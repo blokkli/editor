@@ -10,7 +10,9 @@
       ref="textarea"
       v-bind="$attrs"
       v-model="modelValue"
-      @keydown="onKeydown"
+      @keydown.capture.stop="onKeydown"
+      @keyup.capture.stop
+      @paste="onPaste"
     />
   </div>
 </template>
@@ -26,6 +28,8 @@ defineOptions({
 const props = defineProps<{
   maxHeight?: number
   submitOnEnter?: boolean
+  /** When true, paste HTML from clipboard if available instead of plain text */
+  pasteHtml?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -51,6 +55,50 @@ function onKeydown(e: KeyboardEvent) {
     e.preventDefault()
     emit('submit')
   }
+}
+
+function cleanHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+
+  // Remove style tags
+  for (const style of doc.querySelectorAll('style')) {
+    style.remove()
+  }
+
+  // Remove style attributes from all elements
+  for (const el of doc.querySelectorAll('[style]')) {
+    el.removeAttribute('style')
+  }
+
+  return doc.body.innerHTML
+}
+
+function onPaste(e: ClipboardEvent) {
+  if (!props.pasteHtml) return
+
+  const html = e.clipboardData?.getData('text/html')
+  if (!html) return
+
+  // Prevent default paste and insert HTML instead
+  e.preventDefault()
+
+  const cleanedHtml = cleanHtml(html)
+
+  const el = textarea.value
+  if (!el) return
+
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  const before = modelValue.value.slice(0, start)
+  const after = modelValue.value.slice(end)
+
+  modelValue.value = before + cleanedHtml + after
+
+  // Move cursor to end of pasted content
+  const newPos = start + cleanedHtml.length
+  requestAnimationFrame(() => {
+    el.setSelectionRange(newPos, newPos)
+  })
 }
 
 // Reset height when content is cleared

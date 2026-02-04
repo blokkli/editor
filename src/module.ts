@@ -154,6 +154,7 @@ export default defineNuxtModule<ModuleOptions>({
     await context.generateTemplates()
 
     helper.addAlias('#blokkli-build', helper.paths.blokkliBuildDir)
+    helper.inlineForNitro(helper.paths.blokkliBuildDir)
 
     const moduleDir = import.meta.url
 

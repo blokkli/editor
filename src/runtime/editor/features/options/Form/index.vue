@@ -66,6 +66,7 @@ import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 import {
   getAvailableOptions,
   getMutatedOptionValue,
+  optionValueToStorable,
   type OptionItem,
 } from '#blokkli/editor/helpers/options'
 
@@ -79,36 +80,6 @@ type OptionGroup = {
 }
 
 const activeGroup = ref('')
-
-function optionValueToStorable(
-  definition: BlockOptionDefinition,
-  value: string | string[] | boolean | undefined | null | number,
-): string {
-  if (definition.type === 'checkbox') {
-    if (typeof value === 'string' && (value === '1' || value === '0')) {
-      return value
-    } else if (typeof value === 'boolean') {
-      return value === true ? '1' : '0'
-    }
-    return '0'
-  } else if (
-    definition.type === 'text' ||
-    definition.type === 'radios' ||
-    definition.type === 'datetime-local'
-  ) {
-    if (typeof value === 'string') {
-      return value
-    }
-  } else if (definition.type === 'checkboxes') {
-    if (Array.isArray(value)) {
-      return value.join(',')
-    } else if (typeof value === 'string') {
-      return value
-    }
-  }
-
-  return ''
-}
 
 function onToggleGroup(label: string) {
   if (activeGroup.value === label) {

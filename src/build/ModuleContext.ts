@@ -123,7 +123,8 @@ export class ModuleContext {
           const declarations: string[] = []
 
           for (const line of lines) {
-            if (line.startsWith('import ') && line.includes(' from ')) {
+            // Handle both regular imports (import x from 'y') and side-effect imports (import 'y')
+            if (line.startsWith('import ')) {
               imports.push(line)
             } else {
               declarations.push(line)

@@ -53,3 +53,46 @@ export function getMutatedOptionValue(
   }
   return defaultValue
 }
+
+/**
+ * Convert a typed option value to the string format expected by the adapter.
+ */
+export function optionValueToStorable(
+  definition: BlockOptionDefinition,
+  value: string | string[] | boolean | undefined | null | number,
+): string {
+  if (definition.type === 'checkbox') {
+    if (typeof value === 'string' && (value === '1' || value === '0')) {
+      return value
+    } else if (typeof value === 'boolean') {
+      return value === true ? '1' : '0'
+    }
+    return '0'
+  } else if (
+    definition.type === 'text' ||
+    definition.type === 'radios' ||
+    definition.type === 'datetime-local'
+  ) {
+    if (typeof value === 'string') {
+      return value
+    }
+  } else if (definition.type === 'checkboxes') {
+    if (Array.isArray(value)) {
+      return value.join(',')
+    } else if (typeof value === 'string') {
+      return value
+    }
+  } else if (definition.type === 'number' || definition.type === 'range') {
+    if (typeof value === 'number') {
+      return String(value)
+    } else if (typeof value === 'string') {
+      return value
+    }
+  } else if (definition.type === 'color') {
+    if (typeof value === 'string') {
+      return value
+    }
+  }
+
+  return ''
+}

@@ -93,6 +93,7 @@ export declare const templateEditRouteName: string|null
       options: {
         dependencies: [],
         write: true,
+        context: 'app',
       },
     })
 

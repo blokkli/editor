@@ -14,7 +14,6 @@ export default defineCodeTemplate(
     const definitions: string[] = []
     const declarations: string[] = []
     const imports = new Map<string, string>()
-    const typeImports: string[] = []
 
     for (const feature of features) {
       const componentVarName = toValidVariableName(`component_${feature.id}`)
@@ -25,22 +24,11 @@ export default defineCodeTemplate(
       definitions.push(declarationVarName)
       imports.set(componentVarName, feature.componentPath)
       featuresComponents.set(feature.id, componentVarName)
-
-      // Check if feature has a types.ts file and add side-effect import
-      const typesPath = feature.componentPath.replace('/index.vue', '/types.ts')
-      if (existsSync(typesPath)) {
-        typeImports.push(
-          `import '${feature.componentPath.replace('/index.vue', '/types')}'`,
-        )
-      }
     }
 
     const availableFeaturesAtBuild = features.map((v) => v.id)
 
-    const typeImportsCode =
-      typeImports.length > 0 ? typeImports.join('\n') + '\n' : ''
-
-    return `${typeImportsCode}${toImports(imports)}
+    return `${toImports(imports)}
 
 export const availableFeaturesAtBuild = ${JSON.stringify(
       availableFeaturesAtBuild.sort(),
@@ -56,14 +44,26 @@ export const featureDefinitions = [
 `
   },
   (ctx) => {
-    const features = ctx.features.getEnabledFeatures().map((v) => v.id)
+    const features = ctx.features.getEnabledFeatures()
+    const availableFeaturesAtBuild = features.map((v) => v.id)
 
-    const availableFeaturesAtBuild = features
+    // Collect type imports for features that have a types.ts file
+    const typeImports: string[] = []
+    for (const feature of features) {
+      const typesPath = feature.componentPath.replace('/index.vue', '/types.ts')
+      if (existsSync(typesPath)) {
+        typeImports.push(
+          `import '${feature.componentPath.replace('/index.vue', '/types')}'`,
+        )
+      }
+    }
 
-    return `
-import type { FeatureDefinition } from '${ctx.helper.relativePaths.TYPES}'
+    const typeImportsCode =
+      typeImports.length > 0 ? '\n' + typeImports.join('\n') + '\n' : ''
+
+    return `import type { FeatureDefinition } from '${ctx.helper.relativePaths.TYPES}'
 import type { Component } from 'vue'
-
+${typeImportsCode}
 export type ValidFeatureKey = ${availableFeaturesAtBuild.map((v) => '"' + v + '"').join(' | ')}
 
 export declare const featureComponents: Record<ValidFeatureKey, Component>

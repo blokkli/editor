@@ -214,6 +214,17 @@ export class ModuleHelper implements ValidationInterface {
     ]
   }
 
+  /**
+   * Add a path to Nitro's externals.inline for server-side usage.
+   * @see https://github.com/nuxt/nuxt/issues/28995
+   */
+  public inlineForNitro(path: string) {
+    this.nuxt.options.nitro.externals ||= {}
+    this.nuxt.options.nitro.externals.inline ||= []
+    this.nuxt.options.nitro.externals.inline.push(path)
+    this.nuxt.options.build.transpile.push(path)
+  }
+
   public getMappedBlockBundle(bundle: string): string {
     if (bundle === 'BK_BUNDLE_FROM_LIBRARY') {
       return this.options.fromLibraryBlockBundle ?? 'from_library'

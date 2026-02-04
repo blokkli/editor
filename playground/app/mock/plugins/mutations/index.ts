@@ -79,6 +79,7 @@ import {
   MutationApplyRewrite,
   type MutationApplyRewriteArgs,
 } from './Mutation/ApplyRewrite'
+import { MutationSwap, type MutationSwapArgs } from './Mutation/Swap'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -104,6 +105,7 @@ export type MutationArgsMap = {
   add_template: MutationAddTemplateArgs
   create_template: MutationCreateTemplateArgs
   apply_rewrite: MutationApplyRewriteArgs
+  swap: MutationSwapArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -157,6 +159,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationCreateTemplate(configuration)
     case 'apply_rewrite':
       return new MutationApplyRewrite(configuration)
+    case 'swap':
+      return new MutationSwap(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

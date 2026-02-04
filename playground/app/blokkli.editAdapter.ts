@@ -590,6 +590,12 @@ export default defineBlokkliEditAdapter((ctx) => {
         uuids,
       }),
 
+    swapBlocks: (first: string, second: string) =>
+      addMutation('swap', {
+        firstUuid: first,
+        secondUuid: second,
+      }),
+
     pasteExistingBlocks: (e) =>
       addMutation('duplicate', {
         uuids: e.uuids,

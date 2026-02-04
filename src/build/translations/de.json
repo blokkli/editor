@@ -107,6 +107,14 @@
     "source": "Adding media block...",
     "translation": "Medien-Block hinzufügen..."
   },
+  "aiAgentAddTemplateDone": {
+    "source": "Added template",
+    "translation": ""
+  },
+  "aiAgentAddTemplateRunning": {
+    "source": "Adding template...",
+    "translation": ""
+  },
   "aiAgentAlwaysApprove": {
     "source": "Always",
     "translation": "Immer"
@@ -115,6 +123,10 @@
     "source": "Approve",
     "translation": "Bestätigen"
   },
+  "aiAgentAskQuestionRunning": {
+    "source": "Waiting for answer...",
+    "translation": ""
+  },
   "aiAgentAwaitingApproval": {
     "source": "Awaiting your approval...",
     "translation": "Wartet auf Ihre Bestätigung..."
@@ -122,6 +134,18 @@
   "aiAgentBatchRewriteTextRunning": {
     "source": "Rewriting multiple texts...",
     "translation": "Mehrere Texte umschreiben..."
+  },
+  "aiAgentBlockNotFound": {
+    "source": "Block not found",
+    "translation": ""
+  },
+  "aiAgentCancelled": {
+    "source": "Cancelled",
+    "translation": ""
+  },
+  "aiAgentConfirm": {
+    "source": "Confirm",
+    "translation": ""
   },
   "aiAgentConnecting": {
     "source": "Connecting...",
@@ -139,9 +163,25 @@
     "source": "Deleting blocks...",
     "translation": "Blöcke löschen..."
   },
+  "aiAgentDetachLibraryBlockDone": {
+    "source": "Detached library block",
+    "translation": ""
+  },
+  "aiAgentDetachLibraryBlockRunning": {
+    "source": "Detaching library block...",
+    "translation": ""
+  },
+  "aiAgentDetachLibraryBlocksDone": {
+    "source": "Detached @count library blocks",
+    "translation": ""
+  },
   "aiAgentDuplicateBlockDone": {
     "source": "Duplicated @bundle",
     "translation": "@bundle dupliziert"
+  },
+  "aiAgentDuplicateBlockToFieldDone": {
+    "source": "Duplicated @bundle to @field",
+    "translation": ""
   },
   "aiAgentDuplicateBlocksDone": {
     "source": "Duplicated @count blocks",
@@ -151,6 +191,18 @@
     "source": "Duplicating blocks...",
     "translation": "Blöcke duplizieren..."
   },
+  "aiAgentDuplicateBlocksToFieldDone": {
+    "source": "Duplicated @count blocks to @field",
+    "translation": ""
+  },
+  "aiAgentFindBlocksDone": {
+    "source": "Found @count blocks",
+    "translation": ""
+  },
+  "aiAgentFindBlocksRunning": {
+    "source": "Finding blocks...",
+    "translation": ""
+  },
   "aiAgentGetAllFragments": {
     "source": "Get all fragments",
     "translation": "Alle Fragmente abrufen"
@@ -158,6 +210,14 @@
   "aiAgentGetAllFragmentsDone": {
     "source": "Got all fragments",
     "translation": "Alle Fragmente abgerufen"
+  },
+  "aiAgentGetAllPageContentDone": {
+    "source": "Got content from @count blocks",
+    "translation": ""
+  },
+  "aiAgentGetAllPageContentRunning": {
+    "source": "Getting all page content...",
+    "translation": ""
   },
   "aiAgentGetAvailableBundlesDone": {
     "source": "Got available bundles for @field",
@@ -167,9 +227,21 @@
     "source": "Getting available bundles...",
     "translation": "Verfügbare Blocktypen abrufen..."
   },
+  "aiAgentGetBlockContextDone": {
+    "source": "Got context for @bundle",
+    "translation": ""
+  },
+  "aiAgentGetBlockContextRunning": {
+    "source": "Getting block context...",
+    "translation": ""
+  },
   "aiAgentGetBlockFieldsDone": {
     "source": "Got fields of @bundle block",
     "translation": "Felder von @bundle-Block abgerufen"
+  },
+  "aiAgentGetBlockFieldsNone": {
+    "source": "@bundle has no block fields",
+    "translation": ""
   },
   "aiAgentGetBlockFieldsRunning": {
     "source": "Getting block fields...",
@@ -199,13 +271,25 @@
     "source": "Getting block options...",
     "translation": "Block-Optionen abrufen..."
   },
-  "aiAgentGetChildrenDone": {
-    "source": "Got children of @bundle",
-    "translation": "Unterblöcke von @bundle abgerufen"
+  "aiAgentGetBlocksInViewportDone": {
+    "source": "Got @count blocks in viewport",
+    "translation": ""
   },
-  "aiAgentGetChildrenRunning": {
-    "source": "Getting child blocks...",
-    "translation": "Unterblöcke abrufen..."
+  "aiAgentGetBlocksInViewportRunning": {
+    "source": "Getting blocks in viewport...",
+    "translation": ""
+  },
+  "aiAgentGetChildBlocks": {
+    "source": "Get child blocks",
+    "translation": ""
+  },
+  "aiAgentGetChildBlocksDone": {
+    "source": "Got children of @bundle",
+    "translation": ""
+  },
+  "aiAgentGetChildBlocksNone": {
+    "source": "@bundle has no child fields",
+    "translation": ""
   },
   "aiAgentGetEditableFieldsDone": {
     "source": "Got editable fields of @bundle block",
@@ -215,21 +299,9 @@
     "source": "Getting editable fields...",
     "translation": "Editierbare Felder abrufen..."
   },
-  "aiAgentGetPageStructure": {
-    "source": "Get page structure",
-    "translation": "Seitenstruktur abrufen"
-  },
-  "aiAgentGetPageStructureDone": {
-    "source": "Got page structure",
-    "translation": "Seitenstruktur abgerufen"
-  },
-  "aiAgentGetVisibleBlocksDone": {
-    "source": "Got @count visible blocks",
-    "translation": "@count sichtbare Blöcke abgerufen"
-  },
-  "aiAgentGetVisibleBlocksRunning": {
-    "source": "Getting visible blocks...",
-    "translation": "Sichtbare Blöcke abrufen..."
+  "aiAgentGoToHistoryIndexRunning": {
+    "source": "Navigating history...",
+    "translation": ""
   },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
@@ -247,9 +319,25 @@
     "source": "Ask me to edit the page content...",
     "translation": "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
   },
+  "aiAgentProcessing": {
+    "source": "Processing...",
+    "translation": "Verarbeiten..."
+  },
+  "aiAgentRedoDone": {
+    "source": "Redid @count changes",
+    "translation": ""
+  },
   "aiAgentReject": {
     "source": "Reject",
     "translation": "Ablehnen"
+  },
+  "aiAgentReplaceMediaDone": {
+    "source": "Replaced media on @field",
+    "translation": ""
+  },
+  "aiAgentReplaceMediaRunning": {
+    "source": "Replacing media...",
+    "translation": ""
   },
   "aiAgentRewriteFieldDone": {
     "source": "Rewrote @field",
@@ -271,6 +359,30 @@
     "source": "Searching media...",
     "translation": "Medien suchen..."
   },
+  "aiAgentSearchTemplatesAllDone": {
+    "source": "Searched all templates",
+    "translation": ""
+  },
+  "aiAgentSearchTemplatesDone": {
+    "source": "Searched templates for '@query'",
+    "translation": ""
+  },
+  "aiAgentSearchTemplatesRunning": {
+    "source": "Searching templates...",
+    "translation": ""
+  },
+  "aiAgentSearchTextDone": {
+    "source": "Found @count blocks matching '@query'",
+    "translation": ""
+  },
+  "aiAgentSearchTextError": {
+    "source": "Invalid regex pattern",
+    "translation": ""
+  },
+  "aiAgentSearchTextRunning": {
+    "source": "Searching text...",
+    "translation": ""
+  },
   "aiAgentSelectMediaRunning": {
     "source": "Selecting media...",
     "translation": "Medien auswählen..."
@@ -279,13 +391,25 @@
     "source": "Setting block options...",
     "translation": "Block-Optionen setzen..."
   },
+  "aiAgentSwapBlocksDone": {
+    "source": "Swapped @bundleA and @bundleB",
+    "translation": ""
+  },
+  "aiAgentSwapBlocksRunning": {
+    "source": "Swapping blocks...",
+    "translation": ""
+  },
   "aiAgentThinking": {
-    "source": "Processing...",
-    "translation": "Verarbeiten..."
+    "source": "Thinking...",
+    "translation": "Überlegen..."
   },
   "aiAgentTourText": {
     "source": "Chat with an AI assistant to edit page content.",
     "translation": "Chatten Sie mit einem KI-Assistenten, um Seiteninhalte zu bearbeiten."
+  },
+  "aiAgentUndoDone": {
+    "source": "Undid @count changes",
+    "translation": ""
   },
   "aiAgentUpdateOptionsOnBlockDone": {
     "source": "Updated @count option(s) on block",
@@ -294,6 +418,14 @@
   "aiAgentUpdateOptionsOnBlocksDone": {
     "source": "Updated @count option(s) on @blockCount blocks",
     "translation": "@count Option(en) auf @blockCount Blöcken aktualisiert"
+  },
+  "aiAgentWebFetchDone": {
+    "source": "Fetched '@title'",
+    "translation": ""
+  },
+  "aiAgentWebFetchRunning": {
+    "source": "Fetching web page...",
+    "translation": ""
   },
   "all": {
     "source": "All",
@@ -507,12 +639,24 @@
     "source": "Available fragments",
     "translation": "Verfügbare Fragmente"
   },
+  "batchRewriteAllApplied": {
+    "source": "All @count changes applied",
+    "translation": ""
+  },
+  "batchRewriteAllRejected": {
+    "source": "All changes rejected by user",
+    "translation": ""
+  },
   "batchRewriteApply": {
     "source": "Apply",
     "translation": ""
   },
   "batchRewriteFields": {
     "source": "fields",
+    "translation": ""
+  },
+  "batchRewriteSomeApplied": {
+    "source": "@applied of @total changes applied",
     "translation": ""
   },
   "batchRewriteTitle": {

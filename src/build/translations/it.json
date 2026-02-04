@@ -107,6 +107,14 @@
     "source": "Adding media block...",
     "translation": ""
   },
+  "aiAgentAddTemplateDone": {
+    "source": "Added template",
+    "translation": ""
+  },
+  "aiAgentAddTemplateRunning": {
+    "source": "Adding template...",
+    "translation": ""
+  },
   "aiAgentAlwaysApprove": {
     "source": "Always",
     "translation": ""
@@ -115,12 +123,28 @@
     "source": "Approve",
     "translation": ""
   },
+  "aiAgentAskQuestionRunning": {
+    "source": "Waiting for answer...",
+    "translation": ""
+  },
   "aiAgentAwaitingApproval": {
     "source": "Awaiting your approval...",
     "translation": ""
   },
   "aiAgentBatchRewriteTextRunning": {
     "source": "Rewriting multiple texts...",
+    "translation": ""
+  },
+  "aiAgentBlockNotFound": {
+    "source": "Block not found",
+    "translation": ""
+  },
+  "aiAgentCancelled": {
+    "source": "Cancelled",
+    "translation": ""
+  },
+  "aiAgentConfirm": {
+    "source": "Confirm",
     "translation": ""
   },
   "aiAgentConnecting": {
@@ -139,8 +163,24 @@
     "source": "Deleting blocks...",
     "translation": ""
   },
+  "aiAgentDetachLibraryBlockDone": {
+    "source": "Detached library block",
+    "translation": ""
+  },
+  "aiAgentDetachLibraryBlockRunning": {
+    "source": "Detaching library block...",
+    "translation": ""
+  },
+  "aiAgentDetachLibraryBlocksDone": {
+    "source": "Detached @count library blocks",
+    "translation": ""
+  },
   "aiAgentDuplicateBlockDone": {
     "source": "Duplicated @bundle",
+    "translation": ""
+  },
+  "aiAgentDuplicateBlockToFieldDone": {
+    "source": "Duplicated @bundle to @field",
     "translation": ""
   },
   "aiAgentDuplicateBlocksDone": {
@@ -151,12 +191,32 @@
     "source": "Duplicating blocks...",
     "translation": ""
   },
+  "aiAgentDuplicateBlocksToFieldDone": {
+    "source": "Duplicated @count blocks to @field",
+    "translation": ""
+  },
+  "aiAgentFindBlocksDone": {
+    "source": "Found @count blocks",
+    "translation": ""
+  },
+  "aiAgentFindBlocksRunning": {
+    "source": "Finding blocks...",
+    "translation": ""
+  },
   "aiAgentGetAllFragments": {
     "source": "Get all fragments",
     "translation": ""
   },
   "aiAgentGetAllFragmentsDone": {
     "source": "Got all fragments",
+    "translation": ""
+  },
+  "aiAgentGetAllPageContentDone": {
+    "source": "Got content from @count blocks",
+    "translation": ""
+  },
+  "aiAgentGetAllPageContentRunning": {
+    "source": "Getting all page content...",
     "translation": ""
   },
   "aiAgentGetAvailableBundlesDone": {
@@ -167,8 +227,20 @@
     "source": "Getting available bundles...",
     "translation": ""
   },
+  "aiAgentGetBlockContextDone": {
+    "source": "Got context for @bundle",
+    "translation": ""
+  },
+  "aiAgentGetBlockContextRunning": {
+    "source": "Getting block context...",
+    "translation": ""
+  },
   "aiAgentGetBlockFieldsDone": {
     "source": "Got fields of @bundle block",
+    "translation": ""
+  },
+  "aiAgentGetBlockFieldsNone": {
+    "source": "@bundle has no block fields",
     "translation": ""
   },
   "aiAgentGetBlockFieldsRunning": {
@@ -199,12 +271,24 @@
     "source": "Getting block options...",
     "translation": ""
   },
-  "aiAgentGetChildrenDone": {
+  "aiAgentGetBlocksInViewportDone": {
+    "source": "Got @count blocks in viewport",
+    "translation": ""
+  },
+  "aiAgentGetBlocksInViewportRunning": {
+    "source": "Getting blocks in viewport...",
+    "translation": ""
+  },
+  "aiAgentGetChildBlocks": {
+    "source": "Get child blocks",
+    "translation": ""
+  },
+  "aiAgentGetChildBlocksDone": {
     "source": "Got children of @bundle",
     "translation": ""
   },
-  "aiAgentGetChildrenRunning": {
-    "source": "Getting child blocks...",
+  "aiAgentGetChildBlocksNone": {
+    "source": "@bundle has no child fields",
     "translation": ""
   },
   "aiAgentGetEditableFieldsDone": {
@@ -215,20 +299,8 @@
     "source": "Getting editable fields...",
     "translation": ""
   },
-  "aiAgentGetPageStructure": {
-    "source": "Get page structure",
-    "translation": ""
-  },
-  "aiAgentGetPageStructureDone": {
-    "source": "Got page structure",
-    "translation": ""
-  },
-  "aiAgentGetVisibleBlocksDone": {
-    "source": "Got @count visible blocks",
-    "translation": ""
-  },
-  "aiAgentGetVisibleBlocksRunning": {
-    "source": "Getting visible blocks...",
+  "aiAgentGoToHistoryIndexRunning": {
+    "source": "Navigating history...",
     "translation": ""
   },
   "aiAgentMoveBlockDone": {
@@ -247,8 +319,24 @@
     "source": "Ask me to edit the page content...",
     "translation": ""
   },
+  "aiAgentProcessing": {
+    "source": "Processing...",
+    "translation": ""
+  },
+  "aiAgentRedoDone": {
+    "source": "Redid @count changes",
+    "translation": ""
+  },
   "aiAgentReject": {
     "source": "Reject",
+    "translation": ""
+  },
+  "aiAgentReplaceMediaDone": {
+    "source": "Replaced media on @field",
+    "translation": ""
+  },
+  "aiAgentReplaceMediaRunning": {
+    "source": "Replacing media...",
     "translation": ""
   },
   "aiAgentRewriteFieldDone": {
@@ -271,6 +359,30 @@
     "source": "Searching media...",
     "translation": ""
   },
+  "aiAgentSearchTemplatesAllDone": {
+    "source": "Searched all templates",
+    "translation": ""
+  },
+  "aiAgentSearchTemplatesDone": {
+    "source": "Searched templates for '@query'",
+    "translation": ""
+  },
+  "aiAgentSearchTemplatesRunning": {
+    "source": "Searching templates...",
+    "translation": ""
+  },
+  "aiAgentSearchTextDone": {
+    "source": "Found @count blocks matching '@query'",
+    "translation": ""
+  },
+  "aiAgentSearchTextError": {
+    "source": "Invalid regex pattern",
+    "translation": ""
+  },
+  "aiAgentSearchTextRunning": {
+    "source": "Searching text...",
+    "translation": ""
+  },
   "aiAgentSelectMediaRunning": {
     "source": "Selecting media...",
     "translation": ""
@@ -279,12 +391,24 @@
     "source": "Setting block options...",
     "translation": ""
   },
+  "aiAgentSwapBlocksDone": {
+    "source": "Swapped @bundleA and @bundleB",
+    "translation": ""
+  },
+  "aiAgentSwapBlocksRunning": {
+    "source": "Swapping blocks...",
+    "translation": ""
+  },
   "aiAgentThinking": {
-    "source": "Processing...",
+    "source": "Thinking...",
     "translation": ""
   },
   "aiAgentTourText": {
     "source": "Chat with an AI assistant to edit page content.",
+    "translation": ""
+  },
+  "aiAgentUndoDone": {
+    "source": "Undid @count changes",
     "translation": ""
   },
   "aiAgentUpdateOptionsOnBlockDone": {
@@ -293,6 +417,14 @@
   },
   "aiAgentUpdateOptionsOnBlocksDone": {
     "source": "Updated @count option(s) on @blockCount blocks",
+    "translation": ""
+  },
+  "aiAgentWebFetchDone": {
+    "source": "Fetched '@title'",
+    "translation": ""
+  },
+  "aiAgentWebFetchRunning": {
+    "source": "Fetching web page...",
     "translation": ""
   },
   "all": {
@@ -507,12 +639,24 @@
     "source": "Available fragments",
     "translation": ""
   },
+  "batchRewriteAllApplied": {
+    "source": "All @count changes applied",
+    "translation": ""
+  },
+  "batchRewriteAllRejected": {
+    "source": "All changes rejected by user",
+    "translation": ""
+  },
   "batchRewriteApply": {
     "source": "Apply",
     "translation": ""
   },
   "batchRewriteFields": {
     "source": "fields",
+    "translation": ""
+  },
+  "batchRewriteSomeApplied": {
+    "source": "@applied of @total changes applied",
     "translation": ""
   },
   "batchRewriteTitle": {

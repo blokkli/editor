@@ -424,7 +424,6 @@ onBlokkliEvent('scrollSelectionIntoView', (e) => {
 
   // No valid rects found.
   if (minX === Infinity) {
-    console.log('no valid rects found')
     return
   }
 
@@ -446,8 +445,8 @@ onBlokkliEvent('scrollSelectionIntoView', (e) => {
   }
 
   artboard.scrollIntoView(boundingRect, {
-    scale: 'blocking',
-    axis: 'y',
+    scale: 'none',
+    axis: 'both',
     behavior: e.immediate ? 'instant' : 'auto',
   })
 })

@@ -92,7 +92,14 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    modules: [testExtensionModule(), aiRewriteModule(), agentModule()],
+    modules: [
+      testExtensionModule(),
+      aiRewriteModule(),
+      agentModule({
+        allowedFetchOrigins: ['https://stadt.winterthur.ch'],
+        provider: 'anthropic',
+      }),
+    ],
     pattern: [
       playgroundFolder + 'app/components/Blokkli/**/*.vue',
       playgroundFolder + 'app/pages/**/*.vue',

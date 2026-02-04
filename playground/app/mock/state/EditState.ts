@@ -137,6 +137,56 @@ export class MutationContext {
     }
   }
 
+  moveProxyToField(
+    uuid: string,
+    hostEntityType: string,
+    hostEntityUuid: string,
+    hostField: string,
+    preceedingUuid?: string,
+  ) {
+    const proxy = this.removeProxy(uuid)
+    if (!proxy) {
+      return
+    }
+
+    // Update the proxy's host info
+    proxy.hostEntityType = hostEntityType
+    proxy.hostEntityUuid = hostEntityUuid
+    proxy.hostField = hostField
+
+    // Insert at the correct position
+    if (preceedingUuid) {
+      const preceedingIndex = this.getIndex(preceedingUuid)
+      if (preceedingIndex !== undefined) {
+        this.proxies.splice(preceedingIndex + 1, 0, proxy)
+        return
+      }
+    }
+
+    // If no preceding UUID or it wasn't found, find the first block in the target field
+    // and insert before it (at the beginning of the field)
+    const targetFieldProxies = this.proxies.filter(
+      (p) =>
+        p.hostEntityType === hostEntityType &&
+        p.hostEntityUuid === hostEntityUuid &&
+        p.hostField === hostField,
+    )
+
+    if (targetFieldProxies.length > 0) {
+      const firstInField = targetFieldProxies[0]
+      if (firstInField) {
+        const firstIndex = this.getIndex(firstInField.block.uuid)
+        if (firstIndex !== undefined) {
+          this.proxies.splice(firstIndex, 0, proxy)
+          return
+        }
+      }
+    }
+
+    // If target field is empty, just add to the end
+    this.proxies.push(proxy)
+  }
+
   getProxiesForHost(
     hostEntityType: string,
     hostEntityUuid: string,
