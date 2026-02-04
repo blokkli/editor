@@ -13,7 +13,8 @@ const resultSchema = z.object({
 
 export default defineBlokkliMcpTool({
   name: 'ping',
-  description: 'A simple test tool that returns a success response. Use this to verify the agent is working.',
+  description:
+    'A simple test tool that returns a success response. Use this to verify the agent is working.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: () => 'Pinging...',

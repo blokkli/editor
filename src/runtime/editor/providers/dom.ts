@@ -539,13 +539,17 @@ export default function (
     return registeredFields[key]
   }
 
-  const getFieldsAllowingFragment = (fragmentName: string): RegisteredField[] => {
+  const getFieldsAllowingFragment = (
+    fragmentName: string,
+  ): RegisteredField[] => {
     const results: RegisteredField[] = []
 
     for (const field of Object.values(registeredFields)) {
       if (
         field &&
-        field.allowedFragments.includes(fragmentName as (typeof field.allowedFragments)[number])
+        field.allowedFragments.includes(
+          fragmentName as (typeof field.allowedFragments)[number],
+        )
       ) {
         results.push(field)
       }

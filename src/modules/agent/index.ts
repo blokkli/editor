@@ -1,0 +1,174 @@
+import { addServerHandler, createResolver } from '@nuxt/kit'
+import { fileURLToPath } from 'node:url'
+import * as path from 'node:path'
+import { defineBlokkliModule } from '../defineBlokkliModule'
+import { McpToolCollector } from './build/McpToolCollector'
+import { SkillCollector } from './build/SkillCollector'
+import { createMcpToolsClientTemplate } from './build/templates/mcpToolsClient'
+import {
+  createAgentServerConfigTemplate,
+  type AgentProvider,
+} from './build/templates/agentServerConfig'
+import { createAgentSkillsTemplate } from './build/templates/agentSkills'
+
+const AGENT_ROUTE = '/api/blokkli/agent'
+const FETCH_ROUTE = '/api/blokkli/agent/fetch'
+
+export type AgentModuleOptions = {
+  /**
+   * Allowed origins for the fetch endpoint.
+   * URLs that the agent is allowed to fetch content from.
+   */
+  allowedFetchOrigins?: string[]
+
+  /**
+   * AI provider to use.
+   * - 'anthropic': Uses Anthropic's Claude models (default)
+   * - 'openai': Uses OpenAI's GPT models (requires openai npm package)
+   *
+   * NOTE: The API key needs to be provided at runtime via runtime config:
+   *
+   * NUXT_BLOKKLI_AGENT_API_KEY=hunter2
+   *
+   * @default 'anthropic'
+   */
+  provider?: AgentProvider
+
+  /**
+   * Model to use for the AI provider.
+   *
+   * If not specified, uses the provider's default model:
+   * - Anthropic: claude-haiku-4-5-20251001
+   * - OpenAI: gpt-4o
+   */
+  model?: string
+}
+
+export default defineBlokkliModule<AgentModuleOptions>({
+  alterOptions: (options) => {
+    options.featureImports ||= []
+    const moduleResolver = createResolver(
+      fileURLToPath(new URL('./', import.meta.url)),
+    )
+    const featurePath = moduleResolver.resolve(
+      './runtime/app/features/agent/index.vue',
+    )
+    options.featureImports.push(featurePath)
+  },
+  async setup(ctx, options) {
+    const nuxt = ctx.helper.nuxt
+    const moduleResolver = createResolver(
+      fileURLToPath(new URL('./', import.meta.url)),
+    )
+
+    // @ts-expect-error Can indeed not exit, even if the types says it does.
+    ctx.helper.nuxt.options.runtimeConfig.blokkli ||= {}
+    // @ts-expect-error Can indeed not exit, even if the types says it does.
+    ctx.helper.nuxt.options.runtimeConfig.blokkli.agent ||= {}
+    ctx.helper.nuxt.options.runtimeConfig.blokkli.agent.apiKey ||= ''
+
+    ctx.helper.addAlias(
+      '#blokkli/agent/app',
+      moduleResolver.resolve('./runtime/app'),
+    )
+    ctx.helper.addAlias(
+      '#blokkli/agent/shared',
+      moduleResolver.resolve('./runtime/shared'),
+    )
+    ctx.helper.addAlias(
+      '#blokkli/agent/server',
+      moduleResolver.resolve('./runtime/server'),
+    )
+
+    // Initialize MCP tools collector with both module and project directories
+    const moduleToolsDir = moduleResolver.resolve('./runtime/app/tools')
+    const projectToolsDir = path.resolve(nuxt.options.rootDir, 'blokkli/tools')
+    const mcpTools = new McpToolCollector(ctx.helper, [
+      moduleToolsDir,
+      projectToolsDir,
+    ])
+    await mcpTools.init()
+    ctx.context.addCollector(mcpTools)
+
+    // Register client template for MCP tools
+    ctx.context.addTemplate(createMcpToolsClientTemplate(mcpTools))
+
+    // Add project tools directory to app TypeScript includes (client-side code)
+    const relativeToolsDir = path.relative(
+      nuxt.options.buildDir,
+      projectToolsDir,
+    )
+    nuxt.options.typescript.tsConfig ||= {}
+    nuxt.options.typescript.tsConfig.include ||= []
+    nuxt.options.typescript.tsConfig.include.push(relativeToolsDir)
+
+    // Register server template for agent config
+    ctx.context.addTemplate(
+      createAgentServerConfigTemplate({
+        allowedFetchOrigins: options?.allowedFetchOrigins ?? [],
+        provider: options?.provider ?? 'anthropic',
+        model: options?.model,
+        providersPath: moduleResolver.resolve('./runtime/server/providers'),
+      }),
+    )
+
+    // Initialize skills collector with both module and project directories
+    const moduleSkillsDir = moduleResolver.resolve(
+      './runtime/server/default-skills',
+    )
+    const projectSkillsDir = path.resolve(
+      nuxt.options.rootDir,
+      'blokkli/skills',
+    )
+
+    const skillsCollector = new SkillCollector(ctx.helper, [
+      moduleSkillsDir,
+      projectSkillsDir,
+    ])
+    await skillsCollector.init()
+    ctx.context.addCollector(skillsCollector)
+
+    ctx.context.addTemplate(
+      createAgentSkillsTemplate({
+        collector: skillsCollector,
+        typesPath: moduleResolver.resolve('./runtime/server/skills/types'),
+      }),
+    )
+
+    // Add server handler for WebSocket
+    addServerHandler({
+      route: AGENT_ROUTE,
+      handler: moduleResolver.resolve('./runtime/server/agent'),
+    })
+
+    // Add server handler for web fetch
+    addServerHandler({
+      route: FETCH_ROUTE,
+      handler: moduleResolver.resolve('./runtime/server/fetch'),
+    })
+
+    // Add project skills directory to Nitro TypeScript includes for proper type resolution
+    // Path must be relative to .nuxt directory where tsconfig is generated
+    const relativeSkillsDir = path.relative(
+      nuxt.options.buildDir,
+      projectSkillsDir,
+    )
+    nuxt.hook('nitro:config', (nitroConfig) => {
+      nitroConfig.typescript ||= {}
+      nitroConfig.typescript.tsConfig ||= {}
+      nitroConfig.typescript.tsConfig.include ||= []
+      nitroConfig.typescript.tsConfig.include.push(relativeSkillsDir)
+    })
+
+    // Remove the WebSocket route from Nitro's type generation.
+    // WebSocket handlers don't return data for $fetch, so the generated
+    // types are useless and cause type errors because the server file
+    // gets checked in the app context via nitro-routes.d.ts.
+    nuxt.hook('nitro:init', (nitro) => {
+      nitro.hooks.hook('types:extend', (types) => {
+        delete types.routes[AGENT_ROUTE]
+        delete types.routes[FETCH_ROUTE]
+      })
+    })
+  },
+})

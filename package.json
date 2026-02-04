@@ -39,6 +39,9 @@
       ],
       "drupal": [
         "./dist/modules/drupal/index.d.mts"
+      ],
+      "agent": [
+        "./dist/modules/agent/index.d.mts"
       ]
     }
   },
@@ -50,6 +53,10 @@
     "./drupal": {
       "types": "./dist/modules/drupal/index.d.mts",
       "import": "./dist/modules/drupal/index.mjs"
+    },
+    "./agent": {
+      "types": "./dist/modules/agent/index.d.mts",
+      "import": "./dist/modules/agent/index.mjs"
     }
   },
   "scripts": {
@@ -152,13 +159,21 @@
     "magic-string": "^0.30.0",
     "micromatch": "^4.0.0",
     "oxc-walker": "^0.5.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "openai": "^4.0.0",
+    "@anthropic-ai/sdk": "^0.71.2"
   },
   "peerDependenciesMeta": {
     "@lunarisapp/readability": {
       "optional": true
     },
     "axe-core": {
+      "optional": true
+    },
+    "openai": {
+      "optional": true
+    },
+    "@anthropic-ai/sdk": {
       "optional": true
     }
   },

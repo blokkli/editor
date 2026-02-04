@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import drupal from './src/modules/drupal'
-import agent from './packages/agent/src/module'
+import agent from './src/modules/agent'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -63,8 +63,8 @@ fragment blokkliParagraphsType on ParagraphsType {
     typescript: {
       tsConfig: {
         include: [
-          '../packages/agent/src/runtime/server/**/*',
-          '../packages/agent/src/runtime/shared/**/*',
+          '../src/modules/agent/runtime/server/**/*',
+          '../src/modules/agent/runtime/shared/**/*',
         ],
       },
     },
@@ -81,7 +81,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../playground-minimal',
         '../dist',
         '../app',
-        '../packages/agent/src/runtime/server/**/*',
+        '../src/modules/agent/runtime/server/**/*',
       ],
       include: [
         '../src/runtime/components/**/*',
@@ -92,8 +92,8 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/runtime/types/**/*',
         '../src/global/**/*',
         '../src/modules/drupal/runtime/**/*',
-        '../packages/agent/src/runtime/app/**/*',
-        '../packages/agent/src/runtime/shared/**/*',
+        '../src/modules/agent/runtime/app/**/*',
+        '../src/modules/agent/runtime/shared/**/*',
       ],
     },
     nodeTsConfig: {
@@ -106,13 +106,13 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/build/**/*',
         '../src/modules/**/*.ts',
         '../src/global/**/*',
-        '../packages/agent/src/module.ts',
-        '../packages/agent/src/build/**/*',
+        '../src/modules/agent/module.ts',
+        '../src/modules/agent/build/**/*',
       ],
       exclude: [
         '../src/runtime/**/*',
         '../src/modules/*/runtime/**/*',
-        '../packages/agent/src/runtime/**/*',
+        '../src/modules/agent/runtime/**/*',
       ],
     },
   },

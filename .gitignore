@@ -60,6 +60,7 @@ src/runtime/css
 docs/.vitepress/cache
 
 playground/app/blokkli/apiReadabilityAnalyzer.ts
+playground/blokkli/skills/einfacheSprache.ts
 
 .yalc
 yalc.lock
@@ -71,3 +72,4 @@ src/runtime/editor/icons/material-icons.ts
 src/runtime/editor/css/output.css
 
 packages/agent
+packages/kit

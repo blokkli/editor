@@ -1,0 +1,39 @@
+import { defineCodeTemplate } from '../../../../../src/build/templates/defineTemplate'
+import type { McpToolCollector } from '../McpToolCollector'
+
+/**
+ * Creates the client template that imports all tool files and exports them as an array.
+ */
+export function createMcpToolsClientTemplate(collector: McpToolCollector) {
+  return defineCodeTemplate(
+    'mcp-tools-client',
+    () => {
+      const tools = collector.getTools()
+
+      if (tools.length === 0) {
+        return `export const mcpTools = []
+`
+      }
+
+      const imports = tools.map(
+        (tool) =>
+          `import ${tool.importName} from '${tool.filePath.replace(/\.ts$/, '')}'`,
+      )
+
+      const toolsArrayEntries = tools.map((tool) => tool.importName)
+
+      return `${imports.join('\n')}
+
+export const mcpTools = [
+  ${toolsArrayEntries.join(',\n  ')}
+]
+`
+    },
+    () => {
+      return `import type { McpToolDefinition } from '#blokkli/agent/app/types'
+
+export declare const mcpTools: McpToolDefinition[]
+`
+    },
+  )
+}

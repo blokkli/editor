@@ -1,0 +1,437 @@
+.bk-agent-connecting {
+  @apply flex items-center justify-center gap-8 p-20 text-mono-500;
+}
+
+.bk.bk-agent-panel {
+  @apply flex flex-col h-full min-h-[200px] select-text;
+
+  .bk-agent-panel-inner {
+    @apply flex-1 overflow-y-auto;
+    @apply flex flex-col;
+  }
+
+  .bk-agent-panel-conversation {
+    @apply p-15 flex-1;
+  }
+
+  /* Conversation */
+  .bk-agent-conversation {
+    @apply grid;
+  }
+
+  .bk-agent-message {
+    @apply min-w-0;
+  }
+
+  .bk-agent-message.bk-is-user {
+    @apply p-10 ml-18 rounded-xl;
+    @apply bg-accent-600 text-white;
+    @apply mb-15;
+
+    &:not(:first-child) {
+      @apply mt-15;
+    }
+  }
+
+  .bk-agent-assistant-bubble {
+    @apply bg-mono-100 px-10 rounded-xl py-10;
+  }
+  .bk-agent-assistant-bubble + .bk-agent-assistant-bubble {
+    @apply rounded-t-none pt-0;
+  }
+  .bk-agent-assistant-bubble:has(+ .bk-agent-assistant-bubble) {
+    @apply rounded-b-none;
+  }
+
+  .bk-agent-assistant-bubble.bk-is-tool {
+    .bk-agent-tool-call {
+      @apply border-t border-t-mono-300;
+    }
+  }
+
+  .bk-is-assistant + .bk-agent-assistant-bubble.bk-is-tool {
+    .bk-agent-tool-call {
+      @apply pt-10;
+    }
+  }
+
+  .bk-agent-assistant-bubble.bk-is-tool
+    + .bk-agent-assistant-bubble.bk-is-tool {
+    .bk-agent-tool-call {
+      @apply border-t-0;
+    }
+  }
+  .bk-agent-assistant-bubble.bk-is-tool:has(+ .bk-is-assistant) {
+    .bk-agent-tool-call {
+      @apply border-b border-b-mono-300 pb-10;
+    }
+  }
+
+  .bk-agent-message-text {
+    @apply break-words;
+    @apply text-sm;
+
+    > * {
+      @apply first:mt-0 last:mb-0;
+    }
+
+    p,
+    ol,
+    ul,
+    blockquote,
+    table {
+      @apply my-8;
+    }
+
+    h1 {
+      @apply text-xl mb-8 mt-24;
+      &:not(:has(strong)) {
+        @apply font-bold;
+      }
+    }
+
+    h2 {
+      @apply text-lg mb-8 mt-24;
+      &:not(:has(strong)) {
+        @apply font-bold;
+      }
+    }
+
+    h3 {
+      @apply text-base mb-8 mt-24;
+      &:not(:has(strong)) {
+        @apply font-bold;
+      }
+    }
+
+    code {
+      @apply bg-mono-300 px-[0.3em] rounded-md text-mono-700;
+    }
+
+    a {
+      @apply text-accent-700 font-semibold underline underline-offset-2;
+    }
+
+    blockquote {
+      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5;
+    }
+
+    pre {
+      @apply whitespace-normal;
+    }
+
+    table {
+      @apply w-full;
+
+      thead {
+        @apply text-left;
+
+        tr {
+          @apply border-b-2 border-b-mono-950;
+        }
+      }
+
+      tbody {
+        td,
+        th {
+          @apply py-2;
+        }
+        tr {
+          @apply border-b border-b-mono-300;
+        }
+      }
+    }
+
+    hr {
+      @apply border-t-mono-300 my-20;
+    }
+
+    ul {
+      @apply list-disc pl-18;
+    }
+
+    ol {
+      @apply list-decimal pl-18;
+    }
+  }
+
+  .bk-agent-tool-call {
+    @apply flex items-center text-sm gap-5;
+
+    &.bk-is-pending {
+      .bk-agent-tool-call-status {
+        @apply bg-yellow-normal text-white;
+      }
+    }
+
+    &.bk-is-success {
+      .bk-agent-tool-call-status {
+        @apply bg-lime-normal text-white;
+      }
+    }
+
+    &.bk-is-error {
+      .bk-agent-tool-call-status {
+        @apply bg-red-normal text-white;
+      }
+    }
+  }
+
+  .bk-agent-tool-call-name {
+    @apply flex-1;
+  }
+
+  .bk-agent-tool-call-status {
+    @apply size-18 rounded-full p-2;
+
+    svg {
+      @apply w-full h-full fill-current;
+    }
+  }
+
+  /* Pending mutation approval */
+  .bk-agent-pending-mutation {
+    @apply mt-15 border border-mono-300 rounded-md;
+  }
+
+  .bk-agent-pending-header {
+    @apply flex items-center gap-5 font-medium text-sm p-10;
+    @apply bg-mono-100;
+
+    > .bk-icon {
+      @apply w-18 h-18 fill-current;
+    }
+
+    > span {
+      @apply flex-1;
+    }
+  }
+
+  .bk-agent-pending-header-cancel {
+    @apply relative;
+    button {
+      @apply w-25 h-25 flex items-center justify-center rounded;
+      @apply border-none cursor-pointer;
+      @apply bg-red-normal hover:bg-red-dark;
+
+      svg {
+        @apply w-15 h-15 fill-current;
+      }
+    }
+    .bk-tooltip {
+      @apply absolute bottom-full right-0 mb-5;
+    }
+
+    &:not(:hover) {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
+  }
+
+  .bk-agent-pending-mutation .bk-agent-pending-actions {
+    @apply flex gap-8 p-10;
+  }
+
+  /* Batch rewrite tool content */
+  .bk-batch-rewrite-list {
+    @apply flex flex-col divide-y divide-mono-200;
+  }
+
+  .bk-batch-rewrite-item {
+    @apply flex items-start gap-10 px-10 py-8 cursor-pointer;
+    @apply hover:bg-mono-50;
+
+    input[type='checkbox'] {
+      @apply mt-2 shrink-0 w-15 h-15 rounded border-mono-300;
+      @apply accent-accent-700;
+    }
+
+    &.bk-is-deselected {
+      @apply opacity-50;
+
+      .bk-batch-rewrite-new {
+        @apply line-through;
+      }
+    }
+  }
+
+  .bk-batch-rewrite-change {
+    @apply flex-1 min-w-0;
+  }
+
+  .bk-batch-rewrite-field {
+    @apply text-xs font-medium text-mono-600 mb-3;
+  }
+
+  .bk-batch-rewrite-preview {
+    @apply flex items-center gap-5 text-sm;
+
+    svg {
+      @apply w-15 h-15 fill-mono-400 shrink-0;
+    }
+  }
+
+  .bk-batch-rewrite-original {
+    @apply text-mono-500 line-clamp-1;
+  }
+
+  .bk-batch-rewrite-new {
+    @apply text-mono-800 font-medium line-clamp-1;
+  }
+
+  /* Media select tool content */
+  .bk-media-select-list {
+    @apply flex flex-col divide-y divide-mono-200;
+  }
+
+  .bk-media-select-item {
+    @apply flex items-center gap-10 px-10 py-8 cursor-pointer;
+    @apply hover:bg-mono-50;
+
+    &.bk-is-selected {
+      @apply bg-accent-100;
+      .bk-media-select-thumbnail {
+        @apply outline outline-accent-600 relative z-40;
+      }
+    }
+  }
+
+  .bk-media-select-thumbnail {
+    @apply w-40 h-40 bg-mono-100 rounded overflow-hidden shrink-0;
+    @apply flex items-center justify-center;
+
+    img {
+      @apply w-full h-full object-cover;
+    }
+
+    svg {
+      @apply w-20 h-20 fill-mono-300;
+    }
+  }
+
+  .bk-media-select-label {
+    @apply text-sm text-mono-700 flex-1 break-words max-w-full overflow-hidden;
+  }
+
+  /* Debug gallery */
+  .bk-agent-debug-gallery {
+    @apply flex flex-col gap-20;
+
+    h3 {
+      @apply text-sm font-bold text-mono-600 uppercase tracking-wide;
+    }
+  }
+
+  .bk-agent-panel-input {
+    @apply sticky bottom-0;
+    @apply mt-15;
+    @apply bg-white;
+    @apply p-15;
+
+    &:before {
+      content: '';
+      @apply absolute left-0 bottom-full w-full h-25;
+      background: linear-gradient(0deg, white, rgba(255, 255, 255, 0));
+    }
+  }
+
+  /* Input area */
+  .bk-agent-input {
+    @apply flex flex-col shrink-0;
+    @apply border border-mono-200 bg-white;
+    @apply rounded-lg;
+    @apply focus-within:outline focus-within:outline-4 focus-within:outline-accent-700/20 focus-within:border-accent-700/50;
+
+    .bk-flex-textarea {
+      @apply min-h-[60px];
+    }
+
+    textarea {
+      @apply w-full resize-none text-base p-10 pb-0;
+      @apply border-none bg-transparent appearance-none;
+      @apply text-mono-800;
+      @apply rounded-t-lg;
+
+      &:focus {
+        @apply outline-none shadow-none;
+      }
+
+      &::placeholder {
+        @apply text-mono-400;
+      }
+    }
+
+    .bk-agent-input-actions {
+      @apply border-t border-t-mono-200 flex justify-end p-8;
+    }
+
+    .bk-agent-submit-btn,
+    .bk-agent-cancel-btn,
+    .bk-agent-debug-btn {
+      @apply w-30 h-30 flex items-center justify-center;
+      @apply rounded-full border-none;
+
+      svg {
+        @apply w-18 h-18 fill-current;
+      }
+    }
+
+    .bk-agent-submit-btn {
+      @apply bg-accent-700 text-white;
+      @apply hover:bg-accent-800;
+      @apply disabled:opacity-40 disabled:cursor-not-allowed;
+    }
+
+    .bk-agent-cancel-btn {
+      @apply bg-red-normal text-white;
+      @apply hover:bg-red-dark;
+    }
+
+    .bk-agent-debug-btn {
+      @apply bg-mono-100 text-mono-500;
+      @apply hover:bg-mono-200 hover:text-mono-700;
+    }
+  }
+
+  .bk-agent-tool-question {
+    .bk-form-label {
+      @apply !hidden;
+    }
+
+    .bk-agent-tool-question-inner {
+      @apply px-15 py-10;
+      @apply border-b border-b-mono-300;
+
+      .bk-radio,
+      .bk-checkbox {
+        @apply text-sm;
+        span {
+          @apply font-normal;
+          &:before {
+            @apply mt-0;
+          }
+        }
+      }
+    }
+  }
+
+  .bk-agent-thinking {
+    @apply flex gap-8 items-center text-sm;
+    .bk-icon {
+      @apply size-20;
+      svg {
+        @apply fill-mono-700;
+      }
+    }
+  }
+}
+
+/* Transcript dialog */
+.bk-agent-transcript {
+  @apply p-25 bg-mono-900 text-white select-text;
+  @apply whitespace-pre-wrap break-words;
+  @apply text-xs leading-relaxed;
+  @apply font-mono;
+  @apply m-0;
+}

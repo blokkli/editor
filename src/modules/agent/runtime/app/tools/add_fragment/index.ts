@@ -1,0 +1,92 @@
+import { z } from 'zod'
+import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { mutationResultSchema, parentSchema } from '../schemas'
+
+const paramsSchema = z.object({
+  name: z.string().describe('The fragment name to add'),
+  parent: parentSchema.describe('The parent entity to add the fragment to'),
+  afterUuid: z
+    .string()
+    .nullable()
+    .optional()
+    .describe('UUID of block to insert after, or null for beginning'),
+})
+
+export default defineBlokkliMcpTool({
+  name: 'add_fragment',
+  description:
+    'Add a fragment block to the page. Requires user approval before the fragment is actually added.',
+  category: 'mutation',
+  modes: ['editing'],
+  label: ($t) => $t('aiAgentAddFragmentRunning', 'Adding fragment...'),
+  paramsSchema,
+  resultSchema: mutationResultSchema,
+  requiredAdapterMethods: ['fragmentsAddBlock'],
+  execute: (ctx, params) => {
+    const { fields, definitions } = ctx.app
+
+    // Check if the fragment exists
+    const fragment = definitions.fragmentDefinitions.value.find(
+      (f) => f.name === params.name,
+    )
+    if (!fragment) {
+      return { error: `Fragment not found: ${params.name}` }
+    }
+
+    // Check if the field exists
+    const field = fields.find(params.parent.uuid, params.parent.field)
+    if (!field) {
+      return {
+        error: `Field not found: ${params.parent.field} on entity ${params.parent.uuid}`,
+      }
+    }
+
+    // Check if fragments are allowed in this field
+    if (!field.allowedFragments.length) {
+      return {
+        error: `Field "${params.parent.field}" does not allow fragments`,
+      }
+    }
+
+    // Check if this specific fragment is allowed in this field
+    if (!field.allowedFragments.includes(params.name)) {
+      const allowedIn = ctx.app.dom.getFieldsAllowingFragment(params.name)
+
+      if (allowedIn.length === 0) {
+        return {
+          error: `Fragment "${params.name}" is not allowed in any currently registered field.`,
+        }
+      }
+
+      const locationsList = allowedIn
+        .map((f) => `${f.fieldName} on ${f.entity.type} ${f.entity.uuid}`)
+        .join(', ')
+
+      return {
+        error:
+          `Fragment "${params.name}" is not allowed in field "${params.parent.field}". ` +
+          `This fragment can be added to: ${locationsList}`,
+      }
+    }
+
+    const { $t } = ctx.app
+
+    return {
+      type: 'add' as const,
+      label: $t('aiAgentAddFragmentDone', 'Added fragment "@label"').replace(
+        '@label',
+        fragment.label,
+      ),
+      apply: (adapter) =>
+        adapter.fragmentsAddBlock({
+          name: params.name,
+          host: {
+            type: params.parent.type,
+            uuid: params.parent.uuid,
+            fieldName: params.parent.field,
+          },
+          preceedingUuid: params.afterUuid ?? null,
+        }),
+    }
+  },
+})

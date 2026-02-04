@@ -1,0 +1,58 @@
+import { z } from 'zod'
+import { defineBlokkliMcpTool } from '#blokkli/agent/app/composables'
+import { mutationResultSchema } from '../schemas'
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
+
+const paramsSchema = z.object({
+  uuids: z.array(z.string()).describe('UUIDs of library blocks to detach'),
+})
+
+export default defineBlokkliMcpTool({
+  name: 'detach_library_block',
+  description:
+    'Detach one or more library blocks to create editable copies. ' +
+    'IMPORTANT: The original library block UUIDs will no longer exist after detaching. ' +
+    'The result includes newUuids containing the UUIDs of the newly created editable blocks. ' +
+    'Use these new UUIDs for any subsequent operations.',
+  category: 'mutation',
+  modes: ['editing'],
+  label: ($t) =>
+    $t('aiAgentDetachLibraryBlockRunning', 'Detaching library block...'),
+  paramsSchema,
+  resultSchema: mutationResultSchema,
+  requiredAdapterMethods: ['detachReusableBlock'],
+  execute: (ctx, params) => {
+    const { blocks, $t } = ctx.app
+
+    if (params.uuids.length === 0) {
+      return { error: 'No block UUIDs provided' }
+    }
+
+    // Validate all blocks exist and are library blocks
+    for (const uuid of params.uuids) {
+      const block = blocks.getBlock(uuid)
+      if (!block) {
+        return { error: `Block not found: ${uuid}` }
+      }
+      if (block.bundle !== fromLibraryBlockBundle) {
+        return {
+          error: `Block ${uuid} is not a library block (bundle: ${block.bundle}). Only ${fromLibraryBlockBundle} blocks can be detached.`,
+        }
+      }
+    }
+
+    const label =
+      params.uuids.length === 1
+        ? $t('aiAgentDetachLibraryBlockDone', 'Detached library block')
+        : $t(
+            'aiAgentDetachLibraryBlocksDone',
+            'Detached @count library blocks',
+          ).replace('@count', String(params.uuids.length))
+
+    return {
+      type: 'rewrite' as const,
+      label,
+      apply: (adapter) => adapter.detachReusableBlock!({ uuids: params.uuids }),
+    }
+  },
+})

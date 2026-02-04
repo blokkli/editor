@@ -28,10 +28,12 @@ export function getAvailableOptions(
     {},
   )
 
-  return Object.entries({ ...options, ...global }).map(([property, option]) => ({
-    property,
-    option,
-  }))
+  return Object.entries({ ...options, ...global }).map(
+    ([property, option]) => ({
+      property,
+      option,
+    }),
+  )
 }
 
 /**
@@ -48,7 +50,10 @@ export function getMutatedOptionValue(
     return ''
   }
   const blockMutatedOptions = mutatedOptions?.[uuid]
-  if (blockMutatedOptions !== undefined && blockMutatedOptions[key] !== undefined) {
+  if (
+    blockMutatedOptions !== undefined &&
+    blockMutatedOptions[key] !== undefined
+  ) {
     return blockMutatedOptions[key]
   }
   return defaultValue

@@ -9,6 +9,7 @@ import type {
 import type { FeatureCollector } from './Collector/Features'
 import type { ThemeData } from './ThemeData'
 import type { BlockCollector } from './Collector/Blocks'
+import type { Collector } from './Collector'
 
 const WRITE = false
 
@@ -21,6 +22,7 @@ export class ModuleContext {
   private templates: ModuleTemplate[] = []
   private templateContents: Map<string, string> = new Map()
   private adapterExtensions: AdapterExtensionDefinition[] = []
+  public collectors: Collector[] = []
 
   constructor(
     public helper: ModuleHelper,
@@ -39,6 +41,10 @@ export class ModuleContext {
 
   getAdapterExtensions(): AdapterExtensionDefinition[] {
     return this.adapterExtensions
+  }
+
+  addCollector(collector: Collector) {
+    this.collectors.push(collector)
   }
 
   private getTemplateContents(

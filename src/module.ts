@@ -139,6 +139,11 @@ export default defineNuxtModule<ModuleOptions>({
       await module.init.setup(app, module.options!)
     }
 
+    // Merge collectors provided by modules.
+    app.context.collectors.forEach((collector) => {
+      collectors.push(collector)
+    })
+
     TEMPLATES.forEach((v) => {
       if (typeof v === 'function') {
         const result = v(helper)

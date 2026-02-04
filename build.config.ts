@@ -40,6 +40,13 @@ export default defineBuildConfig({
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },
+    './src/modules/agent/index.ts',
+    {
+      input: './src/modules/agent/runtime/',
+      outDir: `./dist/modules/agent/runtime`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
   ],
   externals: [
     './global/constants',

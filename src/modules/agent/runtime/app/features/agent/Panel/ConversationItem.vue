@@ -1,0 +1,108 @@
+<template>
+  <div v-if="item.type === 'user'" class="bk-agent-message bk-is-user">
+    <div class="bk-agent-message-content">
+      <div ref="contentEl" class="bk-agent-message-text" />
+    </div>
+  </div>
+
+  <div
+    v-else-if="item.type === 'assistant'"
+    class="bk-agent-message bk-is-assistant bk-agent-assistant-bubble"
+  >
+    <div class="bk-agent-message-content">
+      <div ref="contentEl" class="bk-agent-message-text" />
+    </div>
+  </div>
+
+  <div
+    v-else-if="item.type === 'tool'"
+    class="bk-agent-assistant-bubble bk-is-tool"
+  >
+    <div class="bk-agent-tool-call" :class="toolStatusClass">
+      <Icon v-if="isActive" name="loader" class="bk-agent-tool-call-status" />
+      <Icon
+        v-else-if="toolStatus === 'success'"
+        name="bk_mdi_check"
+        class="bk-agent-tool-call-status"
+      />
+      <Icon
+        v-else-if="toolStatus === 'error'"
+        name="bk_mdi_exclamation"
+        class="bk-agent-tool-call-status"
+      />
+      <span class="bk-agent-tool-call-name">{{
+        item.label || formatToolName(item.tool)
+      }}</span>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, watch, nextTick, computed } from '#imports'
+import { Icon } from '#blokkli/editor/components'
+import { marked } from 'marked'
+import type {
+  ConversationItem,
+  AssistantActiveItem,
+  ToolActiveItem,
+  ToolConversationItem,
+} from '#blokkli/agent/app/types'
+
+type ItemProp = ConversationItem | AssistantActiveItem | ToolActiveItem
+
+// Type guard to check if tool item has status (is finalized)
+function isToolFinalized(
+  item: ToolConversationItem | ToolActiveItem,
+): item is ToolConversationItem {
+  return 'status' in item
+}
+
+const props = defineProps<{
+  item: ItemProp
+  isActive?: boolean
+}>()
+
+const contentEl = ref<HTMLElement>()
+
+marked.setOptions({ gfm: true, breaks: true })
+
+function renderContent(content: string) {
+  const container = contentEl.value
+  if (!container) return
+  container.innerHTML = marked.parse(content) as string
+}
+
+// Watch content changes for user/assistant messages
+watch(
+  () => {
+    if (props.item.type === 'user' || props.item.type === 'assistant') {
+      return props.item.content
+    }
+    return null
+  },
+  async (content) => {
+    if (content) {
+      await nextTick()
+      renderContent(content)
+    }
+  },
+  { immediate: true },
+)
+
+// Get the tool status safely (handles both finalized and active tool items)
+const toolStatus = computed(() => {
+  if (props.item.type !== 'tool') return null
+  if (props.isActive) return 'pending'
+  return isToolFinalized(props.item) ? props.item.status : 'pending'
+})
+
+const toolStatusClass = computed(() => {
+  if (props.item.type !== 'tool') return ''
+  if (props.isActive) return 'bk-is-pending'
+  return toolStatus.value ? `bk-is-${toolStatus.value}` : 'bk-is-pending'
+})
+
+function formatToolName(tool: string): string {
+  return tool.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+</script>

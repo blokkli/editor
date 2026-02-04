@@ -557,7 +557,10 @@ export default defineBlokkliEditAdapter((ctx) => {
           hostEntityUuid: e.host.uuid,
           hostField: e.host.fieldName,
           // First block uses the provided afterUuid, subsequent blocks are placed after the previous one
-          preceedingUuid: index === 0 ? e.afterUuid : e.blocks[index - 1]?.blockUuid ?? null,
+          preceedingUuid:
+            index === 0
+              ? e.afterUuid
+              : (e.blocks[index - 1]?.blockUuid ?? null),
           blockUuid: block.blockUuid,
         })),
       ),
