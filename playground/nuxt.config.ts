@@ -99,6 +99,7 @@ export default defineNuxtConfig({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         // provider: 'anthropic',
         provider: 'openai',
+        model: 'gpt-5-mini',
       }),
     ],
     pattern: [

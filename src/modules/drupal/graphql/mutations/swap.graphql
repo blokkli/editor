@@ -1,0 +1,16 @@
+mutation pbSwapParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $uuid1: String!
+  $uuid2: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: swap(uuid1: $uuid1, uuid2: $uuid2) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

@@ -183,6 +183,7 @@ export declare const templateEditRouteName: string|null
 
     // Add mutations only if they exist in the schema.
     addMutation('add')
+    addMutation('swap')
     addMutation('add_clipboard_text')
     addMutation('add_entity_reference')
     addMutation('add_entity_reference_multiple')
@@ -207,6 +208,7 @@ export declare const templateEditRouteName: string|null
     addMutation('update_field_value')
     addMutation('update_host_entity_field_value')
     addMutation('update_host_options')
+    addMutation('add_multiple')
 
     // Feature: Comments.
     if (graphql.schemaHasType('CommentBlokkliNode')) {

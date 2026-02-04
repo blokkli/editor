@@ -5636,6 +5636,12 @@ input ParagraphsBlokkliAddEntityReferenceMultipleInput {
   targetType: String!
 }
 
+input ParagraphsBlokkliAddMultipleItemInput {
+  bundle: String!
+  uuid: String!
+  values: MapData
+}
+
 type ParagraphsBlokkliAllowedType {
   """The allowed paragraph types."""
   allowedTypes: [String!]
@@ -6183,6 +6189,9 @@ type ParagraphsEditMutationState {
     """The UUID of the target host."""
     hostUuid: String!
 
+    """The UUID to use for the new paragraph."""
+    paragraphUuid: String
+
     """The paragraph type."""
     type: String!
   ): ParagraphsBlokkliMutationResult
@@ -6370,6 +6379,24 @@ type ParagraphsEditMutationState {
 
     """The paragraph bundle to use (optional)."""
     paragraphBundle: String
+  ): ParagraphsBlokkliMutationResult
+
+  """Adds multiple paragraphs at once."""
+  add_multiple(
+    """The UUID of the paragraph after which to add these."""
+    afterUuid: String
+
+    """The field name of the target host."""
+    hostFieldName: String!
+
+    """The entity type of the target host."""
+    hostType: String!
+
+    """The UUID of the target host."""
+    hostUuid: String!
+
+    """Array of paragraphs with uuid, bundle and optional values."""
+    items: [ParagraphsBlokkliAddMultipleItemInput]!
   ): ParagraphsBlokkliMutationResult
 
   """Add a reusable paragraph."""
@@ -6642,6 +6669,15 @@ type ParagraphsEditMutationState {
   set_paragraph_schedule(
     """The UUID of the paragraph being edited."""
     items: [ParagraphsBlokkliSetParagraphScheduleInput]!
+  ): ParagraphsBlokkliMutationResult
+
+  """Swap the positions of two paragraphs."""
+  swap(
+    """The UUID of the first paragraph to swap."""
+    uuid1: String!
+
+    """The UUID of the second paragraph to swap."""
+    uuid2: String!
   ): ParagraphsBlokkliMutationResult
   takeOwnership: ParagraphsBlokkliMutationResult
 

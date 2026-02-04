@@ -1,0 +1,25 @@
+mutation pbAddMultipleParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+  $items: [ParagraphsBlokkliAddMultipleItemInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: add_multiple(
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+      items: $items
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

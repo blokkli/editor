@@ -51,7 +51,7 @@ export type ModuleOptions = {
   /**
    * An array of blökkli modules to use.
    */
-  modules?: BlokkliModule[]
+  modules?: BlokkliModule<any>[]
 
   /**
    * The pattern of source files to scan for blokkli components.

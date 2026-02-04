@@ -125,6 +125,14 @@ fragment blokkliParagraphsType on ParagraphsType {
   },
 
   blokkli: {
-    modules: [drupal(), agent()],
+    modules: [
+      drupal(),
+      agent({
+        // provider: 'anthropic',
+        // model: 'claude-sonnet-4-20250514',
+        provider: 'openai',
+        model: 'gpt-5',
+      }),
+    ],
   },
 })

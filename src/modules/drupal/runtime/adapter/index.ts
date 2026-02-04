@@ -1279,6 +1279,40 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
+    if (hasMutation('pbSwapParagraphs')) {
+      adapter.swapBlocks = (uuid1, uuid2) =>
+        useGraphqlMutation('pbSwapParagraphs', {
+          entityType: ctx.value.entityType,
+          entityUuid: ctx.value.entityUuid,
+          langcode: ctx.value.langcode,
+          uuid1,
+          uuid2,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbAddMultipleParagraphs')) {
+      adapter.addNewBlocks = (data) =>
+        useGraphqlMutation('pbAddMultipleParagraphs', {
+          entityType: ctx.value.entityType,
+          entityUuid: ctx.value.entityUuid,
+          langcode: ctx.value.langcode,
+          hostType: data.host.type,
+          hostUuid: data.host.uuid,
+          hostFieldName: data.host.fieldName,
+          afterUuid: data.afterUuid,
+          items: data.blocks.map((block) => {
+            if (!block.blockUuid) {
+              throw new Error('Missing UUID.')
+            }
+            return {
+              bundle: block.bundle,
+              uuid: block.blockUuid,
+              values: block.values,
+            }
+          }),
+        }).then(mapMutation)
+    }
+
     return adapter
   },
 )
