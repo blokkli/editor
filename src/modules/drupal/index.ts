@@ -209,6 +209,7 @@ export declare const templateEditRouteName: string|null
     addMutation('update_host_entity_field_value')
     addMutation('update_host_options')
     addMutation('add_multiple')
+    addMutation('replace_entity_reference')
 
     // Feature: Comments.
     if (graphql.schemaHasType('CommentBlokkliNode')) {

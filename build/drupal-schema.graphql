@@ -6632,6 +6632,24 @@ type ParagraphsEditMutationState {
     uuids: [String]!
   ): ParagraphsBlokkliMutationResult
 
+  """Replaces the entity reference on an existing paragraph."""
+  replace_entity_reference(
+    """The specific paragraph field to update."""
+    fieldName: String
+
+    """The entity bundle of the referenced entity."""
+    targetBundle: String!
+
+    """The ID of the referenced entity."""
+    targetId: String!
+
+    """The entity type of the referenced entity."""
+    targetType: String!
+
+    """The UUID of the paragraph."""
+    uuid: String!
+  ): ParagraphsBlokkliMutationResult
+
   """Replace referenced media."""
   replace_host_entity_media(
     """The name of the field."""

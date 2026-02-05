@@ -1290,6 +1290,19 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
+    if (hasMutation('pbReplaceEntityReference')) {
+      adapter.replaceContentSearchItem = (data) =>
+        useGraphqlMutation('pbReplaceEntityReference', {
+          entityType: ctx.value.entityType,
+          entityUuid: ctx.value.entityUuid,
+          langcode: ctx.value.langcode,
+          targetType: data.item.entityType,
+          targetBundle: data.item.entityBundle,
+          targetId: data.item.id,
+          uuid: data.host.uuid,
+        }).then(mapMutation)
+    }
+
     if (hasMutation('pbAddMultipleParagraphs')) {
       adapter.addNewBlocks = (data) =>
         useGraphqlMutation('pbAddMultipleParagraphs', {

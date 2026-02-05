@@ -1,0 +1,25 @@
+mutation pbReplaceEntityReference(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $targetType: String!
+  $targetBundle: String!
+  $targetId: String!
+  $uuid: String!
+  $fieldName: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: replace_entity_reference(
+      targetType: $targetType
+      targetBundle: $targetBundle
+      targetId: $targetId
+      uuid: $uuid
+      fieldName: $fieldName
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
