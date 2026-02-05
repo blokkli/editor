@@ -31,6 +31,7 @@ export default defineBlokkliAgentTool({
   description:
     'Add a block using a content item from search results. Use search_content_* first to find content items, then use this tool to add one to the page. Requires user approval.',
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) =>
     $t('aiAgentAddContentSearchBlockRunning', 'Adding content block...'),

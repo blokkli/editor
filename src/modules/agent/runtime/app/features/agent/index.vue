@@ -361,6 +361,17 @@ function handleServerMessage(data: ServerMessage) {
       })
       break
 
+    case 'server_tool_result':
+      finalizeActiveItem()
+      conversation.value.push({
+        type: 'server_tool',
+        id: generateId(),
+        tool: data.tool,
+        label: data.label,
+        timestamp: Date.now(),
+      })
+      break
+
     case 'transcript':
       transcriptContent.value = data.content
       showTranscript.value = true

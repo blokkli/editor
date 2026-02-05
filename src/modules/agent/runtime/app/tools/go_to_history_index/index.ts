@@ -17,6 +17,7 @@ export default defineBlokkliAgentTool({
     '0 for first mutation, etc. Useful for undoing changes or reverting to earlier states. ' +
     'Note: All query tools reflect the current history state - navigating back will restore previously deleted blocks.',
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) => $t('aiAgentGoToHistoryIndexRunning', 'Navigating history...'),
   paramsSchema,

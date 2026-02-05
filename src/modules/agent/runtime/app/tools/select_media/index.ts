@@ -42,6 +42,7 @@ export default defineBlokkliAgentTool({
   description:
     'Show a thumbnail grid of media items for the user to select from. Use this when search_media returns multiple results and you want the user to choose one.',
   category: 'query',
+  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentSelectMediaRunning', 'Selecting media...'),
   paramsSchema,

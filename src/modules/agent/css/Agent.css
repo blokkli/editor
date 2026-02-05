@@ -90,6 +90,12 @@
         @apply bg-red-normal text-white;
       }
     }
+
+    &.bk-is-server-tool {
+      .bk-agent-tool-call-status {
+        @apply p-1 text-mono-500;
+      }
+    }
   }
 
   .bk-agent-tool-call-name {

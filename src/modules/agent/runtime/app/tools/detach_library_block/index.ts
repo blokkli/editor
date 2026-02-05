@@ -15,6 +15,7 @@ export default defineBlokkliAgentTool({
     'The result includes newUuids containing the UUIDs of the newly created editable blocks. ' +
     'Use these new UUIDs for any subsequent operations.',
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) =>
     $t('aiAgentDetachLibraryBlockRunning', 'Detaching library block...'),

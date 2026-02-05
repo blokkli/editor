@@ -27,6 +27,7 @@ export default defineBlokkliAgentTool({
   description:
     'Fetch and extract content from a web page. Only allowed origins can be fetched. By default returns Markdown which preserves document structure (headings, lists, links). Use format="html" if you need the raw HTML.',
   category: 'query',
+  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentWebFetchRunning', 'Fetching web page...'),
   paramsSchema,

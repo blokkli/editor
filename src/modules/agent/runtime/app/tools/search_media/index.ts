@@ -31,8 +31,9 @@ export type SearchMediaResult = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'search_media',
   description:
-    'Search the media library for images, videos, and other media. Returns media items that can be added to the page using add_media_block.',
+    'Search the media library for images, videos, and other media. Returns media items that can be added to the page using add_media_block. If more than one matching media is found: USE THE select_media TOOL TO LET THE USER PICK.',
   category: 'query',
+  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentSearchMediaRunning', 'Searching media...'),
   paramsSchema,
@@ -41,7 +42,8 @@ export default defineBlokkliAgentTool({
   execute: async (ctx, params) => {
     const { $t } = ctx.app
     const filters: Record<string, string> = {}
-    if (params.query) filters.text = params.query
+    const query = (params.query ?? '').replaceAll('*', '').replaceAll('%', '')
+    if (query) filters.text = query
     if (params.bundle) filters.bundle = params.bundle
 
     const apiResult = await ctx.adapter.mediaLibraryGetResults!({
@@ -60,10 +62,10 @@ export default defineBlokkliAgentTool({
       total: apiResult.total,
     }
 
-    const label = params.query
+    const label = query
       ? $t('aiAgentSearchMediaDone', "Searched media for '@query'").replace(
           '@query',
-          params.query,
+          query,
         )
       : $t('aiAgentSearchMediaAllDone', 'Searched all media')
 

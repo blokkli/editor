@@ -12,6 +12,7 @@ export default defineBlokkliAgentTool({
   description:
     'Swap the positions of two blocks, either in the same field or different fields.',
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) => $t('aiAgentSwapBlocksRunning', 'Swapping blocks...'),
   paramsSchema,

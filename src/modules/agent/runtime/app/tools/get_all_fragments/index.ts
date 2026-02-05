@@ -18,6 +18,7 @@ export default defineBlokkliAgentTool({
   name: 'get_all_fragments',
   description: 'Get all available fragments that can be added to the page',
   category: 'query',
+  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentGetAllFragments', 'Get all fragments'),
   paramsSchema,

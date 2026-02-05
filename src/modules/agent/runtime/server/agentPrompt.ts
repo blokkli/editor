@@ -45,10 +45,11 @@ You have access to various MCP tools to query and mutate the page. Use them!
 3. Use get_block_context to get comprehensive info about a specific block (parent chain, siblings, children, content fields, options) - prefer this over multiple individual calls
 4. Use find_blocks to search for blocks by bundle, text content, nesting level, or options
 5. Use get_child_blocks to see a block's or page's fields with their blocks - returns parent objects ready for add_blocks
-6. THEN use mutation tools to make the requested changes
-7. Add up to 5 blocks at a time. For more blocks, use multiple add_blocks calls.
-8. For blocks with lots of text (more than 100 words), add one at a time.
-9. After making changes, briefly confirm what you did. DO NOT repeat chunks of texts that you changed! The UI already shows this automatically.
+6. If you need specialized tools (media search, content search, templates, etc.), use load_tools to activate them first
+7. THEN use mutation tools to make the requested changes
+8. Add up to 5 blocks at a time. For more blocks, use multiple add_blocks calls.
+9. For blocks with lots of text (more than 100 words), add one at a time.
+10. After making changes, briefly confirm what you did. DO NOT repeat chunks of texts that you changed! The UI already shows this automatically.
 
 ## Interaction with User
 - Be polite and helpful.
@@ -76,7 +77,7 @@ These are pre-defined groups of blocks that can be added to the page. Unlike "li
 - Use the move_blocks tool when moving blocks, instead of creating a new block of the same bundle and copy pasting text.
 - The user's prompt might not always be related to which blocks are selected! Verify if the prompt actually refers to the selection.
 - ONLY assist the user in things that are related to the task!
-- Use the "ask_question" tool to ask structured questions instead of asking them via a message!
+- ALWAYS USE THE "ask_question" TOOL TO ASK STRUCTURED QUESTIONS!!!
 `
 
 const REFUSAL_PROMPT = `
@@ -261,18 +262,46 @@ function getSecuritySection(): string {
 }
 
 /**
+ * Build the lazy tools section of the prompt if lazy tools are available.
+ */
+function buildLazyToolsSection(
+  lazyTools: { name: string; description: string }[],
+): string {
+  if (lazyTools.length === 0) {
+    return ''
+  }
+
+  const lines: string[] = [
+    '',
+    '## Additional Tools',
+    '',
+    'The following tools are available but must be loaded first by calling `load_tools`.',
+    'Only load tools you actually need for the current task.',
+    '',
+  ]
+
+  for (const tool of lazyTools) {
+    lines.push(`- **${tool.name}**: ${tool.description}`)
+  }
+
+  return lines.join('\n')
+}
+
+/**
  * Build the complete system prompt for the AI agent.
  * Includes base instructions and page-specific context.
  */
 export function buildSystemPrompt(
   context: PageContext,
   resolvedSkills: ResolvedSkill[],
+  lazyTools: { name: string; description: string }[] = [],
 ): string {
   return (
     BASE_PROMPT +
     getSecuritySection() +
     '\n' +
     buildPageContext(context) +
-    buildSkillsSection(resolvedSkills)
+    buildSkillsSection(resolvedSkills) +
+    buildLazyToolsSection(lazyTools)
   )
 }

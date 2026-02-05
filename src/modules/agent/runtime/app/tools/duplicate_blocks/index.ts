@@ -27,6 +27,7 @@ export default defineBlokkliAgentTool({
   description:
     'Duplicate one or more blocks. Without parent parameter, duplicates in the same field. With parent parameter, duplicates to a different field. Requires user approval.',
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) => $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks...'),
   paramsSchema,

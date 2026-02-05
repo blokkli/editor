@@ -15,6 +15,19 @@
   </div>
 
   <div
+    v-else-if="item.type === 'server_tool'"
+    class="bk-agent-assistant-bubble bk-is-tool bk-is-server-tool"
+  >
+    <div class="bk-agent-tool-call bk-is-server-tool">
+      <Icon
+        :name="getServerSideToolIcon(item.tool)"
+        class="bk-agent-tool-call-status"
+      />
+      <span>{{ item.label }}</span>
+    </div>
+  </div>
+
+  <div
     v-else-if="item.type === 'tool'"
     class="bk-agent-assistant-bubble bk-is-tool"
   >
@@ -46,9 +59,15 @@ import type {
   AssistantActiveItem,
   ToolActiveItem,
   ToolConversationItem,
+  ServerToolConversationItem,
 } from '#blokkli/agent/app/types'
+import type { BlokkliIcon } from '#blokkli-build/icons'
 
-type ItemProp = ConversationItem | AssistantActiveItem | ToolActiveItem
+type ItemProp =
+  | ConversationItem
+  | AssistantActiveItem
+  | ToolActiveItem
+  | ServerToolConversationItem
 
 // Type guard to check if tool item has status (is finalized)
 function isToolFinalized(
@@ -104,5 +123,15 @@ const toolStatusClass = computed(() => {
 
 function formatToolName(tool: string): string {
   return tool.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function getServerSideToolIcon(
+  id: ServerToolConversationItem['tool'],
+): BlokkliIcon {
+  if (id === 'load_skill') {
+    return 'bk_mdi_lightbulb-fill'
+  }
+
+  return 'bk_mdi_build-fill'
 }
 </script>

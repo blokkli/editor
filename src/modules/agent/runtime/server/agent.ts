@@ -53,8 +53,12 @@ type Session = {
   >
   abortController: AbortController | null
   isProcessing: boolean
-  /** Tools received from client on init */
+  /** Eager tools sent to the LLM on every turn */
   tools: ClientToolDefinition[]
+  /** Lazy tools held back until activated via load_tools */
+  lazyTools: ClientToolDefinition[]
+  /** Names of lazy tools that have been activated via load_tools */
+  activatedLazyTools: Set<string>
   /** Page context received from client on init */
   pageContext?: PageContext
 }
@@ -74,6 +78,8 @@ function getOrCreateSession(peerId: string): Session {
       abortController: null,
       isProcessing: false,
       tools: [],
+      lazyTools: [],
+      activatedLazyTools: new Set(),
     }
     sessions.set(peerId, session)
   }
@@ -269,7 +275,16 @@ async function runAgentLoop(
   // Resolve skills for this page context
   const resolvedSkills = resolveSkills(session.pageContext)
 
-  const systemPrompt = buildSystemPrompt(session.pageContext, resolvedSkills)
+  const lazyToolSummaries = session.lazyTools.map((t) => ({
+    name: t.name,
+    description: t.description,
+  }))
+
+  const systemPrompt = buildSystemPrompt(
+    session.pageContext,
+    resolvedSkills,
+    lazyToolSummaries,
+  )
 
   // Build initial user message with context about selection
   let userContent = prompt
@@ -344,8 +359,47 @@ async function runAgentLoop(
             ]
           : []
 
+      // Lazy tools that have been activated via load_tools
+      const activatedTools = session.lazyTools.filter((t) =>
+        session.activatedLazyTools.has(t.name),
+      )
+
+      // Build load_tools server tool (only if there are unloaded lazy tools)
+      const unloadedLazyTools = session.lazyTools.filter(
+        (t) => !session.activatedLazyTools.has(t.name),
+      )
+      const loadToolsDef: ClientToolDefinition[] =
+        unloadedLazyTools.length > 0
+          ? [
+              {
+                name: 'load_tools',
+                description:
+                  'Load additional tools by name before using them. You must call this before using any tool listed under "Additional Tools" in the system prompt.',
+                input_schema: {
+                  type: 'object',
+                  properties: {
+                    tools: {
+                      type: 'array',
+                      items: {
+                        type: 'string',
+                        enum: unloadedLazyTools.map((t) => t.name),
+                      },
+                      description: 'Tool names to activate',
+                    },
+                  },
+                  required: ['tools'],
+                },
+              },
+            ]
+          : []
+
       // Combine server tools with client tools
-      const allTools = [...serverTools, ...session.tools]
+      const allTools = [
+        ...serverTools,
+        ...loadToolsDef,
+        ...session.tools,
+        ...activatedTools,
+      ]
 
       // Create stream using the provider
       const stream = provider.createStream(
@@ -454,6 +508,13 @@ async function runAgentLoop(
                       guidelines: skill.content,
                     }),
                   })
+                  peer.send(
+                    JSON.stringify({
+                      type: 'server_tool_result',
+                      tool: 'load_skill',
+                      label: `Loaded skill: ${skillName}`,
+                    }),
+                  )
                 } else {
                   toolResults.push({
                     type: 'tool_result',
@@ -463,6 +524,44 @@ async function runAgentLoop(
                     }),
                     is_error: true,
                   })
+                }
+
+                currentToolUse = null
+                break
+              }
+
+              // Check if this is the load_tools server-side tool
+              if (currentToolUse.name === 'load_tools') {
+                const names = (input.tools as string[]) || []
+                const loaded: string[] = []
+
+                for (const name of names) {
+                  if (session.lazyTools.some((t) => t.name === name)) {
+                    session.activatedLazyTools.add(name)
+                    loaded.push(name)
+                  }
+                }
+
+                if (DEBUG_LOGGING) {
+                  console.log(
+                    `[Server] Loaded lazy tools: ${loaded.join(', ')}`,
+                  )
+                }
+
+                toolResults.push({
+                  type: 'tool_result',
+                  tool_use_id: currentToolUse.id,
+                  content: JSON.stringify({ loaded }),
+                })
+
+                if (loaded.length) {
+                  peer.send(
+                    JSON.stringify({
+                      type: 'server_tool_result',
+                      tool: 'load_tools',
+                      label: `Loaded tools: ${loaded.join(', ')}`,
+                    }),
+                  )
                 }
 
                 currentToolUse = null
@@ -613,7 +712,15 @@ function buildTranscript(session: Session): string {
   let systemPrompt = '(No page context available)'
   if (session.pageContext) {
     const resolvedSkills = resolveSkills(session.pageContext)
-    systemPrompt = buildSystemPrompt(session.pageContext, resolvedSkills)
+    const lazyToolSummaries = session.lazyTools.map((t) => ({
+      name: t.name,
+      description: t.description,
+    }))
+    systemPrompt = buildSystemPrompt(
+      session.pageContext,
+      resolvedSkills,
+      lazyToolSummaries,
+    )
   }
 
   lines.push('='.repeat(80))
@@ -672,12 +779,14 @@ export default defineWebSocketHandler({
 
       switch (data.type) {
         case 'init':
-          // Store tools and block context sent by client
-          session.tools = data.tools
+          // Split tools into eager and lazy
+          session.tools = data.tools.filter((t) => !t.lazy)
+          session.lazyTools = data.tools.filter((t) => !!t.lazy)
+          session.activatedLazyTools = new Set()
           session.pageContext = data.pageContext
           if (DEBUG_LOGGING) {
             console.log(
-              `[WebSocket] Received ${session.tools.length} tools from client`,
+              `[WebSocket] Received ${session.tools.length} eager tools, ${session.lazyTools.length} lazy tools from client`,
             )
             console.log(
               `[WebSocket] Received page context with ${session.pageContext?.bundles.length ?? 0} block bundles from client`,

@@ -5,7 +5,7 @@
       v-if="activeItem"
       :key="activeItem.id"
       :item="activeItem"
-      :is-active="true"
+      is-active
     />
     <div
       v-if="isThinking"

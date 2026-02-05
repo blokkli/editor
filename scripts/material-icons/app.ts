@@ -5,10 +5,7 @@ import { glob } from 'glob'
 import { format } from './../helpers'
 
 const RUNTIME_PATH = path.resolve(__dirname, '../../src/runtime')
-const PACKAGES_RUNTIME_PATH = path.resolve(
-  __dirname,
-  '../../packages/*/src/runtime',
-)
+const PACKAGES_RUNTIME_PATH = path.resolve(__dirname, '../../src/modules/*')
 
 const TYPES_OUTPUT_PATH = path.resolve(
   __dirname,

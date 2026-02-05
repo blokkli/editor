@@ -70,6 +70,7 @@ export function getToolsForServer(
       input_schema: stripSchemaOverhead(
         z.toJSONSchema(tool.paramsSchema),
       ) as object,
+      ...(tool.lazy ? { lazy: true as const } : {}),
     }))
 }
 

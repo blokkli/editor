@@ -21,6 +21,7 @@ export default defineBlokkliAgentTool({
   description:
     "Add a template to the page. Templates are copied when added, so changes to the added blocks won't affect other pages using the same template. Requires user approval before the template is actually added.",
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) => $t('aiAgentAddTemplateRunning', 'Adding template...'),
   paramsSchema,

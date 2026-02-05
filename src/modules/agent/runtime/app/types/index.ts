@@ -209,6 +209,13 @@ export type McpToolDefinition<
           | Promise<QueryResult<z.infer<TResultSchema>> | ToolError>
 
   /**
+   * If true, this tool is not sent to the LLM until activated via load_tools.
+   * Lazy tools are listed by name + description in the system prompt so the
+   * LLM knows they exist and can load them on demand.
+   */
+  lazy?: boolean
+
+  /**
    * Optional function returning mock params for styling/debugging.
    * When provided, the debug view will render the component with these params.
    */
@@ -238,6 +245,7 @@ export type FactoryResolvedTool = {
   requiredAdapterMethods?: readonly AdapterMethods[]
   modes: EditMode[]
   component?: Component
+  lazy?: boolean
   execute: (...args: any[]) => any
   mockParams?: () => any
 }
@@ -321,12 +329,22 @@ export type ToolConversationItem = ConversationItemBase & {
 }
 
 /**
+ * A server-side tool call result in the conversation history.
+ */
+export type ServerToolConversationItem = ConversationItemBase & {
+  type: 'server_tool'
+  tool: 'load_skill' | 'load_tools'
+  label: string
+}
+
+/**
  * Finalized items in conversation history (never modified after being pushed).
  */
 export type ConversationItem =
   | UserConversationItem
   | AssistantConversationItem
   | ToolConversationItem
+  | ServerToolConversationItem
 
 /**
  * Assistant message being streamed (content may grow).

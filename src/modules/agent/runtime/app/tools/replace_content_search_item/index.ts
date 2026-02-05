@@ -20,6 +20,7 @@ export default defineBlokkliAgentTool({
   description:
     'Replace a content reference on an existing block field. Use get_content_fields first to see available reference fields, then search_content_* to find content items.',
   category: 'mutation',
+  lazy: true,
   modes: ['editing'],
   label: ($t) =>
     $t(
