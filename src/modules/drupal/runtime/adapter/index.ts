@@ -1325,10 +1325,37 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             if (!block.blockUuid) {
               throw new Error('Missing UUID.')
             }
+            const values: Record<string, unknown> = {}
+            for (const entry of block.values ?? []) {
+              const droppableConfig = config.droppableFieldConfig.find(
+                (f) =>
+                  f.entityBundle === block.bundle && f.name === entry.fieldName,
+              )
+              if (droppableConfig) {
+                if (droppableConfig.type === 'reference') {
+                  if (typeof entry.fieldValue !== 'string') {
+                    values[entry.fieldName] = {
+                      target_id: entry.fieldValue.entityId,
+                    }
+                  }
+                } else if (droppableConfig.type === 'link') {
+                  if (typeof entry.fieldValue === 'string') {
+                    if (entry.fieldValue.startsWith('http')) {
+                      values[entry.fieldName] = entry.fieldValue
+                    }
+                  } else {
+                    values[entry.fieldName] =
+                      `entity:${entry.fieldValue.entityType}/${entry.fieldValue.entityId}`
+                  }
+                }
+              } else if (typeof entry.fieldValue === 'string') {
+                values[entry.fieldName] = entry.fieldValue
+              }
+            }
             return {
               bundle: block.bundle,
               uuid: block.blockUuid,
-              values: block.values,
+              values,
             }
           }),
         }).then(mapMutation)

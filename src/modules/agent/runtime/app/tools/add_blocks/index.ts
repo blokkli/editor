@@ -4,14 +4,41 @@ import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import { mutationResultSchema, parentSchema } from '../schemas'
 import { itemEntityType } from '#blokkli-build/config'
 
+const fieldValueSchema = z
+  .array(
+    z.object({
+      fieldName: z.string().describe('The field name'),
+      fieldValue: z
+        .union([
+          z
+            .string()
+            .describe(
+              'Text value for editable text fields, or a URL string (starting with http) for link-type droppable fields',
+            ),
+          z
+            .object({
+              entityType: z
+                .string()
+                .describe('Entity type (e.g., "media", "node")'),
+              entityId: z.string().describe('Entity ID'),
+            })
+            .describe(
+              'Entity reference for droppable fields (media, content references)',
+            ),
+        ])
+        .describe(
+          'The field value: a string for editable text fields, an entity reference object for droppable fields, or a URL string for link fields',
+        ),
+    }),
+  )
+  .optional()
+  .describe(
+    'Field values to set on the new block. Use this to set text content (editable fields) and media/entity references (droppable fields) in one step.',
+  )
+
 const blockSchema = z.object({
   bundle: z.string().describe('The block bundle to add'),
-  values: z
-    .record(z.string(), z.unknown())
-    .optional()
-    .describe(
-      'Default values for the block fields. Keys are field names ("editable fields" or "droppable fields"), values are field values (strings for text fields, arrays of IDs for reference fields).',
-    ),
+  values: fieldValueSchema,
 })
 
 const paramsSchema = z.object({
@@ -30,7 +57,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_blocks',
   description:
-    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. Requires user approval before the blocks are actually created.',
+    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. Requires user approval before the blocks are actually created. IMPORTANT: Always provide values for editable fields (text) and droppable fields (media/entity references) directly, instead of adding the block first and then calling replace_media_field or update_editable_field separately.',
   category: 'mutation',
   modes: ['editing'],
   label: ($t) => $t('aiAgentAddBlocksRunning', 'Adding blocks...'),
@@ -84,7 +111,9 @@ export default defineBlokkliAgentTool({
 
       // Validate values if provided
       if (block.values) {
-        for (const [fieldName, value] of Object.entries(block.values)) {
+        for (const entry of block.values) {
+          const { fieldName, fieldValue } = entry
+
           // Check if field is editable (text fields)
           const editableConfig = types.editableFieldConfig.forName(
             ctx.itemEntityType,
@@ -119,16 +148,21 @@ export default defineBlokkliAgentTool({
           }
 
           // Validate value type for editable fields (should be string)
-          if (editableConfig && typeof value !== 'string') {
+          if (editableConfig && typeof fieldValue !== 'string') {
             return {
-              error: `Block ${i + 1}: Field "${fieldName}" is a text field and expects a string value, got ${typeof value}.`,
+              error: `Block ${i + 1}: Field "${fieldName}" is a text field and expects a string value, got ${typeof fieldValue}.`,
             }
           }
 
-          // Validate value type for droppable fields (should be array)
-          if (droppableConfig && !Array.isArray(value)) {
-            return {
-              error: `Block ${i + 1}: Field "${fieldName}" is a reference field and expects an array of IDs, got ${typeof value}.`,
+          // Validate value type for droppable fields
+          if (droppableConfig) {
+            if (
+              typeof fieldValue === 'string' &&
+              droppableConfig.type !== 'link'
+            ) {
+              return {
+                error: `Block ${i + 1}: Field "${fieldName}" is a reference field and expects { entityType, entityId }, got a string.`,
+              }
             }
           }
         }

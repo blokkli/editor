@@ -136,13 +136,18 @@ export type AddNewBlockEvent = {
   blockUuid?: string
 }
 
+export type BlockFieldValue = {
+  fieldName: string
+  fieldValue: string | { entityType: string; entityId: string }
+}
+
 export type AddNewBlocksEvent = {
   blocks: Array<{
     bundle: string
     /** Optional UUID to use for the new block. If not provided, the adapter generates one. */
     blockUuid?: string
     /** Optional default values for the block's editable/droppable fields. */
-    values?: Record<string, unknown>
+    values?: BlockFieldValue[]
   }>
   host: BlokkliItemHost
   afterUuid: string | null

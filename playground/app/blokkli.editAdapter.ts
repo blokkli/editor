@@ -553,19 +553,29 @@ export default defineBlokkliEditAdapter((ctx) => {
     addNewBlocks: (e) =>
       addMutation(
         'add',
-        e.blocks.map((block, index) => ({
-          bundle: block.bundle,
-          values: block.values,
-          hostEntityType: e.host.type,
-          hostEntityUuid: e.host.uuid,
-          hostField: e.host.fieldName,
-          // First block uses the provided afterUuid, subsequent blocks are placed after the previous one
-          preceedingUuid:
-            index === 0
-              ? e.afterUuid
-              : (e.blocks[index - 1]?.blockUuid ?? null),
-          blockUuid: block.blockUuid,
-        })),
+        e.blocks.map((block, index) => {
+          const values: Record<string, unknown> = {}
+          for (const entry of block.values ?? []) {
+            if (typeof entry.fieldValue === 'string') {
+              values[entry.fieldName] = entry.fieldValue
+            } else {
+              values[entry.fieldName] = [entry.fieldValue.entityId]
+            }
+          }
+          return {
+            bundle: block.bundle,
+            values,
+            hostEntityType: e.host.type,
+            hostEntityUuid: e.host.uuid,
+            hostField: e.host.fieldName,
+            // First block uses the provided afterUuid, subsequent blocks are placed after the previous one
+            preceedingUuid:
+              index === 0
+                ? e.afterUuid
+                : (e.blocks[index - 1]?.blockUuid ?? null),
+            blockUuid: block.blockUuid,
+          }
+        }),
       ),
 
     moveBlock: (e) =>
@@ -1295,7 +1305,12 @@ export default defineBlokkliEditAdapter((ctx) => {
                 label: field.label,
                 entityType: entity.entityType,
                 entityBundle: entity.bundle,
-                allowed: [],
+                allowed: [
+                  {
+                    type: 'media',
+                    bundles: ['image'],
+                  },
+                ],
                 cardinality: field.cardinality,
                 required: field.required,
               }
