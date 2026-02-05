@@ -76,6 +76,7 @@ import type {
   ConversationItem,
   ActiveItem,
   MutationAction,
+  McpToolDefinition,
 } from '#blokkli/agent/app/types'
 import type {
   ServerMessage,
@@ -91,13 +92,14 @@ import {
   isMutationAction,
   isQueryResult,
   isToolError,
+  resolveTools,
 } from '#blokkli/agent/app/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import { mcpTools } from '#blokkli-build/mcp-tools-client'
 
 const DEBUG_STYLING = false
 
-const toolMap = createToolMap(mcpTools)
+let toolMap: Record<string, McpToolDefinition> = {}
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',
@@ -161,10 +163,13 @@ const showTranscript = useDialog('agent-transcript', 'center')
 
 const { isConnected, connect, disconnect, send } = useAgentWebSocket({
   onMessage: handleServerMessage,
-  onConnect: () => {
+  onConnect: async () => {
+    const ctx = createToolContext()
+    const resolved = await resolveTools(mcpTools, ctx)
+    toolMap = createToolMap(resolved)
     send({
       type: 'init',
-      tools: getToolsForServer(mcpTools, state.editMode.value, adapter),
+      tools: getToolsForServer(resolved, state.editMode.value, adapter),
       pageContext: buildPageContext(),
     })
   },

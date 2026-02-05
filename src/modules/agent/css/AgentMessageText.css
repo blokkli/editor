@@ -1,0 +1,110 @@
+.bk {
+  .bk-agent-message {
+    --bk-link-color: theme('colors.accent.700');
+    --bk-code-bg: theme('colors.mono.300');
+    --bk-code-text: theme('colors.mono.700');
+    --bk-table-color: theme('colors.mono.300');
+    --bk-text-color: theme('colors.mono.950');
+    color: var(--bk-text-color);
+    &.bk-is-user {
+      --bk-link-color: white;
+      --bk-code-bg: theme('colors.accent.800');
+      --bk-code-text: theme('colors.accent.100');
+      --bk-table-color: theme('colors.accent.300');
+      --bk-text-color: theme('colors.accent.50');
+    }
+  }
+
+  .bk-agent-message-text {
+    @apply break-words;
+    @apply text-sm;
+
+    > * {
+      @apply first:mt-0 last:mb-0;
+    }
+
+    p,
+    ol,
+    ul,
+    blockquote,
+    table {
+      @apply my-8;
+    }
+
+    h1 {
+      @apply text-xl mb-8 mt-24;
+      &:not(:has(strong)) {
+        @apply font-bold;
+      }
+    }
+
+    h2 {
+      @apply text-lg mb-8 mt-24;
+      &:not(:has(strong)) {
+        @apply font-bold;
+      }
+    }
+
+    h3 {
+      @apply text-base mb-8 mt-24;
+      &:not(:has(strong)) {
+        @apply font-bold;
+      }
+    }
+
+    code {
+      @apply px-[0.3em] rounded-md;
+      background: var(--bk-code-bg);
+      color: var(--bk-code-text);
+    }
+
+    a {
+      @apply font-semibold underline underline-offset-2;
+      color: var(--bk-link-color);
+    }
+
+    blockquote {
+      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5;
+    }
+
+    pre {
+      @apply whitespace-normal;
+    }
+
+    table {
+      @apply w-full;
+
+      thead {
+        @apply text-left;
+
+        tr {
+          @apply border-b-2;
+          border-bottom-color: var(--bk-text-color);
+        }
+      }
+
+      tbody {
+        td,
+        th {
+          @apply py-2;
+        }
+        tr {
+          @apply border-b;
+          border-bottom-color: var(--bk-table-color);
+        }
+      }
+    }
+
+    hr {
+      @apply border-t-mono-300 my-20;
+    }
+
+    ul {
+      @apply list-disc pl-18;
+    }
+
+    ol {
+      @apply list-decimal pl-18;
+    }
+  }
+}

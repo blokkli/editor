@@ -107,6 +107,7 @@ import type {
   MutationAction,
 } from '#blokkli/agent/app/types'
 import { mcpTools } from '#blokkli-build/mcp-tools-client'
+import { isToolDefinition } from '#blokkli/agent/app/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
 type PendingToolCall = {
@@ -123,9 +124,11 @@ const toolContext = computed(() => ({
   adapter: app.adapter,
 }))
 
+const staticTools = mcpTools.filter(isToolDefinition)
+
 const pendingToolComponent = computed(() => {
   if (!props.pendingToolCall) return null
-  const tool = mcpTools.find((t) => t.name === props.pendingToolCall!.toolName)
+  const tool = staticTools.find((t) => t.name === props.pendingToolCall!.toolName)
   return tool?.component || null
 })
 

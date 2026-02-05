@@ -30,9 +30,9 @@ export const mcpTools = [
 `
     },
     () => {
-      return `import type { McpToolDefinition } from '#blokkli/agent/app/types'
+      return `import type { McpToolItem } from '#blokkli/agent/app/types'
 
-export declare const mcpTools: McpToolDefinition[]
+export declare const mcpTools: McpToolItem[]
 `
     },
   )

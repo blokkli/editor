@@ -216,6 +216,72 @@ export type McpToolDefinition<
 }
 
 // ============================================================================
+// Tool Factory Definitions
+// ============================================================================
+
+/**
+ * A tool definition with a relaxed execute signature.
+ *
+ * Used as the return type for factory resolve callbacks. Preserves structural
+ * checking on all other properties (catches typos and excess properties) while
+ * allowing each tool to have its own specific execute signature via
+ * defineBlokkliAgentTool().
+ */
+export type FactoryResolvedTool = {
+  name: string
+  description: string
+  icon?: string
+  category: McpToolCategory
+  label: ($t: TranslationFunction) => string
+  paramsSchema: z.ZodType
+  resultSchema: z.ZodType
+  requiredAdapterMethods?: readonly AdapterMethods[]
+  modes: EditMode[]
+  component?: Component
+  execute: (...args: any[]) => any
+  mockParams?: () => any
+}
+
+/**
+ * Input for a tool factory that dynamically creates tools at runtime.
+ *
+ * Instead of defining a single static tool, a factory uses a `resolve` callback
+ * that is called when the agent connects. The callback returns an array of
+ * McpToolDefinition objects, allowing tools to be created based on runtime state
+ * (e.g., available content search tabs from the adapter).
+ */
+export type McpToolFactoryInput = {
+  /**
+   * Called once when the agent connects. Returns an array of tool definitions
+   * that are registered as if they were statically defined.
+   *
+   * Each returned tool is a full McpToolDefinition with its own
+   * requiredAdapterMethods, execute function, and schemas. Use
+   * defineBlokkliAgentTool() for each tool to get full type inference.
+   *
+   * The context provides access to the app and adapter so the factory can
+   * query runtime state (e.g., available content search tabs) to decide
+   * which tools to create. If adapter methods are optional, check for their
+   * existence before calling them (or return an empty array).
+   */
+  resolve: (
+    context: McpToolContext,
+  ) => Promise<FactoryResolvedTool[]> | FactoryResolvedTool[]
+}
+
+/**
+ * A tool factory with the __factory marker for runtime identification.
+ */
+export type McpToolFactory = McpToolFactoryInput & {
+  __factory: true
+}
+
+/**
+ * A tool item is either a static tool definition or a factory that produces tools.
+ */
+export type McpToolItem = McpToolDefinition | McpToolFactory
+
+// ============================================================================
 // Agent State Types - Flat Conversation Model
 // ============================================================================
 

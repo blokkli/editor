@@ -40,6 +40,7 @@ import type {
   McpToolContext,
 } from '#blokkli/agent/app/types'
 import { mcpTools } from '#blokkli-build/mcp-tools-client'
+import { isToolDefinition } from '#blokkli/agent/app/helpers'
 
 const mockContext: Partial<McpToolContext> = {
   app: null as any,
@@ -152,9 +153,11 @@ const mockMutations: MutationAction[] = [
 ]
 
 const toolsWithMockParams = computed(() =>
-  mcpTools.filter(
-    (tool): tool is typeof tool & { mockParams: () => unknown } =>
-      !!tool.component && !!tool.mockParams,
-  ),
+  mcpTools
+    .filter(isToolDefinition)
+    .filter(
+      (tool): tool is typeof tool & { mockParams: () => unknown } =>
+        !!tool.component && !!tool.mockParams,
+    ),
 )
 </script>

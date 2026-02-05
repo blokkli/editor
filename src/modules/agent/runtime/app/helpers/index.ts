@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import type {
   McpToolDefinition,
+  McpToolFactory,
+  McpToolItem,
   McpToolContext,
   McpToolCategory,
   MutationAction,
@@ -136,4 +138,44 @@ export function isToolError(result: unknown): result is ToolError {
     'error' in result &&
     typeof (result as ToolError).error === 'string'
   )
+}
+
+/**
+ * Check if a tool item is a factory (produces tools dynamically at runtime).
+ */
+export function isToolFactory(item: McpToolItem): item is McpToolFactory {
+  return '__factory' in item && (item as McpToolFactory).__factory === true
+}
+
+/**
+ * Check if a tool item is a static tool definition (not a factory).
+ */
+export function isToolDefinition(
+  item: McpToolItem,
+): item is McpToolDefinition {
+  return !isToolFactory(item)
+}
+
+/**
+ * Resolve an array of tool items (static definitions + factories) into
+ * a flat array of McpToolDefinition objects.
+ *
+ * Each factory's resolve callback is called to produce tools. The individual
+ * tools returned by factories have their own requiredAdapterMethods, which
+ * are checked later by getToolsForServer.
+ */
+export async function resolveTools(
+  tools: McpToolItem[],
+  context: McpToolContext,
+): Promise<McpToolDefinition[]> {
+  const resolved: McpToolDefinition[] = []
+  for (const tool of tools) {
+    if (isToolFactory(tool)) {
+      const factoryTools = await tool.resolve(context)
+      resolved.push(...(factoryTools as McpToolDefinition[]))
+    } else {
+      resolved.push(tool)
+    }
+  }
+  return resolved
 }

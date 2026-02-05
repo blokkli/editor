@@ -1,3 +1,5 @@
+@import './AgentMessageText.css';
+
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;
 }
@@ -25,7 +27,7 @@
 
   .bk-agent-message.bk-is-user {
     @apply p-10 ml-18 rounded-xl;
-    @apply bg-accent-600 text-white;
+    @apply bg-accent-600;
     @apply mb-15;
 
     &:not(:first-child) {
@@ -43,7 +45,8 @@
     @apply rounded-b-none;
   }
 
-  .bk-agent-assistant-bubble.bk-is-tool {
+  .bk-agent-assistant-bubble.bk-is-assistant
+    + .bk-agent-assistant-bubble.bk-is-tool {
     .bk-agent-tool-call {
       @apply border-t border-t-mono-300;
     }
@@ -67,96 +70,8 @@
     }
   }
 
-  .bk-agent-message-text {
-    @apply break-words;
-    @apply text-sm;
-
-    > * {
-      @apply first:mt-0 last:mb-0;
-    }
-
-    p,
-    ol,
-    ul,
-    blockquote,
-    table {
-      @apply my-8;
-    }
-
-    h1 {
-      @apply text-xl mb-8 mt-24;
-      &:not(:has(strong)) {
-        @apply font-bold;
-      }
-    }
-
-    h2 {
-      @apply text-lg mb-8 mt-24;
-      &:not(:has(strong)) {
-        @apply font-bold;
-      }
-    }
-
-    h3 {
-      @apply text-base mb-8 mt-24;
-      &:not(:has(strong)) {
-        @apply font-bold;
-      }
-    }
-
-    code {
-      @apply bg-mono-300 px-[0.3em] rounded-md text-mono-700;
-    }
-
-    a {
-      @apply text-accent-700 font-semibold underline underline-offset-2;
-    }
-
-    blockquote {
-      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5;
-    }
-
-    pre {
-      @apply whitespace-normal;
-    }
-
-    table {
-      @apply w-full;
-
-      thead {
-        @apply text-left;
-
-        tr {
-          @apply border-b-2 border-b-mono-950;
-        }
-      }
-
-      tbody {
-        td,
-        th {
-          @apply py-2;
-        }
-        tr {
-          @apply border-b border-b-mono-300;
-        }
-      }
-    }
-
-    hr {
-      @apply border-t-mono-300 my-20;
-    }
-
-    ul {
-      @apply list-disc pl-18;
-    }
-
-    ol {
-      @apply list-decimal pl-18;
-    }
-  }
-
   .bk-agent-tool-call {
-    @apply flex items-center text-sm gap-5;
+    @apply flex items-start text-sm gap-5;
 
     &.bk-is-pending {
       .bk-agent-tool-call-status {

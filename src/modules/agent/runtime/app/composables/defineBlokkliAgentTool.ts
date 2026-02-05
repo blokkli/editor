@@ -1,6 +1,8 @@
 import type {
   McpToolDefinition,
   McpToolCategory,
+  McpToolFactoryInput,
+  McpToolFactory,
 } from '#blokkli/agent/app/types'
 import type { AdapterMethods } from '#blokkli/editor/adapter'
 import type { z } from 'zod'
@@ -47,7 +49,26 @@ import type { Component } from 'vue'
  *   },
  * })
  * ```
+ *
+ * @example Factory pattern for dynamic tools:
+ * ```typescript
+ * export default defineBlokkliAgentTool({
+ *   resolve: async (ctx) => {
+ *     if (!ctx.adapter.getContentSearchTabs) return []
+ *     const tabs = await ctx.adapter.getContentSearchTabs()
+ *     return Object.entries(tabs).map(([id, label]) =>
+ *       defineBlokkliAgentTool({
+ *         name: `search_${id}`,
+ *         requiredAdapterMethods: ['getContentSearchResults'],
+ *         // ... each tool has full type safety
+ *       })
+ *     )
+ *   },
+ * })
+ * ```
  */
+
+// Overload: static tool definition
 export function defineBlokkliAgentTool<
   TParamsSchema extends z.ZodType,
   TResultSchema extends z.ZodType,
@@ -68,6 +89,19 @@ export function defineBlokkliAgentTool<
   TMethods,
   TComponent,
   TCategory
-> {
+>
+
+// Overload: factory pattern
+export function defineBlokkliAgentTool(
+  options: McpToolFactoryInput,
+): McpToolFactory
+
+// Implementation
+export function defineBlokkliAgentTool(
+  options: McpToolDefinition<any, any, any, any, any> | McpToolFactoryInput,
+): McpToolDefinition<any, any, any, any, any> | McpToolFactory {
+  if ('resolve' in options) {
+    return { ...options, __factory: true as const } as McpToolFactory
+  }
   return options
 }

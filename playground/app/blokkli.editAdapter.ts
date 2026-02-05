@@ -332,9 +332,11 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     getUserPermissions() {
       const permissions: UserPermissions[] = [
-        // 'manage-default-templates',
-        // 'create-library-item',
         'edit_library_item',
+        'manage_default_templates',
+        'create_library_item',
+        'create_comments',
+        'view_comments',
       ]
       return Promise.resolve(permissions)
     },
