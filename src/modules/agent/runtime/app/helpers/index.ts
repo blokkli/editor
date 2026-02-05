@@ -23,6 +23,25 @@ export function createToolMap(
 }
 
 /**
+ * Recursively strip $schema and additionalProperties from a JSON Schema object.
+ * These are unnecessary for the LLM and waste context window tokens.
+ */
+function stripSchemaOverhead(obj: unknown): unknown {
+  if (Array.isArray(obj)) {
+    return obj.map(stripSchemaOverhead)
+  }
+  if (typeof obj === 'object' && obj !== null) {
+    const result: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(obj)) {
+      if (key === '$schema' || key === 'additionalProperties') continue
+      result[key] = stripSchemaOverhead(value)
+    }
+    return result
+  }
+  return obj
+}
+
+/**
  * Get tools formatted for the server with JSON schemas.
  * Filters by edit mode and adapter methods if provided.
  */
@@ -48,7 +67,9 @@ export function getToolsForServer(
     .map((tool) => ({
       name: tool.name,
       description: tool.description,
-      input_schema: z.toJSONSchema(tool.paramsSchema),
+      input_schema: stripSchemaOverhead(
+        z.toJSONSchema(tool.paramsSchema),
+      ) as object,
     }))
 }
 

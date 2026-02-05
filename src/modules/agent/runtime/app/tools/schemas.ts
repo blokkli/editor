@@ -6,9 +6,9 @@ import { z } from 'zod'
  * Used consistently across tools for specifying block locations.
  */
 export const parentSchema = z.object({
-  type: z.string().describe('The entity type of the parent'),
-  uuid: z.string().describe('The UUID of the parent entity'),
-  field: z.string().describe('The field name on the parent'),
+  type: z.string(),
+  uuid: z.string(),
+  field: z.string(),
 })
 
 /**

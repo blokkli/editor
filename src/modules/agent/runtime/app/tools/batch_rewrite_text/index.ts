@@ -39,7 +39,7 @@ export type BatchRewriteChange = z.infer<typeof changeSchema>
 export default defineBlokkliAgentTool({
   name: 'batch_rewrite_text',
   description:
-    'Rewrite text content in multiple fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields.',
+    'Rewrite text content in multiple content fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields.',
   category: 'mutation',
   modes: ['editing', 'translating'],
   label: ($t) =>

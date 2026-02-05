@@ -7,7 +7,7 @@ const paramsSchema = z.object({
   uuid: z
     .string()
     .describe('The block UUID containing the content reference field'),
-  fieldName: z.string().describe('The droppable field name'),
+  fieldName: z.string().describe('The content field name (reference type)'),
   itemId: z
     .string()
     .describe('Content item ID from search_content_* results'),
@@ -18,7 +18,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'replace_content_search_item',
   description:
-    'Replace a content reference on an existing block field. Use get_editable_fields first to see available droppable fields, then search_content_* to find content items.',
+    'Replace a content reference on an existing block field. Use get_content_fields first to see available reference fields, then search_content_* to find content items.',
   category: 'mutation',
   modes: ['editing'],
   label: ($t) =>
@@ -46,7 +46,7 @@ export default defineBlokkliAgentTool({
     )
     if (!config) {
       return {
-        error: `Field "${params.fieldName}" is not a droppable field on ${block.bundle} blocks`,
+        error: `Field "${params.fieldName}" is not a reference content field on ${block.bundle} blocks`,
       }
     }
     const allowedRestriction = config.allowed.find(

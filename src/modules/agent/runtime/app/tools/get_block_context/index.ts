@@ -24,11 +24,11 @@ const paramsSchema = z.object({
     .optional()
     .default(true)
     .describe('Include child fields summary'),
-  includeEditableFields: z
+  includeContentFields: z
     .boolean()
     .optional()
     .default(true)
-    .describe('Include editable text fields with values'),
+    .describe('Include content fields (text, media, links) with values'),
   includeOptions: z
     .boolean()
     .optional()
@@ -70,13 +70,48 @@ const childFieldSchema = z.object({
   bundles: z.array(z.string()).describe('Unique bundle types in this field'),
 })
 
-const editableFieldSchema = z.object({
-  fieldName: z.string().describe('The field name'),
-  fieldType: z
-    .enum(['plain', 'markup'])
-    .describe('Whether field accepts HTML or plain text'),
-  currentValue: z.string().describe('Current field value'),
-})
+const contentFieldSchema = z.discriminatedUnion('type', [
+  z.object({
+    fieldName: z.string().describe('The field name'),
+    type: z.literal('plain').describe('Plain text field'),
+    currentValue: z.string().describe('Current field value'),
+  }),
+  z.object({
+    fieldName: z.string().describe('The field name'),
+    type: z.literal('markup').describe('Rich text / HTML field'),
+    currentValue: z.string().describe('Current field value'),
+  }),
+  z.object({
+    fieldName: z.string().describe('The field name'),
+    label: z.string().describe('Human-readable field label'),
+    type: z.literal('reference').describe('Entity reference field'),
+    allowed: z
+      .array(
+        z.object({
+          type: z.string().describe('The entity type (e.g., "media", "node")'),
+          bundles: z
+            .array(z.string())
+            .describe('The bundles accepted for this entity type'),
+        }),
+      )
+      .describe('Entity types and bundles this field accepts'),
+  }),
+  z.object({
+    fieldName: z.string().describe('The field name'),
+    label: z.string().describe('Human-readable field label'),
+    type: z.literal('link').describe('Link field'),
+    allowed: z
+      .array(
+        z.object({
+          type: z.string().describe('The entity type (e.g., "media", "node")'),
+          bundles: z
+            .array(z.string())
+            .describe('The bundles accepted for this entity type'),
+        }),
+      )
+      .describe('Entity types and bundles this field accepts'),
+  }),
+])
 
 const resultSchema = z.object({
   uuid: z.string().describe('The block UUID'),
@@ -101,10 +136,10 @@ const resultSchema = z.object({
     .optional()
     .describe('Child fields with block counts'),
 
-  editableFields: z
-    .array(editableFieldSchema)
+  contentFields: z
+    .array(contentFieldSchema)
     .optional()
-    .describe('Editable text fields with current values'),
+    .describe('Content fields (text, media, links) with current values'),
 
   options: z
     .array(
@@ -128,7 +163,7 @@ const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'get_block_context',
   description:
-    'Get comprehensive context for a single block including parent chain, siblings, children, editable fields, and options. Preferred over multiple individual tool calls.',
+    'Get comprehensive context for a single block including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) =>
@@ -261,11 +296,12 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    // Get editable fields
-    if (params.includeEditableFields) {
-      const editables = directive.getEditablesForBlock(params.uuid)
-      const editableFields: z.infer<typeof editableFieldSchema>[] = []
+    // Get content fields (text, media, links)
+    if (params.includeContentFields) {
+      const fields: z.infer<typeof contentFieldSchema>[] = []
 
+      // Editable text fields
+      const editables = directive.getEditablesForBlock(params.uuid)
       for (const editable of editables) {
         const config = types.editableFieldConfig.forName(
           ctx.itemEntityType,
@@ -297,15 +333,30 @@ export default defineBlokkliAgentTool({
           }
         }
 
-        editableFields.push({
+        fields.push({
           fieldName: editable.fieldName,
-          fieldType,
+          type: fieldType,
           currentValue,
         })
       }
 
-      if (editableFields.length > 0) {
-        result.editableFields = editableFields
+      // Droppable fields (reference and link)
+      const droppableConfigs =
+        types.droppableFieldConfig.forEntityTypeAndBundle(
+          ctx.itemEntityType,
+          block.bundle,
+        )
+      for (const config of droppableConfigs) {
+        fields.push({
+          fieldName: config.name,
+          label: config.label,
+          type: config.type as 'reference' | 'link',
+          allowed: config.allowed,
+        })
+      }
+
+      if (fields.length > 0) {
+        result.contentFields = fields
       }
     }
 

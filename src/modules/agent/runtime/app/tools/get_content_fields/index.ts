@@ -10,36 +10,63 @@ const paramsSchema = z.object({
     .describe('Whether to include fields from nested child blocks'),
 })
 
-const editableFieldSchema = z.object({
-  uuid: z.string().describe('The block UUID containing this field'),
-  bundle: z.string().describe('The block type'),
-  fieldName: z.string().describe('The field name'),
-  fieldType: z
-    .enum(['plain', 'markup'])
-    .describe('Whether field accepts HTML or plain text'),
-  currentValue: z.string().describe('Current field value'),
-})
-
-const droppableFieldSchema = z.object({
-  uuid: z.string().describe('The block UUID containing this field'),
-  bundle: z.string().describe('The block type'),
-  fieldName: z.string().describe('The droppable field name'),
-  label: z.string().describe('Human-readable field label'),
-  allowed: z
-    .array(
-      z.object({
-        type: z.string().describe('The entity type (e.g., "media", "node")'),
-        bundles: z
-          .array(z.string())
-          .describe('The bundles accepted for this entity type'),
-      }),
-    )
-    .describe('Entity types and bundles this field accepts'),
-})
+const contentFieldSchema = z.discriminatedUnion('type', [
+  z.object({
+    uuid: z.string().describe('The block UUID containing this field'),
+    bundle: z.string().describe('The block type'),
+    fieldName: z.string().describe('The field name'),
+    type: z.literal('plain').describe('Plain text field'),
+    currentValue: z.string().describe('Current field value'),
+  }),
+  z.object({
+    uuid: z.string().describe('The block UUID containing this field'),
+    bundle: z.string().describe('The block type'),
+    fieldName: z.string().describe('The field name'),
+    type: z.literal('markup').describe('Rich text / HTML field'),
+    currentValue: z.string().describe('Current field value'),
+  }),
+  z.object({
+    uuid: z.string().describe('The block UUID containing this field'),
+    bundle: z.string().describe('The block type'),
+    fieldName: z.string().describe('The field name'),
+    label: z.string().describe('Human-readable field label'),
+    type: z.literal('reference').describe('Entity reference field'),
+    allowed: z
+      .array(
+        z.object({
+          type: z
+            .string()
+            .describe('The entity type (e.g., "media", "node")'),
+          bundles: z
+            .array(z.string())
+            .describe('The bundles accepted for this entity type'),
+        }),
+      )
+      .describe('Entity types and bundles this field accepts'),
+  }),
+  z.object({
+    uuid: z.string().describe('The block UUID containing this field'),
+    bundle: z.string().describe('The block type'),
+    fieldName: z.string().describe('The field name'),
+    label: z.string().describe('Human-readable field label'),
+    type: z.literal('link').describe('Link field'),
+    allowed: z
+      .array(
+        z.object({
+          type: z
+            .string()
+            .describe('The entity type (e.g., "media", "node")'),
+          bundles: z
+            .array(z.string())
+            .describe('The bundles accepted for this entity type'),
+        }),
+      )
+      .describe('Entity types and bundles this field accepts'),
+  }),
+])
 
 const resultSchema = z.object({
-  editableFields: z.array(editableFieldSchema),
-  droppableFields: z.array(droppableFieldSchema),
+  contentFields: z.array(contentFieldSchema),
 })
 
 function getFieldType(
@@ -63,19 +90,18 @@ function getFieldType(
 }
 
 export default defineBlokkliAgentTool({
-  name: 'get_editable_fields',
+  name: 'get_content_fields',
   description:
-    'Get all editable text fields and droppable media fields for a block and optionally its nested children',
+    'Get all content fields (text, media, links) for a block and optionally its nested children',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) =>
-    $t('aiAgentGetEditableFieldsRunning', 'Getting editable fields...'),
+    $t('aiAgentGetContentFieldsRunning', 'Getting content fields...'),
   paramsSchema,
   resultSchema,
   execute: (ctx, params) => {
     const { blocks, directive, state, types, $t } = ctx.app
-    const editableResults: z.infer<typeof editableFieldSchema>[] = []
-    const droppableResults: z.infer<typeof droppableFieldSchema>[] = []
+    const contentFields: z.infer<typeof contentFieldSchema>[] = []
 
     const rootBlock = blocks.getBlock(params.uuid)
     const bundleLabel = rootBlock
@@ -114,27 +140,28 @@ export default defineBlokkliAgentTool({
           }
         }
 
-        editableResults.push({
+        contentFields.push({
           uuid: blockUuid,
           bundle: block.bundle,
           fieldName: editable.fieldName,
-          fieldType,
+          type: fieldType,
           currentValue,
         })
       }
 
-      // Get droppable media fields
+      // Get droppable fields (reference and link)
       const droppableConfigs =
         types.droppableFieldConfig.forEntityTypeAndBundle(
           ctx.itemEntityType,
           block.bundle,
         )
       for (const config of droppableConfigs) {
-        droppableResults.push({
+        contentFields.push({
           uuid: blockUuid,
           bundle: block.bundle,
           fieldName: config.name,
           label: config.label,
+          type: config.type as 'reference' | 'link',
           allowed: config.allowed,
         })
       }
@@ -156,12 +183,11 @@ export default defineBlokkliAgentTool({
 
     return {
       label: $t(
-        'aiAgentGetEditableFieldsDone',
-        'Got editable fields of @bundle block',
+        'aiAgentGetContentFieldsDone',
+        'Got content fields of @bundle block',
       ).replace('@bundle', bundleLabel),
       result: {
-        editableFields: editableResults,
-        droppableFields: droppableResults,
+        contentFields,
       },
       affectedUuids: [params.uuid],
     }

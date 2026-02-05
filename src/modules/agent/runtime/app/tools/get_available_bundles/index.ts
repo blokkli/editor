@@ -9,7 +9,14 @@ const paramsSchema = z.object({
 const bundleSchema = z.object({
   bundle: z.string().describe('The block type identifier'),
   label: z.string().describe('Human-readable label'),
-  editableFields: z.array(z.string()).describe('Names of editable text fields'),
+  contentFields: z
+    .array(
+      z.object({
+        name: z.string().describe('The field name'),
+        type: z.string().describe('Field type: plain, markup, reference, or link'),
+      }),
+    )
+    .describe('Content fields (text, media, links) on this bundle'),
 })
 
 const resultSchema = z.object({
@@ -54,14 +61,24 @@ export default defineBlokkliAgentTool({
 
     const bundles = field.allowedBundles.map((bundle) => {
       const bundleDefinition = types.getBlockBundleDefinition(bundle)
-      const editableConfigs = types.editableFieldConfig.forEntityTypeAndBundle(
-        ctx.itemEntityType,
-        bundle,
-      )
+      const editableConfigs = types.editableFieldConfig
+        .forEntityTypeAndBundle(ctx.itemEntityType, bundle)
+        .filter((c) => c.type !== 'table')
+        .map((c) => ({
+          name: c.name,
+          type:
+            c.type === 'frame' || c.type === 'markup' ? 'markup' : 'plain',
+        }))
+      const droppableConfigs = types.droppableFieldConfig
+        .forEntityTypeAndBundle(ctx.itemEntityType, bundle)
+        .map((c) => ({
+          name: c.name,
+          type: c.type,
+        }))
       return {
         bundle,
         label: bundleDefinition?.label ?? bundle,
-        editableFields: editableConfigs.map((c) => c.name),
+        contentFields: [...editableConfigs, ...droppableConfigs],
       }
     })
 

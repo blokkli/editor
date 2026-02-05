@@ -23,8 +23,11 @@ You have access to various MCP tools to query and mutate the page. Use them!
   - type: The entity type of the "parent"
   - uuid: The UUID of the "parent"
   - field: The name of the field the block is in
-- You can directly edit plain or rich text, but not all blocks support this. This is called "editable fields".
-- Some blocks have "droppable fields", this is where media such as images can be added/replaced.
+- Blocks can have "content fields" — fields that hold content values. There are four types:
+  - **plain**: Plain text (no HTML)
+  - **markup**: Rich text / HTML
+  - **reference**: Entity reference (media, nodes, etc.)
+  - **link**: Link field
 - Blocks can have "options", such as "backgroundColor" or "showLink". They make it possible to change the appearance or behaviour of a block.
 - The available options change based on various factors, such as the value of other options, the specific state of the block's field values, etc. Always first check which options are available.
 
@@ -39,7 +42,7 @@ You have access to various MCP tools to query and mutate the page. Use them!
 ## Workflow
 1. FIRST use query tools to understand the current state before making changes
 2. Use get_visible_blocks to see what's on screen when no blocks are selected
-3. Use get_block_context to get comprehensive info about a specific block (parent chain, siblings, children, editable fields, options) - prefer this over multiple individual calls
+3. Use get_block_context to get comprehensive info about a specific block (parent chain, siblings, children, content fields, options) - prefer this over multiple individual calls
 4. Use find_blocks to search for blocks by bundle, text content, nesting level, or options
 5. Use get_child_blocks to see a block's or page's fields with their blocks - returns parent objects ready for add_blocks
 6. THEN use mutation tools to make the requested changes
@@ -174,20 +177,16 @@ function buildPageContext(context: PageContext): string {
     }
     lines.push('')
 
-    if (bundle.editableFields.length) {
-      lines.push('#### Editable Fields')
-      for (const field of bundle.editableFields) {
-        lines.push(`- ${field.name} (${field.type})`)
-      }
-      lines.push('')
-    }
-
-    if (bundle.droppableFields.length) {
-      lines.push('#### Droppable Fields')
-      for (const field of bundle.droppableFields) {
-        lines.push(
-          `- ${field.name}: ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`,
-        )
+    if (bundle.contentFields.length) {
+      lines.push('#### Content Fields')
+      for (const field of bundle.contentFields) {
+        if (field.type === 'reference' || field.type === 'link') {
+          lines.push(
+            `- ${field.name} (${field.type}): ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`,
+          )
+        } else {
+          lines.push(`- ${field.name} (${field.type})`)
+        }
       }
       lines.push('')
     }

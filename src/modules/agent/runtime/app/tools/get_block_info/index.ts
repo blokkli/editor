@@ -26,7 +26,7 @@ export default defineBlokkliAgentTool({
   name: 'get_block_info',
   description:
     'Get lightweight info for multiple blocks (bundle, current option values, parent). ' +
-    'For detailed single-block analysis with option definitions, editable fields, and children, use get_block_context instead.',
+    'For detailed single-block analysis with option definitions, content fields, and children, use get_block_context instead.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentGetBlockInfoRunning', 'Getting block info...'),

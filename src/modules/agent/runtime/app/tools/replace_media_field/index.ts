@@ -4,7 +4,7 @@ import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('The block UUID containing the media field'),
-  fieldName: z.string().describe('The droppable field name'),
+  fieldName: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
 })
@@ -12,7 +12,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'replace_media_field',
   description:
-    'Replace the media on an existing block field. Use get_editable_fields first to see available droppable fields, then search_media to find media items.',
+    'Replace the media on an existing block field. Use get_content_fields first to see available reference fields, then search_media to find media items.',
   category: 'mutation',
   modes: ['editing'],
   label: ($t) => $t('aiAgentReplaceMediaRunning', 'Replacing media...'),
@@ -36,7 +36,7 @@ export default defineBlokkliAgentTool({
     )
     if (!config) {
       return {
-        error: `Field "${params.fieldName}" is not a droppable field on ${block.bundle} blocks`,
+        error: `Field "${params.fieldName}" is not a reference content field on ${block.bundle} blocks`,
       }
     }
     const allowedMedia = config.allowed.find((v) => v.type === 'media')

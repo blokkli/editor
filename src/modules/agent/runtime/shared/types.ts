@@ -3,22 +3,17 @@
 // ============================================================================
 
 /**
- * Editable field metadata for a block bundle.
+ * Content field metadata for a block bundle.
+ * Unifies editable text fields and droppable reference/link fields.
  */
-export type BlockBundleEditableField = {
-  name: string
-  label: string
-  type: string
-}
-
-/**
- * Droppable field metadata for a block bundle.
- */
-export type BlockBundleDroppableField = {
-  name: string
-  label: string
-  allowed: { type: string; bundles: string[] }[]
-}
+export type BlockBundleContentField =
+  | { name: string; label: string; type: 'plain' | 'markup' }
+  | {
+      name: string
+      label: string
+      type: 'reference' | 'link'
+      allowed: { type: string; bundles: string[] }[]
+    }
 
 /**
  * Block field (nested blocks) metadata for a block bundle.
@@ -37,8 +32,7 @@ export type BlockBundle = {
   id: string
   label: string
   description?: string
-  editableFields: BlockBundleEditableField[]
-  droppableFields: BlockBundleDroppableField[]
+  contentFields: BlockBundleContentField[]
   blockFields: BlockBundleBlockField[]
 }
 

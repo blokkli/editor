@@ -32,7 +32,7 @@ function getFieldType(
 export default defineBlokkliAgentTool({
   name: 'rewrite_text',
   description:
-    'Rewrite the text content of an editable field. Shows a preview immediately and requires user approval.',
+    'Rewrite the text content of a plain or markup content field. Shows a preview immediately and requires user approval.',
   category: 'mutation',
   modes: ['editing', 'translating'],
   label: ($t) => $t('aiAgentRewriteTextRunning', 'Rewriting text...'),

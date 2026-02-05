@@ -13,7 +13,7 @@ const fieldValueSchema = z
           z
             .string()
             .describe(
-              'Text value for editable text fields, or a URL string (starting with http) for link-type droppable fields',
+              'Text value for plain/markup content fields, or a URL string (starting with http) for link content fields',
             ),
           z
             .object({
@@ -23,17 +23,17 @@ const fieldValueSchema = z
               entityId: z.string().describe('Entity ID'),
             })
             .describe(
-              'Entity reference for droppable fields (media, content references)',
+              'Entity reference for reference content fields (media, content references)',
             ),
         ])
         .describe(
-          'The field value: a string for editable text fields, an entity reference object for droppable fields, or a URL string for link fields',
+          'The field value: a string for plain/markup content fields, an entity reference object for reference content fields, or a URL string for link content fields',
         ),
     }),
   )
   .optional()
   .describe(
-    'Field values to set on the new block. Use this to set text content (editable fields) and media/entity references (droppable fields) in one step.',
+    'Field values to set on the new block. Use this to set text content and media/entity references on content fields in one step.',
   )
 
 const blockSchema = z.object({
@@ -57,7 +57,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_blocks',
   description:
-    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. Requires user approval before the blocks are actually created. IMPORTANT: Always provide values for editable fields (text) and droppable fields (media/entity references) directly, instead of adding the block first and then calling replace_media_field or update_editable_field separately.',
+    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. Requires user approval before the blocks are actually created. IMPORTANT: Always provide values for content fields (text, media/entity references) directly, instead of adding the block first and then calling replace_media_field or rewrite_text separately.',
   category: 'mutation',
   modes: ['editing'],
   label: ($t) => $t('aiAgentAddBlocksRunning', 'Adding blocks...'),
@@ -130,20 +130,23 @@ export default defineBlokkliAgentTool({
 
           if (!editableConfig && !droppableConfig) {
             // Get available fields for error message
-            const editableFields = types.editableFieldConfig
+            const editableFieldNames = types.editableFieldConfig
               .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
               .map((f) => f.name)
-            const droppableFields = types.droppableFieldConfig
+            const droppableFieldNames = types.droppableFieldConfig
               .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
               .map((f) => f.name)
-            const availableFields = [...editableFields, ...droppableFields]
+            const availableFields = [
+              ...editableFieldNames,
+              ...droppableFieldNames,
+            ]
 
             return {
               error:
                 `Block ${i + 1}: Field "${fieldName}" does not exist on bundle "${block.bundle}". ` +
                 (availableFields.length
-                  ? `Available fields: ${availableFields.join(', ')}`
-                  : 'This bundle has no editable or droppable fields.'),
+                  ? `Available content fields: ${availableFields.join(', ')}`
+                  : 'This bundle has no content fields.'),
             }
           }
 

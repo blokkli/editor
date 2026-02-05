@@ -195,17 +195,26 @@ function buildPageContext(): PageContext {
   const bundles: BlockBundle[] = []
 
   for (const bundle of types.generallyAvailableBundles) {
-    const editableFields = types.editableFieldConfig
-      .forEntityTypeAndBundle(itemEntityType, bundle.id)
-      .map((f) => ({ name: f.name, label: f.label, type: f.type }))
-
-    const droppableFields = types.droppableFieldConfig
-      .forEntityTypeAndBundle(itemEntityType, bundle.id)
-      .map((f) => ({
-        name: f.name,
-        label: f.label,
-        allowed: f.allowed,
-      }))
+    const contentFields = [
+      ...types.editableFieldConfig
+        .forEntityTypeAndBundle(itemEntityType, bundle.id)
+        .filter((f) => f.type !== 'table')
+        .map((f) => ({
+          name: f.name,
+          label: f.label,
+          type: (f.type === 'frame' || f.type === 'markup'
+            ? 'markup'
+            : 'plain') as 'plain' | 'markup',
+        })),
+      ...types.droppableFieldConfig
+        .forEntityTypeAndBundle(itemEntityType, bundle.id)
+        .map((f) => ({
+          name: f.name,
+          label: f.label,
+          type: f.type as 'reference' | 'link',
+          allowed: f.allowed,
+        })),
+    ]
 
     const blockFields = types.fieldConfig
       .forEntityTypeAndBundle(itemEntityType, bundle.id)
@@ -220,8 +229,7 @@ function buildPageContext(): PageContext {
       id: bundle.id,
       label: bundle.label,
       description: bundle.description,
-      editableFields,
-      droppableFields,
+      contentFields,
       blockFields,
     })
   }
