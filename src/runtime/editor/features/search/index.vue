@@ -91,11 +91,13 @@ defineDropAreas((dragItems) => {
       }
 
       const config = types.getDroppableFieldConfig(field.fieldName, field)
-      if (config.allowedEntityType !== searchItem.entityType) {
-        return
-      }
-
-      if (!config.allowedBundles.includes(searchItem.entityBundle)) {
+      const allowedBundles = config.allowed.find(
+        (v) => v.type === searchItem.entityType,
+      )?.bundles
+      if (
+        !allowedBundles ||
+        !allowedBundles.includes(searchItem.entityBundle)
+      ) {
         return
       }
 
@@ -105,10 +107,10 @@ defineDropAreas((dragItems) => {
         fieldName: field.fieldName,
       }
 
-      const label = $t(
-        'searchContentReplace',
-        'Replace @field',
-      ).replace('@field', config.label)
+      const label = $t('searchContentReplace', 'Replace @field').replace(
+        '@field',
+        config.label,
+      )
 
       return {
         id: `replace-search-content:${field.uuid}:${field.fieldName}`,

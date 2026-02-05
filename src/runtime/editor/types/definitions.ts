@@ -18,3 +18,8 @@ export type FieldConfig = {
   canEdit: boolean
   allowedBundles: string[]
 }
+
+export type EntityTypeRestriction = {
+  type: string
+  bundles: string[]
+}

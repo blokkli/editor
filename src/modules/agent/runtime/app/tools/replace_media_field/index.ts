@@ -39,14 +39,15 @@ export default defineBlokkliAgentTool({
         error: `Field "${params.fieldName}" is not a droppable field on ${block.bundle} blocks`,
       }
     }
-    if (config.allowedEntityType !== 'media') {
+    const allowedMedia = config.allowed.find((v) => v.type === 'media')
+    if (!allowedMedia) {
       return {
         error: `Field "${params.fieldName}" does not accept media items`,
       }
     }
-    if (!config.allowedBundles.includes(params.mediaBundle)) {
+    if (!allowedMedia.bundles.includes(params.mediaBundle)) {
       return {
-        error: `Field "${params.fieldName}" does not accept ${params.mediaBundle} media. Allowed: ${config.allowedBundles.join(', ')}`,
+        error: `Field "${params.fieldName}" does not accept ${params.mediaBundle} media. Allowed: ${allowedMedia.bundles.join(', ')}`,
       }
     }
 

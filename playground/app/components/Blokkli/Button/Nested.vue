@@ -3,6 +3,7 @@
     :is="isExternal ? 'a' : NuxtLink"
     v-bind="attributes"
     class="button shrink-0 grow-0 max-w-fit playground-button"
+    v-blokkli-droppable:url
     :class="{
       'is-primary': options.color === 'primary',
       'is-inverted': options.color === 'normal' && isInverted,

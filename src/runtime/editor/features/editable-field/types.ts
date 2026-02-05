@@ -1,3 +1,5 @@
+import type { EntityTypeRestriction } from '#blokkli/editor/types/definitions'
+
 export type EditableFieldType = 'plain' | 'markup' | 'table' | 'frame'
 
 export type EditableFieldConfig = {
@@ -11,12 +13,12 @@ export type EditableFieldConfig = {
 }
 
 export type DroppableFieldConfig = {
+  type: 'reference' | 'link'
   name: string
   label: string
   entityType: string
   entityBundle: string
-  allowedEntityType: string
-  allowedBundles: string[]
+  allowed: EntityTypeRestriction[]
   cardinality: number
   required: boolean
 }

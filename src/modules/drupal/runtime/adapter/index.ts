@@ -1003,7 +1003,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 id: tab.id,
                 title: tab.label,
                 description: tab.description ?? null,
-                types: tab.types,
+                types: tab.types.map((t) => ({
+                  type: t.entityType,
+                  bundles: t.bundles,
+                })),
               }
             })
             .filter(falsy)

@@ -1,5 +1,9 @@
 <template>
-  <div v-if="options.align === 'left'" class="container mt-25 text-left">
+  <div
+    v-if="options.align === 'left'"
+    class="container mt-25 text-left"
+    v-blokkli-droppable:url
+  >
     <Component
       :is="isExternal ? 'a' : NuxtLink"
       v-bind="attributes"
@@ -15,6 +19,7 @@
   </div>
   <div
     v-else
+    v-blokkli-droppable:url
     class="container mt-25"
     :class="{
       'text-center': options.align === 'center',

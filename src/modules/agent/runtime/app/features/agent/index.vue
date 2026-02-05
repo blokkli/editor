@@ -204,7 +204,7 @@ function buildPageContext(): PageContext {
       .map((f) => ({
         name: f.name,
         label: f.label,
-        allowedBundles: f.allowedBundles,
+        allowed: f.allowed,
       }))
 
     const blockFields = types.fieldConfig

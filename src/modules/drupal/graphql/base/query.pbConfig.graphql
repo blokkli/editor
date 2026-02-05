@@ -55,14 +55,17 @@ query pbConfig($entityType: String!, $entityBundle: String!) {
     entityType: $entityType
     entityBundle: $entityBundle
   ) {
+    type: fieldType
     name
     label
     entityType
     entityBundle
     cardinality
     canEdit
-    allowedEntityType
-    allowedBundles
+    allowed {
+      type: entityType
+      bundles
+    }
     required
   }
 

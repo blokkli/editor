@@ -45,6 +45,7 @@ import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
+import { FieldUrl } from './mock/state/Field/Url'
 
 const ENALBE_EDIT_STATES = false
 const ENABLED_ASSISTANT = false
@@ -877,7 +878,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           description: null,
           types: [
             {
-              entityType: 'media',
+              type: 'media',
               bundles: ['image'],
             },
           ],
@@ -888,7 +889,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           description: null,
           types: [
             {
-              entityType: 'media',
+              type: 'media',
               bundles: ['video'],
             },
           ],
@@ -899,7 +900,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           description: null,
           types: [
             {
-              entityType: 'media',
+              type: 'media',
               bundles: ['icon'],
             },
           ],
@@ -1273,12 +1274,28 @@ export default defineBlokkliEditAdapter((ctx) => {
           .map<DroppableFieldConfig | undefined>((field) => {
             if (field instanceof FieldReference) {
               return {
+                type: 'reference',
                 name: field.id,
                 label: field.label,
                 entityType: entity.entityType,
                 entityBundle: entity.bundle,
-                allowedEntityType: field.targetEntityType,
-                allowedBundles: field.allowedBundles,
+                allowed: [
+                  {
+                    type: field.targetEntityType,
+                    bundles: field.allowedBundles,
+                  },
+                ],
+                cardinality: field.cardinality,
+                required: field.required,
+              }
+            } else if (field instanceof FieldUrl) {
+              return {
+                type: 'link',
+                name: field.id,
+                label: field.label,
+                entityType: entity.entityType,
+                entityBundle: entity.bundle,
+                allowed: [],
                 cardinality: field.cardinality,
                 required: field.required,
               }

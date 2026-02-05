@@ -1,3 +1,4 @@
+import type { EntityTypeRestriction } from '#blokkli/editor/types/definitions'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 export type AddContentSearchItemEvent = {
@@ -23,7 +24,7 @@ export type ContentSearchTab = {
   id: string
   title: string
   description: string | null
-  types: { entityType: string; bundles: string[] }[]
+  types: EntityTypeRestriction[]
 }
 
 /**

@@ -69,14 +69,14 @@ defineDropAreas((dragItems) => {
     .getDroppableElements()
     .map<DropArea | undefined>((field) => {
       const config = types.getDroppableFieldConfig(field.fieldName, field)
+      const allowedBundles = config.allowed.find(
+        (v) => v.type === 'media',
+      )?.bundles
       // @TODO: This should be provided by the adapter on the item.
-      if (config.allowedEntityType !== 'media') {
+      if (!allowedBundles || !allowedBundles.includes(item.mediaBundle)) {
         return
       }
 
-      if (!config.allowedBundles.includes(item.mediaBundle)) {
-        return
-      }
       const isBlock = field.type === itemEntityType
       const draggableHost: BlokkliItemHost = {
         uuid: field.uuid,

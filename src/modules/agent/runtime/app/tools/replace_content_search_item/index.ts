@@ -49,14 +49,17 @@ export default defineBlokkliAgentTool({
         error: `Field "${params.fieldName}" is not a droppable field on ${block.bundle} blocks`,
       }
     }
-    if (config.allowedEntityType !== params.itemEntityType) {
+    const allowedRestriction = config.allowed.find(
+      (v) => v.type === params.itemEntityType,
+    )
+    if (!allowedRestriction) {
       return {
-        error: `Field "${params.fieldName}" does not accept ${params.itemEntityType} entities. Allowed: ${config.allowedEntityType}`,
+        error: `Field "${params.fieldName}" does not accept ${params.itemEntityType} entities. Allowed types: ${config.allowed.map((v) => v.type).join(', ')}`,
       }
     }
-    if (!config.allowedBundles.includes(params.itemEntityBundle)) {
+    if (!allowedRestriction.bundles.includes(params.itemEntityBundle)) {
       return {
-        error: `Field "${params.fieldName}" does not accept ${params.itemEntityBundle} bundles. Allowed: ${config.allowedBundles.join(', ')}`,
+        error: `Field "${params.fieldName}" does not accept ${params.itemEntityBundle} bundles. Allowed: ${allowedRestriction.bundles.join(', ')}`,
       }
     }
 

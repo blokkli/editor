@@ -185,7 +185,9 @@ function buildPageContext(context: PageContext): string {
     if (bundle.droppableFields.length) {
       lines.push('#### Droppable Fields')
       for (const field of bundle.droppableFields) {
-        lines.push(`- ${field.name}: ${field.allowedBundles.join(', ')}`)
+        lines.push(
+          `- ${field.name}: ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`,
+        )
       }
       lines.push('')
     }

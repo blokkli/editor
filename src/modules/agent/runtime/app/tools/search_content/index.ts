@@ -28,7 +28,7 @@ export default defineBlokkliAgentTool({
     return tabs.map((tab) => {
       const typesDescription = tab.types
         .map((type) => {
-          return `${type.entityType} (${type.bundles.join(', ')})`
+          return `${type.type} (${type.bundles.join(', ')})`
         })
         .join(', ')
       const description = `Content search for these entities: ${typesDescription}`

@@ -5749,15 +5749,20 @@ type ParagraphsBlokkliConversion {
 }
 
 type ParagraphsBlokkliDroppableFieldConfig {
-  allowedBundles: [String!]!
-  allowedEntityType: String!
+  allowed: [ParagraphsBlokkliEntityRestriction!]!
   canEdit: Boolean!
   cardinality: Int!
   entityBundle: String!
   entityType: String!
+  fieldType: ParagraphsBlokkliDroppableFieldType!
   label: String!
   name: String!
   required: Boolean!
+}
+
+enum ParagraphsBlokkliDroppableFieldType {
+  link
+  reference
 }
 
 """Paragraphs Blokkli Edit State"""
@@ -5924,6 +5929,11 @@ type ParagraphsBlokkliEntityMetadata {
   entityAccess(operation: String!): Boolean!
 }
 
+type ParagraphsBlokkliEntityRestriction {
+  bundles: [String!]!
+  entityType: String!
+}
+
 type ParagraphsBlokkliFieldConfig {
   allowedBundles: [String!]!
   canEdit: Boolean!
@@ -6082,13 +6092,8 @@ type ParagraphsBlokkliSearchTab {
   description: String
   id: String!
   label: String!
-  types: [ParagraphsBlokkliSearchTabType!]!
+  types: [ParagraphsBlokkliEntityRestriction!]!
   weight: Int!
-}
-
-type ParagraphsBlokkliSearchTabType {
-  bundles: [String!]!
-  entityType: String!
 }
 
 input ParagraphsBlokkliSetParagraphScheduleInput {

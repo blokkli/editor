@@ -25,12 +25,16 @@ const droppableFieldSchema = z.object({
   bundle: z.string().describe('The block type'),
   fieldName: z.string().describe('The droppable field name'),
   label: z.string().describe('Human-readable field label'),
-  allowedEntityType: z
-    .string()
-    .describe('The entity type this field accepts (e.g., "media")'),
-  allowedBundles: z
-    .array(z.string())
-    .describe('The bundles this field accepts (e.g., ["image", "video"])'),
+  allowed: z
+    .array(
+      z.object({
+        type: z.string().describe('The entity type (e.g., "media", "node")'),
+        bundles: z
+          .array(z.string())
+          .describe('The bundles accepted for this entity type'),
+      }),
+    )
+    .describe('Entity types and bundles this field accepts'),
 })
 
 const resultSchema = z.object({
@@ -131,8 +135,7 @@ export default defineBlokkliAgentTool({
           bundle: block.bundle,
           fieldName: config.name,
           label: config.label,
-          allowedEntityType: config.allowedEntityType,
-          allowedBundles: config.allowedBundles,
+          allowed: config.allowed,
         })
       }
 

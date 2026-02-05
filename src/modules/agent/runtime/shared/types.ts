@@ -17,7 +17,7 @@ export type BlockBundleEditableField = {
 export type BlockBundleDroppableField = {
   name: string
   label: string
-  allowedBundles: string[]
+  allowed: { type: string; bundles: string[] }[]
 }
 
 /**
