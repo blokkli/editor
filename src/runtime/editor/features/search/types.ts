@@ -7,6 +7,11 @@ export type AddContentSearchItemEvent = {
   afterUuid: string | null
 }
 
+export type ReplaceContentSearchItemEvent = {
+  host: BlokkliItemHost
+  item: SearchContentItem
+}
+
 export interface DraggableSearchContentItem {
   itemType: 'search_content'
   element: () => HTMLElement
@@ -83,6 +88,13 @@ declare module '#blokkli/editor/adapter' {
      */
     addContentSearchItem?: (
       e: AddContentSearchItemEvent,
+    ) => Promise<MutationResponseLike<T>> | undefined
+
+    /**
+     * Replace a content reference on an existing block from a search content item.
+     */
+    replaceContentSearchItem?: (
+      e: ReplaceContentSearchItemEvent,
     ) => Promise<MutationResponseLike<T>> | undefined
   }
 }

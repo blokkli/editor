@@ -45,7 +45,11 @@ import {
 import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { onBlokkliEvent, defineDropAreas } from '#blokkli/editor/composables'
+import { falsy } from '#blokkli/helpers'
+import { itemEntityType } from '#blokkli-build/config'
+import type { DropArea } from '#blokkli/editor/types/ui'
+import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 defineBlokkliFeature({
   id: 'search',
@@ -55,7 +59,76 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { $t, selection, ui } = useBlokkli()
+const { $t, selection, ui, adapter, state, types, directive } = useBlokkli()
+
+const ERROR_MESSAGE = $t(
+  'searchContentReplaceFailed',
+  'Failed to replace content.',
+)
+
+defineDropAreas((dragItems) => {
+  if (!adapter.replaceContentSearchItem) {
+    return
+  }
+
+  if (dragItems.length !== 1) {
+    return
+  }
+
+  const item = dragItems[0]!
+
+  if (item.itemType !== 'search_content') {
+    return
+  }
+
+  const searchItem = item.searchItem
+
+  return directive
+    .getDroppableElements()
+    .map<DropArea | undefined>((field) => {
+      if (field.type !== itemEntityType) {
+        return
+      }
+
+      const config = types.getDroppableFieldConfig(field.fieldName, field)
+      if (config.allowedEntityType !== searchItem.entityType) {
+        return
+      }
+
+      if (!config.allowedBundles.includes(searchItem.entityBundle)) {
+        return
+      }
+
+      const host: BlokkliItemHost = {
+        uuid: field.uuid,
+        type: field.type,
+        fieldName: field.fieldName,
+      }
+
+      const label = $t(
+        'searchContentReplace',
+        'Replace @field',
+      ).replace('@field', config.label)
+
+      return {
+        id: `replace-search-content:${field.uuid}:${field.fieldName}`,
+        label,
+        element: field.element,
+        icon: 'bk_mdi_swap_horiz',
+        onDrop: () => {
+          return state.mutateWithLoadingState(
+            () =>
+              adapter.replaceContentSearchItem!({
+                host,
+                item: searchItem,
+              }),
+            ERROR_MESSAGE,
+          )
+        },
+      }
+    })
+    .filter(falsy)
+})
 
 const isRendered = ref(false)
 const isVisible = ref(false)

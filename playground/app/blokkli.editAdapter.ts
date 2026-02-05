@@ -1001,6 +1001,19 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
     },
 
+    replaceContentSearchItem(e) {
+      if (e.item.entityType === 'media') {
+        return addMutation('replace_media', {
+          blockUuid: e.host.uuid,
+          fieldName: e.host.fieldName,
+          mediaUuid: e.item.id,
+        })
+      }
+      throw new Error(
+        `Unsupported entity type for replaceContentSearchItem: "${e.item.entityType}"`,
+      )
+    },
+
     addBlockFromClipboardItem(e) {
       if (e.item.itemBundle === 'text') {
         return addMutation('add', {
