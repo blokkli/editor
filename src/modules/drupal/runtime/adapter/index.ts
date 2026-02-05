@@ -40,6 +40,7 @@ import {
   ALL_PERMISSIONS,
   type UserPermissions,
 } from '#blokkli/editor/types/permissions'
+import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -993,15 +994,19 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (hasQuery('pbSearchTabs')) {
       adapter.getContentSearchTabs = () => {
         return useGraphqlQuery('pbSearchTabs').then((v) => {
-          return (v.data.tabs || []).reduce<Record<string, string>>(
-            (acc, tab) => {
-              if (tab?.id) {
-                acc[tab.id] = tab.label
+          return (v.data.tabs ?? [])
+            .map<ContentSearchTab | null>((tab) => {
+              if (!tab) {
+                return null
               }
-              return acc
-            },
-            {},
-          )
+              return {
+                id: tab.id,
+                title: tab.label,
+                description: tab.description ?? null,
+                types: tab.types,
+              }
+            })
+            .filter(falsy)
         })
       }
     }

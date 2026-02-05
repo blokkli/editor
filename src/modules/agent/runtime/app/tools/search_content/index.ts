@@ -25,28 +25,34 @@ export default defineBlokkliAgentTool({
       return []
     }
     const tabs = await ctx.adapter.getContentSearchTabs()
-    return Object.entries(tabs).map(([tabId, tabLabel]) =>
-      defineBlokkliAgentTool({
-        name: `search_content_${tabId}`,
-        description: `Search for "${tabLabel}" content items. Returns items that can be added to the page.`,
+    return tabs.map((tab) => {
+      const typesDescription = tab.types
+        .map((type) => {
+          return `${type.entityType} (${type.bundles.join(', ')})`
+        })
+        .join(', ')
+      const description = `Content search for these entities: ${typesDescription}`
+      return defineBlokkliAgentTool({
+        name: `search_content_${tab.id}`,
+        description,
         category: 'query',
         requiredAdapterMethods: [
           'getContentSearchTabs',
           'getContentSearchResults',
         ],
         modes: ['readonly', 'editing', 'translating', 'review'],
-        label: () => `Searching ${tabLabel}...`,
+        label: () => `Searching ${tab.title}...`,
         paramsSchema: z.object({
-          query: z.string().describe(`Search query for ${tabLabel}`),
+          query: z.string().describe(`Search query for ${tab.title}`),
         }),
         resultSchema,
         execute: async (toolCtx, params) => {
           const items = await toolCtx.adapter.getContentSearchResults(
-            tabId,
+            tab.id,
             params.query,
           )
           return {
-            label: `Searched ${tabLabel} for "${params.query}"`,
+            label: `Searched ${tab.title} for "${params.query}"`,
             result: items.map((item) => ({
               id: item.id,
               title: item.title,
@@ -59,7 +65,7 @@ export default defineBlokkliAgentTool({
             })),
           }
         },
-      }),
-    )
+      })
+    })
   },
 })

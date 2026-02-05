@@ -19,6 +19,13 @@ export interface DraggableSearchContentItem {
   searchItem: SearchContentItem
 }
 
+export type ContentSearchTab = {
+  id: string
+  title: string
+  description: string | null
+  types: { entityType: string; bundles: string[] }[]
+}
+
 /**
  * Defines a content search item.
  */
@@ -70,8 +77,8 @@ declare module '#blokkli/editor/adapter' {
      * Return the possible content search tabs.
      */
     getContentSearchTabs?: () =>
-      | Record<string, string>
-      | Promise<Record<string, string>>
+      | ContentSearchTab[]
+      | Promise<ContentSearchTab[]>
 
     /**
      * Return items for the "content" search.

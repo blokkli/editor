@@ -102,12 +102,15 @@ defineExpose({ focusInput })
 
 const adapterContentSearchTabs = adapter.getContentSearchTabs
   ? await adapter.getContentSearchTabs()
-  : {}
+  : []
 
 const tabsMap = computed(() => {
   return {
     on_this_page: $t('searchBoxOnThisPage', 'On this page'),
-    ...adapterContentSearchTabs,
+    ...adapterContentSearchTabs.reduce<Record<string, string>>((acc, tab) => {
+      acc[tab.id] = tab.title
+      return acc
+    }, {}),
   }
 })
 

@@ -870,11 +870,41 @@ export default defineBlokkliEditAdapter((ctx) => {
     makeBlockReusable: (e) => addMutation('make_reusable', e),
 
     getContentSearchTabs() {
-      return {
-        images: 'Images',
-        videos: 'Videos',
-        icons: 'Icons',
-      }
+      return [
+        {
+          id: 'images',
+          title: 'Images',
+          description: null,
+          types: [
+            {
+              entityType: 'media',
+              bundles: ['image'],
+            },
+          ],
+        },
+        {
+          id: 'videos',
+          title: 'Videos',
+          description: null,
+          types: [
+            {
+              entityType: 'media',
+              bundles: ['video'],
+            },
+          ],
+        },
+        {
+          id: 'icons',
+          title: 'Icons',
+          description: null,
+          types: [
+            {
+              entityType: 'media',
+              bundles: ['icon'],
+            },
+          ],
+        },
+      ]
     },
 
     clipboardMapBundle(e) {

@@ -6079,8 +6079,16 @@ type ParagraphsBlokkliSearchItem {
 }
 
 type ParagraphsBlokkliSearchTab {
+  description: String
   id: String!
   label: String!
+  types: [ParagraphsBlokkliSearchTabType!]!
+  weight: Int!
+}
+
+type ParagraphsBlokkliSearchTabType {
+  bundles: [String!]!
+  entityType: String!
 }
 
 input ParagraphsBlokkliSetParagraphScheduleInput {

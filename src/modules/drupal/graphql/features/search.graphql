@@ -15,5 +15,10 @@ query pbSearchTabs {
   tabs: paragraphsBlokkliSearchTabs {
     id
     label
+    description
+    types {
+      entityType
+      bundles
+    }
   }
 }
