@@ -73,6 +73,7 @@ These are pre-defined groups of blocks that can be added to the page. Unlike "li
 - Use the move_blocks tool when moving blocks, instead of creating a new block of the same bundle and copy pasting text.
 - The user's prompt might not always be related to which blocks are selected! Verify if the prompt actually refers to the selection.
 - ONLY assist the user in things that are related to the task!
+- Use the "ask_question" tool to ask structured questions instead of asking them via a message!
 `
 
 const REFUSAL_PROMPT = `

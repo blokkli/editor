@@ -10,7 +10,7 @@ const blockSchema = z.object({
     .record(z.string(), z.unknown())
     .optional()
     .describe(
-      'Optional default values for the block fields. Keys are field names, values are field values (strings for text fields, arrays of IDs for reference fields).',
+      'Default values for the block fields. Keys are field names ("editable fields" or "droppable fields"), values are field values (strings for text fields, arrays of IDs for reference fields).',
     ),
 })
 
