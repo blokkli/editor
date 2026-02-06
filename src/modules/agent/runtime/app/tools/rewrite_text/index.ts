@@ -49,12 +49,8 @@ export default defineBlokkliAgentTool({
       return { error: `Block not found: ${params.uuid}` }
     }
 
-    const entityType = isEntity
-      ? context.value.entityType
-      : ctx.itemEntityType
-    const bundle = isEntity
-      ? context.value.entityBundle
-      : block!.bundle
+    const entityType = isEntity ? context.value.entityType : ctx.itemEntityType
+    const bundle = isEntity ? context.value.entityBundle : block!.bundle
 
     const fieldType = getFieldType(
       ctx.app,

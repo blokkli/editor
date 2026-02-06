@@ -1,17 +1,13 @@
 <template>
   <div v-if="item.type === 'user'" class="bk-agent-message bk-is-user">
-    <div class="bk-agent-message-content">
-      <div ref="contentEl" class="bk-agent-message-text" />
-    </div>
+    <div ref="contentEl" class="bk-agent-message-text" />
   </div>
 
   <div
     v-else-if="item.type === 'assistant'"
     class="bk-agent-message bk-is-assistant bk-agent-assistant-bubble"
   >
-    <div class="bk-agent-message-content">
-      <div ref="contentEl" class="bk-agent-message-text" />
-    </div>
+    <div ref="contentEl" class="bk-agent-message-text" />
   </div>
 
   <div

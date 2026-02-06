@@ -21,10 +21,6 @@ export type ExtractedSkill = {
 export class CollectedSkillFile extends CollectedFile {
   private skill: ExtractedSkill | null = null
 
-  constructor(filePath: string, fileContents: string) {
-    super(filePath, fileContents)
-  }
-
   /**
    * Check if file contains the skill composable and extract skill data.
    */

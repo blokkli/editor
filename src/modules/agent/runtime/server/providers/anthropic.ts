@@ -124,7 +124,7 @@ export class AnthropicProvider implements AIProvider {
             yield { type: 'tool_use_end' }
             break
 
-          case 'message_stop':
+          case 'message_stop': {
             // Get stop reason from the final message
             const finalMessage = await stream.finalMessage()
             yield {
@@ -136,6 +136,7 @@ export class AnthropicProvider implements AIProvider {
                 | 'stop',
             }
             break
+          }
         }
       }
     } catch (error) {

@@ -5,9 +5,7 @@ import { mutationResultSchema } from '../schemas'
 const paramsSchema = z.object({
   uuid: z
     .string()
-    .describe(
-      'The block UUID or entity UUID containing the media field',
-    ),
+    .describe('The block UUID or entity UUID containing the media field'),
   fieldName: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
@@ -35,12 +33,8 @@ export default defineBlokkliAgentTool({
       return { error: `Block not found: ${params.uuid}` }
     }
 
-    const entityType = isEntity
-      ? context.value.entityType
-      : ctx.itemEntityType
-    const bundle = isEntity
-      ? context.value.entityBundle
-      : block!.bundle
+    const entityType = isEntity ? context.value.entityType : ctx.itemEntityType
+    const bundle = isEntity ? context.value.entityBundle : block!.bundle
 
     // Validate field exists and is a droppable media field
     const config = types.droppableFieldConfig.forName(

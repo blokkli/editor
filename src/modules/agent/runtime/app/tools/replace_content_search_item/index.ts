@@ -8,9 +8,7 @@ const paramsSchema = z.object({
     .string()
     .describe('The block UUID containing the content reference field'),
   fieldName: z.string().describe('The content field name (reference type)'),
-  itemId: z
-    .string()
-    .describe('Content item ID from search_content_* results'),
+  itemId: z.string().describe('Content item ID from search_content_* results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
 })

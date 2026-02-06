@@ -197,13 +197,6 @@ function toggleToolCall(id: string) {
 
   toolCall.accepted = !toolCall.accepted
 
-  // Handle phantom block visibility for add_block
-  if (toolCall.tool.name === 'add_block' && toolCall.phantomUuid) {
-    if (toolCall.accepted) {
-    } else {
-    }
-  }
-
   // Handle rewrite_text visibility
   if (toolCall.tool.name === 'rewrite_text') {
     const { uuid, fieldName, value } = toolCall.tool.params
@@ -266,8 +259,6 @@ function handleToolCallChunk(chunk: RewriteChunk) {
           ...deltaFields,
         }
         // Update phantom block props
-        if (toolCall.phantomUuid) {
-        }
       } catch {
         // Delta might be partial JSON, ignore
       }
@@ -927,12 +918,6 @@ async function onAccept() {
   const acceptedToolCalls: RewriteTool[] = pendingToolCalls.value
     .filter((tc) => tc.accepted)
     .map((tc) => tc.tool)
-
-  // Remove rejected phantom blocks
-  for (const tc of pendingToolCalls.value) {
-    if (!tc.accepted && tc.phantomUuid) {
-    }
-  }
 
   if (
     Object.keys(valuesToApply).length === 0 &&

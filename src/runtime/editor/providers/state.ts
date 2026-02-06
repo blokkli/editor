@@ -30,7 +30,7 @@ import type {
   Validation,
 } from '../types/state'
 import type { EditPermission } from '#blokkli/types/provider'
-import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const HOST_OPTION_KEY = 'HOST'
 

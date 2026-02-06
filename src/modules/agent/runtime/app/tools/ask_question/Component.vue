@@ -2,26 +2,26 @@
   <ToolCard
     icon="bk_mdi_help"
     :title="params.question"
-    @cancel="cancel"
     class="bk-agent-tool-question"
+    @cancel="cancel"
   >
     <div class="bk-agent-tool-question-inner">
       <!-- Multi-select: Checkboxes -->
       <FormCheckboxes
         v-if="params.multiSelect"
         id="ask-question"
+        v-model="selectedMulti"
         label=""
         :options="params.options"
-        v-model="selectedMulti"
       />
 
       <!-- Single-select: Radio -->
       <FormRadio
         v-else
         id="ask-question"
+        v-model="selectedSingle"
         label=""
         :options="params.options"
-        v-model="selectedSingle"
       />
     </div>
 

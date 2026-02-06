@@ -13,7 +13,9 @@ const bundleSchema = z.object({
     .array(
       z.object({
         name: z.string().describe('The field name'),
-        type: z.string().describe('Field type: plain, markup, reference, or link'),
+        type: z
+          .string()
+          .describe('Field type: plain, markup, reference, or link'),
       }),
     )
     .describe('Content fields (text, media, links) on this bundle'),
@@ -66,8 +68,7 @@ export default defineBlokkliAgentTool({
         .filter((c) => c.type !== 'table')
         .map((c) => ({
           name: c.name,
-          type:
-            c.type === 'frame' || c.type === 'markup' ? 'markup' : 'plain',
+          type: c.type === 'frame' || c.type === 'markup' ? 'markup' : 'plain',
         }))
       const droppableConfigs = types.droppableFieldConfig
         .forEntityTypeAndBundle(ctx.itemEntityType, bundle)

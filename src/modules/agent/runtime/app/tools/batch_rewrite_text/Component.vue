@@ -11,7 +11,7 @@
         class="bk-batch-rewrite-item"
         :class="{ 'bk-is-deselected': !change.selected }"
       >
-        <input type="checkbox" v-model="change.selected" />
+        <input v-model="change.selected" type="checkbox" />
         <div class="bk-batch-rewrite-change">
           <div class="bk-batch-rewrite-field">{{ change.fieldName }}</div>
           <div class="bk-batch-rewrite-preview">

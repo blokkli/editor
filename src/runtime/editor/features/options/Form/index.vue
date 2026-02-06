@@ -56,7 +56,6 @@ import type {
   FragmentDefinitionInput,
   ProviderDefinitionInput,
 } from '#blokkli/types/definitions'
-import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import {
   BK_HIDDEN_GLOBALLY,

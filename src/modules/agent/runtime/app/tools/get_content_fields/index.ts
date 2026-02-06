@@ -36,9 +36,7 @@ const contentFieldSchema = z.discriminatedUnion('type', [
     allowed: z
       .array(
         z.object({
-          type: z
-            .string()
-            .describe('The entity type (e.g., "media", "node")'),
+          type: z.string().describe('The entity type (e.g., "media", "node")'),
           bundles: z
             .array(z.string())
             .describe('The bundles accepted for this entity type'),
@@ -55,9 +53,7 @@ const contentFieldSchema = z.discriminatedUnion('type', [
     allowed: z
       .array(
         z.object({
-          type: z
-            .string()
-            .describe('The entity type (e.g., "media", "node")'),
+          type: z.string().describe('The entity type (e.g., "media", "node")'),
           bundles: z
             .array(z.string())
             .describe('The bundles accepted for this entity type'),
@@ -124,9 +120,7 @@ export default defineBlokkliAgentTool({
 
       // Build a lookup of directive-registered editables for getValue().
       const editableMap = new Map(
-        directive
-          .getEditablesForBlock(entityUuid)
-          .map((e) => [e.fieldName, e]),
+        directive.getEditablesForBlock(entityUuid).map((e) => [e.fieldName, e]),
       )
 
       for (const config of editableConfigs) {

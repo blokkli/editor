@@ -135,8 +135,8 @@ export default defineBlokkliModule<AgentModuleOptions>({
     // gets checked in the app context via nitro-routes.d.ts.
     nuxt.hook('nitro:init', (nitro) => {
       nitro.hooks.hook('types:extend', (types) => {
-        delete types.routes[AGENT_ROUTE]
-        delete types.routes[FETCH_ROUTE]
+        Reflect.deleteProperty(types.routes, AGENT_ROUTE)
+        Reflect.deleteProperty(types.routes, FETCH_ROUTE)
       })
     })
   },

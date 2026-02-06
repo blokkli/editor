@@ -33,8 +33,8 @@
 
           <!-- Interactive tool component -->
           <component
-            v-if="pendingToolComponent && agent.pendingToolCall.value"
             :is="pendingToolComponent"
+            v-if="pendingToolComponent && agent.pendingToolCall.value"
             :context="toolContext"
             :params="agent.pendingToolCall.value.params"
             @done="agent.onToolComponentDone"

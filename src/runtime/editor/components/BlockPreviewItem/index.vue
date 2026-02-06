@@ -56,7 +56,11 @@ const props = withDefaults(
     noPreview?: boolean
   }>(),
   {
+    items: () => [],
+    description: undefined,
+    bundle: undefined,
     maxHeight: 400,
+    noPreview: false,
   },
 )
 

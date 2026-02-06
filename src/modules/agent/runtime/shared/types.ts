@@ -127,4 +127,8 @@ export type ServerMessage =
   | { type: 'done'; message?: string }
   | { type: 'error'; message: string }
   | { type: 'transcript'; content: string }
-  | { type: 'server_tool_result'; tool: 'load_skill' | 'load_tools'; label: string }
+  | {
+      type: 'server_tool_result'
+      tool: 'load_skill' | 'load_tools'
+      label: string
+    }

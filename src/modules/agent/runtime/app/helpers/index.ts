@@ -172,9 +172,7 @@ export function isToolFactory(item: McpToolItem): item is McpToolFactory {
 /**
  * Check if a tool item is a static tool definition (not a factory).
  */
-export function isToolDefinition(
-  item: McpToolItem,
-): item is McpToolDefinition {
+export function isToolDefinition(item: McpToolItem): item is McpToolDefinition {
   return !isToolFactory(item)
 }
 

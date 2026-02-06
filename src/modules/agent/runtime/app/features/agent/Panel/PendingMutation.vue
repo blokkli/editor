@@ -20,8 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { useBlokkli } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import ToolCard from './ToolCard.vue'
 import type { MutationAction } from '#blokkli/agent/app/types'
@@ -32,9 +31,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'approve'): void
-  (e: 'reject'): void
-  (e: 'always-approve'): void
+  (e: 'approve' | 'reject' | 'always-approve'): void
 }>()
 
 const { $t } = useBlokkli()
@@ -51,6 +48,8 @@ const actionIcon = computed((): BlokkliIcon => {
       return 'bk_mdi_drag_pan'
     case 'options':
       return 'bk_mdi_tune'
+    default:
+      return 'bk_mdi_edit'
   }
 })
 </script>

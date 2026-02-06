@@ -4,15 +4,9 @@ import { mutationResultSchema, parentSchema } from '../schemas'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
 const paramsSchema = z.object({
-  itemId: z
-    .string()
-    .describe('Content item ID from search_content_* results'),
-  itemEntityType: z
-    .string()
-    .describe('Entity type of the content item'),
-  itemEntityBundle: z
-    .string()
-    .describe('Entity bundle of the content item'),
+  itemId: z.string().describe('Content item ID from search_content_* results'),
+  itemEntityType: z.string().describe('Entity type of the content item'),
+  itemEntityBundle: z.string().describe('Entity bundle of the content item'),
   targetBundle: z
     .string()
     .describe(

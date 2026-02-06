@@ -810,12 +810,13 @@ export default defineWebSocketHandler({
           runAgentLoop(peer, session, data.prompt, data.selectedUuids)
           break
 
-        case 'tool_result':
+        case 'tool_result': {
           const pending = session.pendingToolCalls.get(data.callId)
           if (pending) {
             pending.resolve({ result: data.result, error: data.error })
           }
           break
+        }
 
         case 'cancel':
           session.abortController?.abort()

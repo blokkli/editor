@@ -11,11 +11,9 @@
       v-if="isThinking"
       class="bk-agent-message bk-is-assistant bk-agent-assistant-bubble"
     >
-      <div class="bk-agent-message-content">
-        <div class="bk-agent-thinking">
-          <Icon name="loader" />
-          <span>{{ $t('aiAgentThinking', 'Thinking...') }}</span>
-        </div>
+      <div class="bk-agent-thinking">
+        <Icon name="loader" />
+        <span>{{ $t('aiAgentThinking', 'Thinking...') }}</span>
       </div>
     </div>
   </div>

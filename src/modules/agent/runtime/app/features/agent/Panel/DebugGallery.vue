@@ -19,9 +19,9 @@
 
     <h3>Tool Components</h3>
     <component
+      :is="tool.component"
       v-for="tool in toolsWithMockParams"
       :key="tool.name"
-      :is="tool.component"
       :context="mockContext"
       :params="tool.mockParams()"
       @done="() => {}"

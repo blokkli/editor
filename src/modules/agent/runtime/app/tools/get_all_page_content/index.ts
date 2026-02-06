@@ -108,9 +108,7 @@ export default defineBlokkliAgentTool({
           uuid: blockUuid,
           bundle: block.bundle,
           text: textParts.join('\n\n'),
-          referenceFields: droppableFields.length
-            ? droppableFields
-            : undefined,
+          referenceFields: droppableFields.length ? droppableFields : undefined,
         })
       }
 

@@ -41,7 +41,7 @@ export class MutationSwap extends Mutation {
     context: MutationContext,
     args: MutationSwapArgs,
     firstProxy: ReturnType<MutationContext['getProxy']> & object,
-    secondProxy: ReturnType<MutationContext['getProxy']> & object,
+    _secondProxy: ReturnType<MutationContext['getProxy']> & object,
   ) {
     // Get the indices
     const firstIndex = context.getIndex(args.firstUuid)

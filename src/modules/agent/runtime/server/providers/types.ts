@@ -1,4 +1,4 @@
-import type { ClientToolDefinition, PageContext } from '../../shared/types'
+import type { ClientToolDefinition } from '../../shared/types'
 
 // ============================================================================
 // Generic Message Types

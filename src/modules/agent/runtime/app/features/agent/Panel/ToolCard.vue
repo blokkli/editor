@@ -4,11 +4,7 @@
       <Icon :name="icon" />
       <span>{{ title }}</span>
       <div class="bk-agent-pending-header-cancel">
-        <button
-          type="button"
-          class="bk-agent-pending-cancel"
-          @click="$emit('cancel')"
-        >
+        <button type="button" @click="$emit('cancel')">
           <Icon name="bk_mdi_close" />
         </button>
         <div class="bk-tooltip">

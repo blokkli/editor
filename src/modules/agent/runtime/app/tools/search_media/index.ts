@@ -2,7 +2,12 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
-  query: z.string().optional().describe('Search text to filter media items. Omit or leave empty to list all available media.'),
+  query: z
+    .string()
+    .optional()
+    .describe(
+      'Search text to filter media items. Omit or leave empty to list all available media.',
+    ),
   bundle: z
     .string()
     .optional()
