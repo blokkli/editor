@@ -3,7 +3,6 @@ import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import testExtensionModule from './app/blokkli/modules/test-extension'
-import aiRewriteModule from './app/blokkli/modules/ai-rewrite'
 import agentModule from './../src/modules/agent'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
@@ -94,7 +93,6 @@ export default defineNuxtConfig({
   blokkli: {
     modules: [
       testExtensionModule(),
-      aiRewriteModule(),
       agentModule({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         provider: 'anthropic',

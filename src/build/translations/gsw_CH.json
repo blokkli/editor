@@ -1443,14 +1443,6 @@
     "source": "Revert",
     "translation": "Zruggsetze"
   },
-  "feature_rewrite_description": {
-    "source": "Rewrite selected blocks using AI.",
-    "translation": ""
-  },
-  "feature_rewrite_label": {
-    "source": "AI Rewrite",
-    "translation": ""
-  },
   "feature_search_description": {
     "source": "Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.",
     "translation": "Stellt es Overlay mit Shortcut bereit zum uf dr aktuälle Sitte noch Blöck z'sueche oder bestehendi Inhält als Blöck drzuefüege."
@@ -2170,62 +2162,6 @@
   "revertSuccess": {
     "source": "All changes have been discarded.",
     "translation": "Alli Änderige sin glöcht worde."
-  },
-  "rewriteAcceptedMessagePlural": {
-    "source": "Accepted @count texts:",
-    "translation": ""
-  },
-  "rewriteAcceptedMessageSingular": {
-    "source": "Accepted 1 text:",
-    "translation": ""
-  },
-  "rewriteAction": {
-    "source": "Rewrite with AI",
-    "translation": ""
-  },
-  "rewriteAddedBlock": {
-    "source": "Added 1 block",
-    "translation": ""
-  },
-  "rewriteAddedBlocks": {
-    "source": "Added @count blocks",
-    "translation": ""
-  },
-  "rewriteApplyError": {
-    "source": "Failed to save rewritten content.",
-    "translation": ""
-  },
-  "rewriteAssistantMessagePlural": {
-    "source": "Rewrote @count texts",
-    "translation": ""
-  },
-  "rewriteAssistantMessageSingular": {
-    "source": "Rewrote 1 text",
-    "translation": ""
-  },
-  "rewriteError": {
-    "source": "An error occurred.",
-    "translation": ""
-  },
-  "rewritePromptPlaceholder": {
-    "source": "e.g. \"rewrite in simpler words\"",
-    "translation": ""
-  },
-  "rewriteRefinePromptPlaceholder": {
-    "source": "Enter instructions to refine unchecked results...",
-    "translation": ""
-  },
-  "rewriteTitle": {
-    "source": "Rewriting @count texts...",
-    "translation": ""
-  },
-  "rewriteTitleDone": {
-    "source": "Rewrite complete",
-    "translation": ""
-  },
-  "rewriteTitlePrompt": {
-    "source": "Rewrite @count texts in @blockCount blocks",
-    "translation": ""
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",

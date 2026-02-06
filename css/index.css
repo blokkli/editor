@@ -53,7 +53,6 @@
 @import './partials/Indicators.css';
 @import './partials/Analyze.css';
 @import './partials/Transform.css';
-@import './partials/Rewrite.css';
 @import './../src/modules/agent/css/Agent.css';
 @import './partials/Konami.css';
 @import './partials/Publish.css';
