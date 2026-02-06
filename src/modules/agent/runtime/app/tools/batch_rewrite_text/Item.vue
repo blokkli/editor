@@ -14,7 +14,7 @@
       </div>
       <div v-if="!selected" class="bk-batch-rewrite-reason">
         <FlexTextarea
-          v-model="reasonModel"
+          v-model="reason"
           textarea-class
           :max-height="100"
           :min-height="42"
@@ -32,13 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  watch,
-  onBeforeUnmount,
-  useBlokkli,
-  nextTick,
-  computed,
-} from '#imports'
+import { watch, onBeforeUnmount, useBlokkli, nextTick, ref } from '#imports'
 import { DiffValue, FlexTextarea } from '#blokkli/editor/components'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
@@ -49,22 +43,17 @@ const props = defineProps<{
   fieldName: string
   fieldLabel: string
   newValue: string
-  selected: boolean
-  applied: boolean
-  reason: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'toggle'): void
-  (e: 'reason', value: string): void
+  (e: 'update:selected', value: boolean): void
 }>()
 
 const { blocks, context, eventBus, $t } = useBlokkli()
 
-const reasonModel = computed({
-  get: () => props.reason,
-  set: (value: string) => emit('reason', value),
-})
+const selected = ref(true)
+const reason = ref('')
+const applied = ref(false)
 
 function resolveHost(): EntityContext {
   if (props.uuid === context.value.entityUuid) {
@@ -95,27 +84,35 @@ function onMouseEnter() {
 override.setValue(props.newValue)
 
 async function onChange() {
-  emit('toggle')
+  selected.value = !selected.value
+  emit('update:selected', selected.value)
   await nextTick()
   onMouseEnter()
 }
 
 // Toggle preview when selection changes.
-watch(
-  () => props.selected,
-  (isSelected) => {
-    if (isSelected) {
-      override.setValue(props.newValue)
-    } else {
-      override.restore()
-    }
-  },
-)
+watch(selected, (isSelected) => {
+  if (isSelected) {
+    override.setValue(props.newValue)
+  } else {
+    override.restore()
+  }
+})
 
 // Restore on unmount if not applied.
 onBeforeUnmount(() => {
-  if (!props.applied) {
+  if (!applied.value) {
     override.restore()
   }
+})
+
+function markApplied() {
+  applied.value = true
+}
+
+defineExpose({
+  selected,
+  reason,
+  markApplied,
 })
 </script>

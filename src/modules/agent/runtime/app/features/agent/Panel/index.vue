@@ -54,44 +54,16 @@
         </template>
       </div>
 
-      <div class="bk-agent-panel-input">
-        <div class="bk-agent-input">
-          <FlexTextarea
-            ref="textarea"
-            v-model="inputValue"
-            :max-height="150"
-            submit-on-enter
-            paste-html
-            rows="2"
-            :placeholder="placeholder"
-            @submit="onSubmit"
-          />
-          <div class="bk-agent-input-actions">
-            <button
-              class="bk-agent-debug-btn"
-              title="Log WebSocket messages to console"
-              @click="agent.getTranscript"
-            >
-              <Icon name="bk_mdi_bug_report" />
-            </button>
-            <button
-              v-if="agent.isProcessing.value"
-              class="bk-agent-cancel-btn"
-              @click="agent.cancel"
-            >
-              <Icon name="bk_mdi_stop" />
-            </button>
-            <button
-              v-else
-              class="bk-agent-submit-btn"
-              :disabled="!canSubmit"
-              @click="onSubmit"
-            >
-              <Icon name="bk_mdi_arrow_upward" />
-            </button>
-          </div>
-        </div>
-      </div>
+      <AgentInput
+        ref="inputEl"
+        v-model="inputValue"
+        :placeholder="placeholder"
+        :is-processing="agent.isProcessing.value"
+        @submit="onSubmit"
+        @cancel="agent.cancel"
+        @new-conversation="onNewConversation"
+        @show-transcript="agent.getTranscript"
+      />
     </div>
   </div>
   <div v-else class="bk-agent-connecting">
@@ -110,11 +82,12 @@ import {
   inject,
   useBlokkli,
 } from '#imports'
-import { Icon, FlexTextarea } from '#blokkli/editor/components'
+import { Icon } from '#blokkli/editor/components'
 import Conversation from './Conversation.vue'
 import PendingMutation from './PendingMutation.vue'
 import DebugGallery from './DebugGallery.vue'
 import Welcome from './Welcome/index.vue'
+import AgentInput from './Input/index.vue'
 import type { AgentProvider } from '#blokkli/agent/app/composables'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { isToolDefinition } from '#blokkli/agent/app/helpers'
@@ -160,7 +133,7 @@ const pendingToolComponent = computed(() => {
 })
 
 const inputValue = ref('')
-const textarea = useTemplateRef('textarea')
+const inputEl = useTemplateRef('inputEl')
 const scrollContainer = useTemplateRef('scrollContainer')
 
 // Track if user is at the bottom of the scroll container
@@ -227,14 +200,10 @@ watch(
   () => agent.isProcessing.value,
   (isProcessing, wasProcessing) => {
     if (wasProcessing && !isProcessing) {
-      nextTick(() => textarea.value?.focus())
+      nextTick(() => inputEl.value?.focus())
     }
   },
 )
-
-const canSubmit = computed(() => {
-  return inputValue.value.trim().length > 0 && !agent.isProcessing.value
-})
 
 const showWelcome = computed(() => {
   return (
@@ -269,9 +238,13 @@ function onWelcomePrompt(prompt: string) {
 }
 
 function onSubmit() {
-  if (!canSubmit.value) return
+  if (!inputValue.value.trim() || agent.isProcessing.value) return
   agent.sendPrompt(inputValue.value)
   inputValue.value = ''
   scrollToBottomOnSend()
+}
+
+function onNewConversation() {
+  // TODO: implement new conversation
 }
 </script>

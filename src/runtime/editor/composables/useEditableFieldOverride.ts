@@ -149,14 +149,16 @@ export function useEditableFieldOverride(
 
   function restore(): void {
     if (usesMutatedProps && matchingProp) {
-      if (originalMutatedProp === undefined) {
-        if (state.mutatedItemProps[mutatedItemPropsKey]) {
-          state.mutatedItemProps[mutatedItemPropsKey] = undefined
-        }
-      } else {
-        if (state.mutatedItemProps[mutatedItemPropsKey]) {
-          state.mutatedItemProps[mutatedItemPropsKey]![matchingProp] =
-            originalMutatedProp
+      const propsObj = state.mutatedItemProps[mutatedItemPropsKey]
+      if (propsObj) {
+        if (originalMutatedProp === undefined) {
+          delete propsObj[matchingProp]
+          // Only remove the entire object if no other overrides remain.
+          if (Object.keys(propsObj).length === 0) {
+            state.mutatedItemProps[mutatedItemPropsKey] = undefined
+          }
+        } else {
+          propsObj[matchingProp] = originalMutatedProp
         }
       }
     }

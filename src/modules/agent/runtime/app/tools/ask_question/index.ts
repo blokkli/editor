@@ -37,7 +37,7 @@ export type AskQuestionResult = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'ask_question',
   description:
-    'Ask the user a question with predefined options. Use for clarifications or choices.',
+    'Ask the user a question with predefined options. Use for clarifications or choices. Prefer this over listing options in a message!!',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentAskQuestionRunning', 'Waiting for answer...'),

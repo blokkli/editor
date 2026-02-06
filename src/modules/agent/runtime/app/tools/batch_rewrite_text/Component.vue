@@ -4,7 +4,7 @@
     :title="
       $t('aiAgentBatchRewriteTitle', 'Rewrite @count fields').replace(
         '@count',
-        String(changes.length),
+        String(items.length),
       )
     "
     @cancel="rejectAll"
@@ -15,17 +15,13 @@
       @mouseleave="onMouseLeave"
     >
       <Item
-        v-for="change in changes"
-        :key="change.id"
-        :uuid="change.uuid"
-        :field-name="change.fieldName"
-        :field-label="change.fieldLabel"
-        :new-value="change.value"
-        :selected="change.selected"
-        :applied="change.applied"
-        :reason="change.reason"
-        @toggle="change.selected = !change.selected"
-        @reason="change.reason = $event"
+        v-for="item in items"
+        :key="item.id"
+        ref="itemRefs"
+        :uuid="item.uuid"
+        :field-name="item.fieldName"
+        :field-label="item.fieldLabel"
+        :new-value="item.value"
       />
     </div>
 
@@ -42,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, computed, useBlokkli, ref } from '#imports'
+import { computed, useBlokkli, ref, useTemplateRef } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard.vue'
 import Item from './Item.vue'
@@ -70,15 +66,12 @@ const {
 
 const isApplying = ref(false)
 
-type ChangeWithState = {
+type ChangeItem = {
   id: number
   uuid: string
   fieldName: string
   fieldLabel: string
   value: string
-  selected: boolean
-  applied: boolean
-  reason: string
 }
 
 function resolveFieldLabel(uuid: string, fieldName: string): string {
@@ -105,20 +98,19 @@ function resolveFieldLabel(uuid: string, fieldName: string): string {
   return config?.label || fieldName
 }
 
-const changes = reactive<ChangeWithState[]>(
-  props.params.changes.map((change, index) => ({
-    id: index,
-    uuid: change.uuid,
-    fieldName: change.fieldName,
-    fieldLabel: resolveFieldLabel(change.uuid, change.fieldName),
-    value: change.value,
-    selected: true,
-    applied: false,
-    reason: '',
-  })),
-)
+const items: ChangeItem[] = props.params.changes.map((change, index) => ({
+  id: index,
+  uuid: change.uuid,
+  fieldName: change.fieldName,
+  fieldLabel: resolveFieldLabel(change.uuid, change.fieldName),
+  value: change.value,
+}))
 
-const selectedCount = computed(() => changes.filter((c) => c.selected).length)
+const itemRefs = useTemplateRef<InstanceType<typeof Item>[]>('itemRefs')
+
+const selectedCount = computed(
+  () => itemRefs.value?.filter((item) => item.selected).length ?? 0,
+)
 
 function onMouseLeave() {
   eventBus.emit('highlight', null)
@@ -127,60 +119,72 @@ function onMouseLeave() {
 async function applySelected() {
   isApplying.value = true
 
+  const refs = itemRefs.value || []
+
   const rejectedByUser: Array<{
     uuid: string
     fieldName: string
     reason?: string
   }> = []
 
-  for (const change of changes) {
-    if (!change.selected) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]!
+    const ref = refs[i]
+    if (ref && !ref.selected) {
       rejectedByUser.push({
-        uuid: change.uuid,
-        fieldName: change.fieldName,
-        reason: change.reason || undefined,
+        uuid: item.uuid,
+        fieldName: item.fieldName,
+        reason: ref.reason || undefined,
       })
     }
   }
 
   // Apply all selected changes via the adapter in a single batch.
-  const selectedChanges = changes.filter((c) => c.selected)
   const entityUuid = editorContext.value.entityUuid
 
-  const items: Array<{ uuid: string; fieldName: string; fieldValue: string }> =
-    []
+  const batchItems: Array<{
+    uuid: string
+    fieldName: string
+    fieldValue: string
+  }> = []
   const entityItems: Array<{ fieldName: string; fieldValue: string }> = []
 
-  for (const change of selectedChanges) {
-    if (change.uuid === entityUuid) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]!
+    const ref = refs[i]
+    if (!ref?.selected) continue
+
+    if (item.uuid === entityUuid) {
       entityItems.push({
-        fieldName: change.fieldName,
-        fieldValue: change.value,
+        fieldName: item.fieldName,
+        fieldValue: item.value,
       })
     } else {
-      items.push({
-        uuid: change.uuid,
-        fieldName: change.fieldName,
-        fieldValue: change.value,
+      batchItems.push({
+        uuid: item.uuid,
+        fieldName: item.fieldName,
+        fieldValue: item.value,
       })
     }
   }
 
   await state.mutateWithLoadingState(() =>
     props.context.adapter.updateFieldValueBatched!({
-      items,
+      items: batchItems,
       entityItems,
     }),
   )
 
-  for (const change of selectedChanges) {
-    change.applied = true
+  for (const ref of refs) {
+    if (ref.selected) {
+      ref.markApplied()
+    }
   }
 
-  const acceptedCount = selectedChanges.length
+  const acceptedCount = batchItems.length + entityItems.length
 
   const label =
-    acceptedCount === changes.length
+    acceptedCount === items.length
       ? $t(
           'aiAgentBatchRewriteAllApplied',
           'All @count changes applied',
@@ -190,7 +194,7 @@ async function applySelected() {
           '@applied of @total changes applied',
         )
           .replace('@applied', String(acceptedCount))
-          .replace('@total', String(changes.length))
+          .replace('@total', String(items.length))
 
   // If there are rejections without reasons, tell the agent to ask the user.
   const hasRejectionsWithoutReason = rejectedByUser.some((r) => !r.reason)
@@ -212,7 +216,7 @@ function rejectAll() {
   // Item components will restore on unmount.
   emit('done', {
     acceptedCount: 0,
-    rejectedByUser: changes.map((c) => ({
+    rejectedByUser: items.map((c) => ({
       uuid: c.uuid,
       fieldName: c.fieldName,
     })),
@@ -225,6 +229,6 @@ function rejectAll() {
 const applyLabel = computed(() => {
   return $t('aiAgentBatchRewriteApply', 'Apply @count of @total')
     .replace('@count', selectedCount.value.toString())
-    .replace('@total', changes.length.toString())
+    .replace('@total', items.length.toString())
 })
 </script>

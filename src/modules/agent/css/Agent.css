@@ -284,7 +284,43 @@
     }
 
     .bk-agent-input-actions {
-      @apply border-t border-t-mono-300 flex justify-end p-8 gap-8;
+      @apply border-t border-t-mono-300 flex items-center justify-between p-8 gap-8;
+    }
+
+    .bk-agent-input-actions-right {
+      @apply flex gap-8;
+    }
+
+    .bk-agent-more-menu {
+      @apply relative;
+    }
+
+    .bk-agent-more-btn {
+      @apply w-30 h-30 flex items-center justify-center;
+      @apply border-none cursor-pointer rounded;
+      @apply bg-transparent text-mono-500;
+      @apply hover:bg-mono-100 hover:text-mono-700;
+
+      svg {
+        @apply fill-current size-20;
+      }
+    }
+
+    .bk-agent-more-dropdown {
+      @apply absolute bottom-full left-0 mb-5;
+      @apply bg-white border border-mono-300 rounded-lg shadow-lg;
+      @apply py-5 min-w-[200px];
+
+      button {
+        @apply w-full flex items-center gap-8 px-10 py-8;
+        @apply text-sm text-mono-700 text-left;
+        @apply border-none bg-transparent cursor-pointer;
+        @apply hover:bg-mono-50;
+
+        svg {
+          @apply w-15 h-15 fill-current;
+        }
+      }
     }
 
     .bk-agent-submit-btn,

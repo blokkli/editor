@@ -3,36 +3,32 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({
-  uuid: z
-    .string()
-    .describe('The block UUID or entity UUID (to get entity-level fields)'),
+  uuids: z
+    .array(z.string())
+    .describe(
+      'One or more block UUIDs (or the page UUID to get page-level fields)',
+    ),
   includeNested: z
     .boolean()
     .optional()
-    .describe('Whether to include fields from nested child blocks'),
+    .default(true)
+    .describe(
+      'Recursively include content fields from all nested child blocks (default: true). Set to false to only get direct fields.',
+    ),
 })
 
-const contentFieldSchema = z.discriminatedUnion('type', [
+const fieldSchema = z.discriminatedUnion('type', [
   z.object({
-    uuid: z.string().describe('The block UUID containing this field'),
-    bundle: z.string().describe('The block type'),
-    fieldName: z.string().describe('The field name'),
     type: z.literal('plain').describe('Plain text field'),
     currentValue: z.string().describe('Current field value'),
   }),
   z.object({
-    uuid: z.string().describe('The block UUID containing this field'),
-    bundle: z.string().describe('The block type'),
-    fieldName: z.string().describe('The field name'),
     type: z.literal('markup').describe('Rich text / HTML field'),
     currentValue: z.string().describe('Current field value'),
   }),
   z.object({
-    uuid: z.string().describe('The block UUID containing this field'),
-    bundle: z.string().describe('The block type'),
-    fieldName: z.string().describe('The field name'),
-    label: z.string().describe('Human-readable field label'),
     type: z.literal('reference').describe('Entity reference field'),
+    label: z.string().describe('Human-readable field label'),
     allowed: z
       .array(
         z.object({
@@ -45,11 +41,8 @@ const contentFieldSchema = z.discriminatedUnion('type', [
       .describe('Entity types and bundles this field accepts'),
   }),
   z.object({
-    uuid: z.string().describe('The block UUID containing this field'),
-    bundle: z.string().describe('The block type'),
-    fieldName: z.string().describe('The field name'),
-    label: z.string().describe('Human-readable field label'),
     type: z.literal('link').describe('Link field'),
+    label: z.string().describe('Human-readable field label'),
     allowed: z
       .array(
         z.object({
@@ -63,9 +56,14 @@ const contentFieldSchema = z.discriminatedUnion('type', [
   }),
 ])
 
-const resultSchema = z.object({
-  contentFields: z.array(contentFieldSchema),
-})
+type FieldInfo = z.infer<typeof fieldSchema>
+type BlockFields = Record<string, FieldInfo>
+type Result = Record<string, BlockFields>
+
+const resultSchema = z.record(
+  z.string().describe('Block UUID'),
+  z.record(z.string().describe('Field name'), fieldSchema),
+)
 
 function getFieldType(
   app: BlokkliApp,
@@ -84,6 +82,18 @@ function getFieldType(
   return 'plain'
 }
 
+function addField(
+  result: Result,
+  uuid: string,
+  fieldName: string,
+  field: FieldInfo,
+) {
+  if (!result[uuid]) {
+    result[uuid] = {}
+  }
+  result[uuid][fieldName] = field
+}
+
 export default defineBlokkliAgentTool({
   name: 'get_content_fields',
   description:
@@ -96,29 +106,17 @@ export default defineBlokkliAgentTool({
   resultSchema,
   execute: (ctx, params) => {
     const { blocks, directive, state, types, $t, context } = ctx.app
-    const contentFields: z.infer<typeof contentFieldSchema>[] = []
-
-    // Check if this is the entity UUID.
-    const isEntity = params.uuid === context.value.entityUuid
-
-    const rootBlock = blocks.getBlock(params.uuid)
-    const bundleLabel = isEntity
-      ? context.value.entityBundle
-      : rootBlock
-        ? types.getBlockLabel(rootBlock.bundle)
-        : 'unknown'
+    const result: Result = {}
+    const processedUuids = new Set<string>()
 
     function processEntity(entityUuid: string) {
       const entityType = context.value.entityType
       const entityBundle = context.value.entityBundle
 
-      // Get editable text fields from config (not from directives, since
-      // entity editables may not be registered via getEditablesForBlock).
       const editableConfigs = types.editableFieldConfig
         .forEntityTypeAndBundle(entityType, entityBundle)
         .filter((f) => f.type !== 'table')
 
-      // Build a lookup of directive-registered editables for getValue().
       const editableMap = new Map(
         directive.getEditablesForBlock(entityUuid).map((e) => [e.fieldName, e]),
       )
@@ -147,38 +145,33 @@ export default defineBlokkliAgentTool({
           }
         }
 
-        contentFields.push({
-          uuid: entityUuid,
-          bundle: entityBundle,
-          fieldName: config.name,
+        addField(result, entityUuid, config.name, {
           type: fieldType as 'plain' | 'markup',
           currentValue,
         })
       }
 
-      // Get droppable fields (reference and link) for entity
       const droppableConfigs =
         types.droppableFieldConfig.forEntityTypeAndBundle(
           entityType,
           entityBundle,
         )
       for (const config of droppableConfigs) {
-        contentFields.push({
-          uuid: entityUuid,
-          bundle: entityBundle,
-          fieldName: config.name,
-          label: config.label,
+        addField(result, entityUuid, config.name, {
           type: config.type as 'reference' | 'link',
+          label: config.label,
           allowed: config.allowed,
         })
       }
     }
 
     function processBlock(blockUuid: string) {
+      if (processedUuids.has(blockUuid)) return
+      processedUuids.add(blockUuid)
+
       const block = blocks.getBlock(blockUuid)
       if (!block) return
 
-      // Get editable text fields
       const editables = directive.getEditablesForBlock(blockUuid)
       for (const editable of editables) {
         const fieldType = getFieldType(
@@ -206,33 +199,25 @@ export default defineBlokkliAgentTool({
           }
         }
 
-        contentFields.push({
-          uuid: blockUuid,
-          bundle: block.bundle,
-          fieldName: editable.fieldName,
+        addField(result, blockUuid, editable.fieldName, {
           type: fieldType,
           currentValue,
         })
       }
 
-      // Get droppable fields (reference and link)
       const droppableConfigs =
         types.droppableFieldConfig.forEntityTypeAndBundle(
           ctx.itemEntityType,
           block.bundle,
         )
       for (const config of droppableConfigs) {
-        contentFields.push({
-          uuid: blockUuid,
-          bundle: block.bundle,
-          fieldName: config.name,
-          label: config.label,
+        addField(result, blockUuid, config.name, {
           type: config.type as 'reference' | 'link',
+          label: config.label,
           allowed: config.allowed,
         })
       }
 
-      // Process nested children if requested
       if (params.includeNested) {
         const mutatedFields = state.mutatedFields.value
         for (const field of mutatedFields) {
@@ -245,26 +230,42 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    if (isEntity) {
-      processEntity(params.uuid)
-    } else {
-      processBlock(params.uuid)
+    let hasEntity = false
+    for (const uuid of params.uuids) {
+      if (uuid === context.value.entityUuid) {
+        hasEntity = true
+        processEntity(uuid)
+      } else {
+        processBlock(uuid)
+      }
     }
 
-    return {
-      label: isEntity
+    const count = params.uuids.length
+    const label =
+      hasEntity && count === 1
         ? $t(
             'aiAgentGetEntityContentFieldsDone',
             'Got content fields of page entity',
           )
-        : $t(
-            'aiAgentGetContentFieldsDone',
-            'Got content fields of @bundle block',
-          ).replace('@bundle', bundleLabel),
-      result: {
-        contentFields,
-      },
-      affectedUuids: [params.uuid],
+        : count === 1
+          ? $t(
+              'aiAgentGetContentFieldsDone',
+              'Got content fields of @bundle block',
+            ).replace(
+              '@bundle',
+              types.getBlockLabel(
+                blocks.getBlock(params.uuids[0]!)?.bundle || 'unknown',
+              ),
+            )
+          : $t(
+              'aiAgentGetContentFieldsMultipleDone',
+              'Got content fields of @count blocks',
+            ).replace('@count', String(count))
+
+    return {
+      label,
+      result,
+      affectedUuids: params.uuids,
     }
   },
 })
