@@ -12,13 +12,10 @@ const paramsSchema = z.object({
 
 export default defineBlokkliAgentTool({
   name: 'go_to_history_index',
-  description:
-    'Navigate to a specific point in mutation history. Use -1 for pristine state, ' +
-    '0 for first mutation, etc. Useful for undoing changes or reverting to earlier states. ' +
-    'Note: All query tools reflect the current history state - navigating back will restore previously deleted blocks.',
+  description: `Navigate to a specific point in mutation history (undo/redo). -1 = pristine state, 0 = first mutation, etc.`,
   category: 'mutation',
   lazy: true,
-  modes: ['editing'],
+  modes: ['editing', 'translating'],
   label: ($t) => $t('aiAgentGoToHistoryIndexRunning', 'Navigating history...'),
   paramsSchema,
   resultSchema: mutationResultSchema,
