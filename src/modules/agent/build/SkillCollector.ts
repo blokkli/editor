@@ -134,7 +134,7 @@ export class SkillCollector extends Collector<CollectedSkillFile> {
   }
 
   override getDependencyTypes(): TemplateDependency[] {
-    return ['agent-skills']
+    return ['agent-server']
   }
 
   /**

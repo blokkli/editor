@@ -1,6 +1,6 @@
 import type { PageContext, BlockBundleContentField } from '../shared/types'
 import type { ResolvedSkill } from './skills/types'
-import { debugPrompt } from '#blokkli-build/agent-server-config'
+import { debugPrompt } from '#blokkli-build/agent-server'
 
 const BASE_PROMPT = `You are an AI assistant helping users edit page content in a block-based editor called blökkli.
 

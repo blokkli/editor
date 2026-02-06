@@ -1,2 +1,8 @@
 export { defineBlokkliAgentTool } from './defineBlokkliAgentTool'
-export { useAgentWebSocket } from './useAgentWebSocket'
+export { useAgentProvider } from './agentProvider'
+export type {
+  AgentProvider,
+  AgentProviderOptions,
+  PendingMutationState,
+  PendingToolCall,
+} from './agentProvider'

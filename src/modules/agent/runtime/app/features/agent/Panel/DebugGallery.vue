@@ -39,7 +39,7 @@ import type {
   MutationAction,
   McpToolContext,
 } from '#blokkli/agent/app/types'
-import { mcpTools } from '#blokkli-build/mcp-tools-client'
+import { mcpTools } from '#blokkli-build/agent-client'
 import { isToolDefinition } from '#blokkli/agent/app/helpers'
 
 const mockContext: Partial<McpToolContext> = {

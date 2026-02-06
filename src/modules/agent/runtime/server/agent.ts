@@ -8,8 +8,7 @@ import type {
 import type { GenericMessage, GenericContentBlock } from './providers/types'
 import type { ResolvedSkill } from './skills/types'
 import { buildSystemPrompt } from './agentPrompt'
-import { provider, aiModel } from '#blokkli-build/agent-server-config'
-import { skills } from '#blokkli-build/agent-skills'
+import { provider, aiModel, skills } from '#blokkli-build/agent-server'
 
 /**
  * Resolve skills for the given page context.

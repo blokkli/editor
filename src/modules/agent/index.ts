@@ -4,9 +4,8 @@ import * as path from 'node:path'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { McpToolCollector } from './build/McpToolCollector'
 import { SkillCollector } from './build/SkillCollector'
-import { createMcpToolsClientTemplate } from './build/templates/mcpToolsClient'
-import { createAgentServerConfigTemplate } from './build/templates/agentServerConfig'
-import { createAgentSkillsTemplate } from './build/templates/agentSkills'
+import createClientTemplate from './build/templates/client'
+import createServerTemplate from './build/templates/server'
 import type { AgentModuleOptions } from './build/types'
 
 const AGENT_ROUTE = '/api/blokkli/agent'
@@ -65,7 +64,7 @@ export default defineBlokkliModule<AgentModuleOptions>({
     ctx.context.addCollector(mcpTools)
 
     // Register client template for MCP tools
-    ctx.context.addTemplate(createMcpToolsClientTemplate(mcpTools))
+    ctx.context.addTemplate(createClientTemplate(mcpTools))
 
     // Add project tools directory to app TypeScript includes (client-side code)
     const relativeToolsDir = path.relative(
@@ -75,14 +74,6 @@ export default defineBlokkliModule<AgentModuleOptions>({
     nuxt.options.typescript.tsConfig ||= {}
     nuxt.options.typescript.tsConfig.include ||= []
     nuxt.options.typescript.tsConfig.include.push(relativeToolsDir)
-
-    // Register server template for agent config
-    ctx.context.addTemplate(
-      createAgentServerConfigTemplate(
-        options,
-        moduleResolver.resolve('./runtime/server/providers'),
-      ),
-    )
 
     // Initialize skills collector with both module and project directories
     const moduleSkillsDir = moduleResolver.resolve(
@@ -100,10 +91,15 @@ export default defineBlokkliModule<AgentModuleOptions>({
     await skillsCollector.init()
     ctx.context.addCollector(skillsCollector)
 
+    // Register single server template for agent config and skills
     ctx.context.addTemplate(
-      createAgentSkillsTemplate({
-        collector: skillsCollector,
-        typesPath: moduleResolver.resolve('./runtime/server/skills/types'),
+      createServerTemplate({
+        moduleOptions: options,
+        providersPath: moduleResolver.resolve('./runtime/server/providers'),
+        skillsCollector,
+        skillsTypesPath: moduleResolver.resolve(
+          './runtime/server/skills/types',
+        ),
       }),
     )
 

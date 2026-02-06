@@ -1,12 +1,12 @@
-import { defineCodeTemplate } from '../../../../../src/build/templates/defineTemplate'
+import { defineCodeTemplate } from '../../../../build/templates/defineTemplate'
 import type { McpToolCollector } from '../McpToolCollector'
 
 /**
  * Creates the client template that imports all tool files and exports them as an array.
  */
-export function createMcpToolsClientTemplate(collector: McpToolCollector) {
+export default function (collector: McpToolCollector) {
   return defineCodeTemplate(
-    'mcp-tools-client',
+    'agent-client',
     () => {
       const tools = collector.getTools()
 

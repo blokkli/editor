@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, readBody } from '#imports'
-import { allowedFetchOrigins } from '#blokkli-build/agent-server-config'
+import { allowedFetchOrigins } from '#blokkli-build/agent-server'
 import TurndownService from 'turndown'
 
 type OutputFormat = 'markdown' | 'html'

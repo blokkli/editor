@@ -64,6 +64,7 @@
               :key="isRenderedDetached ? 'detached' : 'attached'"
               :scrolled-to-end
               :is-detached="isRenderedDetached"
+              :is-shown="isShown"
               :width
               :height
               :toggle-sidebar
@@ -97,6 +98,7 @@
             :key="isRenderedDetached ? 'detached' : 'attached'"
             :scrolled-to-end="scrolledToEnd"
             :is-detached="isRenderedDetached"
+            :is-shown="isShown"
             :width="undefined"
             :height="undefined"
             :toggle-sidebar="toggleSidebar"
@@ -284,6 +286,12 @@ watch(
 
 const isRenderedDetached = computed(
   () => isDetached.value && !ui.isMobile.value,
+)
+
+const isShown = computed(
+  () =>
+    (activeSidebar.value === props.id || isRenderedDetached.value) &&
+    !isDisabled.value,
 )
 
 watch(isDisabled, (v) => {

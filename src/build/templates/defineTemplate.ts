@@ -10,7 +10,7 @@ export type TemplateDependency =
   | 'block-path'
   | 'block-global-options'
   | 'agent-mcp-tools'
-  | 'agent-skills'
+  | 'agent-server'
 
 /**
  * Where the template should be available:
