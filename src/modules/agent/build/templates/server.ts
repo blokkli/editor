@@ -1,12 +1,15 @@
 import { defineCodeTemplate } from '../../../../../src/build/templates/defineTemplate'
 import type { AgentModuleOptions } from '../types'
 import type { SkillCollector } from '../SkillCollector'
+import type { SystemPromptCollector } from '../SystemPromptCollector'
 
 export type AgentServerTemplateOptions = {
   moduleOptions: AgentModuleOptions
   providersPath: string
   skillsCollector: SkillCollector
   skillsTypesPath: string
+  systemPromptCollector: SystemPromptCollector
+  systemPromptTypesPath: string
 }
 
 /**
@@ -15,10 +18,17 @@ export type AgentServerTemplateOptions = {
  * - provider: The AI provider instance to use
  * - aiModel: The model to use for the AI provider
  * - skills: Array of agent skill definitions
+ * - systemPrompts: Array of agent system prompt definitions
  */
 export default function (options: AgentServerTemplateOptions) {
-  const { moduleOptions, providersPath, skillsCollector, skillsTypesPath } =
-    options
+  const {
+    moduleOptions,
+    providersPath,
+    skillsCollector,
+    skillsTypesPath,
+    systemPromptCollector,
+    systemPromptTypesPath,
+  } = options
   const { allowedFetchOrigins, provider, model } = moduleOptions
 
   return defineCodeTemplate(
@@ -60,6 +70,29 @@ export const skills = [
 ]`
       }
 
+      // Generate system prompts imports and array
+      const systemPrompts = systemPromptCollector.getSystemPrompts()
+      let systemPromptsCode: string
+
+      if (systemPrompts.length === 0) {
+        systemPromptsCode = `export const systemPrompts = []`
+      } else {
+        const systemPromptImports = systemPrompts.map(
+          (sp) =>
+            `import ${sp.importName} from '${sp.filePath.replace(/\.ts$/, '')}'`,
+        )
+
+        const systemPromptsArrayEntries = systemPrompts.map(
+          (sp) => sp.importName,
+        )
+
+        systemPromptsCode = `${systemPromptImports.join('\n')}
+
+export const systemPrompts = [
+  ${systemPromptsArrayEntries.join(',\n  ')}
+]`
+      }
+
       return `${providerImport}
 
 export const allowedFetchOrigins = ${originsJson}
@@ -70,17 +103,21 @@ export const aiModel = ${modelExport}
 export const debugPrompt = ${!!moduleOptions.debugPrompt}
 
 ${skillsCode}
+
+${systemPromptsCode}
 `
     },
     () => {
       return `import type { AIProvider } from '${providersPath}/types'
 import type { SkillDefinition } from '${skillsTypesPath}'
+import type { SystemPromptDefinition } from '${systemPromptTypesPath}'
 
 export declare const allowedFetchOrigins: string[]
 export declare const provider: AIProvider
 export declare const aiModel: string
 export declare const debugPrompt: boolean
 export declare const skills: SkillDefinition[]
+export declare const systemPrompts: SystemPromptDefinition[]
 `
     },
     {

@@ -5,6 +5,7 @@ import { defineBlokkliModule } from '../defineBlokkliModule'
 import { McpToolCollector } from './build/McpToolCollector'
 import { PromptCollector } from './build/PromptCollector'
 import { SkillCollector } from './build/SkillCollector'
+import { SystemPromptCollector } from './build/SystemPromptCollector'
 import createClientTemplate from './build/templates/client'
 import createServerTemplate from './build/templates/server'
 import type { AgentModuleOptions } from './build/types'
@@ -116,7 +117,23 @@ export default defineBlokkliModule<AgentModuleOptions>({
     await skillsCollector.init()
     ctx.context.addCollector(skillsCollector)
 
-    // Register single server template for agent config and skills
+    // Initialize system prompt collector with both module and project directories
+    const moduleSystemPromptsDir = moduleResolver.resolve(
+      './runtime/server/default-system-prompts',
+    )
+    const projectSystemPromptsDir = path.resolve(
+      nuxt.options.rootDir,
+      'blokkli/system-prompts',
+    )
+
+    const systemPromptCollector = new SystemPromptCollector(ctx.helper, [
+      moduleSystemPromptsDir,
+      projectSystemPromptsDir,
+    ])
+    await systemPromptCollector.init()
+    ctx.context.addCollector(systemPromptCollector)
+
+    // Register single server template for agent config, skills, and system prompts
     ctx.context.addTemplate(
       createServerTemplate({
         moduleOptions: options,
@@ -124,6 +141,10 @@ export default defineBlokkliModule<AgentModuleOptions>({
         skillsCollector,
         skillsTypesPath: moduleResolver.resolve(
           './runtime/server/skills/types',
+        ),
+        systemPromptCollector,
+        systemPromptTypesPath: moduleResolver.resolve(
+          './runtime/server/system-prompts/types',
         ),
       }),
     )
@@ -141,17 +162,22 @@ export default defineBlokkliModule<AgentModuleOptions>({
       handler: moduleResolver.resolve('./runtime/server/fetch'),
     })
 
-    // Add project skills directory to Nitro TypeScript includes for proper type resolution
+    // Add project skills and system-prompts directories to Nitro TypeScript includes for proper type resolution
     // Path must be relative to .nuxt directory where tsconfig is generated
     const relativeSkillsDir = path.relative(
       nuxt.options.buildDir,
       projectSkillsDir,
+    )
+    const relativeSystemPromptsDir = path.relative(
+      nuxt.options.buildDir,
+      projectSystemPromptsDir,
     )
     nuxt.hook('nitro:config', (nitroConfig) => {
       nitroConfig.typescript ||= {}
       nitroConfig.typescript.tsConfig ||= {}
       nitroConfig.typescript.tsConfig.include ||= []
       nitroConfig.typescript.tsConfig.include.push(relativeSkillsDir)
+      nitroConfig.typescript.tsConfig.include.push(relativeSystemPromptsDir)
     })
 
     // Remove the WebSocket route from Nitro's type generation.

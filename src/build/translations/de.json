@@ -251,14 +251,6 @@
     "source": "Getting all page content...",
     "translation": "Gesamten Seiteninhalt abrufen..."
   },
-  "aiAgentGetAvailableBundlesDone": {
-    "source": "Got available bundles for @field",
-    "translation": "Verfügbare Blocktypen für @field abgerufen"
-  },
-  "aiAgentGetAvailableBundlesRunning": {
-    "source": "Getting available bundles...",
-    "translation": "Verfügbare Blocktypen abrufen..."
-  },
   "aiAgentGetBlockContextDone": {
     "source": "Got context for @bundle",
     "translation": "Kontext für @bundle abgerufen"
@@ -286,6 +278,14 @@
   "aiAgentGetBlocksInViewportRunning": {
     "source": "Getting blocks in viewport...",
     "translation": "Blöcke im Viewport abrufen..."
+  },
+  "aiAgentGetBundleInfoDone": {
+    "source": "Got bundle info for @field",
+    "translation": "Bundle-Info für @field abgerufen"
+  },
+  "aiAgentGetBundleInfoRunning": {
+    "source": "Getting bundle info...",
+    "translation": "Bundle-Info abrufen..."
   },
   "aiAgentGetChildBlocks": {
     "source": "Get child blocks",

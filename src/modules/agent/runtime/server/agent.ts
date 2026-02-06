@@ -33,6 +33,7 @@ function resolveSkills(context: PageContext): ResolvedSkill[] {
       return {
         name: skill.name,
         label: resolveSkillLabel(skill.label, context.interfaceLanguage),
+        englishLabel: resolveSkillLabel(skill.label),
         description: skill.description,
         content,
       }

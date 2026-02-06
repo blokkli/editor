@@ -263,14 +263,6 @@ msgctxt "aiAgentGetAllPageContentRunning"
 msgid "Getting all page content..."
 msgstr ""
 
-msgctxt "aiAgentGetAvailableBundlesDone"
-msgid "Got available bundles for @field"
-msgstr ""
-
-msgctxt "aiAgentGetAvailableBundlesRunning"
-msgid "Getting available bundles..."
-msgstr ""
-
 msgctxt "aiAgentGetBlockContextDone"
 msgid "Got context for @bundle"
 msgstr ""
@@ -297,6 +289,14 @@ msgstr ""
 
 msgctxt "aiAgentGetBlocksInViewportRunning"
 msgid "Getting blocks in viewport..."
+msgstr ""
+
+msgctxt "aiAgentGetBundleInfoDone"
+msgid "Got bundle info for @field"
+msgstr ""
+
+msgctxt "aiAgentGetBundleInfoRunning"
+msgid "Getting bundle info..."
 msgstr ""
 
 msgctxt "aiAgentGetChildBlocks"

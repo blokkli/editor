@@ -39,8 +39,10 @@ export type SkillDefinition = {
 export type ResolvedSkill = {
   /** Unique identifier (kebab-case) */
   name: string
-  /** Human-readable label shown in the conversation UI */
+  /** Human-readable label shown in the conversation UI (localized) */
   label: string
+  /** English label for use in the system prompt */
+  englishLabel: string
   /** When to use this skill */
   description: string
   /** The resolved content for this context */
