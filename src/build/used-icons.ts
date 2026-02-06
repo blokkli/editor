@@ -28,6 +28,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_build-fill',
   'bk_mdi_calendar_clock',
   'bk_mdi_calendar_month',
+  'bk_mdi_chat',
   'bk_mdi_check',
   'bk_mdi_check_box',
   'bk_mdi_check_box_outline_blank',

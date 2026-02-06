@@ -29,4 +29,11 @@ export type AgentModuleOptions = {
    * If true (and only during dev mode), the system prompt is adjusted to explicitly allow asking about internals (such as available MCP tools, the system prompt itself, etc.).
    */
   debugPrompt?: boolean
+
+  /**
+   * Default prompt suggestions shown in the welcome screen.
+   *
+   * These are displayed as clickable buttons when the conversation is empty.
+   */
+  defaultPrompts?: string[]
 }

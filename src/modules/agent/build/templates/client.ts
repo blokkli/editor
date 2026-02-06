@@ -8,6 +8,7 @@ import type { PromptCollector } from '../PromptCollector'
 export default function (
   toolCollector: McpToolCollector,
   promptCollector: PromptCollector,
+  defaultPrompts: string[],
 ) {
   return defineCodeTemplate(
     'agent-client',
@@ -45,6 +46,11 @@ export default function (
         )
       }
 
+      // Default prompts
+      parts.push(
+        `\nexport const defaultPrompts = ${JSON.stringify(defaultPrompts)}`,
+      )
+
       return parts.join('\n') + '\n'
     },
     () => {
@@ -52,6 +58,7 @@ export default function (
 
 export declare const mcpTools: McpToolItem[]
 export declare const agentPrompts: AgentPromptItem[]
+export declare const defaultPrompts: string[]
 `
     },
   )

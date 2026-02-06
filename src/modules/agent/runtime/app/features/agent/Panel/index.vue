@@ -19,6 +19,9 @@
 
         <!-- Normal mode -->
         <template v-else>
+          <!-- Welcome text when conversation is empty -->
+          <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
+
           <!-- Conversation history with active item -->
           <Conversation
             v-if="
@@ -59,7 +62,7 @@
             :max-height="150"
             submit-on-enter
             paste-html
-            rows="1"
+            rows="2"
             :placeholder="placeholder"
             @submit="onSubmit"
           />
@@ -111,12 +114,14 @@ import { Icon, FlexTextarea } from '#blokkli/editor/components'
 import Conversation from './Conversation.vue'
 import PendingMutation from './PendingMutation.vue'
 import DebugGallery from './DebugGallery.vue'
+import Welcome from './Welcome/index.vue'
 import type { AgentProvider } from '#blokkli/agent/app/composables'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { isToolDefinition } from '#blokkli/agent/app/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
+  agentName: string
   isShown: boolean
   debugStyling?: boolean
 }>()
@@ -226,6 +231,14 @@ const canSubmit = computed(() => {
   return inputValue.value.trim().length > 0 && !agent.isProcessing.value
 })
 
+const showWelcome = computed(() => {
+  return (
+    !agent.conversation.value.length &&
+    !agent.activeItem.value &&
+    !agent.isThinking.value
+  )
+})
+
 const placeholder = computed(() => {
   if (agent.isProcessing.value) {
     return $t('aiAgentProcessing', 'Processing...')
@@ -238,6 +251,10 @@ const placeholder = computed(() => {
 
 function onAlwaysApprove() {
   agent.setAutoApprove(true)
+}
+
+function onWelcomePrompt(prompt: string) {
+  agent.sendPrompt(prompt)
 }
 
 function onSubmit() {

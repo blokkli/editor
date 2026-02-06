@@ -76,7 +76,13 @@ export default defineBlokkliModule<AgentModuleOptions>({
     ctx.context.addCollector(promptsCollector)
 
     // Register client template for MCP tools and prompts
-    ctx.context.addTemplate(createClientTemplate(mcpTools, promptsCollector))
+    ctx.context.addTemplate(
+      createClientTemplate(
+        mcpTools,
+        promptsCollector,
+        options.defaultPrompts || [],
+      ),
+    )
 
     // Add project tools directory to app TypeScript includes (client-side code)
     const relativeToolsDir = path.relative(

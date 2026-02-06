@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="agent"
-    title="blökkler"
+    :title="agentName"
     :tour-text="
       $t('aiAgentTourText', 'Chat with an AI assistant to edit page content.')
     "
@@ -11,7 +11,7 @@
     beta
   >
     <template #default="{ isShown }">
-      <AgentPanel :is-shown :debug-styling="DEBUG_STYLING" />
+      <AgentPanel :is-shown :debug-styling="DEBUG_STYLING" :agent-name />
     </template>
 
     <template
@@ -58,6 +58,7 @@ import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
 const DEBUG_STYLING = false
+const agentName = 'Agäntli'
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',

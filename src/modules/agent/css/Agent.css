@@ -27,7 +27,7 @@
 
   .bk-agent-message.bk-is-user {
     @apply p-10 ml-18 rounded-xl;
-    @apply bg-accent-600;
+    @apply bg-accent-700;
     @apply mb-15;
 
     &:not(:first-child) {
@@ -182,7 +182,7 @@
   }
 
   .bk-batch-rewrite-field {
-    @apply text-xs font-medium text-mono-600 mb-3;
+    @apply text-xs font-medium text-mono-700 mb-3;
   }
 
   .bk-batch-rewrite-preview {
@@ -213,7 +213,7 @@
     &.bk-is-selected {
       @apply bg-accent-100;
       .bk-media-select-thumbnail {
-        @apply outline outline-accent-600 relative z-40;
+        @apply outline outline-accent-700 relative z-40;
       }
     }
   }
@@ -240,7 +240,7 @@
     @apply flex flex-col gap-20;
 
     h3 {
-      @apply text-sm font-bold text-mono-600 uppercase tracking-wide;
+      @apply text-sm font-bold text-mono-700 uppercase tracking-wide;
     }
   }
 
@@ -332,6 +332,29 @@
           &:before {
             @apply mt-0;
           }
+        }
+      }
+    }
+  }
+
+  .bk-agent-welcome {
+    @apply text-mono-950;
+  }
+
+  .bk-agent-welcome-prompts {
+    @apply grid gap-5 mt-10;
+
+    button {
+      @apply text-left text-sm text-pretty font-medium;
+      @apply border border-accent-300 rounded-lg px-10 py-8;
+      @apply text-accent-700 bg-accent-50;
+      @apply hover:border-accent-700 hover:text-accent-50 hover:bg-accent-700;
+      @apply cursor-pointer;
+      @apply flex gap-5;
+      .bk-icon {
+        @apply size-15 shrink-0 mt-2;
+        svg {
+          @apply fill-current;
         }
       }
     }

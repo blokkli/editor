@@ -41,8 +41,8 @@ const modelValue = defineModel<string>({ required: true })
 
 const textarea = useTemplateRef('textarea')
 
-const height = ref(20)
-const minHeight = 20
+const height = ref(70)
+const minHeight = 70
 
 const isScrollable = computed(() => {
   if (!props.maxHeight) return false

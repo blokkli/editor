@@ -103,6 +103,12 @@ export default defineNuxtConfig({
         model: 'claude-haiku-4-5',
         debugPrompt: true,
         // model: 'claude-opus-4-5',
+        defaultPrompts: [
+          'Rewrite the page title and lead text',
+          'Add a new text block with a summary of the AI features',
+          'Move the last section to the top of the page',
+          'Translate all content to German',
+        ],
       }),
     ],
     pattern: [
