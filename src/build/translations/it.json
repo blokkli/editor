@@ -319,6 +319,18 @@
     "source": "Getting mutation history...",
     "translation": ""
   },
+  "aiAgentGetSelectedBlocksDone": {
+    "source": "@count block(s) selected",
+    "translation": ""
+  },
+  "aiAgentGetSelectedBlocksNone": {
+    "source": "No blocks selected",
+    "translation": ""
+  },
+  "aiAgentGetSelectedBlocksRunning": {
+    "source": "Getting selected blocks...",
+    "translation": ""
+  },
   "aiAgentGoToHistoryIndexRunning": {
     "source": "Navigating history...",
     "translation": ""

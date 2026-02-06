@@ -852,7 +852,7 @@ export default defineWebSocketHandler({
         case 'cancel':
           session.abortController?.abort()
           // Don't clear conversation - just note that the operation was cancelled
-          peer.send(JSON.stringify({ type: 'done', message: 'Cancelled' }))
+          peer.send(JSON.stringify({ type: 'done' }))
           break
 
         case 'accept':

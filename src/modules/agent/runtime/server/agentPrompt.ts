@@ -23,8 +23,8 @@ export function buildSystemPrompt(
     .filter((sp) => !sp.modes?.length || sp.modes.includes(context.editMode))
     .sort((a, b) => a.weight - b.weight)
     .map((sp) => {
-      const text = sp.getPrompt(promptContext)
-      if (text === null) return null
+      const text = sp.getPrompt(promptContext)?.trim()
+      if (!text) return null
       return sp.title ? `## ${sp.title}\n\n${text}` : text
     })
     .filter((t): t is string => t !== null)

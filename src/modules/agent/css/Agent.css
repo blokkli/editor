@@ -93,7 +93,7 @@
 
     &.bk-is-server-tool {
       .bk-agent-tool-call-status {
-        @apply p-1 text-mono-500;
+        @apply text-mono-500 p-0;
       }
     }
   }
@@ -260,9 +260,9 @@
   /* Input area */
   .bk-agent-input {
     @apply flex flex-col shrink-0;
-    @apply border border-mono-200 bg-white;
+    @apply border border-mono-300 bg-white;
     @apply rounded-lg;
-    @apply focus-within:outline focus-within:outline-4 focus-within:outline-accent-700/20 focus-within:border-accent-700/50;
+    @apply focus-within:outline focus-within:outline-4 focus-within:outline-accent-100 focus-within:border-accent-500;
 
     .bk-flex-textarea {
       @apply min-h-[60px];
@@ -284,7 +284,7 @@
     }
 
     .bk-agent-input-actions {
-      @apply border-t border-t-mono-200 flex justify-end p-8;
+      @apply border-t border-t-mono-300 flex justify-end p-8 gap-8;
     }
 
     .bk-agent-submit-btn,

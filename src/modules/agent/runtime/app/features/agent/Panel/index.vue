@@ -178,11 +178,16 @@ function scrollToBottom() {
   scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
 }
 
-// Auto-scroll when history changes, but only if user was at bottom
+// Auto-scroll when history changes. Always scroll for user messages (the user
+// just submitted something), otherwise only if user was already at the bottom.
 watch(
   () => agent.conversation.value,
-  () => {
-    if (isAtBottom.value) {
+  (conv) => {
+    const last = conv[conv.length - 1]
+    if (last?.type === 'user') {
+      isAtBottom.value = true
+      nextTick(scrollToBottom)
+    } else if (isAtBottom.value) {
       nextTick(scrollToBottom)
     }
   },
@@ -253,13 +258,20 @@ function onAlwaysApprove() {
   agent.setAutoApprove(true)
 }
 
+function scrollToBottomOnSend() {
+  isAtBottom.value = true
+  nextTick(scrollToBottom)
+}
+
 function onWelcomePrompt(prompt: string) {
   agent.sendPrompt(prompt)
+  scrollToBottomOnSend()
 }
 
 function onSubmit() {
   if (!canSubmit.value) return
   agent.sendPrompt(inputValue.value)
   inputValue.value = ''
+  scrollToBottomOnSend()
 }
 </script>

@@ -332,13 +332,25 @@ msgctxt "aiAgentGetMutationHistoryRunning"
 msgid "Getting mutation history..."
 msgstr "Änderungsverlauf abrufen..."
 
+msgctxt "aiAgentGetSelectedBlocksDone"
+msgid "@count block(s) selected"
+msgstr ""
+
+msgctxt "aiAgentGetSelectedBlocksNone"
+msgid "No blocks selected"
+msgstr ""
+
+msgctxt "aiAgentGetSelectedBlocksRunning"
+msgid "Getting selected blocks..."
+msgstr ""
+
 msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
 msgstr "Im Verlauf navigieren..."
 
 msgctxt "aiAgentLoadSkill"
 msgid "Using skill \"@label\""
-msgstr "Verwende Skill «@label»"
+msgstr "Skill «@label» lesen"
 
 msgctxt "aiAgentLoadTools"
 msgid "@count tools loaded"

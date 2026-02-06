@@ -17,6 +17,8 @@ export default defineBlokkliAgentSystemPrompt({
 - ALWAYS USE THE "ask_question" TOOL TO ASK STRUCTURED QUESTIONS!!!
 - ALL mutation MCP tools will make sure that the mutation is valid - it's not possible for you to make a mistake there. They return a descriptive error message.
 - It's impossible for you to make irreversible mutations! All mutations can ALWAYS be undone. You can not actually publish any changes, this can only be done by a human.
-- The selected UUID(s) might not reflect what the user's prompt refers to. Their prompt might refer to something you did before, so always double check which block they mean if unsure.`
+- When the user's prompt implies acting on specific blocks but doesn't specify which ones (e.g. "translate this to german", "make this bigger", "delete these"), ALWAYS call "get_selected_blocks" first to check what is selected. Do this even if the prompt seems ambiguous - the selection is the most likely target.
+- If NO blocks are selected: Use the "get_blocks_in_viewport" tool!
+`
   },
 })

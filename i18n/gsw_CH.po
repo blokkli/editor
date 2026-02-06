@@ -331,6 +331,18 @@ msgctxt "aiAgentGetMutationHistoryRunning"
 msgid "Getting mutation history..."
 msgstr ""
 
+msgctxt "aiAgentGetSelectedBlocksDone"
+msgid "@count block(s) selected"
+msgstr ""
+
+msgctxt "aiAgentGetSelectedBlocksNone"
+msgid "No blocks selected"
+msgstr ""
+
+msgctxt "aiAgentGetSelectedBlocksRunning"
+msgid "Getting selected blocks..."
+msgstr ""
+
 msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
 msgstr ""

@@ -1,11 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { parentSchema } from '../schemas'
 import {
-  getAvailableOptions,
-  getMutatedOptionValue,
-} from '#blokkli/editor/helpers/options'
-import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
+  parentSchema,
+  blockOptionsMapSchema,
+  buildBlockOptionsMap,
+} from '../schemas'
+import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('The block UUID'),
@@ -141,23 +141,9 @@ const resultSchema = z.object({
     .optional()
     .describe('Content fields (text, media, links) with current values'),
 
-  options: z
-    .array(
-      z.object({
-        property: z.string().describe('The option property name'),
-        type: z.string().describe('Option type (checkbox, radios, etc.)'),
-        label: z.string().describe('Human-readable label'),
-        currentValue: z
-          .union([z.string(), z.boolean(), z.number(), z.array(z.string())])
-          .describe('Current value'),
-        choices: z
-          .record(z.string(), z.string())
-          .optional()
-          .describe('Available choices for radios/checkboxes'),
-      }),
-    )
+  options: blockOptionsMapSchema
     .optional()
-    .describe('Block options with definitions and current values'),
+    .describe('Block options with current values'),
 })
 
 export default defineBlokkliAgentTool({
@@ -380,38 +366,11 @@ export default defineBlokkliAgentTool({
         )
 
         if (availableOptions.length > 0) {
-          result.options = availableOptions.map((opt) => {
-            const rawValue = getMutatedOptionValue(
-              state.mutatedOptions,
-              params.uuid,
-              opt.property,
-              opt.option.default,
-            )
-            const currentValue = getRuntimeOptionValue(opt.option, rawValue)
-
-            const optionResult: {
-              property: string
-              type: string
-              label: string
-              currentValue: string | boolean | number | string[]
-              choices?: Record<string, string>
-            } = {
-              property: opt.property,
-              type: opt.option.type,
-              label: opt.option.label,
-              currentValue,
-            }
-
-            // Include choices for radios/checkboxes
-            if ('options' in opt.option && opt.option.options) {
-              optionResult.choices = opt.option.options as Record<
-                string,
-                string
-              >
-            }
-
-            return optionResult
-          })
+          result.options = buildBlockOptionsMap(
+            availableOptions,
+            state.mutatedOptions,
+            params.uuid,
+          )
         }
       }
     }

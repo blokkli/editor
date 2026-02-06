@@ -144,7 +144,7 @@ function getServerSideToolIcon(
   id: ServerToolConversationItem['tool'],
 ): BlokkliIcon {
   if (id === 'load_skill') {
-    return 'bk_mdi_lightbulb-fill'
+    return 'bk_mdi_book_2'
   }
 
   return 'bk_mdi_build-fill'

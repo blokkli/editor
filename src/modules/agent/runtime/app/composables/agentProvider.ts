@@ -65,7 +65,7 @@ export type AgentProvider = {
   pendingToolCall: Ref<PendingToolCall | null>
 
   // Actions
-  sendPrompt: (text: string, displayPrompt?: string) => void
+  sendPrompt: (text: string, displayPrompt?: string, selectedUuids?: string[]) => void
   approve: () => void
   reject: () => void
   setAutoApprove: (value: boolean) => void
@@ -84,7 +84,7 @@ export type AgentProvider = {
 
 export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   const { app, adapter, itemEntityType } = options
-  const { $t, state, selection, ui, context } = app
+  const { $t, state, ui, context } = app
 
   // WebSocket state
   let ws: WebSocket | null = null
@@ -92,7 +92,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   let hasEverConnected = false
   const isConnected = ref(false)
   const isReady = ref(false)
-  let pendingPrompt: { prompt: string; displayPrompt?: string } | null = null
+  let pendingPrompt: { prompt: string; displayPrompt?: string; selectedUuids?: string[] } | null = null
 
   // Tool map (populated on connect)
   let toolMap: Record<string, McpToolDefinition> = {}
@@ -228,9 +228,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     isReady.value = true
 
     if (pendingPrompt) {
-      const { prompt, displayPrompt } = pendingPrompt
+      const { prompt, displayPrompt, selectedUuids } = pendingPrompt
       pendingPrompt = null
-      sendPrompt(prompt, displayPrompt)
+      sendPrompt(prompt, displayPrompt, selectedUuids)
     }
   }
 
@@ -720,11 +720,11 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // User Actions
   // ============================================================================
 
-  function sendPrompt(prompt: string, displayPrompt?: string) {
+  function sendPrompt(prompt: string, displayPrompt?: string, selectedUuids?: string[]) {
     if (!prompt.trim() || isProcessing.value) return
 
     if (!isReady.value) {
-      pendingPrompt = { prompt, displayPrompt }
+      pendingPrompt = { prompt, displayPrompt, selectedUuids }
       return
     }
 
@@ -740,9 +740,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     send({
       type: 'start',
       prompt,
-      selectedUuids: selection.uuids.value.length
-        ? [...selection.uuids.value]
-        : undefined,
+      selectedUuids: selectedUuids?.length ? selectedUuids : undefined,
     })
   }
 
@@ -780,6 +778,13 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     activeItem.value = null
     send({ type: 'cancel' })
     isProcessing.value = false
+
+    conversation.value.push({
+      type: 'assistant',
+      id: generateId(),
+      content: $t('aiAgentCancelled', 'Cancelled'),
+      timestamp: Date.now(),
+    })
   }
 
   function getTranscript() {
