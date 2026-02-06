@@ -3,11 +3,16 @@
     id="bk-blokkli-item-actions-dropdown"
     class="bk-blokkli-item-actions-type-dropdown"
   >
-    <div v-for="group in groups" :key="group.name">
+    <div
+      v-for="group in groups"
+      :key="group.name"
+      :class="'bk-is-' + group.name"
+    >
       <ol>
         <li v-for="action in group.actions" :key="action.id">
           <button
             class="bk-blokkli-item-actions-type-dropdown-button"
+            :class="'bk-is-variant-' + action.variant || 'default'"
             :disabled="action.enabled === false"
             @click.prevent="onActionClick(action)"
           >

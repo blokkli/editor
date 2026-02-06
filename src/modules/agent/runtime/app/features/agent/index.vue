@@ -1,13 +1,14 @@
 <template>
   <PluginSidebar
     id="agent"
-    :title="$t('aiAgent', 'AI Agent')"
+    title="blökkler"
     :tour-text="
       $t('aiAgentTourText', 'Chat with an AI assistant to edit page content.')
     "
     icon="stars"
     weight="-10"
     render-always
+    beta
   >
     <template #default="{ isShown }">
       <AgentPanel :is-shown :debug-styling="DEBUG_STYLING" />
@@ -50,8 +51,11 @@ import {
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
 import { useAgentProvider } from '#blokkli/agent/app/composables'
+import { agentPrompts } from '#blokkli-build/agent-client'
 import AgentPanel from './Panel/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
+import { defineItemDropdownAction } from '#blokkli/editor/composables'
+import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
 const DEBUG_STYLING = false
 
@@ -78,6 +82,32 @@ provide('agent', agent)
 
 onBeforeUnmount(() => {
   agent.disconnect()
+})
+
+defineItemDropdownAction(() => {
+  return agentPrompts.flatMap((promptFactory) => {
+    const promptsResult =
+      '__factory' in promptFactory ? promptFactory.resolve(app) : promptFactory
+    const prompts = Array.isArray(promptsResult)
+      ? promptsResult
+      : [promptsResult]
+    return prompts.map<ItemDropdownAction>((prompt) => {
+      const promptText = prompt.getPrompt(app)
+      const userPromptText = prompt.getUserPrompt?.(app)
+      return {
+        id: 'agent:prompt:' + prompt.id,
+        label: prompt.getLabel(app),
+        icon: 'stars',
+        group: 'agent',
+        variant: 'agent',
+        weight: -900,
+        callback: () => {
+          app.eventBus.emit('sidebar:open', 'agent')
+          agent.sendPrompt(promptText, userPromptText)
+        },
+      }
+    })
+  })
 })
 </script>
 

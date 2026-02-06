@@ -634,6 +634,12 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
+    updateFieldValueBatched: (e) =>
+      addMutation('update_field_value_batched', {
+        items: e.items,
+        entityItems: e.entityItems,
+      }),
+
     getImportItems(args) {
       const items: ImportItem[] = [
         {

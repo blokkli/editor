@@ -290,6 +290,48 @@ export type McpToolFactory = McpToolFactoryInput & {
 export type McpToolItem = McpToolDefinition | McpToolFactory
 
 // ============================================================================
+// Agent Prompt Definitions
+// ============================================================================
+
+/**
+ * A pre-defined agent prompt that users can select.
+ */
+export type AgentPromptDefinition = {
+  /** Unique prompt ID */
+  id: string
+  /** Returns the label shown in the UI */
+  getLabel: (app: BlokkliApp) => string
+  /** Returns the prompt text sent to the agent */
+  getPrompt: (app: BlokkliApp) => string
+  /** Optional: returns the prompt text shown in the conversation UI. Defaults to getPrompt. */
+  getUserPrompt?: (app: BlokkliApp) => string
+}
+
+/**
+ * Input for a prompt factory that dynamically creates prompts at runtime.
+ */
+export type AgentPromptFactoryInput = {
+  /**
+   * Called to resolve prompts dynamically based on runtime state.
+   */
+  resolve: (
+    app: BlokkliApp,
+  ) => AgentPromptDefinition[] | AgentPromptDefinition
+}
+
+/**
+ * A prompt factory with the __factory marker for runtime identification.
+ */
+export type AgentPromptFactory = AgentPromptFactoryInput & {
+  __factory: true
+}
+
+/**
+ * A prompt item is either a static prompt definition or a factory that produces prompts.
+ */
+export type AgentPromptItem = AgentPromptDefinition | AgentPromptFactory
+
+// ============================================================================
 // Agent State Types - Flat Conversation Model
 // ============================================================================
 

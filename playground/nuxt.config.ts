@@ -101,6 +101,7 @@ export default defineNuxtConfig({
         // provider: 'openai',
         // model: 'gpt-5-mini',
         model: 'claude-haiku-4-5',
+        debugPrompt: true,
         // model: 'claude-opus-4-5',
       }),
     ],

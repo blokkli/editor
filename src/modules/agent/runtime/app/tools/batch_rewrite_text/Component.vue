@@ -186,27 +186,37 @@ async function applySelected() {
     }
   }
 
-  // Apply all selected changes via the adapter
+  // Apply all selected changes via the adapter in a single batch
   const selectedChanges = changes.value.filter((c) => c.selected)
   const entityUuid = props.context.app?.context.value.entityUuid
+
+  const items: Array<{ uuid: string; fieldName: string; fieldValue: string }> =
+    []
+  const entityItems: Array<{ fieldName: string; fieldValue: string }> = []
+
   for (const change of selectedChanges) {
-    const isEntity = change.uuid === entityUuid
-    if (isEntity && props.context.adapter.updateEntityFieldValue) {
-      await state.mutateWithLoadingState(() =>
-        props.context.adapter.updateEntityFieldValue!({
-          fieldName: change.fieldName,
-          fieldValue: change.value,
-        }),
-      )
+    if (change.uuid === entityUuid) {
+      entityItems.push({
+        fieldName: change.fieldName,
+        fieldValue: change.value,
+      })
     } else {
-      await state.mutateWithLoadingState(() =>
-        props.context.adapter.updateFieldValue!({
-          uuid: change.uuid,
-          fieldName: change.fieldName,
-          fieldValue: change.value,
-        }),
-      )
+      items.push({
+        uuid: change.uuid,
+        fieldName: change.fieldName,
+        fieldValue: change.value,
+      })
     }
+  }
+
+  await state.mutateWithLoadingState(() =>
+    props.context.adapter.updateFieldValueBatched!({
+      items,
+      entityItems,
+    }),
+  )
+
+  for (const change of selectedChanges) {
     change.applied = true
     applied.push({ uuid: change.uuid, fieldName: change.fieldName })
   }

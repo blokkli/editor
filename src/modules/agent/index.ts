@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import * as path from 'node:path'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { McpToolCollector } from './build/McpToolCollector'
+import { PromptCollector } from './build/PromptCollector'
 import { SkillCollector } from './build/SkillCollector'
 import createClientTemplate from './build/templates/client'
 import createServerTemplate from './build/templates/server'
@@ -63,8 +64,19 @@ export default defineBlokkliModule<AgentModuleOptions>({
     await mcpTools.init()
     ctx.context.addCollector(mcpTools)
 
-    // Register client template for MCP tools
-    ctx.context.addTemplate(createClientTemplate(mcpTools))
+    // Initialize prompts collector with project directory
+    const projectPromptsDir = path.resolve(
+      nuxt.options.rootDir,
+      'blokkli/prompts',
+    )
+    const promptsCollector = new PromptCollector(ctx.helper, [
+      projectPromptsDir,
+    ])
+    await promptsCollector.init()
+    ctx.context.addCollector(promptsCollector)
+
+    // Register client template for MCP tools and prompts
+    ctx.context.addTemplate(createClientTemplate(mcpTools, promptsCollector))
 
     // Add project tools directory to app TypeScript includes (client-side code)
     const relativeToolsDir = path.relative(
@@ -74,6 +86,13 @@ export default defineBlokkliModule<AgentModuleOptions>({
     nuxt.options.typescript.tsConfig ||= {}
     nuxt.options.typescript.tsConfig.include ||= []
     nuxt.options.typescript.tsConfig.include.push(relativeToolsDir)
+
+    // Add project prompts directory to app TypeScript includes (client-side code)
+    const relativePromptsDir = path.relative(
+      nuxt.options.buildDir,
+      projectPromptsDir,
+    )
+    nuxt.options.typescript.tsConfig.include.push(relativePromptsDir)
 
     // Initialize skills collector with both module and project directories
     const moduleSkillsDir = moduleResolver.resolve(

@@ -14,6 +14,7 @@ export type ItemDropdownAction = {
   bundle?: string
   weight?: number
   group: string
+  variant?: string
   callback: () => void
 }
 

@@ -11,6 +11,7 @@ export type TemplateDependency =
   | 'block-global-options'
   | 'agent-mcp-tools'
   | 'agent-server'
+  | 'agent-prompts'
 
 /**
  * Where the template should be available:

@@ -49,6 +49,7 @@ export type AgentProviderOptions = {
 export type AgentProvider = {
   // Connection state
   isConnected: Readonly<Ref<boolean>>
+  isReady: Readonly<Ref<boolean>>
   connect: () => void
   disconnect: () => void
 
@@ -64,7 +65,7 @@ export type AgentProvider = {
   pendingToolCall: Ref<PendingToolCall | null>
 
   // Actions
-  sendPrompt: (text: string) => void
+  sendPrompt: (text: string, displayPrompt?: string) => void
   approve: () => void
   reject: () => void
   setAutoApprove: (value: boolean) => void
@@ -90,6 +91,8 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   let reconnectTimeout: number | null = null
   let hasEverConnected = false
   const isConnected = ref(false)
+  const isReady = ref(false)
+  let pendingPrompt: { prompt: string; displayPrompt?: string } | null = null
 
   // Tool map (populated on connect)
   let toolMap: Record<string, McpToolDefinition> = {}
@@ -140,6 +143,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
 
   function onWebSocketClose() {
     isConnected.value = false
+    isReady.value = false
     isProcessing.value = false
     // Reconnect after delay
     reconnectTimeout = window.setTimeout(() => {
@@ -191,6 +195,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       ws = null
     }
     isConnected.value = false
+    isReady.value = false
 
     // Re-enable editing
     ui.setTransform(null)
@@ -220,6 +225,13 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       tools: getToolsForServer(resolved, state.editMode.value, adapter),
       pageContext: buildPageContext(),
     })
+    isReady.value = true
+
+    if (pendingPrompt) {
+      const { prompt, displayPrompt } = pendingPrompt
+      pendingPrompt = null
+      sendPrompt(prompt, displayPrompt)
+    }
   }
 
   // ============================================================================
@@ -701,15 +713,20 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // User Actions
   // ============================================================================
 
-  function sendPrompt(prompt: string) {
+  function sendPrompt(prompt: string, displayPrompt?: string) {
     if (!prompt.trim() || isProcessing.value) return
+
+    if (!isReady.value) {
+      pendingPrompt = { prompt, displayPrompt }
+      return
+    }
 
     isProcessing.value = true
 
     conversation.value.push({
       type: 'user',
       id: generateId(),
-      content: prompt,
+      content: displayPrompt || prompt,
       timestamp: Date.now(),
     })
 
@@ -777,6 +794,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   return {
     // Connection state
     isConnected: readonly(isConnected),
+    isReady: readonly(isReady),
     connect,
     disconnect,
 

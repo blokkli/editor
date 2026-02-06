@@ -1,4 +1,5 @@
 import type { EntityTypeRestriction } from '#blokkli/editor/types/definitions'
+import type { UpdateEntityFieldValueEvent } from '#blokkli/editor/adapter'
 
 export type EditableFieldType = 'plain' | 'markup' | 'table' | 'frame'
 
@@ -27,6 +28,11 @@ export type UpdateFieldValueEvent = {
   uuid: string
   fieldName: string
   fieldValue: string
+}
+
+export type UpdateFieldValueBatchedEvent = {
+  items: UpdateFieldValueEvent[]
+  entityItems: UpdateEntityFieldValueEvent[]
 }
 
 type AdapterBuildEditableFrameUrl = {
@@ -58,6 +64,13 @@ declare module '#blokkli/editor/adapter' {
      */
     updateEntityFieldValue?: (
       e: UpdateEntityFieldValueEvent,
+    ) => Promise<MutationResponseLike<T>> | undefined
+
+    /**
+     * Update the values of multiple block and entity fields in a single batch.
+     */
+    updateFieldValueBatched?: (
+      e: UpdateFieldValueBatchedEvent,
     ) => Promise<MutationResponseLike<T>> | undefined
 
     /**
