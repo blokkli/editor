@@ -91,6 +91,14 @@
     "source": "Adding blocks...",
     "translation": ""
   },
+  "aiAgentAddContentSearchBlockDone": {
+    "source": "Added @bundle with content ID @id",
+    "translation": ""
+  },
+  "aiAgentAddContentSearchBlockRunning": {
+    "source": "Adding content block...",
+    "translation": ""
+  },
   "aiAgentAddFragmentDone": {
     "source": "Added fragment \"@label\"",
     "translation": ""
@@ -131,8 +139,28 @@
     "source": "Awaiting your approval...",
     "translation": ""
   },
+  "aiAgentBatchRewriteAllApplied": {
+    "source": "All @count changes applied",
+    "translation": ""
+  },
+  "aiAgentBatchRewriteAllRejected": {
+    "source": "All changes rejected by user",
+    "translation": ""
+  },
+  "aiAgentBatchRewriteApply": {
+    "source": "Apply @count of @total",
+    "translation": ""
+  },
+  "aiAgentBatchRewriteSomeApplied": {
+    "source": "@applied of @total changes applied",
+    "translation": ""
+  },
   "aiAgentBatchRewriteTextRunning": {
     "source": "Rewriting multiple texts...",
+    "translation": ""
+  },
+  "aiAgentBatchRewriteTitle": {
+    "source": "Rewrite @count fields",
     "translation": ""
   },
   "aiAgentBlockNotFound": {
@@ -235,30 +263,6 @@
     "source": "Getting block context...",
     "translation": ""
   },
-  "aiAgentGetBlockFieldsDone": {
-    "source": "Got fields of @bundle block",
-    "translation": ""
-  },
-  "aiAgentGetBlockFieldsNone": {
-    "source": "@bundle has no block fields",
-    "translation": ""
-  },
-  "aiAgentGetBlockFieldsRunning": {
-    "source": "Getting block fields...",
-    "translation": ""
-  },
-  "aiAgentGetBlockInfoDone": {
-    "source": "Got info for @bundle",
-    "translation": ""
-  },
-  "aiAgentGetBlockInfoMultipleDone": {
-    "source": "Got info for @count blocks",
-    "translation": ""
-  },
-  "aiAgentGetBlockInfoRunning": {
-    "source": "Getting block info...",
-    "translation": ""
-  },
   "aiAgentGetBlockOptionsDone": {
     "source": "Got options of @bundle",
     "translation": ""
@@ -291,12 +295,24 @@
     "source": "@bundle has no child fields",
     "translation": ""
   },
-  "aiAgentGetEditableFieldsDone": {
-    "source": "Got editable fields of @bundle block",
+  "aiAgentGetContentFieldsDone": {
+    "source": "Got content fields of @bundle block",
     "translation": ""
   },
-  "aiAgentGetEditableFieldsRunning": {
-    "source": "Getting editable fields...",
+  "aiAgentGetContentFieldsRunning": {
+    "source": "Getting content fields...",
+    "translation": ""
+  },
+  "aiAgentGetEntityContentFieldsDone": {
+    "source": "Got content fields of page entity",
+    "translation": ""
+  },
+  "aiAgentGetMutationHistoryDone": {
+    "source": "Got mutation history",
+    "translation": ""
+  },
+  "aiAgentGetMutationHistoryRunning": {
+    "source": "Getting mutation history...",
     "translation": ""
   },
   "aiAgentGoToHistoryIndexRunning": {
@@ -329,6 +345,14 @@
   },
   "aiAgentReject": {
     "source": "Reject",
+    "translation": ""
+  },
+  "aiAgentReplaceContentSearchItemDone": {
+    "source": "Replaced content reference on @field",
+    "translation": ""
+  },
+  "aiAgentReplaceContentSearchItemRunning": {
+    "source": "Replacing content reference...",
     "translation": ""
   },
   "aiAgentReplaceMediaDone": {
@@ -637,30 +661,6 @@
   },
   "availableFragments": {
     "source": "Available fragments",
-    "translation": ""
-  },
-  "batchRewriteAllApplied": {
-    "source": "All @count changes applied",
-    "translation": ""
-  },
-  "batchRewriteAllRejected": {
-    "source": "All changes rejected by user",
-    "translation": ""
-  },
-  "batchRewriteApply": {
-    "source": "Apply",
-    "translation": ""
-  },
-  "batchRewriteFields": {
-    "source": "fields",
-    "translation": ""
-  },
-  "batchRewriteSomeApplied": {
-    "source": "@applied of @total changes applied",
-    "translation": ""
-  },
-  "batchRewriteTitle": {
-    "source": "Rewrite",
     "translation": ""
   },
   "blockAddListTourText": {
@@ -2242,6 +2242,14 @@
   "searchBoxPlaceholder": {
     "source": "Enter search term",
     "translation": "Inserisci un termine di ricerca"
+  },
+  "searchContentReplace": {
+    "source": "Replace @field",
+    "translation": ""
+  },
+  "searchContentReplaceFailed": {
+    "source": "Failed to replace content.",
+    "translation": ""
   },
   "searchToolbarLabel": {
     "source": "Search content",

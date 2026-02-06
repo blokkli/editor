@@ -99,6 +99,14 @@ msgctxt "aiAgentAddBlocksRunning"
 msgid "Adding blocks..."
 msgstr ""
 
+msgctxt "aiAgentAddContentSearchBlockDone"
+msgid "Added @bundle with content ID @id"
+msgstr ""
+
+msgctxt "aiAgentAddContentSearchBlockRunning"
+msgid "Adding content block..."
+msgstr ""
+
 msgctxt "aiAgentAddFragmentDone"
 msgid "Added fragment \"@label\""
 msgstr ""
@@ -139,8 +147,28 @@ msgctxt "aiAgentAwaitingApproval"
 msgid "Awaiting your approval..."
 msgstr ""
 
+msgctxt "aiAgentBatchRewriteAllApplied"
+msgid "All @count changes applied"
+msgstr ""
+
+msgctxt "aiAgentBatchRewriteAllRejected"
+msgid "All changes rejected by user"
+msgstr ""
+
+msgctxt "aiAgentBatchRewriteApply"
+msgid "Apply @count of @total"
+msgstr ""
+
+msgctxt "aiAgentBatchRewriteSomeApplied"
+msgid "@applied of @total changes applied"
+msgstr ""
+
 msgctxt "aiAgentBatchRewriteTextRunning"
 msgid "Rewriting multiple texts..."
+msgstr ""
+
+msgctxt "aiAgentBatchRewriteTitle"
+msgid "Rewrite @count fields"
 msgstr ""
 
 msgctxt "aiAgentBlockNotFound"
@@ -243,30 +271,6 @@ msgctxt "aiAgentGetBlockContextRunning"
 msgid "Getting block context..."
 msgstr ""
 
-msgctxt "aiAgentGetBlockFieldsDone"
-msgid "Got fields of @bundle block"
-msgstr ""
-
-msgctxt "aiAgentGetBlockFieldsNone"
-msgid "@bundle has no block fields"
-msgstr ""
-
-msgctxt "aiAgentGetBlockFieldsRunning"
-msgid "Getting block fields..."
-msgstr ""
-
-msgctxt "aiAgentGetBlockInfoDone"
-msgid "Got info for @bundle"
-msgstr ""
-
-msgctxt "aiAgentGetBlockInfoMultipleDone"
-msgid "Got info for @count blocks"
-msgstr ""
-
-msgctxt "aiAgentGetBlockInfoRunning"
-msgid "Getting block info..."
-msgstr ""
-
 msgctxt "aiAgentGetBlockOptionsDone"
 msgid "Got options of @bundle"
 msgstr ""
@@ -299,12 +303,24 @@ msgctxt "aiAgentGetChildBlocksNone"
 msgid "@bundle has no child fields"
 msgstr ""
 
-msgctxt "aiAgentGetEditableFieldsDone"
-msgid "Got editable fields of @bundle block"
+msgctxt "aiAgentGetContentFieldsDone"
+msgid "Got content fields of @bundle block"
 msgstr ""
 
-msgctxt "aiAgentGetEditableFieldsRunning"
-msgid "Getting editable fields..."
+msgctxt "aiAgentGetContentFieldsRunning"
+msgid "Getting content fields..."
+msgstr ""
+
+msgctxt "aiAgentGetEntityContentFieldsDone"
+msgid "Got content fields of page entity"
+msgstr ""
+
+msgctxt "aiAgentGetMutationHistoryDone"
+msgid "Got mutation history"
+msgstr ""
+
+msgctxt "aiAgentGetMutationHistoryRunning"
+msgid "Getting mutation history..."
 msgstr ""
 
 msgctxt "aiAgentGoToHistoryIndexRunning"
@@ -337,6 +353,14 @@ msgstr ""
 
 msgctxt "aiAgentReject"
 msgid "Reject"
+msgstr ""
+
+msgctxt "aiAgentReplaceContentSearchItemDone"
+msgid "Replaced content reference on @field"
+msgstr ""
+
+msgctxt "aiAgentReplaceContentSearchItemRunning"
+msgid "Replacing content reference..."
 msgstr ""
 
 msgctxt "aiAgentReplaceMediaDone"
@@ -645,30 +669,6 @@ msgstr ""
 
 msgctxt "availableFragments"
 msgid "Available fragments"
-msgstr ""
-
-msgctxt "batchRewriteAllApplied"
-msgid "All @count changes applied"
-msgstr ""
-
-msgctxt "batchRewriteAllRejected"
-msgid "All changes rejected by user"
-msgstr ""
-
-msgctxt "batchRewriteApply"
-msgid "Apply"
-msgstr ""
-
-msgctxt "batchRewriteFields"
-msgid "fields"
-msgstr ""
-
-msgctxt "batchRewriteSomeApplied"
-msgid "@applied of @total changes applied"
-msgstr ""
-
-msgctxt "batchRewriteTitle"
-msgid "Rewrite"
 msgstr ""
 
 msgctxt "blockAddListTourText"
@@ -2401,6 +2401,14 @@ msgstr "Su questa pagina"
 msgctxt "searchBoxPlaceholder"
 msgid "Enter search term"
 msgstr "Inserisci un termine di ricerca"
+
+msgctxt "searchContentReplace"
+msgid "Replace @field"
+msgstr ""
+
+msgctxt "searchContentReplaceFailed"
+msgid "Failed to replace content."
+msgstr ""
 
 msgctxt "searchToolbarLabel"
 msgid "Search content"

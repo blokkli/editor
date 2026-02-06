@@ -64,10 +64,10 @@
           >
             <h3>{{ prop.key }}</h3>
             <div class="bk-diff-monospace">
-              <div
+              <DiffValue
                 v-if="diffMode === 'inline'"
-                class="bk-diff-prop-diff"
-                v-html="prop.diff"
+                :before="prop.before || ''"
+                :after="prop.after || ''"
               />
               <div
                 v-else-if="diffMode === 'side_by_side'"
@@ -103,8 +103,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import type { FieldListItem } from '#blokkli/types'
-import { ItemIcon, FormRadioTabs } from '#blokkli/editor/components'
-import diff from 'html-diff-ts'
+import { ItemIcon, FormRadioTabs, DiffValue } from '#blokkli/editor/components'
 import type { ThemeColorName } from './../../../../global/types/theme'
 import type { MappedState, MutatedField } from '#blokkli/editor/types/state'
 
@@ -175,7 +174,6 @@ function getProps(bundle: string, props: any): Record<string, string> {
 
 interface DiffItemProp {
   key: string
-  diff?: string
   before?: string
   after?: string
 }
@@ -229,7 +227,6 @@ const diffItems = computed<DiffItem[]>(() => {
         status: 'removed',
         props: Object.entries(beforeProps).map(([key, value]) => ({
           key,
-          diff: diff(toString(value), ''),
           before: toString(value),
           after: '',
         })),
@@ -244,7 +241,6 @@ const diffItems = computed<DiffItem[]>(() => {
         if (beforeValue !== afterValue) {
           changedProps.push({
             key,
-            diff: diff(toString(beforeValue), toString(afterValue)),
             before: toString(beforeValue),
             after: toString(afterValue),
           })
@@ -256,7 +252,6 @@ const diffItems = computed<DiffItem[]>(() => {
         if (!(key in beforeProps)) {
           changedProps.push({
             key,
-            diff: diff('', toString(afterProps[key]!)),
             before: '',
             after: toString(afterProps[key]!),
           })
@@ -293,7 +288,6 @@ const diffItems = computed<DiffItem[]>(() => {
         status: 'added',
         props: Object.entries(afterProps).map(([key, value]) => ({
           key,
-          diff: diff('', toString(value)),
           before: '',
           after: toString(value),
         })),

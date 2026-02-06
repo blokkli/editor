@@ -65,12 +65,12 @@
     @apply font-mono text-sm;
   }
 
-  .bk-diff-prop-diff {
+  .bk-diff-value {
     @apply inline;
     word-break: break-word;
 
     del {
-      @apply line-through text-mono-300;
+      @apply line-through text-mono-500;
 
       &:has(img) {
         @apply block overflow-hidden max-w-300 bg-red-normal;

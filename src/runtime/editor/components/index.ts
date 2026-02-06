@@ -8,6 +8,7 @@ import Banner from './Banner/index.vue'
 import BlokkliTransition from './Transition/index.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
+import DiffValue from './DiffViewer/DiffValue.vue'
 import DiffViewerState from './DiffViewer/State.vue'
 import ErrorBoundary from './BlokkliErrorBoundary.vue'
 import FormCheckboxes from './Form/Checkboxes/index.vue'
@@ -50,6 +51,7 @@ export {
   BlokkliTransition,
   ConfigForm,
   DialogModal,
+  DiffValue,
   DiffViewerState,
   ErrorBoundary,
   FormCheckboxes,

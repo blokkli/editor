@@ -104,6 +104,14 @@ msgctxt "aiAgentAddBlocksRunning"
 msgid "Adding blocks..."
 msgstr "Blöcke hinzufügen..."
 
+msgctxt "aiAgentAddContentSearchBlockDone"
+msgid "Added @bundle with content ID @id"
+msgstr "@bundle mit Inhalts-ID @id hinzugefügt"
+
+msgctxt "aiAgentAddContentSearchBlockRunning"
+msgid "Adding content block..."
+msgstr "Inhalts-Block hinzufügen..."
+
 msgctxt "aiAgentAddFragmentDone"
 msgid "Added fragment \"@label\""
 msgstr "Fragment «@label» hinzugefügt"
@@ -122,11 +130,11 @@ msgstr "Medien-Block hinzufügen..."
 
 msgctxt "aiAgentAddTemplateDone"
 msgid "Added template"
-msgstr ""
+msgstr "Vorlage hinzugefügt"
 
 msgctxt "aiAgentAddTemplateRunning"
 msgid "Adding template..."
-msgstr ""
+msgstr "Vorlage hinzufügen..."
 
 msgctxt "aiAgentAlwaysApprove"
 msgid "Always"
@@ -138,27 +146,47 @@ msgstr "Bestätigen"
 
 msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer..."
-msgstr ""
+msgstr "Auf Antwort warten..."
 
 msgctxt "aiAgentAwaitingApproval"
 msgid "Awaiting your approval..."
 msgstr "Wartet auf Ihre Bestätigung..."
 
+msgctxt "aiAgentBatchRewriteAllApplied"
+msgid "All @count changes applied"
+msgstr "Alle @count Änderungen angewendet"
+
+msgctxt "aiAgentBatchRewriteAllRejected"
+msgid "All changes rejected by user"
+msgstr "Alle Änderungen abgelehnt"
+
+msgctxt "aiAgentBatchRewriteApply"
+msgid "Apply @count of @total"
+msgstr "@count von @total anwenden"
+
+msgctxt "aiAgentBatchRewriteSomeApplied"
+msgid "@applied of @total changes applied"
+msgstr "@applied von @total Änderungen angewendet"
+
 msgctxt "aiAgentBatchRewriteTextRunning"
 msgid "Rewriting multiple texts..."
 msgstr "Mehrere Texte umschreiben..."
 
+msgctxt "aiAgentBatchRewriteTitle"
+msgid "Rewrite @count fields"
+msgstr "@count Felder umschreiben"
+
 msgctxt "aiAgentBlockNotFound"
 msgid "Block not found"
-msgstr ""
+msgstr "Block nicht gefunden"
 
 msgctxt "aiAgentCancelled"
 msgid "Cancelled"
-msgstr ""
+msgstr "Abgebrochen"
 
 msgctxt "aiAgentConfirm"
 msgid "Confirm"
-msgstr ""
+msgstr "Bestätigen"
 
 msgctxt "aiAgentConnecting"
 msgid "Connecting..."
@@ -178,15 +206,15 @@ msgstr "Blöcke löschen..."
 
 msgctxt "aiAgentDetachLibraryBlockDone"
 msgid "Detached library block"
-msgstr ""
+msgstr "Bibliotheks-Block abgetrennt"
 
 msgctxt "aiAgentDetachLibraryBlockRunning"
 msgid "Detaching library block..."
-msgstr ""
+msgstr "Bibliotheks-Block abtrennen..."
 
 msgctxt "aiAgentDetachLibraryBlocksDone"
 msgid "Detached @count library blocks"
-msgstr ""
+msgstr "@count Bibliotheks-Blöcke abgetrennt"
 
 msgctxt "aiAgentDuplicateBlockDone"
 msgid "Duplicated @bundle"
@@ -194,7 +222,7 @@ msgstr "@bundle dupliziert"
 
 msgctxt "aiAgentDuplicateBlockToFieldDone"
 msgid "Duplicated @bundle to @field"
-msgstr ""
+msgstr "@bundle nach @field dupliziert"
 
 msgctxt "aiAgentDuplicateBlocksDone"
 msgid "Duplicated @count blocks"
@@ -206,15 +234,15 @@ msgstr "Blöcke duplizieren..."
 
 msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
-msgstr ""
+msgstr "@count Blöcke nach @field dupliziert"
 
 msgctxt "aiAgentFindBlocksDone"
 msgid "Found @count blocks"
-msgstr ""
+msgstr "@count Blöcke gefunden"
 
 msgctxt "aiAgentFindBlocksRunning"
 msgid "Finding blocks..."
-msgstr ""
+msgstr "Blöcke suchen..."
 
 msgctxt "aiAgentGetAllFragments"
 msgid "Get all fragments"
@@ -226,11 +254,11 @@ msgstr "Alle Fragmente abgerufen"
 
 msgctxt "aiAgentGetAllPageContentDone"
 msgid "Got content from @count blocks"
-msgstr ""
+msgstr "Inhalt von @count Blöcken abgerufen"
 
 msgctxt "aiAgentGetAllPageContentRunning"
 msgid "Getting all page content..."
-msgstr ""
+msgstr "Gesamten Seiteninhalt abrufen..."
 
 msgctxt "aiAgentGetAvailableBundlesDone"
 msgid "Got available bundles for @field"
@@ -242,35 +270,11 @@ msgstr "Verfügbare Blocktypen abrufen..."
 
 msgctxt "aiAgentGetBlockContextDone"
 msgid "Got context for @bundle"
-msgstr ""
+msgstr "Kontext für @bundle abgerufen"
 
 msgctxt "aiAgentGetBlockContextRunning"
 msgid "Getting block context..."
-msgstr ""
-
-msgctxt "aiAgentGetBlockFieldsDone"
-msgid "Got fields of @bundle block"
-msgstr "Felder von @bundle-Block abgerufen"
-
-msgctxt "aiAgentGetBlockFieldsNone"
-msgid "@bundle has no block fields"
-msgstr ""
-
-msgctxt "aiAgentGetBlockFieldsRunning"
-msgid "Getting block fields..."
-msgstr "Block-Felder abrufen..."
-
-msgctxt "aiAgentGetBlockInfoDone"
-msgid "Got info for @bundle"
-msgstr "Info für @bundle abgerufen"
-
-msgctxt "aiAgentGetBlockInfoMultipleDone"
-msgid "Got info for @count blocks"
-msgstr "Info für @count Blöcke abgerufen"
-
-msgctxt "aiAgentGetBlockInfoRunning"
-msgid "Getting block info..."
-msgstr "Block-Info abrufen..."
+msgstr "Block-Kontext abrufen..."
 
 msgctxt "aiAgentGetBlockOptionsDone"
 msgid "Got options of @bundle"
@@ -286,35 +290,47 @@ msgstr "Block-Optionen abrufen..."
 
 msgctxt "aiAgentGetBlocksInViewportDone"
 msgid "Got @count blocks in viewport"
-msgstr ""
+msgstr "@count Blöcke im Viewport abgerufen"
 
 msgctxt "aiAgentGetBlocksInViewportRunning"
 msgid "Getting blocks in viewport..."
-msgstr ""
+msgstr "Blöcke im Viewport abrufen..."
 
 msgctxt "aiAgentGetChildBlocks"
 msgid "Get child blocks"
-msgstr ""
+msgstr "Kind-Blöcke abrufen"
 
 msgctxt "aiAgentGetChildBlocksDone"
 msgid "Got children of @bundle"
-msgstr ""
+msgstr "Kind-Blöcke von @bundle abgerufen"
 
 msgctxt "aiAgentGetChildBlocksNone"
 msgid "@bundle has no child fields"
-msgstr ""
+msgstr "@bundle hat keine Kind-Felder"
 
-msgctxt "aiAgentGetEditableFieldsDone"
-msgid "Got editable fields of @bundle block"
-msgstr "Editierbare Felder von @bundle-Block abgerufen"
+msgctxt "aiAgentGetContentFieldsDone"
+msgid "Got content fields of @bundle block"
+msgstr "Inhaltsfelder von @bundle abgerufen"
 
-msgctxt "aiAgentGetEditableFieldsRunning"
-msgid "Getting editable fields..."
-msgstr "Editierbare Felder abrufen..."
+msgctxt "aiAgentGetContentFieldsRunning"
+msgid "Getting content fields..."
+msgstr "Inhaltsfelder abrufen..."
+
+msgctxt "aiAgentGetEntityContentFieldsDone"
+msgid "Got content fields of page entity"
+msgstr "Inhaltsfelder der Seite abgerufen"
+
+msgctxt "aiAgentGetMutationHistoryDone"
+msgid "Got mutation history"
+msgstr "Änderungsverlauf abgerufen"
+
+msgctxt "aiAgentGetMutationHistoryRunning"
+msgid "Getting mutation history..."
+msgstr "Änderungsverlauf abrufen..."
 
 msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
-msgstr ""
+msgstr "Im Verlauf navigieren..."
 
 msgctxt "aiAgentMoveBlockDone"
 msgid "Moved @bundle"
@@ -338,19 +354,27 @@ msgstr "Verarbeiten..."
 
 msgctxt "aiAgentRedoDone"
 msgid "Redid @count changes"
-msgstr ""
+msgstr "@count Änderungen wiederhergestellt"
 
 msgctxt "aiAgentReject"
 msgid "Reject"
 msgstr "Ablehnen"
 
+msgctxt "aiAgentReplaceContentSearchItemDone"
+msgid "Replaced content reference on @field"
+msgstr "Inhaltsreferenz auf @field ersetzt"
+
+msgctxt "aiAgentReplaceContentSearchItemRunning"
+msgid "Replacing content reference..."
+msgstr "Inhaltsreferenz ersetzen..."
+
 msgctxt "aiAgentReplaceMediaDone"
 msgid "Replaced media on @field"
-msgstr ""
+msgstr "Medien auf @field ersetzt"
 
 msgctxt "aiAgentReplaceMediaRunning"
 msgid "Replacing media..."
-msgstr ""
+msgstr "Medien ersetzen..."
 
 msgctxt "aiAgentRewriteFieldDone"
 msgid "Rewrote @field"
@@ -374,27 +398,27 @@ msgstr "Medien suchen..."
 
 msgctxt "aiAgentSearchTemplatesAllDone"
 msgid "Searched all templates"
-msgstr ""
+msgstr "Alle Vorlagen durchsucht"
 
 msgctxt "aiAgentSearchTemplatesDone"
 msgid "Searched templates for '@query'"
-msgstr ""
+msgstr "Vorlagen nach «@query» durchsucht"
 
 msgctxt "aiAgentSearchTemplatesRunning"
 msgid "Searching templates..."
-msgstr ""
+msgstr "Vorlagen suchen..."
 
 msgctxt "aiAgentSearchTextDone"
 msgid "Found @count blocks matching '@query'"
-msgstr ""
+msgstr "@count Blöcke mit «@query» gefunden"
 
 msgctxt "aiAgentSearchTextError"
 msgid "Invalid regex pattern"
-msgstr ""
+msgstr "Ungültiges Regex-Muster"
 
 msgctxt "aiAgentSearchTextRunning"
 msgid "Searching text..."
-msgstr ""
+msgstr "Text suchen..."
 
 msgctxt "aiAgentSelectMediaRunning"
 msgid "Selecting media..."
@@ -406,11 +430,11 @@ msgstr "Block-Optionen setzen..."
 
 msgctxt "aiAgentSwapBlocksDone"
 msgid "Swapped @bundleA and @bundleB"
-msgstr ""
+msgstr "@bundleA und @bundleB getauscht"
 
 msgctxt "aiAgentSwapBlocksRunning"
 msgid "Swapping blocks..."
-msgstr ""
+msgstr "Blöcke tauschen..."
 
 msgctxt "aiAgentThinking"
 msgid "Thinking..."
@@ -422,7 +446,7 @@ msgstr "Chatten Sie mit einem KI-Assistenten, um Seiteninhalte zu bearbeiten."
 
 msgctxt "aiAgentUndoDone"
 msgid "Undid @count changes"
-msgstr ""
+msgstr "@count Änderungen rückgängig gemacht"
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
 msgid "Updated @count option(s) on block"
@@ -434,11 +458,11 @@ msgstr "@count Option(en) auf @blockCount Blöcken aktualisiert"
 
 msgctxt "aiAgentWebFetchDone"
 msgid "Fetched '@title'"
-msgstr ""
+msgstr "«@title» abgerufen"
 
 msgctxt "aiAgentWebFetchRunning"
 msgid "Fetching web page..."
-msgstr ""
+msgstr "Webseite abrufen..."
 
 msgctxt "all"
 msgid "All"
@@ -653,30 +677,6 @@ msgstr "Verfügbare Blöcke"
 msgctxt "availableFragments"
 msgid "Available fragments"
 msgstr "Verfügbare Fragmente"
-
-msgctxt "batchRewriteAllApplied"
-msgid "All @count changes applied"
-msgstr ""
-
-msgctxt "batchRewriteAllRejected"
-msgid "All changes rejected by user"
-msgstr ""
-
-msgctxt "batchRewriteApply"
-msgid "Apply"
-msgstr ""
-
-msgctxt "batchRewriteFields"
-msgid "fields"
-msgstr ""
-
-msgctxt "batchRewriteSomeApplied"
-msgid "@applied of @total changes applied"
-msgstr ""
-
-msgctxt "batchRewriteTitle"
-msgid "Rewrite"
-msgstr ""
 
 msgctxt "blockAddListTourText"
 msgid ""
@@ -1978,11 +1978,11 @@ msgstr "Suchen Sie nach Medien wie Bildern und ziehen Sie diese in die Seite."
 
 msgctxt "mediaSelectConfirm"
 msgid "Use selected"
-msgstr ""
+msgstr "Auswahl verwenden"
 
 msgctxt "mediaSelectTitle"
 msgid "Select a media item"
-msgstr ""
+msgstr "Medium auswählen"
 
 msgctxt "multipleItemsLabel"
 msgid "Items"
@@ -2378,11 +2378,11 @@ msgstr "Mit KI umschreiben"
 
 msgctxt "rewriteAddedBlock"
 msgid "Added 1 block"
-msgstr ""
+msgstr "1 Block hinzugefügt"
 
 msgctxt "rewriteAddedBlocks"
 msgid "Added @count blocks"
-msgstr ""
+msgstr "@count Blöcke hinzugefügt"
 
 msgctxt "rewriteApplyError"
 msgid "Failed to save rewritten content."
@@ -2435,6 +2435,14 @@ msgstr "Auf dieser Seite"
 msgctxt "searchBoxPlaceholder"
 msgid "Enter search term"
 msgstr "Suchbegriff eingeben"
+
+msgctxt "searchContentReplace"
+msgid "Replace @field"
+msgstr "@field ersetzen"
+
+msgctxt "searchContentReplaceFailed"
+msgid "Failed to replace content."
+msgstr "Inhalt konnte nicht ersetzt werden."
 
 msgctxt "searchToolbarLabel"
 msgid "Search content"
