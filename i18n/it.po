@@ -152,11 +152,15 @@ msgid "All @count changes applied"
 msgstr ""
 
 msgctxt "aiAgentBatchRewriteAllRejected"
-msgid "All changes rejected by user"
+msgid "All changes rejected"
 msgstr ""
 
 msgctxt "aiAgentBatchRewriteApply"
 msgid "Apply @count of @total"
+msgstr ""
+
+msgctxt "aiAgentBatchRewriteReasonPlaceholder"
+msgid "Reason for rejection (optional)"
 msgstr ""
 
 msgctxt "aiAgentBatchRewriteSomeApplied"
@@ -327,6 +331,14 @@ msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
 msgstr ""
 
+msgctxt "aiAgentLoadSkill"
+msgid "Using skill \"@label\""
+msgstr ""
+
+msgctxt "aiAgentLoadTools"
+msgid "@count tools loaded"
+msgstr ""
+
 msgctxt "aiAgentMoveBlockDone"
 msgid "Moved @bundle"
 msgstr ""
@@ -369,14 +381,6 @@ msgstr ""
 
 msgctxt "aiAgentReplaceMediaRunning"
 msgid "Replacing media..."
-msgstr ""
-
-msgctxt "aiAgentRewriteFieldDone"
-msgid "Rewrote @field"
-msgstr ""
-
-msgctxt "aiAgentRewriteTextRunning"
-msgid "Rewriting text..."
 msgstr ""
 
 msgctxt "aiAgentSearchMediaAllDone"

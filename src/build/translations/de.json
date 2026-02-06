@@ -144,12 +144,16 @@
     "translation": "Alle @count Änderungen angewendet"
   },
   "aiAgentBatchRewriteAllRejected": {
-    "source": "All changes rejected by user",
+    "source": "All changes rejected",
     "translation": "Alle Änderungen abgelehnt"
   },
   "aiAgentBatchRewriteApply": {
     "source": "Apply @count of @total",
     "translation": "@count von @total anwenden"
+  },
+  "aiAgentBatchRewriteReasonPlaceholder": {
+    "source": "Reason for rejection (optional)",
+    "translation": "Grund für Ablehnung (optional)"
   },
   "aiAgentBatchRewriteSomeApplied": {
     "source": "@applied of @total changes applied",
@@ -319,6 +323,14 @@
     "source": "Navigating history...",
     "translation": "Im Verlauf navigieren..."
   },
+  "aiAgentLoadSkill": {
+    "source": "Using skill \"@label\"",
+    "translation": "Verwende Skill «@label»"
+  },
+  "aiAgentLoadTools": {
+    "source": "@count tools loaded",
+    "translation": "@count Tools geladen"
+  },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
     "translation": "@bundle verschoben"
@@ -362,14 +374,6 @@
   "aiAgentReplaceMediaRunning": {
     "source": "Replacing media...",
     "translation": "Medien ersetzen..."
-  },
-  "aiAgentRewriteFieldDone": {
-    "source": "Rewrote @field",
-    "translation": "@field umgeschrieben"
-  },
-  "aiAgentRewriteTextRunning": {
-    "source": "Rewriting text...",
-    "translation": "Text umschreiben..."
   },
   "aiAgentSearchMediaAllDone": {
     "source": "Searched all media",

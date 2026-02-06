@@ -1,10 +1,19 @@
 <template>
   <ToolCard
     icon="bk_mdi_edit"
-    :title="$t('aiAgentBatchRewriteTitle', 'Rewrite @count fields').replace('@count', String(changes.length))"
+    :title="
+      $t('aiAgentBatchRewriteTitle', 'Rewrite @count fields').replace(
+        '@count',
+        String(changes.length),
+      )
+    "
     @cancel="rejectAll"
   >
-    <div class="bk-batch-rewrite-list" @mouseleave="onMouseLeave">
+    <div
+      v-if="!isApplying"
+      class="bk-batch-rewrite-list"
+      @mouseleave="onMouseLeave"
+    >
       <Item
         v-for="change in changes"
         :key="change.id"
@@ -14,14 +23,15 @@
         :new-value="change.value"
         :selected="change.selected"
         :applied="change.applied"
+        :reason="change.reason"
         @toggle="change.selected = !change.selected"
+        @reason="change.reason = $event"
       />
     </div>
 
     <template #actions>
       <button
         class="bk-button bk-is-small bk-is-lime bk-is-fullwidth"
-        :disabled="selectedCount === 0"
         @click="applySelected"
       >
         <Icon name="bk_mdi_check" />
@@ -32,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, computed, useBlokkli } from '#imports'
+import { reactive, computed, useBlokkli, ref } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard.vue'
 import Item from './Item.vue'
@@ -49,8 +59,16 @@ const emit = defineEmits<{
   (e: 'done', result: BatchRewriteResult): void
 }>()
 
-const { $t, state, blocks, context: editorContext, types, eventBus } =
-  useBlokkli()
+const {
+  $t,
+  state,
+  blocks,
+  context: editorContext,
+  types,
+  eventBus,
+} = useBlokkli()
+
+const isApplying = ref(false)
 
 type ChangeWithState = {
   id: number
@@ -60,6 +78,7 @@ type ChangeWithState = {
   value: string
   selected: boolean
   applied: boolean
+  reason: string
 }
 
 function resolveFieldLabel(uuid: string, fieldName: string): string {
@@ -95,6 +114,7 @@ const changes = reactive<ChangeWithState[]>(
     value: change.value,
     selected: true,
     applied: false,
+    reason: '',
   })),
 )
 
@@ -105,12 +125,21 @@ function onMouseLeave() {
 }
 
 async function applySelected() {
-  const applied: Array<{ uuid: string; fieldName: string }> = []
-  const rejected: Array<{ uuid: string; fieldName: string }> = []
+  isApplying.value = true
+
+  const rejectedByUser: Array<{
+    uuid: string
+    fieldName: string
+    reason?: string
+  }> = []
 
   for (const change of changes) {
     if (!change.selected) {
-      rejected.push({ uuid: change.uuid, fieldName: change.fieldName })
+      rejectedByUser.push({
+        uuid: change.uuid,
+        fieldName: change.fieldName,
+        reason: change.reason || undefined,
+      })
     }
   }
 
@@ -146,23 +175,35 @@ async function applySelected() {
 
   for (const change of selectedChanges) {
     change.applied = true
-    applied.push({ uuid: change.uuid, fieldName: change.fieldName })
   }
 
+  const acceptedCount = selectedChanges.length
+
   const label =
-    applied.length === changes.length
-      ? $t('aiAgentBatchRewriteAllApplied', 'All @count changes applied').replace(
-          '@count',
-          String(applied.length),
+    acceptedCount === changes.length
+      ? $t(
+          'aiAgentBatchRewriteAllApplied',
+          'All @count changes applied',
+        ).replace('@count', String(acceptedCount))
+      : $t(
+          'aiAgentBatchRewriteSomeApplied',
+          '@applied of @total changes applied',
         )
-      : $t('aiAgentBatchRewriteSomeApplied', '@applied of @total changes applied')
-          .replace('@applied', String(applied.length))
+          .replace('@applied', String(acceptedCount))
           .replace('@total', String(changes.length))
 
+  // If there are rejections without reasons, tell the agent to ask the user.
+  const hasRejectionsWithoutReason = rejectedByUser.some((r) => !r.reason)
+  const agentMessage =
+    rejectedByUser.length > 0 && hasRejectionsWithoutReason
+      ? 'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
+      : undefined
+
   emit('done', {
-    applied,
-    rejected,
+    acceptedCount,
+    rejectedByUser,
     label,
+    agentMessage,
     historyIndex: state.currentMutationIndex.value,
   })
 }
@@ -170,12 +211,14 @@ async function applySelected() {
 function rejectAll() {
   // Item components will restore on unmount.
   emit('done', {
-    applied: [],
-    rejected: changes.map((c) => ({
+    acceptedCount: 0,
+    rejectedByUser: changes.map((c) => ({
       uuid: c.uuid,
       fieldName: c.fieldName,
     })),
-    label: $t('aiAgentBatchRewriteAllRejected', 'All changes rejected by user'),
+    label: $t('aiAgentBatchRewriteAllRejected', 'All changes rejected'),
+    agentMessage:
+      'All changes were rejected by the user. Ask the user what they would like to change instead.',
   })
 }
 

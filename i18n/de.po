@@ -157,12 +157,16 @@ msgid "All @count changes applied"
 msgstr "Alle @count Änderungen angewendet"
 
 msgctxt "aiAgentBatchRewriteAllRejected"
-msgid "All changes rejected by user"
+msgid "All changes rejected"
 msgstr "Alle Änderungen abgelehnt"
 
 msgctxt "aiAgentBatchRewriteApply"
 msgid "Apply @count of @total"
 msgstr "@count von @total anwenden"
+
+msgctxt "aiAgentBatchRewriteReasonPlaceholder"
+msgid "Reason for rejection (optional)"
+msgstr "Grund für Ablehnung (optional)"
 
 msgctxt "aiAgentBatchRewriteSomeApplied"
 msgid "@applied of @total changes applied"
@@ -332,6 +336,14 @@ msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
 msgstr "Im Verlauf navigieren..."
 
+msgctxt "aiAgentLoadSkill"
+msgid "Using skill \"@label\""
+msgstr "Verwende Skill «@label»"
+
+msgctxt "aiAgentLoadTools"
+msgid "@count tools loaded"
+msgstr "@count Tools geladen"
+
 msgctxt "aiAgentMoveBlockDone"
 msgid "Moved @bundle"
 msgstr "@bundle verschoben"
@@ -375,14 +387,6 @@ msgstr "Medien auf @field ersetzt"
 msgctxt "aiAgentReplaceMediaRunning"
 msgid "Replacing media..."
 msgstr "Medien ersetzen..."
-
-msgctxt "aiAgentRewriteFieldDone"
-msgid "Rewrote @field"
-msgstr "@field umgeschrieben"
-
-msgctxt "aiAgentRewriteTextRunning"
-msgid "Rewriting text..."
-msgstr "Text umschreiben..."
 
 msgctxt "aiAgentSearchMediaAllDone"
 msgid "Searched all media"

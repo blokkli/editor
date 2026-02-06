@@ -25,7 +25,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'duplicate_blocks',
   description:
-    'Duplicate one or more blocks. Without parent parameter, duplicates in the same field. With parent parameter, duplicates to a different field. Requires user approval.',
+    'Duplicate one or more blocks, with ALL their child blocks. Without parent parameter, duplicates in the same field. With parent parameter, duplicates to a different field.',
   category: 'mutation',
   lazy: true,
   modes: ['editing'],

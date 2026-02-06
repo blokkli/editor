@@ -15,23 +15,26 @@ const paramsSchema = z.object({
 })
 
 const resultSchema = z.object({
-  applied: z
+  acceptedCount: z.number().describe('Number of changes accepted by the user'),
+  rejectedByUser: z
     .array(
       z.object({
         uuid: z.string(),
         fieldName: z.string(),
-      }),
-    )
-    .describe('Changes that were applied'),
-  rejected: z
-    .array(
-      z.object({
-        uuid: z.string(),
-        fieldName: z.string(),
+        reason: z
+          .string()
+          .optional()
+          .describe('Reason provided by the user for rejecting'),
       }),
     )
     .describe('Changes that were rejected by the user'),
-  label: z.string().describe('Human-readable summary of what happened'),
+  label: z.string().describe('Human-readable summary shown in the UI'),
+  agentMessage: z
+    .string()
+    .optional()
+    .describe(
+      'Detailed message for the agent, replaces label in the LLM context',
+    ),
   historyIndex: z
     .number()
     .optional()
@@ -52,7 +55,7 @@ export default defineBlokkliAgentTool({
     $t('aiAgentBatchRewriteTextRunning', 'Rewriting multiple texts...'),
   paramsSchema,
   resultSchema,
-  requiredAdapterMethods: ['updateFieldValue'],
+  requiredAdapterMethods: ['updateFieldValueBatched'],
   component: Component,
   execute: (_ctx, params) => params,
   mockParams: () => ({

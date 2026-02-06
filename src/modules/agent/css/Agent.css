@@ -151,7 +151,7 @@
   }
 
   .bk-agent-pending-mutation .bk-agent-pending-actions {
-    @apply flex gap-8 p-10;
+    @apply flex gap-8 p-10 bg-white sticky bottom-0;
   }
 
   /* Batch rewrite tool content */
@@ -160,20 +160,27 @@
   }
 
   .bk-batch-rewrite-item {
-    @apply flex items-start gap-10 px-10 py-8 cursor-pointer;
+    @apply px-10 py-8 cursor-pointer;
     @apply hover:bg-mono-50;
 
     .bk-diff-value {
       @apply text-sm;
     }
 
-    input[type='checkbox'] {
-      @apply mt-2 shrink-0 w-15 h-15 rounded border-mono-300;
-      @apply accent-accent-700;
+    .bk-checkbox {
+      @apply shrink-0 py-0;
+      span {
+        @apply text-sm mt-0 leading-[18px];
+        &:before {
+          @apply mt-0;
+        }
+      }
     }
 
     &.bk-is-deselected {
-      @apply opacity-50;
+      .bk-diff-value {
+        @apply opacity-50;
+      }
     }
   }
 
@@ -183,6 +190,15 @@
 
   .bk-batch-rewrite-field {
     @apply text-xs font-medium text-mono-700 mb-3;
+  }
+
+  .bk-batch-rewrite-reason {
+    @apply w-full mt-10;
+    min-height: auto;
+
+    textarea {
+      @apply !text-sm !py-10 !px-10;
+    }
   }
 
   /* Media select tool content */
@@ -373,6 +389,14 @@
   .bk-icon {
     svg {
       @apply fill-orange-normal;
+    }
+  }
+}
+
+.bk {
+  #bk-sidebar-button-agent {
+    svg {
+      @apply fill-orange-normal -translate-x-1;
     }
   }
 }

@@ -1,2 +1,2 @@
 export { defineBlokkliAgentSkill } from './defineBlokkliAgentSkill'
-export type { SkillDefinition, ResolvedSkill } from './types'
+export type { SkillDefinition, SkillLabel, ResolvedSkill } from './types'

@@ -10,6 +10,9 @@
       ref="textarea"
       v-bind="$attrs"
       v-model="modelValue"
+      :class="{
+        'bk-form-input': textareaClass,
+      }"
       @keydown.capture.stop="onKeydown"
       @keyup.capture.stop
       @paste="onPaste"
@@ -25,12 +28,19 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<{
-  maxHeight?: number
-  submitOnEnter?: boolean
-  /** When true, paste HTML from clipboard if available instead of plain text */
-  pasteHtml?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    maxHeight?: number
+    minHeight?: number
+    submitOnEnter?: boolean
+    /** When true, paste HTML from clipboard if available instead of plain text */
+    pasteHtml?: boolean
+    textareaClass?: boolean
+  }>(),
+  {
+    minHeight: 70,
+  },
+)
 
 const emit = defineEmits<{
   (e: 'submit'): void
@@ -41,8 +51,7 @@ const modelValue = defineModel<string>({ required: true })
 
 const textarea = useTemplateRef('textarea')
 
-const height = ref(70)
-const minHeight = 70
+const height = ref(props.minHeight)
 
 const isScrollable = computed(() => {
   if (!props.maxHeight) return false
@@ -104,13 +113,13 @@ function onPaste(e: ClipboardEvent) {
 // Reset height when content is cleared
 watch(modelValue, (newValue) => {
   if (!newValue) {
-    height.value = minHeight
+    height.value = props.minHeight
   }
 })
 
 onBlokkliEvent('animationFrame', () => {
-  const scrollHeight = textarea.value?.scrollHeight ?? minHeight
-  const newHeight = Math.max(scrollHeight, minHeight)
+  const scrollHeight = textarea.value?.scrollHeight ?? props.minHeight
+  const newHeight = Math.max(scrollHeight, props.minHeight)
   height.value = props.maxHeight
     ? Math.min(newHeight, props.maxHeight)
     : newHeight

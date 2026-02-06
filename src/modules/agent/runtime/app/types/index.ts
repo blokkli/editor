@@ -83,7 +83,7 @@ export type MutationAction<
   ) => Promise<MutationResponseLike<any>> | undefined
   /** Optional revert function - called when user rejects (for rewrite preview) */
   revert?: () => void
-  /** Data to include in the success result sent to AI (e.g., { blockUuid }) */
+  /** Data to include in the success result sent to AI */
   result?: Record<string, unknown>
   /**
    * UUIDs of blocks affected by this mutation.
@@ -209,6 +209,13 @@ export type McpToolDefinition<
           | Promise<QueryResult<z.infer<TResultSchema>> | ToolError>
 
   /**
+   * If true, mutation tools require explicit user approval before applying.
+   * When false or omitted, mutations are applied immediately.
+   * Only relevant for tools with category 'mutation'.
+   */
+  requiresApproval?: boolean
+
+  /**
    * If true, this tool is not sent to the LLM until activated via load_tools.
    * Lazy tools are listed by name + description in the system prompt so the
    * LLM knows they exist and can load them on demand.
@@ -245,6 +252,7 @@ export type FactoryResolvedTool = {
   requiredAdapterMethods?: readonly AdapterMethods[]
   modes: EditMode[]
   component?: Component
+  requiresApproval?: boolean
   lazy?: boolean
   execute: (...args: any[]) => any
   mockParams?: () => any

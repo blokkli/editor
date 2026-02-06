@@ -33,10 +33,17 @@ export const mutationResultSchema = z.union([
 export const mutationSuccessSchema = z.union([
   z.object({
     success: z.literal(true),
-    blockUuid: z
-      .string()
+    newBlocks: z
+      .array(
+        z.object({
+          uuid: z.string(),
+          bundle: z.string(),
+        }),
+      )
       .optional()
-      .describe('UUID of the created block (for add operations)'),
+      .describe(
+        'Blocks created by this mutation (for add/duplicate operations), with their UUIDs and bundle types',
+      ),
     historyIndex: z
       .number()
       .describe('Current position in mutation history (-1 = pristine)'),

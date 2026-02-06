@@ -1,16 +1,45 @@
 <template>
-  <label class="bk-batch-rewrite-item" :class="{ 'bk-is-deselected': !selected }" @mouseenter="onMouseEnter">
-    <input type="checkbox" :checked="selected" @change="$emit('toggle')" />
+  <div
+    class="bk-batch-rewrite-item"
+    :class="{ 'bk-is-deselected': !selected }"
+    @mouseenter="onMouseEnter"
+  >
+    <label class="bk-checkbox">
+      <input type="checkbox" :checked="selected" @change="onChange" />
+      <span>{{ fieldLabel }}</span>
+    </label>
     <div class="bk-batch-rewrite-change">
-      <div class="bk-batch-rewrite-field">{{ fieldLabel }}</div>
-      <DiffValue :before="override.originalValue" :after="newValue" />
+      <div @click.prevent="onChange">
+        <DiffValue :before="override.originalValue" :after="newValue" />
+      </div>
+      <div v-if="!selected" class="bk-batch-rewrite-reason">
+        <FlexTextarea
+          v-model="reasonModel"
+          textarea-class
+          :max-height="100"
+          :min-height="42"
+          :placeholder="
+            $t(
+              'aiAgentBatchRewriteReasonPlaceholder',
+              'Reason for rejection (optional)',
+            )
+          "
+          @click.prevent
+        />
+      </div>
     </div>
-  </label>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, onBeforeUnmount, useBlokkli } from '#imports'
-import { DiffValue } from '#blokkli/editor/components'
+import {
+  watch,
+  onBeforeUnmount,
+  useBlokkli,
+  nextTick,
+  computed,
+} from '#imports'
+import { DiffValue, FlexTextarea } from '#blokkli/editor/components'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
@@ -22,13 +51,20 @@ const props = defineProps<{
   newValue: string
   selected: boolean
   applied: boolean
+  reason: string
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'toggle'): void
+  (e: 'reason', value: string): void
 }>()
 
-const { blocks, context, eventBus } = useBlokkli()
+const { blocks, context, eventBus, $t } = useBlokkli()
+
+const reasonModel = computed({
+  get: () => props.reason,
+  set: (value: string) => emit('reason', value),
+})
 
 function resolveHost(): EntityContext {
   if (props.uuid === context.value.entityUuid) {
@@ -57,6 +93,12 @@ function onMouseEnter() {
 
 // Apply preview immediately.
 override.setValue(props.newValue)
+
+async function onChange() {
+  emit('toggle')
+  await nextTick()
+  onMouseEnter()
+}
 
 // Toggle preview when selection changes.
 watch(

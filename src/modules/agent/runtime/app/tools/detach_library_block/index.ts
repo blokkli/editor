@@ -12,7 +12,7 @@ export default defineBlokkliAgentTool({
   description:
     'Detach one or more library blocks to create editable copies. ' +
     'IMPORTANT: The original library block UUIDs will no longer exist after detaching. ' +
-    'The result includes newUuids containing the UUIDs of the newly created editable blocks. ' +
+    'The result includes newBlocks containing the UUIDs and bundles of the newly created editable blocks. ' +
     'Use these new UUIDs for any subsequent operations.',
   category: 'mutation',
   lazy: true,

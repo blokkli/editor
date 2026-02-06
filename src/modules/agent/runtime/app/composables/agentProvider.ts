@@ -673,28 +673,35 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       return newUuids
     }
 
-    if (autoApprove.value) {
-      const newUuids = await applyMutation()
+    function buildMutationResult(newUuids: string[]) {
+      const newBlocks =
+        action.type === 'add' && newUuids.length
+          ? newUuids
+              .map((uuid) => {
+                const block = app.blocks.getBlock(uuid)
+                return block ? { uuid, bundle: block.bundle } : null
+              })
+              .filter((b): b is { uuid: string; bundle: string } => b !== null)
+          : undefined
+
       return {
         success: true,
         historyIndex: state.currentMutationIndex.value,
-        newUuids:
-          action.type === 'add' && newUuids.length ? newUuids : undefined,
+        newBlocks: newBlocks?.length ? newBlocks : undefined,
         ...action.result,
       }
+    }
+
+    if (autoApprove.value || !toolDef.requiresApproval) {
+      const newUuids = await applyMutation()
+      return buildMutationResult(newUuids)
     }
 
     const approved = await waitForApproval(action)
 
     if (approved) {
       const newUuids = await applyMutation()
-      return {
-        success: true,
-        historyIndex: state.currentMutationIndex.value,
-        newUuids:
-          action.type === 'add' && newUuids.length ? newUuids : undefined,
-        ...action.result,
-      }
+      return buildMutationResult(newUuids)
     } else {
       if (action.revert) {
         action.revert()

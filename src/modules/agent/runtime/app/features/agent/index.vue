@@ -6,7 +6,7 @@
       $t('aiAgentTourText', 'Chat with an AI assistant to edit page content.')
     "
     icon="stars"
-    weight="-10"
+    weight="-900"
     render-always
     beta
   >

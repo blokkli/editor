@@ -19,7 +19,7 @@
         :name="getServerSideToolIcon(item.tool)"
         class="bk-agent-tool-call-status"
       />
-      <span>{{ item.label }}</span>
+      <span>{{ serverToolLabel }}</span>
     </div>
   </div>
 
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick, computed } from '#imports'
+import { ref, watch, nextTick, computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { marked } from 'marked'
 import type {
@@ -76,6 +76,8 @@ const props = defineProps<{
   item: ItemProp
   isActive?: boolean
 }>()
+
+const { $t } = useBlokkli()
 
 const contentEl = ref<HTMLElement>()
 
@@ -115,6 +117,23 @@ const toolStatusClass = computed(() => {
   if (props.item.type !== 'tool') return ''
   if (props.isActive) return 'bk-is-pending'
   return toolStatus.value ? `bk-is-${toolStatus.value}` : 'bk-is-pending'
+})
+
+const serverToolLabel = computed(() => {
+  if (props.item.type !== 'server_tool') return ''
+  if (props.item.tool === 'load_skill') {
+    return $t('aiAgentLoadSkill', 'Using skill "@label"').replace(
+      '@label',
+      props.item.label,
+    )
+  }
+  if (props.item.tool === 'load_tools') {
+    return $t('aiAgentLoadTools', '@count tools loaded').replace(
+      '@count',
+      props.item.label,
+    )
+  }
+  return props.item.label
 })
 
 function formatToolName(tool: string): string {

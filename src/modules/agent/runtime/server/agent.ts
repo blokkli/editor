@@ -6,7 +6,7 @@ import type {
   ClientToolDefinition,
 } from '../shared/types'
 import type { GenericMessage, GenericContentBlock } from './providers/types'
-import type { ResolvedSkill } from './skills/types'
+import type { ResolvedSkill, SkillDefinition } from './skills/types'
 import { buildSystemPrompt } from './agentPrompt'
 import { provider, aiModel, skills } from '#blokkli-build/agent-server'
 
@@ -14,12 +14,28 @@ import { provider, aiModel, skills } from '#blokkli-build/agent-server'
  * Resolve skills for the given page context.
  * Calls getContents on each skill and filters out nulls.
  */
+function resolveSkillLabel(
+  label: SkillDefinition['label'],
+  language?: string,
+): string {
+  if (typeof label === 'string') return label
+  if (language && language in label) {
+    return label[language as keyof typeof label] || label.en
+  }
+  return label.en
+}
+
 function resolveSkills(context: PageContext): ResolvedSkill[] {
   return skills
     .map((skill) => {
       const content = skill.getContents(context)
       if (content === null) return null
-      return { name: skill.name, description: skill.description, content }
+      return {
+        name: skill.name,
+        label: resolveSkillLabel(skill.label, context.interfaceLanguage),
+        description: skill.description,
+        content,
+      }
     })
     .filter((s): s is ResolvedSkill => s !== null)
 }
@@ -511,7 +527,7 @@ async function runAgentLoop(
                     JSON.stringify({
                       type: 'server_tool_result',
                       tool: 'load_skill',
-                      label: `Loaded skill: ${skillName}`,
+                      label: skill.label,
                     }),
                   )
                 } else {
@@ -558,7 +574,7 @@ async function runAgentLoop(
                     JSON.stringify({
                       type: 'server_tool_result',
                       tool: 'load_tools',
-                      label: `Loaded tools: ${loaded.join(', ')}`,
+                      label: String(loaded.length),
                     }),
                   )
                 }
@@ -593,10 +609,24 @@ async function runAgentLoop(
                     is_error: true,
                   })
                 } else {
+                  // If the result has an agentMessage, replace label
+                  // with it in the payload sent to the LLM. The label
+                  // is only shown in the UI.
+                  let resultForLLM = clientResult.result
+                  if (
+                    typeof resultForLLM === 'object' &&
+                    resultForLLM !== null &&
+                    'agentMessage' in resultForLLM
+                  ) {
+                    const { agentMessage, ...rest } =
+                      resultForLLM as Record<string, unknown>
+                    resultForLLM = { ...rest, label: agentMessage }
+                  }
+
                   toolResults.push({
                     type: 'tool_result',
                     tool_use_id: currentToolUse.id,
-                    content: JSON.stringify(clientResult.result),
+                    content: JSON.stringify(resultForLLM),
                   })
                 }
               } catch (error) {

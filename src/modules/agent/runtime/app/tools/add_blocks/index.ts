@@ -57,7 +57,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_blocks',
   description:
-    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. Requires user approval before the blocks are actually created. IMPORTANT: Always provide values for content fields (text, media/entity references) directly, instead of adding the block first and then calling replace_media_field or rewrite_text separately. For reference content fields (media), set the value to { entityType, entityId } from search_media results.',
+    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. IMPORTANT: Always provide values for content fields (text, media/entity references) directly, instead of adding empty blocks! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT block fields! Nested blocks need to be created in separate calls.',
   category: 'mutation',
   modes: ['editing'],
   label: ($t) => $t('aiAgentAddBlocksRunning', 'Adding blocks...'),
@@ -207,8 +207,6 @@ export default defineBlokkliAgentTool({
           afterUuid: params.afterUuid ?? null,
         }),
       affectedUuids: blockUuids,
-      // Include all blockUuids in the success result so AI knows the UUIDs
-      result: { blockUuids },
     }
   },
 })

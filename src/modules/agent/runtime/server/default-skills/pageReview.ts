@@ -2,6 +2,7 @@ import { defineBlokkliAgentSkill } from '../skills'
 
 export default defineBlokkliAgentSkill({
   name: 'page-review',
+  label: { en: 'Page Review', de: 'Seiten-Review' },
   description:
     'Tool guidance for reviewing page content. Load this IMMEDIATELY AFTER being asked to review, critique, or analyze a page!',
   getContents: () => `

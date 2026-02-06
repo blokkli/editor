@@ -144,11 +144,15 @@
     "translation": ""
   },
   "aiAgentBatchRewriteAllRejected": {
-    "source": "All changes rejected by user",
+    "source": "All changes rejected",
     "translation": ""
   },
   "aiAgentBatchRewriteApply": {
     "source": "Apply @count of @total",
+    "translation": ""
+  },
+  "aiAgentBatchRewriteReasonPlaceholder": {
+    "source": "Reason for rejection (optional)",
     "translation": ""
   },
   "aiAgentBatchRewriteSomeApplied": {
@@ -319,6 +323,14 @@
     "source": "Navigating history...",
     "translation": ""
   },
+  "aiAgentLoadSkill": {
+    "source": "Using skill \"@label\"",
+    "translation": ""
+  },
+  "aiAgentLoadTools": {
+    "source": "@count tools loaded",
+    "translation": ""
+  },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
     "translation": ""
@@ -361,14 +373,6 @@
   },
   "aiAgentReplaceMediaRunning": {
     "source": "Replacing media...",
-    "translation": ""
-  },
-  "aiAgentRewriteFieldDone": {
-    "source": "Rewrote @field",
-    "translation": ""
-  },
-  "aiAgentRewriteTextRunning": {
-    "source": "Rewriting text...",
     "translation": ""
   },
   "aiAgentSearchMediaAllDone": {

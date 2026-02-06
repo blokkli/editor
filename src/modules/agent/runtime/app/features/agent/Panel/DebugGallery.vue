@@ -112,7 +112,7 @@ const mockHistory: ConversationItem[] = [
     type: 'tool',
     id: 'call-4',
     callId: 'call-4',
-    tool: 'rewrite_text',
+    tool: 'batch_rewrite_text',
     label: 'Rewrite text',
     status: 'success',
     timestamp: Date.now() - 58000,
