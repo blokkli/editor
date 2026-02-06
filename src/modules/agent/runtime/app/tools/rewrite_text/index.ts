@@ -4,23 +4,22 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
-  uuid: z.string().describe('The block UUID containing the field'),
+  uuid: z
+    .string()
+    .describe('The block UUID or entity UUID containing the field'),
   fieldName: z.string().describe('The field name to update'),
   value: z.string().describe('The new text content'),
 })
 
 function getFieldType(
   app: BlokkliApp,
-  itemEntityType: string,
-  uuid: string,
+  entityType: string,
+  bundle: string,
   fieldName: string,
 ): 'plain' | 'markup' | null {
-  const block = app.blocks.getBlock(uuid)
-  if (!block) return null
-
   const config = app.types.editableFieldConfig.forName(
-    itemEntityType,
-    block.bundle,
+    entityType,
+    bundle,
     fieldName,
   )
   if (!config) return null
@@ -40,17 +39,27 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['updateFieldValue'],
   execute: (ctx, params) => {
-    const { blocks, directive } = ctx.app
+    const { blocks, directive, context } = ctx.app
 
-    const block = blocks.getBlock(params.uuid)
-    if (!block) {
+    // Resolve entity type and bundle from either block or entity context.
+    const isEntity = params.uuid === context.value.entityUuid
+    const block = !isEntity ? blocks.getBlock(params.uuid) : null
+
+    if (!isEntity && !block) {
       return { error: `Block not found: ${params.uuid}` }
     }
 
+    const entityType = isEntity
+      ? context.value.entityType
+      : ctx.itemEntityType
+    const bundle = isEntity
+      ? context.value.entityBundle
+      : block!.bundle
+
     const fieldType = getFieldType(
       ctx.app,
-      ctx.itemEntityType,
-      params.uuid,
+      entityType,
+      bundle,
       params.fieldName,
     )
     if (!fieldType) {
@@ -58,9 +67,9 @@ export default defineBlokkliAgentTool({
     }
 
     const element = directive.findEditableElement(params.fieldName, {
-      type: ctx.itemEntityType,
+      type: entityType,
       uuid: params.uuid,
-      bundle: block.bundle,
+      bundle,
     })
 
     if (!element) {
@@ -89,12 +98,22 @@ export default defineBlokkliAgentTool({
         '@field',
         params.fieldName,
       ),
-      apply: (adapter) =>
-        adapter.updateFieldValue({
+      apply: (adapter) => {
+        if (isEntity) {
+          if (!adapter.updateEntityFieldValue) {
+            throw new Error('Entity field editing not supported')
+          }
+          return adapter.updateEntityFieldValue({
+            fieldName: params.fieldName,
+            fieldValue: params.value,
+          })
+        }
+        return adapter.updateFieldValue({
           uuid: params.uuid,
           fieldName: params.fieldName,
           fieldValue: params.value,
-        }),
+        })
+      },
       revert: () => {
         // Restore original value when rejected
         if (fieldType === 'markup') {

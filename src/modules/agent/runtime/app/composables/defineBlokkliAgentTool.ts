@@ -34,7 +34,7 @@ import type { Component } from 'vue'
  * })
  *
  * export default defineBlokkliAgentTool({
- *   name: 'get_block_info',
+ *   name: 'get_block_context',
  *   description: 'Get detailed information about a specific block by its UUID',
  *   category: 'query',
  *   paramsSchema,
@@ -43,7 +43,7 @@ import type { Component } from 'vue'
  *     const block = ctx.app.blocks.getBlock(params.uuid)
  *     if (!block) throw new Error(`Block not found: ${params.uuid}`)
  *     return {
- *       label: 'Get block info',
+ *       label: 'Get block context',
  *       result: { uuid: params.uuid, bundle: block.bundle }
  *     }
  *   },

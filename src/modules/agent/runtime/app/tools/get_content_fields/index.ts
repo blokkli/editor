@@ -3,7 +3,9 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
+  uuid: z
+    .string()
+    .describe('The block UUID or entity UUID (to get entity-level fields)'),
   includeNested: z
     .boolean()
     .optional()
@@ -71,16 +73,13 @@ const resultSchema = z.object({
 
 function getFieldType(
   app: BlokkliApp,
-  itemEntityType: string,
-  uuid: string,
+  entityType: string,
+  bundle: string,
   fieldName: string,
 ): 'plain' | 'markup' | null {
-  const block = app.blocks.getBlock(uuid)
-  if (!block) return null
-
   const config = app.types.editableFieldConfig.forName(
-    itemEntityType,
-    block.bundle,
+    entityType,
+    bundle,
     fieldName,
   )
   if (!config) return null
@@ -100,13 +99,86 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute: (ctx, params) => {
-    const { blocks, directive, state, types, $t } = ctx.app
+    const { blocks, directive, state, types, $t, context } = ctx.app
     const contentFields: z.infer<typeof contentFieldSchema>[] = []
 
+    // Check if this is the entity UUID.
+    const isEntity = params.uuid === context.value.entityUuid
+
     const rootBlock = blocks.getBlock(params.uuid)
-    const bundleLabel = rootBlock
-      ? types.getBlockLabel(rootBlock.bundle)
-      : 'unknown'
+    const bundleLabel = isEntity
+      ? context.value.entityBundle
+      : rootBlock
+        ? types.getBlockLabel(rootBlock.bundle)
+        : 'unknown'
+
+    function processEntity(entityUuid: string) {
+      const entityType = context.value.entityType
+      const entityBundle = context.value.entityBundle
+
+      // Get editable text fields from config (not from directives, since
+      // entity editables may not be registered via getEditablesForBlock).
+      const editableConfigs = types.editableFieldConfig
+        .forEntityTypeAndBundle(entityType, entityBundle)
+        .filter((f) => f.type !== 'table')
+
+      // Build a lookup of directive-registered editables for getValue().
+      const editableMap = new Map(
+        directive
+          .getEditablesForBlock(entityUuid)
+          .map((e) => [e.fieldName, e]),
+      )
+
+      for (const config of editableConfigs) {
+        const fieldType =
+          config.type === 'frame' || config.type === 'markup'
+            ? 'markup'
+            : 'plain'
+
+        let currentValue = ''
+        const registered = editableMap.get(config.name)
+        if (registered?.getValue) {
+          currentValue = registered.getValue()
+        } else {
+          const element = directive.findEditableElement(config.name, {
+            type: entityType,
+            uuid: entityUuid,
+            bundle: entityBundle,
+          })
+          if (element) {
+            currentValue =
+              fieldType === 'markup'
+                ? element.innerHTML || ''
+                : element.textContent || ''
+          }
+        }
+
+        contentFields.push({
+          uuid: entityUuid,
+          bundle: entityBundle,
+          fieldName: config.name,
+          type: fieldType as 'plain' | 'markup',
+          currentValue,
+        })
+      }
+
+      // Get droppable fields (reference and link) for entity
+      const droppableConfigs =
+        types.droppableFieldConfig.forEntityTypeAndBundle(
+          entityType,
+          entityBundle,
+        )
+      for (const config of droppableConfigs) {
+        contentFields.push({
+          uuid: entityUuid,
+          bundle: entityBundle,
+          fieldName: config.name,
+          label: config.label,
+          type: config.type as 'reference' | 'link',
+          allowed: config.allowed,
+        })
+      }
+    }
 
     function processBlock(blockUuid: string) {
       const block = blocks.getBlock(blockUuid)
@@ -118,7 +190,7 @@ export default defineBlokkliAgentTool({
         const fieldType = getFieldType(
           ctx.app,
           ctx.itemEntityType,
-          blockUuid,
+          block.bundle,
           editable.fieldName,
         )
         if (!fieldType) continue
@@ -179,13 +251,22 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    processBlock(params.uuid)
+    if (isEntity) {
+      processEntity(params.uuid)
+    } else {
+      processBlock(params.uuid)
+    }
 
     return {
-      label: $t(
-        'aiAgentGetContentFieldsDone',
-        'Got content fields of @bundle block',
-      ).replace('@bundle', bundleLabel),
+      label: isEntity
+        ? $t(
+            'aiAgentGetEntityContentFieldsDone',
+            'Got content fields of page entity',
+          )
+        : $t(
+            'aiAgentGetContentFieldsDone',
+            'Got content fields of @bundle block',
+          ).replace('@bundle', bundleLabel),
       result: {
         contentFields,
       },

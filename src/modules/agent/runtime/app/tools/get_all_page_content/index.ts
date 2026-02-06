@@ -8,6 +8,12 @@ const blockContentSchema = z.object({
   uuid: z.string().describe('The block UUID'),
   bundle: z.string().describe('The block type'),
   text: z.string().describe('All text content from this block concatenated'),
+  referenceFields: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Names of reference/link content fields on this block (e.g., media fields)',
+    ),
 })
 
 const resultSchema = z.object({
@@ -91,12 +97,20 @@ export default defineBlokkliAgentTool({
         }
       }
 
-      // Only add blocks that have text content
-      if (textParts.length > 0) {
+      // Look up reference/link content fields for this block's bundle
+      const droppableFields = ctx.app.types.droppableFieldConfig
+        .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
+        .map((f) => f.name)
+
+      // Add blocks that have text content or reference fields
+      if (textParts.length > 0 || droppableFields.length > 0) {
         content.push({
           uuid: blockUuid,
           bundle: block.bundle,
           text: textParts.join('\n\n'),
+          referenceFields: droppableFields.length
+            ? droppableFields
+            : undefined,
         })
       }
 

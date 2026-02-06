@@ -1,4 +1,4 @@
-import type { PageContext } from '../shared/types'
+import type { PageContext, BlockBundleContentField } from '../shared/types'
 import type { ResolvedSkill } from './skills/types'
 
 /**
@@ -78,6 +78,7 @@ These are pre-defined groups of blocks that can be added to the page. Unlike "li
 - The user's prompt might not always be related to which blocks are selected! Verify if the prompt actually refers to the selection.
 - ONLY assist the user in things that are related to the task!
 - ALWAYS USE THE "ask_question" TOOL TO ASK STRUCTURED QUESTIONS!!!
+- ALL mutation MCP tools will make sure that the mutation is valid - it's not possible for you to make a mistake there. They return a descriptive error message.
 `
 
 const REFUSAL_PROMPT = `
@@ -114,6 +115,30 @@ function getEditModeDescription(editMode: string): string {
     default:
       return ''
   }
+}
+
+/**
+ * Serialize a content field to a stable string key for comparison.
+ */
+function contentFieldKey(field: BlockBundleContentField): string {
+  if (field.type === 'reference' || field.type === 'link') {
+    const allowed = field.allowed
+      .map((a) => `${a.type}[${a.bundles.sort().join(',')}]`)
+      .sort()
+      .join(';')
+    return `${field.name}|${field.type}|${allowed}`
+  }
+  return `${field.name}|${field.type}`
+}
+
+/**
+ * Format a content field as a prompt line.
+ */
+function formatContentField(field: BlockBundleContentField): string {
+  if (field.type === 'reference' || field.type === 'link') {
+    return `- ${field.name} (${field.type}): ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`
+  }
+  return `- ${field.name} (${field.type})`
 }
 
 /**
@@ -162,14 +187,59 @@ function buildPageContext(context: PageContext): string {
     '```',
   )
 
+  // Add entity content fields if present
+  if (context.entityContentFields?.length) {
+    lines.push(
+      '',
+      '## Entity Content Fields',
+      '',
+      `The page entity itself has the following content fields that can be read/edited using get_content_fields, rewrite_text, and replace_media_field with the entity UUID (\`${context.entityUuid}\`):`,
+      '',
+    )
+    for (const field of context.entityContentFields) {
+      lines.push(formatContentField(field))
+    }
+  }
+
   // Add edit mode information
   const editModeDescription = getEditModeDescription(context.editMode)
   if (editModeDescription) {
     lines.push('', '## Edit Mode', '', editModeDescription)
   }
 
+  // Detect content fields that appear identically across ALL bundles
+  const commonFieldKeys = new Set<string>()
+  if (context.bundles.length > 1) {
+    // Count how many bundles have each content field key
+    const fieldKeyCounts = new Map<string, number>()
+    for (const bundle of context.bundles) {
+      for (const field of bundle.contentFields) {
+        const key = contentFieldKey(field)
+        fieldKeyCounts.set(key, (fieldKeyCounts.get(key) || 0) + 1)
+      }
+    }
+    // Fields present in every bundle are "common"
+    for (const [key, count] of fieldKeyCounts) {
+      if (count === context.bundles.length) {
+        commonFieldKeys.add(key)
+      }
+    }
+  }
+
   // Add available block types
   lines.push('', '## Available Block Types', '')
+
+  // List common content fields once if any exist
+  if (commonFieldKeys.size > 0) {
+    lines.push('### Common Content Fields (present on all block types)')
+    // Use the first bundle's fields as the source for formatting
+    for (const field of context.bundles[0]!.contentFields) {
+      if (commonFieldKeys.has(contentFieldKey(field))) {
+        lines.push(formatContentField(field))
+      }
+    }
+    lines.push('')
+  }
 
   for (const bundle of context.bundles) {
     lines.push(`### ${bundle.label} (\`${bundle.id}\`)`)
@@ -178,16 +248,15 @@ function buildPageContext(context: PageContext): string {
     }
     lines.push('')
 
-    if (bundle.contentFields.length) {
+    // Filter out common fields
+    const uniqueContentFields = bundle.contentFields.filter(
+      (field) => !commonFieldKeys.has(contentFieldKey(field)),
+    )
+
+    if (uniqueContentFields.length) {
       lines.push('#### Content Fields')
-      for (const field of bundle.contentFields) {
-        if (field.type === 'reference' || field.type === 'link') {
-          lines.push(
-            `- ${field.name} (${field.type}): ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`,
-          )
-        } else {
-          lines.push(`- ${field.name} (${field.type})`)
-        }
+      for (const field of uniqueContentFields) {
+        lines.push(formatContentField(field))
       }
       lines.push('')
     }

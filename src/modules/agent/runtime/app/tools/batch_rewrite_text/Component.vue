@@ -72,18 +72,35 @@ type ChangeWithState = BatchRewriteChange & {
   applied?: boolean
 }
 
+function resolveEntityAndBundle(uuid: string): {
+  entityType: string
+  bundle: string
+} | null {
+  const { app, itemEntityType } = props.context
+  if (!app) return null
+  if (uuid === app.context.value.entityUuid) {
+    return {
+      entityType: app.context.value.entityType,
+      bundle: app.context.value.entityBundle,
+    }
+  }
+  const block = app.blocks.getBlock(uuid)
+  if (!block) return null
+  return { entityType: itemEntityType, bundle: block.bundle }
+}
+
 function getFieldType(
   uuid: string,
   fieldName: string,
 ): 'plain' | 'markup' | null {
-  const { app, itemEntityType } = props.context
+  const { app } = props.context
   if (!app) return null
-  const block = app.blocks.getBlock(uuid)
-  if (!block) return null
+  const resolved = resolveEntityAndBundle(uuid)
+  if (!resolved) return null
 
   const config = app.types.editableFieldConfig.forName(
-    itemEntityType,
-    block.bundle,
+    resolved.entityType,
+    resolved.bundle,
     fieldName,
   )
   if (!config) return null
@@ -93,16 +110,16 @@ function getFieldType(
 }
 
 function findElement(uuid: string, fieldName: string): HTMLElement | null {
-  const { app, itemEntityType } = props.context
+  const { app } = props.context
   if (!app) return null
-  const block = app.blocks.getBlock(uuid)
-  if (!block) return null
+  const resolved = resolveEntityAndBundle(uuid)
+  if (!resolved) return null
 
   return (
     app.directive.findEditableElement(fieldName, {
-      type: itemEntityType,
+      type: resolved.entityType,
       uuid,
-      bundle: block.bundle,
+      bundle: resolved.bundle,
     }) || null
   )
 }
@@ -171,14 +188,25 @@ async function applySelected() {
 
   // Apply all selected changes via the adapter
   const selectedChanges = changes.value.filter((c) => c.selected)
+  const entityUuid = props.context.app?.context.value.entityUuid
   for (const change of selectedChanges) {
-    await state.mutateWithLoadingState(() =>
-      props.context.adapter.updateFieldValue!({
-        uuid: change.uuid,
-        fieldName: change.fieldName,
-        fieldValue: change.value,
-      }),
-    )
+    const isEntity = change.uuid === entityUuid
+    if (isEntity && props.context.adapter.updateEntityFieldValue) {
+      await state.mutateWithLoadingState(() =>
+        props.context.adapter.updateEntityFieldValue!({
+          fieldName: change.fieldName,
+          fieldValue: change.value,
+        }),
+      )
+    } else {
+      await state.mutateWithLoadingState(() =>
+        props.context.adapter.updateFieldValue!({
+          uuid: change.uuid,
+          fieldName: change.fieldName,
+          fieldValue: change.value,
+        }),
+      )
+    }
     change.applied = true
     applied.push({ uuid: change.uuid, fieldName: change.fieldName })
   }
@@ -193,7 +221,12 @@ async function applySelected() {
           .replace('@applied', String(applied.length))
           .replace('@total', String(changes.value.length))
 
-  emit('done', { applied, rejected, label })
+  emit('done', {
+    applied,
+    rejected,
+    label,
+    historyIndex: state.currentMutationIndex.value,
+  })
 }
 
 function rejectAll() {

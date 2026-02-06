@@ -81,6 +81,8 @@ export type PageContext = {
   editMode: EditMode
   /** Available fragments (reusable content blocks) */
   fragments: Fragment[]
+  /** Content fields on the page entity itself (e.g., lead text, hero image) */
+  entityContentFields?: BlockBundleContentField[]
 }
 
 // ============================================================================

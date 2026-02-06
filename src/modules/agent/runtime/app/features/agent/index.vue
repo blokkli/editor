@@ -240,7 +240,35 @@ function buildPageContext(): PageContext {
     description: f.description,
   }))
 
-  return {
+  // Build entity-level content fields (fields on the page entity itself).
+  const entityContentFields = [
+    ...types.editableFieldConfig
+      .forEntityTypeAndBundle(
+        context.value.entityType,
+        context.value.entityBundle,
+      )
+      .filter((f) => f.type !== 'table')
+      .map((f) => ({
+        name: f.name,
+        label: f.label,
+        type: (f.type === 'frame' || f.type === 'markup'
+          ? 'markup'
+          : 'plain') as 'plain' | 'markup',
+      })),
+    ...types.droppableFieldConfig
+      .forEntityTypeAndBundle(
+        context.value.entityType,
+        context.value.entityBundle,
+      )
+      .map((f) => ({
+        name: f.name,
+        label: f.label,
+        type: f.type as 'reference' | 'link',
+        allowed: f.allowed,
+      })),
+  ]
+
+  const pageContext: PageContext = {
     title: state.entity.value.label || '',
     entityType: context.value.entityType,
     entityUuid: context.value.entityUuid,
@@ -255,6 +283,12 @@ function buildPageContext(): PageContext {
     editMode: state.editMode.value,
     fragments,
   }
+
+  if (entityContentFields.length) {
+    pageContext.entityContentFields = entityContentFields
+  }
+
+  return pageContext
 }
 
 // ============================================================================
@@ -628,13 +662,17 @@ async function executeToolLocally(
 
     await state.mutateWithLoadingState(() => action.apply(adapter))
 
-    // Find newly created UUIDs (blocks that exist now but didn't before)
-    const newUuids = action.affectedUuids?.length
-      ? action.affectedUuids
-      : state.getAllUuids().filter((uuid) => !uuidsBefore.includes(uuid))
+    // Detect actually new blocks (UUIDs that didn't exist before)
+    const newUuids = state
+      .getAllUuids()
+      .filter((uuid) => !uuidsBefore.includes(uuid))
 
-    if (newUuids.length) {
-      app.eventBus.emit('select', newUuids)
+    // Select affected or new blocks
+    const selectUuids = newUuids.length
+      ? newUuids
+      : action.affectedUuids || []
+    if (selectUuids.length) {
+      app.eventBus.emit('select', selectUuids)
       app.eventBus.emit('scrollSelectionIntoView', {})
     }
 
@@ -647,7 +685,7 @@ async function executeToolLocally(
     return {
       success: true,
       historyIndex: state.currentMutationIndex.value,
-      newUuids: newUuids.length ? newUuids : undefined,
+      newUuids: action.type === 'add' && newUuids.length ? newUuids : undefined,
       ...action.result,
     }
   }
@@ -660,7 +698,7 @@ async function executeToolLocally(
     return {
       success: true,
       historyIndex: state.currentMutationIndex.value,
-      newUuids: newUuids.length ? newUuids : undefined,
+      newUuids: action.type === 'add' && newUuids.length ? newUuids : undefined,
       ...action.result,
     }
   } else {

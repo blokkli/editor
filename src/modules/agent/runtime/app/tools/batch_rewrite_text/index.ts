@@ -3,7 +3,9 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 
 const changeSchema = z.object({
-  uuid: z.string().describe('The block UUID containing the field'),
+  uuid: z
+    .string()
+    .describe('The block UUID or entity UUID containing the field'),
   fieldName: z.string().describe('The field name to update'),
   value: z.string().describe('The new text content'),
 })
@@ -30,6 +32,10 @@ const resultSchema = z.object({
     )
     .describe('Changes that were rejected by the user'),
   label: z.string().describe('Human-readable summary of what happened'),
+  historyIndex: z
+    .number()
+    .optional()
+    .describe('The mutation history index after applying changes'),
 })
 
 export type BatchRewriteParams = z.infer<typeof paramsSchema>

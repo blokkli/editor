@@ -3,7 +3,11 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
-  uuid: z.string().describe('The block UUID containing the media field'),
+  uuid: z
+    .string()
+    .describe(
+      'The block UUID or entity UUID containing the media field',
+    ),
   fieldName: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
@@ -21,23 +25,32 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['mediaLibraryReplaceMedia'],
   execute: (ctx, params) => {
-    const { blocks, types, $t } = ctx.app
+    const { blocks, types, $t, context } = ctx.app
 
-    // Validate block exists
-    const block = blocks.getBlock(params.uuid)
-    if (!block) {
+    // Resolve entity type and bundle from either block or entity context.
+    const isEntity = params.uuid === context.value.entityUuid
+    const block = !isEntity ? blocks.getBlock(params.uuid) : null
+
+    if (!isEntity && !block) {
       return { error: `Block not found: ${params.uuid}` }
     }
 
+    const entityType = isEntity
+      ? context.value.entityType
+      : ctx.itemEntityType
+    const bundle = isEntity
+      ? context.value.entityBundle
+      : block!.bundle
+
     // Validate field exists and is a droppable media field
     const config = types.droppableFieldConfig.forName(
-      ctx.itemEntityType,
-      block.bundle,
+      entityType,
+      bundle,
       params.fieldName,
     )
     if (!config) {
       return {
-        error: `Field "${params.fieldName}" is not a reference content field on ${block.bundle} blocks`,
+        error: `Field "${params.fieldName}" is not a reference content field on ${bundle}`,
       }
     }
     const allowedMedia = config.allowed.find((v) => v.type === 'media')
@@ -58,15 +71,29 @@ export default defineBlokkliAgentTool({
         '@field',
         config.label,
       ),
-      apply: (adapter) =>
-        adapter.mediaLibraryReplaceMedia!({
+      apply: (adapter) => {
+        if (isEntity) {
+          if (!adapter.mediaLibraryReplaceEntityMedia) {
+            throw new Error('Entity media replacement not supported')
+          }
+          return adapter.mediaLibraryReplaceEntityMedia({
+            host: {
+              type: entityType,
+              uuid: params.uuid,
+              fieldName: params.fieldName,
+            },
+            mediaId: params.mediaId,
+          })
+        }
+        return adapter.mediaLibraryReplaceMedia!({
           host: {
-            type: ctx.itemEntityType,
+            type: entityType,
             uuid: params.uuid,
             fieldName: params.fieldName,
           },
           mediaId: params.mediaId,
-        }),
+        })
+      },
       affectedUuids: [params.uuid],
     }
   },

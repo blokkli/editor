@@ -746,7 +746,11 @@ function buildTranscript(session: Session): string {
           lines.push(JSON.stringify(block.input, null, 2))
         } else if (block.type === 'tool_result') {
           lines.push(`[Tool Result: ${block.tool_use_id}]`)
-          lines.push(block.content)
+          try {
+            lines.push(JSON.stringify(JSON.parse(block.content), null, 2))
+          } catch {
+            lines.push(block.content)
+          }
         }
       }
     }

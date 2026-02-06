@@ -78,7 +78,7 @@ const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'find_blocks',
   description:
-    'Find blocks matching multiple filter criteria. Supports filtering by bundle, structure (nesting, parent, field), content, and options. Returns paginated results.',
+    'Find blocks matching multiple filter criteria. Supports filtering by bundle, structure (nesting, parent, field), content, and options. Returns paginated results. containsText does simple case-insensitive substring matching. For regex or match snippets, use search_text instead.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label: ($t) => $t('aiAgentFindBlocksRunning', 'Finding blocks...'),
