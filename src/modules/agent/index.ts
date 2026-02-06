@@ -5,38 +5,12 @@ import { defineBlokkliModule } from '../defineBlokkliModule'
 import { McpToolCollector } from './build/McpToolCollector'
 import { SkillCollector } from './build/SkillCollector'
 import { createMcpToolsClientTemplate } from './build/templates/mcpToolsClient'
-import {
-  createAgentServerConfigTemplate,
-  type AgentProvider,
-} from './build/templates/agentServerConfig'
+import { createAgentServerConfigTemplate } from './build/templates/agentServerConfig'
 import { createAgentSkillsTemplate } from './build/templates/agentSkills'
+import type { AgentModuleOptions } from './build/types'
 
 const AGENT_ROUTE = '/api/blokkli/agent'
 const FETCH_ROUTE = '/api/blokkli/agent/fetch'
-
-export type AgentModuleOptions = {
-  /**
-   * Allowed origins for the fetch endpoint.
-   * URLs that the agent is allowed to fetch content from.
-   */
-  allowedFetchOrigins?: string[]
-
-  /**
-   * AI provider to use.
-   * - 'anthropic': Uses Anthropic's Claude models (default)
-   * - 'openai': Uses OpenAI's GPT models (requires openai npm package)
-   *
-   * NOTE: The API key needs to be provided at runtime via runtime config:
-   *
-   * NUXT_BLOKKLI_AGENT_API_KEY=hunter2
-   */
-  provider: AgentProvider
-
-  /**
-   * Model to use for the AI provider.
-   */
-  model: string
-}
 
 export default defineBlokkliModule<AgentModuleOptions>({
   alterOptions: (options) => {
@@ -104,12 +78,10 @@ export default defineBlokkliModule<AgentModuleOptions>({
 
     // Register server template for agent config
     ctx.context.addTemplate(
-      createAgentServerConfigTemplate({
-        allowedFetchOrigins: options?.allowedFetchOrigins ?? [],
-        provider: options?.provider ?? 'anthropic',
-        model: options?.model,
-        providersPath: moduleResolver.resolve('./runtime/server/providers'),
-      }),
+      createAgentServerConfigTemplate(
+        options,
+        moduleResolver.resolve('./runtime/server/providers'),
+      ),
     )
 
     // Initialize skills collector with both module and project directories

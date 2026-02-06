@@ -1,14 +1,5 @@
 import { defineCodeTemplate } from '../../../../../src/build/templates/defineTemplate'
-
-export type AgentProvider = 'anthropic' | 'openai'
-
-export type AgentServerConfigOptions = {
-  allowedFetchOrigins: string[]
-  provider: AgentProvider
-  model?: string
-  /** Absolute path to the providers directory */
-  providersPath: string
-}
+import type { AgentModuleOptions } from '../types'
 
 /**
  * Creates a server-only template that exports the agent configuration.
@@ -18,9 +9,10 @@ export type AgentServerConfigOptions = {
  * - aiModel: The model to use for the AI provider
  */
 export function createAgentServerConfigTemplate(
-  options: AgentServerConfigOptions,
+  options: AgentModuleOptions,
+  providersPath: string
 ) {
-  const { allowedFetchOrigins, provider, model, providersPath } = options
+  const { allowedFetchOrigins, provider, model } = options
 
   return defineCodeTemplate(
     'agent-server-config',
@@ -47,6 +39,7 @@ export const allowedFetchOrigins = ${originsJson}
 export const provider = ${providerCreate}
 
 export const aiModel = ${modelExport}
+export const debugPrompt = ${!!options.debugPrompt}
 `
     },
     () => {
@@ -55,6 +48,7 @@ export const aiModel = ${modelExport}
 export declare const allowedFetchOrigins: string[]
 export declare const provider: AIProvider
 export declare const aiModel: string
+export declare const debugPrompt: boolean
 `
     },
     {

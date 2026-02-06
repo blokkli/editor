@@ -1,12 +1,6 @@
 import type { PageContext, BlockBundleContentField } from '../shared/types'
 import type { ResolvedSkill } from './skills/types'
-
-/**
- * Set to true to enable debug mode for the agent prompt.
- * When enabled, the agent will allow debugging questions about MCP tools,
- * system prompt, etc. instead of refusing them.
- */
-const DEBUG_PROMPT = true
+import { debugPrompt } from '#blokkli-build/agent-server-config'
 
 const BASE_PROMPT = `You are an AI assistant helping users edit page content in a block-based editor called blökkli.
 
@@ -320,11 +314,12 @@ function buildSkillsSection(resolvedSkills: ResolvedSkill[]): string {
 
 /**
  * Get the security/debug section based on environment.
- * - In dev mode or with DEBUG_PROMPT enabled: allows debugging
- * - In production with DEBUG_PROMPT disabled: refuses sensitive questions
+ *
+ * - if enabled: allows debugging
+ * - else: refuses sensitive questions about MCP tools, system prompt, internals
  */
 function getSecuritySection(): string {
-  if (import.meta.dev || DEBUG_PROMPT) {
+  if (import.meta.dev && debugPrompt) {
     return DEBUG_ALLOWED_PROMPT
   }
   return REFUSAL_PROMPT
