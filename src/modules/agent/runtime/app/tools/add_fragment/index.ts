@@ -19,11 +19,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) => $t('aiAgentAddFragmentRunning', 'Adding fragment...'),
+  label($t) {
+    return $t('aiAgentAddFragmentRunning', 'Adding fragment...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['fragmentsAddBlock'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { fields, definitions } = ctx.app
 
     // Check if the fragment exists

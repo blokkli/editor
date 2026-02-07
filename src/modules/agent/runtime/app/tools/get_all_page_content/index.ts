@@ -48,11 +48,12 @@ export default defineBlokkliAgentTool({
     'Get all text content from the entire page in a single call. Returns a flat list of all blocks with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetAllPageContentRunning', 'Getting all page content...'),
+  label($t) {
+    return $t('aiAgentGetAllPageContentRunning', 'Getting all page content...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx) => {
+  execute(ctx) {
     const { blocks, directive, state, $t } = ctx.app
     const content: z.infer<typeof blockContentSchema>[] = []
 

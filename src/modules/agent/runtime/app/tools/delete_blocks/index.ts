@@ -12,11 +12,13 @@ export default defineBlokkliAgentTool({
     'Delete one or more blocks from the page. Requires user approval before the blocks are actually deleted.',
   category: 'mutation',
   modes: ['editing'],
-  label: ($t) => $t('aiAgentDeleteBlocksRunning', 'Deleting blocks...'),
+  label($t) {
+    return $t('aiAgentDeleteBlocksRunning', 'Deleting blocks...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['deleteBlocks'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, types } = ctx.app
 
     if (params.uuids.length === 0) {

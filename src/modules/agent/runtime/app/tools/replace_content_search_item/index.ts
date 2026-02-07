@@ -20,15 +20,16 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) =>
-    $t(
+  label($t) {
+    return $t(
       'aiAgentReplaceContentSearchItemRunning',
       'Replacing content reference...',
-    ),
+    )
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['replaceContentSearchItem'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, types, $t } = ctx.app
 
     // Validate block exists.

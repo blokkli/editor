@@ -20,10 +20,12 @@ export default defineBlokkliAgentTool({
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentGetAllFragments', 'Get all fragments'),
+  label($t) {
+    return $t('aiAgentGetAllFragments', 'Get all fragments')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx) => {
+  execute(ctx) {
     const { definitions, $t } = ctx.app
 
     const result = definitions.fragmentDefinitions.value.map((fragment) => ({

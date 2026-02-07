@@ -29,11 +29,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) => $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks...'),
+  label($t) {
+    return $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['duplicateBlocks'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { $t, types, context, blocks } = ctx.app
 
     // 1. Validate all blocks exist

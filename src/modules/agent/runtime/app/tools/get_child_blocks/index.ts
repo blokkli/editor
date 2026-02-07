@@ -30,10 +30,7 @@ const resultSchema = z.object({
     .string()
     .describe('The bundle type of the parent (page or block)'),
   fields: z
-    .record(
-      z.string().describe('Field name'),
-      fieldWithBlocksSchema,
-    )
+    .record(z.string().describe('Field name'), fieldWithBlocksSchema)
     .describe('Fields keyed by name, each with parent object and blocks'),
 })
 
@@ -43,10 +40,12 @@ export default defineBlokkliAgentTool({
     'Get all child fields and blocks for the page or a block. Returns parent objects ready for use with add_blocks. Use this to understand structure before adding blocks.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentGetChildBlocks', 'Get child blocks'),
+  label($t) {
+    return $t('aiAgentGetChildBlocks', 'Get child blocks')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { context, state, $t, blocks, types } = ctx.app
 
     // Use provided UUID or fall back to page entity

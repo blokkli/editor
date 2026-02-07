@@ -53,11 +53,12 @@ export default defineBlokkliAgentTool({
   category: 'query',
   modes: ['editing', 'translating'],
   lazy: true,
-  label: ($t) =>
-    $t('aiAgentGetMutationHistoryRunning', 'Getting mutation history...'),
+  label($t) {
+    return $t('aiAgentGetMutationHistoryRunning', 'Getting mutation history...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { state, $t } = ctx.app
     const mutations = state.mutations.value
     const currentIndex = state.currentMutationIndex.value

@@ -81,10 +81,12 @@ export default defineBlokkliAgentTool({
     'Find blocks matching multiple filter criteria. Supports filtering by bundle, structure (nesting, parent, field), content, and options. Returns paginated results. containsText does simple case-insensitive substring matching. For regex or match snippets, use search_text instead.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentFindBlocksRunning', 'Finding blocks...'),
+  label($t) {
+    return $t('aiAgentFindBlocksRunning', 'Finding blocks...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, state, context, types, dom, definitions, $t } = ctx.app
     const limit = params.limit ?? 50
 

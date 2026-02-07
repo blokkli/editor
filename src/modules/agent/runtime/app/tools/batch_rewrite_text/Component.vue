@@ -134,7 +134,10 @@ function onMouseLeave() {
 }
 
 async function applySelected() {
-  const rejectedByUser: Record<string, Record<string, { reasonForRejection: string }>> = {}
+  const rejectedByUser: Record<
+    string,
+    Record<string, { reasonForRejection: string }>
+  > = {}
 
   // Apply all selected changes via the adapter in a single batch.
   const entityUuid = editorContext.value.entityUuid
@@ -203,7 +206,10 @@ async function applySelected() {
   }
 
   let agentMessage: string | undefined
-  if (rejectedWithoutReason.length === 1 || rejectedWithoutReason.length === 2) {
+  if (
+    rejectedWithoutReason.length === 1 ||
+    rejectedWithoutReason.length === 2
+  ) {
     const fieldList = rejectedWithoutReason
       .map((r) => `"${r.fieldName}" of block ${r.uuid}`)
       .join(' and ')
@@ -223,7 +229,10 @@ async function applySelected() {
 }
 
 function rejectAll() {
-  const rejectedByUser: Record<string, Record<string, { reasonForRejection: string }>> = {}
+  const rejectedByUser: Record<
+    string,
+    Record<string, { reasonForRejection: string }>
+  > = {}
   for (const item of items) {
     const fields = rejectedByUser[item.uuid] ?? {}
     fields[item.fieldName] = { reasonForRejection: '' }

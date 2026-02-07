@@ -134,9 +134,7 @@ export const parentSchema = z.object({
     .describe(
       'The entity type of the parent. Do NOT guess this - always use the parent object returned by get_child_blocks.',
     ),
-  uuid: z
-    .string()
-    .describe('The UUID of the parent entity or block'),
+  uuid: z.string().describe('The UUID of the parent entity or block'),
   field: z
     .string()
     .describe(

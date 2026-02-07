@@ -38,10 +38,12 @@ export default defineBlokkliAgentTool({
     'Search for text in block content. Returns blocks containing matches with text snippets. Only searches text directly in each block, not in nested child blocks. For regex, use /pattern/flags format (e.g., "/hello|world/gi").',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentSearchTextRunning', 'Searching text...'),
+  label($t) {
+    return $t('aiAgentSearchTextRunning', 'Searching text...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, dom, element, $t } = ctx.app
     const limit = params.limit ?? 20
 

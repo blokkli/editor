@@ -42,12 +42,14 @@ export default defineBlokkliAgentTool({
           'getContentSearchResults',
         ],
         modes: ['readonly', 'editing', 'translating', 'review'],
-        label: () => `Searching ${tab.title}...`,
+        label() {
+          return `Searching ${tab.title}...`
+        },
         paramsSchema: z.object({
           query: z.string().describe(`Search query for ${tab.title}`),
         }),
         resultSchema,
-        execute: async (toolCtx, params) => {
+        async execute(toolCtx, params) {
           const items = await toolCtx.adapter.getContentSearchResults(
             tab.id,
             params.query,

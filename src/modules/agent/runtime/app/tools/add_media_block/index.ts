@@ -24,11 +24,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) => $t('aiAgentAddMediaBlockRunning', 'Adding media block...'),
+  label($t) {
+    return $t('aiAgentAddMediaBlockRunning', 'Adding media block...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['mediaLibraryAddBlock'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { $t, types } = ctx.app
     const item: DraggableMediaLibraryItem = {
       itemType: 'media_library',

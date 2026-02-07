@@ -19,11 +19,12 @@ export default defineBlokkliAgentTool({
     'Get the blocks currently selected by the user. Returns an empty array if nothing is selected.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetSelectedBlocksRunning', 'Getting selected blocks...'),
+  label($t) {
+    return $t('aiAgentGetSelectedBlocksRunning', 'Getting selected blocks...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx) => {
+  execute(ctx) {
     const { selection, types, $t } = ctx.app
 
     const blocks = selection.uuids.value.map((uuid) => {

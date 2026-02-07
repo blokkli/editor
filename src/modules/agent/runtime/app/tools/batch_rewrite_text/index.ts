@@ -53,13 +53,16 @@ export default defineBlokkliAgentTool({
     'Rewrite text content in multiple content fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields. Set requireApproval to false when the user has already explicitly provided or confirmed the exact text to use.',
   category: 'mutation',
   modes: ['editing', 'translating'],
-  label: ($t) =>
-    $t('aiAgentBatchRewriteTextRunning', 'Rewriting multiple texts...'),
+  label($t) {
+    return $t('aiAgentBatchRewriteTextRunning', 'Rewriting multiple texts...')
+  },
   paramsSchema,
   resultSchema,
   requiredAdapterMethods: ['updateFieldValueBatched'],
   component: Component,
-  execute: (_ctx, params) => params,
+  execute(_ctx, params) {
+    return params
+  },
   mockParams: () => ({
     changes: {
       'mock-1': { title: 'Updated Title Text' },

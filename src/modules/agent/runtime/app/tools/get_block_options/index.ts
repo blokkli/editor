@@ -18,11 +18,12 @@ export default defineBlokkliAgentTool({
     'Get available options and their current values for one or more blocks',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetBlockOptionsRunning', 'Getting block options...'),
+  label($t) {
+    return $t('aiAgentGetBlockOptionsRunning', 'Getting block options...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, state, definitions, selection, types, $t } = ctx.app
 
     const result: z.infer<typeof resultSchema> = {}

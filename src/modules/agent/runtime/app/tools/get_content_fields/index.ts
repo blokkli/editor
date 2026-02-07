@@ -100,11 +100,12 @@ export default defineBlokkliAgentTool({
     'Get all content fields (text, media, links) for a block and optionally its nested children',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetContentFieldsRunning', 'Getting content fields...'),
+  label($t) {
+    return $t('aiAgentGetContentFieldsRunning', 'Getting content fields...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, directive, state, types, $t, context } = ctx.app
     const result: Result = {}
     const processedUuids = new Set<string>()

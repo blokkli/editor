@@ -16,11 +16,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing', 'translating'],
-  label: ($t) => $t('aiAgentGoToHistoryIndexRunning', 'Navigating history...'),
+  label($t) {
+    return $t('aiAgentGoToHistoryIndexRunning', 'Navigating history...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['setHistoryIndex'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { $t, state } = ctx.app
     const mutations = state.mutations.value
     const currentIndex = state.currentMutationIndex.value

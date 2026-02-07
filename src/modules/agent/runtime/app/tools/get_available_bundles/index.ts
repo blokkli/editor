@@ -56,10 +56,12 @@ export default defineBlokkliAgentTool({
     'Get detailed information about which block types can be added to a specific field, including their content fields and block fields (for nested blocks).',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...'),
+  label($t) {
+    return $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { fields, types, state, $t } = ctx.app
     const label = $t(
       'aiAgentGetBundleInfoDone',

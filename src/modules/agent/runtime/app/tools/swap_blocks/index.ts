@@ -14,11 +14,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) => $t('aiAgentSwapBlocksRunning', 'Swapping blocks...'),
+  label($t) {
+    return $t('aiAgentSwapBlocksRunning', 'Swapping blocks...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['swapBlocks'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, types, $t } = ctx.app
 
     // Same block - nothing to do

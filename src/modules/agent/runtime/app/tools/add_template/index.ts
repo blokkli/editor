@@ -23,11 +23,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) => $t('aiAgentAddTemplateRunning', 'Adding template...'),
+  label($t) {
+    return $t('aiAgentAddTemplateRunning', 'Adding template...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['templatesAdd'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { fields, $t } = ctx.app
 
     // Check if the field exists

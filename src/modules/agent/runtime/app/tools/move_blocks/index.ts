@@ -18,11 +18,13 @@ export default defineBlokkliAgentTool({
     'Move one or more blocks to a different parent field. All blocks are moved to the same location and they KEEP their UUIDs!!',
   category: 'mutation',
   modes: ['editing'],
-  label: ($t) => $t('aiAgentMoveBlocksRunning', 'Moving blocks...'),
+  label($t) {
+    return $t('aiAgentMoveBlocksRunning', 'Moving blocks...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['moveMultipleBlocks'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, types } = ctx.app
 
     if (params.uuids.length === 0) {

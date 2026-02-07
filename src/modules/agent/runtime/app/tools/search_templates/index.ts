@@ -29,11 +29,13 @@ export default defineBlokkliAgentTool({
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentSearchTemplatesRunning', 'Searching templates...'),
+  label($t) {
+    return $t('aiAgentSearchTemplatesRunning', 'Searching templates...')
+  },
   paramsSchema,
   resultSchema,
   requiredAdapterMethods: ['templatesSearch'],
-  execute: async (ctx, params) => {
+  async execute(ctx, params) {
     const { $t } = ctx.app
 
     const apiResult = await ctx.adapter.templatesSearch!({

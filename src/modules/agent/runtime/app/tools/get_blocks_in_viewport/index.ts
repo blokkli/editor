@@ -254,11 +254,15 @@ export default defineBlokkliAgentTool({
     'Get blocks currently visible in the viewport with their visibility percentage. Use this for viewport-relative queries like "the block at the top", "what\'s in the center", or "blocks near the bottom". NOT for getting all page content - use get_all_page_content for that.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetBlocksInViewportRunning', 'Getting blocks in viewport...'),
+  label($t) {
+    return $t(
+      'aiAgentGetBlocksInViewportRunning',
+      'Getting blocks in viewport...',
+    )
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { dom, state, $t } = ctx.app
     const visibleUuids = dom.getVisibleBlocks()
 

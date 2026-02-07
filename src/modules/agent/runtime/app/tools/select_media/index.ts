@@ -40,11 +40,15 @@ export default defineBlokkliAgentTool({
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentSelectMediaRunning', 'Selecting media...'),
+  label($t) {
+    return $t('aiAgentSelectMediaRunning', 'Selecting media...')
+  },
   paramsSchema,
   resultSchema,
   component: Component,
-  execute: (_ctx, params) => params,
+  execute(_ctx, params) {
+    return params
+  },
   mockParams: () => ({
     items: [
       {

@@ -36,11 +36,15 @@ export default defineBlokkliAgentTool({
     'Ask the user a question with predefined options. Use for clarifications or choices. Prefer this over listing options in a message!!',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentAskQuestionRunning', 'Waiting for answer...'),
+  label($t) {
+    return $t('aiAgentAskQuestionRunning', 'Waiting for answer...')
+  },
   paramsSchema,
   resultSchema,
   component: Component,
-  execute: (_ctx, params) => params,
+  execute(_ctx, params) {
+    return params
+  },
   mockParams: () => ({
     question: 'Which style do you prefer for the hero section?',
     options: [

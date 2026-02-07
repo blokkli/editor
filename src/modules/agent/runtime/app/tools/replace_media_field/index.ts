@@ -18,11 +18,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) => $t('aiAgentReplaceMediaRunning', 'Replacing media...'),
+  label($t) {
+    return $t('aiAgentReplaceMediaRunning', 'Replacing media...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['mediaLibraryReplaceMedia'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, types, $t, context } = ctx.app
 
     // Resolve entity type and bundle from either block or entity context.

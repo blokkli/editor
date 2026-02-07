@@ -27,12 +27,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) =>
-    $t('aiAgentAddContentSearchBlockRunning', 'Adding content block...'),
+  label($t) {
+    return $t('aiAgentAddContentSearchBlockRunning', 'Adding content block...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['addContentSearchItem'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { $t, types } = ctx.app
     const item: SearchContentItem = {
       id: params.itemId,

@@ -152,11 +152,12 @@ export default defineBlokkliAgentTool({
     'Get comprehensive context for a single block including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetBlockContextRunning', 'Getting block context...'),
+  label($t) {
+    return $t('aiAgentGetBlockContextRunning', 'Getting block context...')
+  },
   paramsSchema,
   resultSchema,
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const {
       blocks,
       state,

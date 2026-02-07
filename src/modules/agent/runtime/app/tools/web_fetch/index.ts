@@ -29,10 +29,12 @@ export default defineBlokkliAgentTool({
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentWebFetchRunning', 'Fetching web page...'),
+  label($t) {
+    return $t('aiAgentWebFetchRunning', 'Fetching web page...')
+  },
   paramsSchema,
   resultSchema,
-  execute: async (ctx, params) => {
+  async execute(ctx, params) {
     const { $t } = ctx.app
 
     const response = await fetch('/api/blokkli/agent/fetch', {

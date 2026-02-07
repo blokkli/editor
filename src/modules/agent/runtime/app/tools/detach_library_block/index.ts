@@ -17,12 +17,13 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   lazy: true,
   modes: ['editing'],
-  label: ($t) =>
-    $t('aiAgentDetachLibraryBlockRunning', 'Detaching library block...'),
+  label($t) {
+    return $t('aiAgentDetachLibraryBlockRunning', 'Detaching library block...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['detachReusableBlock'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, $t } = ctx.app
 
     if (params.uuids.length === 0) {

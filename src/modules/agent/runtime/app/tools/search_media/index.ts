@@ -40,11 +40,13 @@ export default defineBlokkliAgentTool({
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) => $t('aiAgentSearchMediaRunning', 'Searching media...'),
+  label($t) {
+    return $t('aiAgentSearchMediaRunning', 'Searching media...')
+  },
   paramsSchema,
   resultSchema,
   requiredAdapterMethods: ['mediaLibraryGetResults'],
-  execute: async (ctx, params) => {
+  async execute(ctx, params) {
     const { $t } = ctx.app
     const filters: Record<string, string> = {}
     const query = (params.query ?? '').replaceAll('*', '').replaceAll('%', '')

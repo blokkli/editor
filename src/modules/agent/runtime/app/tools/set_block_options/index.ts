@@ -29,12 +29,13 @@ export default defineBlokkliAgentTool({
     'Set options on one or more blocks. Each block entry contains a UUID and an options object with key-value pairs.',
   category: 'mutation',
   modes: ['editing'],
-  label: ($t) =>
-    $t('aiAgentSetBlockOptionsRunning', 'Setting block options...'),
+  label($t) {
+    return $t('aiAgentSetBlockOptionsRunning', 'Setting block options...')
+  },
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['updateOptions'],
-  execute: (ctx, params) => {
+  execute(ctx, params) {
     const { blocks, definitions, selection } = ctx.app
 
     if (params.blocks.length === 0) {
