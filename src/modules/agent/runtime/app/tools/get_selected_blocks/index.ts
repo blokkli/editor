@@ -18,6 +18,8 @@ export default defineBlokkliAgentTool({
   description:
     'Get the blocks currently selected by the user. Returns an empty array if nothing is selected.',
   category: 'query',
+  volatile: true,
+  prunedSummary: (r) => `${r.blocks?.length || 0} blocks selected`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetSelectedBlocksRunning', 'Getting selected blocks...')

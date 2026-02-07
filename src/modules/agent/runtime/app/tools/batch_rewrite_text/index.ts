@@ -52,6 +52,8 @@ export default defineBlokkliAgentTool({
   description:
     'Rewrite text content in multiple content fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields. Set requireApproval to false when the user has already explicitly provided or confirmed the exact text to use.',
   category: 'mutation',
+  prunedSummary: (r) =>
+    `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
   modes: ['editing', 'translating'],
   label($t) {
     return $t('aiAgentBatchRewriteTextRunning', 'Rewriting multiple texts...')

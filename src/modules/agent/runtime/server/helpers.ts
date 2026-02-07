@@ -141,6 +141,45 @@ export function classifyError(error: unknown): {
   }
 }
 
+// ============================================================================
+// Pruning Types
+// ============================================================================
+
+/**
+ * Metadata about a tool used during message pruning.
+ */
+export type ToolPruningMetadata = {
+  volatile?: boolean
+}
+
+// ============================================================================
+// Pruning Helpers
+// ============================================================================
+
+/**
+ * Find the tool name for a tool_result block by looking up the matching
+ * tool_use block in the preceding assistant message.
+ */
+export function findToolNameForResult(
+  messages: GenericMessage[],
+  userMsgIndex: number,
+  toolUseId: string,
+): string | undefined {
+  // The assistant message with the matching tool_use should be immediately before
+  for (let i = userMsgIndex - 1; i >= 0; i--) {
+    const msg = messages[i]
+    if (msg.role !== 'assistant' || !Array.isArray(msg.content)) continue
+    for (const block of msg.content) {
+      if (block.type === 'tool_use' && block.id === toolUseId) {
+        return block.name
+      }
+    }
+    // Only check the immediately preceding assistant message
+    break
+  }
+  return undefined
+}
+
 /**
  * Compress a tool result to reduce token usage.
  * Extracts just the essential information from the result.
@@ -148,6 +187,11 @@ export function classifyError(error: unknown): {
 export function compressToolResult(content: string): string {
   try {
     const parsed = JSON.parse(content)
+
+    // Client-computed summary takes highest priority
+    if (parsed._summary) {
+      return JSON.stringify({ summary: parsed._summary })
+    }
 
     // Query tools have a label field - use it as summary
     if (parsed.label) {
@@ -178,35 +222,92 @@ export function compressToolResult(content: string): string {
 }
 
 /**
+ * Compress a volatile tool result — the page state has changed since this
+ * query ran, so the data is stale.
+ */
+function compressVolatileToolResult(content: string): string {
+  try {
+    const parsed = JSON.parse(content)
+    const summary = parsed._summary || 'page state has changed since this query'
+    return JSON.stringify({ stale: true, summary })
+  } catch {
+    return JSON.stringify({
+      stale: true,
+      summary: 'page state has changed since this query',
+    })
+  }
+}
+
+/**
+ * Check whether any mutation tool_result exists between two message indices.
+ * Used to determine if a volatile query result has become stale.
+ */
+function hasMutationBetween(
+  messages: GenericMessage[],
+  afterIndex: number,
+  beforeIndex: number,
+  toolMetadata: Map<string, ToolPruningMetadata>,
+): boolean {
+  for (let i = afterIndex + 1; i < beforeIndex; i++) {
+    const msg = messages[i]
+    if (msg.role !== 'user' || !Array.isArray(msg.content)) continue
+    for (const block of msg.content) {
+      if (block.type !== 'tool_result') continue
+      const toolName = findToolNameForResult(messages, i, block.tool_use_id)
+      if (!toolName) continue
+      // A tool is a mutation if it's NOT in the metadata as volatile, and
+      // it's NOT a server tool. Check if it's a mutation by seeing if the
+      // result contains { success: ... } (mutation result pattern).
+      const meta = toolMetadata.get(toolName)
+      if (meta?.volatile) continue // queries, not mutations
+      try {
+        const parsed = JSON.parse(block.content)
+        if (parsed.success !== undefined) return true
+      } catch {
+        // not JSON, skip
+      }
+    }
+  }
+  return false
+}
+
+/**
  * Prune old messages to reduce context size.
  * Keeps recent messages intact, compresses old tool results to just their summary.
  *
  * A "turn" is defined as a user message followed by an assistant response.
- * We count turns by counting user messages (since each user message starts a turn).
+ * We count turns by counting user messages that contain actual user text
+ * (not just tool results or tool results mixed with skill text).
  */
 export function pruneMessages(
   messages: GenericMessage[],
   keepRecentTurns: number,
+  toolMetadata?: Map<string, ToolPruningMetadata>,
 ): void {
   if (messages.length === 0) {
     return
   }
 
-  // Count user messages to determine turns
-  // Each user message (that's not just tool results) represents a new turn
+  const metadata = toolMetadata || new Map<string, ToolPruningMetadata>()
+
+  // Count user messages to determine turns.
+  // A user message that contains any tool_result blocks is NOT a real turn —
+  // it's a tool response message. Only messages without tool_result blocks
+  // (i.e. actual user prompts or system messages) count as turns.
   let turnCount = 0
   const turnStartIndices: number[] = []
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i]
     if (msg.role === 'user') {
-      // Check if this is a "real" user message vs tool results
-      // Tool results are arrays of { type: 'tool_result', ... }
       const content = msg.content
-      const isToolResultOnly =
+      // Bug 4 fix: use .some() instead of .every() — a message with tool_results
+      // mixed with text blocks (e.g. skill injections) is still a tool response,
+      // not a real user turn.
+      const containsToolResult =
         Array.isArray(content) &&
         content.length > 0 &&
-        content.every(
+        content.some(
           (block) =>
             typeof block === 'object' &&
             block !== null &&
@@ -214,7 +315,7 @@ export function pruneMessages(
             block.type === 'tool_result',
         )
 
-      if (!isToolResultOnly) {
+      if (!containsToolResult) {
         turnCount++
         turnStartIndices.push(i)
       }
@@ -247,25 +348,115 @@ export function pruneMessages(
       continue
     }
 
-    // Compress tool_result blocks.
-    // For user messages, also remove text blocks (e.g. skill guidelines injected
-    // alongside tool results). We only strip text from user messages — stripping
-    // from assistant messages would leave empty content arrays, which the API
-    // rejects for non-final assistant messages.
+    if (msg.role === 'assistant') {
+      // Compress tool_use inputs in old assistant messages to save tokens
+      for (const block of content) {
+        if (block.type === 'tool_use') {
+          block.input = { _pruned: true }
+        }
+      }
+      continue
+    }
+
+    // User messages: compress tool_result blocks and remove text blocks
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
       if (block.type === 'tool_result') {
         const originalSize = block.content.length
-        block.content = compressToolResult(block.content)
+        const toolName = findToolNameForResult(messages, i, block.tool_use_id)
+        const meta = toolName ? metadata.get(toolName) : undefined
+
+        // If the tool is volatile and a mutation happened after it, mark as stale
+        if (
+          meta?.volatile &&
+          hasMutationBetween(messages, i, messages.length, metadata)
+        ) {
+          block.content = compressVolatileToolResult(block.content)
+        } else {
+          block.content = compressToolResult(block.content)
+        }
 
         if (DEBUG_LOGGING && originalSize > block.content.length) {
           console.log(
-            `[Pruning] Compressed tool result: ${originalSize} -> ${block.content.length} chars`,
+            `[Pruning] Compressed tool result${meta?.volatile ? ' (volatile)' : ''}: ${originalSize} -> ${block.content.length} chars`,
           )
         }
-      } else if (block.type === 'text' && msg.role === 'user') {
+      } else if (block.type === 'text') {
         content.splice(j, 1)
       }
     }
   }
+}
+
+// ============================================================================
+// Message Validation
+// ============================================================================
+
+/**
+ * Validate message array for issues that would cause API errors.
+ * Returns an array of issue descriptions (empty if valid).
+ */
+export function validateMessages(messages: GenericMessage[]): string[] {
+  const issues: string[] = []
+
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i]
+
+    // Check for consecutive same-role messages
+    if (i > 0 && messages[i - 1].role === msg.role) {
+      issues.push(
+        `Consecutive ${msg.role} messages at indices ${i - 1} and ${i}`,
+      )
+    }
+
+    // Check for empty content
+    if (Array.isArray(msg.content) && msg.content.length === 0) {
+      issues.push(`Empty content array in ${msg.role} message at index ${i}`)
+    }
+
+    // Check for orphaned tool_result (no matching tool_use in preceding assistant)
+    if (msg.role === 'user' && Array.isArray(msg.content)) {
+      for (const block of msg.content) {
+        if (block.type === 'tool_result') {
+          const toolName = findToolNameForResult(messages, i, block.tool_use_id)
+          if (!toolName) {
+            issues.push(
+              `Orphaned tool_result for ${block.tool_use_id} at message index ${i}`,
+            )
+          }
+        }
+      }
+    }
+
+    // Check for orphaned tool_use (no matching tool_result in following user message)
+    if (msg.role === 'assistant' && Array.isArray(msg.content)) {
+      for (const block of msg.content) {
+        if (block.type === 'tool_use') {
+          const nextMsg = messages[i + 1]
+          if (!nextMsg || nextMsg.role !== 'user') {
+            issues.push(
+              `tool_use "${block.name}" (${block.id}) at message index ${i} has no following user message`,
+            )
+            continue
+          }
+          if (!Array.isArray(nextMsg.content)) {
+            issues.push(
+              `tool_use "${block.name}" (${block.id}) at message index ${i} has no matching tool_result`,
+            )
+            continue
+          }
+          const hasResult = nextMsg.content.some(
+            (b) => b.type === 'tool_result' && b.tool_use_id === block.id,
+          )
+          if (!hasResult) {
+            issues.push(
+              `tool_use "${block.name}" (${block.id}) at message index ${i} has no matching tool_result`,
+            )
+          }
+        }
+      }
+    }
+  }
+
+  return issues
 }

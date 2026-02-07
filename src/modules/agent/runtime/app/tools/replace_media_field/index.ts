@@ -16,6 +16,7 @@ export default defineBlokkliAgentTool({
   description:
     'Replace the media on an existing block field. Use get_content_fields first to see available reference fields, then search_media to find media items.',
   category: 'mutation',
+  prunedSummary: (r) => (r.success ? 'replaced media' : 'rejected'),
   lazy: true,
   modes: ['editing'],
   label($t) {

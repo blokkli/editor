@@ -17,6 +17,7 @@ export default defineBlokkliAgentTool({
   description:
     'Add a fragment block to the page. Requires user approval before the fragment is actually added.',
   category: 'mutation',
+  prunedSummary: (r) => (r.success ? 'added fragment' : 'rejected'),
   lazy: true,
   modes: ['editing'],
   label($t) {

@@ -577,10 +577,30 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         })
         activeItem.value = null
 
+        // Inject _summary from prunedSummary callback for use during server-side pruning.
+        let resultForServer = result
+        if (
+          toolDef.prunedSummary &&
+          typeof result === 'object' &&
+          result !== null
+        ) {
+          try {
+            const summary = toolDef.prunedSummary(result)
+            if (summary) {
+              resultForServer = {
+                ...(result as Record<string, unknown>),
+                _summary: summary,
+              }
+            }
+          } catch {
+            // prunedSummary failed — send original result
+          }
+        }
+
         send({
           type: 'tool_result',
           callId,
-          result,
+          result: resultForServer,
         })
       }
     } catch (error) {

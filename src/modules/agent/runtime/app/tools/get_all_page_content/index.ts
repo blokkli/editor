@@ -47,6 +47,8 @@ export default defineBlokkliAgentTool({
   description:
     'Get all text content from the entire page in a single call. Returns a flat list of all blocks with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
   category: 'query',
+  volatile: true,
+  prunedSummary: (r) => `${r.content?.length || 0} blocks`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetAllPageContentRunning', 'Getting all page content...')

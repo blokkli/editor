@@ -113,6 +113,8 @@ export type ClientToolDefinition = {
   description: string
   input_schema: object
   lazy?: boolean
+  category?: 'query' | 'mutation'
+  volatile?: boolean
 }
 
 /**

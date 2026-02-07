@@ -59,6 +59,8 @@ export default defineBlokkliAgentTool({
   description:
     'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. IMPORTANT: Always provide values for content fields (text, media/entity references) directly, instead of adding empty blocks! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT block fields! Nested blocks need to be created in separate calls.',
   category: 'mutation',
+  prunedSummary: (r) =>
+    r.success ? `added ${r.newBlocks?.length || 0} blocks` : 'rejected',
   modes: ['editing'],
   label($t) {
     return $t('aiAgentAddBlocksRunning', 'Adding blocks...')

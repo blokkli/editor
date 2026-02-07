@@ -107,6 +107,8 @@ export default defineBlokkliAgentTool({
   description:
     'Get all content fields (text, media, links) for a block and optionally its nested children',
   category: 'query',
+  volatile: true,
+  prunedSummary: (r) => `fields for ${Object.keys(r || {}).length} blocks`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetContentFieldsRunning', 'Getting content fields...')

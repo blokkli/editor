@@ -15,6 +15,8 @@ export default defineBlokkliAgentTool({
     'The result includes newBlocks containing the UUIDs and bundles of the newly created editable blocks. ' +
     'Use these new UUIDs for any subsequent operations.',
   category: 'mutation',
+  prunedSummary: (r) =>
+    r.success ? `detached ${r.newBlocks?.length || 0} blocks` : 'rejected',
   lazy: true,
   modes: ['editing'],
   label($t) {

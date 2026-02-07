@@ -12,6 +12,7 @@ export default defineBlokkliAgentTool({
   description:
     'Swap the positions of two blocks, either in the same field or different fields.',
   category: 'mutation',
+  prunedSummary: (r) => (r.success ? 'swapped blocks' : 'rejected'),
   lazy: true,
   modes: ['editing'],
   label($t) {

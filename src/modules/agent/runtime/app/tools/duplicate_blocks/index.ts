@@ -27,6 +27,8 @@ export default defineBlokkliAgentTool({
   description:
     'Duplicate one or more blocks, with ALL their child blocks. Without parent parameter, duplicates in the same field. With parent parameter, duplicates to a different field.',
   category: 'mutation',
+  prunedSummary: (r) =>
+    r.success ? `duplicated ${r.newBlocks?.length || 0} blocks` : 'rejected',
   lazy: true,
   modes: ['editing'],
   label($t) {

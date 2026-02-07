@@ -11,6 +11,7 @@ export default defineBlokkliAgentTool({
   description:
     'Delete one or more blocks from the page. Requires user approval before the blocks are actually deleted.',
   category: 'mutation',
+  prunedSummary: (r) => (r.success ? 'deleted blocks' : 'rejected'),
   modes: ['editing'],
   label($t) {
     return $t('aiAgentDeleteBlocksRunning', 'Deleting blocks...')

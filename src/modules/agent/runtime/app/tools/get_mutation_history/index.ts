@@ -51,6 +51,8 @@ export default defineBlokkliAgentTool({
   name: 'get_mutation_history',
   description: `Get information about the mutation history. Returns current position, undo/redo availability, and optionally context mutations before/after the current position. Use with go_to_history_index to navigate.`,
   category: 'query',
+  volatile: true,
+  prunedSummary: (r) => `index ${r.currentIndex ?? -1}/${r.totalCount ?? 0}`,
   modes: ['editing', 'translating'],
   lazy: true,
   label($t) {

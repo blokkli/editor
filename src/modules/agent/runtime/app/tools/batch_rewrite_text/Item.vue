@@ -72,6 +72,10 @@ const override = useEditableFieldOverride(props.fieldName, host)
 function onMouseEnter() {
   if (override.element) {
     eventBus.emit('highlight', override.element)
+    eventBus.emit('scrollIntoView', {
+      element: override.element,
+      immediate: true,
+    })
   }
 }
 

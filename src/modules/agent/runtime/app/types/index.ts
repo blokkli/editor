@@ -35,6 +35,25 @@ export type Host = {
 export type McpToolCategory = 'query' | 'mutation'
 
 /**
+ * Result shape for mutation tools after the framework applies the mutation.
+ * This is the type passed to `prunedSummary` for non-component mutation tools.
+ */
+export type MutationToolResult =
+  | {
+      success: true
+      historyIndex: number
+      newBlocks?: Array<{
+        uuid: string
+        bundle: string
+        blockFields?: string[]
+      }>
+    }
+  | {
+      success: false
+      rejected?: true
+    }
+
+/**
  * Result from a query tool - includes a label for UI display
  * and the actual result data sent to the LLM.
  */
@@ -224,6 +243,31 @@ export type McpToolDefinition<
   lazy?: boolean
 
   /**
+   * Whether results become stale after any mutation.
+   * When true, old results from this tool are marked as stale during pruning.
+   * Typical for query tools that return page structure (e.g. get_child_blocks).
+   */
+  volatile?: boolean
+
+  /**
+   * Callback to compute a pruning summary from the tool result.
+   * Called client-side after tool execution. The returned string is included
+   * as `_summary` in the result sent to the server, and used during pruning
+   * instead of the generic fallback.
+   *
+   * The result type depends on the tool category:
+   * - Query tools / component tools: `z.infer<TResultSchema>`
+   * - Mutation tools (no component): `MutationToolResult`
+   */
+  prunedSummary?: (
+    result: TComponent extends Component
+      ? z.infer<TResultSchema>
+      : TCategory extends 'query'
+        ? z.infer<TResultSchema>
+        : MutationToolResult,
+  ) => string
+
+  /**
    * Optional function returning mock params for styling/debugging.
    * When provided, the debug view will render the component with these params.
    */
@@ -255,6 +299,10 @@ export type FactoryResolvedTool = {
   component?: Component
   requiresApproval?: boolean
   lazy?: boolean
+  volatile?: boolean
+  // `any` is intentional: FactoryResolvedTool erases generics, and function
+  // parameter contravariance prevents using a concrete type here.
+  prunedSummary?: (result: any) => string // eslint-disable-line @typescript-eslint/no-explicit-any
   execute: (...args: any[]) => any
   mockParams?: () => any
 }

@@ -28,6 +28,7 @@ export default defineBlokkliAgentTool({
   description:
     'Set options on one or more blocks. Each block entry contains a UUID and an options object with key-value pairs.',
   category: 'mutation',
+  prunedSummary: (r) => (r.success ? 'updated options' : 'rejected'),
   modes: ['editing'],
   label($t) {
     return $t('aiAgentSetBlockOptionsRunning', 'Setting block options...')

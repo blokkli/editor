@@ -14,6 +14,8 @@ export default defineBlokkliAgentTool({
   name: 'go_to_history_index',
   description: `Navigate to a specific point in mutation history (undo/redo). -1 = pristine state, 0 = first mutation, etc.`,
   category: 'mutation',
+  prunedSummary: (r) =>
+    r.success ? `navigated to index ${r.historyIndex ?? '?'}` : 'rejected',
   lazy: true,
   modes: ['editing', 'translating'],
   label($t) {

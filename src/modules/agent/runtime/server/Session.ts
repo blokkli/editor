@@ -4,6 +4,7 @@ import type { PageContext, ClientToolDefinition } from '../shared/types'
 import type { GenericMessage, GenericContentBlock } from './providers/types'
 import { buildSystemPrompt } from './agentPrompt'
 import { provider, aiModel } from '#blokkli-build/agent-server'
+import type { ToolPruningMetadata } from './helpers'
 import {
   send,
   DEBUG_LOGGING,
@@ -12,6 +13,7 @@ import {
   transformText,
   classifyError,
   pruneMessages,
+  validateMessages,
 } from './helpers'
 
 // ============================================================================
@@ -84,22 +86,24 @@ export class Session {
 
   cancel(peer: Peer): void {
     this.abortController?.abort()
+    // Bug 1 fix: reject all pending tool call promises so the agent loop
+    // doesn't hang waiting for a client response that will never come.
+    for (const pending of this.pendingToolCalls.values()) {
+      pending.reject(new Error('Cancelled'))
+    }
+    this.pendingToolCalls.clear()
     send(peer, { type: 'done' })
   }
 
   acceptChanges(peer: Peer): void {
-    this.messages.push({
-      role: 'user',
-      content: `[System: Changes accepted and applied.]`,
-    })
+    this.safePushUserMessage(`[System: Changes accepted and applied.]`)
     send(peer, { type: 'done', message: 'Changes accepted' })
   }
 
   rejectChanges(peer: Peer): void {
-    this.messages.push({
-      role: 'user',
-      content: `[System: Changes rejected. All pending changes have been reverted. The page is back to its previous state.]`,
-    })
+    this.safePushUserMessage(
+      `[System: Changes rejected. All pending changes have been reverted. The page is back to its previous state.]`,
+    )
     send(peer, { type: 'done', message: 'Changes rejected' })
   }
 
@@ -213,8 +217,13 @@ export class Session {
         // Send thinking indicator
         send(peer, { type: 'thinking' })
 
+        // Bug 5: validate messages before API call in debug mode
         if (DEBUG_LOGGING) {
           console.log('\n========== AGENT LOOP ITERATION ==========')
+          const issues = validateMessages(this.messages)
+          if (issues.length) {
+            console.warn('[Validation] Message issues detected:', issues)
+          }
           console.log('Messages:', JSON.stringify(this.messages, null, 2))
         }
 
@@ -584,9 +593,6 @@ export class Session {
           break
         }
       }
-
-      // Prune old messages to reduce context size for future turns
-      pruneMessages(this.messages, KEEP_RECENT_TURNS)
     } catch (error) {
       // Don't send errors if the session was aborted (cleanup/cancel).
       if (
@@ -600,6 +606,13 @@ export class Session {
     } finally {
       this.isProcessing = false
       this.abortController = null
+
+      // Bug 2 fix: prune in finally so messages are compressed even after errors.
+      pruneMessages(
+        this.messages,
+        KEEP_RECENT_TURNS,
+        this.buildToolMetadataMap(),
+      )
     }
   }
 
@@ -620,6 +633,38 @@ export class Session {
         },
       })
     })
+  }
+
+  /**
+   * Bug 3 fix: safely push a user message, merging with the last message
+   * if it's also a user message to avoid consecutive same-role messages.
+   */
+  private safePushUserMessage(text: string): void {
+    const lastMessage = this.messages[this.messages.length - 1]
+    if (lastMessage && lastMessage.role === 'user') {
+      // Merge into existing user message
+      if (typeof lastMessage.content === 'string') {
+        lastMessage.content = lastMessage.content + '\n' + text
+      } else {
+        // Array content — append as text block
+        lastMessage.content.push({ type: 'text', text })
+      }
+    } else {
+      this.messages.push({ role: 'user', content: text })
+    }
+  }
+
+  /**
+   * Build a map of tool name to pruning metadata from all known tools.
+   */
+  private buildToolMetadataMap(): Map<string, ToolPruningMetadata> {
+    const map = new Map<string, ToolPruningMetadata>()
+    for (const tool of [...this.tools, ...this.lazyTools]) {
+      if (tool.volatile) {
+        map.set(tool.name, { volatile: true })
+      }
+    }
+    return map
   }
 
   private buildTranscript(): string {

@@ -39,6 +39,15 @@ export default defineBlokkliAgentTool({
   description:
     'Get all child fields and blocks for the page or a block. Returns parent objects ready for use with add_blocks. Use this to understand structure before adding blocks.',
   category: 'query',
+  volatile: true,
+  prunedSummary: (r) => {
+    const fieldCount = Object.keys(r.fields).length
+    const blockCount = Object.values(r.fields).reduce(
+      (s, f) => s + f.blocks.length,
+      0,
+    )
+    return `${blockCount} blocks across ${fieldCount} fields`
+  },
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetChildBlocks', 'Get child blocks')

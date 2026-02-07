@@ -71,6 +71,8 @@ export function getToolsForServer(
         z.toJSONSchema(tool.paramsSchema),
       ) as object,
       ...(tool.lazy ? { lazy: true as const } : {}),
+      category: tool.category,
+      ...(tool.volatile ? { volatile: true as const } : {}),
     }))
 }
 
