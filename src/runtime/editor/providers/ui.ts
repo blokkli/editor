@@ -444,6 +444,13 @@ export type UiProvider = {
    * The container element for the primary editor interface.
    */
   mainLayoutElement: Readonly<ShallowRef<HTMLDivElement | null>>
+
+  /**
+   * Whether the canvas is currently focused.
+   */
+  canvasFocused: Readonly<Ref<boolean>>
+
+  setCanvasFocused: (isFocused: boolean) => void
 }
 
 export default function (
@@ -481,6 +488,11 @@ export default function (
   const visibleViewportHeight = ref(0)
   const visibleViewportX = ref(0)
   const visibleViewportY = ref(0)
+  const canvasFocused = ref(false)
+
+  function setCanvasFocused(isFocused: boolean) {
+    canvasFocused.value = isFocused
+  }
 
   const isProxyMode = ref(false)
   const currentDialog = ref<GlobalUiDialog | null>(null)
@@ -920,5 +932,7 @@ export default function (
     toArtboardCoords,
     hasNestedEditorOpen,
     setNestedEditor,
+    setCanvasFocused,
+    canvasFocused: readonly(canvasFocused),
   }
 }

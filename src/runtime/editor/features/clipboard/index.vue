@@ -668,7 +668,12 @@ function copyCurrentSelectionToClipboard() {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
-  if (e.code !== 'c' || !e.meta || ui.hasDialogOpen.value) {
+  if (
+    e.code !== 'c' ||
+    !e.meta ||
+    ui.hasDialogOpen.value ||
+    !ui.canvasFocused.value
+  ) {
     return
   }
   copyCurrentSelectionToClipboard()

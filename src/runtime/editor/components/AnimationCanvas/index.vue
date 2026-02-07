@@ -4,11 +4,14 @@
       id="bk-animation-canvas-webgl"
       :key="animation.canvasKey.value"
       ref="canvasEl"
+      tabindex="0"
       :style
       @click.capture="onClick"
       @pointerdown.capture="onPointerDown"
       @pointerup.capture="onPointerUp"
       @pointermove="onPointerMove"
+      @focus="onCanvasFocus"
+      @blur="onCanvasBlur"
     />
   </Teleport>
 </template>
@@ -47,6 +50,14 @@ const {
   directive,
   blocks,
 } = useBlokkli()
+
+function onCanvasFocus() {
+  ui.setCanvasFocused(true)
+}
+
+function onCanvasBlur() {
+  ui.setCanvasFocused(false)
+}
 
 let handlePointerMove = false
 
@@ -241,6 +252,10 @@ function onPointerMove(e: PointerEvent) {
 function onPointerDown(e: PointerEvent) {
   if (e.buttons === MOUSE_BUTTONS.AUXILIARY) {
     return
+  }
+
+  if (canvasEl.value) {
+    canvasEl.value.focus()
   }
 
   if (!keyboard.isPressingSpace.value) {
@@ -558,6 +573,9 @@ function onClick(e: MouseEvent) {
   e.preventDefault()
   e.stopImmediatePropagation()
   e.stopPropagation()
+  if (canvasEl.value) {
+    canvasEl.value.focus()
+  }
 }
 
 const canvasEl = useTemplateRef('canvasEl')
