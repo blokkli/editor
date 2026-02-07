@@ -42,6 +42,12 @@ const resultSchema = z.object({
   cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
   currentCount: z.number().describe('Current number of blocks in the field'),
   bundles: z.array(bundleSchema).describe('Available block types'),
+  nestingInfo: z
+    .string()
+    .optional()
+    .describe(
+      'Summary of which bundles have block fields for nested blocks. Use get_child_blocks after adding these bundles to populate their nested fields.',
+    ),
 })
 
 export default defineBlokkliAgentTool({
@@ -109,6 +115,16 @@ export default defineBlokkliAgentTool({
       }
     })
 
+    const nestingBundles = bundles.filter((b) => b.blockFields.length > 0)
+    const nestingInfo = nestingBundles.length
+      ? nestingBundles
+          .map(
+            (b) =>
+              `${b.bundle} has block fields: ${b.blockFields.map((f) => `${f.name} (${f.allowedBundles.join(', ')})`).join(', ')}`,
+          )
+          .join('; ')
+      : undefined
+
     return {
       label,
       result: {
@@ -116,6 +132,7 @@ export default defineBlokkliAgentTool({
         cardinality: field.cardinality,
         currentCount,
         bundles,
+        nestingInfo,
       },
     }
   },

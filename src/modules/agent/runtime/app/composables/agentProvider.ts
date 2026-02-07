@@ -676,9 +676,27 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
           ? newUuids
               .map((uuid) => {
                 const block = app.blocks.getBlock(uuid)
-                return block ? { uuid, bundle: block.bundle } : null
+                if (!block) return null
+                const blockFieldNames = app.types.fieldConfig
+                  .forEntityTypeAndBundle(itemEntityType, block.bundle)
+                  .map((f) => f.name)
+                return {
+                  uuid,
+                  bundle: block.bundle,
+                  ...(blockFieldNames.length
+                    ? { blockFields: blockFieldNames }
+                    : {}),
+                }
               })
-              .filter((b): b is { uuid: string; bundle: string } => b !== null)
+              .filter(
+                (
+                  b,
+                ): b is {
+                  uuid: string
+                  bundle: string
+                  blockFields?: string[]
+                } => b !== null,
+              )
           : undefined
 
       return {

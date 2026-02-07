@@ -8,8 +8,9 @@ export default defineBlokkliAgentSystemPrompt({
     return `- blökkli is an interactive page builder to manage complex content blocks
 - Everything is an "entity" that always has an "entity type", "entity bundle" and "uuid"
 - The "page" itself is a separate entity type, e.g. "content" or "node"
-- A block can be placed in "fields"
+- A block can be placed in "block fields"
 - A field can restrict which block bundles it allows or how many blocks are allowed (cardinality)
+- A cardinality of -1 means: no limit on number of blocks, 1 = one block, 2 = two blocks, etc.
 - Both the page and block bundles themselves can have fields to place nested blocks
 - A block always has a "parent". This consists of:
   - type: The entity type of the "parent"

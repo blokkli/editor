@@ -15,7 +15,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'move_blocks',
   description:
-    'Move one or more blocks to a different parent field. All blocks are moved to the same target location.',
+    'Move one or more blocks to a different parent field. All blocks are moved to the same location and they KEEP their UUIDs!!',
   category: 'mutation',
   modes: ['editing'],
   label: ($t) => $t('aiAgentMoveBlocksRunning', 'Moving blocks...'),

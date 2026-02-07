@@ -171,6 +171,12 @@ export const mutationSuccessSchema = z.union([
         z.object({
           uuid: z.string(),
           bundle: z.string(),
+          blockFields: z
+            .array(z.string())
+            .optional()
+            .describe(
+              "Block fields on this new block that can hold nested blocks. Call get_child_blocks with this block's UUID to add blocks to these fields.",
+            ),
         }),
       )
       .optional()

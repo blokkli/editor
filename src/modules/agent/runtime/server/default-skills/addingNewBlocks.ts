@@ -9,6 +9,7 @@ export default defineBlokkliAgentSkill({
 - You can add multiple blocks using the add_blocks tool.
 - When adding blocks to a NEW parent (one you just created), ALWAYS call get_child_blocks first to get the correct parent objects and field names. NEVER construct parent objects manually!
 - Use get_bundle_info to learn which bundles are allowed and what content fields they have BEFORE providing values in add_blocks.
+- IMPORTANT: When get_bundle_info shows a block has blockFields (like "header", "blocks", "left", "right"), plan your structure so that matching content goes INTO those fields, not as sibling blocks. For example, if a grid has a "header" blockField that allows "title" bundles, create the title INSIDE the grid's header field, not as a separate block alongside the grid.
 - When you need to create nested structures:
   - First create the root blocks in an add_blocks call
   - Then call get_child_blocks on the new block to get its fields and parent objects

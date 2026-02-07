@@ -17,7 +17,6 @@ const blockSchema = z.object({
 })
 
 const fieldWithBlocksSchema = z.object({
-  name: z.string().describe('Field name'),
   label: z.string().describe('Human-readable field label'),
   cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
   parent: parentSchema.describe(
@@ -30,7 +29,12 @@ const resultSchema = z.object({
   parentBundle: z
     .string()
     .describe('The bundle type of the parent (page or block)'),
-  fields: z.array(fieldWithBlocksSchema),
+  fields: z
+    .record(
+      z.string().describe('Field name'),
+      fieldWithBlocksSchema,
+    )
+    .describe('Fields keyed by name, each with parent object and blocks'),
 })
 
 export default defineBlokkliAgentTool({
@@ -60,7 +64,7 @@ export default defineBlokkliAgentTool({
       if (!block) {
         return {
           label: $t('aiAgentBlockNotFound', 'Block not found'),
-          result: { parentBundle: 'unknown', fields: [] },
+          result: { parentBundle: 'unknown', fields: {} },
         }
       }
       parentBundle = block.bundle
@@ -80,7 +84,7 @@ export default defineBlokkliAgentTool({
           'aiAgentGetChildBlocksNone',
           '@bundle has no child fields',
         ).replace('@bundle', types.getBlockLabel(parentBundle)),
-        result: { parentBundle, fields: [] },
+        result: { parentBundle, fields: {} },
         affectedUuids: [params.uuid],
       }
     }
@@ -93,10 +97,18 @@ export default defineBlokkliAgentTool({
     )
 
     // Return all defined fields, with blocks from mutated state
-    const fields = fieldConfigs.map((fieldConfig) => {
+    const fields: Record<
+      string,
+      {
+        label: string
+        cardinality: number
+        parent: { type: string; uuid: string; field: string }
+        blocks: { uuid: string; bundle: string }[]
+      }
+    > = {}
+    for (const fieldConfig of fieldConfigs) {
       const blockList = mutatedFieldsMap.get(fieldConfig.name) || []
-      return {
-        name: fieldConfig.name,
+      fields[fieldConfig.name] = {
         label: fieldConfig.label,
         cardinality: fieldConfig.cardinality,
         parent: {
@@ -109,7 +121,7 @@ export default defineBlokkliAgentTool({
           bundle: item.bundle,
         })),
       }
-    })
+    }
 
     const bundleLabel = isPage
       ? context.value.entityBundle

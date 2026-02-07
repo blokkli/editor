@@ -36,7 +36,7 @@
   }
 
   .bk-agent-assistant-bubble {
-    @apply bg-mono-100 px-10 rounded-xl py-10;
+    @apply bg-mono-100 px-10 rounded-xl py-10 min-w-0;
   }
   .bk-agent-assistant-bubble + .bk-agent-assistant-bubble {
     @apply rounded-t-none pt-0;
@@ -99,11 +99,11 @@
   }
 
   .bk-agent-tool-call-name {
-    @apply flex-1;
+    @apply flex-1 break-words min-w-0;
   }
 
   .bk-agent-tool-call-status {
-    @apply size-18 rounded-full p-2;
+    @apply size-18 rounded-full p-2 shrink-0;
 
     svg {
       @apply w-full h-full fill-current;
