@@ -31,8 +31,8 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import Conversation from './Conversation.vue'
-import PendingMutation from './PendingMutation.vue'
+import Conversation from '../Conversation/index.vue'
+import PendingMutation from '../PendingMutation/index.vue'
 import type {
   ConversationItem,
   ActiveItem,

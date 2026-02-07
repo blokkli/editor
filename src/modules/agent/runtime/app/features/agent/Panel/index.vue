@@ -83,9 +83,9 @@ import {
   useBlokkli,
 } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import Conversation from './Conversation.vue'
-import PendingMutation from './PendingMutation.vue'
-import DebugGallery from './DebugGallery.vue'
+import Conversation from './Conversation/index.vue'
+import PendingMutation from './PendingMutation/index.vue'
+import DebugGallery from './DebugGallery/index.vue'
 import Welcome from './Welcome/index.vue'
 import AgentInput from './Input/index.vue'
 import type { AgentProvider } from '#blokkli/agent/app/composables'

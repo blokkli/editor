@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { ref, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import ToolCard from '../../features/agent/Panel/ToolCard.vue'
+import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type {
   SelectMediaParams,

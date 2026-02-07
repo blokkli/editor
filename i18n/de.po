@@ -240,6 +240,34 @@ msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
 msgstr "@count Blöcke nach @field dupliziert"
 
+msgctxt "aiAgentErrorAuthentication"
+msgid "API authentication failed. Please check your API key."
+msgstr ""
+
+msgctxt "aiAgentErrorBadRequest"
+msgid "The request to the AI service was invalid."
+msgstr ""
+
+msgctxt "aiAgentErrorConnection"
+msgid "Could not connect to the AI service. Please check your network connection."
+msgstr ""
+
+msgctxt "aiAgentErrorNotFound"
+msgid "The configured AI model was not found. Please check the configuration."
+msgstr ""
+
+msgctxt "aiAgentErrorOverloaded"
+msgid "The AI service is currently overloaded. Please try again in a moment."
+msgstr ""
+
+msgctxt "aiAgentErrorRateLimit"
+msgid "Rate limit exceeded. Please wait a moment before trying again."
+msgstr ""
+
+msgctxt "aiAgentErrorUnknown"
+msgid "An unexpected error occurred."
+msgstr ""
+
 msgctxt "aiAgentFindBlocksDone"
 msgid "Found @count blocks"
 msgstr "@count Blöcke gefunden"

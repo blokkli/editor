@@ -38,10 +38,10 @@ export default defineBlokkliAgentTool({
 
     const count = blocks.length
     const label = count
-      ? $t(
-          'aiAgentGetSelectedBlocksDone',
-          '@count block(s) selected',
-        ).replace('@count', String(count))
+      ? $t('aiAgentGetSelectedBlocksDone', '@count block(s) selected').replace(
+          '@count',
+          String(count),
+        )
       : $t('aiAgentGetSelectedBlocksNone', 'No blocks selected')
 
     return {

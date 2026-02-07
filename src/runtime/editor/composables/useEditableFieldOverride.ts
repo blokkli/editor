@@ -67,9 +67,7 @@ export function useEditableFieldOverride(
   const isComponent = !!editableData?.isComponent
 
   // Determine update strategy.
-  function findMatchingProp(
-    mapping: Record<string, string>,
-  ): string | null {
+  function findMatchingProp(mapping: Record<string, string>): string | null {
     return (
       Object.entries(mapping).find(
         ([_prop, field]) => field === fieldName,
@@ -152,7 +150,7 @@ export function useEditableFieldOverride(
       const propsObj = state.mutatedItemProps[mutatedItemPropsKey]
       if (propsObj) {
         if (originalMutatedProp === undefined) {
-          delete propsObj[matchingProp]
+          Reflect.deleteProperty(propsObj, matchingProp)
           // Only remove the entire object if no other overrides remain.
           if (Object.keys(propsObj).length === 0) {
             state.mutatedItemProps[mutatedItemPropsKey] = undefined

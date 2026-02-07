@@ -65,7 +65,11 @@ export type AgentProvider = {
   pendingToolCall: Ref<PendingToolCall | null>
 
   // Actions
-  sendPrompt: (text: string, displayPrompt?: string, selectedUuids?: string[]) => void
+  sendPrompt: (
+    text: string,
+    displayPrompt?: string,
+    selectedUuids?: string[],
+  ) => void
   approve: () => void
   reject: () => void
   setAutoApprove: (value: boolean) => void
@@ -93,7 +97,11 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   let hasEverConnected = false
   const isConnected = ref(false)
   const isReady = ref(false)
-  let pendingPrompt: { prompt: string; displayPrompt?: string; selectedUuids?: string[] } | null = null
+  let pendingPrompt: {
+    prompt: string
+    displayPrompt?: string
+    selectedUuids?: string[]
+  } | null = null
 
   // Tool map (populated on connect)
   let toolMap: Record<string, McpToolDefinition> = {}
@@ -425,10 +433,13 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         finalizeActiveItem()
         isThinking.value = false
         isProcessing.value = false
+        if (data.detail) {
+          console.warn(`[blokkli agent] ${data.errorType} error:`, data.detail)
+        }
         conversation.value.push({
-          type: 'assistant',
+          type: 'error',
           id: generateId(),
-          content: `Error: ${data.message}`,
+          errorType: data.errorType,
           timestamp: Date.now(),
         })
         break
@@ -721,7 +732,11 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // User Actions
   // ============================================================================
 
-  function sendPrompt(prompt: string, displayPrompt?: string, selectedUuids?: string[]) {
+  function sendPrompt(
+    prompt: string,
+    displayPrompt?: string,
+    selectedUuids?: string[],
+  ) {
     if (!prompt.trim() || isProcessing.value) return
 
     if (!isReady.value) {

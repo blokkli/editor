@@ -40,8 +40,8 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, ref, useTemplateRef } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import ToolCard from '../../features/agent/Panel/ToolCard.vue'
-import Item from './Item.vue'
+import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
+import type Item from './Item.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
 import { itemEntityType } from '#blokkli-build/config'

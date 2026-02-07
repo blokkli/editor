@@ -286,6 +286,8 @@ The Drupal integration (`src/modules/drupal/`) is a blökkli sub-module that:
 ### Style System
 
 - Uses PostCSS with Tailwind CSS
+- NOTE: THE PROJECT USES CUSTOM TAILWIND COLORS, SPACINGS, ETC.! CHECK
+  tailwind.config.js TO SEE WHICH CLASSES ARE AVAILABLE!!!!
 - Main styles in `css/` directory
 - Compiled to `src/runtime/css/output.css`
 - Editor has themed appearance (see `src/themes/`)

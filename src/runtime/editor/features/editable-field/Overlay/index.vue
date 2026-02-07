@@ -78,13 +78,7 @@ import {
 } from '#blokkli/editor/composables'
 import type { EditableFieldConfig } from '../types'
 
-const {
-  state,
-  adapter,
-  $t,
-  types,
-  element: elementProvider,
-} = useBlokkli()
+const { state, adapter, $t, types, element: elementProvider } = useBlokkli()
 
 const props = defineProps<{
   fieldName: string

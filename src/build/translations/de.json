@@ -227,6 +227,34 @@
     "source": "Duplicated @count blocks to @field",
     "translation": "@count Blöcke nach @field dupliziert"
   },
+  "aiAgentErrorAuthentication": {
+    "source": "API authentication failed. Please check your API key.",
+    "translation": ""
+  },
+  "aiAgentErrorBadRequest": {
+    "source": "The request to the AI service was invalid.",
+    "translation": ""
+  },
+  "aiAgentErrorConnection": {
+    "source": "Could not connect to the AI service. Please check your network connection.",
+    "translation": ""
+  },
+  "aiAgentErrorNotFound": {
+    "source": "The configured AI model was not found. Please check the configuration.",
+    "translation": ""
+  },
+  "aiAgentErrorOverloaded": {
+    "source": "The AI service is currently overloaded. Please try again in a moment.",
+    "translation": ""
+  },
+  "aiAgentErrorRateLimit": {
+    "source": "Rate limit exceeded. Please wait a moment before trying again.",
+    "translation": ""
+  },
+  "aiAgentErrorUnknown": {
+    "source": "An unexpected error occurred.",
+    "translation": ""
+  },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
     "translation": "@count Blöcke gefunden"

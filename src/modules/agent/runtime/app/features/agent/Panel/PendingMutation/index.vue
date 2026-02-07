@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import ToolCard from './ToolCard.vue'
+import ToolCard from '../ToolCard/index.vue'
 import type { MutationAction } from '#blokkli/agent/app/types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 

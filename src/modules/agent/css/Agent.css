@@ -396,6 +396,18 @@
     }
   }
 
+  .bk-agent-error-bubble {
+    @apply flex items-start gap-8 p-10 rounded-xl;
+    @apply bg-red-light text-red-dark text-sm;
+
+    .bk-icon {
+      @apply size-18 shrink-0 bg-red-normal text-white rounded-full p-2;
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+
   .bk-agent-thinking {
     @apply flex gap-8 items-center text-sm;
     .bk-icon {

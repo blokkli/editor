@@ -86,6 +86,23 @@ export type PageContext = {
 }
 
 // ============================================================================
+// Error Types
+// ============================================================================
+
+/**
+ * Classified error categories for AI provider errors.
+ * Both Anthropic and OpenAI SDKs map to these via HTTP status codes.
+ */
+export type AgentErrorType =
+  | 'authentication' // 401 — bad API key
+  | 'rate_limit' // 429 — too many requests
+  | 'overloaded' // 529 (Anthropic) / 503 — service overloaded
+  | 'not_found' // 404 — invalid model or endpoint
+  | 'bad_request' // 400 — malformed request
+  | 'connection' // Network/connection failure
+  | 'unknown' // Anything else
+
+// ============================================================================
 // WebSocket Protocol Messages
 // ============================================================================
 
@@ -126,7 +143,12 @@ export type ServerMessage =
   | { type: 'text'; content: string }
   | { type: 'text_delta'; content: string }
   | { type: 'done'; message?: string }
-  | { type: 'error'; message: string }
+  | {
+      type: 'error'
+      errorType: AgentErrorType
+      message: string
+      detail?: string
+    }
   | { type: 'transcript'; content: string }
   | {
       type: 'server_tool_result'

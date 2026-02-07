@@ -40,9 +40,10 @@ export function formatItems(
   }
 
   for (const item of items) {
-    const heading = item.label && item.label !== item.id
-      ? `### \`${item.id}\` - ${item.label}`
-      : `### \`${item.id}\``
+    const heading =
+      item.label && item.label !== item.id
+        ? `### \`${item.id}\` - ${item.label}`
+        : `### \`${item.id}\``
     lines.push(heading)
     if (item.description) {
       lines.push(item.description)

@@ -31,9 +31,7 @@ const bundleSchema = z.object({
         allowedBundles: z
           .array(z.string())
           .describe('Block types allowed in this field'),
-        cardinality: z
-          .number()
-          .describe('Max blocks allowed (-1 = unlimited)'),
+        cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
       }),
     )
     .describe('Block fields (for nested blocks) on this bundle'),
@@ -52,8 +50,7 @@ export default defineBlokkliAgentTool({
     'Get detailed information about which block types can be added to a specific field, including their content fields and block fields (for nested blocks).',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
-  label: ($t) =>
-    $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...'),
+  label: ($t) => $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...'),
   paramsSchema,
   resultSchema,
   execute: (ctx, params) => {

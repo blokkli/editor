@@ -4,8 +4,8 @@
     <div v-if="defaultPrompts.length" class="bk-agent-welcome-prompts">
       <button
         v-for="(prompt, index) in defaultPrompts"
-        type="button"
         :key="index"
+        type="button"
         @click.prevent="emit('prompt', prompt)"
       >
         <Icon name="bk_mdi_chat" />

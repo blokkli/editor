@@ -104,7 +104,9 @@ defineItemDropdownAction(() => {
         weight: -900,
         callback: () => {
           app.eventBus.emit('sidebar:open', 'agent')
-          agent.sendPrompt(promptText, userPromptText, [...app.selection.uuids.value])
+          agent.sendPrompt(promptText, userPromptText, [
+            ...app.selection.uuids.value,
+          ])
         },
       }
     })

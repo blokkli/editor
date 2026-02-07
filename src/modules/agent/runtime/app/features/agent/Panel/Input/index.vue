@@ -60,7 +60,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount, useTemplateRef, useBlokkli } from '#imports'
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  useTemplateRef,
+  useBlokkli,
+} from '#imports'
 import { Icon, FlexTextarea } from '#blokkli/editor/components'
 
 const props = defineProps<{
@@ -69,10 +76,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'cancel'): void
-  (e: 'new-conversation'): void
-  (e: 'show-transcript'): void
+  (e: 'submit' | 'cancel' | 'new-conversation' | 'show-transcript'): void
 }>()
 
 const { $t, eventBus } = useBlokkli()

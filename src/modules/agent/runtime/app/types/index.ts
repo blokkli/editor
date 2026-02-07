@@ -5,6 +5,7 @@ import type {
   AdapterMethods,
 } from '#blokkli/editor/adapter'
 import type { EditMode } from '#blokkli/editor/types/state'
+import type { AgentErrorType } from '#blokkli/agent/shared/types'
 import type { z } from 'zod'
 import type { Component } from 'vue'
 
@@ -322,9 +323,7 @@ export type AgentPromptFactoryInput = {
   /**
    * Called to resolve prompts dynamically based on runtime state.
    */
-  resolve: (
-    app: BlokkliApp,
-  ) => AgentPromptDefinition[] | AgentPromptDefinition
+  resolve: (app: BlokkliApp) => AgentPromptDefinition[] | AgentPromptDefinition
 }
 
 /**
@@ -388,6 +387,14 @@ export type ServerToolConversationItem = ConversationItemBase & {
 }
 
 /**
+ * An error message in the conversation history.
+ */
+export type ErrorConversationItem = ConversationItemBase & {
+  type: 'error'
+  errorType: AgentErrorType
+}
+
+/**
  * Finalized items in conversation history (never modified after being pushed).
  */
 export type ConversationItem =
@@ -395,6 +402,7 @@ export type ConversationItem =
   | AssistantConversationItem
   | ToolConversationItem
   | ServerToolConversationItem
+  | ErrorConversationItem
 
 /**
  * Assistant message being streamed (content may grow).
