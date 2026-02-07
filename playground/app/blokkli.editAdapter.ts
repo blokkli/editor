@@ -338,6 +338,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         'create_library_item',
         'create_comments',
         'view_comments',
+        'use_agent',
       ]
       return Promise.resolve(permissions)
     },

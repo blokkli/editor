@@ -75,6 +75,7 @@ const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_comment',
   label: 'Comments',
   requiredAdapterMethods: ['loadComments', 'addComment'],
+  requiredPermissions: ['view_comments'],
   description: 'Provides comment functionality for blocks.',
   screenshot: 'feature-comments.jpg',
 })

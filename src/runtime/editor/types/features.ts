@@ -8,6 +8,7 @@ import type {
 } from './../../../global/types/features'
 import type { AdapterMethods } from '#blokkli/editor/adapter'
 import type { BlokkliApp } from './app'
+import type { UserPermissions } from './permissions'
 
 export type FeatureDefinitionSetting =
   | FeatureDefinitionSettingCheckbox
@@ -20,8 +21,9 @@ export type FeatureDefinition<
   T extends string = '',
 > = Omit<
   FeatureDefinitionBase<AdapterMethods, BlokkliIcon, T>,
-  'requiredAdapterMethods' | 'settings'
+  'requiredAdapterMethods' | 'settings' | 'requiredPermissions'
 > & {
   requiredAdapterMethods?: [...Methods]
   settings?: Record<string, FeatureDefinitionSetting>
+  requiredPermissions?: UserPermissions[]
 }

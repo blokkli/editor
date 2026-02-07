@@ -5,7 +5,10 @@ const TOKEN_EXPIRY_SECONDS = 300
 const SESSION_IDLE_TIMEOUT_MS = 5 * 60 * 1000
 
 export class SessionManager {
-  private sessions = new Map<string, { session: Session; lastActivity: number }>()
+  private sessions = new Map<
+    string,
+    { session: Session; lastActivity: number }
+  >()
   /** Maps used token strings to their embedded timestamp (seconds). */
   private usedTokens = new Map<string, number>()
   private pruneTimer: ReturnType<typeof setInterval> | null = null

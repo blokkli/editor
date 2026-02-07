@@ -76,6 +76,7 @@ const { adapter } = defineBlokkliFeature({
   icon: 'stars',
   label: 'AI Agent',
   description: 'Chat with an AI assistant to edit page content.',
+  requiredPermissions: ['use_agent'],
   requiredAdapterMethods: [
     'updateFieldValue',
     'addNewBlock',

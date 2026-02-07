@@ -96,6 +96,11 @@ export type FeatureDefinitionBase<
   requiredAdapterMethods?: AdapterMethodsType[]
 
   /**
+   * The required permissions.
+   */
+  requiredPermissions?: string[]
+
+  /**
    * Feature-specific settings that will be rendered in the settings dialog.
    */
   settings?: Record<string, FeatureDefinitionSettingBase<Icon>>

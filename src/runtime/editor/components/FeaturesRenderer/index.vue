@@ -15,7 +15,7 @@ import { useBlokkli, computed, watch } from '#imports'
 
 const emit = defineEmits(['loaded'])
 
-const { adapter, adapters, features, ui, debug } = useBlokkli()
+const { adapter, adapters, features, ui, debug, permissions } = useBlokkli()
 
 const logger = debug.createLogger('Features')
 
@@ -28,18 +28,18 @@ const disabledFeatures = adapter.getDisabledFeatures
   ? await adapter.getDisabledFeatures()
   : await Promise.resolve([])
 
-const availableFeatures = computed(() => {
+const availableFeatures = computed<ValidFeatureKey[]>(() => {
   return features.features.value
-    .filter((v) => {
+    .filter((feature) => {
       // Feature is disabled at runtime.
-      if (disabledFeatures.includes(v.id)) {
+      if (disabledFeatures.includes(feature.id)) {
         return false
       }
 
       // Feature requires adapter methods that aren't implemented.
       // Check both base adapter and extensions.
-      if (v.requiredAdapterMethods?.length) {
-        const hasAllMethods = v.requiredAdapterMethods.every((method) => {
+      if (feature.requiredAdapterMethods?.length) {
+        const hasAllMethods = feature.requiredAdapterMethods.every((method) => {
           // Check base adapter
           if (adapter[method]) {
             return true
@@ -52,22 +52,37 @@ const availableFeatures = computed(() => {
         }
       }
 
+      // Check if feature defines permission requirements.
+      if (feature.requiredPermissions?.length) {
+        const hasAllPermissions = feature.requiredPermissions.every(
+          (permission) => permissions.hasPermission(permission),
+        )
+        if (!hasAllPermissions) {
+          return false
+        }
+      }
+
       // Feature has dependencies on other features that are not yet rendered.
       if (
-        v.dependencies?.length &&
-        !v.dependencies.every((id) => renderedFeatures.value.includes(id))
+        feature.dependencies?.length &&
+        !feature.dependencies.every((id) => renderedFeatures.value.includes(id))
       ) {
         return false
       }
 
       if (
-        v.beta &&
-        !features.enabledBetaFeatures.value.includes(v.id as ValidFeatureKey)
+        feature.beta &&
+        !features.enabledBetaFeatures.value.includes(
+          feature.id as ValidFeatureKey,
+        )
       ) {
         return false
       }
 
-      return !v.viewports?.length || v.viewports.includes(ui.appViewport.value)
+      return (
+        !feature.viewports?.length ||
+        feature.viewports.includes(ui.appViewport.value)
+      )
     })
     .map((v) => {
       return v.id as ValidFeatureKey
