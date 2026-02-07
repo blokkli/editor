@@ -316,6 +316,7 @@
         @apply text-sm text-mono-700 text-left;
         @apply border-none bg-transparent cursor-pointer;
         @apply hover:bg-mono-50;
+        @apply whitespace-nowrap;
 
         svg {
           @apply w-15 h-15 fill-current;

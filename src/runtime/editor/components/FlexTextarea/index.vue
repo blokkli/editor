@@ -39,6 +39,7 @@ const props = withDefaults(
   }>(),
   {
     minHeight: 70,
+    maxHeight: undefined,
   },
 )
 

@@ -12,7 +12,7 @@
         @submit="onSubmit"
       />
       <div class="bk-agent-input-actions">
-        <div class="bk-agent-input-actions-left">
+        <div>
           <div ref="menuContainer" class="bk-agent-more-menu">
             <button
               class="bk-agent-more-btn"
