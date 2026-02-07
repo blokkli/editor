@@ -100,6 +100,7 @@ export type AgentErrorType =
   | 'not_found' // 404 — invalid model or endpoint
   | 'bad_request' // 400 — malformed request
   | 'connection' // Network/connection failure
+  | 'unauthorized' // WebSocket auth token invalid or missing
   | 'unknown' // Anything else
 
 // ============================================================================
@@ -120,7 +121,12 @@ export type ClientToolDefinition = {
  * Messages sent from client to server over WebSocket.
  */
 export type ClientMessage =
-  | { type: 'init'; tools: ClientToolDefinition[]; pageContext: PageContext }
+  | { type: 'authenticate'; authToken: string }
+  | {
+      type: 'init'
+      tools: ClientToolDefinition[]
+      pageContext: PageContext
+    }
   | { type: 'start'; prompt: string; selectedUuids?: string[] }
   | { type: 'tool_result'; callId: string; result: unknown; error?: string }
   | { type: 'cancel' }
@@ -128,11 +134,13 @@ export type ClientMessage =
   | { type: 'reject' }
   | { type: 'get_transcript' }
   | { type: 'new_conversation' }
+  | { type: 'ping' }
 
 /**
  * Messages sent from server to client over WebSocket.
  */
 export type ServerMessage =
+  | { type: 'authenticated' }
   | {
       type: 'tool_call'
       callId: string

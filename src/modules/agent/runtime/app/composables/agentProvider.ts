@@ -94,6 +94,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // WebSocket state
   let ws: WebSocket | null = null
   let reconnectTimeout: number | null = null
+  let pingInterval: number | null = null
   let hasEverConnected = false
   const isConnected = ref(false)
   const isReady = ref(false)
@@ -101,6 +102,10 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     prompt: string
     displayPrompt?: string
     selectedUuids?: string[]
+  } | null = null
+  let pendingInit: {
+    tools: ReturnType<typeof getToolsForServer>
+    pageContext: PageContext
   } | null = null
 
   // Tool map (populated on connect)
@@ -147,6 +152,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
 
   function onWebSocketOpen() {
     isConnected.value = true
+    pingInterval = window.setInterval(() => {
+      send({ type: 'ping' })
+    }, 30_000)
     onConnect()
   }
 
@@ -191,6 +199,10 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   }
 
   function disconnect() {
+    if (pingInterval) {
+      window.clearInterval(pingInterval)
+      pingInterval = null
+    }
     if (reconnectTimeout) {
       window.clearTimeout(reconnectTimeout)
       reconnectTimeout = null
@@ -229,11 +241,44 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     const ctx = createToolContext()
     const resolved = await resolveTools(mcpTools, ctx)
     toolMap = createToolMap(resolved)
-    send({
-      type: 'init',
-      tools: getToolsForServer(resolved, state.editMode.value, adapter),
-      pageContext: buildPageContext(),
-    })
+
+    if (adapter.getAgentAuthToken) {
+      try {
+        const authToken = await adapter.getAgentAuthToken()
+        if (!authToken) {
+          conversation.value.push({
+            type: 'error',
+            id: generateId(),
+            errorType: 'unauthorized',
+            timestamp: Date.now(),
+          })
+          disconnect()
+          return
+        }
+        send({ type: 'authenticate', authToken })
+        // Wait for 'authenticated' response before sending init.
+        // The handleServerMessage will call sendInit() when received.
+        pendingInit = {
+          tools: getToolsForServer(resolved, state.editMode.value, adapter),
+          pageContext: buildPageContext(),
+        }
+        return
+      } catch (e) {
+        console.error('Failed to obtain agent auth token:', e)
+      }
+    }
+
+    sendInit(
+      getToolsForServer(resolved, state.editMode.value, adapter),
+      buildPageContext(),
+    )
+  }
+
+  function sendInit(
+    tools: ReturnType<typeof getToolsForServer>,
+    pageContext: PageContext,
+  ) {
+    send({ type: 'init', tools, pageContext })
     isReady.value = true
 
     if (pendingPrompt) {
@@ -390,6 +435,13 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
 
   function handleServerMessage(data: ServerMessage) {
     switch (data.type) {
+      case 'authenticated':
+        if (pendingInit) {
+          sendInit(pendingInit.tools, pendingInit.pageContext)
+          pendingInit = null
+        }
+        break
+
       case 'thinking':
         isThinking.value = true
         break

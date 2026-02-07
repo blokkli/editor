@@ -2616,6 +2616,7 @@ type Mutation {
   masqueradeSwitchBack: Boolean!
   messengerMessages: MessengerMessage
   paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!): [Comment]
+  paragraphsBlokkliAgentToken: String
   paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
 

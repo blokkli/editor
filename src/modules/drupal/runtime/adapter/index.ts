@@ -1361,6 +1361,14 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
+    if (hasMutation('paragraphsBlokkliAgentToken')) {
+      adapter.getAgentAuthToken = function () {
+        return useGraphqlMutation('paragraphsBlokkliAgentToken').then(
+          (v) => v.data.token,
+        )
+      }
+    }
+
     return adapter
   },
 )

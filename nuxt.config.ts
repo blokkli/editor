@@ -60,6 +60,9 @@ fragment blokkliParagraphsType on ParagraphsType {
     ],
   },
   nitro: {
+    experimental: {
+      websocket: true,
+    },
     typescript: {
       tsConfig: {
         include: [

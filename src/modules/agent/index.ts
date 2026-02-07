@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     // @ts-expect-error Can indeed not exit, even if the types says it does.
     ctx.helper.nuxt.options.runtimeConfig.blokkli.agent ||= {}
     ctx.helper.nuxt.options.runtimeConfig.blokkli.agent.apiKey ||= ''
+    ctx.helper.nuxt.options.runtimeConfig.blokkli.agent.authSecret ||= ''
 
     ctx.helper.addAlias(
       '#blokkli/agent/app',

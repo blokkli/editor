@@ -133,6 +133,7 @@ export declare const templateEditRouteName: string|null
     }
 
     const queryFields = getTypeFields('Query')
+    const mutationFields = getTypeFields('Mutation')
     const editStateFields = getTypeFields('ParagraphsBlokkliEditState')
     const editMutationStateFields = getTypeFields('ParagraphsEditMutationState')
 
@@ -216,6 +217,13 @@ export declare const templateEditRouteName: string|null
       addGraphqlDocument('features/comments.graphql')
     } else {
       context.features.disableFeature('comments')
+    }
+
+    // Feature: Agent.
+    if (mutationFields.has('paragraphsBlokkliAgentToken')) {
+      addGraphqlDocument('features/agent.graphql')
+    } else {
+      context.features.disableFeature('agent')
     }
 
     // Feature: Fragments.

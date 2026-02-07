@@ -11,6 +11,7 @@ fragment paragraphsBlokkliUserPermissions on ParagraphsBlokkliUser {
 
   create_comments: hasPermission(permission: "post comments")
   view_comments: hasPermission(permission: "access comments")
+  use_agent: hasPermission(permission: "use paragraphs blokkli agent")
 }
 query pbConfig($entityType: String!, $entityBundle: String!) {
   userPermissions: paragraphsBlokkliGetUser {

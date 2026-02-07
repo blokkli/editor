@@ -46,6 +46,11 @@ const errorMessage = computed(() => {
         'aiAgentErrorConnection',
         'Could not connect to the AI service. Please check your network connection.',
       )
+    case 'unauthorized':
+      return $t(
+        'aiAgentErrorUnauthorized',
+        'Authentication failed. Please reload the page and try again.',
+      )
     default:
       return $t('aiAgentErrorUnknown', 'An unexpected error occurred.')
   }

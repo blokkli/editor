@@ -1707,5 +1707,8 @@ export default defineBlokkliEditAdapter((ctx) => {
     }
   }
 
+  adapter.getAgentAuthToken = () =>
+    $fetch<{ token: string }>('/api/blokkli/agent/token').then((v) => v.token)
+
   return adapter
 })
