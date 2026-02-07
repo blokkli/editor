@@ -27,10 +27,6 @@ const resultSchema = z.object({
     .string()
     .optional()
     .describe('Human-readable label of the prompt (for UI display)'),
-  userMessage: z
-    .string()
-    .optional()
-    .describe('Message to display as user response in conversation'),
 })
 
 export type SelectMediaParams = z.infer<typeof paramsSchema>

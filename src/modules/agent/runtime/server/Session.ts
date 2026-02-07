@@ -232,6 +232,7 @@ export class Session {
           content: string
           is_error?: boolean
         }> = []
+        const extraTextBlocks: Array<{ type: 'text'; text: string }> = []
 
         // Track current tool use being streamed
         let currentToolUse: {
@@ -413,8 +414,11 @@ export class Session {
                       content: JSON.stringify({
                         loaded: true,
                         name: skill.name,
-                        guidelines: skill.content,
                       }),
+                    })
+                    extraTextBlocks.push({
+                      type: 'text',
+                      text: `# Skill: ${skill.name}\n\n${skill.content}`,
                     })
                     send(peer, {
                       type: 'server_tool_result',
@@ -569,7 +573,7 @@ export class Session {
         if (toolResults.length) {
           this.messages.push({
             role: 'user',
-            content: toolResults,
+            content: [...toolResults, ...extraTextBlocks],
           })
         }
 

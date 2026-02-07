@@ -238,8 +238,8 @@ export function pruneMessages(
       continue
     }
 
-    // Compress tool_result blocks
-    for (let j = 0; j < content.length; j++) {
+    // Compress tool_result blocks and remove text blocks (e.g. skill guidelines)
+    for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
       if (block.type === 'tool_result') {
         const originalSize = block.content.length
@@ -250,6 +250,8 @@ export function pruneMessages(
             `[Pruning] Compressed tool result: ${originalSize} -> ${block.content.length} chars`,
           )
         }
+      } else if (block.type === 'text') {
+        content.splice(j, 1)
       }
     }
   }

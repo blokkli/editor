@@ -25,10 +25,6 @@ const resultSchema = z.object({
     .string()
     .optional()
     .describe('Human-readable label of what was selected (for UI display)'),
-  userMessage: z
-    .string()
-    .optional()
-    .describe('Message to display as user response in conversation'),
 })
 
 export type AskQuestionParams = z.infer<typeof paramsSchema>

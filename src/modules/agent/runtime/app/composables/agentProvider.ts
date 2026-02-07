@@ -616,22 +616,6 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         setLabel((result as { label: string }).label)
       }
 
-      if (
-        typeof result === 'object' &&
-        result !== null &&
-        'userMessage' in result
-      ) {
-        const userMsg = (result as { userMessage?: string }).userMessage
-        if (userMsg) {
-          conversation.value.push({
-            type: 'user',
-            id: generateId(),
-            content: userMsg,
-            timestamp: Date.now(),
-          })
-        }
-      }
-
       return result
     }
 

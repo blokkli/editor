@@ -68,6 +68,8 @@ function getSelectedItem(): SelectMediaItem | null {
 function confirm() {
   const item = getSelectedItem()
   if (item) {
+    const prompt =
+      props.params.prompt || $t('mediaSelectTitle', 'Select a media item')
     emit('done', {
       selected: {
         mediaId: item.mediaId,
@@ -75,9 +77,7 @@ function confirm() {
         mediaBundle: item.mediaBundle,
         thumbnail: item.thumbnail,
       },
-      label:
-        props.params.prompt || $t('mediaSelectTitle', 'Select a media item'),
-      userMessage: item.label,
+      label: `${prompt} -> ${item.label}`,
     })
   }
 }

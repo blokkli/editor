@@ -1,5 +1,6 @@
 <template>
   <ToolCard
+    v-if="params.requireApproval !== false"
     icon="bk_mdi_edit"
     :title="
       $t('aiAgentBatchRewriteTitle', 'Rewrite @count fields').replace(
@@ -39,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, ref, reactive } from '#imports'
+import { computed, useBlokkli, ref, reactive, onMounted } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import ItemComponent from './Item.vue'
@@ -66,6 +67,12 @@ const {
 } = useBlokkli()
 
 const isApplying = ref(false)
+
+onMounted(() => {
+  if (props.params.requireApproval === false) {
+    applySelected()
+  }
+})
 
 type ChangeItem = {
   id: number
@@ -99,13 +106,17 @@ function resolveFieldLabel(uuid: string, fieldName: string): string {
   return config?.label || fieldName
 }
 
-const items: ChangeItem[] = props.params.changes.map((change, index) => ({
-  id: index,
-  uuid: change.uuid,
-  fieldName: change.fieldName,
-  fieldLabel: resolveFieldLabel(change.uuid, change.fieldName),
-  value: change.value,
-}))
+let idCounter = 0
+const items: ChangeItem[] = Object.entries(props.params.changes).flatMap(
+  ([uuid, fields]) =>
+    Object.entries(fields).map(([fieldName, value]) => ({
+      id: idCounter++,
+      uuid,
+      fieldName,
+      fieldLabel: resolveFieldLabel(uuid, fieldName),
+      value,
+    })),
+)
 
 const selected = reactive<Record<number, boolean>>(
   Object.fromEntries(items.map((item) => [item.id, true])),
@@ -123,11 +134,7 @@ function onMouseLeave() {
 }
 
 async function applySelected() {
-  const rejectedByUser: Array<{
-    uuid: string
-    fieldName: string
-    reason?: string
-  }> = []
+  const rejectedByUser: Record<string, Record<string, { reasonForRejection: string }>> = {}
 
   // Apply all selected changes via the adapter in a single batch.
   const entityUuid = editorContext.value.entityUuid
@@ -141,11 +148,9 @@ async function applySelected() {
 
   for (const item of items) {
     if (!selected[item.id]) {
-      rejectedByUser.push({
-        uuid: item.uuid,
-        fieldName: item.fieldName,
-        reason: reasons[item.id] || undefined,
-      })
+      const fields = rejectedByUser[item.uuid] ?? {}
+      fields[item.fieldName] = { reasonForRejection: reasons[item.id] || '' }
+      rejectedByUser[item.uuid] = fields
       continue
     }
 
@@ -187,12 +192,26 @@ async function applySelected() {
           .replace('@applied', String(acceptedCount))
           .replace('@total', String(items.length))
 
-  // If there are rejections without reasons, tell the agent to ask the user.
-  const hasRejectionsWithoutReason = rejectedByUser.some((r) => !r.reason)
-  const agentMessage =
-    rejectedByUser.length > 0 && hasRejectionsWithoutReason
-      ? 'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
-      : undefined
+  // Collect rejected fields without a reason.
+  const rejectedWithoutReason: Array<{ uuid: string; fieldName: string }> = []
+  for (const [uuid, fields] of Object.entries(rejectedByUser)) {
+    for (const [fieldName, v] of Object.entries(fields)) {
+      if (!v?.reasonForRejection) {
+        rejectedWithoutReason.push({ uuid, fieldName })
+      }
+    }
+  }
+
+  let agentMessage: string | undefined
+  if (rejectedWithoutReason.length === 1 || rejectedWithoutReason.length === 2) {
+    const fieldList = rejectedWithoutReason
+      .map((r) => `"${r.fieldName}" of block ${r.uuid}`)
+      .join(' and ')
+    agentMessage = `The user rejected ${fieldList} without a reason. Use the ask_question tool to present the user with 2 or more alternative texts for each rejected field.`
+  } else if (rejectedWithoutReason.length > 2) {
+    agentMessage =
+      'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
+  }
 
   emit('done', {
     acceptedCount,
@@ -204,13 +223,17 @@ async function applySelected() {
 }
 
 function rejectAll() {
+  const rejectedByUser: Record<string, Record<string, { reasonForRejection: string }>> = {}
+  for (const item of items) {
+    const fields = rejectedByUser[item.uuid] ?? {}
+    fields[item.fieldName] = { reasonForRejection: '' }
+    rejectedByUser[item.uuid] = fields
+  }
+
   // Item components will restore on unmount.
   emit('done', {
     acceptedCount: 0,
-    rejectedByUser: items.map((c) => ({
-      uuid: c.uuid,
-      fieldName: c.fieldName,
-    })),
+    rejectedByUser,
     label: $t('aiAgentBatchRewriteAllRejected', 'All changes rejected'),
     agentMessage:
       'All changes were rejected by the user. Ask the user what they would like to change instead.',

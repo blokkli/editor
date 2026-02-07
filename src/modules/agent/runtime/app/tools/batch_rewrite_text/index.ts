@@ -2,32 +2,35 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 
-const changeSchema = z.object({
-  uuid: z
-    .string()
-    .describe('The block UUID or entity UUID containing the field'),
-  fieldName: z.string().describe('The field name to update'),
-  value: z.string().describe('The new text content'),
-})
-
 const paramsSchema = z.object({
-  changes: z.array(changeSchema).describe('List of text changes to apply'),
+  changes: z
+    .record(z.string(), z.record(z.string(), z.string()))
+    .describe('Map of block UUID to field name to new text value'),
+  requireApproval: z
+    .boolean()
+    .default(true)
+    .describe(
+      'Whether to show the approval UI. Set to false when the user already explicitly provided the text content.',
+    ),
 })
 
 const resultSchema = z.object({
   acceptedCount: z.number().describe('Number of changes accepted by the user'),
   rejectedByUser: z
-    .array(
-      z.object({
-        uuid: z.string(),
-        fieldName: z.string(),
-        reason: z
-          .string()
-          .optional()
-          .describe('Reason provided by the user for rejecting'),
-      }),
+    .record(
+      z.string(),
+      z.record(
+        z.string(),
+        z.object({
+          reasonForRejection: z
+            .string()
+            .describe(
+              'Reason provided by the user for rejecting, empty if no reason given',
+            ),
+        }),
+      ),
     )
-    .describe('Changes that were rejected by the user'),
+    .describe('Map of rejected block UUID to field name to rejection details'),
   label: z.string().describe('Human-readable summary shown in the UI'),
   agentMessage: z
     .string()
@@ -43,12 +46,11 @@ const resultSchema = z.object({
 
 export type BatchRewriteParams = z.infer<typeof paramsSchema>
 export type BatchRewriteResult = z.infer<typeof resultSchema>
-export type BatchRewriteChange = z.infer<typeof changeSchema>
 
 export default defineBlokkliAgentTool({
   name: 'batch_rewrite_text',
   description:
-    'Rewrite text content in multiple content fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields.',
+    'Rewrite text content in multiple content fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields. Set requireApproval to false when the user has already explicitly provided or confirmed the exact text to use.',
   category: 'mutation',
   modes: ['editing', 'translating'],
   label: ($t) =>
@@ -59,14 +61,11 @@ export default defineBlokkliAgentTool({
   component: Component,
   execute: (_ctx, params) => params,
   mockParams: () => ({
-    changes: [
-      { uuid: 'mock-1', fieldName: 'title', value: 'Updated Title Text' },
-      {
-        uuid: 'mock-2',
-        fieldName: 'body',
-        value: 'This is the new body content with some changes.',
-      },
-      { uuid: 'mock-3', fieldName: 'subtitle', value: 'A fresh subtitle here' },
-    ],
+    changes: {
+      'mock-1': { title: 'Updated Title Text' },
+      'mock-2': { body: 'This is the new body content with some changes.' },
+      'mock-3': { subtitle: 'A fresh subtitle here' },
+    },
+    requireApproval: true,
   }),
 })

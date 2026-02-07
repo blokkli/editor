@@ -80,12 +80,12 @@ function getSelectedLabel(): string {
 }
 
 function confirm() {
-  const userMessage = getSelectedLabel()
-  const label = props.params.question
+  const selectedLabel = getSelectedLabel()
+  const label = `${props.params.question} -> ${selectedLabel}`
   if (props.params.multiSelect) {
-    emit('done', { selected: selectedMulti.value, label, userMessage })
+    emit('done', { selected: selectedMulti.value, label })
   } else {
-    emit('done', { selected: selectedSingle.value, label, userMessage })
+    emit('done', { selected: selectedSingle.value, label })
   }
 }
 

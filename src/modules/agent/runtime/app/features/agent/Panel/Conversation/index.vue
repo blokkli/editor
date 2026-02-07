@@ -11,7 +11,7 @@
       :item="activeItem"
       is-active
     />
-    <Thinking v-show="isThinking" />
+    <Thinking v-if="isThinking" />
   </div>
 </template>
 
