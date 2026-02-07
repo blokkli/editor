@@ -1,6 +1,10 @@
 <template>
   <Teleport to="#bk-banner-list">
-    <OwnershipBanner v-if="shouldRender" @submit="takeOwnership" />
+    <OwnershipBanner
+      v-if="shouldRender"
+      :can-take-ownership
+      @submit="takeOwnership"
+    />
   </Teleport>
 </template>
 
@@ -17,7 +21,7 @@ const { adapter } = defineBlokkliFeature({
     'Renders a large button to take ownership of the current edit state.',
 })
 
-const { state, $t } = useBlokkli()
+const { state, $t, permissions } = useBlokkli()
 
 const shouldRender = computed<boolean>(
   () =>
@@ -25,12 +29,20 @@ const shouldRender = computed<boolean>(
     state.permissions.value.includes('edit'),
 )
 
-const takeOwnership = () =>
+const canTakeOwnership = computed<boolean>(() =>
+  permissions.hasPermission('take_ownership'),
+)
+
+function takeOwnership() {
+  if (!canTakeOwnership.value) {
+    return
+  }
   state.mutateWithLoadingState(
     () => adapter.takeOwnership(),
     $t('ownershipError', 'Error in assigning'),
     $t('ownershipSuccess', 'You are now the owner.'),
   )
+}
 </script>
 
 <script lang="ts">

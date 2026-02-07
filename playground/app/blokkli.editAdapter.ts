@@ -339,6 +339,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         'create_comments',
         'view_comments',
         'use_agent',
+        'take_ownership',
+        'use_blokkli',
       ]
       return Promise.resolve(permissions)
     },

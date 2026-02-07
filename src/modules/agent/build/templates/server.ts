@@ -1,14 +1,13 @@
 import { defineCodeTemplate } from '../../../../../src/build/templates/defineTemplate'
 import type { AgentModuleOptions } from '../types'
-import type { SkillCollector } from '../SkillCollector'
-import type { SystemPromptCollector } from '../SystemPromptCollector'
+import type { AgentCollector } from '../AgentCollector'
 
 export type AgentServerTemplateOptions = {
   moduleOptions: AgentModuleOptions
   providersPath: string
-  skillsCollector: SkillCollector
+  skillsCollector: AgentCollector
   skillsTypesPath: string
-  systemPromptCollector: SystemPromptCollector
+  systemPromptCollector: AgentCollector
   systemPromptTypesPath: string
 }
 
@@ -33,91 +32,79 @@ export default function (options: AgentServerTemplateOptions) {
 
   return defineCodeTemplate(
     'agent-server',
-    () => {
-      const originsJson = JSON.stringify(allowedFetchOrigins, null, 2)
+    (ctx) => {
+      const rel = (p: string) =>
+        ctx.helper.toModuleBuildRelative(p).replace(/\.ts$/, '')
+      const imports: string[] = []
 
-      // Generate the provider import using the absolute path
-      const providerImport =
-        provider === 'openai'
-          ? `import { createOpenAIProvider } from '${providersPath}/openai'`
-          : `import { createAnthropicProvider } from '${providersPath}/anthropic'`
+      // Provider import
+      if (provider === 'openai') {
+        imports.push(
+          `import { createOpenAIProvider } from '${rel(providersPath)}/openai'`,
+        )
+      } else {
+        imports.push(
+          `import { createAnthropicProvider } from '${rel(providersPath)}/anthropic'`,
+        )
+      }
 
       const providerCreate =
         provider === 'openai'
           ? 'createOpenAIProvider()'
           : 'createAnthropicProvider()'
 
-      const modelExport = `'${model}'`
-
-      // Generate skills imports and array
-      const skills = skillsCollector.getSkills()
-      let skillsCode: string
-
-      if (skills.length === 0) {
-        skillsCode = `export const skills = []`
-      } else {
-        const skillImports = skills.map(
-          (skill) =>
-            `import ${skill.importName} from '${skill.filePath.replace(/\.ts$/, '')}'`,
-        )
-
-        const skillsArrayEntries = skills.map((skill) => skill.importName)
-
-        skillsCode = `${skillImports.join('\n')}
-
-export const skills = [
-  ${skillsArrayEntries.join(',\n  ')}
-]`
+      // Skills imports and export
+      const skills = skillsCollector.getItems()
+      for (const skill of skills) {
+        imports.push(`import ${skill.importName} from '${rel(skill.filePath)}'`)
       }
 
-      // Generate system prompts imports and array
-      const systemPrompts = systemPromptCollector.getSystemPrompts()
-      let systemPromptsCode: string
+      const skillsExport =
+        skills.length === 0
+          ? `export const skills = []`
+          : `export const skills = [\n  ${skills.map((s) => s.importName).join(',\n  ')}\n]`
 
-      if (systemPrompts.length === 0) {
-        systemPromptsCode = `export const systemPrompts = []`
-      } else {
-        const systemPromptImports = systemPrompts.map(
-          (sp) =>
-            `import ${sp.importName} from '${sp.filePath.replace(/\.ts$/, '')}'`,
-        )
-
-        const systemPromptsArrayEntries = systemPrompts.map(
-          (sp) => sp.importName,
-        )
-
-        systemPromptsCode = `${systemPromptImports.join('\n')}
-
-export const systemPrompts = [
-  ${systemPromptsArrayEntries.join(',\n  ')}
-]`
+      // System prompts imports and export
+      const systemPrompts = systemPromptCollector.getItems()
+      for (const sp of systemPrompts) {
+        imports.push(`import ${sp.importName} from '${rel(sp.filePath)}'`)
       }
 
-      return `${providerImport}
+      const systemPromptsExport =
+        systemPrompts.length === 0
+          ? `export const systemPrompts = []`
+          : `export const systemPrompts = [\n  ${systemPrompts.map((sp) => sp.importName).join(',\n  ')}\n]`
+
+      const originsJson = JSON.stringify(allowedFetchOrigins, null, 2)
+
+      return `${imports.join('\n')}
 
 export const allowedFetchOrigins = ${originsJson}
 
 export const provider = ${providerCreate}
 
-export const aiModel = ${modelExport}
+export const aiModel = '${model}'
 export const debugPrompt = ${!!moduleOptions.debugPrompt}
 
-${skillsCode}
+${skillsExport}
 
-${systemPromptsCode}
+${systemPromptsExport}
 `
     },
-    () => {
-      return `import type { AIProvider } from '${providersPath}/types'
-import type { SkillDefinition } from '${skillsTypesPath}'
-import type { SystemPromptDefinition } from '${systemPromptTypesPath}'
+    (ctx) => {
+      const rel = (p: string) =>
+        ctx.helper.toModuleBuildRelative(p).replace(/\.ts$/, '')
 
-export declare const allowedFetchOrigins: string[]
-export declare const provider: AIProvider
-export declare const aiModel: string
-export declare const debugPrompt: boolean
-export declare const skills: SkillDefinition[]
-export declare const systemPrompts: SystemPromptDefinition[]
+      return `import type { AIProvider } from '${rel(providersPath)}/types'
+import type { SkillDefinition } from '${rel(skillsTypesPath)}'
+import type { SystemPromptDefinition } from '${rel(systemPromptTypesPath)}'
+
+export const allowedFetchOrigins: string[]
+export const provider: AIProvider
+export const aiModel: string
+export const debugPrompt: boolean
+export const skills: SkillDefinition[]
+export const systemPrompts: SystemPromptDefinition[]
 `
     },
     {

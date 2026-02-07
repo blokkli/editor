@@ -6,3 +6,9 @@ declare module '#blokkli/editor/adapter' {
     takeOwnership?: () => Promise<MutationResponseLike<T>>
   }
 }
+
+declare module '#blokkli/editor/types/permissions' {
+  interface UserPermissionMap {
+    take_ownership: 'Take ownership of edit state'
+  }
+}

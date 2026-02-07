@@ -1,5 +1,9 @@
 import type { Peer } from 'crossws'
-import type { AgentErrorType, PageContext, ServerMessage } from '../shared/types'
+import type {
+  AgentErrorType,
+  PageContext,
+  ServerMessage,
+} from '../shared/types'
 import type { GenericMessage } from './providers/types'
 import type { ResolvedSkill, SkillDefinition } from './skills/types'
 import { skills } from '#blokkli-build/agent-server'

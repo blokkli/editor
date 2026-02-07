@@ -63,6 +63,8 @@ const PERMISSION_FIELDS: Record<
   UserPermissions,
   keyof ParagraphsBlokkliUserPermissionsFragment
 > = {
+  use_blokkli: 'use_blokkli',
+  take_ownership: 'take_ownership',
   manage_default_templates: 'manage_default_templates',
   create_library_item: 'create_library_item',
   edit_library_item: 'edit_library_item',

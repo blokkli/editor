@@ -3,7 +3,7 @@
     id="ownership"
     icon="bk_mdi_person-fill"
     :text
-    :button="$t('ownershipTakeOwnership', 'Assign to me')"
+    :button
     @click="$emit('submit')"
   />
 </template>
@@ -11,6 +11,10 @@
 <script setup lang="ts">
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { Banner } from '#blokkli/editor/components'
+
+const props = defineProps<{
+  canTakeOwnership: boolean
+}>()
 
 defineEmits<{
   (e: 'submit'): void
@@ -32,6 +36,14 @@ const text = computed(() => {
     'ownershipNote',
     'This page is currently being edited by @name. Changes can only be made by one person at a time.',
   ).replace('@name', name.value)
+})
+
+const button = computed<string | undefined>(() => {
+  if (!props.canTakeOwnership) {
+    return undefined
+  }
+
+  return $t('ownershipTakeOwnership', 'Assign to me')
 })
 
 onMounted(() => {

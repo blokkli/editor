@@ -11,6 +11,8 @@
  * }
  * ```
  */
-export interface UserPermissionMap {}
+export interface UserPermissionMap {
+  use_blokkli: 'use the blökkli editor'
+}
 
 export type UserPermissions = keyof UserPermissionMap

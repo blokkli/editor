@@ -2,10 +2,7 @@ import { addServerHandler, createResolver } from '@nuxt/kit'
 import { fileURLToPath } from 'node:url'
 import * as path from 'node:path'
 import { defineBlokkliModule } from '../defineBlokkliModule'
-import { McpToolCollector } from './build/McpToolCollector'
-import { PromptCollector } from './build/PromptCollector'
-import { SkillCollector } from './build/SkillCollector'
-import { SystemPromptCollector } from './build/SystemPromptCollector'
+import { AgentCollector } from './build/AgentCollector'
 import createClientTemplate from './build/templates/client'
 import createServerTemplate from './build/templates/server'
 import type { AgentModuleOptions } from './build/types'
@@ -73,10 +70,12 @@ export default defineNuxtConfig({
     // Initialize MCP tools collector with both module and project directories
     const moduleToolsDir = moduleResolver.resolve('./runtime/app/tools')
     const projectToolsDir = path.resolve(nuxt.options.rootDir, 'blokkli/tools')
-    const mcpTools = new McpToolCollector(ctx.helper, [
-      moduleToolsDir,
-      projectToolsDir,
-    ])
+    const mcpTools = new AgentCollector(ctx.helper, {
+      composable: 'defineBlokkliAgentTool',
+      importPrefix: 'tool',
+      dependency: 'agent-mcp-tools',
+      dirs: [moduleToolsDir, projectToolsDir],
+    })
     await mcpTools.init()
     ctx.context.addCollector(mcpTools)
 
@@ -85,9 +84,12 @@ export default defineNuxtConfig({
       nuxt.options.rootDir,
       'blokkli/prompts',
     )
-    const promptsCollector = new PromptCollector(ctx.helper, [
-      projectPromptsDir,
-    ])
+    const promptsCollector = new AgentCollector(ctx.helper, {
+      composable: 'defineBlokkliAgentPrompt',
+      importPrefix: 'prompt',
+      dependency: 'agent-prompts',
+      dirs: [projectPromptsDir],
+    })
     await promptsCollector.init()
     ctx.context.addCollector(promptsCollector)
 
@@ -125,10 +127,12 @@ export default defineNuxtConfig({
       'blokkli/skills',
     )
 
-    const skillsCollector = new SkillCollector(ctx.helper, [
-      moduleSkillsDir,
-      projectSkillsDir,
-    ])
+    const skillsCollector = new AgentCollector(ctx.helper, {
+      composable: 'defineBlokkliAgentSkill',
+      importPrefix: 'skill',
+      dependency: 'agent-server',
+      dirs: [moduleSkillsDir, projectSkillsDir],
+    })
     await skillsCollector.init()
     ctx.context.addCollector(skillsCollector)
 
@@ -141,10 +145,12 @@ export default defineNuxtConfig({
       'blokkli/system-prompts',
     )
 
-    const systemPromptCollector = new SystemPromptCollector(ctx.helper, [
-      moduleSystemPromptsDir,
-      projectSystemPromptsDir,
-    ])
+    const systemPromptCollector = new AgentCollector(ctx.helper, {
+      composable: 'defineBlokkliAgentSystemPrompt',
+      importPrefix: 'systemPrompt',
+      dependency: 'agent-server',
+      dirs: [moduleSystemPromptsDir, projectSystemPromptsDir],
+    })
     await systemPromptCollector.init()
     ctx.context.addCollector(systemPromptCollector)
 
