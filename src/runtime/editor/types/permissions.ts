@@ -1,10 +1,16 @@
-export const ALL_PERMISSIONS = [
-  'manage_default_templates',
-  'create_library_item',
-  'edit_library_item',
-  'create_comments',
-  'view_comments',
-  'use_agent',
-] as const
+/**
+ * Map of permission keys to their descriptions.
+ *
+ * Features can augment this interface to register additional permissions:
+ *
+ * ```ts
+ * declare module '#blokkli/editor/types/permissions' {
+ *   interface UserPermissionMap {
+ *     my_permission: 'Description of what this permission grants.'
+ *   }
+ * }
+ * ```
+ */
+export interface UserPermissionMap {}
 
-export type UserPermissions = (typeof ALL_PERMISSIONS)[number]
+export type UserPermissions = keyof UserPermissionMap

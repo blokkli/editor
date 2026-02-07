@@ -83,3 +83,9 @@ declare module '#blokkli/editor/adapter' {
     templatesGetEditUrl?: (e: AdapterTemplatesGetEditUrl) => string
   }
 }
+
+declare module '#blokkli/editor/types/permissions' {
+  interface UserPermissionMap {
+    manage_default_templates: 'Manage default block templates.'
+  }
+}

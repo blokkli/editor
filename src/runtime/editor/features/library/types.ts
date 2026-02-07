@@ -104,3 +104,10 @@ declare module '#blokkli/editor/events' {
     'library:edit-item': LibraryEditItemEvent
   }
 }
+
+declare module '#blokkli/editor/types/permissions' {
+  interface UserPermissionMap {
+    create_library_item: 'Create new library items from existing blocks'
+    edit_library_item: 'Edit library items.'
+  }
+}

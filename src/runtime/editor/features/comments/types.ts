@@ -26,3 +26,10 @@ declare module '#blokkli/editor/adapter' {
     resolveComment?: (uuid: string) => Promise<CommentItem[]>
   }
 }
+
+declare module '#blokkli/editor/types/permissions' {
+  interface UserPermissionMap {
+    create_comments: 'Post comments.'
+    view_comments: 'Access comments.'
+  }
+}

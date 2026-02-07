@@ -36,10 +36,7 @@ import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { GraphqlResponse } from '#nuxt-graphql-middleware/response'
 import type { EditPermission } from '#blokkli/types/provider'
-import {
-  ALL_PERMISSIONS,
-  type UserPermissions,
-} from '#blokkli/editor/types/permissions'
+import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
@@ -58,12 +55,33 @@ function mapPublishOptions(
   }
 }
 
+/**
+ * Maps each UserPermission to its corresponding GraphQL fragment field.
+ * Adding a new permission without a mapping here will cause a type error.
+ */
+const PERMISSION_FIELDS: Record<
+  UserPermissions,
+  keyof ParagraphsBlokkliUserPermissionsFragment
+> = {
+  manage_default_templates: 'manage_default_templates',
+  create_library_item: 'create_library_item',
+  edit_library_item: 'edit_library_item',
+  create_comments: 'create_comments',
+  view_comments: 'view_comments',
+  use_agent: 'use_agent',
+}
+
 function mapUserPermissions(
   user: ParagraphsBlokkliUserPermissionsFragment,
 ): UserPermissions[] {
-  return ALL_PERMISSIONS.filter((permission) => {
-    return user[permission] === true
-  })
+  return (
+    Object.entries(PERMISSION_FIELDS) as [
+      UserPermissions,
+      keyof ParagraphsBlokkliUserPermissionsFragment,
+    ][]
+  )
+    .filter(([, field]) => user[field] === true)
+    .map(([permission]) => permission)
 }
 
 function valueToFilterString(v: unknown): string {

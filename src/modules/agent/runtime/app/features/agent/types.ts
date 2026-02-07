@@ -1,3 +1,9 @@
+declare module '#blokkli/editor/types/permissions' {
+  interface UserPermissionMap {
+    use_agent: 'Use the AI agent.'
+  }
+}
+
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
     /**
