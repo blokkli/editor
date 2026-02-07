@@ -31,6 +31,20 @@ export default defineBlokkliModule<AgentModuleOptions>({
     if (!options.provider) {
       throw new Error('Missing blökkli agent option "provider".')
     }
+    if (!ctx.helper.nuxt.options.nitro?.experimental?.websocket) {
+      ctx.helper.logger
+        .error(`Nitro experimental WebSocket support is not enabled.
+
+export default defineNuxtConfig({
+  nitro: {
+    experimental: {
+      websocket: true
+    }
+  }
+})
+`)
+      throw new Error('Experimental WebSocket support of Nitro is not enabled.')
+    }
     const nuxt = ctx.helper.nuxt
     const moduleResolver = createResolver(
       fileURLToPath(new URL('./', import.meta.url)),
