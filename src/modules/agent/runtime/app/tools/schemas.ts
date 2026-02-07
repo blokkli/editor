@@ -129,9 +129,19 @@ export function buildBlockOptionsMap(
  * Used consistently across tools for specifying block locations.
  */
 export const parentSchema = z.object({
-  type: z.string(),
-  uuid: z.string(),
-  field: z.string(),
+  type: z
+    .string()
+    .describe(
+      'The entity type of the parent. Do NOT guess this - always use the parent object returned by get_child_blocks.',
+    ),
+  uuid: z
+    .string()
+    .describe('The UUID of the parent entity or block'),
+  field: z
+    .string()
+    .describe(
+      'The field name on the parent. Do NOT guess this - always use the parent object returned by get_child_blocks.',
+    ),
 })
 
 /**

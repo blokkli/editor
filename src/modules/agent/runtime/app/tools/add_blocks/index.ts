@@ -83,8 +83,11 @@ export default defineBlokkliAgentTool({
     const field = types.getFieldConfig(entityType, bundle, params.parent.field)
 
     if (!field) {
+      const availableFields = types.fieldConfig
+        .forEntityTypeAndBundle(entityType, bundle)
+        .map((f) => f.name)
       return {
-        error: 'Field not found.',
+        error: `Field "${params.parent.field}" not found on bundle "${bundle}". Available fields: ${availableFields.length ? availableFields.join(', ') : 'none'}. Use get_child_blocks to get the correct parent object.`,
       }
     }
 
