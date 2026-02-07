@@ -70,6 +70,7 @@ export type AgentProvider = {
   reject: () => void
   setAutoApprove: (value: boolean) => void
   cancel: () => void
+  newConversation: () => void
   getTranscript: () => void
   onToolComponentDone: (result: unknown) => void
 
@@ -787,6 +788,28 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     })
   }
 
+  function newConversation() {
+    // Cancel any in-progress work
+    if (pendingMutation.value) {
+      pendingMutation.value.resolve(false)
+      pendingMutation.value = null
+    }
+    if (pendingToolCallResolve) {
+      pendingToolCallResolve({ cancelled: true })
+      pendingToolCallResolve = null
+    }
+    pendingToolCall.value = null
+
+    // Clear client state
+    conversation.value = []
+    activeItem.value = null
+    isProcessing.value = false
+    isThinking.value = false
+
+    // Tell server to clear conversation
+    send({ type: 'new_conversation' })
+  }
+
   function getTranscript() {
     send({ type: 'get_transcript' })
   }
@@ -827,6 +850,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     reject,
     setAutoApprove,
     cancel,
+    newConversation,
     getTranscript,
     onToolComponentDone,
 

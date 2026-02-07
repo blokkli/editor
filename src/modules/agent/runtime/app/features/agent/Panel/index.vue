@@ -245,6 +245,6 @@ function onSubmit() {
 }
 
 function onNewConversation() {
-  // TODO: implement new conversation
+  agent.newConversation()
 }
 </script>

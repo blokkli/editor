@@ -884,6 +884,13 @@ export default defineWebSocketHandler({
             }),
           )
           break
+
+        case 'new_conversation':
+          session.abortController?.abort()
+          session.messages = []
+          session.activatedLazyTools.clear()
+          peer.send(JSON.stringify({ type: 'done' }))
+          break
       }
     } catch (error) {
       console.error('WebSocket message error:', error)

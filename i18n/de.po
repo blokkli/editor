@@ -316,6 +316,10 @@ msgctxt "aiAgentGetContentFieldsDone"
 msgid "Got content fields of @bundle block"
 msgstr "Inhaltsfelder von @bundle abgerufen"
 
+msgctxt "aiAgentGetContentFieldsMultipleDone"
+msgid "Got content fields of @count blocks"
+msgstr "Inhaltsfelder von @count Blöcken geladen"
+
 msgctxt "aiAgentGetContentFieldsRunning"
 msgid "Getting content fields..."
 msgstr "Inhaltsfelder abrufen..."
@@ -334,15 +338,15 @@ msgstr "Änderungsverlauf abrufen..."
 
 msgctxt "aiAgentGetSelectedBlocksDone"
 msgid "@count block(s) selected"
-msgstr ""
+msgstr "@count Blöcke ausgewählt"
 
 msgctxt "aiAgentGetSelectedBlocksNone"
 msgid "No blocks selected"
-msgstr ""
+msgstr "Keine Blöcke ausgewählt"
 
 msgctxt "aiAgentGetSelectedBlocksRunning"
 msgid "Getting selected blocks..."
-msgstr ""
+msgstr "Ausgewählte Blöcke laden..."
 
 msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
@@ -356,6 +360,10 @@ msgctxt "aiAgentLoadTools"
 msgid "@count tools loaded"
 msgstr "@count Tools geladen"
 
+msgctxt "aiAgentMoreOptions"
+msgid "More options"
+msgstr "Weitere Optionen"
+
 msgctxt "aiAgentMoveBlockDone"
 msgid "Moved @bundle"
 msgstr "@bundle verschoben"
@@ -367,6 +375,10 @@ msgstr "@count Blöcke verschoben"
 msgctxt "aiAgentMoveBlocksRunning"
 msgid "Moving blocks..."
 msgstr "Blöcke verschieben..."
+
+msgctxt "aiAgentNewConversation"
+msgid "Start new conversation"
+msgstr "Neue Unterhaltung starten"
 
 msgctxt "aiAgentPlaceholder"
 msgid "Ask me to edit the page content..."
@@ -443,6 +455,10 @@ msgstr "Medien auswählen..."
 msgctxt "aiAgentSetBlockOptionsRunning"
 msgid "Setting block options..."
 msgstr "Block-Optionen setzen..."
+
+msgctxt "aiAgentShowTranscript"
+msgid "Show transcript"
+msgstr "Transkript anzeigen"
 
 msgctxt "aiAgentSwapBlocksDone"
 msgid "Swapped @bundleA and @bundleB"

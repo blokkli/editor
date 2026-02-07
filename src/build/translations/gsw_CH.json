@@ -303,6 +303,10 @@
     "source": "Got content fields of @bundle block",
     "translation": ""
   },
+  "aiAgentGetContentFieldsMultipleDone": {
+    "source": "Got content fields of @count blocks",
+    "translation": ""
+  },
   "aiAgentGetContentFieldsRunning": {
     "source": "Getting content fields...",
     "translation": ""
@@ -343,6 +347,10 @@
     "source": "@count tools loaded",
     "translation": ""
   },
+  "aiAgentMoreOptions": {
+    "source": "More options",
+    "translation": ""
+  },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
     "translation": ""
@@ -353,6 +361,10 @@
   },
   "aiAgentMoveBlocksRunning": {
     "source": "Moving blocks...",
+    "translation": ""
+  },
+  "aiAgentNewConversation": {
+    "source": "Start new conversation",
     "translation": ""
   },
   "aiAgentPlaceholder": {
@@ -429,6 +441,10 @@
   },
   "aiAgentSetBlockOptionsRunning": {
     "source": "Setting block options...",
+    "translation": ""
+  },
+  "aiAgentShowTranscript": {
+    "source": "Show transcript",
     "translation": ""
   },
   "aiAgentSwapBlocksDone": {

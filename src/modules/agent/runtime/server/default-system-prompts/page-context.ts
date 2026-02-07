@@ -16,10 +16,6 @@ export default defineBlokkliAgentSystemPrompt({
       `- status: ${pageContext.isPublished ? 'Published' : 'Unpublished'}`,
     ]
 
-    if (pageContext.ownerName) {
-      lines.push(`- owner: ${pageContext.ownerName}`)
-    }
-
     if (pageContext.entityLanguage) {
       lines.push(
         `- contentLanguage: ${pageContext.entityLanguage} (language to use for generating content)`,

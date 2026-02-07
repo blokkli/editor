@@ -311,6 +311,10 @@ msgctxt "aiAgentGetContentFieldsDone"
 msgid "Got content fields of @bundle block"
 msgstr ""
 
+msgctxt "aiAgentGetContentFieldsMultipleDone"
+msgid "Got content fields of @count blocks"
+msgstr ""
+
 msgctxt "aiAgentGetContentFieldsRunning"
 msgid "Getting content fields..."
 msgstr ""
@@ -351,6 +355,10 @@ msgctxt "aiAgentLoadTools"
 msgid "@count tools loaded"
 msgstr ""
 
+msgctxt "aiAgentMoreOptions"
+msgid "More options"
+msgstr ""
+
 msgctxt "aiAgentMoveBlockDone"
 msgid "Moved @bundle"
 msgstr ""
@@ -361,6 +369,10 @@ msgstr ""
 
 msgctxt "aiAgentMoveBlocksRunning"
 msgid "Moving blocks..."
+msgstr ""
+
+msgctxt "aiAgentNewConversation"
+msgid "Start new conversation"
 msgstr ""
 
 msgctxt "aiAgentPlaceholder"
@@ -437,6 +449,10 @@ msgstr ""
 
 msgctxt "aiAgentSetBlockOptionsRunning"
 msgid "Setting block options..."
+msgstr ""
+
+msgctxt "aiAgentShowTranscript"
+msgid "Show transcript"
 msgstr ""
 
 msgctxt "aiAgentSwapBlocksDone"

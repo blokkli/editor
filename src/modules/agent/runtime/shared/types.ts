@@ -110,6 +110,7 @@ export type ClientMessage =
   | { type: 'accept' }
   | { type: 'reject' }
   | { type: 'get_transcript' }
+  | { type: 'new_conversation' }
 
 /**
  * Messages sent from server to client over WebSocket.

@@ -303,6 +303,10 @@
     "source": "Got content fields of @bundle block",
     "translation": "Inhaltsfelder von @bundle abgerufen"
   },
+  "aiAgentGetContentFieldsMultipleDone": {
+    "source": "Got content fields of @count blocks",
+    "translation": "Inhaltsfelder von @count Blöcken geladen"
+  },
   "aiAgentGetContentFieldsRunning": {
     "source": "Getting content fields...",
     "translation": "Inhaltsfelder abrufen..."
@@ -321,15 +325,15 @@
   },
   "aiAgentGetSelectedBlocksDone": {
     "source": "@count block(s) selected",
-    "translation": ""
+    "translation": "@count Blöcke ausgewählt"
   },
   "aiAgentGetSelectedBlocksNone": {
     "source": "No blocks selected",
-    "translation": ""
+    "translation": "Keine Blöcke ausgewählt"
   },
   "aiAgentGetSelectedBlocksRunning": {
     "source": "Getting selected blocks...",
-    "translation": ""
+    "translation": "Ausgewählte Blöcke laden..."
   },
   "aiAgentGoToHistoryIndexRunning": {
     "source": "Navigating history...",
@@ -343,6 +347,10 @@
     "source": "@count tools loaded",
     "translation": "@count Tools geladen"
   },
+  "aiAgentMoreOptions": {
+    "source": "More options",
+    "translation": "Weitere Optionen"
+  },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
     "translation": "@bundle verschoben"
@@ -354,6 +362,10 @@
   "aiAgentMoveBlocksRunning": {
     "source": "Moving blocks...",
     "translation": "Blöcke verschieben..."
+  },
+  "aiAgentNewConversation": {
+    "source": "Start new conversation",
+    "translation": "Neue Unterhaltung starten"
   },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
@@ -430,6 +442,10 @@
   "aiAgentSetBlockOptionsRunning": {
     "source": "Setting block options...",
     "translation": "Block-Optionen setzen..."
+  },
+  "aiAgentShowTranscript": {
+    "source": "Show transcript",
+    "translation": "Transkript anzeigen"
   },
   "aiAgentSwapBlocksDone": {
     "source": "Swapped @bundleA and @bundleB",
