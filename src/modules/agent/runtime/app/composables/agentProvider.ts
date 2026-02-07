@@ -378,7 +378,6 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       bundleLabel: state.entity.value.bundleLabel || '',
       itemEntityType,
       bundles,
-      ownerName: state.owner.value?.name,
       interfaceLanguage: ui.interfaceLanguage.value,
       entityLanguage: context.value.language,
       isPublished: state.entity.value.status,

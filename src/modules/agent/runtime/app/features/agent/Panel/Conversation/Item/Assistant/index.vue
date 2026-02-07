@@ -5,11 +5,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick } from '#imports'
+import { ref, watch, nextTick, useBlokkli } from '#imports'
 import { marked } from 'marked'
 import type { AssistantConversationItem } from '#blokkli/agent/app/types'
+import { PLACEHOLDER_USER_NAME } from '#blokkli/agent/shared/placeholders'
 
 const props = defineProps<AssistantConversationItem>()
+
+const { state } = useBlokkli()
 
 const contentEl = ref<HTMLElement>()
 
@@ -18,7 +21,10 @@ marked.setOptions({ gfm: true, breaks: true })
 function renderContent(content: string) {
   const container = contentEl.value
   if (!container) return
-  container.innerHTML = marked.parse(content) as string
+  const ownerName = state.owner.value?.name || ''
+  container.innerHTML = marked.parse(
+    content.replaceAll(PLACEHOLDER_USER_NAME, ownerName),
+  ) as string
 }
 
 watch(

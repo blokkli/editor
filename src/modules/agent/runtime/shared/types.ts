@@ -69,8 +69,6 @@ export type PageContext = {
   itemEntityType: string
   /** Available block bundles */
   bundles: BlockBundle[]
-  /** The name of the page owner (person who created/owns the content) */
-  ownerName?: string
   /** The UI/interface language code (e.g., "en", "de") */
   interfaceLanguage?: string
   /** The content/entity language code (e.g., "en", "de") */
