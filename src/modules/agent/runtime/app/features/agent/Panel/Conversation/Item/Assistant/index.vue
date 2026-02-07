@@ -7,12 +7,9 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick } from '#imports'
 import { marked } from 'marked'
-import type {
-  AssistantConversationItem,
-  AssistantActiveItem,
-} from '#blokkli/agent/app/types'
+import type { AssistantConversationItem } from '#blokkli/agent/app/types'
 
-const props = defineProps<AssistantConversationItem | AssistantActiveItem>()
+const props = defineProps<AssistantConversationItem>()
 
 const contentEl = ref<HTMLElement>()
 

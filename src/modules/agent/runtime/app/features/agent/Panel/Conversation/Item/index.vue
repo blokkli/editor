@@ -16,23 +16,10 @@ import ItemAssistant from './Assistant/index.vue'
 import ItemTool from './Tool/index.vue'
 import ItemServerTool from './ServerTool/index.vue'
 import ItemError from './Error/index.vue'
-import type {
-  ConversationItem,
-  AssistantActiveItem,
-  ToolActiveItem,
-  ServerToolConversationItem,
-  ErrorConversationItem,
-} from '#blokkli/agent/app/types'
-
-type ItemProp =
-  | ConversationItem
-  | AssistantActiveItem
-  | ToolActiveItem
-  | ServerToolConversationItem
-  | ErrorConversationItem
+import type { ConversationItem } from '#blokkli/agent/app/types'
 
 defineProps<{
-  item: ItemProp
+  item: ConversationItem
   isActive?: boolean
 }>()
 </script>

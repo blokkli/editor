@@ -484,6 +484,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       callId,
       tool,
       label: initialLabel,
+      status: 'active',
       timestamp,
     }
 

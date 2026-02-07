@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onBeforeUnmount, useBlokkli, nextTick, ref } from '#imports'
+import { watch, onBeforeUnmount, useBlokkli, nextTick } from '#imports'
 import { DiffValue, FlexTextarea } from '#blokkli/editor/components'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
@@ -45,15 +45,10 @@ const props = defineProps<{
   newValue: string
 }>()
 
-const emit = defineEmits<{
-  (e: 'update:selected', value: boolean): void
-}>()
+const selected = defineModel<boolean>('selected', { default: false })
+const reason = defineModel<string>('reason', { default: '' })
 
 const { blocks, context, eventBus, $t } = useBlokkli()
-
-const selected = ref(true)
-const reason = ref('')
-const applied = ref(false)
 
 function resolveHost(): EntityContext {
   if (props.uuid === context.value.entityUuid) {
@@ -85,7 +80,6 @@ override.setValue(props.newValue)
 
 async function onChange() {
   selected.value = !selected.value
-  emit('update:selected', selected.value)
   await nextTick()
   onMouseEnter()
 }
@@ -99,20 +93,8 @@ watch(selected, (isSelected) => {
   }
 })
 
-// Restore on unmount if not applied.
+// Restore on unmount.
 onBeforeUnmount(() => {
-  if (!applied.value) {
-    override.restore()
-  }
-})
-
-function markApplied() {
-  applied.value = true
-}
-
-defineExpose({
-  selected,
-  reason,
-  markApplied,
+  override.restore()
 })
 </script>

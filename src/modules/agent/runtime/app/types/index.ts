@@ -367,14 +367,15 @@ export type AssistantConversationItem = ConversationItemBase & {
 }
 
 /**
- * A completed tool call in the conversation history.
+ * A tool call in the conversation history.
+ * Status is 'active' while executing, then 'success' or 'error' when complete.
  */
 export type ToolConversationItem = ConversationItemBase & {
   type: 'tool'
   callId: string
   tool: string
   label: string
-  status: 'success' | 'error'
+  status: 'active' | 'success' | 'error'
 }
 
 /**
@@ -405,29 +406,7 @@ export type ConversationItem =
   | ErrorConversationItem
 
 /**
- * Assistant message being streamed (content may grow).
- */
-export type AssistantActiveItem = {
-  type: 'assistant'
-  id: string
-  content: string
-  timestamp: number
-}
-
-/**
- * Tool call in progress (pending execution or awaiting approval).
- */
-export type ToolActiveItem = {
-  type: 'tool'
-  id: string
-  callId: string
-  tool: string
-  label: string
-  timestamp: number
-}
-
-/**
  * The single item currently being built (streaming text or pending tool).
  * Only one active item can exist at a time. When complete, it's pushed to conversation history.
  */
-export type ActiveItem = AssistantActiveItem | ToolActiveItem
+export type ActiveItem = AssistantConversationItem | ToolConversationItem

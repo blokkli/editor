@@ -14,10 +14,11 @@
       class="bk-batch-rewrite-list"
       @mouseleave="onMouseLeave"
     >
-      <Item
+      <ItemComponent
         v-for="item in items"
         :key="item.id"
-        ref="itemRefs"
+        v-model:selected="selected[item.id]"
+        v-model:reason="reasons[item.id]"
         :uuid="item.uuid"
         :field-name="item.fieldName"
         :field-label="item.fieldLabel"
@@ -38,10 +39,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, ref, useTemplateRef } from '#imports'
+import { computed, useBlokkli, ref, reactive } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
-import type Item from './Item.vue'
+import ItemComponent from './Item.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
 import { itemEntityType } from '#blokkli-build/config'
@@ -106,10 +107,15 @@ const items: ChangeItem[] = props.params.changes.map((change, index) => ({
   value: change.value,
 }))
 
-const itemRefs = useTemplateRef<InstanceType<typeof Item>[]>('itemRefs')
+const selected = reactive<Record<number, boolean>>(
+  Object.fromEntries(items.map((item) => [item.id, true])),
+)
+const reasons = reactive<Record<number, string>>(
+  Object.fromEntries(items.map((item) => [item.id, ''])),
+)
 
 const selectedCount = computed(
-  () => itemRefs.value?.filter((item) => item.selected).length ?? 0,
+  () => items.filter((item) => selected[item.id]).length,
 )
 
 function onMouseLeave() {
@@ -117,27 +123,11 @@ function onMouseLeave() {
 }
 
 async function applySelected() {
-  isApplying.value = true
-
-  const refs = itemRefs.value || []
-
   const rejectedByUser: Array<{
     uuid: string
     fieldName: string
     reason?: string
   }> = []
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i]!
-    const ref = refs[i]
-    if (ref && !ref.selected) {
-      rejectedByUser.push({
-        uuid: item.uuid,
-        fieldName: item.fieldName,
-        reason: ref.reason || undefined,
-      })
-    }
-  }
 
   // Apply all selected changes via the adapter in a single batch.
   const entityUuid = editorContext.value.entityUuid
@@ -149,10 +139,15 @@ async function applySelected() {
   }> = []
   const entityItems: Array<{ fieldName: string; fieldValue: string }> = []
 
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i]!
-    const ref = refs[i]
-    if (!ref?.selected) continue
+  for (const item of items) {
+    if (!selected[item.id]) {
+      rejectedByUser.push({
+        uuid: item.uuid,
+        fieldName: item.fieldName,
+        reason: reasons[item.id] || undefined,
+      })
+      continue
+    }
 
     if (item.uuid === entityUuid) {
       entityItems.push({
@@ -168,18 +163,14 @@ async function applySelected() {
     }
   }
 
+  isApplying.value = true
+
   await state.mutateWithLoadingState(() =>
     props.context.adapter.updateFieldValueBatched!({
       items: batchItems,
       entityItems,
     }),
   )
-
-  for (const ref of refs) {
-    if (ref.selected) {
-      ref.markApplied()
-    }
-  }
 
   const acceptedCount = batchItems.length + entityItems.length
 

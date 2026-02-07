@@ -126,6 +126,7 @@ const mockActiveItem: ActiveItem = {
   callId: 'call-5',
   tool: 'move_block',
   label: 'Move block after hero section',
+  status: 'active',
   timestamp: Date.now() - 55000,
 }
 
