@@ -70,17 +70,17 @@ export type PageContext = {
   /** Available block bundles */
   bundles: BlockBundle[]
   /** The UI/interface language code (e.g., "en", "de") */
-  interfaceLanguage?: string
+  interfaceLanguage: string
   /** The content/entity language code (e.g., "en", "de") */
-  entityLanguage?: string
-  /** Whether the entity is published */
-  isPublished?: boolean
+  entityLanguage: string
+  /** Whether the entity is published or null if entity is not publishable */
+  isPublished: boolean | null
   /** The current edit mode - determines what actions are available */
   editMode: EditMode
   /** Available fragments (reusable content blocks) */
   fragments: Fragment[]
   /** Content fields on the page entity itself (e.g., lead text, hero image) */
-  entityContentFields?: BlockBundleContentField[]
+  entityContentFields: BlockBundleContentField[]
 }
 
 // ============================================================================

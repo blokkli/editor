@@ -32,7 +32,7 @@
     }
 
     h1 {
-      @apply text-xl mb-8 mt-24 leading-none;
+      @apply text-xl mb-8 mt-24 leading-tight;
       &:not(:has(strong)) {
         @apply font-bold;
       }

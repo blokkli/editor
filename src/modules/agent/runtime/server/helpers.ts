@@ -247,7 +247,11 @@ export function pruneMessages(
       continue
     }
 
-    // Compress tool_result blocks and remove text blocks (e.g. skill guidelines)
+    // Compress tool_result blocks.
+    // For user messages, also remove text blocks (e.g. skill guidelines injected
+    // alongside tool results). We only strip text from user messages — stripping
+    // from assistant messages would leave empty content arrays, which the API
+    // rejects for non-final assistant messages.
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
       if (block.type === 'tool_result') {
@@ -259,7 +263,7 @@ export function pruneMessages(
             `[Pruning] Compressed tool result: ${originalSize} -> ${block.content.length} chars`,
           )
         }
-      } else if (block.type === 'text') {
+      } else if (block.type === 'text' && msg.role === 'user') {
         content.splice(j, 1)
       }
     }

@@ -229,31 +229,35 @@
   },
   "aiAgentErrorAuthentication": {
     "source": "API authentication failed. Please check your API key.",
-    "translation": ""
+    "translation": "API-Authentifizierung ist fehlgeschlagen. Bitte API-Key überprüfen."
   },
   "aiAgentErrorBadRequest": {
     "source": "The request to the AI service was invalid.",
-    "translation": ""
+    "translation": "Die Anfrage an den KI-Dienst ist ungültig."
   },
   "aiAgentErrorConnection": {
     "source": "Could not connect to the AI service. Please check your network connection.",
-    "translation": ""
+    "translation": "Fehler beim Verbinden mit dem KI-Dienst."
   },
   "aiAgentErrorNotFound": {
     "source": "The configured AI model was not found. Please check the configuration.",
-    "translation": ""
+    "translation": "Das konfigurierte KI-Model konnte nicht gefunden werden. Bitte Konfiguration überprüfen."
   },
   "aiAgentErrorOverloaded": {
     "source": "The AI service is currently overloaded. Please try again in a moment.",
-    "translation": ""
+    "translation": "Der KI-Dienst ist aktuell überlastet. Bitte versuchen Sie es später noch einmal."
   },
   "aiAgentErrorRateLimit": {
     "source": "Rate limit exceeded. Please wait a moment before trying again.",
+    "translation": "Das Limit wurde überschritten. Bitte warten Sie einen Moment, bevor Sie es erneut versuchen."
+  },
+  "aiAgentErrorUnauthorized": {
+    "source": "Authentication failed. Please reload the page and try again.",
     "translation": ""
   },
   "aiAgentErrorUnknown": {
     "source": "An unexpected error occurred.",
-    "translation": ""
+    "translation": "Ein unerwarteter Fehler ist aufgetreten."
   },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",

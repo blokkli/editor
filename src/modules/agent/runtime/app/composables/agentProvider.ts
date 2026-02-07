@@ -380,13 +380,10 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       bundles,
       interfaceLanguage: ui.interfaceLanguage.value,
       entityLanguage: context.value.language,
-      isPublished: state.entity.value.status,
+      isPublished: state.entity.value.status ?? null,
       editMode: state.editMode.value,
       fragments,
-    }
-
-    if (entityContentFields.length) {
-      pageContext.entityContentFields = entityContentFields
+      entityContentFields,
     }
 
     return pageContext

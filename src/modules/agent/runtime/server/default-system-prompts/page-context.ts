@@ -8,43 +8,41 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'page-context',
   title: 'Current Page',
   weight: 800,
-  getPrompt: (context) => {
-    const { pageContext } = context
-    const lines: string[] = [
-      `- title: ${pageContext.title}`,
-      `- bundle: ${pageContext.entityBundle} (${pageContext.bundleLabel})`,
-      `- status: ${pageContext.isPublished ? 'Published' : 'Unpublished'}`,
-    ]
+  getPrompt: ({ pageContext }) => {
+    let intro = `The title of the page being edited is "${pageContext.title}".`
+    if (pageContext.isPublished === true) {
+      intro += ' The page is currently published.'
+    } else if (pageContext.isPublished === false) {
+      intro += ' The page is currently not published.'
+    }
+
+    intro += ` The UUID is "${pageContext.entityUuid}", its entity type is "${pageContext.entityType}" and the bundle is "${pageContext.entityBundle}", but the user refers to the bundle as "${pageContext.bundleLabel}".`
 
     if (pageContext.entityLanguage) {
-      lines.push(
-        `- contentLanguage: ${pageContext.entityLanguage} (language to use for generating content)`,
-      )
+      intro += ` The ISO language code for content on this page is "${pageContext.entityLanguage}".`
     }
 
-    if (pageContext.interfaceLanguage) {
+    const lines = [intro]
+
+    if (pageContext.editMode === 'editing') {
       lines.push(
-        `- interfaceLanguage: ${pageContext.interfaceLanguage} (language to use for interaction with user)`,
+        '',
+        '### Parent for Root-Level Blocks',
+        '',
+        'When adding blocks directly to the page, use this parent object:',
+        '```json',
+        JSON.stringify(
+          {
+            type: pageContext.entityType,
+            uuid: pageContext.entityUuid,
+            field: '<field_name>',
+          },
+          null,
+          2,
+        ),
+        '```',
       )
     }
-
-    lines.push(
-      '',
-      '### Parent for Root-Level Blocks',
-      '',
-      'When adding blocks directly to the page, use this parent object:',
-      '```json',
-      JSON.stringify(
-        {
-          type: pageContext.entityType,
-          uuid: pageContext.entityUuid,
-          field: '<field_name>',
-        },
-        null,
-        2,
-      ),
-      '```',
-    )
 
     // Add entity content fields if present
     if (pageContext.entityContentFields?.length) {

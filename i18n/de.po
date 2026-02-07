@@ -242,31 +242,41 @@ msgstr "@count Blöcke nach @field dupliziert"
 
 msgctxt "aiAgentErrorAuthentication"
 msgid "API authentication failed. Please check your API key."
-msgstr ""
+msgstr "API-Authentifizierung ist fehlgeschlagen. Bitte API-Key überprüfen."
 
 msgctxt "aiAgentErrorBadRequest"
 msgid "The request to the AI service was invalid."
-msgstr ""
+msgstr "Die Anfrage an den KI-Dienst ist ungültig."
 
 msgctxt "aiAgentErrorConnection"
 msgid "Could not connect to the AI service. Please check your network connection."
-msgstr ""
+msgstr "Fehler beim Verbinden mit dem KI-Dienst."
 
 msgctxt "aiAgentErrorNotFound"
 msgid "The configured AI model was not found. Please check the configuration."
 msgstr ""
+"Das konfigurierte KI-Model konnte nicht gefunden werden. Bitte "
+"Konfiguration überprüfen."
 
 msgctxt "aiAgentErrorOverloaded"
 msgid "The AI service is currently overloaded. Please try again in a moment."
 msgstr ""
+"Der KI-Dienst ist aktuell überlastet. Bitte versuchen Sie es später noch "
+"einmal."
 
 msgctxt "aiAgentErrorRateLimit"
 msgid "Rate limit exceeded. Please wait a moment before trying again."
 msgstr ""
+"Das Limit wurde überschritten. Bitte warten Sie einen Moment, bevor Sie es "
+"erneut versuchen."
+
+msgctxt "aiAgentErrorUnauthorized"
+msgid "Authentication failed. Please reload the page and try again."
+msgstr ""
 
 msgctxt "aiAgentErrorUnknown"
 msgid "An unexpected error occurred."
-msgstr ""
+msgstr "Ein unerwarteter Fehler ist aufgetreten."
 
 msgctxt "aiAgentFindBlocksDone"
 msgid "Found @count blocks"

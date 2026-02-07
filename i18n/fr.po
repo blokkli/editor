@@ -259,6 +259,10 @@ msgctxt "aiAgentErrorRateLimit"
 msgid "Rate limit exceeded. Please wait a moment before trying again."
 msgstr ""
 
+msgctxt "aiAgentErrorUnauthorized"
+msgid "Authentication failed. Please reload the page and try again."
+msgstr ""
+
 msgctxt "aiAgentErrorUnknown"
 msgid "An unexpected error occurred."
 msgstr ""

@@ -251,6 +251,10 @@
     "source": "Rate limit exceeded. Please wait a moment before trying again.",
     "translation": ""
   },
+  "aiAgentErrorUnauthorized": {
+    "source": "Authentication failed. Please reload the page and try again.",
+    "translation": ""
+  },
   "aiAgentErrorUnknown": {
     "source": "An unexpected error occurred.",
     "translation": ""

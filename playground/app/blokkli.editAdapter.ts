@@ -1260,6 +1260,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         return entity
           .getFieldDefintions()
           .map<EditableFieldConfig | undefined>((field) => {
+            if (field.id === 'publishOn' || field.id === 'unpublishOn') {
+              return
+            }
             if (field instanceof FieldText || field instanceof FieldTextarea) {
               return {
                 name: field.id,
