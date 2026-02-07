@@ -11,13 +11,31 @@
     beta
   >
     <template #default="{ isShown }">
-      <AgentPanel :is-shown :debug-styling="DEBUG_STYLING" :agent-name />
+      <AgentPanel
+        :is-shown
+        :debug-styling="DEBUG_STYLING"
+        :agent-name
+        :conversation
+        :active-item
+        :is-thinking
+        :is-processing
+        :is-connected
+        :pending-tool-call
+        :pending-mutation
+        :auto-approve
+        @connect="connect"
+        @send-prompt="sendPrompt"
+        @cancel="cancel"
+        @approve="approve"
+        @reject="reject"
+        @set-auto-approve="setAutoApprove"
+        @new-conversation="newConversation"
+        @get-transcript="getTranscript"
+        @tool-component-done="onToolComponentDone"
+      />
     </template>
 
-    <template
-      v-if="agent.pendingMutation.value || agent.pendingToolCall.value"
-      #badge
-    >
+    <template v-if="pendingMutation || pendingToolCall" #badge>
       <div class="bk-sidebar-badge bk-is-yellow">1</div>
     </template>
   </PluginSidebar>
@@ -25,29 +43,22 @@
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <DialogModal
-        v-if="agent.showTranscript.value"
+        v-if="showTranscript"
         id="agent-transcript"
         title="Agent Transcript"
         :width="900"
         hide-buttons
         full-screen
-        @cancel="agent.showTranscript.value = false"
+        @cancel="showTranscript = false"
       >
-        <pre class="bk-agent-transcript">{{
-          agent.transcriptContent.value
-        }}</pre>
+        <pre class="bk-agent-transcript">{{ transcriptContent }}</pre>
       </DialogModal>
     </BlokkliTransition>
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import {
-  useBlokkli,
-  defineBlokkliFeature,
-  onBeforeUnmount,
-  provide,
-} from '#imports'
+import { useBlokkli, defineBlokkliFeature, onBeforeUnmount } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
 import { useAgentProvider } from '#blokkli/agent/app/composables'
@@ -76,13 +87,31 @@ const { adapter } = defineBlokkliFeature({
 const app = useBlokkli()
 const { $t, ui } = app
 
-const agent = useAgentProvider({ app, adapter, itemEntityType })
-
-// Provide agent to children (Panel and interactive tool components)
-provide('agent', agent)
+const {
+  isConnected,
+  connect,
+  disconnect,
+  conversation,
+  activeItem,
+  isProcessing,
+  isThinking,
+  autoApprove,
+  pendingMutation,
+  pendingToolCall,
+  sendPrompt,
+  approve,
+  reject,
+  setAutoApprove,
+  cancel,
+  newConversation,
+  getTranscript,
+  onToolComponentDone,
+  transcriptContent,
+  showTranscript,
+} = useAgentProvider({ app, adapter, itemEntityType })
 
 onBeforeUnmount(() => {
-  agent.disconnect()
+  disconnect()
 })
 
 defineItemDropdownAction(() => {
@@ -104,9 +133,7 @@ defineItemDropdownAction(() => {
         weight: -900,
         callback: () => {
           app.eventBus.emit('sidebar:open', 'agent')
-          agent.sendPrompt(promptText, userPromptText, [
-            ...app.selection.uuids.value,
-          ])
+          sendPrompt(promptText, userPromptText, [...app.selection.uuids.value])
         },
       }
     })

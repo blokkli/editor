@@ -33,8 +33,8 @@ const props = withDefaults(
     maxHeight?: number
     minHeight?: number
     submitOnEnter?: boolean
-    /** When true, paste HTML from clipboard if available instead of plain text */
-    pasteHtml?: boolean
+    /** When true, convert pasted HTML to markdown */
+    pasteMarkdown?: boolean
     textareaClass?: boolean
   }>(),
   {
@@ -67,32 +67,105 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
-function cleanHtml(html: string): string {
+function convertNode(node: Node): string {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent || ''
+  }
+
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return ''
+  }
+
+  const el = node as Element
+  const tag = el.tagName.toLowerCase()
+  const children = Array.from(el.childNodes).map(convertNode).join('')
+
+  switch (tag) {
+    case 'br':
+      return '\n'
+    case 'p':
+    case 'div':
+      return children + '\n\n'
+    case 'strong':
+    case 'b':
+      return `**${children}**`
+    case 'em':
+    case 'i':
+      return `*${children}*`
+    case 'del':
+    case 's':
+      return `~~${children}~~`
+    case 'code':
+      if (el.parentElement?.tagName.toLowerCase() === 'pre') {
+        return children
+      }
+      return `\`${children}\``
+    case 'pre': {
+      const codeEl = el.querySelector('code')
+      const content = codeEl ? convertNode(codeEl) : children
+      return `\n\`\`\`\n${content}\n\`\`\`\n`
+    }
+    case 'h1':
+      return `# ${children}\n\n`
+    case 'h2':
+      return `## ${children}\n\n`
+    case 'h3':
+      return `### ${children}\n\n`
+    case 'h4':
+      return `#### ${children}\n\n`
+    case 'h5':
+      return `##### ${children}\n\n`
+    case 'h6':
+      return `###### ${children}\n\n`
+    case 'a': {
+      const href = el.getAttribute('href')
+      return href ? `[${children}](${href})` : children
+    }
+    case 'ul':
+    case 'ol':
+      return '\n' + children + '\n'
+    case 'li': {
+      const parent = el.parentElement
+      if (parent?.tagName.toLowerCase() === 'ol') {
+        const index = Array.from(parent.children).indexOf(el) + 1
+        return `${index}. ${children.trim()}\n`
+      }
+      return `- ${children.trim()}\n`
+    }
+    case 'blockquote':
+      return (
+        children
+          .trim()
+          .split('\n')
+          .map((line) => `> ${line}`)
+          .join('\n') + '\n'
+      )
+    case 'hr':
+      return '\n---\n'
+    case 'style':
+    case 'script':
+      return ''
+    default:
+      return children
+  }
+}
+
+function htmlToMarkdown(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html')
-
-  // Remove style tags
-  for (const style of doc.querySelectorAll('style')) {
-    style.remove()
-  }
-
-  // Remove style attributes from all elements
-  for (const el of doc.querySelectorAll('[style]')) {
-    el.removeAttribute('style')
-  }
-
-  return doc.body.innerHTML
+  return convertNode(doc.body)
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
 }
 
 function onPaste(e: ClipboardEvent) {
-  if (!props.pasteHtml) return
+  if (!props.pasteMarkdown) return
 
   const html = e.clipboardData?.getData('text/html')
   if (!html) return
 
-  // Prevent default paste and insert HTML instead
   e.preventDefault()
 
-  const cleanedHtml = cleanHtml(html)
+  const markdown = htmlToMarkdown(html)
 
   const el = textarea.value
   if (!el) return
@@ -102,10 +175,9 @@ function onPaste(e: ClipboardEvent) {
   const before = modelValue.value.slice(0, start)
   const after = modelValue.value.slice(end)
 
-  modelValue.value = before + cleanedHtml + after
+  modelValue.value = before + markdown + after
 
-  // Move cursor to end of pasted content
-  const newPos = start + cleanedHtml.length
+  const newPos = start + markdown.length
   requestAnimationFrame(() => {
     el.setSelectionRange(newPos, newPos)
   })

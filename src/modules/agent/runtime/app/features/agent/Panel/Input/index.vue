@@ -6,7 +6,7 @@
         v-model="model"
         :max-height="150"
         submit-on-enter
-        paste-html
+        paste-markdown
         rows="2"
         :placeholder="placeholder"
         @submit="onSubmit"

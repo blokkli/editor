@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="agent.isConnected.value || debugStyling"
+    v-if="isConnected || debugStyling"
     class="bk bk-agent-panel"
     @mousedown.capture.stop
     @pointerdown.capture.stop
@@ -14,41 +14,27 @@
       @scroll="onScroll"
     >
       <div class="bk-agent-panel-conversation">
-        <!-- Debug styling gallery -->
         <DebugGallery v-if="debugStyling" />
-
-        <!-- Normal mode -->
         <template v-else>
-          <!-- Welcome text when conversation is empty -->
           <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
-
-          <!-- Conversation history with active item -->
           <Conversation
-            v-if="
-              agent.conversation.value.length ||
-              agent.activeItem.value ||
-              agent.isThinking.value
-            "
-            :history="agent.conversation.value"
-            :active-item="agent.activeItem.value"
-            :is-thinking="agent.isThinking.value"
+            v-if="conversation.length || activeItem || isThinking"
+            :history="conversation"
+            :active-item="activeItem"
+            :is-thinking="isThinking"
           />
-
-          <!-- Interactive tool component -->
           <component
             :is="pendingToolComponent"
-            v-if="pendingToolComponent && agent.pendingToolCall.value"
+            v-if="pendingToolComponent && pendingToolCall"
             :context="toolContext"
-            :params="agent.pendingToolCall.value.params"
-            @done="agent.onToolComponentDone"
+            :params="pendingToolCall.params"
+            @done="(result: unknown) => emit('toolComponentDone', result)"
           />
-
-          <!-- Default pending mutation approval -->
           <PendingMutation
-            v-else-if="agent.pendingMutation.value && !agent.autoApprove.value"
-            :action="agent.pendingMutation.value.action"
-            @approve="agent.approve"
-            @reject="agent.reject"
+            v-else-if="pendingMutation && !autoApprove"
+            :action="pendingMutation.action"
+            @approve="emit('approve')"
+            @reject="emit('reject')"
             @always-approve="onAlwaysApprove"
           />
         </template>
@@ -58,11 +44,11 @@
         ref="inputEl"
         v-model="inputValue"
         :placeholder="placeholder"
-        :is-processing="agent.isProcessing.value"
+        :is-processing="isProcessing"
         @submit="onSubmit"
-        @cancel="agent.cancel"
+        @cancel="emit('cancel')"
         @new-conversation="onNewConversation"
-        @show-transcript="agent.getTranscript"
+        @show-transcript="emit('getTranscript')"
       />
     </div>
   </div>
@@ -79,7 +65,6 @@ import {
   useTemplateRef,
   nextTick,
   watch,
-  inject,
   useBlokkli,
 } from '#imports'
 import { Icon } from '#blokkli/editor/components'
@@ -88,7 +73,11 @@ import PendingMutation from './PendingMutation/index.vue'
 import DebugGallery from './DebugGallery/index.vue'
 import Welcome from './Welcome/index.vue'
 import AgentInput from './Input/index.vue'
-import type { AgentProvider } from '#blokkli/agent/app/composables'
+import type {
+  PendingMutationState,
+  PendingToolCall,
+} from '#blokkli/agent/app/composables'
+import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { isToolDefinition } from '#blokkli/agent/app/helpers'
 import { itemEntityType } from '#blokkli-build/config'
@@ -97,19 +86,37 @@ const props = defineProps<{
   agentName: string
   isShown: boolean
   debugStyling?: boolean
+  conversation: ConversationItem[]
+  activeItem: ActiveItem | null
+  isThinking: boolean
+  isProcessing: boolean
+  isConnected: boolean
+  pendingToolCall: PendingToolCall | null
+  pendingMutation: PendingMutationState | null
+  autoApprove: boolean
+}>()
+
+const emit = defineEmits<{
+  connect: []
+  sendPrompt: [prompt: string]
+  cancel: []
+  approve: []
+  reject: []
+  setAutoApprove: [value: boolean]
+  newConversation: []
+  getTranscript: []
+  toolComponentDone: [result: unknown]
 }>()
 
 const app = useBlokkli()
 const { $t } = app
-
-const agent = inject<AgentProvider>('agent')!
 
 // Connect when sidebar first becomes visible (provider guards against duplicate calls)
 watch(
   () => props.isShown,
   (isShown) => {
     if (isShown && !props.debugStyling) {
-      agent.connect()
+      emit('connect')
     }
   },
   { immediate: true },
@@ -125,9 +132,9 @@ const toolContext = computed(() => ({
 const staticTools = mcpTools.filter(isToolDefinition)
 
 const pendingToolComponent = computed(() => {
-  if (!agent.pendingToolCall.value) return null
+  if (!props.pendingToolCall) return null
   const tool = staticTools.find(
-    (t) => t.name === agent.pendingToolCall.value!.toolName,
+    (t) => t.name === props.pendingToolCall!.toolName,
   )
   return tool?.component || null
 })
@@ -154,7 +161,7 @@ function scrollToBottom() {
 // Auto-scroll when history changes. Always scroll for user messages (the user
 // just submitted something), otherwise only if user was already at the bottom.
 watch(
-  () => agent.conversation.value,
+  () => props.conversation,
   (conv) => {
     const last = conv[conv.length - 1]
     if (last?.type === 'user') {
@@ -168,7 +175,7 @@ watch(
 
 // Auto-scroll when active item changes
 watch(
-  () => agent.activeItem.value,
+  () => props.activeItem,
   () => {
     if (isAtBottom.value) {
       nextTick(scrollToBottom)
@@ -178,7 +185,7 @@ watch(
 
 // Also scroll when pending mutation or tool component appears
 watch(
-  () => agent.pendingMutation.value,
+  () => props.pendingMutation,
   () => {
     if (isAtBottom.value) {
       nextTick(scrollToBottom)
@@ -187,7 +194,7 @@ watch(
 )
 
 watch(
-  () => agent.pendingToolCall.value,
+  () => props.pendingToolCall,
   () => {
     if (isAtBottom.value) {
       nextTick(scrollToBottom)
@@ -197,7 +204,7 @@ watch(
 
 // Focus textarea when processing completes
 watch(
-  () => agent.isProcessing.value,
+  () => props.isProcessing,
   (isProcessing, wasProcessing) => {
     if (wasProcessing && !isProcessing) {
       nextTick(() => inputEl.value?.focus())
@@ -206,25 +213,21 @@ watch(
 )
 
 const showWelcome = computed(() => {
-  return (
-    !agent.conversation.value.length &&
-    !agent.activeItem.value &&
-    !agent.isThinking.value
-  )
+  return !props.conversation.length && !props.activeItem && !props.isThinking
 })
 
 const placeholder = computed(() => {
-  if (agent.isProcessing.value) {
+  if (props.isProcessing) {
     return $t('aiAgentProcessing', 'Processing...')
   }
-  if (agent.pendingMutation.value || agent.pendingToolCall.value) {
+  if (props.pendingMutation || props.pendingToolCall) {
     return $t('aiAgentAwaitingApproval', 'Awaiting your approval...')
   }
   return $t('aiAgentPlaceholder', 'Ask me to edit the page content...')
 })
 
 function onAlwaysApprove() {
-  agent.setAutoApprove(true)
+  emit('setAutoApprove', true)
 }
 
 function scrollToBottomOnSend() {
@@ -233,18 +236,18 @@ function scrollToBottomOnSend() {
 }
 
 function onWelcomePrompt(prompt: string) {
-  agent.sendPrompt(prompt)
+  emit('sendPrompt', prompt)
   scrollToBottomOnSend()
 }
 
 function onSubmit() {
-  if (!inputValue.value.trim() || agent.isProcessing.value) return
-  agent.sendPrompt(inputValue.value)
+  if (!inputValue.value.trim() || props.isProcessing) return
+  emit('sendPrompt', inputValue.value)
   inputValue.value = ''
   scrollToBottomOnSend()
 }
 
 function onNewConversation() {
-  agent.newConversation()
+  emit('newConversation')
 }
 </script>

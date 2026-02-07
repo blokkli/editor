@@ -21,10 +21,18 @@ const fieldSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('plain').describe('Plain text field'),
     currentValue: z.string().describe('Current field value'),
+    required: z.boolean().describe('Whether this field is required'),
+    maxLength: z
+      .number()
+      .describe('Maximum character length (0 means unlimited)'),
   }),
   z.object({
     type: z.literal('markup').describe('Rich text / HTML field'),
     currentValue: z.string().describe('Current field value'),
+    required: z.boolean().describe('Whether this field is required'),
+    maxLength: z
+      .number()
+      .describe('Maximum character length (0 means unlimited)'),
   }),
   z.object({
     type: z.literal('reference').describe('Entity reference field'),
@@ -149,6 +157,8 @@ export default defineBlokkliAgentTool({
         addField(result, entityUuid, config.name, {
           type: fieldType as 'plain' | 'markup',
           currentValue,
+          required: config.required,
+          maxLength: config.maxLength,
         })
       }
 
@@ -200,9 +210,17 @@ export default defineBlokkliAgentTool({
           }
         }
 
+        const config = types.editableFieldConfig.forName(
+          ctx.itemEntityType,
+          block.bundle,
+          editable.fieldName,
+        )
+
         addField(result, blockUuid, editable.fieldName, {
           type: fieldType,
           currentValue,
+          required: config?.required ?? false,
+          maxLength: config?.maxLength ?? 0,
         })
       }
 

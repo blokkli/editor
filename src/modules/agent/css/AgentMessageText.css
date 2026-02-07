@@ -32,14 +32,14 @@
     }
 
     h1 {
-      @apply text-xl mb-8 mt-24;
+      @apply text-xl mb-8 mt-24 leading-none;
       &:not(:has(strong)) {
         @apply font-bold;
       }
     }
 
     h2 {
-      @apply text-lg mb-8 mt-24;
+      @apply text-lg mb-8 mt-24 leading-tight;
       &:not(:has(strong)) {
         @apply font-bold;
       }
