@@ -120,6 +120,14 @@ msgctxt "aiAgentAddFragmentRunning"
 msgid "Adding fragment..."
 msgstr "Fragment hinzufügen..."
 
+msgctxt "aiAgentAddLibraryItemDone"
+msgid "Added reusable block"
+msgstr "Wiederverwendbaren Block hinzugefügt"
+
+msgctxt "aiAgentAddLibraryItemRunning"
+msgid "Adding reusable block..."
+msgstr "Wiederverwendbaren Block hinzufügen..."
+
 msgctxt "aiAgentAddMediaBlockDone"
 msgid "Added @bundle with media ID @id"
 msgstr "@bundle mit Medien-ID @id hinzugefügt"
@@ -449,6 +457,14 @@ msgstr "Medien auf @field ersetzt"
 msgctxt "aiAgentReplaceMediaRunning"
 msgid "Replacing media..."
 msgstr "Medien ersetzen..."
+
+msgctxt "aiAgentSearchLibraryDone"
+msgid "Searched library"
+msgstr "Bibliothek durchsucht"
+
+msgctxt "aiAgentSearchLibraryRunning"
+msgid "Searching reusable blocks..."
+msgstr "Wiederverwendbare Blöcke suchen..."
 
 msgctxt "aiAgentSearchMediaAllDone"
 msgid "Searched all media"

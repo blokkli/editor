@@ -107,6 +107,14 @@
     "source": "Adding fragment...",
     "translation": ""
   },
+  "aiAgentAddLibraryItemDone": {
+    "source": "Added reusable block",
+    "translation": ""
+  },
+  "aiAgentAddLibraryItemRunning": {
+    "source": "Adding reusable block...",
+    "translation": ""
+  },
   "aiAgentAddMediaBlockDone": {
     "source": "Added @bundle with media ID @id",
     "translation": ""
@@ -429,6 +437,14 @@
   },
   "aiAgentReplaceMediaRunning": {
     "source": "Replacing media...",
+    "translation": ""
+  },
+  "aiAgentSearchLibraryDone": {
+    "source": "Searched library",
+    "translation": ""
+  },
+  "aiAgentSearchLibraryRunning": {
+    "source": "Searching reusable blocks...",
     "translation": ""
   },
   "aiAgentSearchMediaAllDone": {
