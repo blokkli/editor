@@ -1,13 +1,11 @@
+import type { Peer } from 'crossws'
 import { useRuntimeConfig } from '#imports'
-import type {
-  ServerMessage,
-  PageContext,
-  ClientToolDefinition,
-} from '../shared/types'
+import type { PageContext, ClientToolDefinition } from '../shared/types'
 import type { GenericMessage, GenericContentBlock } from './providers/types'
 import { buildSystemPrompt } from './agentPrompt'
 import { provider, aiModel } from '#blokkli-build/agent-server'
 import {
+  send,
   DEBUG_LOGGING,
   KEEP_RECENT_TURNS,
   resolveSkills,
@@ -15,16 +13,6 @@ import {
   classifyError,
   pruneMessages,
 } from './helpers'
-
-// ============================================================================
-// Type-safe send helper
-// ============================================================================
-
-type Peer = { send: (data: string) => void; id: string }
-
-function send(peer: Peer, message: ServerMessage): void {
-  peer.send(JSON.stringify(message))
-}
 
 // ============================================================================
 // Session class
@@ -134,6 +122,12 @@ export class Session {
     for (const pending of this.pendingToolCalls.values()) {
       pending.reject(new Error('Session closed'))
     }
+    this.pendingToolCalls.clear()
+    this.messages = []
+    this.tools = []
+    this.lazyTools = []
+    this.activatedLazyTools.clear()
+    this.pageContext = undefined
   }
 
   // --------------------------------------------------------------------------
@@ -594,7 +588,11 @@ export class Session {
       // Prune old messages to reduce context size for future turns
       pruneMessages(this.messages, KEEP_RECENT_TURNS)
     } catch (error) {
-      if ((error as Error).name !== 'AbortError') {
+      // Don't send errors if the session was aborted (cleanup/cancel).
+      if (
+        (error as Error).name !== 'AbortError' &&
+        !this.abortController?.signal.aborted
+      ) {
         console.error('Agent loop error:', error)
         const classified = classifyError(error)
         send(peer, { type: 'error', ...classified })

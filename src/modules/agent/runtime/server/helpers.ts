@@ -1,7 +1,12 @@
-import type { AgentErrorType, PageContext } from '../shared/types'
+import type { Peer } from 'crossws'
+import type { AgentErrorType, PageContext, ServerMessage } from '../shared/types'
 import type { GenericMessage } from './providers/types'
 import type { ResolvedSkill, SkillDefinition } from './skills/types'
 import { skills } from '#blokkli-build/agent-server'
+
+export function send(peer: Peer, message: ServerMessage): void {
+  peer.send(JSON.stringify(message))
+}
 
 export const DEBUG_LOGGING = true
 

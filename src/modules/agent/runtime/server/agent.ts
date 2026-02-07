@@ -1,30 +1,16 @@
 import type { Peer, Message } from 'crossws'
 import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
-import type { ClientMessage, ServerMessage } from '../shared/types'
+import type { ClientMessage } from '../shared/types'
 import { SessionManager } from './SessionManager'
-import { DEBUG_LOGGING } from './helpers'
-
-function send(peer: Peer, message: ServerMessage): void {
-  peer.send(JSON.stringify(message))
-}
+import { send, DEBUG_LOGGING } from './helpers'
 
 const sessionManager = new SessionManager()
-const peers = new Map<string, Peer>()
-
-sessionManager.startPruning((peerId) => {
-  const peer = peers.get(peerId)
-  if (peer) {
-    peer.close()
-    peers.delete(peerId)
-  }
-})
 
 export default defineWebSocketHandler({
   open(peer: Peer) {
     if (DEBUG_LOGGING) {
       console.log(`\n[WebSocket] Client connected: ${peer.id}`)
     }
-    peers.set(peer.id, peer)
   },
 
   async message(peer: Peer, message: Message) {
@@ -127,12 +113,10 @@ export default defineWebSocketHandler({
       console.log(`\n[WebSocket] Client disconnected: ${peer.id}`)
     }
     sessionManager.cleanup(peer.id)
-    peers.delete(peer.id)
   },
 
   error(peer: Peer, error: Error) {
     console.error(`[WebSocket] Error for ${peer.id}:`, error)
     sessionManager.cleanup(peer.id)
-    peers.delete(peer.id)
   },
 })

@@ -11,28 +11,10 @@ export class SessionManager {
   >()
   /** Maps used token strings to their embedded timestamp (seconds). */
   private usedTokens = new Map<string, number>()
-  private pruneTimer: ReturnType<typeof setInterval> | null = null
-  private onIdleClose?: (peerId: string) => void
-
-  /**
-   * Start periodic pruning of idle sessions.
-   * The callback is invoked for each peer whose session is removed,
-   * so the caller can close the underlying WebSocket connection.
-   */
-  startPruning(onIdleClose: (peerId: string) => void): void {
-    this.onIdleClose = onIdleClose
-    this.pruneTimer = setInterval(() => {
-      this.pruneIdleSessions()
-      this.pruneTokens()
-    }, 60_000)
-  }
-
-  stopPruning(): void {
-    if (this.pruneTimer) {
-      clearInterval(this.pruneTimer)
-      this.pruneTimer = null
-    }
-  }
+  private pruneTimer = setInterval(() => {
+    this.pruneIdleSessions()
+    this.pruneTokens()
+  }, 60_000)
 
   create(peerId: string): Session {
     const session = new Session()
@@ -107,7 +89,6 @@ export class SessionManager {
       if (entry.lastActivity < cutoff) {
         entry.session.cleanup()
         this.sessions.delete(peerId)
-        this.onIdleClose?.(peerId)
       }
     }
   }
