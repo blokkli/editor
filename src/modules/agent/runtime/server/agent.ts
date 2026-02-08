@@ -109,6 +109,14 @@ export default defineWebSocketHandler({
           }
           break
         }
+
+        case 'plan_approve':
+          session.approvePlan()
+          break
+
+        case 'plan_reject':
+          session.rejectPlan()
+          break
       }
     } catch (error) {
       console.error('WebSocket message error:', error)

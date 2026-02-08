@@ -40,17 +40,26 @@
         </template>
       </div>
 
-      <AgentInput
-        ref="inputEl"
-        v-model="inputValue"
-        :placeholder="placeholder"
-        :is-processing="isProcessing"
-        @submit="onSubmit"
-        @cancel="emit('cancel')"
-        @new-conversation="onNewConversation"
-        @show-transcript="emit('getTranscript')"
-        @show-conversations="emit('showConversations')"
-      />
+      <div class="bk-agent-panel-input">
+        <Plan
+          v-if="activePlan"
+          :plan="activePlan"
+          :pending-approval="isPlanPendingApproval"
+          @approve="emit('approvePlan')"
+          @reject="emit('rejectPlan')"
+        />
+        <AgentInput
+          ref="inputEl"
+          v-model="inputValue"
+          :placeholder="placeholder"
+          :is-processing="isProcessing"
+          @submit="onSubmit"
+          @cancel="emit('cancel')"
+          @new-conversation="onNewConversation"
+          @show-transcript="emit('getTranscript')"
+          @show-conversations="emit('showConversations')"
+        />
+      </div>
     </div>
     <Transition name="bk-agent-overlay" :duration="500">
       <div
@@ -100,6 +109,8 @@ import type {
   PendingToolCall,
 } from '#blokkli/agent/app/composables'
 import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
+import type { ClientPlanState } from '#blokkli/agent/shared/types'
+import Plan from './Plan/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { isToolDefinition } from '#blokkli/agent/app/helpers'
 import { itemEntityType } from '#blokkli-build/config'
@@ -118,6 +129,7 @@ const props = defineProps<{
   autoApprove: boolean
   conversationList: AgentConversationSummary[]
   showConversationList: boolean
+  plan: ClientPlanState | null
 }>()
 
 const emit = defineEmits<{
@@ -134,6 +146,8 @@ const emit = defineEmits<{
   deleteConversation: [id: string]
   showConversations: []
   hideConversations: []
+  approvePlan: []
+  rejectPlan: []
 }>()
 
 const app = useBlokkli()
@@ -239,6 +253,29 @@ watch(
     }
   },
 )
+
+const debugPlan: ClientPlanState = {
+  title: 'Restructure page content',
+  steps: [
+    { label: 'Analyze current page structure', status: 'completed' },
+    { label: 'Add hero section with title', status: 'completed' },
+    { label: 'Rewrite introduction text', status: 'in_progress' },
+    { label: 'Add feature cards grid', status: 'pending' },
+    { label: 'Add footer with contact info', status: 'pending' },
+  ],
+}
+
+const activePlan = computed(() => {
+  return props.debugStyling ? debugPlan : props.plan
+})
+
+const isPlanPendingApproval = computed(() => {
+  return (
+    props.debugStyling ||
+    (activePlan.value !== null &&
+      activePlan.value.steps.every((s) => s.status === 'pending'))
+  )
+})
 
 const showWelcome = computed(() => {
   return !props.conversation.length && !props.activeItem && !props.isThinking

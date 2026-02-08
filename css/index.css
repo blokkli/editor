@@ -64,6 +64,7 @@
 @import './partials/Templates.css';
 @import './partials/PluginConfigForm.css';
 @import './partials/NestedEditorOverlay.css';
+@import './partials/StatusIcon.css';
 
 @import './indicator.css';
 

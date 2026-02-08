@@ -1,66 +1,64 @@
 <template>
-  <div class="bk-agent-panel-input">
-    <div class="bk-agent-input">
-      <FlexTextarea
-        ref="textarea"
-        v-model="model"
-        :max-height="150"
-        submit-on-enter
-        paste-markdown
-        rows="2"
-        :placeholder="placeholder"
-        @submit="onSubmit"
-      />
-      <div class="bk-agent-input-actions">
-        <div>
-          <div ref="menuContainer" class="bk-agent-more-menu">
-            <button
-              class="bk-agent-more-btn"
-              :title="$t('aiAgentMoreOptions', 'More options')"
-              @click="showMenu = !showMenu"
-            >
-              <Icon name="bk_mdi_more_horiz" />
+  <div class="bk-agent-input">
+    <FlexTextarea
+      ref="textarea"
+      v-model="model"
+      :max-height="150"
+      submit-on-enter
+      paste-markdown
+      rows="2"
+      :placeholder="placeholder"
+      @submit="onSubmit"
+    />
+    <div class="bk-agent-input-actions">
+      <div>
+        <div ref="menuContainer" class="bk-agent-more-menu">
+          <button
+            class="bk-agent-more-btn"
+            :title="$t('aiAgentMoreOptions', 'More options')"
+            @click="showMenu = !showMenu"
+          >
+            <Icon name="bk_mdi_more_horiz" />
+          </button>
+          <div v-if="showMenu" class="bk-agent-more-dropdown">
+            <button @click="onNewConversation">
+              <Icon name="bk_mdi_add" />
+              <span>{{
+                $t('aiAgentNewConversation', 'Start new conversation')
+              }}</span>
             </button>
-            <div v-if="showMenu" class="bk-agent-more-dropdown">
-              <button @click="onNewConversation">
-                <Icon name="bk_mdi_add" />
-                <span>{{
-                  $t('aiAgentNewConversation', 'Start new conversation')
-                }}</span>
-              </button>
-              <button @click="onShowConversations">
-                <Icon name="bk_mdi_history" />
-                <span>{{
-                  $t('aiAgentPastConversations', 'Past conversations...')
-                }}</span>
-              </button>
-              <hr />
-              <button @click="onShowTranscript">
-                <Icon name="bk_mdi_bug_report" />
-                <span>{{
-                  $t('aiAgentShowTranscript', 'Show transcript...')
-                }}</span>
-              </button>
-            </div>
+            <button @click="onShowConversations">
+              <Icon name="bk_mdi_history" />
+              <span>{{
+                $t('aiAgentPastConversations', 'Past conversations...')
+              }}</span>
+            </button>
+            <hr />
+            <button @click="onShowTranscript">
+              <Icon name="bk_mdi_bug_report" />
+              <span>{{
+                $t('aiAgentShowTranscript', 'Show transcript...')
+              }}</span>
+            </button>
           </div>
         </div>
-        <div class="bk-agent-input-actions-right">
-          <button
-            v-if="isProcessing"
-            class="bk-agent-cancel-btn"
-            @click="$emit('cancel')"
-          >
-            <Icon name="bk_mdi_stop" />
-          </button>
-          <button
-            v-else
-            class="bk-agent-submit-btn"
-            :disabled="!canSubmit"
-            @click="onSubmit"
-          >
-            <Icon name="bk_mdi_arrow_upward" />
-          </button>
-        </div>
+      </div>
+      <div class="bk-agent-input-actions-right">
+        <button
+          v-if="isProcessing"
+          class="bk-agent-cancel-btn"
+          @click="$emit('cancel')"
+        >
+          <Icon name="bk_mdi_stop" />
+        </button>
+        <button
+          v-else
+          class="bk-agent-submit-btn"
+          :disabled="!canSubmit"
+          @click="onSubmit"
+        >
+          <Icon name="bk_mdi_arrow_upward" />
+        </button>
       </div>
     </div>
   </div>

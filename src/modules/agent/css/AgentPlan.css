@@ -1,0 +1,51 @@
+.bk.bk-agent-panel {
+  /* Plan checklist - overrides ToolCard defaults */
+  .bk-agent-plan {
+    @apply mb-10 mt-0 overflow-hidden;
+  }
+
+  .bk-agent-plan-steps {
+    @apply flex flex-col;
+  }
+
+  .bk-agent-plan-step {
+    @apply flex items-center gap-8 px-10 text-sm py-8 relative;
+
+    &:first-child {
+      @apply border-t-0;
+    }
+
+    .bk-status-icon {
+      @apply relative z-30;
+    }
+
+    &:not(:last-child) {
+      &:after {
+        content: '';
+        @apply absolute w-1 bg-mono-200 h-full top-1/2 left-[18px];
+      }
+    }
+
+    &.bk-is-completed {
+      .bk-agent-plan-step-label {
+        @apply text-mono-500 line-through;
+      }
+    }
+
+    &.bk-is-in-progress {
+      .bk-agent-plan-step-label {
+        @apply font-medium;
+      }
+    }
+
+    &.bk-is-pending {
+      .bk-agent-plan-step-label {
+        @apply text-mono-600;
+      }
+    }
+  }
+
+  .bk-agent-plan-step-label {
+    @apply flex-1;
+  }
+}

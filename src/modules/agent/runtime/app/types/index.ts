@@ -302,7 +302,7 @@ export type FactoryResolvedTool = {
   volatile?: boolean
   // `any` is intentional: FactoryResolvedTool erases generics, and function
   // parameter contravariance prevents using a concrete type here.
-  prunedSummary?: (result: any) => string  
+  prunedSummary?: (result: any) => string
   execute: (...args: any[]) => any
   mockParams?: () => any
 }
@@ -431,7 +431,13 @@ const toolConversationItemSchema = conversationItemBase.extend({
  */
 const serverToolConversationItemSchema = conversationItemBase.extend({
   type: z.literal('server_tool'),
-  tool: z.enum(['load_skill', 'load_tools']),
+  tool: z.enum([
+    'load_skill',
+    'load_tools',
+    'create_plan',
+    'complete_plan_step',
+    'plan_completed',
+  ]),
   label: z.string(),
 })
 

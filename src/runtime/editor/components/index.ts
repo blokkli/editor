@@ -35,6 +35,7 @@ import ScheduleDate from './ScheduleDate/index.vue'
 import ScrollBoundary from './ScrollBoundary/index.vue'
 import ShortcutIndicator from './ShortcutIndicator/index.vue'
 import Sortli from './Sortli/index.vue'
+import StatusIcon from './StatusIcon/index.vue'
 import TransitionHeight from './Transition/Height.vue'
 import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
 import BundleSelector from './BundleSelector/index.vue'
@@ -78,6 +79,7 @@ export {
   ScrollBoundary,
   ShortcutIndicator,
   Sortli,
+  StatusIcon,
   TransitionHeight,
   ViewportBlockingRect,
   BundleSelector,

@@ -19,7 +19,12 @@ const props = defineProps<{
   id: string
   timestamp: number
   type: 'server_tool'
-  tool: 'load_skill' | 'load_tools'
+  tool:
+    | 'load_skill'
+    | 'load_tools'
+    | 'create_plan'
+    | 'complete_plan_step'
+    | 'plan_completed'
   label: string
 }>()
 
@@ -38,14 +43,46 @@ const serverToolLabel = computed(() => {
       props.label,
     )
   }
+  if (props.tool === 'create_plan') {
+    return $t('aiAgentCreatePlan', 'Plan: @label').replace(
+      '@label',
+      props.label,
+    )
+  }
+  if (props.tool === 'complete_plan_step') {
+    return $t('aiAgentCompletePlanStep', 'Completed: @label').replace(
+      '@label',
+      props.label,
+    )
+  }
+  if (props.tool === 'plan_completed') {
+    return $t('aiAgentPlanCompleted', 'Plan completed: @label').replace(
+      '@label',
+      props.label,
+    )
+  }
   return props.label
 })
 
 function getServerSideToolIcon(
-  id: 'load_skill' | 'load_tools',
+  id:
+    | 'load_skill'
+    | 'load_tools'
+    | 'create_plan'
+    | 'complete_plan_step'
+    | 'plan_completed',
 ): BlokkliIcon {
   if (id === 'load_skill') {
     return 'bk_mdi_book_2'
+  }
+  if (id === 'create_plan') {
+    return 'bk_mdi_inventory'
+  }
+  if (id === 'complete_plan_step') {
+    return 'bk_mdi_check'
+  }
+  if (id === 'plan_completed') {
+    return 'bk_mdi_done_all'
   }
 
   return 'bk_mdi_build-fill'

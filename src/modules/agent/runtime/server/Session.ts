@@ -3,6 +3,8 @@ import { useRuntimeConfig } from '#imports'
 import type {
   PageContext,
   ClientToolDefinition,
+  ClientPlanState,
+  ClientPlanStep,
   ConversationStateSnapshot,
   GenericMessage,
   GenericContentBlock,
@@ -23,6 +25,21 @@ import {
   verifyStateHash,
   validateMessages,
 } from './helpers'
+
+// ============================================================================
+// Plan Types (server-side, includes descriptions)
+// ============================================================================
+
+type ServerPlanStep = {
+  label: string
+  description: string
+  status: 'pending' | 'in_progress' | 'completed'
+}
+
+type ServerPlan = {
+  title: string
+  steps: ServerPlanStep[]
+}
 
 // ============================================================================
 // Session class
@@ -49,6 +66,11 @@ export class Session {
   activatedLazyTools = new Set<string>()
   /** Page context received from client on init */
   pageContext?: PageContext
+
+  /** Current plan (null when no plan is active) */
+  plan: ServerPlan | null = null
+  /** Pending plan approval promise resolver */
+  pendingPlanApproval: { resolve: (approved: boolean) => void } | null = null
 
   // --------------------------------------------------------------------------
   // Public methods
@@ -100,6 +122,11 @@ export class Session {
       pending.reject(new Error('Cancelled'))
     }
     this.pendingToolCalls.clear()
+    // Reject pending plan approval so the agent loop doesn't hang
+    if (this.pendingPlanApproval) {
+      this.pendingPlanApproval.resolve(false)
+      this.pendingPlanApproval = null
+    }
     send(peer, { type: 'done' })
   }
 
@@ -117,6 +144,20 @@ export class Session {
     this.sendConversationState(peer)
   }
 
+  approvePlan(): void {
+    if (this.pendingPlanApproval) {
+      this.pendingPlanApproval.resolve(true)
+      this.pendingPlanApproval = null
+    }
+  }
+
+  rejectPlan(): void {
+    if (this.pendingPlanApproval) {
+      this.pendingPlanApproval.resolve(false)
+      this.pendingPlanApproval = null
+    }
+  }
+
   getTranscript(peer: Peer): void {
     send(peer, {
       type: 'transcript',
@@ -128,6 +169,11 @@ export class Session {
     this.abortController?.abort()
     this.messages = []
     this.activatedLazyTools.clear()
+    this.plan = null
+    if (this.pendingPlanApproval) {
+      this.pendingPlanApproval.resolve(false)
+      this.pendingPlanApproval = null
+    }
     send(peer, { type: 'done' })
     // Send empty state so adapter clears persisted data
     this.sendConversationState(peer)
@@ -139,6 +185,11 @@ export class Session {
       pending.reject(new Error('Session closed'))
     }
     this.pendingToolCalls.clear()
+    if (this.pendingPlanApproval) {
+      this.pendingPlanApproval.resolve(false)
+      this.pendingPlanApproval = null
+    }
+    this.plan = null
     this.messages = []
     this.tools = []
     this.lazyTools = []
@@ -163,12 +214,19 @@ export class Session {
     const authSecret = config.blokkli?.agent?.authSecret || ''
     const prunedMessages = pruneForPersistence(this.messages)
     const activatedLazyTools = Array.from(this.activatedLazyTools)
+    const clientPlan = this.toClientPlan()
     const hash = computeStateHash(
       prunedMessages,
       activatedLazyTools,
       authSecret,
+      clientPlan,
     )
-    return { messages: prunedMessages, activatedLazyTools, hash }
+    return {
+      messages: prunedMessages,
+      activatedLazyTools,
+      hash,
+      plan: clientPlan,
+    }
   }
 
   /**
@@ -202,6 +260,23 @@ export class Session {
       state.activatedLazyTools.filter((name) => validLazyToolNames.has(name)),
     )
 
+    // Restore plan from snapshot (client-facing only — descriptions are lost,
+    // which is fine since the LLM gets fresh context on the next turn)
+    if (state.plan) {
+      this.plan = {
+        title: state.plan.title,
+        steps: state.plan.steps.map(
+          (s): ServerPlanStep => ({
+            label: s.label,
+            description: '',
+            status: s.status,
+          }),
+        ),
+      }
+    } else {
+      this.plan = null
+    }
+
     if (DEBUG_LOGGING) {
       console.log(
         `[Restore] Restored ${this.messages.length} messages, ${this.activatedLazyTools.size} activated lazy tools`,
@@ -214,6 +289,31 @@ export class Session {
   // --------------------------------------------------------------------------
   // Private methods
   // --------------------------------------------------------------------------
+
+  /**
+   * Convert the server plan to a client-facing plan (strips descriptions).
+   */
+  private toClientPlan(): ClientPlanState | null {
+    if (!this.plan) return null
+    return {
+      title: this.plan.title,
+      steps: this.plan.steps.map(
+        (s): ClientPlanStep => ({
+          label: s.label,
+          status: s.status,
+        }),
+      ),
+    }
+  }
+
+  /**
+   * Wait for the user to approve or reject the plan.
+   */
+  private waitForPlanApproval(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.pendingPlanApproval = { resolve }
+    })
+  }
 
   private async runAgentLoop(
     peer: Peer,
@@ -314,6 +414,9 @@ export class Session {
         }> = []
         const extraTextBlocks: Array<{ type: 'text'; text: string }> = []
 
+        // Flag set by create_plan: messages already committed, skip normal commit
+        let messagesCommittedByPlanTool = false
+
         // Track current tool use being streamed
         let currentToolUse: {
           id: string
@@ -382,10 +485,69 @@ export class Session {
               ]
             : []
 
+        // Build plan tools conditionally
+        const planTools: ClientToolDefinition[] = []
+
+        if (!this.plan) {
+          // Offer create_plan when no plan exists
+          planTools.push({
+            name: 'create_plan',
+            description:
+              'Create a step-by-step plan for a complex task. The user will review and approve the plan before you proceed. Each step needs a short label (shown to the user) and a detailed description (your notes on what to do). Do NOT create plans for simple tasks.',
+            input_schema: {
+              type: 'object',
+              properties: {
+                title: {
+                  type: 'string',
+                  description: 'Short title for the plan',
+                },
+                steps: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      label: {
+                        type: 'string',
+                        description:
+                          'Short label shown to the user (e.g. "Add hero section")',
+                      },
+                      description: {
+                        type: 'string',
+                        description:
+                          'Detailed instructions for yourself on what to do in this step',
+                      },
+                    },
+                    required: ['label', 'description'],
+                  },
+                  minItems: 2,
+                  description: 'The steps of the plan',
+                },
+              },
+              required: ['title', 'steps'],
+            },
+          })
+        } else if (
+          this.plan.steps.some(
+            (s) => s.status === 'in_progress' || s.status === 'pending',
+          )
+        ) {
+          // Offer complete_plan_step when a plan is active with remaining steps
+          planTools.push({
+            name: 'complete_plan_step',
+            description:
+              'Mark the current plan step as completed and get the next step. Call this when you have finished all work for the current step.',
+            input_schema: {
+              type: 'object',
+              properties: {},
+            },
+          })
+        }
+
         // Combine server tools with client tools
         const allTools = [
           ...serverTools,
           ...loadToolsDef,
+          ...planTools,
           ...this.tools,
           ...activatedTools,
         ]
@@ -556,6 +718,212 @@ export class Session {
                   break
                 }
 
+                // Handle create_plan server-side tool
+                if (currentToolUse.name === 'create_plan') {
+                  const title = (input.title as string) || 'Plan'
+                  const steps = (
+                    input.steps as Array<{
+                      label: string
+                      description: string
+                    }>
+                  ).map(
+                    (s): ServerPlanStep => ({
+                      label: s.label,
+                      description: s.description,
+                      status: 'pending',
+                    }),
+                  )
+
+                  this.plan = { title, steps }
+
+                  if (DEBUG_LOGGING) {
+                    console.log(
+                      `[Server] Plan created: "${title}" with ${steps.length} steps`,
+                    )
+                  }
+
+                  // Send plan to client (labels only)
+                  send(peer, {
+                    type: 'plan_update',
+                    plan: this.toClientPlan()!,
+                  })
+
+                  // Send server_tool_result for UI
+                  send(peer, {
+                    type: 'server_tool_result',
+                    tool: 'create_plan',
+                    label: title,
+                  })
+
+                  // Commit messages before awaiting approval (can't use toolResults
+                  // array since that's committed after the stream loop ends).
+                  // Push assistant content collected so far
+                  if (assistantContent.length) {
+                    this.messages.push({
+                      role: 'assistant',
+                      content: [...assistantContent],
+                    })
+                    assistantContent.length = 0
+                  }
+
+                  // Push tool result placeholder
+                  const planToolUseId = currentToolUse.id
+                  this.messages.push({
+                    role: 'user',
+                    content: [
+                      {
+                        type: 'tool_result',
+                        tool_use_id: planToolUseId,
+                        content: JSON.stringify({
+                          status: 'awaiting_approval',
+                          title,
+                          steps: steps.map((s) => s.label),
+                        }),
+                      },
+                    ],
+                  })
+
+                  currentToolUse = null
+
+                  // Wait for user approval
+                  const approved = await this.waitForPlanApproval()
+
+                  if (approved) {
+                    // Set first step to in_progress
+                    this.plan.steps[0].status = 'in_progress'
+                    send(peer, {
+                      type: 'plan_update',
+                      plan: this.toClientPlan()!,
+                    })
+
+                    // Replace the placeholder tool result with approval + first step
+                    const lastMsg = this.messages[this.messages.length - 1]
+                    if (
+                      lastMsg.role === 'user' &&
+                      Array.isArray(lastMsg.content)
+                    ) {
+                      const resultBlock = lastMsg.content.find(
+                        (b) =>
+                          b.type === 'tool_result' &&
+                          b.tool_use_id === planToolUseId,
+                      )
+                      if (resultBlock && resultBlock.type === 'tool_result') {
+                        resultBlock.content = JSON.stringify({
+                          approved: true,
+                          current_step: {
+                            label: this.plan.steps[0].label,
+                            description: this.plan.steps[0].description,
+                          },
+                        })
+                      }
+                    }
+                  } else {
+                    // Plan rejected
+                    const lastMsg = this.messages[this.messages.length - 1]
+                    if (
+                      lastMsg.role === 'user' &&
+                      Array.isArray(lastMsg.content)
+                    ) {
+                      const resultBlock = lastMsg.content.find(
+                        (b) =>
+                          b.type === 'tool_result' &&
+                          b.tool_use_id === planToolUseId,
+                      )
+                      if (resultBlock && resultBlock.type === 'tool_result') {
+                        resultBlock.content = JSON.stringify({
+                          approved: false,
+                          message:
+                            'The user rejected the plan. Ask what they would like to change.',
+                        })
+                      }
+                    }
+                    this.plan = null
+                    send(peer, {
+                      type: 'plan_update',
+                      plan: null,
+                    })
+                  }
+
+                  // Messages were already committed above.
+                  // Set flag so the post-stream logic skips normal commit
+                  // and continues to the next iteration instead of ending.
+                  messagesCommittedByPlanTool = true
+                  break
+                }
+
+                // Handle complete_plan_step server-side tool
+                if (currentToolUse.name === 'complete_plan_step') {
+                  if (!this.plan) {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: currentToolUse.id,
+                      content: JSON.stringify({
+                        error: 'No active plan',
+                      }),
+                      is_error: true,
+                    })
+                    currentToolUse = null
+                    break
+                  }
+
+                  // Find current in_progress step and mark completed
+                  const currentStep = this.plan.steps.find(
+                    (s) => s.status === 'in_progress',
+                  )
+                  if (currentStep) {
+                    currentStep.status = 'completed'
+                  }
+
+                  // Find next pending step and mark in_progress
+                  const nextStep = this.plan.steps.find(
+                    (s) => s.status === 'pending',
+                  )
+                  if (nextStep) {
+                    nextStep.status = 'in_progress'
+                  }
+
+                  // Send updated plan to client
+                  send(peer, {
+                    type: 'plan_update',
+                    plan: this.toClientPlan()!,
+                  })
+
+                  // Send server_tool_result for UI
+                  send(peer, {
+                    type: 'server_tool_result',
+                    tool: 'complete_plan_step',
+                    label: currentStep?.label || 'Step completed',
+                  })
+
+                  if (nextStep) {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: currentToolUse.id,
+                      content: JSON.stringify({
+                        completed: currentStep?.label,
+                        next_step: {
+                          label: nextStep.label,
+                          description: nextStep.description,
+                        },
+                      }),
+                    })
+                  } else {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: currentToolUse.id,
+                      content: JSON.stringify({
+                        completed: currentStep?.label,
+                        all_steps_completed: true,
+                        message:
+                          'All plan steps are completed. Summarize what was done.',
+                      }),
+                    })
+                  }
+
+                  currentToolUse = null
+                  break
+                }
+
                 // Send tool call to client
                 send(peer, {
                   type: 'tool_call',
@@ -632,6 +1000,12 @@ export class Session {
         // Check for abort after stream completes
         if (this.abortController?.signal.aborted) {
           break
+        }
+
+        // If create_plan handled messages directly, skip normal commit
+        // and continue to the next agent loop iteration.
+        if (messagesCommittedByPlanTool) {
+          continue
         }
 
         if (DEBUG_LOGGING) {

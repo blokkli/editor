@@ -1,21 +1,7 @@
 <template>
   <div class="bk-agent-assistant-bubble bk-is-tool">
     <div class="bk-agent-tool-call" :class="toolStatusClass">
-      <Icon
-        v-if="toolStatus === 'active'"
-        name="loader"
-        class="bk-agent-tool-call-status"
-      />
-      <Icon
-        v-else-if="toolStatus === 'success'"
-        name="bk_mdi_check"
-        class="bk-agent-tool-call-status"
-      />
-      <Icon
-        v-else-if="toolStatus === 'error'"
-        name="bk_mdi_priority_high"
-        class="bk-agent-tool-call-status"
-      />
+      <StatusIcon :status="toolStatus" />
       <span class="bk-agent-tool-call-name">{{
         label || formatToolName(tool)
       }}</span>
@@ -25,7 +11,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { StatusIcon } from '#blokkli/editor/components'
 const props = defineProps<{
   id: string
   timestamp: number

@@ -9,6 +9,7 @@ import {
 import type {
   ServerMessage,
   ClientMessage,
+  ClientPlanState,
   ConversationStateSnapshot,
   PageContext,
   BlockBundle,
@@ -70,6 +71,11 @@ export type AgentProvider = {
   autoApprove: Ref<boolean>
   pendingMutation: Ref<PendingMutationState | null>
   pendingToolCall: Ref<PendingToolCall | null>
+
+  // Plan state
+  plan: Ref<ClientPlanState | null>
+  approvePlan: () => void
+  rejectPlan: () => void
 
   // Actions
   sendPrompt: (
@@ -142,6 +148,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   const pendingToolCall = ref<PendingToolCall | null>(null)
   let pendingToolCallResolve: ((result: unknown) => void) | null = null
 
+  // Plan state
+  const plan = ref<ClientPlanState | null>(null)
+
   // Transcript dialog state
   const transcriptContent = ref('')
   const showTranscript = ref(false)
@@ -184,7 +193,6 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         }),
         hash: serverState.hash,
       })
-
     } catch (e) {
       console.warn('[blokkli agent] Failed to save conversation:', e)
     }
@@ -233,7 +241,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     }
   }
 
-  async function loadConversation(uuid: string): Promise<ParsedConversation | null> {
+  async function loadConversation(
+    uuid: string,
+  ): Promise<ParsedConversation | null> {
     if (!adapter.agentConversations) return null
 
     try {
@@ -694,6 +704,26 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         })
         break
 
+      case 'plan_update':
+        if (
+          data.plan &&
+          data.plan.steps.length > 0 &&
+          data.plan.steps.every((s) => s.status === 'completed')
+        ) {
+          // All steps completed — add a conversation item and clear the plan
+          conversation.value.push({
+            type: 'server_tool',
+            id: generateId(),
+            tool: 'plan_completed',
+            label: data.plan.title,
+            timestamp: Date.now(),
+          })
+          plan.value = null
+        } else {
+          plan.value = data.plan
+        }
+        break
+
       case 'transcript':
         transcriptContent.value = data.content
         showTranscript.value = true
@@ -717,7 +747,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         if (activeConversationId.value) {
           const failedId = activeConversationId.value
           activeConversationId.value = null
-    
+
           if (adapter.agentConversations) {
             adapter.agentConversations.delete(failedId).catch(() => {
               // Ignore delete errors for failed conversations
@@ -1097,6 +1127,14 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     })
   }
 
+  function approvePlan() {
+    send({ type: 'plan_approve' })
+  }
+
+  function rejectPlan() {
+    send({ type: 'plan_reject' })
+  }
+
   function newConversation() {
     // Cancel any in-progress work
     if (pendingMutation.value) {
@@ -1115,6 +1153,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     isProcessing.value = false
     isThinking.value = false
     activeConversationId.value = null
+    plan.value = null
 
     // Tell server to clear conversation
     send({ type: 'new_conversation' })
@@ -1153,6 +1192,11 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     autoApprove,
     pendingMutation,
     pendingToolCall,
+
+    // Plan state
+    plan,
+    approvePlan,
+    rejectPlan,
 
     // Actions
     sendPrompt,

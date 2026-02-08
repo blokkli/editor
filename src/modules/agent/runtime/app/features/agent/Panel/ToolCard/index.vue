@@ -15,7 +15,7 @@
 
     <slot />
 
-    <div class="bk-agent-pending-actions">
+    <div v-if="$slots.actions" class="bk-agent-pending-actions">
       <slot name="actions" />
     </div>
   </div>

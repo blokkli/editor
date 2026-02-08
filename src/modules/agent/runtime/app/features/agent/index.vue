@@ -25,6 +25,7 @@
       :auto-approve
       :conversation-list
       :show-conversation-list
+      :plan
       @connect="connect"
       @send-prompt="sendPrompt"
       @cancel="cancel"
@@ -38,6 +39,8 @@
       @delete-conversation="deleteConversation"
       @show-conversations="onShowConversations"
       @hide-conversations="onHideConversations"
+      @approve-plan="approvePlan"
+      @reject-plan="rejectPlan"
     />
   </PluginSidebar>
 
@@ -69,7 +72,7 @@ import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
-const DEBUG_STYLING = false
+const DEBUG_STYLING = true
 const agentName = 'Agäntli'
 
 const { adapter } = defineBlokkliFeature({
@@ -100,6 +103,9 @@ const {
   autoApprove,
   pendingMutation,
   pendingToolCall,
+  plan,
+  approvePlan,
+  rejectPlan,
   sendPrompt,
   approve,
   reject,

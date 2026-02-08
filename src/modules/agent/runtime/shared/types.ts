@@ -62,6 +62,7 @@ export type ConversationStateSnapshot = {
   messages: GenericMessage[]
   activatedLazyTools: string[]
   hash: string
+  plan?: ClientPlanState | null
 }
 
 // ============================================================================
@@ -171,6 +172,27 @@ export const agentErrorTypeSchema = z.enum([
 export type AgentErrorType = z.infer<typeof agentErrorTypeSchema>
 
 // ============================================================================
+// Plan Types
+// ============================================================================
+
+/**
+ * A single step in a plan as seen by the client (no description — that stays server-side).
+ */
+export type ClientPlanStep = {
+  label: string
+  status: 'pending' | 'in_progress' | 'completed'
+}
+
+/**
+ * Plan state sent to the client. Contains only labels and statuses,
+ * not the detailed descriptions that the LLM uses internally.
+ */
+export type ClientPlanState = {
+  title: string
+  steps: ClientPlanStep[]
+}
+
+// ============================================================================
 // WebSocket Protocol Messages
 // ============================================================================
 
@@ -204,6 +226,8 @@ export type ClientMessage =
   | { type: 'get_transcript' }
   | { type: 'new_conversation' }
   | { type: 'restore_conversation'; state: ConversationStateSnapshot }
+  | { type: 'plan_approve' }
+  | { type: 'plan_reject' }
   | { type: 'ping' }
 
 /**
@@ -230,9 +254,10 @@ export type ServerMessage =
   | { type: 'transcript'; content: string }
   | {
       type: 'server_tool_result'
-      tool: 'load_skill' | 'load_tools'
+      tool: 'load_skill' | 'load_tools' | 'create_plan' | 'complete_plan_step'
       label: string
     }
+  | { type: 'plan_update'; plan: ClientPlanState | null }
   | { type: 'conversation_state'; state: ConversationStateSnapshot }
   | { type: 'conversation_restored' }
   | { type: 'conversation_restore_failed'; reason: string }

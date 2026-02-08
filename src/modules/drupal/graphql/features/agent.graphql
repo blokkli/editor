@@ -42,10 +42,7 @@ mutation pbAgentConversationDelete($uuid: String!) {
   }
 }
 
-query pbAgentConversations(
-  $hostEntityType: String!
-  $hostEntityUuid: String!
-) {
+query pbAgentConversations($hostEntityType: String!, $hostEntityUuid: String!) {
   conversations: paragraphsBlokkliAgentConversations(
     hostEntityType: $hostEntityType
     hostEntityUuid: $hostEntityUuid
