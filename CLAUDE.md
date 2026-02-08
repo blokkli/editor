@@ -63,7 +63,7 @@ npm run docs:preview           # Preview built docs
 
 ```bash
 npm run texts                  # Sync translation PO/JSON files (see /translations skill)
-npm run drupal-types           # Generate Drupal-specific types
+npm run material-icons         # Regenerate used-icons list (see /icons skill)
 ```
 
 ## Architecture Overview
@@ -286,9 +286,9 @@ The Drupal integration (`src/modules/drupal/`) is a blökkli sub-module that:
 ### Style System
 
 **IMPORTANT**: This project uses a fully custom Tailwind config that replaces
-default colors, spacing, and fonts. Standard classes like `p-4`, `text-gray-500`,
-or `gap-6` do not exist. Always consult the styles skill before writing any CSS
-or Tailwind classes.
+default colors, spacing, and fonts. Standard classes like `p-4`,
+`text-gray-500`, or `gap-6` do not exist. Always consult the styles skill before
+writing any CSS or Tailwind classes.
 
 ### Translations
 

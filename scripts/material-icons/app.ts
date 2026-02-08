@@ -7,11 +7,6 @@ import { format } from './../helpers'
 const RUNTIME_PATH = path.resolve(__dirname, '../../src/runtime')
 const PACKAGES_RUNTIME_PATH = path.resolve(__dirname, '../../src/modules/*')
 
-const TYPES_OUTPUT_PATH = path.resolve(
-  __dirname,
-  '../../src/runtime/material-icons/index.ts',
-)
-
 const USED_ICONS_OUTPUT_PATH = path.resolve(
   __dirname,
   '../../src/build/used-icons.ts',
@@ -28,11 +23,6 @@ async function findUsedIcons(): Promise<string[]> {
   const iconPattern = /bk_mdi_[a-z0-9_-]+/g
 
   for (const file of files) {
-    // Skip the generated types file.
-    if (path.resolve(file) === TYPES_OUTPUT_PATH) {
-      continue
-    }
-
     const content = await fs.promises.readFile(file, 'utf-8')
     const matches = content.match(iconPattern)
 
