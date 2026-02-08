@@ -1,0 +1,9 @@
+.bk {
+  .bk-agent-transcript {
+    @apply p-25 bg-mono-900 text-white select-text;
+    @apply whitespace-pre-wrap break-words;
+    @apply text-xs leading-relaxed;
+    @apply font-mono;
+    @apply m-0;
+  }
+}

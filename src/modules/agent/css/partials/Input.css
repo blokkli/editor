@@ -1,0 +1,118 @@
+.bk {
+  .bk-agent-panel-input {
+    @apply sticky bottom-0 z-50;
+    @apply mt-15;
+    @apply bg-white;
+    @apply p-15;
+
+    &:before {
+      content: '';
+      @apply absolute left-0 bottom-full w-full h-25;
+      background: linear-gradient(0deg, white, rgba(255, 255, 255, 0));
+    }
+  }
+
+  .bk-agent-input {
+    @apply flex flex-col shrink-0;
+    @apply border border-mono-300 bg-white;
+    @apply rounded-lg;
+
+    &:has(textarea:focus) {
+      @apply outline outline-4 outline-accent-100 border-accent-500;
+    }
+
+    .bk-flex-textarea {
+      @apply min-h-[60px];
+    }
+
+    textarea {
+      @apply w-full resize-none text-base p-10 pb-0;
+      @apply border-none bg-transparent appearance-none;
+      @apply text-mono-800;
+      @apply rounded-t-lg;
+
+      &:focus {
+        @apply outline-none shadow-none;
+      }
+
+      &::placeholder {
+        @apply text-mono-400;
+      }
+    }
+
+    .bk-agent-input-actions {
+      @apply border-t border-t-mono-300 flex items-center justify-between p-8 gap-8;
+      @apply relative;
+    }
+
+    .bk-agent-input-actions-right {
+      @apply flex gap-8;
+    }
+
+    .bk-agent-more-btn {
+      @apply w-30 h-30 flex items-center justify-center;
+      @apply border-none cursor-pointer rounded;
+      @apply bg-transparent text-mono-500;
+      @apply hover:bg-mono-100 hover:text-mono-700;
+
+      svg {
+        @apply fill-current size-20;
+      }
+    }
+
+    .bk-agent-more-dropdown {
+      @apply absolute bottom-full left-0 mb-5;
+      @apply bg-white border border-mono-300 rounded-lg shadow-lg overflow-hidden;
+      @apply right-0;
+
+      hr {
+        @apply border-t-mono-300;
+      }
+
+      button {
+        @apply w-full flex items-center gap-8 px-10 py-10;
+        @apply text-sm text-mono-700 text-left;
+        @apply border-none bg-transparent cursor-pointer;
+        @apply hover:bg-mono-100 hover:text-mono-950;
+        @apply whitespace-nowrap leading-none;
+
+        &:hover {
+          svg {
+            @apply fill-accent-700;
+          }
+        }
+
+        svg {
+          @apply size-18 fill-current;
+        }
+      }
+    }
+
+    .bk-agent-submit-btn,
+    .bk-agent-cancel-btn,
+    .bk-agent-debug-btn {
+      @apply w-30 h-30 flex items-center justify-center;
+      @apply rounded-full border-none;
+
+      svg {
+        @apply w-18 h-18 fill-current;
+      }
+    }
+
+    .bk-agent-submit-btn {
+      @apply bg-accent-700 text-white;
+      @apply hover:bg-accent-800;
+      @apply disabled:opacity-40 disabled:cursor-not-allowed;
+    }
+
+    .bk-agent-cancel-btn {
+      @apply bg-red-normal text-white;
+      @apply hover:bg-red-dark;
+    }
+
+    .bk-agent-debug-btn {
+      @apply bg-mono-100 text-mono-500;
+      @apply hover:bg-mono-200 hover:text-mono-700;
+    }
+  }
+}

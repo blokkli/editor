@@ -2,6 +2,14 @@
 @import './partials/ConversationList.css';
 @import './partials/Plan.css';
 @import './partials/ToolCard.css';
+@import './partials/Transcript.css';
+@import './partials/Sidebar.css';
+@import './partials/ItemActions.css';
+@import './partials/Welcome.css';
+@import './partials/BatchRewrite.css';
+@import './partials/MediaSelect.css';
+@import './partials/Input.css';
+@import './partials/ToolQuestion.css';
 
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;
@@ -91,277 +99,12 @@
     @apply shrink-0;
   }
 
-  /* Batch rewrite tool content */
-  .bk-batch-rewrite-list {
-    @apply flex flex-col divide-y divide-mono-200;
-  }
-
-  .bk-batch-rewrite-item {
-    @apply px-10 py-8 cursor-pointer;
-    @apply hover:bg-mono-50;
-
-    .bk-diff-value {
-      @apply text-sm;
-    }
-
-    .bk-checkbox {
-      @apply shrink-0 py-0;
-      span {
-        @apply text-sm mt-0 leading-[18px];
-        &:before {
-          @apply mt-0;
-        }
-      }
-    }
-
-    &.bk-is-deselected {
-      .bk-diff-value {
-        @apply opacity-50;
-      }
-    }
-  }
-
-  .bk-batch-rewrite-change {
-    @apply flex-1 min-w-0;
-  }
-
-  .bk-batch-rewrite-field {
-    @apply text-xs font-medium text-mono-700 mb-3;
-  }
-
-  .bk-batch-rewrite-reason {
-    @apply w-full mt-10;
-    min-height: auto;
-
-    textarea {
-      @apply !text-sm !py-10 !px-10;
-    }
-  }
-
-  /* Media select tool content */
-  .bk-media-select-list {
-    @apply flex flex-col divide-y divide-mono-200;
-  }
-
-  .bk-media-select-item {
-    @apply flex items-center gap-10 px-10 py-8 cursor-pointer;
-    @apply hover:bg-mono-50;
-
-    &.bk-is-selected {
-      @apply bg-accent-100;
-      .bk-media-select-thumbnail {
-        @apply outline outline-accent-700 relative z-40;
-      }
-    }
-  }
-
-  .bk-media-select-thumbnail {
-    @apply w-40 h-40 bg-mono-100 rounded overflow-hidden shrink-0;
-    @apply flex items-center justify-center;
-
-    img {
-      @apply w-full h-full object-cover;
-    }
-
-    svg {
-      @apply w-20 h-20 fill-mono-300;
-    }
-  }
-
-  .bk-media-select-label {
-    @apply text-sm text-mono-700 flex-1 break-words max-w-full overflow-hidden;
-  }
-
   /* Debug gallery */
   .bk-agent-debug-gallery {
     @apply flex flex-col gap-20;
 
     h3 {
       @apply text-sm font-bold text-mono-700 uppercase tracking-wide;
-    }
-  }
-
-  .bk-agent-panel-input {
-    @apply sticky bottom-0;
-    @apply mt-15;
-    @apply bg-white;
-    @apply p-15;
-
-    &:before {
-      content: '';
-      @apply absolute left-0 bottom-full w-full h-25;
-      background: linear-gradient(0deg, white, rgba(255, 255, 255, 0));
-    }
-  }
-
-  /* Input area */
-  .bk-agent-input {
-    @apply flex flex-col shrink-0;
-    @apply border border-mono-300 bg-white;
-    @apply rounded-lg;
-
-    &:has(textarea:focus) {
-      @apply outline outline-4 outline-accent-100 border-accent-500;
-    }
-
-    .bk-flex-textarea {
-      @apply min-h-[60px];
-    }
-
-    textarea {
-      @apply w-full resize-none text-base p-10 pb-0;
-      @apply border-none bg-transparent appearance-none;
-      @apply text-mono-800;
-      @apply rounded-t-lg;
-
-      &:focus {
-        @apply outline-none shadow-none;
-      }
-
-      &::placeholder {
-        @apply text-mono-400;
-      }
-    }
-
-    .bk-agent-input-actions {
-      @apply border-t border-t-mono-300 flex items-center justify-between p-8 gap-8;
-      @apply relative;
-    }
-
-    .bk-agent-input-actions-right {
-      @apply flex gap-8;
-    }
-
-    .bk-agent-more-btn {
-      @apply w-30 h-30 flex items-center justify-center;
-      @apply border-none cursor-pointer rounded;
-      @apply bg-transparent text-mono-500;
-      @apply hover:bg-mono-100 hover:text-mono-700;
-
-      svg {
-        @apply fill-current size-20;
-      }
-    }
-
-    .bk-agent-more-dropdown {
-      @apply absolute bottom-full left-0 mb-5;
-      @apply bg-white border border-mono-300 rounded-lg shadow-lg overflow-hidden;
-      @apply right-0;
-
-      hr {
-        @apply border-t-mono-300;
-      }
-
-      button {
-        @apply w-full flex items-center gap-8 px-10 py-10;
-        @apply text-sm text-mono-700 text-left;
-        @apply border-none bg-transparent cursor-pointer;
-        @apply hover:bg-mono-100 hover:text-mono-950;
-        @apply whitespace-nowrap leading-none;
-
-        &:hover {
-          svg {
-            @apply fill-accent-700;
-          }
-        }
-
-        svg {
-          @apply size-18 fill-current;
-        }
-      }
-    }
-
-    .bk-agent-submit-btn,
-    .bk-agent-cancel-btn,
-    .bk-agent-debug-btn {
-      @apply w-30 h-30 flex items-center justify-center;
-      @apply rounded-full border-none;
-
-      svg {
-        @apply w-18 h-18 fill-current;
-      }
-    }
-
-    .bk-agent-submit-btn {
-      @apply bg-accent-700 text-white;
-      @apply hover:bg-accent-800;
-      @apply disabled:opacity-40 disabled:cursor-not-allowed;
-    }
-
-    .bk-agent-cancel-btn {
-      @apply bg-red-normal text-white;
-      @apply hover:bg-red-dark;
-    }
-
-    .bk-agent-debug-btn {
-      @apply bg-mono-100 text-mono-500;
-      @apply hover:bg-mono-200 hover:text-mono-700;
-    }
-  }
-
-  .bk-agent-tool-question {
-    .bk-form-label {
-      @apply !hidden;
-    }
-
-    .bk-agent-tool-question-inner {
-      @apply px-15 py-10;
-      @apply border-b border-b-mono-300;
-
-      .bk-radio,
-      .bk-checkbox {
-        @apply text-sm;
-        span {
-          @apply font-normal;
-          &:before {
-            @apply mt-0;
-          }
-        }
-      }
-    }
-  }
-
-  .bk-agent-welcome {
-    @apply text-mono-950;
-  }
-
-  .bk-agent-welcome-prompts {
-    @apply grid gap-5 mt-10;
-
-    button {
-      @apply text-left text-sm text-pretty font-medium;
-      @apply border border-accent-300 rounded-lg px-10 py-8;
-      @apply text-accent-700 bg-accent-50;
-      @apply hover:border-accent-700 hover:text-accent-50 hover:bg-accent-700;
-      @apply cursor-pointer;
-      @apply flex gap-5;
-      .bk-icon {
-        @apply size-15 shrink-0 mt-2;
-        svg {
-          @apply fill-current;
-        }
-      }
-    }
-  }
-  .bk-agent-welcome-disclaimer {
-    @apply bg-yellow-light text-yellow-dark;
-    @apply border border-yellow-dark;
-    @apply text-sm p-10;
-    @apply rounded-md;
-    @apply mt-20;
-    @apply flex gap-8 items-center;
-
-    > div {
-      @apply hyphens-auto text-balance;
-    }
-
-    .bk-icon {
-      @apply size-50 rounded-full p-10 shrink-0;
-      @apply bg-yellow-normal;
-
-      svg {
-        @apply fill-yellow-dark;
-      }
     }
   }
 
@@ -384,36 +127,6 @@
       svg {
         @apply fill-mono-700;
       }
-    }
-  }
-}
-
-/* Transcript dialog */
-.bk-agent-transcript {
-  @apply p-25 bg-mono-900 text-white select-text;
-  @apply whitespace-pre-wrap break-words;
-  @apply text-xs leading-relaxed;
-  @apply font-mono;
-  @apply m-0;
-}
-
-.bk .bk-blokkli-item-actions-type-dropdown > div.bk-is-agent {
-  @apply border-b-orange-light/30;
-}
-
-.bk .bk-blokkli-item-actions-type-dropdown-button.bk-is-variant-agent {
-  @apply bg-orange-normal/10 text-orange-light/90 hover:bg-orange-normal/20 hover:text-orange-light;
-  .bk-icon {
-    svg {
-      @apply fill-orange-normal;
-    }
-  }
-}
-
-.bk {
-  #bk-sidebar-button-agent {
-    svg {
-      @apply fill-orange-normal -translate-x-1;
     }
   }
 }

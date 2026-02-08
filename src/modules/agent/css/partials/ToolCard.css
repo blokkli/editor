@@ -4,6 +4,7 @@
   .bk-agent-tool-card-header {
     @apply flex items-center gap-5 font-medium text-sm p-10;
     @apply bg-mono-100;
+    @apply border-b border-mono-300;
 
     > .bk-icon {
       @apply w-18 h-18 fill-current;

@@ -1,0 +1,23 @@
+.bk {
+  .bk-agent-tool-question {
+    .bk-form-label {
+      @apply !hidden;
+    }
+
+    .bk-agent-tool-question-inner {
+      @apply px-15 py-10;
+      @apply border-b border-b-mono-300;
+
+      .bk-radio,
+      .bk-checkbox {
+        @apply text-sm;
+        span {
+          @apply font-normal;
+          &:before {
+            @apply mt-0;
+          }
+        }
+      }
+    }
+  }
+}

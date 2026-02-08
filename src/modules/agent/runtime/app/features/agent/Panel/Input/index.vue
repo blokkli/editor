@@ -12,7 +12,7 @@
     />
     <div class="bk-agent-input-actions">
       <div>
-        <div ref="menuContainer" class="bk-agent-more-menu">
+        <div ref="menuContainer">
           <button
             class="bk-agent-more-btn"
             :title="$t('aiAgentMoreOptions', 'More options')"
@@ -30,7 +30,7 @@
             <button @click="onShowConversations">
               <Icon name="bk_mdi_history" />
               <span>{{
-                $t('aiAgentPastConversations', 'Past conversations...')
+                $t('aiAgentPastConversations', 'Past conversations')
               }}</span>
             </button>
             <hr />

@@ -1,0 +1,7 @@
+.bk {
+  #bk-sidebar-button-agent {
+    svg {
+      @apply fill-orange-normal -translate-x-1;
+    }
+  }
+}
