@@ -5,7 +5,7 @@
         <Icon :name="icon" />
         <span>{{ title }}</span>
       </div>
-      <div class="bk-agent-tool-card-header-cancel">
+      <div v-if="!hideCancel" class="bk-agent-tool-card-header-cancel">
         <button type="button" @click="$emit('cancel')">
           <Icon name="bk_mdi_close" />
         </button>

@@ -58,6 +58,7 @@ export type AgentProvider = {
   // Connection state
   isConnected: Readonly<Ref<boolean>>
   isReady: Readonly<Ref<boolean>>
+  hasBeenReady: Readonly<Ref<boolean>>
   connect: () => void
   disconnect: () => void
 
@@ -119,6 +120,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   let hasEverConnected = false
   const isConnected = ref(false)
   const isReady = ref(false)
+  const hasBeenReady = ref(false)
   let pendingPrompt: {
     prompt: string
     displayPrompt?: string
@@ -464,6 +466,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   ) {
     send({ type: 'init', tools, pageContext })
     isReady.value = true
+    hasBeenReady.value = true
 
     // Try to restore the latest conversation
     if (adapter.agentConversations) {
@@ -1179,6 +1182,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     // Connection state
     isConnected: readonly(isConnected),
     isReady: readonly(isReady),
+    hasBeenReady: readonly(hasBeenReady),
     connect,
     disconnect,
 

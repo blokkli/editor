@@ -47,18 +47,18 @@ const { options, parentType } = defineBlokkli({
 const props = defineProps<Props>()
 
 const url = computed(() => {
-  return props.imageReference.url
+  return props.imageReference?.url
 })
 
 const alt = computed(() => {
-  return props.imageReference.alt
+  return props.imageReference?.alt
 })
 
 const width = computed(() => {
-  return props.imageReference.width
+  return props.imageReference?.width
 })
 
 const height = computed(() => {
-  return props.imageReference.height
+  return props.imageReference?.height
 })
 </script>

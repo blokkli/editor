@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isConnected || debugStyling"
+    v-if="hasBeenReady || debugStyling"
     class="bk bk-agent-panel"
     @mousedown.capture.stop
     @pointerdown.capture.stop
@@ -53,6 +53,7 @@
           v-model="inputValue"
           :placeholder="placeholder"
           :is-processing="isProcessing"
+          :is-connected="isConnected"
           @submit="onSubmit"
           @cancel="emit('cancel')"
           @new-conversation="onNewConversation"
@@ -81,7 +82,7 @@
       </div>
     </Transition>
   </div>
-  <div v-else class="bk-agent-connecting">
+  <div v-else-if="!hasBeenReady" class="bk-agent-connecting">
     <Icon name="loader" />
     <span>{{ $t('aiAgentConnecting', 'Connecting...') }}</span>
   </div>
@@ -124,6 +125,7 @@ const props = defineProps<{
   isThinking: boolean
   isProcessing: boolean
   isConnected: boolean
+  hasBeenReady: boolean
   pendingToolCall: PendingToolCall | null
   pendingMutation: PendingMutationState | null
   autoApprove: boolean
@@ -306,7 +308,7 @@ function onWelcomePrompt(prompt: string) {
 }
 
 function onSubmit() {
-  if (!inputValue.value.trim() || props.isProcessing) return
+  if (!inputValue.value.trim() || props.isProcessing || !props.isConnected) return
   emit('sendPrompt', inputValue.value)
   inputValue.value = ''
   scrollToBottomOnSend()

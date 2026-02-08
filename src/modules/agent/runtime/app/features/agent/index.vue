@@ -20,6 +20,7 @@
       :is-thinking
       :is-processing
       :is-connected
+      :has-been-ready
       :pending-tool-call
       :pending-mutation
       :auto-approve
@@ -94,6 +95,7 @@ const { $t, ui } = app
 
 const {
   isConnected,
+  hasBeenReady,
   connect,
   disconnect,
   conversation,

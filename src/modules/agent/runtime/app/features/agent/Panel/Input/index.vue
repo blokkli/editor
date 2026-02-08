@@ -16,6 +16,7 @@
           <button
             class="bk-agent-more-btn"
             :title="$t('aiAgentMoreOptions', 'More options')"
+            :disabled="!isConnected"
             @click="showMenu = !showMenu"
           >
             <Icon name="bk_mdi_more_horiz" />
@@ -47,6 +48,7 @@
         <button
           v-if="isProcessing"
           class="bk-agent-cancel-btn"
+          :disabled="!isConnected"
           @click="$emit('cancel')"
         >
           <Icon name="bk_mdi_stop" />
@@ -78,6 +80,7 @@ import { Icon, FlexTextarea } from '#blokkli/editor/components'
 const props = defineProps<{
   placeholder: string
   isProcessing: boolean
+  isConnected: boolean
 }>()
 
 const emit = defineEmits<{
@@ -117,7 +120,7 @@ onBeforeUnmount(() => {
 })
 
 const canSubmit = computed(() => {
-  return model.value.trim().length > 0 && !props.isProcessing
+  return model.value.trim().length > 0 && !props.isProcessing && props.isConnected
 })
 
 function onSubmit() {

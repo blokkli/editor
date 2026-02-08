@@ -99,7 +99,7 @@ export default defineNuxtConfig({
         // provider: 'openai',
         // model: 'gpt-5-mini',
         model: 'claude-haiku-4-5',
-        debugPrompt: false,
+        debugPrompt: true,
         // model: 'claude-opus-4-5',
         defaultPrompts: [
           'Rewrite the page title and lead text',
