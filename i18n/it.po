@@ -147,6 +147,10 @@ msgctxt "aiAgentApprove"
 msgid "Approve"
 msgstr ""
 
+msgctxt "aiAgentApprovePlan"
+msgid "Accept plan"
+msgstr ""
+
 msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer..."
 msgstr ""
@@ -191,12 +195,20 @@ msgctxt "aiAgentCancelled"
 msgid "Cancelled"
 msgstr ""
 
+msgctxt "aiAgentCompletePlanStep"
+msgid "Completed: @label"
+msgstr ""
+
 msgctxt "aiAgentConfirm"
 msgid "Confirm"
 msgstr ""
 
 msgctxt "aiAgentConnecting"
 msgid "Connecting..."
+msgstr ""
+
+msgctxt "aiAgentCreatePlan"
+msgid "Plan: @label"
 msgstr ""
 
 msgctxt "aiAgentDeleteBlockDone"
@@ -424,11 +436,15 @@ msgid "No past conversations."
 msgstr ""
 
 msgctxt "aiAgentPastConversations"
-msgid "Past conversations"
+msgid "Past conversations..."
 msgstr ""
 
 msgctxt "aiAgentPlaceholder"
 msgid "Ask me to edit the page content..."
+msgstr ""
+
+msgctxt "aiAgentPlanCompleted"
+msgid "Plan completed: @label"
 msgstr ""
 
 msgctxt "aiAgentProcessing"
@@ -533,6 +549,10 @@ msgstr ""
 
 msgctxt "aiAgentUndoDone"
 msgid "Undid @count changes"
+msgstr ""
+
+msgctxt "aiAgentUnknownMessage"
+msgid "Unknown message type"
 msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"

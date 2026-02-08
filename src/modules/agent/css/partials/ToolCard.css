@@ -1,0 +1,42 @@
+.bk .bk-agent-tool-card {
+  @apply mt-15 border border-mono-300 rounded-md overflow-hidden;
+
+  .bk-agent-tool-card-header {
+    @apply flex items-center gap-5 font-medium text-sm p-10;
+    @apply bg-mono-100;
+
+    > .bk-icon {
+      @apply w-18 h-18 fill-current;
+    }
+
+    > span {
+      @apply flex-1;
+    }
+  }
+
+  .bk-agent-tool-card-header-cancel {
+    @apply relative;
+    button {
+      @apply w-25 h-25 flex items-center justify-center rounded;
+      @apply border-none cursor-pointer;
+      @apply bg-red-normal hover:bg-red-dark;
+
+      svg {
+        @apply w-15 h-15 fill-current;
+      }
+    }
+    .bk-tooltip {
+      @apply absolute right-full mb-5 top-1/2 -translate-y-1/2 mr-5;
+    }
+
+    &:not(:hover) {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
+  }
+
+  .bk-agent-tool-card-actions {
+    @apply flex gap-8 p-10 bg-white sticky bottom-0;
+  }
+}

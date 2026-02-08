@@ -139,6 +139,10 @@
     "source": "Approve",
     "translation": "Bestätigen"
   },
+  "aiAgentApprovePlan": {
+    "source": "Accept plan",
+    "translation": ""
+  },
   "aiAgentAskQuestionRunning": {
     "source": "Waiting for answer...",
     "translation": "Auf Antwort warten..."
@@ -183,6 +187,10 @@
     "source": "Cancelled",
     "translation": "Abgebrochen"
   },
+  "aiAgentCompletePlanStep": {
+    "source": "Completed: @label",
+    "translation": ""
+  },
   "aiAgentConfirm": {
     "source": "Confirm",
     "translation": "Bestätigen"
@@ -190,6 +198,10 @@
   "aiAgentConnecting": {
     "source": "Connecting...",
     "translation": "Verbinden..."
+  },
+  "aiAgentCreatePlan": {
+    "source": "Plan: @label",
+    "translation": ""
   },
   "aiAgentDeleteBlockDone": {
     "source": "Deleted @bundle",
@@ -416,12 +428,16 @@
     "translation": "Keine früheren Konversationen."
   },
   "aiAgentPastConversations": {
-    "source": "Past conversations",
+    "source": "Past conversations...",
     "translation": "Frühere Konversationen..."
   },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
     "translation": "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
+  },
+  "aiAgentPlanCompleted": {
+    "source": "Plan completed: @label",
+    "translation": ""
   },
   "aiAgentProcessing": {
     "source": "Processing...",
@@ -526,6 +542,10 @@
   "aiAgentUndoDone": {
     "source": "Undid @count changes",
     "translation": "@count Änderungen rückgängig gemacht"
+  },
+  "aiAgentUnknownMessage": {
+    "source": "Unknown message type",
+    "translation": ""
   },
   "aiAgentUpdateOptionsOnBlockDone": {
     "source": "Updated @count option(s) on block",

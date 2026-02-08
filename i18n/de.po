@@ -152,6 +152,10 @@ msgctxt "aiAgentApprove"
 msgid "Approve"
 msgstr "Bestätigen"
 
+msgctxt "aiAgentApprovePlan"
+msgid "Accept plan"
+msgstr ""
+
 msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer..."
 msgstr "Auf Antwort warten..."
@@ -196,6 +200,10 @@ msgctxt "aiAgentCancelled"
 msgid "Cancelled"
 msgstr "Abgebrochen"
 
+msgctxt "aiAgentCompletePlanStep"
+msgid "Completed: @label"
+msgstr ""
+
 msgctxt "aiAgentConfirm"
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -203,6 +211,10 @@ msgstr "Bestätigen"
 msgctxt "aiAgentConnecting"
 msgid "Connecting..."
 msgstr "Verbinden..."
+
+msgctxt "aiAgentCreatePlan"
+msgid "Plan: @label"
+msgstr ""
 
 msgctxt "aiAgentDeleteBlockDone"
 msgid "Deleted @bundle"
@@ -435,12 +447,16 @@ msgid "No past conversations."
 msgstr "Keine früheren Konversationen."
 
 msgctxt "aiAgentPastConversations"
-msgid "Past conversations"
+msgid "Past conversations..."
 msgstr "Frühere Konversationen..."
 
 msgctxt "aiAgentPlaceholder"
 msgid "Ask me to edit the page content..."
 msgstr "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
+
+msgctxt "aiAgentPlanCompleted"
+msgid "Plan completed: @label"
+msgstr ""
 
 msgctxt "aiAgentProcessing"
 msgid "Processing..."
@@ -545,6 +561,10 @@ msgstr "Chatten Sie mit einem KI-Assistenten, um Seiteninhalte zu bearbeiten."
 msgctxt "aiAgentUndoDone"
 msgid "Undid @count changes"
 msgstr "@count Änderungen rückgängig gemacht"
+
+msgctxt "aiAgentUnknownMessage"
+msgid "Unknown message type"
+msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
 msgid "Updated @count option(s) on block"

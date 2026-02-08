@@ -139,6 +139,10 @@
     "source": "Approve",
     "translation": ""
   },
+  "aiAgentApprovePlan": {
+    "source": "Accept plan",
+    "translation": ""
+  },
   "aiAgentAskQuestionRunning": {
     "source": "Waiting for answer...",
     "translation": ""
@@ -183,12 +187,20 @@
     "source": "Cancelled",
     "translation": ""
   },
+  "aiAgentCompletePlanStep": {
+    "source": "Completed: @label",
+    "translation": ""
+  },
   "aiAgentConfirm": {
     "source": "Confirm",
     "translation": ""
   },
   "aiAgentConnecting": {
     "source": "Connecting...",
+    "translation": ""
+  },
+  "aiAgentCreatePlan": {
+    "source": "Plan: @label",
     "translation": ""
   },
   "aiAgentDeleteBlockDone": {
@@ -416,11 +428,15 @@
     "translation": ""
   },
   "aiAgentPastConversations": {
-    "source": "Past conversations",
+    "source": "Past conversations...",
     "translation": ""
   },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
+    "translation": ""
+  },
+  "aiAgentPlanCompleted": {
+    "source": "Plan completed: @label",
     "translation": ""
   },
   "aiAgentProcessing": {
@@ -525,6 +541,10 @@
   },
   "aiAgentUndoDone": {
     "source": "Undid @count changes",
+    "translation": ""
+  },
+  "aiAgentUnknownMessage": {
+    "source": "Unknown message type",
     "translation": ""
   },
   "aiAgentUpdateOptionsOnBlockDone": {

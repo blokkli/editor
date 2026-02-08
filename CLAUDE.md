@@ -62,7 +62,7 @@ npm run docs:preview           # Preview built docs
 ### Specialized Scripts
 
 ```bash
-npm run texts                  # Process translation strings
+npm run texts                  # Sync translation PO/JSON files (see /translations skill)
 npm run drupal-types           # Generate Drupal-specific types
 ```
 
@@ -285,36 +285,12 @@ The Drupal integration (`src/modules/drupal/`) is a blökkli sub-module that:
 
 ### Style System
 
-- Uses PostCSS with Tailwind CSS
-- NOTE: THE PROJECT USES CUSTOM TAILWIND COLORS, SPACINGS, ETC.! CHECK
-  tailwind.config.js TO SEE WHICH CLASSES ARE AVAILABLE!!!!
-- Main styles in `css/` directory
-- Compiled to `src/runtime/css/output.css`
-- Editor has themed appearance (see `src/themes/`)
+**IMPORTANT**: This project uses a fully custom Tailwind config that replaces
+default colors, spacing, and fonts. Standard classes like `p-4`, `text-gray-500`,
+or `gap-6` do not exist. Always consult the styles skill before writing any CSS
+or Tailwind classes.
 
 ### Translations
 
-blökkli uses gettext-style `.po` files for internationalization. Translation
-files are in `i18n/` and generated JSON files are in `src/translations/`.
-
-**IMPORTANT**: Always edit `.po` files, never the JSON files directly. The JSON
-files are generated from PO files.
-
-#### Adding New Translation Keys
-
-When you add a new translation key using `$t()`:
-
-1. Run `npm run texts` - This parses all components and TypeScript files in
-   `src/` and searches for `$t()` calls
-2. The script compiles the found keys and adds them to the PO files in `i18n/`
-3. Edit the PO files to add translations for your new keys
-4. Run `npm run texts` again to generate the JSON files in `src/translations/`
-
-#### Updating Existing Translation Keys
-
-When updating translations that already exist in PO files:
-
-1. Directly edit the `.po` files in `i18n/` (e.g., `de.po`, `fr.po`, `it.po`)
-2. Run `npm run texts` to regenerate the JSON files
-
-The workflow ensures PO files are the source of truth for all translations.
+For all translation tasks, use the `/translations` skill. It has full details on
+the PO-based i18n system, CLI commands, and workflows.

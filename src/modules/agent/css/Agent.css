@@ -1,6 +1,7 @@
-@import './AgentMessageText.css';
-@import './AgentConversationList.css';
-@import './AgentPlan.css';
+@import './partials/MessageText.css';
+@import './partials/ConversationList.css';
+@import './partials/Plan.css';
+@import './partials/ToolCard.css';
 
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;
@@ -88,50 +89,6 @@
 
   .bk-agent-tool-call .bk-status-icon {
     @apply shrink-0;
-  }
-
-  /* Pending mutation approval */
-  .bk-agent-pending-mutation {
-    @apply mt-15 border border-mono-300 rounded-md overflow-hidden;
-  }
-
-  .bk-agent-pending-header {
-    @apply flex items-center gap-5 font-medium text-sm p-10;
-    @apply bg-mono-100;
-
-    > .bk-icon {
-      @apply w-18 h-18 fill-current;
-    }
-
-    > span {
-      @apply flex-1;
-    }
-  }
-
-  .bk-agent-pending-header-cancel {
-    @apply relative;
-    button {
-      @apply w-25 h-25 flex items-center justify-center rounded;
-      @apply border-none cursor-pointer;
-      @apply bg-red-normal hover:bg-red-dark;
-
-      svg {
-        @apply w-15 h-15 fill-current;
-      }
-    }
-    .bk-tooltip {
-      @apply absolute right-full mb-5 top-1/2 -translate-y-1/2 mr-5;
-    }
-
-    &:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
-  }
-
-  .bk-agent-pending-mutation .bk-agent-pending-actions {
-    @apply flex gap-8 p-10 bg-white sticky bottom-0;
   }
 
   /* Batch rewrite tool content */

@@ -1,9 +1,9 @@
 <template>
-  <div class="bk-agent-pending-mutation">
-    <div class="bk-agent-pending-header">
+  <div class="bk-agent-tool-card">
+    <div class="bk-agent-tool-card-header">
       <Icon :name="icon" />
       <span>{{ title }}</span>
-      <div class="bk-agent-pending-header-cancel">
+      <div class="bk-agent-tool-card-header-cancel">
         <button type="button" @click="$emit('cancel')">
           <Icon name="bk_mdi_close" />
         </button>
@@ -15,7 +15,7 @@
 
     <slot />
 
-    <div v-if="$slots.actions" class="bk-agent-pending-actions">
+    <div v-if="$slots.actions" class="bk-agent-tool-card-actions">
       <slot name="actions" />
     </div>
   </div>
