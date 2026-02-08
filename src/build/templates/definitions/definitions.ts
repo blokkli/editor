@@ -96,7 +96,7 @@ export default defineCodeTemplate(
 
     const imageImports = [...images.entries()]
       .map(([bundle, imagePath]) => {
-        return `import image_${bundle} from '${ctx.helper.toModuleBuildRelative(imagePath)}?url'`
+        return `import image_${bundle} from '${imagePath}?url'`
       })
       .join('\n')
 
@@ -183,7 +183,7 @@ export type Definitions = {
   renderKey: string
 }
 
-declare const definitions: Definitions
+const definitions: Definitions
 
 export default definitions
 `

@@ -22,8 +22,6 @@ export default defineCodeTemplate(
   )`
     }).join(',\n')
 
-    const typeUnion = LANGUAGES.map((lang) => `'${lang}'`).join(' | ')
-
     const hasUserTranslations =
       userTranslations && Object.keys(userTranslations).length > 0
 
@@ -31,23 +29,17 @@ export default defineCodeTemplate(
       return `import { defu } from 'defu'
 ${imports}
 
-export type InterfaceLanguage = ${typeUnion}
-export type TranslationMap = Record<string, string>
-
-const defaultTranslations: Record<InterfaceLanguage, TranslationMap> = {
+const defaultTranslations = {
 ${processedEntries}
 }
 
-export const translations: Record<InterfaceLanguage, TranslationMap> = defu(${JSON.stringify(userTranslations)}, defaultTranslations)
+export const translations = defu(${JSON.stringify(userTranslations)}, defaultTranslations)
 `
     }
 
     return `${imports}
 
-export type InterfaceLanguage = ${typeUnion}
-export type TranslationMap = Record<string, string>
-
-export const translations: Record<InterfaceLanguage, TranslationMap> = {
+export const translations = {
 ${processedEntries}
 }
 `
@@ -57,7 +49,7 @@ ${processedEntries}
     return `
 export type InterfaceLanguage = ${typeUnion}
 export type TranslationMap = Record<string, string>
-export declare const translations: Record<InterfaceLanguage, TranslationMap>
+export const translations: Record<InterfaceLanguage, TranslationMap>
 `
   },
 )

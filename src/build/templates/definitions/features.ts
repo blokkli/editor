@@ -22,10 +22,7 @@ export default defineCodeTemplate(
         `const ${declarationVarName} = ${feature.definitionSource}`,
       )
       definitions.push(declarationVarName)
-      imports.set(
-        componentVarName,
-        ctx.helper.toModuleBuildRelative(feature.componentPath),
-      )
+      imports.set(componentVarName, feature.componentPath)
       featuresComponents.set(feature.id, componentVarName)
     }
 

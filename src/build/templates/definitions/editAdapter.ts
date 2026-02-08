@@ -17,7 +17,7 @@ export default adapter
     return `
 import type { BlokkliAdapterFactory } from '${ctx.helper.relativePaths.ADAPTER}'
 
-declare const adapter: BlokkliAdapterFactory<any>
+const adapter: BlokkliAdapterFactory<any>
 
 export default adapter
 `

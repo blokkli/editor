@@ -17,15 +17,11 @@ export default defineCodeTemplate(
 
       if (file.proxyComponentPath) {
         const importName = 'proxy_' + bundle
-        imports[importName] = ctx.helper.toModuleBuildRelative(
-          file.proxyComponentPath,
-        )
+        imports[importName] = file.proxyComponentPath
         proxyComponents.set(bundle, importName)
       } else if (file.diffComponentPath) {
         const importName = 'diff_' + file.definition.bundle
-        imports[importName] = ctx.helper.toModuleBuildRelative(
-          file.diffComponentPath,
-        )
+        imports[importName] = file.diffComponentPath
         diffComponents.set(bundle, importName)
       }
     }

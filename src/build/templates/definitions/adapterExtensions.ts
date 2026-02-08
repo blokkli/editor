@@ -28,7 +28,7 @@ export default [
     return `
 import type { AdapterExtensionDefinition } from '${ctx.helper.toModuleBuildRelative(ctx.helper.resolvers.module.resolve('./runtime/editor/providers/adapters.ts'))}'
 
-declare const adapterExtensions: AdapterExtensionDefinition[]
+const adapterExtensions: AdapterExtensionDefinition[]
 
 export default adapterExtensions
 `
