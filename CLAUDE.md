@@ -251,6 +251,12 @@ Key options in `nuxt.config.ts` under `blokkli` key:
   lists
 - Runtime options are type-checked using branded types
 
+## Agent Module
+
+The agent module (`src/modules/agent/`) adds an AI assistant to the editor. See
+the agent skill for full architecture details — tools, WebSocket protocol,
+system prompts, skills, plans, and extensibility points.
+
 ## Drupal Module
 
 The Drupal integration (`src/modules/drupal/`) is a blökkli sub-module that:

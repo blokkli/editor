@@ -66,49 +66,16 @@ utilities: `p-*`, `m-*`, `gap-*`, `w-*`, `h-*`, `top-*`, `inset-*`, etc.
 ### Available values
 
 ```
-0     → 0px
-1     → 1px
-2     → 2px
-3     → 3px
-5     → 5px
-8     → 8px
-10    → 10px
-15    → 15px
-18    → 18px
-20    → 20px
-24    → 24px
-25    → 25px
-30    → 30px
-40    → 40px
-50    → 50px
-60    → 60px
-70    → 70px
-80    → 80px
-90    → 90px
-100   → 100px
-120   → 120px
-200   → 200px
-300   → 300px
-340   → 340px
-770   → 770px
+0, 1, 2, 3, 5, 8, 10, 15, 18, 20, 24, 25, 30, 40, 50, 60, 70, 80, 90,
+100, 120, 200, 300, 340, 770
 ```
+
+All values are in **pixels** (e.g., `p-10` = `10px`, `w-300` = `300px`).
 
 ### Dynamic spacing variables
 
 ```
-offset-t      → var(--bk-root-offset-top)
-offset-r      → var(--bk-root-offset-right)
-offset-b      → var(--bk-root-offset-bottom)
-scrollbar     → var(--bk-artboard-scrollbar-size)
-sidebar-right → var(--bk-sidebar-width-right)
-toolbar-left  → var(--bk-toolbar-left-width)
-```
-
-### Examples
-
-```
-p-10  gap-5  w-300  h-50  mt-20  px-15  mb-30
-top-offset-t  right-offset-r  w-sidebar-right
+offset-t, offset-r, offset-b, scrollbar, sidebar-right, toolbar-left
 ```
 
 **Wrong**: `p-4` (no 4), `gap-6` (no 6), `w-96` (no 96), `mt-16` (no 16),
@@ -119,110 +86,32 @@ For values not in the scale, use Tailwind arbitrary values: `p-[7px]`,
 
 ## Border Width
 
-```
-border    → 1px (default)
-border-0  → 0
-border-2  → 2px
-border-3  → 3px
-border-4  → 4px
-```
-
-**Wrong**: `border-8`, `border-[0.5px]`
+`border` (1px default), `border-0`, `border-2`, `border-3`, `border-4`
 
 ## Border Radius
 
-Border radius uses **Tailwind defaults** (this is one category that is NOT
-customized):
-
-```
-rounded-none → 0
-rounded-sm   → 0.125rem (2px)
-rounded      → 0.25rem (4px)
-rounded-md   → 0.375rem (6px)
-rounded-lg   → 0.5rem (8px)
-rounded-xl   → 0.75rem (12px)
-rounded-2xl  → 1rem (16px)
-rounded-3xl  → 1.5rem (24px)
-rounded-full → 9999px
-```
+Uses **Tailwind defaults** (not customized).
 
 ## Box Shadow
 
-```
-shadow-sm          shadow             shadow-md
-shadow-lg          shadow-xl          shadow-2xl
-shadow-inner       shadow-none
-shadow-xl-inverted shadow-xl-left     shadow-xl-even
-```
+Standard: `shadow-sm`, `shadow`, `shadow-md`, `shadow-lg`, `shadow-xl`,
+`shadow-2xl`, `shadow-inner`, `shadow-none`
+
+Custom: `shadow-xl-inverted`, `shadow-xl-left`, `shadow-xl-even`
 
 ## Z-Index
 
-Uses a computed base system: `calc(var(--bk-z-index-base) + N)` where
-`--bk-z-index-base` is `50000`.
+Uses semantic names defined in `tailwind.config.js` — never use numeric z-index
+values like `z-10` or `z-[9999]`. Always use `z-{name}` (e.g., `z-sidebar`,
+`z-dialog`, `z-overlay`). Check `tailwind.config.js` for the full list.
 
-Available z-index names (use as `z-{name}`):
+## Other Utilities
 
-```
-z-main-layout              z-canvas-overlay
-z-animation-canvas         z-selection
-z-interaction-overlay      z-comments-overlay
-z-comments-overlay-active  z-artboard-scrollbar
-z-artboard-overview        z-translations-banner-mobile
-z-editable-field           z-translations-banner-desktop
-z-actions                  z-sidebar
-z-sidebar-tabs             z-toolbar
-z-selection-add            z-add-buttons-label
-z-add-list                 z-add-list-info
-z-tour-popup               z-preview
-z-toolbar-dropdown         z-drop-targets
-z-dragging-overlay         z-touch-action-bar
-z-tour-overlay             z-tour-item
-z-context-menu             z-search
-z-resizable                z-transform-overlay
-z-overlay                  z-sidebar-detached
-z-form-overlay             z-form-overlay-header
-z-dialog                   z-messages
-z-menu                     z-command-palette
-z-library-edit-dialog      z-nested-editor-overlay-bg
-z-nested-editor-overlay-iframe  z-init-overlay
-```
-
-**Wrong**: `z-10`, `z-50`, `z-[9999]` — always use semantic z-index names.
-
-## Font Family
-
-```
-font-sans  → 'PB Inter, sans-serif'
-font-mono  → 'monospace'
-```
-
-**Wrong**: `font-serif`
-
-## Transition Timing
-
-Standard Tailwind easings plus:
-
-```
-ease-swing → cubic-bezier(0.56, 0.04, 0.25, 1)
-```
-
-## Breakpoints
-
-Breakpoints use Tailwind defaults:
-
-```
-sm  → 640px
-md  → 768px
-lg  → 1024px
-xl  → 1280px
-2xl → 1536px
-```
-
-## Custom Variant
-
-```
-mobile-only:  → @media screen and (max-width: 640px)
-```
+- **Fonts**: `font-sans` (PB Inter), `font-mono` (monospace). No `font-serif`.
+- **Easing**: `ease-swing` (custom cubic-bezier) in addition to Tailwind
+  defaults
+- **Breakpoints**: Tailwind defaults (`sm`, `md`, `lg`, `xl`, `2xl`)
+- **Custom variant**: `mobile-only:` (max-width: 640px)
 
 ## CSS Architecture
 
@@ -240,7 +129,7 @@ mobile-only:  → @media screen and (max-width: 640px)
 
 ## Component CSS Classes
 
-Reusable component styles are defined in `css/components/`:
+Reusable component styles in `css/components/`:
 
 - `button.css` — `.bk-button` with variants: `.is-primary`, `.is-teal`,
   `.is-orange`, `.is-lime`, `.is-lime-outline`, `.is-danger`, `.is-warning`,
@@ -251,6 +140,4 @@ Reusable component styles are defined in `css/components/`:
 ## Theme System
 
 Themes are JSON files in `src/build/themes/` (nuxt, fire, gruvbox) that define
-RGB values for all color CSS custom properties. Colors are set as
-`--bk-theme-{palette}-{shade}` with space-separated RGB values (e.g.,
-`0 220 130`).
+RGB values for color CSS custom properties as `--bk-theme-{palette}-{shade}`.
