@@ -259,14 +259,9 @@ system prompts, skills, plans, and extensibility points.
 
 ## Drupal Module
 
-The Drupal integration (`src/modules/drupal/`) is a blökkli sub-module that:
-
-- Provides a GraphQL-based adapter implementation
-- Sets sensible defaults for Drupal-based projects
-- Expects the
-  [Paragraphs blökkli](https://www.drupal.org/project/paragraphs_blokkli) Drupal
-  module
-- Uses `nuxt-graphql-middleware` for GraphQL communication
+The Drupal integration (`src/modules/drupal/`) provides a GraphQL-based adapter
+for Drupal backends. See the drupal skill for details on schema introspection,
+adapter methods, and configuration.
 
 ## Working with the Codebase
 
