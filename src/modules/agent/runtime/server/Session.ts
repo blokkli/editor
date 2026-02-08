@@ -14,7 +14,6 @@ import { provider, aiModel } from '#blokkli-build/agent-server'
 import type { ToolPruningMetadata } from './helpers'
 import {
   send,
-  DEBUG_LOGGING,
   KEEP_RECENT_TURNS,
   resolveSkills,
   transformText,
@@ -25,21 +24,23 @@ import {
   verifyStateHash,
   validateMessages,
 } from './helpers'
+import type {
+  ServerPlan,
+  ServerToolContext,
+  ToolDefinitionContext,
+} from './server-tools'
+import { buildDefinition } from './server-tools'
+import loadSkillTool from './server-tools/load_skill'
+import loadToolsTool from './server-tools/load_tools'
+import createPlanTool from './server-tools/create_plan'
+import completePlanStepTool from './server-tools/complete_plan_step'
 
-// ============================================================================
-// Plan Types (server-side, includes descriptions)
-// ============================================================================
-
-type ServerPlanStep = {
-  label: string
-  description: string
-  status: 'pending' | 'in_progress' | 'completed'
-}
-
-type ServerPlan = {
-  title: string
-  steps: ServerPlanStep[]
-}
+const serverTools = [
+  loadSkillTool,
+  loadToolsTool,
+  createPlanTool,
+  completePlanStepTool,
+]
 
 // ============================================================================
 // Session class
@@ -81,15 +82,6 @@ export class Session {
     this.lazyTools = tools.filter((t) => !!t.lazy)
     this.activatedLazyTools = new Set()
     this.pageContext = pageContext
-
-    if (DEBUG_LOGGING) {
-      console.log(
-        `[WebSocket] Received ${this.tools.length} eager tools, ${this.lazyTools.length} lazy tools from client`,
-      )
-      console.log(
-        `[WebSocket] Received page context with ${this.pageContext?.bundles.length ?? 0} block bundles from client`,
-      )
-    }
   }
 
   start(peer: Peer, prompt: string, selectedUuids?: string[]): void {
@@ -214,7 +206,11 @@ export class Session {
     const authSecret = config.blokkli?.agent?.authSecret || ''
     const prunedMessages = pruneForPersistence(this.messages)
     const activatedLazyTools = Array.from(this.activatedLazyTools)
-    const hash = computeStateHash(prunedMessages, activatedLazyTools, authSecret)
+    const hash = computeStateHash(
+      prunedMessages,
+      activatedLazyTools,
+      authSecret,
+    )
     return {
       messages: prunedMessages,
       activatedLazyTools,
@@ -239,9 +235,6 @@ export class Session {
 
     const issues = validateMessages(state.messages)
     if (issues.length > 0) {
-      if (DEBUG_LOGGING) {
-        console.warn('[Restore] Message validation issues:', issues)
-      }
       return { success: false, reason: 'Invalid message structure' }
     }
 
@@ -254,12 +247,6 @@ export class Session {
     )
 
     this.plan = null
-
-    if (DEBUG_LOGGING) {
-      console.log(
-        `[Restore] Restored ${this.messages.length} messages, ${this.activatedLazyTools.size} activated lazy tools`,
-      )
-    }
 
     return { success: true }
   }
@@ -372,16 +359,6 @@ export class Session {
         // Send thinking indicator
         send(peer, { type: 'thinking' })
 
-        // Bug 5: validate messages before API call in debug mode
-        if (DEBUG_LOGGING) {
-          console.log('\n========== AGENT LOOP ITERATION ==========')
-          const issues = validateMessages(this.messages)
-          if (issues.length) {
-            console.warn('[Validation] Message issues detected:', issues)
-          }
-          console.log('Messages:', JSON.stringify(this.messages, null, 2))
-        }
-
         // Track content blocks as they complete
         const assistantContent: GenericContentBlock[] = []
         const toolResults: Array<{
@@ -406,129 +383,26 @@ export class Session {
         let currentTextContent = ''
         let inTextBlock = false
 
-        // Build server-side tools (load_skill) if resolved skills are available
-        const serverTools: ClientToolDefinition[] =
-          resolvedSkills.length > 0
-            ? [
-                {
-                  name: 'load_skill',
-                  description:
-                    'Load detailed guidelines for a specific skill. Call this before writing or editing content that should follow specific rules or guidelines.',
-                  input_schema: {
-                    type: 'object',
-                    properties: {
-                      name: {
-                        type: 'string',
-                        enum: resolvedSkills.map((s) => s.name),
-                        description: 'The skill to load',
-                      },
-                    },
-                    required: ['name'],
-                  },
-                },
-              ]
-            : []
-
         // Lazy tools that have been activated via load_tools
         const activatedTools = this.lazyTools.filter((t) =>
           this.activatedLazyTools.has(t.name),
         )
 
-        // Build load_tools server tool (only if there are unloaded lazy tools)
+        // Build server-side tool definitions for this turn
         const unloadedLazyTools = this.lazyTools.filter(
           (t) => !this.activatedLazyTools.has(t.name),
         )
-        const loadToolsDef: ClientToolDefinition[] =
-          unloadedLazyTools.length > 0
-            ? [
-                {
-                  name: 'load_tools',
-                  description:
-                    'Load additional tools by name before using them. You must call this before using any tool listed under "Additional Tools" in the system prompt.',
-                  input_schema: {
-                    type: 'object',
-                    properties: {
-                      tools: {
-                        type: 'array',
-                        items: {
-                          type: 'string',
-                          enum: unloadedLazyTools.map((t) => t.name),
-                        },
-                        description: 'Tool names to activate',
-                      },
-                    },
-                    required: ['tools'],
-                  },
-                },
-              ]
-            : []
-
-        // Build plan tools conditionally
-        const planTools: ClientToolDefinition[] = []
-
-        if (!this.plan) {
-          // Offer create_plan when no plan exists
-          planTools.push({
-            name: 'create_plan',
-            description:
-              'Create a step-by-step plan for a complex task. The user will review and approve the plan before you proceed. Each step needs a short label (shown to the user) and a detailed description (your notes on what to do). Do NOT create plans for simple tasks.',
-            input_schema: {
-              type: 'object',
-              properties: {
-                title: {
-                  type: 'string',
-                  description: 'Short title for the plan',
-                },
-                steps: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      label: {
-                        type: 'string',
-                        description:
-                          'Short label shown to the user (e.g. "Add hero section")',
-                      },
-                      description: {
-                        type: 'string',
-                        description:
-                          'Detailed instructions for yourself on what to do in this step',
-                      },
-                    },
-                    required: ['label', 'description'],
-                  },
-                  minItems: 2,
-                  description: 'The steps of the plan',
-                },
-              },
-              required: ['title', 'steps'],
-            },
-          })
-        } else if (
-          this.plan.steps.some(
-            (s) => s.status === 'in_progress' || s.status === 'pending',
-          )
-        ) {
-          // Offer complete_plan_step when a plan is active with remaining steps
-          planTools.push({
-            name: 'complete_plan_step',
-            description:
-              'Mark the current plan step as completed and get the next step. Call this when you have finished all work for the current step.',
-            input_schema: {
-              type: 'object',
-              properties: {},
-            },
-          })
+        const defCtx: ToolDefinitionContext = {
+          resolvedSkills,
+          plan: this.plan,
+          unloadedLazyTools,
         }
+        const serverToolDefs = serverTools
+          .map((t) => buildDefinition(t, defCtx))
+          .filter((d): d is ClientToolDefinition => d !== null)
 
         // Combine server tools with client tools
-        const allTools = [
-          ...serverTools,
-          ...loadToolsDef,
-          ...planTools,
-          ...this.tools,
-          ...activatedTools,
-        ]
+        const allTools = [...serverToolDefs, ...this.tools, ...activatedTools]
 
         // Create stream using the provider
         const stream = provider.createStream(
@@ -547,14 +421,6 @@ export class Session {
           // Check for abort during streaming
           if (this.abortController?.signal.aborted) {
             break
-          }
-
-          if (
-            DEBUG_LOGGING &&
-            event.type !== 'text_delta' &&
-            event.type !== 'tool_use_delta'
-          ) {
-            console.log('Stream event:', event.type)
           }
 
           switch (event.type) {
@@ -601,13 +467,6 @@ export class Session {
                 const input = JSON.parse(currentToolUse.inputJson || '{}')
                 const callId = `tc_${toolCallCounter++}`
 
-                if (DEBUG_LOGGING) {
-                  console.log(
-                    `\n--- TOOL CALL: ${currentToolUse.name} (${callId}) ---`,
-                  )
-                  console.log('Input:', JSON.stringify(input, null, 2))
-                }
-
                 // Add to assistant content
                 assistantContent.push({
                   type: 'tool_use',
@@ -616,289 +475,68 @@ export class Session {
                   input,
                 })
 
-                // Check if this is a server-side tool (load_skill)
-                if (currentToolUse.name === 'load_skill') {
-                  const skillName = input.name as string
-                  const skill = resolvedSkills.find((s) => s.name === skillName)
-
-                  if (DEBUG_LOGGING) {
-                    console.log(
-                      `[Server] Handling load_skill for: ${skillName}`,
-                    )
-                  }
-
-                  if (skill) {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({
-                        loaded: true,
-                        name: skill.name,
-                      }),
-                    })
-                    extraTextBlocks.push({
-                      type: 'text',
-                      text: `# Skill: ${skill.name}\n\n${skill.content}`,
-                    })
-                    send(peer, {
-                      type: 'server_tool_result',
-                      tool: 'load_skill',
-                      label: skill.label,
-                    })
-                  } else {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({
-                        error: `Skill '${skillName}' not found`,
-                      }),
-                      is_error: true,
-                    })
-                  }
-
-                  currentToolUse = null
-                  break
-                }
-
-                // Check if this is the load_tools server-side tool
-                if (currentToolUse.name === 'load_tools') {
-                  const names = (input.tools as string[]) || []
-                  const loaded: string[] = []
-
-                  for (const name of names) {
-                    if (this.lazyTools.some((t) => t.name === name)) {
-                      this.activatedLazyTools.add(name)
-                      loaded.push(name)
-                    }
-                  }
-
-                  if (DEBUG_LOGGING) {
-                    console.log(
-                      `[Server] Loaded lazy tools: ${loaded.join(', ')}`,
-                    )
-                  }
-
-                  toolResults.push({
-                    type: 'tool_result',
-                    tool_use_id: currentToolUse.id,
-                    content: JSON.stringify({ loaded }),
-                  })
-
-                  if (loaded.length) {
-                    send(peer, {
-                      type: 'server_tool_result',
-                      tool: 'load_tools',
-                      label: String(loaded.length),
-                    })
-                  }
-
-                  currentToolUse = null
-                  break
-                }
-
-                // Handle create_plan server-side tool
-                if (currentToolUse.name === 'create_plan') {
-                  const title = (input.title as string) || 'Plan'
-                  const steps = (
-                    input.steps as Array<{
-                      label: string
-                      description: string
-                    }>
-                  ).map(
-                    (s): ServerPlanStep => ({
-                      label: s.label,
-                      description: s.description,
-                      status: 'pending',
-                    }),
-                  )
-
-                  this.plan = { title, steps }
-
-                  if (DEBUG_LOGGING) {
-                    console.log(
-                      `[Server] Plan created: "${title}" with ${steps.length} steps`,
-                    )
-                  }
-
-                  // Send plan to client (labels only)
-                  send(peer, {
-                    type: 'plan_update',
-                    plan: this.toClientPlan()!,
-                  })
-
-                  // Send server_tool_result for UI
-                  send(peer, {
-                    type: 'server_tool_result',
-                    tool: 'create_plan',
-                    label: title,
-                  })
-
-                  // Commit messages before awaiting approval (can't use toolResults
-                  // array since that's committed after the stream loop ends).
-                  // Push assistant content collected so far
-                  if (assistantContent.length) {
-                    this.messages.push({
-                      role: 'assistant',
-                      content: [...assistantContent],
-                    })
-                    assistantContent.length = 0
-                  }
-
-                  // Push tool result placeholder
-                  const planToolUseId = currentToolUse.id
-                  this.messages.push({
-                    role: 'user',
-                    content: [
-                      {
-                        type: 'tool_result',
-                        tool_use_id: planToolUseId,
-                        content: JSON.stringify({
-                          status: 'awaiting_approval',
-                          title,
-                          steps: steps.map((s) => s.label),
-                        }),
-                      },
-                    ],
-                  })
-
-                  currentToolUse = null
-
-                  // Wait for user approval
-                  const approved = await this.waitForPlanApproval()
-
-                  if (approved) {
-                    // Set first step to in_progress
-                    this.plan.steps[0].status = 'in_progress'
-                    send(peer, {
-                      type: 'plan_update',
-                      plan: this.toClientPlan()!,
-                    })
-
-                    // Replace the placeholder tool result with approval + first step
-                    const lastMsg = this.messages[this.messages.length - 1]
-                    if (
-                      lastMsg.role === 'user' &&
-                      Array.isArray(lastMsg.content)
-                    ) {
-                      const resultBlock = lastMsg.content.find(
-                        (b) =>
-                          b.type === 'tool_result' &&
-                          b.tool_use_id === planToolUseId,
-                      )
-                      if (resultBlock && resultBlock.type === 'tool_result') {
-                        resultBlock.content = JSON.stringify({
-                          approved: true,
-                          current_step: {
-                            label: this.plan.steps[0].label,
-                            description: this.plan.steps[0].description,
-                          },
+                // Check if this is a server-side tool
+                const matchedServerTool = serverTools.find(
+                  (t) => t.name === currentToolUse!.name,
+                )
+                if (matchedServerTool) {
+                  const handlerCtx: ServerToolContext = {
+                    toolUseId: currentToolUse.id,
+                    send: (msg) => send(peer, msg),
+                    resolvedSkills,
+                    lazyTools: this.lazyTools,
+                    activatedLazyTools: this.activatedLazyTools,
+                    plan: this.plan,
+                    setPlan: (p) => {
+                      this.plan = p
+                    },
+                    toClientPlan: () => this.toClientPlan(),
+                    waitForPlanApproval: () => this.waitForPlanApproval(),
+                    assistantContent,
+                    commitMessagesEarly: (toolResult) => {
+                      if (assistantContent.length) {
+                        this.messages.push({
+                          role: 'assistant',
+                          content: [...assistantContent],
                         })
+                        assistantContent.length = 0
                       }
-                    }
-                  } else {
-                    // Plan rejected
-                    const lastMsg = this.messages[this.messages.length - 1]
-                    if (
-                      lastMsg.role === 'user' &&
-                      Array.isArray(lastMsg.content)
-                    ) {
-                      const resultBlock = lastMsg.content.find(
-                        (b) =>
-                          b.type === 'tool_result' &&
-                          b.tool_use_id === planToolUseId,
-                      )
-                      if (resultBlock && resultBlock.type === 'tool_result') {
-                        resultBlock.content = JSON.stringify({
-                          approved: false,
-                          message:
-                            'The user rejected the plan. Ask what they would like to change.',
-                        })
+                      this.messages.push({
+                        role: 'user',
+                        content: [toolResult],
+                      })
+                    },
+                    updateLastToolResult: (toolUseId, content) => {
+                      const lastMsg = this.messages[this.messages.length - 1]
+                      if (
+                        lastMsg.role === 'user' &&
+                        Array.isArray(lastMsg.content)
+                      ) {
+                        const resultBlock = lastMsg.content.find(
+                          (b) =>
+                            b.type === 'tool_result' &&
+                            b.tool_use_id === toolUseId,
+                        )
+                        if (resultBlock && resultBlock.type === 'tool_result') {
+                          resultBlock.content = content
+                        }
                       }
-                    }
-                    this.plan = null
-                    send(peer, {
-                      type: 'plan_update',
-                      plan: null,
-                    })
+                    },
                   }
-
-                  // Messages were already committed above.
-                  // Set flag so the post-stream logic skips normal commit
-                  // and continues to the next iteration instead of ending.
-                  messagesCommittedByPlanTool = true
-                  break
-                }
-
-                // Handle complete_plan_step server-side tool
-                if (currentToolUse.name === 'complete_plan_step') {
-                  if (!this.plan) {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({
-                        error: 'No active plan',
-                      }),
-                      is_error: true,
-                    })
-                    currentToolUse = null
-                    break
-                  }
-
-                  // Find current in_progress step and mark completed
-                  const currentStep = this.plan.steps.find(
-                    (s) => s.status === 'in_progress',
+                  const parsed = matchedServerTool
+                    .inputSchema(defCtx)
+                    .parse(input)
+                  const result = await matchedServerTool.handle(
+                    handlerCtx,
+                    parsed,
                   )
-                  if (currentStep) {
-                    currentStep.status = 'completed'
+                  toolResults.push(...result.toolResults)
+                  if (result.extraTextBlocks) {
+                    extraTextBlocks.push(...result.extraTextBlocks)
                   }
-
-                  // Find next pending step and mark in_progress
-                  const nextStep = this.plan.steps.find(
-                    (s) => s.status === 'pending',
-                  )
-                  if (nextStep) {
-                    nextStep.status = 'in_progress'
+                  if (result.messagesCommitted) {
+                    messagesCommittedByPlanTool = true
                   }
-
-                  // Send server_tool_result for UI first, so the step
-                  // completion appears before any plan completion.
-                  send(peer, {
-                    type: 'server_tool_result',
-                    tool: 'complete_plan_step',
-                    label: currentStep?.label || 'Step completed',
-                  })
-
-                  // Send updated plan to client
-                  send(peer, {
-                    type: 'plan_update',
-                    plan: this.toClientPlan()!,
-                  })
-
-                  if (nextStep) {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({
-                        completed: currentStep?.label,
-                        next_step: {
-                          label: nextStep.label,
-                          description: nextStep.description,
-                        },
-                      }),
-                    })
-                  } else {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({
-                        completed: currentStep?.label,
-                        all_steps_completed: true,
-                        message:
-                          'All plan steps are completed. Summarize what was done.',
-                      }),
-                    })
-                  }
-
                   currentToolUse = null
                   break
                 }
@@ -914,13 +552,6 @@ export class Session {
                 // Wait for client to respond
                 try {
                   const clientResult = await this.waitForToolResult(callId)
-
-                  if (DEBUG_LOGGING) {
-                    console.log(
-                      'Result:',
-                      JSON.stringify(clientResult, null, 2),
-                    )
-                  }
 
                   if (clientResult.error) {
                     toolResults.push({
@@ -953,10 +584,6 @@ export class Session {
                     })
                   }
                 } catch (error) {
-                  if (DEBUG_LOGGING) {
-                    console.log('Error:', error)
-                  }
-
                   toolResults.push({
                     type: 'tool_result',
                     tool_use_id: currentToolUse.id,
@@ -985,13 +612,6 @@ export class Session {
         // and continue to the next agent loop iteration.
         if (messagesCommittedByPlanTool) {
           continue
-        }
-
-        if (DEBUG_LOGGING) {
-          console.log(
-            'Assistant content:',
-            JSON.stringify(assistantContent, null, 2),
-          )
         }
 
         // Add assistant response to history if we have content
