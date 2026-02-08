@@ -43,7 +43,7 @@ npm run styles:watch           # Watch and rebuild styles
 ```bash
 npm test                       # Run Vitest tests
 npm run test:watch             # Watch mode for tests
-npm run typecheck              # Type check main + playground
+npm run typecheck              # Type check all (see /typecheck skill for targeted commands)
 npm run lint                   # Lint source files
 npm run lint:fix               # Auto-fix linting issues
 npm run prettier               # Check code formatting
