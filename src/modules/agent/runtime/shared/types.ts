@@ -62,7 +62,6 @@ export type ConversationStateSnapshot = {
   messages: GenericMessage[]
   activatedLazyTools: string[]
   hash: string
-  plan?: ClientPlanState | null
 }
 
 // ============================================================================

@@ -2,7 +2,6 @@ import type { Peer } from 'crossws'
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import type {
   AgentErrorType,
-  ClientPlanState,
   ConversationStateSnapshot,
   PageContext,
   ServerMessage,
@@ -512,14 +511,9 @@ export function computeStateHash(
   messages: GenericMessage[],
   activatedLazyTools: string[],
   secret: string,
-  plan?: ClientPlanState | null,
 ): string {
   const payload =
-    JSON.stringify(messages) +
-    '|' +
-    JSON.stringify(activatedLazyTools) +
-    '|' +
-    JSON.stringify(plan ?? null)
+    JSON.stringify(messages) + '|' + JSON.stringify(activatedLazyTools)
   return createHmac('sha256', secret).update(payload).digest('hex')
 }
 
@@ -535,7 +529,6 @@ export function verifyStateHash(
     snapshot.messages,
     snapshot.activatedLazyTools,
     secret,
-    snapshot.plan,
   )
   if (expected.length !== snapshot.hash.length) return false
   try {

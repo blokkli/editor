@@ -214,18 +214,11 @@ export class Session {
     const authSecret = config.blokkli?.agent?.authSecret || ''
     const prunedMessages = pruneForPersistence(this.messages)
     const activatedLazyTools = Array.from(this.activatedLazyTools)
-    const clientPlan = this.toClientPlan()
-    const hash = computeStateHash(
-      prunedMessages,
-      activatedLazyTools,
-      authSecret,
-      clientPlan,
-    )
+    const hash = computeStateHash(prunedMessages, activatedLazyTools, authSecret)
     return {
       messages: prunedMessages,
       activatedLazyTools,
       hash,
-      plan: clientPlan,
     }
   }
 
@@ -260,22 +253,7 @@ export class Session {
       state.activatedLazyTools.filter((name) => validLazyToolNames.has(name)),
     )
 
-    // Restore plan from snapshot (client-facing only — descriptions are lost,
-    // which is fine since the LLM gets fresh context on the next turn)
-    if (state.plan) {
-      this.plan = {
-        title: state.plan.title,
-        steps: state.plan.steps.map(
-          (s): ServerPlanStep => ({
-            label: s.label,
-            description: '',
-            status: s.status,
-          }),
-        ),
-      }
-    } else {
-      this.plan = null
-    }
+    this.plan = null
 
     if (DEBUG_LOGGING) {
       console.log(
