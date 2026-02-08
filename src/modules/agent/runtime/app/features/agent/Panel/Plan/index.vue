@@ -3,6 +3,7 @@
     class="bk-agent-plan"
     icon="bk_mdi_inventory"
     :title="plan.title"
+    :hide-cancel="!pendingApproval"
     @cancel="$emit('reject')"
   >
     <div class="bk-agent-plan-steps">

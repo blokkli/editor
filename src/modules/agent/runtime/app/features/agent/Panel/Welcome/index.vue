@@ -22,7 +22,8 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { marked } from 'marked'
-import welcomeMd from './en.md?raw'
+import welcomeMdEn from './en.md?raw'
+import welcomeMdDe from './de.md?raw'
 import { defaultPrompts } from '#blokkli-build/agent-client'
 import { Icon } from '#blokkli/editor/components'
 
@@ -34,7 +35,9 @@ const emit = defineEmits<{
   (e: 'prompt', value: string): void
 }>()
 
-const { $t } = useBlokkli()
+const { $t, ui } = useBlokkli()
+
+const welcomeMd = ui.interfaceLanguage.value === 'de' ? welcomeMdDe : welcomeMdEn
 
 const welcomeHtml = await Promise.resolve(marked.parse(welcomeMd)).then((v) =>
   v.replaceAll('@agent-name', props.agentName),

@@ -1,8 +1,10 @@
 <template>
   <div class="bk-agent-tool-card">
     <div class="bk-agent-tool-card-header">
-      <Icon :name="icon" />
-      <span>{{ title }}</span>
+      <div class="bk-agent-tool-card-header-left">
+        <Icon :name="icon" />
+        <span>{{ title }}</span>
+      </div>
       <div class="bk-agent-tool-card-header-cancel">
         <button type="button" @click="$emit('cancel')">
           <Icon name="bk_mdi_close" />
@@ -29,6 +31,7 @@ import { useBlokkli } from '#imports'
 defineProps<{
   icon: BlokkliIcon
   title: string
+  hideCancel?: boolean
 }>()
 
 defineEmits<{

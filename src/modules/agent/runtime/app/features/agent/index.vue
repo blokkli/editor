@@ -72,7 +72,7 @@ import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
-const DEBUG_STYLING = true
+const DEBUG_STYLING = false
 const agentName = 'Agäntli'
 
 const { adapter } = defineBlokkliFeature({

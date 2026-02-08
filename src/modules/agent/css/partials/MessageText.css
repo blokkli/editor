@@ -16,7 +16,7 @@
   }
 
   .bk-agent-message-text {
-    @apply break-words;
+    @apply break-words hyphens-auto;
     @apply text-sm;
 
     > * {

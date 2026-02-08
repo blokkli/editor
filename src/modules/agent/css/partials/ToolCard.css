@@ -2,16 +2,20 @@
   @apply mt-15 border border-mono-300 rounded-md overflow-hidden;
 
   .bk-agent-tool-card-header {
-    @apply flex items-center gap-5 font-medium text-sm p-10;
+    @apply flex items-center gap-5 font-medium justify-between;
     @apply bg-mono-100;
     @apply border-b border-mono-300;
+    @apply p-10;
 
-    > .bk-icon {
-      @apply w-18 h-18 fill-current;
-    }
+    .bk-agent-tool-card-header-left {
+      @apply flex text-sm gap-5;
+      > .bk-icon {
+        @apply w-18 h-18 fill-current;
+      }
 
-    > span {
-      @apply flex-1;
+      > span {
+        @apply flex-1;
+      }
     }
   }
 

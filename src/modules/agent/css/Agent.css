@@ -86,7 +86,7 @@
 
     &.bk-is-server-tool {
       .bk-agent-tool-call-status {
-        @apply text-mono-500 p-0;
+        @apply text-mono-500 p-0 shrink-0 size-18;
       }
     }
   }

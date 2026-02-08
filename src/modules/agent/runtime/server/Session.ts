@@ -882,17 +882,18 @@ export class Session {
                     nextStep.status = 'in_progress'
                   }
 
-                  // Send updated plan to client
-                  send(peer, {
-                    type: 'plan_update',
-                    plan: this.toClientPlan()!,
-                  })
-
-                  // Send server_tool_result for UI
+                  // Send server_tool_result for UI first, so the step
+                  // completion appears before any plan completion.
                   send(peer, {
                     type: 'server_tool_result',
                     tool: 'complete_plan_step',
                     label: currentStep?.label || 'Step completed',
+                  })
+
+                  // Send updated plan to client
+                  send(peer, {
+                    type: 'plan_update',
+                    plan: this.toClientPlan()!,
                   })
 
                   if (nextStep) {
