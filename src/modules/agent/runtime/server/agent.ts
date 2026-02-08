@@ -2,29 +2,23 @@ import type { Peer, Message } from 'crossws'
 import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
 import type { ClientMessage } from '../shared/types'
 import { SessionManager } from './SessionManager'
-import { send, DEBUG_LOGGING } from './helpers'
+import { send } from './helpers'
 
 const sessionManager = new SessionManager()
 
+const config = useRuntimeConfig()
+const authSecret = config.blokkli?.agent?.authSecret || ''
+const apiKey = config.blokkli?.agent?.apiKey || ''
+
 export default defineWebSocketHandler({
-  open(peer: Peer) {
-    if (DEBUG_LOGGING) {
-      console.log(`\n[WebSocket] Client connected: ${peer.id}`)
-    }
-  },
+  open(_peer: Peer) {},
 
   async message(peer: Peer, message: Message) {
     try {
       const data = JSON.parse(message.text()) as ClientMessage
 
-      if (DEBUG_LOGGING && data.type !== 'ping') {
-        console.log(`\n[WebSocket] Message from ${peer.id}:`, data.type)
-      }
-
       // Handle authentication before any other message.
       if (data.type === 'authenticate') {
-        const config = useRuntimeConfig()
-        const authSecret = config.blokkli?.agent?.authSecret
         if (
           !authSecret ||
           !sessionManager.authenticate(data.authToken, authSecret)
@@ -67,7 +61,15 @@ export default defineWebSocketHandler({
           break
 
         case 'start':
-          session.start(peer, data.prompt, data.selectedUuids)
+          if (!apiKey) {
+            send(peer, {
+              type: 'error',
+              errorType: 'authentication',
+              message: 'API key not configured',
+            })
+            return
+          }
+          session.start(peer, data.prompt, apiKey, authSecret, data.selectedUuids)
           break
 
         case 'tool_result':
@@ -82,11 +84,11 @@ export default defineWebSocketHandler({
           break
 
         case 'accept':
-          session.acceptChanges(peer)
+          session.acceptChanges(peer, authSecret)
           break
 
         case 'reject':
-          session.rejectChanges(peer)
+          session.rejectChanges(peer, authSecret)
           break
 
         case 'get_transcript':
@@ -94,11 +96,11 @@ export default defineWebSocketHandler({
           break
 
         case 'new_conversation':
-          session.newConversation(peer)
+          session.newConversation(peer, authSecret)
           break
 
         case 'restore_conversation': {
-          const result = session.restoreConversation(data.state)
+          const result = session.restoreConversation(data.state, authSecret)
           if (result.success) {
             send(peer, { type: 'conversation_restored' })
           } else {
@@ -130,9 +132,6 @@ export default defineWebSocketHandler({
   },
 
   close(peer: Peer) {
-    if (DEBUG_LOGGING) {
-      console.log(`\n[WebSocket] Client disconnected: ${peer.id}`)
-    }
     sessionManager.cleanup(peer.id)
   },
 

@@ -1,5 +1,4 @@
 import type { Peer } from 'crossws'
-import { useRuntimeConfig } from '#imports'
 import type {
   PageContext,
   ClientToolDefinition,
@@ -26,6 +25,7 @@ import {
 } from './helpers'
 import type {
   ServerPlan,
+  ServerSideTool,
   ServerToolContext,
   ToolDefinitionContext,
 } from './server-tools'
@@ -35,7 +35,7 @@ import loadToolsTool from './server-tools/load_tools'
 import createPlanTool from './server-tools/create_plan'
 import completePlanStepTool from './server-tools/complete_plan_step'
 
-const serverTools = [
+const serverTools: ServerSideTool[] = [
   loadSkillTool,
   loadToolsTool,
   createPlanTool,
@@ -84,7 +84,13 @@ export class Session {
     this.pageContext = pageContext
   }
 
-  start(peer: Peer, prompt: string, selectedUuids?: string[]): void {
+  start(
+    peer: Peer,
+    prompt: string,
+    apiKey: string,
+    authSecret: string,
+    selectedUuids?: string[],
+  ): void {
     if (this.isProcessing) {
       send(peer, {
         type: 'error',
@@ -93,7 +99,7 @@ export class Session {
       })
       return
     }
-    this.runAgentLoop(peer, prompt, selectedUuids)
+    this.runAgentLoop(peer, prompt, apiKey, authSecret, selectedUuids)
   }
 
   resolveToolResult(
@@ -122,18 +128,18 @@ export class Session {
     send(peer, { type: 'done' })
   }
 
-  acceptChanges(peer: Peer): void {
+  acceptChanges(peer: Peer, authSecret: string): void {
     this.safePushUserMessage(`[System: Changes accepted and applied.]`)
     send(peer, { type: 'done', message: 'Changes accepted' })
-    this.sendConversationState(peer)
+    this.sendConversationState(peer, authSecret)
   }
 
-  rejectChanges(peer: Peer): void {
+  rejectChanges(peer: Peer, authSecret: string): void {
     this.safePushUserMessage(
       `[System: Changes rejected. All pending changes have been reverted. The page is back to its previous state.]`,
     )
     send(peer, { type: 'done', message: 'Changes rejected' })
-    this.sendConversationState(peer)
+    this.sendConversationState(peer, authSecret)
   }
 
   approvePlan(): void {
@@ -157,7 +163,7 @@ export class Session {
     })
   }
 
-  newConversation(peer: Peer): void {
+  newConversation(peer: Peer, authSecret: string): void {
     this.abortController?.abort()
     this.messages = []
     this.activatedLazyTools.clear()
@@ -168,7 +174,7 @@ export class Session {
     }
     send(peer, { type: 'done' })
     // Send empty state so adapter clears persisted data
-    this.sendConversationState(peer)
+    this.sendConversationState(peer, authSecret)
   }
 
   cleanup(): void {
@@ -192,8 +198,8 @@ export class Session {
   /**
    * Build a persistence snapshot and send it to the client.
    */
-  sendConversationState(peer: Peer): void {
-    const state = this.getConversationStateForPersistence()
+  sendConversationState(peer: Peer, authSecret: string): void {
+    const state = this.getConversationStateForPersistence(authSecret)
     send(peer, { type: 'conversation_state', state })
   }
 
@@ -201,9 +207,9 @@ export class Session {
    * Create an aggressively pruned snapshot of the current conversation
    * for client-side persistence.
    */
-  getConversationStateForPersistence(): ConversationStateSnapshot {
-    const config = useRuntimeConfig()
-    const authSecret = config.blokkli?.agent?.authSecret || ''
+  getConversationStateForPersistence(
+    authSecret: string,
+  ): ConversationStateSnapshot {
     const prunedMessages = pruneForPersistence(this.messages)
     const activatedLazyTools = Array.from(this.activatedLazyTools)
     const hash = computeStateHash(
@@ -222,13 +228,13 @@ export class Session {
    * Restore conversation state from a client-provided snapshot.
    * Verifies HMAC integrity before loading.
    */
-  restoreConversation(state: ConversationStateSnapshot): {
+  restoreConversation(
+    state: ConversationStateSnapshot,
+    authSecret: string,
+  ): {
     success: boolean
     reason?: string
   } {
-    const config = useRuntimeConfig()
-    const authSecret = config.blokkli?.agent?.authSecret || ''
-
     if (!verifyStateHash(state, authSecret)) {
       return { success: false, reason: 'Invalid state hash' }
     }
@@ -283,23 +289,10 @@ export class Session {
   private async runAgentLoop(
     peer: Peer,
     prompt: string,
+    apiKey: string,
+    authSecret: string,
     selectedUuids?: string[],
   ): Promise<void> {
-    const config = useRuntimeConfig()
-
-    // Get API key based on provider
-    const providerName = provider.name
-    const apiKey = config.blokkli?.agent?.apiKey
-
-    if (!apiKey) {
-      send(peer, {
-        type: 'error',
-        errorType: 'authentication',
-        message: `${providerName} API key not configured`,
-      })
-      return
-    }
-
     if (this.tools.length === 0) {
       send(peer, {
         type: 'error',
@@ -665,7 +658,7 @@ export class Session {
       )
 
       // Send conversation state for client-side persistence
-      this.sendConversationState(peer)
+      this.sendConversationState(peer, authSecret)
     }
   }
 

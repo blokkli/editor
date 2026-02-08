@@ -14,8 +14,6 @@ export function send(peer: Peer, message: ServerMessage): void {
   peer.send(JSON.stringify(message))
 }
 
-export const DEBUG_LOGGING = true
-
 /** Number of recent turns to keep uncompressed when pruning messages */
 export const KEEP_RECENT_TURNS = 8
 
@@ -334,12 +332,6 @@ export function pruneMessages(
   const cutoffMessageIndex =
     turnStartIndices[cutoffTurnIndex] ?? messages.length
 
-  if (DEBUG_LOGGING) {
-    console.log(
-      `\n[Pruning] ${turnCount} turns total, keeping ${keepRecentTurns} recent, pruning messages before index ${cutoffMessageIndex}`,
-    )
-  }
-
   // Prune messages before the cutoff
   for (let i = 0; i < cutoffMessageIndex; i++) {
     const msg = messages[i]
@@ -364,7 +356,6 @@ export function pruneMessages(
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
       if (block.type === 'tool_result') {
-        const originalSize = block.content.length
         const toolName = findToolNameForResult(messages, i, block.tool_use_id)
         const meta = toolName ? metadata.get(toolName) : undefined
 
@@ -378,11 +369,6 @@ export function pruneMessages(
           block.content = compressToolResult(block.content)
         }
 
-        if (DEBUG_LOGGING && originalSize > block.content.length) {
-          console.log(
-            `[Pruning] Compressed tool result${meta?.volatile ? ' (volatile)' : ''}: ${originalSize} -> ${block.content.length} chars`,
-          )
-        }
       } else if (block.type === 'text') {
         content.splice(j, 1)
       }
