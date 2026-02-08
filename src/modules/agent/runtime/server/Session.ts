@@ -1,7 +1,12 @@
 import type { Peer } from 'crossws'
 import { useRuntimeConfig } from '#imports'
-import type { PageContext, ClientToolDefinition } from '../shared/types'
-import type { GenericMessage, GenericContentBlock } from './providers/types'
+import type {
+  PageContext,
+  ClientToolDefinition,
+  ConversationStateSnapshot,
+  GenericMessage,
+  GenericContentBlock,
+} from '../shared/types'
 import { buildSystemPrompt } from './agentPrompt'
 import { provider, aiModel } from '#blokkli-build/agent-server'
 import type { ToolPruningMetadata } from './helpers'
@@ -13,6 +18,9 @@ import {
   transformText,
   classifyError,
   pruneMessages,
+  pruneForPersistence,
+  computeStateHash,
+  verifyStateHash,
   validateMessages,
 } from './helpers'
 
@@ -98,6 +106,7 @@ export class Session {
   acceptChanges(peer: Peer): void {
     this.safePushUserMessage(`[System: Changes accepted and applied.]`)
     send(peer, { type: 'done', message: 'Changes accepted' })
+    this.sendConversationState(peer)
   }
 
   rejectChanges(peer: Peer): void {
@@ -105,6 +114,7 @@ export class Session {
       `[System: Changes rejected. All pending changes have been reverted. The page is back to its previous state.]`,
     )
     send(peer, { type: 'done', message: 'Changes rejected' })
+    this.sendConversationState(peer)
   }
 
   getTranscript(peer: Peer): void {
@@ -119,6 +129,8 @@ export class Session {
     this.messages = []
     this.activatedLazyTools.clear()
     send(peer, { type: 'done' })
+    // Send empty state so adapter clears persisted data
+    this.sendConversationState(peer)
   }
 
   cleanup(): void {
@@ -132,6 +144,71 @@ export class Session {
     this.lazyTools = []
     this.activatedLazyTools.clear()
     this.pageContext = undefined
+  }
+
+  /**
+   * Build a persistence snapshot and send it to the client.
+   */
+  sendConversationState(peer: Peer): void {
+    const state = this.getConversationStateForPersistence()
+    send(peer, { type: 'conversation_state', state })
+  }
+
+  /**
+   * Create an aggressively pruned snapshot of the current conversation
+   * for client-side persistence.
+   */
+  getConversationStateForPersistence(): ConversationStateSnapshot {
+    const config = useRuntimeConfig()
+    const authSecret = config.blokkli?.agent?.authSecret || ''
+    const prunedMessages = pruneForPersistence(this.messages)
+    const activatedLazyTools = Array.from(this.activatedLazyTools)
+    const hash = computeStateHash(
+      prunedMessages,
+      activatedLazyTools,
+      authSecret,
+    )
+    return { messages: prunedMessages, activatedLazyTools, hash }
+  }
+
+  /**
+   * Restore conversation state from a client-provided snapshot.
+   * Verifies HMAC integrity before loading.
+   */
+  restoreConversation(state: ConversationStateSnapshot): {
+    success: boolean
+    reason?: string
+  } {
+    const config = useRuntimeConfig()
+    const authSecret = config.blokkli?.agent?.authSecret || ''
+
+    if (!verifyStateHash(state, authSecret)) {
+      return { success: false, reason: 'Invalid state hash' }
+    }
+
+    const issues = validateMessages(state.messages)
+    if (issues.length > 0) {
+      if (DEBUG_LOGGING) {
+        console.warn('[Restore] Message validation issues:', issues)
+      }
+      return { success: false, reason: 'Invalid message structure' }
+    }
+
+    this.messages = state.messages
+
+    // Only restore lazy tools that still exist in the current tool set
+    const validLazyToolNames = new Set(this.lazyTools.map((t) => t.name))
+    this.activatedLazyTools = new Set(
+      state.activatedLazyTools.filter((name) => validLazyToolNames.has(name)),
+    )
+
+    if (DEBUG_LOGGING) {
+      console.log(
+        `[Restore] Restored ${this.messages.length} messages, ${this.activatedLazyTools.size} activated lazy tools`,
+      )
+    }
+
+    return { success: true }
   }
 
   // --------------------------------------------------------------------------
@@ -613,6 +690,9 @@ export class Session {
         KEEP_RECENT_TURNS,
         this.buildToolMetadataMap(),
       )
+
+      // Send conversation state for client-side persistence
+      this.sendConversationState(peer)
     }
   }
 

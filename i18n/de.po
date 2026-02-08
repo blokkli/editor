@@ -216,6 +216,10 @@ msgctxt "aiAgentDeleteBlocksRunning"
 msgid "Deleting blocks..."
 msgstr "Blöcke löschen..."
 
+msgctxt "aiAgentDeleteConversation"
+msgid "Delete conversation"
+msgstr "Konversation löschen"
+
 msgctxt "aiAgentDetachLibraryBlockDone"
 msgid "Detached library block"
 msgstr "Bibliotheks-Block abgetrennt"
@@ -426,6 +430,14 @@ msgctxt "aiAgentNewConversation"
 msgid "Start new conversation"
 msgstr "Neue Unterhaltung starten"
 
+msgctxt "aiAgentNoConversations"
+msgid "No past conversations."
+msgstr "Keine früheren Konversationen."
+
+msgctxt "aiAgentPastConversations"
+msgid "Past conversations"
+msgstr "Frühere Konversationen..."
+
 msgctxt "aiAgentPlaceholder"
 msgid "Ask me to edit the page content..."
 msgstr "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
@@ -511,8 +523,8 @@ msgid "Setting block options..."
 msgstr "Block-Optionen setzen..."
 
 msgctxt "aiAgentShowTranscript"
-msgid "Show transcript"
-msgstr "Transkript anzeigen"
+msgid "Show transcript..."
+msgstr "Transkript anzeigen..."
 
 msgctxt "aiAgentSwapBlocksDone"
 msgid "Swapped @bundleA and @bundleB"

@@ -8,7 +8,11 @@
       <Loading v-if="showLoading" screen />
     </Transition>
 
-    <div ref="mainLayoutElement" class="bk-main-layout">
+    <div
+      ref="mainLayoutElement"
+      class="bk-main-layout"
+      :lang="ui.interfaceLanguage.value"
+    >
       <Toolbar @loaded="toolbarLoaded = true" />
       <div ref="viewportElement" class="bk bk-viewport">
         <Messages />

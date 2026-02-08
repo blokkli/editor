@@ -1,4 +1,68 @@
 // ============================================================================
+// Generic Message Types (used by both server and client)
+// ============================================================================
+
+/**
+ * Text content block in a message.
+ */
+export type GenericTextBlock = {
+  type: 'text'
+  text: string
+}
+
+/**
+ * Tool use content block - assistant requesting tool execution.
+ */
+export type GenericToolUseBlock = {
+  type: 'tool_use'
+  id: string
+  name: string
+  input: unknown
+}
+
+/**
+ * Tool result content block - result of tool execution.
+ */
+export type GenericToolResultBlock = {
+  type: 'tool_result'
+  tool_use_id: string
+  content: string
+  is_error?: boolean
+}
+
+/**
+ * Content block in a message.
+ */
+export type GenericContentBlock =
+  | GenericTextBlock
+  | GenericToolUseBlock
+  | GenericToolResultBlock
+
+/**
+ * Generic message format used internally.
+ * Provider implementations convert to/from this format.
+ */
+export type GenericMessage = {
+  role: 'user' | 'assistant'
+  content: string | GenericContentBlock[]
+}
+
+// ============================================================================
+// Conversation Persistence Types
+// ============================================================================
+
+/**
+ * Snapshot of conversation state for persistence.
+ * Sent from server to client after each completed turn.
+ * The hash prevents client-side tampering.
+ */
+export type ConversationStateSnapshot = {
+  messages: GenericMessage[]
+  activatedLazyTools: string[]
+  hash: string
+}
+
+// ============================================================================
 // Page Context Types
 // ============================================================================
 
@@ -134,6 +198,7 @@ export type ClientMessage =
   | { type: 'reject' }
   | { type: 'get_transcript' }
   | { type: 'new_conversation' }
+  | { type: 'restore_conversation'; state: ConversationStateSnapshot }
   | { type: 'ping' }
 
 /**
@@ -163,3 +228,6 @@ export type ServerMessage =
       tool: 'load_skill' | 'load_tools'
       label: string
     }
+  | { type: 'conversation_state'; state: ConversationStateSnapshot }
+  | { type: 'conversation_restored' }
+  | { type: 'conversation_restore_failed'; reason: string }

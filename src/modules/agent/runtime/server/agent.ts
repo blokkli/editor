@@ -96,6 +96,19 @@ export default defineWebSocketHandler({
         case 'new_conversation':
           session.newConversation(peer)
           break
+
+        case 'restore_conversation': {
+          const result = session.restoreConversation(data.state)
+          if (result.success) {
+            send(peer, { type: 'conversation_restored' })
+          } else {
+            send(peer, {
+              type: 'conversation_restore_failed',
+              reason: result.reason || 'Unknown error',
+            })
+          }
+          break
+        }
       }
     } catch (error) {
       console.error('WebSocket message error:', error)

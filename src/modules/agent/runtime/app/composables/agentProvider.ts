@@ -8,9 +8,14 @@ import type {
 import type {
   ServerMessage,
   ClientMessage,
+  ConversationStateSnapshot,
   PageContext,
   BlockBundle,
 } from '#blokkli/agent/shared/types'
+import type {
+  AgentConversationData,
+  AgentConversationSummary,
+} from '#blokkli/agent/app/features/agent/types'
 import {
   createToolMap,
   executeTool,
@@ -25,6 +30,7 @@ import {
 import { mcpTools } from '#blokkli-build/agent-client'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
+import { generateUUID } from '#blokkli/editor/helpers/uuid'
 
 // ============================================================================
 // Types
@@ -81,6 +87,14 @@ export type AgentProvider = {
   // Transcript dialog state
   transcriptContent: Ref<string>
   showTranscript: Ref<boolean>
+
+  // Conversation list
+  conversationList: Ref<AgentConversationSummary[]>
+  showConversationList: Ref<boolean>
+  activeConversationId: Readonly<Ref<string | null>>
+  switchConversation: (id: string) => void
+  deleteConversation: (id: string) => void
+  refreshConversationList: () => Promise<void>
 }
 
 // ============================================================================
@@ -130,6 +144,154 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // Transcript dialog state
   const transcriptContent = ref('')
   const showTranscript = ref(false)
+
+  // Conversation list state
+  const activeConversationId = ref<string | null>(null)
+  const conversationList = ref<AgentConversationSummary[]>([])
+  const showConversationList = ref(false)
+
+  // ============================================================================
+  // Conversation Persistence Helpers
+  // ============================================================================
+
+  async function saveCurrentConversation(
+    serverState: ConversationStateSnapshot,
+  ): Promise<void> {
+    if (!adapter.agentConversations) return
+    if (!conversation.value.length) return
+
+    // Generate an ID if we don't have one yet
+    if (!activeConversationId.value) {
+      activeConversationId.value = generateUUID()
+    }
+
+    // Compute title from first user message
+    const firstUser = conversation.value.find((item) => item.type === 'user')
+    const titleText =
+      firstUser && 'content' in firstUser ? firstUser.content : ''
+    const title =
+      titleText.length > 80 ? titleText.slice(0, 80) + '…' : titleText
+
+    try {
+      await adapter.agentConversations.upsert({
+        uuid: activeConversationId.value,
+        title,
+        clientState: JSON.stringify(conversation.value),
+        serverState: JSON.stringify({
+          messages: serverState.messages,
+          activatedLazyTools: serverState.activatedLazyTools,
+        }),
+        hash: serverState.hash,
+      })
+
+    } catch (e) {
+      console.warn('[blokkli agent] Failed to save conversation:', e)
+    }
+  }
+
+  type ParsedConversation = {
+    conversation: ConversationItem[]
+    serverState: ConversationStateSnapshot
+  }
+
+  function parseConversationData(
+    data: AgentConversationData,
+  ): ParsedConversation | null {
+    try {
+      const clientState: ConversationItem[] = JSON.parse(data.clientState)
+      const serverParsed: {
+        messages: ConversationStateSnapshot['messages']
+        activatedLazyTools: ConversationStateSnapshot['activatedLazyTools']
+      } = JSON.parse(data.serverState)
+
+      if (!clientState?.length || !serverParsed?.messages?.length) {
+        return null
+      }
+
+      return {
+        conversation: clientState,
+        serverState: {
+          messages: serverParsed.messages,
+          activatedLazyTools: serverParsed.activatedLazyTools,
+          hash: data.hash,
+        },
+      }
+    } catch {
+      return null
+    }
+  }
+
+  async function loadConversation(uuid: string): Promise<ParsedConversation | null> {
+    if (!adapter.agentConversations) return null
+
+    try {
+      const data = await adapter.agentConversations.load(uuid)
+      if (!data) return null
+      return parseConversationData(data)
+    } catch (e) {
+      console.warn('[blokkli agent] Failed to load conversation:', e)
+      return null
+    }
+  }
+
+  async function deleteConversation(id: string): Promise<void> {
+    if (adapter.agentConversations) {
+      try {
+        await adapter.agentConversations.delete(id)
+      } catch (e) {
+        console.warn('[blokkli agent] Failed to delete conversation:', e)
+      }
+    }
+
+    // If deleting the active conversation, clear UI and tell server
+    if (activeConversationId.value === id) {
+      activeConversationId.value = null
+      conversation.value = []
+      activeItem.value = null
+      isProcessing.value = false
+      isThinking.value = false
+
+      send({ type: 'new_conversation' })
+    }
+
+    // Refresh the list
+    await refreshConversationList()
+  }
+
+  async function switchConversation(id: string): Promise<void> {
+    if (isProcessing.value) return
+
+    const loaded = await loadConversation(id)
+    if (!loaded) return
+
+    // Restore UI state
+    conversation.value = loaded.conversation
+    activeItem.value = null
+    activeConversationId.value = id
+
+    // Tell server to restore this conversation's state
+    send({ type: 'restore_conversation', state: loaded.serverState })
+
+    // Hide the list
+    showConversationList.value = false
+  }
+
+  async function refreshConversationList(): Promise<void> {
+    if (!adapter.agentConversations) {
+      conversationList.value = []
+      return
+    }
+
+    try {
+      const list = await adapter.agentConversations.list()
+      conversationList.value = list.sort((a, b) =>
+        b.updatedAt.localeCompare(a.updatedAt),
+      )
+    } catch (e) {
+      console.warn('[blokkli agent] Failed to list conversations:', e)
+      conversationList.value = []
+    }
+  }
 
   // Disable editing while agent is processing
   watch(isProcessing, (processing) => {
@@ -274,12 +436,29 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     )
   }
 
-  function sendInit(
+  async function sendInit(
     tools: ReturnType<typeof getToolsForServer>,
     pageContext: PageContext,
   ) {
     send({ type: 'init', tools, pageContext })
     isReady.value = true
+
+    // Try to restore the latest conversation
+    if (adapter.agentConversations) {
+      try {
+        const latest = await adapter.agentConversations.loadLatest()
+        if (latest) {
+          const parsed = parseConversationData(latest)
+          if (parsed) {
+            activeConversationId.value = latest.uuid
+            conversation.value = parsed.conversation
+            send({ type: 'restore_conversation', state: parsed.serverState })
+          }
+        }
+      } catch (e) {
+        console.warn('[blokkli agent] Failed to load latest conversation:', e)
+      }
+    }
 
     if (pendingPrompt) {
       const { prompt, displayPrompt, selectedUuids } = pendingPrompt
@@ -506,6 +685,33 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       case 'transcript':
         transcriptContent.value = data.content
         showTranscript.value = true
+        break
+
+      case 'conversation_state':
+        saveCurrentConversation(data.state)
+        break
+
+      case 'conversation_restored':
+        // UI already restored from adapter data — no action needed
+        break
+
+      case 'conversation_restore_failed':
+        console.warn(
+          '[blokkli agent] Conversation restore failed:',
+          data.reason,
+        )
+        conversation.value = []
+        // Remove the failed conversation via adapter
+        if (activeConversationId.value) {
+          const failedId = activeConversationId.value
+          activeConversationId.value = null
+    
+          if (adapter.agentConversations) {
+            adapter.agentConversations.delete(failedId).catch(() => {
+              // Ignore delete errors for failed conversations
+            })
+          }
+        }
         break
     }
   }
@@ -817,6 +1023,11 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
 
     isProcessing.value = true
 
+    // Ensure we have a conversation ID
+    if (!activeConversationId.value) {
+      activeConversationId.value = generateUUID()
+    }
+
     conversation.value.push({
       type: 'user',
       id: generateId(),
@@ -886,11 +1097,12 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     }
     pendingToolCall.value = null
 
-    // Clear client state
+    // Clear client state (old conversation stays persisted)
     conversation.value = []
     activeItem.value = null
     isProcessing.value = false
     isThinking.value = false
+    activeConversationId.value = null
 
     // Tell server to clear conversation
     send({ type: 'new_conversation' })
@@ -943,5 +1155,13 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     // Transcript dialog state
     transcriptContent,
     showTranscript,
+
+    // Conversation list
+    conversationList,
+    showConversationList,
+    activeConversationId: readonly(activeConversationId),
+    switchConversation,
+    deleteConversation,
+    refreshConversationList,
   }
 }

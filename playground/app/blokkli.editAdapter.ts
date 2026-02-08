@@ -1716,5 +1716,41 @@ export default defineBlokkliEditAdapter((ctx) => {
   adapter.getAgentAuthToken = () =>
     $fetch<{ token: string }>('/api/blokkli/agent/token').then((v) => v.token)
 
+  const conversationParams = () => ({
+    entityType: ctx.value.entityType,
+    entityUuid: ctx.value.entityUuid,
+  })
+
+  adapter.agentConversations = {
+    async upsert(data) {
+      return $fetch('/api/blokkli/agent/conversations', {
+        method: 'POST',
+        query: conversationParams(),
+        body: data,
+      })
+    },
+    async load(id) {
+      return $fetch(`/api/blokkli/agent/conversations/${id}`, {
+        query: conversationParams(),
+      })
+    },
+    async loadLatest() {
+      return $fetch('/api/blokkli/agent/conversations/latest', {
+        query: conversationParams(),
+      })
+    },
+    async list() {
+      return $fetch('/api/blokkli/agent/conversations', {
+        query: conversationParams(),
+      })
+    },
+    async delete(id) {
+      return $fetch(`/api/blokkli/agent/conversations/${id}`, {
+        method: 'DELETE',
+        query: conversationParams(),
+      })
+    },
+  }
+
   return adapter
 })

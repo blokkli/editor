@@ -1,11 +1,12 @@
 @import './AgentMessageText.css';
+@import './AgentConversationList.css';
 
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;
 }
 
 .bk.bk-agent-panel {
-  @apply flex flex-col h-full min-h-[200px] select-text;
+  @apply flex flex-col h-full min-h-[200px] select-text relative;
 
   .bk-agent-panel-inner {
     @apply flex-1 overflow-y-auto;
@@ -262,7 +263,10 @@
     @apply flex flex-col shrink-0;
     @apply border border-mono-300 bg-white;
     @apply rounded-lg;
-    @apply focus-within:outline focus-within:outline-4 focus-within:outline-accent-100 focus-within:border-accent-500;
+
+    &:has(textarea:focus) {
+      @apply outline outline-4 outline-accent-100 border-accent-500;
+    }
 
     .bk-flex-textarea {
       @apply min-h-[60px];
@@ -285,14 +289,11 @@
 
     .bk-agent-input-actions {
       @apply border-t border-t-mono-300 flex items-center justify-between p-8 gap-8;
+      @apply relative;
     }
 
     .bk-agent-input-actions-right {
       @apply flex gap-8;
-    }
-
-    .bk-agent-more-menu {
-      @apply relative;
     }
 
     .bk-agent-more-btn {
@@ -308,18 +309,28 @@
 
     .bk-agent-more-dropdown {
       @apply absolute bottom-full left-0 mb-5;
-      @apply bg-white border border-mono-300 rounded-lg shadow-lg;
-      @apply py-5 min-w-[200px];
+      @apply bg-white border border-mono-300 rounded-lg shadow-lg overflow-hidden;
+      @apply right-0;
+
+      hr {
+        @apply border-t-mono-300;
+      }
 
       button {
-        @apply w-full flex items-center gap-8 px-10 py-8;
+        @apply w-full flex items-center gap-8 px-10 py-10;
         @apply text-sm text-mono-700 text-left;
         @apply border-none bg-transparent cursor-pointer;
-        @apply hover:bg-mono-50;
-        @apply whitespace-nowrap;
+        @apply hover:bg-mono-100 hover:text-mono-950;
+        @apply whitespace-nowrap leading-none;
+
+        &:hover {
+          svg {
+            @apply fill-accent-700;
+          }
+        }
 
         svg {
-          @apply w-15 h-15 fill-current;
+          @apply size-18 fill-current;
         }
       }
     }

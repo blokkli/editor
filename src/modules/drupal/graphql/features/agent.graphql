@@ -1,3 +1,72 @@
+fragment pbAgentConversation on ParagraphsBlokkliAgentConversation {
+  uuid
+  title
+  clientState: dataUser
+  serverState: dataServer
+  hash
+  createdAt: created
+  updatedAt: changed
+}
+
 mutation paragraphsBlokkliAgentToken {
   token: paragraphsBlokkliAgentToken
+}
+
+mutation pbAgentConversationUpsert(
+  $uuid: String!
+  $title: String!
+  $dataUser: String!
+  $dataServer: String!
+  $hash: String!
+  $hostEntityType: String!
+  $hostEntityUuid: String!
+) {
+  result: paragraphsBlokkliAgentConversationUpsert(
+    uuid: $uuid
+    title: $title
+    dataUser: $dataUser
+    dataServer: $dataServer
+    hash: $hash
+    hostEntityType: $hostEntityType
+    hostEntityUuid: $hostEntityUuid
+  ) {
+    success
+    errors
+  }
+}
+
+mutation pbAgentConversationDelete($uuid: String!) {
+  result: paragraphsBlokkliAgentConversationDelete(uuid: $uuid) {
+    success
+    errors
+  }
+}
+
+query pbAgentConversations(
+  $hostEntityType: String!
+  $hostEntityUuid: String!
+) {
+  conversations: paragraphsBlokkliAgentConversations(
+    hostEntityType: $hostEntityType
+    hostEntityUuid: $hostEntityUuid
+  ) {
+    uuid
+    title
+    createdAt: created
+    updatedAt: changed
+  }
+}
+
+query pbAgentConversation(
+  $hostEntityType: String!
+  $hostEntityUuid: String!
+  $uuid: String
+) {
+  conversation: paragraphsBlokkliAgentConversation(
+    hostEntityType: $hostEntityType
+    hostEntityUuid: $hostEntityUuid
+    uuid: $uuid
+  ) {
+    ...pbAgentConversation
+  }
 }

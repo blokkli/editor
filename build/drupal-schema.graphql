@@ -2616,6 +2616,17 @@ type Mutation {
   masqueradeSwitchBack: Boolean!
   messengerMessages: MessengerMessage
   paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!): [Comment]
+
+  """Delete an agent conversation by UUID."""
+  paragraphsBlokkliAgentConversationDelete(uuid: String!): ParagraphsBlokkliAgentConversationMutationResult!
+
+  """
+  Upsert an agent conversation. If a conversation with the given UUID exists,
+  it is updated; otherwise a new one is created.
+  """
+  paragraphsBlokkliAgentConversationUpsert(dataServer: String!, dataUser: String!, hash: String!, hostEntityType: String!, hostEntityUuid: String!, title: String!, uuid: String!): ParagraphsBlokkliAgentConversationMutationResult!
+
+  """Generate a token for using the blökkli agent."""
   paragraphsBlokkliAgentToken: String
   paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
@@ -5643,6 +5654,24 @@ input ParagraphsBlokkliAddMultipleItemInput {
   values: MapData
 }
 
+type ParagraphsBlokkliAgentConversation {
+  changed: String!
+  created: String!
+  dataServer: String!
+  dataUser: String!
+  hash: String!
+  hostEntityType: String!
+  hostEntityUuid: String!
+  title: String!
+  uuid: String!
+}
+
+type ParagraphsBlokkliAgentConversationMutationResult {
+  conversation: ParagraphsBlokkliAgentConversation
+  errors: [String!]
+  success: Boolean!
+}
+
 type ParagraphsBlokkliAllowedType {
   """The allowed paragraph types."""
   allowedTypes: [String!]
@@ -6959,6 +6988,16 @@ type Query {
     name: MenuName!
   ): Menu
   messengerMessages: MessengerMessage
+
+  """
+  Get a single conversation. If uuid is provided, loads that specific
+  conversation. Otherwise returns the latest conversation of the current user
+  for the given host entity, if it was changed within the last 24 hours.
+  """
+  paragraphsBlokkliAgentConversation(hostEntityType: String!, hostEntityUuid: String!, uuid: String): ParagraphsBlokkliAgentConversation
+
+  """Get all conversations of the current user for a given host entity."""
+  paragraphsBlokkliAgentConversations(hostEntityType: String!, hostEntityUuid: String!): [ParagraphsBlokkliAgentConversation!]!
 
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliAllowedTypes: [ParagraphsBlokkliAllowedType!]

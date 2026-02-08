@@ -1,13 +1,4 @@
 import { describe, it, expect, vi } from 'vitest'
-
-// Mock the #blokkli-build/agent-server import used by helpers.ts
-vi.mock('#blokkli-build/agent-server', () => ({
-  skills: [],
-}))
-
-// Mock crossws Peer type
-vi.mock('crossws', () => ({}))
-
 import type { GenericMessage } from '../../src/modules/agent/runtime/server/providers/types'
 import {
   compressToolResult,
@@ -16,6 +7,14 @@ import {
   findToolNameForResult,
   type ToolPruningMetadata,
 } from '../../src/modules/agent/runtime/server/helpers'
+
+// Mock the #blokkli-build/agent-server import used by helpers.ts
+vi.mock('#blokkli-build/agent-server', () => ({
+  skills: [],
+}))
+
+// Mock crossws Peer type
+vi.mock('crossws', () => ({}))
 
 // ============================================================================
 // compressToolResult

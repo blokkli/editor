@@ -1,10 +1,12 @@
 import type { Peer } from 'crossws'
+import { createHmac, timingSafeEqual } from 'node:crypto'
 import type {
   AgentErrorType,
+  ConversationStateSnapshot,
   PageContext,
   ServerMessage,
+  GenericMessage,
 } from '../shared/types'
-import type { GenericMessage } from './providers/types'
 import type { ResolvedSkill, SkillDefinition } from './skills/types'
 import { skills } from '#blokkli-build/agent-server'
 
@@ -385,6 +387,157 @@ export function pruneMessages(
         content.splice(j, 1)
       }
     }
+  }
+}
+
+// ============================================================================
+// Persistence Helpers
+// ============================================================================
+
+/** Number of recent turns to keep when pruning for persistence */
+const PERSISTENCE_KEEP_TURNS = 7
+
+/**
+ * Create a deep-cloned, aggressively pruned copy of messages for persistence.
+ * Does NOT mutate the original array.
+ *
+ * - Keeps only the last `keepTurns` user turns (non-tool-result user messages)
+ * - Compresses ALL tool_result blocks (not just old ones)
+ * - Strips tool_use inputs to { _pruned: true } for all but the most recent turn
+ */
+export function pruneForPersistence(
+  messages: GenericMessage[],
+  keepTurns: number = PERSISTENCE_KEEP_TURNS,
+): GenericMessage[] {
+  if (messages.length === 0) return []
+
+  // Deep clone to avoid mutating the original
+  const cloned: GenericMessage[] = JSON.parse(JSON.stringify(messages))
+
+  // Identify user turns (messages without tool_result blocks)
+  let turnCount = 0
+  const turnStartIndices: number[] = []
+
+  for (let i = 0; i < cloned.length; i++) {
+    const msg = cloned[i]
+    if (msg.role === 'user') {
+      const content = msg.content
+      const containsToolResult =
+        Array.isArray(content) &&
+        content.length > 0 &&
+        content.some(
+          (block) =>
+            typeof block === 'object' &&
+            block !== null &&
+            'type' in block &&
+            block.type === 'tool_result',
+        )
+
+      if (!containsToolResult) {
+        turnCount++
+        turnStartIndices.push(i)
+      }
+    }
+  }
+
+  // Trim to last keepTurns turns
+  let startIndex = 0
+  if (turnCount > keepTurns) {
+    const cutoffTurnIndex = turnCount - keepTurns
+    startIndex = turnStartIndices[cutoffTurnIndex] ?? 0
+  }
+
+  const trimmed = cloned.slice(startIndex)
+
+  // Find the last user turn start index (relative to trimmed) for input preservation
+  let lastTurnStart = 0
+  for (let i = trimmed.length - 1; i >= 0; i--) {
+    const msg = trimmed[i]
+    if (msg.role === 'user') {
+      const content = msg.content
+      const containsToolResult =
+        Array.isArray(content) &&
+        content.length > 0 &&
+        content.some(
+          (block) =>
+            typeof block === 'object' &&
+            block !== null &&
+            'type' in block &&
+            block.type === 'tool_result',
+        )
+      if (!containsToolResult) {
+        lastTurnStart = i
+        break
+      }
+    }
+  }
+
+  // Compress all tool results and strip old tool_use inputs
+  for (let i = 0; i < trimmed.length; i++) {
+    const msg = trimmed[i]
+    const content = msg.content
+    if (!Array.isArray(content)) continue
+
+    if (msg.role === 'assistant') {
+      // Strip tool_use inputs for all but the most recent turn
+      if (i < lastTurnStart) {
+        for (const block of content) {
+          if (block.type === 'tool_use') {
+            block.input = { _pruned: true }
+          }
+        }
+      }
+      continue
+    }
+
+    // User messages: compress ALL tool_result blocks, remove text blocks in old turns
+    for (let j = content.length - 1; j >= 0; j--) {
+      const block = content[j]
+      if (block.type === 'tool_result') {
+        block.content = compressToolResult(block.content)
+      } else if (block.type === 'text' && i < lastTurnStart) {
+        content.splice(j, 1)
+      }
+    }
+  }
+
+  return trimmed
+}
+
+/**
+ * Compute an HMAC-SHA256 hash for a conversation state snapshot.
+ */
+export function computeStateHash(
+  messages: GenericMessage[],
+  activatedLazyTools: string[],
+  secret: string,
+): string {
+  const payload =
+    JSON.stringify(messages) + '|' + JSON.stringify(activatedLazyTools)
+  return createHmac('sha256', secret).update(payload).digest('hex')
+}
+
+/**
+ * Verify the HMAC hash of a conversation state snapshot.
+ * Uses timing-safe comparison to prevent timing attacks.
+ */
+export function verifyStateHash(
+  snapshot: ConversationStateSnapshot,
+  secret: string,
+): boolean {
+  const expected = computeStateHash(
+    snapshot.messages,
+    snapshot.activatedLazyTools,
+    secret,
+  )
+  if (expected.length !== snapshot.hash.length) return false
+  try {
+    return timingSafeEqual(
+      Buffer.from(expected, 'hex'),
+      Buffer.from(snapshot.hash, 'hex'),
+    )
+  } catch {
+    return false
   }
 }
 

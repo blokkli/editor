@@ -1389,6 +1389,51 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
+    if (
+      hasMutation('pbAgentConversationUpsert') &&
+      hasMutation('pbAgentConversationDelete') &&
+      hasQuery('pbAgentConversations') &&
+      hasQuery('pbAgentConversation')
+    ) {
+      const hostParams = () => ({
+        hostEntityType: providedContext.value.entityType,
+        hostEntityUuid: providedContext.value.entityUuid,
+      })
+
+      adapter.agentConversations = {
+        upsert: (data) =>
+          useGraphqlMutation('pbAgentConversationUpsert', {
+            ...hostParams(),
+            uuid: data.uuid,
+            title: data.title,
+            dataUser: data.clientState,
+            dataServer: data.serverState,
+            hash: data.hash,
+          }).then((v) => v.data.result.success),
+
+        load: (uuid) =>
+          useGraphqlQuery('pbAgentConversation', {
+            ...hostParams(),
+            uuid,
+          }).then((v) => v.data.conversation ?? null),
+
+        loadLatest: () =>
+          useGraphqlQuery('pbAgentConversation', hostParams()).then(
+            (v) => v.data.conversation ?? null,
+          ),
+
+        list: () =>
+          useGraphqlQuery('pbAgentConversations', hostParams()).then(
+            (v) => v.data.conversations,
+          ),
+
+        delete: (uuid) =>
+          useGraphqlMutation('pbAgentConversationDelete', { uuid }).then(
+            (v) => v.data.result.success,
+          ),
+      }
+    }
+
     return adapter
   },
 )

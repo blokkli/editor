@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
-import { fromLibraryBlockBundle } from '#blokkli-build/config'
-import { itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
   libraryItemUuid: z

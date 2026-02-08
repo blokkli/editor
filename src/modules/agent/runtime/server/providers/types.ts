@@ -1,53 +1,13 @@
-import type { ClientToolDefinition } from '../../shared/types'
+import type { ClientToolDefinition, GenericMessage } from '../../shared/types'
 
-// ============================================================================
-// Generic Message Types
-// ============================================================================
-
-/**
- * Text content block in a message.
- */
-export type GenericTextBlock = {
-  type: 'text'
-  text: string
-}
-
-/**
- * Tool use content block - assistant requesting tool execution.
- */
-export type GenericToolUseBlock = {
-  type: 'tool_use'
-  id: string
-  name: string
-  input: unknown
-}
-
-/**
- * Tool result content block - result of tool execution.
- */
-export type GenericToolResultBlock = {
-  type: 'tool_result'
-  tool_use_id: string
-  content: string
-  is_error?: boolean
-}
-
-/**
- * Content block in a message.
- */
-export type GenericContentBlock =
-  | GenericTextBlock
-  | GenericToolUseBlock
-  | GenericToolResultBlock
-
-/**
- * Generic message format used internally.
- * Provider implementations convert to/from this format.
- */
-export type GenericMessage = {
-  role: 'user' | 'assistant'
-  content: string | GenericContentBlock[]
-}
+// Re-export generic message types from shared (moved there for client access)
+export type {
+  GenericTextBlock,
+  GenericToolUseBlock,
+  GenericToolResultBlock,
+  GenericContentBlock,
+  GenericMessage,
+} from '../../shared/types'
 
 // ============================================================================
 // Stream Event Types

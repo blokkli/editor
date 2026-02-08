@@ -49,8 +49,28 @@
         @cancel="emit('cancel')"
         @new-conversation="onNewConversation"
         @show-transcript="emit('getTranscript')"
+        @show-conversations="emit('showConversations')"
       />
     </div>
+    <Transition name="bk-agent-overlay" :duration="500">
+      <div
+        v-if="showConversationList"
+        class="bk-agent-conversation-list-overlay"
+      >
+        <div
+          class="bk-agent-conversation-list-backdrop"
+          @click="emit('hideConversations')"
+        />
+        <div class="bk-agent-conversation-list-sheet bk-scrollbar-light">
+          <ConversationList
+            :conversations="conversationList"
+            @switch="(id: string) => emit('switchConversation', id)"
+            @delete="(id: string) => emit('deleteConversation', id)"
+            @close="emit('hideConversations')"
+          />
+        </div>
+      </div>
+    </Transition>
   </div>
   <div v-else class="bk-agent-connecting">
     <Icon name="loader" />
@@ -73,7 +93,9 @@ import PendingMutation from './PendingMutation/index.vue'
 import DebugGallery from './DebugGallery/index.vue'
 import Welcome from './Welcome/index.vue'
 import AgentInput from './Input/index.vue'
+import ConversationList from './ConversationList/index.vue'
 import type {
+  AgentConversationSummary,
   PendingMutationState,
   PendingToolCall,
 } from '#blokkli/agent/app/composables'
@@ -94,6 +116,8 @@ const props = defineProps<{
   pendingToolCall: PendingToolCall | null
   pendingMutation: PendingMutationState | null
   autoApprove: boolean
+  conversationList: AgentConversationSummary[]
+  showConversationList: boolean
 }>()
 
 const emit = defineEmits<{
@@ -106,6 +130,10 @@ const emit = defineEmits<{
   newConversation: []
   getTranscript: []
   toolComponentDone: [result: unknown]
+  switchConversation: [id: string]
+  deleteConversation: [id: string]
+  showConversations: []
+  hideConversations: []
 }>()
 
 const app = useBlokkli()

@@ -7,3 +7,7 @@ export type {
   PendingMutationState,
   PendingToolCall,
 } from './agentProvider'
+export type {
+  AgentConversationData,
+  AgentConversationSummary,
+} from '../features/agent/types'

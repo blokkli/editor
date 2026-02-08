@@ -203,6 +203,10 @@
     "source": "Deleting blocks...",
     "translation": "Blöcke löschen..."
   },
+  "aiAgentDeleteConversation": {
+    "source": "Delete conversation",
+    "translation": "Konversation löschen"
+  },
   "aiAgentDetachLibraryBlockDone": {
     "source": "Detached library block",
     "translation": "Bibliotheks-Block abgetrennt"
@@ -407,6 +411,14 @@
     "source": "Start new conversation",
     "translation": "Neue Unterhaltung starten"
   },
+  "aiAgentNoConversations": {
+    "source": "No past conversations.",
+    "translation": "Keine früheren Konversationen."
+  },
+  "aiAgentPastConversations": {
+    "source": "Past conversations",
+    "translation": "Frühere Konversationen..."
+  },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
     "translation": "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
@@ -492,8 +504,8 @@
     "translation": "Block-Optionen setzen..."
   },
   "aiAgentShowTranscript": {
-    "source": "Show transcript",
-    "translation": "Transkript anzeigen"
+    "source": "Show transcript...",
+    "translation": "Transkript anzeigen..."
   },
   "aiAgentSwapBlocksDone": {
     "source": "Swapped @bundleA and @bundleB",

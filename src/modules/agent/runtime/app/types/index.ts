@@ -302,7 +302,7 @@ export type FactoryResolvedTool = {
   volatile?: boolean
   // `any` is intentional: FactoryResolvedTool erases generics, and function
   // parameter contravariance prevents using a concrete type here.
-  prunedSummary?: (result: any) => string // eslint-disable-line @typescript-eslint/no-explicit-any
+  prunedSummary?: (result: any) => string  
   execute: (...args: any[]) => any
   mockParams?: () => any
 }

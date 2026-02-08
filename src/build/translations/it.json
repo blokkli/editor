@@ -203,6 +203,10 @@
     "source": "Deleting blocks...",
     "translation": ""
   },
+  "aiAgentDeleteConversation": {
+    "source": "Delete conversation",
+    "translation": ""
+  },
   "aiAgentDetachLibraryBlockDone": {
     "source": "Detached library block",
     "translation": ""
@@ -407,6 +411,14 @@
     "source": "Start new conversation",
     "translation": ""
   },
+  "aiAgentNoConversations": {
+    "source": "No past conversations.",
+    "translation": ""
+  },
+  "aiAgentPastConversations": {
+    "source": "Past conversations",
+    "translation": ""
+  },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
     "translation": ""
@@ -492,7 +504,7 @@
     "translation": ""
   },
   "aiAgentShowTranscript": {
-    "source": "Show transcript",
+    "source": "Show transcript...",
     "translation": ""
   },
   "aiAgentSwapBlocksDone": {

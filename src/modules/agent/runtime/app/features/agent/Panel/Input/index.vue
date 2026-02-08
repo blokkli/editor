@@ -28,10 +28,17 @@
                   $t('aiAgentNewConversation', 'Start new conversation')
                 }}</span>
               </button>
+              <button @click="onShowConversations">
+                <Icon name="bk_mdi_history" />
+                <span>{{
+                  $t('aiAgentPastConversations', 'Past conversations...')
+                }}</span>
+              </button>
+              <hr />
               <button @click="onShowTranscript">
                 <Icon name="bk_mdi_bug_report" />
                 <span>{{
-                  $t('aiAgentShowTranscript', 'Show transcript')
+                  $t('aiAgentShowTranscript', 'Show transcript...')
                 }}</span>
               </button>
             </div>
@@ -76,7 +83,14 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'submit' | 'cancel' | 'new-conversation' | 'show-transcript'): void
+  (
+    e:
+      | 'submit'
+      | 'cancel'
+      | 'new-conversation'
+      | 'show-transcript'
+      | 'show-conversations',
+  ): void
 }>()
 
 const { $t, eventBus } = useBlokkli()
@@ -116,6 +130,11 @@ function onSubmit() {
 function onNewConversation() {
   showMenu.value = false
   emit('new-conversation')
+}
+
+function onShowConversations() {
+  showMenu.value = false
+  emit('show-conversations')
 }
 
 function onShowTranscript() {

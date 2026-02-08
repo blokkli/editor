@@ -1,6 +1,7 @@
 <template>
   <PluginSidebar
     id="agent"
+    v-slot="{ isShown }"
     :title="agentName"
     :tour-text="
       $t('aiAgentTourText', 'Chat with an AI assistant to edit page content.')
@@ -10,34 +11,34 @@
     render-always
     beta
   >
-    <template #default="{ isShown }">
-      <AgentPanel
-        :is-shown
-        :debug-styling="DEBUG_STYLING"
-        :agent-name
-        :conversation
-        :active-item
-        :is-thinking
-        :is-processing
-        :is-connected
-        :pending-tool-call
-        :pending-mutation
-        :auto-approve
-        @connect="connect"
-        @send-prompt="sendPrompt"
-        @cancel="cancel"
-        @approve="approve"
-        @reject="reject"
-        @set-auto-approve="setAutoApprove"
-        @new-conversation="newConversation"
-        @get-transcript="getTranscript"
-        @tool-component-done="onToolComponentDone"
-      />
-    </template>
-
-    <template v-if="pendingMutation || pendingToolCall" #badge>
-      <div class="bk-sidebar-badge bk-is-yellow">1</div>
-    </template>
+    <AgentPanel
+      :is-shown
+      :debug-styling="DEBUG_STYLING"
+      :agent-name
+      :conversation
+      :active-item
+      :is-thinking
+      :is-processing
+      :is-connected
+      :pending-tool-call
+      :pending-mutation
+      :auto-approve
+      :conversation-list
+      :show-conversation-list
+      @connect="connect"
+      @send-prompt="sendPrompt"
+      @cancel="cancel"
+      @approve="approve"
+      @reject="reject"
+      @set-auto-approve="setAutoApprove"
+      @new-conversation="newConversation"
+      @get-transcript="getTranscript"
+      @tool-component-done="onToolComponentDone"
+      @switch-conversation="switchConversation"
+      @delete-conversation="deleteConversation"
+      @show-conversations="onShowConversations"
+      @hide-conversations="onHideConversations"
+    />
   </PluginSidebar>
 
   <Teleport :to="ui.mainLayoutElement.value">
@@ -109,7 +110,21 @@ const {
   onToolComponentDone,
   transcriptContent,
   showTranscript,
+  conversationList,
+  showConversationList,
+  switchConversation,
+  deleteConversation,
+  refreshConversationList,
 } = useAgentProvider({ app, adapter, itemEntityType })
+
+async function onShowConversations() {
+  await refreshConversationList()
+  showConversationList.value = true
+}
+
+function onHideConversations() {
+  showConversationList.value = false
+}
 
 onBeforeUnmount(() => {
   disconnect()
