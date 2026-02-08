@@ -1,5 +1,7 @@
 ---
-description: Reference for the blökkli editor CSS and Tailwind setup with custom spacing, colors, and z-index — use this before writing any styles
+description:
+  Reference for the blökkli editor CSS and Tailwind setup with custom spacing,
+  colors, and z-index — use this before writing any styles
 ---
 
 # Styles Skill
@@ -13,11 +15,11 @@ Always consult this reference before writing CSS or Tailwind classes.
 
 The following common Tailwind defaults are **not available**:
 
-- **No default colors**: No `gray`, `blue`, `green`, `red-500`, `slate`,
-  `zinc`, `neutral`, `stone`, `emerald`, `indigo`, `violet`, `pink`, etc.
-- **No default spacing scale**: No `1` = 0.25rem, `4` = 1rem, `6` = 1.5rem,
-  `8` = 2rem, `12` = 3rem, `16` = 4rem, `64` = 16rem, `96` = 24rem, etc.
-  Spacing values are **pixel-based integers** (see below).
+- **No default colors**: No `gray`, `blue`, `green`, `red-500`, `slate`, `zinc`,
+  `neutral`, `stone`, `emerald`, `indigo`, `violet`, `pink`, etc.
+- **No default spacing scale**: No `1` = 0.25rem, `4` = 1rem, `6` = 1.5rem, `8`
+  = 2rem, `12` = 3rem, `16` = 4rem, `64` = 16rem, `96` = 24rem, etc. Spacing
+  values are **pixel-based integers** (see below).
 - **No default font families**: No `font-serif`. Only `font-sans` and
   `font-mono`.
 

@@ -449,8 +449,8 @@ msgid "No past conversations."
 msgstr "Keine früheren Konversationen."
 
 msgctxt "aiAgentPastConversations"
-msgid "Past conversations..."
-msgstr "Frühere Konversationen..."
+msgid "Past conversations"
+msgstr "Frühere Konversationen"
 
 msgctxt "aiAgentPlaceholder"
 msgid "Ask me to edit the page content..."

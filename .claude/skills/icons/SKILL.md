@@ -1,5 +1,7 @@
 ---
-description: Reference for how icons work in blökkli — Material Symbols, custom SVGs, build-time extraction, and naming conventions
+description:
+  Reference for how icons work in blökkli — Material Symbols, custom SVGs,
+  build-time extraction, and naming conventions
 ---
 
 # Icons Skill
@@ -87,8 +89,8 @@ It validates each `bk_mdi_*` name against the actual
 
 ### In blökkli runtime code
 
-1. Use the icon name string (e.g. `bk_mdi_favorite`) anywhere in the code —
-   as a prop, variable, or string literal
+1. Use the icon name string (e.g. `bk_mdi_favorite`) anywhere in the code — as a
+   prop, variable, or string literal
 2. Run `npm run material-icons` to regenerate `src/build/used-icons.ts`
 3. The icon will be included in the next build
 
@@ -99,6 +101,6 @@ Nuxt build time — no manual step needed.
 
 ## Validation
 
-The build validates icon names at build time via `IconCollector.isValidIconName`.
-If an icon name doesn't exist in the Material Symbols package or as a custom SVG,
-the build will warn about it.
+The build validates icon names at build time via
+`IconCollector.isValidIconName`. If an icon name doesn't exist in the Material
+Symbols package or as a custom SVG, the build will warn about it.

@@ -1,25 +1,63 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { defu } from 'defu'
-import defaultTranslations from './../../translations'
+import { LANGUAGES } from '../../../global/constants'
+
+const TRANSLATIONS_DIR = './runtime/editor/translations'
 
 export default defineCodeTemplate(
   'translations',
   (ctx) => {
-    const translations: Record<string, Record<string, string>> = {}
-    Object.keys(defaultTranslations).forEach((language) => {
-      translations[language] = {}
-      Object.keys((defaultTranslations as any)[language]).forEach((key) => {
-        translations[language]![key] = (defaultTranslations as any)[language][
-          key
-        ].translation
-      })
-    })
-    const merged = defu(ctx.helper.options.translations, translations)
-    return `export const translations = ${JSON.stringify(merged, null, 2)}`
+    const imports = LANGUAGES.map((lang) => {
+      const relativePath = ctx.helper.toModuleBuildRelative(
+        ctx.helper.resolvers.module.resolve(`${TRANSLATIONS_DIR}/${lang}.json`),
+      )
+      return `import raw_${lang} from '${relativePath}'`
+    }).join('\n')
+
+    const userTranslations = ctx.helper.options.translations
+
+    // Build the processing code that extracts .translation from each entry.
+    const processedEntries = LANGUAGES.map((lang) => {
+      return `  '${lang}': Object.fromEntries(
+    Object.entries(raw_${lang}).map(([k, v]) => [k, v.translation])
+  )`
+    }).join(',\n')
+
+    const typeUnion = LANGUAGES.map((lang) => `'${lang}'`).join(' | ')
+
+    const hasUserTranslations =
+      userTranslations && Object.keys(userTranslations).length > 0
+
+    if (hasUserTranslations) {
+      return `import { defu } from 'defu'
+${imports}
+
+export type InterfaceLanguage = ${typeUnion}
+export type TranslationMap = Record<string, string>
+
+const defaultTranslations: Record<InterfaceLanguage, TranslationMap> = {
+${processedEntries}
+}
+
+export const translations: Record<InterfaceLanguage, TranslationMap> = defu(${JSON.stringify(userTranslations)}, defaultTranslations)
+`
+    }
+
+    return `${imports}
+
+export type InterfaceLanguage = ${typeUnion}
+export type TranslationMap = Record<string, string>
+
+export const translations: Record<InterfaceLanguage, TranslationMap> = {
+${processedEntries}
+}
+`
   },
   () => {
+    const typeUnion = LANGUAGES.map((lang) => `'${lang}'`).join(' | ')
     return `
-export declare const translations: Record<string, Record<string, string>>
+export type InterfaceLanguage = ${typeUnion}
+export type TranslationMap = Record<string, string>
+export declare const translations: Record<InterfaceLanguage, TranslationMap>
 `
   },
 )

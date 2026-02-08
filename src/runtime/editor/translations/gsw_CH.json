@@ -5,39 +5,39 @@
   },
   "actionsDropdownToolip": {
     "source": "Further actions",
-    "translation": "Autres actions"
+    "translation": "Witeri Aktione"
   },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
-    "translation": "Ajouter «@block» dans «@field»"
+    "translation": "«@block» in «@field» drzüefüege"
   },
   "addBlockCommand.appendRoot": {
     "source": "Append \"@block\"",
-    "translation": "Ajouter «@block»"
+    "translation": "«@block» drzuefüege"
   },
   "addBlockCommand.insertInField": {
     "source": "Insert \"@block\" into \"@field\"",
-    "translation": "Insérer «@block» dans «@field»"
+    "translation": "«@block» in «@field» drzuefüege"
   },
   "addButtonAfterBundle": {
     "source": "Add after...",
-    "translation": "Ajouter après..."
+    "translation": "Noch däm drzuefüege..."
   },
   "addButtonBeforeBundle": {
     "source": "Add before...",
-    "translation": "Ajouter avant..."
+    "translation": "Vorhär drzuefüege..."
   },
   "addButtonBundleAfter": {
     "source": "Add \"@bundle\" after",
-    "translation": "Ajouter «@bundle» après"
+    "translation": "«@bundle» noch däm drzuefüege"
   },
   "addButtonBundleBefore": {
     "source": "Add \"@bundle\" before",
-    "translation": "Ajouter «@bundle» avant"
+    "translation": "«@bundle» vorhär drzuefüege"
   },
   "addButtonBundleInsideField": {
     "source": "Add \"@bundle\" inside @parentBundle » @fieldLabel",
-    "translation": "Ajouter «@bundle» dans @parentBundle » @fieldLabel"
+    "translation": "«@bundle» in @parentBundle » @fieldLabel drzuefüege"
   },
   "addButtonBundleToField": {
     "source": "Add \"@bundle\" to @fieldLabel",
@@ -45,7 +45,7 @@
   },
   "addButtonInsideField": {
     "source": "Add inside @parentBundle » @fieldLabel...",
-    "translation": "Ajouter dans @parentBundle » @fieldLabel..."
+    "translation": "In @parentBundle » @fieldLabel drzuefüege..."
   },
   "addButtonToField": {
     "source": "Add to @fieldLabel...",
@@ -57,23 +57,23 @@
   },
   "addCommentToItem": {
     "source": "Add Comment...",
-    "translation": "Commenter"
+    "translation": "Kommentiere"
   },
   "addListItemFavoriteAdd": {
     "source": "Add to favorites",
-    "translation": "Ajouter aux favoris"
+    "translation": "Zu de Favorite drzuefüege"
   },
   "addListItemFavoriteRemove": {
     "source": "Remove from favorites",
-    "translation": "Retirer des favoris"
+    "translation": "Us de Favorite entfärne"
   },
   "addListSidebarTitle": {
     "source": "Add blocks",
-    "translation": "Ajouter des blocs"
+    "translation": "Block drzuefüege"
   },
   "addListTourText": {
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
-    "translation": ""
+    "translation": "<p>Do gsehsch d'Lischt vo allne verfüegbare Blöck wo chönne drzuegfüegt wärde. Zieh s'Symbol in d'Sitte zum e Block drzuefüege.</p><p>Wenn e Block usgwählt isch, sin gwüssi Blöck uusggruet. Das zeigt aa, welchi Blöck in oder noch däm usgwählte Block chönne platziert wärde.</p>"
   },
   "aiAgent": {
     "source": "AI Agent",
@@ -428,7 +428,7 @@
     "translation": ""
   },
   "aiAgentPastConversations": {
-    "source": "Past conversations...",
+    "source": "Past conversations",
     "translation": ""
   },
   "aiAgentPlaceholder": {
@@ -569,7 +569,7 @@
   },
   "all": {
     "source": "All",
-    "translation": ""
+    "translation": "Alli"
   },
   "allowedBlocks": {
     "source": "Allowed Blocks",
@@ -577,27 +577,27 @@
   },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
-    "translation": ""
+    "translation": "Sitte analysiere"
   },
   "analyzeCategory": {
     "source": "Category",
-    "translation": ""
+    "translation": "Kategorie"
   },
   "analyzeCategoryAccessibility": {
     "source": "Accessibility",
-    "translation": ""
+    "translation": "Barrierefreiheit"
   },
   "analyzeCategoryContent": {
     "source": "Content",
-    "translation": ""
+    "translation": "Inhalt"
   },
   "analyzeCategorySeo": {
     "source": "SEO",
-    "translation": ""
+    "translation": "SEO"
   },
   "analyzeCategoryText": {
     "source": "Text",
-    "translation": ""
+    "translation": "Teggscht"
   },
   "analyzeClickButton": {
     "source": "Click the button above to run the analysis.",
@@ -605,11 +605,11 @@
   },
   "analyzeLastRun": {
     "source": "Last run: @time",
-    "translation": ""
+    "translation": "Zletscht usgfüehrt: @time"
   },
   "analyzeMoreLink": {
     "source": "More",
-    "translation": ""
+    "translation": "Meh"
   },
   "analyzeNotAvailableInStructureView": {
     "source": "Analyze is not available in structure view.",
@@ -621,19 +621,19 @@
   },
   "analyzeSidebarTitle": {
     "source": "Analyze",
-    "translation": ""
+    "translation": "Analysiere"
   },
   "analyzeStatusInapplicable": {
     "source": "Inapplicable",
-    "translation": ""
+    "translation": "Nid zuetreffe"
   },
   "analyzeStatusIncomplete": {
     "source": "Incomplete",
-    "translation": ""
+    "translation": "Unvollständig"
   },
   "analyzeStatusPass": {
     "source": "Pass",
-    "translation": ""
+    "translation": "I Ornig"
   },
   "analyzeStatusStale": {
     "source": "Stale",
@@ -645,131 +645,131 @@
   },
   "analyzeStatusViolation": {
     "source": "Violation",
-    "translation": ""
+    "translation": "Verstoss"
   },
   "analyzeTourText": {
     "source": "Analyze the content of your page",
-    "translation": ""
+    "translation": "Dr Inhalt vo dinere Sitte analysiere"
   },
   "analyzerReadabiliyAverageSentenceLength": {
     "source": "Average sentence length @length → split sentences.",
-    "translation": ""
+    "translation": "Durchschnittlichi Satzlängi @length → Sätz ufdrennen."
   },
   "analyzerReadabiliyDescription": {
     "source": "Avoid texts that are hard to read.",
-    "translation": ""
+    "translation": "Vermiid Teggscht wo schwär z'läse sin."
   },
   "analyzerReadabiliyHardToRead": {
     "source": "Hard to read (@lang).",
-    "translation": ""
+    "translation": "Schwär z'läse (@lang)."
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
-    "translation": ""
+    "translation": "Bruch chürzeri Sätz und eifacheri Formulierige."
   },
   "analyzerReadabiliyTitle": {
     "source": "Text readability issues",
-    "translation": ""
+    "translation": "Läsbarkeitsproblem im Teggscht"
   },
   "anchorHide": {
     "source": "Hide anchor links",
-    "translation": ""
+    "translation": "Anker-Links verstecke"
   },
   "anchorShow": {
     "source": "Show anchor links",
-    "translation": ""
+    "translation": "Anker-Links aazeige"
   },
   "anchorToggle": {
     "source": "Toggle anchor links",
-    "translation": ""
+    "translation": "Anker-Links umschalte"
   },
   "artboard": {
     "source": "Artboard",
-    "translation": ""
+    "translation": "Zeichenflächi"
   },
   "artboardOverviewHide": {
     "source": "Hide overview",
-    "translation": ""
+    "translation": "Übersicht verstecke"
   },
   "artboardOverviewShow": {
     "source": "Show overview",
-    "translation": ""
+    "translation": "Übersicht aazeige"
   },
   "artboardOverviewToggle": {
     "source": "Toggle overview",
-    "translation": ""
+    "translation": "Übersicht umschalte"
   },
   "artboardOverviewTourText": {
     "source": "Displays a top level overview of your content.",
-    "translation": ""
+    "translation": "Zeigt e Übersicht über dini Inhält aa."
   },
   "artboardResetZoom": {
     "source": "Reset zoom",
-    "translation": ""
+    "translation": "Zoom zruggsetze"
   },
   "artboardScaleToFit": {
     "source": "Scale to fit",
-    "translation": ""
+    "translation": "And Höchi aapasse"
   },
   "artboardScrollDown": {
     "source": "Scroll down",
-    "translation": ""
+    "translation": "abescrolle"
   },
   "artboardScrollOnePageDown": {
     "source": "Scroll one page down",
-    "translation": ""
+    "translation": "E Sitte ufescrolle"
   },
   "artboardScrollOnePageUp": {
     "source": "Scroll one page up",
-    "translation": ""
+    "translation": "E Sitte abescrolle"
   },
   "artboardScrollToEnd": {
     "source": "Scroll to end",
-    "translation": ""
+    "translation": "Zum Schluss scrolle"
   },
   "artboardScrollToTop": {
     "source": "Scroll to top",
-    "translation": ""
+    "translation": "Zum Aafang scrolle"
   },
   "artboardScrollUp": {
     "source": "Scroll up",
-    "translation": ""
+    "translation": "ufescrolle"
   },
   "artboardToolbarButtonTourText": {
     "source": "Shows the current zoom factor. Click on it to reset the zoom back to 100%.",
-    "translation": ""
+    "translation": "Zeigt dr aktuäll Zoom-Faktor aa. Klick druf zum dr Zoom uf 100% zruggzsetze."
   },
   "assistantAddAction": {
     "source": "Add with AI Assistant",
-    "translation": ""
+    "translation": "Mitem KI-Assischtänt drzuefüege"
   },
   "assistantAddActionDescription": {
     "source": "Add content using an AI assistant.",
-    "translation": ""
+    "translation": "Inhält mitemne KI-Assischtänt drzuefüege."
   },
   "assistantAddResultError": {
     "source": "Failed to add block from assistant.",
-    "translation": ""
+    "translation": "Es het e Fähler gäh bim drzuefüege mitem KI Assischtänt"
   },
   "assistantDialogLead": {
     "source": "Please enter what you'd like the assistant to generate.",
-    "translation": ""
+    "translation": "Bitte git iih, was dr KI-Assischtänt söll generiere. "
   },
   "assistantDialogSubmit": {
     "source": "Create blocks",
-    "translation": ""
+    "translation": "Blöck erstelle"
   },
   "assistantDialogTitle": {
     "source": "Generate content with AI assistant",
-    "translation": ""
+    "translation": "Inhalt mit KI generiere"
   },
   "assistantPromptLabel": {
     "source": "Prompt",
-    "translation": ""
+    "translation": "Aawiisig"
   },
   "assistantPromptPlaceholder": {
     "source": "Generate content for a page about how taxes work in Switzerland",
-    "translation": ""
+    "translation": "Schrib e Teggscht zum Thema Stüüre in dr Schwiz"
   },
   "availableBlocks": {
     "source": "Available blocks",
@@ -781,11 +781,11 @@
   },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
-    "translation": ""
+    "translation": "Mach e Rächtsklick uf e Block zum nen zu dine Favorite drzuefüege oder z'entfärne. Favorite sin hervorhebt und wärde immer oobe in dr Lischt aazeigt."
   },
   "blockAddListTourTitle": {
     "source": "Favorite blocks",
-    "translation": ""
+    "translation": "Lieblingsblöck"
   },
   "blockNotImplemented": {
     "source": "Missing component for block bundle <strong>@bundle</strong>.",
@@ -797,7 +797,7 @@
   },
   "blockOption_bkHiddenGlobally_label": {
     "source": "Hide globally",
-    "translation": ""
+    "translation": "Global verstecke"
   },
   "blockOption_bkVisibleLanguages_description": {
     "source": "Only show on specific languages.",
@@ -805,7 +805,7 @@
   },
   "blockOption_bkVisibleLanguages_label": {
     "source": "Visible languages",
-    "translation": ""
+    "translation": "Sichtbari Sproche"
   },
   "blockSchedulerChangesPreview": {
     "source": "Changes to be applied",
@@ -853,7 +853,7 @@
   },
   "cancelSelection": {
     "source": "Cancel selection",
-    "translation": ""
+    "translation": "Uswahl abbräche"
   },
   "clearInput": {
     "source": "Clear input",
@@ -861,35 +861,35 @@
   },
   "clipboard": {
     "source": "Clipboard",
-    "translation": "Presse-papiers"
+    "translation": "Zwüscheablag"
   },
   "clipboardCopyShortcutHelp": {
     "source": "Copy selected blocks",
-    "translation": ""
+    "translation": "Usgwählti Blöck kopiere"
   },
   "clipboardEmpty": {
     "source": "No items in the clipboard",
-    "translation": "Aucun élément dans le presse-papiers"
+    "translation": "In dr Zwüscheablag hets nüt"
   },
   "clipboardExplanation": {
     "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
-    "translation": "<p>\n    Utilisez Ctrl-V sur la page pour coller du contenu. Ils\n    seront alors affichés ici.\n  </p>\n  <p>\n    Utilisez Ctrl-F pour rechercher du contenu existant et le copier\n    dans le presse-papiers.\n  </p>"
+    "translation": "<p>Bruch Ctrl+V zum öbbis iifüege. D'Inhält wärde denn do aazeigt.</p><p>Bruch Ctrl+F zum bestehendi Inhält z'sueche und ind Zwüscheablag iizfüege. </p>"
   },
   "clipboardPasteDescription": {
     "source": "Paste blocks from clipboard",
-    "translation": ""
+    "translation": "Blöck us dr Zwüscheablag iifüege"
   },
   "clipboardPasteError": {
     "source": "Failed to paste:",
-    "translation": ""
+    "translation": "Iifüege het nid funktioniert:"
   },
   "clipboardPasteErrorAllowedBundlesMultiple": {
     "source": "Block types (@types) are not allowed here.",
-    "translation": ""
+    "translation": "Block-Type (@types) sin do nid erlaubt."
   },
   "clipboardPasteErrorAllowedBundlesSingle": {
     "source": "Block type \"@types\" is not allowed here.",
-    "translation": ""
+    "translation": "Block-Typ «@types» isch do nid erlaubt."
   },
   "clipboardPasteErrorAllowedFragmentsMultiple": {
     "source": "Fragments (@types) are not allowed here.",
@@ -901,95 +901,95 @@
   },
   "clipboardPasteErrorCardinality": {
     "source": "This field only allows up to @count blocks.",
-    "translation": ""
+    "translation": "In däm Fäld sin maximal @count Blöck erlaubt."
   },
   "clipboardPasteErrorOneField": {
     "source": "Pasting is only possible into one field at a time.",
-    "translation": ""
+    "translation": "Iifüege isch nur in eis Fäld uf s'Mol möglich."
   },
   "clipboardPastePlaceholder": {
     "source": "Paste text or media here",
-    "translation": "Paste text or media here"
+    "translation": "Teggscht oder Medie iifüege"
   },
   "clipboardPasteShortcutHelp": {
     "source": "Paste text, image or copied blocks",
-    "translation": ""
+    "translation": "Teggscht, Bild oder kopierti Blöck iifüege"
   },
   "clipboardTourText": {
     "source": "Drag and drop content pasted from your clipboard into the page to create a matching block.",
-    "translation": ""
+    "translation": "Zieh Inhält us dinere Zwüscheablag in d'Sitte zum e passende Block z'erstelle."
   },
   "close": {
     "source": "Close",
-    "translation": "Fermer"
+    "translation": "Zuemache"
   },
   "commandGroup.action": {
     "source": "Actions",
-    "translation": ""
+    "translation": "Aktione"
   },
   "commandGroup.add": {
     "source": "Add new",
-    "translation": ""
+    "translation": "Drzuefüege"
   },
   "commandGroup.misc": {
     "source": "Miscellaneous",
-    "translation": ""
+    "translation": "Divärses"
   },
   "commandGroup.selection": {
     "source": "Selection",
-    "translation": ""
+    "translation": "Uswahl"
   },
   "commandGroup.ui": {
     "source": "Interface",
-    "translation": ""
+    "translation": "Oberflächi"
   },
   "commandPalette.inputPlaceholder": {
     "source": "Search commands...",
-    "translation": ""
+    "translation": "Aktione durchsueche..."
   },
   "commandPaletteOpen": {
     "source": "Open Command Palette",
-    "translation": ""
+    "translation": "Befehlspalette ufmache"
   },
   "commandPaletteTourText": {
     "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
-    "translation": ""
+    "translation": "Füehr Aktione eifach mit dinere Tastatuur uus, indem d'Befehlspalette ufmachsch. Di meischte Funktione wo mit Klicks verfüegbar sin, gits au in dr Befehlspalette."
   },
   "commentAdd": {
     "source": "Add comment",
-    "translation": ""
+    "translation": "Kommentar drzuefüege"
   },
   "commentBodyPlaceholder": {
     "source": "Add reply",
-    "translation": ""
+    "translation": "Antwort drzuefüege"
   },
   "commentSave": {
     "source": "Submit comment",
-    "translation": "Sauvegarder le commentaire"
+    "translation": "Kommentar speichere"
   },
   "comments": {
     "source": "Comments",
-    "translation": "Commentaires"
+    "translation": "Kommentär"
   },
   "commentsMarkAsResolved": {
     "source": "Resolve",
-    "translation": ""
+    "translation": "Abschliesse"
   },
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
-    "translation": ""
+    "translation": "Zeigt alli Kommentär für die aktuelli Sitte aa."
   },
   "conversionsConvertTo": {
     "source": "Convert to: @bundle",
-    "translation": ""
+    "translation": "Konvertiere zu: @bundle"
   },
   "copiedToClipboardMessage": {
     "source": "\"@text\" has been copied to your clipboard",
-    "translation": ""
+    "translation": "«@text» isch in dini Zwüscheablag kopiert worde"
   },
   "copy": {
     "source": "Copy",
-    "translation": ""
+    "translation": "Kopiere"
   },
   "created": {
     "source": "Created",
@@ -1005,59 +1005,59 @@
   },
   "deleteButton": {
     "source": "Delete",
-    "translation": "Supprimer"
+    "translation": "Lösche"
   },
   "deleteError": {
     "source": "The block could not be deleted.",
-    "translation": "L'élément n'a pas pu être supprimé."
+    "translation": "S'Elemänt het nid chönne entfärnt wärde. "
   },
   "diffAfter": {
     "source": "After",
-    "translation": ""
+    "translation": "Nochhär"
   },
   "diffBefore": {
     "source": "Before",
-    "translation": ""
+    "translation": "Vorhär"
   },
   "diffModeAfter": {
     "source": "After",
-    "translation": ""
+    "translation": "Nochhär"
   },
   "diffModeInline": {
     "source": "Inline",
-    "translation": ""
+    "translation": "Inline"
   },
   "diffModeLabel": {
     "source": "Display",
-    "translation": ""
+    "translation": "Aazaig"
   },
   "diffModeSideBySide": {
     "source": "Both",
-    "translation": ""
+    "translation": "Beidi"
   },
   "diffSidebarTitle": {
     "source": "Changes",
-    "translation": ""
+    "translation": "Änderige"
   },
   "diffSidebarTourText": {
     "source": "Displays all the changes made during editing.",
-    "translation": ""
+    "translation": "Zeigt alli Änderige wo bim Bearbeite gmacht worde sin aa."
   },
   "diffStatusAdded": {
     "source": "Added",
-    "translation": ""
+    "translation": "Drzuegfüegt"
   },
   "diffStatusDeleted": {
     "source": "Deleted",
-    "translation": ""
+    "translation": "Glöscht"
   },
   "diffStatusEdited": {
     "source": "Edited",
-    "translation": ""
+    "translation": "Bearbeitet"
   },
   "diffStatusUnchanged": {
     "source": "Unchanged",
-    "translation": ""
+    "translation": "Unveränderet"
   },
   "downloadLogsButton": {
     "source": "Download Logs",
@@ -1069,39 +1069,39 @@
   },
   "duplicate": {
     "source": "Duplicate",
-    "translation": "Dupliquer"
+    "translation": "Dupliziere"
   },
   "duplicateError": {
     "source": "The items could not be duplicated.",
-    "translation": "Les éléments n'ont pas pu être dupliqués."
+    "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
     "source": "Edit...",
-    "translation": "Modifier"
+    "translation": "Bearbeite"
   },
   "editFormBlockAdd": {
     "source": "Add @label",
-    "translation": ""
+    "translation": "@label drzuefüege"
   },
   "editFormBlockEdit": {
     "source": "Edit @label",
-    "translation": ""
+    "translation": "@label bearbeite"
   },
   "editFormBlockTranslate": {
     "source": "Translate @label (@language)",
-    "translation": ""
+    "translation": "@label übersetze (@language)"
   },
   "editFormEntityEdit": {
     "source": "Edit @label",
-    "translation": ""
+    "translation": "\"@label\" bearbeite"
   },
   "editFormEntityTranslate": {
     "source": "Translate \"@label\" (@language)",
-    "translation": ""
+    "translation": "\"@label\" übersetze (@language)"
   },
   "editIndicatorLabel": {
     "source": "Edit blocks",
-    "translation": "Modifier les éléments"
+    "translation": "Elemänt bearbeite"
   },
   "editIndicatorLabelReview": {
     "source": "Review changes",
@@ -1113,7 +1113,7 @@
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
-    "translation": ""
+    "translation": "Fäld «@name» bearbeite"
   },
   "editableFieldDiscard": {
     "source": "Discard",
@@ -1121,11 +1121,11 @@
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
-    "translation": ""
+    "translation": "<p>Zeigt dr Titel und Status vo dr aktuälle Sitte aa.</p><p>Klick uf dr Titel zum s'Sitte-Bearbeitsformular z'öffne.</p>"
   },
   "entityTitleTourTitle": {
     "source": "Page",
-    "translation": ""
+    "translation": "Sitte"
   },
   "errorCapturedMessage": {
     "source": "Error in \"@label\": @errorMessage",
@@ -1137,47 +1137,47 @@
   },
   "exitDescription": {
     "source": "Close editor without publishing",
-    "translation": "Fermer l’éditeur sans publier"
+    "translation": "Dr Editor zuemache ohni z'veröffentliche"
   },
   "exitTitle": {
     "source": "Close",
-    "translation": "Fermer"
+    "translation": "Zuemache"
   },
   "failedToConvert": {
     "source": "The block could not be converted.",
-    "translation": "L'élément n'a pas pu être converti."
+    "translation": "S'Elemänt het nid chönne konvertiert wärde. "
   },
   "failedToTransform": {
     "source": "The action \"@name\" could not be executed.",
-    "translation": "The action \"@name\" could not be executed."
+    "translation": "D'Aktion «@name» het nid chönne usgfüert wärde."
   },
   "fatalErrorButton": {
     "source": "Continue anyway...",
-    "translation": ""
+    "translation": "Trotzdem wiiterfahre..."
   },
   "fatalErrorText": {
     "source": "Unfortunately blökkli has encountered a fatal error which prevents it from working normally. You may be able to continue using it, but things may not work as expected.",
-    "translation": ""
+    "translation": "Leider het blökkli e schwäre Fähler gha wo s'normale Funktioniere verhinderet. Du chasch eventuell wiitermache, aber es chönnt sii, dass nid alles eso funktioniert wie's sött."
   },
   "fatalErrorTitle": {
     "source": "blökkli has stopped working",
-    "translation": ""
+    "translation": "blökkli het ufghört z'funktioniere"
   },
   "featureHelpShortcuts": {
     "source": "Shortcuts",
-    "translation": ""
+    "translation": "Taschtekombinatione"
   },
   "featureHelpTitle": {
     "source": "Help",
-    "translation": ""
+    "translation": "Hilf"
   },
   "feature_add-list_description": {
     "source": "Provides the container to render a list of blocks to add or add actions.",
-    "translation": "Fournit le conteneur pour afficher une liste de blocs à ajouter ou d'actions."
+    "translation": "Stellt dr Container bereit zum e Lischt vo Blöck oder Aktione zum drzuefüege z'rendere."
   },
   "feature_add-list_label": {
     "source": "Add List",
-    "translation": "Liste d'ajout"
+    "translation": "Drzuefüeg-Lischt"
   },
   "feature_add-list_setting_hideDisabledBlocks_description": {
     "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
@@ -1197,55 +1197,55 @@
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
-    "translation": "Analyse les blocs et la page pour le SEO, l'accessibilité, etc."
+    "translation": "Blöck und Sitte analysiere für SEO, Barrierefreiheit usw."
   },
   "feature_analyze_label": {
     "source": "Analyze",
-    "translation": "Analyser"
+    "translation": "Analysiere"
   },
   "feature_anchors_description": {
     "source": "Displays indicators for blocks with anchor IDs",
-    "translation": "Affiche des indicateurs pour les blocs avec des ID d'ancre"
+    "translation": "Zeigt Markierige für Blöck mit Anker-IDs aa."
   },
   "feature_anchors_label": {
     "source": "Anchors",
-    "translation": "Ancres"
+    "translation": "Anker"
   },
   "feature_artboard_description": {
     "source": "Wraps the entire page in an artboard that can be zoomed and moved using the mouse.",
-    "translation": "Enveloppe toute la page dans une zone de travail qui peut être zoomée et déplacée avec la souris."
+    "translation": "Packt di ganzi Sitte in e Zeichenflächi, wo mit dr Muus chamer zoome und verschiebe."
   },
   "feature_artboard_label": {
     "source": "Artboard",
-    "translation": "Zone de travail"
+    "translation": "Zeichenflächi"
   },
   "feature_artboard_setting_momentum_description": {
     "source": "Applies smooth animations when scrolling or zooming the artboard.",
-    "translation": "Applique des animations fluides lors du défilement ou du zoom de la zone de travail."
+    "translation": "Wendet sanfti Animatione aa bim Scrolle oder Zoome vo dr Zeichenflächi."
   },
   "feature_artboard_setting_momentum_label": {
     "source": "Use smooth scrolling",
-    "translation": "Utiliser le défilement fluide"
+    "translation": "Sanfts Scrolle verwände"
   },
   "feature_artboard_setting_persist_description": {
     "source": "Stores and restores the last position and zoom factor of the artboard.",
-    "translation": "Stocke et restaure la dernière position et le facteur de zoom de la zone de travail."
+    "translation": "Speicheret und stellt di letscht Position und dr Zoom-Faktor vo dr Zeichenflächi widerhär."
   },
   "feature_artboard_setting_persist_label": {
     "source": "Persist position and zoom",
-    "translation": "Conserver la position et le zoom"
+    "translation": "Position und Zoom speichere"
   },
   "feature_artboard_setting_scrollSpeed_label": {
     "source": "Artboard scroll speed",
-    "translation": "Vitesse de défilement de la zone de travail"
+    "translation": "Scrollgschwindigkeit vo dr Zeicheflächi"
   },
   "feature_assistant_description": {
     "source": "Provides a dynamic add block action to add one or more blocks generated by an AI assistant.",
-    "translation": "Fournit une action dynamique pour ajouter un ou plusieurs blocs générés par un assistant IA."
+    "translation": "Stellt e dynamischi Aktion bereit zum ei oder mehreri Blöck vom KI-Assischtänt z'generiere."
   },
   "feature_assistant_label": {
     "source": "Assistant",
-    "translation": "Assistant"
+    "translation": "Assischtänt"
   },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
@@ -1265,59 +1265,59 @@
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
-    "translation": "Fournit l'intégration du presse-papiers pour copier/coller des blocs existants ou coller du contenu pris en charge comme du texte ou des images."
+    "translation": "Stellt Zwüscheablag-Integration bereit zum bestehendi Blöck z'kopiere/iizfüege oder understützti Inhält wie Teggscht oder Bilder iizfüege."
   },
   "feature_clipboard_label": {
     "source": "Clipboard",
-    "translation": "Presse-papiers"
+    "translation": "Zwüscheablag"
   },
   "feature_clipboard_setting_openSidebarOnPaste_description": {
     "source": "Automatically opens the sidebar when pasting content from the clipboard.",
-    "translation": "Ouvre automatiquement l'encadré lors du collage de contenu depuis le presse-papiers."
+    "translation": "Macht d'Sitteleischte automatisch uf, wenn Inhält us dr Zwüscheablag iigfüegt wärde."
   },
   "feature_clipboard_setting_openSidebarOnPaste_label": {
     "source": "Open sidebar when pasting",
-    "translation": "Ouvrir l'encadré lors du collage"
+    "translation": "Sitteleischte bim Iifüege us dr Zwüscheablag ufmache"
   },
   "feature_command-palette_description": {
     "source": "Provides a command palette with search to access most UI features with a keyboard.",
-    "translation": "Fournit une palette de commandes avec recherche pour accéder à la plupart des fonctionnalités de l'interface avec le clavier."
+    "translation": "Stellt e Befehlspalette mit Suechfunktion bereit zum di meischte UI-Funktione mit dr Tastatuur z'verwände."
   },
   "feature_command-palette_label": {
     "source": "Command Palette",
-    "translation": "Palette de commandes"
+    "translation": "Befehlspalette"
   },
   "feature_comments_description": {
     "source": "Provides comment functionality for blocks.",
-    "translation": "Fournit la fonctionnalité de commentaire pour les blocs."
+    "translation": "Stellt Kommentarfunktionalität für Blöck bereit."
   },
   "feature_comments_label": {
     "source": "Comments",
-    "translation": "Commentaires"
+    "translation": "Kommentär"
   },
   "feature_conversions_description": {
     "source": "Provides block actions to convert one or more blocks to a different bundle.",
-    "translation": "Fournit des actions de bloc pour convertir un ou plusieurs blocs vers un type différent."
+    "translation": "Stellt Block-Aktione bereit zum ei oder mehreri Blöck in es anders Bundle z'konvertiere."
   },
   "feature_conversions_label": {
     "source": "Conversions",
-    "translation": "Conversions"
+    "translation": "Konvertierige"
   },
   "feature_debug_description": {
     "source": "Provides debugging functionality.",
-    "translation": "Fournit la fonctionnalité de débogage."
+    "translation": "Stellt Debug-Funktionalität bereit."
   },
   "feature_debug_label": {
     "source": "Debug",
-    "translation": "Débogage"
+    "translation": "Debug"
   },
   "feature_delete_description": {
     "source": "Provides an action to delete one or more blocks.",
-    "translation": "Fournit une action pour supprimer un ou plusieurs blocs."
+    "translation": "Stellt e Aktion bereit zum ei oder mehreri Blöck z'lösche."
   },
   "feature_delete_label": {
     "source": "Delete",
-    "translation": "Supprimer"
+    "translation": "Lösche"
   },
   "feature_dev-mode_description": {
     "source": "Feature enabled in development mode.",
@@ -1329,115 +1329,115 @@
   },
   "feature_diff_description": {
     "source": "Displays a diff of all changes in the edit state.",
-    "translation": "Affiche un différentiel de toutes les modifications dans l'état d'édition."
+    "translation": "Zeigt e Diff vo allne Änderige im Bearbeitszuestand aa."
   },
   "feature_diff_label": {
     "source": "Diff",
-    "translation": "Différences"
+    "translation": "Diff"
   },
   "feature_dragging-overlay_description": {
     "source": "Renders an overlay when dragging or placing a block.",
-    "translation": "Affiche une superposition lors du glissement ou du placement d'un bloc."
+    "translation": "Renderet es Overlay bim Ziehe oder Platziere von emne Block."
   },
   "feature_dragging-overlay_label": {
     "source": "Dragging Overlay",
-    "translation": "Superposition de glissement"
+    "translation": "Zieh-Overlay"
   },
   "feature_duplicate_description": {
     "source": "Provides an action to duplicate one or more blocks in place.",
-    "translation": "Fournit une action pour dupliquer un ou plusieurs blocs sur place."
+    "translation": "Stellt e Aktion bereit zum ei oder mehreri Blöck an Ort und Stell z'dupliziere."
   },
   "feature_duplicate_label": {
     "source": "Duplicate",
-    "translation": "Dupliquer"
+    "translation": "Dupliziere"
   },
   "feature_edit-form_description": {
     "source": "Listens to edit events and renders an iframe containing the edit form.",
-    "translation": "Écoute les événements d'édition et affiche une iframe contenant le formulaire d'édition."
+    "translation": "Losst uf Bearbeitigs-Events und renderet es iframe mit em Bearbeitigsformular."
   },
   "feature_edit-form_label": {
     "source": "Edit Form",
-    "translation": "Formulaire d'édition"
+    "translation": "Bearbeitigsformular"
   },
   "feature_edit_description": {
     "source": "Provides an action to edit a block.",
-    "translation": "Fournit une action pour modifier un bloc."
+    "translation": "Stellt e Aktion bereit zum e Block z'bearbeite."
   },
   "feature_edit_label": {
     "source": "Edit",
-    "translation": "Modifier"
+    "translation": "Bearbeite"
   },
   "feature_editable-field_description": {
     "source": "Implements a form overlay to edit a single field of a block.",
-    "translation": "Implémente une superposition de formulaire pour modifier un seul champ d'un bloc."
+    "translation": "Implementiert es Formular-Overlay zum es einzels Fäld von emne Block z'bearbeite."
   },
   "feature_editable-field_label": {
     "source": "Editable Field",
-    "translation": "Champ modifiable"
+    "translation": "Bearbeitbars Fäld"
   },
   "feature_editable-mask_description": {
     "source": "Provides a view option to hide non-editable parts of the page.",
-    "translation": "Fournit une option d'affichage pour masquer les parties non modifiables de la page."
+    "translation": "Stellt e Aasigsoptio bereit zum nid-bearbeitbari Teile vo dr Sitte z'verstecke."
   },
   "feature_editable-mask_label": {
     "source": "Editable Mask",
-    "translation": "Masque modifiable"
+    "translation": "Bearbeitigs-Maske"
   },
   "feature_entity-title_description": {
     "source": "Renders the title and status of the page entity.",
-    "translation": "Affiche le titre et le statut de l'entité de page."
+    "translation": "Renderet dr Titel und Status vo dr Sitte-Entität."
   },
   "feature_entity-title_label": {
     "source": "Entity Title",
-    "translation": "Titre de l'entité"
+    "translation": "Entitäts-Titel"
   },
   "feature_exit_description": {
     "source": "Provides a menu button to exit the editor without saving.",
-    "translation": "Fournit un bouton de menu pour quitter l'éditeur sans sauvegarder."
+    "translation": "Stellt e Menü-Button bereit zum dr Editor z'verloh ohni z'speichere."
   },
   "feature_exit_label": {
     "source": "Exit",
-    "translation": "Quitter"
+    "translation": "Verlo"
   },
   "feature_fragments_description": {
     "source": "Provides way to add content fragments defined by the frontend.",
-    "translation": "Permet d'ajouter des fragments de contenu définis par le frontend."
+    "translation": "Stellt e Möglichkeit bereit zum Inhaltsfragmänt vom Frontend z'definiere und drzuefüege."
   },
   "feature_fragments_label": {
     "source": "Fragments",
-    "translation": "Fragments"
+    "translation": "Fragmänt"
   },
   "feature_grid_description": {
     "source": "Provides a view option to render a grid.",
-    "translation": "Fournit une option d'affichage pour afficher une grille."
+    "translation": "Stellt e Aasigsoptio bereit zum es Raster aazzeige."
   },
   "feature_grid_label": {
     "source": "Grid",
-    "translation": "Grille"
+    "translation": "Raster"
   },
   "feature_help_description": {
     "source": "Provides a sidebar pane with helpful information on how to use blokkli.",
-    "translation": "Fournit un panneau d'encadré avec des informations utiles sur l'utilisation de blökkli."
+    "translation": "Stellt e Sitteleischte-Panel mit nützliche Informatione über d'Bedienig vo blökkli bereit."
   },
   "feature_help_label": {
     "source": "Help",
-    "translation": "Aide"
+    "translation": "Hilf"
   },
   "feature_history_description": {
     "source": "Implements support for history features (undo, redo, list of mutations).",
-    "translation": "Implémente le support des fonctionnalités d'historique (annuler, rétablir, liste des mutations)."
+    "translation": "Implementiert Understützig für Verlaufs-Funktione (Rückgängig, Widerhärstelle, Lischt vo Änderige)."
   },
   "feature_history_label": {
     "source": "History",
-    "translation": "Historique"
+    "translation": "Verlauf"
   },
   "feature_history_setting_useMouseButtons_description": {
     "source": "When enabled you can use the backwards/forwards buttons on your mouse to undo and redo.",
-    "translation": "Lorsque activé, vous pouvez utiliser les boutons arrière/avant de votre souris pour annuler et rétablir."
+    "translation": "Wenn aktiviert, chasch d'Zrugg/Vorwärts-Taschte vo dinere Muus zum Rückgängig mache und Widerhärstelle bruche."
   },
   "feature_history_setting_useMouseButtons_label": {
     "source": "Use mouse buttons for undo/redo",
-    "translation": "Utiliser les boutons de la souris pour annuler/rétablir"
+    "translation": "Muustaschte für Rückgängig/Wiederhärstelle bruche"
   },
   "feature_hover_description": {
     "source": "Renders a border around blocks that are currently being hovered.",
@@ -1449,167 +1449,167 @@
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
-    "translation": "Implémente une action de menu qui affiche une boîte de dialogue pour importer des blocs depuis une autre entité."
+    "translation": "Implementiert e Menü-Aktion wo e Dialog renderet zum Blöck vonere andere Entität z'importiere."
   },
   "feature_import-existing_label": {
     "source": "Import existing content",
-    "translation": "Importer du contenu existant"
+    "translation": "Bestehendi Inhält importiere"
   },
   "feature_import-existing_setting_showDialogWhenEmpty_description": {
     "source": "Displays the import dialog when starting blökkli if the page is empty.",
-    "translation": "Affiche la boîte de dialogue d'importation au démarrage de blökkli si la page est vide."
+    "translation": "Zeigt dr Importdialog bim Start vo blökkli aa, wenn d'Sitte leer isch."
   },
   "feature_import-existing_setting_showDialogWhenEmpty_label": {
     "source": "Show import dialog at start",
-    "translation": "Afficher la boîte de dialogue d'importation au démarrage"
+    "translation": "Importdialog bim Start aazeige wenn d'Sitte leer isch"
   },
   "feature_library_description": {
     "source": "Implements support for a block library to manage reusable blocks.",
-    "translation": "Implémente le support d'une bibliothèque de blocs pour gérer les blocs réutilisables."
+    "translation": "Implementiert Understützig für e Block-Bibliothek zum wiederverwändbare Blöck z'verwallte."
   },
   "feature_library_label": {
     "source": "Library",
-    "translation": "Bibliothèque"
+    "translation": "Bibliothek"
   },
   "feature_media-library_description": {
     "source": "Implements a media library to easily drag and drop media like images or videos.",
-    "translation": "Implémente une bibliothèque de médias pour glisser-déposer facilement des médias comme des images ou des vidéos."
+    "translation": "Implementiert e Medie-Bibliothek zum eifach Medie wie Bilder oder Videos per Drag-and-Drop iizfüege."
   },
   "feature_media-library_label": {
     "source": "Media Library",
-    "translation": "Bibliothèque de médias"
+    "translation": "Medie-Bibliothek"
   },
   "feature_multi-select_description": {
     "source": "Implements support for selecting multiple blocks using a select rectangle.",
-    "translation": "Implémente le support de la sélection de plusieurs blocs à l'aide d'un rectangle de sélection."
+    "translation": "Implementiert Understützig zum mehreri Blöck mit emne Uswahl-Rechteck z'markiere."
   },
   "feature_multi-select_label": {
     "source": "Multiselect",
-    "translation": "Sélection multiple"
+    "translation": "Merfachuswahl"
   },
   "feature_options_description": {
     "source": "Renders the options form for one or more blocks.",
-    "translation": "Affiche le formulaire d'options pour un ou plusieurs blocs."
+    "translation": "Renderet s'Optione-Formular für ei oder mehreri Blöck."
   },
   "feature_options_label": {
     "source": "Options",
-    "translation": "Options"
+    "translation": "Optione"
   },
   "feature_ownership_description": {
     "source": "Renders a large button to take ownership of the current edit state.",
-    "translation": "Affiche un grand bouton pour prendre la propriété de l'état d'édition actuel."
+    "translation": "Renderet e grosse Button zum dr Bsitz vom aktuälle Bearbeitszuestand z'übernäh."
   },
   "feature_ownership_label": {
     "source": "Ownership",
-    "translation": "Propriété"
+    "translation": "Bsitz"
   },
   "feature_preview-grant_description": {
     "source": "Provides a button to open a dialog with a QR code to preview the page on a smartphone.",
-    "translation": "Fournit un bouton pour ouvrir une boîte de dialogue avec un code QR pour prévisualiser la page sur un smartphone."
+    "translation": "Stellt e Button bereit zum e Dialog mit emne QR-Code z'öffne zum d'Sitte ufem Smartphone z'betrachte."
   },
   "feature_preview-grant_label": {
     "source": "Preview Grant",
-    "translation": "Accès à l'aperçu"
+    "translation": "Vorschau-Freigab"
   },
   "feature_preview_description": {
     "source": "Provides a button to open a preview in a new window.",
-    "translation": "Fournit un bouton pour ouvrir un aperçu dans une nouvelle fenêtre."
+    "translation": "Stellt e Button bereit zum e Vorschau in emne neue Fänschter z'öffne."
   },
   "feature_preview_label": {
     "source": "Preview",
-    "translation": "Aperçu"
+    "translation": "Vorschau"
   },
   "feature_proxy_view_description": {
     "source": "Displays the blocks as a structure in the preview.",
-    "translation": "Affiche les blocs sous forme de structure dans l'aperçu."
+    "translation": "Zeigt d'Blöck als Struktur in dr Vorschau aa."
   },
   "feature_proxy_view_label": {
     "source": "Proxy View",
-    "translation": "Vue structurée"
+    "translation": "Strukturaasicht"
   },
   "feature_publish_description": {
     "source": "Provides a menu button to publish the changes of the current entity.",
-    "translation": "Fournit un bouton de menu pour publier les modifications de l'entité actuelle."
+    "translation": "Stellt e Menü-Button bereit zum d'Änderige vo dr aktuälle Entität z'publiziere."
   },
   "feature_publish_label": {
     "source": "Publish",
-    "translation": "Publier"
+    "translation": "Publiziere"
   },
   "feature_publish_setting_closeAfterPublish_description": {
     "source": "Immediately closes the editor after successfully publishing or saving.",
-    "translation": "Ferme immédiatement l'éditeur après une publication ou une sauvegarde réussie."
+    "translation": "Schliesst dr Editor sofort noch em erfolgriche Publiziere oder Speichere."
   },
   "feature_publish_setting_closeAfterPublish_label": {
     "source": "Close editor after publishing",
-    "translation": "Fermer l'éditeur après publication"
+    "translation": "Editor noch em Publiziere schliesse"
   },
   "feature_responsive-preview_description": {
     "source": "Provides a responsive preview of the current edit state in an iframe.",
-    "translation": "Fournit un aperçu responsive de l'état d'édition actuel dans une iframe."
+    "translation": "Stellt e responsivi Vorschau vom aktuälle Bearbeitszuestand in emne iframe bereit."
   },
   "feature_responsive-preview_label": {
     "source": "Responsive Preview",
-    "translation": "Aperçu responsive"
+    "translation": "Responsivi Vorschau"
   },
   "feature_revert_description": {
     "source": "Provides a menu button to revert all changes done on the current entity.",
-    "translation": "Fournit un bouton de menu pour annuler toutes les modifications effectuées sur l'entité actuelle."
+    "translation": "Stellt e Menü-Button bereit zum alli Änderige vo dr aktuälle Entität rückgängig z'mache."
   },
   "feature_revert_label": {
     "source": "Revert",
-    "translation": "Annuler"
+    "translation": "Zruggsetze"
   },
   "feature_search_description": {
     "source": "Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.",
-    "translation": "Fournit une superposition avec raccourci pour rechercher des blocs sur la page actuelle ou du contenu existant à ajouter en tant que blocs."
+    "translation": "Stellt es Overlay mit Shortcut bereit zum uf dr aktuälle Sitte noch Blöck z'sueche oder bestehendi Inhält als Blöck drzuefüege."
   },
   "feature_search_label": {
     "source": "Search",
-    "translation": "Rechercher"
+    "translation": "Sueche"
   },
   "feature_selection_description": {
     "source": "Renders an overlay that highlights the selected blocks.",
-    "translation": "Affiche une superposition qui met en évidence les blocs sélectionnés."
+    "translation": "Renderet es Overlay wo di usgwählte Blöck hervorhebt."
   },
   "feature_selection_label": {
     "source": "Selection",
-    "translation": "Sélection"
+    "translation": "Uswahl"
   },
   "feature_settings_description": {
     "source": "Provides a menu button to display a settings dialog.",
-    "translation": "Fournit un bouton de menu pour afficher une boîte de dialogue de paramètres."
+    "translation": "Stellt e Menü-Button bereit zum e Iistelligs-Dialog aazzeige."
   },
   "feature_settings_label": {
     "source": "Settings",
-    "translation": "Paramètres"
+    "translation": "Iistellige"
   },
   "feature_settings_setting_lowPerformanceMode_description": {
     "source": "Reduces the animations and interactivity to a minimum for devices with low performance.",
-    "translation": "Réduit les animations et l'interactivité au minimum pour les appareils avec de faibles performances."
+    "translation": "Reduziert d'Animatione und Interaktivität uf es Minimum für Gerät mit tiefer Leistig."
   },
   "feature_settings_setting_lowPerformanceMode_label": {
     "source": "Enable low performance mode",
-    "translation": "Activer le mode basse performance"
+    "translation": "Energie-Sparmodus aktiviere"
   },
   "feature_settings_setting_resetAllSettings_label": {
     "source": "Reset all settings",
-    "translation": "Réinitialiser tous les paramètres"
+    "translation": "Alli Iistellige Zruggsetze"
   },
   "feature_settings_setting_useAnimations_description": {
     "source": "Animates UI elements like dialogs or drawers or interactions like drag and drop or scroll changes.",
-    "translation": "Anime les éléments de l'interface comme les boîtes de dialogue ou les tiroirs, ou les interactions comme le glisser-déposer ou les changements de défilement."
+    "translation": "Animiert UI-Elemänt wie Dialoge oder Schublade oder Interaktione wie Drag-and-Drop oder Scroll-Änderige."
   },
   "feature_settings_setting_useAnimations_label": {
     "source": "Use animations",
-    "translation": "Utiliser les animations"
+    "translation": "Animatione aazeige"
   },
   "feature_structure_description": {
     "source": "Provides a sidebar button to render a structured list of all blocks on the current page.",
-    "translation": "Fournit un bouton d'encadré pour afficher une liste structurée de tous les blocs sur la page actuelle."
+    "translation": "Stellt e Sitteleischte-Button bereit zum e strukturierti Lischt vo allne Blöck uf dr aktuälle Sitte z'rendere."
   },
   "feature_structure_label": {
     "source": "Structure",
-    "translation": "Structure"
+    "translation": "Struktur"
   },
   "feature_templates_description": {
     "source": "Add blocks from templates.",
@@ -1621,163 +1621,163 @@
   },
   "feature_theme_description": {
     "source": "Implements a theme editor.",
-    "translation": "Implémente un éditeur de thème."
+    "translation": "Implementiert e Theme-Editor."
   },
   "feature_theme_label": {
     "source": "Theme",
-    "translation": "Thème"
+    "translation": "Theme"
   },
   "feature_touch-action-bar_description": {
     "source": "Renders a button on touch devices to cancel touch actions.",
-    "translation": "Affiche un bouton sur les appareils tactiles pour annuler les actions tactiles."
+    "translation": "Renderet e Button uf Touch-Gerät zum Touch-Aktione abzbräche."
   },
   "feature_touch-action-bar_label": {
     "source": "Touch Action Bar",
-    "translation": "Barre d'actions tactiles"
+    "translation": "Touch-Aktionsleischte"
   },
   "feature_tour_description": {
     "source": "Provides a tour overlay to get to know the editor.",
-    "translation": "Fournit une superposition de visite guidée pour découvrir l'éditeur."
+    "translation": "Stellt es Tour-Overlay bereit zum dr Editor kennezlehrne."
   },
   "feature_tour_label": {
     "source": "Tour",
-    "translation": "Visite guidée"
+    "translation": "Tour"
   },
   "feature_transform_description": {
     "source": "Provides integration for block transform plugins.",
-    "translation": "Fournit l'intégration pour les plugins de transformation de blocs."
+    "translation": "Stellt Integration für Block-Transform-Plugins bereit."
   },
   "feature_transform_label": {
     "source": "Transform",
-    "translation": "Transformer"
+    "translation": "Transform"
   },
   "feature_translations_description": {
     "source": "Adds support for block translations.",
-    "translation": "Ajoute le support des traductions de blocs."
+    "translation": "Füegt Understützig für Block-Übersetzige hinzu."
   },
   "feature_translations_label": {
     "source": "Translations",
-    "translation": "Traductions"
+    "translation": "Übersetzige"
   },
   "feature_validations_description": {
     "source": "Provides a sidebar pane to render validations.",
-    "translation": "Fournit un panneau d'encadré pour afficher les validations."
+    "translation": "Stellt es Sitteleischte-Panel bereit zum Validierige z'rendere."
   },
   "feature_validations_label": {
     "source": "Validations",
-    "translation": "Validations"
+    "translation": "Validierige"
   },
   "fieldIsRequired": {
     "source": "This field is required",
-    "translation": "Ce champ est obligatoire"
+    "translation": "Das Fäld dörf nid leer sii"
   },
   "fragmentsAddFragmentAction": {
     "source": "Fragment",
-    "translation": ""
+    "translation": "Fragmänt drzuefüege"
   },
   "fragmentsAddFragmentDescription": {
     "source": "<p>Drag the icon into the page to add a fragment block.</p><p>Fragments are reusable blocks that always render the same content.</p>",
-    "translation": ""
+    "translation": "<p>Zieh s'Symbol in d'Sitte zum e Fragmänt-Block drzuefüege.</p><p>Fragmänt sin wiederverwändbare Blöck wo immer dr gliich Inhalt renderet.</p>"
   },
   "fragmentsPlaceDialogLead": {
     "source": "Select a block fragment to add to the page.",
-    "translation": ""
+    "translation": "Wähl es Block-Fragmänt us zum's zur Sitte drzuefüege."
   },
   "fragmentsPlaceDialogSearchLabel": {
     "source": "Filter fragments",
-    "translation": ""
+    "translation": "Fragmänt filtere"
   },
   "fragmentsPlaceDialogSearchPlaceholder": {
     "source": "Search fragments",
-    "translation": ""
+    "translation": "Fragmänt sueche"
   },
   "fragmentsPlaceDialogSubmitButton": {
     "source": "Add selected fragment",
-    "translation": ""
+    "translation": "Usgwählts Fragmänt drzuefüege"
   },
   "fragmentsPlaceDialogTitle": {
     "source": "Add fragment block",
-    "translation": ""
+    "translation": "Fragmänt-Block drzuefüege"
   },
   "gridHide": {
     "source": "Hide grid",
-    "translation": "Masquer la grille"
+    "translation": "Spalte verstecke"
   },
   "gridShow": {
     "source": "Show grid",
-    "translation": "Afficher la grille"
+    "translation": "Spalte aazeige"
   },
   "gridToggle": {
     "source": "Toggle grid",
-    "translation": ""
+    "translation": "Spalte aazeige"
   },
   "gridTourText": {
     "source": "Display a layout grid overlay on top of the page.",
-    "translation": ""
+    "translation": "Zeigt es Layout-Raster-Overlay über dr Sitte aa."
   },
   "helpTourText": {
     "source": "Shows a list of available shortcuts.",
-    "translation": ""
+    "translation": "Zeigt e Lischt vo verfüegbare Shortcuts aa."
   },
   "history": {
     "source": "History",
-    "translation": "Historique"
+    "translation": "Ändergie"
   },
   "historyCurrentRevision": {
     "source": "Current revision",
-    "translation": "Révision actuelle"
+    "translation": "Aktuelli Revision"
   },
   "historyEmpty": {
     "source": "There are now changes yet.",
-    "translation": ""
+    "translation": "S'git no keini Änderige."
   },
   "historyRedo": {
     "source": "Redo",
-    "translation": ""
+    "translation": "Wiederhole"
   },
   "historyRedoTourText": {
     "source": "Redo the previous change.",
-    "translation": ""
+    "translation": "Di vorig Änderig widerhärstelle."
   },
   "historyShowMore": {
     "source": "Show @count more",
-    "translation": "@count autres à afficher"
+    "translation": "@count meeh aazeige"
   },
   "historyTourText": {
     "source": "See a list of all changes made so far and switch back and forth between changes.",
-    "translation": ""
+    "translation": "Zeigt e Lischt vo allne bisher gmachte Änderige aa und wächsle zwüsche de Änderige hin und här."
   },
   "historyUndo": {
     "source": "Undo",
-    "translation": ""
+    "translation": "Rückgängig"
   },
   "historyUndoTourText": {
     "source": "Undo the last change.",
-    "translation": ""
+    "translation": "Di letscht Änderig rückgängig mache."
   },
   "importExistingDescription": {
     "source": "Import from an existing page",
-    "translation": "Importer d’une page existante"
+    "translation": "Von enere bestehende Sitte importiere"
   },
   "importExistingDialogLead": {
     "source": "Import content from an existing page. The items will be added to the end of the list. This action can be undone.",
-    "translation": "Importez du contenu d’une page existante. Les éléments seront ajoutés à la fin de la liste. Cette action peut être annulée."
+    "translation": "Inhält chönne vonere bestehende Sitte importiert wärde. Die Elemänt wärde am Ändi vo dr lischte denn drzuegfüegt. Die Aktion chame nid ruckgängig mache. "
   },
   "importExistingDialogSubmit": {
     "source": "Import content",
-    "translation": "Importer le contenu"
+    "translation": "Inhält importiere"
   },
   "importExistingDialogTitle": {
     "source": "Import from existing page",
-    "translation": "Importer d’une page existante"
+    "translation": "Vonere bestehende Sitte importiere"
   },
   "importExistingError": {
     "source": "Content could not be imported.",
-    "translation": "Le contenu n’a pas pu être importé."
+    "translation": "D'Inhält hän nid chönne übernoh wärde"
   },
   "importExistingFieldsLabel": {
     "source": "Which content would you like to import?",
-    "translation": "Quel contenu souhaitez-vous importer ?"
+    "translation": "Weli Inhält sölle importiert wärde?"
   },
   "importExistingPagesTitle": {
     "source": "Select page",
@@ -1785,11 +1785,11 @@
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",
-    "translation": "Contenu importé avec succès."
+    "translation": "Inhält erfolgriich importiert"
   },
   "importExistingTitle": {
     "source": "Import...",
-    "translation": "Importer..."
+    "translation": "Importiere..."
   },
   "interactionLayerOff": {
     "source": "Show interaction layers",
@@ -1801,51 +1801,51 @@
   },
   "libraryAdd": {
     "source": "Add to library...",
-    "translation": "Ajouter à la bibliothèque"
+    "translation": "Zur Bibliothek drzuefüege"
   },
   "libraryAddDescription": {
     "source": "<p>Add a reusable block from the block library. Changes to that block will become visible on all pages.</p>",
-    "translation": ""
+    "translation": "E wiederverwändbare Block us dr Block-Bibliothek drzuefüege."
   },
   "libraryAddFromLibrary": {
     "source": "From library",
-    "translation": ""
+    "translation": "Us dr Bibliothek drzuefüege"
   },
   "libraryDetach": {
     "source": "Detach from library",
-    "translation": ""
+    "translation": "Von der Bibliothek loslöse"
   },
   "libraryDialogDescriptionLabel": {
     "source": "Description",
-    "translation": "Description"
+    "translation": "Beschriibig"
   },
   "libraryDialogLead": {
     "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
-    "translation": "En ajoutant un élément à la bibliothèque, vous pouvez l’utiliser sur plusieurs pages à la fois. Les modifications apportées à cet élément seront alors immédiatement publiées sur toutes les pages."
+    "translation": "Wenn es Elemänt in dr Bibliothek isch, cha das Elemänt uf mehrere Sitte gliichzittig brucht wärde. D'Änderige an däm Elemänt wärde denn sofort uf allne Sitte publiziert. "
   },
   "libraryDialogReusableInfo": {
     "source": "The library item will be available for placement on other pages once this page has been published.",
-    "translation": ""
+    "translation": "S'Bibliotheks-Elemänt wird verfüegbar für d'Platzierig uf andere Sitte, sobald die Sitte publiziert worde isch."
   },
   "libraryDialogSubmit": {
     "source": "Add to library",
-    "translation": "Ajouter à la bibliothèque"
+    "translation": "Zur Bibliothe drzuefüege"
   },
   "libraryDialogTitle": {
     "source": "Add to library",
-    "translation": "Ajouter à la bibliothèque"
+    "translation": "Zur Bibliothe drzuefüege"
   },
   "libraryDialogTitleInputPlaceholder": {
     "source": "e.g. Teaser Campaign 2024",
-    "translation": "Ex. : Teaser campagne 2023"
+    "translation": "z.B. Teaser Kampagne 2023"
   },
   "libraryError": {
     "source": "Failed to add block to library.",
-    "translation": "L'élément n’a pas pu être rendu réutilisable."
+    "translation": "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
   },
   "libraryItemEditOverlayBack": {
     "source": "Back to page",
-    "translation": ""
+    "translation": "Zrugg zur Sitte"
   },
   "libraryItemEditOverlayBackWithPage": {
     "source": "Back to \"@label\"",
@@ -1853,27 +1853,27 @@
   },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",
-    "translation": ""
+    "translation": "Wiederverwändbare Block bearbeite"
   },
   "libraryPlaceBundleSelectLabel": {
     "source": "Bundle",
-    "translation": ""
+    "translation": "Bundle"
   },
   "libraryPlaceDialogLead": {
     "source": "Select a reusable block from the library to add it to your layout. You can detach the block later.",
-    "translation": ""
+    "translation": "Wähl e wiederverwändbare Block us dr Bibliothek zum dä drzuefüege. Dr Block cha spöter wider entfärnt wärde. "
   },
   "libraryPlaceDialogSubmit": {
     "source": "Add reusable block",
-    "translation": ""
+    "translation": "E widerverwändbare Block drzuefüege"
   },
   "libraryPlaceDialogTitle": {
     "source": "Add block from library",
-    "translation": ""
+    "translation": "Block us dr Bibliothek drzuefüege"
   },
   "libraryPreviewLabel": {
     "source": "Preview",
-    "translation": "Aperçu"
+    "translation": "Vorschau"
   },
   "manageSchedule": {
     "source": "Manage schedule...",
@@ -1881,35 +1881,35 @@
   },
   "maskHide": {
     "source": "Hide non-editable areas",
-    "translation": "Masquer les champs de contenu"
+    "translation": "Inhaltsfälder verstecke"
   },
   "maskShow": {
     "source": "Show non-editable areas",
-    "translation": "Afficher les champs de contenu"
+    "translation": "Inhaltsfelder aazeige"
   },
   "maskToggle": {
     "source": "Toggle non-editable areas",
-    "translation": ""
+    "translation": "Inhaltsfelder aazeige"
   },
   "maskTourText": {
     "source": "Toggle between showing or hiding non-editable parts of the page.",
-    "translation": ""
+    "translation": "Wächsle zwüsche Aazeige oder Verstecke vo nid-bearbeitbare Teile vo dr Sitte."
   },
   "mediaLibrary": {
     "source": "Media Library",
-    "translation": ""
+    "translation": "Mediebibliothek"
   },
   "mediaLibraryReplaceFailed": {
     "source": "Failed to replace media.",
-    "translation": ""
+    "translation": "Medie het nid chönne ersetzt wärde."
   },
   "mediaLibraryReplaceMedia": {
     "source": "Replace @field",
-    "translation": ""
+    "translation": "@field ersetze"
   },
   "mediaLibraryTourText": {
     "source": "Search for media like images and drag and drop them into the page.",
-    "translation": ""
+    "translation": "Suech noch Medie wie Bilder und zieh si per Drag-and-Drop in d'Sitte."
   },
   "mediaSelectConfirm": {
     "source": "Use selected",
@@ -1921,7 +1921,7 @@
   },
   "multipleItemsLabel": {
     "source": "Items",
-    "translation": "Éléments"
+    "translation": "Elemänt"
   },
   "nameDescription": {
     "source": "Name / Description",
@@ -1937,19 +1937,19 @@
   },
   "optionBkVisibleLanguagesAll": {
     "source": "All languages",
-    "translation": ""
+    "translation": "Alli Sproche"
   },
   "optionsCommand.selectCheckboxValue": {
     "source": "Select \"@value\" in \"@option\"",
-    "translation": ""
+    "translation": "«@value» in «@option» uswähle"
   },
   "optionsCommand.setOption": {
     "source": "Set option \"@option\" to \"@value\"",
-    "translation": ""
+    "translation": "Option «@option» «@value» setze"
   },
   "optionsCommand.unselectCheckboxValue": {
     "source": "Unselect \"@value\" in \"@option\"",
-    "translation": ""
+    "translation": "«@value» in «@option» abwähle"
   },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
@@ -1957,79 +1957,79 @@
   },
   "ownershipError": {
     "source": "Error in assigning",
-    "translation": "Erreur lors de l’attribution"
+    "translation": "Fähler bim Zuewiise"
   },
   "ownershipNote": {
     "source": "This page is currently being edited by @name. Changes can only be made by one person at a time.",
-    "translation": "Cette page est actuellement en cours de modification par @name. Les modifications ne peuvent être effectuées que par une personne à la fois."
+    "translation": "Diese Sitte wird aktuell vo @name bearbeitet. Änderige chönne nur vo einere Person glichzittig gmacht wärde. "
   },
   "ownershipSuccess": {
     "source": "You are now the owner.",
-    "translation": "Vous en êtes maintenant le propriétaire."
+    "translation": "Du bisch jetzt dr Bsitzer."
   },
   "ownershipTakeOwnership": {
     "source": "Assign to me",
-    "translation": "Me l’attribuer"
+    "translation": "Mir zuewiise"
   },
   "pageIsNotPublished": {
     "source": "Page is not published",
-    "translation": "La page n’est pas publiée"
+    "translation": "Die Sitte isch nid publiziert"
   },
   "pageIsPublished": {
     "source": "Page is published",
-    "translation": "La page est publiée"
+    "translation": "Die Sitte isch Publiziert"
   },
   "pageIsPublishedWithPendingChanges": {
     "source": "Page is published (changes pending)",
-    "translation": "La page est publiée (modifications en attente)"
+    "translation": "Die Sitte isch publiziert (es sin aber no Änderige usstehend)"
   },
   "paste": {
     "source": "Paste",
-    "translation": ""
+    "translation": "Iifüege"
   },
   "previewDialogLead": {
     "source": "Scan the QR code with your smartphone to open the preview.",
-    "translation": "Scannez le code QR avec votre smartphone pour ouvrir l’aperçu."
+    "translation": "Scan dr QR-Code zum ufem Smartphone d'Vorschau aaluege. "
   },
   "previewDialogTitle": {
     "source": "Preview with smartphone",
-    "translation": "Aperçu avec smartphone"
+    "translation": "Vorschau mitem Smartphone"
   },
   "previewNewWindow": {
     "source": "Preview (new window)",
-    "translation": "Aperçu (nouvelle fenêtre)"
+    "translation": "Vorschau (neus Fänschter)"
   },
   "previewNewWindowTourText": {
     "source": "Opens a preview of the current changes in a new window.",
-    "translation": ""
+    "translation": "Macht e Vorschau vo de aktuälle Änderige in emne neue Fänschter uf."
   },
   "previewQrCodeText": {
     "source": "You can also copy the link and share it.",
-    "translation": ""
+    "translation": "Dä Link chame au kopiere und teile."
   },
   "previewWithSmartphone": {
     "source": "Preview (with smartphone)",
-    "translation": "Aperçu (avec smartphone)"
+    "translation": "Vorschau (mitem Smartphone)"
   },
   "previewWithSmartphoneTourText": {
     "source": "Shows a QR code to quickly open a preview of the changes with your smartphone.",
-    "translation": ""
+    "translation": "Zeigt e QR-Code aa zum schnäll e Vorschau vo de Änderige mitem Smartphone z'öffne."
   },
   "proxyViewHide": {
     "source": "Show content preview",
-    "translation": ""
+    "translation": "Inhaltsvorscha aazeige"
   },
   "proxyViewShow": {
     "source": "Show structure view",
-    "translation": ""
+    "translation": "Strukturaasicht aazeige"
   },
   "proxyViewToggle": {
     "source": "Toggle structure view",
-    "translation": ""
+    "translation": "Strukturaasicht umschalte"
   },
   "proxyViewTourText": {
     "source": "Displays the content blocks as a structured view.",
-    "translation": ""
+    "translation": "Zeigt d'Inhaltblöck als strukturierti Aasicht aa."
   },
   "publishAlreadyScheduledDescription": {
     "source": "This page is already scheduled for publishing",
@@ -2037,11 +2037,11 @@
   },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
-    "translation": ""
+    "translation": "Publiziere & Zuemache"
   },
   "publishAndCloseLabelUnpublished": {
     "source": "Save & Close",
-    "translation": ""
+    "translation": "Speichere & Zuemache"
   },
   "publishCurrentPage": {
     "source": "Current page",
@@ -2057,7 +2057,7 @@
   },
   "publishDescription": {
     "source": "Publish all changes.",
-    "translation": "Rendre toutes les modifications publiques"
+    "translation": "Alli änderige öffentlich mache."
   },
   "publishDescriptionScheduled": {
     "source": "View or change the scheduled publication",
@@ -2065,23 +2065,23 @@
   },
   "publishDescriptionUnpublished": {
     "source": "Save all changes while keeping page unpublished",
-    "translation": ""
+    "translation": "Alli Änderige speichere ohni d'Sitte z'publiziere"
   },
   "publishDialogTitle": {
     "source": "Publish changes",
-    "translation": ""
+    "translation": "Änderige publiziere"
   },
   "publishError": {
     "source": "Changes could not be published.",
-    "translation": "Les modifications n’ont pas pu être publiées."
+    "translation": "D'Änderige hän nid chönne publiziert wärde."
   },
   "publishLabel": {
     "source": "Publish",
-    "translation": "Publier"
+    "translation": "Publiziere"
   },
   "publishLabelUnpublished": {
     "source": "Save",
-    "translation": ""
+    "translation": "Speichere"
   },
   "publishManageSchedule": {
     "source": "Manage scheduling",
@@ -2165,7 +2165,7 @@
   },
   "publishRevisionLogMessage": {
     "source": "Change description",
-    "translation": "Description des modifications"
+    "translation": ""
   },
   "publishRevisionLogMessageDescription": {
     "source": "Briefly describe the changes made",
@@ -2217,7 +2217,7 @@
   },
   "publishSuccess": {
     "source": "Changes published successfully.",
-    "translation": "Modifications publiées avec succès."
+    "translation": "Änderige erfolgriich publiziert."
   },
   "publishSuccessfullyPublished": {
     "source": "Successfully published",
@@ -2241,43 +2241,43 @@
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",
-    "translation": ""
+    "translation": "Benutzerdefiniert"
   },
   "responsivePreviewTitle": {
     "source": "Responsive Preview",
-    "translation": ""
+    "translation": "Responsivi Vorschau"
   },
   "responsivePreviewTourText": {
     "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
-    "translation": ""
+    "translation": "Lueg wie dini Änderige uf chliinere Bildschirm usgsähn, wie z.B. Smartphones. Klick uf dr «Ablöse»-Button zum zusätzlichi Viewport-Grösse uswähle z'chönne."
   },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
-    "translation": "Cela supprimera toutes les modifications et restaurera l’état actuellement publié. Cette action est irréversible."
+    "translation": "Alli Änderige wärde glöscht und dr jetzt publizierti Zuestand wird wider härgstellt. Die Aktion chame nid rückgängig mache. "
   },
   "revertDialogSubmit": {
     "source": "Discard changes",
-    "translation": "Annuler les modifications"
+    "translation": "Änderige verwärfe"
   },
   "revertDialogTitle": {
     "source": "Irrevocably discard changes",
-    "translation": "Annuler les modifications de façon irréversible"
+    "translation": "Änderige ändgültig verwärfe. "
   },
   "revertError": {
     "source": "Changes could not be discarded.",
-    "translation": "Les modifications n’ont pas pu être annulées."
+    "translation": "D'Änderige hän nid chönne verworfe wärde."
   },
   "revertMenuDescription": {
     "source": "Restore currently published state",
-    "translation": "Restaurer l’état actuellement publié"
+    "translation": "Dr aktuell publizierti Stand widerhärstelle."
   },
   "revertMenuTitle": {
     "source": "Discard...",
-    "translation": "Annuler..."
+    "translation": "Verwärfe..."
   },
   "revertSuccess": {
     "source": "All changes have been discarded.",
-    "translation": "Toutes les modifications ont été annulées."
+    "translation": "Alli Änderige sin glöcht worde."
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
@@ -2285,15 +2285,15 @@
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",
-    "translation": "Aucun résultat trouvé"
+    "translation": "Keini Resultat gfunde"
   },
   "searchBoxOnThisPage": {
     "source": "On this page",
-    "translation": "Sur cette page"
+    "translation": "Uf dere Sitte"
   },
   "searchBoxPlaceholder": {
     "source": "Enter search term",
-    "translation": "Entrer un terme de recherche"
+    "translation": "Suechbegriff iigeh"
   },
   "searchContentReplace": {
     "source": "Replace @field",
@@ -2305,11 +2305,11 @@
   },
   "searchToolbarLabel": {
     "source": "Search content",
-    "translation": "Rechercher des contenus"
+    "translation": "Inhält sueche"
   },
   "searchTourText": {
     "source": "Quickly find blocks on the current page or existing content to drag and drop as blocks into the page.",
-    "translation": ""
+    "translation": "Find schnäll Blöck uf dr aktuälle Sitte oder bestehendi Inhält zum si als Blöck in d'Sitte z'zieh."
   },
   "selectAllBlocks": {
     "source": "Select all blocks",
@@ -2317,7 +2317,7 @@
   },
   "selectAllOfBundle": {
     "source": "Select all \"@bundle\" blocks",
-    "translation": ""
+    "translation": "Alli «@bundle»-Blöck uswähle"
   },
   "selectedIsNew": {
     "source": "New",
@@ -2325,95 +2325,95 @@
   },
   "settingsAdvanced": {
     "source": "Advanced",
-    "translation": ""
+    "translation": "Erwitteret"
   },
   "settingsAppearance": {
     "source": "Appearance",
-    "translation": ""
+    "translation": "Darstellig"
   },
   "settingsArtboard": {
     "source": "Artboard",
-    "translation": ""
+    "translation": "Zeichenflächi"
   },
   "settingsBehaviour": {
     "source": "Behaviour",
-    "translation": "Comportement"
+    "translation": "Verhalte"
   },
   "settingsBeta": {
     "source": "New Features",
-    "translation": ""
+    "translation": "Neui Funktione"
   },
   "settingsDialogTitle": {
     "source": "Change settings",
-    "translation": "Paramètres"
+    "translation": "Iistellige"
   },
   "settingsMenuDescription": {
     "source": "Personal settings for the editor",
-    "translation": "Paramètres personnels pour l’éditeur"
+    "translation": "Persönlichi Iistellige füre Editor"
   },
   "settingsMenuTitle": {
     "source": "Settings",
-    "translation": "Paramètres"
+    "translation": "Iistellige"
   },
   "shortcutGroupBlocks": {
     "source": "Blocks",
-    "translation": ""
+    "translation": "Blöck"
   },
   "shortcutGroupGeneral": {
     "source": "General",
-    "translation": ""
+    "translation": "Allgemein"
   },
   "shortcutGroupUi": {
     "source": "UI",
-    "translation": ""
+    "translation": "Oberflächi"
   },
   "sidebar.hide": {
     "source": "Hide @title",
-    "translation": ""
+    "translation": "@title usblände"
   },
   "sidebar.show": {
     "source": "Show @title",
-    "translation": ""
+    "translation": "@title aazeige"
   },
   "singleComment": {
     "source": "comment",
-    "translation": ""
+    "translation": "Kommentar"
   },
   "stateUnavailableText": {
     "source": "This could be due to missing permissions or a temporary problem. Please try again later.",
-    "translation": ""
+    "translation": "Das chönnt a fehlende Berechtigung oder emne temporäre Problem liege. Bitte versuech's spöter nomol."
   },
   "stateUnavailableTitle": {
     "source": "The edit state could not be loaded.",
-    "translation": ""
+    "translation": "Dr Bearbeitszuestand het nid chönne glade wärde."
   },
   "structureToolbarLabel": {
     "source": "Structure",
-    "translation": "Structure"
+    "translation": "Struktur"
   },
   "structureTourText": {
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
-    "translation": ""
+    "translation": "Zeigt e strukturierti Lischt vo allne Blöck uf dr aktuälle Sitte aa. Klick uf e belibige Block zum schnäll dohii z'springe."
   },
   "systemRequirementsDialogButton": {
     "source": "Continue anyway",
-    "translation": ""
+    "translation": "Trotzdem wiiterfahre"
   },
   "systemRequirementsDialogLead": {
     "source": "blökkli has detected that your browser does not meet one or more system requirements. For the best experience, please use a browser that supports all the listed requirements.",
-    "translation": ""
+    "translation": "blökkli het festgstellt, dass dii Browser ei oder mehreri Systemaforderige nid erfüllt. Für s'bescht Erläbnis, bruch bitte e Browser wo alli ufglischtete Aforderige understützt."
   },
   "systemRequirementsDialogText": {
     "source": "blökkli has been tested and optimized for the latest versions of Chrome, Firefox, Edge, and Safari. Features like WebGL are well supported, but they may sometimes be disabled for performance or security reasons.",
-    "translation": ""
+    "translation": "blökkli isch testet und optimiert worde für di neueschte Versione vo Chrome, Firefox, Edge und Safari. Funktione wie WebGL sin guet understützt, chönne aber mängmol us Leischtigs- oder Sicherheitsgründ deaktiviert sii."
   },
   "systemRequirementsDialogTitle": {
     "source": "System Requirements",
-    "translation": ""
+    "translation": "Systemaforderige"
   },
   "systemRequirementsWebglText": {
     "source": "blökkli uses WebGL for fast rendering of UI elements such as selected blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli will resort to fallback rendering, which is slower and lacks full feature support.",
-    "translation": ""
+    "translation": "blökkli brucht WebGL zum schnäll UI-Elemänt wie usgwählti Blöck und Drag-and-Drop-Indikatore z'rendere. Wenn WebGL nid understützt wird, wird blökkli uf Fallback-Rendering zruggriife, wo langsamer isch und nid alli Funktione understützt."
   },
   "templatesAddTemplate": {
     "source": "Template",
@@ -2557,11 +2557,11 @@
   },
   "theme": {
     "source": "Theme",
-    "translation": ""
+    "translation": "Farbe"
   },
   "themeTourText": {
     "source": "Change the colors of the theme and generate a theme file.",
-    "translation": ""
+    "translation": "Änderi d'Farbe vom Theme und generier e Theme-Datei."
   },
   "toggleInteractionLayers": {
     "source": "Toggle interaction layers",
@@ -2569,39 +2569,39 @@
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",
-    "translation": ""
+    "translation": "Platziere abbräche"
   },
   "touchBarFinishSelecting": {
     "source": "Finish selecting",
-    "translation": ""
+    "translation": "Merfachuswahl beände"
   },
   "tourDescription": {
     "source": "Explore the features of the editor",
-    "translation": ""
+    "translation": "Entdeck d'Funktione vom Editor"
   },
   "tourIntro": {
     "source": "Explore the most important features of the editor and learn how to get started using blökkli.",
-    "translation": ""
+    "translation": "Entdeck di wichtigschte Funktione vom Editor und lehr wie mer mit blökkli aafangt."
   },
   "tourLabel": {
     "source": "Take a tour",
-    "translation": ""
+    "translation": "Tour mache"
   },
   "tourNext": {
     "source": "Next",
-    "translation": ""
+    "translation": "Neggscht"
   },
   "tourPrev": {
     "source": "Previous",
-    "translation": ""
+    "translation": "Zrugg"
   },
   "tourStartButton": {
     "source": "Start the tour",
-    "translation": ""
+    "translation": "Tour starte"
   },
   "transformDialogButtonApply": {
     "source": "Apply changes",
-    "translation": ""
+    "translation": "Aawände"
   },
   "transformDialogButtonNewSuggestion": {
     "source": "New suggestion",
@@ -2609,51 +2609,51 @@
   },
   "transformDialogButtonPreview": {
     "source": "Preview",
-    "translation": ""
+    "translation": "Vorschau"
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",
-    "translation": ""
+    "translation": "Stattdässe Quellsproch bearbeite"
   },
   "translationsBannerText": {
     "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
-    "translation": ""
+    "translation": "Du bearbeitisch grad d'<strong>@language</strong>-Übersetztig. Gwüssi Funktione wie Drzuefüege, Verschiebe oder Lösche vo Blöck sin nid verfüegbar."
   },
   "translationsBatchTranslateMenuDescription": {
     "source": "Translate all blocks",
-    "translation": "Traduire tous les éléments"
+    "translation": "Alli Elemänt übersetze"
   },
   "translationsBatchTranslateMenuTitle": {
     "source": "Translate...",
-    "translation": "Traduire..."
+    "translation": "Übersetze..."
   },
   "translationsItemAction": {
     "source": "Translate",
-    "translation": "Traduire..."
+    "translation": "Übersetze..."
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
-    "translation": ""
+    "translation": "Wächsle schnäll zwüsche verfüegbare Übersetzige. E uusgrueti Sproch zeigt aa, dass dr Inhalt no nid übersetzt worde isch. E Klick druf macht s'Formular uf zum e neui Übersetztig für die Sproch z'erstelle."
   },
   "translationsTourTitle": {
     "source": "Translations",
-    "translation": ""
+    "translation": "Übersetzige"
   },
   "unexpectedMutationError": {
     "source": "An unexpected error happened.",
-    "translation": ""
+    "translation": "Es isch e unerwartete Fähler ufträte."
   },
   "validationsNoneFound": {
     "source": "No validation errors found.",
-    "translation": "Aucune erreur de validation trouvée."
+    "translation": "Keini Validierigsfähler gfunde."
   },
   "validationsToolbarLabel": {
     "source": "Validations",
-    "translation": "Validations"
+    "translation": "Validierige"
   },
   "validationsTourText": {
     "source": "See validation errors for content or structure on the current page.",
-    "translation": ""
+    "translation": "Lueg Validierigsfähler für Inhalt oder Struktur uf dr aktuälle Sitte aa."
   },
   "viewBannerReviewText": {
     "source": "You can view and add comments but cannot edit content.",

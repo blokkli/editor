@@ -3,9 +3,7 @@ import chalk from 'chalk'
 import { getSourceTexts, INTERNAL_TRANSLATIONS, LANGUAGES } from './extract'
 import { updateTranslationFile, readPoFile, updatePoKeys } from './po'
 
-program
-  .name('texts')
-  .description('Manage blökkli translation files')
+program.name('texts').description('Manage blökkli translation files')
 
 program
   .command('sync', { isDefault: true })
@@ -26,7 +24,7 @@ program
   .command('missing <language>')
   .description('List missing translations for a language')
   .action(async (language: string) => {
-    if (!LANGUAGES.includes(language)) {
+    if (!(LANGUAGES as readonly string[]).includes(language)) {
       console.error(
         chalk.red(
           `Unknown language "${language}". Available: ${LANGUAGES.join(', ')}`,
@@ -46,9 +44,7 @@ program
     }
 
     console.log(
-      chalk.yellow(
-        `${missing.length} missing translations for ${language}:\n`,
-      ),
+      chalk.yellow(`${missing.length} missing translations for ${language}:\n`),
     )
 
     for (const [key, entry] of missing) {
@@ -62,7 +58,7 @@ program
   .command('update <language> [pairs...]')
   .description('Update translations for specific keys (key="translated text")')
   .action(async (language: string, pairs: string[]) => {
-    if (!LANGUAGES.includes(language)) {
+    if (!(LANGUAGES as readonly string[]).includes(language)) {
       console.error(
         chalk.red(
           `Unknown language "${language}". Available: ${LANGUAGES.join(', ')}`,

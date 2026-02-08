@@ -35,6 +35,7 @@ export const forceDefaultLanguage = ${JSON.stringify(
     return `
 import type { Theme } from '${ctx.helper.relativePaths.TYPES_THEME}'
 import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
+import type { InterfaceLanguage } from '#blokkli-build/translations'
 
 /**
  * Whether the app uses a custom theme.
@@ -69,7 +70,7 @@ export declare const storageDefaults: Record<string, string | boolean | string[]
 /**
  * The default/fallback language.
  */
-export declare const defaultLanguage: string
+export declare const defaultLanguage: InterfaceLanguage
 
 /**
  * The entity type of templates.

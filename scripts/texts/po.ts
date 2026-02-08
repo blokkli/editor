@@ -64,7 +64,7 @@ export async function updateTranslationFile(
 
   const filePath = path.resolve(
     __dirname,
-    `./../../src/build/translations/${language}.json`,
+    `./../../src/runtime/editor/translations/${language}.json`,
   )
   const formatted = JSON.stringify(sorted, null, 2) + '\n'
   await fs.promises.writeFile(filePath, formatted)
@@ -106,9 +106,7 @@ export async function updatePoKeys(
 
   for (const [key, value] of Object.entries(updates)) {
     if (!entries[key]) {
-      throw new Error(
-        `Key "${key}" does not exist in ${language}.po`,
-      )
+      throw new Error(`Key "${key}" does not exist in ${language}.po`)
     }
     entries[key].translation = value
   }
@@ -118,7 +116,7 @@ export async function updatePoKeys(
 
   const filePath = path.resolve(
     __dirname,
-    `./../../src/build/translations/${language}.json`,
+    `./../../src/runtime/editor/translations/${language}.json`,
   )
   const formatted = JSON.stringify(sorted, null, 2) + '\n'
   await fs.promises.writeFile(filePath, formatted)

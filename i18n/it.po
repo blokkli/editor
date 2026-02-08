@@ -436,7 +436,7 @@ msgid "No past conversations."
 msgstr ""
 
 msgctxt "aiAgentPastConversations"
-msgid "Past conversations..."
+msgid "Past conversations"
 msgstr ""
 
 msgctxt "aiAgentPlaceholder"

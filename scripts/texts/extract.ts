@@ -7,7 +7,10 @@ import { glob } from 'glob'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
+  LANGUAGES,
 } from '../../src/global/constants'
+
+export { LANGUAGES }
 
 export const INTERNAL_TRANSLATIONS = {
   [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',
@@ -16,8 +19,6 @@ export const INTERNAL_TRANSLATIONS = {
   [`blockOption_${BK_HIDDEN_GLOBALLY}_label`]: 'Hide globally',
   [`blockOption_${BK_HIDDEN_GLOBALLY}_description`]: 'Always hides the block.',
 }
-
-export const LANGUAGES = ['de', 'fr', 'it', 'gsw_CH']
 
 export interface Extraction {
   key: string
