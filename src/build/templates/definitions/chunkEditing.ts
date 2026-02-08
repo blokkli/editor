@@ -24,8 +24,9 @@ export default defineCodeTemplate(
         continue
       }
 
+      const relativePath = ctx.helper.toModuleBuildRelative(file.filePath)
       imports.push(
-        `import ${file.identifier} from '${file.filePath}?blokkliEditing=true'`,
+        `import ${file.identifier} from '${relativePath}?blokkliEditing=true'`,
       )
       file.variations.forEach((variation) => {
         map.set(variation, file.identifier)

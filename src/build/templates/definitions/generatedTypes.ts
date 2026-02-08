@@ -1,6 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
 import { type CollectedBlockFile, isBlock } from '../../Collector/Blocks'
-import { relative } from 'pathe'
 import type { GetBundlePropsTypeResult } from '../../types'
 import type {
   BlockDefinitionInputBase,
@@ -149,7 +148,7 @@ ${lines.join('\n  ')}
           })
           .join(', ')
         const importPath = from.startsWith('/')
-          ? relative(ctx.helper.paths.blokkliBuildDir, from)
+          ? ctx.helper.toModuleBuildRelative(from)
           : from
         return `import type { ${imports} } from '${importPath}'`
       })

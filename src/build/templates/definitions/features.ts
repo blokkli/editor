@@ -22,7 +22,10 @@ export default defineCodeTemplate(
         `const ${declarationVarName} = ${feature.definitionSource}`,
       )
       definitions.push(declarationVarName)
-      imports.set(componentVarName, feature.componentPath)
+      imports.set(
+        componentVarName,
+        ctx.helper.toModuleBuildRelative(feature.componentPath),
+      )
       featuresComponents.set(feature.id, componentVarName)
     }
 
@@ -52,9 +55,10 @@ export const featureDefinitions = [
     for (const feature of features) {
       const typesPath = feature.componentPath.replace('/index.vue', '/types.ts')
       if (existsSync(typesPath)) {
-        typeImports.push(
-          `import '${feature.componentPath.replace('/index.vue', '/types')}'`,
+        const relativePath = ctx.helper.toModuleBuildRelative(
+          feature.componentPath.replace('/index.vue', '/types'),
         )
+        typeImports.push(`import '${relativePath}'`)
       }
     }
 

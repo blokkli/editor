@@ -26,15 +26,16 @@ export default withHelper((helper) => {
             continue
           }
 
+          const relativePath = ctx.helper.toModuleBuildRelative(file.filePath)
           if (helper.isDev) {
             imports.push(
-              `const ${file.identifier} = () => import('${file.filePath}').then(v => v.default)`,
+              `const ${file.identifier} = () => import('${relativePath}').then(v => v.default)`,
             )
             file.variations.forEach((variation) => {
               map[variation] = `{ loadComponent: ${file.identifier} }`
             })
           } else {
-            imports.push(`import ${file.identifier} from '${file.filePath}'`)
+            imports.push(`import ${file.identifier} from '${relativePath}'`)
             file.variations.forEach((variation) => {
               map[variation] = file.identifier!
             })

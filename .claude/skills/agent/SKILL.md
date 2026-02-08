@@ -7,8 +7,8 @@ description:
 # Agent Module Skill
 
 The agent module (`src/modules/agent/`) adds an AI assistant to the blökkli
-editor. It runs as a sidebar feature where users chat with an LLM that can
-query and mutate page content through a tool system.
+editor. It runs as a sidebar feature where users chat with an LLM that can query
+and mutate page content through a tool system.
 
 ## Module Structure
 

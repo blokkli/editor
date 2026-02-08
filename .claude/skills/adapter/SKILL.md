@@ -12,14 +12,13 @@ options, etc.) are delegated to the adapter implementation.
 
 ## Core Concept
 
-A project provides an adapter factory at a known path
-(`blokkli.editAdapter.ts` in the app directory, or via the `editAdapterPath`
-module option). This factory receives the adapter context and returns an adapter
-instance:
+A project provides an adapter factory at a known path (`blokkli.editAdapter.ts`
+in the app directory, or via the `editAdapterPath` module option). This factory
+receives the adapter context and returns an adapter instance:
 
 ```typescript
-const adapter: BlokkliAdapterFactory<T> =
-  (ctx: ComputedRef<AdapterContext>) => FullBlokkliAdapter<T>
+const adapter: BlokkliAdapterFactory<T> = (ctx: ComputedRef<AdapterContext>) =>
+  FullBlokkliAdapter<T>
 ```
 
 The Drupal module provides the reference implementation. The playground uses a
@@ -52,7 +51,8 @@ declare module '#blokkli/editor/adapter' {
 ### Combined type
 
 ```typescript
-type FullBlokkliAdapter<T> = BlokkliAdapter<T> & Partial<AdapterExtensionMethods<T>>
+type FullBlokkliAdapter<T> = BlokkliAdapter<T> &
+  Partial<AdapterExtensionMethods<T>>
 ```
 
 This means extension methods are always optional on the adapter. Features that

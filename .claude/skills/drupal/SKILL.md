@@ -27,12 +27,14 @@ src/modules/drupal/
 ## What It Does
 
 **Sets Drupal-specific defaults** (via `alterOptions`):
+
 - `itemEntityType` = `'paragraph'`
 - `templateEntityType` = `'blokkli_paragraph_template'`
 - Registers default component patterns for Paragraph, Node, TaxonomyTerm, etc.
 - Sets up bundle-to-GraphQL fragment mapping
 
 **Introspects the GraphQL schema** (during `setup`):
+
 - Detects which mutations, types, and queries exist in the backend
 - Conditionally registers GraphQL documents and enables/disables features
 - This allows graceful degradation when a Drupal site doesn't support certain
