@@ -141,7 +141,7 @@
   },
   "aiAgentApprovePlan": {
     "source": "Accept plan",
-    "translation": ""
+    "translation": "Plan akzeptieren"
   },
   "aiAgentAskQuestionRunning": {
     "source": "Waiting for answer...",
@@ -189,7 +189,7 @@
   },
   "aiAgentCompletePlanStep": {
     "source": "Completed: @label",
-    "translation": ""
+    "translation": "Abgeschlossen: @label"
   },
   "aiAgentConfirm": {
     "source": "Confirm",
@@ -201,7 +201,7 @@
   },
   "aiAgentCreatePlan": {
     "source": "Plan: @label",
-    "translation": ""
+    "translation": "Plan: @label"
   },
   "aiAgentDeleteBlockDone": {
     "source": "Deleted @bundle",
@@ -277,7 +277,7 @@
   },
   "aiAgentErrorUnauthorized": {
     "source": "Authentication failed. Please reload the page and try again.",
-    "translation": ""
+    "translation": "Authentifizierung fehlgeschlagen. Bitte laden Sie die Seite neu und versuchen Sie es erneut."
   },
   "aiAgentErrorUnknown": {
     "source": "An unexpected error occurred.",
@@ -437,7 +437,7 @@
   },
   "aiAgentPlanCompleted": {
     "source": "Plan completed: @label",
-    "translation": ""
+    "translation": "Plan abgeschlossen: @label"
   },
   "aiAgentProcessing": {
     "source": "Processing...",
@@ -545,7 +545,7 @@
   },
   "aiAgentUnknownMessage": {
     "source": "Unknown message type",
-    "translation": ""
+    "translation": "Unbekannter Nachrichtentyp"
   },
   "aiAgentUpdateOptionsOnBlockDone": {
     "source": "Updated @count option(s) on block",
@@ -1189,11 +1189,11 @@
   },
   "feature_agent_description": {
     "source": "Chat with an AI assistant to edit page content.",
-    "translation": ""
+    "translation": "Mit einem KI-Assistenten chatten, um Seiteninhalte zu bearbeiten."
   },
   "feature_agent_label": {
     "source": "AI Agent",
-    "translation": ""
+    "translation": "KI-Agent"
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",

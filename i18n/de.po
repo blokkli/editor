@@ -154,7 +154,7 @@ msgstr "Bestätigen"
 
 msgctxt "aiAgentApprovePlan"
 msgid "Accept plan"
-msgstr ""
+msgstr "Plan akzeptieren"
 
 msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer..."
@@ -202,7 +202,7 @@ msgstr "Abgebrochen"
 
 msgctxt "aiAgentCompletePlanStep"
 msgid "Completed: @label"
-msgstr ""
+msgstr "Abgeschlossen: @label"
 
 msgctxt "aiAgentConfirm"
 msgid "Confirm"
@@ -214,7 +214,7 @@ msgstr "Verbinden..."
 
 msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
-msgstr ""
+msgstr "Plan: @label"
 
 msgctxt "aiAgentDeleteBlockDone"
 msgid "Deleted @bundle"
@@ -297,6 +297,8 @@ msgstr ""
 msgctxt "aiAgentErrorUnauthorized"
 msgid "Authentication failed. Please reload the page and try again."
 msgstr ""
+"Authentifizierung fehlgeschlagen. Bitte laden Sie die Seite neu und "
+"versuchen Sie es erneut."
 
 msgctxt "aiAgentErrorUnknown"
 msgid "An unexpected error occurred."
@@ -456,7 +458,7 @@ msgstr "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
 
 msgctxt "aiAgentPlanCompleted"
 msgid "Plan completed: @label"
-msgstr ""
+msgstr "Plan abgeschlossen: @label"
 
 msgctxt "aiAgentProcessing"
 msgid "Processing..."
@@ -564,7 +566,7 @@ msgstr "@count Änderungen rückgängig gemacht"
 
 msgctxt "aiAgentUnknownMessage"
 msgid "Unknown message type"
-msgstr ""
+msgstr "Unbekannter Nachrichtentyp"
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
 msgid "Updated @count option(s) on block"
@@ -1257,11 +1259,11 @@ msgstr "Blöcke verstecken, die nicht hinzugefügt werden können"
 
 msgctxt "feature_agent_description"
 msgid "Chat with an AI assistant to edit page content."
-msgstr ""
+msgstr "Mit einem KI-Assistenten chatten, um Seiteninhalte zu bearbeiten."
 
 msgctxt "feature_agent_label"
 msgid "AI Agent"
-msgstr ""
+msgstr "KI-Agent"
 
 msgctxt "feature_analyze_description"
 msgid "Analyze blocks and page for SEO, accessibility, etc."
