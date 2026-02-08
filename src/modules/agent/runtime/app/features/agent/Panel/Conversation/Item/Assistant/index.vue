@@ -7,10 +7,14 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick, useBlokkli } from '#imports'
 import { marked } from 'marked'
-import type { AssistantConversationItem } from '#blokkli/agent/app/types'
 import { PLACEHOLDER_USER_NAME } from '#blokkli/agent/shared/placeholders'
 
-const props = defineProps<AssistantConversationItem>()
+const props = defineProps<{
+  id: string
+  timestamp: number
+  type: 'assistant'
+  content: string
+}>()
 
 const { state } = useBlokkli()
 

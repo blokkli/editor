@@ -1,9 +1,10 @@
 import { ref, readonly, watch, type Ref } from '#imports'
-import type {
-  ConversationItem,
-  ActiveItem,
-  MutationAction,
-  McpToolDefinition,
+import {
+  conversationItemSchema,
+  type ConversationItem,
+  type ActiveItem,
+  type MutationAction,
+  type McpToolDefinition,
 } from '#blokkli/agent/app/types'
 import type {
   ServerMessage,
@@ -198,13 +199,24 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     data: AgentConversationData,
   ): ParsedConversation | null {
     try {
-      const clientState: ConversationItem[] = JSON.parse(data.clientState)
+      const raw: unknown[] = JSON.parse(data.clientState)
+      const clientState: ConversationItem[] = raw.map((item) => {
+        const result = conversationItemSchema.safeParse(item)
+        if (result.success) {
+          return result.data
+        }
+        return {
+          type: 'unknown' as const,
+          id: generateId(),
+          timestamp: Date.now(),
+        }
+      })
       const serverParsed: {
         messages: ConversationStateSnapshot['messages']
         activatedLazyTools: ConversationStateSnapshot['activatedLazyTools']
       } = JSON.parse(data.serverState)
 
-      if (!clientState?.length || !serverParsed?.messages?.length) {
+      if (!clientState.length || !serverParsed?.messages?.length) {
         return null
       }
 

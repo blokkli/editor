@@ -7,9 +7,12 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick } from '#imports'
 import { marked } from 'marked'
-import type { UserConversationItem } from '#blokkli/agent/app/types'
-
-const props = defineProps<UserConversationItem>()
+const props = defineProps<{
+  id: string
+  timestamp: number
+  type: 'user'
+  content: string
+}>()
 
 const contentEl = ref<HTMLElement>()
 

@@ -5,8 +5,8 @@ import type {
   AdapterMethods,
 } from '#blokkli/editor/adapter'
 import type { EditMode } from '#blokkli/editor/types/state'
-import type { AgentErrorType } from '#blokkli/agent/shared/types'
-import type { z } from 'zod'
+import { agentErrorTypeSchema } from '#blokkli/agent/shared/types'
+import { z } from 'zod'
 import type { Component } from 'vue'
 
 // ============================================================================
@@ -393,65 +393,93 @@ export type AgentPromptItem = AgentPromptDefinition | AgentPromptFactory
 /**
  * Base properties shared by all conversation items.
  */
-type ConversationItemBase = {
-  id: string
-  timestamp: number
-}
+const conversationItemBase = z.object({
+  id: z.string(),
+  timestamp: z.number(),
+})
 
 /**
  * A user message in the conversation history.
  */
-export type UserConversationItem = ConversationItemBase & {
-  type: 'user'
-  content: string
-}
+const userConversationItemSchema = conversationItemBase.extend({
+  type: z.literal('user'),
+  content: z.string(),
+})
 
 /**
  * An assistant text message in the conversation history.
  */
-export type AssistantConversationItem = ConversationItemBase & {
-  type: 'assistant'
-  content: string
-}
+const assistantConversationItemSchema = conversationItemBase.extend({
+  type: z.literal('assistant'),
+  content: z.string(),
+})
 
 /**
  * A tool call in the conversation history.
  * Status is 'active' while executing, then 'success' or 'error' when complete.
  */
-export type ToolConversationItem = ConversationItemBase & {
-  type: 'tool'
-  callId: string
-  tool: string
-  label: string
-  status: 'active' | 'success' | 'error'
-}
+const toolConversationItemSchema = conversationItemBase.extend({
+  type: z.literal('tool'),
+  callId: z.string(),
+  tool: z.string(),
+  label: z.string(),
+  status: z.enum(['active', 'success', 'error']),
+})
 
 /**
  * A server-side tool call result in the conversation history.
  */
-export type ServerToolConversationItem = ConversationItemBase & {
-  type: 'server_tool'
-  tool: 'load_skill' | 'load_tools'
-  label: string
-}
+const serverToolConversationItemSchema = conversationItemBase.extend({
+  type: z.literal('server_tool'),
+  tool: z.enum(['load_skill', 'load_tools']),
+  label: z.string(),
+})
 
 /**
  * An error message in the conversation history.
  */
-export type ErrorConversationItem = ConversationItemBase & {
-  type: 'error'
-  errorType: AgentErrorType
+const errorConversationItemSchema = conversationItemBase.extend({
+  type: z.literal('error'),
+  errorType: agentErrorTypeSchema,
+})
+
+/**
+ * Discriminated union of all conversation item schemas.
+ */
+export const conversationItemSchema = z.discriminatedUnion('type', [
+  userConversationItemSchema,
+  assistantConversationItemSchema,
+  toolConversationItemSchema,
+  serverToolConversationItemSchema,
+  errorConversationItemSchema,
+])
+
+export type UserConversationItem = z.infer<typeof userConversationItemSchema>
+export type AssistantConversationItem = z.infer<
+  typeof assistantConversationItemSchema
+>
+export type ToolConversationItem = z.infer<typeof toolConversationItemSchema>
+export type ServerToolConversationItem = z.infer<
+  typeof serverToolConversationItemSchema
+>
+export type ErrorConversationItem = z.infer<typeof errorConversationItemSchema>
+
+/**
+ * A conversation item that failed validation when restoring from persistence.
+ * Displayed as a placeholder so the user sees something went wrong.
+ */
+export type UnknownConversationItem = {
+  type: 'unknown'
+  id: string
+  timestamp: number
 }
 
 /**
  * Finalized items in conversation history (never modified after being pushed).
  */
 export type ConversationItem =
-  | UserConversationItem
-  | AssistantConversationItem
-  | ToolConversationItem
-  | ServerToolConversationItem
-  | ErrorConversationItem
+  | z.infer<typeof conversationItemSchema>
+  | UnknownConversationItem
 
 /**
  * The single item currently being built (streaming text or pending tool).

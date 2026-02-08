@@ -13,10 +13,15 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import type { ServerToolConversationItem } from '#blokkli/agent/app/types'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
-const props = defineProps<ServerToolConversationItem>()
+const props = defineProps<{
+  id: string
+  timestamp: number
+  type: 'server_tool'
+  tool: 'load_skill' | 'load_tools'
+  label: string
+}>()
 
 const { $t } = useBlokkli()
 
@@ -37,7 +42,7 @@ const serverToolLabel = computed(() => {
 })
 
 function getServerSideToolIcon(
-  id: ServerToolConversationItem['tool'],
+  id: 'load_skill' | 'load_tools',
 ): BlokkliIcon {
   if (id === 'load_skill') {
     return 'bk_mdi_book_2'

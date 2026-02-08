@@ -26,9 +26,16 @@
 <script lang="ts" setup>
 import { computed } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import type { ToolConversationItem } from '#blokkli/agent/app/types'
-
-const props = defineProps<ToolConversationItem & { isActive?: boolean }>()
+const props = defineProps<{
+  id: string
+  timestamp: number
+  type: 'tool'
+  callId: string
+  tool: string
+  label: string
+  status: 'active' | 'success' | 'error'
+  isActive?: boolean
+}>()
 
 const toolStatus = computed(() => {
   if (props.isActive) return 'active'

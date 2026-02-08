@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 // ============================================================================
 // Generic Message Types (used by both server and client)
 // ============================================================================
@@ -155,15 +157,18 @@ export type PageContext = {
  * Classified error categories for AI provider errors.
  * Both Anthropic and OpenAI SDKs map to these via HTTP status codes.
  */
-export type AgentErrorType =
-  | 'authentication' // 401 — bad API key
-  | 'rate_limit' // 429 — too many requests
-  | 'overloaded' // 529 (Anthropic) / 503 — service overloaded
-  | 'not_found' // 404 — invalid model or endpoint
-  | 'bad_request' // 400 — malformed request
-  | 'connection' // Network/connection failure
-  | 'unauthorized' // WebSocket auth token invalid or missing
-  | 'unknown' // Anything else
+export const agentErrorTypeSchema = z.enum([
+  'authentication', // 401 — bad API key
+  'rate_limit', // 429 — too many requests
+  'overloaded', // 529 (Anthropic) / 503 — service overloaded
+  'not_found', // 404 — invalid model or endpoint
+  'bad_request', // 400 — malformed request
+  'connection', // Network/connection failure
+  'unauthorized', // WebSocket auth token invalid or missing
+  'unknown', // Anything else
+])
+
+export type AgentErrorType = z.infer<typeof agentErrorTypeSchema>
 
 // ============================================================================
 // WebSocket Protocol Messages

@@ -8,9 +8,20 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import type { ErrorConversationItem } from '#blokkli/agent/app/types'
-
-const props = defineProps<ErrorConversationItem>()
+const props = defineProps<{
+  id: string
+  timestamp: number
+  type: 'error'
+  errorType:
+    | 'authentication'
+    | 'rate_limit'
+    | 'overloaded'
+    | 'not_found'
+    | 'bad_request'
+    | 'connection'
+    | 'unauthorized'
+    | 'unknown'
+}>()
 
 const { $t } = useBlokkli()
 

@@ -8,6 +8,7 @@
   />
   <ItemServerTool v-else-if="item.type === 'server_tool'" v-bind="item" />
   <ItemError v-else-if="item.type === 'error'" v-bind="item" />
+  <ItemUnknown v-else-if="item.type === 'unknown'" v-bind="item" />
 </template>
 
 <script lang="ts" setup>
@@ -16,6 +17,7 @@ import ItemAssistant from './Assistant/index.vue'
 import ItemTool from './Tool/index.vue'
 import ItemServerTool from './ServerTool/index.vue'
 import ItemError from './Error/index.vue'
+import ItemUnknown from './Unknown/index.vue'
 import type { ConversationItem } from '#blokkli/agent/app/types'
 
 defineProps<{
