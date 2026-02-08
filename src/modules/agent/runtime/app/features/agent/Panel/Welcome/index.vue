@@ -12,10 +12,15 @@
         <span>{{ prompt }}</span>
       </button>
     </div>
+    <div class="bk-agent-welcome-disclaimer">
+      <div v-html="disclaimer" />
+      <Icon name="bk_mdi_priority_high" />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli } from '#imports'
 import { marked } from 'marked'
 import welcomeMd from './en.md?raw'
 import { defaultPrompts } from '#blokkli-build/agent-client'
@@ -29,7 +34,16 @@ const emit = defineEmits<{
   (e: 'prompt', value: string): void
 }>()
 
+const { $t } = useBlokkli()
+
 const welcomeHtml = await Promise.resolve(marked.parse(welcomeMd)).then((v) =>
   v.replaceAll('@agent-name', props.agentName),
 )
+
+const disclaimer = computed(() => {
+  return $t(
+    'aiAgentWelcomeDisclaimer',
+    `@agent can make mistakes! Always check the output. <strong>Do not enter sensitive information.</strong>`,
+  ).replace('@agent', props.agentName)
+})
 </script>

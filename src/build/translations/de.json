@@ -531,6 +531,10 @@
     "source": "Fetching web page...",
     "translation": "Webseite abrufen..."
   },
+  "aiAgentWelcomeDisclaimer": {
+    "source": "@agent can make mistakes! Always check the output. <strong>Do not enter sensitive information.</strong>",
+    "translation": "@agent kann Fehler machen! Überprüfen Sie immer die Resultate. <strong>Geben Sie keine vertraulichen Informationen ein.</strong>"
+  },
   "all": {
     "source": "All",
     "translation": "Alle"

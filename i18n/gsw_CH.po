@@ -543,6 +543,12 @@ msgctxt "aiAgentWebFetchRunning"
 msgid "Fetching web page..."
 msgstr ""
 
+msgctxt "aiAgentWelcomeDisclaimer"
+msgid ""
+"@agent can make mistakes! Always check the output. <strong>Do not enter "
+"sensitive information.</strong>"
+msgstr ""
+
 msgctxt "all"
 msgid "All"
 msgstr "Alli"

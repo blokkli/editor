@@ -396,6 +396,27 @@
       }
     }
   }
+  .bk-agent-welcome-disclaimer {
+    @apply bg-yellow-light text-yellow-dark;
+    @apply border border-yellow-dark;
+    @apply text-sm p-10;
+    @apply rounded-md;
+    @apply mt-20;
+    @apply flex gap-8 items-center;
+
+    > div {
+      @apply hyphens-auto text-balance;
+    }
+
+    .bk-icon {
+      @apply size-50 rounded-full p-10 shrink-0;
+      @apply bg-yellow-normal;
+
+      svg {
+        @apply fill-yellow-dark;
+      }
+    }
+  }
 
   .bk-agent-error-bubble {
     @apply flex items-start gap-8 p-10 rounded-xl;
