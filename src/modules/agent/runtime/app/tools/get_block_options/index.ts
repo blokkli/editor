@@ -35,9 +35,11 @@ export default defineBlokkliAgentTool({
       const block = blocks.getBlock(uuid)
       if (!block) continue
 
+      // For from_library blocks, use the reusable block's actual bundle.
+      const bundle = block.library?.reusableBundle || block.bundle
       const selectionItem = selection.items.value.find((v) => v.uuid === uuid)
       const definition = definitions.getBlockDefinition(
-        block.bundle,
+        bundle,
         selectionItem?.fieldListType ?? 'default',
         selectionItem?.parentBlockBundle,
       )

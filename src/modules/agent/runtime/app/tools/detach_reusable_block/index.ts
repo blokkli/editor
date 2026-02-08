@@ -8,7 +8,7 @@ const paramsSchema = z.object({
 })
 
 export default defineBlokkliAgentTool({
-  name: 'detach_library_block',
+  name: 'detach_reusable_block',
   description:
     'Detach one or more library blocks to create editable copies. ' +
     'IMPORTANT: The original library block UUIDs will no longer exist after detaching. ' +

@@ -63,19 +63,20 @@ export default defineBlokkliAgentTool({
         return { error: `Block not found: ${blockEntry.uuid}` }
       }
 
-      // Get block definition with context
+      // For from_library blocks, use the reusable block's actual bundle.
+      const bundle = block.library?.reusableBundle || block.bundle
       const selectionItem = selection.items.value.find(
         (v) => v.uuid === blockEntry.uuid,
       )
       const definition = definitions.getBlockDefinition(
-        block.bundle,
+        bundle,
         selectionItem?.fieldListType ?? 'default',
         selectionItem?.parentBlockBundle,
       )
 
       if (!definition) {
         return {
-          error: `Block definition not found for bundle: ${block.bundle}`,
+          error: `Block definition not found for bundle: ${bundle}`,
         }
       }
 
@@ -92,7 +93,7 @@ export default defineBlokkliAgentTool({
         const optionDef = availableOptions.find((o) => o.property === key)
         if (!optionDef) {
           return {
-            error: `Option "${key}" is not available for block type "${block.bundle}"`,
+            error: `Option "${key}" is not available for block type "${bundle}"`,
           }
         }
 
