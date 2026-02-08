@@ -13,7 +13,7 @@
       class="bk-agent-panel-inner bk-scrollbar-light"
       @scroll="onScroll"
     >
-      <div class="bk-agent-panel-conversation">
+      <div ref="conversationContainer" class="bk-agent-panel-conversation">
         <DebugGallery v-if="debugStyling" />
         <template v-else>
           <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
@@ -95,6 +95,7 @@ import {
   useTemplateRef,
   nextTick,
   watch,
+  onBeforeUnmount,
   useBlokkli,
 } from '#imports'
 import { Icon } from '#blokkli/editor/components'
@@ -202,49 +203,30 @@ function scrollToBottom() {
   scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
 }
 
-// Auto-scroll when history changes. Always scroll for user messages (the user
-// just submitted something), otherwise only if user was already at the bottom.
-watch(
-  () => props.conversation,
-  (conv) => {
-    const last = conv[conv.length - 1]
-    if (last?.type === 'user') {
-      isAtBottom.value = true
-      nextTick(scrollToBottom)
-    } else if (isAtBottom.value) {
-      nextTick(scrollToBottom)
-    }
-  },
-)
+// Auto-scroll using ResizeObserver on the conversation container.
+// Any content change (new messages, streaming text, thinking indicator, tool
+// results) causes the container to grow, which the observer catches.
+const conversationContainer = useTemplateRef('conversationContainer')
+let resizeObserver: ResizeObserver | null = null
 
-// Auto-scroll when active item changes
-watch(
-  () => props.activeItem,
-  () => {
+watch(conversationContainer, (el, _oldEl, onCleanup) => {
+  if (!el) return
+  resizeObserver = new ResizeObserver(() => {
     if (isAtBottom.value) {
-      nextTick(scrollToBottom)
+      scrollToBottom()
     }
-  },
-)
+  })
+  resizeObserver.observe(el)
+  onCleanup(() => {
+    resizeObserver?.disconnect()
+    resizeObserver = null
+  })
+}, { immediate: true })
 
-// Also scroll when pending mutation or tool component appears
-watch(
-  () => props.pendingMutation,
-  () => {
-    if (isAtBottom.value) {
-      nextTick(scrollToBottom)
-    }
-  },
-)
-
-watch(
-  () => props.pendingToolCall,
-  () => {
-    if (isAtBottom.value) {
-      nextTick(scrollToBottom)
-    }
-  },
-)
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+  resizeObserver = null
+})
 
 // Focus textarea when processing completes
 watch(
