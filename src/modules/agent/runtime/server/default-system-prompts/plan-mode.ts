@@ -29,7 +29,10 @@ ${currentStep.description}
 `
 
     if (remainingSteps.length > 0) {
-      text += `\nRemaining steps after this one: ${remainingSteps.join(', ')}`
+      text += `\nRemaining steps after this one:`
+      remainingSteps.forEach((step) => {
+        text += `\n- ${step}`
+      })
     }
 
     return text

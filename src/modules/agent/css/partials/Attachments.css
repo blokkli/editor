@@ -1,6 +1,6 @@
 .bk {
   .bk-agent-input-attachments {
-    @apply flex flex-wrap gap-5 p-10;
+    @apply flex flex-wrap gap-5 p-10 border-b border-b-mono-300 border-dashed;
   }
 
   .bk-agent-attachment {
@@ -9,10 +9,10 @@
     .bk-agent-attachment-text {
       @apply p-10;
       @apply text-xs;
-      @apply bg-mono-50 rounded;
-      @apply border border-mono-300;
-      @apply text-mono-500;
-      @apply hover:border-mono-400 hover:bg-mono-100;
+      @apply bg-accent-50 rounded;
+      @apply border border-accent-300;
+      @apply text-accent-700/70;
+      @apply hover:border-accent-400 hover:bg-accent-100;
 
       > div {
         @apply line-clamp-4;
@@ -20,7 +20,7 @@
     }
 
     .bk-agent-attachment-title {
-      @apply font-semibold text-mono-900 mb-2;
+      @apply font-semibold text-accent-800 mb-2;
       @apply uppercase tracking-wider block;
     }
 

@@ -1,9 +1,9 @@
 <template>
   <div class="bk-agent-input-actions">
-    <div>
+    <div class="bk-agent-input-actions-left">
       <div ref="menuContainer">
         <button
-          class="bk-agent-more-btn"
+          class="bk-button bk-is-white bk-is-small bk-is-icon-only"
           :title="$t('aiAgentMoreOptions', 'More options')"
           :disabled="!isConnected"
           @click="showMenu = !showMenu"
@@ -28,14 +28,27 @@
               :text="$t('aiAgentShowTranscript', 'Show transcript...')"
               @click="onShowTranscript"
             />
+            <div
+              v-if="props.tokenUsage.inputTokens > 0"
+              class="bk-agent-token-usage"
+            >
+              <Icon name="bk_mdi_toll" />
+              <span>
+                {{ props.tokenUsage.inputTokens.toLocaleString() }} in /
+                {{ props.tokenUsage.outputTokens.toLocaleString() }} out
+              </span>
+            </div>
           </div>
         </BlokkliTransition>
       </div>
     </div>
     <div class="bk-agent-input-actions-right">
+      <div v-show="hasText" class="bk-agent-input-actions-keyboard">
+        {{ $t('aiAgentNewLineHint', 'Shift + Enter for new line') }}
+      </div>
       <button
         v-if="isProcessing"
-        class="bk-agent-cancel-btn"
+        class="bk-button bk-is-danger bk-is-small bk-is-icon-only"
         :disabled="!isConnected"
         @click="$emit('cancel')"
       >
@@ -43,7 +56,7 @@
       </button>
       <button
         v-else
-        class="bk-agent-submit-btn"
+        class="bk-button bk-is-primary bk-is-small bk-is-icon-only"
         :disabled="!canSubmit"
         @click="$emit('submit')"
       >
@@ -64,10 +77,12 @@ import {
 import { Icon, BlokkliTransition } from '#blokkli/editor/components'
 import DropdownItem from './DropdownItem.vue'
 
-defineProps<{
+const props = defineProps<{
   isProcessing: boolean
   isConnected: boolean
   canSubmit: boolean
+  hasText: boolean
+  tokenUsage: { inputTokens: number; outputTokens: number }
 }>()
 
 const emit = defineEmits<{

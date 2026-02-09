@@ -59,6 +59,7 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...')
   },
+  lazy: true,
   paramsSchema,
   resultSchema,
   execute(ctx, params) {

@@ -5,6 +5,8 @@
 </template>
 
 <script setup lang="ts">
+const EASE_SWING = 'cubic-bezier(0.56, 0.04, 0.25, 1)'
+
 const props = withDefaults(
   defineProps<{
     /**
@@ -31,8 +33,8 @@ const props = withDefaults(
   {
     duration: 200,
     opacity: false,
-    easingEnter: 'ease-in-out',
-    easingLeave: 'ease-in-out',
+    easingEnter: EASE_SWING,
+    easingLeave: EASE_SWING,
   },
 )
 

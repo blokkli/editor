@@ -27,6 +27,8 @@ export type StreamEvent =
   | {
       type: 'message_end'
       stop_reason: 'end_turn' | 'tool_use' | 'max_tokens' | 'stop'
+      inputTokens?: number
+      outputTokens?: number
     }
   | { type: 'error'; error: Error }
 

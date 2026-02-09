@@ -79,6 +79,9 @@ export type AgentProvider = {
   approvePlan: () => void
   rejectPlan: () => void
 
+  // Token usage
+  tokenUsage: Readonly<Ref<{ inputTokens: number; outputTokens: number }>>
+
   // Actions
   sendPrompt: (
     text: string,
@@ -140,6 +143,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // Processing state
   const isProcessing = ref(false)
   const isThinking = ref(false)
+
+  // Token usage tracking
+  const tokenUsage = ref({ inputTokens: 0, outputTokens: 0 })
 
   // Conversation state
   const conversation = ref<ConversationItem[]>([])
@@ -667,6 +673,13 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         handleToolCall(data.callId, data.tool, data.params)
         break
 
+      case 'usage':
+        tokenUsage.value = {
+          inputTokens: tokenUsage.value.inputTokens + data.inputTokens,
+          outputTokens: tokenUsage.value.outputTokens + data.outputTokens,
+        }
+        break
+
       case 'done':
         finalizeActiveItem()
         isThinking.value = false
@@ -1168,6 +1181,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     isThinking.value = false
     activeConversationId.value = null
     plan.value = null
+    tokenUsage.value = { inputTokens: 0, outputTokens: 0 }
 
     // Tell server to clear conversation
     send({ type: 'new_conversation' })
@@ -1212,6 +1226,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     plan,
     approvePlan,
     rejectPlan,
+
+    // Token usage
+    tokenUsage: readonly(tokenUsage),
 
     // Actions
     sendPrompt,

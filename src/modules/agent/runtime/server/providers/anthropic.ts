@@ -126,7 +126,7 @@ export class AnthropicProvider implements AIProvider {
             break
 
           case 'message_stop': {
-            // Get stop reason from the final message
+            // Get stop reason and usage from the final message
             const finalMessage = await stream.finalMessage()
             yield {
               type: 'message_end',
@@ -135,6 +135,8 @@ export class AnthropicProvider implements AIProvider {
                 | 'tool_use'
                 | 'max_tokens'
                 | 'stop',
+              inputTokens: finalMessage.usage?.input_tokens,
+              outputTokens: finalMessage.usage?.output_tokens,
             }
             break
           }

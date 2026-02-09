@@ -1,16 +1,6 @@
 <template>
   <div class="bk-agent-input" @paste.capture="onPaste">
-    <FlexTextarea
-      ref="textarea"
-      v-model="model"
-      :max-height="150"
-      submit-on-enter
-      paste-markdown
-      rows="2"
-      :placeholder="placeholder"
-      @submit="onSubmit"
-    />
-    <TransitionHeight opacity>
+    <TransitionHeight opacity :duration="300">
       <div v-if="attachments.length" class="bk-agent-input-attachments">
         <AttachmentChip
           v-for="att in attachments"
@@ -21,10 +11,23 @@
         />
       </div>
     </TransitionHeight>
+    <FlexTextarea
+      ref="textarea"
+      v-model="model"
+      :max-height="150"
+      submit-on-enter
+      paste-markdown
+      rows="2"
+      :placeholder="placeholder"
+      @submit="onSubmit"
+    />
+
     <Actions
       :is-processing="isProcessing"
       :is-connected="isConnected"
       :can-submit="canSubmit"
+      :token-usage="tokenUsage"
+      :has-text
       @submit="onSubmit"
       @cancel="$emit('cancel')"
       @new-conversation="$emit('new-conversation')"
@@ -35,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
 import AttachmentChip from '../Attachment/index.vue'
 import Actions from './Actions/index.vue'
@@ -45,10 +48,27 @@ import type { Attachment } from '#blokkli/agent/app/types'
 const ATTACHMENT_THRESHOLD = 500
 
 const props = defineProps<{
-  placeholder: string
   isProcessing: boolean
   isConnected: boolean
+  hasPendingApproval: boolean
+  hasConversation: boolean
+  tokenUsage: { inputTokens: number; outputTokens: number }
 }>()
+
+const { $t } = useBlokkli()
+
+const placeholder = computed(() => {
+  if (props.isProcessing) {
+    return $t('aiAgentProcessing', 'Processing...')
+  }
+  if (props.hasPendingApproval) {
+    return $t('aiAgentAwaitingApproval', 'Awaiting your approval...')
+  }
+  if (props.hasConversation) {
+    return $t('aiAgentPlaceholderReply', 'Reply...')
+  }
+  return $t('aiAgentPlaceholder', 'What should we work on?')
+})
 
 const emit = defineEmits<{
   (e: 'submit', attachments: Attachment[]): void
@@ -78,9 +98,11 @@ function removeAttachment(id: string) {
   attachments.value = attachments.value.filter((a) => a.id !== id)
 }
 
-const canSubmit = computed(() => {
+const hasText = computed<boolean>(() => !!model.value.trim())
+
+const canSubmit = computed<boolean>(() => {
   return (
-    (model.value.trim().length > 0 || attachments.value.length > 0) &&
+    (hasText.value || attachments.value.length > 0) &&
     !props.isProcessing &&
     props.isConnected
   )

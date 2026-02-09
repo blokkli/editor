@@ -18,6 +18,7 @@ export default defineBlokkliAgentTool({
     'Get available options and their current values for one or more blocks',
   category: 'query',
   volatile: true,
+  lazy: true,
   prunedSummary: (r) => `options for ${Object.keys(r || {}).length} blocks`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {

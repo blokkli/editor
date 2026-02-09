@@ -6,19 +6,18 @@
   }
 
   .bk-agent-conversation-list-backdrop {
-    @apply absolute inset-0 bg-mono-900/90;
+    @apply absolute inset-0 bg-mono-200/90 backdrop-blur-sm;
   }
 
   .bk-agent-conversation-list-sheet {
-    @apply overflow-y-auto relative z-50;
-    max-height: 60%;
-    min-height: 30%;
+    @apply relative z-50 shadow-lg-inverted;
+    height: 500px;
   }
 
   .bk-agent-conversation-list {
     @apply flex flex-col bg-white;
     @apply rounded-t-xl;
-    min-height: 100%;
+    @apply h-full;
   }
 
   .bk-agent-conversation-list-header {
@@ -40,7 +39,7 @@
   }
 
   .bk-agent-conversation-list-items {
-    @apply flex flex-col;
+    @apply overflow-auto;
   }
 
   .bk-agent-conversation-list-item {

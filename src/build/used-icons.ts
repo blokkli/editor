@@ -97,6 +97,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_text_select_end',
   'bk_mdi_texture',
   'bk_mdi_title',
+  'bk_mdi_toll',
   'bk_mdi_trackpad_input',
   'bk_mdi_translate',
   'bk_mdi_tune',

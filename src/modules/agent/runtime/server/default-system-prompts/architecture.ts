@@ -25,8 +25,7 @@ export default defineBlokkliAgentSystemPrompt({
 - The available options change based on various factors, such as the value of other options, the specific state of the block's field values, etc. Always first check which options are available.
 
 ### EXTRA UX FEATURES
-- You can create markdown links for a specific block by using the block UUID! For example: [This title needs to change](#UUID)
-- When the user clicks on it, it will automatically scroll to there!
+- You can create markdown links for a specific block by using the block UUID! For example: "You should rewrite [this text](#UUID)"
 
 ### History and Undo/Redo
 - blökkli maintains a history of all changes (undo/redo)

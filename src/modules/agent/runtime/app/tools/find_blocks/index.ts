@@ -81,6 +81,7 @@ export default defineBlokkliAgentTool({
     'Find blocks matching multiple filter criteria. Supports filtering by bundle, structure (nesting, parent, field), content, and options. Returns paginated results. containsText does simple case-insensitive substring matching. For regex or match snippets, use search_text instead.',
   category: 'query',
   volatile: true,
+  lazy: true,
   prunedSummary: (r) =>
     `found ${r.total || 0} blocks${r.hasMore ? ' (more available)' : ''}`,
   modes: ['readonly', 'editing', 'translating', 'review'],

@@ -431,6 +431,10 @@
     "source": "Start new conversation",
     "translation": "Neue Unterhaltung starten"
   },
+  "aiAgentNewLineHint": {
+    "source": "Shift + Enter for new line",
+    "translation": "Shift + Enter für neue Zeile"
+  },
   "aiAgentNoConversations": {
     "source": "No past conversations.",
     "translation": "Keine früheren Konversationen."
@@ -444,8 +448,8 @@
     "translation": "Eingefügter Text"
   },
   "aiAgentPlaceholder": {
-    "source": "Ask me to edit the page content...",
-    "translation": "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
+    "source": "What should we work on?",
+    "translation": "Woran sollen wir arbeiten?"
   },
   "aiAgentPlaceholderReply": {
     "source": "Reply...",

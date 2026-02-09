@@ -382,5 +382,6 @@ export type ServerMessage =
     }
   | { type: 'plan_update'; plan: ClientPlanState | null }
   | { type: 'conversation_state'; state: ConversationStateSnapshot }
+  | { type: 'usage'; inputTokens: number; outputTokens: number }
   | { type: 'conversation_restored' }
   | { type: 'conversation_restore_failed'; reason: string }

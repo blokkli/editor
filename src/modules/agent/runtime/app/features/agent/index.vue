@@ -27,6 +27,7 @@
       :conversation-list
       :show-conversation-list
       :plan
+      :token-usage="tokenUsage"
       @connect="connect"
       @send-prompt="sendPrompt"
       @cancel="cancel"
@@ -108,6 +109,7 @@ const {
   plan,
   approvePlan,
   rejectPlan,
+  tokenUsage,
   sendPrompt,
   approve,
   reject,

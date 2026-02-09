@@ -9,6 +9,10 @@
       @apply !bg-mono-100 !text-mono-300 cursor-not-allowed;
     }
 
+    &.bk-is-white {
+      @apply !bg-white hover:!bg-mono-100 hover:!text-mono-600;
+    }
+
     &.bk-is-primary {
       @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
       &[disabled]:not(.bk-is-loading) {

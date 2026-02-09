@@ -2,23 +2,18 @@
   .bk-agent-panel-input {
     @apply sticky bottom-0 z-50;
     @apply mt-15;
-    @apply bg-white;
     @apply p-15;
-
-    &:before {
-      content: '';
-      @apply absolute left-0 bottom-full w-full h-25;
-      background: linear-gradient(0deg, white, rgba(255, 255, 255, 0));
-    }
+    background: linear-gradient(0deg, white, rgba(255, 255, 255, 0));
   }
 
   .bk-agent-input {
     @apply flex flex-col shrink-0;
     @apply border border-mono-300 bg-white;
     @apply rounded-lg;
+    @apply shadow-xl-even;
 
     &:has(textarea:focus) {
-      @apply outline outline-4 outline-accent-100 border-accent-500;
+      @apply border-mono-500;
     }
 
     .bk-flex-textarea {
@@ -42,21 +37,27 @@
 
     .bk-agent-input-actions {
       @apply border-t border-t-mono-300 flex items-center justify-between p-8 gap-8;
+      @apply border-dashed;
       @apply relative;
     }
 
     .bk-agent-input-actions-right {
-      @apply flex gap-8;
+      @apply flex gap-8 items-center;
     }
 
-    .bk-agent-more-btn {
-      @apply w-30 h-30 flex items-center justify-center;
-      @apply border-none cursor-pointer rounded;
-      @apply bg-transparent text-mono-500;
-      @apply hover:bg-mono-100 hover:text-mono-700;
+    .bk-agent-input-actions-left {
+      @apply flex gap-8 items-center;
+    }
 
-      svg {
-        @apply fill-current size-20;
+    .bk-agent-input-actions-keyboard {
+      @apply text-xs text-mono-500;
+
+      span {
+        @apply inline-flex items-center justify-center;
+        @apply border;
+        @apply size-20;
+        @apply rounded-md;
+        @apply text-mono-500;
       }
     }
 
@@ -88,31 +89,15 @@
       }
     }
 
-    .bk-agent-submit-btn,
-    .bk-agent-cancel-btn,
-    .bk-agent-debug-btn {
-      @apply w-30 h-30 flex items-center justify-center;
-      @apply rounded-full border-none;
+    .bk-agent-token-usage {
+      @apply flex items-center gap-8 px-10 py-10;
+      @apply text-xs text-mono-400;
+      @apply border-t border-t-mono-300;
+      @apply whitespace-nowrap leading-none;
 
       svg {
-        @apply w-18 h-18 fill-current;
+        @apply size-15 fill-current;
       }
-    }
-
-    .bk-agent-submit-btn {
-      @apply bg-accent-700 text-white;
-      @apply hover:bg-accent-800;
-      @apply disabled:opacity-40 disabled:cursor-not-allowed;
-    }
-
-    .bk-agent-cancel-btn {
-      @apply bg-red-normal text-white;
-      @apply hover:bg-red-dark;
-    }
-
-    .bk-agent-debug-btn {
-      @apply bg-mono-100 text-mono-500;
-      @apply hover:bg-mono-200 hover:text-mono-700;
     }
   }
 }

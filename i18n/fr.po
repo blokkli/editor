@@ -439,6 +439,10 @@ msgctxt "aiAgentNewConversation"
 msgid "Start new conversation"
 msgstr ""
 
+msgctxt "aiAgentNewLineHint"
+msgid "Shift + Enter for new line"
+msgstr ""
+
 msgctxt "aiAgentNoConversations"
 msgid "No past conversations."
 msgstr ""
@@ -452,7 +456,7 @@ msgid "Pasted text"
 msgstr "Texte collé"
 
 msgctxt "aiAgentPlaceholder"
-msgid "Ask me to edit the page content..."
+msgid "What should we work on?"
 msgstr ""
 
 msgctxt "aiAgentPlaceholderReply"

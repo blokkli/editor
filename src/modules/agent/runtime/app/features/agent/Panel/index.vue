@@ -41,12 +41,7 @@
       </div>
 
       <div class="bk-agent-panel-input">
-        <TransitionHeight
-          :duration="600"
-          opacity
-          easing-enter="cubic-bezier(0.56, 0.04, 0.25, 1)"
-          easing-leave="cubic-bezier(0.56, 0.04, 0.25, 1)"
-        >
+        <TransitionHeight :duration="600" opacity>
           <Plan
             v-if="activePlan"
             :plan="activePlan"
@@ -58,9 +53,11 @@
         <AgentInput
           ref="inputEl"
           v-model="inputValue"
-          :placeholder="placeholder"
-          :is-processing="isProcessing"
-          :is-connected="isConnected"
+          :is-processing
+          :is-connected
+          :has-pending-approval="!!(pendingMutation || pendingToolCall)"
+          :has-conversation="conversation.length > 0"
+          :token-usage
           @submit="onSubmit"
           @cancel="emit('cancel')"
           @new-conversation="onNewConversation"
@@ -144,6 +141,7 @@ const props = defineProps<{
   conversationList: AgentConversationSummary[]
   showConversationList: boolean
   plan: ClientPlanState | null
+  tokenUsage: { inputTokens: number; outputTokens: number }
 }>()
 
 const emit = defineEmits<{
@@ -285,19 +283,6 @@ const showWelcome = computed(() => {
   return !props.conversation.length && !props.activeItem && !props.isThinking
 })
 
-const placeholder = computed(() => {
-  if (props.isProcessing) {
-    return $t('aiAgentProcessing', 'Processing...')
-  }
-  if (props.pendingMutation || props.pendingToolCall) {
-    return $t('aiAgentAwaitingApproval', 'Awaiting your approval...')
-  }
-  if (props.conversation.length) {
-    return $t('aiAgentPlaceholderReply', 'Reply...')
-  }
-  return $t('aiAgentPlaceholder', 'Ask me to edit the page content...')
-})
-
 function onAlwaysApprove() {
   emit('setAutoApprove', true)
 }
@@ -314,19 +299,24 @@ function onWelcomePrompt(prompt: string) {
 
 function onSubmit(submitAttachments: Attachment[]) {
   const text = inputValue.value.trim()
-  if ((!text && !submitAttachments.length) || props.isProcessing || !props.isConnected)
+  if (
+    (!text && !submitAttachments.length) ||
+    props.isProcessing ||
+    !props.isConnected
+  )
     return
 
   if (!submitAttachments.length) {
     emit('sendPrompt', inputValue.value)
   } else {
     const attachmentBlocks = submitAttachments
-      .map((att) => `<attachment type="${att.type}">\n${att.content}\n</attachment>`)
+      .map(
+        (att) =>
+          `<attachment type="${att.type}">\n${att.content}\n</attachment>`,
+      )
       .join('\n\n')
 
-    const prompt = text
-      ? `${text}\n\n${attachmentBlocks}`
-      : attachmentBlocks
+    const prompt = text ? `${text}\n\n${attachmentBlocks}` : attachmentBlocks
 
     emit('sendPrompt', prompt, text, undefined, submitAttachments)
   }

@@ -152,6 +152,7 @@ export default defineBlokkliAgentTool({
     'Get comprehensive context for a single block including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
   category: 'query',
   volatile: true,
+  lazy: true,
   prunedSummary: (r) =>
     `context for ${r.bundle || 'block'} (${r.uuid?.slice(0, 8) || '?'})`,
   modes: ['readonly', 'editing', 'translating', 'review'],

@@ -431,6 +431,10 @@
     "source": "Start new conversation",
     "translation": ""
   },
+  "aiAgentNewLineHint": {
+    "source": "Shift + Enter for new line",
+    "translation": ""
+  },
   "aiAgentNoConversations": {
     "source": "No past conversations.",
     "translation": ""
@@ -444,7 +448,7 @@
     "translation": "Iigfüegter Tekscht"
   },
   "aiAgentPlaceholder": {
-    "source": "Ask me to edit the page content...",
+    "source": "What should we work on?",
     "translation": ""
   },
   "aiAgentPlaceholderReply": {

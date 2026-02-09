@@ -681,6 +681,19 @@ export class Session {
               }
               break
 
+            case 'message_end':
+              if (
+                event.inputTokens !== undefined &&
+                event.outputTokens !== undefined
+              ) {
+                send(peer, {
+                  type: 'usage',
+                  inputTokens: event.inputTokens,
+                  outputTokens: event.outputTokens,
+                })
+              }
+              break
+
             case 'error':
               throw event.error
           }

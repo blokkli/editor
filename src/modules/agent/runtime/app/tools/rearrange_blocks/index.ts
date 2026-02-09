@@ -20,6 +20,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'rearranged blocks' : 'rejected'),
   modes: ['editing'],
+  lazy: true,
   label($t) {
     return $t('aiAgentRearrangeBlocksRunning', 'Rearranging blocks...')
   },
@@ -41,11 +42,7 @@ export default defineBlokkliAgentTool({
     }
 
     // Validate the field exists
-    const field = types.getFieldConfig(
-      entityType,
-      bundle,
-      params.parent.field,
-    )
+    const field = types.getFieldConfig(entityType, bundle, params.parent.field)
     if (!field) {
       const availableFields = types.fieldConfig
         .forEntityTypeAndBundle(entityType, bundle)
@@ -58,8 +55,7 @@ export default defineBlokkliAgentTool({
     // Get the current blocks in this field
     const mutatedField = state.mutatedFields.value.find(
       (f) =>
-        f.entityUuid === params.parent.uuid &&
-        f.name === params.parent.field,
+        f.entityUuid === params.parent.uuid && f.name === params.parent.field,
     )
 
     if (!mutatedField || mutatedField.list.length === 0) {

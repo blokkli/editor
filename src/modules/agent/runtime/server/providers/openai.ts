@@ -130,6 +130,7 @@ export class OpenAIProvider implements AIProvider {
         messages: allMessages,
         tools: tools.length > 0 ? tools : undefined,
         stream: true,
+        stream_options: { include_usage: true },
       })
 
       // Track state for reconstructing tool calls from deltas
@@ -139,6 +140,8 @@ export class OpenAIProvider implements AIProvider {
         { id: string; name: string; arguments: string }
       >()
       const toolCallsStarted = new Set<number>()
+      let pendingStopReason: 'end_turn' | 'tool_use' | 'max_tokens' | 'stop' =
+        'stop'
 
       for await (const chunk of stream) {
         // Check abort signal
@@ -146,8 +149,19 @@ export class OpenAIProvider implements AIProvider {
           break
         }
 
+        // Final chunk with usage has no choices — emit message_end with usage
         const choice = chunk.choices[0]
-        if (!choice) continue
+        if (!choice) {
+          if (chunk.usage) {
+            yield {
+              type: 'message_end',
+              stop_reason: pendingStopReason,
+              inputTokens: chunk.usage.prompt_tokens,
+              outputTokens: chunk.usage.completion_tokens,
+            }
+          }
+          continue
+        }
 
         const delta = choice.delta
 
@@ -213,7 +227,7 @@ export class OpenAIProvider implements AIProvider {
           }
         }
 
-        // Handle finish
+        // Handle finish — defer message_end until usage chunk arrives
         if (choice.finish_reason) {
           // End any ongoing text block
           if (currentTextStarted) {
@@ -227,22 +241,19 @@ export class OpenAIProvider implements AIProvider {
           }
 
           // Map OpenAI finish reasons to our stop reasons
-          let stopReason: 'end_turn' | 'tool_use' | 'max_tokens' | 'stop'
           switch (choice.finish_reason) {
             case 'stop':
-              stopReason = 'end_turn'
+              pendingStopReason = 'end_turn'
               break
             case 'tool_calls':
-              stopReason = 'tool_use'
+              pendingStopReason = 'tool_use'
               break
             case 'length':
-              stopReason = 'max_tokens'
+              pendingStopReason = 'max_tokens'
               break
             default:
-              stopReason = 'stop'
+              pendingStopReason = 'stop'
           }
-
-          yield { type: 'message_end', stop_reason: stopReason }
         }
       }
     } catch (error) {
