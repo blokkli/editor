@@ -411,6 +411,15 @@ const conversationItemBase = z.object({
 const userConversationItemSchema = conversationItemBase.extend({
   type: z.literal('user'),
   content: z.string(),
+  attachments: z
+    .array(
+      z.object({
+        type: z.literal('text'),
+        id: z.string(),
+        content: z.string(),
+      }),
+    )
+    .optional(),
 })
 
 /**
@@ -499,3 +508,15 @@ export type ConversationItem =
  * Only one active item can exist at a time. When complete, it's pushed to conversation history.
  */
 export type ActiveItem = AssistantConversationItem | ToolConversationItem
+
+// ============================================================================
+// Attachment Types
+// ============================================================================
+
+export type TextAttachment = {
+  type: 'text'
+  id: string
+  content: string
+}
+
+export type Attachment = TextAttachment

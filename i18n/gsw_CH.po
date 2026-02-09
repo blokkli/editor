@@ -451,9 +451,17 @@ msgctxt "aiAgentPastConversations"
 msgid "Past conversations"
 msgstr ""
 
+msgctxt "aiAgentPastedText"
+msgid "Pasted text"
+msgstr "Iigfüegter Tekscht"
+
 msgctxt "aiAgentPlaceholder"
 msgid "Ask me to edit the page content..."
 msgstr ""
+
+msgctxt "aiAgentPlaceholderReply"
+msgid "Reply..."
+msgstr "Antworte..."
 
 msgctxt "aiAgentPlanCompleted"
 msgid "Plan completed: @label"
@@ -478,6 +486,10 @@ msgstr ""
 msgctxt "aiAgentReject"
 msgid "Reject"
 msgstr ""
+
+msgctxt "aiAgentRemoveAttachment"
+msgid "Remove attachment"
+msgstr "Aahang entferne"
 
 msgctxt "aiAgentReplaceContentSearchItemDone"
 msgid "Replaced content reference on @field"
@@ -581,6 +593,10 @@ msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlocksDone"
 msgid "Updated @count option(s) on @blockCount blocks"
+msgstr ""
+
+msgctxt "aiAgentViewAttachment"
+msgid "View attachment"
 msgstr ""
 
 msgctxt "aiAgentWebFetchDone"

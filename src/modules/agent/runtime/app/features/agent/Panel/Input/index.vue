@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-agent-input">
+  <div class="bk-agent-input" @paste.capture="onPaste">
     <FlexTextarea
       ref="textarea"
       v-model="model"
@@ -10,72 +10,39 @@
       :placeholder="placeholder"
       @submit="onSubmit"
     />
-    <div class="bk-agent-input-actions">
-      <div>
-        <div ref="menuContainer">
-          <button
-            class="bk-agent-more-btn"
-            :title="$t('aiAgentMoreOptions', 'More options')"
-            :disabled="!isConnected"
-            @click="showMenu = !showMenu"
-          >
-            <Icon name="bk_mdi_more_horiz" />
-          </button>
-          <div v-if="showMenu" class="bk-agent-more-dropdown">
-            <button @click="onNewConversation">
-              <Icon name="bk_mdi_add" />
-              <span>{{
-                $t('aiAgentNewConversation', 'Start new conversation')
-              }}</span>
-            </button>
-            <button @click="onShowConversations">
-              <Icon name="bk_mdi_history" />
-              <span>{{
-                $t('aiAgentPastConversations', 'Past conversations')
-              }}</span>
-            </button>
-            <hr />
-            <button @click="onShowTranscript">
-              <Icon name="bk_mdi_bug_report" />
-              <span>{{
-                $t('aiAgentShowTranscript', 'Show transcript...')
-              }}</span>
-            </button>
-          </div>
-        </div>
+    <TransitionHeight opacity>
+      <div v-if="attachments.length" class="bk-agent-input-attachments">
+        <AttachmentChip
+          v-for="att in attachments"
+          :key="att.id"
+          :attachment="att"
+          removable
+          @remove="removeAttachment(att.id)"
+        />
       </div>
-      <div class="bk-agent-input-actions-right">
-        <button
-          v-if="isProcessing"
-          class="bk-agent-cancel-btn"
-          :disabled="!isConnected"
-          @click="$emit('cancel')"
-        >
-          <Icon name="bk_mdi_stop" />
-        </button>
-        <button
-          v-else
-          class="bk-agent-submit-btn"
-          :disabled="!canSubmit"
-          @click="onSubmit"
-        >
-          <Icon name="bk_mdi_arrow_upward" />
-        </button>
-      </div>
-    </div>
+    </TransitionHeight>
+    <Actions
+      :is-processing="isProcessing"
+      :is-connected="isConnected"
+      :can-submit="canSubmit"
+      @submit="onSubmit"
+      @cancel="$emit('cancel')"
+      @new-conversation="$emit('new-conversation')"
+      @show-transcript="$emit('show-transcript')"
+      @show-conversations="$emit('show-conversations')"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  useTemplateRef,
-  useBlokkli,
-} from '#imports'
-import { Icon, FlexTextarea } from '#blokkli/editor/components'
+import { ref, computed } from '#imports'
+import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
+import AttachmentChip from '../Attachment/index.vue'
+import Actions from './Actions/index.vue'
+import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import type { Attachment } from '#blokkli/agent/app/types'
+
+const ATTACHMENT_THRESHOLD = 500
 
 const props = defineProps<{
   placeholder: string
@@ -84,68 +51,56 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  (e: 'submit', attachments: Attachment[]): void
   (
-    e:
-      | 'submit'
-      | 'cancel'
-      | 'new-conversation'
-      | 'show-transcript'
-      | 'show-conversations',
+    e: 'cancel' | 'new-conversation' | 'show-transcript' | 'show-conversations',
   ): void
 }>()
 
-const { $t, eventBus } = useBlokkli()
-
 const model = defineModel<string>({ required: true })
-const textarea = useTemplateRef('textarea')
-const menuContainer = useTemplateRef('menuContainer')
-const showMenu = ref(false)
+const attachments = ref<Attachment[]>([])
 
-function closeMenu() {
-  showMenu.value = false
-}
-
-function onDocumentClick(e: MouseEvent) {
-  if (!menuContainer.value?.contains(e.target as Node)) {
-    closeMenu()
+function onPaste(e: ClipboardEvent) {
+  const text = e.clipboardData?.getData('text/plain')
+  if (!text || text.length < ATTACHMENT_THRESHOLD) {
+    return
   }
+  e.preventDefault()
+  e.stopPropagation()
+  attachments.value.push({
+    type: 'text',
+    id: generateUUID(),
+    content: text,
+  })
 }
 
-eventBus.on('mouse:up', closeMenu)
-
-onMounted(() => document.addEventListener('click', onDocumentClick))
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onDocumentClick)
-  eventBus.off('mouse:up', closeMenu)
-})
+function removeAttachment(id: string) {
+  attachments.value = attachments.value.filter((a) => a.id !== id)
+}
 
 const canSubmit = computed(() => {
-  return model.value.trim().length > 0 && !props.isProcessing && props.isConnected
+  return (
+    (model.value.trim().length > 0 || attachments.value.length > 0) &&
+    !props.isProcessing &&
+    props.isConnected
+  )
 })
 
 function onSubmit() {
   if (!canSubmit.value) return
-  emit('submit')
+  emit('submit', attachments.value)
+  attachments.value = []
 }
 
-function onNewConversation() {
-  showMenu.value = false
-  emit('new-conversation')
-}
-
-function onShowConversations() {
-  showMenu.value = false
-  emit('show-conversations')
-}
-
-function onShowTranscript() {
-  showMenu.value = false
-  emit('show-transcript')
-}
+const textarea = ref<InstanceType<typeof FlexTextarea> | null>(null)
 
 function focus() {
   textarea.value?.focus()
 }
 
-defineExpose({ focus })
+function clearAttachments() {
+  attachments.value = []
+}
+
+defineExpose({ focus, clearAttachments })
 </script>

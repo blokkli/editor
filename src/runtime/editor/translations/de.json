@@ -439,9 +439,17 @@
     "source": "Past conversations",
     "translation": "Frühere Konversationen"
   },
+  "aiAgentPastedText": {
+    "source": "Pasted text",
+    "translation": "Eingefügter Text"
+  },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
     "translation": "Fragen Sie mich, um den Seiteninhalt zu bearbeiten..."
+  },
+  "aiAgentPlaceholderReply": {
+    "source": "Reply...",
+    "translation": "Antworten..."
   },
   "aiAgentPlanCompleted": {
     "source": "Plan completed: @label",
@@ -466,6 +474,10 @@
   "aiAgentReject": {
     "source": "Reject",
     "translation": "Ablehnen"
+  },
+  "aiAgentRemoveAttachment": {
+    "source": "Remove attachment",
+    "translation": "Anhang entfernen"
   },
   "aiAgentReplaceContentSearchItemDone": {
     "source": "Replaced content reference on @field",
@@ -570,6 +582,10 @@
   "aiAgentUpdateOptionsOnBlocksDone": {
     "source": "Updated @count option(s) on @blockCount blocks",
     "translation": "@count Option(en) auf @blockCount Blöcken aktualisiert"
+  },
+  "aiAgentViewAttachment": {
+    "source": "View attachment",
+    "translation": "Anhang anzeigen"
   },
   "aiAgentWebFetchDone": {
     "source": "Fetched '@title'",

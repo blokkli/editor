@@ -1,37 +1,33 @@
 <template>
   <div class="bk-agent-message bk-is-user">
-    <div ref="contentEl" class="bk-agent-message-text" />
+    <div v-if="html" class="bk-agent-message-text" v-html="html" />
+    <div v-if="attachments?.length" class="bk-agent-message-attachments">
+      <AttachmentChip
+        v-for="att in attachments"
+        :key="att.id"
+        :attachment="att"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick } from '#imports'
+import { computed } from '#imports'
 import { marked } from 'marked'
+import AttachmentChip from '../../../Attachment/index.vue'
+import type { Attachment } from '#blokkli/agent/app/types'
+
 const props = defineProps<{
   id: string
   timestamp: number
   type: 'user'
   content: string
+  attachments?: Attachment[]
 }>()
-
-const contentEl = ref<HTMLElement>()
 
 marked.setOptions({ gfm: true, breaks: true })
 
-function renderContent(content: string) {
-  const container = contentEl.value
-  if (!container) return
-  container.innerHTML = marked.parse(content) as string
-}
-
-watch(
-  () => props.content,
-  async (content) => {
-    if (content) {
-      await nextTick()
-      renderContent(content)
-    }
-  },
-  { immediate: true },
-)
+const html = computed(() => {
+  return props.content ? (marked.parse(props.content) as string) : ''
+})
 </script>

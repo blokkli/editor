@@ -3,6 +3,19 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with
 code in this repository.
 
+## SKILLS!!!
+
+You have SEVERAL skills available that you MUST use!!
+
+- **adapter** => Use when working with the blökkli edit adapter
+- **agent** => Use when working on ./src/modules/agent code !!!
+- **drupal** => Use when working on ./src/modules/drupal code !!!
+- **icon** => Use when you need to use an icon for the `<Icon>` component
+- **styles** => Use when you need to write CSS for the editor
+- **translations** => Use when you add new translations or are tasked to
+  translate!
+- **typecheck** => Use when you need to check Typescript types!
+
 ## Project Overview
 
 blökkli is an interactive page editor/builder for Nuxt that integrates with any

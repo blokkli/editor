@@ -21,6 +21,22 @@
           @apply border-l-accent-500 bg-accent-900 text-white;
         }
       }
+
+      .bk-agent-attachment-text {
+        @apply rounded-md;
+        @apply bg-accent-800 text-white/70 border-accent-500;
+        @apply hover:bg-accent-900 hover:border-accent-400;
+        .bk-agent-attachment-title {
+          @apply text-white;
+        }
+      }
+    }
+  }
+
+  .bk-agent-message-attachments {
+    @apply grid gap-8;
+    &:not(:first-child) {
+      @apply mt-10;
     }
   }
 

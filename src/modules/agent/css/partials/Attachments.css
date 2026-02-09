@@ -1,0 +1,57 @@
+.bk {
+  .bk-agent-input-attachments {
+    @apply flex flex-wrap gap-5 p-10;
+  }
+
+  .bk-agent-attachment {
+    @apply relative max-w-full min-w-0;
+
+    .bk-agent-attachment-text {
+      @apply p-10;
+      @apply text-xs;
+      @apply bg-mono-50 rounded;
+      @apply border border-mono-300;
+      @apply text-mono-500;
+      @apply hover:border-mono-400 hover:bg-mono-100;
+
+      > div {
+        @apply line-clamp-4;
+      }
+    }
+
+    .bk-agent-attachment-title {
+      @apply font-semibold text-mono-900 mb-2;
+      @apply uppercase tracking-wider block;
+    }
+
+    .bk-agent-attachment-preview {
+      word-break: break-all;
+    }
+
+    .bk-agent-attachment-close {
+      @apply absolute -top-5 -right-5;
+      @apply bg-white border border-mono-300;
+      @apply size-20 flex items-center justify-center shrink-0;
+      @apply cursor-pointer rounded-full;
+      @apply text-mono-700;
+      @apply hover:bg-red-normal hover:text-white;
+      @apply hover:border-red-normal;
+
+      svg {
+        @apply size-15 fill-current;
+      }
+    }
+  }
+}
+
+.bk.bk-agent-attachment-modal {
+  .bk-dialog-content {
+    @apply !p-0;
+  }
+  .bk-dialog-content-inner {
+    @apply p-10;
+    @apply whitespace-pre-wrap;
+    @apply select-text;
+    @apply overflow-auto;
+  }
+}

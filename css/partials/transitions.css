@@ -188,6 +188,16 @@
     }
   }
 
+  /* Drop up. */
+  .bk-drop-up-enter-active,
+  .bk-drop-up-leave-active {
+    @apply origin-bottom-left transition duration-200 ease-swing;
+  }
+  .bk-drop-up-enter-from,
+  .bk-drop-up-leave-to {
+    @apply opacity-0 scale-75;
+  }
+
   /* Command Palette . */
   .bk-command-palette-enter-active,
   .bk-command-palette-leave-active {

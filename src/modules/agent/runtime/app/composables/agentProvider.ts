@@ -1,6 +1,7 @@
 import { ref, readonly, watch, type Ref } from '#imports'
 import {
   conversationItemSchema,
+  type Attachment,
   type ConversationItem,
   type ActiveItem,
   type MutationAction,
@@ -83,6 +84,7 @@ export type AgentProvider = {
     text: string,
     displayPrompt?: string,
     selectedUuids?: string[],
+    attachments?: Attachment[],
   ) => void
   approve: () => void
   reject: () => void
@@ -125,6 +127,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     prompt: string
     displayPrompt?: string
     selectedUuids?: string[]
+    attachments?: Attachment[]
   } | null = null
   let pendingInit: {
     tools: ReturnType<typeof getToolsForServer>
@@ -488,9 +491,10 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     }
 
     if (pendingPrompt) {
-      const { prompt, displayPrompt, selectedUuids } = pendingPrompt
+      const { prompt, displayPrompt, selectedUuids, attachments } =
+        pendingPrompt
       pendingPrompt = null
-      sendPrompt(prompt, displayPrompt, selectedUuids)
+      sendPrompt(prompt, displayPrompt, selectedUuids, attachments)
     }
   }
 
@@ -1060,11 +1064,12 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     prompt: string,
     displayPrompt?: string,
     selectedUuids?: string[],
+    attachments?: Attachment[],
   ) {
     if (!prompt.trim() || isProcessing.value) return
 
     if (!isReady.value) {
-      pendingPrompt = { prompt, displayPrompt, selectedUuids }
+      pendingPrompt = { prompt, displayPrompt, selectedUuids, attachments }
       return
     }
 
@@ -1075,12 +1080,16 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       activeConversationId.value = generateUUID()
     }
 
-    conversation.value.push({
+    const item: ConversationItem = {
       type: 'user',
       id: generateId(),
-      content: displayPrompt || prompt,
+      content: displayPrompt ?? prompt,
       timestamp: Date.now(),
-    })
+    }
+    if (attachments?.length) {
+      ;(item as { attachments?: Attachment[] }).attachments = attachments
+    }
+    conversation.value.push(item)
 
     send({
       type: 'start',

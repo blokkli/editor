@@ -117,7 +117,11 @@ import type {
   PendingMutationState,
   PendingToolCall,
 } from '#blokkli/agent/app/composables'
-import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
+import type {
+  ConversationItem,
+  ActiveItem,
+  Attachment,
+} from '#blokkli/agent/app/types'
 import type { ClientPlanState } from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
@@ -144,7 +148,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   connect: []
-  sendPrompt: [prompt: string]
+  sendPrompt: [
+    prompt: string,
+    displayPrompt?: string,
+    selectedUuids?: string[],
+    attachments?: Attachment[],
+  ]
   cancel: []
   approve: []
   reject: []
@@ -283,6 +292,9 @@ const placeholder = computed(() => {
   if (props.pendingMutation || props.pendingToolCall) {
     return $t('aiAgentAwaitingApproval', 'Awaiting your approval...')
   }
+  if (props.conversation.length) {
+    return $t('aiAgentPlaceholderReply', 'Reply...')
+  }
   return $t('aiAgentPlaceholder', 'Ask me to edit the page content...')
 })
 
@@ -300,10 +312,25 @@ function onWelcomePrompt(prompt: string) {
   scrollToBottomOnSend()
 }
 
-function onSubmit() {
-  if (!inputValue.value.trim() || props.isProcessing || !props.isConnected)
+function onSubmit(submitAttachments: Attachment[]) {
+  const text = inputValue.value.trim()
+  if ((!text && !submitAttachments.length) || props.isProcessing || !props.isConnected)
     return
-  emit('sendPrompt', inputValue.value)
+
+  if (!submitAttachments.length) {
+    emit('sendPrompt', inputValue.value)
+  } else {
+    const attachmentBlocks = submitAttachments
+      .map((att) => `<attachment type="${att.type}">\n${att.content}\n</attachment>`)
+      .join('\n\n')
+
+    const prompt = text
+      ? `${text}\n\n${attachmentBlocks}`
+      : attachmentBlocks
+
+    emit('sendPrompt', prompt, text, undefined, submitAttachments)
+  }
+
   inputValue.value = ''
   scrollToBottomOnSend()
 }

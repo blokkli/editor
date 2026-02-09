@@ -15,6 +15,7 @@ type TransitionName =
   | 'editable'
   | 'menu'
   | 'loading'
+  | 'drop-up'
   | 'toolbar'
   | 'slide-in'
   | 'slide-up'
@@ -49,6 +50,7 @@ const DURATION: Partial<Record<TransitionName, number>> = {
   'touch-bar': 200,
   'command-palette': 100,
   'caret-tooltip': 150,
+  'drop-up': 200,
 }
 
 const name = computed(() => {

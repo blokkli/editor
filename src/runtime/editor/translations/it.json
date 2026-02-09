@@ -439,9 +439,17 @@
     "source": "Past conversations",
     "translation": ""
   },
+  "aiAgentPastedText": {
+    "source": "Pasted text",
+    "translation": "Testo incollato"
+  },
   "aiAgentPlaceholder": {
     "source": "Ask me to edit the page content...",
     "translation": ""
+  },
+  "aiAgentPlaceholderReply": {
+    "source": "Reply...",
+    "translation": "Rispondi..."
   },
   "aiAgentPlanCompleted": {
     "source": "Plan completed: @label",
@@ -466,6 +474,10 @@
   "aiAgentReject": {
     "source": "Reject",
     "translation": ""
+  },
+  "aiAgentRemoveAttachment": {
+    "source": "Remove attachment",
+    "translation": "Rimuovi allegato"
   },
   "aiAgentReplaceContentSearchItemDone": {
     "source": "Replaced content reference on @field",
@@ -569,6 +581,10 @@
   },
   "aiAgentUpdateOptionsOnBlocksDone": {
     "source": "Updated @count option(s) on @blockCount blocks",
+    "translation": ""
+  },
+  "aiAgentViewAttachment": {
+    "source": "View attachment",
     "translation": ""
   },
   "aiAgentWebFetchDone": {
