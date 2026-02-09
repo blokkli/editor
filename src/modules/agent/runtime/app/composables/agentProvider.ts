@@ -188,7 +188,9 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       await adapter.agentConversations.upsert({
         uuid: activeConversationId.value,
         title,
-        clientState: JSON.stringify(conversation.value),
+        clientState: JSON.stringify(
+          conversation.value.filter((item) => item.type !== 'error'),
+        ),
         serverState: JSON.stringify({
           messages: serverState.messages,
           activatedLazyTools: serverState.activatedLazyTools,

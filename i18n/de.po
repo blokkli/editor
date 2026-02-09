@@ -156,6 +156,14 @@ msgctxt "aiAgentApprovePlan"
 msgid "Accept plan"
 msgstr "Plan akzeptieren"
 
+msgctxt "aiAgentAskQuestionOther"
+msgid "None of the above"
+msgstr "Keine der Optionen"
+
+msgctxt "aiAgentAskQuestionOtherPlaceholder"
+msgid "Type your answer..."
+msgstr "Eigene Antwort eingeben..."
+
 msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer..."
 msgstr "Auf Antwort warten..."
@@ -463,6 +471,14 @@ msgstr "Plan abgeschlossen: @label"
 msgctxt "aiAgentProcessing"
 msgid "Processing..."
 msgstr "Verarbeiten..."
+
+msgctxt "aiAgentRearrangeBlocksDone"
+msgid "Rearranged @count blocks"
+msgstr "@count Blöcke neu angeordnet"
+
+msgctxt "aiAgentRearrangeBlocksRunning"
+msgid "Rearranging blocks..."
+msgstr "Blöcke werden neu angeordnet..."
 
 msgctxt "aiAgentRedoDone"
 msgid "Redid @count changes"

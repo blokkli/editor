@@ -1,6 +1,6 @@
 import type { PageContext } from '../shared/types'
 import type { ResolvedSkill } from './skills/types'
-import type { SystemPromptContext } from './system-prompts/types'
+import type { ActivePlanContext, SystemPromptContext } from './system-prompts/types'
 import { debugPrompt, systemPrompts } from '#blokkli-build/agent-server'
 
 /**
@@ -11,12 +11,16 @@ export function buildSystemPrompt(
   context: PageContext,
   resolvedSkills: ResolvedSkill[],
   lazyTools: { name: string; description: string }[] = [],
+  activePlan?: ActivePlanContext,
+  loadedSkills: ReadonlySet<string> = new Set(),
 ): string {
   const promptContext: SystemPromptContext = {
     pageContext: context,
     resolvedSkills,
     lazyTools,
     isDebugMode: !!(import.meta.dev && debugPrompt),
+    activePlan,
+    loadedSkills,
   }
 
   return systemPrompts

@@ -1,0 +1,15 @@
+mutation pbBulkUpdateFieldValues(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $items: [ParagraphsBlokkliBulkUpdateFieldValuesInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: bulk_update_field_values(langcode: $langcode, items: $items) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

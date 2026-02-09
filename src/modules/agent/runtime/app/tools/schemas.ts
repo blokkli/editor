@@ -159,6 +159,77 @@ export const mutationResultSchema = z.union([
 ])
 
 /**
+ * Shared schema for option values (used by add_blocks and set_block_options).
+ */
+export const optionValueSchema = z.union([
+  z.string(),
+  z.boolean(),
+  z.number(),
+  z.array(z.string()),
+])
+
+/**
+ * Validate a single option value against its definition.
+ * Returns an error string or undefined if valid.
+ */
+export function validateOptionValue(
+  key: string,
+  value: string | boolean | number | string[],
+  optionDef: OptionItem,
+): string | undefined {
+  const optionType = optionDef.option.type
+
+  if (optionType === 'checkbox') {
+    if (
+      typeof value !== 'boolean' &&
+      value !== '1' &&
+      value !== '0' &&
+      value !== 'true' &&
+      value !== 'false'
+    ) {
+      return `Option "${key}" expects a boolean value`
+    }
+  } else if (optionType === 'radios') {
+    if (typeof value !== 'string') {
+      return `Option "${key}" expects a string value`
+    }
+    if ('options' in optionDef.option && optionDef.option.options) {
+      const allowedKeys = Object.keys(optionDef.option.options)
+      if (!allowedKeys.includes(value)) {
+        return `Option "${key}" value must be one of: ${allowedKeys.join(', ')}`
+      }
+    }
+  } else if (optionType === 'checkboxes') {
+    if (!Array.isArray(value) && typeof value !== 'string') {
+      return `Option "${key}" expects an array of strings or comma-separated string`
+    }
+    if ('options' in optionDef.option && optionDef.option.options) {
+      const allowedKeys = Object.keys(optionDef.option.options)
+      const values = Array.isArray(value) ? value : value.split(',')
+      for (const v of values) {
+        if (!allowedKeys.includes(v)) {
+          return `Option "${key}" value "${v}" is not allowed. Must be one of: ${allowedKeys.join(', ')}`
+        }
+      }
+    }
+  } else if (optionType === 'number' || optionType === 'range') {
+    const numValue =
+      typeof value === 'number' ? value : Number.parseFloat(String(value))
+    if (Number.isNaN(numValue)) {
+      return `Option "${key}" expects a numeric value`
+    }
+    if ('min' in optionDef.option && numValue < optionDef.option.min) {
+      return `Option "${key}" value must be >= ${optionDef.option.min}`
+    }
+    if ('max' in optionDef.option && numValue > optionDef.option.max) {
+      return `Option "${key}" value must be <= ${optionDef.option.max}`
+    }
+  }
+
+  return undefined
+}
+
+/**
  * Schema for the success result sent back to the AI after mutation is applied.
  */
 export const mutationSuccessSchema = z.union([

@@ -33,7 +33,8 @@ function stripSchemaOverhead(obj: unknown): unknown {
   if (typeof obj === 'object' && obj !== null) {
     const result: Record<string, unknown> = {}
     for (const [key, value] of Object.entries(obj)) {
-      if (key === '$schema' || key === 'additionalProperties') continue
+      if (key === '$schema') continue
+      if (key === 'additionalProperties' && value === false) continue
       result[key] = stripSchemaOverhead(value)
     }
     return result
@@ -69,7 +70,7 @@ export function getToolsForServer(
       description: tool.description,
       input_schema: stripSchemaOverhead(
         z.toJSONSchema(tool.paramsSchema),
-      ) as object,
+      ) as Record<string, unknown>,
       ...(tool.lazy ? { lazy: true as const } : {}),
       category: tool.category,
       ...(tool.volatile ? { volatile: true as const } : {}),

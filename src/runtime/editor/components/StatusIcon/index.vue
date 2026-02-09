@@ -1,7 +1,7 @@
 <template>
   <div class="bk-status-icon" :class="`bk-is-${status}`">
     <Icon v-if="icon" :name="icon" />
-    <span v-else class="bk-status-icon-bullet" />
+    <span v-else class="bk-status-icon-bullet" v-html="bulletText" />
   </div>
 </template>
 
@@ -12,6 +12,7 @@ import Icon from '../Icon/index.vue'
 
 const props = defineProps<{
   status: 'pending' | 'active' | 'success' | 'error'
+  bulletText?: string | number
 }>()
 
 const icon = computed<BlokkliIcon | null>(() => {

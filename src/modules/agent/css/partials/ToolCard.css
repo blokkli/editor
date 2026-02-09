@@ -42,6 +42,6 @@
   }
 
   .bk-agent-tool-card-actions {
-    @apply flex gap-8 p-10 bg-white sticky bottom-0;
+    @apply flex gap-8 p-10 bg-white;
   }
 }

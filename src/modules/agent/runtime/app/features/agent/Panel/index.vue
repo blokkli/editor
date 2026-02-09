@@ -41,13 +41,20 @@
       </div>
 
       <div class="bk-agent-panel-input">
-        <Plan
-          v-if="activePlan"
-          :plan="activePlan"
-          :pending-approval="isPlanPendingApproval"
-          @approve="emit('approvePlan')"
-          @reject="emit('rejectPlan')"
-        />
+        <TransitionHeight
+          :duration="600"
+          opacity
+          easing-enter="cubic-bezier(0.56, 0.04, 0.25, 1)"
+          easing-leave="cubic-bezier(0.56, 0.04, 0.25, 1)"
+        >
+          <Plan
+            v-if="activePlan"
+            :plan="activePlan"
+            :pending-approval="isPlanPendingApproval"
+            @approve="emit('approvePlan')"
+            @reject="emit('rejectPlan')"
+          />
+        </TransitionHeight>
         <AgentInput
           ref="inputEl"
           v-model="inputValue"
@@ -98,7 +105,7 @@ import {
   onBeforeUnmount,
   useBlokkli,
 } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, TransitionHeight } from '#blokkli/editor/components'
 import Conversation from './Conversation/index.vue'
 import PendingMutation from './PendingMutation/index.vue'
 import DebugGallery from './DebugGallery/index.vue'
@@ -209,19 +216,23 @@ function scrollToBottom() {
 const conversationContainer = useTemplateRef('conversationContainer')
 let resizeObserver: ResizeObserver | null = null
 
-watch(conversationContainer, (el, _oldEl, onCleanup) => {
-  if (!el) return
-  resizeObserver = new ResizeObserver(() => {
-    if (isAtBottom.value) {
-      scrollToBottom()
-    }
-  })
-  resizeObserver.observe(el)
-  onCleanup(() => {
-    resizeObserver?.disconnect()
-    resizeObserver = null
-  })
-}, { immediate: true })
+watch(
+  conversationContainer,
+  (el, _oldEl, onCleanup) => {
+    if (!el) return
+    resizeObserver = new ResizeObserver(() => {
+      if (isAtBottom.value) {
+        scrollToBottom()
+      }
+    })
+    resizeObserver.observe(el)
+    onCleanup(() => {
+      resizeObserver?.disconnect()
+      resizeObserver = null
+    })
+  },
+  { immediate: true },
+)
 
 onBeforeUnmount(() => {
   resizeObserver?.disconnect()
@@ -290,7 +301,8 @@ function onWelcomePrompt(prompt: string) {
 }
 
 function onSubmit() {
-  if (!inputValue.value.trim() || props.isProcessing || !props.isConnected) return
+  if (!inputValue.value.trim() || props.isProcessing || !props.isConnected)
+    return
   emit('sendPrompt', inputValue.value)
   inputValue.value = ''
   scrollToBottomOnSend()

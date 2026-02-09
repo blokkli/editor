@@ -272,6 +272,12 @@ export type McpToolDefinition<
    * When provided, the debug view will render the component with these params.
    */
   mockParams?: () => z.infer<TParamsSchema>
+
+  /**
+   * Optional additional mock param variants for the debug gallery.
+   * Each entry renders an extra instance of the component.
+   */
+  mockParamsVariants?: () => z.infer<TParamsSchema>[]
 }
 
 // ============================================================================
@@ -305,6 +311,7 @@ export type FactoryResolvedTool = {
   prunedSummary?: (result: any) => string
   execute: (...args: any[]) => any
   mockParams?: () => any
+  mockParamsVariants?: () => any[]
 }
 
 /**

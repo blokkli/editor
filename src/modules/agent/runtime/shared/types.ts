@@ -13,6 +13,16 @@ export type GenericTextBlock = {
 }
 
 /**
+ * Skill content block - loaded skill guidelines injected into the conversation.
+ * Providers serialize this as a text block for the API.
+ */
+export type GenericSkillBlock = {
+  type: 'skill'
+  name: string
+  text: string
+}
+
+/**
  * Tool use content block - assistant requesting tool execution.
  */
 export type GenericToolUseBlock = {
@@ -37,6 +47,7 @@ export type GenericToolResultBlock = {
  */
 export type GenericContentBlock =
   | GenericTextBlock
+  | GenericSkillBlock
   | GenericToolUseBlock
   | GenericToolResultBlock
 
@@ -201,33 +212,146 @@ export type ClientPlanState = {
 export type ClientToolDefinition = {
   name: string
   description: string
-  input_schema: object
+  input_schema: Record<string, unknown>
   lazy?: boolean
   category?: 'query' | 'mutation'
   volatile?: boolean
 }
 
 /**
+ * Validation schemas for client messages.
+ * These are the single source of truth — the ClientMessage type is derived below.
+ */
+
+const blockBundleContentFieldSchema = z.union([
+  z.object({
+    name: z.string(),
+    label: z.string(),
+    type: z.enum(['plain', 'markup']),
+  }),
+  z.object({
+    name: z.string(),
+    label: z.string(),
+    type: z.enum(['reference', 'link']),
+    allowed: z.array(
+      z.object({
+        type: z.string(),
+        bundles: z.array(z.string()),
+      }),
+    ),
+  }),
+])
+
+const blockBundleBlockFieldSchema = z.object({
+  name: z.string(),
+  label: z.string(),
+  allowedBundles: z.array(z.string()),
+  cardinality: z.number(),
+})
+
+const blockBundleSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+  contentFields: z.array(blockBundleContentFieldSchema),
+  blockFields: z.array(blockBundleBlockFieldSchema),
+})
+
+const fragmentSchema = z.object({
+  name: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+})
+
+const pageContextSchema = z.object({
+  title: z.string(),
+  entityType: z.string(),
+  entityUuid: z.string(),
+  entityBundle: z.string(),
+  bundleLabel: z.string(),
+  itemEntityType: z.string(),
+  bundles: z.array(blockBundleSchema),
+  interfaceLanguage: z.string(),
+  entityLanguage: z.string(),
+  isPublished: z.boolean().nullable(),
+  editMode: z.enum(['readonly', 'editing', 'translating', 'review']),
+  fragments: z.array(fragmentSchema),
+  entityContentFields: z.array(blockBundleContentFieldSchema),
+})
+
+const clientToolDefinitionSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  input_schema: z.record(z.string(), z.unknown()),
+  lazy: z.boolean().optional(),
+  category: z.enum(['query', 'mutation']).optional(),
+  volatile: z.boolean().optional(),
+})
+
+const genericContentBlockSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('text'), text: z.string() }),
+  z.object({ type: z.literal('skill'), name: z.string(), text: z.string() }),
+  z.object({
+    type: z.literal('tool_use'),
+    id: z.string(),
+    name: z.string(),
+    input: z.unknown(),
+  }),
+  z.object({
+    type: z.literal('tool_result'),
+    tool_use_id: z.string(),
+    content: z.string(),
+    is_error: z.boolean().optional(),
+  }),
+])
+
+const genericMessageSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.union([z.string(), z.array(genericContentBlockSchema)]),
+})
+
+const conversationStateSnapshotSchema = z.object({
+  messages: z.array(genericMessageSchema),
+  activatedLazyTools: z.array(z.string()),
+  hash: z.string(),
+})
+
+export const clientMessageSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('authenticate'), authToken: z.string() }),
+  z.object({
+    type: z.literal('init'),
+    tools: z.array(clientToolDefinitionSchema),
+    pageContext: pageContextSchema,
+  }),
+  z.object({
+    type: z.literal('start'),
+    prompt: z.string(),
+    selectedUuids: z.array(z.string()).optional(),
+  }),
+  z.object({
+    type: z.literal('tool_result'),
+    callId: z.string(),
+    result: z.unknown(),
+    error: z.string().optional(),
+  }),
+  z.object({ type: z.literal('cancel') }),
+  z.object({ type: z.literal('accept') }),
+  z.object({ type: z.literal('reject') }),
+  z.object({ type: z.literal('get_transcript') }),
+  z.object({ type: z.literal('new_conversation') }),
+  z.object({
+    type: z.literal('restore_conversation'),
+    state: conversationStateSnapshotSchema,
+  }),
+  z.object({ type: z.literal('plan_approve') }),
+  z.object({ type: z.literal('plan_reject') }),
+  z.object({ type: z.literal('ping') }),
+])
+
+/**
  * Messages sent from client to server over WebSocket.
  */
-export type ClientMessage =
-  | { type: 'authenticate'; authToken: string }
-  | {
-      type: 'init'
-      tools: ClientToolDefinition[]
-      pageContext: PageContext
-    }
-  | { type: 'start'; prompt: string; selectedUuids?: string[] }
-  | { type: 'tool_result'; callId: string; result: unknown; error?: string }
-  | { type: 'cancel' }
-  | { type: 'accept' }
-  | { type: 'reject' }
-  | { type: 'get_transcript' }
-  | { type: 'new_conversation' }
-  | { type: 'restore_conversation'; state: ConversationStateSnapshot }
-  | { type: 'plan_approve' }
-  | { type: 'plan_reject' }
-  | { type: 'ping' }
+export type ClientMessage = z.infer<typeof clientMessageSchema>
 
 /**
  * Messages sent from server to client over WebSocket.

@@ -151,6 +151,14 @@ msgctxt "aiAgentApprovePlan"
 msgid "Accept plan"
 msgstr ""
 
+msgctxt "aiAgentAskQuestionOther"
+msgid "None of the above"
+msgstr ""
+
+msgctxt "aiAgentAskQuestionOtherPlaceholder"
+msgid "Type your answer..."
+msgstr ""
+
 msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer..."
 msgstr ""
@@ -449,6 +457,14 @@ msgstr ""
 
 msgctxt "aiAgentProcessing"
 msgid "Processing..."
+msgstr ""
+
+msgctxt "aiAgentRearrangeBlocksDone"
+msgid "Rearranged @count blocks"
+msgstr ""
+
+msgctxt "aiAgentRearrangeBlocksRunning"
+msgid "Rearranging blocks..."
 msgstr ""
 
 msgctxt "aiAgentRedoDone"

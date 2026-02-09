@@ -1,7 +1,10 @@
 .bk.bk-agent-panel {
-  /* Plan checklist - overrides ToolCard defaults */
   .bk-agent-plan {
-    @apply mb-10 mt-0 overflow-hidden;
+    @apply mt-0 overflow-hidden border-b-0 rounded-b-none;
+  }
+
+  .bk-agent-plan + .bk-agent-input {
+    @apply rounded-t-none relative z-30;
   }
 
   .bk-agent-plan-steps {

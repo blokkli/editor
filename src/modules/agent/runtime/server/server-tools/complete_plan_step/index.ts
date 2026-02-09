@@ -22,24 +22,25 @@ export default defineServerSideTool({
   },
 
   handle(ctx) {
-    if (!ctx.plan) {
+    // Find current in_progress step
+    const currentStep = ctx.plan?.steps.find(
+      (s) => s.status === 'in_progress',
+    )
+    if (!ctx.plan || !currentStep) {
       return {
         toolResults: [
           {
             type: 'tool_result',
             tool_use_id: ctx.toolUseId,
-            content: JSON.stringify({ error: 'No active plan' }),
+            content: JSON.stringify({ error: 'No active plan step' }),
             is_error: true,
           },
         ],
       }
     }
 
-    // Find current in_progress step and mark completed
-    const currentStep = ctx.plan.steps.find((s) => s.status === 'in_progress')
-    if (currentStep) {
-      currentStep.status = 'completed'
-    }
+    // Mark current step completed
+    currentStep.status = 'completed'
 
     // Find next pending step and mark in_progress
     const nextStep = ctx.plan.steps.find((s) => s.status === 'pending')
@@ -47,11 +48,11 @@ export default defineServerSideTool({
       nextStep.status = 'in_progress'
     }
 
-    // Send server_tool_result for UI first
+    // Send server_tool_result for UI
     ctx.send({
       type: 'server_tool_result',
       tool: 'complete_plan_step',
-      label: currentStep?.label || 'Step completed',
+      label: currentStep.label,
     })
 
     // Send updated plan to client
@@ -67,7 +68,7 @@ export default defineServerSideTool({
             type: 'tool_result',
             tool_use_id: ctx.toolUseId,
             content: JSON.stringify({
-              completed: currentStep?.label,
+              completed: currentStep.label,
               next_step: {
                 label: nextStep.label,
                 description: nextStep.description,
@@ -78,13 +79,20 @@ export default defineServerSideTool({
       }
     }
 
+    // All steps done — clear the plan
+    ctx.setPlan(null)
+    ctx.send({
+      type: 'plan_update',
+      plan: null,
+    })
+
     return {
       toolResults: [
         {
           type: 'tool_result',
           tool_use_id: ctx.toolUseId,
           content: JSON.stringify({
-            completed: currentStep?.label,
+            completed: currentStep.label,
             all_steps_completed: true,
             message: 'All plan steps are completed. Summarize what was done.',
           }),

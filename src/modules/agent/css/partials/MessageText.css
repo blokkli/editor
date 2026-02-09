@@ -12,6 +12,15 @@
       --bk-code-text: theme('colors.accent.100');
       --bk-table-color: theme('colors.accent.300');
       --bk-text-color: theme('colors.accent.50');
+
+      .bk-agent-message-text {
+        ::selection {
+          @apply bg-accent-100 text-accent-900;
+        }
+        blockquote {
+          @apply border-l-accent-500 bg-accent-900 text-white;
+        }
+      }
     }
   }
 
@@ -63,8 +72,18 @@
       color: var(--bk-link-color);
     }
 
+    a[href^='#'] {
+      @apply no-underline rounded px-3 py-1 cursor-pointer;
+      @apply bg-mono-200 text-accent-600;
+      @apply hover:bg-accent-600 hover:text-white;
+      &:before {
+        content: '↗';
+        @apply align-sub mr-2;
+      }
+    }
+
     blockquote {
-      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5;
+      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5 rounded-md;
     }
 
     pre {

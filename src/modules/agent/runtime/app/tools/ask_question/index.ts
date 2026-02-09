@@ -13,7 +13,9 @@ const paramsSchema = z.object({
   multiSelect: z
     .boolean()
     .default(false)
-    .describe('Allow selecting multiple options'),
+    .describe(
+      `Allow selecting multiple options. If false, the user has the option to enter a custom option if none of the options are good.`,
+    ),
 })
 
 const resultSchema = z.object({
@@ -33,7 +35,7 @@ export type AskQuestionResult = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'ask_question',
   description:
-    'Ask the user a question with predefined options. Use for clarifications or choices. Prefer this over listing options in a message!!',
+    'Ask the user a question with predefined options. ALWAYS use for clarifications or choices. Prefer this over listing options in a message!!',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
@@ -54,4 +56,16 @@ export default defineBlokkliAgentTool({
     ],
     multiSelect: false,
   }),
+  mockParamsVariants: () => [
+    {
+      question: 'Which sections should be included on the page?',
+      options: [
+        { value: 'hero', label: 'Hero' },
+        { value: 'features', label: 'Features' },
+        { value: 'testimonials', label: 'Testimonials' },
+        { value: 'pricing', label: 'Pricing' },
+      ],
+      multiSelect: true,
+    },
+  ],
 })

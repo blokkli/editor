@@ -6,7 +6,6 @@
     @cancel="cancel"
   >
     <div class="bk-agent-tool-question-inner">
-      <!-- Multi-select: Checkboxes -->
       <FormCheckboxes
         v-if="params.multiSelect"
         id="ask-question"
@@ -15,14 +14,25 @@
         :options="params.options"
       />
 
-      <!-- Single-select: Radio -->
-      <FormRadio
-        v-else
-        id="ask-question"
-        v-model="selectedSingle"
-        label=""
-        :options="params.options"
-      />
+      <div v-else>
+        <FormRadio
+          id="ask-question"
+          v-model="selectedSingle"
+          label=""
+          :options="radioOptions"
+        />
+        <div v-if="isOtherSelected" class="bk-agent-tool-question-other">
+          <textarea
+            ref="otherTextarea"
+            v-model="otherText"
+            class="bk-form-input"
+            :rows="2"
+            :placeholder="
+              $t('aiAgentAskQuestionOtherPlaceholder', 'Type your answer...')
+            "
+          />
+        </div>
+      </div>
     </div>
 
     <template #actions>
@@ -39,11 +49,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli } from '#imports'
+import { ref, computed, watch, nextTick, useBlokkli } from '#imports'
 import { Icon, FormRadio, FormCheckboxes } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AskQuestionParams, AskQuestionResult } from './index'
+
+const OTHER_VALUE = '__other__'
 
 const props = defineProps<{
   context: McpToolContext
@@ -58,10 +70,33 @@ const { $t } = useBlokkli()
 
 const selectedSingle = ref<string>('')
 const selectedMulti = ref<string[]>([])
+const otherText = ref('')
+const otherTextarea = ref<HTMLTextAreaElement | null>(null)
+
+const radioOptions = computed(() => [
+  ...props.params.options,
+  {
+    value: OTHER_VALUE,
+    label: $t('aiAgentAskQuestionOther', 'None of the above'),
+  },
+])
+
+const isOtherSelected = computed(() => selectedSingle.value === OTHER_VALUE)
+
+watch(isOtherSelected, (isOther) => {
+  if (isOther) {
+    nextTick(() => {
+      otherTextarea.value?.focus()
+    })
+  }
+})
 
 const hasSelection = computed(() => {
   if (props.params.multiSelect) {
     return selectedMulti.value.length > 0
+  }
+  if (isOtherSelected.value) {
+    return otherText.value.trim().length > 0
   }
   return selectedSingle.value !== ''
 })
@@ -72,6 +107,9 @@ function getSelectedLabel(): string {
       .map((v) => props.params.options.find((o) => o.value === v)?.label)
       .filter(Boolean)
     return labels.join(', ')
+  }
+  if (isOtherSelected.value) {
+    return otherText.value.trim()
   }
   return (
     props.params.options.find((o) => o.value === selectedSingle.value)?.label ||
@@ -85,7 +123,10 @@ function confirm() {
   if (props.params.multiSelect) {
     emit('done', { selected: selectedMulti.value, label })
   } else {
-    emit('done', { selected: selectedSingle.value, label })
+    const value = isOtherSelected.value
+      ? otherText.value.trim()
+      : selectedSingle.value
+    emit('done', { selected: value, label })
   }
 }
 

@@ -4,7 +4,7 @@ type ActiveEnvironment {
   name: String
 }
 
-"""Paragraph Template"""
+"""Seitenabschnitts-Vorlage"""
 type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -13,10 +13,10 @@ type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLink
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """{value} {field: description} An optional description of the template."""
+  """{value} {field: description} Eine optionale Beschreibung der Vorlage."""
   description: String
 
-  """{field: description} An optional description of the template."""
+  """{field: description} Eine optionale Beschreibung der Vorlage."""
   descriptionRawField: FieldItemListStringLong
 
   """The bundle ID of the entity."""
@@ -30,14 +30,16 @@ type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLink
   id: String
 
   """
-  {value} {field: is_default} Auto-apply when adding a paragraph of this type.
-  Only allowed when template contains exactly one paragraph.
+  {value} {field: is_default} Automatisch anwenden beim Hinzufügen eines
+  Seitenabschnitts dieses Typs. Nur erlaubt, wenn die Vorlage genau einen
+  Seitenabschnitt enthält.
   """
   isDefault: Boolean
 
   """
-  {field: is_default} Auto-apply when adding a paragraph of this type. Only
-  allowed when template contains exactly one paragraph.
+  {field: is_default} Automatisch anwenden beim Hinzufügen eines
+  Seitenabschnitts dieses Typs. Nur erlaubt, wenn die Vorlage genau einen
+  Seitenabschnitt enthält.
   """
   isDefaultRawField: FieldItemListBoolean
 
@@ -50,10 +52,14 @@ type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLink
   """The langcode of this entity."""
   langcode: String
 
-  """{value} {field: paragraphs} The paragraphs that make up this template."""
+  """
+  {value} {field: paragraphs} Die Seitenabschnitte, aus denen diese Vorlage besteht.
+  """
   paragraphs: [Paragraph]
 
-  """{field: paragraphs} The paragraphs that make up this template."""
+  """
+  {field: paragraphs} Die Seitenabschnitte, aus denen diese Vorlage besteht.
+  """
   paragraphsRawField: FieldItemListEntityReferenceRevisions
   templateBundles: [String!]!
   translationLanguages: [String!]!
@@ -122,7 +128,7 @@ interface Comment implements Entity & EntityLinkable {
   uuid: String!
 }
 
-"""Blokkli Node"""
+"""Blokkli Node {entity_type: comment, bundle: blokkli_node}"""
 type CommentBlokkliNode implements Comment & Entity & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -190,7 +196,7 @@ type CommentBlokkliNode implements Comment & Entity & EntityLinkable {
 type ConfigurableLanguage implements Entity & LanguageInterface {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
-  direction: Int!
+  direction: String
 
   """The bundle ID of the entity."""
   entityBundle: String!
@@ -216,6 +222,11 @@ type ConfigurableLanguage implements Entity & LanguageInterface {
   """The unique UUID."""
   uuid: String!
   weight: Int
+}
+
+type DeadLinkCheck {
+  isValid: Boolean!
+  path: String!
 }
 
 type DefaultEntityUrl implements EntityUrl & InternalUrl & Url {
@@ -270,16 +281,28 @@ enum DrupalDateFormat {
   """11-14"""
   HTML_YEARLESS_DATE
 
-  """Montag, 14. November 2022 - 14:52"""
+  """Montag, 14 November 2022 - 14:52"""
   LONG
 
-  """Mo., 14.11.2022 - 14:52"""
+  """Mo. 14 Nov 2022 - 14:52"""
   MEDIUM
 
-  """14.  November  2022"""
+  """Montag, 14. November 2022"""
+  NEWS
+
+  """November"""
+  NEWS_MONTH
+
+  """14. November 2022"""
+  NEWS_SHORT
+
+  """2022"""
+  NEWS_YEAR
+
+  """14 November 2022"""
   OLIVERO_MEDIUM
 
-  """14.11.2022 - 14:52"""
+  """14 Nov 2022 - 14:52"""
   SHORT
 }
 
@@ -434,7 +457,7 @@ enum EntityQuerySortOrder {
 
 """
 Interface for entities that are revisionable.
-This corresponds to the core RevisionableInterface but is only implemeted by entity types where revisions are enabled.
+This corresponds to the core RevisionableInterface but is only implemented by entity types where revisions are enabled.
 """
 interface EntityRevisionable implements Entity {
   """Check entity access for the given operation, defaults to view."""
@@ -509,7 +532,7 @@ interface EntityTranslatable implements Entity {
 }
 
 enum EntityType {
-  """Paragraph Template"""
+  """Seitenabschnitts-Vorlage"""
   BLOKKLI_PARAGRAPH_TEMPLATE
 
   """Kommentar"""
@@ -579,6 +602,16 @@ type ExternalUrl implements Url {
   path: String!
 }
 
+"""
+A scalar defining a map (object) where both properties and values are strings.
+Example:
+{
+  "BRAND:123": "digitec",
+  "REGION:456": "Zürich"
+}
+"""
+scalar FacetTermLabels
+
 """A field item list containing items."""
 interface FieldItemList {
   """The number of field items."""
@@ -597,7 +630,7 @@ interface FieldItemList {
   list: [FieldItemType]
 }
 
-"""Adresse"""
+"""Name und Adresse"""
 type FieldItemListAddress implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -744,7 +777,7 @@ type FieldItemListEntityReference implements FieldItemList {
   list: [FieldItemTypeEntityReference]
 }
 
-"""Abschnitte"""
+"""Inhalt"""
 type FieldItemListEntityReferenceRevisions implements FieldItemList {
   canEdit: Boolean
 
@@ -811,6 +844,27 @@ type FieldItemListFileUri implements FieldItemList {
   list: [FieldItemTypeFileUri]
 }
 
+"""Position"""
+type FieldItemListGeofield implements FieldItemList {
+  """The number of field items."""
+  count: Int!
+
+  """Get the entity the field belongs to."""
+  entity: Entity
+
+  """The first field item."""
+  first: FieldItemTypeGeofield
+
+  """Get a string representation of all field items."""
+  getString: String!
+
+  """True if the field list has no items."""
+  isEmpty: Boolean!
+
+  """Array of field items."""
+  list: [FieldItemTypeGeofield]
+}
+
 """Miniaturbild"""
 type FieldItemListImage implements FieldItemList {
   """The number of field items."""
@@ -874,7 +928,7 @@ type FieldItemListLanguage implements FieldItemList {
   list: [FieldItemTypeLanguage]
 }
 
-"""Link"""
+"""An"""
 type FieldItemListLink implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -979,7 +1033,7 @@ type FieldItemListString implements FieldItemList {
   list: [FieldItemTypeString]
 }
 
-"""Beschreibung"""
+"""Lead"""
 type FieldItemListStringLong implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -1000,7 +1054,28 @@ type FieldItemListStringLong implements FieldItemList {
   list: [FieldItemTypeStringLong]
 }
 
-"""Telefonnummer"""
+"""Chart Table"""
+type FieldItemListTablefield implements FieldItemList {
+  """The number of field items."""
+  count: Int!
+
+  """Get the entity the field belongs to."""
+  entity: Entity
+
+  """The first field item."""
+  first: FieldItemTypeTablefield
+
+  """Get a string representation of all field items."""
+  getString: String!
+
+  """True if the field list has no items."""
+  isEmpty: Boolean!
+
+  """Array of field items."""
+  list: [FieldItemTypeTablefield]
+}
+
+"""Telefon"""
 type FieldItemListTelephone implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -1042,6 +1117,27 @@ type FieldItemListTextLong implements FieldItemList {
   list: [FieldItemTypeTextLong]
 }
 
+"""Inhalt"""
+type FieldItemListTextWithSummary implements FieldItemList {
+  """The number of field items."""
+  count: Int!
+
+  """Get the entity the field belongs to."""
+  entity: Entity
+
+  """The first field item."""
+  first: FieldItemTypeTextWithSummary
+
+  """Get a string representation of all field items."""
+  getString: String!
+
+  """True if the field list has no items."""
+  isEmpty: Boolean!
+
+  """Array of field items."""
+  list: [FieldItemTypeTextWithSummary]
+}
+
 """Letzter Zugriff"""
 type FieldItemListTimestamp implements FieldItemList {
   """The number of field items."""
@@ -1080,7 +1176,7 @@ type FieldItemTypeAddress implements FieldItemType {
   """{field: address_line2} Die zweite Zeile des Adressblocks"""
   addressLine2: String
 
-  """{field: address_line3} The third line of the address block"""
+  """{field: address_line3} Die dritte Zeile des Adressblocks"""
   addressLine3: String
 
   """
@@ -1229,6 +1325,42 @@ type FieldItemTypeFileUri implements FieldItemType {
   value: Url
 }
 
+"""Geofield"""
+type FieldItemTypeGeofield implements FieldItemType & FieldItemTypeStringInterface {
+  """{field: bottom} Begrenz. unten"""
+  bottom: Float
+
+  """{field: geo_type} Geometrietyp"""
+  geoType: String
+
+  """{field: geohash} Geohash"""
+  geohash: String
+
+  """True if this item is considered empty."""
+  isEmpty: Boolean!
+
+  """{field: lat} Zentroid Breite"""
+  lat: Float
+
+  """{field: latlon} Breiten- und Längengrad"""
+  latlon: String
+
+  """{field: left} Begrenz. links"""
+  left: Float
+
+  """{field: lon} Zentroid Länge"""
+  lon: Float
+
+  """{field: right} Begrenz. rechts"""
+  right: Float
+
+  """{field: top} Begrenz. oben"""
+  top: Float
+
+  """{field: value} Geometrie"""
+  value: String
+}
+
 """Image"""
 type FieldItemTypeImage implements FieldItemType {
   """{field: alt} Alternativer Text"""
@@ -1365,10 +1497,37 @@ type FieldItemTypeStringLong implements FieldItemType & FieldItemTypeStringInter
   value: String
 }
 
+"""Table Field"""
+type FieldItemTypeTablefield implements FieldItemType {
+  """{field: caption} Table Caption"""
+  caption: String
+
+  """{field: format} Textformat"""
+  format: String
+
+  """True if this item is considered empty."""
+  isEmpty: Boolean!
+  rows: [[String]]
+
+  """{field: table_value} Stringified table value"""
+  tableValue: String
+
+  """{field: value} Table data"""
+  value: MapData
+}
+
 """Telefonnummer"""
 type FieldItemTypeTelephone implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
+
+  """
+  Parse the phone number. If the number is not valid it will return NULL.
+  """
+  parsed(
+    """The default region to use when parsing the phone number."""
+    region: String
+  ): ParsedPhoneNumber
 
   """{field: value} Telefonnummer"""
   value: String
@@ -1384,6 +1543,27 @@ type FieldItemTypeTextLong implements FieldItemType & FieldItemTypeStringInterfa
 
   """{field: processed} Verarbeiteter Text"""
   processed: String
+
+  """{field: value} Text"""
+  value: String
+}
+
+"""Text (formatiert, lang, mit Zusammenfassung)"""
+type FieldItemTypeTextWithSummary implements FieldItemType & FieldItemTypeStringInterface {
+  """{field: format} Textformat"""
+  format: String
+
+  """True if this item is considered empty."""
+  isEmpty: Boolean!
+
+  """{field: processed} Verarbeiteter Text"""
+  processed: String
+
+  """{field: summary} Zusammenfassung"""
+  summary: String
+
+  """{field: summary_processed} Verarbeitete Zusammenfassung"""
+  summaryProcessed: String
 
   """{field: value} Text"""
   value: String
@@ -1419,6 +1599,25 @@ type File implements Entity & EntityLinkable {
 
   """The entity type ID."""
   entityTypeId: String!
+
+  """{value} {field: filemime} MIME-Typ der Datei"""
+  filemime: String
+
+  """{field: filemime} MIME-Typ der Datei"""
+  filemimeRawField: FieldItemListString
+
+  """{value} {field: filename} Name der Datei ohne Pfadbestandteile"""
+  filename: String
+
+  """{field: filename} Name der Datei ohne Pfadbestandteile"""
+  filenameRawField: FieldItemListString
+
+  """{value} {field: filesize} Die Dateigröße in Bytes."""
+  filesize: Int
+
+  """{field: filesize} Die Dateigröße in Bytes."""
+  filesizeRawField: FieldItemListInteger
+  fullUrl: String
   id: String
 
   """Determines whether the entity is new."""
@@ -1501,22 +1700,27 @@ enum Langcode {
 
   """English"""
   EN
-
-  """French"""
-  FR
 }
 
 type Language implements LanguageInterface {
-  direction: Int!
+  direction: String
   id: String
   isLocked: Boolean!
   name: String!
   weight: Int
 }
 
+enum LanguageDirection {
+  """Left to right"""
+  LTR
+
+  """Right to left"""
+  RTL
+}
+
 """Interface for a language."""
 interface LanguageInterface {
-  direction: Int!
+  direction: String
   id: String
   isLocked: Boolean!
   name: String!
@@ -1551,12 +1755,12 @@ interface Media implements Entity & EntityLinkable & EntityRevisionable {
   accessCheck(operation: String): Boolean!
 
   """
-  {value} {field: changed} Der Zeitpunkt, zu dem der Medieneintrag zuletzt bearbeitet wurde.
+  {value} {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
   """
   changed: String
 
   """
-  {field: changed} Der Zeitpunkt, zu dem der Medieneintrag zuletzt bearbeitet wurde.
+  {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
   """
   changedRawField: FieldItemListChanged
 
@@ -1635,7 +1839,7 @@ interface Media implements Entity & EntityLinkable & EntityRevisionable {
   wasDefaultRevision: Boolean
 }
 
-"""Audio"""
+"""Audio {entity_type: media, bundle: audio}"""
 type MediaAudio implements Entity & EntityLinkable & EntityRevisionable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -1731,7 +1935,7 @@ type MediaAudio implements Entity & EntityLinkable & EntityRevisionable & Media 
   wasDefaultRevision: Boolean
 }
 
-"""Dokument"""
+"""Dokument {entity_type: media, bundle: document}"""
 type MediaDocument implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -1804,6 +2008,7 @@ type MediaDocument implements Entity & EntityLinkable & EntityRevisionable & Ent
 
   """{field: path} """
   pathRawField: FieldItemListPath
+  pdfThumbnail: FieldItemTypeImage
 
   """{value} {field: status} """
   status: Boolean
@@ -1839,18 +2044,18 @@ type MediaDocument implements Entity & EntityLinkable & EntityRevisionable & Ent
   wasDefaultRevision: Boolean
 }
 
-"""Icon"""
+"""Icon {entity_type: media, bundle: icon}"""
 type MediaIcon implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
   """
-  {value} {field: changed} Der Zeitpunkt, zu dem der Medieneintrag zuletzt bearbeitet wurde.
+  {value} {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
   """
   changed: String
 
   """
-  {field: changed} Der Zeitpunkt, zu dem der Medieneintrag zuletzt bearbeitet wurde.
+  {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
   """
   changedRawField: FieldItemListChanged
 
@@ -1947,7 +2152,7 @@ type MediaIcon implements Entity & EntityLinkable & EntityRevisionable & EntityT
   wasDefaultRevision: Boolean
 }
 
-"""Image"""
+"""Image {entity_type: media, bundle: image}"""
 type MediaImage implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2067,7 +2272,7 @@ type MediaImage implements Entity & EntityLinkable & EntityRevisionable & Entity
   wasDefaultRevision: Boolean
 }
 
-"""Extern gehostetes Video"""
+"""Extern gehostetes Video {entity_type: media, bundle: remote_video}"""
 type MediaRemoteVideo implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2188,7 +2393,7 @@ type MediaRemoteVideo implements Entity & EntityLinkable & EntityRevisionable & 
   wasDefaultRevision: Boolean
 }
 
-"""Video"""
+"""Video {entity_type: media, bundle: video}"""
 type MediaVideo implements Entity & EntityLinkable & EntityRevisionable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2358,46 +2563,7 @@ interface MenuLinkContent implements Entity & EntityLinkable & EntityRevisionabl
   wasDefaultRevision: Boolean
 }
 
-"""Benutzermenü"""
-type MenuLinkContentAccount implements Entity & EntityLinkable & EntityRevisionable & MenuLinkContent {
-  """Check entity access for the given operation, defaults to view."""
-  accessCheck(operation: String): Boolean!
-
-  """The bundle ID of the entity."""
-  entityBundle: String!
-
-  """
-  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
-  """
-  entityRevisionId: String
-
-  """The entity type ID."""
-  entityTypeId: String!
-  id: String
-
-  """Checks if this entity is the latest revision."""
-  isLatestRevision: Boolean
-
-  """Determines whether the entity is new."""
-  isNew: Boolean!
-
-  """The label of this entity."""
-  label: String
-
-  """The langcode of this entity."""
-  langcode: String
-
-  """Get the URL, defaults to canonical."""
-  url(options: UrlOptions, rel: String): Url
-
-  """The unique UUID."""
-  uuid: String!
-
-  """TRUE if the entity object was a revision, FALSE otherwise."""
-  wasDefaultRevision: Boolean
-}
-
-"""Verwaltung"""
+"""Verwaltung {entity_type: menu_link_content, bundle: admin}"""
 type MenuLinkContentAdmin implements Entity & EntityLinkable & EntityRevisionable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2436,7 +2602,7 @@ type MenuLinkContentAdmin implements Entity & EntityLinkable & EntityRevisionabl
   wasDefaultRevision: Boolean
 }
 
-"""Fußzeile"""
+"""Fußzeile {entity_type: menu_link_content, bundle: footer}"""
 type MenuLinkContentFooter implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2487,7 +2653,7 @@ type MenuLinkContentFooter implements Entity & EntityLinkable & EntityRevisionab
   wasDefaultRevision: Boolean
 }
 
-"""Hauptnavigation"""
+"""Hauptnavigation {entity_type: menu_link_content, bundle: main}"""
 type MenuLinkContentMain implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2538,8 +2704,8 @@ type MenuLinkContentMain implements Entity & EntityLinkable & EntityRevisionable
   wasDefaultRevision: Boolean
 }
 
-"""Werkzeuge"""
-type MenuLinkContentTools implements Entity & EntityLinkable & EntityRevisionable & MenuLinkContent {
+"""Benutzermenü {entity_type: menu_link_content, bundle: unexposed}"""
+type MenuLinkContentUnexposed implements Entity & EntityLinkable & EntityRevisionable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
@@ -2617,16 +2783,51 @@ type Mutation {
   messengerMessages: MessengerMessage
   paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!): [Comment]
 
-  """Delete an agent conversation by UUID."""
-  paragraphsBlokkliAgentConversationDelete(uuid: String!): ParagraphsBlokkliAgentConversationMutationResult!
+  """
+  Delete an agent conversation by its UUID. Returns a success/error result.
+  The data producer performs its own entity access check.
+  """
+  paragraphsBlokkliAgentConversationDelete(
+    """The UUID of the conversation to delete."""
+    uuid: String!
+  ): ParagraphsBlokkliAgentConversationMutationResult!
 
   """
-  Upsert an agent conversation. If a conversation with the given UUID exists,
-  it is updated; otherwise a new one is created.
+  Create or update an agent conversation. If a conversation with the given
+  UUID already exists and the current user has update access, its fields are
+  overwritten. Otherwise a new conversation is created with the current user
+  as owner. The data producer performs its own entity access checks.
   """
-  paragraphsBlokkliAgentConversationUpsert(dataServer: String!, dataUser: String!, hash: String!, hostEntityType: String!, hostEntityUuid: String!, title: String!, uuid: String!): ParagraphsBlokkliAgentConversationMutationResult!
+  paragraphsBlokkliAgentConversationUpsert(
+    """JSON-encoded server-side conversation state."""
+    dataServer: String!
 
-  """Generate a token for using the blökkli agent."""
+    """JSON-encoded user-visible conversation state."""
+    dataUser: String!
+
+    """Tamper-prevention hash from the frontend."""
+    hash: String!
+
+    """The entity type ID of the host entity."""
+    hostEntityType: String!
+
+    """The UUID of the host entity this conversation belongs to."""
+    hostEntityUuid: String!
+
+    """The user-defined title."""
+    title: String!
+
+    """
+    The UUID for the conversation (used as stable identifier across upserts).
+    """
+    uuid: String!
+  ): ParagraphsBlokkliAgentConversationMutationResult!
+
+  """
+  Generate an HMAC authentication token for the blökkli agent WebSocket.
+  Returns NULL if the current user lacks the "use paragraphs blokkli agent"
+  permission.
+  """
   paragraphsBlokkliAgentToken: String
   paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
@@ -2640,7 +2841,9 @@ type Mutation {
     """If true, the mutation is executed but not persisted in the edit state."""
     preview: Boolean
   ): ParagraphsEditMutationState
+  pbCheckDeadLinks(paths: [String]): [DeadLinkCheck!]!
   ping: String
+  trackSearchClick(entityType: EntityType!, id: String!, position: Int!, text: String!, total: Int!): Boolean
 
   """Login with a username or password."""
   userLogin(password: String!, username: String!): UserLoginResponse
@@ -2662,6 +2865,15 @@ type Mutation {
 
   """Login with a timestamp and hash from the password reset email."""
   userPasswordResetLogin(hash: String!, id: ID!, timestamp: Int!): UserPasswordResetLoginResponse
+}
+
+"""Result type for newsEntityQuery containing press release items."""
+type NewsEntityQueryResult {
+  """The list of matched press releases."""
+  items: [NodePressRelease]
+
+  """The total number of results."""
+  total: Int!
 }
 
 """Inhalt"""
@@ -2725,6 +2937,7 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
 
   """The langcode of this entity."""
   langcode: String
+  matchingRedirects: [Redirect]
 
   """
   {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
@@ -2742,6 +2955,9 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
 
   """{field: nid} """
   nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
 
   """{value} {field: path} """
   path: FieldItemTypePath
@@ -2817,8 +3033,8 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
   wasDefaultRevision: Boolean
 }
 
-"""Kontakt"""
-type NodeContact implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Node {
+"""Handbuch {entity_type: node, bundle: handbook}"""
+type NodeHandbook implements Entity & EntityLinkable & EntityRevisionable & Node {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
@@ -2866,33 +3082,21 @@ type NodeContact implements Entity & EntityLinkable & EntityRevisionable & Entit
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_email} """
-  fieldEmail: String
-
-  """{field: field_email} """
-  fieldEmailRawField: FieldItemListEmail
-
-  """{value} {field: field_job_title} """
-  fieldJobTitle: String
-
-  """{field: field_job_title} """
-  fieldJobTitleRawField: FieldItemListString
+  """
+  {value} {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLead: String
 
   """
-  {value} {field: field_phone_number} Das internationale Telefonnummer-Format verwenden, zB +41 79 111 11 11
+  {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
   """
-  fieldPhoneNumber: String
+  fieldLeadRawField: FieldItemListStringLong
 
-  """
-  {field: field_phone_number} Das internationale Telefonnummer-Format verwenden, zB +41 79 111 11 11
-  """
-  fieldPhoneNumberRawField: FieldItemListTelephone
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [Paragraph]
 
-  """{value} {field: field_photo} """
-  fieldPhoto: MediaImage
-
-  """{field: field_photo} """
-  fieldPhotoRawField: FieldItemListEntityReference
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
   id: String
 
   """Checks if this entity is the latest revision."""
@@ -2901,11 +3105,18 @@ type NodeContact implements Entity & EntityLinkable & EntityRevisionable & Entit
   """Determines whether the entity is new."""
   isNew: Boolean!
 
+  """
+  Whether this handbook node is the configured overview page (from field_handbook in global config).
+  """
+  isOverview: Boolean!
+
   """The label of this entity."""
   label: String
 
   """The langcode of this entity."""
   langcode: String
+  matchingRedirects: [Redirect]
+  menuChildren: [MenuLinkTreeElement]
 
   """
   {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
@@ -2923,6 +3134,196 @@ type NodeContact implements Entity & EntityLinkable & EntityRevisionable & Entit
 
   """{field: nid} """
   nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
+
+  """{value} {field: path} """
+  path: FieldItemTypePath
+
+  """{field: path} """
+  pathRawField: FieldItemListPath
+
+  """{value} {field: promote} """
+  promote: Boolean
+
+  """{field: promote} """
+  promoteRawField: FieldItemListBoolean
+
+  """{value} {field: publish_on} """
+  publishOn: String
+
+  """{field: publish_on} """
+  publishOnRawField: FieldItemListTimestamp
+
+  """
+  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  """
+  revisionUid: User
+
+  """
+  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  """
+  revisionUidRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: sticky} """
+  sticky: Boolean
+
+  """{field: sticky} """
+  stickyRawField: FieldItemListBoolean
+
+  """{value} {field: title} """
+  title: String
+
+  """{field: title} """
+  titleRawField: FieldItemListString
+
+  """{value} {field: uid} Der Benutzername des Autors."""
+  uid: User
+
+  """{field: uid} Der Benutzername des Autors."""
+  uidRawField: FieldItemListEntityReference
+
+  """{value} {field: unpublish_on} """
+  unpublishOn: String
+
+  """{field: unpublish_on} """
+  unpublishOnRawField: FieldItemListTimestamp
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """{value} {field: vid} """
+  vid: Int
+
+  """{field: vid} """
+  vidRawField: FieldItemListInteger
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Organisationsseite {entity_type: node, bundle: ou}"""
+type NodeOu implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Node {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
+
+  """
+  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
+  """
+  changed: String
+
+  """
+  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
+  """
+  changedRawField: FieldItemListChanged
+
+  """
+  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_hero_image} """
+  fieldHeroImage: MediaImage
+
+  """{field: field_hero_image} """
+  fieldHeroImageRawField: FieldItemListEntityReference
+
+  """
+  {value} {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLead: String
+
+  """
+  {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLeadRawField: FieldItemListStringLong
+
+  """{value} {field: field_locations} """
+  fieldLocations: [ParagraphLocation]
+
+  """{field: field_locations} """
+  fieldLocationsRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [Paragraph]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  matchingRedirects: [Redirect]
+  menuChildren: [MenuLinkTreeElement]
+
+  """
+  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
+  (nur während des Speichervorgangs verfügbar).
+  """
+  menuLink: MenuLinkContent
+
+  """
+  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  """
+  menuLinkRawField: FieldItemListEntityReference
+  menuSiblings: [MenuLinkTreeElement]
+
+  """{value} {field: nid} """
+  nid: Int
+
+  """{field: nid} """
+  nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
 
   """{value} {field: path} """
   path: FieldItemTypePath
@@ -2977,10 +3378,10 @@ type NodeContact implements Entity & EntityLinkable & EntityRevisionable & Entit
     """
     fallback: Boolean
     langcode: Langcode!
-  ): NodeContact
+  ): NodeOu
 
   """Get all translations."""
-  translations: [NodeContact]
+  translations: [NodeOu]
 
   """{value} {field: uid} Der Benutzername des Autors."""
   uid: User
@@ -3010,7 +3411,7 @@ type NodeContact implements Entity & EntityLinkable & EntityRevisionable & Entit
   wasDefaultRevision: Boolean
 }
 
-"""Seite"""
+"""Inhaltsseite {entity_type: node, bundle: page}"""
 type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Node {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -3079,13 +3480,32 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   """
   {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
   """
-  fieldLeadRawField: FieldItemListTextLong
+  fieldLeadRawField: FieldItemListStringLong
+
+  """
+  {value} {field: field_ou} Welche Organisationen für diese Seite
+  verantwortlich sind. Die erste Organisation in der Liste ist dabei die
+  «Hauptorganisation».
+  """
+  fieldOu: [NodeOu]
+
+  """
+  {field: field_ou} Welche Organisationen für diese Seite verantwortlich sind.
+  Die erste Organisation in der Liste ist dabei die «Hauptorganisation».
+  """
+  fieldOuRawField: FieldItemListEntityReference
 
   """{value} {field: field_paragraphs} """
   fieldParagraphs: [Paragraph]
 
   """{field: field_paragraphs} """
   fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_services} """
+  fieldServices: [NodeService]
+
+  """{field: field_services} """
+  fieldServicesRawField: FieldItemListEntityReference
 
   """
   {value} {field: field_teaser} Ein Teasertext, damit Teaser, die auf die Seite verweisen, den Text anzeigen können.
@@ -3095,7 +3515,7 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   """
   {field: field_teaser} Ein Teasertext, damit Teaser, die auf die Seite verweisen, den Text anzeigen können.
   """
-  fieldTeaserRawField: FieldItemListTextLong
+  fieldTeaserRawField: FieldItemListStringLong
   id: String
 
   """Checks if this entity is the latest revision."""
@@ -3109,6 +3529,9 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
 
   """The langcode of this entity."""
   langcode: String
+  matchingRedirects: [Redirect]
+  menuChildren: [MenuLinkTreeElement]
+  menuChildrenGrouped: [MenuLinkTreeElement]
 
   """
   {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
@@ -3120,12 +3543,16 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
   """
   menuLinkRawField: FieldItemListEntityReference
+  menuSiblings: [MenuLinkTreeElement]
 
   """{value} {field: nid} """
   nid: Int
 
   """{field: nid} """
   nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
 
   """{value} {field: path} """
   path: FieldItemTypePath
@@ -3213,7 +3640,219 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   wasDefaultRevision: Boolean
 }
 
-"""Medienmitteilung / News"""
+"""Polizeimeldung {entity_type: node, bundle: police_report}"""
+type NodePoliceReport implements Entity & EntityLinkable & EntityRevisionable & Node {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
+
+  """{value} {field: body} """
+  body(summary: Boolean): String
+
+  """{field: body} """
+  bodyRawField: FieldItemListTextWithSummary
+
+  """
+  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
+  """
+  changed: String
+
+  """
+  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
+  """
+  changedRawField: FieldItemListChanged
+
+  """
+  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_attachments} """
+  fieldAttachments: [Media]
+
+  """{field: field_attachments} """
+  fieldAttachmentsRawField: FieldItemListEntityReference
+
+  """
+  {value} {field: field_author_name} Format: "Vorname Name". Falls freigelassen,
+  wird der Autor/Ersteller der Seite übernommen.
+  """
+  fieldAuthorName: String
+
+  """
+  {field: field_author_name} Format: "Vorname Name". Falls freigelassen, wird der Autor/Ersteller der Seite übernommen.
+  """
+  fieldAuthorNameRawField: FieldItemListString
+
+  """
+  {value} {field: field_date} Das offizielle angezeigte Datum der Polizeimeldung.
+  """
+  fieldDate: FieldItemTypeDatetime
+
+  """
+  {field: field_date} Das offizielle angezeigte Datum der Polizeimeldung.
+  """
+  fieldDateRawField: FieldItemListDatetime
+
+  """
+  {value} {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLead: String
+
+  """
+  {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLeadRawField: FieldItemListStringLong
+
+  """{value} {field: field_ou} """
+  fieldOu: [NodeOu]
+
+  """{field: field_ou} """
+  fieldOuRawField: FieldItemListEntityReference
+
+  """{value} {field: field_subhead} """
+  fieldSubhead: String
+
+  """{field: field_subhead} """
+  fieldSubheadRawField: FieldItemListStringLong
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  matchingRedirects: [Redirect]
+
+  """
+  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
+  (nur während des Speichervorgangs verfügbar).
+  """
+  menuLink: MenuLinkContent
+
+  """
+  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  """
+  menuLinkRawField: FieldItemListEntityReference
+
+  """{value} {field: nid} """
+  nid: Int
+
+  """{field: nid} """
+  nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
+
+  """{value} {field: path} """
+  path: FieldItemTypePath
+
+  """{field: path} """
+  pathRawField: FieldItemListPath
+
+  """{value} {field: promote} """
+  promote: Boolean
+
+  """{field: promote} """
+  promoteRawField: FieldItemListBoolean
+
+  """{value} {field: publish_on} """
+  publishOn: String
+
+  """{field: publish_on} """
+  publishOnRawField: FieldItemListTimestamp
+
+  """
+  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  """
+  revisionUid: User
+
+  """
+  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  """
+  revisionUidRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: sticky} """
+  sticky: Boolean
+
+  """{field: sticky} """
+  stickyRawField: FieldItemListBoolean
+
+  """{value} {field: title} """
+  title: String
+
+  """{field: title} """
+  titleRawField: FieldItemListString
+
+  """{value} {field: uid} Der Benutzername des Autors."""
+  uid: User
+
+  """{field: uid} Der Benutzername des Autors."""
+  uidRawField: FieldItemListEntityReference
+
+  """{value} {field: unpublish_on} """
+  unpublishOn: String
+
+  """{field: unpublish_on} """
+  unpublishOnRawField: FieldItemListTimestamp
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """{value} {field: vid} """
+  vid: Int
+
+  """{field: vid} """
+  vidRawField: FieldItemListInteger
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Medienmitteilung / News {entity_type: node, bundle: press_release}"""
 type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Node {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -3262,12 +3901,6 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_contact} """
-  fieldContact: NodeContact
-
-  """{field: field_contact} """
-  fieldContactRawField: FieldItemListEntityReference
-
   """
   {value} {field: field_date} Das offizielle angezeigte Datum der Medienmitteilung.
   """
@@ -3278,11 +3911,11 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   """
   fieldDateRawField: FieldItemListDatetime
 
-  """{value} {field: field_image} """
-  fieldImage: MediaImage
+  """{value} {field: field_hero_image} """
+  fieldHeroImage: MediaImage
 
-  """{field: field_image} """
-  fieldImageRawField: FieldItemListEntityReference
+  """{field: field_hero_image} """
+  fieldHeroImageRawField: FieldItemListEntityReference
 
   """
   {value} {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
@@ -3292,23 +3925,19 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   """
   {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
   """
-  fieldLeadRawField: FieldItemListTextLong
+  fieldLeadRawField: FieldItemListStringLong
+
+  """{value} {field: field_ou} """
+  fieldOu: [NodeOu]
+
+  """{field: field_ou} """
+  fieldOuRawField: FieldItemListEntityReference
 
   """{value} {field: field_paragraphs} """
   fieldParagraphs: [Paragraph]
 
   """{field: field_paragraphs} """
   fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
-
-  """
-  {value} {field: field_teaser} Ein Teasertext, damit Teaser, die auf die Seite verweisen, den Text anzeigen können.
-  """
-  fieldTeaser: String
-
-  """
-  {field: field_teaser} Ein Teasertext, damit Teaser, die auf die Seite verweisen, den Text anzeigen können.
-  """
-  fieldTeaserRawField: FieldItemListTextLong
 
   """{value} {field: field_type} """
   fieldType: String
@@ -3328,6 +3957,8 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
 
   """The langcode of this entity."""
   langcode: String
+  matchingRedirects: [Redirect]
+  menuChildren: [MenuLinkTreeElement]
 
   """
   {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
@@ -3339,12 +3970,16 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
   """
   menuLinkRawField: FieldItemListEntityReference
+  menuSiblings: [MenuLinkTreeElement]
 
   """{value} {field: nid} """
   nid: Int
 
   """{field: nid} """
   nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
 
   """{value} {field: path} """
   path: FieldItemTypePath
@@ -3403,6 +4038,228 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
 
   """Get all translations."""
   translations: [NodePressRelease]
+
+  """{value} {field: uid} Der Benutzername des Autors."""
+  uid: User
+
+  """{field: uid} Der Benutzername des Autors."""
+  uidRawField: FieldItemListEntityReference
+
+  """{value} {field: unpublish_on} """
+  unpublishOn: String
+
+  """{field: unpublish_on} """
+  unpublishOnRawField: FieldItemListTimestamp
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """{value} {field: vid} """
+  vid: Int
+
+  """{field: vid} """
+  vidRawField: FieldItemListInteger
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Service {entity_type: node, bundle: service}"""
+type NodeService implements Entity & EntityLinkable & EntityRevisionable & Node {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
+
+  """
+  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
+  """
+  changed: String
+
+  """
+  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
+  """
+  changedRawField: FieldItemListChanged
+
+  """
+  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_category} """
+  fieldCategory: TaxonomyTerm
+
+  """{field: field_category} """
+  fieldCategoryRawField: FieldItemListEntityReference
+
+  """
+  {value} {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLead: String
+
+  """
+  {field: field_lead} Ein Text, der unterhalb des Titels angezeigt wird, falls vorhanden.
+  """
+  fieldLeadRawField: FieldItemListStringLong
+
+  """
+  {value} {field: field_ou} Welche Organisationen für diese Seite
+  verantwortlich sind. Die erste Organisation in der Liste ist dabei die
+  «Hauptorganisation».
+  """
+  fieldOu: [NodeOu]
+
+  """
+  {field: field_ou} Welche Organisationen für diese Seite verantwortlich sind.
+  Die erste Organisation in der Liste ist dabei die «Hauptorganisation».
+  """
+  fieldOuRawField: FieldItemListEntityReference
+
+  """{value} {field: field_paragraph_costs} """
+  fieldParagraphCosts: [Paragraph]
+
+  """{field: field_paragraph_costs} """
+  fieldParagraphCostsRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_paragraph_faq} """
+  fieldParagraphFaq: [ParagraphAccordeon]
+
+  """{field: field_paragraph_faq} """
+  fieldParagraphFaqRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_paragraph_infos} """
+  fieldParagraphInfos: [Paragraph]
+
+  """{field: field_paragraph_infos} """
+  fieldParagraphInfosRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_paragraph_procedure} """
+  fieldParagraphProcedure: [Paragraph]
+
+  """{field: field_paragraph_procedure} """
+  fieldParagraphProcedureRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_paragraph_services} """
+  fieldParagraphServices: [ParagraphService]
+
+  """{field: field_paragraph_services} """
+  fieldParagraphServicesRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_paragraph_use} """
+  fieldParagraphUse: [Paragraph]
+
+  """{field: field_paragraph_use} """
+  fieldParagraphUseRawField: FieldItemListEntityReferenceRevisions
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  matchingRedirects: [Redirect]
+
+  """
+  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
+  (nur während des Speichervorgangs verfügbar).
+  """
+  menuLink: MenuLinkContent
+
+  """
+  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  """
+  menuLinkRawField: FieldItemListEntityReference
+
+  """{value} {field: nid} """
+  nid: Int
+
+  """{field: nid} """
+  nidRawField: FieldItemListInteger
+
+  """The parent menu link."""
+  parentMenuLink: MenuLink
+
+  """{value} {field: path} """
+  path: FieldItemTypePath
+
+  """{field: path} """
+  pathRawField: FieldItemListPath
+
+  """{value} {field: promote} """
+  promote: Boolean
+
+  """{field: promote} """
+  promoteRawField: FieldItemListBoolean
+
+  """{value} {field: publish_on} """
+  publishOn: String
+
+  """{field: publish_on} """
+  publishOnRawField: FieldItemListTimestamp
+
+  """
+  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  """
+  revisionUid: User
+
+  """
+  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  """
+  revisionUidRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: sticky} """
+  sticky: Boolean
+
+  """{field: sticky} """
+  stickyRawField: FieldItemListBoolean
+
+  """{value} {field: title} """
+  title: String
+
+  """{field: title} """
+  titleRawField: FieldItemListString
 
   """{value} {field: uid} Der Benutzername des Autors."""
   uid: User
@@ -3547,7 +4404,7 @@ interface Paragraph implements Entity & EntityRevisionable {
   wasDefaultRevision: Boolean
 }
 
-"""Akkordeon"""
+"""Akkordeon {entity_type: paragraph, bundle: accordeon}"""
 type ParagraphAccordeon implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -3686,7 +4543,7 @@ type ParagraphAccordeon implements Entity & EntityRevisionable & EntityTranslata
   wasDefaultRevision: Boolean
 }
 
-"""blökkli Fragment"""
+"""blökkli Fragment {entity_type: paragraph, bundle: blokkli_fragment}"""
 type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -3809,8 +4666,8 @@ type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph
   wasDefaultRevision: Boolean
 }
 
-"""Button"""
-type ParagraphButton implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
+"""Diagramm {entity_type: paragraph, bundle: chart}"""
+type ParagraphChart implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
@@ -3851,17 +4708,41 @@ type ParagraphButton implements Entity & EntityRevisionable & EntityTranslatable
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_label} """
-  fieldLabel: String
+  """{value} {field: field_axis_labels} """
+  fieldAxisLabels: [String]
 
-  """{field: field_label} """
-  fieldLabelRawField: FieldItemListString
+  """{field: field_axis_labels} """
+  fieldAxisLabelsRawField: FieldItemListStringLong
 
-  """{value} {field: field_link} """
-  fieldLink: FieldItemTypeLink
+  """{value} {field: field_caption} """
+  fieldCaption: String
 
-  """{field: field_link} """
-  fieldLinkRawField: FieldItemListLink
+  """{field: field_caption} """
+  fieldCaptionRawField: FieldItemListString
+
+  """{value} {field: field_chart_table} """
+  fieldChartTable: FieldItemTypeTablefield
+
+  """{field: field_chart_table} """
+  fieldChartTableRawField: FieldItemListTablefield
+
+  """{value} {field: field_footnotes} """
+  fieldFootnotes: String
+
+  """{field: field_footnotes} """
+  fieldFootnotesRawField: FieldItemListTextLong
+
+  """{value} {field: field_value_prefix} """
+  fieldValuePrefix: String
+
+  """{field: field_value_prefix} """
+  fieldValuePrefixRawField: FieldItemListString
+
+  """{value} {field: field_value_suffix} """
+  fieldValueSuffix: String
+
+  """{field: field_value_suffix} """
+  fieldValueSuffixRawField: FieldItemListString
   id: String
 
   """Checks if this entity is the latest revision."""
@@ -3923,18 +4804,6 @@ type ParagraphButton implements Entity & EntityRevisionable & EntityTranslatable
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """Get a specific translation."""
-  translation(
-    """
-    Return entity in current language if translation language does not exist.
-    """
-    fallback: Boolean
-    langcode: Langcode!
-  ): ParagraphButton
-
-  """Get all translations."""
-  translations: [ParagraphButton]
-
   """{value} {field: type} """
   type: ParagraphsType
 
@@ -3948,8 +4817,8 @@ type ParagraphButton implements Entity & EntityRevisionable & EntityTranslatable
   wasDefaultRevision: Boolean
 }
 
-"""Karussell"""
-type ParagraphCarousel implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
+"""Kontaktperson {entity_type: paragraph, bundle: contact}"""
+type ParagraphContact implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
@@ -3990,11 +4859,408 @@ type ParagraphCarousel implements Entity & EntityRevisionable & EntityTranslatab
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_slides} """
-  fieldSlides: [ParagraphTextImage]
+  """{value} {field: field_term} """
+  fieldTerm: TaxonomyTermContact
 
-  """{field: field_slides} """
-  fieldSlidesRawField: FieldItemListEntityReferenceRevisions
+  """{field: field_term} """
+  fieldTermRawField: FieldItemListEntityReference
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Kontaktliste {entity_type: paragraph, bundle: contact_list}"""
+type ParagraphContactList implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [ParagraphContact]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """
+  {value} {field: field_title} Falls leer wird standardmässig «Kontakt» verwendet.
+  """
+  fieldTitle: String
+
+  """
+  {field: field_title} Falls leer wird standardmässig «Kontakt» verwendet.
+  """
+  fieldTitleRawField: FieldItemListString
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Container {entity_type: paragraph, bundle: container}"""
+type ParagraphContainer implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [Paragraph]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""
+Querschnittsthema {entity_type: paragraph, bundle: cross_cutting_teaser}
+"""
+type ParagraphCrossCuttingTeaser implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_image} """
+  fieldImage: MediaImage
+
+  """{field: field_image} """
+  fieldImageRawField: FieldItemListEntityReference
+
+  """{value} {field: field_link} """
+  fieldLink: FieldItemTypeLink
+
+  """{field: field_link} """
+  fieldLinkRawField: FieldItemListLink
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [ParagraphLink]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """
+  {value} {field: field_tagline} Wenn leer wird standardmässig «Querschnittsthema» angezeigt.
+  """
+  fieldTagline: String
+
+  """
+  {field: field_tagline} Wenn leer wird standardmässig «Querschnittsthema» angezeigt.
+  """
+  fieldTaglineRawField: FieldItemListString
 
   """{value} {field: field_title} """
   fieldTitle: String
@@ -4062,18 +5328,6 @@ type ParagraphCarousel implements Entity & EntityRevisionable & EntityTranslatab
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """Get a specific translation."""
-  translation(
-    """
-    Return entity in current language if translation language does not exist.
-    """
-    fallback: Boolean
-    langcode: Langcode!
-  ): ParagraphCarousel
-
-  """Get all translations."""
-  translations: [ParagraphCarousel]
-
   """{value} {field: type} """
   type: ParagraphsType
 
@@ -4087,7 +5341,7 @@ type ParagraphCarousel implements Entity & EntityRevisionable & EntityTranslatab
   wasDefaultRevision: Boolean
 }
 
-"""Aus der Bibliothek"""
+"""Aus der Bibliothek {entity_type: paragraph, bundle: from_library}"""
 type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -4208,8 +5462,8 @@ type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   wasDefaultRevision: Boolean
 }
 
-"""Icon Textelement"""
-type ParagraphIconTextItem implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
+"""Bildergalerie {entity_type: paragraph, bundle: gallery}"""
+type ParagraphGallery implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
@@ -4250,17 +5504,21 @@ type ParagraphIconTextItem implements Entity & EntityRevisionable & EntityTransl
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_icon} """
-  fieldIcon: MediaIcon
+  """
+  {value} {field: field_caption} Die Beschreibung wird im Vorschaubild neben dem Button angezeigt.
+  """
+  fieldCaption: String
 
-  """{field: field_icon} """
-  fieldIconRawField: FieldItemListEntityReference
+  """
+  {field: field_caption} Die Beschreibung wird im Vorschaubild neben dem Button angezeigt.
+  """
+  fieldCaptionRawField: FieldItemListString
 
-  """{value} {field: field_text} """
-  fieldText: String
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [ParagraphImage]
 
-  """{field: field_text} """
-  fieldTextRawField: FieldItemListTextLong
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
 
   """{value} {field: field_title} """
   fieldTitle: String
@@ -4328,18 +5586,6 @@ type ParagraphIconTextItem implements Entity & EntityRevisionable & EntityTransl
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """Get a specific translation."""
-  translation(
-    """
-    Return entity in current language if translation language does not exist.
-    """
-    fallback: Boolean
-    langcode: Langcode!
-  ): ParagraphIconTextItem
-
-  """Get all translations."""
-  translations: [ParagraphIconTextItem]
-
   """{value} {field: type} """
   type: ParagraphsType
 
@@ -4353,152 +5599,7 @@ type ParagraphIconTextItem implements Entity & EntityRevisionable & EntityTransl
   wasDefaultRevision: Boolean
 }
 
-"""Icon Textliste"""
-type ParagraphIconTextList implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
-  """Check entity access for the given operation, defaults to view."""
-  accessCheck(operation: String): Boolean!
-
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
-  behaviorSettings: String
-
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
-  behaviorSettingsRawField: FieldItemListStringLong
-
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
-  created: String
-
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
-  createdRawField: FieldItemListCreated
-
-  """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
-  """
-  defaultLangcode: Boolean
-
-  """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
-  """
-  defaultLangcodeRawField: FieldItemListBoolean
-
-  """The bundle ID of the entity."""
-  entityBundle: String!
-
-  """
-  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
-  """
-  entityRevisionId: String
-
-  """The entity type ID."""
-  entityTypeId: String!
-
-  """{value} {field: field_content} """
-  fieldContent: [ParagraphIconTextItem]
-
-  """{field: field_content} """
-  fieldContentRawField: FieldItemListEntityReferenceRevisions
-
-  """{value} {field: field_text} """
-  fieldText: String
-
-  """{field: field_text} """
-  fieldTextRawField: FieldItemListTextLong
-
-  """{value} {field: field_title} """
-  fieldTitle: String
-
-  """{field: field_title} """
-  fieldTitleRawField: FieldItemListString
-  id: String
-
-  """Checks if this entity is the latest revision."""
-  isLatestRevision: Boolean
-
-  """Determines whether the entity is new."""
-  isNew: Boolean!
-
-  """The status of the paragraph."""
-  isPublished: Boolean
-
-  """The label of this entity."""
-  label: String
-
-  """The langcode of this entity."""
-  langcode: String
-  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
-
-  """Whether the paragraph should be rendered."""
-  paragraphsBlokkliIsVisible: Boolean!
-
-  """The untyped paragraph options."""
-  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
-
-  """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
-  """
-  parentFieldName: String
-
-  """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
-  """
-  parentFieldNameRawField: FieldItemListString
-
-  """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
-  """
-  parentId: String
-
-  """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
-  """
-  parentIdRawField: FieldItemListString
-
-  """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
-  """
-  parentType: String
-
-  """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
-  """
-  parentTypeRawField: FieldItemListString
-  props: Paragraph
-
-  """{value} {field: status} """
-  status: Boolean
-
-  """{field: status} """
-  statusRawField: FieldItemListBoolean
-
-  """Get a specific translation."""
-  translation(
-    """
-    Return entity in current language if translation language does not exist.
-    """
-    fallback: Boolean
-    langcode: Langcode!
-  ): ParagraphIconTextList
-
-  """Get all translations."""
-  translations: [ParagraphIconTextList]
-
-  """{value} {field: type} """
-  type: ParagraphsType
-
-  """{field: type} """
-  typeRawField: FieldItemListEntityReference
-
-  """The unique UUID."""
-  uuid: String!
-
-  """TRUE if the entity object was a revision, FALSE otherwise."""
-  wasDefaultRevision: Boolean
-}
-
-"""iFrame"""
+"""iFrame {entity_type: paragraph, bundle: iframe}"""
 type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -4540,11 +5641,37 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   """The entity type ID."""
   entityTypeId: String!
 
+  """
+  {value} {field: field_height} Optionale Höhe. Falls leer gelassen, wir
+  "iFrame Resizer" verwendet um die Höhe zu bestimmen. Dies bedingt aber, dass
+  das Script auf Zielseite vorhanden ist.
+  """
+  fieldHeight: Int
+
+  """
+  {field: field_height} Optionale Höhe. Falls leer gelassen, wir "iFrame
+  Resizer" verwendet um die Höhe zu bestimmen. Dies bedingt aber, dass das
+  Script auf Zielseite vorhanden ist.
+  """
+  fieldHeightRawField: FieldItemListInteger
+
   """{value} {field: field_iframe_url} """
   fieldIframeUrl: FieldItemTypeLink
 
   """{field: field_iframe_url} """
   fieldIframeUrlRawField: FieldItemListLink
+
+  """{value} {field: field_referrer_policy} """
+  fieldReferrerPolicy: String
+
+  """{field: field_referrer_policy} """
+  fieldReferrerPolicyRawField: FieldItemListString
+
+  """{value} {field: field_title} """
+  fieldTitle: String
+
+  """{field: field_title} """
+  fieldTitleRawField: FieldItemListString
   id: String
 
   """Checks if this entity is the latest revision."""
@@ -4631,7 +5758,7 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   wasDefaultRevision: Boolean
 }
 
-"""Bild"""
+"""Bild {entity_type: paragraph, bundle: image}"""
 type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -4672,6 +5799,16 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
 
   """The entity type ID."""
   entityTypeId: String!
+
+  """
+  {value} {field: field_description} Damit kann die Bildunterschrift vom Bild übersteuert werden.
+  """
+  fieldDescription: String
+
+  """
+  {field: field_description} Damit kann die Bildunterschrift vom Bild übersteuert werden.
+  """
+  fieldDescriptionRawField: FieldItemListStringLong
 
   """{value} {field: field_image} """
   fieldImage: MediaImage
@@ -4752,7 +5889,704 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   wasDefaultRevision: Boolean
 }
 
-"""Zitat"""
+"""Infobox {entity_type: paragraph, bundle: infobox}"""
+type ParagraphInfobox implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [Paragraph]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_title} """
+  fieldTitle: String
+
+  """{field: field_title} """
+  fieldTitleRawField: FieldItemListString
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Link {entity_type: paragraph, bundle: link}"""
+type ParagraphLink implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """
+  {value} {field: field_link} Link auf eine interne oder externe Seite oder ein Dokument.
+  """
+  fieldLink: FieldItemTypeLink
+
+  """
+  {field: field_link} Link auf eine interne oder externe Seite oder ein Dokument.
+  """
+  fieldLinkRawField: FieldItemListLink
+
+  """
+  {value} {field: field_teaser_text} Die Beschreibung des Links übersteuern.
+  Bei internen Links wird standardmässig der Lead- oder Teaser-Text der
+  verlinkten Seite angezeigt.<br>Bei Links auf Dokumenten wird immer eine
+  automatische Beschreibung angezeigt.
+  """
+  fieldTeaserText: String
+
+  """
+  {field: field_teaser_text} Die Beschreibung des Links übersteuern. Bei
+  internen Links wird standardmässig der Lead- oder Teaser-Text der verlinkten
+  Seite angezeigt.<br>Bei Links auf Dokumenten wird immer eine automatische
+  Beschreibung angezeigt.
+  """
+  fieldTeaserTextRawField: FieldItemListStringLong
+
+  """
+  {value} {field: field_title} Damit kann der Titel des Links übersteuert
+  werden. Bei Links auf internen Seiten oder Dokumenten wird standardmässig der
+  Titel der Seite oder des Dokumentes angezeigt.
+  """
+  fieldTitle: String
+
+  """
+  {field: field_title} Damit kann der Titel des Links übersteuert werden. Bei
+  Links auf internen Seiten oder Dokumenten wird standardmässig der Titel der
+  Seite oder des Dokumentes angezeigt.
+  """
+  fieldTitleRawField: FieldItemListString
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Link-Liste {entity_type: paragraph, bundle: link_list}"""
+type ParagraphLinkList implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [ParagraphLink]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_title} """
+  fieldTitle: String
+
+  """{field: field_title} """
+  fieldTitleRawField: FieldItemListString
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Standort {entity_type: paragraph, bundle: location}"""
+type ParagraphLocation implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_address} """
+  fieldAddress: FieldItemTypeAddress
+
+  """{field: field_address} """
+  fieldAddressRawField: FieldItemListAddress
+
+  """
+  {value} {field: field_exceptions} Hier können Ausnahmen und Sonderregeln für die Öffnungszeiten erfasst werden.
+  """
+  fieldExceptions: String
+
+  """
+  {field: field_exceptions} Hier können Ausnahmen und Sonderregeln für die Öffnungszeiten erfasst werden.
+  """
+  fieldExceptionsRawField: FieldItemListTextLong
+
+  """{value} {field: field_link} """
+  fieldLink: FieldItemTypeLink
+
+  """{field: field_link} """
+  fieldLinkRawField: FieldItemListLink
+
+  """{value} {field: field_mail} """
+  fieldMail: String
+
+  """{field: field_mail} """
+  fieldMailRawField: FieldItemListEmail
+
+  """{value} {field: field_opening_hours} """
+  fieldOpeningHours: String
+
+  """{field: field_opening_hours} """
+  fieldOpeningHoursRawField: FieldItemListTextLong
+
+  """{value} {field: field_phone_number} """
+  fieldPhoneNumber: String
+
+  """{field: field_phone_number} """
+  fieldPhoneNumberRawField: FieldItemListTelephone
+
+  """{value} {field: field_position} """
+  fieldPosition: FieldItemTypeGeofield
+
+  """{field: field_position} """
+  fieldPositionRawField: FieldItemListGeofield
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Karte {entity_type: paragraph, bundle: map}"""
+type ParagraphMap implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_geo_location} """
+  fieldGeoLocation: FieldItemTypeGeofield
+
+  """{field: field_geo_location} """
+  fieldGeoLocationRawField: FieldItemListGeofield
+
+  """{value} {field: field_ou} """
+  fieldOu: NodeOu
+
+  """{field: field_ou} """
+  fieldOuRawField: FieldItemListEntityReference
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Zitat {entity_type: paragraph, bundle: quote}"""
 type ParagraphQuote implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -4903,7 +6737,381 @@ type ParagraphQuote implements Entity & EntityRevisionable & EntityTranslatable 
   wasDefaultRevision: Boolean
 }
 
-"""Teaser"""
+"""Service {entity_type: paragraph, bundle: service}"""
+type ParagraphService implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_service} """
+  fieldService: NodeService
+
+  """{field: field_service} """
+  fieldServiceRawField: FieldItemListEntityReference
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Services {entity_type: paragraph, bundle: services}"""
+type ParagraphServices implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [ParagraphService]
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """
+  {value} {field: field_title} Damit kann der Titel des Abschnittes überschrieben werden.
+  """
+  fieldTitle: String
+
+  """
+  {field: field_title} Damit kann der Titel des Abschnittes überschrieben werden.
+  """
+  fieldTitleRawField: FieldItemListString
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Tabelle {entity_type: paragraph, bundle: table}"""
+type ParagraphTable implements Entity & EntityRevisionable & Paragraph {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettings: String
+
+  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  """
+  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  created: String
+
+  """
+  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
+  """
+  createdRawField: FieldItemListCreated
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_table_markup} """
+  fieldTableMarkup: String
+
+  """{field: field_table_markup} """
+  fieldTableMarkupRawField: FieldItemListTextLong
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The status of the paragraph."""
+  isPublished: Boolean
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  """Whether the paragraph should be rendered."""
+  paragraphsBlokkliIsVisible: Boolean!
+
+  """The untyped paragraph options."""
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  """
+  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldName: String
+
+  """
+  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  """
+  parentFieldNameRawField: FieldItemListString
+
+  """
+  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentId: String
+
+  """
+  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  """
+  parentIdRawField: FieldItemListString
+
+  """
+  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentType: String
+
+  """
+  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  """
+  parentTypeRawField: FieldItemListString
+  props: Paragraph
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+  structuredTable: StructuredTable
+
+  """{value} {field: type} """
+  type: ParagraphsType
+
+  """{field: type} """
+  typeRawField: FieldItemListEntityReference
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+}
+
+"""Teaser {entity_type: paragraph, bundle: teaser}"""
 type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -4945,16 +7153,29 @@ type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable
   """The entity type ID."""
   entityTypeId: String!
 
-  """
-  {value} {field: field_node_ref} Der Node, der als Teaser dargestellt werden
-  soll. Der Teasertext und das Bild kommen vom Node.
-  """
-  fieldNodeRef: NodePage
+  """{value} {field: field_image} """
+  fieldImage: MediaImage
 
-  """
-  {field: field_node_ref} Der Node, der als Teaser dargestellt werden soll. Der Teasertext und das Bild kommen vom Node.
-  """
-  fieldNodeRefRawField: FieldItemListEntityReference
+  """{field: field_image} """
+  fieldImageRawField: FieldItemListEntityReference
+
+  """{value} {field: field_link} """
+  fieldLink: FieldItemTypeLink
+
+  """{field: field_link} """
+  fieldLinkRawField: FieldItemListLink
+
+  """{value} {field: field_tagline} """
+  fieldTagline: String
+
+  """{field: field_tagline} """
+  fieldTaglineRawField: FieldItemListString
+
+  """{value} {field: field_teaser_text} """
+  fieldTeaserText: String
+
+  """{field: field_teaser_text} """
+  fieldTeaserTextRawField: FieldItemListStringLong
 
   """
   {value} {field: field_title} Optionaler Titel. Standardmässig wird der Nodetitel verwendet.
@@ -5051,7 +7272,7 @@ type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable
   wasDefaultRevision: Boolean
 }
 
-"""Teaserliste"""
+"""Teaserliste {entity_type: paragraph, bundle: teaser_list}"""
 type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -5093,16 +7314,16 @@ type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslat
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_paragraphs_teaser} """
-  fieldParagraphsTeaser: [ParagraphTeaser]
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [Paragraph]
 
-  """{field: field_paragraphs_teaser} """
-  fieldParagraphsTeaserRawField: FieldItemListEntityReferenceRevisions
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
 
-  """{value} {field: field_title} Optionale Überschrift."""
+  """{value} {field: field_title} """
   fieldTitle: String
 
-  """{field: field_title} Optionale Überschrift."""
+  """{field: field_title} """
   fieldTitleRawField: FieldItemListString
   id: String
 
@@ -5190,7 +7411,7 @@ type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslat
   wasDefaultRevision: Boolean
 }
 
-"""Text"""
+"""Text {entity_type: paragraph, bundle: text}"""
 type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -5323,8 +7544,8 @@ type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable &
   wasDefaultRevision: Boolean
 }
 
-"""Text / Bild"""
-type ParagraphTextImage implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
+"""Titel {entity_type: paragraph, bundle: title}"""
+type ParagraphTitle implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
@@ -5364,18 +7585,6 @@ type ParagraphTextImage implements Entity & EntityRevisionable & EntityTranslata
 
   """The entity type ID."""
   entityTypeId: String!
-
-  """{value} {field: field_image} """
-  fieldImage: MediaImage
-
-  """{field: field_image} """
-  fieldImageRawField: FieldItemListEntityReference
-
-  """{value} {field: field_text} """
-  fieldText: String
-
-  """{field: field_text} """
-  fieldTextRawField: FieldItemListTextLong
 
   """{value} {field: field_title} """
   fieldTitle: String
@@ -5443,18 +7652,6 @@ type ParagraphTextImage implements Entity & EntityRevisionable & EntityTranslata
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """Get a specific translation."""
-  translation(
-    """
-    Return entity in current language if translation language does not exist.
-    """
-    fallback: Boolean
-    langcode: Langcode!
-  ): ParagraphTextImage
-
-  """Get all translations."""
-  translations: [ParagraphTextImage]
-
   """{value} {field: type} """
   type: ParagraphsType
 
@@ -5468,7 +7665,7 @@ type ParagraphTextImage implements Entity & EntityRevisionable & EntityTranslata
   wasDefaultRevision: Boolean
 }
 
-"""Video"""
+"""Video {entity_type: paragraph, bundle: video}"""
 type ParagraphVideo implements Entity & EntityRevisionable & EntityTranslatable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -5648,27 +7845,60 @@ input ParagraphsBlokkliAddEntityReferenceMultipleInput {
   targetType: String!
 }
 
+input ParagraphsBlokkliAddMultipleItemChildren {
+  fieldName: String!
+  items: [ParagraphsBlokkliAddMultipleItemInput!]
+}
+
 input ParagraphsBlokkliAddMultipleItemInput {
   bundle: String!
+  children: [ParagraphsBlokkliAddMultipleItemChildren!]
+  options: MapData
   uuid: String!
   values: MapData
 }
 
+"""A persisted agent conversation belonging to a user and host entity."""
 type ParagraphsBlokkliAgentConversation {
+  """ISO 8601 timestamp of when the conversation was last changed."""
   changed: String!
+
+  """ISO 8601 timestamp of when the conversation was created."""
   created: String!
+
+  """JSON-encoded server-side conversation state."""
   dataServer: String!
+
+  """JSON-encoded user-visible conversation state."""
   dataUser: String!
+
+  """Tamper-prevention hash generated by the frontend."""
   hash: String!
+
+  """The entity type ID of the host entity (e.g. "node")."""
   hostEntityType: String!
+
+  """The UUID of the host entity this conversation belongs to."""
   hostEntityUuid: String!
+
+  """The user-defined title of the conversation."""
   title: String!
+
+  """The UUID of the conversation entity."""
   uuid: String!
 }
 
+"""Result of a conversation mutation (upsert or delete)."""
 type ParagraphsBlokkliAgentConversationMutationResult {
+  """
+  The conversation entity after a successful upsert. NULL on delete or failure.
+  """
   conversation: ParagraphsBlokkliAgentConversation
+
+  """Error messages if the operation failed."""
   errors: [String!]
+
+  """Whether the operation succeeded."""
   success: Boolean!
 }
 
@@ -5706,6 +7936,12 @@ input ParagraphsBlokkliBulkUpdateBehaviorSettingsInput {
   key: String!
   pluginId: String!
   uuid: String!
+  value: String!
+}
+
+input ParagraphsBlokkliBulkUpdateFieldValuesInput {
+  name: String!
+  uuid: String
   value: String!
 }
 
@@ -6223,13 +8459,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The UUID to use for the new paragraph."""
@@ -6244,13 +8480,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The text."""
@@ -6262,13 +8498,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The paragraph bundle."""
@@ -6289,13 +8525,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The entity references."""
@@ -6315,13 +8551,13 @@ type ParagraphsEditMutationState {
     """The name of the file."""
     fileName: String!
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
   ): ParagraphsBlokkliMutationResult
 
@@ -6330,34 +8566,34 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The fragment name."""
     name: String!
   ): ParagraphsBlokkliMutationResult
 
-  """Adds all paragraphs from a template."""
+  """Fügt alle Seitenabschnitte aus einer Vorlage hinzu."""
   add_from_template(
-    """The UUID of the paragraph after which to add."""
+    """Die UUID des Seitenabschnitts, nach dem eingefügt werden soll."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
-    """The UUID of the template."""
+    """Die UUID der Vorlage."""
     templateUuid: String!
   ): ParagraphsBlokkliMutationResult
 
@@ -6372,13 +8608,13 @@ type ParagraphsEditMutationState {
     """The name of the file."""
     fileName: String!
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
   ): ParagraphsBlokkliMutationResult
 
@@ -6387,13 +8623,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The ID of the media image."""
@@ -6408,13 +8644,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The ID of the media video."""
@@ -6429,13 +8665,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add these."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """Array of paragraphs with uuid, bundle and optional values."""
@@ -6447,13 +8683,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The UUID of the paragraphs library item entity."""
@@ -6486,13 +8722,13 @@ type ParagraphsEditMutationState {
     """The paragrpah bundle."""
     bundle: String!
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The text."""
@@ -6510,13 +8746,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The paragraph bundle to use (optional)."""
@@ -6530,6 +8766,15 @@ type ParagraphsEditMutationState {
   bulk_update_behavior_settings(
     """A list of arrays with keys: uuid, pluginId, key, value."""
     items: [ParagraphsBlokkliBulkUpdateBehaviorSettingsInput]!
+  ): ParagraphsBlokkliMutationResult
+
+  """Updates multiple field values on paragraphs and/or the host entity."""
+  bulk_update_field_values(
+    """A list of arrays with keys: uuid, name, value."""
+    items: [ParagraphsBlokkliBulkUpdateFieldValuesInput]!
+
+    """The langcode."""
+    langcode: String!
   ): ParagraphsBlokkliMutationResult
 
   """Converts an existing paragraph to another type."""
@@ -6630,13 +8875,13 @@ type ParagraphsEditMutationState {
     """The UUID of the preceeding paragraph."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The UUID of the paragraph being moved."""
@@ -6648,19 +8893,34 @@ type ParagraphsEditMutationState {
     """The UUID of the preceeding paragraph."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The UUIDs of the paragraphs being moved."""
     uuids: [String]!
   ): ParagraphsBlokkliMutationResult
   publish(createNewState: Boolean, publishIfUnpublished: Boolean, revisionLogMessage: String): ParagraphsBlokkliMutationResult
+
+  """Rearrange paragraphs within a field."""
+  rearrange(
+    """Der Feldname des Ziel-Hosts."""
+    hostFieldName: String!
+
+    """Der Entitätstyp des Ziel-Hosts."""
+    hostType: String!
+
+    """Die UUID des Ziel-Hosts."""
+    hostUuid: String!
+
+    """The UUIDs defining the new order."""
+    uuids: [String]!
+  ): ParagraphsBlokkliMutationResult
   redo: ParagraphsBlokkliMutationResult
 
   """Remove a paragraph."""
@@ -6935,6 +9195,117 @@ type ParagraphsType implements Entity {
   uuid: String!
 }
 
+type ParsedPhoneNumber {
+  """
+  The country calling code for this number, as defined by the International
+  Telecommunication Union (ITU). For example, this would be 1 for NANPA
+  countries, and 33 for France.
+  """
+  countryCode: Int
+
+  """Format the phone number."""
+  format(
+    """The desired format."""
+    format: PhoneNumberFormat
+  ): String
+
+  """Two character region codes for this country code (e.g. "CH")."""
+  regionCodes: [String]
+
+  """The phone number type."""
+  type: PhoneNumberType!
+}
+
+enum PhoneNumberFormat {
+  """Formatted: +41446681800"""
+  E164
+
+  """Formatted: +41 44 668 1800"""
+  INTERNATIONAL
+
+  """Formatted: 044 668 1800"""
+  NATIONAL
+
+  """tel:+41-44-668-1800"""
+  RFC3966
+}
+
+enum PhoneNumberType {
+  """Emergency."""
+  EMERGENCY
+
+  """Fixed line."""
+  FIXED_LINE
+
+  """
+  In some regions (e.g. the USA), it is impossible to distinguish
+  between fixed-line and mobile numbers by looking at the phone
+  number itself.
+  """
+  FIXED_LINE_OR_MOBILE
+
+  """Mobile."""
+  MOBILE
+
+  """Pager."""
+  PAGER
+
+  """
+  A personal number is associated with a particular person, and
+  may be routed to either a MOBILE or FIXED_LINE number.
+  """
+  PERSONAL_NUMBER
+
+  """Premium rate."""
+  PREMIUM_RATE
+
+  """
+  The cost of this call is shared between the caller and the
+  recipient, and is hence typically less than PREMIUM_RATE calls.
+  """
+  SHARED_COST
+
+  """Short code."""
+  SHORT_CODE
+
+  """Standard rate."""
+  STANDARD_RATE
+
+  """Freephone lines."""
+  TOLL_FREE
+
+  """
+  Used for "Universal Access Numbers" or "Company Numbers". They
+  may be further routed to specific offices, but allow one number
+  to be used for a company.
+  """
+  UAN
+
+  """
+  A phone number is of type UNKNOWN when it does not fit any of
+  the known patterns for a specific region.
+  """
+  UNKNOWN
+
+  """Voicemail."""
+  VOICEMAIL
+
+  """
+  Voice over IP numbers. This includes TSoIP (Telephony Service
+  over IP).
+  """
+  VOIP
+}
+
+"""Press release type filter for newsEntityQuery."""
+enum PressReleaseType {
+  """News articles."""
+  news
+
+  """Press releases."""
+  press_release
+}
+
 type Query {
   activeEnvironment: ActiveEnvironment
   currentUser: User
@@ -6958,6 +9329,7 @@ type Query {
     """ Sort results. """
     sort: [EntityQuerySortInput!] = null
   ): EntityQueryResult!
+  footerConfig: TranslatableConfigPagesFooter
 
   """Get the edit state for a paragraphs field on an entity."""
   getParagraphsEditState(
@@ -6990,14 +9362,54 @@ type Query {
   messengerMessages: MessengerMessage
 
   """
-  Get a single conversation. If uuid is provided, loads that specific
-  conversation. Otherwise returns the latest conversation of the current user
-  for the given host entity, if it was changed within the last 24 hours.
+  Query press releases filtered by OU hierarchy from the menu tree.
+  Returns press releases that reference the given OU or any of its descendant OUs.
+  If ouId is not provided, returns all press releases of the specified type.
   """
-  paragraphsBlokkliAgentConversation(hostEntityType: String!, hostEntityUuid: String!, uuid: String): ParagraphsBlokkliAgentConversation
+  newsEntityQuery(
+    """Maximum number of results (default: 3)."""
+    limit: Int = 3
 
-  """Get all conversations of the current user for a given host entity."""
-  paragraphsBlokkliAgentConversations(hostEntityType: String!, hostEntityUuid: String!): [ParagraphsBlokkliAgentConversation!]!
+    """
+    The OU node ID to filter by (includes all descendant OUs from the menu tree). If not provided, returns all.
+    """
+    ouId: ID
+
+    """The type to filter by."""
+    type: PressReleaseType!
+  ): NewsEntityQueryResult!
+
+  """
+  Load a single conversation. When uuid is provided, loads that specific
+  conversation (with access check). When uuid is omitted, returns the most
+  recently changed conversation of the current user for the given host entity,
+  provided it was changed within the last 24 hours. Returns NULL if nothing
+  matches or access is denied. Requires the "use paragraphs blokkli agent"
+  permission.
+  """
+  paragraphsBlokkliAgentConversation(
+    """The entity type ID of the host entity (e.g. "node")."""
+    hostEntityType: String!
+
+    """The UUID of the host entity."""
+    hostEntityUuid: String!
+
+    """Optional UUID of a specific conversation to load."""
+    uuid: String
+  ): ParagraphsBlokkliAgentConversation
+
+  """
+  List all conversations of the current user for a given host entity,
+  ordered by last changed date (newest first). Requires the
+  "use paragraphs blokkli agent" permission.
+  """
+  paragraphsBlokkliAgentConversations(
+    """The entity type ID of the host entity (e.g. "node")."""
+    hostEntityType: String!
+
+    """The UUID of the host entity."""
+    hostEntityUuid: String!
+  ): [ParagraphsBlokkliAgentConversation!]!
 
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliAllowedTypes: [ParagraphsBlokkliAllowedType!]
@@ -7028,8 +9440,74 @@ type Query {
   pbSearchEditStates(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliEditStatesResults
   ping: String
   requestHeaders: [RequestHeader!]
-  route(path: String!): Url
+  route(path: String!, skipFrontpageRedirect: Boolean = false): Url
+
+  """Search for a keyword."""
+  searchTypesense(
+    """
+    Optional: The alpha parameter for hybrid search (0.0 to 1.0).
+    Controls the ratio between keyword and semantic search scores.
+    Only used when searchMode is SEMANTIC_SEARCH or HYBRID_SEARCH.
+    Defaults to 0.8 if not specified.
+    """
+    alpha: Float
+    collection: TypesenseCollection!
+
+    """
+    Optional: The distance threshold for vector search.
+    Only used when searchMode is SEMANTIC_SEARCH or HYBRID_SEARCH.
+    Defaults to 0.5 if not specified.
+    """
+    distanceThreshold: Float
+
+    """
+    Optional: Specify which facets to return in the response.
+    If not provided, no facets will be returned (for performance reasons).
+    For numerical fields, you can optionally define range groups to bucket values
+    into labeled ranges (e.g., "last_day", "last_month" for date fields).
+    """
+    facetFields: [TypesenseFacetFieldInput!]
+    fulltextFields: [TypesenseFulltextFieldInput!]!
+    page: Int
+    perPage: Int
+
+    """
+    Optional: The search mode to use.
+    Defaults to KEYWORD_SEARCH if not specified.
+    SEMANTIC_SEARCH and HYBRID_SEARCH are only available when embeddings are enabled on the collection.
+    """
+    searchMode: TypesenseSearchMode
+
+    """
+    Optional: Filter results by selected facet values.
+    When provided, results will be filtered by these facet values,
+    and facet counts will reflect the filtered results.
+    """
+    selectedFacets: [TypesenseSelectedFacet!]
+
+    """
+    Optional: How to sort the search results.
+    Can provide multiple sort fields for multi-level sorting (e.g., sort by date first, then by title).
+    Fields are applied in order - if values are equal for the first field, the second field is used, etc.
+    If not provided and a search text is provided, results will be sorted by relevance (_text_match:desc).
+    If not provided and no search text is provided, results will not be sorted.
+    """
+    sortBy: [TypesenseSortByInput!]
+    text: String
+  ): TypesenseSearchResults
+
+  """Get information about the current multisite instance."""
+  siteInfo: SiteInfo!
   textsLoader: TextsLoader
+
+  """Return a single document by ID from the given collection."""
+  typesenseDocumentById(
+    """From which collection to get the document from."""
+    collection: TypesenseCollection!
+
+    """The full document ID, internally also called "search_api_id"."""
+    id: String!
+  ): TypesenseHitDocument
 }
 
 """Umleiten"""
@@ -7059,11 +9537,18 @@ interface Redirect implements Entity & EntityLinkable {
   """{field: language} Die Umleitungssprache."""
   languageRawField: FieldItemListLanguage
 
+  """{value} {field: redirect_redirect} """
+  redirectRedirect: FieldItemTypeLink
+
+  """{field: redirect_redirect} """
+  redirectRedirectRawField: FieldItemListLink
+
   """{value} {field: rid} Die Umleitungs-ID."""
   rid: Int
 
   """{field: rid} Die Umleitungs-ID."""
   ridRawField: FieldItemListInteger
+  sourcePath: String
 
   """{value} {field: status_code} Der Umleitungs-Statuscode"""
   statusCode: Int
@@ -7084,7 +9569,7 @@ interface Redirect implements Entity & EntityLinkable {
   uuid: String!
 }
 
-"""Umleiten"""
+"""Umleiten {entity_type: redirect, bundle: redirect}"""
 type RedirectRedirect implements Entity & EntityLinkable & Redirect {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -7111,11 +9596,18 @@ type RedirectRedirect implements Entity & EntityLinkable & Redirect {
   """{field: language} Die Umleitungssprache."""
   languageRawField: FieldItemListLanguage
 
+  """{value} {field: redirect_redirect} """
+  redirectRedirect: FieldItemTypeLink
+
+  """{field: redirect_redirect} """
+  redirectRedirectRawField: FieldItemListLink
+
   """{value} {field: rid} Die Umleitungs-ID."""
   rid: Int
 
   """{field: rid} Die Umleitungs-ID."""
   ridRawField: FieldItemListInteger
+  sourcePath: String
 
   """{value} {field: status_code} Der Umleitungs-Statuscode"""
   statusCode: Int
@@ -7240,6 +9732,31 @@ type SchemaMetatag {
   json: String
 }
 
+"""Site information for the current multisite instance."""
+type SiteInfo {
+  """The multisite identifier (e.g., 'default', 'stadtbus', 'bibliothek')."""
+  id: String!
+}
+
+type StructuredTable {
+  caption: String
+  tbody: [[StructuredTableCell!]]!
+  tfoot: [[StructuredTableCell!]]!
+  thead: [[StructuredTableCell!]]!
+}
+
+type StructuredTableCell {
+  attributes: StructuredTableCellAttributes
+  content: String!
+  plainText: String!
+  tag: String!
+}
+
+type StructuredTableCellAttributes {
+  colspan: String
+  rowspan: String
+}
+
 """Taxonomie-Begriff"""
 interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
@@ -7340,7 +9857,267 @@ interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
   weightRawField: FieldItemListInteger
 }
 
-"""Tags"""
+"""Kontaktperson {entity_type: taxonomy_term, bundle: contact}"""
+type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable & TaxonomyTerm {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """
+  {value} {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
+  """
+  changed: String
+
+  """
+  {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
+  """
+  changedRawField: FieldItemListChanged
+  children: [TaxonomyTermContact]
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """{value} {field: description} """
+  description: String
+
+  """{field: description} """
+  descriptionRawField: FieldItemListTextLong
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_address} """
+  fieldAddress: FieldItemTypeAddress
+
+  """{field: field_address} """
+  fieldAddressRawField: FieldItemListAddress
+
+  """{value} {field: field_job_title} """
+  fieldJobTitle: String
+
+  """{field: field_job_title} """
+  fieldJobTitleRawField: FieldItemListString
+
+  """{value} {field: field_mail} """
+  fieldMail: String
+
+  """{field: field_mail} """
+  fieldMailRawField: FieldItemListEmail
+
+  """{value} {field: field_ou} """
+  fieldOu: NodeOu
+
+  """{field: field_ou} """
+  fieldOuRawField: FieldItemListEntityReference
+
+  """
+  {value} {field: field_page} Falls die Person sehr "bedeutungsvoll" ist, kann
+  sie eine Detailseite erhalten. Dabei handelt es sich um eine normale Seite
+  (meistens ohne Menueeintrag), die hier verlinkt wird.
+  """
+  fieldPage: NodePage
+
+  """
+  {field: field_page} Falls die Person sehr "bedeutungsvoll" ist, kann sie eine
+  Detailseite erhalten. Dabei handelt es sich um eine normale Seite (meistens
+  ohne Menueeintrag), die hier verlinkt wird.
+  """
+  fieldPageRawField: FieldItemListEntityReference
+
+  """{value} {field: field_phone_number} """
+  fieldPhoneNumber: String
+
+  """{field: field_phone_number} """
+  fieldPhoneNumberRawField: FieldItemListTelephone
+
+  """{value} {field: field_photo} """
+  fieldPhoto: MediaImage
+
+  """{field: field_photo} """
+  fieldPhotoRawField: FieldItemListEntityReference
+
+  """
+  {value} {field: field_placeholder} Der Platzhalter wird angezeigt, wenn kein Foto hochgeladen wurde.
+  """
+  fieldPlaceholder: String
+
+  """
+  {field: field_placeholder} Der Platzhalter wird angezeigt, wenn kein Foto hochgeladen wurde.
+  """
+  fieldPlaceholderRawField: FieldItemListListString
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+
+  """{value} {field: name} """
+  name: String
+
+  """{field: name} """
+  nameRawField: FieldItemListString
+
+  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  parent: [TaxonomyTermContact]
+
+  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  parentRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: tid} Die Begriffs-ID."""
+  tid: Int
+
+  """{field: tid} Die Begriffs-ID."""
+  tidRawField: FieldItemListInteger
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+
+  """
+  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  """
+  weight: Int
+
+  """
+  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  """
+  weightRawField: FieldItemListInteger
+}
+
+"""Suchbegriffe {entity_type: taxonomy_term, bundle: search_terms}"""
+type TaxonomyTermSearchTerms implements Entity & EntityLinkable & EntityRevisionable & TaxonomyTerm {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """
+  {value} {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
+  """
+  changed: String
+
+  """
+  {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
+  """
+  changedRawField: FieldItemListChanged
+  children: [TaxonomyTermSearchTerms]
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """{value} {field: description} """
+  description: String
+
+  """{field: description} """
+  descriptionRawField: FieldItemListTextLong
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+
+  """{value} {field: name} """
+  name: String
+
+  """{field: name} """
+  nameRawField: FieldItemListString
+
+  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  parent: [TaxonomyTermSearchTerms]
+
+  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  parentRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: tid} Die Begriffs-ID."""
+  tid: Int
+
+  """{field: tid} Die Begriffs-ID."""
+  tidRawField: FieldItemListInteger
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+
+  """
+  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  """
+  weight: Int
+
+  """
+  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  """
+  weightRawField: FieldItemListInteger
+}
+
+"""Tags {entity_type: taxonomy_term, bundle: tags}"""
 type TaxonomyTermTags implements Entity & EntityLinkable & EntityRevisionable & TaxonomyTerm {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -7404,6 +10181,106 @@ type TaxonomyTermTags implements Entity & EntityLinkable & EntityRevisionable & 
 
   """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
   parent: [TaxonomyTermTags]
+
+  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  parentRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: tid} Die Begriffs-ID."""
+  tid: Int
+
+  """{field: tid} Die Begriffs-ID."""
+  tidRawField: FieldItemListInteger
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+
+  """
+  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  """
+  weight: Int
+
+  """
+  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  """
+  weightRawField: FieldItemListInteger
+}
+
+"""ePublikation Stelle {entity_type: taxonomy_term, bundle: unexposed}"""
+type TaxonomyTermUnexposed implements Entity & EntityLinkable & EntityRevisionable & TaxonomyTerm {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """
+  {value} {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
+  """
+  changed: String
+
+  """
+  {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
+  """
+  changedRawField: FieldItemListChanged
+  children: [TaxonomyTermUnexposed]
+
+  """
+  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """{value} {field: description} """
+  description: String
+
+  """{field: description} """
+  descriptionRawField: FieldItemListTextLong
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+
+  """{value} {field: name} """
+  name: String
+
+  """{field: name} """
+  nameRawField: FieldItemListString
+
+  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  parent: [TaxonomyTerm]
 
   """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
   parentRawField: FieldItemListEntityReference
@@ -7521,6 +10398,9 @@ interface TranslatableConfigPages implements Entity & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
+
   """The bundle ID of the entity."""
   entityBundle: String!
 
@@ -7544,10 +10424,15 @@ interface TranslatableConfigPages implements Entity & EntityLinkable {
   uuid: String!
 }
 
-"""Globale Konfiguration"""
-type TranslatableConfigPagesGlobal implements Entity & EntityLinkable & EntityTranslatable & TranslatableConfigPages {
+"""
+Footer Konfiguration {entity_type: translatable_config_pages, bundle: footer}
+"""
+type TranslatableConfigPagesFooter implements Entity & EntityLinkable & TranslatableConfigPages {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
+
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
 
   """The bundle ID of the entity."""
   entityBundle: String!
@@ -7555,11 +10440,17 @@ type TranslatableConfigPagesGlobal implements Entity & EntityLinkable & EntityTr
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_address} """
-  fieldAddress: FieldItemTypeAddress
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [Paragraph]
 
-  """{field: field_address} """
-  fieldAddressRawField: FieldItemListAddress
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """{value} {field: field_social_media_links} """
+  fieldSocialMediaLinks: [FieldItemTypeLink]
+
+  """{field: field_social_media_links} """
+  fieldSocialMediaLinksRawField: FieldItemListLink
   id: String
 
   """Determines whether the entity is new."""
@@ -7570,6 +10461,62 @@ type TranslatableConfigPagesGlobal implements Entity & EntityLinkable & EntityTr
 
   """The langcode of this entity."""
   langcode: String
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+}
+
+"""
+Globale Konfiguration {entity_type: translatable_config_pages, bundle: global}
+"""
+type TranslatableConfigPagesGlobal implements Entity & EntityLinkable & EntityTranslatable & TranslatableConfigPages {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """The props for the blokkli provider component."""
+  blokkliProps: ParagraphsBlokkliProps!
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_paragraphs} """
+  fieldParagraphs: [ParagraphLink]
+
+  """{value} {field: field_paragraphs_home_images} """
+  fieldParagraphsHomeImages: [ParagraphImage]
+
+  """{field: field_paragraphs_home_images} """
+  fieldParagraphsHomeImagesRawField: FieldItemListEntityReferenceRevisions
+
+  """{field: field_paragraphs} """
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  """
+  {value} {field: field_sitename} Seitenname, z.B. "Stadt Winterthur"
+  """
+  fieldSitename: String
+
+  """
+  {field: field_sitename} Seitenname, z.B. "Stadt Winterthur"
+  """
+  fieldSitenameRawField: FieldItemListString
+  id: String
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+  topicLinks: [MenuLinkTreeElement]
 
   """Get a specific translation."""
   translation(
@@ -7588,6 +10535,760 @@ type TranslatableConfigPagesGlobal implements Entity & EntityLinkable & EntityTr
 
   """The unique UUID."""
   uuid: String!
+}
+
+enum TypesenseCollection {
+  """Typesense collection: content (alias for Content)"""
+  CONTENT
+
+  """Typesense collection: epublications (alias for ePublikationen)"""
+  EPUBLICATIONS
+
+  """Typesense collection: handbook (alias for Handbook)"""
+  HANDBOOK
+
+  """Typesense collection: news (alias for News)"""
+  NEWS
+}
+
+"""Defines a typesense_datetime object."""
+type TypesenseDateTime {
+  """The parsed DrupalDateTime object."""
+  parsed: DrupalDateTime
+
+  """The unix timestamp."""
+  value: Int
+}
+
+type TypesenseEntityReference {
+  """The labels of the entity in all languages."""
+  all_labels: [String!]
+
+  """The ID of the entity."""
+  id: String!
+
+  """The label of the entity."""
+  label: String!
+
+  """The ID of the parent."""
+  parent: String
+
+  """The weight of the entity (if supported)."""
+  weight: Int
+}
+
+type TypesenseFacet {
+  """The facet identifier."""
+  id: TypesenseFacetId!
+
+  """The first level facet terms."""
+  terms: [TypesenseFacetTerm!]!
+
+  """The type of the facet."""
+  type: TypesenseFacetType!
+}
+
+"""Defines a facet field configuration with optional range groups."""
+input TypesenseFacetFieldInput {
+  """
+  Optional range groups for numerical fields.
+  When provided, the facet will be grouped by these ranges instead of individual values.
+  The field must have the 'sort' property enabled in the Typesense schema.
+  """
+  groups: [TypesenseFacetGroupInput!]
+
+  """The facet field ID."""
+  id: TypesenseFacetId!
+}
+
+"""
+Defines a facet group range for numerical fields.
+Used to bucket numerical values (like timestamps) into labeled ranges.
+Range start values are inclusive, end values are exclusive.
+"""
+input TypesenseFacetGroupInput {
+  """The start of the range (inclusive). Leave null for minimum value."""
+  from: Int
+
+  """
+  The label/ID for this range group (e.g., "last_day", "last_month").
+  This ID will be returned as the facet term ID and can be used for filtering.
+  """
+  id: String!
+
+  """The end of the range (exclusive). Leave null for maximum value."""
+  to: Int
+}
+
+enum TypesenseFacetId {
+  """
+  Facet field_category.id from collection content_search_typesense (Taxonomy Term Entity Reference Object)
+  """
+  CONTENT_FIELD_CATEGORY___ID
+
+  """
+  Facet field_search_terms.id from collection content_search_typesense (Taxonomy Term Entity Reference Object)
+  """
+  CONTENT_FIELD_SEARCH_TERMS___ID
+
+  """Facet filter_date from collection content_search_typesense"""
+  CONTENT_FILTER_DATE
+
+  """
+  Facet ou.id from collection content_search_typesense (Node Entity Reference Object)
+  """
+  CONTENT_OU___ID
+
+  """
+  Facet search_item_type.id from collection content_search_typesense (Key Value)
+  """
+  CONTENT_SEARCH_ITEM_TYPE
+
+  """Facet type from collection content_search_typesense"""
+  CONTENT_TYPE
+
+  """
+  Facet ou.id from collection epublications (Taxonomy Term Entity Reference Object)
+  """
+  EPUBLICATIONS_OU___ID
+
+  """Facet publication_date from collection epublications"""
+  EPUBLICATIONS_PUBLICATION_DATE
+
+  """
+  Facet rubric.id from collection epublications (Taxonomy Term Entity Reference Object)
+  """
+  EPUBLICATIONS_RUBRIC___ID
+
+  """Facet search_term from collection news"""
+  NEWS_SEARCH_TERM
+}
+
+type TypesenseFacetTerm {
+  """All labels in all languages (for taxonomy term facets)."""
+  all_labels: [String!]
+
+  """The number of documents that match this term."""
+  count: Int!
+
+  """The ID of the facet term."""
+  id: String!
+
+  """The label."""
+  label: String!
+
+  """Nested child terms."""
+  terms: [TypesenseFacetTerm!]!
+
+  """The weight of the term (for taxonomy term facets)."""
+  weight: Int
+}
+
+enum TypesenseFacetType {
+  """Entity reference object"""
+  ENTITY_REFERENCE_OBJECT
+
+  """Key value"""
+  KEY_VALUE
+
+  """Range"""
+  RANGE
+
+  """String"""
+  STRING
+}
+
+"""Defines a fulltext field configuration for search."""
+input TypesenseFulltextFieldInput {
+  """
+  Whether to enable infix search. Default to off. Other options are always or fallback.
+  Can only be used if field is configured as infix in the Typesense schema.
+  """
+  infix: String
+
+  """The field name."""
+  name: String!
+
+  """Number of typos allowed. Default to 0."""
+  numTypos: Int
+
+  """
+  Whether prefix search should be enabled for this field. Default to false.
+  """
+  prefix: Boolean
+
+  """The search weight. Default to 1 if not set."""
+  weight: Int
+}
+
+"""Defines an object to filter by geo location."""
+input TypesenseGeolocation {
+  """Latitude."""
+  lat: Float!
+
+  """Longitude."""
+  lon: Float!
+}
+
+"""
+Defines a parsed typesense_geopoint value.
+Internally, Typesense stores this as an array of two float numbers.
+For better clarity, we parse this and convert it to an object in the
+GraphQL field resolver.
+"""
+type TypesenseGeopoint {
+  """Latitude."""
+  lat: Float!
+
+  """Longitude."""
+  lon: Float!
+}
+
+"""Contains highlights for different fields in a search result."""
+type TypesenseHighlights {
+  """
+  Get highlight for a specific field by name.
+  
+  @param field
+    The field name to get highlights for.
+  @param fullField
+    If true, the entire field will be highlighted without snippeting.
+    Defaults to false.
+  """
+  getHighlight(field: String!, fullField: Boolean): TypesenseHitHighlight
+}
+
+interface TypesenseHit {
+  """The document."""
+  document: TypesenseHitDocument!
+
+  """Highlights for different fields in the search result."""
+  highlights: TypesenseHighlights
+
+  """
+  Details about hot the score was calculated. For internal/debugging use only.
+  """
+  text_match_info: TypesenseHitTextMatchInfo
+
+  """The vector distance if a vector query was performed."""
+  vector_distance: Float
+}
+
+type TypesenseHitContent implements TypesenseHit {
+  document: TypesenseHitDocumentContent!
+
+  """Highlights for different fields in the search result."""
+  highlights: TypesenseHighlights
+
+  """
+  Details about hot the score was calculated. For internal/debugging use only.
+  """
+  text_match_info: TypesenseHitTextMatchInfo
+
+  """The vector distance if a vector query was performed."""
+  vector_distance: Float
+}
+
+interface TypesenseHitDocument {
+  """
+  The unique identifier of the document (not the entity!) across all languages and indices.
+  """
+  id: String!
+}
+
+"""Document of the 'content_search_typesense' (Content) Typesense index."""
+type TypesenseHitDocumentContent implements TypesenseHitDocument {
+  """
+  Pfadnavigation
+  The breadcrumb for the content.
+  Data Type: typesense_string[]
+  """
+  breadcrumb_text: [String!]
+
+  """
+  Geschrieben am
+  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Geschrieben am, Inhalt » Geschrieben am.
+  Data Type: typesense_date_time
+  """
+  created: TypesenseDateTime!
+
+  """
+  Datum
+  Data Type: typesense_date_time
+  """
+  date: TypesenseDateTime
+
+  """
+  Entity ID
+  Eine Vereinigung -Aggregation der folgenden Felder: Medien » ID, Inhalt » ID.
+  Data Type: typesense_int32
+  """
+  entity_id: Int!
+
+  """
+  Exclude from search
+  Eine Anfang -Aggregation der folgenden Felder: Inhalt » Von der Suche ausschliessen.
+  Data Type: typesense_bool
+  """
+  excluded: Boolean
+
+  """
+  Kategorie
+  Data Type: typesense_entity_reference_object_taxonomy_term[]
+  """
+  field_category: [TypesenseEntityReference!]
+
+  """
+  Hero Bild
+  Data Type: typesense_rokka_image
+  """
+  field_hero_image: TypesenseRokkaImage
+
+  """
+  Suchbegriffe
+  Data Type: typesense_entity_reference_object_taxonomy_term[]
+  """
+  field_search_terms: [TypesenseEntityReference!]
+
+  """
+  Filter Date
+  Date used for filtering, defaults to updated date
+  Data Type: typesense_date_time
+  """
+  filter_date: TypesenseDateTime!
+
+  """
+  The unique identifier of the document (not the entity!) across all languages and indices.
+  """
+  id: String!
+
+  """
+  Lead
+  Data Type: typesense_string
+  """
+  lead: String
+
+  """
+  Origanizational Unit
+  Organizational Unit node ID
+  Data Type: typesense_entity_reference_object_node[]
+  """
+  ou: [TypesenseEntityReference!]
+
+  """
+  Search-API Anhänge: Dokument
+  Search-API Anhänge: Dokument
+  Data Type: typesense_string
+  """
+  saa_field_media_document: String
+
+  """
+  Search Item Type
+  Bundle or a custom type
+  Data Type: typesense_key_value[]
+  """
+  search_item_type: [TypesenseKeyValue!]!
+
+  """
+  Status
+  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Veröffentlicht, Inhalt » Veröffentlicht.
+  Data Type: typesense_string
+  """
+  status: String!
+
+  """
+  Teaser
+  Data Type: typesense_string
+  """
+  teaser: String
+
+  """
+  Text
+  Das vollständige HTML, das beim Anzeigen des Elements angezeigt wird
+  Data Type: typesense_string
+  """
+  text: String
+
+  """
+  Title
+  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Name, Inhalt » Titel.
+  Data Type: typesense_string
+  """
+  title: String!
+
+  """
+  Title exact
+  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Name, Inhalt » Titel.
+  Data Type: typesense_string
+  """
+  title_exact: String!
+
+  """
+  Entity type
+  Der Entitätstyp des indizierten Elements
+  Data Type: typesense_string
+  """
+  type: String!
+
+  """
+  URL
+  Eine Vereinigung -Aggregation der folgenden Felder: Allgemein » Entity URL.
+  Data Type: typesense_string
+  """
+  url: String!
+}
+
+"""Document of the 'epublications' (ePublikationen) Typesense index."""
+type TypesenseHitDocumentEpublications implements TypesenseHitDocument {
+  """
+  The unique identifier of the document (not the entity!) across all languages and indices.
+  """
+  id: String!
+
+  """
+  Beschriftung
+  Data Type: typesense_string
+  """
+  label: String!
+
+  """
+  Organisational Unit
+  Data Type: typesense_entity_reference_object_taxonomy_term[]
+  """
+  ou: [TypesenseEntityReference!]
+
+  """
+  Publication Date
+  Data Type: typesense_date_time
+  """
+  publication_date: TypesenseDateTime
+
+  """
+  Sub Rubric Term
+  Data Type: typesense_entity_reference_object_taxonomy_term[]
+  """
+  rubric: [TypesenseEntityReference!]
+
+  """
+  Sub Rubric
+  Data Type: typesense_string
+  """
+  sub_rubric: String!
+
+  """
+  URI
+  Die lokale Speicheradresse, um auf das Element zuzugreifen
+  Data Type: typesense_string
+  """
+  url: String!
+}
+
+"""Document of the 'handbook' (Handbook) Typesense index."""
+type TypesenseHitDocumentHandbook implements TypesenseHitDocument {
+  """
+  Pfadnavigation
+  The breadcrumb for the content.
+  Data Type: typesense_string[]
+  """
+  breadcrumb: [String!]
+
+  """
+  Gerenderte HTML-Ausgabe
+  Das vollständige HTML, das beim Anzeigen des Elements angezeigt wird
+  Data Type: typesense_string
+  """
+  content: String
+
+  """
+  The unique identifier of the document (not the entity!) across all languages and indices.
+  """
+  id: String!
+
+  """
+  Lead
+  Data Type: typesense_string
+  """
+  lead: String
+
+  """
+  Titel
+  Data Type: typesense_string
+  """
+  title: String!
+
+  """
+  Entity URL
+  The canonical URL of an entity.
+  Data Type: typesense_string
+  """
+  url: String!
+}
+
+"""Document of the 'news' (News) Typesense index."""
+type TypesenseHitDocumentNews implements TypesenseHitDocument {
+  """
+  The unique identifier of the document (not the entity!) across all languages and indices.
+  """
+  id: String!
+
+  """
+  Suchbegriffe » Taxonomie-Begriff » Name
+  Data Type: typesense_string[]
+  """
+  search_term: [String!]
+
+  """
+  Titel
+  Data Type: typesense_string
+  """
+  title: String!
+}
+
+type TypesenseHitEpublications implements TypesenseHit {
+  document: TypesenseHitDocumentEpublications!
+
+  """Highlights for different fields in the search result."""
+  highlights: TypesenseHighlights
+
+  """
+  Details about hot the score was calculated. For internal/debugging use only.
+  """
+  text_match_info: TypesenseHitTextMatchInfo
+
+  """The vector distance if a vector query was performed."""
+  vector_distance: Float
+}
+
+type TypesenseHitHandbook implements TypesenseHit {
+  document: TypesenseHitDocumentHandbook!
+
+  """Highlights for different fields in the search result."""
+  highlights: TypesenseHighlights
+
+  """
+  Details about hot the score was calculated. For internal/debugging use only.
+  """
+  text_match_info: TypesenseHitTextMatchInfo
+
+  """The vector distance if a vector query was performed."""
+  vector_distance: Float
+}
+
+"""A search highlight."""
+type TypesenseHitHighlight {
+  """The field that was matched."""
+  field: String
+
+  """An array of tokens that are highlighted."""
+  matched_tokens: [String]
+
+  """The source string with matches wrapped in <mark>."""
+  snippet: String
+}
+
+type TypesenseHitNews implements TypesenseHit {
+  document: TypesenseHitDocumentNews!
+
+  """Highlights for different fields in the search result."""
+  highlights: TypesenseHighlights
+
+  """
+  Details about hot the score was calculated. For internal/debugging use only.
+  """
+  text_match_info: TypesenseHitTextMatchInfo
+
+  """The vector distance if a vector query was performed."""
+  vector_distance: Float
+}
+
+"""
+Contains detailed information about how the score was calculated.
+For internal/debugging use only.
+"""
+type TypesenseHitTextMatchInfo {
+  best_field_score: String
+  best_field_weight: Int
+  fields_matches: Int
+  num_tokens_dropped: Int
+  score: String
+  tokens_matched: Int
+  typo_prefix_score: Int
+}
+
+type TypesenseKeyValue {
+  """The key (ID) of the key-value pair."""
+  id: String!
+
+  """The value (label) of the key-value pair."""
+  label: String!
+}
+
+"""Defines an input type to filter by a range."""
+input TypesenseRange {
+  from: Int!
+  to: Int!
+}
+
+"""Defines a typesense_rokka_image data type object."""
+type TypesenseRokkaImage {
+  """The alt text of the image."""
+  alt: String
+
+  """The file name of the source image."""
+  fileName: String
+
+  """The rokka hash."""
+  hash: String!
+
+  """The height of the source image."""
+  height: Int
+
+  """The title of the image."""
+  title: String
+
+  """The width of the source image."""
+  width: Int
+}
+
+enum TypesenseSearchMode {
+  """
+  Hybrid search mode. Combines keyword and semantic search. Only available when embeddings are enabled on the collection.
+  """
+  HYBRID_SEARCH
+
+  """Keyword search mode (default). Uses traditional full-text search."""
+  KEYWORD_SEARCH
+
+  """
+  Semantic search mode. Uses vector embeddings for semantic similarity search.
+  Only available when embeddings are enabled on the collection.
+  """
+  SEMANTIC_SEARCH
+}
+
+interface TypesenseSearchResults {
+  """The available facets."""
+  facets: [TypesenseFacet!]!
+
+  """The matching documents."""
+  hits: [TypesenseHit!]!
+
+  """Debug Query."""
+  queryDebug: MapData
+
+  """Total number of matching documents."""
+  total: Int!
+}
+
+"""Search results for the 'content' Typesense collection."""
+type TypesenseSearchResultsContent implements TypesenseSearchResults {
+  """The available facets. Only available if mode is RESULTS."""
+  facets: [TypesenseFacet!]!
+
+  """The matching documents. Only available if mode is RESULTS."""
+  hits: [TypesenseHitContent!]!
+
+  """Debug Query."""
+  queryDebug: MapData
+
+  """Total number of matching documents."""
+  total: Int!
+}
+
+"""Search results for the 'epublications' Typesense collection."""
+type TypesenseSearchResultsEpublications implements TypesenseSearchResults {
+  """The available facets. Only available if mode is RESULTS."""
+  facets: [TypesenseFacet!]!
+
+  """The matching documents. Only available if mode is RESULTS."""
+  hits: [TypesenseHitEpublications!]!
+
+  """Debug Query."""
+  queryDebug: MapData
+
+  """Total number of matching documents."""
+  total: Int!
+}
+
+"""Search results for the 'handbook' Typesense collection."""
+type TypesenseSearchResultsHandbook implements TypesenseSearchResults {
+  """The available facets. Only available if mode is RESULTS."""
+  facets: [TypesenseFacet!]!
+
+  """The matching documents. Only available if mode is RESULTS."""
+  hits: [TypesenseHitHandbook!]!
+
+  """Debug Query."""
+  queryDebug: MapData
+
+  """Total number of matching documents."""
+  total: Int!
+}
+
+"""Search results for the 'news' Typesense collection."""
+type TypesenseSearchResultsNews implements TypesenseSearchResults {
+  """The available facets. Only available if mode is RESULTS."""
+  facets: [TypesenseFacet!]!
+
+  """The matching documents. Only available if mode is RESULTS."""
+  hits: [TypesenseHitNews!]!
+
+  """Debug Query."""
+  queryDebug: MapData
+
+  """Total number of matching documents."""
+  total: Int!
+}
+
+"""Defines the selected values of a facet."""
+input TypesenseSelectedFacet {
+  """The facet ID."""
+  id: TypesenseFacetId!
+
+  """
+  The selected terms.
+  If null, empty, or contains null values, the facet filter will be ignored (treated as if no filter was provided).
+  """
+  values: [String]
+}
+
+enum TypesenseSortBy {
+  """Sortable field entity_id from collection content_search_typesense"""
+  CONTENT_ENTITY_ID
+
+  """Sortable field filter_date from collection content_search_typesense"""
+  CONTENT_FILTER_DATE
+
+  """Sortable field title from collection content_search_typesense"""
+  CONTENT_TITLE
+
+  """Sortable field publication_date from collection epublications"""
+  EPUBLICATIONS_PUBLICATION_DATE
+
+  """Sortable field sub_rubric from collection epublications"""
+  EPUBLICATIONS_SUB_RUBRIC
+
+  """Sort by relevance (default Typesense sorting by _text_match)"""
+  RELEVANCE
+}
+
+"""Defines how to sort search results."""
+input TypesenseSortByInput {
+  """The sort direction. Defaults to DESC if not specified."""
+  direction: TypesenseSortDirection
+
+  """
+  The field to sort by. Must be a field that is enabled for sorting in the Typesense schema.
+  """
+  field: TypesenseSortBy!
+}
+
+enum TypesenseSortDirection {
+  """Sort in ascending order."""
+  ASC
+
+  """Sort in descending order."""
+  DESC
 }
 
 """Interface for an URL."""
@@ -7651,6 +11352,12 @@ type User implements Entity & EntityLinkable {
 
   """The entity type ID."""
   entityTypeId: String!
+
+  """{value} {field: field_address} """
+  fieldAddress: FieldItemTypeAddress
+
+  """{field: field_address} """
+  fieldAddressRawField: FieldItemListAddress
   hasPermission(permission: String!): Boolean!
 
   """Check if the user has the given role."""
@@ -7711,19 +11418,19 @@ type UserLoginResponse {
   """The token to use for logging out."""
   logoutToken: String
 
-  """The user name if login was successfull."""
+  """The user name if login was successful."""
   name: String
 
   """Login was successful."""
   success: Boolean
 
-  """The user ID if login was successfull."""
+  """The user ID if login was successful."""
   uid: String
 }
 
 """The response for the userLogout mutation."""
 type UserLogoutResponse {
-  """Error message if logout was not successfull."""
+  """Error message if logout was not successful."""
   error: String
 
   """Logout was successful."""
@@ -7732,7 +11439,7 @@ type UserLogoutResponse {
 
 """The response for the userPasswordChange mutation."""
 type UserPasswordChangeResponse {
-  """Error message if password change was not successfull."""
+  """Error message if password change was not successful."""
   error: String
 
   """Password change was successful."""
@@ -7741,7 +11448,7 @@ type UserPasswordChangeResponse {
 
 """The response for the userPasswordResetLogin mutation."""
 type UserPasswordResetLoginResponse {
-  """Error message if password reset was not successfull."""
+  """Error message if password reset was not successful."""
   error: String
 
   """Password reset was successful."""
@@ -7756,7 +11463,7 @@ type UserPasswordResetLoginResponse {
 
 """The response for the userPasswordReset mutation."""
 type UserPasswordResetResponse {
-  """Error message if password reset was not successfull."""
+  """Error message if password reset was not successful."""
   error: String
 
   """Password reset was successful."""

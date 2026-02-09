@@ -30,6 +30,17 @@ declare module '#blokkli/editor/adapter' {
     ) => Promise<MutationResponseLike<T>>
 
     /**
+     * Rearrange blocks within a field by specifying the desired order.
+     *
+     * All provided UUIDs must belong to the same field. The blocks
+     * are reordered to match the given UUID array order.
+     */
+    rearrangeBlocks?: (e: {
+      host: import('#blokkli/editor/types/field').BlokkliItemHost
+      uuids: string[]
+    }) => Promise<MutationResponseLike<T>>
+
+    /**
      * Get an authentication token for the agent WebSocket connection.
      *
      * The token is included in the WebSocket init message and validated

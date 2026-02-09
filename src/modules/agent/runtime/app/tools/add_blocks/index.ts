@@ -1,44 +1,78 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import {
+  mutationResultSchema,
+  parentSchema,
+  optionValueSchema,
+  validateOptionValue,
+} from '../schemas'
 import { itemEntityType } from '#blokkli-build/config'
+import type { McpToolContext } from '#blokkli/agent/app/types'
+import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'
+import {
+  getAvailableOptions,
+  optionValueToStorable,
+} from '#blokkli/editor/helpers/options'
 
-const fieldValueSchema = z
-  .array(
-    z.object({
-      fieldName: z.string().describe('The field name'),
-      fieldValue: z
-        .union([
-          z
-            .string()
-            .describe(
-              'Text value for plain/markup content fields, or a URL string (starting with http) for link content fields',
-            ),
-          z
-            .object({
-              entityType: z
-                .string()
-                .describe('Entity type (e.g., "media", "node")'),
-              entityId: z.string().describe('Entity ID'),
-            })
-            .describe(
-              'Entity reference for reference content fields (media, content references)',
-            ),
-        ])
-        .describe(
-          'The field value: a string for plain/markup content fields, an entity reference object for reference content fields, or a URL string for link content fields',
-        ),
-    }),
+const contentFieldValueSchema = z.union([
+  z
+    .string()
+    .describe(
+      'Text value for plain/markup content fields, or a URL string (starting with http) for link content fields',
+    ),
+  z
+    .object({
+      entityType: z.string().describe('Entity type (e.g., "media", "node")'),
+      entityId: z.string().describe('Entity ID'),
+    })
+    .describe(
+      'Entity reference for reference content fields (media, content references)',
+    ),
+])
+
+const contentFieldsSchema = z
+  .record(
+    z.string().describe('The content field name'),
+    contentFieldValueSchema,
   )
   .optional()
   .describe(
-    'Field values to set on the new block. Use this to set text content and media/entity references on content fields in one step.',
+    'Content field values to set on the new block, keyed by field name. Use this to set text content and media/entity references in one step.',
   )
 
-const blockSchema = z.object({
+type OptionValue = string | boolean | number | string[]
+
+type BlockInput = {
+  bundle: string
+  contentFields?: Record<
+    string,
+    string | { entityType: string; entityId: string }
+  >
+  options?: Record<string, OptionValue>
+  children?: Record<string, BlockInput[]>
+}
+
+const blockSchema: z.ZodType<BlockInput> = z.object({
   bundle: z.string().describe('The block bundle to add'),
-  values: fieldValueSchema,
+  contentFields: contentFieldsSchema,
+  options: z
+    .record(z.string(), optionValueSchema)
+    .optional()
+    .describe(
+      'Block options to set as key-value pairs (e.g. alignment, style). Use get_bundle_info to see available options.',
+    ),
+  children: z
+    .record(
+      z.string().describe('Block field name'),
+      z
+        .lazy(() => z.array(blockSchema))
+        .describe('Child blocks for this field'),
+    )
+    .optional()
+    .describe(
+      'Nested child blocks keyed by block field name. Recursive — children can also have children.',
+    ),
 })
 
 const paramsSchema = z.object({
@@ -54,10 +88,279 @@ const paramsSchema = z.object({
     .describe('UUID of block to insert after, or null for beginning'),
 })
 
+/**
+ * Validate content fields for a single block.
+ * Returns an error string or undefined if valid.
+ */
+function validateContentFields(
+  ctx: McpToolContext,
+  block: BlockInput,
+  path: string,
+): string | undefined {
+  if (!block.contentFields) return undefined
+
+  for (const [fieldName, fieldValue] of Object.entries(block.contentFields)) {
+    const editableConfig = ctx.app.types.editableFieldConfig.forName(
+      ctx.itemEntityType,
+      block.bundle,
+      fieldName,
+    )
+
+    const droppableConfig = ctx.app.types.droppableFieldConfig.forName(
+      ctx.itemEntityType,
+      block.bundle,
+      fieldName,
+    )
+
+    if (!editableConfig && !droppableConfig) {
+      const editableFieldNames = ctx.app.types.editableFieldConfig
+        .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
+        .map((f) => f.name)
+      const droppableFieldNames = ctx.app.types.droppableFieldConfig
+        .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
+        .map((f) => f.name)
+      const availableFields = [...editableFieldNames, ...droppableFieldNames]
+
+      return (
+        `${path}: Field "${fieldName}" does not exist on bundle "${block.bundle}". ` +
+        (availableFields.length
+          ? `Available content fields: ${availableFields.join(', ')}`
+          : 'This bundle has no content fields.')
+      )
+    }
+
+    if (editableConfig && typeof fieldValue !== 'string') {
+      return `${path}: Field "${fieldName}" is a text field and expects a string value, got ${typeof fieldValue}.`
+    }
+
+    if (droppableConfig) {
+      if (
+        typeof fieldValue === 'string' &&
+        droppableConfig.type !== 'link'
+      ) {
+        return `${path}: Field "${fieldName}" is a reference field and expects { entityType, entityId }, got a string.`
+      }
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Validate options for a single block.
+ * Returns an error string or undefined if valid.
+ */
+function validateBlockOptions(
+  ctx: McpToolContext,
+  block: BlockInput,
+  path: string,
+): string | undefined {
+  if (!block.options) return undefined
+
+  const { definitions } = ctx.app
+  const definition = definitions.getBlockDefinition(block.bundle, 'default')
+
+  if (!definition) {
+    return `${path}: Block definition not found for bundle "${block.bundle}".`
+  }
+
+  const availableOptions = getAvailableOptions(
+    definition.options,
+    definition.globalOptions as string[] | undefined,
+    definitions.globalOptions.value as Record<string, any>,
+  )
+
+  for (const [key, value] of Object.entries(block.options)) {
+    const optionDef = availableOptions.find((o) => o.property === key)
+    if (!optionDef) {
+      const availableKeys = availableOptions.map((o) => o.property)
+      return (
+        `${path}: Option "${key}" is not available for bundle "${block.bundle}". ` +
+        (availableKeys.length
+          ? `Available options: ${availableKeys.join(', ')}`
+          : 'This bundle has no options.')
+      )
+    }
+
+    const valueError = validateOptionValue(key, value, optionDef)
+    if (valueError) {
+      return `${path}: ${valueError}`
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Recursively validate the block tree.
+ * Returns an error string or undefined if the entire tree is valid.
+ */
+function validateBlockTree(
+  ctx: McpToolContext,
+  blocks: BlockInput[],
+  allowedBundles: string[],
+  fieldLabel: string,
+  pathPrefix: string,
+): string | undefined {
+  const { types } = ctx.app
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]!
+    const path = `${pathPrefix}Block ${i + 1}`
+
+    // Check if bundle exists
+    const bundleDefinition = types.getBlockBundleDefinition(block.bundle)
+    if (!bundleDefinition) {
+      return `${path}: Bundle "${block.bundle}" does not exist.`
+    }
+
+    // Check if bundle is allowed in the target field
+    if (allowedBundles.length && !allowedBundles.includes(block.bundle)) {
+      return `${path}: Bundle "${block.bundle}" is not allowed in field "${fieldLabel}". Allowed bundles: ${allowedBundles.join(', ')}`
+    }
+
+    // Validate content fields
+    const contentError = validateContentFields(ctx, block, path)
+    if (contentError) return contentError
+
+    // Validate options
+    const optionsError = validateBlockOptions(ctx, block, path)
+    if (optionsError) return optionsError
+
+    // Validate children recursively
+    if (block.children) {
+      for (const [childFieldName, childBlocks] of Object.entries(
+        block.children,
+      )) {
+        const childFieldConfig = types.fieldConfig.forName(
+          ctx.itemEntityType,
+          block.bundle,
+          childFieldName,
+        )
+
+        if (!childFieldConfig) {
+          const availableBlockFields = types.fieldConfig
+            .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
+            .map((f) => f.name)
+          return (
+            `${path}: Block field "${childFieldName}" does not exist on bundle "${block.bundle}". ` +
+            (availableBlockFields.length
+              ? `Available block fields: ${availableBlockFields.join(', ')}`
+              : 'This bundle has no block fields.')
+          )
+        }
+
+        if (!childBlocks.length) continue
+
+        const childError = validateBlockTree(
+          ctx,
+          childBlocks,
+          childFieldConfig.allowedBundles,
+          childFieldName,
+          `${path} > ${childFieldName} > `,
+        )
+        if (childError) return childError
+      }
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Recursively transform validated BlockInput[] into AddNewBlocksEventBlock[].
+ * Generates UUIDs, converts contentFields to values array, and converts options to storable strings.
+ */
+function buildEventBlocks(
+  ctx: McpToolContext,
+  blocks: BlockInput[],
+): AddNewBlocksEventBlock[] {
+  const { definitions } = ctx.app
+
+  return blocks.map((block) => {
+    const blockUuid = generateUUID()
+
+    const values = block.contentFields
+      ? Object.entries(block.contentFields).map(([fieldName, fieldValue]) => ({
+          fieldName,
+          fieldValue,
+        }))
+      : undefined
+
+    let options: Record<string, string> | undefined
+    if (block.options) {
+      const definition = definitions.getBlockDefinition(block.bundle, 'default')
+      if (definition) {
+        const availableOptions = getAvailableOptions(
+          definition.options,
+          definition.globalOptions as string[] | undefined,
+          definitions.globalOptions.value as Record<string, any>,
+        )
+        options = {}
+        for (const [key, value] of Object.entries(block.options)) {
+          const optionDef = availableOptions.find((o) => o.property === key)
+          if (optionDef) {
+            options[key] = optionValueToStorable(optionDef.option, value)
+          }
+        }
+      }
+    }
+
+    let children: Record<string, AddNewBlocksEventBlock[]> | undefined
+    if (block.children) {
+      children = {}
+      for (const [fieldName, childBlocks] of Object.entries(block.children)) {
+        if (childBlocks.length) {
+          children[fieldName] = buildEventBlocks(ctx, childBlocks)
+        }
+      }
+    }
+
+    return {
+      bundle: block.bundle,
+      blockUuid,
+      values,
+      options,
+      children,
+    }
+  })
+}
+
+/**
+ * Count total blocks in the tree (including nested children).
+ */
+function countBlocks(blocks: AddNewBlocksEventBlock[]): number {
+  let count = blocks.length
+  for (const block of blocks) {
+    if (block.children) {
+      for (const childBlocks of Object.values(block.children)) {
+        count += countBlocks(childBlocks)
+      }
+    }
+  }
+  return count
+}
+
+/**
+ * Collect all UUIDs from the block tree.
+ */
+function collectAllUuids(blocks: AddNewBlocksEventBlock[]): string[] {
+  const uuids: string[] = []
+  for (const block of blocks) {
+    uuids.push(block.blockUuid)
+    if (block.children) {
+      for (const childBlocks of Object.values(block.children)) {
+        uuids.push(...collectAllUuids(childBlocks))
+      }
+    }
+  }
+  return uuids
+}
+
 export default defineBlokkliAgentTool({
   name: 'add_blocks',
   description:
-    'Add one or more new blocks to the page. All blocks are added to the same parent field in the order specified. IMPORTANT: Always provide values for content fields (text, media/entity references) directly, instead of adding empty blocks! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT block fields! Nested blocks need to be created in separate calls.',
+    'Add one or more new blocks to the page. Supports nested structures via the `children` property — define entire block trees in a single call. IMPORTANT: Always provide content field values (text, media/entity references) directly via contentFields, instead of adding empty blocks! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT block fields! For nested blocks, use the `children` property keyed by block field name. You can also set block options inline via the `options` property (key-value pairs).',
   category: 'mutation',
   prunedSummary: (r) =>
     r.success ? `added ${r.newBlocks?.length || 0} blocks` : 'rejected',
@@ -95,117 +398,41 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    const allowedBundles = field.allowedBundles
-
-    // Validate each block
-    for (let i = 0; i < params.blocks.length; i++) {
-      const block = params.blocks[i]!
-
-      // Check if bundle exists
-      const bundleDefinition = types.getBlockBundleDefinition(block.bundle)
-      if (!bundleDefinition) {
-        return {
-          error: `Block ${i + 1}: Bundle "${block.bundle}" does not exist.`,
-        }
-      }
-
-      // Check if bundle is allowed in the target field
-      if (allowedBundles.length && !allowedBundles.includes(block.bundle)) {
-        return {
-          error: `Block ${i + 1}: Bundle "${block.bundle}" is not allowed in field "${params.parent.field}". Allowed bundles: ${allowedBundles.join(', ')}`,
-        }
-      }
-
-      // Validate values if provided
-      if (block.values) {
-        for (const entry of block.values) {
-          const { fieldName, fieldValue } = entry
-
-          // Check if field is editable (text fields)
-          const editableConfig = types.editableFieldConfig.forName(
-            ctx.itemEntityType,
-            block.bundle,
-            fieldName,
-          )
-
-          // Check if field is droppable (reference fields)
-          const droppableConfig = types.droppableFieldConfig.forName(
-            ctx.itemEntityType,
-            block.bundle,
-            fieldName,
-          )
-
-          if (!editableConfig && !droppableConfig) {
-            // Get available fields for error message
-            const editableFieldNames = types.editableFieldConfig
-              .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
-              .map((f) => f.name)
-            const droppableFieldNames = types.droppableFieldConfig
-              .forEntityTypeAndBundle(ctx.itemEntityType, block.bundle)
-              .map((f) => f.name)
-            const availableFields = [
-              ...editableFieldNames,
-              ...droppableFieldNames,
-            ]
-
-            return {
-              error:
-                `Block ${i + 1}: Field "${fieldName}" does not exist on bundle "${block.bundle}". ` +
-                (availableFields.length
-                  ? `Available content fields: ${availableFields.join(', ')}`
-                  : 'This bundle has no content fields.'),
-            }
-          }
-
-          // Validate value type for editable fields (should be string)
-          if (editableConfig && typeof fieldValue !== 'string') {
-            return {
-              error: `Block ${i + 1}: Field "${fieldName}" is a text field and expects a string value, got ${typeof fieldValue}.`,
-            }
-          }
-
-          // Validate value type for droppable fields
-          if (droppableConfig) {
-            if (
-              typeof fieldValue === 'string' &&
-              droppableConfig.type !== 'link'
-            ) {
-              return {
-                error: `Block ${i + 1}: Field "${fieldName}" is a reference field and expects { entityType, entityId }, got a string.`,
-              }
-            }
-          }
-        }
-      }
+    // Recursively validate the entire block tree
+    const validationError = validateBlockTree(
+      ctx,
+      params.blocks,
+      field.allowedBundles,
+      params.parent.field,
+      '',
+    )
+    if (validationError) {
+      return { error: validationError }
     }
 
-    // Generate UUIDs for all blocks
-    const blocksWithUuids = params.blocks.map((block) => ({
-      bundle: block.bundle,
-      blockUuid: generateUUID(),
-      values: block.values,
-    }))
+    // Build the event tree with UUIDs and storable options
+    const eventBlocks = buildEventBlocks(ctx, params.blocks)
+    const totalCount = countBlocks(eventBlocks)
+    const blockUuids = collectAllUuids(eventBlocks)
 
     const { $t } = ctx.app
     const label =
-      blocksWithUuids.length === 1
+      totalCount === 1
         ? $t('aiAgentAddBlockDone', 'Added @bundle').replace(
             '@bundle',
-            types.getBlockLabel(blocksWithUuids[0]!.bundle),
+            types.getBlockLabel(eventBlocks[0]!.bundle),
           )
         : $t('aiAgentAddBlocksDone', 'Added @count blocks').replace(
             '@count',
-            String(blocksWithUuids.length),
+            String(totalCount),
           )
-    const blockUuids = blocksWithUuids.map((b) => b.blockUuid)
 
-    // Return the action for the framework to handle
     return {
       type: 'add' as const,
       label,
       apply: (adapter) =>
         adapter.addNewBlocks({
-          blocks: blocksWithUuids,
+          blocks: eventBlocks,
           host: {
             type: params.parent.type,
             uuid: params.parent.uuid,

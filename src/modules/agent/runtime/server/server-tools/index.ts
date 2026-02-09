@@ -3,6 +3,8 @@ import type {
   ClientToolDefinition,
   ClientPlanState,
   GenericContentBlock,
+  GenericTextBlock,
+  GenericSkillBlock,
   ServerMessage,
 } from '../../shared/types'
 import type { ResolvedSkill } from '../skills/types'
@@ -57,6 +59,7 @@ export type ServerToolContext = {
   resolvedSkills: ResolvedSkill[]
   lazyTools: ClientToolDefinition[]
   activatedLazyTools: Set<string>
+  loadedSkills: Set<string>
   plan: ServerPlan | null
   setPlan: (plan: ServerPlan | null) => void
   toClientPlan: () => ClientPlanState | null
@@ -75,7 +78,7 @@ export type ServerToolContext = {
  */
 export type ServerToolResult = {
   toolResults: ToolResultEntry[]
-  extraTextBlocks?: { type: 'text'; text: string }[]
+  extraBlocks?: (GenericTextBlock | GenericSkillBlock)[]
   /** When true, messages were already committed (e.g. create_plan). */
   messagesCommitted?: boolean
 }
@@ -157,6 +160,8 @@ export function buildDefinition(
   return {
     name: tool.name,
     description: tool.description,
-    input_schema: stripSchemaOverhead(z.toJSONSchema(schema)) as object,
+    input_schema: stripSchemaOverhead(
+      z.toJSONSchema(schema),
+    ) as Record<string, unknown>,
   }
 }

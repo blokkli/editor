@@ -86,6 +86,7 @@ export default defineServerSideTool({
         ctx.toolUseId,
         JSON.stringify({
           approved: true,
+          message: 'Plan approved. Start executing now.',
           current_step: {
             label: steps[0].label,
             description: steps[0].description,

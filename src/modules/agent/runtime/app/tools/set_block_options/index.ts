@@ -4,16 +4,17 @@ import {
   getAvailableOptions,
   optionValueToStorable,
 } from '#blokkli/editor/helpers/options'
-import { mutationResultSchema } from '../schemas'
+import {
+  mutationResultSchema,
+  optionValueSchema,
+  validateOptionValue,
+} from '../schemas'
 import { onlyUnique } from '#blokkli/helpers'
 
 const blockOptionsSchema = z.object({
   uuid: z.string().describe('The block UUID'),
   options: z
-    .record(
-      z.string(),
-      z.union([z.string(), z.boolean(), z.number(), z.array(z.string())]),
-    )
+    .record(z.string(), optionValueSchema)
     .describe('Options to set as key-value pairs'),
 })
 
@@ -89,7 +90,6 @@ export default defineBlokkliAgentTool({
 
       // Validate and process each option
       for (const [key, value] of optionEntries) {
-        // Check if the option key is valid
         const optionDef = availableOptions.find((o) => o.property === key)
         if (!optionDef) {
           return {
@@ -97,77 +97,11 @@ export default defineBlokkliAgentTool({
           }
         }
 
-        // Validate value against option type
-        const optionType = optionDef.option.type
-
-        // Type-specific validation
-        if (optionType === 'checkbox') {
-          if (
-            typeof value !== 'boolean' &&
-            value !== '1' &&
-            value !== '0' &&
-            value !== 'true' &&
-            value !== 'false'
-          ) {
-            return {
-              error: `Option "${key}" expects a boolean value`,
-            }
-          }
-        } else if (optionType === 'radios') {
-          if (typeof value !== 'string') {
-            return {
-              error: `Option "${key}" expects a string value`,
-            }
-          }
-          // Validate against allowed options if defined
-          if ('options' in optionDef.option && optionDef.option.options) {
-            const allowedKeys = Object.keys(optionDef.option.options)
-            if (!allowedKeys.includes(value)) {
-              return {
-                error: `Option "${key}" value must be one of: ${allowedKeys.join(', ')}`,
-              }
-            }
-          }
-        } else if (optionType === 'checkboxes') {
-          if (!Array.isArray(value) && typeof value !== 'string') {
-            return {
-              error: `Option "${key}" expects an array of strings or comma-separated string`,
-            }
-          }
-          // Validate against allowed options if defined
-          if ('options' in optionDef.option && optionDef.option.options) {
-            const allowedKeys = Object.keys(optionDef.option.options)
-            const values = Array.isArray(value) ? value : value.split(',')
-            for (const v of values) {
-              if (!allowedKeys.includes(v)) {
-                return {
-                  error: `Option "${key}" value "${v}" is not allowed. Must be one of: ${allowedKeys.join(', ')}`,
-                }
-              }
-            }
-          }
-        } else if (optionType === 'number' || optionType === 'range') {
-          const numValue =
-            typeof value === 'number' ? value : Number.parseFloat(String(value))
-          if (Number.isNaN(numValue)) {
-            return {
-              error: `Option "${key}" expects a numeric value`,
-            }
-          }
-          // Validate min/max bounds
-          if ('min' in optionDef.option && numValue < optionDef.option.min) {
-            return {
-              error: `Option "${key}" value must be >= ${optionDef.option.min}`,
-            }
-          }
-          if ('max' in optionDef.option && numValue > optionDef.option.max) {
-            return {
-              error: `Option "${key}" value must be <= ${optionDef.option.max}`,
-            }
-          }
+        const valueError = validateOptionValue(key, value, optionDef)
+        if (valueError) {
+          return { error: valueError }
         }
 
-        // Convert value to storable string format
         const storableValue = optionValueToStorable(optionDef.option, value)
 
         validatedOptions.push({

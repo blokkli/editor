@@ -1,34 +1,33 @@
-.bk-status-icon {
-  @apply size-18 shrink-0 flex items-center justify-center rounded-full;
-  @apply border border-mono-300;
+.bk .bk-status-icon {
+  @apply size-20 shrink-0 flex items-center justify-center rounded-full leading-none;
 
   svg {
     @apply w-full h-full fill-current;
   }
 
   &.bk-is-pending {
-    @apply bg-white;
+    @apply bg-mono-200;
     .bk-status-icon-bullet {
-      @apply size-5 rounded-full bg-mono-400;
+      @apply text-mono-500 text-xs text-center font-bold !leading-none;
     }
   }
 
   &.bk-is-active {
-    @apply p-2 bg-yellow-normal border-yellow-normal;
+    @apply p-3 bg-yellow-normal;
     svg {
       @apply fill-white;
     }
   }
 
   &.bk-is-success {
-    @apply border-lime-normal bg-lime-normal text-white;
+    @apply p-2 bg-lime-normal text-white;
     svg {
       @apply fill-current;
     }
   }
 
   &.bk-is-error {
-    @apply border-red-normal bg-red-normal text-white;
+    @apply p-2 bg-red-normal text-white;
     svg {
       @apply fill-current;
     }

@@ -25,6 +25,7 @@ function convertMessages(messages: GenericMessage[]): MessageParam[] {
     const content = msg.content.map((block) => {
       switch (block.type) {
         case 'text':
+        case 'skill':
           return { type: 'text' as const, text: block.text }
         case 'tool_use':
           return {

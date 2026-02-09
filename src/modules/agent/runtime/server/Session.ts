@@ -7,8 +7,11 @@ import type {
   ConversationStateSnapshot,
   GenericMessage,
   GenericContentBlock,
+  GenericTextBlock,
+  GenericSkillBlock,
 } from '../shared/types'
 import { buildSystemPrompt } from './agentPrompt'
+import type { ActivePlanContext } from './system-prompts/types'
 import { provider, aiModel } from '#blokkli-build/agent-server'
 import type { ToolPruningMetadata } from './helpers'
 import {
@@ -65,6 +68,8 @@ export class Session {
   lazyTools: ClientToolDefinition[] = []
   /** Names of lazy tools that have been activated via load_tools */
   activatedLazyTools = new Set<string>()
+  /** Names of skills that have been loaded via load_skill */
+  loadedSkills = new Set<string>()
   /** Page context received from client on init */
   pageContext?: PageContext
 
@@ -81,6 +86,7 @@ export class Session {
     this.tools = tools.filter((t) => !t.lazy)
     this.lazyTools = tools.filter((t) => !!t.lazy)
     this.activatedLazyTools = new Set()
+    this.loadedSkills = new Set()
     this.pageContext = pageContext
   }
 
@@ -167,6 +173,7 @@ export class Session {
     this.abortController?.abort()
     this.messages = []
     this.activatedLazyTools.clear()
+    this.loadedSkills.clear()
     this.plan = null
     if (this.pendingPlanApproval) {
       this.pendingPlanApproval.resolve(false)
@@ -192,6 +199,7 @@ export class Session {
     this.tools = []
     this.lazyTools = []
     this.activatedLazyTools.clear()
+    this.loadedSkills.clear()
     this.pageContext = undefined
   }
 
@@ -278,6 +286,30 @@ export class Session {
   }
 
   /**
+   * Build an ActivePlanContext from the current plan state,
+   * or undefined if no plan step is in progress.
+   */
+  private getActivePlanContext(): ActivePlanContext | undefined {
+    const currentStep = this.plan?.steps.find(
+      (s) => s.status === 'in_progress',
+    )
+    if (!this.plan || !currentStep) return undefined
+    return {
+      title: this.plan.title,
+      totalSteps: this.plan.steps.length,
+      completedSteps: this.plan.steps.filter((s) => s.status === 'completed')
+        .length,
+      currentStep: {
+        label: currentStep.label,
+        description: currentStep.description,
+      },
+      remainingSteps: this.plan.steps
+        .filter((s) => s.status === 'pending')
+        .map((s) => s.label),
+    }
+  }
+
+  /**
    * Wait for the user to approve or reject the plan.
    */
   private waitForPlanApproval(): Promise<boolean> {
@@ -321,12 +353,6 @@ export class Session {
       description: t.description,
     }))
 
-    const systemPrompt = buildSystemPrompt(
-      this.pageContext,
-      resolvedSkills,
-      lazyToolSummaries,
-    )
-
     // Build initial user message with context about selection
     let userContent = prompt
     if (selectedUuids?.length) {
@@ -341,6 +367,7 @@ export class Session {
     this.abortController = new AbortController()
     this.isProcessing = true
     let toolCallCounter = 0
+    let planRetryCount = 0
 
     try {
       while (true) {
@@ -360,7 +387,7 @@ export class Session {
           content: string
           is_error?: boolean
         }> = []
-        const extraTextBlocks: Array<{ type: 'text'; text: string }> = []
+        const extraBlocks: (GenericTextBlock | GenericSkillBlock)[] = []
 
         // Flag set by create_plan: messages already committed, skip normal commit
         let messagesCommittedByPlanTool = false
@@ -396,6 +423,15 @@ export class Session {
 
         // Combine server tools with client tools
         const allTools = [...serverToolDefs, ...this.tools, ...activatedTools]
+
+        // Build system prompt each turn so it reflects current plan state
+        const systemPrompt = buildSystemPrompt(
+          this.pageContext!,
+          resolvedSkills,
+          lazyToolSummaries,
+          this.getActivePlanContext(),
+          this.loadedSkills,
+        )
 
         // Create stream using the provider
         const stream = provider.createStream(
@@ -457,7 +493,32 @@ export class Session {
 
             case 'tool_use_end':
               if (currentToolUse) {
-                const input = JSON.parse(currentToolUse.inputJson || '{}')
+                let input: Record<string, unknown>
+                try {
+                  input = JSON.parse(currentToolUse.inputJson || '{}')
+                } catch {
+                  // Malformed JSON from the model — record an empty tool_use
+                  // so the message structure stays valid, then return an error
+                  // result so the LLM can retry.
+                  input = {}
+                  assistantContent.push({
+                    type: 'tool_use',
+                    id: currentToolUse.id,
+                    name: currentToolUse.name,
+                    input,
+                  })
+                  toolResults.push({
+                    type: 'tool_result',
+                    tool_use_id: currentToolUse.id,
+                    content: JSON.stringify({
+                      error:
+                        'Your tool call produced malformed JSON input. Please try again.',
+                    }),
+                    is_error: true,
+                  })
+                  currentToolUse = null
+                  break
+                }
                 const callId = `tc_${toolCallCounter++}`
 
                 // Add to assistant content
@@ -473,12 +534,30 @@ export class Session {
                   (t) => t.name === currentToolUse!.name,
                 )
                 if (matchedServerTool) {
+                  // Reject if the tool is not available in this context
+                  // (e.g. LLM hallucinated a tool that was not offered).
+                  if (
+                    matchedServerTool.isAvailable &&
+                    !matchedServerTool.isAvailable(defCtx)
+                  ) {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: currentToolUse.id,
+                      content: JSON.stringify({
+                        error: 'This tool is not available right now.',
+                      }),
+                      is_error: true,
+                    })
+                    currentToolUse = null
+                    break
+                  }
                   const handlerCtx: ServerToolContext = {
                     toolUseId: currentToolUse.id,
                     send: (msg) => send(peer, msg),
                     resolvedSkills,
                     lazyTools: this.lazyTools,
                     activatedLazyTools: this.activatedLazyTools,
+                    loadedSkills: this.loadedSkills,
                     plan: this.plan,
                     setPlan: (p) => {
                       this.plan = p
@@ -516,19 +595,30 @@ export class Session {
                       }
                     },
                   }
-                  const parsed = matchedServerTool
-                    .inputSchema(defCtx)
-                    .parse(input)
-                  const result = await matchedServerTool.handle(
-                    handlerCtx,
-                    parsed,
-                  )
-                  toolResults.push(...result.toolResults)
-                  if (result.extraTextBlocks) {
-                    extraTextBlocks.push(...result.extraTextBlocks)
-                  }
-                  if (result.messagesCommitted) {
-                    messagesCommittedByPlanTool = true
+                  try {
+                    const parsed = matchedServerTool
+                      .inputSchema(defCtx)
+                      .parse(input)
+                    const result = await matchedServerTool.handle(
+                      handlerCtx,
+                      parsed,
+                    )
+                    toolResults.push(...result.toolResults)
+                    if (result.extraBlocks) {
+                      extraBlocks.push(...result.extraBlocks)
+                    }
+                    if (result.messagesCommitted) {
+                      messagesCommittedByPlanTool = true
+                    }
+                  } catch (e) {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: currentToolUse.id,
+                      content: JSON.stringify({
+                        error: `Invalid input: ${(e as Error).message}`,
+                      }),
+                      is_error: true,
+                    })
                   }
                   currentToolUse = null
                   break
@@ -619,12 +709,29 @@ export class Session {
         if (toolResults.length) {
           this.messages.push({
             role: 'user',
-            content: [...toolResults, ...extraTextBlocks],
+            content: [...toolResults, ...extraBlocks],
           })
+          // Reset retry counter — the LLM is making progress
+          planRetryCount = 0
         }
 
-        // If no tool calls were made, we're done
+        // If no tool calls were made, check if there's an active plan.
+        // If so, retry the loop — the system prompt (rebuilt each iteration)
+        // includes the active plan step instructions. Limit retries to
+        // prevent infinite loops.
         if (toolResults.length === 0) {
+          const hasActivePlan =
+            this.plan &&
+            this.plan.steps.some((s) => s.status === 'in_progress')
+          if (hasActivePlan && planRetryCount < 2) {
+            planRetryCount++
+            // Push a minimal user message to maintain valid message
+            // alternation. The system prompt (rebuilt each iteration)
+            // carries the authoritative plan continuation instruction.
+            this.safePushUserMessage('[Continue with the plan.]')
+            continue
+          }
+
           const finalMessage = assistantContent
             .filter(
               (c): c is { type: 'text'; text: string } => c.type === 'text',
@@ -656,6 +763,12 @@ export class Session {
         KEEP_RECENT_TURNS,
         this.buildToolMetadataMap(),
       )
+
+      // Reconcile loadedSkills: if pruning removed a skill's text block,
+      // remove it from the set so the system prompt no longer says it's loaded.
+      if (this.loadedSkills.size > 0) {
+        this.reconcileLoadedSkills()
+      }
 
       // Send conversation state for client-side persistence
       this.sendConversationState(peer, authSecret)
@@ -701,6 +814,29 @@ export class Session {
   }
 
   /**
+   * Remove skills from loadedSkills whose text content has been pruned
+   * from the conversation messages.
+   */
+  private reconcileLoadedSkills(): void {
+    // Collect skill names still present as skill blocks in messages
+    const presentSkills = new Set<string>()
+    for (const msg of this.messages) {
+      if (msg.role !== 'user' || !Array.isArray(msg.content)) continue
+      for (const block of msg.content) {
+        if (block.type === 'skill') {
+          presentSkills.add(block.name)
+        }
+      }
+    }
+    // Remove any skills that are no longer in the messages
+    for (const name of this.loadedSkills) {
+      if (!presentSkills.has(name)) {
+        this.loadedSkills.delete(name)
+      }
+    }
+  }
+
+  /**
    * Build a map of tool name to pruning metadata from all known tools.
    */
   private buildToolMetadataMap(): Map<string, ToolPruningMetadata> {
@@ -728,6 +864,7 @@ export class Session {
         this.pageContext,
         resolvedSkills,
         lazyToolSummaries,
+        this.getActivePlanContext(),
       )
     }
 
@@ -748,6 +885,9 @@ export class Session {
       } else if (Array.isArray(message.content)) {
         for (const block of message.content) {
           if (block.type === 'text') {
+            lines.push(block.text)
+          } else if (block.type === 'skill') {
+            lines.push(`[Skill: ${block.name}]`)
             lines.push(block.text)
           } else if (block.type === 'tool_use') {
             lines.push(`[Tool Call: ${block.name}]`)

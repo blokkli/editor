@@ -553,10 +553,28 @@ export default defineBlokkliEditAdapter((ctx) => {
         blockUuid: e.blockUuid,
       }),
 
-    addNewBlocks: (e) =>
-      addMutation(
-        'add',
-        e.blocks.map((block, index) => {
+    addNewBlocks: async (e) => {
+      // Recursively flatten the block tree into MutationAddArgs.
+      const flatArgs: MutationAddArgs[] = []
+      const optionsToUpdate: Array<{
+        uuid: string
+        key: string
+        value: string
+      }> = []
+
+      type FlattenHost = {
+        type: string
+        uuid: string
+        fieldName: string
+      }
+
+      const flatten = (
+        blocks: typeof e.blocks,
+        host: FlattenHost,
+        afterUuid: string | null,
+      ) => {
+        let prevUuid = afterUuid
+        for (const block of blocks) {
           const values: Record<string, unknown> = {}
           for (const entry of block.values ?? []) {
             if (typeof entry.fieldValue === 'string') {
@@ -565,21 +583,51 @@ export default defineBlokkliEditAdapter((ctx) => {
               values[entry.fieldName] = [entry.fieldValue.entityId]
             }
           }
-          return {
+          flatArgs.push({
             bundle: block.bundle,
             values,
-            hostEntityType: e.host.type,
-            hostEntityUuid: e.host.uuid,
-            hostField: e.host.fieldName,
-            // First block uses the provided afterUuid, subsequent blocks are placed after the previous one
-            preceedingUuid:
-              index === 0
-                ? e.afterUuid
-                : (e.blocks[index - 1]?.blockUuid ?? null),
+            hostEntityType: host.type,
+            hostEntityUuid: host.uuid,
+            hostField: host.fieldName,
+            preceedingUuid: prevUuid,
             blockUuid: block.blockUuid,
+          })
+          if (block.options) {
+            for (const [key, value] of Object.entries(block.options)) {
+              optionsToUpdate.push({
+                uuid: block.blockUuid,
+                key,
+                value,
+              })
+            }
           }
-        }),
-      ),
+          prevUuid = block.blockUuid
+          if (block.children) {
+            for (const [fieldName, childBlocks] of Object.entries(
+              block.children,
+            )) {
+              flatten(
+                childBlocks,
+                {
+                  type: 'block',
+                  uuid: block.blockUuid,
+                  fieldName,
+                },
+                null,
+              )
+            }
+          }
+        }
+      }
+
+      flatten(e.blocks, e.host, e.afterUuid)
+
+      const result = await addMutation('add', flatArgs)
+      if (optionsToUpdate.length) {
+        return addMutation('update_options', { options: optionsToUpdate })
+      }
+      return result
+    },
 
     moveBlock: (e) =>
       addMutation('move', {
@@ -597,6 +645,14 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,
         preceedingUuid: e.afterUuid,
+      }),
+
+    rearrangeBlocks: (e) =>
+      addMutation('rearrange', {
+        hostEntityType: e.host.type,
+        hostEntityUuid: e.host.uuid,
+        hostField: e.host.fieldName,
+        uuids: e.uuids,
       }),
 
     deleteBlocks: (uuids) =>

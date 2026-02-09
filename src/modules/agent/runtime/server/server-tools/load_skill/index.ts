@@ -22,6 +22,8 @@ export default defineServerSideTool({
     const skill = ctx.resolvedSkills.find((s) => s.name === input.name)
 
     if (skill) {
+      ctx.loadedSkills.add(skill.name)
+
       ctx.send({
         type: 'server_tool_result',
         tool: 'load_skill',
@@ -39,9 +41,10 @@ export default defineServerSideTool({
             }),
           },
         ],
-        extraTextBlocks: [
+        extraBlocks: [
           {
-            type: 'text',
+            type: 'skill',
+            name: skill.name,
             text: `# Skill: ${skill.name}\n\n${skill.content}`,
           },
         ],

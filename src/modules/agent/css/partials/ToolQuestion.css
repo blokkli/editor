@@ -5,18 +5,33 @@
     }
 
     .bk-agent-tool-question-inner {
-      @apply px-15 py-10;
+      @apply py-5;
       @apply border-b border-b-mono-300;
 
       .bk-radio,
       .bk-checkbox {
         @apply text-sm;
+        @apply px-10;
         span {
           @apply font-normal;
           &:before {
             @apply mt-0;
           }
         }
+      }
+
+      .bk-radio {
+        &:last-child {
+          @apply border-t border-t-mono-300 pt-10 mt-5;
+        }
+      }
+    }
+
+    .bk-agent-tool-question-other {
+      @apply px-10 pt-5 pb-5;
+
+      textarea {
+        @apply !text-sm min-h-50;
       }
     }
   }

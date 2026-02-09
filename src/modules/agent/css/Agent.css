@@ -109,7 +109,7 @@
   }
 
   .bk-agent-error-bubble {
-    @apply flex items-start gap-8 p-10 rounded-xl;
+    @apply flex items-start gap-8 p-10 rounded-xl mt-15;
     @apply bg-red-light text-red-dark text-sm;
 
     .bk-icon {

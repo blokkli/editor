@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-agent-conversation">
+  <div class="bk-agent-conversation" @click="onClick">
     <ConversationItemComponent
       v-for="item in history"
       :key="item.id"
@@ -18,6 +18,7 @@
 <script lang="ts" setup>
 import ConversationItemComponent from './Item/index.vue'
 import Thinking from './Thinking/index.vue'
+import { useBlokkli } from '#imports'
 import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
 
 defineProps<{
@@ -25,4 +26,30 @@ defineProps<{
   activeItem: ActiveItem | null
   isThinking: boolean
 }>()
+
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+const { eventBus, dom, blocks } = useBlokkli()
+
+function onClick(e: MouseEvent) {
+  const target = e.target as HTMLElement
+  if (target.tagName !== 'A') return
+
+  const href = target.getAttribute('href')
+  if (!href || !href.startsWith('#')) return
+
+  const uuid = href.slice(1)
+  if (!UUID_REGEX.test(uuid)) return
+
+  e.preventDefault()
+  eventBus.emit('scrollIntoView', { uuid, center: true })
+
+  const block = blocks.getBlock(uuid)
+  if (!block) return
+  const element = dom.getDragElement(block)
+  if (!element) return
+
+  eventBus.emit('highlight', element)
+}
 </script>

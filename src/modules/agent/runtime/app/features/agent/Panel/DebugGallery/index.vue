@@ -18,14 +18,22 @@
     />
 
     <h3>Tool Components</h3>
-    <component
-      :is="tool.component"
-      v-for="tool in toolsWithMockParams"
-      :key="tool.name"
-      :context="mockContext"
-      :params="tool.mockParams()"
-      @done="() => {}"
-    />
+    <template v-for="tool in toolsWithMockParams" :key="tool.name">
+      <component
+        :is="tool.component"
+        :context="mockContext"
+        :params="tool.mockParams()"
+        @done="() => {}"
+      />
+      <component
+        v-for="(variant, i) in (tool.mockParamsVariants?.() ?? [])"
+        :key="`${tool.name}-variant-${i}`"
+        :is="tool.component"
+        :context="mockContext"
+        :params="variant"
+        @done="() => {}"
+      />
+    </template>
   </div>
 </template>
 

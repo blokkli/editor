@@ -143,6 +143,14 @@
     "source": "Accept plan",
     "translation": ""
   },
+  "aiAgentAskQuestionOther": {
+    "source": "None of the above",
+    "translation": ""
+  },
+  "aiAgentAskQuestionOtherPlaceholder": {
+    "source": "Type your answer...",
+    "translation": ""
+  },
   "aiAgentAskQuestionRunning": {
     "source": "Waiting for answer...",
     "translation": ""
@@ -441,6 +449,14 @@
   },
   "aiAgentProcessing": {
     "source": "Processing...",
+    "translation": ""
+  },
+  "aiAgentRearrangeBlocksDone": {
+    "source": "Rearranged @count blocks",
+    "translation": ""
+  },
+  "aiAgentRearrangeBlocksRunning": {
+    "source": "Rearranging blocks...",
     "translation": ""
   },
   "aiAgentRedoDone": {

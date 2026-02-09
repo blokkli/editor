@@ -17,7 +17,10 @@
           'bk-is-completed': step.status === 'completed',
         }"
       >
-        <StatusIcon :status="planStepToStatus(step.status)" />
+        <StatusIcon
+          :status="planStepToStatus(step.status)"
+          :bullet-text="index + 1"
+        />
         <span class="bk-agent-plan-step-label">{{ step.label }}</span>
       </div>
     </div>

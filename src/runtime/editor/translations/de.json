@@ -143,6 +143,14 @@
     "source": "Accept plan",
     "translation": "Plan akzeptieren"
   },
+  "aiAgentAskQuestionOther": {
+    "source": "None of the above",
+    "translation": "Keine der Optionen"
+  },
+  "aiAgentAskQuestionOtherPlaceholder": {
+    "source": "Type your answer...",
+    "translation": "Eigene Antwort eingeben..."
+  },
   "aiAgentAskQuestionRunning": {
     "source": "Waiting for answer...",
     "translation": "Auf Antwort warten..."
@@ -442,6 +450,14 @@
   "aiAgentProcessing": {
     "source": "Processing...",
     "translation": "Verarbeiten..."
+  },
+  "aiAgentRearrangeBlocksDone": {
+    "source": "Rearranged @count blocks",
+    "translation": "@count Blöcke neu angeordnet"
+  },
+  "aiAgentRearrangeBlocksRunning": {
+    "source": "Rearranging blocks...",
+    "translation": "Blöcke werden neu angeordnet..."
   },
   "aiAgentRedoDone": {
     "source": "Redid @count changes",

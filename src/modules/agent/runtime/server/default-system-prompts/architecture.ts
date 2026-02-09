@@ -24,6 +24,10 @@ export default defineBlokkliAgentSystemPrompt({
 - Blocks can have "options", such as "backgroundColor" or "showLink". They make it possible to change the appearance or behaviour of a block.
 - The available options change based on various factors, such as the value of other options, the specific state of the block's field values, etc. Always first check which options are available.
 
+### EXTRA UX FEATURES
+- You can create markdown links for a specific block by using the block UUID! For example: [This title needs to change](#UUID)
+- When the user clicks on it, it will automatically scroll to there!
+
 ### History and Undo/Redo
 - blökkli maintains a history of all changes (undo/redo)
 - All query tools reflect the **current** history state

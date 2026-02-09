@@ -15,6 +15,8 @@ import {
   useRouter,
 } from '#imports'
 import type {
+  ParagraphsBlokkliBulkUpdateFieldValuesInput,
+  ParagraphsBlokkliAddMultipleItemInput,
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
@@ -1332,7 +1334,57 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasMutation('pbAddMultipleParagraphs')) {
-      adapter.addNewBlocks = (data) =>
+      type AddNewBlocksData = Parameters<
+        NonNullable<typeof adapter.addNewBlocks>
+      >[0]
+      type EventBlock = AddNewBlocksData['blocks'][number]
+
+      const mapBlockToGraphQL = (
+        block: EventBlock,
+      ): ParagraphsBlokkliAddMultipleItemInput => {
+        const values: Record<string, unknown> = {}
+        for (const entry of block.values ?? []) {
+          const droppableConfig = config.droppableFieldConfig.find(
+            (f) =>
+              f.entityBundle === block.bundle && f.name === entry.fieldName,
+          )
+          if (droppableConfig) {
+            if (droppableConfig.type === 'reference') {
+              if (typeof entry.fieldValue !== 'string') {
+                values[entry.fieldName] = {
+                  target_id: entry.fieldValue.entityId,
+                }
+              }
+            } else if (droppableConfig.type === 'link') {
+              if (typeof entry.fieldValue === 'string') {
+                values[entry.fieldName] = entry.fieldValue
+              } else {
+                values[entry.fieldName] =
+                  `entity:${entry.fieldValue.entityType}/${entry.fieldValue.entityId}`
+              }
+            }
+          } else if (typeof entry.fieldValue === 'string') {
+            values[entry.fieldName] = entry.fieldValue
+          }
+        }
+
+        return {
+          bundle: block.bundle,
+          uuid: block.blockUuid,
+          values,
+          options: block.options,
+          children: block.children
+            ? Object.entries(block.children).map(
+                ([fieldName, childBlocks]) => ({
+                  fieldName,
+                  items: childBlocks.map(mapBlockToGraphQL),
+                }),
+              )
+            : undefined,
+        }
+      }
+
+      adapter.addNewBlocks = (data: AddNewBlocksData) =>
         useGraphqlMutation('pbAddMultipleParagraphs', {
           entityType: ctx.value.entityType,
           entityUuid: ctx.value.entityUuid,
@@ -1341,43 +1393,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: data.host.uuid,
           hostFieldName: data.host.fieldName,
           afterUuid: data.afterUuid,
-          items: data.blocks.map((block) => {
-            if (!block.blockUuid) {
-              throw new Error('Missing UUID.')
-            }
-            const values: Record<string, unknown> = {}
-            for (const entry of block.values ?? []) {
-              const droppableConfig = config.droppableFieldConfig.find(
-                (f) =>
-                  f.entityBundle === block.bundle && f.name === entry.fieldName,
-              )
-              if (droppableConfig) {
-                if (droppableConfig.type === 'reference') {
-                  if (typeof entry.fieldValue !== 'string') {
-                    values[entry.fieldName] = {
-                      target_id: entry.fieldValue.entityId,
-                    }
-                  }
-                } else if (droppableConfig.type === 'link') {
-                  if (typeof entry.fieldValue === 'string') {
-                    if (entry.fieldValue.startsWith('http')) {
-                      values[entry.fieldName] = entry.fieldValue
-                    }
-                  } else {
-                    values[entry.fieldName] =
-                      `entity:${entry.fieldValue.entityType}/${entry.fieldValue.entityId}`
-                  }
-                }
-              } else if (typeof entry.fieldValue === 'string') {
-                values[entry.fieldName] = entry.fieldValue
-              }
-            }
-            return {
-              bundle: block.bundle,
-              uuid: block.blockUuid,
-              values,
-            }
-          }),
+          items: data.blocks.map(mapBlockToGraphQL),
         }).then(mapMutation)
     }
 
@@ -1431,6 +1447,44 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           useGraphqlMutation('pbAgentConversationDelete', { uuid }).then(
             (v) => v.data.result.success,
           ),
+      }
+    }
+
+    if (hasMutation('pbBulkUpdateFieldValues')) {
+      adapter.updateFieldValueBatched = (data) => {
+        const entityItems: ParagraphsBlokkliBulkUpdateFieldValuesInput[] =
+          data.entityItems.map((item) => {
+            return {
+              name: item.fieldName,
+              value: item.fieldValue,
+            }
+          })
+
+        const blockItems: ParagraphsBlokkliBulkUpdateFieldValuesInput[] =
+          data.items.map((item) => {
+            return {
+              uuid: item.uuid,
+              name: item.fieldName,
+              value: item.fieldValue,
+            }
+          })
+
+        return useGraphqlMutation('pbBulkUpdateFieldValues', {
+          ...ctx.value,
+          items: [...entityItems, ...blockItems],
+        }).then(mapMutation)
+      }
+    }
+
+    if (hasMutation('pbRearrangeParagraphs')) {
+      adapter.rearrangeBlocks = (data) => {
+        return useGraphqlMutation('pbRearrangeParagraphs', {
+          ...ctx.value,
+          hostType: data.host.type,
+          hostFieldName: data.host.fieldName,
+          hostUuid: data.host.uuid,
+          uuids: data.uuids,
+        }).then(mapMutation)
       }
     }
 

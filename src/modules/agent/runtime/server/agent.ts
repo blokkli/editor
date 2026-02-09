@@ -1,6 +1,6 @@
 import type { Peer, Message } from 'crossws'
 import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
-import type { ClientMessage } from '../shared/types'
+import { clientMessageSchema } from '../shared/types'
 import { SessionManager } from './SessionManager'
 import { send } from './helpers'
 
@@ -15,7 +15,16 @@ export default defineWebSocketHandler({
 
   async message(peer: Peer, message: Message) {
     try {
-      const data = JSON.parse(message.text()) as ClientMessage
+      const parsed = clientMessageSchema.safeParse(JSON.parse(message.text()))
+      if (!parsed.success) {
+        send(peer, {
+          type: 'error',
+          errorType: 'bad_request',
+          message: 'Invalid message format',
+        })
+        return
+      }
+      const data = parsed.data
 
       // Handle authentication before any other message.
       if (data.type === 'authenticate') {
@@ -30,6 +39,10 @@ export default defineWebSocketHandler({
           })
           peer.close()
           return
+        }
+        // Cleanup existing session if re-authenticating.
+        if (sessionManager.get(peer.id)) {
+          sessionManager.cleanup(peer.id)
         }
         sessionManager.create(peer.id)
         send(peer, { type: 'authenticated' })
@@ -55,6 +68,24 @@ export default defineWebSocketHandler({
         return
       }
 
+      // Reject state-mutating messages while the agent is processing.
+      if (session.isProcessing) {
+        switch (data.type) {
+          case 'init':
+          case 'accept':
+          case 'reject':
+          case 'new_conversation':
+          case 'restore_conversation':
+            send(peer, {
+              type: 'error',
+              errorType: 'bad_request',
+              message:
+                'Cannot perform this action while the agent is processing.',
+            })
+            return
+        }
+      }
+
       switch (data.type) {
         case 'init':
           session.init(data.tools, data.pageContext)
@@ -69,7 +100,13 @@ export default defineWebSocketHandler({
             })
             return
           }
-          session.start(peer, data.prompt, apiKey, authSecret, data.selectedUuids)
+          session.start(
+            peer,
+            data.prompt,
+            apiKey,
+            authSecret,
+            data.selectedUuids,
+          )
           break
 
         case 'tool_result':

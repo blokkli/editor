@@ -81,6 +81,10 @@ import {
 } from './Mutation/ApplyRewrite'
 import { MutationSwap, type MutationSwapArgs } from './Mutation/Swap'
 import {
+  MutationRearrange,
+  type MutationRearrangeArgs,
+} from './Mutation/Rearrange'
+import {
   MutationUpdateFieldValueBatched,
   type MutationUpdateFieldValueBatchedArgs,
 } from './Mutation/UpdateFieldValueBatched'
@@ -110,6 +114,7 @@ export type MutationArgsMap = {
   create_template: MutationCreateTemplateArgs
   apply_rewrite: MutationApplyRewriteArgs
   swap: MutationSwapArgs
+  rearrange: MutationRearrangeArgs
   update_field_value_batched: MutationUpdateFieldValueBatchedArgs
 }
 
@@ -166,6 +171,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationApplyRewrite(configuration)
     case 'swap':
       return new MutationSwap(configuration)
+    case 'rearrange':
+      return new MutationRearrange(configuration)
     case 'update_field_value_batched':
       return new MutationUpdateFieldValueBatched(configuration)
   }
