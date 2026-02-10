@@ -3,15 +3,12 @@
 This method should return possible sources to import existing blocks into the
 current page.
 
-It's expected to return an object with this type:
-
-```
-{ items: ImportItem[]; total: number }
-```
+The method receives an `AdapterSearchArguments` object with `page` and `filters`
+properties. It's expected to return an object with items, total count, page
+size, and optionally filter definitions.
 
 The method is called when the user opens the "Import from existing" dialog. It
-receives an argument containing the search text entered by the user to filter
-the available import sources.
+receives the search arguments including the current page and any applied filters.
 
 For this feature to work the [importFromExisting()](/adapter/importFromExisting)
 method must also be implemented.
@@ -23,9 +20,11 @@ import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {
-    getImportItems: (searchText?: string) => {
+    getImportItems: (e) => {
       return Promise.resolve({
         total: 2,
+        perPage: 16,
+        filters: [],
         items: [
           {
             uuid: '1645ba79-8770-4a0c-a58b-163a847eea22',

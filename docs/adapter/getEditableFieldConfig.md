@@ -53,6 +53,15 @@ export default defineBlokkliEditAdapter((ctx) => {
 
           // The label displayed in the editor.
           label: 'Title',
+
+          // The field type ('plaintext' or 'formatted').
+          type: 'plaintext',
+
+          // Whether the field is required.
+          required: true,
+
+          // The maximum number of characters allowed.
+          maxLength: 255,
         },
       ])
     },

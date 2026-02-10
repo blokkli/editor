@@ -11,6 +11,26 @@ composables.
 
 :::
 
+## icon
+
+An optional icon name to display for this block in the editor (e.g. in the add
+list). You can use any Material Symbols icon by prefixing its name with
+`bk_mdi_`, or reference a custom SVG icon.
+
+```vue
+<script lang="ts" setup>
+defineBlokkli({
+  bundle: 'gallery',
+
+  editor: {
+    icon: 'bk_mdi_photo_library',
+  },
+})
+</script>
+```
+
+[Learn more about icons](/define-blokkli/icons)
+
 ## determineVisibleOptions
 
 With this setting you can reactively decide which defined options to show.
@@ -415,3 +435,32 @@ defineBlokkli({
 })
 </script>
 ```
+
+## blokkliDraggable (template ref)
+
+By default, the editor uses the block component's root element as the drag
+handle. If your component has a wrapper element (e.g. a container) that
+shouldn't be part of the draggable area, add `ref="blokkliDraggable"` to the
+inner content element.
+
+```vue
+<template>
+  <div class="container">
+    <div ref="blokkliDraggable" class="card-content">
+      <h3 v-blokkli-editable:title>{{ title }}</h3>
+      <p v-blokkli-editable:text>{{ text }}</p>
+    </div>
+  </div>
+</template>
+```
+
+This tells the editor to use the inner `<div>` as the drag target instead of
+the outer container. The editor also uses this element for:
+
+- Generating drag previews
+- Calculating block positions and sizes
+- Intersection and resize observation
+
+If no `ref="blokkliDraggable"` is set, the component's root element is used as
+a fallback. The ref can also point to a child component — the editor will use
+its root element.

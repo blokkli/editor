@@ -29,9 +29,9 @@ const items = [
     // Could be some tags, a file name, etc.
     context: 'Stock photo',
 
-    // The resulting block bundle that will be created when
+    // The block bundles that can be created when
     // the user drag and drops this media into the page.
-    blockBundle: 'image',
+    targetBundles: ['image'],
 
     // A thumbnail that is used in the media grid.
     thumbnail: 'https://www.example.com/image-of-a-computer.jpg',
@@ -40,7 +40,7 @@ const items = [
     mediaId: '79',
     label: 'Terms and conditions',
     context: 'PDF',
-    blockBundle: 'document',
+    targetBundles: ['document'],
 
     // Instead of a thumbnail we can also provide the name of
     // a valid blökkli icon instead.
@@ -50,7 +50,7 @@ const items = [
     mediaId: '45',
     label: 'A nice music video',
     context: 'YouTube',
-    blockBundle: 'video',
+    targetBundles: ['video'],
     thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
   },
 ]

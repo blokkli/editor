@@ -185,6 +185,12 @@ export default defineConfig({
 
     sidebar: [
       {
+        text: 'Getting Started',
+        items: [
+          { text: 'Configuration', link: '/configuration' },
+        ],
+      },
+      {
         text: 'Define blocks',
         items: [
           { text: 'defineBlokkli()', link: '/define-blokkli' },
@@ -200,6 +206,7 @@ export default defineConfig({
           { text: 'Block Context', link: '/define-blokkli/block-context' },
           { text: 'Editable / Droppable', link: '/define-blokkli/editable' },
           { text: 'Editor behaviour', link: '/define-blokkli/editor' },
+          { text: 'Icons', link: '/define-blokkli/icons' },
           { text: 'Proxy Mode', link: '/define-blokkli/proxy-mode' },
           {
             text: 'import.meta.blokkliEditing',

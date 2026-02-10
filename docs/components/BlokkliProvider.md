@@ -188,12 +188,35 @@ const pageData = computed(() => ({
 </script>
 ```
 
-## Host Options
+## defineBlokkliProvider()
 
-You can define page-level options using `defineBlokkliProvider()`:
+The `defineBlokkliProvider()` composable defines page-level (host) options for
+the entity being edited. It works like `defineBlokkli()` but for the entire
+page rather than individual blocks.
+
+### Usage
+
+Call `defineBlokkliProvider()` in the same component that renders
+`<BlokkliProvider>`. Pass the entity data as the first argument and the
+configuration as the second:
 
 ```vue
+<template>
+  <BlokkliProvider
+    entity-type="content"
+    entity-bundle="page"
+    :entity-uuid="page.uuid"
+    :entity="pageData"
+  >
+    <div :class="themeClass">
+      <BlokkliField name="content" :list="pageData.content" />
+    </div>
+  </BlokkliProvider>
+</template>
+
 <script setup lang="ts">
+const pageData = computed(() => page.getData())
+
 const { options } = defineBlokkliProvider(pageData.value, {
   entityType: 'content',
   bundle: 'page',
@@ -210,12 +233,64 @@ const { options } = defineBlokkliProvider(pageData.value, {
   },
 })
 
-// Use options in your template
 const themeClass = computed(() =>
   options.value.theme === 'dark' ? 'dark-theme' : 'light-theme',
 )
 </script>
 ```
+
+### Configuration
+
+The configuration object accepts these properties:
+
+#### entityType
+
+**Type:** `string` (required)
+
+The entity type. Must match the `entity-type` prop on `<BlokkliProvider>`.
+
+#### bundle
+
+**Type:** `string` (required)
+
+The entity bundle. Must match the `entity-bundle` prop on `<BlokkliProvider>`.
+
+#### options
+
+**Type:** [type.BlockDefinitionOptionsInput]
+
+Page-level options. Works the same as block options — see
+[Options](/define-blokkli/options) for all option types.
+
+#### globalOptions
+
+**Type:** `GlobalOptionsKey[]`
+
+Reference global options defined in `nuxt.config.ts`, same as in
+`defineBlokkli()`.
+
+#### propsFieldMapping
+
+**Type:** `Record<string, string>`
+
+Maps component prop names to backend field names, same as in `defineBlokkli()`.
+
+### Return Value
+
+Returns an object with a single property:
+
+#### options
+
+**Type:** `ComputedRef<...>`
+
+A reactive computed ref containing the resolved option values. The type is
+inferred from the `options` and `globalOptions` configuration.
+
+Options are resolved with the following priority (highest to lowest):
+
+1. Values set by the user in the editor
+2. Values from the `hostOptions` prop on `<BlokkliProvider>`
+3. Default values from the option definitions
 
 ## Edit State
 

@@ -1,12 +1,27 @@
 # Block Context
 
-`defineBlokkli()` returns a context object that contains useful information.
+`defineBlokkli()` returns a context object that contains useful information
+about the current block and its surroundings.
 
 ```typescript
 const ctx = defineBlokkli({
   bundle: 'title',
 })
 ```
+
+## Overview
+
+| Property        | Type                                              | Description                               |
+| --------------- | ------------------------------------------------- | ----------------------------------------- |
+| `uuid`          | `string`                                          | Block UUID                                |
+| `index`         | `ComputedRef<number>`                             | Position in the field                     |
+| `options`       | `ComputedRef<...>`                                | Reactive block options                    |
+| `isEditing`     | `boolean` (deprecated)                            | Whether the editor is open                |
+| `parentType`    | `ComputedRef<string \| undefined>`                | Parent block bundle, if nested            |
+| `fieldListType` | `ComputedRef<ValidFieldListTypes>`                | Field list type of the containing field   |
+| `siblings`      | `ComputedRef<FieldListItemTyped[]>`               | All blocks in the same field              |
+| `rootBlocks`    | `ComputedRef<FieldListItemTyped[]>`               | Root-level blocks of the page             |
+| `provider`      | `ComputedRef<BlokkliProviderEntityContext\|null>`  | Provider entity context                   |
 
 ## uuid: `String`
 
@@ -28,7 +43,12 @@ These are the computed options of the block, if there are options defined.
 The value is a key/value object of all the options, but the type is inferred
 automatically based on the actual options defined.
 
-## isEditing: `boolean`
+## isEditing: `boolean` (deprecated)
+
+::: warning Deprecated
+Use `import.meta.blokkliEditing` instead. It ensures editing-related code is
+only included in the editor bundle and tree-shaken from the public bundle.
+:::
 
 A boolean value to indicate if the block is currently being rendered when the
 editor is open.

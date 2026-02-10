@@ -113,6 +113,64 @@ const { options } = defineBlokkli({
 
 :::
 
+## propsFieldMapping
+
+**Type:** `Record<string, string>`
+
+Maps component prop names to backend field names. This is required for blocks
+that contain nested blocks (via `<BlokkliField>`), so that blökkli can walk the
+block tree correctly — for example, when using
+[`useBlokkliHelper()`](/define-blokkli/query-blocks) or for editable field
+overrides during editing.
+
+Each key is the **prop name** on the component, and the value is the **field
+name** used in `<BlokkliField>`.
+
+```vue
+<template>
+  <div>
+    <BlokkliField name="header" :list="header" />
+    <div class="columns">
+      <BlokkliField name="left" :list="left" />
+      <BlokkliField name="right" :list="right" />
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+defineBlokkli({
+  bundle: 'two_columns',
+  propsFieldMapping: {
+    header: 'header',
+    left: 'left',
+    right: 'right',
+  },
+  editor: {
+    disableEdit: true,
+  },
+})
+
+defineProps<{
+  header: any[]
+  left: any[]
+  right: any[]
+}>()
+</script>
+```
+
+If the prop name differs from the field name (common with Drupal backends):
+
+```vue
+<script lang="ts" setup>
+defineBlokkli({
+  bundle: 'section',
+  propsFieldMapping: {
+    headerParagraphs: 'field_paragraphs_header',
+  },
+})
+</script>
+```
+
 ## editor
 
 **Type:** [type.BlokkliDefinitionInputEditor]
@@ -157,7 +215,7 @@ defineBlokkli({
     previewBackgroundClass: 'bg-white',
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('a')?.textContent,
-    mockProops: (text: string) => {
+    mockProps: (text: string) => {
       return {
         title: text,
       }

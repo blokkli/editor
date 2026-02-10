@@ -13,6 +13,7 @@ The only required methods that must be implemented are:
 
 - [adapter.loadState]
 - [adapter.mapState]
+- [adapter.getUserPermissions]
 - [adapter.getAllBundles]
 - [adapter.getFieldConfig]
 - [adapter.addNewBlock]

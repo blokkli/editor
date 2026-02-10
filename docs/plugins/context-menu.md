@@ -18,7 +18,7 @@ import type { ContextMenu } from '#blokkli/types'
 
 const menuItems: ContextMenu[] = [
   {
-    id: 'edit',
+    type: 'button',
     label: 'Edit',
     icon: 'edit',
     callback: () => {
@@ -26,7 +26,10 @@ const menuItems: ContextMenu[] = [
     },
   },
   {
-    id: 'delete',
+    type: 'rule',
+  },
+  {
+    type: 'button',
     label: 'Delete',
     icon: 'delete',
     callback: () => {
@@ -52,19 +55,24 @@ open.
 - **Type:** `ContextMenu[]`
 - **Required:** Yes
 
-Array of menu items to display. Each item can have nested sub-menus.
+Array of menu items to display. Each item is either a button or a rule
+(separator).
 
-**Menu Item Structure:**
+**Menu Item Types:**
 
 ```typescript
-type ContextMenu = {
-  id: string
+type ContextMenuButton = {
+  type: 'button'
   label: string
-  icon?: BlokkliIcon
-  callback?: () => void
-  disabled?: boolean
-  children?: ContextMenu[]
+  icon: BlokkliIcon
+  callback: () => void
 }
+
+type ContextMenuRule = {
+  type: 'rule'
+}
+
+type ContextMenu = ContextMenuButton | ContextMenuRule
 ```
 
 ### tag
@@ -83,48 +91,26 @@ The content that should trigger the context menu on right-click.
 
 ## Menu Item Types
 
-### Simple Action
+### Button
+
+A clickable menu item with a label, icon, and callback:
 
 ```typescript
 {
-  id: 'copy',
+  type: 'button',
   label: 'Copy',
   icon: 'copy',
   callback: () => copyItem(),
 }
 ```
 
-### Disabled Item
+### Rule (Separator)
+
+A visual separator between menu items:
 
 ```typescript
 {
-  id: 'paste',
-  label: 'Paste',
-  icon: 'paste',
-  disabled: !hasClipboardData,
-  callback: () => pasteItem(),
-}
-```
-
-### Nested Menu
-
-```typescript
-{
-  id: 'transform',
-  label: 'Transform',
-  icon: 'transform',
-  children: [
-    {
-      id: 'uppercase',
-      label: 'To Uppercase',
-      callback: () => transformText('uppercase'),
-    },
-    {
-      id: 'lowercase',
-      label: 'To Lowercase',
-      callback: () => transformText('lowercase'),
-    },
-  ],
+  type: 'rule',
 }
 ```
 
@@ -148,69 +134,29 @@ import type { ContextMenu } from '#blokkli/types'
 
 const props = defineProps<{
   uuid: string
-  canEdit: boolean
-  canDelete: boolean
 }>()
 
 const blockMenu = computed<ContextMenu[]>(() => [
   {
-    id: 'edit',
+    type: 'button',
     label: 'Edit Block',
     icon: 'edit',
-    disabled: !props.canEdit,
     callback: () => editBlock(props.uuid),
   },
   {
-    id: 'duplicate',
+    type: 'button',
     label: 'Duplicate',
     icon: 'duplicate',
     callback: () => duplicateBlock(props.uuid),
   },
   {
-    id: 'delete',
+    type: 'rule',
+  },
+  {
+    type: 'button',
     label: 'Delete',
     icon: 'delete',
-    disabled: !props.canDelete,
     callback: () => deleteBlock(props.uuid),
-  },
-])
-</script>
-```
-
-### Field Context Menu with Transform Options
-
-```vue
-<template>
-  <PluginContextMenu id="field-menu" :menu="fieldMenu">
-    <div class="field-wrapper">
-      <BlokkliField name="content" :list="blocks" />
-    </div>
-  </PluginContextMenu>
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-import type { ContextMenu } from '#blokkli/types'
-
-const transformPlugins = await adapter.getTransformPlugins()
-
-const fieldMenu = computed<ContextMenu[]>(() => [
-  {
-    id: 'paste',
-    label: 'Paste Blocks',
-    icon: 'paste',
-    disabled: !hasClipboard.value,
-    callback: () => pasteBlocks(),
-  },
-  {
-    id: 'transform',
-    label: 'Transform All',
-    icon: 'transform',
-    children: transformPlugins.map((plugin) => ({
-      id: plugin.id,
-      label: plugin.label,
-      callback: () => applyTransform(plugin.id),
-    })),
   },
 ])
 </script>
@@ -221,6 +167,5 @@ const fieldMenu = computed<ContextMenu[]>(() => [
 - Only one context menu can be open at a time
 - The menu automatically positions itself based on cursor position
 - Right-clicking outside the menu closes it
-- Nested menus open on hover
 - The context menu is teleported to the main layout element for proper
   positioning

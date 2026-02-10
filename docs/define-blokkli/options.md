@@ -282,12 +282,16 @@ const { options } = defineBlokkli({
 
 ![Screenshot of the icons radios option type](/assets/option-radios-icons.png)
 
-This will render the given icon for each option. The icons have to be _in the
-same folder as the component_ and are referenced by their file name (all
-lowercase, only a-z, - and \_ are allowed). The file name must start with
-`icon-blokkli-`.
+This will render the given icon for each option. You can use either:
 
-In this example we have the following file structure:
+- **Material Symbols icons** with the `bk_mdi_` prefix (e.g.
+  `bk_mdi_grid_view`)
+- **Custom SVG icons** placed in the same folder as the component, with file
+  names starting with `icon-blokkli-`
+
+See [Icons](/define-blokkli/icons) for full details on how icons work.
+
+In this example we use custom SVG icons with the following file structure:
 
 ```
 - components/

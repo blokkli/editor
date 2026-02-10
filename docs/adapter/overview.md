@@ -28,11 +28,11 @@ To extend an existing adapter you can do the following:
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import drupalGraphlMiddlewareAdapter from '#blokkli/editor/adapter/drupal/graphqlMiddleware'
+import drupalAdapter from '#blokkli/drupal-adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   // Create instance of the base adapter.
-  const baseAdapter = drupalGraphlMiddlewareAdapter(ctx)
+  const baseAdapter = drupalAdapter(ctx)
   return {
     ...baseAdapter,
 

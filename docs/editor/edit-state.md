@@ -170,6 +170,13 @@ These options are used to override the existing options on a block. This object
 is made reactive, which allows the user to instantly see how changing an option
 value affects the block.
 
+## publishOptions
+
+`PublishOptions`
+
+Contains available publish/workflow options displayed in the publish dialog. This
+tells the editor what actions the user can take (e.g. publish, archive, etc.).
+
 ## entity
 
 [type.EditEntity]
@@ -186,6 +193,22 @@ title and status.
   "bundleLabel": "Landing Page" // Human-readable label of the entity bundle
 }
 ```
+
+## mutatedEntity
+
+`any` (optional)
+
+The mutated entity data. When present, this is merged with the original entity
+data passed to `<BlokkliProvider>` and provided to the slot as the `entity`
+prop. Use this to pass updated entity-level field values (like title, lead text)
+that were changed via inline editing.
+
+## previewUrl
+
+`string` (optional)
+
+A URL for previewing the current entity. When provided, the editor can offer a
+preview link.
 
 ## translationState
 
@@ -247,15 +270,20 @@ An array of existing translations of the entity.
   {
     "id": "en",
     "url": "/en/subscribe-to-newsletter",
+    "exists": true,
     "status": true // Translation exists and is published.
   },
   {
     "id": "de",
     "url": "/de/anmeldung-newsletter",
+    "exists": true,
     "status": false // Translation exists, but is not published.
   }
 ]
 ```
+
+Each translation can also have an optional `editUrl` property for a direct link
+to the translation editing interface.
 
 ## Full example
 
@@ -353,6 +381,8 @@ This is an example of a full edit state object that should be returned by
     "violations": []
   },
 
+  "publishOptions": {},
+
   "entity": {
     "label": "Landing page winter 2024",
     "status": true,
@@ -384,11 +414,13 @@ This is an example of a full edit state object that should be returned by
       {
         "id": "en",
         "url": "/en/subscribe-to-newsletter",
+        "exists": true,
         "status": true
       },
       {
         "id": "de",
         "url": "/de/anmeldung-newsletter",
+        "exists": true,
         "status": false
       }
     ]

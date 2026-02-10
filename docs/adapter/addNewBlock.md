@@ -16,7 +16,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         method: 'post',
         body: {
           // The block bundle to add.
-          bundle: e.type,
+          bundle: e.bundle,
 
           // The parent entity type where the block is being added.
           // Could be the entity type of the <BlokkliProvider> or in case
