@@ -1,5 +1,5 @@
 <template>
-  <div v-if="totals.inputTokens > 0" class="bk-agent-token-usage">
+  <div class="bk-agent-token-usage">
     <ul>
       <li
         :title="
@@ -32,7 +32,7 @@
         :title="$t('aiAgentTokensCost', 'Estimated cost for this conversation')"
       >
         <div>{{ $t('aiAgentTokensCostLabel', 'Cost') }}</div>
-        <div v-if="totals.cost !== null">{{ ui.formatPrice(totals.cost) }}</div>
+        <div>{{ totals.cost }}</div>
       </li>
     </ul>
   </div>
@@ -53,14 +53,12 @@ const totals = computed(() => {
   let outputTokens = 0
   let cacheReadInputTokens = 0
   let cost = 0
-  let hasPricing = false
 
   for (const turn of props.usageTurns) {
     inputTokens += turn.inputTokens
     outputTokens += turn.outputTokens
     cacheReadInputTokens += turn.cacheReadInputTokens
     if (turn.pricing) {
-      hasPricing = true
       cost +=
         (turn.inputTokens * turn.pricing.input +
           turn.cacheCreationInputTokens * turn.pricing.cacheWrite +
@@ -74,7 +72,7 @@ const totals = computed(() => {
     inputTokens,
     outputTokens,
     cacheReadInputTokens,
-    cost: hasPricing ? cost : null,
+    cost: ui.formatPrice(cost),
   }
 })
 </script>

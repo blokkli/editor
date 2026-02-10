@@ -12,16 +12,19 @@
       </div>
     </TransitionHeight>
     <slot />
-    <FlexTextarea
-      ref="textarea"
-      v-model="model"
-      :max-height="150"
-      submit-on-enter
-      paste-markdown
-      rows="2"
-      :placeholder="placeholder"
-      @submit="onSubmit"
-    />
+    <TransitionHeight opacity :duration="300">
+      <FlexTextarea
+        v-if="!hasActivePlan || !isProcessing"
+        ref="textarea"
+        v-model="model"
+        :max-height="150"
+        submit-on-enter
+        paste-markdown
+        rows="2"
+        :placeholder="placeholder"
+        @submit="onSubmit"
+      />
+    </TransitionHeight>
 
     <Actions
       :is-processing="isProcessing"
@@ -55,6 +58,7 @@ const props = defineProps<{
   isConnected: boolean
   hasPendingApproval: boolean
   hasConversation: boolean
+  hasActivePlan: boolean
   usageTurns: UsageTurn[]
 }>()
 

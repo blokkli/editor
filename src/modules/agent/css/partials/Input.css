@@ -63,7 +63,7 @@
     }
 
     .bk-agent-more-dropdown {
-      @apply absolute bottom-full left-0 mb-5;
+      @apply absolute bottom-full left-0 mb-5 z-50;
       @apply bg-white border border-mono-300 rounded-lg shadow-lg overflow-hidden;
       @apply right-0;
 

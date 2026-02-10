@@ -49,6 +49,7 @@
           :has-pending-approval="!!(pendingMutation || pendingToolCall)"
           :has-conversation="conversation.length > 0"
           :usage-turns
+          :has-active-plan="!!activePlan"
           @submit="onSubmit"
           @cancel="emit('cancel')"
           @new-conversation="onNewConversation"

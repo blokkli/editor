@@ -1,21 +1,25 @@
 import { defineConfig } from 'vitepress'
-import features from './../../playground/.nuxt/blokkli/features-data.json'
+import features from './../../.nuxt/blokkli/features-data.json'
 import fs from 'fs'
 import path from 'path'
 
 const TYPE_FILES = [
   './../../src/runtime/types/index.ts',
-  './../../src/runtime/types/theme.ts',
+  './../../src/runtime/types/definitions.ts',
   './../../src/runtime/types/blockOptions.ts',
-  './../../src/runtime/adapter/index.ts',
+  './../../src/runtime/editor/providers/theme.ts',
+  './../../src/runtime/editor/adapter/index.ts',
+  './../../src/runtime/editor/types/state.ts',
+  './../../src/build/templates/definitions/moduleTypes.ts',
+  './../../src/global/types/definitions.ts',
 ]
 
 const featureMenuItems = features
   .filter((v) => v.id !== 'demo-feature')
   .map((v) => {
     return {
-      text: v.definition.definition.label,
-      link: '/features/' + v.definition.definition.id,
+      text: v.definition.label,
+      link: '/features/' + v.definition.id,
     }
   })
 
@@ -197,6 +201,12 @@ export default defineConfig({
           { text: 'Editable / Droppable', link: '/define-blokkli/editable' },
           { text: 'Editor behaviour', link: '/define-blokkli/editor' },
           { text: 'Proxy Mode', link: '/define-blokkli/proxy-mode' },
+          {
+            text: 'import.meta.blokkliEditing',
+            link: '/define-blokkli/blokkli-editing',
+          },
+          { text: 'Query Blocks', link: '/define-blokkli/query-blocks' },
+          { text: 'Fragments', link: '/define-blokkli/fragments' },
         ],
       },
       {
@@ -248,6 +258,20 @@ export default defineConfig({
         text: 'Plugins',
         collapsed: true,
         items: pluginDocs,
+      },
+      {
+        text: 'Agent',
+        collapsed: true,
+        items: [
+          { text: 'Overview', link: '/agent/overview' },
+          { text: 'Quick Start', link: '/agent/quick-start' },
+          { text: 'Configuration', link: '/agent/configuration' },
+          { text: 'Adapter', link: '/agent/adapter' },
+          { text: 'Custom Tools', link: '/agent/custom-tools' },
+          { text: 'Custom Skills', link: '/agent/custom-skills' },
+          { text: 'Prompts & System Prompts', link: '/agent/custom-prompts' },
+          { text: 'Architecture', link: '/agent/architecture' },
+        ],
       },
     ],
 
