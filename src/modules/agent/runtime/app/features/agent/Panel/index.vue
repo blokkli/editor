@@ -48,7 +48,7 @@
           :is-connected
           :has-pending-approval="!!(pendingMutation || pendingToolCall)"
           :has-conversation="conversation.length > 0"
-          :token-usage
+          :usage-turns
           @submit="onSubmit"
           @cancel="emit('cancel')"
           @new-conversation="onNewConversation"
@@ -120,7 +120,7 @@ import type {
   ActiveItem,
   Attachment,
 } from '#blokkli/agent/app/types'
-import type { ClientPlanState } from '#blokkli/agent/shared/types'
+import type { ClientPlanState, UsageTurn } from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { isToolDefinition } from '#blokkli/agent/app/helpers'
@@ -142,12 +142,7 @@ const props = defineProps<{
   conversationList: AgentConversationSummary[]
   showConversationList: boolean
   plan: ClientPlanState | null
-  tokenUsage: {
-    inputTokens: number
-    outputTokens: number
-    cacheCreationInputTokens: number
-    cacheReadInputTokens: number
-  }
+  usageTurns: UsageTurn[]
 }>()
 
 const emit = defineEmits<{

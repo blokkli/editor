@@ -71,7 +71,8 @@ export function buildSystemPrompt(
     // Place a cache hint when this is the last block in a cacheable group
     // (i.e. the next block has a different or no cache group)
     const isLastInGroup =
-      entry.cacheGroup && (!nextEntry || nextEntry.cacheGroup !== entry.cacheGroup)
+      entry.cacheGroup &&
+      (!nextEntry || nextEntry.cacheGroup !== entry.cacheGroup)
 
     const block: SystemPromptBlock = { text: entry.text }
     if (isLastInGroup) {

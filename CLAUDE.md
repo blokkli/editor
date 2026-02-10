@@ -7,6 +7,7 @@ code in this repository.
 
 You have SEVERAL skills available that you MUST use!!
 
+- **nuxt-vue** => **MUST** use when creating or editing Vue component
 - **adapter** => Use when working with the blökkli edit adapter
 - **agent** => Use when working on ./src/modules/agent code !!!
 - **drupal** => Use when working on ./src/modules/drupal code !!!

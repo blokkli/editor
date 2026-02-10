@@ -12,6 +12,8 @@
         </button>
         <BlokkliTransition name="drop-up">
           <div v-if="showMenu" class="bk-agent-more-dropdown">
+            <TokenUsage :usage-turns />
+            <hr />
             <DropdownItem
               icon="bk_mdi_add"
               :text="$t('aiAgentNewConversation', 'Start new conversation')"
@@ -28,23 +30,6 @@
               :text="$t('aiAgentShowTranscript', 'Show transcript...')"
               @click="onShowTranscript"
             />
-            <div
-              v-if="props.tokenUsage.inputTokens > 0"
-              class="bk-agent-token-usage"
-            >
-              <Icon name="bk_mdi_toll" />
-              <span>
-                {{ props.tokenUsage.inputTokens.toLocaleString() }} in /
-                {{ props.tokenUsage.outputTokens.toLocaleString() }} out
-              </span>
-              <span
-                v-if="props.tokenUsage.cacheReadInputTokens > 0"
-                class="bk-agent-token-usage-cache"
-              >
-                ({{ props.tokenUsage.cacheReadInputTokens.toLocaleString() }}
-                cached)
-              </span>
-            </div>
           </div>
         </BlokkliTransition>
       </div>
@@ -82,19 +67,16 @@ import {
   useBlokkli,
 } from '#imports'
 import { Icon, BlokkliTransition } from '#blokkli/editor/components'
-import DropdownItem from './DropdownItem.vue'
+import DropdownItem from './DropdownItem/index.vue'
+import TokenUsage from './TokenUsage/index.vue'
+import type { UsageTurn } from '#blokkli/agent/shared/types'
 
-const props = defineProps<{
+defineProps<{
   isProcessing: boolean
   isConnected: boolean
   canSubmit: boolean
   hasText: boolean
-  tokenUsage: {
-    inputTokens: number
-    outputTokens: number
-    cacheCreationInputTokens: number
-    cacheReadInputTokens: number
-  }
+  usageTurns: UsageTurn[]
 }>()
 
 const emit = defineEmits<{

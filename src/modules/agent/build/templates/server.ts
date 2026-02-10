@@ -5,6 +5,7 @@ import type { AgentCollector } from '../AgentCollector'
 export type AgentServerTemplateOptions = {
   moduleOptions: AgentModuleOptions
   providersPath: string
+  sharedTypesPath: string
   skillsCollector: AgentCollector
   skillsTypesPath: string
   systemPromptCollector: AgentCollector
@@ -15,7 +16,7 @@ export type AgentServerTemplateOptions = {
  * Creates a single server-only template that exports all agent server code:
  * - allowedFetchOrigins: Used by the fetch endpoint to validate allowed origins
  * - provider: The AI provider instance to use
- * - aiModel: The model to use for the AI provider
+ * - models: Array of model definitions with optional pricing
  * - skills: Array of agent skill definitions
  * - systemPrompts: Array of agent system prompt definitions
  */
@@ -23,12 +24,13 @@ export default function (options: AgentServerTemplateOptions) {
   const {
     moduleOptions,
     providersPath,
+    sharedTypesPath,
     skillsCollector,
     skillsTypesPath,
     systemPromptCollector,
     systemPromptTypesPath,
   } = options
-  const { allowedFetchOrigins, provider, model } = moduleOptions
+  const { allowedFetchOrigins, provider, models } = moduleOptions
 
   return defineCodeTemplate(
     'agent-server',
@@ -83,7 +85,7 @@ export const allowedFetchOrigins = ${originsJson}
 
 export const provider = ${providerCreate}
 
-export const aiModel = '${model}'
+export const models = ${JSON.stringify(models)}
 export const debugPrompt = ${!!moduleOptions.debugPrompt}
 
 ${skillsExport}
@@ -98,10 +100,11 @@ ${systemPromptsExport}
       return `import type { AIProvider } from '${rel(providersPath)}/types'
 import type { SkillDefinition } from '${rel(skillsTypesPath)}'
 import type { SystemPromptDefinition } from '${rel(systemPromptTypesPath)}'
+import type { AgentModelDefinition } from '${rel(sharedTypesPath)}'
 
 export const allowedFetchOrigins: string[]
 export const provider: AIProvider
-export const aiModel: string
+export const models: AgentModelDefinition[]
 export const debugPrompt: boolean
 export const skills: SkillDefinition[]
 export const systemPrompts: SystemPromptDefinition[]

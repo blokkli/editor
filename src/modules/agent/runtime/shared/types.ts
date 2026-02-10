@@ -1,6 +1,29 @@
 import { z } from 'zod'
 
 // ============================================================================
+// Model Definition
+// ============================================================================
+
+/**
+ * Defines an AI model with optional pricing for cost calculation.
+ */
+export type AgentModelDefinition = {
+  /** Model identifier passed to the AI provider (e.g. 'claude-haiku-4-5'). */
+  name: string
+  /** Human-readable label shown in the UI. */
+  label: string
+  /** Whether this is the default model. The first model is used if none is marked. */
+  isDefault?: boolean
+  /** Per-million-token pricing. When set, cost is computed and shown in the UI. */
+  pricing?: {
+    input: number
+    cacheWrite: number
+    cacheRead: number
+    output: number
+  }
+}
+
+// ============================================================================
 // Generic Message Types (used by both server and client)
 // ============================================================================
 
@@ -214,6 +237,33 @@ export type ClientPlanState = {
 }
 
 // ============================================================================
+// Usage Tracking
+// ============================================================================
+
+/**
+ * Token pricing rates per million tokens, captured at the time of the turn.
+ */
+export type UsagePricing = {
+  input: number
+  cacheWrite: number
+  cacheRead: number
+  output: number
+}
+
+/**
+ * A single usage turn as sent by the server and stored by the client.
+ * Contains raw token counts and the pricing that was active at the time,
+ * so cost can be computed correctly even after pricing changes.
+ */
+export type UsageTurn = {
+  inputTokens: number
+  outputTokens: number
+  cacheCreationInputTokens: number
+  cacheReadInputTokens: number
+  pricing: UsagePricing | null
+}
+
+// ============================================================================
 // WebSocket Protocol Messages
 // ============================================================================
 
@@ -419,12 +469,6 @@ export type ServerMessage =
     }
   | { type: 'plan_update'; plan: ClientPlanState | null }
   | { type: 'conversation_state'; state: ConversationStateSnapshot }
-  | {
-      type: 'usage'
-      inputTokens: number
-      outputTokens: number
-      cacheCreationInputTokens?: number
-      cacheReadInputTokens?: number
-    }
+  | { type: 'usage'; usage: UsageTurn }
   | { type: 'conversation_restored' }
   | { type: 'conversation_restore_failed'; reason: string }

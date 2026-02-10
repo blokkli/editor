@@ -132,9 +132,9 @@ fragment blokkliParagraphsType on ParagraphsType {
       drupal(),
       agent({
         // provider: 'anthropic',
-        // model: 'claude-sonnet-4-20250514',
+        // models: [{ name: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', isDefault: true }],
         provider: 'openai',
-        model: 'gpt-5',
+        models: [{ name: 'gpt-5', label: 'GPT-5', isDefault: true }],
       }),
     ],
   },

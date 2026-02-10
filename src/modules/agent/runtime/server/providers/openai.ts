@@ -162,13 +162,14 @@ export class OpenAIProvider implements AIProvider {
         const choice = chunk.choices[0]
         if (!choice) {
           if (chunk.usage) {
+            const cachedTokens =
+              chunk.usage.prompt_tokens_details?.cached_tokens ?? 0
             yield {
               type: 'message_end',
               stop_reason: pendingStopReason,
-              inputTokens: chunk.usage.prompt_tokens,
+              inputTokens: chunk.usage.prompt_tokens - cachedTokens,
               outputTokens: chunk.usage.completion_tokens,
-              cacheReadInputTokens:
-                chunk.usage.prompt_tokens_details?.cached_tokens ?? undefined,
+              cacheReadInputTokens: cachedTokens || undefined,
             }
           }
           continue

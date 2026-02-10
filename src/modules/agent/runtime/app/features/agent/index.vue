@@ -27,7 +27,7 @@
       :conversation-list
       :show-conversation-list
       :plan
-      :token-usage="tokenUsage"
+      :usage-turns="usageTurns"
       @connect="connect"
       @send-prompt="sendPrompt"
       @cancel="cancel"
@@ -108,7 +108,7 @@ const {
   plan,
   approvePlan,
   rejectPlan,
-  tokenUsage,
+  usageTurns,
   sendPrompt,
   approve,
   reject,

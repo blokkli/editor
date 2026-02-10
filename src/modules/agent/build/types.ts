@@ -1,5 +1,17 @@
 export type AgentProvider = 'anthropic' | 'openai'
 
+export type AgentModelDefinition = {
+  name: string
+  label: string
+  isDefault?: boolean
+  pricing?: {
+    input: number
+    cacheWrite: number
+    cacheRead: number
+    output: number
+  }
+}
+
 export type AgentModuleOptions = {
   /**
    * Allowed origins for the fetch endpoint.
@@ -19,9 +31,12 @@ export type AgentModuleOptions = {
   provider: AgentProvider
 
   /**
-   * Model to use for the AI provider.
+   * Available models for the AI provider.
+   *
+   * At least one model must be defined. The model marked with `isDefault: true`
+   * (or the first model if none is marked) is used for conversations.
    */
-  model: string
+  models: AgentModelDefinition[]
 
   /**
    * Debug the system prompt.

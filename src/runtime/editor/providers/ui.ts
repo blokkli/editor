@@ -340,6 +340,35 @@ export type UiProvider = {
   ) => string
 
   /**
+   * Format a number using the current locale.
+   *
+   * @param value - The number to format
+   * @param options - Intl.NumberFormat options
+   * @returns Localized number string
+   *
+   * @example
+   * ```ts
+   * formatNumber(12345) // "12'345" (de-CH) or "12,345" (en)
+   * formatNumber(0.5, { style: 'percent' }) // "50%"
+   * ```
+   */
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string
+
+  /**
+   * Format a price in USD using the current locale.
+   *
+   * @param value - The price value
+   * @returns Localized currency string
+   *
+   * @example
+   * ```ts
+   * formatPrice(12.5) // "$12.50" (en) or "12.50 $" (de-CH)
+   * formatPrice(0.0042) // "$0.0042"
+   * ```
+   */
+  formatPrice: (value: number) => string
+
+  /**
    * Get absolute rectangle for an element or rectangle.
    *
    * Converts viewport-relative coordinates to artboard-absolute coordinates
@@ -804,6 +833,22 @@ export default function (
     return dateObj.toLocaleString(locale.value, options || defaultOptions)
   }
 
+  function formatNumber(
+    value: number,
+    options?: Intl.NumberFormatOptions,
+  ): string {
+    return value.toLocaleString(locale.value, options)
+  }
+
+  function formatPrice(value: number): string {
+    return value.toLocaleString(locale.value, {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    })
+  }
+
   addElementClasses(document.documentElement, 'bk-is-animating', isAnimating)
 
   addElementClasses(
@@ -911,6 +956,8 @@ export default function (
     interfaceLanguage,
     locale,
     formatDate,
+    formatNumber,
+    formatPrice,
     hasDialogOpen,
     hasTransformOverlayOpen,
     hasTooltipOpen,

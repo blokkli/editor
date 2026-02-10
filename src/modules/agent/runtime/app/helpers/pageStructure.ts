@@ -23,7 +23,11 @@ function truncate(text: string): string {
   return cleaned.slice(0, MAX_CONTENT_LENGTH) + '…'
 }
 
-function buildBlock(app: BlokkliApp, uuid: string, bundle: string): PageStructureBlock {
+function buildBlock(
+  app: BlokkliApp,
+  uuid: string,
+  bundle: string,
+): PageStructureBlock {
   const block: PageStructureBlock = { uuid, bundle }
 
   // Collect content fields (plain + markup only).
@@ -31,10 +35,22 @@ function buildBlock(app: BlokkliApp, uuid: string, bundle: string): PageStructur
   const content: Record<string, string> = {}
 
   for (const editable of editables) {
-    const fieldType = getFieldType(app, itemEntityType, bundle, editable.fieldName)
+    const fieldType = getFieldType(
+      app,
+      itemEntityType,
+      bundle,
+      editable.fieldName,
+    )
     if (!fieldType) continue
 
-    const raw = getEditableValue(app, itemEntityType, uuid, bundle, editable.fieldName, fieldType)
+    const raw = getEditableValue(
+      app,
+      itemEntityType,
+      uuid,
+      bundle,
+      editable.fieldName,
+      fieldType,
+    )
     const text = fieldType === 'markup' ? stripHtml(raw) : raw
     const truncated = truncate(text)
     if (truncated) {

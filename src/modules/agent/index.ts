@@ -22,8 +22,10 @@ export default defineBlokkliModule<AgentModuleOptions>({
     options.featureImports.push(featurePath)
   },
   async setup(ctx, options) {
-    if (!options.model) {
-      throw new Error('Missing blökkli agent option "model".')
+    if (!options.models?.length) {
+      throw new Error(
+        'Missing blökkli agent option "models". At least one model must be defined.',
+      )
     }
     if (!options.provider) {
       throw new Error('Missing blökkli agent option "provider".')
@@ -99,6 +101,7 @@ export default defineNuxtConfig({
         mcpTools,
         promptsCollector,
         options.defaultPrompts || [],
+        options.models,
       ),
     )
 
@@ -159,6 +162,7 @@ export default defineNuxtConfig({
       createServerTemplate({
         moduleOptions: options,
         providersPath: moduleResolver.resolve('./runtime/server/providers'),
+        sharedTypesPath: moduleResolver.resolve('./runtime/shared/types'),
         skillsCollector,
         skillsTypesPath: moduleResolver.resolve(
           './runtime/server/skills/types',

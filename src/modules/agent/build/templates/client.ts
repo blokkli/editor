@@ -1,5 +1,6 @@
 import { defineCodeTemplate } from '../../../../build/templates/defineTemplate'
 import type { AgentCollector } from '../AgentCollector'
+import type { AgentModelDefinition } from '../types'
 
 /**
  * Creates the client template that imports all tool and prompt files and exports them as arrays.
@@ -8,6 +9,7 @@ export default function (
   toolCollector: AgentCollector,
   promptCollector: AgentCollector,
   defaultPrompts: string[],
+  models: AgentModelDefinition[],
 ) {
   return defineCodeTemplate(
     'agent-client',
@@ -51,6 +53,9 @@ export default function (
         `export const defaultPrompts = ${JSON.stringify(defaultPrompts)}`,
       )
 
+      // Models
+      exports.push(`export const models = ${JSON.stringify(models)}`)
+
       const parts: string[] = []
       if (imports.length > 0) {
         parts.push(imports.join('\n'))
@@ -61,10 +66,12 @@ export default function (
     },
     () => {
       return `import type { McpToolItem, AgentPromptItem } from '#blokkli/agent/app/types'
+import type { AgentModelDefinition } from '#blokkli/agent/shared/types'
 
 export const mcpTools: McpToolItem[]
 export const agentPrompts: AgentPromptItem[]
 export const defaultPrompts: string[]
+export const models: AgentModelDefinition[]
 `
     },
   )

@@ -27,7 +27,7 @@
       :is-processing="isProcessing"
       :is-connected="isConnected"
       :can-submit="canSubmit"
-      :token-usage="tokenUsage"
+      :usage-turns="usageTurns"
       :has-text
       @submit="onSubmit"
       @cancel="$emit('cancel')"
@@ -39,12 +39,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli } from '#imports'
-import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
+import { ref, computed, useBlokkli, useTemplateRef } from '#imports'
+import { FlexTextarea } from '#blokkli/editor/components'
+import { TransitionHeight } from '#blokkli/editor/components'
 import AttachmentChip from '../Attachment/index.vue'
 import Actions from './Actions/index.vue'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import type { Attachment } from '#blokkli/agent/app/types'
+import type { UsageTurn } from '#blokkli/agent/shared/types'
 
 const ATTACHMENT_THRESHOLD = 500
 
@@ -53,12 +55,7 @@ const props = defineProps<{
   isConnected: boolean
   hasPendingApproval: boolean
   hasConversation: boolean
-  tokenUsage: {
-    inputTokens: number
-    outputTokens: number
-    cacheCreationInputTokens: number
-    cacheReadInputTokens: number
-  }
+  usageTurns: UsageTurn[]
 }>()
 
 const { $t } = useBlokkli()
@@ -120,7 +117,7 @@ function onSubmit() {
   attachments.value = []
 }
 
-const textarea = ref<InstanceType<typeof FlexTextarea> | null>(null)
+const textarea = useTemplateRef('textarea')
 
 function focus() {
   textarea.value?.focus()

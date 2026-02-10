@@ -388,9 +388,7 @@ onBlokkliEvent('scrollIntoView', (e) => {
       const elRect = e.element.getBoundingClientRect()
 
       // Skip scrolling if at least half of the element is already visible.
-      if (
-        calculateIntersection(elRect, ui.visibleViewport.value) >= 0.75
-      ) {
+      if (calculateIntersection(elRect, ui.visibleViewport.value) >= 0.75) {
         return
       }
 

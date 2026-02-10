@@ -91,13 +91,33 @@
     }
 
     .bk-agent-token-usage {
-      @apply flex items-center gap-8 px-10 py-10;
-      @apply text-xs text-mono-400;
-      @apply border-t border-t-mono-300;
+      @apply px-10 py-8;
       @apply whitespace-nowrap leading-none;
+      /* @apply bg-mono-100; */
 
-      svg {
-        @apply size-15 fill-current;
+      ul {
+        @apply flex justify-between flex-1;
+
+        li {
+          @apply h-30;
+          @apply cursor-help;
+          &.bk-is-separator {
+            @apply w-0 shrink-0;
+            @apply border-r border-dashed border-r-mono-400;
+          }
+          > div {
+            &:first-child {
+              font-size: 10px;
+              @apply font-medium uppercase tracking-wide mb-3;
+              @apply text-mono-500;
+              @apply flex items-center;
+            }
+
+            &:nth-child(2) {
+              @apply font-mono text-xs;
+            }
+          }
+        }
       }
     }
   }

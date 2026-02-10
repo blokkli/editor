@@ -13,7 +13,7 @@ import type {
 } from '../shared/types'
 import { buildSystemPrompt, buildSystemPromptText } from './agentPrompt'
 import type { ActivePlanContext } from './system-prompts/types'
-import { provider, aiModel } from '#blokkli-build/agent-server'
+import { provider, models } from '#blokkli-build/agent-server'
 import type { ToolPruningMetadata } from './helpers'
 import {
   send,
@@ -90,10 +90,7 @@ function formatBlock(
   return lines.join('\n')
 }
 
-function formatPageStructure(
-  ps: PageStructure,
-  ctx: PageContext,
-): string {
+function formatPageStructure(ps: PageStructure, ctx: PageContext): string {
   const lines: string[] = []
   lines.push(
     `<Page uuid="${ctx.entityUuid}" type="${escapeXml(ctx.entityType)}" bundle="${escapeXml(ctx.entityBundle)}">`,
@@ -530,7 +527,10 @@ export class Session {
 
         // Create stream using the provider
         const stream = provider.createStream(
-          { apiKey, model: aiModel },
+          {
+            apiKey,
+            model: (models.find((m) => m.isDefault) || models[0]!).name,
+          },
           {
             systemPrompt,
             messages: this.messages,
@@ -781,12 +781,18 @@ export class Session {
                 event.inputTokens !== undefined &&
                 event.outputTokens !== undefined
               ) {
+                const defaultModel =
+                  models.find((m) => m.isDefault) || models[0]
                 send(peer, {
                   type: 'usage',
-                  inputTokens: event.inputTokens,
-                  outputTokens: event.outputTokens,
-                  cacheCreationInputTokens: event.cacheCreationInputTokens,
-                  cacheReadInputTokens: event.cacheReadInputTokens,
+                  usage: {
+                    inputTokens: event.inputTokens,
+                    outputTokens: event.outputTokens,
+                    cacheCreationInputTokens:
+                      event.cacheCreationInputTokens ?? 0,
+                    cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
+                    pricing: defaultModel?.pricing ?? null,
+                  },
                 })
               }
               break

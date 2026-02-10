@@ -12,6 +12,7 @@ import type {
   ClientMessage,
   ClientPlanState,
   ConversationStateSnapshot,
+  UsageTurn,
   PageContext,
   BlockBundle,
 } from '#blokkli/agent/shared/types'
@@ -82,14 +83,7 @@ export type AgentProvider = {
   rejectPlan: () => void
 
   // Token usage
-  tokenUsage: Readonly<
-    Ref<{
-      inputTokens: number
-      outputTokens: number
-      cacheCreationInputTokens: number
-      cacheReadInputTokens: number
-    }>
-  >
+  usageTurns: Ref<UsageTurn[]>
 
   // Actions
   sendPrompt: (
@@ -156,13 +150,8 @@ export default function (
   const isProcessing = ref(false)
   const isThinking = ref(false)
 
-  // Token usage tracking
-  const tokenUsage = ref({
-    inputTokens: 0,
-    outputTokens: 0,
-    cacheCreationInputTokens: 0,
-    cacheReadInputTokens: 0,
-  })
+  // Token usage tracking (one entry per server usage event)
+  const usageTurns = ref<UsageTurn[]>([])
 
   // Conversation state
   const conversation = ref<ConversationItem[]>([])
@@ -214,9 +203,12 @@ export default function (
       await adapter.agentConversations.upsert({
         uuid: activeConversationId.value,
         title,
-        clientState: JSON.stringify(
-          conversation.value.filter((item) => item.type !== 'error'),
-        ),
+        clientState: JSON.stringify({
+          conversation: conversation.value.filter(
+            (item) => item.type !== 'error',
+          ),
+          usageTurns: usageTurns.value,
+        }),
         serverState: JSON.stringify({
           messages: serverState.messages,
           activatedLazyTools: serverState.activatedLazyTools,
@@ -230,6 +222,7 @@ export default function (
 
   type ParsedConversation = {
     conversation: ConversationItem[]
+    usageTurns: UsageTurn[]
     serverState: ConversationStateSnapshot
   }
 
@@ -237,29 +230,41 @@ export default function (
     data: AgentConversationData,
   ): ParsedConversation | null {
     try {
-      const raw: unknown[] = JSON.parse(data.clientState)
-      const clientState: ConversationItem[] = raw.map((item) => {
-        const result = conversationItemSchema.safeParse(item)
-        if (result.success) {
-          return result.data
-        }
-        return {
-          type: 'unknown' as const,
-          id: generateId(),
-          timestamp: Date.now(),
-        }
-      })
+      const parsed: {
+        conversation?: unknown[]
+        usageTurns?: UsageTurn[]
+      } = JSON.parse(data.clientState)
+
+      if (!parsed.conversation?.length) {
+        return null
+      }
+
+      const clientConversation: ConversationItem[] = parsed.conversation.map(
+        (item) => {
+          const result = conversationItemSchema.safeParse(item)
+          if (result.success) {
+            return result.data
+          }
+          return {
+            type: 'unknown' as const,
+            id: generateId(),
+            timestamp: Date.now(),
+          }
+        },
+      )
+
       const serverParsed: {
         messages: ConversationStateSnapshot['messages']
         activatedLazyTools: ConversationStateSnapshot['activatedLazyTools']
       } = JSON.parse(data.serverState)
 
-      if (!clientState.length || !serverParsed?.messages?.length) {
+      if (!serverParsed?.messages?.length) {
         return null
       }
 
       return {
-        conversation: clientState,
+        conversation: clientConversation,
+        usageTurns: parsed.usageTurns ?? [],
         serverState: {
           messages: serverParsed.messages,
           activatedLazyTools: serverParsed.activatedLazyTools,
@@ -318,6 +323,7 @@ export default function (
 
     // Restore UI state
     conversation.value = loaded.conversation
+    usageTurns.value = loaded.usageTurns
     activeItem.value = null
     activeConversationId.value = id
 
@@ -505,6 +511,7 @@ export default function (
           if (parsed) {
             activeConversationId.value = latest.uuid
             conversation.value = parsed.conversation
+            usageTurns.value = parsed.usageTurns
             send({ type: 'restore_conversation', state: parsed.serverState })
           }
         }
@@ -691,16 +698,7 @@ export default function (
         break
 
       case 'usage':
-        tokenUsage.value = {
-          inputTokens: tokenUsage.value.inputTokens + data.inputTokens,
-          outputTokens: tokenUsage.value.outputTokens + data.outputTokens,
-          cacheCreationInputTokens:
-            tokenUsage.value.cacheCreationInputTokens +
-            (data.cacheCreationInputTokens ?? 0),
-          cacheReadInputTokens:
-            tokenUsage.value.cacheReadInputTokens +
-            (data.cacheReadInputTokens ?? 0),
-        }
+        usageTurns.value = [...usageTurns.value, data.usage]
         break
 
       case 'done':
@@ -1207,12 +1205,7 @@ export default function (
     isThinking.value = false
     activeConversationId.value = null
     plan.value = null
-    tokenUsage.value = {
-      inputTokens: 0,
-      outputTokens: 0,
-      cacheCreationInputTokens: 0,
-      cacheReadInputTokens: 0,
-    }
+    usageTurns.value = []
 
     // Tell server to clear conversation
     send({ type: 'new_conversation' })
@@ -1259,7 +1252,7 @@ export default function (
     rejectPlan,
 
     // Token usage
-    tokenUsage: readonly(tokenUsage),
+    usageTurns,
 
     // Actions
     sendPrompt,

@@ -3,15 +3,15 @@
     <button
       v-if="removable"
       :title="$t('aiAgentRemoveAttachment', 'Remove attachment')"
-      @click="$emit('remove')"
       class="bk-agent-attachment-close"
+      @click="$emit('remove')"
     >
       <Icon name="bk_mdi_close" />
     </button>
     <button
       class="bk-agent-attachment-text"
-      @click="showAttachment = true"
       :title="$t('aiAgentViewAttachment', 'View attachment')"
+      @click="showAttachment = true"
     >
       <div>
         <span class="bk-agent-attachment-title">{{ title }}</span>
@@ -27,8 +27,8 @@
         :title
         :width="1200"
         hide-buttons
-        @cancel="showAttachment = false"
         class="bk-agent-attachment-modal"
+        @cancel="showAttachment = false"
       >
         <div>{{ attachment.content }}</div>
       </DialogModal>

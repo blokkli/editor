@@ -65,7 +65,9 @@ function convertSystemPrompt(blocks: SystemPromptBlock[]): TextBlockParam[] {
   return blocks.map((block) => {
     const param: TextBlockParam = { type: 'text', text: block.text }
     if (block.cacheHint) {
-      ;(param as TextBlockParam & { cache_control?: { type: string } }).cache_control = {
+      ;(
+        param as TextBlockParam & { cache_control?: { type: string } }
+      ).cache_control = {
         type: block.cacheHint,
       }
     }
