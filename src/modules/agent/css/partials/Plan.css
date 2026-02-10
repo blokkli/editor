@@ -1,10 +1,7 @@
 .bk.bk-agent-panel {
   .bk-agent-plan {
-    @apply mt-0 overflow-hidden border-b-0 rounded-b-none;
-  }
-
-  .bk-agent-plan + .bk-agent-input {
-    @apply rounded-t-none relative z-30;
+    @apply mt-0 overflow-hidden border-0 rounded-b-none rounded-t-lg;
+    @apply border-dashed border-b border-b-mono-300;
   }
 
   .bk-agent-plan-steps {

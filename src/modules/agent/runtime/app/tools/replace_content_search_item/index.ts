@@ -7,7 +7,7 @@ const paramsSchema = z.object({
   uuid: z
     .string()
     .describe('The block UUID containing the content reference field'),
-  fieldName: z.string().describe('The content field name (reference type)'),
+  field: z.string().describe('The content field name (reference type)'),
   itemId: z.string().describe('Content item ID from search_content_* results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
@@ -19,7 +19,6 @@ export default defineBlokkliAgentTool({
     'Replace a content reference on an existing block field. Use get_content_fields first to see available reference fields, then search_content_* to find content items.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'replaced content reference' : 'rejected'),
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t(
@@ -43,11 +42,11 @@ export default defineBlokkliAgentTool({
     const config = types.droppableFieldConfig.forName(
       ctx.itemEntityType,
       block.bundle,
-      params.fieldName,
+      params.field,
     )
     if (!config) {
       return {
-        error: `Field "${params.fieldName}" is not a reference content field on ${block.bundle} blocks`,
+        error: `Field "${params.field}" is not a reference content field on ${block.bundle} blocks`,
       }
     }
     const allowedRestriction = config.allowed.find(
@@ -55,12 +54,12 @@ export default defineBlokkliAgentTool({
     )
     if (!allowedRestriction) {
       return {
-        error: `Field "${params.fieldName}" does not accept ${params.itemEntityType} entities. Allowed types: ${config.allowed.map((v) => v.type).join(', ')}`,
+        error: `Field "${params.field}" does not accept ${params.itemEntityType} entities. Allowed types: ${config.allowed.map((v) => v.type).join(', ')}`,
       }
     }
     if (!allowedRestriction.bundles.includes(params.itemEntityBundle)) {
       return {
-        error: `Field "${params.fieldName}" does not accept ${params.itemEntityBundle} bundles. Allowed: ${allowedRestriction.bundles.join(', ')}`,
+        error: `Field "${params.field}" does not accept ${params.itemEntityBundle} bundles. Allowed: ${allowedRestriction.bundles.join(', ')}`,
       }
     }
 
@@ -83,7 +82,7 @@ export default defineBlokkliAgentTool({
           host: {
             type: ctx.itemEntityType,
             uuid: params.uuid,
-            fieldName: params.fieldName,
+            fieldName: params.field,
           },
           item,
         }),

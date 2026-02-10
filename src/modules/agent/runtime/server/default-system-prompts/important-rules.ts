@@ -4,6 +4,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'important-rules',
   title: 'IMPORTANT',
   weight: 600,
+  cacheGroup: 'static',
   getPrompt: () => {
     return `
 - ALWAYS USE THE "ask_question" TOOL TO ASK STRUCTURED QUESTIONS!!!

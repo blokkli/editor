@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import type { BlokkliApp } from '#blokkli/editor/types/app'
+import { getFieldType, getEditableValue } from '../schemas'
 
 const paramsSchema = z.object({})
 
@@ -22,33 +22,12 @@ const resultSchema = z.object({
     .describe('All blocks with their text content, flattened'),
 })
 
-function getFieldType(
-  app: BlokkliApp,
-  itemEntityType: string,
-  uuid: string,
-  fieldName: string,
-): 'plain' | 'markup' | null {
-  const block = app.blocks.getBlock(uuid)
-  if (!block) return null
-
-  const config = app.types.editableFieldConfig.forName(
-    itemEntityType,
-    block.bundle,
-    fieldName,
-  )
-  if (!config) return null
-  if (config.type === 'table') return null
-  if (config.type === 'frame' || config.type === 'markup') return 'markup'
-  return 'plain'
-}
-
 export default defineBlokkliAgentTool({
   name: 'get_all_page_content',
   description:
     'Get all text content from the entire page in a single call. Returns a flat list of all blocks with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
   category: 'query',
   volatile: true,
-  lazy: true,
   prunedSummary: (r) => `${r.content?.length || 0} blocks`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
@@ -57,7 +36,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx) {
-    const { blocks, directive, state, $t } = ctx.app
+    const { blocks, state, $t } = ctx.app
     const content: z.infer<typeof blockContentSchema>[] = []
 
     // Get all blocks from all mutated fields
@@ -66,35 +45,26 @@ export default defineBlokkliAgentTool({
       if (!block) return
 
       // Get all editable text fields for this block
-      const editables = directive.getEditablesForBlock(blockUuid)
+      const editables = ctx.app.directive.getEditablesForBlock(blockUuid)
       const textParts: string[] = []
 
       for (const editable of editables) {
         const fieldType = getFieldType(
           ctx.app,
           ctx.itemEntityType,
-          blockUuid,
+          block.bundle,
           editable.fieldName,
         )
         if (!fieldType) continue
 
-        let value = ''
-        if (editable.getValue) {
-          value = editable.getValue()
-        } else {
-          const element = directive.findEditableElement(editable.fieldName, {
-            type: ctx.itemEntityType,
-            uuid: blockUuid,
-            bundle: block.bundle,
-          })
-          if (element) {
-            // For markup fields, keep the HTML; for plain, get text content
-            value =
-              fieldType === 'markup'
-                ? element.innerHTML || ''
-                : element.textContent || ''
-          }
-        }
+        const value = getEditableValue(
+          ctx.app,
+          ctx.itemEntityType,
+          blockUuid,
+          block.bundle,
+          editable.fieldName,
+          fieldType,
+        )
 
         if (value.trim()) {
           textParts.push(value.trim())

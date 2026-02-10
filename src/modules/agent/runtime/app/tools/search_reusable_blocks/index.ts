@@ -28,7 +28,6 @@ export default defineBlokkliAgentTool({
     'Search for reusable blocks. These are pre-built blocks that can be placed on multiple pages. Unlike templates, reusable blocks stay linked: editing the reusable block updates all pages using it. Use add_reusable_block to add a result to the page.',
   category: 'query',
   prunedSummary: (r) => `found ${r.total} reusable blocks`,
-  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentSearchLibraryRunning', 'Searching reusable blocks...')

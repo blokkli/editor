@@ -67,15 +67,14 @@
 import { useBlokkli, defineBlokkliFeature, onBeforeUnmount } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
-import { useAgentProvider } from '#blokkli/agent/app/composables'
+import agentProvider from '#blokkli/agent/app/composables/agentProvider'
 import { agentPrompts } from '#blokkli-build/agent-client'
 import AgentPanel from './Panel/index.vue'
-import { itemEntityType } from '#blokkli-build/config'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
 const DEBUG_STYLING = false
-const agentName = 'Agäntli'
+const agentName = 'Gschwindi'
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',
@@ -125,7 +124,7 @@ const {
   switchConversation,
   deleteConversation,
   refreshConversationList,
-} = useAgentProvider({ app, adapter, itemEntityType })
+} = agentProvider(app, adapter, agentName)
 
 async function onShowConversations() {
   await refreshConversationList()

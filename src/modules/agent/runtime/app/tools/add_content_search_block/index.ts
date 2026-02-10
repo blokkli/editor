@@ -26,7 +26,6 @@ export default defineBlokkliAgentTool({
     'Add a block using a content item from search results. Use search_content_* first to find content items, then use this tool to add one to the page. Requires user approval.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added content block' : 'rejected'),
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t('aiAgentAddContentSearchBlockRunning', 'Adding content block...')

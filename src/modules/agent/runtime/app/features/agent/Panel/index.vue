@@ -41,15 +41,6 @@
       </div>
 
       <div class="bk-agent-panel-input">
-        <TransitionHeight :duration="600" opacity>
-          <Plan
-            v-if="activePlan"
-            :plan="activePlan"
-            :pending-approval="isPlanPendingApproval"
-            @approve="emit('approvePlan')"
-            @reject="emit('rejectPlan')"
-          />
-        </TransitionHeight>
         <AgentInput
           ref="inputEl"
           v-model="inputValue"
@@ -63,7 +54,17 @@
           @new-conversation="onNewConversation"
           @show-transcript="emit('getTranscript')"
           @show-conversations="emit('showConversations')"
-        />
+        >
+          <TransitionHeight :duration="600" opacity>
+            <Plan
+              v-if="activePlan"
+              :plan="activePlan"
+              :pending-approval="isPlanPendingApproval"
+              @approve="emit('approvePlan')"
+              @reject="emit('rejectPlan')"
+            />
+          </TransitionHeight>
+        </AgentInput>
       </div>
     </div>
     <Transition name="bk-agent-overlay" :duration="500">
@@ -141,7 +142,12 @@ const props = defineProps<{
   conversationList: AgentConversationSummary[]
   showConversationList: boolean
   plan: ClientPlanState | null
-  tokenUsage: { inputTokens: number; outputTokens: number }
+  tokenUsage: {
+    inputTokens: number
+    outputTokens: number
+    cacheCreationInputTokens: number
+    cacheReadInputTokens: number
+  }
 }>()
 
 const emit = defineEmits<{

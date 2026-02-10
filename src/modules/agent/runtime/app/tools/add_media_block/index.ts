@@ -23,7 +23,6 @@ export default defineBlokkliAgentTool({
     'Add a block using a media item from the library. Use search_media first to find media items, then use this tool to add one to the page. Requires user approval.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added media block' : 'rejected'),
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t('aiAgentAddMediaBlockRunning', 'Adding media block...')

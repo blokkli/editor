@@ -16,7 +16,6 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) =>
     r.success ? `navigated to index ${r.historyIndex ?? '?'}` : 'rejected',
-  lazy: true,
   modes: ['editing', 'translating'],
   label($t) {
     return $t('aiAgentGoToHistoryIndexRunning', 'Navigating history...')

@@ -37,7 +37,8 @@ const emit = defineEmits<{
 
 const { $t, ui } = useBlokkli()
 
-const welcomeMd = ui.interfaceLanguage.value === 'de' ? welcomeMdDe : welcomeMdEn
+const welcomeMd =
+  ui.interfaceLanguage.value === 'de' ? welcomeMdDe : welcomeMdEn
 
 const welcomeHtml = await Promise.resolve(marked.parse(welcomeMd)).then((v) =>
   v.replaceAll('@agent-name', props.agentName),

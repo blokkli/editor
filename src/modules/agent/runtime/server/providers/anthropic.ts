@@ -1,5 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { MessageParam, Tool } from '@anthropic-ai/sdk/resources/messages'
+import type {
+  MessageParam,
+  TextBlockParam,
+  Tool,
+} from '@anthropic-ai/sdk/resources/messages'
 import type {
   AIProvider,
   GenericMessage,
@@ -8,6 +12,7 @@ import type {
   StreamEvent,
 } from './types'
 import type { ClientToolDefinition } from '../../shared/types'
+import type { SystemPromptBlock } from '../system-prompts/types'
 
 /**
  * Convert generic messages to Anthropic's MessageParam format.
@@ -26,6 +31,7 @@ function convertMessages(messages: GenericMessage[]): MessageParam[] {
       switch (block.type) {
         case 'text':
         case 'skill':
+        case 'page_structure':
           return { type: 'text' as const, text: block.text }
         case 'tool_use':
           return {
@@ -52,14 +58,38 @@ function convertMessages(messages: GenericMessage[]): MessageParam[] {
 }
 
 /**
+ * Convert system prompt blocks to Anthropic's TextBlockParam format.
+ * Blocks with cacheHint get cache_control for prompt caching.
+ */
+function convertSystemPrompt(blocks: SystemPromptBlock[]): TextBlockParam[] {
+  return blocks.map((block) => {
+    const param: TextBlockParam = { type: 'text', text: block.text }
+    if (block.cacheHint) {
+      ;(param as TextBlockParam & { cache_control?: { type: string } }).cache_control = {
+        type: block.cacheHint,
+      }
+    }
+    return param
+  })
+}
+
+/**
  * Convert client tool definitions to Anthropic's Tool format.
+ * Places a cache_control breakpoint on the last tool so that the
+ * system prompt + tools prefix is cached across turns.
  */
 function convertTools(tools: ClientToolDefinition[]): Tool[] {
-  return tools.map((tool) => ({
-    name: tool.name,
-    description: tool.description,
-    input_schema: tool.input_schema as Tool['input_schema'],
-  }))
+  return tools.map((tool, i) => {
+    const converted: Tool = {
+      name: tool.name,
+      description: tool.description,
+      input_schema: tool.input_schema as Tool['input_schema'],
+    }
+    if (i === tools.length - 1) {
+      converted.cache_control = { type: 'ephemeral' }
+    }
+    return converted
+  })
 }
 
 /**
@@ -80,7 +110,7 @@ export class AnthropicProvider implements AIProvider {
     const stream = client.messages.stream({
       model: config.model,
       max_tokens: options.maxTokens ?? 4096,
-      system: options.systemPrompt,
+      system: convertSystemPrompt(options.systemPrompt),
       messages,
       tools,
     })
@@ -137,6 +167,10 @@ export class AnthropicProvider implements AIProvider {
                 | 'stop',
               inputTokens: finalMessage.usage?.input_tokens,
               outputTokens: finalMessage.usage?.output_tokens,
+              cacheCreationInputTokens:
+                finalMessage.usage?.cache_creation_input_tokens ?? undefined,
+              cacheReadInputTokens:
+                finalMessage.usage?.cache_read_input_tokens ?? undefined,
             }
             break
           }

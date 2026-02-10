@@ -385,6 +385,15 @@ onBlokkliEvent('scrollIntoView', (e) => {
     })
   } else {
     if (artboardElement.contains(e.element)) {
+      const elRect = e.element.getBoundingClientRect()
+
+      // Skip scrolling if at least half of the element is already visible.
+      if (
+        calculateIntersection(elRect, ui.visibleViewport.value) >= 0.75
+      ) {
+        return
+      }
+
       artboard.scrollElementIntoView(e.element, {
         scale: 'none',
         axis: 'y',

@@ -134,10 +134,7 @@ function validateContentFields(
     }
 
     if (droppableConfig) {
-      if (
-        typeof fieldValue === 'string' &&
-        droppableConfig.type !== 'link'
-      ) {
+      if (typeof fieldValue === 'string' && droppableConfig.type !== 'link') {
         return `${path}: Field "${fieldName}" is a reference field and expects { entityType, entityId }, got a string.`
       }
     }

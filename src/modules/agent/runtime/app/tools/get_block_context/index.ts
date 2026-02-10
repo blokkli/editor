@@ -40,7 +40,7 @@ const parentChainItemSchema = z.object({
   uuid: z.string().describe('The parent block UUID'),
   bundle: z.string().describe('The block type'),
   label: z.string().describe('Human-readable block label'),
-  fieldName: z.string().describe('The field name this block is in'),
+  field: z.string().describe('The field name this block is in'),
 })
 
 const siblingInfoSchema = z.object({
@@ -72,17 +72,17 @@ const childFieldSchema = z.object({
 
 const contentFieldSchema = z.discriminatedUnion('type', [
   z.object({
-    fieldName: z.string().describe('The field name'),
+    field: z.string().describe('The field name'),
     type: z.literal('plain').describe('Plain text field'),
     currentValue: z.string().describe('Current field value'),
   }),
   z.object({
-    fieldName: z.string().describe('The field name'),
+    field: z.string().describe('The field name'),
     type: z.literal('markup').describe('Rich text / HTML field'),
     currentValue: z.string().describe('Current field value'),
   }),
   z.object({
-    fieldName: z.string().describe('The field name'),
+    field: z.string().describe('The field name'),
     label: z.string().describe('Human-readable field label'),
     type: z.literal('reference').describe('Entity reference field'),
     allowed: z
@@ -97,7 +97,7 @@ const contentFieldSchema = z.discriminatedUnion('type', [
       .describe('Entity types and bundles this field accepts'),
   }),
   z.object({
-    fieldName: z.string().describe('The field name'),
+    field: z.string().describe('The field name'),
     label: z.string().describe('Human-readable field label'),
     type: z.literal('link').describe('Link field'),
     allowed: z
@@ -152,7 +152,6 @@ export default defineBlokkliAgentTool({
     'Get comprehensive context for a single block including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
   category: 'query',
   volatile: true,
-  lazy: true,
   prunedSummary: (r) =>
     `context for ${r.bundle || 'block'} (${r.uuid?.slice(0, 8) || '?'})`,
   modes: ['readonly', 'editing', 'translating', 'review'],
@@ -221,7 +220,7 @@ export default defineBlokkliAgentTool({
             uuid: currentUuid,
             bundle: parentBlock.bundle,
             label: types.getBlockLabel(parentBlock.bundle),
-            fieldName: parentField.name,
+            field: parentField.name,
           })
         }
 
@@ -325,7 +324,7 @@ export default defineBlokkliAgentTool({
         }
 
         fields.push({
-          fieldName: editable.fieldName,
+          field: editable.fieldName,
           type: fieldType,
           currentValue,
         })
@@ -339,7 +338,7 @@ export default defineBlokkliAgentTool({
         )
       for (const config of droppableConfigs) {
         fields.push({
-          fieldName: config.name,
+          field: config.name,
           label: config.label,
           type: config.type as 'reference' | 'link',
           allowed: config.allowed,

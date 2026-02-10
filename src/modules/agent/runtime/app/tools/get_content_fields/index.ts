@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import type { BlokkliApp } from '#blokkli/editor/types/app'
+import { getFieldType, getEditableValue } from '../schemas'
 
 const paramsSchema = z.object({
   uuids: z
@@ -73,23 +73,6 @@ const resultSchema = z.record(
   z.record(z.string().describe('Field name'), fieldSchema),
 )
 
-function getFieldType(
-  app: BlokkliApp,
-  entityType: string,
-  bundle: string,
-  fieldName: string,
-): 'plain' | 'markup' | null {
-  const config = app.types.editableFieldConfig.forName(
-    entityType,
-    bundle,
-    fieldName,
-  )
-  if (!config) return null
-  if (config.type === 'table') return null
-  if (config.type === 'frame' || config.type === 'markup') return 'markup'
-  return 'plain'
-}
-
 function addField(
   result: Result,
   uuid: string,
@@ -108,7 +91,6 @@ export default defineBlokkliAgentTool({
     'Get all content fields (text, media, links) for a block and optionally its nested children',
   category: 'query',
   volatile: true,
-  lazy: true,
   prunedSummary: (r) => `fields for ${Object.keys(r || {}).length} blocks`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
@@ -129,33 +111,20 @@ export default defineBlokkliAgentTool({
         .forEntityTypeAndBundle(entityType, entityBundle)
         .filter((f) => f.type !== 'table')
 
-      const editableMap = new Map(
-        directive.getEditablesForBlock(entityUuid).map((e) => [e.fieldName, e]),
-      )
-
       for (const config of editableConfigs) {
         const fieldType =
           config.type === 'frame' || config.type === 'markup'
             ? 'markup'
             : 'plain'
 
-        let currentValue = ''
-        const registered = editableMap.get(config.name)
-        if (registered?.getValue) {
-          currentValue = registered.getValue()
-        } else {
-          const element = directive.findEditableElement(config.name, {
-            type: entityType,
-            uuid: entityUuid,
-            bundle: entityBundle,
-          })
-          if (element) {
-            currentValue =
-              fieldType === 'markup'
-                ? element.innerHTML || ''
-                : element.textContent || ''
-          }
-        }
+        const currentValue = getEditableValue(
+          ctx.app,
+          entityType,
+          entityUuid,
+          entityBundle,
+          config.name,
+          fieldType as 'plain' | 'markup',
+        )
 
         addField(result, entityUuid, config.name, {
           type: fieldType as 'plain' | 'markup',
@@ -196,22 +165,14 @@ export default defineBlokkliAgentTool({
         )
         if (!fieldType) continue
 
-        let currentValue = ''
-        if (editable.getValue) {
-          currentValue = editable.getValue()
-        } else {
-          const element = directive.findEditableElement(editable.fieldName, {
-            type: ctx.itemEntityType,
-            uuid: blockUuid,
-            bundle: block.bundle,
-          })
-          if (element) {
-            currentValue =
-              fieldType === 'markup'
-                ? element.innerHTML || ''
-                : element.textContent || ''
-          }
-        }
+        const currentValue = getEditableValue(
+          ctx.app,
+          ctx.itemEntityType,
+          blockUuid,
+          block.bundle,
+          editable.fieldName,
+          fieldType,
+        )
 
         const config = types.editableFieldConfig.forName(
           ctx.itemEntityType,

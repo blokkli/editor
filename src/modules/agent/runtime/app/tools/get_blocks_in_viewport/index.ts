@@ -254,7 +254,6 @@ export default defineBlokkliAgentTool({
     'Get blocks currently visible in the viewport with their visibility percentage. Use this for viewport-relative queries like "the block at the top", "what\'s in the center", or "blocks near the bottom". NOT for getting all page content - use get_all_page_content for that.',
   category: 'query',
   volatile: true,
-  lazy: true,
   prunedSummary: (r) => `${r.blocks?.length || 0} blocks in viewport`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {

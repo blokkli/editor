@@ -9,9 +9,7 @@ const schema = z.object({
       z.object({
         label: z
           .string()
-          .describe(
-            'Short label shown to the user (e.g. "Add hero section")',
-          ),
+          .describe('Short label shown to the user (e.g. "Add hero section")'),
         description: z
           .string()
           .describe(

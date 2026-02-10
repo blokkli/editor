@@ -5,6 +5,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'available-skills',
   title: 'Available Skills',
   weight: 900,
+  cacheGroup: 'per-page',
   getPrompt: (context) => {
     return formatItems(
       context.resolvedSkills.map((s) => ({

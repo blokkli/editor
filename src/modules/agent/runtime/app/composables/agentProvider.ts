@@ -30,10 +30,12 @@ import {
   isToolError,
   resolveTools,
 } from '#blokkli/agent/app/helpers'
+import { buildPageStructure } from '#blokkli/agent/app/helpers/pageStructure'
 import { mcpTools } from '#blokkli-build/agent-client'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import { itemEntityType } from '#blokkli-build/config'
 
 // ============================================================================
 // Types
@@ -80,7 +82,14 @@ export type AgentProvider = {
   rejectPlan: () => void
 
   // Token usage
-  tokenUsage: Readonly<Ref<{ inputTokens: number; outputTokens: number }>>
+  tokenUsage: Readonly<
+    Ref<{
+      inputTokens: number
+      outputTokens: number
+      cacheCreationInputTokens: number
+      cacheReadInputTokens: number
+    }>
+  >
 
   // Actions
   sendPrompt: (
@@ -114,8 +123,11 @@ export type AgentProvider = {
 // Provider Implementation
 // ============================================================================
 
-export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
-  const { app, adapter, itemEntityType } = options
+export default function (
+  app: BlokkliApp,
+  adapter: FullBlokkliAdapter<any>,
+  agentName: string,
+): AgentProvider {
   const { $t, state, ui, context } = app
 
   // WebSocket state
@@ -145,7 +157,12 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   const isThinking = ref(false)
 
   // Token usage tracking
-  const tokenUsage = ref({ inputTokens: 0, outputTokens: 0 })
+  const tokenUsage = ref({
+    inputTokens: 0,
+    outputTokens: 0,
+    cacheCreationInputTokens: 0,
+    cacheReadInputTokens: 0,
+  })
 
   // Conversation state
   const conversation = ref<ConversationItem[]>([])
@@ -331,7 +348,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
   // Disable editing while agent is processing
   watch(isProcessing, (processing) => {
     if (processing) {
-      ui.setTransform($t('aiAgent', 'AI Agent'))
+      ui.setTransform(agentName)
     } else {
       ui.setTransform(null)
     }
@@ -677,6 +694,12 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
         tokenUsage.value = {
           inputTokens: tokenUsage.value.inputTokens + data.inputTokens,
           outputTokens: tokenUsage.value.outputTokens + data.outputTokens,
+          cacheCreationInputTokens:
+            tokenUsage.value.cacheCreationInputTokens +
+            (data.cacheCreationInputTokens ?? 0),
+          cacheReadInputTokens:
+            tokenUsage.value.cacheReadInputTokens +
+            (data.cacheReadInputTokens ?? 0),
         }
         break
 
@@ -1093,6 +1116,8 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       activeConversationId.value = generateUUID()
     }
 
+    const isFirstMessage = !conversation.value.some((i) => i.type === 'user')
+
     const item: ConversationItem = {
       type: 'user',
       id: generateId(),
@@ -1108,6 +1133,7 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
       type: 'start',
       prompt,
       selectedUuids: selectedUuids?.length ? selectedUuids : undefined,
+      pageStructure: isFirstMessage ? buildPageStructure(app) : undefined,
     })
   }
 
@@ -1181,7 +1207,12 @@ export function useAgentProvider(options: AgentProviderOptions): AgentProvider {
     isThinking.value = false
     activeConversationId.value = null
     plan.value = null
-    tokenUsage.value = { inputTokens: 0, outputTokens: 0 }
+    tokenUsage.value = {
+      inputTokens: 0,
+      outputTokens: 0,
+      cacheCreationInputTokens: 0,
+      cacheReadInputTokens: 0,
+    }
 
     // Tell server to clear conversation
     send({ type: 'new_conversation' })

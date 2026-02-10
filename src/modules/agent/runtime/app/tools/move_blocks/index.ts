@@ -18,7 +18,6 @@ export default defineBlokkliAgentTool({
     'Move one or more blocks to a different parent field. All blocks are moved to the same location and they KEEP their UUIDs!!',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'moved blocks' : 'rejected'),
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t('aiAgentMoveBlocksRunning', 'Moving blocks...')

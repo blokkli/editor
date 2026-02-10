@@ -1,6 +1,7 @@
 # Hallo! Ich bin @agent-name, dein Assistent für die Inhaltsbearbeitung.
 
-Ich kann dir helfen, diese Seite zu gestalten — sag mir einfach, was du brauchst:
+Ich kann dir helfen, diese Seite zu gestalten — sag mir einfach, was du
+brauchst:
 
 - **Blöcke hinzufügen, verschieben und löschen** auf der Seite
 - **Textinhalte bearbeiten und umschreiben**

@@ -25,7 +25,6 @@ export default defineBlokkliAgentTool({
     'Add a reusable block to the page. Reusable blocks stay linked to the original: edits to the block are reflected everywhere it is used. Use search_reusable_blocks first to find available blocks.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added reusable block' : 'rejected'),
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t('aiAgentAddLibraryItemRunning', 'Adding reusable block...')

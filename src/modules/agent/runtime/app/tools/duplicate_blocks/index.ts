@@ -29,7 +29,6 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) =>
     r.success ? `duplicated ${r.newBlocks?.length || 0} blocks` : 'rejected',
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks...')

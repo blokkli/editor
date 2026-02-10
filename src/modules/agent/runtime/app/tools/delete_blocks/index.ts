@@ -16,7 +16,6 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t('aiAgentDeleteBlocksRunning', 'Deleting blocks...')
   },
-  lazy: true,
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['deleteBlocks'],

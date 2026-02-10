@@ -160,8 +160,9 @@ export function buildDefinition(
   return {
     name: tool.name,
     description: tool.description,
-    input_schema: stripSchemaOverhead(
-      z.toJSONSchema(schema),
-    ) as Record<string, unknown>,
+    input_schema: stripSchemaOverhead(z.toJSONSchema(schema)) as Record<
+      string,
+      unknown
+    >,
   }
 }

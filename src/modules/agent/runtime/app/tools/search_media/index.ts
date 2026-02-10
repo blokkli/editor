@@ -39,7 +39,6 @@ export default defineBlokkliAgentTool({
     'Search the media library for images, videos, and other media. Returns media items that can be added to the page using add_media_block. If more than one matching media is found: USE THE select_media TOOL TO LET THE USER PICK.',
   category: 'query',
   prunedSummary: (r) => `found ${r.total || 0} media items`,
-  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentSearchMediaRunning', 'Searching media...')

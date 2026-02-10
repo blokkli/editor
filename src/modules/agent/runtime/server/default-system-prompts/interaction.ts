@@ -5,6 +5,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'interaction',
   title: 'Interaction with User',
   weight: 400,
+  cacheGroup: 'per-page',
   getPrompt: ({ pageContext }) => {
     const isGerman = pageContext.interfaceLanguage === 'de'
     const listItems = [

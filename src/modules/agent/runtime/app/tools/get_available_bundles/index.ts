@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
   parentUuid: z.string().describe('The parent entity UUID'),
-  fieldName: z.string().describe('The field name'),
+  field: z.string().describe('The field name'),
 })
 
 const bundleSchema = z.object({
@@ -59,7 +59,6 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...')
   },
-  lazy: true,
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
@@ -67,14 +66,14 @@ export default defineBlokkliAgentTool({
     const label = $t(
       'aiAgentGetBundleInfoDone',
       'Got bundle info for @field',
-    ).replace('@field', params.fieldName)
+    ).replace('@field', params.field)
 
-    const field = fields.find(params.parentUuid, params.fieldName)
+    const field = fields.find(params.parentUuid, params.field)
     if (!field) {
       return {
         label,
         result: {
-          fieldLabel: params.fieldName,
+          fieldLabel: params.field,
           cardinality: -1,
           currentCount: 0,
           bundles: [],
@@ -83,7 +82,7 @@ export default defineBlokkliAgentTool({
     }
 
     // Get field key for counting blocks
-    const fieldKey = `${params.parentUuid}:${params.fieldName}`
+    const fieldKey = `${params.parentUuid}:${params.field}`
     const currentCount = state.getFieldBlockCount(fieldKey)
 
     const bundles = field.allowedBundles.map((bundle) => {

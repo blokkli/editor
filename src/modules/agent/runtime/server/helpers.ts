@@ -368,7 +368,6 @@ export function pruneMessages(
         } else {
           block.content = compressToolResult(block.content)
         }
-
       } else if (block.type === 'text' || block.type === 'skill') {
         content.splice(j, 1)
       }

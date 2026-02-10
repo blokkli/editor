@@ -28,7 +28,6 @@ export default defineBlokkliAgentTool({
     'Search for available templates. Templates are reusable block collections created by users that can be added to the page.',
   category: 'query',
   prunedSummary: (r) => `found ${r.total || 0} templates`,
-  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentSearchTemplatesRunning', 'Searching templates...')

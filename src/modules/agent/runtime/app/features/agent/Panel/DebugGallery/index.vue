@@ -26,7 +26,7 @@
         @done="() => {}"
       />
       <component
-        v-for="(variant, i) in (tool.mockParamsVariants?.() ?? [])"
+        v-for="(variant, i) in tool.mockParamsVariants?.() ?? []"
         :key="`${tool.name}-variant-${i}`"
         :is="tool.component"
         :context="mockContext"

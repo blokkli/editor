@@ -5,6 +5,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'block-bundles',
   title: 'Available Block Bundles',
   weight: 810,
+  cacheGroup: 'per-page',
   getPrompt: (context) => {
     return formatItems(
       context.pageContext.bundles.map((b) => {

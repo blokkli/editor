@@ -1,4 +1,5 @@
 import type { ClientToolDefinition, GenericMessage } from '../../shared/types'
+import type { SystemPromptBlock } from '../system-prompts/types'
 
 // Re-export generic message types from shared (moved there for client access)
 export type {
@@ -29,6 +30,8 @@ export type StreamEvent =
       stop_reason: 'end_turn' | 'tool_use' | 'max_tokens' | 'stop'
       inputTokens?: number
       outputTokens?: number
+      cacheCreationInputTokens?: number
+      cacheReadInputTokens?: number
     }
   | { type: 'error'; error: Error }
 
@@ -50,8 +53,8 @@ export type ProviderConfig = {
  * Options for creating a stream.
  */
 export type StreamOptions = {
-  /** System prompt */
-  systemPrompt: string
+  /** System prompt blocks with optional cache hints */
+  systemPrompt: SystemPromptBlock[]
   /** Conversation messages */
   messages: GenericMessage[]
   /** Available tools */

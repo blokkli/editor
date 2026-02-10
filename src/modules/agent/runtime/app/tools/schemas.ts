@@ -2,6 +2,7 @@ import { z } from 'zod'
 import type { OptionItem } from '#blokkli/editor/helpers/options'
 import { getMutatedOptionValue } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
+import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 /**
  * Extract a simple key→label map from the various radios/checkboxes option formats.
@@ -227,6 +228,88 @@ export function validateOptionValue(
   }
 
   return undefined
+}
+
+/**
+ * Resolve an editable field config to its simplified type.
+ * Returns 'plain' for text fields, 'markup' for rich text/frame fields, null for unsupported.
+ */
+export function getFieldType(
+  app: BlokkliApp,
+  entityType: string,
+  bundle: string,
+  fieldName: string,
+): 'plain' | 'markup' | null {
+  const config = app.types.editableFieldConfig.forName(
+    entityType,
+    bundle,
+    fieldName,
+  )
+  if (!config) return null
+  if (config.type === 'table') return null
+  if (config.type === 'frame' || config.type === 'markup') return 'markup'
+  return 'plain'
+}
+
+/**
+ * Read the current value of an editable field on a block or entity.
+ * Tries the registered getValue() callback first, falls back to DOM element reading.
+ */
+export function getEditableValue(
+  app: BlokkliApp,
+  entityType: string,
+  uuid: string,
+  bundle: string,
+  fieldName: string,
+  fieldType: 'plain' | 'markup',
+): string {
+  const editables = app.directive.getEditablesForBlock(uuid)
+  const editable = editables.find((e) => e.fieldName === fieldName)
+
+  if (editable?.getValue) {
+    return editable.getValue()
+  }
+
+  const element = app.directive.findEditableElement(fieldName, {
+    type: entityType,
+    uuid,
+    bundle,
+  })
+  if (element) {
+    return fieldType === 'markup'
+      ? element.innerHTML || ''
+      : element.textContent || ''
+  }
+
+  return ''
+}
+
+/**
+ * Get all child fields and their blocks for a given entity UUID.
+ * Walks mutatedFields to find fields belonging to the entity.
+ */
+export function getBlockChildren(
+  app: BlokkliApp,
+  uuid: string,
+): { fieldName: string; blocks: { uuid: string; bundle: string }[] }[] {
+  const result: {
+    fieldName: string
+    blocks: { uuid: string; bundle: string }[]
+  }[] = []
+
+  for (const field of app.state.mutatedFields.value) {
+    if (field.entityUuid === uuid && field.list.length > 0) {
+      result.push({
+        fieldName: field.name,
+        blocks: field.list.map((item) => ({
+          uuid: item.uuid,
+          bundle: item.bundle,
+        })),
+      })
+    }
+  }
+
+  return result
 }
 
 /**

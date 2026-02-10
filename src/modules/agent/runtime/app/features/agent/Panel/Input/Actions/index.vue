@@ -37,6 +37,13 @@
                 {{ props.tokenUsage.inputTokens.toLocaleString() }} in /
                 {{ props.tokenUsage.outputTokens.toLocaleString() }} out
               </span>
+              <span
+                v-if="props.tokenUsage.cacheReadInputTokens > 0"
+                class="bk-agent-token-usage-cache"
+              >
+                ({{ props.tokenUsage.cacheReadInputTokens.toLocaleString() }}
+                cached)
+              </span>
             </div>
           </div>
         </BlokkliTransition>
@@ -82,7 +89,12 @@ const props = defineProps<{
   isConnected: boolean
   canSubmit: boolean
   hasText: boolean
-  tokenUsage: { inputTokens: number; outputTokens: number }
+  tokenUsage: {
+    inputTokens: number
+    outputTokens: number
+    cacheCreationInputTokens: number
+    cacheReadInputTokens: number
+  }
 }>()
 
 const emit = defineEmits<{

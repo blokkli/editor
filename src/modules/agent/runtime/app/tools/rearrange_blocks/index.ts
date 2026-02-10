@@ -20,7 +20,6 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'rearranged blocks' : 'rejected'),
   modes: ['editing'],
-  lazy: true,
   label($t) {
     return $t('aiAgentRearrangeBlocksRunning', 'Rearranging blocks...')
   },

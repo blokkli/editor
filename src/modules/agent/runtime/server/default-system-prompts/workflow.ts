@@ -4,6 +4,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'workflow',
   title: 'Workflow',
   weight: 300,
+  cacheGroup: 'static',
   getPrompt: () => {
     return `1. For complex tasks that require 3 or more distinct operations (e.g. building a full page, importing content, restructuring multiple sections), use create_plan to outline the steps first. Each step needs a short label (shown to the user) and a detailed description (your own notes on what to do). The user will review and approve the plan before you proceed. Do NOT create plans for simple tasks like answering questions, making a single edit, or adding one block.
 2. Once a plan is approved, execute ALL steps sequentially until the plan is complete. Do NOT stop with a text response between steps — keep working. After finishing each step, call complete_plan_step to advance to the next one.

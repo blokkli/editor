@@ -6,7 +6,7 @@ const paramsSchema = z.object({
   uuid: z
     .string()
     .describe('The block UUID or entity UUID containing the media field'),
-  fieldName: z.string().describe('The content field name (reference type)'),
+  field: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
 })
@@ -17,7 +17,6 @@ export default defineBlokkliAgentTool({
     'Replace the media on an existing block field. Use get_content_fields first to see available reference fields, then search_media to find media items.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'replaced media' : 'rejected'),
-  lazy: true,
   modes: ['editing'],
   label($t) {
     return $t('aiAgentReplaceMediaRunning', 'Replacing media...')
@@ -43,22 +42,22 @@ export default defineBlokkliAgentTool({
     const config = types.droppableFieldConfig.forName(
       entityType,
       bundle,
-      params.fieldName,
+      params.field,
     )
     if (!config) {
       return {
-        error: `Field "${params.fieldName}" is not a reference content field on ${bundle}`,
+        error: `Field "${params.field}" is not a reference content field on ${bundle}`,
       }
     }
     const allowedMedia = config.allowed.find((v) => v.type === 'media')
     if (!allowedMedia) {
       return {
-        error: `Field "${params.fieldName}" does not accept media items`,
+        error: `Field "${params.field}" does not accept media items`,
       }
     }
     if (!allowedMedia.bundles.includes(params.mediaBundle)) {
       return {
-        error: `Field "${params.fieldName}" does not accept ${params.mediaBundle} media. Allowed: ${allowedMedia.bundles.join(', ')}`,
+        error: `Field "${params.field}" does not accept ${params.mediaBundle} media. Allowed: ${allowedMedia.bundles.join(', ')}`,
       }
     }
 
@@ -77,7 +76,7 @@ export default defineBlokkliAgentTool({
             host: {
               type: entityType,
               uuid: params.uuid,
-              fieldName: params.fieldName,
+              fieldName: params.field,
             },
             mediaId: params.mediaId,
           })
@@ -86,7 +85,7 @@ export default defineBlokkliAgentTool({
           host: {
             type: entityType,
             uuid: params.uuid,
-            fieldName: params.fieldName,
+            fieldName: params.field,
           },
           mediaId: params.mediaId,
         })

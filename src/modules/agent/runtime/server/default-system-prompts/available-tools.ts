@@ -5,6 +5,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'available-tools',
   title: 'Additional Tools',
   weight: 1000,
+  cacheGroup: 'per-page',
   getPrompt: (context) => {
     return formatItems(
       context.lazyTools.map((t) => ({

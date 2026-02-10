@@ -4,6 +4,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'introduction',
   title: '',
   weight: 100,
+  cacheGroup: 'static',
   getPrompt: () => {
     return `You are a friendly AI agent that helps users create and edit complex page content in a block-based editor called blökkli.
 

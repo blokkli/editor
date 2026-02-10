@@ -41,7 +41,11 @@ function convertMessages(
       }> = []
 
       for (const block of msg.content) {
-        if (block.type === 'text' || block.type === 'skill') {
+        if (
+          block.type === 'text' ||
+          block.type === 'skill' ||
+          block.type === 'page_structure'
+        ) {
           textParts.push(block.text)
         } else if (block.type === 'tool_use') {
           toolCalls.push({
@@ -69,7 +73,11 @@ function convertMessages(
     } else if (msg.role === 'user') {
       // User messages might contain tool results
       for (const block of msg.content) {
-        if (block.type === 'text' || block.type === 'skill') {
+        if (
+          block.type === 'text' ||
+          block.type === 'skill' ||
+          block.type === 'page_structure'
+        ) {
           result.push({
             role: 'user',
             content: block.text,
@@ -117,9 +125,10 @@ export class OpenAIProvider implements AIProvider {
     const messages = convertMessages(options.messages)
     const tools = convertTools(options.tools)
 
-    // Prepend system message
+    // Prepend system message (concatenate blocks — OpenAI caches by prefix automatically)
+    const systemText = options.systemPrompt.map((b) => b.text).join('\n\n')
     const allMessages: ChatCompletionMessageParam[] = [
-      { role: 'system', content: options.systemPrompt },
+      { role: 'system', content: systemText },
       ...messages,
     ]
 
@@ -158,6 +167,8 @@ export class OpenAIProvider implements AIProvider {
               stop_reason: pendingStopReason,
               inputTokens: chunk.usage.prompt_tokens,
               outputTokens: chunk.usage.completion_tokens,
+              cacheReadInputTokens:
+                chunk.usage.prompt_tokens_details?.cached_tokens ?? undefined,
             }
           }
           continue

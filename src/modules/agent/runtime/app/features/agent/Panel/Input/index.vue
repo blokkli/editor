@@ -11,6 +11,7 @@
         />
       </div>
     </TransitionHeight>
+    <slot />
     <FlexTextarea
       ref="textarea"
       v-model="model"
@@ -52,7 +53,12 @@ const props = defineProps<{
   isConnected: boolean
   hasPendingApproval: boolean
   hasConversation: boolean
-  tokenUsage: { inputTokens: number; outputTokens: number }
+  tokenUsage: {
+    inputTokens: number
+    outputTokens: number
+    cacheCreationInputTokens: number
+    cacheReadInputTokens: number
+  }
 }>()
 
 const { $t } = useBlokkli()

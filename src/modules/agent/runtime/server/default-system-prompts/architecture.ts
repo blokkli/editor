@@ -4,6 +4,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'architecture',
   title: 'Architecture',
   weight: 200,
+  cacheGroup: 'static',
   getPrompt: () => {
     return `- blökkli is an interactive page builder to manage complex content blocks
 - Everything is an "entity" that always has an "entity type", "entity bundle" and "uuid"

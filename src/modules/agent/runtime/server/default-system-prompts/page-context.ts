@@ -8,6 +8,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'page-context',
   title: 'Current Page',
   weight: 800,
+  cacheGroup: 'per-page',
   getPrompt: ({ pageContext }) => {
     let intro = `The title of the page being edited is "${pageContext.title}".`
     if (pageContext.isPublished === true) {

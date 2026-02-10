@@ -23,9 +23,7 @@ export default defineServerSideTool({
 
   handle(ctx) {
     // Find current in_progress step
-    const currentStep = ctx.plan?.steps.find(
-      (s) => s.status === 'in_progress',
-    )
+    const currentStep = ctx.plan?.steps.find((s) => s.status === 'in_progress')
     if (!ctx.plan || !currentStep) {
       return {
         toolResults: [

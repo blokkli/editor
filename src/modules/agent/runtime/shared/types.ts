@@ -43,6 +43,16 @@ export type GenericToolResultBlock = {
 }
 
 /**
+ * Page structure content block - summary of the page state injected
+ * as an assistant message before the first user prompt.
+ * Providers serialize this as a text block for the API.
+ */
+export type GenericPageStructureBlock = {
+  type: 'page_structure'
+  text: string
+}
+
+/**
  * Content block in a message.
  */
 export type GenericContentBlock =
@@ -50,6 +60,7 @@ export type GenericContentBlock =
   | GenericSkillBlock
   | GenericToolUseBlock
   | GenericToolResultBlock
+  | GenericPageStructureBlock
 
 /**
  * Generic message format used internally.
@@ -279,6 +290,30 @@ const pageContextSchema = z.object({
   entityContentFields: z.array(blockBundleContentFieldSchema),
 })
 
+export type PageStructureBlock = {
+  uuid: string
+  bundle: string
+  contentFields?: Record<string, string>
+  fields?: Record<string, PageStructureBlock[]>
+}
+
+const pageStructureBlockSchema: z.ZodType<PageStructureBlock> = z.lazy(() =>
+  z.object({
+    uuid: z.string(),
+    bundle: z.string(),
+    contentFields: z.record(z.string(), z.string()).optional(),
+    fields: z.record(z.string(), z.array(pageStructureBlockSchema)).optional(),
+  }),
+)
+
+const pageStructureSchema = z.object({
+  totalBlocks: z.number(),
+  fields: z.record(z.string(), z.array(pageStructureBlockSchema)),
+  entityContentFields: z.record(z.string(), z.string()).optional(),
+})
+
+export type PageStructure = z.infer<typeof pageStructureSchema>
+
 const clientToolDefinitionSchema = z.object({
   name: z.string(),
   description: z.string(),
@@ -303,6 +338,7 @@ const genericContentBlockSchema = z.discriminatedUnion('type', [
     content: z.string(),
     is_error: z.boolean().optional(),
   }),
+  z.object({ type: z.literal('page_structure'), text: z.string() }),
 ])
 
 const genericMessageSchema = z.object({
@@ -327,6 +363,7 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
     type: z.literal('start'),
     prompt: z.string(),
     selectedUuids: z.array(z.string()).optional(),
+    pageStructure: pageStructureSchema.optional(),
   }),
   z.object({
     type: z.literal('tool_result'),
@@ -382,6 +419,12 @@ export type ServerMessage =
     }
   | { type: 'plan_update'; plan: ClientPlanState | null }
   | { type: 'conversation_state'; state: ConversationStateSnapshot }
-  | { type: 'usage'; inputTokens: number; outputTokens: number }
+  | {
+      type: 'usage'
+      inputTokens: number
+      outputTokens: number
+      cacheCreationInputTokens?: number
+      cacheReadInputTokens?: number
+    }
   | { type: 'conversation_restored' }
   | { type: 'conversation_restore_failed'; reason: string }

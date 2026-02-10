@@ -54,7 +54,6 @@ export default defineBlokkliAgentTool({
   volatile: true,
   prunedSummary: (r) => `index ${r.currentIndex ?? -1}/${r.totalCount ?? 0}`,
   modes: ['editing', 'translating'],
-  lazy: true,
   label($t) {
     return $t('aiAgentGetMutationHistoryRunning', 'Getting mutation history...')
   },

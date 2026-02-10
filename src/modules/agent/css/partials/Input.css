@@ -10,10 +10,11 @@
     @apply flex flex-col shrink-0;
     @apply border border-mono-300 bg-white;
     @apply rounded-lg;
-    @apply shadow-xl-even;
+    @apply shadow-md-even;
 
     &:has(textarea:focus) {
       @apply border-mono-500;
+      @apply shadow-xl-even;
     }
 
     .bk-flex-textarea {

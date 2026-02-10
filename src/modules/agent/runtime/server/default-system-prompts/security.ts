@@ -4,6 +4,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'security',
   title: '',
   weight: 700,
+  cacheGroup: 'per-page',
   getPrompt: (context) => {
     if (context.isDebugMode) {
       return `## DEBUG MODE ENABLED

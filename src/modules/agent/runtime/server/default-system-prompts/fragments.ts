@@ -5,6 +5,7 @@ export default defineBlokkliAgentSystemPrompt({
   id: 'fragments',
   title: 'Available Fragments',
   weight: 820,
+  cacheGroup: 'per-page',
   modes: ['editing'],
   getPrompt: (context) => {
     return formatItems(
