@@ -82,6 +82,8 @@ is physically removed from the public bundle via dead code elimination. This
 reduces bundle size and avoids shipping unnecessary code to end users.
 
 ::: warning
+
 `isEditing` from `defineBlokkli()` is deprecated. Use
 `import.meta.blokkliEditing` instead.
+
 :::

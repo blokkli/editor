@@ -454,13 +454,13 @@ inner content element.
 </template>
 ```
 
-This tells the editor to use the inner `<div>` as the drag target instead of
-the outer container. The editor also uses this element for:
+This tells the editor to use the inner `<div>` as the drag target instead of the
+outer container. The editor also uses this element for:
 
 - Generating drag previews
 - Calculating block positions and sizes
 - Intersection and resize observation
 
-If no `ref="blokkliDraggable"` is set, the component's root element is used as
-a fallback. The ref can also point to a child component — the editor will use
-its root element.
+If no `ref="blokkliDraggable"` is set, the component's root element is used as a
+fallback. The ref can also point to a child component — the editor will use its
+root element.

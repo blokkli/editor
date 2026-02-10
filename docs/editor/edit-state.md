@@ -174,8 +174,9 @@ value affects the block.
 
 `PublishOptions`
 
-Contains available publish/workflow options displayed in the publish dialog. This
-tells the editor what actions the user can take (e.g. publish, archive, etc.).
+Contains available publish/workflow options displayed in the publish dialog.
+This tells the editor what actions the user can take (e.g. publish, archive,
+etc.).
 
 ## entity
 

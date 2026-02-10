@@ -8,7 +8,8 @@ properties. It's expected to return an object with items, total count, page
 size, and optionally filter definitions.
 
 The method is called when the user opens the "Import from existing" dialog. It
-receives the search arguments including the current page and any applied filters.
+receives the search arguments including the current page and any applied
+filters.
 
 For this feature to work the [importFromExisting()](/adapter/importFromExisting)
 method must also be implemented.

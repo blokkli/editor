@@ -101,7 +101,8 @@ needed.
 ### Custom Adapter
 
 If you're using a custom adapter, you need to implement the token endpoint and
-adapter method yourself. See the [Adapter](/agent/adapter) page for full details.
+adapter method yourself. See the [Adapter](/agent/adapter) page for full
+details.
 
 In short:
 

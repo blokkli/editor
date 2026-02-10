@@ -43,16 +43,16 @@ Skills.`
 
 ### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | `string` | Unique prompt identifier |
-| `getLabel` | `(app) => string` | Label shown on the button |
-| `getPrompt` | `(app) => string` | Full prompt text sent to the LLM |
+| Property        | Type              | Description                                                        |
+| --------------- | ----------------- | ------------------------------------------------------------------ |
+| `id`            | `string`          | Unique prompt identifier                                           |
+| `getLabel`      | `(app) => string` | Label shown on the button                                          |
+| `getPrompt`     | `(app) => string` | Full prompt text sent to the LLM                                   |
 | `getUserPrompt` | `(app) => string` | Optional. Text shown in the conversation. Defaults to `getPrompt`. |
 
 The `getUserPrompt` property is useful when the actual prompt contains detailed
-tool instructions that would clutter the conversation UI. The user sees the short
-version while the LLM receives the detailed one.
+tool instructions that would clutter the conversation UI. The user sees the
+short version while the LLM receives the detailed one.
 
 ### Prompt Factories
 
@@ -96,8 +96,10 @@ blokkli/
 ```
 
 ::: warning
+
 System prompts run on the **server** (Nitro), not in the browser. Use the
 server-side import path.
+
 :::
 
 ### Defining a System Prompt Section
@@ -124,32 +126,32 @@ export default defineBlokkliAgentSystemPrompt({
 
 ### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | `string` | Unique section identifier |
-| `title` | `string` | Section heading in the assembled prompt |
-| `weight` | `number` | Position in the prompt (lower = earlier) |
-| `modes` | `EditMode[]?` | Optional. Only include this section in these edit modes. |
-| `cacheGroup` | `'static' \| 'per-page'?` | Cache strategy (see below) |
-| `getPrompt` | `(context) => string \| null` | Returns the prompt text, or `null` to exclude |
+| Property     | Type                          | Description                                              |
+| ------------ | ----------------------------- | -------------------------------------------------------- |
+| `id`         | `string`                      | Unique section identifier                                |
+| `title`      | `string`                      | Section heading in the assembled prompt                  |
+| `weight`     | `number`                      | Position in the prompt (lower = earlier)                 |
+| `modes`      | `EditMode[]?`                 | Optional. Only include this section in these edit modes. |
+| `cacheGroup` | `'static' \| 'per-page'?`     | Cache strategy (see below)                               |
+| `getPrompt`  | `(context) => string \| null` | Returns the prompt text, or `null` to exclude            |
 
 ### Weight System
 
 The `weight` determines where the section appears in the assembled system
 prompt. Lower weights come first. The built-in sections use these ranges:
 
-| Weight | Built-in Section |
-|--------|-----------------|
-| 100 | Introduction |
-| 150 | Plan mode (dynamic) |
-| 200 | Architecture concepts |
-| 300 | Workflow guidelines |
-| 400 | Interaction rules |
-| 600 | Important rules |
-| 700 | Security |
+| Weight  | Built-in Section                       |
+| ------- | -------------------------------------- |
+| 100     | Introduction                           |
+| 150     | Plan mode (dynamic)                    |
+| 200     | Architecture concepts                  |
+| 300     | Workflow guidelines                    |
+| 400     | Interaction rules                      |
+| 600     | Important rules                        |
+| 700     | Security                               |
 | 800–820 | Page context, block bundles, fragments |
-| 900 | Available skills |
-| 1000 | Available lazy tools |
+| 900     | Available skills                       |
+| 1000    | Available lazy tools                   |
 
 Place custom sections where they make sense. For general project rules, a weight
 around 550 (between workflow and important rules) works well.
@@ -159,28 +161,29 @@ around 550 (between workflow and important rules) works well.
 The `cacheGroup` controls how the section is cached for prompt caching
 optimization:
 
-| Value | Behavior |
-|-------|----------|
-| `'static'` | Content never changes. Cached indefinitely within TTL. |
+| Value        | Behavior                                                                             |
+| ------------ | ------------------------------------------------------------------------------------ |
+| `'static'`   | Content never changes. Cached indefinitely within TTL.                               |
 | `'per-page'` | Content is stable across turns within a conversation. Changes when the page changes. |
-| _(omit)_ | Content changes every turn (e.g. plan progress). Not cached. |
+| _(omit)_     | Content changes every turn (e.g. plan progress). Not cached.                         |
 
 Prompts are sorted by cache group (`static` → `per-page` → per-turn), then by
-weight within each group. This ensures stable prefixes for efficient caching with
-both Anthropic (explicit breakpoints) and OpenAI (automatic prefix caching).
+weight within each group. This ensures stable prefixes for efficient caching
+with both Anthropic (explicit breakpoints) and OpenAI (automatic prefix
+caching).
 
 ### Context Object
 
 The `getPrompt` function receives a `SystemPromptContext`:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `pageContext` | `PageContext` | Current page metadata (title, language, bundles, etc.) |
-| `resolvedSkills` | `ResolvedSkill[]` | Skills that are available for this page |
-| `lazyTools` | `{ name, description }[]` | Lazy tools that haven't been loaded yet |
-| `isDebugMode` | `boolean` | Whether debug mode is enabled |
-| `activePlan` | `ActivePlanContext?` | Current plan state, if a plan is active |
-| `loadedSkills` | `ReadonlySet<string>` | Names of skills already loaded in this conversation |
+| Property         | Type                      | Description                                            |
+| ---------------- | ------------------------- | ------------------------------------------------------ |
+| `pageContext`    | `PageContext`             | Current page metadata (title, language, bundles, etc.) |
+| `resolvedSkills` | `ResolvedSkill[]`         | Skills that are available for this page                |
+| `lazyTools`      | `{ name, description }[]` | Lazy tools that haven't been loaded yet                |
+| `isDebugMode`    | `boolean`                 | Whether debug mode is enabled                          |
+| `activePlan`     | `ActivePlanContext?`      | Current plan state, if a plan is active                |
+| `loadedSkills`   | `ReadonlySet<string>`     | Names of skills already loaded in this conversation    |
 
 ### Context-Aware Example
 

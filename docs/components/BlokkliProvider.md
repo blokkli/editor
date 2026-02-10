@@ -191,8 +191,8 @@ const pageData = computed(() => ({
 ## defineBlokkliProvider()
 
 The `defineBlokkliProvider()` composable defines page-level (host) options for
-the entity being edited. It works like `defineBlokkli()` but for the entire
-page rather than individual blocks.
+the entity being edited. It works like `defineBlokkli()` but for the entire page
+rather than individual blocks.
 
 ### Usage
 

@@ -10,7 +10,9 @@ import agentModule from '@blokkli/editor/agent'
 
 agentModule({
   provider: 'anthropic',
-  models: [/* ... */],
+  models: [
+    /* ... */
+  ],
   allowedFetchOrigins: ['https://example.com'],
   defaultPrompts: ['Translate all content to German'],
   debugPrompt: false,
@@ -21,10 +23,10 @@ agentModule({
 
 **Required.** The AI provider to use.
 
-| Value | Description |
-|-------|-------------|
-| `'anthropic'` | Anthropic's Claude models. Uses explicit cache breakpoints for prompt caching. |
-| `'openai'` | OpenAI's GPT models. Uses automatic prefix caching. Requires the `openai` npm package. |
+| Value         | Description                                                                            |
+| ------------- | -------------------------------------------------------------------------------------- |
+| `'anthropic'` | Anthropic's Claude models. Uses explicit cache breakpoints for prompt caching.         |
+| `'openai'`    | OpenAI's GPT models. Uses automatic prefix caching. Requires the `openai` npm package. |
 
 ### `models`
 
@@ -58,21 +60,21 @@ models: [
 
 Each model has:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | `string` | Model identifier passed to the provider API (e.g. `'claude-haiku-4-5'`) |
-| `label` | `string` | Human-readable name shown in the UI |
+| Property    | Type       | Description                                                               |
+| ----------- | ---------- | ------------------------------------------------------------------------- |
+| `name`      | `string`   | Model identifier passed to the provider API (e.g. `'claude-haiku-4-5'`)   |
+| `label`     | `string`   | Human-readable name shown in the UI                                       |
 | `isDefault` | `boolean?` | Whether this is the default model. First model is used if none is marked. |
-| `pricing` | `object?` | Per-million-token costs. When set, the UI shows estimated costs per turn. |
+| `pricing`   | `object?`  | Per-million-token costs. When set, the UI shows estimated costs per turn. |
 
 The `pricing` object:
 
-| Property | Description |
-|----------|-------------|
-| `input` | Cost per 1M input tokens |
+| Property     | Description                         |
+| ------------ | ----------------------------------- |
+| `input`      | Cost per 1M input tokens            |
 | `cacheWrite` | Cost per 1M tokens written to cache |
-| `cacheRead` | Cost per 1M tokens read from cache |
-| `output` | Cost per 1M output tokens |
+| `cacheRead`  | Cost per 1M tokens read from cache  |
+| `output`     | Cost per 1M output tokens           |
 
 ### `allowedFetchOrigins`
 
@@ -105,9 +107,9 @@ development.
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `NUXT_BLOKKLI_AGENT_API_KEY` | API key for the LLM provider (Anthropic or OpenAI) |
+| Variable                         | Description                                           |
+| -------------------------------- | ----------------------------------------------------- |
+| `NUXT_BLOKKLI_AGENT_API_KEY`     | API key for the LLM provider (Anthropic or OpenAI)    |
 | `NUXT_BLOKKLI_AGENT_AUTH_SECRET` | Secret used for HMAC signing of WebSocket auth tokens |
 
 Both are set via Nuxt runtime config under `runtimeConfig.blokkli.agent`.

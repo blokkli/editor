@@ -33,37 +33,37 @@ Client                          Server
 
 ### Client Messages
 
-| Type | Description |
-|------|-------------|
-| `authenticate` | Send auth token to validate the connection |
-| `init` | Send tool definitions and page context |
-| `start` | Send a user message to start a turn |
-| `tool_result` | Return the result of a tool call |
-| `cancel` | Cancel the current turn |
-| `accept` / `reject` | Approve or reject a pending mutation |
-| `plan_approve` / `plan_reject` | Approve or reject a proposed plan |
-| `new_conversation` | Reset the conversation |
-| `restore_conversation` | Restore a persisted conversation |
-| `get_transcript` | Request the raw conversation transcript |
-| `ping` | Keep-alive ping |
+| Type                           | Description                                |
+| ------------------------------ | ------------------------------------------ |
+| `authenticate`                 | Send auth token to validate the connection |
+| `init`                         | Send tool definitions and page context     |
+| `start`                        | Send a user message to start a turn        |
+| `tool_result`                  | Return the result of a tool call           |
+| `cancel`                       | Cancel the current turn                    |
+| `accept` / `reject`            | Approve or reject a pending mutation       |
+| `plan_approve` / `plan_reject` | Approve or reject a proposed plan          |
+| `new_conversation`             | Reset the conversation                     |
+| `restore_conversation`         | Restore a persisted conversation           |
+| `get_transcript`               | Request the raw conversation transcript    |
+| `ping`                         | Keep-alive ping                            |
 
 ### Server Messages
 
-| Type | Description |
-|------|-------------|
-| `authenticated` | Auth token accepted |
-| `text` | Complete text block |
-| `text_delta` | Streaming text chunk |
-| `tool_call` | Request tool execution from the client |
-| `server_tool_result` | Result of a server-side tool (skills, plans) |
-| `done` | Turn complete |
-| `error` | Error with classified type |
-| `plan_update` | Plan state changed |
-| `usage` | Token usage for the completed turn |
-| `conversation_state` | State snapshot for persistence |
-| `conversation_restored` | Conversation successfully restored |
-| `conversation_restore_failed` | Restore failed (hash mismatch, etc.) |
-| `transcript` | Raw conversation transcript |
+| Type                          | Description                                  |
+| ----------------------------- | -------------------------------------------- |
+| `authenticated`               | Auth token accepted                          |
+| `text`                        | Complete text block                          |
+| `text_delta`                  | Streaming text chunk                         |
+| `tool_call`                   | Request tool execution from the client       |
+| `server_tool_result`          | Result of a server-side tool (skills, plans) |
+| `done`                        | Turn complete                                |
+| `error`                       | Error with classified type                   |
+| `plan_update`                 | Plan state changed                           |
+| `usage`                       | Token usage for the completed turn           |
+| `conversation_state`          | State snapshot for persistence               |
+| `conversation_restored`       | Conversation successfully restored           |
+| `conversation_restore_failed` | Restore failed (hash mismatch, etc.)         |
+| `transcript`                  | Raw conversation transcript                  |
 
 ## Session Lifecycle
 
@@ -126,78 +126,78 @@ restored:
 
 ### Query Tools
 
-| Tool | Description |
-|------|-------------|
-| `find_blocks` | Find blocks matching filters (bundle, structure, content, options) |
-| `search_text` | Search for text in block content with regex support |
-| `get_selected_blocks` | Get currently selected blocks |
-| `get_blocks_in_viewport` | Get blocks visible in the viewport |
-| `get_child_blocks` | Get all child fields and blocks for a page or block |
-| `get_block_context` | Comprehensive context for a single block (parent chain, siblings, children) |
-| `get_content_fields` | Get all content fields (text, media, links) for blocks |
-| `get_block_options` | Get available options and current values |
-| `get_bundle_info` | Get information about block types that can be added to a field |
-| `get_all_page_content` | Get all text content from the entire page |
-| `get_all_fragments` | Get all available fragments |
-| `get_mutation_history` | Get undo/redo history information |
-| `search_media` | Search the media library |
-| `search_templates` | Search available templates |
-| `search_reusable_blocks` | Search reusable blocks from library |
-| `ask_question` | Ask the user a question with predefined options |
-| `web_fetch` | Fetch and extract content from web pages |
+| Tool                     | Description                                                                 |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `find_blocks`            | Find blocks matching filters (bundle, structure, content, options)          |
+| `search_text`            | Search for text in block content with regex support                         |
+| `get_selected_blocks`    | Get currently selected blocks                                               |
+| `get_blocks_in_viewport` | Get blocks visible in the viewport                                          |
+| `get_child_blocks`       | Get all child fields and blocks for a page or block                         |
+| `get_block_context`      | Comprehensive context for a single block (parent chain, siblings, children) |
+| `get_content_fields`     | Get all content fields (text, media, links) for blocks                      |
+| `get_block_options`      | Get available options and current values                                    |
+| `get_bundle_info`        | Get information about block types that can be added to a field              |
+| `get_all_page_content`   | Get all text content from the entire page                                   |
+| `get_all_fragments`      | Get all available fragments                                                 |
+| `get_mutation_history`   | Get undo/redo history information                                           |
+| `search_media`           | Search the media library                                                    |
+| `search_templates`       | Search available templates                                                  |
+| `search_reusable_blocks` | Search reusable blocks from library                                         |
+| `ask_question`           | Ask the user a question with predefined options                             |
+| `web_fetch`              | Fetch and extract content from web pages                                    |
 
 ### Mutation Tools
 
-| Tool | Description |
-|------|-------------|
-| `add_blocks` | Add one or more new blocks (supports nested children) |
-| `add_media_block` | Add a block using a media item |
-| `add_content_search_block` | Add a block using a content search result |
-| `add_reusable_block` | Add a reusable block |
-| `add_fragment` | Add a fragment block |
-| `add_template` | Add a template |
-| `delete_blocks` | Delete one or more blocks |
-| `duplicate_blocks` | Duplicate blocks with all children |
-| `move_blocks` | Move blocks to a different parent field |
-| `swap_blocks` | Swap positions of two blocks |
-| `rearrange_blocks` | Reorder blocks within a field |
-| `batch_rewrite_text` | Rewrite text in multiple fields at once |
-| `set_block_options` | Set options on blocks |
-| `replace_media_field` | Replace media on an existing block |
-| `replace_content_search_item` | Replace a content reference |
-| `detach_reusable_block` | Detach library blocks to create editable copies |
-| `go_to_history_index` | Navigate to a specific point in undo/redo history |
+| Tool                          | Description                                           |
+| ----------------------------- | ----------------------------------------------------- |
+| `add_blocks`                  | Add one or more new blocks (supports nested children) |
+| `add_media_block`             | Add a block using a media item                        |
+| `add_content_search_block`    | Add a block using a content search result             |
+| `add_reusable_block`          | Add a reusable block                                  |
+| `add_fragment`                | Add a fragment block                                  |
+| `add_template`                | Add a template                                        |
+| `delete_blocks`               | Delete one or more blocks                             |
+| `duplicate_blocks`            | Duplicate blocks with all children                    |
+| `move_blocks`                 | Move blocks to a different parent field               |
+| `swap_blocks`                 | Swap positions of two blocks                          |
+| `rearrange_blocks`            | Reorder blocks within a field                         |
+| `batch_rewrite_text`          | Rewrite text in multiple fields at once               |
+| `set_block_options`           | Set options on blocks                                 |
+| `replace_media_field`         | Replace media on an existing block                    |
+| `replace_content_search_item` | Replace a content reference                           |
+| `detach_reusable_block`       | Detach library blocks to create editable copies       |
+| `go_to_history_index`         | Navigate to a specific point in undo/redo history     |
 
 ### Server-side Tools
 
 These tools are handled entirely on the server:
 
-| Tool | Description |
-|------|-------------|
-| `load_skill` | Load a skill's content into the conversation |
-| `load_tools` | Activate lazy tools |
-| `create_plan` | Create a multi-step plan for user approval |
-| `complete_plan_step` | Mark the current plan step as complete |
-| `plan_completed` | Mark the entire plan as complete |
+| Tool                 | Description                                  |
+| -------------------- | -------------------------------------------- |
+| `load_skill`         | Load a skill's content into the conversation |
+| `load_tools`         | Activate lazy tools                          |
+| `create_plan`        | Create a multi-step plan for user approval   |
+| `complete_plan_step` | Mark the current plan step as complete       |
+| `plan_completed`     | Mark the entire plan as complete             |
 
 ## Built-in Skills
 
-| Skill | Description |
-|-------|-------------|
-| `page-review` | Guidance for reviewing and analyzing page content |
-| `rewrite-and-translate` | Guidelines for batch rewriting and translating text |
-| `from-library-reusable-blocks` | How to work with reusable blocks from the library |
-| `adding-new-blocks` | Comprehensive guide for adding blocks with nested children |
+| Skill                          | Description                                                |
+| ------------------------------ | ---------------------------------------------------------- |
+| `page-review`                  | Guidance for reviewing and analyzing page content          |
+| `rewrite-and-translate`        | Guidelines for batch rewriting and translating text        |
+| `from-library-reusable-blocks` | How to work with reusable blocks from the library          |
+| `adding-new-blocks`            | Comprehensive guide for adding blocks with nested children |
 
 ## Error Types
 
-| Error Type | Cause |
-|------------|-------|
-| `authentication` | Invalid API key (401) |
-| `rate_limit` | Too many requests (429) |
-| `overloaded` | Service overloaded (529/503) |
-| `not_found` | Invalid model or endpoint (404) |
-| `bad_request` | Malformed request (400) |
-| `connection` | Network/connection failure |
-| `unauthorized` | Invalid WebSocket auth token |
-| `unknown` | Unclassified error |
+| Error Type       | Cause                           |
+| ---------------- | ------------------------------- |
+| `authentication` | Invalid API key (401)           |
+| `rate_limit`     | Too many requests (429)         |
+| `overloaded`     | Service overloaded (529/503)    |
+| `not_found`      | Invalid model or endpoint (404) |
+| `bad_request`    | Malformed request (400)         |
+| `connection`     | Network/connection failure      |
+| `unauthorized`   | Invalid WebSocket auth token    |
+| `unknown`        | Unclassified error              |

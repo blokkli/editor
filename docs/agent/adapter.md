@@ -79,9 +79,7 @@ export default defineEventHandler(() => {
   }
 
   const timestamp = Math.floor(Date.now() / 1000).toString()
-  const hmac = createHmac('sha256', authSecret)
-    .update(timestamp)
-    .digest('hex')
+  const hmac = createHmac('sha256', authSecret).update(timestamp).digest('hex')
   return { token: `${timestamp}:${hmac}` }
 })
 ```
@@ -142,28 +140,28 @@ agentConversations?: {
 type AgentConversationData = {
   uuid: string
   title: string
-  clientState: string   // JSON-encoded client state
-  serverState: string   // JSON-encoded server state (messages + hash)
-  hash: string          // HMAC integrity hash
+  clientState: string // JSON-encoded client state
+  serverState: string // JSON-encoded server state (messages + hash)
+  hash: string // HMAC integrity hash
 }
 
 type AgentConversationSummary = {
   uuid: string
   title: string
-  createdAt: string     // ISO timestamp, managed by backend
-  updatedAt: string     // ISO timestamp, managed by backend
+  createdAt: string // ISO timestamp, managed by backend
+  updatedAt: string // ISO timestamp, managed by backend
 }
 ```
 
 ### Methods
 
-| Method | Description |
-|--------|-------------|
+| Method         | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
 | `upsert(data)` | Create or update a conversation. Returns `true` on success. |
-| `load(uuid)` | Load a conversation by UUID. Returns `null` if not found. |
-| `loadLatest()` | Load the most recently updated conversation. |
-| `list()` | List all conversations for the current entity. |
-| `delete(uuid)` | Delete a conversation. Returns `true` on success. |
+| `load(uuid)`   | Load a conversation by UUID. Returns `null` if not found.   |
+| `loadLatest()` | Load the most recently updated conversation.                |
+| `list()`       | List all conversations for the current entity.              |
+| `delete(uuid)` | Delete a conversation. Returns `true` on success.           |
 
 The backend is responsible for managing `createdAt` and `updatedAt` timestamps.
 The `hash` field ensures conversation integrity — the server generates it and

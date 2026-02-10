@@ -284,8 +284,7 @@ const { options } = defineBlokkli({
 
 This will render the given icon for each option. You can use either:
 
-- **Material Symbols icons** with the `bk_mdi_` prefix (e.g.
-  `bk_mdi_grid_view`)
+- **Material Symbols icons** with the `bk_mdi_` prefix (e.g. `bk_mdi_grid_view`)
 - **Custom SVG icons** placed in the same folder as the component, with file
   names starting with `icon-blokkli-`
 

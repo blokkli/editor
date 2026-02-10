@@ -108,11 +108,7 @@ To allow a fragment to be placed in a `<BlokkliField>`, use the
 
 ```vue
 <template>
-  <BlokkliField
-    name="content"
-    :list="blocks"
-    allowed-fragments="cta"
-  />
+  <BlokkliField name="content" :list="blocks" allowed-fragments="cta" />
 </template>
 ```
 

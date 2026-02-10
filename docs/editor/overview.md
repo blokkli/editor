@@ -8,9 +8,9 @@ interface to build content.
 The editor is started from within the `<BlokkliProvider>` component. It displays
 an "Edit Blocks" button to start the editor.
 
-The button is only displayed if the user has the `'edit'` permission. Permissions
-are passed via the `:permissions` prop as an array. An example implementation
-might look like this:
+The button is only displayed if the user has the `'edit'` permission.
+Permissions are passed via the `:permissions` prop as an array. An example
+implementation might look like this:
 
 ::: code-group
 

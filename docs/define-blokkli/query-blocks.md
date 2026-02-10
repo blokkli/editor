@@ -4,9 +4,9 @@ The `useBlokkliHelper()` composable provides the `queryBlocks` method, which
 walks the entire block tree and returns a flat, reactive array of matching
 blocks.
 
-This is useful when a component needs to know about blocks outside its own
-field — for example, a table of contents component that collects all title
-blocks across the page.
+This is useful when a component needs to know about blocks outside its own field
+— for example, a table of contents component that collects all title blocks
+across the page.
 
 ## queryBlocks
 
@@ -94,7 +94,9 @@ const items = computed(() =>
 ```
 
 ::: tip
+
 `useBlokkliHelper()` automatically injects the root block list from the nearest
 `<BlokkliProvider>`. If the component is not inside a `<BlokkliField>`, you can
 pass the block list as the second argument to `queryBlocks`.
+
 :::

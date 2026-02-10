@@ -7,8 +7,8 @@ This is a **required** adapter method.
 
 ## Permissions
 
-The base permission is `use_blokkli` which grants access to the editor.
-Features can register additional permissions via module augmentation of the
+The base permission is `use_blokkli` which grants access to the editor. Features
+can register additional permissions via module augmentation of the
 `UserPermissionMap` interface. For example, the agent module registers a
 `use_agent` permission.
 

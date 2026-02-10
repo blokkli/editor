@@ -56,28 +56,28 @@ export default defineBlokkliAgentTool({
 
 ### Required
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | `string` | Unique tool name in `snake_case` |
-| `description` | `string` | Description shown to the LLM |
-| `category` | `'query' \| 'mutation'` | Whether the tool reads or modifies state |
-| `modes` | `EditMode[]` | Edit modes where this tool is available (`'editing'`, `'translating'`, `'readonly'`, `'review'`) |
-| `label` | `($t) => string` | Label shown while the tool is executing |
-| `paramsSchema` | `z.ZodType` | Zod schema for input parameters |
-| `resultSchema` | `z.ZodType` | Zod schema for the result |
-| `execute` | `(ctx, params) => ...` | The tool implementation |
+| Property       | Type                    | Description                                                                                      |
+| -------------- | ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `name`         | `string`                | Unique tool name in `snake_case`                                                                 |
+| `description`  | `string`                | Description shown to the LLM                                                                     |
+| `category`     | `'query' \| 'mutation'` | Whether the tool reads or modifies state                                                         |
+| `modes`        | `EditMode[]`            | Edit modes where this tool is available (`'editing'`, `'translating'`, `'readonly'`, `'review'`) |
+| `label`        | `($t) => string`        | Label shown while the tool is executing                                                          |
+| `paramsSchema` | `z.ZodType`             | Zod schema for input parameters                                                                  |
+| `resultSchema` | `z.ZodType`             | Zod schema for the result                                                                        |
+| `execute`      | `(ctx, params) => ...`  | The tool implementation                                                                          |
 
 ### Optional
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `icon` | `string` | Icon name displayed in the UI |
-| `lazy` | `boolean` | If `true`, tool is not sent to the LLM until activated via `load_tools`. Listed by name in the system prompt. |
-| `volatile` | `boolean` | If `true`, results from this tool are marked as stale after any mutation. Use for tools that return page structure. |
-| `requiresApproval` | `boolean` | If `true`, mutation tools require explicit user approval before applying. |
-| `requiredAdapterMethods` | `AdapterMethods[]` | Adapter methods that must exist for this tool to be available. |
-| `component` | `Component` | Vue component for interactive tools (see below). |
-| `prunedSummary` | `(result) => string` | Compute a summary string used during message pruning instead of the full result. |
+| Property                 | Type                 | Description                                                                                                         |
+| ------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `icon`                   | `string`             | Icon name displayed in the UI                                                                                       |
+| `lazy`                   | `boolean`            | If `true`, tool is not sent to the LLM until activated via `load_tools`. Listed by name in the system prompt.       |
+| `volatile`               | `boolean`            | If `true`, results from this tool are marked as stale after any mutation. Use for tools that return page structure. |
+| `requiresApproval`       | `boolean`            | If `true`, mutation tools require explicit user approval before applying.                                           |
+| `requiredAdapterMethods` | `AdapterMethods[]`   | Adapter methods that must exist for this tool to be available.                                                      |
+| `component`              | `Component`          | Vue component for interactive tools (see below).                                                                    |
+| `prunedSummary`          | `(result) => string` | Compute a summary string used during message pruning instead of the full result.                                    |
 
 ## Query Tools
 
@@ -88,8 +88,8 @@ The `execute` function must return a `QueryResult`:
 
 ```ts
 type QueryResult<T> = {
-  label: string          // Shown in the conversation UI
-  result: T              // Data sent to the LLM
+  label: string // Shown in the conversation UI
+  result: T // Data sent to the LLM
   affectedUuids?: string[] // Blocks to select and scroll into view
 }
 ```
@@ -140,10 +140,10 @@ applies (optionally after user approval).
 ```ts
 type MutationAction = {
   type: 'add' | 'delete' | 'move' | 'rewrite' | 'options'
-  label: string            // Shown in the conversation UI
+  label: string // Shown in the conversation UI
   apply: (adapter) => Promise<MutationResponseLike>
-  revert?: () => void      // Called if user rejects (for preview-based tools)
-  result?: Record<string, unknown>  // Extra data included in the LLM response
+  revert?: () => void // Called if user rejects (for preview-based tools)
+  result?: Record<string, unknown> // Extra data included in the LLM response
   affectedUuids?: string[] // Blocks to select and scroll into view
 }
 ```
@@ -190,17 +190,17 @@ export default defineBlokkliAgentTool({
 
 The `ctx` parameter provides:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `ctx.app` | `BlokkliApp` | The full blökkli app instance (state, DOM, blocks, etc.) |
-| `ctx.adapter` | `BlokkliAdapter` | The adapter with required methods guaranteed |
-| `ctx.itemEntityType` | `string` | The item entity type from module config |
+| Property             | Type             | Description                                              |
+| -------------------- | ---------------- | -------------------------------------------------------- |
+| `ctx.app`            | `BlokkliApp`     | The full blökkli app instance (state, DOM, blocks, etc.) |
+| `ctx.adapter`        | `BlokkliAdapter` | The adapter with required methods guaranteed             |
+| `ctx.itemEntityType` | `string`         | The item entity type from module config                  |
 
 ## Required Adapter Methods
 
 If your tool depends on optional adapter methods, declare them with
-`requiredAdapterMethods`. The tool is only registered when those methods exist on
-the adapter:
+`requiredAdapterMethods`. The tool is only registered when those methods exist
+on the adapter:
 
 ```ts
 export default defineBlokkliAgentTool({
@@ -232,8 +232,8 @@ export default defineBlokkliAgentTool({
 ```
 
 The component receives `{ context, params }` props and must emit a `'done'`
-event with the final result matching `resultSchema`. The component is responsible
-for rendering the UI, applying changes, and emitting the result.
+event with the final result matching `resultSchema`. The component is
+responsible for rendering the UI, applying changes, and emitting the result.
 
 ## Lazy Tools
 

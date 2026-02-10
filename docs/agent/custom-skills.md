@@ -26,8 +26,10 @@ blokkli/
 ```
 
 ::: warning
+
 Skills run on the **server** (Nitro), not in the browser. Use the server-side
 import path.
+
 :::
 
 ## Defining a Skill
@@ -55,11 +57,11 @@ export default defineBlokkliAgentSkill({
 
 ## Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | `string` | Unique identifier in kebab-case |
-| `label` | `string \| SkillLabel` | Human-readable label shown in the UI |
-| `description` | `string` | Tells the LLM when to use this skill |
+| Property      | Type                                       | Description                                     |
+| ------------- | ------------------------------------------ | ----------------------------------------------- |
+| `name`        | `string`                                   | Unique identifier in kebab-case                 |
+| `label`       | `string \| SkillLabel`                     | Human-readable label shown in the UI            |
+| `description` | `string`                                   | Tells the LLM when to use this skill            |
 | `getContents` | `(context: PageContext) => string \| null` | Returns the skill content, or `null` to hide it |
 
 ## Translatable Labels
@@ -106,15 +108,15 @@ export default defineBlokkliAgentSkill({
 
 The `PageContext` includes:
 
-| Property | Description |
-|----------|-------------|
-| `title` | Page title |
-| `entityType` | Page entity type |
-| `entityBundle` | Page bundle (e.g. `'article'`, `'landing_page'`) |
-| `entityLanguage` | Content language code (e.g. `'en'`, `'de'`) |
-| `interfaceLanguage` | UI language code |
-| `editMode` | Current edit mode |
-| `bundles` | Available block bundles |
+| Property            | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `title`             | Page title                                       |
+| `entityType`        | Page entity type                                 |
+| `entityBundle`      | Page bundle (e.g. `'article'`, `'landing_page'`) |
+| `entityLanguage`    | Content language code (e.g. `'en'`, `'de'`)      |
+| `interfaceLanguage` | UI language code                                 |
+| `editMode`          | Current edit mode                                |
+| `bundles`           | Available block bundles                          |
 
 ## Full Example
 

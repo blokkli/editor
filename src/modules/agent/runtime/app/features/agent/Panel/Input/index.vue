@@ -43,8 +43,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, useTemplateRef } from '#imports'
-import { FlexTextarea } from '#blokkli/editor/components'
-import { TransitionHeight } from '#blokkli/editor/components'
+import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
 import AttachmentChip from '../Attachment/index.vue'
 import Actions from './Actions/index.vue'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'

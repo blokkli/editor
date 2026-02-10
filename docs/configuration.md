@@ -93,8 +93,8 @@ each page load requires multiple requests.
 **Type:** `string[]`
 
 Define valid field list types that can be passed to the `<BlokkliField>`
-component via the `field-list-type` prop. The value is available to blocks inside
-the field via `ctx.fieldListType`.
+component via the `field-list-type` prop. The value is available to blocks
+inside the field via `ctx.fieldListType`.
 
 ```typescript
 blokkli: {
@@ -124,8 +124,8 @@ const isInline = computed(() => fieldListType.value === 'inline')
 
 **Type:** `string`
 
-Custom absolute path to the edit adapter implementation. The file must exist when
-the module is initialised.
+Custom absolute path to the edit adapter implementation. The file must exist
+when the module is initialised.
 
 ```typescript
 blokkli: {
@@ -248,8 +248,8 @@ blokkli: {
 
 **Type:** `string`
 
-The entity type for template entities (reusable block templates). For the
-Drupal integration this should be `'blokkli_paragraph_template'`.
+The entity type for template entities (reusable block templates). For the Drupal
+integration this should be `'blokkli_paragraph_template'`.
 
 ## fromLibraryBlockBundle
 
@@ -272,8 +272,8 @@ The block bundle name used to wrap fragment components. See
 **Type:** `string`\
 **Default:** `.nuxt/blokkli/options-schema.json`
 
-Override the output path for the generated options schema JSON file. The path can
-use aliases like `~`.
+Override the output path for the generated options schema JSON file. The path
+can use aliases like `~`.
 
 ```typescript
 blokkli: {
@@ -283,14 +283,15 @@ blokkli: {
 
 ## getBundlePropsType
 
-**Type:** `(name: string, definition: CollectedBlockFile) => { typeName: string; from: string }`
+**Type:**
+`(name: string, definition: CollectedBlockFile) => { typeName: string; from: string }`
 
 A callback that generates TypeScript prop types for each block bundle. This
-enables type-safe access to block props when iterating over field items (e.g. via
-`siblings`, `rootBlocks`, or the `<BlokkliField>` slot).
+enables type-safe access to block props when iterating over field items (e.g.
+via `siblings`, `rootBlocks`, or the `<BlokkliField>` slot).
 
-The function receives the bundle name and the block definition, and should return
-the type name and the module/path it can be imported from.
+The function receives the bundle name and the block definition, and should
+return the type name and the module/path it can be imported from.
 
 ```typescript
 blokkli: {
@@ -333,7 +334,12 @@ import agentModule from 'blokkli/agent'
 export default defineNuxtConfig({
   blokkli: {
     modules: [
-      agentModule({ provider: 'anthropic', models: [/* ... */] }),
+      agentModule({
+        provider: 'anthropic',
+        models: [
+          /* ... */
+        ],
+      }),
     ],
   },
 })

@@ -82,9 +82,12 @@ Browse the full icon catalog at
 name, then prefix it with `bk_mdi_` and replace any hyphens or spaces with
 underscores.
 
-::: tip TypeScript Autocomplete Because `BlokkliIcon` is a generated union type,
-your editor will provide autocomplete for all available icon names when typing
-`'bk_mdi_'`. :::
+::: tip TypeScript Autocomplete
+
+Because `BlokkliIcon` is a generated union type, your editor will provide
+autocomplete for all available icon names when typing `'bk_mdi_'`.
+
+:::
 
 ## Custom SVG Icons
 
@@ -152,9 +155,9 @@ These classes ensure the icon adapts to the editor's current theme (light/dark).
 
 ## Where Icons Can Be Used
 
-| Context                       | Accepts `bk_mdi_` | Accepts custom SVG |
-| ----------------------------- | ------------------ | ------------------ |
-| `editor.icon`                 | Yes                | Yes                |
-| `displayAs: 'icons'` options  | Yes                | Yes                |
-| Plugin definitions            | Yes                | Yes                |
-| Feature definitions           | Yes                | Yes                |
+| Context                      | Accepts `bk_mdi_` | Accepts custom SVG |
+| ---------------------------- | ----------------- | ------------------ |
+| `editor.icon`                | Yes               | Yes                |
+| `displayAs: 'icons'` options | Yes               | Yes                |
+| Plugin definitions           | Yes               | Yes                |
+| Feature definitions          | Yes               | Yes                |

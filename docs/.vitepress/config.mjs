@@ -186,9 +186,7 @@ export default defineConfig({
     sidebar: [
       {
         text: 'Getting Started',
-        items: [
-          { text: 'Configuration', link: '/configuration' },
-        ],
+        items: [{ text: 'Configuration', link: '/configuration' }],
       },
       {
         text: 'Define blocks',
@@ -234,6 +232,33 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Drupal',
+        collapsed: true,
+        items: [
+          { text: 'Overview', link: '/drupal/overview' },
+          { text: 'Getting Started', link: '/drupal/getting-started' },
+          { text: 'GraphQL Fragments', link: '/drupal/graphql' },
+          { text: 'Page Components', link: '/drupal/pages' },
+          { text: 'Block Components', link: '/drupal/blocks' },
+          { text: 'Configuration', link: '/drupal/configuration' },
+          { text: 'FAQ & Troubleshooting', link: '/drupal/faq' },
+        ],
+      },
+      {
+        text: 'Agent',
+        collapsed: true,
+        items: [
+          { text: 'Overview', link: '/agent/overview' },
+          { text: 'Quick Start', link: '/agent/quick-start' },
+          { text: 'Configuration', link: '/agent/configuration' },
+          { text: 'Adapter', link: '/agent/adapter' },
+          { text: 'Custom Tools', link: '/agent/custom-tools' },
+          { text: 'Custom Skills', link: '/agent/custom-skills' },
+          { text: 'Prompts & System Prompts', link: '/agent/custom-prompts' },
+          { text: 'Architecture', link: '/agent/architecture' },
+        ],
+      },
+      {
         text: 'Editor',
         items: [
           { text: 'Overview', link: '/editor/overview' },
@@ -265,20 +290,6 @@ export default defineConfig({
         text: 'Plugins',
         collapsed: true,
         items: pluginDocs,
-      },
-      {
-        text: 'Agent',
-        collapsed: true,
-        items: [
-          { text: 'Overview', link: '/agent/overview' },
-          { text: 'Quick Start', link: '/agent/quick-start' },
-          { text: 'Configuration', link: '/agent/configuration' },
-          { text: 'Adapter', link: '/agent/adapter' },
-          { text: 'Custom Tools', link: '/agent/custom-tools' },
-          { text: 'Custom Skills', link: '/agent/custom-skills' },
-          { text: 'Prompts & System Prompts', link: '/agent/custom-prompts' },
-          { text: 'Architecture', link: '/agent/architecture' },
-        ],
       },
     ],
 
