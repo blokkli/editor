@@ -1,6 +1,12 @@
 <template>
-  <div class="bk-agent-input" @paste.capture="onPaste">
-    <TransitionHeight opacity :duration="300">
+  <div
+    class="bk-agent-input"
+    @paste.capture="onPaste"
+    :class="{
+      'bk-is-active': hasActivePlan,
+    }"
+  >
+    <TransitionHeight opacity :duration="600">
       <div v-if="attachments.length" class="bk-agent-input-attachments">
         <AttachmentChip
           v-for="att in attachments"
@@ -12,18 +18,19 @@
       </div>
     </TransitionHeight>
     <slot />
-    <TransitionHeight opacity :duration="300">
-      <FlexTextarea
-        v-if="!hasActivePlan || !isProcessing"
-        ref="textarea"
-        v-model="model"
-        :max-height="150"
-        submit-on-enter
-        paste-markdown
-        rows="2"
-        :placeholder="placeholder"
-        @submit="onSubmit"
-      />
+    <TransitionHeight opacity :duration="600">
+      <div v-if="!hasActivePlan || !isProcessing">
+        <FlexTextarea
+          ref="textarea"
+          v-model="model"
+          :max-height="150"
+          submit-on-enter
+          paste-markdown
+          rows="2"
+          :placeholder="placeholder"
+          @submit="onSubmit"
+        />
+      </div>
     </TransitionHeight>
 
     <Actions
@@ -89,6 +96,11 @@ const attachments = ref<Attachment[]>([])
 function onPaste(e: ClipboardEvent) {
   const text = e.clipboardData?.getData('text/plain')
   if (!text || text.length < ATTACHMENT_THRESHOLD) {
+    return
+  }
+  if (attachments.value.some((a) => a.content === text)) {
+    e.preventDefault()
+    e.stopPropagation()
     return
   }
   e.preventDefault()

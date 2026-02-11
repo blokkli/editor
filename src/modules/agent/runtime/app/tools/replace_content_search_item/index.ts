@@ -26,6 +26,7 @@ export default defineBlokkliAgentTool({
       'Replacing content reference...',
     )
   },
+  lazy: true,
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['replaceContentSearchItem'],

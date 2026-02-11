@@ -14,6 +14,13 @@
       @scroll="onScroll"
     >
       <div ref="conversationContainer" class="bk-agent-panel-conversation">
+        <button
+          v-if="debugStyling"
+          @click="debugShowPlan = !debugShowPlan"
+          class="bk-button"
+        >
+          {{ debugShowPlan ? 'Hide' : 'Show' }} Plan
+        </button>
         <DebugGallery v-if="debugStyling" />
         <template v-else>
           <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
@@ -44,7 +51,7 @@
         <AgentInput
           ref="inputEl"
           v-model="inputValue"
-          :is-processing
+          :is-processing="debugIsProcessing"
           :is-connected
           :has-pending-approval="!!(pendingMutation || pendingToolCall)"
           :has-conversation="conversation.length > 0"
@@ -269,8 +276,21 @@ const debugPlan: ClientPlanState = {
   ],
 }
 
+const debugShowPlan = ref(true)
+
+const debugIsProcessing = computed(() => {
+  if (props.debugStyling) {
+    return debugShowPlan.value
+  }
+  return props.isProcessing
+})
+
 const activePlan = computed(() => {
-  return props.debugStyling ? debugPlan : props.plan
+  return props.debugStyling
+    ? debugShowPlan.value
+      ? debugPlan
+      : null
+    : props.plan
 })
 
 const isPlanPendingApproval = computed(() => {

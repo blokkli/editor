@@ -12,9 +12,13 @@
     @apply rounded-lg;
     @apply shadow-md-even;
 
+    &:has(textarea:focus),
+    &.bk-is-active {
+      @apply shadow-xl-even;
+    }
+
     &:has(textarea:focus) {
       @apply border-mono-500;
-      @apply shadow-xl-even;
     }
 
     .bk-flex-textarea {
