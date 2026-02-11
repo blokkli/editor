@@ -1,15 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the blocks to move'),
   parent: parentSchema.describe('The target parent entity'),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('UUID of block to insert after, or null for beginning'),
+  position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
@@ -56,6 +52,10 @@ export default defineBlokkliAgentTool({
             String(validBlocks.length),
           )
 
+    // Resolve position to afterUuid
+    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    if ('error' in resolved) return resolved
+
     // Return the action for the framework to handle
     return {
       type: 'move' as const,
@@ -68,7 +68,7 @@ export default defineBlokkliAgentTool({
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          afterUuid: params.afterUuid ?? null,
+          afterUuid: resolved.afterUuid,
         }),
     }
   },

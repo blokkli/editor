@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
 import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
@@ -12,11 +12,7 @@ const paramsSchema = z.object({
   parent: parentSchema.describe(
     'The parent entity to add the reusable block to.',
   ),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('UUID of block to insert after, or null for beginning'),
+  position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
@@ -68,6 +64,10 @@ export default defineBlokkliAgentTool({
       }
     }
 
+    // Resolve position to afterUuid
+    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    if ('error' in resolved) return resolved
+
     return {
       type: 'add' as const,
       label: $t('aiAgentAddLibraryItemDone', 'Added reusable block'),
@@ -79,7 +79,7 @@ export default defineBlokkliAgentTool({
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          afterUuid: params.afterUuid ?? null,
+          afterUuid: resolved.afterUuid,
         }),
     }
   },

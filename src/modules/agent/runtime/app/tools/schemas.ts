@@ -313,6 +313,82 @@ export function getBlockChildren(
 }
 
 /**
+ * Shared schema for the `position` parameter used by mutation tools that insert blocks.
+ *
+ * Values:
+ * - `"start"` — insert at the beginning of the field
+ * - `"end"` (default when omitted) — append at the end of the field
+ * - `"after:<UUID>"` — insert after the block with the given UUID
+ * - `"before:<UUID>"` — insert before the block with the given UUID
+ */
+export const positionSchema = z
+  .string()
+  .optional()
+  .default('end')
+  .describe(
+    'Where to place the block(s). "start" = beginning, "end" (default) = append at end, "after:<UUID>" = after a specific block, "before:<UUID>" = before a specific block.',
+  )
+
+/**
+ * Resolve a `position` string to the `afterUuid` value expected by adapter methods.
+ *
+ * Returns `{ afterUuid: string | null }` on success, or `{ error: string }` if
+ * the referenced UUID is not found in the target field.
+ */
+export function resolvePosition(
+  app: BlokkliApp,
+  parentUuid: string,
+  fieldName: string,
+  position?: string,
+): { afterUuid: string | null } | { error: string } {
+  const fieldList = app.state.mutatedFields.value.find(
+    (f) => f.entityUuid === parentUuid && f.name === fieldName,
+  )
+  const list = fieldList?.list ?? []
+
+  // Default or explicit "end": append after last block
+  if (position === undefined || position === 'end') {
+    const lastBlock = list.at(-1)
+    return { afterUuid: lastBlock?.uuid ?? null }
+  }
+
+  // "start": insert at beginning
+  if (position === 'start') {
+    return { afterUuid: null }
+  }
+
+  // "after:<UUID>": insert after the referenced block
+  if (position.startsWith('after:')) {
+    const uuid = position.slice(6)
+    const found = list.find((b) => b.uuid === uuid)
+    if (!found) {
+      return {
+        error: `Position "after:${uuid}": block not found in field "${fieldName}".`,
+      }
+    }
+    return { afterUuid: uuid }
+  }
+
+  // "before:<UUID>": insert before the referenced block
+  if (position.startsWith('before:')) {
+    const uuid = position.slice(7)
+    const index = list.findIndex((b) => b.uuid === uuid)
+    if (index === -1) {
+      return {
+        error: `Position "before:${uuid}": block not found in field "${fieldName}".`,
+      }
+    }
+    // If it's the first block, afterUuid is null (insert at beginning)
+    const preceding = index > 0 ? list[index - 1] : undefined
+    return { afterUuid: preceding?.uuid ?? null }
+  }
+
+  return {
+    error: `Invalid position value: "${position}". Use "start", "end", "after:<UUID>", or "before:<UUID>".`,
+  }
+}
+
+/**
  * Schema for the success result sent back to the AI after mutation is applied.
  */
 export const mutationSuccessSchema = z.union([

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
 import {
   validateBlocksExist,
   validateSameField,
@@ -15,11 +15,9 @@ const paramsSchema = z.object({
   parent: parentSchema
     .optional()
     .describe('Target parent field. If omitted, duplicates in same field.'),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('Insert after this block (only when parent is provided)'),
+  position: positionSchema.describe(
+    'Where to place the duplicated blocks (only when parent is provided). Defaults to "end".',
+  ),
 })
 
 export default defineBlokkliAgentTool({
@@ -121,6 +119,10 @@ export default defineBlokkliAgentTool({
               .replace('@count', String(params.uuids.length))
               .replace('@field', params.parent.field)
 
+      // Resolve position to afterUuid
+      const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+      if ('error' in resolved) return resolved
+
       return {
         type: 'add' as const,
         label,
@@ -132,7 +134,7 @@ export default defineBlokkliAgentTool({
               uuid: params.parent!.uuid,
               fieldName: params.parent!.field,
             },
-            preceedingUuid: params.afterUuid ?? null,
+            preceedingUuid: resolved.afterUuid,
           }),
       }
     }

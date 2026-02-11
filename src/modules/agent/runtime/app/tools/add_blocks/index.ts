@@ -4,6 +4,8 @@ import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import {
   mutationResultSchema,
   parentSchema,
+  positionSchema,
+  resolvePosition,
   optionValueSchema,
   validateOptionValue,
 } from '../schemas'
@@ -81,11 +83,7 @@ const paramsSchema = z.object({
     .min(1)
     .describe('Array of blocks to add, in order'),
   parent: parentSchema.describe('The parent entity to add the blocks to'),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('UUID of block to insert after, or null for beginning'),
+  position: positionSchema,
 })
 
 /**
@@ -424,6 +422,10 @@ export default defineBlokkliAgentTool({
             String(totalCount),
           )
 
+    // Resolve position to afterUuid
+    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    if ('error' in resolved) return resolved
+
     return {
       type: 'add' as const,
       label,
@@ -435,7 +437,7 @@ export default defineBlokkliAgentTool({
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          afterUuid: params.afterUuid ?? null,
+          afterUuid: resolved.afterUuid,
         }),
       affectedUuids: blockUuids,
     }

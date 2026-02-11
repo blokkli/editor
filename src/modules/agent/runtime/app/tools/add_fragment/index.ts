@@ -1,15 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
 
 const paramsSchema = z.object({
   name: z.string().describe('The fragment name to add'),
   parent: parentSchema.describe('The parent entity to add the fragment to'),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('UUID of block to insert after, or null for beginning'),
+  position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
@@ -74,6 +70,10 @@ export default defineBlokkliAgentTool({
 
     const { $t } = ctx.app
 
+    // Resolve position to afterUuid
+    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    if ('error' in resolved) return resolved
+
     return {
       type: 'add' as const,
       label: $t('aiAgentAddFragmentDone', 'Added fragment "@label"').replace(
@@ -88,7 +88,7 @@ export default defineBlokkliAgentTool({
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          preceedingUuid: params.afterUuid ?? null,
+          preceedingUuid: resolved.afterUuid,
         }),
     }
   },

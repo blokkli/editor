@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
 import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 
 const paramsSchema = z.object({
@@ -10,11 +10,7 @@ const paramsSchema = z.object({
     .string()
     .describe('Block bundle to create (from targetBundles in search_media)'),
   parent: parentSchema.describe('The parent entity to add the block to'),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('UUID of block to insert after, or null for beginning'),
+  position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
@@ -40,6 +36,10 @@ export default defineBlokkliAgentTool({
       element: () => document.createElement('div'),
     }
 
+    // Resolve position to afterUuid
+    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    if ('error' in resolved) return resolved
+
     return {
       type: 'add' as const,
       label: $t('aiAgentAddMediaBlockDone', 'Added @bundle with media ID @id')
@@ -52,7 +52,7 @@ export default defineBlokkliAgentTool({
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          preceedingUuid: params.afterUuid ?? null,
+          preceedingUuid: resolved.afterUuid,
           item,
           targetBundle: params.targetBundle,
         }),

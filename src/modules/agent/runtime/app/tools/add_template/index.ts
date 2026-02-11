@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema } from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
 
 const paramsSchema = z.object({
   templateUuid: z
@@ -9,11 +9,7 @@ const paramsSchema = z.object({
       'The UUID of the template to add (from search_templates results)',
     ),
   parent: parentSchema.describe('The parent entity to add the template to'),
-  afterUuid: z
-    .string()
-    .nullable()
-    .optional()
-    .describe('UUID of block to insert after, or null for beginning'),
+  position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
@@ -44,6 +40,10 @@ export default defineBlokkliAgentTool({
       }
     }
 
+    // Resolve position to afterUuid
+    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    if ('error' in resolved) return resolved
+
     return {
       type: 'add' as const,
       label: $t('aiAgentAddTemplateDone', 'Added template'),
@@ -55,7 +55,7 @@ export default defineBlokkliAgentTool({
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          afterUuid: params.afterUuid ?? null,
+          afterUuid: resolved.afterUuid,
         }),
     }
   },
