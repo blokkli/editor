@@ -144,7 +144,7 @@ export type BlockBundle = {
   label: string
   description?: string
   contentFields: BlockBundleContentField[]
-  blockFields: BlockBundleBlockField[]
+  paragraphFields: BlockBundleBlockField[]
 }
 
 /**

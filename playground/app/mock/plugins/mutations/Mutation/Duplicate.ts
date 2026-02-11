@@ -1,6 +1,6 @@
 import { falsy } from '~~/helpers'
 import { entityStorageManager } from '#mock/entityStorage'
-import type { Block } from '../../../state/Block/Block'
+import type { Paragraph } from '../../../state/Paragraph/Paragraph'
 import { BlockProxy, type MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
 
@@ -62,7 +62,7 @@ export class MutationDuplicate extends Mutation {
   ): BlockProxy {
     const block = proxy.block
     const newUuid = this.getUuidForNewEntity(block.uuid)
-    const clone = entityStorageManager.cloneBlock(block, newUuid) as Block
+    const clone = entityStorageManager.cloneBlock(block, newUuid) as Paragraph
     const cloneProxy = new BlockProxy(
       clone,
       hostEntityType,
@@ -84,7 +84,7 @@ export class MutationDuplicate extends Mutation {
         const clonedChild = entityStorageManager.cloneBlock(
           child.block,
           newChildUuid,
-        ) as Block
+        ) as Paragraph
         const clonedChildProxy = new BlockProxy(
           clonedChild,
           childProxy.block.entityType,

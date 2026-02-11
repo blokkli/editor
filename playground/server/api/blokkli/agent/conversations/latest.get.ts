@@ -1,4 +1,4 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler<Promise<Record<string, unknown> | null>>(async (event) => {
   const query = getQuery(event)
   const entityType = query.entityType as string
   const entityUuid = query.entityUuid as string

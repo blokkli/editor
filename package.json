@@ -66,7 +66,7 @@
     "typecheck:build": "vue-tsc --noEmit -p .nuxt/tsconfig.node.json",
     "typecheck:runtime": "vue-tsc --noEmit -p .nuxt/tsconfig.app.json",
     "typecheck:server": "vue-tsc --noEmit -p .nuxt/tsconfig.server.json",
-    "typecheck:playground": "cd playground && vue-tsc --noEmit",
+    "typecheck:playground": "vue-tsc --noEmit -p ./playground/.nuxt/tsconfig.app.json",
     "dev:minimal": "nuxi dev playground-minimal --host",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css",
     "styles:watch": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css --watch",

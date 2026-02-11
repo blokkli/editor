@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
+import {
+  mutationResultSchema,
+  parentSchema,
+  positionSchema,
+  resolvePosition,
+} from '../schemas'
 
 const paramsSchema = z.object({
   templateUuid: z
@@ -15,11 +20,11 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_template',
   description:
-    "Add a template to the page. Templates are copied when added, so changes to the added blocks won't affect other pages using the same template. Requires user approval before the template is actually added.",
+    "Add a template to the page. Templates are copied when added, so changes to the added paragraphs won't affect other pages using the same template. Requires user approval before the template is actually added.",
   category: 'mutation',
   prunedSummary: (r) =>
     r.success
-      ? `added template (${r.newBlocks?.length || 0} blocks)`
+      ? `added template (${r.newBlocks?.length || 0} paragraphs)`
       : 'rejected',
   lazy: true,
   modes: ['editing'],
@@ -41,7 +46,12 @@ export default defineBlokkliAgentTool({
     }
 
     // Resolve position to afterUuid
-    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    const resolved = resolvePosition(
+      ctx.app,
+      params.parent.uuid,
+      params.parent.field,
+      params.position,
+    )
     if ('error' in resolved) return resolved
 
     return {

@@ -11,46 +11,17 @@ import { BlokkliEditingPlugin } from './build/unplugin/BlokkliEditing'
 import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from './global/constants'
 import type { ModuleOptions } from './build/types'
 import { IconCollector } from './build/Collector/Icons'
-import type { CollectedFile, Collector } from './build/Collector'
+import type { Collector, ModuleHooks } from './build/Collector'
 import { ModuleHelper } from './build/ModuleHelper'
 import { ModuleContext } from './build/ModuleContext'
 import { TEMPLATES } from './build/templates'
 import type { TemplateDependency } from './build/templates/defineTemplate'
-import type { CollectedFeatureFile } from './build/Collector/Features'
 import { FeatureCollector } from './build/Collector/Features'
 import { ThemeData } from './build/ThemeData'
-import type { CollectedBlockFile } from './build/Collector/Blocks'
 import { BlockCollector } from './build/Collector/Blocks'
 import type { Blokkli } from './modules/defineBlokkliModule'
 
 const logger = useLogger('@blokkli/editor')
-
-type AlterHookContext<K extends string, T extends CollectedFile> = {
-  [P in K]: T[]
-}
-
-interface ModuleHooks {
-  /**
-   * Alter features.
-   */
-  'blokkli:alter-features': (
-    ctx: AlterHookContext<'features', CollectedFeatureFile>,
-  ) => void | Promise<void>
-
-  /**
-   * Alter icons.
-   */
-  'blokkli:alter-icons': (
-    ctx: AlterHookContext<'icons', CollectedFile>,
-  ) => void | Promise<void>
-
-  /**
-   * Alter blocks.
-   */
-  'blokkli:alter-blocks': (
-    ctx: AlterHookContext<'blocks', CollectedBlockFile>,
-  ) => void | Promise<void>
-}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -244,9 +215,4 @@ export default defineNuxtModule<ModuleOptions>({
   },
 })
 
-export type { ModuleOptions }
-
-declare module '@nuxt/schema' {
-  // oxlint-disable-next-line
-  interface NuxtHooks extends ModuleHooks {}
-}
+export type { ModuleOptions, ModuleHooks }

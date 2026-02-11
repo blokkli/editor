@@ -12,7 +12,7 @@ import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem, exportState } from './mock/state'
-import { getBlockBundles } from './mock/state/Block'
+import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
 import { FieldBlocks } from './mock/state/Field/Blocks'
@@ -29,7 +29,7 @@ import type {
 import type { MutationArgsMap } from './mock/plugins/mutations'
 import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'
-import type { Block } from './mock/state/Block/Block'
+import type { Paragraph } from './mock/state/Paragraph/Paragraph'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
 import type {
@@ -46,6 +46,10 @@ import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import { FieldUrl } from './mock/state/Field/Url'
+import type {
+  AgentConversationData,
+  AgentConversationSummary,
+} from '#blokkli/agent/app/composables'
 
 const ENALBE_EDIT_STATES = false
 const ENABLED_ASSISTANT = false
@@ -102,7 +106,7 @@ const blockAnalyzer = defineAnalyzer(() => {
     run: function (context) {
       const matchingUuids = context.mutatedFields
         .map((mutatedField) => {
-          if (mutatedField.entityType !== 'block') {
+          if (mutatedField.entityType !== 'paragraph') {
             return
           }
           const item = context.getFieldListItem(mutatedField.entityUuid)
@@ -609,7 +613,7 @@ export default defineBlokkliEditAdapter((ctx) => {
               flatten(
                 childBlocks,
                 {
-                  type: 'block',
+                  type: 'paragraph',
                   uuid: block.blockUuid,
                   fieldName,
                 },
@@ -1171,14 +1175,14 @@ export default defineBlokkliEditAdapter((ctx) => {
         })
       })
 
-      getBlockBundles().forEach((blockBundle) => {
+      getParagraphBundles().forEach((blockBundle) => {
         blockBundle.getFieldDefintions().forEach((field) => {
           if (field instanceof FieldBlocks) {
             fields.push({
               name: field.id,
               label: field.label,
               cardinality: field.cardinality,
-              entityType: 'block',
+              entityType: 'paragraph',
               entityBundle: blockBundle.bundle,
               canEdit: true,
               allowedBundles: field.allowedBundles,
@@ -1311,7 +1315,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     getEditableFieldConfig() {
       const mapEntityFields = (
-        entity: typeof Content | typeof Block,
+        entity: typeof Content | typeof Paragraph,
       ): EditableFieldConfig[] => {
         return entity
           .getFieldDefintions()
@@ -1334,7 +1338,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           .filter(falsy)
       }
 
-      const blockFields: EditableFieldConfig[] = getBlockBundles().flatMap(
+      const blockFields: EditableFieldConfig[] = getParagraphBundles().flatMap(
         (v) => mapEntityFields(v),
       )
 
@@ -1345,7 +1349,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     getDroppableFieldConfig() {
       const mapEntityFields = (
-        entity: typeof Content | typeof Block,
+        entity: typeof Content | typeof Paragraph,
       ): DroppableFieldConfig[] => {
         return entity
           .getFieldDefintions()
@@ -1387,7 +1391,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           .filter(falsy)
       }
       return Promise.resolve([
-        ...getBlockBundles().flatMap((v) => mapEntityFields(v)),
+        ...getParagraphBundles().flatMap((v) => mapEntityFields(v)),
         ...mapEntityFields(ContentPage),
       ])
     },
@@ -1659,7 +1663,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
 
     // Build bundle options from allowed bundles that exist in templates
-    const blockClasses = getBlockBundles()
+    const blockClasses = getParagraphBundles()
     const bundleOptions = Array.from(allBundles)
       .filter(
         (bundle) =>
@@ -1779,29 +1783,38 @@ export default defineBlokkliEditAdapter((ctx) => {
 
   adapter.agentConversations = {
     async upsert(data) {
-      return $fetch('/api/blokkli/agent/conversations', {
+      return $fetch<boolean>('/api/blokkli/agent/conversations', {
         method: 'POST',
         query: conversationParams(),
         body: data,
       })
     },
     async load(id) {
-      return $fetch(`/api/blokkli/agent/conversations/${id}`, {
-        query: conversationParams(),
-      })
+      return $fetch<AgentConversationData | null>(
+        `/api/blokkli/agent/conversations/${id}`,
+        {
+          query: conversationParams(),
+        },
+      )
     },
     async loadLatest() {
-      return $fetch('/api/blokkli/agent/conversations/latest', {
-        query: conversationParams(),
-      })
+      return $fetch<AgentConversationData | null>(
+        '/api/blokkli/agent/conversations/latest',
+        {
+          query: conversationParams(),
+        },
+      )
     },
     async list() {
-      return $fetch('/api/blokkli/agent/conversations', {
-        query: conversationParams(),
-      })
+      return $fetch<AgentConversationSummary[]>(
+        '/api/blokkli/agent/conversations',
+        {
+          query: conversationParams(),
+        },
+      )
     },
     async delete(id) {
-      return $fetch(`/api/blokkli/agent/conversations/${id}`, {
+      return $fetch<boolean>(`/api/blokkli/agent/conversations/${id}`, {
         method: 'DELETE',
         query: conversationParams(),
       })

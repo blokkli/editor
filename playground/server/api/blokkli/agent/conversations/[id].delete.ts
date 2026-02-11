@@ -1,4 +1,4 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler<Promise<boolean>>(async (event) => {
   const id = getRouterParam(event, 'id')
   const query = getQuery(event)
   const entityType = query.entityType as string

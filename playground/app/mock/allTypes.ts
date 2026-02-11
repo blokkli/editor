@@ -1,7 +1,7 @@
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
-import { getBlockBundles } from './state/Block'
+import { getParagraphBundles } from './state/Paragraph'
 
-export const allTypes: BlockBundleDefinition[] = getBlockBundles().map(
+export const allTypes: BlockBundleDefinition[] = getParagraphBundles().map(
   (block) => {
     return {
       id: block.bundle,

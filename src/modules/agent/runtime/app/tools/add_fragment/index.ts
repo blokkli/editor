@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
+import {
+  mutationResultSchema,
+  parentSchema,
+  positionSchema,
+  resolvePosition,
+} from '../schemas'
 
 const paramsSchema = z.object({
   name: z.string().describe('The fragment name to add'),
@@ -11,7 +16,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_fragment',
   description:
-    'Add a fragment block to the page. Requires user approval before the fragment is actually added.',
+    'Add a fragment paragraph to the page. Requires user approval before the fragment is actually added.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added fragment' : 'rejected'),
   modes: ['editing'],
@@ -71,7 +76,12 @@ export default defineBlokkliAgentTool({
     const { $t } = ctx.app
 
     // Resolve position to afterUuid
-    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    const resolved = resolvePosition(
+      ctx.app,
+      params.parent.uuid,
+      params.parent.field,
+      params.position,
+    )
     if ('error' in resolved) return resolved
 
     return {

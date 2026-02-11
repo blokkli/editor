@@ -1,7 +1,7 @@
 import { BlockProxy, type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
 import { entityStorageManager } from '#mock/entityStorage'
-import { getBlockBundles } from '#mock/state/Block'
+import { getParagraphBundles } from '#mock/state/Paragraph'
 
 export type MutationAddArgs = {
   bundle: string
@@ -30,7 +30,7 @@ export class MutationAdd extends Mutation {
       const uuid = item.blockUuid ?? this.getUuidForNewEntity(i.toString())
 
       const block = entityStorageManager.createBlock(item.bundle, uuid)
-      const blockBundle = getBlockBundles().find(
+      const blockBundle = getParagraphBundles().find(
         (v) => v.bundle === item.bundle,
       )!
       const defaultValues = blockBundle.getDefaultValues()

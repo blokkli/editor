@@ -1,0 +1,26 @@
+import type { Field } from '../Field'
+import { FieldReference } from '../Field/Reference'
+import { Paragraph } from './Paragraph'
+
+export class ParagraphImage extends Paragraph {
+  static override bundle = 'image'
+  static override label = 'Image'
+  static override description =
+    'Displays a single image from the media library.'
+
+  static override getFieldDefintions(): Field<any>[] {
+    return [
+      ...super.getFieldDefintions(),
+      new FieldReference('imageReference', 'Image', 1, true, 'media', [
+        'image',
+      ]),
+    ]
+  }
+
+  static override getDefaultValues(): Record<string, any> {
+    return {
+      ...super.getDefaultValues(),
+      imageReference: ['7'],
+    }
+  }
+}

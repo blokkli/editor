@@ -1,12 +1,12 @@
 import { falsy } from '~~/helpers'
 import { entityStorageManager } from '../../entityStorage'
 import { mapMockField } from '../../state'
-import { Block } from '../Block/Block'
+import { Paragraph } from '../Paragraph/Paragraph'
 import { Field } from '../Field'
 
 type FieldItem = { uuid: string }
 
-type PossibleItem = Block | FieldItem | string
+type PossibleItem = Paragraph | FieldItem | string
 
 export class FieldBlocks extends Field<{ uuid: string }> {
   allowedBundles: string[]
@@ -22,10 +22,13 @@ export class FieldBlocks extends Field<{ uuid: string }> {
     this.allowedBundles = allowedBundles
   }
 
-  getBlocks(): Block[] {
+  getBlocks(): Paragraph[] {
     return this.list
       .map((item) => {
-        const block = entityStorageManager.load('block', item.uuid) as Block
+        const block = entityStorageManager.load(
+          'paragraph',
+          item.uuid,
+        ) as Paragraph
         if (block) {
           return block.getTranslation(this.entity.langcode)
         }
@@ -33,7 +36,7 @@ export class FieldBlocks extends Field<{ uuid: string }> {
       .filter(falsy)
   }
 
-  setBlocks(blocks: Block[]) {
+  setBlocks(blocks: Paragraph[]) {
     this.list = blocks.map((v) => {
       return { uuid: v.uuid }
     })
@@ -53,7 +56,7 @@ export class FieldBlocks extends Field<{ uuid: string }> {
   }
 
   private mapItem(v: PossibleItem): FieldItem {
-    if (v instanceof Block) {
+    if (v instanceof Paragraph) {
       return { uuid: v.uuid }
     } else if (typeof v === 'string') {
       return { uuid: v }

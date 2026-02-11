@@ -125,7 +125,7 @@ export default defineNuxtConfig({
       playgroundFolder + 'app/components/Blokkli/**/*.vue',
       playgroundFolder + 'app/pages/**/*.vue',
     ],
-    itemEntityType: 'block',
+    itemEntityType: 'paragraph',
     fieldListTypes: ['header', 'inline'],
     globalOptions: {
       background: {

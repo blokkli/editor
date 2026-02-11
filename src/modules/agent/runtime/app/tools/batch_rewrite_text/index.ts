@@ -5,7 +5,7 @@ import Component from './Component.vue'
 const paramsSchema = z.object({
   changes: z
     .record(z.string(), z.record(z.string(), z.string()))
-    .describe('Map of block UUID to field name to new text value'),
+    .describe('Map of paragraph UUID to field name to new text value'),
   requireApproval: z
     .boolean()
     .default(true)
@@ -30,7 +30,9 @@ const resultSchema = z.object({
         }),
       ),
     )
-    .describe('Map of rejected block UUID to field name to rejection details'),
+    .describe(
+      'Map of rejected paragraph UUID to field name to rejection details',
+    ),
   label: z.string().describe('Human-readable summary shown in the UI'),
   agentMessage: z
     .string()

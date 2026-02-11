@@ -1,5 +1,5 @@
-import { createBlock } from './state/Block'
-import type { Block } from './state/Block/Block'
+import { createParagraph } from './state/Paragraph'
+import type { Paragraph } from './state/Paragraph/Paragraph'
 import { Comment } from './state/Comment'
 import type { Entity } from './state/Entity'
 import { ContentPage, type Content } from './state/Entity/Content'
@@ -59,7 +59,7 @@ type StorageMap = {
   content: EntityStorage<Content>
   comment: EntityStorage<Comment>
   user: EntityStorage<User>
-  block: EntityStorage<Block>
+  paragraph: EntityStorage<Paragraph>
   media: EntityStorage<Media>
   library_item: EntityStorage<LibraryItem>
   template_item: EntityStorage<TemplateItem>
@@ -75,7 +75,7 @@ export class EntityStorageManager {
       content: new EntityStorage(),
       comment: new EntityStorage(),
       user: new EntityStorage(),
-      block: new EntityStorage(),
+      paragraph: new EntityStorage(),
       media: new EntityStorage(),
       library_item: new EntityStorage(),
       template_item: new EntityStorage(),
@@ -379,8 +379,8 @@ export class EntityStorageManager {
     this.loadCommentsFromStorage()
   }
 
-  addBlock(block: Block) {
-    this.storages.block.add(block)
+  addBlock(block: Paragraph) {
+    this.storages.paragraph.add(block)
   }
 
   addLibraryItem(item: LibraryItem) {
@@ -392,9 +392,9 @@ export class EntityStorageManager {
   }
 
   createBlock(bundle: string, uuid: string, values: Record<string, any> = {}) {
-    const block = createBlock(bundle, uuid)
+    const block = createParagraph(bundle, uuid)
     block.setValues(values)
-    this.storages.block.add(block)
+    this.storages.paragraph.add(block)
     return block
   }
 
@@ -427,9 +427,11 @@ export class EntityStorageManager {
     return video
   }
 
-  cloneBlock(entity: Block, newUuid: string): Entity {
+  cloneBlock(entity: Paragraph, newUuid: string): Entity {
     // Create a new instance of the current class
-    const cloned = new (entity.constructor as typeof Entity)(newUuid) as Block
+    const cloned = new (entity.constructor as typeof Entity)(
+      newUuid,
+    ) as Paragraph
 
     const values = entity.getValues()
     cloned.setValues({ ...values, isNew: [true] })

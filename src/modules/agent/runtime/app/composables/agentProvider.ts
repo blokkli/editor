@@ -573,7 +573,7 @@ export default function (
         label: bundle.label,
         description: bundle.description,
         contentFields,
-        blockFields,
+        paragraphFields: blockFields,
       })
     }
 
@@ -1152,7 +1152,8 @@ export default function (
 
     // Remove the error item from conversation
     conversation.value = conversation.value.filter(
-      (item) => !(item.type === 'error' && 'retryable' in item && item.retryable),
+      (item) =>
+        !(item.type === 'error' && 'retryable' in item && item.retryable),
     )
 
     isProcessing.value = true

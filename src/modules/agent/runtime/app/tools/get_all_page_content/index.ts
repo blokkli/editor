@@ -5,30 +5,32 @@ import { getFieldType, getEditableValue } from '../schemas'
 const paramsSchema = z.object({})
 
 const blockContentSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
-  text: z.string().describe('All text content from this block concatenated'),
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  text: z
+    .string()
+    .describe('All text content from this paragraph concatenated'),
   referenceFields: z
     .array(z.string())
     .optional()
     .describe(
-      'Names of reference/link content fields on this block (e.g., media fields)',
+      'Names of reference/link content fields on this paragraph (e.g., media fields)',
     ),
 })
 
 const resultSchema = z.object({
   content: z
     .array(blockContentSchema)
-    .describe('All blocks with their text content, flattened'),
+    .describe('All paragraphs with their text content, flattened'),
 })
 
 export default defineBlokkliAgentTool({
   name: 'get_all_page_content',
   description:
-    'Get all text content from the entire page in a single call. Returns a flat list of all blocks with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
+    'Get all text content from the entire page in a single call. Returns a flat list of all paragraphs with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
   category: 'query',
   volatile: true,
-  prunedSummary: (r) => `${r.content?.length || 0} blocks`,
+  prunedSummary: (r) => `${r.content?.length || 0} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetAllPageContentRunning', 'Getting all page content...')

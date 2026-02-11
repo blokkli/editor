@@ -7,20 +7,20 @@ import type {
 import { entityStorageManager } from '../entityStorage'
 import { createMutation, type MutationArgsMap } from '../plugins/mutations'
 import { mapBlockItem } from '../state'
-import { createBlock } from './Block'
-import type { Block } from './Block/Block'
+import { createParagraph } from './Paragraph'
+import type { Paragraph } from './Paragraph/Paragraph'
 import type { Entity } from './Entity'
 
 export class BlockProxy {
   hostEntityType: string
   hostEntityUuid: string
   hostField: string
-  block: Block
+  block: Paragraph
   isDeleted = false
   overrideOptions: Record<string, string>
 
   constructor(
-    block: Block,
+    block: Paragraph,
     hostEntityType: string,
     hostEntityUuid: string,
     hostField: string,
@@ -33,8 +33,8 @@ export class BlockProxy {
     this.overrideOptions = overrideOptions
   }
 
-  static fromEntity(block: Block, hostField: string, entity: Entity) {
-    const clone = createBlock(block.bundle, block.uuid)
+  static fromEntity(block: Paragraph, hostField: string, entity: Entity) {
+    const clone = createParagraph(block.bundle, block.uuid)
     clone.setValues(block.getValues())
     return new BlockProxy(clone, entity.entityType, entity.uuid, hostField)
   }
@@ -80,7 +80,7 @@ export class MutationContext {
     if (proxy) {
       return proxy
     }
-    const block = entityStorageManager.storages.block.load(uuid)
+    const block = entityStorageManager.storages.paragraph.load(uuid)
     if (block) {
       const newProxy = new BlockProxy(block, 'content', '1', 'content')
       this.proxies.push(newProxy)
@@ -360,7 +360,7 @@ export class EditState {
         }
       } else {
         if (options?.save) {
-          entityStorageManager.storages.block.delete(proxy.block.uuid)
+          entityStorageManager.storages.paragraph.delete(proxy.block.uuid)
         }
       }
       if (options?.save) {
@@ -407,7 +407,7 @@ export class EditState {
       const blockValidations = proxy.block.validate().map((v) => {
         return {
           ...v,
-          entityType: 'block',
+          entityType: 'paragraph',
           entityUuid: proxy.block.uuid,
         }
       })

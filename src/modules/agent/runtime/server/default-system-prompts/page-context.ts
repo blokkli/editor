@@ -28,9 +28,9 @@ export default defineBlokkliAgentSystemPrompt({
     if (pageContext.editMode === 'editing') {
       lines.push(
         '',
-        '### Parent for Root-Level Blocks',
+        '### Parent for Root-Level Paragraphs',
         '',
-        'When adding blocks directly to the page, use this parent object:',
+        'When adding paragraphs directly to the page, use this parent object:',
         '```json',
         JSON.stringify(
           {

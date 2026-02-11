@@ -1,6 +1,6 @@
 import type { FieldListItem } from '#blokkli/types'
 import { entityStorageManager } from './entityStorage'
-import type { Block } from './state/Block/Block'
+import type { Paragraph } from './state/Paragraph/Paragraph'
 import { EditState } from './state/EditState'
 import type { FieldBlocks } from './state/Field/Blocks'
 
@@ -22,7 +22,7 @@ export const state: MockState = {
 }
 
 export function mapBlockItem(
-  block: Block,
+  block: Paragraph,
   overrideOptions?: Record<string, string>,
 ): FieldListItem {
   const props = block.getProps()
@@ -60,7 +60,7 @@ export const exportState = async () => {
   // Build a map of proxy blocks by UUID (these have the mutated values)
   const proxyMap = new Map<
     string,
-    { block: Block; overrideOptions: Record<string, string> }
+    { block: Paragraph; overrideOptions: Record<string, string> }
   >()
   result.context.proxies.forEach((proxy) => {
     if (!proxy.isDeleted) {
@@ -95,7 +95,7 @@ export const exportState = async () => {
     ...libraryItems.map((v) => v.block),
   ]
 
-  const blocks = entityStorageManager.storages.block
+  const blocks = entityStorageManager.storages.paragraph
     .loadAll()
     .filter((v) => usedBlocks.includes(v.uuid))
     .map((storageBlock) => {
@@ -124,7 +124,7 @@ export const exportState = async () => {
       }
 
       return {
-        entityType: 'block' as const,
+        entityType: 'paragraph' as const,
         bundle: block.bundle,
         uuid: block.uuid,
         values,

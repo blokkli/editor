@@ -1,8 +1,8 @@
 import { BlockProxy, type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
 import { entityStorageManager } from '#mock/entityStorage'
-import type { BlockFromLibrary } from '#mock/state/Block/FromLibrary'
-import type { Block } from '#mock/state/Block/Block'
+import type { ParagraphFromLibrary } from '#mock/state/Paragraph/FromLibrary'
+import type { Paragraph } from '~/mock/state/Paragraph/Paragraph'
 
 export type MutationDetachReusableArgs = {
   uuids: string[]
@@ -21,7 +21,7 @@ export class MutationDetachReusable extends Mutation {
         return
       }
 
-      const block = proxy.block as BlockFromLibrary
+      const block = proxy.block as ParagraphFromLibrary
       const libraryItem = block.getLibraryItem()
       if (!libraryItem) {
         return
@@ -37,7 +37,7 @@ export class MutationDetachReusable extends Mutation {
       const clone = entityStorageManager.cloneBlock(
         reusableBlock,
         newUuid,
-      ) as Block
+      ) as Paragraph
       const cloneProxy = new BlockProxy(
         clone,
         proxy.hostEntityType,

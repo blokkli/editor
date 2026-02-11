@@ -13,7 +13,7 @@ import {
 } from '#imports'
 import { entityStorageManager } from '#mock/entityStorage'
 import { getEditState } from '#mock/state'
-import { getBlockBundles } from '#mock/state/Block'
+import { getParagraphBundles } from '#mock/state/Paragraph'
 
 definePageMeta({
   layout: 'form',
@@ -36,7 +36,7 @@ if (!page) {
 
 const editState = getEditState(entityType.value, entityUuid.value)
 
-const blockBundle = getBlockBundles().find((v) => v.bundle === bundle.value)
+const blockBundle = getParagraphBundles().find((v) => v.bundle === bundle.value)
 
 if (!blockBundle) {
   throw new Error('Bundle does not exist: ' + bundle.value)

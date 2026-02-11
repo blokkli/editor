@@ -3,6 +3,29 @@ import type { ModuleHelper } from '../ModuleHelper'
 import type { TemplateDependency } from '../templates/defineTemplate'
 import type { IconCollector } from './Icons'
 import type { ValidationInterface } from '../ValidationInterface'
+import type { CollectedFeatureFile } from './Features'
+import type { CollectedBlockFile } from './Blocks'
+
+type AlterHookContext<K extends string, T extends CollectedFile> = {
+  [P in K]: T[]
+}
+
+export interface ModuleHooks {
+  'blokkli:alter-features': (
+    ctx: AlterHookContext<'features', CollectedFeatureFile>,
+  ) => void | Promise<void>
+  'blokkli:alter-icons': (
+    ctx: AlterHookContext<'icons', CollectedFile>,
+  ) => void | Promise<void>
+  'blokkli:alter-blocks': (
+    ctx: AlterHookContext<'blocks', CollectedBlockFile>,
+  ) => void | Promise<void>
+}
+
+declare module '@nuxt/schema' {
+  // oxlint-disable-next-line
+  interface NuxtHooks extends ModuleHooks {}
+}
 
 export type HandleWatchEventResult = {
   hasChanged: boolean

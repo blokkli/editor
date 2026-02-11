@@ -7,7 +7,7 @@ const paramsSchema = z.object({
 })
 
 const bundleSchema = z.object({
-  bundle: z.string().describe('The block type identifier'),
+  bundle: z.string().describe('The paragraph type identifier'),
   label: z.string().describe('Human-readable label'),
   description: z
     .string()
@@ -23,37 +23,41 @@ const bundleSchema = z.object({
       }),
     )
     .describe('Content fields (text, media, links) on this bundle'),
-  blockFields: z
+  paragraphFields: z
     .array(
       z.object({
         name: z.string().describe('The field name'),
         label: z.string().describe('Human-readable label'),
         allowedBundles: z
           .array(z.string())
-          .describe('Block types allowed in this field'),
-        cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
+          .describe('Paragraph types allowed in this field'),
+        cardinality: z
+          .number()
+          .describe('Max paragraphs allowed (-1 = unlimited)'),
       }),
     )
-    .describe('Block fields (for nested blocks) on this bundle'),
+    .describe('Paragraph fields (for nested paragraphs) on this bundle'),
 })
 
 const resultSchema = z.object({
   fieldLabel: z.string().describe('Human-readable field label'),
-  cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
-  currentCount: z.number().describe('Current number of blocks in the field'),
-  bundles: z.array(bundleSchema).describe('Available block types'),
+  cardinality: z.number().describe('Max paragraphs allowed (-1 = unlimited)'),
+  currentCount: z
+    .number()
+    .describe('Current number of paragraphs in the field'),
+  bundles: z.array(bundleSchema).describe('Available paragraph types'),
   nestingInfo: z
     .string()
     .optional()
     .describe(
-      'Summary of which bundles have block fields for nested blocks. Use get_child_blocks after adding these bundles to populate their nested fields.',
+      'Summary of which bundles have paragraph fields for nested paragraphs. Use get_child_paragraphs after adding these bundles to populate their nested fields.',
     ),
 })
 
 export default defineBlokkliAgentTool({
   name: 'get_bundle_info',
   description:
-    'Get detailed information about which block types can be added to a specific field, including their content fields and block fields (for nested blocks).',
+    'Get detailed information about which paragraph types can be added to a specific field, including their content fields and paragraph fields (for nested paragraphs).',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
@@ -113,16 +117,16 @@ export default defineBlokkliAgentTool({
         label: bundleDefinition?.label ?? bundle,
         description: bundleDefinition?.description,
         contentFields: [...editableConfigs, ...droppableConfigs],
-        blockFields: blockFieldConfigs,
+        paragraphFields: blockFieldConfigs,
       }
     })
 
-    const nestingBundles = bundles.filter((b) => b.blockFields.length > 0)
+    const nestingBundles = bundles.filter((b) => b.paragraphFields.length > 0)
     const nestingInfo = nestingBundles.length
       ? nestingBundles
           .map(
             (b) =>
-              `${b.bundle} has block fields: ${b.blockFields.map((f) => `${f.name} (${f.allowedBundles.join(', ')})`).join(', ')}`,
+              `${b.bundle} has paragraph fields: ${b.paragraphFields.map((f) => `${f.name} (${f.allowedBundles.join(', ')})`).join(', ')}`,
           )
           .join('; ')
       : undefined

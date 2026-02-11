@@ -124,7 +124,7 @@ components.
   },
   {
     "name": "cards",
-    "entityType": "block",
+    "entityType": "paragraph",
     "entityUuid": "9485812c-0ecd-4699-85b2-3a031d47a0a1",
     "list": [
       {
@@ -357,7 +357,7 @@ This is an example of a full edit state object that should be returned by
       },
       {
         "name": "cards",
-        "entityType": "block",
+        "entityType": "paragraph",
         "entityUuid": "9485812c-0ecd-4699-85b2-3a031d47a0a1",
         "list": [
           {

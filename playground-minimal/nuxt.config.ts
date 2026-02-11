@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    itemEntityType: 'block',
+    itemEntityType: 'paragraph',
   },
   typescript: {
     shim: true,

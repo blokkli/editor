@@ -49,13 +49,13 @@
     },
     {
       "name": "header",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
       "field": ["3284016a-aa33-4994-8e4d-c0a6f9bd91c7"]
     },
     {
       "name": "blocks",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
       "field": [
         "1645ba79-8770-4a0c-a58b-163a847eea22",
@@ -65,13 +65,13 @@
     },
     {
       "name": "header",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
       "field": ["d6020cd0-45f0-4200-8690-e297a38a1cca"]
     },
     {
       "name": "blocks",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
       "field": [
         "72633ab5-2353-45ce-8a1b-3726c7da8679",
@@ -81,7 +81,7 @@
     },
     {
       "name": "left",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
       "field": [
         "611aae9b-49be-4236-b4a0-1602aa306f56",
@@ -90,19 +90,19 @@
     },
     {
       "name": "right",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
       "field": ["e011fd53-b083-4db0-a4aa-26c3602916f8"]
     },
     {
       "name": "header",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
       "field": ["47f0bf41-bd49-47c2-a2c4-145f80abe161"]
     },
     {
       "name": "blocks",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
       "field": [
         "5780e657-2c02-45b2-bb92-1424a7a29fb8",
@@ -112,13 +112,13 @@
     },
     {
       "name": "header",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "334a4e80-a174-49ba-b986-af5697f093b7",
       "field": ["4e7ac454-2b6b-4c45-a01c-34abdd52b792"]
     },
     {
       "name": "blocks",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "334a4e80-a174-49ba-b986-af5697f093b7",
       "field": [
         "af913394-1d5b-4d05-bbc0-46f280d1787b",
@@ -128,7 +128,7 @@
     },
     {
       "name": "left",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
       "field": [
         "6eb4ba7f-5102-41eb-aa35-5c6a33daab82",
@@ -137,13 +137,13 @@
     },
     {
       "name": "right",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
       "field": ["f91e046b-3bcc-48dd-bbd5-8a21115436b7"]
     },
     {
       "name": "left",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
       "field": [
         "4526d2d0-f122-4093-902f-e2f00a433981",
@@ -152,19 +152,19 @@
     },
     {
       "name": "right",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
       "field": ["9ab46061-c9f3-40fb-bfb1-27ba3bb628f5"]
     },
     {
       "name": "header",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "c414a773-406c-4200-aef6-ada9349b3f11",
       "field": ["b819947c-1bce-429e-a210-91579dae421c"]
     },
     {
       "name": "blocks",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "c414a773-406c-4200-aef6-ada9349b3f11",
       "field": [
         "87098bb1-d849-4afc-8845-05ef2d08d160",
@@ -174,7 +174,7 @@
     },
     {
       "name": "left",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
       "field": [
         "8a51a714-1990-4d6a-9bf7-81344cc1a288",
@@ -184,19 +184,19 @@
     },
     {
       "name": "right",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "90d01577-babc-45b5-a03b-2ba266822425",
       "field": ["1be4ab78-8265-48a6-a1aa-ff852d2507b5"]
     },
     {
       "name": "header",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a",
       "field": ["5e6f7a8b-9c0d-4e1f-2a3b-4c5d6e7f8a9b"]
     },
     {
       "name": "blocks",
-      "entityType": "block",
+      "entityType": "paragraph",
       "entityUuid": "4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a",
       "field": [
         "6f7a8b9c-0d1e-4f2a-3b4c-5d6e7f8a9b0c",
@@ -207,7 +207,7 @@
   ],
   "blocks": [
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "c1d4278d-c0e1-439d-8849-558d17b9cc5f",
       "values": {
@@ -219,7 +219,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "not_implemented",
       "uuid": "b2a44272-8432-4516-8a6a-9837b0084884",
       "values": {
@@ -230,7 +230,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "762c4159-aaa8-49dc-9111-2910be58d5c2",
       "values": {
@@ -242,7 +242,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "5d49b533-b3bc-4c06-895b-7ee489875a54",
       "values": {
@@ -254,7 +254,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "c377fd74-dcb3-447f-a6ff-2ad279c3274a",
       "values": {
@@ -266,7 +266,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "7fac3370-9563-4b61-a099-be58a3e71858",
       "values": {
@@ -278,7 +278,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "5d2a1a79-e56d-47cf-baa7-fb7bb797f66a",
       "values": {
@@ -290,7 +290,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "35753850-9cda-400a-8416-ec9ba7e8d9a7",
       "values": {
@@ -302,7 +302,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "80f53678-cbfb-452a-8f00-e00c4d393db5",
       "values": {
@@ -314,7 +314,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "icon",
       "uuid": "aaad7afb-ea3c-450f-b683-a47cf79e281b",
       "values": {
@@ -326,7 +326,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "4526d2d0-f122-4093-902f-e2f00a433981",
       "values": {
@@ -342,7 +342,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "3284016a-aa33-4994-8e4d-c0a6f9bd91c7",
       "values": {
@@ -363,7 +363,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "grid",
       "uuid": "bf4acf60-e0a2-43bb-b4fc-9f32a41a4816",
       "values": {
@@ -407,7 +407,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "a4aac285-9615-4764-81de-96d3af41e622",
       "values": {
@@ -428,7 +428,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "1645ba79-8770-4a0c-a58b-163a847eea22",
       "values": {
@@ -449,7 +449,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "27e417eb-a5fa-4d17-94b5-e218fc653906",
       "values": {
@@ -470,7 +470,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "d6020cd0-45f0-4200-8690-e297a38a1cca",
       "values": {
@@ -486,7 +486,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "grid",
       "uuid": "f7e3f26b-9c8a-4571-9f98-660bcca08938",
       "values": {
@@ -530,7 +530,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "25cdf719-d6ef-4a27-a828-ba6ed8b78ee6",
       "values": {
@@ -555,7 +555,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "4e7ac454-2b6b-4c45-a01c-34abdd52b792",
       "values": {
@@ -571,7 +571,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "grid",
       "uuid": "334a4e80-a174-49ba-b986-af5697f093b7",
       "values": {
@@ -611,7 +611,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "af913394-1d5b-4d05-bbc0-46f280d1787b",
       "values": {
@@ -627,7 +627,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "82b54483-03ee-4483-8b14-121d611ecf27",
       "values": {
@@ -643,7 +643,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "3ce777ca-70a5-48fb-b220-7ac2ab052516",
       "values": {
@@ -659,7 +659,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "b819947c-1bce-429e-a210-91579dae421c",
       "values": {
@@ -675,7 +675,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "c3f229a1-7bb7-4d0a-8820-51a48acd73b0",
       "values": {
@@ -696,7 +696,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "a3bcf0de-589c-44d2-9ca7-b8184cfe5028",
       "values": {
@@ -717,7 +717,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "two_columns",
       "uuid": "ce8afc60-2f42-4b99-8a44-c5a46eb15f7a",
       "values": {
@@ -755,7 +755,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "9ab46061-c9f3-40fb-bfb1-27ba3bb628f5",
       "values": {
@@ -772,7 +772,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "d8d3ad51-7c37-4a27-ad64-e04ee8a4f842",
       "values": {
@@ -788,7 +788,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "87098bb1-d849-4afc-8845-05ef2d08d160",
       "values": {
@@ -809,7 +809,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "two_columns",
       "uuid": "dc7ebb39-c0a2-4875-a6ff-1d0b92477ccf",
       "values": {
@@ -851,7 +851,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "e011fd53-b083-4db0-a4aa-26c3602916f8",
       "values": {
@@ -868,7 +868,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "611aae9b-49be-4236-b4a0-1602aa306f56",
       "values": {
@@ -882,7 +882,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "319c3ffb-6d38-4885-860e-fa346c40e5c1",
       "values": {
@@ -899,7 +899,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "6694e5d3-da35-417b-87ce-5022b6377e92",
       "values": {
@@ -916,7 +916,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "text",
       "uuid": "4ce7b4f0-da66-4ae6-9378-c47eb7b7158e",
       "values": {
@@ -935,7 +935,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "text",
       "uuid": "3a2617ed-6844-4d39-859c-82869f4ea5aa",
       "values": {
@@ -954,7 +954,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "grid",
       "uuid": "c414a773-406c-4200-aef6-ada9349b3f11",
       "values": {
@@ -994,7 +994,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "grid",
       "uuid": "6d0bde10-a05b-4c7d-a8cf-fafc8e0001f1",
       "values": {
@@ -1038,7 +1038,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "47f0bf41-bd49-47c2-a2c4-145f80abe161",
       "values": {
@@ -1054,7 +1054,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "5780e657-2c02-45b2-bb92-1424a7a29fb8",
       "values": {
@@ -1070,7 +1070,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "4636604d-f473-4d10-b083-79a00228a2d8",
       "values": {
@@ -1091,7 +1091,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "57bbeffb-dd8d-44f6-a29a-3a1145b4e373",
       "values": {
@@ -1107,7 +1107,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "button",
       "uuid": "0962e858-fbf6-4f98-bf6f-f7813bd5f9be",
       "values": {
@@ -1126,7 +1126,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "button",
       "uuid": "332bbf33-2368-4b56-8ae6-4855657bc5d4",
       "values": {
@@ -1145,7 +1145,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "two_columns",
       "uuid": "90d01577-babc-45b5-a03b-2ba266822425",
       "values": {
@@ -1190,7 +1190,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "8a51a714-1990-4d6a-9bf7-81344cc1a288",
       "values": {
@@ -1206,7 +1206,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "text",
       "uuid": "67a9e26f-8028-4283-8b7d-8f836355b949",
       "values": {
@@ -1225,7 +1225,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "1be4ab78-8265-48a6-a1aa-ff852d2507b5",
       "values": {
@@ -1242,7 +1242,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "button",
       "uuid": "49e2da9e-4e87-4570-9909-458494c9cf3d",
       "values": {
@@ -1261,7 +1261,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "72633ab5-2353-45ce-8a1b-3726c7da8679",
       "values": {
@@ -1286,7 +1286,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "59b6db95-f4ca-4dd7-86a4-3ad53e66571b",
       "values": {
@@ -1311,7 +1311,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "two_columns",
       "uuid": "908fac9f-e47e-4478-bfd8-ab8ac947835b",
       "values": {
@@ -1345,7 +1345,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "6eb4ba7f-5102-41eb-aa35-5c6a33daab82",
       "values": {
@@ -1361,7 +1361,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "ba696dbe-8f34-4d83-857d-c1c805cf3aec",
       "values": {
@@ -1375,7 +1375,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "f91e046b-3bcc-48dd-bbd5-8a21115436b7",
       "values": {
@@ -1387,7 +1387,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "text",
       "uuid": "9485812c-0ecd-4699-85b2-3a031d47a0a1",
       "values": {
@@ -1401,7 +1401,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "from_library",
       "uuid": "b7288437-c229-463c-840e-b454b9f41416",
       "values": {
@@ -1418,7 +1418,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "from_library",
       "uuid": "96f7fbda-04d9-4662-9a6c-6aa3bcf964f2",
       "values": {
@@ -1439,7 +1439,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "blokkli_fragment",
       "uuid": "0039cbfb-6ee7-48db-9e9f-7117c488299b",
       "values": {
@@ -1451,7 +1451,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "blokkli_fragment",
       "uuid": "ab4f48ef-a397-4390-b52e-b867ce25fbf3",
       "values": {
@@ -1463,7 +1463,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
       "values": {
@@ -1479,7 +1479,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "image",
       "uuid": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
       "values": {
@@ -1496,7 +1496,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
       "values": {
@@ -1510,7 +1510,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "text",
       "uuid": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
       "values": {
@@ -1524,7 +1524,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "button",
       "uuid": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
       "values": {
@@ -1543,7 +1543,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "button",
       "uuid": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
       "values": {
@@ -1562,7 +1562,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "grid",
       "uuid": "4d5e6f7a-8b9c-4d0e-1f2a-3b4c5d6e7f8a",
       "values": {
@@ -1602,7 +1602,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "title",
       "uuid": "5e6f7a8b-9c0d-4e1f-2a3b-4c5d6e7f8a9b",
       "values": {
@@ -1616,7 +1616,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "6f7a8b9c-0d1e-4f2a-3b4c-5d6e7f8a9b0c",
       "values": {
@@ -1635,7 +1635,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "7a8b9c0d-1e2f-4a3b-4c5d-6e7f8a9b0c1d",
       "values": {
@@ -1654,7 +1654,7 @@
       }
     },
     {
-      "entityType": "block",
+      "entityType": "paragraph",
       "bundle": "card",
       "uuid": "8b9c0d1e-2f3a-4b4c-5d6e-7f8a9b0c1d2e",
       "values": {

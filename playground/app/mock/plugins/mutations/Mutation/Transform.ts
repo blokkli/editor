@@ -1,10 +1,10 @@
 import { falsy } from '~~/helpers'
-import { BlockText } from '#mock/state/Block/Text'
+import { ParagraphText } from '#mock/state/Paragraph/Text'
 import { BlockProxy, type MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
-import { BlockButton } from '#mock/state/Block/Button'
+import { ParagraphButton } from '#mock/state/Paragraph/Button'
 import { entityStorageManager } from '#mock/entityStorage'
-import type { Block } from '#mock/state/Block/Block'
+import type { Paragraph } from '~/mock/state/Paragraph/Paragraph'
 import type { PluginConfigInputItem } from '#blokkli/editor/types/pluginConfig'
 
 export type MutationTransformArgs = {
@@ -71,7 +71,7 @@ export class MutationTransform extends Mutation {
       return
     }
     const first = proxies.find((v) => v.block.uuid === firstUuid)?.block
-    if (!(first instanceof BlockText)) {
+    if (!(first instanceof ParagraphText)) {
       return
     }
     let text = ''
@@ -79,7 +79,7 @@ export class MutationTransform extends Mutation {
     for (let i = 0; i < proxies.length; i++) {
       const proxy = proxies[i]!
       const block = proxy.block
-      if (block instanceof BlockText) {
+      if (block instanceof ParagraphText) {
         text += block.text().getText()
         if (block.uuid !== firstUuid) {
           proxy.markAsDeleted()
@@ -100,7 +100,7 @@ export class MutationTransform extends Mutation {
     for (let i = 0; i < proxies.length; i++) {
       const proxy = proxies[i]!
       const block = proxy.block
-      if (block instanceof BlockButton) {
+      if (block instanceof ParagraphButton) {
         const title = block.getTitle()
         const url = block.getUrl()
         links.push(`<a href="${url}">${title}</a>`)
@@ -139,7 +139,7 @@ export class MutationTransform extends Mutation {
     const textProxy = proxies[0]
     const textBlock = textProxy?.block
 
-    if (!(textBlock instanceof BlockText) || !textProxy) {
+    if (!(textBlock instanceof ParagraphText) || !textProxy) {
       return
     }
 
@@ -171,7 +171,7 @@ export class MutationTransform extends Mutation {
       return uuid
     }
 
-    const createBlock = (el: Element): Block | Block[] | undefined => {
+    const createBlock = (el: Element): Paragraph | Paragraph[] | undefined => {
       if (!(el instanceof HTMLElement)) {
         return
       }

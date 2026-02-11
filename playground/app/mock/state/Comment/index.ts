@@ -33,7 +33,7 @@ export class Comment extends Entity {
         'Referenced Blocks',
         -1,
         false,
-        'block',
+        'paragraph',
         [],
       ),
     ]

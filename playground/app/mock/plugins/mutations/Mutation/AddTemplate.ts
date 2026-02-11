@@ -1,7 +1,7 @@
 import { BlockProxy, type MutationContext } from '#mock/state/EditState'
 import { Mutation } from '../Mutation'
 import { entityStorageManager } from '#mock/entityStorage'
-import type { Block } from '#mock/state/Block/Block'
+import type { Paragraph } from '~/mock/state/Paragraph/Paragraph'
 import type { FieldBlocks } from '#mock/state/Field/Blocks'
 
 export type MutationAddTemplateArgs = {
@@ -52,7 +52,7 @@ export class MutationAddTemplate extends Mutation {
    */
   private cloneBlockRecursively(
     context: MutationContext,
-    block: Block,
+    block: Paragraph,
     hostEntityType: string,
     hostEntityUuid: string,
     hostField: string,
@@ -75,7 +75,7 @@ export class MutationAddTemplate extends Mutation {
         const newNestedUuid = this.cloneBlockRecursively(
           context,
           nestedBlock,
-          'block',
+          'paragraph',
           newUuid,
           field.id,
           null,
@@ -85,7 +85,10 @@ export class MutationAddTemplate extends Mutation {
     }
 
     // Now clone this block
-    const clonedBlock = entityStorageManager.cloneBlock(block, newUuid) as Block
+    const clonedBlock = entityStorageManager.cloneBlock(
+      block,
+      newUuid,
+    ) as Paragraph
 
     // Update the cloned block's field values to reference the new nested UUIDs
     for (const field of blockFields) {
