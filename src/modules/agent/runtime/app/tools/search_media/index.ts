@@ -25,7 +25,7 @@ const resultSchema = z.object({
       thumbnail: z.string().optional().describe('URL of the thumbnail image'),
       targetBundles: z
         .array(z.string())
-        .describe('Block bundles that can be created from this media'),
+        .describe('Paragraph bundles that can be created from this media'),
     }),
   ),
   total: z.number().describe('Total number of matching media items'),
@@ -36,7 +36,7 @@ export type SearchMediaResult = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'search_media',
   description:
-    'Search the media library for images, videos, and other media. Returns media items that can be added to the page using add_media_block. If more than one matching media is found: USE THE select_media TOOL TO LET THE USER PICK.',
+    'Search the media library for images, videos, and other media. Returns media items that can be added to the page using add_media_paragraph. If more than one matching media is found: USE THE select_media TOOL TO LET THE USER PICK.',
   category: 'query',
   prunedSummary: (r) => `found ${r.total || 0} media items`,
   modes: ['readonly', 'editing', 'translating', 'review'],

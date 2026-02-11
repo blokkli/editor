@@ -7,13 +7,15 @@ const paramsSchema = z.object({
     .number()
     .optional()
     .describe(
-      'Maximum nesting depth to include (0 = only root blocks, 1 = root + direct children, etc.). Omit for unlimited depth.',
+      'Maximum nesting depth to include (0 = only root paragraphs, 1 = root + direct children, etc.). Omit for unlimited depth.',
     ),
   includeDimensions: z
     .boolean()
     .optional()
     .default(false)
-    .describe('Include x, y, width, height for each block (default: false)'),
+    .describe(
+      'Include x, y, width, height for each paragraph (default: false)',
+    ),
 })
 
 // Block dimensions in artboard coordinates
@@ -59,46 +61,46 @@ const dimensionsSchema = z.object({
 
 // Schema for nested blocks (no visibility or parent)
 const nestedBlockSchema: z.ZodType<NestedBlock> = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
-  label: z.string().describe('Human-readable block label'),
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  label: z.string().describe('Human-readable paragraph label'),
   dimensions: dimensionsSchema
     .optional()
-    .describe('Block position and size (if requested)'),
+    .describe('Paragraph position and size (if requested)'),
   children: z
     .record(z.string(), z.array(z.lazy(() => nestedBlockSchema)))
     .optional()
-    .describe('Child blocks organized by field name'),
+    .describe('Child paragraphs organized by field name'),
 })
 
 // Schema for root blocks (includes visibility and parent)
 const rootBlockSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
-  label: z.string().describe('Human-readable block label'),
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  label: z.string().describe('Human-readable paragraph label'),
   dimensions: dimensionsSchema
     .optional()
-    .describe('Block position and size (if requested)'),
+    .describe('Paragraph position and size (if requested)'),
   visibilityPercent: z
     .number()
-    .describe('Percentage of block area visible in viewport (0-100)'),
+    .describe('Percentage of paragraph area visible in viewport (0-100)'),
   parent: z
     .object({
       type: z.string().describe('Parent entity type'),
       uuid: z.string().describe('Parent entity UUID'),
-      field: z.string().describe('Field name containing this block'),
+      field: z.string().describe('Field name containing this paragraph'),
     })
     .describe('Parent field information'),
   children: z
     .record(z.string(), z.array(nestedBlockSchema))
     .optional()
-    .describe('Child blocks organized by field name'),
+    .describe('Child paragraphs organized by field name'),
 })
 
 const resultSchema = z.object({
-  blocks: z
+  paragraphs: z
     .array(rootBlockSchema)
-    .describe('Root-level blocks currently visible in the viewport'),
+    .describe('Root-level paragraphs currently visible in the viewport'),
 })
 
 function getDimensions(app: BlokkliApp, uuid: string): BlockDimensions {
@@ -249,12 +251,12 @@ function buildRootBlockTree(
 }
 
 export default defineBlokkliAgentTool({
-  name: 'get_blocks_in_viewport',
+  name: 'get_paragraphs_in_viewport',
   description:
-    'Get blocks currently visible in the viewport with their visibility percentage. Use this for viewport-relative queries like "the block at the top", "what\'s in the center", or "blocks near the bottom". NOT for getting all page content - use get_all_page_content for that.',
+    'Get paragraphs currently visible in the viewport with their visibility percentage. Use this for viewport-relative queries like "the paragraph at the top", "what\'s in the center", or "paragraphs near the bottom". NOT for getting all page content - use get_all_page_content for that.',
   category: 'query',
   volatile: true,
-  prunedSummary: (r) => `${r.blocks?.length || 0} blocks in viewport`,
+  prunedSummary: (r) => `${r.paragraphs?.length || 0} paragraphs in viewport`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t(
@@ -291,7 +293,7 @@ export default defineBlokkliAgentTool({
         'Got @count blocks in viewport',
       ).replace('@count', String(blockTrees.length)),
       result: {
-        blocks: blockTrees,
+        paragraphs: blockTrees,
       },
     }
   },

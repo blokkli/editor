@@ -6,7 +6,7 @@ import type {
 import {
   getFieldType,
   getEditableValue,
-  getBlockChildren,
+  getParagraphChildren,
 } from '#blokkli/agent/app/tools/schemas'
 import { itemEntityType } from '#blokkli-build/config'
 
@@ -23,7 +23,7 @@ function truncate(text: string): string {
   return cleaned.slice(0, MAX_CONTENT_LENGTH) + '…'
 }
 
-function buildBlock(
+export function buildBlock(
   app: BlokkliApp,
   uuid: string,
   bundle: string,
@@ -63,11 +63,11 @@ function buildBlock(
   }
 
   // Collect nested block fields.
-  const children = getBlockChildren(app, uuid)
+  const children = getParagraphChildren(app, uuid)
   if (children.length > 0) {
     const fields: Record<string, PageStructureBlock[]> = {}
     for (const child of children) {
-      fields[child.fieldName] = child.blocks.map((b) =>
+      fields[child.fieldName] = child.paragraphs.map((b) =>
         buildBlock(app, b.uuid, b.bundle),
       )
     }
@@ -83,14 +83,14 @@ export function buildPageStructure(app: BlokkliApp): PageStructure {
   const entityBundle = app.context.value.entityBundle
 
   // Build top-level fields → blocks tree.
-  const topLevelChildren = getBlockChildren(app, pageUuid)
+  const topLevelChildren = getParagraphChildren(app, pageUuid)
   const fields: Record<string, PageStructureBlock[]> = {}
-  let totalBlocks = 0
+  let totalParagraphs = 0
 
   for (const child of topLevelChildren) {
-    fields[child.fieldName] = child.blocks.map((b) => {
+    fields[child.fieldName] = child.paragraphs.map((b) => {
       const block = buildBlock(app, b.uuid, b.bundle)
-      totalBlocks += countBlocks(block)
+      totalParagraphs += countBlocks(block)
       return block
     })
   }
@@ -122,13 +122,13 @@ export function buildPageStructure(app: BlokkliApp): PageStructure {
   }
 
   return {
-    totalBlocks,
+    totalParagraphs,
     fields,
     entityContentFields,
   }
 }
 
-function countBlocks(block: PageStructureBlock): number {
+export function countBlocks(block: PageStructureBlock): number {
   let count = 1
   if (block.fields) {
     for (const blocks of Object.values(block.fields)) {

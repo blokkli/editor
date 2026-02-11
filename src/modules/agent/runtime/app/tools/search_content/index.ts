@@ -9,7 +9,7 @@ const resultSchema = z.array(
     entityBundle: z.string().describe('The entity bundle'),
     targetBundles: z
       .array(z.string())
-      .describe('Block bundles that can be created from this content item'),
+      .describe('Paragraph bundles that can be created from this content item'),
     context: z.string().optional().describe('Additional context information'),
     text: z.string().optional().describe('Description text'),
     imageUrl: z.string().optional().describe('URL of the preview image'),

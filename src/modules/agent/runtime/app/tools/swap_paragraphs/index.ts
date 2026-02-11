@@ -3,16 +3,16 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
-  uuidA: z.string().describe('First block UUID'),
-  uuidB: z.string().describe('Second block UUID'),
+  uuidA: z.string().describe('First paragraph UUID'),
+  uuidB: z.string().describe('Second paragraph UUID'),
 })
 
 export default defineBlokkliAgentTool({
-  name: 'swap_blocks',
+  name: 'swap_paragraphs',
   description:
-    'Swap the positions of two blocks, either in the same field or different fields.',
+    'Swap the positions of two paragraphs, either in the same field or different fields.',
   category: 'mutation',
-  prunedSummary: (r) => (r.success ? 'swapped blocks' : 'rejected'),
+  prunedSummary: (r) => (r.success ? 'swapped paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {
     return $t('aiAgentSwapBlocksRunning', 'Swapping blocks...')
@@ -25,19 +25,19 @@ export default defineBlokkliAgentTool({
 
     // Same block - nothing to do
     if (params.uuidA === params.uuidB) {
-      return { error: 'Both UUIDs refer to the same block' }
+      return { error: 'Both UUIDs refer to the same paragraph' }
     }
 
     // Validate block A exists
     const blockA = blocks.getBlock(params.uuidA)
     if (!blockA) {
-      return { error: `Block not found: ${params.uuidA}` }
+      return { error: `Paragraph not found: ${params.uuidA}` }
     }
 
     // Validate block B exists
     const blockB = blocks.getBlock(params.uuidB)
     if (!blockB) {
-      return { error: `Block not found: ${params.uuidB}` }
+      return { error: `Paragraph not found: ${params.uuidB}` }
     }
 
     // Get field config for A's parent field
@@ -47,7 +47,9 @@ export default defineBlokkliAgentTool({
       blockA.host.fieldName,
     )
     if (!fieldConfigA) {
-      return { error: `Could not find field config for block A's parent field` }
+      return {
+        error: `Could not find field config for paragraph A's parent field`,
+      }
     }
 
     // Get field config for B's parent field
@@ -57,7 +59,9 @@ export default defineBlokkliAgentTool({
       blockB.host.fieldName,
     )
     if (!fieldConfigB) {
-      return { error: `Could not find field config for block B's parent field` }
+      return {
+        error: `Could not find field config for paragraph B's parent field`,
+      }
     }
 
     // Check if blockA's bundle is allowed in fieldB

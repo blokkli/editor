@@ -31,7 +31,6 @@ import {
   isToolError,
   resolveTools,
 } from '#blokkli/agent/app/helpers'
-import { buildPageStructure } from '#blokkli/agent/app/helpers/pageStructure'
 import { mcpTools } from '#blokkli-build/agent-client'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
@@ -559,7 +558,7 @@ export default function (
           })),
       ]
 
-      const blockFields = types.fieldConfig
+      const paragraphFields = types.fieldConfig
         .forEntityTypeAndBundle(itemEntityType, bundle.id)
         .map((f) => ({
           name: f.name,
@@ -573,7 +572,7 @@ export default function (
         label: bundle.label,
         description: bundle.description,
         contentFields,
-        paragraphFields: blockFields,
+        paragraphFields: paragraphFields,
       })
     }
 
@@ -1036,7 +1035,7 @@ export default function (
     }
 
     function buildMutationResult(newUuids: string[]) {
-      const newBlocks =
+      const newParagraphs =
         action.type === 'add' && newUuids.length
           ? newUuids
               .map((uuid) => {
@@ -1049,7 +1048,7 @@ export default function (
                   uuid,
                   bundle: block.bundle,
                   ...(blockFieldNames.length
-                    ? { blockFields: blockFieldNames }
+                    ? { paragraphFields: blockFieldNames }
                     : {}),
                 }
               })
@@ -1059,7 +1058,7 @@ export default function (
                 ): b is {
                   uuid: string
                   bundle: string
-                  blockFields?: string[]
+                  paragraphFields?: string[]
                 } => b !== null,
               )
           : undefined
@@ -1067,7 +1066,7 @@ export default function (
       return {
         success: true,
         historyIndex: state.currentMutationIndex.value,
-        newBlocks: newBlocks?.length ? newBlocks : undefined,
+        newParagraphs: newParagraphs?.length ? newParagraphs : undefined,
         ...action.result,
       }
     }
@@ -1120,8 +1119,6 @@ export default function (
       activeConversationId.value = generateUUID()
     }
 
-    const isFirstMessage = !conversation.value.some((i) => i.type === 'user')
-
     const item: ConversationItem = {
       type: 'user',
       id: generateId(),
@@ -1137,7 +1134,6 @@ export default function (
       type: 'start',
       prompt,
       selectedUuids: selectedUuids?.length ? selectedUuids : undefined,
-      pageStructure: isFirstMessage ? buildPageStructure(app) : undefined,
     })
   }
 
@@ -1161,10 +1157,6 @@ export default function (
     send({
       type: 'start',
       prompt: lastUserItem.content,
-      pageStructure:
-        conversation.value.filter((i) => i.type === 'user').length <= 1
-          ? buildPageStructure(app)
-          : undefined,
     })
   }
 

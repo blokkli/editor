@@ -211,7 +211,7 @@ async function applySelected() {
     rejectedWithoutReason.length === 2
   ) {
     const fieldList = rejectedWithoutReason
-      .map((r) => `"${r.fieldName}" of block ${r.uuid}`)
+      .map((r) => `"${r.fieldName}" of paragraph ${r.uuid}`)
       .join(' and ')
     agentMessage = `The user rejected ${fieldList} without a reason. Use the ask_question tool to present the user with 2 or more alternative texts for each rejected field.`
   } else if (rejectedWithoutReason.length > 2) {

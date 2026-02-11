@@ -3,7 +3,7 @@ import { defineBlokkliAgentSystemPrompt } from '../system-prompts'
 export default defineBlokkliAgentSystemPrompt({
   id: 'plan-mode',
   title: 'PLAN MODE ENABLED',
-  weight: 150,
+  weight: 9000,
   getPrompt: (context) => {
     if (!context.activePlan) {
       return null

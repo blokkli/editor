@@ -10,7 +10,7 @@ const paramsSchema = z.object({
   bundle: z
     .string()
     .optional()
-    .describe('Optional: only search in blocks of this bundle type'),
+    .describe('Optional: only search in paragraphs of this bundle type'),
   limit: z
     .number()
     .optional()
@@ -21,24 +21,24 @@ const paramsSchema = z.object({
 const resultSchema = z.object({
   matches: z.array(
     z.object({
-      uuid: z.string().describe('The block UUID'),
-      bundle: z.string().describe('The block type'),
+      uuid: z.string().describe('The paragraph UUID'),
+      bundle: z.string().describe('The paragraph type'),
       matchedText: z.string().describe('The text snippet containing the match'),
       matchCount: z
         .number()
-        .describe('Number of times the query appears in this block'),
+        .describe('Number of times the query appears in this paragraph'),
     }),
   ),
-  totalMatches: z.number().describe('Total number of blocks that matched'),
+  totalMatches: z.number().describe('Total number of paragraphs that matched'),
 })
 
 export default defineBlokkliAgentTool({
   name: 'search_text',
   description:
-    'Search for text in block content. Returns blocks containing matches with text snippets. Only searches text directly in each block, not in nested child blocks. For regex, use /pattern/flags format (e.g., "/hello|world/gi").',
+    'Search for text in paragraph content. Returns paragraphs containing matches with text snippets. Only searches text directly in each paragraph, not in nested child paragraphs. For regex, use /pattern/flags format (e.g., "/hello|world/gi").',
   category: 'query',
   volatile: true,
-  prunedSummary: (r) => `${r.totalMatches || 0} blocks matched`,
+  prunedSummary: (r) => `${r.totalMatches || 0} paragraphs matched`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentSearchTextRunning', 'Searching text...')

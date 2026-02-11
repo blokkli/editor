@@ -106,7 +106,6 @@ export default defineWebSocketHandler({
             apiKey,
             authSecret,
             data.selectedUuids,
-            data.pageStructure,
           )
           break
 

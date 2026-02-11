@@ -1,4 +1,3 @@
-import { PLACEHOLDER_USER_NAME } from '#blokkli/agent/shared/placeholders'
 import { defineBlokkliAgentSystemPrompt } from '../system-prompts'
 
 export default defineBlokkliAgentSystemPrompt({
@@ -18,7 +17,6 @@ export default defineBlokkliAgentSystemPrompt({
       `Talk to the user in the same language as their initial message`,
       `DO NOT respond with long messages, unless asked to! Keep your answers short.`,
       `After mutations, **BRIEFLY** confirm what you did. No lengthy summaries. No repeating of updated content.`,
-      `If the user just says hi, address them with the "${PLACEHOLDER_USER_NAME}" placeholder for a friendly welcome message. It will be automatically replaced with the actual user's name!`,
     ].filter(Boolean)
     return listItems.map((v) => '- ' + v).join('\n')
   },

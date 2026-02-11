@@ -9,7 +9,6 @@ import type {
   GenericContentBlock,
   GenericTextBlock,
   GenericSkillBlock,
-  PageStructure,
 } from '../shared/types'
 import { buildSystemPrompt, buildSystemPromptText } from './agentPrompt'
 import type { ActivePlanContext } from './system-prompts/types'
@@ -45,76 +44,6 @@ const serverTools: ServerSideTool[] = [
   createPlanTool,
   completePlanStepTool,
 ]
-
-function escapeXml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
-function formatBlock(
-  block: PageStructure['fields'][string][number],
-  indent: string,
-): string {
-  const hasContent = block.contentFields || block.fields
-  if (!hasContent) {
-    return `${indent}<Block uuid="${block.uuid}" bundle="${escapeXml(block.bundle)}" />`
-  }
-
-  const lines: string[] = []
-  lines.push(
-    `${indent}<Block uuid="${block.uuid}" bundle="${escapeXml(block.bundle)}">`,
-  )
-
-  if (block.contentFields) {
-    for (const [name, value] of Object.entries(block.contentFields)) {
-      lines.push(
-        `${indent}  <ContentField name="${escapeXml(name)}">${escapeXml(value)}</ContentField>`,
-      )
-    }
-  }
-
-  if (block.fields) {
-    for (const [fieldName, children] of Object.entries(block.fields)) {
-      lines.push(`${indent}  <BlockField name="${escapeXml(fieldName)}">`)
-      for (const child of children) {
-        lines.push(formatBlock(child, indent + '    '))
-      }
-      lines.push(`${indent}  </BlockField>`)
-    }
-  }
-
-  lines.push(`${indent}</Block>`)
-  return lines.join('\n')
-}
-
-function formatPageStructure(ps: PageStructure, ctx: PageContext): string {
-  const lines: string[] = []
-  lines.push(
-    `<Page uuid="${ctx.entityUuid}" type="${escapeXml(ctx.entityType)}" bundle="${escapeXml(ctx.entityBundle)}">`,
-  )
-
-  if (ps.entityContentFields) {
-    for (const [name, value] of Object.entries(ps.entityContentFields)) {
-      lines.push(
-        `  <ContentField name="${escapeXml(name)}">${escapeXml(value)}</ContentField>`,
-      )
-    }
-  }
-
-  for (const [fieldName, blocks] of Object.entries(ps.fields)) {
-    lines.push(`  <BlockField name="${escapeXml(fieldName)}">`)
-    for (const block of blocks) {
-      lines.push(formatBlock(block, '    '))
-    }
-    lines.push(`  </BlockField>`)
-  }
-
-  lines.push(`</Page>`)
-  return lines.join('\n')
-}
 
 // ============================================================================
 // Session class
@@ -167,7 +96,6 @@ export class Session {
     apiKey: string,
     authSecret: string,
     selectedUuids?: string[],
-    pageStructure?: PageStructure,
   ): void {
     if (this.isProcessing) {
       send(peer, {
@@ -177,14 +105,7 @@ export class Session {
       })
       return
     }
-    this.runAgentLoop(
-      peer,
-      prompt,
-      apiKey,
-      authSecret,
-      selectedUuids,
-      pageStructure,
-    )
+    this.runAgentLoop(peer, prompt, apiKey, authSecret, selectedUuids)
   }
 
   resolveToolResult(
@@ -331,11 +252,7 @@ export class Session {
       return { success: false, reason: 'Invalid message structure' }
     }
 
-    // Remove stale page structure from restored conversation
-    this.messages = state.messages.filter((m) => {
-      if (m.role !== 'assistant' || typeof m.content === 'string') return true
-      return !m.content.some((b) => b.type === 'page_structure')
-    })
+    this.messages = state.messages
 
     // Only restore lazy tools that still exist in the current tool set
     const validLazyToolNames = new Set(this.lazyTools.map((t) => t.name))
@@ -405,7 +322,6 @@ export class Session {
     apiKey: string,
     authSecret: string,
     selectedUuids?: string[],
-    pageStructure?: PageStructure,
   ): Promise<void> {
     if (this.tools.length === 0) {
       send(peer, {
@@ -438,14 +354,9 @@ export class Session {
     // Build initial user message with context
     const userParts: string[] = []
 
-    // Prepend page structure to the first user message
-    if (pageStructure && this.messages.length === 0) {
-      userParts.push(formatPageStructure(pageStructure, this.pageContext!))
-    }
-
     if (selectedUuids?.length) {
       userParts.push(
-        `[User has selected the following blocks: ${selectedUuids.join(', ')}]`,
+        `[User has selected the following paragraphs: ${selectedUuids.join(', ')}]`,
       )
     }
 
@@ -678,8 +589,7 @@ export class Session {
                         })
                       },
                       updateLastToolResult: (toolUseId, content) => {
-                        const lastMsg =
-                          this.messages[this.messages.length - 1]
+                        const lastMsg = this.messages[this.messages.length - 1]
                         if (
                           lastMsg.role === 'user' &&
                           Array.isArray(lastMsg.content)
@@ -737,8 +647,7 @@ export class Session {
 
                   // Wait for client to respond
                   try {
-                    const clientResult =
-                      await this.waitForToolResult(callId)
+                    const clientResult = await this.waitForToolResult(callId)
 
                     if (clientResult.error) {
                       toolResults.push({
@@ -1051,13 +960,6 @@ export class Session {
           } else if (block.type === 'skill') {
             lines.push(`[Skill: ${block.name}]`)
             lines.push(block.text)
-          } else if (block.type === 'page_structure') {
-            lines.push(`[Page Structure]`)
-            try {
-              lines.push(JSON.stringify(JSON.parse(block.text), null, 2))
-            } catch {
-              lines.push(block.text)
-            }
           } else if (block.type === 'tool_use') {
             lines.push(`[Tool Call: ${block.name}]`)
             lines.push(JSON.stringify(block.input, null, 2))

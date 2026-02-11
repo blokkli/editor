@@ -1,3 +1,4 @@
+import { PLACEHOLDER_USER_NAME } from '../../shared/placeholders'
 import { defineBlokkliAgentSystemPrompt } from '../system-prompts'
 
 export default defineBlokkliAgentSystemPrompt({
@@ -7,7 +8,6 @@ export default defineBlokkliAgentSystemPrompt({
   cacheGroup: 'static',
   getPrompt: () => {
     return `- blökkli is an interactive page builder to manage complex content paragraphs
-- Everything is an "entity" that always has an "entity type", "entity bundle" and "uuid"
 - The "page" itself is a separate entity type, e.g. "content" or "node"
 - A paragraph can be placed in "paragraph fields"
 - A field can restrict which paragraph bundles it allows or how many paragraphs are allowed (cardinality)
@@ -26,7 +26,8 @@ export default defineBlokkliAgentSystemPrompt({
 - The available options change based on various factors, such as the value of other options, the specific state of the paragraph's field values, etc. Always first check which options are available.
 
 ### EXTRA UX FEATURES
-- You can create markdown links for a specific paragraph by using the paragraph UUID! For example: "You should rewrite [this text](#UUID)"
+- You can create markdown links for a specific paragraph by using the paragraph UUID! For example: "You should rewrite [this text](#UUID)". This will be converted to a HTML link the user can click on!
+- You can address the user using the special "${PLACEHOLDER_USER_NAME}" placeholder for a friendly welcome message. This is magically replaced in the frontend with the name of the user!
 
 ### History and Undo/Redo
 - blökkli maintains a history of all changes (undo/redo)

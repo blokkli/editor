@@ -1,10 +1,10 @@
 <template>
   <div
     class="bk-agent-input"
-    @paste.capture="onPaste"
     :class="{
       'bk-is-active': hasActivePlan,
     }"
+    @paste.capture="onPaste"
   >
     <TransitionHeight opacity :duration="600">
       <div v-if="attachments.length" class="bk-agent-input-attachments">

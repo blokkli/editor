@@ -59,17 +59,17 @@ const paramsSchema = z.object({
     .describe('Maximum number of results to return (default: 50)'),
 })
 
-const blockResultSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
-  label: z.string().describe('Human-readable block label'),
+const paragraphResultSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  label: z.string().describe('Human-readable paragraph label'),
   nestingLevel: z.number().describe('Nesting depth (0 = root level)'),
-  parent: parentSchema.describe('The parent entity containing this block'),
+  parent: parentSchema.describe('The parent entity containing this paragraph'),
 })
 
 const resultSchema = z.object({
   paragraphs: z
-    .array(blockResultSchema)
+    .array(paragraphResultSchema)
     .describe('paragraphs matching the filters'),
   total: z.number().describe('Total number of matches before pagination'),
   hasMore: z
@@ -221,7 +221,7 @@ export default defineBlokkliAgentTool({
 
     // Paginate and build result
     const limitedCandidates = candidates.slice(0, limit)
-    const resultBlocks: z.infer<typeof blockResultSchema>[] = []
+    const resultBlocks: z.infer<typeof paragraphResultSchema>[] = []
 
     for (const block of limitedCandidates) {
       const fieldList = state.getFieldListForBlock(block.uuid)

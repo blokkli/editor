@@ -15,7 +15,7 @@ export function validateBlocksExist(
   for (const uuid of uuids) {
     const block = app.blocks.getBlock(uuid)
     if (!block) {
-      return { error: `Block not found: ${uuid}` }
+      return { error: `Paragraph not found: ${uuid}` }
     }
     blocks.push(block)
   }
@@ -32,7 +32,7 @@ export function validateSameField(
   | { fieldKey: string; host: RenderedFieldListItem['host'] }
   | { error: string } {
   if (blocks.length === 0) {
-    return { error: 'No blocks provided' }
+    return { error: 'No paragraphs provided' }
   }
 
   const firstBlock = blocks[0]!
@@ -42,7 +42,7 @@ export function validateSameField(
     const block = blocks[i]!
     const blockFieldKey = getFieldKey(block.host.uuid, block.host.fieldName)
     if (blockFieldKey !== fieldKey) {
-      return { error: 'All blocks must be in the same field' }
+      return { error: 'All paragraphs must be in the same field' }
     }
   }
 
@@ -80,7 +80,7 @@ export function validateFieldCardinality(
   if (currentCount + additionalCount > fieldConfig.cardinality) {
     return {
       valid: false,
-      error: `Field "${host.fieldName}" can only hold ${fieldConfig.cardinality} blocks (currently has ${currentCount}, trying to add ${additionalCount})`,
+      error: `Field "${host.fieldName}" can only hold ${fieldConfig.cardinality} paragraphs (currently has ${currentCount}, trying to add ${additionalCount})`,
     }
   }
 

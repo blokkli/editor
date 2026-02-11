@@ -2,7 +2,11 @@
   <div class="bk-agent-error-bubble">
     <Icon name="bk_mdi_priority_high" />
     <span>{{ errorMessage }}</span>
-    <button v-if="retryable" class="bk-agent-error-retry" @click="emit('retry')">
+    <button
+      v-if="retryable"
+      class="bk-agent-error-retry"
+      @click="emit('retry')"
+    >
       {{ $t('aiAgentRetry', 'Retry') }}
     </button>
   </div>

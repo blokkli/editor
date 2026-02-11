@@ -66,16 +66,6 @@ export type GenericToolResultBlock = {
 }
 
 /**
- * Page structure content block - summary of the page state injected
- * as an assistant message before the first user prompt.
- * Providers serialize this as a text block for the API.
- */
-export type GenericPageStructureBlock = {
-  type: 'page_structure'
-  text: string
-}
-
-/**
  * Content block in a message.
  */
 export type GenericContentBlock =
@@ -83,7 +73,6 @@ export type GenericContentBlock =
   | GenericSkillBlock
   | GenericToolUseBlock
   | GenericToolResultBlock
-  | GenericPageStructureBlock
 
 /**
  * Generic message format used internally.
@@ -315,7 +304,7 @@ const blockBundleSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
   contentFields: z.array(blockBundleContentFieldSchema),
-  blockFields: z.array(blockBundleBlockFieldSchema),
+  paragraphFields: z.array(blockBundleBlockFieldSchema),
 })
 
 const fragmentSchema = z.object({
@@ -356,8 +345,8 @@ const pageStructureBlockSchema: z.ZodType<PageStructureBlock> = z.lazy(() =>
   }),
 )
 
-const pageStructureSchema = z.object({
-  totalBlocks: z.number(),
+export const pageStructureSchema = z.object({
+  totalParagraphs: z.number(),
   fields: z.record(z.string(), z.array(pageStructureBlockSchema)),
   entityContentFields: z.record(z.string(), z.string()).optional(),
 })
@@ -388,7 +377,6 @@ const genericContentBlockSchema = z.discriminatedUnion('type', [
     content: z.string(),
     is_error: z.boolean().optional(),
   }),
-  z.object({ type: z.literal('page_structure'), text: z.string() }),
 ])
 
 const genericMessageSchema = z.object({
@@ -413,7 +401,6 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
     type: z.literal('start'),
     prompt: z.string(),
     selectedUuids: z.array(z.string()).optional(),
-    pageStructure: pageStructureSchema.optional(),
   }),
   z.object({
     type: z.literal('tool_result'),

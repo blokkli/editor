@@ -14,7 +14,7 @@ const templateSchema = z.object({
     .describe('A short description of the template'),
   itemBundles: z
     .array(z.string())
-    .describe('Block types contained in the template'),
+    .describe('Paragraph types contained in the template'),
 })
 
 const resultSchema = z.object({
@@ -25,7 +25,7 @@ const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'search_templates',
   description:
-    'Search for available templates. Templates are reusable block collections created by users that can be added to the page.',
+    'Search for available templates. Templates are reusable paragraph collections created by users that can be added to the page.',
   category: 'query',
   prunedSummary: (r) => `found ${r.total || 0} templates`,
   modes: ['readonly', 'editing', 'translating', 'review'],

@@ -8,17 +8,17 @@ import {
 import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 
 const paramsSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
+  uuid: z.string().describe('The paragraph UUID'),
   includeParentChain: z
     .boolean()
     .optional()
     .default(true)
-    .describe('Include ancestor parent blocks up to the page'),
+    .describe('Include ancestor parent paragraphs up to the page'),
   includeSiblings: z
     .boolean()
     .optional()
     .default(false)
-    .describe('Include sibling blocks in the same field'),
+    .describe('Include sibling paragraphs in the same field'),
   includeChildren: z
     .boolean()
     .optional()
@@ -33,40 +33,42 @@ const paramsSchema = z.object({
     .boolean()
     .optional()
     .default(true)
-    .describe('Include block options'),
+    .describe('Include paragraph options'),
 })
 
 const parentChainItemSchema = z.object({
-  uuid: z.string().describe('The parent block UUID'),
-  bundle: z.string().describe('The block type'),
-  label: z.string().describe('Human-readable block label'),
-  field: z.string().describe('The field name this block is in'),
+  uuid: z.string().describe('The parent paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  label: z.string().describe('Human-readable paragraph label'),
+  field: z.string().describe('The field name this paragraph is in'),
 })
 
 const siblingInfoSchema = z.object({
-  total: z.number().describe('Total number of siblings including this block'),
-  position: z.number().describe('1-based position of this block'),
+  total: z
+    .number()
+    .describe('Total number of siblings including this paragraph'),
+  position: z.number().describe('1-based position of this paragraph'),
   prev: z
     .object({
       uuid: z.string(),
       bundle: z.string(),
     })
     .nullable()
-    .describe('Previous sibling block'),
+    .describe('Previous sibling paragraph'),
   next: z
     .object({
       uuid: z.string(),
       bundle: z.string(),
     })
     .nullable()
-    .describe('Next sibling block'),
+    .describe('Next sibling paragraph'),
 })
 
 const childFieldSchema = z.object({
   name: z.string().describe('Field name'),
   label: z.string().describe('Human-readable field label'),
-  count: z.number().describe('Number of blocks in this field'),
-  cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
+  count: z.number().describe('Number of paragraphs in this field'),
+  cardinality: z.number().describe('Max paragraphs allowed (-1 = unlimited)'),
   bundles: z.array(z.string()).describe('Unique bundle types in this field'),
 })
 
@@ -114,27 +116,27 @@ const contentFieldSchema = z.discriminatedUnion('type', [
 ])
 
 const resultSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
-  label: z.string().describe('Human-readable block label'),
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  label: z.string().describe('Human-readable paragraph label'),
   nestingLevel: z.number().describe('Nesting depth (0 = root level)'),
   parent: parentSchema
     .nullable()
-    .describe('The parent entity containing this block'),
+    .describe('The parent entity containing this paragraph'),
 
   parentChain: z
     .array(parentChainItemSchema)
     .optional()
-    .describe('Ancestor parent blocks from immediate parent to page'),
+    .describe('Ancestor parent paragraphs from immediate parent to page'),
 
   siblings: siblingInfoSchema
     .optional()
-    .describe('Information about sibling blocks in the same field'),
+    .describe('Information about sibling paragraphs in the same field'),
 
   childFields: z
     .array(childFieldSchema)
     .optional()
-    .describe('Child fields with block counts'),
+    .describe('Child fields with paragraph counts'),
 
   contentFields: z
     .array(contentFieldSchema)
@@ -143,17 +145,17 @@ const resultSchema = z.object({
 
   options: blockOptionsMapSchema
     .optional()
-    .describe('Block options with current values'),
+    .describe('Paragraph options with current values'),
 })
 
 export default defineBlokkliAgentTool({
-  name: 'get_block_context',
+  name: 'get_paragraph_context',
   description:
-    'Get comprehensive context for a single block including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
+    'Get comprehensive context for a single paragraph including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
   category: 'query',
   volatile: true,
   prunedSummary: (r) =>
-    `context for ${r.bundle || 'block'} (${r.uuid?.slice(0, 8) || '?'})`,
+    `context for ${r.bundle || 'paragraph'} (${r.uuid?.slice(0, 8) || '?'})`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetBlockContextRunning', 'Getting block context...')
@@ -176,7 +178,7 @@ export default defineBlokkliAgentTool({
     const block = blocks.getBlock(params.uuid)
     if (!block) {
       return {
-        error: `Block not found: ${params.uuid}`,
+        error: `Paragraph not found: ${params.uuid}`,
       }
     }
 

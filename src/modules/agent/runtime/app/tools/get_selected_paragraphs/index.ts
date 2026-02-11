@@ -3,23 +3,25 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({})
 
-const blockSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
-  label: z.string().describe('Human-readable block label'),
+const paragraphSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
+  label: z.string().describe('Human-readable paragraph label'),
 })
 
 const resultSchema = z.object({
-  blocks: z.array(blockSchema).describe('Currently selected blocks'),
+  paragraphs: z
+    .array(paragraphSchema)
+    .describe('Currently selected paragraphs'),
 })
 
 export default defineBlokkliAgentTool({
-  name: 'get_selected_blocks',
+  name: 'get_selected_paragraphs',
   description:
-    'Get the blocks currently selected by the user. Returns an empty array if nothing is selected.',
+    'Get the paragraphs currently selected by the user. Returns an empty array if nothing is selected.',
   category: 'query',
   volatile: true,
-  prunedSummary: (r) => `${r.blocks?.length || 0} blocks selected`,
+  prunedSummary: (r) => `${r.paragraphs?.length || 0} paragraphs selected`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetSelectedBlocksRunning', 'Getting selected blocks...')
@@ -29,7 +31,7 @@ export default defineBlokkliAgentTool({
   execute(ctx) {
     const { selection, types, $t } = ctx.app
 
-    const blocks = selection.uuids.value.map((uuid) => {
+    const paragraphs = selection.uuids.value.map((uuid) => {
       const item = selection.items.value.find((v) => v.uuid === uuid)
       const bundle = item?.bundle ?? 'unknown'
       return {
@@ -39,7 +41,7 @@ export default defineBlokkliAgentTool({
       }
     })
 
-    const count = blocks.length
+    const count = paragraphs.length
     const label = count
       ? $t('aiAgentGetSelectedBlocksDone', '@count block(s) selected').replace(
           '@count',
@@ -49,8 +51,8 @@ export default defineBlokkliAgentTool({
 
     return {
       label,
-      result: { blocks },
-      affectedUuids: blocks.map((b) => b.uuid),
+      result: { paragraphs },
+      affectedUuids: paragraphs.map((b) => b.uuid),
     }
   },
 })

@@ -41,11 +41,7 @@ function convertMessages(
       }> = []
 
       for (const block of msg.content) {
-        if (
-          block.type === 'text' ||
-          block.type === 'skill' ||
-          block.type === 'page_structure'
-        ) {
+        if (block.type === 'text' || block.type === 'skill') {
           textParts.push(block.text)
         } else if (block.type === 'tool_use') {
           toolCalls.push({
@@ -73,11 +69,7 @@ function convertMessages(
     } else if (msg.role === 'user') {
       // User messages might contain tool results
       for (const block of msg.content) {
-        if (
-          block.type === 'text' ||
-          block.type === 'skill' ||
-          block.type === 'page_structure'
-        ) {
+        if (block.type === 'text' || block.type === 'skill') {
           result.push({
             role: 'user',
             content: block.text,

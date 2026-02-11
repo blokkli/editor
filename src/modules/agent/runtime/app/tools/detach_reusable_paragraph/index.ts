@@ -16,7 +16,9 @@ export default defineBlokkliAgentTool({
     'Use these new UUIDs for any subsequent operations.',
   category: 'mutation',
   prunedSummary: (r) =>
-    r.success ? `detached ${r.newBlocks?.length || 0} paragraphs` : 'rejected',
+    r.success
+      ? `detached ${r.newParagraphs?.length || 0} paragraphs`
+      : 'rejected',
   lazy: true,
   modes: ['editing'],
   label($t) {

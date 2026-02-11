@@ -11,42 +11,42 @@ const paramsSchema = z.object({
     ),
 })
 
-const blockSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
-  bundle: z.string().describe('The block type'),
+const paragraphSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
+  bundle: z.string().describe('The paragraph type'),
 })
 
-const fieldWithBlocksSchema = z.object({
+const fieldWithParagraphsSchema = z.object({
   label: z.string().describe('Human-readable field label'),
-  cardinality: z.number().describe('Max blocks allowed (-1 = unlimited)'),
+  cardinality: z.number().describe('Max paragraphs allowed (-1 = unlimited)'),
   parent: parentSchema.describe(
-    'Parent object to use when adding blocks to this field',
+    'Parent object to use when adding paragraphs to this field',
   ),
-  blocks: z.array(blockSchema).describe('Blocks in this field'),
+  paragraphs: z.array(paragraphSchema).describe('Paragraphs in this field'),
 })
 
 const resultSchema = z.object({
   parentBundle: z
     .string()
-    .describe('The bundle type of the parent (page or block)'),
+    .describe('The bundle type of the parent (page or paragraph)'),
   fields: z
-    .record(z.string().describe('Field name'), fieldWithBlocksSchema)
-    .describe('Fields keyed by name, each with parent object and blocks'),
+    .record(z.string().describe('Field name'), fieldWithParagraphsSchema)
+    .describe('Fields keyed by name, each with parent object and paragraphs'),
 })
 
 export default defineBlokkliAgentTool({
-  name: 'get_child_blocks',
+  name: 'get_child_paragraphs',
   description:
-    'Get all child fields and blocks for the page or a block. Returns parent objects ready for use with add_blocks. Use this to understand structure before adding blocks.',
+    'Get all child fields and paragraphs for the page or a paragraph. Returns parent objects ready for use with add_paragraphs. Use this to understand structure before adding paragraphs.',
   category: 'query',
   volatile: true,
   prunedSummary: (r) => {
     const fieldCount = Object.keys(r.fields).length
-    const blockCount = Object.values(r.fields).reduce(
-      (s, f) => s + f.blocks.length,
+    const paragraphCount = Object.values(r.fields).reduce(
+      (s, f) => s + f.paragraphs.length,
       0,
     )
-    return `${blockCount} blocks across ${fieldCount} fields`
+    return `${paragraphCount} paragraphs across ${fieldCount} fields`
   },
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
@@ -111,7 +111,7 @@ export default defineBlokkliAgentTool({
         label: string
         cardinality: number
         parent: { type: string; uuid: string; field: string }
-        blocks: { uuid: string; bundle: string }[]
+        paragraphs: { uuid: string; bundle: string }[]
       }
     > = {}
     for (const fieldConfig of fieldConfigs) {
@@ -124,7 +124,7 @@ export default defineBlokkliAgentTool({
           uuid: parentUuid,
           field: fieldConfig.name,
         },
-        blocks: blockList.map((item) => ({
+        paragraphs: blockList.map((item) => ({
           uuid: item.uuid,
           bundle: item.bundle,
         })),

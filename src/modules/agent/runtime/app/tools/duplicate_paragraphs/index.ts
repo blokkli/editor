@@ -32,7 +32,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) =>
     r.success
-      ? `duplicated ${r.newBlocks?.length || 0} paragraphs`
+      ? `duplicated ${r.newParagraphs?.length || 0} paragraphs`
       : 'rejected',
   modes: ['editing'],
   label($t) {

@@ -42,10 +42,10 @@ export type MutationToolResult =
   | {
       success: true
       historyIndex: number
-      newBlocks?: Array<{
+      newParagraphs?: Array<{
         uuid: string
         bundle: string
-        blockFields?: string[]
+        paragraphFields?: string[]
       }>
     }
   | {

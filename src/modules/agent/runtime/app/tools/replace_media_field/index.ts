@@ -5,7 +5,7 @@ import { mutationResultSchema } from '../schemas'
 const paramsSchema = z.object({
   uuid: z
     .string()
-    .describe('The block UUID or entity UUID containing the media field'),
+    .describe('The paragraph UUID or entity UUID containing the media field'),
   field: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
@@ -14,7 +14,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'replace_media_field',
   description:
-    'Replace the media on an existing block field. Use get_content_fields first to see available reference fields, then search_media to find media items.',
+    'Replace the media on an existing paragraph field. Use get_content_fields first to see available reference fields, then search_media to find media items.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'replaced media' : 'rejected'),
   modes: ['editing'],
@@ -32,7 +32,7 @@ export default defineBlokkliAgentTool({
     const block = !isEntity ? blocks.getBlock(params.uuid) : null
 
     if (!isEntity && !block) {
-      return { error: `Block not found: ${params.uuid}` }
+      return { error: `Paragraph not found: ${params.uuid}` }
     }
 
     const entityType = isEntity ? context.value.entityType : ctx.itemEntityType

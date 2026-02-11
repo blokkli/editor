@@ -11,23 +11,23 @@ import {
 } from '../schemas'
 import { onlyUnique } from '#blokkli/helpers'
 
-const blockOptionsSchema = z.object({
-  uuid: z.string().describe('The block UUID'),
+const paragraphOptionsSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
   options: z
     .record(z.string(), optionValueSchema)
     .describe('Options to set as key-value pairs'),
 })
 
 const paramsSchema = z.object({
-  blocks: z
-    .array(blockOptionsSchema)
-    .describe('Array of blocks with their options to set'),
+  paragraphs: z
+    .array(paragraphOptionsSchema)
+    .describe('Array of paragraphs with their options to set'),
 })
 
 export default defineBlokkliAgentTool({
-  name: 'set_block_options',
+  name: 'set_paragraph_options',
   description:
-    'Set options on one or more blocks. Each block entry contains a UUID and an options object with key-value pairs.',
+    'Set options on one or more paragraphs. Each paragraph entry contains a UUID and an options object with key-value pairs.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'updated options' : 'rejected'),
   modes: ['editing'],
@@ -40,8 +40,8 @@ export default defineBlokkliAgentTool({
   execute(ctx, params) {
     const { blocks, definitions, selection } = ctx.app
 
-    if (params.blocks.length === 0) {
-      return { error: 'No blocks provided' }
+    if (params.paragraphs.length === 0) {
+      return { error: 'No paragraphs provided' }
     }
 
     // Validate all options before applying
@@ -52,7 +52,7 @@ export default defineBlokkliAgentTool({
     }> = []
     const updatedBlocks = new Set<string>()
 
-    for (const blockEntry of params.blocks) {
+    for (const blockEntry of params.paragraphs) {
       const optionEntries = Object.entries(blockEntry.options)
       if (optionEntries.length === 0) {
         continue
@@ -61,7 +61,7 @@ export default defineBlokkliAgentTool({
       // Check block exists
       const block = blocks.getBlock(blockEntry.uuid)
       if (!block) {
-        return { error: `Block not found: ${blockEntry.uuid}` }
+        return { error: `Paragraph not found: ${blockEntry.uuid}` }
       }
 
       // For from_library blocks, use the reusable block's actual bundle.
@@ -77,7 +77,7 @@ export default defineBlokkliAgentTool({
 
       if (!definition) {
         return {
-          error: `Block definition not found for bundle: ${bundle}`,
+          error: `Paragraph definition not found for bundle: ${bundle}`,
         }
       }
 
@@ -93,7 +93,7 @@ export default defineBlokkliAgentTool({
         const optionDef = availableOptions.find((o) => o.property === key)
         if (!optionDef) {
           return {
-            error: `Option "${key}" is not available for block type "${bundle}"`,
+            error: `Option "${key}" is not available for paragraph type "${bundle}"`,
           }
         }
 
@@ -135,7 +135,9 @@ export default defineBlokkliAgentTool({
             .replace('@count', String(optionCount))
             .replace('@blockCount', String(blockCount))
 
-    const affectedUuids = params.blocks.map((v) => v.uuid).filter(onlyUnique)
+    const affectedUuids = params.paragraphs
+      .map((v) => v.uuid)
+      .filter(onlyUnique)
 
     return {
       type: 'options' as const,

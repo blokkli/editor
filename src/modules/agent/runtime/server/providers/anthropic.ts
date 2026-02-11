@@ -31,7 +31,6 @@ function convertMessages(messages: GenericMessage[]): MessageParam[] {
       switch (block.type) {
         case 'text':
         case 'skill':
-        case 'page_structure':
           return { type: 'text' as const, text: block.text }
         case 'tool_use':
           return {

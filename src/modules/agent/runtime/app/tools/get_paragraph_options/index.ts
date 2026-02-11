@@ -4,21 +4,21 @@ import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 import { blockOptionsMapSchema, buildBlockOptionsMap } from '../schemas'
 
 const paramsSchema = z.object({
-  uuids: z.array(z.string()).describe('The block UUIDs to get options for'),
+  uuids: z.array(z.string()).describe('The paragraph UUIDs to get options for'),
 })
 
 const resultSchema = z.record(
-  z.string().describe('Block UUID'),
-  blockOptionsMapSchema.describe('Options for this block'),
+  z.string().describe('Paragraph UUID'),
+  blockOptionsMapSchema.describe('Options for this paragraph'),
 )
 
 export default defineBlokkliAgentTool({
-  name: 'get_block_options',
+  name: 'get_paragraph_options',
   description:
-    'Get available options and their current values for one or more blocks',
+    'Get available options and their current values for one or more paragraphs',
   category: 'query',
   volatile: true,
-  prunedSummary: (r) => `options for ${Object.keys(r || {}).length} blocks`,
+  prunedSummary: (r) => `options for ${Object.keys(r || {}).length} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetBlockOptionsRunning', 'Getting block options...')

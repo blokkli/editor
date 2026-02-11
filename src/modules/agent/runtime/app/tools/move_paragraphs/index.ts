@@ -1,19 +1,24 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { mutationResultSchema, parentSchema, positionSchema, resolvePosition } from '../schemas'
+import {
+  mutationResultSchema,
+  parentSchema,
+  positionSchema,
+  resolvePosition,
+} from '../schemas'
 
 const paramsSchema = z.object({
-  uuids: z.array(z.string()).describe('The UUIDs of the blocks to move'),
+  uuids: z.array(z.string()).describe('The UUIDs of the paragraphs to move'),
   parent: parentSchema.describe('The target parent entity'),
   position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
-  name: 'move_blocks',
+  name: 'move_paragraphs',
   description:
-    'Move one or more blocks to a different parent field. All blocks are moved to the same location and they KEEP their UUIDs!!',
+    'Move one or more paragraphs to a different parent field. All paragraphs are moved to the same location and they KEEP their UUIDs!!',
   category: 'mutation',
-  prunedSummary: (r) => (r.success ? 'moved blocks' : 'rejected'),
+  prunedSummary: (r) => (r.success ? 'moved paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {
     return $t('aiAgentMoveBlocksRunning', 'Moving blocks...')
@@ -25,7 +30,7 @@ export default defineBlokkliAgentTool({
     const { blocks, types } = ctx.app
 
     if (params.uuids.length === 0) {
-      return { error: 'No block UUIDs provided' }
+      return { error: 'No paragraph UUIDs provided' }
     }
 
     // Validate that all blocks exist
@@ -33,7 +38,7 @@ export default defineBlokkliAgentTool({
     for (const uuid of params.uuids) {
       const block = blocks.getBlock(uuid)
       if (!block) {
-        return { error: `Block not found: ${uuid}` }
+        return { error: `Paragraph not found: ${uuid}` }
       }
       validBlocks.push({ uuid, bundle: block.bundle })
     }
@@ -53,7 +58,12 @@ export default defineBlokkliAgentTool({
           )
 
     // Resolve position to afterUuid
-    const resolved = resolvePosition(ctx.app, params.parent.uuid, params.parent.field, params.position)
+    const resolved = resolvePosition(
+      ctx.app,
+      params.parent.uuid,
+      params.parent.field,
+      params.position,
+    )
     if ('error' in resolved) return resolved
 
     // Return the action for the framework to handle

@@ -21,10 +21,10 @@ const currentMutationSchema = z.object({
   index: z.number().describe('History index for use with go_to_history_index'),
   label: z.string().describe('Human-readable mutation label'),
   pluginId: z.string().optional().describe('Internal plugin ID'),
-  affectedBlockUuid: z
+  affectedParagraphUuid: z
     .string()
     .optional()
-    .describe('UUID of the block that was affected'),
+    .describe('UUID of the paragraph that was affected'),
 })
 
 const resultSchema = z.object({
@@ -81,7 +81,7 @@ export default defineBlokkliAgentTool({
           index: currentIndex,
           label: getMutationLabel(mutation),
           pluginId: mutation.pluginId,
-          affectedBlockUuid: mutation.plugin?.affectedItemUuid,
+          affectedParagraphUuid: mutation.plugin?.affectedItemUuid,
         }
       }
     }

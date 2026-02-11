@@ -1,4 +1,8 @@
-export default defineEventHandler<Promise<{ uuid: string; title: string; createdAt: string; updatedAt: string }[]>>(async (event) => {
+export default defineEventHandler<
+  Promise<
+    { uuid: string; title: string; createdAt: string; updatedAt: string }[]
+  >
+>(async (event) => {
   const query = getQuery(event)
   const entityType = query.entityType as string
   const entityUuid = query.entityUuid as string
@@ -33,5 +37,10 @@ export default defineEventHandler<Promise<{ uuid: string; title: string; created
     }),
   )
 
-  return summaries.filter(Boolean) as { uuid: string; title: string; createdAt: string; updatedAt: string }[]
+  return summaries.filter(Boolean) as {
+    uuid: string
+    title: string
+    createdAt: string
+    updatedAt: string
+  }[]
 })

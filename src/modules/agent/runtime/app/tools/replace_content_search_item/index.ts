@@ -6,7 +6,7 @@ import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 const paramsSchema = z.object({
   uuid: z
     .string()
-    .describe('The block UUID containing the content reference field'),
+    .describe('The paragraph UUID containing the content reference field'),
   field: z.string().describe('The content field name (reference type)'),
   itemId: z.string().describe('Content item ID from search_content_* results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
@@ -16,7 +16,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'replace_content_search_item',
   description:
-    'Replace a content reference on an existing block field. Use get_content_fields first to see available reference fields, then search_content_* to find content items.',
+    'Replace a content reference on an existing paragraph field. Use get_content_fields first to see available reference fields, then search_content_* to find content items.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'replaced content reference' : 'rejected'),
   modes: ['editing'],
@@ -36,7 +36,7 @@ export default defineBlokkliAgentTool({
     // Validate block exists.
     const block = blocks.getBlock(params.uuid)
     if (!block) {
-      return { error: `Block not found: ${params.uuid}` }
+      return { error: `Paragraph not found: ${params.uuid}` }
     }
 
     // Validate field exists and is a droppable field.
@@ -47,7 +47,7 @@ export default defineBlokkliAgentTool({
     )
     if (!config) {
       return {
-        error: `Field "${params.field}" is not a reference content field on ${block.bundle} blocks`,
+        error: `Field "${params.field}" is not a reference content field on ${block.bundle} paragraphs`,
       }
     }
     const allowedRestriction = config.allowed.find(

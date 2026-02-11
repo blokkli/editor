@@ -133,13 +133,13 @@ export const parentSchema = z.object({
   type: z
     .string()
     .describe(
-      'The entity type of the parent. Do NOT guess this - always use the parent object returned by get_child_blocks.',
+      'The entity type of the parent. Do NOT guess this - always use the parent object returned by get_child_paragraphs.',
     ),
-  uuid: z.string().describe('The UUID of the parent entity or block'),
+  uuid: z.string().describe('The UUID of the parent entity or paragraph'),
   field: z
     .string()
     .describe(
-      'The field name on the parent. Do NOT guess this - always use the parent object returned by get_child_blocks.',
+      'The field name on the parent. Do NOT guess this - always use the parent object returned by get_child_paragraphs.',
     ),
 })
 
@@ -285,23 +285,23 @@ export function getEditableValue(
 }
 
 /**
- * Get all child fields and their blocks for a given entity UUID.
+ * Get all child fields and their paragraphs for a given entity UUID.
  * Walks mutatedFields to find fields belonging to the entity.
  */
-export function getBlockChildren(
+export function getParagraphChildren(
   app: BlokkliApp,
   uuid: string,
-): { fieldName: string; blocks: { uuid: string; bundle: string }[] }[] {
+): { fieldName: string; paragraphs: { uuid: string; bundle: string }[] }[] {
   const result: {
     fieldName: string
-    blocks: { uuid: string; bundle: string }[]
+    paragraphs: { uuid: string; bundle: string }[]
   }[] = []
 
   for (const field of app.state.mutatedFields.value) {
     if (field.entityUuid === uuid && field.list.length > 0) {
       result.push({
         fieldName: field.name,
-        blocks: field.list.map((item) => ({
+        paragraphs: field.list.map((item) => ({
           uuid: item.uuid,
           bundle: item.bundle,
         })),
@@ -326,7 +326,7 @@ export const positionSchema = z
   .optional()
   .default('end')
   .describe(
-    'Where to place the block(s). "start" = beginning, "end" (default) = append at end, "after:<UUID>" = after a specific block, "before:<UUID>" = before a specific block.',
+    'Where to place the paragraph(s). "start" = beginning, "end" (default) = append at end, "after:<UUID>" = after a specific paragraph, "before:<UUID>" = before a specific paragraph.',
   )
 
 /**
@@ -363,7 +363,7 @@ export function resolvePosition(
     const found = list.find((b) => b.uuid === uuid)
     if (!found) {
       return {
-        error: `Position "after:${uuid}": block not found in field "${fieldName}".`,
+        error: `Position "after:${uuid}": paragraph not found in field "${fieldName}".`,
       }
     }
     return { afterUuid: uuid }
@@ -375,7 +375,7 @@ export function resolvePosition(
     const index = list.findIndex((b) => b.uuid === uuid)
     if (index === -1) {
       return {
-        error: `Position "before:${uuid}": block not found in field "${fieldName}".`,
+        error: `Position "before:${uuid}": paragraph not found in field "${fieldName}".`,
       }
     }
     // If it's the first block, afterUuid is null (insert at beginning)
@@ -394,22 +394,22 @@ export function resolvePosition(
 export const mutationSuccessSchema = z.union([
   z.object({
     success: z.literal(true),
-    newBlocks: z
+    newParagraphs: z
       .array(
         z.object({
           uuid: z.string(),
           bundle: z.string(),
-          blockFields: z
+          paragraphFields: z
             .array(z.string())
             .optional()
             .describe(
-              "Block fields on this new block that can hold nested blocks. Call get_child_blocks with this block's UUID to add blocks to these fields.",
+              "Paragraph fields on this new paragraph that can hold nested paragraphs. Call get_child_paragraphs with this paragraph's UUID to add paragraphs to these fields.",
             ),
         }),
       )
       .optional()
       .describe(
-        'Blocks created by this mutation (for add/duplicate operations), with their UUIDs and bundle types',
+        'Paragraphs created by this mutation (for add/duplicate operations), with their UUIDs and bundle types',
       ),
     historyIndex: z
       .number()

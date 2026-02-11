@@ -358,7 +358,7 @@ export default defineBlokkliAgentTool({
     'Add one or more new paragraphs to the page. Supports nested structures via the `children` property — define entire paragraph trees in a single call. IMPORTANT: Always provide content field values (text, media/entity references) directly via contentFields, instead of adding empty paragraphs! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT paragraph fields! For nested paragraphs, use the `children` property keyed by paragraph field name. You can also set paragraph options inline via the `options` property (key-value pairs).',
   category: 'mutation',
   prunedSummary: (r) =>
-    r.success ? `added ${r.newBlocks?.length || 0} paragraphs` : 'rejected',
+    r.success ? `added ${r.newParagraphs?.length || 0} paragraphs` : 'rejected',
   modes: ['editing'],
   label($t) {
     return $t('aiAgentAddBlocksRunning', 'Adding blocks...')

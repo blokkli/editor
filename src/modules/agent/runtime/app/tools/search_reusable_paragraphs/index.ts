@@ -7,27 +7,31 @@ const paramsSchema = z.object({
   parent: parentSchema
     .optional()
     .describe(
-      'The parent entity where a reusable block would be added. When provided, results are filtered to only include bundles allowed in this field.',
+      'The parent entity where a reusable paragraph would be added. When provided, results are filtered to only include bundles allowed in this field.',
     ),
 })
 
-const reusableBlockSchema = z.object({
-  uuid: z.string().describe('The unique UUID of the reusable block'),
+const reusableParagraphSchema = z.object({
+  uuid: z.string().describe('The unique UUID of the reusable paragraph'),
   label: z.string().describe('The display label'),
-  bundle: z.string().describe('The block bundle type of the reusable block'),
+  bundle: z
+    .string()
+    .describe('The paragraph bundle type of the reusable paragraph'),
 })
 
 const resultSchema = z.object({
-  items: z.array(reusableBlockSchema).describe('Matching reusable blocks'),
-  total: z.number().describe('Total number of matching reusable blocks'),
+  items: z
+    .array(reusableParagraphSchema)
+    .describe('Matching reusable paragraphs'),
+  total: z.number().describe('Total number of matching reusable paragraphs'),
 })
 
 export default defineBlokkliAgentTool({
-  name: 'search_reusable_blocks',
+  name: 'search_reusable_paragraphs',
   description:
-    'Search for reusable blocks. These are pre-built blocks that can be placed on multiple pages. Unlike templates, reusable blocks stay linked: editing the reusable block updates all pages using it. Use add_reusable_block to add a result to the page.',
+    'Search for reusable paragraphs. These are pre-built paragraphs that can be placed on multiple pages. Unlike templates, reusable paragraphs stay linked: editing the reusable paragraph updates all pages using it. Use add_reusable_paragraph to add a result to the page.',
   category: 'query',
-  prunedSummary: (r) => `found ${r.total} reusable blocks`,
+  prunedSummary: (r) => `found ${r.total} reusable paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentSearchLibraryRunning', 'Searching reusable blocks...')

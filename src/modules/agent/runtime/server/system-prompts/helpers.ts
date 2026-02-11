@@ -8,7 +8,7 @@ export function getEditModeDescription(editMode: string): string {
     case 'editing':
       return 'The user has full editing access and can make any changes to the page structure and content.'
     case 'translating':
-      return 'The user is translating the page content. They can only edit content text fields to provide translations. Structural changes (adding, deleting, moving blocks) are not allowed.'
+      return 'The user is translating the page content. They can only edit content text fields to provide translations. Structural changes (adding, deleting, moving paragraphs) are not allowed.'
     case 'readonly':
       return 'The user has read-only access. No changes can be made to the page. You can only answer questions about the content.'
     case 'review':

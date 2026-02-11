@@ -24,7 +24,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) =>
     r.success
-      ? `added template (${r.newBlocks?.length || 0} paragraphs)`
+      ? `added template (${r.newParagraphs?.length || 0} paragraphs)`
       : 'rejected',
   lazy: true,
   modes: ['editing'],

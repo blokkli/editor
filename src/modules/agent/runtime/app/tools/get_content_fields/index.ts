@@ -6,14 +6,14 @@ const paramsSchema = z.object({
   uuids: z
     .array(z.string())
     .describe(
-      'One or more block UUIDs (or the page UUID to get page-level fields)',
+      'One or more paragraph UUIDs (or the page UUID to get page-level fields)',
     ),
   includeNested: z
     .boolean()
     .optional()
     .default(true)
     .describe(
-      'Recursively include content fields from all nested child blocks (default: true). Set to false to only get direct fields.',
+      'Recursively include content fields from all nested child paragraphs (default: true). Set to false to only get direct fields.',
     ),
 })
 
@@ -65,11 +65,11 @@ const fieldSchema = z.discriminatedUnion('type', [
 ])
 
 type FieldInfo = z.infer<typeof fieldSchema>
-type BlockFields = Record<string, FieldInfo>
-type Result = Record<string, BlockFields>
+type ParagraphFields = Record<string, FieldInfo>
+type Result = Record<string, ParagraphFields>
 
 const resultSchema = z.record(
-  z.string().describe('Block UUID'),
+  z.string().describe('Paragraph UUID'),
   z.record(z.string().describe('Field name'), fieldSchema),
 )
 
@@ -88,10 +88,10 @@ function addField(
 export default defineBlokkliAgentTool({
   name: 'get_content_fields',
   description:
-    'Get all content fields (text, media, links) for a block and optionally its nested children',
+    'Get all content fields (text, media, links) for a paragraph and optionally its nested children',
   category: 'query',
   volatile: true,
-  prunedSummary: (r) => `fields for ${Object.keys(r || {}).length} blocks`,
+  prunedSummary: (r) => `fields for ${Object.keys(r || {}).length} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetContentFieldsRunning', 'Getting content fields...')
