@@ -29,6 +29,7 @@
             :history="conversation"
             :active-item="activeItem"
             :is-thinking="isThinking"
+            @retry="emit('retry')"
           />
           <component
             :is="pendingToolComponent"
@@ -172,6 +173,7 @@ const emit = defineEmits<{
   deleteConversation: [id: string]
   showConversations: []
   hideConversations: []
+  retry: []
   approvePlan: []
   rejectPlan: []
 }>()

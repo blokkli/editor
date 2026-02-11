@@ -451,15 +451,18 @@ export class Session {
 
     userParts.push(prompt)
 
-    this.messages.push({
+    const userMessage: GenericMessage = {
       role: 'user',
       content: userParts.join('\n\n'),
-    })
+    }
+    this.messages.push(userMessage)
 
     this.abortController = new AbortController()
     this.isProcessing = true
     let toolCallCounter = 0
     let planRetryCount = 0
+    let streamRetryCount = 0
+    const MAX_STREAM_RETRIES = 1
 
     try {
       while (true) {
@@ -540,266 +543,309 @@ export class Session {
           },
         )
 
-        // Process stream events
-        for await (const event of stream) {
-          // Check for abort during streaming
-          if (this.abortController?.signal.aborted) {
-            break
-          }
-
-          switch (event.type) {
-            case 'text_start':
-              inTextBlock = true
-              currentTextContent = ''
+        // Process stream events — wrapped in try/catch for transient retry
+        try {
+          for await (const event of stream) {
+            // Check for abort during streaming
+            if (this.abortController?.signal.aborted) {
               break
+            }
 
-            case 'text_delta':
-              if (inTextBlock) {
-                const transformed = transformText(event.text)
-                currentTextContent += transformed
-                send(peer, { type: 'text_delta', content: transformed })
-              }
-              break
+            switch (event.type) {
+              case 'text_start':
+                inTextBlock = true
+                currentTextContent = ''
+                break
 
-            case 'text_end':
-              if (inTextBlock && currentTextContent) {
-                assistantContent.push({
-                  type: 'text',
-                  text: currentTextContent,
-                })
-              }
-              currentTextContent = ''
-              inTextBlock = false
-              break
-
-            case 'tool_use_start':
-              currentToolUse = {
-                id: event.id,
-                name: event.name,
-                inputJson: '',
-              }
-              break
-
-            case 'tool_use_delta':
-              if (currentToolUse) {
-                currentToolUse.inputJson += event.partial_json
-              }
-              break
-
-            case 'tool_use_end':
-              if (currentToolUse) {
-                let input: Record<string, unknown>
-                try {
-                  input = JSON.parse(currentToolUse.inputJson || '{}')
-                } catch {
-                  // Malformed JSON from the model — record an empty tool_use
-                  // so the message structure stays valid, then return an error
-                  // result so the LLM can retry.
-                  input = {}
-                  assistantContent.push({
-                    type: 'tool_use',
-                    id: currentToolUse.id,
-                    name: currentToolUse.name,
-                    input,
-                  })
-                  toolResults.push({
-                    type: 'tool_result',
-                    tool_use_id: currentToolUse.id,
-                    content: JSON.stringify({
-                      error:
-                        'Your tool call produced malformed JSON input. Please try again.',
-                    }),
-                    is_error: true,
-                  })
-                  currentToolUse = null
-                  break
+              case 'text_delta':
+                if (inTextBlock) {
+                  const transformed = transformText(event.text)
+                  currentTextContent += transformed
+                  send(peer, { type: 'text_delta', content: transformed })
                 }
-                const callId = `tc_${toolCallCounter++}`
+                break
 
-                // Add to assistant content
-                assistantContent.push({
-                  type: 'tool_use',
-                  id: currentToolUse.id,
-                  name: currentToolUse.name,
-                  input,
-                })
+              case 'text_end':
+                if (inTextBlock && currentTextContent) {
+                  assistantContent.push({
+                    type: 'text',
+                    text: currentTextContent,
+                  })
+                }
+                currentTextContent = ''
+                inTextBlock = false
+                break
 
-                // Check if this is a server-side tool
-                const matchedServerTool = serverTools.find(
-                  (t) => t.name === currentToolUse!.name,
-                )
-                if (matchedServerTool) {
-                  // Reject if the tool is not available in this context
-                  // (e.g. LLM hallucinated a tool that was not offered).
-                  if (
-                    matchedServerTool.isAvailable &&
-                    !matchedServerTool.isAvailable(defCtx)
-                  ) {
+              case 'tool_use_start':
+                currentToolUse = {
+                  id: event.id,
+                  name: event.name,
+                  inputJson: '',
+                }
+                break
+
+              case 'tool_use_delta':
+                if (currentToolUse) {
+                  currentToolUse.inputJson += event.partial_json
+                }
+                break
+
+              case 'tool_use_end':
+                if (currentToolUse) {
+                  let input: Record<string, unknown>
+                  try {
+                    input = JSON.parse(currentToolUse.inputJson || '{}')
+                  } catch {
+                    // Malformed JSON from the model — record an empty tool_use
+                    // so the message structure stays valid, then return an error
+                    // result so the LLM can retry.
+                    input = {}
+                    assistantContent.push({
+                      type: 'tool_use',
+                      id: currentToolUse.id,
+                      name: currentToolUse.name,
+                      input,
+                    })
                     toolResults.push({
                       type: 'tool_result',
                       tool_use_id: currentToolUse.id,
                       content: JSON.stringify({
-                        error: 'This tool is not available right now.',
+                        error:
+                          'Your tool call produced malformed JSON input. Please try again.',
                       }),
                       is_error: true,
                     })
                     currentToolUse = null
                     break
                   }
-                  const handlerCtx: ServerToolContext = {
-                    toolUseId: currentToolUse.id,
-                    send: (msg) => send(peer, msg),
-                    resolvedSkills,
-                    lazyTools: this.lazyTools,
-                    activatedLazyTools: this.activatedLazyTools,
-                    loadedSkills: this.loadedSkills,
-                    plan: this.plan,
-                    setPlan: (p) => {
-                      this.plan = p
-                    },
-                    toClientPlan: () => this.toClientPlan(),
-                    waitForPlanApproval: () => this.waitForPlanApproval(),
-                    assistantContent,
-                    commitMessagesEarly: (toolResult) => {
-                      if (assistantContent.length) {
-                        this.messages.push({
-                          role: 'assistant',
-                          content: [...assistantContent],
-                        })
-                        assistantContent.length = 0
-                      }
-                      this.messages.push({
-                        role: 'user',
-                        content: [toolResult],
+                  const callId = `tc_${toolCallCounter++}`
+
+                  // Add to assistant content
+                  assistantContent.push({
+                    type: 'tool_use',
+                    id: currentToolUse.id,
+                    name: currentToolUse.name,
+                    input,
+                  })
+
+                  // Check if this is a server-side tool
+                  const matchedServerTool = serverTools.find(
+                    (t) => t.name === currentToolUse!.name,
+                  )
+                  if (matchedServerTool) {
+                    // Reject if the tool is not available in this context
+                    // (e.g. LLM hallucinated a tool that was not offered).
+                    if (
+                      matchedServerTool.isAvailable &&
+                      !matchedServerTool.isAvailable(defCtx)
+                    ) {
+                      toolResults.push({
+                        type: 'tool_result',
+                        tool_use_id: currentToolUse.id,
+                        content: JSON.stringify({
+                          error: 'This tool is not available right now.',
+                        }),
+                        is_error: true,
                       })
-                    },
-                    updateLastToolResult: (toolUseId, content) => {
-                      const lastMsg = this.messages[this.messages.length - 1]
-                      if (
-                        lastMsg.role === 'user' &&
-                        Array.isArray(lastMsg.content)
-                      ) {
-                        const resultBlock = lastMsg.content.find(
-                          (b) =>
-                            b.type === 'tool_result' &&
-                            b.tool_use_id === toolUseId,
-                        )
-                        if (resultBlock && resultBlock.type === 'tool_result') {
-                          resultBlock.content = content
+                      currentToolUse = null
+                      break
+                    }
+                    const handlerCtx: ServerToolContext = {
+                      toolUseId: currentToolUse.id,
+                      send: (msg) => send(peer, msg),
+                      resolvedSkills,
+                      lazyTools: this.lazyTools,
+                      activatedLazyTools: this.activatedLazyTools,
+                      loadedSkills: this.loadedSkills,
+                      plan: this.plan,
+                      setPlan: (p) => {
+                        this.plan = p
+                      },
+                      toClientPlan: () => this.toClientPlan(),
+                      waitForPlanApproval: () => this.waitForPlanApproval(),
+                      assistantContent,
+                      commitMessagesEarly: (toolResult) => {
+                        if (assistantContent.length) {
+                          this.messages.push({
+                            role: 'assistant',
+                            content: [...assistantContent],
+                          })
+                          assistantContent.length = 0
                         }
+                        this.messages.push({
+                          role: 'user',
+                          content: [toolResult],
+                        })
+                      },
+                      updateLastToolResult: (toolUseId, content) => {
+                        const lastMsg =
+                          this.messages[this.messages.length - 1]
+                        if (
+                          lastMsg.role === 'user' &&
+                          Array.isArray(lastMsg.content)
+                        ) {
+                          const resultBlock = lastMsg.content.find(
+                            (b) =>
+                              b.type === 'tool_result' &&
+                              b.tool_use_id === toolUseId,
+                          )
+                          if (
+                            resultBlock &&
+                            resultBlock.type === 'tool_result'
+                          ) {
+                            resultBlock.content = content
+                          }
+                        }
+                      },
+                    }
+                    try {
+                      const parsed = matchedServerTool
+                        .inputSchema(defCtx)
+                        .parse(input)
+                      const result = await matchedServerTool.handle(
+                        handlerCtx,
+                        parsed,
+                      )
+                      toolResults.push(...result.toolResults)
+                      if (result.extraBlocks) {
+                        extraBlocks.push(...result.extraBlocks)
                       }
-                    },
+                      if (result.messagesCommitted) {
+                        messagesCommittedByPlanTool = true
+                      }
+                    } catch (e) {
+                      toolResults.push({
+                        type: 'tool_result',
+                        tool_use_id: currentToolUse.id,
+                        content: JSON.stringify({
+                          error: `Invalid input: ${(e as Error).message}`,
+                        }),
+                        is_error: true,
+                      })
+                    }
+                    currentToolUse = null
+                    break
                   }
+
+                  // Send tool call to client
+                  send(peer, {
+                    type: 'tool_call',
+                    callId,
+                    tool: currentToolUse.name,
+                    params: input as Record<string, unknown>,
+                  })
+
+                  // Wait for client to respond
                   try {
-                    const parsed = matchedServerTool
-                      .inputSchema(defCtx)
-                      .parse(input)
-                    const result = await matchedServerTool.handle(
-                      handlerCtx,
-                      parsed,
-                    )
-                    toolResults.push(...result.toolResults)
-                    if (result.extraBlocks) {
-                      extraBlocks.push(...result.extraBlocks)
+                    const clientResult =
+                      await this.waitForToolResult(callId)
+
+                    if (clientResult.error) {
+                      toolResults.push({
+                        type: 'tool_result',
+                        tool_use_id: currentToolUse.id,
+                        content: JSON.stringify({
+                          error: clientResult.error,
+                        }),
+                        is_error: true,
+                      })
+                    } else {
+                      // If the result has an agentMessage, replace label
+                      // with it in the payload sent to the LLM. The label
+                      // is only shown in the UI.
+                      let resultForLLM = clientResult.result
+                      if (
+                        typeof resultForLLM === 'object' &&
+                        resultForLLM !== null &&
+                        'agentMessage' in resultForLLM
+                      ) {
+                        const { agentMessage, ...rest } =
+                          resultForLLM as Record<string, unknown>
+                        resultForLLM = { ...rest, label: agentMessage }
+                      }
+
+                      toolResults.push({
+                        type: 'tool_result',
+                        tool_use_id: currentToolUse.id,
+                        content: JSON.stringify(resultForLLM),
+                      })
                     }
-                    if (result.messagesCommitted) {
-                      messagesCommittedByPlanTool = true
-                    }
-                  } catch (e) {
+                  } catch (error) {
                     toolResults.push({
                       type: 'tool_result',
                       tool_use_id: currentToolUse.id,
                       content: JSON.stringify({
-                        error: `Invalid input: ${(e as Error).message}`,
+                        error: (error as Error).message,
                       }),
                       is_error: true,
                     })
                   }
+
                   currentToolUse = null
-                  break
                 }
+                break
 
-                // Send tool call to client
-                send(peer, {
-                  type: 'tool_call',
-                  callId,
-                  tool: currentToolUse.name,
-                  params: input as Record<string, unknown>,
-                })
-
-                // Wait for client to respond
-                try {
-                  const clientResult = await this.waitForToolResult(callId)
-
-                  if (clientResult.error) {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({ error: clientResult.error }),
-                      is_error: true,
-                    })
-                  } else {
-                    // If the result has an agentMessage, replace label
-                    // with it in the payload sent to the LLM. The label
-                    // is only shown in the UI.
-                    let resultForLLM = clientResult.result
-                    if (
-                      typeof resultForLLM === 'object' &&
-                      resultForLLM !== null &&
-                      'agentMessage' in resultForLLM
-                    ) {
-                      const { agentMessage, ...rest } = resultForLLM as Record<
-                        string,
-                        unknown
-                      >
-                      resultForLLM = { ...rest, label: agentMessage }
-                    }
-
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify(resultForLLM),
-                    })
-                  }
-                } catch (error) {
-                  toolResults.push({
-                    type: 'tool_result',
-                    tool_use_id: currentToolUse.id,
-                    content: JSON.stringify({
-                      error: (error as Error).message,
-                    }),
-                    is_error: true,
+              case 'message_end':
+                if (
+                  event.inputTokens !== undefined &&
+                  event.outputTokens !== undefined
+                ) {
+                  const defaultModel =
+                    models.find((m) => m.isDefault) || models[0]
+                  send(peer, {
+                    type: 'usage',
+                    usage: {
+                      inputTokens: event.inputTokens,
+                      outputTokens: event.outputTokens,
+                      cacheCreationInputTokens:
+                        event.cacheCreationInputTokens ?? 0,
+                      cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
+                      pricing: defaultModel?.pricing ?? null,
+                    },
                   })
                 }
+                break
 
-                currentToolUse = null
-              }
-              break
-
-            case 'message_end':
-              if (
-                event.inputTokens !== undefined &&
-                event.outputTokens !== undefined
-              ) {
-                const defaultModel =
-                  models.find((m) => m.isDefault) || models[0]
-                send(peer, {
-                  type: 'usage',
-                  usage: {
-                    inputTokens: event.inputTokens,
-                    outputTokens: event.outputTokens,
-                    cacheCreationInputTokens:
-                      event.cacheCreationInputTokens ?? 0,
-                    cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
-                    pricing: defaultModel?.pricing ?? null,
-                  },
-                })
-              }
-              break
-
-            case 'error':
-              throw event.error
+              case 'error':
+                throw event.error
+            }
           }
+        } catch (streamError) {
+          // Retry transient streaming errors (e.g. JSON parse errors
+          // mid-stream) when no tools have been executed this turn.
+          // API errors have an HTTP `status` property and should NOT
+          // be retried.
+          const isApiError =
+            typeof (streamError as { status?: unknown }).status === 'number'
+          const isRetryable = !isApiError && toolResults.length === 0
+
+          if (isRetryable && streamRetryCount < MAX_STREAM_RETRIES) {
+            streamRetryCount++
+            console.warn(
+              `[blokkli agent] Transient stream error, retrying (attempt ${streamRetryCount}/${MAX_STREAM_RETRIES}):`,
+              streamError,
+            )
+            continue
+          }
+
+          // For transient errors that exhausted retries: roll back the
+          // user message (if no turns committed anything to messages)
+          // so the user can simply re-send their prompt.
+          if (
+            isRetryable &&
+            this.messages[this.messages.length - 1] === userMessage
+          ) {
+            this.messages.pop()
+            console.error(
+              '[blokkli agent] Transient stream error, retries exhausted:',
+              streamError,
+            )
+            const classified = classifyError(streamError)
+            send(peer, { type: 'error', ...classified, retryable: true })
+            break
+          }
+
+          throw streamError
         }
 
         // Check for abort after stream completes
@@ -827,8 +873,9 @@ export class Session {
             role: 'user',
             content: [...toolResults, ...extraBlocks],
           })
-          // Reset retry counter — the LLM is making progress
+          // Reset retry counters — the LLM is making progress
           planRetryCount = 0
+          streamRetryCount = 0
         }
 
         // If no tool calls were made, check if there's an active plan.

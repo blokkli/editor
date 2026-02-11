@@ -460,6 +460,7 @@ export type ServerMessage =
       errorType: AgentErrorType
       message: string
       detail?: string
+      retryable?: boolean
     }
   | { type: 'transcript'; content: string }
   | {

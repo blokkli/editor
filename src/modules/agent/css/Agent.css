@@ -110,7 +110,7 @@
   }
 
   .bk-agent-error-bubble {
-    @apply flex items-start gap-8 p-10 rounded-xl mt-15;
+    @apply flex items-start gap-8 p-10 rounded-xl mt-15 flex-wrap;
     @apply bg-red-light text-red-dark text-sm;
 
     .bk-icon {
@@ -118,6 +118,10 @@
       svg {
         @apply fill-current;
       }
+    }
+
+    .bk-agent-error-retry {
+      @apply text-red-dark font-bold underline cursor-pointer ml-auto;
     }
   }
 

@@ -30,6 +30,7 @@
       :usage-turns="usageTurns"
       @connect="connect"
       @send-prompt="sendPrompt"
+      @retry="retry"
       @cancel="cancel"
       @approve="approve"
       @reject="reject"
@@ -110,6 +111,7 @@ const {
   rejectPlan,
   usageTurns,
   sendPrompt,
+  retry,
   approve,
   reject,
   setAutoApprove,

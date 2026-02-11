@@ -2,6 +2,9 @@
   <div class="bk-agent-error-bubble">
     <Icon name="bk_mdi_priority_high" />
     <span>{{ errorMessage }}</span>
+    <button v-if="retryable" class="bk-agent-error-retry" @click="emit('retry')">
+      {{ $t('aiAgentRetry', 'Retry') }}
+    </button>
   </div>
 </template>
 
@@ -21,6 +24,11 @@ const props = defineProps<{
     | 'connection'
     | 'unauthorized'
     | 'unknown'
+  retryable?: boolean
+}>()
+
+const emit = defineEmits<{
+  retry: []
 }>()
 
 const { $t } = useBlokkli()

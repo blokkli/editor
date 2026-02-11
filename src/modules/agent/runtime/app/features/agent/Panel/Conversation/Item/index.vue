@@ -7,7 +7,11 @@
     :is-active="isActive"
   />
   <ItemServerTool v-else-if="item.type === 'server_tool'" v-bind="item" />
-  <ItemError v-else-if="item.type === 'error'" v-bind="item" />
+  <ItemError
+    v-else-if="item.type === 'error'"
+    v-bind="item"
+    @retry="emit('retry')"
+  />
   <ItemUnknown v-else-if="item.type === 'unknown'" v-bind="item" />
 </template>
 
@@ -23,5 +27,9 @@ import type { ConversationItem } from '#blokkli/agent/app/types'
 defineProps<{
   item: ConversationItem
   isActive?: boolean
+}>()
+
+const emit = defineEmits<{
+  retry: []
 }>()
 </script>

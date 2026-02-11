@@ -92,6 +92,7 @@ export type AgentProvider = {
     selectedUuids?: string[],
     attachments?: Attachment[],
   ) => void
+  retry: () => void
   approve: () => void
   reject: () => void
   setAutoApprove: (value: boolean) => void
@@ -679,6 +680,10 @@ export default function (
         break
 
       case 'thinking':
+        // Discard any partial text from a previous failed stream attempt
+        // (e.g. when the server retries after a transient error).
+        // We don't finalize because the partial text is incomplete/broken.
+        activeItem.value = null
         isThinking.value = true
         break
 
@@ -733,6 +738,7 @@ export default function (
           id: generateId(),
           errorType: data.errorType,
           timestamp: Date.now(),
+          ...(data.retryable ? { retryable: true } : {}),
         })
         break
 
@@ -1135,6 +1141,32 @@ export default function (
     })
   }
 
+  function retry() {
+    if (isProcessing.value || !isReady.value) return
+
+    // Find the last user message as the prompt to retry
+    const lastUserItem = [...conversation.value]
+      .reverse()
+      .find((item) => item.type === 'user')
+    if (!lastUserItem || lastUserItem.type !== 'user') return
+
+    // Remove the error item from conversation
+    conversation.value = conversation.value.filter(
+      (item) => !(item.type === 'error' && 'retryable' in item && item.retryable),
+    )
+
+    isProcessing.value = true
+
+    send({
+      type: 'start',
+      prompt: lastUserItem.content,
+      pageStructure:
+        conversation.value.filter((i) => i.type === 'user').length <= 1
+          ? buildPageStructure(app)
+          : undefined,
+    })
+  }
+
   function approve() {
     if (pendingMutation.value) {
       pendingMutation.value.resolve(true)
@@ -1256,6 +1288,7 @@ export default function (
 
     // Actions
     sendPrompt,
+    retry,
     approve,
     reject,
     setAutoApprove,

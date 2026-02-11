@@ -4,6 +4,7 @@
       v-for="item in history"
       :key="item.id"
       :item="item"
+      @retry="emit('retry')"
     />
     <ConversationItemComponent
       v-if="activeItem"
@@ -25,6 +26,10 @@ defineProps<{
   history: ConversationItem[]
   activeItem: ActiveItem | null
   isThinking: boolean
+}>()
+
+const emit = defineEmits<{
+  retry: []
 }>()
 
 const UUID_REGEX =

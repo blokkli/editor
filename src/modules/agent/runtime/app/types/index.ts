@@ -463,6 +463,7 @@ const serverToolConversationItemSchema = conversationItemBase.extend({
 const errorConversationItemSchema = conversationItemBase.extend({
   type: z.literal('error'),
   errorType: agentErrorTypeSchema,
+  retryable: z.boolean().optional(),
 })
 
 /**
