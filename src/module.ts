@@ -6,6 +6,7 @@ import {
   defineNuxtModule,
   useLogger,
 } from '@nuxt/kit'
+import type { NuxtModule } from 'nuxt/schema'
 import { RuntimeDefinitionPlugin } from './build/unplugin/RuntimeDefinition'
 import { BlokkliEditingPlugin } from './build/unplugin/BlokkliEditing'
 import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from './global/constants'
@@ -23,6 +24,9 @@ import type { Blokkli } from './modules/defineBlokkliModule'
 
 const logger = useLogger('@blokkli/editor')
 
+// The type assertion ensures that rollup-plugin-dts (used by @nuxt/module-builder)
+// emits the proper NuxtModule type in dist/module.d.mts instead of falling back
+// to "any" when it can't infer the return type of defineNuxtModule().
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name,
@@ -81,9 +85,6 @@ export default defineNuxtModule<ModuleOptions>({
       blockCollector,
     ]
 
-    await Promise.all(collectors.map((v) => v.init()))
-    await Promise.all(collectors.map((v) => v.runHooks()))
-
     const hasErrors = [...collectors, helper]
       .flatMap((v) => v.validate(iconCollector))
       .some((v) => v)
@@ -114,6 +115,9 @@ export default defineNuxtModule<ModuleOptions>({
     app.context.collectors.forEach((collector) => {
       collectors.push(collector)
     })
+
+    await Promise.all(collectors.map((v) => v.init()))
+    await Promise.all(collectors.map((v) => v.runHooks()))
 
     TEMPLATES.forEach((v) => {
       if (typeof v === 'function') {
@@ -213,6 +217,6 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
   },
-})
+}) as NuxtModule<ModuleOptions>
 
 export type { ModuleOptions, ModuleHooks }
