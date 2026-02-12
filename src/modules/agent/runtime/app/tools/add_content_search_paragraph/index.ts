@@ -28,6 +28,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added content paragraph' : 'rejected'),
   modes: ['editing'],
+  lazy: true,
   label($t) {
     return $t(
       'aiAgentAddContentSearchBlockRunning',

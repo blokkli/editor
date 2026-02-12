@@ -36,6 +36,7 @@ export default defineBlokkliAgentTool({
         name: `search_content_${tab.id}`,
         description,
         category: 'query',
+        lazy: true,
         requiredAdapterMethods: [
           'getContentSearchTabs',
           'getContentSearchResults',

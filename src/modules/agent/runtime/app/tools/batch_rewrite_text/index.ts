@@ -3,15 +3,15 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 
 const paramsSchema = z.object({
-  changes: z
+  uuids: z
     .record(z.string(), z.record(z.string(), z.string()))
-    .describe('Map of paragraph UUID to field name to new text value'),
+    .describe(
+      'A map of uuids containing a map of field names to field values.',
+    ),
   requireApproval: z
     .boolean()
-    .default(true)
-    .describe(
-      'Whether to show the approval UI. Set to false when the user already explicitly provided the text content.',
-    ),
+    .optional()
+    .describe('Whether to show the approval UI.'),
 })
 
 const resultSchema = z.object({
@@ -52,7 +52,7 @@ export type BatchRewriteResult = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'batch_rewrite_text',
   description:
-    'Rewrite text content in multiple content fields at once. Shows previews immediately and lets the user select which changes to apply. Use this when you need to update multiple text fields. Set requireApproval to false when the user has already explicitly provided or confirmed the exact text to use.',
+    'Rewrite text content in multiple content fields at once. Set requireApproval to true when the user should confirm the changes first. EXAMPLE: { "uuids": { "<UUID>": { "title": "New title", "text": "New text" } } }',
   category: 'mutation',
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
@@ -68,7 +68,7 @@ export default defineBlokkliAgentTool({
     return params
   },
   mockParams: () => ({
-    changes: {
+    uuids: {
       'mock-1': { title: 'Updated Title Text' },
       'mock-2': { body: 'This is the new body content with some changes.' },
       'mock-3': { subtitle: 'A fresh subtitle here' },

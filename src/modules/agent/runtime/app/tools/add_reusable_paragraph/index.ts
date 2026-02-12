@@ -27,6 +27,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added reusable paragraph' : 'rejected'),
   modes: ['editing'],
+  lazy: true,
   label($t) {
     return $t('aiAgentAddLibraryItemRunning', 'Adding reusable block...')
   },

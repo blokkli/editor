@@ -17,6 +17,7 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t('aiAgentSwapBlocksRunning', 'Swapping blocks...')
   },
+  lazy: true,
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['swapBlocks'],

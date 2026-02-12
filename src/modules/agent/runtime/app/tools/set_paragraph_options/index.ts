@@ -34,6 +34,7 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t('aiAgentSetBlockOptionsRunning', 'Setting block options...')
   },
+  lazy: true,
   paramsSchema,
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['updateOptions'],

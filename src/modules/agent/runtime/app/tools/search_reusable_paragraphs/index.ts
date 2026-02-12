@@ -33,6 +33,7 @@ export default defineBlokkliAgentTool({
   category: 'query',
   prunedSummary: (r) => `found ${r.total} reusable paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
+  lazy: true,
   label($t) {
     return $t('aiAgentSearchLibraryRunning', 'Searching reusable blocks...')
   },

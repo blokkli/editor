@@ -35,6 +35,7 @@ export default defineBlokkliAgentTool({
       ? `duplicated ${r.newParagraphs?.length || 0} paragraphs`
       : 'rejected',
   modes: ['editing'],
+  lazy: true,
   label($t) {
     return $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks...')
   },

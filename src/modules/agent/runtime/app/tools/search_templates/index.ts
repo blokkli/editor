@@ -29,6 +29,7 @@ export default defineBlokkliAgentTool({
   category: 'query',
   prunedSummary: (r) => `found ${r.total || 0} templates`,
   modes: ['readonly', 'editing', 'translating', 'review'],
+  lazy: true,
   label($t) {
     return $t('aiAgentSearchTemplatesRunning', 'Searching templates...')
   },

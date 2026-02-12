@@ -38,6 +38,7 @@ export default defineBlokkliAgentTool({
     'Search for text in paragraph content. Returns paragraphs containing matches with text snippets. Only searches text directly in each paragraph, not in nested child paragraphs. For regex, use /pattern/flags format (e.g., "/hello|world/gi").',
   category: 'query',
   volatile: true,
+  lazy: true,
   prunedSummary: (r) => `${r.totalMatches || 0} paragraphs matched`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {

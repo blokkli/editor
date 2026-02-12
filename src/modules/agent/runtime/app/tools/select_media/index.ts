@@ -42,6 +42,7 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t('aiAgentSelectMediaRunning', 'Selecting media...')
   },
+  lazy: true,
   paramsSchema,
   resultSchema,
   component: Component,

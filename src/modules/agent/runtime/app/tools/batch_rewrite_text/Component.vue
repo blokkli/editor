@@ -107,7 +107,7 @@ function resolveFieldLabel(uuid: string, fieldName: string): string {
 }
 
 let idCounter = 0
-const items: ChangeItem[] = Object.entries(props.params.changes).flatMap(
+const items: ChangeItem[] = Object.entries(props.params.uuids).flatMap(
   ([uuid, fields]) =>
     Object.entries(fields).map(([fieldName, value]) => ({
       id: idCounter++,

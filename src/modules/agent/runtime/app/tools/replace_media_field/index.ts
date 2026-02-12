@@ -18,6 +18,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'replaced media' : 'rejected'),
   modes: ['editing'],
+  lazy: true,
   label($t) {
     return $t('aiAgentReplaceMediaRunning', 'Replacing media...')
   },
