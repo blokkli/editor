@@ -69,13 +69,12 @@ import { useBlokkli, defineBlokkliFeature, onBeforeUnmount } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
 import agentProvider from '#blokkli/agent/app/composables/agentProvider'
-import { agentPrompts } from '#blokkli-build/agent-client'
+import { agentPrompts, agentName } from '#blokkli-build/agent-client'
 import AgentPanel from './Panel/index.vue'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
 const DEBUG_STYLING = false
-const agentName = 'Gschwindi'
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',

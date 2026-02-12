@@ -10,6 +10,7 @@ export default function (
   promptCollector: AgentCollector,
   defaultPrompts: string[],
   models: AgentModelDefinition[],
+  agentName: string
 ) {
   return defineCodeTemplate(
     'agent-client',
@@ -56,6 +57,8 @@ export default function (
       // Models
       exports.push(`export const models = ${JSON.stringify(models)}`)
 
+      exports.push(`export const agentName = ${JSON.stringify(agentName)}`)
+
       const parts: string[] = []
       if (imports.length > 0) {
         parts.push(imports.join('\n'))
@@ -71,6 +74,7 @@ import type { AgentModelDefinition } from '#blokkli/agent/shared/types'
 export const mcpTools: McpToolItem[]
 export const agentPrompts: AgentPromptItem[]
 export const defaultPrompts: string[]
+export const agentName: string
 export const models: AgentModelDefinition[]
 `
     },

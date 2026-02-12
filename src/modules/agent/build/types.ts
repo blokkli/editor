@@ -51,4 +51,9 @@ export type AgentModuleOptions = {
    * These are displayed as clickable buttons when the conversation is empty.
    */
   defaultPrompts?: string[]
+
+  /**
+   * The name of the agent as shown to the user.
+   */
+  agentName?: string
 }

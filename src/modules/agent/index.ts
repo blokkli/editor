@@ -102,6 +102,7 @@ export default defineNuxtConfig({
         promptsCollector,
         options.defaultPrompts || [],
         options.models,
+        options.agentName ?? 'Blocki',
       ),
     )
 
