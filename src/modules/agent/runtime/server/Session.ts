@@ -77,6 +77,8 @@ export class Session {
   plan: ServerPlan | null = null
   /** Pending plan approval promise resolver */
   pendingPlanApproval: { resolve: (approved: boolean) => void } | null = null
+  /** Last tools payload sent to the provider (for transcript debugging) */
+  private lastProviderTools: unknown = null
 
   // --------------------------------------------------------------------------
   // Public methods
@@ -463,6 +465,10 @@ export class Session {
             }
 
             switch (event.type) {
+              case 'debug_request':
+                this.lastProviderTools = event.tools
+                break
+
               case 'text_start':
                 inTextBlock = true
                 currentTextContent = ''
@@ -944,6 +950,15 @@ export class Session {
     lines.push('='.repeat(80))
     lines.push(systemPrompt)
     lines.push('')
+
+    // Add exact tools payload as sent to the provider
+    if (this.lastProviderTools) {
+      lines.push('='.repeat(80))
+      lines.push('TOOLS (exact payload sent to provider)')
+      lines.push('='.repeat(80))
+      lines.push(JSON.stringify(this.lastProviderTools, null, 2))
+      lines.push('')
+    }
 
     // Add conversation messages
     for (const message of this.messages) {

@@ -138,6 +138,7 @@ function stripSchemaOverhead(obj: unknown): unknown {
     const result: Record<string, unknown> = {}
     for (const [key, value] of Object.entries(obj)) {
       if (key === '$schema' || key === 'additionalProperties') continue
+      if (key === 'propertyNames') continue
       result[key] = stripSchemaOverhead(value)
     }
     return result

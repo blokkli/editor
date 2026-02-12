@@ -108,6 +108,9 @@ export class AnthropicProvider implements AIProvider {
     const messages = convertMessages(options.messages)
     const tools = convertTools(options.tools)
 
+    // Emit the exact tools payload for transcript debugging
+    yield { type: 'debug_request', tools }
+
     const stream = client.messages.stream({
       model: config.model,
       max_tokens: options.maxTokens ?? 4096,

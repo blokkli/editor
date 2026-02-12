@@ -34,6 +34,7 @@ export type StreamEvent =
       cacheReadInputTokens?: number
     }
   | { type: 'error'; error: Error }
+  | { type: 'debug_request'; tools: unknown }
 
 // ============================================================================
 // Provider Configuration

@@ -1,8 +1,8 @@
 import OpenAI from 'openai'
 import type {
-  ChatCompletionMessageParam,
-  ChatCompletionTool,
-} from 'openai/resources/chat/completions'
+  ResponseInputItem,
+  Tool as ResponseTool,
+} from 'openai/resources/responses/responses'
 import type {
   AIProvider,
   GenericMessage,
@@ -13,74 +13,76 @@ import type {
 import type { ClientToolDefinition } from '../../shared/types'
 
 /**
- * Convert generic messages to OpenAI's ChatCompletionMessageParam format.
- * OpenAI handles system prompts separately and uses role: 'tool' for tool results.
+ * Convert generic messages to OpenAI Responses API input items.
+ *
+ * The Responses API uses a flat list of typed input items instead of role-based
+ * messages. Assistant text → EasyInputMessage, tool calls → function_call items,
+ * tool results → function_call_output items.
  */
-function convertMessages(
-  messages: GenericMessage[],
-): ChatCompletionMessageParam[] {
-  const result: ChatCompletionMessageParam[] = []
+function convertMessages(messages: GenericMessage[]): ResponseInputItem[] {
+  const result: ResponseInputItem[] = []
 
   for (const msg of messages) {
     if (typeof msg.content === 'string') {
       result.push({
-        role: msg.role,
+        role: msg.role as 'user' | 'assistant',
         content: msg.content,
       })
       continue
     }
 
-    // Process content blocks
     if (msg.role === 'assistant') {
-      // Assistant messages with tool calls
       const textParts: string[] = []
-      const toolCalls: Array<{
-        id: string
-        type: 'function'
-        function: { name: string; arguments: string }
-      }> = []
 
       for (const block of msg.content) {
         if (block.type === 'text' || block.type === 'skill') {
           textParts.push(block.text)
         } else if (block.type === 'tool_use') {
-          toolCalls.push({
-            id: block.id,
-            type: 'function',
-            function: {
-              name: block.name,
-              arguments: JSON.stringify(block.input),
-            },
+          // Flush accumulated text as an assistant message before the tool call
+          if (textParts.length > 0) {
+            result.push({
+              role: 'assistant',
+              content: textParts.join('\n'),
+            })
+            textParts.length = 0
+          }
+          result.push({
+            type: 'function_call',
+            call_id: block.id,
+            name: block.name,
+            arguments: JSON.stringify(block.input),
           })
         }
       }
 
-      const assistantMsg: ChatCompletionMessageParam = {
-        role: 'assistant',
-        content: textParts.length > 0 ? textParts.join('\n') : null,
+      if (textParts.length > 0) {
+        result.push({
+          role: 'assistant',
+          content: textParts.join('\n'),
+        })
       }
-
-      if (toolCalls.length > 0) {
-        ;(assistantMsg as { tool_calls?: typeof toolCalls }).tool_calls =
-          toolCalls
-      }
-
-      result.push(assistantMsg)
     } else if (msg.role === 'user') {
-      // User messages might contain tool results
+      const textParts: string[] = []
+
       for (const block of msg.content) {
         if (block.type === 'text' || block.type === 'skill') {
-          result.push({
-            role: 'user',
-            content: block.text,
-          })
+          textParts.push(block.text)
         } else if (block.type === 'tool_result') {
+          // Flush text before the tool result
+          if (textParts.length > 0) {
+            result.push({ role: 'user', content: textParts.join('\n') })
+            textParts.length = 0
+          }
           result.push({
-            role: 'tool',
-            tool_call_id: block.tool_use_id,
-            content: block.content,
+            type: 'function_call_output',
+            call_id: block.tool_use_id,
+            output: block.content,
           })
         }
+      }
+
+      if (textParts.length > 0) {
+        result.push({ role: 'user', content: textParts.join('\n') })
       }
     }
   }
@@ -89,21 +91,21 @@ function convertMessages(
 }
 
 /**
- * Convert client tool definitions to OpenAI's function format.
+ * Convert client tool definitions to OpenAI Responses API tool format.
+ * Uses the flat format: { type, name, description, parameters }.
  */
-function convertTools(tools: ClientToolDefinition[]): ChatCompletionTool[] {
+function convertTools(tools: ClientToolDefinition[]): ResponseTool[] {
   return tools.map((tool) => ({
     type: 'function' as const,
-    function: {
-      name: tool.name,
-      description: tool.description,
-      parameters: tool.input_schema as Record<string, unknown>,
-    },
+    name: tool.name,
+    description: tool.description ?? null,
+    parameters: tool.input_schema as Record<string, unknown>,
+    strict: false,
   }))
 }
 
 /**
- * OpenAI provider implementation.
+ * OpenAI provider using the Responses API.
  */
 export class OpenAIProvider implements AIProvider {
   readonly name = 'openai'
@@ -114,155 +116,112 @@ export class OpenAIProvider implements AIProvider {
   ): AsyncIterable<StreamEvent> {
     const client = new OpenAI({ apiKey: config.apiKey })
 
-    const messages = convertMessages(options.messages)
+    const input = convertMessages(options.messages)
     const tools = convertTools(options.tools)
 
-    // Prepend system message (concatenate blocks — OpenAI caches by prefix automatically)
-    const systemText = options.systemPrompt.map((b) => b.text).join('\n\n')
-    const allMessages: ChatCompletionMessageParam[] = [
-      { role: 'system', content: systemText },
-      ...messages,
-    ]
+    // Emit the exact tools payload for transcript debugging
+    yield { type: 'debug_request', tools }
+
+    const instructions = options.systemPrompt.map((b) => b.text).join('\n\n')
 
     try {
-      const stream = await client.chat.completions.create({
-        model: config.model,
-        max_completion_tokens: options.maxTokens ?? 4096,
-        messages: allMessages,
-        tools: tools.length > 0 ? tools : undefined,
-        stream: true,
-        stream_options: { include_usage: true },
-      })
+      const stream = await client.responses.create(
+        {
+          model: config.model,
+          instructions,
+          input,
+          tools: tools.length > 0 ? tools : undefined,
+          max_output_tokens: options.maxTokens ?? 4096,
+          stream: true,
+          store: false,
+        },
+        { signal: options.signal },
+      )
 
-      // Track state for reconstructing tool calls from deltas
-      let currentTextStarted = false
-      const toolCallState = new Map<
-        number,
-        { id: string; name: string; arguments: string }
-      >()
-      const toolCallsStarted = new Set<number>()
-      let pendingStopReason: 'end_turn' | 'tool_use' | 'max_tokens' | 'stop' =
-        'stop'
+      let hasFunctionCalls = false
 
-      for await (const chunk of stream) {
-        // Check abort signal
-        if (options.signal?.aborted) {
-          break
-        }
+      for await (const event of stream) {
+        if (options.signal?.aborted) break
 
-        // Final chunk with usage has no choices — emit message_end with usage
-        const choice = chunk.choices[0]
-        if (!choice) {
-          if (chunk.usage) {
-            const cachedTokens =
-              chunk.usage.prompt_tokens_details?.cached_tokens ?? 0
-            yield {
-              type: 'message_end',
-              stop_reason: pendingStopReason,
-              inputTokens: chunk.usage.prompt_tokens - cachedTokens,
-              outputTokens: chunk.usage.completion_tokens,
-              cacheReadInputTokens: cachedTokens || undefined,
+        switch (event.type) {
+          // Text streaming
+          case 'response.content_part.added':
+            if (event.part.type === 'output_text') {
+              yield { type: 'text_start' }
             }
-          }
-          continue
-        }
+            break
 
-        const delta = choice.delta
+          case 'response.output_text.delta':
+            yield { type: 'text_delta', text: event.delta }
+            break
 
-        // Handle text content
-        if (delta.content) {
-          if (!currentTextStarted) {
-            yield { type: 'text_start' }
-            currentTextStarted = true
-          }
-          yield { type: 'text_delta', text: delta.content }
-        }
+          case 'response.output_text.done':
+            yield { type: 'text_end' }
+            break
 
-        // Handle tool calls
-        if (delta.tool_calls) {
-          for (const toolCall of delta.tool_calls) {
-            const index = toolCall.index
-
-            // Initialize state for this tool call if needed
-            if (!toolCallState.has(index)) {
-              toolCallState.set(index, {
-                id: '',
-                name: '',
-                arguments: '',
-              })
-            }
-
-            const state = toolCallState.get(index)!
-
-            // Update state with delta
-            if (toolCall.id) {
-              state.id = toolCall.id
-            }
-            if (toolCall.function?.name) {
-              state.name = toolCall.function.name
-            }
-            if (toolCall.function?.arguments) {
-              state.arguments += toolCall.function.arguments
-            }
-
-            // Emit tool_use_start when we have id and name
-            if (state.id && state.name && !toolCallsStarted.has(index)) {
-              // End any ongoing text block first
-              if (currentTextStarted) {
-                yield { type: 'text_end' }
-                currentTextStarted = false
-              }
-
+          // Tool call streaming
+          case 'response.output_item.added':
+            if (event.item.type === 'function_call') {
+              hasFunctionCalls = true
               yield {
                 type: 'tool_use_start',
-                id: state.id,
-                name: state.name,
-              }
-              toolCallsStarted.add(index)
-            }
-
-            // Emit argument deltas
-            if (toolCall.function?.arguments && toolCallsStarted.has(index)) {
-              yield {
-                type: 'tool_use_delta',
-                partial_json: toolCall.function.arguments,
+                id: event.item.call_id,
+                name: event.item.name,
               }
             }
-          }
-        }
+            break
 
-        // Handle finish — defer message_end until usage chunk arrives
-        if (choice.finish_reason) {
-          // End any ongoing text block
-          if (currentTextStarted) {
-            yield { type: 'text_end' }
-            currentTextStarted = false
-          }
+          case 'response.function_call_arguments.delta':
+            yield { type: 'tool_use_delta', partial_json: event.delta }
+            break
 
-          // End all tool calls
-          for (const _ of toolCallsStarted) {
+          case 'response.function_call_arguments.done':
             yield { type: 'tool_use_end' }
+            break
+
+          // Completion
+          case 'response.completed': {
+            const usage = event.response.usage
+
+            let stopReason: StreamEvent & { type: 'message_end' } =
+              undefined as never
+            if (hasFunctionCalls) {
+              stopReason = buildMessageEnd('tool_use', usage)
+            } else if (event.response.status === 'incomplete') {
+              stopReason = buildMessageEnd('max_tokens', usage)
+            } else {
+              stopReason = buildMessageEnd('end_turn', usage)
+            }
+
+            yield stopReason
+            break
           }
 
-          // Map OpenAI finish reasons to our stop reasons
-          switch (choice.finish_reason) {
-            case 'stop':
-              pendingStopReason = 'end_turn'
-              break
-            case 'tool_calls':
-              pendingStopReason = 'tool_use'
-              break
-            case 'length':
-              pendingStopReason = 'max_tokens'
-              break
-            default:
-              pendingStopReason = 'stop'
-          }
+          case 'response.failed':
+            yield {
+              type: 'error',
+              error: new Error('OpenAI response failed'),
+            }
+            break
         }
       }
     } catch (error) {
       yield { type: 'error', error: error as Error }
     }
+  }
+}
+
+function buildMessageEnd(
+  stopReason: 'end_turn' | 'tool_use' | 'max_tokens',
+  usage: OpenAI.Responses.ResponseUsage | null | undefined,
+): StreamEvent & { type: 'message_end' } {
+  const cachedTokens = usage?.input_tokens_details?.cached_tokens ?? 0
+  return {
+    type: 'message_end',
+    stop_reason: stopReason,
+    inputTokens: usage ? usage.input_tokens - cachedTokens : undefined,
+    outputTokens: usage?.output_tokens,
+    cacheReadInputTokens: cachedTokens || undefined,
   }
 }
 
