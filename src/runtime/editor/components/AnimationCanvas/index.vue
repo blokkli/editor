@@ -103,30 +103,30 @@ let mouseStartCoordinates: Coord | null = null
 let pointerDownTimestamp = 0
 let pointerUpTimestamp = 0
 
+function getFieldZIndex(uuid: string): number {
+  const fieldKey = state.getFieldKeyForUuid(uuid)
+  if (!fieldKey) {
+    return 0
+  }
+  const separatorIndex = fieldKey.indexOf(':')
+  const entityUuid = fieldKey.substring(0, separatorIndex)
+  const fieldName = fieldKey.substring(separatorIndex + 1)
+  return dom.getRegisteredField(entityUuid, fieldName)?.zIndex ?? 0
+}
+
 function getInteractedElement(
   e: MouseEvent | TouchEvent,
 ): InteractedElement | null {
   const { x, y } = getInteractionCoordinates(e)
-  const editableField = directive.getEditableAtPoint(x, y)
-  if (editableField) {
-    const uuid =
-      editableField.type === itemEntityType ? editableField.uuid : undefined
-    return {
-      editableFieldName: editableField.fieldName,
-      uuid,
-      timestamp: Date.now(),
-      x,
-      y,
-    }
-  }
 
-  // Try to find a block to select by matching its rects.
+  // Find the winning block first (deepest nesting level, then highest z-index).
   // Some blocks might not render anything and thus have a height of 0.
-  // All registered block rects enfore a minimum height.
+  // All registered block rects enforce a minimum height.
   const visibleUuids = dom.getVisibleBlocks()
 
   let deepestUuid = ''
   let deepestLevel = -1
+  let deepestZIndex = 0
 
   for (let i = 0; i < visibleUuids.length; i++) {
     const uuid = visibleUuids[i]
@@ -134,15 +134,45 @@ function getInteractedElement(
       continue
     }
     const rect = dom.getBlockRect(uuid)
-    if (rect) {
-      const level = state.getNestingLevel(uuid)
-      if (level <= deepestLevel) {
-        continue
-      }
-      const relativeRect = ui.getViewportRelativeRect(rect)
-      if (isInsideRect(x, y, relativeRect)) {
+    if (!rect) {
+      continue
+    }
+    const level = state.getNestingLevel(uuid)
+    if (level < deepestLevel) {
+      continue
+    }
+    const relativeRect = ui.getViewportRelativeRect(rect)
+    if (!isInsideRect(x, y, relativeRect)) {
+      continue
+    }
+    if (level > deepestLevel) {
+      deepestUuid = uuid
+      deepestLevel = level
+      deepestZIndex = getFieldZIndex(uuid)
+    } else {
+      // Same nesting level: prefer the block from the field with higher z-index.
+      const zIndex = getFieldZIndex(uuid)
+      if (zIndex > deepestZIndex) {
         deepestUuid = uuid
-        deepestLevel = level
+        deepestZIndex = zIndex
+      }
+    }
+  }
+
+  // Check if there is an editable at this point that belongs to the winning block.
+  const editableField = directive.getEditableAtPoint(x, y)
+  if (editableField) {
+    const editableUuid =
+      editableField.type === itemEntityType ? editableField.uuid : undefined
+    // Use the editable if it belongs to the winning block, or if it's on a
+    // non-block entity (e.g. the host entity).
+    if (!editableUuid || editableUuid === deepestUuid) {
+      return {
+        editableFieldName: editableField.fieldName,
+        uuid: editableUuid,
+        timestamp: Date.now(),
+        x,
+        y,
       }
     }
   }
@@ -419,6 +449,7 @@ function onPointerUp(e: PointerEvent) {
     } else if (keyboard.isPressingShift.value) {
       eventBus.emit('select:shiftToggle', clicked.uuid)
     } else {
+      console.log('asdfasdf')
       eventBus.emit('select', clicked.uuid)
     }
     return

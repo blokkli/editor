@@ -10,7 +10,7 @@ export default function (
   promptCollector: AgentCollector,
   defaultPrompts: string[],
   models: AgentModelDefinition[],
-  agentName: string
+  agentName: string,
 ) {
   return defineCodeTemplate(
     'agent-client',

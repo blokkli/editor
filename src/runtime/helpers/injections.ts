@@ -58,6 +58,14 @@ export const INJECT_NESTING_LEVEL = Symbol(
 ) as InjectionKey<number>
 
 /**
+ * The z-index of the parent field, used to resolve overlapping blocks at the
+ * same nesting level. Higher values take priority.
+ */
+export const INJECT_FIELD_Z_INDEX = Symbol(
+  'blokkli_field_z_index',
+) as InjectionKey<number>
+
+/**
  * Whether we're currently in preview mode.
  */
 export const INJECT_IS_PREVIEW = Symbol('blokkli_is_preview') as InjectionKey<

@@ -18,6 +18,7 @@
       { [nonEmptyClass]: filteredList.length },
     ]"
     :is-nested
+    :z-index
     :language="providerEntity?.language"
     :proxy-mode
     :tag
@@ -66,6 +67,7 @@ import type {
 import {
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
+  INJECT_FIELD_Z_INDEX,
   INJECT_IS_EDITING,
   INJECT_IS_IN_REUSABLE,
   INJECT_IS_NESTED,
@@ -149,6 +151,12 @@ const props = withDefaults(
     dropAlignment?: FieldDropAlignment
 
     /**
+     * The z-index of this field, used to resolve overlapping blocks at the same
+     * nesting level. Higher values take priority. Default is 0.
+     */
+    zIndex?: number | string
+
+    /**
      * Renders proxy blocks during editing.
      *
      * Doing this will *not* render the actual block components.
@@ -174,6 +182,7 @@ const props = withDefaults(
     allowedFragments: () => [],
     dropAlignment: undefined,
     shouldRenderItem: undefined,
+    zIndex: 0,
   },
 )
 
@@ -275,6 +284,7 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
 
 provide(INJECT_IS_NESTED, true)
 provide(INJECT_NESTING_LEVEL, nestingLevel + 1)
+provide(INJECT_FIELD_Z_INDEX, Number(props.zIndex))
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
 

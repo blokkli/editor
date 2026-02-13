@@ -38,6 +38,7 @@ export type RegisteredField = {
   isNested: boolean
   nestingLevel: number
   dropAlignment: FieldDropAlignment | null
+  zIndex: number
 }
 
 export type RegisterFieldData = Pick<
@@ -47,6 +48,7 @@ export type RegisterFieldData = Pick<
   | 'isNested'
   | 'nestingLevel'
   | 'dropAlignment'
+  | 'zIndex'
 >
 
 export type RenderedFieldListItem = {

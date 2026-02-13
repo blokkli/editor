@@ -98,6 +98,7 @@ const props = withDefaults(
     fieldListType: ValidFieldListTypes
     allowedFragments?: BlokkliFragmentName[] | BlokkliFragmentName
     dropAlignment?: FieldDropAlignment
+    zIndex?: number | string
     proxyMode?: boolean
     globalProxyMode?: boolean
     nestingLevel: number
@@ -108,6 +109,7 @@ const props = withDefaults(
     allowedFragments: () => {
       return []
     },
+    zIndex: 0,
     dropAlignment: undefined,
     language: undefined,
     shouldRenderItem: undefined,
@@ -153,12 +155,14 @@ const data = computed<RegisterFieldData>(() => {
   const allowedFragments = Array.isArray(props.allowedFragments)
     ? props.allowedFragments
     : [props.allowedFragments]
+  const zIndex = Number(props.zIndex)
   return {
     fieldListType: props.fieldListType,
     allowedFragments,
     isNested: props.isNested,
     nestingLevel: props.nestingLevel,
     dropAlignment: props.dropAlignment ?? null,
+    zIndex: Number.isNaN(zIndex) ? 0 : zIndex,
   }
 })
 
