@@ -61,6 +61,7 @@ import { computed, ref, useBlokkli, useTemplateRef } from '#imports'
 import { onElementResize } from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 
 const props = defineProps<{
   type: 'bundle' | 'action'
@@ -80,20 +81,25 @@ defineExpose({
   height,
 })
 
-const { types, $t, definitions } = useBlokkli()
+const { types, $t, definitions, dom } = useBlokkli()
 
 const reusableBlockTypes = computed(() =>
   types.generallyAvailableBundles.filter((v) => v.allowReusable),
 )
 
 const fragments = computed<FieldInfoItem[]>(() => {
-  return definitions.fragmentDefinitions.value.map((v) => {
-    return {
-      bundle: fragmentBlockBundle,
-      label: v.label,
-      icon: v.editor?.icon ?? 'bk_mdi_newspaper',
-    }
-  })
+  const available = dom.generallyAvailableFragments.value
+  return definitions.fragmentDefinitions.value
+    .filter((definition) => {
+      return available.includes(definition.name as BlokkliFragmentName)
+    })
+    .map((v) => {
+      return {
+        bundle: fragmentBlockBundle,
+        label: v.label,
+        icon: v.editor?.icon ?? 'bk_mdi_newspaper',
+      }
+    })
 })
 
 const bundleDefinition = computed(() => {

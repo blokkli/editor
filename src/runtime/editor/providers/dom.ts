@@ -1,6 +1,6 @@
 import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
 import type { EntityContext } from '#blokkli/types'
-import { falsy } from '#blokkli/helpers'
+import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import { cloneElementWithStyles } from '../helpers/dom'
 import {
@@ -17,6 +17,7 @@ import type {
   RegisterFieldData,
   RenderedFieldListItem,
 } from '../types/field'
+import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 
 type RegisteredFieldType = {
   entityType: string
@@ -243,6 +244,11 @@ export type DomProvider = {
   ) => HTMLElement | undefined
 
   /**
+   * The fragments that are generally available to be added anywhere on the page.
+   */
+  generallyAvailableFragments: ComputedRef<BlokkliFragmentName[]>
+
+  /**
    * Get debug data for troubleshooting.
    */
   getDebugData: () => {
@@ -320,6 +326,18 @@ export default function (
 
   let settleTimeout: null | number = null
   const settleKey = ref(0)
+
+  const generallyAvailableFragments = computed<BlokkliFragmentName[]>(() => {
+    return Object.values(registeredFields)
+      .flatMap((field) => {
+        if (field && field.allowedFragments.length) {
+          return field.allowedFragments
+        }
+        return null
+      })
+      .filter(falsy)
+      .filter(onlyUnique)
+  })
 
   /**
    * Obserable elements.
@@ -990,5 +1008,6 @@ export default function (
     getFieldsAllowingFragment,
     registeredBlocks: computed(() => registeredBlocks),
     getBoundingClientRect,
+    generallyAvailableFragments,
   }
 }
