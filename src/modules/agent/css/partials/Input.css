@@ -52,6 +52,10 @@
 
     .bk-agent-input-actions-left {
       @apply flex gap-8 items-center;
+      .bk-dropdown-menu-content {
+        @apply w-full;
+        @apply max-w-[500px];
+      }
     }
 
     .bk-agent-input-actions-keyboard {
@@ -63,34 +67,6 @@
         @apply size-20;
         @apply rounded-md;
         @apply text-mono-500;
-      }
-    }
-
-    .bk-agent-more-dropdown {
-      @apply absolute bottom-full left-0 mb-5 z-50;
-      @apply bg-white border border-mono-300 rounded-lg shadow-lg overflow-hidden;
-      @apply right-0;
-
-      hr {
-        @apply border-t-mono-300;
-      }
-
-      button {
-        @apply w-full flex items-center gap-8 px-10 py-10;
-        @apply text-sm text-mono-700 text-left;
-        @apply border-none bg-transparent cursor-pointer;
-        @apply hover:bg-mono-100 hover:text-mono-950;
-        @apply whitespace-nowrap leading-none;
-
-        &:hover {
-          svg {
-            @apply fill-accent-700;
-          }
-        }
-
-        svg {
-          @apply size-18 fill-current;
-        }
       }
     }
 

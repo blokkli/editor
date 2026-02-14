@@ -1,38 +1,34 @@
 <template>
   <div class="bk-agent-input-actions">
     <div class="bk-agent-input-actions-left">
-      <div ref="menuContainer">
-        <button
-          class="bk-button bk-is-white bk-is-small bk-is-icon-only"
-          :title="$t('aiAgentMoreOptions', 'More options')"
-          :disabled="!isConnected"
-          @click="showMenu = !showMenu"
-        >
-          <Icon name="bk_mdi_more_horiz" />
-        </button>
-        <BlokkliTransition name="drop-up">
-          <div v-if="showMenu" class="bk-agent-more-dropdown">
-            <TokenUsage :usage-turns />
-            <hr />
-            <DropdownItem
-              icon="bk_mdi_add"
-              :text="$t('aiAgentNewConversation', 'Start new conversation')"
-              @click="onNewConversation"
-            />
-            <DropdownItem
-              icon="bk_mdi_history"
-              :text="$t('aiAgentPastConversations', 'Past conversations')"
-              @click="onShowConversations"
-            />
-            <hr />
-            <DropdownItem
-              icon="bk_mdi_bug_report"
-              :text="$t('aiAgentShowTranscript', 'Show transcript...')"
-              @click="onShowTranscript"
-            />
+      <Dropdown ref="dropdown" :disabled="!isConnected">
+        <template #button>
+          <div
+            class="bk-button bk-is-white bk-is-small bk-is-icon-only"
+            :title="$t('aiAgentMoreOptions', 'More options')"
+          >
+            <Icon name="bk_mdi_more_horiz" />
           </div>
-        </BlokkliTransition>
-      </div>
+        </template>
+        <TokenUsage :usage-turns />
+        <hr />
+        <DropdownItem
+          icon="bk_mdi_add"
+          :text="$t('aiAgentNewConversation', 'Start new conversation')"
+          @click="onNewConversation"
+        />
+        <DropdownItem
+          icon="bk_mdi_history"
+          :text="$t('aiAgentPastConversations', 'Past conversations')"
+          @click="onShowConversations"
+        />
+        <hr />
+        <DropdownItem
+          icon="bk_mdi_bug_report"
+          :text="$t('aiAgentShowTranscript', 'Show transcript...')"
+          @click="onShowTranscript"
+        />
+      </Dropdown>
     </div>
     <div class="bk-agent-input-actions-right">
       <div v-show="hasText" class="bk-agent-input-actions-keyboard">
@@ -59,15 +55,8 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  onMounted,
-  onBeforeUnmount,
-  useTemplateRef,
-  useBlokkli,
-} from '#imports'
-import { Icon, BlokkliTransition } from '#blokkli/editor/components'
-import DropdownItem from './DropdownItem/index.vue'
+import { useTemplateRef, useBlokkli } from '#imports'
+import { Icon, Dropdown, DropdownItem } from '#blokkli/editor/components'
 import TokenUsage from './TokenUsage/index.vue'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
 
@@ -87,41 +76,22 @@ const emit = defineEmits<{
   'show-conversations': []
 }>()
 
-const { $t, eventBus } = useBlokkli()
+const { $t } = useBlokkli()
 
-const menuContainer = useTemplateRef('menuContainer')
-const showMenu = ref(false)
-
-function closeMenu() {
-  showMenu.value = false
-}
-
-function onDocumentClick(e: MouseEvent) {
-  if (!menuContainer.value?.contains(e.target as Node)) {
-    closeMenu()
-  }
-}
-
-eventBus.on('mouse:up', closeMenu)
-
-onMounted(() => document.addEventListener('click', onDocumentClick))
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onDocumentClick)
-  eventBus.off('mouse:up', closeMenu)
-})
+const dropdown = useTemplateRef('dropdown')
 
 function onNewConversation() {
-  showMenu.value = false
+  dropdown.value?.close()
   emit('new-conversation')
 }
 
 function onShowConversations() {
-  showMenu.value = false
+  dropdown.value?.close()
   emit('show-conversations')
 }
 
 function onShowTranscript() {
-  showMenu.value = false
+  dropdown.value?.close()
   emit('show-transcript')
 }
 </script>

@@ -7,6 +7,8 @@ import BlockPreviewRenderer from './BlockPreviewRenderer/index.vue'
 import BlokkliTransition from './Transition/index.vue'
 import BundleSelector from './BundleSelector/index.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
+import Dropdown from './Dropdown/index.vue'
+import DropdownItem from './DropdownItem/index.vue'
 import DialogModal from './Dialog/index.vue'
 import DiffValue from './DiffViewer/DiffValue.vue'
 import DiffViewerState from './DiffViewer/State.vue'
@@ -52,6 +54,8 @@ export {
   BlokkliTransition,
   BundleSelector,
   ConfigForm,
+  Dropdown,
+  DropdownItem,
   DialogModal,
   DiffValue,
   DiffViewerState,

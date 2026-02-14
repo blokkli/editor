@@ -68,6 +68,7 @@ export default createConfigForNuxt(
             'bk-grid-overlay',
             'bk-drop-element',
             'bk-field-list-item',
+            'bk-dropdown-menu',
           ],
         },
       ],
