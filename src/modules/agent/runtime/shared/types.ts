@@ -253,6 +253,48 @@ export type UsageTurn = {
 }
 
 // ============================================================================
+// Transcript Types
+// ============================================================================
+
+/**
+ * A single system prompt entry in the structured transcript.
+ */
+export type TranscriptSystemPrompt = {
+  id: string
+  name: string
+  content: string
+}
+
+/**
+ * A single message in the structured transcript.
+ * `seen` is the pruned content actually sent to the LLM.
+ * `full` is the pre-pruned content, omitted when identical to `seen`.
+ */
+export type TranscriptMessage = {
+  type: 'agent' | 'user'
+  seen: string | GenericContentBlock[]
+  full?: string | GenericContentBlock[]
+}
+
+/**
+ * Tool definition as included in the transcript.
+ */
+export type TranscriptToolDefinition = {
+  name: string
+  description: string
+  input_schema: Record<string, unknown>
+}
+
+/**
+ * Structured transcript of the current conversation state.
+ */
+export type Transcript = {
+  system: TranscriptSystemPrompt[]
+  messages: TranscriptMessage[]
+  tools: TranscriptToolDefinition[]
+}
+
+// ============================================================================
 // WebSocket Protocol Messages
 // ============================================================================
 
@@ -449,7 +491,7 @@ export type ServerMessage =
       detail?: string
       retryable?: boolean
     }
-  | { type: 'transcript'; content: string }
+  | { type: 'transcript'; transcript: Transcript }
   | {
       type: 'server_tool_result'
       tool: 'load_skill' | 'load_tools' | 'create_plan' | 'complete_plan_step'

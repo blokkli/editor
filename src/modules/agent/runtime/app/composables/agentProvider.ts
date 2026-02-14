@@ -15,6 +15,7 @@ import type {
   UsageTurn,
   PageContext,
   BlockBundle,
+  Transcript,
 } from '#blokkli/agent/shared/types'
 import type {
   AgentConversationData,
@@ -101,7 +102,7 @@ export type AgentProvider = {
   onToolComponentDone: (result: unknown) => void
 
   // Transcript dialog state
-  transcriptContent: Ref<string>
+  transcriptContent: Ref<Transcript | null>
   showTranscript: Ref<boolean>
 
   // Conversation list
@@ -169,7 +170,7 @@ export default function (
   const plan = ref<ClientPlanState | null>(null)
 
   // Transcript dialog state
-  const transcriptContent = ref('')
+  const transcriptContent = ref<Transcript | null>(null)
   const showTranscript = ref(false)
 
   // Conversation list state
@@ -774,7 +775,7 @@ export default function (
         break
 
       case 'transcript':
-        transcriptContent.value = data.content
+        transcriptContent.value = data.transcript
         showTranscript.value = true
         break
 

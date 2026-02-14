@@ -1,4 +1,4 @@
-import type { PageContext } from '../shared/types'
+import type { PageContext, TranscriptSystemPrompt } from '../shared/types'
 import type { ResolvedSkill } from './skills/types'
 import type {
   ActivePlanContext,
@@ -103,4 +103,46 @@ export function buildSystemPromptText(
   )
     .map((b) => b.text)
     .join('\n\n')
+}
+
+/**
+ * Build structured system prompt entries for the transcript.
+ * Returns one entry per prompt definition with id, name, and content.
+ */
+export function buildSystemPromptEntries(
+  context: PageContext,
+  resolvedSkills: ResolvedSkill[],
+  lazyTools: { name: string; description: string }[] = [],
+  activePlan?: ActivePlanContext,
+  loadedSkills: ReadonlySet<string> = new Set(),
+): TranscriptSystemPrompt[] {
+  const promptContext: SystemPromptContext = {
+    pageContext: context,
+    resolvedSkills,
+    lazyTools,
+    isDebugMode: !!(import.meta.dev && debugPrompt),
+    activePlan,
+    loadedSkills,
+  }
+
+  const sorted = systemPrompts
+    .filter((sp) => !sp.modes?.length || sp.modes.includes(context.editMode))
+    .sort((a, b) => {
+      const groupDiff = getCacheGroupOrder(a) - getCacheGroupOrder(b)
+      if (groupDiff !== 0) return groupDiff
+      return a.weight - b.weight
+    })
+
+  const entries: TranscriptSystemPrompt[] = []
+  for (const sp of sorted) {
+    const text = sp.getPrompt(promptContext)?.trim()
+    if (!text) continue
+    entries.push({
+      id: sp.id,
+      name: sp.title,
+      content: text,
+    })
+  }
+
+  return entries
 }

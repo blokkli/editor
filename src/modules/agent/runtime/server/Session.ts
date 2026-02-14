@@ -9,8 +9,10 @@ import type {
   GenericContentBlock,
   GenericTextBlock,
   GenericSkillBlock,
+  Transcript,
+  TranscriptMessage,
 } from '../shared/types'
-import { buildSystemPrompt, buildSystemPromptText } from './agentPrompt'
+import { buildSystemPrompt, buildSystemPromptEntries } from './agentPrompt'
 import type { ActivePlanContext } from './system-prompts/types'
 import { provider, models } from '#blokkli-build/agent-server'
 import type { ToolPruningMetadata } from './helpers'
@@ -77,8 +79,10 @@ export class Session {
   plan: ServerPlan | null = null
   /** Pending plan approval promise resolver */
   pendingPlanApproval: { resolve: (approved: boolean) => void } | null = null
-  /** Last tools payload sent to the provider (for transcript debugging) */
-  private lastProviderTools: unknown = null
+  /** Pre-pruned messages snapshot for transcript (captured before pruneMessages) */
+  private unprunedMessages: GenericMessage[] = []
+  /** Last generic tool definitions for transcript */
+  private lastTools: ClientToolDefinition[] = []
 
   // --------------------------------------------------------------------------
   // Public methods
@@ -167,13 +171,15 @@ export class Session {
   getTranscript(peer: Peer): void {
     send(peer, {
       type: 'transcript',
-      content: this.buildTranscript(),
+      transcript: this.buildTranscript(),
     })
   }
 
   newConversation(peer: Peer, authSecret: string): void {
     this.abortController?.abort()
     this.messages = []
+    this.unprunedMessages = []
+    this.lastTools = []
     this.activatedLazyTools.clear()
     this.loadedSkills.clear()
     this.plan = null
@@ -255,6 +261,8 @@ export class Session {
     }
 
     this.messages = state.messages
+    this.unprunedMessages = []
+    this.lastTools = []
 
     // Only restore lazy tools that still exist in the current tool set
     const validLazyToolNames = new Set(this.lazyTools.map((t) => t.name))
@@ -431,6 +439,7 @@ export class Session {
 
         // Combine server tools with client tools
         const allTools = [...serverToolDefs, ...this.tools, ...activatedTools]
+        this.lastTools = allTools
 
         // Build system prompt each turn so it reflects current plan state
         const systemPrompt = buildSystemPrompt(
@@ -466,7 +475,6 @@ export class Session {
 
             switch (event.type) {
               case 'debug_request':
-                this.lastProviderTools = event.tools
                 break
 
               case 'text_start':
@@ -834,6 +842,9 @@ export class Session {
       this.isProcessing = false
       this.abortController = null
 
+      // Snapshot messages before pruning so the transcript can show both versions.
+      this.unprunedMessages = structuredClone(this.messages)
+
       // Bug 2 fix: prune in finally so messages are compressed even after errors.
       pruneMessages(
         this.messages,
@@ -926,71 +937,47 @@ export class Session {
     return map
   }
 
-  private buildTranscript(): string {
-    const lines: string[] = []
+  private buildTranscript(): Transcript {
+    // Build system prompt entries
+    const system = this.pageContext
+      ? buildSystemPromptEntries(
+          this.pageContext,
+          resolveSkills(this.pageContext),
+          this.lazyTools.map((t) => ({
+            name: t.name,
+            description: t.description,
+          })),
+          this.getActivePlanContext(),
+          this.loadedSkills,
+        )
+      : []
 
-    // Add system prompt
-    let systemPrompt = '(No page context available)'
-    if (this.pageContext) {
-      const resolvedSkills = resolveSkills(this.pageContext)
-      const lazyToolSummaries = this.lazyTools.map((t) => ({
-        name: t.name,
-        description: t.description,
-      }))
-      systemPrompt = buildSystemPromptText(
-        this.pageContext,
-        resolvedSkills,
-        lazyToolSummaries,
-        this.getActivePlanContext(),
-      )
-    }
+    // Zip pruned (seen) messages with unpruned (full) messages
+    const messages: TranscriptMessage[] = this.messages.map((msg, i) => {
+      const entry: TranscriptMessage = {
+        type: msg.role === 'assistant' ? 'agent' : 'user',
+        seen: msg.content,
+      }
 
-    lines.push('='.repeat(80))
-    lines.push('SYSTEM PROMPT')
-    lines.push('='.repeat(80))
-    lines.push(systemPrompt)
-    lines.push('')
-
-    // Add exact tools payload as sent to the provider
-    if (this.lastProviderTools) {
-      lines.push('='.repeat(80))
-      lines.push('TOOLS (exact payload sent to provider)')
-      lines.push('='.repeat(80))
-      lines.push(JSON.stringify(this.lastProviderTools, null, 2))
-      lines.push('')
-    }
-
-    // Add conversation messages
-    for (const message of this.messages) {
-      lines.push('='.repeat(80))
-      lines.push(`${message.role.toUpperCase()}`)
-      lines.push('='.repeat(80))
-
-      if (typeof message.content === 'string') {
-        lines.push(message.content)
-      } else if (Array.isArray(message.content)) {
-        for (const block of message.content) {
-          if (block.type === 'text') {
-            lines.push(block.text)
-          } else if (block.type === 'skill') {
-            lines.push(`[Skill: ${block.name}]`)
-            lines.push(block.text)
-          } else if (block.type === 'tool_use') {
-            lines.push(`[Tool Call: ${block.name}]`)
-            lines.push(JSON.stringify(block.input, null, 2))
-          } else if (block.type === 'tool_result') {
-            lines.push(`[Tool Result: ${block.tool_use_id}]`)
-            try {
-              lines.push(JSON.stringify(JSON.parse(block.content), null, 2))
-            } catch {
-              lines.push(block.content)
-            }
-          }
+      const unpruned = this.unprunedMessages[i]
+      if (unpruned) {
+        const seenJson = JSON.stringify(msg.content)
+        const fullJson = JSON.stringify(unpruned.content)
+        if (seenJson !== fullJson) {
+          entry.full = unpruned.content
         }
       }
-      lines.push('')
-    }
 
-    return lines.join('\n')
+      return entry
+    })
+
+    // Map last tools to transcript format
+    const tools = this.lastTools.map((t) => ({
+      name: t.name,
+      description: t.description,
+      input_schema: t.input_schema,
+    }))
+
+    return { system, messages, tools }
   }
 }

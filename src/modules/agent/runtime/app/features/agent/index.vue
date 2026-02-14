@@ -58,7 +58,10 @@
         full-screen
         @cancel="showTranscript = false"
       >
-        <pre class="bk-agent-transcript">{{ transcriptContent }}</pre>
+        <AgentTranscript
+          v-if="transcriptContent"
+          :transcript="transcriptContent"
+        />
       </DialogModal>
     </BlokkliTransition>
   </Teleport>
@@ -71,6 +74,7 @@ import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
 import agentProvider from '#blokkli/agent/app/composables/agentProvider'
 import { agentPrompts, agentName } from '#blokkli-build/agent-client'
 import AgentPanel from './Panel/index.vue'
+import AgentTranscript from './Transcript/index.vue'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 

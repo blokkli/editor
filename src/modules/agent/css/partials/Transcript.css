@@ -1,9 +1,69 @@
 .bk {
   .bk-agent-transcript {
-    @apply p-25 bg-mono-900 text-white select-text;
-    @apply whitespace-pre-wrap break-words;
+    @apply bg-mono-900 text-white select-text;
     @apply text-xs leading-relaxed;
     @apply font-mono;
-    @apply m-0;
+    @apply m-0 p-20 overflow-auto;
+    @apply flex flex-col gap-20;
+  }
+
+  .bk-agent-transcript-section {
+    @apply flex flex-col gap-5;
+
+    > h3 {
+      @apply text-mono-300 text-xs font-sans uppercase tracking-wider;
+      @apply m-0 p-0 pb-5 border-b border-mono-700;
+    }
+  }
+
+  .bk-agent-transcript-entry {
+    @apply border border-mono-700 rounded;
+
+    > summary {
+      @apply px-10 py-5 cursor-pointer text-accent-300;
+      @apply hover:bg-mono-800;
+    }
+
+    &[open] > summary {
+      @apply border-b border-mono-700 bg-mono-800;
+    }
+  }
+
+  .bk-agent-transcript-message {
+    @apply border border-mono-700 rounded p-10;
+    @apply flex flex-col gap-5;
+  }
+
+  .bk-agent-transcript-role {
+    @apply text-accent-400 font-sans font-bold text-xs uppercase;
+    @apply flex items-center gap-5;
+  }
+
+  .bk-agent-transcript-content {
+    @apply flex flex-col gap-5;
+  }
+
+  .bk-agent-transcript-block {
+    @apply bg-mono-800 rounded p-10;
+
+    pre {
+      @apply m-0 whitespace-pre-wrap break-words text-xs;
+    }
+
+    p {
+      @apply m-0 mb-5 text-mono-300;
+    }
+  }
+
+  .bk-agent-transcript-label {
+    @apply text-teal-normal text-xs font-sans mb-5;
+  }
+
+  .bk-agent-transcript-pruned {
+    @apply text-yellow-normal font-normal lowercase;
+  }
+
+  .bk-agent-transcript-error {
+    @apply text-red-normal ml-5;
   }
 }
