@@ -502,8 +502,9 @@ export default function (
     isReady.value = true
     hasBeenReady.value = true
 
-    // Try to restore the latest conversation
-    if (adapter.agentConversations) {
+    // Try to restore the latest conversation, but skip if a prompt is already
+    // queued (panel just opened from a dropdown action — start fresh).
+    if (adapter.agentConversations && !pendingPrompt) {
       try {
         const latest = await adapter.agentConversations.loadLatest()
         if (latest) {
