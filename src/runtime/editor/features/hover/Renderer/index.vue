@@ -16,35 +16,20 @@ import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { isInsideRect } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import type { RGB } from './../../../../../global/types/theme'
-import {
-  defineRenderer,
-  onBlokkliEvent,
-  useStateBasedCache,
-} from '#blokkli/editor/composables'
+import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 
-const { animation, theme, dom, selection, state, ui, directive, blocks } =
-  useBlokkli()
-
-const getZIndexCache = useStateBasedCache(() => new Map<string, number>())
-
-function getFieldZIndex(uuid: string): number {
-  const cache = getZIndexCache()
-  const cached = cache.get(uuid)
-  if (cached !== undefined) return cached
-
-  const fieldKey = state.getFieldKeyForUuid(uuid)
-  if (!fieldKey) {
-    cache.set(uuid, 0)
-    return 0
-  }
-  const separatorIndex = fieldKey.indexOf(':')
-  const entityUuid = fieldKey.substring(0, separatorIndex)
-  const fieldName = fieldKey.substring(separatorIndex + 1)
-  const zIndex = dom.getRegisteredField(entityUuid, fieldName)?.zIndex ?? 0
-  cache.set(uuid, zIndex)
-  return zIndex
-}
+const {
+  animation,
+  theme,
+  dom,
+  selection,
+  state,
+  ui,
+  directive,
+  blocks,
+  fields,
+} = useBlokkli()
 
 // How many hover quads are supported.
 // This means that we support 10 blocks + 1 editable field.
@@ -80,7 +65,6 @@ function getDeepestUuid(uuids: string[]): string | null {
 
   let deepestUuid = uuids[0]!
   let maxLevel = state.getNestingLevel(deepestUuid)
-  let maxZIndex = -1
 
   for (let i = 1; i < uuids.length; i++) {
     const uuid = uuids[i]!
@@ -88,15 +72,9 @@ function getDeepestUuid(uuids: string[]): string | null {
     if (level > maxLevel) {
       maxLevel = level
       deepestUuid = uuid
-      maxZIndex = -1
     } else if (level === maxLevel) {
-      if (maxZIndex === -1) {
-        maxZIndex = getFieldZIndex(deepestUuid)
-      }
-      const zIndex = getFieldZIndex(uuid)
-      if (zIndex > maxZIndex) {
+      if (fields.compareFieldPriority(uuid, deepestUuid) > 0) {
         deepestUuid = uuid
-        maxZIndex = zIndex
       }
     }
   }
@@ -305,7 +283,7 @@ function updateHoverState(
     const existing = nestingMap.get(level)
     if (!existing) {
       nestingMap.set(level, uuid)
-    } else if (getFieldZIndex(uuid) > getFieldZIndex(existing)) {
+    } else if (fields.compareFieldPriority(uuid, existing) > 0) {
       nestingMap.set(level, uuid)
     }
   }

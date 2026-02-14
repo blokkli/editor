@@ -234,7 +234,7 @@ const animation = animationProvider(
 const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
-const fields = fieldsProvider(dom, types)
+const fields = fieldsProvider(dom, types, state)
 const permissionsInstance = await permissionsProvider(adapter)
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)

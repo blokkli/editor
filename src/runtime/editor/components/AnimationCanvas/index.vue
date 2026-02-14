@@ -34,7 +34,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
-import { onBlokkliEvent, useStateBasedCache } from '#blokkli/editor/composables'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
@@ -49,6 +49,7 @@ const {
   state,
   directive,
   blocks,
+  fields,
 } = useBlokkli()
 
 function onCanvasFocus() {
@@ -103,26 +104,6 @@ let mouseStartCoordinates: Coord | null = null
 let pointerDownTimestamp = 0
 let pointerUpTimestamp = 0
 
-const getZIndexCache = useStateBasedCache(() => new Map<string, number>())
-
-function getFieldZIndex(uuid: string): number {
-  const cache = getZIndexCache()
-  const cached = cache.get(uuid)
-  if (cached !== undefined) return cached
-
-  const fieldKey = state.getFieldKeyForUuid(uuid)
-  if (!fieldKey) {
-    cache.set(uuid, 0)
-    return 0
-  }
-  const separatorIndex = fieldKey.indexOf(':')
-  const entityUuid = fieldKey.substring(0, separatorIndex)
-  const fieldName = fieldKey.substring(separatorIndex + 1)
-  const zIndex = dom.getRegisteredField(entityUuid, fieldName)?.zIndex ?? 0
-  cache.set(uuid, zIndex)
-  return zIndex
-}
-
 function getInteractedElement(
   e: MouseEvent | TouchEvent,
 ): InteractedElement | null {
@@ -135,7 +116,6 @@ function getInteractedElement(
 
   let deepestUuid = ''
   let deepestLevel = -1
-  let deepestZIndex = 0
 
   for (let i = 0; i < visibleUuids.length; i++) {
     const uuid = visibleUuids[i]
@@ -157,14 +137,9 @@ function getInteractedElement(
     if (level > deepestLevel) {
       deepestUuid = uuid
       deepestLevel = level
-      deepestZIndex = getFieldZIndex(uuid)
-    } else {
+    } else if (fields.compareFieldPriority(uuid, deepestUuid) > 0) {
       // Same nesting level: prefer the block from the field with higher z-index.
-      const zIndex = getFieldZIndex(uuid)
-      if (zIndex > deepestZIndex) {
-        deepestUuid = uuid
-        deepestZIndex = zIndex
-      }
+      deepestUuid = uuid
     }
   }
 
@@ -458,7 +433,6 @@ function onPointerUp(e: PointerEvent) {
     } else if (keyboard.isPressingShift.value) {
       eventBus.emit('select:shiftToggle', clicked.uuid)
     } else {
-      console.log('asdfasdf')
       eventBus.emit('select', clicked.uuid)
     }
     return

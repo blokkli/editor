@@ -78,14 +78,6 @@ export type Props = {
 
 defineProps<Props>()
 
-if (import.meta.dev) {
-  if (import.meta.blokkliEditing) {
-    console.log('FOOBAR:EDITING')
-  } else {
-    console.log('FOOBAR:NOT-EDITING')
-  }
-}
-
 const colorClass = computed(() => {
   switch (options.value.background) {
     case 'dark':

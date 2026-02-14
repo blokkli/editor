@@ -103,6 +103,24 @@ List of fragment names that can be added to this field. Note that the
 Forces a specific drop alignment during drag-and-drop. Useful for horizontal
 layouts.
 
+### zIndex
+
+- **Type:** `number | string`
+- **Required:** No
+- **Default:** `0`
+
+The z-index of this field, used to resolve overlapping blocks at the same
+nesting level. When two blocks from different fields overlap visually, the block
+belonging to the field with the higher `zIndex` takes priority for hover
+detection and click interactions.
+
+When two fields share the same `zIndex` (or neither sets one), DOM order is used
+as a tiebreaker — the field that appears later in the document wins, matching
+natural CSS paint order.
+
+This is useful for layouts where fields are layered on top of each other (e.g. a
+floating header field overlapping a content field).
+
 ### proxyMode
 
 - **Type:** `boolean`
@@ -204,6 +222,25 @@ Rendered after the blocks. Receives the same props as the default slot.
     edit-class="min-h-[300px]"
     drop-alignment="horizontal"
   />
+</template>
+```
+
+### Overlapping Fields with z-index
+
+When fields visually overlap, use `z-index` to control which field's blocks take
+priority for interactions:
+
+```vue
+<template>
+  <div class="relative">
+    <BlokkliField name="content" :list="page.content" />
+    <BlokkliField
+      name="floating_header"
+      :list="page.floatingHeader"
+      :z-index="1"
+      list-class="absolute top-0 left-0 right-0"
+    />
+  </div>
 </template>
 ```
 
