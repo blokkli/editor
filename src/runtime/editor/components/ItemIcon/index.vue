@@ -9,7 +9,10 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { fromLibraryBlockBundle } from '#blokkli-build/config'
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+} from '#blokkli-build/config'
 
 const props = defineProps<{
   bundle?: string
@@ -33,7 +36,13 @@ const iconName = computed<BlokkliIcon>(() => {
     }
   }
 
-  return props.icon ?? 'bk_mdi_question_mark'
+  if (props.icon) {
+    return props.icon
+  } else if (props.bundle === fragmentBlockBundle) {
+    return 'bk_mdi_newspaper'
+  }
+
+  return 'bk_mdi_question_mark'
 })
 </script>
 
