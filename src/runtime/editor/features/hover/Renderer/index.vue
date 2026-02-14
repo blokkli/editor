@@ -16,11 +16,35 @@ import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { isInsideRect } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import type { RGB } from './../../../../../global/types/theme'
-import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
+import {
+  defineRenderer,
+  onBlokkliEvent,
+  useStateBasedCache,
+} from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 
 const { animation, theme, dom, selection, state, ui, directive, blocks } =
   useBlokkli()
+
+const getZIndexCache = useStateBasedCache(() => new Map<string, number>())
+
+function getFieldZIndex(uuid: string): number {
+  const cache = getZIndexCache()
+  const cached = cache.get(uuid)
+  if (cached !== undefined) return cached
+
+  const fieldKey = state.getFieldKeyForUuid(uuid)
+  if (!fieldKey) {
+    cache.set(uuid, 0)
+    return 0
+  }
+  const separatorIndex = fieldKey.indexOf(':')
+  const entityUuid = fieldKey.substring(0, separatorIndex)
+  const fieldName = fieldKey.substring(separatorIndex + 1)
+  const zIndex = dom.getRegisteredField(entityUuid, fieldName)?.zIndex ?? 0
+  cache.set(uuid, zIndex)
+  return zIndex
+}
 
 // How many hover quads are supported.
 // This means that we support 10 blocks + 1 editable field.
@@ -46,6 +70,8 @@ type HoverState = {
 /**
  * Determine which UUID is the "deepest" in the hierarchy.
  * Returns the block with the highest nesting level.
+ * When blocks share the same nesting level, the one from the field with the
+ * higher z-index wins.
  */
 function getDeepestUuid(uuids: string[]): string | null {
   if (uuids.length === 0) {
@@ -54,6 +80,7 @@ function getDeepestUuid(uuids: string[]): string | null {
 
   let deepestUuid = uuids[0]!
   let maxLevel = state.getNestingLevel(deepestUuid)
+  let maxZIndex = -1
 
   for (let i = 1; i < uuids.length; i++) {
     const uuid = uuids[i]!
@@ -61,6 +88,16 @@ function getDeepestUuid(uuids: string[]): string | null {
     if (level > maxLevel) {
       maxLevel = level
       deepestUuid = uuid
+      maxZIndex = -1
+    } else if (level === maxLevel) {
+      if (maxZIndex === -1) {
+        maxZIndex = getFieldZIndex(deepestUuid)
+      }
+      const zIndex = getFieldZIndex(uuid)
+      if (zIndex > maxZIndex) {
+        deepestUuid = uuid
+        maxZIndex = zIndex
+      }
     }
   }
 
@@ -203,15 +240,35 @@ function updateHoverState(
     ) ||
     deepestUuid !== previousDeepestUuid
 
-  // Find hovered editable field using the editable provider
+  // Find hovered editable field that belongs to the deepest/winning block.
+  // When blocks overlap at the same nesting level, only show the editable
+  // from the block with the higher field z-index.
   let hoveredEditableFieldRect: Rectangle | null = null
   const editableRects = directive.getVisible('editable')
+  let fallbackEditableRect: Rectangle | null = null
+
   for (let i = 0; i < editableRects.length; i++) {
     const editableRect = editableRects[i]!
-    if (isInsideRect(artboardMouseX, artboardMouseY, editableRect)) {
+    if (!isInsideRect(artboardMouseX, artboardMouseY, editableRect)) continue
+
+    // Extract entity UUID from the rect key (format: directive:entityType:uuid:fieldName).
+    const key = (editableRect as Rectangle & { key: string }).key
+    const entityUuid = key.split(':')[2]!
+
+    if (deepestUuid && entityUuid === deepestUuid) {
+      // Editable belongs to the winning block.
       hoveredEditableFieldRect = editableRect
       break
     }
+
+    if (!fallbackEditableRect && !hoveredUuids.includes(entityUuid)) {
+      // Non-block editable (e.g. host entity) — use as fallback.
+      fallbackEditableRect = editableRect
+    }
+  }
+
+  if (!hoveredEditableFieldRect) {
+    hoveredEditableFieldRect = fallbackEditableRect
   }
 
   // Quick check if we can skip rendering updates
@@ -245,7 +302,10 @@ function updateHoverState(
   for (let i = 0; i < unselectedHoveredUuids.length; i++) {
     const uuid = unselectedHoveredUuids[i]!
     const level = Math.min(state.getNestingLevel(uuid), 9)
-    if (!nestingMap.has(level)) {
+    const existing = nestingMap.get(level)
+    if (!existing) {
+      nestingMap.set(level, uuid)
+    } else if (getFieldZIndex(uuid) > getFieldZIndex(existing)) {
       nestingMap.set(level, uuid)
     }
   }

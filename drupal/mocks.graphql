@@ -2,14 +2,6 @@ fragment paragraph on Paragraph {
   uuid
 }
 
-fragment paragraphsFieldItem on Paragraph {
-  uuid
-  bundle: entityBundle
-  isVisible: paragraphsBlokkliIsVisible
-  isNew
-  options: paragraphsBlokkliOptions
-}
-
 fragment pbMutatedEntity on Entity {
   uuid
 }

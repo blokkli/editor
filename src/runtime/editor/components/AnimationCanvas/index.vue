@@ -34,7 +34,7 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { onBlokkliEvent, useStateBasedCache } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
@@ -103,15 +103,24 @@ let mouseStartCoordinates: Coord | null = null
 let pointerDownTimestamp = 0
 let pointerUpTimestamp = 0
 
+const getZIndexCache = useStateBasedCache(() => new Map<string, number>())
+
 function getFieldZIndex(uuid: string): number {
+  const cache = getZIndexCache()
+  const cached = cache.get(uuid)
+  if (cached !== undefined) return cached
+
   const fieldKey = state.getFieldKeyForUuid(uuid)
   if (!fieldKey) {
+    cache.set(uuid, 0)
     return 0
   }
   const separatorIndex = fieldKey.indexOf(':')
   const entityUuid = fieldKey.substring(0, separatorIndex)
   const fieldName = fieldKey.substring(separatorIndex + 1)
-  return dom.getRegisteredField(entityUuid, fieldName)?.zIndex ?? 0
+  const zIndex = dom.getRegisteredField(entityUuid, fieldName)?.zIndex ?? 0
+  cache.set(uuid, zIndex)
+  return zIndex
 }
 
 function getInteractedElement(
