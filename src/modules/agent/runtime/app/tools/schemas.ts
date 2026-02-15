@@ -8,7 +8,7 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
  * Extract a simple key→label map from the various radios/checkboxes option formats.
  * Handles plain strings, icon objects, color objects, grid objects, etc.
  */
-function extractOptionLabels(
+export function extractOptionLabels(
   option: Record<string, unknown>,
 ): Record<string, string> | undefined {
   if (!('options' in option) || !option.options) return undefined
