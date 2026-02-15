@@ -11,7 +11,7 @@ import { defineBlokkli } from '#imports'
 defineBlokkli({
   bundle: 'button_list',
   propsFieldMapping: {
-    blocks: 'blocks',
+    blocks: { type: 'field', name: 'blocks' },
   },
   editor: {
     disableEdit: true,

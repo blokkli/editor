@@ -85,6 +85,18 @@ const { parentType, options } = defineBlokkli({
       return ['box']
     },
   },
+
+  propsFieldMapping: {
+    icon: null,
+    title: {
+      type: 'editable',
+      name: 'title',
+    },
+    text: {
+      type: 'editable',
+      name: 'text',
+    },
+  },
 })
 
 defineProps<Props>()

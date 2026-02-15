@@ -36,6 +36,11 @@ export type BlockDefinitionRenderForProviderTypeBase<
   providerType: ProviderType
 }
 
+export type PropsFieldMapping = {
+  type: 'editable' | 'droppable' | 'field'
+  name: string
+}
+
 export type BlockDefinitionRenderForBase<
   BundleWithNested extends string = string,
   FieldListTypes extends string = string,
@@ -301,8 +306,8 @@ export type BlockDefinitionInputBase<
    * ```
    */
   propsFieldMapping?: Bundle extends keyof BundlePropsMap
-    ? Partial<Record<keyof BundlePropsMap[Bundle], string>>
-    : never
+    ? Record<keyof BundlePropsMap[Bundle], PropsFieldMapping | null>
+    : Record<string, PropsFieldMapping | null>
 }
 
 export type FragmentDefinitionInputBase<
@@ -382,5 +387,5 @@ export type ProviderDefinitionInputBase<
    */
   globalOptions?: GlobalOptions
 
-  propsFieldMapping?: Record<string, string>
+  propsFieldMapping?: Record<string, PropsFieldMapping | null>
 }

@@ -75,9 +75,12 @@ const { options } = defineBlokkli({
     },
   },
   propsFieldMapping: {
-    header: 'header',
-    left: 'left',
-    right: 'right',
+    header: {
+      type: 'field',
+      name: 'header',
+    },
+    left: { type: 'field', name: 'left' },
+    right: { type: 'field', name: 'right' },
   },
   editor: {
     disableEdit: true,

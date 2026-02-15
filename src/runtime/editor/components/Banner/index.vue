@@ -5,7 +5,9 @@
     :class="scheme ? 'bk-scheme-' + scheme : undefined"
   >
     <Icon :name="icon" />
-    <p v-html="text" />
+    <slot>
+      <p v-if="text" v-html="text" />
+    </slot>
     <button v-if="button" class="bk-banner-close" @click="$emit('click')">
       {{ button }}
       <Icon name="bk_mdi_close" />
@@ -28,7 +30,7 @@ const props = withDefaults(
   defineProps<{
     id: string
     icon: BlokkliIcon
-    text: string
+    text?: string
     button?: string
     scheme?: ThemeColorName
   }>(),

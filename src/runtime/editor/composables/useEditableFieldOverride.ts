@@ -1,7 +1,7 @@
 import type { EntityContext } from '#blokkli/types'
 import { useBlokkli } from '#imports'
-import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import { itemEntityType } from '#blokkli-build/config'
+import type { PropsFieldMapping } from './../../../global/types/definitions'
 
 export type EditableFieldOverride = {
   /** The resolved DOM element, or null if not found. */
@@ -67,10 +67,13 @@ export function useEditableFieldOverride(
   const isComponent = !!editableData?.isComponent
 
   // Determine update strategy.
-  function findMatchingProp(mapping: Record<string, string>): string | null {
+  function findMatchingProp(
+    mapping: Record<string, PropsFieldMapping | null>,
+  ): string | null {
     return (
       Object.entries(mapping).find(
-        ([_prop, field]) => field === fieldName,
+        ([_prop, propMapping]) =>
+          propMapping?.name === fieldName && propMapping.type === 'editable',
       )?.[0] ?? null
     )
   }
@@ -82,9 +85,9 @@ export function useEditableFieldOverride(
 
   let matchingProp: string | null = null
   if (host.type === itemEntityType) {
-    const mapping = FIELD_MAPPING[host.bundle]
-    if (mapping) {
-      matchingProp = findMatchingProp(mapping)
+    const defintion = definitions.getBlockDefinition(host.bundle, 'default')
+    if (defintion?.propsFieldMapping) {
+      matchingProp = findMatchingProp(defintion.propsFieldMapping)
     }
   } else if (providerDefinition) {
     const mapping = providerDefinition.propsFieldMapping

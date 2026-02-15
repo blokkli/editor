@@ -27,7 +27,7 @@ const { parentType } = defineBlokkli({
   bundle: 'table',
   chunkName: 'rare',
   propsFieldMapping: {
-    rows: 'rows',
+    rows: { type: 'field', name: 'rows' },
   },
   editor: {
     icon: 'bk_mdi_table',

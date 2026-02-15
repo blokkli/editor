@@ -96,8 +96,10 @@ function walkBlocks(
     // Iterate over props that contain children.
     const propNames = Object.keys(nestedFieldMapping)
     for (const propName of propNames) {
-      const fieldName = nestedFieldMapping[propName]
-      const key = mappedItem.uuid + ':' + fieldName
+      const mapping = nestedFieldMapping[propName]
+      if (!mapping) continue
+      if (mapping[0] !== 'field') continue
+      const key = mappedItem.uuid + ':' + mapping[1]
       const value = mutatedFieldsMap
         ? mutatedFieldsMap[key]?.list
         : (mappedItem.props as any)?.[propName]

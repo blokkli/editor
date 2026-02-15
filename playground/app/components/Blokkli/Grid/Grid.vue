@@ -60,8 +60,8 @@ const { options } = defineBlokkli({
     },
   },
   propsFieldMapping: {
-    header: 'header',
-    blocks: 'blocks',
+    header: { type: 'field', name: 'header' },
+    blocks: { type: 'field', name: 'blocks' },
   },
   editor: {
     icon: 'bk_mdi_grid_view',

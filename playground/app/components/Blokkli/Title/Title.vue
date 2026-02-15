@@ -60,9 +60,9 @@ const { parentType, fieldListType } = defineBlokkli({
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },
   propsFieldMapping: {
-    title: 'title',
-    tagline: 'tagline',
-    lead: 'lead',
+    title: { type: 'editable', name: 'title' },
+    tagline: { type: 'editable', name: 'tagline' },
+    lead: { type: 'editable', name: 'lead' },
   },
 })
 

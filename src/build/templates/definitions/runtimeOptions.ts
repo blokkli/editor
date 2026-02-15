@@ -62,9 +62,21 @@ export default defineCodeTemplate(
 
       if (isBlock(item.definition)) {
         if (item.definition.propsFieldMapping) {
+          const mapping = Object.entries(
+            item.definition.propsFieldMapping,
+          ).reduce<Record<string, [string, string]>>(
+            (acc, [propName, mapping]) => {
+              if (mapping) {
+                acc[propName] = [mapping.type, mapping.name]
+              }
+
+              return acc
+            },
+            {},
+          )
           FIELD_MAPPING.set(
             item.definition.bundle,
-            JSON.stringify(item.definition.propsFieldMapping, null, 2),
+            JSON.stringify(mapping, null, 2),
           )
         }
       }
@@ -149,8 +161,10 @@ export type RuntimeBlockOptions = {
 ${runtimeMappedOptionTypes}
 }
 
+export type PropsFieldMappingType = 'editable' | 'droppable' | 'field'
+
 export declare const OPTIONS: Record<string, Record<string, RuntimeBlockOptionArray>>
-export declare const FIELD_MAPPING: Record<string, Record<string, string>>
+export declare const FIELD_MAPPING: Record<string, Record<string, [PropsFieldMappingType, string]>>
 `
   },
   {

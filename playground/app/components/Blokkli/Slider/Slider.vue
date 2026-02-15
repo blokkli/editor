@@ -19,7 +19,7 @@ import { defineBlokkli } from '#imports'
 defineBlokkli({
   bundle: 'slider',
   propsFieldMapping: {
-    slides: 'slides',
+    slides: { type: 'field', name: 'slides' },
   },
   editor: {
     icon: 'bk_mdi_view_carousel',
