@@ -37,7 +37,9 @@ type GetType<T> = T extends { options: infer O }
       ? number
       : T extends { type: 'number' }
         ? number
-        : string
+        : T extends { type: 'json' }
+          ? any
+          : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition

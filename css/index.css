@@ -54,6 +54,7 @@
 @import './partials/Analyze.css';
 @import './partials/Transform.css';
 @import './../src/modules/agent/css/Agent.css';
+@import './../src/modules/charts/css/Charts.css';
 @import './partials/Konami.css';
 @import './partials/Publish.css';
 @import './partials/ArtboardTooltip.css';

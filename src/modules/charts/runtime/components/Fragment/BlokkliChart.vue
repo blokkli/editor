@@ -1,11 +1,14 @@
 <template>
-  <div>Hello World</div>
+  <ChartRenderer v-if="data?.label" v-bind="data" />
+  <div v-else>Missing chart data.</div>
 </template>
 
 <script setup lang="ts">
-import { defineBlokkliFragment } from '#imports'
+import { defineBlokkliFragment, computed } from '#imports'
+import type { BlokkliChartData } from '../../types'
+import ChartRenderer from './../ChartRenderer/index.vue'
 
-defineBlokkliFragment({
+const { options } = defineBlokkliFragment({
   name: 'blokkli_chart',
   label: 'Chart',
   description: 'Create interactive charts.',
@@ -19,5 +22,9 @@ defineBlokkliFragment({
       default: '{}',
     },
   },
+})
+
+const data = computed<BlokkliChartData | null>(() => {
+  return options.value.data
 })
 </script>
