@@ -17,6 +17,8 @@ import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+import { featureFragmentNames } from '#blokkli-build/editor-config'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 defineBlokkliFeature({
   id: 'edit',
@@ -33,11 +35,27 @@ const userCanEditLibraryItems = computed(() =>
   permissions.hasPermission('edit_library_item'),
 )
 
+function isFragment(item: RenderedFieldListItem): boolean {
+  return item.bundle === fragmentBlockBundle
+}
+
+function isFeatureFragment(item: RenderedFieldListItem): boolean {
+  return (
+    !!item.fragment?.name && featureFragmentNames.includes(item.fragment.name)
+  )
+}
+
 const canEdit = computed(() => {
   const item = selection.item.value
+
   // Editing is only possible when a single block is selected.
   if (!item) {
     return false
+  }
+
+  // Fragments provided by features can always be edited.
+  if (isFragment(item)) {
+    return isFeatureFragment(item)
   }
 
   const definition = definitions.getBlockDefinition(
@@ -90,6 +108,16 @@ function onClick(items: RenderedFieldListItem[]) {
       uuid: item.library.libraryItemUuid,
       blockUuid: item.uuid,
     })
+    return
+  }
+
+  if (isFragment(item)) {
+    if (isFeatureFragment(item)) {
+      eventBus.emit('fragment:edit', {
+        uuid: item.uuid,
+        name: item.fragment!.name,
+      })
+    }
     return
   }
 

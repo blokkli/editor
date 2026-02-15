@@ -6,6 +6,7 @@ export default defineCodeTemplate(
   'editor-config',
   (ctx) => {
     const settingsOverride = ctx.helper.options.settingsOverride || {}
+    const featureFragmentNames = ctx.getFeatureFragmentNames()
 
     return `
 export const hasCustomTheme = ${JSON.stringify(ctx.theme.hasCustomTheme)}
@@ -29,6 +30,8 @@ export const defaultLanguage = ${JSON.stringify(
 export const forceDefaultLanguage = ${JSON.stringify(
       !!ctx.helper.options.forceDefaultLanguage,
     )}
+
+export const featureFragmentNames = ${JSON.stringify(featureFragmentNames)}
 `
   },
   (ctx) => {
@@ -81,6 +84,11 @@ export declare const templateEntityType: string | null
  * Whether to always force the default language, even on translation pages.
  */
 export declare const forceDefaultLanguage: boolean
+
+/**
+ * The fragment names provided by features.
+ */
+export declare const featureFragmentNames: string[]
 `
   },
 )

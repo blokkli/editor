@@ -22,6 +22,7 @@ export class ModuleContext {
   private templates: ModuleTemplate[] = []
   private templateContents: Map<string, string> = new Map()
   private adapterExtensions: AdapterExtensionDefinition[] = []
+  private featureFragments: Set<string> = new Set()
   public collectors: Collector[] = []
 
   constructor(
@@ -31,6 +32,17 @@ export class ModuleContext {
     public blocks: BlockCollector,
     public theme: ThemeData,
   ) {}
+
+  addFeatureFragment(name: string) {
+    if (this.featureFragments.has(name)) {
+      throw new Error(`A feature fragment with name "${name}" already exists.`)
+    }
+    this.featureFragments.add(name)
+  }
+
+  getFeatureFragmentNames(): string[] {
+    return [...this.featureFragments.values()]
+  }
 
   registerAdapterExtension(namespace: string, path: string): void {
     if (this.adapterExtensions.some((e) => e.namespace === namespace)) {

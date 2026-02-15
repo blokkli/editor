@@ -293,6 +293,11 @@ export interface EventbusEvents {
    * Emitted when a view option is being toggled.
    */
   'view-option:toggle': { id: string }
+
+  /**
+   * Emitted when editing a fragment provided by a feature.
+   */
+  'fragment:edit': { name: string; uuid: string }
 }
 
 type EventbusEventsType = {
