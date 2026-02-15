@@ -2,10 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
-import {
-  blockOptionsMapSchema,
-  extractOptionLabels,
-} from '../schemas'
+import { blockOptionsMapSchema, extractOptionLabels } from '../schemas'
 import type { BlockOptionsMap } from '../schemas'
 
 const paramsSchema = z.object({
@@ -209,7 +206,11 @@ export default defineBlokkliAgentTool({
       ? nestingBundles
           .map(
             (b) =>
-              `${b.bundle} has paragraph fields: ${Object.entries(b.paragraphFields).map(([name, f]) => `${name} (${f.allowedBundles.join(', ')})`).join(', ')}`,
+              `${b.bundle} has paragraph fields: ${Object.entries(
+                b.paragraphFields,
+              )
+                .map(([name, f]) => `${name} (${f.allowedBundles.join(', ')})`)
+                .join(', ')}`,
           )
           .join('; ')
       : undefined

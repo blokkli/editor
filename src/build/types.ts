@@ -97,6 +97,15 @@ export type ModuleOptions = {
   fieldListTypes?: string[]
 
   /**
+   * Valid blokkli provider types.
+   *
+   * If one or more values are defined, they can be passed to the
+   * BlokkliProvider component as a prop. The value is made available to all
+   * blokkli items inside this provider.
+   */
+  providerTypes?: string[]
+
+  /**
    * The entity type of blokkli items.
    *
    * Using the paragraphs_blokkli integration this value should be set to "paragraph".

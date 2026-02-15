@@ -4,6 +4,7 @@ import type { DebugLogger } from '#blokkli/editor/providers/debug'
 import type {
   FieldListItemTyped,
   ValidFieldListTypes,
+  ValidProviderTypes,
 } from '#blokkli-build/generated-types'
 import type DraggableListComponent from '../editor/components/DraggableList.vue'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
@@ -164,6 +165,13 @@ export const INJECT_MUTATED_FIELDS_MAP = Symbol(
 export const INJECT_ENTITY_CONTEXT = Symbol(
   'blokkli_entity_context',
 ) as InjectionKey<EntityContext>
+
+/**
+ * The current provider type.
+ */
+export const INJECT_PROVIDER_TYPE = Symbol(
+  'blokkli_provider_type',
+) as InjectionKey<ValidProviderTypes>
 
 /**
  * The entity context of the provider.

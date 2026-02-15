@@ -30,13 +30,21 @@ export type BlockDefinitionRenderForFieldListTypeBase<
   fieldListType: FieldListTypes
 }
 
+export type BlockDefinitionRenderForProviderTypeBase<
+  ProviderType extends string = string,
+> = {
+  providerType: ProviderType
+}
+
 export type BlockDefinitionRenderForBase<
   BundleWithNested extends string = string,
   FieldListTypes extends string = string,
+  ProviderType extends string = string,
 > =
   | BlockDefinitionRenderForParentBase<BundleWithNested>
   | BlockDefinitionRenderForFieldListBase<FieldListTypes>
   | BlockDefinitionRenderForFieldListTypeBase<FieldListTypes>
+  | BlockDefinitionRenderForProviderTypeBase<ProviderType>
 
 export type BlokkliDefinitionInputEditorBase<
   Options extends BlockDefinitionOptionsInputBase =
@@ -205,6 +213,7 @@ export type BlockDefinitionInputBase<
     string,
     Record<string, any>
   >,
+  ProviderTypes extends string = string,
 > = {
   /**
    * The bundle ID of the block, e.g. "text" or "section_title".
@@ -217,8 +226,16 @@ export type BlockDefinitionInputBase<
    * parent matches the given bundle.
    */
   renderFor?:
-    | BlockDefinitionRenderForBase<BundleWithNested, FieldListTypes>
-    | BlockDefinitionRenderForBase<BundleWithNested, FieldListTypes>[]
+    | BlockDefinitionRenderForBase<
+        BundleWithNested,
+        FieldListTypes,
+        ProviderTypes
+      >
+    | BlockDefinitionRenderForBase<
+        BundleWithNested,
+        FieldListTypes,
+        ProviderTypes
+      >[]
 
   /**
    * The name of the chunk group.

@@ -133,6 +133,7 @@ export default defineNuxtConfig({
     ],
     itemEntityType: 'paragraph',
     fieldListTypes: ['header', 'inline'],
+    providerTypes: ['contentPage'],
     globalOptions: {
       background: {
         type: 'radios',

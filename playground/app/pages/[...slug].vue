@@ -11,6 +11,7 @@
       :language="language"
       :entity="pageValues"
       :permissions="canEdit ? ['review', 'edit', 'view'] : []"
+      provider-type="contentPage"
     >
       <Hero
         :is-editing="isEditing"

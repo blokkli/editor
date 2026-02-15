@@ -107,6 +107,18 @@ Host options that apply to the entire page. These are defined using
 When `true`, isolates the provider element during editing by hiding other page
 content. Useful for focusing on a specific editable region.
 
+### providerType
+
+- **Type:** `ValidProviderTypes`
+- **Required:** No
+- **Default:** `'default'`
+
+Define the type of this provider. You can define custom types in the blökkli
+module config via `blokkli.providerTypes`.
+
+This allows you to define specific block components for a provider type using
+the [renderFor](/define-blokkli/render-for) property in `defineBlokkli`.
+
 ## Slots
 
 ### default

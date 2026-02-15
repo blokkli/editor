@@ -68,6 +68,8 @@ function getVariations(definition?: ExtractedDefinition | null): string[] {
           return `block:${bundle}__p:${v.parentBundle}`
         } else if ('fieldList' in v) {
           return `block:${bundle}__f:${v.fieldList}`
+        } else if ('providerType' in v) {
+          return `block:${bundle}__t:${v.providerType}`
         } else {
           return `block:${bundle}__f:${v.fieldListType}`
         }

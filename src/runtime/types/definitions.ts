@@ -9,6 +9,7 @@ import type {
   ValidFieldListTypes,
   ValidGlobalConfigKeys,
   BundleProps,
+  ValidProviderTypes,
 } from '#blokkli-build/generated-types'
 import type {
   BlockDefinitionInputBase,
@@ -16,6 +17,7 @@ import type {
   BlockDefinitionRenderForFieldListBase,
   BlockDefinitionRenderForFieldListTypeBase,
   BlockDefinitionRenderForParentBase,
+  BlockDefinitionRenderForProviderTypeBase,
   BlokkliDefinitionInputEditorBase,
   FragmentDefinitionInputBase,
   ProviderDefinitionInputBase,
@@ -181,9 +183,13 @@ export type BlockDefinitionRenderForFieldList =
 export type BlockDefinitionRenderForFieldListType =
   BlockDefinitionRenderForFieldListTypeBase<ValidFieldListTypes>
 
+export type BlockDefinitionRenderForProviderType =
+  BlockDefinitionRenderForProviderTypeBase<ValidProviderTypes>
+
 export type BlockDefinitionRenderFor = BlockDefinitionRenderForBase<
   BlockBundleWithNested,
-  ValidFieldListTypes
+  ValidFieldListTypes,
+  ValidProviderTypes
 >
 
 export type BlockDefinitionInput<
@@ -199,7 +205,8 @@ export type BlockDefinitionInput<
     BlockBundleWithNested,
     ValidFieldListTypes,
     BlokkliIcon,
-    BundleProps
+    BundleProps,
+    ValidProviderTypes
   >,
   'editor'
 > & {

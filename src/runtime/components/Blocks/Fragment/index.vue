@@ -25,12 +25,17 @@ const ctx = defineBlokkli({
   },
 })
 
+const providerType = ctx.provider.value?.providerType
+
 const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
 const component = getComponent(
   'fragment',
   componentProps.name,
-  undefined,
-  undefined,
+  {
+    fieldListType: undefined,
+    parentBundle: undefined,
+    providerType,
+  },
   allComponentsChunk,
 )
 

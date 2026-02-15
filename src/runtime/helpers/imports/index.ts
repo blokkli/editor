@@ -1,6 +1,10 @@
 import { chunks, chunkMapping } from '#blokkli-build/imports'
 import type { Component } from 'vue'
 import { defineAsyncComponent } from '#imports'
+import type {
+  ValidFieldListTypes,
+  ValidProviderTypes,
+} from '#blokkli-build/generated-types'
 
 function objectOrImport(
   key: string,
@@ -35,24 +39,20 @@ function objectOrImport(
   return item
 }
 
+type GetComponentContext = {
+  fieldListType?: ValidFieldListTypes
+  parentBundle?: string
+  providerType?: ValidProviderTypes
+}
+
 export function getComponent(
   type: 'block' | 'fragment',
-  bundle: string,
-  fieldListType?: string,
-  parentBundle?: string,
+  bundleOrFragmentName: string,
+  context: GetComponentContext,
   allComponents?: Record<string, Component> | null,
 ): any {
-  if (fieldListType) {
-    const key = `${type}:${bundle}__f:${fieldListType}`
-    if (allComponents && allComponents[key]) {
-      return allComponents[key]
-    }
-    if (chunkMapping[key]) {
-      return objectOrImport(key)
-    }
-  }
-  if (parentBundle) {
-    const key = `${type}:${bundle}__p:${parentBundle}`
+  if (context.providerType) {
+    const key = `${type}:${bundleOrFragmentName}__t:${context.providerType}`
     if (allComponents && allComponents[key]) {
       return allComponents[key]
     }
@@ -61,7 +61,27 @@ export function getComponent(
     }
   }
 
-  const key = `${type}:${bundle}`
+  if (context.fieldListType) {
+    const key = `${type}:${bundleOrFragmentName}__f:${context.fieldListType}`
+    if (allComponents && allComponents[key]) {
+      return allComponents[key]
+    }
+    if (chunkMapping[key]) {
+      return objectOrImport(key)
+    }
+  }
+
+  if (context.parentBundle) {
+    const key = `${type}:${bundleOrFragmentName}__p:${context.parentBundle}`
+    if (allComponents && allComponents[key]) {
+      return allComponents[key]
+    }
+    if (chunkMapping[key]) {
+      return objectOrImport(key)
+    }
+  }
+
+  const key = `${type}:${bundleOrFragmentName}`
   if (allComponents && allComponents[key]) {
     return allComponents[key]
   }

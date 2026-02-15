@@ -78,6 +78,7 @@ export default defineCodeTemplate(
 
     const chunkNames = ctx.helper.options.chunkNames || ['global']
     const fieldListTypes = ctx.helper.options.fieldListTypes || ['default']
+    const providerTypes = ctx.helper.options.providerTypes || ['default']
     const globalOptions = ctx.helper.options.globalOptions || {}
 
     const validGlobalOptions = Object.keys(globalOptions)
@@ -165,6 +166,8 @@ ${propTypeImportStatements}
 import type { FieldListItem } from "${ctx.helper.relativePaths.TYPES}"
 
 export type ValidFieldListTypes = ${toStringUnion(fieldListTypes)}
+
+export type ValidProviderTypes = ${toStringUnion(providerTypes)}
 
 export type BlockBundle = ${toStringUnion(validBlockBundles)}
 

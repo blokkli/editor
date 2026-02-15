@@ -128,6 +128,11 @@ export class ModuleHelper implements ValidationInterface {
       fieldListTypes.push('default')
     }
 
+    const providerTypes: string[] = providedOptions.providerTypes || []
+    if (!providerTypes.includes('default')) {
+      providerTypes.push('default')
+    }
+
     const chunkNames: string[] = providedOptions.chunkNames || []
 
     if (!chunkNames.includes('global')) {
@@ -138,6 +143,7 @@ export class ModuleHelper implements ValidationInterface {
       ...providedOptions,
       pattern,
       fieldListTypes: fieldListTypes.filter(onlyUnique),
+      providerTypes: providerTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
     }
 

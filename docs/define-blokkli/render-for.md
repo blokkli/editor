@@ -4,9 +4,10 @@ It's possible to define multiple components for the same block bundle and render
 them based on the context. This is done using the `renderFor` property in
 `defineBlokkli`.
 
-There are two ways to define a constraint: Based on parent bundle, e.g.
-`{ parentBundle: 'grid' }` or based on the field list type:
-`{ fieldListType: 'inline' }`.
+There are three ways to define a constraint: Based on parent bundle, e.g.
+`{ parentBundle: 'grid' }`, based on the field list type
+`{ fieldListType: 'inline' }` or based on the provider type
+`{ providerType: 'news' }`.
 
 ::: warning
 
@@ -123,3 +124,40 @@ Now, when the button is rendered inside this field:
 :::
 
 It will use the `Inline.vue` component instead.
+
+## Based on provider type
+
+You can render a different component based on the current provider type:
+
+::: code-group
+
+```vue [~/components/Blokkli/CTA/OnHome.vue]
+<script lang="ts" setup>
+defineBlokkli({
+  bundle: 'cta',
+  renderFor: [
+    {
+      providerType: 'home',
+    },
+  ],
+})
+</script>
+```
+
+:::
+
+Now, when the CTA block is rendered inside a provider of this type:
+
+::: code-group
+
+```vue [~/pages/home.vue]
+<template>
+  <BlokkliProvider v-bind="providerProps" provider-type="home">
+    <BlokkliField :list="blocks" />
+  </BlokkliProvider>
+</template>
+```
+
+:::
+
+It will use the `OnHome.vue` component instead.

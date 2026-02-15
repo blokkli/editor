@@ -34,6 +34,7 @@ import {
   INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_ITEM_PROPS_OVERRIDE,
+  INJECT_PROVIDER_TYPE,
 } from '../helpers/injections'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
@@ -73,6 +74,7 @@ const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
 const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
 const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
 const fieldListType = inject(INJECT_FIELD_LIST_TYPE, undefined)
+const providerType = inject(INJECT_PROVIDER_TYPE, undefined)
 
 const itemProps = computed<Record<string, string>>(() => {
   if (mutatedItemProps) {
@@ -96,8 +98,11 @@ const component =
     : getComponent(
         'block',
         componentProps.bundle,
-        fieldListType?.value || 'default',
-        componentProps.parentType,
+        {
+          fieldListType: fieldListType?.value || 'default',
+          parentBundle: componentProps.parentType,
+          providerType,
+        },
         allComponentsChunk,
       )
 

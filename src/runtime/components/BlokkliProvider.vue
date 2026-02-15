@@ -79,12 +79,14 @@ import {
 import {
   INJECT_ENTITY_CONTEXT,
   INJECT_PROVIDER_CONTEXT,
+  INJECT_PROVIDER_TYPE,
 } from '../helpers/injections'
 import type { EntityContext } from '#blokkli/types'
 import type {
   BlokkliProviderEntityContext,
   EditPermission,
 } from '#blokkli/types/provider'
+import type { ValidProviderTypes } from '#blokkli-build/generated-types'
 
 type BlokkliProviderProps = {
   /**
@@ -136,6 +138,13 @@ type BlokkliProviderProps = {
    * Whether to isolate the provider element during editing.
    */
   isolate?: boolean
+
+  /**
+   * The provider type.
+   *
+   * @default "default"
+   */
+  providerType?: ValidProviderTypes
 }
 
 const props = withDefaults(
@@ -164,6 +173,7 @@ const props = withDefaults(
     editPath: undefined,
     hostOptions: undefined,
     entity: undefined,
+    providerType: 'default',
     permissions: () => [],
   },
 )
@@ -243,6 +253,7 @@ function edit(): void {
 const blokkliProviderEntityContext = computed<BlokkliProviderEntityContext>(
   () => {
     return {
+      providerType: props.providerType,
       uuid: props.entityUuid,
       type: props.entityType,
       bundle: props.entityBundle,
@@ -261,6 +272,7 @@ const entityContext = computed<EntityContext>(() => {
 
 provide(INJECT_PROVIDER_CONTEXT, blokkliProviderEntityContext)
 provide(INJECT_ENTITY_CONTEXT, entityContext.value)
+provide(INJECT_PROVIDER_TYPE, props.providerType)
 
 onMounted(() => {
   shouldRender.value = true
