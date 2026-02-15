@@ -147,6 +147,19 @@ export function getRuntimeOptionValue(
       }
     }
     return value
+  } else if (type === 'json') {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value)
+      } catch {}
+    }
+    if (typeof defaultValue === 'string') {
+      try {
+        return JSON.parse(defaultValue)
+      } catch {}
+    }
+
+    return ''
   }
 
   if (defaultValue === undefined) {

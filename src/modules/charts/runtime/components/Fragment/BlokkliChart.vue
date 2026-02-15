@@ -12,5 +12,12 @@ defineBlokkliFragment({
   editor: {
     previewWidth: 1200,
   },
+  options: {
+    data: {
+      type: 'json',
+      label: 'The chart data.',
+      default: '{}',
+    },
+  },
 })
 </script>

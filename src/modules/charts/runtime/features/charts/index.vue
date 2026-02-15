@@ -18,6 +18,7 @@ const chartBeingEdited = ref<string | null>(null)
 onBlokkliEvent('fragment:edit', (data) => {
   if (data.name === 'blokkli_chart') {
     chartBeingEdited.value = data.uuid
+    console.log('CHARTS!')
   } else {
     chartBeingEdited.value = null
   }

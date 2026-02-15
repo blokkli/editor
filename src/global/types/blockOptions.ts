@@ -413,7 +413,16 @@ type DefinitionOptionRadiosBase<Icon extends string = string> = {
   | DefinitionOptionRadiosIconsBase<Icon>
 )
 
+type DefinitionOptionJson = {
+  type: 'json'
+  label: string
+  default: string
+  description?: string
+  group?: string
+}
+
 export type BlockOptionDefinitionBase<Icon extends string = string> =
+  | DefinitionOptionJson
   | DefinitionOptionColor
   | DefinitionOptionCheckbox
   | DefinitionOptionCheckboxes
@@ -433,6 +442,7 @@ export type BlockOptionDefinitionBase<Icon extends string = string> =
  */
 export type RuntimeBlockOptionArray =
   | ['text', string]
+  | ['json', string]
   | ['checkbox', boolean]
   | ['color', `#${string}`]
   | ['radios', string, string[]]
