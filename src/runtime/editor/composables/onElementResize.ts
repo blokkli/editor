@@ -33,7 +33,6 @@ export function onElementResize(
         if (!boxSize) {
           return
         }
-        console.log('CB')
         cb({
           width: boxSize.inlineSize,
           height: boxSize.blockSize,

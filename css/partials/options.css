@@ -26,7 +26,8 @@
       @apply pointer-events-none opacity-20;
     }
     .bk-tooltip {
-      @apply absolute bottom-full left-0 min-w-full mb-3 grid;
+      @apply absolute bottom-full left-0 mb-3 w-max block py-8;
+      @apply max-w-[400px];
 
       .bk-is-label {
         span:nth-child(2) {
@@ -35,7 +36,8 @@
       }
 
       > span:nth-child(2) {
-        @apply text-mono-200 mt-5 text-xs leading-none font-medium min-w-fit max-w-fit;
+        @apply text-mono-200 mt-5 text-xs font-medium block;
+        @apply whitespace-normal;
       }
     }
     &:not(:hover) {

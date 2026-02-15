@@ -55,7 +55,8 @@ const { parentType, options } = defineBlokkli({
     box: {
       type: 'checkbox',
       label: 'Box',
-      description: 'If checked, the card is displayed as a box with shadow.',
+      description:
+        'If checked, the card is displayed as a box with shadow. It will have a white or dark background, depending on the background of the parent block.',
       default: true,
     },
     color: {
