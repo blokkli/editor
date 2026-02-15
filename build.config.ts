@@ -22,12 +22,19 @@ export default defineBuildConfig({
     },
   },
   entries: [
+    /**
+     * Emit global code/types for build and runtime, for all modules.
+     */
     {
       input: './src/global/',
       outDir: `./dist/global`,
       addRelativeDeclarationExtensions: false,
       ext: 'js',
     },
+
+    /**
+     * Module: Drupal.
+     */
     './src/modules/drupal/index.ts',
     {
       builder: 'copy',
@@ -40,6 +47,10 @@ export default defineBuildConfig({
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },
+
+    /**
+     * Module: Agent.
+     */
     './src/modules/agent/index.ts',
     {
       input: './src/modules/agent/runtime/',
@@ -47,10 +58,25 @@ export default defineBuildConfig({
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },
+
+    /**
+     * Module: Table of Contents.
+     */
     './src/modules/table-of-contents/index.ts',
     {
       input: './src/modules/table-of-contents/runtime/',
       outDir: `./dist/modules/table-of-contents/runtime`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
+
+    /**
+     * Module: Charts.
+     */
+    './src/modules/charts/index.ts',
+    {
+      input: './src/modules/charts/runtime/',
+      outDir: `./dist/modules/charts/runtime`,
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },

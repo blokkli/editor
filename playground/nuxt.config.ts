@@ -5,6 +5,7 @@ import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import testExtensionModule from './app/blokkli/modules/test-extension'
 import agentModule from './../src/modules/agent'
 import tableOfContents from './../src/modules/table-of-contents'
+import charts from './../src/modules/charts'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -95,6 +96,7 @@ export default defineNuxtConfig({
     modules: [
       testExtensionModule(),
       tableOfContents(),
+      charts(),
       agentModule({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         debugPrompt: true,

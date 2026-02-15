@@ -45,6 +45,9 @@
       ],
       "table-of-contents": [
         "./dist/modules/table-of-contents/index.d.mts"
+      ],
+      "charts": [
+        "./dist/modules/charts/index.d.mts"
       ]
     }
   },
@@ -64,6 +67,10 @@
     "./table-of-contents": {
       "types": "./dist/modules/table-of-contents/index.d.mts",
       "import": "./dist/modules/table-of-contents/index.mjs"
+    },
+    "./charts": {
+      "types": "./dist/modules/charts/index.d.mts",
+      "import": "./dist/modules/charts/index.mjs"
     }
   },
   "scripts": {

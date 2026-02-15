@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import drupal from './src/modules/drupal'
 import agent from './src/modules/agent'
 import tableOfContents from './src/modules/table-of-contents'
+import charts from './src/modules/charts'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -99,6 +100,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/agent/runtime/app/**/*',
         '../src/modules/agent/runtime/shared/**/*',
         '../src/modules/table-of-contents/runtime/**/*',
+        '../src/modules/charts/runtime/**/*',
       ],
     },
     nodeTsConfig: {
@@ -120,6 +122,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/*/runtime/**/*',
         '../src/modules/agent/runtime/**/*',
         '../src/modules/table-of-contents/runtime/**/*',
+        '../src/modules/charts/runtime/**/*',
       ],
     },
   },
@@ -135,6 +138,7 @@ fragment blokkliParagraphsType on ParagraphsType {
     modules: [
       drupal(),
       tableOfContents(),
+      charts(),
       agent({
         // provider: 'anthropic',
         // models: [{ name: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', isDefault: true }],
