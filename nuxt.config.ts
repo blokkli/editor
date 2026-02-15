@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import drupal from './src/modules/drupal'
 import agent from './src/modules/agent'
+import tableOfContents from './src/modules/table-of-contents'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -97,6 +98,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/drupal/runtime/**/*',
         '../src/modules/agent/runtime/app/**/*',
         '../src/modules/agent/runtime/shared/**/*',
+        '../src/modules/table-of-contents/runtime/**/*',
       ],
     },
     nodeTsConfig: {
@@ -110,12 +112,14 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/**/*.ts',
         '../src/global/**/*',
         '../src/modules/agent/module.ts',
+        '../src/modules/table-of-contents/module.ts',
         '../src/modules/agent/build/**/*',
       ],
       exclude: [
         '../src/runtime/**/*',
         '../src/modules/*/runtime/**/*',
         '../src/modules/agent/runtime/**/*',
+        '../src/modules/table-of-contents/runtime/**/*',
       ],
     },
   },
@@ -130,6 +134,7 @@ fragment blokkliParagraphsType on ParagraphsType {
   blokkli: {
     modules: [
       drupal(),
+      tableOfContents(),
       agent({
         // provider: 'anthropic',
         // models: [{ name: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', isDefault: true }],

@@ -48,12 +48,27 @@
           name="content"
           :list="fieldContent"
           :allowed-fragments="['cta', 'shader_debug', 'top_level_link']"
-          v-slot="{ items }"
         >
           <DevOnly>
             <div>
-              <div>{{ options }}</div>
-              <TableOfContents :items />
+              <BlokkliTableOfContents
+                v-slot="{ links }"
+                option-name="showInMenu"
+                :bundles="['title']"
+                :map-item="
+                  (item) => {
+                    if (item.bundle === 'title') {
+                      return {
+                        id: item.uuid,
+                        label: item.props.title,
+                      }
+                    }
+                    return null
+                  }
+                "
+              >
+                <TableOfContents :links />
+              </BlokkliTableOfContents>
             </div>
           </DevOnly>
         </BlokkliField>

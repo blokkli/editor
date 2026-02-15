@@ -47,6 +47,13 @@ export default defineBuildConfig({
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },
+    './src/modules/table-of-contents/index.ts',
+    {
+      input: './src/modules/table-of-contents/runtime/',
+      outDir: `./dist/modules/table-of-contents/runtime`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
   ],
   externals: [
     './global/constants',
