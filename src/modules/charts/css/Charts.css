@@ -1,2 +1,6 @@
-.bk {
-}
+@import './partials/Editor.css';
+@import './partials/ChartTypePicker.css';
+@import './partials/ColorDropdown.css';
+@import './partials/DataTable.css';
+@import './partials/Footnotes.css';
+@import './partials/ChartRenderer.css';

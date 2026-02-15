@@ -1,31 +1,219 @@
 <template>
-  <div></div>
+  <div class="bk-chart-editor" @wheel.capture.stop>
+    <div class="bk-chart-editor-actions">
+      <button type="button" :disabled="!canUndo" @click="undo">
+        <Icon name="bk_mdi_undo" />
+      </button>
+      <button type="button" :disabled="!canRedo" @click="redo">
+        <Icon name="bk_mdi_redo" />
+      </button>
+    </div>
+    <div class="bk-chart-editor-main">
+      <div class="bk-chart-editor-section bk-chart-editor-config">
+        <div>
+          <label class="bk-form-label">{{ $t('chartsChartType', 'Chart Type') }}</label>
+          <ChartTypePicker v-model="data.type" />
+        </div>
+
+        <div>
+          <label class="bk-form-label">{{ $t('chartsTitle', 'Title') }}</label>
+          <input
+            v-model.lazy="data.title"
+            type="text"
+            class="bk-form-input"
+            :placeholder="$t('chartsTitlePlaceholder', 'Chart title (optional)')"
+          />
+        </div>
+      </div>
+
+      <div class="bk-chart-editor-section">
+        <label class="bk-form-label">{{ $t('chartsData', 'Data') }}</label>
+        <DataTable
+          :categories="data.categories"
+          :series="data.series"
+          :category-colors="data.categoryColors"
+          :has-multiple-series="caps.hasMultipleSeries"
+          :has-series-colors="caps.hasSeriesColors"
+          :has-category-colors="caps.hasCategoryColors"
+          :colors="COLORS"
+          :remove-row="removeRow"
+          :remove-series="removeSeries"
+          @update:categories="data.categories = $event"
+          @update:series="data.series = $event"
+          @update:category-colors="data.categoryColors = $event"
+        />
+        <div class="bk-chart-data-table-actions">
+          <button type="button" class="bk-button bk-is-small" @click="addRow">
+            <Icon name="bk_mdi_add_row_below" />
+            {{ $t('chartsAddRow', 'Add row') }}
+          </button>
+          <button
+            v-if="caps.hasMultipleSeries"
+            type="button"
+            class="bk-button bk-is-small"
+            @click="addSeries"
+          >
+            <Icon name="bk_mdi_add_column_right" />
+            {{ $t('chartsAddColumn', 'Add column') }}
+          </button>
+          <CsvImport :colors="COLORS" @import="importData" />
+        </div>
+      </div>
+
+      <div class="bk-chart-editor-section">
+        <FootnoteEditor
+          :footnotes="data.footnotes"
+          @update:footnotes="data.footnotes = $event"
+        />
+      </div>
+
+      <div class="bk-chart-editor-section">
+        <div class="bk-chart-editor-preview-header">
+          <label class="bk-form-label">{{ $t('chartsPreview', 'Preview') }}</label>
+          <div class="bk-chart-editor-preview-actions">
+            <button
+              v-if="!autoUpdate"
+              type="button"
+              class="bk-button bk-is-small"
+              @click="refreshPreview"
+            >
+              {{ $t('chartsRefreshPreview', 'Refresh Preview') }}
+            </button>
+            <FormToggle v-model="autoUpdate" :label="$t('chartsAutoUpdate', 'Auto-update')" />
+          </div>
+        </div>
+        <Preview :data="previewData" :stale="isStale" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, useBlokkli } from '#imports'
+import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliChartData } from '../../../types'
+import { getDefaultChartData, getFirstColorId, getCapabilities } from '../../../types'
+import { COLORS } from '#blokkli-build/charts-config'
+import { useChartEditorState } from './useChartEditorState'
+import { Icon, FormToggle } from '#blokkli/editor/components'
+import ChartTypePicker from './ChartTypePicker/index.vue'
+import DataTable from './DataTable/index.vue'
+import CsvImport from './CsvImport/index.vue'
+import FootnoteEditor from './FootnoteEditor/index.vue'
+import Preview from './Preview/index.vue'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   uuid: string
 }>()
 
-const { ui, $t, state } = useBlokkli()
+const { $t, state } = useBlokkli()
 
-function getCurrentData() {
-  // @todo later, do some valiation of the provided data.
+function getCurrentData(): BlokkliChartData {
   const options = state.getFieldListItem(props.uuid)?.options
   if (options?.data) {
     try {
-      return JSON.parse(options.data)
-    } catch {}
+      const parsed = JSON.parse(options.data)
+      if (parsed && Array.isArray(parsed.series) && parsed.series.length > 0) {
+        const fallbackId = getFirstColorId(COLORS)
+        for (const series of parsed.series) {
+          if (!COLORS[series.color]) {
+            series.color = fallbackId
+          }
+        }
+        if (Array.isArray(parsed.categoryColors)) {
+          for (let i = 0; i < parsed.categoryColors.length; i++) {
+            if (!COLORS[parsed.categoryColors[i]]) {
+              parsed.categoryColors[i] = fallbackId
+            }
+          }
+        } else {
+          parsed.categoryColors = parsed.categories.map(
+            (_: string, i: number) => {
+              const ids = Object.keys(COLORS)
+              return ids[i % ids.length] || fallbackId
+            },
+          )
+        }
+        if (!Array.isArray(parsed.footnotes)) {
+          parsed.footnotes = []
+        }
+        return parsed
+      }
+    } catch {
+      // Ignore parse errors.
+    }
   }
-
-  // Default value.
-  return {
-    label: '',
-  }
+  return getDefaultChartData(COLORS)
 }
 
-const data = ref<BlokkliChartData>(getCurrentData())
+const {
+  data,
+  canUndo,
+  canRedo,
+  undo,
+  redo,
+  addRow,
+  addSeries,
+  removeRow,
+  removeSeries,
+  importData,
+} = useChartEditorState(getCurrentData(), COLORS)
+
+const autoUpdate = ref(true)
+const previewData = ref<BlokkliChartData>(
+  JSON.parse(JSON.stringify(data.value)),
+)
+const isStale = ref(false)
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+function refreshPreview() {
+  previewData.value = JSON.parse(JSON.stringify(data.value))
+  isStale.value = false
+}
+
+watch(
+  data,
+  () => {
+    if (autoUpdate.value) {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      isStale.value = true
+      debounceTimer = setTimeout(refreshPreview, 500)
+    } else {
+      isStale.value = true
+    }
+  },
+  { deep: true },
+)
+
+watch(autoUpdate, (enabled) => {
+  if (enabled) {
+    refreshPreview()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (debounceTimer) clearTimeout(debounceTimer)
+})
+
+const caps = computed(() => getCapabilities(data.value.type))
+
+function getData(): BlokkliChartData {
+  return data.value
+}
+
+onBlokkliEvent('keyPressed', (e) => {
+  if (e.code === 'z' && e.meta) {
+    e.originalEvent.preventDefault()
+    if (canUndo.value) {
+      undo()
+    }
+  } else if (e.code === 'Z' && e.meta && e.shift) {
+    e.originalEvent.preventDefault()
+    if (canRedo.value) {
+      redo()
+    }
+  }
+})
+
+defineExpose({ getData })
 </script>

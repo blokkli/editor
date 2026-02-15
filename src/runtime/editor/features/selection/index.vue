@@ -331,7 +331,8 @@ onBlokkliEvent('keyPressed', (e) => {
     selection.isDragging.value ||
     selection.isMultiSelecting.value ||
     ui.hasDialogOpen.value ||
-    ui.hasTooltipOpen.value
+    ui.hasTooltipOpen.value ||
+    ui.hasNestedEditorOpen.value
   ) {
     return
   }
@@ -341,7 +342,11 @@ onBlokkliEvent('keyPressed', (e) => {
       eventBus.emit('select:host:unselect')
     }
   } else if (e.code === 'Tab') {
-    if (tour.isTouring.value || ui.hasDialogOpen.value) {
+    if (
+      tour.isTouring.value ||
+      ui.hasDialogOpen.value ||
+      ui.hasNestedEditorOpen.value
+    ) {
       return
     }
     e.originalEvent.preventDefault()

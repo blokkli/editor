@@ -61,7 +61,7 @@ if (!props.viewOnly) {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
-  if (ui.hasDialogOpen.value) {
+  if (ui.hasDialogOpen.value || ui.hasNestedEditorOpen.value) {
     return
   }
   const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')

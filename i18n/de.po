@@ -105,7 +105,7 @@ msgid "Added @bundle with content ID @id"
 msgstr "@bundle mit Inhalts-ID @id hinzugefügt"
 
 msgctxt "aiAgentAddContentSearchBlockRunning"
-msgid "Adding content block..."
+msgid "Adding content paragraph..."
 msgstr "Inhalts-Block hinzufügen..."
 
 msgctxt "aiAgentAddFragmentDone"
@@ -404,6 +404,14 @@ msgctxt "aiAgentGetMutationHistoryRunning"
 msgid "Getting mutation history..."
 msgstr "Änderungsverlauf abrufen..."
 
+msgctxt "aiAgentGetPageStructureDone"
+msgid "Got page structure (@count paragraphs)"
+msgstr "Seitenstruktur erhalten (@count Absätze)"
+
+msgctxt "aiAgentGetPageStructureRunning"
+msgid "Getting page structure..."
+msgstr "Seitenstruktur wird geladen..."
+
 msgctxt "aiAgentGetSelectedBlocksDone"
 msgid "@count block(s) selected"
 msgstr "@count Blöcke ausgewählt"
@@ -515,6 +523,10 @@ msgstr "Medien auf @field ersetzt"
 msgctxt "aiAgentReplaceMediaRunning"
 msgid "Replacing media..."
 msgstr "Medien ersetzen..."
+
+msgctxt "aiAgentRetry"
+msgid "Retry"
+msgstr "Erneut versuchen"
 
 msgctxt "aiAgentSearchLibraryDone"
 msgid "Searched library"
@@ -954,6 +966,90 @@ msgstr "Typ"
 msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Auswahl abbrechen"
+
+msgctxt "chartsAddColumn"
+msgid "Add column"
+msgstr "Spalte hinzufügen"
+
+msgctxt "chartsAddFootnote"
+msgid "Add footnote"
+msgstr "Fussnote hinzufügen"
+
+msgctxt "chartsAddRow"
+msgid "Add row"
+msgstr "Zeile hinzufügen"
+
+msgctxt "chartsAutoUpdate"
+msgid "Auto-update"
+msgstr "Automatisch aktualisieren"
+
+msgctxt "chartsChartType"
+msgid "Chart Type"
+msgstr "Diagrammtyp"
+
+msgctxt "chartsData"
+msgid "Data"
+msgstr "Daten"
+
+msgctxt "chartsEditorSaveError"
+msgid "The chart could not be saved."
+msgstr "Das Diagramm konnte nicht gespeichert werden."
+
+msgctxt "chartsEditorTitle"
+msgid "Edit chart"
+msgstr "Diagramm bearbeiten"
+
+msgctxt "chartsFootnotes"
+msgid "Footnotes"
+msgstr "Fussnoten"
+
+msgctxt "chartsImportCsv"
+msgid "Import CSV"
+msgstr "CSV importieren"
+
+msgctxt "chartsPreview"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "chartsPreviewPlaceholder"
+msgid "Click \"Refresh Preview\" to see the chart."
+msgstr "Klicken Sie auf «Vorschau aktualisieren», um das Diagramm anzuzeigen."
+
+msgctxt "chartsRefreshPreview"
+msgid "Refresh Preview"
+msgstr "Vorschau aktualisieren"
+
+msgctxt "chartsTitle"
+msgid "Title"
+msgstr "Titel"
+
+msgctxt "chartsTitlePlaceholder"
+msgid "Chart title (optional)"
+msgstr "Diagrammtitel (optional)"
+
+msgctxt "chartsTypeArea"
+msgid "Area"
+msgstr "Fläche"
+
+msgctxt "chartsTypeBar"
+msgid "Bar"
+msgstr "Balken"
+
+msgctxt "chartsTypeDonut"
+msgid "Donut"
+msgstr "Donut"
+
+msgctxt "chartsTypeHeatmap"
+msgid "Heatmap"
+msgstr "Heatmap"
+
+msgctxt "chartsTypeLine"
+msgid "Line"
+msgstr "Linie"
+
+msgctxt "chartsTypePie"
+msgid "Pie"
+msgstr "Kreis"
 
 msgctxt "clearInput"
 msgid "Clear input"
@@ -1406,6 +1502,14 @@ msgstr "Zeigt den Breadcrumbs-Pfad der Auswahl an."
 msgctxt "feature_breadcrumbs_label"
 msgid "Breadcrumbs"
 msgstr "Breadcrumbs"
+
+msgctxt "feature_charts_description"
+msgid "Add and edit interactive charts."
+msgstr "Interaktive Diagramme hinzufügen und bearbeiten."
+
+msgctxt "feature_charts_label"
+msgid "Charts"
+msgstr "Diagramme"
 
 msgctxt "feature_clipboard_description"
 msgid ""

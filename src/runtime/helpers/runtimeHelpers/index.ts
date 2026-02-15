@@ -151,12 +151,16 @@ export function getRuntimeOptionValue(
     if (typeof value === 'string') {
       try {
         return JSON.parse(value)
-      } catch {}
+      } catch {
+        // Noop.
+      }
     }
     if (typeof defaultValue === 'string') {
       try {
         return JSON.parse(defaultValue)
-      } catch {}
+      } catch {
+        // Noop.
+      }
     }
 
     return ''

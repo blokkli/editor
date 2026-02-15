@@ -6,6 +6,10 @@
   @apply !bg-white !border !border-mono-400 !text-mono-900 !rounded-md focus:!outline-none focus:!border-transparent !block !w-full !p-10 !font-sans !text-base;
   @apply focus:ring-[3px] focus:ring-accent-700;
 
+  &.bk-is-small {
+    @apply h-[32px] !px-[8px] !text-sm gap-5;
+  }
+
   &[disabled] {
     @apply !bg-mono-50 cursor-not-allowed;
   }

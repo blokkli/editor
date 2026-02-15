@@ -672,6 +672,7 @@ onBlokkliEvent('keyPressed', (e) => {
     e.code !== 'c' ||
     !e.meta ||
     ui.hasDialogOpen.value ||
+    ui.hasNestedEditorOpen.value ||
     !ui.canvasFocused.value
   ) {
     return

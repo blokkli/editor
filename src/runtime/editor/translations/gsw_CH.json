@@ -92,7 +92,7 @@
     "translation": ""
   },
   "aiAgentAddContentSearchBlockRunning": {
-    "source": "Adding content block...",
+    "source": "Adding content paragraph...",
     "translation": ""
   },
   "aiAgentAddFragmentDone": {
@@ -383,6 +383,14 @@
     "source": "Getting mutation history...",
     "translation": ""
   },
+  "aiAgentGetPageStructureDone": {
+    "source": "Got page structure (@count paragraphs)",
+    "translation": ""
+  },
+  "aiAgentGetPageStructureRunning": {
+    "source": "Getting page structure...",
+    "translation": ""
+  },
   "aiAgentGetSelectedBlocksDone": {
     "source": "@count block(s) selected",
     "translation": ""
@@ -493,6 +501,10 @@
   },
   "aiAgentReplaceMediaRunning": {
     "source": "Replacing media...",
+    "translation": ""
+  },
+  "aiAgentRetry": {
+    "source": "Retry",
     "translation": ""
   },
   "aiAgentSearchLibraryDone": {
@@ -919,6 +931,90 @@
     "source": "Cancel selection",
     "translation": "Uswahl abbräche"
   },
+  "chartsAddColumn": {
+    "source": "Add column",
+    "translation": ""
+  },
+  "chartsAddFootnote": {
+    "source": "Add footnote",
+    "translation": ""
+  },
+  "chartsAddRow": {
+    "source": "Add row",
+    "translation": ""
+  },
+  "chartsAutoUpdate": {
+    "source": "Auto-update",
+    "translation": ""
+  },
+  "chartsChartType": {
+    "source": "Chart Type",
+    "translation": ""
+  },
+  "chartsData": {
+    "source": "Data",
+    "translation": ""
+  },
+  "chartsEditorSaveError": {
+    "source": "The chart could not be saved.",
+    "translation": ""
+  },
+  "chartsEditorTitle": {
+    "source": "Edit chart",
+    "translation": ""
+  },
+  "chartsFootnotes": {
+    "source": "Footnotes",
+    "translation": ""
+  },
+  "chartsImportCsv": {
+    "source": "Import CSV",
+    "translation": ""
+  },
+  "chartsPreview": {
+    "source": "Preview",
+    "translation": ""
+  },
+  "chartsPreviewPlaceholder": {
+    "source": "Click \"Refresh Preview\" to see the chart.",
+    "translation": ""
+  },
+  "chartsRefreshPreview": {
+    "source": "Refresh Preview",
+    "translation": ""
+  },
+  "chartsTitle": {
+    "source": "Title",
+    "translation": ""
+  },
+  "chartsTitlePlaceholder": {
+    "source": "Chart title (optional)",
+    "translation": ""
+  },
+  "chartsTypeArea": {
+    "source": "Area",
+    "translation": ""
+  },
+  "chartsTypeBar": {
+    "source": "Bar",
+    "translation": ""
+  },
+  "chartsTypeDonut": {
+    "source": "Donut",
+    "translation": ""
+  },
+  "chartsTypeHeatmap": {
+    "source": "Heatmap",
+    "translation": "Heatmap"
+  },
+  "chartsTypeLine": {
+    "source": "Line",
+    "translation": ""
+  },
+  "chartsTypePie": {
+    "source": "Pie",
+    "translation": ""
+  },
   "clearInput": {
     "source": "Clear input",
     "translation": ""
@@ -1325,6 +1421,14 @@
   },
   "feature_breadcrumbs_label": {
     "source": "Breadcrumbs",
+    "translation": ""
+  },
+  "feature_charts_description": {
+    "source": "Add and edit interactive charts.",
+    "translation": ""
+  },
+  "feature_charts_label": {
+    "source": "Charts",
     "translation": ""
   },
   "feature_clipboard_description": {

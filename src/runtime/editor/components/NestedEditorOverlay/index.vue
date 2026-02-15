@@ -34,12 +34,17 @@
         class="bk bk-library-edit-overlay"
         :class="'bk-is-' + theme"
       >
-        <iframe
-          ref="iframe"
-          :src="url"
-          style="width: 100%; height: 100%"
-          @load="onLoad"
-        />
+        <div class="bk-library-edit-overlay-frame">
+          <slot>
+            <iframe
+              v-if="url"
+              ref="iframe"
+              :src="url"
+              style="width: 100%; height: 100%"
+              @load="onLoad"
+            />
+          </slot>
+        </div>
       </div>
     </Transition>
   </Teleport>
@@ -59,10 +64,10 @@ import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
 export type NestedEditorOverlayProps = {
-  url: string
+  url?: string
   uuid: string
   title: string
-  theme: 'lime' | 'red'
+  theme: 'lime' | 'red' | 'accent'
   icon: BlokkliIcon
   blockUuid?: string
   element?: HTMLElement | null
@@ -306,6 +311,9 @@ function onEditorLoaded({ uuid }: { uuid: string }) {
 onMounted(() => {
   isLoaded.value = true
   ui.setNestedEditor(props.uuid)
+  if (!props.url) {
+    isLoaded.value = true
+  }
 })
 
 onBeforeUnmount(() => {

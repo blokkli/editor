@@ -1,0 +1,49 @@
+.bk {
+  .bk-chart-editor {
+    @apply h-full;
+    @apply bg-mono-100;
+    @apply overflow-auto;
+  }
+
+  .bk-chart-editor-actions {
+    @apply bg-mono-900 flex sticky z-50 top-0;
+
+    button {
+      @apply size-50 flex items-center justify-center cursor-pointer text-mono-100;
+      @apply hover:bg-mono-700;
+      &[disabled] {
+        @apply pointer-events-none text-mono-700;
+      }
+      .bk-icon {
+        @apply size-20;
+        svg {
+          @apply fill-current;
+        }
+      }
+    }
+  }
+
+  .bk-chart-editor-main {
+    @apply p-20;
+  }
+
+  .bk-chart-editor-section {
+    @apply p-20 bg-white mb-20 shadow rounded-md;
+  }
+
+  .bk-chart-editor-config {
+    @apply grid gap-20 grid-cols-2;
+  }
+
+  .bk-chart-editor-preview-header {
+    @apply flex items-center justify-between;
+  }
+
+  .bk-chart-editor-preview-actions {
+    @apply flex items-center gap-10;
+  }
+
+  .bk-is-stale {
+    @apply opacity-50 transition-opacity;
+  }
+}

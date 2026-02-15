@@ -322,7 +322,7 @@ const resetZoom = () => {
 }
 
 onBlokkliEvent('keyPressed', (e) => {
-  if (ui.hasDialogOpen.value) {
+  if (ui.hasDialogOpen.value || ui.hasNestedEditorOpen.value) {
     return
   }
 

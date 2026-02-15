@@ -1,0 +1,109 @@
+.bk {
+  .bk-chart-data-table {
+    @apply border-collapse w-full;
+
+    .bk-dropdown-menu {
+      @apply relative;
+    }
+
+    input,
+    button {
+      @apply focus:outline focus:outline-2 focus:outline-accent-600 focus:border-0 focus:ring-0 focus:outline-offset-0;
+    }
+
+    thead {
+      th {
+        @apply p-0 h-40;
+
+        input {
+          @apply text-sm;
+        }
+      }
+
+      th:empty {
+        @apply bg-white border-t-0;
+      }
+
+      th:empty:first-child {
+        @apply border-l-0;
+      }
+
+      th:empty:last-child {
+        @apply border-r-0;
+      }
+    }
+
+    th,
+    td {
+      @apply border border-mono-300 p-0;
+    }
+
+    th {
+      @apply bg-mono-50 text-mono-700 text-sm font-semibold text-left px-8 py-5;
+    }
+
+    td:last-child:has(.bk-chart-data-table-remove) {
+      @apply w-0;
+    }
+
+    td input,
+    th input {
+      @apply bg-transparent text-mono-900 w-full font-sans text-base px-8 py-5;
+      border: none;
+      outline: none;
+      @apply h-40;
+    }
+
+    td input[inputmode='decimal'] {
+      text-align: right;
+    }
+
+    tfoot td {
+      @apply border-0 pt-8;
+    }
+  }
+
+  .bk-chart-data-table-actions {
+    @apply flex gap-8 mt-20;
+  }
+
+  .bk-chart-data-table-file-input {
+    @apply sr-only;
+  }
+
+  .bk-dropdown-menu-trigger {
+    @apply size-40 flex items-center justify-center hover:bg-mono-200;
+  }
+
+  .bk-chart-data-table-category-cell {
+    @apply flex items-center;
+
+    input {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .bk-chart-data-table-series-header {
+    @apply flex items-center;
+  }
+
+  .bk-chart-data-table-series-name {
+    @apply bg-transparent text-mono-700 font-semibold text-sm;
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bk-chart-data-table-remove {
+    @apply text-mono-400 cursor-pointer bg-transparent border-none text-base leading-none;
+    @apply hover:text-red-normal;
+    @apply size-40 flex items-center justify-center;
+    @apply hover:bg-mono-200;
+
+    svg {
+      @apply size-15;
+    }
+  }
+}

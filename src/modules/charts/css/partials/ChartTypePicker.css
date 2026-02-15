@@ -1,0 +1,27 @@
+.bk {
+  .bk-chart-type-picker {
+    @apply flex gap-5;
+
+    button {
+      @apply flex-1;
+      @apply flex items-center gap-5 px-10;
+      @apply h-[46px];
+      @apply border border-mono-400 rounded-md bg-transparent cursor-pointer;
+      @apply text-base text-mono-500 leading-none;
+      @apply hover:border-mono-500 hover:text-mono-700 hover:bg-mono-100;
+      @apply font-medium;
+
+      .bk-icon {
+        @apply size-25;
+        svg {
+          @apply fill-current;
+        }
+      }
+
+      &.is-active {
+        @apply font-bold;
+        @apply bg-accent-600 text-white border-accent-600;
+      }
+    }
+  }
+}

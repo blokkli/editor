@@ -96,7 +96,18 @@ export default defineNuxtConfig({
     modules: [
       testExtensionModule(),
       tableOfContents(),
-      charts(),
+      charts({
+        colors: {
+          blue: { color: '#3b82f6', label: 'Blue' },
+          red: { color: '#ef4444', label: 'Red' },
+          green: { color: '#10b981', label: 'Green' },
+          amber: { color: '#f59e0b', label: 'Amber' },
+          purple: { color: '#8b5cf6', label: 'Purple' },
+          pink: { color: '#ec4899', label: 'Pink' },
+          teal: { color: '#14b8a6', label: 'Teal' },
+          orange: { color: '#f97316', label: 'Orange' },
+        },
+      }),
       agentModule({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         debugPrompt: true,

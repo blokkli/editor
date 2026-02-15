@@ -1,6 +1,8 @@
 <template>
-  <ChartRenderer v-if="data?.label" v-bind="data" />
-  <div v-else>Missing chart data.</div>
+  <div class="blokkli-fragment-chart">
+    <ChartRenderer v-if="data && data.series?.length > 0" v-bind="data" />
+    <div v-else>Missing chart data.</div>
+  </div>
 </template>
 
 <script setup lang="ts">

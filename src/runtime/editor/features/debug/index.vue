@@ -17,7 +17,7 @@ const { logger } = defineBlokkliFeature({
 const { debug, ui } = useBlokkli()
 
 onBlokkliEvent('keyPressed', (e) => {
-  if (ui.hasDialogOpen.value) {
+  if (ui.hasDialogOpen.value || ui.hasNestedEditorOpen.value) {
     return
   }
 

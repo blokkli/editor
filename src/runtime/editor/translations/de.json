@@ -92,7 +92,7 @@
     "translation": "@bundle mit Inhalts-ID @id hinzugefügt"
   },
   "aiAgentAddContentSearchBlockRunning": {
-    "source": "Adding content block...",
+    "source": "Adding content paragraph...",
     "translation": "Inhalts-Block hinzufügen..."
   },
   "aiAgentAddFragmentDone": {
@@ -383,6 +383,14 @@
     "source": "Getting mutation history...",
     "translation": "Änderungsverlauf abrufen..."
   },
+  "aiAgentGetPageStructureDone": {
+    "source": "Got page structure (@count paragraphs)",
+    "translation": "Seitenstruktur erhalten (@count Absätze)"
+  },
+  "aiAgentGetPageStructureRunning": {
+    "source": "Getting page structure...",
+    "translation": "Seitenstruktur wird geladen..."
+  },
   "aiAgentGetSelectedBlocksDone": {
     "source": "@count block(s) selected",
     "translation": "@count Blöcke ausgewählt"
@@ -494,6 +502,10 @@
   "aiAgentReplaceMediaRunning": {
     "source": "Replacing media...",
     "translation": "Medien ersetzen..."
+  },
+  "aiAgentRetry": {
+    "source": "Retry",
+    "translation": "Erneut versuchen"
   },
   "aiAgentSearchLibraryDone": {
     "source": "Searched library",
@@ -919,6 +931,90 @@
     "source": "Cancel selection",
     "translation": "Auswahl abbrechen"
   },
+  "chartsAddColumn": {
+    "source": "Add column",
+    "translation": "Spalte hinzufügen"
+  },
+  "chartsAddFootnote": {
+    "source": "Add footnote",
+    "translation": "Fussnote hinzufügen"
+  },
+  "chartsAddRow": {
+    "source": "Add row",
+    "translation": "Zeile hinzufügen"
+  },
+  "chartsAutoUpdate": {
+    "source": "Auto-update",
+    "translation": "Automatisch aktualisieren"
+  },
+  "chartsChartType": {
+    "source": "Chart Type",
+    "translation": "Diagrammtyp"
+  },
+  "chartsData": {
+    "source": "Data",
+    "translation": "Daten"
+  },
+  "chartsEditorSaveError": {
+    "source": "The chart could not be saved.",
+    "translation": "Das Diagramm konnte nicht gespeichert werden."
+  },
+  "chartsEditorTitle": {
+    "source": "Edit chart",
+    "translation": "Diagramm bearbeiten"
+  },
+  "chartsFootnotes": {
+    "source": "Footnotes",
+    "translation": "Fussnoten"
+  },
+  "chartsImportCsv": {
+    "source": "Import CSV",
+    "translation": "CSV importieren"
+  },
+  "chartsPreview": {
+    "source": "Preview",
+    "translation": "Vorschau"
+  },
+  "chartsPreviewPlaceholder": {
+    "source": "Click \"Refresh Preview\" to see the chart.",
+    "translation": "Klicken Sie auf «Vorschau aktualisieren», um das Diagramm anzuzeigen."
+  },
+  "chartsRefreshPreview": {
+    "source": "Refresh Preview",
+    "translation": "Vorschau aktualisieren"
+  },
+  "chartsTitle": {
+    "source": "Title",
+    "translation": "Titel"
+  },
+  "chartsTitlePlaceholder": {
+    "source": "Chart title (optional)",
+    "translation": "Diagrammtitel (optional)"
+  },
+  "chartsTypeArea": {
+    "source": "Area",
+    "translation": "Fläche"
+  },
+  "chartsTypeBar": {
+    "source": "Bar",
+    "translation": "Balken"
+  },
+  "chartsTypeDonut": {
+    "source": "Donut",
+    "translation": "Donut"
+  },
+  "chartsTypeHeatmap": {
+    "source": "Heatmap",
+    "translation": "Heatmap"
+  },
+  "chartsTypeLine": {
+    "source": "Line",
+    "translation": "Linie"
+  },
+  "chartsTypePie": {
+    "source": "Pie",
+    "translation": "Kreis"
+  },
   "clearInput": {
     "source": "Clear input",
     "translation": "Eingabe löschen"
@@ -1326,6 +1422,14 @@
   "feature_breadcrumbs_label": {
     "source": "Breadcrumbs",
     "translation": "Breadcrumbs"
+  },
+  "feature_charts_description": {
+    "source": "Add and edit interactive charts.",
+    "translation": "Interaktive Diagramme hinzufügen und bearbeiten."
+  },
+  "feature_charts_label": {
+    "source": "Charts",
+    "translation": "Diagramme"
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",

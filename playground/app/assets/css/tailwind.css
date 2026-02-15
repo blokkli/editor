@@ -36,6 +36,10 @@ body {
   }
 }
 
+.blokkli-fragment-chart {
+  @apply container;
+}
+
 .entity-form {
   @apply p-20 mb-100;
 

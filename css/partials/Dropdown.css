@@ -13,10 +13,17 @@
 
     &.bk-is-bottom-left {
       @apply bottom-full left-0 mb-5;
+      @apply origin-bottom-left;
+    }
+
+    &.bk-is-top-left {
+      @apply top-full left-0 mt-5;
+      @apply origin-top-left;
     }
 
     &.bk-is-top-right {
       @apply top-full right-0 mt-5;
+      @apply origin-top-right;
     }
   }
 

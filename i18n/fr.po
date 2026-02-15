@@ -100,7 +100,7 @@ msgid "Added @bundle with content ID @id"
 msgstr ""
 
 msgctxt "aiAgentAddContentSearchBlockRunning"
-msgid "Adding content block..."
+msgid "Adding content paragraph..."
 msgstr ""
 
 msgctxt "aiAgentAddFragmentDone"
@@ -391,6 +391,14 @@ msgctxt "aiAgentGetMutationHistoryRunning"
 msgid "Getting mutation history..."
 msgstr ""
 
+msgctxt "aiAgentGetPageStructureDone"
+msgid "Got page structure (@count paragraphs)"
+msgstr ""
+
+msgctxt "aiAgentGetPageStructureRunning"
+msgid "Getting page structure..."
+msgstr ""
+
 msgctxt "aiAgentGetSelectedBlocksDone"
 msgid "@count block(s) selected"
 msgstr ""
@@ -501,6 +509,10 @@ msgstr ""
 
 msgctxt "aiAgentReplaceMediaRunning"
 msgid "Replacing media..."
+msgstr ""
+
+msgctxt "aiAgentRetry"
+msgid "Retry"
 msgstr ""
 
 msgctxt "aiAgentSearchLibraryDone"
@@ -931,6 +943,90 @@ msgstr ""
 
 msgctxt "cancelSelection"
 msgid "Cancel selection"
+msgstr ""
+
+msgctxt "chartsAddColumn"
+msgid "Add column"
+msgstr ""
+
+msgctxt "chartsAddFootnote"
+msgid "Add footnote"
+msgstr ""
+
+msgctxt "chartsAddRow"
+msgid "Add row"
+msgstr ""
+
+msgctxt "chartsAutoUpdate"
+msgid "Auto-update"
+msgstr ""
+
+msgctxt "chartsChartType"
+msgid "Chart Type"
+msgstr ""
+
+msgctxt "chartsData"
+msgid "Data"
+msgstr ""
+
+msgctxt "chartsEditorSaveError"
+msgid "The chart could not be saved."
+msgstr ""
+
+msgctxt "chartsEditorTitle"
+msgid "Edit chart"
+msgstr ""
+
+msgctxt "chartsFootnotes"
+msgid "Footnotes"
+msgstr ""
+
+msgctxt "chartsImportCsv"
+msgid "Import CSV"
+msgstr ""
+
+msgctxt "chartsPreview"
+msgid "Preview"
+msgstr ""
+
+msgctxt "chartsPreviewPlaceholder"
+msgid "Click \"Refresh Preview\" to see the chart."
+msgstr ""
+
+msgctxt "chartsRefreshPreview"
+msgid "Refresh Preview"
+msgstr ""
+
+msgctxt "chartsTitle"
+msgid "Title"
+msgstr ""
+
+msgctxt "chartsTitlePlaceholder"
+msgid "Chart title (optional)"
+msgstr ""
+
+msgctxt "chartsTypeArea"
+msgid "Area"
+msgstr ""
+
+msgctxt "chartsTypeBar"
+msgid "Bar"
+msgstr ""
+
+msgctxt "chartsTypeDonut"
+msgid "Donut"
+msgstr ""
+
+msgctxt "chartsTypeHeatmap"
+msgid "Heatmap"
+msgstr "Carte de chaleur"
+
+msgctxt "chartsTypeLine"
+msgid "Line"
+msgstr ""
+
+msgctxt "chartsTypePie"
+msgid "Pie"
 msgstr ""
 
 msgctxt "clearInput"
@@ -1379,6 +1475,14 @@ msgstr ""
 
 msgctxt "feature_breadcrumbs_label"
 msgid "Breadcrumbs"
+msgstr ""
+
+msgctxt "feature_charts_description"
+msgid "Add and edit interactive charts."
+msgstr ""
+
+msgctxt "feature_charts_label"
+msgid "Charts"
 msgstr ""
 
 msgctxt "feature_clipboard_description"
