@@ -3,7 +3,7 @@
     <div class="bk-form-label">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </div>
-    <div>
+    <div :class="{ 'bk-radio-inline': inline }">
       <label v-for="option in options" :key="option.value" class="bk-radio">
         <input
           v-model="value"
@@ -28,6 +28,7 @@ defineProps<{
   required?: boolean
   disabled?: boolean
   description?: string
+  inline?: boolean
 }>()
 
 const value = defineModel<string>()

@@ -1,6 +1,8 @@
 <template>
   <div class="bk-chart-data-table-footnotes">
-    <label class="bk-form-label">{{ $t('chartsFootnotes', 'Footnotes') }}</label>
+    <label class="bk-form-label">{{
+      $t('chartsFootnotes', 'Footnotes')
+    }}</label>
     <div
       v-for="(note, i) in footnotes"
       :key="i"

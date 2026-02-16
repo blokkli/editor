@@ -5,81 +5,78 @@
     @input="onTableInput"
     @click="onTableClick"
   >
-      <thead v-if="hasMultipleSeries">
-        <tr>
-          <th />
-          <th v-for="(s, si) in visibleSeries" :key="si">
-            <div class="bk-chart-data-table-series-header">
-              <ColorDropdown
-                v-if="hasSeriesColors"
-                :color-id="s.color"
-                :colors="colors"
-                @select="updateSeriesColor(si, $event)"
-              />
-              <input
-                type="text"
-                :value="s.name"
-                class="bk-chart-data-table-series-name"
-                @change="
-                  updateSeriesName(
-                    si,
-                    ($event.target as HTMLInputElement).value,
-                  )
-                "
-              />
-              <button
-                v-if="series.length > 1"
-                type="button"
-                class="bk-chart-data-table-remove"
-                @click="props.removeSeries(si)"
-              >
-                <Icon name="bk_mdi_delete" />
-              </button>
-            </div>
-          </th>
-          <th v-if="canDeleteRows" />
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(cat, ci) in categories" :key="ci">
-          <td>
-            <div class="bk-chart-data-table-category-cell">
-              <ColorDropdown
-                v-if="hasCategoryColors"
-                :color-id="categoryColors[ci] || ''"
-                :colors="colors"
-                @select="updateCategoryColor(ci, $event)"
-              />
-              <input
-                type="text"
-                :value="cat"
-                @change="
-                  updateCategory(ci, ($event.target as HTMLInputElement).value)
-                "
-              />
-            </div>
-          </td>
-          <td v-for="(s, si) in visibleSeries" :key="si">
+    <thead v-if="hasMultipleSeries">
+      <tr>
+        <th />
+        <th v-for="(s, si) in visibleSeries" :key="si">
+          <div class="bk-chart-data-table-series-header">
+            <ColorDropdown
+              v-if="hasSeriesColors"
+              :color-id="s.color"
+              :colors="colors"
+              @select="updateSeriesColor(si, $event)"
+            />
             <input
               type="text"
-              inputmode="decimal"
-              :value="s.data[ci]"
-              @blur="
-                updateValue(si, ci, ($event.target as HTMLInputElement).value)
+              :value="s.name"
+              class="bk-chart-data-table-series-name"
+              @change="
+                updateSeriesName(si, ($event.target as HTMLInputElement).value)
               "
             />
-          </td>
-          <td v-if="canDeleteRows">
             <button
+              v-if="series.length > 1"
               type="button"
               class="bk-chart-data-table-remove"
-              @click="props.removeRow(ci)"
+              @click="props.removeSeries(si)"
             >
               <Icon name="bk_mdi_delete" />
             </button>
-          </td>
-        </tr>
-      </tbody>
+          </div>
+        </th>
+        <th v-if="canDeleteRows" />
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(cat, ci) in categories" :key="ci">
+        <td>
+          <div class="bk-chart-data-table-category-cell">
+            <ColorDropdown
+              v-if="hasCategoryColors"
+              :color-id="categoryColors[ci] || ''"
+              :colors="colors"
+              @select="updateCategoryColor(ci, $event)"
+            />
+            <input
+              type="text"
+              :value="cat"
+              @change="
+                updateCategory(ci, ($event.target as HTMLInputElement).value)
+              "
+            />
+          </div>
+        </td>
+        <td v-for="(s, si) in visibleSeries" :key="si">
+          <input
+            type="text"
+            inputmode="decimal"
+            :value="s.data[ci]"
+            @blur="
+              updateValue(si, ci, ($event.target as HTMLInputElement).value)
+            "
+          />
+        </td>
+        <td v-if="canDeleteRows">
+          <button
+            type="button"
+            class="bk-chart-data-table-remove"
+            @click="props.removeRow(ci)"
+          >
+            <Icon name="bk_mdi_delete" />
+          </button>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </template>
 

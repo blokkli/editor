@@ -943,9 +943,41 @@
     "source": "Add row",
     "translation": "Zeile hinzufügen"
   },
+  "chartsAreaCurved": {
+    "source": "Smooth curves",
+    "translation": "Glatte Kurven"
+  },
+  "chartsAreaMarkers": {
+    "source": "Show markers",
+    "translation": "Markierungen anzeigen"
+  },
   "chartsAutoUpdate": {
     "source": "Auto-update",
     "translation": "Automatisch aktualisieren"
+  },
+  "chartsBarHorizontal": {
+    "source": "Horizontal",
+    "translation": "Horizontal"
+  },
+  "chartsBarStacked": {
+    "source": "Stacked",
+    "translation": "Gestapelt"
+  },
+  "chartsBorderRadius": {
+    "source": "Corner radius",
+    "translation": "Eckenradius"
+  },
+  "chartsBorderRadiusLarge": {
+    "source": "Large",
+    "translation": "Gross"
+  },
+  "chartsBorderRadiusNone": {
+    "source": "None",
+    "translation": "Keine"
+  },
+  "chartsBorderRadiusSmall": {
+    "source": "Small",
+    "translation": "Klein"
   },
   "chartsChartType": {
     "source": "Chart Type",
@@ -954,6 +986,18 @@
   "chartsData": {
     "source": "Data",
     "translation": "Daten"
+  },
+  "chartsDataLabels": {
+    "source": "Data labels",
+    "translation": "Datenbeschriftungen"
+  },
+  "chartsDonutShowLabels": {
+    "source": "Show labels",
+    "translation": "Beschriftungen anzeigen"
+  },
+  "chartsDonutShowTotal": {
+    "source": "Show total",
+    "translation": "Total anzeigen"
   },
   "chartsEditorSaveError": {
     "source": "The chart could not be saved.",
@@ -967,9 +1011,61 @@
     "source": "Footnotes",
     "translation": "Fussnoten"
   },
+  "chartsGridLines": {
+    "source": "Grid lines",
+    "translation": "Rasterlinien"
+  },
+  "chartsGroupDisplay": {
+    "source": "Display",
+    "translation": "Darstellung"
+  },
+  "chartsGroupLabels": {
+    "source": "Labels",
+    "translation": "Beschriftungen"
+  },
   "chartsImportCsv": {
     "source": "Import CSV",
     "translation": "CSV importieren"
+  },
+  "chartsLegendPosition": {
+    "source": "Legend position",
+    "translation": "Legendenposition"
+  },
+  "chartsLineCurved": {
+    "source": "Smooth curves",
+    "translation": "Glatte Kurven"
+  },
+  "chartsLineMarkers": {
+    "source": "Show markers",
+    "translation": "Markierungen anzeigen"
+  },
+  "chartsOpacityLight": {
+    "source": "Light",
+    "translation": "Leicht"
+  },
+  "chartsOpacitySolid": {
+    "source": "Solid",
+    "translation": "Deckend"
+  },
+  "chartsOpacityTransparent": {
+    "source": "Transparent",
+    "translation": "Transparent"
+  },
+  "chartsPieShowLabels": {
+    "source": "Show labels",
+    "translation": "Beschriftungen anzeigen"
+  },
+  "chartsPositionBottom": {
+    "source": "Bottom",
+    "translation": "Unten"
+  },
+  "chartsPositionRight": {
+    "source": "Right",
+    "translation": "Rechts"
+  },
+  "chartsPositionTop": {
+    "source": "Top",
+    "translation": "Oben"
   },
   "chartsPreview": {
     "source": "Preview",
@@ -979,9 +1075,45 @@
     "source": "Click \"Refresh Preview\" to see the chart.",
     "translation": "Klicken Sie auf «Vorschau aktualisieren», um das Diagramm anzuzeigen."
   },
+  "chartsRadarFillOpacity": {
+    "source": "Fill opacity",
+    "translation": "Fülldeckkraft"
+  },
+  "chartsRadarMarkers": {
+    "source": "Show markers",
+    "translation": "Markierungen anzeigen"
+  },
+  "chartsRadialBarShowLabels": {
+    "source": "Show labels",
+    "translation": "Beschriftungen anzeigen"
+  },
+  "chartsRadialBarShowTotal": {
+    "source": "Show total",
+    "translation": "Total anzeigen"
+  },
   "chartsRefreshPreview": {
     "source": "Refresh Preview",
     "translation": "Vorschau aktualisieren"
+  },
+  "chartsRotationAuto": {
+    "source": "Auto",
+    "translation": "Automatisch"
+  },
+  "chartsStrokeMedium": {
+    "source": "Medium",
+    "translation": "Mittel"
+  },
+  "chartsStrokeThick": {
+    "source": "Thick",
+    "translation": "Dick"
+  },
+  "chartsStrokeThin": {
+    "source": "Thin",
+    "translation": "Dünn"
+  },
+  "chartsStrokeWidth": {
+    "source": "Line thickness",
+    "translation": "Linienstärke"
   },
   "chartsTitle": {
     "source": "Title",
@@ -1014,6 +1146,18 @@
   "chartsTypePie": {
     "source": "Pie",
     "translation": "Kreis"
+  },
+  "chartsTypeRadar": {
+    "source": "Radar",
+    "translation": "Radar"
+  },
+  "chartsTypeRadialBar": {
+    "source": "Radial Bar",
+    "translation": "Radialdiagramm"
+  },
+  "chartsXAxisRotation": {
+    "source": "Label rotation",
+    "translation": "Beschriftungswinkel"
   },
   "clearInput": {
     "source": "Clear input",

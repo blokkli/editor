@@ -1,23 +1,12 @@
-export type ChartType = 'bar' | 'line' | 'pie' | 'area' | 'donut' | 'heatmap'
-
-export type ChartTypeCapabilities = {
-  hasMultipleSeries: boolean
-  hasSeriesColors: boolean
-  hasCategoryColors: boolean
-}
-
-export const CHART_CAPABILITIES: Record<ChartType, ChartTypeCapabilities> = {
-  bar: { hasMultipleSeries: true, hasSeriesColors: true, hasCategoryColors: false },
-  line: { hasMultipleSeries: true, hasSeriesColors: true, hasCategoryColors: false },
-  area: { hasMultipleSeries: true, hasSeriesColors: true, hasCategoryColors: false },
-  pie: { hasMultipleSeries: false, hasSeriesColors: false, hasCategoryColors: true },
-  donut: { hasMultipleSeries: false, hasSeriesColors: false, hasCategoryColors: true },
-  heatmap: { hasMultipleSeries: true, hasSeriesColors: false, hasCategoryColors: false },
-}
-
-export function getCapabilities(type: ChartType): ChartTypeCapabilities {
-  return CHART_CAPABILITIES[type]
-}
+export type ChartType =
+  | 'bar'
+  | 'line'
+  | 'pie'
+  | 'area'
+  | 'donut'
+  | 'heatmap'
+  | 'radialBar'
+  | 'radar'
 
 export type ChartSeries = {
   name: string
@@ -39,6 +28,7 @@ export type BlokkliChartData = {
    */
   categoryColors: string[]
   footnotes: string[]
+  typeOptions?: Record<string, unknown>
 }
 
 const SUPERSCRIPTS: Record<string, string> = {
@@ -140,5 +130,6 @@ export function getDefaultChartData(
       getColorIdAtIndex(2, colors),
     ],
     footnotes: [],
+    typeOptions: {},
   }
 }

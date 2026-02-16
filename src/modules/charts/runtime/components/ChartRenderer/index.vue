@@ -22,7 +22,9 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, useTemplateRef } from '#imports'
 import type { BlokkliChartData } from '../../types'
-import { resolveChartColor, applyFootnotes, SUPERSCRIPTS, getCapabilities } from '../../types'
+import { resolveChartColor, applyFootnotes, SUPERSCRIPTS } from '../../types'
+import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
+import type { ChartBuildContext } from '../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
 
 const ApexChart = defineAsyncComponent(() => import('vue3-apexcharts'))
@@ -31,7 +33,7 @@ const props = defineProps<BlokkliChartData>()
 
 const rootEl = useTemplateRef('rootEl')
 
-const caps = computed(() => getCapabilities(props.type))
+const chartDef = computed(() => getChartTypeRuntime(props.type))
 
 function superscriptFor(n: number): string {
   return String(n)
@@ -40,13 +42,36 @@ function superscriptFor(n: number): string {
     .join('')
 }
 
+function deepMerge(
+  target: Record<string, any>,
+  source: Record<string, any>,
+): Record<string, any> {
+  const result = { ...target }
+  for (const key of Object.keys(source)) {
+    if (
+      result[key] &&
+      typeof result[key] === 'object' &&
+      !Array.isArray(result[key]) &&
+      typeof source[key] === 'object' &&
+      !Array.isArray(source[key])
+    ) {
+      result[key] = deepMerge(result[key], source[key])
+    } else {
+      result[key] = source[key]
+    }
+  }
+  return result
+}
+
 const resolvedColors = computed(() => {
-  if (caps.value.hasCategoryColors) {
+  const def = chartDef.value
+  if (!def) return []
+  if (def.hasCategoryColors) {
     return props.categoryColors.map((id) =>
       resolveChartColor(id, COLORS, rootEl.value),
     )
   }
-  if (caps.value.hasSeriesColors) {
+  if (def.hasSeriesColors) {
     return props.series.map((s) =>
       resolveChartColor(s.color, COLORS, rootEl.value),
     )
@@ -55,6 +80,9 @@ const resolvedColors = computed(() => {
 })
 
 const chartOptions = computed(() => {
+  const def = chartDef.value
+  if (!def) return {}
+
   const base: Record<string, any> = {
     chart: {
       toolbar: { show: false },
@@ -69,40 +97,46 @@ const chartOptions = computed(() => {
     base.title = { text: applyFootnotes(props.title), align: 'left' }
   }
 
-  if (!caps.value.hasMultipleSeries) {
-    base.labels = props.categories.map(applyFootnotes)
-  } else {
-    base.xaxis = { categories: props.categories.map(applyFootnotes) }
+  const ctx: ChartBuildContext = {
+    title: props.title,
+    categories: props.categories.map(applyFootnotes),
+    series: props.series.map((s) => ({
+      name: applyFootnotes(s.name),
+      color: s.color,
+      data: s.data,
+    })),
+    seriesColors: resolvedColors.value,
+    categoryColors: resolvedColors.value,
+    typeOptions: {
+      ...getDefaultTypeOptions(props.type),
+      ...(props.typeOptions || {}),
+    },
   }
 
-  if (props.type === 'heatmap') {
-    base.dataLabels = { enabled: true }
-    base.plotOptions = {
-      heatmap: {
-        colorScale: { ranges: [] },
-      },
-    }
-  }
-
-  return base
+  const typeOpts = def.buildChartOptions(ctx)
+  return deepMerge(base, typeOpts)
 })
 
 const chartSeries = computed(() => {
-  if (!caps.value.hasMultipleSeries) {
-    return props.series[0]?.data || []
-  }
-  if (props.type === 'heatmap') {
-    return props.series.map((s) => ({
+  const def = chartDef.value
+  if (!def) return []
+
+  const ctx: ChartBuildContext = {
+    title: props.title,
+    categories: props.categories.map(applyFootnotes),
+    series: props.series.map((s) => ({
       name: applyFootnotes(s.name),
-      data: s.data.map((value, i) => ({
-        x: applyFootnotes(props.categories[i] || ''),
-        y: value,
-      })),
-    }))
+      color: s.color,
+      data: s.data,
+    })),
+    seriesColors: resolvedColors.value,
+    categoryColors: resolvedColors.value,
+    typeOptions: {
+      ...getDefaultTypeOptions(props.type),
+      ...(props.typeOptions || {}),
+    },
   }
-  return props.series.map((s) => ({
-    name: applyFootnotes(s.name),
-    data: s.data,
-  }))
+
+  return def.buildSeries(ctx)
 })
 </script>

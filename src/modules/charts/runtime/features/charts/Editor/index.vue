@@ -11,7 +11,9 @@
     <div class="bk-chart-editor-main">
       <div class="bk-chart-editor-section bk-chart-editor-config">
         <div>
-          <label class="bk-form-label">{{ $t('chartsChartType', 'Chart Type') }}</label>
+          <label class="bk-form-label">{{
+            $t('chartsChartType', 'Chart Type')
+          }}</label>
           <ChartTypePicker v-model="data.type" />
         </div>
 
@@ -21,9 +23,40 @@
             v-model.lazy="data.title"
             type="text"
             class="bk-form-input"
-            :placeholder="$t('chartsTitlePlaceholder', 'Chart title (optional)')"
+            :placeholder="
+              $t('chartsTitlePlaceholder', 'Chart title (optional)')
+            "
           />
         </div>
+        <ChartTypeOptions
+          v-if="chartDef && Object.keys(chartDef.editor.options).length > 0"
+          :options="chartDef.editor.options"
+          :type-options="data.typeOptions || {}"
+          @update:type-options="data.typeOptions = $event"
+        />
+      </div>
+
+      <div class="bk-chart-editor-section">
+        <div class="bk-chart-editor-preview-header">
+          <label class="bk-form-label">{{
+            $t('chartsPreview', 'Preview')
+          }}</label>
+          <div class="bk-chart-editor-preview-actions">
+            <button
+              v-if="!autoUpdate"
+              type="button"
+              class="bk-button bk-is-small"
+              @click="refreshPreview"
+            >
+              {{ $t('chartsRefreshPreview', 'Refresh Preview') }}
+            </button>
+            <FormToggle
+              v-model="autoUpdate"
+              :label="$t('chartsAutoUpdate', 'Auto-update')"
+            />
+          </div>
+        </div>
+        <Preview :data="previewData" :stale="isStale" />
       </div>
 
       <div class="bk-chart-editor-section">
@@ -66,24 +99,6 @@
           @update:footnotes="data.footnotes = $event"
         />
       </div>
-
-      <div class="bk-chart-editor-section">
-        <div class="bk-chart-editor-preview-header">
-          <label class="bk-form-label">{{ $t('chartsPreview', 'Preview') }}</label>
-          <div class="bk-chart-editor-preview-actions">
-            <button
-              v-if="!autoUpdate"
-              type="button"
-              class="bk-button bk-is-small"
-              @click="refreshPreview"
-            >
-              {{ $t('chartsRefreshPreview', 'Refresh Preview') }}
-            </button>
-            <FormToggle v-model="autoUpdate" :label="$t('chartsAutoUpdate', 'Auto-update')" />
-          </div>
-        </div>
-        <Preview :data="previewData" :stale="isStale" />
-      </div>
     </div>
   </div>
 </template>
@@ -91,7 +106,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliChartData } from '../../../types'
-import { getDefaultChartData, getFirstColorId, getCapabilities } from '../../../types'
+import { getDefaultChartData, getFirstColorId } from '../../../types'
+import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
 import { useChartEditorState } from './useChartEditorState'
 import { Icon, FormToggle } from '#blokkli/editor/components'
@@ -100,6 +116,7 @@ import DataTable from './DataTable/index.vue'
 import CsvImport from './CsvImport/index.vue'
 import FootnoteEditor from './FootnoteEditor/index.vue'
 import Preview from './Preview/index.vue'
+import ChartTypeOptions from './ChartTypeOptions/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
@@ -136,6 +153,9 @@ function getCurrentData(): BlokkliChartData {
         }
         if (!Array.isArray(parsed.footnotes)) {
           parsed.footnotes = []
+        }
+        if (!parsed.typeOptions || typeof parsed.typeOptions !== 'object') {
+          parsed.typeOptions = getDefaultTypeOptions(parsed.type)
         }
         return parsed
       }
@@ -195,7 +215,41 @@ onBeforeUnmount(() => {
   if (debounceTimer) clearTimeout(debounceTimer)
 })
 
-const caps = computed(() => getCapabilities(data.value.type))
+const chartDef = computed(() => getChartType(data.value.type, $t))
+const caps = computed(() => {
+  const def = chartDef.value
+  return {
+    hasMultipleSeries: def?.hasMultipleSeries ?? true,
+    hasSeriesColors: def?.hasSeriesColors ?? true,
+    hasCategoryColors: def?.hasCategoryColors ?? false,
+  }
+})
+
+const typeOptionsCache: Record<string, unknown> = {
+  ...(data.value.typeOptions || {}),
+}
+
+watch(
+  () => data.value.type,
+  (type) => {
+    const defaults = getDefaultTypeOptions(type)
+    const merged: Record<string, unknown> = {}
+    for (const key of Object.keys(defaults)) {
+      merged[key] = key in typeOptionsCache ? typeOptionsCache[key] : defaults[key]
+    }
+    data.value.typeOptions = merged
+  },
+)
+
+watch(
+  () => data.value.typeOptions,
+  (opts) => {
+    if (opts) {
+      Object.assign(typeOptionsCache, opts)
+    }
+  },
+  { deep: true },
+)
 
 function getData(): BlokkliChartData {
   return data.value

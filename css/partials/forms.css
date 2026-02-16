@@ -1,5 +1,5 @@
 .bk-form-label {
-  @apply !block !mb-10 !text-base !font-semibold !text-mono-900 !font-sans;
+  @apply !block !mb-8 !text-xs !font-medium !text-mono-600 !font-sans uppercase tracking-wide;
 }
 
 .bk-form-input {
@@ -82,6 +82,13 @@
 
   .bk-required-indicator {
     @apply text-red-normal font-bold;
+  }
+
+  .bk-radio-inline {
+    @apply flex flex-wrap gap-x-15;
+    .bk-radio {
+      @apply py-3;
+    }
   }
 
   .bk-radio {

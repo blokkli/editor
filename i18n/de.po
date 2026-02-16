@@ -979,9 +979,41 @@ msgctxt "chartsAddRow"
 msgid "Add row"
 msgstr "Zeile hinzufügen"
 
+msgctxt "chartsAreaCurved"
+msgid "Smooth curves"
+msgstr "Glatte Kurven"
+
+msgctxt "chartsAreaMarkers"
+msgid "Show markers"
+msgstr "Markierungen anzeigen"
+
 msgctxt "chartsAutoUpdate"
 msgid "Auto-update"
 msgstr "Automatisch aktualisieren"
+
+msgctxt "chartsBarHorizontal"
+msgid "Horizontal"
+msgstr "Horizontal"
+
+msgctxt "chartsBarStacked"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "chartsBorderRadius"
+msgid "Corner radius"
+msgstr "Eckenradius"
+
+msgctxt "chartsBorderRadiusLarge"
+msgid "Large"
+msgstr "Gross"
+
+msgctxt "chartsBorderRadiusNone"
+msgid "None"
+msgstr "Keine"
+
+msgctxt "chartsBorderRadiusSmall"
+msgid "Small"
+msgstr "Klein"
 
 msgctxt "chartsChartType"
 msgid "Chart Type"
@@ -990,6 +1022,18 @@ msgstr "Diagrammtyp"
 msgctxt "chartsData"
 msgid "Data"
 msgstr "Daten"
+
+msgctxt "chartsDataLabels"
+msgid "Data labels"
+msgstr "Datenbeschriftungen"
+
+msgctxt "chartsDonutShowLabels"
+msgid "Show labels"
+msgstr "Beschriftungen anzeigen"
+
+msgctxt "chartsDonutShowTotal"
+msgid "Show total"
+msgstr "Total anzeigen"
 
 msgctxt "chartsEditorSaveError"
 msgid "The chart could not be saved."
@@ -1003,9 +1047,61 @@ msgctxt "chartsFootnotes"
 msgid "Footnotes"
 msgstr "Fussnoten"
 
+msgctxt "chartsGridLines"
+msgid "Grid lines"
+msgstr "Rasterlinien"
+
+msgctxt "chartsGroupDisplay"
+msgid "Display"
+msgstr "Darstellung"
+
+msgctxt "chartsGroupLabels"
+msgid "Labels"
+msgstr "Beschriftungen"
+
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr "CSV importieren"
+
+msgctxt "chartsLegendPosition"
+msgid "Legend position"
+msgstr "Legendenposition"
+
+msgctxt "chartsLineCurved"
+msgid "Smooth curves"
+msgstr "Glatte Kurven"
+
+msgctxt "chartsLineMarkers"
+msgid "Show markers"
+msgstr "Markierungen anzeigen"
+
+msgctxt "chartsOpacityLight"
+msgid "Light"
+msgstr "Leicht"
+
+msgctxt "chartsOpacitySolid"
+msgid "Solid"
+msgstr "Deckend"
+
+msgctxt "chartsOpacityTransparent"
+msgid "Transparent"
+msgstr "Transparent"
+
+msgctxt "chartsPieShowLabels"
+msgid "Show labels"
+msgstr "Beschriftungen anzeigen"
+
+msgctxt "chartsPositionBottom"
+msgid "Bottom"
+msgstr "Unten"
+
+msgctxt "chartsPositionRight"
+msgid "Right"
+msgstr "Rechts"
+
+msgctxt "chartsPositionTop"
+msgid "Top"
+msgstr "Oben"
 
 msgctxt "chartsPreview"
 msgid "Preview"
@@ -1015,9 +1111,45 @@ msgctxt "chartsPreviewPlaceholder"
 msgid "Click \"Refresh Preview\" to see the chart."
 msgstr "Klicken Sie auf «Vorschau aktualisieren», um das Diagramm anzuzeigen."
 
+msgctxt "chartsRadarFillOpacity"
+msgid "Fill opacity"
+msgstr "Fülldeckkraft"
+
+msgctxt "chartsRadarMarkers"
+msgid "Show markers"
+msgstr "Markierungen anzeigen"
+
+msgctxt "chartsRadialBarShowLabels"
+msgid "Show labels"
+msgstr "Beschriftungen anzeigen"
+
+msgctxt "chartsRadialBarShowTotal"
+msgid "Show total"
+msgstr "Total anzeigen"
+
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr "Vorschau aktualisieren"
+
+msgctxt "chartsRotationAuto"
+msgid "Auto"
+msgstr "Automatisch"
+
+msgctxt "chartsStrokeMedium"
+msgid "Medium"
+msgstr "Mittel"
+
+msgctxt "chartsStrokeThick"
+msgid "Thick"
+msgstr "Dick"
+
+msgctxt "chartsStrokeThin"
+msgid "Thin"
+msgstr "Dünn"
+
+msgctxt "chartsStrokeWidth"
+msgid "Line thickness"
+msgstr "Linienstärke"
 
 msgctxt "chartsTitle"
 msgid "Title"
@@ -1050,6 +1182,18 @@ msgstr "Linie"
 msgctxt "chartsTypePie"
 msgid "Pie"
 msgstr "Kreis"
+
+msgctxt "chartsTypeRadar"
+msgid "Radar"
+msgstr "Radar"
+
+msgctxt "chartsTypeRadialBar"
+msgid "Radial Bar"
+msgstr "Radialdiagramm"
+
+msgctxt "chartsXAxisRotation"
+msgid "Label rotation"
+msgstr "Beschriftungswinkel"
 
 msgctxt "clearInput"
 msgid "Clear input"

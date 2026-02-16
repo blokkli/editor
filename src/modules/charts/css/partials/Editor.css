@@ -32,7 +32,7 @@
   }
 
   .bk-chart-editor-config {
-    @apply grid gap-20 grid-cols-2;
+    @apply grid gap-x-20 grid-cols-[1fr_auto];
   }
 
   .bk-chart-editor-preview-header {

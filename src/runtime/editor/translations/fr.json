@@ -943,9 +943,41 @@
     "source": "Add row",
     "translation": ""
   },
+  "chartsAreaCurved": {
+    "source": "Smooth curves",
+    "translation": "Courbes lisses"
+  },
+  "chartsAreaMarkers": {
+    "source": "Show markers",
+    "translation": "Afficher les marqueurs"
+  },
   "chartsAutoUpdate": {
     "source": "Auto-update",
     "translation": ""
+  },
+  "chartsBarHorizontal": {
+    "source": "Horizontal",
+    "translation": "Horizontal"
+  },
+  "chartsBarStacked": {
+    "source": "Stacked",
+    "translation": "Empilé"
+  },
+  "chartsBorderRadius": {
+    "source": "Corner radius",
+    "translation": "Rayon des coins"
+  },
+  "chartsBorderRadiusLarge": {
+    "source": "Large",
+    "translation": "Grand"
+  },
+  "chartsBorderRadiusNone": {
+    "source": "None",
+    "translation": "Aucun"
+  },
+  "chartsBorderRadiusSmall": {
+    "source": "Small",
+    "translation": "Petit"
   },
   "chartsChartType": {
     "source": "Chart Type",
@@ -954,6 +986,18 @@
   "chartsData": {
     "source": "Data",
     "translation": ""
+  },
+  "chartsDataLabels": {
+    "source": "Data labels",
+    "translation": "Étiquettes de données"
+  },
+  "chartsDonutShowLabels": {
+    "source": "Show labels",
+    "translation": "Afficher les étiquettes"
+  },
+  "chartsDonutShowTotal": {
+    "source": "Show total",
+    "translation": "Afficher le total"
   },
   "chartsEditorSaveError": {
     "source": "The chart could not be saved.",
@@ -967,9 +1011,61 @@
     "source": "Footnotes",
     "translation": ""
   },
+  "chartsGridLines": {
+    "source": "Grid lines",
+    "translation": "Lignes de grille"
+  },
+  "chartsGroupDisplay": {
+    "source": "Display",
+    "translation": "Affichage"
+  },
+  "chartsGroupLabels": {
+    "source": "Labels",
+    "translation": "Étiquettes"
+  },
   "chartsImportCsv": {
     "source": "Import CSV",
     "translation": ""
+  },
+  "chartsLegendPosition": {
+    "source": "Legend position",
+    "translation": "Position de la légende"
+  },
+  "chartsLineCurved": {
+    "source": "Smooth curves",
+    "translation": "Courbes lisses"
+  },
+  "chartsLineMarkers": {
+    "source": "Show markers",
+    "translation": "Afficher les marqueurs"
+  },
+  "chartsOpacityLight": {
+    "source": "Light",
+    "translation": "Léger"
+  },
+  "chartsOpacitySolid": {
+    "source": "Solid",
+    "translation": "Solide"
+  },
+  "chartsOpacityTransparent": {
+    "source": "Transparent",
+    "translation": "Transparent"
+  },
+  "chartsPieShowLabels": {
+    "source": "Show labels",
+    "translation": "Afficher les étiquettes"
+  },
+  "chartsPositionBottom": {
+    "source": "Bottom",
+    "translation": "En bas"
+  },
+  "chartsPositionRight": {
+    "source": "Right",
+    "translation": "À droite"
+  },
+  "chartsPositionTop": {
+    "source": "Top",
+    "translation": "En haut"
   },
   "chartsPreview": {
     "source": "Preview",
@@ -979,9 +1075,45 @@
     "source": "Click \"Refresh Preview\" to see the chart.",
     "translation": ""
   },
+  "chartsRadarFillOpacity": {
+    "source": "Fill opacity",
+    "translation": "Opacité du remplissage"
+  },
+  "chartsRadarMarkers": {
+    "source": "Show markers",
+    "translation": "Afficher les marqueurs"
+  },
+  "chartsRadialBarShowLabels": {
+    "source": "Show labels",
+    "translation": "Afficher les libellés"
+  },
+  "chartsRadialBarShowTotal": {
+    "source": "Show total",
+    "translation": "Afficher le total"
+  },
   "chartsRefreshPreview": {
     "source": "Refresh Preview",
     "translation": ""
+  },
+  "chartsRotationAuto": {
+    "source": "Auto",
+    "translation": "Automatique"
+  },
+  "chartsStrokeMedium": {
+    "source": "Medium",
+    "translation": "Moyen"
+  },
+  "chartsStrokeThick": {
+    "source": "Thick",
+    "translation": "Épais"
+  },
+  "chartsStrokeThin": {
+    "source": "Thin",
+    "translation": "Fin"
+  },
+  "chartsStrokeWidth": {
+    "source": "Line thickness",
+    "translation": "Épaisseur de ligne"
   },
   "chartsTitle": {
     "source": "Title",
@@ -1014,6 +1146,18 @@
   "chartsTypePie": {
     "source": "Pie",
     "translation": ""
+  },
+  "chartsTypeRadar": {
+    "source": "Radar",
+    "translation": "Radar"
+  },
+  "chartsTypeRadialBar": {
+    "source": "Radial Bar",
+    "translation": "Barre radiale"
+  },
+  "chartsXAxisRotation": {
+    "source": "Label rotation",
+    "translation": "Rotation des libellés"
   },
   "clearInput": {
     "source": "Clear input",

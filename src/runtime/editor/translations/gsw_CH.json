@@ -943,9 +943,41 @@
     "source": "Add row",
     "translation": ""
   },
+  "chartsAreaCurved": {
+    "source": "Smooth curves",
+    "translation": "Glatti Churve"
+  },
+  "chartsAreaMarkers": {
+    "source": "Show markers",
+    "translation": "Markierige aazeige"
+  },
   "chartsAutoUpdate": {
     "source": "Auto-update",
     "translation": ""
+  },
+  "chartsBarHorizontal": {
+    "source": "Horizontal",
+    "translation": "Horizontal"
+  },
+  "chartsBarStacked": {
+    "source": "Stacked",
+    "translation": "Gstaplet"
+  },
+  "chartsBorderRadius": {
+    "source": "Corner radius",
+    "translation": "Eckeradius"
+  },
+  "chartsBorderRadiusLarge": {
+    "source": "Large",
+    "translation": "Gross"
+  },
+  "chartsBorderRadiusNone": {
+    "source": "None",
+    "translation": "Kei"
+  },
+  "chartsBorderRadiusSmall": {
+    "source": "Small",
+    "translation": "Chli"
   },
   "chartsChartType": {
     "source": "Chart Type",
@@ -954,6 +986,18 @@
   "chartsData": {
     "source": "Data",
     "translation": ""
+  },
+  "chartsDataLabels": {
+    "source": "Data labels",
+    "translation": "Datebeschriftige"
+  },
+  "chartsDonutShowLabels": {
+    "source": "Show labels",
+    "translation": "Beschriftige aazeige"
+  },
+  "chartsDonutShowTotal": {
+    "source": "Show total",
+    "translation": "Total aazeige"
   },
   "chartsEditorSaveError": {
     "source": "The chart could not be saved.",
@@ -967,9 +1011,61 @@
     "source": "Footnotes",
     "translation": ""
   },
+  "chartsGridLines": {
+    "source": "Grid lines",
+    "translation": "Rasterliniene"
+  },
+  "chartsGroupDisplay": {
+    "source": "Display",
+    "translation": "Darstellig"
+  },
+  "chartsGroupLabels": {
+    "source": "Labels",
+    "translation": "Beschriftige"
+  },
   "chartsImportCsv": {
     "source": "Import CSV",
     "translation": ""
+  },
+  "chartsLegendPosition": {
+    "source": "Legend position",
+    "translation": "Legendeposition"
+  },
+  "chartsLineCurved": {
+    "source": "Smooth curves",
+    "translation": "Glatti Churve"
+  },
+  "chartsLineMarkers": {
+    "source": "Show markers",
+    "translation": "Markierige aazeige"
+  },
+  "chartsOpacityLight": {
+    "source": "Light",
+    "translation": "Liecht"
+  },
+  "chartsOpacitySolid": {
+    "source": "Solid",
+    "translation": "Deckend"
+  },
+  "chartsOpacityTransparent": {
+    "source": "Transparent",
+    "translation": "Transparent"
+  },
+  "chartsPieShowLabels": {
+    "source": "Show labels",
+    "translation": "Beschriftige aazeige"
+  },
+  "chartsPositionBottom": {
+    "source": "Bottom",
+    "translation": "Unde"
+  },
+  "chartsPositionRight": {
+    "source": "Right",
+    "translation": "Rächts"
+  },
+  "chartsPositionTop": {
+    "source": "Top",
+    "translation": "Obe"
   },
   "chartsPreview": {
     "source": "Preview",
@@ -979,9 +1075,45 @@
     "source": "Click \"Refresh Preview\" to see the chart.",
     "translation": ""
   },
+  "chartsRadarFillOpacity": {
+    "source": "Fill opacity",
+    "translation": "Fülldeckchraft"
+  },
+  "chartsRadarMarkers": {
+    "source": "Show markers",
+    "translation": "Markierige aazeige"
+  },
+  "chartsRadialBarShowLabels": {
+    "source": "Show labels",
+    "translation": "Beschriftige aazeige"
+  },
+  "chartsRadialBarShowTotal": {
+    "source": "Show total",
+    "translation": "Total aazeige"
+  },
   "chartsRefreshPreview": {
     "source": "Refresh Preview",
     "translation": ""
+  },
+  "chartsRotationAuto": {
+    "source": "Auto",
+    "translation": "Automatisch"
+  },
+  "chartsStrokeMedium": {
+    "source": "Medium",
+    "translation": "Mittel"
+  },
+  "chartsStrokeThick": {
+    "source": "Thick",
+    "translation": "Dick"
+  },
+  "chartsStrokeThin": {
+    "source": "Thin",
+    "translation": "Dünn"
+  },
+  "chartsStrokeWidth": {
+    "source": "Line thickness",
+    "translation": "Liniestärchi"
   },
   "chartsTitle": {
     "source": "Title",
@@ -1014,6 +1146,18 @@
   "chartsTypePie": {
     "source": "Pie",
     "translation": ""
+  },
+  "chartsTypeRadar": {
+    "source": "Radar",
+    "translation": "Radar"
+  },
+  "chartsTypeRadialBar": {
+    "source": "Radial Bar",
+    "translation": "Radialdiagramm"
+  },
+  "chartsXAxisRotation": {
+    "source": "Label rotation",
+    "translation": "Beschriftigswinkel"
   },
   "clearInput": {
     "source": "Clear input",

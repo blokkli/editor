@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import type { ChartType } from '../../../../types'
-import type { BlokkliIcon } from '#blokkli-build/icons'
+import { getChartTypes } from '../../../../chartTypes'
 import { Icon } from '#blokkli/editor/components'
 
 defineProps<{
@@ -29,14 +29,11 @@ const emit = defineEmits<{
 
 const { $t } = useBlokkli()
 
-const chartTypes = computed<
-  { value: ChartType; label: string; icon: BlokkliIcon }[]
->(() => [
-  { value: 'bar', label: $t('chartsTypeBar', 'Bar'), icon: 'bk_mdi_bar_chart' },
-  { value: 'line', label: $t('chartsTypeLine', 'Line'), icon: 'bk_mdi_show_chart' },
-  { value: 'pie', label: $t('chartsTypePie', 'Pie'), icon: 'bk_mdi_pie_chart' },
-  { value: 'area', label: $t('chartsTypeArea', 'Area'), icon: 'bk_mdi_area_chart' },
-  { value: 'donut', label: $t('chartsTypeDonut', 'Donut'), icon: 'bk_mdi_donut_large' },
-  { value: 'heatmap', label: $t('chartsTypeHeatmap', 'Heatmap'), icon: 'bk_mdi_grid_view' },
-])
+const chartTypes = computed(() =>
+  getChartTypes($t).map((def) => ({
+    value: def.id as ChartType,
+    label: def.editor.label,
+    icon: def.editor.icon,
+  })),
+)
 </script>
