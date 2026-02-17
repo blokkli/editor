@@ -45,7 +45,7 @@ const { $t, state } = useBlokkli()
 const props = defineProps<{
   label: string
   property: string
-  modelValue?: string
+  modelValue?: string[]
   options: { value: string; label: string }[]
   isGrouped?: boolean
 }>()
@@ -58,10 +58,10 @@ const optionOrder = computed(() => props.options.map((v) => v.value))
 
 const checked = computed<string[]>({
   get() {
-    return (props.modelValue || '').split(',').filter(Boolean)
+    return props.modelValue || []
   },
   set(newValue: string[]) {
-    const storedValue = newValue
+    const sorted = newValue
       .filter(Boolean)
       .sort((a, b) => {
         // Sort the options keys as defined in the definition.
@@ -69,8 +69,7 @@ const checked = computed<string[]>({
         // the keys would change.
         return optionOrder.value.indexOf(a) - optionOrder.value.indexOf(b)
       })
-      .join(',')
-    emit('update:modelValue', storedValue)
+    emit('update:modelValue', sorted)
   },
 })
 

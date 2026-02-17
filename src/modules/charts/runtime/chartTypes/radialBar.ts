@@ -5,7 +5,6 @@ export default defineChartType(($t) => ({
   hasMultipleSeries: false,
   hasSeriesColors: false,
   hasCategoryColors: true,
-  optionDefaults: { showLabels: true, showTotal: false },
   buildChartOptions(ctx) {
     const showLabels = !!ctx.typeOptions.showLabels
     const showTotal = !!ctx.typeOptions.showTotal
@@ -30,13 +29,15 @@ export default defineChartType(($t) => ({
     icon: 'bk_mdi_track_changes',
     options: {
       showLabels: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsRadialBarShowLabels', 'Show labels'),
+        default: true,
         group: 'labels',
       },
       showTotal: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsRadialBarShowTotal', 'Show total'),
+        default: false,
         group: 'display',
       },
     },

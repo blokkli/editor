@@ -341,23 +341,31 @@ const optionGroups = computed<OptionGroup[]>(() => {
   )
 })
 
-function setOptionValue(key: string, value: string) {
+function setOptionValue(key: string, value: unknown) {
+  const optionDef = availableOptions.value.find((o) => o.property === key)
+  const storable = optionDef
+    ? optionValueToStorable(
+        optionDef.option,
+        value as string | string[] | boolean | number | null | undefined,
+      )
+    : String(value)
+
   if (Array.isArray(props.uuids)) {
     props.uuids.forEach((uuid) => {
-      updated.set(uuid, key, value)
+      updated.set(uuid, key, storable)
 
       if (!state.mutatedOptions[uuid]) {
         state.mutatedOptions[uuid] = {}
       }
-      state.mutatedOptions[uuid][key] = value
-      eventBus.emit('option:update', { uuid, key, value })
+      state.mutatedOptions[uuid][key] = storable
+      eventBus.emit('option:update', { uuid, key, value: storable })
     })
   } else {
-    updated.set('HOST', key, value)
+    updated.set('HOST', key, storable)
     if (!state.mutatedOptions.HOST) {
       state.mutatedOptions.HOST = {}
     }
-    state.mutatedOptions.HOST[key] = value
+    state.mutatedOptions.HOST[key] = storable
   }
 }
 

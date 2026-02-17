@@ -15,7 +15,7 @@ const { $t, state } = useBlokkli()
 const props = defineProps<{
   label: string
   property: string
-  modelValue?: string
+  modelValue?: boolean
   required?: boolean
 }>()
 
@@ -23,10 +23,10 @@ const emit = defineEmits(['update:modelValue'])
 
 const checked = computed({
   get() {
-    return props.modelValue === '1'
+    return props.modelValue ?? false
   },
-  set(v: any) {
-    emit('update:modelValue', v ? '1' : '0')
+  set(v: boolean) {
+    emit('update:modelValue', v)
   },
 })
 

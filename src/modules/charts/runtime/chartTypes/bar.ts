@@ -23,12 +23,6 @@ export default defineChartType(($t) => {
     hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
-    optionDefaults: {
-      stacked: false,
-      horizontal: false,
-      borderRadius: '0',
-      ...shared.defaults,
-    },
     buildChartOptions(ctx) {
       return {
         chart: { stacked: !!ctx.typeOptions.stacked },
@@ -55,23 +49,26 @@ export default defineChartType(($t) => {
       icon: 'bk_mdi_bar_chart',
       options: {
         stacked: {
-          type: 'toggle',
+          type: 'checkbox',
           label: $t('chartsBarStacked', 'Stacked'),
+          default: false,
           group: 'display',
         },
         horizontal: {
-          type: 'toggle',
+          type: 'checkbox',
           label: $t('chartsBarHorizontal', 'Horizontal'),
+          default: false,
           group: 'display',
         },
         borderRadius: {
-          type: 'select',
+          type: 'radios',
           label: $t('chartsBorderRadius', 'Corner radius'),
-          options: [
-            { value: '0', label: $t('chartsBorderRadiusNone', 'None') },
-            { value: '4', label: $t('chartsBorderRadiusSmall', 'Small') },
-            { value: '8', label: $t('chartsBorderRadiusLarge', 'Large') },
-          ],
+          default: '0',
+          options: {
+            '0': $t('chartsBorderRadiusNone', 'None'),
+            '4': $t('chartsBorderRadiusSmall', 'Small'),
+            '8': $t('chartsBorderRadiusLarge', 'Large'),
+          },
         },
         ...shared.options,
       },

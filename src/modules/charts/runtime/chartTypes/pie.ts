@@ -5,7 +5,6 @@ export default defineChartType(($t) => ({
   hasMultipleSeries: false,
   hasSeriesColors: false,
   hasCategoryColors: true,
-  optionDefaults: { showLabels: true },
   buildChartOptions(ctx) {
     return {
       labels: ctx.categories,
@@ -20,8 +19,9 @@ export default defineChartType(($t) => ({
     icon: 'bk_mdi_pie_chart',
     options: {
       showLabels: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsPieShowLabels', 'Show labels'),
+        default: true,
         group: 'labels',
       },
     },

@@ -26,11 +26,6 @@ export default defineChartType(($t) => {
     hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
-    optionDefaults: {
-      curved: false,
-      markers: false,
-      ...shared.defaults,
-    },
     buildChartOptions(ctx) {
       const strokeWidth = buildStrokeWidthOptions(ctx.typeOptions)
       return {
@@ -56,13 +51,15 @@ export default defineChartType(($t) => {
       icon: 'bk_mdi_area_chart',
       options: {
         curved: {
-          type: 'toggle',
+          type: 'checkbox',
           label: $t('chartsAreaCurved', 'Smooth curves'),
+          default: false,
           group: 'display',
         },
         markers: {
-          type: 'toggle',
+          type: 'checkbox',
           label: $t('chartsAreaMarkers', 'Show markers'),
+          default: false,
           group: 'display',
         },
         ...shared.options,

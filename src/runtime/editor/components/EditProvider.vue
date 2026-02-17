@@ -136,6 +136,7 @@ import {
 } from '#blokkli/editor/composables'
 import type { BlokkliApp } from '../types/app'
 import type { EditPermission } from '#blokkli/types/provider'
+import type { ValidProviderTypes } from '#blokkli-build/generated-types'
 
 const props = withDefaults(
   defineProps<{
@@ -147,6 +148,7 @@ const props = withDefaults(
     isolate?: boolean
     permissions: Array<EditPermission | null>
     providerEl: HTMLElement
+    providerType: ValidProviderTypes
   }>(),
   {
     language: 'en',
@@ -187,7 +189,7 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
-const definitions = definitionProvider()
+const definitions = definitionProvider(props.providerType)
 const $t = textProvider(context)
 const state = await editStateProvider(
   eventBus,

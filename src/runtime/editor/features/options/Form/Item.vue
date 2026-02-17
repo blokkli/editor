@@ -89,16 +89,12 @@ import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import OptionDateTimeLocal from './DateTimeLocal/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
-import {
-  isValidDatetimeLocalValue,
-  mapCheckboxTrue,
-} from '#blokkli/helpers/runtimeHelpers'
 import { BK_VISIBLE_LANGUAGES } from './../../../../../global/constants'
 
 const { state, $t: $blokkliText } = useBlokkli()
 
 const emit = defineEmits<{
-  (e: 'update', data: string): void
+  (e: 'update', data: unknown): void
 }>()
 
 const props = defineProps<{
@@ -155,55 +151,12 @@ const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
   })
 })
 
-const validCheckboxValues = computed(() =>
-  checkboxOptions.value.map((v) => v.value),
-)
-
-const validateValue = (
-  v: string | string[] | boolean | undefined | null | number,
-): string | undefined => {
-  if (props.option.type === 'text') {
-    if (typeof v === 'string') {
-      return v
-    }
-  } else if (props.option.type === 'datetime-local') {
-    if (typeof v === 'string' && isValidDatetimeLocalValue(v)) {
-      return v
-    }
-  } else if (props.option.type === 'color') {
-    if (typeof v === 'string' && v.startsWith('#') && v.length === 7) {
-      return v
-    }
-  } else if (props.option.type === 'radios' && typeof v === 'string') {
-    if (props.option.options[v]) {
-      return v
-    }
-  } else if (props.option.type === 'checkbox') {
-    return mapCheckboxTrue(v)
-  } else if (props.option.type === 'checkboxes') {
-    const items = Array.isArray(v)
-      ? v
-      : (typeof v === 'string' ? v : '').split(',')
-    return items
-      .filter((key) => {
-        return validCheckboxValues.value.includes(key)
-      })
-      .join(',')
-  } else if (props.option.type === 'range' || props.option.type === 'number') {
-    if (typeof v === 'number') {
-      return v.toString()
-    } else if (typeof v === 'string') {
-      return v
-    }
-  }
-}
-
-const value = computed<string | undefined>({
+const value = computed({
   get() {
-    return validateValue(props.mutatedValue)
+    return props.mutatedValue
   },
-  set(value: string | undefined) {
-    emit('update', value === undefined ? '' : value)
+  set(v: unknown) {
+    emit('update', v)
   },
 })
 </script>

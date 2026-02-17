@@ -5,7 +5,6 @@ export default defineChartType(($t) => ({
   hasMultipleSeries: false,
   hasSeriesColors: false,
   hasCategoryColors: true,
-  optionDefaults: { showTotal: false, showLabels: true },
   buildChartOptions(ctx) {
     const show = !!ctx.typeOptions.showTotal
     return {
@@ -31,13 +30,15 @@ export default defineChartType(($t) => ({
     icon: 'bk_mdi_donut_large',
     options: {
       showTotal: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsDonutShowTotal', 'Show total'),
+        default: false,
         group: 'display',
       },
       showLabels: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsDonutShowLabels', 'Show labels'),
+        default: true,
         group: 'labels',
       },
     },

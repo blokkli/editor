@@ -72,14 +72,16 @@ export function getChartType(
  */
 export function getDefaultTypeOptions(id: string): Record<string, unknown> {
   const def = getChartTypeRuntime(id)
-  return def ? { ...def.optionDefaults } : {}
+  if (!def) return {}
+  const defaults: Record<string, unknown> = {}
+  for (const [key, opt] of Object.entries(def.editor.options)) {
+    defaults[key] = opt.default
+  }
+  return defaults
 }
 
 export type {
   ChartTypeDefinition,
   ChartBuildContext,
-  ChartTypeOptionDefinition,
-  ChartTypeOptionSelect,
-  ChartOptionGroup,
   TranslateFunction,
 } from './types'

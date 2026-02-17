@@ -1,12 +1,13 @@
 .bk {
   .bk-chart-editor {
-    @apply h-full;
     @apply bg-mono-100;
     @apply overflow-auto;
+    @apply h-full;
   }
 
   .bk-chart-editor-actions {
-    @apply bg-mono-900 flex sticky z-50 top-0;
+    @apply flex;
+    @apply border-r border-r-mono-700;
 
     button {
       @apply size-50 flex items-center justify-center cursor-pointer text-mono-100;
@@ -23,16 +24,21 @@
     }
   }
 
+  .bk-chart-editor-top {
+    @apply bg-mono-900 sticky top-0 z-50;
+  }
+
+  .bk-chart-editor-top-actions {
+    @apply flex;
+    @apply border-b border-mono-700;
+  }
+
   .bk-chart-editor-main {
-    @apply p-20;
+    @apply p-20 grid gap-20;
   }
 
   .bk-chart-editor-section {
-    @apply p-20 bg-white mb-20 shadow rounded-md;
-  }
-
-  .bk-chart-editor-config {
-    @apply grid gap-x-20 grid-cols-[1fr_auto];
+    @apply p-20 bg-white shadow rounded-md;
   }
 
   .bk-chart-editor-preview-header {

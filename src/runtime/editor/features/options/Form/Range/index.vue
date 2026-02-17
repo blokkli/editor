@@ -10,7 +10,7 @@ import { computed } from '#imports'
 
 const props = defineProps<{
   label: string
-  modelValue?: string
+  modelValue?: number
   min: number
   max: number
   step: number
@@ -20,17 +20,15 @@ const emit = defineEmits(['update:modelValue'])
 
 const text = computed<string>({
   get() {
-    return props.modelValue || '0'
+    return String(props.modelValue ?? 0)
   },
   set(v: string | number | undefined) {
-    emit('update:modelValue', (v === undefined ? '' : v).toString())
+    emit('update:modelValue', Number(v) || 0)
   },
 })
 
 const formatted = computed(() => {
-  // Ensure the value is treated as a number
-  const numValue =
-    typeof text.value === 'string' ? Number.parseFloat(text.value) : text.value
+  const numValue = props.modelValue ?? 0
 
   // Determine the precision of the step
   const stepPrecision = (props.step.toString().split('.')[1] || '').length

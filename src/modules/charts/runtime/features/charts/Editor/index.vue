@@ -1,41 +1,29 @@
 <template>
   <div class="bk-chart-editor" @wheel.capture.stop>
-    <div class="bk-chart-editor-actions">
-      <button type="button" :disabled="!canUndo" @click="undo">
-        <Icon name="bk_mdi_undo" />
-      </button>
-      <button type="button" :disabled="!canRedo" @click="redo">
-        <Icon name="bk_mdi_redo" />
-      </button>
-    </div>
-    <div class="bk-chart-editor-main">
-      <div class="bk-chart-editor-section bk-chart-editor-config">
-        <div>
-          <label class="bk-form-label">{{
-            $t('chartsChartType', 'Chart Type')
-          }}</label>
-          <ChartTypePicker v-model="data.type" />
+    <div class="bk-chart-editor-top">
+      <div class="bk-chart-editor-top-actions">
+        <div class="bk-chart-editor-actions">
+          <button type="button" :disabled="!canUndo" @click="undo">
+            <Icon name="bk_mdi_undo" />
+          </button>
+          <button type="button" :disabled="!canRedo" @click="redo">
+            <Icon name="bk_mdi_redo" />
+          </button>
         </div>
 
-        <div>
-          <label class="bk-form-label">{{ $t('chartsTitle', 'Title') }}</label>
-          <input
-            v-model.lazy="data.title"
-            type="text"
-            class="bk-form-input"
-            :placeholder="
-              $t('chartsTitlePlaceholder', 'Chart title (optional)')
-            "
-          />
-        </div>
-        <ChartTypeOptions
-          v-if="chartDef && Object.keys(chartDef.editor.options).length > 0"
-          :options="chartDef.editor.options"
-          :type-options="data.typeOptions || {}"
-          @update:type-options="data.typeOptions = $event"
-        />
+        <ChartTypePicker v-model="data.type" />
       </div>
 
+      <ChartTypeOptions
+        v-if="chartDef"
+        v-model:title="data.title"
+        :options="chartDef.editor.options"
+        :type-options="data.typeOptions || {}"
+        @update:type-options="data.typeOptions = $event"
+      />
+    </div>
+
+    <div class="bk-chart-editor-main">
       <div class="bk-chart-editor-section">
         <div class="bk-chart-editor-preview-header">
           <label class="bk-form-label">{{
@@ -235,7 +223,8 @@ watch(
     const defaults = getDefaultTypeOptions(type)
     const merged: Record<string, unknown> = {}
     for (const key of Object.keys(defaults)) {
-      merged[key] = key in typeOptionsCache ? typeOptionsCache[key] : defaults[key]
+      merged[key] =
+        key in typeOptionsCache ? typeOptionsCache[key] : defaults[key]
     }
     data.value.typeOptions = merged
   },

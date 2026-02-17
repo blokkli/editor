@@ -1,100 +1,110 @@
 <template>
-  <div v-if="hasOptions" class="bk-chart-type-options">
-    <div
-      v-for="group in toggleGroups"
-      :key="group.key"
-      class="bk-chart-type-options-group"
+  <div class="bk-chart-type-options">
+    <OptionsFormItem
+      :option="titleOption"
+      property="title"
+      :mutated-value="title"
+      @update="$emit('update:title', $event)"
+    />
+
+    <OptionsFormItem
+      v-for="item in ungroupedOptions"
+      :key="item.key"
+      :option="item.option"
+      :property="item.key"
+      :mutated-value="typeOptions[item.key] ?? item.option.default"
+      @update="updateOption(item.key, $event)"
+    />
+
+    <OptionsFormGroup
+      v-for="group in groups"
+      :key="'group_' + group.label"
+      :label="group.label"
+      :is-active="group.label === activeGroup"
+      @toggle="onToggleGroup(group.label)"
     >
-      <div class="bk-form-label">{{ group.label }}</div>
-      <div class="bk-chart-type-options-toggles">
-        <FormToggle
-          v-for="toggle in group.toggles"
-          :key="toggle.key"
-          :model-value="!!typeOptions[toggle.key]"
-          :label="toggle.label"
-          @update:model-value="updateOption(toggle.key, $event)"
-        />
-      </div>
-    </div>
-    <div
-      v-for="(opt, key) in selectOptions"
-      :key="key"
-      class="bk-chart-type-options-item"
-    >
-      <FormSelect
-        v-if="opt.options.length > 4"
-        :id="'chart-opt-' + key"
-        :label="opt.label"
-        :options="opt.options"
-        :model-value="String(typeOptions[key] ?? '')"
-        @update:model-value="updateOption(key, $event)"
+      <OptionsFormItem
+        v-for="item in group.options"
+        :key="item.key"
+        :option="item.option"
+        :property="item.key"
+        :mutated-value="typeOptions[item.key] ?? item.option.default"
+        is-grouped
+        @update="updateOption(item.key, $event)"
       />
-      <FormRadio
-        v-else
-        :id="'chart-opt-' + key"
-        :label="opt.label"
-        :options="opt.options"
-        :model-value="String(typeOptions[key] ?? '')"
-        inline
-        @update:model-value="updateOption(key, $event)"
-      />
-    </div>
+    </OptionsFormGroup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
-import type {
-  ChartTypeOptionDefinition,
-  ChartOptionGroup,
-  ChartTypeOptionSelect,
-} from '../../../../chartTypes'
-import { FormToggle, FormRadio, FormSelect } from '#blokkli/editor/components'
+import { computed, ref, useBlokkli } from '#imports'
+import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
+import OptionsFormItem from '#blokkli/editor/features/options/Form/Item.vue'
+import OptionsFormGroup from '#blokkli/editor/features/options/Form/Group.vue'
 
 const { $t } = useBlokkli()
 
 const props = defineProps<{
-  options: Record<string, ChartTypeOptionDefinition>
+  title: string
+  options: Record<string, BlockOptionDefinition>
   typeOptions: Record<string, unknown>
 }>()
 
 const emit = defineEmits<{
+  'update:title': [value: unknown]
   'update:typeOptions': [value: Record<string, unknown>]
 }>()
 
-const GROUP_LABELS: Record<ChartOptionGroup, () => string> = {
-  display: () => $t('chartsGroupDisplay', 'Display'),
-  labels: () => $t('chartsGroupLabels', 'Labels'),
+const titleOption: BlockOptionDefinition = {
+  type: 'text',
+  label: $t('chartsTitle', 'Title'),
+  default: '',
 }
 
-const GROUP_ORDER: ChartOptionGroup[] = ['display', 'labels']
+type OptionEntry = {
+  key: string
+  option: BlockOptionDefinition
+}
 
-const hasOptions = computed(() => Object.keys(props.options).length > 0)
+type OptionGroup = {
+  label: string
+  options: OptionEntry[]
+}
 
-const toggleGroups = computed(() => {
-  const groups: Record<string, { key: string; label: string }[]> = {}
-  for (const [key, opt] of Object.entries(props.options)) {
-    if (opt.type === 'toggle') {
-      const list = groups[opt.group] || (groups[opt.group] = [])
-      list.push({ key, label: opt.label })
-    }
+const activeGroup = ref('')
+
+function onToggleGroup(label: string) {
+  if (activeGroup.value === label) {
+    activeGroup.value = ''
+  } else {
+    activeGroup.value = label
   }
-  return GROUP_ORDER.filter((g) => groups[g])
-    .map((g) => ({
-      key: g,
-      label: GROUP_LABELS[g](),
-      toggles: groups[g] || [],
-    }))
-})
+}
 
-const selectOptions = computed(() => {
-  const result: Record<string, ChartTypeOptionSelect> = {}
-  for (const [key, opt] of Object.entries(props.options)) {
-    if (opt.type === 'select') {
-      result[key] = opt
-    }
-  }
-  return result
+const allOptions = computed<OptionEntry[]>(() =>
+  Object.entries(props.options).map(([key, option]) => ({ key, option })),
+)
+
+const ungroupedOptions = computed(() =>
+  allOptions.value.filter((v) => !v.option.group),
+)
+
+const groups = computed<OptionGroup[]>(() => {
+  return Object.values(
+    allOptions.value.reduce<Record<string, OptionGroup>>((acc, entry) => {
+      if (entry.option.group) {
+        if (!acc[entry.option.group]) {
+          acc[entry.option.group] = {
+            label: entry.option.group,
+            options: [entry],
+          }
+        } else {
+          acc[entry.option.group]!.options.push(entry)
+        }
+      }
+      return acc
+    }, {}),
+  )
 })
 
 function updateOption(key: string, value: unknown) {

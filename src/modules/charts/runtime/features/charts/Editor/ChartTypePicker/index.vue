@@ -7,8 +7,10 @@
       :class="{ 'is-active': modelValue === option.value }"
       @click="emit('update:modelValue', option.value)"
     >
-      <Icon :name="option.icon" />
-      <span>{{ option.label }}</span>
+      <div>
+        <Icon :name="option.icon" />
+        <span>{{ option.label }}</span>
+      </div>
     </button>
   </div>
 </template>

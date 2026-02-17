@@ -1,28 +1,9 @@
 .bk {
   .bk-chart-type-options {
-    @apply flex mt-20 flex-wrap col-span-full pt-20 border-t border-t-mono-300 gap-y-20;
-
-    .bk-chart-type-options-group {
-      @apply border-r border-r-mono-300 pr-20 mr-20;
-    }
-
-    .bk-chart-type-options-toggles {
-      @apply flex gap-20;
-    }
-
-    .bk-chart-type-options-item {
-      @apply border-r border-r-mono-300 pr-20 mr-20 flex items-end;
-    }
-
-    .bk-radio {
-      @apply py-0;
-    }
-
-    .bk-checkbox-toggle {
-      @apply h-[26px] flex items-center;
-      .bk-checkbox-toggle-label {
-        @apply pr-0;
-      }
+    @apply bg-mono-900 flex flex-wrap relative z-50;
+    > .bk-blokkli-item-options-group,
+    > .bk-blokkli-item-options-item {
+      @apply h-50;
     }
   }
 }

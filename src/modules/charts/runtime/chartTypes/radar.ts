@@ -14,11 +14,6 @@ export default defineChartType(($t) => {
     hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
-    optionDefaults: {
-      markers: false,
-      fillOpacity: '0.2',
-      ...shared.defaults,
-    },
     buildChartOptions(ctx) {
       return {
         xaxis: { categories: ctx.categories },
@@ -36,21 +31,20 @@ export default defineChartType(($t) => {
       icon: 'bk_mdi_radar',
       options: {
         markers: {
-          type: 'toggle',
+          type: 'checkbox',
           label: $t('chartsRadarMarkers', 'Show markers'),
+          default: false,
           group: 'display',
         },
         fillOpacity: {
-          type: 'select',
+          type: 'radios',
           label: $t('chartsRadarFillOpacity', 'Fill opacity'),
-          options: [
-            {
-              value: '0.2',
-              label: $t('chartsOpacityTransparent', 'Transparent'),
-            },
-            { value: '0.4', label: $t('chartsOpacityLight', 'Light') },
-            { value: '0.8', label: $t('chartsOpacitySolid', 'Solid') },
-          ],
+          default: '0.2',
+          options: {
+            '0.2': $t('chartsOpacityTransparent', 'Transparent'),
+            '0.4': $t('chartsOpacityLight', 'Light'),
+            '0.8': $t('chartsOpacitySolid', 'Solid'),
+          },
         },
         ...shared.options,
       },

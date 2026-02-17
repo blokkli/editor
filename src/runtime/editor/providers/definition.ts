@@ -9,6 +9,7 @@ import definitions from '#blokkli-build/definitions'
 import type {
   ValidFieldListTypes,
   BlockBundleWithNested,
+  ValidProviderTypes,
 } from '#blokkli-build/generated-types'
 import type { DeepReadonly } from 'vue'
 import type { BlockDefinitionOptionsInput } from '../../types/definitions'
@@ -127,7 +128,7 @@ export type DefinitionProvider = {
   bundlesWithAutoAdd: ComputedRef<string[]>
 }
 
-export default function (): DefinitionProvider {
+export default function (providerType: ValidProviderTypes): DefinitionProvider {
   const blocks = ref<BlockDefinition[]>(definitions.blocks)
   const fragments = ref<FragmentDefinition[]>(definitions.fragments)
   const providers = ref<ProviderDefinition[]>(definitions.providers)
@@ -175,6 +176,9 @@ export default function (): DefinitionProvider {
             acc[bundle + '__' + 'field:' + renderFor.fieldList] = definition
           } else if ('fieldListType' in renderFor) {
             acc[bundle + '__' + 'field:' + renderFor.fieldListType] = definition
+          } else if (renderFor.providerType) {
+            acc[bundle + '__' + 'provider:' + renderFor.providerType] =
+              definition
           }
         })
       } else {
@@ -219,6 +223,10 @@ export default function (): DefinitionProvider {
       if (blocksByKey.value[forParentBundle]) {
         return blocksByKey.value[forParentBundle]
       }
+    }
+    const forProviderType = bundle + '__provider:' + providerType
+    if (blocksByKey.value[forProviderType]) {
+      return blocksByKey.value[forProviderType]
     }
 
     return blocksByKey.value[bundle]

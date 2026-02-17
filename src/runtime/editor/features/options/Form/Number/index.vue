@@ -1,6 +1,6 @@
 <template>
   <div class="bk-blokkli-item-options-number">
-    <button :disabled="numeric <= min" @click.stop.prevent="decrement">
+    <button :disabled="modelValue <= min" @click.stop.prevent="decrement">
       <Icon name="bk_mdi_remove" />
     </button>
     <input
@@ -13,7 +13,7 @@
       }"
     />
 
-    <button :disabled="numeric >= max" @click.stop.prevent="increment">
+    <button :disabled="modelValue >= max" @click.stop.prevent="increment">
       <Icon name="bk_mdi_add" />
     </button>
   </div>
@@ -26,14 +26,14 @@ import { Icon } from '#blokkli/editor/components'
 const props = withDefaults(
   defineProps<{
     label: string
-    modelValue?: string
+    modelValue?: number
     min: number
     max: number
     type?: string
   }>(),
   {
     type: 'text',
-    modelValue: '0',
+    modelValue: 0,
   },
 )
 
@@ -43,31 +43,19 @@ const emit = defineEmits(['update:modelValue'])
 
 const text = computed<string>({
   get() {
-    return props.modelValue
+    return String(props.modelValue)
   },
   set(v: string | number | undefined) {
-    emit('update:modelValue', (v === undefined ? '' : v).toString())
+    emit('update:modelValue', Number(v) || 0)
   },
-})
-
-const numeric = computed(() => {
-  if (props.modelValue === undefined) {
-    return 0
-  }
-  const v = Number.parseInt(props.modelValue)
-  if (Number.isNaN(v)) {
-    return 0
-  }
-
-  return v
 })
 
 function increment() {
-  text.value = (numeric.value + 1).toString()
+  emit('update:modelValue', props.modelValue + 1)
 }
 
 function decrement() {
-  text.value = (numeric.value - 1).toString()
+  emit('update:modelValue', props.modelValue - 1)
 }
 </script>
 

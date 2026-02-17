@@ -34,6 +34,7 @@
         :language
         :isolate
         :permissions
+        :provider-type
       >
         <slot
           :is-editing

@@ -1,8 +1,9 @@
-import type { TranslateFunction, ChartTypeOptionDefinition } from './types'
+import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOptions'
+import type { TranslateFunction } from './types'
 
 type SharedOptions = {
-  options: Record<string, ChartTypeOptionDefinition>
-  defaults: Record<string, unknown>
+  options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
 }
 
 /**
@@ -12,17 +13,15 @@ export function xAxisOptions($t: TranslateFunction): SharedOptions {
   return {
     options: {
       xaxisRotation: {
-        type: 'select',
+        type: 'radios',
         label: $t('chartsXAxisRotation', 'Label rotation'),
-        options: [
-          { value: 'auto', label: $t('chartsRotationAuto', 'Auto') },
-          { value: '-45', label: '-45°' },
-          { value: '-90', label: '-90°' },
-        ],
+        default: 'auto',
+        options: {
+          auto: $t('chartsRotationAuto', 'Auto'),
+          '-45': '-45°',
+          '-90': '-90°',
+        },
       },
-    },
-    defaults: {
-      xaxisRotation: 'auto',
     },
   }
 }
@@ -53,13 +52,11 @@ export function dataLabelsOptions($t: TranslateFunction): SharedOptions {
   return {
     options: {
       dataLabels: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsDataLabels', 'Data labels'),
+        default: false,
         group: 'labels',
       },
-    },
-    defaults: {
-      dataLabels: false,
     },
   }
 }
@@ -80,17 +77,15 @@ export function legendOptions($t: TranslateFunction): SharedOptions {
   return {
     options: {
       legendPosition: {
-        type: 'select',
+        type: 'radios',
         label: $t('chartsLegendPosition', 'Legend position'),
-        options: [
-          { value: 'bottom', label: $t('chartsPositionBottom', 'Bottom') },
-          { value: 'top', label: $t('chartsPositionTop', 'Top') },
-          { value: 'right', label: $t('chartsPositionRight', 'Right') },
-        ],
+        default: 'bottom',
+        options: {
+          bottom: $t('chartsPositionBottom', 'Bottom'),
+          top: $t('chartsPositionTop', 'Top'),
+          right: $t('chartsPositionRight', 'Right'),
+        },
       },
-    },
-    defaults: {
-      legendPosition: 'bottom',
     },
   }
 }
@@ -111,13 +106,11 @@ export function gridOptions($t: TranslateFunction): SharedOptions {
   return {
     options: {
       gridLines: {
-        type: 'toggle',
+        type: 'checkbox',
         label: $t('chartsGridLines', 'Grid lines'),
+        default: true,
         group: 'display',
       },
-    },
-    defaults: {
-      gridLines: true,
     },
   }
 }
@@ -138,17 +131,15 @@ export function strokeWidthOptions($t: TranslateFunction): SharedOptions {
   return {
     options: {
       strokeWidth: {
-        type: 'select',
+        type: 'radios',
         label: $t('chartsStrokeWidth', 'Line thickness'),
-        options: [
-          { value: '2', label: $t('chartsStrokeThin', 'Thin') },
-          { value: '4', label: $t('chartsStrokeMedium', 'Medium') },
-          { value: '6', label: $t('chartsStrokeThick', 'Thick') },
-        ],
+        default: '2',
+        options: {
+          '2': $t('chartsStrokeThin', 'Thin'),
+          '4': $t('chartsStrokeMedium', 'Medium'),
+          '6': $t('chartsStrokeThick', 'Thick'),
+        },
       },
-    },
-    defaults: {
-      strokeWidth: '2',
     },
   }
 }
@@ -166,11 +157,9 @@ export function buildStrokeWidthOptions(
  * Merge multiple shared option sets into one.
  */
 export function mergeShared(...sets: SharedOptions[]): SharedOptions {
-  const options: Record<string, ChartTypeOptionDefinition> = {}
-  const defaults: Record<string, unknown> = {}
+  const options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>> = {}
   for (const set of sets) {
     Object.assign(options, set.options)
-    Object.assign(defaults, set.defaults)
   }
-  return { options, defaults }
+  return { options }
 }

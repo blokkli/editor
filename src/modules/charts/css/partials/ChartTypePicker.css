@@ -1,26 +1,31 @@
 .bk {
   .bk-chart-type-picker {
-    @apply flex gap-5;
+    @apply flex flex-1;
 
     button {
-      @apply flex-1;
-      @apply flex items-center gap-5 px-10;
-      @apply h-[46px];
-      @apply border border-mono-400 rounded-md bg-transparent cursor-pointer;
-      @apply text-base text-mono-500 leading-none;
-      @apply hover:border-mono-500 hover:text-mono-700 hover:bg-mono-100;
-      @apply font-medium;
-
+      @apply h-50 flex items-center text-mono-300 px-15 flex-1 justify-center;
+      > div {
+        @apply flex items-center gap-8;
+        @apply text-base;
+        @apply rounded-full px-10 py-3;
+      }
+      &:hover {
+        > div {
+          @apply bg-mono-700 text-mono-50;
+        }
+      }
       .bk-icon {
-        @apply size-25;
+        @apply size-20;
         svg {
           @apply fill-current;
         }
       }
 
       &.is-active {
-        @apply font-bold;
-        @apply bg-accent-600 text-white border-accent-600;
+        > div {
+          @apply bg-white text-mono-950;
+          @apply font-semibold;
+        }
       }
     }
   }

@@ -20,7 +20,6 @@ export default defineChartType(($t) => {
     hasMultipleSeries: true,
     hasSeriesColors: false,
     hasCategoryColors: false,
-    optionDefaults: { ...shared.defaults },
     buildChartOptions(ctx) {
       return {
         dataLabels: { enabled: true },
