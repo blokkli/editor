@@ -91,37 +91,65 @@ export function buildBlockOptionsMap(
     )
     const currentValue = getRuntimeOptionValue(opt.option, rawValue)
 
-    const entry: BlockOptionsMap[string] = {
-      type: opt.option.type,
-      label: opt.option.label,
-      currentValue,
-    }
-
-    if (opt.option.description) {
-      entry.description = opt.option.description
-    }
-
-    const labels = extractOptionLabels(opt.option)
-    if (labels) {
-      entry.options = labels
-    }
-
-    if ('min' in opt.option) {
-      entry.min = opt.option.min
-    }
-
-    if ('max' in opt.option) {
-      entry.max = opt.option.max
-    }
-
-    if ('step' in opt.option && opt.option.type === 'range') {
-      entry.step = opt.option.step
-    }
-
-    result[opt.property] = entry
+    result[opt.property] = buildBlockOptionEntry(opt.option, currentValue)
   }
 
   return result
+}
+
+/**
+ * Build a block options map from option definitions, using defaults as current values.
+ */
+export function buildBlockOptionsMapFromDefinitions(
+  options: Record<string, Record<string, unknown>>,
+): BlockOptionsMap {
+  const result: BlockOptionsMap = {}
+
+  for (const [key, opt] of Object.entries(options)) {
+    result[key] = buildBlockOptionEntry(
+      opt,
+      opt.default as string | boolean | number | string[],
+    )
+  }
+
+  return result
+}
+
+/**
+ * Build a single block option entry from an option definition and a current value.
+ */
+function buildBlockOptionEntry(
+  opt: Record<string, unknown>,
+  currentValue: string | boolean | number | string[],
+): BlockOptionsMap[string] {
+  const entry: BlockOptionsMap[string] = {
+    type: opt.type as string,
+    label: opt.label as string,
+    currentValue,
+  }
+
+  if (opt.description) {
+    entry.description = opt.description as string
+  }
+
+  const labels = extractOptionLabels(opt)
+  if (labels) {
+    entry.options = labels
+  }
+
+  if ('min' in opt) {
+    entry.min = opt.min as number | string
+  }
+
+  if ('max' in opt) {
+    entry.max = opt.max as number | string
+  }
+
+  if ('step' in opt && opt.type === 'range') {
+    entry.step = opt.step as number
+  }
+
+  return entry
 }
 
 /**

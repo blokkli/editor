@@ -203,6 +203,14 @@
     "source": "Connecting...",
     "translation": ""
   },
+  "aiAgentCreateChartDone": {
+    "source": "Added chart",
+    "translation": ""
+  },
+  "aiAgentCreateChartRunning": {
+    "source": "Creating chart...",
+    "translation": ""
+  },
   "aiAgentCreatePlan": {
     "source": "Plan: @label",
     "translation": ""
@@ -345,6 +353,18 @@
   },
   "aiAgentGetBundleInfoRunning": {
     "source": "Getting bundle info...",
+    "translation": ""
+  },
+  "aiAgentGetChartDataDone": {
+    "source": "Got chart data",
+    "translation": ""
+  },
+  "aiAgentGetChartDataRunning": {
+    "source": "Getting chart data...",
+    "translation": ""
+  },
+  "aiAgentGetChartTypeOptionsRunning": {
+    "source": "Getting chart options...",
     "translation": ""
   },
   "aiAgentGetChildBlocks": {
@@ -617,6 +637,14 @@
   },
   "aiAgentUnknownMessage": {
     "source": "Unknown message type",
+    "translation": ""
+  },
+  "aiAgentUpdateChartDone": {
+    "source": "Updated chart",
+    "translation": ""
+  },
+  "aiAgentUpdateChartRunning": {
+    "source": "Updating chart...",
     "translation": ""
   },
   "aiAgentUpdateOptionsOnBlockDone": {
@@ -979,10 +1007,6 @@
     "source": "Small",
     "translation": "Piccolo"
   },
-  "chartsChartType": {
-    "source": "Chart Type",
-    "translation": ""
-  },
   "chartsData": {
     "source": "Data",
     "translation": ""
@@ -1015,14 +1039,6 @@
     "source": "Grid lines",
     "translation": "Linee griglia"
   },
-  "chartsGroupDisplay": {
-    "source": "Display",
-    "translation": "Visualizzazione"
-  },
-  "chartsGroupLabels": {
-    "source": "Labels",
-    "translation": "Etichette"
-  },
   "chartsImportCsv": {
     "source": "Import CSV",
     "translation": ""
@@ -1050,6 +1066,14 @@
   "chartsOpacityTransparent": {
     "source": "Transparent",
     "translation": "Trasparente"
+  },
+  "chartsOptionGroupDisplay": {
+    "source": "Display",
+    "translation": ""
+  },
+  "chartsOptionGroupLabels": {
+    "source": "Labels",
+    "translation": ""
   },
   "chartsPieShowLabels": {
     "source": "Show labels",
@@ -1117,10 +1141,6 @@
   },
   "chartsTitle": {
     "source": "Title",
-    "translation": ""
-  },
-  "chartsTitlePlaceholder": {
-    "source": "Chart title (optional)",
     "translation": ""
   },
   "chartsTypeArea": {

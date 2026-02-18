@@ -49,10 +49,6 @@ const element = computed(() => {
 const isLoading = ref(false)
 const editorRef = useTemplateRef('editorRef')
 
-function onCancel() {
-  uuid.value = null
-}
-
 async function onSubmit() {
   if (!uuid.value || !editorRef.value) return
   const chartData = editorRef.value.getData()

@@ -120,12 +120,18 @@ const label = computed(() =>
   $blokkliText(`blockOption_${props.property}_label`, props.option.label),
 )
 
-const description = computed(() =>
-  $blokkliText(
-    `blockOption_${props.property}_description`,
-    props.option.description,
-  ),
-)
+const description = computed<string | null>(() => {
+  if (!props.option.description) {
+    return null
+  }
+  const key = `blockOption_${props.property}_description`
+  const translation = $blokkliText(key, props.option.description)
+  if (key === translation) {
+    return null
+  }
+
+  return translation
+})
 
 const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
   if (props.option.type !== 'checkboxes') {

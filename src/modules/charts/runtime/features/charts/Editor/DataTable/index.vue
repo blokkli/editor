@@ -204,8 +204,9 @@ function onTableKeydown(e: KeyboardEvent) {
   // Enter in navigation mode: enter edit mode (place cursor at end).
   if (key === 'Enter' && !editing.value && !e.shiftKey) {
     editing.value = true
-    const len = active.value.length
-    ;(active as HTMLInputElement).setSelectionRange(len, len)
+    const input = active as HTMLInputElement
+    const len = input.value.length
+    input.setSelectionRange(len, len)
     e.preventDefault()
     return
   }

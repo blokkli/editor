@@ -1300,8 +1300,9 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
     },
 
-    fragmentsAddBlock(e) {
-      return addMutation('add', {
+    async fragmentsAddBlock(e) {
+      const blockUuid = e.options ? crypto.randomUUID() : undefined
+      const result = await addMutation('add', {
         bundle: 'blokkli_fragment',
         values: {
           name: [e.name],
@@ -1310,7 +1311,17 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostEntityUuid: e.host.uuid,
         hostField: e.host.fieldName,
         preceedingUuid: e.preceedingUuid ?? null,
+        blockUuid,
       })
+      if (e.options && blockUuid) {
+        const options = Object.entries(e.options).map(([key, value]) => ({
+          uuid: blockUuid,
+          key,
+          value,
+        }))
+        return addMutation('update_options', { options })
+      }
+      return result
     },
 
     getEditableFieldConfig() {

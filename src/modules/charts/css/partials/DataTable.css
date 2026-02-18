@@ -2,6 +2,10 @@
   .bk-chart-data-table {
     @apply border-collapse w-full;
 
+    .bk-dropdown-menu-trigger {
+      @apply size-40 flex items-center justify-center hover:bg-mono-200;
+    }
+
     .bk-dropdown-menu {
       @apply relative;
     }
@@ -69,10 +73,6 @@
 
   .bk-chart-data-table-file-input {
     @apply sr-only;
-  }
-
-  .bk-dropdown-menu-trigger {
-    @apply size-40 flex items-center justify-center hover:bg-mono-200;
   }
 
   .bk-chart-data-table-category-cell {

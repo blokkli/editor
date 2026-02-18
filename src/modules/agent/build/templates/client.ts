@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../../../../build/templates/defineTemplate'
 import type { AgentCollector } from '../AgentCollector'
-import type { AgentModelDefinition } from '../types'
+import type { AgentModuleOptions } from '../types'
 
 /**
  * Creates the client template that imports all tool and prompt files and exports them as arrays.
@@ -8,9 +8,7 @@ import type { AgentModelDefinition } from '../types'
 export default function (
   toolCollector: AgentCollector,
   promptCollector: AgentCollector,
-  defaultPrompts: string[],
-  models: AgentModelDefinition[],
-  agentName: string,
+  options: AgentModuleOptions,
 ) {
   return defineCodeTemplate(
     'agent-client',
@@ -51,13 +49,19 @@ export default function (
 
       // Default prompts
       exports.push(
-        `export const defaultPrompts = ${JSON.stringify(defaultPrompts)}`,
+        `export const defaultPrompts = ${JSON.stringify(options.defaultPrompts ?? [])}`,
       )
 
       // Models
-      exports.push(`export const models = ${JSON.stringify(models)}`)
+      exports.push(`export const models = ${JSON.stringify(options.models)}`)
 
-      exports.push(`export const agentName = ${JSON.stringify(agentName)}`)
+      exports.push(
+        `export const agentName = ${JSON.stringify(options.agentName ?? 'Blocki')}`,
+      )
+
+      exports.push(
+        `export const hasWebFetch = ${JSON.stringify(!!options.allowedFetchOrigins)}`,
+      )
 
       const parts: string[] = []
       if (imports.length > 0) {
@@ -76,6 +80,7 @@ export const agentPrompts: AgentPromptItem[]
 export const defaultPrompts: string[]
 export const agentName: string
 export const models: AgentModelDefinition[]
+export const hasWebFetch: boolean
 `
     },
   )

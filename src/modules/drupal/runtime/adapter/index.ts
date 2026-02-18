@@ -918,15 +918,18 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasMutation('pbAddFragmentParagraph')) {
-      adapter.fragmentsAddBlock = (e) =>
-        useGraphqlMutation('pbAddFragmentParagraph', {
+      adapter.fragmentsAddBlock = (e) => {
+        const options = e.options ? JSON.stringify(e.options) : undefined
+        return useGraphqlMutation('pbAddFragmentParagraph', {
           ...ctx.value,
           hostType: e.host.type,
           hostFieldName: e.host.fieldName,
           hostUuid: e.host.uuid,
           afterUuid: e.preceedingUuid,
           name: e.name,
+          options,
         }).then(mapMutation)
+      }
     }
 
     if (hasMutation('pbReplaceMedia')) {

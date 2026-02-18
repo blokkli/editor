@@ -211,6 +211,14 @@ msgctxt "aiAgentConnecting"
 msgid "Connecting..."
 msgstr ""
 
+msgctxt "aiAgentCreateChartDone"
+msgid "Added chart"
+msgstr ""
+
+msgctxt "aiAgentCreateChartRunning"
+msgid "Creating chart..."
+msgstr ""
+
 msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr ""
@@ -353,6 +361,18 @@ msgstr ""
 
 msgctxt "aiAgentGetBundleInfoRunning"
 msgid "Getting bundle info..."
+msgstr ""
+
+msgctxt "aiAgentGetChartDataDone"
+msgid "Got chart data"
+msgstr ""
+
+msgctxt "aiAgentGetChartDataRunning"
+msgid "Getting chart data..."
+msgstr ""
+
+msgctxt "aiAgentGetChartTypeOptionsRunning"
+msgid "Getting chart options..."
 msgstr ""
 
 msgctxt "aiAgentGetChildBlocks"
@@ -625,6 +645,14 @@ msgstr ""
 
 msgctxt "aiAgentUnknownMessage"
 msgid "Unknown message type"
+msgstr ""
+
+msgctxt "aiAgentUpdateChartDone"
+msgid "Updated chart"
+msgstr ""
+
+msgctxt "aiAgentUpdateChartRunning"
+msgid "Updating chart..."
 msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
@@ -993,10 +1021,6 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Piccolo"
 
-msgctxt "chartsChartType"
-msgid "Chart Type"
-msgstr ""
-
 msgctxt "chartsData"
 msgid "Data"
 msgstr ""
@@ -1029,14 +1053,6 @@ msgctxt "chartsGridLines"
 msgid "Grid lines"
 msgstr "Linee griglia"
 
-msgctxt "chartsGroupDisplay"
-msgid "Display"
-msgstr "Visualizzazione"
-
-msgctxt "chartsGroupLabels"
-msgid "Labels"
-msgstr "Etichette"
-
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr ""
@@ -1064,6 +1080,14 @@ msgstr "Solido"
 msgctxt "chartsOpacityTransparent"
 msgid "Transparent"
 msgstr "Trasparente"
+
+msgctxt "chartsOptionGroupDisplay"
+msgid "Display"
+msgstr ""
+
+msgctxt "chartsOptionGroupLabels"
+msgid "Labels"
+msgstr ""
 
 msgctxt "chartsPieShowLabels"
 msgid "Show labels"
@@ -1131,10 +1155,6 @@ msgstr "Spessore linea"
 
 msgctxt "chartsTitle"
 msgid "Title"
-msgstr ""
-
-msgctxt "chartsTitlePlaceholder"
-msgid "Chart title (optional)"
 msgstr ""
 
 msgctxt "chartsTypeArea"

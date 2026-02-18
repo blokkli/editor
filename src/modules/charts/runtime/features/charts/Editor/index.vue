@@ -114,10 +114,12 @@ const props = defineProps<{
 const { $t, state } = useBlokkli()
 
 function getCurrentData(): BlokkliChartData {
-  const options = state.getFieldListItem(props.uuid)?.options
-  if (options?.data) {
+  const rawData =
+    state.mutatedOptions[props.uuid]?.data ||
+    state.getFieldListItem(props.uuid)?.options?.data
+  if (rawData) {
     try {
-      const parsed = JSON.parse(options.data)
+      const parsed = JSON.parse(rawData)
       if (parsed && Array.isArray(parsed.series) && parsed.series.length > 0) {
         const fallbackId = getFirstColorId(COLORS)
         for (const series of parsed.series) {
@@ -214,7 +216,7 @@ const caps = computed(() => {
 })
 
 const typeOptionsCache: Record<string, unknown> = {
-  ...(data.value.typeOptions || {}),
+  ...data.value.typeOptions,
 }
 
 watch(

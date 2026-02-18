@@ -4,6 +4,7 @@ export type AdapterFragmentsAddBlock = {
   name: string
   host: BlokkliItemHost
   preceedingUuid: string | null
+  options?: Record<string, string>
 }
 
 declare module '#blokkli/editor/adapter' {

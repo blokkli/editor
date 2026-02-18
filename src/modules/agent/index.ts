@@ -69,6 +69,9 @@ export default defineNuxtConfig({
       moduleResolver.resolve('./runtime/server'),
     )
 
+    // Additional blokkli/ directories registered by other modules.
+    const moduleBlokkliDirs = ctx.helper.options.blokkliDirs || []
+
     // Initialize MCP tools collector with both module and project directories
     const moduleToolsDir = moduleResolver.resolve('./runtime/app/tools')
     const projectToolsDir = path.resolve(nuxt.options.rootDir, 'blokkli/tools')
@@ -76,9 +79,12 @@ export default defineNuxtConfig({
       composable: 'defineBlokkliAgentTool',
       importPrefix: 'tool',
       dependency: 'agent-mcp-tools',
-      dirs: [moduleToolsDir, projectToolsDir],
+      dirs: [
+        moduleToolsDir,
+        projectToolsDir,
+        ...moduleBlokkliDirs.map((d) => path.join(d, 'tools')),
+      ],
     })
-    await mcpTools.init()
     ctx.context.addCollector(mcpTools)
 
     // Initialize prompts collector with project directory
@@ -90,20 +96,16 @@ export default defineNuxtConfig({
       composable: 'defineBlokkliAgentPrompt',
       importPrefix: 'prompt',
       dependency: 'agent-prompts',
-      dirs: [projectPromptsDir],
+      dirs: [
+        projectPromptsDir,
+        ...moduleBlokkliDirs.map((d) => path.join(d, 'prompts')),
+      ],
     })
-    await promptsCollector.init()
     ctx.context.addCollector(promptsCollector)
 
     // Register client template for MCP tools and prompts
     ctx.context.addTemplate(
-      createClientTemplate(
-        mcpTools,
-        promptsCollector,
-        options.defaultPrompts || [],
-        options.models,
-        options.agentName ?? 'Blocki',
-      ),
+      createClientTemplate(mcpTools, promptsCollector, options),
     )
 
     // Add project tools directory to app TypeScript includes (client-side code)
@@ -122,6 +124,13 @@ export default defineNuxtConfig({
     )
     nuxt.options.typescript.tsConfig.include.push(relativePromptsDir)
 
+    // Add module blokkli tools directories to app TypeScript includes
+    for (const dir of moduleBlokkliDirs) {
+      const toolsDir = path.join(dir, 'tools')
+      const relDir = path.relative(nuxt.options.buildDir, toolsDir)
+      nuxt.options.typescript.tsConfig.include.push(relDir)
+    }
+
     // Initialize skills collector with both module and project directories
     const moduleSkillsDir = moduleResolver.resolve(
       './runtime/server/default-skills',
@@ -135,9 +144,12 @@ export default defineNuxtConfig({
       composable: 'defineBlokkliAgentSkill',
       importPrefix: 'skill',
       dependency: 'agent-server',
-      dirs: [moduleSkillsDir, projectSkillsDir],
+      dirs: [
+        moduleSkillsDir,
+        projectSkillsDir,
+        ...moduleBlokkliDirs.map((d) => path.join(d, 'skills')),
+      ],
     })
-    await skillsCollector.init()
     ctx.context.addCollector(skillsCollector)
 
     // Initialize system prompt collector with both module and project directories
@@ -153,9 +165,12 @@ export default defineNuxtConfig({
       composable: 'defineBlokkliAgentSystemPrompt',
       importPrefix: 'systemPrompt',
       dependency: 'agent-server',
-      dirs: [moduleSystemPromptsDir, projectSystemPromptsDir],
+      dirs: [
+        moduleSystemPromptsDir,
+        projectSystemPromptsDir,
+        ...moduleBlokkliDirs.map((d) => path.join(d, 'system-prompts')),
+      ],
     })
-    await systemPromptCollector.init()
     ctx.context.addCollector(systemPromptCollector)
 
     // Register single server template for agent config, skills, and system prompts

@@ -30,6 +30,7 @@ import definitionProvider from '#blokkli/editor/providers/definition'
 import { addElementClasses } from '#blokkli/editor/composables'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
 import type { MutatedField } from '../types/state'
+import type { ValidProviderTypes } from '#blokkli-build/generated-types'
 
 const props = defineProps<{
   entity?: T
@@ -37,6 +38,7 @@ const props = defineProps<{
   entityUuid: string
   entityBundle: string
   language: string
+  providerType: ValidProviderTypes
 }>()
 
 defineSlots<{
@@ -54,7 +56,7 @@ const context = computed<AdapterContext>(() => {
 const adapter = await getAdapter(context)
 const router = useRouter()
 const broadcast = broadcastProvider()
-const definitions = definitionProvider()
+const definitions = definitionProvider(props.providerType)
 
 let timeout: any = null
 let lastChanged: number = 0

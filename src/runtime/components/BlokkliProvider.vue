@@ -15,6 +15,7 @@
         :entity-uuid
         :entity-bundle
         :language
+        :provider-type
       >
         <slot
           :entity="mutatedEntity"

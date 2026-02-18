@@ -89,13 +89,23 @@ const ungroupedOptions = computed(() =>
   allOptions.value.filter((v) => !v.option.group),
 )
 
+function getGroupLabel(group: string): string {
+  if (group === 'display') {
+    return $t('chartsOptionGroupDisplay', 'Display')
+  } else if (group === 'labels') {
+    return $t('chartsOptionGroupLabels', 'Labels')
+  }
+
+  return group
+}
+
 const groups = computed<OptionGroup[]>(() => {
   return Object.values(
     allOptions.value.reduce<Record<string, OptionGroup>>((acc, entry) => {
       if (entry.option.group) {
         if (!acc[entry.option.group]) {
           acc[entry.option.group] = {
-            label: entry.option.group,
+            label: getGroupLabel(entry.option.group),
             options: [entry],
           }
         } else {

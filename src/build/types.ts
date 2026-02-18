@@ -49,6 +49,18 @@ type ModuleOptionsStorageDefaults = {
  */
 export type ModuleOptions = {
   /**
+   * Additional blokkli/ directories provided by modules.
+   *
+   * These follow the same structure as <rootDir>/blokkli/ (tools/, skills/,
+   * prompts/, system-prompts/) and are scanned by collectors that support it.
+   *
+   * Modules should push to this array during alterOptions.
+   *
+   * @internal
+   */
+  blokkliDirs?: string[]
+
+  /**
    * An array of blökkli modules to use.
    */
   modules?: BlokkliModule<any>[]

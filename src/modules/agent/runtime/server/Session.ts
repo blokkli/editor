@@ -385,6 +385,11 @@ export class Session {
     let streamRetryCount = 0
     const MAX_STREAM_RETRIES = 1
 
+    // Track consecutive identical tool calls to detect loops
+    let lastToolCallKey = ''
+    let consecutiveIdenticalCalls = 0
+    const MAX_IDENTICAL_CALLS = 2
+
     try {
       while (true) {
         // Check for abort
@@ -552,6 +557,29 @@ export class Session {
                     name: currentToolUse.name,
                     input,
                   })
+
+                  // Detect repeated identical tool calls (same name + input).
+                  const toolCallKey =
+                    currentToolUse.name + ':' + currentToolUse.inputJson
+                  if (toolCallKey === lastToolCallKey) {
+                    consecutiveIdenticalCalls++
+                  } else {
+                    lastToolCallKey = toolCallKey
+                    consecutiveIdenticalCalls = 1
+                  }
+
+                  if (consecutiveIdenticalCalls > MAX_IDENTICAL_CALLS) {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: currentToolUse.id,
+                      content: JSON.stringify({
+                        error: `You have called "${currentToolUse.name}" ${consecutiveIdenticalCalls} times in a row with identical parameters and received the same result each time. Stop repeating this call. Use the information you already have or try a different approach.`,
+                      }),
+                      is_error: true,
+                    })
+                    currentToolUse = null
+                    break
+                  }
 
                   // Check if this is a server-side tool
                   const matchedServerTool = serverTools.find(

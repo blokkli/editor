@@ -6,6 +6,7 @@ import {
   buildBlockOptionsMap,
 } from '../schemas'
 import { getAvailableOptions } from '#blokkli/editor/helpers/options'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
@@ -119,6 +120,10 @@ const resultSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
   bundle: z.string().describe('The paragraph type'),
   label: z.string().describe('Human-readable paragraph label'),
+  fragmentName: z
+    .string()
+    .optional()
+    .describe('The fragment name, if this paragraph is a fragment block'),
   nestingLevel: z.number().describe('Nesting depth (0 = root level)'),
   parent: parentSchema
     .nullable()
@@ -206,6 +211,10 @@ export default defineBlokkliAgentTool({
       label: bundleLabel,
       nestingLevel: state.getNestingLevel(params.uuid),
       parent,
+    }
+
+    if (block.bundle === fragmentBlockBundle && block.fragment?.name) {
+      result.fragmentName = block.fragment.name
     }
 
     // Build parent chain (ancestor blocks)

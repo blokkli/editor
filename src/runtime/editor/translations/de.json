@@ -203,6 +203,14 @@
     "source": "Connecting...",
     "translation": "Verbinden..."
   },
+  "aiAgentCreateChartDone": {
+    "source": "Added chart",
+    "translation": "Diagramm hinzugefügt"
+  },
+  "aiAgentCreateChartRunning": {
+    "source": "Creating chart...",
+    "translation": "Diagramm wird erstellt..."
+  },
   "aiAgentCreatePlan": {
     "source": "Plan: @label",
     "translation": "Plan: @label"
@@ -346,6 +354,18 @@
   "aiAgentGetBundleInfoRunning": {
     "source": "Getting bundle info...",
     "translation": "Bundle-Info abrufen..."
+  },
+  "aiAgentGetChartDataDone": {
+    "source": "Got chart data",
+    "translation": "Diagrammdaten geladen"
+  },
+  "aiAgentGetChartDataRunning": {
+    "source": "Getting chart data...",
+    "translation": "Diagrammdaten werden geladen..."
+  },
+  "aiAgentGetChartTypeOptionsRunning": {
+    "source": "Getting chart options...",
+    "translation": "Diagrammoptionen werden geladen..."
   },
   "aiAgentGetChildBlocks": {
     "source": "Get child blocks",
@@ -618,6 +638,14 @@
   "aiAgentUnknownMessage": {
     "source": "Unknown message type",
     "translation": "Unbekannter Nachrichtentyp"
+  },
+  "aiAgentUpdateChartDone": {
+    "source": "Updated chart",
+    "translation": "Diagramm aktualisiert"
+  },
+  "aiAgentUpdateChartRunning": {
+    "source": "Updating chart...",
+    "translation": "Diagramm wird aktualisiert..."
   },
   "aiAgentUpdateOptionsOnBlockDone": {
     "source": "Updated @count option(s) on block",
@@ -979,10 +1007,6 @@
     "source": "Small",
     "translation": "Klein"
   },
-  "chartsChartType": {
-    "source": "Chart Type",
-    "translation": "Diagrammtyp"
-  },
   "chartsData": {
     "source": "Data",
     "translation": "Daten"
@@ -1015,14 +1039,6 @@
     "source": "Grid lines",
     "translation": "Rasterlinien"
   },
-  "chartsGroupDisplay": {
-    "source": "Display",
-    "translation": "Darstellung"
-  },
-  "chartsGroupLabels": {
-    "source": "Labels",
-    "translation": "Beschriftungen"
-  },
   "chartsImportCsv": {
     "source": "Import CSV",
     "translation": "CSV importieren"
@@ -1050,6 +1066,14 @@
   "chartsOpacityTransparent": {
     "source": "Transparent",
     "translation": "Transparent"
+  },
+  "chartsOptionGroupDisplay": {
+    "source": "Display",
+    "translation": "Darstellung"
+  },
+  "chartsOptionGroupLabels": {
+    "source": "Labels",
+    "translation": "Beschriftungen"
   },
   "chartsPieShowLabels": {
     "source": "Show labels",
@@ -1118,10 +1142,6 @@
   "chartsTitle": {
     "source": "Title",
     "translation": "Titel"
-  },
-  "chartsTitlePlaceholder": {
-    "source": "Chart title (optional)",
-    "translation": "Diagrammtitel (optional)"
   },
   "chartsTypeArea": {
     "source": "Area",

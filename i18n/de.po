@@ -216,6 +216,14 @@ msgctxt "aiAgentConnecting"
 msgid "Connecting..."
 msgstr "Verbinden..."
 
+msgctxt "aiAgentCreateChartDone"
+msgid "Added chart"
+msgstr "Diagramm hinzugefügt"
+
+msgctxt "aiAgentCreateChartRunning"
+msgid "Creating chart..."
+msgstr "Diagramm wird erstellt..."
+
 msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr "Plan: @label"
@@ -367,6 +375,18 @@ msgstr "Bundle-Info für @field abgerufen"
 msgctxt "aiAgentGetBundleInfoRunning"
 msgid "Getting bundle info..."
 msgstr "Bundle-Info abrufen..."
+
+msgctxt "aiAgentGetChartDataDone"
+msgid "Got chart data"
+msgstr "Diagrammdaten geladen"
+
+msgctxt "aiAgentGetChartDataRunning"
+msgid "Getting chart data..."
+msgstr "Diagrammdaten werden geladen..."
+
+msgctxt "aiAgentGetChartTypeOptionsRunning"
+msgid "Getting chart options..."
+msgstr "Diagrammoptionen werden geladen..."
 
 msgctxt "aiAgentGetChildBlocks"
 msgid "Get child blocks"
@@ -639,6 +659,14 @@ msgstr "@count Änderungen rückgängig gemacht"
 msgctxt "aiAgentUnknownMessage"
 msgid "Unknown message type"
 msgstr "Unbekannter Nachrichtentyp"
+
+msgctxt "aiAgentUpdateChartDone"
+msgid "Updated chart"
+msgstr "Diagramm aktualisiert"
+
+msgctxt "aiAgentUpdateChartRunning"
+msgid "Updating chart..."
+msgstr "Diagramm wird aktualisiert..."
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
 msgid "Updated @count option(s) on block"
@@ -1015,10 +1043,6 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Klein"
 
-msgctxt "chartsChartType"
-msgid "Chart Type"
-msgstr "Diagrammtyp"
-
 msgctxt "chartsData"
 msgid "Data"
 msgstr "Daten"
@@ -1051,14 +1075,6 @@ msgctxt "chartsGridLines"
 msgid "Grid lines"
 msgstr "Rasterlinien"
 
-msgctxt "chartsGroupDisplay"
-msgid "Display"
-msgstr "Darstellung"
-
-msgctxt "chartsGroupLabels"
-msgid "Labels"
-msgstr "Beschriftungen"
-
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr "CSV importieren"
@@ -1086,6 +1102,14 @@ msgstr "Deckend"
 msgctxt "chartsOpacityTransparent"
 msgid "Transparent"
 msgstr "Transparent"
+
+msgctxt "chartsOptionGroupDisplay"
+msgid "Display"
+msgstr "Darstellung"
+
+msgctxt "chartsOptionGroupLabels"
+msgid "Labels"
+msgstr "Beschriftungen"
 
 msgctxt "chartsPieShowLabels"
 msgid "Show labels"
@@ -1154,10 +1178,6 @@ msgstr "Linienstärke"
 msgctxt "chartsTitle"
 msgid "Title"
 msgstr "Titel"
-
-msgctxt "chartsTitlePlaceholder"
-msgid "Chart title (optional)"
-msgstr "Diagrammtitel (optional)"
 
 msgctxt "chartsTypeArea"
 msgid "Area"

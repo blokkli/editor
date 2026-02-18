@@ -70,6 +70,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         include: [
           '../src/modules/agent/runtime/server/**/*',
           '../src/modules/agent/runtime/shared/**/*',
+          '../src/modules/charts/runtime/blokkli/skills/**/*',
         ],
       },
     },
@@ -87,6 +88,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../dist',
         '../app',
         '../src/modules/agent/runtime/server/**/*',
+        '../src/modules/charts/runtime/blokkli/skills/**/*',
       ],
       include: [
         '../src/runtime/components/**/*',
@@ -100,7 +102,12 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/agent/runtime/app/**/*',
         '../src/modules/agent/runtime/shared/**/*',
         '../src/modules/table-of-contents/runtime/**/*',
-        '../src/modules/charts/runtime/**/*',
+        '../src/modules/charts/runtime/blokkli/tools/**/*',
+        '../src/modules/charts/runtime/chartTypes/**/*',
+        '../src/modules/charts/runtime/components/**/*',
+        '../src/modules/charts/runtime/features/**/*',
+        '../src/modules/charts/runtime/helpers/**/*',
+        '../src/modules/charts/runtime/types.ts',
       ],
     },
     nodeTsConfig: {

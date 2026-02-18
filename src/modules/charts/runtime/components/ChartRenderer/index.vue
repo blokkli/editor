@@ -109,7 +109,7 @@ const chartOptions = computed(() => {
     categoryColors: resolvedColors.value,
     typeOptions: {
       ...getDefaultTypeOptions(props.type),
-      ...(props.typeOptions || {}),
+      ...props.typeOptions,
     },
   }
 
@@ -133,7 +133,7 @@ const chartSeries = computed(() => {
     categoryColors: resolvedColors.value,
     typeOptions: {
       ...getDefaultTypeOptions(props.type),
-      ...(props.typeOptions || {}),
+      ...props.typeOptions,
     },
   }
 

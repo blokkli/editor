@@ -61,14 +61,12 @@ const checked = computed<string[]>({
     return props.modelValue || []
   },
   set(newValue: string[]) {
-    const sorted = newValue
-      .filter(Boolean)
-      .sort((a, b) => {
-        // Sort the options keys as defined in the definition.
-        // That way we can prevent persisting changes if only the order of
-        // the keys would change.
-        return optionOrder.value.indexOf(a) - optionOrder.value.indexOf(b)
-      })
+    const sorted = newValue.filter(Boolean).sort((a, b) => {
+      // Sort the options keys as defined in the definition.
+      // That way we can prevent persisting changes if only the order of
+      // the keys would change.
+      return optionOrder.value.indexOf(a) - optionOrder.value.indexOf(b)
+    })
     emit('update:modelValue', sorted)
   },
 })
