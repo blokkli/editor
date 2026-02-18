@@ -1,5 +1,6 @@
 import {
   defineBlokkliEditAdapter,
+  type BlokkliAdapterFactory,
   type FullBlokkliAdapter,
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
@@ -1493,4 +1494,4 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     return adapter
   },
-)
+) as BlokkliAdapterFactory<ParagraphsBlokkliEditStateFragment>
