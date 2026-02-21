@@ -16,6 +16,60 @@
   }
 }
 
+.bk.bk-clipboard-dragging {
+  grid-area: viewport;
+  @apply bg-mono-900/95 pointer-events-auto;
+  @apply flex items-center justify-center;
+
+  .bk-item-icon {
+    @apply -rotate-6;
+    /* --bk-item-icon-outline: 20px; */
+    --bk-item-icon-size: 200px;
+    --bk-item-icon-radius-base: 30px;
+    border-width: 3px;
+    box-shadow: 0 2px 2px 2px var(--bk-item-icon-shadow-color);
+
+    svg {
+      filter: drop-shadow(0px -3px 0px var(--bk-item-icon-shadow-color));
+    }
+  }
+
+  .bk-clipboard-dragging-content {
+    @apply flex flex-col items-center gap-40;
+    @apply text-mono-100;
+
+    span {
+      @apply font-bold text-2xl font-sans;
+    }
+  }
+
+  &.bk-clipboard-drag-enter-from,
+  &.bk-clipboard-drag-leave-to {
+    opacity: 0;
+
+    .bk-clipboard-dragging-content {
+      transform: translateY(40px);
+    }
+  }
+
+  &.bk-clipboard-drag-enter-active,
+  &.bk-clipboard-drag-leave-active {
+    @apply transition duration-200 ease-swing;
+    .bk-clipboard-dragging-content {
+      @apply transition duration-200 ease-swing;
+    }
+  }
+
+  &.bk-clipboard-drag-enter-to,
+  &.bk-clipboard-drag-leave-from {
+    opacity: 1;
+
+    .bk-clipboard-dragging-content {
+      transform: translateY(0);
+    }
+  }
+}
+
 .bk-dragging-overlay .bk-clipboard-list-item {
   @apply rounded-lg overflow-hidden bg-mono-50;
 }

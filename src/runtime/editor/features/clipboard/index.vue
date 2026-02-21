@@ -63,6 +63,8 @@
       </div>
     </div>
   </PluginSidebar>
+
+  <DragIndicator @drop="onDrop" />
 </template>
 
 <script lang="ts" setup>
@@ -75,8 +77,10 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
+
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import ClipboardList from './List/index.vue'
+import DragIndicator from './DragIndicator/index.vue'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import { Icon } from '#blokkli/editor/components'
@@ -291,15 +295,18 @@ function handleFiles(data: DataTransfer | FileList) {
   })
 }
 
-function onDrop(e: DragEvent) {
-  e.preventDefault()
-  if (e.dataTransfer?.files.length) {
-    handleFiles(e.dataTransfer)
+function onDrop(data: DataTransfer) {
+  if (data.files.length) {
+    handleFiles(data)
+  } else {
+    const text =
+      data.getData('text/html') ||
+      data.getData('text/plain') ||
+      data.getData('text')
+    if (text) {
+      handlePastedText(text)
+    }
   }
-}
-
-function onDragOver(e: DragEvent) {
-  e.preventDefault()
 }
 
 const showClipboardSidebar = () => {
@@ -735,14 +742,10 @@ onBlokkliEvent('drop:clipboardItem', async (data) => {
 
 onMounted(() => {
   document.addEventListener('paste', onPaste)
-  document.body.addEventListener('drop', onDrop)
-  document.addEventListener('dragover', onDragOver)
 })
 
 onUnmounted(() => {
   document.removeEventListener('paste', onPaste)
-  document.body.removeEventListener('drop', onDrop)
-  document.removeEventListener('dragover', onDragOver)
 })
 </script>
 

@@ -995,6 +995,10 @@ export default defineBlokkliEditAdapter((ctx) => {
         return 'video'
       } else if (e.type === 'plaintext') {
         return 'text'
+      } else if (e.type === 'image') {
+        return 'image'
+      } else if (e.type === 'file') {
+        return 'text'
       }
     },
 
