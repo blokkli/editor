@@ -1,9 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  blockOptionsMapSchema,
-  buildBlockOptionsMapFromDefinitions,
-} from '#blokkli/agent/app/tools/schemas'
+import { blockOptionsMapSchema } from '#blokkli/agent/app/tools/schemas'
+import { buildBlockOptionsMapFromDefinitions } from '#blokkli/agent/app/tools/helpers'
 import { getChartTypeRuntime } from '../../../chartTypes'
 import { chartTypeEnum } from '../chart_schemas'
 

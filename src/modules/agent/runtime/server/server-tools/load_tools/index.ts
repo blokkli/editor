@@ -26,7 +26,7 @@ export default defineServerSideTool({
     const loaded: string[] = []
 
     for (const name of input.tools) {
-      if (ctx.lazyTools.some((t) => t.name === name)) {
+      if (ctx.lazyToolNames.includes(name)) {
         ctx.activatedLazyTools.add(name)
         loaded.push(name)
       }

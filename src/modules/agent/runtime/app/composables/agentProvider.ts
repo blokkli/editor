@@ -25,7 +25,7 @@ import {
   createToolMap,
   executeTool,
   getToolCategory,
-  getToolsForServer,
+  getToolInfoForServer,
   getToolDefinition,
   isMutationAction,
   isQueryResult,
@@ -140,7 +140,7 @@ export default function (
     attachments?: Attachment[]
   } | null = null
   let pendingInit: {
-    tools: ReturnType<typeof getToolsForServer>
+    toolNames: string[]
     pageContext: PageContext
   } | null = null
 
@@ -463,6 +463,22 @@ export default function (
     const resolved = await resolveTools(mcpTools, ctx)
     toolMap = createToolMap(resolved)
 
+    const toolNames = getToolInfoForServer(
+      resolved,
+      state.editMode.value,
+      adapter,
+    )
+
+    // Fetch content search tabs if the adapter supports it
+    let contentSearchTabs: PageContext['contentSearchTabs']
+    if (adapter.getContentSearchTabs) {
+      try {
+        contentSearchTabs = await adapter.getContentSearchTabs()
+      } catch (e) {
+        console.warn('[blokkli agent] Failed to fetch content search tabs:', e)
+      }
+    }
+
     if (adapter.getAgentAuthToken) {
       try {
         const authToken = await adapter.getAgentAuthToken()
@@ -480,8 +496,8 @@ export default function (
         // Wait for 'authenticated' response before sending init.
         // The handleServerMessage will call sendInit() when received.
         pendingInit = {
-          tools: getToolsForServer(resolved, state.editMode.value, adapter),
-          pageContext: buildPageContext(),
+          toolNames,
+          pageContext: buildPageContext(contentSearchTabs),
         }
         return
       } catch (e) {
@@ -489,17 +505,11 @@ export default function (
       }
     }
 
-    sendInit(
-      getToolsForServer(resolved, state.editMode.value, adapter),
-      buildPageContext(),
-    )
+    sendInit(toolNames, buildPageContext(contentSearchTabs))
   }
 
-  async function sendInit(
-    tools: ReturnType<typeof getToolsForServer>,
-    pageContext: PageContext,
-  ) {
-    send({ type: 'init', tools, pageContext })
+  async function sendInit(toolNames: string[], pageContext: PageContext) {
+    send({ type: 'init', toolNames, pageContext })
     isReady.value = true
     hasBeenReady.value = true
 
@@ -534,7 +544,9 @@ export default function (
   // Page Context Builder
   // ============================================================================
 
-  function buildPageContext(): PageContext {
+  function buildPageContext(
+    contentSearchTabs?: PageContext['contentSearchTabs'],
+  ): PageContext {
     const { types, definitions } = app
     const bundles: BlockBundle[] = []
 
@@ -626,6 +638,7 @@ export default function (
       editMode: state.editMode.value,
       fragments,
       entityContentFields,
+      ...(contentSearchTabs?.length ? { contentSearchTabs } : {}),
     }
 
     return pageContext
@@ -675,7 +688,7 @@ export default function (
     switch (data.type) {
       case 'authenticated':
         if (pendingInit) {
-          sendInit(pendingInit.tools, pendingInit.pageContext)
+          sendInit(pendingInit.toolNames, pendingInit.pageContext)
           pendingInit = null
         }
         break

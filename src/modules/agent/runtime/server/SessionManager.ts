@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { Session } from './Session'
+import type { ServerToolMetadata } from '../shared/types'
 
 const TOKEN_EXPIRY_SECONDS = 300
 const SESSION_IDLE_TIMEOUT_MS = 5 * 60 * 1000
@@ -16,8 +17,10 @@ export class SessionManager {
     this.pruneTokens()
   }, 60_000)
 
+  constructor(private toolDefinitions: ServerToolMetadata[]) {}
+
   create(peerId: string): Session {
-    const session = new Session()
+    const session = new Session(this.toolDefinitions)
     this.sessions.set(peerId, { session, lastActivity: Date.now() })
     return session
   }

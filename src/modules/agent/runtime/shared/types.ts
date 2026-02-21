@@ -142,6 +142,22 @@ export type BlockBundle = {
 export type EditMode = 'readonly' | 'editing' | 'translating' | 'review'
 
 /**
+ * Server-side tool metadata extracted at build time.
+ * Contains only static properties needed by the server — no execute(), label(),
+ * component, or other runtime-only fields.
+ */
+export type ServerToolMetadata = {
+  name: string
+  description: string
+  category: 'query' | 'mutation'
+  modes: EditMode[]
+  paramsSchema: z.ZodType
+  lazy?: boolean
+  volatile?: boolean
+  requiredAdapterMethods?: string[]
+}
+
+/**
  * Fragment definition for reusable content blocks.
  */
 export type Fragment = {
@@ -181,6 +197,12 @@ export type PageContext = {
   fragments: Fragment[]
   /** Content fields on the page entity itself (e.g., lead text, hero image) */
   entityContentFields: BlockBundleContentField[]
+  /** Available content search tabs (for the search_content tool) */
+  contentSearchTabs?: {
+    id: string
+    title: string
+    types: { type: string; bundles: string[] }[]
+  }[]
 }
 
 // ============================================================================
@@ -369,6 +391,20 @@ const pageContextSchema = z.object({
   editMode: z.enum(['readonly', 'editing', 'translating', 'review']),
   fragments: z.array(fragmentSchema),
   entityContentFields: z.array(blockBundleContentFieldSchema),
+  contentSearchTabs: z
+    .array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        types: z.array(
+          z.object({
+            type: z.string(),
+            bundles: z.array(z.string()),
+          }),
+        ),
+      }),
+    )
+    .optional(),
 })
 
 export type PageStructureBlock = {
@@ -436,7 +472,7 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('authenticate'), authToken: z.string() }),
   z.object({
     type: z.literal('init'),
-    tools: z.array(clientToolDefinitionSchema),
+    toolNames: z.array(z.string()),
     pageContext: pageContextSchema,
   }),
   z.object({

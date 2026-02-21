@@ -3,8 +3,9 @@ import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
 import { clientMessageSchema } from '../shared/types'
 import { SessionManager } from './SessionManager'
 import { send } from './helpers'
+import { toolDefinitions } from '#blokkli-build/agent-server'
 
-const sessionManager = new SessionManager()
+const sessionManager = new SessionManager(toolDefinitions)
 
 const config = useRuntimeConfig()
 const authSecret = config.blokkli?.agent?.authSecret || ''
@@ -88,7 +89,7 @@ export default defineWebSocketHandler({
 
       switch (data.type) {
         case 'init':
-          session.init(data.tools, data.pageContext)
+          session.init(data.toolNames, data.pageContext)
           break
 
         case 'start':

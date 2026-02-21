@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { getAvailableOptions } from '#blokkli/editor/helpers/options'
-import { blockOptionsMapSchema, buildBlockOptionsMap } from '../schemas'
+import { blockOptionsMapSchema } from '../schemas'
+import { buildBlockOptionsMap } from '../helpers'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The paragraph UUIDs to get options for'),

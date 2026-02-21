@@ -2,8 +2,9 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
-import { blockOptionsMapSchema, extractOptionLabels } from '../schemas'
+import { blockOptionsMapSchema } from '../schemas'
 import type { BlockOptionsMap } from '../schemas'
+import { extractOptionLabels } from '../helpers'
 
 const paramsSchema = z.object({
   parentUuid: z.string().describe('The parent entity UUID'),

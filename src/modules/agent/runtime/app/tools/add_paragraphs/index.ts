@@ -5,10 +5,9 @@ import {
   mutationResultSchema,
   parentSchema,
   positionSchema,
-  resolvePosition,
   optionValueSchema,
-  validateOptionValue,
 } from '../schemas'
+import { resolvePosition, validateOptionValue } from '../helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'

@@ -17,58 +17,50 @@ const resultSchema = z.array(
 )
 
 export default defineBlokkliAgentTool({
-  resolve: async (ctx) => {
-    if (
-      !ctx.adapter.getContentSearchTabs ||
-      !ctx.adapter.getContentSearchResults
-    ) {
-      return []
-    }
+  name: 'search_content',
+  description:
+    'Search for content items by tab ID and query. The available tab IDs and their entity types are listed in the system prompt under "Content Search Tabs". Use the tab ID that matches the type of content you are looking for.',
+  category: 'query',
+  lazy: true,
+  requiredAdapterMethods: ['getContentSearchTabs', 'getContentSearchResults'],
+  modes: ['readonly', 'editing', 'translating', 'review'],
+  label($t) {
+    return $t('aiAgentSearchContentRunning', 'Searching content...')
+  },
+  paramsSchema: z.object({
+    tab: z
+      .string()
+      .describe(
+        'The tab ID to search in. See the system prompt for available tab IDs.',
+      ),
+    query: z.string().describe('The search query'),
+  }),
+  resultSchema,
+  async execute(ctx, params) {
     const tabs = await ctx.adapter.getContentSearchTabs()
-    return tabs.map((tab) => {
-      const typesDescription = tab.types
-        .map((type) => {
-          return `${type.type} (${type.bundles.join(', ')})`
-        })
-        .join(', ')
-      const description = `Content search for these entities: ${typesDescription}`
-      return defineBlokkliAgentTool({
-        name: `search_content_${tab.id}`,
-        description,
-        category: 'query',
-        lazy: true,
-        requiredAdapterMethods: [
-          'getContentSearchTabs',
-          'getContentSearchResults',
-        ],
-        modes: ['readonly', 'editing', 'translating', 'review'],
-        label() {
-          return `Searching ${tab.title}...`
-        },
-        paramsSchema: z.object({
-          query: z.string().describe(`Search query for ${tab.title}`),
-        }),
-        resultSchema,
-        async execute(toolCtx, params) {
-          const items = await toolCtx.adapter.getContentSearchResults(
-            tab.id,
-            params.query,
-          )
-          return {
-            label: `Searched ${tab.title} for "${params.query}"`,
-            result: items.map((item) => ({
-              id: item.id,
-              title: item.title,
-              entityType: item.entityType,
-              entityBundle: item.entityBundle,
-              targetBundles: item.targetBundles,
-              context: item.context,
-              text: item.text,
-              imageUrl: item.imageUrl,
-            })),
-          }
-        },
-      })
-    })
+    const tab = tabs.find((t) => t.id === params.tab)
+    if (!tab) {
+      return {
+        error: `Invalid tab ID "${params.tab}". Available tabs: ${tabs.map((t) => t.id).join(', ')}`,
+      }
+    }
+
+    const items = await ctx.adapter.getContentSearchResults(
+      params.tab,
+      params.query,
+    )
+    return {
+      label: `Searched ${tab.title} for "${params.query}"`,
+      result: items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        entityType: item.entityType,
+        entityBundle: item.entityBundle,
+        targetBundles: item.targetBundles,
+        context: item.context,
+        text: item.text,
+        imageUrl: item.imageUrl,
+      })),
+    }
   },
 })

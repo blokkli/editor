@@ -1,21 +1,17 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  mutationResultSchema,
-  parentSchema,
-  positionSchema,
-  resolvePosition,
-} from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
+import { resolvePosition } from '../helpers'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
 const paramsSchema = z.object({
-  itemId: z.string().describe('Content item ID from search_content_* results'),
+  itemId: z.string().describe('Content item ID from search_content results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
   targetBundle: z
     .string()
     .describe(
-      'Paragraph bundle to create (from targetBundles in search_content_* results)',
+      'Paragraph bundle to create (from targetBundles in search_content results)',
     ),
   parent: parentSchema.describe('The parent entity to add the paragraph to'),
   position: positionSchema,
@@ -24,7 +20,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_content_search_paragraphs',
   description:
-    'Add a paragraph using a content item from search results. Use search_content_* first to find content items, then use this tool to add one to the page. Requires user approval.',
+    'Add a paragraph using a content item from search results. Use search_content first to find content items, then use this tool to add one to the page. Requires user approval.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added content paragraph' : 'rejected'),
   modes: ['editing'],

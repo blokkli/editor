@@ -59,6 +59,23 @@ export default defineBlokkliAgentSystemPrompt({
       }
     }
 
+    // Add content search tabs if present
+    if (pageContext.contentSearchTabs?.length) {
+      lines.push(
+        '',
+        '## Content Search Tabs',
+        '',
+        'Use the `search_content` tool with one of these tab IDs to search for content:',
+        '',
+      )
+      for (const tab of pageContext.contentSearchTabs) {
+        const typesDescription = tab.types
+          .map((t) => `${t.type} (${t.bundles.join(', ')})`)
+          .join(', ')
+        lines.push(`- **\`${tab.id}\`** — ${tab.title}: ${typesDescription}`)
+      }
+    }
+
     // Add edit mode information
     const editModeDescription = getEditModeDescription(pageContext.editMode)
     if (editModeDescription) {

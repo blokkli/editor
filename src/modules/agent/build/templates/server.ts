@@ -10,6 +10,7 @@ export type AgentServerTemplateOptions = {
   skillsTypesPath: string
   systemPromptCollector: AgentCollector
   systemPromptTypesPath: string
+  mcpToolsCollector: AgentCollector
 }
 
 /**
@@ -19,6 +20,7 @@ export type AgentServerTemplateOptions = {
  * - models: Array of model definitions with optional pricing
  * - skills: Array of agent skill definitions
  * - systemPrompts: Array of agent system prompt definitions
+ * - toolDefinitions: Array of server-safe tool metadata (extracted via ?blokkliAgentTool)
  */
 export default function (options: AgentServerTemplateOptions) {
   const {
@@ -29,6 +31,7 @@ export default function (options: AgentServerTemplateOptions) {
     skillsTypesPath,
     systemPromptCollector,
     systemPromptTypesPath,
+    mcpToolsCollector,
   } = options
   const { allowedFetchOrigins, provider, models } = moduleOptions
 
@@ -77,6 +80,19 @@ export default function (options: AgentServerTemplateOptions) {
           ? `export const systemPrompts = []`
           : `export const systemPrompts = [\n  ${systemPrompts.map((sp) => sp.importName).join(',\n  ')}\n]`
 
+      // Tool definitions imports and export (using ?blokkliAgentTool query)
+      const tools = mcpToolsCollector.getItems()
+      for (const tool of tools) {
+        imports.push(
+          `import ${tool.importName} from '${rel(tool.filePath)}?blokkliAgentTool'`,
+        )
+      }
+
+      const toolDefinitionsExport =
+        tools.length === 0
+          ? `export const toolDefinitions = []`
+          : `export const toolDefinitions = [\n  ${tools.map((t) => t.importName).join(',\n  ')},\n].filter(v => v !== null)`
+
       const originsJson = JSON.stringify(allowedFetchOrigins, null, 2)
 
       return `${imports.join('\n')}
@@ -91,6 +107,8 @@ export const debugPrompt = ${!!moduleOptions.debugPrompt}
 ${skillsExport}
 
 ${systemPromptsExport}
+
+${toolDefinitionsExport}
 `
     },
     (ctx) => {
@@ -100,7 +118,7 @@ ${systemPromptsExport}
       return `import type { AIProvider } from '${rel(providersPath)}/types'
 import type { SkillDefinition } from '${rel(skillsTypesPath)}'
 import type { SystemPromptDefinition } from '${rel(systemPromptTypesPath)}'
-import type { AgentModelDefinition } from '${rel(sharedTypesPath)}'
+import type { AgentModelDefinition, ServerToolMetadata } from '${rel(sharedTypesPath)}'
 
 export const allowedFetchOrigins: string[]
 export const provider: AIProvider
@@ -108,6 +126,7 @@ export const models: AgentModelDefinition[]
 export const debugPrompt: boolean
 export const skills: SkillDefinition[]
 export const systemPrompts: SystemPromptDefinition[]
+export const toolDefinitions: ServerToolMetadata[]
 `
     },
     {

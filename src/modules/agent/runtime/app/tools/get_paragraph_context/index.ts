@@ -1,10 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  parentSchema,
-  blockOptionsMapSchema,
-  buildBlockOptionsMap,
-} from '../schemas'
+import { parentSchema, blockOptionsMapSchema } from '../schemas'
+import { buildBlockOptionsMap } from '../helpers'
 import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 import { fragmentBlockBundle } from '#blokkli-build/config'
 

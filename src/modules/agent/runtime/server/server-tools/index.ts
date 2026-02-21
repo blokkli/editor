@@ -46,7 +46,7 @@ export type ToolResultEntry = {
 export type ToolDefinitionContext = {
   resolvedSkills: ResolvedSkill[]
   plan: ServerPlan | null
-  unloadedLazyTools: ClientToolDefinition[]
+  unloadedLazyTools: { name: string; description: string }[]
 }
 
 /**
@@ -57,7 +57,7 @@ export type ServerToolContext = {
   toolUseId: string
   send: (message: ServerMessage) => void
   resolvedSkills: ResolvedSkill[]
-  lazyTools: ClientToolDefinition[]
+  lazyToolNames: string[]
   activatedLazyTools: Set<string>
   loadedSkills: Set<string>
   plan: ServerPlan | null
@@ -130,7 +130,7 @@ export function defineServerSideTool<T extends z.ZodType>(
  * Recursively strip $schema and additionalProperties from a JSON Schema object.
  * These are unnecessary for the LLM and waste context window tokens.
  */
-function stripSchemaOverhead(obj: unknown): unknown {
+export function stripSchemaOverhead(obj: unknown): unknown {
   if (Array.isArray(obj)) {
     return obj.map(stripSchemaOverhead)
   }

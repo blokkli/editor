@@ -16,5 +16,9 @@ import type { ChartColor } from '#blokkli/charts/types'
 export const COLORS: Record<string, ChartColor>
 `
     },
+    {
+      context: 'both',
+      write: true,
+    },
   )
 }

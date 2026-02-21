@@ -5,7 +5,9 @@ import { defineBlokkliModule } from '../defineBlokkliModule'
 import { AgentCollector } from './build/AgentCollector'
 import createClientTemplate from './build/templates/client'
 import createServerTemplate from './build/templates/server'
+import { agentToolStripPlugin } from './build/AgentToolStripPlugin'
 import type { AgentModuleOptions } from './build/types'
+import type { Plugin } from 'rollup'
 
 const AGENT_ROUTE = '/api/blokkli/agent'
 const FETCH_ROUTE = '/api/blokkli/agent/fetch'
@@ -187,6 +189,7 @@ export default defineNuxtConfig({
         systemPromptTypesPath: moduleResolver.resolve(
           './runtime/server/system-prompts/types',
         ),
+        mcpToolsCollector: mcpTools,
       }),
     )
 
@@ -219,6 +222,28 @@ export default defineNuxtConfig({
       nitroConfig.typescript.tsConfig.include ||= []
       nitroConfig.typescript.tsConfig.include.push(relativeSkillsDir)
       nitroConfig.typescript.tsConfig.include.push(relativeSystemPromptsDir)
+
+      // Register the agent tool strip plugin for Nitro's Rollup build.
+      nitroConfig.rollupConfig ||= {}
+      nitroConfig.rollupConfig.plugins ||= []
+      ;(nitroConfig.rollupConfig.plugins as Plugin[]).push(
+        agentToolStripPlugin(),
+      )
+
+      // Add aliases so that imports from stripped tool files resolve in Nitro.
+      // The strip plugin keeps `#blokkli/agent/app/tools/schemas` imports
+      // (pure Zod schemas), so they need a Nitro alias.
+      nitroConfig.alias ||= {}
+      nitroConfig.alias['#blokkli/agent/app/tools/schemas'] =
+        moduleResolver.resolve('./runtime/app/tools/schemas')
+
+      // Forward app aliases to Nitro for transitive dependencies
+      // (e.g. chart_schemas.ts imports from #blokkli/charts/types).
+      for (const [key, value] of Object.entries(nuxt.options.alias)) {
+        if (key.startsWith('#blokkli/') && !nitroConfig.alias[key]) {
+          nitroConfig.alias[key] = value as string
+        }
+      }
     })
 
     // Remove the WebSocket route from Nitro's type generation.

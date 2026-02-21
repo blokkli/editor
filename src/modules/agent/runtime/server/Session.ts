@@ -1,7 +1,9 @@
+import { z } from 'zod'
 import type { Peer } from 'crossws'
 import type {
   PageContext,
   ClientToolDefinition,
+  ServerToolMetadata,
   ClientPlanState,
   ClientPlanStep,
   ConversationStateSnapshot,
@@ -34,7 +36,7 @@ import type {
   ServerToolContext,
   ToolDefinitionContext,
 } from './server-tools'
-import { buildDefinition } from './server-tools'
+import { buildDefinition, stripSchemaOverhead } from './server-tools'
 import loadSkillTool from './server-tools/load_skill'
 import loadToolsTool from './server-tools/load_tools'
 import createPlanTool from './server-tools/create_plan'
@@ -64,10 +66,10 @@ export class Session {
   abortController: AbortController | null = null
   isProcessing = false
 
-  /** Eager tools sent to the LLM on every turn */
-  tools: ClientToolDefinition[] = []
-  /** Lazy tools held back until activated via load_tools */
-  lazyTools: ClientToolDefinition[] = []
+  /** Names of eager tools sent to the LLM on every turn */
+  toolNames: string[] = []
+  /** Names of lazy tools held back until activated via load_tools */
+  lazyToolNames: string[] = []
   /** Names of lazy tools that have been activated via load_tools */
   activatedLazyTools = new Set<string>()
   /** Names of skills that have been loaded via load_skill */
@@ -84,13 +86,84 @@ export class Session {
   /** Last generic tool definitions for transcript */
   private lastTools: ClientToolDefinition[] = []
 
+  /** Bundled tool metadata map for server-side resolution */
+  private bundledToolMap: Map<string, ServerToolMetadata>
+  /** Cache for resolved JSON Schemas (Zod→JSON Schema is deterministic) */
+  private jsonSchemaCache = new Map<string, Record<string, unknown>>()
+
+  constructor(toolDefinitions: ServerToolMetadata[]) {
+    this.bundledToolMap = new Map(toolDefinitions.map((t) => [t.name, t]))
+  }
+
+  /**
+   * Resolve a single tool name into a ClientToolDefinition.
+   * Resolves from bundled metadata. Caches the JSON Schema conversion.
+   */
+  resolveToolDefinition(name: string): ClientToolDefinition | undefined {
+    const bundled = this.bundledToolMap.get(name)
+    if (!bundled) return undefined
+
+    let inputSchema = this.jsonSchemaCache.get(name)
+    if (!inputSchema) {
+      inputSchema = stripSchemaOverhead(
+        z.toJSONSchema(bundled.paramsSchema),
+      ) as Record<string, unknown>
+      this.jsonSchemaCache.set(name, inputSchema)
+    }
+    return {
+      name: bundled.name,
+      description: bundled.description,
+      input_schema: inputSchema,
+      ...(bundled.lazy ? { lazy: true as const } : {}),
+      category: bundled.category,
+      ...(bundled.volatile ? { volatile: true as const } : {}),
+    }
+  }
+
+  /**
+   * Resolve multiple tool names into ClientToolDefinition objects.
+   * Skips names that cannot be resolved.
+   */
+  resolveToolDefinitions(names: string[]): ClientToolDefinition[] {
+    const result: ClientToolDefinition[] = []
+    for (const name of names) {
+      const def = this.resolveToolDefinition(name)
+      if (def) {
+        result.push(def)
+      }
+    }
+    return result
+  }
+
+  /**
+   * Look up name + description for a tool.
+   */
+  private getToolSummary(
+    name: string,
+  ): { name: string; description: string } | undefined {
+    const bundled = this.bundledToolMap.get(name)
+    if (!bundled) return undefined
+    return { name: bundled.name, description: bundled.description }
+  }
+
   // --------------------------------------------------------------------------
   // Public methods
   // --------------------------------------------------------------------------
 
-  init(tools: ClientToolDefinition[], pageContext: PageContext): void {
-    this.tools = tools.filter((t) => !t.lazy)
-    this.lazyTools = tools.filter((t) => !!t.lazy)
+  init(toolNames: string[], pageContext: PageContext): void {
+    // Partition into eager/lazy using bundled metadata
+    this.toolNames = []
+    this.lazyToolNames = []
+    for (const name of toolNames) {
+      const bundled = this.bundledToolMap.get(name)
+      const isLazy = bundled?.lazy ?? false
+      if (isLazy) {
+        this.lazyToolNames.push(name)
+      } else {
+        this.toolNames.push(name)
+      }
+    }
+
     this.activatedLazyTools = new Set()
     this.loadedSkills = new Set()
     this.pageContext = pageContext
@@ -204,8 +277,8 @@ export class Session {
     }
     this.plan = null
     this.messages = []
-    this.tools = []
-    this.lazyTools = []
+    this.toolNames = []
+    this.lazyToolNames = []
     this.activatedLazyTools.clear()
     this.loadedSkills.clear()
     this.pageContext = undefined
@@ -265,7 +338,7 @@ export class Session {
     this.lastTools = []
 
     // Only restore lazy tools that still exist in the current tool set
-    const validLazyToolNames = new Set(this.lazyTools.map((t) => t.name))
+    const validLazyToolNames = new Set(this.lazyToolNames)
     this.activatedLazyTools = new Set(
       state.activatedLazyTools.filter((name) => validLazyToolNames.has(name)),
     )
@@ -333,7 +406,7 @@ export class Session {
     authSecret: string,
     selectedUuids?: string[],
   ): Promise<void> {
-    if (this.tools.length === 0) {
+    if (this.toolNames.length === 0) {
       send(peer, {
         type: 'error',
         errorType: 'bad_request',
@@ -356,10 +429,11 @@ export class Session {
     // Resolve skills for this page context
     const resolvedSkills = resolveSkills(this.pageContext)
 
-    const lazyToolSummaries = this.lazyTools.map((t) => ({
-      name: t.name,
-      description: t.description,
-    }))
+    const lazyToolSummaries = this.lazyToolNames
+      .map((name) => this.getToolSummary(name))
+      .filter(
+        (s): s is { name: string; description: string } => s !== undefined,
+      )
 
     // Build initial user message with context
     const userParts: string[] = []
@@ -424,15 +498,24 @@ export class Session {
         let currentTextContent = ''
         let inTextBlock = false
 
-        // Lazy tools that have been activated via load_tools
-        const activatedTools = this.lazyTools.filter((t) =>
-          this.activatedLazyTools.has(t.name),
+        // Resolve eager tools from names
+        const eagerTools = this.resolveToolDefinitions(this.toolNames)
+
+        // Resolve activated lazy tools
+        const activatedToolNames = this.lazyToolNames.filter((name) =>
+          this.activatedLazyTools.has(name),
         )
+        const activatedTools = this.resolveToolDefinitions(activatedToolNames)
 
         // Build server-side tool definitions for this turn
-        const unloadedLazyTools = this.lazyTools.filter(
-          (t) => !this.activatedLazyTools.has(t.name),
+        const unloadedLazyToolNames = this.lazyToolNames.filter(
+          (name) => !this.activatedLazyTools.has(name),
         )
+        const unloadedLazyTools = unloadedLazyToolNames
+          .map((name) => this.getToolSummary(name))
+          .filter(
+            (s): s is { name: string; description: string } => s !== undefined,
+          )
         const defCtx: ToolDefinitionContext = {
           resolvedSkills,
           plan: this.plan,
@@ -442,8 +525,8 @@ export class Session {
           .map((t) => buildDefinition(t, defCtx))
           .filter((d): d is ClientToolDefinition => d !== null)
 
-        // Combine server tools with client tools
-        const allTools = [...serverToolDefs, ...this.tools, ...activatedTools]
+        // Combine server tools with resolved client tools
+        const allTools = [...serverToolDefs, ...eagerTools, ...activatedTools]
         this.lastTools = allTools
 
         // Build system prompt each turn so it reflects current plan state
@@ -607,7 +690,7 @@ export class Session {
                       toolUseId: currentToolUse.id,
                       send: (msg) => send(peer, msg),
                       resolvedSkills,
-                      lazyTools: this.lazyTools,
+                      lazyToolNames: this.lazyToolNames,
                       activatedLazyTools: this.activatedLazyTools,
                       loadedSkills: this.loadedSkills,
                       plan: this.plan,
@@ -957,9 +1040,10 @@ export class Session {
    */
   private buildToolMetadataMap(): Map<string, ToolPruningMetadata> {
     const map = new Map<string, ToolPruningMetadata>()
-    for (const tool of [...this.tools, ...this.lazyTools]) {
-      if (tool.volatile) {
-        map.set(tool.name, { volatile: true })
+    for (const name of [...this.toolNames, ...this.lazyToolNames]) {
+      const bundled = this.bundledToolMap.get(name)
+      if (bundled?.volatile) {
+        map.set(name, { volatile: true })
       }
     }
     return map
@@ -971,10 +1055,12 @@ export class Session {
       ? buildSystemPromptEntries(
           this.pageContext,
           resolveSkills(this.pageContext),
-          this.lazyTools.map((t) => ({
-            name: t.name,
-            description: t.description,
-          })),
+          this.lazyToolNames
+            .map((name) => this.getToolSummary(name))
+            .filter(
+              (s): s is { name: string; description: string } =>
+                s !== undefined,
+            ),
           this.getActivePlanContext(),
           this.loadedSkills,
         )

@@ -4,11 +4,8 @@ import {
   getAvailableOptions,
   optionValueToStorable,
 } from '#blokkli/editor/helpers/options'
-import {
-  mutationResultSchema,
-  optionValueSchema,
-  validateOptionValue,
-} from '../schemas'
+import { mutationResultSchema, optionValueSchema } from '../schemas'
+import { validateOptionValue } from '../helpers'
 import { onlyUnique } from '#blokkli/helpers'
 
 const paragraphOptionsSchema = z.object({

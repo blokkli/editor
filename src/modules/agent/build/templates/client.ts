@@ -72,10 +72,10 @@ export default function (
       return parts.join('\n\n') + '\n'
     },
     () => {
-      return `import type { McpToolItem, AgentPromptItem } from '#blokkli/agent/app/types'
+      return `import type { McpToolDefinition, AgentPromptItem } from '#blokkli/agent/app/types'
 import type { AgentModelDefinition } from '#blokkli/agent/shared/types'
 
-export const mcpTools: McpToolItem[]
+export const mcpTools: McpToolDefinition[]
 export const agentPrompts: AgentPromptItem[]
 export const defaultPrompts: string[]
 export const agentName: string

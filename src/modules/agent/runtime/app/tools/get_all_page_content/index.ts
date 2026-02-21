@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { getFieldType, getEditableValue } from '../schemas'
+import { getFieldType, getEditableValue } from '../helpers'
 
 const paramsSchema = z.object({})
 

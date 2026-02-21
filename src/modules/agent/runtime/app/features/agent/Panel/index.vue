@@ -132,7 +132,6 @@ import type {
 import type { ClientPlanState, UsageTurn } from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
-import { isToolDefinition } from '#blokkli/agent/app/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
 const props = defineProps<{
@@ -199,11 +198,9 @@ const toolContext = computed(() => ({
   adapter: app.adapter,
 }))
 
-const staticTools = mcpTools.filter(isToolDefinition)
-
 const pendingToolComponent = computed(() => {
   if (!props.pendingToolCall) return null
-  const tool = staticTools.find(
+  const tool = mcpTools.find(
     (t) => t.name === props.pendingToolCall!.toolName,
   )
   return tool?.component || null

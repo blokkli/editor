@@ -1,11 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  mutationResultSchema,
-  parentSchema,
-  positionSchema,
-  resolvePosition,
-} from '../schemas'
+import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
+import { resolvePosition } from '../helpers'
 import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 
 const paramsSchema = z.object({

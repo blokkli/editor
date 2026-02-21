@@ -4,8 +4,8 @@ import {
   mutationResultSchema,
   parentSchema,
   positionSchema,
-  resolvePosition,
 } from '#blokkli/agent/app/tools/schemas'
+import { resolvePosition } from '#blokkli/agent/app/tools/helpers'
 import { chartDataSchema, validateChartData } from '../chart_schemas'
 import { COLORS } from '#blokkli-build/charts-config'
 import type { BlokkliChartData } from '#blokkli/charts/types'

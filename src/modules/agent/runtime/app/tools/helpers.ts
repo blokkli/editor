@@ -1,0 +1,316 @@
+import type { OptionItem } from '#blokkli/editor/helpers/options'
+import { getMutatedOptionValue } from '#blokkli/editor/helpers/options'
+import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
+import type { BlokkliApp } from '#blokkli/editor/types/app'
+import type { BlockOptionsMap } from './schemas'
+
+/**
+ * Extract a simple key→label map from the various radios/checkboxes option formats.
+ * Handles plain strings, icon objects, color objects, grid objects, etc.
+ */
+export function extractOptionLabels(
+  option: Record<string, unknown>,
+): Record<string, string> | undefined {
+  if (!('options' in option) || !option.options) return undefined
+
+  const raw = option.options as Record<string, unknown>
+  const labels: Record<string, string> = {}
+
+  for (const [key, value] of Object.entries(raw)) {
+    if (typeof value === 'string') {
+      labels[key] = value
+    } else if (
+      typeof value === 'object' &&
+      value !== null &&
+      'label' in value
+    ) {
+      labels[key] = String((value as { label: string }).label)
+    } else {
+      labels[key] = key
+    }
+  }
+
+  return labels
+}
+
+/**
+ * Build a block options map from available options and mutated state.
+ */
+export function buildBlockOptionsMap(
+  availableOptions: OptionItem[],
+  mutatedOptions: Record<string, Record<string, string>>,
+  uuid: string,
+): BlockOptionsMap {
+  const result: BlockOptionsMap = {}
+
+  for (const opt of availableOptions) {
+    const rawValue = getMutatedOptionValue(
+      mutatedOptions,
+      uuid,
+      opt.property,
+      opt.option.default,
+    )
+    const currentValue = getRuntimeOptionValue(opt.option, rawValue)
+
+    result[opt.property] = buildBlockOptionEntry(opt.option, currentValue)
+  }
+
+  return result
+}
+
+/**
+ * Build a block options map from option definitions, using defaults as current values.
+ */
+export function buildBlockOptionsMapFromDefinitions(
+  options: Record<string, Record<string, unknown>>,
+): BlockOptionsMap {
+  const result: BlockOptionsMap = {}
+
+  for (const [key, opt] of Object.entries(options)) {
+    result[key] = buildBlockOptionEntry(
+      opt,
+      opt.default as string | boolean | number | string[],
+    )
+  }
+
+  return result
+}
+
+/**
+ * Build a single block option entry from an option definition and a current value.
+ */
+function buildBlockOptionEntry(
+  opt: Record<string, unknown>,
+  currentValue: string | boolean | number | string[],
+): BlockOptionsMap[string] {
+  const entry: BlockOptionsMap[string] = {
+    type: opt.type as string,
+    label: opt.label as string,
+    currentValue,
+  }
+
+  if (opt.description) {
+    entry.description = opt.description as string
+  }
+
+  const labels = extractOptionLabels(opt)
+  if (labels) {
+    entry.options = labels
+  }
+
+  if ('min' in opt) {
+    entry.min = opt.min as number | string
+  }
+
+  if ('max' in opt) {
+    entry.max = opt.max as number | string
+  }
+
+  if ('step' in opt && opt.type === 'range') {
+    entry.step = opt.step as number
+  }
+
+  return entry
+}
+
+/**
+ * Validate a single option value against its definition.
+ * Returns an error string or undefined if valid.
+ */
+export function validateOptionValue(
+  key: string,
+  value: string | boolean | number | string[],
+  optionDef: OptionItem,
+): string | undefined {
+  const optionType = optionDef.option.type
+
+  if (optionType === 'checkbox') {
+    if (
+      typeof value !== 'boolean' &&
+      value !== '1' &&
+      value !== '0' &&
+      value !== 'true' &&
+      value !== 'false'
+    ) {
+      return `Option "${key}" expects a boolean value`
+    }
+  } else if (optionType === 'radios') {
+    if (typeof value !== 'string') {
+      return `Option "${key}" expects a string value`
+    }
+    if ('options' in optionDef.option && optionDef.option.options) {
+      const allowedKeys = Object.keys(optionDef.option.options)
+      if (!allowedKeys.includes(value)) {
+        return `Option "${key}" value must be one of: ${allowedKeys.join(', ')}`
+      }
+    }
+  } else if (optionType === 'checkboxes') {
+    if (!Array.isArray(value) && typeof value !== 'string') {
+      return `Option "${key}" expects an array of strings or comma-separated string`
+    }
+    if ('options' in optionDef.option && optionDef.option.options) {
+      const allowedKeys = Object.keys(optionDef.option.options)
+      const values = Array.isArray(value) ? value : value.split(',')
+      for (const v of values) {
+        if (!allowedKeys.includes(v)) {
+          return `Option "${key}" value "${v}" is not allowed. Must be one of: ${allowedKeys.join(', ')}`
+        }
+      }
+    }
+  } else if (optionType === 'number' || optionType === 'range') {
+    const numValue =
+      typeof value === 'number' ? value : Number.parseFloat(String(value))
+    if (Number.isNaN(numValue)) {
+      return `Option "${key}" expects a numeric value`
+    }
+    if ('min' in optionDef.option && numValue < optionDef.option.min) {
+      return `Option "${key}" value must be >= ${optionDef.option.min}`
+    }
+    if ('max' in optionDef.option && numValue > optionDef.option.max) {
+      return `Option "${key}" value must be <= ${optionDef.option.max}`
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Resolve an editable field config to its simplified type.
+ * Returns 'plain' for text fields, 'markup' for rich text/frame fields, null for unsupported.
+ */
+export function getFieldType(
+  app: BlokkliApp,
+  entityType: string,
+  bundle: string,
+  fieldName: string,
+): 'plain' | 'markup' | null {
+  const config = app.types.editableFieldConfig.forName(
+    entityType,
+    bundle,
+    fieldName,
+  )
+  if (!config) return null
+  if (config.type === 'table') return null
+  if (config.type === 'frame' || config.type === 'markup') return 'markup'
+  return 'plain'
+}
+
+/**
+ * Read the current value of an editable field on a block or entity.
+ * Tries the registered getValue() callback first, falls back to DOM element reading.
+ */
+export function getEditableValue(
+  app: BlokkliApp,
+  entityType: string,
+  uuid: string,
+  bundle: string,
+  fieldName: string,
+  fieldType: 'plain' | 'markup',
+): string {
+  const editables = app.directive.getEditablesForBlock(uuid)
+  const editable = editables.find((e) => e.fieldName === fieldName)
+
+  if (editable?.getValue) {
+    return editable.getValue()
+  }
+
+  const element = app.directive.findEditableElement(fieldName, {
+    type: entityType,
+    uuid,
+    bundle,
+  })
+  if (element) {
+    return fieldType === 'markup'
+      ? element.innerHTML || ''
+      : element.textContent || ''
+  }
+
+  return ''
+}
+
+/**
+ * Get all child fields and their paragraphs for a given entity UUID.
+ * Walks mutatedFields to find fields belonging to the entity.
+ */
+export function getParagraphChildren(
+  app: BlokkliApp,
+  uuid: string,
+): { fieldName: string; paragraphs: { uuid: string; bundle: string }[] }[] {
+  const result: {
+    fieldName: string
+    paragraphs: { uuid: string; bundle: string }[]
+  }[] = []
+
+  for (const field of app.state.mutatedFields.value) {
+    if (field.entityUuid === uuid && field.list.length > 0) {
+      result.push({
+        fieldName: field.name,
+        paragraphs: field.list.map((item) => ({
+          uuid: item.uuid,
+          bundle: item.bundle,
+        })),
+      })
+    }
+  }
+
+  return result
+}
+
+/**
+ * Resolve a `position` string to the `afterUuid` value expected by adapter methods.
+ *
+ * Returns `{ afterUuid: string | null }` on success, or `{ error: string }` if
+ * the referenced UUID is not found in the target field.
+ */
+export function resolvePosition(
+  app: BlokkliApp,
+  parentUuid: string,
+  fieldName: string,
+  position?: string,
+): { afterUuid: string | null } | { error: string } {
+  const fieldList = app.state.mutatedFields.value.find(
+    (f) => f.entityUuid === parentUuid && f.name === fieldName,
+  )
+  const list = fieldList?.list ?? []
+
+  // Default or explicit "end": append after last block
+  if (position === undefined || position === 'end') {
+    const lastBlock = list.at(-1)
+    return { afterUuid: lastBlock?.uuid ?? null }
+  }
+
+  // "start": insert at beginning
+  if (position === 'start') {
+    return { afterUuid: null }
+  }
+
+  // "after:<UUID>": insert after the referenced block
+  if (position.startsWith('after:')) {
+    const uuid = position.slice(6)
+    const found = list.find((b) => b.uuid === uuid)
+    if (!found) {
+      return {
+        error: `Position "after:${uuid}": paragraph not found in field "${fieldName}".`,
+      }
+    }
+    return { afterUuid: uuid }
+  }
+
+  // "before:<UUID>": insert before the referenced block
+  if (position.startsWith('before:')) {
+    const uuid = position.slice(7)
+    const index = list.findIndex((b) => b.uuid === uuid)
+    if (index === -1) {
+      return {
+        error: `Position "before:${uuid}": paragraph not found in field "${fieldName}".`,
+      }
+    }
+    // If it's the first block, afterUuid is null (insert at beginning)
+    const preceding = index > 0 ? list[index - 1] : undefined
+    return { afterUuid: preceding?.uuid ?? null }
+  }
+
+  return {
+    error: `Invalid position value: "${position}". Use "start", "end", "after:<UUID>", or "before:<UUID>".`,
+  }
+}

@@ -7,7 +7,7 @@ import {
   getFieldType,
   getEditableValue,
   getParagraphChildren,
-} from '#blokkli/agent/app/tools/schemas'
+} from '#blokkli/agent/app/tools/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
 const MAX_CONTENT_LENGTH = 150
