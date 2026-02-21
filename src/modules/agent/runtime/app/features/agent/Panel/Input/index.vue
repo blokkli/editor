@@ -39,6 +39,7 @@
       :can-submit="canSubmit"
       :usage-turns="usageTurns"
       :has-text
+      :has-conversation
       @submit="onSubmit"
       @cancel="$emit('cancel')"
       @new-conversation="$emit('new-conversation')"

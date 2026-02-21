@@ -1,27 +1,40 @@
 <template>
   <div class="bk-agent-input-actions">
     <div class="bk-agent-input-actions-left">
+      <button
+        class="bk-agent-input-actions-button"
+        :disabled="!isConnected || !hasConversation"
+        @click="emit('new-conversation')"
+      >
+        <Icon name="bk_mdi_add" />
+        <div class="bk-tooltip">
+          <span>{{
+            $t('aiAgentNewConversation', 'Start new conversation')
+          }}</span>
+        </div>
+      </button>
+      <button
+        class="bk-agent-input-actions-button"
+        :disabled="!isConnected"
+        @click="emit('show-conversations')"
+      >
+        <Icon name="bk_mdi_forum" />
+        <div class="bk-tooltip">
+          <span>{{
+            $t('aiAgentPastConversations', 'Past conversations')
+          }}</span>
+        </div>
+      </button>
       <Dropdown ref="dropdown" :disabled="!isConnected">
         <template #button>
           <div
-            class="bk-button bk-is-white bk-is-small bk-is-icon-only"
+            class="bk-agent-input-actions-button"
             :title="$t('aiAgentMoreOptions', 'More options')"
           >
-            <Icon name="bk_mdi_more_horiz" />
+            <Icon name="bk_mdi_more_vert" />
           </div>
         </template>
         <TokenUsage :usage-turns />
-        <hr />
-        <DropdownItem
-          icon="bk_mdi_add"
-          :text="$t('aiAgentNewConversation', 'Start new conversation')"
-          @click="onNewConversation"
-        />
-        <DropdownItem
-          icon="bk_mdi_history"
-          :text="$t('aiAgentPastConversations', 'Past conversations')"
-          @click="onShowConversations"
-        />
         <hr />
         <DropdownItem
           icon="bk_mdi_bug_report"
@@ -65,6 +78,7 @@ defineProps<{
   isConnected: boolean
   canSubmit: boolean
   hasText: boolean
+  hasConversation: boolean
   usageTurns: UsageTurn[]
 }>()
 
@@ -79,16 +93,6 @@ const emit = defineEmits<{
 const { $t } = useBlokkli()
 
 const dropdown = useTemplateRef('dropdown')
-
-function onNewConversation() {
-  dropdown.value?.close()
-  emit('new-conversation')
-}
-
-function onShowConversations() {
-  dropdown.value?.close()
-  emit('show-conversations')
-}
 
 function onShowTranscript() {
   dropdown.value?.close()

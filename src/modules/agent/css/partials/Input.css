@@ -41,20 +41,42 @@
     }
 
     .bk-agent-input-actions {
-      @apply border-t border-t-mono-300 flex items-center justify-between p-8 gap-8;
+      @apply border-t border-t-mono-300 flex items-center justify-between;
       @apply border-dashed;
       @apply relative;
     }
 
+    .bk-agent-input-actions-button {
+      @apply size-40 flex items-center justify-center;
+      @apply text-mono-500;
+      @apply hover:bg-mono-100 hover:text-mono-800;
+      &[disabled] {
+        @apply text-mono-200 pointer-events-none;
+      }
+
+      svg {
+        @apply size-18 fill-current;
+      }
+    }
+
     .bk-agent-input-actions-right {
-      @apply flex gap-8 items-center;
+      @apply flex gap-8 items-center pr-5;
     }
 
     .bk-agent-input-actions-left {
-      @apply flex gap-8 items-center;
+      @apply flex gap-2 items-center;
       .bk-dropdown-menu-content {
         @apply w-full;
         @apply max-w-[500px];
+      }
+      > button {
+        @apply relative;
+        .bk-tooltip {
+          @apply absolute bottom-full left-0 mb-3;
+        }
+        &:not(:hover) .bk-tooltip {
+          @apply hidden;
+        }
       }
     }
 
@@ -71,18 +93,21 @@
     }
 
     .bk-agent-token-usage {
-      @apply px-10 py-8;
+      @apply py-8;
       @apply whitespace-nowrap leading-none;
       /* @apply bg-mono-100; */
 
       ul {
-        @apply flex justify-between flex-1;
+        @apply flex justify-evenly flex-1;
 
         li {
-          @apply h-30;
+          @apply h-30 flex-1;
           @apply cursor-help;
+          &:not(.bk-is-separator) {
+            @apply px-10;
+          }
           &.bk-is-separator {
-            @apply w-0 shrink-0;
+            @apply w-0 shrink-0 flex-none;
             @apply border-r border-dashed border-r-mono-400;
           }
           > div {

@@ -1,6 +1,6 @@
 .bk {
   .bk-dropdown-menu-trigger {
-    @apply appearance-none border-none bg-transparent p-0 m-0 cursor-pointer;
+    @apply appearance-none border-none bg-transparent p-0 m-0 cursor-pointer block;
   }
 
   .bk-dropdown-menu-content {
