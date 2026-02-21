@@ -53,13 +53,18 @@ import { BundleSelector, BlokkliTransition } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DraggableMediaLibraryItem } from '../media-library/types'
 import type { DraggableSearchContentItem } from '../search/types'
-import type { DropTargetEvent } from '#blokkli/editor/events'
+import { emitMessage, type DropTargetEvent } from '#blokkli/editor/events'
+import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type {
   DraggableExistingBlock,
   DraggableItem,
 } from '#blokkli/editor/types/draggable'
-import type { DraggableClipboardItem } from '../clipboard/types'
+import type {
+  DraggableClipboardItem,
+  DraggableNativeDropItem,
+  BlokkliClipboardItem,
+} from '../clipboard/types'
 import type { DraggableActionItem } from '../add-list/types'
 import type { DraggableReusableItem } from '../library/types'
 import type { DraggableExistingStructureBlock } from '../structure/types'
@@ -94,7 +99,10 @@ const {
 type BundleSelectorData = {
   bundles: string[]
   anchorCoordinates: Coord
-  item: DraggableSearchContentItem | DraggableMediaLibraryItem[]
+  item:
+    | DraggableSearchContentItem
+    | DraggableMediaLibraryItem[]
+    | DraggableNativeDropItem
   host: BlokkliItemHost
   field: BlokkliFieldElement
   afterUuid: string | null
@@ -122,6 +130,8 @@ async function onSelectBundle(bundle: string) {
       data.afterUuid,
       bundle,
     )
+  } else if (item.itemType === 'native_drop') {
+    await executeNativeDrop(item, data.host, data.afterUuid, bundle)
   } else {
     await state.mutateWithLoadingState(() =>
       adapter.addContentSearchItem!({
@@ -243,13 +253,32 @@ const onDropExisting = async (
   afterUuid: string | null,
 ) => {
   const uuids = items.map((v) => v.block.uuid)
-  await state.mutateWithLoadingState(() =>
-    adapter.moveMultipleBlocks({
-      uuids,
-      afterUuid,
-      host,
-    }),
+  const isCopy = items.some(
+    (v) => v.itemType === 'existing' && v.isCopy,
   )
+
+  if (isCopy && adapter.pasteExistingBlocks) {
+    await state.mutateWithLoadingState(() =>
+      adapter.pasteExistingBlocks!({
+        uuids,
+        host: {
+          type: host.type,
+          uuid: host.uuid,
+          fieldName: host.fieldName,
+        },
+        preceedingUuid: afterUuid,
+      }),
+    )
+  } else {
+    await state.mutateWithLoadingState(() =>
+      adapter.moveMultipleBlocks({
+        uuids,
+        afterUuid,
+        host,
+      }),
+    )
+  }
+
   if (uuids.length >= 1 && uuids.length <= 10) {
     for (let i = 0; i < uuids.length; i++) {
       dom.refreshBlockRect(uuids[i]!)
@@ -291,6 +320,209 @@ const onDropClipboardItem = async (
     blockBundle: item.itemBundle,
     afterUuid,
   })
+}
+
+function readFileAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader()
+    fr.onload = () => {
+      if (typeof fr.result === 'string') {
+        resolve(fr.result)
+      } else {
+        reject(new Error('FileReader result is not a string'))
+      }
+    }
+    fr.onerror = () => reject(fr.error)
+    fr.readAsDataURL(file)
+  })
+}
+
+const executeNativeDrop = async (
+  item: DraggableNativeDropItem,
+  host: BlokkliItemHost,
+  afterUuid: string | null,
+  bundle: string,
+) => {
+  if (!adapter.addBlockFromClipboardItem) {
+    return
+  }
+
+  // Clipboard paste path: data is already available via clipboardItems.
+  if (item.clipboardItems?.length) {
+    await state.mutateWithLoadingState(async () => {
+      let lastResult
+      for (const clipItem of item.clipboardItems!) {
+        lastResult = await adapter.addBlockFromClipboardItem!({
+          item: clipItem,
+          blockBundle: bundle,
+          host,
+          afterUuid,
+        })
+      }
+      return lastResult!
+    })
+    return
+  }
+
+  if (!item.dataTransfer) {
+    return
+  }
+
+  const dt = item.dataTransfer
+
+  if (dt.files.length > 0) {
+    const files = [...dt.files]
+
+    // Re-validate each file's bundle with actual file size.
+    if (adapter.clipboardMapBundle) {
+      for (const file of files) {
+        const type: 'image' | 'file' = file.type.startsWith('image/')
+          ? 'image'
+          : 'file'
+        const mapped = adapter.clipboardMapBundle({
+          type,
+          fileType: file.type,
+          fileSize: file.size,
+        })
+        if (!mapped) {
+          emitMessage('This file type or size is not supported.', 'error')
+          return
+        }
+      }
+    }
+
+    let results: string[]
+    try {
+      results = await Promise.all(files.map(readFileAsDataURL))
+    } catch {
+      return
+    }
+
+    const clipboardItems: BlokkliClipboardItem[] = files.map((file, i) => {
+      const type: 'image' | 'file' = file.type.startsWith('image/')
+        ? 'image'
+        : 'file'
+      return {
+        type,
+        id: generateUUID(),
+        itemBundle: bundle,
+        data: results[i]!,
+        additional: file.name,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+      }
+    })
+
+    await state.mutateWithLoadingState(async () => {
+      let lastResult
+      for (const clipItem of clipboardItems) {
+        lastResult = await adapter.addBlockFromClipboardItem!({
+          item: clipItem,
+          blockBundle: bundle,
+          host,
+          afterUuid,
+        })
+      }
+      return lastResult!
+    })
+  } else {
+    // Text drop.
+    const text =
+      dt.getData('text/html') || dt.getData('text/plain') || dt.getData('text')
+    if (!text) {
+      return
+    }
+
+    // Re-validate bundle with actual text.
+    let resolvedBundle = bundle
+    if (adapter.clipboardMapBundle) {
+      const mapped = adapter.clipboardMapBundle({
+        type: 'plaintext',
+        text,
+      })
+      if (!mapped) {
+        return
+      }
+      // Use first bundle if array is returned.
+      resolvedBundle = Array.isArray(mapped) ? mapped[0]! : mapped
+    }
+
+    const clipboardItem: BlokkliClipboardItem = {
+      type: 'text',
+      id: generateUUID(),
+      itemBundle: resolvedBundle,
+      data: text,
+    }
+
+    await state.mutateWithLoadingState(() =>
+      adapter.addBlockFromClipboardItem!({
+        item: clipboardItem,
+        blockBundle: resolvedBundle,
+        host,
+        afterUuid,
+      }),
+    )
+  }
+}
+
+const onDropNativeDrop = async (
+  field: BlokkliFieldElement,
+  item: DraggableNativeDropItem,
+  host: BlokkliItemHost,
+  afterUuid: string | null,
+) => {
+  if (!adapter.addBlockFromClipboardItem) {
+    return
+  }
+
+  const possibleBundles = field.allowedBundles.filter((b) =>
+    item.itemBundles.includes(b),
+  )
+
+  if (possibleBundles.length === 0) {
+    return
+  }
+
+  if (possibleBundles.length > 1) {
+    // The bundle selector is async — by the time the user picks a bundle,
+    // the browser will have invalidated the DataTransfer object, making
+    // dt.getData() return empty strings. Eagerly read text data now and
+    // store it as clipboardItems so executeNativeDrop can use the clipboard
+    // path instead.
+    if (!item.clipboardItems?.length && item.dataTransfer) {
+      const dt = item.dataTransfer
+      if (dt.files.length === 0) {
+        const text =
+          dt.getData('text/html') ||
+          dt.getData('text/plain') ||
+          dt.getData('text')
+        if (text) {
+          item.clipboardItems = [
+            {
+              type: 'text',
+              id: generateUUID(),
+              itemBundle: possibleBundles[0]!,
+              data: text,
+            },
+          ]
+        }
+      }
+    }
+
+    bundleSelectorData.value = {
+      bundles: possibleBundles,
+      anchorCoordinates: getAnchorCoordinates(),
+      item,
+      host,
+      field,
+      afterUuid,
+    }
+    return
+  }
+
+  const bundle = possibleBundles[0]!
+  await executeNativeDrop(item, host, afterUuid, bundle)
 }
 
 const onDropMediaLibraryItem = async (
@@ -433,6 +665,8 @@ const onDrop = async (e: DropTargetEvent) => {
       await onDropReusable(typed.item, host, afterUuid)
     } else if (typed.itemType === 'clipboard') {
       await onDropClipboardItem(typed.item, host, afterUuid)
+    } else if (typed.itemType === 'native_drop') {
+      await onDropNativeDrop(e.field, typed.item, host, afterUuid)
     } else if (typed.itemType === 'search_content') {
       await onDropSearchContentItem(e.field, typed.item, host, afterUuid)
     } else if (typed.itemType === 'action') {
@@ -506,6 +740,11 @@ onBlokkliEvent('state:reloaded', async function () {
     fieldName: editableField,
     uuid: newUuid,
   })
+})
+
+onBlokkliEvent('dragging:move', (e) => {
+  mouseX.value = e.x
+  mouseY.value = e.y
 })
 
 onBlokkliEvent('dragging:drop', onDrop)

@@ -994,7 +994,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       ) {
         return 'video'
       } else if (e.type === 'plaintext') {
-        return 'text'
+        return ['text', 'title']
       } else if (e.type === 'image') {
         return 'image'
       } else if (e.type === 'file') {
@@ -1131,11 +1131,22 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     addBlockFromClipboardItem(e) {
-      if (e.item.itemBundle === 'text') {
+      if (e.blockBundle === 'text' && e.item.type === 'text') {
         return addMutation('add', {
           bundle: 'text',
           values: {
             text: e.item.data,
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.blockBundle === 'title' && e.item.type === 'text') {
+        return addMutation('add', {
+          bundle: 'title',
+          values: {
+            title: e.item.data,
           },
           hostEntityType: e.host.type,
           hostEntityUuid: e.host.uuid,

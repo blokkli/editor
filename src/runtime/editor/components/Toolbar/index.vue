@@ -7,8 +7,8 @@
   />
 
   <div
-    ref="sidebarRightWrapper"
     v-show="activeSidebarRight || activeSidebarRightBottom"
+    ref="sidebarRightWrapper"
     class="bk-sidebar-right-wrapper"
     :class="{ 'bk-is-resizing-split': isResizingSplit }"
   >
@@ -142,8 +142,7 @@ function onSplitPointerUp() {
   const wrapper = sidebarRightWrapper.value
   if (wrapper && activeSplitHeight.value !== null) {
     const wrapperHeight = wrapper.clientHeight
-    splitPercent.value =
-      (activeSplitHeight.value / wrapperHeight) * 100
+    splitPercent.value = (activeSplitHeight.value / wrapperHeight) * 100
   }
   activeSplitHeight.value = null
   isResizingSplit.value = false

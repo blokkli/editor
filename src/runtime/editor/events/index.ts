@@ -225,6 +225,7 @@ export interface EventbusEvents {
   'multi-select:start': MultiSelectStartEvent
   'dragging:start': DraggableStartEvent
   'dragging:drop': DropTargetEvent
+  'dragging:move': Coord
   'dragging:end': undefined
   'add:block:new': AddNewBlockEvent
   updateMutatedFields: UpdateMutatedFieldsEvent

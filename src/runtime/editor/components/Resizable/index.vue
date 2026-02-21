@@ -8,7 +8,10 @@
     <div class="bk-resizable-inner">
       <slot />
     </div>
-    <button class="bk-resizable-handle bk-is-vertical" @mousedown="onMouseDown" />
+    <button
+      class="bk-resizable-handle bk-is-vertical"
+      @mousedown="onMouseDown"
+    />
   </div>
 </template>
 

@@ -98,12 +98,22 @@ export interface DraggableClipboardItem {
   clipboardId: string
 }
 
+export interface DraggableNativeDropItem {
+  itemType: 'native_drop'
+  element: () => HTMLElement
+  itemBundles: string[]
+  dataTransfer: DataTransfer | null
+  clipboardItems?: BlokkliClipboardItem[]
+}
+
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
     /**
      * Determine the block bundle for the given clipboard item.
      */
-    clipboardMapBundle?(e: ClipboardMapBundleEvent): string | undefined | null
+    clipboardMapBundle?(
+      e: ClipboardMapBundleEvent,
+    ): string | string[] | undefined | null
 
     /**
      * Add a clipboard item.
@@ -124,5 +134,6 @@ declare module '#blokkli/editor/adapter' {
 declare module '#blokkli/editor/types/draggable' {
   interface DraggableItemTypes {
     clipboard: DraggableClipboardItem
+    native_drop: DraggableNativeDropItem
   }
 }

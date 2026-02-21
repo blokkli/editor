@@ -70,7 +70,7 @@ const props = defineProps<{
 }>()
 
 const MAX_WIDTH = 350
-const MAX_HEIGHT = 150
+const MAX_HEIGHT = 200
 
 const labelEl = useTemplateRef('labelEl')
 
@@ -274,14 +274,26 @@ onMounted(() => {
     return
   }
 
+  const mouseInsideBound = isInsideRect(
+    props.startCoords.x,
+    props.startCoords.y,
+    boundRect.rect,
+  )
   const bounds = getDraggingBounds(
     props.startCoords,
     boundRect.rect,
     MAX_WIDTH,
     MAX_HEIGHT,
   )
-  const boundsX = props.isTouch ? 0 : bounds.x
-  const boundsY = props.isTouch ? translateY.value : bounds.y
+  let boundsX = props.isTouch ? 0 : bounds.x
+  let boundsY = props.isTouch ? translateY.value : bounds.y
+
+  // When the mouse is not inside any dragged element (e.g. copy-paste),
+  // center the drag preview under the cursor.
+  if (!mouseInsideBound && !props.isTouch) {
+    boundsX = props.startCoords.x - bounds.width / 2
+    boundsY = props.startCoords.y - bounds.height / 2
+  }
 
   offsetX.value = props.startCoords.x - boundsX
   offsetY.value = props.startCoords.y - boundsY
@@ -363,7 +375,7 @@ onMounted(() => {
 
       return {
         isTop,
-        from: ui.lowPerformanceMode.value ? to : from,
+        from: ui.lowPerformanceMode.value || !mouseInsideBound ? to : from,
         to,
         width: item.element.offsetWidth,
         height: item.element.offsetHeight,
@@ -374,7 +386,7 @@ onMounted(() => {
             ? realBackgroundColor(item.element)
             : '',
         prevVisibility:
-          item.item.itemType === 'existing' ||
+          (item.item.itemType === 'existing' && !item.item.isCopy) ||
           item.item.itemType === 'existing_structure'
             ? item.element.style.visibility
             : undefined,
@@ -391,6 +403,10 @@ onMounted(() => {
       item.item.itemType === 'existing' ||
       item.item.itemType === 'existing_structure'
     ) {
+      // When copying, keep the original elements visible.
+      if (item.item.itemType === 'existing' && item.item.isCopy) {
+        return
+      }
       // Set the visibility to hidden. Unlike setting opacity or filter, this
       // does not trigger layout trashing and style recalculation.
       item.element.style.visibility = 'hidden'

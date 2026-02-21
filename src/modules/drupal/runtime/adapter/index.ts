@@ -1085,21 +1085,21 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             }
 
             return false
-          })?.possibleParagraphBundles?.[0]
+          })?.possibleParagraphBundles
         } else if (e.type === 'plaintext') {
           return config.clipboard.find((v) => {
             return (
               v?.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
             )
-          })?.possibleParagraphBundles?.[0]
+          })?.possibleParagraphBundles
         } else if (e.type === 'image') {
           return config.clipboard.find((v) => {
             return v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
-          })?.possibleParagraphBundles?.[0]
+          })?.possibleParagraphBundles
         } else if (e.type === 'file') {
           return config.clipboard.find((v) => {
             return v?.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
-          })?.possibleParagraphBundles?.[0]
+          })?.possibleParagraphBundles
         }
       }
     }

@@ -247,6 +247,11 @@ export type AnimationProvider = {
   cursor: ComputedRef<CursorKeyword>
 
   /**
+   * Get the current mouse coordinates.
+   */
+  getMouseCoords: () => Coord
+
+  /**
    * Handle a click event by calling onClick handlers on renderers.
    * Returns true if any renderer claimed the click, false otherwise.
    */
@@ -882,6 +887,14 @@ export default function (
   onBlokkliEvent('option:update', requestDraw)
   onBlokkliEvent('state:reloaded', requestDraw)
 
+  // During native drag (file drop from OS), pointermove doesn't fire.
+  // The DragIndicator feeds coordinates via this event instead.
+  onBlokkliEvent('dragging:move', (e) => {
+    mouseX = e.x
+    mouseY = e.y
+    requestDraw()
+  })
+
   const dpi = computed(() => {
     const viewportWidth = ui.viewport.value.width
     const viewportHeight = ui.viewport.value.height
@@ -988,6 +1001,7 @@ export default function (
     setCanvasElement,
     removeCanvasElement,
     cursor,
+    getMouseCoords: () => ({ x: mouseX, y: mouseY }),
     handleClick,
     registerRenderer,
     unregisterRenderer,

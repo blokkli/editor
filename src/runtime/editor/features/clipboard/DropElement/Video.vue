@@ -15,9 +15,11 @@
 import { computed } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { ClipboardItemVideo } from '../../types'
-
-const props = defineProps<ClipboardItemVideo>()
+const props = defineProps<{
+  data: string
+  videoService?: string
+  videoId: string
+}>()
 
 const imgUrl = computed(() => {
   if (props.videoService === 'youtube') {

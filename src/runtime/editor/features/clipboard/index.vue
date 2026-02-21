@@ -1,70 +1,13 @@
 <template>
-  <PluginSidebar
-    v-if="adapter.addBlockFromClipboardItem"
-    id="clipboard"
-    ref="plugin"
-    :title="$t('clipboard', 'Clipboard')"
-    :tour-text="
-      $t(
-        'clipboardTourText',
-        'Drag and drop content pasted from your clipboard into the page to create a matching block.',
-      )
-    "
-    edit-only
-    icon="bk_mdi_content_paste"
-    weight="-30"
-  >
-    <div class="bk bk-clipboard bk-control">
-      <div
-        v-if="!pastedItems.length"
-        class="bk-clipboard-info bk-sidebar-padding"
-      >
-        <h4>{{ $t('clipboardEmpty', 'No items in the clipboard') }}</h4>
-        <div
-          v-if="!ui.isMobile.value"
-          v-html="
-            $t(
-              'clipboardExplanation',
-              `<p>
-    Use Ctrl-V on the page to paste content. These
-    will then be displayed here.
-  </p>
-  <p>
-    Use Ctrl-F to search for existing content and paste it into
-    the clipboard.
-  </p>`,
-            )
-          "
-        />
-      </div>
-      <ClipboardList
-        v-if="pastedItems.length"
-        :items="pastedItems"
-        @remove="remove"
+  <Teleport :to="ui.mainLayoutElement.value">
+    <div class="bk-clipboard-drop-element-wrapper">
+      <DropElement
+        ref="dropElementRef"
+        :bundles="directDropBundles"
+        :items="dropItems"
       />
-      <div class="bk-clipboard-form bk-sidebar-padding">
-        <div class="bk-clipboard-input">
-          <input
-            type="text"
-            class="bk-form-input"
-            :placeholder="
-              $t('clipboardPastePlaceholder', 'Paste text or media here')
-            "
-            @paste.stop.prevent="onManualPaste"
-            @keydown.stop
-          />
-        </div>
-        <div class="bk-clipboard-upload">
-          <input type="file" @change="onFileInput" />
-          <div class="bk-button bk-is-primary">
-            <Icon name="bk_mdi_upload" />
-          </div>
-        </div>
-      </div>
     </div>
-  </PluginSidebar>
-
-  <DragIndicator @drop="onDrop" />
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -78,13 +21,10 @@ import {
   useTemplateRef,
 } from '#imports'
 
-import { PluginSidebar } from '#blokkli/editor/plugins'
-import ClipboardList from './List/index.vue'
-import DragIndicator from './DragIndicator/index.vue'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
-import { Icon } from '#blokkli/editor/components'
 import getVideoId from 'get-video-id'
+import DropElement, { type DropElementItem } from './DropElement/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
@@ -93,35 +33,242 @@ import {
   defineShortcut,
   onBlokkliEvent,
 } from '#blokkli/editor/composables'
-import type { BlokkliClipboardItem } from './types'
+import type { BlokkliClipboardItem, DraggableNativeDropItem } from './types'
+import { buildMapBundleEvent, sanitizeHtml } from './helpers'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
 
-const { settings, logger } = defineBlokkliFeature({
+const { logger } = defineBlokkliFeature({
   id: 'clipboard',
   label: 'Clipboard',
   icon: 'bk_mdi_content_paste',
   description:
     'Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.',
-  settings: {
-    openSidebarOnPaste: {
-      type: 'checkbox',
-      default: true,
-      label: 'Open sidebar when pasting',
-      description:
-        'Automatically opens the sidebar when pasting content from the clipboard.',
-      group: 'behavior',
-    },
-  },
 
   screenshot: 'feature-clipboard.jpg',
 })
 
-const { selection, $t, adapter, state, ui, types, keyboard, blocks, fields } =
-  useBlokkli()
+const {
+  selection,
+  $t,
+  adapter,
+  state,
+  ui,
+  types,
+  keyboard,
+  blocks,
+  fields,
+  eventBus,
+  animation,
+} = useBlokkli()
 
-const plugin = useTemplateRef('plugin')
 const selectionClipboard = ref<string[]>([])
 
+// ---------------------------------------------------------------------------
+// Drop element state (used for both native drag and clipboard paste).
+// ---------------------------------------------------------------------------
+const isDirectDrop = ref(false)
+const directDropBundles = ref<string[]>([])
+const dropItems = ref<DropElementItem[]>([])
+const dropElementRef = useTemplateRef('dropElementRef')
+let dragCounter = 0
+let nativeDropItem: DraggableNativeDropItem | null = null
+
+// ---------------------------------------------------------------------------
+// Shared helpers.
+// ---------------------------------------------------------------------------
+function positionDropElement(x: number, y: number) {
+  const el = dropElementRef.value?.$el as HTMLElement | undefined
+  const wrapper = el?.parentElement
+  if (wrapper && el) {
+    const w = el.offsetWidth
+    const h = el.offsetHeight
+    wrapper.style.left = x - w / 2 + 'px'
+    wrapper.style.top = y - h / 2 + 'px'
+  }
+}
+
+function normalizeBundles(
+  result: string | string[] | undefined | null,
+): string[] | null {
+  if (!result) return null
+  return Array.isArray(result) ? result : [result]
+}
+
+function startClipboardDrag(
+  item: BlokkliClipboardItem,
+  bundles?: string[],
+  allItems?: BlokkliClipboardItem[],
+) {
+  if (
+    !adapter.clipboardMapBundle ||
+    !adapter.addBlockFromClipboardItem ||
+    state.editMode.value !== 'editing' ||
+    !dropElementRef.value
+  ) {
+    return
+  }
+
+  const itemBundles = bundles || [item.itemBundle]
+  if (!itemBundles.length) {
+    return
+  }
+
+  const items = allItems || [item]
+  directDropBundles.value = itemBundles
+  dropItems.value = items.map((v) => ({
+    type: v.type,
+    data: v.data,
+    fileName: 'fileName' in v ? v.fileName : undefined,
+    fileSize: 'fileSize' in v ? v.fileSize : undefined,
+    videoId: 'videoId' in v ? v.videoId : undefined,
+    videoService: 'videoService' in v ? v.videoService : undefined,
+  }))
+
+  const coords = animation.getMouseCoords()
+  positionDropElement(coords.x, coords.y)
+
+  const el = dropElementRef.value.$el as HTMLElement
+
+  nativeDropItem = {
+    itemType: 'native_drop',
+    itemBundles,
+    dataTransfer: null,
+    clipboardItems: allItems || [item],
+    element: () => el,
+  }
+
+  isDirectDrop.value = true
+
+  eventBus.emit('dragging:start', {
+    items: [nativeDropItem],
+    coords,
+    mode: 'mouse',
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Native drag (file/text from OS).
+// ---------------------------------------------------------------------------
+function tryStartDirectDrop(e: DragEvent): boolean {
+  if (
+    !adapter.clipboardMapBundle ||
+    !adapter.addBlockFromClipboardItem ||
+    state.editMode.value !== 'editing' ||
+    !dropElementRef.value
+  ) {
+    return false
+  }
+
+  const mapEvent = buildMapBundleEvent(e)
+  if (!mapEvent) {
+    return false
+  }
+
+  const bundles = normalizeBundles(adapter.clipboardMapBundle(mapEvent))
+  if (!bundles) {
+    return false
+  }
+
+  const itemType = mapEvent.type === 'plaintext' ? 'text' : mapEvent.type
+  const fileCount = mapEvent.fileCount || 1
+
+  directDropBundles.value = bundles
+  // During native drag we only know the type and maybe file name — no data yet.
+  dropItems.value = Array.from({ length: fileCount }, () => ({
+    type: itemType as DropElementItem['type'],
+    fileName: mapEvent.fileName,
+  }))
+  positionDropElement(e.clientX, e.clientY)
+
+  const el = dropElementRef.value!.$el as HTMLElement
+
+  nativeDropItem = {
+    itemType: 'native_drop',
+    itemBundles: bundles,
+    dataTransfer: null,
+    element: () => el,
+  }
+
+  isDirectDrop.value = true
+
+  eventBus.emit('dragging:start', {
+    items: [nativeDropItem],
+    coords: { x: e.clientX, y: e.clientY },
+    mode: 'mouse',
+  })
+
+  return true
+}
+
+function resetDrag() {
+  dragCounter = 0
+  if (isDirectDrop.value) {
+    eventBus.emit('dragging:end')
+    isDirectDrop.value = false
+    nativeDropItem = null
+    directDropBundles.value = []
+    dropItems.value = []
+  }
+}
+
+function onDragEnter(e: DragEvent) {
+  dragCounter++
+  if (dragCounter === 1) {
+    tryStartDirectDrop(e)
+  }
+}
+
+function onDragLeave() {
+  dragCounter--
+  if (dragCounter <= 0) {
+    resetDrag()
+  }
+}
+
+function onDragOver(e: DragEvent) {
+  e.preventDefault()
+  if (isDirectDrop.value) {
+    eventBus.emit('dragging:move', { x: e.clientX, y: e.clientY })
+  }
+}
+
+function onNativeDrop(e: DragEvent) {
+  e.preventDefault()
+
+  if (isDirectDrop.value && nativeDropItem && e.dataTransfer) {
+    nativeDropItem.dataTransfer = e.dataTransfer
+    // Emit mouse:up so the Renderer can check for a valid drop target and
+    // potentially emit dragging:drop. mitt handlers run synchronously, so
+    // by the time this returns dragging:drop has already been dispatched
+    // (if a valid target was found).
+    eventBus.emit('mouse:up', {
+      type: 'mouse',
+      x: e.clientX,
+      y: e.clientY,
+      distance: 100,
+      duration: 1000,
+    })
+    // Always emit dragging:end to clean up. In normal drag the pointerup
+    // DOM handler does this, but pointerup never fires during a native drag.
+    eventBus.emit('dragging:end')
+    dragCounter = 0
+    isDirectDrop.value = false
+    nativeDropItem = null
+    directDropBundles.value = []
+    dropItems.value = []
+    return
+  }
+
+  resetDrag()
+  if (e.dataTransfer) {
+    onDropFallback(e.dataTransfer)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Clipboard paste & drop fallback handling.
+// ---------------------------------------------------------------------------
 type DropdownItem = {
   id: 'copy' | 'paste'
   label: string
@@ -159,143 +306,99 @@ function onSelectDropdownItem(item: DropdownItem) {
   }
 }
 
-const ALLOWED_HTML_ATTRIBUTES = ['href']
-
-const _MOCK: BlokkliClipboardItem[] = [
-  {
-    type: 'text',
-    id: generateUUID(),
-    itemBundle: 'text',
-    data: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-  },
-  {
-    type: 'file',
-    id: generateUUID(),
-    itemBundle: 'image',
-    data: 'asdfasdf',
-    additional: 'asdfasdfasdf',
-    fileName: 'my-little-document.pdf',
-    fileSize: 26624,
-    fileType: 'application/pdf',
-  },
-  {
-    type: 'file',
-    id: generateUUID(),
-    itemBundle: 'image',
-    data: 'asdfasdf',
-    additional: 'asdfasdfasdf',
-    fileName: 'my-little-document.pdf',
-    fileSize: 36623,
-    fileType: 'application/pdf',
-  },
-  {
-    type: 'video',
-    id: generateUUID(),
-    itemBundle: 'video',
-    data: 'https://vimeo.com/53520224',
-    videoService: 'vimeo',
-    videoId: '53520224',
-  },
-  {
-    type: 'video',
-    id: generateUUID(),
-    itemBundle: 'video',
-    data: 'https://www.youtube.com/watch?v=zsvYVVRAk0c',
-    videoService: 'youtube',
-    videoId: 'zsvYVVRAk0c',
-  },
-]
-
-const pastedItems = ref<BlokkliClipboardItem[]>([])
-
-const onFileInput = (e: Event) => {
-  e.preventDefault()
-  if (e.target instanceof HTMLInputElement) {
-    const files = e.target.files
-    if (files) {
-      handleFiles(files)
-    }
-  }
-}
-
-function removeAllAttrs(element: Element) {
-  for (let i = element.attributes.length; i-- > 0; ) {
-    const attribute = element.attributes[i]!
-    if (!ALLOWED_HTML_ATTRIBUTES.includes(attribute.name)) {
-      element.removeAttributeNode(attribute)
-    }
-  }
-}
-
-function removeAttributes(el: Element) {
-  if (el.tagName === 'IMG' || el.tagName === 'BR') {
-    el.remove()
-    return
-  }
-  const children = el.children
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i]!
-    removeAllAttrs(child)
-    if (child.children.length) {
-      removeAttributes(child)
-    }
-  }
-}
-
-const onManualPaste = (e: ClipboardEvent) => {
-  onPaste(e, true)
-}
-
-function handleFiles(data: DataTransfer | FileList) {
-  if (!FileReader) {
-    return
-  }
-
-  const files = data instanceof DataTransfer ? [...data.files] : [...data]
-
-  files.forEach((file) => {
+function readFileAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
     const fr = new FileReader()
-    fr.onload = function () {
-      if (!adapter.clipboardMapBundle) {
-        return
+    fr.onload = () => {
+      if (typeof fr.result === 'string') {
+        resolve(fr.result)
+      } else {
+        reject(new Error('FileReader result is not a string'))
       }
-
-      if (typeof fr.result !== 'string') {
-        return
-      }
-
-      const type: 'image' | 'file' = file.type.startsWith('image/')
-        ? 'image'
-        : 'file'
-
-      // Let the adapter decide which block bundle can be created from this clipboard item.
-      const itemBundle = adapter.clipboardMapBundle({
-        type,
-        fileType: file.type,
-        fileSize: file.size,
-      })
-
-      if (!itemBundle) {
-        return
-      }
-
-      pastedItems.value.push({
-        type,
-        itemBundle,
-        id: generateUUID(),
-        data: fr.result,
-        additional: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-        fileName: file.name,
-      })
-      showClipboardSidebar()
     }
+    fr.onerror = () => reject(fr.error)
     fr.readAsDataURL(file)
   })
 }
 
-function onDrop(data: DataTransfer) {
+async function handleFiles(data: DataTransfer | FileList) {
+  if (!FileReader || !adapter.clipboardMapBundle) {
+    return
+  }
+
+  const files = data instanceof DataTransfer ? [...data.files] : [...data]
+  if (!files.length) {
+    return
+  }
+
+  // Map each file to its bundles and intersect to find common bundles.
+  let commonBundles: string[] | null = null
+  for (const file of files) {
+    const type: 'image' | 'file' = file.type.startsWith('image/')
+      ? 'image'
+      : 'file'
+    const fileBundles = normalizeBundles(
+      adapter.clipboardMapBundle({
+        type,
+        fileType: file.type,
+        fileSize: file.size,
+      }),
+    )
+    if (!fileBundles) {
+      emitPasteError(
+        $t('clipboardUnsupportedFileType', 'This file type is not supported.'),
+      )
+      return
+    }
+    if (commonBundles === null) {
+      commonBundles = fileBundles
+    } else {
+      commonBundles = commonBundles.filter((b) => fileBundles.includes(b))
+    }
+  }
+
+  if (!commonBundles || !commonBundles.length) {
+    emitPasteError(
+      $t(
+        'clipboardNoCommonBundle',
+        'No common block type for these files.',
+      ),
+    )
+    return
+  }
+
+  // Read all files.
+  let results: string[]
+  try {
+    results = await Promise.all(files.map(readFileAsDataURL))
+  } catch {
+    return
+  }
+
+  // Build clipboard items from results.
+  const items: BlokkliClipboardItem[] = []
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]!
+    const result = results[i]!
+    const type: 'image' | 'file' = file.type.startsWith('image/')
+      ? 'image'
+      : 'file'
+    items.push({
+      type,
+      itemBundle: commonBundles[0]!,
+      id: generateUUID(),
+      data: result,
+      additional: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      fileName: file.name,
+    })
+  }
+
+  startClipboardDrag(items[0]!, commonBundles, items)
+}
+
+function onDropFallback(data: DataTransfer) {
   if (data.files.length) {
     handleFiles(data)
   } else {
@@ -309,15 +412,25 @@ function onDrop(data: DataTransfer) {
   }
 }
 
-const showClipboardSidebar = () => {
-  if (settings.value.openSidebarOnPaste) {
-    plugin?.value?.showSidebar()
-  }
-}
-
 function emitPasteError(message: string) {
   const prefix = $t('clipboardPasteError', 'Failed to paste:')
   emitMessage(`${prefix} ${message}`, 'error')
+}
+
+function startCopyDrag(existingBlocks: RenderedFieldListItem[]) {
+  const items: DraggableExistingBlock[] = existingBlocks.map((block) => ({
+    itemType: 'existing',
+    block,
+    isCopy: true,
+  }))
+
+  const coords = animation.getMouseCoords()
+
+  eventBus.emit('dragging:start', {
+    items,
+    coords,
+    mode: 'mouse',
+  })
 }
 
 const handleSelectionPaste = (pastedUuids: string[]) => {
@@ -325,23 +438,28 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     return
   }
 
-  // Pasting is only possible into a single field.
-  if (selection.uuids.value.length !== 1) {
-    emitPasteError(
-      $t(
-        'clipboardPasteErrorOneField',
-        'Pasting is only possible into one field at a time.',
-      ),
-    )
+  if (!pastedUuids.length) {
     return
   }
 
-  if (!pastedUuids.length) {
+  // Validate that the copied blocks still exist.
+  const existingBlocks = pastedUuids
+    .map((uuid) => blocks.getBlock(uuid))
+    .filter((block): block is RenderedFieldListItem => !!block)
+
+  if (!existingBlocks.length) {
+    return
+  }
+
+  // If nothing is selected, start a drag interaction.
+  if (selection.uuids.value.length !== 1) {
+    startCopyDrag(existingBlocks)
     return
   }
 
   const block = selection.items.value[0]
   if (!block) {
+    startCopyDrag(existingBlocks)
     return
   }
 
@@ -353,15 +471,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   // Only try to paste into nested fields if Shift is not pressed
   if (!keyboard.isPressingShift.value) {
     // Get bundles and fragments of pasted blocks first
-    const pastedBundles = pastedUuids
-      .map((uuid) => blocks.getBlock(uuid)?.bundle)
+    const pastedBundles = existingBlocks
+      .map((b) => b.bundle)
       .filter((bundle): bundle is string => !!bundle)
 
-    const pastedFragments = pastedUuids
-      .map((uuid) => {
-        const block = blocks.getBlock(uuid)
-        if (block?.bundle === fragmentBlockBundle && block.fragment?.name) {
-          return block.fragment.name
+    const pastedFragments = existingBlocks
+      .map((b) => {
+        if (b.bundle === fragmentBlockBundle && b.fragment?.name) {
+          return b.fragment.name
         }
         return null
       })
@@ -422,109 +539,58 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     }
   }
 
-  // If no suitable nested field found, use the parent field (existing logic)
+  // If no suitable nested field found, use the parent field
   if (!targetField || !targetFieldElement || !targetFieldKey) {
     const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
-    if (!field) {
-      return
-    }
-
-    const fieldElement = fields.find(field.entityUuid, field.name)
-    if (!fieldElement) {
-      return
-    }
-
-    targetField = {
-      entityType: field.entityType,
-      entityUuid: field.entityUuid,
-      name: field.name,
-    }
-    targetFieldElement = fieldElement
-    targetFieldKey = getFieldKey(field.entityUuid, field.name)
-    preceedingUuid = selection.uuids.value[0] ?? null
-  }
-
-  const pastedBlocks: RenderedFieldListItem[] = []
-  const notAllowedBundles: string[] = []
-  const notAllowedFragments: string[] = []
-
-  for (let i = 0; i < pastedUuids.length; i++) {
-    const uuid = pastedUuids[i]
-    if (!uuid) {
-      continue
-    }
-    const block = blocks.getBlock(uuid)
-    if (!block) {
-      continue
-    }
-    const isAllowed = targetFieldElement.allowedBundles.includes(block.bundle)
-    if (!isAllowed) {
-      notAllowedBundles.push(block.bundle)
-      continue
-    }
-
-    // Check fragment restrictions for blokkli_fragment bundles
-    if (
-      block.bundle === fragmentBlockBundle &&
-      block.fragment?.name &&
-      targetFieldElement.allowedFragments.length > 0
-    ) {
-      const fragmentAllowed = targetFieldElement.allowedFragments.includes(
-        block.fragment.name,
-      )
-      if (!fragmentAllowed) {
-        notAllowedFragments.push(block.fragment.name)
-        continue
+    if (field) {
+      const fieldElement = fields.find(field.entityUuid, field.name)
+      if (fieldElement) {
+        targetField = {
+          entityType: field.entityType,
+          entityUuid: field.entityUuid,
+          name: field.name,
+        }
+        targetFieldElement = fieldElement
+        targetFieldKey = getFieldKey(field.entityUuid, field.name)
+        preceedingUuid = selection.uuids.value[0] ?? null
       }
     }
-
-    pastedBlocks.push(block)
   }
 
-  if (!pastedBlocks.length) {
-    if (notAllowedFragments.length) {
-      const message =
-        notAllowedFragments.length === 1
-          ? $t(
-              'clipboardPasteErrorAllowedFragmentsSingle',
-              'Fragment "@types" is not allowed here.',
-            )
-          : $t(
-              'clipboardPasteErrorAllowedFragmentsMultiple',
-              'Fragments (@types) are not allowed here.',
-            )
-      emitPasteError(message.replace('@types', notAllowedFragments.join(', ')))
-      return
-    }
-
-    const blockTypes = notAllowedBundles.map((bundle) => {
-      return types.getBlockBundleDefinition(bundle)?.label ?? bundle
-    })
-    const message =
-      blockTypes.length === 1
-        ? $t(
-            'clipboardPasteErrorAllowedBundlesSingle',
-            'Block type "@types" is not allowed here.',
-          )
-        : $t(
-            'clipboardPasteErrorAllowedBundlesMultiple',
-            'Block types (@types) are not allowed here.',
-          )
-    emitPasteError(message.replace('@types', blockTypes.join(', ')))
+  // If we couldn't resolve a target field, fall back to drag.
+  if (!targetField || !targetFieldElement || !targetFieldKey) {
+    startCopyDrag(existingBlocks)
     return
   }
 
+  // Filter blocks to only those allowed in the target field.
+  const pastedBlocks = existingBlocks.filter((b) => {
+    if (!targetFieldElement.allowedBundles.includes(b.bundle)) {
+      return false
+    }
+    if (
+      b.bundle === fragmentBlockBundle &&
+      b.fragment?.name &&
+      targetFieldElement.allowedFragments.length > 0
+    ) {
+      return targetFieldElement.allowedFragments.includes(b.fragment.name)
+    }
+    return true
+  })
+
+  // If none of the blocks are allowed, fall back to drag.
+  if (!pastedBlocks.length) {
+    startCopyDrag(existingBlocks)
+    return
+  }
+
+  // Check cardinality.
   const count = state.getFieldBlockCount(targetFieldKey)
   if (
     targetFieldElement.cardinality !== -1 &&
     count + pastedBlocks.length > targetFieldElement.cardinality
   ) {
-    emitPasteError(
-      $t(
-        'clipboardPasteErrorCardinality',
-        'This field only allows up to @count blocks.',
-      ).replace('@count', targetFieldElement.cardinality.toString()),
-    )
+    startCopyDrag(existingBlocks)
     return
   }
 
@@ -541,15 +607,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
   )
 }
 
-function onPaste(e: ClipboardEvent, fromInput?: boolean) {
+function onPaste(e: ClipboardEvent) {
   logger.log('Paste Event', e)
   if (state.editMode.value !== 'editing') {
     return
   }
   if (
-    !fromInput &&
-    (e.target instanceof HTMLInputElement ||
-      e.target instanceof HTMLTextAreaElement)
+    e.target instanceof HTMLInputElement ||
+    e.target instanceof HTMLTextAreaElement
   ) {
     return
   }
@@ -558,13 +623,20 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
   e.stopPropagation()
   e.preventDefault()
 
-  if (state.isLoading.value) {
+  if (state.isLoading.value || selection.isDragging.value) {
     return
   }
 
   const clipboardData = e.clipboardData
   if (!clipboardData) {
     return
+  }
+
+  // Handle files first – when pasting an image, browsers often include a
+  // text representation alongside the file data which would incorrectly
+  // trigger text handling.
+  if (clipboardData.files.length) {
+    return handleFiles(clipboardData)
   }
 
   const pastedData =
@@ -590,10 +662,6 @@ function onPaste(e: ClipboardEvent, fromInput?: boolean) {
     }
     handlePastedText(pastedData)
   }
-
-  if (clipboardData.files.length) {
-    return handleFiles(clipboardData)
-  }
 }
 
 const handlePastedText = (text: string) => {
@@ -602,52 +670,54 @@ const handlePastedText = (text: string) => {
   }
   const video = getVideoId(text)
   if (video.id && video.service) {
-    const itemBundle = adapter.clipboardMapBundle({
-      type: 'video',
-      videoService: video.service,
-      videoId: video.id,
-    })
-    if (!itemBundle) {
+    const itemBundles = normalizeBundles(
+      adapter.clipboardMapBundle({
+        type: 'video',
+        videoService: video.service,
+        videoId: video.id,
+      }),
+    )
+    if (!itemBundles) {
       return
     }
-    pastedItems.value.push({
-      type: 'video',
-      id: generateUUID(),
-      itemBundle,
-      data: text,
-      videoService: video.service,
-      videoId: video.id,
-    })
-    showClipboardSidebar()
+    startClipboardDrag(
+      {
+        type: 'video',
+        id: generateUUID(),
+        itemBundle: itemBundles[0]!,
+        data: text,
+        videoService: video.service,
+        videoId: video.id,
+      },
+      itemBundles,
+    )
     return
   }
 
   const div = document.createElement('div')
   div.innerHTML = text.replace(/&nbsp;|<br>/g, '')
 
-  removeAttributes(div)
+  sanitizeHtml(div)
   if (div.textContent) {
-    const itemBundle = adapter.clipboardMapBundle({
-      type: 'plaintext',
-      text: div.innerHTML,
-    })
-    if (!itemBundle) {
+    const itemBundles = normalizeBundles(
+      adapter.clipboardMapBundle({
+        type: 'plaintext',
+        text: div.innerHTML,
+      }),
+    )
+    if (!itemBundles) {
       return
     }
-    showClipboardSidebar()
-    pastedItems.value.push({
-      type: 'text',
-      id: generateUUID(),
-      itemBundle,
-      data: div.innerHTML,
-    })
+    startClipboardDrag(
+      {
+        type: 'text',
+        id: generateUUID(),
+        itemBundle: itemBundles[0]!,
+        data: div.innerHTML,
+      },
+      itemBundles,
+    )
   }
-}
-
-function remove(index: number) {
-  pastedItems.value = pastedItems.value.filter((_v, i) => {
-    return i !== index
-  })
 }
 
 function setClipboard(text: string) {
@@ -720,32 +790,22 @@ defineItemDropdownAction(() => {
   }
 })
 
-onBlokkliEvent('drop:clipboardItem', async (data) => {
-  const item = pastedItems.value.find((v) => v.id === data.id)
-  if (!item) {
-    return
-  }
-  if (adapter.addBlockFromClipboardItem) {
-    await state.mutateWithLoadingState(() =>
-      adapter.addBlockFromClipboardItem!({
-        afterUuid: data.afterUuid,
-        item: item,
-        blockBundle: data.blockBundle,
-        host: data.host,
-      }),
-    )
-
-    // Remove the pasted item.
-    pastedItems.value = pastedItems.value.filter((v) => v.id !== item.id)
-  }
-})
-
 onMounted(() => {
   document.addEventListener('paste', onPaste)
+  document.addEventListener('dragenter', onDragEnter)
+  document.addEventListener('dragleave', onDragLeave)
+  document.addEventListener('dragend', resetDrag)
+  document.addEventListener('dragover', onDragOver)
+  document.addEventListener('drop', onNativeDrop)
 })
 
 onUnmounted(() => {
   document.removeEventListener('paste', onPaste)
+  document.removeEventListener('dragenter', onDragEnter)
+  document.removeEventListener('dragleave', onDragLeave)
+  document.removeEventListener('dragend', resetDrag)
+  document.removeEventListener('dragover', onDragOver)
+  document.removeEventListener('drop', onNativeDrop)
 })
 </script>
 
