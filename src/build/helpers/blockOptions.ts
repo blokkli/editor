@@ -24,6 +24,9 @@ export function toRuntimeOptionArray(
   } else if (option.type === 'color') {
     return [option.type, option.default]
   } else if (option.type === 'json') {
+    if (option.dataType) {
+      return [option.type, option.default, option.dataType]
+    }
     return [option.type, option.default]
   }
   return [option.type, option.default]

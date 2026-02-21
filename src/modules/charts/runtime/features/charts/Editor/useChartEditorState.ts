@@ -1,6 +1,6 @@
 import { ref, watch, nextTick, computed } from '#imports'
 import type { BlokkliChartData, ChartColor, ChartSeries } from '../../../types'
-import { getColorIdAtIndex } from '../../../types'
+import { getColorIdAtIndex } from '../../../helpers'
 
 const MAX_HISTORY = 50
 

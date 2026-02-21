@@ -12,6 +12,7 @@
       :option="plugin.option"
       :property="plugin.property"
       :mutated-value="currentValues[plugin.property]"
+      :uuid="firstUuid"
       class="bk-blokkli-item-options-item"
       :class="{
         'bk-is-disabled': isDisabled(plugin),
@@ -33,6 +34,7 @@
         :option="plugin.option"
         :property="plugin.property"
         :mutated-value="currentValues[plugin.property]"
+        :uuid="firstUuid"
         class="bk-blokkli-item-options-item"
         :class="{
           'bk-is-disabled': isDisabled(plugin),
@@ -107,6 +109,10 @@ const props = defineProps<{
     | FragmentDefinitionInput
     | ProviderDefinitionInput
 }>()
+
+const firstUuid = computed(() =>
+  Array.isArray(props.uuids) ? props.uuids[0] : undefined,
+)
 
 let pointerTimeout: null | number = null
 let mouseLeaveTimeout: null | number = null

@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { useBlokkli } from '#imports'
-import { SUPERSCRIPTS } from '../../../../types'
+import { SUPERSCRIPTS } from '../../../../helpers'
 import { Icon } from '#blokkli/editor/components'
 
 const { $t } = useBlokkli()

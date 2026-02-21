@@ -5,6 +5,7 @@ import type { ModuleOptions } from '../build/types'
 export type Blokkli = {
   helper: ModuleHelper
   context: ModuleContext
+  $t: (key: string, defaultText: string) => string
 }
 
 type BlokkliModuleInit<O extends object> = {

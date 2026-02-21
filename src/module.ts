@@ -104,6 +104,7 @@ export default defineNuxtModule<ModuleOptions>({
     const app: Blokkli = {
       helper,
       context,
+      $t: (key: string, _defaultText: string) => key,
     }
 
     // Setup blökkli modules.

@@ -200,9 +200,7 @@ const toolContext = computed(() => ({
 
 const pendingToolComponent = computed(() => {
   if (!props.pendingToolCall) return null
-  const tool = mcpTools.find(
-    (t) => t.name === props.pendingToolCall!.toolName,
-  )
+  const tool = mcpTools.find((t) => t.name === props.pendingToolCall!.toolName)
   return tool?.component || null
 })
 

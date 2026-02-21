@@ -44,7 +44,12 @@
             />
           </div>
         </div>
-        <Preview :data="previewData" :stale="isStale" />
+        <Preview
+          :uuid
+          :option-key="optionKey"
+          :data="previewData"
+          :stale="isStale"
+        />
       </div>
 
       <div class="bk-chart-editor-section">
@@ -94,7 +99,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliChartData } from '../../../types'
-import { getDefaultChartData, getFirstColorId } from '../../../types'
+import { getDefaultChartData, getFirstColorId } from '../../../helpers'
 import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
 import { useChartEditorState } from './useChartEditorState'
@@ -109,6 +114,7 @@ import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   uuid: string
+  optionKey: string
 }>()
 
 const { $t, state } = useBlokkli()

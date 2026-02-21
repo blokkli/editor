@@ -1,9 +1,12 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { chartTypeEnum, chartColorEnum, chartSeriesSchema } from '../chart_schemas'
+import {
+  chartTypeEnum,
+  chartColorEnum,
+  chartSeriesSchema,
+} from '../chart_schemas'
 import { COLORS } from '#blokkli-build/charts-config'
-import { getDefaultChartData } from '#blokkli/charts/types'
-import { fragmentBlockBundle } from '#blokkli-build/config'
+import { getDefaultChartData } from '../../../helpers'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('UUID of the chart paragraph'),
@@ -16,9 +19,7 @@ const resultSchema = z.object({
   series: z
     .array(chartSeriesSchema.required())
     .describe('Data series with colors'),
-  categoryColors: z
-    .array(chartColorEnum)
-    .describe('Color IDs per category'),
+  categoryColors: z.array(chartColorEnum).describe('Color IDs per category'),
   footnotes: z.array(z.string()).describe('Footnote texts'),
   typeOptions: z
     .record(z.string(), z.union([z.string(), z.boolean(), z.number()]))
@@ -46,14 +47,9 @@ export default defineBlokkliAgentTool({
     if (!block) {
       return { error: `Paragraph not found: ${params.uuid}` }
     }
-    if (block.bundle !== fragmentBlockBundle) {
+    if (block.bundle !== 'chart') {
       return {
-        error: `Paragraph "${params.uuid}" is a "${block.bundle}", not a fragment.`,
-      }
-    }
-    if (block.fragment?.name !== 'blokkli_chart') {
-      return {
-        error: `Fragment "${params.uuid}" is a "${block.fragment?.name}", not a "blokkli_chart".`,
+        error: `Paragraph "${params.uuid}" is a "${block.bundle}", not a "chart".`,
       }
     }
 

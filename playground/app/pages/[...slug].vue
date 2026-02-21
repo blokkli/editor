@@ -47,12 +47,7 @@
         <BlokkliField
           name="content"
           :list="fieldContent"
-          :allowed-fragments="[
-            'cta',
-            'shader_debug',
-            'top_level_link',
-            'blokkli_chart',
-          ]"
+          :allowed-fragments="['cta', 'shader_debug', 'top_level_link']"
         >
           <DevOnly>
             <div>

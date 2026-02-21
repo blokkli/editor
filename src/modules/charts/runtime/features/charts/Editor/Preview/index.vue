@@ -1,26 +1,56 @@
 <template>
   <div :class="{ 'bk-is-stale': stale }">
-    <ChartRenderer v-if="data" v-bind="data" />
-    <div v-else class="bk-chart-preview-placeholder">
-      {{
-        $t(
-          'chartsPreviewPlaceholder',
-          'Click "Refresh Preview" to see the chart.',
-        )
-      }}
-    </div>
+    <BlokkliItem
+      v-if="item"
+      v-bind="item"
+      :options="mergedOptions"
+      :is-editing="false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useBlokkli } from '#imports'
+import { computed, provide, useBlokkli } from '#imports'
 import type { BlokkliChartData } from '../../../../types'
-import ChartRenderer from '../../../../components/ChartRenderer/index.vue'
+import type {
+  FieldListItemTyped,
+  ValidFieldListTypes,
+} from '#blokkli-build/generated-types'
+import {
+  INJECT_EDIT_CONTEXT,
+  INJECT_FIELD_LIST_BLOCKS,
+  INJECT_FIELD_LIST_TYPE,
+  INJECT_IS_EDITING,
+  INJECT_IS_IN_REUSABLE,
+  INJECT_PROVIDER_BLOCKS,
+} from '#blokkli/helpers/injections'
 
-const { $t } = useBlokkli()
+const { state } = useBlokkli()
 
-defineProps<{
+const props = defineProps<{
+  uuid: string
+  optionKey: string
   data: BlokkliChartData | null
   stale: boolean
 }>()
+
+const item = computed(() => state.getFieldListItem(props.uuid))
+
+const mergedOptions = computed(() => {
+  const base = item.value?.options || {}
+  return {
+    ...base,
+    [props.optionKey]: JSON.stringify(props.data),
+  }
+})
+
+const blocks = computed(() => [] as FieldListItemTyped[])
+const fieldListType = computed(() => 'default' as ValidFieldListTypes)
+
+provide(INJECT_IS_IN_REUSABLE, true)
+provide(INJECT_IS_EDITING, false)
+provide(INJECT_FIELD_LIST_BLOCKS, blocks)
+provide(INJECT_PROVIDER_BLOCKS, blocks)
+provide(INJECT_FIELD_LIST_TYPE, fieldListType)
+provide(INJECT_EDIT_CONTEXT, null)
 </script>

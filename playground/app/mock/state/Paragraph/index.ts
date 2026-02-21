@@ -2,6 +2,7 @@ import type { Paragraph } from './Paragraph'
 import { ParagraphButton } from './Button'
 import { ParagraphButtonList } from './ButtonList'
 import { ParagraphCard } from './Card'
+import { ParagraphChart } from './Chart'
 import { ParagraphFragment } from './Fragment'
 import { ParagraphFromLibrary } from './FromLibrary'
 import { ParagraphGrid } from './Grid'
@@ -36,6 +37,8 @@ export const createParagraph = (bundle: string, uuid: string): Paragraph => {
       return new ParagraphButton(uuid)
     case 'card':
       return new ParagraphCard(uuid)
+    case 'chart':
+      return new ParagraphChart(uuid)
     case 'image':
       return new ParagraphImage(uuid)
     case 'from_library':
@@ -72,6 +75,7 @@ export const getParagraphBundles = (): Array<typeof Paragraph> => {
     ParagraphButton,
     ParagraphFragment,
     ParagraphCard,
+    ParagraphChart,
     ParagraphVideo,
     ParagraphWidget,
     ParagraphTable,

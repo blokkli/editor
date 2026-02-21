@@ -13,15 +13,26 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     options.blokkliDirs ??= []
     options.blokkliDirs.push(resolve('./runtime/blokkli'))
   },
-  setup(ctx, options) {
-    ctx.context.blocks.addFile(
-      resolve('./runtime/components/Fragment/BlokkliChart.vue'),
+  setup({ context, helper, $t }, options) {
+    context.features.addFile(resolve('./runtime/features/charts/index.vue'))
+
+    context.addTemplate(chartsConfigTemplate(options))
+
+    helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
+    helper.addAlias(
+      '#blokkli/charts/components',
+      resolve('./runtime/components'),
     )
-    ctx.context.features.addFile(resolve('./runtime/features/charts/index.vue'))
-    ctx.context.addFeatureFragment('blokkli_chart')
 
-    ctx.context.addTemplate(chartsConfigTemplate(options))
-
-    ctx.helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
+    context.registerComplexOptionType({
+      id: 'chart',
+      typeName: 'BlokkliChartData',
+      typePath: resolve('./runtime/types'),
+      editorComponentPath: resolve(
+        './runtime/features/charts/Editor/index.vue',
+      ),
+      editorButtonLabel: $t('chartsEditButton', 'Edit chart...'),
+      editorIcon: 'bk_mdi_area_chart',
+    })
   },
 })

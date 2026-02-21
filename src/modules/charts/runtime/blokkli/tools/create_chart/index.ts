@@ -29,19 +29,11 @@ export default defineBlokkliAgentTool({
   },
   paramsSchema,
   resultSchema: mutationResultSchema,
-  requiredAdapterMethods: ['fragmentsAddBlock'],
+  requiredAdapterMethods: ['addNewBlocks'],
   execute(ctx, params) {
-    const { fields, definitions } = ctx.app
+    const { fields } = ctx.app
 
-    // Check if the blokkli_chart fragment exists.
-    const fragment = definitions.fragmentDefinitions.value.find(
-      (f) => f.name === 'blokkli_chart',
-    )
-    if (!fragment) {
-      return { error: 'Chart fragment "blokkli_chart" is not available.' }
-    }
-
-    // Check if the target field allows the chart fragment.
+    // Check if the target field allows the chart bundle.
     const field = fields.find(params.parent.uuid, params.parent.field)
     if (!field) {
       return {
@@ -49,9 +41,9 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    if (!field.allowedFragments.includes('blokkli_chart')) {
+    if (!field.allowedBundles.includes('chart')) {
       return {
-        error: `Field "${params.parent.field}" does not allow the "blokkli_chart" fragment. Allowed fragments: ${field.allowedFragments.length ? field.allowedFragments.join(', ') : 'none'}`,
+        error: `Field "${params.parent.field}" does not allow the "chart" bundle. Allowed bundles: ${field.allowedBundles.length ? field.allowedBundles.join(', ') : 'none'}`,
       }
     }
 
@@ -84,20 +76,26 @@ export default defineBlokkliAgentTool({
     if ('error' in resolved) return resolved
 
     const { $t } = ctx.app
+    const blockUuid = crypto.randomUUID()
 
     return {
       type: 'add' as const,
       label: $t('aiAgentCreateChartDone', 'Added chart'),
       apply: (adapter) =>
-        adapter.fragmentsAddBlock!({
-          name: 'blokkli_chart',
+        adapter.addNewBlocks({
+          blocks: [
+            {
+              bundle: 'chart',
+              blockUuid,
+              options: { data: JSON.stringify(result.data) },
+            },
+          ],
           host: {
             type: params.parent.type,
             uuid: params.parent.uuid,
             fieldName: params.parent.field,
           },
-          preceedingUuid: resolved.afterUuid,
-          options: { data: JSON.stringify(result.data) },
+          afterUuid: resolved.afterUuid,
         }),
     }
   },

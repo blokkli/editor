@@ -1,4 +1,7 @@
-import type { McpToolDefinition, McpToolCategory } from '#blokkli/agent/app/types'
+import type {
+  McpToolDefinition,
+  McpToolCategory,
+} from '#blokkli/agent/app/types'
 import type { AdapterMethods } from '#blokkli/editor/adapter'
 import type { z } from 'zod'
 import type { Component } from 'vue'

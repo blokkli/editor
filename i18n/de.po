@@ -548,6 +548,10 @@ msgctxt "aiAgentRetry"
 msgid "Retry"
 msgstr "Erneut versuchen"
 
+msgctxt "aiAgentSearchContentRunning"
+msgid "Searching content..."
+msgstr ""
+
 msgctxt "aiAgentSearchLibraryDone"
 msgid "Searched library"
 msgstr "Bibliothek durchsucht"
@@ -1059,6 +1063,10 @@ msgctxt "chartsDonutShowTotal"
 msgid "Show total"
 msgstr "Total anzeigen"
 
+msgctxt "chartsEditButton"
+msgid "Edit chart..."
+msgstr "Diagramm bearbeiten..."
+
 msgctxt "chartsEditorSaveError"
 msgid "The chart could not be saved."
 msgstr "Das Diagramm konnte nicht gespeichert werden."
@@ -1130,10 +1138,6 @@ msgstr "Oben"
 msgctxt "chartsPreview"
 msgid "Preview"
 msgstr "Vorschau"
-
-msgctxt "chartsPreviewPlaceholder"
-msgid "Click \"Refresh Preview\" to see the chart."
-msgstr "Klicken Sie auf «Vorschau aktualisieren», um das Diagramm anzuzeigen."
 
 msgctxt "chartsRadarFillOpacity"
 msgid "Fill opacity"

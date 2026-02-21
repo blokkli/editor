@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { BlokkliChartData, ChartColor } from '#blokkli/charts/types'
-import { getColorIdAtIndex } from '#blokkli/charts/types'
+import { getColorIdAtIndex } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
 

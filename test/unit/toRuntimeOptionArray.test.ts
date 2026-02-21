@@ -162,6 +162,25 @@ describe('toRuntimeOptionArray', () => {
     ])
   })
 
+  test('converts json option without dataType', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'json',
+      label: 'Data',
+      default: '{}',
+    }
+    expect(toRuntimeOptionArray(option)).toEqual(['json', '{}'])
+  })
+
+  test('converts json option with dataType', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'json',
+      label: 'Chart data',
+      default: '{}',
+      dataType: 'chart',
+    }
+    expect(toRuntimeOptionArray(option)).toEqual(['json', '{}', 'chart'])
+  })
+
   test('converts datetime-local option with undefined default', () => {
     const option: BlockOptionDefinitionBase = {
       type: 'datetime-local',

@@ -535,6 +535,10 @@ msgctxt "aiAgentRetry"
 msgid "Retry"
 msgstr ""
 
+msgctxt "aiAgentSearchContentRunning"
+msgid "Searching content..."
+msgstr ""
+
 msgctxt "aiAgentSearchLibraryDone"
 msgid "Searched library"
 msgstr ""
@@ -1037,6 +1041,10 @@ msgctxt "chartsDonutShowTotal"
 msgid "Show total"
 msgstr "Mostra totale"
 
+msgctxt "chartsEditButton"
+msgid "Edit chart..."
+msgstr ""
+
 msgctxt "chartsEditorSaveError"
 msgid "The chart could not be saved."
 msgstr ""
@@ -1107,10 +1115,6 @@ msgstr "In alto"
 
 msgctxt "chartsPreview"
 msgid "Preview"
-msgstr ""
-
-msgctxt "chartsPreviewPlaceholder"
-msgid "Click \"Refresh Preview\" to see the chart."
 msgstr ""
 
 msgctxt "chartsRadarFillOpacity"

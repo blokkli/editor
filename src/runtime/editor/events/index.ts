@@ -261,6 +261,11 @@ export interface EventbusEvents {
   'option:update': UpdateBlockOptionEvent
 
   /**
+   * Emitted when editing a complex option type (e.g. chart data).
+   */
+  'option:edit-complex': { uuid: string; key: string; dataType: string }
+
+  /**
    * Emitted after finishing changing options.
    */
   'option:finish-change': undefined

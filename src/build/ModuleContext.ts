@@ -18,11 +18,22 @@ export interface AdapterExtensionDefinition {
   path: string
 }
 
+export interface ComplexOptionTypeDefinition {
+  id: string
+  typeName: string
+  typePath: string
+  editorComponentPath: string
+  editorButtonLabel: string
+  editorIcon: string
+}
+
 export class ModuleContext {
   private templates: ModuleTemplate[] = []
   private templateContents: Map<string, string> = new Map()
   private adapterExtensions: AdapterExtensionDefinition[] = []
   private featureFragments: Set<string> = new Set()
+  private complexOptionTypes: Map<string, ComplexOptionTypeDefinition> =
+    new Map()
   public collectors: Collector[] = []
 
   constructor(
@@ -42,6 +53,19 @@ export class ModuleContext {
 
   getFeatureFragmentNames(): string[] {
     return [...this.featureFragments.values()]
+  }
+
+  registerComplexOptionType(def: ComplexOptionTypeDefinition): void {
+    if (this.complexOptionTypes.has(def.id)) {
+      throw new Error(
+        `A complex option type with id "${def.id}" already exists.`,
+      )
+    }
+    this.complexOptionTypes.set(def.id, def)
+  }
+
+  getComplexOptionTypes(): ComplexOptionTypeDefinition[] {
+    return [...this.complexOptionTypes.values()]
   }
 
   registerAdapterExtension(namespace: string, path: string): void {

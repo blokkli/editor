@@ -527,6 +527,10 @@
     "source": "Retry",
     "translation": ""
   },
+  "aiAgentSearchContentRunning": {
+    "source": "Searching content...",
+    "translation": ""
+  },
   "aiAgentSearchLibraryDone": {
     "source": "Searched library",
     "translation": ""
@@ -1023,6 +1027,10 @@
     "source": "Show total",
     "translation": "Mostra totale"
   },
+  "chartsEditButton": {
+    "source": "Edit chart...",
+    "translation": ""
+  },
   "chartsEditorSaveError": {
     "source": "The chart could not be saved.",
     "translation": ""
@@ -1093,10 +1101,6 @@
   },
   "chartsPreview": {
     "source": "Preview",
-    "translation": ""
-  },
-  "chartsPreviewPlaceholder": {
-    "source": "Click \"Refresh Preview\" to see the chart.",
     "translation": ""
   },
   "chartsRadarFillOpacity": {

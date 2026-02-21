@@ -9,7 +9,7 @@
     @submit="onSubmit"
     @close="onSubmit"
   >
-    <ChartsEditor ref="editorRef" :uuid />
+    <ChartsEditor ref="editorRef" :uuid :option-key="optionKey" />
   </NestedEditorOverlay>
 </template>
 
@@ -36,6 +36,7 @@ defineBlokkliFeature({
 const { $t, state, adapter, dom, blocks } = useBlokkli()
 
 const uuid = ref<string | null>(null)
+const optionKey = ref<string>('data')
 const element = computed(() => {
   if (!uuid.value) {
     return null
@@ -58,7 +59,7 @@ async function onSubmit() {
       adapter.updateOptions!([
         {
           uuid: uuid.value!,
-          key: 'data',
+          key: optionKey.value,
           value: JSON.stringify(chartData),
         },
       ]),
@@ -68,11 +69,10 @@ async function onSubmit() {
   uuid.value = null
 }
 
-onBlokkliEvent('fragment:edit', (data) => {
-  if (data.name === 'blokkli_chart') {
+onBlokkliEvent('option:edit-complex', (data) => {
+  if (data.dataType === 'chart') {
     uuid.value = data.uuid
-  } else {
-    uuid.value = null
+    optionKey.value = data.key
   }
 })
 </script>

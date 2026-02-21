@@ -9,8 +9,7 @@ import {
 } from '../chart_schemas'
 import { COLORS } from '#blokkli-build/charts-config'
 import type { BlokkliChartData } from '#blokkli/charts/types'
-import { getDefaultChartData } from '#blokkli/charts/types'
-import { fragmentBlockBundle } from '#blokkli-build/config'
+import { getDefaultChartData } from '../../../helpers'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('UUID of the chart paragraph to update'),
@@ -65,20 +64,14 @@ export default defineBlokkliAgentTool({
   execute(ctx, params) {
     const { blocks, state } = ctx.app
 
-    // Verify the block exists and is a chart fragment.
+    // Verify the block exists and is a chart block.
     const block = blocks.getBlock(params.uuid)
     if (!block) {
       return { error: `Paragraph not found: ${params.uuid}` }
     }
-    if (block.bundle !== fragmentBlockBundle) {
+    if (block.bundle !== 'chart') {
       return {
-        error: `Paragraph "${params.uuid}" is a "${block.bundle}", not a "${fragmentBlockBundle}".`,
-      }
-    }
-
-    if (block.fragment?.name !== 'blokkli_chart') {
-      return {
-        error: `Fragment "${params.uuid}" is a "${block.fragment?.name}", not a "blokkli_chart".`,
+        error: `Paragraph "${params.uuid}" is a "${block.bundle}", not a "chart".`,
       }
     }
 

@@ -417,6 +417,7 @@ type DefinitionOptionJson = {
   type: 'json'
   label: string
   default: string
+  dataType?: string
   description?: string
   group?: string
 }
@@ -443,6 +444,7 @@ export type BlockOptionDefinitionBase<Icon extends string = string> =
 export type RuntimeBlockOptionArray =
   | ['text', string]
   | ['json', string]
+  | ['json', string, string]
   | ['checkbox', boolean]
   | ['color', `#${string}`]
   | ['radios', string, string[]]

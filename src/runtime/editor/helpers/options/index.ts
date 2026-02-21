@@ -97,6 +97,11 @@ export function optionValueToStorable(
     if (typeof value === 'string') {
       return value
     }
+  } else if (definition.type === 'json') {
+    if (typeof value === 'string') {
+      return value
+    }
+    return JSON.stringify(value)
   }
 
   return ''

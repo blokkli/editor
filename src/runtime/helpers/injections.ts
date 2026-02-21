@@ -35,7 +35,7 @@ export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
  */
 export const INJECT_EDIT_CONTEXT = Symbol(
   'blokkli_edit_context',
-) as InjectionKey<ItemEditContext>
+) as InjectionKey<ItemEditContext | null>
 
 /**
  * Whether we're currently editing (within the editor).

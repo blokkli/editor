@@ -190,7 +190,7 @@ export function defineBlokkli<
     bundle !== fragmentBlockBundle
   ) {
     const isProxyMode = inject(INJECT_FIELD_USES_PROXY, false)
-    if (!isProxyMode) {
+    if (!isProxyMode && isEditing) {
       // The block registration is always done by the "actual" block in case of reusable blocks.
       // For this reason we use the injected UUID of the from_library block for the registration.
       editContext.useBlockRegistration(editContext.dom, reusableUuid ?? uuid)

@@ -1,4 +1,4 @@
-import { type Plugin } from 'rollup'
+import type { Plugin } from 'rollup'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import MagicString from 'magic-string'
@@ -271,10 +271,7 @@ function validateTransformedOutput(
  *
  * Exported for testing.
  */
-export function transformToolSource(
-  source: string,
-  filePath?: string,
-): string {
+export function transformToolSource(source: string, filePath?: string): string {
   const ast = parse(source, {
     sourceType: 'module',
     ecmaVersion: 'latest',

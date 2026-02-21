@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, useTemplateRef } from '#imports'
 import type { BlokkliChartData } from '../../types'
-import { resolveChartColor, applyFootnotes, SUPERSCRIPTS } from '../../types'
+import { resolveChartColor, applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'

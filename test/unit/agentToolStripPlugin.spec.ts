@@ -281,9 +281,9 @@ var stdin_default = defineBlokkliAgentTool({
 });
 `)
 
-    expect(() =>
-      transformToolSource(input, '/path/to/tool/index.ts'),
-    ).toThrow('/path/to/tool/index.ts')
+    expect(() => transformToolSource(input, '/path/to/tool/index.ts')).toThrow(
+      '/path/to/tool/index.ts',
+    )
   })
 })
 

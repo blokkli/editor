@@ -25,6 +25,7 @@ import type {
 
 import type { GlobalOptionsType } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { ComplexOptionTypeMap } from '#blokkli-build/complex-option-types'
 import type { BlokkliProviderEntityContext } from './provider'
 
 type GetType<T> = T extends { options: infer O }
@@ -37,9 +38,13 @@ type GetType<T> = T extends { options: infer O }
       ? number
       : T extends { type: 'number' }
         ? number
-        : T extends { type: 'json' }
-          ? any
-          : string
+        : T extends { type: 'json'; dataType: infer D }
+          ? D extends keyof ComplexOptionTypeMap
+            ? ComplexOptionTypeMap[D]
+            : any
+          : T extends { type: 'json' }
+            ? any
+            : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition

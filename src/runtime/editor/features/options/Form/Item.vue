@@ -74,6 +74,12 @@
         :min="option.min"
         :max="option.max"
       />
+      <OptionComplexType
+        v-else-if="option.type === 'json' && option.dataType && uuid"
+        :uuid="uuid"
+        :property="property"
+        :data-type="option.dataType"
+      />
     </div>
   </div>
 </template>
@@ -88,6 +94,7 @@ import OptionColor from './Color/index.vue'
 import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import OptionDateTimeLocal from './DateTimeLocal/index.vue'
+import OptionComplexType from './ComplexType/index.vue'
 import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 import { BK_VISIBLE_LANGUAGES } from './../../../../../global/constants'
 
@@ -102,6 +109,7 @@ const props = defineProps<{
   property: string
   mutatedValue: any
   isGrouped?: boolean
+  uuid?: string
 }>()
 
 const hoveredOption = ref('')

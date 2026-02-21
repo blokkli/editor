@@ -106,8 +106,18 @@ function extractLiteral(
 
 function extractText(program: any): Extraction | undefined {
   const node = getExpression(program)
+  const firstArg = node.arguments[0]
 
-  const key = extractLiteral(node.arguments[0], 'key')
+  // Skip calls where the first argument is not a string literal (e.g. $t(variable, variable)).
+  if (
+    firstArg &&
+    firstArg.type !== 'Literal' &&
+    firstArg.type !== 'TemplateLiteral'
+  ) {
+    return undefined
+  }
+
+  const key = extractLiteral(firstArg, 'key')
   const defaultText = extractLiteral(node.arguments[1], 'defaultText')
 
   if (key) {

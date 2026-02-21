@@ -62,6 +62,14 @@
       "type": "radios"
     }
   },
+  "chart": {
+    "data": {
+      "dataType": "chart",
+      "default": "{}",
+      "label": "Chart data",
+      "type": "json"
+    }
+  },
   "from_library": {},
   "grid": {
     "background": {
