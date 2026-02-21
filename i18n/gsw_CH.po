@@ -87,6 +87,10 @@ msgstr ""
 "usgwählt isch, sin gwüssi Blöck uusggruet. Das zeigt aa, welchi Blöck in "
 "oder noch däm usgwählte Block chönne platziert wärde.</p>"
 
+msgctxt "agentSidebarTooltipLabel"
+msgid "@name (AI-Assistant)"
+msgstr ""
+
 msgctxt "aiAgentAddBlockDone"
 msgid "Added @bundle"
 msgstr ""

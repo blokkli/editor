@@ -136,6 +136,9 @@ module.exports = {
       current: 'currentColor',
     },
     extend: {
+      screens: {
+        '3xl': '1920px',
+      },
       transitionTimingFunction: {
         swing: 'cubic-bezier(0.56, 0.04, 0.25, 1)',
       },

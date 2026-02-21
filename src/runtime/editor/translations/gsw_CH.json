@@ -75,6 +75,10 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": "<p>Do gsehsch d'Lischt vo allne verfüegbare Blöck wo chönne drzuegfüegt wärde. Zieh s'Symbol in d'Sitte zum e Block drzuefüege.</p><p>Wenn e Block usgwählt isch, sin gwüssi Blöck uusggruet. Das zeigt aa, welchi Blöck in oder noch däm usgwählte Block chönne platziert wärde.</p>"
   },
+  "agentSidebarTooltipLabel": {
+    "source": "@name (AI-Assistant)",
+    "translation": ""
+  },
   "aiAgentAddBlockDone": {
     "source": "Added @bundle",
     "translation": ""

@@ -75,6 +75,10 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": ""
   },
+  "agentSidebarTooltipLabel": {
+    "source": "@name (AI-Assistant)",
+    "translation": ""
+  },
   "aiAgentAddBlockDone": {
     "source": "Added @bundle",
     "translation": ""

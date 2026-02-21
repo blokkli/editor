@@ -20,14 +20,13 @@ const { state } = useBlokkli()
 
 const contentEl = ref<HTMLElement>()
 
-marked.setOptions({ gfm: true, breaks: true })
-
 function renderContent(content: string) {
   const container = contentEl.value
   if (!container) return
   const ownerName = state.owner.value?.name || ''
   container.innerHTML = marked.parse(
     content.replaceAll(PLACEHOLDER_USER_NAME, ownerName),
+    { gfm: true, breaks: true },
   ) as string
 }
 

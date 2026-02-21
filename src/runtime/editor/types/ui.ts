@@ -7,7 +7,7 @@ export type Message = {
   replace?: boolean
 }
 
-export type SidebarRegion = 'left' | 'right'
+export type SidebarRegion = 'left' | 'right' | 'right-bottom'
 
 export type GlobalUiDialog = {
   id: string

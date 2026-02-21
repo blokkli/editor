@@ -17,7 +17,7 @@
       </slot>
       <slot name="badge" />
       <div class="bk-tooltip">
-        <span>{{ title }}</span>
+        <span>{{ tooltipTitle || title }}</span>
         <ShortcutIndicator
           v-if="keyCode"
           :meta
@@ -148,6 +148,11 @@ const props = withDefaults(
     title: string
 
     /**
+     * The title for the tooltip. Falls back to the title.
+     */
+    tooltipTitle?: string
+
+    /**
      * Optional text for the interactive tour.
      *
      * If provided, this sidebar will be included in the editor tour.
@@ -245,6 +250,7 @@ const props = withDefaults(
     minHeight: undefined,
     size: undefined,
     keyCode: undefined,
+    tooltipTitle: undefined,
   },
 )
 

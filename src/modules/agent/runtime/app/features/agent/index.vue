@@ -1,8 +1,8 @@
 <template>
   <PluginSidebar
     id="agent"
-    v-slot="{ isShown }"
     :title="agentName"
+    :tooltip-title
     :tour-text="
       $t('aiAgentTourText', 'Chat with an AI assistant to edit page content.')
     "
@@ -10,41 +10,47 @@
     weight="-900"
     render-always
     beta
+    region="right-bottom"
   >
-    <AgentPanel
-      :is-shown
-      :debug-styling="DEBUG_STYLING"
-      :agent-name
-      :conversation
-      :active-item
-      :is-thinking
-      :is-processing
-      :is-connected
-      :has-been-ready
-      :pending-tool-call
-      :pending-mutation
-      :auto-approve
-      :conversation-list
-      :show-conversation-list
-      :plan
-      :usage-turns="usageTurns"
-      @connect="connect"
-      @send-prompt="sendPrompt"
-      @retry="retry"
-      @cancel="cancel"
-      @approve="approve"
-      @reject="reject"
-      @set-auto-approve="setAutoApprove"
-      @new-conversation="newConversation"
-      @get-transcript="getTranscript"
-      @tool-component-done="onToolComponentDone"
-      @switch-conversation="switchConversation"
-      @delete-conversation="deleteConversation"
-      @show-conversations="onShowConversations"
-      @hide-conversations="onHideConversations"
-      @approve-plan="approvePlan"
-      @reject-plan="rejectPlan"
-    />
+    <template #icon>
+      <Icon name="stars" class="bk-is-animated" />
+    </template>
+    <template #default="{ isShown }">
+      <AgentPanel
+        :is-shown
+        :debug-styling="DEBUG_STYLING"
+        :agent-name
+        :conversation
+        :active-item
+        :is-thinking
+        :is-processing
+        :is-connected
+        :has-been-ready
+        :pending-tool-call
+        :pending-mutation
+        :auto-approve
+        :conversation-list
+        :show-conversation-list
+        :plan
+        :usage-turns="usageTurns"
+        @connect="connect"
+        @send-prompt="sendPrompt"
+        @retry="retry"
+        @cancel="cancel"
+        @approve="approve"
+        @reject="reject"
+        @set-auto-approve="setAutoApprove"
+        @new-conversation="newConversation"
+        @get-transcript="getTranscript"
+        @tool-component-done="onToolComponentDone"
+        @switch-conversation="switchConversation"
+        @delete-conversation="deleteConversation"
+        @show-conversations="onShowConversations"
+        @hide-conversations="onHideConversations"
+        @approve-plan="approvePlan"
+        @reject-plan="rejectPlan"
+      />
+    </template>
   </PluginSidebar>
 
   <Teleport :to="ui.mainLayoutElement.value">
@@ -68,9 +74,18 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, onBeforeUnmount } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  onBeforeUnmount,
+  computed,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
+import {
+  DialogModal,
+  BlokkliTransition,
+  Icon,
+} from '#blokkli/editor/components'
 import agentProvider from '#blokkli/agent/app/composables/agentProvider'
 import { agentPrompts, agentName } from '#blokkli-build/agent-client'
 import AgentPanel from './Panel/index.vue'
@@ -96,6 +111,13 @@ const { adapter } = defineBlokkliFeature({
 
 const app = useBlokkli()
 const { $t, ui } = app
+
+const tooltipTitle = computed(() => {
+  return $t('agentSidebarTooltipLabel', '@name (AI-Assistant)').replace(
+    '@name',
+    agentName,
+  )
+})
 
 const {
   isConnected,

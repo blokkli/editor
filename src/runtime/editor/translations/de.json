@@ -75,6 +75,10 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": "<p>Hier sehen Sie die Liste der verfügbaren Blöcke. Ziehen Sie einen Block auf die Seite um ihn hinzuzufügen.</p><p>Wenn ein bestehender Block ausgewählt ist sind möglicherweise einige Blöcke ausgegraut. Das bedeutet, dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block hinzugefügt werden können.</p>"
   },
+  "agentSidebarTooltipLabel": {
+    "source": "@name (AI-Assistant)",
+    "translation": "@name (KI-Assistent)"
+  },
   "aiAgentAddBlockDone": {
     "source": "Added @bundle",
     "translation": "@bundle hinzugefügt"

@@ -83,6 +83,10 @@ msgid ""
 "placed inside or after the selected block.</p>"
 msgstr ""
 
+msgctxt "agentSidebarTooltipLabel"
+msgid "@name (AI-Assistant)"
+msgstr ""
+
 msgctxt "aiAgentAddBlockDone"
 msgid "Added @bundle"
 msgstr ""

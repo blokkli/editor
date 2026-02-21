@@ -25,9 +25,9 @@ const props = defineProps<{
   attachments?: Attachment[]
 }>()
 
-marked.setOptions({ gfm: true, breaks: true })
-
 const html = computed(() => {
-  return props.content ? (marked.parse(props.content) as string) : ''
+  return props.content
+    ? (marked.parse(props.content, { gfm: true, breaks: true }) as string)
+    : ''
 })
 </script>

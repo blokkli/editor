@@ -88,6 +88,10 @@ msgstr ""
 "dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block "
 "hinzugefügt werden können.</p>"
 
+msgctxt "agentSidebarTooltipLabel"
+msgid "@name (AI-Assistant)"
+msgstr "@name (KI-Assistent)"
+
 msgctxt "aiAgentAddBlockDone"
 msgid "Added @bundle"
 msgstr "@bundle hinzugefügt"

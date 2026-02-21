@@ -468,6 +468,13 @@ export type UiProvider = {
   hasSidebarRight: ComputedRef<boolean>
 
   /**
+   * Whether any sidebar is active in the right-bottom region.
+   *
+   * When true, adds 'bk-has-sidebar-right-bottom' class to document root.
+   */
+  hasSidebarRightBottom: ComputedRef<boolean>
+
+  /**
    * Reference to the main layout element.
    *
    * The container element for the primary editor interface.
@@ -689,6 +696,7 @@ export default function (
 
   const activeSidebarsLeft = ref<string[]>([])
   const activeSidebarsRight = ref<string[]>([])
+  const activeSidebarsRightBottom = ref<string[]>([])
 
   function setActiveSidebar(region: string, id: string) {
     if (region === 'left') {
@@ -696,6 +704,11 @@ export default function (
         return
       }
       activeSidebarsLeft.value.push(id)
+    } else if (region === 'right-bottom') {
+      if (activeSidebarsRightBottom.value.includes(id)) {
+        return
+      }
+      activeSidebarsRightBottom.value.push(id)
     } else {
       if (activeSidebarsRight.value.includes(id)) {
         return
@@ -707,6 +720,10 @@ export default function (
   function removeActiveSidebar(region: string, id: string) {
     if (region === 'left') {
       activeSidebarsLeft.value = activeSidebarsLeft.value.filter(
+        (v) => v !== id,
+      )
+    } else if (region === 'right-bottom') {
+      activeSidebarsRightBottom.value = activeSidebarsRightBottom.value.filter(
         (v) => v !== id,
       )
     } else {
@@ -722,6 +739,10 @@ export default function (
 
   const hasSidebarRight = computed<boolean>(() => {
     return !!activeSidebarsRight.value.length
+  })
+
+  const hasSidebarRightBottom = computed<boolean>(() => {
+    return !!activeSidebarsRightBottom.value.length
   })
 
   const blockingPaddingX = computed(() => 15)
@@ -861,6 +882,11 @@ export default function (
     'bk-has-sidebar-right',
     hasSidebarRight,
   )
+  addElementClasses(
+    document.documentElement,
+    'bk-has-sidebar-right-bottom',
+    hasSidebarRightBottom,
+  )
 
   addElementClasses(document.documentElement, ['bk-html-root'])
   addElementClasses(document.body, 'bk-body')
@@ -971,6 +997,7 @@ export default function (
     removeActiveSidebar,
     hasSidebarLeft,
     hasSidebarRight,
+    hasSidebarRightBottom,
     mainLayoutElement,
     openDialog,
     closeDialog,

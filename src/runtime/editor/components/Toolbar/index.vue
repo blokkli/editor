@@ -7,11 +7,30 @@
   />
 
   <div
-    v-show="activeSidebarRight"
-    id="bk-sidebar-content-right"
-    class="bk-sidebar bk-is-right"
-    :class="{ 'bk-is-hidden': !sidebarVisible }"
-  />
+    ref="sidebarRightWrapper"
+    v-show="activeSidebarRight || activeSidebarRightBottom"
+    class="bk-sidebar-right-wrapper"
+    :class="{ 'bk-is-resizing-split': isResizingSplit }"
+  >
+    <div
+      v-show="activeSidebarRight"
+      id="bk-sidebar-content-right"
+      class="bk-sidebar bk-is-right"
+      :class="{ 'bk-is-hidden': !sidebarVisible }"
+      :style="rightSidebarStyle"
+    />
+    <div
+      v-show="activeSidebarRight && activeSidebarRightBottom"
+      class="bk-resizable-handle bk-is-horizontal"
+      @mousedown.prevent.stop="onSplitMouseDown"
+    />
+    <div
+      v-show="activeSidebarRightBottom"
+      id="bk-sidebar-content-right-bottom"
+      class="bk-sidebar bk-is-right-bottom"
+      :class="{ 'bk-is-hidden': !sidebarVisible }"
+    />
+  </div>
 
   <AppMenu />
 
@@ -44,12 +63,23 @@
       id="bk-sidebar-tabs-right"
       class="bk-sidebar-container-tabs bk-is-right"
     />
+    <div
+      id="bk-sidebar-tabs-right-bottom"
+      class="bk-sidebar-container-tabs bk-is-right"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from '#blokkli/editor/components'
-import { onMounted, useBlokkli, onBeforeUnmount, computed } from '#imports'
+import {
+  onMounted,
+  useBlokkli,
+  onBeforeUnmount,
+  computed,
+  ref,
+  useTemplateRef,
+} from '#imports'
 import AppMenu from './../AppMenu/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
@@ -70,7 +100,74 @@ const sidebarVisible = computed(() => {
 
 const activeSidebarLeft = storage.use('sidebar:active:left', '')
 const activeSidebarRight = storage.use('sidebar:active:right', '')
+const activeSidebarRightBottom = storage.use('sidebar:active:right-bottom', '')
 const focusedSidebar = storage.use('sidebar:focused', '')
+const splitPercent = storage.use('sidebar:right:split-percent', 50)
+
+const sidebarRightWrapper = useTemplateRef('sidebarRightWrapper')
+const activeSplitHeight = ref<number | null>(null)
+const isResizingSplit = ref(false)
+const splitStartY = ref(0)
+const splitStartHeight = ref(0)
+
+const bothSidebarsVisible = computed(
+  () => !!activeSidebarRight.value && !!activeSidebarRightBottom.value,
+)
+
+const rightSidebarStyle = computed(() => {
+  if (!bothSidebarsVisible.value) {
+    return {}
+  }
+  if (activeSplitHeight.value !== null) {
+    return { flex: `0 0 ${activeSplitHeight.value}px` }
+  }
+  return { flex: `0 0 ${splitPercent.value}%` }
+})
+
+function onSplitPointerMove(e: MouseEvent) {
+  const wrapper = sidebarRightWrapper.value
+  if (!wrapper) {
+    return
+  }
+  const wrapperHeight = wrapper.clientHeight
+  const delta = e.clientY - splitStartY.value
+  const newHeight = Math.min(
+    Math.max(splitStartHeight.value + delta, 100),
+    wrapperHeight - 100,
+  )
+  activeSplitHeight.value = newHeight
+}
+
+function onSplitPointerUp() {
+  const wrapper = sidebarRightWrapper.value
+  if (wrapper && activeSplitHeight.value !== null) {
+    const wrapperHeight = wrapper.clientHeight
+    splitPercent.value =
+      (activeSplitHeight.value / wrapperHeight) * 100
+  }
+  activeSplitHeight.value = null
+  isResizingSplit.value = false
+  document.documentElement.style.cursor = ''
+  window.removeEventListener('mousemove', onSplitPointerMove)
+  window.removeEventListener('mouseup', onSplitPointerUp)
+}
+
+function onSplitMouseDown(e: MouseEvent) {
+  if (ui.isMobile.value || e.button !== 0) {
+    return
+  }
+  const wrapper = sidebarRightWrapper.value
+  if (!wrapper) {
+    return
+  }
+  const wrapperHeight = wrapper.clientHeight
+  splitStartY.value = e.clientY
+  splitStartHeight.value = (splitPercent.value / 100) * wrapperHeight
+  isResizingSplit.value = true
+  document.documentElement.style.cursor = 'ns-resize'
+  window.addEventListener('mousemove', onSplitPointerMove)
+  window.addEventListener('mouseup', onSplitPointerUp)
+}
 
 const emit = defineEmits(['loaded'])
 
@@ -92,6 +189,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.documentElement.removeEventListener('mousedown', onWindowMouseDown)
+  window.removeEventListener('mousemove', onSplitPointerMove)
+  window.removeEventListener('mouseup', onSplitPointerUp)
 })
 </script>
 
