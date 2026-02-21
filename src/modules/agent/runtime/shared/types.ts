@@ -431,15 +431,6 @@ export const pageStructureSchema = z.object({
 
 export type PageStructure = z.infer<typeof pageStructureSchema>
 
-const clientToolDefinitionSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  input_schema: z.record(z.string(), z.unknown()),
-  lazy: z.boolean().optional(),
-  category: z.enum(['query', 'mutation']).optional(),
-  volatile: z.boolean().optional(),
-})
-
 const genericContentBlockSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('text'), text: z.string() }),
   z.object({ type: z.literal('skill'), name: z.string(), text: z.string() }),

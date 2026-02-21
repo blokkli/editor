@@ -6,6 +6,12 @@ type SharedOptions = {
   options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
 }
 
+export type XAxisTypeOptions = { xaxisRotation: string }
+export type DataLabelsTypeOptions = { dataLabels: boolean }
+export type LegendTypeOptions = { legendPosition: string }
+export type GridTypeOptions = { gridLines: boolean }
+export type StrokeWidthTypeOptions = { strokeWidth: string }
+
 /**
  * Shared x-axis label options for chart types that display an x-axis.
  */
@@ -31,7 +37,7 @@ export function xAxisOptions($t: TranslateFunction): SharedOptions {
  * Returns properties to merge into the xaxis config object.
  */
 export function buildXAxisLabelOptions(
-  typeOptions: Record<string, unknown>,
+  typeOptions: XAxisTypeOptions,
 ): Record<string, any> {
   const rotation = typeOptions.xaxisRotation
   if (rotation && rotation !== 'auto') {
@@ -65,7 +71,7 @@ export function dataLabelsOptions($t: TranslateFunction): SharedOptions {
  * Build data labels config from type options.
  */
 export function buildDataLabelsOptions(
-  typeOptions: Record<string, unknown>,
+  typeOptions: DataLabelsTypeOptions,
 ): Record<string, any> {
   return { dataLabels: { enabled: !!typeOptions.dataLabels } }
 }
@@ -94,7 +100,7 @@ export function legendOptions($t: TranslateFunction): SharedOptions {
  * Build legend config from type options.
  */
 export function buildLegendOptions(
-  typeOptions: Record<string, unknown>,
+  typeOptions: LegendTypeOptions,
 ): Record<string, any> {
   return { legend: { position: typeOptions.legendPosition || 'bottom' } }
 }
@@ -119,7 +125,7 @@ export function gridOptions($t: TranslateFunction): SharedOptions {
  * Build grid config from type options.
  */
 export function buildGridOptions(
-  typeOptions: Record<string, unknown>,
+  typeOptions: GridTypeOptions,
 ): Record<string, any> {
   return { grid: { show: !!typeOptions.gridLines } }
 }
@@ -148,7 +154,7 @@ export function strokeWidthOptions($t: TranslateFunction): SharedOptions {
  * Build stroke width config from type options.
  */
 export function buildStrokeWidthOptions(
-  typeOptions: Record<string, unknown>,
+  typeOptions: StrokeWidthTypeOptions,
 ): Record<string, any> {
   return { stroke: { width: Number(typeOptions.strokeWidth) || 2 } }
 }

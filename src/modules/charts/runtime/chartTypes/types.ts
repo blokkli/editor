@@ -3,22 +3,26 @@ import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOp
 
 export type TranslateFunction = (key: string, fallback: string) => string
 
-export type ChartBuildContext = {
+export type ChartBuildContext<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   title: string
   categories: string[]
   series: Array<{ name: string; color: string; data: number[] }>
   seriesColors: string[]
   categoryColors: string[]
-  typeOptions: Record<string, unknown>
+  typeOptions: T
 }
 
-export type ChartTypeDefinition = {
+export type ChartTypeDefinition<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   id: string
   hasMultipleSeries: boolean
   hasSeriesColors: boolean
   hasCategoryColors: boolean
-  buildChartOptions: (ctx: ChartBuildContext) => Record<string, any>
-  buildSeries: (ctx: ChartBuildContext) => any
+  buildChartOptions: (ctx: ChartBuildContext<T>) => Record<string, any>
+  buildSeries: (ctx: ChartBuildContext<T>) => any
   editor: {
     label: string
     icon: BlokkliIcon
@@ -26,4 +30,6 @@ export type ChartTypeDefinition = {
   }
 }
 
-export type ChartTypeFactory = ($t: TranslateFunction) => ChartTypeDefinition
+export type ChartTypeFactory<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = ($t: TranslateFunction) => ChartTypeDefinition<T>

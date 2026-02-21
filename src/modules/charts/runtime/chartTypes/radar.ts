@@ -6,8 +6,15 @@ import {
   buildLegendOptions,
   mergeShared,
 } from './shared'
+import type { DataLabelsTypeOptions, LegendTypeOptions } from './shared'
 
-export default defineChartType(($t) => {
+export type TypeOptions = {
+  markers: boolean
+  fillOpacity: string
+} & DataLabelsTypeOptions &
+  LegendTypeOptions
+
+export default defineChartType<TypeOptions>(($t) => {
   const shared = mergeShared(dataLabelsOptions($t), legendOptions($t))
   return {
     id: 'radar',

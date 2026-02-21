@@ -12,8 +12,24 @@ import {
   buildStrokeWidthOptions,
   mergeShared,
 } from './shared'
+import type {
+  XAxisTypeOptions,
+  DataLabelsTypeOptions,
+  LegendTypeOptions,
+  GridTypeOptions,
+  StrokeWidthTypeOptions,
+} from './shared'
 
-export default defineChartType(($t) => {
+export type TypeOptions = {
+  curved: boolean
+  markers: boolean
+} & XAxisTypeOptions &
+  DataLabelsTypeOptions &
+  LegendTypeOptions &
+  GridTypeOptions &
+  StrokeWidthTypeOptions
+
+export default defineChartType<TypeOptions>(($t) => {
   const shared = mergeShared(
     xAxisOptions($t),
     dataLabelsOptions($t),

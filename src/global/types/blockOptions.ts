@@ -413,17 +413,20 @@ type DefinitionOptionRadiosBase<Icon extends string = string> = {
   | DefinitionOptionRadiosIconsBase<Icon>
 )
 
-type DefinitionOptionJson = {
+type DefinitionOptionJsonBase<DataType extends string = string> = {
   type: 'json'
   label: string
   default: string
-  dataType?: string
+  dataType?: DataType
   description?: string
   group?: string
 }
 
-export type BlockOptionDefinitionBase<Icon extends string = string> =
-  | DefinitionOptionJson
+export type BlockOptionDefinitionBase<
+  Icon extends string = string,
+  DataType extends string = string,
+> =
+  | DefinitionOptionJsonBase<DataType>
   | DefinitionOptionColor
   | DefinitionOptionCheckbox
   | DefinitionOptionCheckboxes

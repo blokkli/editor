@@ -8,8 +8,15 @@ import {
   buildGridOptions,
   mergeShared,
 } from './shared'
+import type {
+  XAxisTypeOptions,
+  LegendTypeOptions,
+  GridTypeOptions,
+} from './shared'
 
-export default defineChartType(($t) => {
+export type TypeOptions = XAxisTypeOptions & LegendTypeOptions & GridTypeOptions
+
+export default defineChartType<TypeOptions>(($t) => {
   const shared = mergeShared(
     xAxisOptions($t),
     legendOptions($t),

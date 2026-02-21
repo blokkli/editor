@@ -6,7 +6,11 @@ import {
   positionSchema,
 } from '#blokkli/agent/app/tools/schemas'
 import { resolvePosition } from '#blokkli/agent/app/tools/helpers'
-import { chartDataSchema, validateChartData } from '../chart_schemas'
+import {
+  chartDataSchema,
+  validateChartData,
+  findChartBundle,
+} from '../chart_schemas'
 import { COLORS } from '#blokkli-build/charts-config'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 
@@ -33,7 +37,7 @@ export default defineBlokkliAgentTool({
   execute(ctx, params) {
     const { fields } = ctx.app
 
-    // Check if the target field allows the chart bundle.
+    // Check if the target field exists.
     const field = fields.find(params.parent.uuid, params.parent.field)
     if (!field) {
       return {
@@ -41,9 +45,11 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    if (!field.allowedBundles.includes('chart')) {
+    // Find a bundle that has a chart option among the field's allowed bundles.
+    const chartBundle = findChartBundle(ctx, field.allowedBundles)
+    if ('error' in chartBundle) {
       return {
-        error: `Field "${params.parent.field}" does not allow the "chart" bundle. Allowed bundles: ${field.allowedBundles.length ? field.allowedBundles.join(', ') : 'none'}`,
+        error: `No block type with a chart option is allowed in field "${params.parent.field}". Allowed bundles: ${field.allowedBundles.length ? field.allowedBundles.join(', ') : 'none'}`,
       }
     }
 
@@ -85,9 +91,11 @@ export default defineBlokkliAgentTool({
         adapter.addNewBlocks({
           blocks: [
             {
-              bundle: 'chart',
+              bundle: chartBundle.bundle,
               blockUuid,
-              options: { data: JSON.stringify(result.data) },
+              options: {
+                [chartBundle.key]: JSON.stringify(result.data),
+              },
             },
           ],
           host: {

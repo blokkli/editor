@@ -44,6 +44,7 @@ export const COMPLEX_OPTION_TYPES: Record<string, never>`
     const entries = types.map((t) => `  '${t.id}': ${t.typeName}`).join('\n')
 
     return `${imports}
+import type { BlokkliIcon } from './icons'
 
 export interface ComplexOptionTypeMap {
 ${entries}
@@ -52,7 +53,7 @@ ${entries}
 export const COMPLEX_OPTION_TYPES: Record<string, {
   editorComponent: import('vue').Component
   editorButtonLabel: string
-  editorIcon: string
+  editorIcon: BlokkliIcon
 }>`
   },
   {

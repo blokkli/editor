@@ -4,7 +4,7 @@
     class="bk-blokkli-item-options-complex-type"
     @click="onClick"
   >
-    <Icon :name="config.editorIcon as BlokkliIcon" />
+    <Icon :name="config.editorIcon" />
     <span>{{ $t(config.editorButtonLabel, config.editorButtonLabel) }}</span>
   </button>
 </template>
@@ -13,7 +13,6 @@
 import { useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { COMPLEX_OPTION_TYPES } from '#blokkli-build/complex-option-types'
-import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { eventBus, $t } = useBlokkli()
 

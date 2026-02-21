@@ -56,7 +56,7 @@ export default function (
       exports.push(`export const models = ${JSON.stringify(options.models)}`)
 
       exports.push(
-        `export const agentName = ${JSON.stringify(options.agentName ?? 'Blocki')}`,
+        `export const agentName = ${JSON.stringify(options.agentName ?? 'Superblökkli')}`,
       )
 
       exports.push(

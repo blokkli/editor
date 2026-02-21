@@ -38,15 +38,17 @@
 
 <script setup lang="ts">
 import { computed, ref, useBlokkli } from '#imports'
-import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
+import type { ChartTypeDefinition } from '../../../../chartTypes/types'
 import OptionsFormItem from '#blokkli/editor/features/options/Form/Item.vue'
 import OptionsFormGroup from '#blokkli/editor/features/options/Form/Group.vue'
+
+type ChartOption = ChartTypeDefinition['editor']['options'][string]
 
 const { $t } = useBlokkli()
 
 const props = defineProps<{
   title: string
-  options: Record<string, BlockOptionDefinition>
+  options: Record<string, ChartOption>
   typeOptions: Record<string, unknown>
 }>()
 
@@ -55,7 +57,7 @@ const emit = defineEmits<{
   'update:typeOptions': [value: Record<string, unknown>]
 }>()
 
-const titleOption: BlockOptionDefinition = {
+const titleOption: ChartOption = {
   type: 'text',
   label: $t('chartsTitle', 'Title'),
   default: '',
@@ -63,7 +65,7 @@ const titleOption: BlockOptionDefinition = {
 
 type OptionEntry = {
   key: string
-  option: BlockOptionDefinition
+  option: ChartOption
 }
 
 type OptionGroup = {

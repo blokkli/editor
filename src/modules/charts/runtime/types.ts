@@ -1,3 +1,5 @@
+import type { ChartTypeOptionsMap } from './chartTypes/index'
+
 export type ChartType =
   | 'bar'
   | 'line'
@@ -8,6 +10,8 @@ export type ChartType =
   | 'radialBar'
   | 'radar'
 
+export type ChartTypeOptions = ChartTypeOptionsMap[ChartType]
+
 export type ChartSeries = {
   name: string
   /**
@@ -17,9 +21,8 @@ export type ChartSeries = {
   data: number[]
 }
 
-export type BlokkliChartData = {
+type ChartDataBase = {
   title: string
-  type: ChartType
   categories: string[]
   series: ChartSeries[]
   /**
@@ -28,8 +31,14 @@ export type BlokkliChartData = {
    */
   categoryColors: string[]
   footnotes: string[]
-  typeOptions?: Record<string, unknown>
 }
+
+export type BlokkliChartData = {
+  [K in ChartType]: ChartDataBase & {
+    type: K
+    typeOptions?: Partial<ChartTypeOptionsMap[K]>
+  }
+}[ChartType]
 
 export type ChartColor = {
   color: string

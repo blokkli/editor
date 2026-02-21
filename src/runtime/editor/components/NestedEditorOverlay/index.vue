@@ -153,19 +153,30 @@ function onEnter(el: Element, done: () => void) {
   const originatingRect = originating.getBoundingClientRect()
   const overlayRect = el.getBoundingClientRect()
 
-  // Calculate scale to match originating element's size
+  // Use uniform scale that covers the originating rect (no distortion).
   const scaleX = originatingRect.width / overlayRect.width
   const scaleY = originatingRect.height / overlayRect.height
+  const scale = Math.max(scaleX, scaleY)
 
-  // Calculate translation to position overlay at originating element
-  const offsetX = originatingRect.x - overlayRect.x
-  const offsetY = originatingRect.y - overlayRect.y
+  // Position the scaled overlay so its center aligns with the originating
+  // element's center, then clip to the originating rect.
+  const scaledW = overlayRect.width * scale
+  const scaledH = overlayRect.height * scale
+  const centerX = originatingRect.x + originatingRect.width / 2
+  const centerY = originatingRect.y + originatingRect.height / 2
+  const offsetX = centerX - scaledW / 2 - overlayRect.x
+  const offsetY = centerY - scaledH / 2 - overlayRect.y
+
+  // Clip-path inset values in local (pre-transform) coordinates.
+  const clipY = (overlayRect.height - originatingRect.height / scale) / 2
+  const clipX = (overlayRect.width - originatingRect.width / scale) / 2
 
   // Set initial state with no transition
   el.style.transition = 'none'
   el.style.opacity = '0'
   el.style.transformOrigin = '0px 0px'
-  el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scaleX}, ${scaleY})`
+  el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
+  el.style.clipPath = `inset(${clipY}px ${clipX}px ${clipY}px ${clipX}px round 4px)`
 
   // Force reflow to ensure initial state is painted
   el.getBoundingClientRect()
@@ -176,10 +187,11 @@ function onEnter(el: Element, done: () => void) {
     el.style.transition = `opacity ${FADE_DURATION}ms ease-out`
     el.style.opacity = '1'
 
-    // After fade completes, do transform
+    // After fade completes, animate transform and clip-path together
     withTimeout(() => {
-      el.style.transition = `transform ${DURATION}ms ${EASING}`
-      el.style.transform = 'translate(0px, 0px) scale(1, 1)'
+      el.style.transition = `transform ${DURATION}ms ${EASING}, clip-path ${DURATION}ms ${EASING}`
+      el.style.transform = 'translate(0px, 0px) scale(1)'
+      el.style.clipPath = 'inset(0px 0px 0px 0px round 0px)'
 
       withTimeout(() => {
         pendingTimeouts = []
@@ -196,6 +208,7 @@ function onAfter(el: Element) {
     el.style.transition = ''
     el.style.opacity = ''
     el.style.transformOrigin = ''
+    el.style.clipPath = ''
   }
   pendingTimeouts = []
 }
@@ -203,9 +216,10 @@ function onAfter(el: Element) {
 function onBeforeLeave(el: Element) {
   cancelPendingTimeouts()
   if (el instanceof HTMLElement) {
-    // Start from visible state
+    // Start from visible state with explicit clip-path so it can interpolate.
     el.style.transform = 'none'
     el.style.opacity = '1'
+    el.style.clipPath = 'inset(0px 0px 0px 0px round 0px)'
   }
 }
 
@@ -230,18 +244,27 @@ function onLeave(el: Element, done: () => void) {
   const originatingRect = originating.getBoundingClientRect()
   const overlayRect = el.getBoundingClientRect()
 
-  // Calculate scale to match originating element's size
+  // Same cover-scale + clip-path approach as the enter animation.
   const scaleX = originatingRect.width / overlayRect.width
   const scaleY = originatingRect.height / overlayRect.height
+  const scale = Math.max(scaleX, scaleY)
 
-  // Calculate translation to position overlay at originating element
-  const offsetX = originatingRect.x - overlayRect.x
-  const offsetY = originatingRect.y - overlayRect.y
+  const scaledW = overlayRect.width * scale
+  const scaledH = overlayRect.height * scale
+  const centerX = originatingRect.x + originatingRect.width / 2
+  const centerY = originatingRect.y + originatingRect.height / 2
+  const offsetX = centerX - scaledW / 2 - overlayRect.x
+  const offsetY = centerY - scaledH / 2 - overlayRect.y
 
-  // First: do the transform
-  el.style.transition = `transform ${DURATION}ms ${EASING}`
+  // Clip-path inset values in local (pre-transform) coordinates.
+  const clipY = (overlayRect.height - originatingRect.height / scale) / 2
+  const clipX = (overlayRect.width - originatingRect.width / scale) / 2
+
+  // Animate transform and clip-path together
+  el.style.transition = `transform ${DURATION}ms ${EASING}, clip-path ${DURATION}ms ${EASING}`
   el.style.transformOrigin = '0px 0px'
-  el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scaleX}, ${scaleY})`
+  el.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
+  el.style.clipPath = `inset(${clipY}px ${clipX}px ${clipY}px ${clipX}px round 4px)`
 
   // After transform completes, fade out
   withTimeout(() => {

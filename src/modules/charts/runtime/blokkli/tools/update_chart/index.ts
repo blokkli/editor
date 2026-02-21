@@ -6,6 +6,7 @@ import {
   chartColorEnum,
   chartSeriesSchema,
   validateChartData,
+  findChartOptionKey,
 } from '../chart_schemas'
 import { COLORS } from '#blokkli-build/charts-config'
 import type { BlokkliChartData } from '#blokkli/charts/types'
@@ -62,23 +63,16 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['updateOptions'],
   execute(ctx, params) {
-    const { blocks, state } = ctx.app
+    const { state } = ctx.app
 
-    // Verify the block exists and is a chart block.
-    const block = blocks.getBlock(params.uuid)
-    if (!block) {
-      return { error: `Paragraph not found: ${params.uuid}` }
-    }
-    if (block.bundle !== 'chart') {
-      return {
-        error: `Paragraph "${params.uuid}" is a "${block.bundle}", not a "chart".`,
-      }
-    }
+    // Find the chart option key on this block.
+    const chartOption = findChartOptionKey(ctx, params.uuid)
+    if ('error' in chartOption) return chartOption
 
     // Read current chart data from options.
     let current: BlokkliChartData
     const item = state.getFieldListItem(params.uuid)
-    const rawData = item?.options?.data
+    const rawData = item?.options?.[chartOption.key]
     if (rawData) {
       try {
         current = JSON.parse(rawData)
@@ -90,7 +84,7 @@ export default defineBlokkliAgentTool({
     }
 
     // Merge updates (top-level replace for provided fields).
-    const merged: BlokkliChartData = {
+    const merged = {
       title: params.title !== undefined ? params.title : current.title,
       type: params.type !== undefined ? params.type : current.type,
       categories:
@@ -115,7 +109,7 @@ export default defineBlokkliAgentTool({
         params.typeOptions !== undefined
           ? params.typeOptions
           : current.typeOptions || {},
-    }
+    } as BlokkliChartData
 
     // Validate and normalize.
     const result = validateChartData(merged, COLORS)
@@ -131,7 +125,7 @@ export default defineBlokkliAgentTool({
         adapter.updateOptions([
           {
             uuid: params.uuid,
-            key: 'data',
+            key: chartOption.key,
             value: JSON.stringify(result.data),
           },
         ]),

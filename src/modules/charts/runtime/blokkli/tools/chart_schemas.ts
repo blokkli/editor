@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { BlokkliChartData, ChartColor } from '#blokkli/charts/types'
+import type { McpToolContext } from '#blokkli/agent/app/types'
 import { getColorIdAtIndex } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
@@ -148,4 +149,68 @@ export function validateChartData(
   }
 
   return { data }
+}
+
+/**
+ * Find the option key for a chart option on a block.
+ *
+ * Charts are stored as a JSON option with `dataType: 'chart'` on any block.
+ * This helper looks up the block's definition and returns the option key.
+ */
+export function findChartOptionKey(
+  ctx: McpToolContext,
+  uuid: string,
+): { key: string } | { error: string } {
+  const { blocks, definitions, selection } = ctx.app
+  const block = blocks.getBlock(uuid)
+  if (!block) return { error: `Paragraph not found: ${uuid}` }
+
+  const bundle = block.library?.reusableBundle || block.bundle
+  const selectionItem = selection.items.value.find((v) => v.uuid === uuid)
+  const definition = definitions.getBlockDefinition(
+    bundle,
+    selectionItem?.fieldListType ?? 'default',
+    selectionItem?.parentBlockBundle,
+  )
+  if (!definition?.options) {
+    return { error: `Paragraph "${uuid}" (${bundle}) has no chart option.` }
+  }
+
+  const chartEntry = Object.entries(definition.options).find(
+    ([_, opt]) =>
+      opt.type === 'json' && 'dataType' in opt && opt.dataType === 'chart',
+  )
+  if (!chartEntry) {
+    return { error: `Paragraph "${uuid}" (${bundle}) has no chart option.` }
+  }
+
+  return { key: chartEntry[0] }
+}
+
+/**
+ * Find a bundle that has a chart option among a field's allowed bundles.
+ *
+ * Returns the bundle name and the option key for the chart data.
+ */
+export function findChartBundle(
+  ctx: McpToolContext,
+  allowedBundles: string[],
+): { bundle: string; key: string } | { error: string } {
+  const { definitions } = ctx.app
+
+  for (const bundle of allowedBundles) {
+    const def = definitions.getDefaultDefinition(bundle)
+    if (!def?.options) continue
+    const entry = Object.entries(def.options).find(
+      ([_, opt]) =>
+        opt.type === 'json' && 'dataType' in opt && opt.dataType === 'chart',
+    )
+    if (entry) {
+      return { bundle, key: entry[0] }
+    }
+  }
+
+  return {
+    error: `No block type with a chart option is allowed in this field.`,
+  }
 }

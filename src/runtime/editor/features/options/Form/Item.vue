@@ -95,7 +95,7 @@ import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import OptionDateTimeLocal from './DateTimeLocal/index.vue'
 import OptionComplexType from './ComplexType/index.vue'
-import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
+import type { BlockOptionDefinitionBase } from './../../../../../global/types/blockOptions'
 import { BK_VISIBLE_LANGUAGES } from './../../../../../global/constants'
 
 const { state, $t: $blokkliText } = useBlokkli()
@@ -105,7 +105,7 @@ const emit = defineEmits<{
 }>()
 
 const props = defineProps<{
-  option: BlockOptionDefinition
+  option: BlockOptionDefinitionBase
   property: string
   mutatedValue: any
   isGrouped?: boolean

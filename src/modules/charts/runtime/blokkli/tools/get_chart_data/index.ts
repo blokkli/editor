@@ -4,6 +4,7 @@ import {
   chartTypeEnum,
   chartColorEnum,
   chartSeriesSchema,
+  findChartOptionKey,
 } from '../chart_schemas'
 import { COLORS } from '#blokkli-build/charts-config'
 import { getDefaultChartData } from '../../../helpers'
@@ -41,20 +42,13 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { blocks, state, $t } = ctx.app
+    const { state, $t } = ctx.app
 
-    const block = blocks.getBlock(params.uuid)
-    if (!block) {
-      return { error: `Paragraph not found: ${params.uuid}` }
-    }
-    if (block.bundle !== 'chart') {
-      return {
-        error: `Paragraph "${params.uuid}" is a "${block.bundle}", not a "chart".`,
-      }
-    }
+    const chartOption = findChartOptionKey(ctx, params.uuid)
+    if ('error' in chartOption) return chartOption
 
     const item = state.getFieldListItem(params.uuid)
-    const rawData = item?.options?.data
+    const rawData = item?.options?.[chartOption.key]
     let data
     if (rawData) {
       try {

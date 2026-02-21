@@ -1,6 +1,8 @@
 import { defineChartType } from './define'
 
-export default defineChartType(($t) => ({
+export type TypeOptions = { showLabels: boolean; showTotal: boolean }
+
+export default defineChartType<TypeOptions>(($t) => ({
   id: 'radialBar',
   hasMultipleSeries: false,
   hasSeriesColors: false,

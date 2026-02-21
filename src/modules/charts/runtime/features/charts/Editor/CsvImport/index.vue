@@ -18,8 +18,7 @@
 <script setup lang="ts">
 import { useTemplateRef, useBlokkli } from '#imports'
 import type { ChartSeries, ChartColor } from '../../../../types'
-import { getColorIdAtIndex } from '../../../../helpers'
-import { parseNumericInput } from '../../../../helpers'
+import { getColorIdAtIndex, parseNumericInput } from '../../../../helpers'
 
 const props = defineProps<{
   colors: Record<string, ChartColor>
