@@ -15,6 +15,7 @@
       }"
       @keydown.capture.stop="onKeydown"
       @keyup.capture.stop
+      @pointerdown="onPointerDown"
       @paste="onPaste"
     />
   </div>
@@ -59,6 +60,15 @@ const isScrollable = computed(() => {
   if (!props.maxHeight) return false
   return height.value >= props.maxHeight
 })
+
+// Workaround for Chromium bug where CSS transform on a parent breaks textarea
+// text selection when the pointer leaves the element.
+// https://issues.chromium.org/issues/41439320
+function onPointerDown(e: PointerEvent) {
+  if (e.target instanceof HTMLElement) {
+    e.target.setPointerCapture(e.pointerId)
+  }
+}
 
 function onKeydown(e: KeyboardEvent) {
   emit('keydown', e)
