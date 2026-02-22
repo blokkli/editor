@@ -135,6 +135,14 @@
     "source": "Always",
     "translation": ""
   },
+  "aiAgentAnalyzeContentDone": {
+    "source": "Analyzed @count results",
+    "translation": "@count résultats analysés"
+  },
+  "aiAgentAnalyzeContentRunning": {
+    "source": "Analyzing content...",
+    "translation": "Analyse du contenu..."
+  },
   "aiAgentApprove": {
     "source": "Approve",
     "translation": ""
@@ -1400,7 +1408,7 @@
     "translation": "Les éléments n'ont pas pu être dupliqués."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Modifier"
   },
   "editFormBlockAdd": {

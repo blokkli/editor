@@ -14,6 +14,10 @@ export type AnalyzeNode = {
   description?: string
   impact?: AnalyzeImpact
   /**
+   * Optional numeric scores for this node (e.g. readability indices).
+   */
+  scores?: Record<string, number>
+  /**
    * An array of either:
    * - string: a valid selector
    * - HTMLElement: the DOM node
@@ -52,6 +56,8 @@ export type Analyzer = {
 
   label?: string | ((langcode: string) => string)
 
+  description?: string | ((langcode: string) => string)
+
   /**
    * If true, the raw page (without editor UI) is required for this analyzer.
    */
@@ -72,4 +78,14 @@ export type Analyzer = {
     | AnalyzeResult
     | AnalyzeResult[]
     | Promise<undefined | null | AnalyzeResult | AnalyzeResult[]>
+
+  /**
+   * Optional method to analyze raw text without DOM context.
+   * Enables agent feedback loops (test a rewrite before applying).
+   * Analyzers that only work with DOM (e.g. axe-core) don't implement this.
+   */
+  analyzeText?: (
+    text: string,
+    langcode: string,
+  ) => AnalyzeNode[] | Promise<AnalyzeNode[]>
 }

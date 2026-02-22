@@ -147,6 +147,14 @@ msgctxt "aiAgentAlwaysApprove"
 msgid "Always"
 msgstr ""
 
+msgctxt "aiAgentAnalyzeContentDone"
+msgid "Analyzed @count results"
+msgstr "@count Ergebnis analysiert"
+
+msgctxt "aiAgentAnalyzeContentRunning"
+msgid "Analyzing content..."
+msgstr "Inhalt wird analysiert..."
+
 msgctxt "aiAgentApprove"
 msgid "Approve"
 msgstr ""
@@ -1429,7 +1437,7 @@ msgid "The items could not be duplicated."
 msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeite"
 
 msgctxt "editFormBlockAdd"

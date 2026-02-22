@@ -6,6 +6,7 @@
     icon="bk_mdi_speed"
     weight="10"
     :is-loading="isRunning"
+    render-always
   >
     <template #icon>
       <AnalyzeIcon :is-running />
@@ -26,7 +27,7 @@
       :key="animation.renderKey.value"
       v-model="isRunning"
       :langcode="context.language"
-      :analyzers
+      :analyze
     />
   </PluginSidebar>
 </template>
@@ -38,7 +39,7 @@ import { InfoBox } from '#blokkli/editor/components'
 import AnalyzerMain from './Main.vue'
 import AnalyzeIcon from './Icon.vue'
 
-const { adapters } = defineBlokkliFeature({
+defineBlokkliFeature({
   id: 'analyze',
   label: 'Analyze',
   icon: 'bk_mdi_speed',
@@ -47,12 +48,9 @@ const { adapters } = defineBlokkliFeature({
   viewports: [],
 })
 
-const { $t, context, animation, ui } = useBlokkli()
+const { $t, context, animation, ui, analyze } = useBlokkli()
 
 const isRunning = ref(false)
-
-// Aggregate analyzers from base adapter and all extensions
-const analyzers = await adapters.getAggregated('getAnalyzers')
 </script>
 
 <script lang="ts">

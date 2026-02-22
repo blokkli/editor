@@ -76,6 +76,23 @@ export default defineBlokkliAgentSystemPrompt({
       }
     }
 
+    // Add available analyzers if present
+    if (pageContext.analyzers?.length) {
+      lines.push(
+        '',
+        '## Available Analyzers',
+        '',
+        'Use the `analyze_content` tool with the `analyzerIds` parameter to run specific analyzers:',
+        '',
+      )
+      for (const a of pageContext.analyzers) {
+        const parts = [`- **\`${a.id}\`**`]
+        if (a.label) parts.push(`— ${a.label}`)
+        if (a.description) parts.push(`: ${a.description}`)
+        lines.push(parts.join(''))
+      }
+    }
+
     // Add edit mode information
     const editModeDescription = getEditModeDescription(pageContext.editMode)
     if (editModeDescription) {

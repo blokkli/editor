@@ -30,6 +30,7 @@ import type { ThemeProvider } from '../providers/theme'
 import type { DefinitionProvider } from '../providers/definition'
 import type { PermissionsProvider } from '../providers/permissions'
 import type { AdaptersProvider } from '../providers/adapters'
+import type { AnalyzeProvider } from '../providers/analyze'
 
 export interface BlokkliApp {
   /**
@@ -70,4 +71,5 @@ export interface BlokkliApp {
   fields: FieldsProvider
   icons: IconsProvider
   permissions: PermissionsProvider
+  analyze: AnalyzeProvider
 }

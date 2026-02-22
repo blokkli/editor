@@ -110,6 +110,7 @@ import fieldsProvider from '#blokkli/editor/providers/fields'
 import iconsProvider from '#blokkli/editor/providers/icons'
 import permissionsProvider from '#blokkli/editor/providers/permissions'
 import adaptersProvider from '#blokkli/editor/providers/adapters'
+import analyzeProviderFn from '#blokkli/editor/providers/analyze'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -238,6 +239,7 @@ const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
 const permissionsInstance = await permissionsProvider(adapter)
+const analyze = analyzeProviderFn(adapters, state, ui, context, $t)
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
 
@@ -359,6 +361,7 @@ const app: BlokkliApp = {
   fields,
   icons,
   permissions: permissionsInstance,
+  analyze,
 }
 
 provide(INJECT_APP, app)

@@ -213,6 +213,7 @@ function resetDrag() {
 }
 
 function onDragEnter(e: DragEvent) {
+  console.log(e)
   dragCounter++
   if (dragCounter === 1) {
     tryStartDirectDrop(e)
@@ -359,10 +360,7 @@ async function handleFiles(data: DataTransfer | FileList) {
 
   if (!commonBundles || !commonBundles.length) {
     emitPasteError(
-      $t(
-        'clipboardNoCommonBundle',
-        'No common block type for these files.',
-      ),
+      $t('clipboardNoCommonBundle', 'No common block type for these files.'),
     )
     return
   }

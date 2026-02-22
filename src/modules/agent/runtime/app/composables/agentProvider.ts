@@ -497,7 +497,7 @@ export default function (
         // The handleServerMessage will call sendInit() when received.
         pendingInit = {
           toolNames,
-          pageContext: buildPageContext(contentSearchTabs),
+          pageContext: await buildPageContext(contentSearchTabs),
         }
         return
       } catch (e) {
@@ -505,7 +505,7 @@ export default function (
       }
     }
 
-    sendInit(toolNames, buildPageContext(contentSearchTabs))
+    sendInit(toolNames, await buildPageContext(contentSearchTabs))
   }
 
   async function sendInit(toolNames: string[], pageContext: PageContext) {
@@ -544,9 +544,9 @@ export default function (
   // Page Context Builder
   // ============================================================================
 
-  function buildPageContext(
+  async function buildPageContext(
     contentSearchTabs?: PageContext['contentSearchTabs'],
-  ): PageContext {
+  ): Promise<PageContext> {
     const { types, definitions } = app
     const bundles: BlockBundle[] = []
 
@@ -624,6 +624,22 @@ export default function (
         })),
     ]
 
+    // Build analyzer metadata if available.
+    await app.analyze.ensureInitialized()
+    const analyzersList = app.analyze.analyzers.value
+      .filter((a) => !a.requireRawPage)
+      .map((a) => ({
+        id: a.id,
+        label:
+          typeof a.label === 'function'
+            ? a.label(context.value.language)
+            : a.label,
+        description:
+          typeof a.description === 'function'
+            ? a.description(context.value.language)
+            : a.description,
+      }))
+
     const pageContext: PageContext = {
       title: state.entity.value.label || '',
       entityType: context.value.entityType,
@@ -639,6 +655,7 @@ export default function (
       fragments,
       entityContentFields,
       ...(contentSearchTabs?.length ? { contentSearchTabs } : {}),
+      ...(analyzersList.length ? { analyzers: analyzersList } : {}),
     }
 
     return pageContext

@@ -203,6 +203,8 @@ export type PageContext = {
     title: string
     types: { type: string; bundles: string[] }[]
   }[]
+  /** Available content analyzers (for the analyze_content tool) */
+  analyzers?: { id: string; label?: string; description?: string }[]
 }
 
 // ============================================================================
@@ -402,6 +404,15 @@ const pageContextSchema = z.object({
             bundles: z.array(z.string()),
           }),
         ),
+      }),
+    )
+    .optional(),
+  analyzers: z
+    .array(
+      z.object({
+        id: z.string(),
+        label: z.string().optional(),
+        description: z.string().optional(),
       }),
     )
     .optional(),

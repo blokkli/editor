@@ -80,20 +80,18 @@ import type {
   AnalyzeNodeTargetMapped,
   AnalyzeResult,
   AnalyzeResultMapped,
-  Analyzer,
 } from './analyzers/types'
+import type { AnalyzeProvider } from '#blokkli/editor/providers/analyze'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
 import Renderer from './Renderer/index.vue'
 import { useAnalyzeHelper } from './helper'
 import { FormSelect, RelativeTime } from '#blokkli/editor/components'
-import { AnalyzerContext } from './analyzers/helpers/Context'
-import { normalizeToArray } from './analyzers/helpers/normalizeArray'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 
 const props = defineProps<{
   langcode: string
-  analyzers: Analyzer[]
+  analyze: AnalyzeProvider
 }>()
 
 const ALL = 'ALL'
@@ -124,15 +122,14 @@ const activeId = useState(() => '')
 const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
-const hasInitialized = useState(() => false)
 const providerRootElement = ui.providerElement
 
 // Split analyzers into continuous and manual
 const continuousAnalyzers = computed(() =>
-  props.analyzers.filter((a) => a.continuous),
+  props.analyze.analyzers.value.filter((a) => a.continuous),
 )
 const manualAnalyzers = computed(() =>
-  props.analyzers.filter((a) => !a.continuous),
+  props.analyze.analyzers.value.filter((a) => !a.continuous),
 )
 
 const hasContinuousAnalyzers = computed(
@@ -240,7 +237,7 @@ const analyzerStatuses = computed(() => {
     return []
   }
 
-  return props.analyzers.map((analyzer) => {
+  return props.analyze.analyzers.value.map((analyzer) => {
     const status = analyzer.continuous
       ? $t('analyzeStatusUpToDate', 'Up-to-date')
       : isStale.value
@@ -296,17 +293,6 @@ onUnmounted(() => {
   }
 })
 
-function getContext(signal?: AbortSignal): AnalyzerContext {
-  return new AnalyzerContext(
-    props.langcode,
-    ui.interfaceLanguage.value,
-    providerRootElement,
-    state,
-    $t,
-    signal,
-  )
-}
-
 async function runContinuous() {
   if (!continuousAnalyzers.value.length) {
     return
@@ -326,25 +312,19 @@ async function runContinuous() {
   let wasAborted = false
 
   try {
-    const context = getContext(abortController.signal)
-
-    // Initialize all analyzers if not done yet
-    if (!hasInitialized.value) {
-      await Promise.all(
-        props.analyzers.map(async (analyzer) => {
-          if (analyzer.init) {
-            await analyzer.init(context)
-          }
-        }),
-      )
-      hasInitialized.value = true
-    }
+    // Ensure analyzers are fetched and initialized.
+    await props.analyze.ensureInitialized()
 
     // Check if aborted before running analyzers
     if (abortController.signal.aborted) {
       wasAborted = true
       return
     }
+
+    const context = props.analyze.createContext(
+      providerRootElement,
+      abortController.signal,
+    )
 
     const newResults: AnalyzeResultWithPluginId[] = []
 
@@ -357,7 +337,7 @@ async function runContinuous() {
       }
 
       const analyzer = continuousAnalyzers.value[i]!
-      const result = (await normalizeToArray(analyzer.run(context))).map(
+      const result = (await props.analyze.runAnalyzer(analyzer, context)).map(
         (v) => {
           return {
             ...v,
@@ -420,25 +400,16 @@ async function onClick() {
   const currentRefreshKey = state.refreshKey.value
 
   try {
-    const context = getContext()
+    await props.analyze.ensureInitialized()
 
-    if (!hasInitialized.value) {
-      await Promise.all(
-        props.analyzers.map(async (analyzer) => {
-          if (analyzer.init) {
-            await analyzer.init(context)
-          }
-        }),
-      )
-    }
-    hasInitialized.value = true
+    const context = props.analyze.createContext(providerRootElement)
 
     const newManualResults: AnalyzeResultWithPluginId[] = []
 
     // Run only manual analyzers (continuous ones have already run automatically)
     for (let i = 0; i < manualAnalyzers.value.length; i++) {
       const analyzer = manualAnalyzers.value[i]!
-      const result = (await normalizeToArray(analyzer.run(context))).map(
+      const result = (await props.analyze.runAnalyzer(analyzer, context)).map(
         (v) => {
           return {
             ...v,
@@ -496,8 +467,9 @@ const categoryOptions = computed<{ value: string; label: string }[]>(() => {
   ]
 })
 
-// Auto-run continuous analyzers on mount
+// Fetch and init analyzers on mount, then auto-run continuous ones.
 onMounted(async () => {
+  await props.analyze.ensureInitialized()
   if (hasContinuousAnalyzers.value) {
     await runContinuous()
   }

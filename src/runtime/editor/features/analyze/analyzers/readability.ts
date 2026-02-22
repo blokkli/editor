@@ -209,6 +209,12 @@ function analyzeReadability(
     nodes.push({
       description: parts.join(' · '),
       impact: impactFor(scores.lix),
+      scores: {
+        ...(scores.lix != null ? { lix: scores.lix } : {}),
+        ...(scores.cli != null ? { cli: scores.cli } : {}),
+        ...(scores.ari != null ? { ari: scores.ari } : {}),
+        ...(scores.gulpease != null ? { gulpease: scores.gulpease } : {}),
+      },
       targets: [b.element],
     })
   }
@@ -225,6 +231,64 @@ function analyzeReadability(
     status: nodes.length ? 'violation' : 'pass',
     nodes,
     impact: summarizeImpact(nodes),
+  }
+}
+
+/**
+ * Score a single text string and return an AnalyzeNode with scores,
+ * regardless of the readability band. Used by analyzeText to give
+ * the agent scores for every input.
+ */
+function scoreText(
+  tr: TextReadability,
+  text: string,
+  langcode: LangCode,
+): AnalyzeNode | null {
+  const trimmed = text.trim()
+  if (!trimmed) return null
+
+  const words = segmentWords(trimmed)
+  if (words.length < MIN_WORDS_FOR_CONFIDENCE) return null
+
+  const sentences = Math.max(1, countSentences(trimmed))
+  const avgSentLen = words.length / sentences
+
+  const lix = safe(() => tr.lix(trimmed))
+  const cli = safe(() => tr.colemanLiauIndex(trimmed))
+  const ari = safe(() => tr.automatedReadabilityIndex(trimmed))
+  const gulpease =
+    langcode === 'it' ? safe(() => tr.gulpeaseIndex(trimmed)) : undefined
+
+  const scores = {
+    ...(lix != null ? { lix } : {}),
+    ...(cli != null ? { cli } : {}),
+    ...(ari != null ? { ari } : {}),
+    ...(gulpease != null ? { gulpease } : {}),
+  }
+
+  const band = toBand(langcode, { lix, cli, ari, gulpease })
+  const impact = impactFor(lix)
+
+  const parts: string[] = []
+  if (band === 'hard') {
+    parts.push('Hard to read.')
+  } else if (band === 'ok') {
+    parts.push('Acceptable readability.')
+  } else {
+    parts.push('Easy to read.')
+  }
+  if (lix != null) parts.push(`LIX ${format(lix)}`)
+  if (langcode === 'it' && gulpease != null) {
+    parts.push(`Gulpease ${format(gulpease)}`)
+  }
+  if (cli != null) parts.push(`CLI ${format(cli)}`)
+  parts.push(`Avg sentence length ${format(avgSentLen)}`)
+
+  return {
+    description: parts.join(' · '),
+    impact,
+    scores,
+    targets: [],
   }
 }
 
@@ -250,6 +314,8 @@ export default defineAnalyzer(() => {
 
       return 'Readability'
     },
+    description:
+      'Analyzes text readability using LIX, Coleman-Liau, and ARI indices. Flags hard-to-read text blocks.',
     continuous: true,
     init: async function (context) {
       const { TextReadability } = await import('@lunarisapp/readability')
@@ -272,6 +338,22 @@ export default defineAnalyzer(() => {
         context.$t,
         cache,
       )
+    },
+    async analyzeText(text, langcode) {
+      if (!isSupportedLangcode(langcode)) {
+        return []
+      }
+
+      if (!textReadability) {
+        const { TextReadability } = await import('@lunarisapp/readability')
+        textReadability = new TextReadability({
+          lang: mapLang(langcode),
+          cache: true,
+        })
+      }
+
+      const node = scoreText(textReadability, text, langcode)
+      return node ? [node] : []
     },
   }
 })
