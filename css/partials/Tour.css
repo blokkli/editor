@@ -89,35 +89,3 @@
   @apply border-3 border-yellow-normal transition-all duration-200 ease-swing;
   @apply ring-yellow-light/80 ring-1 bg-yellow-normal/30;
 }
-
-.bk.bk-tour-popup {
-  @apply fixed top-80 left-0 w-full bg-white shadow-xl  hyphens-auto;
-  @apply z-tour-popup pointer-events-auto;
-  @apply border border-mono-200;
-
-  @screen lg {
-    @apply top-60 left-80 right-auto w-[360px] rounded-md;
-  }
-
-  h2 {
-    @apply font-bold lg:text-xl;
-  }
-
-  .bk-button {
-    @apply !bg-yellow-normal hover:!bg-yellow-normal/80 w-full mt-20 !text-yellow-dark/90 hover:!text-yellow-dark;
-    @apply focus:ring-yellow-dark/70;
-  }
-
-  .bk-tour-popup-title {
-    @apply flex justify-between items-center pl-20 border-b border-b-mono-200;
-  }
-  .bk-tour-popup-content {
-    @apply p-20;
-  }
-  .bk-tour-popup-close {
-    @apply p-20 hover:bg-mono-50;
-    svg {
-      @apply w-20 h-20;
-    }
-  }
-}

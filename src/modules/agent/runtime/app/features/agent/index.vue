@@ -11,6 +11,7 @@
     render-always
     beta
     region="right-bottom"
+    @toggle="closeAgentPopup"
   >
     <template #icon>
       <Icon name="stars" class="bk-is-animated" />
@@ -70,6 +71,19 @@
         />
       </DialogModal>
     </BlokkliTransition>
+
+    <Popup
+      id="agent"
+      ref="popup"
+      :title="$t('aiAgentPopupTitle', 'AI-Assistant')"
+      :cta="$t('aiAgentIntroPopupCta', 'Get started')"
+      theme="primary"
+      position="bottom-right"
+      @submit="openAgent"
+    >
+      <Icon name="stars" class="bk-is-animated" />
+      <p v-html="popupText" />
+    </Popup>
   </Teleport>
 </template>
 
@@ -79,12 +93,14 @@ import {
   defineBlokkliFeature,
   onBeforeUnmount,
   computed,
+  useTemplateRef,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import {
   DialogModal,
   BlokkliTransition,
   Icon,
+  Popup,
 } from '#blokkli/editor/components'
 import agentProvider from '#blokkli/agent/app/composables/agentProvider'
 import { agentPrompts, agentName } from '#blokkli-build/agent-client'
@@ -111,6 +127,25 @@ const { adapter } = defineBlokkliFeature({
 
 const app = useBlokkli()
 const { $t, ui } = app
+
+const popup = useTemplateRef('popup')
+
+function closeAgentPopup() {
+  if (popup.value) {
+    popup.value.closePopup()
+  }
+}
+
+function openAgent() {
+  app.eventBus.emit('sidebar:open', 'agent')
+}
+
+const popupText = computed(() => {
+  return $t(
+    'aiAgentIntroPopup',
+    'Need help editing? @name is your AI assistant — it can add, move, and update blocks and much more. Give it a try!',
+  ).replace('@name', `<em>${agentName}</em>`)
+})
 
 const tooltipTitle = computed(() => {
   return $t('agentSidebarTooltipLabel', '@name (AI-Assistant)').replace(

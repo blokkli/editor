@@ -255,7 +255,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'updated'): void
+  (e: 'updated' | 'toggle'): void
 }>()
 
 const { storage, state, ui, $t } = useBlokkli()
@@ -319,6 +319,7 @@ const onAttachDetached = () => {
 }
 
 const toggleSidebar = () => {
+  emit('toggle')
   if (isDetached.value) {
     isDetached.value = false
     return

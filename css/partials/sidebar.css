@@ -64,7 +64,7 @@
   }
 
   .bk-sidebar-title {
-    @apply !font-semibold !font-sans !pl-15 md:!pl-20 !border-b !border-b-mono-300 flex items-center h-40;
+    @apply !font-semibold !font-sans !pl-15 !border-b !border-b-mono-300 flex items-center h-40;
     @apply select-none text-sm;
 
     .bk-beta-indicator {

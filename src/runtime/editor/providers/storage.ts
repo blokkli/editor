@@ -11,6 +11,19 @@ import type { AdapterContext, BlokkliAdapter } from '#blokkli/editor/adapter'
 
 const PREFIX = 'blokkli:'
 
+/**
+ * Migrate renamed storage keys.
+ */
+const migrations: Record<
+  string,
+  (oldValue: any) => { key: string; value: any }
+> = {
+  showTourPopup: (oldValue) => ({
+    key: 'popup:tour:closed',
+    value: !oldValue,
+  }),
+}
+
 export type StorageProvider = {
   /**
    * Create a reactive storage value synced to localStorage.
@@ -241,6 +254,16 @@ export default async function (
     const storageKey = PREFIX + key
     values.value[storageKey] = undefined
     window.localStorage.removeItem(storageKey)
+  }
+
+  for (const [oldKey, migrate] of Object.entries(migrations)) {
+    const oldStorageKey = PREFIX + oldKey
+    const oldValue = getExisting(oldStorageKey)
+    if (oldValue !== undefined) {
+      const { key, value } = migrate(oldValue)
+      localStorage.setItem(PREFIX + key, JSON.stringify(value))
+      localStorage.removeItem(oldStorageKey)
+    }
   }
 
   return { use, useWithContextPrefix, clearAll, clear }

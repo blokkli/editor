@@ -431,6 +431,14 @@
     "source": "Navigating history...",
     "translation": "Im Verlauf navigieren..."
   },
+  "aiAgentIntroPopup": {
+    "source": "Need help editing? @name is your AI assistant — it can add, move, and update blocks and much more. Give it a try!",
+    "translation": "Brauchst du Hilfe? Ich bin @name, dein KI-Assistent — ich kann Blöcke hinzufügen, verschieben, bearbeiten und vieles mehr. Probier es aus!"
+  },
+  "aiAgentIntroPopupCta": {
+    "source": "Get started",
+    "translation": "Jetzt ausprobieren"
+  },
   "aiAgentLoadSkill": {
     "source": "Using skill \"@label\"",
     "translation": "Skill «@label» lesen"
@@ -487,6 +495,10 @@
     "source": "Plan completed: @label",
     "translation": "Plan abgeschlossen: @label"
   },
+  "aiAgentPopupTitle": {
+    "source": "AI-Assistant",
+    "translation": "KI-Assistent"
+  },
   "aiAgentProcessing": {
     "source": "Processing...",
     "translation": "Verarbeiten..."
@@ -533,7 +545,7 @@
   },
   "aiAgentSearchContentRunning": {
     "source": "Searching content...",
-    "translation": ""
+    "translation": "Inhalte werden durchsucht..."
   },
   "aiAgentSearchLibraryDone": {
     "source": "Searched library",
@@ -1191,21 +1203,13 @@
     "source": "Clear input",
     "translation": "Eingabe löschen"
   },
-  "clipboard": {
-    "source": "Clipboard",
-    "translation": "Zwischenablage"
-  },
   "clipboardCopyShortcutHelp": {
     "source": "Copy selected blocks",
     "translation": "Ausgewählte Blöcke kopieren"
   },
-  "clipboardEmpty": {
-    "source": "No items in the clipboard",
-    "translation": "Keine Elemente in der Zwischenablage"
-  },
-  "clipboardExplanation": {
-    "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
-    "translation": "<p>Verwenden Sie Ctrl-V auf der Seite um Inhalte einzufügen. Diese werden dann hier angezeigt.</p><p>Verwenden Sie Ctrl-F um bestehende Inhalte zu suchen und in die Zwischenablage einzufügen.</p>"
+  "clipboardNoCommonBundle": {
+    "source": "No common block type for these files.",
+    "translation": "Kein gemeinsamer Blocktyp für diese Dateien."
   },
   "clipboardPasteDescription": {
     "source": "Paste blocks from clipboard",
@@ -1215,41 +1219,29 @@
     "source": "Failed to paste:",
     "translation": "Einfügen fehlgeschlagen:"
   },
-  "clipboardPasteErrorAllowedBundlesMultiple": {
-    "source": "Block types (@types) are not allowed here.",
-    "translation": "Die Block-Typen (@types) sind hier nicht erlaubt."
-  },
-  "clipboardPasteErrorAllowedBundlesSingle": {
-    "source": "Block type \"@types\" is not allowed here.",
-    "translation": "Der Block-Typ «@types» ist hier nicht erlaubt."
-  },
-  "clipboardPasteErrorAllowedFragmentsMultiple": {
-    "source": "Fragments (@types) are not allowed here.",
-    "translation": "Die Fragmente (@types) sind hier nicht erlaubt."
-  },
-  "clipboardPasteErrorAllowedFragmentsSingle": {
-    "source": "Fragment \"@types\" is not allowed here.",
-    "translation": "Das Fragment «@types» ist hier nicht erlaubt."
-  },
-  "clipboardPasteErrorCardinality": {
-    "source": "This field only allows up to @count blocks.",
-    "translation": "Dieses Feld erlaubt nur bis zu @count Blöcke."
-  },
-  "clipboardPasteErrorOneField": {
-    "source": "Pasting is only possible into one field at a time.",
-    "translation": "Blöcke können nur in einem Feld gleichzeitig eingefügt werden."
-  },
-  "clipboardPastePlaceholder": {
-    "source": "Paste text or media here",
-    "translation": "Text oder Medien einfügen"
-  },
   "clipboardPasteShortcutHelp": {
     "source": "Paste text, image or copied blocks",
     "translation": "Text, Bild oder kopierte Blöcke einfügen"
   },
-  "clipboardTourText": {
-    "source": "Drag and drop content pasted from your clipboard into the page to create a matching block.",
-    "translation": "Ziehen Sie Inhalte, die aus Ihrer Zwischenablage eingefügt wurden, in die Seite hinein, um einen passenden Block zu erstellen."
+  "clipboardTypeFile": {
+    "source": "File",
+    "translation": "Datei"
+  },
+  "clipboardTypeImage": {
+    "source": "Image",
+    "translation": "Bild"
+  },
+  "clipboardTypeText": {
+    "source": "Text",
+    "translation": "Text"
+  },
+  "clipboardTypeVideo": {
+    "source": "Video",
+    "translation": "Video"
+  },
+  "clipboardUnsupportedFileType": {
+    "source": "This file type is not supported.",
+    "translation": "Dieser Dateityp wird nicht unterstützt."
   },
   "close": {
     "source": "Close",
@@ -1408,7 +1400,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {
@@ -1610,14 +1602,6 @@
   "feature_clipboard_label": {
     "source": "Clipboard",
     "translation": "Zwischenablage"
-  },
-  "feature_clipboard_setting_openSidebarOnPaste_description": {
-    "source": "Automatically opens the sidebar when pasting content from the clipboard.",
-    "translation": "Öffnet automatisch die Seitenleiste wenn Inhalte aus der Zwischenablage eingefügt werden."
-  },
-  "feature_clipboard_setting_openSidebarOnPaste_label": {
-    "source": "Open sidebar when pasting",
-    "translation": "Seitenleiste beim Einfügen aus der Zwischenablage öffnen"
   },
   "feature_command-palette_description": {
     "source": "Provides a command palette with search to access most UI features with a keyboard.",

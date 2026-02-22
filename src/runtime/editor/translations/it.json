@@ -431,6 +431,14 @@
     "source": "Navigating history...",
     "translation": ""
   },
+  "aiAgentIntroPopup": {
+    "source": "Need help editing? @name is your AI assistant — it can add, move, and update blocks and much more. Give it a try!",
+    "translation": ""
+  },
+  "aiAgentIntroPopupCta": {
+    "source": "Get started",
+    "translation": ""
+  },
   "aiAgentLoadSkill": {
     "source": "Using skill \"@label\"",
     "translation": ""
@@ -485,6 +493,10 @@
   },
   "aiAgentPlanCompleted": {
     "source": "Plan completed: @label",
+    "translation": ""
+  },
+  "aiAgentPopupTitle": {
+    "source": "AI-Assistant",
     "translation": ""
   },
   "aiAgentProcessing": {
@@ -1191,21 +1203,13 @@
     "source": "Clear input",
     "translation": ""
   },
-  "clipboard": {
-    "source": "Clipboard",
-    "translation": "Appunti"
-  },
   "clipboardCopyShortcutHelp": {
     "source": "Copy selected blocks",
     "translation": ""
   },
-  "clipboardEmpty": {
-    "source": "No items in the clipboard",
-    "translation": "Nessun elemento negli appunti"
-  },
-  "clipboardExplanation": {
-    "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
-    "translation": "<p>\n    Utilizzare Ctrl-V sulla pagina per incollare i contenuti. Questi\n    saranno poi visualizzati qui.\n  </p>\n  <p>\n    Utilizzare Ctrl-F per cercare contenuti esistenti e incollarli negli appunti.\n  </p>"
+  "clipboardNoCommonBundle": {
+    "source": "No common block type for these files.",
+    "translation": ""
   },
   "clipboardPasteDescription": {
     "source": "Paste blocks from clipboard",
@@ -1215,40 +1219,28 @@
     "source": "Failed to paste:",
     "translation": ""
   },
-  "clipboardPasteErrorAllowedBundlesMultiple": {
-    "source": "Block types (@types) are not allowed here.",
-    "translation": ""
-  },
-  "clipboardPasteErrorAllowedBundlesSingle": {
-    "source": "Block type \"@types\" is not allowed here.",
-    "translation": ""
-  },
-  "clipboardPasteErrorAllowedFragmentsMultiple": {
-    "source": "Fragments (@types) are not allowed here.",
-    "translation": ""
-  },
-  "clipboardPasteErrorAllowedFragmentsSingle": {
-    "source": "Fragment \"@types\" is not allowed here.",
-    "translation": ""
-  },
-  "clipboardPasteErrorCardinality": {
-    "source": "This field only allows up to @count blocks.",
-    "translation": ""
-  },
-  "clipboardPasteErrorOneField": {
-    "source": "Pasting is only possible into one field at a time.",
-    "translation": ""
-  },
-  "clipboardPastePlaceholder": {
-    "source": "Paste text or media here",
-    "translation": "Paste text or media here"
-  },
   "clipboardPasteShortcutHelp": {
     "source": "Paste text, image or copied blocks",
     "translation": ""
   },
-  "clipboardTourText": {
-    "source": "Drag and drop content pasted from your clipboard into the page to create a matching block.",
+  "clipboardTypeFile": {
+    "source": "File",
+    "translation": ""
+  },
+  "clipboardTypeImage": {
+    "source": "Image",
+    "translation": ""
+  },
+  "clipboardTypeText": {
+    "source": "Text",
+    "translation": ""
+  },
+  "clipboardTypeVideo": {
+    "source": "Video",
+    "translation": ""
+  },
+  "clipboardUnsupportedFileType": {
+    "source": "This file type is not supported.",
     "translation": ""
   },
   "close": {
@@ -1408,7 +1400,7 @@
     "translation": "Gli elementi non possono essere duplicati."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Modifica"
   },
   "editFormBlockAdd": {
@@ -1610,14 +1602,6 @@
   "feature_clipboard_label": {
     "source": "Clipboard",
     "translation": "Appunti"
-  },
-  "feature_clipboard_setting_openSidebarOnPaste_description": {
-    "source": "Automatically opens the sidebar when pasting content from the clipboard.",
-    "translation": "Apre automaticamente la barra laterale quando si incolla contenuto dagli appunti."
-  },
-  "feature_clipboard_setting_openSidebarOnPaste_label": {
-    "source": "Open sidebar when pasting",
-    "translation": "Apri barra laterale quando si incolla"
   },
   "feature_command-palette_description": {
     "source": "Provides a command palette with search to access most UI features with a keyboard.",

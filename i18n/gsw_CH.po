@@ -443,6 +443,16 @@ msgctxt "aiAgentGoToHistoryIndexRunning"
 msgid "Navigating history..."
 msgstr ""
 
+msgctxt "aiAgentIntroPopup"
+msgid ""
+"Need help editing? @name is your AI assistant — it can add, move, and "
+"update blocks and much more. Give it a try!"
+msgstr ""
+
+msgctxt "aiAgentIntroPopupCta"
+msgid "Get started"
+msgstr ""
+
 msgctxt "aiAgentLoadSkill"
 msgid "Using skill \"@label\""
 msgstr ""
@@ -497,6 +507,10 @@ msgstr "Antworte..."
 
 msgctxt "aiAgentPlanCompleted"
 msgid "Plan completed: @label"
+msgstr ""
+
+msgctxt "aiAgentPopupTitle"
+msgid "AI-Assistant"
 msgstr ""
 
 msgctxt "aiAgentProcessing"
@@ -1212,32 +1226,13 @@ msgctxt "clearInput"
 msgid "Clear input"
 msgstr ""
 
-msgctxt "clipboard"
-msgid "Clipboard"
-msgstr "Zwüscheablag"
-
 msgctxt "clipboardCopyShortcutHelp"
 msgid "Copy selected blocks"
 msgstr "Usgwählti Blöck kopiere"
 
-msgctxt "clipboardEmpty"
-msgid "No items in the clipboard"
-msgstr "In dr Zwüscheablag hets nüt"
-
-msgctxt "clipboardExplanation"
-msgid ""
-"<p>\n"
-"    Use Ctrl-V on the page to paste content. These\n"
-"    will then be displayed here.\n"
-"  </p>\n"
-"  <p>\n"
-"    Use Ctrl-F to search for existing content and paste it into\n"
-"    the clipboard.\n"
-"  </p>"
+msgctxt "clipboardNoCommonBundle"
+msgid "No common block type for these files."
 msgstr ""
-"<p>Bruch Ctrl+V zum öbbis iifüege. D'Inhält wärde denn do "
-"aazeigt.</p><p>Bruch Ctrl+F zum bestehendi Inhält z'sueche und ind "
-"Zwüscheablag iizfüege. </p>"
 
 msgctxt "clipboardPasteDescription"
 msgid "Paste blocks from clipboard"
@@ -1247,45 +1242,29 @@ msgctxt "clipboardPasteError"
 msgid "Failed to paste:"
 msgstr "Iifüege het nid funktioniert:"
 
-msgctxt "clipboardPasteErrorAllowedBundlesMultiple"
-msgid "Block types (@types) are not allowed here."
-msgstr "Block-Type (@types) sin do nid erlaubt."
-
-msgctxt "clipboardPasteErrorAllowedBundlesSingle"
-msgid "Block type \"@types\" is not allowed here."
-msgstr "Block-Typ «@types» isch do nid erlaubt."
-
-msgctxt "clipboardPasteErrorAllowedFragmentsMultiple"
-msgid "Fragments (@types) are not allowed here."
-msgstr ""
-
-msgctxt "clipboardPasteErrorAllowedFragmentsSingle"
-msgid "Fragment \"@types\" is not allowed here."
-msgstr ""
-
-msgctxt "clipboardPasteErrorCardinality"
-msgid "This field only allows up to @count blocks."
-msgstr "In däm Fäld sin maximal @count Blöck erlaubt."
-
-msgctxt "clipboardPasteErrorOneField"
-msgid "Pasting is only possible into one field at a time."
-msgstr "Iifüege isch nur in eis Fäld uf s'Mol möglich."
-
-msgctxt "clipboardPastePlaceholder"
-msgid "Paste text or media here"
-msgstr "Teggscht oder Medie iifüege"
-
 msgctxt "clipboardPasteShortcutHelp"
 msgid "Paste text, image or copied blocks"
 msgstr "Teggscht, Bild oder kopierti Blöck iifüege"
 
-msgctxt "clipboardTourText"
-msgid ""
-"Drag and drop content pasted from your clipboard into the page to create a "
-"matching block."
+msgctxt "clipboardTypeFile"
+msgid "File"
 msgstr ""
-"Zieh Inhält us dinere Zwüscheablag in d'Sitte zum e passende Block "
-"z'erstelle."
+
+msgctxt "clipboardTypeImage"
+msgid "Image"
+msgstr ""
+
+msgctxt "clipboardTypeText"
+msgid "Text"
+msgstr ""
+
+msgctxt "clipboardTypeVideo"
+msgid "Video"
+msgstr ""
+
+msgctxt "clipboardUnsupportedFileType"
+msgid "This file type is not supported."
+msgstr ""
 
 msgctxt "close"
 msgid "Close"
@@ -1450,7 +1429,7 @@ msgid "The items could not be duplicated."
 msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeite"
 
 msgctxt "editFormBlockAdd"
@@ -1679,16 +1658,6 @@ msgstr ""
 msgctxt "feature_clipboard_label"
 msgid "Clipboard"
 msgstr "Zwüscheablag"
-
-msgctxt "feature_clipboard_setting_openSidebarOnPaste_description"
-msgid "Automatically opens the sidebar when pasting content from the clipboard."
-msgstr ""
-"Macht d'Sitteleischte automatisch uf, wenn Inhält us dr Zwüscheablag "
-"iigfüegt wärde."
-
-msgctxt "feature_clipboard_setting_openSidebarOnPaste_label"
-msgid "Open sidebar when pasting"
-msgstr "Sitteleischte bim Iifüege us dr Zwüscheablag ufmache"
 
 msgctxt "feature_command-palette_description"
 msgid ""

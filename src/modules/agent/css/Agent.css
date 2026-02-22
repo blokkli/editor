@@ -135,3 +135,20 @@
     }
   }
 }
+
+.bk-popup.bk-is-agent {
+  .bk-popup-content-text {
+    .bk-icon {
+      @apply float-right ml-2;
+      svg {
+        @apply fill-accent-600 size-60;
+      }
+    }
+    p {
+      @apply hyphens-auto;
+      em {
+        @apply not-italic text-accent-600 font-bold hyphens-none;
+      }
+    }
+  }
+}

@@ -431,6 +431,14 @@
     "source": "Navigating history...",
     "translation": ""
   },
+  "aiAgentIntroPopup": {
+    "source": "Need help editing? @name is your AI assistant — it can add, move, and update blocks and much more. Give it a try!",
+    "translation": ""
+  },
+  "aiAgentIntroPopupCta": {
+    "source": "Get started",
+    "translation": ""
+  },
   "aiAgentLoadSkill": {
     "source": "Using skill \"@label\"",
     "translation": ""
@@ -485,6 +493,10 @@
   },
   "aiAgentPlanCompleted": {
     "source": "Plan completed: @label",
+    "translation": ""
+  },
+  "aiAgentPopupTitle": {
+    "source": "AI-Assistant",
     "translation": ""
   },
   "aiAgentProcessing": {
@@ -1191,21 +1203,13 @@
     "source": "Clear input",
     "translation": ""
   },
-  "clipboard": {
-    "source": "Clipboard",
-    "translation": "Zwüscheablag"
-  },
   "clipboardCopyShortcutHelp": {
     "source": "Copy selected blocks",
     "translation": "Usgwählti Blöck kopiere"
   },
-  "clipboardEmpty": {
-    "source": "No items in the clipboard",
-    "translation": "In dr Zwüscheablag hets nüt"
-  },
-  "clipboardExplanation": {
-    "source": "<p>\n    Use Ctrl-V on the page to paste content. These\n    will then be displayed here.\n  </p>\n  <p>\n    Use Ctrl-F to search for existing content and paste it into\n    the clipboard.\n  </p>",
-    "translation": "<p>Bruch Ctrl+V zum öbbis iifüege. D'Inhält wärde denn do aazeigt.</p><p>Bruch Ctrl+F zum bestehendi Inhält z'sueche und ind Zwüscheablag iizfüege. </p>"
+  "clipboardNoCommonBundle": {
+    "source": "No common block type for these files.",
+    "translation": ""
   },
   "clipboardPasteDescription": {
     "source": "Paste blocks from clipboard",
@@ -1215,41 +1219,29 @@
     "source": "Failed to paste:",
     "translation": "Iifüege het nid funktioniert:"
   },
-  "clipboardPasteErrorAllowedBundlesMultiple": {
-    "source": "Block types (@types) are not allowed here.",
-    "translation": "Block-Type (@types) sin do nid erlaubt."
-  },
-  "clipboardPasteErrorAllowedBundlesSingle": {
-    "source": "Block type \"@types\" is not allowed here.",
-    "translation": "Block-Typ «@types» isch do nid erlaubt."
-  },
-  "clipboardPasteErrorAllowedFragmentsMultiple": {
-    "source": "Fragments (@types) are not allowed here.",
-    "translation": ""
-  },
-  "clipboardPasteErrorAllowedFragmentsSingle": {
-    "source": "Fragment \"@types\" is not allowed here.",
-    "translation": ""
-  },
-  "clipboardPasteErrorCardinality": {
-    "source": "This field only allows up to @count blocks.",
-    "translation": "In däm Fäld sin maximal @count Blöck erlaubt."
-  },
-  "clipboardPasteErrorOneField": {
-    "source": "Pasting is only possible into one field at a time.",
-    "translation": "Iifüege isch nur in eis Fäld uf s'Mol möglich."
-  },
-  "clipboardPastePlaceholder": {
-    "source": "Paste text or media here",
-    "translation": "Teggscht oder Medie iifüege"
-  },
   "clipboardPasteShortcutHelp": {
     "source": "Paste text, image or copied blocks",
     "translation": "Teggscht, Bild oder kopierti Blöck iifüege"
   },
-  "clipboardTourText": {
-    "source": "Drag and drop content pasted from your clipboard into the page to create a matching block.",
-    "translation": "Zieh Inhält us dinere Zwüscheablag in d'Sitte zum e passende Block z'erstelle."
+  "clipboardTypeFile": {
+    "source": "File",
+    "translation": ""
+  },
+  "clipboardTypeImage": {
+    "source": "Image",
+    "translation": ""
+  },
+  "clipboardTypeText": {
+    "source": "Text",
+    "translation": ""
+  },
+  "clipboardTypeVideo": {
+    "source": "Video",
+    "translation": ""
+  },
+  "clipboardUnsupportedFileType": {
+    "source": "This file type is not supported.",
+    "translation": ""
   },
   "close": {
     "source": "Close",
@@ -1408,7 +1400,7 @@
     "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeite"
   },
   "editFormBlockAdd": {
@@ -1610,14 +1602,6 @@
   "feature_clipboard_label": {
     "source": "Clipboard",
     "translation": "Zwüscheablag"
-  },
-  "feature_clipboard_setting_openSidebarOnPaste_description": {
-    "source": "Automatically opens the sidebar when pasting content from the clipboard.",
-    "translation": "Macht d'Sitteleischte automatisch uf, wenn Inhält us dr Zwüscheablag iigfüegt wärde."
-  },
-  "feature_clipboard_setting_openSidebarOnPaste_label": {
-    "source": "Open sidebar when pasting",
-    "translation": "Sitteleischte bim Iifüege us dr Zwüscheablag ufmache"
   },
   "feature_command-palette_description": {
     "source": "Provides a command palette with search to access most UI features with a keyboard.",

@@ -5,21 +5,20 @@
     transform: scale(1);
   }
   50% {
-    opacity: 0.3;
+    opacity: 0.7;
     transform: scale(0.6);
   }
 }
 
 .bk {
   #bk-sidebar-button-agent {
-    @apply hover:bg-orange-normal/15;
-    @apply text-orange-normal;
+    @apply text-white;
 
     &.bk-is-active {
-      @apply bg-orange-normal/15;
     }
     svg {
       @apply size-30;
+      @apply translate-x-[-7%];
     }
   }
 

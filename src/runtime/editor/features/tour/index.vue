@@ -1,13 +1,26 @@
 <template>
-  <Overlay v-if="tour.isTouring.value" @close="close" />
-  <Popup v-if="showTourPopup" @close="close" @start="start" />
+  <Overlay v-if="tour.isTouring.value" @close="stopTour" />
+  <Popup
+    id="tour"
+    theme="warning"
+    position="top-left"
+    :title="$t('tourLabel', 'Take a tour')"
+    :text="
+      $t(
+        'tourIntro',
+        'Explore the most important features of the editor and learn how to get started using blökkli.',
+      )
+    "
+    :cta="$t('tourStartButton', 'Start the tour')"
+    @submit="startTour"
+  />
 </template>
 
 <script lang="ts" setup>
 import { defineBlokkliFeature, useBlokkli } from '#imports'
 import Overlay from './Overlay/index.vue'
-import Popup from './Popup/index.vue'
 import { defineMenuButton } from '#blokkli/editor/composables'
+import { Popup } from '#blokkli/editor/components'
 
 defineBlokkliFeature({
   id: 'tour',
@@ -16,16 +29,13 @@ defineBlokkliFeature({
   description: 'Provides a tour overlay to get to know the editor.',
 })
 
-const { tour, $t, storage } = useBlokkli()
+const { tour, $t } = useBlokkli()
 
-const showTourPopup = storage.use('showTourPopup', true)
-
-const start = () => {
-  showTourPopup.value = false
+function startTour() {
   tour.isTouring.value = true
 }
-const close = () => {
-  showTourPopup.value = false
+
+function stopTour() {
   tour.isTouring.value = false
 }
 
@@ -37,7 +47,7 @@ defineMenuButton(() => {
     icon: 'bk_mdi_school-fill',
     secondary: true,
     weight: -10,
-    callback: start,
+    callback: startTour,
   }
 })
 </script>
