@@ -55,6 +55,7 @@ import type { DraggableMediaLibraryItem } from '../media-library/types'
 import type { DraggableSearchContentItem } from '../search/types'
 import { emitMessage, type DropTargetEvent } from '#blokkli/editor/events'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import { MOUSE_BUTTON } from '#blokkli/editor/helpers/dom'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type {
   DraggableExistingBlock,
@@ -761,7 +762,10 @@ function loop() {
   box.value = dragItemsComponent.value.getRect()
 }
 
-const onMouseUp = (e: MouseEvent) => {
+const onMouseUp = (e: PointerEvent) => {
+  if (e.button === MOUSE_BUTTON.AUXILIARY) {
+    return
+  }
   e.preventDefault()
   e.stopPropagation()
   if (!ui.isMobile.value) {

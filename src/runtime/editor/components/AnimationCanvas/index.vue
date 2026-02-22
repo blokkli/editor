@@ -189,7 +189,7 @@ function onPointerMove(e: PointerEvent) {
   if (!handlePointerMove) {
     return
   }
-  if (keyboard.isPressingSpace.value || e.buttons === MOUSE_BUTTONS.AUXILIARY) {
+  if (keyboard.isPressingSpace.value || e.buttons & MOUSE_BUTTONS.AUXILIARY) {
     return
   }
   e.preventDefault()
@@ -264,7 +264,7 @@ function onPointerMove(e: PointerEvent) {
 }
 
 function onPointerDown(e: PointerEvent) {
-  if (e.buttons === MOUSE_BUTTONS.AUXILIARY) {
+  if (e.buttons & MOUSE_BUTTONS.AUXILIARY) {
     return
   }
 
@@ -336,11 +336,11 @@ function isClickInArtboard(coords: Coord): boolean {
 }
 
 function onPointerUp(e: PointerEvent) {
-  handlePointerMove = false
   if (e.button === MOUSE_BUTTON.AUXILIARY) {
     e.preventDefault()
     return
   }
+  handlePointerMove = false
   e.preventDefault()
   e.stopPropagation()
   e.stopImmediatePropagation()
