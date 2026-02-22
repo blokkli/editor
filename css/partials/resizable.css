@@ -44,7 +44,7 @@
   }
 
   &.bk-is-horizontal {
-    @apply block relative w-full pointer-events-auto z-50 bg-mono-300;
+    @apply block relative w-full pointer-events-auto z-50 bg-mono-400;
     flex: 0 0 4px;
     cursor: ns-resize;
     &:hover {

@@ -45,6 +45,17 @@
 
   &.bk-is-right-bottom {
     @apply flex-1 min-h-0;
+    .bk-sidebar-title {
+      @apply bg-accent-700 text-white !border-b-transparent;
+
+      button {
+        @apply text-accent-50 hover:bg-accent-800 hover:text-white;
+      }
+
+      .bk-beta-indicator {
+        @apply bg-white text-accent-700;
+      }
+    }
   }
 
   &.bk-is-left {
@@ -66,6 +77,7 @@
   .bk-sidebar-title {
     @apply !font-semibold !font-sans !pl-15 !border-b !border-b-mono-300 flex items-center h-40;
     @apply select-none text-sm;
+    @apply bg-mono-200;
 
     .bk-beta-indicator {
       @apply mr-auto ml-5;
@@ -75,7 +87,7 @@
       &:first-of-type {
         @apply ml-auto;
       }
-      @apply h-full text-mono-700 hover:bg-mono-100 hover:text-mono-900 min-w-[40px] flex items-center justify-center;
+      @apply h-40 text-mono-700 hover:bg-mono-100 hover:text-mono-900 min-w-[40px] flex items-center justify-center;
       svg {
         @apply size-15 fill-current;
       }
