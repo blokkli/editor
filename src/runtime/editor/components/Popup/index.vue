@@ -21,7 +21,7 @@
             </slot>
           </div>
 
-          <button class="bk-button" @click="onSubmit" :class="'bk-is-' + theme">
+          <button class="bk-button" :class="'bk-is-' + theme" @click="onSubmit">
             {{ cta }}
           </button>
         </div>
