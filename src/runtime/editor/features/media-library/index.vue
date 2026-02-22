@@ -22,7 +22,7 @@ import { PluginSidebar } from '#blokkli/editor/plugins'
 import Library from './Library/index.vue'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
-import { defineDropAreas } from '#blokkli/editor/composables'
+import { defineDropAreas, defineDropHandler } from '#blokkli/editor/composables'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
@@ -125,6 +125,41 @@ defineDropAreas((dragItems) => {
       }
     })
     .filter(falsy)
+})
+
+defineDropHandler('media_library', {
+  resolveBundles({ items, field }) {
+    // All media library items must be of the same bundle.
+    const allSameBundles =
+      [...new Set(items.map((v) => v.mediaBundle)).values()].length === 1
+    if (!allSameBundles) {
+      return []
+    }
+    const item = items[0]!
+    return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+  },
+
+  async execute({ items, host, afterUuid, bundle }) {
+    if (adapter.mediaLibraryAddBlock && items.length === 1) {
+      await state.mutateWithLoadingState(() =>
+        adapter.mediaLibraryAddBlock!({
+          preceedingUuid: afterUuid,
+          host,
+          item: items[0]!,
+          targetBundle: bundle,
+        }),
+      )
+    } else if (adapter.mediaLibraryAddBlocks && items.length > 1) {
+      await state.mutateWithLoadingState(() =>
+        adapter.mediaLibraryAddBlocks!({
+          preceedingUuid: afterUuid,
+          host,
+          items,
+          targetBundle: bundle,
+        }),
+      )
+    }
+  },
 })
 </script>
 

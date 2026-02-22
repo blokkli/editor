@@ -90,6 +90,17 @@ function getRandomNumberInRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+function getImageDimensions(
+  dataUrl: string,
+): Promise<{ width: number; height: number }> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    img.onerror = () => resolve({ width: 800, height: 600 })
+    img.src = dataUrl
+  })
+}
+
 function sleep(duration: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -998,7 +1009,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       } else if (e.type === 'image') {
         return 'image'
       } else if (e.type === 'file') {
-        return 'text'
+        return 'button'
       }
     },
 
@@ -1161,6 +1172,51 @@ export default defineBlokkliEditAdapter((ctx) => {
           hostField: e.host.fieldName,
           preceedingUuid: e.afterUuid,
         })
+      } else if (e.item.type === 'image') {
+        const imageItem = e.item
+        return (async () => {
+          const [response, dimensions] = await Promise.all([
+            $fetch<{ url: string }>('/api/upload', {
+              method: 'POST',
+              body: {
+                data: imageItem.data,
+                fileName: imageItem.fileName,
+              },
+            }),
+            getImageDimensions(imageItem.data),
+          ])
+          return addMutation('add_image_from_clipboard', {
+            url: response.url,
+            fileName: imageItem.fileName,
+            width: dimensions.width,
+            height: dimensions.height,
+            hostEntityType: e.host.type,
+            hostEntityUuid: e.host.uuid,
+            hostField: e.host.fieldName,
+            preceedingUuid: e.afterUuid,
+          })
+        })()
+      } else if (e.item.type === 'file') {
+        const fileItem = e.item
+        return $fetch<{ url: string }>('/api/upload', {
+          method: 'POST',
+          body: {
+            data: fileItem.data,
+            fileName: fileItem.fileName,
+          },
+        }).then((response) =>
+          addMutation('add', {
+            bundle: 'button',
+            values: {
+              title: fileItem.fileName,
+              url: response.url,
+            },
+            hostEntityType: e.host.type,
+            hostEntityUuid: e.host.uuid,
+            hostField: e.host.fieldName,
+            preceedingUuid: e.afterUuid,
+          }),
+        )
       }
     },
 

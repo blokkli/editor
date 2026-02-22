@@ -64,6 +64,7 @@ import {
 } from '#blokkli/editor/components'
 import {
   defineAddAction,
+  defineDropHandler,
   onBlokkliEvent,
   useDialog,
 } from '#blokkli/editor/composables'
@@ -217,6 +218,20 @@ function onSubmitLibraryItem() {
   eventBus.emit('reloadState')
   cancelLibraryItemEdit()
 }
+
+defineDropHandler('reusable', {
+  async execute({ items, host, afterUuid }) {
+    if (adapter.addLibraryItem) {
+      await state.mutateWithLoadingState(() =>
+        adapter.addLibraryItem!({
+          libraryItemUuid: items[0]!.libraryItemUuid,
+          host,
+          afterUuid,
+        }),
+      )
+    }
+  },
+})
 
 defineAddAction(() => {
   if (

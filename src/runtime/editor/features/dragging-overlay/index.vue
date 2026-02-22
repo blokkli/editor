@@ -50,30 +50,12 @@ import {
 } from '#imports'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { BundleSelector, BlokkliTransition } from '#blokkli/editor/components'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
-import type { DraggableMediaLibraryItem } from '../media-library/types'
-import type { DraggableSearchContentItem } from '../search/types'
-import { emitMessage, type DropTargetEvent } from '#blokkli/editor/events'
-import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import { onBlokkliEvent, defineDropHandler } from '#blokkli/editor/composables'
+import type { DropTargetEvent } from '#blokkli/editor/events'
 import { MOUSE_BUTTON } from '#blokkli/editor/helpers/dom'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
-import type {
-  DraggableExistingBlock,
-  DraggableItem,
-} from '#blokkli/editor/types/draggable'
-import type {
-  DraggableClipboardItem,
-  DraggableNativeDropItem,
-  BlokkliClipboardItem,
-} from '../clipboard/types'
-import type { DraggableActionItem } from '../add-list/types'
-import type { DraggableReusableItem } from '../library/types'
-import type { DraggableExistingStructureBlock } from '../structure/types'
-import type {
-  BlokkliFieldElement,
-  BlokkliItemHost,
-} from '#blokkli/editor/types/field'
-import type { BlokkliDefinitionAddBehaviour } from './../../../../global/types/definitions'
+import type { DraggableItem } from '#blokkli/editor/types/draggable'
+import type { DropExecuteResult } from '#blokkli/editor/providers/dragdrop'
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',
@@ -95,58 +77,49 @@ const {
   directive,
   fields,
   $t,
+  dragdrop,
 } = useBlokkli()
 
+// ---------------------------------------------------------------------------
+// Promise-based BundleSelector.
+// ---------------------------------------------------------------------------
 type BundleSelectorData = {
   bundles: string[]
   anchorCoordinates: Coord
-  item:
-    | DraggableSearchContentItem
-    | DraggableMediaLibraryItem[]
-    | DraggableNativeDropItem
-  host: BlokkliItemHost
-  field: BlokkliFieldElement
-  afterUuid: string | null
 }
 
 const bundleSelectorData = ref<BundleSelectorData | null>(null)
+let bundleSelectorResolve: ((bundle: string | null) => void) | null = null
+
+function showBundleSelector(bundles: string[]): Promise<string | null> {
+  return new Promise((resolve) => {
+    bundleSelectorResolve = resolve
+    bundleSelectorData.value = {
+      bundles,
+      anchorCoordinates: getAnchorCoordinates(),
+    }
+  })
+}
 
 function onCloseBundleSelector() {
   bundleSelectorData.value = null
+  if (bundleSelectorResolve) {
+    bundleSelectorResolve(null)
+    bundleSelectorResolve = null
+  }
 }
 
-async function onSelectBundle(bundle: string) {
-  const data = bundleSelectorData.value
-  if (!data) {
-    return
+function onSelectBundle(bundle: string) {
+  bundleSelectorData.value = null
+  if (bundleSelectorResolve) {
+    bundleSelectorResolve(bundle)
+    bundleSelectorResolve = null
   }
-
-  const item = data.item
-
-  if (Array.isArray(item)) {
-    await onDropMediaLibraryItem(
-      data.field,
-      item,
-      data.host,
-      data.afterUuid,
-      bundle,
-    )
-  } else if (item.itemType === 'native_drop') {
-    await executeNativeDrop(item, data.host, data.afterUuid, bundle)
-  } else {
-    await state.mutateWithLoadingState(() =>
-      adapter.addContentSearchItem!({
-        item: item.searchItem,
-        host: data.host,
-        bundle,
-        afterUuid: data.afterUuid,
-      }),
-    )
-  }
-
-  onCloseBundleSelector()
 }
 
+// ---------------------------------------------------------------------------
+// Drag item rendering state.
+// ---------------------------------------------------------------------------
 const dragItemsComponent = useTemplateRef('dragItemsComponent')
 const isVisible = ref(false)
 const isTouching = ref(false)
@@ -166,428 +139,6 @@ const box = ref<Rectangle>({
 
 const dragItems = ref<DraggableItem[]>([])
 
-function isSameItemType(items: DraggableItem[]): boolean {
-  return items.every((item) => item.itemType === items[0]!.itemType)
-}
-
-type FilteredItemType<T extends DraggableItem> = T extends {
-  itemType: 'existing'
-}
-  ? { itemType: 'existing'; items: T[] }
-  : T extends { itemType: 'existing_structure' }
-    ? { itemType: 'existing_structure'; items: T[] }
-    : T extends { itemType: 'media_library' }
-      ? { itemType: 'media_library'; items: T[] }
-      : { itemType: T['itemType']; item: T }
-
-function filterItemType<T extends DraggableItem>(
-  items: T[],
-): FilteredItemType<T> {
-  if (!items.length) {
-    throw new Error('Items array is empty')
-  }
-
-  if (!isSameItemType(items)) {
-    throw new Error('Items of different types')
-  }
-
-  const itemType = items[0]!.itemType
-
-  if (
-    itemType === 'existing' ||
-    itemType === 'existing_structure' ||
-    itemType === 'media_library'
-  ) {
-    return { itemType, items } as any
-  }
-
-  if (items.length > 1) {
-    throw new Error(`Only a single item of type '${itemType}' is allowed.`)
-  }
-
-  return { itemType, item: items[0] } as FilteredItemType<T>
-}
-
-const onDropNew = async (
-  bundle: string,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-) => {
-  const field = fields.find(host.uuid, host.fieldName)
-  if (!field) {
-    throw new Error(
-      `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,
-    )
-  }
-  const definition = definitions.getBlockDefinition(
-    bundle,
-    field.fieldListType,
-    field.hostEntityBundle as any,
-  )
-  const addBehaviour: BlokkliDefinitionAddBehaviour =
-    definition?.editor?.addBehaviour || 'form'
-  if (
-    definition?.editor?.disableEdit ||
-    addBehaviour === 'no-form' ||
-    addBehaviour.startsWith('editable:') ||
-    !adapter.formFrameBuilder
-  ) {
-    await state.mutateWithLoadingState(() =>
-      adapter.addNewBlock({
-        bundle,
-        host,
-        afterUuid,
-      }),
-    )
-  } else {
-    eventBus.emit('add:block:new', {
-      bundle,
-      host,
-      afterUuid,
-    })
-  }
-}
-
-const onDropExisting = async (
-  items: Array<DraggableExistingBlock | DraggableExistingStructureBlock>,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-) => {
-  const uuids = items.map((v) => v.block.uuid)
-  const isCopy = items.some(
-    (v) => v.itemType === 'existing' && v.isCopy,
-  )
-
-  if (isCopy && adapter.pasteExistingBlocks) {
-    await state.mutateWithLoadingState(() =>
-      adapter.pasteExistingBlocks!({
-        uuids,
-        host: {
-          type: host.type,
-          uuid: host.uuid,
-          fieldName: host.fieldName,
-        },
-        preceedingUuid: afterUuid,
-      }),
-    )
-  } else {
-    await state.mutateWithLoadingState(() =>
-      adapter.moveMultipleBlocks({
-        uuids,
-        afterUuid,
-        host,
-      }),
-    )
-  }
-
-  if (uuids.length >= 1 && uuids.length <= 10) {
-    for (let i = 0; i < uuids.length; i++) {
-      dom.refreshBlockRect(uuids[i]!)
-    }
-  }
-
-  if (ui.isMobile.value && uuids.length) {
-    eventBus.emit('scrollIntoView', {
-      uuid: uuids[0]!,
-      center: true,
-    })
-  }
-}
-
-const onDropReusable = async (
-  item: DraggableReusableItem,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-) => {
-  if (adapter.addLibraryItem) {
-    await state.mutateWithLoadingState(() =>
-      adapter.addLibraryItem!({
-        libraryItemUuid: item.libraryItemUuid,
-        host,
-        afterUuid,
-      }),
-    )
-  }
-}
-
-const onDropClipboardItem = async (
-  item: DraggableClipboardItem,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-) => {
-  eventBus.emit('drop:clipboardItem', {
-    id: item.clipboardId,
-    host,
-    blockBundle: item.itemBundle,
-    afterUuid,
-  })
-}
-
-function readFileAsDataURL(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const fr = new FileReader()
-    fr.onload = () => {
-      if (typeof fr.result === 'string') {
-        resolve(fr.result)
-      } else {
-        reject(new Error('FileReader result is not a string'))
-      }
-    }
-    fr.onerror = () => reject(fr.error)
-    fr.readAsDataURL(file)
-  })
-}
-
-const executeNativeDrop = async (
-  item: DraggableNativeDropItem,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-  bundle: string,
-) => {
-  if (!adapter.addBlockFromClipboardItem) {
-    return
-  }
-
-  // Clipboard paste path: data is already available via clipboardItems.
-  if (item.clipboardItems?.length) {
-    await state.mutateWithLoadingState(async () => {
-      let lastResult
-      for (const clipItem of item.clipboardItems!) {
-        lastResult = await adapter.addBlockFromClipboardItem!({
-          item: clipItem,
-          blockBundle: bundle,
-          host,
-          afterUuid,
-        })
-      }
-      return lastResult!
-    })
-    return
-  }
-
-  if (!item.dataTransfer) {
-    return
-  }
-
-  const dt = item.dataTransfer
-
-  if (dt.files.length > 0) {
-    const files = [...dt.files]
-
-    // Re-validate each file's bundle with actual file size.
-    if (adapter.clipboardMapBundle) {
-      for (const file of files) {
-        const type: 'image' | 'file' = file.type.startsWith('image/')
-          ? 'image'
-          : 'file'
-        const mapped = adapter.clipboardMapBundle({
-          type,
-          fileType: file.type,
-          fileSize: file.size,
-        })
-        if (!mapped) {
-          emitMessage('This file type or size is not supported.', 'error')
-          return
-        }
-      }
-    }
-
-    let results: string[]
-    try {
-      results = await Promise.all(files.map(readFileAsDataURL))
-    } catch {
-      return
-    }
-
-    const clipboardItems: BlokkliClipboardItem[] = files.map((file, i) => {
-      const type: 'image' | 'file' = file.type.startsWith('image/')
-        ? 'image'
-        : 'file'
-      return {
-        type,
-        id: generateUUID(),
-        itemBundle: bundle,
-        data: results[i]!,
-        additional: file.name,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-      }
-    })
-
-    await state.mutateWithLoadingState(async () => {
-      let lastResult
-      for (const clipItem of clipboardItems) {
-        lastResult = await adapter.addBlockFromClipboardItem!({
-          item: clipItem,
-          blockBundle: bundle,
-          host,
-          afterUuid,
-        })
-      }
-      return lastResult!
-    })
-  } else {
-    // Text drop.
-    const text =
-      dt.getData('text/html') || dt.getData('text/plain') || dt.getData('text')
-    if (!text) {
-      return
-    }
-
-    // Re-validate bundle with actual text.
-    let resolvedBundle = bundle
-    if (adapter.clipboardMapBundle) {
-      const mapped = adapter.clipboardMapBundle({
-        type: 'plaintext',
-        text,
-      })
-      if (!mapped) {
-        return
-      }
-      // Use first bundle if array is returned.
-      resolvedBundle = Array.isArray(mapped) ? mapped[0]! : mapped
-    }
-
-    const clipboardItem: BlokkliClipboardItem = {
-      type: 'text',
-      id: generateUUID(),
-      itemBundle: resolvedBundle,
-      data: text,
-    }
-
-    await state.mutateWithLoadingState(() =>
-      adapter.addBlockFromClipboardItem!({
-        item: clipboardItem,
-        blockBundle: resolvedBundle,
-        host,
-        afterUuid,
-      }),
-    )
-  }
-}
-
-const onDropNativeDrop = async (
-  field: BlokkliFieldElement,
-  item: DraggableNativeDropItem,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-) => {
-  if (!adapter.addBlockFromClipboardItem) {
-    return
-  }
-
-  const possibleBundles = field.allowedBundles.filter((b) =>
-    item.itemBundles.includes(b),
-  )
-
-  if (possibleBundles.length === 0) {
-    return
-  }
-
-  if (possibleBundles.length > 1) {
-    // The bundle selector is async — by the time the user picks a bundle,
-    // the browser will have invalidated the DataTransfer object, making
-    // dt.getData() return empty strings. Eagerly read text data now and
-    // store it as clipboardItems so executeNativeDrop can use the clipboard
-    // path instead.
-    if (!item.clipboardItems?.length && item.dataTransfer) {
-      const dt = item.dataTransfer
-      if (dt.files.length === 0) {
-        const text =
-          dt.getData('text/html') ||
-          dt.getData('text/plain') ||
-          dt.getData('text')
-        if (text) {
-          item.clipboardItems = [
-            {
-              type: 'text',
-              id: generateUUID(),
-              itemBundle: possibleBundles[0]!,
-              data: text,
-            },
-          ]
-        }
-      }
-    }
-
-    bundleSelectorData.value = {
-      bundles: possibleBundles,
-      anchorCoordinates: getAnchorCoordinates(),
-      item,
-      host,
-      field,
-      afterUuid,
-    }
-    return
-  }
-
-  const bundle = possibleBundles[0]!
-  await executeNativeDrop(item, host, afterUuid, bundle)
-}
-
-const onDropMediaLibraryItem = async (
-  field: BlokkliFieldElement,
-  items: DraggableMediaLibraryItem[],
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-  bundle: string | null,
-) => {
-  // We can assume that all media library items are of the same bundle, since it's not possible to multi select media library items of different bundles.
-  const allSameBundles =
-    [...new Set(items.map((v) => v.mediaBundle)).values()].length === 1
-  if (!allSameBundles) {
-    throw new Error(
-      'Multi select of media library items of different bundles is not supported.',
-    )
-  }
-
-  let targetBundle = bundle
-
-  if (targetBundle === null) {
-    const item = items[0]!
-    const allowedBundles = field.allowedBundles
-    const possibleBundles = allowedBundles.filter((bundle) =>
-      item.itemBundles.includes(bundle),
-    )
-    if (possibleBundles.length === 0) {
-      throw new Error('This search item can not be placed here.')
-    } else if (possibleBundles.length === 1) {
-      targetBundle = possibleBundles[0]!
-    } else {
-      bundleSelectorData.value = {
-        bundles: possibleBundles,
-        anchorCoordinates: getAnchorCoordinates(),
-        item: items,
-        host,
-        afterUuid,
-        field,
-      }
-      return
-    }
-  }
-
-  if (adapter.mediaLibraryAddBlock && items.length === 1) {
-    await state.mutateWithLoadingState(() =>
-      adapter.mediaLibraryAddBlock!({
-        preceedingUuid: afterUuid,
-        host,
-        item: items[0]!,
-        targetBundle,
-      }),
-    )
-  } else if (adapter.mediaLibraryAddBlocks && items.length > 1) {
-    await state.mutateWithLoadingState(() =>
-      adapter.mediaLibraryAddBlocks!({
-        preceedingUuid: afterUuid,
-        host,
-        items,
-        targetBundle,
-      }),
-    )
-  }
-}
-
 function getAnchorCoordinates() {
   return ui.toArtboardCoords({
     x: mouseX.value,
@@ -595,86 +146,106 @@ function getAnchorCoordinates() {
   })
 }
 
-const onDropSearchContentItem = async (
-  field: BlokkliFieldElement,
-  item: DraggableSearchContentItem,
-  host: BlokkliItemHost,
-  afterUuid: string | null,
-) => {
-  if (!adapter.addContentSearchItem) {
-    throw new Error('Adapter does not implement "addContentSearchItem".')
-  }
+// ---------------------------------------------------------------------------
+// Core drop handlers registered via defineDropHandler.
+// ---------------------------------------------------------------------------
 
-  const allowedBundles = field.allowedBundles
-  const possibleBundles = allowedBundles.filter((bundle) =>
-    item.itemBundles.includes(bundle),
-  )
+// existing: move/copy blocks.
+defineDropHandler('existing', {
+  async execute({ items, host, afterUuid }) {
+    const uuids = items.map((v) => v.block.uuid)
+    const isCopy = items.some((v) => v.isCopy)
 
-  if (possibleBundles.length === 0) {
-    throw new Error('This search item can not be placed here.')
-  } else if (possibleBundles.length === 1) {
-    await state.mutateWithLoadingState(() =>
-      adapter.addContentSearchItem!({
-        item: item.searchItem,
-        host,
-        bundle: possibleBundles[0]!,
-        afterUuid,
-      }),
-    )
-  } else {
-    bundleSelectorData.value = {
-      bundles: possibleBundles,
-      anchorCoordinates: getAnchorCoordinates(),
-      field,
-      item,
-      host,
-      afterUuid,
+    if (isCopy && adapter.pasteExistingBlocks) {
+      await state.mutateWithLoadingState(() =>
+        adapter.pasteExistingBlocks!({
+          uuids,
+          host: {
+            type: host.type,
+            uuid: host.uuid,
+            fieldName: host.fieldName,
+          },
+          preceedingUuid: afterUuid,
+        }),
+      )
+    } else {
+      await state.mutateWithLoadingState(() =>
+        adapter.moveMultipleBlocks({
+          uuids,
+          afterUuid,
+          host,
+        }),
+      )
     }
-  }
-}
 
-const onDropAction = (
-  action: DraggableActionItem,
-  host: BlokkliItemHost,
-  field: BlokkliFieldElement,
-  afterUuid: string | null,
-) => {
-  action.action.callback({
-    preceedingUuid: afterUuid,
-    host,
-    field,
-  })
-}
+    if (uuids.length >= 1 && uuids.length <= 10) {
+      for (let i = 0; i < uuids.length; i++) {
+        dom.refreshBlockRect(uuids[i]!)
+      }
+    }
 
+    if (ui.isMobile.value && uuids.length) {
+      eventBus.emit('scrollIntoView', {
+        uuid: uuids[0]!,
+        center: true,
+      })
+    }
+  },
+})
+
+// ---------------------------------------------------------------------------
+// Thin dispatcher: onDrop.
+// ---------------------------------------------------------------------------
 let allUuidsBefore: string[] = []
+let lastDropResult: DropExecuteResult | null = null
 
 const onDrop = async (e: DropTargetEvent) => {
   allUuidsBefore = state.getAllUuids()
 
   await nextTick(async () => {
-    const afterUuid = e.preceedingUuid ?? null
-    const host = e.host
-    const typed = filterItemType(e.items)
-    if (
-      typed.itemType === 'existing' ||
-      typed.itemType === 'existing_structure'
-    ) {
-      await onDropExisting(typed.items, host, afterUuid)
-    } else if (typed.itemType === 'new') {
-      await onDropNew(typed.item.itemBundle, host, afterUuid)
-    } else if (typed.itemType === 'reusable') {
-      await onDropReusable(typed.item, host, afterUuid)
-    } else if (typed.itemType === 'clipboard') {
-      await onDropClipboardItem(typed.item, host, afterUuid)
-    } else if (typed.itemType === 'native_drop') {
-      await onDropNativeDrop(e.field, typed.item, host, afterUuid)
-    } else if (typed.itemType === 'search_content') {
-      await onDropSearchContentItem(e.field, typed.item, host, afterUuid)
-    } else if (typed.itemType === 'action') {
-      onDropAction(typed.item, host, e.field, afterUuid)
-    } else if (typed.itemType === 'media_library') {
-      await onDropMediaLibraryItem(e.field, typed.items, host, afterUuid, null)
+    const itemType = e.items[0]?.itemType
+    if (!itemType) {
+      return
     }
+
+    const handler = dragdrop.getDropHandler(itemType)
+    if (!handler) {
+      return
+    }
+
+    const baseCtx = {
+      items: e.items as any,
+      field: e.field,
+      host: e.host,
+      afterUuid: e.preceedingUuid ?? null,
+    }
+
+    let result: DropExecuteResult | undefined
+
+    if (handler.resolveBundles) {
+      const bundles = await handler.resolveBundles(baseCtx)
+
+      if (bundles.length === 0) {
+        return
+      }
+
+      let bundle: string
+      if (bundles.length === 1) {
+        bundle = bundles[0]!
+      } else {
+        const selected = await showBundleSelector(bundles)
+        if (!selected) {
+          return
+        }
+        bundle = selected
+      }
+
+      result = await handler.execute({ ...baseCtx, bundle })
+    } else {
+      result = await handler.execute({ ...baseCtx, bundle: '' })
+    }
+
+    lastDropResult = result ?? null
 
     eventBus.emit('dragging:end')
     eventBus.emit('item:dropped')
@@ -684,13 +255,18 @@ const onDrop = async (e: DropTargetEvent) => {
   mouseY.value = 0
 }
 
+// ---------------------------------------------------------------------------
+// Post-drop: detect new blocks, select them, focus editable field.
+// ---------------------------------------------------------------------------
 onBlokkliEvent('state:reloaded', async function () {
   if (!allUuidsBefore.length) {
     return
   }
   const allUuidsAfter = state.getAllUuids()
   const newUuid = allUuidsAfter.find((uuid) => !allUuidsBefore.includes(uuid))
+  const dropResult = lastDropResult
   allUuidsBefore = []
+  lastDropResult = null
 
   if (!newUuid) {
     return
@@ -710,9 +286,9 @@ onBlokkliEvent('state:reloaded', async function () {
 
   eventBus.emit('select', allSelected)
 
-  // if (typed.itemType !== 'new') {
-  //   return
-  // }
+  if (!dropResult?.focusEditable) {
+    return
+  }
 
   const definition = definitions.getBlockDefinition(
     newBlock.bundle,
@@ -743,6 +319,9 @@ onBlokkliEvent('state:reloaded', async function () {
   })
 })
 
+// ---------------------------------------------------------------------------
+// Drag interaction lifecycle.
+// ---------------------------------------------------------------------------
 onBlokkliEvent('dragging:move', (e) => {
   mouseX.value = e.x
   mouseY.value = e.y
@@ -823,10 +402,26 @@ onBlokkliEvent('keyPressed', (e) => {
   }
 })
 
-onBlokkliEvent('block:append', (e) => {
+onBlokkliEvent('block:append', async (e) => {
   allUuidsBefore = state.getAllUuids()
-  // @todo: scroll into view
-  onDropNew(e.bundle, e.host, e.afterUuid)
+  // Use the new handler to add a block via the 'new' drop handler.
+  const handler = dragdrop.getDropHandler('new')
+  if (handler) {
+    const result = await handler.execute({
+      items: [
+        {
+          itemType: 'new',
+          itemBundle: e.bundle,
+          element: () => document.createElement('div'),
+        },
+      ],
+      field: fields.find(e.host.uuid, e.host.fieldName)!,
+      host: e.host,
+      afterUuid: e.afterUuid,
+      bundle: e.bundle,
+    })
+    lastDropResult = result ?? null
+  }
 })
 
 onUnmounted(() => {

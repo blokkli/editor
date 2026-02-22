@@ -101,7 +101,6 @@ import commandsProvider from '#blokkli/editor/providers/commands'
 import tourProvider from '#blokkli/editor/providers/tour'
 import debugProvider from '#blokkli/editor/providers/debug'
 import definitionProvider from '#blokkli/editor/providers/definition'
-import dropAreasProvider from '#blokkli/editor/providers/dropArea'
 import blocksProvider from '#blokkli/editor/providers/blocks'
 import indicatorsProvider from '#blokkli/editor/providers/indicators'
 import pluginProvider from '#blokkli/editor/providers/plugin'
@@ -111,6 +110,7 @@ import iconsProvider from '#blokkli/editor/providers/icons'
 import permissionsProvider from '#blokkli/editor/providers/permissions'
 import adaptersProvider from '#blokkli/editor/providers/adapters'
 import analyzeProviderFn from '#blokkli/editor/providers/analyze'
+import dragdropProvider from '#blokkli/editor/providers/dragdrop'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -209,7 +209,6 @@ const element = elementProvider(debug)
 const features = featuresProvider(storage)
 const commands = commandsProvider()
 const tour = tourProvider()
-const dropAreas = dropAreasProvider()
 const broadcast = broadcastProvider()
 const icons = iconsProvider()
 const ui = uiProvider(
@@ -240,6 +239,7 @@ const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
 const permissionsInstance = await permissionsProvider(adapter)
 const analyze = analyzeProviderFn(adapters, state, ui, context, $t)
+const dragdrop = dragdropProvider()
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
 
@@ -342,7 +342,6 @@ const app: BlokkliApp = {
   debug,
   definitions,
   dom,
-  dropAreas,
   element,
   eventBus,
   directive,
@@ -362,6 +361,7 @@ const app: BlokkliApp = {
   icons,
   permissions: permissionsInstance,
   analyze,
+  dragdrop,
 }
 
 provide(INJECT_APP, app)

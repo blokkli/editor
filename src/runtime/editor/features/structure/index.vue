@@ -40,6 +40,7 @@ import {
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { ScrollBoundary } from '#blokkli/editor/components'
 import List from './List/index.vue'
+import { defineDropHandler } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'structure',
@@ -49,7 +50,35 @@ defineBlokkliFeature({
     'Provides a sidebar button to render a structured list of all blocks on the current page.',
 })
 
-const { $t, context } = useBlokkli()
+const { $t, context, adapter, state, dom, ui, eventBus } = useBlokkli()
+
+// existing_structure: move structure blocks.
+defineDropHandler('existing_structure', {
+  async execute({ items, host, afterUuid }) {
+    const uuids = items.map((v) => v.block.uuid)
+
+    await state.mutateWithLoadingState(() =>
+      adapter.moveMultipleBlocks({
+        uuids,
+        afterUuid,
+        host,
+      }),
+    )
+
+    if (uuids.length >= 1 && uuids.length <= 10) {
+      for (let i = 0; i < uuids.length; i++) {
+        dom.refreshBlockRect(uuids[i]!)
+      }
+    }
+
+    if (ui.isMobile.value && uuids.length) {
+      eventBus.emit('scrollIntoView', {
+        uuid: uuids[0]!,
+        center: true,
+      })
+    }
+  },
+})
 
 const isLoaded = ref(false)
 

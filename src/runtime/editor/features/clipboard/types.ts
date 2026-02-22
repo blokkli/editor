@@ -84,11 +84,17 @@ export type ClipboardMapBundleEventVideo = {
   videoId: string
 }
 
+export type ClipboardMapBundleEventLink = {
+  type: 'link'
+  url: string
+}
+
 export type ClipboardMapBundleEvent =
   | ClipboardMapBundleEventVideo
   | ClipboardMapBundleEventImage
   | ClipboardMapBundleEventFile
   | ClipboardMapBundleEventPlaintext
+  | ClipboardMapBundleEventLink
 
 export interface DraggableClipboardItem {
   itemType: 'clipboard'

@@ -29,6 +29,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
 import {
+  defineDropHandler,
   defineItemDropdownAction,
   defineShortcut,
   onBlokkliEvent,
@@ -213,7 +214,6 @@ function resetDrag() {
 }
 
 function onDragEnter(e: DragEvent) {
-  console.log(e)
   dragCounter++
   if (dragCounter === 1) {
     tryStartDirectDrop(e)
@@ -717,6 +717,290 @@ const handlePastedText = (text: string) => {
     )
   }
 }
+
+// ---------------------------------------------------------------------------
+// Drop handlers: native_drop and clipboard.
+// ---------------------------------------------------------------------------
+
+/**
+ * Try to detect if a URL string is a plain URL (not embedded in HTML).
+ * Returns the URL if it looks like a bare URL, null otherwise.
+ */
+function extractBareUrl(text: string): string | null {
+  const trimmed = text.trim()
+  try {
+    const url = new URL(trimmed)
+    if (url.protocol === 'http:' || url.protocol === 'https:') {
+      return trimmed
+    }
+  } catch {
+    // Not a valid URL.
+  }
+  return null
+}
+
+defineDropHandler('native_drop', {
+  resolveBundles({ items, field }) {
+    const item = items[0]!
+
+    if (!adapter.addBlockFromClipboardItem) {
+      return []
+    }
+
+    // If clipboardItems are already pre-built (from paste path), use the
+    // item's bundles directly.
+    if (item.clipboardItems?.length) {
+      return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+    }
+
+    if (!item.dataTransfer) {
+      return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+    }
+
+    const dt = item.dataTransfer
+
+    // For files: re-validate via clipboardMapBundle with actual file info.
+    if (dt.files.length > 0) {
+      if (!adapter.clipboardMapBundle) {
+        return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+      }
+      const files = [...dt.files]
+      let possibleBundles: string[] | null = null
+      for (const file of files) {
+        const type: 'image' | 'file' = file.type.startsWith('image/')
+          ? 'image'
+          : 'file'
+        const mapped = normalizeBundles(
+          adapter.clipboardMapBundle({
+            type,
+            fileType: file.type,
+            fileSize: file.size,
+          }),
+        )
+        if (!mapped) {
+          return []
+        }
+        if (possibleBundles === null) {
+          possibleBundles = mapped
+        } else {
+          possibleBundles = possibleBundles.filter((b) => mapped.includes(b))
+        }
+      }
+      return (possibleBundles || []).filter((b) =>
+        field.allowedBundles.includes(b),
+      )
+    }
+
+    // For text: read DataTransfer NOW and detect content type.
+    const text =
+      dt.getData('text/html') || dt.getData('text/plain') || dt.getData('text')
+    if (!text) {
+      return []
+    }
+
+    if (adapter.clipboardMapBundle) {
+      // Try video detection.
+      const video = getVideoId(text)
+      if (video.id && video.service) {
+        const mapped = normalizeBundles(
+          adapter.clipboardMapBundle({
+            type: 'video',
+            videoService: video.service,
+            videoId: video.id,
+          }),
+        )
+        if (mapped?.length) {
+          item.clipboardItems = [
+            {
+              type: 'video',
+              id: generateUUID(),
+              itemBundle: mapped[0]!,
+              data: text,
+              videoService: video.service,
+              videoId: video.id,
+            },
+          ]
+          return mapped.filter((b) => field.allowedBundles.includes(b))
+        }
+      }
+
+      // Try URL detection (not a video).
+      const bareUrl = extractBareUrl(text)
+      if (bareUrl) {
+        const mapped = normalizeBundles(
+          adapter.clipboardMapBundle({ type: 'link', url: bareUrl }),
+        )
+        if (mapped?.length) {
+          item.clipboardItems = [
+            {
+              type: 'text',
+              id: generateUUID(),
+              itemBundle: mapped[0]!,
+              data: bareUrl,
+            },
+          ]
+          return mapped.filter((b) => field.allowedBundles.includes(b))
+        }
+      }
+
+      // Fall through to plaintext.
+      const mapped = normalizeBundles(
+        adapter.clipboardMapBundle({ type: 'plaintext', text }),
+      )
+      if (mapped?.length) {
+        item.clipboardItems = [
+          {
+            type: 'text',
+            id: generateUUID(),
+            itemBundle: mapped[0]!,
+            data: text,
+          },
+        ]
+        return mapped.filter((b) => field.allowedBundles.includes(b))
+      }
+    }
+
+    // No clipboardMapBundle — use pre-determined bundles.
+    // Eagerly store text as clipboardItems since DataTransfer will be
+    // invalidated after this synchronous handler returns.
+    item.clipboardItems = [
+      {
+        type: 'text',
+        id: generateUUID(),
+        itemBundle: item.itemBundles[0]!,
+        data: text,
+      },
+    ]
+    return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+  },
+
+  async execute({ items, host, afterUuid, bundle }) {
+    if (!adapter.addBlockFromClipboardItem) {
+      return
+    }
+
+    const item = items[0]!
+
+    // Clipboard paste path: data is already available via clipboardItems.
+    if (item.clipboardItems?.length) {
+      await state.mutateWithLoadingState(async () => {
+        let lastResult
+        for (const clipItem of item.clipboardItems!) {
+          lastResult = await adapter.addBlockFromClipboardItem!({
+            item: clipItem,
+            blockBundle: bundle,
+            host,
+            afterUuid,
+          })
+        }
+        return lastResult!
+      })
+      return
+    }
+
+    if (!item.dataTransfer) {
+      return
+    }
+
+    const dt = item.dataTransfer
+
+    if (dt.files.length > 0) {
+      const files = [...dt.files]
+
+      // Re-validate each file's bundle with actual file size.
+      if (adapter.clipboardMapBundle) {
+        for (const file of files) {
+          const type: 'image' | 'file' = file.type.startsWith('image/')
+            ? 'image'
+            : 'file'
+          const mapped = adapter.clipboardMapBundle({
+            type,
+            fileType: file.type,
+            fileSize: file.size,
+          })
+          if (!mapped) {
+            emitMessage('This file type or size is not supported.', 'error')
+            return
+          }
+        }
+      }
+
+      let results: string[]
+      try {
+        results = await Promise.all(files.map(readFileAsDataURL))
+      } catch {
+        return
+      }
+
+      const clipboardItems: BlokkliClipboardItem[] = files.map((file, i) => {
+        const type: 'image' | 'file' = file.type.startsWith('image/')
+          ? 'image'
+          : 'file'
+        return {
+          type,
+          id: generateUUID(),
+          itemBundle: bundle,
+          data: results[i]!,
+          additional: file.name,
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+        }
+      })
+
+      await state.mutateWithLoadingState(async () => {
+        let lastResult
+        for (const clipItem of clipboardItems) {
+          lastResult = await adapter.addBlockFromClipboardItem!({
+            item: clipItem,
+            blockBundle: bundle,
+            host,
+            afterUuid,
+          })
+        }
+        return lastResult!
+      })
+    } else {
+      // Text drop — clipboardItems should have been set in resolveBundles.
+      // Fallback: read from DataTransfer directly.
+      const text =
+        dt.getData('text/html') ||
+        dt.getData('text/plain') ||
+        dt.getData('text')
+      if (!text) {
+        return
+      }
+
+      const clipboardItem: BlokkliClipboardItem = {
+        type: 'text',
+        id: generateUUID(),
+        itemBundle: bundle,
+        data: text,
+      }
+
+      await state.mutateWithLoadingState(() =>
+        adapter.addBlockFromClipboardItem!({
+          item: clipboardItem,
+          blockBundle: bundle,
+          host,
+          afterUuid,
+        }),
+      )
+    }
+  },
+})
+
+defineDropHandler('clipboard', {
+  async execute({ items, host, afterUuid }) {
+    const item = items[0]!
+    eventBus.emit('drop:clipboardItem', {
+      id: item.clipboardId,
+      host,
+      blockBundle: item.itemBundle,
+      afterUuid,
+    })
+  },
+})
 
 function setClipboard(text: string) {
   const type = 'text/plain'

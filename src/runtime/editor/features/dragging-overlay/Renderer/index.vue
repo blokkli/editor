@@ -58,7 +58,7 @@ const {
   dom,
   ui,
   theme,
-  dropAreas,
+  dragdrop,
   eventBus,
   animation,
   state,
@@ -127,7 +127,7 @@ defineEmits<{
   (e: 'drop', data: DropTargetEvent): void
 }>()
 
-const areas = dropAreas
+const areas = dragdrop
   .getDropAreas(props.items)
   .reduce<Record<string, DropArea>>((acc, v) => {
     acc[v.id] = v

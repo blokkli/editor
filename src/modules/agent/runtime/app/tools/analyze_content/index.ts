@@ -186,8 +186,7 @@ export default defineBlokkliAgentTool({
               if (target instanceof HTMLElement) {
                 const closest = target.closest('[data-bk-uuid]')
                 if (closest) {
-                  blockUuid =
-                    closest.getAttribute('data-bk-uuid') ?? undefined
+                  blockUuid = closest.getAttribute('data-bk-uuid') ?? undefined
                   break
                 }
               } else if (typeof target === 'object' && 'uuid' in target) {

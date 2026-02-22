@@ -73,6 +73,8 @@ import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 import type { AddListHelp } from './types'
 import type { AddAction } from '#blokkli/editor/types/actions'
+import type { BlokkliDefinitionAddBehaviour } from './../../../../global/types/definitions'
+import { defineDropHandler } from '#blokkli/editor/composables'
 
 const DEBUG_HELP = false
 
@@ -95,8 +97,73 @@ const { settings } = defineBlokkliFeature({
   screenshot: 'feature-add-list.jpg',
 })
 
-const { $t, ui, selection, state, tour, types, context, dom, plugins } =
-  useBlokkli()
+const {
+  $t,
+  ui,
+  selection,
+  state,
+  tour,
+  types,
+  context,
+  dom,
+  plugins,
+  adapter,
+  definitions,
+  fields,
+  eventBus,
+} = useBlokkli()
+
+// new: add new block.
+defineDropHandler('new', {
+  async execute({ items, host, afterUuid, bundle }) {
+    const itemBundle = bundle || items[0]!.itemBundle
+    const field = fields.find(host.uuid, host.fieldName)
+    if (!field) {
+      throw new Error(
+        `Failed to locate field with name "${host.fieldName}" on UUID "${host.uuid}"`,
+      )
+    }
+    const definition = definitions.getBlockDefinition(
+      itemBundle,
+      field.fieldListType,
+      field.hostEntityBundle as any,
+    )
+    const addBehaviour: BlokkliDefinitionAddBehaviour =
+      definition?.editor?.addBehaviour || 'form'
+    if (
+      definition?.editor?.disableEdit ||
+      addBehaviour === 'no-form' ||
+      addBehaviour.startsWith('editable:') ||
+      !adapter.formFrameBuilder
+    ) {
+      await state.mutateWithLoadingState(() =>
+        adapter.addNewBlock({
+          bundle: itemBundle,
+          host,
+          afterUuid,
+        }),
+      )
+      return { focusEditable: true }
+    } else {
+      eventBus.emit('add:block:new', {
+        bundle: itemBundle,
+        host,
+        afterUuid,
+      })
+    }
+  },
+})
+
+// action: call action callback.
+defineDropHandler('action', {
+  execute({ items, host, field, afterUuid }) {
+    items[0]!.action.callback({
+      preceedingUuid: afterUuid,
+      host,
+      field,
+    })
+  },
+})
 
 const actions = computed<AddAction[]>(() => {
   return plugins.get('addAction').sort((a, b) => a.weight - b.weight)

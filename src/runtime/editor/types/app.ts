@@ -25,12 +25,12 @@ import type { FieldsProvider } from '../providers/fields'
 import type { ElementProvider } from '../providers/element'
 import type { CommandsProvider } from '../providers/commands'
 import type { TourProvider } from '../providers/tour'
-import type { DropAreaProvider } from '../providers/dropArea'
 import type { ThemeProvider } from '../providers/theme'
 import type { DefinitionProvider } from '../providers/definition'
 import type { PermissionsProvider } from '../providers/permissions'
 import type { AdaptersProvider } from '../providers/adapters'
 import type { AnalyzeProvider } from '../providers/analyze'
+import type { DragDropProvider } from '../providers/dragdrop'
 
 export interface BlokkliApp {
   /**
@@ -63,7 +63,6 @@ export interface BlokkliApp {
   theme: ThemeProvider
   commands: CommandsProvider
   tour: TourProvider
-  dropAreas: DropAreaProvider
   debug: DebugProvider
   indicators: IndicatorsProvider
   plugins: PluginProvider
@@ -72,4 +71,5 @@ export interface BlokkliApp {
   icons: IconsProvider
   permissions: PermissionsProvider
   analyze: AnalyzeProvider
+  dragdrop: DragDropProvider
 }

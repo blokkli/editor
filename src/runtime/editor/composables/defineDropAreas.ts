@@ -5,13 +5,13 @@ import type { DropArea } from '../types/ui'
 export function defineDropAreas(
   cb: (items: DraggableItem[]) => DropArea | DropArea[] | undefined,
 ) {
-  const { dropAreas } = useBlokkli()
+  const { dragdrop } = useBlokkli()
 
   onMounted(() => {
-    dropAreas.add(cb)
+    dragdrop.addDropArea(cb)
   })
 
   onBeforeUnmount(() => {
-    dropAreas.remove(cb)
+    dragdrop.removeDropArea(cb)
   })
 }

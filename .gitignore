@@ -71,5 +71,7 @@ src/runtime/editor/icons/material-icons.ts
 
 src/runtime/editor/css/output.css
 
+playground/public/uploads/
+
 packages/agent
 packages/kit

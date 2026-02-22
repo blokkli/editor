@@ -45,7 +45,11 @@ import {
 import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
-import { onBlokkliEvent, defineDropAreas } from '#blokkli/editor/composables'
+import {
+  onBlokkliEvent,
+  defineDropAreas,
+  defineDropHandler,
+} from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DropArea } from '#blokkli/editor/types/ui'
@@ -130,6 +134,28 @@ defineDropAreas((dragItems) => {
       }
     })
     .filter(falsy)
+})
+
+defineDropHandler('search_content', {
+  resolveBundles({ items, field }) {
+    const item = items[0]!
+    return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+  },
+
+  async execute({ items, host, afterUuid, bundle }) {
+    if (!adapter.addContentSearchItem) {
+      throw new Error('Adapter does not implement "addContentSearchItem".')
+    }
+    const item = items[0]!
+    await state.mutateWithLoadingState(() =>
+      adapter.addContentSearchItem!({
+        item: item.searchItem,
+        host,
+        bundle,
+        afterUuid,
+      }),
+    )
+  },
 })
 
 const isRendered = ref(false)

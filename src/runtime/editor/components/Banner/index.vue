@@ -36,6 +36,7 @@ const props = withDefaults(
   }>(),
   {
     button: undefined,
+    text: undefined,
     scheme: 'accent',
   },
 )

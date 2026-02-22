@@ -8,6 +8,10 @@ import {
   MutationAddVideoFromUrl,
   type MutationAddVideoFromUrlArgs,
 } from './Mutation/AddVideoFromUrl'
+import {
+  MutationAddImageFromClipboard,
+  type MutationAddImageFromClipboardArgs,
+} from './Mutation/AddImageFromClipboard'
 import { MutationDelete, type MutationDeleteArgs } from './Mutation/Delete'
 import {
   MutationDetachReusable,
@@ -105,6 +109,7 @@ export type MutationArgsMap = {
   replace_media: MutationReplaceMediaArgs
   replace_entity_media: MutationReplaceEntityMediaArgs
   add_video_from_url: MutationAddVideoFromUrlArgs
+  add_image_from_clipboard: MutationAddImageFromClipboardArgs
   set_block_schedule: MutationSetBlockScheduleArgs
   add_template: MutationAddTemplateArgs
   create_template: MutationCreateTemplateArgs
@@ -156,6 +161,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationReplaceEntityMedia(configuration)
     case 'add_video_from_url':
       return new MutationAddVideoFromUrl(configuration)
+    case 'add_image_from_clipboard':
+      return new MutationAddImageFromClipboard(configuration)
     case 'set_block_schedule':
       return new MutationSetBlockSchedule(configuration)
     case 'add_template':

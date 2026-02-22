@@ -1,9 +1,8 @@
-import { ref, type Ref } from 'vue'
+import { ref, type Ref, type ComputedRef } from '#imports'
 import type { AdaptersProvider } from './adapters'
 import type { StateProvider } from './state'
 import type { UiProvider } from './ui'
 import type { AdapterContext } from '#blokkli/editor/adapter'
-import type { ComputedRef } from 'vue'
 import type { TextProvider } from './texts'
 import type {
   AnalyzeNode,
@@ -153,10 +152,7 @@ export default function analyzeProvider(
 
     for (const text of texts) {
       for (const analyzer of textAnalyzers) {
-        const nodes = await analyzer.analyzeText!(
-          text,
-          context.value.language,
-        )
+        const nodes = await analyzer.analyzeText!(text, context.value.language)
 
         const label =
           typeof analyzer.label === 'function'
