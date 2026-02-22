@@ -10,7 +10,7 @@
     @apply flex flex-col shrink-0;
     @apply border border-mono-300 bg-white;
     @apply rounded-lg;
-    @apply shadow-md-even;
+    @apply shadow-md-even overflow-hidden;
 
     &:has(textarea:focus),
     &.bk-is-active {
@@ -41,15 +41,24 @@
     }
 
     .bk-agent-input-actions {
-      @apply border-t border-t-mono-300 flex items-center justify-between;
-      @apply border-dashed;
+      @apply border-t border-t-mono-300 border-dashed;
       @apply relative;
     }
 
+    .bk-agent-input-actions-bar {
+      @apply flex items-center justify-between;
+    }
+
     .bk-agent-input-actions-button {
-      @apply size-40 flex items-center justify-center;
+      @apply h-40 min-w-40 flex items-center justify-center text-sm px-8 gap-3 font-medium;
       @apply text-mono-500;
-      @apply hover:bg-mono-100 hover:text-mono-800;
+      @apply hover:bg-mono-100 hover:text-accent-700;
+      &:not(:first-child) {
+        @apply border-l border-l-mono-300 border-dashed;
+      }
+      &.bk-is-active {
+        @apply text-accent-700;
+      }
       &[disabled] {
         @apply text-mono-200 pointer-events-none;
       }
@@ -64,15 +73,10 @@
     }
 
     .bk-agent-input-actions-left {
-      @apply flex gap-2 items-center;
-      .bk-dropdown-menu-content {
-        @apply w-full;
-        @apply max-w-[500px];
-      }
+      @apply flex items-center relative;
       > button {
-        @apply relative;
         .bk-tooltip {
-          @apply absolute bottom-full left-0 mb-3;
+          @apply absolute bottom-full left-5 mb-5;
         }
         &:not(:hover) .bk-tooltip {
           @apply hidden;
@@ -92,9 +96,19 @@
       }
     }
 
+    .bk-agent-input-actions-expanded {
+      @apply border-b border-b-mono-300 border-dashed;
+
+      > button {
+        @apply w-full flex items-center gap-5 px-10 text-sm text-mono-500;
+        @apply hover:bg-mono-100 hover:text-mono-800;
+      }
+    }
+
     .bk-agent-token-usage {
       @apply py-8;
       @apply whitespace-nowrap leading-none;
+      @apply border-b border-b-mono-300 border-dashed;
       /* @apply bg-mono-100; */
 
       ul {

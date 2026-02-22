@@ -10,7 +10,10 @@
     v-show="activeSidebarRight || activeSidebarRightBottom"
     ref="sidebarRightWrapper"
     class="bk-sidebar-right-wrapper"
-    :class="{ 'bk-is-resizing-split': isResizingSplit }"
+    :class="{
+      'bk-is-resizing-split': isResizingSplit,
+      'bk-is-split': activeSidebarRightBottom,
+    }"
   >
     <div
       v-show="activeSidebarRight"
@@ -21,9 +24,15 @@
     />
     <div
       v-show="activeSidebarRight && activeSidebarRightBottom"
-      class="bk-resizable-handle bk-is-horizontal"
+      class="bk bk-sidebar-resize"
       @mousedown.prevent.stop="onSplitMouseDown"
-    />
+    >
+      <div>
+        <hr />
+        <hr />
+        <hr />
+      </div>
+    </div>
     <div
       v-show="activeSidebarRightBottom"
       id="bk-sidebar-content-right-bottom"

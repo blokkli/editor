@@ -5,11 +5,13 @@
     v-model="modelValue"
     class="bk bk-editable-field-textarea"
     enterkeyhint="done"
+    submit-on-enter
     rows="2"
     v-bind="inputAttributes"
     autofocus
     @keydown="onKeyDown"
     @blur="onBlur"
+    @submit="save"
   />
 </template>
 
@@ -45,8 +47,6 @@ const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Escape') {
     e.preventDefault()
     discard()
-  } else if (e.code === 'Enter') {
-    e.preventDefault()
     save()
   }
 }

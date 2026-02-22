@@ -45,6 +45,12 @@
         <div v-if="errorText" class="bk-editable-field-info-error">
           {{ errorText }}
         </div>
+        <div
+          v-else-if="config.type === 'plain'"
+          class="bk-editable-field-info-hint"
+        >
+          {{ $t('textareaNewLineHint', 'Shift + Enter for new line') }}
+        </div>
         <div v-if="!isMarkup" class="bk-editable-field-info-count">
           <span>{{ count }}</span>
           <span v-if="maxlength >= 1">&nbsp;/&nbsp;{{ maxlength }}</span>

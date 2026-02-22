@@ -20,7 +20,7 @@
   @apply flex flex-col h-full min-h-[200px] select-text relative;
 
   .bk-agent-panel-inner {
-    @apply flex-1 overflow-y-auto;
+    @apply flex-1 overflow-y-scroll;
     @apply flex flex-col;
   }
 
@@ -110,7 +110,7 @@
   }
 
   .bk-agent-error-bubble {
-    @apply flex items-start gap-8 p-10 rounded-xl mt-15 flex-wrap;
+    @apply flex items-start gap-8 p-10 rounded-xl mt-15;
     @apply bg-red-light text-red-dark text-sm;
 
     .bk-icon {

@@ -28,10 +28,13 @@
     }
   }
   .bk-editable-field-info-error {
-    @apply text-red-normal px-10;
+    @apply text-red-normal px-10 ml-auto;
+  }
+  .bk-editable-field-info-hint {
+    @apply px-10 font-normal text-right ml-auto text-mono-500 text-xs;
   }
   .bk-editable-field-info-count {
-    @apply ml-auto pr-10;
+    @apply px-10 h-[32px] flex items-center border-l border-l-mono-300;
   }
 }
 

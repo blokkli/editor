@@ -21,6 +21,11 @@
         </RelativeTime>
       </p>
 
+      <FormToggle
+        v-model="keepVisible"
+        :label="$t('analyzeKeepVisible', 'Keep results visible')"
+      />
+
       <div v-if="analyzerStatuses.length > 1" class="bk-analyze-statuses">
         <div
           v-for="analyzer in analyzerStatuses"
@@ -56,7 +61,7 @@
     </div>
   </div>
   <Renderer
-    v-if="results.length"
+    v-if="results.length && (keepVisible || isShown)"
     v-model="activeId"
     :results
     :is-stale
@@ -86,17 +91,22 @@ import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
 import Renderer from './Renderer/index.vue'
 import { useAnalyzeHelper } from './helper'
-import { FormSelect, RelativeTime } from '#blokkli/editor/components'
+import {
+  FormSelect,
+  FormToggle,
+  RelativeTime,
+} from '#blokkli/editor/components'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 
 const props = defineProps<{
   langcode: string
   analyze: AnalyzeProvider
+  isShown: boolean
 }>()
 
 const ALL = 'ALL'
 
-const { $t, ui, state, directive, dom } = useBlokkli()
+const { $t, ui, state, directive, dom, storage } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
 
 const refreshKey = computed(() => {
@@ -122,6 +132,7 @@ const activeId = useState(() => '')
 const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
+const keepVisible = storage.use('analyze:keepVisible', true)
 const providerRootElement = ui.providerElement
 
 // Split analyzers into continuous and manual

@@ -211,6 +211,14 @@ msgctxt "aiAgentCancelled"
 msgid "Cancelled"
 msgstr ""
 
+msgctxt "aiAgentCheckReadabilityDone"
+msgid "Checked readability for @count texts"
+msgstr ""
+
+msgctxt "aiAgentCheckReadabilityRunning"
+msgid "Checking readability..."
+msgstr ""
+
 msgctxt "aiAgentCompletePlanStep"
 msgid "Completed: @label"
 msgstr ""
@@ -313,6 +321,10 @@ msgstr ""
 
 msgctxt "aiAgentErrorUnknown"
 msgid "An unexpected error occurred."
+msgstr ""
+
+msgctxt "aiAgentExpandButton"
+msgid "Show more"
 msgstr ""
 
 msgctxt "aiAgentFindBlocksDone"
@@ -465,10 +477,6 @@ msgctxt "aiAgentLoadTools"
 msgid "@count tools loaded"
 msgstr ""
 
-msgctxt "aiAgentMoreOptions"
-msgid "More options"
-msgstr ""
-
 msgctxt "aiAgentMoveBlockDone"
 msgid "Moved @bundle"
 msgstr ""
@@ -483,10 +491,6 @@ msgstr ""
 
 msgctxt "aiAgentNewConversation"
 msgid "Start new conversation"
-msgstr ""
-
-msgctxt "aiAgentNewLineHint"
-msgid "Shift + Enter for new line"
 msgstr ""
 
 msgctxt "aiAgentNoConversations"
@@ -745,6 +749,10 @@ msgstr ""
 
 msgctxt "analyzeClickButton"
 msgid "Click the button above to run the analysis."
+msgstr ""
+
+msgctxt "analyzeKeepVisible"
+msgid "Keep results visible"
 msgstr ""
 
 msgctxt "analyzeLastRun"
@@ -3050,6 +3058,10 @@ msgstr ""
 
 msgctxt "templatesSuccessMessage"
 msgid "Successfully created template \"@label\""
+msgstr ""
+
+msgctxt "textareaNewLineHint"
+msgid "Shift + Enter for new line"
 msgstr ""
 
 msgctxt "theme"

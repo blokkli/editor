@@ -111,6 +111,10 @@
     }
   }
 
+  &.bk-is-split {
+    @apply bg-mono-900;
+  }
+
   #bk-sidebar-content-right,
   #bk-sidebar-content-right-bottom {
     @apply relative z-10;
@@ -307,5 +311,35 @@ html.bk-is-sidebar-interacting {
 
   &.bk-is-red {
     @apply bg-red-normal text-white;
+  }
+}
+
+.bk.bk-sidebar-resize {
+  flex: 0 0 8px;
+  @apply relative cursor-ns-resize z-50;
+
+  &:hover {
+    > div {
+      @apply opacity-100;
+    }
+  }
+
+  &:before {
+    content: '';
+    @apply absolute left-0 w-full;
+    @apply h-18 top-1/2 -translate-y-1/2;
+  }
+
+  > div {
+    @apply opacity-0;
+    @apply absolute w-[100px] bg-accent-950 left-1/2 -translate-x-1/2;
+    @apply backdrop-blur-xl;
+    @apply top-1/2 -translate-y-1/2;
+    @apply grid gap-2;
+    @apply px-8 py-5 rounded-full;
+
+    hr {
+      @apply h-1 border-t border-t-mono-300 bg-mono-700;
+    }
   }
 }

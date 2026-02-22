@@ -203,6 +203,14 @@
     "source": "Cancelled",
     "translation": "Abgebrochen"
   },
+  "aiAgentCheckReadabilityDone": {
+    "source": "Checked readability for @count texts",
+    "translation": "Lesbarkeit von @count Texten geprüft"
+  },
+  "aiAgentCheckReadabilityRunning": {
+    "source": "Checking readability...",
+    "translation": "Lesbarkeit wird geprüft..."
+  },
   "aiAgentCompletePlanStep": {
     "source": "Completed: @label",
     "translation": "Abgeschlossen: @label"
@@ -306,6 +314,10 @@
   "aiAgentErrorUnknown": {
     "source": "An unexpected error occurred.",
     "translation": "Ein unerwarteter Fehler ist aufgetreten."
+  },
+  "aiAgentExpandButton": {
+    "source": "Show more",
+    "translation": "Mehr anzeigen"
   },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
@@ -455,10 +467,6 @@
     "source": "@count tools loaded",
     "translation": "@count Tools geladen"
   },
-  "aiAgentMoreOptions": {
-    "source": "More options",
-    "translation": "Weitere Optionen"
-  },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
     "translation": "@bundle verschoben"
@@ -474,10 +482,6 @@
   "aiAgentNewConversation": {
     "source": "Start new conversation",
     "translation": "Neue Konversation starten"
-  },
-  "aiAgentNewLineHint": {
-    "source": "Shift + Enter for new line",
-    "translation": "Shift + Enter für neue Zeile"
   },
   "aiAgentNoConversations": {
     "source": "No past conversations.",
@@ -734,6 +738,10 @@
   "analyzeClickButton": {
     "source": "Click the button above to run the analysis.",
     "translation": "Klicken Sie auf den Button oben um die Analyse auszuführen."
+  },
+  "analyzeKeepVisible": {
+    "source": "Keep results visible",
+    "translation": "Ergebnisse sichtbar halten"
   },
   "analyzeLastRun": {
     "source": "Last run: @time",
@@ -2886,6 +2894,10 @@
   "templatesSuccessMessage": {
     "source": "Successfully created template \"@label\"",
     "translation": "Die Vorlage «@label» wurde erfolgreich erstellt."
+  },
+  "textareaNewLineHint": {
+    "source": "Shift + Enter for new line",
+    "translation": "Shift + Enter für neue Zeile"
   },
   "theme": {
     "source": "Theme",

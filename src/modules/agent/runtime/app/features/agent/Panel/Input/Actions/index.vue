@@ -1,75 +1,80 @@
 <template>
   <div class="bk-agent-input-actions">
-    <div class="bk-agent-input-actions-left">
-      <button
-        class="bk-agent-input-actions-button"
-        :disabled="!isConnected || !hasConversation"
-        @click="emit('new-conversation')"
-      >
-        <Icon name="bk_mdi_add" />
-        <div class="bk-tooltip">
-          <span>{{
-            $t('aiAgentNewConversation', 'Start new conversation')
-          }}</span>
-        </div>
-      </button>
-      <button
-        class="bk-agent-input-actions-button"
-        :disabled="!isConnected"
-        @click="emit('show-conversations')"
-      >
-        <Icon name="bk_mdi_forum" />
-        <div class="bk-tooltip">
-          <span>{{
-            $t('aiAgentPastConversations', 'Past conversations')
-          }}</span>
-        </div>
-      </button>
-      <Dropdown ref="dropdown" :disabled="!isConnected">
-        <template #button>
-          <div
-            class="bk-agent-input-actions-button"
-            :title="$t('aiAgentMoreOptions', 'More options')"
-          >
-            <Icon name="bk_mdi_more_vert" />
-          </div>
-        </template>
+    <TransitionHeight opacity>
+      <div v-if="isExpanded" class="bk-agent-input-actions-expanded">
         <TokenUsage :usage-turns />
-        <hr />
         <DropdownItem
           icon="bk_mdi_bug_report"
           :text="$t('aiAgentShowTranscript', 'Show transcript...')"
-          @click="onShowTranscript"
+          @click="$emit('show-transcript')"
         />
-      </Dropdown>
-    </div>
-    <div class="bk-agent-input-actions-right">
-      <div v-show="hasText" class="bk-agent-input-actions-keyboard">
-        {{ $t('aiAgentNewLineHint', 'Shift + Enter for new line') }}
+        <DropdownItem
+          icon="bk_mdi_forum"
+          :text="$t('aiAgentPastConversations', 'Past conversations')"
+          :disabled="!isConnected"
+          @click="$emit('show-conversations')"
+        />
       </div>
-      <button
-        v-if="isProcessing"
-        class="bk-button bk-is-danger bk-is-small bk-is-icon-only"
-        :disabled="!isConnected"
-        @click="$emit('cancel')"
-      >
-        <Icon name="bk_mdi_stop" />
-      </button>
-      <button
-        v-else
-        class="bk-button bk-is-primary bk-is-small bk-is-icon-only"
-        :disabled="!canSubmit"
-        @click="$emit('submit')"
-      >
-        <Icon name="bk_mdi_arrow_upward" />
-      </button>
+    </TransitionHeight>
+    <div class="bk-agent-input-actions-bar">
+      <div class="bk-agent-input-actions-left">
+        <button
+          class="bk-agent-input-actions-button"
+          :class="{ 'bk-is-active': isExpanded }"
+          :disabled="!isConnected"
+          @click="isExpanded = !isExpanded"
+        >
+          <Icon
+            :name="isExpanded ? 'bk_mdi_collapse_all' : 'bk_mdi_expand_all'"
+          />
+          <div v-if="!isExpanded" class="bk-tooltip">
+            <span>{{ $t('aiAgentExpandButton', 'Show more') }}</span>
+          </div>
+        </button>
+        <button
+          v-show="!hasText && hasConversation"
+          class="bk-agent-input-actions-button"
+          :disabled="!isConnected"
+          @click="$emit('new-conversation')"
+        >
+          <Icon name="bk_mdi_add" />
+          <span>{{
+            $t('aiAgentNewConversation', 'Start new conversation')
+          }}</span>
+        </button>
+      </div>
+      <div class="bk-agent-input-actions-right">
+        <div v-show="hasText" class="bk-agent-input-actions-keyboard">
+          {{ $t('textareaNewLineHint', 'Shift + Enter for new line') }}
+        </div>
+        <button
+          v-if="isProcessing"
+          class="bk-button bk-is-danger bk-is-small bk-is-icon-only"
+          :disabled="!isConnected"
+          @click="$emit('cancel')"
+        >
+          <Icon name="bk_mdi_stop" />
+        </button>
+        <button
+          v-else
+          class="bk-button bk-is-primary bk-is-small bk-is-icon-only"
+          :disabled="!canSubmit"
+          @click="$emit('submit')"
+        >
+          <Icon name="bk_mdi_arrow_upward" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, useBlokkli } from '#imports'
-import { Icon, Dropdown, DropdownItem } from '#blokkli/editor/components'
+import { ref, useBlokkli } from '#imports'
+import {
+  Icon,
+  DropdownItem,
+  TransitionHeight,
+} from '#blokkli/editor/components'
 import TokenUsage from './TokenUsage/index.vue'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
 
@@ -82,7 +87,7 @@ defineProps<{
   usageTurns: UsageTurn[]
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   submit: []
   cancel: []
   'new-conversation': []
@@ -92,10 +97,5 @@ const emit = defineEmits<{
 
 const { $t } = useBlokkli()
 
-const dropdown = useTemplateRef('dropdown')
-
-function onShowTranscript() {
-  dropdown.value?.close()
-  emit('show-transcript')
-}
+const isExpanded = ref(false)
 </script>

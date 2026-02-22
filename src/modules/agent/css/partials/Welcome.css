@@ -22,6 +22,44 @@
   }
   .bk-agent-welcome {
     @apply text-mono-950;
+    .bk-agent-message-text {
+      ul + p {
+        @apply mt-30;
+      }
+
+      ul:nth-child(3),
+      ul:nth-child(5) {
+        @apply list-none pl-0;
+        li {
+          @apply relative pl-[1.5em] text-pretty;
+          &:not(:last-child) {
+            @apply mb-3;
+          }
+          &:before {
+            font-size: 0.8em;
+            @apply absolute left-0 top-0;
+          }
+        }
+      }
+
+      ul:nth-child(3) {
+        li {
+          &:before {
+            content: '';
+            @apply text-lime-normal;
+          }
+        }
+      }
+
+      ul:nth-child(5) {
+        li {
+          &:before {
+            content: '';
+            @apply text-red-normal;
+          }
+        }
+      }
+    }
   }
 
   .bk-agent-welcome-prompts {

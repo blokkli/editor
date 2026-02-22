@@ -10,10 +10,10 @@ brauchst:
 - **Vorlagen einfügen** aus der Vorlagenbibliothek
 - **Inhalte übersetzen** in andere Sprachen
 
-Ein paar Dinge, die du beachten solltest:
+Ein paar Dinge, die ich nicht kann:
 
 - **Speichern oder veröffentlichen** — das musst du selbst machen
-- **Andere Seiten bearbeiten** — ich kann nur auf der aktuellen Seite arbeiten
+- **Andere Seiten bearbeiten** — ich kann nur auf der aktuellen arbeiten
 - **Globale Inhalte löschen** wie Bilder, Videos oder Seiten
 
 Probier eines davon aus, um loszulegen:

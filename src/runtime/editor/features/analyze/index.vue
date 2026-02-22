@@ -11,24 +11,27 @@
     <template #icon>
       <AnalyzeIcon :is-running />
     </template>
-    <div v-if="ui.isProxyMode.value" class="bk-sidebar-padding bk">
-      <InfoBox
-        :text="
-          $t(
-            'analyzeNotAvailableInStructureView',
-            'Analyze is not available in structure view.',
-          )
-        "
-        icon="bk_mdi_account_tree"
+    <template #default="{ isShown }">
+      <div v-if="ui.isProxyMode.value" class="bk-sidebar-padding bk">
+        <InfoBox
+          :text="
+            $t(
+              'analyzeNotAvailableInStructureView',
+              'Analyze is not available in structure view.',
+            )
+          "
+          icon="bk_mdi_account_tree"
+        />
+      </div>
+      <AnalyzerMain
+        v-else
+        :key="animation.renderKey.value"
+        v-model="isRunning"
+        :langcode="context.language"
+        :analyze
+        :is-shown
       />
-    </div>
-    <AnalyzerMain
-      v-else
-      :key="animation.renderKey.value"
-      v-model="isRunning"
-      :langcode="context.language"
-      :analyze
-    />
+    </template>
   </PluginSidebar>
 </template>
 

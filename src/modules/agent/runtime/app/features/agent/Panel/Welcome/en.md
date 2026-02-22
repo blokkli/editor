@@ -9,10 +9,10 @@ I can help you shape this page — just tell me what you need:
 - **Insert templates** from the template library
 - **Translate** content to other languages
 
-A few things to keep in mind:
+A few things I can't do:
 
 - **Save or publish** changes — you need to do that yourself
-- **Edit other pages** — I can only work on the current page
+- **Edit other pages** — I can only work on the current one
 - **Delete global content** like images, videos or pages
 
 Try one of these to get started:

@@ -203,6 +203,14 @@
     "source": "Cancelled",
     "translation": ""
   },
+  "aiAgentCheckReadabilityDone": {
+    "source": "Checked readability for @count texts",
+    "translation": ""
+  },
+  "aiAgentCheckReadabilityRunning": {
+    "source": "Checking readability...",
+    "translation": ""
+  },
   "aiAgentCompletePlanStep": {
     "source": "Completed: @label",
     "translation": ""
@@ -305,6 +313,10 @@
   },
   "aiAgentErrorUnknown": {
     "source": "An unexpected error occurred.",
+    "translation": ""
+  },
+  "aiAgentExpandButton": {
+    "source": "Show more",
     "translation": ""
   },
   "aiAgentFindBlocksDone": {
@@ -455,10 +467,6 @@
     "source": "@count tools loaded",
     "translation": ""
   },
-  "aiAgentMoreOptions": {
-    "source": "More options",
-    "translation": ""
-  },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
     "translation": ""
@@ -473,10 +481,6 @@
   },
   "aiAgentNewConversation": {
     "source": "Start new conversation",
-    "translation": ""
-  },
-  "aiAgentNewLineHint": {
-    "source": "Shift + Enter for new line",
     "translation": ""
   },
   "aiAgentNoConversations": {
@@ -733,6 +737,10 @@
   },
   "analyzeClickButton": {
     "source": "Click the button above to run the analysis.",
+    "translation": ""
+  },
+  "analyzeKeepVisible": {
+    "source": "Keep results visible",
     "translation": ""
   },
   "analyzeLastRun": {
@@ -2885,6 +2893,10 @@
   },
   "templatesSuccessMessage": {
     "source": "Successfully created template \"@label\"",
+    "translation": ""
+  },
+  "textareaNewLineHint": {
+    "source": "Shift + Enter for new line",
     "translation": ""
   },
   "theme": {

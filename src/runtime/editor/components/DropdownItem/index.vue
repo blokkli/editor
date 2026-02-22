@@ -1,5 +1,5 @@
 <template>
-  <button class="bk-dropdown-menu-item" @click="$emit('click')">
+  <button class="bk-dropdown-menu-item" @click="$emit('click')" :disabled>
     <Icon :name="icon" />
     <span>{{ text }}</span>
   </button>
@@ -12,6 +12,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 defineProps<{
   icon: BlokkliIcon
   text: string
+  disabled?: boolean
 }>()
 
 defineEmits<{
