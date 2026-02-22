@@ -204,6 +204,7 @@ function tryStartDirectDrop(e: DragEvent): boolean {
 
 function resetDrag() {
   dragCounter = 0
+  isDragFromInput = false
   if (isDirectDrop.value) {
     eventBus.emit('dragging:end')
     isDirectDrop.value = false
@@ -213,7 +214,23 @@ function resetDrag() {
   }
 }
 
+let isDragFromInput = false
+
+function onDragStart(e: DragEvent) {
+  const target = e.target
+  if (
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLInputElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  ) {
+    isDragFromInput = true
+  }
+}
+
 function onDragEnter(e: DragEvent) {
+  if (isDragFromInput) {
+    return
+  }
   dragCounter++
   if (dragCounter === 1) {
     tryStartDirectDrop(e)
@@ -221,6 +238,9 @@ function onDragEnter(e: DragEvent) {
 }
 
 function onDragLeave() {
+  if (isDragFromInput) {
+    return
+  }
   dragCounter--
   if (dragCounter <= 0) {
     resetDrag()
@@ -236,6 +256,11 @@ function onDragOver(e: DragEvent) {
 
 function onNativeDrop(e: DragEvent) {
   e.preventDefault()
+
+  if (isDragFromInput) {
+    isDragFromInput = false
+    return
+  }
 
   if (isDirectDrop.value && nativeDropItem && e.dataTransfer) {
     nativeDropItem.dataTransfer = e.dataTransfer
@@ -1074,6 +1099,7 @@ defineItemDropdownAction(() => {
 
 onMounted(() => {
   document.addEventListener('paste', onPaste)
+  document.addEventListener('dragstart', onDragStart)
   document.addEventListener('dragenter', onDragEnter)
   document.addEventListener('dragleave', onDragLeave)
   document.addEventListener('dragend', resetDrag)
@@ -1083,6 +1109,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('paste', onPaste)
+  document.removeEventListener('dragstart', onDragStart)
   document.removeEventListener('dragenter', onDragEnter)
   document.removeEventListener('dragleave', onDragLeave)
   document.removeEventListener('dragend', resetDrag)

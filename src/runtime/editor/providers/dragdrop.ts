@@ -6,6 +6,8 @@ import type {
 } from '#blokkli/editor/types/field'
 import type { DropArea } from '#blokkli/editor/types/ui'
 
+type MaybePromise<T> = T | Promise<T>
+
 export type DropResolveContext<K extends keyof DraggableItemTypes> = {
   items: DraggableItemTypes[K][]
   field: BlokkliFieldElement
@@ -37,9 +39,10 @@ export type DropHandler<K extends keyof DraggableItemTypes> = {
    * If resolveBundles was provided, `ctx.bundle` is the resolved bundle
    * (either the single result or the user's BundleSelector pick).
    */
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   execute: (
     ctx: DropExecuteContext<K>,
-  ) => Promise<DropExecuteResult | undefined> | DropExecuteResult | undefined
+  ) => MaybePromise<DropExecuteResult | void>
 }
 
 type DropAreaProviderFunction = (

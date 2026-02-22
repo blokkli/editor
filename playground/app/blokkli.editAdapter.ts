@@ -95,7 +95,8 @@ function getImageDimensions(
 ): Promise<{ width: number; height: number }> {
   return new Promise((resolve) => {
     const img = new Image()
-    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    img.onload = () =>
+      resolve({ width: img.naturalWidth, height: img.naturalHeight })
     img.onerror = () => resolve({ width: 800, height: 600 })
     img.src = dataUrl
   })

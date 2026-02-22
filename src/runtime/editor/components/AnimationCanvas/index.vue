@@ -103,6 +103,7 @@ let pointerDownElement: InteractedElement | null = null
 let mouseStartCoordinates: Coord | null = null
 let pointerDownTimestamp = 0
 let pointerUpTimestamp = 0
+let pointerDownOnCanvas = false
 
 function getInteractedElement(
   e: MouseEvent | TouchEvent,
@@ -268,6 +269,8 @@ function onPointerDown(e: PointerEvent) {
     return
   }
 
+  pointerDownOnCanvas = true
+
   if (canvasEl.value) {
     canvasEl.value.focus()
   }
@@ -346,7 +349,9 @@ function onPointerUp(e: PointerEvent) {
   e.stopImmediatePropagation()
 
   // If a tooltip is open, close it and prevent all other interactions.
-  if (ui.openTooltip.value) {
+  // Don't close the tooltip when an editable field is active, as the user
+  // may be selecting text and releasing the pointer outside the overlay.
+  if (ui.openTooltip.value && !selection.activeEditableLabel.value) {
     ui.openTooltip.value = ''
     return
   }
@@ -383,8 +388,11 @@ function onPointerUp(e: PointerEvent) {
     return
   }
   if (selection.activeEditableLabel.value) {
-    eventBus.emit('window:clickAway')
-    lastInteractedElement = null
+    if (pointerDownOnCanvas) {
+      eventBus.emit('window:clickAway')
+      lastInteractedElement = null
+    }
+    pointerDownOnCanvas = false
     return
   }
 
@@ -408,6 +416,7 @@ function onPointerUp(e: PointerEvent) {
     const deltaY = Math.abs(lastInteractedElement.y - e.clientY)
     if (deltaTime < 400 && deltaX < 3 && deltaY < 3) {
       if (clicked.editableFieldName) {
+        pointerDownOnCanvas = false
         eventBus.emit('editable:focus', {
           fieldName: clicked.editableFieldName,
           uuid: clicked.uuid,
@@ -587,7 +596,7 @@ function onClick(e: MouseEvent) {
   e.preventDefault()
   e.stopImmediatePropagation()
   e.stopPropagation()
-  if (canvasEl.value) {
+  if (canvasEl.value && !selection.activeEditableLabel.value) {
     canvasEl.value.focus()
   }
 }

@@ -22,7 +22,7 @@ export class FieldReference<T extends Entity> extends Field<string> {
 
   override getPropValueItem(uuid: string) {
     const entity = entityStorageManager.load(this.targetEntityType, uuid)
-    return entity?.getValues()
+    return entity?.getData()
   }
 
   getReferencedEntities(): T[] {

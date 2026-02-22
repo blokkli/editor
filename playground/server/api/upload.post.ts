@@ -12,7 +12,11 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
 
-  if (!body || typeof body.data !== 'string' || typeof body.fileName !== 'string') {
+  if (
+    !body ||
+    typeof body.data !== 'string' ||
+    typeof body.fileName !== 'string'
+  ) {
     throw createError({
       statusCode: 400,
       message: 'Missing data or fileName',

@@ -240,9 +240,9 @@ const onDrop = async (e: DropTargetEvent) => {
         bundle = selected
       }
 
-      result = await handler.execute({ ...baseCtx, bundle })
+      result = (await handler.execute({ ...baseCtx, bundle })) || undefined
     } else {
-      result = await handler.execute({ ...baseCtx, bundle: '' })
+      result = (await handler.execute({ ...baseCtx, bundle: '' })) || undefined
     }
 
     lastDropResult = result ?? null

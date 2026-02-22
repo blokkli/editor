@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, ref, computed, watch } from '#imports'
+import { useTemplateRef, ref, computed, watch, onMounted } from '#imports'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 defineOptions({
@@ -36,6 +36,7 @@ const props = withDefaults(
     /** When true, convert pasted HTML to markdown */
     pasteMarkdown?: boolean
     textareaClass?: boolean
+    autofocus?: boolean
   }>(),
   {
     minHeight: 70,
@@ -196,6 +197,12 @@ onBlokkliEvent('animationFrame', () => {
   height.value = props.maxHeight
     ? Math.min(newHeight, props.maxHeight)
     : newHeight
+})
+
+onMounted(() => {
+  if (props.autofocus && textarea.value) {
+    textarea.value.focus()
+  }
 })
 
 defineExpose({

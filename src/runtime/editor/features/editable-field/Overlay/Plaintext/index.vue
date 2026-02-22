@@ -7,13 +7,14 @@
     enterkeyhint="done"
     rows="2"
     v-bind="inputAttributes"
+    autofocus
     @keydown="onKeyDown"
     @blur="onBlur"
   />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed, useTemplateRef } from '#imports'
+import { useBlokkli, computed } from '#imports'
 import { FlexTextarea } from '#blokkli/editor/components'
 
 const { ui, selection } = useBlokkli()
@@ -27,8 +28,6 @@ const props = defineProps<{
 const modelValue = defineModel<string>({ required: true })
 
 const emit = defineEmits(['discard', 'save'])
-
-const textarea = useTemplateRef('textarea')
 
 function discard() {
   emit('discard')
