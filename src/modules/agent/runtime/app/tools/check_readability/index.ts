@@ -25,9 +25,9 @@ const resultSchema = z.object({
 })
 
 export default defineBlokkliAgentTool({
-  name: 'check_readability',
+  name: 'check_readability_for_texts',
   description:
-    'Check readability scores for one or more text strings. Returns readability metrics (e.g. Flesch-Kincaid) for each text. Use this to quickly evaluate or compare text readability without needing block UUIDs.',
+    'Check readability scores for one or more text strings. Returns readability metrics (LIX, CLI, ARI) for each text. Use this to evaluate whether a rewritten text has better readability before applying it.',
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],

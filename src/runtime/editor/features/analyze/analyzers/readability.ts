@@ -210,10 +210,10 @@ function analyzeReadability(
       description: parts.join(' · '),
       impact: impactFor(scores.lix),
       scores: {
-        ...(scores.lix != null ? { lix: scores.lix } : {}),
-        ...(scores.cli != null ? { cli: scores.cli } : {}),
-        ...(scores.ari != null ? { ari: scores.ari } : {}),
-        ...(scores.gulpease != null ? { gulpease: scores.gulpease } : {}),
+        ...(scores.lix != null ? { lix: round(scores.lix) } : {}),
+        ...(scores.cli != null ? { cli: round(scores.cli) } : {}),
+        ...(scores.ari != null ? { ari: round(scores.ari) } : {}),
+        ...(scores.gulpease != null ? { gulpease: round(scores.gulpease) } : {}),
       },
       targets: [b.element],
     })
@@ -260,10 +260,10 @@ function scoreText(
     langcode === 'it' ? safe(() => tr.gulpeaseIndex(trimmed)) : undefined
 
   const scores = {
-    ...(lix != null ? { lix } : {}),
-    ...(cli != null ? { cli } : {}),
-    ...(ari != null ? { ari } : {}),
-    ...(gulpease != null ? { gulpease } : {}),
+    ...(lix != null ? { lix: round(lix) } : {}),
+    ...(cli != null ? { cli: round(cli) } : {}),
+    ...(ari != null ? { ari: round(ari) } : {}),
+    ...(gulpease != null ? { gulpease: round(gulpease) } : {}),
   }
 
   const band = toBand(langcode, { lix, cli, ari, gulpease })
@@ -290,6 +290,10 @@ function scoreText(
     scores,
     targets: [],
   }
+}
+
+function round(n: number): number {
+  return Math.round(n * 10) / 10
 }
 
 function safe(fn: () => number): number | undefined {

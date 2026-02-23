@@ -492,13 +492,11 @@ export default function (
           disconnect()
           return
         }
+        // Build pageContext BEFORE sending authenticate, so that
+        // pendingInit is ready when the 'authenticated' response arrives.
+        const pageContext = await buildPageContext(contentSearchTabs)
+        pendingInit = { toolNames, pageContext }
         send({ type: 'authenticate', authToken })
-        // Wait for 'authenticated' response before sending init.
-        // The handleServerMessage will call sendInit() when received.
-        pendingInit = {
-          toolNames,
-          pageContext: await buildPageContext(contentSearchTabs),
-        }
         return
       } catch (e) {
         console.error('Failed to obtain agent auth token:', e)

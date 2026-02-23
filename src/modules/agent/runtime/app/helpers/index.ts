@@ -46,6 +46,33 @@ export function getToolInfoForServer(
 }
 
 /**
+ * Coerce stringified JSON values back to their actual types.
+ *
+ * LLMs sometimes double-serialize array or object parameters, sending e.g.
+ * `"[\"readability\"]"` (a string) instead of `["readability"]` (an array).
+ * This walks the params and attempts JSON.parse on any string that looks like
+ * a JSON array or object.
+ */
+export function coerceStringifiedParams(
+  params: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {}
+  for (const key of Object.keys(params)) {
+    const value = params[key]
+    if (typeof value === 'string' && (value[0] === '[' || value[0] === '{')) {
+      try {
+        result[key] = JSON.parse(value)
+      } catch {
+        result[key] = value
+      }
+    } else {
+      result[key] = value
+    }
+  }
+  return result
+}
+
+/**
  * Execute a tool by name with the given context and parameters.
  * Validates parameters with Zod before executing.
  */
@@ -60,8 +87,11 @@ export async function executeTool(
     throw new Error(`Unknown tool: ${name}`)
   }
 
+  // Coerce stringified arrays/objects before validation.
+  const coerced = coerceStringifiedParams(params)
+
   // Validate params with Zod before executing
-  const validatedParams = tool.paramsSchema.parse(params)
+  const validatedParams = tool.paramsSchema.parse(coerced)
 
   return tool.execute(context, validatedParams)
 }

@@ -82,7 +82,7 @@ export default defineBlokkliAgentSystemPrompt({
         '',
         '## Available Analyzers',
         '',
-        'Use the `analyze_content` tool with the `analyzerIds` parameter to run specific analyzers:',
+        'Use the `analyze_content` tool with the `analyzerId` parameter to run an analyzer:',
         '',
       )
       for (const a of pageContext.analyzers) {

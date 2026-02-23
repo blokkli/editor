@@ -734,9 +734,27 @@ export class Session {
                       },
                     }
                     try {
+                      // Coerce stringified arrays/objects before validation.
+                      // LLMs sometimes double-serialize parameters.
+                      const coercedInput: Record<string, unknown> = {}
+                      for (const key of Object.keys(input)) {
+                        const value = input[key]
+                        if (
+                          typeof value === 'string' &&
+                          (value[0] === '[' || value[0] === '{')
+                        ) {
+                          try {
+                            coercedInput[key] = JSON.parse(value)
+                          } catch {
+                            coercedInput[key] = value
+                          }
+                        } else {
+                          coercedInput[key] = value
+                        }
+                      }
                       const parsed = matchedServerTool
                         .inputSchema(defCtx)
-                        .parse(input)
+                        .parse(coercedInput)
                       const result = await matchedServerTool.handle(
                         handlerCtx,
                         parsed,
