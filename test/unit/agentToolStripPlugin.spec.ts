@@ -8,7 +8,7 @@ function esbuildStyle(body: string): string {
 }
 
 // ============================================================================
-// Standard tool: strips execute/label, keeps name/description/category/paramsSchema
+// Standard tool: strips non-kept props, keeps name/description/category/paramsSchema
 // ============================================================================
 
 describe('transformToolSource — standard tool', () => {
@@ -44,27 +44,11 @@ var stdin_default = defineBlokkliAgentTool({
 })
 
 // ============================================================================
-// Import handling: allowlist
+// Import handling: usage-based dead import removal
 // ============================================================================
 
-describe('transformToolSource — import allowlist', () => {
-  it('keeps zod import', () => {
-    const input = esbuildStyle(`
-import { z } from "zod";
-var paramsSchema = z.object({ id: z.string() });
-var stdin_default = defineBlokkliAgentTool({
-  name: "test",
-  description: "test",
-  category: "query",
-  paramsSchema
-});
-`)
-
-    const result = transformToolSource(input)
-    expect(result).toContain('from "zod"')
-  })
-
-  it('keeps ../schemas import', () => {
+describe('transformToolSource — import removal', () => {
+  it('keeps imports whose bindings are used in kept code', () => {
     const input = esbuildStyle(`
 import { z } from "zod";
 import { parentSchema } from "../schemas";
@@ -78,13 +62,14 @@ var stdin_default = defineBlokkliAgentTool({
 `)
 
     const result = transformToolSource(input)
+    expect(result).toContain('from "zod"')
     expect(result).toContain('from "../schemas"')
   })
 
-  it('keeps #blokkli/agent/app/tools/schemas import', () => {
+  it('keeps imports with .js extension when bindings are used', () => {
     const input = esbuildStyle(`
 import { z } from "zod";
-import { parentSchema } from "#blokkli/agent/app/tools/schemas";
+import { parentSchema } from "../schemas.js";
 var paramsSchema = z.object({ parent: parentSchema });
 var stdin_default = defineBlokkliAgentTool({
   name: "test",
@@ -95,31 +80,14 @@ var stdin_default = defineBlokkliAgentTool({
 `)
 
     const result = transformToolSource(input)
-    expect(result).toContain('from "#blokkli/agent/app/tools/schemas"')
+    expect(result).toContain('from "../schemas.js"')
   })
 
-  it('keeps ../chart_schemas import', () => {
-    const input = esbuildStyle(`
-import { z } from "zod";
-import { chartTypeEnum } from "../chart_schemas";
-var paramsSchema = z.object({ type: chartTypeEnum });
-var stdin_default = defineBlokkliAgentTool({
-  name: "test",
-  description: "test",
-  category: "query",
-  paramsSchema
-});
-`)
-
-    const result = transformToolSource(input)
-    expect(result).toContain('from "../chart_schemas"')
-  })
-
-  it('keeps #blokkli-build/charts-config import', () => {
+  it('keeps imports from any source as long as bindings are used', () => {
     const input = esbuildStyle(`
 import { z } from "zod";
 import { COLORS } from "#blokkli-build/charts-config";
-var paramsSchema = z.object({ id: z.string() });
+var paramsSchema = z.object({ color: z.enum(COLORS) });
 var stdin_default = defineBlokkliAgentTool({
   name: "test",
   description: "test",
@@ -132,7 +100,7 @@ var stdin_default = defineBlokkliAgentTool({
     expect(result).toContain('from "#blokkli-build/charts-config"')
   })
 
-  it('removes client-only #blokkli/* imports', () => {
+  it('removes imports whose bindings are only used in stripped properties', () => {
     const input = esbuildStyle(`
 import { z } from "zod";
 import { defineBlokkliAgentTool } from "#blokkli/agent/app/composables";
@@ -145,7 +113,7 @@ var stdin_default = defineBlokkliAgentTool({
   description: "test",
   category: "query",
   paramsSchema,
-  execute() {}
+  execute() { resolvePosition(); useSomething(); uuid(); }
 });
 `)
 
@@ -156,7 +124,7 @@ var stdin_default = defineBlokkliAgentTool({
     expect(result).not.toContain('#blokkli/editor/helpers/uuid')
   })
 
-  it('removes .vue component imports', () => {
+  it('removes .vue component imports when component prop is stripped', () => {
     const input = esbuildStyle(`
 import { z } from "zod";
 import Component from "./Component.vue";
@@ -175,25 +143,7 @@ var stdin_default = defineBlokkliAgentTool({
     expect(result).not.toContain('component')
   })
 
-  it('removes ../helpers import', () => {
-    const input = esbuildStyle(`
-import { z } from "zod";
-import { resolvePosition } from "../helpers";
-var paramsSchema = z.object({ id: z.string() });
-var stdin_default = defineBlokkliAgentTool({
-  name: "test",
-  description: "test",
-  category: "query",
-  paramsSchema,
-  execute() {}
-});
-`)
-
-    const result = transformToolSource(input)
-    expect(result).not.toContain('../helpers')
-  })
-
-  it('removes unknown imports (fail closed)', () => {
+  it('removes imports unused in remaining code', () => {
     const input = esbuildStyle(`
 import { z } from "zod";
 import { something } from "some-unknown-lib";
@@ -203,7 +153,7 @@ var stdin_default = defineBlokkliAgentTool({
   description: "test",
   category: "query",
   paramsSchema,
-  execute() {}
+  execute() { something(); }
 });
 `)
 
@@ -211,7 +161,75 @@ var stdin_default = defineBlokkliAgentTool({
     expect(result).not.toContain('some-unknown-lib')
     expect(result).toContain('from "zod"')
   })
+
+  it('removes unused imports even when not referenced anywhere', () => {
+    const input = esbuildStyle(`
+import { z } from "zod";
+import { COLORS } from "#blokkli-build/charts-config";
+var paramsSchema = z.object({ id: z.string() });
+var stdin_default = defineBlokkliAgentTool({
+  name: "test",
+  description: "test",
+  category: "query",
+  paramsSchema
+});
+`)
+
+    const result = transformToolSource(input)
+    expect(result).not.toContain('#blokkli-build/charts-config')
+  })
 })
+
+  it('removes top-level functions only reachable from stripped properties', () => {
+    const input = esbuildStyle(`
+import { z } from "zod";
+import { parentSchema } from "../schemas";
+import { resolvePosition } from "../helpers";
+import { itemEntityType } from "#blokkli-build/config";
+var paramsSchema = z.object({ parent: parentSchema });
+function validateTree(ctx) { return itemEntityType; }
+function buildBlocks(ctx) { return resolvePosition(); }
+var stdin_default = defineBlokkliAgentTool({
+  name: "test",
+  description: "test",
+  category: "mutation",
+  paramsSchema,
+  execute(ctx, params) { validateTree(ctx); buildBlocks(ctx); }
+});
+`)
+
+    const result = transformToolSource(input)
+    // Dead functions and their imports should be gone.
+    expect(result).not.toContain('validateTree')
+    expect(result).not.toContain('buildBlocks')
+    expect(result).not.toContain('resolvePosition')
+    expect(result).not.toContain('itemEntityType')
+    expect(result).not.toContain('#blokkli-build/config')
+    expect(result).not.toContain('../helpers')
+    // Needed imports survive.
+    expect(result).toContain('from "zod"')
+    expect(result).toContain('from "../schemas"')
+  })
+
+  it('keeps top-level declarations transitively needed by paramsSchema', () => {
+    const input = esbuildStyle(`
+import { z } from "zod";
+import { optionValueSchema } from "../schemas";
+var fieldSchema = z.record(z.string(), optionValueSchema);
+var paramsSchema = z.object({ fields: fieldSchema });
+var stdin_default = defineBlokkliAgentTool({
+  name: "test",
+  description: "test",
+  category: "query",
+  paramsSchema
+});
+`)
+
+    const result = transformToolSource(input)
+    expect(result).toContain('fieldSchema')
+    expect(result).toContain('optionValueSchema')
+    expect(result).toContain('from "../schemas"')
+  })
 
 // ============================================================================
 // defineBlokkliAgentTool unwrapping

@@ -4,52 +4,34 @@ import * as path from 'node:path'
 import MagicString from 'magic-string'
 import { parse } from 'acorn'
 import { walk, type Node } from 'estree-walker-ts'
-import { transformSync } from 'esbuild'
+import { transformSync, buildSync } from 'esbuild'
 import type {
   ImportDeclaration,
   CallExpression,
   ObjectExpression,
   Property,
+  Identifier,
 } from 'estree'
 
 const QUERY = '?blokkliAgentTool'
 
 /**
- * Properties to remove from the tool definition object.
- * These are runtime-only (client-side) and not needed on the server.
+ * Properties to KEEP in the stripped tool definition.
+ * Everything else is removed. This is the server-side metadata the tool
+ * registry needs — anything not listed here is client-only.
  */
-const PROPERTIES_TO_REMOVE = new Set([
-  'execute',
-  'resultSchema',
-  'component',
-  'label',
-  'prunedSummary',
-  'mockParams',
-  'mockParamsVariants',
-  'requiresApproval',
-  'icon',
+const PROPERTIES_TO_KEEP = new Set([
+  'name',
+  'description',
+  'category',
+  'paramsSchema',
+  'modes',
+  'lazy',
+  'volatile',
+  'requiredAdapterMethods',
+  'requiredFeatures',
+  'resolve',
 ])
-
-/**
- * Allowlist of import sources that are safe for server-side use.
- * Any import NOT in this set is removed. This is safer than a blocklist
- * because unknown/new imports fail closed (removed) rather than fail open
- * (kept and potentially breaking the Nitro server build).
- */
-const SERVER_SAFE_IMPORTS = new Set([
-  'zod',
-  '../schemas',
-  '#blokkli/agent/app/tools/schemas',
-  '../chart_schemas',
-  '#blokkli-build/charts-config',
-])
-
-/**
- * Check if an import source is safe for server-side use.
- */
-function isServerSafeImport(source: string): boolean {
-  return SERVER_SAFE_IMPORTS.has(source)
-}
 
 type ASTNode = Node & { start: number; end: number }
 type PositionedObjectExpression = ObjectExpression & {
@@ -69,9 +51,8 @@ type ToolExportInfo = {
  * only the static metadata + Zod paramsSchema.
  *
  * The plugin uses esbuild to compile TypeScript to JavaScript first, then
- * parses the result with acorn and strips client-only code with MagicString.
- *
- * Factory tools (those with a `resolve` property) are exported as `null`.
+ * strips non-kept properties from the tool object with MagicString, and finally
+ * runs esbuild's bundler with tree-shaking to eliminate dead code and imports.
  */
 export function agentToolStripPlugin(): Plugin {
   return {
@@ -109,7 +90,7 @@ export function agentToolStripPlugin(): Plugin {
       try {
         rawSource = fs.readFileSync(filePath, 'utf-8')
       } catch {
-        this.error(`Cannot read agent tool file: ${filePath}`)
+        return this.error(`Cannot read agent tool file: ${filePath}`)
       }
 
       // Use esbuild to strip TypeScript syntax, producing clean JavaScript.
@@ -262,12 +243,102 @@ function validateTransformedOutput(
 }
 
 /**
+ * Use esbuild's bundler to tree-shake dead functions and variables.
+ *
+ * All imports are externalized so esbuild doesn't resolve them — it only
+ * performs dead code elimination on the module's own declarations.
+ *
+ * Note: esbuild keeps imports even when their bindings become unused (because
+ * imports may have side effects). Dead import removal is handled separately.
+ */
+function treeShake(code: string): string {
+  const result = buildSync({
+    stdin: { contents: code, loader: 'js', resolveDir: '/tmp' },
+    bundle: true,
+    write: false,
+    format: 'esm',
+    target: 'esnext',
+    treeShaking: true,
+    external: ['*'],
+  })
+
+  return result.outputFiles[0]!.text
+}
+
+/**
+ * Remove import declarations whose bindings are not referenced in the code.
+ */
+function removeDeadImports(code: string): string {
+  const ast = parse(code, {
+    sourceType: 'module',
+    ecmaVersion: 'latest',
+  }) as ASTNode
+
+  // Collect ranges of import declarations.
+  const importRanges: Array<{ start: number; end: number }> = []
+  walk(ast, {
+    enter(node) {
+      if (node.type === 'ImportDeclaration') {
+        const n = node as ImportDeclaration & { start: number; end: number }
+        importRanges.push({ start: n.start, end: n.end })
+      }
+    },
+    leave() {},
+  })
+
+  // Collect all identifiers referenced outside import declarations.
+  const usedIds = new Set<string>()
+  walk(ast, {
+    enter(node) {
+      if (node.type === 'Identifier') {
+        const n = node as Identifier & { start: number }
+        const inImport = importRanges.some(
+          (r) => n.start >= r.start && n.start < r.end,
+        )
+        if (!inImport) {
+          usedIds.add(n.name)
+        }
+      }
+    },
+    leave() {},
+  })
+
+  const s = new MagicString(code)
+
+  walk(ast, {
+    enter(node) {
+      if (node.type !== 'ImportDeclaration') return
+
+      const importDecl = node as ImportDeclaration & {
+        start: number
+        end: number
+      }
+
+      const hasUsedBinding = (importDecl.specifiers || []).some((spec) =>
+        usedIds.has(spec.local.name),
+      )
+
+      if (!hasUsedBinding) {
+        let removeEnd = importDecl.end
+        if (code[removeEnd] === '\n') {
+          removeEnd++
+        }
+        s.remove(importDecl.start, removeEnd)
+      }
+    },
+    leave() {},
+  })
+
+  return s.toString()
+}
+
+/**
  * Transform a compiled JS tool source to remove runtime-only code.
  *
- * Parses the JS with acorn, then uses MagicString to:
- * 1. Remove non-allowlisted imports
- * 2. Remove runtime-only properties from the tool definition object
- * 3. Replace the `defineBlokkliAgentTool(...)` wrapper with a plain object literal
+ * 1. Parse and strip properties NOT in PROPERTIES_TO_KEEP from the tool object
+ * 2. Replace the `defineBlokkliAgentTool(...)` wrapper with a plain object literal
+ * 3. Run esbuild with tree-shaking to eliminate dead functions, variables,
+ *    and imports that are no longer reachable
  *
  * Exported for testing.
  */
@@ -285,29 +356,7 @@ export function transformToolSource(source: string, filePath?: string): string {
   const s = new MagicString(source)
   const { toolObject, call } = exportInfo
 
-  // 1. Remove client-only imports.
-  walk(ast, {
-    enter(node) {
-      if (node.type !== 'ImportDeclaration') return
-
-      const importDecl = node as ImportDeclaration & {
-        start: number
-        end: number
-      }
-      const importSource = importDecl.source.value as string
-
-      if (!isServerSafeImport(importSource)) {
-        let removeEnd = importDecl.end
-        if (source[removeEnd] === '\n') {
-          removeEnd++
-        }
-        s.remove(importDecl.start, removeEnd)
-      }
-    },
-    leave() {},
-  })
-
-  // 2. Remove unwanted properties from the tool object.
+  // 1. Remove properties NOT in the keep-list.
   for (const prop of toolObject.properties) {
     if (prop.type !== 'Property') continue
 
@@ -319,7 +368,7 @@ export function transformToolSource(source: string, filePath?: string): string {
       name = key.value
     }
 
-    if (name && PROPERTIES_TO_REMOVE.has(name)) {
+    if (name && !PROPERTIES_TO_KEEP.has(name)) {
       const propNode = prop as Property & { start: number; end: number }
       let removeEnd = propNode.end
 
@@ -334,11 +383,13 @@ export function transformToolSource(source: string, filePath?: string): string {
     }
   }
 
-  // 3. Replace the `defineBlokkliAgentTool(...)` call with just the object literal.
+  // 2. Replace the `defineBlokkliAgentTool(...)` call with just the object literal.
   s.overwrite(call.start, toolObject.start, '')
   s.overwrite(toolObject.end, call.end, '')
 
-  const result = s.toString()
+  // 3. Let esbuild tree-shake dead functions and variables, then remove
+  //    imports whose bindings are no longer referenced.
+  const result = removeDeadImports(treeShake(s.toString()))
 
   // 4. Validate the output.
   const error = validateTransformedOutput(result, filePath)
