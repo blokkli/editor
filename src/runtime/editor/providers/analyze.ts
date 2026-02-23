@@ -8,6 +8,7 @@ import type {
   AnalyzeNode,
   AnalyzeResult,
   Analyzer,
+  AnalyzerType,
 } from '../features/analyze/analyzers/types'
 import { AnalyzerContext } from '../features/analyze/analyzers/helpers/Context'
 import { normalizeToArray } from '../features/analyze/analyzers/helpers/normalizeArray'
@@ -44,11 +45,12 @@ export type AnalyzeProvider = {
 
   /**
    * Run analyzeText on all analyzers that support it.
+   * Optionally filter by analyzer type.
    * Returns nodes per analyzer per text.
    */
   runOnTexts: (
     texts: string[],
-    analyzerIds?: string[],
+    analyzerType?: AnalyzerType,
   ) => Promise<
     Array<{
       analyzerId: string
@@ -127,7 +129,7 @@ export default function analyzeProvider(
 
   async function runOnTexts(
     texts: string[],
-    analyzerIds?: string[],
+    analyzerType?: AnalyzerType,
   ): Promise<
     Array<{
       analyzerId: string
@@ -139,9 +141,8 @@ export default function analyzeProvider(
     await ensureInitialized()
 
     let textAnalyzers = analyzers.value.filter((a) => a.analyzeText)
-    if (analyzerIds?.length) {
-      const ids = new Set(analyzerIds)
-      textAnalyzers = textAnalyzers.filter((a) => ids.has(a.id))
+    if (analyzerType) {
+      textAnalyzers = textAnalyzers.filter((a) => a.type === analyzerType)
     }
     const results: Array<{
       analyzerId: string

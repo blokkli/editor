@@ -1,5 +1,5 @@
 <template>
-  <button class="bk-dropdown-menu-item" @click="$emit('click')" :disabled>
+  <button class="bk-dropdown-menu-item" :disabled @click="$emit('click')">
     <Icon :name="icon" />
     <span>{{ text }}</span>
   </button>

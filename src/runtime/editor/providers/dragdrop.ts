@@ -39,7 +39,7 @@ export type DropHandler<K extends keyof DraggableItemTypes> = {
    * If resolveBundles was provided, `ctx.bundle` is the resolved bundle
    * (either the single result or the user's BundleSelector pick).
    */
-  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+
   execute: (
     ctx: DropExecuteContext<K>,
   ) => MaybePromise<DropExecuteResult | void>

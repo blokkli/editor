@@ -31,11 +31,10 @@ export default defineBlokkliAgentTool({
   execute(ctx) {
     const { selection, types, $t } = ctx.app
 
-    const paragraphs = selection.uuids.value.map((uuid) => {
-      const item = selection.items.value.find((v) => v.uuid === uuid)
+    const paragraphs = selection.items.value.map((item) => {
       const bundle = item?.bundle ?? 'unknown'
       return {
-        uuid,
+        uuid: item.uuid,
         bundle,
         label: types.getBlockLabel(bundle),
       }

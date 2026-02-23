@@ -24,6 +24,7 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed, watch, onMounted } from '#imports'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { ClipboardData } from '#blokkli/editor/helpers/clipboardData'
 
 defineOptions({
   inheritAttrs: false,
@@ -36,6 +37,8 @@ const props = withDefaults(
     submitOnEnter?: boolean
     /** When true, convert pasted HTML to markdown */
     pasteMarkdown?: boolean
+    /** Called before the built-in paste handling. Return true to skip it. */
+    onBeforePaste?: (data: ClipboardData) => boolean
     textareaClass?: boolean
     autofocus?: boolean
   }>(),
@@ -78,105 +81,18 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
-function convertNode(node: Node): string {
-  if (node.nodeType === Node.TEXT_NODE) {
-    return node.textContent || ''
-  }
-
-  if (node.nodeType !== Node.ELEMENT_NODE) {
-    return ''
-  }
-
-  const el = node as Element
-  const tag = el.tagName.toLowerCase()
-  const children = Array.from(el.childNodes).map(convertNode).join('')
-
-  switch (tag) {
-    case 'br':
-      return '\n'
-    case 'p':
-    case 'div':
-      return children + '\n\n'
-    case 'strong':
-    case 'b':
-      return `**${children}**`
-    case 'em':
-    case 'i':
-      return `*${children}*`
-    case 'del':
-    case 's':
-      return `~~${children}~~`
-    case 'code':
-      if (el.parentElement?.tagName.toLowerCase() === 'pre') {
-        return children
-      }
-      return `\`${children}\``
-    case 'pre': {
-      const codeEl = el.querySelector('code')
-      const content = codeEl ? convertNode(codeEl) : children
-      return `\n\`\`\`\n${content}\n\`\`\`\n`
-    }
-    case 'h1':
-      return `# ${children}\n\n`
-    case 'h2':
-      return `## ${children}\n\n`
-    case 'h3':
-      return `### ${children}\n\n`
-    case 'h4':
-      return `#### ${children}\n\n`
-    case 'h5':
-      return `##### ${children}\n\n`
-    case 'h6':
-      return `###### ${children}\n\n`
-    case 'a': {
-      const href = el.getAttribute('href')
-      return href ? `[${children}](${href})` : children
-    }
-    case 'ul':
-    case 'ol':
-      return '\n' + children + '\n'
-    case 'li': {
-      const parent = el.parentElement
-      if (parent?.tagName.toLowerCase() === 'ol') {
-        const index = Array.from(parent.children).indexOf(el) + 1
-        return `${index}. ${children.trim()}\n`
-      }
-      return `- ${children.trim()}\n`
-    }
-    case 'blockquote':
-      return (
-        children
-          .trim()
-          .split('\n')
-          .map((line) => `> ${line}`)
-          .join('\n') + '\n'
-      )
-    case 'hr':
-      return '\n---\n'
-    case 'style':
-    case 'script':
-      return ''
-    default:
-      return children
-  }
-}
-
-function htmlToMarkdown(html: string): string {
-  const doc = new DOMParser().parseFromString(html, 'text/html')
-  return convertNode(doc.body)
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-}
-
 function onPaste(e: ClipboardEvent) {
-  if (!props.pasteMarkdown) return
-
-  const html = e.clipboardData?.getData('text/html')
-  if (!html) return
+  if (!e.clipboardData) return
+  const data = new ClipboardData(e.clipboardData)
+  if (props.onBeforePaste?.(data)) {
+    e.preventDefault()
+    return
+  }
+  if (!props.pasteMarkdown || !data.hasHtml()) return
 
   e.preventDefault()
 
-  const markdown = htmlToMarkdown(html)
+  const markdown = data.toMarkdown()
 
   const el = textarea.value
   if (!el) return

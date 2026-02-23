@@ -628,6 +628,7 @@ export default function (
       .filter((a) => !a.requireRawPage)
       .map((a) => ({
         id: a.id,
+        type: a.type,
         label:
           typeof a.label === 'function'
             ? a.label(context.value.language)

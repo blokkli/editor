@@ -12,7 +12,7 @@ Fixing readability is an **iterative process**. You must verify your rewrites ac
 
 ## Step 1: Analyze
 
-Call \`analyze_content\` with \`analyzerId: "readability"\` to get current issues.
+Call \`get_readability_issues\` to get current issues.
 
 The result is an object keyed by paragraph UUID, then by field name:
 \`\`\`
@@ -52,7 +52,7 @@ When rewriting:
 
 ## Step 4: Verify
 
-After the rewrites are applied, call \`analyze_content\` with \`analyzerId: "readability"\` **again** to check if the issues are resolved.
+After the rewrites are applied, call \`get_readability_issues\` **again** to check if the issues are resolved.
 
 - If issues remain: rewrite again with different wording.
 - If new issues appeared: fix those too.
@@ -63,7 +63,7 @@ After the rewrites are applied, call \`analyze_content\` with \`analyzerId: "rea
 ## Important
 
 - Always pre-check with \`check_readability_for_texts\` before applying rewrites.
-- Always verify with \`analyze_content\` after applying rewrites.
+- Always verify with \`get_readability_issues\` after applying rewrites.
 - Never assume a rewrite fixed the issue.
 - The scores (LIX, CLI, ARI) measure sentence length and word complexity. Lower is easier to read.
 - LIX above 60 is flagged. Above 70 is critical.

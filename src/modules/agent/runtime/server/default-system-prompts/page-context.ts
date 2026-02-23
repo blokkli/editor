@@ -82,7 +82,7 @@ export default defineBlokkliAgentSystemPrompt({
         '',
         '## Available Analyzers',
         '',
-        'Use the `analyze_content` tool with the `analyzerId` parameter to run an analyzer:',
+        'Use `get_readability_issues` to run all readability analyzers. The following analyzers are available:',
         '',
       )
       for (const a of pageContext.analyzers) {

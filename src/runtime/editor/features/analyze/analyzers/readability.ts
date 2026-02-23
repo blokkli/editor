@@ -213,7 +213,9 @@ function analyzeReadability(
         ...(scores.lix != null ? { lix: round(scores.lix) } : {}),
         ...(scores.cli != null ? { cli: round(scores.cli) } : {}),
         ...(scores.ari != null ? { ari: round(scores.ari) } : {}),
-        ...(scores.gulpease != null ? { gulpease: round(scores.gulpease) } : {}),
+        ...(scores.gulpease != null
+          ? { gulpease: round(scores.gulpease) }
+          : {}),
       },
       targets: [b.element],
     })
@@ -311,6 +313,7 @@ export default defineAnalyzer(() => {
 
   return {
     id: 'readability',
+    type: 'readability',
     label: (langcode) => {
       if (langcode === 'de') {
         return 'Lesbarkeit'

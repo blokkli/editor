@@ -45,7 +45,7 @@ export default defineBlokkliAgentTool({
 
     await analyze.ensureInitialized()
 
-    const rawResults = await analyze.runOnTexts(params.texts, ['readability'])
+    const rawResults = await analyze.runOnTexts(params.texts, 'readability')
 
     const results: z.infer<typeof textResultSchema>[] = rawResults.map(
       (tr) => ({

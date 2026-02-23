@@ -12,11 +12,7 @@ const fieldResultSchema = z.object({
   issues: z.array(issueSchema),
 })
 
-const paramsSchema = z.object({
-  analyzerId: z
-    .string()
-    .describe('The analyzer to run (e.g. "readability").'),
-})
+const paramsSchema = z.object({})
 
 const resultSchema = z.record(
   z.string(),
@@ -56,9 +52,9 @@ function resolveTargetInfo(target: HTMLElement): {
 type Result = z.infer<typeof resultSchema>
 
 export default defineBlokkliAgentTool({
-  name: 'analyze_content',
+  name: 'get_readability_issues',
   description:
-    'Run a content analyzer (e.g. readability) against the full page. Returns an object keyed by paragraph UUID and field name, with the current field value and a list of issues. Each issue contains the flagged text segment, impact, and scores. Use the result to call batch_rewrite_text directly.',
+    'Run all readability analyzers against the full page. Returns an object keyed by paragraph UUID and field name, with the current field value and a list of issues. Each issue contains the flagged text segment, impact, and scores. Use the result to call batch_rewrite_text directly.',
   category: 'query',
   volatile: true,
   lazy: true,
@@ -78,67 +74,69 @@ export default defineBlokkliAgentTool({
   },
   paramsSchema,
   resultSchema,
-  async execute(ctx, params) {
+  async execute(ctx) {
     const { analyze, ui, $t } = ctx.app
 
     await analyze.ensureInitialized()
 
-    const analyzer = analyze.analyzers.value.find(
-      (a) => a.id === params.analyzerId && !a.requireRawPage,
+    const readabilityAnalyzers = analyze.analyzers.value.filter(
+      (a) => a.type === 'readability' && !a.requireRawPage,
     )
 
-    if (!analyzer) {
+    if (readabilityAnalyzers.length === 0) {
       return {
-        label: $t('aiAgentAnalyzeContentDone', 'Analyzed @count results').replace(
-          '@count',
-          '0',
-        ),
+        label: $t(
+          'aiAgentAnalyzeContentDone',
+          'Analyzed @count results',
+        ).replace('@count', '0'),
         result: {},
       }
     }
 
     const analyzerCtx = analyze.createContext(ui.providerElement)
-    const rawResults = await analyze.runAnalyzer(analyzer, analyzerCtx)
-
     const result: Result = {}
 
-    for (const r of rawResults) {
-      const rawNodes = Array.isArray(r.nodes) ? r.nodes : [r.nodes]
+    for (const analyzer of readabilityAnalyzers) {
+      const rawResults = await analyze.runAnalyzer(analyzer, analyzerCtx)
 
-      for (const node of rawNodes) {
-        const targets = Array.isArray(node.targets)
-          ? node.targets
-          : [node.targets]
+      for (const r of rawResults) {
+        const rawNodes = Array.isArray(r.nodes) ? r.nodes : [r.nodes]
 
-        for (const target of targets) {
-          if (!(target instanceof HTMLElement)) continue
+        for (const node of rawNodes) {
+          const targets = Array.isArray(node.targets)
+            ? node.targets
+            : [node.targets]
 
-          const info = resolveTargetInfo(target)
-          if (!info.paragraphUuid || !info.fieldName) continue
+          for (const target of targets) {
+            if (!(target instanceof HTMLElement)) continue
 
-          const targetText = target.textContent?.trim()
-          if (!targetText) continue
+            const info = resolveTargetInfo(target)
+            if (!info.paragraphUuid || !info.fieldName) continue
 
-          const uuid = info.paragraphUuid
-          const field = info.fieldName
+            const targetText = target.textContent?.trim()
+            if (!targetText) continue
 
-          if (!result[uuid]) {
-            result[uuid] = {}
-          }
-          if (!result[uuid][field]) {
-            result[uuid][field] = {
-              fieldValue: info.fieldText,
-              issues: [],
+            const uuid = info.paragraphUuid
+            const field = info.fieldName
+
+            if (!result[uuid]) {
+              result[uuid] = {}
             }
+            if (!result[uuid][field]) {
+              result[uuid][field] = {
+                fieldValue: info.fieldText,
+                issues: [],
+              }
+            }
+
+            result[uuid][field].issues.push({
+              text: targetText,
+              impact: node.impact,
+              scores: node.scores,
+            })
+
+            break
           }
-
-          result[uuid][field].issues.push({
-            text: targetText,
-            impact: node.impact,
-            scores: node.scores,
-          })
-
-          break
         }
       }
     }

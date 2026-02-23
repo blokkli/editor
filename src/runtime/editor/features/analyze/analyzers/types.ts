@@ -51,8 +51,18 @@ export type AnalyzeResultMapped = Omit<AnalyzeResult, 'nodes'> & {
   nodes: AnalyzeNodeMapped[]
 }
 
+export type AnalyzerType = 'generic' | 'readability'
+
 export type Analyzer = {
   id: string
+
+  /**
+   * The type of analyzer. Defaults to 'generic'.
+   *
+   * - 'readability': Text readability analysis (LIX, Flesch, etc.)
+   * - 'generic': Any other type of analysis (accessibility, SEO, custom checks)
+   */
+  type?: AnalyzerType
 
   label?: string | ((langcode: string) => string)
 

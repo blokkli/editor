@@ -4,7 +4,6 @@
     :class="{
       'bk-is-active': hasActivePlan,
     }"
-    @paste.capture="onPaste"
   >
     <TransitionHeight opacity :duration="600">
       <div v-if="attachments.length" class="bk-agent-input-attachments">
@@ -26,6 +25,7 @@
           :max-height="150"
           submit-on-enter
           paste-markdown
+          :on-before-paste="onPaste"
           rows="2"
           :placeholder="placeholder"
           @submit="onSubmit"
@@ -55,6 +55,7 @@ import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
 import AttachmentChip from '../Attachment/index.vue'
 import Actions from './Actions/index.vue'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import type { ClipboardData } from '#blokkli/editor/helpers/clipboardData'
 import type { Attachment } from '#blokkli/agent/app/types'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
 
@@ -94,23 +95,20 @@ const emit = defineEmits<{
 const model = defineModel<string>({ required: true })
 const attachments = ref<Attachment[]>([])
 
-function onPaste(e: ClipboardEvent) {
-  const text = e.clipboardData?.getData('text/plain')
-  if (!text || text.length < ATTACHMENT_THRESHOLD) {
-    return
+function onPaste(data: ClipboardData): boolean {
+  const content = data.toMarkdown()
+  if (!content || content.length < ATTACHMENT_THRESHOLD) {
+    return false
   }
-  if (attachments.value.some((a) => a.content === text)) {
-    e.preventDefault()
-    e.stopPropagation()
-    return
+  if (attachments.value.some((a) => a.content === content)) {
+    return true
   }
-  e.preventDefault()
-  e.stopPropagation()
   attachments.value.push({
     type: 'text',
     id: generateUUID(),
-    content: text,
+    content,
   })
+  return true
 }
 
 function removeAttachment(id: string) {
