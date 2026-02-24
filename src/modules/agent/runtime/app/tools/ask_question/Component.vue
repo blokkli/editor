@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, nextTick, useBlokkli } from '#imports'
+import { ref, computed, watch, nextTick, onMounted, useBlokkli } from '#imports'
 import { Icon, FormRadio, FormCheckboxes } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
@@ -66,7 +66,14 @@ const emit = defineEmits<{
   (e: 'done', result: AskQuestionResult): void
 }>()
 
-const { $t } = useBlokkli()
+const { $t, eventBus } = useBlokkli()
+
+onMounted(() => {
+  if (props.params.paragraphUuids?.length) {
+    eventBus.emit('select', props.params.paragraphUuids)
+    eventBus.emit('scrollSelectionIntoView', {})
+  }
+})
 
 const selectedSingle = ref<string>('')
 const selectedMulti = ref<string[]>([])

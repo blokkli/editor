@@ -219,6 +219,17 @@ export class EntityStorageManager {
       }
     })
 
+    if (import.meta.dev) {
+      const devTextUuid = 'dev-long-text-block'
+      this.createBlock('text', devTextUuid, {
+        text: '<h2>Why blökkli?</h2><p>Most page builders force you into their ecosystem. They dictate how your data is stored, how your components are structured, and how your backend works. blökkli takes a fundamentally different approach: it is purely an editor. It provides the interactive editing experience — drag and drop, inline editing, real-time previews — while your backend remains in full control of the data. This separation means you can integrate blökkli into an existing Nuxt project without rewriting your content model or migrating your database.</p><p>The adapter pattern is at the heart of this architecture. Every mutation — adding a block, moving it, changing an option, deleting it — is delegated to an adapter that you implement. The adapter defines how these operations translate to your backend, whether that is Drupal with Paragraphs, a headless CMS, a custom API, or even localStorage. blökkli ships with a full Drupal adapter as a reference implementation, but the interface is designed to be backend-agnostic. If your backend can handle CRUD operations on structured content, you can write an adapter for it.</p><p>On the frontend, blökkli builds on Vue and Nuxt. Blocks are regular Vue single-file components that use the <code>defineBlokkli()</code> composable to declare their bundle, options, and editor behavior. A Vite plugin extracts these definitions at build time and generates TypeScript types, so your block options, field lists, and bundle names are fully type-safe. There is no runtime schema parsing or magic strings — everything is checked at compile time. This means refactoring a block option or renaming a field will surface errors immediately, not in production.</p><p>The feature system makes the editor modular. Each piece of editor functionality — comments, history, clipboard, search, validation, the AI assistant — is a self-contained feature that is discovered at build time by the FeatureCollector. Features can be enabled or disabled per project, and they communicate through a well-defined event bus and provider system. This keeps the core small while allowing ambitious extensions. The AI agent module, for example, adds a full conversational assistant to the editor sidebar without touching a single line of core editor code.</p><p>Performance was a priority from the start. blökkli uses a custom animation system, intelligent DOM diffing for live previews, and code splitting so that features are only loaded when needed. The editor overlay is rendered in a separate layer that does not interfere with your page styles. Even on pages with hundreds of blocks, the editing experience stays responsive. The playground in this repository demonstrates this — you can open the stress test page with 1500+ blocks and see for yourself.</p>',
+      })
+      const contentEntity = this.load('content', '1')
+      if (contentEntity) {
+        contentEntity.get<FieldBlocks>('content').append(devTextUuid)
+      }
+    }
+
     data.libraryItems.forEach((item) => {
       const libraryItem = new LibraryItem(item.uuid)
       libraryItem.setValues({

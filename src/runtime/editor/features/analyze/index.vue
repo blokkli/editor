@@ -24,7 +24,7 @@
         />
       </div>
       <AnalyzerMain
-        v-else
+        v-else-if="!ui.isTransforming.value"
         :key="animation.renderKey.value"
         v-model="isRunning"
         :langcode="context.language"

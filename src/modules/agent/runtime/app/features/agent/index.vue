@@ -109,7 +109,7 @@ import AgentTranscript from './Transcript/index.vue'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
-const DEBUG_STYLING = false
+const DEBUG_STYLING = true
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',

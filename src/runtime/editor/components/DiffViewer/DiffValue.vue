@@ -6,7 +6,7 @@
 import { computed } from '#imports'
 import diff from 'html-diff-ts'
 
-const MAX_CHANGES = 6
+const MAX_CHANGES = 10
 
 const props = defineProps<{
   before: string

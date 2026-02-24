@@ -69,10 +69,30 @@ export default defineBlokkliAgentTool({
   },
   mockParams: () => ({
     uuids: {
-      'mock-1': { title: 'Updated Title Text' },
-      'mock-2': { body: 'This is the new body content with some changes.' },
-      'mock-3': { subtitle: 'A fresh subtitle here' },
+      '4526d2d0-f122-4093-902f-e2f00a433981': {
+        title: 'Seamlessly integrates in any Nuxt setup',
+        tagline: 'Great Developer Experience',
+      },
+      '9485812c-0ecd-4699-85b2-3a031d47a0a1': {
+        text: '<ul><li>Fully responsive design</li><li>Touch gestures and smooth interactions</li><li>All editing features available on mobile</li><li>Optimized for tablets</li></ul>',
+      },
+      '67a9e26f-8028-4283-8b7d-8f836355b949': {
+        text: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><p>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra.</p>',
+      },
+      '3a2617ed-6844-4d39-859c-82869f4ea5aa': {
+        text: '<ul><li>Auto import block components</li><li>Directly define options inside the component</li><li>Support for import chunks</li></ul>',
+      },
     },
     requireApproval: true,
   }),
+  mockParamsVariants: () => [
+    {
+      uuids: {
+        'dev-long-text-block': {
+          text: '<h2>The Architecture Behind blökkli</h2><p>At its core, blökkli is a Nuxt module that injects an editing overlay on top of your existing page. When you enter edit mode, the overlay activates and wraps each block with interactive handles for selection, dragging, and inline editing. The key insight is that your page components render exactly as they would in production — blökkli never replaces them with editor-specific versions. Instead, it reads the DOM to understand the page structure and provides editing affordances on top.</p><p>The provider system is how blökkli shares state across the editor. Rather than a single global store, functionality is split into focused providers: one for selection state, one for UI, one for DOM operations, one for animations, and so on. Each provider is injected via Vue provide/inject at the appropriate level — some are global, some are per-field, some are per-block. This granularity prevents unnecessary reactivity and keeps the editor fast even on complex pages.</p><p>Code generation plays a crucial role in the developer experience. When you run the dev server, blökkli scans your block components, extracts their <code>defineBlokkli()</code> calls, and generates TypeScript definitions into the <code>.nuxt/blokkli/</code> directory. These generated types power autocomplete for block bundles, option keys, field names, and adapter methods. The result is that typos and mismatches are caught by your IDE before you even save the file.</p><p>The mutation system deserves special attention. Every change the user makes in the editor is captured as a discrete mutation object with a type, target, and payload. Mutations are queued and sent to the adapter in order. The adapter can batch them, validate them, or reject them. This design makes undo/redo straightforward — the editor simply replays or reverts mutations. It also makes the AI agent possible, because the agent produces the same mutation objects as manual editing.</p><p>Theming is handled through CSS custom properties defined in JSON theme files. Each theme specifies RGB values for color palettes, and the editor resolves them at runtime. Switching themes is instant because it only updates CSS variables — no components re-render. The built-in themes (nuxt, fire, gruvbox) demonstrate the range, but creating a custom theme is just a matter of defining your color values in a JSON file and referencing it in your Nuxt config.</p>',
+        },
+      },
+      requireApproval: true,
+    },
+  ],
 })

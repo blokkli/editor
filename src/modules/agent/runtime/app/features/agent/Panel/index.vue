@@ -308,9 +308,8 @@ const activePlan = computed(() => {
 
 const isPlanPendingApproval = computed(() => {
   return (
-    props.debugStyling ||
-    (activePlan.value !== null &&
-      activePlan.value.steps.every((s) => s.status === 'pending'))
+    activePlan.value !== null &&
+    activePlan.value.steps.every((s) => s.status === 'pending')
   )
 })
 

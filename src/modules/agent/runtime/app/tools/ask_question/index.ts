@@ -16,6 +16,12 @@ const paramsSchema = z.object({
     .describe(
       `Allow selecting multiple options. If false, the user has the option to enter a custom option if none of the options are good.`,
     ),
+  paragraphUuids: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Optional UUIDs of paragraphs this question relates to. When provided, these paragraphs will be highlighted on the page.',
+    ),
 })
 
 const resultSchema = z.object({
@@ -45,6 +51,12 @@ export default defineBlokkliAgentTool({
   resultSchema,
   component: Component,
   execute(_ctx, params) {
+    if (params.options.length < 2) {
+      return {
+        error:
+          'Questions must have at least 2 options. Either add more options or rephrase as a yes/no question.',
+      }
+    }
     return params
   },
   mockParams: () => ({
