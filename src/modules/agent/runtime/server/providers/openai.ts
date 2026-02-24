@@ -139,6 +139,8 @@ export class OpenAIProvider implements AIProvider {
       )
 
       let hasFunctionCalls = false
+      let inTextBlock = false
+      let currentToolCallId: string | null = null
 
       for await (const event of stream) {
         if (options.signal?.aborted) break
@@ -147,6 +149,7 @@ export class OpenAIProvider implements AIProvider {
           // Text streaming
           case 'response.content_part.added':
             if (event.part.type === 'output_text') {
+              inTextBlock = true
               yield { type: 'text_start' }
             }
             break
@@ -156,13 +159,32 @@ export class OpenAIProvider implements AIProvider {
             break
 
           case 'response.output_text.done':
+            inTextBlock = false
             yield { type: 'text_end' }
+            break
+
+          // Refusal streaming — map to text events so the user sees the
+          // refusal message instead of getting an empty/silent response.
+          case 'response.refusal.delta':
+            if (!inTextBlock) {
+              inTextBlock = true
+              yield { type: 'text_start' }
+            }
+            yield { type: 'text_delta', text: event.delta }
+            break
+
+          case 'response.refusal.done':
+            if (inTextBlock) {
+              inTextBlock = false
+              yield { type: 'text_end' }
+            }
             break
 
           // Tool call streaming
           case 'response.output_item.added':
             if (event.item.type === 'function_call') {
               hasFunctionCalls = true
+              currentToolCallId = event.item.call_id
               yield {
                 type: 'tool_use_start',
                 id: event.item.call_id,
@@ -176,7 +198,21 @@ export class OpenAIProvider implements AIProvider {
             break
 
           case 'response.function_call_arguments.done':
+            currentToolCallId = null
             yield { type: 'tool_use_end' }
+            break
+
+          // Safety net: if a function_call item completes but we still
+          // have an open tool call (e.g. arguments.done was missed),
+          // close it here.
+          case 'response.output_item.done':
+            if (
+              event.item.type === 'function_call' &&
+              currentToolCallId === event.item.call_id
+            ) {
+              currentToolCallId = null
+              yield { type: 'tool_use_end' }
+            }
             break
 
           // Completion
@@ -197,13 +233,110 @@ export class OpenAIProvider implements AIProvider {
             break
           }
 
-          case 'response.failed':
+          // Truncated response (max_output_tokens, content filter).
+          // Unlike response.completed, this fires when the response
+          // could not finish normally. Close any open blocks and yield
+          // message_end so Session.ts can continue the agent loop.
+          case 'response.incomplete': {
+            if (inTextBlock) {
+              inTextBlock = false
+              yield { type: 'text_end' }
+            }
+            if (currentToolCallId) {
+              currentToolCallId = null
+              yield { type: 'tool_use_end' }
+            }
+
+            const usage = event.response.usage
+            const stopReason = hasFunctionCalls ? 'tool_use' : 'max_tokens'
+            yield buildMessageEnd(stopReason, usage)
+            break
+          }
+
+          case 'response.failed': {
+            const errorMsg =
+              event.response?.error?.message || 'OpenAI response failed'
             yield {
               type: 'error',
-              error: new Error('OpenAI response failed'),
+              error: new Error(errorMsg),
             }
             break
+          }
+
+          // Streaming error event (distinct from response.failed).
+          case 'error':
+            yield {
+              type: 'error',
+              error: new Error(event.message || 'OpenAI stream error'),
+            }
+            break
+
+          // Lifecycle events — no action needed.
+          case 'response.created':
+          case 'response.in_progress':
+          case 'response.queued':
+          // Redundant completions of parts we already handle via specific events.
+          case 'response.content_part.done':
+          case 'response.output_text.annotation.added':
+          // Audio output — not used.
+          case 'response.audio.delta':
+          case 'response.audio.done':
+          case 'response.audio.transcript.delta':
+          case 'response.audio.transcript.done':
+          // Built-in tools — not used.
+          case 'response.code_interpreter_call.completed':
+          case 'response.code_interpreter_call.in_progress':
+          case 'response.code_interpreter_call.interpreting':
+          case 'response.code_interpreter_call_code.delta':
+          case 'response.code_interpreter_call_code.done':
+          case 'response.file_search_call.completed':
+          case 'response.file_search_call.in_progress':
+          case 'response.file_search_call.searching':
+          case 'response.web_search_call.completed':
+          case 'response.web_search_call.in_progress':
+          case 'response.web_search_call.searching':
+          // Image generation — not used.
+          case 'response.image_generation_call.completed':
+          case 'response.image_generation_call.generating':
+          case 'response.image_generation_call.in_progress':
+          case 'response.image_generation_call.partial_image':
+          // Server-side MCP — not used.
+          case 'response.mcp_call.completed':
+          case 'response.mcp_call.failed':
+          case 'response.mcp_call.in_progress':
+          case 'response.mcp_call_arguments.delta':
+          case 'response.mcp_call_arguments.done':
+          case 'response.mcp_list_tools.completed':
+          case 'response.mcp_list_tools.failed':
+          case 'response.mcp_list_tools.in_progress':
+          // Custom hosted tools — not used.
+          case 'response.custom_tool_call_input.delta':
+          case 'response.custom_tool_call_input.done':
+          // Internal reasoning / CoT — not exposed.
+          case 'response.reasoning_text.delta':
+          case 'response.reasoning_text.done':
+          case 'response.reasoning_summary_part.added':
+          case 'response.reasoning_summary_part.done':
+          case 'response.reasoning_summary_text.delta':
+          case 'response.reasoning_summary_text.done':
+            console.debug('[blokkli:agent] Unhandled response event: ', event)
+            break
+
+          default:
+            console.error(
+              `[blokkli:agent] Unhandled OpenAI stream event type: ${(event as { type: string }).type}`,
+            )
+            break
         }
+      }
+
+      // Recovery guard: if the stream ended without a terminal event
+      // (e.g. abrupt network disconnect), close any open blocks.
+      if (inTextBlock) {
+        yield { type: 'text_end' }
+      }
+      if (currentToolCallId) {
+        yield { type: 'tool_use_end' }
       }
     } catch (error) {
       yield { type: 'error', error: error as Error }
