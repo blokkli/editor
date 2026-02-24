@@ -64,34 +64,11 @@
           >
             <h3>{{ prop.key }}</h3>
             <div class="bk-diff-monospace">
-              <DiffValue
-                v-if="diffMode === 'inline'"
+              <DiffDisplay
                 :before="prop.before || ''"
                 :after="prop.after || ''"
+                :mode="diffMode"
               />
-              <div
-                v-else-if="diffMode === 'side_by_side'"
-                class="bk-diff-prop-side-by-side"
-              >
-                <div class="bk-diff-prop-before">
-                  <div class="bk-diff-prop-label">
-                    {{ $t('diffBefore', 'Before') }}
-                  </div>
-                  <div class="bk-diff-prop-content" v-html="prop.before" />
-                </div>
-                <div class="bk-diff-prop-after">
-                  <div class="bk-diff-prop-label">
-                    {{ $t('diffAfter', 'After') }}
-                  </div>
-                  <div class="bk-diff-prop-content" v-html="prop.after" />
-                </div>
-              </div>
-              <div
-                v-else-if="diffMode === 'after'"
-                class="bk-diff-prop-after-only"
-              >
-                <div class="bk-diff-prop-content" v-html="prop.after" />
-              </div>
             </div>
           </div>
         </div>
@@ -103,7 +80,8 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import type { FieldListItem } from '#blokkli/types'
-import { ItemIcon, FormRadioTabs, DiffValue } from '#blokkli/editor/components'
+import { ItemIcon, FormRadioTabs, DiffDisplay } from '#blokkli/editor/components'
+import type { DiffDisplayMode } from './DiffDisplay/index.vue'
 import type { ThemeColorName } from './../../../../global/types/theme'
 import type { MappedState, MutatedField } from '#blokkli/editor/types/state'
 
@@ -118,10 +96,7 @@ const props = defineProps<{
 
 const { types, $t, eventBus, dom, definitions, storage } = useBlokkli()
 
-const diffMode = storage.use<'inline' | 'side_by_side' | 'after'>(
-  'diffMode',
-  'inline',
-)
+const diffMode = storage.use<DiffDisplayMode>('diffMode', 'inline')
 
 const diffModeOptions = computed(() => [
   {

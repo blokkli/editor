@@ -172,15 +172,23 @@ function isTextFile(file: File): boolean {
 }
 
 async function extractDocxText(file: File): Promise<string> {
-  const mammoth = await import('mammoth')
+  const [mammoth, { default: TurndownService }] = await Promise.all([
+    import('mammoth'),
+    import('turndown'),
+  ])
   const arrayBuffer = await file.arrayBuffer()
-  const { value } = await mammoth.convertToMarkdown({
-    arrayBuffer,
-    convertImage: mammoth.images.imgElement(() => Promise.resolve({ src: '' })),
-  })
+  const { value: html } = await mammoth.convertToHtml(
+    { arrayBuffer },
+    {
+      convertImage: mammoth.images.imgElement(() =>
+        Promise.resolve({ src: '' }),
+      ),
+    },
+  )
+  const turndown = new TurndownService({ headingStyle: 'atx' })
+  const markdown = turndown.turndown(html)
   // Strip any leftover image markdown (e.g. ![](data:...)) or bare data URIs.
-  const cleaned = value.replace(/!\[[^\]]*\]\([^)]*\)/g, '').trim()
-  console.log('[DropHandler] DOCX Markdown:', cleaned)
+  const cleaned = markdown.replace(/!\[[^\]]*\]\([^)]*\)/g, '').trim()
   return cleaned
 }
 

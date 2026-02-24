@@ -10,21 +10,28 @@
     "
     @cancel="rejectAll"
   >
-    <div
-      v-if="!isApplying"
-      class="bk-batch-rewrite-list"
-      @mouseleave="onMouseLeave"
-    >
-      <ItemComponent
-        v-for="item in items"
-        :key="item.id"
-        v-model:selected="selected[item.id]"
-        v-model:reason="reasons[item.id]"
-        :uuid="item.uuid"
-        :field-name="item.fieldName"
-        :field-label="item.fieldLabel"
-        :new-value="item.value"
-      />
+    <div v-if="!isApplying">
+      <div class="bk-batch-rewrite-mode-selector">
+        <FormRadioTabs
+          :id="'batch-rewrite-diff-mode-' + id"
+          v-model="diffMode"
+          :options="diffModeOptions"
+          :label="$t('diffModeLabel', 'Display')"
+        />
+      </div>
+      <div class="bk-batch-rewrite-list" @mouseleave="onMouseLeave">
+        <ItemComponent
+          v-for="item in items"
+          :key="item.id"
+          v-model:selected="selected[item.id]"
+          v-model:reason="reasons[item.id]"
+          :uuid="item.uuid"
+          :field-name="item.fieldName"
+          :field-label="item.fieldLabel"
+          :new-value="item.value"
+          :diff-mode="diffMode"
+        />
+      </div>
     </div>
 
     <template #actions>
@@ -40,8 +47,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, ref, reactive, onMounted } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { computed, useBlokkli, ref, reactive, onMounted, useId } from '#imports'
+import { Icon, FormRadioTabs } from '#blokkli/editor/components'
+import type { DiffDisplayMode } from '#blokkli/editor/components/DiffViewer/DiffDisplay/index.vue'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import ItemComponent from './Item.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
@@ -53,8 +61,17 @@ const props = defineProps<{
   params: BatchRewriteParams
 }>()
 
+export type BatchRewriteDetailItem = {
+  fieldLabel: string
+  before: string
+  after: string
+}
+
 const emit = defineEmits<{
-  (e: 'done', result: BatchRewriteResult): void
+  (
+    e: 'done',
+    result: BatchRewriteResult & { _details?: BatchRewriteDetailItem[] },
+  ): void
 }>()
 
 const {
@@ -63,8 +80,20 @@ const {
   blocks,
   context: editorContext,
   types,
+  directive,
   eventBus,
+  storage,
 } = useBlokkli()
+
+const id = useId()
+
+const diffMode = storage.use<DiffDisplayMode>('diffMode', 'inline')
+
+const diffModeOptions = computed(() => [
+  { value: 'inline', label: $t('diffModeInline', 'Inline') },
+  { value: 'side_by_side', label: $t('diffModeSideBySide', 'Both') },
+  { value: 'after', label: $t('diffModeAfter', 'After') },
+])
 
 const isApplying = ref(false)
 
@@ -82,33 +111,53 @@ type ChangeItem = {
   value: string
 }
 
-function resolveFieldLabel(uuid: string, fieldName: string): string {
-  let entityType: string
-  let bundle: string
-
+function resolveHost(
+  uuid: string,
+): { entityType: string; bundle: string } | null {
   if (uuid === editorContext.value.entityUuid) {
-    entityType = editorContext.value.entityType
-    bundle = editorContext.value.entityBundle
-  } else {
-    const block = blocks.getBlock(uuid)
-    if (!block) {
-      return fieldName
+    return {
+      entityType: editorContext.value.entityType,
+      bundle: editorContext.value.entityBundle,
     }
-    entityType = itemEntityType
-    bundle = block.bundle
   }
+  const block = blocks.getBlock(uuid)
+  if (!block) return null
+  return { entityType: itemEntityType, bundle: block.bundle }
+}
 
+function resolveFieldLabel(uuid: string, fieldName: string): string {
+  const host = resolveHost(uuid)
+  if (!host) return fieldName
   const config = types.editableFieldConfig.forName(
-    entityType,
-    bundle,
+    host.entityType,
+    host.bundle,
     fieldName,
   )
   return config?.label || fieldName
 }
 
+function getCurrentValue(uuid: string, fieldName: string): string | null {
+  const host = resolveHost(uuid)
+  if (!host) return null
+  const el = directive.findEditableElement(fieldName, {
+    type: host.entityType,
+    bundle: host.bundle,
+    uuid,
+  })
+  if (!el) return null
+  const cfg = types.editableFieldConfig.forName(
+    host.entityType,
+    host.bundle,
+    fieldName,
+  )
+  if (!cfg || cfg.type === 'table') return null
+  return cfg.type === 'plain' ? el.textContent || '' : el.innerHTML
+}
+
 let idCounter = 0
-const items: ChangeItem[] = Object.entries(props.params.uuids).flatMap(
-  ([uuid, fields]) =>
+const beforeValues = new Map<number, string>()
+const items: ChangeItem[] = Object.entries(props.params.uuids)
+  .flatMap(([uuid, fields]) =>
     Object.entries(fields).map(([fieldName, value]) => ({
       id: idCounter++,
       uuid,
@@ -116,7 +165,14 @@ const items: ChangeItem[] = Object.entries(props.params.uuids).flatMap(
       fieldLabel: resolveFieldLabel(uuid, fieldName),
       value,
     })),
-)
+  )
+  .filter((item) => {
+    const current = getCurrentValue(item.uuid, item.fieldName)
+    if (current !== null) {
+      beforeValues.set(item.id, current)
+    }
+    return current === null || current !== item.value
+  })
 
 const selected = reactive<Record<number, boolean>>(
   Object.fromEntries(items.map((item) => [item.id, true])),
@@ -219,12 +275,22 @@ async function applySelected() {
       'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
   }
 
+  // Capture before/after diffs for the details panel.
+  const _details: BatchRewriteDetailItem[] = items
+    .filter((item) => selected[item.id])
+    .map((item) => ({
+      fieldLabel: item.fieldLabel,
+      before: beforeValues.get(item.id) || '',
+      after: item.value,
+    }))
+
   emit('done', {
     acceptedCount,
     rejectedByUser,
     label,
     agentMessage,
     historyIndex: state.currentMutationIndex.value,
+    _details,
   })
 }
 

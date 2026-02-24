@@ -1,4 +1,4 @@
-import { ref, readonly, watch, type Ref } from '#imports'
+import { ref, readonly, reactive, watch, type Ref } from '#imports'
 import {
   conversationItemSchema,
   type Attachment,
@@ -101,6 +101,9 @@ export type AgentProvider = {
   getTranscript: () => void
   onToolComponentDone: (result: unknown) => void
 
+  // Tool details (ephemeral, in-memory only)
+  toolDetails: Map<string, unknown>
+
   // Transcript dialog state
   transcriptContent: Ref<Transcript | null>
   showTranscript: Ref<boolean>
@@ -178,6 +181,9 @@ export default function (
   const activeConversationId = ref<string | null>(null)
   const conversationList = ref<AgentConversationSummary[]>([])
   const showConversationList = ref(false)
+
+  // In-memory tool details (ephemeral, cleared on new conversation)
+  const toolDetails: Map<string, unknown> = reactive(new Map())
 
   // ============================================================================
   // Conversation Persistence Helpers
@@ -936,18 +942,44 @@ export default function (
         })
         activeItem.value = null
 
+        // Store ephemeral details if the tool provides a buildDetails callback.
+        if (toolDef.buildDetails) {
+          try {
+            // Check for _details on the result (set by interactive components).
+            const detailsSource =
+              typeof result === 'object' &&
+              result !== null &&
+              '_details' in result
+                ? (result as Record<string, unknown>)._details
+                : result
+            const details = toolDef.buildDetails(detailsSource)
+            if (details != null) {
+              toolDetails.set(callId, details)
+            }
+          } catch {
+            // buildDetails failed — skip
+          }
+        }
+
         // Inject _summary from prunedSummary callback for use during server-side pruning.
-        let resultForServer = result
+        // Also strip _details (ephemeral, not sent to server).
+        let resultForServer: unknown = result
+        if (typeof result === 'object' && result !== null) {
+          if ('_details' in result) {
+            const { _details: _, ...rest } = result as Record<string, unknown>
+            resultForServer = rest
+          }
+        }
         if (
           toolDef.prunedSummary &&
-          typeof result === 'object' &&
-          result !== null
+          typeof resultForServer === 'object' &&
+          resultForServer !== null
         ) {
           try {
-            const summary = toolDef.prunedSummary(result)
+            const summary = toolDef.prunedSummary(resultForServer)
             if (summary) {
               resultForServer = {
-                ...(result as Record<string, unknown>),
+                ...(resultForServer as Record<string, unknown>),
                 _summary: summary,
               }
             }
@@ -1294,6 +1326,7 @@ export default function (
     activeConversationId.value = null
     plan.value = null
     usageTurns.value = []
+    toolDetails.clear()
 
     // Tell server to clear conversation
     send({ type: 'new_conversation' })
@@ -1352,6 +1385,9 @@ export default function (
     newConversation,
     getTranscript,
     onToolComponentDone,
+
+    // Tool details (ephemeral)
+    toolDetails,
 
     // Transcript dialog state
     transcriptContent,

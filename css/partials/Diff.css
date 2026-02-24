@@ -65,9 +65,77 @@
     @apply font-mono text-sm;
   }
 
+  .bk-diff-markup-style {
+    p,
+    ul,
+    ol,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply my-20 first:mt-0 last:mb-0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply leading-tight;
+    }
+
+    p,
+    ul,
+    ol {
+      @apply leading-normal;
+    }
+
+    h2 {
+      @apply font-bold text-[1.7em];
+    }
+
+    h3 {
+      @apply text-[1.5em] font-bold;
+    }
+
+    h4 {
+      @apply text-[1.3em] font-bold;
+    }
+
+    ul {
+      @apply list-disc ml-18;
+    }
+
+    ol {
+      @apply ml-30 list-decimal;
+    }
+
+    a {
+      @apply text-accent-700 underline;
+    }
+
+    blockquote {
+      @apply border-l-[6px] border-l-mono-300 pl-20;
+    }
+
+    pre {
+      @apply whitespace-break-spaces break-words w-full max-w-full;
+      word-break: break-all;
+    }
+  }
+
   .bk-diff-value {
     @apply inline;
     word-break: break-word;
+
+    .bk-is-clipped {
+      del {
+        @apply line-clamp-4;
+      }
+    }
 
     del {
       @apply line-through text-mono-500;
@@ -93,55 +161,10 @@
     del:has(img) + ins:has(img) {
       @apply mt-15;
     }
-
-    p,
-    ul,
-    ol,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply my-20 first:mt-0 last:mb-0;
-    }
-
-    h2 {
-      @apply font-bold text-[2em];
-    }
-
-    h3 {
-      @apply text-[1.66666em] font-bold;
-    }
-
-    h4 {
-      @apply text-[1.333333em] font-bold;
-    }
-
-    ul {
-      @apply list-disc ml-18;
-    }
-
-    ol {
-      @apply ml-30 list-decimal;
-    }
-
-    a {
-      @apply text-accent-700 underline;
-    }
-
-    blockquote {
-      @apply border-l-[6px] border-l-mono-300 pl-20;
-    }
-
-    pre {
-      @apply whitespace-break-spaces break-words w-full max-w-full;
-      word-break: break-all;
-    }
   }
 
   .bk-diff-prop-side-by-side {
-    @apply grid gap-20;
+    @apply grid gap-10;
     @container (min-width: 700px) {
       @apply grid-cols-2;
     }

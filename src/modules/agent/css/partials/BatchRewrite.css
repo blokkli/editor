@@ -1,18 +1,42 @@
 .bk {
+  .bk-batch-rewrite-mode-selector {
+    @apply px-10 py-10;
+    .bk-form-label {
+      @apply !hidden;
+    }
+  }
+
   .bk-batch-rewrite-list {
-    @apply flex flex-col divide-y divide-mono-200;
+    @apply flex flex-col divide-y divide-mono-300;
   }
 
   .bk-batch-rewrite-item {
-    @apply px-10 py-8 cursor-pointer;
-    @apply hover:bg-mono-50;
+    @apply relative;
+
+    &:hover:before {
+      @apply visible;
+    }
+
+    &:has(input:checked) {
+      &:before {
+        @apply border-accent-600;
+      }
+    }
+
+    &:before {
+      content: '';
+      @apply pointer-events-none;
+      @apply absolute top-0 left-0 size-full z-30;
+      @apply border-2 border-mono-400;
+      @apply invisible;
+    }
 
     .bk-diff-value {
       @apply text-sm;
     }
 
     .bk-checkbox {
-      @apply shrink-0 py-0;
+      @apply shrink-0 p-10 bg-mono-100 select-none hover:bg-mono-200;
       span {
         @apply text-sm mt-0 leading-[18px];
         &:before {
@@ -26,10 +50,16 @@
         @apply opacity-50;
       }
     }
+
+    .bk-diff-prop-after-only {
+      .bk-diff-prop-content {
+        @apply p-0 border-0 bg-transparent;
+      }
+    }
   }
 
   .bk-batch-rewrite-change {
-    @apply flex-1 min-w-0;
+    @apply flex-1 min-w-0 p-10 text-sm;
   }
 
   .bk-batch-rewrite-field {

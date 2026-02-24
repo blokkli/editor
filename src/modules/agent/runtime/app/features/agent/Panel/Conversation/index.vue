@@ -4,12 +4,14 @@
       v-for="item in history"
       :key="item.id"
       :item="item"
+      :tool-details
       @retry="emit('retry')"
     />
     <ConversationItemComponent
       v-if="activeItem"
       :key="activeItem.id"
       :item="activeItem"
+      :tool-details
       is-active
     />
     <Thinking v-if="isThinking" />
@@ -22,10 +24,11 @@ import Thinking from './Thinking/index.vue'
 import { useBlokkli } from '#imports'
 import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
 
-defineProps<{
+const props = defineProps<{
   history: ConversationItem[]
   activeItem: ActiveItem | null
   isThinking: boolean
+  toolDetails: Map<string, unknown>
 }>()
 
 const emit = defineEmits<{

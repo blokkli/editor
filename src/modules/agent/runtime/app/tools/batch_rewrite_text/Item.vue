@@ -9,8 +9,12 @@
       <span>{{ fieldLabel }}</span>
     </label>
     <div class="bk-batch-rewrite-change">
-      <div @click.prevent="onChange">
-        <DiffValue :before="override.originalValue" :after="newValue" />
+      <div>
+        <DiffDisplay
+          :before="override.originalValue"
+          :after="newValue"
+          :mode="diffMode"
+        />
       </div>
       <div v-if="!selected" class="bk-batch-rewrite-reason">
         <FlexTextarea
@@ -33,16 +37,19 @@
 
 <script lang="ts" setup>
 import { watch, onBeforeUnmount, useBlokkli, nextTick } from '#imports'
-import { DiffValue, FlexTextarea } from '#blokkli/editor/components'
+import { DiffDisplay, FlexTextarea } from '#blokkli/editor/components'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
+
+import type { DiffDisplayMode } from '#blokkli/editor/components/DiffViewer/DiffDisplay/index.vue'
 
 const props = defineProps<{
   uuid: string
   fieldName: string
   fieldLabel: string
   newValue: string
+  diffMode: DiffDisplayMode
 }>()
 
 const selected = defineModel<boolean>('selected', { default: false })

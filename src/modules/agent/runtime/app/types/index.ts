@@ -268,6 +268,19 @@ export type McpToolDefinition<
   ) => string
 
   /**
+   * Optional callback that extracts detail data from the tool result.
+   * Called after tool execution. The returned value is stored in memory
+   * (not persisted) and passed to detailsComponent when expanded.
+   */
+  buildDetails?: (result: any) => unknown
+
+  /**
+   * Optional Vue component rendered inside the collapsible details area.
+   * Receives { details: unknown } as props (the value from buildDetails).
+   */
+  detailsComponent?: Component
+
+  /**
    * Optional function returning mock params for styling/debugging.
    * When provided, the debug view will render the component with these params.
    */
@@ -344,6 +357,7 @@ const userConversationItemSchema = conversationItemBase.extend({
         type: z.literal('text'),
         id: z.string(),
         content: z.string(),
+        format: z.enum(['plaintext', 'markdown', 'html', 'csv', 'code']),
       }),
     )
     .optional(),

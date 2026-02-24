@@ -31,6 +31,7 @@
             :history="conversation"
             :active-item="activeItem"
             :is-thinking="isThinking"
+            :tool-details
             @retry="emit('retry')"
           />
           <component
@@ -162,6 +163,7 @@ const props = defineProps<{
   pendingToolCall: PendingToolCall | null
   pendingMutation: PendingMutationState | null
   autoApprove: boolean
+  toolDetails: Map<string, unknown>
   conversationList: AgentConversationSummary[]
   showConversationList: boolean
   plan: ClientPlanState | null

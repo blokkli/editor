@@ -197,7 +197,7 @@ export default async function (
     // beeing lost.
     // We can do this because the feature settings are always loaded before
     // the settings dialog can be opened.
-    if (!defaults.value[storageKey.value]) {
+    if (defaults.value[storageKey.value] === undefined) {
       defaults.value[storageKey.value] = defaultValue
     }
 

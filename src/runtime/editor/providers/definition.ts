@@ -33,7 +33,7 @@ export type DefinitionProvider = {
    */
   getBlockDefinition: (
     bundleOrBlock: string | RenderedFieldListItem,
-    fieldListType?: ValidFieldListTypes,
+    fieldListType?: ValidFieldListTypes | null,
     parentBundle?: BlockBundleWithNested | null,
   ) => BlockDefinition | undefined
 
@@ -212,7 +212,7 @@ export default function (providerType: ValidProviderTypes): DefinitionProvider {
 
   function getBlockDefinition(
     bundleOrBlock: string | RenderedFieldListItem,
-    maybeFieldListType: ValidFieldListTypes,
+    maybeFieldListType?: ValidFieldListTypes | null,
     maybeParentBundle?: BlockBundleWithNested | null,
   ): BlockDefinition | undefined {
     const bundle =

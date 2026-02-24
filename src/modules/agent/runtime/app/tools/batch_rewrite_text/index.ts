@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
+import DetailsComponent from './Details/index.vue'
 
 const paramsSchema = z.object({
   uuids: z
@@ -64,6 +65,8 @@ export default defineBlokkliAgentTool({
   resultSchema,
   requiredAdapterMethods: ['updateFieldValueBatched'],
   component: Component,
+  detailsComponent: DetailsComponent,
+  buildDetails: (result) => result,
   execute(_ctx, params) {
     return params
   },

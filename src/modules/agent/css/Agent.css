@@ -112,13 +112,15 @@
   }
 
   .bk-agent-tool-call {
-    @apply flex items-start text-sm gap-5;
-
     &.bk-is-server-tool {
       .bk-agent-tool-call-status {
         @apply text-mono-500 p-0 shrink-0 size-18;
       }
     }
+  }
+
+  .bk-agent-tool-call-inner {
+    @apply flex items-start text-sm gap-5;
   }
 
   .bk-agent-tool-call-name {
@@ -127,6 +129,44 @@
 
   .bk-agent-tool-call .bk-status-icon {
     @apply shrink-0;
+  }
+
+  .bk-agent-tool-details-toggle {
+    @apply shrink-0 size-18 flex items-center justify-center;
+    @apply rounded text-mono-500 hover:text-mono-900 hover:bg-mono-200;
+
+    .bk-icon svg {
+      @apply size-15 fill-current;
+      @apply transition-transform duration-200 ease-swing;
+    }
+
+    &.bk-is-expanded {
+      svg {
+        @apply rotate-180;
+      }
+    }
+  }
+
+  .bk-agent-tool-details {
+  }
+  .bk-agent-tool-details-inner {
+    @apply pt-10;
+  }
+
+  .bk-batch-rewrite-details {
+    @apply flex flex-col divide-y divide-mono-300;
+  }
+
+  .bk-batch-rewrite-details-item {
+    @apply py-5;
+
+    .bk-diff-value {
+      @apply text-sm;
+    }
+  }
+
+  .bk-batch-rewrite-details-label {
+    @apply text-xs font-medium text-mono-600 mb-3;
   }
 
   /* Debug gallery */

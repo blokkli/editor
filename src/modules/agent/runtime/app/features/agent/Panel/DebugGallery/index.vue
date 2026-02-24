@@ -5,6 +5,7 @@
       :history="mockHistory"
       :active-item="mockActiveItem"
       :is-thinking="false"
+      :tool-details="new Map()"
     />
 
     <h3>Pending Mutations</h3>
