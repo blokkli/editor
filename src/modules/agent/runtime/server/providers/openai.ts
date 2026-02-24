@@ -272,18 +272,18 @@ export class OpenAIProvider implements AIProvider {
             break
 
           // Lifecycle events — no action needed.
+          // Lifecycle, redundant completions, audio, built-in tools,
+          // image generation, server-side MCP, custom hosted tools,
+          // and internal reasoning/CoT — all not used.
           case 'response.created':
           case 'response.in_progress':
           case 'response.queued':
-          // Redundant completions of parts we already handle via specific events.
           case 'response.content_part.done':
           case 'response.output_text.annotation.added':
-          // Audio output — not used.
           case 'response.audio.delta':
           case 'response.audio.done':
           case 'response.audio.transcript.delta':
           case 'response.audio.transcript.done':
-          // Built-in tools — not used.
           case 'response.code_interpreter_call.completed':
           case 'response.code_interpreter_call.in_progress':
           case 'response.code_interpreter_call.interpreting':
@@ -295,12 +295,10 @@ export class OpenAIProvider implements AIProvider {
           case 'response.web_search_call.completed':
           case 'response.web_search_call.in_progress':
           case 'response.web_search_call.searching':
-          // Image generation — not used.
           case 'response.image_generation_call.completed':
           case 'response.image_generation_call.generating':
           case 'response.image_generation_call.in_progress':
           case 'response.image_generation_call.partial_image':
-          // Server-side MCP — not used.
           case 'response.mcp_call.completed':
           case 'response.mcp_call.failed':
           case 'response.mcp_call.in_progress':
@@ -309,10 +307,8 @@ export class OpenAIProvider implements AIProvider {
           case 'response.mcp_list_tools.completed':
           case 'response.mcp_list_tools.failed':
           case 'response.mcp_list_tools.in_progress':
-          // Custom hosted tools — not used.
           case 'response.custom_tool_call_input.delta':
           case 'response.custom_tool_call_input.done':
-          // Internal reasoning / CoT — not exposed.
           case 'response.reasoning_text.delta':
           case 'response.reasoning_text.done':
           case 'response.reasoning_summary_part.added':

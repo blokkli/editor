@@ -106,11 +106,45 @@ function isDocxFile(file: File): boolean {
 }
 
 const CODE_EXTENSIONS = new Set([
-  'js', 'ts', 'jsx', 'tsx', 'vue', 'svelte', 'css', 'scss', 'less',
-  'py', 'rb', 'php', 'java', 'kt', 'go', 'rs', 'c', 'cpp', 'h', 'hpp',
-  'cs', 'swift', 'sh', 'bash', 'zsh', 'fish', 'sql', 'graphql', 'gql',
-  'json', 'xml', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf',
-  'diff', 'patch',
+  'js',
+  'ts',
+  'jsx',
+  'tsx',
+  'vue',
+  'svelte',
+  'css',
+  'scss',
+  'less',
+  'py',
+  'rb',
+  'php',
+  'java',
+  'kt',
+  'go',
+  'rs',
+  'c',
+  'cpp',
+  'h',
+  'hpp',
+  'cs',
+  'swift',
+  'sh',
+  'bash',
+  'zsh',
+  'fish',
+  'sql',
+  'graphql',
+  'gql',
+  'json',
+  'xml',
+  'yaml',
+  'yml',
+  'toml',
+  'ini',
+  'cfg',
+  'conf',
+  'diff',
+  'patch',
 ])
 
 function getFileFormat(file: File): AttachmentFormat {
@@ -142,9 +176,7 @@ async function extractDocxText(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer()
   const { value } = await mammoth.convertToMarkdown({
     arrayBuffer,
-    convertImage: mammoth.images.imgElement(() =>
-      Promise.resolve({ src: '' }),
-    ),
+    convertImage: mammoth.images.imgElement(() => Promise.resolve({ src: '' })),
   })
   // Strip any leftover image markdown (e.g. ![](data:...)) or bare data URIs.
   const cleaned = value.replace(/!\[[^\]]*\]\([^)]*\)/g, '').trim()

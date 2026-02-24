@@ -15,6 +15,7 @@ import type { DeepReadonly } from 'vue'
 import type { BlockDefinitionOptionsInput } from '../../types/definitions'
 import { OPTIONS } from '#blokkli-build/runtime-options'
 import type { RuntimeBlockOptionArray } from '../../../global/types/blockOptions'
+import type { RenderedFieldListItem } from '../types/field'
 
 export type DefinitionProvider = {
   /**
@@ -31,8 +32,8 @@ export type DefinitionProvider = {
    * @returns The block definition, or undefined if not found
    */
   getBlockDefinition: (
-    bundle: string,
-    fieldListType: ValidFieldListTypes,
+    bundleOrBlock: string | RenderedFieldListItem,
+    fieldListType?: ValidFieldListTypes,
     parentBundle?: BlockBundleWithNested | null,
   ) => BlockDefinition | undefined
 
@@ -210,10 +211,15 @@ export default function (providerType: ValidProviderTypes): DefinitionProvider {
   )
 
   function getBlockDefinition(
-    bundle: string,
-    fieldListType: ValidFieldListTypes,
-    parentBundle?: BlockBundleWithNested | null,
+    bundleOrBlock: string | RenderedFieldListItem,
+    maybeFieldListType: ValidFieldListTypes,
+    maybeParentBundle?: BlockBundleWithNested | null,
   ): BlockDefinition | undefined {
+    const bundle =
+      typeof bundleOrBlock === 'string' ? bundleOrBlock : bundleOrBlock.bundle
+    const block = typeof bundleOrBlock === 'object' ? bundleOrBlock : null
+    const fieldListType = maybeFieldListType || block?.fieldListType
+    const parentBundle = maybeParentBundle || block?.parentBlockBundle
     const forFieldListType = bundle + '__field:' + fieldListType
     if (blocksByKey.value[forFieldListType]) {
       return blocksByKey.value[forFieldListType]

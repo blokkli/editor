@@ -180,8 +180,8 @@ var stdin_default = defineBlokkliAgentTool({
   })
 })
 
-  it('removes top-level functions only reachable from stripped properties', () => {
-    const input = esbuildStyle(`
+it('removes top-level functions only reachable from stripped properties', () => {
+  const input = esbuildStyle(`
 import { z } from "zod";
 import { parentSchema } from "../schemas";
 import { resolvePosition } from "../helpers";
@@ -198,21 +198,21 @@ var stdin_default = defineBlokkliAgentTool({
 });
 `)
 
-    const result = transformToolSource(input)
-    // Dead functions and their imports should be gone.
-    expect(result).not.toContain('validateTree')
-    expect(result).not.toContain('buildBlocks')
-    expect(result).not.toContain('resolvePosition')
-    expect(result).not.toContain('itemEntityType')
-    expect(result).not.toContain('#blokkli-build/config')
-    expect(result).not.toContain('../helpers')
-    // Needed imports survive.
-    expect(result).toContain('from "zod"')
-    expect(result).toContain('from "../schemas"')
-  })
+  const result = transformToolSource(input)
+  // Dead functions and their imports should be gone.
+  expect(result).not.toContain('validateTree')
+  expect(result).not.toContain('buildBlocks')
+  expect(result).not.toContain('resolvePosition')
+  expect(result).not.toContain('itemEntityType')
+  expect(result).not.toContain('#blokkli-build/config')
+  expect(result).not.toContain('../helpers')
+  // Needed imports survive.
+  expect(result).toContain('from "zod"')
+  expect(result).toContain('from "../schemas"')
+})
 
-  it('keeps top-level declarations transitively needed by paramsSchema', () => {
-    const input = esbuildStyle(`
+it('keeps top-level declarations transitively needed by paramsSchema', () => {
+  const input = esbuildStyle(`
 import { z } from "zod";
 import { optionValueSchema } from "../schemas";
 var fieldSchema = z.record(z.string(), optionValueSchema);
@@ -225,11 +225,11 @@ var stdin_default = defineBlokkliAgentTool({
 });
 `)
 
-    const result = transformToolSource(input)
-    expect(result).toContain('fieldSchema')
-    expect(result).toContain('optionValueSchema')
-    expect(result).toContain('from "../schemas"')
-  })
+  const result = transformToolSource(input)
+  expect(result).toContain('fieldSchema')
+  expect(result).toContain('optionValueSchema')
+  expect(result).toContain('from "../schemas"')
+})
 
 // ============================================================================
 // defineBlokkliAgentTool unwrapping

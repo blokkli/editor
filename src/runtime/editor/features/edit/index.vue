@@ -128,6 +128,26 @@ function onClick(items: RenderedFieldListItem[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
+  const definition = definitions.getBlockDefinition(block)
+  if (!definition) {
+    return
+  }
+  const options = definition.options
+  if (options) {
+    const keys = Object.keys(options)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      if (!key) continue
+      const option = options[key]
+      if (option?.type !== 'json' || !option.dataType) continue
+      eventBus.emit('option:edit-complex', {
+        uuid: block.uuid,
+        key,
+        dataType: option.dataType,
+      })
+      return
+    }
+  }
   onClick([block])
 })
 </script>

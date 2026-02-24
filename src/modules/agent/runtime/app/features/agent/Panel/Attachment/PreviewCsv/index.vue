@@ -30,10 +30,6 @@ const headerRow = computed(() => {
 })
 
 const bodyRows = computed(() => {
-  return props.content
-    .trim()
-    .split('\n')
-    .slice(1)
-    .map(parseRow)
+  return props.content.trim().split('\n').slice(1).map(parseRow)
 })
 </script>
