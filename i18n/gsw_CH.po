@@ -275,6 +275,10 @@ msgctxt "aiAgentDetachLibraryBlocksDone"
 msgid "Detached @count library blocks"
 msgstr ""
 
+msgctxt "aiAgentDisconnected"
+msgid "Connection lost. Reconnecting..."
+msgstr ""
+
 msgctxt "aiAgentDuplicateBlockDone"
 msgid "Duplicated @bundle"
 msgstr ""

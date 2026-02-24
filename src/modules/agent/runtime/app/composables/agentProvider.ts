@@ -129,7 +129,6 @@ export default function (
   let ws: WebSocket | null = null
   let reconnectTimeout: number | null = null
   let pingInterval: number | null = null
-  let hasEverConnected = false
   const isConnected = ref(false)
   const isReady = ref(false)
   const hasBeenReady = ref(false)
@@ -380,6 +379,10 @@ export default function (
   }
 
   function onWebSocketClose() {
+    if (pingInterval) {
+      window.clearInterval(pingInterval)
+      pingInterval = null
+    }
     isConnected.value = false
     isReady.value = false
     isProcessing.value = false
@@ -405,9 +408,23 @@ export default function (
   }
 
   function connect() {
-    // Only connect once - reconnection is handled automatically on close
-    if (hasEverConnected) return
-    hasEverConnected = true
+    // Already connected or connecting — don't create a duplicate socket
+    if (
+      ws &&
+      (ws.readyState === WebSocket.OPEN ||
+        ws.readyState === WebSocket.CONNECTING)
+    ) {
+      return
+    }
+
+    // Clean up dead socket if any
+    if (ws) {
+      ws.removeEventListener('open', onWebSocketOpen)
+      ws.removeEventListener('close', onWebSocketClose)
+      ws.removeEventListener('error', onWebSocketError)
+      ws.removeEventListener('message', onWebSocketMessage)
+      ws = null
+    }
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const url = `${protocol}//${window.location.host}/api/blokkli/agent`

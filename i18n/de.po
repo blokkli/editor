@@ -276,6 +276,10 @@ msgctxt "aiAgentDetachLibraryBlocksDone"
 msgid "Detached @count library blocks"
 msgstr "@count Bibliotheks-Blöcke abgetrennt"
 
+msgctxt "aiAgentDisconnected"
+msgid "Connection lost. Reconnecting..."
+msgstr "Verbindung wird wiederhergestellt..."
+
 msgctxt "aiAgentDuplicateBlockDone"
 msgid "Duplicated @bundle"
 msgstr "@bundle dupliziert"

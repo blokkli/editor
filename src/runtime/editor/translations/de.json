@@ -263,6 +263,10 @@
     "source": "Detached @count library blocks",
     "translation": "@count Bibliotheks-Blöcke abgetrennt"
   },
+  "aiAgentDisconnected": {
+    "source": "Connection lost. Reconnecting...",
+    "translation": "Verbindung wird wiederhergestellt..."
+  },
   "aiAgentDuplicateBlockDone": {
     "source": "Duplicated @bundle",
     "translation": "@bundle dupliziert"

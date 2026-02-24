@@ -73,6 +73,9 @@ const props = defineProps<{
 const { $t } = useBlokkli()
 
 const placeholder = computed(() => {
+  if (!props.isConnected) {
+    return $t('aiAgentDisconnected', 'Connection lost. Reconnecting...')
+  }
   if (props.isProcessing) {
     return $t('aiAgentProcessing', 'Processing...')
   }

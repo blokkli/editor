@@ -263,6 +263,10 @@
     "source": "Detached @count library blocks",
     "translation": ""
   },
+  "aiAgentDisconnected": {
+    "source": "Connection lost. Reconnecting...",
+    "translation": ""
+  },
   "aiAgentDuplicateBlockDone": {
     "source": "Duplicated @bundle",
     "translation": ""

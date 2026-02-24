@@ -16,6 +16,20 @@
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;
 }
 
+.bk-agent-disconnected {
+  @apply border-b border-b-mono-300 border-dashed;
+  @apply flex items-center gap-8 px-10 py-10 text-mono-500 text-sm;
+  @apply bg-red-light;
+  @apply font-medium;
+  @apply text-red-normal;
+
+  .bk-icon {
+    svg {
+      @apply size-18 fill-current;
+    }
+  }
+}
+
 .bk.bk-agent-panel {
   @apply flex flex-col h-full min-h-[200px] select-text relative;
 

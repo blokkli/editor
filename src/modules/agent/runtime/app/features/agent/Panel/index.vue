@@ -64,6 +64,17 @@
           @show-transcript="emit('getTranscript')"
           @show-conversations="emit('showConversations')"
         >
+          <TransitionHeight opacity :duration="300">
+            <div
+              v-if="!isConnected && hasBeenReady && !debugStyling"
+              class="bk-agent-disconnected"
+            >
+              <Icon name="loader" />
+              <span>{{
+                $t('aiAgentDisconnected', 'Connection lost. Reconnecting...')
+              }}</span>
+            </div>
+          </TransitionHeight>
           <TransitionHeight :duration="600" opacity>
             <Plan
               v-if="activePlan"
