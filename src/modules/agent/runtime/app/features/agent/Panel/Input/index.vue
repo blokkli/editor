@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, useTemplateRef } from '#imports'
+import { computed, useBlokkli, useTemplateRef } from '#imports'
 import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
 import AttachmentChip from '../Attachment/index.vue'
 import Actions from './Actions/index.vue'
@@ -93,7 +93,7 @@ const emit = defineEmits<{
 }>()
 
 const model = defineModel<string>({ required: true })
-const attachments = ref<Attachment[]>([])
+const attachments = defineModel<Attachment[]>('attachments', { required: true })
 
 function onPaste(data: ClipboardData): boolean {
   const content = data.toMarkdown()
@@ -107,6 +107,7 @@ function onPaste(data: ClipboardData): boolean {
     type: 'text',
     id: generateUUID(),
     content,
+    format: 'markdown',
   })
   return true
 }
@@ -128,7 +129,6 @@ const canSubmit = computed<boolean>(() => {
 function onSubmit() {
   if (!canSubmit.value) return
   emit('submit', attachments.value)
-  attachments.value = []
 }
 
 const textarea = useTemplateRef('textarea')
@@ -137,9 +137,5 @@ function focus() {
   textarea.value?.focus()
 }
 
-function clearAttachments() {
-  attachments.value = []
-}
-
-defineExpose({ focus, clearAttachments })
+defineExpose({ focus })
 </script>

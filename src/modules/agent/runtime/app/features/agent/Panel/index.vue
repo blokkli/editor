@@ -1,5 +1,5 @@
 <template>
-  <div
+  <DropHandler
     v-if="hasBeenReady || debugStyling"
     class="bk bk-agent-panel"
     @mousedown.capture.stop
@@ -7,10 +7,12 @@
     @pointerup.capture.stop
     @mouseup.capture.stop
     @contextmenu.capture.stop
+    @drop="onFileDrop"
   >
     <div
       ref="scrollContainer"
       class="bk-agent-panel-inner bk-scrollbar-light"
+      :class="{ 'bk-is-pending-approval': isPlanPendingApproval }"
       @scroll="onScroll"
     >
       <div ref="conversationContainer" class="bk-agent-panel-conversation">
@@ -52,6 +54,7 @@
         <AgentInput
           ref="inputEl"
           v-model="inputValue"
+          v-model:attachments="attachments"
           :is-processing="debugIsProcessing"
           :is-connected
           :has-pending-approval="!!(pendingMutation || pendingToolCall)"
@@ -106,7 +109,7 @@
         </div>
       </div>
     </Transition>
-  </div>
+  </DropHandler>
   <div v-else-if="!hasBeenReady" class="bk-agent-connecting">
     <Icon name="loader" />
     <span>{{ $t('aiAgentConnecting', 'Connecting...') }}</span>
@@ -142,6 +145,7 @@ import type {
 } from '#blokkli/agent/app/types'
 import type { ClientPlanState, UsageTurn } from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
+import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
 
@@ -216,6 +220,7 @@ const pendingToolComponent = computed(() => {
 })
 
 const inputValue = ref('')
+const attachments = ref<Attachment[]>([])
 const inputEl = useTemplateRef('inputEl')
 const scrollContainer = useTemplateRef('scrollContainer')
 
@@ -352,7 +357,13 @@ function onSubmit(submitAttachments: Attachment[]) {
   }
 
   inputValue.value = ''
+  attachments.value = []
   scrollToBottomOnSend()
+}
+
+function onFileDrop(dropped: Attachment[]) {
+  attachments.value.push(...dropped)
+  nextTick(() => inputEl.value?.focus())
 }
 
 function onNewConversation() {

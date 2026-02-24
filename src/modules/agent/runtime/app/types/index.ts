@@ -441,10 +441,13 @@ export type ActiveItem = AssistantConversationItem | ToolConversationItem
 // Attachment Types
 // ============================================================================
 
+export type AttachmentFormat = 'plaintext' | 'markdown' | 'html' | 'csv' | 'code'
+
 export type TextAttachment = {
   type: 'text'
   id: string
   content: string
+  format: AttachmentFormat
 }
 
 export type Attachment = TextAttachment

@@ -54,4 +54,34 @@
     @apply select-text;
     @apply overflow-auto;
   }
+
+  .bk-agent-attachment-rendered {
+    @apply whitespace-normal;
+  }
+
+  .bk-agent-attachment-code {
+    @apply text-sm overflow-auto;
+    @apply bg-mono-100 rounded-lg p-15;
+
+    code {
+      @apply font-mono;
+    }
+  }
+
+  .bk-agent-attachment-table {
+    @apply w-full text-sm border-collapse;
+
+    th,
+    td {
+      @apply border border-mono-300 px-10 py-5 text-left;
+    }
+
+    th {
+      @apply bg-mono-100 font-semibold;
+    }
+
+    tr:hover td {
+      @apply bg-mono-50;
+    }
+  }
 }

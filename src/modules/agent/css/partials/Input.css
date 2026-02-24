@@ -42,7 +42,7 @@
 
     .bk-agent-input-actions {
       @apply border-t border-t-mono-300 border-dashed;
-      @apply relative;
+      @apply relative z-50;
     }
 
     .bk-agent-input-actions-bar {

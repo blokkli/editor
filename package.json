@@ -113,7 +113,6 @@
     "marked": "^17.0.1",
     "mitt": "^3.0.1",
     "qrcode.vue": "^3.6.0",
-    "turndown": "^7.2.0",
     "twgl.js": "^7.0.0",
     "vue3-apexcharts": "^1.10.0",
     "zod": "^4.0.0"
@@ -177,9 +176,11 @@
     "axe-core": "^4.10.0",
     "esbuild": ">=0.20.0",
     "magic-string": "^0.30.0",
+    "mammoth": "^1.11.0",
     "micromatch": "^4.0.0",
     "openai": "^4.0.0",
     "oxc-walker": "^0.5.0",
+    "turndown": "^7.2.2",
     "typescript": "^5.0.0"
   },
   "peerDependenciesMeta": {
