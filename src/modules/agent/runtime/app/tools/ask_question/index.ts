@@ -34,7 +34,8 @@ export type AskQuestionResult = z.infer<typeof resultSchema>
 
 export default defineBlokkliAgentTool({
   name: 'ask_question',
-  description: 'Ask the user a question with predefined options.',
+  description:
+    'Ask the user a question with predefined options. The tool will automatically add a "none of the above" option where the user can define a custom option.',
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {

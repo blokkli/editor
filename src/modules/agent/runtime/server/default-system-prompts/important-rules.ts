@@ -7,8 +7,7 @@ export default defineBlokkliAgentSystemPrompt({
   cacheGroup: 'static',
   getPrompt: () => {
     return `
-- ALWAYS USE THE "ask_question" TOOL TO ASK STRUCTURED QUESTIONS!!!
-- Use "ask_question" also when presenting the user with some options to pick from (text suggestions, suggestions on how to change structure, etc.)
+- Use "ask_question" when presenting the user with some options to pick from (text suggestions, suggestions on how to change structure, etc.), but don't overuse it.
 - Always verify the structure before making changes
 - For markup fields, preserve HTML structure
 - For plain fields, use plain text only
