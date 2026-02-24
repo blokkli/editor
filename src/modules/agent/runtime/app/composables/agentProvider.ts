@@ -129,6 +129,8 @@ export default function (
   let ws: WebSocket | null = null
   let reconnectTimeout: number | null = null
   let pingInterval: number | null = null
+  let reconnectAttempts = 0
+  const MAX_RECONNECT_ATTEMPTS = 10
   const isConnected = ref(false)
   const isReady = ref(false)
   const hasBeenReady = ref(false)
@@ -372,6 +374,7 @@ export default function (
 
   function onWebSocketOpen() {
     isConnected.value = true
+    reconnectAttempts = 0
     pingInterval = window.setInterval(() => {
       send({ type: 'ping' })
     }, 30_000)
@@ -386,6 +389,18 @@ export default function (
     isConnected.value = false
     isReady.value = false
     isProcessing.value = false
+
+    reconnectAttempts++
+    if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
+      conversation.value.push({
+        type: 'error',
+        id: generateId(),
+        errorType: 'connection',
+        timestamp: Date.now(),
+      })
+      return
+    }
+
     // Reconnect after delay
     reconnectTimeout = window.setTimeout(() => {
       if (!isConnected.value) {
