@@ -1,6 +1,7 @@
 import OpenAI from 'openai'
 import type {
   ResponseInputItem,
+  ResponseReasoningItem,
   Tool as ResponseTool,
 } from 'openai/resources/responses/responses'
 import type {
@@ -11,6 +12,7 @@ import type {
   StreamEvent,
 } from './types'
 import type { ClientToolDefinition } from '../../shared/types'
+import type { ResponseCreateAndStreamParams } from 'openai/lib/responses/ResponseStream.mjs'
 
 /**
  * Convert generic messages to OpenAI Responses API input items.
@@ -37,6 +39,26 @@ function convertMessages(messages: GenericMessage[]): ResponseInputItem[] {
       for (const block of msg.content) {
         if (block.type === 'text' || block.type === 'skill') {
           textParts.push(block.text)
+        } else if (block.type === 'reasoning') {
+          // Flush accumulated text before the reasoning item
+          if (textParts.length > 0) {
+            result.push({
+              role: 'assistant',
+              content: textParts.join('\n'),
+            })
+            textParts.length = 0
+          }
+          // Feed reasoning back with encrypted_content for stateless
+          // multi-turn reasoning (store: false + include encrypted).
+          const reasoningItem: ResponseReasoningItem = {
+            type: 'reasoning',
+            id: block.id,
+            summary: [{ type: 'summary_text', text: block.text }],
+          }
+          if (block.encryptedContent) {
+            reasoningItem.encrypted_content = block.encryptedContent
+          }
+          result.push(reasoningItem)
         } else if (block.type === 'tool_use') {
           // Flush accumulated text as an assistant message before the tool call
           if (textParts.length > 0) {
@@ -118,29 +140,34 @@ export class OpenAIProvider implements AIProvider {
 
     const input = convertMessages(options.messages)
     const tools = convertTools(options.tools)
-
-    // Emit the exact tools payload for transcript debugging
-    yield { type: 'debug_request', tools }
-
     const instructions = options.systemPrompt.map((b) => b.text).join('\n\n')
+
+    const requestParams: ResponseCreateAndStreamParams = {
+      model: config.model,
+      instructions,
+      input,
+      tools: tools.length > 0 ? tools : undefined,
+      max_output_tokens: options.maxTokens ?? 4096,
+      store: false,
+      include: ['reasoning.encrypted_content'],
+      parallel_tool_calls: false,
+      reasoning: { effort: 'low', summary: 'auto' },
+    }
+
+    if (import.meta.dev) {
+      yield { type: 'debug_request', payload: requestParams }
+    }
 
     try {
       const stream = await client.responses.create(
-        {
-          model: config.model,
-          instructions,
-          input,
-          tools: tools.length > 0 ? tools : undefined,
-          max_output_tokens: options.maxTokens ?? 4096,
-          stream: true,
-          store: false,
-        },
+        { ...requestParams, stream: true },
         { signal: options.signal },
       )
 
       let hasFunctionCalls = false
       let inTextBlock = false
       let currentToolCallId: string | null = null
+      let currentReasoningContent = ''
 
       for await (const event of stream) {
         if (options.signal?.aborted) break
@@ -204,7 +231,8 @@ export class OpenAIProvider implements AIProvider {
 
           // Safety net: if a function_call item completes but we still
           // have an open tool call (e.g. arguments.done was missed),
-          // close it here.
+          // close it here. Also flush accumulated reasoning when the
+          // reasoning output item completes.
           case 'response.output_item.done':
             if (
               event.item.type === 'function_call' &&
@@ -212,6 +240,14 @@ export class OpenAIProvider implements AIProvider {
             ) {
               currentToolCallId = null
               yield { type: 'tool_use_end' }
+            } else if (event.item.type === 'reasoning') {
+              yield {
+                type: 'reasoning_summary',
+                id: event.item.id,
+                text: currentReasoningContent,
+                encryptedContent: event.item.encrypted_content ?? undefined,
+              }
+              currentReasoningContent = ''
             }
             break
 
@@ -309,13 +345,28 @@ export class OpenAIProvider implements AIProvider {
           case 'response.mcp_list_tools.in_progress':
           case 'response.custom_tool_call_input.delta':
           case 'response.custom_tool_call_input.done':
+            console.debug('[blokkli:agent] Unhandled response event: ', event)
+            break
+
+          // Reasoning summary — capture and yield so Session.ts can
+          // persist it in the conversation history for multi-turn coherence.
+          case 'response.reasoning_summary_part.added':
+            break
+
+          case 'response.reasoning_summary_text.delta':
+            // Accumulate across all summary parts (don't reset per part).
+            currentReasoningContent += event.delta
+            break
+
+          case 'response.reasoning_summary_text.done':
+            break
+
+          case 'response.reasoning_summary_part.done':
+            break
+
+          // Internal reasoning (encrypted CoT) — not used.
           case 'response.reasoning_text.delta':
           case 'response.reasoning_text.done':
-          case 'response.reasoning_summary_part.added':
-          case 'response.reasoning_summary_part.done':
-          case 'response.reasoning_summary_text.delta':
-          case 'response.reasoning_summary_text.done':
-            console.debug('[blokkli:agent] Unhandled response event: ', event)
             break
 
           default:

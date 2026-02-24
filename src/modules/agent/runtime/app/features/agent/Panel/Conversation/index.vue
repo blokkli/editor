@@ -24,7 +24,7 @@ import Thinking from './Thinking/index.vue'
 import { useBlokkli } from '#imports'
 import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
 
-const props = defineProps<{
+const _props = defineProps<{
   history: ConversationItem[]
   activeItem: ActiveItem | null
   isThinking: boolean

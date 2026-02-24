@@ -37,6 +37,23 @@ export default defineServerSideTool({
       }
     }
 
+    // Prevent advancing without doing any real work
+    if (!ctx.planStepHasWork) {
+      return {
+        toolResults: [
+          {
+            type: 'tool_result',
+            tool_use_id: ctx.toolUseId,
+            content: JSON.stringify({
+              error:
+                'You have not performed any work for this step yet. Use the appropriate tools to complete the step before marking it as done.',
+            }),
+            is_error: true,
+          },
+        ],
+      }
+    }
+
     // Mark current step completed
     currentStep.status = 'completed'
 
@@ -45,6 +62,9 @@ export default defineServerSideTool({
     if (nextStep) {
       nextStep.status = 'in_progress'
     }
+
+    // Reset work tracking for the next step
+    ctx.resetPlanStepWork()
 
     // Send server_tool_result for UI
     ctx.send({

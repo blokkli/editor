@@ -67,6 +67,12 @@ export type ServerToolContext = {
   assistantContent: GenericContentBlock[]
   commitMessagesEarly: (toolResult: ToolResultEntry) => void
   updateLastToolResult: (toolUseId: string, content: string) => void
+  /** Whether any non-server tools were called since the current plan step started. */
+  planStepHasWork: boolean
+  /** Mark that real work was performed for the current plan step. */
+  markPlanStepWork: () => void
+  /** Reset the work flag (called after advancing to the next plan step). */
+  resetPlanStepWork: () => void
 }
 
 // ============================================================================

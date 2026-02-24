@@ -66,6 +66,18 @@ export type GenericToolResultBlock = {
 }
 
 /**
+ * Reasoning summary block - captures reasoning model chain-of-thought.
+ * OpenAI reasoning models emit these; they must be fed back to maintain
+ * coherent multi-turn tool-calling behavior.
+ */
+export type GenericReasoningBlock = {
+  type: 'reasoning'
+  id: string
+  text: string
+  encryptedContent?: string
+}
+
+/**
  * Content block in a message.
  */
 export type GenericContentBlock =
@@ -73,6 +85,7 @@ export type GenericContentBlock =
   | GenericSkillBlock
   | GenericToolUseBlock
   | GenericToolResultBlock
+  | GenericReasoningBlock
 
 /**
  * Generic message format used internally.
@@ -321,6 +334,8 @@ export type Transcript = {
   system: TranscriptSystemPrompt[]
   messages: TranscriptMessage[]
   tools: TranscriptToolDefinition[]
+  /** Raw request payload from the last provider call (dev only). */
+  lastRequest?: unknown
 }
 
 // ============================================================================
@@ -463,6 +478,12 @@ const genericContentBlockSchema = z.discriminatedUnion('type', [
     content: z.string(),
     is_error: z.boolean().optional(),
   }),
+  z.object({
+    type: z.literal('reasoning'),
+    id: z.string(),
+    text: z.string(),
+    encryptedContent: z.string().optional(),
+  }),
 ])
 
 const genericMessageSchema = z.object({
@@ -538,7 +559,7 @@ export type ServerMessage =
   | { type: 'transcript'; transcript: Transcript }
   | {
       type: 'server_tool_result'
-      tool: 'load_skill' | 'load_tools' | 'create_plan' | 'complete_plan_step'
+      tool: 'load_skills' | 'load_tools' | 'create_plan' | 'complete_plan_step'
       label: string
     }
   | { type: 'plan_update'; plan: ClientPlanState | null }

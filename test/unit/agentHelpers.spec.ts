@@ -230,7 +230,7 @@ describe('pruneMessages', () => {
       {
         role: 'assistant',
         content: [
-          { type: 'tool_use', id: 'tu_0', name: 'load_skill', input: {} },
+          { type: 'tool_use', id: 'tu_0', name: 'load_skills', input: {} },
         ],
       },
       {

@@ -1,15 +1,21 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const nodeSchema = z.object({
-  description: z.string().optional(),
-  impact: z.string().optional(),
-  scores: z.record(z.string(), z.number()).optional(),
-})
+/**
+ * Map analyzer impact levels to a user-friendly readability level.
+ * The analyzer always returns an impact (minor/moderate/serious/critical),
+ * even for easy texts. We translate that into a clear "good", "ok", or "hard".
+ */
+function impactToLevel(impact?: string): 'good' | 'ok' | 'hard' {
+  if (impact === 'critical' || impact === 'serious') return 'hard'
+  if (impact === 'moderate') return 'ok'
+  return 'good'
+}
 
 const textResultSchema = z.object({
   text: z.string(),
-  nodes: z.array(nodeSchema),
+  level: z.enum(['good', 'ok', 'hard']),
+  scores: z.record(z.string(), z.number()),
 })
 
 const paramsSchema = z.object({
@@ -27,7 +33,7 @@ const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'check_readability_for_texts',
   description:
-    'Check readability scores for one or more text strings. Returns readability metrics (LIX, CLI, ARI) for each text. Use this to evaluate whether a rewritten text has better readability before applying it.',
+    'Check readability scores for one or more text strings. Returns a readability level ("good", "ok", or "hard") and metrics (LIX, CLI, ARI) for each text. Use this to evaluate whether a rewritten text has better readability before applying it.',
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
@@ -47,16 +53,17 @@ export default defineBlokkliAgentTool({
 
     const rawResults = await analyze.runOnTexts(params.texts, 'readability')
 
-    const results: z.infer<typeof textResultSchema>[] = rawResults.map(
-      (tr) => ({
+    const results: z.infer<typeof textResultSchema>[] = rawResults.map((tr) => {
+      // The analyzer returns one node per text with scores and impact.
+      // Texts too short for analysis return no nodes.
+      const node = tr.nodes[0]
+
+      return {
         text: tr.text,
-        nodes: tr.nodes.map((node) => ({
-          description: node.description,
-          impact: node.impact,
-          scores: node.scores,
-        })),
-      }),
-    )
+        level: impactToLevel(node?.impact),
+        scores: node?.scores ?? {},
+      }
+    })
 
     return {
       label: $t(

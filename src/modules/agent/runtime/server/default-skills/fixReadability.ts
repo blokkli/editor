@@ -1,10 +1,11 @@
 import { defineBlokkliAgentSkill } from '../skills'
 
 export default defineBlokkliAgentSkill({
-  name: 'fix-readability',
+  name: 'asses-and-fix-readability',
   label: { en: 'Fix Readability', de: 'Lesbarkeit verbessern' },
   description:
     'Load this skill when asked to check, fix, or improve readability of texts on the page.',
+  tools: ['get_readability_issues', 'check_readability_for_texts'],
   getContents: () => `
 # Fix Readability - Iterative Workflow
 

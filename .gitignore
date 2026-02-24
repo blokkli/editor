@@ -1,6 +1,7 @@
 # Dependencies
 node_modules
 storage
+tmp
 
 # Logs
 *.log*

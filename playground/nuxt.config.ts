@@ -111,29 +111,40 @@ export default defineNuxtConfig({
       agentModule({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         debugPrompt: true,
-        provider: 'anthropic',
-        models: [
-          {
-            name: 'claude-haiku-4-5',
-            label: 'Claude Haiku 4.5',
-            isDefault: true,
-            pricing: { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 },
-          },
-        ],
-        // provider: 'openai',
+        // provider: 'anthropic',
         // models: [
         //   {
-        //     name: 'gpt-5-mini',
-        //     label: 'GPT-5 Mini',
+        //     name: 'claude-haiku-4-5',
+        //     label: 'Claude Haiku 4.5',
         //     isDefault: true,
-        //     pricing: {
-        //       input: 0.25,
-        //       cacheWrite: 0.25,
-        //       cacheRead: 0.025,
-        //       output: 2,
-        //     },
+        //     pricing: { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 },
         //   },
         // ],
+        provider: 'openai',
+        models: [
+          // {
+          //   name: 'gpt-5.2',
+          //   label: 'GPT-5.2',
+          //   isDefault: true,
+          //   pricing: {
+          //     input: 1.75,
+          //     cacheWrite: 1.75,
+          //     cacheRead: 0.175,
+          //     output: 14,
+          //   },
+          // },
+          {
+            name: 'gpt-5-mini',
+            label: 'GPT-5 Mini',
+            isDefault: true,
+            pricing: {
+              input: 0.25,
+              cacheWrite: 0.25,
+              cacheRead: 0.025,
+              output: 2,
+            },
+          },
+        ],
         defaultPrompts: [
           'Rewrite the page title and lead text',
           'Add a new text block with a summary of the AI features',

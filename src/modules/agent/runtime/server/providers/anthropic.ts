@@ -13,6 +13,7 @@ import type {
 } from './types'
 import type { ClientToolDefinition } from '../../shared/types'
 import type { SystemPromptBlock } from '../system-prompts/types'
+import type { MessageStreamParams } from '@anthropic-ai/sdk/resources'
 
 /**
  * Convert generic messages to Anthropic's MessageParam format.
@@ -26,28 +27,30 @@ function convertMessages(messages: GenericMessage[]): MessageParam[] {
       }
     }
 
-    // Convert content blocks
-    const content = msg.content.map((block) => {
-      switch (block.type) {
-        case 'text':
-        case 'skill':
-          return { type: 'text' as const, text: block.text }
-        case 'tool_use':
-          return {
-            type: 'tool_use' as const,
-            id: block.id,
-            name: block.name,
-            input: block.input,
-          }
-        case 'tool_result':
-          return {
-            type: 'tool_result' as const,
-            tool_use_id: block.tool_use_id,
-            content: block.content,
-            is_error: block.is_error,
-          }
-      }
-    })
+    // Convert content blocks (skip reasoning blocks — they're OpenAI-specific)
+    const content = msg.content
+      .filter((block) => block.type !== 'reasoning')
+      .map((block) => {
+        switch (block.type) {
+          case 'text':
+          case 'skill':
+            return { type: 'text' as const, text: block.text }
+          case 'tool_use':
+            return {
+              type: 'tool_use' as const,
+              id: block.id,
+              name: block.name,
+              input: block.input,
+            }
+          case 'tool_result':
+            return {
+              type: 'tool_result' as const,
+              tool_use_id: block.tool_use_id,
+              content: block.content,
+              is_error: block.is_error,
+            }
+        }
+      })
 
     return {
       role: msg.role,
@@ -108,16 +111,19 @@ export class AnthropicProvider implements AIProvider {
     const messages = convertMessages(options.messages)
     const tools = convertTools(options.tools)
 
-    // Emit the exact tools payload for transcript debugging
-    yield { type: 'debug_request', tools }
-
-    const stream = client.messages.stream({
+    const requestParams: MessageStreamParams = {
       model: config.model,
       max_tokens: options.maxTokens ?? 4096,
       system: convertSystemPrompt(options.systemPrompt),
       messages,
       tools,
-    })
+    }
+
+    if (import.meta.dev) {
+      yield { type: 'debug_request', payload: requestParams }
+    }
+
+    const stream = client.messages.stream(requestParams)
 
     try {
       for await (const event of stream) {

@@ -389,7 +389,7 @@ const toolConversationItemSchema = conversationItemBase.extend({
 const serverToolConversationItemSchema = conversationItemBase.extend({
   type: z.literal('server_tool'),
   tool: z.enum([
-    'load_skill',
+    'load_skills',
     'load_tools',
     'create_plan',
     'complete_plan_step',

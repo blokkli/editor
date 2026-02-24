@@ -1,11 +1,13 @@
 <template>
   <div class="bk-agent-assistant-bubble bk-is-tool bk-is-server-tool">
     <div class="bk-agent-tool-call bk-is-server-tool">
-      <Icon
-        :name="getServerSideToolIcon(tool)"
-        class="bk-agent-tool-call-status"
-      />
-      <span>{{ serverToolLabel }}</span>
+      <div class="bk-agent-tool-call-inner">
+        <Icon
+          :name="getServerSideToolIcon(tool)"
+          class="bk-agent-tool-call-status"
+        />
+        <span>{{ serverToolLabel }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +22,7 @@ const props = defineProps<{
   timestamp: number
   type: 'server_tool'
   tool:
-    | 'load_skill'
+    | 'load_skills'
     | 'load_tools'
     | 'create_plan'
     | 'complete_plan_step'
@@ -31,7 +33,7 @@ const props = defineProps<{
 const { $t } = useBlokkli()
 
 const serverToolLabel = computed(() => {
-  if (props.tool === 'load_skill') {
+  if (props.tool === 'load_skills') {
     return $t('aiAgentLoadSkill', 'Using skill "@label"').replace(
       '@label',
       props.label,
@@ -66,13 +68,13 @@ const serverToolLabel = computed(() => {
 
 function getServerSideToolIcon(
   id:
-    | 'load_skill'
+    | 'load_skills'
     | 'load_tools'
     | 'create_plan'
     | 'complete_plan_step'
     | 'plan_completed',
 ): BlokkliIcon {
-  if (id === 'load_skill') {
+  if (id === 'load_skills') {
     return 'bk_mdi_book_2'
   }
   if (id === 'create_plan') {

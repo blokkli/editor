@@ -80,7 +80,11 @@
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import type { FieldListItem } from '#blokkli/types'
-import { ItemIcon, FormRadioTabs, DiffDisplay } from '#blokkli/editor/components'
+import {
+  ItemIcon,
+  FormRadioTabs,
+  DiffDisplay,
+} from '#blokkli/editor/components'
 import type { DiffDisplayMode } from './DiffDisplay/index.vue'
 import type { ThemeColorName } from './../../../../global/types/theme'
 import type { MappedState, MutatedField } from '#blokkli/editor/types/state'

@@ -122,13 +122,49 @@
         </details>
       </div>
     </section>
+
+    <section v-if="transcript.lastRequest" class="bk-agent-transcript-section">
+      <h3>
+        Last Request
+        <button @click="copyLastRequest">
+          {{ copied ? 'Copied!' : 'Copy JSON' }}
+        </button>
+      </h3>
+      <pre class="bk-agent-transcript-block">{{
+        JSON.stringify(transcript.lastRequest, null, 2)
+      }}</pre>
+    </section>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ref, onBeforeUnmount } from '#imports'
 import type { Transcript } from '#blokkli/agent/shared/types'
 
-defineProps<{ transcript: Transcript }>()
+const props = defineProps<{ transcript: Transcript }>()
+
+const copied = ref(false)
+let copiedTimeout: ReturnType<typeof setTimeout> | null = null
+
+onBeforeUnmount(() => {
+  if (copiedTimeout) {
+    clearTimeout(copiedTimeout)
+  }
+})
+
+function copyLastRequest() {
+  const json = JSON.stringify(props.transcript.lastRequest, null, 2)
+  navigator.clipboard.writeText(json).then(() => {
+    copied.value = true
+    if (copiedTimeout) {
+      clearTimeout(copiedTimeout)
+    }
+    copiedTimeout = setTimeout(() => {
+      copied.value = false
+      copiedTimeout = null
+    }, 2000)
+  })
+}
 </script>
 
 <script lang="ts">

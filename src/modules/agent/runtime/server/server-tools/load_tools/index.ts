@@ -33,6 +33,7 @@ export default defineServerSideTool({
     }
 
     if (loaded.length) {
+      ctx.markPlanStepWork()
       ctx.send({
         type: 'server_tool_result',
         tool: 'load_tools',

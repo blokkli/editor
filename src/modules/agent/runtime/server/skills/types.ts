@@ -30,6 +30,8 @@ export type SkillDefinition = {
    * Return null if the skill is not applicable for this context.
    */
   getContents: (context: PageContext) => string | null
+  /** Tool names that should be auto-loaded when this skill is activated. */
+  tools?: string[]
 }
 
 /**
@@ -47,4 +49,6 @@ export type ResolvedSkill = {
   description: string
   /** The resolved content for this context */
   content: string
+  /** Tool names to auto-load when this skill is activated. */
+  tools: string[]
 }

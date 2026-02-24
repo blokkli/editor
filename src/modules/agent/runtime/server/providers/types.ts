@@ -6,6 +6,7 @@ export type {
   GenericTextBlock,
   GenericToolUseBlock,
   GenericToolResultBlock,
+  GenericReasoningBlock,
   GenericContentBlock,
   GenericMessage,
 } from '../../shared/types'
@@ -26,6 +27,12 @@ export type StreamEvent =
   | { type: 'tool_use_delta'; partial_json: string }
   | { type: 'tool_use_end' }
   | {
+      type: 'reasoning_summary'
+      id: string
+      text: string
+      encryptedContent?: string
+    }
+  | {
       type: 'message_end'
       stop_reason: 'end_turn' | 'tool_use' | 'max_tokens' | 'stop'
       inputTokens?: number
@@ -34,7 +41,7 @@ export type StreamEvent =
       cacheReadInputTokens?: number
     }
   | { type: 'error'; error: Error }
-  | { type: 'debug_request'; tools: unknown }
+  | { type: 'debug_request'; payload: unknown }
 
 // ============================================================================
 // Provider Configuration

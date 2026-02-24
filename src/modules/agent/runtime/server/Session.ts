@@ -37,7 +37,7 @@ import type {
   ToolDefinitionContext,
 } from './server-tools'
 import { buildDefinition, stripSchemaOverhead } from './server-tools'
-import loadSkillTool from './server-tools/load_skill'
+import loadSkillTool from './server-tools/load_skills'
 import loadToolsTool from './server-tools/load_tools'
 import createPlanTool from './server-tools/create_plan'
 import completePlanStepTool from './server-tools/complete_plan_step'
@@ -72,19 +72,23 @@ export class Session {
   lazyToolNames: string[] = []
   /** Names of lazy tools that have been activated via load_tools */
   activatedLazyTools = new Set<string>()
-  /** Names of skills that have been loaded via load_skill */
+  /** Names of skills that have been loaded via load_skills */
   loadedSkills = new Set<string>()
   /** Page context received from client on init */
   pageContext?: PageContext
 
   /** Current plan (null when no plan is active) */
   plan: ServerPlan | null = null
+  /** Whether any real work (non-server tool calls) happened since the last plan step started */
+  planStepHasWork = false
   /** Pending plan approval promise resolver */
   pendingPlanApproval: { resolve: (approved: boolean) => void } | null = null
   /** Pre-pruned messages snapshot for transcript (captured before pruneMessages) */
   private unprunedMessages: GenericMessage[] = []
   /** Last generic tool definitions for transcript */
   private lastTools: ClientToolDefinition[] = []
+  /** Last raw request payload for transcript (dev only) */
+  private lastDebugPayload: unknown = null
 
   /** Bundled tool metadata map for server-side resolution */
   private bundledToolMap: Map<string, ServerToolMetadata>
@@ -253,6 +257,7 @@ export class Session {
     this.messages = []
     this.unprunedMessages = []
     this.lastTools = []
+    this.lastDebugPayload = null
     this.activatedLazyTools.clear()
     this.loadedSkills.clear()
     this.plan = null
@@ -429,12 +434,6 @@ export class Session {
     // Resolve skills for this page context
     const resolvedSkills = resolveSkills(this.pageContext)
 
-    const lazyToolSummaries = this.lazyToolNames
-      .map((name) => this.getToolSummary(name))
-      .filter(
-        (s): s is { name: string; description: string } => s !== undefined,
-      )
-
     // Build initial user message with context
     const userParts: string[] = []
 
@@ -529,6 +528,14 @@ export class Session {
         const allTools = [...serverToolDefs, ...eagerTools, ...activatedTools]
         this.lastTools = allTools
 
+        // Compute lazy tool summaries each turn, filtering out activated tools
+        const lazyToolSummaries = this.lazyToolNames
+          .filter((name) => !this.activatedLazyTools.has(name))
+          .map((name) => this.getToolSummary(name))
+          .filter(
+            (s): s is { name: string; description: string } => s !== undefined,
+          )
+
         // Build system prompt each turn so it reflects current plan state
         const systemPrompt = buildSystemPrompt(
           this.pageContext!,
@@ -563,6 +570,7 @@ export class Session {
 
             switch (event.type) {
               case 'debug_request':
+                this.lastDebugPayload = event.payload
                 break
 
               case 'text_start':
@@ -732,6 +740,13 @@ export class Session {
                           }
                         }
                       },
+                      planStepHasWork: this.planStepHasWork,
+                      markPlanStepWork: () => {
+                        this.planStepHasWork = true
+                      },
+                      resetPlanStepWork: () => {
+                        this.planStepHasWork = false
+                      },
                     }
                     try {
                       // Coerce stringified arrays/objects before validation.
@@ -821,6 +836,9 @@ export class Session {
                         tool_use_id: currentToolUse.id,
                         content: JSON.stringify(resultForLLM),
                       })
+
+                      // Client-side tool completed successfully — counts as real work
+                      this.planStepHasWork = true
                     }
                   } catch (error) {
                     toolResults.push({
@@ -835,6 +853,19 @@ export class Session {
 
                   currentToolUse = null
                 }
+                break
+
+              case 'reasoning_summary':
+                // Store reasoning in assistant content so it's fed back on
+                // subsequent turns. The encryptedContent is the opaque blob
+                // that OpenAI requires for stateless multi-turn reasoning
+                // (when store: false).
+                assistantContent.push({
+                  type: 'reasoning',
+                  id: event.id,
+                  text: event.text,
+                  encryptedContent: event.encryptedContent,
+                })
                 break
 
               case 'message_end':
@@ -908,6 +939,8 @@ export class Session {
         // If create_plan handled messages directly, skip normal commit
         // and continue to the next agent loop iteration.
         if (messagesCommittedByPlanTool) {
+          // A new plan was just created/approved — reset work tracking
+          this.planStepHasWork = false
           continue
         }
 
@@ -1110,6 +1143,11 @@ export class Session {
       input_schema: t.input_schema,
     }))
 
-    return { system, messages, tools }
+    return {
+      system,
+      messages,
+      tools,
+      ...(this.lastDebugPayload ? { lastRequest: this.lastDebugPayload } : {}),
+    }
   }
 }

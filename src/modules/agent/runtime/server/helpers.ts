@@ -46,6 +46,7 @@ export function resolveSkills(context: PageContext): ResolvedSkill[] {
         englishLabel: resolveSkillLabel(skill.label),
         description: skill.description,
         content,
+        tools: skill.tools ?? [],
       }
     })
     .filter((s): s is ResolvedSkill => s !== null)

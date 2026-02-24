@@ -17,7 +17,7 @@ export default defineBlokkliAgentSystemPrompt({
           ? 'Already loaded in the conversation. Do NOT load again.'
           : s.description,
       })),
-      'You can load detailed guidelines using the `load_skill` tool. Use skills when the task requires following specific rules or guidelines. Load skills when you feel they help you achieve a goal or when the user mentions it.',
+      'You can load detailed guidelines using the `load_skills` tool. Use skills when the task requires following specific rules or guidelines. Load skills when you feel they help you achieve a goal or when the user mentions it.',
     )
   },
 })
