@@ -18,6 +18,6 @@ export default defineBlokkliAgentSkill({
 - You SHOULD already provide default content field values if possible!
 - You can set paragraph OPTIONS inline via the \`options\` property on each paragraph (key-value pairs). Use get_bundle_info to see which options are available for a bundle. This avoids a separate set_paragraph_options call after creating paragraphs.
 - The add_paragraphs tool will thoroughly validate your input (including children and options recursively), so it's impossible for you to add invalid paragraphs.
-- If you made a mistake, use the move_paragraphs to move the newly created paragraphs if possible or batch_rewrite_text if you need to change text.
+- If you made a mistake, use the move_paragraphs to move the newly created paragraphs if possible or update_text_fields if you need to change text.
 `,
 })

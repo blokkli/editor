@@ -35,12 +35,13 @@ function resolveTargetInfo(target: HTMLElement): {
   let fieldName: string | undefined
   let fieldEl: HTMLElement | undefined
   let el: HTMLElement | null = target
-  while (el && el !== blockEl) {
+  while (el) {
     if (el.dataset.blokkliEditableField) {
       fieldName = el.dataset.blokkliEditableField
       fieldEl = el
       break
     }
+    if (el === blockEl) break
     el = el.parentElement
   }
 
@@ -54,7 +55,7 @@ type Result = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'get_readability_issues',
   description:
-    'Run all readability analyzers against the full page. Returns an object keyed by paragraph UUID and field name, with the current field value and a list of issues. Each issue contains the flagged text segment, impact, and scores. Use the result to call batch_rewrite_text directly.',
+    'Run all readability analyzers against the full page. Returns an object keyed by paragraph UUID and field name, with the current field value and a list of issues. Each issue contains the flagged text segment, impact, and scores. Use the result to call update_text_fields directly.',
   category: 'query',
   volatile: true,
   lazy: true,

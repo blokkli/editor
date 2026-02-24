@@ -51,7 +51,7 @@ export default defineBlokkliAgentSystemPrompt({
         '',
         '## Entity Content Fields',
         '',
-        `The page entity itself has the following content fields that can be read/edited using get_content_fields, batch_rewrite_text, and replace_media_field with the entity UUID (\`${pageContext.entityUuid}\`):`,
+        `The page entity itself has the following content fields that can be read/edited using get_content_fields, update_text_fields, and replace_media_field with the entity UUID (\`${pageContext.entityUuid}\`):`,
         '',
       )
       for (const field of pageContext.entityContentFields) {

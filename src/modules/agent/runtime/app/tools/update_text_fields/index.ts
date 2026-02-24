@@ -7,7 +7,7 @@ const paramsSchema = z.object({
   uuids: z
     .record(z.string(), z.record(z.string(), z.string()))
     .describe(
-      'A map of uuids containing a map of field names to field values.',
+      'A map of paragraph uuids containing a map of field names to field values.',
     ),
   requireApproval: z
     .boolean()
@@ -51,9 +51,9 @@ export type BatchRewriteParams = z.infer<typeof paramsSchema>
 export type BatchRewriteResult = z.infer<typeof resultSchema>
 
 export default defineBlokkliAgentTool({
-  name: 'batch_rewrite_text',
+  name: 'update_text_fields',
   description:
-    'Rewrite text content in multiple content fields at once. Set requireApproval to true when the user should confirm the changes first. EXAMPLE: { "uuids": { "<UUID>": { "title": "New title", "text": "New text" } } }',
+    'Update text content fields on one or more paragraphs, identified by UUID. Set requireApproval to true when the user should confirm the changes first. EXAMPLE: { "uuids": { "<UUID>": { "title": "New title", "text": "New text" } } }',
   category: 'mutation',
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,

@@ -161,7 +161,7 @@ restored:
 | `move_blocks`                 | Move blocks to a different parent field               |
 | `swap_blocks`                 | Swap positions of two blocks                          |
 | `rearrange_blocks`            | Reorder blocks within a field                         |
-| `batch_rewrite_text`          | Rewrite text in multiple fields at once               |
+| `update_text_fields`          | Rewrite text in multiple fields at once               |
 | `set_block_options`           | Set options on blocks                                 |
 | `replace_media_field`         | Replace media on an existing block                    |
 | `replace_content_search_item` | Replace a content reference                           |

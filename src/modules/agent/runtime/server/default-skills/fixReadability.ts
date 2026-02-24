@@ -41,7 +41,7 @@ This is cheap and fast — use it to iterate on your wording before committing a
 
 ## Step 3: Rewrite
 
-Use \`batch_rewrite_text\` to apply the improved texts. The UUID and field name from the analyze result map directly to the batch_rewrite_text input:
+Use \`update_text_fields\` to apply the improved texts. The UUID and field name from the analyze result map directly to the update_text_fields input:
 \`\`\`
 { "uuids": { "<uuid>": { "<fieldName>": "improved text" } } }
 \`\`\`
