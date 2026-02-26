@@ -5,68 +5,55 @@ export default defineBlokkliAgentSkill({
   label: { en: 'Fix Readability', de: 'Lesbarkeit verbessern' },
   description:
     'Load this skill when asked to check, fix, or improve readability of texts on the page.',
-  tools: ['get_readability_issues', 'check_readability_for_texts'],
+  tools: [
+    'get_readability_issues',
+    'check_readability_for_texts',
+    'stream_text_fields',
+  ],
   getContents: () => `
-# Fix Readability - Iterative Workflow
-
-Fixing readability is an **iterative process**. You must verify your rewrites actually improved the scores before moving on.
+# Fix Readability
 
 ## Step 1: Analyze
 
-Call \`get_readability_issues\` to get current issues.
+Call \`get_readability_issues\` to see current issues. Review the results to decide which fields need fixing.
 
-The result is an object keyed by paragraph UUID, then by field name:
-\`\`\`
+## Step 2: Fix with \`stream_text_fields\`
+
+Call \`stream_text_fields\` with:
+- \`template\`: \`"fix_readability"\`
+- \`templateParams\`: \`{}\` (empty — issues are resolved automatically)
+- \`fields\`: array of \`{ uuid, fieldName }\` for the fields you want to fix
+
+Include ALL fields that have issues. The tool handles everything automatically:
+1. Runs readability analyzers to find issues in the specified fields
+2. Streams rewrites to fix them
+3. Verifies readability scores on the proposed text
+4. If any fields still fail, retries automatically with feedback (up to 3 attempts)
+5. Presents the user with before/after readability scores for approval
+
+Example:
+\`\`\`json
 {
-  "<uuid>": {
-    "<fieldName>": {
-      "fieldValue": "current text",
-      "issues": [
-        { "text": "flagged segment", "impact": "critical", "scores": { "lix": 85 } }
-      ]
-    }
-  }
+  "template": "fix_readability",
+  "templateParams": {},
+  "fields": [
+    { "uuid": "uuid-1", "fieldName": "field_text" },
+    { "uuid": "uuid-2", "fieldName": "title" }
+  ]
 }
 \`\`\`
 
-- \`fieldValue\` is the full editable field content.
-- Each issue is a text segment within the field that was flagged, with its own scores.
-- A field can have multiple issues (e.g. a rich text field with several hard-to-read paragraphs).
+You do NOT need to pass any issue data, map field indices, or verify results manually. The tool does all of this internally.
 
-## Step 2: Pre-check with \`check_readability_for_texts\`
+## Optional: Pre-check with \`check_readability_for_texts\`
 
-Before applying a rewrite, use \`check_readability_for_texts\` to verify your rewritten text actually scores better. Pass the proposed new text and check that the scores improved compared to the original.
+Use \`check_readability_for_texts\` to check readability scores for specific text strings without applying changes. Useful for spot-checks or comparing phrasings.
 
-This is cheap and fast — use it to iterate on your wording before committing a rewrite.
+## Score Reference
 
-## Step 3: Rewrite
-
-Use \`update_text_fields\` to apply the improved texts. The UUID and field name from the analyze result map directly to the update_text_fields input:
-\`\`\`
-{ "uuids": { "<uuid>": { "<fieldName>": "improved text" } } }
-\`\`\`
-
-When rewriting:
-- Use shorter sentences and simpler words.
-- Keep the original meaning and tone.
-- Focus on fields with "critical" and "serious" impact first.
-
-## Step 4: Verify
-
-After the rewrites are applied, call \`get_readability_issues\` **again** to check if the issues are resolved.
-
-- If issues remain: rewrite again with different wording.
-- If new issues appeared: fix those too.
-- Repeat until no more readability issues are reported.
-
-**Do NOT skip the verification step.** A rewrite can easily make readability worse if sentences become longer or more complex.
-
-## Important
-
-- Always pre-check with \`check_readability_for_texts\` before applying rewrites.
-- Always verify with \`get_readability_issues\` after applying rewrites.
-- Never assume a rewrite fixed the issue.
-- The scores (LIX, CLI, ARI) measure sentence length and word complexity. Lower is easier to read.
-- LIX above 60 is flagged. Above 70 is critical.
+- LIX below 40: Easy
+- LIX 40-60: Medium
+- LIX above 60: Hard (flagged)
+- LIX above 70: Critical
 `,
 })

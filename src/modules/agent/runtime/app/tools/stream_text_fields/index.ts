@@ -1,0 +1,194 @@
+import { z } from 'zod'
+import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import {
+  getFieldType,
+  getEditableValue,
+  runReadabilityAnalysis,
+} from '../helpers'
+import Component from './Component.vue'
+import DetailsComponent from './Details/index.vue'
+
+const fieldSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
+  fieldName: z.string().describe('The editable field name'),
+})
+
+const paramsSchema = z.object({
+  template: z
+    .enum(['fix_readability', 'translate', 'rewrite', 'generate_content'])
+    .describe(
+      'The prompt template to use. ' +
+        'fix_readability: fix specific flagged readability issues (requires templateParams.issues). ' +
+        'translate: translate all fields to a target language (requires templateParams.targetLanguage). ' +
+        'rewrite: general-purpose rewrite with a free-form instruction (requires templateParams.instruction). ' +
+        'generate_content: write new content for empty fields (requires templateParams.instruction, optional templateParams.context).',
+    ),
+  templateParams: z
+    .record(z.string(), z.unknown())
+    .describe(
+      'Parameters for the chosen template. ' +
+        'fix_readability: {} (no params needed — issues are resolved automatically). ' +
+        'translate: { targetLanguage: string }. ' +
+        'rewrite: { instruction: string }. ' +
+        'generate_content: { instruction: string, context?: string }.',
+    ),
+  fields: z
+    .array(fieldSchema)
+    .describe('The fields to transform (UUIDs and field names only)'),
+})
+
+const resultSchema = z.object({
+  acceptedCount: z.number().describe('Number of changes accepted by the user'),
+  rejectedByUser: z
+    .record(
+      z.string(),
+      z.record(
+        z.string(),
+        z.object({
+          reasonForRejection: z
+            .string()
+            .describe(
+              'Reason provided by the user for rejecting, empty if no reason given',
+            ),
+        }),
+      ),
+    )
+    .describe(
+      'Map of rejected paragraph UUID to field name to rejection details',
+    ),
+  label: z.string().describe('Human-readable summary shown in the UI'),
+  agentMessage: z
+    .string()
+    .optional()
+    .describe(
+      'Detailed message for the agent, replaces label in the LLM context',
+    ),
+  historyIndex: z
+    .number()
+    .optional()
+    .describe('The mutation history index after applying changes'),
+})
+
+export type StreamTextFieldsParams = z.infer<typeof paramsSchema>
+export type StreamTextFieldsResult = z.infer<typeof resultSchema>
+
+export type ResolvedField = {
+  uuid: string
+  fieldName: string
+  currentValue: string
+  fieldType: 'plain' | 'markup'
+}
+
+export type ComponentParams = {
+  template: string
+  templateParams: Record<string, unknown>
+  fields: ResolvedField[]
+}
+
+export default defineBlokkliAgentTool({
+  name: 'stream_text_fields',
+  description:
+    'Rewrite, translate, fix readability, or generate text fields with live streaming preview. Choose a template (fix_readability, translate, rewrite, generate_content) and provide the corresponding templateParams. The content will be streamed live into the page for immediate visual feedback.',
+  category: 'mutation',
+  lazy: true,
+  modes: ['editing', 'translating'],
+  prunedSummary: (r) =>
+    `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
+  label($t) {
+    return $t('aiAgentStreamTextFieldsRunning', 'Streaming text updates...')
+  },
+  paramsSchema,
+  resultSchema,
+  requiredAdapterMethods: ['updateFieldValueBatched'],
+  component: Component,
+  detailsComponent: DetailsComponent,
+  buildDetails: (result) => result,
+  async execute(ctx, params) {
+    const { blocks, context } = ctx.app
+    const resolvedFields: ResolvedField[] = []
+
+    for (const { uuid, fieldName } of params.fields) {
+      let entityType: string
+      let bundle: string
+
+      if (uuid === context.value.entityUuid) {
+        entityType = context.value.entityType
+        bundle = context.value.entityBundle
+      } else {
+        const block = blocks.getBlock(uuid)
+        if (!block) continue
+        entityType = ctx.itemEntityType
+        bundle = block.bundle
+      }
+
+      const fieldType = getFieldType(ctx.app, entityType, bundle, fieldName)
+      if (!fieldType) continue
+
+      const currentValue = getEditableValue(
+        ctx.app,
+        entityType,
+        uuid,
+        bundle,
+        fieldName,
+        fieldType,
+      )
+
+      resolvedFields.push({ uuid, fieldName, currentValue, fieldType })
+    }
+
+    let templateParams = params.templateParams
+
+    // For fix_readability, auto-resolve issues from analyzers.
+    if (params.template === 'fix_readability') {
+      const analysisResult = await runReadabilityAnalysis(
+        ctx.app,
+        ctx.itemEntityType,
+      )
+
+      const issues: {
+        fieldIndex: number
+        text: string
+        impact: string
+        scores: Record<string, number>
+      }[] = []
+
+      for (let i = 0; i < resolvedFields.length; i++) {
+        const field = resolvedFields[i]!
+        const fieldIssues =
+          analysisResult[field.uuid]?.[field.fieldName]?.issues
+        if (!fieldIssues) continue
+
+        for (const issue of fieldIssues) {
+          issues.push({
+            fieldIndex: i,
+            text: issue.text,
+            impact: issue.impact || 'moderate',
+            scores: issue.scores || {},
+          })
+        }
+      }
+
+      templateParams = { issues }
+    }
+
+    return {
+      template: params.template,
+      templateParams,
+      fields: resolvedFields,
+    }
+  },
+  mockParams: () => ({
+    template: 'translate' as const,
+    templateParams: { targetLanguage: 'German' },
+    fields: [
+      {
+        uuid: '4526d2d0-f122-4093-902f-e2f00a433981',
+        fieldName: 'title',
+      },
+      {
+        uuid: '67a9e26f-8028-4283-8b7d-8f836355b949',
+        fieldName: 'text',
+      },
+    ],
+  }),
+})

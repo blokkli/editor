@@ -14,6 +14,12 @@ export type SkillLabel =
       gsw_CH?: string
     }
 
+export type StreamTemplateName =
+  | 'fix_readability'
+  | 'translate'
+  | 'rewrite'
+  | 'generate_content'
+
 /**
  * Skill definition with context-aware content getter.
  * Used by defineBlokkliAgentSkill() to define skills as TypeScript modules.
@@ -32,6 +38,15 @@ export type SkillDefinition = {
   getContents: (context: PageContext) => string | null
   /** Tool names that should be auto-loaded when this skill is activated. */
   tools?: string[]
+  /**
+   * Stream templates for which this skill's content (from getContents)
+   * should be injected into the sub-agent's system prompt.
+   *
+   * Use this for project-specific writing guidelines, terminology,
+   * tone-of-voice rules, or language constraints that the sub-agent should
+   * follow when rewriting text.
+   */
+  streamTemplates?: StreamTemplateName[]
 }
 
 /**

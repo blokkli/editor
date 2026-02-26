@@ -3,11 +3,39 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import Component from './Component.vue'
 import DetailsComponent from './Details/index.vue'
 
+const operationSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
+  fieldName: z.string().describe('The editable field name'),
+  search: z
+    .string()
+    .describe(
+      'Text to find in the field value, OR a CSS selector (e.g. "p:nth-child(3)") to target a specific HTML element',
+    ),
+  replace: z
+    .string()
+    .describe(
+      'The replacement text (or innerHTML when search is a CSS selector)',
+    ),
+  selector: z
+    .boolean()
+    .optional()
+    .describe(
+      'Set to true when search is a CSS selector instead of a text search',
+    ),
+})
+
 const paramsSchema = z.object({
   uuids: z
     .record(z.string(), z.record(z.string(), z.string()))
+    .optional()
     .describe(
-      'A map of paragraph uuids containing a map of field names to field values.',
+      'Full value replacements: map of paragraph UUID → field name → new value.',
+    ),
+  operations: z
+    .array(operationSchema)
+    .optional()
+    .describe(
+      'Patch operations: search/replace pairs applied to current field values. Use for small targeted edits like typo fixes.',
     ),
   requireApproval: z
     .boolean()
@@ -53,7 +81,7 @@ export type BatchRewriteResult = z.infer<typeof resultSchema>
 export default defineBlokkliAgentTool({
   name: 'update_text_fields',
   description:
-    'Update text content fields on one or more paragraphs, identified by UUID. Set requireApproval to true when the user should confirm the changes first. EXAMPLE: { "uuids": { "<UUID>": { "title": "New title", "text": "New text" } } }',
+    'Update text content fields on one or more paragraphs. Supports two modes: (1) Full replacement via "uuids" — provide complete new values. (2) Patch via "operations" — search/replace pairs applied to current values, ideal for small edits like typo fixes. Set "selector" to true to use a CSS selector instead of text search. Set requireApproval to true when the user should confirm the changes first.',
   category: 'mutation',
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
@@ -95,6 +123,24 @@ export default defineBlokkliAgentTool({
           text: '<h2>The Architecture Behind blökkli</h2><p>At its core, blökkli is a Nuxt module that injects an editing overlay on top of your existing page. When you enter edit mode, the overlay activates and wraps each block with interactive handles for selection, dragging, and inline editing. The key insight is that your page components render exactly as they would in production — blökkli never replaces them with editor-specific versions. Instead, it reads the DOM to understand the page structure and provides editing affordances on top.</p><p>The provider system is how blökkli shares state across the editor. Rather than a single global store, functionality is split into focused providers: one for selection state, one for UI, one for DOM operations, one for animations, and so on. Each provider is injected via Vue provide/inject at the appropriate level — some are global, some are per-field, some are per-block. This granularity prevents unnecessary reactivity and keeps the editor fast even on complex pages.</p><p>Code generation plays a crucial role in the developer experience. When you run the dev server, blökkli scans your block components, extracts their <code>defineBlokkli()</code> calls, and generates TypeScript definitions into the <code>.nuxt/blokkli/</code> directory. These generated types power autocomplete for block bundles, option keys, field names, and adapter methods. The result is that typos and mismatches are caught by your IDE before you even save the file.</p><p>The mutation system deserves special attention. Every change the user makes in the editor is captured as a discrete mutation object with a type, target, and payload. Mutations are queued and sent to the adapter in order. The adapter can batch them, validate them, or reject them. This design makes undo/redo straightforward — the editor simply replays or reverts mutations. It also makes the AI agent possible, because the agent produces the same mutation objects as manual editing.</p><p>Theming is handled through CSS custom properties defined in JSON theme files. Each theme specifies RGB values for color palettes, and the editor resolves them at runtime. Switching themes is instant because it only updates CSS variables — no components re-render. The built-in themes (nuxt, fire, gruvbox) demonstrate the range, but creating a custom theme is just a matter of defining your color values in a JSON file and referencing it in your Nuxt config.</p>',
         },
       },
+      requireApproval: true,
+    },
+    {
+      operations: [
+        {
+          uuid: '4526d2d0-f122-4093-902f-e2f00a433981',
+          fieldName: 'title',
+          search: 'integrates in any',
+          replace: 'integrates into any',
+        },
+        {
+          uuid: '9485812c-0ecd-4699-85b2-3a031d47a0a1',
+          fieldName: 'text',
+          search: 'li:last-child',
+          replace: 'Optimized for tablets and mobile devices',
+          selector: true,
+        },
+      ],
       requireApproval: true,
     },
   ],

@@ -129,6 +129,9 @@ export type McpToolContext<
   adapter: Methods extends readonly AdapterMethods[]
     ? RequireAdapterMethods<FullBlokkliAdapter<any>, Methods>
     : FullBlokkliAdapter<any>
+
+  /** The page context built during connection, available for tools that need it */
+  pageContext: import('#blokkli/agent/shared/types').PageContext | null
 }
 
 /**

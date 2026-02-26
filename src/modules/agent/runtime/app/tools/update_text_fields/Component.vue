@@ -30,6 +30,7 @@
           :field-label="item.fieldLabel"
           :new-value="item.value"
           :diff-mode="diffMode"
+          :operations="item.operations"
         />
       </div>
     </div>
@@ -55,6 +56,7 @@ import ItemComponent from './Item.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
 import { itemEntityType } from '#blokkli-build/config'
+import { applyOperations } from '../helpers'
 
 const props = defineProps<{
   context: McpToolContext
@@ -109,6 +111,7 @@ type ChangeItem = {
   fieldName: string
   fieldLabel: string
   value: string
+  operations?: Array<{ search: string; replace: string }>
 }
 
 function resolveHost(
@@ -156,23 +159,83 @@ function getCurrentValue(uuid: string, fieldName: string): string | null {
 
 let idCounter = 0
 const beforeValues = new Map<number, string>()
-const items: ChangeItem[] = Object.entries(props.params.uuids)
-  .flatMap(([uuid, fields]) =>
-    Object.entries(fields).map(([fieldName, value]) => ({
-      id: idCounter++,
-      uuid,
-      fieldName,
-      fieldLabel: resolveFieldLabel(uuid, fieldName),
-      value,
-    })),
-  )
-  .filter((item) => {
-    const current = getCurrentValue(item.uuid, item.fieldName)
-    if (current !== null) {
-      beforeValues.set(item.id, current)
+
+function buildItems(): ChangeItem[] {
+  const result: ChangeItem[] = []
+
+  // Process full-value replacements from `uuids`.
+  if (props.params.uuids) {
+    for (const [uuid, fields] of Object.entries(props.params.uuids)) {
+      for (const [fieldName, value] of Object.entries(fields)) {
+        result.push({
+          id: idCounter++,
+          uuid,
+          fieldName,
+          fieldLabel: resolveFieldLabel(uuid, fieldName),
+          value,
+        })
+      }
     }
-    return current === null || current !== item.value
-  })
+  }
+
+  // Process patch operations — group by uuid+fieldName, apply to current value.
+  if (props.params.operations?.length) {
+    // Group operations by uuid+fieldName.
+    const grouped = new Map<
+      string,
+      {
+        uuid: string
+        fieldName: string
+        ops: Array<{ search: string; replace: string; selector?: boolean }>
+      }
+    >()
+    for (const op of props.params.operations) {
+      const key = `${op.uuid}::${op.fieldName}`
+      let entry = grouped.get(key)
+      if (!entry) {
+        entry = { uuid: op.uuid, fieldName: op.fieldName, ops: [] }
+        grouped.set(key, entry)
+      }
+      entry.ops.push({
+        search: op.search,
+        replace: op.replace,
+        selector: op.selector,
+      })
+    }
+
+    for (const { uuid, fieldName, ops } of grouped.values()) {
+      const current = getCurrentValue(uuid, fieldName)
+      if (current === null) continue
+
+      const newValue = applyOperations(current, ops)
+      if (newValue === current) continue
+
+      // Build display operations (without selector flag) for compact diff.
+      const displayOps: Array<{ search: string; replace: string }> = ops.map(
+        (op) => ({ search: op.search, replace: op.replace }),
+      )
+
+      result.push({
+        id: idCounter++,
+        uuid,
+        fieldName,
+        fieldLabel: resolveFieldLabel(uuid, fieldName),
+        value: newValue,
+        operations: displayOps,
+      })
+    }
+  }
+
+  return result
+}
+
+const items: ChangeItem[] = buildItems().filter((item) => {
+  const current = getCurrentValue(item.uuid, item.fieldName)
+  if (current !== null) {
+    beforeValues.set(item.id, current)
+  }
+  return current === null || current !== item.value
+})
 
 const selected = reactive<Record<number, boolean>>(
   Object.fromEntries(items.map((item) => [item.id, true])),

@@ -35,6 +35,7 @@
         :plan
         :tool-details
         :usage-turns="usageTurns"
+        :page-context="pageContext"
         @connect="connect"
         @send-prompt="sendPrompt"
         @retry="retry"
@@ -188,6 +189,7 @@ const {
   switchConversation,
   deleteConversation,
   refreshConversationList,
+  pageContext,
 } = agentProvider(app, adapter, agentName)
 
 async function onShowConversations() {

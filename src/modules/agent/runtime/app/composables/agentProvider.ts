@@ -1,4 +1,4 @@
-import { ref, readonly, reactive, watch, type Ref } from '#imports'
+import { ref, shallowRef, readonly, reactive, watch, type Ref } from '#imports'
 import {
   conversationItemSchema,
   type Attachment,
@@ -115,6 +115,9 @@ export type AgentProvider = {
   switchConversation: (id: string) => void
   deleteConversation: (id: string) => void
   refreshConversationList: () => Promise<void>
+
+  // Page context (built once during connection)
+  pageContext: Ref<PageContext | null>
 }
 
 // ============================================================================
@@ -150,6 +153,9 @@ export default function (
 
   // Tool map (populated on connect)
   let toolMap: Record<string, McpToolDefinition> = {}
+
+  // Page context built during connection, reused by tools.
+  const storedPageContext = shallowRef<PageContext | null>(null)
 
   // Processing state
   const isProcessing = ref(false)
@@ -533,6 +539,7 @@ export default function (
         // Build pageContext BEFORE sending authenticate, so that
         // pendingInit is ready when the 'authenticated' response arrives.
         const pageContext = await buildPageContext(contentSearchTabs)
+        storedPageContext.value = pageContext
         pendingInit = { toolNames, pageContext }
         send({ type: 'authenticate', authToken })
         return
@@ -541,7 +548,9 @@ export default function (
       }
     }
 
-    sendInit(toolNames, await buildPageContext(contentSearchTabs))
+    const pageContext = await buildPageContext(contentSearchTabs)
+    storedPageContext.value = pageContext
+    sendInit(toolNames, pageContext)
   }
 
   async function sendInit(toolNames: string[], pageContext: PageContext) {
@@ -962,11 +971,15 @@ export default function (
         }
 
         // Inject _summary from prunedSummary callback for use during server-side pruning.
-        // Also strip _details (ephemeral, not sent to server).
+        // Also strip _details and _usage (ephemeral, not sent to server).
         let resultForServer: unknown = result
         if (typeof result === 'object' && result !== null) {
-          if ('_details' in result) {
-            const { _details: _, ...rest } = result as Record<string, unknown>
+          const rec = result as Record<string, unknown>
+          if ('_usage' in rec && rec._usage) {
+            usageTurns.value = [...usageTurns.value, rec._usage as UsageTurn]
+          }
+          if ('_details' in rec || '_usage' in rec) {
+            const { _details: _, _usage: __, ...rest } = rec
             resultForServer = rest
           }
         }
@@ -1024,6 +1037,7 @@ export default function (
       app,
       itemEntityType,
       adapter,
+      pageContext: storedPageContext.value,
     }
   }
 
@@ -1400,5 +1414,8 @@ export default function (
     switchConversation,
     deleteConversation,
     refreshConversationList,
+
+    // Page context (built once during connection)
+    pageContext: storedPageContext,
   }
 }

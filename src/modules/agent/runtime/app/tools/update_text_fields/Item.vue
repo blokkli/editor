@@ -10,7 +10,17 @@
     </label>
     <div class="bk-batch-rewrite-change">
       <div>
+        <template v-if="operations?.length">
+          <DiffDisplay
+            v-for="(op, opIndex) in operations"
+            :key="opIndex"
+            :before="op.search"
+            :after="op.replace"
+            :mode="diffMode"
+          />
+        </template>
         <DiffDisplay
+          v-else
           :before="override.originalValue"
           :after="newValue"
           :mode="diffMode"
@@ -50,6 +60,7 @@ const props = defineProps<{
   fieldLabel: string
   newValue: string
   diffMode: DiffDisplayMode
+  operations?: Array<{ search: string; replace: string }>
 }>()
 
 const selected = defineModel<boolean>('selected', { default: false })

@@ -1,0 +1,42 @@
+.bk {
+  .bk-stream-text-fields-progress {
+    @apply flex flex-col gap-3 px-10 py-10;
+  }
+
+  .bk-stream-text-fields-progress-item {
+    @apply flex items-center gap-5 text-sm text-mono-600;
+
+    .icon {
+      @apply size-[16px] shrink-0;
+    }
+
+    &.bk-is-active {
+      @apply text-accent-700 font-medium;
+
+      .icon {
+        @apply animate-pulse;
+      }
+    }
+
+    &.bk-is-done {
+      @apply text-lime-dark;
+    }
+  }
+
+  .bk-stream-text-readability-badge {
+    @apply flex items-center gap-5 px-10 py-3 text-xs font-mono;
+    @apply border-t border-mono-200 bg-mono-50;
+
+    &.bk-is-good {
+      @apply text-lime-dark;
+    }
+
+    &.bk-is-ok {
+      @apply text-orange-dark;
+    }
+
+    &.bk-is-hard {
+      @apply text-red-dark;
+    }
+  }
+}

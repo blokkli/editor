@@ -54,6 +54,7 @@ const mockContext: Partial<McpToolContext> = {
   app: null as any,
   itemEntityType: 'paragraph',
   adapter: {} as any,
+  pageContext: null,
 }
 
 // Flat conversation history - each item is immutable after being added

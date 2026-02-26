@@ -144,7 +144,11 @@ import type {
   ActiveItem,
   Attachment,
 } from '#blokkli/agent/app/types'
-import type { ClientPlanState, UsageTurn } from '#blokkli/agent/shared/types'
+import type {
+  ClientPlanState,
+  PageContext,
+  UsageTurn,
+} from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
 import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
@@ -168,6 +172,7 @@ const props = defineProps<{
   showConversationList: boolean
   plan: ClientPlanState | null
   usageTurns: UsageTurn[]
+  pageContext: PageContext | null
 }>()
 
 const emit = defineEmits<{
@@ -213,6 +218,7 @@ const toolContext = computed(() => ({
   app,
   itemEntityType,
   adapter: app.adapter,
+  pageContext: props.pageContext,
 }))
 
 const pendingToolComponent = computed(() => {
