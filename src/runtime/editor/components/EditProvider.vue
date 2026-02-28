@@ -110,6 +110,8 @@ import iconsProvider from '#blokkli/editor/providers/icons'
 import permissionsProvider from '#blokkli/editor/providers/permissions'
 import adaptersProvider from '#blokkli/editor/providers/adapters'
 import analyzeProviderFn from '#blokkli/editor/providers/analyze'
+import readabilityProviderFn from '#blokkli/editor/providers/readability'
+import fieldValueProviderFn from '#blokkli/editor/providers/fieldValue'
 import dragdropProvider from '#blokkli/editor/providers/dragdrop'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
@@ -238,7 +240,14 @@ const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
 const permissionsInstance = await permissionsProvider(adapter)
-const analyze = analyzeProviderFn(adapters, state, ui, context, $t)
+const fieldValue = fieldValueProviderFn(adapters, directive, state, types)
+const readability = readabilityProviderFn(
+  adapters,
+  context,
+  directive,
+  fieldValue,
+)
+const analyze = analyzeProviderFn(adapters, state, ui, context, $t, readability)
 const dragdrop = dragdropProvider()
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
@@ -361,6 +370,8 @@ const app: BlokkliApp = {
   icons,
   permissions: permissionsInstance,
   analyze,
+  readability,
+  fieldValue,
   dragdrop,
 }
 

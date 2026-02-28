@@ -1,10 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  getFieldType,
-  getEditableValue,
-  runReadabilityAnalysis,
-} from '../helpers'
+import { runReadabilityAnalysis } from '../helpers'
 import Component from './Component.vue'
 import DetailsComponent from './Details/index.vue'
 
@@ -121,11 +117,14 @@ export default defineBlokkliAgentTool({
         bundle = block.bundle
       }
 
-      const fieldType = getFieldType(ctx.app, entityType, bundle, fieldName)
+      const fieldType = ctx.app.fieldValue.resolveFieldType(
+        entityType,
+        bundle,
+        fieldName,
+      )
       if (!fieldType) continue
 
-      const currentValue = getEditableValue(
-        ctx.app,
+      const currentValue = ctx.app.fieldValue.readValue(
         entityType,
         uuid,
         bundle,
@@ -140,16 +139,13 @@ export default defineBlokkliAgentTool({
 
     // For fix_readability, auto-resolve issues from analyzers.
     if (params.template === 'fix_readability') {
-      const analysisResult = await runReadabilityAnalysis(
-        ctx.app,
-        ctx.itemEntityType,
-      )
+      const analysisResult = await runReadabilityAnalysis(ctx.app)
 
       const issues: {
         fieldIndex: number
         text: string
         impact: string
-        scores: Record<string, number>
+        score: number
       }[] = []
 
       for (let i = 0; i < resolvedFields.length; i++) {
@@ -163,12 +159,16 @@ export default defineBlokkliAgentTool({
             fieldIndex: i,
             text: issue.text,
             impact: issue.impact || 'moderate',
-            scores: issue.scores || {},
+            score: issue.score ?? 0,
           })
         }
       }
 
-      templateParams = { issues }
+      templateParams = {
+        issues,
+        scoreLabel: ctx.app.readability.analyzer.value.scoreLabel,
+        scoreReference: ctx.app.readability.getAgentContext(),
+      }
     }
 
     return {
@@ -177,18 +177,4 @@ export default defineBlokkliAgentTool({
       fields: resolvedFields,
     }
   },
-  mockParams: () => ({
-    template: 'translate' as const,
-    templateParams: { targetLanguage: 'German' },
-    fields: [
-      {
-        uuid: '4526d2d0-f122-4093-902f-e2f00a433981',
-        fieldName: 'title',
-      },
-      {
-        uuid: '67a9e26f-8028-4283-8b7d-8f836355b949',
-        fieldName: 'text',
-      },
-    ],
-  }),
 })

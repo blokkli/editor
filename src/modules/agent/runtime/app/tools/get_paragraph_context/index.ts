@@ -301,35 +301,20 @@ export default defineBlokkliAgentTool({
       // Editable text fields
       const editables = directive.getEditablesForBlock(params.uuid)
       for (const editable of editables) {
-        const config = types.editableFieldConfig.forName(
+        const fieldType = ctx.app.fieldValue.resolveFieldType(
           ctx.itemEntityType,
           block.bundle,
           editable.fieldName,
         )
-        if (!config) continue
-        if (config.type === 'table') continue
+        if (!fieldType) continue
 
-        const fieldType: 'plain' | 'markup' =
-          config.type === 'frame' || config.type === 'markup'
-            ? 'markup'
-            : 'plain'
-
-        let currentValue = ''
-        if (editable.getValue) {
-          currentValue = editable.getValue()
-        } else {
-          const element = directive.findEditableElement(editable.fieldName, {
-            type: ctx.itemEntityType,
-            uuid: params.uuid,
-            bundle: block.bundle,
-          })
-          if (element) {
-            currentValue =
-              fieldType === 'markup'
-                ? element.innerHTML || ''
-                : element.textContent || ''
-          }
-        }
+        const currentValue = ctx.app.fieldValue.readValue(
+          ctx.itemEntityType,
+          params.uuid,
+          block.bundle,
+          editable.fieldName,
+          fieldType,
+        )
 
         fields.push({
           field: editable.fieldName,

@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { getFieldType, getEditableValue } from '../helpers'
 
 const paramsSchema = z.object({})
 
@@ -51,16 +50,14 @@ export default defineBlokkliAgentTool({
       const textParts: string[] = []
 
       for (const editable of editables) {
-        const fieldType = getFieldType(
-          ctx.app,
+        const fieldType = ctx.app.fieldValue.resolveFieldType(
           ctx.itemEntityType,
           block.bundle,
           editable.fieldName,
         )
         if (!fieldType) continue
 
-        const value = getEditableValue(
-          ctx.app,
+        const value = ctx.app.fieldValue.readValue(
           ctx.itemEntityType,
           blockUuid,
           block.bundle,

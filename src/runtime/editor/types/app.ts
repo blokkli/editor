@@ -30,6 +30,8 @@ import type { DefinitionProvider } from '../providers/definition'
 import type { PermissionsProvider } from '../providers/permissions'
 import type { AdaptersProvider } from '../providers/adapters'
 import type { AnalyzeProvider } from '../providers/analyze'
+import type { ReadabilityProvider } from '../providers/readability'
+import type { FieldValueProvider } from '../providers/fieldValue'
 import type { DragDropProvider } from '../providers/dragdrop'
 
 export interface BlokkliApp {
@@ -71,5 +73,7 @@ export interface BlokkliApp {
   icons: IconsProvider
   permissions: PermissionsProvider
   analyze: AnalyzeProvider
+  readability: ReadabilityProvider
+  fieldValue: FieldValueProvider
   dragdrop: DragDropProvider
 }

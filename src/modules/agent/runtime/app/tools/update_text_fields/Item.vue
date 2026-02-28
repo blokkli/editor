@@ -2,65 +2,50 @@
   <div
     class="bk-batch-rewrite-item"
     :class="{ 'bk-is-deselected': !selected }"
-    @mouseenter="onMouseEnter"
   >
-    <label class="bk-checkbox">
-      <input type="checkbox" :checked="selected" @change="onChange" />
-      <span>{{ fieldLabel }}</span>
-    </label>
-    <div class="bk-batch-rewrite-change">
-      <div>
-        <template v-if="operations?.length">
-          <DiffDisplay
-            v-for="(op, opIndex) in operations"
-            :key="opIndex"
-            :before="op.search"
-            :after="op.replace"
-            :mode="diffMode"
-          />
-        </template>
-        <DiffDisplay
-          v-else
-          :before="override.originalValue"
-          :after="newValue"
-          :mode="diffMode"
-        />
-      </div>
-      <div v-if="!selected" class="bk-batch-rewrite-reason">
-        <FlexTextarea
-          v-model="reason"
-          textarea-class
-          :max-height="100"
-          :min-height="42"
-          :placeholder="
-            $t(
-              'aiAgentBatchRewriteReasonPlaceholder',
-              'Reason for rejection (optional)',
-            )
-          "
-          @click.prevent
-        />
-      </div>
+    <div class="bk-batch-rewrite-item-header">
+      <label class="bk-checkbox">
+        <input type="checkbox" :checked="selected" @change="onChange" />
+        <span>{{ fieldLabel }}</span>
+      </label>
+      <button class="bk-batch-rewrite-item-locate" @click="onLocate">
+        <Icon name="bk_mdi_visibility" />
+      </button>
+    </div>
+    <div class="bk-batch-rewrite-preview">
+      {{ plainText }}
+    </div>
+    <div v-if="!selected" class="bk-batch-rewrite-reason">
+      <FlexTextarea
+        v-model="reason"
+        textarea-class
+        :max-height="100"
+        :min-height="42"
+        :placeholder="
+          $t(
+            'aiAgentBatchRewriteReasonPlaceholder',
+            'Reason for rejection (optional)',
+          )
+        "
+        @click.prevent
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, onBeforeUnmount, useBlokkli, nextTick } from '#imports'
-import { DiffDisplay, FlexTextarea } from '#blokkli/editor/components'
+import { watch, onBeforeUnmount, useBlokkli, computed } from '#imports'
+import { FlexTextarea, Icon } from '#blokkli/editor/components'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
-
-import type { DiffDisplayMode } from '#blokkli/editor/components/DiffViewer/DiffDisplay/index.vue'
+import diff from 'html-diff-ts'
 
 const props = defineProps<{
   uuid: string
   fieldName: string
   fieldLabel: string
   newValue: string
-  diffMode: DiffDisplayMode
-  operations?: Array<{ search: string; replace: string }>
 }>()
 
 const selected = defineModel<boolean>('selected', { default: false })
@@ -87,7 +72,26 @@ function resolveHost(): EntityContext {
 const host = resolveHost()
 const override = useEditableFieldOverride(props.fieldName, host)
 
-function onMouseEnter() {
+/**
+ * Extract plain text from the new value (strip HTML tags).
+ */
+const plainText = (() => {
+  const tmp = document.createElement('div')
+  tmp.innerHTML = props.newValue
+  return tmp.textContent || ''
+})()
+
+const diffHtml = computed(() => diff(override.originalValue, props.newValue))
+
+function applyOverride() {
+  if (selected.value) {
+    override.setDiffHtml(diffHtml.value)
+  } else {
+    override.restore()
+  }
+}
+
+function onLocate() {
   if (override.element) {
     eventBus.emit('highlight', override.element)
     eventBus.emit('scrollIntoView', {
@@ -98,21 +102,15 @@ function onMouseEnter() {
 }
 
 // Apply preview immediately.
-override.setValue(props.newValue)
+applyOverride()
 
-async function onChange() {
+function onChange() {
   selected.value = !selected.value
-  await nextTick()
-  onMouseEnter()
 }
 
 // Toggle preview when selection changes.
-watch(selected, (isSelected) => {
-  if (isSelected) {
-    override.setValue(props.newValue)
-  } else {
-    override.restore()
-  }
+watch(selected, () => {
+  applyOverride()
 })
 
 // Restore on unmount.

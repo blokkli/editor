@@ -14,9 +14,9 @@ export type AnalyzeNode = {
   description?: string
   impact?: AnalyzeImpact
   /**
-   * Optional numeric scores for this node (e.g. readability indices).
+   * Optional numeric score for this node (e.g. readability index).
    */
-  scores?: Record<string, number>
+  score?: number
   /**
    * An array of either:
    * - string: a valid selector

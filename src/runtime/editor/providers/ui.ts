@@ -487,6 +487,15 @@ export type UiProvider = {
   canvasFocused: Readonly<Ref<boolean>>
 
   setCanvasFocused: (isFocused: boolean) => void
+
+  /**
+   * Whether the approval toolbar is currently visible.
+   *
+   * Set by the text field approval toolbar on mount/unmount.
+   */
+  isApproving: Readonly<Ref<boolean>>
+
+  setIsApproving: (value: boolean) => void
 }
 
 export default function (
@@ -530,7 +539,12 @@ export default function (
     canvasFocused.value = isFocused
   }
 
+  function setIsApproving(value: boolean) {
+    isApproving.value = value
+  }
+
   const isProxyMode = ref(false)
+  const isApproving = ref(false)
   const currentDialog = ref<GlobalUiDialog | null>(null)
   const openTooltip = ref('')
   const hasTransformOverlayOpen = ref(false)
@@ -1008,5 +1022,7 @@ export default function (
     setNestedEditor,
     setCanvasFocused,
     canvasFocused: readonly(canvasFocused),
+    isApproving: readonly(isApproving),
+    setIsApproving,
   }
 }

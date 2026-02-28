@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { getFieldType, getEditableValue } from '../helpers'
 
 const paramsSchema = z.object({
   uuids: z
@@ -117,8 +116,7 @@ export default defineBlokkliAgentTool({
             ? 'markup'
             : 'plain'
 
-        const currentValue = getEditableValue(
-          ctx.app,
+        const currentValue = ctx.app.fieldValue.readValue(
           entityType,
           entityUuid,
           entityBundle,
@@ -157,16 +155,14 @@ export default defineBlokkliAgentTool({
 
       const editables = directive.getEditablesForBlock(blockUuid)
       for (const editable of editables) {
-        const fieldType = getFieldType(
-          ctx.app,
+        const fieldType = ctx.app.fieldValue.resolveFieldType(
           ctx.itemEntityType,
           block.bundle,
           editable.fieldName,
         )
         if (!fieldType) continue
 
-        const currentValue = getEditableValue(
-          ctx.app,
+        const currentValue = ctx.app.fieldValue.readValue(
           ctx.itemEntityType,
           blockUuid,
           block.bundle,

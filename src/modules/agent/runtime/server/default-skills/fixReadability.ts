@@ -48,12 +48,5 @@ You do NOT need to pass any issue data, map field indices, or verify results man
 ## Optional: Pre-check with \`check_readability_for_texts\`
 
 Use \`check_readability_for_texts\` to check readability scores for specific text strings without applying changes. Useful for spot-checks or comparing phrasings.
-
-## Score Reference
-
-- LIX below 40: Easy
-- LIX 40-60: Medium
-- LIX above 60: Hard (flagged)
-- LIX above 70: Critical
 `,
 })

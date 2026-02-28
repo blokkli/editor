@@ -1,5 +1,6 @@
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import type { StateProvider } from '#blokkli/editor/providers/state'
+import type { ReadabilityProvider } from '#blokkli/editor/providers/readability'
 import type { TextProvider } from '#blokkli/editor/providers/texts'
 import type { MutatedField } from '#blokkli/editor/types/state'
 import type {
@@ -14,6 +15,11 @@ export class AnalyzerContext {
   public readonly mutatedFields: Readonly<MutatedField[]>
 
   /**
+   * The readability provider.
+   */
+  public readonly readability: ReadabilityProvider
+
+  /**
    * The collected text elements.
    */
   private textElements: Readonly<TextElement[]> | null = null
@@ -24,8 +30,10 @@ export class AnalyzerContext {
     public readonly providerRootElement: HTMLElement,
     private state: StateProvider,
     public readonly $t: TextProvider,
-    public readonly signal?: AbortSignal,
+    public readonly signal: AbortSignal | undefined,
+    readability: ReadabilityProvider,
   ) {
+    this.readability = readability
     this.mutatedFields = JSON.parse(JSON.stringify(state.mutatedFields.value))
   }
 

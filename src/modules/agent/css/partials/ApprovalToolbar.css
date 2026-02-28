@@ -1,0 +1,54 @@
+.bk.bk-approval-toolbar {
+  grid-area: viewport;
+  align-self: end;
+  @apply pointer-events-auto mb-20 mx-20;
+  @apply flex items-center h-50;
+  @apply bg-mono-950/90 backdrop-blur text-mono-50 rounded-md;
+  @apply select-none;
+  @apply overflow-hidden;
+
+  color-scheme: dark;
+
+  .bk-approval-toolbar-nav {
+    @apply shrink-0 size-50 flex items-center justify-center;
+    @apply text-mono-300 hover:text-white hover:bg-mono-800;
+
+    svg {
+      @apply size-30 fill-current;
+    }
+  }
+
+  .bk-checkbox-toggle {
+    @apply flex items-center text-mono-200 hover:text-white mx-15;
+  }
+
+  .bk-approval-toolbar-info {
+    @apply flex items-center gap-10 px-15;
+    @apply border-l border-l-mono-600 h-full;
+  }
+
+  .bk-approval-toolbar-counter {
+    @apply text-mono-400 tabular-nums whitespace-nowrap;
+  }
+
+  .bk-approval-toolbar-label {
+    @apply font-medium whitespace-nowrap;
+  }
+
+  .bk-approval-toolbar-reason {
+    @apply flex-1 min-w-0 px-10;
+
+    input {
+      @apply w-full h-30 px-10 rounded bg-mono-800 text-mono-100 text-sm;
+      @apply border border-mono-600 outline-none;
+      @apply placeholder:text-mono-500;
+      @apply focus:border-mono-400;
+    }
+  }
+
+  .bk-approval-toolbar-apply {
+    @apply shrink-0 h-30 px-10 rounded font-medium ml-auto mr-10;
+    @apply bg-lime-normal text-mono-950;
+    @apply hover:brightness-110;
+  }
+}

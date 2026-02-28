@@ -99,7 +99,8 @@ const isVisible = computed(
     !selection.activeEditableLabel.value &&
     !selection.isDragging.value &&
     !ui.isAnimating.value &&
-    hasSelectedOnce.value,
+    hasSelectedOnce.value &&
+    !ui.isApproving.value,
 )
 
 /**

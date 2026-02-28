@@ -9,11 +9,13 @@ type FixReadabilityIssue = {
   fieldIndex: number
   text: string
   impact: string
-  scores: Record<string, number>
+  score: number
 }
 
 type FixReadabilityParams = {
   issues: FixReadabilityIssue[]
+  scoreLabel?: string
+  scoreReference?: string
   retryContext?: string
 }
 
@@ -113,18 +115,18 @@ function buildFixReadability(
   params: FixReadabilityParams,
   fields: FieldInput[],
 ): { systemPrompt: string; userMessage: string } {
+  const label = params.scoreLabel || 'score'
   const issueList = params.issues
     .map((issue) => {
-      const scoreEntries = Object.entries(issue.scores)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join(', ')
-      return `- Field ${issue.fieldIndex}: "${issue.text}" [impact: ${issue.impact}, scores: ${scoreEntries}]`
+      return `- Field ${issue.fieldIndex}: "${issue.text}" [impact: ${issue.impact}, ${label}: ${issue.score}]`
     })
     .join('\n')
 
   const retryBlock = params.retryContext
     ? `\n## Previous Attempt Feedback\n\n${params.retryContext}\n`
     : ''
+
+  const scoreReference = params.scoreReference || ''
 
   const systemPrompt = `You are a text editing assistant specialized in improving readability.
 
@@ -136,14 +138,7 @@ Fix ONLY the specific text segments listed below. Do NOT change any other text.
 
 ${issueList}
 ${retryBlock}
-## LIX Score Reference
-
-- Below 25: Very easy (children's books)
-- 25–40: Easy (simple articles)
-- 40–50: Medium (newspapers)
-- 50–60: Difficult (official documents)
-- Above 60: Very difficult — this is what gets flagged
-- Above 70: Critical — must be simplified
+${scoreReference}
 
 ## How to Fix
 

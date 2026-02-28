@@ -2,6 +2,7 @@ import { ref, type Ref, type ComputedRef } from '#imports'
 import type { AdaptersProvider } from './adapters'
 import type { StateProvider } from './state'
 import type { UiProvider } from './ui'
+import type { ReadabilityProvider } from './readability'
 import type { AdapterContext } from '#blokkli/editor/adapter'
 import type { TextProvider } from './texts'
 import type {
@@ -67,6 +68,7 @@ export default function analyzeProvider(
   ui: UiProvider,
   context: ComputedRef<AdapterContext>,
   $t: TextProvider,
+  readability: ReadabilityProvider,
 ): AnalyzeProvider {
   const analyzers = ref<Analyzer[]>([])
   const isInitialized = ref(false)
@@ -82,6 +84,8 @@ export default function analyzeProvider(
       ui.providerElement,
       state,
       $t,
+      undefined,
+      readability,
     )
 
     await Promise.all(
@@ -117,6 +121,7 @@ export default function analyzeProvider(
       state,
       $t,
       signal,
+      readability,
     )
   }
 

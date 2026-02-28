@@ -42,6 +42,7 @@ import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import type { PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
@@ -1616,6 +1617,30 @@ export default defineBlokkliEditAdapter((ctx) => {
       addMutation('update_host_options', {
         options,
       }),
+
+    async getTextFieldValues(): Promise<TextFieldValue[]> {
+      const entity = getEntity()
+      const mutatedState = await editState.getMutatedState(entity, {
+        save: false,
+      })
+      const values: TextFieldValue[] = []
+      for (const proxy of mutatedState.context.proxies) {
+        if (proxy.isDeleted) continue
+        const textFields = proxy.block.getTextFields()
+        for (const field of textFields) {
+          const value = field.getUnprocessed()
+          if (value && value.trim()) {
+            values.push({
+              uuid: proxy.block.uuid,
+              fieldName: field.id,
+              value,
+              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            })
+          }
+        }
+      }
+      return values
+    },
 
     getAnalyzers: () => {
       return [

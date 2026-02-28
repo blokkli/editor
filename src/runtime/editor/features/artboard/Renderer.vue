@@ -394,7 +394,7 @@ onBlokkliEvent('scrollIntoView', (e) => {
 
       artboard.scrollElementIntoView(e.element, {
         scale: 'none',
-        axis: 'y',
+        axis: 'both',
         behavior: e.immediate ? 'instant' : 'auto',
       })
     } else {

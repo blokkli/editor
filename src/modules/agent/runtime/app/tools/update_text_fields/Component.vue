@@ -1,58 +1,22 @@
 <template>
-  <ToolCard
+  <TextFieldApproval
     v-if="params.requireApproval !== false"
-    icon="bk_mdi_edit"
+    :items="items"
+    :applying="isApplying"
     :title="
       $t('aiAgentBatchRewriteTitle', 'Rewrite @count fields').replace(
         '@count',
         String(items.length),
       )
     "
+    @apply="applySelected"
     @cancel="rejectAll"
-  >
-    <div v-if="!isApplying">
-      <div class="bk-batch-rewrite-mode-selector">
-        <FormRadioTabs
-          :id="'batch-rewrite-diff-mode-' + id"
-          v-model="diffMode"
-          :options="diffModeOptions"
-          :label="$t('diffModeLabel', 'Display')"
-        />
-      </div>
-      <div class="bk-batch-rewrite-list" @mouseleave="onMouseLeave">
-        <ItemComponent
-          v-for="item in items"
-          :key="item.id"
-          v-model:selected="selected[item.id]"
-          v-model:reason="reasons[item.id]"
-          :uuid="item.uuid"
-          :field-name="item.fieldName"
-          :field-label="item.fieldLabel"
-          :new-value="item.value"
-          :diff-mode="diffMode"
-          :operations="item.operations"
-        />
-      </div>
-    </div>
-
-    <template #actions>
-      <button
-        class="bk-button bk-is-small bk-is-lime bk-is-fullwidth"
-        @click="applySelected"
-      >
-        <Icon name="bk_mdi_check" />
-        <span>{{ applyLabel }}</span>
-      </button>
-    </template>
-  </ToolCard>
+  />
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, ref, reactive, onMounted, useId } from '#imports'
-import { Icon, FormRadioTabs } from '#blokkli/editor/components'
-import type { DiffDisplayMode } from '#blokkli/editor/components/DiffViewer/DiffDisplay/index.vue'
-import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
-import ItemComponent from './Item.vue'
+import { useBlokkli, ref, onMounted } from '#imports'
+import TextFieldApproval from '../TextFieldApproval/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
 import { itemEntityType } from '#blokkli-build/config'
@@ -83,25 +47,16 @@ const {
   context: editorContext,
   types,
   directive,
-  eventBus,
-  storage,
 } = useBlokkli()
-
-const id = useId()
-
-const diffMode = storage.use<DiffDisplayMode>('diffMode', 'inline')
-
-const diffModeOptions = computed(() => [
-  { value: 'inline', label: $t('diffModeInline', 'Inline') },
-  { value: 'side_by_side', label: $t('diffModeSideBySide', 'Both') },
-  { value: 'after', label: $t('diffModeAfter', 'After') },
-])
 
 const isApplying = ref(false)
 
 onMounted(() => {
   if (props.params.requireApproval === false) {
-    applySelected()
+    applySelected({
+      selected: Object.fromEntries(items.map((item) => [item.id, true])),
+      reasons: Object.fromEntries(items.map((item) => [item.id, ''])),
+    })
   }
 })
 
@@ -111,7 +66,6 @@ type ChangeItem = {
   fieldName: string
   fieldLabel: string
   value: string
-  operations?: Array<{ search: string; replace: string }>
 }
 
 function resolveHost(
@@ -210,18 +164,12 @@ function buildItems(): ChangeItem[] {
       const newValue = applyOperations(current, ops)
       if (newValue === current) continue
 
-      // Build display operations (without selector flag) for compact diff.
-      const displayOps: Array<{ search: string; replace: string }> = ops.map(
-        (op) => ({ search: op.search, replace: op.replace }),
-      )
-
       result.push({
         id: idCounter++,
         uuid,
         fieldName,
         fieldLabel: resolveFieldLabel(uuid, fieldName),
         value: newValue,
-        operations: displayOps,
       })
     }
   }
@@ -237,22 +185,11 @@ const items: ChangeItem[] = buildItems().filter((item) => {
   return current === null || current !== item.value
 })
 
-const selected = reactive<Record<number, boolean>>(
-  Object.fromEntries(items.map((item) => [item.id, true])),
-)
-const reasons = reactive<Record<number, string>>(
-  Object.fromEntries(items.map((item) => [item.id, ''])),
-)
-
-const selectedCount = computed(
-  () => items.filter((item) => selected[item.id]).length,
-)
-
-function onMouseLeave() {
-  eventBus.emit('highlight', null)
-}
-
-async function applySelected() {
+async function applySelected(data: {
+  selected: Record<number, boolean>
+  reasons: Record<number, string>
+}) {
+  const { selected, reasons } = data
   const rejectedByUser: Record<
     string,
     Record<string, { reasonForRejection: string }>
@@ -377,10 +314,4 @@ function rejectAll() {
       'All changes were rejected by the user. Ask the user what they would like to change instead.',
   })
 }
-
-const applyLabel = computed(() => {
-  return $t('aiAgentBatchRewriteApply', 'Apply @count of @total')
-    .replace('@count', selectedCount.value.toString())
-    .replace('@total', items.length.toString())
-})
 </script>

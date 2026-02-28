@@ -5,7 +5,7 @@ import { runReadabilityAnalysis } from '../helpers'
 const issueSchema = z.object({
   text: z.string(),
   impact: z.string().optional(),
-  scores: z.record(z.string(), z.number()).optional(),
+  score: z.number().optional(),
 })
 
 const fieldResultSchema = z.object({
@@ -48,10 +48,7 @@ export default defineBlokkliAgentTool({
   async execute(ctx) {
     const { $t } = ctx.app
 
-    const result: Result = await runReadabilityAnalysis(
-      ctx.app,
-      ctx.itemEntityType,
-    )
+    const result: Result = await runReadabilityAnalysis(ctx.app)
 
     let issueCount = 0
     for (const fields of Object.values(result)) {

@@ -23,65 +23,31 @@
     </div>
   </ToolCard>
 
-  <ToolCard
-    v-else-if="phase === 'approval'"
-    icon="bk_mdi_edit"
+  <TextFieldApproval
+    v-else-if="phase === 'approval' && completedItems.length > 0"
+    :items="completedItems"
     :title="
       $t('aiAgentStreamTextFieldsReview', 'Review @count fields').replace(
         '@count',
         String(completedItems.length),
       )
     "
+    @apply="applySelected"
     @cancel="rejectAll"
   >
-    <div>
-      <div class="bk-batch-rewrite-mode-selector">
-        <FormRadioTabs
-          :id="'stream-text-diff-mode-' + id"
-          v-model="diffMode"
-          :options="diffModeOptions"
-          :label="$t('diffModeLabel', 'Display')"
-        />
-      </div>
-      <div class="bk-batch-rewrite-list" @mouseleave="onMouseLeave">
-        <div v-for="item in completedItems" :key="item.id">
-          <ItemComponent
-            v-model:selected="selected[item.id]"
-            v-model:reason="reasons[item.id]"
-            :uuid="item.uuid"
-            :field-name="item.fieldName"
-            :field-label="item.fieldLabel"
-            :new-value="item.value"
-            :diff-mode="diffMode"
-            :operations="item.operations"
-          />
-          <div
-            v-if="item.readabilityAfter"
-            class="bk-stream-text-readability-badge"
-            :class="'bk-is-' + (item.readabilityLevel || 'good')"
-          >
-            <span
-              >LIX: {{ formatLix(item.readabilityBefore) }} →
-              {{ formatLix(item.readabilityAfter) }}</span
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <template #actions>
-      <button
-        class="bk-button bk-is-small bk-is-lime bk-is-fullwidth"
-        @click="applySelected"
+    <template #item-footer="{ item }">
+      <div
+        v-if="hasReadabilityScores(item.id)"
+        class="bk-stream-text-readability-badge"
+        :class="'bk-is-' + (getReadabilityLevel(item.id) || 'good')"
       >
-        <Icon name="bk_mdi_check" />
-        <span>{{ applyLabel }}</span>
-      </button>
+        <span>{{ readabilityLabel(item.id) }}</span>
+      </div>
     </template>
-  </ToolCard>
+  </TextFieldApproval>
 
   <ToolCard
-    v-else-if="phase === 'error'"
+    v-if="phase === 'error'"
     icon="bk_mdi_error"
     :title="$t('aiAgentStreamTextFieldsError', 'Streaming failed')"
     @cancel="finishWithError"
@@ -98,23 +64,18 @@ import {
   reactive,
   onMounted,
   onBeforeUnmount,
-  useId,
 } from '#imports'
-import { Icon, FormRadioTabs } from '#blokkli/editor/components'
-import type { DiffDisplayMode } from '#blokkli/editor/components/DiffViewer/DiffDisplay/index.vue'
+import { Icon } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
-import ItemComponent from '../update_text_fields/Item.vue'
+import TextFieldApproval from '../TextFieldApproval/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { ComponentParams, StreamTextFieldsResult } from './index'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
-import {
-  applyOperations,
-  runReadabilityAnalysis,
-  type ReadabilityResult,
-} from '../helpers'
+import { applyOperations, type ReadabilityResult } from '../helpers'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
 const props = defineProps<{
   context: McpToolContext
@@ -146,18 +107,7 @@ const {
   context: editorContext,
   types,
   eventBus,
-  storage,
 } = useBlokkli()
-
-const id = useId()
-
-const diffMode = storage.use<DiffDisplayMode>('diffMode', 'inline')
-
-const diffModeOptions = computed(() => [
-  { value: 'inline', label: $t('diffModeInline', 'Inline') },
-  { value: 'side_by_side', label: $t('diffModeSideBySide', 'Both') },
-  { value: 'after', label: $t('diffModeAfter', 'After') },
-])
 
 type Phase = 'streaming' | 'approval' | 'error'
 const phase = ref<Phase>('streaming')
@@ -165,7 +115,7 @@ const errorMessage = ref('')
 const streamUsage = ref<UsageTurn>()
 
 // Readability retry configuration.
-const MAX_READABILITY_RETRIES = 3
+const MAX_READABILITY_RETRIES = 10
 const isFixReadability = props.params.template === 'fix_readability'
 const retryAttempt = ref(0)
 const streamingTitle = ref(
@@ -183,8 +133,12 @@ type FieldState = {
   mode: 'full' | 'patch' | null
   fullValue: string
   operations: Array<{ search: string; replace: string }>
+  /** Accumulated operations across all retry attempts (for details display). */
+  allOperations: Array<{ search: string; replace: string }>
   currentSearch: string
   baseValue: string
+  /** The original value before any streaming attempts. */
+  originalBaseValue: string
 }
 
 const fieldStates = reactive<FieldState[]>(
@@ -196,8 +150,10 @@ const fieldStates = reactive<FieldState[]>(
     mode: null,
     fullValue: '',
     operations: [],
+    allOperations: [],
     currentSearch: '',
     baseValue: f.currentValue,
+    originalBaseValue: f.currentValue,
   })),
 )
 
@@ -205,6 +161,7 @@ const fieldStates = reactive<FieldState[]>(
 type OverrideEntry = {
   uuid: string
   fieldName: string
+  element: HTMLElement | null
   setValue: (value: string) => void
   restore: () => void
   originalValue: string
@@ -220,21 +177,18 @@ type CompletedItem = {
   fieldName: string
   fieldLabel: string
   value: string
-  operations: Array<{ search: string; replace: string }>
-  readabilityBefore?: Record<string, number>
-  readabilityAfter?: Record<string, number>
+  readabilityBefore?: number
+  readabilityAfter?: number
   readabilityLevel?: 'good' | 'ok' | 'hard'
 }
 
 const completedItems = ref<CompletedItem[]>([])
-const selected = reactive<Record<number, boolean>>({})
-const reasons = reactive<Record<number, string>>({})
 const beforeValues = new Map<number, string>()
 
 // Readability score tracking.
 type ReadabilityCheck = {
   level: 'good' | 'ok' | 'hard'
-  scores: Record<string, number>
+  score: number
 }
 
 const readabilityBeforeScores = new Map<string, ReadabilityCheck>()
@@ -272,6 +226,7 @@ for (const field of props.params.fields) {
   overrides.push({
     uuid: field.uuid,
     fieldName: field.fieldName,
+    element: override.element,
     setValue: override.setValue,
     restore: override.restore,
     originalValue: override.originalValue,
@@ -382,17 +337,20 @@ function getProposedValue(fs: FieldState): string {
 }
 
 /**
- * Format a LIX score for display.
+ * Format a single readability score for display.
+ * Returns a string like "LIX: 45" using the analyzer's scoreLabel.
  */
-function formatLix(scores?: Record<string, number>): string {
-  if (!scores || scores.lix === undefined) return '?'
-  return String(Math.round(scores.lix))
+function formatScore(score?: number): string {
+  if (score == null) return ''
+  const analyzer = props.context.app.readability.analyzer.value
+  return `${analyzer.scoreLabel}: ${Math.round(score)}`
 }
 
 /**
- * Run DOM-based readability analysis and return issues for our fields.
- * Uses the same analysis path as get_readability_issues, so results
- * are consistent. The DOM overrides must reflect the values to check.
+ * Run readability analysis on proposed field values and return issues.
+ * Analyzes raw values directly via the readability provider — no DOM dependency.
+ * Uses the raw analysis result to capture scores from ALL chunks (not just hard
+ * ones), so the "after" score is always available even when readability is good.
  */
 async function analyzeReadability(): Promise<
   Map<
@@ -400,46 +358,68 @@ async function analyzeReadability(): Promise<
     {
       issues: ReadabilityResult[string][string]['issues']
       worstLevel: 'good' | 'ok' | 'hard'
-      worstScores: Record<string, number>
+      worstScore: number | undefined
     }
   >
 > {
-  const result = await runReadabilityAnalysis(
-    props.context.app,
-    itemEntityType,
+  // Build TextFieldValue[] from current field states' proposed values.
+  const textFields: TextFieldValue[] = []
+  for (const fs of fieldStates) {
+    if (fs.status !== 'done') continue
+    const field = props.params.fields.find(
+      (f) => f.uuid === fs.uuid && f.fieldName === fs.fieldName,
+    )
+    if (!field) continue
+    textFields.push({
+      uuid: fs.uuid,
+      fieldName: fs.fieldName,
+      value: getProposedValue(fs),
+      fieldType: field.fieldType,
+    })
+  }
+
+  // Call analyzeFieldValues directly to get ALL chunks with scores.
+  const rawAnalysis = await props.context.app.readability.analyzeFieldValues(
+    textFields,
   )
+
+  const bandOrder: Record<string, number> = { easy: 0, ok: 1, hard: 2 }
 
   const fieldMap = new Map<
     string,
     {
       issues: ReadabilityResult[string][string]['issues']
       worstLevel: 'good' | 'ok' | 'hard'
-      worstScores: Record<string, number>
+      worstScore: number | undefined
     }
   >()
 
   for (const fs of fieldStates) {
     const key = fs.uuid + ':' + fs.fieldName
-    const fieldIssues = result[fs.uuid]?.[fs.fieldName]?.issues ?? []
+    const analysisKey = fs.uuid + '/' + fs.fieldName
+    const fieldResult = rawAnalysis[analysisKey]
+    const chunks = fieldResult?.chunks ?? []
 
-    let worstLevel: 'good' | 'ok' | 'hard' = 'good'
-    let worstScores: Record<string, number> = {}
+    // Collect hard chunks as issues (for retry logic).
+    const issues: ReadabilityResult[string][string]['issues'] = chunks
+      .filter((c) => c.band === 'hard')
+      .map((c) => ({ text: c.text, impact: c.impact, score: c.score }))
 
-    for (const issue of fieldIssues) {
-      const impact = issue.impact
-      const level =
-        impact === 'critical' || impact === 'serious'
-          ? 'hard'
-          : impact === 'moderate'
-            ? 'ok'
-            : 'good'
-      if (level === 'hard' || (level === 'ok' && worstLevel === 'good')) {
-        worstLevel = level
-        worstScores = issue.scores ?? {}
+    // Find the worst chunk across ALL bands to get representative score.
+    let worstBandValue = -1
+    let worstScore: number | undefined
+    for (const chunk of chunks) {
+      const value = bandOrder[chunk.band] ?? 0
+      if (value > worstBandValue) {
+        worstBandValue = value
+        worstScore = chunk.score
       }
     }
 
-    fieldMap.set(key, { issues: fieldIssues, worstLevel, worstScores })
+    const worstLevel: 'good' | 'ok' | 'hard' =
+      worstBandValue >= 2 ? 'hard' : worstBandValue >= 1 ? 'ok' : 'good'
+
+    fieldMap.set(key, { issues, worstLevel, worstScore })
   }
 
   return fieldMap
@@ -459,6 +439,57 @@ function addUsage(usage: UsageTurn) {
   }
 }
 
+/**
+ * Find the nearest block-level child element within a field element that
+ * contains the given text. Falls back to the field element itself.
+ */
+function findBlockElementForText(
+  fieldElement: HTMLElement,
+  text: string,
+): HTMLElement {
+  const blockTags = new Set([
+    'P',
+    'H1',
+    'H2',
+    'H3',
+    'H4',
+    'H5',
+    'H6',
+    'LI',
+    'BLOCKQUOTE',
+  ])
+  for (const child of fieldElement.children) {
+    if (
+      blockTags.has(child.tagName) &&
+      child.textContent?.includes(text.slice(0, 40))
+    ) {
+      return child as HTMLElement
+    }
+  }
+  return fieldElement
+}
+
+/** Track the last search target per field to avoid redundant scrolls. */
+let lastScrollTarget = ''
+
+function scrollToFieldText(uuid: string, fieldName: string, text?: string) {
+  const override = findOverride(uuid, fieldName)
+  if (!override?.element) {
+    // Fall back to block-level scroll.
+    eventBus.emit('scrollIntoView', { uuid, immediate: true })
+    return
+  }
+  const target =
+    text && override.element
+      ? findBlockElementForText(override.element, text)
+      : override.element
+  const key =
+    uuid + ':' + fieldName + ':' + (target?.textContent?.slice(0, 20) || '')
+  if (key === lastScrollTarget) return
+  lastScrollTarget = key
+  eventBus.emit('scrollIntoView', { element: target, immediate: true })
+}
+
 function handleSSEEvent(eventType: string, data: string) {
   try {
     const parsed = JSON.parse(data)
@@ -470,6 +501,8 @@ function handleSSEEvent(eventType: string, data: string) {
           fs.status = 'streaming'
           fs.mode = parsed.mode || 'full'
         }
+        lastScrollTarget = ''
+        scrollToFieldText(parsed.uuid, parsed.fieldName)
         break
       }
       case 'field_delta': {
@@ -483,6 +516,10 @@ function handleSSEEvent(eventType: string, data: string) {
         // Patch mode — partial replacement streaming.
         const fs = findFieldState(parsed.uuid, parsed.fieldName)
         if (fs) {
+          // Scroll to the target text when the search target changes.
+          if (parsed.search !== fs.currentSearch) {
+            scrollToFieldText(parsed.uuid, parsed.fieldName, parsed.search)
+          }
           fs.currentSearch = parsed.search
           const preview = computePatchPreview(
             fs.baseValue,
@@ -645,8 +682,7 @@ async function fetchStream(
 
 /**
  * Run readability verification and retry loop after the initial stream.
- * Uses the same DOM-based analyzer as get_readability_issues so results
- * are consistent. The DOM overrides are already applied from streaming.
+ * Analyzes proposed values directly via the readability provider.
  */
 async function readabilityRetryLoop(authToken: string) {
   for (let attempt = 0; attempt < MAX_READABILITY_RETRIES; attempt++) {
@@ -655,8 +691,7 @@ async function readabilityRetryLoop(authToken: string) {
       'Checking readability...',
     )
 
-    // Run DOM-based readability analysis on the current state.
-    // The DOM already has overrides applied from streaming.
+    // Run readability analysis on proposed values.
     const analysis = await analyzeReadability()
 
     // Store scores and classify fields.
@@ -665,7 +700,7 @@ async function readabilityRetryLoop(authToken: string) {
       fieldType: 'plain' | 'markup'
       proposedValue: string
       level: 'good' | 'ok' | 'hard'
-      scores: Record<string, number>
+      score: number | undefined
       issues: ReadabilityResult[string][string]['issues']
     }
 
@@ -682,39 +717,42 @@ async function readabilityRetryLoop(authToken: string) {
       const key = fs.uuid + ':' + fs.fieldName
       const entry = analysis.get(key)
       const level = entry?.worstLevel ?? 'good'
-      const scores = entry?.worstScores ?? {}
+      const score = entry?.worstScore
       const issues = entry?.issues ?? []
       const proposedValue = getProposedValue(fs)
 
       // Store "after" scores for the approval UI.
-      readabilityAfterScores.set(key, { level, scores })
+      if (score != null) {
+        readabilityAfterScores.set(key, { level, score })
+      }
 
       // On the first attempt, also capture "before" scores from the original values.
       if (attempt === 0) {
         // "Before" scores come from the issues that were present before
         // streaming started — use the templateParams.issues if available,
         // otherwise just mark as unknown.
-        const originalIssues =
-          props.params.templateParams?.issues as
-            | Array<{ scores?: Record<string, number> }>
-            | undefined
+        const originalIssues = props.params.templateParams?.issues as
+          | Array<{ score?: number }>
+          | undefined
         if (originalIssues?.length) {
           // Find the worst score from original issues for this field's index.
           const fieldIndex = props.params.fields.indexOf(field)
-          let worstOriginalScores: Record<string, number> = {}
+          let worstOriginalScore: number | undefined
           for (const issue of originalIssues) {
             if (
               'fieldIndex' in issue &&
               (issue as { fieldIndex: number }).fieldIndex === fieldIndex &&
-              issue.scores
+              issue.score != null
             ) {
-              worstOriginalScores = issue.scores
+              worstOriginalScore = issue.score
             }
           }
-          readabilityBeforeScores.set(key, {
-            level: 'hard',
-            scores: worstOriginalScores,
-          })
+          if (worstOriginalScore != null) {
+            readabilityBeforeScores.set(key, {
+              level: 'hard',
+              score: worstOriginalScore,
+            })
+          }
         }
       }
 
@@ -723,7 +761,7 @@ async function readabilityRetryLoop(authToken: string) {
         fieldType: field.fieldType,
         proposedValue,
         level,
-        scores,
+        score,
         issues,
       }
 
@@ -751,10 +789,9 @@ async function readabilityRetryLoop(authToken: string) {
           p.proposedValue.length > 200
             ? p.proposedValue.slice(0, 200) + '...'
             : p.proposedValue
-        const lixScore = p.scores.lix
-          ? ` (LIX: ${Math.round(p.scores.lix)})`
-          : ''
-        contextParts.push(`- "${p.fs.fieldLabel}": "${truncated}"${lixScore}`)
+        const scoreStr = formatScore(p.score)
+        const scoreSuffix = scoreStr ? ` (${scoreStr})` : ''
+        contextParts.push(`- "${p.fs.fieldLabel}": "${truncated}"${scoreSuffix}`)
       }
       contextParts.push('')
     }
@@ -769,8 +806,9 @@ async function readabilityRetryLoop(authToken: string) {
 
     const retryContext = contextParts.join('\n')
 
-    // Reset failing field states for retry.
+    // Reset failing field states for retry, accumulating operations from this attempt.
     for (const f of failing) {
+      f.fs.allOperations.push(...f.fs.operations)
       f.fs.status = 'pending'
       f.fs.mode = null
       f.fs.baseValue = f.proposedValue
@@ -795,7 +833,7 @@ async function readabilityRetryLoop(authToken: string) {
       fieldIndex: number
       text: string
       impact: string
-      scores: Record<string, number>
+      score: number
     }> = []
     for (let i = 0; i < failing.length; i++) {
       for (const issue of failing[i]!.issues) {
@@ -803,7 +841,7 @@ async function readabilityRetryLoop(authToken: string) {
           fieldIndex: i,
           text: issue.text,
           impact: issue.impact || 'critical',
-          scores: issue.scores || {},
+          score: issue.score ?? 0,
         })
       }
     }
@@ -824,6 +862,8 @@ async function readabilityRetryLoop(authToken: string) {
 
     const retrySuccess = await fetchStream(retryToken, retryFields, {
       issues: retryIssues,
+      scoreLabel: props.context.app.readability.analyzer.value.scoreLabel,
+      scoreReference: props.context.app.readability.getAgentContext(),
       retryContext,
     })
 
@@ -868,6 +908,36 @@ async function startStreaming() {
   transitionToApproval()
 }
 
+function getReadabilityBefore(itemId: number): number | undefined {
+  const item = completedItems.value.find((i) => i.id === itemId)
+  return item?.readabilityBefore
+}
+
+function getReadabilityAfter(itemId: number): number | undefined {
+  const item = completedItems.value.find((i) => i.id === itemId)
+  return item?.readabilityAfter
+}
+
+function getReadabilityLevel(itemId: number): string | undefined {
+  const item = completedItems.value.find((i) => i.id === itemId)
+  return item?.readabilityLevel
+}
+
+function hasReadabilityScores(itemId: number): boolean {
+  const before = getReadabilityBefore(itemId)
+  const after = getReadabilityAfter(itemId)
+  return before != null || after != null
+}
+
+function readabilityLabel(itemId: number): string {
+  const before = formatScore(getReadabilityBefore(itemId))
+  const after = formatScore(getReadabilityAfter(itemId))
+  if (before && after) return `${before} → ${after}`
+  if (before) return before
+  if (after) return after
+  return ''
+}
+
 function transitionToApproval() {
   let idCounter = 0
   const items: CompletedItem[] = []
@@ -898,14 +968,11 @@ function transitionToApproval() {
       fieldName: fs.fieldName,
       fieldLabel: fs.fieldLabel,
       value: finalValue,
-      operations: fs.mode === 'patch' ? [...fs.operations] : [],
-      readabilityBefore: readabilityBeforeScores.get(scoreKey)?.scores,
-      readabilityAfter: readabilityAfterScores.get(scoreKey)?.scores,
+      readabilityBefore: readabilityBeforeScores.get(scoreKey)?.score,
+      readabilityAfter: readabilityAfterScores.get(scoreKey)?.score,
       readabilityLevel: readabilityAfterScores.get(scoreKey)?.level,
     })
 
-    selected[itemId] = true
-    reasons[itemId] = ''
     beforeValues.set(itemId, override.originalValue)
   }
 
@@ -936,10 +1003,6 @@ function restoreAll() {
   }
 }
 
-function onMouseLeave() {
-  eventBus.emit('highlight', null)
-}
-
 function onCancel() {
   if (abortController) {
     abortController.abort()
@@ -965,7 +1028,11 @@ function finishWithError() {
   })
 }
 
-async function applySelected() {
+async function applySelected(data: {
+  selected: Record<number, boolean>
+  reasons: Record<number, string>
+}) {
+  const { selected, reasons } = data
   const rejectedByUser: Record<
     string,
     Record<string, { reasonForRejection: string }>
@@ -1095,12 +1162,18 @@ async function applySelected() {
     .filter((item) => selected[item.id])
     .map((item) => {
       const fs = findFieldState(item.uuid, item.fieldName)
+      // Only include per-operation diffs when there were no retries.
+      // Operations from different retry attempts reference different base
+      // values, so individual search/replace pairs wouldn't make sense.
+      const hadRetries = fs ? fs.allOperations.length > 0 : false
+      const operations =
+        fs?.mode === 'patch' && !hadRetries ? [...fs.operations] : []
       return {
         fieldLabel: item.fieldLabel,
-        before: beforeValues.get(item.id) || '',
+        before: fs?.originalBaseValue || beforeValues.get(item.id) || '',
         after: item.value,
         mode: (fs?.mode || 'full') as 'full' | 'patch',
-        operations: fs?.operations ? [...fs.operations] : [],
+        operations,
       }
     })
 
@@ -1135,16 +1208,6 @@ function rejectAll() {
     _usage: streamUsage.value,
   })
 }
-
-const selectedCount = computed(
-  () => completedItems.value.filter((item) => selected[item.id]).length,
-)
-
-const applyLabel = computed(() => {
-  return $t('aiAgentBatchRewriteApply', 'Apply @count of @total')
-    .replace('@count', selectedCount.value.toString())
-    .replace('@total', completedItems.value.length.toString())
-})
 
 onMounted(() => {
   startStreaming()

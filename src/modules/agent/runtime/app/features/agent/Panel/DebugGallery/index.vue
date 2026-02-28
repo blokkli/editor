@@ -155,11 +155,11 @@ const mockMutations: MutationAction[] = [
     label: 'Move card block after hero section',
     apply: () => undefined,
   },
-  {
-    type: 'rewrite',
-    label: 'Rewrite title field content',
-    apply: () => undefined,
-  },
+  // {
+  //   type: 'rewrite',
+  //   label: 'Rewrite title field content',
+  //   apply: () => undefined,
+  // },
 ]
 
 const toolsWithMockParams = computed(() =>

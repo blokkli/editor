@@ -12,6 +12,8 @@ export type EditableFieldOverride = {
   fieldType: 'plain' | 'markup'
   /** Apply a value — updates live preview via the correct strategy. */
   setValue(value: string): void
+  /** Apply pre-built diff HTML (with <ins>/<del> tags) to the DOM element. */
+  setDiffHtml(html: string): void
   /** Restore the original value (shorthand for setValue(originalValue)). */
   restore(): void
 }
@@ -21,6 +23,7 @@ const NOOP_OVERRIDE: EditableFieldOverride = {
   originalValue: '',
   fieldType: 'plain',
   setValue() {},
+  setDiffHtml() {},
   restore() {},
 }
 
@@ -124,6 +127,8 @@ export function useEditableFieldOverride(
       : undefined
 
   function setValue(value: string): void {
+    element.removeAttribute('data-bk-diff-active')
+
     if (usesMutatedProps && matchingProp) {
       if (!state.mutatedItemProps[mutatedItemPropsKey]) {
         state.mutatedItemProps[mutatedItemPropsKey] = {}
@@ -148,7 +153,22 @@ export function useEditableFieldOverride(
     }
   }
 
+  function setDiffHtml(html: string): void {
+    element.setAttribute('data-bk-diff-active', '')
+    // Always use innerHTML directly, bypassing reactive state (mutatedItemProps
+    // / component events).  This avoids the problem where components using
+    // v-text would escape the <ins>/<del> tags.  Because no reactive state is
+    // changed, Vue won't re-render and overwrite the DOM during the approval
+    // phase.
+    element.innerHTML = html
+  }
+
   function restore(): void {
+    // Check if setDiffHtml was used — it writes directly to innerHTML bypassing
+    // reactive state, so we must also restore the DOM directly.
+    const wasDiffActive = element.hasAttribute('data-bk-diff-active')
+    element.removeAttribute('data-bk-diff-active')
+
     if (usesMutatedProps && matchingProp) {
       const propsObj = state.mutatedItemProps[mutatedItemPropsKey]
       if (propsObj) {
@@ -160,6 +180,16 @@ export function useEditableFieldOverride(
           }
         } else {
           propsObj[matchingProp] = originalMutatedProp
+        }
+      }
+
+      // setDiffHtml bypasses mutatedItemProps entirely, so restoring the prop
+      // alone doesn't trigger a re-render. Force the DOM back to the original.
+      if (wasDiffActive) {
+        if (isMarkup) {
+          element.innerHTML = originalValue
+        } else {
+          element.textContent = originalValue
         }
       }
     }
@@ -186,6 +216,7 @@ export function useEditableFieldOverride(
     originalValue,
     fieldType,
     setValue,
+    setDiffHtml,
     restore,
   }
 }

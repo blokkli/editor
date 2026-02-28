@@ -36,7 +36,7 @@
     }
 
     .bk-indicators-highlighted {
-      @apply absolute top-0 left-0 bg-accent-500/30 rounded border-3 border-accent-500;
+      @apply absolute top-0 left-0 rounded border-3 border-accent-500;
       @apply ring-4 ring-accent-300 outline outline-white;
     }
   }

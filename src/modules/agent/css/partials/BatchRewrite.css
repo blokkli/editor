@@ -1,11 +1,4 @@
 .bk {
-  .bk-batch-rewrite-mode-selector {
-    @apply px-10 py-10;
-    .bk-form-label {
-      @apply !hidden;
-    }
-  }
-
   .bk-batch-rewrite-list {
     @apply flex flex-col divide-y divide-mono-300;
   }
@@ -13,30 +6,12 @@
   .bk-batch-rewrite-item {
     @apply relative;
 
-    &:hover:before {
-      @apply visible;
-    }
-
-    &:has(input:checked) {
-      &:before {
-        @apply border-accent-600;
-      }
-    }
-
-    &:before {
-      content: '';
-      @apply pointer-events-none;
-      @apply absolute top-0 left-0 size-full z-30;
-      @apply border-2 border-mono-400;
-      @apply invisible;
-    }
-
-    .bk-diff-value {
-      @apply text-sm;
+    .bk-batch-rewrite-item-header {
+      @apply flex items-center bg-mono-100;
     }
 
     .bk-checkbox {
-      @apply shrink-0 p-10 bg-mono-100 select-none hover:bg-mono-200;
+      @apply shrink-0 flex-1 p-10 select-none hover:bg-mono-200;
       span {
         @apply text-sm mt-0 leading-[18px];
         &:before {
@@ -45,21 +20,28 @@
       }
     }
 
-    &.bk-is-deselected {
-      .bk-diff-value {
-        @apply opacity-50;
+    .bk-batch-rewrite-item-locate {
+      @apply shrink-0 size-[36px] flex items-center justify-center;
+      @apply text-mono-400 hover:text-mono-800 rounded;
+
+      svg {
+        @apply size-[18px];
       }
     }
 
-    .bk-diff-prop-after-only {
-      .bk-diff-prop-content {
-        @apply p-0 border-0 bg-transparent;
+    &.bk-is-deselected {
+      .bk-batch-rewrite-preview {
+        @apply opacity-50;
       }
     }
   }
 
-  .bk-batch-rewrite-change {
-    @apply flex-1 min-w-0 p-10 text-sm;
+  .bk-batch-rewrite-preview {
+    @apply px-10 py-5 text-sm text-mono-600;
+    @apply overflow-hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 
   .bk-batch-rewrite-field {
@@ -67,7 +49,7 @@
   }
 
   .bk-batch-rewrite-reason {
-    @apply w-full mt-10;
+    @apply w-full px-10 pb-10;
     min-height: auto;
 
     textarea {

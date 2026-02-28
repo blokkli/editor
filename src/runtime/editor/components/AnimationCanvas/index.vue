@@ -190,6 +190,9 @@ function onPointerMove(e: PointerEvent) {
   if (!handlePointerMove) {
     return
   }
+  if (ui.isApproving.value) {
+    return
+  }
   if (keyboard.isPressingSpace.value || e.buttons & MOUSE_BUTTONS.AUXILIARY) {
     return
   }
@@ -269,6 +272,10 @@ function onPointerDown(e: PointerEvent) {
     return
   }
 
+  if (ui.isApproving.value) {
+    return
+  }
+
   pointerDownOnCanvas = true
 
   if (canvasEl.value) {
@@ -341,6 +348,9 @@ function isClickInArtboard(coords: Coord): boolean {
 function onPointerUp(e: PointerEvent) {
   if (e.button === MOUSE_BUTTON.AUXILIARY) {
     e.preventDefault()
+    return
+  }
+  if (ui.isApproving.value) {
     return
   }
   handlePointerMove = false

@@ -3,11 +3,13 @@ import { getMutatedOptionValue } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { BlockOptionsMap } from './schemas'
+import type { ReadabilityAnalysisResult } from '#blokkli/editor/features/analyze/readability/types'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
 type ReadabilityIssue = {
   text: string
   impact?: string
-  scores?: Record<string, number>
+  score?: number
 }
 
 type ReadabilityFieldResult = {
@@ -21,120 +23,61 @@ export type ReadabilityResult = Record<
 >
 
 /**
- * Resolve a target HTMLElement to its paragraph UUID and editable field name.
+ * Map a ReadabilityAnalysisResult (keyed by "{uuid}/{fieldName}") to the
+ * agent ReadabilityResult shape (nested uuid → fieldName → issues).
  */
-export function resolveTargetInfo(target: HTMLElement): {
-  paragraphUuid?: string
-  fieldName?: string
-} {
-  const blockEl = target.closest('[data-bk-uuid]')
-  const paragraphUuid = blockEl?.getAttribute('data-bk-uuid') ?? undefined
-
-  // Walk up from target to find the editable field element.
-  let fieldName: string | undefined
-  let el: HTMLElement | null = target
-  while (el) {
-    if (el.dataset.blokkliEditableField) {
-      fieldName = el.dataset.blokkliEditableField
-      break
-    }
-    if (el === blockEl) break
-    el = el.parentElement
-  }
-
-  return { paragraphUuid, fieldName }
-}
-
-/**
- * Run all readability analyzers against the page and return results grouped
- * by paragraph UUID and field name.
- */
-export async function runReadabilityAnalysis(
-  app: BlokkliApp,
-  itemEntityType: string,
-): Promise<ReadabilityResult> {
-  const { analyze, ui } = app
-
-  await analyze.ensureInitialized()
-
-  const readabilityAnalyzers = analyze.analyzers.value.filter(
-    (a) => a.type === 'readability' && !a.requireRawPage,
-  )
-
-  if (readabilityAnalyzers.length === 0) {
-    return {}
-  }
-
-  const analyzerCtx = analyze.createContext(ui.providerElement)
+function mapAnalysisToResult(
+  analysis: ReadabilityAnalysisResult,
+): ReadabilityResult {
   const result: ReadabilityResult = {}
 
-  for (const analyzer of readabilityAnalyzers) {
-    const rawResults = await analyze.runAnalyzer(analyzer, analyzerCtx)
+  for (const [key, fieldResult] of Object.entries(analysis)) {
+    const slashIndex = key.indexOf('/')
+    if (slashIndex === -1) continue
 
-    for (const r of rawResults) {
-      const rawNodes = Array.isArray(r.nodes) ? r.nodes : [r.nodes]
+    const uuid = key.slice(0, slashIndex)
+    const fieldName = key.slice(slashIndex + 1)
 
-      for (const node of rawNodes) {
-        const targets = Array.isArray(node.targets)
-          ? node.targets
-          : [node.targets]
+    const hardChunks = fieldResult.chunks.filter((c) => c.band === 'hard')
+    if (hardChunks.length === 0) continue
 
-        for (const target of targets) {
-          if (!(target instanceof HTMLElement)) continue
-
-          const info = resolveTargetInfo(target)
-          if (!info.paragraphUuid || !info.fieldName) continue
-
-          const uuid = info.paragraphUuid
-          const field = info.fieldName
-          const block = app.blocks.getBlock(uuid)
-          if (!block) continue
-
-          const fieldType = getFieldType(
-            app,
-            itemEntityType,
-            block.bundle,
-            field,
-          )
-          if (!fieldType) continue
-
-          const isMarkup = fieldType === 'markup'
-          const targetText = isMarkup
-            ? target.innerHTML?.trim()
-            : target.textContent?.trim()
-          if (!targetText) continue
-
-          if (!result[uuid]) {
-            result[uuid] = {}
-          }
-          if (!result[uuid][field]) {
-            const fieldValue = getEditableValue(
-              app,
-              itemEntityType,
-              uuid,
-              block.bundle,
-              field,
-              fieldType,
-            )
-            result[uuid][field] = {
-              fieldValue: fieldValue || undefined,
-              issues: [],
-            }
-          }
-
-          result[uuid][field].issues.push({
-            text: targetText,
-            impact: node.impact,
-            scores: node.scores,
-          })
-
-          break
-        }
-      }
+    if (!result[uuid]) {
+      result[uuid] = {}
+    }
+    result[uuid][fieldName] = {
+      fieldValue: fieldResult.rawValue || undefined,
+      issues: hardChunks.map((c) => ({
+        text: c.text,
+        impact: c.impact,
+        score: c.score,
+      })),
     }
   }
 
   return result
+}
+
+/**
+ * Run readability analysis against all fields on the page and return results
+ * grouped by paragraph UUID and field name.
+ */
+export async function runReadabilityAnalysis(
+  app: BlokkliApp,
+): Promise<ReadabilityResult> {
+  const analysis = await app.readability.analyzeAllFields()
+  return mapAnalysisToResult(analysis)
+}
+
+/**
+ * Run readability analysis for specific field values (without reading from
+ * DOM/adapter). Used by the retry loop to analyze proposed values directly.
+ */
+export async function runReadabilityAnalysisForValues(
+  app: BlokkliApp,
+  fields: TextFieldValue[],
+): Promise<ReadabilityResult> {
+  const analysis = await app.readability.analyzeFieldValues(fields)
+  return mapAnalysisToResult(analysis)
 }
 
 /**
@@ -305,60 +248,6 @@ export function validateOptionValue(
   }
 
   return undefined
-}
-
-/**
- * Resolve an editable field config to its simplified type.
- * Returns 'plain' for text fields, 'markup' for rich text/frame fields, null for unsupported.
- */
-export function getFieldType(
-  app: BlokkliApp,
-  entityType: string,
-  bundle: string,
-  fieldName: string,
-): 'plain' | 'markup' | null {
-  const config = app.types.editableFieldConfig.forName(
-    entityType,
-    bundle,
-    fieldName,
-  )
-  if (!config) return null
-  if (config.type === 'table') return null
-  if (config.type === 'frame' || config.type === 'markup') return 'markup'
-  return 'plain'
-}
-
-/**
- * Read the current value of an editable field on a block or entity.
- * Tries the registered getValue() callback first, falls back to DOM element reading.
- */
-export function getEditableValue(
-  app: BlokkliApp,
-  entityType: string,
-  uuid: string,
-  bundle: string,
-  fieldName: string,
-  fieldType: 'plain' | 'markup',
-): string {
-  const editables = app.directive.getEditablesForBlock(uuid)
-  const editable = editables.find((e) => e.fieldName === fieldName)
-
-  if (editable?.getValue) {
-    return editable.getValue()
-  }
-
-  const element = app.directive.findEditableElement(fieldName, {
-    type: entityType,
-    uuid,
-    bundle,
-  })
-  if (element) {
-    return fieldType === 'markup'
-      ? element.innerHTML || ''
-      : element.textContent || ''
-  }
-
-  return ''
 }
 
 /**

@@ -1,21 +1,20 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import type { ReadabilityBand } from '#blokkli/editor/features/analyze/readability/types'
 
 /**
- * Map analyzer impact levels to a user-friendly readability level.
- * The analyzer always returns an impact (minor/moderate/serious/critical),
- * even for easy texts. We translate that into a clear "good", "ok", or "hard".
+ * Map a readability band to a user-friendly level.
  */
-function impactToLevel(impact?: string): 'good' | 'ok' | 'hard' {
-  if (impact === 'critical' || impact === 'serious') return 'hard'
-  if (impact === 'moderate') return 'ok'
+function bandToLevel(band: ReadabilityBand): 'good' | 'ok' | 'hard' {
+  if (band === 'hard') return 'hard'
+  if (band === 'ok') return 'ok'
   return 'good'
 }
 
 const textResultSchema = z.object({
   text: z.string(),
   level: z.enum(['good', 'ok', 'hard']),
-  scores: z.record(z.string(), z.number()),
+  score: z.number(),
 })
 
 const paramsSchema = z.object({
@@ -47,23 +46,32 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   async execute(ctx, params) {
-    const { analyze, $t } = ctx.app
+    const { readability, $t, context } = ctx.app
+    const langcode = context.value.language
 
-    await analyze.ensureInitialized()
+    const results: z.infer<typeof textResultSchema>[] = []
 
-    const rawResults = await analyze.runOnTexts(params.texts, 'readability')
+    for (const text of params.texts) {
+      const chunks = await readability.analyzeText(text, langcode)
 
-    const results: z.infer<typeof textResultSchema>[] = rawResults.map((tr) => {
-      // The analyzer returns one node per text with scores and impact.
-      // Texts too short for analysis return no nodes.
-      const node = tr.nodes[0]
+      // Determine worst band/score across all chunks.
+      let worstLevel: 'good' | 'ok' | 'hard' = 'good'
+      let worstScore = 0
 
-      return {
-        text: tr.text,
-        level: impactToLevel(node?.impact),
-        scores: node?.scores ?? {},
+      for (const chunk of chunks) {
+        const level = bandToLevel(chunk.band)
+        if (level === 'hard' || (level === 'ok' && worstLevel === 'good')) {
+          worstLevel = level
+          worstScore = chunk.score
+        }
       }
-    })
+
+      results.push({
+        text,
+        level: worstLevel,
+        score: worstScore,
+      })
+    }
 
     return {
       label: $t(
