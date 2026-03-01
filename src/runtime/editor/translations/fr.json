@@ -75,6 +75,18 @@
     "source": "<p>This shows the list of available blocks that can be placed. Add a block by dragging the icon into the page.</p><p>When an existing block is selected, some blocks may be greyed out. This indicates which blocks can be placed inside or after the selected block.</p>",
     "translation": ""
   },
+  "agentPromptReadabilityLabel": {
+    "source": "Fix readability...",
+    "translation": ""
+  },
+  "agentPromptReadabilityPrompt": {
+    "source": "The readability issues have already been analyzed and the fix has been applied. Do not call any more tools. Just very briefly confirm that you are done.",
+    "translation": ""
+  },
+  "agentPromptReadabilityUserPrompt": {
+    "source": "Fix the readability of the selected paragraphs.",
+    "translation": ""
+  },
   "agentSidebarTooltipLabel": {
     "source": "@name (AI-Assistant)",
     "translation": ""
@@ -142,6 +154,10 @@
   "aiAgentAnalyzeContentRunning": {
     "source": "Analyzing content...",
     "translation": "Analyse du contenu..."
+  },
+  "aiAgentApprovalAccept": {
+    "source": "Accept",
+    "translation": ""
   },
   "aiAgentApprove": {
     "source": "Approve",
@@ -265,6 +281,10 @@
   },
   "aiAgentDisconnected": {
     "source": "Connection lost. Reconnecting...",
+    "translation": ""
+  },
+  "aiAgentDropFiles": {
+    "source": "Drop files to attach",
     "translation": ""
   },
   "aiAgentDuplicateBlockDone": {
@@ -619,6 +639,42 @@
     "source": "Show transcript...",
     "translation": ""
   },
+  "aiAgentStreamTextFieldsCancelled": {
+    "source": "Streaming cancelled",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsChecking": {
+    "source": "Checking readability...",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsError": {
+    "source": "Streaming failed",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsFailed": {
+    "source": "Streaming failed",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsNoChanges": {
+    "source": "No changes detected",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsRetrying": {
+    "source": "Retrying @count fields (attempt @attempt)...",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsReview": {
+    "source": "Review @count fields",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsRunning": {
+    "source": "Streaming text updates...",
+    "translation": ""
+  },
+  "aiAgentStreamTextFieldsStreaming": {
+    "source": "Streaming @count fields...",
+    "translation": ""
+  },
   "aiAgentSwapBlocksDone": {
     "source": "Swapped @bundleA and @bundleB",
     "translation": ""
@@ -793,10 +849,6 @@
   },
   "analyzeTourText": {
     "source": "Analyze the content of your page",
-    "translation": ""
-  },
-  "analyzerReadabiliyAverageSentenceLength": {
-    "source": "Average sentence length @length → split sentences.",
     "translation": ""
   },
   "analyzerReadabiliyDescription": {

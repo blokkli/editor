@@ -90,7 +90,8 @@ export default defineNuxtConfig({
     })
     ctx.context.addCollector(mcpTools)
 
-    // Initialize prompts collector with project directory
+    // Initialize prompts collector with both module and project directories
+    const modulePromptsDir = moduleResolver.resolve('./runtime/app/prompts')
     const projectPromptsDir = path.resolve(
       nuxt.options.rootDir,
       'blokkli/prompts',
@@ -100,6 +101,7 @@ export default defineNuxtConfig({
       importPrefix: 'prompt',
       dependency: 'agent-prompts',
       dirs: [
+        modulePromptsDir,
         projectPromptsDir,
         ...moduleBlokkliDirs.map((d) => path.join(d, 'prompts')),
       ],

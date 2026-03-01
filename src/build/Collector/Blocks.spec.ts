@@ -7,6 +7,9 @@ import {
   CollectedBlockFile,
 } from './Blocks'
 import type { BlockDefinitionInputBase } from '../../global/types/definitions'
+import type { IconCollector } from './Icons'
+
+const mockIcons = {} as IconCollector
 
 // ============================================================================
 // Helpers
@@ -66,8 +69,10 @@ function createMockBlockFileForRenderFor(
           return `block:${bundle}__p:${v.parentBundle}`
         } else if ('fieldList' in v) {
           return `block:${bundle}__f:${v.fieldList}`
-        } else {
+        } else if ('fieldListType' in v) {
           return `block:${bundle}__f:${v.fieldListType}`
+        } else {
+          return `block:${bundle}__f:unknown`
         }
       })
       .sort()
@@ -98,7 +103,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns error when default does not match any option', () => {
@@ -117,11 +122,11 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('alignment')
-      expect(errors[0].message).toContain('invalid')
-      expect(errors[0].message).toContain('left')
+      expect(errors[0]!.optionKey).toBe('alignment')
+      expect(errors[0]!.message).toContain('invalid')
+      expect(errors[0]!.message).toContain('left')
     })
   })
 
@@ -142,7 +147,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns error when a default value does not match any option', () => {
@@ -160,10 +165,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('features')
-      expect(errors[0].message).toContain('invalid')
+      expect(errors[0]!.optionKey).toBe('features')
+      expect(errors[0]!.message).toContain('invalid')
     })
 
     test('returns multiple errors for multiple invalid defaults', () => {
@@ -180,7 +185,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(2)
     })
   })
@@ -199,7 +204,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns error when default is less than min', () => {
@@ -215,10 +220,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('count')
-      expect(errors[0].message).toContain('less than the minimum')
+      expect(errors[0]!.optionKey).toBe('count')
+      expect(errors[0]!.message).toContain('less than the minimum')
     })
 
     test('returns error when default is greater than max', () => {
@@ -234,10 +239,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('count')
-      expect(errors[0].message).toContain('greater than the maximum')
+      expect(errors[0]!.optionKey).toBe('count')
+      expect(errors[0]!.message).toContain('greater than the maximum')
     })
   })
 
@@ -256,7 +261,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns error when default is out of range', () => {
@@ -273,9 +278,9 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('opacity')
+      expect(errors[0]!.optionKey).toBe('opacity')
     })
   })
 
@@ -291,7 +296,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns no errors for uppercase hex color', () => {
@@ -305,7 +310,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns error for invalid hex color format', () => {
@@ -319,10 +324,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('bgColor')
-      expect(errors[0].message).toContain('not a valid hex color')
+      expect(errors[0]!.optionKey).toBe('bgColor')
+      expect(errors[0]!.message).toContain('not a valid hex color')
     })
 
     test('returns error for hex color without hash', () => {
@@ -336,9 +341,9 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('bgColor')
+      expect(errors[0]!.optionKey).toBe('bgColor')
     })
   })
 
@@ -354,7 +359,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns no errors when datetime is within min/max range', () => {
@@ -370,7 +375,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns error for invalid datetime format', () => {
@@ -384,10 +389,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('publishDate')
-      expect(errors[0].message).toContain('not a valid datetime')
+      expect(errors[0]!.optionKey).toBe('publishDate')
+      expect(errors[0]!.message).toContain('not a valid datetime')
     })
 
     test('returns error when datetime is before min', () => {
@@ -402,10 +407,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('publishDate')
-      expect(errors[0].message).toContain('before the minimum')
+      expect(errors[0]!.optionKey).toBe('publishDate')
+      expect(errors[0]!.message).toContain('before the minimum')
     })
 
     test('returns error when datetime is after max', () => {
@@ -420,10 +425,10 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].optionKey).toBe('publishDate')
-      expect(errors[0].message).toContain('after the maximum')
+      expect(errors[0]!.optionKey).toBe('publishDate')
+      expect(errors[0]!.message).toContain('after the maximum')
     })
   })
 
@@ -449,7 +454,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(2)
     })
   })
@@ -459,7 +464,7 @@ describe('validateBlockDefinition', () => {
       const definition: BlockDefinitionInputBase = {
         bundle: 'test',
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
   })
 
@@ -469,11 +474,11 @@ describe('validateBlockDefinition', () => {
         bundle: 'test',
         renderFor: [{ fieldList: 'inline' }],
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(1)
-      expect(errors[0].severity).toBe('warning')
-      expect(errors[0].message).toContain('deprecated')
-      expect(errors[0].message).toContain('fieldList')
+      expect(errors[0]!.severity).toBe('warning')
+      expect(errors[0]!.message).toContain('deprecated')
+      expect(errors[0]!.message).toContain('fieldList')
     })
 
     test('returns no warning when using fieldListType in renderFor', () => {
@@ -481,7 +486,7 @@ describe('validateBlockDefinition', () => {
         bundle: 'test',
         renderFor: [{ fieldListType: 'inline' }],
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns no warning when using parentBundle in renderFor', () => {
@@ -489,7 +494,7 @@ describe('validateBlockDefinition', () => {
         bundle: 'test',
         renderFor: [{ parentBundle: 'grid' }],
       }
-      expect(validateBlockDefinition(definition)).toEqual([])
+      expect(validateBlockDefinition(definition, mockIcons)).toEqual([])
     })
 
     test('returns warning for each fieldList entry', () => {
@@ -501,7 +506,7 @@ describe('validateBlockDefinition', () => {
           { parentBundle: 'grid' },
         ],
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       const warnings = errors.filter((e) => e.severity === 'warning')
       expect(warnings).toHaveLength(2)
     })
@@ -519,7 +524,7 @@ describe('validateBlockDefinition', () => {
           },
         },
       }
-      const errors = validateBlockDefinition(definition)
+      const errors = validateBlockDefinition(definition, mockIcons)
       expect(errors).toHaveLength(2)
       const warnings = errors.filter((e) => e.severity === 'warning')
       const actualErrors = errors.filter((e) => e.severity !== 'warning')
@@ -539,10 +544,10 @@ describe('CollectedBlockFile.validate', () => {
       const file = createMockBlockFile({
         bundle: 'test',
       })
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter((e) => e.severity === 'warning')
       expect(warnings).toHaveLength(1)
-      expect(warnings[0].message).toContain('missing an icon')
+      expect(warnings[0]!.message).toContain('missing an icon')
     })
 
     test('returns no warning when main block has icon file', () => {
@@ -550,7 +555,7 @@ describe('CollectedBlockFile.validate', () => {
         { bundle: 'test' },
         { iconPath: '/path/to/icon.svg' },
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter((e) => e.severity === 'warning')
       expect(warnings).toHaveLength(0)
     })
@@ -562,7 +567,7 @@ describe('CollectedBlockFile.validate', () => {
           icon: 'some_icon',
         },
       })
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter((e) => e.severity === 'warning')
       expect(warnings).toHaveLength(0)
     })
@@ -575,7 +580,7 @@ describe('CollectedBlockFile.validate', () => {
         },
         { type: 'context' },
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('icon'),
       )
@@ -584,8 +589,8 @@ describe('CollectedBlockFile.validate', () => {
 
     test('caches validation results', () => {
       const file = createMockBlockFile({ bundle: 'test' })
-      const firstResult = file.validate()
-      const secondResult = file.validate()
+      const firstResult = file.validate(mockIcons)
+      const secondResult = file.validate(mockIcons)
       expect(firstResult).toBe(secondResult)
     })
   })
@@ -601,13 +606,13 @@ const { isEditing } = defineBlokkli({
         { bundle: 'test', editor: { icon: 'test' } },
         fileContents,
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('isEditing'),
       )
       expect(warnings).toHaveLength(1)
-      expect(warnings[0].message).toContain('deprecated')
-      expect(warnings[0].message).toContain('import.meta.blokkliEditing')
+      expect(warnings[0]!.message).toContain('deprecated')
+      expect(warnings[0]!.message).toContain('import.meta.blokkliEditing')
     })
 
     test('returns warning when isEditing is destructured with other properties', () => {
@@ -620,7 +625,7 @@ const { options, isEditing, index } = defineBlokkli({
         { bundle: 'test', editor: { icon: 'test' } },
         fileContents,
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('isEditing'),
       )
@@ -637,7 +642,7 @@ const { isEditing } = defineBlokkliFragment({
         { bundle: 'test', editor: { icon: 'test' } },
         fileContents,
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('isEditing'),
       )
@@ -654,7 +659,7 @@ const { options } = defineBlokkli({
         { bundle: 'test', editor: { icon: 'test' } },
         fileContents,
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('isEditing'),
       )
@@ -672,7 +677,7 @@ const { options } = defineBlokkli({
         { bundle: 'test', editor: { icon: 'test' } },
         fileContents,
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('isEditing'),
       )
@@ -693,7 +698,7 @@ const {
         { bundle: 'test', editor: { icon: 'test' } },
         fileContents,
       )
-      const errors = file.validate()
+      const errors = file.validate(mockIcons)
       const warnings = errors.filter(
         (e) => e.severity === 'warning' && e.message.includes('isEditing'),
       )
@@ -753,8 +758,8 @@ describe('validateMissingMainComponent', () => {
 
     const errors = validateMissingMainComponent(files)
     expect(errors).toHaveLength(1)
-    expect(errors[0].bundle).toBe('button')
-    expect(errors[0].filePaths).toContain('/path/to/ButtonNested.vue')
+    expect(errors[0]!.bundle).toBe('button')
+    expect(errors[0]!.filePaths).toContain('/path/to/ButtonNested.vue')
   })
 
   test('returns error with all context component paths', () => {
@@ -779,8 +784,8 @@ describe('validateMissingMainComponent', () => {
 
     const errors = validateMissingMainComponent(files)
     expect(errors).toHaveLength(1)
-    expect(errors[0].bundle).toBe('button')
-    expect(errors[0].filePaths).toHaveLength(2)
+    expect(errors[0]!.bundle).toBe('button')
+    expect(errors[0]!.filePaths).toHaveLength(2)
   })
 
   test('returns multiple errors for multiple bundles without main', () => {
@@ -866,7 +871,7 @@ describe('validateMissingMainComponent', () => {
 
     const errors = validateMissingMainComponent(files)
     expect(errors).toHaveLength(1)
-    expect(errors[0].bundle).toBe('card')
+    expect(errors[0]!.bundle).toBe('card')
   })
 })
 
@@ -942,12 +947,12 @@ describe('validateBundleOptionCompatibility', () => {
 
     const conflicts = validateBundleOptionCompatibility(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].bundle).toBe('button')
-    expect(conflicts[0].optionKey).toBe('color')
-    expect(conflicts[0].reason).toBe('type')
-    expect(conflicts[0].conflicts).toHaveLength(2)
-    expect(conflicts[0].conflicts[0].type).toBe('radios')
-    expect(conflicts[0].conflicts[1].type).toBe('checkbox')
+    expect(conflicts[0]!.bundle).toBe('button')
+    expect(conflicts[0]!.optionKey).toBe('color')
+    expect(conflicts[0]!.reason).toBe('type')
+    expect(conflicts[0]!.conflicts).toHaveLength(2)
+    expect(conflicts[0]!.conflicts[0]!.type).toBe('radios')
+    expect(conflicts[0]!.conflicts[1]!.type).toBe('checkbox')
   })
 
   test('returns conflict when radios have different option keys', () => {
@@ -979,12 +984,12 @@ describe('validateBundleOptionCompatibility', () => {
 
     const conflicts = validateBundleOptionCompatibility(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].bundle).toBe('button')
-    expect(conflicts[0].optionKey).toBe('background')
-    expect(conflicts[0].reason).toBe('options')
-    expect(conflicts[0].conflicts).toHaveLength(2)
-    expect(conflicts[0].conflicts[0].optionKeys).toEqual(['dark', 'light'])
-    expect(conflicts[0].conflicts[1].optionKeys).toEqual(['blue', 'red'])
+    expect(conflicts[0]!.bundle).toBe('button')
+    expect(conflicts[0]!.optionKey).toBe('background')
+    expect(conflicts[0]!.reason).toBe('options')
+    expect(conflicts[0]!.conflicts).toHaveLength(2)
+    expect(conflicts[0]!.conflicts[0]!.optionKeys).toEqual(['dark', 'light'])
+    expect(conflicts[0]!.conflicts[1]!.optionKeys).toEqual(['blue', 'red'])
   })
 
   test('returns conflict when checkboxes have different option keys', () => {
@@ -1016,7 +1021,7 @@ describe('validateBundleOptionCompatibility', () => {
 
     const conflicts = validateBundleOptionCompatibility(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].reason).toBe('options')
+    expect(conflicts[0]!.reason).toBe('options')
   })
 
   test('returns no conflict when radios have same option keys', () => {
@@ -1233,7 +1238,7 @@ describe('validateBundleOptionCompatibility', () => {
 
     const conflicts = validateBundleOptionCompatibility(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].conflicts).toHaveLength(3)
+    expect(conflicts[0]!.conflicts).toHaveLength(3)
   })
 })
 
@@ -1274,11 +1279,11 @@ describe('validateRenderForConflicts', () => {
 
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].bundle).toBe('button')
-    expect(conflicts[0].variation).toBe('block:button__p:grid')
-    expect(conflicts[0].filePaths).toHaveLength(2)
-    expect(conflicts[0].filePaths).toContain('/path/to/ButtonA.vue')
-    expect(conflicts[0].filePaths).toContain('/path/to/ButtonB.vue')
+    expect(conflicts[0]!.bundle).toBe('button')
+    expect(conflicts[0]!.variation).toBe('block:button__p:grid')
+    expect(conflicts[0]!.filePaths).toHaveLength(2)
+    expect(conflicts[0]!.filePaths).toContain('/path/to/ButtonA.vue')
+    expect(conflicts[0]!.filePaths).toContain('/path/to/ButtonB.vue')
   })
 
   test('returns conflict when two components have same fieldList renderFor', () => {
@@ -1295,7 +1300,7 @@ describe('validateRenderForConflicts', () => {
 
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].variation).toBe('block:button__f:inline')
+    expect(conflicts[0]!.variation).toBe('block:button__f:inline')
   })
 
   test('returns conflict when two components are main blocks (no renderFor)', () => {
@@ -1310,9 +1315,9 @@ describe('validateRenderForConflicts', () => {
 
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].bundle).toBe('button')
-    expect(conflicts[0].variation).toBe('block:button')
-    expect(conflicts[0].filePaths).toHaveLength(2)
+    expect(conflicts[0]!.bundle).toBe('button')
+    expect(conflicts[0]!.variation).toBe('block:button')
+    expect(conflicts[0]!.filePaths).toHaveLength(2)
   })
 
   test('returns no conflicts for different bundles with same renderFor', () => {
@@ -1344,7 +1349,7 @@ describe('validateRenderForConflicts', () => {
 
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].variation).toBe('block:button__p:grid')
+    expect(conflicts[0]!.variation).toBe('block:button__p:grid')
   })
 
   test('returns multiple conflicts for multiple overlapping entries', () => {
@@ -1396,7 +1401,7 @@ describe('validateRenderForConflicts', () => {
 
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].filePaths).toHaveLength(3)
+    expect(conflicts[0]!.filePaths).toHaveLength(3)
   })
 
   test('handles fieldListType renderFor', () => {
@@ -1413,6 +1418,6 @@ describe('validateRenderForConflicts', () => {
 
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
-    expect(conflicts[0].variation).toBe('block:button__f:sidebar')
+    expect(conflicts[0]!.variation).toBe('block:button__f:sidebar')
   })
 })

@@ -1,6 +1,6 @@
 <template>
   <DropHandler
-    v-if="hasBeenReady || debugStyling"
+    v-if="hasBeenReady || DEBUG_STYLING"
     class="bk bk-agent-panel"
     @mousedown.capture.stop
     @pointerdown.capture.stop
@@ -17,13 +17,13 @@
     >
       <div ref="conversationContainer" class="bk-agent-panel-conversation">
         <button
-          v-if="debugStyling"
+          v-if="DEBUG_STYLING"
           class="bk-button"
           @click="debugShowPlan = !debugShowPlan"
         >
           {{ debugShowPlan ? 'Hide' : 'Show' }} Plan
         </button>
-        <DebugGallery v-if="debugStyling" />
+        <DebugGallery v-if="DEBUG_STYLING" />
         <template v-else>
           <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
           <Conversation
@@ -70,7 +70,7 @@
         >
           <TransitionHeight opacity :duration="300">
             <div
-              v-if="!isConnected && hasBeenReady && !debugStyling"
+              v-if="!isConnected && hasBeenReady && !DEBUG_STYLING"
               class="bk-agent-disconnected"
             >
               <Icon name="loader" />
@@ -157,7 +157,6 @@ import { itemEntityType } from '#blokkli-build/config'
 const props = defineProps<{
   agentName: string
   isShown: boolean
-  debugStyling?: boolean
   conversation: ConversationItem[]
   activeItem: ActiveItem | null
   isThinking: boolean
@@ -199,6 +198,8 @@ const emit = defineEmits<{
   rejectPlan: []
 }>()
 
+const DEBUG_STYLING = import.meta.dev && false
+
 const app = useBlokkli()
 const { $t } = app
 
@@ -206,7 +207,7 @@ const { $t } = app
 watch(
   () => props.isShown,
   (isShown) => {
-    if (isShown && !props.debugStyling) {
+    if (isShown && !DEBUG_STYLING) {
       emit('connect')
     }
   },
@@ -300,18 +301,14 @@ const debugPlan: ClientPlanState = {
 const debugShowPlan = ref(true)
 
 const debugIsProcessing = computed(() => {
-  if (props.debugStyling) {
+  if (DEBUG_STYLING) {
     return debugShowPlan.value
   }
   return props.isProcessing
 })
 
 const activePlan = computed(() => {
-  return props.debugStyling
-    ? debugShowPlan.value
-      ? debugPlan
-      : null
-    : props.plan
+  return DEBUG_STYLING ? (debugShowPlan.value ? debugPlan : null) : props.plan
 })
 
 const isPlanPendingApproval = computed(() => {

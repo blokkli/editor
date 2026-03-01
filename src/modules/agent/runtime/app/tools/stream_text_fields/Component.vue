@@ -468,7 +468,7 @@ function scrollToFieldText(uuid: string, fieldName: string, text?: string) {
   const override = findOverride(uuid, fieldName)
   if (!override?.element) {
     // Fall back to block-level scroll.
-    eventBus.emit('scrollIntoView', { uuid, immediate: true })
+    eventBus.emit('scrollIntoView', { uuid, immediate: false })
     return
   }
   const target =
@@ -479,7 +479,7 @@ function scrollToFieldText(uuid: string, fieldName: string, text?: string) {
     uuid + ':' + fieldName + ':' + (target?.textContent?.slice(0, 20) || '')
   if (key === lastScrollTarget) return
   lastScrollTarget = key
-  eventBus.emit('scrollIntoView', { element: target, immediate: true })
+  eventBus.emit('scrollIntoView', { element: target, immediate: false })
 }
 
 function handleSSEEvent(eventType: string, data: string) {

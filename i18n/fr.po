@@ -83,6 +83,21 @@ msgid ""
 "placed inside or after the selected block.</p>"
 msgstr ""
 
+msgctxt "agentPromptReadabilityLabel"
+msgid "Fix readability..."
+msgstr ""
+
+msgctxt "agentPromptReadabilityPrompt"
+msgid ""
+"The readability issues have already been analyzed and the fix has been "
+"applied. Do not call any more tools. Just very briefly confirm that you are "
+"done."
+msgstr ""
+
+msgctxt "agentPromptReadabilityUserPrompt"
+msgid "Fix the readability of the selected paragraphs."
+msgstr ""
+
 msgctxt "agentSidebarTooltipLabel"
 msgid "@name (AI-Assistant)"
 msgstr ""
@@ -150,6 +165,10 @@ msgstr "@count résultats analysés"
 msgctxt "aiAgentAnalyzeContentRunning"
 msgid "Analyzing content..."
 msgstr "Analyse du contenu..."
+
+msgctxt "aiAgentApprovalAccept"
+msgid "Accept"
+msgstr ""
 
 msgctxt "aiAgentApprove"
 msgid "Approve"
@@ -273,6 +292,10 @@ msgstr ""
 
 msgctxt "aiAgentDisconnected"
 msgid "Connection lost. Reconnecting..."
+msgstr ""
+
+msgctxt "aiAgentDropFiles"
+msgid "Drop files to attach"
 msgstr ""
 
 msgctxt "aiAgentDuplicateBlockDone"
@@ -629,6 +652,42 @@ msgctxt "aiAgentShowTranscript"
 msgid "Show transcript..."
 msgstr ""
 
+msgctxt "aiAgentStreamTextFieldsCancelled"
+msgid "Streaming cancelled"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsChecking"
+msgid "Checking readability..."
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsError"
+msgid "Streaming failed"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsFailed"
+msgid "Streaming failed"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsNoChanges"
+msgid "No changes detected"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsRetrying"
+msgid "Retrying @count fields (attempt @attempt)..."
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsReview"
+msgid "Review @count fields"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsRunning"
+msgid "Streaming text updates..."
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsStreaming"
+msgid "Streaming @count fields..."
+msgstr ""
+
 msgctxt "aiAgentSwapBlocksDone"
 msgid "Swapped @bundleA and @bundleB"
 msgstr ""
@@ -805,10 +864,6 @@ msgstr ""
 
 msgctxt "analyzeTourText"
 msgid "Analyze the content of your page"
-msgstr ""
-
-msgctxt "analyzerReadabiliyAverageSentenceLength"
-msgid "Average sentence length @length → split sentences."
 msgstr ""
 
 msgctxt "analyzerReadabiliyDescription"

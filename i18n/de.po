@@ -88,6 +88,23 @@ msgstr ""
 "dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block "
 "hinzugefügt werden können.</p>"
 
+msgctxt "agentPromptReadabilityLabel"
+msgid "Fix readability..."
+msgstr "Lesbarkeit verbessern..."
+
+msgctxt "agentPromptReadabilityPrompt"
+msgid ""
+"The readability issues have already been analyzed and the fix has been "
+"applied. Do not call any more tools. Just very briefly confirm that you are "
+"done."
+msgstr ""
+"Die Lesbarkeit wurde bereits analysiert und die Korrektur wurde angewendet. "
+"Rufe keine weiteren Tools auf. Bestätige nur kurz, dass du fertig bist."
+
+msgctxt "agentPromptReadabilityUserPrompt"
+msgid "Fix the readability of the selected paragraphs."
+msgstr "Verbessere die Lesbarkeit der ausgewählten Blöcke."
+
 msgctxt "agentSidebarTooltipLabel"
 msgid "@name (AI-Assistant)"
 msgstr "@name (KI-Assistent)"
@@ -155,6 +172,10 @@ msgstr "@count Ergebnisse analysiert"
 msgctxt "aiAgentAnalyzeContentRunning"
 msgid "Analyzing content..."
 msgstr "Inhalte werden analysiert..."
+
+msgctxt "aiAgentApprovalAccept"
+msgid "Accept"
+msgstr ""
 
 msgctxt "aiAgentApprove"
 msgid "Approve"
@@ -279,6 +300,10 @@ msgstr "@count Bibliotheks-Blöcke abgetrennt"
 msgctxt "aiAgentDisconnected"
 msgid "Connection lost. Reconnecting..."
 msgstr "Verbindung wird wiederhergestellt..."
+
+msgctxt "aiAgentDropFiles"
+msgid "Drop files to attach"
+msgstr ""
 
 msgctxt "aiAgentDuplicateBlockDone"
 msgid "Duplicated @bundle"
@@ -644,6 +669,42 @@ msgctxt "aiAgentShowTranscript"
 msgid "Show transcript..."
 msgstr "Transkript anzeigen..."
 
+msgctxt "aiAgentStreamTextFieldsCancelled"
+msgid "Streaming cancelled"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsChecking"
+msgid "Checking readability..."
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsError"
+msgid "Streaming failed"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsFailed"
+msgid "Streaming failed"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsNoChanges"
+msgid "No changes detected"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsRetrying"
+msgid "Retrying @count fields (attempt @attempt)..."
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsReview"
+msgid "Review @count fields"
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsRunning"
+msgid "Streaming text updates..."
+msgstr ""
+
+msgctxt "aiAgentStreamTextFieldsStreaming"
+msgid "Streaming @count fields..."
+msgstr ""
+
 msgctxt "aiAgentSwapBlocksDone"
 msgid "Swapped @bundleA and @bundleB"
 msgstr "@bundleA und @bundleB getauscht"
@@ -823,10 +884,6 @@ msgstr "Fehler"
 msgctxt "analyzeTourText"
 msgid "Analyze the content of your page"
 msgstr "Inhalte auf dieser Seite analysieren."
-
-msgctxt "analyzerReadabiliyAverageSentenceLength"
-msgid "Average sentence length @length → split sentences."
-msgstr "Durchschnittliche Satzlänge: @length. In einzelne Sätze aufteilen."
 
 msgctxt "analyzerReadabiliyDescription"
 msgid "Avoid texts that are hard to read."

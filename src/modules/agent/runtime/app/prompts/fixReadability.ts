@@ -8,14 +8,20 @@ export default defineBlokkliAgentPrompt({
     'check_readability_for_texts',
     'stream_text_fields',
   ],
-  getLabel: () => {
-    return 'Fix readability...'
+  getLabel: ({ $t }) => {
+    return $t('agentPromptReadabilityLabel', 'Fix readability...')
   },
-  getPrompt: () => {
-    return `The readability issues have already been analyzed and the fix has been applied. Do not call any more tools. Just very briefly confirm that you are done.`
+  getPrompt: ({ $t }) => {
+    return $t(
+      'agentPromptReadabilityPrompt',
+      'The readability issues have already been analyzed and the fix has been applied. Do not call any more tools. Just very briefly confirm that you are done.',
+    )
   },
-  getUserPrompt: () => {
-    return `Fix the readability of the selected paragraphs.`
+  getUserPrompt: ({ $t }) => {
+    return $t(
+      'agentPromptReadabilityUserPrompt',
+      'Fix the readability of the selected paragraphs.',
+    )
   },
 
   async preExecute({ selectedUuids, runTool }) {

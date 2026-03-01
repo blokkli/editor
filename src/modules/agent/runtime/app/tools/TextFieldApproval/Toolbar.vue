@@ -106,11 +106,11 @@ function locateItem(item: ApprovalItem) {
     const el = directive.findEditableElement(item.fieldName, host)
     if (el) {
       eventBus.emit('highlight', el)
-      eventBus.emit('scrollIntoView', { element: el, immediate: true })
+      eventBus.emit('scrollIntoView', { element: el, immediate: false })
       return
     }
   }
-  eventBus.emit('scrollIntoView', { uuid: item.uuid, immediate: true })
+  eventBus.emit('scrollIntoView', { uuid: item.uuid, immediate: false })
 }
 
 function prev() {

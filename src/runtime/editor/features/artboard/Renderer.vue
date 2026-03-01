@@ -382,6 +382,7 @@ onBlokkliEvent('scrollIntoView', (e) => {
       scale: 'none',
       axis: 'y',
       behavior: e.immediate ? 'instant' : 'auto',
+      area: 'blocking',
     })
   } else {
     if (artboardElement.contains(e.element)) {
@@ -396,6 +397,9 @@ onBlokkliEvent('scrollIntoView', (e) => {
         scale: 'none',
         axis: 'both',
         behavior: e.immediate ? 'instant' : 'auto',
+        area: 'blocking',
+        block: 'auto',
+        inline: 'auto',
       })
     } else {
       artboard.scrollToTop({

@@ -81,8 +81,6 @@ function onMouseUp(e: MouseEvent) {
     eventBus.emit('select', props.uuid)
     eventBus.emit('scrollIntoView', {
       uuid: props.uuid,
-      immediate: true,
-      center: true,
     })
   }
 }

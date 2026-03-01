@@ -95,7 +95,6 @@ function onLocate() {
     eventBus.emit('highlight', override.element)
     eventBus.emit('scrollIntoView', {
       element: override.element,
-      immediate: true,
     })
   }
 }
