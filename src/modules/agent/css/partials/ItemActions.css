@@ -3,7 +3,7 @@
 }
 
 .bk .bk-blokkli-item-actions-type-dropdown-button.bk-is-variant-agent {
-  @apply bg-orange-normal/10 text-orange-light/90 hover:bg-orange-normal/20 hover:text-orange-light;
+  @apply hover:bg-orange-normal/10 hover:text-orange-light;
   .bk-icon {
     svg {
       @apply fill-orange-normal;

@@ -89,6 +89,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get all content fields (text, media, links) for a paragraph and optionally its nested children',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => `fields for ${Object.keys(r || {}).length} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],

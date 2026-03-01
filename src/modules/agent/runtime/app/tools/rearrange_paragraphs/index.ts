@@ -18,6 +18,7 @@ export default defineBlokkliAgentTool({
   description:
     'Rearrange paragraphs within a single field by specifying the desired order. You must provide ALL paragraph UUIDs that are currently in the field — use get_child_paragraphs to get them. This only reorders, it does not add or remove paragraphs.',
   category: 'mutation',
+  lazy: true,
   prunedSummary: (r) => (r.success ? 'rearranged paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {

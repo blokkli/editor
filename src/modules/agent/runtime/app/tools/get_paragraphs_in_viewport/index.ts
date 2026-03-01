@@ -255,6 +255,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get paragraphs currently visible in the viewport with their visibility percentage. Use this for viewport-relative queries like "the paragraph at the top", "what\'s in the center", or "paragraphs near the bottom". NOT for getting all page content - use get_all_page_content for that.',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => `${r.paragraphs?.length || 0} paragraphs in viewport`,
   modes: ['readonly', 'editing', 'translating', 'review'],

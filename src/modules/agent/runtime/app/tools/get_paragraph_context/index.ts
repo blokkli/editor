@@ -155,6 +155,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get comprehensive context for a single paragraph including parent chain, siblings, children, content fields, and options. Preferred over multiple individual tool calls.',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) =>
     `context for ${r.bundle || 'paragraph'} (${r.uuid?.slice(0, 8) || '?'})`,

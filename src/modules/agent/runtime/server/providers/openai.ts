@@ -152,6 +152,9 @@ export class OpenAIProvider implements AIProvider {
       include: ['reasoning.encrypted_content'],
       parallel_tool_calls: false,
       reasoning: { effort: 'low', summary: 'auto' },
+      ...(options.toolChoice === 'any'
+        ? { tool_choice: 'required' as const }
+        : {}),
     }
 
     if (import.meta.dev) {

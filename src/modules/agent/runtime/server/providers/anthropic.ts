@@ -117,6 +117,9 @@ export class AnthropicProvider implements AIProvider {
       system: convertSystemPrompt(options.systemPrompt),
       messages,
       tools,
+      ...(options.toolChoice === 'any'
+        ? { tool_choice: { type: 'any' as const } }
+        : {}),
     }
 
     if (import.meta.dev) {

@@ -4,6 +4,7 @@ export type AgentModelDefinition = {
   name: string
   label: string
   isDefault?: boolean
+  routing?: boolean
   pricing?: {
     input: number
     cacheWrite: number

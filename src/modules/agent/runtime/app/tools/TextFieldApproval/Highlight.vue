@@ -22,7 +22,7 @@ import { computed, useTemplateRef, useBlokkli } from '#imports'
 import type { ApprovalItem } from './index.vue'
 import Item from './Item.vue'
 
-const props = defineProps<{
+defineProps<{
   items: ApprovalItem[]
   selected: Record<number, boolean>
 }>()
@@ -35,9 +35,7 @@ const activeIndex = defineModel<number>({ default: -1 })
 
 const { ui } = useBlokkli()
 
-const itemRefs = useTemplateRef('itemRefs') as {
-  value: InstanceType<typeof Item>[] | null
-}
+const itemRefs = useTemplateRef('itemRefs')
 
 const containerStyle = computed(() => {
   const offset = ui.artboardOffset.value
@@ -51,6 +49,9 @@ const containerStyle = computed(() => {
 function updateRects() {
   if (itemRefs.value) {
     for (const item of itemRefs.value) {
+      if (!item) {
+        continue
+      }
       item.updateRect()
     }
   }

@@ -71,6 +71,8 @@ export type StreamOptions = {
   maxTokens?: number
   /** Abort signal for cancellation */
   signal?: AbortSignal
+  /** Force tool use. 'any' = model must call a tool. */
+  toolChoice?: 'auto' | 'any'
 }
 
 // ============================================================================

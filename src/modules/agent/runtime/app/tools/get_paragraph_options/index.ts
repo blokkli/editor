@@ -18,6 +18,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get available options and their current values for one or more paragraphs',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => `options for ${Object.keys(r || {}).length} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],

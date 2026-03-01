@@ -14,6 +14,7 @@ export default defineBlokkliAgentTool({
   description:
     'Move one or more paragraphs to a different parent field. All paragraphs are moved to the same location and they KEEP their UUIDs!!',
   category: 'mutation',
+  lazy: true,
   prunedSummary: (r) => (r.success ? 'moved paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {

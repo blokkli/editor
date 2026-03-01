@@ -117,6 +117,7 @@ export default defineNuxtConfig({
             name: 'claude-haiku-4-5',
             label: 'Claude Haiku 4.5',
             isDefault: true,
+            routing: true,
             pricing: { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 },
           },
         ],

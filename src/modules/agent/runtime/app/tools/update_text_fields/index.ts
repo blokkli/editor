@@ -83,6 +83,7 @@ export default defineBlokkliAgentTool({
   description:
     'Update text content fields on one or more paragraphs. Supports two modes: (1) Full replacement via "uuids" — provide complete new values. (2) Patch via "operations" — search/replace pairs applied to current values, ideal for small edits like typo fixes. Set "selector" to true to use a CSS selector instead of text search. Set requireApproval to true when the user should confirm the changes first.',
   category: 'mutation',
+  lazy: true,
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
   modes: ['editing', 'translating'],

@@ -14,6 +14,13 @@ export type AgentModelDefinition = {
   label: string
   /** Whether this is the default model. The first model is used if none is marked. */
   isDefault?: boolean
+  /**
+   * Whether this model is used for prompt routing.
+   * When true, the agent makes a fast LLM call before the main loop to
+   * pre-load relevant skills and tools based on the user's first message.
+   * If no model has `routing: true`, the default model is used.
+   */
+  routing?: boolean
   /** Per-million-token pricing. When set, cost is computed and shown in the UI. */
   pricing?: {
     input: number

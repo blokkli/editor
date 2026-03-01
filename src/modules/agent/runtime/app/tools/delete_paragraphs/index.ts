@@ -11,6 +11,7 @@ export default defineBlokkliAgentTool({
   description:
     'Delete one or more paragraphs from the page. Requires user approval before the paragraphs are actually deleted.',
   category: 'mutation',
+  lazy: true,
   prunedSummary: (r) => (r.success ? 'deleted paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {

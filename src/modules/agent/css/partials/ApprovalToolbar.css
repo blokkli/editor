@@ -9,12 +9,15 @@
   @apply text-sm;
 }
 .bk.bk-approval-toolbar {
-  grid-area: breadcrumbs;
+  grid-area: viewport;
   align-self: end;
   @apply pointer-events-auto;
   @apply flex items-center h-50;
   @apply bg-mono-900 text-mono-50;
   @apply select-none relative;
+  @apply mx-15 mb-15 rounded-md;
+  @apply shadow-xl-even;
+  @apply outline outline-1 outline-mono-400;
 
   color-scheme: dark;
 
@@ -37,12 +40,16 @@
   }
 
   > .bk-button {
-    @apply rounded-none;
+    @apply rounded-l-none;
   }
 
   .bk-approval-toolbar-nav {
     @apply shrink-0 size-50 flex items-center justify-center;
     @apply text-mono-300 hover:text-white hover:bg-mono-800 relative;
+
+    &:first-child {
+      @apply rounded-l-md;
+    }
 
     svg {
       @apply size-30 fill-current;

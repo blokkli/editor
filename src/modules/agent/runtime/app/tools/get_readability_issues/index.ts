@@ -62,8 +62,7 @@ export default defineBlokkliAgentTool({
           Object.entries(allResults).filter(([uuid]) =>
             params.uuids!.some(
               (selected) =>
-                selected === uuid ||
-                ctx.app.state.isChildOf(uuid, selected),
+                selected === uuid || ctx.app.state.isChildOf(uuid, selected),
             ),
           ),
         )

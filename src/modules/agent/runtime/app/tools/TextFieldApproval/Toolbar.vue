@@ -14,9 +14,9 @@
         <div class="bk-tooltip">
           <span>{{ $t('aiAgentApprovalPrevChange', 'Previous change') }}</span>
           <ShortcutIndicator
-            @pressed="$emit('prev')"
             key-code="ArrowLeft"
             :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
+            @pressed="$emit('prev')"
           />
         </div>
       </button>
@@ -25,9 +25,9 @@
         <div class="bk-tooltip">
           <span>{{ $t('aiAgentApprovalNextChange', 'Next change') }}</span>
           <ShortcutIndicator
-            @pressed="$emit('next')"
             key-code="ArrowRight"
             :label="$t('aiAgentApprovalNextChange', 'Next change')"
+            @pressed="$emit('next')"
           />
         </div>
       </button>
@@ -51,9 +51,9 @@
         <div class="bk-tooltip">
           <span>{{ $t('aiAgentApprovalToggle', 'Toggle approval') }}</span>
           <ShortcutIndicator
-            @pressed="toggleCurrent"
             key-code="Enter"
             :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
+            @pressed="toggleCurrent"
           />
         </div>
       </div>

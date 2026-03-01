@@ -169,6 +169,9 @@ export default function (
   // Tool map (populated on connect)
   let toolMap: Record<string, McpToolDefinition> = {}
 
+  // Tool names sent to the server (populated on init)
+  let sentToolNames: string[] = []
+
   // Page context built during connection, reused by tools.
   const storedPageContext = shallowRef<PageContext | null>(null)
 
@@ -569,6 +572,7 @@ export default function (
   }
 
   async function sendInit(toolNames: string[], pageContext: PageContext) {
+    sentToolNames = toolNames
     send({ type: 'init', toolNames, pageContext })
     isReady.value = true
     hasBeenReady.value = true
@@ -1258,7 +1262,7 @@ export default function (
   // User Actions
   // ============================================================================
 
-  function sendPrompt(
+  async function sendPrompt(
     prompt: string,
     displayPrompt?: string,
     selectedUuids?: string[],
@@ -1291,6 +1295,57 @@ export default function (
       activeConversationId.value = generateUUID()
     }
 
+    // On the first message without caller-provided directives, call the
+    // routing endpoint to determine which skills/tools to pre-load.
+    const isFirstMessage = !conversation.value.some(
+      (item) => item.type === 'user',
+    )
+    const hasClientDirectives = !!(
+      autoLoadTools?.length || autoLoadSkills?.length
+    )
+
+    let resolvedAutoLoadTools = autoLoadTools
+    let resolvedAutoLoadSkills = autoLoadSkills
+
+    if (isFirstMessage && !hasClientDirectives && storedPageContext.value) {
+      try {
+        const routingResult = await fetch('/api/blokkli/agent/route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            toolNames: sentToolNames,
+            pageContext: storedPageContext.value,
+          }),
+        }).then(
+          (r) =>
+            r.json() as Promise<{
+              skills: string[]
+              tools: string[]
+              usage: UsageTurn | null
+            }>,
+        )
+
+        if (routingResult.usage) {
+          usageTurns.value = [...usageTurns.value, routingResult.usage]
+        }
+        if (routingResult.tools?.length) {
+          resolvedAutoLoadTools = [
+            ...(resolvedAutoLoadTools || []),
+            ...routingResult.tools,
+          ]
+        }
+        if (routingResult.skills?.length) {
+          resolvedAutoLoadSkills = [
+            ...(resolvedAutoLoadSkills || []),
+            ...routingResult.skills,
+          ]
+        }
+      } catch {
+        // Routing failed — proceed without pre-loaded skills/tools
+      }
+    }
+
     const item: ConversationItem = {
       type: 'user',
       id: generateId(),
@@ -1315,8 +1370,12 @@ export default function (
       type: 'start',
       prompt,
       selectedUuids: selectedUuids?.length ? selectedUuids : undefined,
-      autoLoadTools: autoLoadTools?.length ? autoLoadTools : undefined,
-      autoLoadSkills: autoLoadSkills?.length ? autoLoadSkills : undefined,
+      autoLoadTools: resolvedAutoLoadTools?.length
+        ? resolvedAutoLoadTools
+        : undefined,
+      autoLoadSkills: resolvedAutoLoadSkills?.length
+        ? resolvedAutoLoadSkills
+        : undefined,
       preSeededResults: serverPreSeeded,
       autoExecuteTools: autoExecuteTools?.length ? autoExecuteTools : undefined,
     })

@@ -77,6 +77,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get page structure as an XML tree of paragraphs, their fields, and content previews. Without a UUID, returns the full page. With a UUID, returns that paragraph and its subtree.',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => `page structure (${r.totalParagraphs ?? 0} paragraphs)`,
   modes: ['readonly', 'editing', 'translating', 'review'],

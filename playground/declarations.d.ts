@@ -1,1 +1,1 @@
-/// <reference path="../declarations.d.ts" />
+import '../declarations.d.ts'

@@ -20,6 +20,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get the paragraphs currently selected by the user. Returns an empty array if nothing is selected.',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => `${r.paragraphs?.length || 0} paragraphs selected`,
   modes: ['readonly', 'editing', 'translating', 'review'],

@@ -96,7 +96,7 @@
 }
 
 .bk-sidebar-right-wrapper {
-  @apply flex flex-col pointer-events-none bg-white;
+  @apply flex flex-col pointer-events-none bg-white relative z-sidebar;
   grid-area: sidebar-right;
   width: var(--bk-sidebar-width-right);
 

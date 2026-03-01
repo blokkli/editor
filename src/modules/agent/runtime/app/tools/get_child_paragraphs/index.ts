@@ -39,6 +39,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get all child fields and paragraphs for the page or a paragraph. Returns parent objects ready for use with add_paragraphs. Use this to understand structure before adding paragraphs.',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => {
     const fieldCount = Object.keys(r.fields).length

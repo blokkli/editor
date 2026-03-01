@@ -28,6 +28,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get all text content from the entire page in a single call. Returns a flat list of all paragraphs with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
   category: 'query',
+  lazy: true,
   volatile: true,
   prunedSummary: (r) => `${r.content?.length || 0} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],

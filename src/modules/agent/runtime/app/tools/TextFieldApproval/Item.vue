@@ -8,7 +8,10 @@
     }"
     :style="rect"
   >
-    <button class="bk-approval-highlight-item-area" @click.prevent="$emit('activate')" />
+    <button
+      class="bk-approval-highlight-item-area"
+      @click.prevent="$emit('activate')"
+    />
     <button
       v-show="active"
       class="bk-approval-highlight-item-badge"
@@ -26,8 +29,10 @@
 
 <script lang="ts" setup>
 import { watch, ref, computed, useBlokkli } from '#imports'
-import { useEditableFieldOverride } from '#blokkli/editor/composables'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
+import {
+  useEditableFieldOverride,
+  onBlokkliEvent,
+} from '#blokkli/editor/composables'
 import { Icon } from '#blokkli/editor/components'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
@@ -49,8 +54,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'activate'): void
-  (e: 'toggle'): void
+  (e: 'activate' | 'toggle'): void
 }>()
 
 const { ui, blocks, context, $t } = useBlokkli()

@@ -79,6 +79,7 @@ export default defineBlokkliAgentTool({
   description:
     'Get detailed information about which paragraph types can be added to a specific field, including their content fields and paragraph fields (for nested paragraphs).',
   category: 'query',
+  lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
     return $t('aiAgentGetBundleInfoRunning', 'Getting bundle info...')

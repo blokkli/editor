@@ -12,6 +12,7 @@ import type { Plugin } from 'rollup'
 const AGENT_ROUTE = '/api/blokkli/agent'
 const FETCH_ROUTE = '/api/blokkli/agent/fetch'
 const STREAM_ROUTE = '/api/blokkli/agent/stream'
+const ROUTE_ROUTE = '/api/blokkli/agent/route'
 
 export default defineBlokkliModule<AgentModuleOptions>({
   alterOptions: (options) => {
@@ -220,6 +221,12 @@ export default defineNuxtConfig({
       handler: moduleResolver.resolve('./runtime/server/stream'),
     })
 
+    // Add server handler for prompt routing
+    addServerHandler({
+      route: ROUTE_ROUTE,
+      handler: moduleResolver.resolve('./runtime/server/route'),
+    })
+
     // Add project skills and system-prompts directories to Nitro TypeScript includes for proper type resolution
     // Path must be relative to .nuxt directory where tsconfig is generated
     const relativeSkillsDir = path.relative(
@@ -269,6 +276,7 @@ export default defineNuxtConfig({
         Reflect.deleteProperty(types.routes, AGENT_ROUTE)
         Reflect.deleteProperty(types.routes, FETCH_ROUTE)
         Reflect.deleteProperty(types.routes, STREAM_ROUTE)
+        Reflect.deleteProperty(types.routes, ROUTE_ROUTE)
       })
     })
   },

@@ -15,9 +15,9 @@
 
   <Highlight
     ref="highlight"
+    v-model="currentIndex"
     :items="items"
     :selected="selected"
-    v-model="currentIndex"
     @toggle="onToggle"
   />
 </template>
@@ -63,9 +63,7 @@ const emit = defineEmits<{
 
 const { $t, ui, eventBus, directive, context, blocks } = useBlokkli()
 
-const highlight = useTemplateRef('highlight') as {
-  value: InstanceType<typeof Highlight> | null
-}
+const highlight = useTemplateRef('highlight')
 
 function resolveHost(uuid: string): EntityContext | null {
   if (uuid === context.value.entityUuid) {
