@@ -342,11 +342,11 @@ onBlokkliEvent('keyPressed', (e) => {
     e.originalEvent.preventDefault()
     artboard.scrollPageDown()
     animation.requestDraw()
-  } else if (e.code === 'ArrowUp') {
+  } else if (e.code === 'ArrowUp' && !ui.isApproving.value) {
     e.originalEvent.preventDefault()
     artboard.scrollUp()
     animation.requestDraw()
-  } else if (e.code === 'ArrowDown') {
+  } else if (e.code === 'ArrowDown' && !ui.isApproving.value) {
     e.originalEvent.preventDefault()
     artboard.scrollDown()
     animation.requestDraw()

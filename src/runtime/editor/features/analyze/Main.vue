@@ -61,7 +61,7 @@
     </div>
   </div>
   <Renderer
-    v-if="results.length && (keepVisible || isShown)"
+    v-if="results.length && (keepVisible || isShown) && !ui.isApproving.value"
     v-model="activeId"
     :results
     :is-stale

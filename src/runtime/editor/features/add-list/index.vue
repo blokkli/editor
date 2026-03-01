@@ -4,6 +4,7 @@
       id="bk-add-list"
       ref="wrapper"
       class="bk bk-add-list bk-control"
+      v-show="!ui.isApproving.value"
       @wheel.capture.passive="onWheel"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"

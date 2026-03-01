@@ -159,6 +159,30 @@
     "source": "Accept",
     "translation": "Akzeptieren"
   },
+  "aiAgentApprovalAccepted": {
+    "source": "Accepted",
+    "translation": "Akzeptiert"
+  },
+  "aiAgentApprovalHint": {
+    "source": "Review changes and accept or reject them individually. Tab/Arrow keys: navigate, Space/Enter: accept/reject.",
+    "translation": "Änderungen prüfen und einzeln annehmen oder ablehnen. Tab/Pfeiltasten: navigieren, Leertaste/Enter: annehmen/ablehnen."
+  },
+  "aiAgentApprovalNextChange": {
+    "source": "Next change",
+    "translation": "Nächste Änderung"
+  },
+  "aiAgentApprovalPrevChange": {
+    "source": "Previous change",
+    "translation": "Vorherige Änderung"
+  },
+  "aiAgentApprovalRejected": {
+    "source": "Rejected",
+    "translation": "Abgelehnt"
+  },
+  "aiAgentApprovalToggle": {
+    "source": "Toggle approval",
+    "translation": "Änderung annehmen/ablehnen"
+  },
   "aiAgentApprove": {
     "source": "Approve",
     "translation": "Bestätigen"
@@ -206,10 +230,6 @@
   "aiAgentBatchRewriteTextRunning": {
     "source": "Rewriting multiple texts...",
     "translation": "Mehrere Texte umschreiben..."
-  },
-  "aiAgentBatchRewriteTitle": {
-    "source": "Rewrite @count fields",
-    "translation": "@count Felder umschreiben"
   },
   "aiAgentBlockNotFound": {
     "source": "Block not found",
@@ -274,10 +294,6 @@
   "aiAgentDelegateRewriteRetrying": {
     "source": "Retrying @count fields (attempt @attempt)...",
     "translation": "@count Felder werden erneut versucht (Versuch @attempt)..."
-  },
-  "aiAgentDelegateRewriteReview": {
-    "source": "Review @count fields",
-    "translation": "@count Felder überprüfen"
   },
   "aiAgentDelegateRewriteRunning": {
     "source": "Rewriting texts...",
@@ -2194,6 +2210,10 @@
   "interactionLayersOn": {
     "source": "Hide interaction layers",
     "translation": "Interaktionsebenen ausblenden"
+  },
+  "keyboardSpace": {
+    "source": "Space",
+    "translation": ""
   },
   "libraryAdd": {
     "source": "Add to library...",

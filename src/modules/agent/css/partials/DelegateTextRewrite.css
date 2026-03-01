@@ -23,20 +23,5 @@
     }
   }
 
-  .bk-stream-text-readability-badge {
-    @apply flex items-center gap-5 px-10 py-3 text-xs font-mono;
-    @apply border-t border-mono-200 bg-mono-50;
 
-    &.bk-is-good {
-      @apply text-lime-dark;
-    }
-
-    &.bk-is-ok {
-      @apply text-orange-dark;
-    }
-
-    &.bk-is-hard {
-      @apply text-red-dark;
-    }
-  }
 }

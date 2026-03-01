@@ -8,15 +8,10 @@ import { itemEntityType } from '#blokkli-build/config'
 
 const MAX_CONTENT_LENGTH = 150
 
-function stripHtml(html: string): string {
-  // Remove HTML tags to get plain text preview.
-  return html.replace(/<[^>]*>/g, '').trim()
-}
-
 function truncate(text: string): string {
   const cleaned = text.trim()
   if (cleaned.length <= MAX_CONTENT_LENGTH) return cleaned
-  return cleaned.slice(0, MAX_CONTENT_LENGTH) + '…'
+  return cleaned.slice(0, MAX_CONTENT_LENGTH) + ' [TRUNCATED]'
 }
 
 export function buildBlock(
@@ -45,7 +40,7 @@ export function buildBlock(
       editable.fieldName,
       fieldType,
     )
-    const text = fieldType === 'markup' ? stripHtml(raw) : raw
+    const text = raw
     const truncated = truncate(text)
     if (truncated) {
       content[editable.fieldName] = truncated
@@ -106,7 +101,7 @@ export function buildPageStructure(app: BlokkliApp): PageStructure {
       config.name,
       fieldType as 'plain' | 'markup',
     )
-    const text = fieldType === 'markup' ? stripHtml(raw) : raw
+    const text = raw
     const truncated = truncate(text)
     if (truncated) {
       if (!entityContentFields) entityContentFields = {}

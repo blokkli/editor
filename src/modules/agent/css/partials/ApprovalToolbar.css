@@ -1,17 +1,48 @@
+.bk.bk-approval-toolbar-hint {
+  grid-area: mode;
+  @apply self-start justify-self-stretch;
+  @apply h-40 flex items-center px-10 py-5;
+  @apply text-mono-100;
+  @apply bg-mono-900;
+  @apply border-t border-t-mono-600;
+  @apply font-medium;
+  @apply text-sm;
+}
 .bk.bk-approval-toolbar {
   grid-area: breadcrumbs;
   align-self: end;
   @apply pointer-events-auto;
   @apply flex items-center h-50;
   @apply bg-mono-900 text-mono-50;
-  @apply select-none;
-  @apply overflow-hidden;
+  @apply select-none relative;
 
   color-scheme: dark;
 
+  .bk-approval-toolbar-toggle,
+  .bk-approval-toolbar-nav {
+    @apply relative h-full;
+    .bk-tooltip {
+      @apply absolute left-0 bottom-full mb-5 invisible;
+    }
+
+    &:hover {
+      .bk-tooltip {
+        @apply visible;
+      }
+    }
+  }
+
+  .bk-approval-toolbar-toggle {
+    @apply mr-auto;
+  }
+
+  > .bk-button {
+    @apply rounded-none;
+  }
+
   .bk-approval-toolbar-nav {
     @apply shrink-0 size-50 flex items-center justify-center;
-    @apply text-mono-300 hover:text-white hover:bg-mono-800;
+    @apply text-mono-300 hover:text-white hover:bg-mono-800 relative;
 
     svg {
       @apply size-30 fill-current;

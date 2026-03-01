@@ -494,11 +494,6 @@ export class Session {
             this.activatedLazyTools.add(toolName)
           }
         }
-        send(peer, {
-          type: 'server_tool_result',
-          tool: 'load_skills',
-          label: skill.label,
-        })
         autoLoadedSkillBlocks.push({
           type: 'skill',
           name: skill.name,

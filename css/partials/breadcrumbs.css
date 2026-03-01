@@ -1,5 +1,5 @@
 .bk.bk-breadcrumbs {
-  @apply bg-mono-900 pointer-events-auto;
+  @apply bg-mono-900 pointer-events-auto h-50;
   @apply border-r border-r-mono-700;
   @apply overflow-hidden;
   grid-area: breadcrumbs;

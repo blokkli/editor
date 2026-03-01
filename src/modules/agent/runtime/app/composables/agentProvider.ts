@@ -1291,21 +1291,6 @@ export default function (
       activeConversationId.value = generateUUID()
     }
 
-    // Add pre-seeded results as completed tool items in conversation UI
-    if (preSeededResults?.length) {
-      for (const preSeeded of preSeededResults) {
-        conversation.value.push({
-          type: 'tool',
-          id: generateId(),
-          callId: `preseed_${generateId()}`,
-          tool: preSeeded.toolName,
-          label: preSeeded.label,
-          status: 'success',
-          timestamp: Date.now(),
-        })
-      }
-    }
-
     const item: ConversationItem = {
       type: 'user',
       id: generateId(),

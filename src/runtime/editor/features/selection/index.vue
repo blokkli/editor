@@ -346,7 +346,8 @@ onBlokkliEvent('keyPressed', (e) => {
     if (
       tour.isTouring.value ||
       ui.hasDialogOpen.value ||
-      ui.hasNestedEditorOpen.value
+      ui.hasNestedEditorOpen.value ||
+      ui.isApproving.value
     ) {
       return
     }

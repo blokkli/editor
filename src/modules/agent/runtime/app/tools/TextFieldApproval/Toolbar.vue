@@ -1,11 +1,35 @@
 <template>
   <Teleport v-if="ui.mainLayoutElement.value" :to="ui.mainLayoutElement.value">
+    <div class="bk bk-approval-toolbar-hint bk-control">
+      {{
+        $t(
+          'aiAgentApprovalHint',
+          'Review changes and accept or reject them individually. Tab/Arrow keys: navigate, Space/Enter: accept/reject.',
+        )
+      }}
+    </div>
     <div class="bk bk-approval-toolbar bk-control">
-      <button class="bk-approval-toolbar-nav" @click="prev">
+      <button class="bk-approval-toolbar-nav" @click="$emit('prev')">
         <Icon name="bk_mdi_chevron_left" />
+        <div class="bk-tooltip">
+          <span>{{ $t('aiAgentApprovalPrevChange', 'Previous change') }}</span>
+          <ShortcutIndicator
+            @pressed="$emit('prev')"
+            key-code="ArrowLeft"
+            :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
+          />
+        </div>
       </button>
-      <button class="bk-approval-toolbar-nav" @click="next">
+      <button class="bk-approval-toolbar-nav" @click="$emit('next')">
         <Icon name="bk_mdi_chevron_right" />
+        <div class="bk-tooltip">
+          <span>{{ $t('aiAgentApprovalNextChange', 'Next change') }}</span>
+          <ShortcutIndicator
+            @pressed="$emit('next')"
+            key-code="ArrowRight"
+            :label="$t('aiAgentApprovalNextChange', 'Next change')"
+          />
+        </div>
       </button>
 
       <div class="bk-approval-toolbar-info">
@@ -18,11 +42,21 @@
         </span>
       </div>
 
-      <FormToggle
-        :model-value="selected[currentItem.id]"
-        :label="$t('aiAgentApprovalAccept', 'Accept')"
-        @update:model-value="toggleCurrent"
-      />
+      <div class="bk-approval-toolbar-toggle">
+        <FormToggle
+          :model-value="selected[currentItem.id]"
+          :label="$t('aiAgentApprovalAccept', 'Accept')"
+          @update:model-value="toggleCurrent"
+        />
+        <div class="bk-tooltip">
+          <span>{{ $t('aiAgentApprovalToggle', 'Toggle approval') }}</span>
+          <ShortcutIndicator
+            @pressed="toggleCurrent"
+            key-code="Enter"
+            :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
+          />
+        </div>
+      </div>
 
       <div v-if="!selected[currentItem.id]" class="bk-approval-toolbar-reason">
         <input
@@ -38,7 +72,7 @@
         />
       </div>
 
-      <button class="bk-approval-toolbar-apply" @click="$emit('apply')">
+      <button class="bk-button bk-is-lime" @click="$emit('apply')">
         <span>{{ applyLabel }}</span>
       </button>
     </div>
@@ -46,18 +80,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-  useBlokkli,
-} from '#imports'
-import { Icon, FormToggle } from '#blokkli/editor/components'
+import { computed, onMounted, onBeforeUnmount, useBlokkli } from '#imports'
+import { Icon, FormToggle, ShortcutIndicator } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
-import { itemEntityType } from '#blokkli-build/config'
-import type { EntityContext } from '#blokkli/types'
 import type { ApprovalItem } from './index.vue'
 
 const props = defineProps<{
@@ -70,12 +95,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:selected', id: number, value: boolean): void
   (e: 'update:reasons', id: number, value: string): void
-  (e: 'apply'): void
+  (e: 'apply' | 'prev' | 'next'): void
 }>()
 
-const { ui, blocks, types, directive, eventBus, context, $t } = useBlokkli()
+const { ui, blocks, types, $t } = useBlokkli()
 
-const currentIndex = ref(0)
+const currentIndex = defineModel<number>('currentIndex', { default: 0 })
 
 const currentItem = computed(() => props.items[currentIndex.value]!)
 
@@ -87,41 +112,6 @@ const bundleLabel = computed(() => {
   return def?.label || block.bundle
 })
 
-function resolveHost(uuid: string): EntityContext | null {
-  if (uuid === context.value.entityUuid) {
-    return {
-      type: context.value.entityType,
-      bundle: context.value.entityBundle,
-      uuid,
-    }
-  }
-  const block = blocks.getBlock(uuid)
-  if (!block) return null
-  return { type: itemEntityType, bundle: block.bundle, uuid }
-}
-
-function locateItem(item: ApprovalItem) {
-  const host = resolveHost(item.uuid)
-  if (host) {
-    const el = directive.findEditableElement(item.fieldName, host)
-    if (el) {
-      eventBus.emit('highlight', el)
-      eventBus.emit('scrollIntoView', { element: el, immediate: false })
-      return
-    }
-  }
-  eventBus.emit('scrollIntoView', { uuid: item.uuid, immediate: false })
-}
-
-function prev() {
-  currentIndex.value =
-    (currentIndex.value - 1 + props.items.length) % props.items.length
-}
-
-function next() {
-  currentIndex.value = (currentIndex.value + 1) % props.items.length
-}
-
 function toggleCurrent() {
   const item = currentItem.value
   emit('update:selected', item.id, !props.selected[item.id])
@@ -131,13 +121,6 @@ function onReasonInput(event: Event) {
   const value = (event.target as HTMLInputElement).value
   emit('update:reasons', currentItem.value.id, value)
 }
-
-watch(currentIndex, () => {
-  const item = props.items[currentIndex.value]
-  if (item) {
-    locateItem(item)
-  }
-})
 
 onBlokkliEvent('editable:focus', (e) => {
   const index = props.items.findIndex(

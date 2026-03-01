@@ -31,7 +31,8 @@ const isVisible = computed(
     !ui.hasTransformOverlayOpen.value &&
     !ui.hasDialogOpen.value &&
     !ui.hasNestedEditorOpen.value &&
-    !ui.isAnimating.value,
+    !ui.isAnimating.value &&
+    !ui.isApproving.value,
 )
 </script>
 

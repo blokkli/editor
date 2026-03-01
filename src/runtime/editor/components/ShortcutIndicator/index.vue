@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import { defineShortcut, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
@@ -21,12 +21,12 @@ const props = defineProps<{
   meta?: boolean
   shift?: boolean
   keyCode: string
-  label: string
+  label?: string
 }>()
 
 const emit = defineEmits(['pressed'])
 
-const { state, ui } = useBlokkli()
+const { state, ui, $t } = useBlokkli()
 
 const key = computed(() =>
   [props.meta, props.shift, props.keyCode.toLowerCase()].join('-'),
@@ -45,49 +45,41 @@ const keyLabel = computed(() => {
     return '←'
   } else if (props.keyCode === 'Digit0' || props.keyCode === '0') {
     return ''
+  } else if (props.keyCode === ' ') {
+    return $t('keyboardSpace', 'Space')
   }
 
   return props.keyCode.toUpperCase()
 })
 
 if (!props.viewOnly) {
-  defineShortcut({
-    meta: props.meta,
-    shift: props.shift,
-    code: props.keyCode,
-    label: props.label,
-    group: props.group,
+  if (props.label) {
+    defineShortcut({
+      meta: props.meta,
+      shift: props.shift,
+      code: props.keyCode,
+      label: props.label,
+      group: props.group,
+    })
+  }
+
+  onBlokkliEvent('keyPressed', (e) => {
+    if (ui.hasDialogOpen.value || ui.hasNestedEditorOpen.value) {
+      return
+    }
+    const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')
+    if (key.value !== checkKey) {
+      return
+    }
+
+    e.originalEvent.preventDefault()
+
+    if (state.isLoading.value || ui.hasTransformOverlayOpen.value) {
+      return
+    }
+    emit('pressed')
   })
 }
-
-onBlokkliEvent('keyPressed', (e) => {
-  if (ui.hasDialogOpen.value || ui.hasNestedEditorOpen.value) {
-    return
-  }
-  const checkKey = [e.meta, e.shift, e.code.toLowerCase()].join('-')
-  if (key.value !== checkKey) {
-    return
-  }
-
-  e.originalEvent.preventDefault()
-
-  if (state.isLoading.value || ui.hasTransformOverlayOpen.value) {
-    return
-  }
-  emit('pressed')
-})
-
-onMounted(() => {
-  if (props.viewOnly) {
-    return
-  }
-})
-
-onBeforeUnmount(() => {
-  if (props.viewOnly) {
-    return
-  }
-})
 </script>
 
 <script lang="ts">

@@ -2,13 +2,6 @@
   <TextFieldApproval
     v-if="params.requireApproval !== false"
     :items="items"
-    :applying="isApplying"
-    :title="
-      $t('aiAgentBatchRewriteTitle', 'Rewrite @count fields').replace(
-        '@count',
-        String(items.length),
-      )
-    "
     @apply="applySelected"
     @cancel="rejectAll"
   />

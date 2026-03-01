@@ -413,11 +413,12 @@ html.bk-hide-non-editable {
 
   grid-template-areas:
     'toolbar toolbar      toolbar       toolbar     toolbar       right'
+    'left    mode         mode          mode        sidebar-right right'
     'left    sidebar-left viewport      scrollbar-y sidebar-right right'
     'left    sidebar-left banner        scrollbar-y sidebar-right right'
     'left breadcrumbs breadcrumbs   breadcrumbs sidebar-right right';
   grid-template-columns: auto auto 1fr 16px auto 50px;
-  grid-template-rows: 50px 1fr auto 50px;
+  grid-template-rows: 50px auto 1fr auto auto;
 }
 
 .bk-viewport {

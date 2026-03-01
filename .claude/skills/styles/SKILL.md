@@ -116,6 +116,9 @@ values like `z-10` or `z-[9999]`. Always use `z-{name}` (e.g., `z-sidebar`,
 ## CSS Architecture
 
 - Entry point: `css/index.css`, partials in `css/partials/`
+- Sub-modules have their own CSS entry points and partials (e.g.,
+  `src/modules/agent/css/Agent.css` with partials in
+  `src/modules/agent/css/partials/`)
 - Output: `src/runtime/editor/css/output.css`
 - Build: `npm run styles:build` — but the developer always has
   `npm run styles:watch` running, so changes are picked up automatically. Only
@@ -127,9 +130,25 @@ values like `z-10` or `z-[9999]`. Always use `z-{name}` (e.g., `z-sidebar`,
   `css/partials/preflight.css`
 - Tailwind `--tw-*` variables are renamed to `--bk-tw-*`
 
+## CRITICAL: Before Writing Any CSS
+
+**ALWAYS** check for existing styles before writing new ones:
+
+1. **Read the relevant CSS partial first** — if you're working on a component
+   that has a CSS partial (e.g., `ApprovalToolbar.css`), read it before adding
+   or modifying any styles
+2. **Check `css/components/`** — reusable classes like `.bk-button` already
+   exist. Use them instead of writing custom button/toggle/pill styles
+3. **Grep for the class name** before creating it — it may already be defined
+   somewhere
+
+Never blindly write CSS for a class that might already exist. Duplicating
+existing styles causes maintenance problems and confusing overrides.
+
 ## Component CSS Classes
 
-Reusable component styles in `css/components/`:
+Reusable component styles in `css/components/` — **always prefer these over
+writing custom styles** for common UI elements:
 
 - `button.css` — `.bk-button` with variants: `.is-primary`, `.is-teal`,
   `.is-orange`, `.is-lime`, `.is-lime-outline`, `.is-danger`, `.is-warning`,

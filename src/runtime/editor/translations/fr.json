@@ -159,6 +159,30 @@
     "source": "Accept",
     "translation": ""
   },
+  "aiAgentApprovalAccepted": {
+    "source": "Accepted",
+    "translation": ""
+  },
+  "aiAgentApprovalHint": {
+    "source": "Review changes and accept or reject them individually. Tab/Arrow keys: navigate, Space/Enter: accept/reject.",
+    "translation": ""
+  },
+  "aiAgentApprovalNextChange": {
+    "source": "Next change",
+    "translation": ""
+  },
+  "aiAgentApprovalPrevChange": {
+    "source": "Previous change",
+    "translation": ""
+  },
+  "aiAgentApprovalRejected": {
+    "source": "Rejected",
+    "translation": ""
+  },
+  "aiAgentApprovalToggle": {
+    "source": "Toggle approval",
+    "translation": ""
+  },
   "aiAgentApprove": {
     "source": "Approve",
     "translation": ""
@@ -205,10 +229,6 @@
   },
   "aiAgentBatchRewriteTextRunning": {
     "source": "Rewriting multiple texts...",
-    "translation": ""
-  },
-  "aiAgentBatchRewriteTitle": {
-    "source": "Rewrite @count fields",
     "translation": ""
   },
   "aiAgentBlockNotFound": {
@@ -273,10 +293,6 @@
   },
   "aiAgentDelegateRewriteRetrying": {
     "source": "Retrying @count fields (attempt @attempt)...",
-    "translation": ""
-  },
-  "aiAgentDelegateRewriteReview": {
-    "source": "Review @count fields",
     "translation": ""
   },
   "aiAgentDelegateRewriteRunning": {
@@ -2193,6 +2209,10 @@
   },
   "interactionLayersOn": {
     "source": "Hide interaction layers",
+    "translation": ""
+  },
+  "keyboardSpace": {
+    "source": "Space",
     "translation": ""
   },
   "libraryAdd": {

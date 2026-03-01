@@ -33,7 +33,7 @@
     }
 
     &.bk-is-lime {
-      @apply !bg-lime-normal !text-lime-light hover:!bg-lime-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
+      @apply !bg-lime-normal !text-black hover:!bg-lime-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
       &[disabled] {
         @apply opacity-15;
       }

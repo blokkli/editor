@@ -392,7 +392,7 @@ onBlokkliEvent('item:dropped', () => {
 })
 
 onBlokkliEvent('sidebar:open', (id) => {
-  if (id === props.id) {
+  if (id === props.id && !isRenderedDetached.value) {
     activeSidebar.value = props.id
   }
 })

@@ -170,6 +170,32 @@ msgctxt "aiAgentApprovalAccept"
 msgid "Accept"
 msgstr ""
 
+msgctxt "aiAgentApprovalAccepted"
+msgid "Accepted"
+msgstr ""
+
+msgctxt "aiAgentApprovalHint"
+msgid ""
+"Review changes and accept or reject them individually. Tab/Arrow keys: "
+"navigate, Space/Enter: accept/reject."
+msgstr ""
+
+msgctxt "aiAgentApprovalNextChange"
+msgid "Next change"
+msgstr ""
+
+msgctxt "aiAgentApprovalPrevChange"
+msgid "Previous change"
+msgstr ""
+
+msgctxt "aiAgentApprovalRejected"
+msgid "Rejected"
+msgstr ""
+
+msgctxt "aiAgentApprovalToggle"
+msgid "Toggle approval"
+msgstr ""
+
 msgctxt "aiAgentApprove"
 msgid "Approve"
 msgstr ""
@@ -216,10 +242,6 @@ msgstr ""
 
 msgctxt "aiAgentBatchRewriteTextRunning"
 msgid "Rewriting multiple texts..."
-msgstr ""
-
-msgctxt "aiAgentBatchRewriteTitle"
-msgid "Rewrite @count fields"
 msgstr ""
 
 msgctxt "aiAgentBlockNotFound"
@@ -284,10 +306,6 @@ msgstr ""
 
 msgctxt "aiAgentDelegateRewriteRetrying"
 msgid "Retrying @count fields (attempt @attempt)..."
-msgstr ""
-
-msgctxt "aiAgentDelegateRewriteReview"
-msgid "Review @count fields"
 msgstr ""
 
 msgctxt "aiAgentDelegateRewriteRunning"
@@ -2311,6 +2329,10 @@ msgstr ""
 
 msgctxt "interactionLayersOn"
 msgid "Hide interaction layers"
+msgstr ""
+
+msgctxt "keyboardSpace"
+msgid "Space"
 msgstr ""
 
 msgctxt "libraryAdd"

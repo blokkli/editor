@@ -1,34 +1,7 @@
 <template>
-  <ToolCard icon="bk_mdi_edit" :title="title" @cancel="$emit('cancel')">
-    <div v-if="!applying">
-      <div class="bk-batch-rewrite-list" @mouseleave="onMouseLeave">
-        <div v-for="item in items" :key="item.id">
-          <ItemComponent
-            v-model:selected="selected[item.id]"
-            v-model:reason="reasons[item.id]"
-            :uuid="item.uuid"
-            :field-name="item.fieldName"
-            :field-label="item.fieldLabel"
-            :new-value="item.value"
-          />
-          <slot name="item-footer" :item="item" />
-        </div>
-      </div>
-    </div>
-
-    <template #actions>
-      <button
-        class="bk-button bk-is-small bk-is-lime bk-is-fullwidth"
-        @click="onApply"
-      >
-        <Icon name="bk_mdi_check" />
-        <span>{{ applyLabel }}</span>
-      </button>
-    </template>
-  </ToolCard>
-
   <Toolbar
     v-if="items.length > 0"
+    v-model:current-index="currentIndex"
     :items="items"
     :selected="selected"
     :reasons="reasons"
@@ -36,15 +9,34 @@
     @update:selected="onUpdateSelected"
     @update:reasons="onUpdateReasons"
     @apply="onApply"
+    @prev="prev"
+    @next="next"
+  />
+
+  <Highlight
+    ref="highlight"
+    :items="items"
+    :selected="selected"
+    v-model="currentIndex"
+    @toggle="onToggle"
   />
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
-import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
-import ItemComponent from '../update_text_fields/Item.vue'
+import {
+  computed,
+  nextTick,
+  onMounted,
+  reactive,
+  ref,
+  useTemplateRef,
+  useBlokkli,
+} from '#imports'
 import Toolbar from './Toolbar.vue'
+import Highlight from './Highlight.vue'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { itemEntityType } from '#blokkli-build/config'
+import type { EntityContext } from '#blokkli/types'
 
 export type ApprovalItem = {
   id: number
@@ -56,8 +48,6 @@ export type ApprovalItem = {
 
 const props = defineProps<{
   items: ApprovalItem[]
-  title: string
-  applying?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -71,32 +61,69 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { $t, eventBus } = useBlokkli()
+const { $t, ui, eventBus, directive, context, blocks } = useBlokkli()
+
+const highlight = useTemplateRef('highlight') as {
+  value: InstanceType<typeof Highlight> | null
+}
+
+function resolveHost(uuid: string): EntityContext | null {
+  if (uuid === context.value.entityUuid) {
+    return {
+      type: context.value.entityType,
+      bundle: context.value.entityBundle,
+      uuid,
+    }
+  }
+  const block = blocks.getBlock(uuid)
+  if (!block) return null
+  return { type: itemEntityType, bundle: block.bundle, uuid }
+}
+
+function getItemRect(item: ApprovalItem): { x: number; y: number } | null {
+  const host = resolveHost(item.uuid)
+  if (!host) return null
+  const el = directive.findEditableElement(item.fieldName, host)
+  if (!el) return null
+  return ui.getAbsoluteElementRect(el)
+}
+
+// Sort items once by visual position (top to bottom, left to right).
+const items = [...props.items].sort((a, b) => {
+  const rectA = getItemRect(a)
+  const rectB = getItemRect(b)
+  if (!rectA || !rectB) return 0
+  const dy = rectA.y - rectB.y
+  if (dy !== 0) return dy
+  return rectA.x - rectB.x
+})
+
+const currentIndex = ref(0)
 
 const selected = reactive<Record<number, boolean>>(
-  Object.fromEntries(props.items.map((item) => [item.id, true])),
+  Object.fromEntries(items.map((item) => [item.id, true])),
 )
 const reasons = reactive<Record<number, string>>(
-  Object.fromEntries(props.items.map((item) => [item.id, ''])),
+  Object.fromEntries(items.map((item) => [item.id, ''])),
 )
 
 const selectedCount = computed(
-  () => props.items.filter((item) => selected[item.id]).length,
+  () => items.filter((item) => selected[item.id]).length,
 )
 
 const applyLabel = computed(() => {
   return $t('aiAgentBatchRewriteApply', 'Apply @count of @total')
     .replace('@count', selectedCount.value.toString())
-    .replace('@total', props.items.length.toString())
+    .replace('@total', items.length.toString())
 })
-
-function onMouseLeave() {
-  eventBus.emit('highlight', null)
-}
 
 function onUpdateSelected(id: number, value: boolean) {
   selected[id] = value
-  eventBus.emit('ui:update-rects')
+  nextTick(() => highlight.value?.updateRects())
+}
+
+function onToggle(id: number) {
+  onUpdateSelected(id, !selected[id])
 }
 
 function onUpdateReasons(id: number, value: string) {
@@ -109,4 +136,49 @@ function onApply() {
     reasons: { ...reasons },
   })
 }
+
+function scrollToItem(item: ApprovalItem) {
+  const host = resolveHost(item.uuid)
+  if (host) {
+    const el = directive.findEditableElement(item.fieldName, host)
+    if (el) {
+      eventBus.emit('scrollIntoView', { element: el, immediate: false })
+      return
+    }
+  }
+  eventBus.emit('scrollIntoView', { uuid: item.uuid, immediate: false })
+}
+
+function prev() {
+  currentIndex.value = (currentIndex.value - 1 + items.length) % items.length
+  scrollToItem(items[currentIndex.value]!)
+}
+
+function next() {
+  currentIndex.value = (currentIndex.value + 1) % items.length
+  scrollToItem(items[currentIndex.value]!)
+}
+
+onMounted(async () => {
+  await nextTick()
+  if (items[0]) {
+    scrollToItem(items[0])
+  }
+})
+
+onBlokkliEvent('keyPressed', (e) => {
+  if ((e.code === 'Tab' && !e.shift) || e.code === 'ArrowDown') {
+    e.originalEvent.preventDefault()
+    next()
+  } else if ((e.code === 'Tab' && e.shift) || e.code === 'ArrowUp') {
+    e.originalEvent.preventDefault()
+    prev()
+  } else if (e.code === ' ') {
+    e.originalEvent.preventDefault()
+    const item = items[currentIndex.value]
+    if (item) {
+      onUpdateSelected(item.id, !selected[item.id])
+    }
+  }
+})
 </script>

@@ -70,6 +70,7 @@ const style = computed<Record<string, string>>(() => {
   return {
     imageRendering: 'pixelated',
     cursor: cursor.value,
+    pointerEvents: ui.isApproving.value ? 'none' : 'auto',
   }
 })
 

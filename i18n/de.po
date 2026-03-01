@@ -177,6 +177,34 @@ msgctxt "aiAgentApprovalAccept"
 msgid "Accept"
 msgstr "Akzeptieren"
 
+msgctxt "aiAgentApprovalAccepted"
+msgid "Accepted"
+msgstr "Akzeptiert"
+
+msgctxt "aiAgentApprovalHint"
+msgid ""
+"Review changes and accept or reject them individually. Tab/Arrow keys: "
+"navigate, Space/Enter: accept/reject."
+msgstr ""
+"Änderungen prüfen und einzeln annehmen oder ablehnen. Tab/Pfeiltasten: "
+"navigieren, Leertaste/Enter: annehmen/ablehnen."
+
+msgctxt "aiAgentApprovalNextChange"
+msgid "Next change"
+msgstr "Nächste Änderung"
+
+msgctxt "aiAgentApprovalPrevChange"
+msgid "Previous change"
+msgstr "Vorherige Änderung"
+
+msgctxt "aiAgentApprovalRejected"
+msgid "Rejected"
+msgstr "Abgelehnt"
+
+msgctxt "aiAgentApprovalToggle"
+msgid "Toggle approval"
+msgstr "Änderung annehmen/ablehnen"
+
 msgctxt "aiAgentApprove"
 msgid "Approve"
 msgstr "Bestätigen"
@@ -224,10 +252,6 @@ msgstr "@applied von @total Änderungen angewendet"
 msgctxt "aiAgentBatchRewriteTextRunning"
 msgid "Rewriting multiple texts..."
 msgstr "Mehrere Texte umschreiben..."
-
-msgctxt "aiAgentBatchRewriteTitle"
-msgid "Rewrite @count fields"
-msgstr "@count Felder umschreiben"
 
 msgctxt "aiAgentBlockNotFound"
 msgid "Block not found"
@@ -292,10 +316,6 @@ msgstr "Keine Änderungen erkannt"
 msgctxt "aiAgentDelegateRewriteRetrying"
 msgid "Retrying @count fields (attempt @attempt)..."
 msgstr "@count Felder werden erneut versucht (Versuch @attempt)..."
-
-msgctxt "aiAgentDelegateRewriteReview"
-msgid "Review @count fields"
-msgstr "@count Felder überprüfen"
 
 msgctxt "aiAgentDelegateRewriteRunning"
 msgid "Rewriting texts..."
@@ -2353,6 +2373,10 @@ msgstr "Interaktionsebenen anzeigen"
 msgctxt "interactionLayersOn"
 msgid "Hide interaction layers"
 msgstr "Interaktionsebenen ausblenden"
+
+msgctxt "keyboardSpace"
+msgid "Space"
+msgstr ""
 
 msgctxt "libraryAdd"
 msgid "Add to library..."

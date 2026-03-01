@@ -26,25 +26,8 @@
   <TextFieldApproval
     v-else-if="phase === 'approval' && completedItems.length > 0"
     :items="completedItems"
-    :title="
-      $t('aiAgentDelegateRewriteReview', 'Review @count fields').replace(
-        '@count',
-        String(completedItems.length),
-      )
-    "
     @apply="applySelected"
-    @cancel="rejectAll"
-  >
-    <template #item-footer="{ item }">
-      <div
-        v-if="hasReadabilityScores(item.id)"
-        class="bk-stream-text-readability-badge"
-        :class="'bk-is-' + (getReadabilityLevel(item.id) || 'good')"
-      >
-        <span>{{ readabilityLabel(item.id) }}</span>
-      </div>
-    </template>
-  </TextFieldApproval>
+  />
 
   <ToolCard
     v-if="phase === 'error'"
@@ -170,22 +153,10 @@ type CompletedItem = {
   fieldName: string
   fieldLabel: string
   value: string
-  readabilityBefore?: number
-  readabilityAfter?: number
-  readabilityLevel?: 'good' | 'ok' | 'hard'
 }
 
 const completedItems = ref<CompletedItem[]>([])
 const beforeValues = new Map<number, string>()
-
-// Readability score tracking.
-type ReadabilityCheck = {
-  level: 'good' | 'ok' | 'hard'
-  score: number
-}
-
-const readabilityBeforeScores = new Map<string, ReadabilityCheck>()
-const readabilityAfterScores = new Map<string, ReadabilityCheck>()
 
 function resolveHost(uuid: string): EntityContext | null {
   if (uuid === editorContext.value.entityUuid) {
@@ -329,10 +300,6 @@ function getProposedValue(fs: FieldState): string {
   return fs.fullValue
 }
 
-/**
- * Format a single readability score for display.
- * Returns a string like "LIX: 45" using the analyzer's scoreLabel.
- */
 function formatScore(score?: number): string {
   if (score == null) return ''
   const analyzer = props.context.app.readability.analyzer.value
@@ -713,41 +680,6 @@ async function readabilityRetryLoop(authToken: string) {
       const issues = entry?.issues ?? []
       const proposedValue = getProposedValue(fs)
 
-      // Store "after" scores for the approval UI.
-      if (score != null) {
-        readabilityAfterScores.set(key, { level, score })
-      }
-
-      // On the first attempt, also capture "before" scores from the original values.
-      if (attempt === 0) {
-        // "Before" scores come from the issues that were present before
-        // streaming started — use the templateParams.issues if available,
-        // otherwise just mark as unknown.
-        const originalIssues = props.params.templateParams?.issues as
-          | Array<{ score?: number }>
-          | undefined
-        if (originalIssues?.length) {
-          // Find the worst score from original issues for this field's index.
-          const fieldIndex = props.params.fields.indexOf(field)
-          let worstOriginalScore: number | undefined
-          for (const issue of originalIssues) {
-            if (
-              'fieldIndex' in issue &&
-              (issue as { fieldIndex: number }).fieldIndex === fieldIndex &&
-              issue.score != null
-            ) {
-              worstOriginalScore = issue.score
-            }
-          }
-          if (worstOriginalScore != null) {
-            readabilityBeforeScores.set(key, {
-              level: 'hard',
-              score: worstOriginalScore,
-            })
-          }
-        }
-      }
-
       const check: FieldCheck = {
         fs,
         fieldType: field.fieldType,
@@ -902,36 +834,6 @@ async function startStreaming() {
   transitionToApproval()
 }
 
-function getReadabilityBefore(itemId: number): number | undefined {
-  const item = completedItems.value.find((i) => i.id === itemId)
-  return item?.readabilityBefore
-}
-
-function getReadabilityAfter(itemId: number): number | undefined {
-  const item = completedItems.value.find((i) => i.id === itemId)
-  return item?.readabilityAfter
-}
-
-function getReadabilityLevel(itemId: number): string | undefined {
-  const item = completedItems.value.find((i) => i.id === itemId)
-  return item?.readabilityLevel
-}
-
-function hasReadabilityScores(itemId: number): boolean {
-  const before = getReadabilityBefore(itemId)
-  const after = getReadabilityAfter(itemId)
-  return before != null || after != null
-}
-
-function readabilityLabel(itemId: number): string {
-  const before = formatScore(getReadabilityBefore(itemId))
-  const after = formatScore(getReadabilityAfter(itemId))
-  if (before && after) return `${before} → ${after}`
-  if (before) return before
-  if (after) return after
-  return ''
-}
-
 function transitionToApproval() {
   let idCounter = 0
   const items: CompletedItem[] = []
@@ -954,7 +856,6 @@ function transitionToApproval() {
     if (override.originalValue === finalValue) continue
 
     const itemId = idCounter++
-    const scoreKey = fs.uuid + ':' + fs.fieldName
 
     items.push({
       id: itemId,
@@ -962,9 +863,6 @@ function transitionToApproval() {
       fieldName: fs.fieldName,
       fieldLabel: fs.fieldLabel,
       value: finalValue,
-      readabilityBefore: readabilityBeforeScores.get(scoreKey)?.score,
-      readabilityAfter: readabilityAfterScores.get(scoreKey)?.score,
-      readabilityLevel: readabilityAfterScores.get(scoreKey)?.level,
     })
 
     beforeValues.set(itemId, override.originalValue)
@@ -1135,21 +1033,6 @@ async function applySelected(data: {
   } else if (rejectedWithoutReason.length > 2) {
     agentMessage +=
       '\nSome changes were rejected without a reason. Ask the user what they would like to change instead.'
-  }
-
-  // Add readability summary to agent message if scores are available.
-  if (isFixReadability) {
-    const allPassed = acceptedItems.every(
-      (item) => item.readabilityLevel !== 'hard',
-    )
-    if (allPassed) {
-      agentMessage += '\nAll accepted fields now meet readability requirements.'
-    } else {
-      const stillHard = acceptedItems.filter(
-        (item) => item.readabilityLevel === 'hard',
-      )
-      agentMessage += `\n${stillHard.length} accepted field(s) still have readability issues despite retries.`
-    }
   }
 
   const _details: StreamTextFieldsDetailItem[] = completedItems.value
