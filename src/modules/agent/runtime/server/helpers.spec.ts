@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { GenericMessage } from '../../src/modules/agent/runtime/server/providers/types'
+import type { GenericMessage } from './providers/types'
 import {
   compressToolResult,
   pruneMessages,
   validateMessages,
   findToolNameForResult,
   type ToolPruningMetadata,
-} from '../../src/modules/agent/runtime/server/helpers'
+} from './helpers'
 
 // Mock the #blokkli-build/agent-server import used by helpers.ts
 vi.mock('#blokkli-build/agent-server', () => ({

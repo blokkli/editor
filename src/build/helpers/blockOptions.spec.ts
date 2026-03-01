@@ -1,6 +1,6 @@
 import { test, describe, expect } from 'vitest'
-import { toRuntimeOptionArray } from '../../src/build/helpers/blockOptions'
-import type { BlockOptionDefinitionBase } from '../../src/global/types/blockOptions'
+import { toRuntimeOptionArray } from './blockOptions'
+import type { BlockOptionDefinitionBase } from '../../global/types/blockOptions'
 
 describe('toRuntimeOptionArray', () => {
   test('converts text option', () => {

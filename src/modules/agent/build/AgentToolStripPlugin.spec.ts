@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { transformToolSource } from '../../src/modules/agent/build/AgentToolStripPlugin'
+import { transformToolSource } from './AgentToolStripPlugin'
 
 // Helper: simulate esbuild output for a tool source.
 // esbuild converts `export default X` → `var stdin_default = X; export { stdin_default as default }`

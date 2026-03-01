@@ -2,7 +2,7 @@
  * @vitest-environment happy-dom
  */
 import { describe, it, expect } from 'vitest'
-import { chunkHtml } from '../../src/runtime/editor/features/analyze/readability/chunkHtml'
+import { chunkHtml } from './chunkHtml'
 
 describe('chunkHtml', () => {
   describe('plain fields', () => {

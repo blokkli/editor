@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createBuiltinReadabilityAnalyzer } from '../../src/runtime/editor/features/analyze/readability/builtinAnalyzer'
-import type { ReadabilityAnalyzer } from '../../src/runtime/editor/features/analyze/readability/types'
+import { createBuiltinReadabilityAnalyzer } from './builtinAnalyzer'
+import type { ReadabilityAnalyzer } from './types'
 
 describe('createBuiltinReadabilityAnalyzer', () => {
   let analyzer: ReadabilityAnalyzer
