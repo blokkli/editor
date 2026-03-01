@@ -157,7 +157,7 @@
   },
   "aiAgentApprovalAccept": {
     "source": "Accept",
-    "translation": ""
+    "translation": "Akzeptieren"
   },
   "aiAgentApprove": {
     "source": "Approve",
@@ -251,6 +251,42 @@
     "source": "Plan: @label",
     "translation": "Plan: @label"
   },
+  "aiAgentDelegateRewriteCancelled": {
+    "source": "Rewriting cancelled",
+    "translation": "Umschreiben abgebrochen"
+  },
+  "aiAgentDelegateRewriteChecking": {
+    "source": "Checking readability...",
+    "translation": "Lesbarkeit wird geprüft..."
+  },
+  "aiAgentDelegateRewriteError": {
+    "source": "Rewriting failed",
+    "translation": "Umschreiben fehlgeschlagen"
+  },
+  "aiAgentDelegateRewriteFailed": {
+    "source": "Rewriting failed",
+    "translation": "Umschreiben fehlgeschlagen"
+  },
+  "aiAgentDelegateRewriteNoChanges": {
+    "source": "No changes detected",
+    "translation": "Keine Änderungen erkannt"
+  },
+  "aiAgentDelegateRewriteRetrying": {
+    "source": "Retrying @count fields (attempt @attempt)...",
+    "translation": "@count Felder werden erneut versucht (Versuch @attempt)..."
+  },
+  "aiAgentDelegateRewriteReview": {
+    "source": "Review @count fields",
+    "translation": "@count Felder überprüfen"
+  },
+  "aiAgentDelegateRewriteRunning": {
+    "source": "Rewriting texts...",
+    "translation": "Texte werden umgeschrieben..."
+  },
+  "aiAgentDelegateRewriteStreaming": {
+    "source": "Rewriting @count fields...",
+    "translation": "@count Felder werden umgeschrieben..."
+  },
   "aiAgentDeleteBlockDone": {
     "source": "Deleted @bundle",
     "translation": "@bundle gelöscht"
@@ -285,7 +321,7 @@
   },
   "aiAgentDropFiles": {
     "source": "Drop files to attach",
-    "translation": ""
+    "translation": "Dateien ablegen zum Anhängen"
   },
   "aiAgentDuplicateBlockDone": {
     "source": "Duplicated @bundle",
@@ -638,42 +674,6 @@
   "aiAgentShowTranscript": {
     "source": "Show transcript...",
     "translation": "Transkript anzeigen..."
-  },
-  "aiAgentStreamTextFieldsCancelled": {
-    "source": "Streaming cancelled",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsChecking": {
-    "source": "Checking readability...",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsError": {
-    "source": "Streaming failed",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsFailed": {
-    "source": "Streaming failed",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsNoChanges": {
-    "source": "No changes detected",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsRetrying": {
-    "source": "Retrying @count fields (attempt @attempt)...",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsReview": {
-    "source": "Review @count fields",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsRunning": {
-    "source": "Streaming text updates...",
-    "translation": ""
-  },
-  "aiAgentStreamTextFieldsStreaming": {
-    "source": "Streaming @count fields...",
-    "translation": ""
   },
   "aiAgentSwapBlocksDone": {
     "source": "Swapped @bundleA and @bundleB",

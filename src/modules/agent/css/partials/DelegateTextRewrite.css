@@ -1,9 +1,9 @@
 .bk {
-  .bk-stream-text-fields-progress {
+  .bk-delegate-text-rewrite-progress {
     @apply flex flex-col gap-3 px-10 py-10;
   }
 
-  .bk-stream-text-fields-progress-item {
+  .bk-delegate-text-rewrite-progress-item {
     @apply flex items-center gap-5 text-sm text-mono-600;
 
     .icon {

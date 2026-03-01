@@ -175,7 +175,7 @@ msgstr "Inhalte werden analysiert..."
 
 msgctxt "aiAgentApprovalAccept"
 msgid "Accept"
-msgstr ""
+msgstr "Akzeptieren"
 
 msgctxt "aiAgentApprove"
 msgid "Approve"
@@ -269,6 +269,42 @@ msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr "Plan: @label"
 
+msgctxt "aiAgentDelegateRewriteCancelled"
+msgid "Rewriting cancelled"
+msgstr "Umschreiben abgebrochen"
+
+msgctxt "aiAgentDelegateRewriteChecking"
+msgid "Checking readability..."
+msgstr "Lesbarkeit wird geprüft..."
+
+msgctxt "aiAgentDelegateRewriteError"
+msgid "Rewriting failed"
+msgstr "Umschreiben fehlgeschlagen"
+
+msgctxt "aiAgentDelegateRewriteFailed"
+msgid "Rewriting failed"
+msgstr "Umschreiben fehlgeschlagen"
+
+msgctxt "aiAgentDelegateRewriteNoChanges"
+msgid "No changes detected"
+msgstr "Keine Änderungen erkannt"
+
+msgctxt "aiAgentDelegateRewriteRetrying"
+msgid "Retrying @count fields (attempt @attempt)..."
+msgstr "@count Felder werden erneut versucht (Versuch @attempt)..."
+
+msgctxt "aiAgentDelegateRewriteReview"
+msgid "Review @count fields"
+msgstr "@count Felder überprüfen"
+
+msgctxt "aiAgentDelegateRewriteRunning"
+msgid "Rewriting texts..."
+msgstr "Texte werden umgeschrieben..."
+
+msgctxt "aiAgentDelegateRewriteStreaming"
+msgid "Rewriting @count fields..."
+msgstr "@count Felder werden umgeschrieben..."
+
 msgctxt "aiAgentDeleteBlockDone"
 msgid "Deleted @bundle"
 msgstr "@bundle gelöscht"
@@ -303,7 +339,7 @@ msgstr "Verbindung wird wiederhergestellt..."
 
 msgctxt "aiAgentDropFiles"
 msgid "Drop files to attach"
-msgstr ""
+msgstr "Dateien ablegen zum Anhängen"
 
 msgctxt "aiAgentDuplicateBlockDone"
 msgid "Duplicated @bundle"
@@ -668,42 +704,6 @@ msgstr "Block-Optionen setzen..."
 msgctxt "aiAgentShowTranscript"
 msgid "Show transcript..."
 msgstr "Transkript anzeigen..."
-
-msgctxt "aiAgentStreamTextFieldsCancelled"
-msgid "Streaming cancelled"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsChecking"
-msgid "Checking readability..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsError"
-msgid "Streaming failed"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsFailed"
-msgid "Streaming failed"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsNoChanges"
-msgid "No changes detected"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsRetrying"
-msgid "Retrying @count fields (attempt @attempt)..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsReview"
-msgid "Review @count fields"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsRunning"
-msgid "Streaming text updates..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsStreaming"
-msgid "Streaming @count fields..."
-msgstr ""
 
 msgctxt "aiAgentSwapBlocksDone"
 msgid "Swapped @bundleA and @bundleB"

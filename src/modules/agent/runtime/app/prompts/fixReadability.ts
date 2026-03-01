@@ -6,7 +6,7 @@ export default defineBlokkliAgentPrompt({
   tools: [
     'get_readability_issues',
     'check_readability_for_texts',
-    'stream_text_fields',
+    'delegate_text_rewrite',
   ],
   getLabel: ({ $t }) => {
     return $t('agentPromptReadabilityLabel', 'Fix readability...')
@@ -45,7 +45,7 @@ export default defineBlokkliAgentPrompt({
         fields.length > 0
           ? [
               {
-                toolName: 'stream_text_fields',
+                toolName: 'delegate_text_rewrite',
                 params: {
                   template: 'fix_readability',
                   templateParams: {},

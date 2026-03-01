@@ -5,11 +5,11 @@
     :title="streamingTitle"
     @cancel="onCancel"
   >
-    <div class="bk-stream-text-fields-progress">
+    <div class="bk-delegate-text-rewrite-progress">
       <div
         v-for="field in fieldStates"
         :key="field.uuid + field.fieldName"
-        class="bk-stream-text-fields-progress-item"
+        class="bk-delegate-text-rewrite-progress-item"
         :class="{
           'bk-is-active': field.status === 'streaming',
           'bk-is-done': field.status === 'done',
@@ -27,7 +27,7 @@
     v-else-if="phase === 'approval' && completedItems.length > 0"
     :items="completedItems"
     :title="
-      $t('aiAgentStreamTextFieldsReview', 'Review @count fields').replace(
+      $t('aiAgentDelegateRewriteReview', 'Review @count fields').replace(
         '@count',
         String(completedItems.length),
       )
@@ -49,7 +49,7 @@
   <ToolCard
     v-if="phase === 'error'"
     icon="bk_mdi_error"
-    :title="$t('aiAgentStreamTextFieldsError', 'Streaming failed')"
+    :title="$t('aiAgentDelegateRewriteError', 'Rewriting failed')"
     @cancel="finishWithError"
   >
     <p>{{ errorMessage }}</p>
@@ -112,7 +112,7 @@ const MAX_READABILITY_RETRIES = 10
 const isFixReadability = props.params.template === 'fix_readability'
 const retryAttempt = ref(0)
 const streamingTitle = ref(
-  $t('aiAgentStreamTextFieldsStreaming', 'Streaming @count fields...').replace(
+  $t('aiAgentDelegateRewriteStreaming', 'Rewriting @count fields...').replace(
     '@count',
     String(props.params.fields.length),
   ),
@@ -659,8 +659,8 @@ async function fetchStream(
       emit('done', {
         acceptedCount: 0,
         rejectedByUser: {},
-        label: $t('aiAgentStreamTextFieldsCancelled', 'Streaming cancelled'),
-        agentMessage: 'Streaming was cancelled by the user.',
+        label: $t('aiAgentDelegateRewriteCancelled', 'Rewriting cancelled'),
+        agentMessage: 'Rewriting was cancelled by the user.',
         _usage: streamUsage.value,
       })
       return false
@@ -679,7 +679,7 @@ async function fetchStream(
 async function readabilityRetryLoop(authToken: string) {
   for (let attempt = 0; attempt < MAX_READABILITY_RETRIES; attempt++) {
     streamingTitle.value = $t(
-      'aiAgentStreamTextFieldsChecking',
+      'aiAgentDelegateRewriteChecking',
       'Checking readability...',
     )
 
@@ -841,7 +841,7 @@ async function readabilityRetryLoop(authToken: string) {
     }
 
     streamingTitle.value = $t(
-      'aiAgentStreamTextFieldsRetrying',
+      'aiAgentDelegateRewriteRetrying',
       'Retrying @count fields (attempt @attempt)...',
     )
       .replace('@count', String(failing.length))
@@ -976,8 +976,8 @@ function transitionToApproval() {
     emit('done', {
       acceptedCount: 0,
       rejectedByUser: {},
-      label: $t('aiAgentStreamTextFieldsNoChanges', 'No changes detected'),
-      agentMessage: 'The streaming produced no changes to any fields.',
+      label: $t('aiAgentDelegateRewriteNoChanges', 'No changes detected'),
+      agentMessage: 'The rewriting produced no changes to any fields.',
       _usage: streamUsage.value,
     })
     return
@@ -1005,8 +1005,8 @@ function onCancel() {
   emit('done', {
     acceptedCount: 0,
     rejectedByUser: {},
-    label: $t('aiAgentStreamTextFieldsCancelled', 'Streaming cancelled'),
-    agentMessage: 'Streaming was cancelled by the user.',
+    label: $t('aiAgentDelegateRewriteCancelled', 'Rewriting cancelled'),
+    agentMessage: 'Rewriting was cancelled by the user.',
     _usage: streamUsage.value,
   })
 }
@@ -1016,8 +1016,8 @@ function finishWithError() {
   emit('done', {
     acceptedCount: 0,
     rejectedByUser: {},
-    label: $t('aiAgentStreamTextFieldsFailed', 'Streaming failed'),
-    agentMessage: `Streaming failed: ${errorMessage.value}`,
+    label: $t('aiAgentDelegateRewriteFailed', 'Rewriting failed'),
+    agentMessage: `Rewriting failed: ${errorMessage.value}`,
     _usage: streamUsage.value,
   })
 }

@@ -8,7 +8,7 @@ export default defineBlokkliAgentSkill({
   tools: [
     'get_readability_issues',
     'check_readability_for_texts',
-    'stream_text_fields',
+    'delegate_text_rewrite',
   ],
   getContents: () => `
 # Fix Readability
@@ -17,9 +17,9 @@ export default defineBlokkliAgentSkill({
 
 Call \`get_readability_issues\` to see current issues. Review the results to decide which fields need fixing.
 
-## Step 2: Fix with \`stream_text_fields\`
+## Step 2: Fix with \`delegate_text_rewrite\`
 
-Call \`stream_text_fields\` with:
+Call \`delegate_text_rewrite\` with:
 - \`template\`: \`"fix_readability"\`
 - \`templateParams\`: \`{}\` (empty — issues are resolved automatically)
 - \`fields\`: array of \`{ uuid, fieldName }\` for the fields you want to fix

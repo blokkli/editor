@@ -5,11 +5,11 @@ export default defineBlokkliAgentSkill({
   label: { en: 'Rewrite and Translate', de: 'Umschreiben und Übersetzen' },
   description:
     'ALWAYS use this skill when asked to rewrite OR translate texts.',
-  tools: ['stream_text_fields', 'update_text_fields'],
+  tools: ['delegate_text_rewrite', 'update_text_fields'],
   getContents: () => `
-## stream_text_fields — Template-Based Streaming
+## delegate_text_rewrite — Template-Based Rewriting
 
-The \`stream_text_fields\` tool uses prompt templates for precise control. Choose the right template:
+The \`delegate_text_rewrite\` tool uses prompt templates for precise control. Choose the right template:
 
 ### \`translate\` template
 For translating text fields to another language. Always uses FULL mode.
@@ -43,7 +43,7 @@ For writing new content for empty fields (e.g. after adding blocks). Optionally 
 
 ## Guidelines
 
-- Prefer \`stream_text_fields\` when rewriting or translating multiple or large text fields — it streams content live into the page for immediate visual feedback.
+- Prefer \`delegate_text_rewrite\` when rewriting or translating multiple or large text fields — it delegates to a specialized sub-agent for live preview.
 - Fall back to \`update_text_fields\` for small/direct text changes where you already have the final values (e.g. fixing a typo, or setting text provided by the user).
 - Use \`update_text_fields\` with \`operations\` (search/replace) for small targeted edits like typo fixes — avoids outputting the entire field value.
 - Use \`operations\` with \`selector: true\` to target a specific HTML element by CSS selector (e.g. \`p:nth-child(3)\`, \`h2\`, \`li:last-child\`) and replace its innerHTML.

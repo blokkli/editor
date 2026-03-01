@@ -266,6 +266,42 @@ msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr ""
 
+msgctxt "aiAgentDelegateRewriteCancelled"
+msgid "Rewriting cancelled"
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteChecking"
+msgid "Checking readability..."
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteError"
+msgid "Rewriting failed"
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteFailed"
+msgid "Rewriting failed"
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteNoChanges"
+msgid "No changes detected"
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteRetrying"
+msgid "Retrying @count fields (attempt @attempt)..."
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteReview"
+msgid "Review @count fields"
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteRunning"
+msgid "Rewriting texts..."
+msgstr ""
+
+msgctxt "aiAgentDelegateRewriteStreaming"
+msgid "Rewriting @count fields..."
+msgstr ""
+
 msgctxt "aiAgentDeleteBlockDone"
 msgid "Deleted @bundle"
 msgstr ""
@@ -654,42 +690,6 @@ msgstr ""
 
 msgctxt "aiAgentShowTranscript"
 msgid "Show transcript..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsCancelled"
-msgid "Streaming cancelled"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsChecking"
-msgid "Checking readability..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsError"
-msgid "Streaming failed"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsFailed"
-msgid "Streaming failed"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsNoChanges"
-msgid "No changes detected"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsRetrying"
-msgid "Retrying @count fields (attempt @attempt)..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsReview"
-msgid "Review @count fields"
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsRunning"
-msgid "Streaming text updates..."
-msgstr ""
-
-msgctxt "aiAgentStreamTextFieldsStreaming"
-msgid "Streaming @count fields..."
 msgstr ""
 
 msgctxt "aiAgentSwapBlocksDone"

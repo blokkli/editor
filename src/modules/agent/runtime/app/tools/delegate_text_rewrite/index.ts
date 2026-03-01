@@ -82,7 +82,7 @@ export type ComponentParams = {
 }
 
 export default defineBlokkliAgentTool({
-  name: 'stream_text_fields',
+  name: 'delegate_text_rewrite',
   description:
     'Rewrite, translate, fix readability, or generate text fields with live streaming preview. Choose a template (fix_readability, translate, rewrite, generate_content) and provide the corresponding templateParams. The content will be streamed live into the page for immediate visual feedback.',
   category: 'mutation',
@@ -91,7 +91,7 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
   label($t) {
-    return $t('aiAgentStreamTextFieldsRunning', 'Streaming text updates...')
+    return $t('aiAgentDelegateRewriteRunning', 'Rewriting texts...')
   },
   paramsSchema,
   resultSchema,
