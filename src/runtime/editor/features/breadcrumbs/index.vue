@@ -1,6 +1,6 @@
 <template>
   <Teleport v-if="ui.mainLayoutElement.value" :to="ui.mainLayoutElement.value">
-    <div class="bk bk-breadcrumbs">
+    <div v-show="!ui.isApproving.value" class="bk bk-breadcrumbs">
       <ul>
         <li>
           <button

@@ -73,7 +73,7 @@
       </div>
 
       <div
-        v-show="!selection.hasHostSelected.value"
+        v-show="!selection.hasHostSelected.value && !ui.isTransforming.value"
         id="bk-blokkli-item-actions"
         class="bk-blokkli-item-actions-buttons"
       />
@@ -127,7 +127,8 @@ const isVisible = computed<boolean>(() => {
     !ui.isAnimating.value &&
     !ui.hasTransformOverlayOpen.value &&
     hasAnythingSelected.value &&
-    !ui.hasTooltipOpen.value
+    !ui.hasTooltipOpen.value &&
+    !ui.isApproving.value
   )
 })
 

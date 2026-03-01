@@ -57,14 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  useBlokkli,
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-} from '#imports'
+import { useBlokkli, ref, reactive, onMounted, onBeforeUnmount } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import TextFieldApproval from '../TextFieldApproval/index.vue'
@@ -379,9 +372,8 @@ async function analyzeReadability(): Promise<
   }
 
   // Call analyzeFieldValues directly to get ALL chunks with scores.
-  const rawAnalysis = await props.context.app.readability.analyzeFieldValues(
-    textFields,
-  )
+  const rawAnalysis =
+    await props.context.app.readability.analyzeFieldValues(textFields)
 
   const bandOrder: Record<string, number> = { easy: 0, ok: 1, hard: 2 }
 
@@ -791,7 +783,9 @@ async function readabilityRetryLoop(authToken: string) {
             : p.proposedValue
         const scoreStr = formatScore(p.score)
         const scoreSuffix = scoreStr ? ` (${scoreStr})` : ''
-        contextParts.push(`- "${p.fs.fieldLabel}": "${truncated}"${scoreSuffix}`)
+        contextParts.push(
+          `- "${p.fs.fieldLabel}": "${truncated}"${scoreSuffix}`,
+        )
       }
       contextParts.push('')
     }
@@ -1188,7 +1182,9 @@ async function applySelected(data: {
   })
 }
 
-function rejectAll() {
+async function rejectAll() {
+  await state.flushDirty()
+
   const rejectedByUser: Record<
     string,
     Record<string, { reasonForRejection: string }>
@@ -1217,7 +1213,15 @@ onBeforeUnmount(() => {
   if (abortController) {
     abortController.abort()
   }
-  restoreAll()
+  // During streaming, setValue updated mutatedItemProps — restore to original.
+  // During approval, mutatedItemProps is already at original (from
+  // transitionToApproval's restoreAll), so we skip to avoid the flash.
+  if (phase.value === 'streaming') {
+    restoreAll()
+  }
+  // Force re-render any blocks whose DOM was manipulated via setDiffHtml.
+  // No-op on the apply path (already flushed inside mutateWithLoadingState).
+  state.flushDirty()
   if (markupFlushTimer) {
     clearTimeout(markupFlushTimer)
   }

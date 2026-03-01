@@ -46,8 +46,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, useBlokkli } from '#imports'
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  useBlokkli,
+} from '#imports'
 import { Icon, FormToggle } from '#blokkli/editor/components'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
 import type { ApprovalItem } from './index.vue'
@@ -128,6 +136,15 @@ watch(currentIndex, () => {
   const item = props.items[currentIndex.value]
   if (item) {
     locateItem(item)
+  }
+})
+
+onBlokkliEvent('editable:focus', (e) => {
+  const index = props.items.findIndex(
+    (item) => item.fieldName === e.fieldName && item.uuid === e.uuid,
+  )
+  if (index !== -1) {
+    currentIndex.value = index
   }
 })
 

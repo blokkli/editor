@@ -2,6 +2,7 @@
   <Component
     :is="component"
     v-if="isProxyMode || isGlobalProxyMode"
+    :key="'component_' + renderKey"
     :bundle="bundle"
     :uuid="uuid"
     :field-list-type="fieldListType"
@@ -12,22 +13,33 @@
     :is="component"
     v-else-if="component"
     v-bind="itemProps"
+    :key="'proxy_' + renderKey"
     :data-bk-in-proxy="fieldUsesProxy || (isEditing ? 'false' : undefined)"
   />
   <Component
     :is="blockNotImplemented"
-    v-else-if="blockNotImplemented"
+    v-else-if="isEditingComponent && blockNotImplemented"
     :uuid
     :bundle
   />
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, inject, defineAsyncComponent } from '#imports'
+import {
+  computed,
+  provide,
+  inject,
+  defineAsyncComponent,
+  ref,
+  getCurrentInstance,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
   INJECT_BLOCK_ITEM,
+  INJECT_EDIT_CONTEXT,
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
   INJECT_FIELD_PROXY_MODE,
@@ -68,6 +80,10 @@ const componentProps = withDefaults(
   },
 )
 
+const renderKey = ref(0)
+
+const isEditingComponent = import.meta.blokkliEditing
+
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
 const mutatedItemProps = inject(INJECT_ITEM_PROPS_OVERRIDE, null)
 const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
@@ -75,6 +91,7 @@ const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
 const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
 const fieldListType = inject(INJECT_FIELD_LIST_TYPE, undefined)
 const providerType = inject(INJECT_PROVIDER_TYPE, undefined)
+const editingContext = inject(INJECT_EDIT_CONTEXT, null)
 
 const itemProps = computed<Record<string, string>>(() => {
   if (mutatedItemProps && componentProps.isEditing) {
@@ -106,7 +123,7 @@ const component =
         allComponentsChunk,
       )
 
-const blockNotImplemented = componentProps.isEditing
+const blockNotImplemented = isEditingComponent
   ? defineAsyncComponent(() => import('./Blocks/NotImplemented/index.vue'))
   : null
 
@@ -129,6 +146,25 @@ provide(INJECT_ENTITY_CONTEXT, {
   type: itemEntityType,
   bundle: componentProps.bundle,
 })
+
+if (isEditingComponent && editingContext) {
+  const instance = getCurrentInstance()
+
+  if (instance) {
+    function onForceRerender(uuids: string[]) {
+      if (uuids.includes(componentProps.uuid)) {
+        renderKey.value++
+      }
+    }
+    onMounted(() => {
+      editingContext.eventBus.on('block:rerender', onForceRerender)
+    })
+
+    onBeforeUnmount(() => {
+      editingContext.eventBus.off('block:rerender', onForceRerender)
+    })
+  }
+}
 </script>
 
 <script lang="ts">

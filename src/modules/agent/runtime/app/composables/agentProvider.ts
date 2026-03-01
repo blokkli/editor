@@ -6,6 +6,8 @@ import {
   type ActiveItem,
   type MutationAction,
   type McpToolDefinition,
+  type PreSeededToolResult,
+  type AutoExecuteTool,
 } from '#blokkli/agent/app/types'
 import type {
   ServerMessage,
@@ -33,6 +35,7 @@ import {
   resolveTools,
 } from '#blokkli/agent/app/helpers'
 import { mcpTools } from '#blokkli-build/agent-client'
+import type { AgentToolName, AgentToolMap } from '#blokkli-build/agent-client'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
@@ -91,7 +94,15 @@ export type AgentProvider = {
     displayPrompt?: string,
     selectedUuids?: string[],
     attachments?: Attachment[],
+    autoLoadTools?: string[],
+    autoLoadSkills?: string[],
+    preSeededResults?: PreSeededToolResult[],
+    autoExecuteTools?: AutoExecuteTool[],
   ) => void
+  runToolForPrompt: <T extends AgentToolName>(
+    toolName: T,
+    params: AgentToolMap[T]['params'],
+  ) => Promise<PreSeededToolResult & { result: AgentToolMap[T]['result'] }>
   retry: () => void
   approve: () => void
   reject: () => void
@@ -145,6 +156,10 @@ export default function (
     displayPrompt?: string
     selectedUuids?: string[]
     attachments?: Attachment[]
+    autoLoadTools?: string[]
+    autoLoadSkills?: string[]
+    preSeededResults?: PreSeededToolResult[]
+    autoExecuteTools?: AutoExecuteTool[]
   } | null = null
   let pendingInit: {
     toolNames: string[]
@@ -578,10 +593,27 @@ export default function (
     }
 
     if (pendingPrompt) {
-      const { prompt, displayPrompt, selectedUuids, attachments } =
-        pendingPrompt
+      const {
+        prompt,
+        displayPrompt,
+        selectedUuids,
+        attachments,
+        autoLoadTools,
+        autoLoadSkills,
+        preSeededResults,
+        autoExecuteTools,
+      } = pendingPrompt
       pendingPrompt = null
-      sendPrompt(prompt, displayPrompt, selectedUuids, attachments)
+      sendPrompt(
+        prompt,
+        displayPrompt,
+        selectedUuids,
+        attachments,
+        autoLoadTools,
+        autoLoadSkills,
+        preSeededResults,
+        autoExecuteTools,
+      )
     }
   }
 
@@ -1041,6 +1073,24 @@ export default function (
     }
   }
 
+  /**
+   * Execute a tool locally for use in prompt preExecute callbacks.
+   * Returns a PreSeededToolResult that can be passed directly into preSeededResults.
+   */
+  async function runToolForPrompt<T extends AgentToolName>(
+    toolName: T,
+    params: AgentToolMap[T]['params'],
+  ) {
+    const ctx = createToolContext()
+    const toolDef = getToolDefinition(toolMap, toolName)
+    const rawResult = await executeTool(toolMap, toolName, ctx, params)
+    const label = isQueryResult(rawResult) ? rawResult.label : toolDef.label($t)
+    const result = isQueryResult(rawResult)
+      ? (rawResult.result as AgentToolMap[T]['result'])
+      : (rawResult as AgentToolMap[T]['result'])
+    return { toolName, params, result, label }
+  }
+
   function waitForToolComponent(
     toolName: string,
     params: Record<string, unknown>,
@@ -1213,11 +1263,24 @@ export default function (
     displayPrompt?: string,
     selectedUuids?: string[],
     attachments?: Attachment[],
+    autoLoadTools?: string[],
+    autoLoadSkills?: string[],
+    preSeededResults?: PreSeededToolResult[],
+    autoExecuteTools?: AutoExecuteTool[],
   ) {
     if (!prompt.trim() || isProcessing.value) return
 
     if (!isReady.value) {
-      pendingPrompt = { prompt, displayPrompt, selectedUuids, attachments }
+      pendingPrompt = {
+        prompt,
+        displayPrompt,
+        selectedUuids,
+        attachments,
+        autoLoadTools,
+        autoLoadSkills,
+        preSeededResults,
+        autoExecuteTools,
+      }
       return
     }
 
@@ -1226,6 +1289,21 @@ export default function (
     // Ensure we have a conversation ID
     if (!activeConversationId.value) {
       activeConversationId.value = generateUUID()
+    }
+
+    // Add pre-seeded results as completed tool items in conversation UI
+    if (preSeededResults?.length) {
+      for (const preSeeded of preSeededResults) {
+        conversation.value.push({
+          type: 'tool',
+          id: generateId(),
+          callId: `preseed_${generateId()}`,
+          tool: preSeeded.toolName,
+          label: preSeeded.label,
+          status: 'success',
+          timestamp: Date.now(),
+        })
+      }
     }
 
     const item: ConversationItem = {
@@ -1239,10 +1317,23 @@ export default function (
     }
     conversation.value.push(item)
 
+    // Strip client-only `label` from preSeededResults before sending to server
+    const serverPreSeeded = preSeededResults?.length
+      ? preSeededResults.map(({ toolName, params, result }) => ({
+          toolName,
+          params,
+          result,
+        }))
+      : undefined
+
     send({
       type: 'start',
       prompt,
       selectedUuids: selectedUuids?.length ? selectedUuids : undefined,
+      autoLoadTools: autoLoadTools?.length ? autoLoadTools : undefined,
+      autoLoadSkills: autoLoadSkills?.length ? autoLoadSkills : undefined,
+      preSeededResults: serverPreSeeded,
+      autoExecuteTools: autoExecuteTools?.length ? autoExecuteTools : undefined,
     })
   }
 
@@ -1391,6 +1482,7 @@ export default function (
 
     // Actions
     sendPrompt,
+    runToolForPrompt,
     retry,
     approve,
     reject,

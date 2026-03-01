@@ -179,6 +179,17 @@ export class Session {
     apiKey: string,
     authSecret: string,
     selectedUuids?: string[],
+    autoLoadTools?: string[],
+    autoLoadSkills?: string[],
+    preSeededResults?: {
+      toolName: string
+      params: Record<string, unknown>
+      result: unknown
+    }[],
+    autoExecuteTools?: {
+      toolName: string
+      params: Record<string, unknown>
+    }[],
   ): void {
     if (this.isProcessing) {
       send(peer, {
@@ -188,7 +199,17 @@ export class Session {
       })
       return
     }
-    this.runAgentLoop(peer, prompt, apiKey, authSecret, selectedUuids)
+    this.runAgentLoop(
+      peer,
+      prompt,
+      apiKey,
+      authSecret,
+      selectedUuids,
+      autoLoadTools,
+      autoLoadSkills,
+      preSeededResults,
+      autoExecuteTools,
+    )
   }
 
   resolveToolResult(
@@ -410,6 +431,17 @@ export class Session {
     apiKey: string,
     authSecret: string,
     selectedUuids?: string[],
+    autoLoadTools?: string[],
+    autoLoadSkills?: string[],
+    preSeededResults?: {
+      toolName: string
+      params: Record<string, unknown>
+      result: unknown
+    }[],
+    autoExecuteTools?: {
+      toolName: string
+      params: Record<string, unknown>
+    }[],
   ): Promise<void> {
     if (this.toolNames.length === 0) {
       send(peer, {
@@ -434,6 +466,47 @@ export class Session {
     // Resolve skills for this page context
     const resolvedSkills = resolveSkills(this.pageContext)
 
+    // Auto-activate lazy tools requested by the prompt
+    if (autoLoadTools?.length) {
+      for (const name of autoLoadTools) {
+        if (
+          this.lazyToolNames.includes(name) &&
+          !this.activatedLazyTools.has(name)
+        ) {
+          this.activatedLazyTools.add(name)
+        }
+      }
+    }
+
+    // Auto-load skills requested by the prompt
+    const autoLoadedSkillBlocks: GenericSkillBlock[] = []
+    if (autoLoadSkills?.length) {
+      for (const skillName of autoLoadSkills) {
+        const skill = resolvedSkills.find((s) => s.name === skillName)
+        if (!skill || this.loadedSkills.has(skill.name)) continue
+        this.loadedSkills.add(skill.name)
+        // Auto-activate tools declared by the skill
+        for (const toolName of skill.tools) {
+          if (
+            this.lazyToolNames.includes(toolName) &&
+            !this.activatedLazyTools.has(toolName)
+          ) {
+            this.activatedLazyTools.add(toolName)
+          }
+        }
+        send(peer, {
+          type: 'server_tool_result',
+          tool: 'load_skills',
+          label: skill.label,
+        })
+        autoLoadedSkillBlocks.push({
+          type: 'skill',
+          name: skill.name,
+          text: `# Skill: ${skill.name}\n\n${skill.content}`,
+        })
+      }
+    }
+
     // Build initial user message with context
     const userParts: string[] = []
 
@@ -445,11 +518,145 @@ export class Session {
 
     userParts.push(prompt)
 
-    const userMessage: GenericMessage = {
-      role: 'user',
-      content: userParts.join('\n\n'),
-    }
+    const userMessage: GenericMessage =
+      autoLoadedSkillBlocks.length > 0
+        ? {
+            role: 'user',
+            content: [
+              ...autoLoadedSkillBlocks,
+              { type: 'text', text: userParts.join('\n\n') },
+            ],
+          }
+        : { role: 'user', content: userParts.join('\n\n') }
     this.messages.push(userMessage)
+
+    // Inject pre-seeded tool results as synthetic assistant/user message pairs.
+    // These appear in the conversation history so the LLM sees the analysis
+    // without needing to call the tools itself.
+    if (preSeededResults?.length) {
+      for (let i = 0; i < preSeededResults.length; i++) {
+        const preSeeded = preSeededResults[i]!
+        const toolUseId = `preseed_${i}`
+        this.messages.push({
+          role: 'assistant',
+          content: [
+            {
+              type: 'tool_use',
+              id: toolUseId,
+              name: preSeeded.toolName,
+              input: preSeeded.params,
+            },
+          ],
+        })
+        this.messages.push({
+          role: 'user',
+          content: [
+            {
+              type: 'tool_result',
+              tool_use_id: toolUseId,
+              content: JSON.stringify(preSeeded.result),
+            },
+          ],
+        })
+      }
+    }
+
+    // Auto-execute tools: dispatch to client via normal tool_call flow and
+    // wait for results before the LLM loop starts.
+    if (autoExecuteTools?.length) {
+      for (let i = 0; i < autoExecuteTools.length; i++) {
+        const autoTool = autoExecuteTools[i]!
+        const callId = `auto_${i}`
+        const toolUseId = `auto_tu_${i}`
+
+        send(peer, {
+          type: 'tool_call',
+          callId,
+          tool: autoTool.toolName,
+          params: autoTool.params,
+        })
+
+        try {
+          const clientResult = await this.waitForToolResult(callId)
+
+          this.messages.push({
+            role: 'assistant',
+            content: [
+              {
+                type: 'tool_use',
+                id: toolUseId,
+                name: autoTool.toolName,
+                input: autoTool.params,
+              },
+            ],
+          })
+
+          if (clientResult.error) {
+            this.messages.push({
+              role: 'user',
+              content: [
+                {
+                  type: 'tool_result',
+                  tool_use_id: toolUseId,
+                  content: JSON.stringify({ error: clientResult.error }),
+                  is_error: true,
+                },
+              ],
+            })
+          } else {
+            let resultForLLM = clientResult.result
+            if (
+              typeof resultForLLM === 'object' &&
+              resultForLLM !== null &&
+              'agentMessage' in resultForLLM
+            ) {
+              const { agentMessage, ...rest } = resultForLLM as Record<
+                string,
+                unknown
+              >
+              resultForLLM = { ...rest, label: agentMessage }
+            }
+            this.messages.push({
+              role: 'user',
+              content: [
+                {
+                  type: 'tool_result',
+                  tool_use_id: toolUseId,
+                  content: JSON.stringify(resultForLLM),
+                },
+              ],
+            })
+          }
+        } catch {
+          // Client disconnected or cancelled — inject error result so the
+          // LLM can see the failure and decide what to do.
+          this.messages.push({
+            role: 'assistant',
+            content: [
+              {
+                type: 'tool_use',
+                id: toolUseId,
+                name: autoTool.toolName,
+                input: autoTool.params,
+              },
+            ],
+          })
+          this.messages.push({
+            role: 'user',
+            content: [
+              {
+                type: 'tool_result',
+                tool_use_id: toolUseId,
+                content: JSON.stringify({
+                  error: 'Auto-executed tool call was cancelled.',
+                }),
+                is_error: true,
+              },
+            ],
+          })
+        }
+      }
+    }
 
     this.abortController = new AbortController()
     this.isProcessing = true

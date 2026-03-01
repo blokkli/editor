@@ -4,10 +4,12 @@ import * as path from 'node:path'
 import { CollectedFile, Collector } from '../../../build/Collector'
 import type { TemplateDependency } from '../../../build/templates/defineTemplate'
 import type { ModuleHelper } from '../../../build/ModuleHelper'
+import { extractStringProperty } from '../../../build/helpers'
 
 export type ExtractedItem = {
   filePath: string
   importName: string
+  name?: string
 }
 
 export type AgentCollectorOptions = {
@@ -62,9 +64,16 @@ class CollectedAgentFile extends CollectedFile {
         : fileName
     const importName = toImportName(this.importPrefix, baseName)
 
+    const name = extractStringProperty(
+      this.fileContents,
+      [this.composable],
+      'name',
+    )
+
     this.item = {
       filePath: this.filePath,
       importName,
+      name,
     }
 
     return true
@@ -151,5 +160,14 @@ export class AgentCollector extends Collector<CollectedAgentFile> {
     return [...this.files.values()]
       .filter((v) => v.isValid())
       .map((v) => v.getItem()!)
+  }
+
+  /**
+   * Get the extracted `name` values from all valid items.
+   */
+  getNames(): string[] {
+    return this.getItems()
+      .filter((item) => item.name !== undefined)
+      .map((item) => item.name!)
   }
 }

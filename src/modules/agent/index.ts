@@ -106,11 +106,6 @@ export default defineNuxtConfig({
     })
     ctx.context.addCollector(promptsCollector)
 
-    // Register client template for MCP tools and prompts
-    ctx.context.addTemplate(
-      createClientTemplate(mcpTools, promptsCollector, options),
-    )
-
     // Add project tools directory to app TypeScript includes (client-side code)
     const relativeToolsDir = path.relative(
       nuxt.options.buildDir,
@@ -154,6 +149,16 @@ export default defineNuxtConfig({
       ],
     })
     ctx.context.addCollector(skillsCollector)
+
+    // Register client template for MCP tools, prompts, and skills
+    ctx.context.addTemplate(
+      createClientTemplate(
+        mcpTools,
+        promptsCollector,
+        skillsCollector,
+        options,
+      ),
+    )
 
     // Initialize system prompt collector with both module and project directories
     const moduleSystemPromptsDir = moduleResolver.resolve(

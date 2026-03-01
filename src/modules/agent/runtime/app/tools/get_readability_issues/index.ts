@@ -13,7 +13,14 @@ const fieldResultSchema = z.object({
   issues: z.array(issueSchema),
 })
 
-const paramsSchema = z.object({})
+const paramsSchema = z.object({
+  uuids: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Optional list of paragraph UUIDs to return results for. If omitted, returns results for all paragraphs.',
+    ),
+})
 
 const resultSchema = z.record(
   z.string(),
@@ -45,10 +52,18 @@ export default defineBlokkliAgentTool({
   },
   paramsSchema,
   resultSchema,
-  async execute(ctx) {
+  async execute(ctx, params) {
     const { $t } = ctx.app
 
-    const result: Result = await runReadabilityAnalysis(ctx.app)
+    const allResults: Result = await runReadabilityAnalysis(ctx.app)
+
+    const result: Result = params.uuids
+      ? Object.fromEntries(
+          params.uuids
+            .filter((uuid) => uuid in allResults)
+            .map((uuid) => [uuid, allResults[uuid]!]),
+        )
+      : allResults
 
     let issueCount = 0
     for (const fields of Object.values(result)) {

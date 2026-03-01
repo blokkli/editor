@@ -8,6 +8,7 @@ import type { AgentModuleOptions } from '../types'
 export default function (
   toolCollector: AgentCollector,
   promptCollector: AgentCollector,
+  skillsCollector: AgentCollector,
   options: AgentModuleOptions,
 ) {
   return defineCodeTemplate(
@@ -63,6 +64,14 @@ export default function (
         `export const hasWebFetch = ${JSON.stringify(!!options.allowedFetchOrigins)}`,
       )
 
+      // Tool and skill name arrays for auto-loading
+      exports.push(
+        `export const toolNames = ${JSON.stringify(toolCollector.getNames())}`,
+      )
+      exports.push(
+        `export const skillNames = ${JSON.stringify(skillsCollector.getNames())}`,
+      )
+
       const parts: string[] = []
       if (imports.length > 0) {
         parts.push(imports.join('\n'))
@@ -71,9 +80,52 @@ export default function (
 
       return parts.join('\n\n') + '\n'
     },
-    () => {
-      return `import type { McpToolDefinition, AgentPromptItem } from '#blokkli/agent/app/types'
+    (ctx) => {
+      const tools = toolCollector.getItems()
+      const skillNamesList = skillsCollector.getNames()
+
+      const rel = (p: string) =>
+        ctx.helper.toModuleBuildRelative(p).replace(/\.ts$/, '')
+
+      const agentSkillNameType =
+        skillNamesList.length > 0
+          ? skillNamesList.map((n) => `'${n}'`).join(' | ')
+          : 'string'
+
+      // Generate per-tool type map using typeof import() to preserve
+      // the exact paramsSchema/resultSchema generic arguments.
+      const toolsWithNames = tools.filter((t) => t.name !== undefined)
+      let toolMapBlock: string
+      let agentToolNameType: string
+
+      if (toolsWithNames.length > 0) {
+        const entries = toolsWithNames
+          .map((t) => {
+            const importPath = rel(t.filePath)
+            return `  '${t.name}': {
+    params: _ToolParams<typeof import('${importPath}')['default']>
+    result: _ToolResult<typeof import('${importPath}')['default']>
+  }`
+          })
+          .join('\n')
+        toolMapBlock = `export interface AgentToolMap {\n${entries}\n}`
+        agentToolNameType = 'keyof AgentToolMap'
+      } else {
+        toolMapBlock = `export type AgentToolMap = Record<string, { params: Record<string, unknown>; result: unknown }>`
+        agentToolNameType = 'string'
+      }
+
+      return `import type { z } from 'zod'
+import type { McpToolDefinition, AgentPromptItem } from '#blokkli/agent/app/types'
 import type { AgentModelDefinition } from '#blokkli/agent/shared/types'
+
+type _ToolParams<T> = T extends { paramsSchema: infer P extends z.ZodType } ? z.infer<P> : never
+type _ToolResult<T> = T extends { resultSchema: infer R extends z.ZodType } ? z.infer<R> : never
+
+${toolMapBlock}
+
+export type AgentToolName = ${agentToolNameType}
+export type AgentSkillName = ${agentSkillNameType}
 
 export const mcpTools: McpToolDefinition[]
 export const agentPrompts: AgentPromptItem[]
@@ -81,6 +133,8 @@ export const defaultPrompts: string[]
 export const agentName: string
 export const models: AgentModelDefinition[]
 export const hasWebFetch: boolean
+export const toolNames: readonly AgentToolName[]
+export const skillNames: readonly AgentSkillName[]
 `
     },
   )

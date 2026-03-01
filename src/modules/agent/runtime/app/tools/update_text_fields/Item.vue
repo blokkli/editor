@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="bk-batch-rewrite-item"
-    :class="{ 'bk-is-deselected': !selected }"
-  >
+  <div class="bk-batch-rewrite-item" :class="{ 'bk-is-deselected': !selected }">
     <div class="bk-batch-rewrite-item-header">
       <label class="bk-checkbox">
         <input type="checkbox" :checked="selected" @change="onChange" />
@@ -34,12 +31,12 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onBeforeUnmount, useBlokkli, computed } from '#imports'
+import { watch, useBlokkli, computed } from '#imports'
 import { FlexTextarea, Icon } from '#blokkli/editor/components'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
-import diff from 'html-diff-ts'
+import { computeDiff } from '#blokkli/editor/helpers/diff'
 
 const props = defineProps<{
   uuid: string
@@ -81,7 +78,9 @@ const plainText = (() => {
   return tmp.textContent || ''
 })()
 
-const diffHtml = computed(() => diff(override.originalValue, props.newValue))
+const diffHtml = computed(() =>
+  computeDiff(override.originalValue, props.newValue),
+)
 
 function applyOverride() {
   if (selected.value) {
@@ -111,10 +110,5 @@ function onChange() {
 // Toggle preview when selection changes.
 watch(selected, () => {
   applyOverride()
-})
-
-// Restore on unmount.
-onBeforeUnmount(() => {
-  override.restore()
 })
 </script>

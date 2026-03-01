@@ -84,7 +84,12 @@ async function analyzeViaProvider(
       }
 
       nodes.push({
-        description: buildDescription(chunk.score, analyzer.scoreLabel, langcode, $t),
+        description: buildDescription(
+          chunk.score,
+          analyzer.scoreLabel,
+          langcode,
+          $t,
+        ),
         impact: analyzer.impactForScore(chunk.score),
         score: chunk.score,
         targets,

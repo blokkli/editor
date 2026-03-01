@@ -313,7 +313,7 @@ onBlokkliEvent('state:reloaded', async function () {
     return
   }
 
-  eventBus.emit('editable:focus', {
+  eventBus.emit('editable:open', {
     fieldName: editableField,
     uuid: newUuid,
   })

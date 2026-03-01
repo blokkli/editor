@@ -317,6 +317,24 @@ export type StateProvider = {
    * @returns The parent entity UUID, or null if block not found
    */
   getParentEntityUuid: (uuid: string) => string | null
+
+  /**
+   * Mark block UUIDs as dirty for forced re-render.
+   *
+   * When code bypasses Vue's reactivity (e.g. direct innerHTML writes),
+   * the VDOM gets out of sync with the actual DOM.  Calling markDirty
+   * schedules a forced re-render for the given blocks after the next
+   * successful mutation.
+   */
+  markDirty: (...uuids: string[]) => void
+
+  /**
+   * Force re-render all blocks marked as dirty.
+   *
+   * Call this when cancelling an operation that used setDiffHtml to restore
+   * the DOM from reactive state without going through a mutation.
+   */
+  flushDirty: () => Promise<void>
 }
 
 export default async function (
@@ -327,6 +345,24 @@ export default async function (
   providerKey: string,
   permissions: EditPermission[],
 ): Promise<StateProvider> {
+  const dirtyUuids = new Set<string>()
+
+  function markDirty(...uuids: string[]) {
+    for (const uuid of uuids) {
+      dirtyUuids.add(uuid)
+    }
+  }
+
+  async function flushDirty() {
+    if (dirtyUuids.size === 0) {
+      return
+    }
+    const uuids = [...dirtyUuids]
+    dirtyUuids.clear()
+    await nextTick()
+    eventBus.emit('block:rerender', uuids)
+  }
+
   let _mappedState: MappedState | null = null
   const overrideHostOptions = useState('options:' + providerKey)
   const stateLoaded = ref(false)
@@ -686,6 +722,8 @@ export default async function (
         throw new Error(errorMessage)
       }
 
+      await flushDirty()
+
       if (successMessage) {
         emitMessage(successMessage)
       }
@@ -817,5 +855,7 @@ export default async function (
     permissions: computed(() => permissions),
     getFieldKeyForUuid,
     getParentEntityUuid,
+    markDirty,
+    flushDirty,
   }
 }

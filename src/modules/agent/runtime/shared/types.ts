@@ -508,6 +508,25 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
     type: z.literal('start'),
     prompt: z.string(),
     selectedUuids: z.array(z.string()).optional(),
+    autoLoadTools: z.array(z.string()).optional(),
+    autoLoadSkills: z.array(z.string()).optional(),
+    preSeededResults: z
+      .array(
+        z.object({
+          toolName: z.string(),
+          params: z.record(z.string(), z.unknown()),
+          result: z.unknown(),
+        }),
+      )
+      .optional(),
+    autoExecuteTools: z
+      .array(
+        z.object({
+          toolName: z.string(),
+          params: z.record(z.string(), z.unknown()),
+        }),
+      )
+      .optional(),
   }),
   z.object({
     type: z.literal('tool_result'),

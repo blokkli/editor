@@ -60,10 +60,7 @@ export type ReadabilityAnalyzer = {
    * Score an array of plain-text strings.
    * Returns one primary score per input text (null if not scorable).
    */
-  analyze(
-    texts: string[],
-    langcode: string,
-  ): Promise<(number | null)[]>
+  analyze(texts: string[], langcode: string): Promise<(number | null)[]>
 
   /**
    * Classify a score into a readability band.

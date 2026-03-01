@@ -274,6 +274,7 @@ export interface EventbusEvents {
   'plugin:mount': PluginMountEvent
   'plugin:unmount': PluginUnmountEvent
 
+  'editable:open': EditableFieldFocusEvent
   'editable:focus': EditableFieldFocusEvent
   'editable:update': EditableFieldUpdateEvent
   'editable:save': undefined
@@ -288,6 +289,7 @@ export interface EventbusEvents {
   'animator:add': AnimatorAddEvent
 
   'ui:resized': undefined
+  'ui:update-rects': undefined
   'add-list:change': undefined
   'window:clickAway': undefined
 
@@ -304,6 +306,8 @@ export interface EventbusEvents {
    * Emitted when editing a fragment provided by a feature.
    */
   'fragment:edit': { name: string; uuid: string }
+
+  'block:rerender': string[]
 }
 
 type EventbusEventsType = {

@@ -161,6 +161,10 @@ export function useEditableFieldOverride(
     // changed, Vue won't re-render and overwrite the DOM during the approval
     // phase.
     element.innerHTML = html
+
+    // Mark the block as dirty so that the state provider forces a re-render
+    // after the next mutation, fixing the VDOM/DOM mismatch we just created.
+    state.markDirty(host.uuid)
   }
 
   function restore(): void {

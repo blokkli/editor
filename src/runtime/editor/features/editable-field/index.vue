@@ -127,7 +127,7 @@ const buildEditable = (
   }
 }
 
-onBlokkliEvent('editable:focus', (e) => {
+onBlokkliEvent('editable:open', (e) => {
   if (!state.canEdit.value) {
     return
   }

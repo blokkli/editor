@@ -8,6 +8,11 @@ import type { EditMode } from '#blokkli/editor/types/state'
 import { agentErrorTypeSchema } from '#blokkli/agent/shared/types'
 import { z } from 'zod'
 import type { Component } from 'vue'
+import type {
+  AgentToolName,
+  AgentSkillName,
+  AgentToolMap,
+} from '#blokkli-build/agent-client'
 
 // ============================================================================
 // Tool Definitions - Common Types
@@ -301,6 +306,27 @@ export type McpToolDefinition<
 // ============================================================================
 
 /**
+ * A tool result that was pre-computed client-side before the prompt is sent.
+ * Injected into conversation history as synthetic assistant/user message pairs.
+ */
+export type PreSeededToolResult = {
+  toolName: string
+  params: Record<string, unknown>
+  result: unknown
+  /** Human-readable label for display in the conversation UI (client-only). */
+  label: string
+}
+
+/**
+ * A tool call to dispatch to the client before the LLM loop starts.
+ * The server sends it as a normal tool_call and waits for the result.
+ */
+export type AutoExecuteTool = {
+  toolName: string
+  params: Record<string, unknown>
+}
+
+/**
  * A pre-defined agent prompt that users can select.
  */
 export type AgentPromptDefinition = {
@@ -312,6 +338,26 @@ export type AgentPromptDefinition = {
   getPrompt: (app: BlokkliApp) => string
   /** Optional: returns the prompt text shown in the conversation UI. Defaults to getPrompt. */
   getUserPrompt?: (app: BlokkliApp) => string
+  /** Lazy tool names to auto-activate when this prompt is sent. */
+  tools?: AgentToolName[]
+  /** Skill names to auto-load when this prompt is sent. */
+  skills?: AgentSkillName[]
+  /**
+   * Optional async callback that runs client-side before the prompt is sent.
+   * Can pre-compute tool results and declare tool calls to auto-dispatch,
+   * saving LLM round trips for predictable tool sequences.
+   */
+  preExecute?: (ctx: {
+    app: BlokkliApp
+    selectedUuids: string[]
+    runTool: <T extends AgentToolName>(
+      toolName: T,
+      params: AgentToolMap[T]['params'],
+    ) => Promise<PreSeededToolResult & { result: AgentToolMap[T]['result'] }>
+  }) => Promise<{
+    preSeededResults?: PreSeededToolResult[]
+    autoExecuteTools?: AutoExecuteTool[]
+  } | void>
 }
 
 /**

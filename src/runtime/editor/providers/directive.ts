@@ -454,6 +454,7 @@ export default function (
   })
   onBlokkliEvent('ui:resized', handleRefresh)
   onBlokkliEvent('option:finish-change', handleRefresh)
+  onBlokkliEvent('ui:update-rects', handleRefresh)
 
   onMounted(() => {
     doInitTimeout()

@@ -69,7 +69,7 @@ import {
 } from '#imports'
 import type { FieldListItem, EntityContext } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
-import BlokkliItem from './../../components/BlokkliItem.vue'
+import BlokkliItem from './../../components/BlokkliItem.vue?blokkliEditing=true'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import {
   INJECT_FIELD_PROXY_MODE,

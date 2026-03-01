@@ -21,9 +21,16 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
         if (search && pathname.endsWith('.vue')) {
           const query = parseQuery(search)
           if (query.blokkliEditing === 'true') {
+            // Resolve relative paths against the importer directory.
+            let resolved = pathname
+            if (importer && pathname.startsWith('.')) {
+              const importerBase = importer.split('?')[0] || ''
+              resolved = resolve(dirname(importerBase), pathname)
+            }
+
             // Return a modified path that Vue's plugin will still recognize as
             // a .vue file, but is distinct from the original.
-            return pathname.replace(/\.vue$/, `${EDITING_MARKER}.vue`)
+            return resolved.replace(/\.vue$/, `${EDITING_MARKER}.vue`)
           }
         }
 

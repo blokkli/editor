@@ -5,6 +5,7 @@
         definition &&
         !selection.isDragging.value &&
         !ui.isAnimating.value &&
+        !ui.isTransforming.value &&
         uuids
       "
       :key="key + state.refreshKey.value + ui.isAnimating.value"

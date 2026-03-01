@@ -1,8 +1,5 @@
 import type { AnalyzeImpact } from '../analyzers/types'
-import type {
-  ReadabilityAnalyzer,
-  ReadabilityBand,
-} from './types'
+import type { ReadabilityAnalyzer, ReadabilityBand } from './types'
 import type { Language, TextReadability } from '@lunarisapp/readability'
 
 type LangCode = 'en' | 'de' | 'fr' | 'it'
@@ -31,11 +28,14 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
     bands: { easy: 40, ok: 59 },
     impactThresholds: [50, 60, 70],
     referenceTable: [
-      { range: 'Below 25', label: 'Very easy (children\'s books)' },
+      { range: 'Below 25', label: "Very easy (children's books)" },
       { range: '25–40', label: 'Easy (simple articles)' },
       { range: '40–50', label: 'Medium (newspapers)' },
       { range: '50–60', label: 'Difficult (official documents)' },
-      { range: 'Above 60', label: 'Very difficult — this is what gets flagged' },
+      {
+        range: 'Above 60',
+        label: 'Very difficult — this is what gets flagged',
+      },
       { range: 'Above 70', label: 'Critical — must be simplified' },
     ],
   },
@@ -50,7 +50,10 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
       { range: '6–8', label: 'Easy (simple articles)' },
       { range: '8–10', label: 'Medium (newspapers)' },
       { range: '10–12', label: 'Difficult (official documents)' },
-      { range: 'Above 12', label: 'Very difficult — this is what gets flagged' },
+      {
+        range: 'Above 12',
+        label: 'Very difficult — this is what gets flagged',
+      },
       { range: 'Above 14', label: 'Critical — must be simplified' },
     ],
   },
@@ -61,11 +64,14 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
     bands: { easy: 40, ok: 59 },
     impactThresholds: [50, 60, 70],
     referenceTable: [
-      { range: 'Below 25', label: 'Very easy (children\'s books)' },
+      { range: 'Below 25', label: "Very easy (children's books)" },
       { range: '25–40', label: 'Easy (simple articles)' },
       { range: '40–50', label: 'Medium (newspapers)' },
       { range: '50–60', label: 'Difficult (official documents)' },
-      { range: 'Above 60', label: 'Very difficult — this is what gets flagged' },
+      {
+        range: 'Above 60',
+        label: 'Very difficult — this is what gets flagged',
+      },
       { range: 'Above 70', label: 'Critical — must be simplified' },
     ],
   },
@@ -76,11 +82,14 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
     bands: { easy: 80, ok: 60 },
     impactThresholds: [60, 50, 40],
     referenceTable: [
-      { range: 'Above 80', label: 'Very easy (children\'s books)' },
+      { range: 'Above 80', label: "Very easy (children's books)" },
       { range: '60–80', label: 'Easy (simple articles)' },
       { range: '50–60', label: 'Medium (newspapers)' },
       { range: '40–50', label: 'Difficult (official documents)' },
-      { range: 'Below 40', label: 'Very difficult — this is what gets flagged' },
+      {
+        range: 'Below 40',
+        label: 'Very difficult — this is what gets flagged',
+      },
       { range: 'Below 30', label: 'Critical — must be simplified' },
     ],
   },
@@ -119,12 +128,6 @@ function segmentWords(text: string): string[] {
     return out
   }
   return text.match(/\p{Letter}+(?:'\p{Letter}+)?/gu) ?? []
-}
-
-function countSentences(text: string): number {
-  const m = text.match(/[.!?…]+["')\]]*(\s+|$)/g)
-  if (m?.length) return m.length
-  return /\p{Letter}/u.test(text) ? 1 : 0
 }
 
 function safe(fn: () => number): number | undefined {

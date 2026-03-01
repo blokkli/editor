@@ -1,7 +1,7 @@
 /* Diff display in the artboard (page content), outside the .bk editor scope. */
 [data-bk-diff-active] {
   del {
-    @apply line-through text-mono-500;
+    @apply line-through  decoration-red-normal;
   }
 
   ins {

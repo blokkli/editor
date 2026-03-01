@@ -427,7 +427,7 @@ function onPointerUp(e: PointerEvent) {
     if (deltaTime < 400 && deltaX < 3 && deltaY < 3) {
       if (clicked.editableFieldName) {
         pointerDownOnCanvas = false
-        eventBus.emit('editable:focus', {
+        eventBus.emit('editable:open', {
           fieldName: clicked.editableFieldName,
           uuid: clicked.uuid,
         })
@@ -606,6 +606,20 @@ function onClick(e: MouseEvent) {
   e.preventDefault()
   e.stopImmediatePropagation()
   e.stopPropagation()
+  if (ui.isApproving.value) {
+    const { x, y } = getInteractionCoordinates(e)
+    const editableField = directive.getEditableAtPoint(x, y)
+    if (editableField) {
+      eventBus.emit('editable:focus', {
+        fieldName: editableField.fieldName,
+        uuid:
+          editableField.type === itemEntityType
+            ? editableField.uuid
+            : undefined,
+      })
+    }
+    return
+  }
   if (canvasEl.value && !selection.activeEditableLabel.value) {
     canvasEl.value.focus()
   }

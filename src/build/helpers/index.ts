@@ -156,6 +156,75 @@ export function extractObjectLiteral(
   return undefined
 }
 
+/**
+ * Extracts a string literal value from a specific property inside a composable
+ * call's object argument.
+ *
+ * Uses the same parseAndWalk approach as extractObjectLiteral but instead of
+ * returning the whole object, it walks into ObjectExpression.properties to find
+ * the named property and returns its string literal value.
+ */
+export function extractStringProperty(
+  fileContents: string,
+  composables: string[],
+  propertyName: string,
+): string | undefined {
+  if (!composables.some((composable) => fileContents.includes(composable))) {
+    return undefined
+  }
+
+  const scripts = extractScriptContent(fileContents)
+
+  for (const script of scripts) {
+    try {
+      let result: string | undefined
+
+      const filename = script.loader === 'tsx' ? 'temp.tsx' : 'temp.ts'
+
+      parseAndWalk(script.code, filename, {
+        parseOptions: {
+          range: true,
+        },
+        enter(node) {
+          if (result) return
+
+          if (
+            node.type === 'CallExpression' &&
+            node.callee.type === 'Identifier' &&
+            composables.includes(node.callee.name)
+          ) {
+            for (const arg of node.arguments) {
+              if (arg.type === 'ObjectExpression') {
+                for (const prop of arg.properties) {
+                  if (
+                    prop.type === 'Property' &&
+                    prop.key.type === 'Identifier' &&
+                    prop.key.name === propertyName &&
+                    prop.value.type === 'Literal' &&
+                    typeof prop.value.value === 'string'
+                  ) {
+                    result = prop.value.value
+                    break
+                  }
+                }
+                break
+              }
+            }
+          }
+        },
+      })
+
+      if (result) {
+        return result
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return undefined
+}
+
 export function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
 }

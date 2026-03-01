@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, ref, onMounted } from '#imports'
+import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import TextFieldApproval from '../TextFieldApproval/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
@@ -294,7 +294,13 @@ async function applySelected(data: {
   })
 }
 
-function rejectAll() {
+onBeforeUnmount(() => {
+  state.flushDirty()
+})
+
+async function rejectAll() {
+  await state.flushDirty()
+
   const rejectedByUser: Record<
     string,
     Record<string, { reasonForRejection: string }>
@@ -305,7 +311,6 @@ function rejectAll() {
     rejectedByUser[item.uuid] = fields
   }
 
-  // Item components will restore on unmount.
   emit('done', {
     acceptedCount: 0,
     rejectedByUser,

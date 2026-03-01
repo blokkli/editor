@@ -1,9 +1,9 @@
 .bk.bk-approval-toolbar {
-  grid-area: viewport;
+  grid-area: breadcrumbs;
   align-self: end;
-  @apply pointer-events-auto mb-20 mx-20;
+  @apply pointer-events-auto;
   @apply flex items-center h-50;
-  @apply bg-mono-950/90 backdrop-blur text-mono-50 rounded-md;
+  @apply bg-mono-900 text-mono-50;
   @apply select-none;
   @apply overflow-hidden;
 

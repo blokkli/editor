@@ -96,6 +96,7 @@ function onMouseLeave() {
 
 function onUpdateSelected(id: number, value: boolean) {
   selected[id] = value
+  eventBus.emit('ui:update-rects')
 }
 
 function onUpdateReasons(id: number, value: string) {

@@ -173,6 +173,7 @@ const {
   rejectPlan,
   usageTurns,
   sendPrompt,
+  runToolForPrompt,
   retry,
   approve,
   reject,
@@ -222,9 +223,35 @@ defineItemDropdownAction(() => {
         group: 'agent',
         variant: 'agent',
         weight: -900,
-        callback: () => {
+        callback: async () => {
           app.eventBus.emit('sidebar:open', 'agent')
-          sendPrompt(promptText, userPromptText, [...app.selection.uuids.value])
+          const selectedUuids = [...app.selection.uuids.value]
+
+          let preSeededResults = undefined
+          let autoExecuteTools = undefined
+
+          if (prompt.preExecute) {
+            const preResult = await prompt.preExecute({
+              app,
+              selectedUuids,
+              runTool: runToolForPrompt,
+            })
+            if (preResult) {
+              preSeededResults = preResult.preSeededResults
+              autoExecuteTools = preResult.autoExecuteTools
+            }
+          }
+
+          sendPrompt(
+            promptText,
+            userPromptText,
+            selectedUuids,
+            undefined,
+            prompt.tools,
+            prompt.skills,
+            preSeededResults,
+            autoExecuteTools,
+          )
         },
       }
     })
