@@ -405,7 +405,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     const router = useRouter()
 
     const changeLanguage: DrupalAdapter['changeLanguage'] = (translation) => {
-      return router.push({ path: translation.url, query: route.query })
+      // Handle case where Drupal returns absolute URL, e.g. when the domain module is enabled.
+      const path = translation.url.includes('http')
+        ? new URL(translation.url).pathname
+        : translation.url
+      return router.push({ path, query: route.query })
     }
 
     const buildEditableFrameUrl: DrupalAdapter['buildEditableFrameUrl'] = (
