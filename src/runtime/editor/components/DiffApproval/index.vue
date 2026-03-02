@@ -1,11 +1,12 @@
 <template>
   <Toolbar
-    v-if="items.length > 0"
-    v-model:current-index="currentIndex"
-    :items="items"
-    :selected="selected"
-    :reasons="reasons"
-    :apply-label="applyLabel"
+    v-if="currentItem"
+    :current-item
+    :current-index
+    :total-items="items.length"
+    :selected
+    :reasons
+    :apply-label
     @update:selected="onUpdateSelected"
     @update:reasons="onUpdateReasons"
     @apply="onApply"
@@ -16,8 +17,8 @@
   <Highlight
     ref="highlight"
     v-model="currentIndex"
-    :items="items"
-    :selected="selected"
+    :items
+    :selected
     @toggle="onToggle"
   />
 </template>
@@ -31,20 +32,14 @@ import {
   ref,
   useTemplateRef,
   useBlokkli,
+  onBeforeUnmount,
 } from '#imports'
-import Toolbar from './Toolbar.vue'
-import Highlight from './Highlight.vue'
+import Toolbar from './Toolbar/index.vue'
+import Highlight from './Highlight/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
-
-export type ApprovalItem = {
-  id: number
-  uuid: string
-  fieldName: string
-  fieldLabel: string
-  value: string
-}
+import type { ApprovalItem } from './types'
 
 const props = defineProps<{
   items: ApprovalItem[]
@@ -97,6 +92,10 @@ const items = [...props.items].sort((a, b) => {
 })
 
 const currentIndex = ref(0)
+
+const currentItem = computed<ApprovalItem | null>(() => {
+  return props.items.at(currentIndex.value) ?? null
+})
 
 const selected = reactive<Record<number, boolean>>(
   Object.fromEntries(items.map((item) => [item.id, true])),
@@ -157,13 +156,6 @@ function next() {
   scrollToItem(items[currentIndex.value]!)
 }
 
-onMounted(async () => {
-  await nextTick()
-  if (items[0]) {
-    scrollToItem(items[0])
-  }
-})
-
 onBlokkliEvent('keyPressed', (e) => {
   if ((e.code === 'Tab' && !e.shift) || e.code === 'ArrowDown') {
     e.originalEvent.preventDefault()
@@ -178,5 +170,26 @@ onBlokkliEvent('keyPressed', (e) => {
       onUpdateSelected(item.id, !selected[item.id])
     }
   }
+})
+
+onBlokkliEvent('editable:focus', (e) => {
+  const index = props.items.findIndex(
+    (item) => item.fieldName === e.fieldName && item.uuid === e.uuid,
+  )
+  if (index !== -1) {
+    currentIndex.value = index
+  }
+})
+
+onMounted(async () => {
+  ui.setIsApproving(true)
+  await nextTick()
+  if (items[0]) {
+    scrollToItem(items[0])
+  }
+})
+
+onBeforeUnmount(() => {
+  ui.setIsApproving(false)
 })
 </script>

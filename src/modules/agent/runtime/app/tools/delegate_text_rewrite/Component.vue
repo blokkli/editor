@@ -23,7 +23,7 @@
     </div>
   </ToolCard>
 
-  <TextFieldApproval
+  <DiffApproval
     v-else-if="phase === 'approval' && completedItems.length > 0"
     :items="completedItems"
     @apply="applySelected"
@@ -41,9 +41,8 @@
 
 <script lang="ts" setup>
 import { useBlokkli, ref, reactive, onMounted, onBeforeUnmount } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, DiffApproval } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
-import TextFieldApproval from '../TextFieldApproval/index.vue'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { ComponentParams, StreamTextFieldsResult } from './index'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
@@ -52,6 +51,7 @@ import type { EntityContext } from '#blokkli/types'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { applyOperations, type ReadabilityResult } from '../helpers'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
+import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 
 const props = defineProps<{
   context: McpToolContext
@@ -146,16 +146,7 @@ type OverrideEntry = {
 const overrides: OverrideEntry[] = []
 let abortController: AbortController | null = null
 
-// Completed items for approval phase.
-type CompletedItem = {
-  id: number
-  uuid: string
-  fieldName: string
-  fieldLabel: string
-  value: string
-}
-
-const completedItems = ref<CompletedItem[]>([])
+const completedItems = ref<ApprovalItem[]>([])
 const beforeValues = new Map<number, string>()
 
 function resolveHost(uuid: string): EntityContext | null {
@@ -836,7 +827,7 @@ async function startStreaming() {
 
 function transitionToApproval() {
   let idCounter = 0
-  const items: CompletedItem[] = []
+  const items: ApprovalItem[] = []
 
   for (const fs of fieldStates) {
     if (fs.status !== 'done') continue
@@ -1065,7 +1056,7 @@ async function applySelected(data: {
   })
 }
 
-async function rejectAll() {
+async function _rejectAll() {
   await state.flushDirty()
 
   const rejectedByUser: Record<

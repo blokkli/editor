@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-approval-highlight-item"
+    class="bk-diff-approval-highlight-item"
     :class="{
       'bk-is-active': active,
       'bk-is-approved': selected,
@@ -9,12 +9,12 @@
     :style="rect"
   >
     <button
-      class="bk-approval-highlight-item-area"
+      class="bk-diff-approval-highlight-item-area"
       @click.prevent="$emit('activate')"
     />
     <button
       v-show="active"
-      class="bk-approval-highlight-item-badge"
+      class="bk-diff-approval-highlight-item-badge"
       @click.prevent="$emit('toggle')"
     >
       <Icon :name="selected ? 'bk_mdi_check' : 'bk_mdi_close'" />

@@ -13,8 +13,6 @@
 @import './partials/ToolQuestion.css';
 @import './partials/Attachments.css';
 @import './partials/DropHandler.css';
-@import './partials/ApprovalToolbar.css';
-@import './partials/ApprovalHighlight.css';
 
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;

@@ -1,5 +1,5 @@
 <template>
-  <TextFieldApproval
+  <DiffApproval
     v-if="params.requireApproval !== false"
     :items="items"
     @apply="applySelected"
@@ -9,11 +9,12 @@
 
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
-import TextFieldApproval from '../TextFieldApproval/index.vue'
+import { DiffApproval } from '#blokkli/editor/components'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
 import { itemEntityType } from '#blokkli-build/config'
 import { applyOperations } from '../helpers'
+import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 
 const props = defineProps<{
   context: McpToolContext
@@ -52,14 +53,6 @@ onMounted(() => {
     })
   }
 })
-
-type ChangeItem = {
-  id: number
-  uuid: string
-  fieldName: string
-  fieldLabel: string
-  value: string
-}
 
 function resolveHost(
   uuid: string,
@@ -107,8 +100,8 @@ function getCurrentValue(uuid: string, fieldName: string): string | null {
 let idCounter = 0
 const beforeValues = new Map<number, string>()
 
-function buildItems(): ChangeItem[] {
-  const result: ChangeItem[] = []
+function buildItems(): ApprovalItem[] {
+  const result: ApprovalItem[] = []
 
   // Process full-value replacements from `uuids`.
   if (props.params.uuids) {
@@ -170,7 +163,7 @@ function buildItems(): ChangeItem[] {
   return result
 }
 
-const items: ChangeItem[] = buildItems().filter((item) => {
+const items: ApprovalItem[] = buildItems().filter((item) => {
   const current = getCurrentValue(item.uuid, item.fieldName)
   if (current !== null) {
     beforeValues.set(item.id, current)

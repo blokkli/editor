@@ -1,4 +1,4 @@
-.bk.bk-approval-toolbar-hint {
+.bk.bk-diff-approval-toolbar-hint {
   grid-area: mode;
   @apply self-start justify-self-stretch;
   @apply h-40 flex items-center px-10 py-5;
@@ -8,7 +8,7 @@
   @apply font-medium;
   @apply text-sm;
 }
-.bk.bk-approval-toolbar {
+.bk.bk-diff-approval-toolbar {
   grid-area: viewport;
   align-self: end;
   @apply pointer-events-auto;
@@ -21,8 +21,8 @@
 
   color-scheme: dark;
 
-  .bk-approval-toolbar-toggle,
-  .bk-approval-toolbar-nav {
+  .bk-diff-approval-toolbar-toggle,
+  .bk-diff-approval-toolbar-nav {
     @apply relative h-full;
     .bk-tooltip {
       @apply absolute left-0 bottom-full mb-5 invisible;
@@ -35,7 +35,7 @@
     }
   }
 
-  .bk-approval-toolbar-toggle {
+  .bk-diff-approval-toolbar-toggle {
     @apply mr-auto;
   }
 
@@ -43,7 +43,7 @@
     @apply rounded-l-none;
   }
 
-  .bk-approval-toolbar-nav {
+  .bk-diff-approval-toolbar-nav {
     @apply shrink-0 size-50 flex items-center justify-center;
     @apply text-mono-300 hover:text-white hover:bg-mono-800 relative;
 
@@ -60,20 +60,20 @@
     @apply flex items-center text-mono-200 hover:text-white mx-15;
   }
 
-  .bk-approval-toolbar-info {
+  .bk-diff-approval-toolbar-info {
     @apply flex items-center gap-10 px-15;
     @apply border-l border-l-mono-600 h-full;
   }
 
-  .bk-approval-toolbar-counter {
+  .bk-diff-approval-toolbar-counter {
     @apply text-mono-400 tabular-nums whitespace-nowrap;
   }
 
-  .bk-approval-toolbar-label {
+  .bk-diff-approval-toolbar-label {
     @apply font-medium whitespace-nowrap;
   }
 
-  .bk-approval-toolbar-reason {
+  .bk-diff-approval-toolbar-reason {
     @apply flex-1 min-w-0 px-10;
 
     input {
@@ -84,7 +84,7 @@
     }
   }
 
-  .bk-approval-toolbar-apply {
+  .bk-diff-approval-toolbar-apply {
     @apply shrink-0 h-30 px-10 rounded font-medium ml-auto mr-10;
     @apply bg-lime-normal text-mono-950;
     @apply hover:brightness-110;

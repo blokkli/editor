@@ -1,8 +1,8 @@
-.bk.bk-approval-highlight {
+.bk.bk-diff-approval-highlight {
   @apply absolute top-0 left-0 pointer-events-auto;
   transform-origin: 0 0;
 
-  .bk-approval-highlight-item {
+  .bk-diff-approval-highlight-item {
     @apply absolute top-0 left-0 rounded border border-mono-300;
     /* @apply outline outline-2 outline-mono-300/20; */
     &:not(.bk-is-active):hover {
@@ -20,16 +20,16 @@
     &.bk-is-rejected {
       @apply border-red-normal outline-red-normal/30;
 
-      .bk-approval-highlight-item-badge {
+      .bk-diff-approval-highlight-item-badge {
         @apply bg-red-normal;
       }
     }
 
-    .bk-approval-highlight-item-area {
+    .bk-diff-approval-highlight-item-area {
       @apply size-full block;
     }
 
-    .bk-approval-highlight-item-badge {
+    .bk-diff-approval-highlight-item-badge {
       @apply absolute left-[-3px] bottom-full h-30;
       @apply bg-lime-normal text-white;
       @apply rounded-t-md;

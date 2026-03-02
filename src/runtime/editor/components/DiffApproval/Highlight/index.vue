@@ -1,6 +1,6 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
-    <div class="bk bk-approval-highlight" :style="containerStyle">
+    <div class="bk bk-diff-approval-highlight" :style="containerStyle">
       <Item
         v-for="(item, i) in items"
         :key="item.id"
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, useTemplateRef, useBlokkli } from '#imports'
-import type { ApprovalItem } from './index.vue'
+import type { ApprovalItem } from '../types'
 import Item from './Item.vue'
 
 defineProps<{

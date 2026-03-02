@@ -8,6 +8,7 @@ import BlokkliTransition from './Transition/index.vue'
 import BundleSelector from './BundleSelector/index.vue'
 import ConfigForm from './PluginConfigForm/index.vue'
 import DialogModal from './Dialog/index.vue'
+import DiffApproval from './DiffApproval/index.vue'
 import DiffDisplay from './DiffViewer/DiffDisplay/index.vue'
 import DiffValue from './DiffViewer/DiffValue.vue'
 import DiffViewerState from './DiffViewer/State.vue'
@@ -57,6 +58,7 @@ export {
   BundleSelector,
   ConfigForm,
   DialogModal,
+  DiffApproval,
   DiffDisplay,
   DiffValue,
   DiffViewerState,
