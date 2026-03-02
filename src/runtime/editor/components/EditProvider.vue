@@ -240,7 +240,13 @@ const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
 const permissionsInstance = await permissionsProvider(adapter)
-const fieldValue = fieldValueProviderFn(adapters, directive, state, types)
+const fieldValue = fieldValueProviderFn(
+  adapters,
+  directive,
+  state,
+  types,
+  definitions,
+)
 const readability = readabilityProviderFn(
   adapters,
   context,

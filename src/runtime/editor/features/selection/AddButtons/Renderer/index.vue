@@ -506,7 +506,7 @@ const { collector } = defineRenderer('add-buttons', {
     if (ui.openTooltip.value && ui.openTooltip.value !== 'add-buttons') {
       return false
     }
-    if (ui.hasTransformOverlayOpen.value) {
+    if (ui.hasTransformOverlayOpen.value || ui.isApproving.value) {
       return false
     }
     return true

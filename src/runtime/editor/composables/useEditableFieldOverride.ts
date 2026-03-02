@@ -41,7 +41,8 @@ export function useEditableFieldOverride(
   fieldName: string,
   host: EntityContext,
 ): EditableFieldOverride {
-  const { eventBus, state, types, definitions, directive } = useBlokkli()
+  const { eventBus, state, types, definitions, directive, fieldValue } =
+    useBlokkli()
 
   // Resolve the element and editable data.
   const el = directive.findEditableElement(fieldName, host)
@@ -103,22 +104,9 @@ export function useEditableFieldOverride(
   const usesMutatedProps = !!matchingProp
   const usesDirectDom = !isComponent && !matchingProp
 
-  // Capture original value.
-  let originalValue: string
-  if (isComponent) {
-    originalValue = editableData?.getValue ? editableData.getValue() : ''
-  } else if (usesMutatedProps && matchingProp) {
-    if (providerDefinition) {
-      originalValue = state.mutatedEntity.value[matchingProp] || ''
-    } else {
-      originalValue =
-        state.getFieldListItem(host.uuid)?.props?.[matchingProp] ?? ''
-    }
-  } else if (isMarkup) {
-    originalValue = element.innerHTML
-  } else {
-    originalValue = element.textContent || ''
-  }
+  // Capture original value using the shared provider method.
+  const readResult = fieldValue.readFieldValue(fieldName, host)
+  const originalValue = readResult?.value ?? ''
 
   // Capture original mutatedItemProps value for restore.
   const originalMutatedProp: string | undefined =

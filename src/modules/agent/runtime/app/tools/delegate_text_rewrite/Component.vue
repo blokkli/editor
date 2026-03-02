@@ -291,12 +291,6 @@ function getProposedValue(fs: FieldState): string {
   return fs.fullValue
 }
 
-function formatScore(score?: number): string {
-  if (score == null) return ''
-  const analyzer = props.context.app.readability.analyzer.value
-  return `${analyzer.scoreLabel}: ${Math.round(score)}`
-}
-
 /**
  * Run readability analysis on proposed field values and return issues.
  * Analyzes raw values directly via the readability provider — no DOM dependency.
@@ -693,35 +687,20 @@ async function readabilityRetryLoop(authToken: string) {
     // Max retries reached — show what we have.
     if (attempt === MAX_READABILITY_RETRIES - 1) break
 
-    // Build retry context with passing fields for sub-agent reference.
-    const contextParts: string[] = []
-    if (passing.length > 0) {
-      contextParts.push(
-        'The following fields were already improved and now have good readability:',
-      )
-      for (const p of passing) {
-        const truncated =
-          p.proposedValue.length > 200
-            ? p.proposedValue.slice(0, 200) + '...'
-            : p.proposedValue
-        const scoreStr = formatScore(p.score)
-        const scoreSuffix = scoreStr ? ` (${scoreStr})` : ''
-        contextParts.push(
-          `- "${p.fs.fieldLabel}": "${truncated}"${scoreSuffix}`,
-        )
-      }
-      contextParts.push('')
-    }
-    contextParts.push(
-      'Your previous rewrite for the remaining fields did not lower readability scores enough. Try a different approach:',
-    )
-    contextParts.push('- Use shorter sentences (max 10-12 words per sentence)')
-    contextParts.push(
-      '- Replace complex or uncommon words with simple alternatives',
-    )
-    contextParts.push('- Break compound sentences into multiple simple ones')
+    // Build structured retry data for the template.
+    const retryFieldsData = failing.map((f, i) => ({
+      fieldIndex: i,
+      fieldLabel: f.fs.fieldLabel,
+      originalValue: f.fs.originalBaseValue,
+      previousAttempt: f.proposedValue,
+      score: f.score,
+    }))
 
-    const retryContext = contextParts.join('\n')
+    const passingFieldsData = passing.map((p) => ({
+      fieldLabel: p.fs.fieldLabel,
+      value: p.proposedValue,
+      score: p.score,
+    }))
 
     // Reset failing field states for retry, accumulating operations from this attempt.
     for (const f of failing) {
@@ -781,7 +760,8 @@ async function readabilityRetryLoop(authToken: string) {
       issues: retryIssues,
       scoreLabel: props.context.app.readability.analyzer.value.scoreLabel,
       scoreReference: props.context.app.readability.getAgentContext(),
-      retryContext,
+      retryFields: retryFieldsData,
+      passingFields: passingFieldsData,
     })
 
     if (!retrySuccess) return

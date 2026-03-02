@@ -15,6 +15,10 @@
 
     &.bk-is-approved {
       @apply border-lime-normal outline-lime-normal/30;
+
+      .bk-icon {
+        @apply text-lime-normal;
+      }
     }
 
     &.bk-is-rejected {
@@ -22,6 +26,10 @@
 
       .bk-diff-approval-highlight-item-badge {
         @apply bg-red-normal;
+      }
+
+      .bk-icon {
+        @apply text-red-normal;
       }
     }
 
@@ -41,8 +49,12 @@
 
       @apply flex items-center justify-center gap-5;
 
+      .bk-icon {
+        @apply size-18 bg-white rounded flex items-center justify-center;
+      }
+
       svg {
-        @apply size-20 fill-current;
+        @apply size-15 fill-current;
       }
     }
   }
