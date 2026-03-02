@@ -7,43 +7,45 @@
     :data-blokkli-provider-active="isInEditor ? 'true' : 'false'"
   >
     <BlokkliRootErrorBoundary v-if="isInEditor">
-      <PreviewProvider
-        v-if="isPreviewing"
-        v-slot="{ mutatedEntity }"
-        :entity
-        :entity-type
-        :entity-uuid
-        :entity-bundle
-        :language
-        :provider-type
-      >
-        <slot
-          :entity="mutatedEntity"
-          :is-editing
-          :can-edit
-          :is-preview="isPreviewing"
-        />
-      </PreviewProvider>
-      <EditProvider
-        v-else-if="isEditing && shouldRender && providerEl"
-        v-slot="{ mutatedEntity }"
-        :provider-el
-        :entity
-        :entity-type
-        :entity-uuid
-        :entity-bundle
-        :language
-        :isolate
-        :permissions
-        :provider-type
-      >
-        <slot
-          :is-editing
-          :can-edit
-          :is-preview="isPreviewing"
-          :entity="mutatedEntity"
-        />
-      </EditProvider>
+      <ClientOnly>
+        <PreviewProvider
+          v-if="isPreviewing"
+          v-slot="{ mutatedEntity }"
+          :entity
+          :entity-type
+          :entity-uuid
+          :entity-bundle
+          :language
+          :provider-type
+        >
+          <slot
+            :entity="mutatedEntity"
+            :is-editing
+            :can-edit
+            :is-preview="isPreviewing"
+          />
+        </PreviewProvider>
+        <EditProvider
+          v-else-if="isEditing && shouldRender && providerEl"
+          v-slot="{ mutatedEntity }"
+          :provider-el
+          :entity
+          :entity-type
+          :entity-uuid
+          :entity-bundle
+          :language
+          :isolate
+          :permissions
+          :provider-type
+        >
+          <slot
+            :is-editing
+            :can-edit
+            :is-preview="isPreviewing"
+            :entity="mutatedEntity"
+          />
+        </EditProvider>
+      </ClientOnly>
     </BlokkliRootErrorBoundary>
 
     <slot

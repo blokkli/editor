@@ -73,10 +73,22 @@ const { data, refresh, error } = await useAsyncData(() =>
 )
 
 function updateMutatedFields(fields: MutatedField[]) {
-  fields.forEach((field) => {
+  const existingKeys = Object.keys(mutatedFieldsMap)
+  const newKeys = new Set<string>()
+
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i]!
     const key = getFieldKey(field.entityUuid, field.name)
     mutatedFieldsMap[key] = field
-  })
+    newKeys.add(key)
+  }
+
+  for (let i = 0; i < existingKeys.length; i++) {
+    const key = existingKeys[i]!
+    if (!newKeys.has(key)) {
+      delete mutatedFieldsMap[key]
+    }
+  }
 }
 
 const updateState = () => {
