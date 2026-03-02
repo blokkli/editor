@@ -198,7 +198,7 @@ const emit = defineEmits<{
   rejectPlan: []
 }>()
 
-const DEBUG_STYLING = import.meta.dev && true
+const DEBUG_STYLING = import.meta.dev && false
 
 const app = useBlokkli()
 const { $t } = app
