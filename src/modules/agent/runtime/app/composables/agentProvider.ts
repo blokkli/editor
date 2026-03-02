@@ -34,7 +34,7 @@ import {
   isToolError,
   resolveTools,
 } from '#blokkli/agent/app/helpers'
-import { mcpTools } from '#blokkli-build/agent-client'
+import { mcpTools, routeAgent, routeRoute } from '#blokkli-build/agent-client'
 import type { AgentToolName, AgentToolMap } from '#blokkli-build/agent-client'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
@@ -472,7 +472,7 @@ export default function (
     }
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const url = `${protocol}//${window.location.host}/api/blokkli/agent`
+    const url = `${protocol}//${window.location.host}${routeAgent}`
 
     ws = new WebSocket(url)
     ws.addEventListener('open', onWebSocketOpen)
@@ -1309,7 +1309,7 @@ export default function (
 
     if (isFirstMessage && !hasClientDirectives && storedPageContext.value) {
       try {
-        const routingResult = await fetch('/api/blokkli/agent/route', {
+        const routingResult = await fetch(routeRoute, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

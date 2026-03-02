@@ -1,6 +1,6 @@
 import { defineCodeTemplate } from '../../../../build/templates/defineTemplate'
 import type { AgentCollector } from '../AgentCollector'
-import type { AgentModuleOptions } from '../types'
+import type { AgentModuleOptions, AgentModuleOptionsRoutes } from '../types'
 
 /**
  * Creates the client template that imports all tool and prompt files and exports them as arrays.
@@ -10,6 +10,7 @@ export default function (
   promptCollector: AgentCollector,
   skillsCollector: AgentCollector,
   options: AgentModuleOptions,
+  routes: AgentModuleOptionsRoutes,
 ) {
   return defineCodeTemplate(
     'agent-client',
@@ -63,6 +64,12 @@ export default function (
       exports.push(
         `export const hasWebFetch = ${JSON.stringify(!!options.allowedFetchOrigins)}`,
       )
+
+      // Route constants
+      exports.push(`export const routeAgent = ${JSON.stringify(routes.agent)}`)
+      exports.push(`export const routeFetch = ${JSON.stringify(routes.fetch)}`)
+      exports.push(`export const routeStream = ${JSON.stringify(routes.stream)}`)
+      exports.push(`export const routeRoute = ${JSON.stringify(routes.routing)}`)
 
       // Tool and skill name arrays for auto-loading
       exports.push(
@@ -127,6 +134,10 @@ ${toolMapBlock}
 export type AgentToolName = ${agentToolNameType}
 export type AgentSkillName = ${agentSkillNameType}
 
+export const routeAgent: string
+export const routeFetch: string
+export const routeStream: string
+export const routeRoute: string
 export const mcpTools: McpToolDefinition[]
 export const agentPrompts: AgentPromptItem[]
 export const defaultPrompts: string[]

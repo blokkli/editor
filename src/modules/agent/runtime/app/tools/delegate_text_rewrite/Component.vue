@@ -47,6 +47,7 @@ import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { ComponentParams, StreamTextFieldsResult } from './index'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
 import { itemEntityType } from '#blokkli-build/config'
+import { routeStream } from '#blokkli-build/agent-client'
 import type { EntityContext } from '#blokkli/types'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { applyOperations, type ReadabilityResult } from '../helpers'
@@ -552,7 +553,7 @@ async function fetchStream(
   abortController = new AbortController()
 
   try {
-    const response = await fetch('/api/blokkli/agent/stream', {
+    const response = await fetch(routeStream, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -6,13 +6,15 @@ import { AgentCollector } from './build/AgentCollector'
 import createClientTemplate from './build/templates/client'
 import createServerTemplate from './build/templates/server'
 import { agentToolStripPlugin } from './build/AgentToolStripPlugin'
-import type { AgentModuleOptions } from './build/types'
+import type { AgentModuleOptions, AgentModuleOptionsRoutes } from './build/types'
 import type { Plugin } from 'rollup'
 
-const AGENT_ROUTE = '/api/blokkli/agent'
-const FETCH_ROUTE = '/api/blokkli/agent/fetch'
-const STREAM_ROUTE = '/api/blokkli/agent/stream'
-const ROUTE_ROUTE = '/api/blokkli/agent/route'
+const DEFAULT_ROUTES: AgentModuleOptionsRoutes = {
+  agent: '/api/blokkli/agent',
+  fetch: '/api/blokkli/agent/fetch',
+  stream: '/api/blokkli/agent/stream',
+  routing: '/api/blokkli/agent/route',
+}
 
 export default defineBlokkliModule<AgentModuleOptions>({
   alterOptions: (options) => {
@@ -48,6 +50,11 @@ export default defineNuxtConfig({
 `)
       throw new Error('Experimental WebSocket support of Nitro is not enabled.')
     }
+    const routes: AgentModuleOptionsRoutes = {
+      ...DEFAULT_ROUTES,
+      ...options.routes,
+    }
+
     const nuxt = ctx.helper.nuxt
     const moduleResolver = createResolver(
       fileURLToPath(new URL('./', import.meta.url)),
@@ -160,6 +167,7 @@ export default defineNuxtConfig({
         promptsCollector,
         skillsCollector,
         options,
+        routes,
       ),
     )
 
@@ -204,26 +212,26 @@ export default defineNuxtConfig({
 
     // Add server handler for WebSocket
     addServerHandler({
-      route: AGENT_ROUTE,
+      route: routes.agent,
       handler: moduleResolver.resolve('./runtime/server/agent'),
       lazy: true,
     })
 
     // Add server handler for web fetch
     addServerHandler({
-      route: FETCH_ROUTE,
+      route: routes.fetch,
       handler: moduleResolver.resolve('./runtime/server/fetch'),
     })
 
     // Add server handler for SSE streaming
     addServerHandler({
-      route: STREAM_ROUTE,
+      route: routes.stream,
       handler: moduleResolver.resolve('./runtime/server/stream'),
     })
 
     // Add server handler for prompt routing
     addServerHandler({
-      route: ROUTE_ROUTE,
+      route: routes.routing,
       handler: moduleResolver.resolve('./runtime/server/route'),
     })
 
@@ -273,10 +281,10 @@ export default defineNuxtConfig({
     // gets checked in the app context via nitro-routes.d.ts.
     nuxt.hook('nitro:init', (nitro) => {
       nitro.hooks.hook('types:extend', (types) => {
-        Reflect.deleteProperty(types.routes, AGENT_ROUTE)
-        Reflect.deleteProperty(types.routes, FETCH_ROUTE)
-        Reflect.deleteProperty(types.routes, STREAM_ROUTE)
-        Reflect.deleteProperty(types.routes, ROUTE_ROUTE)
+        Reflect.deleteProperty(types.routes, routes.agent)
+        Reflect.deleteProperty(types.routes, routes.fetch)
+        Reflect.deleteProperty(types.routes, routes.stream)
+        Reflect.deleteProperty(types.routes, routes.routing)
       })
     })
   },

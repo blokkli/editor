@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import { routeFetch } from '#blokkli-build/agent-client'
 
 const paramsSchema = z.object({
   url: z.string().url().describe('The URL to fetch content from'),
@@ -37,7 +38,7 @@ export default defineBlokkliAgentTool({
   async execute(ctx, params) {
     const { $t } = ctx.app
 
-    const response = await fetch('/api/blokkli/agent/fetch', {
+    const response = await fetch(routeFetch, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: params.url, format: params.format }),

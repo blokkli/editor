@@ -13,6 +13,13 @@ export type AgentModelDefinition = {
   }
 }
 
+export type AgentModuleOptionsRoutes = {
+  agent: string
+  fetch: string
+  stream: string
+  routing: string
+}
+
 export type AgentModuleOptions = {
   /**
    * Allowed origins for the fetch endpoint.
@@ -57,4 +64,6 @@ export type AgentModuleOptions = {
    * The name of the agent as shown to the user.
    */
   agentName?: string
+
+  routes?: Partial<AgentModuleOptionsRoutes>
 }
