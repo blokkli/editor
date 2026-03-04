@@ -6,6 +6,7 @@
     :anchor-coordinates
     class="bk-selection-add-overlay"
     @close="$emit('close')"
+    @wheel.stop
   >
     <div
       ref="scrollEl"
@@ -48,8 +49,7 @@
       >
         <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
           <AddListItem
-            v-for="item in items"
-            v-show="isVisible(item)"
+            v-for="item in filteredItems"
             :key="item.props.id"
             v-bind="item.props"
             @click.prevent="onClick(item)"
@@ -61,9 +61,17 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, useBlokkli, computed, ref, watch } from '#imports'
+import {
+  useTemplateRef,
+  useBlokkli,
+  computed,
+  ref,
+  watch,
+  onMounted,
+} from '#imports'
 import { ArtboardTooltip, AddListItem, Icon } from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
+import { Fzf } from 'fzf'
 import type { AddListItemProps } from '#blokkli/editor/components/AddListItem/index.vue'
 import type { Coord } from '#blokkli/editor/types/geometry'
 import type { AddAction } from '#blokkli/editor/types/actions'
@@ -117,13 +125,15 @@ type Item =
   | {
       type: 'block'
       bundle: string
-      searchText: string
+      label: string
+      description: string
       props: AddListItemProps
     }
   | {
       type: 'action'
       action: AddAction
-      searchText: string
+      label: string
+      description: string
       props: AddListItemProps
     }
 
@@ -139,6 +149,7 @@ const blocks = computed<Item[]>(() => {
         bundle,
         label: definition?.label ?? bundle,
         isAutoAdd: definitions.bundlesWithAutoAdd.value.includes(bundle),
+        description: definition?.description ?? '',
         isFavorite: favorites.value.includes(bundle),
       }
     })
@@ -151,7 +162,8 @@ const blocks = computed<Item[]>(() => {
       return {
         type: 'block',
         bundle: block.bundle,
-        searchText: block.label.toLowerCase(),
+        label: block.label.toLowerCase(),
+        description: block.description,
         props: {
           id: block.bundle,
           label: block.label,
@@ -181,7 +193,8 @@ const actions = computed<Item[]>(() => {
       return {
         type: 'action',
         action,
-        searchText: action.title + ' ' + (action.description ?? ''),
+        label: action.title,
+        description: action.description ?? '',
         props: {
           id: action.id,
           label: action.title,
@@ -198,13 +211,29 @@ const items = computed<Item[]>(() => {
   return [...blocks.value, ...actions.value]
 })
 
-function isVisible(item: Item) {
-  if (!searchText.value) {
-    return true
+const fzf = new Fzf(items.value, {
+  selector: (item: Item) => item.label + ' ' + item.description,
+})
+
+const filteredItems = computed<Item[]>(() => {
+  const text = searchText.value.trim()
+  if (!text) {
+    return items.value
   }
 
-  return item.searchText.includes(searchText.value)
-}
+  const results = fzf.find(text)
+  const textLower = text.toLowerCase()
+
+  return results
+    .map((r) => r.item)
+    .sort((a, b) => {
+      const aInLabel = a.label.toLowerCase().includes(textLower)
+      const bInLabel = b.label.toLowerCase().includes(textLower)
+      if (aInLabel && !bInLabel) return -1
+      if (!aInLabel && bInLabel) return 1
+      return 0
+    })
+})
 
 const onWheel = (e: WheelEvent) => {
   if (hasScrollbar === null) {
@@ -227,9 +256,15 @@ function onClick(item: Item) {
 }
 
 function onSubmitForm() {
-  const firstResult = items.value.find((item) => isVisible(item))
+  const firstResult = filteredItems.value[0]
   if (firstResult) {
     onClick(firstResult)
   }
 }
+
+onMounted(() => {
+  if (inputEl.value) {
+    inputEl.value.focus()
+  }
+})
 </script>

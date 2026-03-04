@@ -175,7 +175,6 @@ function getInteractedElement(
 }
 
 function onPointerMove(e: PointerEvent) {
-  console.log('pointer move')
   if (!handlePointerMove) {
     return
   }
@@ -609,7 +608,11 @@ function onClick(e: MouseEvent) {
     }
     return
   }
-  if (canvasEl.value && !selection.activeEditableLabel.value) {
+  if (
+    canvasEl.value &&
+    !selection.activeEditableLabel.value &&
+    !ui.hasTooltipOpen.value
+  ) {
     canvasEl.value.focus()
   }
 }
