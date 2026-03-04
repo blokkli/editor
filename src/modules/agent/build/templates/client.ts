@@ -68,8 +68,12 @@ export default function (
       // Route constants
       exports.push(`export const routeAgent = ${JSON.stringify(routes.agent)}`)
       exports.push(`export const routeFetch = ${JSON.stringify(routes.fetch)}`)
-      exports.push(`export const routeStream = ${JSON.stringify(routes.stream)}`)
-      exports.push(`export const routeRoute = ${JSON.stringify(routes.routing)}`)
+      exports.push(
+        `export const routeStream = ${JSON.stringify(routes.stream)}`,
+      )
+      exports.push(
+        `export const routeRoute = ${JSON.stringify(routes.routing)}`,
+      )
 
       // Tool and skill name arrays for auto-loading
       exports.push(

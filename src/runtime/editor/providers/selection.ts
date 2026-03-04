@@ -73,11 +73,6 @@ export type SelectionProvider = {
   activeEditableLabel: Ref<string | null>
 
   /**
-   * Whether the user is currently changing block options.
-   */
-  isChangingOptions: Ref<boolean>
-
-  /**
    * The items that are currently being dragged.
    */
   dragItems: Ref<DraggableItem[]>
@@ -108,7 +103,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
   const hasHostSelected = ref(false)
   const draggingMode = ref<InteractionMode | null>(null)
   const activeEditableLabel = ref<string | null>(null)
-  const isChangingOptions = ref(false)
   const isMultiSelecting = ref(false)
   const interactionMode = ref<InteractionMode>('mouse')
   const selectionLocks = ref<string[]>([])
@@ -278,7 +272,6 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     isDragging,
     isDraggingExisting,
     activeEditableLabel,
-    isChangingOptions,
     isMultiSelecting,
     draggingMode,
     interactionMode,

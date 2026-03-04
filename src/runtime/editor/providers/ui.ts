@@ -496,6 +496,24 @@ export type UiProvider = {
   isApproving: Readonly<Ref<boolean>>
 
   setIsApproving: (value: boolean) => void
+
+  /**
+   * Whether the actions toolbar position is locked.
+   *
+   * When true, the toolbar stays in place (e.g. during option changes
+   * or after clicking "Select parent"). Unlocked after a mouseleave
+   * timeout on the Actions component.
+   */
+  actionsToolbarLocked: Ref<boolean>
+
+  /**
+   * Whether the user is currently changing block options.
+   *
+   * When true, canvas renderers fade out (selection opacity, hover reset,
+   * analyze disable). This is separate from actionsToolbarLocked which
+   * only locks toolbar position.
+   */
+  isChangingOptions: Ref<boolean>
 }
 
 export default function (
@@ -545,6 +563,8 @@ export default function (
 
   const isProxyMode = ref(false)
   const isApproving = ref(false)
+  const actionsToolbarLocked = ref(false)
+  const isChangingOptions = ref(false)
   const currentDialog = ref<GlobalUiDialog | null>(null)
   const openTooltip = ref('')
   const hasTransformOverlayOpen = ref(false)
@@ -1024,5 +1044,7 @@ export default function (
     canvasFocused: readonly(canvasFocused),
     isApproving: readonly(isApproving),
     setIsApproving,
+    actionsToolbarLocked,
+    isChangingOptions,
   }
 }

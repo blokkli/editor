@@ -11,6 +11,22 @@ msgctxt "actionsDropdownToolip"
 msgid "Further actions"
 msgstr "Autres actions"
 
+msgctxt "actionsMoveBlock"
+msgid "Move block"
+msgstr ""
+
+msgctxt "actionsMoveBlocks"
+msgid "Move @count blocks"
+msgstr ""
+
+msgctxt "actionsSelectPage"
+msgid "Select page"
+msgstr ""
+
+msgctxt "actionsSelectParent"
+msgid "Select parent (@label)"
+msgstr ""
+
 msgctxt "addBlockCommand.appendInField"
 msgid "Append \"@block\" in \"@field\""
 msgstr "Ajouter «@block» dans «@field»"
@@ -1512,7 +1528,7 @@ msgid "The items could not be duplicated."
 msgstr "Les éléments n'ont pas pu être dupliqués."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Modifier"
 
 msgctxt "editFormBlockAdd"

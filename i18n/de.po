@@ -11,6 +11,22 @@ msgctxt "actionsDropdownToolip"
 msgid "Further actions"
 msgstr "Weitere Aktionen"
 
+msgctxt "actionsMoveBlock"
+msgid "Move block"
+msgstr "Block verschieben"
+
+msgctxt "actionsMoveBlocks"
+msgid "Move @count blocks"
+msgstr "@count Blöcke verschieben"
+
+msgctxt "actionsSelectPage"
+msgid "Select page"
+msgstr "Seite auswählen"
+
+msgctxt "actionsSelectParent"
+msgid "Select parent (@label)"
+msgstr "Übergeordneten Block (@label) auswählen"
+
 msgctxt "addBlockCommand.appendInField"
 msgid "Append \"@block\" in \"@field\""
 msgstr "«@block» in «@field» anfügen"
@@ -1542,7 +1558,7 @@ msgid "The items could not be duplicated."
 msgstr "Die Elemente konnten nicht dupliziert werden."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeiten..."
 
 msgctxt "editFormBlockAdd"
@@ -2376,7 +2392,7 @@ msgstr "Interaktionsebenen ausblenden"
 
 msgctxt "keyboardSpace"
 msgid "Space"
-msgstr ""
+msgstr "Leertaste"
 
 msgctxt "libraryAdd"
 msgid "Add to library..."

@@ -86,7 +86,7 @@ function updateMutatedFields(fields: MutatedField[]) {
   for (let i = 0; i < existingKeys.length; i++) {
     const key = existingKeys[i]!
     if (!newKeys.has(key)) {
-      delete mutatedFieldsMap[key]
+      mutatedFieldsMap[key] = undefined
     }
   }
 }

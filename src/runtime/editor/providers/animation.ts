@@ -734,7 +734,7 @@ export default function (
 
   const getChangeOptionsTransition = useTransitionedValue(
     () => {
-      return selection.isChangingOptions.value ? 0 : 1
+      return ui.isChangingOptions.value ? 0 : 1
     },
     {
       duration: 150,

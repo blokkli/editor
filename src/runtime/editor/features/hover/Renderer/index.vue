@@ -124,7 +124,7 @@ function resetHoverState() {
   isHoveringSelectedBlock.value = false
 }
 
-watch(selection.isChangingOptions, (isChanging) => {
+watch(ui.isChangingOptions, (isChanging) => {
   if (!isChanging) {
     resetHoverState()
   }

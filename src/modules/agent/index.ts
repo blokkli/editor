@@ -6,7 +6,10 @@ import { AgentCollector } from './build/AgentCollector'
 import createClientTemplate from './build/templates/client'
 import createServerTemplate from './build/templates/server'
 import { agentToolStripPlugin } from './build/AgentToolStripPlugin'
-import type { AgentModuleOptions, AgentModuleOptionsRoutes } from './build/types'
+import type {
+  AgentModuleOptions,
+  AgentModuleOptionsRoutes,
+} from './build/types'
 import type { Plugin } from 'rollup'
 
 const DEFAULT_ROUTES: AgentModuleOptionsRoutes = {

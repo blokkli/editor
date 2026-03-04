@@ -7,6 +7,22 @@
     "source": "Further actions",
     "translation": "Autres actions"
   },
+  "actionsMoveBlock": {
+    "source": "Move block",
+    "translation": ""
+  },
+  "actionsMoveBlocks": {
+    "source": "Move @count blocks",
+    "translation": ""
+  },
+  "actionsSelectPage": {
+    "source": "Select page",
+    "translation": ""
+  },
+  "actionsSelectParent": {
+    "source": "Select parent (@label)",
+    "translation": ""
+  },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
     "translation": "Ajouter «@block» dans «@field»"
@@ -1488,7 +1504,7 @@
     "translation": "Les éléments n'ont pas pu être dupliqués."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Modifier"
   },
   "editFormBlockAdd": {

@@ -3,8 +3,6 @@
     v-if="availableOptions.length"
     class="bk-blokkli-item-options"
     @pointerup="onPointerUp"
-    @mouseleave="onMouseLeave"
-    @mouseenter="onMouseEnter"
   >
     <OptionsFormItem
       v-for="plugin in singleVisibleOptions"
@@ -100,6 +98,7 @@ const {
   context,
   definitions,
   blocks,
+  ui,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -115,24 +114,13 @@ const firstUuid = computed(() =>
 )
 
 let pointerTimeout: null | number = null
-let mouseLeaveTimeout: null | number = null
-
-function onMouseLeave() {
-  onMouseEnter()
-  mouseLeaveTimeout = window.setTimeout(stopChangingOptions, 500)
-}
-
-function onMouseEnter() {
-  if (mouseLeaveTimeout) {
-    window.clearTimeout(mouseLeaveTimeout)
-  }
-}
 
 function onPointerUp(e: PointerEvent) {
   if (pointerTimeout) {
     clearTimeout(pointerTimeout)
   }
-  selection.isChangingOptions.value = true
+  ui.actionsToolbarLocked.value = true
+  ui.isChangingOptions.value = true
 
   if (e.pointerType === 'touch') {
     pointerTimeout = window.setTimeout(() => {
@@ -145,7 +133,7 @@ function stopChangingOptions() {
   if (pointerTimeout) {
     clearTimeout(pointerTimeout)
   }
-  if (!selection.isChangingOptions.value) {
+  if (!ui.isChangingOptions.value) {
     return
   }
 
@@ -162,7 +150,8 @@ function stopChangingOptions() {
       }
     })
   }
-  selection.isChangingOptions.value = false
+  ui.actionsToolbarLocked.value = false
+  ui.isChangingOptions.value = false
   eventBus.emit('option:finish-change')
 }
 
@@ -408,7 +397,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  selection.isChangingOptions.value = false
   const values = updated
     .getEntries()
     .map((entry) => {

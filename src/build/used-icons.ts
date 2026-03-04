@@ -22,6 +22,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_arrow_right',
   'bk_mdi_arrow_right_alt',
   'bk_mdi_arrow_selector_tool',
+  'bk_mdi_arrow_top_left',
   'bk_mdi_arrow_upward',
   'bk_mdi_attach_file',
   'bk_mdi_bakery_dining',

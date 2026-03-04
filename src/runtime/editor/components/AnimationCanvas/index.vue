@@ -36,8 +36,7 @@ import {
 import { itemEntityType } from '#blokkli-build/config'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
-import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
-import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+import { toDraggableExisting } from '#blokkli/editor/helpers/draggable'
 
 const {
   dom,
@@ -175,19 +174,8 @@ function getInteractedElement(
   return null
 }
 
-function toDraggableExisting(
-  v: RenderedFieldListItem | RenderedFieldListItem[],
-): DraggableExistingBlock[] {
-  const blocks = Array.isArray(v) ? v : [v]
-  return blocks.map<DraggableExistingBlock>((block) => {
-    return {
-      itemType: 'existing',
-      block,
-    }
-  })
-}
-
 function onPointerMove(e: PointerEvent) {
+  console.log('pointer move')
   if (!handlePointerMove) {
     return
   }

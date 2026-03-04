@@ -7,6 +7,22 @@
     "source": "Further actions",
     "translation": "Weitere Aktionen"
   },
+  "actionsMoveBlock": {
+    "source": "Move block",
+    "translation": "Block verschieben"
+  },
+  "actionsMoveBlocks": {
+    "source": "Move @count blocks",
+    "translation": "@count Blöcke verschieben"
+  },
+  "actionsSelectPage": {
+    "source": "Select page",
+    "translation": "Seite auswählen"
+  },
+  "actionsSelectParent": {
+    "source": "Select parent (@label)",
+    "translation": "Übergeordneten Block (@label) auswählen"
+  },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
     "translation": "«@block» in «@field» anfügen"
@@ -1488,7 +1504,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {
@@ -2213,7 +2229,7 @@
   },
   "keyboardSpace": {
     "source": "Space",
-    "translation": ""
+    "translation": "Leertaste"
   },
   "libraryAdd": {
     "source": "Add to library...",

@@ -20,6 +20,46 @@
       bottom: initial;
     }
   }
+
+  .bk-blokkli-item-actions-interactions {
+    @apply h-50 w-25 relative;
+    @apply lg:border-r lg:border-r-mono-500;
+
+    > button {
+      @apply size-25;
+      @apply flex items-center justify-center text-mono-300;
+      @apply hover:bg-mono-700 hover:text-mono-50;
+
+      &[disabled] {
+        @apply pointer-events-none text-mono-500;
+      }
+
+      &:first-child {
+        @apply border-b border-b-mono-500 rounded-tl-md;
+      }
+
+      &:nth-child(2) {
+        @apply cursor-grab rounded-bl-md;
+      }
+
+      svg {
+        @apply size-[13px] fill-current;
+      }
+
+      .bk-tooltip {
+        @apply absolute bottom-full left-0 mb-3;
+      }
+
+      @screen lg {
+        &:not(:hover) {
+          .bk-tooltip {
+            @apply hidden;
+          }
+        }
+      }
+    }
+  }
+
   .bk-blokkli-item-actions-controls {
     @apply flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap;
     @apply bg-mono-950/90 backdrop-blur;
@@ -172,7 +212,7 @@
   }
 
   #bk-blokkli-item-actions {
-    @apply lg:border-l lg:border-l-mono-600 justify-end;
+    @apply lg:border-l lg:border-l-mono-500 justify-end;
   }
 
   .bk-blokkli-item-actions-type {
@@ -185,7 +225,7 @@
       @apply border-b border-b-mono-700;
     }
     @screen lg {
-      @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b left-[-2px];
+      @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b left-[23px];
       @apply border-b-2 border-mono-400 border-l-2 border-r-2;
     }
     li {

@@ -5,7 +5,8 @@
       visibility: isVisible ? 'visible' : 'hidden',
     }"
     class="bk bk-blokkli-item-actions-inner"
-    @click.stop
+    @mouseleave="onMouseLeave"
+    @mouseenter="onMouseEnter"
   >
     <div
       id="bk-blokkli-item-actions-controls"
@@ -15,6 +16,7 @@
         'bk-is-locked': ui.isTransforming.value,
       }"
     >
+      <Interactions />
       <div id="bk-blokkli-item-actions-title">
         <button
           class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent"
@@ -82,10 +84,18 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, useBlokkli, useTemplateRef } from '#imports'
+import {
+  watch,
+  ref,
+  computed,
+  useBlokkli,
+  useTemplateRef,
+  onBeforeUnmount,
+} from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { Icon, ItemIconBox } from '#blokkli/editor/components'
 import EditActionsItemDropdown from './ItemDropdown.vue'
+import Interactions from './Interactions/index.vue'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { onBlokkliEvent, useStickyToolbar } from '#blokkli/editor/composables'
@@ -108,10 +118,35 @@ const el = useTemplateRef('el')
 
 useStickyToolbar(el, {
   getPlacementY: () => 'top',
-  shouldUpdate: () => !selection.isChangingOptions.value && isVisible.value,
+  shouldUpdate: () => !ui.actionsToolbarLocked.value && isVisible.value,
   getHeight: () => ACTIONS_HEIGHT,
   getMargin: () => 20,
   allowHorizontalOverflow: true,
+})
+
+let mouseLeaveTimeout: number | null = null
+
+function onMouseLeave() {
+  onMouseEnter()
+  if (ui.actionsToolbarLocked.value || ui.isChangingOptions.value) {
+    mouseLeaveTimeout = window.setTimeout(() => {
+      ui.actionsToolbarLocked.value = false
+      ui.isChangingOptions.value = false
+    }, 500)
+  }
+}
+
+function onMouseEnter() {
+  if (mouseLeaveTimeout) {
+    window.clearTimeout(mouseLeaveTimeout)
+    mouseLeaveTimeout = null
+  }
+}
+
+onBeforeUnmount(() => {
+  if (mouseLeaveTimeout) {
+    window.clearTimeout(mouseLeaveTimeout)
+  }
 })
 
 const showDropdown = ref(false)

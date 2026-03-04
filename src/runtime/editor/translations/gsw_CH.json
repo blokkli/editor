@@ -7,6 +7,22 @@
     "source": "Further actions",
     "translation": "Witeri Aktione"
   },
+  "actionsMoveBlock": {
+    "source": "Move block",
+    "translation": ""
+  },
+  "actionsMoveBlocks": {
+    "source": "Move @count blocks",
+    "translation": ""
+  },
+  "actionsSelectPage": {
+    "source": "Select page",
+    "translation": ""
+  },
+  "actionsSelectParent": {
+    "source": "Select parent (@label)",
+    "translation": ""
+  },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
     "translation": "«@block» in «@field» drzüefüege"
@@ -1488,7 +1504,7 @@
     "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeite"
   },
   "editFormBlockAdd": {

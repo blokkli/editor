@@ -289,10 +289,17 @@ onMounted(() => {
   let boundsY = props.isTouch ? translateY.value : bounds.y
 
   // When the mouse is not inside any dragged element (e.g. copy-paste),
-  // center the drag preview under the cursor.
+  // center the drag preview under the cursor. For existing blocks (e.g.
+  // dragged via the move button) position the top-left at the cursor so
+  // all blocks animate towards the bottom-right of the cursor.
   if (!mouseInsideBound && !props.isTouch) {
-    boundsX = props.startCoords.x - bounds.width / 2
-    boundsY = props.startCoords.y - bounds.height / 2
+    if (isExisting.value) {
+      boundsX = props.startCoords.x - 20
+      boundsY = props.startCoords.y - 20
+    } else {
+      boundsX = props.startCoords.x - bounds.width / 2
+      boundsY = props.startCoords.y - bounds.height / 2
+    }
   }
 
   offsetX.value = props.startCoords.x - boundsX
@@ -375,7 +382,11 @@ onMounted(() => {
 
       return {
         isTop,
-        from: ui.lowPerformanceMode.value || !mouseInsideBound ? to : from,
+        from:
+          ui.lowPerformanceMode.value ||
+          (!mouseInsideBound && !isExisting.value)
+            ? to
+            : from,
         to,
         width: item.element.offsetWidth,
         height: item.element.offsetHeight,
