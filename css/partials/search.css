@@ -1,5 +1,5 @@
 .bk.bk-search {
-  @apply absolute right-0 bottom-0 z-search overflow-hidden md:shadow-xl-left top-40 md:top-0 w-full md:w-[600px] transition pointer-events-auto;
+  @apply absolute right-0 bottom-0 z-search overflow-hidden md:shadow-xl-left top-40 md:top-0 w-full md:w-[600px] xl:w-[800px] transition pointer-events-auto;
   &.bk-is-translucent {
     @apply opacity-0 pointer-events-none;
   }
@@ -46,9 +46,10 @@
   }
 
   .bk-search-item-icon {
-    @apply w-[1em] h-[1em] rounded-[0.1em] bg-mono-100 flex items-center justify-center border border-mono-200 shrink-0 text-mono-500 relative overflow-hidden;
+    @apply bg-mono-100 flex items-center justify-center border border-mono-200 shrink-0 text-mono-500 relative overflow-hidden;
     @apply p-[0.125em];
-    @apply text-[40px] lg:text-[46px];
+    @apply rounded lg:rounded-md xl:rounded-lg;
+    @apply size-40 lg:size-50 xl:size-80;
 
     .bk-blokkli-item-icon {
       @apply w-full h-full;
@@ -60,24 +61,26 @@
   }
 
   .bk-search-item-content {
-    @apply w-full overflow-hidden flex flex-col justify-between;
+    @apply w-full max-w-full min-w-0;
   }
 
   .bk-search-item-title {
-    @apply font-bold text-sm lg:text-base leading-none align-baseline truncate;
+    @apply font-bold text-sm lg:text-base !leading-tight align-baseline line-clamp-2;
+    @apply whitespace-normal break-words;
     div {
       @apply inline-block;
     }
   }
   .bk-search-item-context {
     @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold inline;
+    @apply bg-mono-100 text-mono-700 py-3 px-5 rounded;
   }
 
   .bk-search-item-subtitle {
-    @apply min-w-0 overflow-hidden w-full text-sm mt-auto items-baseline truncate;
+    @apply min-w-0 overflow-hidden w-full text-sm items-baseline;
   }
   .bk-search-item-text {
-    @apply min-w-0 truncate inline ml-5 first:ml-0;
+    @apply min-w-0 whitespace-normal max-w-full break-words line-clamp-2 text-sm;
   }
 
   .bk-search-no-results {
@@ -139,6 +142,12 @@
       &.bk-is-image {
         @apply outline outline-accent-900 outline-[1px];
       }
+    }
+  }
+
+  &:hover {
+    .bk-search-item-context {
+      @apply bg-mono-300 text-mono-950;
     }
   }
 }

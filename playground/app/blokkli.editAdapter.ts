@@ -1029,6 +1029,7 @@ export default defineBlokkliEditAdapter((ctx) => {
                 imageUrl: image.url(),
                 entityType: image.entityType,
                 entityBundle: image.bundle,
+                context: 'Image',
               }
             })
             .filter((v) => v.title.toLowerCase().includes(text.toLowerCase())),

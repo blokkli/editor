@@ -19,19 +19,17 @@
           :text="item.title"
           :regex="regex"
         />
-        <div class="bk-search-item-subtitle">
-          <Highlight
-            v-if="item.context"
-            class="bk-search-item-context"
-            :text="item.context"
-            :regex="regex"
-          />
-          <Highlight
-            class="bk-search-item-text"
-            :text="item.text"
-            :regex="regex"
-          />
-        </div>
+        <Highlight
+          class="bk-search-item-text"
+          :text="item.text"
+          :regex="regex"
+        />
+        <Highlight
+          v-if="item.context"
+          class="bk-search-item-context"
+          :text="item.context"
+          :regex="regex"
+        />
       </div>
     </button>
   </div>

@@ -26,17 +26,13 @@
               class="bk-search-item-title bk-highlight"
               v-html="item.title"
             />
-            <div class="bk-search-item-subtitle">
-              <div
-                v-if="item.context"
-                class="bk-search-item-context"
-                v-html="item.context"
-              />
-              <div
-                class="bk-search-item-text bk-highlight"
-                v-html="item.text"
-              />
-            </div>
+
+            <div class="bk-search-item-text bk-highlight" v-html="item.text" />
+            <div
+              v-if="item.context"
+              class="bk-search-item-context"
+              v-html="item.context"
+            />
           </div>
         </button>
       </Sortli>
