@@ -14,6 +14,7 @@
     v-show="activeLabel"
     ref="labelEl"
     class="bk bk-dragging-overlay-label"
+    :class="labelPosition.className"
     :style="styleLabel"
   >
     <Icon name="bk_mdi_drag_pan" />
@@ -67,10 +68,12 @@ const props = defineProps<{
   color?: string
   backgroundColor?: string
   activeLabel?: string
+  activeRect?: Rectangle
 }>()
 
 const MAX_WIDTH = 350
 const MAX_HEIGHT = 200
+const LABEL_GAP = 20
 
 const labelEl = useTemplateRef('labelEl')
 
@@ -150,12 +153,172 @@ const style = computed(() => {
   }
 })
 
-const styleLabel = computed(() => {
+type LabelPlacement = 'top' | 'bottom' | 'left' | 'right'
+
+type LabelPosition = {
+  x: number
+  y: number
+  placement: LabelPlacement
+  className: string
+}
+
+/**
+ * Check if two ranges overlap on a single axis.
+ */
+function rangesOverlap(
+  aStart: number,
+  aEnd: number,
+  bStart: number,
+  bEnd: number,
+): boolean {
+  return aStart < bEnd && aEnd > bStart
+}
+
+function resolveVerticalPlacement(
+  activeRect: Rectangle,
+  dragItemsRect: Rectangle,
+  lw: number,
+  lh: number,
+  vw: number,
+  vh: number,
+  gap: number,
+): LabelPosition {
+  // Center label horizontally on the drop target, clamped to viewport.
+  const x = Math.min(
+    Math.max(0, activeRect.x + activeRect.width / 2 - lw / 2),
+    vw - lw,
+  )
+
+  // Only consider drag items if they overlap horizontally with the label.
+  const overlapsHorizontally = rangesOverlap(
+    x,
+    x + lw,
+    dragItemsRect.x,
+    dragItemsRect.x + dragItemsRect.width,
+  )
+
+  // Place above the drop target, or above the drag items if they overlap.
+  let topEdge = activeRect.y
+  if (overlapsHorizontally) {
+    topEdge = Math.min(topEdge, dragItemsRect.y)
+  }
+  let y = topEdge - lh - gap
+  let placement: LabelPlacement = 'top'
+
+  // Move below if above goes outside viewport.
+  if (y < 0) {
+    let bottomEdge = activeRect.y + activeRect.height
+    if (overlapsHorizontally) {
+      bottomEdge = Math.max(bottomEdge, dragItemsRect.y + dragItemsRect.height)
+    }
+    y = bottomEdge + gap
+    placement = 'bottom'
+  }
+
+  y = Math.min(Math.max(0, y), vh - lh)
+  return { x, y, placement, className: `bk-is-${placement}` }
+}
+
+function resolveHorizontalPlacement(
+  activeRect: Rectangle,
+  dragItemsRect: Rectangle,
+  lw: number,
+  lh: number,
+  vw: number,
+  vh: number,
+  gap: number,
+): LabelPosition {
+  // Center label vertically on the drop target, clamped to viewport.
+  const y = Math.min(
+    Math.max(0, activeRect.y + activeRect.height / 2 - lh / 2),
+    vh - lh,
+  )
+
+  // Only consider drag items if they overlap vertically with the label.
+  const overlapsVertically = rangesOverlap(
+    y,
+    y + lh,
+    dragItemsRect.y,
+    dragItemsRect.y + dragItemsRect.height,
+  )
+
+  // Place left of the drop target, or left of the drag items if they overlap.
+  let leftEdge = activeRect.x
+  if (overlapsVertically) {
+    leftEdge = Math.min(leftEdge, dragItemsRect.x)
+  }
+  let x = leftEdge - lw - gap
+  let placement: LabelPlacement = 'left'
+
+  // Move right if left goes outside viewport.
+  if (x < 0) {
+    let rightEdge = activeRect.x + activeRect.width
+    if (overlapsVertically) {
+      rightEdge = Math.max(rightEdge, dragItemsRect.x + dragItemsRect.width)
+    }
+    x = rightEdge + gap
+    placement = 'right'
+  }
+
+  x = Math.min(Math.max(0, x), vw - lw)
+  return { x, y, placement, className: `bk-is-${placement}` }
+}
+
+const labelPosition = computed<LabelPosition>(() => {
+  if (props.activeRect && !props.isTouch) {
+    const vw = ui.viewport.value.width
+    const vh = ui.viewport.value.height
+    const lw = labelWidth.value
+    const lh = labelHeight.value
+    const gap = LABEL_GAP
+
+    const dragItemsRect = {
+      x: translateX.value,
+      y: translateY.value,
+      width: width.value,
+      height: height.value,
+    }
+
+    // Wide drop targets (horizontal bars) → left/right.
+    // Tall drop targets (vertical bars) → top/bottom.
+    // Very wide drop targets (e.g. root field) → top/bottom to keep label
+    // close to the drag items.
+    const useHorizontal =
+      props.activeRect.width >= props.activeRect.height &&
+      props.activeRect.width < vw / 2
+    if (useHorizontal) {
+      return resolveHorizontalPlacement(
+        props.activeRect,
+        dragItemsRect,
+        lw,
+        lh,
+        vw,
+        vh,
+        gap,
+      )
+    }
+    return resolveVerticalPlacement(
+      props.activeRect,
+      dragItemsRect,
+      lw,
+      lh,
+      vw,
+      vh,
+      gap,
+    )
+  }
+
+  // Fallback: position above drag items.
   const x = Math.min(
     Math.max(10, translateX.value - labelWidth.value / 2 + width.value / 2),
     ui.viewport.value.width - labelWidth.value,
   )
   const y = Math.max(10, translateY.value - labelHeight.value - 20)
+  return { x, y, placement: 'top', className: 'bk-is-top' }
+})
+
+const styleLabel = computed(() => {
+  const { x, y } = labelPosition.value
   return {
     transform: `translate(${x}px, ${y}px)`,
     '--bk-active-background-color':

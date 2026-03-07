@@ -1,7 +1,7 @@
 <template>
   <Renderer
     v-if="dragItems.length && isVisible"
-    v-slot="{ backgroundColor, color, label }"
+    v-slot="{ backgroundColor, color, label, activeRect }"
     :items="dragItems"
     :box="box"
     :mouse-x="mouseX"
@@ -18,6 +18,7 @@
       :background-color
       :color
       :active-label="label"
+      :active-rect="activeRect"
     />
   </Renderer>
   <Teleport to="#bk-canvas-overlay">

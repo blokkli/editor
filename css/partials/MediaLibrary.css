@@ -49,7 +49,7 @@
 
     &.bk-is-grid > div {
       @apply grid grid-cols-2 pt-10;
-      @container (min-width: 400px) {
+      @container (min-width: 500px) {
         @apply grid-cols-3;
       }
 
@@ -208,6 +208,9 @@
       @apply flex w-full min-w-0 gap-15 p-15 hover:bg-mono-100;
       .bk-media-library-items-item-image {
         @apply w-90;
+        @container (min-width: 400px) {
+          @apply w-120;
+        }
       }
       .bk-media-library-items-item-text {
         @apply flex-1;

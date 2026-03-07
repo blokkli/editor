@@ -4,6 +4,7 @@
       :background-color="activeBackgroundColorHex"
       :color="activeColor"
       :label="active?.label"
+      :active-rect="activeScreenRect"
     />
   </Teleport>
 </template>
@@ -863,7 +864,8 @@ const fieldRenderPalette = computed<
       gradEnd: accent[500],
       borderOuter: accent[400],
       borderInner: accent[300],
-      color: accent[950],
+      color: [255, 255, 255],
+      // color: accent[950],
     },
     '2': {
       gradStart: mono[700],
@@ -926,6 +928,20 @@ const activeBackgroundColorHex = computed<string>(() => {
     return joinRgb(activeBackgroundColorRgb.value)
   }
   return ''
+})
+
+const activeScreenRect = computed<Rectangle | undefined>(() => {
+  if (!active.value) {
+    return
+  }
+  const scale = ui.artboardScale.value
+  const offset = ui.artboardOffset.value
+  return {
+    x: active.value.x * scale + offset.x,
+    y: active.value.y * scale + offset.y,
+    width: active.value.width * scale,
+    height: active.value.height * scale,
+  }
 })
 
 const activeHoverField = ref<FieldRect | null>(null)
