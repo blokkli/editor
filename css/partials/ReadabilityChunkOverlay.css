@@ -1,0 +1,38 @@
+.bk.bk-readability-chunk-overlay {
+  @apply absolute top-0 left-0 pointer-events-none;
+  transform-origin: 0 0;
+
+  .bk-readability-chunk-rect {
+    @apply absolute top-0 left-0 rounded;
+    @apply border-2;
+
+    &.bk-is-easy {
+      @apply border-lime-normal bg-lime-light/30;
+      .bk-readability-chunk-badge {
+        @apply bg-lime-normal text-white;
+      }
+    }
+    &.bk-is-ok {
+      @apply border-yellow-normal bg-yellow-light/30;
+      .bk-readability-chunk-badge {
+        @apply bg-yellow-normal text-yellow-dark;
+      }
+    }
+    &.bk-is-hard {
+      @apply border-red-normal bg-red-light/30;
+      .bk-readability-chunk-badge {
+        @apply bg-red-normal text-white;
+      }
+    }
+  }
+
+  &.bk-is-stale .bk-readability-chunk-rect {
+    @apply opacity-30;
+  }
+
+  .bk-readability-chunk-badge {
+    @apply absolute right-0 bottom-full;
+    @apply text-xs font-semibold px-5 py-2 rounded-t;
+    @apply whitespace-nowrap;
+  }
+}

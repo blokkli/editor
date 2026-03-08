@@ -316,7 +316,8 @@ const { collector } = defineRenderer('analyze-overlay', {
   enabled: () =>
     !selection.isMultiSelecting.value &&
     !selection.isDragging.value &&
-    !ui.isChangingOptions.value,
+    !ui.isChangingOptions.value &&
+    !selection.activeEditableLabel.value,
   render: (_ctx, gl, program) => {
     gl.useProgram(program.program)
 

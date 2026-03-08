@@ -62,6 +62,12 @@
         </div>
       </div>
     </form>
+    <ChunkOverlay
+      v-if="isReadabilityField && isMarkup"
+      :text="modelValue"
+      :field-type="readabilityFieldType"
+      :element="element"
+    />
   </ArtboardTooltip>
 </template>
 
@@ -89,6 +95,7 @@ import {
 } from '#blokkli/editor/composables'
 import type { EditableFieldConfig } from '../types'
 import ReadabilityIndicator from './ReadabilityIndicator/index.vue'
+import ChunkOverlay from './ReadabilityIndicator/ChunkOverlay.vue'
 
 const { state, adapter, $t, types, element: elementProvider } = useBlokkli()
 

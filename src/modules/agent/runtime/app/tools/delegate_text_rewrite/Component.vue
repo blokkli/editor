@@ -345,9 +345,9 @@ async function analyzeReadability(): Promise<
     const fieldResult = rawAnalysis[analysisKey]
     const chunks = fieldResult?.chunks ?? []
 
-    // Collect hard chunks as issues (for retry logic).
+    // Collect hard and ok chunks as issues (for retry logic).
     const issues: ReadabilityResult[string][string]['issues'] = chunks
-      .filter((c) => c.band === 'hard')
+      .filter((c) => c.band === 'hard' || c.band === 'ok')
       .map((c) => ({ text: c.text, impact: c.impact, score: c.score }))
 
     // Find the worst chunk across ALL bands to get representative score.
@@ -675,7 +675,7 @@ async function readabilityRetryLoop(authToken: string) {
         issues,
       }
 
-      if (level === 'hard') {
+      if (level === 'hard' || level === 'ok') {
         failing.push(check)
       } else {
         passing.push(check)

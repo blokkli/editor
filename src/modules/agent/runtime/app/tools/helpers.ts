@@ -38,15 +38,17 @@ function mapAnalysisToResult(
     const uuid = key.slice(0, slashIndex)
     const fieldName = key.slice(slashIndex + 1)
 
-    const hardChunks = fieldResult.chunks.filter((c) => c.band === 'hard')
-    if (hardChunks.length === 0) continue
+    const issueChunks = fieldResult.chunks.filter(
+      (c) => c.band === 'hard' || c.band === 'ok',
+    )
+    if (issueChunks.length === 0) continue
 
     if (!result[uuid]) {
       result[uuid] = {}
     }
     result[uuid][fieldName] = {
       fieldValue: fieldResult.rawValue || undefined,
-      issues: hardChunks.map((c) => ({
+      issues: issueChunks.map((c) => ({
         text: c.text,
         impact: c.impact,
         score: c.score,

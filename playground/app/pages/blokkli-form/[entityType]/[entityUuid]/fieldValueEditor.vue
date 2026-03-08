@@ -44,7 +44,7 @@ if (!block) {
 
 const field = block.get<FieldTextarea>(fieldName.value)
 
-const value = ref(field.getText())
+const value = ref(field.getUnprocessed())
 
 const getHeight = () => {
   const editor = document.querySelector('.ck-editor')
