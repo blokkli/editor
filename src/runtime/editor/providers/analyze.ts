@@ -162,7 +162,7 @@ export default function analyzeProvider(
 
         const label =
           typeof analyzer.label === 'function'
-            ? analyzer.label(context.value.language)
+            ? analyzer.label(context.value.language, $t)
             : analyzer.label
 
         results.push({

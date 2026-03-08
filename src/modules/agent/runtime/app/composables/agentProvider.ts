@@ -714,11 +714,11 @@ export default function (
         type: a.type,
         label:
           typeof a.label === 'function'
-            ? a.label(context.value.language)
+            ? a.label(context.value.language, $t)
             : a.label,
         description:
           typeof a.description === 'function'
-            ? a.description(context.value.language)
+            ? a.description(context.value.language, $t)
             : a.description,
       }))
 

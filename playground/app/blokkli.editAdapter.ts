@@ -7,6 +7,7 @@ import {
 import { defineAnalyzer } from '#blokkli/analyzer'
 import accessibilityAnalyzer from '#blokkli/analyzer/axe'
 import readabilityAnalyzer from '#blokkli/analyzer/readability'
+import headingStructure from '#blokkli/analyzer/headingStructure'
 import { falsy } from '~~/helpers'
 import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
@@ -1648,6 +1649,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         blockAnalyzer(),
         textAnalyzer(),
         readabilityAnalyzer(),
+        headingStructure(),
         accessibilityAnalyzer({
           runOptions: {
             rules: {

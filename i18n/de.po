@@ -869,6 +869,58 @@ msgctxt "analyzeClickButton"
 msgid "Click the button above to run the analysis."
 msgstr "Klicken Sie auf den Button oben um die Analyse auszuführen."
 
+msgctxt "analyzeHeadingMultipleH1"
+msgid "Multiple H1 headings"
+msgstr "Mehrere H1-Überschriften"
+
+msgctxt "analyzeHeadingMultipleH1Description"
+msgid ""
+"The page contains multiple H1 headings. There should only be one H1 heading "
+"per page."
+msgstr ""
+"Die Seite enthält mehrere H1-Überschriften. Es sollte nur eine "
+"H1-Überschrift pro Seite geben."
+
+msgctxt "analyzeHeadingNoH2"
+msgid "Missing H2 headings"
+msgstr "Fehlende H2-Überschriften"
+
+msgctxt "analyzeHeadingNoH2Description"
+msgid ""
+"The page contains no H2 headings. A clear heading structure is important "
+"for SEO and accessibility."
+msgstr ""
+"Die Seite enthält keine H2-Überschriften. Eine klare Überschriftenstruktur "
+"ist wichtig für SEO und Barrierefreiheit."
+
+msgctxt "analyzeHeadingNoH2Found"
+msgid "No H2 headings found"
+msgstr "Keine H2-Überschriften gefunden"
+
+msgctxt "analyzeHeadingSkippedLevels"
+msgid "Skipped heading levels"
+msgstr "Übersprungene Überschriftenebenen"
+
+msgctxt "analyzeHeadingSkippedLevelsDescription"
+msgid ""
+"Headings skip a level. The heading hierarchy should not skip levels (e.g. "
+"do not jump from H2 to H4)."
+msgstr ""
+"Überschriften überspringen eine Ebene. Die Überschriftenhierarchie sollte "
+"keine Ebenen überspringen (z.B. nicht von H2 zu H4)."
+
+msgctxt "analyzeHeadingStructureLabel"
+msgid "Heading Structure"
+msgstr "Titelstruktur"
+
+msgctxt "analyzeHeadingValid"
+msgid "Correct heading structure"
+msgstr "Korrekte Überschriftenstruktur"
+
+msgctxt "analyzeHeadingValidDescription"
+msgid "The page has a correct heading structure with no skipped levels."
+msgstr "Die Seite hat eine korrekte Überschriftenstruktur ohne übersprungene Ebenen."
+
 msgctxt "analyzeKeepVisible"
 msgid "Keep results visible"
 msgstr "Ergebnisse sichtbar halten"
@@ -1558,7 +1610,7 @@ msgid "The items could not be duplicated."
 msgstr "Die Elemente konnten nicht dupliziert werden."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeiten..."
 
 msgctxt "editFormBlockAdd"

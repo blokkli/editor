@@ -277,7 +277,7 @@ const analyzerStatuses = computed(() => {
 
     const title =
       typeof analyzer.label === 'function'
-        ? analyzer.label(ui.interfaceLanguage.value)
+        ? analyzer.label(ui.interfaceLanguage.value, $t)
         : analyzer.label
 
     return {

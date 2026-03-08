@@ -848,6 +848,52 @@ msgctxt "analyzeClickButton"
 msgid "Click the button above to run the analysis."
 msgstr ""
 
+msgctxt "analyzeHeadingMultipleH1"
+msgid "Multiple H1 headings"
+msgstr ""
+
+msgctxt "analyzeHeadingMultipleH1Description"
+msgid ""
+"The page contains multiple H1 headings. There should only be one H1 heading "
+"per page."
+msgstr ""
+
+msgctxt "analyzeHeadingNoH2"
+msgid "Missing H2 headings"
+msgstr ""
+
+msgctxt "analyzeHeadingNoH2Description"
+msgid ""
+"The page contains no H2 headings. A clear heading structure is important "
+"for SEO and accessibility."
+msgstr ""
+
+msgctxt "analyzeHeadingNoH2Found"
+msgid "No H2 headings found"
+msgstr ""
+
+msgctxt "analyzeHeadingSkippedLevels"
+msgid "Skipped heading levels"
+msgstr ""
+
+msgctxt "analyzeHeadingSkippedLevelsDescription"
+msgid ""
+"Headings skip a level. The heading hierarchy should not skip levels (e.g. "
+"do not jump from H2 to H4)."
+msgstr ""
+
+msgctxt "analyzeHeadingStructureLabel"
+msgid "Heading Structure"
+msgstr ""
+
+msgctxt "analyzeHeadingValid"
+msgid "Correct heading structure"
+msgstr ""
+
+msgctxt "analyzeHeadingValidDescription"
+msgid "The page has a correct heading structure with no skipped levels."
+msgstr ""
+
 msgctxt "analyzeKeepVisible"
 msgid "Keep results visible"
 msgstr ""
@@ -1528,7 +1574,7 @@ msgid "The items could not be duplicated."
 msgstr "Gli elementi non possono essere duplicati."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Modifica"
 
 msgctxt "editFormBlockAdd"

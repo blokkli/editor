@@ -1,4 +1,5 @@
 import type { AnalyzerContext } from './helpers/Context'
+import type { TextProvider } from '#blokkli/editor/providers/texts'
 
 export type AnalyzeStatus = 'pass' | 'incomplete' | 'inapplicable' | 'violation'
 export type AnalyzeImpact = 'minor' | 'moderate' | 'serious' | 'critical'
@@ -64,9 +65,9 @@ export type Analyzer = {
    */
   type?: AnalyzerType
 
-  label?: string | ((langcode: string) => string)
+  label?: string | ((langcode: string, $t: TextProvider) => string)
 
-  description?: string | ((langcode: string) => string)
+  description?: string | ((langcode: string, $t: TextProvider) => string)
 
   /**
    * If true, the raw page (without editor UI) is required for this analyzer.

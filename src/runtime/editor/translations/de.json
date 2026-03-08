@@ -831,6 +831,46 @@
     "source": "Click the button above to run the analysis.",
     "translation": "Klicken Sie auf den Button oben um die Analyse auszuführen."
   },
+  "analyzeHeadingMultipleH1": {
+    "source": "Multiple H1 headings",
+    "translation": "Mehrere H1-Überschriften"
+  },
+  "analyzeHeadingMultipleH1Description": {
+    "source": "The page contains multiple H1 headings. There should only be one H1 heading per page.",
+    "translation": "Die Seite enthält mehrere H1-Überschriften. Es sollte nur eine H1-Überschrift pro Seite geben."
+  },
+  "analyzeHeadingNoH2": {
+    "source": "Missing H2 headings",
+    "translation": "Fehlende H2-Überschriften"
+  },
+  "analyzeHeadingNoH2Description": {
+    "source": "The page contains no H2 headings. A clear heading structure is important for SEO and accessibility.",
+    "translation": "Die Seite enthält keine H2-Überschriften. Eine klare Überschriftenstruktur ist wichtig für SEO und Barrierefreiheit."
+  },
+  "analyzeHeadingNoH2Found": {
+    "source": "No H2 headings found",
+    "translation": "Keine H2-Überschriften gefunden"
+  },
+  "analyzeHeadingSkippedLevels": {
+    "source": "Skipped heading levels",
+    "translation": "Übersprungene Überschriftenebenen"
+  },
+  "analyzeHeadingSkippedLevelsDescription": {
+    "source": "Headings skip a level. The heading hierarchy should not skip levels (e.g. do not jump from H2 to H4).",
+    "translation": "Überschriften überspringen eine Ebene. Die Überschriftenhierarchie sollte keine Ebenen überspringen (z.B. nicht von H2 zu H4)."
+  },
+  "analyzeHeadingStructureLabel": {
+    "source": "Heading Structure",
+    "translation": "Titelstruktur"
+  },
+  "analyzeHeadingValid": {
+    "source": "Correct heading structure",
+    "translation": "Korrekte Überschriftenstruktur"
+  },
+  "analyzeHeadingValidDescription": {
+    "source": "The page has a correct heading structure with no skipped levels.",
+    "translation": "Die Seite hat eine korrekte Überschriftenstruktur ohne übersprungene Ebenen."
+  },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
     "translation": "Ergebnisse sichtbar halten"
@@ -1504,7 +1544,7 @@
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeiten..."
   },
   "editFormBlockAdd": {

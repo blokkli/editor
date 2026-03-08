@@ -831,6 +831,46 @@
     "source": "Click the button above to run the analysis.",
     "translation": ""
   },
+  "analyzeHeadingMultipleH1": {
+    "source": "Multiple H1 headings",
+    "translation": ""
+  },
+  "analyzeHeadingMultipleH1Description": {
+    "source": "The page contains multiple H1 headings. There should only be one H1 heading per page.",
+    "translation": ""
+  },
+  "analyzeHeadingNoH2": {
+    "source": "Missing H2 headings",
+    "translation": ""
+  },
+  "analyzeHeadingNoH2Description": {
+    "source": "The page contains no H2 headings. A clear heading structure is important for SEO and accessibility.",
+    "translation": ""
+  },
+  "analyzeHeadingNoH2Found": {
+    "source": "No H2 headings found",
+    "translation": ""
+  },
+  "analyzeHeadingSkippedLevels": {
+    "source": "Skipped heading levels",
+    "translation": ""
+  },
+  "analyzeHeadingSkippedLevelsDescription": {
+    "source": "Headings skip a level. The heading hierarchy should not skip levels (e.g. do not jump from H2 to H4).",
+    "translation": ""
+  },
+  "analyzeHeadingStructureLabel": {
+    "source": "Heading Structure",
+    "translation": ""
+  },
+  "analyzeHeadingValid": {
+    "source": "Correct heading structure",
+    "translation": ""
+  },
+  "analyzeHeadingValidDescription": {
+    "source": "The page has a correct heading structure with no skipped levels.",
+    "translation": ""
+  },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
     "translation": ""
@@ -1504,7 +1544,7 @@
     "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeite"
   },
   "editFormBlockAdd": {
