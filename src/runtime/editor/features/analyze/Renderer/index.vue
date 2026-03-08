@@ -1,5 +1,19 @@
 <template>
-  <div />
+  <Teleport to="#bk-canvas-overlay">
+    <button
+      v-if="tooltipData"
+      v-show="showTooltip"
+      class="bk bk-analyze-tooltip bk-control"
+      :class="'bk-is-' + tooltipData.status"
+      :style="{
+        transform: `translate(${tooltipData.x}px, ${tooltipData.y}px)`,
+      }"
+      @click.prevent="onTooltipClick"
+    >
+      <Icon name="bk_mdi_speed" />
+      <span>{{ tooltipData.title }}</span>
+    </button>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -7,7 +21,7 @@ import type {
   AnalyzeResultMapped,
   AnalyzeStatus,
 } from '#blokkli/analyzer/types'
-import { useBlokkli, computed, watch } from '#imports'
+import { useBlokkli, computed, watch, ref } from '#imports'
 import {
   setBuffersAndAttributes,
   drawBufferInfo,
@@ -20,15 +34,26 @@ import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
+import { Icon } from '#blokkli/editor/components'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]
   isStale: boolean
   isRunning: boolean
   manualAnalyzerIds: Set<string>
+  isShown: boolean
 }>()
 
-const { animation, ui, theme, selection, element, dom, blocks } = useBlokkli()
+const { animation, ui, theme, selection, element, dom, blocks, eventBus } =
+  useBlokkli()
+
+const showTooltip = computed(() => {
+  return (
+    !ui.isChangingOptions.value &&
+    !selection.isMultiSelecting.value &&
+    !selection.activeEditableLabel.value
+  )
+})
 
 const activeId = defineModel<string>({
   default: '',
@@ -147,6 +172,51 @@ const activeRectId = computed(() => {
 
   return -1.0
 })
+
+type TooltipData = {
+  x: number
+  y: number
+  title: string
+  status: AnalyzeStatus
+}
+
+const hoveredNode = ref<AnalyzeRendererNode | null>(null)
+
+const tooltipData = computed<TooltipData | null>(() => {
+  const node = hoveredNode.value
+  if (!node) {
+    return null
+  }
+  const rect = collector.rectCache.get(node.element)
+  if (!rect) {
+    return null
+  }
+  const scale = ui.artboardScale.value
+  const offset = ui.artboardOffset.value
+  const x = rect.x * scale + offset.x
+  const y = rect.y * scale + offset.y
+  return {
+    x,
+    y,
+    title: node.title,
+    status: node.status,
+  }
+})
+
+function onTooltipClick() {
+  const node = hoveredNode.value
+  if (!node) {
+    return
+  }
+  const id = node.id + '_____' + node.index
+  if (activeId.value === id) {
+    activeId.value = ''
+  } else {
+    activeId.value = id
+    eventBus.emit('sidebar:open', 'analyze')
+  }
+  hoveredNode.value = null
+}
 
 class AnalyzeRectangleBufferCollector extends RectangleBufferCollector<AnalyzeRectangle> {
   prevKey = ''
@@ -336,7 +406,33 @@ watch(
   },
 )
 
+onBlokkliEvent('canvas:draw', (e) => {
+  const artboardX = (e.mouseX - e.artboardOffset.x) / e.artboardScale
+  const artboardY = (e.mouseY - e.artboardOffset.y) / e.artboardScale
+
+  for (let i = 0; i < nodes.value.length; i++) {
+    const node = nodes.value[i]!
+    const rect = collector.rectCache.get(node.element)
+    if (!rect) {
+      continue
+    }
+
+    if (
+      artboardX >= rect.x &&
+      artboardX <= rect.x + rect.width &&
+      artboardY >= rect.y &&
+      artboardY <= rect.y + rect.height
+    ) {
+      hoveredNode.value = node
+      return
+    }
+  }
+
+  hoveredNode.value = null
+})
+
 onBlokkliEvent('mouse:up', (e) => {
+  hoveredNode.value = null
   const artboardX = (e.x - ui.artboardOffset.value.x) / ui.artboardScale.value
   const artboardY = (e.y - ui.artboardOffset.value.y) / ui.artboardScale.value
 
@@ -365,6 +461,7 @@ onBlokkliEvent('mouse:up', (e) => {
 })
 
 onBlokkliEvent('window:clickAway', () => {
+  hoveredNode.value = null
   activeId.value = ''
 })
 </script>

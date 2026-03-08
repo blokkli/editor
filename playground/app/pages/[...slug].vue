@@ -107,7 +107,7 @@ const uuid = computed(() => {
   return '1'
 })
 
-const canEdit = computed(() => !!route.query.blokkliEditing)
+const canEdit = computed(() => !!route.query.blokkliEditing || import.meta.dev)
 
 const page = entityStorageManager.getContent(uuid.value)
 

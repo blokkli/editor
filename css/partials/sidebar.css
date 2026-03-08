@@ -303,7 +303,8 @@ html.bk-is-sidebar-interacting {
 }
 
 .bk-sidebar-badge {
-  @apply absolute top-3 right-3 w-15 h-15 rounded-full  text-xs flex items-center justify-center;
+  @apply absolute top-3 right-3 size-18 rounded-full flex items-center justify-center font-bold;
+  font-size: 10px;
 
   &.bk-is-yellow {
     @apply bg-yellow-normal text-yellow-dark;

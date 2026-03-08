@@ -10,6 +10,7 @@ const zIndexKeys = [
   'canvas-overlay',
   'animation-canvas',
   'selection',
+  'analyze-tooltip',
   'interaction-overlay',
   'comments-overlay',
   'comments-overlay-active',

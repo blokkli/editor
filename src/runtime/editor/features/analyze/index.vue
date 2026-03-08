@@ -27,10 +27,20 @@
         v-else-if="!ui.isTransforming.value"
         :key="animation.renderKey.value"
         v-model="isRunning"
+        v-model:issue-count="issueCount"
+        v-model:has-violation="hasViolation"
         :langcode="context.language"
         :analyze
         :is-shown
       />
+    </template>
+    <template v-if="issueCount" #badge>
+      <div
+        class="bk-sidebar-badge"
+        :class="hasViolation ? 'bk-is-red' : 'bk-is-yellow'"
+      >
+        {{ issueCount }}
+      </div>
     </template>
   </PluginSidebar>
 </template>
@@ -54,6 +64,8 @@ defineBlokkliFeature({
 const { $t, context, animation, ui, analyze } = useBlokkli()
 
 const isRunning = ref(false)
+const issueCount = ref(0)
+const hasViolation = ref(false)
 </script>
 
 <script lang="ts">

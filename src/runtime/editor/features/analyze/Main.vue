@@ -67,6 +67,7 @@
     :is-stale
     :manual-analyzer-ids
     :is-running
+    :is-shown
   />
 </template>
 
@@ -114,6 +115,8 @@ const refreshKey = computed(() => {
 })
 
 const isRunning = defineModel<boolean>({ default: false })
+const issueCount = defineModel<number>('issueCount', { default: 0 })
+const hasViolation = defineModel<boolean>('hasViolation', { default: false })
 
 let currentAbortController: AbortController | null = null
 
@@ -208,6 +211,23 @@ const results = computed(() => {
 
   return allResults.value.filter((v) => v.category === selectedCategory.value)
 })
+
+watch(
+  allResults,
+  (v) => {
+    let count = 0
+    for (const r of v) {
+      if (r.status === 'violation' || r.status === 'incomplete') {
+        for (const node of r.nodes) {
+          count += node.targets.length
+        }
+      }
+    }
+    issueCount.value = count
+    hasViolation.value = v.some((r) => r.status === 'violation')
+  },
+  { immediate: true },
+)
 
 const isStale = computed(() => lastRunKey.value !== state.refreshKey.value)
 

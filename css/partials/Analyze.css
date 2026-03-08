@@ -277,3 +277,23 @@
     @apply absolute bg-red-normal;
   }
 }
+
+.bk.bk-analyze-tooltip {
+  @apply fixed top-0 left-0 z-analyze-tooltip cursor-pointer;
+  @apply flex items-center gap-5 px-8 py-5;
+  @apply bg-mono-950 text-white text-xs font-semibold whitespace-nowrap;
+  @apply shadow-lg;
+  @apply hover:bg-mono-950/90;
+
+  svg {
+    @apply size-15 fill-current;
+  }
+
+  &.bk-is-violation {
+    @apply bg-red-normal hover:bg-red-dark;
+  }
+
+  &.bk-is-incomplete {
+    @apply bg-yellow-normal hover:bg-yellow-dark;
+  }
+}
