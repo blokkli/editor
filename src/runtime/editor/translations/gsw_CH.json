@@ -803,6 +803,30 @@
     "source": "Allowed Blocks",
     "translation": ""
   },
+  "analyzeAltTextLabel": {
+    "source": "Image Alt Texts",
+    "translation": ""
+  },
+  "analyzeAltTextMissing": {
+    "source": "Images without alt text",
+    "translation": ""
+  },
+  "analyzeAltTextMissingDescription": {
+    "source": "Images are missing alt text. Alt texts are important for accessibility and SEO.",
+    "translation": ""
+  },
+  "analyzeAltTextMissingNode": {
+    "source": "Image without alt text",
+    "translation": ""
+  },
+  "analyzeAltTextValid": {
+    "source": "Images with alt text",
+    "translation": ""
+  },
+  "analyzeAltTextValidDescription": {
+    "source": "Images have an alt text.",
+    "translation": ""
+  },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
     "translation": "Sitte analysiere"
@@ -831,6 +855,14 @@
     "source": "Click the button above to run the analysis.",
     "translation": ""
   },
+  "analyzeHeadingHasH2": {
+    "source": "H2 headings present",
+    "translation": ""
+  },
+  "analyzeHeadingHasH2Description": {
+    "source": "The page contains H2 headings for a clear content structure.",
+    "translation": ""
+  },
   "analyzeHeadingMultipleH1": {
     "source": "Multiple H1 headings",
     "translation": ""
@@ -851,6 +883,22 @@
     "source": "No H2 headings found",
     "translation": ""
   },
+  "analyzeHeadingNoSkippedLevels": {
+    "source": "No skipped heading levels",
+    "translation": ""
+  },
+  "analyzeHeadingNoSkippedLevelsDescription": {
+    "source": "The heading hierarchy does not skip any levels.",
+    "translation": ""
+  },
+  "analyzeHeadingSingleH1": {
+    "source": "Single H1 heading",
+    "translation": ""
+  },
+  "analyzeHeadingSingleH1Description": {
+    "source": "The page has exactly one H1 heading.",
+    "translation": ""
+  },
   "analyzeHeadingSkippedLevels": {
     "source": "Skipped heading levels",
     "translation": ""
@@ -861,14 +909,6 @@
   },
   "analyzeHeadingStructureLabel": {
     "source": "Heading Structure",
-    "translation": ""
-  },
-  "analyzeHeadingValid": {
-    "source": "Correct heading structure",
-    "translation": ""
-  },
-  "analyzeHeadingValidDescription": {
-    "source": "The page has a correct heading structure with no skipped levels.",
     "translation": ""
   },
   "analyzeKeepVisible": {

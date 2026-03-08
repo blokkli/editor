@@ -4,10 +4,13 @@ import {
   type FullBlokkliAdapter,
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
-import { defineAnalyzer } from '#blokkli/analyzer'
-import accessibilityAnalyzer from '#blokkli/analyzer/axe'
-import readabilityAnalyzer from '#blokkli/analyzer/readability'
-import headingStructure from '#blokkli/analyzer/headingStructure'
+import {
+  defineAnalyzer,
+  altTextAnalyzer,
+  readabilityAnalyzer,
+  axeAnalyzer,
+  headingStructureAnalyzer,
+} from '#blokkli/analyzer'
 import { falsy } from '~~/helpers'
 import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
@@ -1649,8 +1652,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         blockAnalyzer(),
         textAnalyzer(),
         readabilityAnalyzer(),
-        headingStructure(),
-        accessibilityAnalyzer({
+        altTextAnalyzer(),
+        headingStructureAnalyzer(),
+        axeAnalyzer({
           runOptions: {
             rules: {
               region: {

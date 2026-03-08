@@ -841,6 +841,34 @@ msgctxt "allowedBlocks"
 msgid "Allowed Blocks"
 msgstr "Erlaubte Blöcke"
 
+msgctxt "analyzeAltTextLabel"
+msgid "Image Alt Texts"
+msgstr "Bilder Alt-Texte"
+
+msgctxt "analyzeAltTextMissing"
+msgid "Images without alt text"
+msgstr "Bilder ohne Alternativtext"
+
+msgctxt "analyzeAltTextMissingDescription"
+msgid ""
+"Images are missing alt text. Alt texts are important for accessibility and "
+"SEO."
+msgstr ""
+"Bilder haben keinen Alternativtext. Alt-Texte sind wichtig für die "
+"Barrierefreiheit und SEO."
+
+msgctxt "analyzeAltTextMissingNode"
+msgid "Image without alt text"
+msgstr "Bild ohne Alt-Text"
+
+msgctxt "analyzeAltTextValid"
+msgid "Images with alt text"
+msgstr "Bilder mit Alternativtext"
+
+msgctxt "analyzeAltTextValidDescription"
+msgid "Images have an alt text."
+msgstr "Bilder haben einen Alternativtext."
+
 msgctxt "analyzeButtonLabel"
 msgid "Analyze Page"
 msgstr "Seite analysieren"
@@ -868,6 +896,14 @@ msgstr "Texte"
 msgctxt "analyzeClickButton"
 msgid "Click the button above to run the analysis."
 msgstr "Klicken Sie auf den Button oben um die Analyse auszuführen."
+
+msgctxt "analyzeHeadingHasH2"
+msgid "H2 headings present"
+msgstr "H2-Überschriften vorhanden"
+
+msgctxt "analyzeHeadingHasH2Description"
+msgid "The page contains H2 headings for a clear content structure."
+msgstr "Die Seite enthält H2-Überschriften für eine klare Inhaltsstruktur."
 
 msgctxt "analyzeHeadingMultipleH1"
 msgid "Multiple H1 headings"
@@ -897,6 +933,22 @@ msgctxt "analyzeHeadingNoH2Found"
 msgid "No H2 headings found"
 msgstr "Keine H2-Überschriften gefunden"
 
+msgctxt "analyzeHeadingNoSkippedLevels"
+msgid "No skipped heading levels"
+msgstr "Keine übersprungenen Überschriftenebenen"
+
+msgctxt "analyzeHeadingNoSkippedLevelsDescription"
+msgid "The heading hierarchy does not skip any levels."
+msgstr "Die Überschriftenhierarchie überspringt keine Ebenen."
+
+msgctxt "analyzeHeadingSingleH1"
+msgid "Single H1 heading"
+msgstr "Einzelne H1-Überschrift"
+
+msgctxt "analyzeHeadingSingleH1Description"
+msgid "The page has exactly one H1 heading."
+msgstr "Die Seite hat genau eine H1-Überschrift."
+
 msgctxt "analyzeHeadingSkippedLevels"
 msgid "Skipped heading levels"
 msgstr "Übersprungene Überschriftenebenen"
@@ -912,14 +964,6 @@ msgstr ""
 msgctxt "analyzeHeadingStructureLabel"
 msgid "Heading Structure"
 msgstr "Titelstruktur"
-
-msgctxt "analyzeHeadingValid"
-msgid "Correct heading structure"
-msgstr "Korrekte Überschriftenstruktur"
-
-msgctxt "analyzeHeadingValidDescription"
-msgid "The page has a correct heading structure with no skipped levels."
-msgstr "Die Seite hat eine korrekte Überschriftenstruktur ohne übersprungene Ebenen."
 
 msgctxt "analyzeKeepVisible"
 msgid "Keep results visible"

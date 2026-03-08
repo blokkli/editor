@@ -820,6 +820,32 @@ msgctxt "allowedBlocks"
 msgid "Allowed Blocks"
 msgstr ""
 
+msgctxt "analyzeAltTextLabel"
+msgid "Image Alt Texts"
+msgstr ""
+
+msgctxt "analyzeAltTextMissing"
+msgid "Images without alt text"
+msgstr ""
+
+msgctxt "analyzeAltTextMissingDescription"
+msgid ""
+"Images are missing alt text. Alt texts are important for accessibility and "
+"SEO."
+msgstr ""
+
+msgctxt "analyzeAltTextMissingNode"
+msgid "Image without alt text"
+msgstr ""
+
+msgctxt "analyzeAltTextValid"
+msgid "Images with alt text"
+msgstr ""
+
+msgctxt "analyzeAltTextValidDescription"
+msgid "Images have an alt text."
+msgstr ""
+
 msgctxt "analyzeButtonLabel"
 msgid "Analyze Page"
 msgstr ""
@@ -848,6 +874,14 @@ msgctxt "analyzeClickButton"
 msgid "Click the button above to run the analysis."
 msgstr ""
 
+msgctxt "analyzeHeadingHasH2"
+msgid "H2 headings present"
+msgstr ""
+
+msgctxt "analyzeHeadingHasH2Description"
+msgid "The page contains H2 headings for a clear content structure."
+msgstr ""
+
 msgctxt "analyzeHeadingMultipleH1"
 msgid "Multiple H1 headings"
 msgstr ""
@@ -872,6 +906,22 @@ msgctxt "analyzeHeadingNoH2Found"
 msgid "No H2 headings found"
 msgstr ""
 
+msgctxt "analyzeHeadingNoSkippedLevels"
+msgid "No skipped heading levels"
+msgstr ""
+
+msgctxt "analyzeHeadingNoSkippedLevelsDescription"
+msgid "The heading hierarchy does not skip any levels."
+msgstr ""
+
+msgctxt "analyzeHeadingSingleH1"
+msgid "Single H1 heading"
+msgstr ""
+
+msgctxt "analyzeHeadingSingleH1Description"
+msgid "The page has exactly one H1 heading."
+msgstr ""
+
 msgctxt "analyzeHeadingSkippedLevels"
 msgid "Skipped heading levels"
 msgstr ""
@@ -884,14 +934,6 @@ msgstr ""
 
 msgctxt "analyzeHeadingStructureLabel"
 msgid "Heading Structure"
-msgstr ""
-
-msgctxt "analyzeHeadingValid"
-msgid "Correct heading structure"
-msgstr ""
-
-msgctxt "analyzeHeadingValidDescription"
-msgid "The page has a correct heading structure with no skipped levels."
 msgstr ""
 
 msgctxt "analyzeKeepVisible"

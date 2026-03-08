@@ -1,6 +1,6 @@
-import { defineAnalyzer } from '#blokkli/analyzer'
 import type { AnalyzeResult } from '#blokkli/analyzer/types'
 import { falsy } from '#blokkli/helpers'
+import { defineAnalyzer } from './defineAnalyzer'
 
 export default defineAnalyzer(() => {
   return {
@@ -30,6 +30,7 @@ export default defineAnalyzer(() => {
         })
         .filter(falsy)
 
+      // Check H1 count
       const h1Elements = allHeadings.filter((h) => h.level === 1)
       if (h1Elements.length > 1) {
         results.push({
@@ -42,6 +43,21 @@ export default defineAnalyzer(() => {
           ),
           status: 'violation' as const,
           impact: 'serious' as const,
+          nodes: h1Elements.map((h) => ({
+            description: h.text,
+            targets: h.element,
+          })),
+        })
+      } else if (h1Elements.length === 1) {
+        results.push({
+          id: 'blokkli:heading-structure:single-h1',
+          title: $t('analyzeHeadingSingleH1', 'Single H1 heading'),
+          category: 'seo' as const,
+          description: $t(
+            'analyzeHeadingSingleH1Description',
+            'The page has exactly one H1 heading.',
+          ),
+          status: 'pass' as const,
           nodes: h1Elements.map((h) => ({
             description: h.text,
             targets: h.element,
@@ -62,7 +78,6 @@ export default defineAnalyzer(() => {
           continue
         }
 
-        // Check if we're skipping levels (going down more than 1 level)
         if (current.level > previous.level + 1) {
           orderIssues.push({ current, previous })
         }
@@ -83,6 +98,21 @@ export default defineAnalyzer(() => {
             description: `${previous.element.tagName} → ${current.element.tagName}: "${current.text}"`,
             impact: 'moderate' as const,
             targets: current.element,
+          })),
+        })
+      } else if (allHeadings.length > 1) {
+        results.push({
+          id: 'blokkli:heading-structure:no-skipped-levels',
+          title: $t('analyzeHeadingNoSkippedLevels', 'No skipped heading levels'),
+          category: 'seo' as const,
+          description: $t(
+            'analyzeHeadingNoSkippedLevelsDescription',
+            'The heading hierarchy does not skip any levels.',
+          ),
+          status: 'pass' as const,
+          nodes: allHeadings.map((h) => ({
+            description: `${h.element.tagName}: ${h.text}`,
+            targets: h.element,
           })),
         })
       }
@@ -106,25 +136,18 @@ export default defineAnalyzer(() => {
             targets: context.providerRootElement,
           },
         })
-      }
-
-      // If everything is good, show success
-      if (
-        h1Elements.length === 1 &&
-        orderIssues.length === 0 &&
-        h2Elements.length > 0
-      ) {
+      } else {
         results.push({
-          id: 'blokkli:heading-structure:valid',
-          title: $t('analyzeHeadingValid', 'Correct heading structure'),
+          id: 'blokkli:heading-structure:has-h2',
+          title: $t('analyzeHeadingHasH2', 'H2 headings present'),
           category: 'seo' as const,
           description: $t(
-            'analyzeHeadingValidDescription',
-            'The page has a correct heading structure with no skipped levels.',
+            'analyzeHeadingHasH2Description',
+            'The page contains H2 headings for a clear content structure.',
           ),
           status: 'pass' as const,
-          nodes: allHeadings.map((h) => ({
-            description: `${h.element.tagName}: ${h.text}`,
+          nodes: h2Elements.map((h) => ({
+            description: h.text,
             targets: h.element,
           })),
         })

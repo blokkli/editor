@@ -803,6 +803,30 @@
     "source": "Allowed Blocks",
     "translation": "Erlaubte Blöcke"
   },
+  "analyzeAltTextLabel": {
+    "source": "Image Alt Texts",
+    "translation": "Bilder Alt-Texte"
+  },
+  "analyzeAltTextMissing": {
+    "source": "Images without alt text",
+    "translation": "Bilder ohne Alternativtext"
+  },
+  "analyzeAltTextMissingDescription": {
+    "source": "Images are missing alt text. Alt texts are important for accessibility and SEO.",
+    "translation": "Bilder haben keinen Alternativtext. Alt-Texte sind wichtig für die Barrierefreiheit und SEO."
+  },
+  "analyzeAltTextMissingNode": {
+    "source": "Image without alt text",
+    "translation": "Bild ohne Alt-Text"
+  },
+  "analyzeAltTextValid": {
+    "source": "Images with alt text",
+    "translation": "Bilder mit Alternativtext"
+  },
+  "analyzeAltTextValidDescription": {
+    "source": "Images have an alt text.",
+    "translation": "Bilder haben einen Alternativtext."
+  },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
     "translation": "Seite analysieren"
@@ -831,6 +855,14 @@
     "source": "Click the button above to run the analysis.",
     "translation": "Klicken Sie auf den Button oben um die Analyse auszuführen."
   },
+  "analyzeHeadingHasH2": {
+    "source": "H2 headings present",
+    "translation": "H2-Überschriften vorhanden"
+  },
+  "analyzeHeadingHasH2Description": {
+    "source": "The page contains H2 headings for a clear content structure.",
+    "translation": "Die Seite enthält H2-Überschriften für eine klare Inhaltsstruktur."
+  },
   "analyzeHeadingMultipleH1": {
     "source": "Multiple H1 headings",
     "translation": "Mehrere H1-Überschriften"
@@ -851,6 +883,22 @@
     "source": "No H2 headings found",
     "translation": "Keine H2-Überschriften gefunden"
   },
+  "analyzeHeadingNoSkippedLevels": {
+    "source": "No skipped heading levels",
+    "translation": "Keine übersprungenen Überschriftenebenen"
+  },
+  "analyzeHeadingNoSkippedLevelsDescription": {
+    "source": "The heading hierarchy does not skip any levels.",
+    "translation": "Die Überschriftenhierarchie überspringt keine Ebenen."
+  },
+  "analyzeHeadingSingleH1": {
+    "source": "Single H1 heading",
+    "translation": "Einzelne H1-Überschrift"
+  },
+  "analyzeHeadingSingleH1Description": {
+    "source": "The page has exactly one H1 heading.",
+    "translation": "Die Seite hat genau eine H1-Überschrift."
+  },
   "analyzeHeadingSkippedLevels": {
     "source": "Skipped heading levels",
     "translation": "Übersprungene Überschriftenebenen"
@@ -862,14 +910,6 @@
   "analyzeHeadingStructureLabel": {
     "source": "Heading Structure",
     "translation": "Titelstruktur"
-  },
-  "analyzeHeadingValid": {
-    "source": "Correct heading structure",
-    "translation": "Korrekte Überschriftenstruktur"
-  },
-  "analyzeHeadingValidDescription": {
-    "source": "The page has a correct heading structure with no skipped levels.",
-    "translation": "Die Seite hat eine korrekte Überschriftenstruktur ohne übersprungene Ebenen."
   },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
