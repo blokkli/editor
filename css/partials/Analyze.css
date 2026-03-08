@@ -294,6 +294,6 @@
   }
 
   &.bk-is-incomplete {
-    @apply bg-yellow-normal hover:bg-yellow-dark;
+    @apply bg-yellow-normal hover:bg-yellow-dark text-yellow-dark hover:text-yellow-light;
   }
 }

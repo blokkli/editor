@@ -81,4 +81,20 @@ export type ReadabilityAnalyzer = {
    * Optional display formatting for a score value.
    */
   formatScore?(value: number): string
+
+  /**
+   * Return scale information for visualizing score bands.
+   * Used by the UI to render a score bar with thresholds.
+   *
+   * - `thresholds`: The two boundary values between easy/ok and ok/hard.
+   *   Listed in ascending order (lower value first).
+   * - `direction`: Whether higher scores mean easier or harder text.
+   * - `scaleMin`/`scaleMax`: The visual range of the score bar.
+   */
+  getScaleInfo?(langcode: string): {
+    thresholds: [number, number]
+    direction: 'higher_easier' | 'higher_harder'
+    scaleMin: number
+    scaleMax: number
+  }
 }

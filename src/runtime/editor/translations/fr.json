@@ -915,6 +915,10 @@
     "source": "Keep results visible",
     "translation": ""
   },
+  "analyzeKeepVisibleDescription": {
+    "source": "When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.",
+    "translation": "Lorsque activé, les résultats d'analyse restent surlignés sur la page même lorsque le panneau d'analyse est fermé."
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": ""
@@ -963,6 +967,10 @@
     "source": "Analyze the content of your page",
     "translation": ""
   },
+  "analyzerReadabiliyCouldBeSimpler": {
+    "source": "Could be simpler (@lang).",
+    "translation": "Pourrait être plus simple (@lang)."
+  },
   "analyzerReadabiliyDescription": {
     "source": "Avoid texts that are hard to read.",
     "translation": ""
@@ -970,6 +978,14 @@
   "analyzerReadabiliyHardToRead": {
     "source": "Hard to read (@lang).",
     "translation": ""
+  },
+  "analyzerReadabiliyOkDescription": {
+    "source": "Text that could be easier to read.",
+    "translation": "Texte qui pourrait être plus facile à lire."
+  },
+  "analyzerReadabiliyOkTitle": {
+    "source": "Text could be simpler",
+    "translation": "Le texte pourrait être plus simple"
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
@@ -2750,6 +2766,18 @@
   "publishWillBeScheduled": {
     "source": "Will be scheduled",
     "translation": ""
+  },
+  "readabilityTooShort": {
+    "source": "Too short",
+    "translation": "Trop court"
+  },
+  "readabilityTooShortTooltip": {
+    "source": "Text needs at least @count words for readability analysis.",
+    "translation": "Le texte nécessite au moins @count mots pour l'analyse de lisibilité."
+  },
+  "readabilityTooltipDescription": {
+    "source": "@label measures how easy the text is to read.",
+    "translation": "@label mesure la facilité de lecture du texte."
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",

@@ -51,6 +51,11 @@
         >
           {{ $t('textareaNewLineHint', 'Shift + Enter for new line') }}
         </div>
+        <ReadabilityIndicator
+          v-if="isReadabilityField"
+          :text="modelValue"
+          :field-type="readabilityFieldType"
+        />
         <div v-if="!isMarkup" class="bk-editable-field-info-count">
           <span>{{ count }}</span>
           <span v-if="maxlength >= 1">&nbsp;/&nbsp;{{ maxlength }}</span>
@@ -83,6 +88,7 @@ import {
   useEditableFieldOverride,
 } from '#blokkli/editor/composables'
 import type { EditableFieldConfig } from '../types'
+import ReadabilityIndicator from './ReadabilityIndicator/index.vue'
 
 const { state, adapter, $t, types, element: elementProvider } = useBlokkli()
 
@@ -143,6 +149,19 @@ const errorText = computed(() => {
 
   return undefined
 })
+
+const isReadabilityField = computed(
+  () =>
+    props.config.type === 'plain' ||
+    props.config.type === 'markup' ||
+    props.config.type === 'frame',
+)
+
+const readabilityFieldType = computed<'plain' | 'markup'>(() =>
+  props.config.type === 'frame' || props.config.type === 'markup'
+    ? 'markup'
+    : 'plain',
+)
 
 /**
  * Restore the original state when discarding changes.

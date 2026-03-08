@@ -431,35 +431,6 @@ onBlokkliEvent('canvas:draw', (e) => {
   hoveredNode.value = null
 })
 
-onBlokkliEvent('mouse:up', (e) => {
-  hoveredNode.value = null
-  const artboardX = (e.x - ui.artboardOffset.value.x) / ui.artboardScale.value
-  const artboardY = (e.y - ui.artboardOffset.value.y) / ui.artboardScale.value
-
-  for (let i = 0; i < nodes.value.length; i++) {
-    const node = nodes.value[i]!
-    const rect = collector.rectCache.get(node.element)
-    if (!rect) {
-      continue
-    }
-
-    if (
-      artboardX >= rect.x &&
-      artboardX <= rect.x + rect.width &&
-      artboardY >= rect.y &&
-      artboardY <= rect.y + rect.height
-    ) {
-      const id = node.id + '_____' + node.index
-      if (activeId.value === id) {
-        activeId.value = ''
-      } else {
-        activeId.value = id
-      }
-      return
-    }
-  }
-})
-
 onBlokkliEvent('window:clickAway', () => {
   hoveredNode.value = null
   activeId.value = ''

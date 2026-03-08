@@ -915,6 +915,10 @@
     "source": "Keep results visible",
     "translation": ""
   },
+  "analyzeKeepVisibleDescription": {
+    "source": "When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.",
+    "translation": "Quando attivato, i risultati dell'analisi rimangono evidenziati sulla pagina anche quando il pannello di analisi è chiuso."
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": ""
@@ -963,6 +967,10 @@
     "source": "Analyze the content of your page",
     "translation": ""
   },
+  "analyzerReadabiliyCouldBeSimpler": {
+    "source": "Could be simpler (@lang).",
+    "translation": "Potrebbe essere più semplice (@lang)."
+  },
   "analyzerReadabiliyDescription": {
     "source": "Avoid texts that are hard to read.",
     "translation": ""
@@ -970,6 +978,14 @@
   "analyzerReadabiliyHardToRead": {
     "source": "Hard to read (@lang).",
     "translation": ""
+  },
+  "analyzerReadabiliyOkDescription": {
+    "source": "Text that could be easier to read.",
+    "translation": "Testo che potrebbe essere più facile da leggere."
+  },
+  "analyzerReadabiliyOkTitle": {
+    "source": "Text could be simpler",
+    "translation": "Il testo potrebbe essere più semplice"
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
@@ -2750,6 +2766,18 @@
   "publishWillBeScheduled": {
     "source": "Will be scheduled",
     "translation": ""
+  },
+  "readabilityTooShort": {
+    "source": "Too short",
+    "translation": "Troppo breve"
+  },
+  "readabilityTooShortTooltip": {
+    "source": "Text needs at least @count words for readability analysis.",
+    "translation": "Il testo necessita di almeno @count parole per l'analisi della leggibilità."
+  },
+  "readabilityTooltipDescription": {
+    "source": "@label measures how easy the text is to read.",
+    "translation": "@label misura quanto è facile leggere il testo."
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",

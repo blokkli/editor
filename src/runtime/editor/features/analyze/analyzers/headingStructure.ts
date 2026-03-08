@@ -103,7 +103,10 @@ export default defineAnalyzer(() => {
       } else if (allHeadings.length > 1) {
         results.push({
           id: 'blokkli:heading-structure:no-skipped-levels',
-          title: $t('analyzeHeadingNoSkippedLevels', 'No skipped heading levels'),
+          title: $t(
+            'analyzeHeadingNoSkippedLevels',
+            'No skipped heading levels',
+          ),
           category: 'seo' as const,
           description: $t(
             'analyzeHeadingNoSkippedLevelsDescription',

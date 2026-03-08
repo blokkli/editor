@@ -27,7 +27,7 @@ export class ParagraphTitle extends Paragraph {
       ...super.getFieldDefintions(),
       new FieldText('tagline', 'Tagline', 1, false, 20),
       new FieldText('title', 'Title', 1, true, 50),
-      new FieldText('lead', 'Lead', 1, false, 100),
+      new FieldText('lead', 'Lead', 1, false, 200),
     ]
   }
 

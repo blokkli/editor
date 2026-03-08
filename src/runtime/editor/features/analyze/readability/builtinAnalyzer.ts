@@ -17,26 +17,28 @@ type ReadabilityScoreConfig = {
   direction: ScoreDirection
   bands: { easy: number; ok: number }
   impactThresholds: [number, number, number]
+  minWords: number
   referenceTable: ReferenceRow[]
 }
 
 const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
   en: {
-    label: 'LIX',
-    compute: (tr, text) => tr.lix(text),
-    direction: 'higher_harder',
-    bands: { easy: 40, ok: 59 },
-    impactThresholds: [50, 60, 70],
+    label: 'FRE',
+    compute: (tr, text) => tr.fleschReadingEase(text),
+    direction: 'higher_easier',
+    bands: { easy: 60, ok: 30 },
+    impactThresholds: [50, 30, 10],
+    minWords: 15,
     referenceTable: [
-      { range: 'Below 25', label: "Very easy (children's books)" },
-      { range: '25–40', label: 'Easy (simple articles)' },
-      { range: '40–50', label: 'Medium (newspapers)' },
-      { range: '50–60', label: 'Difficult (official documents)' },
+      { range: 'Above 70', label: 'Very easy (simple, conversational)' },
+      { range: '60–70', label: 'Easy (standard web content)' },
+      { range: '50–60', label: 'Fairly difficult (could be simpler)' },
+      { range: '30–50', label: 'Difficult (academic, technical)' },
       {
-        range: 'Above 60',
+        range: 'Below 30',
         label: 'Very difficult — this is what gets flagged',
       },
-      { range: 'Above 70', label: 'Critical — must be simplified' },
+      { range: 'Below 10', label: 'Critical — must be simplified' },
     ],
   },
   de: {
@@ -45,6 +47,7 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
     direction: 'higher_harder',
     bands: { easy: 7, ok: 14 },
     impactThresholds: [12, 16, 20],
+    minWords: 5,
     referenceTable: [
       { range: 'Below 4', label: "Very easy (children's books)" },
       { range: '4–7', label: 'Easy (simple articles)' },
@@ -63,6 +66,7 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
     direction: 'higher_harder',
     bands: { easy: 40, ok: 59 },
     impactThresholds: [50, 60, 70],
+    minWords: 5,
     referenceTable: [
       { range: 'Below 25', label: "Very easy (children's books)" },
       { range: '25–40', label: 'Easy (simple articles)' },
@@ -81,6 +85,7 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
     direction: 'higher_easier',
     bands: { easy: 80, ok: 60 },
     impactThresholds: [60, 50, 40],
+    minWords: 5,
     referenceTable: [
       { range: 'Above 80', label: "Very easy (children's books)" },
       { range: '60–80', label: 'Easy (simple articles)' },
@@ -96,7 +101,6 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
 }
 
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it']
-const DEFAULT_MIN_WORDS = 5
 
 function getConfig(langcode: string): ReadabilityScoreConfig {
   if (isSupportedLangcode(langcode)) {
@@ -200,7 +204,9 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
     description:
       'Analyzes text readability using language-specific algorithms (LIX, Wiener Sachtextformel, Gulpease).',
     supportedLanguages: SUPPORTED_LANGUAGES,
-    minWordsForConfidence: DEFAULT_MIN_WORDS,
+    get minWordsForConfidence(): number {
+      return getConfig(currentLangcode).minWords
+    },
 
     get scoreLabel(): string {
       return getConfig(currentLangcode).label
@@ -238,7 +244,7 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
         if (!trimmed) return null
 
         const words = segmentWords(trimmed)
-        if (words.length < DEFAULT_MIN_WORDS) return null
+        if (words.length < config.minWords) return null
 
         const score = safe(() => config.compute(tr, trimmed))
         return score != null ? round(score) : null
@@ -255,6 +261,21 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
 
     getAgentContext(): string {
       return buildAgentContext(getConfig(currentLangcode))
+    },
+
+    getScaleInfo(langcode: string) {
+      const config = getConfig(langcode)
+      // Thresholds in ascending order.
+      const t1 = Math.min(config.bands.easy, config.bands.ok)
+      const t2 = Math.max(config.bands.easy, config.bands.ok)
+      // Add padding beyond thresholds for visual range.
+      const padding = Math.round((t2 - t1) * 0.5)
+      return {
+        thresholds: [t1, t2] as [number, number],
+        direction: config.direction,
+        scaleMin: Math.max(0, t1 - padding),
+        scaleMax: t2 + padding,
+      }
     },
   }
 }

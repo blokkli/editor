@@ -915,6 +915,10 @@
     "source": "Keep results visible",
     "translation": ""
   },
+  "analyzeKeepVisibleDescription": {
+    "source": "When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.",
+    "translation": "Wenn aktiviert, bliibe d Analyseergebnis uf de Siite hervorghobe, au wenn s Analyse-Panel zuegmacht isch."
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": "Zletscht usgfüehrt: @time"
@@ -963,6 +967,10 @@
     "source": "Analyze the content of your page",
     "translation": "Dr Inhalt vo dinere Sitte analysiere"
   },
+  "analyzerReadabiliyCouldBeSimpler": {
+    "source": "Could be simpler (@lang).",
+    "translation": "Chönnt eifacher si (@lang)."
+  },
   "analyzerReadabiliyDescription": {
     "source": "Avoid texts that are hard to read.",
     "translation": "Vermiid Teggscht wo schwär z'läse sin."
@@ -970,6 +978,14 @@
   "analyzerReadabiliyHardToRead": {
     "source": "Hard to read (@lang).",
     "translation": "Schwär z'läse (@lang)."
+  },
+  "analyzerReadabiliyOkDescription": {
+    "source": "Text that could be easier to read.",
+    "translation": "Text, wo eifacher z läse chönnt si."
+  },
+  "analyzerReadabiliyOkTitle": {
+    "source": "Text could be simpler",
+    "translation": "Text chönnt eifacher si"
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
@@ -2750,6 +2766,18 @@
   "publishWillBeScheduled": {
     "source": "Will be scheduled",
     "translation": ""
+  },
+  "readabilityTooShort": {
+    "source": "Too short",
+    "translation": "Z churz"
+  },
+  "readabilityTooShortTooltip": {
+    "source": "Text needs at least @count words for readability analysis.",
+    "translation": "De Text bruucht mindestens @count Wörter für d Lesbarkeitsanalys."
+  },
+  "readabilityTooltipDescription": {
+    "source": "@label measures how easy the text is to read.",
+    "translation": "@label misst, wie eifach de Text z läse isch."
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",

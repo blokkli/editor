@@ -24,6 +24,12 @@
       <FormToggle
         v-model="keepVisible"
         :label="$t('analyzeKeepVisible', 'Keep results visible')"
+        :description="
+          $t(
+            'analyzeKeepVisibleDescription',
+            'When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.',
+          )
+        "
       />
 
       <div v-if="analyzerStatuses.length > 1" class="bk-analyze-statuses">

@@ -23,15 +23,25 @@ function buildDescription(
   score: number,
   scoreLabel: string,
   lang: string,
+  band: 'ok' | 'hard',
   $t: TextProvider,
 ): string {
   const parts: string[] = []
-  parts.push(
-    $t('analyzerReadabiliyHardToRead', `Hard to read (@lang).`).replace(
-      '@lang',
-      lang.toUpperCase(),
-    ),
-  )
+  if (band === 'hard') {
+    parts.push(
+      $t('analyzerReadabiliyHardToRead', `Hard to read (@lang).`).replace(
+        '@lang',
+        lang.toUpperCase(),
+      ),
+    )
+  } else {
+    parts.push(
+      $t(
+        'analyzerReadabiliyCouldBeSimpler',
+        `Could be simpler (@lang).`,
+      ).replace('@lang', lang.toUpperCase()),
+    )
+  }
   parts.push(`${scoreLabel} ${format(score)}`)
   parts.push(
     $t(
@@ -54,10 +64,11 @@ async function analyzeViaProvider(
   readabilityProvider: ReadabilityProvider,
   langcode: string,
   $t: TextProvider,
-): Promise<AnalyzeResult> {
+): Promise<AnalyzeResult[]> {
   const result = await readabilityProvider.analyzeAllFields()
   const analyzer = readabilityProvider.analyzer.value
-  const nodes: AnalyzeNode[] = []
+  const hardNodes: AnalyzeNode[] = []
+  const okNodes: AnalyzeNode[] = []
 
   for (const [key, fieldResult] of Object.entries(result)) {
     const separatorIndex = key.indexOf('/')
@@ -74,7 +85,7 @@ async function analyzeViaProvider(
 
     for (let i = 0; i < fieldResult.chunks.length; i++) {
       const chunk = fieldResult.chunks[i]!
-      if (chunk.band !== 'hard') continue
+      if (chunk.band === 'easy') continue
 
       // Match chunk to its DOM element by position index within the field.
       const targets: HTMLElement[] = []
@@ -83,21 +94,30 @@ async function analyzeViaProvider(
         targets.push(textElement.element)
       }
 
-      nodes.push({
+      const node: AnalyzeNode = {
         description: buildDescription(
           chunk.score,
           analyzer.scoreLabel,
           langcode,
+          chunk.band,
           $t,
         ),
         impact: analyzer.impactForScore(chunk.score),
         score: chunk.score,
         targets,
-      })
+      }
+
+      if (chunk.band === 'hard') {
+        hardNodes.push(node)
+      } else {
+        okNodes.push(node)
+      }
     }
   }
 
-  return {
+  const results: AnalyzeResult[] = []
+
+  results.push({
     id: 'low-readability',
     title: $t('analyzerReadabiliyTitle', 'Text readability issues'),
     category: 'text',
@@ -106,10 +126,28 @@ async function analyzeViaProvider(
       'Avoid texts that are hard to read.',
     ),
     link: 'https://en.wikipedia.org/wiki/Readability',
-    status: nodes.length ? 'violation' : 'pass',
-    nodes,
-    impact: summarizeImpact(nodes),
+    status: hardNodes.length ? 'violation' : 'pass',
+    nodes: hardNodes,
+    impact: summarizeImpact(hardNodes),
+  })
+
+  if (okNodes.length) {
+    results.push({
+      id: 'ok-readability',
+      title: $t('analyzerReadabiliyOkTitle', 'Text could be simpler'),
+      category: 'text',
+      description: $t(
+        'analyzerReadabiliyOkDescription',
+        'Text that could be easier to read.',
+      ),
+      link: 'https://en.wikipedia.org/wiki/Readability',
+      status: 'incomplete',
+      nodes: okNodes,
+      impact: summarizeImpact(okNodes),
+    })
   }
+
+  return results
 }
 
 export default defineAnalyzer(() => {

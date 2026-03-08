@@ -13,7 +13,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   describe('analyze', () => {
     it('returns a score for a sufficiently long text', async () => {
       const texts = [
-        'The quick brown fox jumps over the lazy dog several times today.',
+        'The quick brown fox jumps over the lazy dog several times today while the sun shines brightly above the green hills.',
       ]
       const results = await analyzer.analyze(texts, 'en')
       expect(results).toHaveLength(1)
@@ -42,9 +42,9 @@ describe('createBuiltinReadabilityAnalyzer', () => {
 
     it('handles batch of multiple texts', async () => {
       const texts = [
-        'The quick brown fox jumps over the lazy dog several times today.',
+        'The quick brown fox jumps over the lazy dog several times today while the sun shines brightly above the green hills.',
         'Short.',
-        'Another sentence that is long enough to be analyzed by the readability tool.',
+        'Another sentence that is long enough to be analyzed by the readability tool and contains many words for testing purposes.',
       ]
       const results = await analyzer.analyze(texts, 'en')
       expect(results).toHaveLength(3)
@@ -53,7 +53,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       expect(results[2]).not.toBeNull()
     })
 
-    it('produces a LIX score for English', async () => {
+    it('produces a Flesch Reading Ease score for English', async () => {
       const results = await analyzer.analyze(
         [
           'Complex governmental regulations frequently necessitate extraordinary administrative oversight mechanisms that substantially increase bureaucratic operational expenditures.',
@@ -105,8 +105,8 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   })
 
   describe('scoreLabel', () => {
-    it('returns LIX for English', () => {
-      expect(analyzer.scoreLabel).toBe('LIX')
+    it('returns FRE for English', () => {
+      expect(analyzer.scoreLabel).toBe('FRE')
     })
 
     it('returns Gulpease for Italian', async () => {
@@ -129,16 +129,16 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   })
 
   describe('classifyBand', () => {
-    it('classifies low LIX as easy', () => {
-      expect(analyzer.classifyBand(30, 'en')).toBe('easy')
+    it('classifies high FRE as easy', () => {
+      expect(analyzer.classifyBand(75, 'en')).toBe('easy')
     })
 
-    it('classifies medium LIX as ok', () => {
-      expect(analyzer.classifyBand(50, 'en')).toBe('ok')
+    it('classifies medium FRE as ok', () => {
+      expect(analyzer.classifyBand(45, 'en')).toBe('ok')
     })
 
-    it('classifies high LIX as hard', () => {
-      expect(analyzer.classifyBand(65, 'en')).toBe('hard')
+    it('classifies low FRE as hard', () => {
+      expect(analyzer.classifyBand(20, 'en')).toBe('hard')
     })
 
     it('uses Gulpease thresholds for Italian', () => {
@@ -149,10 +149,10 @@ describe('createBuiltinReadabilityAnalyzer', () => {
 
     it('uses WSTF thresholds for German', () => {
       expect(analyzer.classifyBand(5, 'de')).toBe('easy')
-      expect(analyzer.classifyBand(6, 'de')).toBe('easy')
+      expect(analyzer.classifyBand(7, 'de')).toBe('easy')
       expect(analyzer.classifyBand(8, 'de')).toBe('ok')
-      expect(analyzer.classifyBand(10, 'de')).toBe('ok')
-      expect(analyzer.classifyBand(11, 'de')).toBe('hard')
+      expect(analyzer.classifyBand(14, 'de')).toBe('ok')
+      expect(analyzer.classifyBand(15, 'de')).toBe('hard')
     })
 
     it('uses LIX thresholds for French', () => {
@@ -163,20 +163,20 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   })
 
   describe('impactForScore', () => {
-    it('returns critical for LIX >= 70', () => {
-      expect(analyzer.impactForScore(75)).toBe('critical')
+    it('returns critical for FRE < 10', () => {
+      expect(analyzer.impactForScore(5)).toBe('critical')
     })
 
-    it('returns serious for LIX >= 60', () => {
-      expect(analyzer.impactForScore(65)).toBe('serious')
+    it('returns serious for FRE < 30', () => {
+      expect(analyzer.impactForScore(20)).toBe('serious')
     })
 
-    it('returns moderate for LIX >= 50', () => {
-      expect(analyzer.impactForScore(55)).toBe('moderate')
+    it('returns moderate for FRE < 50', () => {
+      expect(analyzer.impactForScore(45)).toBe('moderate')
     })
 
-    it('returns minor for LIX < 50', () => {
-      expect(analyzer.impactForScore(35)).toBe('minor')
+    it('returns minor for FRE >= 50', () => {
+      expect(analyzer.impactForScore(65)).toBe('minor')
     })
 
     it('returns critical for Italian Gulpease < 40', async () => {
@@ -197,25 +197,25 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       expect(itAnalyzer.impactForScore(70)).toBe('minor')
     })
 
-    it('returns critical for German WSTF >= 12', async () => {
+    it('returns critical for German WSTF >= 20', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(13)).toBe('critical')
+      expect(deAnalyzer.impactForScore(22)).toBe('critical')
     })
 
-    it('returns serious for German WSTF >= 10', async () => {
+    it('returns serious for German WSTF >= 16', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(11)).toBe('serious')
+      expect(deAnalyzer.impactForScore(17)).toBe('serious')
     })
 
-    it('returns moderate for German WSTF >= 8', async () => {
+    it('returns moderate for German WSTF >= 12', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(9)).toBe('moderate')
+      expect(deAnalyzer.impactForScore(13)).toBe('moderate')
     })
 
-    it('returns minor for German WSTF < 8', async () => {
+    it('returns minor for German WSTF < 12', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
       expect(deAnalyzer.impactForScore(5)).toBe('minor')
@@ -223,9 +223,9 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   })
 
   describe('getAgentContext', () => {
-    it('returns LIX reference text for English', () => {
+    it('returns FRE reference text for English', () => {
       const context = analyzer.getAgentContext()
-      expect(context).toContain('LIX Score Reference')
+      expect(context).toContain('FRE Score Reference')
       expect(context).toContain('Very easy')
       expect(context).toContain('Critical')
     })
@@ -244,7 +244,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       await deAnalyzer.init!('de')
       const context = deAnalyzer.getAgentContext()
       expect(context).toContain('WSTF Score Reference')
-      expect(context).toContain('primary school')
+      expect(context).toContain('Very easy')
       expect(context).toContain('Critical')
     })
 

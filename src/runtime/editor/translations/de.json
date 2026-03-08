@@ -915,6 +915,10 @@
     "source": "Keep results visible",
     "translation": "Ergebnisse sichtbar halten"
   },
+  "analyzeKeepVisibleDescription": {
+    "source": "When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.",
+    "translation": "Wenn aktiviert, bleiben die Analyseergebnisse auf der Seite hervorgehoben, auch wenn das Analyse-Panel geschlossen ist."
+  },
   "analyzeLastRun": {
     "source": "Last run: @time",
     "translation": "Zuletzt ausgeführt: @time"
@@ -963,6 +967,10 @@
     "source": "Analyze the content of your page",
     "translation": "Inhalte auf dieser Seite analysieren."
   },
+  "analyzerReadabiliyCouldBeSimpler": {
+    "source": "Could be simpler (@lang).",
+    "translation": "Könnte einfacher sein (@lang)."
+  },
   "analyzerReadabiliyDescription": {
     "source": "Avoid texts that are hard to read.",
     "translation": "Vermeiden Sie Texte die schwer lesbar sind."
@@ -970,6 +978,14 @@
   "analyzerReadabiliyHardToRead": {
     "source": "Hard to read (@lang).",
     "translation": "Schwierig zu lesen (@lang)."
+  },
+  "analyzerReadabiliyOkDescription": {
+    "source": "Text that could be easier to read.",
+    "translation": "Text, der einfacher zu lesen sein könnte."
+  },
+  "analyzerReadabiliyOkTitle": {
+    "source": "Text could be simpler",
+    "translation": "Text könnte einfacher sein"
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
@@ -2750,6 +2766,18 @@
   "publishWillBeScheduled": {
     "source": "Will be scheduled",
     "translation": "Wird geplant"
+  },
+  "readabilityTooShort": {
+    "source": "Too short",
+    "translation": "Zu kurz"
+  },
+  "readabilityTooShortTooltip": {
+    "source": "Text needs at least @count words for readability analysis.",
+    "translation": "Text braucht mindestens @count Wörter für die Lesbarkeitsanalyse."
+  },
+  "readabilityTooltipDescription": {
+    "source": "@label measures how easy the text is to read.",
+    "translation": "@label misst, wie leicht der Text zu lesen ist."
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",
