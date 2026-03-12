@@ -11,9 +11,9 @@ export type ReadabilityBand = 'easy' | 'ok' | 'hard'
 export type ReadabilityChunkResult = {
   text: string
   html?: string
-  score: number
-  band: ReadabilityBand
-  impact: AnalyzeImpact
+  score: number | null
+  band: ReadabilityBand | null
+  impact: AnalyzeImpact | null
   description?: string
 }
 

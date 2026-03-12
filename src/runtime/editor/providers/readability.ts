@@ -110,17 +110,15 @@ export default function readabilityProvider(
     for (const entry of fieldEntries) {
       const chunkResults: ReadabilityChunkResult[] = []
       for (const chunk of entry.chunks) {
-        const score = scores[textIndex]
+        const score = scores[textIndex] ?? null
         textIndex++
-        if (score != null) {
-          chunkResults.push({
-            text: chunk.text,
-            html: chunk.html,
-            score,
-            band: a.classifyBand(score, langcode),
-            impact: a.impactForScore(score),
-          })
-        }
+        chunkResults.push({
+          text: chunk.text,
+          html: chunk.html,
+          score,
+          band: score != null ? a.classifyBand(score, langcode) : null,
+          impact: score != null ? a.impactForScore(score) : null,
+        })
       }
       result[entry.key] = {
         rawValue: entry.field.value,
@@ -152,16 +150,14 @@ export default function readabilityProvider(
 
     const results: ReadabilityChunkResult[] = []
     for (let i = 0; i < chunks.length; i++) {
-      const score = scores[i]
-      if (score != null) {
-        results.push({
-          text: chunks[i]!.text,
-          html: chunks[i]!.html,
-          score,
-          band: a.classifyBand(score, langcode),
-          impact: a.impactForScore(score),
-        })
-      }
+      const score = scores[i] ?? null
+      results.push({
+        text: chunks[i]!.text,
+        html: chunks[i]!.html,
+        score,
+        band: score != null ? a.classifyBand(score, langcode) : null,
+        impact: score != null ? a.impactForScore(score) : null,
+      })
     }
     return results
   }

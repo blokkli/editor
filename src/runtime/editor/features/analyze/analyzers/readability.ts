@@ -85,7 +85,7 @@ async function analyzeViaProvider(
 
     for (let i = 0; i < fieldResult.chunks.length; i++) {
       const chunk = fieldResult.chunks[i]!
-      if (chunk.band === 'easy') continue
+      if (chunk.band === 'easy' || chunk.band === null || chunk.score === null) continue
 
       // Match chunk to its DOM element by position index within the field.
       const targets: HTMLElement[] = []

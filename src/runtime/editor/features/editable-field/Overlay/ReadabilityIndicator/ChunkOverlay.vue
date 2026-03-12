@@ -110,6 +110,7 @@ async function analyze(text: string) {
 
   for (let i = 0; i < count; i++) {
     const result = chunkResults[i]!
+    if (result.score === null || result.band === null) continue
     const textEl = textElements[i]!
     const r = ui.getAbsoluteElementRect(textEl.element)
 

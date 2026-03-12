@@ -39,7 +39,8 @@ function mapAnalysisToResult(
     const fieldName = key.slice(slashIndex + 1)
 
     const issueChunks = fieldResult.chunks.filter(
-      (c) => c.band === 'hard' || c.band === 'ok',
+      (c): c is typeof c & { score: number; band: string; impact: string } =>
+        c.score !== null && (c.band === 'hard' || c.band === 'ok'),
     )
     if (issueChunks.length === 0) continue
 

@@ -347,13 +347,17 @@ async function analyzeReadability(): Promise<
 
     // Collect hard and ok chunks as issues (for retry logic).
     const issues: ReadabilityResult[string][string]['issues'] = chunks
-      .filter((c) => c.band === 'hard' || c.band === 'ok')
+      .filter(
+        (c): c is typeof c & { score: number; band: string; impact: string } =>
+          c.score !== null && (c.band === 'hard' || c.band === 'ok'),
+      )
       .map((c) => ({ text: c.text, impact: c.impact, score: c.score }))
 
     // Find the worst chunk across ALL bands to get representative score.
     let worstBandValue = -1
     let worstScore: number | undefined
     for (const chunk of chunks) {
+      if (chunk.band === null || chunk.score === null) continue
       const value = bandOrder[chunk.band] ?? 0
       if (value > worstBandValue) {
         worstBandValue = value

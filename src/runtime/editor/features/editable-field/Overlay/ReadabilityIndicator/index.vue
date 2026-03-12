@@ -164,10 +164,10 @@ async function analyze(text: string) {
     context.value.language,
     'plain',
   )
-  if (chunks.length === 0) {
+  if (chunks.length === 0 || chunks[0]!.score === null) {
     readabilityBand.value = null
     readabilityScore.value = null
-    tooShort.value = true
+    tooShort.value = chunks.length > 0
     stale.value = false
     return
   }

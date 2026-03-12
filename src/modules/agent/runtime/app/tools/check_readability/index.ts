@@ -59,6 +59,7 @@ export default defineBlokkliAgentTool({
       let worstScore = 0
 
       for (const chunk of chunks) {
+        if (chunk.band === null || chunk.score === null) continue
         const level = bandToLevel(chunk.band)
         if (level === 'hard' || (level === 'ok' && worstLevel === 'good')) {
           worstLevel = level
