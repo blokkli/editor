@@ -1,7 +1,7 @@
 <template>
   <Teleport to="#bk-toolbar-after-title">
     <PluginTourItem
-      v-if="items.length"
+      v-if="items.length > 1"
       id="translations"
       :title="$t('translationsTourTitle', 'Translations')"
       :text="
