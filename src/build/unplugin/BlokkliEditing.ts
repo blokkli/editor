@@ -112,8 +112,12 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
       },
 
       vite: {
-        handleHotUpdate({ file, server, modules }) {
-          // When a .vue file changes, also invalidate its editing variant.
+        handleHotUpdate({ file, server }) {
+          // When a .vue file changes, also reload its editing variant.
+          // We must trigger this separately (not by returning it in the
+          // modules array) because Vue's vite:vue plugin runs after us
+          // and filters the modules list to only include the original
+          // file's sub-modules, dropping our editing variant.
           if (file.endsWith('.vue') && !file.includes(EDITING_MARKER)) {
             const editingVariantPath = file.replace(
               /\.vue$/,
@@ -123,11 +127,7 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
               server.moduleGraph.getModuleById(editingVariantPath)
 
             if (editingModule) {
-              // Invalidate the editing variant module.
-              server.moduleGraph.invalidateModule(editingModule)
-
-              // Return both the original modules and the editing variant.
-              return [...modules, editingModule]
+              server.reloadModule(editingModule)
             }
           }
         },
