@@ -1,0 +1,47 @@
+.bk.bk-changelog {
+  @apply grid gap-30;
+
+  .bk-changelog-entry {
+    &:not(:first-child) {
+      @apply pt-30 border-t border-mono-300;
+    }
+  }
+
+  .bk-changelog-entry-header {
+    @apply flex items-center gap-10 mb-15;
+
+    h3 {
+      @apply text-base font-bold font-mono bg-accent-100 text-accent-800 rounded-full px-10 py-2;
+    }
+
+    span {
+      @apply text-sm text-mono-500;
+    }
+  }
+
+  /* Rendered markdown content */
+  h3 {
+    @apply text-base font-bold text-mono-900 mt-15 mb-8;
+  }
+
+  .bk-changelog-entry > div:last-child > h3:first-child {
+    @apply mt-0;
+  }
+
+  ul {
+    @apply grid gap-5 mb-0;
+  }
+
+  li {
+    @apply text-sm text-mono-700 leading-relaxed pl-15 relative;
+
+    &::before {
+      content: '';
+      @apply absolute left-0 top-[9px] size-[5px] rounded-full bg-mono-400;
+    }
+
+    strong {
+      @apply text-mono-900 font-semibold;
+    }
+  }
+}

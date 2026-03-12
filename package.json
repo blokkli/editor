@@ -88,6 +88,7 @@
     "dev:start": "npx serve playground/.output/public",
     "dev:prepare": "PLAYGROUND_MODULE_BUILD=true nuxt-module-build build --stub && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run prepack && changelogen --release",
+    "changelog": "node ./scripts/changelog/index.cjs",
     "texts": "node ./scripts/texts/index.cjs",
     "material-icons": "node ./scripts/material-icons/index.cjs",
     "lint": "npx oxlint && eslint ./src",
