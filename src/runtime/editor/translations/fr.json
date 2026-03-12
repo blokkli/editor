@@ -2767,6 +2767,10 @@
     "source": "Will be scheduled",
     "translation": ""
   },
+  "readabilityEntireText": {
+    "source": "This score is calculated for the entire text.",
+    "translation": ""
+  },
   "readabilityTooShort": {
     "source": "Too short",
     "translation": "Trop court"

@@ -2767,6 +2767,10 @@
     "source": "Will be scheduled",
     "translation": "Wird geplant"
   },
+  "readabilityEntireText": {
+    "source": "This score is calculated for the entire text.",
+    "translation": "Dieser Wert wird für den gesamten Text berechnet."
+  },
   "readabilityTooShort": {
     "source": "Too short",
     "translation": "Zu kurz"

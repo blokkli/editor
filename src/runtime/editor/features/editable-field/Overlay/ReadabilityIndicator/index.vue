@@ -21,6 +21,14 @@
           ).replace('@label', readability.analyzer.value.scoreLabel)
         }}
       </p>
+      <p v-if="fieldType === 'markup'">
+        {{
+          $t(
+            'readabilityEntireText',
+            'This score is calculated for the entire text.',
+          )
+        }}
+      </p>
       <div
         v-if="scaleInfo"
         class="bk-readability-scale"
@@ -144,10 +152,17 @@ async function analyze(text: string) {
     stale.value = false
     return
   }
+  // Analyze the entire text as a single chunk to get one overall score.
+  // For markup fields, strip HTML tags first.
+  let plainText = text
+  if (props.fieldType === 'markup') {
+    const doc = new DOMParser().parseFromString(text, 'text/html')
+    plainText = doc.body.textContent || ''
+  }
   const chunks = await readability.analyzeText(
-    text,
+    plainText,
     context.value.language,
-    props.fieldType,
+    'plain',
   )
   if (chunks.length === 0) {
     readabilityBand.value = null
@@ -157,19 +172,8 @@ async function analyze(text: string) {
     return
   }
   tooShort.value = false
-  const bandOrder: Record<ReadabilityBand, number> = {
-    easy: 0,
-    ok: 1,
-    hard: 2,
-  }
-  let worstIndex = 0
-  for (let i = 1; i < chunks.length; i++) {
-    if (bandOrder[chunks[i]!.band] > bandOrder[chunks[worstIndex]!.band]) {
-      worstIndex = i
-    }
-  }
-  readabilityBand.value = chunks[worstIndex]!.band
-  readabilityScore.value = chunks[worstIndex]!.score
+  readabilityBand.value = chunks[0]!.band
+  readabilityScore.value = chunks[0]!.score
   stale.value = false
 }
 

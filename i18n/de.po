@@ -2978,6 +2978,10 @@ msgctxt "publishWillBeScheduled"
 msgid "Will be scheduled"
 msgstr "Wird geplant"
 
+msgctxt "readabilityEntireText"
+msgid "This score is calculated for the entire text."
+msgstr "Dieser Wert wird für den gesamten Text berechnet."
+
 msgctxt "readabilityTooShort"
 msgid "Too short"
 msgstr "Zu kurz"
