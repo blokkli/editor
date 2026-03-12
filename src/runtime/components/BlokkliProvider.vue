@@ -6,8 +6,8 @@
     :data-provider-entity-bundle="entityBundle"
     :data-blokkli-provider-active="isInEditor ? 'true' : 'false'"
   >
-    <BlokkliRootErrorBoundary v-if="isInEditor">
-      <ClientOnly>
+    <ClientOnly v-if="isInEditor">
+      <BlokkliRootErrorBoundary>
         <PreviewProvider
           v-if="isPreviewing"
           v-slot="{ mutatedEntity }"
@@ -45,18 +45,7 @@
             :entity="mutatedEntity"
           />
         </EditProvider>
-      </ClientOnly>
-    </BlokkliRootErrorBoundary>
-
-    <slot
-      v-else
-      :is-editing
-      :can-edit
-      :is-preview="isPreviewing"
-      :entity="entity as any"
-    />
-
-    <ClientOnly>
+      </BlokkliRootErrorBoundary>
       <EditIndicator
         v-if="showIndicator"
         :uuid="entityUuid"
@@ -66,6 +55,14 @@
         @edit="edit"
       />
     </ClientOnly>
+
+    <slot
+      v-else
+      :is-editing
+      :can-edit
+      :is-preview="isPreviewing"
+      :entity="entity as any"
+    />
   </div>
 </template>
 
@@ -191,6 +188,8 @@ defineSlots<{
   }): any
 }>()
 
+const isClient = import.meta.client
+
 const providerEl = useTemplateRef('providerEl')
 
 // Guard editor imports with import.meta.client so the server build
@@ -200,13 +199,13 @@ const PreviewProvider = import.meta.client
   ? defineAsyncComponent(
       () => import('./../editor/components/PreviewProvider.vue'),
     )
-  : ('div' as never)
+  : null
 
 const EditProvider = import.meta.client
   ? defineAsyncComponent(
       () => import('./../editor/components/EditProvider.vue'),
     )
-  : ('div' as never)
+  : null
 
 const BlokkliRootErrorBoundary = import.meta.client
   ? defineAsyncComponent(
@@ -227,6 +226,7 @@ const shouldRender = ref(false)
 
 const isInEditor = computed<boolean>(
   () =>
+    isClient &&
     !!props.entityUuid &&
     !!props.entityType &&
     !!props.entityBundle &&
