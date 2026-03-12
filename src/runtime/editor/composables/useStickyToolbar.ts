@@ -229,15 +229,21 @@ export function useStickyToolbar(
 
     // Calculate X position based on horizontal placement
     let x: number
-    if (resolvedPlacementX === 'center') {
+    if (isSidePlacement && resolvedPlacementX === 'right') {
+      // Side placement: place entirely to the right of the selection
+      x = maxX + margin
+    } else if (isSidePlacement && resolvedPlacementX === 'left') {
+      // Side placement: place entirely to the left of the selection
+      x = minX - width - margin
+    } else if (resolvedPlacementX === 'center') {
       // Center the toolbar horizontally relative to the selection
       x = centerX - width / 2
     } else if (resolvedPlacementX === 'right') {
-      // Place to the right of the selection
-      x = maxX + margin
+      // Align at the right edge of the selection
+      x = maxX - width
     } else {
-      // Place to the left of the selection
-      x = minX - width - margin
+      // Default 'left': align at the left edge of the selection
+      x = minX
     }
 
     // Check if we should allow horizontal overflow
