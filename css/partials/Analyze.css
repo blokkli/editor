@@ -296,4 +296,8 @@
   &.bk-is-incomplete {
     @apply bg-yellow-normal hover:bg-yellow-dark text-yellow-dark hover:text-yellow-light;
   }
+
+  .bk-analyze-tooltip-score {
+    @apply opacity-70;
+  }
 }

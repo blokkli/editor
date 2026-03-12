@@ -12,6 +12,9 @@
     >
       <Icon name="bk_mdi_speed" />
       <span>{{ tooltipData.title }}</span>
+      <span v-if="tooltipData.scoreText" class="bk-analyze-tooltip-score">{{
+        tooltipData.scoreText
+      }}</span>
     </button>
   </Teleport>
 </template>
@@ -44,8 +47,17 @@ const props = defineProps<{
   isShown: boolean
 }>()
 
-const { animation, ui, theme, selection, element, dom, blocks, eventBus } =
-  useBlokkli()
+const {
+  animation,
+  ui,
+  theme,
+  selection,
+  element,
+  dom,
+  blocks,
+  eventBus,
+  readability,
+} = useBlokkli()
 
 const showTooltip = computed(() => {
   return (
@@ -74,6 +86,7 @@ type AnalyzeRendererNode = {
   index: number
   status: AnalyzeStatus
   plugin: string
+  score?: number
 }
 
 const statusPriority: Record<AnalyzeStatus, number> = {
@@ -133,6 +146,7 @@ const nodes = computed<AnalyzeRendererNode[]>(() => {
             title: result.title,
             status: result.status,
             plugin: result.plugin,
+            score: node.score,
           })
         }
       }
@@ -178,6 +192,7 @@ type TooltipData = {
   y: number
   title: string
   status: AnalyzeStatus
+  scoreText: string
 }
 
 const hoveredNode = ref<AnalyzeRendererNode | null>(null)
@@ -195,11 +210,17 @@ const tooltipData = computed<TooltipData | null>(() => {
   const offset = ui.artboardOffset.value
   const x = rect.x * scale + offset.x
   const y = rect.y * scale + offset.y
+  let scoreText = ''
+  if (node.score != null) {
+    const label = readability.analyzer.value.scoreLabel
+    scoreText = `${label} ${readability.formatScore(node.score)}`
+  }
   return {
     x,
     y,
     title: node.title,
     status: node.status,
+    scoreText,
   }
 })
 
