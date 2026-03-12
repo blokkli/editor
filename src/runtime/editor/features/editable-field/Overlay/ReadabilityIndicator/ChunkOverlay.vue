@@ -21,7 +21,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, useBlokkli } from '#imports'
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  useBlokkli,
+} from '#imports'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { collectTextElements } from '../../../analyze/analyzers/helpers/collectTextElements'
 import type { ReadabilityBand } from '../../../analyze/readability/types'

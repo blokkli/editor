@@ -169,7 +169,6 @@ export function useStickyToolbar(
     }
 
     const padding = ui.visibleViewportPadded.value
-    const xSubtract = hasRects ? 5 * Math.min(scale, 1) : 0
     const margin = getMargin() * Math.min(scale, 1)
 
     // Calculate the center of the anchor element or selection
@@ -201,7 +200,9 @@ export function useStickyToolbar(
 
     // Resolve auto-side: pick left or right based on available space.
     const isSidePlacement = placementX === 'auto-side'
-    let resolvedPlacementX: 'left' | 'center' | 'right' = isSidePlacement ? 'right' : placementX
+    let resolvedPlacementX: 'left' | 'center' | 'right' = isSidePlacement
+      ? 'right'
+      : placementX
     if (isSidePlacement) {
       const spaceRight = padding.x + padding.width - maxX
       const spaceLeft = minX - padding.x
