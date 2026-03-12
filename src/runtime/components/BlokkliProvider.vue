@@ -46,14 +46,6 @@
           />
         </EditProvider>
       </BlokkliRootErrorBoundary>
-      <EditIndicator
-        v-if="showIndicator"
-        :uuid="entityUuid"
-        :entity-type
-        :edit-label
-        :permissions
-        @edit="edit"
-      />
     </ClientOnly>
 
     <slot
@@ -63,6 +55,17 @@
       :is-preview="isPreviewing"
       :entity="entity as any"
     />
+
+    <ClientOnly>
+      <EditIndicator
+        v-if="showIndicator"
+        :uuid="entityUuid"
+        :entity-type
+        :edit-label
+        :permissions
+        @edit="edit"
+      />
+    </ClientOnly>
   </div>
 </template>
 
