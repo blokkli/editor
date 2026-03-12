@@ -193,21 +193,32 @@ defineSlots<{
 
 const providerEl = useTemplateRef('providerEl')
 
-const PreviewProvider = defineAsyncComponent(
-  () => import('./../editor/components/PreviewProvider.vue'),
-)
+// Guard editor imports with import.meta.client so the server build
+// tree-shakes the entire editor — these components only render inside
+// <ClientOnly> and are never needed during SSR.
+const PreviewProvider = import.meta.client
+  ? defineAsyncComponent(
+      () => import('./../editor/components/PreviewProvider.vue'),
+    )
+  : ('div' as never)
 
-const EditProvider = defineAsyncComponent(
-  () => import('./../editor/components/EditProvider.vue'),
-)
+const EditProvider = import.meta.client
+  ? defineAsyncComponent(
+      () => import('./../editor/components/EditProvider.vue'),
+    )
+  : ('div' as never)
 
-const BlokkliRootErrorBoundary = defineAsyncComponent(
-  () => import('./../editor/components/BlokkliRootErrorBoundary.vue'),
-)
+const BlokkliRootErrorBoundary = import.meta.client
+  ? defineAsyncComponent(
+      () => import('./../editor/components/BlokkliRootErrorBoundary.vue'),
+    )
+  : ('div' as never)
 
-const EditIndicator = defineAsyncComponent(
-  () => import('./../editor/components/EditIndicator.vue'),
-)
+const EditIndicator = import.meta.client
+  ? defineAsyncComponent(
+      () => import('./../editor/components/EditIndicator.vue'),
+    )
+  : ('div' as never)
 
 const route = useRoute()
 const router = useRouter()
