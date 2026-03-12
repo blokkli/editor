@@ -92,10 +92,9 @@ import {
 import AppMenu from './../AppMenu/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
-const { ui, selection, storage, eventBus } = useBlokkli()
+const { ui, selection, storage } = useBlokkli()
 
 function openMenu() {
-  eventBus.emit('window:clickAway')
   ui.openDialog({ id: 'menu', alignment: 'left' })
 }
 

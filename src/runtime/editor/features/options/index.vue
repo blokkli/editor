@@ -48,13 +48,14 @@ const uuids = computed(() => {
 })
 
 const key = computed(() => {
+  const parts: string[] = [ui.currentDialog.value?.id ?? 'no-dialog']
   if (typeof uuids.value === 'string') {
-    return uuids.value
+    parts.push(uuids.value)
   } else if (uuids.value && typeof uuids.value === 'object') {
-    return uuids.value.join('-')
+    parts.push(...uuids.value)
   }
 
-  return 'none'
+  return parts.join('-')
 })
 
 const definition = computed<
