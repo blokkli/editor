@@ -4,7 +4,7 @@ type ActiveEnvironment {
   name: String
 }
 
-"""Seitenabschnitts-Vorlage"""
+"""Paragraph Template"""
 type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -13,10 +13,10 @@ type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLink
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """{value} {field: description} Eine optionale Beschreibung der Vorlage."""
+  """{value} {field: description} An optional description of the template."""
   description: String
 
-  """{field: description} Eine optionale Beschreibung der Vorlage."""
+  """{field: description} An optional description of the template."""
   descriptionRawField: FieldItemListStringLong
 
   """The bundle ID of the entity."""
@@ -30,16 +30,14 @@ type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLink
   id: String
 
   """
-  {value} {field: is_default} Automatisch anwenden beim Hinzufügen eines
-  Seitenabschnitts dieses Typs. Nur erlaubt, wenn die Vorlage genau einen
-  Seitenabschnitt enthält.
+  {value} {field: is_default} Auto-apply when adding a paragraph of this type.
+  Only allowed when template contains exactly one paragraph.
   """
   isDefault: Boolean
 
   """
-  {field: is_default} Automatisch anwenden beim Hinzufügen eines
-  Seitenabschnitts dieses Typs. Nur erlaubt, wenn die Vorlage genau einen
-  Seitenabschnitt enthält.
+  {field: is_default} Auto-apply when adding a paragraph of this type. Only
+  allowed when template contains exactly one paragraph.
   """
   isDefaultRawField: FieldItemListBoolean
 
@@ -52,14 +50,10 @@ type BlokkliParagraphTemplate implements Entity & EntityDescribable & EntityLink
   """The langcode of this entity."""
   langcode: String
 
-  """
-  {value} {field: paragraphs} Die Seitenabschnitte, aus denen diese Vorlage besteht.
-  """
+  """{value} {field: paragraphs} The paragraphs that make up this template."""
   paragraphs: [Paragraph]
 
-  """
-  {field: paragraphs} Die Seitenabschnitte, aus denen diese Vorlage besteht.
-  """
+  """{field: paragraphs} The paragraphs that make up this template."""
   paragraphsRawField: FieldItemListEntityReferenceRevisions
   templateBundles: [String!]!
   translationLanguages: [String!]!
@@ -76,27 +70,21 @@ type Breadcrumb {
   url: Url!
 }
 
-"""Kommentar"""
+"""Comment"""
 interface Comment implements Entity & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """
-  {value} {field: changed} Der Zeitpunkt, zu dem der Kommentar zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the comment was last edited."""
   changed: String
 
-  """
-  {field: changed} Der Zeitpunkt, zu dem der Kommentar zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the comment was last edited."""
   changedRawField: FieldItemListChanged
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Kommentar erstellt wurde.
-  """
+  """{value} {field: created} The time that the comment was created."""
   created: String
 
-  """{field: created} Der Zeitpunkt, zu dem der Kommentar erstellt wurde."""
+  """{field: created} The time that the comment was created."""
   createdRawField: FieldItemListCreated
 
   """The bundle ID of the entity."""
@@ -115,10 +103,10 @@ interface Comment implements Entity & EntityLinkable {
   """The langcode of this entity."""
   langcode: String
 
-  """{value} {field: uid} Die Benutzer-ID des Kommentar-Autors."""
+  """{value} {field: uid} The user ID of the comment author."""
   uid: User
 
-  """{field: uid} Die Benutzer-ID des Kommentar-Autors."""
+  """{field: uid} The user ID of the comment author."""
   uidRawField: FieldItemListEntityReference
 
   """Get the URL, defaults to canonical."""
@@ -192,7 +180,7 @@ type CommentBlokkliNode implements Comment & Entity & EntityLinkable {
   uuid: String!
 }
 
-"""Sprache"""
+"""Language"""
 type ConfigurableLanguage implements Entity & LanguageInterface {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -257,7 +245,7 @@ type DefaultUrl implements Url {
 }
 
 enum DrupalDateFormat {
-  """Mo., 11/14/2022 - 14:52"""
+  """Mon, 11/14/2022 - 14:52"""
   FALLBACK
 
   """2022-11-14"""
@@ -281,13 +269,13 @@ enum DrupalDateFormat {
   """11-14"""
   HTML_YEARLESS_DATE
 
-  """Montag, 14 November 2022 - 14:52"""
+  """Monday, 14 November 2022 - 14:52"""
   LONG
 
-  """Mo. 14 Nov 2022 - 14:52"""
+  """Mon, 14 Nov 2022 - 14:52"""
   MEDIUM
 
-  """Montag, 14. November 2022"""
+  """Monday, 14. November 2022"""
   NEWS
 
   """November"""
@@ -532,58 +520,58 @@ interface EntityTranslatable implements Entity {
 }
 
 enum EntityType {
-  """Seitenabschnitts-Vorlage"""
+  """Paragraph Template"""
   BLOKKLI_PARAGRAPH_TEMPLATE
 
-  """Kommentar"""
+  """Comment"""
   COMMENT
 
-  """Sprache"""
+  """Language"""
   CONFIGURABLE_LANGUAGE
 
-  """Datei"""
+  """File"""
   FILE
 
-  """Medien"""
+  """Media"""
   MEDIA
 
-  """Menü"""
+  """Menu"""
   MENU
 
-  """Benutzerdefinierter Menülink"""
+  """Custom menu link"""
   MENU_LINK_CONTENT
 
-  """Inhalt"""
+  """Content"""
   NODE
 
-  """Seitenabschnitt"""
+  """Paragraph"""
   PARAGRAPH
 
   """Paragraphs Blokkli Edit State"""
   PARAGRAPHS_BLOKKLI_EDIT_STATE
 
-  """Seitenabschnittsbibliothekseintrag"""
+  """Paragraphs library item"""
   PARAGRAPHS_LIBRARY_ITEM
 
-  """Seitenabschnittstyp"""
+  """Paragraphs type"""
   PARAGRAPHS_TYPE
 
-  """Umleiten"""
+  """Redirect"""
   REDIRECT
 
   """Rokka Metadata"""
   ROKKA_METADATA
 
-  """Taxonomie-Begriff"""
+  """Taxonomy term"""
   TAXONOMY_TERM
 
-  """Texte"""
+  """Texts"""
   TEXTS
 
   """Translatable config pages"""
   TRANSLATABLE_CONFIG_PAGES
 
-  """Benutzer"""
+  """User"""
   USER
 }
 
@@ -651,7 +639,7 @@ type FieldItemListAddress implements FieldItemList {
   list: [FieldItemTypeAddress]
 }
 
-"""Benutzerstatus"""
+"""User status"""
 type FieldItemListBoolean implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -693,7 +681,7 @@ type FieldItemListChanged implements FieldItemList {
   list: [FieldItemTypeChanged]
 }
 
-"""Erstellt"""
+"""Created"""
 type FieldItemListCreated implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -735,7 +723,7 @@ type FieldItemListDatetime implements FieldItemList {
   list: [FieldItemTypeDatetime]
 }
 
-"""E-Mail"""
+"""Email"""
 type FieldItemListEmail implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -756,7 +744,7 @@ type FieldItemListEmail implements FieldItemList {
   list: [FieldItemTypeEmail]
 }
 
-"""Benutzer-ID"""
+"""User ID"""
 type FieldItemListEntityReference implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -802,7 +790,7 @@ type FieldItemListEntityReferenceRevisions implements FieldItemList {
   targetBundles: [Entity]
 }
 
-"""Audiodatei"""
+"""Audio file"""
 type FieldItemListFile implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -865,7 +853,7 @@ type FieldItemListGeofield implements FieldItemList {
   list: [FieldItemTypeGeofield]
 }
 
-"""Miniaturbild"""
+"""Thumbnail"""
 type FieldItemListImage implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -886,7 +874,7 @@ type FieldItemListImage implements FieldItemList {
   list: [FieldItemTypeImage]
 }
 
-"""Benutzer-ID"""
+"""User ID"""
 type FieldItemListInteger implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -907,7 +895,7 @@ type FieldItemListInteger implements FieldItemList {
   list: [FieldItemTypeInteger]
 }
 
-"""Sprache"""
+"""Language"""
 type FieldItemListLanguage implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -928,7 +916,7 @@ type FieldItemListLanguage implements FieldItemList {
   list: [FieldItemTypeLanguage]
 }
 
-"""An"""
+"""To"""
 type FieldItemListLink implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -991,7 +979,7 @@ type FieldItemListParagraphsBlokkliMutation implements FieldItemList {
   list: [FieldItemTypeParagraphsBlokkliMutation]
 }
 
-"""URL-Alias"""
+"""URL alias"""
 type FieldItemListPath implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -1052,27 +1040,6 @@ type FieldItemListStringLong implements FieldItemList {
 
   """Array of field items."""
   list: [FieldItemTypeStringLong]
-}
-
-"""Chart Table"""
-type FieldItemListTablefield implements FieldItemList {
-  """The number of field items."""
-  count: Int!
-
-  """Get the entity the field belongs to."""
-  entity: Entity
-
-  """The first field item."""
-  first: FieldItemTypeTablefield
-
-  """Get a string representation of all field items."""
-  getString: String!
-
-  """True if the field list has no items."""
-  isEmpty: Boolean!
-
-  """Array of field items."""
-  list: [FieldItemTypeTablefield]
 }
 
 """Telefon"""
@@ -1138,7 +1105,7 @@ type FieldItemListTextWithSummary implements FieldItemList {
   list: [FieldItemTypeTextWithSummary]
 }
 
-"""Letzter Zugriff"""
+"""Last access"""
 type FieldItemListTimestamp implements FieldItemList {
   """The number of field items."""
   count: Int!
@@ -1165,172 +1132,172 @@ interface FieldItemType {
   isEmpty: Boolean!
 }
 
-"""Adresse"""
+"""Address"""
 type FieldItemTypeAddress implements FieldItemType {
-  """{field: additional_name} Zusatzname"""
+  """{field: additional_name} The additional name"""
   additionalName: String
 
-  """{field: address_line1} Die erste Zeile des Adressblocks"""
+  """{field: address_line1} The first line of the address block"""
   addressLine1: String
 
-  """{field: address_line2} Die zweite Zeile des Adressblocks"""
+  """{field: address_line2} The second line of the address block"""
   addressLine2: String
 
-  """{field: address_line3} Die dritte Zeile des Adressblocks"""
+  """{field: address_line3} The third line of the address block"""
   addressLine3: String
 
   """
-  {field: administrative_area} Die oberste administrative Unterteilung des Landes
+  {field: administrative_area} The top-level administrative subdivision of the country
   """
   administrativeArea: String
 
-  """{field: country_code} Der zweistellige Ländercode"""
+  """{field: country_code} The two-letter country code"""
   countryCode: String
 
   """
-  {field: dependent_locality} Ortsteilinformation (d. h. die Nachbarschaft)
+  {field: dependent_locality} The dependent locality (i.e. neighbourhood)
   """
   dependentLocality: String
 
-  """{field: family_name} Nachname"""
+  """{field: family_name} The family name"""
   familyName: String
 
-  """{field: given_name} Vorname"""
+  """{field: given_name} The given name"""
   givenName: String
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: langcode} Das Sprachkürzel"""
+  """{field: langcode} The language code"""
   langcode: String
 
-  """{field: locality} Ort (d. h. die Stadt)"""
+  """{field: locality} The locality (i.e. city)"""
   locality: String
 
-  """{field: organization} Die Organisation"""
+  """{field: organization} The organization"""
   organization: String
 
-  """{field: postal_code} Postleitzahl"""
+  """{field: postal_code} The postal code"""
   postalCode: String
 
-  """{field: sorting_code} Der Sortiercode"""
+  """{field: sorting_code} The sorting code"""
   sortingCode: String
 }
 
-"""Boolesch"""
+"""Boolean"""
 type FieldItemTypeBoolean implements FieldItemType {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Boolescher Wert"""
+  """{field: value} Boolean value"""
   value: Boolean
 }
 
-"""Zuletzt geändert"""
+"""Last changed"""
 type FieldItemTypeChanged implements FieldItemType & FieldItemTypeStringInterface & FieldItemTypeTimestampInterface {
   formatted(drupalDateFormat: DrupalDateFormat, format: String): String!
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Zeitstempeleintrag"""
+  """{field: value} Timestamp value"""
   value: String
 }
 
-"""Erstellt"""
+"""Created"""
 type FieldItemTypeCreated implements FieldItemType & FieldItemTypeStringInterface & FieldItemTypeTimestampInterface {
   formatted(drupalDateFormat: DrupalDateFormat, format: String): String!
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Zeitstempeleintrag"""
+  """{field: value} Timestamp value"""
   value: String
 }
 
-"""Datum"""
+"""Date"""
 type FieldItemTypeDatetime implements FieldItemType & FieldItemTypeStringInterface & FieldItemTypeTimestampInterface {
   formatted(drupalDateFormat: DrupalDateFormat, format: String): String!
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Datumswert"""
+  """{field: value} Date value"""
   value: String
 }
 
-"""E-Mail"""
+"""Email"""
 type FieldItemTypeEmail implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} E-Mail"""
+  """{field: value} Email"""
   value: String
 }
 
-"""Entitätsreferenzierung"""
+"""Entity reference"""
 type FieldItemTypeEntityReference implements FieldItemType {
-  """{field: entity} Benutzer"""
+  """{field: entity} User"""
   entity: Entity
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: target_id} Benutzer ID"""
+  """{field: target_id} User ID"""
   targetId: Int
 }
 
-"""Entitätsreferenz-Revisionen"""
+"""Entity reference revisions"""
 type FieldItemTypeEntityReferenceRevisions implements FieldItemType {
-  """{field: entity} Seitenabschnitt"""
+  """{field: entity} Paragraph"""
   entity: Entity
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: target_id} Seitenabschnitt ID"""
+  """{field: target_id} Paragraph ID"""
   targetId: Int
 
-  """{field: target_revision_id} Revisions-ID Seitenabschnitt"""
+  """{field: target_revision_id} Paragraph revision ID"""
   targetRevisionId: Int
 }
 
-"""Datei"""
+"""File"""
 type FieldItemTypeFile implements FieldItemType {
-  """{field: description} Beschreibung"""
+  """{field: description} Description"""
   description: String
 
-  """{field: display} Anzeige"""
+  """{field: display} Display"""
   display: Boolean
 
-  """{field: entity} Datei"""
+  """{field: entity} File"""
   entity: File
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: target_id} Datei ID"""
+  """{field: target_id} File ID"""
   targetId: Int
 }
 
-"""Datei-URI"""
+"""File URI"""
 type FieldItemTypeFileUri implements FieldItemType {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: url} URL der Datei relativ zum Hauptverzeichnis"""
+  """{field: url} Root-relative file URL"""
   url: String
 
-  """{field: value} URI Wert"""
+  """{field: value} URI value"""
   value: Url
 }
 
 """Geofield"""
 type FieldItemTypeGeofield implements FieldItemType & FieldItemTypeStringInterface {
-  """{field: bottom} Begrenz. unten"""
+  """{field: bottom} Bottom Bounding"""
   bottom: Float
 
-  """{field: geo_type} Geometrietyp"""
+  """{field: geo_type} Geometry Type"""
   geoType: String
 
   """{field: geohash} Geohash"""
@@ -1339,59 +1306,59 @@ type FieldItemTypeGeofield implements FieldItemType & FieldItemTypeStringInterfa
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: lat} Zentroid Breite"""
+  """{field: lat} Centroid Latitude"""
   lat: Float
 
-  """{field: latlon} Breiten- und Längengrad"""
+  """{field: latlon} LatLong Pair"""
   latlon: String
 
-  """{field: left} Begrenz. links"""
+  """{field: left} Left Bounding"""
   left: Float
 
-  """{field: lon} Zentroid Länge"""
+  """{field: lon} Centroid Longitude"""
   lon: Float
 
-  """{field: right} Begrenz. rechts"""
+  """{field: right} Right Bounding"""
   right: Float
 
-  """{field: top} Begrenz. oben"""
+  """{field: top} Top Bounding"""
   top: Float
 
-  """{field: value} Geometrie"""
+  """{field: value} Geometry"""
   value: String
 }
 
 """Image"""
 type FieldItemTypeImage implements FieldItemType {
-  """{field: alt} Alternativer Text"""
+  """{field: alt} Alternative text"""
   alt: String
   derivative(style: ImageStyleId!): ImageResource
 
-  """{field: entity} Datei"""
+  """{field: entity} File"""
   entity: File
 
-  """{field: height} Höhe"""
+  """{field: height} Height"""
   height: Int
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: target_id} Datei ID"""
+  """{field: target_id} File ID"""
   targetId: Int
 
-  """{field: title} Titel"""
+  """{field: title} Title"""
   title: String
 
-  """{field: width} Breite"""
+  """{field: width} Width"""
   width: Int
 }
 
-"""Zahl (Ganzzahl)"""
+"""Number (integer)"""
 type FieldItemTypeInteger implements FieldItemType & FieldItemTypeIntegerInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Ganzzahl"""
+  """{field: value} Integer value"""
   value: Int
 }
 
@@ -1402,15 +1369,15 @@ interface FieldItemTypeIntegerInterface implements FieldItemType {
   value: Int
 }
 
-"""Sprache"""
+"""Language"""
 type FieldItemTypeLanguage implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: language} Sprachobjekt"""
+  """{field: language} Language object"""
   language: LanguageInterface
 
-  """{field: value} Sprachkürzel"""
+  """{field: value} Language code"""
   value: String
 }
 
@@ -1419,65 +1386,65 @@ type FieldItemTypeLink implements FieldItemType {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: options} Optionen"""
+  """{field: options} Options"""
   options: MapData
 
-  """{field: title} Link-Text"""
+  """{field: title} Link text"""
   title: String
 
   """{field: uri} URI"""
   uri: Url
 }
 
-"""Liste (Text)"""
+"""List (text)"""
 type FieldItemTypeListString implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Textwert"""
+  """{field: value} Text value"""
   value: String
 }
 
 """Paragraphs Blokkli Mutations"""
 type FieldItemTypeParagraphsBlokkliMutation implements FieldItemType {
-  """{field: enabled} Aktiviert"""
+  """{field: enabled} Enabled"""
   enabled: Boolean
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
   plugin: ParagraphsBlokkliMutationPlugin
 
-  """{field: plugin_id} Plugin-ID"""
+  """{field: plugin_id} Plugin ID"""
   pluginId: String
 
-  """{field: timestamp} Zeitstempel"""
+  """{field: timestamp} Timestamp"""
   timestamp: String
 }
 
-"""Pfad"""
+"""Path"""
 type FieldItemTypePath implements FieldItemType {
-  """{field: alias} Pfad-Alias"""
+  """{field: alias} Path alias"""
   alias: String
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: langcode} Sprachkürzel"""
+  """{field: langcode} Language Code"""
   langcode: String
 
-  """{field: pathauto} Pathauto-Status"""
+  """{field: pathauto} Pathauto state"""
   pathauto: Int
 
-  """{field: pid} Pfad-ID"""
+  """{field: pid} Path id"""
   pid: Int
 }
 
-"""Klartext"""
+"""Text (plain)"""
 type FieldItemTypeString implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Textwert"""
+  """{field: value} Text value"""
   value: String
 }
 
@@ -1488,35 +1455,16 @@ interface FieldItemTypeStringInterface implements FieldItemType {
   value: String
 }
 
-"""Text (unformatiert, lang)"""
+"""Text (plain, long)"""
 type FieldItemTypeStringLong implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Textwert"""
+  """{field: value} Text value"""
   value: String
 }
 
-"""Table Field"""
-type FieldItemTypeTablefield implements FieldItemType {
-  """{field: caption} Table Caption"""
-  caption: String
-
-  """{field: format} Textformat"""
-  format: String
-
-  """True if this item is considered empty."""
-  isEmpty: Boolean!
-  rows: [[String]]
-
-  """{field: table_value} Stringified table value"""
-  tableValue: String
-
-  """{field: value} Table data"""
-  value: MapData
-}
-
-"""Telefonnummer"""
+"""Telephone number"""
 type FieldItemTypeTelephone implements FieldItemType & FieldItemTypeStringInterface {
   """True if this item is considered empty."""
   isEmpty: Boolean!
@@ -1529,54 +1477,54 @@ type FieldItemTypeTelephone implements FieldItemType & FieldItemTypeStringInterf
     region: String
   ): ParsedPhoneNumber
 
-  """{field: value} Telefonnummer"""
+  """{field: value} Telephone number"""
   value: String
 }
 
-"""Text (formatiert, lang)"""
+"""Text (formatted, long)"""
 type FieldItemTypeTextLong implements FieldItemType & FieldItemTypeStringInterface {
-  """{field: format} Textformat"""
+  """{field: format} Text format"""
   format: String
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: processed} Verarbeiteter Text"""
+  """{field: processed} Processed text"""
   processed: String
 
   """{field: value} Text"""
   value: String
 }
 
-"""Text (formatiert, lang, mit Zusammenfassung)"""
+"""Text (formatted, long, with summary)"""
 type FieldItemTypeTextWithSummary implements FieldItemType & FieldItemTypeStringInterface {
-  """{field: format} Textformat"""
+  """{field: format} Text format"""
   format: String
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: processed} Verarbeiteter Text"""
+  """{field: processed} Processed text"""
   processed: String
 
-  """{field: summary} Zusammenfassung"""
+  """{field: summary} Summary"""
   summary: String
 
-  """{field: summary_processed} Verarbeitete Zusammenfassung"""
+  """{field: summary_processed} Processed summary"""
   summaryProcessed: String
 
   """{field: value} Text"""
   value: String
 }
 
-"""Zeitstempel"""
+"""Timestamp"""
 type FieldItemTypeTimestamp implements FieldItemType & FieldItemTypeStringInterface & FieldItemTypeTimestampInterface {
   formatted(drupalDateFormat: DrupalDateFormat, format: String): String!
 
   """True if this item is considered empty."""
   isEmpty: Boolean!
 
-  """{field: value} Zeitstempeleintrag"""
+  """{field: value} Timestamp value"""
   value: String
 }
 
@@ -1589,7 +1537,7 @@ interface FieldItemTypeTimestampInterface implements FieldItemType {
   value: String
 }
 
-"""Datei"""
+"""File"""
 type File implements Entity & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -1600,22 +1548,22 @@ type File implements Entity & EntityLinkable {
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: filemime} MIME-Typ der Datei"""
+  """{value} {field: filemime} The file's MIME type."""
   filemime: String
 
-  """{field: filemime} MIME-Typ der Datei"""
+  """{field: filemime} The file's MIME type."""
   filemimeRawField: FieldItemListString
 
-  """{value} {field: filename} Name der Datei ohne Pfadbestandteile"""
+  """{value} {field: filename} Name of the file with no path components."""
   filename: String
 
-  """{field: filename} Name der Datei ohne Pfadbestandteile"""
+  """{field: filename} Name of the file with no path components."""
   filenameRawField: FieldItemListString
 
-  """{value} {field: filesize} Die Dateigröße in Bytes."""
+  """{value} {field: filesize} The size of the file in bytes."""
   filesize: Int
 
-  """{field: filesize} Die Dateigröße in Bytes."""
+  """{field: filesize} The size of the file in bytes."""
   filesizeRawField: FieldItemListInteger
   fullUrl: String
   id: String
@@ -1631,13 +1579,11 @@ type File implements Entity & EntityLinkable {
   rokkaMetadata: RokkaMetadata
 
   """
-  {value} {field: uri} Die URI über die auf die Datei zugegriffen werden kann (Lokal oder Fernzugriff)
+  {value} {field: uri} The URI to access the file (either local or remote).
   """
   uri: String
 
-  """
-  {field: uri} Die URI über die auf die Datei zugegriffen werden kann (Lokal oder Fernzugriff)
-  """
+  """{field: uri} The URI to access the file (either local or remote)."""
   uriRawField: FieldItemListFileUri
 
   """Get the URL, defaults to canonical."""
@@ -1665,16 +1611,19 @@ enum ImageStyleId {
   """{focal_point} Fokus Punkt"""
   FOCAL_POINT
 
-  """{large} Groß (480x480)"""
+  """{large} Large (480×480)"""
   LARGE
 
-  """{linkit_result_thumbnail} Linkit-Ergebnisminiaturbild"""
+  """{linkit_result_thumbnail} Linkit result thumbnail"""
   LINKIT_RESULT_THUMBNAIL
 
-  """{media_library} Medienbibliothek-Vorschau (220x220)"""
+  """{login_image} login_image"""
+  LOGIN_IMAGE
+
+  """{media_library} Media Library thumbnail (220×220)"""
   MEDIA_LIBRARY
 
-  """{medium} Mittel (220x220)"""
+  """{medium} Medium (220×220)"""
   MEDIUM
 
   """{pdf_preview_lg} PDF Preview (lg)"""
@@ -1689,10 +1638,10 @@ enum ImageStyleId {
   """{pdf_preview_xl} PDF Preview (xl)"""
   PDF_PREVIEW_XL
 
-  """{thumbnail} Miniaturansicht (100x100)"""
+  """{thumbnail} Thumbnail (100×100)"""
   THUMBNAIL
 
-  """{wide} Breit (1090)"""
+  """{wide} Wide (1090)"""
   WIDE
 }
 
@@ -1761,27 +1710,21 @@ type MasqueradeContext {
   isMasquerading: Boolean!
 }
 
-"""Medien"""
+"""Media"""
 interface Media implements Entity & EntityLinkable & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """
-  {value} {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time the media item was last edited."""
   changed: String
 
-  """
-  {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time the media item was last edited."""
   changedRawField: FieldItemListChanged
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem das Medium erstellt wurde.
-  """
+  """{value} {field: created} The time the media item was created."""
   created: String
 
-  """{field: created} Der Zeitpunkt, zu dem das Medium erstellt wurde."""
+  """{field: created} The time the media item was created."""
   createdRawField: FieldItemListCreated
 
   """The bundle ID of the entity."""
@@ -1835,10 +1778,10 @@ interface Media implements Entity & EntityLinkable & EntityRevisionable {
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: thumbnail} Das Miniaturbild des Mediums."""
+  """{value} {field: thumbnail} The thumbnail of the media item."""
   thumbnail: FieldItemTypeImage
 
-  """{field: thumbnail} Das Miniaturbild des Mediums."""
+  """{field: thumbnail} The thumbnail of the media item."""
   thumbnailRawField: FieldItemListImage
 
   """Get the URL, defaults to canonical."""
@@ -1947,7 +1890,7 @@ type MediaAudio implements Entity & EntityLinkable & EntityRevisionable & Media 
   wasDefaultRevision: Boolean
 }
 
-"""Dokument {entity_type: media, bundle: document}"""
+"""Document {entity_type: media, bundle: document}"""
 type MediaDocument implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2061,22 +2004,16 @@ type MediaIcon implements Entity & EntityLinkable & EntityRevisionable & EntityT
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """
-  {value} {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time the media item was last edited."""
   changed: String
 
-  """
-  {field: changed} Der Zeitpunkt, zu dem das Medium zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time the media item was last edited."""
   changedRawField: FieldItemListChanged
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem das Medium erstellt wurde.
-  """
+  """{value} {field: created} The time the media item was created."""
   created: String
 
-  """{field: created} Der Zeitpunkt, zu dem das Medium erstellt wurde."""
+  """{field: created} The time the media item was created."""
   createdRawField: FieldItemListCreated
 
   """The bundle ID of the entity."""
@@ -2136,10 +2073,10 @@ type MediaIcon implements Entity & EntityLinkable & EntityRevisionable & EntityT
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: thumbnail} Das Miniaturbild des Mediums."""
+  """{value} {field: thumbnail} The thumbnail of the media item."""
   thumbnail: FieldItemTypeImage
 
-  """{field: thumbnail} Das Miniaturbild des Mediums."""
+  """{field: thumbnail} The thumbnail of the media item."""
   thumbnailRawField: FieldItemListImage
 
   """Get a specific translation."""
@@ -2284,7 +2221,7 @@ type MediaImage implements Entity & EntityLinkable & EntityRevisionable & Entity
   wasDefaultRevision: Boolean
 }
 
-"""Extern gehostetes Video {entity_type: media, bundle: remote_video}"""
+"""Remote video {entity_type: media, bundle: remote_video}"""
 type MediaRemoteVideo implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Media {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2501,7 +2438,7 @@ type MediaVideo implements Entity & EntityLinkable & EntityRevisionable & Media 
   wasDefaultRevision: Boolean
 }
 
-"""Menü"""
+"""Menu"""
 type Menu implements Entity {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2536,7 +2473,7 @@ type MenuLink {
   url: Url
 }
 
-"""Benutzerdefinierter Menülink"""
+"""Custom menu link"""
 interface MenuLinkContent implements Entity & EntityLinkable & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2575,7 +2512,7 @@ interface MenuLinkContent implements Entity & EntityLinkable & EntityRevisionabl
   wasDefaultRevision: Boolean
 }
 
-"""Verwaltung {entity_type: menu_link_content, bundle: admin}"""
+"""Administration {entity_type: menu_link_content, bundle: admin}"""
 type MenuLinkContentAdmin implements Entity & EntityLinkable & EntityRevisionable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2614,7 +2551,7 @@ type MenuLinkContentAdmin implements Entity & EntityLinkable & EntityRevisionabl
   wasDefaultRevision: Boolean
 }
 
-"""Fußzeile {entity_type: menu_link_content, bundle: footer}"""
+"""Footer {entity_type: menu_link_content, bundle: footer}"""
 type MenuLinkContentFooter implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2665,7 +2602,7 @@ type MenuLinkContentFooter implements Entity & EntityLinkable & EntityRevisionab
   wasDefaultRevision: Boolean
 }
 
-"""Hauptnavigation {entity_type: menu_link_content, bundle: main}"""
+"""Main navigation {entity_type: menu_link_content, bundle: main}"""
 type MenuLinkContentMain implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2716,7 +2653,7 @@ type MenuLinkContentMain implements Entity & EntityLinkable & EntityRevisionable
   wasDefaultRevision: Boolean
 }
 
-"""Benutzermenü {entity_type: menu_link_content, bundle: unexposed}"""
+"""User account menu {entity_type: menu_link_content, bundle: unexposed}"""
 type MenuLinkContentUnexposed implements Entity & EntityLinkable & EntityRevisionable & MenuLinkContent {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2761,19 +2698,19 @@ type MenuLinkTreeElement {
 }
 
 enum MenuName {
-  """Links im Bezug auf das aktive Benutzerkonto"""
+  """Links related to the active user account"""
   ACCOUNT
 
-  """Links für administrative Aufgaben"""
+  """Administrative task links"""
   ADMIN
 
-  """Links zu Website-Informationen"""
+  """Site information links"""
   FOOTER
 
-  """Das Hauptmenü mit mindestens allen Einstiegsseiten"""
+  """Site section links"""
   MAIN
 
-  """Links zu Benutzerwerkzeugen, meist von Modulen hinzugefügt"""
+  """User tool links, often added by modules"""
   TOOLS
 }
 
@@ -2888,7 +2825,7 @@ type NewsEntityQueryResult {
   total: Int!
 }
 
-"""Inhalt"""
+"""Content"""
 interface Node implements Entity & EntityLinkable & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -2896,33 +2833,27 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """
-  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the node was last edited."""
   changed: String
 
-  """
-  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the node was last edited."""
   changedRawField: FieldItemListChanged
 
   """
-  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  {value} {field: created} The date and time that the content was created.
   """
   created: String
 
-  """
-  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
-  """
+  """{field: created} The date and time that the content was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -2952,13 +2883,12 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
   matchingRedirects: [Redirect]
 
   """
-  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
-  (nur während des Speichervorgangs verfügbar).
+  {value} {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLink: MenuLinkContent
 
   """
-  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLinkRawField: FieldItemListEntityReference
 
@@ -2990,12 +2920,12 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -3017,10 +2947,10 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
   """{field: title} """
   titleRawField: FieldItemListString
 
-  """{value} {field: uid} Der Benutzername des Autors."""
+  """{value} {field: uid} The username of the content author."""
   uid: User
 
-  """{field: uid} Der Benutzername des Autors."""
+  """{field: uid} The username of the content author."""
   uidRawField: FieldItemListEntityReference
 
   """{value} {field: unpublish_on} """
@@ -3053,33 +2983,27 @@ type NodeHandbook implements Entity & EntityLinkable & EntityRevisionable & Node
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """
-  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the node was last edited."""
   changed: String
 
-  """
-  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the node was last edited."""
   changedRawField: FieldItemListChanged
 
   """
-  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  {value} {field: created} The date and time that the content was created.
   """
   created: String
 
-  """
-  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
-  """
+  """{field: created} The date and time that the content was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -3131,13 +3055,12 @@ type NodeHandbook implements Entity & EntityLinkable & EntityRevisionable & Node
   menuChildren: [MenuLinkTreeElement]
 
   """
-  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
-  (nur während des Speichervorgangs verfügbar).
+  {value} {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLink: MenuLinkContent
 
   """
-  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLinkRawField: FieldItemListEntityReference
 
@@ -3169,12 +3092,12 @@ type NodeHandbook implements Entity & EntityLinkable & EntityRevisionable & Node
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -3196,10 +3119,10 @@ type NodeHandbook implements Entity & EntityLinkable & EntityRevisionable & Node
   """{field: title} """
   titleRawField: FieldItemListString
 
-  """{value} {field: uid} Der Benutzername des Autors."""
+  """{value} {field: uid} The username of the content author."""
   uid: User
 
-  """{field: uid} Der Benutzername des Autors."""
+  """{field: uid} The username of the content author."""
   uidRawField: FieldItemListEntityReference
 
   """{value} {field: unpublish_on} """
@@ -3232,33 +3155,27 @@ type NodeOu implements Entity & EntityLinkable & EntityRevisionable & EntityTran
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """
-  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the node was last edited."""
   changed: String
 
-  """
-  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the node was last edited."""
   changedRawField: FieldItemListChanged
 
   """
-  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  {value} {field: created} The date and time that the content was created.
   """
   created: String
 
-  """
-  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
-  """
+  """{field: created} The date and time that the content was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -3317,13 +3234,12 @@ type NodeOu implements Entity & EntityLinkable & EntityRevisionable & EntityTran
   menuChildren: [MenuLinkTreeElement]
 
   """
-  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
-  (nur während des Speichervorgangs verfügbar).
+  {value} {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLink: MenuLinkContent
 
   """
-  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLinkRawField: FieldItemListEntityReference
   menuSiblings: [MenuLinkTreeElement]
@@ -3356,12 +3272,12 @@ type NodeOu implements Entity & EntityLinkable & EntityRevisionable & EntityTran
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -3395,10 +3311,10 @@ type NodeOu implements Entity & EntityLinkable & EntityRevisionable & EntityTran
   """Get all translations."""
   translations: [NodeOu]
 
-  """{value} {field: uid} Der Benutzername des Autors."""
+  """{value} {field: uid} The username of the content author."""
   uid: User
 
-  """{field: uid} Der Benutzername des Autors."""
+  """{field: uid} The username of the content author."""
   uidRawField: FieldItemListEntityReference
 
   """{value} {field: unpublish_on} """
@@ -3423,7 +3339,7 @@ type NodeOu implements Entity & EntityLinkable & EntityRevisionable & EntityTran
   wasDefaultRevision: Boolean
 }
 
-"""Inhaltsseite {entity_type: node, bundle: page}"""
+"""Basic page {entity_type: node, bundle: page}"""
 type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTranslatable & Node {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -3431,14 +3347,10 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """
-  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the node was last edited."""
   changed: String
 
-  """
-  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the node was last edited."""
   changedRawField: FieldItemListChanged
 
   """
@@ -3452,12 +3364,12 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -3585,12 +3497,12 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -3624,10 +3536,10 @@ type NodePage implements Entity & EntityLinkable & EntityRevisionable & EntityTr
   """Get all translations."""
   translations: [NodePage]
 
-  """{value} {field: uid} Der Benutzername des Autors."""
+  """{value} {field: uid} The username of the content author."""
   uid: User
 
-  """{field: uid} Der Benutzername des Autors."""
+  """{field: uid} The username of the content author."""
   uidRawField: FieldItemListEntityReference
 
   """{value} {field: unpublish_on} """
@@ -3687,12 +3599,12 @@ type NodePoliceReport implements Entity & EntityLinkable & EntityRevisionable & 
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -3809,12 +3721,12 @@ type NodePoliceReport implements Entity & EntityLinkable & EntityRevisionable & 
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -3872,33 +3784,27 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   """The props for the blokkli provider component."""
   blokkliProps: ParagraphsBlokkliProps!
 
-  """
-  {value} {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the node was last edited."""
   changed: String
 
-  """
-  {field: changed} Zeitpunkt, zu dem der Beitrag zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the node was last edited."""
   changedRawField: FieldItemListChanged
 
   """
-  {value} {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
+  {value} {field: created} The date and time that the content was created.
   """
   created: String
 
-  """
-  {field: created} Das Datum und die Uhrzeit, zu der der Inhalt erstellt wurde.
-  """
+  """{field: created} The date and time that the content was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -3973,13 +3879,12 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   menuChildren: [MenuLinkTreeElement]
 
   """
-  {value} {field: menu_link} Automatisch erstellter Menülink für den Beitrag
-  (nur während des Speichervorgangs verfügbar).
+  {value} {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLink: MenuLinkContent
 
   """
-  {field: menu_link} Automatisch erstellter Menülink für den Beitrag (nur während des Speichervorgangs verfügbar).
+  {field: menu_link} Computed menu link for the node (only available during node saving).
   """
   menuLinkRawField: FieldItemListEntityReference
   menuSiblings: [MenuLinkTreeElement]
@@ -4012,12 +3917,12 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -4051,10 +3956,10 @@ type NodePressRelease implements Entity & EntityLinkable & EntityRevisionable & 
   """Get all translations."""
   translations: [NodePressRelease]
 
-  """{value} {field: uid} Der Benutzername des Autors."""
+  """{value} {field: uid} The username of the content author."""
   uid: User
 
-  """{field: uid} Der Benutzername des Autors."""
+  """{field: uid} The username of the content author."""
   uidRawField: FieldItemListEntityReference
 
   """{value} {field: unpublish_on} """
@@ -4108,12 +4013,12 @@ type NodeService implements Entity & EntityLinkable & EntityRevisionable & Node 
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -4246,12 +4151,12 @@ type NodeService implements Entity & EntityLinkable & EntityRevisionable & Node 
   publishOnRawField: FieldItemListTimestamp
 
   """
-  {value} {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {value} {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUid: User
 
   """
-  {field: revision_uid} Die Benutzerkennung des Autors der aktuellen Revision.
+  {field: revision_uid} The user ID of the author of the current revision.
   """
   revisionUidRawField: FieldItemListEntityReference
 
@@ -4301,34 +4206,30 @@ type NodeService implements Entity & EntityLinkable & EntityRevisionable & Node 
   wasDefaultRevision: Boolean
 }
 
-"""Seitenabschnitt"""
+"""Paragraph"""
 interface Paragraph implements Entity & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -4367,32 +4268,32 @@ interface Paragraph implements Entity & EntityRevisionable {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -4421,29 +4322,25 @@ type ParagraphAccordeon implements Entity & EntityRevisionable & EntityTranslata
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -4494,32 +4391,32 @@ type ParagraphAccordeon implements Entity & EntityRevisionable & EntityTranslata
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -4560,29 +4457,25 @@ type ParagraphBanner implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -4637,32 +4530,32 @@ type ParagraphBanner implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -4691,10 +4584,10 @@ type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -4708,12 +4601,12 @@ type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -4760,32 +4653,32 @@ type ParagraphBlokkliFragment implements Entity & EntityRevisionable & Paragraph
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -4814,10 +4707,10 @@ type ParagraphChart implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -4831,12 +4724,12 @@ type ParagraphChart implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -4850,42 +4743,6 @@ type ParagraphChart implements Entity & EntityRevisionable & Paragraph {
 
   """The entity type ID."""
   entityTypeId: String!
-
-  """{value} {field: field_axis_labels} """
-  fieldAxisLabels: [String]
-
-  """{field: field_axis_labels} """
-  fieldAxisLabelsRawField: FieldItemListStringLong
-
-  """{value} {field: field_caption} """
-  fieldCaption: String
-
-  """{field: field_caption} """
-  fieldCaptionRawField: FieldItemListString
-
-  """{value} {field: field_chart_table} """
-  fieldChartTable: FieldItemTypeTablefield
-
-  """{field: field_chart_table} """
-  fieldChartTableRawField: FieldItemListTablefield
-
-  """{value} {field: field_footnotes} """
-  fieldFootnotes: String
-
-  """{field: field_footnotes} """
-  fieldFootnotesRawField: FieldItemListTextLong
-
-  """{value} {field: field_value_prefix} """
-  fieldValuePrefix: String
-
-  """{field: field_value_prefix} """
-  fieldValuePrefixRawField: FieldItemListString
-
-  """{value} {field: field_value_suffix} """
-  fieldValueSuffix: String
-
-  """{field: field_value_suffix} """
-  fieldValueSuffixRawField: FieldItemListString
   id: String
 
   """Checks if this entity is the latest revision."""
@@ -4911,32 +4768,32 @@ type ParagraphChart implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -4965,10 +4822,10 @@ type ParagraphContact implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -4982,12 +4839,12 @@ type ParagraphContact implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5032,32 +4889,32 @@ type ParagraphContact implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5086,10 +4943,10 @@ type ParagraphContactList implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -5103,12 +4960,12 @@ type ParagraphContactList implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5163,32 +5020,32 @@ type ParagraphContactList implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5217,10 +5074,10 @@ type ParagraphContainer implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -5234,12 +5091,12 @@ type ParagraphContainer implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5284,32 +5141,32 @@ type ParagraphContainer implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5340,10 +5197,10 @@ type ParagraphCrossCuttingTeaser implements Entity & EntityRevisionable & Paragr
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -5357,12 +5214,12 @@ type ParagraphCrossCuttingTeaser implements Entity & EntityRevisionable & Paragr
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5435,32 +5292,32 @@ type ParagraphCrossCuttingTeaser implements Entity & EntityRevisionable & Paragr
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5484,15 +5341,15 @@ type ParagraphCrossCuttingTeaser implements Entity & EntityRevisionable & Paragr
   wasDefaultRevision: Boolean
 }
 
-"""Aus der Bibliothek {entity_type: paragraph, bundle: from_library}"""
+"""From library {entity_type: paragraph, bundle: from_library}"""
 type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -5506,12 +5363,12 @@ type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5556,32 +5413,32 @@ type ParagraphFromLibrary implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5610,10 +5467,10 @@ type ParagraphGallery implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -5627,12 +5484,12 @@ type ParagraphGallery implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5693,32 +5550,32 @@ type ParagraphGallery implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5747,29 +5604,25 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5840,32 +5693,32 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -5906,10 +5759,10 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -5923,12 +5776,12 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -5983,32 +5836,32 @@ type ParagraphImage implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6037,10 +5890,10 @@ type ParagraphInfobox implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -6054,12 +5907,12 @@ type ParagraphInfobox implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6110,32 +5963,32 @@ type ParagraphInfobox implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6164,10 +6017,10 @@ type ParagraphLink implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -6181,12 +6034,12 @@ type ParagraphLink implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6265,32 +6118,32 @@ type ParagraphLink implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6319,10 +6172,10 @@ type ParagraphLinkList implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -6336,12 +6189,12 @@ type ParagraphLinkList implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6392,32 +6245,32 @@ type ParagraphLinkList implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6446,10 +6299,10 @@ type ParagraphLocation implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -6463,12 +6316,12 @@ type ParagraphLocation implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6553,32 +6406,32 @@ type ParagraphLocation implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6607,10 +6460,10 @@ type ParagraphMap implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -6624,12 +6477,12 @@ type ParagraphMap implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6680,32 +6533,32 @@ type ParagraphMap implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6734,29 +6587,25 @@ type ParagraphQuote implements Entity & EntityRevisionable & EntityTranslatable 
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6819,32 +6668,32 @@ type ParagraphQuote implements Entity & EntityRevisionable & EntityTranslatable 
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -6885,10 +6734,10 @@ type ParagraphService implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -6902,12 +6751,12 @@ type ParagraphService implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -6952,32 +6801,32 @@ type ParagraphService implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7006,10 +6855,10 @@ type ParagraphServices implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -7023,12 +6872,12 @@ type ParagraphServices implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7083,32 +6932,32 @@ type ParagraphServices implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7137,10 +6986,10 @@ type ParagraphTable implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -7154,12 +7003,12 @@ type ParagraphTable implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7174,10 +7023,17 @@ type ParagraphTable implements Entity & EntityRevisionable & Paragraph {
   """The entity type ID."""
   entityTypeId: String!
 
-  """{value} {field: field_table_markup} """
+  """
+  {value} {field: field_table_markup} <strong>Hinweis:</strong> Es kann nur eine
+  Tabelle gleichzeitig erstellt werden. Texte vor oder nach der Tabelle werden
+  nicht angezeigt.
+  """
   fieldTableMarkup: String
 
-  """{field: field_table_markup} """
+  """
+  {field: field_table_markup} <strong>Hinweis:</strong> Es kann nur eine Tabelle
+  gleichzeitig erstellt werden. Texte vor oder nach der Tabelle werden nicht
+  """
   fieldTableMarkupRawField: FieldItemListTextLong
   id: String
 
@@ -7204,32 +7060,32 @@ type ParagraphTable implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7259,29 +7115,25 @@ type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7354,32 +7206,32 @@ type ParagraphTeaser implements Entity & EntityRevisionable & EntityTranslatable
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7420,29 +7272,25 @@ type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslat
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7493,32 +7341,32 @@ type ParagraphTeaserList implements Entity & EntityRevisionable & EntityTranslat
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7559,10 +7407,10 @@ type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable &
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -7576,12 +7424,12 @@ type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable &
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7626,32 +7474,32 @@ type ParagraphText implements Entity & EntityRevisionable & EntityTranslatable &
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7692,10 +7540,10 @@ type ParagraphTitle implements Entity & EntityRevisionable & Paragraph {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
   """
@@ -7709,12 +7557,12 @@ type ParagraphTitle implements Entity & EntityRevisionable & Paragraph {
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7759,32 +7607,32 @@ type ParagraphTitle implements Entity & EntityRevisionable & Paragraph {
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -7813,29 +7661,25 @@ type ParagraphVideo implements Entity & EntityRevisionable & EntityTranslatable 
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """{value} {field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{value} {field: behavior_settings} The behavior plugin settings"""
   behaviorSettings: String
 
-  """{field: behavior_settings} Die Verhaltensplugineinstellungen"""
+  """{field: behavior_settings} The behavior plugin settings"""
   behaviorSettingsRawField: FieldItemListStringLong
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{value} {field: created} The time that the Paragraph was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem der Seitenabschnittstyp erstellt wurde.
-  """
+  """{field: created} The time that the Paragraph was created."""
   createdRawField: FieldItemListCreated
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -7920,32 +7764,32 @@ type ParagraphVideo implements Entity & EntityRevisionable & EntityTranslatable 
   paragraphsBlokkliOptions: ParagraphsBlokkliOptions
 
   """
-  {value} {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {value} {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldName: String
 
   """
-  {field: parent_field_name} Der Feldname der übergeordneten Entität, die diese Entität referenziert.
+  {field: parent_field_name} The entity parent field name to which this entity is referenced.
   """
   parentFieldNameRawField: FieldItemListString
 
   """
-  {value} {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {value} {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentId: String
 
   """
-  {field: parent_id} Die ID der übergeordneten Entität, von der diese Entität referenziert wird.
+  {field: parent_id} The ID of the parent entity of which this entity is referenced.
   """
   parentIdRawField: FieldItemListString
 
   """
-  {value} {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {value} {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentType: String
 
   """
-  {field: parent_type} Der übergeordnete Entitätstyp, zu dem diese Entität gehört.
+  {field: parent_type} The entity parent type to which this entity is referenced.
   """
   parentTypeRawField: FieldItemListString
   props: Paragraph
@@ -8602,13 +8446,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The UUID to use for the new paragraph."""
@@ -8623,13 +8467,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The text."""
@@ -8641,13 +8485,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The paragraph bundle."""
@@ -8668,13 +8512,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The entity references."""
@@ -8694,14 +8538,17 @@ type ParagraphsEditMutationState {
     """The name of the file."""
     fileName: String!
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
+
+    """The paragraph bundle to use."""
+    paragraphBundle: String
   ): ParagraphsBlokkliMutationResult
 
   """Adds a new fragment paragraph."""
@@ -8709,13 +8556,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The fragment name."""
@@ -8725,21 +8572,21 @@ type ParagraphsEditMutationState {
     options: String
   ): ParagraphsBlokkliMutationResult
 
-  """Fügt alle Seitenabschnitte aus einer Vorlage hinzu."""
+  """Adds all paragraphs from a template."""
   add_from_template(
-    """Die UUID des Seitenabschnitts, nach dem eingefügt werden soll."""
+    """The UUID of the paragraph after which to add."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
-    """Die UUID der Vorlage."""
+    """The UUID of the template."""
     templateUuid: String!
   ): ParagraphsBlokkliMutationResult
 
@@ -8754,14 +8601,17 @@ type ParagraphsEditMutationState {
     """The name of the file."""
     fileName: String!
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
+
+    """The paragraph bundle to use."""
+    paragraphBundle: String
   ): ParagraphsBlokkliMutationResult
 
   """Adds a new paragraph of type image for an ID"""
@@ -8769,13 +8619,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The ID of the media image."""
@@ -8790,13 +8640,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The ID of the media video."""
@@ -8811,13 +8661,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add these."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """Array of paragraphs with uuid, bundle and optional values."""
@@ -8829,13 +8679,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The UUID of the paragraphs library item entity."""
@@ -8847,16 +8697,16 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
-    """Die ID des Beitrags."""
+    """The node ID."""
     nid: String!
   ): ParagraphsBlokkliMutationResult
 
@@ -8868,13 +8718,13 @@ type ParagraphsEditMutationState {
     """The paragrpah bundle."""
     bundle: String!
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The text."""
@@ -8892,13 +8742,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The paragraph bundle to use (optional)."""
@@ -9021,13 +8871,13 @@ type ParagraphsEditMutationState {
     """The UUID of the preceeding paragraph."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The UUID of the paragraph being moved."""
@@ -9039,13 +8889,13 @@ type ParagraphsEditMutationState {
     """The UUID of the preceeding paragraph."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The UUIDs of the paragraphs being moved."""
@@ -9055,13 +8905,13 @@ type ParagraphsEditMutationState {
 
   """Rearrange paragraphs within a field."""
   rearrange(
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The UUIDs defining the new order."""
@@ -9222,7 +9072,7 @@ type ParagraphsEditViolation {
   propertyPath: String
 }
 
-"""Seitenabschnittsbibliothekseintrag"""
+"""Paragraphs library item"""
 type ParagraphsLibraryItem implements Entity & EntityLinkable & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -9296,7 +9146,7 @@ type ParagraphsLibraryItem implements Entity & EntityLinkable & EntityRevisionab
   wasDefaultRevision: Boolean
 }
 
-"""Seitenabschnittstyp"""
+"""Paragraphs type"""
 type ParagraphsType implements Entity {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -9664,7 +9514,7 @@ type Query {
   ): TypesenseHitDocument
 }
 
-"""Umleiten"""
+"""Redirect"""
 interface Redirect implements Entity & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -9685,10 +9535,10 @@ interface Redirect implements Entity & EntityLinkable {
   """The langcode of this entity."""
   langcode: String
 
-  """{value} {field: language} Die Umleitungssprache."""
+  """{value} {field: language} The redirect language."""
   language: LanguageInterface
 
-  """{field: language} Die Umleitungssprache."""
+  """{field: language} The redirect language."""
   languageRawField: FieldItemListLanguage
 
   """{value} {field: redirect_redirect} """
@@ -9697,23 +9547,23 @@ interface Redirect implements Entity & EntityLinkable {
   """{field: redirect_redirect} """
   redirectRedirectRawField: FieldItemListLink
 
-  """{value} {field: rid} Die Umleitungs-ID."""
+  """{value} {field: rid} The redirect ID."""
   rid: Int
 
-  """{field: rid} Die Umleitungs-ID."""
+  """{field: rid} The redirect ID."""
   ridRawField: FieldItemListInteger
   sourcePath: String
 
-  """{value} {field: status_code} Der Umleitungs-Statuscode"""
+  """{value} {field: status_code} The redirect status code."""
   statusCode: Int
 
-  """{field: status_code} Der Umleitungs-Statuscode"""
+  """{field: status_code} The redirect status code."""
   statusCodeRawField: FieldItemListInteger
 
-  """{value} {field: type} Der Umleitungstyp."""
+  """{value} {field: type} The redirect type."""
   type: String
 
-  """{field: type} Der Umleitungstyp."""
+  """{field: type} The redirect type."""
   typeRawField: FieldItemListString
 
   """Get the URL, defaults to canonical."""
@@ -9723,7 +9573,7 @@ interface Redirect implements Entity & EntityLinkable {
   uuid: String!
 }
 
-"""Umleiten {entity_type: redirect, bundle: redirect}"""
+"""Redirect {entity_type: redirect, bundle: redirect}"""
 type RedirectRedirect implements Entity & EntityLinkable & Redirect {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -9744,10 +9594,10 @@ type RedirectRedirect implements Entity & EntityLinkable & Redirect {
   """The langcode of this entity."""
   langcode: String
 
-  """{value} {field: language} Die Umleitungssprache."""
+  """{value} {field: language} The redirect language."""
   language: LanguageInterface
 
-  """{field: language} Die Umleitungssprache."""
+  """{field: language} The redirect language."""
   languageRawField: FieldItemListLanguage
 
   """{value} {field: redirect_redirect} """
@@ -9756,23 +9606,23 @@ type RedirectRedirect implements Entity & EntityLinkable & Redirect {
   """{field: redirect_redirect} """
   redirectRedirectRawField: FieldItemListLink
 
-  """{value} {field: rid} Die Umleitungs-ID."""
+  """{value} {field: rid} The redirect ID."""
   rid: Int
 
-  """{field: rid} Die Umleitungs-ID."""
+  """{field: rid} The redirect ID."""
   ridRawField: FieldItemListInteger
   sourcePath: String
 
-  """{value} {field: status_code} Der Umleitungs-Statuscode"""
+  """{value} {field: status_code} The redirect status code."""
   statusCode: Int
 
-  """{field: status_code} Der Umleitungs-Statuscode"""
+  """{field: status_code} The redirect status code."""
   statusCodeRawField: FieldItemListInteger
 
-  """{value} {field: type} Der Umleitungstyp."""
+  """{value} {field: type} The redirect type."""
   type: String
 
-  """{field: type} Der Umleitungstyp."""
+  """{field: type} The redirect type."""
   typeRawField: FieldItemListString
 
   """Get the URL, defaults to canonical."""
@@ -9837,10 +9687,10 @@ type RokkaMetadata implements Entity & EntityLinkable {
   """
   hashRawField: FieldItemListString
 
-  """{value} {field: height} Die Höhe des Bildes"""
+  """{value} {field: height} The height of the image."""
   height: Int
 
-  """{field: height} Die Höhe des Bildes"""
+  """{field: height} The height of the image."""
   heightRawField: FieldItemListInteger
   id: String
 
@@ -9875,10 +9725,10 @@ type RokkaMetadata implements Entity & EntityLinkable {
   """The unique UUID."""
   uuid: String!
 
-  """{value} {field: width} Die Breite des Bildes."""
+  """{value} {field: width} The width of the image."""
   width: Int
 
-  """{field: width} Die Breite des Bildes."""
+  """{field: width} The width of the image."""
   widthRawField: FieldItemListInteger
 }
 
@@ -9911,29 +9761,25 @@ type StructuredTableCellAttributes {
   rowspan: String
 }
 
-"""Taxonomie-Begriff"""
+"""Taxonomy term"""
 interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """
-  {value} {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the term was last edited."""
   changed: String
 
-  """
-  {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the term was last edited."""
   changedRawField: FieldItemListChanged
   children: [TaxonomyTerm]
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -9973,10 +9819,10 @@ interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
   """{field: name} """
   nameRawField: FieldItemListString
 
-  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTerm]
 
-  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference
 
   """{value} {field: status} """
@@ -9985,10 +9831,10 @@ interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: tid} Die Begriffs-ID."""
+  """{value} {field: tid} The term ID."""
   tid: Int
 
-  """{field: tid} Die Begriffs-ID."""
+  """{field: tid} The term ID."""
   tidRawField: FieldItemListInteger
 
   """Get the URL, defaults to canonical."""
@@ -10001,13 +9847,11 @@ interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
   wasDefaultRevision: Boolean
 
   """
-  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  {value} {field: weight} The weight of this term in relation to other terms.
   """
   weight: Int
 
-  """
-  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
-  """
+  """{field: weight} The weight of this term in relation to other terms."""
   weightRawField: FieldItemListInteger
 }
 
@@ -10028,12 +9872,12 @@ type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable
   children: [TaxonomyTermContact]
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -10133,10 +9977,10 @@ type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable
   """{field: name} """
   nameRawField: FieldItemListString
 
-  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTermContact]
 
-  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference
 
   """{value} {field: status} """
@@ -10145,10 +9989,10 @@ type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: tid} Die Begriffs-ID."""
+  """{value} {field: tid} The term ID."""
   tid: Int
 
-  """{field: tid} Die Begriffs-ID."""
+  """{field: tid} The term ID."""
   tidRawField: FieldItemListInteger
 
   """Get the URL, defaults to canonical."""
@@ -10161,13 +10005,11 @@ type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable
   wasDefaultRevision: Boolean
 
   """
-  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  {value} {field: weight} The weight of this term in relation to other terms.
   """
   weight: Int
 
-  """
-  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
-  """
+  """{field: weight} The weight of this term in relation to other terms."""
   weightRawField: FieldItemListInteger
 }
 
@@ -10188,12 +10030,12 @@ type TaxonomyTermSearchTerms implements Entity & EntityLinkable & EntityRevision
   children: [TaxonomyTermSearchTerms]
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -10233,10 +10075,10 @@ type TaxonomyTermSearchTerms implements Entity & EntityLinkable & EntityRevision
   """{field: name} """
   nameRawField: FieldItemListString
 
-  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTermSearchTerms]
 
-  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference
 
   """{value} {field: status} """
@@ -10245,10 +10087,10 @@ type TaxonomyTermSearchTerms implements Entity & EntityLinkable & EntityRevision
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: tid} Die Begriffs-ID."""
+  """{value} {field: tid} The term ID."""
   tid: Int
 
-  """{field: tid} Die Begriffs-ID."""
+  """{field: tid} The term ID."""
   tidRawField: FieldItemListInteger
 
   """Get the URL, defaults to canonical."""
@@ -10261,13 +10103,11 @@ type TaxonomyTermSearchTerms implements Entity & EntityLinkable & EntityRevision
   wasDefaultRevision: Boolean
 
   """
-  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  {value} {field: weight} The weight of this term in relation to other terms.
   """
   weight: Int
 
-  """
-  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
-  """
+  """{field: weight} The weight of this term in relation to other terms."""
   weightRawField: FieldItemListInteger
 }
 
@@ -10288,12 +10128,12 @@ type TaxonomyTermTags implements Entity & EntityLinkable & EntityRevisionable & 
   children: [TaxonomyTermTags]
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -10333,10 +10173,10 @@ type TaxonomyTermTags implements Entity & EntityLinkable & EntityRevisionable & 
   """{field: name} """
   nameRawField: FieldItemListString
 
-  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTermTags]
 
-  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference
 
   """{value} {field: status} """
@@ -10345,10 +10185,10 @@ type TaxonomyTermTags implements Entity & EntityLinkable & EntityRevisionable & 
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: tid} Die Begriffs-ID."""
+  """{value} {field: tid} The term ID."""
   tid: Int
 
-  """{field: tid} Die Begriffs-ID."""
+  """{field: tid} The term ID."""
   tidRawField: FieldItemListInteger
 
   """Get the URL, defaults to canonical."""
@@ -10361,13 +10201,11 @@ type TaxonomyTermTags implements Entity & EntityLinkable & EntityRevisionable & 
   wasDefaultRevision: Boolean
 
   """
-  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  {value} {field: weight} The weight of this term in relation to other terms.
   """
   weight: Int
 
-  """
-  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
-  """
+  """{field: weight} The weight of this term in relation to other terms."""
   weightRawField: FieldItemListInteger
 }
 
@@ -10376,24 +10214,20 @@ type TaxonomyTermUnexposed implements Entity & EntityLinkable & EntityRevisionab
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """
-  {value} {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
-  """
+  """{value} {field: changed} The time that the term was last edited."""
   changed: String
 
-  """
-  {field: changed} Der Zeitpunkt an dem der Begriff zuletzt bearbeitet wurde.
-  """
+  """{field: changed} The time that the term was last edited."""
   changedRawField: FieldItemListChanged
   children: [TaxonomyTermUnexposed]
 
   """
-  {value} {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcode: Boolean
 
   """
-  {field: default_langcode} Eine Kennzeichnung, die angibt, ob es sich um die Standardübersetzung handelt.
+  {field: default_langcode} A flag indicating whether this is the default translation.
   """
   defaultLangcodeRawField: FieldItemListBoolean
 
@@ -10433,10 +10267,10 @@ type TaxonomyTermUnexposed implements Entity & EntityLinkable & EntityRevisionab
   """{field: name} """
   nameRawField: FieldItemListString
 
-  """{value} {field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTerm]
 
-  """{field: parent} Die übergeordneten Bergriffe dieses Begriffs."""
+  """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference
 
   """{value} {field: status} """
@@ -10445,10 +10279,10 @@ type TaxonomyTermUnexposed implements Entity & EntityLinkable & EntityRevisionab
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: tid} Die Begriffs-ID."""
+  """{value} {field: tid} The term ID."""
   tid: Int
 
-  """{field: tid} Die Begriffs-ID."""
+  """{field: tid} The term ID."""
   tidRawField: FieldItemListInteger
 
   """Get the URL, defaults to canonical."""
@@ -10461,17 +10295,15 @@ type TaxonomyTermUnexposed implements Entity & EntityLinkable & EntityRevisionab
   wasDefaultRevision: Boolean
 
   """
-  {value} {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
+  {value} {field: weight} The weight of this term in relation to other terms.
   """
   weight: Int
 
-  """
-  {field: weight} Die Reihenfolge dieses Begriffs in Relation zu anderen Begriffen.
-  """
+  """{field: weight} The weight of this term in relation to other terms."""
   weightRawField: FieldItemListInteger
 }
 
-"""Texte"""
+"""Texts"""
 type Texts implements Entity & EntityLinkable {
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
@@ -11055,7 +10887,7 @@ type TypesenseHitDocumentContent implements TypesenseHitDocument {
 
   """
   Geschrieben am
-  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Geschrieben am, Inhalt » Geschrieben am.
+  A Union aggregation of the following fields: Media » Authored on, Content » Authored on.
   Data Type: typesense_date_time
   """
   created: TypesenseDateTime!
@@ -11068,14 +10900,14 @@ type TypesenseHitDocumentContent implements TypesenseHitDocument {
 
   """
   Entity ID
-  Eine Vereinigung -Aggregation der folgenden Felder: Medien » ID, Inhalt » ID.
+  A Union aggregation of the following fields: Media » ID, Content » ID.
   Data Type: typesense_int32
   """
   entity_id: Int!
 
   """
   Exclude from search
-  Eine Anfang -Aggregation der folgenden Felder: Inhalt » Von der Suche ausschliessen.
+  A First aggregation of the following fields: Content » Von der Suche ausschliessen.
   Data Type: typesense_bool
   """
   excluded: Boolean
@@ -11125,7 +10957,7 @@ type TypesenseHitDocumentContent implements TypesenseHitDocument {
 
   """
   Search-API Anhänge: Dokument
-  Search-API Anhänge: Dokument
+  Search api attachments: Document
   Data Type: typesense_string
   """
   saa_field_media_document: String
@@ -11139,7 +10971,7 @@ type TypesenseHitDocumentContent implements TypesenseHitDocument {
 
   """
   Status
-  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Veröffentlicht, Inhalt » Veröffentlicht.
+  A Union aggregation of the following fields: Media » Published, Content » Published.
   Data Type: typesense_string
   """
   status: String!
@@ -11152,35 +10984,35 @@ type TypesenseHitDocumentContent implements TypesenseHitDocument {
 
   """
   Text
-  Das vollständige HTML, das beim Anzeigen des Elements angezeigt wird
+  The complete HTML which would be displayed when viewing the item
   Data Type: typesense_string
   """
   text: String
 
   """
   Title
-  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Name, Inhalt » Titel.
+  A Union aggregation of the following fields: Media » Name, Content » Title.
   Data Type: typesense_string
   """
   title: String!
 
   """
   Title exact
-  Eine Vereinigung -Aggregation der folgenden Felder: Medien » Name, Inhalt » Titel.
+  A Union aggregation of the following fields: Media » Name, Content » Title.
   Data Type: typesense_string
   """
   title_exact: String!
 
   """
   Entity type
-  Der Entitätstyp des indizierten Elements
+  The indexed item's entity type
   Data Type: typesense_string
   """
   type: String!
 
   """
   URL
-  Eine Vereinigung -Aggregation der folgenden Felder: Allgemein » Entity URL.
+  A Union aggregation of the following fields: General » Entity URL.
   Data Type: typesense_string
   """
   url: String!
@@ -11225,7 +11057,7 @@ type TypesenseHitDocumentEpublications implements TypesenseHitDocument {
 
   """
   URI
-  Die lokale Speicheradresse, um auf das Element zuzugreifen
+  A URI where the item can be accessed
   Data Type: typesense_string
   """
   url: String!
@@ -11242,7 +11074,7 @@ type TypesenseHitDocumentHandbook implements TypesenseHitDocument {
 
   """
   Gerenderte HTML-Ausgabe
-  Das vollständige HTML, das beim Anzeigen des Elements angezeigt wird
+  The complete HTML which would be displayed when viewing the item
   Data Type: typesense_string
   """
   content: String
@@ -11560,19 +11392,15 @@ input UrlOptions {
   language: Langcode
 }
 
-"""Benutzer"""
+"""User"""
 type User implements Entity & EntityLinkable {
-  """
-  {value} {field: access} Der Zeitpunkt, zu dem der Benutzer zuletzt auf die Website zugegriffen hat.
-  """
+  """{value} {field: access} The time that the user last accessed the site."""
   access: String
 
   """Check entity access for the given operation, defaults to view."""
   accessCheck(operation: String): Boolean!
 
-  """
-  {field: access} Der Zeitpunkt, zu dem der Benutzer zuletzt auf die Website zugegriffen hat.
-  """
+  """{field: access} The time that the user last accessed the site."""
   accessRawField: FieldItemListTimestamp
 
   """
@@ -11585,14 +11413,10 @@ type User implements Entity & EntityLinkable {
   """
   changedRawField: FieldItemListChanged
 
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem das Benutzerkonto erstellt wurde.
-  """
+  """{value} {field: created} The time that the user was created."""
   created: String
 
-  """
-  {field: created} Der Zeitpunkt, zu dem das Benutzerkonto erstellt wurde.
-  """
+  """{field: created} The time that the user was created."""
   createdRawField: FieldItemListCreated
 
   """The bundle ID of the entity."""
@@ -11621,31 +11445,31 @@ type User implements Entity & EntityLinkable {
   """The langcode of this entity."""
   langcode: String
 
-  """{value} {field: mail} Die E-Mail-Adresse dieses Benutzers."""
+  """{value} {field: mail} The email of this user."""
   mail: String
 
-  """{field: mail} Die E-Mail-Adresse dieses Benutzers."""
+  """{field: mail} The email of this user."""
   mailRawField: FieldItemListEmail
 
-  """{value} {field: name} Der Name dieses Benutzers."""
+  """{value} {field: name} The name of this user."""
   name: String
 
-  """{field: name} Der Name dieses Benutzers."""
+  """{field: name} The name of this user."""
   nameRawField: FieldItemListString
 
   """Contains a list of all roles of this user."""
   roleIds: [String]
 
-  """{value} {field: status} Ob der Benutzer aktiv oder gesperrt ist."""
+  """{value} {field: status} Whether the user is active or blocked."""
   status: Boolean
 
-  """{field: status} Ob der Benutzer aktiv oder gesperrt ist."""
+  """{field: status} Whether the user is active or blocked."""
   statusRawField: FieldItemListBoolean
 
-  """{value} {field: uid} Die Benutzer-ID."""
+  """{value} {field: uid} The user ID."""
   uid: Int
 
-  """{field: uid} Die Benutzer-ID."""
+  """{field: uid} The user ID."""
   uidRawField: FieldItemListInteger
 
   """Get the URL, defaults to canonical."""

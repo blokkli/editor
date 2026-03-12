@@ -1013,7 +1013,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       } else if (e.type === 'plaintext') {
         return ['text', 'title']
       } else if (e.type === 'image') {
-        return 'image'
+        return ['image', 'button']
       } else if (e.type === 'file') {
         return 'button'
       }
@@ -1179,7 +1179,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           hostField: e.host.fieldName,
           preceedingUuid: e.afterUuid,
         })
-      } else if (e.item.type === 'image') {
+      } else if (e.item.type === 'image' && e.blockBundle === 'image') {
         const imageItem = e.item
         return (async () => {
           const [response, dimensions] = await Promise.all([
@@ -1203,6 +1203,27 @@ export default defineBlokkliEditAdapter((ctx) => {
             preceedingUuid: e.afterUuid,
           })
         })()
+      } else if (e.item.type === 'image' && e.blockBundle === 'button') {
+        const imageItem = e.item
+        return $fetch<{ url: string }>('/api/upload', {
+          method: 'POST',
+          body: {
+            data: imageItem.data,
+            fileName: imageItem.fileName,
+          },
+        }).then((response) =>
+          addMutation('add', {
+            bundle: 'button',
+            values: {
+              title: imageItem.fileName,
+              url: response.url,
+            },
+            hostEntityType: e.host.type,
+            hostEntityUuid: e.host.uuid,
+            hostField: e.host.fieldName,
+            preceedingUuid: e.afterUuid,
+          }),
+        )
       } else if (e.item.type === 'file') {
         const fileItem = e.item
         return $fetch<{ url: string }>('/api/upload', {

@@ -8,6 +8,7 @@ mutation pbAddImage(
   $hostUuid: String!
   $hostFieldName: String!
   $afterUuid: String
+  $paragraphBundle: String!
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
@@ -20,6 +21,7 @@ mutation pbAddImage(
       hostType: $hostType
       hostUuid: $hostUuid
       hostFieldName: $hostFieldName
+      paragraphBundle: $paragraphBundle
     ) {
       ...paragraphsBlokkliMutationResult
     }

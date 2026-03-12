@@ -110,6 +110,12 @@ export interface DraggableNativeDropItem {
   itemBundles: string[]
   dataTransfer: DataTransfer | null
   clipboardItems?: BlokkliClipboardItem[]
+  /**
+   * Eagerly extracted from DataTransfer in resolveBundles, because the
+   * DataTransfer object becomes stale after the synchronous event handler
+   * returns (e.g. while the bundle selector is shown).
+   */
+  files?: File[]
 }
 
 declare module '#blokkli/editor/adapter' {

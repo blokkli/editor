@@ -785,13 +785,16 @@ defineDropHandler('native_drop', {
     const dt = item.dataTransfer
 
     // For files: re-validate via clipboardMapBundle with actual file info.
+    // Eagerly extract File objects since DataTransfer will be invalidated
+    // after this synchronous handler returns (e.g. while bundle selector is
+    // shown).
     if (dt.files.length > 0) {
+      item.files = [...dt.files]
       if (!adapter.clipboardMapBundle) {
         return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
       }
-      const files = [...dt.files]
       let possibleBundles: string[] | null = null
-      for (const file of files) {
+      for (const file of item.files) {
         const type: 'image' | 'file' = file.type.startsWith('image/')
           ? 'image'
           : 'file'
@@ -923,15 +926,10 @@ defineDropHandler('native_drop', {
       return
     }
 
-    if (!item.dataTransfer) {
-      return
-    }
-
-    const dt = item.dataTransfer
-
-    if (dt.files.length > 0) {
-      const files = [...dt.files]
-
+    // Use eagerly extracted files (stored in resolveBundles) to avoid stale
+    // DataTransfer after async bundle selection.
+    const files = item.files
+    if (files?.length) {
       // Re-validate each file's bundle with actual file size.
       if (adapter.clipboardMapBundle) {
         for (const file of files) {
@@ -985,32 +983,6 @@ defineDropHandler('native_drop', {
         }
         return lastResult!
       })
-    } else {
-      // Text drop — clipboardItems should have been set in resolveBundles.
-      // Fallback: read from DataTransfer directly.
-      const text =
-        dt.getData('text/html') ||
-        dt.getData('text/plain') ||
-        dt.getData('text')
-      if (!text) {
-        return
-      }
-
-      const clipboardItem: BlokkliClipboardItem = {
-        type: 'text',
-        id: generateUUID(),
-        itemBundle: bundle,
-        data: text,
-      }
-
-      await state.mutateWithLoadingState(() =>
-        adapter.addBlockFromClipboardItem!({
-          item: clipboardItem,
-          blockBundle: bundle,
-          host,
-          afterUuid,
-        }),
-      )
     }
   },
 })

@@ -1127,6 +1127,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: e.host.uuid,
           hostFieldName: e.host.fieldName,
           afterUuid: e.afterUuid,
+          paragraphBundle: e.blockBundle,
         }).then(mapMutation)
       } else if (e.item.type === 'file' && hasMutation('pbAddFile')) {
         return useGraphqlMutation('pbAddFile', {
@@ -1137,6 +1138,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: e.host.uuid,
           hostFieldName: e.host.fieldName,
           afterUuid: e.afterUuid,
+          paragraphBundle: e.blockBundle,
         }).then(mapMutation)
       } else if (e.item.type === 'video' && hasMutation('pbAddVideoRemote')) {
         return useGraphqlMutation('pbAddVideoRemote', {
@@ -1146,6 +1148,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: e.host.uuid,
           hostFieldName: e.host.fieldName,
           afterUuid: e.afterUuid,
+          paragraphBundle: e.blockBundle,
         }).then(mapMutation)
       }
     }
