@@ -6,7 +6,7 @@ import { findIdealRectPosition } from '#blokkli/editor/helpers/geometry'
 import type { Coord, Rectangle } from '../types/geometry'
 
 export type PlacementVertical = 'top' | 'bottom' | 'center' | 'auto'
-export type PlacementHorizontal = 'left' | 'center' | 'right'
+export type PlacementHorizontal = 'left' | 'center' | 'right' | 'auto-side'
 
 type UseStickyToolbarOptions = {
   getPlacementY?: () => PlacementVertical
@@ -81,7 +81,7 @@ export function useStickyToolbar(
   ):
     | (Coord & {
         actualPlacementY: 'top' | 'bottom' | 'center'
-        actualPlacementX: PlacementHorizontal
+        actualPlacementX: 'left' | 'center' | 'right'
         caretX: number
       })
     | undefined {
@@ -199,9 +199,27 @@ export function useStickyToolbar(
       }
     }
 
+    // Resolve auto-side: pick left or right based on available space.
+    const isSidePlacement = placementX === 'auto-side'
+    let resolvedPlacementX: 'left' | 'center' | 'right' = isSidePlacement ? 'right' : placementX
+    if (isSidePlacement) {
+      const spaceRight = padding.x + padding.width - maxX
+      const spaceLeft = minX - padding.x
+      if (spaceRight >= width + margin) {
+        resolvedPlacementX = 'right'
+      } else if (spaceLeft >= width + margin) {
+        resolvedPlacementX = 'left'
+      } else {
+        resolvedPlacementX = spaceRight >= spaceLeft ? 'right' : 'left'
+      }
+    }
+
     // Calculate Y position based on vertical placement
     let y: number
-    if (placementY === 'center') {
+    if (isSidePlacement) {
+      // For side placement, align the tooltip's top edge with the anchor's top edge.
+      y = minY
+    } else if (placementY === 'center') {
       // Center vertically relative to the selection
       y = centerY - height / 2
     } else {
@@ -210,15 +228,15 @@ export function useStickyToolbar(
 
     // Calculate X position based on horizontal placement
     let x: number
-    if (placementX === 'center') {
+    if (resolvedPlacementX === 'center') {
       // Center the toolbar horizontally relative to the selection
       x = centerX - width / 2
-    } else if (placementX === 'right') {
+    } else if (resolvedPlacementX === 'right') {
       // Place to the right of the selection
       x = maxX + margin
     } else {
-      // Default 'left' placement
-      x = minX - xSubtract
+      // Place to the left of the selection
+      x = minX - width - margin
     }
 
     // Check if we should allow horizontal overflow
@@ -275,7 +293,7 @@ export function useStickyToolbar(
     return {
       ...idealPosition,
       actualPlacementY,
-      actualPlacementX: placementX,
+      actualPlacementX: resolvedPlacementX,
       caretX,
     }
   }

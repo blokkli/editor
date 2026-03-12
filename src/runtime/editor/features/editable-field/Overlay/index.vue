@@ -5,6 +5,7 @@
     :title
     :anchor-el="element"
     placement-y="top"
+    :placement-x="useHorizontalPlacement ? 'auto-side' : 'center'"
     class="bk-editable-field"
     close-icon="bk_mdi_check"
     @close="save"
@@ -140,6 +141,10 @@ const title = computed(() => {
 
   return props.config.label
 })
+const useHorizontalPlacement = computed(
+  () => props.config.type === 'frame' && scrollHeight.value > 300,
+)
+
 const isMarkup = computed(
   () =>
     props.config.type === 'table' ||

@@ -67,12 +67,28 @@
       border-width: var(--bk-caret-size) var(--bk-caret-size)
         var(--bk-caret-size) 0;
       border-color: transparent var(--bk-header-bg) transparent transparent;
-      @apply right-full top-1/2 -translate-y-1/2 left-auto;
+      @apply right-full top-1/2 left-auto;
       transform: translateX(0) translateY(-50%);
     }
 
     &:after {
       @apply -mr-1;
+    }
+  }
+
+  &.bk-is-x-left {
+    /* Caret on right side pointing right */
+    &:before,
+    &:after {
+      border-width: var(--bk-caret-size) 0 var(--bk-caret-size)
+        var(--bk-caret-size);
+      border-color: transparent transparent transparent var(--bk-header-bg);
+      @apply left-full top-1/2 right-auto;
+      transform: translateX(0) translateY(-50%);
+    }
+
+    &:after {
+      @apply -ml-1;
     }
   }
 
