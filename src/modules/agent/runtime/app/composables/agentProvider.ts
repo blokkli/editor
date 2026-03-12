@@ -1086,6 +1086,14 @@ export default function (
     params: AgentToolMap[T]['params'],
   ) {
     const ctx = createToolContext()
+
+    // Ensure the tool map is populated (it may not be if the WebSocket
+    // hasn't connected yet when preExecute runs).
+    if (!Object.keys(toolMap).length) {
+      const resolved = await resolveTools(mcpTools, ctx)
+      toolMap = createToolMap(resolved)
+    }
+
     const toolDef = getToolDefinition(toolMap, toolName)
     const rawResult = await executeTool(toolMap, toolName, ctx, params)
     const label = isQueryResult(rawResult) ? rawResult.label : toolDef.label($t)
