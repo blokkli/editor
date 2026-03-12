@@ -1317,11 +1317,21 @@ export default function (
       activeConversationId.value = generateUUID()
     }
 
+    // Push the user message and show thinking indicator immediately,
+    // before any async work (routing), so the UI feels responsive.
+    conversation.value.push({
+      type: 'user',
+      id: generateId(),
+      content: displayPrompt ?? prompt,
+      timestamp: Date.now(),
+      attachments: attachments?.length ? attachments : undefined,
+    })
+    isThinking.value = true
+
     // On the first message without caller-provided directives, call the
     // routing endpoint to determine which skills/tools to pre-load.
-    const isFirstMessage = !conversation.value.some(
-      (item) => item.type === 'user',
-    )
+    const isFirstMessage =
+      conversation.value.filter((v) => v.type === 'user').length === 1
     const hasClientDirectives = !!(
       autoLoadTools?.length || autoLoadSkills?.length
     )
@@ -1367,17 +1377,6 @@ export default function (
         // Routing failed — proceed without pre-loaded skills/tools
       }
     }
-
-    const item: ConversationItem = {
-      type: 'user',
-      id: generateId(),
-      content: displayPrompt ?? prompt,
-      timestamp: Date.now(),
-    }
-    if (attachments?.length) {
-      ;(item as { attachments?: Attachment[] }).attachments = attachments
-    }
-    conversation.value.push(item)
 
     // Strip client-only `label` from preSeededResults before sending to server
     const serverPreSeeded = preSeededResults?.length
