@@ -149,10 +149,11 @@ describe('createBuiltinReadabilityAnalyzer', () => {
 
     it('uses WSTF thresholds for German', () => {
       expect(analyzer.classifyBand(5, 'de')).toBe('easy')
-      expect(analyzer.classifyBand(7, 'de')).toBe('easy')
-      expect(analyzer.classifyBand(8, 'de')).toBe('ok')
-      expect(analyzer.classifyBand(14, 'de')).toBe('ok')
-      expect(analyzer.classifyBand(15, 'de')).toBe('hard')
+      expect(analyzer.classifyBand(12, 'de')).toBe('easy')
+      expect(analyzer.classifyBand(15, 'de')).toBe('easy')
+      expect(analyzer.classifyBand(16, 'de')).toBe('ok')
+      expect(analyzer.classifyBand(18, 'de')).toBe('ok')
+      expect(analyzer.classifyBand(19, 'de')).toBe('hard')
     })
 
     it('uses LIX thresholds for French', () => {
@@ -197,28 +198,28 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       expect(itAnalyzer.impactForScore(70)).toBe('minor')
     })
 
-    it('returns critical for German WSTF >= 20', async () => {
+    it('returns critical for German WSTF >= 24', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(22)).toBe('critical')
+      expect(deAnalyzer.impactForScore(25)).toBe('critical')
     })
 
-    it('returns serious for German WSTF >= 16', async () => {
+    it('returns serious for German WSTF >= 20', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(17)).toBe('serious')
+      expect(deAnalyzer.impactForScore(21)).toBe('serious')
     })
 
-    it('returns moderate for German WSTF >= 12', async () => {
+    it('returns moderate for German WSTF >= 16', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(13)).toBe('moderate')
+      expect(deAnalyzer.impactForScore(17)).toBe('moderate')
     })
 
-    it('returns minor for German WSTF < 12', async () => {
+    it('returns minor for German WSTF < 16', async () => {
       const deAnalyzer = createBuiltinReadabilityAnalyzer()
       await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(5)).toBe('minor')
+      expect(deAnalyzer.impactForScore(10)).toBe('minor')
     })
   })
 
