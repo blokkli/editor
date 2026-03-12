@@ -1009,13 +1009,26 @@ export default function (
         // Inject _summary from prunedSummary callback for use during server-side pruning.
         // Also strip _details and _usage (ephemeral, not sent to server).
         let resultForServer: unknown = result
+        let skipLlmResponse: boolean | undefined
         if (typeof result === 'object' && result !== null) {
           const rec = result as Record<string, unknown>
           if ('_usage' in rec && rec._usage) {
             usageTurns.value = [...usageTurns.value, rec._usage as UsageTurn]
           }
-          if ('_details' in rec || '_usage' in rec) {
-            const { _details: _, _usage: __, ...rest } = rec
+          if (rec._skipLlmResponse === true) {
+            skipLlmResponse = true
+          }
+          if (
+            '_details' in rec ||
+            '_usage' in rec ||
+            '_skipLlmResponse' in rec
+          ) {
+            const {
+              _details: _,
+              _usage: __,
+              _skipLlmResponse: ___,
+              ...rest
+            } = rec
             resultForServer = rest
           }
         }
@@ -1041,6 +1054,7 @@ export default function (
           type: 'tool_result',
           callId,
           result: resultForServer,
+          skipLlmResponse,
         })
       }
     } catch (error) {

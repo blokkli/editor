@@ -540,6 +540,7 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
     callId: z.string(),
     result: z.unknown(),
     error: z.string().optional(),
+    skipLlmResponse: z.boolean().optional(),
   }),
   z.object({ type: z.literal('cancel') }),
   z.object({ type: z.literal('accept') }),

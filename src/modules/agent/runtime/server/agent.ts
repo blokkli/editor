@@ -118,6 +118,7 @@ export default defineWebSocketHandler({
           session.resolveToolResult(data.callId, {
             result: data.result,
             error: data.error,
+            skipLlmResponse: data.skipLlmResponse,
           })
           break
 

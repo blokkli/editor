@@ -59,7 +59,11 @@ export class Session {
   pendingToolCalls = new Map<
     string,
     {
-      resolve: (result: { result: unknown; error?: string }) => void
+      resolve: (result: {
+        result: unknown
+        error?: string
+        skipLlmResponse?: boolean
+      }) => void
       reject: (error: Error) => void
     }
   >()
@@ -215,7 +219,7 @@ export class Session {
 
   resolveToolResult(
     callId: string,
-    result: { result: unknown; error?: string },
+    result: { result: unknown; error?: string; skipLlmResponse?: boolean },
   ): void {
     const pending = this.pendingToolCalls.get(callId)
     if (pending) {
@@ -559,7 +563,10 @@ export class Session {
 
     // Auto-execute tools: dispatch to client via normal tool_call flow and
     // wait for results before the LLM loop starts.
+    let allAutoToolsSkipLlm = false
     if (autoExecuteTools?.length) {
+      let hasErrors = false
+      let allSkip = true
       for (let i = 0; i < autoExecuteTools.length; i++) {
         const autoTool = autoExecuteTools[i]!
         const callId = `auto_${i}`
@@ -588,6 +595,8 @@ export class Session {
           })
 
           if (clientResult.error) {
+            hasErrors = true
+            allSkip = false
             this.messages.push({
               role: 'user',
               content: [
@@ -600,6 +609,9 @@ export class Session {
               ],
             })
           } else {
+            if (!clientResult.skipLlmResponse) {
+              allSkip = false
+            }
             let resultForLLM = clientResult.result
             if (
               typeof resultForLLM === 'object' &&
@@ -624,6 +636,8 @@ export class Session {
             })
           }
         } catch {
+          hasErrors = true
+          allSkip = false
           // Client disconnected or cancelled — inject error result so the
           // LLM can see the failure and decide what to do.
           this.messages.push({
@@ -652,6 +666,16 @@ export class Session {
           })
         }
       }
+      allAutoToolsSkipLlm = allSkip && !hasErrors
+    }
+
+    // If all auto-execute tools succeeded and requested skipping the LLM
+    // response, send done immediately without entering the LLM loop.
+    if (allAutoToolsSkipLlm) {
+      send(peer, { type: 'done' })
+      this.sendConversationState(peer, authSecret)
+      this.isProcessing = false
+      return
     }
 
     this.abortController = new AbortController()
@@ -1230,7 +1254,7 @@ export class Session {
 
   private waitForToolResult(
     callId: string,
-  ): Promise<{ result: unknown; error?: string }> {
+  ): Promise<{ result: unknown; error?: string; skipLlmResponse?: boolean }> {
     return new Promise((resolve, reject) => {
       // No timeout - user may take time to approve/reject mutations.
       // Cleanup is handled by the WebSocket close handler if client disconnects.

@@ -73,6 +73,7 @@ const emit = defineEmits<{
     result: StreamTextFieldsResult & {
       _details?: StreamTextFieldsDetailItem[]
       _usage?: UsageTurn
+      _skipLlmResponse?: boolean
     },
   ): void
 }>()
@@ -1038,6 +1039,7 @@ async function applySelected(data: {
     historyIndex: state.currentMutationIndex.value,
     _details,
     _usage: streamUsage.value,
+    _skipLlmResponse: rejectedItems.length === 0,
   })
 }
 
