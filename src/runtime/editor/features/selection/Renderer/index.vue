@@ -355,10 +355,12 @@ const { collector } = defineRenderer('selection-overlay', {
 
 onBlokkliEvent('ui:resized', function () {
   collector.reset()
+  collector.prevKey = ''
 })
 
 onBlokkliEvent('state:reloaded', function () {
   collector.reset()
+  collector.prevKey = ''
 })
 </script>
 
