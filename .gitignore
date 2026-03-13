@@ -71,6 +71,7 @@ src/runtime/material-icons/index.ts
 src/runtime/editor/icons/material-icons.ts
 
 src/runtime/editor/css/output.css
+src/runtime/editor/features/changelog/changelog.json
 
 playground/public/uploads/
 
