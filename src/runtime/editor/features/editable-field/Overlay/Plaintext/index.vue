@@ -1,7 +1,6 @@
 <template>
   <FlexTextarea
     id="bk-editable-field-textarea"
-    ref="textarea"
     v-model="modelValue"
     class="bk bk-editable-field-textarea"
     enterkeyhint="done"

@@ -189,6 +189,35 @@ export type ModuleOptions = {
   schemaOptionsPath?: string
 
   /**
+   * Configure automatic text replacements when editing plaintext fields.
+   *
+   * Set to `true` to enable all replacements, `false` to disable all.
+   * Or pass an object to enable/disable individual replacements.
+   *
+   * Defaults to `true` (all replacements enabled).
+   */
+  textAutoReplace?:
+    | boolean
+    | {
+        /**
+         * Replace straight double quotes ("...") with guillemets («...»).
+         *
+         * Only active when the interface language is 'de' or 'fr'.
+         */
+        quotes?: boolean
+
+        /**
+         * Replace three consecutive dots (...) with an ellipsis character (…).
+         */
+        ellipsis?: boolean
+
+        /**
+         * Replace two consecutive hyphens (--) with an en dash (–).
+         */
+        enDash?: boolean
+      }
+
+  /**
    * Override the feature settings.
    */
   settingsOverride?: Record<string, { disable?: boolean; default?: any }>

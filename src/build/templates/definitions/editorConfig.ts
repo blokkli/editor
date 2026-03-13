@@ -32,6 +32,17 @@ export const forceDefaultLanguage = ${JSON.stringify(
     )}
 
 export const featureFragmentNames = ${JSON.stringify(featureFragmentNames)}
+
+export const textAutoReplace = ${(() => {
+      const opt = ctx.helper.options.textAutoReplace
+      const all = opt === undefined || opt === true
+      const obj = typeof opt === 'object' && opt !== null ? opt : null
+      return JSON.stringify({
+        quotes: obj ? (obj.quotes ?? true) : all,
+        ellipsis: obj ? (obj.ellipsis ?? true) : all,
+        enDash: obj ? (obj.enDash ?? true) : all,
+      })
+    })()}
 `
   },
   (ctx) => {
@@ -89,6 +100,15 @@ export declare const forceDefaultLanguage: boolean
  * The fragment names provided by features.
  */
 export declare const featureFragmentNames: string[]
+
+/**
+ * Text auto-replace configuration.
+ */
+export declare const textAutoReplace: {
+  quotes: boolean
+  ellipsis: boolean
+  enDash: boolean
+}
 `
   },
 )
