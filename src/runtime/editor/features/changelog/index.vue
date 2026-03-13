@@ -51,6 +51,7 @@ defineMenuButton(() => {
     ),
     icon: 'bk_mdi_campaign',
     secondary: true,
+    weight: -10,
     type: hasNew.value ? 'yellow' : undefined,
     callback: onClick,
   }

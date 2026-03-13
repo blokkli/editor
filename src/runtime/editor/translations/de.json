@@ -1179,6 +1179,18 @@
     "source": "Cancel selection",
     "translation": "Auswahl abbrechen"
   },
+  "changelogDialogTitle": {
+    "source": "What's New",
+    "translation": "Neuigkeiten"
+  },
+  "changelogMenuDescription": {
+    "source": "View recent changes and new features",
+    "translation": "Aktuelle Änderungen und neue Funktionen anzeigen"
+  },
+  "changelogMenuTitle": {
+    "source": "What's New",
+    "translation": "Neuigkeiten"
+  },
   "chartsAddColumn": {
     "source": "Add column",
     "translation": "Spalte hinzufügen"
@@ -1786,6 +1798,14 @@
   "feature_breadcrumbs_label": {
     "source": "Breadcrumbs",
     "translation": "Breadcrumbs"
+  },
+  "feature_changelog_description": {
+    "source": "Provides a menu button to display a changelog of what's new.",
+    "translation": "Stellt eine Menüschaltfläche bereit, um ein Änderungsprotokoll mit Neuigkeiten anzuzeigen."
+  },
+  "feature_changelog_label": {
+    "source": "Changelog",
+    "translation": "Änderungsprotokoll"
   },
   "feature_charts_description": {
     "source": "Add and edit interactive charts.",

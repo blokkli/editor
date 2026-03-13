@@ -1212,6 +1212,18 @@ msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr ""
 
+msgctxt "changelogDialogTitle"
+msgid "What's New"
+msgstr ""
+
+msgctxt "changelogMenuDescription"
+msgid "View recent changes and new features"
+msgstr ""
+
+msgctxt "changelogMenuTitle"
+msgid "What's New"
+msgstr ""
+
 msgctxt "chartsAddColumn"
 msgid "Add column"
 msgstr ""
@@ -1840,6 +1852,14 @@ msgstr ""
 
 msgctxt "feature_breadcrumbs_label"
 msgid "Breadcrumbs"
+msgstr ""
+
+msgctxt "feature_changelog_description"
+msgid "Provides a menu button to display a changelog of what's new."
+msgstr ""
+
+msgctxt "feature_changelog_label"
+msgid "Changelog"
 msgstr ""
 
 msgctxt "feature_charts_description"

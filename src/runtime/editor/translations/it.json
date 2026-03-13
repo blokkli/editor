@@ -1179,6 +1179,18 @@
     "source": "Cancel selection",
     "translation": ""
   },
+  "changelogDialogTitle": {
+    "source": "What's New",
+    "translation": ""
+  },
+  "changelogMenuDescription": {
+    "source": "View recent changes and new features",
+    "translation": ""
+  },
+  "changelogMenuTitle": {
+    "source": "What's New",
+    "translation": ""
+  },
   "chartsAddColumn": {
     "source": "Add column",
     "translation": ""
@@ -1785,6 +1797,14 @@
   },
   "feature_breadcrumbs_label": {
     "source": "Breadcrumbs",
+    "translation": ""
+  },
+  "feature_changelog_description": {
+    "source": "Provides a menu button to display a changelog of what's new.",
+    "translation": ""
+  },
+  "feature_changelog_label": {
+    "source": "Changelog",
     "translation": ""
   },
   "feature_charts_description": {

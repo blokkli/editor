@@ -82,7 +82,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       await deAnalyzer.init!('de')
       const results = await deAnalyzer.analyze(
         [
-          'Die komplexen Verwaltungsvorschriften erfordern häufig außerordentliche Aufsichtsmechanismen, die den bürokratischen Aufwand erheblich steigern.',
+          'Die komplexen Verwaltungsvorschriften erfordern häufig ausserordentliche Aufsichtsmechanismen, die den bürokratischen Aufwand erheblich steigern.',
         ],
         'de',
       )

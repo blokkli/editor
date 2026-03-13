@@ -4,11 +4,25 @@ date: "2026-02-11"
 
 ### New Features
 
-- **AI Assistant**: A new AI-powered assistant is available in the editor sidebar, allowing you to add, move, delete, and rewrite content blocks through a chat interface with support for plans, conversation history, and media selection.
-- **Block preview in "Add" panel**: Hovering a block type in the add panel now shows a tooltip with a preview image and description.
-- **Template management**: A new management view lets you rename and delete saved templates directly from the editor.
-- **Charts**: A new chart block type is available for embedding interactive charts on pages.
-- **Table of contents**: A new table of contents module is available.
+#### AI Assistant
+
+A new AI-powered assistant is available in the editor sidebar, allowing you to add, move, delete, and rewrite content blocks through a chat interface with support for plans, conversation history, and media selection.
+
+#### Block preview in "Add" panel
+
+Hovering a block type in the add panel now shows a tooltip with a preview image and description.
+
+#### Template management
+
+A new management view lets you rename and delete saved templates directly from the editor.
+
+#### Charts
+
+A new chart block type is available for embedding interactive charts on pages.
+
+#### Table of contents
+
+A new table of contents module is available.
 
 ### Improvements
 

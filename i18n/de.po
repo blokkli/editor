@@ -1248,6 +1248,18 @@ msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Auswahl abbrechen"
 
+msgctxt "changelogDialogTitle"
+msgid "What's New"
+msgstr "Neuigkeiten"
+
+msgctxt "changelogMenuDescription"
+msgid "View recent changes and new features"
+msgstr "Aktuelle Änderungen und neue Funktionen anzeigen"
+
+msgctxt "changelogMenuTitle"
+msgid "What's New"
+msgstr "Neuigkeiten"
+
 msgctxt "chartsAddColumn"
 msgid "Add column"
 msgstr "Spalte hinzufügen"
@@ -1884,6 +1896,16 @@ msgstr "Zeigt den Breadcrumbs-Pfad der Auswahl an."
 msgctxt "feature_breadcrumbs_label"
 msgid "Breadcrumbs"
 msgstr "Breadcrumbs"
+
+msgctxt "feature_changelog_description"
+msgid "Provides a menu button to display a changelog of what's new."
+msgstr ""
+"Stellt eine Menüschaltfläche bereit, um ein Änderungsprotokoll mit "
+"Neuigkeiten anzuzeigen."
+
+msgctxt "feature_changelog_label"
+msgid "Changelog"
+msgstr "Änderungsprotokoll"
 
 msgctxt "feature_charts_description"
 msgid "Add and edit interactive charts."

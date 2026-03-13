@@ -2,18 +2,22 @@
   <DialogModal
     id="changelog"
     :title="$t('changelogDialogTitle', 'What\'s New')"
-    :width="700"
+    :width="876"
     hide-buttons
     icon="bk_mdi_campaign"
     @cancel="$emit('cancel')"
   >
     <div class="bk bk-changelog">
-      <div v-for="entry in entries" :key="entry.version" class="bk-changelog-entry">
+      <div
+        v-for="entry in entries"
+        :key="entry.version"
+        class="bk-changelog-entry"
+      >
         <div class="bk-changelog-entry-header">
-          <h3>{{ entry.version }}</h3>
-          <span>{{ entry.date }}</span>
+          <h2>{{ entry.date }}</h2>
+          <span>{{ entry.version }}</span>
         </div>
-        <div v-html="entry.html" />
+        <div v-html="entry.html" class="bk-changelog-entry-content" />
       </div>
     </div>
   </DialogModal>
@@ -39,7 +43,7 @@ const entries = computed(() =>
         : entry.body.en
     return {
       version: entry.version,
-      date: entry.date,
+      date: ui.formatDate(entry.date, { dateStyle: 'long' }),
       html,
     }
   }),

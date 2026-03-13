@@ -4,11 +4,25 @@ date: "2026-02-22"
 
 ### New Features
 
-- **AI Assistant file attachments**: Drag and drop files (including Word documents) directly onto the AI chat panel to attach them as context — the content is automatically extracted and formatted.
-- **AI readability analysis**: The AI assistant can now analyze the page for readability issues and iteratively improve texts based on readability scores.
-- **AI prompt routing**: On the first message of a conversation, the assistant automatically determines which tools are most relevant and pre-loads them before responding.
-- **AI tool details**: Completed AI tool calls in the conversation can now show an expandable details panel with additional context.
-- **AI welcome popup**: A welcome popup now introduces new users to the AI assistant when the editor opens.
+#### AI Assistant file attachments
+
+Drag and drop files (including Word documents) directly onto the AI chat panel to attach them as context — the content is automatically extracted and formatted.
+
+#### AI readability analysis
+
+The AI assistant can now analyze the page for readability issues and iteratively improve texts based on readability scores.
+
+#### Faster AI responses
+
+The assistant now responds faster to the first message of a conversation.
+
+#### AI action details
+
+Completed AI actions in the conversation can now show an expandable details panel with additional context.
+
+#### AI welcome popup
+
+A welcome popup now introduces new users to the AI assistant when the editor opens.
 
 ### Improvements
 
