@@ -17,7 +17,7 @@
           <h2>{{ entry.date }}</h2>
           <span>{{ entry.version }}</span>
         </div>
-        <div v-html="entry.html" class="bk-changelog-entry-content" />
+        <div class="bk-changelog-entry-content" v-html="entry.html" />
       </div>
     </div>
   </DialogModal>

@@ -40,7 +40,11 @@
       </div>
 
       <div class="bk-artboard-tooltip-info">
-        <button :disabled="!hasChanged" @click.prevent="discard">
+        <button
+          class="bk-is-danger"
+          :disabled="!hasChanged"
+          @click.prevent="discard"
+        >
           {{ $t('editableFieldDiscard', 'Discard') }}
         </button>
         <div v-if="errorText" class="bk-editable-field-info-error">

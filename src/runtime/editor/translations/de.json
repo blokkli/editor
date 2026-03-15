@@ -1603,6 +1603,46 @@
     "source": "Select block type to create",
     "translation": "Block-Typ zum Erstellen auswählen"
   },
+  "droppableFieldAdd": {
+    "source": "Add to @field",
+    "translation": "Zu @field hinzufügen"
+  },
+  "droppableFieldAddFailed": {
+    "source": "Failed to add item.",
+    "translation": "Eintrag konnte nicht hinzugefügt werden."
+  },
+  "droppableFieldCommandEdit": {
+    "source": "Edit field \"@name\"",
+    "translation": "Feld \"@name\" bearbeiten"
+  },
+  "droppableFieldDropHint": {
+    "source": "Drop image here",
+    "translation": "Bild hierhin ziehen"
+  },
+  "droppableFieldEditLabel": {
+    "source": "Edit @label",
+    "translation": "@label bearbeiten"
+  },
+  "droppableFieldItemCount": {
+    "source": "@count items",
+    "translation": "@count Einträge"
+  },
+  "droppableFieldMoveFailed": {
+    "source": "Failed to move item.",
+    "translation": "Eintrag konnte nicht verschoben werden."
+  },
+  "droppableFieldOpenLibrary": {
+    "source": "Media Library",
+    "translation": "Medienbibliothek"
+  },
+  "droppableFieldRemaining": {
+    "source": "@count remaining",
+    "translation": "@count verbleibend"
+  },
+  "droppableFieldRemoveFailed": {
+    "source": "Failed to remove item.",
+    "translation": "Eintrag konnte nicht entfernt werden."
+  },
   "duplicate": {
     "source": "Duplicate",
     "translation": "Duplizieren"
@@ -1886,6 +1926,14 @@
   "feature_dragging-overlay_label": {
     "source": "Dragging Overlay",
     "translation": "Drag-Overlay"
+  },
+  "feature_droppable-field-edit_description": {
+    "source": "Editing mode for multi-value droppable fields (add, remove, reorder items).",
+    "translation": "Bearbeitungsmodus für mehrwertige Referenzfelder (hinzufügen, entfernen, umsortieren)."
+  },
+  "feature_droppable-field-edit_label": {
+    "source": "Droppable Field Edit",
+    "translation": "Referenzfeld bearbeiten"
   },
   "feature_duplicate_description": {
     "source": "Provides an action to duplicate one or more blocks in place.",

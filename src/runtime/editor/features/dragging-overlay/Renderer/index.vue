@@ -67,6 +67,7 @@ const {
   fields,
   definitions,
   context,
+  selection,
 } = useBlokkli()
 
 const FIELD_MIN_DRAW_SIZE = 6
@@ -712,10 +713,14 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     info: BufferInfo | null
     hasChanged: boolean
   } {
-    const visibleFields = dom.getVisibleFields()
     const visibleBlocks = dom.getVisibleBlocks()
 
     const lengthBefore = this.positions.length
+
+    // Skip field drop targets when a field edit overlay is open.
+    const visibleFields = selection.activeFieldLabel.value
+      ? []
+      : dom.getVisibleFields()
 
     for (let i = 0; i < visibleFields.length; i++) {
       const key = visibleFields[i]!

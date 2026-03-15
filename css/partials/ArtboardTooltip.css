@@ -127,13 +127,25 @@
     @apply border-t border-t-mono-300 text-sm font-semibold flex justify-between items-center;
 
     > button {
-      @apply text-red-normal text-sm;
+      @apply text-mono-600 text-sm inline-flex items-center gap-2;
       @apply py-[6px] px-10;
-      @apply hover:bg-red-light;
+      @apply hover:bg-mono-100;
       @apply border-r border-r-mono-300;
+
+      svg {
+        @apply size-18 fill-current;
+      }
 
       &[disabled] {
         @apply pointer-events-none text-mono-300;
+      }
+
+      &.bk-is-danger {
+        @apply text-red-normal;
+        @apply hover:bg-red-light;
+        &[disabled] {
+          @apply text-red-normal/40;
+        }
       }
     }
   }

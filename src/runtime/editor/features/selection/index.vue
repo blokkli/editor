@@ -96,7 +96,7 @@ const isVisible = computed(
   () =>
     dom.isReady.value &&
     !selection.isMultiSelecting.value &&
-    !selection.activeEditableLabel.value &&
+    !selection.activeFieldLabel.value &&
     !selection.isDragging.value &&
     !ui.isAnimating.value &&
     hasSelectedOnce.value &&

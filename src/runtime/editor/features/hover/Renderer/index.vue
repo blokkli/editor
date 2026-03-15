@@ -29,13 +29,14 @@ const {
   directive,
   blocks,
   fields,
+  types,
 } = useBlokkli()
 
 // How many hover quads are supported.
-// This means that we support 10 blocks + 1 editable field.
+// This means that we support 10 blocks + 1 editable field + 1 droppable field.
 // Which means that there can only ever be 10 hover blocks visible,
 // so a max. nesting level of 10 (which should be more than enough).
-const MAX_RECTS = 11
+const MAX_RECTS = 12
 
 type HoverRectangle = Rectangle & {
   id: string
@@ -46,10 +47,11 @@ type HoverRectangle = Rectangle & {
 type HoverState = {
   // Rect 0-9: Hover rectangles by nesting level
   // Rect 10: Editable field
-  positions: Float32Array // 11 vec4s = 44 floats (x, y, width, height)
-  radii: Float32Array // 11 vec4s = 44 floats (topLeft, topRight, bottomRight, bottomLeft)
-  types: Float32Array // 11 floats (0=mono, 1=accent, 2=teal fill)
-  visible: Float32Array // 11 floats (0=hidden, 1=visible)
+  // Rect 11: Droppable field
+  positions: Float32Array // 12 vec4s = 48 floats (x, y, width, height)
+  radii: Float32Array // 12 vec4s = 48 floats (topLeft, topRight, bottomRight, bottomLeft)
+  types: Float32Array // 12 floats (0=mono, 1=accent, 2=teal fill)
+  visible: Float32Array // 12 floats (0=hidden, 1=visible)
 }
 
 /**
@@ -97,9 +99,13 @@ const hoverState = createHoverState()
 let previousHoveredUuids: string[] = []
 let previousDeepestUuid: string | null = null
 let previousEditableFieldRect: Rectangle | null = null
+let previousDroppableFieldRect: Rectangle | null = null
 
 // Track whether we're currently hovering over an editable field
 const isHoveringEditableField = ref(false)
+
+// Track whether we're currently hovering over a droppable field
+const isHoveringDroppableField = ref(false)
 
 // Track whether we're currently hovering over a selected block
 const isHoveringSelectedBlock = ref(false)
@@ -119,8 +125,10 @@ function resetHoverState() {
   previousHoveredUuids = []
   previousDeepestUuid = null
   previousEditableFieldRect = null
+  previousDroppableFieldRect = null
   hoverState.visible.fill(0)
   isHoveringEditableField.value = false
+  isHoveringDroppableField.value = false
   isHoveringSelectedBlock.value = false
 }
 
@@ -161,15 +169,19 @@ function updateHoverState(
     const needsUpdate =
       previousHoveredUuids.length > 0 ||
       previousEditableFieldRect !== null ||
+      previousDroppableFieldRect !== null ||
       isHoveringEditableField.value ||
+      isHoveringDroppableField.value ||
       isHoveringSelectedBlock.value
 
     hoverState.visible.fill(0)
     isHoveringEditableField.value = false
+    isHoveringDroppableField.value = false
     isHoveringSelectedBlock.value = false
     previousHoveredUuids = []
     previousDeepestUuid = null
     previousEditableFieldRect = null
+    previousDroppableFieldRect = null
 
     return needsUpdate
   }
@@ -249,9 +261,32 @@ function updateHoverState(
     hoveredEditableFieldRect = fallbackEditableRect
   }
 
+  // Find hovered droppable field (same logic as editable).
+  let hoveredDroppableFieldRect: Rectangle | null = null
+  if (!hoveredEditableFieldRect) {
+    const droppableRects = directive.getVisible('droppable')
+
+    for (let i = 0; i < droppableRects.length; i++) {
+      const droppableRect = droppableRects[i]!
+      if (!isInsideRect(artboardMouseX, artboardMouseY, droppableRect)) continue
+
+      const key = (droppableRect as Rectangle & { key: string }).key
+      const entityUuid = key.split(':')[2]!
+
+      if (deepestUuid && entityUuid === deepestUuid) {
+        const data = directive.getDroppableAtPoint(mouseX, mouseY)
+        if (!data) continue
+        const config = types.getDroppableFieldConfig(data.fieldName, data)
+        if (config.cardinality === 1) continue
+        hoveredDroppableFieldRect = droppableRect
+        break
+      }
+    }
+  }
+
   // Quick check if we can skip rendering updates
   if (!hoveredChanged) {
-    // Check if editable field also unchanged
+    // Check if editable or droppable field changed
     const editableFieldChanged =
       (hoveredEditableFieldRect === null) !==
         (previousEditableFieldRect === null) ||
@@ -262,7 +297,19 @@ function updateHoverState(
           hoveredEditableFieldRect.width !== previousEditableFieldRect.width ||
           hoveredEditableFieldRect.height !== previousEditableFieldRect.height))
 
-    if (!editableFieldChanged) {
+    const droppableFieldChanged =
+      (hoveredDroppableFieldRect === null) !==
+        (previousDroppableFieldRect === null) ||
+      (hoveredDroppableFieldRect &&
+        previousDroppableFieldRect &&
+        (hoveredDroppableFieldRect.x !== previousDroppableFieldRect.x ||
+          hoveredDroppableFieldRect.y !== previousDroppableFieldRect.y ||
+          hoveredDroppableFieldRect.width !==
+            previousDroppableFieldRect.width ||
+          hoveredDroppableFieldRect.height !==
+            previousDroppableFieldRect.height))
+
+    if (!editableFieldChanged && !droppableFieldChanged) {
       return false
     }
   }
@@ -353,12 +400,35 @@ function updateHoverState(
     hoverState.visible[10] = 1
   }
 
+  // Update droppable field rectangle if hovered (rect index 11).
+  if (hoveredDroppableFieldRect) {
+    const inset = 2
+    hoverState.positions[11 * 4 + 0] = hoveredDroppableFieldRect.x + inset
+    hoverState.positions[11 * 4 + 1] = hoveredDroppableFieldRect.y + inset
+    hoverState.positions[11 * 4 + 2] =
+      hoveredDroppableFieldRect.width - inset * 2
+    hoverState.positions[11 * 4 + 3] =
+      hoveredDroppableFieldRect.height - inset * 2
+
+    hoverState.radii[11 * 4 + 0] = 0
+    hoverState.radii[11 * 4 + 1] = 0
+    hoverState.radii[11 * 4 + 2] = 0
+    hoverState.radii[11 * 4 + 3] = 0
+
+    // Type 2 = teal fill (same as editable).
+    hoverState.types[11] = 2
+
+    hoverState.visible[11] = 1
+  }
+
   previousHoveredUuids = unselectedHoveredUuids
   previousDeepestUuid = deepestUuid
   previousEditableFieldRect = hoveredEditableFieldRect
+  previousDroppableFieldRect = hoveredDroppableFieldRect
 
   // Update the hover state for cursor management
   isHoveringEditableField.value = hoveredEditableFieldRect !== null
+  isHoveringDroppableField.value = hoveredDroppableFieldRect !== null
 
   // Check if the deepest hovered block is selected
   // We only care about the most specific block, not parent blocks
@@ -410,7 +480,10 @@ const { collector } = defineRenderer('hover-overlay', {
   program: () => ({ shaders: [vs, fs] }),
   cursor: () => {
     // Priority 1: Editable field (if not in readonly mode)
-    if (isHoveringEditableField.value && state.editMode.value !== 'readonly') {
+    if (
+      (isHoveringEditableField.value || isHoveringDroppableField.value) &&
+      state.editMode.value !== 'readonly'
+    ) {
       return 'text'
     }
 

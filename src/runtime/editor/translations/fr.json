@@ -1603,6 +1603,46 @@
     "source": "Select block type to create",
     "translation": ""
   },
+  "droppableFieldAdd": {
+    "source": "Add to @field",
+    "translation": ""
+  },
+  "droppableFieldAddFailed": {
+    "source": "Failed to add item.",
+    "translation": ""
+  },
+  "droppableFieldCommandEdit": {
+    "source": "Edit field \"@name\"",
+    "translation": ""
+  },
+  "droppableFieldDropHint": {
+    "source": "Drop image here",
+    "translation": ""
+  },
+  "droppableFieldEditLabel": {
+    "source": "Edit @label",
+    "translation": ""
+  },
+  "droppableFieldItemCount": {
+    "source": "@count items",
+    "translation": ""
+  },
+  "droppableFieldMoveFailed": {
+    "source": "Failed to move item.",
+    "translation": ""
+  },
+  "droppableFieldOpenLibrary": {
+    "source": "Media Library",
+    "translation": ""
+  },
+  "droppableFieldRemaining": {
+    "source": "@count remaining",
+    "translation": ""
+  },
+  "droppableFieldRemoveFailed": {
+    "source": "Failed to remove item.",
+    "translation": ""
+  },
   "duplicate": {
     "source": "Duplicate",
     "translation": "Dupliquer"
@@ -1886,6 +1926,14 @@
   "feature_dragging-overlay_label": {
     "source": "Dragging Overlay",
     "translation": "Superposition de glissement"
+  },
+  "feature_droppable-field-edit_description": {
+    "source": "Editing mode for multi-value droppable fields (add, remove, reorder items).",
+    "translation": ""
+  },
+  "feature_droppable-field-edit_label": {
+    "source": "Droppable Field Edit",
+    "translation": ""
   },
   "feature_duplicate_description": {
     "source": "Provides an action to duplicate one or more blocks in place.",

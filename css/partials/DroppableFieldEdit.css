@@ -1,0 +1,103 @@
+.bk-droppable-field-edit {
+  --bk-bg: white;
+  --bk-header-bg: theme('colors.teal.normal');
+  --bk-header-text: theme('colors.teal.dark');
+  --bk-border: theme('colors.teal.normal');
+  --bk-header-hover: rgb(var(--bk-theme-teal-dark) / 0.2);
+
+  .bk-droppable-field-edit-list {
+    @apply w-[680px];
+    max-height: 300px;
+    overflow-y: auto;
+    @apply p-10 bg-mono-200;
+  }
+  .bk-droppable-field-edit-list-inner {
+    @apply bg-white;
+  }
+
+  .bk-droppable-field-edit-item {
+    @apply relative border-b border-b-mono-200;
+    cursor: grab;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &:last-child {
+      @apply border-b-0;
+    }
+  }
+
+  .bk-droppable-field-edit-indicator {
+    height: 4px;
+
+    &.bk-is-visible {
+      @apply bg-teal-normal/30;
+    }
+
+    &.bk-is-active {
+      @apply bg-teal-normal;
+    }
+  }
+
+  .bk-droppable-field-edit-item-inner {
+    @apply flex items-center gap-5 px-8 py-5;
+
+    &.bk-is-dragging {
+      @apply opacity-30;
+    }
+  }
+
+  .bk-droppable-field-edit-item-thumb {
+    @apply size-50 rounded overflow-hidden flex items-center justify-center bg-mono-100 shrink-0;
+
+    img {
+      @apply w-full h-full object-cover;
+    }
+
+    svg {
+      @apply size-18 fill-current text-mono-400;
+    }
+  }
+
+  .bk-droppable-field-edit-item-label {
+    @apply flex-1 min-w-0 truncate text-sm text-mono-800;
+  }
+
+  .bk-droppable-field-edit-item-remove {
+    @apply size-25 flex items-center justify-center rounded shrink-0 text-mono-400;
+
+    &:hover {
+      @apply bg-red-light text-red-dark;
+    }
+
+    &:disabled {
+      @apply opacity-30 pointer-events-none;
+    }
+
+    svg {
+      @apply w-[14px] h-[14px] fill-current;
+    }
+  }
+
+  .bk-droppable-field-edit-drop-hint {
+    @apply flex items-center gap-5 px-8 py-8 text-sm text-mono-400;
+
+    svg {
+      @apply size-18 fill-current shrink-0;
+    }
+  }
+
+  .bk-droppable-field-edit-count {
+    @apply px-10 text-sm text-mono-600 mr-auto;
+  }
+
+  .bk-droppable-field-edit-open-library {
+    @apply ml-auto border-r-0 border-l border-l-mono-300;
+
+    svg {
+      @apply w-[14px] h-[14px] fill-current;
+    }
+  }
+}

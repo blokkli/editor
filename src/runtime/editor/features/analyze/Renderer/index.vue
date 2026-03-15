@@ -63,7 +63,7 @@ const showTooltip = computed(() => {
   return (
     !ui.isChangingOptions.value &&
     !selection.isMultiSelecting.value &&
-    !selection.activeEditableLabel.value
+    !selection.activeFieldLabel.value
   )
 })
 
@@ -338,7 +338,7 @@ const { collector } = defineRenderer('analyze-overlay', {
     !selection.isMultiSelecting.value &&
     !selection.isDragging.value &&
     !ui.isChangingOptions.value &&
-    !selection.activeEditableLabel.value,
+    !selection.activeFieldLabel.value,
   render: (_ctx, gl, program) => {
     gl.useProgram(program.program)
 

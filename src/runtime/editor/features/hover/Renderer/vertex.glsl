@@ -19,11 +19,11 @@ uniform float u_offset_x;
 uniform float u_offset_y;
 uniform vec2 u_resolution;
 
-// Hover state uniforms (11 rectangles)
-uniform vec4 u_hover_positions[11]; // x, y, width, height
-uniform vec4 u_hover_radii[11]; // topLeft, topRight, bottomRight, bottomLeft
-uniform float u_hover_types[11]; // 0=mono, 1=accent, 2=teal fill
-uniform float u_hover_visible[11]; // 0=hidden, 1=visible
+// Hover state uniforms (12 rectangles)
+uniform vec4 u_hover_positions[12]; // x, y, width, height
+uniform vec4 u_hover_radii[12]; // topLeft, topRight, bottomRight, bottomLeft
+uniform float u_hover_types[12]; // 0=mono, 1=accent, 2=teal fill
+uniform float u_hover_visible[12]; // 0=hidden, 1=visible
 
 // Color uniforms
 uniform vec3 u_color_mono;

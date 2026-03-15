@@ -50,6 +50,12 @@ export type EditableFieldFocusEvent = {
   uuid?: string
 }
 
+export type DroppableFieldOpenEvent = {
+  fieldName: string
+  uuid: string
+  entityType: string
+}
+
 export type EditableFieldUpdateEvent = {
   name: string
   entityUuid: string
@@ -278,6 +284,8 @@ export interface EventbusEvents {
   'editable:focus': EditableFieldFocusEvent
   'editable:update': EditableFieldUpdateEvent
   'editable:save': undefined
+
+  'droppable:open': DroppableFieldOpenEvent
 
   'drop:clipboardItem': DropClipboardItemEvent
 

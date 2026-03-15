@@ -17,6 +17,7 @@ import { ParagraphText } from './Text'
 import { ParagraphTitle } from './Title'
 import { ParagraphTwoColumns } from './TwoColumns'
 import { ParagraphVideo } from './Video'
+import { ParagraphGallery } from './Gallery'
 import { ParagraphWidget } from './Widget'
 
 export const createParagraph = (bundle: string, uuid: string): Paragraph => {
@@ -57,6 +58,8 @@ export const createParagraph = (bundle: string, uuid: string): Paragraph => {
       return new ParagraphIcon(uuid)
     case 'button_list':
       return new ParagraphButtonList(uuid)
+    case 'gallery':
+      return new ParagraphGallery(uuid)
     case 'not_implemented':
       return new ParagraphNotImplemented(uuid)
   }
@@ -83,6 +86,7 @@ export const getParagraphBundles = (): Array<typeof Paragraph> => {
     ParagraphOnThisPage,
     ParagraphIcon,
     ParagraphButtonList,
+    ParagraphGallery,
     ParagraphSlider,
     ParagraphNotImplemented,
   ]

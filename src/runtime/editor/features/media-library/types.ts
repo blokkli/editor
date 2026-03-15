@@ -19,6 +19,8 @@ export interface DraggableMediaLibraryItem {
   itemBundles: string[]
   mediaId: string
   mediaBundle: string
+  label: string
+  thumbnailSrc?: string
 }
 
 export type MediaLibraryAddBlockEvent = {

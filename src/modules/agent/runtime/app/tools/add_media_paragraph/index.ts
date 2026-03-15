@@ -38,6 +38,7 @@ export default defineBlokkliAgentTool({
       mediaBundle: params.mediaBundle,
       itemBundles: [params.targetBundle],
       element: () => document.createElement('div'),
+      label: params.mediaId,
     }
 
     // Resolve position to afterUuid

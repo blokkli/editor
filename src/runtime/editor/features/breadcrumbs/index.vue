@@ -44,9 +44,9 @@
             <span>{{ crumb.label }}</span>
           </button>
         </li>
-        <li v-if="selection.activeEditableLabel.value">
+        <li v-if="selection.activeFieldLabel.value">
           <div class="bk-breadcrumb-inner bk-is-editable">
-            <span>{{ selection.activeEditableLabel.value }}</span>
+            <span>{{ selection.activeFieldLabel.value }}</span>
           </div>
         </li>
       </ul>

@@ -21,6 +21,7 @@ import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
 import { FieldBlocks } from './mock/state/Field/Blocks'
 import {
+  type Media,
   type MediaIcon,
   MediaImage,
   type MediaVideo,
@@ -41,6 +42,10 @@ import type {
   EditableFieldConfig,
 } from '#blokkli/editor/features/editable-field/types'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
+import type {
+  DroppableFieldGetItemsEvent,
+  DroppableFieldUpdateEvent,
+} from '#blokkli/editor/features/droppable-field-edit/types'
 import type { AssistantResultMarkup } from '#blokkli/editor/features/assistant/types'
 import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
@@ -1396,6 +1401,41 @@ export default defineBlokkliEditAdapter((ctx) => {
       return addMutation('replace_entity_media', {
         fieldName: e.host.fieldName,
         mediaUuid: e.mediaId,
+      })
+    },
+
+    async getDroppableFieldItems(e: DroppableFieldGetItemsEvent) {
+      const entity = getEntity()
+      const mutatedState = await editState.getMutatedState(entity, {
+        save: false,
+      })
+      const proxy = mutatedState.context.getProxy(e.host.uuid)
+      if (!proxy) {
+        return []
+      }
+      const field = proxy.block.get(e.host.fieldName)
+      if (!field || !(field instanceof FieldReference)) {
+        return []
+      }
+      return field.list.map((uuid) => {
+        const media = entityStorageManager.load('media', uuid) as
+          | Media
+          | undefined
+        return {
+          uuid,
+          entityType: 'media',
+          bundle: media?.bundle ?? '',
+          label: media?.title() ?? uuid,
+          thumbnailSrc: media?.thumbnail(),
+        }
+      })
+    },
+
+    updateDroppableField(e: DroppableFieldUpdateEvent) {
+      return addMutation('droppable_field_update', {
+        blockUuid: e.host.uuid,
+        fieldName: e.host.fieldName,
+        items: e.items,
       })
     },
 

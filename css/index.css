@@ -74,6 +74,7 @@
 @import './partials/Changelog.css';
 @import './partials/DiffApproval/Highlight.css';
 @import './partials/DiffApproval/Toolbar.css';
+@import './partials/DroppableFieldEdit.css';
 
 @import './indicator.css';
 

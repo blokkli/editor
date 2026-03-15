@@ -22,7 +22,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, ref, computed, watch, onMounted, useBlokkli } from '#imports'
+import {
+  useTemplateRef,
+  ref,
+  computed,
+  watch,
+  onMounted,
+  useBlokkli,
+} from '#imports'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { ClipboardData } from '#blokkli/editor/helpers/clipboardData'
 import { textAutoReplace } from '#blokkli-build/editor-config'

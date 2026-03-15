@@ -34,7 +34,7 @@ const { keyboard, eventBus, selection, animation, $t } = useBlokkli()
 
 const isLocked = ref(false)
 const enabled = computed(
-  () => !selection.activeEditableLabel.value && !isLocked.value,
+  () => !selection.activeFieldLabel.value && !isLocked.value,
 )
 
 const shouldRender = ref(false)
