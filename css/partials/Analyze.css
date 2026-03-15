@@ -280,21 +280,32 @@
 
 .bk.bk-analyze-tooltip {
   @apply fixed top-0 left-0 z-analyze-tooltip cursor-pointer;
-  @apply flex items-center gap-5 px-8 py-5;
+  @apply flex items-center gap-5 px-8 h-25 -mt-25;
   @apply bg-mono-950 text-white text-xs font-semibold whitespace-nowrap;
   @apply shadow-lg;
   @apply hover:bg-mono-950/90;
+
+  .bk-icon {
+    @apply absolute top-full left-0 size-25 flex items-center justify-center;
+  }
 
   svg {
     @apply size-15 fill-current;
   }
 
   &.bk-is-violation {
-    @apply bg-red-normal hover:bg-red-dark;
+    @apply bg-red-light text-red-normal;
+    .bk-icon {
+      @apply bg-red-normal hover:bg-red-dark text-white;
+    }
   }
 
   &.bk-is-incomplete {
-    @apply bg-yellow-normal hover:bg-yellow-dark text-yellow-dark hover:text-yellow-light;
+    @apply bg-yellow-light text-yellow-dark;
+
+    .bk-icon {
+      @apply bg-yellow-normal hover:bg-yellow-dark text-yellow-dark hover:text-yellow-light;
+    }
   }
 
   .bk-analyze-tooltip-score {
