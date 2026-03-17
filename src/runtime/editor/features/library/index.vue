@@ -3,6 +3,7 @@
     v-if="isReusable"
     id="library_detach"
     :title="$t('libraryDetach', 'Detach from library')"
+    :disabled="detachDisabledReason"
     icon="reusable-detach"
     edit-only
     multiple
@@ -13,7 +14,7 @@
     v-else-if="!isReusable"
     id="library_make_reusable"
     :title="$t('libraryAdd', 'Add to library...')"
-    :disabled="!canMakeReusable"
+    :disabled="makeReusableDisabledReason"
     edit-only
     icon="reusable"
     :weight="-70"
@@ -90,6 +91,14 @@ const userCanCreateLibraryItem = computed(() =>
   permissions.hasPermission('create_library_item'),
 )
 
+const canAddFromLibrary = computed(() =>
+  permissions.checkBlockBundlePermission(fromLibraryBlockBundle, 'add'),
+)
+
+const canEditFromLibrary = computed(() =>
+  permissions.checkBlockBundlePermission(fromLibraryBlockBundle, 'edit'),
+)
+
 async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {
   // Get all current UUIDs.
   const uuidsBefore = state.getAllUuids()
@@ -108,7 +117,11 @@ async function selectNewlyAdded(cb: () => Promise<boolean>): Promise<void> {
 }
 
 const onDetach = async () => {
-  if (!adapter.detachReusableBlock || !selection.uuids.value.length) {
+  if (
+    !adapter.detachReusableBlock ||
+    !selection.uuids.value.length ||
+    detachDisabledReason.value
+  ) {
     return
   }
 
@@ -123,7 +136,11 @@ const onDetach = async () => {
 
 const placedAction = ref<ActionPlacedData | null>(null)
 const onAddLibraryItem = async (uuid: string) => {
-  if (!placedAction.value || !adapter.addLibraryItem) {
+  if (
+    !placedAction.value ||
+    !adapter.addLibraryItem ||
+    !canAddFromLibrary.value
+  ) {
     return
   }
 
@@ -192,13 +209,47 @@ const fromLibraryAllowedInList = computed(() => {
   return types.allowedTypesInList.value.includes(fromLibraryBlockBundle)
 })
 
-const canMakeReusable = computed(
-  () =>
-    !isReusable.value &&
-    itemBundle?.value?.allowReusable &&
-    fromLibraryAllowedInList.value &&
-    userCanCreateLibraryItem.value,
-)
+const detachDisabledReason = computed<false | string>(() => {
+  if (!canEditFromLibrary.value) {
+    return $t(
+      'libraryDetachNoPermission',
+      'You do not have permission to detach this block.',
+    )
+  }
+  return false
+})
+
+const makeReusableDisabledReason = computed<false | string>(() => {
+  if (isReusable.value) {
+    return false
+  }
+  if (!userCanCreateLibraryItem.value) {
+    return $t(
+      'libraryAddNoPermission',
+      'You do not have permission to create library items.',
+    )
+  }
+  const item = selection.item.value
+  if (item && !permissions.checkBlockBundlePermission(item.bundle, 'edit')) {
+    return $t(
+      'libraryAddNoEditPermission',
+      'You do not have permission to edit this block.',
+    )
+  }
+  if (!itemBundle?.value?.allowReusable) {
+    return $t(
+      'libraryAddNotSupported',
+      'This block type cannot be made reusable.',
+    )
+  }
+  if (!fromLibraryAllowedInList.value) {
+    return $t(
+      'libraryAddNotAllowedInField',
+      'Reusable blocks are not allowed in this field.',
+    )
+  }
+  return false
+})
 
 const editingLibraryItem = ref<LibraryEditItemEvent | null>(null)
 
@@ -221,7 +272,7 @@ function onSubmitLibraryItem() {
 
 defineDropHandler('reusable', {
   async execute({ items, host, afterUuid }) {
-    if (adapter.addLibraryItem) {
+    if (adapter.addLibraryItem && canAddFromLibrary.value) {
       await state.mutateWithLoadingState(() =>
         adapter.addLibraryItem!({
           libraryItemUuid: items[0]!.libraryItemUuid,
@@ -237,7 +288,8 @@ defineAddAction(() => {
   if (
     !adapter.addLibraryItem ||
     !adapter.getLibraryItems ||
-    !isSupportedOnEntity.value
+    !isSupportedOnEntity.value ||
+    !canAddFromLibrary.value
   ) {
     return
   }

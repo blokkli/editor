@@ -2,7 +2,7 @@
   <PluginItemAction
     id="duplicate"
     :title="$t('duplicate', 'Duplicate')"
-    :disabled="!canDuplicate"
+    :disabled="duplicateDisabledReason"
     edit-only
     meta
     key-code="D"
@@ -20,7 +20,7 @@ import { getFieldKey } from '#blokkli/helpers'
 import { getArrayDiff } from '#blokkli/editor/helpers/array'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
-const { state, $t, selection, types, eventBus } = useBlokkli()
+const { state, $t, selection, types, eventBus, permissions } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'duplicate',
@@ -55,7 +55,7 @@ async function onClick(items: RenderedFieldListItem[]) {
   eventBus.emit('scrollIntoView', { uuid: firstUuid })
 }
 
-const canDuplicate = computed<boolean>(() => {
+const duplicateDisabledReason = computed<false | string>(() => {
   const blocksByField: Record<string, RenderedFieldListItem[]> = {}
   const fieldsByKey: Record<
     string,
@@ -63,6 +63,7 @@ const canDuplicate = computed<boolean>(() => {
   > = {}
 
   const selectedCount = selection.items.value.length
+
   for (let i = 0; i < selectedCount; i++) {
     const block = selection.items.value[i]!
     const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
@@ -84,7 +85,10 @@ const canDuplicate = computed<boolean>(() => {
 
     // Early return if the field is already full.
     if (fieldConfig.cardinality !== -1 && count >= fieldConfig.cardinality) {
-      return false
+      return $t(
+        'duplicateFieldFull',
+        'The field has reached its maximum number of blocks.',
+      )
     }
 
     if (!blocksByField[fieldKey]) {
@@ -110,22 +114,36 @@ const canDuplicate = computed<boolean>(() => {
     const count = state.getFieldBlockCount(fieldKey)
     // Check cardinality of the field.
     if (field.cardinality !== -1 && count + blocks.length > field.cardinality) {
-      return false
+      return $t(
+        'duplicateFieldFull',
+        'The field has reached its maximum number of blocks.',
+      )
     }
 
-    // Check if all bundles are allowed in the field. The restrictions may
-    // have changed and the block to be duplicated isn't allowed anymore in
-    // the field.
     const bundles = blocks.map((v) => v.bundle)
+
+    // Check add permission.
+    const denied = permissions.filterDeniedBundles(bundles, 'add')
+    if (denied.length) {
+      return $t(
+        'duplicateNoPermission',
+        'You do not have permission to duplicate this block.',
+      )
+    }
+
+    // Check if all bundles are allowed in the field.
     if (
       !field.allowedBundles.length ||
       bundles.some((bundle) => !field.allowedBundles.includes(bundle))
     ) {
-      return false
+      return $t(
+        'duplicateNotAllowed',
+        'This block type is not allowed in this field.',
+      )
     }
   }
 
-  return true
+  return false
 })
 </script>
 

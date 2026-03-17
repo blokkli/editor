@@ -7,6 +7,10 @@ import {
 import { mutationResultSchema, optionValueSchema } from '../schemas'
 import { validateOptionValue } from '../helpers'
 import { onlyUnique } from '#blokkli/helpers'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 
 const paragraphOptionsSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
@@ -61,6 +65,16 @@ export default defineBlokkliAgentTool({
       if (!block) {
         return { error: `Paragraph not found: ${blockEntry.uuid}` }
       }
+
+      // Check edit permission
+      const denied = requireBundlePermission(ctx.app, [block.bundle], 'edit')
+      if (denied) return denied
+
+      // Check ancestor restrictions
+      const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [
+        blockEntry.uuid,
+      ])
+      if (ancestorDenied) return ancestorDenied
 
       // For from_library blocks, use the reusable block's actual bundle.
       const bundle = block.library?.reusableBundle || block.bundle

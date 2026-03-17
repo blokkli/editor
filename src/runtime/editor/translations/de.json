@@ -1547,6 +1547,10 @@
     "source": "The block could not be deleted.",
     "translation": "Das Element konnte nicht entfernt werden."
   },
+  "deleteNoPermission": {
+    "source": "You do not have permission to delete this block.",
+    "translation": "Löschen aufgrund fehlender Berechtigung nicht möglich."
+  },
   "diffAfter": {
     "source": "After",
     "translation": "Nachher"
@@ -1611,9 +1615,25 @@
     "source": "The items could not be duplicated.",
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
+  "duplicateFieldFull": {
+    "source": "The field has reached its maximum number of blocks.",
+    "translation": "Das Feld hat die maximale Anzahl an Blöcken erreicht."
+  },
+  "duplicateNoPermission": {
+    "source": "You do not have permission to duplicate this block.",
+    "translation": "Duplizieren aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "duplicateNotAllowed": {
+    "source": "This block type is not allowed in this field.",
+    "translation": "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
+  },
   "edit": {
     "source": "Edit...",
     "translation": "Bearbeiten..."
+  },
+  "editDisabledByDefinition": {
+    "source": "Editing is disabled for this block type.",
+    "translation": "Bearbeiten ist für diesen Blocktyp deaktiviert."
   },
   "editFormBlockAdd": {
     "source": "Add @label",
@@ -1635,6 +1655,10 @@
     "source": "Translate \"@label\" (@language)",
     "translation": "\"@label\" übersetzen (@language)"
   },
+  "editFragmentNotEditable": {
+    "source": "This fragment cannot be edited.",
+    "translation": "Dieses Fragment kann nicht bearbeitet werden."
+  },
   "editIndicatorLabel": {
     "source": "Edit blocks",
     "translation": "Elemente bearbeiten"
@@ -1646,6 +1670,18 @@
   "editIndicatorLabelView": {
     "source": "View changes",
     "translation": "Änderungen ansehen"
+  },
+  "editLibraryNotAvailable": {
+    "source": "This reusable block cannot be edited right now.",
+    "translation": "Dieser wiederverwendbare Block kann momentan nicht bearbeitet werden."
+  },
+  "editNoLibraryPermission": {
+    "source": "You do not have permission to edit library items.",
+    "translation": "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "editNoPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
@@ -2359,9 +2395,29 @@
     "source": "From library",
     "translation": "Aus der Bibliothek"
   },
+  "libraryAddNoEditPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "libraryAddNoPermission": {
+    "source": "You do not have permission to create library items.",
+    "translation": "Erstellen aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "libraryAddNotAllowedInField": {
+    "source": "Reusable blocks are not allowed in this field.",
+    "translation": "Wiederverwendbare Blöcke sind in diesem Feld nicht erlaubt."
+  },
+  "libraryAddNotSupported": {
+    "source": "This block type cannot be made reusable.",
+    "translation": "Dieser Blocktyp kann nicht wiederverwendbar gemacht werden."
+  },
   "libraryDetach": {
     "source": "Detach from library",
     "translation": "Von der Bibliothek loslösen"
+  },
+  "libraryDetachNoPermission": {
+    "source": "You do not have permission to detach this block.",
+    "translation": "Loslösen aufgrund fehlender Berechtigung nicht möglich."
   },
   "libraryDialogDescriptionLabel": {
     "source": "Description",
@@ -2815,6 +2871,14 @@
     "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
     "translation": "Sehen Sie, wie Ihre Änderungen auf kleineren Bildschirmen, wie Smartphones, aussehen. Klicken Sie auf den \"Loslösen\"-Button, um zusätzliche Ansichtsgrössen auswählen zu können."
   },
+  "restrictedPermissionsAll": {
+    "source": "Some actions are not available due to missing permissions.",
+    "translation": "Einige Aktionen sind aufgrund fehlender Berechtigungen nicht verfügbar."
+  },
+  "restrictedPermissionsSome": {
+    "source": "Some actions are restricted due to missing permissions.",
+    "translation": "Einige Aktionen sind aufgrund fehlender Berechtigungen eingeschränkt."
+  },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
     "translation": "Damit werden alle Änderungen gelöscht und der aktuell publizierte Stand wiederhergestellt. Diese Aktion kann nicht rückgängig gemacht werden."
@@ -2846,6 +2910,10 @@
   "scheduledFor": {
     "source": "The changes will be published on this date.",
     "translation": "Die Änderungen werden an diesem Datum publiziert."
+  },
+  "schedulerNotSupported": {
+    "source": "Scheduling is not available for this block type.",
+    "translation": "Zeitplanung ist für diesen Blocktyp nicht verfügbar."
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",
@@ -3178,6 +3246,18 @@
   "transformDialogButtonPreview": {
     "source": "Preview",
     "translation": "Vorschau"
+  },
+  "translateEditDisabled": {
+    "source": "Editing is disabled for this block type.",
+    "translation": "Bearbeiten ist für diesen Blocktyp deaktiviert."
+  },
+  "translateLibraryBlock": {
+    "source": "Reusable blocks cannot be translated here.",
+    "translation": "Wiederverwendbare Blöcke können hier nicht übersetzt werden."
+  },
+  "translateNotTranslatable": {
+    "source": "This block type is not translatable.",
+    "translation": "Dieser Blocktyp ist nicht übersetzbar."
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",

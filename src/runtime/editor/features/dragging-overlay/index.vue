@@ -79,6 +79,7 @@ const {
   fields,
   $t,
   dragdrop,
+  permissions,
 } = useBlokkli()
 
 // ---------------------------------------------------------------------------
@@ -224,7 +225,9 @@ const onDrop = async (e: DropTargetEvent) => {
     let result: DropExecuteResult | undefined
 
     if (handler.resolveBundles) {
-      const bundles = await handler.resolveBundles(baseCtx)
+      const bundles = (await handler.resolveBundles(baseCtx)).filter((b) =>
+        permissions.checkBlockBundlePermission(b, 'add'),
+      )
 
       if (bundles.length === 0) {
         return

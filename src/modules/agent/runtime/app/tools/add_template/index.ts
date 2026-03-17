@@ -33,6 +33,17 @@ export default defineBlokkliAgentTool({
   execute(ctx, params) {
     const { fields, $t } = ctx.app
 
+    // Note: template contents (bundles) are only known server-side, so
+    // per-bundle add permission checks happen during the adapter call.
+
+    // Check ancestor restrictions on the target parent
+    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
+      return {
+        error:
+          'Permission denied: target parent is inside a block with restricted editing permissions',
+      }
+    }
+
     // Check if the field exists
     const field = fields.find(params.parent.uuid, params.parent.field)
     if (!field) {

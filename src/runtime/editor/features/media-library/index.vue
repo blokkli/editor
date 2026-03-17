@@ -35,7 +35,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t, adapter, state, types, directive } = useBlokkli()
+const { $t, adapter, state, types, directive, permissions } = useBlokkli()
 
 const ERROR_MESSAGE = $t(
   'mediaLibraryReplaceFailed',
@@ -78,6 +78,17 @@ defineDropAreas((dragItems) => {
       }
 
       const isBlock = field.type === itemEntityType
+
+      // Skip blocks where the user lacks edit permission or is inside
+      // a restricted ancestor.
+      if (
+        isBlock &&
+        (!permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
+          permissions.blockHasRestrictedAncestor(field.uuid))
+      ) {
+        return
+      }
+
       const draggableHost: BlokkliItemHost = {
         uuid: field.uuid,
         type: field.type,
@@ -136,7 +147,11 @@ defineDropHandler('media_library', {
       return []
     }
     const item = items[0]!
-    return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+    return field.allowedBundles.filter(
+      (b) =>
+        item.itemBundles.includes(b) &&
+        permissions.checkBlockBundlePermission(b, 'add'),
+    )
   },
 
   async execute({ items, host, afterUuid, bundle }) {

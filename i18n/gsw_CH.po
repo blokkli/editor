@@ -1593,6 +1593,10 @@ msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "S'Elemänt het nid chönne entfärnt wärde. "
 
+msgctxt "deleteNoPermission"
+msgid "You do not have permission to delete this block."
+msgstr ""
+
 msgctxt "diffAfter"
 msgid "After"
 msgstr "Nochhär"
@@ -1657,9 +1661,25 @@ msgctxt "duplicateError"
 msgid "The items could not be duplicated."
 msgstr "D'Elemänt hän nid chönne dupliziert wärde. "
 
+msgctxt "duplicateFieldFull"
+msgid "The field has reached its maximum number of blocks."
+msgstr ""
+
+msgctxt "duplicateNoPermission"
+msgid "You do not have permission to duplicate this block."
+msgstr ""
+
+msgctxt "duplicateNotAllowed"
+msgid "This block type is not allowed in this field."
+msgstr ""
+
 msgctxt "edit"
 msgid "Edit..."
 msgstr "Bearbeite"
+
+msgctxt "editDisabledByDefinition"
+msgid "Editing is disabled for this block type."
+msgstr ""
 
 msgctxt "editFormBlockAdd"
 msgid "Add @label"
@@ -1681,6 +1701,10 @@ msgctxt "editFormEntityTranslate"
 msgid "Translate \"@label\" (@language)"
 msgstr "\"@label\" übersetze (@language)"
 
+msgctxt "editFragmentNotEditable"
+msgid "This fragment cannot be edited."
+msgstr ""
+
 msgctxt "editIndicatorLabel"
 msgid "Edit blocks"
 msgstr "Elemänt bearbeite"
@@ -1691,6 +1715,18 @@ msgstr ""
 
 msgctxt "editIndicatorLabelView"
 msgid "View changes"
+msgstr ""
+
+msgctxt "editLibraryNotAvailable"
+msgid "This reusable block cannot be edited right now."
+msgstr ""
+
+msgctxt "editNoLibraryPermission"
+msgid "You do not have permission to edit library items."
+msgstr ""
+
+msgctxt "editNoPermission"
+msgid "You do not have permission to edit this block."
 msgstr ""
 
 msgctxt "editableCommandEdit"
@@ -2511,9 +2547,29 @@ msgctxt "libraryAddFromLibrary"
 msgid "From library"
 msgstr "Us dr Bibliothek drzuefüege"
 
+msgctxt "libraryAddNoEditPermission"
+msgid "You do not have permission to edit this block."
+msgstr ""
+
+msgctxt "libraryAddNoPermission"
+msgid "You do not have permission to create library items."
+msgstr ""
+
+msgctxt "libraryAddNotAllowedInField"
+msgid "Reusable blocks are not allowed in this field."
+msgstr ""
+
+msgctxt "libraryAddNotSupported"
+msgid "This block type cannot be made reusable."
+msgstr ""
+
 msgctxt "libraryDetach"
 msgid "Detach from library"
 msgstr "Von der Bibliothek loslöse"
+
+msgctxt "libraryDetachNoPermission"
+msgid "You do not have permission to detach this block."
+msgstr ""
 
 msgctxt "libraryDialogDescriptionLabel"
 msgid "Description"
@@ -2997,6 +3053,14 @@ msgstr ""
 "Smartphones. Klick uf dr «Ablöse»-Button zum zusätzlichi Viewport-Grösse "
 "uswähle z'chönne."
 
+msgctxt "restrictedPermissionsAll"
+msgid "Some actions are not available due to missing permissions."
+msgstr ""
+
+msgctxt "restrictedPermissionsSome"
+msgid "Some actions are restricted due to missing permissions."
+msgstr ""
+
 msgctxt "revertDialogLead"
 msgid ""
 "This will delete all changes and restore the currently published state. "
@@ -3031,6 +3095,10 @@ msgstr "Alli Änderige sin glöcht worde."
 
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."
+msgstr ""
+
+msgctxt "schedulerNotSupported"
+msgid "Scheduling is not available for this block type."
 msgstr ""
 
 msgctxt "searchBoxNoResultsFound"
@@ -3409,6 +3477,18 @@ msgstr ""
 msgctxt "transformDialogButtonPreview"
 msgid "Preview"
 msgstr "Vorschau"
+
+msgctxt "translateEditDisabled"
+msgid "Editing is disabled for this block type."
+msgstr ""
+
+msgctxt "translateLibraryBlock"
+msgid "Reusable blocks cannot be translated here."
+msgstr ""
+
+msgctxt "translateNotTranslatable"
+msgid "This block type is not translatable."
+msgstr ""
 
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"

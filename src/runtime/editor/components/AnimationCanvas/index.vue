@@ -49,6 +49,7 @@ const {
   directive,
   blocks,
   fields,
+  permissions,
 } = useBlokkli()
 
 function onCanvasFocus() {
@@ -149,9 +150,17 @@ function getInteractedElement(
   if (editableField) {
     const editableUuid =
       editableField.type === itemEntityType ? editableField.uuid : undefined
+
+    // Skip editable fields on blocks where the user lacks edit permission
+    // or that are inside a restricted ancestor.
+    const canEdit =
+      !editableUuid ||
+      (permissions.checkBlockBundlePermission(editableField.bundle, 'edit') &&
+        !permissions.blockHasRestrictedAncestor(editableUuid))
+
     // Use the editable if it belongs to the winning block, or if it's on a
     // non-block entity (e.g. the host entity).
-    if (!editableUuid || editableUuid === deepestUuid) {
+    if (canEdit && (!editableUuid || editableUuid === deepestUuid)) {
       return {
         editableFieldName: editableField.fieldName,
         uuid: editableUuid,
@@ -163,8 +172,12 @@ function getInteractedElement(
   }
 
   if (deepestUuid) {
+    // If the deepest block is inside a restricted ancestor, resolve to that
+    // ancestor so that click, drag, and selection all target the right block.
+    const restrictedAncestor = permissions.getRestrictedAncestor(deepestUuid)
+
     return {
-      uuid: deepestUuid,
+      uuid: restrictedAncestor ?? deepestUuid,
       timestamp: Date.now(),
       x,
       y,

@@ -3,7 +3,7 @@
     id="edit"
     edit-only
     :title="$t('edit', 'Edit...')"
-    :disabled="!canEdit"
+    :disabled="editDisabledReason"
     meta
     key-code="E"
     icon="bk_mdi_edit"
@@ -45,7 +45,7 @@ function isFeatureFragment(item: RenderedFieldListItem): boolean {
   )
 }
 
-const canEdit = computed(() => {
+const editDisabledReason = computed<false | string>(() => {
   const item = selection.item.value
 
   // Editing is only possible when a single block is selected.
@@ -56,6 +56,8 @@ const canEdit = computed(() => {
   // Fragments provided by features can always be edited.
   if (isFragment(item)) {
     return isFeatureFragment(item)
+      ? false
+      : $t('editFragmentNotEditable', 'This fragment cannot be edited.')
   }
 
   const definition = definitions.getBlockDefinition(
@@ -66,24 +68,47 @@ const canEdit = computed(() => {
 
   // Editing is explicitly disabled via the definition.
   if (definition?.editor?.disableEdit) {
-    return false
+    return $t(
+      'editDisabledByDefinition',
+      'Editing is disabled for this block type.',
+    )
+  }
+
+  if (!permissions.checkBlockBundlePermission(item.bundle, 'edit')) {
+    return $t(
+      'editNoPermission',
+      'You do not have permission to edit this block.',
+    )
   }
 
   // For reusable blocks, editing is only possible if the adapter implements
   // the getLibraryItemEditUrl method.
   if (item.library?.libraryItemUuid) {
     if (!userCanEditLibraryItems.value) {
-      return false
+      return $t(
+        'editNoLibraryPermission',
+        'You do not have permission to edit library items.',
+      )
     }
-    return (
-      !!adapter.getLibraryItemEditUrl &&
-      (state.editMode.value === 'editing' ||
-        state.editMode.value === 'translating') &&
-      !item.isNew
-    )
+    if (
+      !adapter.getLibraryItemEditUrl ||
+      (state.editMode.value !== 'editing' &&
+        state.editMode.value !== 'translating') ||
+      item.isNew
+    ) {
+      return $t(
+        'editLibraryNotAvailable',
+        'This reusable block cannot be edited right now.',
+      )
+    }
+    return false
   }
 
-  return state.editMode.value === 'editing'
+  if (state.editMode.value !== 'editing') {
+    return false
+  }
+
+  return false
 })
 
 function onClick(items: RenderedFieldListItem[]) {
@@ -91,7 +116,7 @@ function onClick(items: RenderedFieldListItem[]) {
     return
   }
 
-  if (!canEdit.value) {
+  if (editDisabledReason.value) {
     return
   }
 

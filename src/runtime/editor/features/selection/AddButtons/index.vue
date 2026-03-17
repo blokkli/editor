@@ -69,6 +69,7 @@ const {
   animation,
   context,
   selection,
+  permissions,
 } = useBlokkli()
 
 const isLocked = ref(false)
@@ -480,7 +481,18 @@ function setAddData(
   anchorEl?: HTMLElement,
   anchorCoordinates?: { x: number; y: number },
 ) {
-  const allowedBundles = field.allowedBundles
+  // Don't show add buttons for fields inside a restricted block.
+  if (
+    field.hostEntityType === itemEntityType &&
+    (!permissions.checkBlockBundlePermission(field.hostEntityBundle, 'edit') ||
+      permissions.blockHasRestrictedAncestor(field.hostEntityUuid))
+  ) {
+    return
+  }
+
+  const allowedBundles = field.allowedBundles.filter((v) =>
+    permissions.checkBlockBundlePermission(v, 'add'),
+  )
   if (allowedBundles.length === 0) {
     return
   }

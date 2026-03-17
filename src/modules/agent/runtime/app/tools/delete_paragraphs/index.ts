@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the paragraphs to delete'),
@@ -36,6 +40,18 @@ export default defineBlokkliAgentTool({
       }
       validBlocks.push({ uuid, bundle: block.bundle })
     }
+
+    // Check delete permission for all bundles
+    const denied = requireBundlePermission(
+      ctx.app,
+      validBlocks.map((b) => b.bundle),
+      'delete',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    if (ancestorDenied) return ancestorDenied
 
     // Create label based on number of blocks
     const { $t } = ctx.app

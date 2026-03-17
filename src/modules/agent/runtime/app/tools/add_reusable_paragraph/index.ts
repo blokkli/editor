@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
+import { requireBundlePermission } from '../../helpers/validation'
 import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
@@ -31,6 +32,24 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['addLibraryItem'],
   execute(ctx, params) {
+    // Check add permission for from_library bundle
+    const denied = requireBundlePermission(
+      ctx.app,
+      [fromLibraryBlockBundle],
+      'add',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions on the target parent
+    if (
+      ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)
+    ) {
+      return {
+        error:
+          'Permission denied: target parent is inside a block with restricted editing permissions',
+      }
+    }
+
     const { types, fields, context, blocks, $t } = ctx.app
 
     const field = fields.find(params.parent.uuid, params.parent.field)

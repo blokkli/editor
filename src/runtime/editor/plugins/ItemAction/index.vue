@@ -25,6 +25,9 @@
           group="blocks"
           @pressed="onClick"
         />
+        <div v-if="disabledReason" class="bk-item-action-disabled-reason">
+          <span>{{ disabledReason }}</span>
+        </div>
       </div>
     </button>
   </Teleport>
@@ -60,8 +63,11 @@ const props = defineProps<{
 
   /**
    * Whether the action is disabled.
+   *
+   * When a string is provided, the button is disabled and the string is
+   * displayed as the tooltip text explaining why.
    */
-  disabled?: boolean
+  disabled?: boolean | string
 
   /**
    * Whether the button should be displayed in an active state.
@@ -119,7 +125,12 @@ const props = defineProps<{
 }>()
 
 const isDisabled = computed(
-  () => props.disabled || (!props.multiple && selection.items.value.length > 1),
+  () =>
+    !!props.disabled || (!props.multiple && selection.items.value.length > 1),
+)
+
+const disabledReason = computed(() =>
+  typeof props.disabled === 'string' ? props.disabled : null,
 )
 
 const shouldRender = computed(() => {
@@ -147,7 +158,7 @@ defineCommands(() => ({
   group: 'selection',
   label: props.title,
   icon: props.icon,
-  disabled: props.disabled || !selection.items.value.length,
+  disabled: isDisabled.value || !selection.items.value.length,
   callback: onClick,
 }))
 

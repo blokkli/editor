@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 
 const paramsSchema = z.object({
   uuidA: z.string().describe('First paragraph UUID'),
@@ -40,6 +44,21 @@ export default defineBlokkliAgentTool({
     if (!blockB) {
       return { error: `Paragraph not found: ${params.uuidB}` }
     }
+
+    // Check edit permission for both bundles
+    const denied = requireBundlePermission(
+      ctx.app,
+      [blockA.bundle, blockB.bundle],
+      'edit',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions on both blocks
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [
+      params.uuidA,
+      params.uuidB,
+    ])
+    if (ancestorDenied) return ancestorDenied
 
     // Get field config for A's parent field
     const fieldConfigA = types.getFieldConfig(

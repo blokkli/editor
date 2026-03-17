@@ -44,8 +44,18 @@ type Editable = {
   value?: string
 }
 
-const { selection, adapter, types, $t, state, directive, blocks, context, ui } =
-  useBlokkli()
+const {
+  selection,
+  adapter,
+  types,
+  $t,
+  state,
+  directive,
+  blocks,
+  context,
+  ui,
+  permissions,
+} = useBlokkli()
 const selectedEditable = ref<Editable | null>(null)
 const hasTransition = ref(false)
 
@@ -84,6 +94,16 @@ const buildEditable = (
     return
   }
   if (host.bundle === fromLibraryBlockBundle) {
+    return
+  }
+
+  // Block-level editables require edit permission on the bundle
+  // and must not be inside a restricted ancestor.
+  if (
+    host.type === itemEntityType &&
+    (!permissions.checkBlockBundlePermission(host.bundle, 'edit') ||
+      permissions.blockHasRestrictedAncestor(host.uuid))
+  ) {
     return
   }
 

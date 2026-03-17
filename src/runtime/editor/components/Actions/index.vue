@@ -29,7 +29,13 @@
           @click.prevent="showDropdown = !showDropdown"
         >
           <div v-if="shouldRenderButton" class="bk-tooltip">
-            {{ $t('actionsDropdownToolip', 'Further actions') }}
+            <span>{{ $t('actionsDropdownToolip', 'Further actions') }}</span>
+            <div
+              v-if="restrictedPermissionsLabel"
+              class="bk-item-action-disabled-reason"
+            >
+              <span>{{ restrictedPermissionsLabel }}</span>
+            </div>
           </div>
           <div
             v-show="!hasSelectedHost"
@@ -57,6 +63,14 @@
             class="bk-blokkli-item-actions-title-count"
             >{{ selection.items.value.length }}</span
           >
+
+          <span
+            v-show="isPermissionRestricted"
+            class="bk-blokkli-item-actions-title-pill bk-is-restricted"
+          >
+            <Icon name="bk_mdi_lock" />
+          </span>
+
           <span
             v-show="selectedIsNew"
             class="bk-blokkli-item-actions-title-pill"
@@ -103,8 +117,10 @@ import {
   fragmentBlockBundle,
   fromLibraryBlockBundle,
 } from '#blokkli-build/config'
+import type { BlockPermission } from '#blokkli/editor/types/definitions'
 
-const { selection, $t, types, state, ui, definitions, debug } = useBlokkli()
+const { selection, $t, types, state, ui, definitions, debug, permissions } =
+  useBlokkli()
 
 const editingEnabled = computed(
   () =>
@@ -263,6 +279,42 @@ const title = computed(() => {
 const selectedIsNew = computed<boolean>(() => {
   const items = selection.items.value
   return !!items.length && items.every((v) => v.isNew)
+})
+
+const permissionsForSelected = computed<BlockPermission[]>(() => {
+  const bundles = selection.bundles.value
+  if (!bundles.length) {
+    return []
+  }
+
+  const allPermissions: BlockPermission[] = ['add', 'delete', 'edit']
+  return allPermissions.filter((permission) =>
+    bundles.every((bundle) =>
+      permissions.checkBlockBundlePermission(bundle, permission),
+    ),
+  )
+})
+
+const isPermissionRestricted = computed(
+  () =>
+    selection.items.value.length > 0 && permissionsForSelected.value.length < 3,
+)
+
+const restrictedPermissionsLabel = computed(() => {
+  if (!isPermissionRestricted.value) {
+    return null
+  }
+  const shared = permissionsForSelected.value
+  if (shared.length === 0) {
+    return $t(
+      'restrictedPermissionsAll',
+      'Some actions are not available due to missing permissions.',
+    )
+  }
+  return $t(
+    'restrictedPermissionsSome',
+    'Some actions are restricted due to missing permissions.',
+  )
 })
 
 const itemBundle = computed(() => {

@@ -2,6 +2,10 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
 import { itemEntityType } from '#blokkli-build/config'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 
 const paramsSchema = z.object({
   parent: parentSchema.describe('The parent field containing the paragraphs'),
@@ -98,6 +102,19 @@ export default defineBlokkliAgentTool({
         }
       }
     }
+
+    // Check edit permission for all bundles being rearranged
+    const blockBundles = params.uuids
+      .map((uuid) => blocks.getBlock(uuid)?.bundle)
+      .filter((b): b is string => !!b)
+    if (blockBundles.length) {
+      const denied = requireBundlePermission(ctx.app, blockBundles, 'edit')
+      if (denied) return denied
+    }
+
+    // Check ancestor restrictions
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    if (ancestorDenied) return ancestorDenied
 
     // Check if the order is actually different
     const isAlreadyInOrder = params.uuids.every(

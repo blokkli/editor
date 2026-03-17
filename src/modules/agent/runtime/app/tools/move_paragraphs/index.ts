@@ -2,6 +2,10 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the paragraphs to move'),
@@ -38,6 +42,24 @@ export default defineBlokkliAgentTool({
         return { error: `Paragraph not found: ${uuid}` }
       }
       validBlocks.push({ uuid, bundle: block.bundle })
+    }
+
+    // Check edit permission for all bundles being moved
+    const denied = requireBundlePermission(
+      ctx.app,
+      validBlocks.map((b) => b.bundle),
+      'edit',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions on source blocks and target parent
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    if (ancestorDenied) return ancestorDenied
+    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
+      return {
+        error:
+          'Permission denied: target parent is inside a block with restricted editing permissions',
+      }
     }
 
     // Create label based on number of blocks

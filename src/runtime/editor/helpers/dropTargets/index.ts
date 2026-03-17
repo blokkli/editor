@@ -73,6 +73,7 @@ export function determineCanAddChildren(
   itemsToAdd: number,
   draggingBundles?: string[],
   draggingFragments?: string[],
+  isBundlePermitted?: (bundle: string) => boolean,
 ): boolean {
   // Check cardinality of field.
   if (field.cardinality !== -1) {
@@ -97,11 +98,13 @@ export function determineCanAddChildren(
   // No existing blocks are dragged. We only need to check if _any_ of the
   // dragging bundles are allowed. For example, when dragging a media library
   // or search item that can produce several bundles, it can be added whenever
-  // any bundle is allows. The dragging overlay will display a selector to pick
+  // any bundle is allowed. The dragging overlay will display a selector to pick
   // which bundle should be created in this case.
   if (!uuids.length) {
-    return draggingBundles.some((bundle) =>
-      field.allowedBundles.includes(bundle),
+    return draggingBundles.some(
+      (bundle) =>
+        field.allowedBundles.includes(bundle) &&
+        (!isBundlePermitted || isBundlePermitted(bundle)),
     )
   }
 

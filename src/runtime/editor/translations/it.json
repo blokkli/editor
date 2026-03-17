@@ -1547,6 +1547,10 @@
     "source": "The block could not be deleted.",
     "translation": "L'elemento non può essere rimosso."
   },
+  "deleteNoPermission": {
+    "source": "You do not have permission to delete this block.",
+    "translation": ""
+  },
   "diffAfter": {
     "source": "After",
     "translation": ""
@@ -1611,9 +1615,25 @@
     "source": "The items could not be duplicated.",
     "translation": "Gli elementi non possono essere duplicati."
   },
+  "duplicateFieldFull": {
+    "source": "The field has reached its maximum number of blocks.",
+    "translation": ""
+  },
+  "duplicateNoPermission": {
+    "source": "You do not have permission to duplicate this block.",
+    "translation": ""
+  },
+  "duplicateNotAllowed": {
+    "source": "This block type is not allowed in this field.",
+    "translation": ""
+  },
   "edit": {
     "source": "Edit...",
     "translation": "Modifica"
+  },
+  "editDisabledByDefinition": {
+    "source": "Editing is disabled for this block type.",
+    "translation": ""
   },
   "editFormBlockAdd": {
     "source": "Add @label",
@@ -1635,6 +1655,10 @@
     "source": "Translate \"@label\" (@language)",
     "translation": ""
   },
+  "editFragmentNotEditable": {
+    "source": "This fragment cannot be edited.",
+    "translation": ""
+  },
   "editIndicatorLabel": {
     "source": "Edit blocks",
     "translation": "Modifica elementi"
@@ -1645,6 +1669,18 @@
   },
   "editIndicatorLabelView": {
     "source": "View changes",
+    "translation": ""
+  },
+  "editLibraryNotAvailable": {
+    "source": "This reusable block cannot be edited right now.",
+    "translation": ""
+  },
+  "editNoLibraryPermission": {
+    "source": "You do not have permission to edit library items.",
+    "translation": ""
+  },
+  "editNoPermission": {
+    "source": "You do not have permission to edit this block.",
     "translation": ""
   },
   "editableCommandEdit": {
@@ -2359,8 +2395,28 @@
     "source": "From library",
     "translation": ""
   },
+  "libraryAddNoEditPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": ""
+  },
+  "libraryAddNoPermission": {
+    "source": "You do not have permission to create library items.",
+    "translation": ""
+  },
+  "libraryAddNotAllowedInField": {
+    "source": "Reusable blocks are not allowed in this field.",
+    "translation": ""
+  },
+  "libraryAddNotSupported": {
+    "source": "This block type cannot be made reusable.",
+    "translation": ""
+  },
   "libraryDetach": {
     "source": "Detach from library",
+    "translation": ""
+  },
+  "libraryDetachNoPermission": {
+    "source": "You do not have permission to detach this block.",
     "translation": ""
   },
   "libraryDialogDescriptionLabel": {
@@ -2815,6 +2871,14 @@
     "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
     "translation": ""
   },
+  "restrictedPermissionsAll": {
+    "source": "Some actions are not available due to missing permissions.",
+    "translation": ""
+  },
+  "restrictedPermissionsSome": {
+    "source": "Some actions are restricted due to missing permissions.",
+    "translation": ""
+  },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
     "translation": "Questo eliminerà tutte le modifiche e ripristinerà lo stato attualmente pubblicato. Questa azione non può essere annullata."
@@ -2845,6 +2909,10 @@
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
+    "translation": ""
+  },
+  "schedulerNotSupported": {
+    "source": "Scheduling is not available for this block type.",
     "translation": ""
   },
   "searchBoxNoResultsFound": {
@@ -3177,6 +3245,18 @@
   },
   "transformDialogButtonPreview": {
     "source": "Preview",
+    "translation": ""
+  },
+  "translateEditDisabled": {
+    "source": "Editing is disabled for this block type.",
+    "translation": ""
+  },
+  "translateLibraryBlock": {
+    "source": "Reusable blocks cannot be translated here.",
+    "translation": ""
+  },
+  "translateNotTranslatable": {
+    "source": "This block type is not translatable.",
     "translation": ""
   },
   "translationsBannerButton": {

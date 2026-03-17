@@ -47,7 +47,7 @@
       }
 
       .bk-tooltip {
-        @apply absolute bottom-full left-0 mb-3;
+        @apply absolute bottom-full left-0 mb-8;
       }
 
       @screen lg {
@@ -104,7 +104,7 @@
       @apply bg-white text-mono-900 z-50;
     }
     .bk-tooltip {
-      @apply absolute bottom-full left-0 min-w-full mb-3;
+      @apply absolute bottom-full left-0 mb-8 min-w-full;
     }
     @screen lg {
       &:not(:hover) {
@@ -123,6 +123,19 @@
       .bk-item-action-icon {
         @apply opacity-25;
       }
+      .bk-tooltip {
+        @apply flex-wrap;
+      }
+    }
+  }
+
+  .bk-item-action-disabled-reason {
+    @apply w-full text-xs font-medium mt-5 text-yellow-normal;
+    @apply flex items-center gap-5;
+
+    &:before {
+      content: '';
+      @apply size-[0.75em] bg-current rounded-full;
     }
   }
 
@@ -164,7 +177,7 @@
   }
   .bk-blokkli-item-actions-type-button,
   .bk-blokkli-item-actions-type-dropdown-button {
-    @apply pl-[9px] lg:pr-15;
+    @apply pl-[9px] lg:pr-5;
   }
 
   .bk-blokkli-item-actions-type-button {
@@ -180,7 +193,7 @@
     }
 
     .bk-tooltip {
-      @apply absolute left-0 w-full bottom-full invisible mb-3;
+      @apply absolute left-0  bottom-full invisible mb-8 flex-wrap;
     }
 
     &:hover {
@@ -204,7 +217,7 @@
       }
     }
     .bk-caret {
-      @apply ml-5;
+      @apply ml-2;
       svg {
         @apply pointer-events-none size-15 fill-current md:size-20;
       }
@@ -281,9 +294,20 @@
   }
 
   .bk-blokkli-item-actions-title-pill {
-    @apply text-xs uppercase leading-none ml-auto;
-    @apply rounded-full px-5 py-3;
-    @apply bg-mono-700 text-mono-200;
-    @apply border border-mono-500 font-bold;
+    font-size: 10px;
+    @apply uppercase leading-none ml-5;
+    @apply rounded-full px-5 h-20 flex items-center justify-center;
+    @apply bg-accent-900/80 text-accent-100;
+    @apply border border-accent-200/70 font-bold;
+    @apply leading-none;
+
+    &.bk-is-restricted {
+      @apply bg-yellow-normal/20 text-yellow-normal border-yellow-normal/80;
+      @apply p-0 size-20;
+
+      svg {
+        @apply size-[1.25em] fill-current;
+      }
+    }
   }
 }

@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
 const paramsSchema = z.object({
@@ -38,6 +42,14 @@ export default defineBlokkliAgentTool({
     if (!block) {
       return { error: `Paragraph not found: ${params.uuid}` }
     }
+
+    // Check edit permission
+    const denied = requireBundlePermission(ctx.app, [block.bundle], 'edit')
+    if (denied) return denied
+
+    // Check ancestor restrictions
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [params.uuid])
+    if (ancestorDenied) return ancestorDenied
 
     // Validate field exists and is a droppable field.
     const config = types.droppableFieldConfig.forName(

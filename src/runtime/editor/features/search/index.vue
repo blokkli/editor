@@ -63,7 +63,8 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { $t, selection, ui, adapter, state, types, directive } = useBlokkli()
+const { $t, selection, ui, adapter, state, types, directive, permissions } =
+  useBlokkli()
 
 const ERROR_MESSAGE = $t(
   'searchContentReplaceFailed',
@@ -91,6 +92,15 @@ defineDropAreas((dragItems) => {
     .getDroppableElements()
     .map<DropArea | undefined>((field) => {
       if (field.type !== itemEntityType) {
+        return
+      }
+
+      // Skip blocks where the user lacks edit permission or is inside
+      // a restricted ancestor.
+      if (
+        !permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
+        permissions.blockHasRestrictedAncestor(field.uuid)
+      ) {
         return
       }
 
@@ -139,7 +149,11 @@ defineDropAreas((dragItems) => {
 defineDropHandler('search_content', {
   resolveBundles({ items, field }) {
     const item = items[0]!
-    return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+    return field.allowedBundles.filter(
+      (b) =>
+        item.itemBundles.includes(b) &&
+        permissions.checkBlockBundlePermission(b, 'add'),
+    )
   },
 
   async execute({ items, host, afterUuid, bundle }) {

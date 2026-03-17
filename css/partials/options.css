@@ -26,8 +26,8 @@
       @apply pointer-events-none opacity-20;
     }
     .bk-tooltip {
-      @apply absolute bottom-full left-0 mb-3 w-max flex flex-col py-8 justify-center items-start;
-      @apply max-w-[400px];
+      @apply absolute bottom-full left-0 mb-8 w-max flex flex-col py-8 justify-center items-start;
+      @apply max-w-[400px] min-w-full;
 
       .bk-is-label {
         span:nth-child(2) {

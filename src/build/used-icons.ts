@@ -74,6 +74,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_keyboard_arrow_down',
   'bk_mdi_keyboard_command_key',
   'bk_mdi_lists',
+  'bk_mdi_lock',
   'bk_mdi_logo_dev',
   'bk_mdi_menu',
   'bk_mdi_mobile',

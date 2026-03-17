@@ -213,6 +213,11 @@ function validateBlockTree(
       return `${path}: Bundle "${block.bundle}" is not allowed in field "${fieldLabel}". Allowed bundles: ${allowedBundles.join(', ')}`
     }
 
+    // Check add permission for the bundle
+    if (!ctx.app.permissions.checkBlockBundlePermission(block.bundle, 'add')) {
+      return `${path}: Permission denied: cannot add "${bundleDefinition.label}" blocks.`
+    }
+
     // Validate content fields
     const contentError = validateContentFields(ctx, block, path)
     if (contentError) return contentError
@@ -390,6 +395,16 @@ export default defineBlokkliAgentTool({
         .map((f) => f.name)
       return {
         error: `Field "${params.parent.field}" not found on bundle "${bundle}". Available fields: ${availableFields.length ? availableFields.join(', ') : 'none'}. Use get_child_paragraphs to get the correct parent object.`,
+      }
+    }
+
+    // Check ancestor restrictions on the target parent
+    if (!isRootEntity) {
+      if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
+        return {
+          error:
+            'Permission denied: target parent is inside a block with restricted editing permissions',
+        }
       }
     }
 

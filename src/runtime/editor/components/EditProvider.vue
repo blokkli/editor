@@ -225,7 +225,8 @@ const ui = uiProvider(
 const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
-const selection = selectionProvider(blocks)
+const permissionsInstance = await permissionsProvider(adapter, blocks)
+const selection = selectionProvider(blocks, permissionsInstance)
 const keyboard = keyboardProvider(eventBus)
 const animation = animationProvider(
   eventBus,
@@ -239,7 +240,6 @@ const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
-const permissionsInstance = await permissionsProvider(adapter)
 const fieldValue = fieldValueProviderFn(
   adapters,
   directive,

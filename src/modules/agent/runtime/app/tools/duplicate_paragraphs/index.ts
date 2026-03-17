@@ -7,6 +7,8 @@ import {
   validateSameField,
   validateFieldCardinality,
   validateBundlesAllowed,
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
@@ -45,6 +47,18 @@ export default defineBlokkliAgentTool({
     const blocksResult = validateBlocksExist(ctx.app, params.uuids)
     if ('error' in blocksResult) return blocksResult
 
+    // Check add permission for all bundles being duplicated
+    const denied = requireBundlePermission(
+      ctx.app,
+      blocksResult.blocks.map((b) => b.bundle),
+      'add',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions on source blocks
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    if (ancestorDenied) return ancestorDenied
+
     // If parent is provided, duplicate to a different field
     if (params.parent) {
       // Check if adapter supports pasteExistingBlocks
@@ -66,6 +80,17 @@ export default defineBlokkliAgentTool({
 
       if (!targetBundle) {
         return { error: 'Target parent not found.' }
+      }
+
+      // Check ancestor restrictions on target parent
+      if (
+        !isRootEntity &&
+        ctx.app.permissions.blockHasRestrictedAncestor(params.parent!.uuid)
+      ) {
+        return {
+          error:
+            'Permission denied: target parent is inside a block with restricted editing permissions',
+        }
       }
 
       // Validate target field exists

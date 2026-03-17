@@ -29,6 +29,7 @@ const {
   directive,
   blocks,
   fields,
+  permissions,
 } = useBlokkli()
 
 // How many hover quads are supported.
@@ -198,7 +199,10 @@ function updateHoverState(
     }
 
     if (isInsideRect(artboardMouseX, artboardMouseY, blockRect)) {
-      hoveredUuids.push(uuid)
+      // Skip blocks inside a restricted ancestor — they are not interactive.
+      if (!permissions.blockHasRestrictedAncestor(uuid)) {
+        hoveredUuids.push(uuid)
+      }
     }
   }
 
@@ -232,6 +236,17 @@ function updateHoverState(
     // Extract entity UUID from the rect key (format: directive:entityType:uuid:fieldName).
     const key = (editableRect as Rectangle & { key: string }).key
     const entityUuid = key.split(':')[2]!
+
+    // Skip editable fields on blocks where the user lacks edit permission
+    // or that are inside a restricted ancestor.
+    const block = blocks.getBlock(entityUuid)
+    if (
+      block &&
+      (!permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
+        permissions.blockHasRestrictedAncestor(entityUuid))
+    ) {
+      continue
+    }
 
     if (deepestUuid && entityUuid === deepestUuid) {
       // Editable belongs to the winning block.
@@ -312,12 +327,16 @@ function updateHoverState(
     hoverState.radii[level * 4 + 2] = style.radius[2]!
     hoverState.radii[level * 4 + 3] = style.radius[3]!
 
-    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library/reusable).
+    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library), 5=yellow (restricted).
     let type = 0
     if (isDeepest) {
-      // Check if this block is from the library (reusable)
-      const isFromLibrary = state.fromLibraryUuids.value.includes(uuid)
-      if (isFromLibrary) {
+      const isRestricted =
+        !permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
+        !permissions.checkBlockBundlePermission(block.bundle, 'delete') ||
+        !permissions.checkBlockBundlePermission(block.bundle, 'add')
+      if (isRestricted) {
+        type = 5
+      } else if (state.fromLibraryUuids.value.includes(uuid)) {
         type = 4
       } else {
         type = style.isInverted ? 3 : 1
@@ -375,6 +394,7 @@ const uniforms = computed(() => {
     u_color_teal: theme.teal.value.normal,
     u_color_white: [255, 255, 255] as RGB,
     u_color_lime: theme.lime.value.normal,
+    u_color_yellow: theme.yellow.value.normal,
   }
 })
 
@@ -442,6 +462,7 @@ const { collector } = defineRenderer('hover-overlay', {
       u_color_teal: toShaderColor(uniforms.value.u_color_teal),
       u_color_white: toShaderColor(uniforms.value.u_color_white),
       u_color_lime: toShaderColor(uniforms.value.u_color_lime),
+      u_color_yellow: toShaderColor(uniforms.value.u_color_yellow),
       u_hover_positions: hoverState.positions,
       u_hover_radii: hoverState.radii,
       u_hover_types: hoverState.types,
@@ -578,10 +599,12 @@ const { collector } = defineRenderer('hover-overlay', {
         ctx2d.setLineDash([])
         ctx2d.stroke()
       } else {
-        // Type 0, 1, 3, 4 = blocks: dashed border only
-        // Select color: 0=mono, 1=accent, 3=white, 4=lime
+        // Type 0, 1, 3, 4, 5 = blocks: dashed border only
+        // Select color: 0=mono, 1=accent, 3=white, 4=lime, 5=yellow
         let strokeColor = colors.u_color_mono
-        if (type === 4) {
+        if (type === 5) {
+          strokeColor = colors.u_color_yellow
+        } else if (type === 4) {
           strokeColor = colors.u_color_lime
         } else if (type === 3) {
           strokeColor = colors.u_color_white

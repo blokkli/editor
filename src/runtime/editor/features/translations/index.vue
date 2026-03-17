@@ -57,7 +57,7 @@
   <PluginItemAction
     v-if="isTranslating"
     id="translate"
-    :disabled="!canTranslateBlock"
+    :disabled="translateDisabledReason"
     :title="$t('translationsItemAction', 'Translate')"
     icon="bk_mdi_translate"
     :weight="-100"
@@ -148,14 +148,17 @@ const items = computed<TranslationStateItem[]>(() => {
     .filter(falsy)
 })
 
-const canTranslateBlock = computed(() => {
+const translateDisabledReason = computed<false | string>(() => {
   const block = selection.item.value
   if (!block) {
     return false
   }
 
   if (block.library?.libraryItemUuid) {
-    return false
+    return $t(
+      'translateLibraryBlock',
+      'Reusable blocks cannot be translated here.',
+    )
   }
 
   const definition = definitions.getBlockDefinition(
@@ -165,19 +168,21 @@ const canTranslateBlock = computed(() => {
   )
 
   if (definition?.editor?.disableEdit) {
-    return false
+    return $t(
+      'translateEditDisabled',
+      'Editing is disabled for this block type.',
+    )
   }
   const type = types.getBlockBundleDefinition(block.bundle)
 
-  if (!type) {
-    return false
+  if (!type || !type.isTranslatable) {
+    return $t(
+      'translateNotTranslatable',
+      'This block type is not translatable.',
+    )
   }
 
-  if (!type.isTranslatable) {
-    return false
-  }
-
-  return true
+  return false
 })
 
 function onClick(item: TranslationStateItem, event: Event) {
@@ -202,7 +207,7 @@ function onTranslate(items: RenderedFieldListItem[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
-  if (isTranslating.value && canTranslateBlock.value) {
+  if (isTranslating.value && !translateDisabledReason.value) {
     onTranslate([block])
   }
 })

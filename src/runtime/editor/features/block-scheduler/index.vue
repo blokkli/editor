@@ -89,14 +89,19 @@ const selectionHasDates = computed<boolean>(() => {
   return false
 })
 
-const disabled = computed(() => {
-  // Disable if none of the selected bundles support either publish or unpublish
+const disabled = computed<false | string>(() => {
   const hasSupport = selection.bundles.value.some(
     (bundle) =>
       bundlesWithPublish.value.includes(bundle) ||
       bundlesWithUnpublish.value.includes(bundle),
   )
-  return !hasSupport
+  if (!hasSupport) {
+    return $t(
+      'schedulerNotSupported',
+      'Scheduling is not available for this block type.',
+    )
+  }
+  return false
 })
 
 function onClick() {

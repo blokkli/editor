@@ -57,6 +57,7 @@ const {
   state,
   blocks,
   element,
+  permissions,
 } = useBlokkli()
 
 const originatesFromTextInput = (e: Event): boolean =>
@@ -310,6 +311,9 @@ function selectBlock(uuid: string) {
 
 /**
  * Find the next or previous block.
+ *
+ * Skips over blocks whose restricted ancestor is already selected,
+ * so Tab doesn't get stuck cycling through children of a restricted block.
  */
 function selectInList(prev?: boolean) {
   const currentUuid = selection.uuids.value[selection.uuids.value.length - 1]
@@ -319,11 +323,26 @@ function selectInList(prev?: boolean) {
 
   const selectionOrder = getSelectionOrder()
   const currentIndex = selectionOrder.indexOf(currentUuid)
+  if (currentIndex === -1) {
+    return
+  }
+
   const delta = prev ? -1 : 1
-  const newIndex = modulo(currentIndex + delta, selectionOrder.length)
-  const newUuid = selectionOrder[newIndex]
-  if (newUuid) {
-    selectBlock(newUuid)
+  const length = selectionOrder.length
+
+  for (let step = 1; step < length; step++) {
+    const newIndex = modulo(currentIndex + delta * step, length)
+    const candidate = selectionOrder[newIndex]
+    if (!candidate) {
+      continue
+    }
+
+    // Skip candidates that resolve to the already-selected block.
+    const resolved = permissions.getRestrictedAncestor(candidate) ?? candidate
+    if (resolved !== currentUuid) {
+      selectBlock(candidate)
+      return
+    }
   }
 }
 

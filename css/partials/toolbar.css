@@ -15,12 +15,13 @@
 
 .bk {
   .bk-tooltip {
-    @apply bg-mono-800/90 py-[10px] text-white font-bold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap min-h-[40px] font-sans;
+    @apply bg-mono-800/90 py-10 text-white font-bold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap min-h-[40px] font-sans;
+    line-height: 18px;
     @screen lg {
       @apply flex;
     }
     .bk-shortcut {
-      @apply ml-5 my-[-2px];
+      @apply ml-5;
     }
   }
 
@@ -147,21 +148,27 @@
 }
 
 .bk-shortcut {
-  @apply flex gap-5 font-semibold items-center h-[22px] bg-transparent;
+  font-size: 13px !important;
+  @apply flex font-semibold items-center bg-transparent;
+  gap: calc(5em / 16);
+  height: calc(22em / 16);
   color: inherit;
   > kbd {
-    @apply px-5 rounded flex items-center min-w-[22px] justify-center h-full leading-none pt-1 font-sans;
+    @apply rounded flex items-center justify-center h-full leading-none font-sans;
     @apply text-mono-950;
     @apply border border-mono-50;
-    font-size: 11px;
+    padding: calc(1em / 16) calc(5em / 16) 0;
+    min-width: calc(22em / 16);
+    font-size: calc(11em / 16);
     background: linear-gradient(
       theme('colors.mono.300'),
       theme('colors.mono.100')
     );
 
     &.bk-is-single {
-      font-size: 16px;
-      @apply w-[24px] !p-0 font-bold;
+      font-size: 1em;
+      width: calc(24em / 16);
+      @apply !p-0 font-bold;
     }
   }
 }

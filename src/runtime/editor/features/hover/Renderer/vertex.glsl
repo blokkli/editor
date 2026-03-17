@@ -31,6 +31,7 @@ uniform vec3 u_color_accent;
 uniform vec3 u_color_teal;
 uniform vec3 u_color_white;
 uniform vec3 u_color_lime;
+uniform vec3 u_color_yellow;
 
 // The transformed quad for the fragment shader.
 out vec4 v_quad;
@@ -140,8 +141,10 @@ void main() {
   v_dash_cycle = 14.0 - u_scale * 1.0;
   v_rect_size_artboard = vec2(hoverPos.z, hoverPos.w);
 
-  // Select color based on type: 0 = mono, 1 = accent, 2 = teal, 3 = white (inverted), 4 = lime (library)
-  if (hoverType > 3.5) {
+  // Select color based on type: 0 = mono, 1 = accent, 2 = teal, 3 = white (inverted), 4 = lime (library), 5 = yellow (restricted)
+  if (hoverType > 4.5) {
+    v_color = u_color_yellow;
+  } else if (hoverType > 3.5) {
     v_color = u_color_lime;
   } else if (hoverType > 2.5) {
     v_color = u_color_white;

@@ -61,6 +61,7 @@ const {
   fields,
   eventBus,
   animation,
+  permissions,
 } = useBlokkli()
 
 const selectionClipboard = ref<string[]>([])
@@ -471,6 +472,14 @@ const handleSelectionPaste = (pastedUuids: string[]) => {
     .filter((block): block is RenderedFieldListItem => !!block)
 
   if (!existingBlocks.length) {
+    return
+  }
+
+  // Check that the user has "add" permission for all block bundles.
+  const deniedBundles = existingBlocks
+    .map((b) => b.bundle)
+    .filter((bundle) => !permissions.checkBlockBundlePermission(bundle, 'add'))
+  if (deniedBundles.length) {
     return
   }
 

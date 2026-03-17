@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 
 const paramsSchema = z.object({
   uuid: z
@@ -34,6 +38,16 @@ export default defineBlokkliAgentTool({
 
     if (!isEntity && !block) {
       return { error: `Paragraph not found: ${params.uuid}` }
+    }
+
+    // Check edit permission when targeting a block
+    if (block) {
+      const denied = requireBundlePermission(ctx.app, [block.bundle], 'edit')
+      if (denied) return denied
+
+      // Check ancestor restrictions
+      const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [params.uuid])
+      if (ancestorDenied) return ancestorDenied
     }
 
     const entityType = isEntity ? context.value.entityType : ctx.itemEntityType

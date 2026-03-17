@@ -1,5 +1,7 @@
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+import type { BlockPermission } from '#blokkli/editor/types/definitions'
+import type { ToolError } from '../types'
 import { getFieldKey } from '#blokkli/helpers'
 
 type ValidationResult = { valid: true } | { valid: false; error: string }
@@ -124,4 +126,45 @@ export function validateBundlesAllowed(
   }
 
   return { valid: true }
+}
+
+/**
+ * Check that none of the given blocks are inside a restricted ancestor.
+ * Returns a ToolError if any block has a restricted ancestor, or undefined if
+ * all are unrestricted.
+ */
+export function requireNoRestrictedAncestor(
+  app: BlokkliApp,
+  uuids: string[],
+): ToolError | undefined {
+  for (const uuid of uuids) {
+    if (app.permissions.blockHasRestrictedAncestor(uuid)) {
+      return {
+        error:
+          'Permission denied: block is inside a parent with restricted editing permissions',
+      }
+    }
+  }
+  return undefined
+}
+
+/**
+ * Check that the user has a specific permission for all given bundles.
+ * Returns a ToolError if any bundle is denied, or undefined if all are allowed.
+ */
+export function requireBundlePermission(
+  app: BlokkliApp,
+  bundles: string[],
+  operation: BlockPermission,
+): ToolError | undefined {
+  const denied = app.permissions.filterDeniedBundles(bundles, operation)
+  if (denied.length > 0) {
+    const labels = denied.map(
+      (b) => app.types.getBlockBundleDefinition(b)?.label || b,
+    )
+    return {
+      error: `Permission denied: cannot ${operation} ${labels.map((l) => `"${l}"`).join(', ')}`,
+    }
+  }
+  return undefined
 }

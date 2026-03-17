@@ -1,3 +1,5 @@
+export type BlockPermission = 'add' | 'delete' | 'edit'
+
 export interface BlockBundleDefinition {
   id: string
   label: string
@@ -7,6 +9,7 @@ export interface BlockBundleDefinition {
   isTranslatable?: boolean
   hasPublishOn?: boolean
   hasUnpublishOn?: boolean
+  permissions: BlockPermission[]
 }
 
 export type FieldConfig = {
