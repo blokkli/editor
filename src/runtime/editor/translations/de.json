@@ -1175,6 +1175,14 @@
     "source": "Bundle",
     "translation": "Typ"
   },
+  "bundleSelectorActionsLabel": {
+    "source": "Actions",
+    "translation": "Aktionen"
+  },
+  "bundleSelectorFragmentsLabel": {
+    "source": "Fragments",
+    "translation": "Fragmente"
+  },
   "cancelSelection": {
     "source": "Cancel selection",
     "translation": "Auswahl abbrechen"
@@ -1628,7 +1636,7 @@
     "translation": "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeiten..."
   },
   "editDisabledByDefinition": {

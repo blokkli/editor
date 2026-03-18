@@ -64,4 +64,23 @@
       }
     }
   }
+
+  .bk-selection-add-overlay-section {
+    @apply border-t border-mono-700;
+    margin: 0 var(--bk-gap);
+
+    .bk-selection-add-overlay-list {
+      @apply px-0;
+    }
+  }
+
+  .bk-selection-add-overlay-section-label {
+    @apply flex items-center gap-8 text-mono-300 pt-15 uppercase font-semibold text-xs tracking-wide !leading-none;
+    .bk-icon {
+      @apply -translate-y-1;
+      svg {
+        @apply size-[14px] fill-current;
+      }
+    }
+  }
 }

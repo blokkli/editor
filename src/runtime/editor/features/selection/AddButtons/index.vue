@@ -8,9 +8,11 @@
         :anchor-el="addData.anchorEl"
         :anchor-coordinates="addData.anchorCoordinates"
         :label="addData.label"
+        :field="addData.field"
         @select="onSelectBundle"
         @close="closeOverlay"
         @action="onSelectAction"
+        @fragment="onSelectFragment"
       />
     </BlokkliTransition>
   </Teleport>
@@ -70,6 +72,7 @@ const {
   context,
   selection,
   permissions,
+  adapter,
 } = useBlokkli()
 
 const isLocked = ref(false)
@@ -349,6 +352,24 @@ function onSelectAction(action: AddAction) {
     host: { ...addData.value.host },
   })
   closeOverlay()
+}
+
+async function onSelectFragment(name: string) {
+  const fragmentsAddBlock = adapter.fragmentsAddBlock
+  if (!addData.value || !fragmentsAddBlock) {
+    return
+  }
+
+  const { host, preceedingUuid } = addData.value
+  closeOverlay()
+
+  await state.mutateWithLoadingState(() =>
+    fragmentsAddBlock({
+      name,
+      host: { ...host },
+      preceedingUuid,
+    }),
+  )
 }
 
 type CachedState = {

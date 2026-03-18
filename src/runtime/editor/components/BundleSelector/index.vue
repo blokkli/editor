@@ -13,7 +13,7 @@
       class="bk-selection-add-overlay-wrapper bk-scrollbar-dark"
     >
       <div
-        v-if="items.length > 4"
+        v-if="allItems.length > 4"
         class="bk-selection-add-overlay-form"
         @pointerdown.stop
         @keydown.capture.stop
@@ -47,13 +47,51 @@
           height,
         }"
       >
-        <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
+        <div
+          v-if="filteredBlocks.length"
+          class="bk-selection-add-overlay-list"
+          @wheel.passive="onWheel"
+        >
           <AddListItem
-            v-for="item in filteredItems"
+            v-for="item in filteredBlocks"
             :key="item.props.id"
             v-bind="item.props"
             @click.prevent="onClick(item)"
           />
+        </div>
+        <div
+          v-if="filteredActions.length"
+          class="bk-selection-add-overlay-section"
+        >
+          <div class="bk-selection-add-overlay-section-label">
+            <Icon name="bk_mdi_extension" />
+            <span>{{ $t('bundleSelectorActionsLabel', 'Actions') }}</span>
+          </div>
+          <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
+            <AddListItem
+              v-for="item in filteredActions"
+              :key="item.props.id"
+              v-bind="item.props"
+              @click.prevent="onClick(item)"
+            />
+          </div>
+        </div>
+        <div
+          v-if="filteredFragments.length"
+          class="bk-selection-add-overlay-section"
+        >
+          <div class="bk-selection-add-overlay-section-label">
+            <Icon name="bk_mdi_newspaper" />
+            <span>{{ $t('bundleSelectorFragmentsLabel', 'Fragments') }}</span>
+          </div>
+          <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
+            <AddListItem
+              v-for="item in filteredFragments"
+              :key="item.props.id"
+              v-bind="item.props"
+              @click.prevent="onClick(item)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -75,6 +113,8 @@ import { Fzf } from 'fzf'
 import type { AddListItemProps } from '#blokkli/editor/components/AddListItem/index.vue'
 import type { Coord } from '#blokkli/editor/types/geometry'
 import type { AddAction } from '#blokkli/editor/types/actions'
+import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const props = defineProps<{
   bundles: string[]
@@ -82,11 +122,13 @@ const props = defineProps<{
   anchorCoordinates?: Coord
   label: string
   hideActions?: boolean
+  field?: BlokkliFieldElement
 }>()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
   (e: 'action', action: AddAction): void
+  (e: 'fragment', name: string): void
   (e: 'close'): void
 }>()
 
@@ -136,8 +178,15 @@ type Item =
       description: string
       props: AddListItemProps
     }
+  | {
+      type: 'fragment'
+      name: string
+      label: string
+      description: string
+      props: AddListItemProps
+    }
 
-const { types, plugins, storage, $t, definitions } = useBlokkli()
+const { types, plugins, storage, $t, definitions, permissions } = useBlokkli()
 const favorites = storage.use<string[]>('blockFavorites', [])
 
 const blocks = computed<Item[]>(() => {
@@ -176,6 +225,43 @@ const blocks = computed<Item[]>(() => {
     })
 })
 
+const fragments = computed<Item[]>(() => {
+  if (!props.field || !props.field.allowedFragments.length) {
+    return []
+  }
+
+  if (!props.bundles.includes(fragmentBlockBundle)) {
+    return []
+  }
+
+  if (!permissions.checkBlockBundlePermission(fragmentBlockBundle, 'add')) {
+    return []
+  }
+
+  return props.field.allowedFragments
+    .map((name) => {
+      const definition = definitions.getFragmentDefinition(name)
+      if (!definition) {
+        return null
+      }
+      return {
+        type: 'fragment' as const,
+        name,
+        label: definition.label,
+        description: definition.description ?? '',
+        props: {
+          id: 'fragment:' + name,
+          label: definition.label,
+          color: 'accent' as const,
+          context: 'selection-add-buttons' as const,
+          icon: definition.editor?.icon ?? 'bk_mdi_newspaper',
+          noContextMenu: true,
+        },
+      }
+    })
+    .filter((v): v is NonNullable<typeof v> => v !== null)
+})
+
 const actions = computed<Item[]>(() => {
   if (props.hideActions) {
     return []
@@ -183,6 +269,10 @@ const actions = computed<Item[]>(() => {
   return plugins
     .get('addAction')
     .filter((action) => {
+      if (action.id === 'fragment' && fragments.value.length) {
+        return false
+      }
+
       if (!action.itemBundle) {
         return true
       }
@@ -207,18 +297,31 @@ const actions = computed<Item[]>(() => {
     })
 })
 
-const items = computed<Item[]>(() => {
-  return [...blocks.value, ...actions.value]
+const allItems = computed<Item[]>(() => {
+  return [...blocks.value, ...fragments.value, ...actions.value]
 })
 
-const fzf = new Fzf(items.value, {
+const fzf = new Fzf(allItems.value, {
   selector: (item: Item) => item.label + ' ' + item.description,
 })
 
-const filteredItems = computed<Item[]>(() => {
+function filterBySearch<T extends Item>(items: T[]): T[] {
   const text = searchText.value.trim()
   if (!text) {
-    return items.value
+    return items
+  }
+  const textLower = text.toLowerCase()
+  return items.filter(
+    (item) =>
+      item.label.toLowerCase().includes(textLower) ||
+      item.description.toLowerCase().includes(textLower),
+  )
+}
+
+const filteredBlocks = computed<Item[]>(() => {
+  const text = searchText.value.trim()
+  if (!text) {
+    return blocks.value
   }
 
   const results = fzf.find(text)
@@ -226,6 +329,7 @@ const filteredItems = computed<Item[]>(() => {
 
   return results
     .map((r) => r.item)
+    .filter((item) => item.type === 'block')
     .sort((a, b) => {
       const aInLabel = a.label.toLowerCase().includes(textLower)
       const bInLabel = b.label.toLowerCase().includes(textLower)
@@ -234,6 +338,9 @@ const filteredItems = computed<Item[]>(() => {
       return 0
     })
 })
+
+const filteredFragments = computed(() => filterBySearch(fragments.value))
+const filteredActions = computed(() => filterBySearch(actions.value))
 
 const onWheel = (e: WheelEvent) => {
   if (hasScrollbar === null) {
@@ -252,11 +359,16 @@ function onClick(item: Item) {
     emit('select', item.bundle)
   } else if (item.type === 'action') {
     emit('action', item.action)
+  } else if (item.type === 'fragment') {
+    emit('fragment', item.name)
   }
 }
 
 function onSubmitForm() {
-  const firstResult = filteredItems.value[0]
+  const firstResult =
+    filteredBlocks.value[0] ??
+    filteredFragments.value[0] ??
+    filteredActions.value[0]
   if (firstResult) {
     onClick(firstResult)
   }

@@ -1244,6 +1244,14 @@ msgctxt "bundle"
 msgid "Bundle"
 msgstr "Typ"
 
+msgctxt "bundleSelectorActionsLabel"
+msgid "Actions"
+msgstr "Aktionen"
+
+msgctxt "bundleSelectorFragmentsLabel"
+msgid "Fragments"
+msgstr "Fragmente"
+
 msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Auswahl abbrechen"
@@ -1702,7 +1710,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeiten..."
 
 msgctxt "editDisabledByDefinition"

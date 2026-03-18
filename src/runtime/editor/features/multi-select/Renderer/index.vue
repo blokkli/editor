@@ -18,7 +18,8 @@ import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { defineRenderer, useDebugLogger } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 
-const { eventBus, dom, theme, animation, ui, blocks } = useBlokkli()
+const { eventBus, dom, theme, animation, ui, blocks, permissions } =
+  useBlokkli()
 const logger = useDebugLogger()
 
 const props = defineProps<{
@@ -65,6 +66,9 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
       }
       const block = blocks.getBlock(uuid)
       if (!block) {
+        continue
+      }
+      if (permissions.blockHasRestrictedAncestor(uuid)) {
         continue
       }
       const el = dom.getDragElement(block)
