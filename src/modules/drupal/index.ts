@@ -379,6 +379,7 @@ fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEdit
         'isTranslatable',
         'hasPublishOn',
         'hasUnpublishOn',
+        'permissions',
       ].includes(field)
     })
 

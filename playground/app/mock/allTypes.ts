@@ -16,6 +16,10 @@ export const allTypes: BlockBundleDefinition[] = getParagraphBundles().map(
         permissions = ['add', 'delete']
       } else if (block.bundle === 'image') {
         permissions = []
+      } else if (block.bundle === 'from_library') {
+        permissions = []
+      } else if (block.bundle === 'blokkli_fragment') {
+        permissions = ['add', 'edit']
       }
     }
     return {

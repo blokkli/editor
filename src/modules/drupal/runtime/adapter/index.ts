@@ -206,9 +206,24 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         clipboard: v.data.clipboards || [],
         userPermissions: v.data.userPermissions,
         availableFeatures: v.data.features,
-        allTypes: (v.data.allTypes.items || []).filter(
-          (v) => v && 'id' in v,
-        ) as BlockBundleDefinition[],
+        allTypes: (v.data.allTypes.items || [])
+          .map<BlockBundleDefinition | null>((v) => {
+            if (v && 'id' in v && v.id) {
+              return {
+                id: v.id,
+                label: v.label ?? '',
+                description: v.description ?? '',
+                allowReusable: !!v.allowReusable,
+                isTranslatable: !!v.isTranslatable,
+                hasPublishOn: !!v.hasPublishOn,
+                hasUnpublishOn: !!v.hasUnpublishOn,
+                permissions: v.permissions ?? [],
+              }
+            }
+
+            return null
+          })
+          .filter(falsy),
         fieldConfig: v.data.fieldConfig || [],
         editableFieldConfig: v.data.editableFieldConfig || [],
         droppableFieldConfig: v.data.droppableFieldConfig || [],

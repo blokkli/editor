@@ -5652,10 +5652,23 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   fieldHeightRawField: FieldItemListInteger
 
   """{value} {field: field_iframe_url} """
-  fieldIframeUrl: FieldItemTypeLink
+  fieldIframeUrl: TaxonomyTermIframe
 
   """{field: field_iframe_url} """
-  fieldIframeUrlRawField: FieldItemListLink
+  fieldIframeUrlRawField: FieldItemListEntityReference
+
+  """
+  {value} {field: field_max_width} Hier kann eine maximale Breite in Pixel
+  eingetragen werden. Falls leer gelassen, wird die Breiteneinstellung auf dem
+  Abschnitt verwendet.
+  """
+  fieldMaxWidth: Int
+
+  """
+  {field: field_max_width} Hier kann eine maximale Breite in Pixel eingetragen
+  werden. Falls leer gelassen, wird die Breiteneinstellung auf dem Abschnitt
+  """
+  fieldMaxWidthRawField: FieldItemListInteger
 
   """{value} {field: field_referrer_policy} """
   fieldReferrerPolicy: String
@@ -8421,6 +8434,12 @@ type ParagraphsBlokkliTranslationStateEntityTranslation {
   url: String
 }
 
+enum ParagraphsBlokkliTypePermission {
+  add
+  delete
+  edit
+}
+
 input ParagraphsBlokkliUpdateHostOptionsInput {
   key: String!
   value: String!
@@ -9184,6 +9203,9 @@ type ParagraphsType implements Entity {
   """The langcode of this entity."""
   langcode: String
 
+  """The permissions the current user has for this paragraph type."""
+  permissions: [ParagraphsBlokkliTypePermission!]!
+
   """{field: status} """
   status: Boolean
 
@@ -9436,6 +9458,9 @@ type Query {
   pbSearchEditStates(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliEditStatesResults
   ping: String
   requestHeaders: [RequestHeader!]
+
+  """Resolve Drupal cache tags to entity information."""
+  resolveCacheTags(tags: [String!]!): [ResolvedCacheTag!]!
   route(path: String!, skipFrontpageRedirect: Boolean = false): Url
 
   """Search for a keyword."""
@@ -9640,6 +9665,26 @@ type RedirectUrl implements Url {
 type RequestHeader {
   key: String!
   value: [String!]
+}
+
+"""A resolved Drupal cache tag with entity information."""
+type ResolvedCacheTag {
+  """The human-readable bundle label."""
+  bundleLabel: String
+
+  """The entity label/title."""
+  entityLabel: String
+
+  """The entity type ID (e.g., 'node', 'file', 'taxonomy_term')."""
+  entityType: String
+
+  """The original cache tag string."""
+  id: String!
+
+  """
+  A useful URL for the entity (e.g., canonical URL for nodes, file URL for files).
+  """
+  url: String
 }
 
 """Rokka Metadata"""
@@ -9979,6 +10024,106 @@ type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable
 
   """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTermContact]
+
+  """{field: parent} The parents of this term."""
+  parentRawField: FieldItemListEntityReference
+
+  """{value} {field: status} """
+  status: Boolean
+
+  """{field: status} """
+  statusRawField: FieldItemListBoolean
+
+  """{value} {field: tid} The term ID."""
+  tid: Int
+
+  """{field: tid} The term ID."""
+  tidRawField: FieldItemListInteger
+
+  """Get the URL, defaults to canonical."""
+  url(options: UrlOptions, rel: String): Url
+
+  """The unique UUID."""
+  uuid: String!
+
+  """TRUE if the entity object was a revision, FALSE otherwise."""
+  wasDefaultRevision: Boolean
+
+  """
+  {value} {field: weight} The weight of this term in relation to other terms.
+  """
+  weight: Int
+
+  """{field: weight} The weight of this term in relation to other terms."""
+  weightRawField: FieldItemListInteger
+}
+
+"""iFrames {entity_type: taxonomy_term, bundle: iframe}"""
+type TaxonomyTermIframe implements Entity & EntityLinkable & EntityRevisionable & TaxonomyTerm {
+  """Check entity access for the given operation, defaults to view."""
+  accessCheck(operation: String): Boolean!
+
+  """{value} {field: changed} The time that the term was last edited."""
+  changed: String
+
+  """{field: changed} The time that the term was last edited."""
+  changedRawField: FieldItemListChanged
+  children: [TaxonomyTermIframe]
+
+  """
+  {value} {field: default_langcode} A flag indicating whether this is the default translation.
+  """
+  defaultLangcode: Boolean
+
+  """
+  {field: default_langcode} A flag indicating whether this is the default translation.
+  """
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  """{value} {field: description} """
+  description: String
+
+  """{field: description} """
+  descriptionRawField: FieldItemListTextLong
+
+  """The bundle ID of the entity."""
+  entityBundle: String!
+
+  """
+  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
+  """
+  entityRevisionId: String
+
+  """The entity type ID."""
+  entityTypeId: String!
+
+  """{value} {field: field_iframe_url} """
+  fieldIframeUrl: FieldItemTypeLink
+
+  """{field: field_iframe_url} """
+  fieldIframeUrlRawField: FieldItemListLink
+  id: String
+
+  """Checks if this entity is the latest revision."""
+  isLatestRevision: Boolean
+
+  """Determines whether the entity is new."""
+  isNew: Boolean!
+
+  """The label of this entity."""
+  label: String
+
+  """The langcode of this entity."""
+  langcode: String
+
+  """{value} {field: name} """
+  name: String
+
+  """{field: name} """
+  nameRawField: FieldItemListString
+
+  """{value} {field: parent} The parents of this term."""
+  parent: [TaxonomyTermIframe]
 
   """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference
