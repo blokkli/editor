@@ -47,15 +47,15 @@
 
   .bk-selection-add-overlay-list {
     @apply flex flex-wrap items-start;
-    padding: var(--bk-gap);
-    gap: var(--bk-gap);
+    padding: calc(var(--bk-gap) / 2);
 
     max-width: calc(
-      var(--bk-gap) * 2 + var(--bk-item-width) * var(--bk-columns) +
-        var(--bk-gap) * (var(--bk-columns) - 1) + 10px
+      var(--bk-item-width) * var(--bk-columns) + var(--bk-gap) *
+        (var(--bk-columns) - 1) + 10px
     );
     button {
       width: var(--bk-item-width);
+      padding: calc(var(--bk-gap) / 2);
       @apply rounded-md;
       @apply focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-mono-600 focus:!shadow-none;
       @apply self-start;
@@ -67,20 +67,10 @@
 
   .bk-selection-add-overlay-section {
     @apply border-t border-mono-700;
-    margin: 0 var(--bk-gap);
-
-    .bk-selection-add-overlay-list {
-      @apply px-0;
-    }
   }
 
   .bk-selection-add-overlay-section-label {
-    @apply flex items-center gap-8 text-mono-300 pt-15 uppercase font-semibold text-xs tracking-wide !leading-none;
-    .bk-icon {
-      @apply -translate-y-1;
-      svg {
-        @apply size-[14px] fill-current;
-      }
-    }
+    @apply flex items-center gap-8 text-mono-400 uppercase font-semibold text-xs tracking-wide !leading-none;
+    padding: 15px var(--bk-gap) 0;
   }
 }

@@ -64,7 +64,6 @@
           class="bk-selection-add-overlay-section"
         >
           <div class="bk-selection-add-overlay-section-label">
-            <Icon name="bk_mdi_extension" />
             <span>{{ $t('bundleSelectorActionsLabel', 'Actions') }}</span>
           </div>
           <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
@@ -81,7 +80,6 @@
           class="bk-selection-add-overlay-section"
         >
           <div class="bk-selection-add-overlay-section-label">
-            <Icon name="bk_mdi_newspaper" />
             <span>{{ $t('bundleSelectorFragmentsLabel', 'Fragments') }}</span>
           </div>
           <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">

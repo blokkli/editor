@@ -41,9 +41,7 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions on the target parent
-    if (
-      ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)
-    ) {
+    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
       return {
         error:
           'Permission denied: target parent is inside a block with restricted editing permissions',

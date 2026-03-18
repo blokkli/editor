@@ -69,7 +69,7 @@ const tooltipData = computed<{
   text: string
   isField: boolean
 } | null>(() => {
-  if (hoveredCircle.value < 0) {
+  if (hoveredCircle.value < 0 || ui.openTooltip.value) {
     return null
   }
 

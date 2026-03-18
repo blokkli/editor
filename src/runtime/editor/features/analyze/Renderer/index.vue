@@ -63,7 +63,8 @@ const showTooltip = computed(() => {
   return (
     !ui.isChangingOptions.value &&
     !selection.isMultiSelecting.value &&
-    !selection.activeEditableLabel.value
+    !selection.activeEditableLabel.value &&
+    !selection.isDragging.value
   )
 })
 

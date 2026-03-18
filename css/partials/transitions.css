@@ -27,7 +27,7 @@
       @apply origin-top;
     }
 
-    &.bk-is-top {
+    &.bk-is-y-top {
       .bk-caret-tooltip-inner {
         @apply origin-bottom;
       }
