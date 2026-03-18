@@ -126,9 +126,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', id: string): void
+  (e: 'select' | 'fragment', id: string): void
   (e: 'action', action: AddAction): void
-  (e: 'fragment', name: string): void
   (e: 'close'): void
 }>()
 
@@ -186,7 +185,8 @@ type Item =
       props: AddListItemProps
     }
 
-const { types, plugins, storage, $t, definitions, permissions } = useBlokkli()
+const { types, plugins, storage, $t, definitions, permissions, ui } =
+  useBlokkli()
 const favorites = storage.use<string[]>('blockFavorites', [])
 
 const blocks = computed<Item[]>(() => {
@@ -377,6 +377,21 @@ function onSubmitForm() {
 onMounted(() => {
   if (inputEl.value) {
     inputEl.value.focus()
+  }
+
+  if (!ui.isMobile.value) {
+    // Wait one frame for useStickyToolbar to position the tooltip, then
+    // calculate a dynamic max-height based on available viewport space.
+    requestAnimationFrame(() => {
+      if (!scrollEl.value) {
+        return
+      }
+      const rect = scrollEl.value.getBoundingClientRect()
+      const available = window.innerHeight - rect.top - 30
+      if (available > 0) {
+        scrollEl.value.style.maxHeight = Math.max(available, 200) + 'px'
+      }
+    })
   }
 })
 </script>
