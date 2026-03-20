@@ -11,9 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, useRoute, computed } from '#imports'
+import { useBlokkli, useRoute, ref, onMounted } from '#imports'
 import { PluginBlockIndicator } from '#blokkli/editor/plugins'
 import { emitMessage } from '#blokkli/editor/events'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 type Item = {
   id: string
@@ -22,14 +23,28 @@ type Item = {
 
 const route = useRoute()
 
-const { $t, adapter, dom } = useBlokkli()
+const { $t, adapter, ui } = useBlokkli()
 
-const items = computed(() => {
+function getAnchorItems(): Item[] {
   const anchorItems: Item[] = []
 
-  for (const entry of Object.entries(dom.registeredBlocks.value)) {
-    const uuid = entry[0]
-    const element = entry[1]
+  const nodes = [...ui.providerElement.querySelectorAll('[id]')]
+
+  for (const element of nodes) {
+    if (!(element instanceof HTMLElement)) {
+      continue
+    }
+
+    const block = element.closest('[data-bk-uuid]')
+    if (!(block instanceof HTMLElement)) {
+      continue
+    }
+
+    const uuid = block.dataset.bkUuid
+    if (!uuid) {
+      continue
+    }
+
     if (!element || !uuid) {
       continue
     }
@@ -43,7 +58,9 @@ const items = computed(() => {
   }
 
   return anchorItems
-})
+}
+
+const items = ref<Item[]>([])
 
 function getLinkForClipboard(item: Item) {
   if (adapter.buildAnchorLink) {
@@ -64,4 +81,12 @@ function onClick(item: Item) {
     emitMessage(message, 'success', undefined, true)
   }
 }
+
+onBlokkliEvent('state:reloaded', () => {
+  items.value = getAnchorItems()
+})
+
+onMounted(() => {
+  items.value = getAnchorItems()
+})
 </script>
