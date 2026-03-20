@@ -1,7 +1,7 @@
 {
   "actions": {
     "source": "Actions",
-    "translation": ""
+    "translation": "Aktione"
   },
   "actionsDropdownToolip": {
     "source": "Further actions",
@@ -9,23 +9,23 @@
   },
   "actionsMoveBlock": {
     "source": "Move block",
-    "translation": ""
+    "translation": "Block verschiebe"
   },
   "actionsMoveBlocks": {
     "source": "Move @count blocks",
-    "translation": ""
+    "translation": "@count Blöck verschiebe"
   },
   "actionsSelectPage": {
     "source": "Select page",
-    "translation": ""
+    "translation": "Sitte uswähle"
   },
   "actionsSelectParent": {
     "source": "Select parent (@label)",
-    "translation": ""
+    "translation": "Übergeordnete (@label) uswähle"
   },
   "addBlockCommand.appendInField": {
     "source": "Append \"@block\" in \"@field\"",
-    "translation": "«@block» in «@field» drzüefüege"
+    "translation": "«@block» in «@field» drzuefüege"
   },
   "addBlockCommand.appendRoot": {
     "source": "Append \"@block\"",
@@ -57,7 +57,7 @@
   },
   "addButtonBundleToField": {
     "source": "Add \"@bundle\" to @fieldLabel",
-    "translation": ""
+    "translation": "«@bundle» in @fieldLabel drzuefüege"
   },
   "addButtonInsideField": {
     "source": "Add inside @parentBundle » @fieldLabel...",
@@ -65,11 +65,11 @@
   },
   "addButtonToField": {
     "source": "Add to @fieldLabel...",
-    "translation": ""
+    "translation": "In @fieldLabel drzuefüege..."
   },
   "addCommentHeader": {
     "source": "Add Comment",
-    "translation": ""
+    "translation": "Kommentar drzuefüege"
   },
   "addCommentToItem": {
     "source": "Add Comment...",
@@ -93,75 +93,75 @@
   },
   "agentPromptReadabilityLabel": {
     "source": "Fix readability...",
-    "translation": ""
+    "translation": "Läsbarkäit verbessere..."
   },
   "agentPromptReadabilityPrompt": {
     "source": "The readability issues have already been analyzed and the fix has been applied. Do not call any more tools. Just very briefly confirm that you are done.",
-    "translation": ""
+    "translation": "D'Läsbarkäitsproblem sin scho analysiert und d'Korrektur isch aagwändet worde. Rüef käi witere Tools uf. Bestätig nur churz, dass du fertig bisch."
   },
   "agentPromptReadabilityUserPrompt": {
     "source": "Fix the readability of the selected paragraphs.",
-    "translation": ""
+    "translation": "Verbessere d'Läsbarkäit vo de usgwählte Blöck."
   },
   "agentSidebarTooltipLabel": {
     "source": "@name (AI-Assistant)",
-    "translation": ""
+    "translation": "@name (KI-Assischtänt)"
   },
   "aiAgentAddBlockDone": {
     "source": "Added @bundle",
-    "translation": ""
+    "translation": "@bundle drzuegfüegt"
   },
   "aiAgentAddBlocksDone": {
     "source": "Added @count blocks",
-    "translation": ""
+    "translation": "@count Blöck drzuegfüegt"
   },
   "aiAgentAddBlocksRunning": {
     "source": "Adding blocks...",
-    "translation": ""
+    "translation": "Blöck wärde drzuegfüegt..."
   },
   "aiAgentAddContentSearchBlockDone": {
     "source": "Added @bundle with content ID @id",
-    "translation": ""
+    "translation": "@bundle mit Inhalts-ID @id drzuegfüegt"
   },
   "aiAgentAddContentSearchBlockRunning": {
     "source": "Adding content paragraph...",
-    "translation": ""
+    "translation": "Inhaltsblock würd drzuegfüegt..."
   },
   "aiAgentAddFragmentDone": {
     "source": "Added fragment \"@label\"",
-    "translation": ""
+    "translation": "Fragmänt «@label» drzuegfüegt"
   },
   "aiAgentAddFragmentRunning": {
     "source": "Adding fragment...",
-    "translation": ""
+    "translation": "Fragmänt würd drzuegfüegt..."
   },
   "aiAgentAddLibraryItemDone": {
     "source": "Added reusable block",
-    "translation": ""
+    "translation": "Wiederverwändbare Block drzuegfüegt"
   },
   "aiAgentAddLibraryItemRunning": {
     "source": "Adding reusable block...",
-    "translation": ""
+    "translation": "Wiederverwändbare Block würd drzuegfüegt..."
   },
   "aiAgentAddMediaBlockDone": {
     "source": "Added @bundle with media ID @id",
-    "translation": ""
+    "translation": "@bundle mit Medie-ID @id drzuegfüegt"
   },
   "aiAgentAddMediaBlockRunning": {
     "source": "Adding media block...",
-    "translation": ""
+    "translation": "Medieblock würd drzuegfüegt..."
   },
   "aiAgentAddTemplateDone": {
     "source": "Added template",
-    "translation": ""
+    "translation": "Vorlag drzuegfüegt"
   },
   "aiAgentAddTemplateRunning": {
     "source": "Adding template...",
-    "translation": ""
+    "translation": "Vorlag würd drzuegfüegt..."
   },
   "aiAgentAlwaysApprove": {
     "source": "Always",
-    "translation": ""
+    "translation": "Immer"
   },
   "aiAgentAnalyzeContentDone": {
     "source": "Analyzed @count results",
@@ -169,427 +169,427 @@
   },
   "aiAgentAnalyzeContentRunning": {
     "source": "Analyzing content...",
-    "translation": "Inhalt wird analysiert..."
+    "translation": "Inhalt würd analysiert..."
   },
   "aiAgentApprovalAccept": {
     "source": "Accept",
-    "translation": ""
+    "translation": "Akzeptiere"
   },
   "aiAgentApprovalAccepted": {
     "source": "Accepted",
-    "translation": ""
+    "translation": "Akzeptiert"
   },
   "aiAgentApprovalHint": {
     "source": "Review changes and accept or reject them individually. Tab/Arrow keys: navigate, Space/Enter: accept/reject.",
-    "translation": ""
+    "translation": "Überprüef d'Änderige und akzeptier oder lehn si einzeln ab. Tab/Pfiiltaste: navigiere, Leertaste/Enter: akzeptiere/abläne."
   },
   "aiAgentApprovalNextChange": {
     "source": "Next change",
-    "translation": ""
+    "translation": "Nächschti Änderig"
   },
   "aiAgentApprovalPrevChange": {
     "source": "Previous change",
-    "translation": ""
+    "translation": "Vorherigi Änderig"
   },
   "aiAgentApprovalRejected": {
     "source": "Rejected",
-    "translation": ""
+    "translation": "Abglähnt"
   },
   "aiAgentApprovalToggle": {
     "source": "Toggle approval",
-    "translation": ""
+    "translation": "Bestätigung umschalte"
   },
   "aiAgentApprove": {
     "source": "Approve",
-    "translation": ""
+    "translation": "Bestätige"
   },
   "aiAgentApprovePlan": {
     "source": "Accept plan",
-    "translation": ""
+    "translation": "Plan akzeptiere"
   },
   "aiAgentAskQuestionOther": {
     "source": "None of the above",
-    "translation": ""
+    "translation": "Käis vo dene"
   },
   "aiAgentAskQuestionOtherPlaceholder": {
     "source": "Type your answer...",
-    "translation": ""
+    "translation": "Schriib dini Antwort..."
   },
   "aiAgentAskQuestionRunning": {
     "source": "Waiting for answer...",
-    "translation": ""
+    "translation": "Wartet uf Antwort..."
   },
   "aiAgentAwaitingApproval": {
     "source": "Awaiting your approval...",
-    "translation": ""
+    "translation": "Wartet uf dini Bestätigung..."
   },
   "aiAgentBatchRewriteAllApplied": {
     "source": "All @count changes applied",
-    "translation": ""
+    "translation": "Alli @count Änderige aagwändet"
   },
   "aiAgentBatchRewriteAllRejected": {
     "source": "All changes rejected",
-    "translation": ""
+    "translation": "Alli Änderige abglähnt"
   },
   "aiAgentBatchRewriteApply": {
     "source": "Apply @count of @total",
-    "translation": ""
+    "translation": "@count vo @total aawände"
   },
   "aiAgentBatchRewriteReasonPlaceholder": {
     "source": "Reason for rejection (optional)",
-    "translation": ""
+    "translation": "Grund für d'Ablähnig (optional)"
   },
   "aiAgentBatchRewriteSomeApplied": {
     "source": "@applied of @total changes applied",
-    "translation": ""
+    "translation": "@applied vo @total Änderige aagwändet"
   },
   "aiAgentBatchRewriteTextRunning": {
     "source": "Rewriting multiple texts...",
-    "translation": ""
+    "translation": "Mehreri Teggscht wärde umgschriibe..."
   },
   "aiAgentBlockNotFound": {
     "source": "Block not found",
-    "translation": ""
+    "translation": "Block nid gfunde"
   },
   "aiAgentCancelled": {
     "source": "Cancelled",
-    "translation": ""
+    "translation": "Abbroche"
   },
   "aiAgentCheckReadabilityDone": {
     "source": "Checked readability for @count texts",
-    "translation": ""
+    "translation": "Läsbarkäit vo @count Teggscht überprüeft"
   },
   "aiAgentCheckReadabilityRunning": {
     "source": "Checking readability...",
-    "translation": ""
+    "translation": "Läsbarkäit würd überprüeft..."
   },
   "aiAgentCompletePlanStep": {
     "source": "Completed: @label",
-    "translation": ""
+    "translation": "Abgschlosse: @label"
   },
   "aiAgentConfirm": {
     "source": "Confirm",
-    "translation": ""
+    "translation": "Bestätige"
   },
   "aiAgentConnecting": {
     "source": "Connecting...",
-    "translation": ""
+    "translation": "Verbinde..."
   },
   "aiAgentCreateChartDone": {
     "source": "Added chart",
-    "translation": ""
+    "translation": "Diagramm drzuegfüegt"
   },
   "aiAgentCreateChartRunning": {
     "source": "Creating chart...",
-    "translation": ""
+    "translation": "Diagramm würd erstellt..."
   },
   "aiAgentCreatePlan": {
     "source": "Plan: @label",
-    "translation": ""
+    "translation": "Plan: @label"
   },
   "aiAgentDelegateRewriteCancelled": {
     "source": "Rewriting cancelled",
-    "translation": ""
+    "translation": "Umschriibe abbroche"
   },
   "aiAgentDelegateRewriteChecking": {
     "source": "Checking readability...",
-    "translation": ""
+    "translation": "Läsbarkäit würd überprüeft..."
   },
   "aiAgentDelegateRewriteError": {
     "source": "Rewriting failed",
-    "translation": ""
+    "translation": "Umschriibe fählgschlage"
   },
   "aiAgentDelegateRewriteFailed": {
     "source": "Rewriting failed",
-    "translation": ""
+    "translation": "Umschriibe fählgschlage"
   },
   "aiAgentDelegateRewriteNoChanges": {
     "source": "No changes detected",
-    "translation": ""
+    "translation": "Käi Änderige erkannt"
   },
   "aiAgentDelegateRewriteRetrying": {
     "source": "Retrying @count fields (attempt @attempt)...",
-    "translation": ""
+    "translation": "@count Fälder wärde nämol probiert (Versuech @attempt)..."
   },
   "aiAgentDelegateRewriteRunning": {
     "source": "Rewriting texts...",
-    "translation": ""
+    "translation": "Teggscht wärde umgschriibe..."
   },
   "aiAgentDelegateRewriteStreaming": {
     "source": "Rewriting @count fields...",
-    "translation": ""
+    "translation": "@count Fälder wärde umgschriibe..."
   },
   "aiAgentDeleteBlockDone": {
     "source": "Deleted @bundle",
-    "translation": ""
+    "translation": "@bundle glöscht"
   },
   "aiAgentDeleteBlocksDone": {
     "source": "Deleted @count blocks",
-    "translation": ""
+    "translation": "@count Blöck glöscht"
   },
   "aiAgentDeleteBlocksRunning": {
     "source": "Deleting blocks...",
-    "translation": ""
+    "translation": "Blöck wärde glöscht..."
   },
   "aiAgentDeleteConversation": {
     "source": "Delete conversation",
-    "translation": ""
+    "translation": "Konversation lösche"
   },
   "aiAgentDetachLibraryBlockDone": {
     "source": "Detached library block",
-    "translation": ""
+    "translation": "Bibliotheksblock losglöst"
   },
   "aiAgentDetachLibraryBlockRunning": {
     "source": "Detaching library block...",
-    "translation": ""
+    "translation": "Bibliotheksblock würd losglöst..."
   },
   "aiAgentDetachLibraryBlocksDone": {
     "source": "Detached @count library blocks",
-    "translation": ""
+    "translation": "@count Bibliotheksblöck losglöst"
   },
   "aiAgentDisconnected": {
     "source": "Connection lost. Reconnecting...",
-    "translation": ""
+    "translation": "Verbindig verlore. Würd nöi verbunde..."
   },
   "aiAgentDropFiles": {
     "source": "Drop files to attach",
-    "translation": ""
+    "translation": "Dateie ablege zum Aahänge"
   },
   "aiAgentDuplicateBlockDone": {
     "source": "Duplicated @bundle",
-    "translation": ""
+    "translation": "@bundle dupliziert"
   },
   "aiAgentDuplicateBlockToFieldDone": {
     "source": "Duplicated @bundle to @field",
-    "translation": ""
+    "translation": "@bundle in @field dupliziert"
   },
   "aiAgentDuplicateBlocksDone": {
     "source": "Duplicated @count blocks",
-    "translation": ""
+    "translation": "@count Blöck dupliziert"
   },
   "aiAgentDuplicateBlocksRunning": {
     "source": "Duplicating blocks...",
-    "translation": ""
+    "translation": "Blöck wärde dupliziert..."
   },
   "aiAgentDuplicateBlocksToFieldDone": {
     "source": "Duplicated @count blocks to @field",
-    "translation": ""
+    "translation": "@count Blöck in @field dupliziert"
   },
   "aiAgentErrorAuthentication": {
     "source": "API authentication failed. Please check your API key.",
-    "translation": ""
+    "translation": "API-Authentifizierig fählgschlage. Bitte überprüef din API-Schlüssel."
   },
   "aiAgentErrorBadRequest": {
     "source": "The request to the AI service was invalid.",
-    "translation": ""
+    "translation": "D'Aafrog a de KI-Dienst isch ungültig gsi."
   },
   "aiAgentErrorConnection": {
     "source": "Could not connect to the AI service. Please check your network connection.",
-    "translation": ""
+    "translation": "Chönnt nid zum KI-Dienst verbinde. Bitte überprüef dini Netzwerkverbindig."
   },
   "aiAgentErrorNotFound": {
     "source": "The configured AI model was not found. Please check the configuration.",
-    "translation": ""
+    "translation": "S'konfigurierte KI-Modell isch nid gfunde worde. Bitte überprüef d'Konfiguration."
   },
   "aiAgentErrorOverloaded": {
     "source": "The AI service is currently overloaded. Please try again in a moment.",
-    "translation": ""
+    "translation": "Dr KI-Dienst isch momentan überlastet. Bitte probier's in ere Minute nämol."
   },
   "aiAgentErrorRateLimit": {
     "source": "Rate limit exceeded. Please wait a moment before trying again.",
-    "translation": ""
+    "translation": "Aafrog-Limit überschritte. Bitte wart en Momänt bevor du's nämol probiersch."
   },
   "aiAgentErrorUnauthorized": {
     "source": "Authentication failed. Please reload the page and try again.",
-    "translation": ""
+    "translation": "Authentifizierig fählgschlage. Bitte lad d'Sitte nöi und probier's nämol."
   },
   "aiAgentErrorUnknown": {
     "source": "An unexpected error occurred.",
-    "translation": ""
+    "translation": "En unerwartete Fähler isch ufträtte."
   },
   "aiAgentExpandButton": {
     "source": "Show more",
-    "translation": ""
+    "translation": "Meh aazeige"
   },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
-    "translation": ""
+    "translation": "@count Blöck gfunde"
   },
   "aiAgentFindBlocksRunning": {
     "source": "Finding blocks...",
-    "translation": ""
+    "translation": "Blöck wärde gsuecht..."
   },
   "aiAgentGetAllFragments": {
     "source": "Get all fragments",
-    "translation": ""
+    "translation": "Alli Fragmänt hole"
   },
   "aiAgentGetAllFragmentsDone": {
     "source": "Got all fragments",
-    "translation": ""
+    "translation": "Alli Fragmänt gholt"
   },
   "aiAgentGetAllPageContentDone": {
     "source": "Got content from @count blocks",
-    "translation": ""
+    "translation": "Inhalt vo @count Blöck gholt"
   },
   "aiAgentGetAllPageContentRunning": {
     "source": "Getting all page content...",
-    "translation": ""
+    "translation": "Gsamte Sitteinhalt würd gholt..."
   },
   "aiAgentGetBlockContextDone": {
     "source": "Got context for @bundle",
-    "translation": ""
+    "translation": "Kontäxt vo @bundle gholt"
   },
   "aiAgentGetBlockContextRunning": {
     "source": "Getting block context...",
-    "translation": ""
+    "translation": "Block-Kontäxt würd gholt..."
   },
   "aiAgentGetBlockOptionsDone": {
     "source": "Got options of @bundle",
-    "translation": ""
+    "translation": "Optione vo @bundle gholt"
   },
   "aiAgentGetBlockOptionsMultipleDone": {
     "source": "Got options of @count blocks",
-    "translation": ""
+    "translation": "Optione vo @count Blöck gholt"
   },
   "aiAgentGetBlockOptionsRunning": {
     "source": "Getting block options...",
-    "translation": ""
+    "translation": "Block-Optione wärde gholt..."
   },
   "aiAgentGetBlocksInViewportDone": {
     "source": "Got @count blocks in viewport",
-    "translation": ""
+    "translation": "@count Blöck im sichtbare Bereich gfunde"
   },
   "aiAgentGetBlocksInViewportRunning": {
     "source": "Getting blocks in viewport...",
-    "translation": ""
+    "translation": "Blöck im sichtbare Bereich wärde gholt..."
   },
   "aiAgentGetBundleInfoDone": {
     "source": "Got bundle info for @field",
-    "translation": ""
+    "translation": "Typ-Info für @field gholt"
   },
   "aiAgentGetBundleInfoRunning": {
     "source": "Getting bundle info...",
-    "translation": ""
+    "translation": "Typ-Info würd gholt..."
   },
   "aiAgentGetChartDataDone": {
     "source": "Got chart data",
-    "translation": ""
+    "translation": "Diagramm-Date gholt"
   },
   "aiAgentGetChartDataRunning": {
     "source": "Getting chart data...",
-    "translation": ""
+    "translation": "Diagramm-Date wärde gholt..."
   },
   "aiAgentGetChartTypeOptionsRunning": {
     "source": "Getting chart options...",
-    "translation": ""
+    "translation": "Diagramm-Optione wärde gholt..."
   },
   "aiAgentGetChildBlocks": {
     "source": "Get child blocks",
-    "translation": ""
+    "translation": "Underblöck hole"
   },
   "aiAgentGetChildBlocksDone": {
     "source": "Got children of @bundle",
-    "translation": ""
+    "translation": "Underblöck vo @bundle gholt"
   },
   "aiAgentGetChildBlocksNone": {
     "source": "@bundle has no child fields",
-    "translation": ""
+    "translation": "@bundle het käi Underfälder"
   },
   "aiAgentGetContentFieldsDone": {
     "source": "Got content fields of @bundle block",
-    "translation": ""
+    "translation": "Inhaltsfälder vo @bundle Block gholt"
   },
   "aiAgentGetContentFieldsMultipleDone": {
     "source": "Got content fields of @count blocks",
-    "translation": ""
+    "translation": "Inhaltsfälder vo @count Blöck gholt"
   },
   "aiAgentGetContentFieldsRunning": {
     "source": "Getting content fields...",
-    "translation": ""
+    "translation": "Inhaltsfälder wärde gholt..."
   },
   "aiAgentGetEntityContentFieldsDone": {
     "source": "Got content fields of page entity",
-    "translation": ""
+    "translation": "Inhaltsfälder vo de Sitteentität gholt"
   },
   "aiAgentGetMutationHistoryDone": {
     "source": "Got mutation history",
-    "translation": ""
+    "translation": "Änderigsverlauf gholt"
   },
   "aiAgentGetMutationHistoryRunning": {
     "source": "Getting mutation history...",
-    "translation": ""
+    "translation": "Änderigsverlauf würd gholt..."
   },
   "aiAgentGetPageStructureDone": {
     "source": "Got page structure (@count paragraphs)",
-    "translation": ""
+    "translation": "Sittestruktur gholt (@count Blöck)"
   },
   "aiAgentGetPageStructureRunning": {
     "source": "Getting page structure...",
-    "translation": ""
+    "translation": "Sittestruktur würd gholt..."
   },
   "aiAgentGetSelectedBlocksDone": {
     "source": "@count block(s) selected",
-    "translation": ""
+    "translation": "@count Block/Blöck usgwählt"
   },
   "aiAgentGetSelectedBlocksNone": {
     "source": "No blocks selected",
-    "translation": ""
+    "translation": "Käi Blöck usgwählt"
   },
   "aiAgentGetSelectedBlocksRunning": {
     "source": "Getting selected blocks...",
-    "translation": ""
+    "translation": "Usgwählti Blöck wärde gholt..."
   },
   "aiAgentGoToHistoryIndexRunning": {
     "source": "Navigating history...",
-    "translation": ""
+    "translation": "Im Verlauf würd navigiert..."
   },
   "aiAgentIntroPopup": {
     "source": "Need help editing? @name is your AI assistant — it can add, move, and update blocks and much more. Give it a try!",
-    "translation": ""
+    "translation": "Bruchsch Hilf bim Bearbeite? @name isch din KI-Assischtänt — er cha Blöck drzuefüege, verschiebe und aktualisiere und no viel meh. Probier's us!"
   },
   "aiAgentIntroPopupCta": {
     "source": "Get started",
-    "translation": ""
+    "translation": "Los goh"
   },
   "aiAgentLoadSkill": {
     "source": "Using skill \"@label\"",
-    "translation": ""
+    "translation": "Skill «@label» würd bruucht"
   },
   "aiAgentLoadTools": {
     "source": "@count tools loaded",
-    "translation": ""
+    "translation": "@count Tools glade"
   },
   "aiAgentMoveBlockDone": {
     "source": "Moved @bundle",
-    "translation": ""
+    "translation": "@bundle verschobe"
   },
   "aiAgentMoveBlocksDone": {
     "source": "Moved @count blocks",
-    "translation": ""
+    "translation": "@count Blöck verschobe"
   },
   "aiAgentMoveBlocksRunning": {
     "source": "Moving blocks...",
-    "translation": ""
+    "translation": "Blöck wärde verschobe..."
   },
   "aiAgentNewConversation": {
     "source": "Start new conversation",
-    "translation": ""
+    "translation": "Nöii Konversation starte"
   },
   "aiAgentNoConversations": {
     "source": "No past conversations.",
-    "translation": ""
+    "translation": "Käi vergangeni Konversatione."
   },
   "aiAgentPastConversations": {
     "source": "Past conversations",
-    "translation": ""
+    "translation": "Vergangeni Konversatione"
   },
   "aiAgentPastedText": {
     "source": "Pasted text",
-    "translation": "Iigfüegter Tekscht"
+    "translation": "Iigfüegter Teggscht"
   },
   "aiAgentPlaceholder": {
     "source": "What should we work on?",
-    "translation": ""
+    "translation": "Woran sölle mer schaffe?"
   },
   "aiAgentPlaceholderReply": {
     "source": "Reply...",
@@ -597,31 +597,31 @@
   },
   "aiAgentPlanCompleted": {
     "source": "Plan completed: @label",
-    "translation": ""
+    "translation": "Plan abgschlosse: @label"
   },
   "aiAgentPopupTitle": {
     "source": "AI-Assistant",
-    "translation": ""
+    "translation": "KI-Assischtänt"
   },
   "aiAgentProcessing": {
     "source": "Processing...",
-    "translation": ""
+    "translation": "Würd verarbeitet..."
   },
   "aiAgentRearrangeBlocksDone": {
     "source": "Rearranged @count blocks",
-    "translation": ""
+    "translation": "@count Blöck nöi aagordnet"
   },
   "aiAgentRearrangeBlocksRunning": {
     "source": "Rearranging blocks...",
-    "translation": ""
+    "translation": "Blöck wärde nöi aagordnet..."
   },
   "aiAgentRedoDone": {
     "source": "Redid @count changes",
-    "translation": ""
+    "translation": "@count Änderige widerholt"
   },
   "aiAgentReject": {
     "source": "Reject",
-    "translation": ""
+    "translation": "Abläne"
   },
   "aiAgentRemoveAttachment": {
     "source": "Remove attachment",
@@ -629,99 +629,99 @@
   },
   "aiAgentReplaceContentSearchItemDone": {
     "source": "Replaced content reference on @field",
-    "translation": ""
+    "translation": "Inhaltsreferänz uf @field ersetzt"
   },
   "aiAgentReplaceContentSearchItemRunning": {
     "source": "Replacing content reference...",
-    "translation": ""
+    "translation": "Inhaltsreferänz würd ersetzt..."
   },
   "aiAgentReplaceMediaDone": {
     "source": "Replaced media on @field",
-    "translation": ""
+    "translation": "Medie uf @field ersetzt"
   },
   "aiAgentReplaceMediaRunning": {
     "source": "Replacing media...",
-    "translation": ""
+    "translation": "Medie würd ersetzt..."
   },
   "aiAgentRetry": {
     "source": "Retry",
-    "translation": ""
+    "translation": "Nämol probiere"
   },
   "aiAgentSearchContentRunning": {
     "source": "Searching content...",
-    "translation": ""
+    "translation": "Inhalt würd gsuecht..."
   },
   "aiAgentSearchLibraryDone": {
     "source": "Searched library",
-    "translation": ""
+    "translation": "Bibliothek duregsuecht"
   },
   "aiAgentSearchLibraryRunning": {
     "source": "Searching reusable blocks...",
-    "translation": ""
+    "translation": "Wiederverwändbari Blöck wärde gsuecht..."
   },
   "aiAgentSearchMediaAllDone": {
     "source": "Searched all media",
-    "translation": ""
+    "translation": "Alli Medie duregsuecht"
   },
   "aiAgentSearchMediaDone": {
     "source": "Searched media for '@query'",
-    "translation": ""
+    "translation": "Medie für «@query» duregsuecht"
   },
   "aiAgentSearchMediaRunning": {
     "source": "Searching media...",
-    "translation": ""
+    "translation": "Medie wärde gsuecht..."
   },
   "aiAgentSearchTemplatesAllDone": {
     "source": "Searched all templates",
-    "translation": ""
+    "translation": "Alli Vorlage duregsuecht"
   },
   "aiAgentSearchTemplatesDone": {
     "source": "Searched templates for '@query'",
-    "translation": ""
+    "translation": "Vorlage für «@query» duregsuecht"
   },
   "aiAgentSearchTemplatesRunning": {
     "source": "Searching templates...",
-    "translation": ""
+    "translation": "Vorlage wärde gsuecht..."
   },
   "aiAgentSearchTextDone": {
     "source": "Found @count blocks matching '@query'",
-    "translation": ""
+    "translation": "@count Blöck für «@query» gfunde"
   },
   "aiAgentSearchTextError": {
     "source": "Invalid regex pattern",
-    "translation": ""
+    "translation": "Ungültigs Regex-Muschter"
   },
   "aiAgentSearchTextRunning": {
     "source": "Searching text...",
-    "translation": ""
+    "translation": "Teggscht würd gsuecht..."
   },
   "aiAgentSelectMediaRunning": {
     "source": "Selecting media...",
-    "translation": ""
+    "translation": "Medie würd usgwählt..."
   },
   "aiAgentSetBlockOptionsRunning": {
     "source": "Setting block options...",
-    "translation": ""
+    "translation": "Block-Optione wärde gsetzt..."
   },
   "aiAgentShowTranscript": {
     "source": "Show transcript...",
-    "translation": ""
+    "translation": "Transkript aazeige..."
   },
   "aiAgentSwapBlocksDone": {
     "source": "Swapped @bundleA and @bundleB",
-    "translation": ""
+    "translation": "@bundleA und @bundleB tuscht"
   },
   "aiAgentSwapBlocksRunning": {
     "source": "Swapping blocks...",
-    "translation": ""
+    "translation": "Blöck wärde tuscht..."
   },
   "aiAgentThinking": {
     "source": "Thinking...",
-    "translation": ""
+    "translation": "Am Überlegge..."
   },
   "aiAgentTokensCached": {
     "source": "Reused input tokens (cheaper)",
-    "translation": "Widerverwendeti Iigabe-Tokens (günstiger)"
+    "translation": "Wiederverwändeti Iigabe-Tokens (günstiger)"
   },
   "aiAgentTokensCachedLabel": {
     "source": "Cached",
@@ -753,47 +753,47 @@
   },
   "aiAgentTourText": {
     "source": "Chat with an AI assistant to edit page content.",
-    "translation": ""
+    "translation": "Mitem KI-Assischtänt chatte zum Sitteinhalt z'bearbeite."
   },
   "aiAgentUndoDone": {
     "source": "Undid @count changes",
-    "translation": ""
+    "translation": "@count Änderige rückgängig gmacht"
   },
   "aiAgentUnknownMessage": {
     "source": "Unknown message type",
-    "translation": ""
+    "translation": "Unbekannte Nachrichtetyp"
   },
   "aiAgentUpdateChartDone": {
     "source": "Updated chart",
-    "translation": ""
+    "translation": "Diagramm aktualisiert"
   },
   "aiAgentUpdateChartRunning": {
     "source": "Updating chart...",
-    "translation": ""
+    "translation": "Diagramm würd aktualisiert..."
   },
   "aiAgentUpdateOptionsOnBlockDone": {
     "source": "Updated @count option(s) on block",
-    "translation": ""
+    "translation": "@count Option(e) uf em Block aktualisiert"
   },
   "aiAgentUpdateOptionsOnBlocksDone": {
     "source": "Updated @count option(s) on @blockCount blocks",
-    "translation": ""
+    "translation": "@count Option(e) uf @blockCount Blöck aktualisiert"
   },
   "aiAgentViewAttachment": {
     "source": "View attachment",
-    "translation": ""
+    "translation": "Aahang aazeige"
   },
   "aiAgentWebFetchDone": {
     "source": "Fetched '@title'",
-    "translation": ""
+    "translation": "«@title» abgruefe"
   },
   "aiAgentWebFetchRunning": {
     "source": "Fetching web page...",
-    "translation": ""
+    "translation": "Websitte würd abgruefe..."
   },
   "aiAgentWelcomeDisclaimer": {
     "source": "@agent can make mistakes! Always check the output. <strong>Do not enter sensitive information.</strong>",
-    "translation": ""
+    "translation": "@agent cha Fähler mache! Überprüef immer s'Ergebnis. <strong>Gib käi sensibli Date ii.</strong>"
   },
   "all": {
     "source": "All",
@@ -801,31 +801,31 @@
   },
   "allowedBlocks": {
     "source": "Allowed Blocks",
-    "translation": ""
+    "translation": "Erlaubti Blöck"
   },
   "analyzeAltTextLabel": {
     "source": "Image Alt Texts",
-    "translation": ""
+    "translation": "Bild Alt-Teggscht"
   },
   "analyzeAltTextMissing": {
     "source": "Images without alt text",
-    "translation": ""
+    "translation": "Bilder ohni Alt-Teggscht"
   },
   "analyzeAltTextMissingDescription": {
     "source": "Images are missing alt text. Alt texts are important for accessibility and SEO.",
-    "translation": ""
+    "translation": "Bilder hän käi Alt-Teggscht. Alt-Teggscht sin wichtig für d'Barrierefreiheit und SEO."
   },
   "analyzeAltTextMissingNode": {
     "source": "Image without alt text",
-    "translation": ""
+    "translation": "Bild ohni Alt-Teggscht"
   },
   "analyzeAltTextValid": {
     "source": "Images with alt text",
-    "translation": ""
+    "translation": "Bilder mit Alt-Teggscht"
   },
   "analyzeAltTextValidDescription": {
     "source": "Images have an alt text.",
-    "translation": ""
+    "translation": "Bilder hän e Alt-Teggscht."
   },
   "analyzeButtonLabel": {
     "source": "Analyze Page",
@@ -853,71 +853,71 @@
   },
   "analyzeClickButton": {
     "source": "Click the button above to run the analysis.",
-    "translation": ""
+    "translation": "Klick uf de Button obe zum d'Analys uuszfüehre."
   },
   "analyzeHeadingHasH2": {
     "source": "H2 headings present",
-    "translation": ""
+    "translation": "H2-Überschrifte vorhande"
   },
   "analyzeHeadingHasH2Description": {
     "source": "The page contains H2 headings for a clear content structure.",
-    "translation": ""
+    "translation": "D'Sitte het H2-Überschrifte für e klari Inhaltsstruktur."
   },
   "analyzeHeadingMultipleH1": {
     "source": "Multiple H1 headings",
-    "translation": ""
+    "translation": "Mehreri H1-Überschrifte"
   },
   "analyzeHeadingMultipleH1Description": {
     "source": "The page contains multiple H1 headings. There should only be one H1 heading per page.",
-    "translation": ""
+    "translation": "D'Sitte het mehreri H1-Überschrifte. Es sött nur eini H1-Überschrift pro Sitte gäh."
   },
   "analyzeHeadingNoH2": {
     "source": "Missing H2 headings",
-    "translation": ""
+    "translation": "Fählendi H2-Überschrifte"
   },
   "analyzeHeadingNoH2Description": {
     "source": "The page contains no H2 headings. A clear heading structure is important for SEO and accessibility.",
-    "translation": ""
+    "translation": "D'Sitte het käi H2-Überschrifte. E klari Überschriftestruktur isch wichtig für SEO und Barrierefreiheit."
   },
   "analyzeHeadingNoH2Found": {
     "source": "No H2 headings found",
-    "translation": ""
+    "translation": "Käi H2-Überschrifte gfunde"
   },
   "analyzeHeadingNoSkippedLevels": {
     "source": "No skipped heading levels",
-    "translation": ""
+    "translation": "Käi übersprungeni Überschrifte-Ebene"
   },
   "analyzeHeadingNoSkippedLevelsDescription": {
     "source": "The heading hierarchy does not skip any levels.",
-    "translation": ""
+    "translation": "D'Überschrifte-Hierarchie überspringt käi Ebene."
   },
   "analyzeHeadingSingleH1": {
     "source": "Single H1 heading",
-    "translation": ""
+    "translation": "Einzelni H1-Überschrift"
   },
   "analyzeHeadingSingleH1Description": {
     "source": "The page has exactly one H1 heading.",
-    "translation": ""
+    "translation": "D'Sitte het genau eini H1-Überschrift."
   },
   "analyzeHeadingSkippedLevels": {
     "source": "Skipped heading levels",
-    "translation": ""
+    "translation": "Überschrifte-Ebene übersprunge"
   },
   "analyzeHeadingSkippedLevelsDescription": {
     "source": "Headings skip a level. The heading hierarchy should not skip levels (e.g. do not jump from H2 to H4).",
-    "translation": ""
+    "translation": "Überschrifte überspringe e Ebeni. D'Überschrifte-Hierarchie sött käi Ebene überspringe (z.B. nid vo H2 uf H4 springe)."
   },
   "analyzeHeadingStructureLabel": {
     "source": "Heading Structure",
-    "translation": ""
+    "translation": "Überschrifte-Struktur"
   },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
-    "translation": ""
+    "translation": "Ergebnis sichtbar bhalte"
   },
   "analyzeKeepVisibleDescription": {
     "source": "When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.",
-    "translation": "Wenn aktiviert, bliibe d Analyseergebnis uf de Siite hervorghobe, au wenn s Analyse-Panel zuegmacht isch."
+    "translation": "Wenn aktiviert, bliibe d'Analyseergebnis uf dr Sitte hervorghobe, au wenn s'Analyse-Panel zuegmacht isch."
   },
   "analyzeLastRun": {
     "source": "Last run: @time",
@@ -929,11 +929,11 @@
   },
   "analyzeNotAvailableInStructureView": {
     "source": "Analyze is not available in structure view.",
-    "translation": ""
+    "translation": "Analys isch in de Strukturaasicht nid verfüegbar."
   },
   "analyzeResultsOutdated": {
     "source": "Results are outdated. Click the button to update.",
-    "translation": ""
+    "translation": "D'Ergebnis sin veraltet. Klick uf de Button zum Aktualisiere."
   },
   "analyzeSidebarTitle": {
     "source": "Analyze",
@@ -953,11 +953,11 @@
   },
   "analyzeStatusStale": {
     "source": "Stale",
-    "translation": ""
+    "translation": "Veraltet"
   },
   "analyzeStatusUpToDate": {
     "source": "Up-to-date",
-    "translation": ""
+    "translation": "Aktuell"
   },
   "analyzeStatusViolation": {
     "source": "Violation",
@@ -981,11 +981,11 @@
   },
   "analyzerReadabiliyOkDescription": {
     "source": "Text that could be easier to read.",
-    "translation": "Text, wo eifacher z läse chönnt si."
+    "translation": "Teggscht, wo eifacher z'läse chönnt si."
   },
   "analyzerReadabiliyOkTitle": {
     "source": "Text could be simpler",
-    "translation": "Text chönnt eifacher si"
+    "translation": "Teggscht chönnt eifacher si"
   },
   "analyzerReadabiliyShorterSentences": {
     "source": "Consider shorter sentences and simpler wording.",
@@ -1033,7 +1033,7 @@
   },
   "artboardScaleToFit": {
     "source": "Scale to fit",
-    "translation": "And Höchi aapasse"
+    "translation": "A d'Höchi aapasse"
   },
   "artboardScrollDown": {
     "source": "Scroll down",
@@ -1041,11 +1041,11 @@
   },
   "artboardScrollOnePageDown": {
     "source": "Scroll one page down",
-    "translation": "E Sitte ufescrolle"
+    "translation": "E Sitte abescrolle"
   },
   "artboardScrollOnePageUp": {
     "source": "Scroll one page up",
-    "translation": "E Sitte abescrolle"
+    "translation": "E Sitte ufescrolle"
   },
   "artboardScrollToEnd": {
     "source": "Scroll to end",
@@ -1097,11 +1097,11 @@
   },
   "availableBlocks": {
     "source": "Available blocks",
-    "translation": ""
+    "translation": "Verfüegbari Blöck"
   },
   "availableFragments": {
     "source": "Available fragments",
-    "translation": ""
+    "translation": "Verfüegbari Fragmänt"
   },
   "blockAddListTourText": {
     "source": "Right-click on a block to add or remove them from your favorites. Favorites are highlighted and always displayed at the top of the list.",
@@ -1113,11 +1113,11 @@
   },
   "blockNotImplemented": {
     "source": "Missing component for block bundle <strong>@bundle</strong>.",
-    "translation": ""
+    "translation": "Fählendi Komponänte für Block-Typ <strong>@bundle</strong>."
   },
   "blockOption_bkHiddenGlobally_description": {
     "source": "Always hides the block.",
-    "translation": ""
+    "translation": "De Block immer verstecke."
   },
   "blockOption_bkHiddenGlobally_label": {
     "source": "Hide globally",
@@ -1125,7 +1125,7 @@
   },
   "blockOption_bkVisibleLanguages_description": {
     "source": "Only show on specific languages.",
-    "translation": ""
+    "translation": "Nur uf bestimmte Sproche aazeige."
   },
   "blockOption_bkVisibleLanguages_label": {
     "source": "Visible languages",
@@ -1133,55 +1133,55 @@
   },
   "blockSchedulerChangesPreview": {
     "source": "Changes to be applied",
-    "translation": ""
+    "translation": "Aazwändendi Änderige"
   },
   "blockSchedulerDialogLead": {
     "source": "Schedule automatic publishing and unpublishing dates for the selected blocks.",
-    "translation": ""
+    "translation": "Automatischi Veröffentlichigs- und Depublikationsdate für d'usgwählte Blöck plane."
   },
   "blockSchedulerDialogPublishOn": {
     "source": "Publish on",
-    "translation": ""
+    "translation": "Veröffentliche am"
   },
   "blockSchedulerDialogSubmit": {
     "source": "Save schedule",
-    "translation": ""
+    "translation": "Planung speichere"
   },
   "blockSchedulerDialogTitle": {
     "source": "Manage scheduling",
-    "translation": ""
+    "translation": "Planung verwalte"
   },
   "blockSchedulerDialogUnpublishOn": {
     "source": "Unpublish on",
-    "translation": ""
+    "translation": "Depubliziere am"
   },
   "blockSchedulerMixedDates": {
     "source": "Selected blocks have different dates: @dates",
-    "translation": ""
+    "translation": "Usgwählti Blöck hän verschiedeni Date: @dates"
   },
   "blockSchedulerNoChanges": {
     "source": "No changes to be applied.",
-    "translation": ""
+    "translation": "Käi Änderige zum Aawände."
   },
   "blockSchedulerOverride": {
     "source": "Set date for all",
-    "translation": ""
+    "translation": "Datum für alli setze"
   },
   "blockSchedulerSuccessMessage": {
     "source": "Successfully updated schedule dates.",
-    "translation": ""
+    "translation": "Planungsdate erfolgriich aktualisiert."
   },
   "bundle": {
     "source": "Bundle",
-    "translation": ""
+    "translation": "Typ"
   },
   "bundleSelectorActionsLabel": {
     "source": "Actions",
-    "translation": ""
+    "translation": "Aktione"
   },
   "bundleSelectorFragmentsLabel": {
     "source": "Fragments",
-    "translation": ""
+    "translation": "Fragmänt"
   },
   "cancelSelection": {
     "source": "Cancel selection",
@@ -1189,27 +1189,27 @@
   },
   "changelogDialogTitle": {
     "source": "What's New",
-    "translation": ""
+    "translation": "Neuigkeite"
   },
   "changelogMenuDescription": {
     "source": "View recent changes and new features",
-    "translation": ""
+    "translation": "Aktuelli Änderige und nöii Funktione aazeige"
   },
   "changelogMenuTitle": {
     "source": "What's New",
-    "translation": ""
+    "translation": "Neuigkeite"
   },
   "chartsAddColumn": {
     "source": "Add column",
-    "translation": ""
+    "translation": "Spalte drzuefüege"
   },
   "chartsAddFootnote": {
     "source": "Add footnote",
-    "translation": ""
+    "translation": "Fuessnote drzuefüege"
   },
   "chartsAddRow": {
     "source": "Add row",
-    "translation": ""
+    "translation": "Ziile drzuefüege"
   },
   "chartsAreaCurved": {
     "source": "Smooth curves",
@@ -1221,7 +1221,7 @@
   },
   "chartsAutoUpdate": {
     "source": "Auto-update",
-    "translation": ""
+    "translation": "Automatisch aktualisiere"
   },
   "chartsBarHorizontal": {
     "source": "Horizontal",
@@ -1241,7 +1241,7 @@
   },
   "chartsBorderRadiusNone": {
     "source": "None",
-    "translation": "Kei"
+    "translation": "Käi"
   },
   "chartsBorderRadiusSmall": {
     "source": "Small",
@@ -1249,7 +1249,7 @@
   },
   "chartsData": {
     "source": "Data",
-    "translation": ""
+    "translation": "Date"
   },
   "chartsDataLabels": {
     "source": "Data labels",
@@ -1265,27 +1265,27 @@
   },
   "chartsEditButton": {
     "source": "Edit chart...",
-    "translation": ""
+    "translation": "Diagramm bearbeite..."
   },
   "chartsEditorSaveError": {
     "source": "The chart could not be saved.",
-    "translation": ""
+    "translation": "S'Diagramm het nid chönne gspeicheret wärde."
   },
   "chartsEditorTitle": {
     "source": "Edit chart",
-    "translation": ""
+    "translation": "Diagramm bearbeite"
   },
   "chartsFootnotes": {
     "source": "Footnotes",
-    "translation": ""
+    "translation": "Fuessnote"
   },
   "chartsGridLines": {
     "source": "Grid lines",
-    "translation": "Rasterliniene"
+    "translation": "Raschterliniene"
   },
   "chartsImportCsv": {
     "source": "Import CSV",
-    "translation": ""
+    "translation": "CSV importiere"
   },
   "chartsLegendPosition": {
     "source": "Legend position",
@@ -1313,11 +1313,11 @@
   },
   "chartsOptionGroupDisplay": {
     "source": "Display",
-    "translation": ""
+    "translation": "Aazeig"
   },
   "chartsOptionGroupLabels": {
     "source": "Labels",
-    "translation": ""
+    "translation": "Beschriftige"
   },
   "chartsPieShowLabels": {
     "source": "Show labels",
@@ -1337,7 +1337,7 @@
   },
   "chartsPreview": {
     "source": "Preview",
-    "translation": ""
+    "translation": "Vorschau"
   },
   "chartsRadarFillOpacity": {
     "source": "Fill opacity",
@@ -1357,7 +1357,7 @@
   },
   "chartsRefreshPreview": {
     "source": "Refresh Preview",
-    "translation": ""
+    "translation": "Vorschau aktualisiere"
   },
   "chartsRotationAuto": {
     "source": "Auto",
@@ -1381,19 +1381,19 @@
   },
   "chartsTitle": {
     "source": "Title",
-    "translation": ""
+    "translation": "Titel"
   },
   "chartsTypeArea": {
     "source": "Area",
-    "translation": ""
+    "translation": "Flächi"
   },
   "chartsTypeBar": {
     "source": "Bar",
-    "translation": ""
+    "translation": "Balke"
   },
   "chartsTypeDonut": {
     "source": "Donut",
-    "translation": ""
+    "translation": "Donut"
   },
   "chartsTypeHeatmap": {
     "source": "Heatmap",
@@ -1401,11 +1401,11 @@
   },
   "chartsTypeLine": {
     "source": "Line",
-    "translation": ""
+    "translation": "Linie"
   },
   "chartsTypePie": {
     "source": "Pie",
-    "translation": ""
+    "translation": "Chreis"
   },
   "chartsTypeRadar": {
     "source": "Radar",
@@ -1421,7 +1421,7 @@
   },
   "clearInput": {
     "source": "Clear input",
-    "translation": ""
+    "translation": "Iigab lösche"
   },
   "clipboardCopyShortcutHelp": {
     "source": "Copy selected blocks",
@@ -1429,7 +1429,7 @@
   },
   "clipboardNoCommonBundle": {
     "source": "No common block type for these files.",
-    "translation": ""
+    "translation": "Käi gmeinsame Blocktyp für die Dateie."
   },
   "clipboardPasteDescription": {
     "source": "Paste blocks from clipboard",
@@ -1445,23 +1445,23 @@
   },
   "clipboardTypeFile": {
     "source": "File",
-    "translation": ""
+    "translation": "Datei"
   },
   "clipboardTypeImage": {
     "source": "Image",
-    "translation": ""
+    "translation": "Bild"
   },
   "clipboardTypeText": {
     "source": "Text",
-    "translation": ""
+    "translation": "Teggscht"
   },
   "clipboardTypeVideo": {
     "source": "Video",
-    "translation": ""
+    "translation": "Video"
   },
   "clipboardUnsupportedFileType": {
     "source": "This file type is not supported.",
-    "translation": ""
+    "translation": "Dr Dateityp würd nid unterstützt."
   },
   "close": {
     "source": "Close",
@@ -1537,15 +1537,15 @@
   },
   "created": {
     "source": "Created",
-    "translation": ""
+    "translation": "Erstellt"
   },
   "createdBy": {
     "source": "Created by",
-    "translation": ""
+    "translation": "Erstellt vo"
   },
   "dateUpdated": {
     "source": "Updated",
-    "translation": ""
+    "translation": "Aktualisiert"
   },
   "deleteButton": {
     "source": "Delete",
@@ -1553,11 +1553,11 @@
   },
   "deleteError": {
     "source": "The block could not be deleted.",
-    "translation": "S'Elemänt het nid chönne entfärnt wärde. "
+    "translation": "Dr Block het nid chönne glöscht wärde."
   },
   "deleteNoPermission": {
     "source": "You do not have permission to delete this block.",
-    "translation": ""
+    "translation": "Lösche ufgrund fählender Berächtigung nid möglich."
   },
   "diffAfter": {
     "source": "After",
@@ -1609,11 +1609,11 @@
   },
   "downloadLogsButton": {
     "source": "Download Logs",
-    "translation": ""
+    "translation": "Fählerprotokoll abelade"
   },
   "draggingOverlaySelectBundle": {
     "source": "Select block type to create",
-    "translation": ""
+    "translation": "Blocktyp zum Erstelle uswähle"
   },
   "duplicate": {
     "source": "Duplicate",
@@ -1621,27 +1621,27 @@
   },
   "duplicateError": {
     "source": "The items could not be duplicated.",
-    "translation": "D'Elemänt hän nid chönne dupliziert wärde. "
+    "translation": "D'Blöck hän nid chönne dupliziert wärde."
   },
   "duplicateFieldFull": {
     "source": "The field has reached its maximum number of blocks.",
-    "translation": ""
+    "translation": "S'Fäld het d'maximali Aazahl a Blöck erreicht."
   },
   "duplicateNoPermission": {
     "source": "You do not have permission to duplicate this block.",
-    "translation": ""
+    "translation": "Dupliziere ufgrund fählender Berächtigung nid möglich."
   },
   "duplicateNotAllowed": {
     "source": "This block type is not allowed in this field.",
-    "translation": ""
+    "translation": "Dr Blocktyp isch in dem Fäld nid erlaubt."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeite"
   },
   "editDisabledByDefinition": {
     "source": "Editing is disabled for this block type.",
-    "translation": ""
+    "translation": "Bearbeite isch für dr Blocktyp deaktiviert."
   },
   "editFormBlockAdd": {
     "source": "Add @label",
@@ -1665,31 +1665,31 @@
   },
   "editFragmentNotEditable": {
     "source": "This fragment cannot be edited.",
-    "translation": ""
+    "translation": "Das Fragmänt cha nid bearbeitet wärde."
   },
   "editIndicatorLabel": {
     "source": "Edit blocks",
-    "translation": "Elemänt bearbeite"
+    "translation": "Blöck bearbeite"
   },
   "editIndicatorLabelReview": {
     "source": "Review changes",
-    "translation": ""
+    "translation": "Änderige überprüefe"
   },
   "editIndicatorLabelView": {
     "source": "View changes",
-    "translation": ""
+    "translation": "Änderige aaluege"
   },
   "editLibraryNotAvailable": {
     "source": "This reusable block cannot be edited right now.",
-    "translation": ""
+    "translation": "De wiederverwendbar Block cha momentan nid bearbeitet wärde."
   },
   "editNoLibraryPermission": {
     "source": "You do not have permission to edit library items.",
-    "translation": ""
+    "translation": "Bearbeite ufgrund fählender Berächtigung nid möglich."
   },
   "editNoPermission": {
     "source": "You do not have permission to edit this block.",
-    "translation": ""
+    "translation": "Bearbeite ufgrund fählender Berächtigung nid möglich."
   },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
@@ -1697,7 +1697,7 @@
   },
   "editableFieldDiscard": {
     "source": "Discard",
-    "translation": ""
+    "translation": "Verwärfe"
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
@@ -1709,11 +1709,11 @@
   },
   "errorCapturedMessage": {
     "source": "Error in \"@label\": @errorMessage",
-    "translation": ""
+    "translation": "Fähler in «@label»: @errorMessage"
   },
   "errorCapturedMessageDisabled": {
     "source": "\"@label\" has errored more than 3 times. The feature will be disabled.",
-    "translation": ""
+    "translation": "«@label» het meh als 3 Fähler verursacht. D'Funktion würd deaktiviert."
   },
   "exitDescription": {
     "source": "Close editor without publishing",
@@ -1725,7 +1725,7 @@
   },
   "failedToConvert": {
     "source": "The block could not be converted.",
-    "translation": "S'Elemänt het nid chönne konvertiert wärde. "
+    "translation": "Dr Block het nid chönne konvertiert wärde."
   },
   "failedToTransform": {
     "source": "The action \"@name\" could not be executed.",
@@ -1761,19 +1761,19 @@
   },
   "feature_add-list_setting_hideDisabledBlocks_description": {
     "source": "Hides blocks from the \"Add List\" if they can't be added to anywhere.",
-    "translation": ""
+    "translation": "Versteckt Blöck in de «Drzuefüege-Lischt» wo nirgends chönne drzuegfüegt wärde."
   },
   "feature_add-list_setting_hideDisabledBlocks_label": {
     "source": "Hide blocks that can't be added",
-    "translation": ""
+    "translation": "Blöck verstecke wo nid chönne drzuegfüegt wärde"
   },
   "feature_agent_description": {
     "source": "Chat with an AI assistant to edit page content.",
-    "translation": ""
+    "translation": "Mitem KI-Assischtänt chatte zum Sitteinhalt z'bearbeite."
   },
   "feature_agent_label": {
     "source": "AI Agent",
-    "translation": ""
+    "translation": "KI-Agänt"
   },
   "feature_analyze_description": {
     "source": "Analyze blocks and page for SEO, accessibility, etc.",
@@ -1829,35 +1829,35 @@
   },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
-    "translation": ""
+    "translation": "Ermöglicht s'zitgstüürti Veröffentliche vo Blöck."
   },
   "feature_block-scheduler_label": {
     "source": "Block Scheduler",
-    "translation": ""
+    "translation": "Block-Planung"
   },
   "feature_breadcrumbs_description": {
     "source": "Provides a breadcrumb of the selection.",
-    "translation": ""
+    "translation": "Zeigt de Breadcrumbs-Pfad vo de Uswahl aa."
   },
   "feature_breadcrumbs_label": {
     "source": "Breadcrumbs",
-    "translation": ""
+    "translation": "Breadcrumbs"
   },
   "feature_changelog_description": {
     "source": "Provides a menu button to display a changelog of what's new.",
-    "translation": ""
+    "translation": "Stellt e Menü-Button bereit zum e Änderigsverlauf aazzeige."
   },
   "feature_changelog_label": {
     "source": "Changelog",
-    "translation": ""
+    "translation": "Änderigsverlauf"
   },
   "feature_charts_description": {
     "source": "Add and edit interactive charts.",
-    "translation": ""
+    "translation": "Interaktivi Diagramm drzuefüege und bearbeite."
   },
   "feature_charts_label": {
     "source": "Charts",
-    "translation": ""
+    "translation": "Diagramm"
   },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
@@ -1909,11 +1909,11 @@
   },
   "feature_dev-mode_description": {
     "source": "Feature enabled in development mode.",
-    "translation": ""
+    "translation": "Funktion isch im Dev Mode aktiviert."
   },
   "feature_dev-mode_label": {
     "source": "Dev Mode",
-    "translation": ""
+    "translation": "Dev Mode"
   },
   "feature_diff_description": {
     "source": "Displays a diff of all changes in the edit state.",
@@ -2029,11 +2029,11 @@
   },
   "feature_hover_description": {
     "source": "Renders a border around blocks that are currently being hovered.",
-    "translation": ""
+    "translation": "Zeigt e Rahme um Blöck aa wo de Muuszeiger drüber isch."
   },
   "feature_hover_label": {
     "source": "Hover",
-    "translation": ""
+    "translation": "Hover"
   },
   "feature_import-existing_description": {
     "source": "Implements a menu action that renders a dialog to import blocks from another entity.",
@@ -2201,11 +2201,11 @@
   },
   "feature_templates_description": {
     "source": "Add blocks from templates.",
-    "translation": ""
+    "translation": "Blöck us Vorlage drzuefüege."
   },
   "feature_templates_label": {
     "source": "Templates",
-    "translation": ""
+    "translation": "Vorlage"
   },
   "feature_theme_description": {
     "source": "Implements a theme editor.",
@@ -2259,6 +2259,14 @@
     "source": "This field is required",
     "translation": "Das Fäld dörf nid leer sii"
   },
+  "filterSelectNoResults": {
+    "source": "No results",
+    "translation": "Käi Ergebnis"
+  },
+  "filterSelectSearch": {
+    "source": "Search...",
+    "translation": "Sueche..."
+  },
   "fragmentsAddFragmentAction": {
     "source": "Fragment",
     "translation": "Fragmänt drzuefüege"
@@ -2309,7 +2317,7 @@
   },
   "history": {
     "source": "History",
-    "translation": "Ändergie"
+    "translation": "Änderige"
   },
   "historyCurrentRevision": {
     "source": "Current revision",
@@ -2329,7 +2337,7 @@
   },
   "historyShowMore": {
     "source": "Show @count more",
-    "translation": "@count meeh aazeige"
+    "translation": "@count meh aazeige"
   },
   "historyTourText": {
     "source": "See a list of all changes made so far and switch back and forth between changes.",
@@ -2345,11 +2353,11 @@
   },
   "importExistingDescription": {
     "source": "Import from an existing page",
-    "translation": "Von enere bestehende Sitte importiere"
+    "translation": "Vonere bestehende Sitte importiere"
   },
   "importExistingDialogLead": {
     "source": "Import content from an existing page. The items will be added to the end of the list. This action can be undone.",
-    "translation": "Inhält chönne vonere bestehende Sitte importiert wärde. Die Elemänt wärde am Ändi vo dr lischte denn drzuegfüegt. Die Aktion chame nid ruckgängig mache. "
+    "translation": "Inhält chönne vonere bestehende Sitte importiert wärde. D'Blöck wärde am Ändi vo dr Lischt drzuegfüegt. Die Aktion cha rückgängig gmacht wärde."
   },
   "importExistingDialogSubmit": {
     "source": "Import content",
@@ -2361,15 +2369,15 @@
   },
   "importExistingError": {
     "source": "Content could not be imported.",
-    "translation": "D'Inhält hän nid chönne übernoh wärde"
+    "translation": "D'Inhält hän nid chönne importiert wärde."
   },
   "importExistingFieldsLabel": {
     "source": "Which content would you like to import?",
-    "translation": "Weli Inhält sölle importiert wärde?"
+    "translation": "Weli Inhält sotte importiert wärde?"
   },
   "importExistingPagesTitle": {
     "source": "Select page",
-    "translation": ""
+    "translation": "Sitte uswähle"
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",
@@ -2381,15 +2389,15 @@
   },
   "interactionLayerOff": {
     "source": "Show interaction layers",
-    "translation": ""
+    "translation": "Interaktionsebene aazeige"
   },
   "interactionLayersOn": {
     "source": "Hide interaction layers",
-    "translation": ""
+    "translation": "Interaktionsebene usbländen"
   },
   "keyboardSpace": {
     "source": "Space",
-    "translation": ""
+    "translation": "Leertaste"
   },
   "libraryAdd": {
     "source": "Add to library...",
@@ -2405,27 +2413,27 @@
   },
   "libraryAddNoEditPermission": {
     "source": "You do not have permission to edit this block.",
-    "translation": ""
+    "translation": "Bearbeite ufgrund fählender Berächtigung nid möglich."
   },
   "libraryAddNoPermission": {
     "source": "You do not have permission to create library items.",
-    "translation": ""
+    "translation": "Erstelle ufgrund fählender Berächtigung nid möglich."
   },
   "libraryAddNotAllowedInField": {
     "source": "Reusable blocks are not allowed in this field.",
-    "translation": ""
+    "translation": "Wiederverwändbari Blöck sin in dem Fäld nid erlaubt."
   },
   "libraryAddNotSupported": {
     "source": "This block type cannot be made reusable.",
-    "translation": ""
+    "translation": "Dr Blocktyp cha nid wiederverwändbar gmacht wärde."
   },
   "libraryDetach": {
     "source": "Detach from library",
-    "translation": "Von der Bibliothek loslöse"
+    "translation": "Vo dr Bibliothek loslöse"
   },
   "libraryDetachNoPermission": {
     "source": "You do not have permission to detach this block.",
-    "translation": ""
+    "translation": "Loslöse ufgrund fählender Berächtigung nid möglich."
   },
   "libraryDialogDescriptionLabel": {
     "source": "Description",
@@ -2433,27 +2441,27 @@
   },
   "libraryDialogLead": {
     "source": "When you add an item to the library, you can use it on multiple pages at the same time. Changes to this item are then immediately published on all pages.",
-    "translation": "Wenn es Elemänt in dr Bibliothek isch, cha das Elemänt uf mehrere Sitte gliichzittig brucht wärde. D'Änderige an däm Elemänt wärde denn sofort uf allne Sitte publiziert. "
+    "translation": "Wenn e Block in dr Bibliothek isch, cha dr Block uf mehrere Sitte gliichzittig brucht wärde. D'Änderige an dem Block wärde denn sofort uf allne Sitte publiziert."
   },
   "libraryDialogReusableInfo": {
     "source": "The library item will be available for placement on other pages once this page has been published.",
-    "translation": "S'Bibliotheks-Elemänt wird verfüegbar für d'Platzierig uf andere Sitte, sobald die Sitte publiziert worde isch."
+    "translation": "Dr Bibliotheksblock würd verfüegbar für d'Platzierig uf andere Sitte, sobald die Sitte publiziert worde isch."
   },
   "libraryDialogSubmit": {
     "source": "Add to library",
-    "translation": "Zur Bibliothe drzuefüege"
+    "translation": "Zur Bibliothek drzuefüege"
   },
   "libraryDialogTitle": {
     "source": "Add to library",
-    "translation": "Zur Bibliothe drzuefüege"
+    "translation": "Zur Bibliothek drzuefüege"
   },
   "libraryDialogTitleInputPlaceholder": {
     "source": "e.g. Teaser Campaign 2024",
-    "translation": "z.B. Teaser Kampagne 2023"
+    "translation": "z.B. Teaser Kampagne 2024"
   },
   "libraryError": {
     "source": "Failed to add block to library.",
-    "translation": "Das Elemänt het nid chönne zur Bibliothek drzuegfüegt wärde. "
+    "translation": "Dr Block het nid chönne zur Bibliothek drzuegfüegt wärde."
   },
   "libraryItemEditOverlayBack": {
     "source": "Back to page",
@@ -2461,7 +2469,7 @@
   },
   "libraryItemEditOverlayBackWithPage": {
     "source": "Back to \"@label\"",
-    "translation": ""
+    "translation": "Zrugg zu «@label»"
   },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",
@@ -2477,7 +2485,7 @@
   },
   "libraryPlaceDialogSubmit": {
     "source": "Add reusable block",
-    "translation": "E widerverwändbare Block drzuefüege"
+    "translation": "E wiederverwändbare Block drzuefüege"
   },
   "libraryPlaceDialogTitle": {
     "source": "Add block from library",
@@ -2489,7 +2497,7 @@
   },
   "manageSchedule": {
     "source": "Manage schedule...",
-    "translation": ""
+    "translation": "Planung verwalte..."
   },
   "maskHide": {
     "source": "Hide non-editable areas",
@@ -2525,11 +2533,11 @@
   },
   "mediaSelectConfirm": {
     "source": "Use selected",
-    "translation": ""
+    "translation": "Uswahl verwände"
   },
   "mediaSelectTitle": {
     "source": "Select a media item",
-    "translation": ""
+    "translation": "Medium uswähle"
   },
   "multipleItemsLabel": {
     "source": "Items",
@@ -2537,15 +2545,15 @@
   },
   "nameDescription": {
     "source": "Name / Description",
-    "translation": ""
+    "translation": "Name / Beschriibig"
   },
   "notSet": {
     "source": "Not set",
-    "translation": ""
+    "translation": "Nid gsetzt"
   },
   "notSupported": {
     "source": "Not supported",
-    "translation": ""
+    "translation": "Nid unterstützt"
   },
   "optionBkVisibleLanguagesAll": {
     "source": "All languages",
@@ -2565,7 +2573,7 @@
   },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
-    "translation": ""
+    "translation": "<strong>Doppelklick</strong> zum Overlay zuemache"
   },
   "ownershipError": {
     "source": "Error in assigning",
@@ -2573,7 +2581,7 @@
   },
   "ownershipNote": {
     "source": "This page is currently being edited by @name. Changes can only be made by one person at a time.",
-    "translation": "Diese Sitte wird aktuell vo @name bearbeitet. Änderige chönne nur vo einere Person glichzittig gmacht wärde. "
+    "translation": "Die Sitte würd aktuell vo @name bearbeitet. Änderige chönne nur vo einere Person gliichzittig gmacht wärde."
   },
   "ownershipSuccess": {
     "source": "You are now the owner.",
@@ -2629,7 +2637,7 @@
   },
   "proxyViewHide": {
     "source": "Show content preview",
-    "translation": "Inhaltsvorscha aazeige"
+    "translation": "Inhaltsvorschau aazeige"
   },
   "proxyViewShow": {
     "source": "Show structure view",
@@ -2645,7 +2653,7 @@
   },
   "publishAlreadyScheduledDescription": {
     "source": "This page is already scheduled for publishing",
-    "translation": ""
+    "translation": "Die Sitte isch scho zur Veröffentlichig plant"
   },
   "publishAndCloseLabel": {
     "source": "Publish & Close",
@@ -2657,23 +2665,23 @@
   },
   "publishCurrentPage": {
     "source": "Current page",
-    "translation": ""
+    "translation": "Aktuelli Sitte"
   },
   "publishCurrentlyPublished": {
     "source": "Page is published",
-    "translation": ""
+    "translation": "Sitte isch publiziert"
   },
   "publishCurrentlyUnpublished": {
     "source": "Page is unpublished",
-    "translation": ""
+    "translation": "Sitte isch nid publiziert"
   },
   "publishDescription": {
     "source": "Publish all changes.",
-    "translation": "Alli änderige öffentlich mache."
+    "translation": "Alli Änderige veröffentliche."
   },
   "publishDescriptionScheduled": {
     "source": "View or change the scheduled publication",
-    "translation": ""
+    "translation": "Planti Veröffentlichig aaluege oder ändere"
   },
   "publishDescriptionUnpublished": {
     "source": "Save all changes while keeping page unpublished",
@@ -2697,135 +2705,135 @@
   },
   "publishManageSchedule": {
     "source": "Manage scheduling",
-    "translation": ""
+    "translation": "Planung verwalte"
   },
   "publishMode": {
     "source": "Publish mode",
-    "translation": ""
+    "translation": "Veröffentlichigsmodus"
   },
   "publishModeImmediateDescription": {
     "source": "Publish changes immediately",
-    "translation": ""
+    "translation": "Änderige sofort veröffentliche"
   },
   "publishModeImmediateTitle": {
     "source": "Publish",
-    "translation": ""
+    "translation": "Veröffentliche"
   },
   "publishModeSaveDescription": {
     "source": "Save changes without publishing",
-    "translation": ""
+    "translation": "Änderige speichere ohni veröffentliche"
   },
   "publishModeSaveTitle": {
     "source": "Save",
-    "translation": ""
+    "translation": "Speichere"
   },
   "publishModeScheduledDescription": {
     "source": "Schedule changes for publishing",
-    "translation": ""
+    "translation": "Änderige plant veröffentliche"
   },
   "publishModeScheduledTitle": {
     "source": "Schedule",
-    "translation": ""
+    "translation": "Plane"
   },
   "publishName": {
     "source": "Name",
-    "translation": ""
+    "translation": "Name"
   },
   "publishPublicationScheduled": {
     "source": "Publication scheduled",
-    "translation": ""
+    "translation": "Veröffentlichig plant"
   },
   "publishPublishContent": {
     "source": "Publish content",
-    "translation": ""
+    "translation": "Inhalt veröffentliche"
   },
   "publishPublishContents": {
     "source": "Publish @count contents",
-    "translation": ""
+    "translation": "@count Inhält veröffentliche"
   },
   "publishRemainsPublished": {
     "source": "Remains published",
-    "translation": ""
+    "translation": "Bliibt publiziert"
   },
   "publishRemainsUnpublished": {
     "source": "Remains unpublished",
-    "translation": ""
+    "translation": "Bliibt nid publiziert"
   },
   "publishRemoveSchedule": {
     "source": "Remove schedule",
-    "translation": ""
+    "translation": "Planung entfärne"
   },
   "publishResultPublishChangesNowPublished": {
     "source": "Changes are published, page is now published",
-    "translation": ""
+    "translation": "Änderige und Sitte sin publiziert"
   },
   "publishResultPublishChangesRemainPublished": {
     "source": "Changes are published, page remains published",
-    "translation": ""
+    "translation": "Änderige sin publiziert, Sitte bliibt publiziert"
   },
   "publishResultSaveChanges": {
     "source": "Changes are saved, page remains unpublished",
-    "translation": ""
+    "translation": "Änderige sin gspeicheret, Sitte bliibt nid publiziert"
   },
   "publishResultScheduledChanges": {
     "source": "Changes will be published on @date",
-    "translation": ""
+    "translation": "Änderige wärde am @date publiziert"
   },
   "publishResultScheduledPage": {
     "source": "Page will be published on @date",
-    "translation": ""
+    "translation": "Sitte würd am @date publiziert"
   },
   "publishRevisionLogMessage": {
     "source": "Change description",
-    "translation": ""
+    "translation": "Beschriibig vo de Änderige"
   },
   "publishRevisionLogMessageDescription": {
     "source": "Briefly describe the changes made",
-    "translation": ""
+    "translation": "Beschriib churz d'Änderige wo gmacht worde sin"
   },
   "publishSaveContent": {
     "source": "Save content",
-    "translation": ""
+    "translation": "Inhalt speichere"
   },
   "publishSaveContents": {
     "source": "Save @count contents",
-    "translation": ""
+    "translation": "@count Inhält speichere"
   },
   "publishScheduleDate": {
     "source": "Publication date",
-    "translation": ""
+    "translation": "Veröffentlichigsdatum"
   },
   "publishScheduleDateTooSoon": {
     "source": "The scheduled date must be at least 2 minutes in the future",
-    "translation": ""
+    "translation": "S'plante Datum mues mindestens 2 Minute in de Zuekunft liige"
   },
   "publishSchedulePublication": {
     "source": "Schedule publication",
-    "translation": ""
+    "translation": "Veröffentlichig plane"
   },
   "publishSchedulePublications": {
     "source": "Schedule @count publications",
-    "translation": ""
+    "translation": "@count Veröffentlichige plane"
   },
   "publishScheduleSuccess": {
     "source": "Publication scheduled for @date",
-    "translation": ""
+    "translation": "Veröffentlichig für @date plant"
   },
   "publishScheduledBlockPlural": {
     "source": "@count blocks are scheduled to be published on @date",
-    "translation": ""
+    "translation": "@count Blöck sin zur Veröffentlichig am @date plant"
   },
   "publishScheduledBlockSingular": {
     "source": "1 block is scheduled to be published on @date",
-    "translation": ""
+    "translation": "1 Block isch zur Veröffentlichig am @date plant"
   },
   "publishScheduledInfo": {
     "source": "You can still make changes until the scheduled publication date.",
-    "translation": ""
+    "translation": "Du chasch bis zum plante Veröffentlichigsdatum no Änderige mache."
   },
   "publishStatus": {
     "source": "Status",
-    "translation": ""
+    "translation": "Status"
   },
   "publishSuccess": {
     "source": "Changes published successfully.",
@@ -2833,27 +2841,27 @@
   },
   "publishSuccessfullyPublished": {
     "source": "Successfully published",
-    "translation": ""
+    "translation": "Erfolgriich veröffentlicht"
   },
   "publishSuccessfullySaved": {
     "source": "Successfully saved",
-    "translation": ""
+    "translation": "Erfolgriich gspeicheret"
   },
   "publishSummary": {
     "source": "Summary",
-    "translation": ""
+    "translation": "Zämmefassig"
   },
   "publishWillBePublished": {
     "source": "Will be published",
-    "translation": ""
+    "translation": "Würd publiziert"
   },
   "publishWillBeScheduled": {
     "source": "Will be scheduled",
-    "translation": ""
+    "translation": "Würd plant"
   },
   "readabilityEntireText": {
     "source": "This score is calculated for the entire text.",
-    "translation": ""
+    "translation": "Dr Wärt würd für dr gsamte Teggscht berechnet."
   },
   "readabilityTooShort": {
     "source": "Too short",
@@ -2861,11 +2869,11 @@
   },
   "readabilityTooShortTooltip": {
     "source": "Text needs at least @count words for readability analysis.",
-    "translation": "De Text bruucht mindestens @count Wörter für d Lesbarkeitsanalys."
+    "translation": "Dr Teggscht bruucht mindestens @count Wörter für d'Lesbarkeitsanalys."
   },
   "readabilityTooltipDescription": {
     "source": "@label measures how easy the text is to read.",
-    "translation": "@label misst, wie eifach de Text z läse isch."
+    "translation": "@label misst, wie eifach dr Teggscht z'läse isch."
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",
@@ -2881,15 +2889,15 @@
   },
   "restrictedPermissionsAll": {
     "source": "Some actions are not available due to missing permissions.",
-    "translation": ""
+    "translation": "Gwüssi Aktione sin ufgrund fählender Berächtigunge nid verfüegbar."
   },
   "restrictedPermissionsSome": {
     "source": "Some actions are restricted due to missing permissions.",
-    "translation": ""
+    "translation": "Gwüssi Aktione sin ufgrund fählender Berächtigunge iigschränkt."
   },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
-    "translation": "Alli Änderige wärde glöscht und dr jetzt publizierti Zuestand wird wider härgstellt. Die Aktion chame nid rückgängig mache. "
+    "translation": "Alli Änderige wärde glöscht und dr aktuell publizierti Zuestand würd wider härgstellt. Die Aktion cha nid rückgängig gmacht wärde."
   },
   "revertDialogSubmit": {
     "source": "Discard changes",
@@ -2897,7 +2905,7 @@
   },
   "revertDialogTitle": {
     "source": "Irrevocably discard changes",
-    "translation": "Änderige ändgültig verwärfe. "
+    "translation": "Änderige ändgültig verwärfe"
   },
   "revertError": {
     "source": "Changes could not be discarded.",
@@ -2905,7 +2913,7 @@
   },
   "revertMenuDescription": {
     "source": "Restore currently published state",
-    "translation": "Dr aktuell publizierti Stand widerhärstelle."
+    "translation": "Dr aktuell publizierti Stand widerhärstelle"
   },
   "revertMenuTitle": {
     "source": "Discard...",
@@ -2913,19 +2921,19 @@
   },
   "revertSuccess": {
     "source": "All changes have been discarded.",
-    "translation": "Alli Änderige sin glöcht worde."
+    "translation": "Alli Änderige sin glöscht worde."
   },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
-    "translation": ""
+    "translation": "D'Änderige wärde a dem Datum publiziert."
   },
   "schedulerNotSupported": {
     "source": "Scheduling is not available for this block type.",
-    "translation": ""
+    "translation": "Planung isch für dr Blocktyp nid verfüegbar."
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",
-    "translation": "Keini Resultat gfunde"
+    "translation": "Käi Ergebnis gfunde"
   },
   "searchBoxOnThisPage": {
     "source": "On this page",
@@ -2937,11 +2945,11 @@
   },
   "searchContentReplace": {
     "source": "Replace @field",
-    "translation": ""
+    "translation": "@field ersetze"
   },
   "searchContentReplaceFailed": {
     "source": "Failed to replace content.",
-    "translation": ""
+    "translation": "Inhalt het nid chönne ersetzt wärde."
   },
   "searchToolbarLabel": {
     "source": "Search content",
@@ -2953,7 +2961,7 @@
   },
   "selectAllBlocks": {
     "source": "Select all blocks",
-    "translation": ""
+    "translation": "Alli Blöck uswähle"
   },
   "selectAllOfBundle": {
     "source": "Select all \"@bundle\" blocks",
@@ -2961,11 +2969,11 @@
   },
   "selectedIsNew": {
     "source": "New",
-    "translation": ""
+    "translation": "Nöi"
   },
   "settingsAdvanced": {
     "source": "Advanced",
-    "translation": "Erwitteret"
+    "translation": "Erwiiteret"
   },
   "settingsAppearance": {
     "source": "Appearance",
@@ -2989,7 +2997,7 @@
   },
   "settingsMenuDescription": {
     "source": "Personal settings for the editor",
-    "translation": "Persönlichi Iistellige füre Editor"
+    "translation": "Persönlichi Iistellige für dr Editor"
   },
   "settingsMenuTitle": {
     "source": "Settings",
@@ -3021,7 +3029,7 @@
   },
   "stateUnavailableText": {
     "source": "This could be due to missing permissions or a temporary problem. Please try again later.",
-    "translation": "Das chönnt a fehlende Berechtigung oder emne temporäre Problem liege. Bitte versuech's spöter nomol."
+    "translation": "Das chönnt a fählende Berächtigung oder emne temporäre Problem liige. Bitte versuech's spöter nämol."
   },
   "stateUnavailableTitle": {
     "source": "The edit state could not be loaded.",
@@ -3057,147 +3065,147 @@
   },
   "templatesAddTemplate": {
     "source": "Template",
-    "translation": ""
+    "translation": "Vorlag"
   },
   "templatesAddTemplateDescription": {
     "source": "<p>Drag the icon into the page to add blocks from a template.</p><p>Templates are copied to your page and can be changed without affecting other pages.</p>",
-    "translation": ""
+    "translation": "<p>Zieh s'Symbol in d'Sitte zum Blöck us ere Vorlag drzuefüege.</p><p>Vorlage wärde kopiert und chönne ohni Iifluss uf anderi Sitte bearbeitet wärde.</p>"
   },
   "templatesCanNotBeDefault": {
     "source": "Only single blocks can be made default.",
-    "translation": ""
+    "translation": "Nur einzelni Blöck chönne als Standard definiert wärde."
   },
   "templatesCreate": {
     "source": "Create template...",
-    "translation": ""
+    "translation": "Vorlag erstelle..."
   },
   "templatesCreateDialogDefaultDescription": {
     "source": "If set, this template is used automatically when adding a new block of this type.",
-    "translation": ""
+    "translation": "Wenn aktiviert, würd die Vorlag automatisch bruucht bim Drzuefüege vo nöie Blöck vo dem Typ."
   },
   "templatesCreateDialogDefaultLabel": {
     "source": "Use as default",
-    "translation": ""
+    "translation": "Als Standard verwände"
   },
   "templatesCreateDialogDescriptionLabel": {
     "source": "Description",
-    "translation": ""
+    "translation": "Beschriibig"
   },
   "templatesCreateDialogDescriptionPlaceholder": {
     "source": "Optional description of the template",
-    "translation": ""
+    "translation": "Optionali Beschriibig vo de Vorlag"
   },
   "templatesCreateDialogLabelLabel": {
     "source": "Name",
-    "translation": ""
+    "translation": "Name"
   },
   "templatesCreateDialogLabelPlaceholder": {
     "source": "e.g. Hero Section",
-    "translation": ""
+    "translation": "z.B. Hero-Bereich"
   },
   "templatesCreateDialogLead": {
     "source": "Create a reusable template from the selected blocks. Templates can be added to any page.",
-    "translation": ""
+    "translation": "Erstell e wiederverwendbari Vorlag us de usgwählte Blöck. Vorlage chönne uf jeder Sitte drzuegfüegt wärde."
   },
   "templatesCreateDialogPreviewLabel": {
     "source": "Preview",
-    "translation": ""
+    "translation": "Vorschau"
   },
   "templatesCreateDialogSubmit": {
     "source": "Create template",
-    "translation": ""
+    "translation": "Vorlag erstelle"
   },
   "templatesCreateDialogTitle": {
     "source": "Create template",
-    "translation": ""
+    "translation": "Vorlag erstelle"
   },
   "templatesCreateError": {
     "source": "Failed to create template.",
-    "translation": ""
+    "translation": "Vorlag het nid chönne erstellt wärde."
   },
   "templatesDefaultPill": {
     "source": "Default",
-    "translation": ""
+    "translation": "Standard"
   },
   "templatesDefaultPillDescription": {
     "source": "This template is used when new blocks of this type are created.",
-    "translation": ""
+    "translation": "Die Vorlag würd bruucht wenn nöii Blöck vo dem Typ erstellt wärde."
   },
   "templatesDeleteError": {
     "source": "Failed to delete template.",
-    "translation": ""
+    "translation": "Vorlag het nid chönne glöscht wärde."
   },
   "templatesDeleteSuccess": {
     "source": "Template deleted successfully.",
-    "translation": ""
+    "translation": "Vorlag erfolgriich glöscht."
   },
   "templatesEditOverlayTitle": {
     "source": "Edit template",
-    "translation": ""
+    "translation": "Vorlag bearbeite"
   },
   "templatesManageDialogCancelDelete": {
     "source": "Cancel",
-    "translation": ""
+    "translation": "Abbräche"
   },
   "templatesManageDialogConfirmDelete": {
     "source": "Delete",
-    "translation": ""
+    "translation": "Lösche"
   },
   "templatesManageDialogDelete": {
     "source": "Delete",
-    "translation": ""
+    "translation": "Lösche"
   },
   "templatesManageDialogEdit": {
     "source": "Edit",
-    "translation": ""
+    "translation": "Bearbeite"
   },
   "templatesManageDialogLead": {
     "source": "View, edit and delete your block templates.",
-    "translation": ""
+    "translation": "Vorlage verwalte, bearbeite und lösche."
   },
   "templatesManageDialogNoResults": {
     "source": "No templates found.",
-    "translation": ""
+    "translation": "Käi Vorlage gfunde."
   },
   "templatesManageDialogTitle": {
     "source": "Manage templates",
-    "translation": ""
+    "translation": "Vorlage verwalte"
   },
   "templatesMenuDescription": {
     "source": "Edit and delete block templates",
-    "translation": ""
+    "translation": "Vorlage bearbeite und lösche"
   },
   "templatesMenuLabel": {
     "source": "Templates...",
-    "translation": ""
+    "translation": "Vorlage..."
   },
   "templatesMissingDefaultPermissions": {
     "source": "Missing permission to create default templates.",
-    "translation": ""
+    "translation": "Fählendi Berächtigung zum Standard-Vorlage erstelle."
   },
   "templatesNoResults": {
     "source": "No templates available for this field.",
-    "translation": ""
+    "translation": "Käi Vorlage für das Fäld verfüegbar."
   },
   "templatesPlaceDialogDescription": {
     "source": "Templates create copies of blocks that can be edited freely on this page without affecting other pages.",
-    "translation": ""
+    "translation": "Vorlage erstelle Kopie vo Blöck wo uf dere Sitte frei bearbeitet wärde chönne ohni anderi Sitte z'beiflusse."
   },
   "templatesPlaceDialogSubmitButton": {
     "source": "Add template blocks",
-    "translation": ""
+    "translation": "Vorlag-Blöck drzuefüege"
   },
   "templatesPlaceDialogTitle": {
     "source": "Add blocks from template",
-    "translation": ""
+    "translation": "Blöck us Vorlag drzuefüege"
   },
   "templatesSuccessMessage": {
     "source": "Successfully created template \"@label\"",
-    "translation": ""
+    "translation": "Vorlag «@label» erfolgriich erstellt."
   },
   "textareaNewLineHint": {
     "source": "Shift + Enter for new line",
-    "translation": ""
+    "translation": "Shift + Enter für nöii Ziile"
   },
   "theme": {
     "source": "Theme",
@@ -3209,7 +3217,7 @@
   },
   "toggleInteractionLayers": {
     "source": "Toggle interaction layers",
-    "translation": ""
+    "translation": "Interaktionsebene umschalte"
   },
   "touchBarCancelDragging": {
     "source": "Cancel dragging",
@@ -3249,7 +3257,7 @@
   },
   "transformDialogButtonNewSuggestion": {
     "source": "New suggestion",
-    "translation": ""
+    "translation": "Nöie Vorschlag"
   },
   "transformDialogButtonPreview": {
     "source": "Preview",
@@ -3257,15 +3265,15 @@
   },
   "translateEditDisabled": {
     "source": "Editing is disabled for this block type.",
-    "translation": ""
+    "translation": "Bearbeite isch für dr Blocktyp deaktiviert."
   },
   "translateLibraryBlock": {
     "source": "Reusable blocks cannot be translated here.",
-    "translation": ""
+    "translation": "Wiederverwändbari Blöck chönne do nid übersetzt wärde."
   },
   "translateNotTranslatable": {
     "source": "This block type is not translatable.",
-    "translation": ""
+    "translation": "Dr Blocktyp isch nid übersetzbar."
   },
   "translationsBannerButton": {
     "source": "Edit source language instead",
@@ -3277,7 +3285,7 @@
   },
   "translationsBatchTranslateMenuDescription": {
     "source": "Translate all blocks",
-    "translation": "Alli Elemänt übersetze"
+    "translation": "Alli Blöck übersetze"
   },
   "translationsBatchTranslateMenuTitle": {
     "source": "Translate...",
@@ -3313,18 +3321,18 @@
   },
   "viewBannerReviewText": {
     "source": "You can view and add comments but cannot edit content.",
-    "translation": ""
+    "translation": "Du chasch Kommentär aaluege und drzuefüege, aber kän Inhalt bearbeite."
   },
   "viewBannerReviewTitle": {
     "source": "You are in review mode.",
-    "translation": ""
+    "translation": "Du bisch im Review-Modus."
   },
   "viewBannerViewText": {
     "source": "You can view comments but cannot edit content.",
-    "translation": ""
+    "translation": "Du chasch Kommentär aaluege, aber kän Inhalt bearbeite."
   },
   "viewBannerViewTitle": {
     "source": "You are in view-only mode.",
-    "translation": ""
+    "translation": "Du bisch im Aaluege-Modus."
   }
 }

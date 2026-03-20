@@ -1636,7 +1636,7 @@
     "translation": ""
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Modifier"
   },
   "editDisabledByDefinition": {
@@ -2258,6 +2258,14 @@
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Ce champ est obligatoire"
+  },
+  "filterSelectNoResults": {
+    "source": "No results",
+    "translation": ""
+  },
+  "filterSelectSearch": {
+    "source": "Search...",
+    "translation": ""
   },
   "fragmentsAddFragmentAction": {
     "source": "Fragment",

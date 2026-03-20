@@ -1710,7 +1710,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeiten..."
 
 msgctxt "editDisabledByDefinition"
@@ -2430,6 +2430,14 @@ msgstr "Validierungen"
 msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Feld darf nicht leer sein"
+
+msgctxt "filterSelectNoResults"
+msgid "No results"
+msgstr "Keine Ergebnisse"
+
+msgctxt "filterSelectSearch"
+msgid "Search..."
+msgstr "Suchen..."
 
 msgctxt "fragmentsAddFragmentAction"
 msgid "Fragment"

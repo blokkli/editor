@@ -4,7 +4,7 @@ import type {
 } from '#blokkli/editor/types/definitions'
 import { getParagraphBundles } from './state/Paragraph'
 
-const RESTRICT_PERMISSIONS = true
+const RESTRICT_PERMISSIONS = false
 
 export const allTypes: BlockBundleDefinition[] = getParagraphBundles().map(
   (block) => {

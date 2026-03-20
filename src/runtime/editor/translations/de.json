@@ -1636,7 +1636,7 @@
     "translation": "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeiten..."
   },
   "editDisabledByDefinition": {
@@ -2258,6 +2258,14 @@
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Feld darf nicht leer sein"
+  },
+  "filterSelectNoResults": {
+    "source": "No results",
+    "translation": "Keine Ergebnisse"
+  },
+  "filterSelectSearch": {
+    "source": "Search...",
+    "translation": "Suchen..."
   },
   "fragmentsAddFragmentAction": {
     "source": "Fragment",

@@ -99,7 +99,10 @@ function getControlState(
     return true
   }
 
-  return e.getModifierState('Control') || e.getModifierState('Meta')
+  if ('getModifierState' in e) {
+    return e.getModifierState('Control') || e.getModifierState('Meta')
+  }
+  return false
 }
 
 export default function (eventBus: BlokkliEventBus): KeyboardProvider {
@@ -111,10 +114,13 @@ export default function (eventBus: BlokkliEventBus): KeyboardProvider {
   const keyboardLocked = computed<boolean>(() => !!keyboardLocks.value.length)
 
   const onKeyUp = (e: KeyboardEvent) => {
-    isPressingControl.value =
-      e.getModifierState('Control') || e.getModifierState('Meta')
+    isPressingControl.value = e.getModifierState
+      ? e.getModifierState('Control') || e.getModifierState('Meta')
+      : false
 
-    isPressingShift.value = e.getModifierState('Shift')
+    isPressingShift.value = e.getModifierState
+      ? e.getModifierState('Shift')
+      : false
 
     if (e.code === 'Space') {
       isPressingSpace.value = false
@@ -131,9 +137,11 @@ export default function (eventBus: BlokkliEventBus): KeyboardProvider {
 
     isPressingControl.value = getControlState(e)
 
-    isPressingShift.value = e.getModifierState('Shift')
+    isPressingShift.value = e.getModifierState
+      ? e.getModifierState('Shift')
+      : false
 
-    if (!isPressingSpace.value) {
+    if (!isPressingSpace.value && e.code) {
       eventBus.emit('keyPressed', {
         code: e.key,
         shift: e.shiftKey,

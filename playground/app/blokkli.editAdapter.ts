@@ -273,6 +273,9 @@ export default defineBlokkliEditAdapter((ctx) => {
   const mediaLibraryGetResults: GetMediaLibraryFunction = (e) => {
     const perPage = 16
     const bundle = e.filters.bundle
+    const sortBy = e.filters.sort || 'name_asc'
+    const hasThumbnail = e.filters.has_thumbnail === 'true'
+
     const allItems: MediaLibraryItem[] = entityStorageManager
       .getStorage('media')
       .query(bundle && bundle !== 'all' ? { bundle } : {})
@@ -290,10 +293,26 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
       .filter((v) => {
         if (e.filters.text) {
-          return v.label.toLowerCase().includes(e.filters.text)
+          if (!v.label.toLowerCase().includes(e.filters.text)) {
+            return false
+          }
         }
-
+        if (hasThumbnail && !v.thumbnail) {
+          return false
+        }
         return true
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case 'name_asc':
+            return a.label.localeCompare(b.label)
+          case 'name_desc':
+            return b.label.localeCompare(a.label)
+          case 'newest':
+            return Number(b.mediaId) - Number(a.mediaId)
+          default:
+            return 0
+        }
       })
 
     const items = allItems.slice(e.page * perPage, e.page * perPage + perPage)
@@ -332,6 +351,74 @@ export default defineBlokkliEditAdapter((ctx) => {
             },
           ],
         },
+        {
+          type: 'checkbox',
+          name: 'has_thumbnail',
+          label: 'Has thumbnail',
+          checkboxLabel: 'Only show items with a thumbnail',
+          defaultValue: false,
+          required: false,
+        },
+        {
+          type: 'options',
+          variant: 'select',
+          name: 'sort',
+          label: 'Sort by',
+          defaultValue: 'name_asc',
+          required: false,
+          options: [
+            {
+              value: 'name_asc',
+              label: 'Name (A-Z)',
+            },
+            {
+              value: 'name_desc',
+              label: 'Name (Z-A)',
+            },
+            {
+              value: 'newest',
+              label: 'Newest first',
+            },
+          ],
+        },
+        ...(import.meta.dev
+          ? [
+              {
+                type: 'options' as const,
+                variant: 'select' as const,
+                name: 'organization',
+                label: 'Organization',
+                // defaultValue: 'all',
+                required: false,
+                options: [
+                  { value: 'all', label: 'All' },
+                  { value: 'executive_board', label: 'Executive Board' },
+                  { value: 'human_resources', label: 'Human Resources' },
+                  { value: 'finance', label: 'Finance & Accounting' },
+                  { value: 'legal', label: 'Legal & Compliance' },
+                  { value: 'marketing', label: 'Marketing' },
+                  { value: 'sales', label: 'Sales' },
+                  { value: 'customer_support', label: 'Customer Support' },
+                  { value: 'engineering', label: 'Engineering' },
+                  { value: 'product', label: 'Product Management' },
+                  { value: 'design', label: 'Design & UX' },
+                  { value: 'qa', label: 'Quality Assurance' },
+                  { value: 'devops', label: 'DevOps & Infrastructure' },
+                  { value: 'data_science', label: 'Data Science & Analytics' },
+                  { value: 'it', label: 'IT & Security' },
+                  { value: 'operations', label: 'Operations' },
+                  { value: 'logistics', label: 'Logistics & Supply Chain' },
+                  { value: 'procurement', label: 'Procurement' },
+                  {
+                    value: 'communications',
+                    label: 'Corporate Communications',
+                  },
+                  { value: 'research', label: 'Research & Development' },
+                  { value: 'facilities', label: 'Facilities Management' },
+                ],
+              },
+            ]
+          : []),
       ],
       items,
       total: allItems.length,
