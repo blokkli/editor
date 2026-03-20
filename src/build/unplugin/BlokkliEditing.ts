@@ -112,24 +112,47 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
       },
 
       vite: {
-        handleHotUpdate({ file, server }) {
-          // When a .vue file changes, also reload its editing variant.
-          // We must trigger this separately (not by returning it in the
-          // modules array) because Vue's vite:vue plugin runs after us
-          // and filters the modules list to only include the original
-          // file's sub-modules, dropping our editing variant.
-          if (file.endsWith('.vue') && !file.includes(EDITING_MARKER)) {
+        hotUpdate: {
+          order: 'post' as const,
+          async handler({ file, modules, server }) {
+            if (!file.endsWith('.vue') || file.includes(EDITING_MARKER)) {
+              return
+            }
+
             const editingVariantPath = file.replace(
               /\.vue$/,
               `${EDITING_MARKER}.vue`,
             )
-            const editingModule =
-              server.moduleGraph.getModuleById(editingVariantPath)
 
-            if (editingModule) {
-              server.reloadModule(editingModule)
+            const environment = server.environments['client']
+            if (!environment) {
+              return
             }
-          }
+
+            const editingModules =
+              environment.moduleGraph.getModulesByFile(editingVariantPath)
+
+            if (!editingModules || editingModules.size === 0) {
+              return
+            }
+
+            // Find the main editing variant module (no query string).
+            const mainModule = [...editingModules].find(
+              (m) => !m.url.includes('?'),
+            )
+
+            if (mainModule) {
+              // Pre-transform the main module so Vue's SFC descriptor cache
+              // is updated BEFORE any style sub-modules are served. Without
+              // this, the browser may fetch a style sub-module concurrently,
+              // and Vue's getDescriptor() would return the stale cached
+              // descriptor — serving old CSS ("one step behind").
+              environment.moduleGraph.invalidateModule(mainModule)
+              await environment.transformRequest(mainModule.url)
+            }
+
+            return [...modules, ...editingModules]
+          },
         },
       },
     }
