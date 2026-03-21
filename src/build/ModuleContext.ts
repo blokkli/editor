@@ -25,6 +25,7 @@ export interface ComplexOptionTypeDefinition {
   editorComponentPath: string
   editorButtonLabel: string
   editorIcon: string
+  editorTitle?: string
 }
 
 export class ModuleContext {

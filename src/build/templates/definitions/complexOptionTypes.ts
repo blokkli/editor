@@ -16,6 +16,7 @@ export default defineCodeTemplate(
     editorComponent: defineAsyncComponent(() => import('${ctx.helper.toModuleBuildRelative(t.editorComponentPath)}')),
     editorButtonLabel: '${t.editorButtonLabel}',
     editorIcon: '${t.editorIcon}',
+    editorTitle: '${t.editorTitle || t.editorButtonLabel}',
   }`,
       )
       .join(',\n')
@@ -45,15 +46,17 @@ export const COMPLEX_OPTION_TYPES: Record<string, never>`
 
     return `${imports}
 import type { BlokkliIcon } from './icons'
+import type { Component } from 'vue'
 
 export interface ComplexOptionTypeMap {
 ${entries}
 }
 
 export const COMPLEX_OPTION_TYPES: Record<string, {
-  editorComponent: import('vue').Component
+  editorComponent: Component
   editorButtonLabel: string
   editorIcon: BlokkliIcon
+  editorTitle: string
 }>`
   },
   {
