@@ -119,27 +119,11 @@ export default defineNuxtConfig({
     })
     ctx.context.addCollector(promptsCollector)
 
-    // Add project tools directory to app TypeScript includes (client-side code)
-    const relativeToolsDir = path.relative(
-      nuxt.options.buildDir,
-      projectToolsDir,
-    )
-    nuxt.options.typescript.tsConfig ||= {}
-    nuxt.options.typescript.tsConfig.include ||= []
-    nuxt.options.typescript.tsConfig.include.push(relativeToolsDir)
-
-    // Add project prompts directory to app TypeScript includes (client-side code)
-    const relativePromptsDir = path.relative(
-      nuxt.options.buildDir,
-      projectPromptsDir,
-    )
-    nuxt.options.typescript.tsConfig.include.push(relativePromptsDir)
-
-    // Add module blokkli tools directories to app TypeScript includes
+    // Add project tools and prompts directories to app TypeScript includes.
+    ctx.helper.addAppTsInclude(projectToolsDir)
+    ctx.helper.addAppTsInclude(projectPromptsDir)
     for (const dir of moduleBlokkliDirs) {
-      const toolsDir = path.join(dir, 'tools')
-      const relDir = path.relative(nuxt.options.buildDir, toolsDir)
-      nuxt.options.typescript.tsConfig.include.push(relDir)
+      ctx.helper.addAppTsInclude(path.join(dir, 'tools'))
     }
 
     // Initialize skills collector with both module and project directories
@@ -238,23 +222,11 @@ export default defineNuxtConfig({
       handler: moduleResolver.resolve('./runtime/server/route'),
     })
 
-    // Add project skills and system-prompts directories to Nitro TypeScript includes for proper type resolution
-    // Path must be relative to .nuxt directory where tsconfig is generated
-    const relativeSkillsDir = path.relative(
-      nuxt.options.buildDir,
-      projectSkillsDir,
-    )
-    const relativeSystemPromptsDir = path.relative(
-      nuxt.options.buildDir,
-      projectSystemPromptsDir,
-    )
-    nuxt.hook('nitro:config', (nitroConfig) => {
-      nitroConfig.typescript ||= {}
-      nitroConfig.typescript.tsConfig ||= {}
-      nitroConfig.typescript.tsConfig.include ||= []
-      nitroConfig.typescript.tsConfig.include.push(relativeSkillsDir)
-      nitroConfig.typescript.tsConfig.include.push(relativeSystemPromptsDir)
+    // Add project skills and system-prompts directories to Nitro TypeScript includes.
+    ctx.helper.addServerTsInclude(projectSkillsDir)
+    ctx.helper.addServerTsInclude(projectSystemPromptsDir)
 
+    nuxt.hook('nitro:config', (nitroConfig) => {
       // Register the agent tool strip plugin for Nitro's Rollup build.
       nitroConfig.rollupConfig ||= {}
       nitroConfig.rollupConfig.plugins ||= []

@@ -6,6 +6,7 @@ import {
   defineNuxtModule,
   useLogger,
 } from '@nuxt/kit'
+import { resolve, join } from 'node:path'
 import type { NuxtModule } from 'nuxt/schema'
 import { RuntimeDefinitionPlugin } from './build/unplugin/RuntimeDefinition'
 import { BlokkliEditingPlugin } from './build/unplugin/BlokkliEditing'
@@ -170,6 +171,13 @@ export default defineNuxtModule<ModuleOptions>({
       '#blokkli/runtime-helpers',
       resolver.resolve('runtime/helpers/runtimeHelpers'),
     )
+
+    // Add TypeScript includes for user-defined blokkli modules.
+    // Node/build context (index.ts, build/) is covered transitively
+    // through the import in nuxt.config.ts.
+    const blokkliModulesDir = resolve(nuxt.options.rootDir, 'blokkli/modules')
+    helper.addAppTsInclude(join(blokkliModulesDir, '*/app'))
+    helper.addServerTsInclude(join(blokkliModulesDir, '*/server'))
 
     nuxt.hook('nitro:config', (nitroConfig) => {
       nitroConfig.publicAssets ||= []

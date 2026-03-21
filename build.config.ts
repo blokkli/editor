@@ -33,6 +33,11 @@ export default defineBuildConfig({
     },
 
     /**
+     * Entry point for defining custom blökkli modules.
+     */
+    './src/modules/index.ts',
+
+    /**
      * Module: Drupal.
      */
     './src/modules/drupal/index.ts',
