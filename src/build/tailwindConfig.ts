@@ -1,7 +1,7 @@
-const plugin = require('tailwindcss/plugin')
-/** @type {import('tailwindcss').Config} */
+import plugin from 'tailwindcss/plugin'
+import type { Config } from 'tailwindcss'
 
-const z = (index, key) => {
+const z = (index: number, key: string) => {
   return `calc(var(--bk-z-index-base) + ${index}) /* "${key}" */`
 }
 
@@ -56,12 +56,13 @@ const zIndexKeys = [
 // Keys to expose as CSS variables on :root
 const zIndexCssVars = ['sidebar-detached']
 
-const zIndex = zIndexKeys.reduce((acc, key, index) => {
+const zIndex = zIndexKeys.reduce<Record<string, string>>((acc, key, index) => {
   acc[key] = z(index * 10000, key)
   return acc
 }, {})
 
-module.exports = {
+const tailwindConfig: Config = {
+  content: [],
   corePlugins: {
     preflight: false,
     container: false,
@@ -214,17 +215,20 @@ module.exports = {
       addVariant(
         'mobile-only',
         "@media screen and (max-width: theme('screens.sm'))",
-      ) // instead of hard-coded 640px use sm breakpoint value from config. Or anything
+      )
 
       // Expose selected z-index values as CSS variables
-      const cssVars = zIndexCssVars.reduce((acc, key) => {
-        const index = zIndexKeys.indexOf(key)
-        if (index !== -1) {
-          acc[`--bk-z-index-${key}`] =
-            `calc(var(--bk-z-index-base) + ${index * 10000})`
-        }
-        return acc
-      }, {})
+      const cssVars = zIndexCssVars.reduce<Record<string, string>>(
+        (acc, key) => {
+          const index = zIndexKeys.indexOf(key)
+          if (index !== -1) {
+            acc[`--bk-z-index-${key}`] =
+              `calc(var(--bk-z-index-base) + ${index * 10000})`
+          }
+          return acc
+        },
+        {},
+      )
 
       addBase({
         ':root': cssVars,
@@ -232,3 +236,5 @@ module.exports = {
     }),
   ],
 }
+
+export default tailwindConfig

@@ -12,6 +12,7 @@ export type TemplateDependency =
   | 'agent-mcp-tools'
   | 'agent-server'
   | 'agent-prompts'
+  | 'module-css'
 
 /**
  * Where the template should be available:

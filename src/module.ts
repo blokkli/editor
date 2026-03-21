@@ -4,9 +4,10 @@ import {
   addPlugin,
   createResolver,
   defineNuxtModule,
+  updateTemplates,
   useLogger,
 } from '@nuxt/kit'
-import { resolve, join } from 'node:path'
+import { resolve, join, dirname } from 'node:path'
 import type { NuxtModule } from 'nuxt/schema'
 import { RuntimeDefinitionPlugin } from './build/unplugin/RuntimeDefinition'
 import { BlokkliEditingPlugin } from './build/unplugin/BlokkliEditing'
@@ -202,6 +203,12 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {
+      // Add module CSS directories to Nuxt's watch list so builder:watch
+      // fires when these files change.
+      for (const cssFile of context.getCSSFiles()) {
+        nuxt.options.watch.push(dirname(cssFile))
+      }
+
       nuxt.hook('builder:watch', async (event, providedFilePath) => {
         // In <= 3.15 this path is relative to src dir.
         const filePath = providedFilePath.startsWith('/')
@@ -220,8 +227,24 @@ export default defineNuxtModule<ModuleOptions>({
           }
         }
 
+        // Check if the changed file is a registered module CSS file
+        // or a file in the same directory tree (to catch imported partials).
+        const cssFiles = context.getCSSFiles()
+        if (cssFiles.length > 0) {
+          const cssFileDirs = cssFiles.map((f) => dirname(f))
+          const isModuleCSSRelated = cssFiles.some(
+            (cssFile, i) =>
+              filePath === cssFile ||
+              filePath.startsWith(cssFileDirs[i]! + '/'),
+          )
+          if (isModuleCSSRelated) {
+            dependenciesToUpdate.push('module-css')
+          }
+        }
+
         if (dependenciesToUpdate.length) {
           await context.generateTemplates(dependenciesToUpdate)
+          await updateTemplates()
         }
       })
     }

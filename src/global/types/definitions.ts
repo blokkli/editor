@@ -389,3 +389,5 @@ export type ProviderDefinitionInputBase<
 
   propsFieldMapping?: Record<string, PropsFieldMapping | null>
 }
+
+export {}

@@ -35,6 +35,7 @@ export class ModuleContext {
   private featureFragments: Set<string> = new Set()
   private complexOptionTypes: Map<string, ComplexOptionTypeDefinition> =
     new Map()
+  private cssFiles: string[] = []
   public collectors: Collector[] = []
 
   constructor(
@@ -44,6 +45,14 @@ export class ModuleContext {
     public blocks: BlockCollector,
     public theme: ThemeData,
   ) {}
+
+  addCSS(filePath: string): void {
+    this.cssFiles.push(filePath)
+  }
+
+  getCSSFiles(): string[] {
+    return this.cssFiles
+  }
 
   addFeatureFragment(name: string) {
     if (this.featureFragments.has(name)) {

@@ -38,6 +38,11 @@ export default defineBuildConfig({
     './src/modules/index.ts',
 
     /**
+     * Entry point for the Tailwind config export.
+     */
+    './src/modules/tailwind/index.ts',
+
+    /**
      * Module: Drupal.
      */
     './src/modules/drupal/index.ts',

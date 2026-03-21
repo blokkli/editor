@@ -51,6 +51,9 @@
       ],
       "modules": [
         "./dist/modules/index.d.mts"
+      ],
+      "tailwind": [
+        "./dist/modules/tailwind/index.d.mts"
       ]
     }
   },
@@ -78,6 +81,11 @@
     "./modules": {
       "types": "./dist/modules/index.d.mts",
       "import": "./dist/modules/index.mjs"
+    },
+    "./tailwind": {
+      "types": "./dist/modules/tailwind/index.d.mts",
+      "require": "./dist/modules/tailwind/index.mjs",
+      "import": "./dist/modules/tailwind/index.mjs"
     }
   },
   "scripts": {
@@ -180,6 +188,7 @@
   "peerDependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@lunarisapp/readability": "^1.0.2",
+    "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
     "acorn": "^8.0.0",
     "axe-core": "^4.10.0",
     "esbuild": ">=0.20.0",
@@ -188,11 +197,18 @@
     "micromatch": "^4.0.0",
     "openai": "^4.0.0",
     "oxc-walker": "^0.5.0",
+    "postcss": "^8.4.0",
+    "postcss-import": "^16.0.0",
+    "postcss-replace": "^2.0.0",
+    "tailwindcss": "^3.4.0",
     "turndown": "^7.2.2",
     "typescript": "^5.0.0"
   },
   "peerDependenciesMeta": {
     "@lunarisapp/readability": {
+      "optional": true
+    },
+    "@thedutchcoder/postcss-rem-to-px": {
       "optional": true
     },
     "axe-core": {
@@ -202,6 +218,18 @@
       "optional": true
     },
     "@anthropic-ai/sdk": {
+      "optional": true
+    },
+    "postcss": {
+      "optional": true
+    },
+    "postcss-import": {
+      "optional": true
+    },
+    "postcss-replace": {
+      "optional": true
+    },
+    "tailwindcss": {
       "optional": true
     }
   },
