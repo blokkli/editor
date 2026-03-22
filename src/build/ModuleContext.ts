@@ -36,6 +36,7 @@ export class ModuleContext {
   private complexOptionTypes: Map<string, ComplexOptionTypeDefinition> =
     new Map()
   private cssFiles: string[] = []
+  private additionalIcons: string[] = []
   public collectors: Collector[] = []
 
   constructor(
@@ -52,6 +53,14 @@ export class ModuleContext {
 
   getCSSFiles(): string[] {
     return this.cssFiles
+  }
+
+  addIcon(...names: string[]): void {
+    this.additionalIcons.push(...names)
+  }
+
+  getAdditionalIcons(): string[] {
+    return this.additionalIcons
   }
 
   addFeatureFragment(name: string) {

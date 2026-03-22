@@ -43,6 +43,7 @@ export default defineCodeTemplate(
       ...featureIcons,
       ...USED_MATERIAL_ICONS,
       ...globalOptionsIcons,
+      ...ctx.getAdditionalIcons(),
     ]
       .filter(falsy)
       .filter(onlyUnique)
