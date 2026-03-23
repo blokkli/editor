@@ -5,4 +5,4 @@
  */
 export type AdapterMethodsBase = string
 
-export {}
+

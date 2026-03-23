@@ -59,4 +59,4 @@ export type ThemeContextColors = Record<ThemeContextColorShade, RGB>
 export type Theme = Record<ThemeColorGroup, ThemeColors> &
   Record<ThemeContextColorGroup, ThemeContextColors>
 
-export {}
+

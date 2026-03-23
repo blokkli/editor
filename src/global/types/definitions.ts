@@ -8,6 +8,7 @@ export type BlokkliDefinitionAddBehaviour =
   | 'no-form'
   | 'form'
   | `editable:${string}`
+  | `complex-option:${string}`
 
 export type BlockDefinitionRenderForParentBase<
   BundleWithNested extends string = string,
@@ -390,4 +391,4 @@ export type ProviderDefinitionInputBase<
   propsFieldMapping?: Record<string, PropsFieldMapping | null>
 }
 
-export {}
+

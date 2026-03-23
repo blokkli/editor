@@ -135,6 +135,7 @@ defineDropHandler('new', {
       definition?.editor?.disableEdit ||
       addBehaviour === 'no-form' ||
       addBehaviour.startsWith('editable:') ||
+      addBehaviour.startsWith('complex-option:') ||
       !adapter.formFrameBuilder
     ) {
       await state.mutateWithLoadingState(() =>

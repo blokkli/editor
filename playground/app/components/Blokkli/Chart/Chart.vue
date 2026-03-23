@@ -31,6 +31,8 @@ const { options } = defineBlokkli({
   editor: {
     previewWidth: 800,
     icon: 'bk_mdi_area_chart',
+    addBehaviour: 'complex-option:data',
+    disableEdit: true,
   },
 })
 

@@ -290,37 +290,53 @@ onBlokkliEvent('state:reloaded', async function () {
 
   eventBus.emit('select', allSelected)
 
-  if (!dropResult?.focusEditable) {
-    return
-  }
-
   const definition = definitions.getBlockDefinition(
     newBlock.bundle,
     newBlock.fieldListType,
   )
+  const addBehaviour = definition?.editor?.addBehaviour
 
-  if (!definition?.editor?.addBehaviour?.startsWith('editable:')) {
+  if (addBehaviour?.startsWith('complex-option:')) {
+    const optionKey = addBehaviour.split(':')[1]
+    if (!optionKey) {
+      return
+    }
+    const option = definition?.options?.[optionKey]
+    if (option?.type !== 'json' || !option.dataType) {
+      return
+    }
+    eventBus.emit('option:edit-complex', {
+      uuid: newUuid,
+      key: optionKey,
+      dataType: option.dataType,
+    })
     return
   }
 
-  const editableField = definition.editor.addBehaviour.split(':')[1]
-
-  if (!editableField) {
+  if (!dropResult?.focusEditable) {
     return
   }
 
-  const editableFieldElement = directive
-    .getEditablesForBlock(newUuid)
-    .find((v) => v.fieldName === editableField)
+  if (addBehaviour?.startsWith('editable:')) {
+    const editableField = addBehaviour.split(':')[1]
 
-  if (!editableFieldElement) {
-    return
+    if (!editableField) {
+      return
+    }
+
+    const editableFieldElement = directive
+      .getEditablesForBlock(newUuid)
+      .find((v) => v.fieldName === editableField)
+
+    if (!editableFieldElement) {
+      return
+    }
+
+    eventBus.emit('editable:open', {
+      fieldName: editableField,
+      uuid: newUuid,
+    })
   }
-
-  eventBus.emit('editable:open', {
-    fieldName: editableField,
-    uuid: newUuid,
-  })
 })
 
 // ---------------------------------------------------------------------------

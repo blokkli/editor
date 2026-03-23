@@ -1672,7 +1672,7 @@ msgid "This block type is not allowed in this field."
 msgstr ""
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Modifica"
 
 msgctxt "editDisabledByDefinition"

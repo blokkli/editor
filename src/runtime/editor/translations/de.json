@@ -1636,7 +1636,7 @@
     "translation": "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
   },
   "edit": {
-    "source": "Edit...",
+    "source": "Edit",
     "translation": "Bearbeiten..."
   },
   "editDisabledByDefinition": {

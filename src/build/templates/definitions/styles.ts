@@ -25,7 +25,9 @@ export default defineFileTemplate(
           const result = await processCSS(content, filePath)
           processed.push(result)
         } catch (e: any) {
-          logger.error(`Failed to process module CSS "${filePath}":\n${e.message}`)
+          logger.error(
+            `Failed to process module CSS "${filePath}":\n${e.message}`,
+          )
         }
       }
 
