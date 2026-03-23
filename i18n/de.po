@@ -1336,10 +1336,6 @@ msgctxt "chartsEditButton"
 msgid "Edit chart..."
 msgstr "Diagramm bearbeiten..."
 
-msgctxt "chartsEditorSaveError"
-msgid "The chart could not be saved."
-msgstr "Das Diagramm konnte nicht gespeichert werden."
-
 msgctxt "chartsEditorTitle"
 msgid "Edit chart"
 msgstr "Diagramm bearbeiten"
@@ -1596,6 +1592,10 @@ msgstr "Erledigen"
 msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
 msgstr "Zeigt alle Kommentare auf der aktuellen Seite an."
+
+msgctxt "complexOptionsSaveError"
+msgid "The data could not be saved."
+msgstr ""
 
 msgctxt "conversionsConvertTo"
 msgid "Convert to: @bundle"
@@ -1951,14 +1951,6 @@ msgctxt "feature_changelog_label"
 msgid "Changelog"
 msgstr "Änderungsprotokoll"
 
-msgctxt "feature_charts_description"
-msgid "Add and edit interactive charts."
-msgstr "Interaktive Diagramme hinzufügen und bearbeiten."
-
-msgctxt "feature_charts_label"
-msgid "Charts"
-msgstr "Diagramme"
-
 msgctxt "feature_clipboard_description"
 msgid ""
 "Provides clipboard integration to copy/paste existing blocks or paste "
@@ -1991,6 +1983,14 @@ msgstr "Stellt Kommentarfunktionalität für Blöcke bereit."
 msgctxt "feature_comments_label"
 msgid "Comments"
 msgstr "Kommentare"
+
+msgctxt "feature_complex-options_description"
+msgid "Edit complex option types such as charts."
+msgstr ""
+
+msgctxt "feature_complex-options_label"
+msgid "Complex Options"
+msgstr ""
 
 msgctxt "feature_conversions_description"
 msgid "Provides block actions to convert one or more blocks to a different bundle."
@@ -2665,8 +2665,8 @@ msgid "Back to page"
 msgstr "Zurück zur Seite"
 
 msgctxt "libraryItemEditOverlayBackWithPage"
-msgid "Back to \"@label\""
-msgstr "Zurück zu «@label»"
+msgid "Save and go back to \"@label\""
+msgstr "Speichern und zurück zu «@label»"
 
 msgctxt "libraryItemEditOverlayTitle"
 msgid "Edit reusable block"

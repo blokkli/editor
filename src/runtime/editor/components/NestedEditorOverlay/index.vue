@@ -98,10 +98,10 @@ const backLabel = computed(() => {
   if (!entityLabel) {
     return $t('libraryItemEditOverlayBack', 'Back to page')
   }
-  return $t('libraryItemEditOverlayBackWithPage', 'Back to "@label"').replace(
-    '@label',
-    entityLabel,
-  )
+  return $t(
+    'libraryItemEditOverlayBackWithPage',
+    'Save and go back to "@label"',
+  ).replace('@label', entityLabel)
 })
 
 const FADE_DURATION = 150

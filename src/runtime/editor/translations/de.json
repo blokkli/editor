@@ -1267,10 +1267,6 @@
     "source": "Edit chart...",
     "translation": "Diagramm bearbeiten..."
   },
-  "chartsEditorSaveError": {
-    "source": "The chart could not be saved.",
-    "translation": "Das Diagramm konnte nicht gespeichert werden."
-  },
   "chartsEditorTitle": {
     "source": "Edit chart",
     "translation": "Diagramm bearbeiten"
@@ -1522,6 +1518,10 @@
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
     "translation": "Zeigt alle Kommentare auf der aktuellen Seite an."
+  },
+  "complexOptionsSaveError": {
+    "source": "The data could not be saved.",
+    "translation": ""
   },
   "conversionsConvertTo": {
     "source": "Convert to: @bundle",
@@ -1851,14 +1851,6 @@
     "source": "Changelog",
     "translation": "Änderungsprotokoll"
   },
-  "feature_charts_description": {
-    "source": "Add and edit interactive charts.",
-    "translation": "Interaktive Diagramme hinzufügen und bearbeiten."
-  },
-  "feature_charts_label": {
-    "source": "Charts",
-    "translation": "Diagramme"
-  },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
     "translation": "Stellt Zwischenablage-Integration bereit zum Kopieren/Einfügen von bestehenden Blöcken oder zum Einfügen von unterstützten Inhalten wie Text oder Bildern."
@@ -1882,6 +1874,14 @@
   "feature_comments_label": {
     "source": "Comments",
     "translation": "Kommentare"
+  },
+  "feature_complex-options_description": {
+    "source": "Edit complex option types such as charts.",
+    "translation": ""
+  },
+  "feature_complex-options_label": {
+    "source": "Complex Options",
+    "translation": ""
   },
   "feature_conversions_description": {
     "source": "Provides block actions to convert one or more blocks to a different bundle.",
@@ -2468,8 +2468,8 @@
     "translation": "Zurück zur Seite"
   },
   "libraryItemEditOverlayBackWithPage": {
-    "source": "Back to \"@label\"",
-    "translation": "Zurück zu «@label»"
+    "source": "Save and go back to \"@label\"",
+    "translation": "Speichern und zurück zu «@label»"
   },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",

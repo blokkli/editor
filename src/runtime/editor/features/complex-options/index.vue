@@ -2,7 +2,7 @@
   <NestedEditorOverlay
     v-if="uuid"
     :uuid
-    :title="$t(config!.editorTitle)"
+    :title="config!.editorTitle"
     :icon="config!.editorIcon"
     theme="accent"
     :element
