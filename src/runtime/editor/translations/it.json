@@ -1636,7 +1636,7 @@
     "translation": ""
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Modifica"
   },
   "editDisabledByDefinition": {
@@ -2198,6 +2198,14 @@
   "feature_structure_label": {
     "source": "Structure",
     "translation": "Struttura"
+  },
+  "feature_swap_description": {
+    "source": "Provides an action to swap two selected blocks.",
+    "translation": ""
+  },
+  "feature_swap_label": {
+    "source": "Swap",
+    "translation": ""
   },
   "feature_templates_description": {
     "source": "Add blocks from templates.",
@@ -3041,6 +3049,18 @@
   },
   "structureTourText": {
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
+    "translation": ""
+  },
+  "swapButton": {
+    "source": "Swap block positions",
+    "translation": ""
+  },
+  "swapError": {
+    "source": "The blocks could not be swapped.",
+    "translation": ""
+  },
+  "swapNotPossible": {
+    "source": "Block positions cannot be swapped.",
     "translation": ""
   },
   "systemRequirementsDialogButton": {

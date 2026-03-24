@@ -1636,7 +1636,7 @@
     "translation": "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
   },
   "edit": {
-    "source": "Edit",
+    "source": "Edit...",
     "translation": "Bearbeiten..."
   },
   "editDisabledByDefinition": {
@@ -2198,6 +2198,14 @@
   "feature_structure_label": {
     "source": "Structure",
     "translation": "Struktur"
+  },
+  "feature_swap_description": {
+    "source": "Provides an action to swap two selected blocks.",
+    "translation": ""
+  },
+  "feature_swap_label": {
+    "source": "Swap",
+    "translation": ""
   },
   "feature_templates_description": {
     "source": "Add blocks from templates.",
@@ -3042,6 +3050,18 @@
   "structureTourText": {
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
     "translation": "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
+  },
+  "swapButton": {
+    "source": "Swap block positions",
+    "translation": "Blockpositionen tauschen"
+  },
+  "swapError": {
+    "source": "The blocks could not be swapped.",
+    "translation": "Die Blöcke konnten nicht getauscht werden."
+  },
+  "swapNotPossible": {
+    "source": "Block positions cannot be swapped.",
+    "translation": "Blockpositionen können nicht getauscht werden."
   },
   "systemRequirementsDialogButton": {
     "source": "Continue anyway",

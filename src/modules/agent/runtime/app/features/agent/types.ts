@@ -22,14 +22,6 @@ declare module '#blokkli/editor/types/permissions' {
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
     /**
-     * Swap two blocks.
-     */
-    swapBlocks?: (
-      first: string,
-      second: string,
-    ) => Promise<MutationResponseLike<T>>
-
-    /**
      * Rearrange blocks within a field by specifying the desired order.
      *
      * All provided UUIDs must belong to the same field. The blocks

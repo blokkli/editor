@@ -16,6 +16,7 @@ You have SEVERAL skills available that you MUST use!!
 - **translations** => Use when you add new translations or are tasked to
   translate!
 - **typecheck** => Use when you need to check Typescript types!
+- **changelog** => Use when creating changelog entries for a new release
 
 ## Project Overview
 

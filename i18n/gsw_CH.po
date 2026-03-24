@@ -1702,7 +1702,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dr Blocktyp isch in dem Fäld nid erlaubt."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeite"
 
 msgctxt "editDisabledByDefinition"
@@ -2357,6 +2357,14 @@ msgstr ""
 msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struktur"
+
+msgctxt "feature_swap_description"
+msgid "Provides an action to swap two selected blocks."
+msgstr ""
+
+msgctxt "feature_swap_label"
+msgid "Swap"
+msgstr ""
 
 msgctxt "feature_templates_description"
 msgid "Add blocks from templates."
@@ -3261,6 +3269,18 @@ msgid ""
 msgstr ""
 "Zeigt e strukturierti Lischt vo allne Blöck uf dr aktuälle Sitte aa. Klick "
 "uf e belibige Block zum schnäll dohii z'springe."
+
+msgctxt "swapButton"
+msgid "Swap block positions"
+msgstr ""
+
+msgctxt "swapError"
+msgid "The blocks could not be swapped."
+msgstr ""
+
+msgctxt "swapNotPossible"
+msgid "Block positions cannot be swapped."
+msgstr ""
 
 msgctxt "systemRequirementsDialogButton"
 msgid "Continue anyway"

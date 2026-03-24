@@ -111,6 +111,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_stream',
   'bk_mdi_swap_horiz',
   'bk_mdi_swap_horizontal_circle',
+  'bk_mdi_swap_vert',
   'bk_mdi_text_compare',
   'bk_mdi_text_select_end',
   'bk_mdi_texture',

@@ -1672,7 +1672,7 @@ msgid "This block type is not allowed in this field."
 msgstr ""
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Modifica"
 
 msgctxt "editDisabledByDefinition"
@@ -2325,6 +2325,14 @@ msgstr ""
 msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struttura"
+
+msgctxt "feature_swap_description"
+msgid "Provides an action to swap two selected blocks."
+msgstr ""
+
+msgctxt "feature_swap_label"
+msgid "Swap"
+msgstr ""
 
 msgctxt "feature_templates_description"
 msgid "Add blocks from templates."
@@ -3207,6 +3215,18 @@ msgctxt "structureTourText"
 msgid ""
 "Shows a structured list of all blocks on the current page. Click on any "
 "block to quickly jump to it."
+msgstr ""
+
+msgctxt "swapButton"
+msgid "Swap block positions"
+msgstr ""
+
+msgctxt "swapError"
+msgid "The blocks could not be swapped."
+msgstr ""
+
+msgctxt "swapNotPossible"
+msgid "Block positions cannot be swapped."
 msgstr ""
 
 msgctxt "systemRequirementsDialogButton"

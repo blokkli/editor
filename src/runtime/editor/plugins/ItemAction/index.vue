@@ -2,6 +2,7 @@
   <Teleport to="#bk-blokkli-item-actions">
     <button
       v-if="shouldRender"
+      v-show="!hidden"
       ref="el"
       :disabled="isDisabled"
       class="bk-item-action"
@@ -110,6 +111,13 @@ const props = defineProps<{
    * Lower weights appear first. Use 'last' to always position at the end.
    */
   weight?: number | string | 'last'
+
+  /**
+   * Whether the action should be hidden.
+   *
+   * Unlike disabled, this completely hides the button via v-show.
+   */
+  hidden?: boolean
 
   /**
    * Optional icon to display in the button.
