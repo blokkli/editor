@@ -115,5 +115,3 @@ export type FeatureDefinitionBase<
    */
   beta?: boolean
 }
-
-

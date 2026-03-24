@@ -35,6 +35,27 @@ const userCanEditLibraryItems = computed(() =>
   permissions.hasPermission('edit_library_item'),
 )
 
+function getComplexOption(
+  item: RenderedFieldListItem,
+): { key: string; dataType: string } | undefined {
+  const definition = definitions.getBlockDefinition(
+    item.bundle,
+    item.fieldListType,
+    item.parentBlockBundle,
+  )
+  if (!definition?.options) {
+    return
+  }
+  const keys = Object.keys(definition.options)
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    if (!key) continue
+    const option = definition.options[key]
+    if (option?.type !== 'json' || !option.dataType) continue
+    return { key, dataType: option.dataType }
+  }
+}
+
 function isFragment(item: RenderedFieldListItem): boolean {
   return item.bundle === fragmentBlockBundle
 }
@@ -66,8 +87,9 @@ const editDisabledReason = computed<false | string>(() => {
     item.parentBlockBundle,
   )
 
-  // Editing is explicitly disabled via the definition.
-  if (definition?.editor?.disableEdit) {
+  // Editing is explicitly disabled via the definition, but still allow it if
+  // the block has a complex option that can be opened.
+  if (definition?.editor?.disableEdit && !getComplexOption(item)) {
     return $t(
       'editDisabledByDefinition',
       'Editing is disabled for this block type.',
@@ -146,6 +168,16 @@ function onClick(items: RenderedFieldListItem[]) {
     return
   }
 
+  const complexOption = getComplexOption(item)
+  if (complexOption) {
+    eventBus.emit('option:edit-complex', {
+      uuid: item.uuid,
+      key: complexOption.key,
+      dataType: complexOption.dataType,
+    })
+    return
+  }
+
   eventBus.emit('item:edit', {
     uuid: item.uuid,
     bundle: item.bundle,
@@ -153,25 +185,14 @@ function onClick(items: RenderedFieldListItem[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
-  const definition = definitions.getBlockDefinition(block)
-  if (!definition) {
+  const complexOption = getComplexOption(block)
+  if (complexOption) {
+    eventBus.emit('option:edit-complex', {
+      uuid: block.uuid,
+      key: complexOption.key,
+      dataType: complexOption.dataType,
+    })
     return
-  }
-  const options = definition.options
-  if (options) {
-    const keys = Object.keys(options)
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      if (!key) continue
-      const option = options[key]
-      if (option?.type !== 'json' || !option.dataType) continue
-      eventBus.emit('option:edit-complex', {
-        uuid: block.uuid,
-        key,
-        dataType: option.dataType,
-      })
-      return
-    }
   }
   onClick([block])
 })
