@@ -246,6 +246,7 @@ const fieldValue = fieldValueProviderFn(
   state,
   types,
   definitions,
+  blocks,
 )
 const readability = readabilityProviderFn(
   adapters,

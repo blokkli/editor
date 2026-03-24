@@ -29,8 +29,8 @@ const iconName = computed<BlokkliIcon>(() => {
   if (props.bundle === fromLibraryBlockBundle) {
     return 'reusable'
   } else if (props.bundle) {
-    const name = definitions.getBlockDefinition(props.bundle, 'default')?.editor
-      ?.icon
+    const name = definitions.getBlockDefinition(props.bundle, 'default', null)
+      ?.editor?.icon
     if (name) {
       return name
     }

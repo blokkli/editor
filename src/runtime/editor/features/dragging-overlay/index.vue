@@ -293,6 +293,7 @@ onBlokkliEvent('state:reloaded', async function () {
   const definition = definitions.getBlockDefinition(
     newBlock.bundle,
     newBlock.fieldListType,
+    newBlock.parentBlockBundle,
   )
   const addBehaviour = definition?.editor?.addBehaviour
 

@@ -6,6 +6,7 @@ import type { DefinitionProvider } from './definition'
 import type { DirectiveProvider } from './directive'
 import type { StateProvider } from './state'
 import type { BlockDefinitionProvider } from './types'
+import type { BlocksProvider } from './blocks'
 // Side-effect import to register adapter type augmentation.
 import './fieldValueAdapterTypes'
 
@@ -81,6 +82,7 @@ export default function fieldValueProvider(
   state: StateProvider,
   types: BlockDefinitionProvider,
   definitions: DefinitionProvider,
+  blocks: BlocksProvider,
 ): FieldValueProvider {
   function resolveFieldType(
     entityType: string,
@@ -143,7 +145,12 @@ export default function fieldValueProvider(
 
     let matchingProp: string | null = null
     if (host.type === itemEntityType) {
-      const definition = definitions.getBlockDefinition(host.bundle, 'default')
+      const block = blocks.getBlock(host.uuid)
+      const definition = definitions.getBlockDefinition(
+        host.bundle,
+        block?.fieldListType ?? 'default',
+        block?.parentBlockBundle ?? null,
+      )
       if (definition?.propsFieldMapping) {
         matchingProp = findMatchingProp(definition.propsFieldMapping, fieldName)
       }

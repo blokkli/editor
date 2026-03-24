@@ -5,6 +5,7 @@ import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import { blockOptionsMapSchema } from '../schemas'
 import type { BlockOptionsMap } from '../schemas'
 import { extractOptionLabels } from '../helpers'
+import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
 const paramsSchema = z.object({
   parentUuid: z.string().describe('The parent entity UUID'),
@@ -87,7 +88,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { fields, types, state, definitions, $t } = ctx.app
+    const { fields, types, state, definitions, $t, context, blocks } = ctx.app
     const label = $t(
       'aiAgentGetBundleInfoDone',
       'Got bundle info for @field',
@@ -115,6 +116,11 @@ export default defineBlokkliAgentTool({
       : field.allowedBundles
 
     const includeOptions = allowedBundles.length < 3
+    const parentBundle: BlockBundleWithNested | null =
+      params.parentUuid === context.value.entityUuid
+        ? null
+        : ((blocks.getBlock(params.parentUuid)
+            ?.bundle as BlockBundleWithNested) ?? null)
 
     const bundles = allowedBundles.map((bundle) => {
       const bundleDefinition = types.getBlockBundleDefinition(bundle)
@@ -150,7 +156,11 @@ export default defineBlokkliAgentTool({
 
       let options: BlockOptionsMap | undefined
       if (includeOptions) {
-        const definition = definitions.getBlockDefinition(bundle, 'default')
+        const definition = definitions.getBlockDefinition(
+          bundle,
+          'default',
+          parentBundle,
+        )
         if (definition) {
           const availableOptions = getAvailableOptions(
             definition.options,

@@ -170,7 +170,7 @@ export function findChartOptionKey(
   const definition = definitions.getBlockDefinition(
     bundle,
     selectionItem?.fieldListType ?? 'default',
-    selectionItem?.parentBlockBundle,
+    selectionItem?.parentBlockBundle ?? null,
   )
   if (!definition?.options) {
     return { error: `Paragraph "${uuid}" (${bundle}) has no chart option.` }

@@ -41,7 +41,7 @@ export function useEditableFieldOverride(
   fieldName: string,
   host: EntityContext,
 ): EditableFieldOverride {
-  const { eventBus, state, types, definitions, directive, fieldValue } =
+  const { eventBus, state, types, definitions, directive, fieldValue, blocks } =
     useBlokkli()
 
   // Resolve the element and editable data.
@@ -89,7 +89,12 @@ export function useEditableFieldOverride(
 
   let matchingProp: string | null = null
   if (host.type === itemEntityType) {
-    const defintion = definitions.getBlockDefinition(host.bundle, 'default')
+    const block = blocks.getBlock(host.uuid)
+    const defintion = definitions.getBlockDefinition(
+      host.bundle,
+      block?.fieldListType ?? 'default',
+      block?.parentBlockBundle ?? null,
+    )
     if (defintion?.propsFieldMapping) {
       matchingProp = findMatchingProp(defintion.propsFieldMapping)
     }
