@@ -87,14 +87,6 @@ export default defineNuxtModule<ModuleOptions>({
       blockCollector,
     ]
 
-    const hasErrors = [...collectors, helper]
-      .flatMap((v) => v.validate(iconCollector))
-      .some((v) => v)
-
-    if (!helper.isDev && !helper.isPrepare && hasErrors) {
-      throw new Error('Failed to build blökkli due to validation errors.')
-    }
-
     const context = new ModuleContext(
       helper,
       iconCollector,
@@ -121,6 +113,14 @@ export default defineNuxtModule<ModuleOptions>({
 
     await Promise.all(collectors.map((v) => v.init()))
     await Promise.all(collectors.map((v) => v.runHooks()))
+
+    const hasErrors = [...collectors, helper]
+      .flatMap((v) => v.validate(iconCollector))
+      .some((v) => v)
+
+    if (!helper.isDev && !helper.isPrepare && hasErrors) {
+      throw new Error('Failed to build blökkli due to validation errors.')
+    }
 
     TEMPLATES.forEach((v) => {
       if (typeof v === 'function') {
