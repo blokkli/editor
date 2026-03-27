@@ -1595,7 +1595,7 @@ msgstr "Zeigt alle Kommentare auf der aktuellen Seite an."
 
 msgctxt "complexOptionsSaveError"
 msgid "The data could not be saved."
-msgstr ""
+msgstr "Die Daten konnten nicht gespeichert werden."
 
 msgctxt "conversionsConvertTo"
 msgid "Convert to: @bundle"
@@ -1986,11 +1986,11 @@ msgstr "Kommentare"
 
 msgctxt "feature_complex-options_description"
 msgid "Edit complex option types such as charts."
-msgstr ""
+msgstr "Ermöglicht die Bearbeitung komplexer Optionstypen wie z. B. Diagramme."
 
 msgctxt "feature_complex-options_label"
 msgid "Complex Options"
-msgstr ""
+msgstr "Komplexe Optionen"
 
 msgctxt "feature_conversions_description"
 msgid "Provides block actions to convert one or more blocks to a different bundle."
@@ -2373,11 +2373,11 @@ msgstr "Struktur"
 
 msgctxt "feature_swap_description"
 msgid "Provides an action to swap two selected blocks."
-msgstr ""
+msgstr "Stellt eine Aktion zum Vertauschen von zwei ausgewählten Blöcken bereit."
 
 msgctxt "feature_swap_label"
 msgid "Swap"
-msgstr ""
+msgstr "Tauschen"
 
 msgctxt "feature_templates_description"
 msgid "Add blocks from templates."
@@ -3206,6 +3206,10 @@ msgctxt "selectedIsNew"
 msgid "New"
 msgstr "Neu"
 
+msgctxt "selectedTranslationIsOutdated"
+msgid "Outdated"
+msgstr "Veraltet"
+
 msgctxt "settingsAdvanced"
 msgid "Advanced"
 msgstr "Erweitert"
@@ -3572,6 +3576,10 @@ msgctxt "translateNotTranslatable"
 msgid "This block type is not translatable."
 msgstr "Dieser Blocktyp ist nicht übersetzbar."
 
+msgctxt "translationOutdatedHint"
+msgid "The translation is marked as outdated."
+msgstr "Die Übersetzung ist als veraltet markiert."
+
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
 msgstr "Originalsprache bearbeiten"
@@ -3596,6 +3604,14 @@ msgstr "Übersetzen..."
 msgctxt "translationsItemAction"
 msgid "Translate"
 msgstr "Übersetzen"
+
+msgctxt "translationsMarkUpToDate"
+msgid "Mark translation as up-to-date"
+msgstr "Übersetzung als aktuell markieren"
+
+msgctxt "translationsMarkUpToDateDisabled"
+msgid "No selected blocks have an outdated translation."
+msgstr "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
 
 msgctxt "translationsTourText"
 msgid ""

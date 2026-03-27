@@ -3190,6 +3190,10 @@ msgctxt "selectedIsNew"
 msgid "New"
 msgstr "Nöi"
 
+msgctxt "selectedTranslationIsOutdated"
+msgid "Outdated"
+msgstr ""
+
 msgctxt "settingsAdvanced"
 msgid "Advanced"
 msgstr "Erwiiteret"
@@ -3556,6 +3560,10 @@ msgctxt "translateNotTranslatable"
 msgid "This block type is not translatable."
 msgstr "Dr Blocktyp isch nid übersetzbar."
 
+msgctxt "translationOutdatedHint"
+msgid "The translation is marked as outdated."
+msgstr ""
+
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
 msgstr "Stattdässe Quellsproch bearbeite"
@@ -3580,6 +3588,14 @@ msgstr "Übersetze..."
 msgctxt "translationsItemAction"
 msgid "Translate"
 msgstr "Übersetze..."
+
+msgctxt "translationsMarkUpToDate"
+msgid "Mark translation as up-to-date"
+msgstr ""
+
+msgctxt "translationsMarkUpToDateDisabled"
+msgid "No selected blocks have an outdated translation."
+msgstr ""
 
 msgctxt "translationsTourText"
 msgid ""

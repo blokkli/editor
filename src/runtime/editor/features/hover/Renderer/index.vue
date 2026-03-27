@@ -30,6 +30,7 @@ const {
   blocks,
   fields,
   permissions,
+  context,
 } = useBlokkli()
 
 // How many hover quads are supported.
@@ -327,15 +328,20 @@ function updateHoverState(
     hoverState.radii[level * 4 + 2] = style.radius[2]!
     hoverState.radii[level * 4 + 3] = style.radius[3]!
 
-    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library), 5=yellow (restricted).
+    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library), 5=yellow (restricted), 6=yellow (outdated).
     let type = 0
     if (isDeepest) {
       const isRestricted =
         !permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
         !permissions.checkBlockBundlePermission(block.bundle, 'delete') ||
         !permissions.checkBlockBundlePermission(block.bundle, 'add')
+      const isOutdated = block.outdatedTranslations.includes(
+        context.value.language,
+      )
       if (isRestricted) {
         type = 5
+      } else if (isOutdated) {
+        type = 6
       } else if (state.fromLibraryUuids.value.includes(uuid)) {
         type = 4
       } else {
@@ -599,10 +605,10 @@ const { collector } = defineRenderer('hover-overlay', {
         ctx2d.setLineDash([])
         ctx2d.stroke()
       } else {
-        // Type 0, 1, 3, 4, 5 = blocks: dashed border only
-        // Select color: 0=mono, 1=accent, 3=white, 4=lime, 5=yellow
+        // Type 0, 1, 3, 4, 5, 6 = blocks: dashed border only
+        // Select color: 0=mono, 1=accent, 3=white, 4=lime, 5=yellow (restricted), 6=yellow (outdated)
         let strokeColor = colors.u_color_mono
-        if (type === 5) {
+        if (type === 5 || type === 6) {
           strokeColor = colors.u_color_yellow
         } else if (type === 4) {
           strokeColor = colors.u_color_lime

@@ -37,6 +37,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_check',
   'bk_mdi_check_box',
   'bk_mdi_check_box_outline_blank',
+  'bk_mdi_check_circle',
   'bk_mdi_chevron_backward',
   'bk_mdi_chevron_forward',
   'bk_mdi_chevron_left',

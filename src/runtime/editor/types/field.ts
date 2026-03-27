@@ -70,4 +70,5 @@ export type RenderedFieldListItem = {
   isNested: boolean
   publishOn?: string | null
   unpublishOn?: string | null
+  outdatedTranslations: string[]
 }

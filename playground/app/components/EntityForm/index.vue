@@ -67,7 +67,11 @@ type FormField = {
 }
 
 const mapField = (field: Field<unknown>): FormField | undefined => {
-  if (field.id === 'publishOn' || field.id === 'unpublishOn') {
+  if (
+    field.id === 'publishOn' ||
+    field.id === 'unpublishOn' ||
+    field.id === 'outdatedTranslations'
+  ) {
     return
   }
   if (field instanceof FieldText) {

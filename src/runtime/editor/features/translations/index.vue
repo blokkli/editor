@@ -55,12 +55,24 @@
   </Teleport>
 
   <PluginItemAction
+    v-if="isTranslating && adapter.markTranslationUpToDate"
+    id="mark-translation-up-to-date"
+    :disabled="markUpToDateDisabledReason"
+    disabled-reason-success
+    multiple
+    :title="$t('translationsMarkUpToDate', 'Mark translation as up-to-date')"
+    icon="bk_mdi_check_circle"
+    :weight="-100"
+    @click="onMarkUpToDate"
+  />
+
+  <PluginItemAction
     v-if="isTranslating"
     id="translate"
     :disabled="translateDisabledReason"
     :title="$t('translationsItemAction', 'Translate')"
     icon="bk_mdi_translate"
-    :weight="-100"
+    :weight="-90"
     @click="onTranslate"
   />
 </template>
@@ -196,6 +208,21 @@ function onClick(item: TranslationStateItem, event: Event) {
   }
 }
 
+const markUpToDateDisabledReason = computed<false | string>(() => {
+  const lang = context.value.language
+  if (
+    selection.items.value.some((item) =>
+      item.outdatedTranslations.includes(lang),
+    )
+  ) {
+    return false
+  }
+  return $t(
+    'translationsMarkUpToDateDisabled',
+    'No selected blocks have an outdated translation.',
+  )
+})
+
 function onTranslate(items: RenderedFieldListItem[]) {
   const item = items[0]
   if (item) {
@@ -204,6 +231,18 @@ function onTranslate(items: RenderedFieldListItem[]) {
       bundle: item.bundle,
     })
   }
+}
+
+function onMarkUpToDate(items: RenderedFieldListItem[]) {
+  if (!adapter.markTranslationUpToDate) return
+  const lang = context.value.language
+  const uuids = items
+    .filter((item) => item.outdatedTranslations.includes(lang))
+    .map((item) => item.uuid)
+  if (!uuids.length) return
+  state.mutateWithLoadingState(() =>
+    adapter.markTranslationUpToDate!(uuids, context.value.language),
+  )
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {

@@ -640,6 +640,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         },
       }
     },
+    markTranslationUpToDate: (uuids, langcode) =>
+      addMutation('mark_translation_up_to_date', { uuids, langcode }),
+
     changeLanguage(e) {
       return router.push({
         path: e.url,

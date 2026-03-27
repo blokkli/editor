@@ -133,6 +133,10 @@
     @apply w-full text-xs font-medium mt-5 text-yellow-normal;
     @apply flex items-center gap-5;
 
+    &.bk-is-success {
+      @apply text-lime-normal;
+    }
+
     &:before {
       content: '';
       @apply size-[0.75em] bg-current rounded-full;
@@ -302,12 +306,15 @@
     @apply leading-none;
 
     &.bk-is-restricted {
-      @apply bg-yellow-normal/20 text-yellow-normal border-yellow-normal/80;
       @apply p-0 size-20;
 
       svg {
         @apply size-[1.25em] fill-current;
       }
+    }
+
+    &.bk-is-warning {
+      @apply bg-yellow-normal/20 text-yellow-normal border-yellow-normal/80;
     }
   }
 }

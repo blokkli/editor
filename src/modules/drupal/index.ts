@@ -213,6 +213,7 @@ export declare const templateEditRouteName: string|null
     addMutation('add_multiple')
     addMutation('replace_entity_reference')
     addMutation('bulk_update_field_values')
+    addMutation('clear_outdated_translation')
 
     // Feature: Comments.
     if (graphql.schemaHasType('CommentBlokkliNode')) {

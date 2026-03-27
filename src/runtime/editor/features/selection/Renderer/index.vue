@@ -28,7 +28,7 @@ const props = defineProps<{
   hasHostSelected: boolean
 }>()
 
-const { animation, theme, dom, ui, state, permissions } = useBlokkli()
+const { animation, theme, dom, ui, state, permissions, context } = useBlokkli()
 
 type SelectionRectangle = Rectangle & {
   id: string
@@ -36,6 +36,7 @@ type SelectionRectangle = Rectangle & {
   isInverted: boolean
   isFromLibrary: boolean
   isRestricted: boolean
+  isOutdated: boolean
   radius: [number, number, number, number]
 }
 
@@ -60,7 +61,13 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
             return uuid + 'no_rect'
           }
 
-          return uuid + rect.time
+          return (
+            uuid +
+            rect.time +
+            (block.outdatedTranslations.includes(context.value.language)
+              ? '_outdated'
+              : '')
+          )
         })
         .join('_') +
       '_host_' +
@@ -84,6 +91,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
             isInverted: false,
             isFromLibrary: false,
             isRestricted: false,
+            isOutdated: false,
           },
           3, // Type 3 = host selection
         )
@@ -109,10 +117,15 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
           !permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
           !permissions.checkBlockBundlePermission(block.bundle, 'delete') ||
           !permissions.checkBlockBundlePermission(block.bundle, 'add')
-        // Type: 0=default, 1=inverted, 2=library, 3=host, 4=restricted
+        const isOutdated = block.outdatedTranslations.includes(
+          context.value.language,
+        )
+        // Type: 0=default, 1=inverted, 2=library, 3=host, 4=restricted, 5=outdated
         let type = 0
         if (isRestricted) {
           type = 4
+        } else if (isOutdated) {
+          type = 5
         } else if (isFromLibrary) {
           type = 2
         } else if (style?.isInverted) {
@@ -129,6 +142,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
             isInverted: !!style?.isInverted,
             isFromLibrary,
             isRestricted,
+            isOutdated,
           },
           type,
         )
@@ -210,6 +224,14 @@ const getColorRestricted = useTransitionedValue(() => {
   return theme.yellow.value.normal
 })
 
+const getColorOutdated = useTransitionedValue(() => {
+  if (hasTransformingStyle.value) {
+    return theme.orange.value.normal
+  }
+
+  return theme.yellow.value.normal
+})
+
 const getColorHost = useTransitionedValue(() => {
   return theme.mono.value[700]
 })
@@ -238,6 +260,7 @@ const { collector } = defineRenderer('selection-overlay', {
       u_color_inverted: toShaderColor(getColorInverted()),
       u_color_library: toShaderColor(getColorLibrary()),
       u_color_restricted: toShaderColor(getColorRestricted()),
+      u_color_outdated: toShaderColor(getColorOutdated()),
       u_color_host: toShaderColor(getColorHost()),
       u_artboard_size: [
         ui.artboardSize.value.width,
@@ -276,6 +299,7 @@ const { collector } = defineRenderer('selection-overlay', {
     const colorInverted = rgbaToCss(getColorInverted())
     const colorLibrary = rgbaToCss(getColorLibrary())
     const colorRestricted = rgbaToCss(getColorRestricted())
+    const colorOutdated = rgbaToCss(getColorOutdated())
     const colorHost = rgbaToCss(getColorHost())
 
     // Calculate thickness based on scale (from vertex shader line 37)
@@ -290,10 +314,12 @@ const { collector } = defineRenderer('selection-overlay', {
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]!
 
-      // Map type to color (0=default, 1=inverted, 2=library, 3=host, 4=restricted)
+      // Map type to color (0=default, 1=inverted, 2=library, 3=host, 4=restricted, 5=outdated)
       let strokeColor = colorDefault
       if (rect.isRestricted) {
         strokeColor = colorRestricted
+      } else if (rect.isOutdated) {
+        strokeColor = colorOutdated
       } else if (rect.isFromLibrary) {
         strokeColor = colorLibrary
       } else if (rect.isInverted) {

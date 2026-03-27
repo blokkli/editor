@@ -1,0 +1,15 @@
+mutation pbClearOutdatedTranslation(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuids: [String!]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: clear_outdated_translation(uuids: $uuids, langcode: $langcode) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

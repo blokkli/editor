@@ -16,6 +16,7 @@ export class MutationUpdateFieldValueBatched extends Mutation {
     context: MutationContext,
     args: MutationUpdateFieldValueBatchedArgs,
   ) {
+    const modifiedUuids = new Set<string>()
     for (const item of args.items) {
       const proxy = context.getProxy(item.uuid)
       if (!proxy) {
@@ -26,6 +27,17 @@ export class MutationUpdateFieldValueBatched extends Mutation {
         continue
       }
       field.setList([JSON.parse(JSON.stringify(item.fieldValue))])
+      modifiedUuids.add(item.uuid)
+    }
+
+    // Editing source blocks marks all translations as outdated.
+    for (const uuid of modifiedUuids) {
+      const proxy = context.getProxy(uuid)
+      if (proxy) {
+        proxy.block.setValues({
+          outdatedTranslations: JSON.stringify(['de', 'fr', 'it']),
+        })
+      }
     }
 
     for (const item of args.entityItems) {

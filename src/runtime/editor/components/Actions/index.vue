@@ -36,6 +36,17 @@
             >
               <span>{{ restrictedPermissionsLabel }}</span>
             </div>
+            <div
+              v-if="selectedTranslationIsOutdated"
+              class="bk-item-action-disabled-reason"
+            >
+              <span>{{
+                $t(
+                  'translationOutdatedHint',
+                  'The translation is marked as outdated.',
+                )
+              }}</span>
+            </div>
           </div>
           <div
             v-show="!hasSelectedHost"
@@ -66,7 +77,7 @@
 
           <span
             v-show="isPermissionRestricted"
-            class="bk-blokkli-item-actions-title-pill bk-is-restricted"
+            class="bk-blokkli-item-actions-title-pill bk-is-warning bk-is-restricted"
           >
             <Icon name="bk_mdi_lock" />
           </span>
@@ -75,6 +86,11 @@
             v-show="selectedIsNew"
             class="bk-blokkli-item-actions-title-pill"
             >{{ $t('selectedIsNew', 'New') }}</span
+          >
+          <span
+            v-show="selectedTranslationIsOutdated"
+            class="bk-blokkli-item-actions-title-pill bk-is-warning"
+            >{{ $t('selectedTranslationIsOutdated', 'Outdated') }}</span
           >
           <Icon
             v-if="shouldRenderButton"
@@ -119,8 +135,17 @@ import {
 } from '#blokkli-build/config'
 import type { BlockPermission } from '#blokkli/editor/types/definitions'
 
-const { selection, $t, types, state, ui, definitions, debug, permissions } =
-  useBlokkli()
+const {
+  selection,
+  $t,
+  types,
+  state,
+  ui,
+  definitions,
+  debug,
+  permissions,
+  context,
+} = useBlokkli()
 
 const editingEnabled = computed(
   () =>
@@ -279,6 +304,14 @@ const title = computed(() => {
 const selectedIsNew = computed<boolean>(() => {
   const items = selection.items.value
   return !!items.length && items.every((v) => v.isNew)
+})
+
+const selectedTranslationIsOutdated = computed<boolean>(() => {
+  const items = selection.items.value
+  if (!items.length) return false
+  return items.every((item) =>
+    item.outdatedTranslations.includes(context.value.language),
+  )
 })
 
 const permissionsForSelected = computed<BlockPermission[]>(() => {

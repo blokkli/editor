@@ -8197,6 +8197,13 @@ type ParagraphsBlokkliParagraphEditContext {
 
   """The status of the paragraph."""
   isPublished: Boolean!
+
+  """
+  The langcodes for which the translation is outdated.
+  A translation is outdated when the source language text was modified
+  but the translation has not been updated yet.
+  """
+  outdatedTranslations: [String!]!
   publishOn: String
   unpublishOn: String
 }
@@ -8694,6 +8701,17 @@ type ParagraphsEditMutationState {
 
     """The langcode."""
     langcode: String!
+  ): ParagraphsBlokkliMutationResult
+
+  """
+  Marks a specific translation of one or more paragraphs as no longer outdated.
+  """
+  clear_outdated_translation(
+    """The langcode of the translation to clear."""
+    langcode: String!
+
+    """The UUIDs of the paragraphs."""
+    uuids: [String]!
   ): ParagraphsBlokkliMutationResult
 
   """Converts an existing paragraph to another type."""

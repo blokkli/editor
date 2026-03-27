@@ -23,6 +23,7 @@ uniform vec3 u_color_inverted;
 uniform vec3 u_color_library;
 uniform vec3 u_color_restricted;
 uniform vec3 u_color_host;
+uniform vec3 u_color_outdated;
 
 // The transformed quad for the fragment shader.
 out vec4 v_quad;
@@ -87,9 +88,11 @@ void main() {
 
   v_rect_width = adjusted_quad.x;
 
-  // Set color based on type: 0=default, 1=inverted, 2=library, 3=host, 4=restricted
+  // Set color based on type: 0=default, 1=inverted, 2=library, 3=host, 4=restricted, 5=outdated
   v_color = u_color_default;
-  if (a_rect_type > 3.5) {
+  if (a_rect_type > 4.5) {
+    v_color = u_color_outdated;
+  } else if (a_rect_type > 3.5) {
     v_color = u_color_restricted;
   } else if (a_rect_type > 2.5) {
     v_color = u_color_host;

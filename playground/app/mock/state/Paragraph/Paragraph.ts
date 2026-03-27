@@ -18,12 +18,14 @@ export abstract class Paragraph extends Entity {
       new FieldOptions('options', 'Options'),
       new FieldText('publishOn', 'Publish On'),
       new FieldText('unpublishOn', 'Unpublish On'),
+      new FieldText('outdatedTranslations', 'Outdated Translations'),
     ]
   }
 
   static getDefaultValues(): Record<string, any> {
     return {
       isNew: true,
+      outdatedTranslations: JSON.stringify(['de', 'fr']),
     }
   }
 
@@ -61,11 +63,28 @@ export abstract class Paragraph extends Entity {
         isPublished = false
       }
     }
+    const rawOutdated = this.get('outdatedTranslations').getPropValue()
+    let outdatedTranslations: string[] = []
+    if (
+      rawOutdated === null ||
+      rawOutdated === undefined ||
+      rawOutdated === ''
+    ) {
+      // Field was never explicitly set: default to all translation languages
+      // being outdated. This simulates the Drupal server-side tracking.
+      outdatedTranslations = ['de', 'fr', 'it']
+    } else {
+      try {
+        outdatedTranslations = JSON.parse(rawOutdated)
+      } catch { /* ignore invalid JSON */ }
+    }
+
     return {
       isPublished,
       isNew,
       publishOn,
       unpublishOn,
+      outdatedTranslations,
     }
   }
 }

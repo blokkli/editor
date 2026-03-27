@@ -715,6 +715,15 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
+    if (hasMutation('pbClearOutdatedTranslation')) {
+      adapter.markTranslationUpToDate = (uuids, langcode) =>
+        useGraphqlMutation('pbClearOutdatedTranslation', {
+          ...ctx.value,
+          uuids,
+          langcode,
+        }).then(mapMutation)
+    }
+
     if (hasMutation('pbAddReusableParagraph')) {
       adapter.addLibraryItem = (e) =>
         useGraphqlMutation('pbAddReusableParagraph', {

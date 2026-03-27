@@ -26,7 +26,11 @@
           group="blocks"
           @pressed="onClick"
         />
-        <div v-if="disabledReason" class="bk-item-action-disabled-reason">
+        <div
+          v-if="disabledReason"
+          class="bk-item-action-disabled-reason"
+          :class="{ 'bk-is-success': disabledReasonSuccess }"
+        >
           <span>{{ disabledReason }}</span>
         </div>
       </div>
@@ -118,6 +122,14 @@ const props = defineProps<{
    * Unlike disabled, this completely hides the button via v-show.
    */
   hidden?: boolean
+
+  /**
+   * When true, the disabled reason tooltip is rendered in lime (success)
+   * instead of the default yellow (warning).
+   *
+   * Use this when the disabled state is a positive outcome rather than an error.
+   */
+  disabledReasonSuccess?: boolean
 
   /**
    * Optional icon to display in the button.

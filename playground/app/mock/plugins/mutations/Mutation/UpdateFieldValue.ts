@@ -32,5 +32,10 @@ export class MutationUpdateFieldValue extends Mutation {
       return
     }
     field.setList([JSON.parse(JSON.stringify(args.fieldValue))])
+
+    // Editing the source block marks all translations as outdated.
+    block.setValues({
+      outdatedTranslations: JSON.stringify(['de', 'fr', 'it']),
+    })
   }
 }

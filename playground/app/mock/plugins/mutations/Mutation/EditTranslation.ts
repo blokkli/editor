@@ -28,5 +28,21 @@ export class MutationEditTranslation extends Mutation {
     }
 
     proxy.block.setTranslationValues(args.langcode, args.values)
+
+    // Saving a translation marks it as no longer outdated.
+    const raw = proxy.block.get('outdatedTranslations').getPropValue()
+    let current: string[] = []
+    if (raw === null || raw === undefined || raw === '') {
+      current = ['de', 'fr', 'it']
+    } else {
+      try {
+        current = JSON.parse(raw)
+      } catch { /* ignore invalid JSON */ }
+    }
+    proxy.block.setValues({
+      outdatedTranslations: JSON.stringify(
+        current.filter((lc) => lc !== args.langcode),
+      ),
+    })
   }
 }

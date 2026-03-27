@@ -2979,6 +2979,10 @@
     "source": "New",
     "translation": ""
   },
+  "selectedTranslationIsOutdated": {
+    "source": "Outdated",
+    "translation": ""
+  },
   "settingsAdvanced": {
     "source": "Advanced",
     "translation": ""
@@ -3295,6 +3299,10 @@
     "source": "This block type is not translatable.",
     "translation": ""
   },
+  "translationOutdatedHint": {
+    "source": "The translation is marked as outdated.",
+    "translation": ""
+  },
   "translationsBannerButton": {
     "source": "Edit source language instead",
     "translation": ""
@@ -3314,6 +3322,14 @@
   "translationsItemAction": {
     "source": "Translate",
     "translation": "Traduci..."
+  },
+  "translationsMarkUpToDate": {
+    "source": "Mark translation as up-to-date",
+    "translation": ""
+  },
+  "translationsMarkUpToDateDisabled": {
+    "source": "No selected blocks have an outdated translation.",
+    "translation": ""
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
