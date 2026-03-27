@@ -6,6 +6,13 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
   currentIndex
   currentUserIsOwner
   ownerName
+  textFieldValues(langcode: $langcode) {
+    uuid
+    fieldName
+    value
+    fieldType
+  }
+
   mutatedState {
     fields(langcode: $langcode) {
       ...paragraphsBlokkliMutatedField

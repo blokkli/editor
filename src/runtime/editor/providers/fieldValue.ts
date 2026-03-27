@@ -1,14 +1,11 @@
 import type { EntityContext } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { PropsFieldMapping } from '../../../global/types/definitions'
-import type { AdaptersProvider } from './adapters'
 import type { DefinitionProvider } from './definition'
 import type { DirectiveProvider } from './directive'
 import type { StateProvider } from './state'
 import type { BlockDefinitionProvider } from './types'
 import type { BlocksProvider } from './blocks'
-// Side-effect import to register adapter type augmentation.
-import './fieldValueAdapterTypes'
 
 /**
  * Simplified field type for editable fields.
@@ -71,13 +68,12 @@ export type FieldValueProvider = {
 
   /**
    * Get all text field values from the page.
-   * Tries the adapter method first, falls back to reading from directive system.
+   * Reads from mapped state if available, falls back to reading from directive system.
    */
-  getTextFieldValues: () => Promise<TextFieldValue[]>
+  getTextFieldValues: () => TextFieldValue[]
 }
 
 export default function fieldValueProvider(
-  adapters: AdaptersProvider,
   directive: DirectiveProvider,
   state: StateProvider,
   types: BlockDefinitionProvider,
@@ -211,11 +207,11 @@ export default function fieldValueProvider(
     return ''
   }
 
-  async function getTextFieldValues(): Promise<TextFieldValue[]> {
-    // Try the adapter method first.
-    const adapter = adapters.adapter
-    if (adapter.getTextFieldValues) {
-      return adapter.getTextFieldValues()
+  function getTextFieldValues(): TextFieldValue[] {
+    // Read from mapped state if available (provided by adapter's mapState).
+    const mappedState = state.getMappedState()
+    if (mappedState.textFieldValues) {
+      return mappedState.textFieldValues
     }
 
     // Fallback: read from directive system using field configs.

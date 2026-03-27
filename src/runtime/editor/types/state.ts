@@ -66,6 +66,12 @@ export interface MappedState {
   mutatedEntity?: any
   translationState: TranslationState
   previewUrl?: string
+  textFieldValues?: {
+    uuid: string
+    fieldName: string
+    value: string
+    fieldType: 'plain' | 'markup'
+  }[]
 }
 
 export type MutateWithLoadingStateFunction = (

@@ -131,7 +131,7 @@ export default function readabilityProvider(
   }
 
   async function analyzeAllFields(): Promise<ReadabilityAnalysisResult> {
-    const fields = await fieldValue.getTextFieldValues()
+    const fields = fieldValue.getTextFieldValues()
     return analyzeFieldValues(fields)
   }
 

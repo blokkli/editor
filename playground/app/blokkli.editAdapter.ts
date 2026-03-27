@@ -557,6 +557,23 @@ export default defineBlokkliEditAdapter((ctx) => {
       return mockResponse(mutatedState)
     },
     mapState(inputState) {
+      const textFieldValues: TextFieldValue[] = []
+      for (const proxy of inputState.context.proxies) {
+        if (proxy.isDeleted) continue
+        const textFields = proxy.block.getTextFields()
+        for (const field of textFields) {
+          const value = field.getUnprocessed()
+          if (value && value.trim()) {
+            textFieldValues.push({
+              uuid: proxy.block.uuid,
+              fieldName: field.id,
+              value,
+              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            })
+          }
+        }
+      }
+
       return {
         currentIndex: editState.currentIndex,
         mutations: editState.getMutationItems(),
@@ -569,6 +586,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           fields: inputState.fields,
           violations: inputState.violations,
         },
+        textFieldValues,
         publishOptions: getPublishOptions(ctx.value),
         entity: {
           id: ctx.value.entityUuid,
@@ -1730,30 +1748,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       addMutation('update_host_options', {
         options,
       }),
-
-    async getTextFieldValues(): Promise<TextFieldValue[]> {
-      const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity, {
-        save: false,
-      })
-      const values: TextFieldValue[] = []
-      for (const proxy of mutatedState.context.proxies) {
-        if (proxy.isDeleted) continue
-        const textFields = proxy.block.getTextFields()
-        for (const field of textFields) {
-          const value = field.getUnprocessed()
-          if (value && value.trim()) {
-            values.push({
-              uuid: proxy.block.uuid,
-              fieldName: field.id,
-              value,
-              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
-            })
-          }
-        }
-      }
-      return values
-    },
 
     getAnalyzers: () => {
       return [

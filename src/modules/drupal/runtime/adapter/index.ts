@@ -344,6 +344,12 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         entity,
         mutatedEntity: state.mutatedEntity,
         translationState,
+        textFieldValues: (state.textFieldValues || []).map((v) => ({
+          uuid: v.uuid,
+          fieldName: v.fieldName,
+          value: v.value,
+          fieldType: v.fieldType as 'plain' | 'markup',
+        })),
       }
     }
 

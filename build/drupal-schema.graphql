@@ -2342,102 +2342,6 @@ type MediaRemoteVideo implements Entity & EntityLinkable & EntityRevisionable & 
   wasDefaultRevision: Boolean
 }
 
-"""Video {entity_type: media, bundle: video}"""
-type MediaVideo implements Entity & EntityLinkable & EntityRevisionable & Media {
-  """Check entity access for the given operation, defaults to view."""
-  accessCheck(operation: String): Boolean!
-
-  """
-  {value} {field: changed} Der Zeitpunkt, zu dem der Medieneintrag zuletzt bearbeitet wurde.
-  """
-  changed: String
-
-  """
-  {field: changed} Der Zeitpunkt, zu dem der Medieneintrag zuletzt bearbeitet wurde.
-  """
-  changedRawField: FieldItemListChanged
-
-  """
-  {value} {field: created} Der Zeitpunkt, zu dem das Medium erstellt wurde.
-  """
-  created: String
-
-  """{field: created} Der Zeitpunkt, zu dem das Medium erstellt wurde."""
-  createdRawField: FieldItemListCreated
-
-  """The bundle ID of the entity."""
-  entityBundle: String!
-
-  """
-  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
-  """
-  entityRevisionId: String
-
-  """The entity type ID."""
-  entityTypeId: String!
-
-  """{value} {field: field_media_video_file} """
-  fieldMediaVideoFile: FieldItemTypeFile
-
-  """{field: field_media_video_file} """
-  fieldMediaVideoFileRawField: FieldItemListFile
-  id: String
-
-  """Checks if this entity is the latest revision."""
-  isLatestRevision: Boolean
-
-  """Determines whether the entity is new."""
-  isNew: Boolean!
-
-  """The label of this entity."""
-  label: String
-
-  """The langcode of this entity."""
-  langcode: String
-
-  """The URL of the file belonging to the media."""
-  mediaFileUrl: Url
-
-  """{value} {field: mid} """
-  mid: Int
-
-  """{field: mid} """
-  midRawField: FieldItemListInteger
-
-  """{value} {field: name} """
-  name: String
-
-  """{field: name} """
-  nameRawField: FieldItemListString
-
-  """{value} {field: path} """
-  path: FieldItemTypePath
-
-  """{field: path} """
-  pathRawField: FieldItemListPath
-
-  """{value} {field: status} """
-  status: Boolean
-
-  """{field: status} """
-  statusRawField: FieldItemListBoolean
-
-  """{value} {field: thumbnail} Das Miniaturbild des Mediums."""
-  thumbnail: FieldItemTypeImage
-
-  """{field: thumbnail} Das Miniaturbild des Mediums."""
-  thumbnailRawField: FieldItemListImage
-
-  """Get the URL, defaults to canonical."""
-  url(options: UrlOptions, rel: String): Url
-
-  """The unique UUID."""
-  uuid: String!
-
-  """TRUE if the entity object was a revision, FALSE otherwise."""
-  wasDefaultRevision: Boolean
-}
-
 """Menu"""
 type Menu implements Entity {
   """Check entity access for the given operation, defaults to view."""
@@ -5652,10 +5556,10 @@ type ParagraphIframe implements Entity & EntityRevisionable & EntityTranslatable
   fieldHeightRawField: FieldItemListInteger
 
   """{value} {field: field_iframe_url} """
-  fieldIframeUrl: TaxonomyTermIframe
+  fieldIframeUrl: FieldItemTypeLink
 
   """{field: field_iframe_url} """
-  fieldIframeUrlRawField: FieldItemListEntityReference
+  fieldIframeUrlRawField: FieldItemListLink
 
   """
   {value} {field: field_max_width} Hier kann eine maximale Breite in Pixel
@@ -6509,18 +6413,6 @@ type ParagraphMap implements Entity & EntityRevisionable & Paragraph {
 
   """The entity type ID."""
   entityTypeId: String!
-
-  """{value} {field: field_geo_location} """
-  fieldGeoLocation: FieldItemTypeGeofield
-
-  """{field: field_geo_location} """
-  fieldGeoLocationRawField: FieldItemListGeofield
-
-  """{value} {field: field_ou} """
-  fieldOu: NodeOu
-
-  """{field: field_ou} """
-  fieldOuRawField: FieldItemListEntityReference
   id: String
 
   """Checks if this entity is the latest revision."""
@@ -8132,6 +8024,11 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
   """{field: status} """
   statusRawField: FieldItemListBoolean
 
+  """
+  The raw text/markup values of all editable text fields for all paragraphs in the current edit state.
+  """
+  textFieldValues(langcode: String): [ParagraphsBlokkliTextFieldValue!]!
+
   """The available langcodes."""
   translationState: ParagraphsBlokkliTranslationState
 
@@ -8398,6 +8295,13 @@ type ParagraphsBlokkliTemplatesSearchResults {
   items: [BlokkliParagraphTemplate!]!
   perPage: Int!
   total: Int!
+}
+
+type ParagraphsBlokkliTextFieldValue {
+  fieldName: String!
+  fieldType: String!
+  uuid: String!
+  value: String!
 }
 
 type ParagraphsBlokkliTransformPlugin {
@@ -10024,106 +9928,6 @@ type TaxonomyTermContact implements Entity & EntityLinkable & EntityRevisionable
 
   """{value} {field: parent} The parents of this term."""
   parent: [TaxonomyTermContact]
-
-  """{field: parent} The parents of this term."""
-  parentRawField: FieldItemListEntityReference
-
-  """{value} {field: status} """
-  status: Boolean
-
-  """{field: status} """
-  statusRawField: FieldItemListBoolean
-
-  """{value} {field: tid} The term ID."""
-  tid: Int
-
-  """{field: tid} The term ID."""
-  tidRawField: FieldItemListInteger
-
-  """Get the URL, defaults to canonical."""
-  url(options: UrlOptions, rel: String): Url
-
-  """The unique UUID."""
-  uuid: String!
-
-  """TRUE if the entity object was a revision, FALSE otherwise."""
-  wasDefaultRevision: Boolean
-
-  """
-  {value} {field: weight} The weight of this term in relation to other terms.
-  """
-  weight: Int
-
-  """{field: weight} The weight of this term in relation to other terms."""
-  weightRawField: FieldItemListInteger
-}
-
-"""iFrames {entity_type: taxonomy_term, bundle: iframe}"""
-type TaxonomyTermIframe implements Entity & EntityLinkable & EntityRevisionable & TaxonomyTerm {
-  """Check entity access for the given operation, defaults to view."""
-  accessCheck(operation: String): Boolean!
-
-  """{value} {field: changed} The time that the term was last edited."""
-  changed: String
-
-  """{field: changed} The time that the term was last edited."""
-  changedRawField: FieldItemListChanged
-  children: [TaxonomyTermIframe]
-
-  """
-  {value} {field: default_langcode} A flag indicating whether this is the default translation.
-  """
-  defaultLangcode: Boolean
-
-  """
-  {field: default_langcode} A flag indicating whether this is the default translation.
-  """
-  defaultLangcodeRawField: FieldItemListBoolean
-
-  """{value} {field: description} """
-  description: String
-
-  """{field: description} """
-  descriptionRawField: FieldItemListTextLong
-
-  """The bundle ID of the entity."""
-  entityBundle: String!
-
-  """
-  The revision identifier of the entity, or NULL if the entity does not have a revision identifier.
-  """
-  entityRevisionId: String
-
-  """The entity type ID."""
-  entityTypeId: String!
-
-  """{value} {field: field_iframe_url} """
-  fieldIframeUrl: FieldItemTypeLink
-
-  """{field: field_iframe_url} """
-  fieldIframeUrlRawField: FieldItemListLink
-  id: String
-
-  """Checks if this entity is the latest revision."""
-  isLatestRevision: Boolean
-
-  """Determines whether the entity is new."""
-  isNew: Boolean!
-
-  """The label of this entity."""
-  label: String
-
-  """The langcode of this entity."""
-  langcode: String
-
-  """{value} {field: name} """
-  name: String
-
-  """{field: name} """
-  nameRawField: FieldItemListString
-
-  """{value} {field: parent} The parents of this term."""
-  parent: [TaxonomyTermIframe]
 
   """{field: parent} The parents of this term."""
   parentRawField: FieldItemListEntityReference

@@ -241,7 +241,6 @@ const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
 const fieldValue = fieldValueProviderFn(
-  adapters,
   directive,
   state,
   types,
