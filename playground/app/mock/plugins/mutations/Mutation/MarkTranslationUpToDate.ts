@@ -33,7 +33,9 @@ export class MutationMarkTranslationUpToDate extends Mutation {
       } else {
         try {
           current = JSON.parse(raw)
-        } catch { /* ignore invalid JSON */ }
+        } catch {
+          /* ignore invalid JSON */
+        }
       }
       const updated = current.filter((lc) => lc !== args.langcode)
       proxy.block.setValues({ outdatedTranslations: JSON.stringify(updated) })

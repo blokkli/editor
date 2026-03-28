@@ -105,6 +105,7 @@ async function analyzeViaProvider(
         ),
         impact: analyzer.impactForScore(chunk.score),
         score: chunk.score,
+        uuid,
         targets,
       }
 

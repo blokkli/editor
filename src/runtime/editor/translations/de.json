@@ -935,6 +935,10 @@
     "source": "Results are outdated. Click the button to update.",
     "translation": "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren."
   },
+  "analyzeShowDetails": {
+    "source": "Show details",
+    "translation": "Details anzeigen"
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": "Analysieren"
@@ -2011,6 +2015,14 @@
     "source": "Help",
     "translation": "Hilfe"
   },
+  "feature_highlights_description": {
+    "source": "Renders persistent highlights for blocks with issues or outdated translations.",
+    "translation": "Zeigt dauerhafte Markierungen für Blöcke mit Problemen oder veralteten Übersetzungen an."
+  },
+  "feature_highlights_label": {
+    "source": "Highlights",
+    "translation": "Markierungen"
+  },
   "feature_history_description": {
     "source": "Implements support for history features (undo, redo, list of mutations).",
     "translation": "Implementiert Unterstützung für Verlaufsfunktionen (Rückgängig, Wiederherstellen, Liste der Änderungen)."
@@ -2578,6 +2590,14 @@
   "optionsCommand.unselectCheckboxValue": {
     "source": "Unselect \"@value\" in \"@option\"",
     "translation": "«@value» in «@option» abwählen"
+  },
+  "outdatedTranslation": {
+    "source": "Outdated translation",
+    "translation": "Veraltete Übersetzung"
+  },
+  "outdatedTranslationDescription": {
+    "source": "Mark translation as up-to-date",
+    "translation": "Übersetzung als aktuell markieren"
   },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",

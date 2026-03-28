@@ -161,7 +161,7 @@ useStickyToolbar(el, {
   getPlacementY: () => 'top',
   shouldUpdate: () => !ui.actionsToolbarLocked.value && isVisible.value,
   getHeight: () => ACTIONS_HEIGHT,
-  getMargin: () => 20,
+  getMargin: () => 30,
   allowHorizontalOverflow: true,
 })
 

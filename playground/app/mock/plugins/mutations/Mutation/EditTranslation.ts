@@ -37,7 +37,9 @@ export class MutationEditTranslation extends Mutation {
     } else {
       try {
         current = JSON.parse(raw)
-      } catch { /* ignore invalid JSON */ }
+      } catch {
+        /* ignore invalid JSON */
+      }
     }
     proxy.block.setValues({
       outdatedTranslations: JSON.stringify(

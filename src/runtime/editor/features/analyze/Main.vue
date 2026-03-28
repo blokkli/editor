@@ -66,15 +66,6 @@
       <Results v-model="activeId" :results="results" />
     </div>
   </div>
-  <Renderer
-    v-if="results.length && (keepVisible || isShown) && !ui.isApproving.value"
-    v-model="activeId"
-    :results
-    :is-stale
-    :manual-analyzer-ids
-    :is-running
-    :is-shown
-  />
 </template>
 
 <script setup lang="ts">
@@ -96,7 +87,6 @@ import type {
 import type { AnalyzeProvider } from '#blokkli/editor/providers/analyze'
 import Results from './Results/Results.vue'
 import AnalyzeSummary from './Summary/index.vue'
-import Renderer from './Renderer/index.vue'
 import { useAnalyzeHelper } from './helper'
 import {
   FormSelect,
@@ -104,6 +94,7 @@ import {
   RelativeTime,
 } from '#blokkli/editor/components'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
+import { defineHighlight } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   langcode: string
@@ -113,7 +104,18 @@ const props = defineProps<{
 
 const ALL = 'ALL'
 
-const { $t, ui, state, directive, dom, storage } = useBlokkli()
+const {
+  $t,
+  ui,
+  state,
+  directive,
+  dom,
+  storage,
+  element,
+  blocks,
+  eventBus,
+  readability,
+} = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
 
 const refreshKey = computed(() => {
@@ -143,6 +145,79 @@ const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
 const keepVisible = storage.use('analyze:keepVisible', true)
 const providerRootElement = ui.providerElement
+
+defineHighlight(() => {
+  if (!keepVisible.value && !props.isShown) {
+    return
+  }
+
+  if (ui.isApproving.value) {
+    return
+  }
+
+  const highlights: import('#blokkli/editor/providers/plugin').HighlightItem[] =
+    []
+
+  for (const result of results.value) {
+    if (result.status !== 'incomplete' && result.status !== 'violation') {
+      continue
+    }
+
+    for (const node of result.nodes) {
+      if (!node) {
+        continue
+      }
+
+      for (const target of node.targets) {
+        if (!target) {
+          continue
+        }
+
+        let targetElement: HTMLElement | null = null
+        let targetUuid: string | undefined = node.uuid
+
+        if (typeof target.target === 'string') {
+          targetElement = element.query(
+            ui.providerElement,
+            target.target,
+            'Find analyze highlight target element.',
+          )
+        } else if (target.target instanceof HTMLElement) {
+          targetElement = target.target
+        } else if ('uuid' in target.target) {
+          targetUuid = target.target.uuid
+          const item = blocks.getBlock(target.target.uuid)
+          if (item) {
+            targetElement = dom.getDragElement(item) ?? null
+          }
+        }
+
+        if (targetElement) {
+          const id = result.id + '_____' + target.globalIndex
+          let label = result.title
+          if (node.score != null) {
+            const scoreLabel = readability.analyzer.value.scoreLabel
+            label += ` · ${scoreLabel} ${readability.formatScore(node.score)}`
+          }
+          highlights.push({
+            element: targetElement,
+            uuid: targetUuid,
+            color: result.status === 'violation' ? 'red' : 'yellow',
+            icon: 'bk_mdi_speed',
+            label,
+            description: $t('analyzeShowDetails', 'Show details'),
+            onClick: () => {
+              activeId.value = id
+              eventBus.emit('sidebar:open', 'analyze')
+            },
+          })
+        }
+      }
+    }
+  }
+
+  return highlights
+})
 
 // Split analyzers into continuous and manual
 const continuousAnalyzers = computed(() =>
@@ -295,9 +370,6 @@ const analyzerStatuses = computed(() => {
   })
 })
 
-const manualAnalyzerIds = computed(
-  () => new Set(manualAnalyzers.value.map((a) => a.id)),
-)
 
 let refreshTimeout: number | null = null
 

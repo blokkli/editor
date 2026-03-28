@@ -19,6 +19,11 @@ export type AnalyzeNode = {
    */
   score?: number
   /**
+   * Optional UUID of the block this node belongs to.
+   * Used to determine block hierarchy for highlight rendering.
+   */
+  uuid?: string
+  /**
    * An array of either:
    * - string: a valid selector
    * - HTMLElement: the DOM node

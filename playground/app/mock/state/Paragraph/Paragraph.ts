@@ -76,7 +76,9 @@ export abstract class Paragraph extends Entity {
     } else {
       try {
         outdatedTranslations = JSON.parse(rawOutdated)
-      } catch { /* ignore invalid JSON */ }
+      } catch {
+        /* ignore invalid JSON */
+      }
     }
 
     return {

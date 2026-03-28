@@ -88,7 +88,11 @@ import {
 import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import Banner from './Banner/index.vue'
-import { defineMenuButton, onBlokkliEvent } from '#blokkli/editor/composables'
+import {
+  defineMenuButton,
+  defineHighlight,
+  onBlokkliEvent,
+} from '#blokkli/editor/composables'
 import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
@@ -100,10 +104,40 @@ const { adapter } = defineBlokkliFeature({
   description: 'Adds support for block translations.',
 })
 
-const { eventBus, state, context, $t, ui, selection, types, definitions } =
-  useBlokkli()
+const {
+  eventBus,
+  state,
+  context,
+  $t,
+  ui,
+  selection,
+  types,
+  definitions,
+  blocks,
+} = useBlokkli()
 
 const isTranslating = computed(() => state.editMode.value === 'translating')
+
+defineHighlight(() => {
+  if (!isTranslating.value) {
+    return
+  }
+  const lang = context.value.language
+  return blocks
+    .getAllBlocks()
+    .filter((block) => block.outdatedTranslations.includes(lang))
+    .map((block) => ({
+      uuid: block.uuid,
+      color: 'yellow' as const,
+      icon: 'bk_mdi_translate' as const,
+      label: $t('outdatedTranslation', 'Outdated translation'),
+      description: $t(
+        'outdatedTranslationDescription',
+        'Mark translation as up-to-date',
+      ),
+      onClick: () => onMarkUpToDate([block]),
+    }))
+})
 
 const isOpen = ref(false)
 

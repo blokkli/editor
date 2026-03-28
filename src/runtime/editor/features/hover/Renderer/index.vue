@@ -30,7 +30,6 @@ const {
   blocks,
   fields,
   permissions,
-  context,
 } = useBlokkli()
 
 // How many hover quads are supported.
@@ -328,20 +327,15 @@ function updateHoverState(
     hoverState.radii[level * 4 + 2] = style.radius[2]!
     hoverState.radii[level * 4 + 3] = style.radius[3]!
 
-    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library), 5=yellow (restricted), 6=yellow (outdated).
+    // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library), 5=yellow (restricted).
     let type = 0
     if (isDeepest) {
       const isRestricted =
         !permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
         !permissions.checkBlockBundlePermission(block.bundle, 'delete') ||
         !permissions.checkBlockBundlePermission(block.bundle, 'add')
-      const isOutdated = block.outdatedTranslations.includes(
-        context.value.language,
-      )
       if (isRestricted) {
         type = 5
-      } else if (isOutdated) {
-        type = 6
       } else if (state.fromLibraryUuids.value.includes(uuid)) {
         type = 4
       } else {

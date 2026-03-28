@@ -1,0 +1,45 @@
+.bk.bk-highlight-tooltip {
+  @apply fixed top-0 left-0 z-analyze-tooltip;
+  @apply flex flex-row -mt-25;
+  @apply shadow-lg;
+}
+
+.bk.bk-highlight-tooltip-item {
+  @apply cursor-pointer relative;
+  @apply flex items-center gap-5 px-8 h-25;
+  @apply text-xs font-semibold whitespace-nowrap;
+
+  svg {
+    @apply size-15 fill-current;
+  }
+
+  .bk-tooltip {
+    @apply absolute bottom-full left-0 mb-5;
+  }
+
+  &:not(:hover) .bk-tooltip {
+    @apply hidden;
+  }
+
+  &.bk-is-red {
+    @apply bg-red-light text-red-normal;
+    &:hover {
+      @apply bg-red-normal text-red-light;
+    }
+  }
+
+  &.bk-is-yellow {
+    @apply bg-yellow-light text-yellow-dark;
+    &:hover {
+      @apply bg-yellow-normal;
+    }
+  }
+
+  &:first-child {
+    @apply rounded-l;
+  }
+
+  &:last-child {
+    @apply rounded-r;
+  }
+}

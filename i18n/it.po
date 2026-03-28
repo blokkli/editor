@@ -964,6 +964,10 @@ msgctxt "analyzeResultsOutdated"
 msgid "Results are outdated. Click the button to update."
 msgstr ""
 
+msgctxt "analyzeShowDetails"
+msgid "Show details"
+msgstr ""
+
 msgctxt "analyzeSidebarTitle"
 msgid "Analyze"
 msgstr ""
@@ -2086,6 +2090,16 @@ msgctxt "feature_help_label"
 msgid "Help"
 msgstr "Aiuto"
 
+msgctxt "feature_highlights_description"
+msgid ""
+"Renders persistent highlights for blocks with issues or outdated "
+"translations."
+msgstr ""
+
+msgctxt "feature_highlights_label"
+msgid "Highlights"
+msgstr ""
+
 msgctxt "feature_history_description"
 msgid "Implements support for history features (undo, redo, list of mutations)."
 msgstr ""
@@ -2724,6 +2738,14 @@ msgstr ""
 
 msgctxt "optionsCommand.unselectCheckboxValue"
 msgid "Unselect \"@value\" in \"@option\""
+msgstr ""
+
+msgctxt "outdatedTranslation"
+msgid "Outdated translation"
+msgstr ""
+
+msgctxt "outdatedTranslationDescription"
+msgid "Mark translation as up-to-date"
 msgstr ""
 
 msgctxt "overlayDoubleClickInfo"

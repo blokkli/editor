@@ -113,8 +113,7 @@ function getInputWrapperAttributes(value: PossibleOptionType) {
 const mappedOptions = computed(() => {
   return Object.entries(props.options).map(([key, value]) => {
     const label = typeof value === 'string' ? value : value.label
-    const description =
-      typeof value === 'object' ? value.description || '' : ''
+    const description = typeof value === 'object' ? value.description || '' : ''
     return { key, value, label, description }
   })
 })
