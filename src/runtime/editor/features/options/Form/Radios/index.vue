@@ -11,7 +11,7 @@
     <label
       v-for="option in mappedOptions"
       :key="option.key"
-      @mouseenter="active = option.label"
+      @mouseenter="onOptionMouseEnter(option)"
     >
       <div v-bind="getInputWrapperAttributes(option.value)">
         <input
@@ -73,6 +73,7 @@ type PossibleOptionType =
       columns?: number[]
       icon?: string
       label: string
+      description?: string
     }
 
 const props = defineProps<{
@@ -87,6 +88,10 @@ const value = defineModel<string>({
 })
 
 const active = defineModel<string>('hovered', {
+  default: '',
+})
+
+const activeDescription = defineModel<string>('hoveredDescription', {
   default: '',
 })
 
@@ -108,16 +113,24 @@ function getInputWrapperAttributes(value: PossibleOptionType) {
 const mappedOptions = computed(() => {
   return Object.entries(props.options).map(([key, value]) => {
     const label = typeof value === 'string' ? value : value.label
-    return { key, value, label }
+    const description =
+      typeof value === 'object' ? value.description || '' : ''
+    return { key, value, label, description }
   })
 })
 
-const selectedLabel = computed(() => {
-  return mappedOptions.value.find((v) => v.key === value.value)?.label
+const selectedOption = computed(() => {
+  return mappedOptions.value.find((v) => v.key === value.value)
 })
 
+function onOptionMouseEnter(option: (typeof mappedOptions.value)[number]) {
+  active.value = option.label
+  activeDescription.value = option.description
+}
+
 function onMouseLeave() {
-  active.value = selectedLabel.value ?? ''
+  active.value = selectedOption.value?.label ?? ''
+  activeDescription.value = selectedOption.value?.description ?? ''
 }
 
 defineCommands(() => {
@@ -145,7 +158,8 @@ defineCommands(() => {
 })
 
 onMounted(() => {
-  active.value = selectedLabel.value ?? ''
+  active.value = selectedOption.value?.label ?? ''
+  activeDescription.value = selectedOption.value?.description ?? ''
 })
 </script>
 

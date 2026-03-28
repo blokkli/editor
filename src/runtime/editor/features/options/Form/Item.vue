@@ -6,9 +6,14 @@
     >
       <div class="bk-is-label">
         <span>{{ label }}</span>
-        <span v-if="hoveredOption">:&nbsp;{{ hoveredOption }}</span>
       </div>
       <span v-if="description">{{ description }}</span>
+      <div v-if="hoveredOption" class="bk-is-hovered-option">
+        <strong>{{ hoveredOption }}</strong
+        ><template v-if="hoveredOptionDescription"
+          >: {{ hoveredOptionDescription }}</template
+        >
+      </div>
     </div>
     <div
       class="bk-blokkli-item-options-item-content"
@@ -20,6 +25,7 @@
         v-if="option.type === 'radios'"
         v-model="value"
         v-model:hovered="hoveredOption"
+        v-model:hovered-description="hoveredOptionDescription"
         :label="label"
         :options="option.options"
         :property="property"
@@ -113,6 +119,7 @@ const props = defineProps<{
 }>()
 
 const hoveredOption = ref('')
+const hoveredOptionDescription = ref('')
 
 const showLabel = computed(() => {
   if (props.isGrouped) {

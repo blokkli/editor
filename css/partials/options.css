@@ -35,9 +35,13 @@
         }
       }
 
-      > span:nth-child(2) {
+      > span {
         @apply text-mono-200 mt-5 text-xs font-medium block;
         @apply whitespace-normal;
+      }
+
+      div.bk-is-hovered-option {
+        @apply text-xs font-normal pt-8 mt-5 border-t border-t-mono-400 flex-1 w-full;
       }
     }
     &:not(:hover) {
