@@ -44,9 +44,44 @@ reason.
   `<MyComponent :can-submit />` instead of
   `<MyComponent :can-submit="canSubmit" />`!
 
-## NO `<style>` TAGS !!
+## Styling Components
 
-You **CAN NOT** use `<style>` tags in Vue components! All the CSS of the editor
-is in separate css files in `./css` of the repository root. Since this Nuxt
-module is installed in all kinds of setups, these styles could potentially leak
-into the project's styling.
+### Utility classes in templates (preferred)
+
+Use Tailwind utility classes directly in `class="..."` attributes for simple
+styles. A build-time mangling system renames them (e.g., `flex` → `_bk_flex`) so
+they never collide with host project styles. See the **styles** skill for the
+available Tailwind config (custom spacing, colors, etc.).
+
+### `<style lang="postcss">` blocks
+
+Use `<style lang="postcss">` for CSS that can't be expressed as utility classes:
+complex selectors, container queries, pseudo-elements, styling `v-html` content,
+etc. These blocks support full `@apply`, `theme()`, and nesting — they are
+pre-processed through blökkli's PostCSS pipeline at build time, so consumers
+receive plain CSS.
+
+**When to use `<style>` vs utility classes:**
+
+- Simple layout, spacing, colors → utility classes in template
+- Nested selectors, pseudo-elements, container queries, `v-html` styling →
+  `<style lang="postcss">`
+- Selectors in `<style>` should use `bk-*` class names
+
+### `tw()` marker function
+
+When referencing utility class names in `<script>` sections (e.g.,
+`classList.add(...)`, computed class strings), wrap them in `tw()` so the
+mangling system can find and rename them:
+
+```ts
+import { tw } from '#blokkli/helpers/tw'
+element.classList.add(tw('flex pt-5'))
+```
+
+### Legacy CSS partials
+
+Some components still have their CSS in separate files under `css/partials/`.
+When modifying these components, consider migrating the CSS into the component
+using utility classes and `<style lang="postcss">`, then removing the
+`@import` from `css/index.css`.
