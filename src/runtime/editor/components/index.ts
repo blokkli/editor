@@ -1,99 +1,50 @@
-import AddListItem from './AddListItem/index.vue'
-import ArtboardTooltip from './ArtboardTooltip/index.vue'
-import AutoHeight from './AutoHeight/index.vue'
-import Banner from './Banner/index.vue'
-import BlockPreviewItem from './BlockPreviewItem/index.vue'
-import BlockPreviewRenderer from './BlockPreviewRenderer/index.vue'
-import BlokkliTransition from './Transition/index.vue'
-import BundleSelector from './BundleSelector/index.vue'
-import ConfigForm from './PluginConfigForm/index.vue'
-import DialogModal from './Dialog/index.vue'
-import DiffApproval from './DiffApproval/index.vue'
-import DiffDisplay from './DiffViewer/DiffDisplay/index.vue'
-import DiffValue from './DiffViewer/DiffValue.vue'
-import DiffViewerState from './DiffViewer/State.vue'
-import Dropdown from './Dropdown/index.vue'
-import DropdownItem from './DropdownItem/index.vue'
-import ErrorBoundary from './BlokkliErrorBoundary.vue'
-import FlexTextarea from './FlexTextarea/index.vue'
-import FormCheckboxes from './Form/Checkboxes/index.vue'
-import FormDatepicker from './Form/Datepicker/index.vue'
-import FormGroup from './Form/Group/index.vue'
-import FormItem from './Form/Item/index.vue'
-import FormOverlay from './FormOverlay/index.vue'
-import FormRadio from './Form/Radio/index.vue'
-import FormRadioTabs from './Form/RadioTabs/index.vue'
-import FormSelect from './Form/Select/index.vue'
-import FormText from './Form/Text/index.vue'
-import FormTextarea from './Form/Textarea/index.vue'
-import FormToggle from './Form/Toggle/index.vue'
-import Highlight from './Highlight/index.vue'
-import Icon from './Icon/index.vue'
-import InfoBox from './InfoBox/index.vue'
-import ItemIcon from './ItemIcon/index.vue'
-import ItemIconBox from './ItemIconBox/index.vue'
-import Loading from './Loading/index.vue'
-import NestedEditorOverlay from './NestedEditorOverlay/index.vue'
-import Pagination from './Pagination/index.vue'
-import Popup from './Popup/index.vue'
-import RelativeTime from './RelativeTime/index.vue'
-import Resizable from './Resizable/index.vue'
-import ScaleToFit from './ScaleToFit/index.vue'
-import ScheduleDate from './ScheduleDate/index.vue'
-import ScrollBoundary from './ScrollBoundary/index.vue'
-import ShortcutIndicator from './ShortcutIndicator/index.vue'
-import Sortli from './Sortli/index.vue'
-import StatusIcon from './StatusIcon/index.vue'
-import TransitionHeight from './Transition/Height.vue'
-import ViewportBlockingRect from './ViewportBlockingRect/index.vue'
-
-export {
-  AddListItem,
-  ArtboardTooltip,
-  AutoHeight,
-  Banner,
-  BlockPreviewItem,
-  BlockPreviewRenderer,
-  BlokkliTransition,
-  BundleSelector,
-  ConfigForm,
-  DialogModal,
-  DiffApproval,
-  DiffDisplay,
-  DiffValue,
-  DiffViewerState,
-  Dropdown,
-  DropdownItem,
-  ErrorBoundary,
-  FlexTextarea,
-  FormCheckboxes,
-  FormDatepicker,
-  FormGroup,
-  FormItem,
-  FormOverlay,
-  FormRadio,
-  FormRadioTabs,
-  FormSelect,
-  FormText,
-  FormTextarea,
-  FormToggle,
-  Highlight,
-  Icon,
-  InfoBox,
-  ItemIcon,
-  ItemIconBox,
-  Loading,
-  NestedEditorOverlay,
-  Pagination,
-  Popup,
-  RelativeTime,
-  Resizable,
-  ScaleToFit,
-  ScheduleDate,
-  ScrollBoundary,
-  ShortcutIndicator,
-  Sortli,
-  StatusIcon,
-  TransitionHeight,
-  ViewportBlockingRect,
-}
+export { default as AddListItem } from './AddListItem/index.vue'
+export { default as ArtboardTooltip } from './ArtboardTooltip/index.vue'
+export { default as AutoHeight } from './AutoHeight/index.vue'
+export { default as Banner } from './Banner/index.vue'
+export { default as BetaIndicator } from './BetaIndicator/index.vue'
+export { default as BlockPreviewItem } from './BlockPreviewItem/index.vue'
+export { default as BlockPreviewRenderer } from './BlockPreviewRenderer/index.vue'
+export { default as BlokkliTransition } from './Transition/index.vue'
+export { default as BundleSelector } from './BundleSelector/index.vue'
+export { default as ConfigForm } from './PluginConfigForm/index.vue'
+export { default as DialogModal } from './Dialog/index.vue'
+export { default as DiffApproval } from './DiffApproval/index.vue'
+export { default as DiffDisplay } from './DiffViewer/DiffDisplay/index.vue'
+export { default as DiffValue } from './DiffViewer/DiffValue.vue'
+export { default as DiffViewerState } from './DiffViewer/State.vue'
+export { default as Dropdown } from './Dropdown/index.vue'
+export { default as DropdownItem } from './DropdownItem/index.vue'
+export { default as ErrorBoundary } from './BlokkliErrorBoundary.vue'
+export { default as FlexTextarea } from './FlexTextarea/index.vue'
+export { default as FormCheckboxes } from './Form/Checkboxes/index.vue'
+export { default as FormDatepicker } from './Form/Datepicker/index.vue'
+export { default as FormGroup } from './Form/Group/index.vue'
+export { default as FormItem } from './Form/Item/index.vue'
+export { default as FormOverlay } from './FormOverlay/index.vue'
+export { default as FormRadio } from './Form/Radio/index.vue'
+export { default as FormRadioTabs } from './Form/RadioTabs/index.vue'
+export { default as FormSelect } from './Form/Select/index.vue'
+export { default as FormText } from './Form/Text/index.vue'
+export { default as FormTextarea } from './Form/Textarea/index.vue'
+export { default as FormToggle } from './Form/Toggle/index.vue'
+export { default as Highlight } from './Highlight/index.vue'
+export { default as Icon } from './Icon/index.vue'
+export { default as InfoBox } from './InfoBox/index.vue'
+export { default as ItemIcon } from './ItemIcon/index.vue'
+export { default as ItemIconBox } from './ItemIconBox/index.vue'
+export { default as Loading } from './Loading/index.vue'
+export { default as NestedEditorOverlay } from './NestedEditorOverlay/index.vue'
+export { default as Pagination } from './Pagination/index.vue'
+export { default as Popup } from './Popup/index.vue'
+export { default as RelativeTime } from './RelativeTime/index.vue'
+export { default as Resizable } from './Resizable/index.vue'
+export { default as ScaleToFit } from './ScaleToFit/index.vue'
+export { default as ScheduleDate } from './ScheduleDate/index.vue'
+export { default as ScrollBoundary } from './ScrollBoundary/index.vue'
+export { default as ShortcutIndicator } from './ShortcutIndicator/index.vue'
+export { default as Sortli } from './Sortli/index.vue'
+export { default as StatusIcon } from './StatusIcon/index.vue'
+export { default as StatusIndicator } from './StatusIndicator/index.vue'
+export { default as TransitionHeight } from './Transition/Height.vue'
+export { default as ViewportBlockingRect } from './ViewportBlockingRect/index.vue'

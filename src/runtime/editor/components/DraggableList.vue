@@ -196,3 +196,21 @@ if (import.meta.hot) {
   import.meta.hot.accept('#blokkli/helpers/runtimeHelpers', () => {})
 }
 </script>
+
+<style lang="postcss">
+.bk-draggable-list-container {
+  .bk-list-item {
+    @apply bg-white p-20 font-bold !rounded-none;
+    &:after {
+      @apply hidden;
+    }
+  }
+  .bk-list-item-inner {
+    @apply flex gap-20 h-full items-center;
+  }
+  .bk-list-item-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+</style>

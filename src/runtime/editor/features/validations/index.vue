@@ -73,3 +73,19 @@ export default {
   name: 'Validations',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-errors {
+  .bk-errors-success {
+    @apply text-center flex items-center pt-30 flex-col;
+
+    figure {
+      @apply rounded-full bg-lime-light text-lime-dark p-20 w-100 h-100 mb-20;
+
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+}
+</style>

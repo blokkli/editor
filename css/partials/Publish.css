@@ -59,10 +59,6 @@
     .bk-icon-loader svg {
       @apply w-30 h-30 fill-mono-500 mr-15;
     }
-
-    .bk-status-indicator {
-      @apply mx-0;
-    }
   }
   .bk-publish-dialog-table + .bk-publish-dialog-table {
     @apply mt-40;

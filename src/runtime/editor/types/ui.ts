@@ -1,7 +1,9 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
+export type UiStatus = 'success' | 'warning' | 'error'
+
 export type Message = {
-  type: 'success' | 'error' | 'warning'
+  type: UiStatus
   message: string
   additional?: string | Error | unknown
   replace?: boolean

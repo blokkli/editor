@@ -156,3 +156,16 @@ const tickmarks = computed(() => {
   return []
 })
 </script>
+
+<style lang="postcss">
+.bk-input-range {
+  @apply block w-full;
+  input {
+    @apply w-full block accent-accent-700 bg-mono-100 rounded-full border border-mono-300;
+  }
+
+  span {
+    @apply font-medium mb-5 inline-block;
+  }
+}
+</style>

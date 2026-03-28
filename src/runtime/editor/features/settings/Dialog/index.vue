@@ -11,7 +11,10 @@
       <div v-for="group in groups" :key="group.key" class="bk-form-section">
         <h3 class="bk-settings-group-title">
           <span>{{ group.label }}</span>
-          <span v-if="group.id === 'beta'" class="bk-beta-indicator">BETA</span>
+          <BetaIndicator
+            v-if="group.id === 'beta'"
+            class="inline-block ml-5 -translate-y-3"
+          />
         </h3>
         <div>
           <FeatureSettingComponent
@@ -29,7 +32,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
-import { DialogModal } from '#blokkli/editor/components'
+import { DialogModal, BetaIndicator } from '#blokkli/editor/components'
 import FeatureSettingComponent from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import {

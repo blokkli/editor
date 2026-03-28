@@ -224,4 +224,203 @@ export default {
     }
   }
 }
+
+.bk.bk-toolbar {
+  @apply relative z-toolbar;
+  @apply select-none;
+  @apply text-base flex bg-mono-900 pointer-events-auto;
+  contain: style size;
+  grid-area: toolbar;
+
+  .bk-toolbar-button {
+    .bk-tooltip {
+      @apply absolute top-full left-0 mt-10;
+      min-width: calc(100% - 10px);
+    }
+  }
+}
+
+.bk {
+  .bk-tooltip {
+    @apply bg-mono-800/90 py-10 text-white font-bold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap min-h-[40px] font-sans;
+    line-height: 18px;
+    @screen lg {
+      @apply flex;
+    }
+    .bk-shortcut {
+      @apply ml-5;
+    }
+  }
+
+  .bk-toolbar-container {
+    &:not(:first-child) {
+      @screen lg {
+        @apply border-l border-l-mono-600;
+      }
+    }
+    &:empty {
+      @apply hidden;
+    }
+    @apply relative flex h-full;
+    &#bk-toolbar-view-options {
+      @apply hidden lg:flex;
+
+      .bk-tooltip {
+        @apply left-auto right-[9px];
+      }
+    }
+    &#bk-toolbar-title {
+      @apply flex-1 text-xs lg:text-sm xl:text-base;
+      .bk-toolbar-button {
+        @apply w-full justify-start relative;
+        .bk-tooltip {
+          @apply w-auto min-w-0;
+        }
+        &:not(:hover) {
+          .bk-tooltip {
+            @apply hidden;
+          }
+        }
+        .bk-toolbar-title {
+          @apply relative w-full h-full;
+          > div {
+            @apply min-w-0 overflow-ellipsis overflow-hidden absolute top-1/2 left-0 w-full whitespace-nowrap -translate-y-1/2 text-left;
+            @apply flex items-center;
+          }
+        }
+      }
+      strong {
+        @apply text-mono-100;
+      }
+
+      .bk-toolbar-title-scheduled {
+        @apply text-sm !leading-none border-r border-r-yellow-dark relative;
+        @apply bg-yellow-dark/50 text-yellow-light/90;
+        @apply hover:bg-yellow-dark/80 hover:text-yellow-light;
+        @apply font-semibold;
+        @apply flex items-center gap-10 px-10;
+        flex: 0 0 auto;
+
+        .bk-tooltip {
+          @apply absolute top-full left-0 mt-10;
+        }
+
+        &:not(:hover) .bk-tooltip {
+          @apply hidden;
+        }
+
+        .bk-toolbar-title-scheduled-text {
+          @apply whitespace-nowrap;
+        }
+
+        .bk-icon {
+          @apply shrink-0 size-20;
+          svg {
+            @apply fill-current;
+          }
+        }
+      }
+    }
+
+    &#bk-toolbar-before-sidebar {
+      .bk-tooltip {
+        @apply left-auto right-[9px];
+      }
+    }
+  }
+  .bk-feature-canvas-button {
+    @apply flex h-full items-center justify-center min-w-[50px];
+  }
+}
+
+.bk-translations {
+  @apply relative text-xs lg:text-sm xl:text-base;
+  .bk-toolbar-button {
+    @apply uppercase h-full font-semibold;
+
+    &.bk-is-active {
+      @apply !bg-white text-mono-900;
+    }
+  }
+  .bk-translations-dropdown {
+    @apply absolute top-full right-0 lg:right-auto lg:left-0 max-w-[300px] bg-white z-toolbar-dropdown shadow-lg;
+
+    label {
+      @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-mono-100 whitespace-nowrap text-sm;
+      &.bk-is-muted {
+        @apply text-mono-400;
+      }
+      > div {
+        @apply flex items-center gap-10 md:gap-20 justify-between;
+        span {
+          @apply font-semibold order-last;
+        }
+      }
+    }
+
+    input {
+      @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
+    }
+  }
+}
+
+.bk-shortcut {
+  font-size: 13px !important;
+  @apply flex font-semibold items-center bg-transparent;
+  gap: calc(5em / 16);
+  height: calc(22em / 16);
+  color: inherit;
+  > kbd {
+    @apply rounded flex items-center justify-center h-full leading-none font-sans;
+    @apply text-mono-950;
+    @apply border border-mono-50;
+    padding: calc(1em / 16) calc(5em / 16) 0;
+    min-width: calc(22em / 16);
+    font-size: calc(11em / 16);
+    background: linear-gradient(
+      theme('colors.mono.300'),
+      theme('colors.mono.100')
+    );
+
+    &.bk-is-single {
+      font-size: 1em;
+      width: calc(24em / 16);
+      @apply !p-0 font-bold;
+    }
+  }
+}
+
+.bk {
+  .bk-toolbar-button {
+    @apply text-mono-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
+
+    &:not(.bk-is-active) {
+      @apply lg:hover:bg-mono-700;
+    }
+
+    &.bk-is-inactive {
+      @apply text-mono-600;
+    }
+
+    &[disabled] {
+      @apply pointer-events-none text-mono-700;
+    }
+    svg {
+      @apply size-18 lg:size-20;
+    }
+    .bk-icon svg {
+      @apply fill-current;
+    }
+    &.bk-is-active {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
+    &:not(:hover) {
+      .bk-tooltip {
+        @apply hidden;
+      }
+    }
+  }
+}
 </style>

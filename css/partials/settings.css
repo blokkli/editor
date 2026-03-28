@@ -9,9 +9,6 @@
 .bk.bk-settings {
   .bk-settings-group-title {
     @apply text-xl font-bold leading-tight;
-    .bk-beta-indicator {
-      @apply inline-block ml-5 translate-y-[-3px];
-    }
   }
 
   .bk-form-section {

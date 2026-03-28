@@ -14,6 +14,7 @@
     >
       <div
         v-if="showDoubleClickInfo"
+        class="bk-overlay-inner"
         :class="{
           'bk-is-left': alignment === 'right' || alignment === 'center',
           'bk-is-right': alignment === 'left',
@@ -79,3 +80,30 @@ function onDoubleClick() {
   showDoubleClickInfo.value = false
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-overlay {
+  @apply fixed top-0 left-0 w-screen bottom-0 pointer-events-auto z-overlay;
+  @apply bg-mono-800/95;
+  @apply flex items-start;
+
+  > .bk-overlay-inner {
+    @apply text-base text-mono-100 bg-mono-300/20 m-20 rounded-md;
+    @apply py-10 pl-10 pr-15;
+    @apply inline-flex items-center gap-10;
+    @apply border border-mono-500 h-auto grow-0;
+
+    &.bk-is-right {
+      @apply ml-auto;
+    }
+
+    .bk-icon {
+      @apply size-25;
+
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+}
+</style>

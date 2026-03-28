@@ -142,3 +142,14 @@ export default {
   name: 'DevMode',
 }
 </script>
+
+<style lang="postcss">
+html.bk-hide-interaction-layers {
+  #bk-canvas-overlay {
+    @apply !invisible;
+  }
+  .bk-main-canvas {
+    @apply !pointer-events-auto;
+  }
+}
+</style>

@@ -506,3 +506,41 @@ onUnmounted(() => {
   setElementSymbolProperty(props.providerEl, INJECT_ENTITY_CONTEXT)
 })
 </script>
+
+<style lang="postcss">
+.bk-viewport {
+  @apply relative;
+  grid-area: viewport;
+}
+
+.bk-main-layout {
+  @apply fixed top-0 left-0 w-screen h-screen z-main-layout grid pointer-events-none;
+
+  grid-template-areas:
+    'toolbar toolbar      toolbar       toolbar     toolbar       right'
+    'left    mode         mode          mode        sidebar-right right'
+    'left    sidebar-left viewport      scrollbar-y sidebar-right right'
+    'left    sidebar-left banner        scrollbar-y sidebar-right right'
+    'left breadcrumbs breadcrumbs   breadcrumbs sidebar-right right';
+  grid-template-columns: auto auto 1fr 16px auto 50px;
+  grid-template-rows: 50px auto 1fr auto auto;
+}
+
+.bk.bk-canvas-overlay {
+  @apply fixed top-0 left-0 size-full z-canvas-overlay;
+}
+
+html.bk-isolate-provider {
+  [data-provider-uuid]:not([data-blokkli-provider-active='true']) {
+    @apply !hidden;
+  }
+}
+
+html.bk-html-root:not(.bk-use-animations) {
+  *,
+  *:before,
+  *:after {
+    transition: none !important;
+  }
+}
+</style>

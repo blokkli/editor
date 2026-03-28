@@ -1,7 +1,12 @@
 <template>
-  <div class="bk-qr-code">
-    <QrCodeVue :value="fullUrl" :size="430" level="H" />
-    <p>
+  <div>
+    <QrCodeVue
+      :value="fullUrl"
+      :size="430"
+      level="H"
+      class="!w-full !h-auto aspect-square"
+    />
+    <p class="my-20">
       {{ $t('previewQrCodeText', 'You can also copy the link and share it.') }}
     </p>
     <input :value="fullUrl" class="bk-form-input" readonly @focus="onFocus" />

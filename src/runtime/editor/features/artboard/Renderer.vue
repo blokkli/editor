@@ -462,3 +462,21 @@ onBlokkliEvent('scrollSelectionIntoView', (e) => {
   })
 })
 </script>
+
+<style lang="postcss">
+.bk-html-root.bk-is-artboard {
+  .bk-body {
+    .bk-main-canvas {
+      @apply fixed top-0 left-1/2 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
+      background: white;
+      user-select: none;
+      image-rendering: crisp-edges;
+      backface-visibility: hidden;
+      transform-origin: 0 0;
+      /* Set initial position to be centered. The artboard feature will update it on mount. */
+      transform: translateX(-50%) translateY(100px);
+      contain: layout paint inline-size style;
+    }
+  }
+}
+</style>

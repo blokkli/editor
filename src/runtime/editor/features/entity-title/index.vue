@@ -25,13 +25,7 @@
     >
       <div class="bk-toolbar-title">
         <div>
-          <span
-            class="bk-status-indicator"
-            :class="{
-              'bk-is-success': entity.status && !mutations.length,
-              'bk-is-warning': entity.status && mutations.length,
-            }"
-          />
+          <StatusIndicator :status="statusIndicatorStatus" />
           <strong>{{ entity.label }}</strong>
           <span>&nbsp;{{ entity.bundleLabel }}</span>
         </div>
@@ -56,8 +50,9 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, StatusIndicator } from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
+import type { UiStatus } from '#blokkli/editor/types/ui'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -114,29 +109,28 @@ defineCommands(() => {
   }
 })
 
-const tourText = computed(() => {
-  const intro = $t(
-    'entityTitleTourText',
-    '<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>',
-  )
-
-  return `
-  ${intro}
-  <ul>
-  <li><div class="bk-status-indicator"></div>${statusUnpublished.value}</li>
-  <li><div class="bk-status-indicator bk-is-warning"></div>${statusPending.value}</li>
-  <li><div class="bk-status-indicator bk-is-success"></div>${statusPublished.value}</li>
-  </ul>
-  `
-})
-
 defineTourItem(() => {
   return {
     id: 'entity-title',
     title: $t('entityTitleTourTitle', 'Page'),
-    text: tourText.value,
+    text: $t(
+      'entityTitleTourText',
+      '<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>',
+    ),
     element: buttonEl.value,
   }
+})
+
+const statusIndicatorStatus = computed<UiStatus>(() => {
+  if (entity.value.status) {
+    if (mutations.value.length) {
+      return 'warning'
+    } else {
+      return 'success'
+    }
+  }
+
+  return 'error'
 })
 </script>
 
