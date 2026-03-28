@@ -1,9 +1,20 @@
 <template>
-  <div class="bk bk-context-menu" :style="{ left: x + 'px', top: y + 'px' }">
-    <div ref="rootEl" class="bk-context-menu-inner" :style="innerStyle">
+  <div
+    class="bk bk-context-menu fixed z-context-menu pointer-events-auto"
+    :style="{ left: x + 'px', top: y + 'px' }"
+  >
+    <div
+      ref="rootEl"
+      class="bk-context-menu-inner absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 rounded overflow-hidden"
+      :style="innerStyle"
+    >
       <div v-for="(item, i) in menu" :key="i">
         <hr v-if="item.type === 'rule'" />
-        <button v-else-if="item.type === 'button'" @click="onClick(i)">
+        <button
+          v-else-if="item.type === 'button'"
+          class="px-15 py-15 whitespace-nowrap text-left flex items-center gap-10 font-sans font-semibold hover:bg-mono-800"
+          @click="onClick(i)"
+        >
           <Icon :name="item.icon" />
           <span>{{ item.label }}</span>
         </button>
@@ -101,3 +112,11 @@ onBeforeUnmount(() => {
   window.removeEventListener('click', onMouseDown)
 })
 </script>
+
+<style lang="postcss">
+.bk-context-menu-inner button {
+  .bk-icon svg {
+    @apply w-25 h-25 fill-current;
+  }
+}
+</style>

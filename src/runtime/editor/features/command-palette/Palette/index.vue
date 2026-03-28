@@ -6,7 +6,7 @@
     @click.stop
     @mousemove.once="hasUsedMouse = true"
   >
-    <div class="bk-command-palette-input">
+    <div class="bk-command-palette-input text-mono-100 relative">
       <Icon name="bk_mdi_keyboard_command_key" />
       <input
         ref="inputEl"
@@ -17,8 +17,8 @@
         "
       />
     </div>
-    <div class="bk-command-palette-results bk-scrollbar-dark">
-      <div class="bk-command-palette-results-list">
+    <div class="bk-command-palette-results border-t border-t-mono-800 overflow-auto bk-scrollbar-dark">
+      <div class="relative">
         <div>
           <Item
             v-for="item in allCommands"
@@ -269,3 +269,37 @@ onBeforeUnmount(() => {
   document.body.removeEventListener('click', onWindowClick)
 })
 </script>
+
+<style lang="postcss">
+.bk-command-palette {
+  @apply fixed bg-mono-900 z-command-palette w-[600px] left-1/2 -translate-x-1/2 rounded pointer-events-auto;
+  @apply top-120;
+  @apply shadow-2xl shadow-mono-950/70;
+  @apply border border-mono-600;
+  --bk-command-palette-item-height: 46px;
+}
+
+.bk-command-palette-input {
+  .bk-icon {
+    @apply absolute top-1/2 left-15 -translate-y-1/2 w-20 h-20;
+    svg {
+      @apply fill-current;
+    }
+  }
+
+  input {
+    @apply h-60 appearance-none w-full bg-transparent !outline-none !ring-0;
+    @apply pl-[45px];
+    @apply !border-none;
+    @apply text-lg font-bold;
+
+    &::placeholder {
+      @apply font-normal text-mono-600;
+    }
+  }
+}
+
+.bk-command-palette-results {
+  height: calc(var(--bk-command-palette-item-height) * 10);
+}
+</style>
