@@ -69,3 +69,47 @@ const groups = computed(() => {
   })
 })
 </script>
+
+<style lang="postcss">
+.bk .bk-help-shortcuts {
+  table {
+    @apply w-full text-sm;
+
+    @container (min-width: 500px) {
+      @apply text-lg;
+    }
+
+    .bk-shortcut {
+      > kbd {
+        @apply !bg-mono-100 !text-mono-800 !border !border-mono-300;
+      }
+      @container (min-width: 500px) {
+        @apply text-base;
+        > kbd {
+          @apply text-base;
+        }
+      }
+    }
+
+    tr {
+      @apply border-b border-b-mono-300;
+
+      &.bk-is-heading {
+        @apply border-b-2 border-b-mono-300;
+      }
+    }
+
+    th {
+      @apply text-left font-semibold pt-30 uppercase text-xs pb-10 text-mono-900;
+    }
+
+    td {
+      @apply py-10;
+      &:first-child {
+        width: 0;
+        @apply pr-10;
+      }
+    }
+  }
+}
+</style>

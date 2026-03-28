@@ -3,7 +3,7 @@
     <div
       v-if="tooltipHighlights.length"
       v-show="showTooltip"
-      class="bk bk-highlight-tooltip"
+      class="bk fixed top-0 left-0 z-analyze-tooltip flex flex-row -mt-25 shadow-lg"
       :style="{
         transform: `translate(${tooltipPosition.x}px, ${tooltipPosition.y}px)`,
       }"
@@ -13,11 +13,11 @@
       <button
         v-for="(highlight, i) in tooltipHighlights"
         :key="i"
-        class="bk bk-highlight-tooltip-item bk-control"
-        :class="'bk-is-' + highlight.color"
+        class="cursor-pointer relative flex items-center gap-5 px-8 h-25 text-xs font-semibold whitespace-nowrap bg-scheme-normal text-scheme-text first:rounded-l last:rounded-r bk-highlight-tooltip-item"
+        :class="'bk-scheme-' + highlight.color"
         @click.prevent="onTooltipItemClick(highlight)"
       >
-        <Icon :name="highlight.icon" />
+        <Icon :name="highlight.icon" class="size-15" />
         <span>{{ highlight.label }}</span>
         <div v-if="highlight.description" class="bk-tooltip">
           {{ highlight.description }}
@@ -473,3 +473,15 @@ export default {
   name: 'HighlightsRenderer',
 }
 </script>
+
+<style lang="postcss">
+.bk .bk-highlight-tooltip-item {
+  .bk-tooltip {
+    @apply absolute bottom-full left-0 mb-5;
+  }
+
+  &:not(:hover) .bk-tooltip {
+    @apply hidden;
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr class="hover:bg-mono-50">
     <td>
       <div>
         <span>{{ label }}</span>
@@ -16,7 +16,7 @@
         >
       </div>
       <div v-if="description">{{ description }}</div>
-      <ul class="bk-pill-list">
+      <ul class="bk-pill-list mt-8">
         <li v-for="(bundle, index) in bundleLabels" :key="index">
           <span class="bk-pill bk-is-mono" v-text="bundle" />
         </li>
@@ -32,7 +32,7 @@
       <RelativeTime v-if="dateUpdated" :timestamp="dateUpdated" />
     </td>
     <td class="bk-templates-manage-table-actions">
-      <div>
+      <div class="flex gap-10 justify-end">
         <template v-if="confirmDelete">
           <button
             class="bk-button bk-is-danger bk-is-small"

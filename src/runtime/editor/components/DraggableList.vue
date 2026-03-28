@@ -213,4 +213,57 @@ if (import.meta.hot) {
     height: 2rem;
   }
 }
+
+.bk.bk-field-list-proxy {
+  @apply z-dialog w-full min-h-40 p-20 absolute;
+  @apply w-full left-0 top-0;
+
+  @apply transition-opacity duration-100;
+
+  @apply opacity-0 pointer-events-none;
+
+  html.bk-is-proxy-mode & {
+    @apply opacity-100 pointer-events-auto static;
+    @apply mx-10 max-w-full min-w-0 w-auto;
+
+    .bk-block-proxy {
+      @apply min-w-[200px];
+    }
+  }
+
+  &.bk-is-visible {
+    @apply opacity-100 pointer-events-auto;
+  }
+
+  &.bk-is-horizontal {
+    > .bk-field-list-proxy-list {
+      @apply flex gap-15 flex-wrap;
+      &.bk-is-compact {
+        @apply !gap-5;
+        .bk-blokkli-item-icon {
+          @apply hidden;
+        }
+        .bk-block-proxy {
+          @apply p-5;
+          .bk-block-proxy-component {
+            @apply mt-2;
+          }
+        }
+      }
+    }
+  }
+
+  &.bk-is-vertical {
+    > .bk-field-list-proxy-list {
+      @apply grid gap-15;
+    }
+  }
+
+  .bk-field-list-proxy {
+    @apply p-0 relative h-auto w-auto bg-none z-auto !mx-0;
+    .bk-block-proxy {
+      @apply shadow-none;
+    }
+  }
+}
 </style>

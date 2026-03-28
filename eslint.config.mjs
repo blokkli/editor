@@ -62,17 +62,7 @@ export default createConfigForNuxt(
   .override('tailwindcss:rules', {
     rules: {
       'tailwindcss/classnames-order': 'off',
-      'tailwindcss/no-custom-classname': [
-        'error',
-        {
-          whitelist: [
-            'bk-grid-overlay',
-            'bk-drop-element',
-            'bk-field-list-item',
-            'bk-dropdown-menu',
-          ],
-        },
-      ],
+      'tailwindcss/no-custom-classname': 'off',
     },
   })
   .overrideRules({

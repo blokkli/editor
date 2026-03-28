@@ -152,4 +152,52 @@ html.bk-hide-interaction-layers {
     @apply !pointer-events-auto;
   }
 }
+
+.bk.bk-dev-mode {
+  grid-area: viewport;
+  @apply pointer-events-none;
+  @apply pt-15;
+
+  .bk-dev-mode-inner {
+    @apply pointer-events-auto select-text;
+
+    .bk-dev-mode-banner {
+      @apply w-full;
+    }
+
+    code {
+      @apply bg-red-dark rounded px-3;
+    }
+
+    table {
+      @apply w-full;
+    }
+
+    h3 {
+      @apply text-xl font-bold mb-25;
+    }
+
+    thead {
+      th {
+        @apply font-semibold text-left pb-5;
+        @apply text-xs uppercase tracking-wide;
+      }
+    }
+
+    tbody {
+      td {
+        @apply py-5;
+      }
+    }
+
+    td,
+    th {
+      @apply text-left;
+    }
+
+    tr {
+      @apply border-b border-b-red-light/50;
+    }
+  }
+}
 </style>

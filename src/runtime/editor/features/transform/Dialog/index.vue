@@ -267,3 +267,77 @@ onBeforeUnmount(() => {
   selection.unlockSelection('transform-dialog')
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-transform-overlay {
+  @apply absolute top-0 left-0 size-full z-transform-overlay pointer-events-auto;
+
+  .bk-transform-overlay-dialog {
+    width: 600px;
+    @apply absolute top-0 right-0 bottom-0;
+
+    header {
+      @apply flex justify-between items-center;
+      @apply bg-orange-normal text-orange-dark;
+
+      p {
+        @apply px-20 font-bold;
+      }
+
+      button {
+        @apply flex items-center justify-center hover:bg-orange-dark/20 text-current;
+        @apply size-50;
+        svg {
+          @apply size-25 fill-current;
+        }
+      }
+    }
+
+    main {
+      @apply flex-1 relative;
+
+      .bk-lead {
+        @apply mb-15;
+      }
+    }
+
+    footer {
+      @apply border-t border-t-mono-300 flex justify-between p-20;
+    }
+  }
+  .bk-transform-overlay-dialog-inner {
+    @apply h-full;
+  }
+  .bk-transform-overlay-dialog-inner-content {
+    @apply w-full bg-white shadow-2xl overflow-hidden h-full flex flex-col;
+  }
+
+  .bk-transform-overlay-dialog-grid {
+    @apply absolute top-0 left-0 size-full overflow-auto;
+
+    .bk-diff-table {
+      td {
+        @apply !pl-20;
+      }
+    }
+  }
+  .bk-transform-overlay-dialog-top {
+    @apply p-20;
+  }
+}
+
+.bk-transform-overlay-enter-active,
+.bk-transform-overlay-leave-active {
+  @apply transition ease-swing duration-300;
+  .bk-transform-overlay-dialog-inner {
+    @apply transition ease-swing duration-300;
+  }
+}
+
+.bk-transform-overlay-enter-from,
+.bk-transform-overlay-leave-to {
+  .bk-transform-overlay-dialog-inner {
+    @apply opacity-0 translate-x-full;
+  }
+}
+</style>

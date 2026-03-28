@@ -52,3 +52,66 @@ defineOptions({
   name: 'ArtboardScrollbar',
 })
 </script>
+
+<style lang="postcss">
+.bk-html-root {
+  --bk-artboard-scrollbar-size: 4px;
+  @screen md {
+    --bk-artboard-scrollbar-size: 10px;
+  }
+
+  @screen lg {
+    --bk-artboard-scrollbar-size: 16px;
+  }
+}
+
+.bk.bk-artboard-scrollbar {
+  @apply bg-mono-300 z-artboard-scrollbar transition overflow-hidden pointer-events-auto;
+  contain: strict;
+  grid-area: scrollbar-y;
+
+  button {
+    @apply bg-mono-500/50 block rounded-full;
+  }
+
+  @apply py-5;
+
+  &.bk-orientation-y {
+    width: var(--bk-artboard-scrollbar-size);
+
+    > div {
+      @apply h-full;
+    }
+
+    button {
+      @apply w-full;
+    }
+  }
+
+  &.bk-orientation-x {
+    height: var(--bk-artboard-scrollbar-size);
+    left: calc(var(--bk-root-offset-left));
+    right: calc(var(--bk-root-offset-right));
+    bottom: calc(var(--bk-root-offset-bottom) - 1px);
+    button {
+      @apply h-full;
+    }
+    > div {
+      @apply w-full;
+    }
+  }
+
+  &.bk-is-active,
+  &:hover {
+    @apply bg-mono-300;
+    button {
+      @apply bg-mono-600;
+    }
+  }
+
+  &.bk-is-active button,
+  button:hover {
+    @apply bg-mono-500;
+  }
+}
+</style>

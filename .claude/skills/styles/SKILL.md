@@ -132,8 +132,8 @@ projects. This works automatically — just write normal Tailwind classes.
 ### 2. `<style lang="postcss">` blocks (for complex CSS)
 
 Use co-located `<style lang="postcss">` blocks for CSS that can't be expressed
-as utility classes: nested selectors, container queries, pseudo-elements, styling
-`v-html` output, etc.
+as utility classes: nested selectors, container queries, pseudo-elements,
+styling `v-html` output, etc.
 
 ```vue
 <style lang="postcss">

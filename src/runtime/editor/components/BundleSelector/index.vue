@@ -4,23 +4,20 @@
     :title="label"
     :anchor-el
     :anchor-coordinates
-    class="bk-selection-add-overlay"
+    class="bk-bundle-selector"
     @close="$emit('close')"
     @wheel.stop
   >
-    <div
-      ref="scrollEl"
-      class="bk-selection-add-overlay-wrapper bk-scrollbar-dark"
-    >
+    <div ref="scrollEl" class="bk-bundle-selector-wrapper bk-scrollbar-dark">
       <div
         v-if="allItems.length > 4"
-        class="bk-selection-add-overlay-form"
+        class="bk-bundle-selector-form"
         @pointerdown.stop
         @keydown.capture.stop
         @keyup.capture.stop
       >
         <form
-          class="bk-selection-add-overlay-form-input"
+          class="bk-bundle-selector-form-input"
           @submit.prevent.stop="onSubmitForm"
         >
           <Icon name="bk_mdi_search" />
@@ -49,7 +46,7 @@
       >
         <div
           v-if="filteredBlocks.length"
-          class="bk-selection-add-overlay-list"
+          class="bk-bundle-selector-list"
           @wheel.passive="onWheel"
         >
           <AddListItem
@@ -59,14 +56,11 @@
             @click.prevent="onClick(item)"
           />
         </div>
-        <div
-          v-if="filteredActions.length"
-          class="bk-selection-add-overlay-section"
-        >
-          <div class="bk-selection-add-overlay-section-label">
+        <div v-if="filteredActions.length" class="bk-bundle-selector-section">
+          <div class="bk-bundle-selector-section-label">
             <span>{{ $t('bundleSelectorActionsLabel', 'Actions') }}</span>
           </div>
-          <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
+          <div class="bk-bundle-selector-list" @wheel.passive="onWheel">
             <AddListItem
               v-for="item in filteredActions"
               :key="item.props.id"
@@ -75,14 +69,11 @@
             />
           </div>
         </div>
-        <div
-          v-if="filteredFragments.length"
-          class="bk-selection-add-overlay-section"
-        >
-          <div class="bk-selection-add-overlay-section-label">
+        <div v-if="filteredFragments.length" class="bk-bundle-selector-section">
+          <div class="bk-bundle-selector-section-label">
             <span>{{ $t('bundleSelectorFragmentsLabel', 'Fragments') }}</span>
           </div>
-          <div class="bk-selection-add-overlay-list" @wheel.passive="onWheel">
+          <div class="bk-bundle-selector-list" @wheel.passive="onWheel">
             <AddListItem
               v-for="item in filteredFragments"
               :key="item.props.id"
@@ -393,3 +384,82 @@ onMounted(() => {
   }
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-bundle-selector {
+  --bk-item-width: 270px;
+  --bk-columns: 2;
+  --bk-bg: theme('colors.mono.900');
+  --bk-header-bg: theme('colors.mono.800');
+  --bk-header-hover: theme('colors.mono.700');
+  --bk-header-text: theme('colors.mono.100');
+  --bk-border: theme('colors.mono.500');
+
+  .bk-artboard-tooltip-inner {
+    @apply text-white;
+  }
+
+  .bk-bundle-selector-wrapper {
+    @apply max-h-[60vh] overflow-auto lg:max-h-[500px];
+  }
+
+  .bk-bundle-selector-form {
+    padding: var(--bk-gap);
+    padding-bottom: 0;
+  }
+
+  .bk-bundle-selector-form-input {
+    @apply relative;
+    .bk-icon {
+      @apply absolute top-0 left-0 aspect-square h-full p-10;
+      svg {
+        @apply size-full fill-white;
+      }
+    }
+
+    input {
+      @apply w-full appearance-none bg-mono-950;
+      @apply text-white text-lg h-40;
+      @apply rounded-md;
+      @apply border border-mono-700 pl-40;
+      @apply focus:outline-mono-800 focus:shadow-none;
+      @apply focus:border-mono-500;
+      @apply selection:bg-mono-700;
+      @apply placeholder:text-mono-600;
+    }
+
+    button {
+      @apply absolute right-0 top-0 h-full aspect-square;
+    }
+  }
+
+  .bk-bundle-selector-list {
+    @apply flex flex-wrap items-start;
+    padding: calc(var(--bk-gap) / 2);
+
+    max-width: calc(
+      var(--bk-item-width) * var(--bk-columns) + var(--bk-gap) *
+        (var(--bk-columns) - 1) + 10px
+    );
+    button {
+      width: var(--bk-item-width);
+      padding: calc(var(--bk-gap) / 2);
+      @apply rounded-md;
+      @apply focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-mono-600 focus:!shadow-none;
+      @apply self-start;
+      .bk-add-item-label {
+        @apply pl-10;
+      }
+    }
+  }
+
+  .bk-bundle-selector-section {
+    @apply border-t border-mono-700;
+  }
+
+  .bk-bundle-selector-section-label {
+    @apply flex items-center gap-8 text-mono-400 uppercase font-semibold text-xs tracking-wide !leading-none;
+    padding: 15px var(--bk-gap) 0;
+  }
+}
+</style>

@@ -4,6 +4,7 @@
       id="bk-animation-canvas-webgl"
       :key="animation.canvasKey.value"
       ref="canvasEl"
+      class="fixed top-0 left-0 w-full h-full z-animation-canvas contain-strict"
       tabindex="0"
       :style
       @click.capture="onClick"

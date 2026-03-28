@@ -1,5 +1,6 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref } from '#imports'
+import type { ThemeColorName } from '~~/src/global/types/theme'
 import type { AddAction } from '../types/actions'
 
 type PluginAddFunction<T> = () => T | T[] | undefined
@@ -34,12 +35,10 @@ export type MenuButtonPlugin = {
 
 type MenuButtonFunction = PluginAddFunction<MenuButtonPlugin>
 
-export type HighlightColor = 'red' | 'yellow'
-
 export type HighlightItem = {
   uuid?: string
   element?: HTMLElement
-  color: HighlightColor
+  color: ThemeColorName
   icon: BlokkliIcon
   label: string
   description?: string

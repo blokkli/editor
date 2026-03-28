@@ -6,7 +6,10 @@
     @mouseenter="$emit('focus', index)"
     @click.prevent="$emit('select', item.id)"
   >
-    <div class="bk-command-icon w-20 h-20" :class="isFocused ? 'text-mono-100' : 'text-mono-500'">
+    <div
+      class="bk-command-icon w-20 h-20"
+      :class="isFocused ? 'text-mono-100' : 'text-mono-500'"
+    >
       <Icon v-if="item.icon" :name="item.icon" />
       <ItemIcon v-else :bundle="item.bundle" />
     </div>

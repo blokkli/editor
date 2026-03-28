@@ -19,3 +19,25 @@ defineProps<{
 
 const page = defineModel<number>({ default: 0 })
 </script>
+
+<style lang="postcss">
+.bk .bk-pagination {
+  @apply flex justify-between border-t border-t-mono-300 items-center min-h-60;
+  flex: 0 0 auto;
+
+  > div {
+    @apply text-sm;
+  }
+
+  button {
+    @apply p-20 hover:bg-mono-100 text-black;
+
+    &:disabled {
+      @apply text-mono-300 pointer-events-none;
+    }
+    svg {
+      @apply w-20 h-20 fill-current;
+    }
+  }
+}
+</style>

@@ -32,3 +32,41 @@ export default {
   name: 'StatusIcon',
 }
 </script>
+
+<style lang="postcss">
+.bk .bk-status-icon {
+  @apply size-20 shrink-0 flex items-center justify-center rounded-full leading-none;
+
+  svg {
+    @apply w-full h-full fill-current;
+  }
+
+  &.bk-is-pending {
+    @apply bg-mono-200;
+    .bk-status-icon-bullet {
+      @apply text-mono-500 text-xs text-center font-bold !leading-none;
+    }
+  }
+
+  &.bk-is-active {
+    @apply p-3 bg-yellow-normal;
+    svg {
+      @apply fill-white;
+    }
+  }
+
+  &.bk-is-success {
+    @apply p-2 bg-lime-normal text-white;
+    svg {
+      @apply fill-current;
+    }
+  }
+
+  &.bk-is-error {
+    @apply p-2 bg-red-normal text-white;
+    svg {
+      @apply fill-current;
+    }
+  }
+}
+</style>

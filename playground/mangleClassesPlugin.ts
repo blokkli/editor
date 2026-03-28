@@ -96,7 +96,11 @@ function collectClassReplacements(
           if (arg.type === 'Literal' && typeof arg.value === 'string') {
             const mangled = mangleClassString(arg.value)
             if (mangled !== arg.value) {
-              out.push({ start: arg.start + 1, end: arg.end - 1, value: mangled })
+              out.push({
+                start: arg.start + 1,
+                end: arg.end - 1,
+                value: mangled,
+              })
             }
           }
         }
@@ -201,14 +205,17 @@ export default function mangleClassesPlugin(): Plugin {
         const cssContent = styleMatch[2] || ''
         if (cssContent.trim()) {
           const processed = await processCSS(cssContent, id)
-          const replacement = `<style${attrs}>${processed}</style>`
+          // Strip lang="postcss" since content is now plain CSS.
+          // This prevents Vite's CSS pipeline from re-running PostCSS
+          // (which doesn't have blökkli's Tailwind config) during HMR.
+          const cleanAttrs = attrs.replace(/\s*lang=["']postcss["']/g, '')
+          const replacement = `<style${cleanAttrs}>${processed}</style>`
           result =
             result.slice(0, styleMatch.index) +
             replacement +
             result.slice(styleMatch.index + fullMatch.length)
           // Reset regex since string length changed.
-          styleRegex.lastIndex =
-            styleMatch.index + replacement.length
+          styleRegex.lastIndex = styleMatch.index + replacement.length
         }
       }
 

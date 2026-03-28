@@ -14,8 +14,13 @@
     >
       <canvas ref="canvas" class="absolute top-0 left-0 w-full h-full" />
     </div>
-    <div class="absolute top-0 left-0 size-full bg-mono-900/60 mix-blend-multiply">
-      <button ref="overviewVisibleEl" class="relative top-0 left-0 bg-white cursor-move will-change-transform rounded" />
+    <div
+      class="absolute top-0 left-0 size-full bg-mono-900/60 mix-blend-multiply"
+    >
+      <button
+        ref="overviewVisibleEl"
+        class="relative top-0 left-0 bg-white cursor-move will-change-transform rounded"
+      />
     </div>
   </ViewportBlockingRect>
 </template>

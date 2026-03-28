@@ -370,7 +370,6 @@ const analyzerStatuses = computed(() => {
   })
 })
 
-
 let refreshTimeout: number | null = null
 
 watch(refreshKey, () => {

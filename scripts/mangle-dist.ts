@@ -175,7 +175,9 @@ async function processStyleBlocks(
     const cssContent = styleMatch[2] || ''
     if (cssContent.trim()) {
       const processed = await processCSS(cssContent, filePath)
-      const replacement = `<style${attrs}>${processed}</style>`
+      // Strip lang="postcss" since content is now plain CSS.
+      const cleanAttrs = attrs.replace(/\s*lang=["']postcss["']/g, '')
+      const replacement = `<style${cleanAttrs}>${processed}</style>`
       result =
         result.slice(0, styleMatch.index) +
         replacement +

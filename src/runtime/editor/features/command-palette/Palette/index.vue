@@ -17,7 +17,9 @@
         "
       />
     </div>
-    <div class="bk-command-palette-results border-t border-t-mono-800 overflow-auto bk-scrollbar-dark">
+    <div
+      class="bk-command-palette-results border-t border-t-mono-800 overflow-auto bk-scrollbar-dark"
+    >
       <div class="relative">
         <div>
           <Item

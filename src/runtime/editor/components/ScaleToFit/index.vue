@@ -86,3 +86,26 @@ export default {
   name: 'ScaleToFit',
 }
 </script>
+
+<style lang="postcss">
+.bk-scale-to-fit {
+  @apply relative;
+}
+
+.bk-scale-to-fit-wrapper {
+  @apply relative;
+}
+
+.bk-scale-to-fit-wrapper-item {
+  @apply absolute top-0 left-0 pointer-events-none select-none;
+  transform-origin: 0 0;
+  > * {
+    margin: 0 !important;
+    pointer-events: none;
+  }
+  .container {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+</style>

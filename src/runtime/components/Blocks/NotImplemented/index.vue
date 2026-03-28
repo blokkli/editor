@@ -26,3 +26,21 @@ const text = computed(() => {
 
 useBlockRegistration(dom, props.uuid)
 </script>
+
+<style lang="postcss">
+.bk.bk-block-not-implemented {
+  @apply bg-red-light text-red-normal font-medium py-15 font-sans;
+  @apply text-lg rounded-md;
+  @apply outline outline-1 outline-red-normal/30 -outline-offset-1;
+  @apply flex gap-5 items-center justify-center;
+
+  strong {
+    @apply !font-bold;
+  }
+
+  svg {
+    @apply fill-current;
+    @apply size-25;
+  }
+}
+</style>

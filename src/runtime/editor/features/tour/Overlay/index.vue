@@ -274,3 +274,97 @@ useAnimationFrame(() => {
   tooltipHeight.value = contentEl.value.scrollHeight + 50
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-tour {
+  @apply fixed z-tour-item top-0 left-0 rounded-md;
+  @apply bg-white shadow-xl transition-all duration-200 ease-swing text-yellow-dark pointer-events-auto;
+
+  button {
+    @apply focus:outline-0 focus:ring-0 focus:border-0;
+  }
+}
+
+.bk-tour-inner {
+  /* @apply absolute top-0 left-0 w-full; */
+}
+
+.bk-tour-title {
+  @apply font-bold text-lg pl-20 border-b border-b-yellow-dark/30 flex items-center justify-between bg-yellow-normal;
+
+  button {
+    @apply p-15 hover:bg-yellow-dark/10;
+    svg {
+      @apply fill-yellow-dark;
+    }
+  }
+
+  svg {
+    @apply w-20 h-20;
+  }
+}
+.bk-tour-content {
+  @apply p-20 pt-[17px];
+
+  > div {
+    @apply relative ease-swing transition-all overflow-hidden;
+  }
+
+  p:not(:last-child) {
+    @apply mb-18;
+  }
+}
+.bk-tour-content-text {
+  @apply absolute top-0 left-0 w-full;
+}
+
+.bk {
+  .bk-tour-buttons {
+    @apply border-t h-50 absolute bottom-0 left-0 w-full bg-white;
+    @apply border-t-yellow-dark/20;
+    @apply flex justify-between items-center;
+
+    > div {
+      @apply text-yellow-dark/80 text-sm;
+    }
+
+    button {
+      @apply text-yellow-dark font-semibold py-15 px-15 flex items-center leading-none hover:bg-yellow-dark/5 relative;
+
+      .bk-icon {
+        @apply w-20 h-20;
+        svg {
+          @apply fill-current;
+        }
+      }
+
+      .bk-tooltip {
+        @apply absolute top-full hidden mt-10;
+      }
+
+      &:first-child {
+        .bk-tooltip {
+          @apply left-0;
+        }
+      }
+      &:last-child {
+        .bk-tooltip {
+          @apply right-0;
+        }
+      }
+
+      &:hover {
+        .bk-tooltip {
+          @apply flex;
+        }
+      }
+    }
+  }
+}
+
+.bk.bk-tour-overlay-element {
+  @apply fixed top-0 left-0 w-full h-full z-tour-overlay pointer-events-none;
+  @apply border-3 border-yellow-normal transition-all duration-200 ease-swing;
+  @apply ring-yellow-light/80 ring-1 bg-yellow-normal/30;
+}
+</style>

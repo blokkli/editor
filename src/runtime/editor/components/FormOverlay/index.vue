@@ -63,3 +63,43 @@ export default {
   name: 'FormOverlay',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-form-overlay-footer {
+  @apply p-20 bg-white border-t sticky bottom-0 z-50 flex gap-20;
+  .bk-button {
+    @apply w-full;
+  }
+}
+.bk-form-overlay-content {
+  @apply flex-1 relative overscroll-contain overflow-auto rounded-t-xl bg-white md:rounded-t-none;
+  container-type: inline-size;
+}
+
+.bk-form-overlay {
+  @apply absolute left-0 top-0 w-full h-full z-form-overlay pointer-events-none;
+  .bk-form-overlay-resizable {
+    @apply ml-auto h-full shadow-2xl bg-mono-950 pointer-events-auto;
+    .bk-form-overlay-iframe {
+      iframe {
+        @apply absolute top-0 left-0 w-full h-full overscroll-contain;
+      }
+    }
+  }
+  .bk-resizable-inner {
+    @apply h-full flex flex-col;
+  }
+
+  .bk.bk-overlay-header {
+    @apply z-form-overlay-header;
+    @screen md {
+      @apply pl-15 h-50 bg-mono-900;
+
+      > button {
+        @apply h-full aspect-square;
+        @apply hover:bg-mono-800;
+      }
+    }
+  }
+}
+</style>

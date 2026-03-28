@@ -83,5 +83,5 @@ element.classList.add(tw('flex pt-5'))
 
 Some components still have their CSS in separate files under `css/partials/`.
 When modifying these components, consider migrating the CSS into the component
-using utility classes and `<style lang="postcss">`, then removing the
-`@import` from `css/index.css`.
+using utility classes and `<style lang="postcss">`, then removing the `@import`
+from `css/index.css`.

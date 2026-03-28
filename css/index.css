@@ -6,71 +6,15 @@
 
 @import './partials/preflight.css';
 @import './partials/transitions.css';
-@import './partials/actions.css';
-@import './partials/options.css';
 @import './partials/forms.css';
-@import './partials/clipboard.css';
-@import './partials/comments.css';
-@import './partials/messages.css';
-@import './partials/settings.css';
-@import './partials/AddList.css';
-@import './partials/debug.css';
-@import './partials/scaleToFit.css';
-@import './partials/DraggingOverlay.css';
-@import './partials/SelectionAdd.css';
-@import './partials/AddButtonsRenderer.css';
-@import './partials/EditableField.css';
-@import './partials/ReadabilityChunkOverlay.css';
-@import './partials/FlexTextarea.css';
-@import './partials/Assistant.css';
-@import './partials/Animator.css';
-@import './partials/FormOverlay.css';
-@import './partials/BlockNotImplemented.css';
-@import './partials/ResponsivePreview.css';
-@import './partials/Help.css';
-@import './partials/Theme.css';
-@import './partials/MediaLibrary.css';
-@import './partials/Tour.css';
-@import './partials/Error.css';
-@import './partials/Banner.css';
-@import './partials/AnimationCanvas.css';
-@import './partials/Scrollbar.css';
-@import './partials/SystemRequirements.css';
-@import './partials/Pagination.css';
-@import './partials/Validations.css';
-@import './partials/ProxyField.css';
-@import './partials/infobox.css';
-@import './partials/Diff.css';
 @import './partials/table.css';
-@import './partials/Indicators.css';
-@import './partials/Analyze.css';
-@import './partials/Highlights.css';
-@import './partials/Transform.css';
 @import './../src/modules/agent/css/Agent.css';
 @import './../src/modules/charts/css/Charts.css';
-@import './partials/Konami.css';
-@import './partials/Publish.css';
-@import './partials/ArtboardTooltip.css';
-@import './partials/BlockScheduler.css';
-@import './partials/ImportExisting.css';
-@import './partials/breadcrumbs.css';
-@import './partials/BlockPreviewItem.css';
-@import './partials/Templates.css';
-@import './partials/PluginConfigForm.css';
-@import './partials/NestedEditorOverlay.css';
-@import './partials/StatusIcon.css';
-@import './partials/AutoHeight.css';
-@import './partials/Dropdown.css';
-@import './partials/DevMode.css';
-@import './partials/Popup.css';
-@import './partials/DiffApproval/Highlight.css';
-@import './partials/DiffApproval/Toolbar.css';
 
 @import './indicator.css';
 
 @import './components/pill.css';
 @import './components/button.css';
-@import './components/toggle.css';
 
 @tailwind base;
 @tailwind components;
@@ -151,13 +95,6 @@ html {
     svg {
       @apply w-100 h-100 text-mono-200 animate-spin fill-mono-400;
     }
-  }
-}
-
-.bk-is-analyzing {
-  .bk,
-  .bk-sidebar {
-    @apply !hidden;
   }
 }
 

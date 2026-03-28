@@ -18,8 +18,14 @@
         <Messages />
       </div>
       <Actions v-if="!isInitializing" />
-      <div id="bk-banner-container" class="bk">
-        <div id="bk-banner-list">
+      <div
+        id="bk-banner-container"
+        class="bk relative z-translations-banner-mobile lg:z-translations-banner-desktop grid pointer-events-auto"
+        :style="{
+          gridArea: 'banner',
+        }"
+      >
+        <div id="bk-banner-list" class="grid gap-10">
           <Banner
             v-if="!state.stateAvailable.value"
             id="state-unavailable"

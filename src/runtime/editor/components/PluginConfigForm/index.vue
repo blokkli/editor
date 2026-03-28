@@ -69,3 +69,22 @@ defineExpose({
   updateSeed,
 })
 </script>
+
+<style lang="postcss">
+.bk .bk-plugin-config-form {
+  @apply flex flex-wrap gap-10 items-end;
+  > li {
+    @apply flex-1 shrink;
+
+    &.bk-is-type-options,
+    &.bk-is-type-text {
+      @apply min-w-[200px];
+    }
+    &.bk-is-type-checkbox {
+      @apply flex-none;
+      min-height: 46px;
+      @apply flex items-center;
+    }
+  }
+}
+</style>

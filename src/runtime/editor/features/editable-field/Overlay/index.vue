@@ -319,3 +319,154 @@ onBeforeUnmount(async () => {
   }
 })
 </script>
+
+<style lang="postcss">
+.bk-editable-field {
+  --bk-bg: white;
+  --bk-header-bg: theme('colors.teal.normal');
+  --bk-header-text: theme('colors.teal.dark');
+  --bk-border: theme('colors.teal.normal');
+  --bk-header-hover: rgb(var(--bk-theme-teal-dark) / 0.2);
+
+  .bk-editable-field-input {
+    @apply w-full min-w-[360px] max-w-[700px];
+    @screen md {
+      @apply rounded;
+    }
+
+    .bk-editable-field-textarea {
+      @apply relative;
+      @screen lg {
+        @apply min-w-[500px];
+      }
+    }
+
+    textarea {
+      @apply appearance-none resize-none block p-10;
+      @apply outline-none shadow-none border-none;
+      @apply focus:!outline-none focus:!shadow-none focus:!border-none focus:!ring-0 bg-transparent;
+      @apply min-h-[50px] w-full;
+      @apply text-base lg:text-lg;
+      @apply absolute top-0 left-0 h-full;
+    }
+  }
+  .bk-editable-field-info-error {
+    @apply text-red-normal px-10 ml-auto;
+  }
+  .bk-editable-field-info-hint {
+    @apply px-10 font-normal text-right ml-auto text-mono-500 text-xs;
+  }
+  .bk-editable-field-readability {
+    @apply relative px-10 h-[32px] flex items-center gap-5 border-l border-l-mono-300 text-xs text-mono-600 transition-opacity duration-200 cursor-default;
+    @apply cursor-help;
+
+    &.bk-is-stale {
+      @apply opacity-40;
+    }
+
+    .bk-tooltip {
+      @apply absolute top-full right-0 mt-10 min-w-[320px] whitespace-normal text-sm block;
+
+      p:nth-child(2) {
+        @apply font-normal mt-10;
+      }
+      @apply pointer-events-auto;
+    }
+
+    &:not(:hover) .bk-tooltip {
+      @apply hidden;
+    }
+  }
+  .bk-readability-scale {
+    @apply mt-15 w-full pb-25;
+  }
+  .bk-readability-scale-labels {
+    @apply relative h-[16px] text-xs text-mono-50 font-semibold;
+
+    > span {
+      @apply absolute -translate-x-1/2 -top-5;
+    }
+  }
+  .bk-readability-scale-bar {
+    @apply relative h-[12px];
+  }
+  .bk-readability-scale-segments {
+    @apply absolute inset-0 rounded-full overflow-hidden;
+  }
+  .bk-readability-scale-segment {
+    @apply absolute top-0 h-full;
+
+    &.bk-is-left {
+      @apply left-0;
+    }
+
+    &.bk-is-middle {
+      @apply bg-yellow-normal;
+    }
+  }
+  /* higher_easier (e.g. FRE): low=hard, high=easy */
+  .bk-readability-scale.bk-is-higher_easier {
+    .bk-is-left {
+      @apply bg-red-normal;
+    }
+    .bk-is-right {
+      @apply bg-lime-normal;
+    }
+  }
+  /* higher_harder (e.g. LIX): low=easy, high=hard */
+  .bk-readability-scale.bk-is-higher_harder {
+    .bk-is-left {
+      @apply bg-lime-normal;
+    }
+    .bk-is-right {
+      @apply bg-red-normal;
+    }
+  }
+  .bk-readability-scale-marker {
+    @apply absolute -top-5 w-[3px] bg-white rounded-full -translate-x-1/2 -bottom-5;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3);
+
+    > span {
+      @apply absolute top-full left-1/2 -translate-x-1/2 text-white font-bold whitespace-nowrap text-sm mt-5;
+    }
+  }
+  .bk-editable-field-readability-dot {
+    @apply w-8 h-8 rounded-full flex-shrink-0 bg-mono-300;
+
+    &.bk-is-easy {
+      @apply bg-lime-normal;
+    }
+    &.bk-is-ok {
+      @apply bg-yellow-normal;
+    }
+    &.bk-is-hard {
+      @apply bg-red-normal;
+    }
+  }
+  .bk-editable-field-info-count {
+    @apply px-10 h-[32px] flex items-center border-l border-l-mono-300;
+  }
+}
+
+.bk-editable-field-contenteditable {
+  @apply p-10;
+
+  > div {
+    @apply focus:outline-none;
+  }
+}
+
+.bk-editable-field-frame iframe {
+  @apply block w-full;
+  max-height: calc(100vh - 500px);
+
+  @screen lg {
+    @apply min-w-[500px];
+    min-height: 300px;
+  }
+
+  @screen xl {
+    @apply min-w-[700px];
+  }
+}
+</style>

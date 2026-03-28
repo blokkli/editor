@@ -193,3 +193,5 @@ onBeforeUnmount(() => {
   ui.setIsApproving(false)
 })
 </script>
+
+<style lang="postcss"></style>
