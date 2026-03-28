@@ -177,7 +177,7 @@
   .bk-toolbar-button {
     @apply text-mono-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
 
-    &:not(.is-active) {
+    &:not(.bk-is-active) {
       @apply lg:hover:bg-mono-700;
     }
 
@@ -194,7 +194,7 @@
     .bk-icon svg {
       @apply fill-current;
     }
-    &.is-active {
+    &.bk-is-active {
       .bk-tooltip {
         @apply hidden;
       }

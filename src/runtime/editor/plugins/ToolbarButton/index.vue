@@ -4,7 +4,7 @@
       ref="el"
       class="bk-toolbar-button"
       :disabled="disabled"
-      :class="[{ 'is-active': active }, id ? 'bk-is-' + id : undefined]"
+      :class="[{ 'bk-is-active': active }, id ? 'bk-is-' + id : undefined]"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >

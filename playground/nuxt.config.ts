@@ -1,3 +1,4 @@
+import mangleClassesPlugin from './mangleClassesPlugin'
 import { USED_MATERIAL_ICONS } from '../src/build/used-icons'
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
@@ -69,6 +70,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    plugins: [mangleClassesPlugin()],
     build: {
       minify: false,
     },

@@ -7,6 +7,7 @@ module.exports = {
     require('tailwindcss/nesting'),
     require('postcss-url'),
     require('tailwindcss'),
+    require('./src/build/postcssMangleClasses.cjs'),
     require('postcss-replace')({
       pattern: /(--tw|\*, ::before, ::after)/g,
       data: {

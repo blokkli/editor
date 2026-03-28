@@ -206,3 +206,22 @@ export default {
   name: 'BlokkliToolbar',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-toolbar-menu {
+  @apply relative z-menu h-full pointer-events-auto;
+  grid-area: menu;
+  .bk-toolbar-menu-button {
+    @apply lg:bg-accent-700 w-toolbar-left flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
+    @apply lg:hover:bg-accent-800;
+
+    &.bk-is-active {
+      @apply bg-white text-accent-700;
+    }
+
+    svg {
+      @apply w-[24px] h-[24px] fill-current pointer-events-none;
+    }
+  }
+}
+</style>

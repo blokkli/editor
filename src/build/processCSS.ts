@@ -40,6 +40,7 @@ async function createProcessor(): Promise<any> {
         // @apply directives are resolved regardless of content scanning.
         content: [{ raw: ' ', extension: 'html' }],
       }),
+      _require('./postcssMangleClasses.cjs'),
       // Same scoping rules as postcss.config.cjs: scope selectors to .bk
       // and rename Tailwind CSS variables from --tw-* to --bk-tw-*.
       _require('postcss-replace')({
