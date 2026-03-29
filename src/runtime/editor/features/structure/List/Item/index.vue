@@ -153,3 +153,11 @@ defineOptions({
   name: 'StructureListItem',
 })
 </script>
+
+<style lang="postcss">
+.bk-dragging-overlay-item {
+  [bk-structure-uuid] {
+    @apply !bg-mono-100;
+  }
+}
+</style>

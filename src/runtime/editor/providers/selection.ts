@@ -149,7 +149,7 @@ export default function (
   const dragItemsBundles = computed(() =>
     dragItems.value
       .map((v) => {
-        if (v.itemType === 'existing') {
+        if (v.itemType === 'existing' || v.itemType === 'existing_structure') {
           return v.block.bundle
         } else if ('itemBundle' in v) {
           return v.itemBundle

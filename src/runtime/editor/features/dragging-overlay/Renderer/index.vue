@@ -295,7 +295,7 @@ const draggingFragments = computed<string[]>(() =>
 const selectionUuids = computed<string[]>(() =>
   props.items
     .map((item) => {
-      if (item.itemType === 'existing') {
+      if (item.itemType === 'existing' || item.itemType === 'existing_structure') {
         return item.block.uuid
       }
     })
