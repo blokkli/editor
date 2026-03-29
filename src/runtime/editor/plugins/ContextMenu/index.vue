@@ -60,6 +60,10 @@ const onContextMenu = (e: MouseEvent) => {
   if (!props.id || typeof props.id !== 'string' || !props.menu.length) {
     return
   }
+  if (props.id === ui.openContextMenu.value) {
+    ui.openContextMenu.value = ''
+    return
+  }
   x.value = e.clientX
   y.value = e.clientY
   ui.openContextMenu.value = props.id

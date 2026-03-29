@@ -285,9 +285,6 @@ export default {
       }
     }
   }
-  .bk-feature-canvas-button {
-    @apply flex h-full items-center justify-center min-w-[50px];
-  }
 }
 
 .bk-translations {

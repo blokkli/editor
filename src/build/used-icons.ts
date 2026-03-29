@@ -60,6 +60,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_exit_to_app',
   'bk_mdi_expand_all',
   'bk_mdi_extension',
+  'bk_mdi_fit_screen',
   'bk_mdi_forum',
   'bk_mdi_function',
   'bk_mdi_grid_view',

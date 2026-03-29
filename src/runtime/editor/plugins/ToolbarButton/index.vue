@@ -4,7 +4,11 @@
       ref="el"
       class="bk-toolbar-button group/tooltip"
       :disabled="disabled"
-      :class="[{ 'bk-is-active': active }, id ? 'bk-is-' + id : undefined]"
+      :class="[
+        { 'bk-is-active': active },
+        id ? 'bk-is-' + id : undefined,
+        $attrs.class,
+      ]"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >
@@ -190,10 +194,9 @@ defineTourItem(() => {
     element: () => el.value,
   }
 })
-</script>
 
-<script lang="ts">
-export default {
+defineOptions({
   name: 'PluginToolbarButton',
-}
+  inheritAttrs: false,
+})
 </script>

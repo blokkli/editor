@@ -5,17 +5,17 @@
   >
     <div
       ref="rootEl"
-      class="bk-context-menu-inner absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 rounded overflow-hidden"
+      class="bk-context-menu-inner absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 rounded overflow-hidden min-w-200"
       :style="innerStyle"
     >
       <div v-for="(item, i) in menu" :key="i">
-        <hr v-if="item.type === 'rule'" />
+        <hr v-if="item.type === 'rule'" class="border-t-mono-600" />
         <button
           v-else-if="item.type === 'button'"
-          class="p-15 whitespace-nowrap text-left flex items-center gap-10 font-sans font-semibold hover:bg-mono-800"
+          class="p-10 whitespace-nowrap text-left flex items-center gap-5 font-sans font-semibold hover:bg-mono-800 w-full text-base text-mono-300 hover:text-mono-50"
           @click="onClick(i)"
         >
-          <Icon :name="item.icon" />
+          <Icon :name="item.icon" class="size-20" />
           <span>{{ item.label }}</span>
         </button>
       </div>
@@ -49,17 +49,12 @@ const { ui, selection } = useBlokkli()
 const rootEl = ref<HTMLDivElement | null>(null)
 
 const innerStyle = computed(() => {
-  const horizontal =
-    props.x - 300 >
-    ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
-      ? { right: 0 }
-      : { left: 0 }
+  const vp = ui.visibleViewportPadded.value
+  const vpRight = vp.x + vp.width
+  const vpBottom = vp.y + vp.height
 
-  const vertical =
-    props.y + 300 >
-    ui.visibleViewportPadded.value.y + ui.visibleViewportPadded.value.height
-      ? { bottom: 0 }
-      : { top: 0 }
+  const horizontal = props.x + 300 > vpRight ? { right: 0 } : { left: 0 }
+  const vertical = props.y + 300 > vpBottom ? { bottom: 0 } : { top: 0 }
 
   return {
     ...horizontal,
@@ -112,11 +107,3 @@ onBeforeUnmount(() => {
   window.removeEventListener('click', onMouseDown)
 })
 </script>
-
-<style lang="postcss">
-.bk-context-menu-inner button {
-  .bk-icon svg {
-    @apply w-25 h-25 fill-current;
-  }
-}
-</style>
