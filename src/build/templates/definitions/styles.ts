@@ -36,6 +36,27 @@ export default defineFileTemplate(
       }
     }
 
+    // Generate Tailwind utilities for user-land module content paths.
+    // This ensures that utility classes used in module Vue templates
+    // are available in the CSS output (mangled and scoped to .bk).
+    const contentPaths = ctx.getContentPaths()
+    if (contentPaths.length > 0) {
+      try {
+        const utilities = await processCSS(
+          '@tailwind utilities;',
+          'module-utilities.css',
+          contentPaths,
+        )
+        if (utilities.trim()) {
+          moduleCSS += '\n/* Module Utilities */\n' + utilities
+        }
+      } catch (e: any) {
+        logger.error(
+          `Failed to generate utilities for module content paths:\n${e.message}`,
+        )
+      }
+    }
+
     return `
 @import url("${cssFilePath}");
 

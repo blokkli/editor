@@ -2,6 +2,7 @@ import { version, name } from './../package.json'
 import {
   addBuildPlugin,
   addPlugin,
+  addVitePlugin,
   createResolver,
   defineNuxtModule,
   updateTemplates,
@@ -200,6 +201,25 @@ export default defineNuxtModule<ModuleOptions>({
       RuntimeDefinitionPlugin(nuxt, helper, 'defineBlokkliProvider', 1),
     )
     addBuildPlugin(BlokkliEditingPlugin(nuxt))
+
+    // Register mangle Vite plugin for user-land module content paths.
+    // This mangles template class names (_bk_ prefix) and processes <style>
+    // blocks through blökkli's PostCSS pipeline for files in registered
+    // content directories.
+    const contentPaths = context.getContentPaths()
+    if (contentPaths.length > 0) {
+      const { mangleVueSFC } = await import('./build/mangleTransform')
+      addVitePlugin({
+        name: 'blokkli-mangle-module-classes',
+        enforce: 'pre',
+        async transform(code: string, id: string) {
+          if (!id.endsWith('.vue')) return null
+          if (!contentPaths.some((dir) => id.startsWith(dir))) return null
+          const result = await mangleVueSFC(code, id)
+          return result ? { code: result, map: null } : null
+        },
+      })
+    }
 
     // Watch for file changes in dev mode.
     if (nuxt.options.dev) {

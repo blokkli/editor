@@ -36,6 +36,7 @@ export class ModuleContext {
   private complexOptionTypes: Map<string, ComplexOptionTypeDefinition> =
     new Map()
   private cssFiles: string[] = []
+  private contentPaths: string[] = []
   private additionalIcons: string[] = []
   public collectors: Collector[] = []
 
@@ -53,6 +54,23 @@ export class ModuleContext {
 
   getCSSFiles(): string[] {
     return this.cssFiles
+  }
+
+  /**
+   * Register a directory containing Vue files that should participate in
+   * blökkli's CSS build pipeline. Files in these directories will:
+   * - Have their Tailwind utility classes generated and included in the output
+   * - Have their template class names mangled (_bk_ prefix) at build time
+   * - Have their <style> blocks processed through blökkli's PostCSS pipeline
+   *
+   * @param dirPath - Absolute path to a directory containing Vue components
+   */
+  addContentPath(dirPath: string): void {
+    this.contentPaths.push(dirPath)
+  }
+
+  getContentPaths(): string[] {
+    return this.contentPaths
   }
 
   addIcon(...names: string[]): void {
