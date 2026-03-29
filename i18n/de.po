@@ -3644,6 +3644,26 @@ msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
 msgstr "Originalsprache bearbeiten"
 
+msgctxt "translationsBannerMarkAllAsUpToDate"
+msgid "Mark all as up-to-date"
+msgstr "Alle als aktuell markieren"
+
+msgctxt "translationsBannerNext"
+msgid "Next block"
+msgstr "Nächster Block"
+
+msgctxt "translationsBannerOutdatedCount"
+msgid "@count blocks have <strong>outdated translations</strong>."
+msgstr "@count Blöcke haben <strong>veraltete Übersetzungen</strong>."
+
+msgctxt "translationsBannerOutdatedSingular"
+msgid "@count block has an <strong>outdated translation</strong>."
+msgstr "@count Block hat eine <strong>veraltete Übersetzung</strong>."
+
+msgctxt "translationsBannerPrev"
+msgid "Previous block"
+msgstr "Vorheriger Block"
+
 msgctxt "translationsBannerText"
 msgid ""
 "You are currently editing the <strong>@language</strong> translation. Some "

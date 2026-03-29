@@ -60,6 +60,17 @@
         @apply opacity-30;
       }
     }
+
+    &.bk-is-warning-outline-dark {
+      @apply !bg-transparent !text-yellow-dark outline outline-1 -outline-offset-1 hover:!bg-yellow-dark/10;
+    }
+
+    &.bk-is-warning-dark {
+      @apply !bg-yellow-dark !text-yellow-light hover:!bg-yellow-dark/80 focus-visible:ring-yellow-dark/30;
+      &[disabled] {
+        @apply opacity-30;
+      }
+    }
     &.bk-is-small {
       @apply h-30 !px-[8px] !text-sm gap-5;
 

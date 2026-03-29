@@ -23,8 +23,10 @@ export default defineEventHandler<Promise<boolean>>(async (event) => {
   const key = conversationKey(entityType, entityUuid, body.uuid)
   const now = new Date().toISOString()
 
-  const existing =
-    (await storage.getItem(key)) as Record<string, unknown> | null
+  const existing = (await storage.getItem(key)) as Record<
+    string,
+    unknown
+  > | null
   const createdAt =
     existing && typeof existing === 'object' && 'createdAt' in existing
       ? (existing as { createdAt: string }).createdAt

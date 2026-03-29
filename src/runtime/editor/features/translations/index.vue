@@ -52,7 +52,11 @@
   </Teleport>
 
   <Teleport to="#bk-banner-list">
-    <Banner v-if="isTranslating" :active-language />
+    <Banner
+      v-if="isTranslating"
+      :active-language
+      @mark-all-up-to-date="onMarkUpToDate"
+    />
   </Teleport>
 
   <PluginItemAction
@@ -269,13 +273,26 @@ function onTranslate(items: RenderedFieldListItem[]) {
   }
 }
 
-function onMarkUpToDate(items: RenderedFieldListItem[]) {
+function onMarkUpToDate(items: RenderedFieldListItem[] | string[]) {
   if (!adapter.markTranslationUpToDate) return
   const lang = context.value.language
   const uuids = items
-    .filter((item) => item.outdatedTranslations.includes(lang))
-    .map((item) => item.uuid)
-  if (!uuids.length) return
+    .map((item) => {
+      if (typeof item === 'string') {
+        return item
+      }
+      if (item.outdatedTranslations.includes(lang)) {
+        return item.uuid
+      }
+
+      return null
+    })
+    .filter(falsy)
+
+  if (!uuids.length) {
+    return
+  }
+
   state.mutateWithLoadingState(() =>
     adapter.markTranslationUpToDate!(uuids, context.value.language),
   )

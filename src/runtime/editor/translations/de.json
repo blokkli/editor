@@ -3363,6 +3363,26 @@
     "source": "Edit source language instead",
     "translation": "Originalsprache bearbeiten"
   },
+  "translationsBannerMarkAllAsUpToDate": {
+    "source": "Mark all as up-to-date",
+    "translation": "Alle als aktuell markieren"
+  },
+  "translationsBannerNext": {
+    "source": "Next block",
+    "translation": "Nächster Block"
+  },
+  "translationsBannerOutdatedCount": {
+    "source": "@count blocks have <strong>outdated translations</strong>.",
+    "translation": "@count Blöcke haben <strong>veraltete Übersetzungen</strong>."
+  },
+  "translationsBannerOutdatedSingular": {
+    "source": "@count block has an <strong>outdated translation</strong>.",
+    "translation": "@count Block hat eine <strong>veraltete Übersetzung</strong>."
+  },
+  "translationsBannerPrev": {
+    "source": "Previous block",
+    "translation": "Vorheriger Block"
+  },
   "translationsBannerText": {
     "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
     "translation": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>. Einige Funktionen wie das Hinzufügen, Verschieben oder Löschen von Blöcken sind nicht verfügbar."

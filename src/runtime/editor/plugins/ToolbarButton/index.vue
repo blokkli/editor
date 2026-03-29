@@ -61,6 +61,7 @@ const props = defineProps<{
     | 'after-menu'
     | 'before-sidebar-right'
     | 'view-options'
+    | 'artboard'
 
   /**
    * Whether the button is only available in edit mode.
@@ -155,6 +156,8 @@ const tooltipPlacement = computed<Placement>(() => {
   if (props.region === 'before-sidebar-right') {
     return 'below-before'
   } else if (props.region === 'before-sidebar') {
+    return 'below-right'
+  } else if (props.region === 'artboard') {
     return 'below-right'
   }
 

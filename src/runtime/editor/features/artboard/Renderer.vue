@@ -13,7 +13,7 @@
     icon="bk_mdi_zoom_in"
     meta
     key-code="0"
-    region="view-options"
+    region="artboard"
     weight="100"
     @click="resetZoom"
   >

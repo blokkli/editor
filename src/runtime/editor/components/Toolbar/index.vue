@@ -60,6 +60,7 @@
     <div id="bk-toolbar-title" class="bk-toolbar-container" />
     <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
     <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
+    <div id="bk-toolbar-artboard" class="bk-toolbar-container" />
     <div
       id="bk-toolbar-before-sidebar"
       class="bk-sidebar-container-tabs bk-toolbar-container"

@@ -3363,6 +3363,26 @@
     "source": "Edit source language instead",
     "translation": "Stattdässe Quellsproch bearbeite"
   },
+  "translationsBannerMarkAllAsUpToDate": {
+    "source": "Mark all as up-to-date",
+    "translation": ""
+  },
+  "translationsBannerNext": {
+    "source": "Next block",
+    "translation": ""
+  },
+  "translationsBannerOutdatedCount": {
+    "source": "@count blocks have <strong>outdated translations</strong>.",
+    "translation": ""
+  },
+  "translationsBannerOutdatedSingular": {
+    "source": "@count block has an <strong>outdated translation</strong>.",
+    "translation": ""
+  },
+  "translationsBannerPrev": {
+    "source": "Previous block",
+    "translation": ""
+  },
   "translationsBannerText": {
     "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
     "translation": "Du bearbeitisch grad d'<strong>@language</strong>-Übersetztig. Gwüssi Funktione wie Drzuefüege, Verschiebe oder Lösche vo Blöck sin nid verfüegbar."
