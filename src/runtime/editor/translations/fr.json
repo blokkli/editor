@@ -411,6 +411,34 @@
     "source": "Show more",
     "translation": ""
   },
+  "aiAgentFeedbackBad": {
+    "source": "Bad",
+    "translation": ""
+  },
+  "aiAgentFeedbackFine": {
+    "source": "Fine",
+    "translation": ""
+  },
+  "aiAgentFeedbackGood": {
+    "source": "Good",
+    "translation": ""
+  },
+  "aiAgentFeedbackPlaceholder": {
+    "source": "Tell us more (optional)...",
+    "translation": ""
+  },
+  "aiAgentFeedbackPrompt": {
+    "source": "How was this response?",
+    "translation": ""
+  },
+  "aiAgentFeedbackSubmit": {
+    "source": "Submit",
+    "translation": ""
+  },
+  "aiAgentFeedbackThanks": {
+    "source": "Thanks for your feedback!",
+    "translation": ""
+  },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
     "translation": ""
@@ -1009,6 +1037,14 @@
   },
   "anchorToggle": {
     "source": "Toggle anchor links",
+    "translation": ""
+  },
+  "arrowLeft": {
+    "source": "Arrow Left",
+    "translation": ""
+  },
+  "arrowRight": {
+    "source": "Arrow Right",
     "translation": ""
   },
   "artboard": {

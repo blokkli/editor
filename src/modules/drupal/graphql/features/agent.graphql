@@ -6,6 +6,9 @@ fragment pbAgentConversation on ParagraphsBlokkliAgentConversation {
   hash
   createdAt: created
   updatedAt: changed
+  feedback {
+    itemId
+  }
 }
 
 mutation paragraphsBlokkliAgentToken {
@@ -37,6 +40,23 @@ mutation pbAgentConversationUpsert(
 
 mutation pbAgentConversationDelete($uuid: String!) {
   result: paragraphsBlokkliAgentConversationDelete(uuid: $uuid) {
+    success
+    errors
+  }
+}
+
+mutation pbAgentConversationFeedback(
+  $uuid: String!
+  $itemId: String!
+  $rating: String!
+  $explanation: String
+) {
+  result: paragraphsBlokkliAgentConversationFeedback(
+    uuid: $uuid
+    itemId: $itemId
+    rating: $rating
+    explanation: $explanation
+  ) {
     success
     errors
   }

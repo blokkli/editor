@@ -228,18 +228,24 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
       .map((group, index) => {
         const colors = group.highlights.map((h) => h.color).join(',')
 
-        // For block-based highlights, use dom.getBlockRect() which is
-        // observer-driven (no per-frame getBoundingClientRect calls).
+        // If the highlight element IS the block's drag element, use the
+        // observer-driven rect (no per-frame getBoundingClientRect).
+        // Otherwise the highlight targets a child element (e.g. a text
+        // span inside the block) and we must measure that element directly.
         const uuid = group.uuids[0]
         if (uuid) {
-          const blockRect = dom.getBlockRect(uuid)
-          if (blockRect) {
-            this.rectCache.set(group.element, blockRect)
-            return `${index}_${blockRect.time}_${colors}`
+          const block = blocks.getBlock(uuid)
+          const dragEl = block ? dom.getDragElement(block) : null
+          if (dragEl && dragEl === group.element) {
+            const blockRect = dom.getBlockRect(uuid)
+            if (blockRect) {
+              this.rectCache.set(group.element, blockRect)
+              return `${index}_${blockRect.time}_${colors}`
+            }
           }
         }
 
-        // Fallback for arbitrary elements: measure once, cache until clearCache.
+        // Arbitrary/child elements: measure once, cache until clearCache.
         if (!this.rectCache.has(group.element)) {
           const rect = ui.getAbsoluteElementRect(group.element)
           this.rectCache.set(group.element, rect)
@@ -304,7 +310,8 @@ const { collector } = defineRenderer('highlights-overlay', {
     !selection.isMultiSelecting.value &&
     !selection.isDragging.value &&
     !ui.isChangingOptions.value &&
-    !selection.activeEditableLabel.value,
+    !selection.activeEditableLabel.value &&
+    !ui.isApproving.value,
   render: (_ctx, gl, program) => {
     gl.useProgram(program.program)
 

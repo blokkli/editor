@@ -1472,12 +1472,24 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           useGraphqlQuery('pbAgentConversation', {
             ...hostParams(),
             uuid,
-          }).then((v) => v.data.conversation ?? null),
+          }).then((v) => {
+            const c = v.data.conversation
+            if (!c) return null
+            return {
+              ...c,
+              feedbackItemIds: c.feedback.map((f) => f.itemId),
+            }
+          }),
 
         loadLatest: () =>
-          useGraphqlQuery('pbAgentConversation', hostParams()).then(
-            (v) => v.data.conversation ?? null,
-          ),
+          useGraphqlQuery('pbAgentConversation', hostParams()).then((v) => {
+            const c = v.data.conversation
+            if (!c) return null
+            return {
+              ...c,
+              feedbackItemIds: c.feedback.map((f) => f.itemId),
+            }
+          }),
 
         list: () =>
           useGraphqlQuery('pbAgentConversations', hostParams()).then(
@@ -1488,6 +1500,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           useGraphqlMutation('pbAgentConversationDelete', { uuid }).then(
             (v) => v.data.result.success,
           ),
+      }
+
+      if (hasMutation('pbAgentConversationFeedback')) {
+        adapter.submitConversationFeedback = (feedback) =>
+          useGraphqlMutation('pbAgentConversationFeedback', {
+            uuid: feedback.conversationId,
+            itemId: feedback.lastItemId,
+            rating: feedback.rating,
+            explanation: feedback.comment,
+          }).then((v) => v.data.result.success)
       }
     }
 

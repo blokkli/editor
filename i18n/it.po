@@ -424,6 +424,34 @@ msgctxt "aiAgentExpandButton"
 msgid "Show more"
 msgstr ""
 
+msgctxt "aiAgentFeedbackBad"
+msgid "Bad"
+msgstr ""
+
+msgctxt "aiAgentFeedbackFine"
+msgid "Fine"
+msgstr ""
+
+msgctxt "aiAgentFeedbackGood"
+msgid "Good"
+msgstr ""
+
+msgctxt "aiAgentFeedbackPlaceholder"
+msgid "Tell us more (optional)..."
+msgstr ""
+
+msgctxt "aiAgentFeedbackPrompt"
+msgid "How was this response?"
+msgstr ""
+
+msgctxt "aiAgentFeedbackSubmit"
+msgid "Submit"
+msgstr ""
+
+msgctxt "aiAgentFeedbackThanks"
+msgid "Thanks for your feedback!"
+msgstr ""
+
 msgctxt "aiAgentFindBlocksDone"
 msgid "Found @count blocks"
 msgstr ""
@@ -1038,6 +1066,14 @@ msgstr ""
 
 msgctxt "anchorToggle"
 msgid "Toggle anchor links"
+msgstr ""
+
+msgctxt "arrowLeft"
+msgid "Arrow Left"
+msgstr ""
+
+msgctxt "arrowRight"
+msgid "Arrow Right"
 msgstr ""
 
 msgctxt "artboard"

@@ -61,6 +61,7 @@ html {
     --bk-scheme-light: var(--bk-theme-lime-light);
     --bk-scheme-normal: var(--bk-theme-lime-normal);
     --bk-scheme-dark: var(--bk-theme-lime-dark);
+    --bk-scheme-text: 255 255 255;
   }
 
   .bk-scheme-orange {

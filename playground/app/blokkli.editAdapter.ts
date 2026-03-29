@@ -2041,5 +2041,20 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
   }
 
+  adapter.submitConversationFeedback = async (feedback) => {
+    return $fetch<boolean>(
+      `/api/blokkli/agent/conversations/${feedback.conversationId}/feedback`,
+      {
+        method: 'POST',
+        query: conversationParams(),
+        body: {
+          itemId: feedback.lastItemId,
+          rating: feedback.rating,
+          explanation: feedback.comment,
+        },
+      },
+    )
+  }
+
   return adapter
 })

@@ -411,6 +411,34 @@
     "source": "Show more",
     "translation": "Meh aazeige"
   },
+  "aiAgentFeedbackBad": {
+    "source": "Bad",
+    "translation": ""
+  },
+  "aiAgentFeedbackFine": {
+    "source": "Fine",
+    "translation": ""
+  },
+  "aiAgentFeedbackGood": {
+    "source": "Good",
+    "translation": ""
+  },
+  "aiAgentFeedbackPlaceholder": {
+    "source": "Tell us more (optional)...",
+    "translation": ""
+  },
+  "aiAgentFeedbackPrompt": {
+    "source": "How was this response?",
+    "translation": ""
+  },
+  "aiAgentFeedbackSubmit": {
+    "source": "Submit",
+    "translation": ""
+  },
+  "aiAgentFeedbackThanks": {
+    "source": "Thanks for your feedback!",
+    "translation": ""
+  },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
     "translation": "@count Blöck gfunde"
@@ -1010,6 +1038,14 @@
   "anchorToggle": {
     "source": "Toggle anchor links",
     "translation": "Anker-Links umschalte"
+  },
+  "arrowLeft": {
+    "source": "Arrow Left",
+    "translation": ""
+  },
+  "arrowRight": {
+    "source": "Arrow Right",
+    "translation": ""
   },
   "artboard": {
     "source": "Artboard",

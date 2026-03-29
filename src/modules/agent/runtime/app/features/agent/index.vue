@@ -35,6 +35,8 @@
         :tool-details
         :usage-turns="usageTurns"
         :page-context="pageContext"
+        :supports-feedback="!!adapter.submitConversationFeedback"
+        :feedback-item-ids="feedbackItemIds"
         @connect="connect"
         @send-prompt="sendPrompt"
         @retry="retry"
@@ -47,6 +49,8 @@
         @tool-component-done="onToolComponentDone"
         @switch-conversation="switchConversation"
         @delete-conversation="deleteConversation"
+        @submit-feedback="onSubmitFeedback"
+        @feedback-done="onFeedbackDone"
         @show-conversations="onShowConversations"
         @hide-conversations="onHideConversations"
         @approve-plan="approvePlan"
@@ -107,6 +111,7 @@ import agentProvider from '#blokkli/agent/app/composables/agentProvider'
 import { agentPrompts, agentName } from '#blokkli-build/agent-client'
 import AgentPanel from './Panel/index.vue'
 import AgentTranscript from './Transcript/index.vue'
+import type { AgentConversationFeedbackRating } from './types'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
@@ -187,8 +192,39 @@ const {
   switchConversation,
   deleteConversation,
   refreshConversationList,
+  activeConversationId,
+  feedbackItemIds,
   pageContext,
 } = agentProvider(app, adapter, agentName)
+
+async function onSubmitFeedback(
+  rating: AgentConversationFeedbackRating,
+  comment?: string,
+) {
+  if (!adapter.submitConversationFeedback) return
+  const conversationId = activeConversationId.value
+  if (!conversationId) return
+  const lastItem = conversation.value[conversation.value.length - 1]
+  if (!lastItem) return
+
+  try {
+    await adapter.submitConversationFeedback({
+      conversationId,
+      rating,
+      lastItemId: lastItem.id,
+      comment,
+    })
+  } catch (e) {
+    console.warn('[blokkli agent] Failed to submit feedback:', e)
+  }
+}
+
+function onFeedbackDone() {
+  const lastItem = conversation.value[conversation.value.length - 1]
+  if (lastItem) {
+    feedbackItemIds.value.add(lastItem.id)
+  }
+}
 
 async function onShowConversations() {
   await refreshConversationList()

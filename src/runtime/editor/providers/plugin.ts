@@ -1,6 +1,6 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref } from '#imports'
-import type { ThemeColorName } from '~~/src/global/types/theme'
+import type { ThemeColorName } from '../../../global/types/theme'
 import type { AddAction } from '../types/actions'
 
 type PluginAddFunction<T> = () => T | T[] | undefined

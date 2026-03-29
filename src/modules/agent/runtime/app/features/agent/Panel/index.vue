@@ -48,6 +48,24 @@
             @reject="emit('reject')"
             @always-approve="onAlwaysApprove"
           />
+          <TransitionHeight opacity :duration="300">
+            <Feedback
+              v-if="
+                supportsFeedback &&
+                !isProcessing &&
+                !pendingMutation &&
+                !pendingToolCall &&
+                conversation.length > 0 &&
+                conversation[conversation.length - 1]?.type === 'assistant' &&
+                !feedbackItemIds.has(conversation[conversation.length - 1]!.id)
+              "
+              @submit="
+                (rating: AgentConversationFeedbackRating, comment?: string) =>
+                  emit('submitFeedback', rating, comment)
+              "
+              @done="emit('feedbackDone')"
+            />
+          </TransitionHeight>
         </template>
       </div>
 
@@ -134,6 +152,8 @@ import DebugGallery from './DebugGallery/index.vue'
 import Welcome from './Welcome/index.vue'
 import AgentInput from './Input/index.vue'
 import ConversationList from './ConversationList/index.vue'
+import Feedback from './Feedback/index.vue'
+import type { AgentConversationFeedbackRating } from '../types'
 import type {
   AgentConversationSummary,
   PendingMutationState,
@@ -172,6 +192,8 @@ const props = defineProps<{
   plan: ClientPlanState | null
   usageTurns: UsageTurn[]
   pageContext: PageContext | null
+  supportsFeedback: boolean
+  feedbackItemIds: Set<string>
 }>()
 
 const emit = defineEmits<{
@@ -196,6 +218,8 @@ const emit = defineEmits<{
   retry: []
   approvePlan: []
   rejectPlan: []
+  submitFeedback: [rating: AgentConversationFeedbackRating, comment?: string]
+  feedbackDone: []
 }>()
 
 const DEBUG_STYLING = import.meta.dev && false

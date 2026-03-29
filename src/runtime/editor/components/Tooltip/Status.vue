@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { UiStatus } from '#blokkli/editor/types/ui'
 import { computed } from 'vue'
-import type { ThemeColorName } from '~~/src/global/types/theme'
+import type { ThemeColorName } from '../../../../global/types/theme'
 
 const props = defineProps<{
   status: UiStatus
