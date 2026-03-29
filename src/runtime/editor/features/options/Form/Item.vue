@@ -1,20 +1,23 @@
 <template>
-  <div class="bk-blokkli-item-options-item" @keydown.stop>
-    <div
-      v-if="showLabel"
-      :class="isGrouped ? 'bk-blokkli-item-options-item-label' : 'bk-tooltip'"
+  <div class="bk-blokkli-item-options-item group/tooltip" @keydown.stop>
+    <Tooltip
+      :label
+      :description
+      :placement="isGrouped ? 'inline' : 'above-left'"
+      class="!whitespace-normal"
+      :class="{
+        'w-full px-10 pt-10': isGrouped,
+        'min-w-full w-max max-w-300': !isGrouped,
+      }"
     >
-      <div class="bk-is-label">
-        <span>{{ label }}</span>
-      </div>
-      <span v-if="description">{{ description }}</span>
-      <div v-if="hoveredOption" class="bk-is-hovered-option">
-        <strong>{{ hoveredOption }}</strong
-        ><template v-if="hoveredOptionDescription"
-          >: {{ hoveredOptionDescription }}</template
-        >
-      </div>
-    </div>
+      <template #status>
+        <TooltipContext
+          v-if="hoveredOption"
+          :label="hoveredOption"
+          :description="hoveredOptionDescription"
+        />
+      </template>
+    </Tooltip>
     <div
       class="bk-blokkli-item-options-item-content"
       :class="{
@@ -101,6 +104,7 @@ import OptionRange from './Range/index.vue'
 import OptionNumber from './Number/index.vue'
 import OptionDateTimeLocal from './DateTimeLocal/index.vue'
 import OptionComplexType from './ComplexType/index.vue'
+import { Tooltip, TooltipContext } from '#blokkli/editor/components'
 import type { BlockOptionDefinitionBase } from './../../../../../global/types/blockOptions'
 import { BK_VISIBLE_LANGUAGES } from './../../../../../global/constants'
 
@@ -120,16 +124,6 @@ const props = defineProps<{
 
 const hoveredOption = ref('')
 const hoveredOptionDescription = ref('')
-
-const showLabel = computed(() => {
-  if (props.isGrouped) {
-    if (props.option.type === 'checkbox') {
-      return false
-    }
-  }
-
-  return true
-})
 
 const label = computed(() =>
   $blokkliText(`blockOption_${props.property}_label`, props.option.label),

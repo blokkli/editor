@@ -19,7 +19,7 @@
       <Interactions />
       <div id="bk-blokkli-item-actions-title">
         <button
-          class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent"
+          class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent group/tooltip"
           tabindex="-1"
           :disabled="!shouldRenderButton"
           :class="{
@@ -28,26 +28,30 @@
           }"
           @click.prevent="showDropdown = !showDropdown"
         >
-          <div v-if="shouldRenderButton" class="bk-tooltip">
-            <span>{{ $t('actionsDropdownToolip', 'Further actions') }}</span>
-            <div
-              v-if="restrictedPermissionsLabel"
-              class="bk-item-action-disabled-reason"
-            >
-              <span>{{ restrictedPermissionsLabel }}</span>
-            </div>
-            <div
-              v-if="selectedTranslationIsOutdated"
-              class="bk-item-action-disabled-reason"
-            >
-              <span>{{
-                $t(
-                  'translationOutdatedHint',
-                  'The translation is marked as outdated.',
-                )
-              }}</span>
-            </div>
-          </div>
+          <Tooltip
+            v-if="shouldRenderButton"
+            :label="$t('actionsDropdownToolip', 'Further actions')"
+            placement="above-left"
+            class="w-full"
+          >
+            <template #status>
+              <TooltipStatus
+                v-if="restrictedPermissionsLabel"
+                :description="restrictedPermissionsLabel"
+                status="warning"
+              />
+              <TooltipStatus
+                v-if="selectedTranslationIsOutdated"
+                :description="
+                  $t(
+                    'translationOutdatedHint',
+                    'The translation is marked as outdated.',
+                  )
+                "
+                status="warning"
+              />
+            </template>
+          </Tooltip>
           <div
             v-show="!hasSelectedHost"
             class="bk-blokkli-item-actions-title-icon"
@@ -123,7 +127,12 @@ import {
   onBeforeUnmount,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import { Icon, ItemIconBox } from '#blokkli/editor/components'
+import {
+  Icon,
+  ItemIconBox,
+  Tooltip,
+  TooltipStatus,
+} from '#blokkli/editor/components'
 import EditActionsItemDropdown from './ItemDropdown.vue'
 import Interactions from './Interactions/index.vue'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
@@ -401,45 +410,6 @@ export default {
     }
   }
 
-  .bk-blokkli-item-actions-interactions {
-    @apply h-50 w-25 relative;
-    @apply lg:border-r lg:border-r-mono-500;
-
-    > button {
-      @apply size-25;
-      @apply flex items-center justify-center text-mono-300;
-      @apply hover:bg-mono-700 hover:text-mono-50;
-
-      &[disabled] {
-        @apply pointer-events-none text-mono-500;
-      }
-
-      &:first-child {
-        @apply border-b border-b-mono-500 rounded-tl-md;
-      }
-
-      &:nth-child(2) {
-        @apply cursor-grab rounded-bl-md;
-      }
-
-      svg {
-        @apply size-[13px] fill-current;
-      }
-
-      .bk-tooltip {
-        @apply absolute bottom-full left-0 mb-8;
-      }
-
-      @screen lg {
-        &:not(:hover) {
-          .bk-tooltip {
-            @apply hidden;
-          }
-        }
-      }
-    }
-  }
-
   .bk-blokkli-item-actions-controls {
     @apply flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap;
     @apply bg-mono-950/90 backdrop-blur;
@@ -483,16 +453,6 @@ export default {
     &.bk-is-active {
       @apply bg-white text-mono-900 z-50;
     }
-    .bk-tooltip {
-      @apply absolute bottom-full left-0 mb-8 min-w-full;
-    }
-    @screen lg {
-      &:not(:hover) {
-        .bk-tooltip {
-          @apply hidden;
-        }
-      }
-    }
 
     &:not([disabled]) {
       @apply lg:hover:bg-mono-700 lg:hover:text-mono-50;
@@ -503,23 +463,6 @@ export default {
       .bk-item-action-icon {
         @apply opacity-25;
       }
-      .bk-tooltip {
-        @apply flex-wrap;
-      }
-    }
-  }
-
-  .bk-item-action-disabled-reason {
-    @apply w-full text-xs font-medium mt-5 text-yellow-normal;
-    @apply flex items-center gap-5;
-
-    &.bk-is-success {
-      @apply text-lime-normal;
-    }
-
-    &:before {
-      content: '';
-      @apply size-[0.75em] bg-current rounded-full;
     }
   }
 
@@ -574,16 +517,6 @@ export default {
     }
     .bk-blokkli-item-actions-title-icon {
       flex: 0 0 auto;
-    }
-
-    .bk-tooltip {
-      @apply absolute left-0  bottom-full invisible mb-8 flex-wrap;
-    }
-
-    &:hover {
-      .bk-tooltip {
-        @apply visible;
-      }
     }
 
     &.is-interactive {
@@ -660,16 +593,6 @@ export default {
           @apply text-white;
         }
       }
-    }
-
-    &:hover {
-      .bk-tooltip {
-        @apply !visible;
-      }
-    }
-
-    .bk-tooltip {
-      @apply absolute left-full top-1/2 -translate-y-1/2 ml-10 invisible;
     }
   }
 

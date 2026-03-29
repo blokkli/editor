@@ -5,7 +5,7 @@
       v-show="!hidden"
       ref="el"
       :disabled="isDisabled"
-      class="bk-item-action"
+      class="bk-item-action group/tooltip"
       :class="[
         { 'bk-is-active': active, 'bk-is-last': weight === 'last' },
         $attrs.class,
@@ -16,24 +16,24 @@
       <slot name="icon">
         <Icon v-if="icon" :name="icon" class="bk-item-action-icon" />
       </slot>
-      <div class="bk-tooltip">
-        <span>{{ title }}</span>
-        <ShortcutIndicator
-          v-if="keyCode"
-          :meta="meta"
-          :label="title"
-          :key-code="keyCode"
-          group="blocks"
-          @pressed="onClick"
-        />
-        <div
-          v-if="disabledReason"
-          class="bk-item-action-disabled-reason"
-          :class="{ 'bk-is-success': disabledReasonSuccess }"
-        >
-          <span>{{ disabledReason }}</span>
-        </div>
-      </div>
+      <Tooltip :label="title" placement="above-left" class="w-full">
+        <template v-if="keyCode" #shortcut>
+          <ShortcutIndicator
+            :meta="meta"
+            :label="title"
+            :key-code="keyCode"
+            group="blocks"
+            @pressed="onClick"
+          />
+        </template>
+        <template #status>
+          <TooltipStatus
+            v-if="disabledReason"
+            :description="disabledReason"
+            :status="disabledReasonSuccess ? 'success' : 'warning'"
+          />
+        </template>
+      </Tooltip>
     </button>
   </Teleport>
   <slot :items="selection.items.value" :uuids="uuids" />
@@ -43,7 +43,12 @@
 import { computed, ref, useBlokkli } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { Icon, ShortcutIndicator } from '#blokkli/editor/components'
+import {
+  Icon,
+  ShortcutIndicator,
+  Tooltip,
+  TooltipStatus,
+} from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 

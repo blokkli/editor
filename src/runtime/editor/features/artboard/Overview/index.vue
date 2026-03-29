@@ -12,7 +12,7 @@
       ref="overviewArtboardEl"
       class="bg-white absolute top-0 left-0 outline-mono-400 outline-1 outline pointer-events-none overflow-hidden"
     >
-      <canvas ref="canvas" class="absolute top-0 left-0 w-full h-full" />
+      <canvas ref="canvas" class="absolute top-0 left-0 size-full" />
     </div>
     <div
       class="absolute top-0 left-0 size-full bg-mono-900/60 mix-blend-multiply"

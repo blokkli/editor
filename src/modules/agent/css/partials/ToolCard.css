@@ -30,15 +30,6 @@
         @apply w-15 h-15 fill-current;
       }
     }
-    .bk-tooltip {
-      @apply absolute right-full mb-5 top-1/2 -translate-y-1/2 mr-5;
-    }
-
-    &:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
   }
 
   .bk-agent-tool-card-actions {

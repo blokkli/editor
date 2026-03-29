@@ -163,7 +163,10 @@ export default function mangleClassesPlugin(): Plugin {
     enforce: 'pre',
 
     async transform(code, id) {
-      if (!id.includes('/src/runtime/') || !id.endsWith('.vue')) {
+      if (
+        !id.endsWith('.vue') ||
+        (!id.includes('/src/runtime/') && !id.includes('/src/modules/'))
+      ) {
         return null
       }
 

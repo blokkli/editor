@@ -12,7 +12,7 @@
         <hr v-if="item.type === 'rule'" />
         <button
           v-else-if="item.type === 'button'"
-          class="px-15 py-15 whitespace-nowrap text-left flex items-center gap-10 font-sans font-semibold hover:bg-mono-800"
+          class="p-15 whitespace-nowrap text-left flex items-center gap-10 font-sans font-semibold hover:bg-mono-800"
           @click="onClick(i)"
         >
           <Icon :name="item.icon" />

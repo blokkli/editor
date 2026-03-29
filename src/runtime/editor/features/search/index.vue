@@ -361,8 +361,4 @@ export default {
 .bk-dragging-overlay .bk-search-item {
   @apply rounded-lg overflow-hidden;
 }
-
-.bk-toolbar-button.bk-is-search .bk-tooltip {
-  @apply left-auto right-3;
-}
 </style>

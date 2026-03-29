@@ -122,13 +122,21 @@ const selectedOption = computed(() => {
   return mappedOptions.value.find((v) => v.key === value.value)
 })
 
+const isDefaultRadios = computed(
+  () => props.displayAs === 'radios' || !props.displayAs,
+)
+
 function onOptionMouseEnter(option: (typeof mappedOptions.value)[number]) {
-  active.value = option.label
+  if (!isDefaultRadios.value) {
+    active.value = option.label
+  }
   activeDescription.value = option.description
 }
 
 function onMouseLeave() {
-  active.value = selectedOption.value?.label ?? ''
+  if (!isDefaultRadios.value) {
+    active.value = selectedOption.value?.label ?? ''
+  }
   activeDescription.value = selectedOption.value?.description ?? ''
 }
 
@@ -157,7 +165,9 @@ defineCommands(() => {
 })
 
 onMounted(() => {
-  active.value = selectedOption.value?.label ?? ''
+  if (!isDefaultRadios.value) {
+    active.value = selectedOption.value?.label ?? ''
+  }
   activeDescription.value = selectedOption.value?.description ?? ''
 })
 </script>

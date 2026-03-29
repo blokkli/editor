@@ -62,7 +62,7 @@ const zIndex = zIndexKeys.reduce<Record<string, string>>((acc, key, index) => {
 }, {})
 
 const tailwindConfig: Config = {
-  content: ['./src/runtime/**/*.vue'],
+  content: ['./src/runtime/**/*.vue', './src/modules/*/runtime/**/*.vue'],
   corePlugins: {
     preflight: false,
     container: false,

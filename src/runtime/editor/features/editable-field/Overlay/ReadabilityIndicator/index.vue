@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="readabilityScore != null && readabilityBand"
-    class="bk-editable-field-readability"
+    class="bk-editable-field-readability group/tooltip"
     :class="{ 'bk-is-stale': stale }"
   >
     <span
@@ -12,74 +12,74 @@
       >{{ readability.analyzer.value.scoreLabel }}
       {{ readability.formatScore(readabilityScore) }}</span
     >
-    <div class="bk-tooltip">
-      <p>
-        {{
-          $t(
-            'readabilityTooltipDescription',
-            '@label measures how easy the text is to read.',
-          ).replace('@label', readability.analyzer.value.scoreLabel)
-        }}
-      </p>
-      <p v-if="fieldType === 'markup'">
-        {{
-          $t(
-            'readabilityEntireText',
-            'This score is calculated for the entire text.',
-          )
-        }}
-      </p>
-      <div
-        v-if="scaleInfo"
-        class="bk-readability-scale"
-        :class="'bk-is-' + scaleInfo.direction"
-      >
-        <div class="bk-readability-scale-labels">
-          <span :style="{ left: thresholdPositions.first + '%' }">{{
-            scaleInfo.thresholds[0]
-          }}</span>
-          <span :style="{ left: thresholdPositions.second + '%' }">{{
-            scaleInfo.thresholds[1]
-          }}</span>
-        </div>
-        <div class="bk-readability-scale-bar">
-          <div class="bk-readability-scale-segments">
-            <div
-              class="bk-readability-scale-segment bk-is-left"
-              :style="{ width: thresholdPositions.first + '%' }"
-            />
-            <div
-              class="bk-readability-scale-segment bk-is-middle"
-              :style="{
-                left: thresholdPositions.first + '%',
-                width:
-                  thresholdPositions.second - thresholdPositions.first + '%',
-              }"
-            />
-            <div
-              class="bk-readability-scale-segment bk-is-right"
-              :style="{
-                left: thresholdPositions.second + '%',
-                width: 100 - thresholdPositions.second + '%',
-              }"
-            />
+    <Tooltip
+      placement="above-right"
+      :label="
+        $t(
+          'readabilityTooltipDescription',
+          '@label measures how easy the text is to read.',
+        ).replace('@label', readability.analyzer.value.scoreLabel)
+      "
+      :description="
+        fieldType === 'markup'
+          ? $t(
+              'readabilityEntireText',
+              'This score is calculated for the entire text.',
+            )
+          : undefined
+      "
+    >
+      <template #status>
+        <div
+          v-if="scaleInfo"
+          class="bk-readability-scale"
+          :class="'bk-is-' + scaleInfo.direction"
+        >
+          <div class="bk-readability-scale-labels">
+            <span :style="{ left: thresholdPositions.first + '%' }">{{
+              scaleInfo.thresholds[0]
+            }}</span>
+            <span :style="{ left: thresholdPositions.second + '%' }">{{
+              scaleInfo.thresholds[1]
+            }}</span>
           </div>
-          <div
-            class="bk-readability-scale-marker"
-            :style="{ left: markerPosition + '%' }"
-          >
-            <span>{{ readability.formatScore(readabilityScore!) }}</span>
+          <div class="bk-readability-scale-bar">
+            <div class="bk-readability-scale-segments">
+              <div
+                class="bk-readability-scale-segment bk-is-left"
+                :style="{ width: thresholdPositions.first + '%' }"
+              />
+              <div
+                class="bk-readability-scale-segment bk-is-middle"
+                :style="{
+                  left: thresholdPositions.first + '%',
+                  width:
+                    thresholdPositions.second - thresholdPositions.first + '%',
+                }"
+              />
+              <div
+                class="bk-readability-scale-segment bk-is-right"
+                :style="{
+                  left: thresholdPositions.second + '%',
+                  width: 100 - thresholdPositions.second + '%',
+                }"
+              />
+            </div>
+            <div
+              class="bk-readability-scale-marker"
+              :style="{ left: markerPosition + '%' }"
+            >
+              <span>{{ readability.formatScore(readabilityScore!) }}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </Tooltip>
   </div>
   <div v-else-if="tooShort" class="bk-editable-field-readability">
     <span class="bk-editable-field-readability-dot" />
     <span>{{ $t('readabilityTooShort', 'Too short') }}</span>
-    <div class="bk-tooltip">
-      {{ minWordsText }}
-    </div>
+    <Tooltip :label="minWordsText" />
   </div>
 </template>
 
@@ -92,6 +92,7 @@ import {
   onBeforeUnmount,
   useBlokkli,
 } from '#imports'
+import { Tooltip } from '#blokkli/editor/components'
 import type { ReadabilityBand } from '../../../analyze/readability/types'
 
 const { readability, context, $t } = useBlokkli()

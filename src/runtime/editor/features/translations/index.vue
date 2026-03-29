@@ -31,6 +31,7 @@
           <label
             v-for="item in items"
             :key="item.id"
+            class="group/tooltip"
             :class="{ 'bk-is-muted': !item.translation?.exists }"
           >
             <div>
@@ -42,7 +43,7 @@
                 @click.stop.prevent="onClick(item, $event)"
               />
               <span>{{ item.code }}</span>
-              <div :class="{ 'bk-tooltip': !isDropdown }">{{ item.label }}</div>
+              <Tooltip v-show="!isOpen" :label="item.label" class="w-full" />
             </div>
           </label>
         </div>
@@ -94,6 +95,7 @@ import {
   onBlokkliEvent,
 } from '#blokkli/editor/composables'
 import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
+import { Tooltip } from '#blokkli/editor/components'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { adapter } = defineBlokkliFeature({

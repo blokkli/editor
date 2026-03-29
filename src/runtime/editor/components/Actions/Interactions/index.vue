@@ -3,43 +3,47 @@
     <button
       type="button"
       :disabled="!canSelectParent"
+      class="group/tooltip"
       @click.prevent="onClickSelectParent"
     >
       <Icon name="bk_mdi_arrow_top_left" />
-      <div class="bk-tooltip">
-        {{
+      <Tooltip
+        :label="
           parentLabel
             ? $t('actionsSelectParent', 'Select parent (@label)').replace(
                 '@label',
                 parentLabel,
               )
             : $t('actionsSelectPage', 'Select page')
-        }}
-      </div>
+        "
+        placement="above-left"
+      />
     </button>
     <button
       type="button"
+      class="group/tooltip"
       :disabled="!canMove"
       @pointerdown.stop.prevent="onMovePointerDown"
     >
       <Icon name="bk_mdi_drag_pan" />
-      <div class="bk-tooltip">
-        {{
+      <Tooltip
+        :label="
           selection.uuids.value.length === 1
             ? $t('actionsMoveBlock', 'Move block')
             : $t('actionsMoveBlocks', 'Move @count blocks').replace(
                 '@count',
                 String(selection.uuids.value.length),
               )
-        }}
-      </div>
+        "
+        placement="above-left"
+      />
     </button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, Tooltip } from '#blokkli/editor/components'
 import { toDraggableExisting } from '#blokkli/editor/helpers/draggable'
 
 const { selection, $t, state, eventBus, ui, types } = useBlokkli()
@@ -118,3 +122,32 @@ export default {
   name: 'Interactions',
 }
 </script>
+
+<style lang="postcss">
+.bk-blokkli-item-actions-interactions {
+  @apply h-50 w-25 relative;
+  @apply lg:border-r lg:border-r-mono-500;
+
+  > button {
+    @apply size-25;
+    @apply flex items-center justify-center text-mono-300;
+    @apply hover:bg-mono-700 hover:text-mono-50;
+
+    &[disabled] {
+      @apply pointer-events-none text-mono-500;
+    }
+
+    &:first-child {
+      @apply border-b border-b-mono-500 rounded-tl-md;
+    }
+
+    &:nth-child(2) {
+      @apply cursor-grab rounded-bl-md;
+    }
+
+    svg {
+      @apply size-[13px] fill-current;
+    }
+  }
+}
+</style>

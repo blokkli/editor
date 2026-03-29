@@ -151,31 +151,6 @@ export default {
     &.bk-is-disabled {
       @apply pointer-events-none opacity-20;
     }
-    .bk-tooltip {
-      @apply absolute bottom-full left-0 mb-8 w-max flex flex-col py-8 justify-center items-start;
-      @apply max-w-[400px] min-w-full;
-
-      .bk-is-label {
-        span:nth-child(2) {
-          @apply font-normal;
-        }
-      }
-
-      > span {
-        @apply text-mono-200 mt-5 text-xs font-medium block;
-        @apply whitespace-normal;
-      }
-
-      div.bk-is-hovered-option {
-        @apply text-xs font-normal pt-8 mt-5 border-t border-t-mono-400 flex-1 w-full;
-      }
-    }
-    &:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
-
     &:not(:last-child) {
       @apply lg:border-r lg:border-r-mono-600;
     }
@@ -217,7 +192,7 @@ export default {
   }
 
   .bk-blokkli-item-options-radios:not(.bk-is-color) {
-    @apply flex items-center px-10 h-full relative gap-3;
+    @apply flex items-center px-10 h-full relative;
     @apply text-mono-50  select-none text-sm;
     > label {
       @apply h-full flex items-center cursor-pointer;
@@ -240,17 +215,6 @@ export default {
       &.bk-is-muted {
         @apply text-mono-500;
       }
-    }
-  }
-
-  .bk-blokkli-item-options-radios.bk-is-language {
-    > label:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
-    .bk-tooltip {
-      @apply absolute top-full left-0 w-full mt-10;
     }
   }
 

@@ -13,15 +13,17 @@
       <button
         v-for="(highlight, i) in tooltipHighlights"
         :key="i"
-        class="cursor-pointer relative flex items-center gap-5 px-8 h-25 text-xs font-semibold whitespace-nowrap bg-scheme-normal text-scheme-text first:rounded-l last:rounded-r bk-highlight-tooltip-item"
+        class="cursor-pointer relative flex items-center gap-5 px-8 h-25 text-xs font-semibold whitespace-nowrap bg-scheme-normal text-scheme-text first:rounded-l last:rounded-r bk-highlight-tooltip-item group/tooltip"
         :class="'bk-scheme-' + highlight.color"
         @click.prevent="onTooltipItemClick(highlight)"
       >
         <Icon :name="highlight.icon" class="size-15" />
         <span>{{ highlight.label }}</span>
-        <div v-if="highlight.description" class="bk-tooltip">
-          {{ highlight.description }}
-        </div>
+        <Tooltip
+          v-if="highlight.description"
+          :label="highlight.description"
+          placement="center-before"
+        />
       </button>
     </div>
   </Teleport>
@@ -44,7 +46,7 @@ import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 import type { HighlightItem } from '#blokkli/editor/providers/plugin'
 import type { RGB } from '../../../../../global/types/theme'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, Tooltip } from '#blokkli/editor/components'
 
 const { animation, ui, theme, selection, plugins, dom, blocks, state } =
   useBlokkli()
@@ -473,15 +475,3 @@ export default {
   name: 'HighlightsRenderer',
 }
 </script>
-
-<style lang="postcss">
-.bk .bk-highlight-tooltip-item {
-  .bk-tooltip {
-    @apply absolute bottom-full left-0 mb-5;
-  }
-
-  &:not(:hover) .bk-tooltip {
-    @apply hidden;
-  }
-}
-</style>

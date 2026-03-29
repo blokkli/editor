@@ -208,26 +208,31 @@ async function* walkFiles(
 
 // --- Main ---
 
-const distRuntime = join(process.cwd(), 'dist', 'runtime')
+const distDirs = [
+  join(process.cwd(), 'dist', 'runtime'),
+  join(process.cwd(), 'dist', 'modules'),
+]
 
 let filesProcessed = 0
 let filesChanged = 0
 
-for await (const filePath of walkFiles(distRuntime, ['.vue', '.ts'])) {
-  const original = await readFile(filePath, 'utf-8')
-  let transformed = transformTemplateAndScript(original)
-  // Process <style> blocks in Vue files.
-  if (filePath.endsWith('.vue')) {
-    transformed = await processStyleBlocks(transformed, filePath)
-  }
-  filesProcessed++
+for (const distDir of distDirs) {
+  for await (const filePath of walkFiles(distDir, ['.vue', '.ts'])) {
+    const original = await readFile(filePath, 'utf-8')
+    let transformed = transformTemplateAndScript(original)
+    // Process <style> blocks in Vue files.
+    if (filePath.endsWith('.vue')) {
+      transformed = await processStyleBlocks(transformed, filePath)
+    }
+    filesProcessed++
 
-  if (transformed !== original) {
-    await writeFile(filePath, transformed, 'utf-8')
-    filesChanged++
+    if (transformed !== original) {
+      await writeFile(filePath, transformed, 'utf-8')
+      filesChanged++
+    }
   }
 }
 
 console.log(
-  `Mangled classes in ${filesChanged}/${filesProcessed} files in dist/runtime/`,
+  `Mangled classes in ${filesChanged}/${filesProcessed} files in dist/`,
 )

@@ -11,7 +11,7 @@
       <ol>
         <li v-for="action in group.actions" :key="action.id">
           <button
-            class="bk-blokkli-item-actions-type-dropdown-button"
+            class="bk-blokkli-item-actions-type-dropdown-button group/tooltip"
             :class="'bk-is-variant-' + action.variant || 'default'"
             :disabled="action.enabled === false"
             @click.prevent="onActionClick(action)"
@@ -23,9 +23,11 @@
             <div>
               <div>{{ action.label }}</div>
             </div>
-            <div v-if="action.description" class="bk-tooltip">
-              {{ action.description }}
-            </div>
+            <Tooltip
+              v-if="action.description"
+              :label="action.description"
+              placement="center-after"
+            />
           </button>
         </li>
       </ol>
@@ -35,7 +37,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import { ItemIcon, Icon } from '#blokkli/editor/components'
+import { ItemIcon, Icon, Tooltip } from '#blokkli/editor/components'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 
 const emit = defineEmits<{

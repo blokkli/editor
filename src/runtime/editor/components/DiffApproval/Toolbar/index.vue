@@ -9,27 +9,41 @@
       }}
     </div>
     <div class="bk bk-diff-approval-toolbar bk-control">
-      <button class="bk-diff-approval-toolbar-nav" @click="$emit('prev')">
+      <button
+        class="bk-diff-approval-toolbar-nav group/tooltip"
+        @click="$emit('prev')"
+      >
         <Icon name="bk_mdi_chevron_left" />
-        <div class="bk-tooltip">
-          <span>{{ $t('aiAgentApprovalPrevChange', 'Previous change') }}</span>
-          <ShortcutIndicator
-            key-code="ArrowLeft"
-            :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
-            @pressed="$emit('prev')"
-          />
-        </div>
+        <Tooltip
+          :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
+          placement="above-left"
+        >
+          <template #shortcut>
+            <ShortcutIndicator
+              key-code="ArrowLeft"
+              :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
+              @pressed="$emit('prev')"
+            />
+          </template>
+        </Tooltip>
       </button>
-      <button class="bk-diff-approval-toolbar-nav" @click="$emit('next')">
+      <button
+        class="bk-diff-approval-toolbar-nav group/tooltip"
+        @click="$emit('next')"
+      >
         <Icon name="bk_mdi_chevron_right" />
-        <div class="bk-tooltip">
-          <span>{{ $t('aiAgentApprovalNextChange', 'Next change') }}</span>
-          <ShortcutIndicator
-            key-code="ArrowRight"
-            :label="$t('aiAgentApprovalNextChange', 'Next change')"
-            @pressed="$emit('next')"
-          />
-        </div>
+        <Tooltip
+          placement="above-left"
+          :label="$t('aiAgentApprovalNextChange', 'Next change')"
+        >
+          <template #shortcut>
+            <ShortcutIndicator
+              key-code="ArrowRight"
+              :label="$t('aiAgentApprovalNextChange', 'Next change')"
+              @pressed="$emit('next')"
+            />
+          </template>
+        </Tooltip>
       </button>
 
       <div class="bk-diff-approval-toolbar-info">
@@ -42,20 +56,24 @@
         </span>
       </div>
 
-      <div class="bk-diff-approval-toolbar-toggle">
+      <div class="bk-diff-approval-toolbar-toggle group/tooltip">
         <FormToggle
           :model-value="selected[currentItem.id]"
           :label="$t('aiAgentApprovalAccept', 'Accept')"
           @update:model-value="toggleCurrent"
         />
-        <div class="bk-tooltip">
-          <span>{{ $t('aiAgentApprovalToggle', 'Toggle approval') }}</span>
-          <ShortcutIndicator
-            key-code="Enter"
-            :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
-            @pressed="toggleCurrent"
-          />
-        </div>
+        <Tooltip
+          :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
+          placement="above-left"
+        >
+          <template #shortcut>
+            <ShortcutIndicator
+              key-code="Enter"
+              :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
+              @pressed="toggleCurrent"
+            />
+          </template>
+        </Tooltip>
       </div>
 
       <div
@@ -84,7 +102,12 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { Icon, FormToggle, ShortcutIndicator } from '#blokkli/editor/components'
+import {
+  Icon,
+  FormToggle,
+  ShortcutIndicator,
+  Tooltip,
+} from '#blokkli/editor/components'
 import type { ApprovalItem } from '../types'
 
 const props = defineProps<{
@@ -150,15 +173,6 @@ function onReasonInput(event: Event) {
   .bk-diff-approval-toolbar-toggle,
   .bk-diff-approval-toolbar-nav {
     @apply relative h-full;
-    .bk-tooltip {
-      @apply absolute left-0 bottom-full mb-5 invisible;
-    }
-
-    &:hover {
-      .bk-tooltip {
-        @apply visible;
-      }
-    }
   }
 
   .bk-diff-approval-toolbar-toggle {

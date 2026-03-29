@@ -54,3 +54,21 @@ export type BlockIndicator = {
   element: HTMLElement
   position: 'left' | 'right'
 }
+
+export type Placement =
+  | 'above-before'
+  | 'above-left'
+  | 'above-center'
+  | 'above-right'
+  | 'above-after'
+  | 'below-before'
+  | 'below-left'
+  | 'below-center'
+  | 'below-right'
+  | 'below-after'
+  | 'top-before'
+  | 'top-after'
+  | 'center-before'
+  | 'center-after'
+  | 'bottom-before'
+  | 'bottom-after'

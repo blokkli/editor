@@ -2,7 +2,7 @@
   <Teleport :to="'#bk-toolbar-' + region">
     <button
       ref="el"
-      class="bk-toolbar-button"
+      class="bk-toolbar-button group/tooltip"
       :disabled="disabled"
       :class="[{ 'bk-is-active': active }, id ? 'bk-is-' + id : undefined]"
       :style="{ order: weight || 0 }"
@@ -11,27 +11,32 @@
       <slot>
         <Icon v-if="icon" :name="icon" />
       </slot>
-      <div class="bk-tooltip">
-        <span>{{ title }}</span>
-        <ShortcutIndicator
-          v-if="keyCode"
-          :meta="meta"
-          :shift="shift"
-          :key-code="keyCode"
-          :label="title"
-          :group="shortcutGroup"
-          @pressed="onClick"
-        />
-      </div>
+      <Tooltip
+        :label="title"
+        :placement="tooltipPlacement"
+        :margin="region === 'before-sidebar'"
+      >
+        <template v-if="keyCode" #shortcut>
+          <ShortcutIndicator
+            :meta="meta"
+            :shift="shift"
+            :key-code="keyCode"
+            :label="title"
+            :group="shortcutGroup"
+            @pressed="onClick"
+          />
+        </template>
+      </Tooltip>
     </button>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ShortcutIndicator, Icon } from '#blokkli/editor/components'
+import { ShortcutIndicator, Icon, Tooltip } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { ref, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
+import type { Placement } from '#blokkli/editor/types/ui'
 
 const props = defineProps<{
   /**
@@ -145,6 +150,16 @@ function onClick() {
 
   emit('click')
 }
+
+const tooltipPlacement = computed<Placement>(() => {
+  if (props.region === 'before-sidebar-right') {
+    return 'below-before'
+  } else if (props.region === 'before-sidebar') {
+    return 'below-right'
+  }
+
+  return 'below-left'
+})
 
 defineCommands(() => {
   if (props.noCommand) {

@@ -363,19 +363,6 @@ onBeforeUnmount(async () => {
     &.bk-is-stale {
       @apply opacity-40;
     }
-
-    .bk-tooltip {
-      @apply absolute top-full right-0 mt-10 min-w-[320px] whitespace-normal text-sm block;
-
-      p:nth-child(2) {
-        @apply font-normal mt-10;
-      }
-      @apply pointer-events-auto;
-    }
-
-    &:not(:hover) .bk-tooltip {
-      @apply hidden;
-    }
   }
   .bk-readability-scale {
     @apply mt-15 w-full pb-25;

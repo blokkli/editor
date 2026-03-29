@@ -10,7 +10,7 @@
       ref="textarea"
       v-bind="$attrs"
       v-model="modelValue"
-      class="absolute top-0 left-0 w-full h-full resize-none"
+      class="absolute top-0 left-0 size-full resize-none"
       :class="{
         'bk-form-input': textareaClass,
         'overflow-y-auto': isScrollable,

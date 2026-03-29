@@ -2,24 +2,22 @@
   <Teleport to="#bk-toolbar-title">
     <button
       v-if="scheduledDate"
-      class="bk-toolbar-title-scheduled"
+      class="bk-toolbar-title-scheduled group/tooltip"
       @click.prevent="eventBus.emit('publish:show-dialog')"
     >
       <Icon name="bk_mdi_calendar_clock" />
       <div class="bk-toolbar-title-scheduled-text">
         <div>{{ formattedScheduledDate }}</div>
       </div>
-      <div class="bk-tooltip">
-        <div>
-          {{
-            $t('scheduledFor', 'The changes will be published on this date.')
-          }}
-        </div>
-      </div>
+      <Tooltip
+        :label="
+          $t('scheduledFor', 'The changes will be published on this date.')
+        "
+      />
     </button>
     <button
       ref="buttonEl"
-      class="bk-toolbar-button"
+      class="bk-toolbar-button group/tooltip"
       :disabled="!state.canEdit.value"
       @click="eventBus.emit('editEntity')"
     >
@@ -30,15 +28,7 @@
           <span>&nbsp;{{ entity.bundleLabel }}</span>
         </div>
       </div>
-      <div class="bk-tooltip">
-        <span v-if="entity.status && !mutations.length">{{
-          statusPublished
-        }}</span>
-        <span v-else-if="entity.status && mutations.length">{{
-          statusPending
-        }}</span>
-        <span v-else>{{ statusUnpublished }}</span>
-      </div>
+      <Tooltip :label="tooltipLabel" />
     </button>
   </Teleport>
 </template>
@@ -50,7 +40,7 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
-import { Icon, StatusIndicator } from '#blokkli/editor/components'
+import { Icon, StatusIndicator, Tooltip } from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { UiStatus } from '#blokkli/editor/types/ui'
 
@@ -81,20 +71,18 @@ const formattedScheduledDate = computed(() => {
   })
 })
 
-const statusPublished = computed(() =>
-  $t('pageIsPublished', 'Page is published'),
-)
+const tooltipLabel = computed(() => {
+  if (entity.value.status && !mutations.value.length) {
+    return $t('pageIsPublished', 'Page is published')
+  } else if (entity.value.status && mutations.value.length) {
+    return $t(
+      'pageIsPublishedWithPendingChanges',
+      'Page is published (changes pending)',
+    )
+  }
 
-const statusPending = computed(() =>
-  $t(
-    'pageIsPublishedWithPendingChanges',
-    'Page is published (changes pending)',
-  ),
-)
-
-const statusUnpublished = computed(() =>
-  $t('pageIsNotPublished', 'Page is not published'),
-)
+  return $t('pageIsNotPublished', 'Page is not published')
+})
 
 defineCommands(() => {
   return {

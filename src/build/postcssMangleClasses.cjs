@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 const selectorParser = require('postcss-selector-parser')
 
 const plugin = () => ({

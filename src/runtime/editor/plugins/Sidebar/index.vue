@@ -3,7 +3,7 @@
     <button
       :id="'bk-sidebar-button-' + id"
       ref="tourElement"
-      class="bk-toolbar-button"
+      class="bk-toolbar-button group/tooltip"
       :class="[
         { 'bk-is-active': activeSidebar === id && !isDisabled },
         'bk-is-' + region,
@@ -16,17 +16,21 @@
         <Icon v-if="icon" :name="icon" />
       </slot>
       <slot name="badge" />
-      <div class="bk-tooltip">
-        <span>{{ tooltipTitle || title }}</span>
-        <ShortcutIndicator
-          v-if="keyCode"
-          :meta
-          :shift
-          :key-code
-          :label="title"
-          @pressed="toggleSidebar"
-        />
-      </div>
+      <Tooltip
+        :label="tooltipTitle || title"
+        :placement="tooltipPlacement"
+        :margin="region === 'left'"
+      >
+        <template v-if="keyCode" #shortcut>
+          <ShortcutIndicator
+            :meta
+            :shift
+            :key-code
+            :label="title"
+            @pressed="toggleSidebar"
+          />
+        </template>
+      </Tooltip>
     </button>
   </Teleport>
 
@@ -130,9 +134,10 @@ import {
   ScrollBoundary,
   Loading,
   BetaIndicator,
+  Tooltip,
 } from '#blokkli/editor/components'
 import SidebarDetached from './Detached/index.vue'
-import type { SidebarRegion } from '#blokkli/editor/types/ui'
+import type { Placement, SidebarRegion } from '#blokkli/editor/types/ui'
 import {
   defineCommands,
   defineTourItem,
@@ -354,6 +359,16 @@ useAnimationFrame(() => {
     isOverflowing.value =
       sidebarContent.value.scrollHeight > sidebarContent.value.offsetHeight
   }
+})
+
+const tooltipPlacement = computed<Placement>(() => {
+  if (props.region === 'left') {
+    return 'below-left'
+  } else if (props.region === 'right') {
+    return 'center-before'
+  }
+
+  return 'above-before'
 })
 
 const commandTitle = computed(() => {
@@ -665,10 +680,6 @@ html.bk-is-sidebar-interacting {
           content: '';
           @apply absolute bottom-0 left-0 w-full h-1 bg-mono-700;
         }
-
-        .bk-tooltip {
-          @apply top-full translate-y-0 mr-10 right-full mt-10;
-        }
       }
     }
   }
@@ -676,10 +687,6 @@ html.bk-is-sidebar-interacting {
   button {
     @apply w-50 h-40 relative;
     @apply md:h-50;
-
-    .bk-tooltip {
-      @apply absolute right-full left-auto mr-10 top-1/2 -translate-y-1/2;
-    }
   }
 }
 .bk-sidebar-container-tabs {

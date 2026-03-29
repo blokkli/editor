@@ -3,7 +3,7 @@
     <button
       v-if="!ui.isMobile.value"
       ref="button"
-      class="bk-toolbar-button"
+      class="bk-toolbar-button group/tooltip"
       :class="{ 'bk-is-inactive': !isActive }"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
@@ -11,18 +11,17 @@
       <slot name="icon">
         <Icon v-if="icon" :name="icon" />
       </slot>
-      <div class="bk-tooltip">
-        <span>{{ title }}</span>
-
-        <ShortcutIndicator
-          v-if="keyCode"
-          meta
-          :key-code="keyCode"
-          :label="label"
-          group="ui"
-          @pressed="onClick"
-        />
-      </div>
+      <Tooltip :label="title" class="w-full" placement="below-left">
+        <template v-if="keyCode">
+          <ShortcutIndicator
+            meta
+            :key-code="keyCode"
+            :label="label"
+            group="ui"
+            @pressed="onClick"
+          />
+        </template>
+      </Tooltip>
     </button>
   </Teleport>
 
@@ -31,7 +30,7 @@
 
 <script setup lang="ts">
 import { useBlokkli, computed, ref, watch } from '#imports'
-import { ShortcutIndicator, Icon } from '#blokkli/editor/components'
+import { ShortcutIndicator, Icon, Tooltip } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 

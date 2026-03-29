@@ -231,27 +231,9 @@ export default {
   @apply text-base flex bg-mono-900 pointer-events-auto;
   contain: style size;
   grid-area: toolbar;
-
-  .bk-toolbar-button {
-    .bk-tooltip {
-      @apply absolute top-full left-0 mt-10;
-      min-width: calc(100% - 10px);
-    }
-  }
 }
 
 .bk {
-  .bk-tooltip {
-    @apply bg-mono-800/90 py-10 text-white font-bold text-sm rounded select-none pointer-events-none hidden items-center justify-between px-10 leading-none whitespace-nowrap min-h-[40px] font-sans;
-    line-height: 18px;
-    @screen lg {
-      @apply flex;
-    }
-    .bk-shortcut {
-      @apply ml-5;
-    }
-  }
-
   .bk-toolbar-container {
     &:not(:first-child) {
       @screen lg {
@@ -264,23 +246,11 @@ export default {
     @apply relative flex h-full;
     &#bk-toolbar-view-options {
       @apply hidden lg:flex;
-
-      .bk-tooltip {
-        @apply left-auto right-[9px];
-      }
     }
     &#bk-toolbar-title {
       @apply flex-1 text-xs lg:text-sm xl:text-base;
       .bk-toolbar-button {
         @apply w-full justify-start relative;
-        .bk-tooltip {
-          @apply w-auto min-w-0;
-        }
-        &:not(:hover) {
-          .bk-tooltip {
-            @apply hidden;
-          }
-        }
         .bk-toolbar-title {
           @apply relative w-full h-full;
           > div {
@@ -301,14 +271,6 @@ export default {
         @apply flex items-center gap-10 px-10;
         flex: 0 0 auto;
 
-        .bk-tooltip {
-          @apply absolute top-full left-0 mt-10;
-        }
-
-        &:not(:hover) .bk-tooltip {
-          @apply hidden;
-        }
-
         .bk-toolbar-title-scheduled-text {
           @apply whitespace-nowrap;
         }
@@ -319,12 +281,6 @@ export default {
             @apply fill-current;
           }
         }
-      }
-    }
-
-    &#bk-toolbar-before-sidebar {
-      .bk-tooltip {
-        @apply left-auto right-[9px];
       }
     }
   }
@@ -410,16 +366,6 @@ export default {
     }
     .bk-icon svg {
       @apply fill-current;
-    }
-    &.bk-is-active {
-      .bk-tooltip {
-        @apply hidden;
-      }
-    }
-    &:not(:hover) {
-      .bk-tooltip {
-        @apply hidden;
-      }
     }
   }
 }
