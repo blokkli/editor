@@ -16,7 +16,7 @@
       <slot name="icon">
         <Icon v-if="icon" :name="icon" class="bk-item-action-icon" />
       </slot>
-      <Tooltip :label="title" placement="above-left" class="w-full">
+      <Tooltip :label="title" placement="above-left" class="min-w-full">
         <template v-if="keyCode" #shortcut>
           <ShortcutIndicator
             :meta="meta"

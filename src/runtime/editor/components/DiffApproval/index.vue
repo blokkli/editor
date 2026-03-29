@@ -193,5 +193,3 @@ onBeforeUnmount(() => {
   ui.setIsApproving(false)
 })
 </script>
-
-

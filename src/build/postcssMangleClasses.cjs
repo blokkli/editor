@@ -1,4 +1,3 @@
- 
 const selectorParser = require('postcss-selector-parser')
 
 const plugin = () => ({

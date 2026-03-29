@@ -226,6 +226,20 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
   } {
     const key = groups.value
       .map((group, index) => {
+        const colors = group.highlights.map((h) => h.color).join(',')
+
+        // For block-based highlights, use dom.getBlockRect() which is
+        // observer-driven (no per-frame getBoundingClientRect calls).
+        const uuid = group.uuids[0]
+        if (uuid) {
+          const blockRect = dom.getBlockRect(uuid)
+          if (blockRect) {
+            this.rectCache.set(group.element, blockRect)
+            return `${index}_${blockRect.time}_${colors}`
+          }
+        }
+
+        // Fallback for arbitrary elements: measure once, cache until clearCache.
         if (!this.rectCache.has(group.element)) {
           const rect = ui.getAbsoluteElementRect(group.element)
           this.rectCache.set(group.element, rect)
@@ -235,8 +249,6 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
         if (!rect) {
           return `${index}_no_rect`
         }
-
-        const colors = group.highlights.map((h) => h.color).join(',')
 
         return `${index}_${rect.x}_${rect.y}_${rect.width}_${rect.height}_${colors}`
       })
@@ -342,6 +354,11 @@ const { collector } = defineRenderer('highlights-overlay', {
 })
 
 onBlokkliEvent('ui:resized', function () {
+  collector.clearCache()
+  collector.reset()
+})
+
+onBlokkliEvent('state:reloaded', function () {
   collector.clearCache()
   collector.reset()
 })
