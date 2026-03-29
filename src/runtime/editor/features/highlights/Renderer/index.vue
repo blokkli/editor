@@ -378,24 +378,9 @@ onBlokkliEvent('option:finish-change', () => {
 // Hover detection.
 const hoveredGroupIndex = ref<number | null>(null)
 const isTooltipHovered = ref(false)
-let hideTimeout: number | null = null
-
-function setHoveredGroup(index: number | null) {
-  if (index !== null) {
-    if (hideTimeout) {
-      window.clearTimeout(hideTimeout)
-      hideTimeout = null
-    }
-    hoveredGroupIndex.value = index
-  } else if (hoveredGroupIndex.value !== null && !hideTimeout) {
-    hideTimeout = window.setTimeout(() => {
-      hideTimeout = null
-      if (!isTooltipHovered.value) {
-        hoveredGroupIndex.value = null
-      }
-    }, 200)
-  }
-}
+let pendingIndex: number | null = null
+let pendingChangedAt = 0
+const ANCESTOR_DELAY = 150
 
 const tooltipHighlights = computed<HighlightItem[]>(() => {
   if (hoveredGroupIndex.value === null) {
@@ -486,7 +471,37 @@ onBlokkliEvent('canvas:draw', (e) => {
     }
   }
 
-  setHoveredGroup(bestIndex)
+  if (bestIndex === hoveredGroupIndex.value) {
+    pendingIndex = bestIndex
+    return
+  }
+
+  // Delay when switching to a group whose element contains the current
+  // group's element. This covers both ancestor blocks (parent wraps child
+  // in the DOM) and same-block highlights where the block-level element
+  // contains smaller child elements (e.g. text spans). Prevents flickering
+  // when the cursor crosses gaps between siblings.
+  let needsDelay = false
+  if (bestIndex !== null && hoveredGroupIndex.value !== null) {
+    const currentEl = groups.value[hoveredGroupIndex.value]?.element
+    const nextEl = groups.value[bestIndex]?.element
+    if (currentEl && nextEl && nextEl.contains(currentEl)) {
+      needsDelay = true
+    }
+  }
+
+  if (needsDelay) {
+    if (bestIndex !== pendingIndex) {
+      pendingIndex = bestIndex
+      pendingChangedAt = e.time
+    }
+    if (e.time - pendingChangedAt >= ANCESTOR_DELAY) {
+      hoveredGroupIndex.value = pendingIndex
+    }
+  } else {
+    pendingIndex = bestIndex
+    hoveredGroupIndex.value = bestIndex
+  }
 })
 
 onBlokkliEvent('window:clickAway', () => {
