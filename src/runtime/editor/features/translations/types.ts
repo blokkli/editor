@@ -1,4 +1,5 @@
 import type { EntityTranslation } from '#blokkli/editor/types/state'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
@@ -14,6 +15,32 @@ declare module '#blokkli/editor/adapter' {
     markTranslationUpToDate?: (
       uuids: string[],
       langcode: string,
+    ) => Promise<MutationResponseLike<T>>
+
+    /**
+     * Load all text field values for a given language.
+     *
+     * Used by the CSV export to fetch source language values when the editor
+     * is viewing a translation.
+     */
+    loadTextFieldValuesForLanguage?: (
+      langcode: string,
+    ) => Promise<TextFieldValue[]>
+
+    /**
+     * Import translations for multiple languages at once.
+     *
+     * Each item includes the target language, block UUID, field name, and
+     * the new field value. Applied as a single mutation so it can be undone
+     * in one step.
+     */
+    importTranslationsBatched?: (
+      items: {
+        langcode: string
+        uuid: string
+        fieldName: string
+        fieldValue: string
+      }[],
     ) => Promise<MutationResponseLike<T>>
   }
 }

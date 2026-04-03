@@ -221,6 +221,50 @@ export default defineNuxtModule<ModuleOptions>({
           const result = await mangleVueSFC(code, id)
           return result ? { code: result, map: null } : null
         },
+        hotUpdate: {
+          order: 'post' as const,
+          async handler({ file, server, modules: hmrModules }) {
+            if (!file.endsWith('.vue')) return
+            if (!contentPaths.some((dir) => file.startsWith(dir))) return
+
+            const environment = server.environments['client']
+            if (!environment) return
+
+            const modules = environment.moduleGraph.getModulesByFile(file)
+            if (!modules || modules.size === 0) return
+
+            // Re-transform the main module so Vue's SFC descriptor cache
+            // has the mangled CSS before style sub-modules are served.
+            const mainModule = [...modules].find((m) => !m.url.includes('?'))
+            if (mainModule) {
+              environment.moduleGraph.invalidateModule(mainModule)
+              await environment.transformRequest(mainModule.url)
+            }
+
+            // Vue's handleHotUpdate compares the raw file (un-mangled)
+            // against the old descriptor (mangled), so it thinks the
+            // entire component changed and only returns the main module
+            // for a JS update. Explicitly include style sub-modules so
+            // the browser also receives a CSS update.
+            const styleModules = [...modules].filter((m) =>
+              m.url.includes('type=style'),
+            )
+
+            if (styleModules.length) {
+              for (const styleMod of styleModules) {
+                environment.moduleGraph.invalidateModule(styleMod)
+              }
+
+              const result = [...hmrModules]
+              for (const styleMod of styleModules) {
+                if (!result.some((m) => m.url === styleMod.url)) {
+                  result.push(styleMod)
+                }
+              }
+              return result
+            }
+          },
+        },
       })
     }
 

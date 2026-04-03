@@ -55,7 +55,11 @@
     <Banner
       v-if="isTranslating"
       :active-language
+      :show-csv="!!adapter.loadTextFieldValuesForLanguage && !!adapter.importTranslationsBatched"
+      :dialog-open="showCsvDialog"
       @mark-all-up-to-date="onMarkUpToDate"
+      @open-csv="showCsvDialog = true"
+      @import-file="onImportFile"
     />
   </Teleport>
 
@@ -70,6 +74,16 @@
     :weight="-100"
     @click="onMarkUpToDate"
   />
+
+  <Teleport :to="ui.mainLayoutElement.value">
+    <BlokkliTransition name="slide-up">
+      <CsvDialog
+        v-if="showCsvDialog"
+        :initial-files="pendingImportFiles"
+        @close="onCsvDialogClose"
+      />
+    </BlokkliTransition>
+  </Teleport>
 
   <PluginItemAction
     v-if="isTranslating"
@@ -93,13 +107,15 @@ import {
 import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import Banner from './Banner/index.vue'
+import CsvDialog from './CsvDialog/index.vue'
 import {
   defineMenuButton,
   defineHighlight,
   onBlokkliEvent,
+  useDialog,
 } from '#blokkli/editor/composables'
 import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
-import { Tooltip } from '#blokkli/editor/components'
+import { BlokkliTransition, Tooltip } from '#blokkli/editor/components'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { adapter } = defineBlokkliFeature({
@@ -122,7 +138,20 @@ const {
   blocks,
 } = useBlokkli()
 
+const showCsvDialog = useDialog('translations-csv', 'center')
+const pendingImportFiles = ref<File[] | null>(null)
+
 const isTranslating = computed(() => state.editMode.value === 'translating')
+
+function onImportFile(files: File[]) {
+  pendingImportFiles.value = files
+  showCsvDialog.value = true
+}
+
+function onCsvDialogClose() {
+  showCsvDialog.value = false
+  pendingImportFiles.value = null
+}
 
 defineHighlight(() => {
   if (!isTranslating.value) {

@@ -666,6 +666,34 @@ export default defineBlokkliEditAdapter((ctx) => {
     markTranslationUpToDate: (uuids, langcode) =>
       addMutation('mark_translation_up_to_date', { uuids, langcode }),
 
+    async loadTextFieldValuesForLanguage(langcode) {
+      const page = entityStorageManager.getContent(ctx.value.entityUuid)
+      if (!page) return []
+
+      const mutatedState = await editState.getMutatedState(page, langcode, {
+        save: false,
+      })
+
+      const result: TextFieldValue[] = []
+      for (const proxy of mutatedState.context.proxies) {
+        if (proxy.isDeleted) continue
+        const textFields = proxy.block.getTextFields()
+        for (const field of textFields) {
+          if (!field.isTranslatable) continue
+          const value = field.getUnprocessed()
+          if (value && value.trim()) {
+            result.push({
+              uuid: proxy.block.uuid,
+              fieldName: field.id,
+              value,
+              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            })
+          }
+        }
+      }
+      return result
+    },
+
     changeLanguage(e) {
       return router.push({
         path: e.url,
@@ -856,11 +884,13 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
+    importTranslationsBatched: (items) =>
+      addMutation('import_translations_batched', { items }),
+
     updateFieldValueBatched: (e) => {
       const lang = ctx.value.language
       if (lang && lang !== 'en') {
-        // In translation mode, each field update becomes an edit_translation.
-        // We batch them by UUID so each block gets one mutation.
+        // Group by UUID into a single batched mutation.
         const byUuid: Record<string, Record<string, any>> = {}
         for (const item of e.items) {
           if (!byUuid[item.uuid]) {
@@ -868,16 +898,13 @@ export default defineBlokkliEditAdapter((ctx) => {
           }
           byUuid[item.uuid]![item.fieldName] = item.fieldValue
         }
-        // Apply all grouped translations sequentially.
-        let lastResult: Promise<MutationResponseLike<MutatedState>> | undefined
-        for (const [uuid, values] of Object.entries(byUuid)) {
-          lastResult = addMutation('edit_translation', {
+        return addMutation('edit_translation_batched', {
+          langcode: lang,
+          items: Object.entries(byUuid).map(([uuid, values]) => ({
             uuid,
-            langcode: lang,
             values,
-          })
-        }
-        return lastResult!
+          })),
+        })
       }
       return addMutation('update_field_value_batched', {
         items: e.items,

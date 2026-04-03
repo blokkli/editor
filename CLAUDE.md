@@ -280,6 +280,13 @@ adapter methods, and configuration.
 
 ## Working with the Codebase
 
+### Editor Architecture
+
+Almost everything that touches the editor part of blökkli will use `useBlokkli`
+which is provided by `src/runtime/editor/components/EditProvider.vue`. It
+returns an object of type `BlokkliApp`. Each property is a provider, defined in
+`src/runtime/editor/providers/**`.
+
 ### Adding a New Feature
 
 1. Create feature component in `src/runtime/components/Edit/Features/`

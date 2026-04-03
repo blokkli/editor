@@ -1651,6 +1651,10 @@
     "source": "Unchanged",
     "translation": "Unveränderet"
   },
+  "download": {
+    "source": "Download",
+    "translation": ""
+  },
   "downloadLogsButton": {
     "source": "Download Logs",
     "translation": "Fählerprotokoll abelade"
@@ -3392,7 +3396,7 @@
     "translation": ""
   },
   "translationsBannerText": {
-    "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
+    "source": "You are currently editing the <strong>@language</strong> translation.",
     "translation": "Du bearbeitisch grad d'<strong>@language</strong>-Übersetztig. Gwüssi Funktione wie Drzuefüege, Verschiebe oder Lösche vo Blöck sin nid verfüegbar."
   },
   "translationsBatchTranslateMenuDescription": {
@@ -3402,6 +3406,66 @@
   "translationsBatchTranslateMenuTitle": {
     "source": "Translate...",
     "translation": "Übersetze..."
+  },
+  "translationsCsvApply": {
+    "source": "Import @count translations",
+    "translation": ""
+  },
+  "translationsCsvChangesLabel": {
+    "source": "fields will be updated",
+    "translation": ""
+  },
+  "translationsCsvDeselectAll": {
+    "source": "Deselect all",
+    "translation": ""
+  },
+  "translationsCsvDialogTitle": {
+    "source": "Import/Export Translations",
+    "translation": ""
+  },
+  "translationsCsvDiff": {
+    "source": "Changes",
+    "translation": ""
+  },
+  "translationsCsvExport": {
+    "source": "Export",
+    "translation": ""
+  },
+  "translationsCsvImport": {
+    "source": "Import",
+    "translation": ""
+  },
+  "translationsCsvLanguage": {
+    "source": "Language",
+    "translation": ""
+  },
+  "translationsCsvLanguages": {
+    "source": "Languages",
+    "translation": ""
+  },
+  "translationsCsvMenuTitle": {
+    "source": "Import/export...",
+    "translation": ""
+  },
+  "translationsCsvNoChanges": {
+    "source": "No changes found",
+    "translation": ""
+  },
+  "translationsCsvOnlyMissing": {
+    "source": "Only missing translations",
+    "translation": ""
+  },
+  "translationsCsvOnlyOutdated": {
+    "source": "Only outdated translations",
+    "translation": ""
+  },
+  "translationsCsvSelectAll": {
+    "source": "Select all",
+    "translation": ""
+  },
+  "translationsDropToImport": {
+    "source": "Drop CSV or PO file to import",
+    "translation": ""
   },
   "translationsItemAction": {
     "source": "Translate",
@@ -3413,6 +3477,10 @@
   },
   "translationsMarkUpToDateDisabled": {
     "source": "No selected blocks have an outdated translation.",
+    "translation": ""
+  },
+  "translationsSelectImportFile": {
+    "source": "Select CSV or PO file",
     "translation": ""
   },
   "translationsTourText": {

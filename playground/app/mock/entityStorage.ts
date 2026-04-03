@@ -297,6 +297,75 @@ export class EntityStorageManager {
       }
     }
 
+    // Add French translations for demo paragraphs.
+    const frTranslations: Record<string, Record<string, string[]>> = {
+      '4526d2d0-f122-4093-902f-e2f00a433981': {
+        tagline: ['Expérience développeur'],
+        title: ["S'intègre dans n'importe quelle configuration Nuxt"],
+        lead: [
+          'Les blocs sont rendus avec un minimum de surcharge. Support SSR complet, pas de fuite CSS.',
+        ],
+      },
+      '3284016a-aa33-4994-8e4d-c0a6f9bd91c7': {
+        tagline: ['Simplicité'],
+        title: ['Outils essentiels pour une édition fluide'],
+        lead: [
+          "Naviguez dans les bases de la construction de pages avec une facilité inégalée.",
+        ],
+      },
+      'a4aac285-9615-4764-81de-96d3af41e622': {
+        title: ['Copier, Dupliquer, Modifier, Supprimer'],
+        text: [
+          'Effectuez rapidement des modifications de base et gérez votre contenu efficacement.',
+        ],
+      },
+      '1645ba79-8770-4a0c-a58b-163a847eea22': {
+        title: ['Sélectionner'],
+        text: [
+          'Sélectionnez plusieurs blocs avec Ctrl + clic ou glisser-déposer.',
+        ],
+      },
+      '27e417eb-a5fa-4d17-94b5-e218fc653906': {
+        title: ['Historique'],
+        text: [
+          "Annulez ou rétablissez des actions sans effort et explorez l'historique complet de vos modifications.",
+        ],
+      },
+      'd6020cd0-45f0-4200-8690-e297a38a1cca': {
+        tagline: ['Personnalisez votre design'],
+        title: ['Options dynamiques et fonctionnalités interactives'],
+        lead: [
+          'Ajoutez des options personnalisables et des fonctionnalités interactives à vos blocs.',
+        ],
+      },
+      '47f0bf41-bd49-47c2-a2c4-145f80abe161': {
+        tagline: ['Multi Everything'],
+        title: ['Support multilingue et aperçu avancé'],
+        lead: [
+          "blökkli transcende les barrières linguistiques et offre des options d'aperçu avancées.",
+        ],
+      },
+      '5780e657-2c02-45b2-bb92-1424a7a29fb8': {
+        title: ['Multilingue'],
+        text: [
+          "blökkli supporte un flux de travail multilingue. Lors de la traduction, la structure ne peut pas être modifiée.",
+        ],
+      },
+      '0962e858-fbf6-4f98-bf6f-f7813bd5f9be': {
+        title: ['Essayer la démo en direct'],
+      },
+      '332bbf33-2368-4b56-8ae6-4855657bc5d4': {
+        title: ['Voir le module'],
+      },
+    }
+
+    for (const [uuid, values] of Object.entries(frTranslations)) {
+      const block = this.storages.paragraph.load(uuid)
+      if (block) {
+        block.addTranslation('fr', values)
+      }
+    }
+
     if (import.meta.dev) {
       const devTextUuid = 'dev-long-text-block'
       this.createBlock('text', devTextUuid, {

@@ -18,6 +18,8 @@
         </button>
       </div>
 
+      <slot name="tabs" />
+
       <div
         class="bk-dialog-content"
         :class="{
@@ -171,7 +173,7 @@ export default {
 
   @screen md {
     .bk-overlay-header {
-      @apply bg-white text-mono-950 pl-15 text-lg border-b;
+      @apply bg-white text-mono-950 pl-15 text-lg;
       > button {
         @apply p-15 hover:bg-mono-800 focus-visible:bg-mono-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-mono-100;
       }

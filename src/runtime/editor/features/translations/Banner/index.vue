@@ -1,66 +1,91 @@
 <template>
-  <Banner
-    id="translate"
-    icon="bk_mdi_translate"
-    :text
-    :button="$t('translationsBannerButton', 'Edit source language instead')"
-    scheme="yellow"
-    @click="onClick"
-  >
-    <template #before>
-      <TransitionHeight opacity :duration="300">
-        <div v-if="outdatedUuids.length" class="pb-10">
-          <div
-            class="pb-10 border-b border-b-scheme-dark/40 flex justify-between items-center"
-          >
-            <div class="text-base" v-html="outdatedLabel" />
-            <div class="flex gap-5 relative">
-              <button
-                class="bk-button bk-is-small bk-is-warning-outline-dark group/tooltip"
-                @click.prevent="$emit('mark-all-up-to-date', outdatedUuids)"
+  <Banner id="translate" scheme="yellow">
+    <FileDropHandler
+      icon="bk_mdi_translate"
+      :label="$t('translationsDropToImport', 'Drop CSV or PO file to import')"
+      :accept="acceptTranslationFile"
+      @drop="onFileDrop"
+    >
+      <BannerInner
+        icon="bk_mdi_translate"
+        :text
+        :button="$t('translationsBannerButton', 'Edit source language instead')"
+        @click="onClick"
+      >
+        <template #before>
+          <TransitionHeight opacity :duration="300">
+            <div v-if="outdatedUuids.length" class="pb-10">
+              <div
+                class="pb-10 border-b border-b-scheme-dark/40 flex justify-between items-center"
               >
-                {{
-                  $t(
-                    'translationsBannerMarkAllAsUpToDate',
-                    'Mark all as up-to-date',
-                  )
-                }}
-              </button>
-              <button
-                class="bk-button bk-is-small bk-is-warning-dark group/tooltip"
-                @click.prevent="eventBus.emit('select:prev', outdatedUuids)"
-              >
-                <Icon name="bk_mdi_arrow_left_alt" />
-                {{ $t('translationsBannerPrev', 'Previous block') }}
-              </button>
-              <button
-                class="bk-button bk-is-small bk-is-warning-dark group/tooltip"
-                @click.prevent="eventBus.emit('select:next', outdatedUuids)"
-              >
-                {{ $t('translationsBannerNext', 'Next block') }}
-                <Icon name="bk_mdi_arrow_right_alt" />
-              </button>
+                <div class="text-base" v-html="outdatedLabel" />
+                <div class="flex gap-5 relative">
+                  <button
+                    class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+                    @click.prevent="$emit('mark-all-up-to-date', outdatedUuids)"
+                  >
+                    {{
+                      $t(
+                        'translationsBannerMarkAllAsUpToDate',
+                        'Mark all as up-to-date',
+                      )
+                    }}
+                  </button>
+                  <button
+                    class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+                    @click.prevent="eventBus.emit('select:prev', outdatedUuids)"
+                  >
+                    <Icon name="bk_mdi_arrow_left_alt" />
+                    {{ $t('translationsBannerPrev', 'Previous block') }}
+                  </button>
+                  <button
+                    class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+                    @click.prevent="eventBus.emit('select:next', outdatedUuids)"
+                  >
+                    {{ $t('translationsBannerNext', 'Next block') }}
+                    <Icon name="bk_mdi_arrow_right_alt" />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </TransitionHeight>
-    </template>
+          </TransitionHeight>
+        </template>
+        <template v-if="showCsv" #before-button>
+          <button
+            class="bk-button bk-is-small bk-is-scheme"
+            @click.prevent="$emit('open-csv')"
+          >
+            {{ $t('translationsCsvMenuTitle', 'Import/export...') }}
+          </button>
+        </template>
+      </BannerInner>
+    </FileDropHandler>
   </Banner>
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import { Banner, Icon, TransitionHeight } from '#blokkli/editor/components'
+import {
+  Banner,
+  BannerInner,
+  FileDropHandler,
+  Icon,
+  TransitionHeight,
+} from '#blokkli/editor/components'
 import type { Language } from '#blokkli/editor/types/state'
 
 const props = defineProps<{
   activeLanguage: Language
+  showCsv?: boolean
+  dialogOpen?: boolean
 }>()
 
 const { $t, adapter, state, ui, eventBus, blocks } = useBlokkli()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'mark-all-up-to-date', uuids: string[]): void
+  (e: 'open-csv'): void
+  (e: 'import-file', files: File[]): void
 }>()
 
 const outdatedUuids = computed(() => {
@@ -70,6 +95,23 @@ const outdatedUuids = computed(() => {
     .filter((b) => b.outdatedTranslations.includes(lang))
     .map((b) => b.uuid)
 })
+
+function acceptTranslationFile(item: DataTransferItem): boolean {
+  if (!props.showCsv || props.dialogOpen) return false
+  if (item.kind !== 'file') return false
+  // CSV and PO files can have text/csv, text/plain, or no MIME type.
+  if (item.type.startsWith('text/') || !item.type) return true
+  return false
+}
+
+function onFileDrop(files: File[]) {
+  const matched = files.filter(
+    (f) => f.name.endsWith('.csv') || f.name.endsWith('.po'),
+  )
+  if (matched.length) {
+    emit('import-file', matched)
+  }
+}
 
 const onClick = () => {
   const sourceLanguage = state.translation.value.sourceLanguage
@@ -95,7 +137,7 @@ const onClick = () => {
 const text = computed(() => {
   return $t(
     'translationsBannerText',
-    'You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.',
+    'You are currently editing the <strong>@language</strong> translation.',
   ).replace('@language', props.activeLanguage.name)
 })
 

@@ -1717,6 +1717,10 @@ msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
 msgstr "Unveränderet"
 
+msgctxt "download"
+msgid "Download"
+msgstr ""
+
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fählerprotokoll abelade"
@@ -3655,9 +3659,7 @@ msgid "Previous block"
 msgstr ""
 
 msgctxt "translationsBannerText"
-msgid ""
-"You are currently editing the <strong>@language</strong> translation. Some "
-"features like adding, moving or deleting blocks are not available."
+msgid "You are currently editing the <strong>@language</strong> translation."
 msgstr ""
 "Du bearbeitisch grad d'<strong>@language</strong>-Übersetztig. Gwüssi "
 "Funktione wie Drzuefüege, Verschiebe oder Lösche vo Blöck sin nid "
@@ -3671,6 +3673,66 @@ msgctxt "translationsBatchTranslateMenuTitle"
 msgid "Translate..."
 msgstr "Übersetze..."
 
+msgctxt "translationsCsvApply"
+msgid "Import @count translations"
+msgstr ""
+
+msgctxt "translationsCsvChangesLabel"
+msgid "fields will be updated"
+msgstr ""
+
+msgctxt "translationsCsvDeselectAll"
+msgid "Deselect all"
+msgstr ""
+
+msgctxt "translationsCsvDialogTitle"
+msgid "Import/Export Translations"
+msgstr ""
+
+msgctxt "translationsCsvDiff"
+msgid "Changes"
+msgstr ""
+
+msgctxt "translationsCsvExport"
+msgid "Export"
+msgstr ""
+
+msgctxt "translationsCsvImport"
+msgid "Import"
+msgstr ""
+
+msgctxt "translationsCsvLanguage"
+msgid "Language"
+msgstr ""
+
+msgctxt "translationsCsvLanguages"
+msgid "Languages"
+msgstr ""
+
+msgctxt "translationsCsvMenuTitle"
+msgid "Import/export..."
+msgstr ""
+
+msgctxt "translationsCsvNoChanges"
+msgid "No changes found"
+msgstr ""
+
+msgctxt "translationsCsvOnlyMissing"
+msgid "Only missing translations"
+msgstr ""
+
+msgctxt "translationsCsvOnlyOutdated"
+msgid "Only outdated translations"
+msgstr ""
+
+msgctxt "translationsCsvSelectAll"
+msgid "Select all"
+msgstr ""
+
+msgctxt "translationsDropToImport"
+msgid "Drop CSV or PO file to import"
+msgstr ""
+
 msgctxt "translationsItemAction"
 msgid "Translate"
 msgstr "Übersetze..."
@@ -3681,6 +3743,10 @@ msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
+msgstr ""
+
+msgctxt "translationsSelectImportFile"
+msgid "Select CSV or PO file"
 msgstr ""
 
 msgctxt "translationsTourText"

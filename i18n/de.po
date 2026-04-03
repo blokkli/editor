@@ -1725,6 +1725,10 @@ msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
 msgstr "Keine Änderung"
 
+msgctxt "download"
+msgid "Download"
+msgstr ""
+
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fehlerprotokoll herunterladen"
@@ -3673,13 +3677,8 @@ msgid "Previous block"
 msgstr "Vorheriger Block"
 
 msgctxt "translationsBannerText"
-msgid ""
-"You are currently editing the <strong>@language</strong> translation. Some "
-"features like adding, moving or deleting blocks are not available."
-msgstr ""
-"Sie bearbeiten die Übersetzung <strong>«@language»</strong>. Einige "
-"Funktionen wie das Hinzufügen, Verschieben oder Löschen von Blöcken sind "
-"nicht verfügbar."
+msgid "You are currently editing the <strong>@language</strong> translation."
+msgstr "Sie bearbeiten die Übersetzung <strong>«@language»</strong>."
 
 msgctxt "translationsBatchTranslateMenuDescription"
 msgid "Translate all blocks"
@@ -3688,6 +3687,66 @@ msgstr "Alle Elemente übersetzen"
 msgctxt "translationsBatchTranslateMenuTitle"
 msgid "Translate..."
 msgstr "Übersetzen..."
+
+msgctxt "translationsCsvApply"
+msgid "Import @count translations"
+msgstr "@count Übersetzungen importieren"
+
+msgctxt "translationsCsvChangesLabel"
+msgid "fields will be updated"
+msgstr "Felder werden aktualisiert"
+
+msgctxt "translationsCsvDeselectAll"
+msgid "Deselect all"
+msgstr "Alle abwählen"
+
+msgctxt "translationsCsvDialogTitle"
+msgid "Import/Export Translations"
+msgstr "Übersetzungen importieren/exportieren"
+
+msgctxt "translationsCsvDiff"
+msgid "Changes"
+msgstr ""
+
+msgctxt "translationsCsvExport"
+msgid "Export"
+msgstr "Export"
+
+msgctxt "translationsCsvImport"
+msgid "Import"
+msgstr "Import"
+
+msgctxt "translationsCsvLanguage"
+msgid "Language"
+msgstr ""
+
+msgctxt "translationsCsvLanguages"
+msgid "Languages"
+msgstr ""
+
+msgctxt "translationsCsvMenuTitle"
+msgid "Import/export..."
+msgstr "Import/Export..."
+
+msgctxt "translationsCsvNoChanges"
+msgid "No changes found"
+msgstr ""
+
+msgctxt "translationsCsvOnlyMissing"
+msgid "Only missing translations"
+msgstr "Nur fehlende Übersetzungen"
+
+msgctxt "translationsCsvOnlyOutdated"
+msgid "Only outdated translations"
+msgstr "Nur veraltete Übersetzungen"
+
+msgctxt "translationsCsvSelectAll"
+msgid "Select all"
+msgstr "Alle auswählen"
+
+msgctxt "translationsDropToImport"
+msgid "Drop CSV or PO file to import"
+msgstr ""
 
 msgctxt "translationsItemAction"
 msgid "Translate"
@@ -3700,6 +3759,10 @@ msgstr "Übersetzung als aktuell markieren"
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
 msgstr "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
+
+msgctxt "translationsSelectImportFile"
+msgid "Select CSV or PO file"
+msgstr ""
 
 msgctxt "translationsTourText"
 msgid ""

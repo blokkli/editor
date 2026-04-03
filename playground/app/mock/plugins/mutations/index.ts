@@ -31,6 +31,10 @@ import {
   type MutationEditTranslationArgs,
 } from './Mutation/EditTranslation'
 import {
+  MutationEditTranslationBatched,
+  type MutationEditTranslationBatchedArgs,
+} from './Mutation/EditTranslationBatched'
+import {
   MutationHostTransform,
   type MutationHostTransformArgs,
 } from './Mutation/HostTransform'
@@ -98,6 +102,10 @@ import {
   type MutationIgnoreAnalyzeArgs,
   type MutationUnignoreAnalyzeArgs,
 } from './Mutation/SetIgnoredAnalyze'
+import {
+  MutationImportTranslationsBatched,
+  type MutationImportTranslationsBatchedArgs,
+} from './Mutation/ImportTranslationsBatched'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -106,6 +114,7 @@ export type MutationArgsMap = {
   duplicate: MutationDuplicateArgs
   edit: MutationEditArgs
   edit_translation: MutationEditTranslationArgs
+  edit_translation_batched: MutationEditTranslationBatchedArgs
   update_options: MutationUpdateOptionsArgs
   update_host_options: MutationUpdateHostOptionsArgs
   make_reusable: MutationMakeReusableArgs
@@ -129,6 +138,7 @@ export type MutationArgsMap = {
   mark_translation_up_to_date: MutationMarkTranslationUpToDateArgs
   ignore_analyze: MutationIgnoreAnalyzeArgs
   unignore_analyze: MutationUnignoreAnalyzeArgs
+  import_translations_batched: MutationImportTranslationsBatchedArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -148,6 +158,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationEdit(configuration)
     case 'edit_translation':
       return new MutationEditTranslation(configuration)
+    case 'edit_translation_batched':
+      return new MutationEditTranslationBatched(configuration)
     case 'update_options':
       return new MutationUpdateOptions(configuration)
     case 'update_host_options':
@@ -194,6 +206,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationIgnoreAnalyze(configuration)
     case 'unignore_analyze':
       return new MutationUnignoreAnalyze(configuration)
+    case 'import_translations_batched':
+      return new MutationImportTranslationsBatched(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

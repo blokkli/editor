@@ -4,9 +4,18 @@
     @apply !text-mono-900 hover:!text-white;
     @apply !bg-mono-200 hover:!bg-mono-400;
     @apply !border-none;
+    @apply !whitespace-nowrap;
 
     &[disabled] {
       @apply !bg-mono-100 !text-mono-300 cursor-not-allowed;
+    }
+
+    &.bk-is-scheme {
+      @apply !bg-scheme-dark !text-scheme-light hover:!bg-scheme-dark/80;
+    }
+
+    &.bk-is-scheme-outline {
+      @apply !bg-transparent !text-scheme-dark outline outline-1 -outline-offset-1 outline-scheme-dark hover:!bg-scheme-dark/15;
     }
 
     &.bk-is-white {

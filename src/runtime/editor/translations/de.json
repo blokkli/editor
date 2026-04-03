@@ -1651,6 +1651,10 @@
     "source": "Unchanged",
     "translation": "Keine Änderung"
   },
+  "download": {
+    "source": "Download",
+    "translation": ""
+  },
   "downloadLogsButton": {
     "source": "Download Logs",
     "translation": "Fehlerprotokoll herunterladen"
@@ -3392,8 +3396,8 @@
     "translation": "Vorheriger Block"
   },
   "translationsBannerText": {
-    "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
-    "translation": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>. Einige Funktionen wie das Hinzufügen, Verschieben oder Löschen von Blöcken sind nicht verfügbar."
+    "source": "You are currently editing the <strong>@language</strong> translation.",
+    "translation": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>."
   },
   "translationsBatchTranslateMenuDescription": {
     "source": "Translate all blocks",
@@ -3402,6 +3406,66 @@
   "translationsBatchTranslateMenuTitle": {
     "source": "Translate...",
     "translation": "Übersetzen..."
+  },
+  "translationsCsvApply": {
+    "source": "Import @count translations",
+    "translation": "@count Übersetzungen importieren"
+  },
+  "translationsCsvChangesLabel": {
+    "source": "fields will be updated",
+    "translation": "Felder werden aktualisiert"
+  },
+  "translationsCsvDeselectAll": {
+    "source": "Deselect all",
+    "translation": "Alle abwählen"
+  },
+  "translationsCsvDialogTitle": {
+    "source": "Import/Export Translations",
+    "translation": "Übersetzungen importieren/exportieren"
+  },
+  "translationsCsvDiff": {
+    "source": "Changes",
+    "translation": ""
+  },
+  "translationsCsvExport": {
+    "source": "Export",
+    "translation": "Export"
+  },
+  "translationsCsvImport": {
+    "source": "Import",
+    "translation": "Import"
+  },
+  "translationsCsvLanguage": {
+    "source": "Language",
+    "translation": ""
+  },
+  "translationsCsvLanguages": {
+    "source": "Languages",
+    "translation": ""
+  },
+  "translationsCsvMenuTitle": {
+    "source": "Import/export...",
+    "translation": "Import/Export..."
+  },
+  "translationsCsvNoChanges": {
+    "source": "No changes found",
+    "translation": ""
+  },
+  "translationsCsvOnlyMissing": {
+    "source": "Only missing translations",
+    "translation": "Nur fehlende Übersetzungen"
+  },
+  "translationsCsvOnlyOutdated": {
+    "source": "Only outdated translations",
+    "translation": "Nur veraltete Übersetzungen"
+  },
+  "translationsCsvSelectAll": {
+    "source": "Select all",
+    "translation": "Alle auswählen"
+  },
+  "translationsDropToImport": {
+    "source": "Drop CSV or PO file to import",
+    "translation": ""
   },
   "translationsItemAction": {
     "source": "Translate",
@@ -3414,6 +3478,10 @@
   "translationsMarkUpToDateDisabled": {
     "source": "No selected blocks have an outdated translation.",
     "translation": "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
+  },
+  "translationsSelectImportFile": {
+    "source": "Select CSV or PO file",
+    "translation": ""
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
