@@ -15,7 +15,7 @@
       {{ descriptionMapped }}
     </p>
 
-    <ResultsItemNodes v-model="activeId" :nodes :result-id="id" />
+    <ResultsItemNodes :nodes :result-id="id" />
   </div>
 </template>
 
@@ -43,8 +43,6 @@ const props = defineProps<{
   plugin: string
   nodes: AnalyzeNodeMapped[]
 }>()
-
-const activeId = defineModel<string>({ default: '' })
 
 const { getCategoryLabel } = useAnalyzeHelper()
 

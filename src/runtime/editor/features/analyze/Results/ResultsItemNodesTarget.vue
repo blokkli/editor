@@ -67,12 +67,10 @@ const props = defineProps<{
   target: AnalyzeNodeTargetMapped
 }>()
 
-const { $t, eventBus, dom, blocks, element } = useBlokkli()
-
-const activeId = defineModel<string>({ default: '' })
+const { $t, ui, eventBus, dom, blocks, element } = useBlokkli()
 
 const activeIndex = computed(() => {
-  const index = activeId.value.split('_____')[1]
+  const index = ui.activeHighlightId.value.split('_____')[1]
   if (index === undefined) {
     return -1
   }
@@ -155,7 +153,7 @@ function findClosestUuid(element: HTMLElement): string | undefined {
 
 async function onClick() {
   if (activeIndex.value === props.target.globalIndex) {
-    activeId.value = ''
+    ui.activeHighlightId.value = ''
     return
   }
 
@@ -177,7 +175,8 @@ async function onClick() {
   eventBus.emit('scrollIntoView', {
     element,
   })
-  activeId.value = props.resultId + '_____' + props.target.globalIndex
+  ui.activeHighlightId.value =
+    props.resultId + '_____' + props.target.globalIndex
 }
 
 watch(

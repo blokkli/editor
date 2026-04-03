@@ -514,6 +514,14 @@ export type UiProvider = {
    * only locks toolbar position.
    */
   isChangingOptions: Ref<boolean>
+
+  /**
+   * ID of the currently active (focused) highlight, or empty string.
+   *
+   * Shared between the analyze sidebar and the highlights canvas renderer
+   * so both can show a visual "active" state for the same highlight.
+   */
+  activeHighlightId: Ref<string>
 }
 
 export default function (
@@ -565,6 +573,7 @@ export default function (
   const isApproving = ref(false)
   const actionsToolbarLocked = ref(false)
   const isChangingOptions = ref(false)
+  const activeHighlightId = ref('')
   const currentDialog = ref<GlobalUiDialog | null>(null)
   const openTooltip = ref('')
   const hasTransformOverlayOpen = ref(false)
@@ -1046,5 +1055,6 @@ export default function (
     setIsApproving,
     actionsToolbarLocked,
     isChangingOptions,
+    activeHighlightId,
   }
 }
