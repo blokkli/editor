@@ -1111,11 +1111,11 @@ msgstr "Anzeige von Anker-Links umschalten"
 
 msgctxt "arrowLeft"
 msgid "Arrow Left"
-msgstr ""
+msgstr "Pfeil links"
 
 msgctxt "arrowRight"
 msgid "Arrow Right"
-msgstr ""
+msgstr "Pfeil rechts"
 
 msgctxt "artboard"
 msgid "Artboard"
