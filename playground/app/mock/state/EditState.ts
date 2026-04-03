@@ -36,6 +36,10 @@ export class BlockProxy {
   static fromEntity(block: Paragraph, hostField: string, entity: Entity) {
     const clone = createParagraph(block.bundle, block.uuid)
     clone.setValues(block.getValues())
+    // Copy translation data so the clone can be translated.
+    clone.translationValues = JSON.parse(
+      JSON.stringify(block.translationValues),
+    )
     return new BlockProxy(clone, entity.entityType, entity.uuid, hostField)
   }
 
@@ -330,9 +334,9 @@ export class EditState {
 
   async getMutatedState(
     entity: Entity,
+    langcode: string,
     options?: { save?: boolean; index?: number },
   ): Promise<MutatedState> {
-    const langcode = entity.langcode
     const context = new MutationContext(entity)
 
     const mutations = this.getMutations()

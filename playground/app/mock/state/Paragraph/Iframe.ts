@@ -8,7 +8,10 @@ export class ParagraphIframe extends Paragraph {
   static override description = 'An embedded iframe with responsive heights.'
 
   static override getFieldDefintions(): Field<any>[] {
-    return [...super.getFieldDefintions(), new FieldText('url', 'URL')]
+    return [
+      ...super.getFieldDefintions(),
+      new FieldText('url', 'URL', 1, false, -1, false),
+    ]
   }
 
   static override getDefaultValues(): Record<string, any> {

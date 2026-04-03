@@ -28,8 +28,7 @@ export class MutationMarkTranslationUpToDate extends Mutation {
       const raw = proxy.block.get('outdatedTranslations').getPropValue()
       let current: string[] = []
       if (raw === null || raw === undefined || raw === '') {
-        // Field not yet set: default is all translations outdated.
-        current = ['de', 'fr', 'it']
+        current = proxy.block.getTranslationLanguages()
       } else {
         try {
           current = JSON.parse(raw)

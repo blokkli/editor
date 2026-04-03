@@ -16,16 +16,22 @@ export abstract class Paragraph extends Entity {
       ...super.getFieldDefintions(),
       new FieldBoolean('isNew', 'is new'),
       new FieldOptions('options', 'Options'),
-      new FieldText('publishOn', 'Publish On'),
-      new FieldText('unpublishOn', 'Unpublish On'),
-      new FieldText('outdatedTranslations', 'Outdated Translations'),
+      new FieldText('publishOn', 'Publish On', 1, false, -1, false),
+      new FieldText('unpublishOn', 'Unpublish On', 1, false, -1, false),
+      new FieldText(
+        'outdatedTranslations',
+        'Outdated Translations',
+        1,
+        false,
+        -1,
+        false,
+      ),
     ]
   }
 
   static getDefaultValues(): Record<string, any> {
     return {
       isNew: true,
-      outdatedTranslations: JSON.stringify(['de', 'fr']),
     }
   }
 
@@ -70,9 +76,9 @@ export abstract class Paragraph extends Entity {
       rawOutdated === undefined ||
       rawOutdated === ''
     ) {
-      // Field was never explicitly set: default to all translation languages
-      // being outdated. This simulates the Drupal server-side tracking.
-      outdatedTranslations = ['de', 'fr', 'it']
+      // Field was never explicitly set: default to all languages that have
+      // translations on this entity.
+      outdatedTranslations = this.getTranslationLanguages()
     } else {
       try {
         outdatedTranslations = JSON.parse(rawOutdated)

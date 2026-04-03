@@ -236,7 +236,10 @@ export default defineBlokkliEditAdapter((ctx) => {
   ): Promise<MutationResponseLike<MutatedState>> => {
     editState.addMutation(id, args)
     const entity = getEntity()
-    const mutatedState = await editState.getMutatedState(entity)
+    const mutatedState = await editState.getMutatedState(
+      entity,
+      ctx.value.language,
+    )
     return mockResponse(mutatedState)
   }
 
@@ -436,7 +439,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           'Failed to load page with UUID: ' + ctx.value.entityUuid,
         )
       }
-      const mutatedState = editState.getMutatedState(page)
+      const mutatedState = editState.getMutatedState(page, ctx.value.language)
       return Promise.resolve(mutatedState)
     },
     getUserPermissions() {
@@ -459,7 +462,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           'Failed to load page with UUID: ' + ctx.value.entityUuid,
         )
       }
-      return editState.getMutatedState(page, { index })
+      return editState.getMutatedState(page, ctx.value.language, { index })
     },
     getDisabledFeatures() {
       return Promise.resolve([])
@@ -542,9 +545,13 @@ export default defineBlokkliEditAdapter((ctx) => {
       await sleep(2000)
       editState.addMutation('transform', e, true)
       const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity, {
-        save: false,
-      })
+      const mutatedState = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+        {
+          save: false,
+        },
+      )
       editState._tempMutations = null
       editState.currentIndex--
       return mockResponse(mutatedState)
@@ -553,7 +560,10 @@ export default defineBlokkliEditAdapter((ctx) => {
     takeOwnership: async () => {
       isOwner = true
       const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity)
+      const mutatedState = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+      )
       return mockResponse(mutatedState)
     },
     mapState(inputState) {
@@ -637,6 +647,18 @@ export default defineBlokkliEditAdapter((ctx) => {
               status: true,
               exists: true,
             },
+            {
+              id: 'fr',
+              url: '/fr',
+              status: true,
+              exists: true,
+            },
+            {
+              id: 'it',
+              url: '/it',
+              status: false,
+              exists: false,
+            },
           ],
         },
       }
@@ -652,7 +674,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     async revertAllChanges() {
       editState.revert()
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
     loadComments() {
       return loadComments()
@@ -810,12 +834,21 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.preceedingUuid,
       }),
 
-    updateFieldValue: (e) =>
-      addMutation('update_field_value', {
+    updateFieldValue: (e) => {
+      const lang = ctx.value.language
+      if (lang && lang !== 'en') {
+        return addMutation('edit_translation', {
+          uuid: e.uuid,
+          langcode: lang,
+          values: { [e.fieldName]: e.fieldValue },
+        })
+      }
+      return addMutation('update_field_value', {
         uuid: e.uuid,
         fieldName: e.fieldName,
         fieldValue: e.fieldValue,
-      }),
+      })
+    },
 
     updateEntityFieldValue: (e) =>
       addMutation('update_entity_field_value', {
@@ -823,11 +856,34 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    updateFieldValueBatched: (e) =>
-      addMutation('update_field_value_batched', {
+    updateFieldValueBatched: (e) => {
+      const lang = ctx.value.language
+      if (lang && lang !== 'en') {
+        // In translation mode, each field update becomes an edit_translation.
+        // We batch them by UUID so each block gets one mutation.
+        const byUuid: Record<string, Record<string, any>> = {}
+        for (const item of e.items) {
+          if (!byUuid[item.uuid]) {
+            byUuid[item.uuid] = {}
+          }
+          byUuid[item.uuid]![item.fieldName] = item.fieldValue
+        }
+        // Apply all grouped translations sequentially.
+        let lastResult: Promise<MutationResponseLike<MutatedState>> | undefined
+        for (const [uuid, values] of Object.entries(byUuid)) {
+          lastResult = addMutation('edit_translation', {
+            uuid,
+            langcode: lang,
+            values,
+          })
+        }
+        return lastResult!
+      }
+      return addMutation('update_field_value_batched', {
         items: e.items,
         entityItems: e.entityItems,
-      }),
+      })
+    },
 
     getImportItems(args) {
       const items: ImportItem[] = [
@@ -1036,7 +1092,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         Math.max(index, -1),
         editState.getMutations().length,
       )
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
 
     formFrameBuilder(e) {
@@ -1665,13 +1723,17 @@ export default defineBlokkliEditAdapter((ctx) => {
         revisionLogMessage: options.revisionLogMessage,
       }
       localStorage.setItem(scheduleKey, JSON.stringify(scheduleData))
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
 
     async unscheduleEditState(options) {
       const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
       localStorage.removeItem(scheduleKey)
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
 
     async setBlockScheduleDate(blocks) {
@@ -1966,7 +2028,10 @@ export default defineBlokkliEditAdapter((ctx) => {
   adapter.templatesDelete = async function (e) {
     entityStorageManager.storages.template_item.delete(e.templateUuid)
     const entity = getEntity()
-    const mutatedState = await editState.getMutatedState(entity)
+    const mutatedState = await editState.getMutatedState(
+      entity,
+      ctx.value.language,
+    )
     return mockResponse(mutatedState)
   }
 

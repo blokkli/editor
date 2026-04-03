@@ -32,9 +32,7 @@ export class MutationEditTranslation extends Mutation {
     // Saving a translation marks it as no longer outdated.
     const raw = proxy.block.get('outdatedTranslations').getPropValue()
     let current: string[] = []
-    if (raw === null || raw === undefined || raw === '') {
-      current = ['de', 'fr', 'it']
-    } else {
+    if (raw) {
       try {
         current = JSON.parse(raw)
       } catch {

@@ -6,6 +6,7 @@ export abstract class Field<T> {
   label: string
   cardinality: number
   required: boolean
+  isTranslatable: boolean
   list: T[]
   _entity: Entity | null = null
 
@@ -15,12 +16,14 @@ export abstract class Field<T> {
     label: string,
     cardinality: number,
     required = false,
+    isTranslatable = false,
   ) {
     this.type = type
     this.id = id
     this.label = label
     this.cardinality = cardinality
     this.required = required
+    this.isTranslatable = isTranslatable
     this.list = []
   }
 

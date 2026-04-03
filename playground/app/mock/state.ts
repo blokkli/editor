@@ -55,7 +55,7 @@ export const exportState = async () => {
   if (!page) {
     throw new Error('Page not found')
   }
-  const result = await editState.getMutatedState(page)
+  const result = await editState.getMutatedState(page, 'en')
 
   // Build a map of proxy blocks by UUID (these have the mutated values)
   const proxyMap = new Map<
