@@ -617,25 +617,24 @@ const categoryOptions = computed<{ value: string; label: string }[]>(() => {
   ]
 })
 
-async function setIgnored(identifiers: Set<string>) {
-  if (adapter.setIgnoredAnalyzeIdentifiers) {
+async function ignoreNode(resultId: string, identifier: string) {
+  const key = resultId + ':' + identifier
+  if (adapter.ignoreAnalyzeIdentifier) {
     await state.mutateWithLoadingState(
-      () => adapter.setIgnoredAnalyzeIdentifiers!([...identifiers]),
+      () => adapter.ignoreAnalyzeIdentifier!(key),
       false,
     )
   }
 }
 
-async function ignoreNode(resultId: string, identifier: string) {
-  const next = new Set(ignoredIdentifiers.value)
-  next.add(resultId + ':' + identifier)
-  await setIgnored(next)
-}
-
 async function unignoreNode(resultId: string, identifier: string) {
-  const next = new Set(ignoredIdentifiers.value)
-  next.delete(resultId + ':' + identifier)
-  await setIgnored(next)
+  const key = resultId + ':' + identifier
+  if (adapter.unignoreAnalyzeIdentifier) {
+    await state.mutateWithLoadingState(
+      () => adapter.unignoreAnalyzeIdentifier!(key),
+      false,
+    )
+  }
 }
 
 onBlokkliEvent('analyze:ignore', (e) => ignoreNode(e.resultId, e.identifier))

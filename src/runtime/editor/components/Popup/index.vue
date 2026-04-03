@@ -9,8 +9,8 @@
       >
         <div class="bk-popup-title">
           <h2>{{ title }}</h2>
-          <button class="bk-popup-close" @click="onClose">
-            <Icon name="bk_mdi_close" />
+          <button class="p-20 hover:bg-mono-50 text-mono-500" @click="onClose">
+            <Icon name="bk_mdi_close" class="size-20" />
           </button>
         </div>
 
@@ -130,13 +130,6 @@ onBeforeUnmount(() => {
 
   .bk-popup-content {
     @apply p-20;
-  }
-
-  .bk-popup-close {
-    @apply p-20 hover:bg-mono-50;
-    svg {
-      @apply w-20 h-20;
-    }
   }
 }
 </style>
