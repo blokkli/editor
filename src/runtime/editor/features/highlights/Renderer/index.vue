@@ -143,6 +143,7 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
   rectCache = new Map<HTMLElement, Rectangle | null>()
   color1Data: number[] = []
   color2Data: number[] = []
+  activeData: number[] = []
 
   clearCache() {
     this.rectCache.clear()
@@ -153,21 +154,25 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
     super.reset()
     this.color1Data = []
     this.color2Data = []
+    this.activeData = []
   }
 
   addHighlightRectangle(
     rect: Omit<HighlightRectangle, 'index'>,
     color1: RGB,
     color2: RGB,
+    active: boolean,
   ) {
     this.addRectangle(rect, 0)
 
     // Add per-vertex color data (4 vertices per rect).
     const c1 = toShaderColor(color1)
     const c2 = toShaderColor(color2)
+    const a = active ? 1.0 : 0.0
     for (let v = 0; v < 4; v++) {
       this.color1Data.push(c1[0], c1[1], c1[2])
       this.color2Data.push(c2[0], c2[1], c2[2])
+      this.activeData.push(a)
     }
   }
 
@@ -213,6 +218,11 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
         data: this.color2Data,
         type: gl.FLOAT,
       },
+      a_active: {
+        numComponents: 1,
+        data: this.activeData,
+        type: gl.FLOAT,
+      },
       indices: this.indices,
     })
   }
@@ -224,41 +234,45 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
     info: BufferInfo | null
     hasChanged: boolean
   } {
-    const key = groups.value
-      .map((group, index) => {
-        const colors = group.highlights.map((h) => h.color).join(',')
+    const activeId = ui.activeHighlightId.value
+    const key =
+      activeId +
+      '_' +
+      groups.value
+        .map((group, index) => {
+          const colors = group.highlights.map((h) => h.color).join(',')
 
-        // If the highlight element IS the block's drag element, use the
-        // observer-driven rect (no per-frame getBoundingClientRect).
-        // Otherwise the highlight targets a child element (e.g. a text
-        // span inside the block) and we must measure that element directly.
-        const uuid = group.uuids[0]
-        if (uuid) {
-          const block = blocks.getBlock(uuid)
-          const dragEl = block ? dom.getDragElement(block) : null
-          if (dragEl && dragEl === group.element) {
-            const blockRect = dom.getBlockRect(uuid)
-            if (blockRect) {
-              this.rectCache.set(group.element, blockRect)
-              return `${index}_${blockRect.time}_${colors}`
+          // If the highlight element IS the block's drag element, use the
+          // observer-driven rect (no per-frame getBoundingClientRect).
+          // Otherwise the highlight targets a child element (e.g. a text
+          // span inside the block) and we must measure that element directly.
+          const uuid = group.uuids[0]
+          if (uuid) {
+            const block = blocks.getBlock(uuid)
+            const dragEl = block ? dom.getDragElement(block) : null
+            if (dragEl && dragEl === group.element) {
+              const blockRect = dom.getBlockRect(uuid)
+              if (blockRect) {
+                this.rectCache.set(group.element, blockRect)
+                return `${index}_${blockRect.time}_${colors}`
+              }
             }
           }
-        }
 
-        // Arbitrary/child elements: measure once, cache until clearCache.
-        if (!this.rectCache.has(group.element)) {
-          const rect = ui.getAbsoluteElementRect(group.element)
-          this.rectCache.set(group.element, rect)
-        }
+          // Arbitrary/child elements: measure once, cache until clearCache.
+          if (!this.rectCache.has(group.element)) {
+            const rect = ui.getAbsoluteElementRect(group.element)
+            this.rectCache.set(group.element, rect)
+          }
 
-        const rect = this.rectCache.get(group.element)
-        if (!rect) {
-          return `${index}_no_rect`
-        }
+          const rect = this.rectCache.get(group.element)
+          if (!rect) {
+            return `${index}_no_rect`
+          }
 
-        return `${index}_${rect.x}_${rect.y}_${rect.width}_${rect.height}_${colors}`
-      })
-      .join('_')
+          return `${index}_${rect.x}_${rect.y}_${rect.width}_${rect.height}_${colors}`
+        })
+        .join('_')
 
     const hasChanged = force || this.prevKey !== key
 
@@ -278,6 +292,9 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
           continue
         }
 
+        const isActive =
+          !!activeId && group.highlights.some((h) => h.id === activeId)
+
         this.addHighlightRectangle(
           {
             id,
@@ -288,6 +305,7 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
           },
           group.color1,
           group.color2,
+          isActive,
         )
       }
 
@@ -338,6 +356,8 @@ const { collector } = defineRenderer('highlights-overlay', {
 
     const borderRadius = 4 * ctx.dpi
     const lineWidth = 2 * ctx.dpi
+    const activeLineWidth = 4 * ctx.dpi
+    const activeId = ui.activeHighlightId.value
 
     for (let i = 0; i < groups.value.length; i++) {
       const group = groups.value[i]!
@@ -346,12 +366,15 @@ const { collector } = defineRenderer('highlights-overlay', {
         continue
       }
 
+      const isActive =
+        !!activeId && group.highlights.some((h) => h.id === activeId)
+
       const x = (rect.x * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
       const y = (rect.y * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
       const width = rect.width * ctx.artboardScale * ctx.dpi
       const height = rect.height * ctx.artboardScale * ctx.dpi
 
-      ctx2d.lineWidth = lineWidth
+      ctx2d.lineWidth = isActive ? activeLineWidth : lineWidth
       ctx2d.strokeStyle = `rgb(${group.color1[0]}, ${group.color1[1]}, ${group.color1[2]})`
       ctx2d.beginPath()
       ctx2d.roundRect(x, y, width, height, borderRadius)

@@ -36,6 +36,7 @@ export type MenuButtonPlugin = {
 type MenuButtonFunction = PluginAddFunction<MenuButtonPlugin>
 
 export type HighlightItem = {
+  id?: string
   uuid?: string
   element?: HTMLElement
   color: ThemeColorName

@@ -25,7 +25,6 @@
               <ResultsItemNodesTarget
                 v-for="(target, k) in node.targets"
                 :key="i + '_' + j + '_' + k"
-                v-model="activeId"
                 :node
                 :target
                 :result-id
@@ -49,12 +48,11 @@ const props = defineProps<{
   nodes: AnalyzeNodeMapped[]
 }>()
 
-const activeId = defineModel<string>({ default: '' })
 const shouldRender = ref(false)
 
 const isOpen = ref(false)
 
-const { $t } = useBlokkli()
+const { $t, ui } = useBlokkli()
 
 const isSingle = computed(
   () => props.nodes.length === 1 && props.nodes[0]?.targets.length === 1,
@@ -83,11 +81,14 @@ const grouped = computed(() => {
   })
 })
 
-watch(activeId, (id) => {
-  const resultId = id.split('_____')[0]
-  if (resultId === props.resultId) {
-    shouldRender.value = true
-    isOpen.value = true
-  }
-})
+watch(
+  () => ui.activeHighlightId.value,
+  (id) => {
+    const resultId = id.split('_____')[0]
+    if (resultId === props.resultId) {
+      shouldRender.value = true
+      isOpen.value = true
+    }
+  },
+)
 </script>

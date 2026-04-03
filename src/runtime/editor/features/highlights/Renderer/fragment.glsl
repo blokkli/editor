@@ -9,6 +9,7 @@ in vec2 v_rect_size;
 in vec2 v_rect_center;
 in float v_border_factor;
 in vec2 v_rect_size_artboard;
+in float v_active;
 
 out vec4 fragColor;
 
@@ -32,7 +33,7 @@ float sdRoundBox(vec2 p, vec2 b, vec4 radii) {
 }
 
 void main() {
-  float borderThickness = 1.5 * u_dpi * v_border_factor;
+  float borderThickness = (1.5 + v_active * 1.5) * u_dpi * v_border_factor;
   vec2 size = v_rect_size;
   vec4 radius = vec4(4.0 * u_dpi * v_border_factor);
   float borderSoftness = 1.0;

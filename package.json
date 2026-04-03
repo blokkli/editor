@@ -99,7 +99,7 @@
     "dev:minimal": "nuxi dev playground-minimal --host",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css",
     "styles:watch": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css --watch",
-    "dev:build": "npm run dev:prepare && nuxt build playground",
+    "dev:build": "npm run dev:prepare && npm run changelog && nuxt build playground",
     "dev:start": "npx serve playground/.output/public",
     "dev:prepare": "PLAYGROUND_MODULE_BUILD=true nuxt-module-build build --stub && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run prepack && changelogen --release",

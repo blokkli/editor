@@ -9,6 +9,7 @@ in vec4 a_quad;
 in float a_rect_id;
 in vec3 a_color1;
 in vec3 a_color2;
+in float a_active;
 
 // The global scaling applied to all quads.
 uniform float u_scale;
@@ -26,10 +27,12 @@ out vec2 v_rect_size;
 out vec2 v_rect_center;
 out float v_border_factor;
 out vec2 v_rect_size_artboard;
+out float v_active;
 
 void main() {
+  v_active = a_active;
   // Define the increase size to prevent border clipping.
-  float borderThickness = 2.0 * u_dpi;
+  float borderThickness = (2.0 + a_active * 1.5) * u_dpi;
   float increaseSize = max(borderThickness, 10.0) + 4.0;
 
   // Calculate the new dimensions of the quad.

@@ -63,7 +63,7 @@
         />
       </div>
       <AnalyzeSummary :results="activeResults" />
-      <Results v-model="activeId" :results="activeResults" />
+      <Results :results="activeResults" />
       <IgnoredResults v-if="ignoredResults.length" :results="ignoredResults" />
     </div>
   </div>
@@ -143,7 +143,7 @@ const manualResults = useState<AnalyzeResultWithPluginId[]>(
   'blokkli:analyze:manual',
   () => [],
 )
-const activeId = useState(() => '')
+const activeId = ui.activeHighlightId
 const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
@@ -214,6 +214,7 @@ defineHighlight(() => {
             label += ` · ${scoreLabel} ${readability.formatScore(node.score)}`
           }
           highlights.push({
+            id,
             element: targetElement,
             uuid: targetUuid,
             color: result.status === 'violation' ? 'red' : 'yellow',
@@ -221,7 +222,7 @@ defineHighlight(() => {
             label,
             description: $t('analyzeShowDetails', 'Show details'),
             onClick: () => {
-              activeId.value = id
+              activeId.value = activeId.value === id ? '' : id
               eventBus.emit('sidebar:open', 'analyze')
             },
           })
