@@ -23,6 +23,7 @@ import type { TemplateDependency } from './build/templates/defineTemplate'
 import { FeatureCollector } from './build/Collector/Features'
 import { ThemeData } from './build/ThemeData'
 import { BlockCollector } from './build/Collector/Blocks'
+import { mangleVueSFC } from './build/mangleTransform'
 import type { Blokkli } from './modules/defineBlokkliModule'
 
 const logger = useLogger('@blokkli/editor')
@@ -208,7 +209,6 @@ export default defineNuxtModule<ModuleOptions>({
     // content directories.
     const contentPaths = context.getContentPaths()
     if (contentPaths.length > 0) {
-      const { mangleVueSFC } = await import('./build/mangleTransform')
       addVitePlugin({
         name: 'blokkli-mangle-module-classes',
         enforce: 'pre',
