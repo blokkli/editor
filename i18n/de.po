@@ -1053,10 +1053,6 @@ msgctxt "analyzeStatusStale"
 msgid "Stale"
 msgstr "Veraltet"
 
-msgctxt "analyzeStatusUpToDate"
-msgid "Up-to-date"
-msgstr "Aktuell"
-
 msgctxt "analyzeStatusViolation"
 msgid "Violation"
 msgstr "Fehler"
@@ -1384,11 +1380,7 @@ msgctxt "chartsDonutShowTotal"
 msgid "Show total"
 msgstr "Total anzeigen"
 
-msgctxt "chartsEditButton"
-msgid "Edit chart..."
-msgstr "Diagramm bearbeiten..."
-
-msgctxt "chartsEditorTitle"
+msgctxt "chartsEditTitle"
 msgid "Edit chart"
 msgstr "Diagramm bearbeiten"
 
@@ -2603,6 +2595,10 @@ msgstr "Rückgängig"
 msgctxt "historyUndoTourText"
 msgid "Undo the last change."
 msgstr "Letzte Änderung rückgängig machen."
+
+msgctxt "iframesEditTitle"
+msgid "Edit iframe size"
+msgstr "Iframe-Grösse bearbeiten"
 
 msgctxt "importExistingDescription"
 msgid "Import from an existing page"

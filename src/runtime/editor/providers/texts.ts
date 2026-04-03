@@ -66,6 +66,18 @@ export default function (context?: ComputedRef<AdapterContext>): TextProvider {
   })
 
   return (key: string, defaultValue?: string) => {
-    return currentTranslations.value[key] || defaultValue || key
+    const existingForCurrent = currentTranslations.value[key]
+    if (existingForCurrent) {
+      return existingForCurrent
+    }
+
+    if (language.value === 'gsw_CH') {
+      const fallback = translations.de[key]
+      if (fallback) {
+        return fallback
+      }
+    }
+
+    return defaultValue || key
   }
 }

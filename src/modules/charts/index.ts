@@ -29,9 +29,8 @@ export default defineBlokkliModule<ChartsModuleOptions>({
       editorComponentPath: resolve(
         './runtime/features/charts/Editor/index.vue',
       ),
-      editorButtonLabel: $t('chartsEditButton', 'Edit chart...'),
+      editTitle: $t('chartsEditTitle', 'Edit chart'),
       editorIcon: 'bk_mdi_area_chart',
-      editorTitle: $t('chartsEditorTitle', 'Edit chart'),
     })
   },
 })

@@ -23,9 +23,8 @@ export interface ComplexOptionTypeDefinition {
   typeName: string
   typePath: string
   editorComponentPath: string
-  editorButtonLabel: string
+  editTitle: { key: string; defaultTranslation: string }
   editorIcon: string
-  editorTitle?: string
 }
 
 export class ModuleContext {

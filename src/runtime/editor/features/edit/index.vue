@@ -168,14 +168,22 @@ function onClick(items: RenderedFieldListItem[]) {
     return
   }
 
-  const complexOption = getComplexOption(item)
-  if (complexOption) {
-    eventBus.emit('option:edit-complex', {
-      uuid: item.uuid,
-      key: complexOption.key,
-      dataType: complexOption.dataType,
-    })
-    return
+  const definition = definitions.getBlockDefinition(
+    item.bundle,
+    item.fieldListType,
+    item.parentBlockBundle,
+  )
+
+  if (definition?.editor?.disableEdit) {
+    const complexOption = getComplexOption(item)
+    if (complexOption) {
+      eventBus.emit('option:edit-complex', {
+        uuid: item.uuid,
+        key: complexOption.key,
+        dataType: complexOption.dataType,
+      })
+      return
+    }
   }
 
   eventBus.emit('item:edit', {
@@ -185,15 +193,6 @@ function onClick(items: RenderedFieldListItem[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
-  const complexOption = getComplexOption(block)
-  if (complexOption) {
-    eventBus.emit('option:edit-complex', {
-      uuid: block.uuid,
-      key: complexOption.key,
-      dataType: complexOption.dataType,
-    })
-    return
-  }
   onClick([block])
 })
 </script>

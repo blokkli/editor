@@ -995,10 +995,6 @@
     "source": "Stale",
     "translation": ""
   },
-  "analyzeStatusUpToDate": {
-    "source": "Up-to-date",
-    "translation": ""
-  },
   "analyzeStatusViolation": {
     "source": "Violation",
     "translation": ""
@@ -1315,11 +1311,7 @@
     "source": "Show total",
     "translation": "Mostra totale"
   },
-  "chartsEditButton": {
-    "source": "Edit chart...",
-    "translation": ""
-  },
-  "chartsEditorTitle": {
+  "chartsEditTitle": {
     "source": "Edit chart",
     "translation": ""
   },
@@ -2417,6 +2409,10 @@
   },
   "historyUndoTourText": {
     "source": "Undo the last change.",
+    "translation": ""
+  },
+  "iframesEditTitle": {
+    "source": "Edit iframe size",
     "translation": ""
   },
   "importExistingDescription": {

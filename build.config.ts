@@ -81,6 +81,17 @@ export default defineBuildConfig({
     },
 
     /**
+     * Module: Iframes.
+     */
+    './src/modules/iframes/index.ts',
+    {
+      input: './src/modules/iframes/runtime/',
+      outDir: `./dist/modules/iframes/runtime`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
+
+    /**
      * Module: Charts.
      */
     './src/modules/charts/index.ts',

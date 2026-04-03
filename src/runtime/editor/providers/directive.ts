@@ -17,6 +17,14 @@ import type { DebugProvider } from './debug'
 import type { Rectangle } from '../types/geometry'
 import type { BlokkliDirectiveType } from '#blokkli/types/directives'
 
+export type ValueElementType = 'iframe'
+
+type ValueElementEntry = {
+  uuid: string
+  type: ValueElementType
+  value: string
+}
+
 type EditableFieldData = EntityContext & {
   key: string
   fieldName: string
@@ -144,6 +152,33 @@ export type DirectiveProvider = {
   ) => EditableFieldData | undefined
 
   /**
+   * Register a value element for a block.
+   *
+   * Used by companion components (e.g. BlokkliIframe) to make runtime values
+   * available to option editors during editing.
+   */
+  registerValueElement: (
+    uuid: string,
+    type: ValueElementType,
+    value: string,
+  ) => void
+
+  /**
+   * Unregister a value element for a block.
+   */
+  unregisterValueElement: (uuid: string, type: ValueElementType) => void
+
+  /**
+   * Get the registered value for a specific block and type.
+   */
+  getValueElement: (uuid: string, type: ValueElementType) => string | undefined
+
+  /**
+   * Get all registered values for a given type.
+   */
+  getValueElements: (type: ValueElementType) => ValueElementEntry[]
+
+  /**
    * Whether the directive provider is ready.
    *
    * Ready when IntersectionObserver is initialized and initial measurements are complete.
@@ -175,6 +210,35 @@ export default function (
     string,
     Record<string, EditableFieldData | undefined>
   > = {}
+
+  const valueElements = new Map<string, ValueElementEntry>()
+
+  function getValueElementKey(uuid: string, type: ValueElementType): string {
+    return `${type}:${uuid}`
+  }
+
+  function registerValueElement(
+    uuid: string,
+    type: ValueElementType,
+    value: string,
+  ) {
+    valueElements.set(getValueElementKey(uuid, type), { uuid, type, value })
+  }
+
+  function unregisterValueElement(uuid: string, type: ValueElementType) {
+    valueElements.delete(getValueElementKey(uuid, type))
+  }
+
+  function getValueElement(
+    uuid: string,
+    type: ValueElementType,
+  ): string | undefined {
+    return valueElements.get(getValueElementKey(uuid, type))?.value
+  }
+
+  function getValueElements(type: ValueElementType): ValueElementEntry[] {
+    return [...valueElements.values()].filter((v) => v.type === type)
+  }
 
   let settleTimeout: number | null = null
   const settleKey = ref(0)
@@ -476,6 +540,10 @@ export default function (
     getEditablesForBlock,
     findEditableElement,
     getDroppableElements,
+    registerValueElement,
+    unregisterValueElement,
+    getValueElement,
+    getValueElements,
     isReady: computed(() => !isInitalizing.value),
     settleKey: computed(() => settleKey.value),
   }

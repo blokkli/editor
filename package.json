@@ -49,6 +49,9 @@
       "charts": [
         "./dist/modules/charts/index.d.mts"
       ],
+      "iframes": [
+        "./dist/modules/iframes/index.d.mts"
+      ],
       "modules": [
         "./dist/modules/index.d.mts"
       ],
@@ -77,6 +80,10 @@
     "./charts": {
       "types": "./dist/modules/charts/index.d.mts",
       "import": "./dist/modules/charts/index.mjs"
+    },
+    "./iframes": {
+      "types": "./dist/modules/iframes/index.d.mts",
+      "import": "./dist/modules/iframes/index.mjs"
     },
     "./modules": {
       "types": "./dist/modules/index.d.mts",

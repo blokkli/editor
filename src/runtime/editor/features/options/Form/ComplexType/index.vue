@@ -5,7 +5,11 @@
     @click="onClick"
   >
     <Icon :name="config.editorIcon" />
-    <span>{{ $t(config.editorButtonLabel, config.editorButtonLabel) }}</span>
+    <span
+      >{{
+        getText(config.editTitle.key, config.editTitle.defaultTranslation)
+      }}...</span
+    >
   </button>
 </template>
 
@@ -14,7 +18,7 @@ import { useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { COMPLEX_OPTION_TYPES } from '#blokkli-build/complex-option-types'
 
-const { eventBus, $t } = useBlokkli()
+const { eventBus, $t: getText } = useBlokkli()
 
 const props = defineProps<{
   uuid: string

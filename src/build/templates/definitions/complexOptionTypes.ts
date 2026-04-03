@@ -14,9 +14,8 @@ export default defineCodeTemplate(
         (t) =>
           `  '${t.id}': {
     editorComponent: defineAsyncComponent(() => import('${ctx.helper.toModuleBuildRelative(t.editorComponentPath)}')),
-    editorButtonLabel: '${t.editorButtonLabel}',
+    editTitle: ${JSON.stringify(t.editTitle)},
     editorIcon: '${t.editorIcon}',
-    editorTitle: '${t.editorTitle || t.editorButtonLabel}',
   }`,
       )
       .join(',\n')
@@ -54,9 +53,8 @@ ${entries}
 
 export const COMPLEX_OPTION_TYPES: Record<string, {
   editorComponent: Component
-  editorButtonLabel: string
+  editTitle: { key: string; defaultTranslation: string }
   editorIcon: BlokkliIcon
-  editorTitle: string
 }>`
   },
   {

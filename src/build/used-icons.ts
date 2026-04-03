@@ -129,7 +129,6 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_upload',
   'bk_mdi_video_camera_back',
   'bk_mdi_visibility',
-  'bk_mdi_visibility-fill',
   'bk_mdi_visibility_off',
   'bk_mdi_warning',
   'bk_mdi_web_traffic',

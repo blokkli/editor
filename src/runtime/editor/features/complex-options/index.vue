@@ -2,7 +2,9 @@
   <NestedEditorOverlay
     v-if="uuid"
     :uuid
-    :title="config!.editorTitle"
+    :title="
+      getText(config!.editTitle.key, config!.editTitle.defaultTranslation)
+    "
     :icon="config!.editorIcon"
     theme="accent"
     :element
@@ -40,6 +42,7 @@ defineBlokkliFeature({
 })
 
 const { $t, state, adapter, dom, blocks } = useBlokkli()
+const getText = $t
 
 const uuid = ref<string | null>(null)
 const optionKey = ref('')

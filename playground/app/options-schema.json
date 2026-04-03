@@ -119,6 +119,14 @@
     }
   },
   "icon": {},
+  "iframe": {
+    "iframeHeight": {
+      "dataType": "iframe_heights",
+      "default": "{}",
+      "label": "Iframe heights",
+      "type": "json"
+    }
+  },
   "image": {
     "elevated": {
       "default": true,

@@ -995,10 +995,6 @@
     "source": "Stale",
     "translation": "Veraltet"
   },
-  "analyzeStatusUpToDate": {
-    "source": "Up-to-date",
-    "translation": "Aktuell"
-  },
   "analyzeStatusViolation": {
     "source": "Violation",
     "translation": "Fehler"
@@ -1315,11 +1311,7 @@
     "source": "Show total",
     "translation": "Total anzeigen"
   },
-  "chartsEditButton": {
-    "source": "Edit chart...",
-    "translation": "Diagramm bearbeiten..."
-  },
-  "chartsEditorTitle": {
+  "chartsEditTitle": {
     "source": "Edit chart",
     "translation": "Diagramm bearbeiten"
   },
@@ -2418,6 +2410,10 @@
   "historyUndoTourText": {
     "source": "Undo the last change.",
     "translation": "Letzte Änderung rückgängig machen."
+  },
+  "iframesEditTitle": {
+    "source": "Edit iframe size",
+    "translation": "Iframe-Grösse bearbeiten"
   },
   "importExistingDescription": {
     "source": "Import from an existing page",
