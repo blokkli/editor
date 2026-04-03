@@ -1,6 +1,7 @@
 import type { AnalyzeResult } from '#blokkli/analyzer/types'
 import { falsy } from '#blokkli/helpers'
 import { defineAnalyzer } from './defineAnalyzer'
+import { hashString } from './helpers/hashString'
 
 export default defineAnalyzer(() => {
   return {
@@ -45,6 +46,7 @@ export default defineAnalyzer(() => {
           impact: 'serious' as const,
           nodes: h1Elements.map((h) => ({
             description: h.text,
+            identifier: hashString(h.level + ':' + h.text),
             targets: h.element,
           })),
         })
@@ -97,6 +99,7 @@ export default defineAnalyzer(() => {
           nodes: orderIssues.map(({ current, previous }) => ({
             description: `${previous.element.tagName} → ${current.element.tagName}: "${current.text}"`,
             impact: 'moderate' as const,
+            identifier: hashString(current.level + ':' + current.text),
             targets: current.element,
           })),
         })

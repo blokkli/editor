@@ -587,6 +587,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           violations: inputState.violations,
         },
         textFieldValues,
+        ignoredAnalyzeIdentifiers: inputState.ignoredAnalyzeIdentifiers,
         publishOptions: getPublishOptions(ctx.value),
         entity: {
           id: ctx.value.entityUuid,
@@ -1773,6 +1774,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         }),
       ]
     },
+
+    setIgnoredAnalyzeIdentifiers: (identifiers) =>
+      addMutation('set_ignored_analyze', { identifiers }),
   }
 
   // Only available in dev mode.

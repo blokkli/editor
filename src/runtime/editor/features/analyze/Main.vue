@@ -62,8 +62,9 @@
           :options="categoryOptions"
         />
       </div>
-      <AnalyzeSummary :results="results" />
-      <Results v-model="activeId" :results="results" />
+      <AnalyzeSummary :results="activeResults" />
+      <Results v-model="activeId" :results="activeResults" />
+      <IgnoredResults v-if="ignoredResults.length" :results="ignoredResults" />
     </div>
   </div>
 </template>
@@ -71,6 +72,7 @@
 <script setup lang="ts">
 import {
   computed,
+  ref,
   useBlokkli,
   useState,
   onMounted,
@@ -86,6 +88,7 @@ import type {
 } from './analyzers/types'
 import type { AnalyzeProvider } from '#blokkli/editor/providers/analyze'
 import Results from './Results/Results.vue'
+import IgnoredResults from './Ignored/index.vue'
 import AnalyzeSummary from './Summary/index.vue'
 import { useAnalyzeHelper } from './helper'
 import {
@@ -94,7 +97,7 @@ import {
   RelativeTime,
 } from '#blokkli/editor/components'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
-import { defineHighlight } from '#blokkli/editor/composables'
+import { defineHighlight, onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
   langcode: string
@@ -115,6 +118,7 @@ const {
   blocks,
   eventBus,
   readability,
+  adapter,
 } = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
 
@@ -146,6 +150,16 @@ const selectedCategory = useState(() => ALL)
 const keepVisible = storage.use('analyze:keepVisible', true)
 const providerRootElement = ui.providerElement
 
+function getIgnoredFromState(): Set<string> {
+  try {
+    return new Set(state.getMappedState().ignoredAnalyzeIdentifiers)
+  } catch {
+    return new Set()
+  }
+}
+
+const ignoredIdentifiers = ref(getIgnoredFromState())
+
 defineHighlight(() => {
   if (!keepVisible.value && !props.isShown) {
     return
@@ -158,7 +172,7 @@ defineHighlight(() => {
   const highlights: import('#blokkli/editor/providers/plugin').HighlightItem[] =
     []
 
-  for (const result of results.value) {
+  for (const result of activeResults.value) {
     if (result.status !== 'incomplete' && result.status !== 'violation') {
       continue
     }
@@ -268,9 +282,14 @@ const allResults = computed<AnalyzeResultMapped[]>(() => {
         currentIndex++
       }
 
+      const ignored =
+        !!node.identifier &&
+        ignoredIdentifiers.value.has(result.id + ':' + node.identifier)
+
       mappedNodes.push({
         ...node,
         targets: mappedTargets,
+        ignored,
       })
     }
 
@@ -293,8 +312,30 @@ const results = computed(() => {
   return allResults.value.filter((v) => v.category === selectedCategory.value)
 })
 
+function filterResultsByIgnored(
+  items: AnalyzeResultMapped[],
+  wantIgnored: boolean,
+): AnalyzeResultMapped[] {
+  const filtered: AnalyzeResultMapped[] = []
+  for (const result of items) {
+    const nodes = result.nodes.filter((n) => n.ignored === wantIgnored)
+    if (nodes.length) {
+      filtered.push({ ...result, nodes })
+    }
+  }
+  return filtered
+}
+
+const activeResults = computed(() =>
+  filterResultsByIgnored(results.value, false),
+)
+
+const ignoredResults = computed(() =>
+  filterResultsByIgnored(allResults.value, true),
+)
+
 watch(
-  allResults,
+  activeResults,
   (v) => {
     let count = 0
     for (const r of v) {
@@ -573,6 +614,37 @@ const categoryOptions = computed<{ value: string; label: string }[]>(() => {
     },
     ...categories,
   ]
+})
+
+async function setIgnored(identifiers: Set<string>) {
+  if (adapter.setIgnoredAnalyzeIdentifiers) {
+    await state.mutateWithLoadingState(
+      () => adapter.setIgnoredAnalyzeIdentifiers!([...identifiers]),
+      false,
+    )
+  }
+}
+
+async function ignoreNode(resultId: string, identifier: string) {
+  const next = new Set(ignoredIdentifiers.value)
+  next.add(resultId + ':' + identifier)
+  await setIgnored(next)
+}
+
+async function unignoreNode(resultId: string, identifier: string) {
+  const next = new Set(ignoredIdentifiers.value)
+  next.delete(resultId + ':' + identifier)
+  await setIgnored(next)
+}
+
+onBlokkliEvent('analyze:ignore', (e) => ignoreNode(e.resultId, e.identifier))
+onBlokkliEvent('analyze:unignore', (e) =>
+  unignoreNode(e.resultId, e.identifier),
+)
+
+// Sync ignored identifiers from state after mutations (including undo/redo).
+onBlokkliEvent('state:reloaded', () => {
+  ignoredIdentifiers.value = getIgnoredFromState()
 })
 
 // Fetch and init analyzers on mount, then auto-run continuous ones.

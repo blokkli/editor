@@ -24,6 +24,20 @@ export type AnalyzeNode = {
    */
   uuid?: string
   /**
+   * Content-based identifier for this finding. When set, the user can ignore
+   * this node. Combined with the parent result's `id` to form the stored key:
+   * `${result.id}:${node.identifier}`.
+   *
+   * Not a unique ID — it's a hash of the analyzed content. If the content
+   * changes, the identifier changes and the finding reappears.
+   */
+  identifier?: string
+  /**
+   * Label for the score metric (e.g., "FRE", "LIX", "WSTF").
+   * Shown as a badge in the results UI when both score and scoreLabel are set.
+   */
+  scoreLabel?: string
+  /**
    * An array of either:
    * - string: a valid selector
    * - HTMLElement: the DOM node
@@ -34,6 +48,7 @@ export type AnalyzeNode = {
 
 export type AnalyzeNodeMapped = Omit<AnalyzeNode, 'targets'> & {
   targets: AnalyzeNodeTargetMapped[]
+  ignored: boolean
 }
 
 export type AnalyzeResult = {

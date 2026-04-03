@@ -12,4 +12,16 @@ declare module '#blokkli/editor/adapter' {
       | Promise<Analyzer>
       | Promise<Analyzer[]>
   }
+
+  interface BlokkliAdapter<T> {
+    /**
+     * Set the ignored analyze identifiers for the current entity.
+     * Each identifier is a composite key: `${resultId}:${nodeIdentifier}`.
+     *
+     * This is a mutation so it supports undo/redo.
+     */
+    setIgnoredAnalyzeIdentifiers?: (
+      identifiers: string[],
+    ) => Promise<MutationResponseLike<T>>
+  }
 }

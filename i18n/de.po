@@ -993,6 +993,14 @@ msgctxt "analyzeHeadingStructureLabel"
 msgid "Heading Structure"
 msgstr "Titelstruktur"
 
+msgctxt "analyzeIgnore"
+msgid "Ignore"
+msgstr "Ignorieren"
+
+msgctxt "analyzeIgnoredResults"
+msgid "Ignored"
+msgstr "Ignoriert"
+
 msgctxt "analyzeKeepVisible"
 msgid "Keep results visible"
 msgstr "Ergebnisse sichtbar halten"
@@ -1056,6 +1064,10 @@ msgstr "Fehler"
 msgctxt "analyzeTourText"
 msgid "Analyze the content of your page"
 msgstr "Inhalte auf dieser Seite analysieren."
+
+msgctxt "analyzeUnignore"
+msgid "Restore"
+msgstr "Wiederherstellen"
 
 msgctxt "analyzerReadabiliyCouldBeSimpler"
 msgid "Could be simpler (@lang)."

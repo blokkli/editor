@@ -56,6 +56,7 @@ export class MutationContext {
   proxies: BlockProxy[] = []
   entity: Entity
   mutatedHostOptions: Record<string, string> = {}
+  ignoredAnalyzeIdentifiers: string[] = []
 
   constructor(hostEntity: Entity) {
     this.entity = hostEntity
@@ -230,6 +231,7 @@ export type MutatedState = {
   fields: MutatedField[]
   context: MutationContext
   violations: Validation[]
+  ignoredAnalyzeIdentifiers: string[]
 }
 
 export class EditState {
@@ -428,6 +430,7 @@ export class EditState {
       fields: Object.values(mutatedFields),
       context,
       violations,
+      ignoredAnalyzeIdentifiers: [...context.ignoredAnalyzeIdentifiers],
     }
   }
 }

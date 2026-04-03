@@ -310,6 +310,9 @@ export interface EventbusEvents {
   'fragment:edit': { name: string; uuid: string }
 
   'block:rerender': string[]
+
+  'analyze:ignore': { resultId: string; identifier: string }
+  'analyze:unignore': { resultId: string; identifier: string }
 }
 
 type EventbusEventsType = {

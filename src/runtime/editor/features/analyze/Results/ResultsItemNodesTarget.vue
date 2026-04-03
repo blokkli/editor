@@ -1,31 +1,73 @@
 <template>
   <div
-    class="bk-analyze-results-item-nodes-target"
+    class="bk-analyze-results-item-nodes-target relative flex items-center gap-5 pr-5"
     :class="{
-      'bk-is-focused': isFocused,
+      'bg-accent-700': isFocused,
     }"
   >
-    <div>
-      <button ref="elButton" @click.prevent="onClick">
-        <Icon name="bk_mdi_visibility-fill" />
-        <span>{{ getLabel() }}</span>
-      </button>
-    </div>
+    <button
+      ref="elButton"
+      class="flex-1 min-w-0 text-mono-600 flex items-center gap-5 hover:underline underline-offset-[3px] py-[7px] px-10 hover:text-accent-700 scroll-mt-50"
+      :class="{
+        '!text-accent-50': isFocused,
+      }"
+      @click.prevent="onClick"
+    >
+      <div v-if="node.score != null && node.scoreLabel">
+        <span class="bk-pill shrink-0">{{ node.score.toFixed(1) }}</span>
+      </div>
+      <span class="truncate w-full inline-block font-mono">{{
+        getLabel()
+      }}</span>
+    </button>
+    <button
+      v-if="node.identifier"
+      class="shrink-0 size-25 flex items-center justify-center rounded group/tooltip relative"
+      :class="
+        isFocused
+          ? 'text-accent-200 hover:text-accent-700 hover:bg-white'
+          : 'text-mono-500 hover:bg-accent-700 hover:text-accent-50'
+      "
+      @click.prevent="
+        eventBus.emit(node.ignored ? 'analyze:unignore' : 'analyze:ignore', {
+          resultId,
+          identifier: node.identifier!,
+        })
+      "
+    >
+      <Icon
+        :name="node.ignored ? 'bk_mdi_visibility' : 'bk_mdi_visibility_off'"
+        class="size-15"
+      />
+      <Tooltip
+        placement="center-before"
+        small
+        :label="
+          node.ignored
+            ? $t('analyzeUnignore', 'Restore')
+            : $t('analyzeIgnore', 'Ignore')
+        "
+      />
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Icon } from '#blokkli/editor/components'
 import { computed, useBlokkli, useTemplateRef, watch } from '#imports'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
-import type { AnalyzeNodeTargetMapped } from '#blokkli/analyzer/types'
+import type {
+  AnalyzeNodeMapped,
+  AnalyzeNodeTargetMapped,
+} from '#blokkli/analyzer/types'
+import { Icon, Tooltip } from '#blokkli/editor/components'
 
 const props = defineProps<{
   resultId: string
+  node: AnalyzeNodeMapped
   target: AnalyzeNodeTargetMapped
 }>()
 
-const { eventBus, dom, blocks, element } = useBlokkli()
+const { $t, eventBus, dom, blocks, element } = useBlokkli()
 
 const activeId = defineModel<string>({ default: '' })
 
@@ -138,15 +180,19 @@ async function onClick() {
   activeId.value = props.resultId + '_____' + props.target.globalIndex
 }
 
-watch(isFocused, (isFocused) => {
-  if (!isFocused) {
-    return
-  }
-  if (elButton.value) {
-    elButton.value.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-    })
-  }
-})
+watch(
+  isFocused,
+  (isFocused) => {
+    if (!isFocused) {
+      return
+    }
+    if (elButton.value) {
+      elButton.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      })
+    }
+  },
+  { immediate: true },
+)
 </script>

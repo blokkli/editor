@@ -1,6 +1,7 @@
 import { defineAnalyzer } from './defineAnalyzer'
 import type { AnalyzeImpact, AnalyzeNode, AnalyzeResult } from './types'
 import { collectTextElements } from './helpers/collectTextElements'
+import { hashString } from './helpers/hashString'
 import type { TextProvider } from '#blokkli/editor/providers/texts'
 import type { ReadabilityProvider } from '#blokkli/editor/providers/readability'
 
@@ -15,13 +16,7 @@ function summarizeImpact(nodes: AnalyzeNode[]): AnalyzeImpact | undefined {
   return maxIdx >= 0 ? order[maxIdx] : undefined
 }
 
-function format(n?: number, d = 1) {
-  return typeof n === 'number' && Number.isFinite(n) ? n.toFixed(d) : '—'
-}
-
 function buildDescription(
-  score: number,
-  scoreLabel: string,
   lang: string,
   band: 'ok' | 'hard',
   $t: TextProvider,
@@ -42,7 +37,6 @@ function buildDescription(
       ).replace('@lang', lang.toUpperCase()),
     )
   }
-  parts.push(`${scoreLabel} ${format(score)}`)
   parts.push(
     $t(
       'analyzerReadabiliyShorterSentences',
@@ -96,16 +90,12 @@ async function analyzeViaProvider(
       }
 
       const node: AnalyzeNode = {
-        description: buildDescription(
-          chunk.score,
-          analyzer.scoreLabel,
-          langcode,
-          chunk.band,
-          $t,
-        ),
+        description: buildDescription(langcode, chunk.band, $t),
         impact: analyzer.impactForScore(chunk.score),
         score: chunk.score,
+        scoreLabel: analyzer.scoreLabel,
         uuid,
+        identifier: hashString(chunk.text),
         targets,
       }
 

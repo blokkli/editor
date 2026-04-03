@@ -26,6 +26,7 @@
                 v-for="(target, k) in node.targets"
                 :key="i + '_' + j + '_' + k"
                 v-model="activeId"
+                :node
                 :target
                 :result-id
               />
@@ -85,6 +86,7 @@ const grouped = computed(() => {
 watch(activeId, (id) => {
   const resultId = id.split('_____')[0]
   if (resultId === props.resultId) {
+    shouldRender.value = true
     isOpen.value = true
   }
 })

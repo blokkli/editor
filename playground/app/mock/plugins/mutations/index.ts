@@ -92,6 +92,10 @@ import {
   MutationMarkTranslationUpToDate,
   type MutationMarkTranslationUpToDateArgs,
 } from './Mutation/MarkTranslationUpToDate'
+import {
+  MutationSetIgnoredAnalyze,
+  type MutationSetIgnoredAnalyzeArgs,
+} from './Mutation/SetIgnoredAnalyze'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -121,6 +125,7 @@ export type MutationArgsMap = {
   rearrange: MutationRearrangeArgs
   update_field_value_batched: MutationUpdateFieldValueBatchedArgs
   mark_translation_up_to_date: MutationMarkTranslationUpToDateArgs
+  set_ignored_analyze: MutationSetIgnoredAnalyzeArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -182,6 +187,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationUpdateFieldValueBatched(configuration)
     case 'mark_translation_up_to_date':
       return new MutationMarkTranslationUpToDate(configuration)
+    case 'set_ignored_analyze':
+      return new MutationSetIgnoredAnalyze(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

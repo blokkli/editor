@@ -72,6 +72,7 @@ export interface MappedState {
     value: string
     fieldType: 'plain' | 'markup'
   }[]
+  ignoredAnalyzeIdentifiers?: string[]
 }
 
 export type MutateWithLoadingStateFunction = (

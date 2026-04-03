@@ -306,45 +306,6 @@ export default {
       @apply border-t border-t-mono-300 pt-10;
     }
   }
-
-  .bk-analyze-results-item-nodes-target {
-    @apply relative;
-    span {
-      @apply overflow-ellipsis overflow-hidden whitespace-nowrap w-full inline-block font-mono;
-    }
-
-    button {
-      @apply w-full min-w-0 text-mono-600 flex items-center gap-5 hover:underline underline-offset-[3px] py-[7px] px-10;
-      @apply hover:text-accent-700;
-      @apply scroll-mt-50;
-
-      &:hover svg {
-        @apply fill-accent-700;
-      }
-      &:hover .bk-icon {
-        @apply bg-mono-200;
-      }
-      svg {
-        @apply size-[13px] fill-mono-500;
-      }
-
-      .bk-icon {
-        @apply size-20 flex items-center justify-center rounded-full shrink-0;
-      }
-    }
-
-    &.bk-is-focused {
-      button {
-        @apply bg-accent-600 text-accent-50;
-        .bk-icon {
-          @apply bg-white;
-          svg {
-            @apply fill-accent-700;
-          }
-        }
-      }
-    }
-  }
 }
 
 .bk.bk-analyze-overlay {

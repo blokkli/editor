@@ -939,6 +939,14 @@
     "source": "Heading Structure",
     "translation": "Überschrifte-Struktur"
   },
+  "analyzeIgnore": {
+    "source": "Ignore",
+    "translation": ""
+  },
+  "analyzeIgnoredResults": {
+    "source": "Ignored",
+    "translation": ""
+  },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
     "translation": "Ergebnis sichtbar bhalte"
@@ -998,6 +1006,10 @@
   "analyzeTourText": {
     "source": "Analyze the content of your page",
     "translation": "Dr Inhalt vo dinere Sitte analysiere"
+  },
+  "analyzeUnignore": {
+    "source": "Restore",
+    "translation": ""
   },
   "analyzerReadabiliyCouldBeSimpler": {
     "source": "Could be simpler (@lang).",
