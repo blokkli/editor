@@ -38,6 +38,10 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
     ...pbMutatedEntity
   }
 
+  stateSettings {
+    ignoredAnalyzeIdentifiers
+  }
+
   translationState {
     isTranslatable
     sourceLanguage

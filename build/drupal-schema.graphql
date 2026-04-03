@@ -2657,8 +2657,8 @@ type Mutation {
     """The ID of the item to give feedback on."""
     itemId: String!
 
-    """The rating: bad, fine, or good."""
-    rating: String!
+    """The rating."""
+    rating: ParagraphsBlokkliAgentFeedbackRating!
 
     """The UUID of the conversation."""
     uuid: String!
@@ -7824,8 +7824,15 @@ type ParagraphsBlokkliAgentFeedback {
   """The ID of the item the feedback is about."""
   itemId: String!
 
-  """The rating: bad, fine, or good."""
-  rating: String!
+  """The rating."""
+  rating: ParagraphsBlokkliAgentFeedbackRating!
+}
+
+"""Possible ratings for agent conversation feedback."""
+enum ParagraphsBlokkliAgentFeedbackRating {
+  bad
+  fine
+  good
 }
 
 type ParagraphsBlokkliAllowedType {
@@ -8051,6 +8058,9 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
 
   """The publish options."""
   publishOptions: ParagraphsBlokkliPublishOptions
+
+  """The state settings for this host entity."""
+  stateSettings: ParagraphsBlokkliStateSettings!
 
   """{value} {field: status} """
   status: Boolean
@@ -8304,6 +8314,11 @@ input ParagraphsBlokkliSetParagraphScheduleInput {
   date: String
   type: String!
   uuid: String!
+}
+
+type ParagraphsBlokkliStateSettings {
+  """The ignored analyze identifiers for this host entity."""
+  ignoredAnalyzeIdentifiers: [String!]!
 }
 
 interface ParagraphsBlokkliSupportedClipboard {
@@ -8832,6 +8847,12 @@ type ParagraphsEditMutationState {
     userConfig: [ParagraphsBlokkliUserConfigInput]
   ): ParagraphsBlokkliMutationResult
 
+  """Ignore one or more analyze identifiers."""
+  ignore_analyze(
+    """The analyze identifiers to ignore."""
+    ids: [String]!
+  ): ParagraphsBlokkliMutationResult
+
   """Makes a paragraph reusable."""
   make_reusable(
     """The label for the reusable paragraph."""
@@ -8986,6 +9007,12 @@ type ParagraphsEditMutationState {
   """Translate multiple paragraphs."""
   translate_multiple: ParagraphsBlokkliMutationResult
   undo: ParagraphsBlokkliMutationResult
+
+  """Remove one or more identifiers from the ignored analyze list."""
+  unignore_analyze(
+    """The analyze identifiers to unignore."""
+    ids: [String]!
+  ): ParagraphsBlokkliMutationResult
 
   """Unschedule an already scheduled edit state."""
   unschedule: ParagraphsBlokkliMutationResult

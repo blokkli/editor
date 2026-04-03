@@ -15,19 +15,19 @@ declare module '#blokkli/editor/adapter' {
 
   interface BlokkliAdapter<T> {
     /**
-     * Ignore a single analyze finding.
-     * The identifier is a composite key: `${resultId}:${nodeIdentifier}`.
+     * Ignore one or more analyze findings.
+     * Each identifier is a composite key: `${resultId}:${nodeIdentifier}`.
      */
-    ignoreAnalyzeIdentifier?: (
-      identifier: string,
+    ignoreAnalyzeIdentifiers?: (
+      identifiers: string[],
     ) => Promise<MutationResponseLike<T>>
 
     /**
-     * Restore a previously ignored analyze finding.
-     * The identifier is a composite key: `${resultId}:${nodeIdentifier}`.
+     * Restore one or more previously ignored analyze findings.
+     * Each identifier is a composite key: `${resultId}:${nodeIdentifier}`.
      */
-    unignoreAnalyzeIdentifier?: (
-      identifier: string,
+    unignoreAnalyzeIdentifiers?: (
+      identifiers: string[],
     ) => Promise<MutationResponseLike<T>>
   }
 }

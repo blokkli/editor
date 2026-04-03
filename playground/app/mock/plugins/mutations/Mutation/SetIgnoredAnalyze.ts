@@ -2,7 +2,7 @@ import type { MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
 
 export type MutationIgnoreAnalyzeArgs = {
-  identifier: string
+  identifiers: string[]
 }
 
 export class MutationIgnoreAnalyze extends Mutation {
@@ -11,14 +11,16 @@ export class MutationIgnoreAnalyze extends Mutation {
   }
 
   override execute(context: MutationContext, args: MutationIgnoreAnalyzeArgs) {
-    if (!context.ignoredAnalyzeIdentifiers.includes(args.identifier)) {
-      context.ignoredAnalyzeIdentifiers.push(args.identifier)
+    for (const id of args.identifiers) {
+      if (!context.ignoredAnalyzeIdentifiers.includes(id)) {
+        context.ignoredAnalyzeIdentifiers.push(id)
+      }
     }
   }
 }
 
 export type MutationUnignoreAnalyzeArgs = {
-  identifier: string
+  identifiers: string[]
 }
 
 export class MutationUnignoreAnalyze extends Mutation {
@@ -30,7 +32,8 @@ export class MutationUnignoreAnalyze extends Mutation {
     context: MutationContext,
     args: MutationUnignoreAnalyzeArgs,
   ) {
+    const toRemove = new Set(args.identifiers)
     context.ignoredAnalyzeIdentifiers =
-      context.ignoredAnalyzeIdentifiers.filter((id) => id !== args.identifier)
+      context.ignoredAnalyzeIdentifiers.filter((id) => !toRemove.has(id))
   }
 }

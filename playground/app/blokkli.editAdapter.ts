@@ -1775,11 +1775,11 @@ export default defineBlokkliEditAdapter((ctx) => {
       ]
     },
 
-    ignoreAnalyzeIdentifier: (identifier) =>
-      addMutation('ignore_analyze', { identifier }),
+    ignoreAnalyzeIdentifiers: (identifiers) =>
+      addMutation('ignore_analyze', { identifiers }),
 
-    unignoreAnalyzeIdentifier: (identifier) =>
-      addMutation('unignore_analyze', { identifier }),
+    unignoreAnalyzeIdentifiers: (identifiers) =>
+      addMutation('unignore_analyze', { identifiers }),
   }
 
   // Only available in dev mode.

@@ -350,6 +350,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           value: v.value,
           fieldType: v.fieldType as 'plain' | 'markup',
         })),
+        ignoredAnalyzeIdentifiers:
+          state.stateSettings?.ignoredAnalyzeIdentifiers || [],
       }
     }
 
@@ -1550,6 +1552,18 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
       }
     }
+
+    adapter.ignoreAnalyzeIdentifiers = (identifiers) =>
+      useGraphqlMutation('pbIgnoreAnalyze', {
+        ...ctx.value,
+        ids: identifiers,
+      }).then(mapMutation)
+
+    adapter.unignoreAnalyzeIdentifiers = (identifiers) =>
+      useGraphqlMutation('pbUnignoreAnalyze', {
+        ...ctx.value,
+        ids: identifiers,
+      }).then(mapMutation)
 
     return adapter
   },

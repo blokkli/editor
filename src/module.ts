@@ -190,7 +190,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     addPlugin({
-      src: resolver.resolve('runtime/plugins/blokkliDirectives'),
+      src: resolver.resolve('./runtime/plugins/blokkliDirectives'),
     })
 
     addBuildPlugin(RuntimeDefinitionPlugin(nuxt, helper, 'defineBlokkli'))

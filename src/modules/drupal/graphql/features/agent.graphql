@@ -48,7 +48,7 @@ mutation pbAgentConversationDelete($uuid: String!) {
 mutation pbAgentConversationFeedback(
   $uuid: String!
   $itemId: String!
-  $rating: String!
+  $rating: ParagraphsBlokkliAgentFeedbackRating!
   $explanation: String
 ) {
   result: paragraphsBlokkliAgentConversationFeedback(

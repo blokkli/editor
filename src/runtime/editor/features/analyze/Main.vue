@@ -619,21 +619,23 @@ const categoryOptions = computed<{ value: string; label: string }[]>(() => {
 
 async function ignoreNode(resultId: string, identifier: string) {
   const key = resultId + ':' + identifier
-  if (adapter.ignoreAnalyzeIdentifier) {
+  if (adapter.ignoreAnalyzeIdentifiers) {
     await state.mutateWithLoadingState(
-      () => adapter.ignoreAnalyzeIdentifier!(key),
+      () => adapter.ignoreAnalyzeIdentifiers!([key]),
       false,
     )
+    ignoredIdentifiers.value = getIgnoredFromState()
   }
 }
 
 async function unignoreNode(resultId: string, identifier: string) {
   const key = resultId + ':' + identifier
-  if (adapter.unignoreAnalyzeIdentifier) {
+  if (adapter.unignoreAnalyzeIdentifiers) {
     await state.mutateWithLoadingState(
-      () => adapter.unignoreAnalyzeIdentifier!(key),
+      () => adapter.unignoreAnalyzeIdentifiers!([key]),
       false,
     )
+    ignoredIdentifiers.value = getIgnoredFromState()
   }
 }
 

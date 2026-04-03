@@ -2,6 +2,54 @@ import { createRequire } from 'node:module'
 
 const processors = new Map<string, any>()
 
+function postcssMangleClasses(selectorParser: any) {
+  const plugin = () => ({
+    postcssPlugin: 'postcss-mangle-blokkli-classes',
+    OnceExit(root: any) {
+      root.walkRules((rule: any) => {
+        if (
+          rule.parent &&
+          rule.parent.type === 'atrule' &&
+          rule.parent.name === 'keyframes'
+        ) {
+          return
+        }
+
+        rule.selector = selectorParser((selectors: any) => {
+          selectors.each((selector: any) => {
+            let hasMangled = false
+            let hasBk = false
+
+            selector.walkClasses((classNode: any) => {
+              if (classNode.value === 'bk') {
+                hasBk = true
+                return
+              }
+              if (classNode.value.startsWith('bk-')) return
+              classNode.value = '_bk_' + classNode.value
+              hasMangled = true
+            })
+
+            if (hasMangled && !hasBk) {
+              const descendant = selector.clone()
+              descendant.prepend(selectorParser.combinator({ value: ' ' }))
+              descendant.prepend(selectorParser.className({ value: 'bk' }))
+
+              const compound = selector.clone()
+              compound.prepend(selectorParser.className({ value: 'bk' }))
+
+              selector.replaceWith(descendant, compound)
+            }
+          })
+        }).processSync(rule.selector)
+      })
+    },
+  })
+
+  plugin.postcss = true
+  return plugin
+}
+
 /**
  * Process CSS through the same PostCSS+Tailwind pipeline used by blökkli
  * internally. Resolves @apply directives, scopes selectors to .bk, and
@@ -53,7 +101,7 @@ async function createProcessor(contentPaths?: string[]): Promise<any> {
         ...tailwindConfig,
         content,
       }),
-      _require('./postcssMangleClasses.cjs'),
+      postcssMangleClasses(_require('postcss-selector-parser')),
       // Same scoping rules as postcss.config.cjs: scope selectors to .bk
       // and rename Tailwind CSS variables from --tw-* to --bk-tw-*.
       _require('postcss-replace')({
