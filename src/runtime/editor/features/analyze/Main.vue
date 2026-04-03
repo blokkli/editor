@@ -32,9 +32,9 @@
         "
       />
 
-      <div v-if="analyzerStatuses.length > 1" class="bk-analyze-statuses">
+      <div v-if="staleAnalyzerStatuses.length > 1" class="bk-analyze-statuses">
         <div
-          v-for="analyzer in analyzerStatuses"
+          v-for="analyzer in staleAnalyzerStatuses"
           :key="analyzer.id"
           class="bk-analyze-status-item"
         >
@@ -98,6 +98,7 @@ import {
 } from '#blokkli/editor/components'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { defineHighlight, onBlokkliEvent } from '#blokkli/editor/composables'
+import { falsy } from '#blokkli/helpers'
 
 const props = defineProps<{
   langcode: string
@@ -386,30 +387,31 @@ const staleMessage = computed(() => {
   return ''
 })
 
-const analyzerStatuses = computed(() => {
+const staleAnalyzerStatuses = computed(() => {
   if (!hasRunOnce.value) {
     return []
   }
 
-  return props.analyze.analyzers.value.map((analyzer) => {
-    const status = analyzer.continuous
-      ? $t('analyzeStatusUpToDate', 'Up-to-date')
-      : isStale.value
-        ? $t('analyzeStatusStale', 'Stale')
-        : $t('analyzeStatusUpToDate', 'Up-to-date')
+  return props.analyze.analyzers.value
+    .map((analyzer) => {
+      if (analyzer.continuous || !isStale.value) {
+        return
+      }
+      const status = $t('analyzeStatusStale', 'Stale')
 
-    const title =
-      typeof analyzer.label === 'function'
-        ? analyzer.label(ui.interfaceLanguage.value, $t)
-        : analyzer.label
+      const title =
+        typeof analyzer.label === 'function'
+          ? analyzer.label(ui.interfaceLanguage.value, $t)
+          : analyzer.label
 
-    return {
-      id: analyzer.id,
-      title: title ?? analyzer.id,
-      status,
-      isStale: !analyzer.continuous && isStale.value,
-    }
-  })
+      return {
+        id: analyzer.id,
+        title: title ?? analyzer.id,
+        status,
+        isStale: !analyzer.continuous && isStale.value,
+      }
+    })
+    .filter(falsy)
 })
 
 let refreshTimeout: number | null = null
