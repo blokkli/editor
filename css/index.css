@@ -130,25 +130,23 @@ html {
 
 .bk {
   @apply text-base;
-  strong,
-  label,
-  button {
+  :where(strong, label, button) {
     transition: none;
     min-inline-size: initial;
     margin: 0;
   }
-  strong {
+  :where(strong) {
     color: inherit;
     gap: 0;
   }
-  label {
+  :where(label) {
     font-size: inherit;
     color: inherit;
     font-family: inherit;
     gap: 0;
   }
-  button {
-    @apply text-white text-left items-start justify-start;
+  :where(button) {
+    @apply text-left items-start justify-start;
     block-size: initial;
     border-radius: 0;
     box-shadow: none !important;

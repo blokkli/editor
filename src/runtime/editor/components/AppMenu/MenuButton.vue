@@ -45,7 +45,7 @@ export default {
 <style lang="postcss">
 .bk .bk-menu-list-button {
   @media screen and (min-height: 900px) {
-    @apply gap-x-15 text-base;
+    @apply !gap-x-15 !text-base;
   }
 
   grid-template-columns: auto 1fr;

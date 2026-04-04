@@ -18,7 +18,7 @@ const plugin = () => ({
           let hasMangled = false
           let hasBk = false
 
-          // Rename non-bk classes and track state.
+          // Rename non-bk classes with _bk_ prefix.
           selector.walkClasses((classNode) => {
             if (classNode.value === 'bk') {
               hasBk = true
@@ -31,16 +31,13 @@ const plugin = () => ({
 
           // Scope mangled selectors under .bk if not already present.
           if (hasMangled && !hasBk) {
-            // Descendant version: .bk <selector>
             const descendant = selector.clone()
             descendant.prepend(selectorParser.combinator({ value: ' ' }))
             descendant.prepend(selectorParser.className({ value: 'bk' }))
 
-            // Compound version: .bk<selector> (for when utility is on the root element)
             const compound = selector.clone()
             compound.prepend(selectorParser.className({ value: 'bk' }))
 
-            // Replace original selector with both scoped versions.
             selector.replaceWith(descendant, compound)
           }
         })
