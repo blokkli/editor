@@ -42,6 +42,7 @@
       </div>
       <template v-else-if="changes && changes.length">
         <SelectionTable
+          show-selection
           :selected-count="selectedCount"
           :total-count="changes.length"
           :label="$t('translationsCsvChangesLabel', 'fields will be updated')"

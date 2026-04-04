@@ -3503,13 +3503,9 @@
     "source": "Apply @count translations",
     "translation": "@count Übersetzungen anwenden"
   },
-  "translationsTranslateBack": {
-    "source": "Back",
-    "translation": "Zurück"
-  },
   "translationsTranslateButton": {
-    "source": "Translate @count fields",
-    "translation": "@count Felder übersetzen"
+    "source": "Request @count translations",
+    "translation": "@count Übersetzungen anfordern"
   },
   "translationsTranslateCurrentColumn": {
     "source": "Current translation (@language)",

@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-between flex-wrap gap-10">
     <span
-      v-if="selectedCount !== undefined"
+      v-if="showSelection"
       class="text-mono-900 text-lg font-bold"
     >
       {{ selectedCount }}/{{ totalCount }}
@@ -23,7 +23,7 @@
     <table class="bk-csv-table w-full text-sm select-text">
       <thead>
         <tr>
-          <th v-if="selectedCount !== undefined" class="w-40">
+          <th v-if="showSelection" class="w-40">
             <div class="bk-checkbox">
               <input
                 type="checkbox"
@@ -51,6 +51,7 @@ defineProps<{
   selectedCount?: number
   totalCount: number
   label?: string
+  showSelection?: boolean
   showFilters?: boolean
 }>()
 

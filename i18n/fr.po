@@ -3692,12 +3692,8 @@ msgctxt "translationsTranslateApply"
 msgid "Apply @count translations"
 msgstr ""
 
-msgctxt "translationsTranslateBack"
-msgid "Back"
-msgstr ""
-
 msgctxt "translationsTranslateButton"
-msgid "Translate @count fields"
+msgid "Request @count translations"
 msgstr ""
 
 msgctxt "translationsTranslateCurrentColumn"

@@ -3503,12 +3503,8 @@
     "source": "Apply @count translations",
     "translation": ""
   },
-  "translationsTranslateBack": {
-    "source": "Back",
-    "translation": ""
-  },
   "translationsTranslateButton": {
-    "source": "Translate @count fields",
+    "source": "Request @count translations",
     "translation": ""
   },
   "translationsTranslateCurrentColumn": {

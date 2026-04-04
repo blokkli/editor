@@ -30,6 +30,7 @@
           v-model:only-outdated="onlyOutdated"
           v-model:only-untranslated="onlyUntranslated"
           show-filters
+          show-selection
           :selected-count="selectedCount"
           :total-count="filteredValues.length"
           :label="$t('translationsTranslateFieldsLabel', 'fields selected')"
@@ -66,11 +67,12 @@
                 <DiffValue
                   :before="currentValues.get(item.key) || ''"
                   :after="translations.get(item.key) || ''"
+                  :after-only="!currentValues.get(item.key) || currentValues.get(item.key) === item.value"
                 />
               </td>
               <td v-else>
                 <span
-                  v-if="currentValues.get(item.key)"
+                  v-if="currentValues.get(item.key) && currentValues.get(item.key) !== item.value"
                   v-text="stripHtml(currentValues.get(item.key)!)"
                 />
                 <span v-else class="text-mono-400 italic">&mdash;</span>
@@ -81,8 +83,7 @@
 
         <div class="flex gap-10 mt-auto">
           <button
-            v-if="!hasTranslated"
-            class="bk-button bk-is-primary"
+            class="bk-button"
             :disabled="!selectedCount || isTranslating"
             @click="requestTranslations"
           >
@@ -93,28 +94,23 @@
               {{
                 $t(
                   'translationsTranslateButton',
-                  'Translate @count fields',
+                  'Request @count translations',
                 ).replace('@count', selectedCount.toString())
               }}
             </template>
           </button>
-          <template v-else>
-            <button
-              class="bk-button bk-is-primary"
-              :disabled="!selectedCount || isApplying"
-              @click="applyTranslations"
-            >
-              {{
-                $t(
-                  'translationsTranslateApply',
-                  'Apply @count translations',
-                ).replace('@count', selectedCount.toString())
-              }}
-            </button>
-            <button class="bk-button" @click="resetTranslations">
-              {{ $t('translationsTranslateBack', 'Back') }}
-            </button>
-          </template>
+          <button
+            class="bk-button bk-is-primary"
+            :disabled="!hasTranslated || !selectedCount || isApplying"
+            @click="applyTranslations"
+          >
+            {{
+              $t(
+                'translationsTranslateApply',
+                'Apply @count translations',
+              ).replace('@count', selectedCount.toString())
+            }}
+          </button>
         </div>
       </template>
 
@@ -286,11 +282,6 @@ async function requestTranslations() {
   } finally {
     isTranslating.value = false
   }
-}
-
-function resetTranslations() {
-  hasTranslated.value = false
-  translations.value = new Map()
 }
 
 async function applyTranslations() {

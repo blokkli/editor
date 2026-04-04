@@ -1,7 +1,7 @@
 <template>
   <div
     ref="el"
-    class="bk bk-banner text-scheme-text bg-scheme-normal text-xs md:text-base mx-10 mb-10 rounded-md order-10 shadow-xl border border-scheme-dark/40 lg:min-h-50"
+    class="bk bk-banner text-scheme-text bg-scheme-normal text-xs md:text-base order-10 shadow-xl-inverted border-t border-scheme-dark/40 lg:min-h-50"
     :class="scheme ? 'bk-scheme-' + scheme : undefined"
   >
     <slot />
