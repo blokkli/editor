@@ -3371,6 +3371,22 @@
     "source": "The translation is marked as outdated.",
     "translation": ""
   },
+  "translationsAddFiles": {
+    "source": "Add files...",
+    "translation": ""
+  },
+  "translationsAutoTranslate": {
+    "source": "Auto-translate",
+    "translation": ""
+  },
+  "translationsAutoTranslateButton": {
+    "source": "Auto-translate...",
+    "translation": ""
+  },
+  "translationsAutoTranslateTooltip": {
+    "source": "Automatically translate all texts using a translation service",
+    "translation": ""
+  },
   "translationsBannerButton": {
     "source": "Edit source language instead",
     "translation": ""
@@ -3415,10 +3431,6 @@
     "source": "fields will be updated",
     "translation": ""
   },
-  "translationsCsvDeselectAll": {
-    "source": "Deselect all",
-    "translation": ""
-  },
   "translationsCsvDialogTitle": {
     "source": "Import/Export Translations",
     "translation": ""
@@ -3433,10 +3445,6 @@
   },
   "translationsCsvImport": {
     "source": "Import",
-    "translation": ""
-  },
-  "translationsCsvLanguage": {
-    "source": "Language",
     "translation": ""
   },
   "translationsCsvLanguages": {
@@ -3459,8 +3467,8 @@
     "source": "Only outdated translations",
     "translation": ""
   },
-  "translationsCsvSelectAll": {
-    "source": "Select all",
+  "translationsCsvTooltip": {
+    "source": "Import or export translations as CSV or PO files",
     "translation": ""
   },
   "translationsDropToImport": {
@@ -3489,6 +3497,38 @@
   },
   "translationsTourTitle": {
     "source": "Translations",
+    "translation": ""
+  },
+  "translationsTranslateApply": {
+    "source": "Apply @count translations",
+    "translation": ""
+  },
+  "translationsTranslateBack": {
+    "source": "Back",
+    "translation": ""
+  },
+  "translationsTranslateButton": {
+    "source": "Translate @count fields",
+    "translation": ""
+  },
+  "translationsTranslateCurrentColumn": {
+    "source": "Current translation (@language)",
+    "translation": ""
+  },
+  "translationsTranslateDialogTitle": {
+    "source": "Automatic Translation",
+    "translation": ""
+  },
+  "translationsTranslateFieldsLabel": {
+    "source": "fields selected",
+    "translation": ""
+  },
+  "translationsTranslateLoading": {
+    "source": "Translating...",
+    "translation": ""
+  },
+  "translationsTranslateNoTexts": {
+    "source": "No translatable texts found on this page.",
     "translation": ""
   },
   "unexpectedMutationError": {

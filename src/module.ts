@@ -152,6 +152,11 @@ export default defineNuxtModule<ModuleOptions>({
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 
+    // CJS packages used by the editor need Vite pre-bundling for ESM interop.
+    nuxt.options.vite.optimizeDeps ??= {}
+    nuxt.options.vite.optimizeDeps.include ??= []
+    nuxt.options.vite.optimizeDeps.include.push('papaparse', 'pofile')
+
     helper.addComponent('BlokkliField')
     helper.addComponent('BlokkliEditable')
     helper.addComponent('BlokkliProvider')

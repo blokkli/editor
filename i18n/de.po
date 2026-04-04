@@ -1727,7 +1727,7 @@ msgstr "Keine Änderung"
 
 msgctxt "download"
 msgid "Download"
-msgstr ""
+msgstr "Herunterladen"
 
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
@@ -3652,6 +3652,22 @@ msgctxt "translationOutdatedHint"
 msgid "The translation is marked as outdated."
 msgstr "Die Übersetzung ist als veraltet markiert."
 
+msgctxt "translationsAddFiles"
+msgid "Add files..."
+msgstr "Dateien hinzufügen..."
+
+msgctxt "translationsAutoTranslate"
+msgid "Auto-translate"
+msgstr "Automatisch übersetzen"
+
+msgctxt "translationsAutoTranslateButton"
+msgid "Auto-translate..."
+msgstr "Automatisch übersetzen..."
+
+msgctxt "translationsAutoTranslateTooltip"
+msgid "Automatically translate all texts using a translation service"
+msgstr "Alle Texte automatisch mit einem Übersetzungsdienst übersetzen"
+
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
 msgstr "Originalsprache bearbeiten"
@@ -3696,17 +3712,13 @@ msgctxt "translationsCsvChangesLabel"
 msgid "fields will be updated"
 msgstr "Felder werden aktualisiert"
 
-msgctxt "translationsCsvDeselectAll"
-msgid "Deselect all"
-msgstr "Alle abwählen"
-
 msgctxt "translationsCsvDialogTitle"
 msgid "Import/Export Translations"
 msgstr "Übersetzungen importieren/exportieren"
 
 msgctxt "translationsCsvDiff"
 msgid "Changes"
-msgstr ""
+msgstr "Änderungen"
 
 msgctxt "translationsCsvExport"
 msgid "Export"
@@ -3716,13 +3728,9 @@ msgctxt "translationsCsvImport"
 msgid "Import"
 msgstr "Import"
 
-msgctxt "translationsCsvLanguage"
-msgid "Language"
-msgstr ""
-
 msgctxt "translationsCsvLanguages"
 msgid "Languages"
-msgstr ""
+msgstr "Sprachen"
 
 msgctxt "translationsCsvMenuTitle"
 msgid "Import/export..."
@@ -3730,7 +3738,7 @@ msgstr "Import/Export..."
 
 msgctxt "translationsCsvNoChanges"
 msgid "No changes found"
-msgstr ""
+msgstr "Keine Änderungen gefunden"
 
 msgctxt "translationsCsvOnlyMissing"
 msgid "Only missing translations"
@@ -3740,13 +3748,13 @@ msgctxt "translationsCsvOnlyOutdated"
 msgid "Only outdated translations"
 msgstr "Nur veraltete Übersetzungen"
 
-msgctxt "translationsCsvSelectAll"
-msgid "Select all"
-msgstr "Alle auswählen"
+msgctxt "translationsCsvTooltip"
+msgid "Import or export translations as CSV or PO files"
+msgstr "Übersetzungen als CSV- oder PO-Dateien importieren oder exportieren"
 
 msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
-msgstr ""
+msgstr "CSV- oder PO-Datei zum Importieren ablegen"
 
 msgctxt "translationsItemAction"
 msgid "Translate"
@@ -3762,7 +3770,7 @@ msgstr "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
 
 msgctxt "translationsSelectImportFile"
 msgid "Select CSV or PO file"
-msgstr ""
+msgstr "CSV- oder PO-Datei auswählen"
 
 msgctxt "translationsTourText"
 msgid ""
@@ -3778,6 +3786,38 @@ msgstr ""
 msgctxt "translationsTourTitle"
 msgid "Translations"
 msgstr "Übersetzungen"
+
+msgctxt "translationsTranslateApply"
+msgid "Apply @count translations"
+msgstr "@count Übersetzungen anwenden"
+
+msgctxt "translationsTranslateBack"
+msgid "Back"
+msgstr "Zurück"
+
+msgctxt "translationsTranslateButton"
+msgid "Translate @count fields"
+msgstr "@count Felder übersetzen"
+
+msgctxt "translationsTranslateCurrentColumn"
+msgid "Current translation (@language)"
+msgstr "Aktuelle Übersetzung (@language)"
+
+msgctxt "translationsTranslateDialogTitle"
+msgid "Automatic Translation"
+msgstr "Automatische Übersetzung"
+
+msgctxt "translationsTranslateFieldsLabel"
+msgid "fields selected"
+msgstr "Felder ausgewählt"
+
+msgctxt "translationsTranslateLoading"
+msgid "Translating..."
+msgstr "Wird übersetzt..."
+
+msgctxt "translationsTranslateNoTexts"
+msgid "No translatable texts found on this page."
+msgstr "Keine übersetzbaren Texte auf dieser Seite gefunden."
 
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."

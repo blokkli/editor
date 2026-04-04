@@ -1,63 +1,47 @@
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex gap-30 items-end flex-wrap pb-20">
-      <FormCheckboxes
-        id="export-languages"
-        v-model="selectedLanguages"
-        :label="$t('translationsCsvLanguages', 'Languages')"
-        :options="languageOptions"
-        inline
-        @update:model-value="loadExportData"
-      />
-      <div class="flex flex-col h-full pb-[4px]">
-        <div class="bk-form-label">Filter</div>
-        <div class="flex gap-20 mt-auto">
-          <FormToggle
-            v-model="onlyOutdated"
-            :label="
-              $t('translationsCsvOnlyOutdated', 'Only outdated translations')
-            "
-          />
-          <FormToggle
-            v-model="onlyMissing"
-            :label="
-              $t('translationsCsvOnlyMissing', 'Only missing translations')
-            "
-          />
-        </div>
-      </div>
-    </div>
     <div v-if="isLoading" class="flex items-center gap-10 py-20">
       <Loading />
     </div>
     <template v-else-if="exportRows.length">
-      <div class="overflow-auto border border-mono-300 rounded flex-1">
-        <table class="bk-csv-table font-mono w-full text-xs select-text">
-          <thead>
-            <tr>
-              <th>Key</th>
-              <th>{{ sourceLangName }}</th>
-              <th v-for="lang in activeLanguages" :key="lang.id">
-                {{ lang.name }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in filteredRows" :key="row.key">
-              <td class="text-mono-400" v-text="row.key" />
-              <td v-text="row.source" />
-              <td
-                v-for="lang in activeLanguages"
-                :key="lang.id"
-                :class="{
-                  'bk-is-empty': !row.translations[lang.id],
-                }"
-                v-text="row.translations[lang.id] || '—'"
-              />
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <SelectionTable
+        v-model:only-outdated="onlyOutdated"
+        v-model:only-untranslated="onlyMissing"
+        show-filters
+        :total-count="filteredRows.length"
+      >
+        <template #toolbar>
+          <FormCheckboxes
+            id="export-languages"
+            v-model="selectedLanguages"
+            :label="$t('translationsCsvLanguages', 'Languages')"
+            :options="languageOptions"
+            inline
+            @update:model-value="loadExportData"
+          />
+        </template>
+        <template #header>
+          <th>Key</th>
+          <th>{{ sourceLangName }}</th>
+          <th v-for="lang in activeLanguages" :key="lang.id">
+            {{ lang.name }}
+          </th>
+        </template>
+        <template #body>
+          <tr v-for="row in filteredRows" :key="row.key">
+            <td class="text-mono-400" v-text="row.key" />
+            <td v-text="row.source" />
+            <td
+              v-for="lang in activeLanguages"
+              :key="lang.id"
+              :class="{
+                'bk-is-empty': !row.translations[lang.id],
+              }"
+              v-text="row.translations[lang.id] || '—'"
+            />
+          </tr>
+        </template>
+      </SelectionTable>
       <div class="flex gap-10 flex-wrap pt-20">
         <button class="bk-button" @click="downloadCsv">
           <div
@@ -88,11 +72,12 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
-import { Loading, FormToggle, FormCheckboxes } from '#blokkli/editor/components'
+import { Loading, FormCheckboxes } from '#blokkli/editor/components'
 import type { MultiLangRow } from '../csv'
 import { buildMultiLangCsv } from '../csv'
 import { buildPo } from '../po'
 import type { Language } from '#blokkli/editor/types/state'
+import SelectionTable from '../../SelectionTable/index.vue'
 
 const { adapter, $t, state, blocks, context, element, ui, directive } =
   useBlokkli()

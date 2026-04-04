@@ -50,6 +50,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     openaiKey: process.env.OPENAI_KEY || '',
     anthropicKey: process.env.ANTHROPIC_API_KEY || '',
+    deeplKey: process.env.DEEPL_KEY || '',
     public: {
       version: packageJson.version,
     },

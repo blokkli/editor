@@ -41,79 +41,63 @@
         {{ $t('translationsCsvNoChanges', 'No changes found') }}
       </div>
       <template v-else-if="changes && changes.length">
-        <div class="flex items-center justify-between">
-          <span class="text-mono-900 text-lg font-bold">
-            {{ selectedCount }}/{{ changes.length }}
-            {{ $t('translationsCsvChangesLabel', 'fields will be updated') }}
-          </span>
-          <button class="bk-button bk-is-small" @click="toggleAll">
-            {{
-              allSelected
-                ? $t('translationsCsvDeselectAll', 'Deselect all')
-                : $t('translationsCsvSelectAll', 'Select all')
-            }}
-          </button>
-        </div>
-        <div class="border border-mono-300 rounded overflow-auto flex-1">
-          <table class="bk-csv-table w-full text-sm select-text">
-            <thead>
-              <tr>
-                <th class="w-40" />
-                <th>{{ sourceLangName }}</th>
-                <th v-if="!isMultiLang">
-                  {{ $t('translationsCsvDiff', 'Changes') }}
-                </th>
-                <th v-for="lang in languages" v-else :key="lang">
-                  {{ langName(lang) }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in rows" :key="row.key">
+        <SelectionTable
+          :selected-count="selectedCount"
+          :total-count="changes.length"
+          :label="$t('translationsCsvChangesLabel', 'fields will be updated')"
+          @toggle-all="toggleAll"
+        >
+          <template #header>
+            <th>{{ sourceLangName }}</th>
+            <th v-if="!isMultiLang">
+              {{ $t('translationsCsvDiff', 'Changes') }}
+            </th>
+            <th v-for="lang in languages" v-else :key="lang">
+              {{ langName(lang) }}
+            </th>
+          </template>
+          <template #body>
+            <tr v-for="row in rows" :key="row.key">
+              <td>
+                <div class="bk-checkbox">
+                  <input
+                    type="checkbox"
+                    :checked="isRowSelected(row)"
+                    @change="toggleRow(row)"
+                  />
+                  <span class="!mt-0 before:!mt-0" />
+                </div>
+              </td>
+              <td v-text="row.source" />
+              <template v-if="!isMultiLang">
                 <td>
-                  <div class="bk-checkbox">
-                    <input
-                      type="checkbox"
-                      :checked="isRowSelected(row)"
-                      @change="toggleRow(row)"
-                    />
-                    <span class="!mt-0 before:!mt-0" />
-                  </div>
+                  <DiffValue
+                    :before="singleLangChange(row).current"
+                    :after="singleLangChange(row).imported"
+                  />
                 </td>
-                <td v-text="row.source" />
-                <template v-if="!isMultiLang">
-                  <td>
-                    <DiffValue
-                      :before="singleLangChange(row).current"
-                      :after="singleLangChange(row).imported"
-                    />
-                  </td>
-                </template>
-                <template v-else>
-                  <td v-for="lang in languages" :key="lang">
-                    <div
-                      v-if="row.changes[lang]"
-                      class="flex items-start gap-8"
-                    >
-                      <div class="bk-checkbox shrink-0">
-                        <input
-                          v-model="selected[row.changes[lang]!.id]"
-                          type="checkbox"
-                        />
-                        <span class="!mt-0 before:!mt-0" />
-                      </div>
-                      <DiffValue
-                        :before="row.changes[lang]!.current"
-                        :after="row.changes[lang]!.imported"
+              </template>
+              <template v-else>
+                <td v-for="lang in languages" :key="lang">
+                  <div v-if="row.changes[lang]" class="flex items-start gap-8">
+                    <div class="bk-checkbox shrink-0">
+                      <input
+                        v-model="selected[row.changes[lang]!.id]"
+                        type="checkbox"
                       />
+                      <span class="!mt-0 before:!mt-0" />
                     </div>
-                    <span v-else class="bk-is-empty">&mdash;</span>
-                  </td>
-                </template>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                    <DiffValue
+                      :before="row.changes[lang]!.current"
+                      :after="row.changes[lang]!.imported"
+                    />
+                  </div>
+                  <span v-else class="bk-is-empty">&mdash;</span>
+                </td>
+              </template>
+            </tr>
+          </template>
+        </SelectionTable>
         <div class="flex gap-10 mt-auto">
           <button
             class="bk-button bk-is-primary"
@@ -146,6 +130,7 @@ import { ref, computed, useBlokkli, useTemplateRef, onMounted } from '#imports'
 import { DiffValue, FileDropHandler, Icon } from '#blokkli/editor/components'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
+import SelectionTable from '../../SelectionTable/index.vue'
 
 type ImportChange = {
   id: string
@@ -212,10 +197,6 @@ const selectedCount = computed(
   () => changes.value?.filter((c) => selected.value[c.id]).length ?? 0,
 )
 
-const allSelected = computed(
-  () => !!changes.value?.length && selectedCount.value === changes.value.length,
-)
-
 function isRowSelected(row: ImportRow): boolean {
   const rowChanges = Object.values(row.changes)
   return rowChanges.length > 0 && rowChanges.every((c) => selected.value[c.id])
@@ -234,7 +215,9 @@ function singleLangChange(row: ImportRow): ImportChange {
 
 function toggleAll() {
   if (!changes.value) return
-  const newValue = !allSelected.value
+  const allSelected =
+    changes.value.length > 0 && selectedCount.value === changes.value.length
+  const newValue = !allSelected
   for (const change of changes.value) {
     selected.value[change.id] = newValue
   }

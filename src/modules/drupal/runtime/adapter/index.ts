@@ -754,6 +754,25 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         )
     }
 
+    if (hasMutation('pbRequestTranslation')) {
+      adapter.requestTranslation = (items) =>
+        useGraphqlMutation('pbRequestTranslation', {
+          items: items.map((item) => ({
+            key: item.key,
+            text: item.text,
+            sourceLanguage: item.sourceLanguage,
+            targetLanguage: item.targetLanguage,
+          })),
+        }).then((v) => ({
+          success: v.data.result?.success ?? false,
+          errors: v.data.result?.errors ?? undefined,
+          data: (v.data.result?.items || []).map((item) => ({
+            key: item.key,
+            translatedText: item.text,
+          })),
+        }))
+    }
+
     if (hasMutation('pbAddReusableParagraph')) {
       adapter.addLibraryItem = (e) =>
         useGraphqlMutation('pbAddReusableParagraph', {

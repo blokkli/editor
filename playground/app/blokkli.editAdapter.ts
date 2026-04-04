@@ -887,6 +887,25 @@ export default defineBlokkliEditAdapter((ctx) => {
     importTranslationsBatched: (items) =>
       addMutation('import_translations_batched', { items }),
 
+    async requestTranslation(items) {
+      try {
+        const data = await $fetch<{ key: string; translatedText: string }[]>(
+          '/api/translate',
+          {
+            method: 'POST',
+            body: { items },
+          },
+        )
+        return { success: true, data }
+      } catch (e: any) {
+        return {
+          success: false,
+          data: [],
+          errors: [e?.message || 'Translation request failed.'],
+        }
+      }
+    },
+
     updateFieldValueBatched: (e) => {
       const lang = ctx.value.language
       if (lang && lang !== 'en') {

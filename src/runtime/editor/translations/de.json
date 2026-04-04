@@ -1653,7 +1653,7 @@
   },
   "download": {
     "source": "Download",
-    "translation": ""
+    "translation": "Herunterladen"
   },
   "downloadLogsButton": {
     "source": "Download Logs",
@@ -3371,6 +3371,22 @@
     "source": "The translation is marked as outdated.",
     "translation": "Die Übersetzung ist als veraltet markiert."
   },
+  "translationsAddFiles": {
+    "source": "Add files...",
+    "translation": "Dateien hinzufügen..."
+  },
+  "translationsAutoTranslate": {
+    "source": "Auto-translate",
+    "translation": "Automatisch übersetzen"
+  },
+  "translationsAutoTranslateButton": {
+    "source": "Auto-translate...",
+    "translation": "Automatisch übersetzen..."
+  },
+  "translationsAutoTranslateTooltip": {
+    "source": "Automatically translate all texts using a translation service",
+    "translation": "Alle Texte automatisch mit einem Übersetzungsdienst übersetzen"
+  },
   "translationsBannerButton": {
     "source": "Edit source language instead",
     "translation": "Originalsprache bearbeiten"
@@ -3415,17 +3431,13 @@
     "source": "fields will be updated",
     "translation": "Felder werden aktualisiert"
   },
-  "translationsCsvDeselectAll": {
-    "source": "Deselect all",
-    "translation": "Alle abwählen"
-  },
   "translationsCsvDialogTitle": {
     "source": "Import/Export Translations",
     "translation": "Übersetzungen importieren/exportieren"
   },
   "translationsCsvDiff": {
     "source": "Changes",
-    "translation": ""
+    "translation": "Änderungen"
   },
   "translationsCsvExport": {
     "source": "Export",
@@ -3435,13 +3447,9 @@
     "source": "Import",
     "translation": "Import"
   },
-  "translationsCsvLanguage": {
-    "source": "Language",
-    "translation": ""
-  },
   "translationsCsvLanguages": {
     "source": "Languages",
-    "translation": ""
+    "translation": "Sprachen"
   },
   "translationsCsvMenuTitle": {
     "source": "Import/export...",
@@ -3449,7 +3457,7 @@
   },
   "translationsCsvNoChanges": {
     "source": "No changes found",
-    "translation": ""
+    "translation": "Keine Änderungen gefunden"
   },
   "translationsCsvOnlyMissing": {
     "source": "Only missing translations",
@@ -3459,13 +3467,13 @@
     "source": "Only outdated translations",
     "translation": "Nur veraltete Übersetzungen"
   },
-  "translationsCsvSelectAll": {
-    "source": "Select all",
-    "translation": "Alle auswählen"
+  "translationsCsvTooltip": {
+    "source": "Import or export translations as CSV or PO files",
+    "translation": "Übersetzungen als CSV- oder PO-Dateien importieren oder exportieren"
   },
   "translationsDropToImport": {
     "source": "Drop CSV or PO file to import",
-    "translation": ""
+    "translation": "CSV- oder PO-Datei zum Importieren ablegen"
   },
   "translationsItemAction": {
     "source": "Translate",
@@ -3481,7 +3489,7 @@
   },
   "translationsSelectImportFile": {
     "source": "Select CSV or PO file",
-    "translation": ""
+    "translation": "CSV- oder PO-Datei auswählen"
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
@@ -3490,6 +3498,38 @@
   "translationsTourTitle": {
     "source": "Translations",
     "translation": "Übersetzungen"
+  },
+  "translationsTranslateApply": {
+    "source": "Apply @count translations",
+    "translation": "@count Übersetzungen anwenden"
+  },
+  "translationsTranslateBack": {
+    "source": "Back",
+    "translation": "Zurück"
+  },
+  "translationsTranslateButton": {
+    "source": "Translate @count fields",
+    "translation": "@count Felder übersetzen"
+  },
+  "translationsTranslateCurrentColumn": {
+    "source": "Current translation (@language)",
+    "translation": "Aktuelle Übersetzung (@language)"
+  },
+  "translationsTranslateDialogTitle": {
+    "source": "Automatic Translation",
+    "translation": "Automatische Übersetzung"
+  },
+  "translationsTranslateFieldsLabel": {
+    "source": "fields selected",
+    "translation": "Felder ausgewählt"
+  },
+  "translationsTranslateLoading": {
+    "source": "Translating...",
+    "translation": "Wird übersetzt..."
+  },
+  "translationsTranslateNoTexts": {
+    "source": "No translatable texts found on this page.",
+    "translation": "Keine übersetzbaren Texte auf dieser Seite gefunden."
   },
   "unexpectedMutationError": {
     "source": "An unexpected error happened.",

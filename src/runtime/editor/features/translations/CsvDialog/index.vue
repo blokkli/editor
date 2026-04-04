@@ -42,28 +42,3 @@ const tabs = [
   { id: 'import', label: $t('translationsCsvImport', 'Import') },
 ]
 </script>
-
-<style lang="postcss">
-.bk-csv-table {
-  border-collapse: collapse;
-
-  th {
-    @apply text-left p-8 bg-mono-100 font-semibold text-mono-700 sticky top-0;
-  }
-
-  td {
-    @apply p-8 border-t border-t-mono-200;
-    max-width: 400px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  tr:hover td {
-    @apply bg-mono-50;
-  }
-
-  .bk-is-empty {
-    @apply text-mono-400 italic;
-  }
-}
-</style>

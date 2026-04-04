@@ -124,7 +124,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-blokkli-item-actions-interactions {
+.bk .bk-blokkli-item-actions-interactions {
   @apply h-50 w-25 relative;
   @apply lg:border-r lg:border-r-mono-500;
 

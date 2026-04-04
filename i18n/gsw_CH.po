@@ -3634,6 +3634,22 @@ msgctxt "translationOutdatedHint"
 msgid "The translation is marked as outdated."
 msgstr ""
 
+msgctxt "translationsAddFiles"
+msgid "Add files..."
+msgstr ""
+
+msgctxt "translationsAutoTranslate"
+msgid "Auto-translate"
+msgstr ""
+
+msgctxt "translationsAutoTranslateButton"
+msgid "Auto-translate..."
+msgstr ""
+
+msgctxt "translationsAutoTranslateTooltip"
+msgid "Automatically translate all texts using a translation service"
+msgstr ""
+
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
 msgstr "Stattdässe Quellsproch bearbeite"
@@ -3681,10 +3697,6 @@ msgctxt "translationsCsvChangesLabel"
 msgid "fields will be updated"
 msgstr ""
 
-msgctxt "translationsCsvDeselectAll"
-msgid "Deselect all"
-msgstr ""
-
 msgctxt "translationsCsvDialogTitle"
 msgid "Import/Export Translations"
 msgstr ""
@@ -3699,10 +3711,6 @@ msgstr ""
 
 msgctxt "translationsCsvImport"
 msgid "Import"
-msgstr ""
-
-msgctxt "translationsCsvLanguage"
-msgid "Language"
 msgstr ""
 
 msgctxt "translationsCsvLanguages"
@@ -3725,8 +3733,8 @@ msgctxt "translationsCsvOnlyOutdated"
 msgid "Only outdated translations"
 msgstr ""
 
-msgctxt "translationsCsvSelectAll"
-msgid "Select all"
+msgctxt "translationsCsvTooltip"
+msgid "Import or export translations as CSV or PO files"
 msgstr ""
 
 msgctxt "translationsDropToImport"
@@ -3762,6 +3770,38 @@ msgstr ""
 msgctxt "translationsTourTitle"
 msgid "Translations"
 msgstr "Übersetzige"
+
+msgctxt "translationsTranslateApply"
+msgid "Apply @count translations"
+msgstr ""
+
+msgctxt "translationsTranslateBack"
+msgid "Back"
+msgstr ""
+
+msgctxt "translationsTranslateButton"
+msgid "Translate @count fields"
+msgstr ""
+
+msgctxt "translationsTranslateCurrentColumn"
+msgid "Current translation (@language)"
+msgstr ""
+
+msgctxt "translationsTranslateDialogTitle"
+msgid "Automatic Translation"
+msgstr ""
+
+msgctxt "translationsTranslateFieldsLabel"
+msgid "fields selected"
+msgstr ""
+
+msgctxt "translationsTranslateLoading"
+msgid "Translating..."
+msgstr ""
+
+msgctxt "translationsTranslateNoTexts"
+msgid "No translatable texts found on this page."
+msgstr ""
 
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."

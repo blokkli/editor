@@ -215,6 +215,9 @@ export declare const templateEditRouteName: string|null
     addMutation('bulk_update_field_values')
     addMutation('clear_outdated_translation')
     addMutation('bulk_translate_field_values')
+    if (mutationFields.has('paragraphsBlokkliRequestTranslation')) {
+      addGraphqlDocument('mutations/request_translation.graphql')
+    }
     if (editStateFields.has('textFieldValues')) {
       addGraphqlDocument('features/textFieldValues.graphql')
     }

@@ -59,9 +59,15 @@
         !!adapter.loadTextFieldValuesForLanguage &&
         !!adapter.importTranslationsBatched
       "
+      :show-translate="
+        !!adapter.requestTranslation &&
+        !!adapter.loadTextFieldValuesForLanguage &&
+        !!adapter.importTranslationsBatched
+      "
       :dialog-open="showCsvDialog"
       @mark-all-up-to-date="onMarkUpToDate"
       @open-csv="showCsvDialog = true"
+      @open-translate="showTranslateDialog = true"
       @import-file="onImportFile"
     />
   </Teleport>
@@ -84,6 +90,12 @@
         v-if="showCsvDialog"
         :initial-files="pendingImportFiles"
         @close="onCsvDialogClose"
+      />
+    </BlokkliTransition>
+    <BlokkliTransition name="slide-up">
+      <TranslateDialog
+        v-if="showTranslateDialog"
+        @close="showTranslateDialog = false"
       />
     </BlokkliTransition>
   </Teleport>
@@ -111,9 +123,11 @@ import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import Banner from './Banner/index.vue'
 import CsvDialog from './CsvDialog/index.vue'
+import TranslateDialog from './TranslateDialog/index.vue'
 import {
   defineMenuButton,
   defineHighlight,
+  defineItemDropdownAction,
   onBlokkliEvent,
   useDialog,
 } from '#blokkli/editor/composables'
@@ -142,6 +156,7 @@ const {
 } = useBlokkli()
 
 const showCsvDialog = useDialog('translations-csv', 'center')
+const showTranslateDialog = useDialog('translations-translate', 'center')
 const pendingImportFiles = ref<File[] | null>(null)
 
 const isTranslating = computed(() => state.editMode.value === 'translating')
@@ -176,6 +191,71 @@ defineHighlight(() => {
       onClick: () => onMarkUpToDate([block]),
     }))
 })
+
+const autoTranslateLabel = computed(() => {
+  return $t('translationsAutoTranslate', 'Auto-translate')
+})
+
+defineItemDropdownAction(() => {
+  if (
+    !isTranslating.value ||
+    !adapter.requestTranslation ||
+    !adapter.loadTextFieldValuesForLanguage ||
+    !adapter.importTranslationsBatched
+  ) {
+    return
+  }
+
+  const selectedUuids = selection.uuids.value
+  if (!selectedUuids.length) return
+
+  return {
+    id: 'auto-translate',
+    label: autoTranslateLabel.value,
+    icon: 'bk_mdi_translate',
+    group: 'translate',
+    weight: -80,
+    callback: () => autoTranslateSelected(),
+  }
+})
+
+async function autoTranslateSelected() {
+  ui.setTransform(autoTranslateLabel.value)
+  const sourceLanguage = state.translation.value.sourceLanguage || 'en'
+  const targetLanguage = context.value.language
+  const selectedUuids = new Set(selection.uuids.value)
+
+  const sourceValues =
+    await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
+  const items = sourceValues
+    .filter((v) => selectedUuids.has(v.uuid))
+    .map((v) => ({
+      key: `${v.uuid}:${v.fieldName}`,
+      text: v.value,
+      sourceLanguage,
+      targetLanguage,
+    }))
+
+  if (items.length) {
+    const response = await adapter.requestTranslation!(items)
+    if (!response.success || !response.data.length) return
+
+    const importItems = response.data.map((result) => {
+      const separatorIndex = result.key.indexOf(':')
+      return {
+        langcode: targetLanguage,
+        uuid: result.key.substring(0, separatorIndex),
+        fieldName: result.key.substring(separatorIndex + 1),
+        fieldValue: result.translatedText,
+      }
+    })
+
+    await state.mutateWithLoadingState(() =>
+      adapter.importTranslationsBatched!(importItems),
+    )
+  }
+  ui.setTransform(null)
+}
 
 const isOpen = ref(false)
 
@@ -372,7 +452,15 @@ defineMenuButton(() => {
     disabled: !isTranslating.value,
     weight: 60,
     callback: () => {
-      eventBus.emit('batchTranslate')
+      if (
+        adapter.requestTranslation &&
+        adapter.loadTextFieldValuesForLanguage &&
+        adapter.importTranslationsBatched
+      ) {
+        showTranslateDialog.value = true
+      } else {
+        eventBus.emit('batchTranslate')
+      }
     },
   }
 })

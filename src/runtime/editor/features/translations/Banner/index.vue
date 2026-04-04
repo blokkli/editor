@@ -50,13 +50,43 @@
             </div>
           </TransitionHeight>
         </template>
-        <template v-if="showCsv" #before-button>
-          <button
-            class="bk-button bk-is-small bk-is-scheme"
-            @click.prevent="$emit('open-csv')"
-          >
-            {{ $t('translationsCsvMenuTitle', 'Import/export...') }}
-          </button>
+        <template v-if="showCsv || showTranslate" #before-button>
+          <div class="flex gap-10 relative">
+            <button
+              v-if="showTranslate"
+              class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+              @click.prevent="$emit('open-translate')"
+            >
+              <Icon name="bk_mdi_translate" />
+              {{ $t('translationsAutoTranslateButton', 'Auto-translate...') }}
+              <Tooltip
+                :label="
+                  $t(
+                    'translationsAutoTranslateTooltip',
+                    'Automatically translate all texts using a translation service',
+                  )
+                "
+                placement="above-left"
+              />
+            </button>
+            <button
+              v-if="showCsv"
+              class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+              @click.prevent="$emit('open-csv')"
+            >
+              <Icon name="bk_mdi_upload" />
+              {{ $t('translationsCsvMenuTitle', 'Import/export...') }}
+              <Tooltip
+                :label="
+                  $t(
+                    'translationsCsvTooltip',
+                    'Import or export translations as CSV or PO files',
+                  )
+                "
+                placement="above-left"
+              />
+            </button>
+          </div>
         </template>
       </BannerInner>
     </FileDropHandler>
@@ -71,12 +101,14 @@ import {
   FileDropHandler,
   Icon,
   TransitionHeight,
+  Tooltip,
 } from '#blokkli/editor/components'
 import type { Language } from '#blokkli/editor/types/state'
 
 const props = defineProps<{
   activeLanguage: Language
   showCsv?: boolean
+  showTranslate?: boolean
   dialogOpen?: boolean
 }>()
 
@@ -84,7 +116,7 @@ const { $t, adapter, state, ui, eventBus, blocks } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'mark-all-up-to-date', uuids: string[]): void
-  (e: 'open-csv'): void
+  (e: 'open-csv' | 'open-translate'): void
   (e: 'import-file', files: File[]): void
 }>()
 

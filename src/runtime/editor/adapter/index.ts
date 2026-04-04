@@ -18,6 +18,12 @@ export interface MutationResponseLike<T> {
   errors?: string[]
 }
 
+export interface GenericAdapterResponse<T> {
+  success: boolean
+  data: T
+  errors?: string[]
+}
+
 export type UpdateEntityFieldValueEvent = {
   fieldName: string
   fieldValue: string

@@ -104,6 +104,9 @@
     }
   }
   .bk-checkbox {
+    input:focus-visible ~ span:before {
+      @apply ring;
+    }
     input:checked ~ span:before {
       background-image: url('/_blokkli-assets/check.svg');
       background-size: 80% 80%;

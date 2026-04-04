@@ -2701,6 +2701,9 @@ type Mutation {
   permission.
   """
   paragraphsBlokkliAgentToken: String
+
+  """Request translations via DeepL."""
+  paragraphsBlokkliRequestTranslation(items: [ParagraphsBlokkliTranslationInput!]!): ParagraphsBlokkliTranslationResult!
   paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
 
@@ -8377,6 +8380,39 @@ type ParagraphsBlokkliTransformPlugin {
   max: Int!
   min: Int!
   targetBundles: [String!]
+}
+
+type ParagraphsBlokkliTranslatedItem {
+  """The key matching the input item."""
+  key: String!
+
+  """The translated text."""
+  text: String!
+}
+
+input ParagraphsBlokkliTranslationInput {
+  """A unique key to map the translated text back to the original."""
+  key: String!
+
+  """The source language code."""
+  sourceLanguage: String!
+
+  """The target language code."""
+  targetLanguage: String!
+
+  """The text to translate."""
+  text: String!
+}
+
+type ParagraphsBlokkliTranslationResult {
+  """Error messages if the request failed."""
+  errors: [String!]
+
+  """The translated items."""
+  items: [ParagraphsBlokkliTranslatedItem!]
+
+  """Whether the translation request was successful."""
+  success: Boolean!
 }
 
 type ParagraphsBlokkliTranslationState {
