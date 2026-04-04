@@ -214,6 +214,10 @@ export declare const templateEditRouteName: string|null
     addMutation('replace_entity_reference')
     addMutation('bulk_update_field_values')
     addMutation('clear_outdated_translation')
+    addMutation('bulk_translate_field_values')
+    if (editStateFields.has('textFieldValues')) {
+      addGraphqlDocument('features/textFieldValues.graphql')
+    }
     addMutation('ignore_analyze')
     addMutation('unignore_analyze')
 

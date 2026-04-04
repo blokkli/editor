@@ -7865,6 +7865,13 @@ type ParagraphsBlokkliAvailableFeatures {
   mutations: [String!]
 }
 
+input ParagraphsBlokkliBulkTranslateFieldValuesInput {
+  langcode: String!
+  name: String!
+  uuid: String
+  value: String!
+}
+
 input ParagraphsBlokkliBulkUpdateBehaviorSettingsInput {
   key: String!
   pluginId: String!
@@ -8735,6 +8742,14 @@ type ParagraphsEditMutationState {
 
     """The video URL."""
     url: String!
+  ): ParagraphsBlokkliMutationResult
+
+  """
+  Updates multiple field values across different translations on paragraphs and/or the host entity.
+  """
+  bulk_translate_field_values(
+    """A list of arrays with keys: uuid, name, value, langcode."""
+    items: [ParagraphsBlokkliBulkTranslateFieldValuesInput]!
   ): ParagraphsBlokkliMutationResult
 
   """Updates multiple behavior settings."""

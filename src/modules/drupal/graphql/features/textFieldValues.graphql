@@ -1,0 +1,18 @@
+query pbTextFieldValues(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+) {
+  state: getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
+    textFieldValues(langcode: $langcode) {
+      uuid
+      fieldName
+      value
+      fieldType
+    }
+  }
+}

@@ -94,17 +94,8 @@ import { buildMultiLangCsv } from '../csv'
 import { buildPo } from '../po'
 import type { Language } from '#blokkli/editor/types/state'
 
-const {
-  adapter,
-  $t,
-  state,
-  fieldValue,
-  blocks,
-  context,
-  element,
-  ui,
-  directive,
-} = useBlokkli()
+const { adapter, $t, state, blocks, context, element, ui, directive } =
+  useBlokkli()
 
 const isLoading = ref(false)
 const onlyOutdated = ref(false)

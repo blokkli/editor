@@ -1,10 +1,7 @@
 import PO from 'pofile'
 import type { CsvRow } from './csv'
 
-export function buildPo(
-  rows: CsvRow[],
-  language: string,
-): string {
+export function buildPo(rows: CsvRow[], language: string): string {
   const po = new PO()
 
   po.headers = {

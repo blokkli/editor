@@ -33,7 +33,9 @@ defineEmits<{
 
 const { $t } = useBlokkli()
 
-const mode = ref<'export' | 'import'>(props.initialFiles?.length ? 'import' : 'export')
+const mode = ref<'export' | 'import'>(
+  props.initialFiles?.length ? 'import' : 'export',
+)
 
 const tabs = [
   { id: 'export', label: $t('translationsCsvExport', 'Export') },

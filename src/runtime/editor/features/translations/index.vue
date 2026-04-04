@@ -55,7 +55,10 @@
     <Banner
       v-if="isTranslating"
       :active-language
-      :show-csv="!!adapter.loadTextFieldValuesForLanguage && !!adapter.importTranslationsBatched"
+      :show-csv="
+        !!adapter.loadTextFieldValuesForLanguage &&
+        !!adapter.importTranslationsBatched
+      "
       :dialog-open="showCsvDialog"
       @mark-all-up-to-date="onMarkUpToDate"
       @open-csv="showCsvDialog = true"

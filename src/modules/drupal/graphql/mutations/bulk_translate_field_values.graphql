@@ -1,0 +1,15 @@
+mutation pbBulkTranslateFieldValues(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $items: [ParagraphsBlokkliBulkTranslateFieldValuesInput]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: bulk_translate_field_values(items: $items) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

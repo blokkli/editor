@@ -20,10 +20,7 @@
           <Icon name="bk_mdi_close" class="size-15" />
         </button>
       </div>
-      <button
-        class="bk-button bk-is-small"
-        @click.prevent="triggerFileDialog"
-      >
+      <button class="bk-button bk-is-small" @click.prevent="triggerFileDialog">
         {{ $t('translationsAddFiles', 'Add files...') }}
       </button>
     </div>
@@ -124,10 +121,10 @@
             @click="applyImport"
           >
             {{
-              $t(
-                'translationsCsvApply',
-                'Import @count translations',
-              ).replace('@count', selectedCount.toString())
+              $t('translationsCsvApply', 'Import @count translations').replace(
+                '@count',
+                selectedCount.toString(),
+              )
             }}
           </button>
         </div>
@@ -145,13 +142,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  useBlokkli,
-  useTemplateRef,
-  onMounted,
-} from '#imports'
+import { ref, computed, useBlokkli, useTemplateRef, onMounted } from '#imports'
 import { DiffValue, FileDropHandler, Icon } from '#blokkli/editor/components'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'

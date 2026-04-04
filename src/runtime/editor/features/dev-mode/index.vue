@@ -13,10 +13,7 @@
     <div v-if="fieldMappingValidations.length" class="bk bk-dev-mode">
       <div class="bk-dev-mode-inner">
         <Banner id="dev-mode" scheme="red">
-          <BannerInner
-            icon="bk_mdi_logo_dev"
-            text="Invalid definitions found!"
-          >
+          <BannerInner icon="bk_mdi_logo_dev" text="Invalid definitions found!">
             <div class="bk-dev-mode-banner">
               <h3>Some block components are invalid:</h3>
               <table>

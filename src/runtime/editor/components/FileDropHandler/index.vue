@@ -19,7 +19,7 @@
         <div
           class="bk-file-drop-content relative flex flex-col items-center gap-8 text-mono-100 font-semibold text-base"
         >
-          <Icon :name="icon" class="size-80" />
+          <Icon :name="icon" class="size-50" />
           <span>{{ label }}</span>
         </div>
       </div>

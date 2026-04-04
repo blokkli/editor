@@ -310,7 +310,7 @@ export class EntityStorageManager {
         tagline: ['Simplicité'],
         title: ['Outils essentiels pour une édition fluide'],
         lead: [
-          "Naviguez dans les bases de la construction de pages avec une facilité inégalée.",
+          'Naviguez dans les bases de la construction de pages avec une facilité inégalée.',
         ],
       },
       'a4aac285-9615-4764-81de-96d3af41e622': {
@@ -348,7 +348,7 @@ export class EntityStorageManager {
       '5780e657-2c02-45b2-bb92-1424a7a29fb8': {
         title: ['Multilingue'],
         text: [
-          "blökkli supporte un flux de travail multilingue. Lors de la traduction, la structure ne peut pas être modifiée.",
+          'blökkli supporte un flux de travail multilingue. Lors de la traduction, la structure ne peut pas être modifiée.',
         ],
       },
       '0962e858-fbf6-4f98-bf6f-f7813bd5f9be': {
