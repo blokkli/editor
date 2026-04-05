@@ -138,6 +138,7 @@ const {
   $t,
   types,
   context,
+  fieldValue,
   element: elementProvider,
 } = useBlokkli()
 
@@ -226,10 +227,7 @@ function onFormattedValue(text: string) {
 }
 
 const canTranslate = computed(
-  () =>
-    state.editMode.value === 'translating' &&
-    !!adapter.requestTranslation &&
-    !!adapter.loadTextFieldValuesForLanguage,
+  () => state.editMode.value === 'translating' && !!adapter.requestTranslation,
 )
 
 async function autoTranslate() {
@@ -239,20 +237,12 @@ async function autoTranslate() {
   try {
     const sourceLanguage = state.translation.value.sourceLanguage || 'en'
     const targetLanguage = context.value.language
-
-    // Load the source language value for this field.
-    const sourceValues =
-      await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
     const key = `${props.host.uuid}:${props.fieldName}`
-    const sourceField = sourceValues.find(
-      (v) => `${v.uuid}:${v.fieldName}` === key,
-    )
-    if (!sourceField) return
 
     const response = await adapter.requestTranslation!([
       {
         key,
-        text: sourceField.value,
+        text: modelValue.value,
         isHtml: readabilityFieldType.value === 'markup',
         sourceLanguage,
         targetLanguage,
@@ -324,6 +314,8 @@ async function save() {
   isClosing.value = true
 
   if (hasChanged.value) {
+    console.log('modelValue', modelValue.value)
+    console.log('originalText', originalText.value)
     if (errorText.value) {
       // Validation error: restore original state instead of saving.
       restoreOriginalState()
@@ -390,11 +382,21 @@ const focusInput = (el?: HTMLElement | Document | null) => {
 onMounted(() => {
   const el = props.element
 
-  // Use the composable's captured original value, or the component's value prop.
+  // Read the raw value from textFieldValues when available (always has
+  // unprocessed values), fall back to the override's captured DOM value.
   if (props.isComponent) {
     modelValue.value = props.value || ''
   } else {
-    modelValue.value = override.originalValue
+    const tfv = fieldValue.getTextFieldValues().find(
+      (v) => v.uuid === props.host.uuid && v.fieldName === props.fieldName,
+    )
+    modelValue.value =
+      tfv?.value ||
+      override.originalValue ||
+      (isMarkup.value
+        ? props.element.innerHTML
+        : props.element.textContent) ||
+      ''
   }
 
   originalText.value = modelValue.value

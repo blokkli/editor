@@ -10,7 +10,7 @@
     }"
   >
     <Icon v-if="icon" :name="icon" />
-    <span v-blokkli-editable:title>{{ title }}</span>
+    <span v-blokkli-editable:title>{{ title || 'Learn more' }}</span>
   </Component>
 </template>
 
@@ -52,11 +52,19 @@ const { options } = defineBlokkli({
     addBehaviour: 'no-form',
     editTitle: (el) => el.querySelector('a')?.textContent,
   },
+  propsFieldMapping: {
+    url: null,
+    title: {
+      type: 'editable',
+      name: 'title'
+    },
+    icon: null
+  }
 })
 
 const props = defineProps<{
   url: string
-  title: string
+  title?: string
   icon?: BlokkliIcon
 }>()
 

@@ -129,8 +129,6 @@ const url = computed(() => {
   })
 })
 
-const original = ref('')
-
 const onMessage = (e: MessageEvent) => {
   if (typeof e.data === 'object') {
     if (e.data.name === 'blokkli__editable_field_update') {
@@ -156,7 +154,6 @@ function setValue(text: string) {
 defineExpose({ setValue })
 
 onMounted(() => {
-  original.value = modelValue.value
   height.value = props.initialHeight
 
   window.addEventListener('message', onMessage)

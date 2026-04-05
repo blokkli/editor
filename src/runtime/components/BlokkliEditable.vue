@@ -59,13 +59,12 @@ defineSlots<{
 
 const isEditingBuild = import.meta.blokkliEditing
 
-const root = useTemplateRef('root')
-
 const valueOverride = ref('')
 
 const renderedValue = computed(() => valueOverride.value || props.value || '')
 
 if (isEditingBuild) {
+  const root = useTemplateRef('root')
   const isEditing = inject(INJECT_IS_EDITING, false)
   const entity = inject(INJECT_ENTITY_CONTEXT, null)
   const editContext = inject(INJECT_EDIT_CONTEXT, null)
