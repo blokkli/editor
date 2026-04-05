@@ -37,6 +37,10 @@ const props = defineProps<{
 
 const modelValue = defineModel<string>({ required: true })
 
+const emit = defineEmits<{
+  formatted: [text: string]
+}>()
+
 const iframe = useTemplateRef('iframe')
 
 function onIframeLoad() {
@@ -131,6 +135,8 @@ const onMessage = (e: MessageEvent) => {
   if (typeof e.data === 'object') {
     if (e.data.name === 'blokkli__editable_field_update') {
       modelValue.value = e.data.data.text
+    } else if (e.data.name === 'blokkli__editable_field_update_formatted') {
+      emit('formatted', e.data.data.text)
     } else if (e.data.name === 'blokkli__editable_field_update_height') {
       height.value = e.data.data.height
     }

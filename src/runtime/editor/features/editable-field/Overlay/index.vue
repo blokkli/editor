@@ -27,6 +27,7 @@
           :field-name="fieldName"
           :host="host"
           :initial-height="scrollHeight"
+          @formatted="onFormattedValue"
         />
 
         <InputPlaintext
@@ -160,6 +161,9 @@ const form = useTemplateRef('form')
 const inputFrame = useTemplateRef('inputFrame')
 const isClosing = ref(false)
 const isAutoTranslating = ref(false)
+// For frame fields: the backend-processed HTML used for live preview.
+// When set, the preview uses this instead of the raw modelValue.
+const formattedValue = ref<string | null>(null)
 
 // Create field override for live preview via the correct update strategy.
 const override = useEditableFieldOverride(props.fieldName, props.host)
@@ -216,6 +220,10 @@ const readabilityFieldType = computed<'plain' | 'markup'>(() =>
     ? 'markup'
     : 'plain',
 )
+
+function onFormattedValue(text: string) {
+  formattedValue.value = text
+}
 
 const canTranslate = computed(
   () =>
@@ -330,9 +338,16 @@ async function save() {
 onBlokkliEvent('window:clickAway', save)
 
 // Update the live preview as the user types.
-watch(modelValue, (newText) => {
-  override.setValue(newText)
-})
+// Frame fields use the backend-formatted value; other fields use modelValue directly.
+watch(
+  () =>
+    props.config.type === 'frame' ? formattedValue.value : modelValue.value,
+  (newText) => {
+    if (newText !== null) {
+      override.setValue(newText)
+    }
+  },
+)
 
 const focusInput = (el?: HTMLElement | Document | null) => {
   if (!el) {

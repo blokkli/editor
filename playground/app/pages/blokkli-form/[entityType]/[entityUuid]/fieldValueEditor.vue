@@ -66,10 +66,15 @@ const getHeight = () => {
 const sendMessageToParent = () => {
   if (window.parent !== window) {
     window.parent.postMessage({
-      name: 'blokkli__' + 'editable_field_update',
+      name: 'blokkli__editable_field_update',
       data: {
         text: value.value,
-        height: getHeight(),
+      },
+    })
+    window.parent.postMessage({
+      name: 'blokkli__editable_field_update_formatted',
+      data: {
+        text: value.value,
       },
     })
   }
