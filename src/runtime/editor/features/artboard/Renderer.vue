@@ -398,10 +398,6 @@ onBlokkliEvent('keyPressed', (e) => {
   } else if (e.code === '0' && e.meta) {
     e.originalEvent.preventDefault()
     resetZoom()
-  } else if (e.code === '1' && e.meta) {
-    e.originalEvent.preventDefault()
-    artboard.scaleToFit()
-    animation.requestDraw()
   }
 })
 
