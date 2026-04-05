@@ -1659,6 +1659,10 @@
     "source": "Download Logs",
     "translation": "Fählerprotokoll abelade"
   },
+  "downloadWithLabel": {
+    "source": "Download @label",
+    "translation": ""
+  },
   "draggingOverlaySelectBundle": {
     "source": "Select block type to create",
     "translation": "Blocktyp zum Erstelle uswähle"
@@ -1743,9 +1747,29 @@
     "source": "Edit field \"@name\"",
     "translation": "Fäld «@name» bearbeite"
   },
+  "editableFieldCharCountMax": {
+    "source": "@count of @max characters used",
+    "translation": ""
+  },
   "editableFieldDiscard": {
     "source": "Discard",
     "translation": "Verwärfe"
+  },
+  "editableFieldExitFullscreen": {
+    "source": "Exit Fullscreen",
+    "translation": ""
+  },
+  "editableFieldFullscreen": {
+    "source": "Fullscreen",
+    "translation": ""
+  },
+  "editableFieldTranslate": {
+    "source": "Translate",
+    "translation": ""
+  },
+  "editableFieldTranslateTooltip": {
+    "source": "Automatically translate the current text.",
+    "translation": ""
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
@@ -2999,6 +3023,10 @@
     "source": "All changes have been discarded.",
     "translation": "Alli Änderige sin glöscht worde."
   },
+  "save": {
+    "source": "Save",
+    "translation": ""
+  },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
     "translation": "D'Änderige wärde a dem Datum publiziert."
@@ -3480,7 +3508,7 @@
     "translation": "Übersetze..."
   },
   "translationsMarkUpToDate": {
-    "source": "Mark translation as up-to-date",
+    "source": "Mark translations as up to date",
     "translation": ""
   },
   "translationsMarkUpToDateDisabled": {

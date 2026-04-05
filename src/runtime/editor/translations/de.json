@@ -1659,6 +1659,10 @@
     "source": "Download Logs",
     "translation": "Fehlerprotokoll herunterladen"
   },
+  "downloadWithLabel": {
+    "source": "Download @label",
+    "translation": "@label herunterladen"
+  },
   "draggingOverlaySelectBundle": {
     "source": "Select block type to create",
     "translation": "Block-Typ zum Erstellen auswählen"
@@ -1743,9 +1747,29 @@
     "source": "Edit field \"@name\"",
     "translation": "Feld «@name» bearbeiten"
   },
+  "editableFieldCharCountMax": {
+    "source": "@count of @max characters used",
+    "translation": "@count von @max Zeichen verwendet"
+  },
   "editableFieldDiscard": {
     "source": "Discard",
     "translation": "Verwerfen"
+  },
+  "editableFieldExitFullscreen": {
+    "source": "Exit Fullscreen",
+    "translation": "Vollbild beenden"
+  },
+  "editableFieldFullscreen": {
+    "source": "Fullscreen",
+    "translation": "Vollbild"
+  },
+  "editableFieldTranslate": {
+    "source": "Translate",
+    "translation": "Übersetzen"
+  },
+  "editableFieldTranslateTooltip": {
+    "source": "Automatically translate the current text.",
+    "translation": "Den aktuellen Text automatisch übersetzen."
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
@@ -2999,6 +3023,10 @@
     "source": "All changes have been discarded.",
     "translation": "Alle Änderungen wurden verworfen."
   },
+  "save": {
+    "source": "Save",
+    "translation": "Speichern"
+  },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
     "translation": "Die Änderungen werden an diesem Datum publiziert."
@@ -3480,7 +3508,7 @@
     "translation": "Übersetzen"
   },
   "translationsMarkUpToDate": {
-    "source": "Mark translation as up-to-date",
+    "source": "Mark translations as up to date",
     "translation": "Übersetzung als aktuell markieren"
   },
   "translationsMarkUpToDateDisabled": {

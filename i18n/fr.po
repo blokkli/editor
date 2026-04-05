@@ -1695,6 +1695,10 @@ msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr ""
 
+msgctxt "downloadWithLabel"
+msgid "Download @label"
+msgstr ""
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr ""
@@ -1779,8 +1783,28 @@ msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr ""
 
+msgctxt "editableFieldCharCountMax"
+msgid "@count of @max characters used"
+msgstr ""
+
 msgctxt "editableFieldDiscard"
 msgid "Discard"
+msgstr ""
+
+msgctxt "editableFieldExitFullscreen"
+msgid "Exit Fullscreen"
+msgstr ""
+
+msgctxt "editableFieldFullscreen"
+msgid "Fullscreen"
+msgstr ""
+
+msgctxt "editableFieldTranslate"
+msgid "Translate"
+msgstr ""
+
+msgctxt "editableFieldTranslateTooltip"
+msgid "Automatically translate the current text."
 msgstr ""
 
 msgctxt "entityTitleTourText"
@@ -3158,6 +3182,10 @@ msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Toutes les modifications ont été annulées."
 
+msgctxt "save"
+msgid "Save"
+msgstr ""
+
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."
 msgstr ""
@@ -3666,7 +3694,7 @@ msgid "Translate"
 msgstr "Traduire..."
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"

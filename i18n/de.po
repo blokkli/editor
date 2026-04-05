@@ -1733,6 +1733,10 @@ msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fehlerprotokoll herunterladen"
 
+msgctxt "downloadWithLabel"
+msgid "Download @label"
+msgstr "@label herunterladen"
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr "Block-Typ zum Erstellen auswählen"
@@ -1817,9 +1821,29 @@ msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr "Feld «@name» bearbeiten"
 
+msgctxt "editableFieldCharCountMax"
+msgid "@count of @max characters used"
+msgstr "@count von @max Zeichen verwendet"
+
 msgctxt "editableFieldDiscard"
 msgid "Discard"
 msgstr "Verwerfen"
+
+msgctxt "editableFieldExitFullscreen"
+msgid "Exit Fullscreen"
+msgstr "Vollbild beenden"
+
+msgctxt "editableFieldFullscreen"
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+msgctxt "editableFieldTranslate"
+msgid "Translate"
+msgstr "Übersetzen"
+
+msgctxt "editableFieldTranslateTooltip"
+msgid "Automatically translate the current text."
+msgstr "Den aktuellen Text automatisch übersetzen."
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -3226,6 +3250,10 @@ msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alle Änderungen wurden verworfen."
 
+msgctxt "save"
+msgid "Save"
+msgstr "Speichern"
+
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."
 msgstr "Die Änderungen werden an diesem Datum publiziert."
@@ -3761,7 +3789,7 @@ msgid "Translate"
 msgstr "Übersetzen"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr "Übersetzung als aktuell markieren"
 
 msgctxt "translationsMarkUpToDateDisabled"

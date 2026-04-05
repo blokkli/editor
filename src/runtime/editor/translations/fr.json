@@ -1659,6 +1659,10 @@
     "source": "Download Logs",
     "translation": ""
   },
+  "downloadWithLabel": {
+    "source": "Download @label",
+    "translation": ""
+  },
   "draggingOverlaySelectBundle": {
     "source": "Select block type to create",
     "translation": ""
@@ -1743,8 +1747,28 @@
     "source": "Edit field \"@name\"",
     "translation": ""
   },
+  "editableFieldCharCountMax": {
+    "source": "@count of @max characters used",
+    "translation": ""
+  },
   "editableFieldDiscard": {
     "source": "Discard",
+    "translation": ""
+  },
+  "editableFieldExitFullscreen": {
+    "source": "Exit Fullscreen",
+    "translation": ""
+  },
+  "editableFieldFullscreen": {
+    "source": "Fullscreen",
+    "translation": ""
+  },
+  "editableFieldTranslate": {
+    "source": "Translate",
+    "translation": ""
+  },
+  "editableFieldTranslateTooltip": {
+    "source": "Automatically translate the current text.",
     "translation": ""
   },
   "entityTitleTourText": {
@@ -2999,6 +3023,10 @@
     "source": "All changes have been discarded.",
     "translation": "Toutes les modifications ont été annulées."
   },
+  "save": {
+    "source": "Save",
+    "translation": ""
+  },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
     "translation": ""
@@ -3480,7 +3508,7 @@
     "translation": "Traduire..."
   },
   "translationsMarkUpToDate": {
-    "source": "Mark translation as up-to-date",
+    "source": "Mark translations as up to date",
     "translation": ""
   },
   "translationsMarkUpToDateDisabled": {

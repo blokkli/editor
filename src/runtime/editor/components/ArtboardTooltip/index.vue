@@ -2,7 +2,11 @@
   <div
     ref="el"
     class="bk bk-artboard-tooltip"
-    :class="['bk-is-y-' + placementY, 'bk-is-x-' + placementX]"
+    :class="[
+      'bk-is-y-' + placementY,
+      'bk-is-x-' + placementX,
+      { 'bk-is-fullscreen': fullscreen },
+    ]"
     :style="{
       '--bk-caret-x': caretX,
     }"
@@ -10,9 +14,11 @@
   >
     <div class="bk bk-artboard-tooltip-inner bk-caret-tooltip-inner">
       <div class="bk-artboard-tooltip-header">
-        <div v-html="title" />
+        <div v-html="title" class="mr-auto" />
+        <slot name="header" />
         <button @click="$emit('close')">
           <Icon :name="closeIcon" />
+          <span v-if="buttonLabel">{{ buttonLabel }}</span>
         </button>
       </div>
       <slot />
@@ -43,10 +49,12 @@ const props = withDefaults(
     id: string
     title: string
     anchorEl?: HTMLElement | null
+    buttonLabel?: string
     anchorCoordinates?: Coord | null
     placementY?: PlacementVertical
     placementX?: PlacementHorizontal
     closeIcon?: BlokkliIcon
+    fullscreen?: boolean
   }>(),
   {
     anchorEl: null,
@@ -85,6 +93,9 @@ const { placementY, placementX, caretX } = useStickyToolbar(el, {
   },
   getCaretWidth() {
     return 30
+  },
+  isFullscreen() {
+    return !!props.fullscreen
   },
 })
 
@@ -210,6 +221,17 @@ onBeforeUnmount(() => {
     }
   }
 
+  &.bk-is-fullscreen {
+    &:before,
+    &:after {
+      @apply hidden;
+    }
+
+    .bk-artboard-tooltip-inner {
+      @apply h-full flex flex-col rounded-none;
+    }
+  }
+
   .bk-artboard-tooltip-inner {
     @apply lg:rounded-md;
     @apply lg:shadow-2xl;
@@ -226,7 +248,7 @@ onBeforeUnmount(() => {
     }
 
     > button {
-      @apply ml-auto size-40 flex items-center justify-center;
+      @apply min-w-40 h-40 flex items-center justify-center px-10 gap-8;
       color: var(--bk-header-text);
 
       &:hover {

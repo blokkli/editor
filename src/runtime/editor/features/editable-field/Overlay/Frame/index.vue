@@ -2,7 +2,7 @@
   <div class="bk-editable-field-frame">
     <iframe
       ref="iframe"
-      :style="{ height: Math.max(height, 150) + 'px' }"
+      :style="{ height: Math.max(height, 400) + 'px' }"
       :src="url"
       @load="onIframeLoad"
     />
@@ -163,3 +163,19 @@ onBeforeUnmount(() => {
   window.removeEventListener('message', onMessage)
 })
 </script>
+
+<style lang="postcss">
+.bk .bk-editable-field-frame iframe {
+  @apply block w-full;
+  max-height: calc(100vh - 500px);
+
+  @screen lg {
+    @apply min-w-[700px];
+    min-height: 400px;
+  }
+
+  @screen xl {
+    @apply min-w-[700px];
+  }
+}
+</style>

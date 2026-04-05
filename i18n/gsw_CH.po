@@ -1725,6 +1725,10 @@ msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fählerprotokoll abelade"
 
+msgctxt "downloadWithLabel"
+msgid "Download @label"
+msgstr ""
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr "Blocktyp zum Erstelle uswähle"
@@ -1809,9 +1813,29 @@ msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr "Fäld «@name» bearbeite"
 
+msgctxt "editableFieldCharCountMax"
+msgid "@count of @max characters used"
+msgstr ""
+
 msgctxt "editableFieldDiscard"
 msgid "Discard"
 msgstr "Verwärfe"
+
+msgctxt "editableFieldExitFullscreen"
+msgid "Exit Fullscreen"
+msgstr ""
+
+msgctxt "editableFieldFullscreen"
+msgid "Fullscreen"
+msgstr ""
+
+msgctxt "editableFieldTranslate"
+msgid "Translate"
+msgstr ""
+
+msgctxt "editableFieldTranslateTooltip"
+msgid "Automatically translate the current text."
+msgstr ""
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -3208,6 +3232,10 @@ msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alli Änderige sin glöscht worde."
 
+msgctxt "save"
+msgid "Save"
+msgstr ""
+
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."
 msgstr "D'Änderige wärde a dem Datum publiziert."
@@ -3746,7 +3774,7 @@ msgid "Translate"
 msgstr "Übersetze..."
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"

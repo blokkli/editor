@@ -7,9 +7,28 @@
     placement-y="top"
     :placement-x="useHorizontalPlacement ? 'auto-side' : 'center'"
     class="bk-editable-field"
+    :class="{ 'bk-is-fullscreen': isFullscreen }"
     close-icon="bk_mdi_check"
+    :fullscreen="isFullscreen"
+    :button-label="$t('save', 'Save')"
     @close="save"
   >
+    <template #header>
+      <button
+        v-if="canDoFullscreen"
+        type="button"
+        @click="isFullscreenPreference = !isFullscreenPreference"
+      >
+        <Icon
+          :name="isFullscreen ? 'bk_mdi_fullscreen_exit' : 'bk_mdi_fullscreen'"
+        />
+        <span>{{
+          isFullscreen
+            ? $t('editableFieldExitFullscreen', 'Exit Fullscreen')
+            : $t('editableFieldFullscreen', 'Fullscreen')
+        }}</span>
+      </button>
+    </template>
     <form ref="form" class="bk-editable-field-input" @submit.prevent="save">
       <div ref="input">
         <InputContenteditable
@@ -140,6 +159,7 @@ const {
   context,
   fieldValue,
   element: elementProvider,
+  storage,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -162,6 +182,16 @@ const form = useTemplateRef('form')
 const inputFrame = useTemplateRef('inputFrame')
 const isClosing = ref(false)
 const isAutoTranslating = ref(false)
+const isFullscreenPreference = storage.use('editableOverlayFullscreen', false)
+
+const canDoFullscreen = computed(
+  () => props.config.type === 'markup' || props.config.type === 'frame',
+)
+
+const isFullscreen = computed(
+  () => canDoFullscreen.value && isFullscreenPreference.value,
+)
+
 // For frame fields: the backend-processed HTML used for live preview.
 // When set, the preview uses this instead of the raw modelValue.
 const formattedValue = ref<string | null>(null)
@@ -387,15 +417,15 @@ onMounted(() => {
   if (props.isComponent) {
     modelValue.value = props.value || ''
   } else {
-    const tfv = fieldValue.getTextFieldValues().find(
-      (v) => v.uuid === props.host.uuid && v.fieldName === props.fieldName,
-    )
+    const tfv = fieldValue
+      .getTextFieldValues()
+      .find(
+        (v) => v.uuid === props.host.uuid && v.fieldName === props.fieldName,
+      )
     modelValue.value =
       tfv?.value ||
       override.originalValue ||
-      (isMarkup.value
-        ? props.element.innerHTML
-        : props.element.textContent) ||
+      (isMarkup.value ? props.element.innerHTML : props.element.textContent) ||
       ''
   }
 
@@ -431,6 +461,18 @@ onBeforeUnmount(async () => {
   --bk-header-text: theme('colors.teal.dark');
   --bk-border: theme('colors.teal.normal');
   --bk-header-hover: rgb(var(--bk-theme-teal-dark) / 0.2);
+
+  &.bk-is-fullscreen .bk-editable-field-input {
+    @apply max-w-none flex-1 flex flex-col;
+
+    > div:first-child {
+      @apply flex-1 flex flex-col;
+
+      > * {
+        @apply flex-1;
+      }
+    }
+  }
 
   .bk-editable-field-input {
     @apply w-full min-w-[360px] max-w-[700px];
@@ -551,20 +593,6 @@ onBeforeUnmount(async () => {
 
   > div {
     @apply focus:outline-none;
-  }
-}
-
-.bk-editable-field-frame iframe {
-  @apply block w-full;
-  max-height: calc(100vh - 500px);
-
-  @screen lg {
-    @apply min-w-[500px];
-    min-height: 300px;
-  }
-
-  @screen xl {
-    @apply min-w-[700px];
   }
 }
 </style>
