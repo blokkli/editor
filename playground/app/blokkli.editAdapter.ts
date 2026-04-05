@@ -884,8 +884,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    importTranslationsBatched: (items) =>
-      addMutation('import_translations_batched', { items }),
+    importTranslationsBatched: ({ items, markUpToDate }) =>
+      addMutation('import_translations_batched', { items, markUpToDate }),
 
     async requestTranslation(items) {
       try {
@@ -893,7 +893,15 @@ export default defineBlokkliEditAdapter((ctx) => {
           '/api/translate',
           {
             method: 'POST',
-            body: { items },
+            body: {
+              items: items.map((item) => ({
+                key: item.key,
+                text: item.text,
+                isHtml: item.isHtml,
+                sourceLanguage: item.sourceLanguage,
+                targetLanguage: item.targetLanguage,
+              })),
+            },
           },
         )
         return { success: true, data }

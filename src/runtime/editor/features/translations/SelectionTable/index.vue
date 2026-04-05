@@ -1,22 +1,24 @@
 <template>
-  <div class="flex items-center justify-between flex-wrap gap-10">
-    <span
-      v-if="showSelection"
-      class="text-mono-900 text-lg font-bold"
-    >
+  <div class="flex items-end justify-between flex-wrap gap-10 pb-15">
+    <span v-if="showSelection" class="text-mono-900 text-lg font-bold">
       {{ selectedCount }}/{{ totalCount }}
       {{ label }}
     </span>
     <slot name="toolbar" />
-    <div v-if="showFilters" class="flex items-center gap-20">
-      <FormToggle
-        v-model="onlyOutdated"
-        :label="$t('translationsCsvOnlyOutdated', 'Only outdated translations')"
-      />
-      <FormToggle
-        v-model="onlyUntranslated"
-        :label="$t('translationsCsvOnlyMissing', 'Only missing translations')"
-      />
+    <div v-if="showFilters">
+      <div class="bk-form-label">Filter</div>
+      <div class="flex items-center gap-20">
+        <FormToggle
+          v-model="onlyOutdated"
+          :label="
+            $t('translationsCsvOnlyOutdated', 'Only outdated translations')
+          "
+        />
+        <FormToggle
+          v-model="onlyUntranslated"
+          :label="$t('translationsCsvOnlyMissing', 'Only missing translations')"
+        />
+      </div>
     </div>
   </div>
   <div class="border border-mono-300 rounded overflow-auto flex-1">

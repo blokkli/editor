@@ -62,7 +62,12 @@
           >
             po
           </div>
-          <span>{{ $t('download', 'Download') }} {{ lang.name }}</span>
+          <span>{{
+            $t('downloadWithLabel', 'Download @label').replace(
+              '@label',
+              lang.name,
+            )
+          }}</span>
         </button>
       </div>
     </template>

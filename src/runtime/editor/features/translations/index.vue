@@ -232,6 +232,7 @@ async function autoTranslateSelected() {
     .map((v) => ({
       key: `${v.uuid}:${v.fieldName}`,
       text: v.value,
+      isHtml: v.fieldType === 'markup',
       sourceLanguage,
       targetLanguage,
     }))
@@ -251,7 +252,7 @@ async function autoTranslateSelected() {
     })
 
     await state.mutateWithLoadingState(() =>
-      adapter.importTranslationsBatched!(importItems),
+      adapter.importTranslationsBatched!({ items: importItems }),
     )
   }
   ui.setTransform(null)

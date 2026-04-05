@@ -3,10 +3,10 @@
     icon="bk_mdi_translate"
     :label="$t('translationsDropToImport', 'Drop CSV or PO file to import')"
     :accept="acceptTranslationFile"
-    class="flex flex-col h-full gap-20"
+    class="flex flex-col h-full"
     @drop="addFiles"
   >
-    <div v-if="files.length" class="flex flex-wrap items-center gap-8">
+    <div v-if="files.length" class="flex flex-wrap items-center gap-8 pb-20">
       <div
         v-for="(file, index) in files"
         :key="index"
@@ -75,6 +75,10 @@
                   <DiffValue
                     :before="singleLangChange(row).current"
                     :after="singleLangChange(row).imported"
+                    :after-only="
+                      !singleLangChange(row).current ||
+                      singleLangChange(row).current === row.source
+                    "
                   />
                 </td>
               </template>
@@ -91,6 +95,10 @@
                     <DiffValue
                       :before="row.changes[lang]!.current"
                       :after="row.changes[lang]!.imported"
+                      :after-only="
+                        !row.changes[lang]!.current ||
+                        row.changes[lang]!.current === row.source
+                      "
                     />
                   </div>
                   <span v-else class="bk-is-empty">&mdash;</span>
@@ -99,7 +107,7 @@
             </tr>
           </template>
         </SelectionTable>
-        <div class="flex gap-10 mt-auto">
+        <div class="flex items-center gap-10 mt-auto pt-20">
           <button
             class="bk-button bk-is-primary"
             :disabled="!selectedCount"
@@ -112,6 +120,13 @@
               )
             }}
           </button>
+          <FormToggle
+            v-model="markUpToDate"
+            class="!h-auto"
+            :label="
+              $t('translationsMarkUpToDate', 'Mark translations as up to date')
+            "
+          />
         </div>
       </template>
     </template>
@@ -128,7 +143,12 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, useTemplateRef, onMounted } from '#imports'
-import { DiffValue, FileDropHandler, Icon } from '#blokkli/editor/components'
+import {
+  DiffValue,
+  FileDropHandler,
+  FormToggle,
+  Icon,
+} from '#blokkli/editor/components'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
 import SelectionTable from '../../SelectionTable/index.vue'
@@ -158,6 +178,7 @@ const languages = ref<string[]>([])
 const isMultiLang = computed(() => languages.value.length > 1)
 const selected = ref<Record<string, boolean>>({})
 const fileInputEl = useTemplateRef('fileInputEl')
+const markUpToDate = ref(false)
 
 type ImportRow = {
   key: string
@@ -404,7 +425,10 @@ async function applyImport() {
   })
 
   await state.mutateWithLoadingState(() =>
-    adapter.importTranslationsBatched!(items),
+    adapter.importTranslationsBatched!({
+      items,
+      markUpToDate: markUpToDate.value,
+    }),
   )
 
   emit('close')

@@ -3,12 +3,16 @@ mutation pbBulkTranslateFieldValues(
   $entityUuid: String!
   $langcode: String!
   $items: [ParagraphsBlokkliBulkTranslateFieldValuesInput]!
+  $clearOutdated: Boolean
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: bulk_translate_field_values(items: $items) {
+    action: bulk_translate_field_values(
+      items: $items
+      clearOutdated: $clearOutdated
+    ) {
       ...paragraphsBlokkliMutationResult
     }
   }

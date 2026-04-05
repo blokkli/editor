@@ -1,6 +1,5 @@
 import type { EntityTranslation } from '#blokkli/editor/types/state'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
-import type { GenericAdapterResponse } from '#blokkli/editor/adapter'
 
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
@@ -35,14 +34,15 @@ declare module '#blokkli/editor/adapter' {
      * the new field value. Applied as a single mutation so it can be undone
      * in one step.
      */
-    importTranslationsBatched?: (
+    importTranslationsBatched?: (arg: {
       items: {
         langcode: string
         uuid: string
         fieldName: string
         fieldValue: string
-      }[],
-    ) => Promise<MutationResponseLike<T>>
+      }[]
+      markUpToDate?: boolean
+    }) => Promise<MutationResponseLike<T>>
 
     /**
      * Request automatic translations for a batch of text fields.
@@ -56,6 +56,7 @@ declare module '#blokkli/editor/adapter' {
       items: {
         key: string
         text: string
+        isHtml: boolean
         sourceLanguage: string
         targetLanguage: string
       }[],

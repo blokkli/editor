@@ -54,7 +54,7 @@
   }
   .bk-checkbox,
   .bk-radio {
-    @apply flex items-start cursor-pointer py-5 hover:text-accent-600 relative text-balance;
+    @apply flex items-start cursor-pointer hover:text-accent-600 relative text-balance;
     input {
       @apply absolute opacity-0;
     }

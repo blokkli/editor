@@ -727,9 +727,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasMutation('pbBulkTranslateFieldValues')) {
-      adapter.importTranslationsBatched = (items) =>
+      adapter.importTranslationsBatched = ({ items, markUpToDate }) =>
         useGraphqlMutation('pbBulkTranslateFieldValues', {
           ...ctx.value,
+          clearOutdated: !!markUpToDate,
           items: items.map((item) => ({
             uuid: item.uuid,
             name: item.fieldName,
@@ -760,6 +761,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           items: items.map((item) => ({
             key: item.key,
             text: item.text,
+            isMarkup: item.isHtml,
             sourceLanguage: item.sourceLanguage,
             targetLanguage: item.targetLanguage,
           })),

@@ -7,7 +7,7 @@
     hide-buttons
     @cancel="$emit('close')"
   >
-    <div class="bk h-[calc(100vh-200px)] overflow-hidden flex flex-col gap-20">
+    <div class="bk h-[calc(100vh-200px)] overflow-hidden flex flex-col">
       <template v-if="isLoading">
         <div class="flex items-center justify-center py-60">
           <Loading />
@@ -67,12 +67,18 @@
                 <DiffValue
                   :before="currentValues.get(item.key) || ''"
                   :after="translations.get(item.key) || ''"
-                  :after-only="!currentValues.get(item.key) || currentValues.get(item.key) === item.value"
+                  :after-only="
+                    !currentValues.get(item.key) ||
+                    currentValues.get(item.key) === item.value
+                  "
                 />
               </td>
               <td v-else>
                 <span
-                  v-if="currentValues.get(item.key) && currentValues.get(item.key) !== item.value"
+                  v-if="
+                    currentValues.get(item.key) &&
+                    currentValues.get(item.key) !== item.value
+                  "
                   v-text="stripHtml(currentValues.get(item.key)!)"
                 />
                 <span v-else class="text-mono-400 italic">&mdash;</span>
@@ -81,7 +87,7 @@
           </template>
         </SelectionTable>
 
-        <div class="flex gap-10 mt-auto">
+        <div class="flex items-center gap-10 mt-auto pt-20">
           <button
             class="bk-button"
             :disabled="!selectedCount || isTranslating"
@@ -111,6 +117,13 @@
               ).replace('@count', selectedCount.toString())
             }}
           </button>
+          <FormToggle
+            v-model="markUpToDate"
+            class="!h-auto"
+            :label="
+              $t('translationsMarkUpToDate', 'Mark translations as up to date')
+            "
+          />
         </div>
       </template>
 
@@ -125,7 +138,12 @@
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted } from '#imports'
-import { DialogModal, DiffValue, Loading } from '#blokkli/editor/components'
+import {
+  DialogModal,
+  DiffValue,
+  FormToggle,
+  Loading,
+} from '#blokkli/editor/components'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import SelectionTable from '../SelectionTable/index.vue'
 
@@ -145,6 +163,7 @@ const isLoading = ref(true)
 const isTranslating = ref(false)
 const isApplying = ref(false)
 const hasTranslated = ref(false)
+const markUpToDate = ref(false)
 const errorMessage = ref('')
 const onlyOutdated = ref(false)
 const onlyUntranslated = ref(false)
@@ -260,6 +279,7 @@ async function requestTranslations() {
     .map((item) => ({
       key: item.key,
       text: item.value,
+      isHtml: item.fieldType === 'markup',
       sourceLanguage: sourceLanguage.value,
       targetLanguage: targetLanguage.value,
     }))
@@ -306,7 +326,10 @@ async function applyTranslations() {
 
   try {
     await state.mutateWithLoadingState(() =>
-      adapter.importTranslationsBatched!(items),
+      adapter.importTranslationsBatched!({
+        items,
+        markUpToDate: markUpToDate.value,
+      }),
     )
     emit('close')
   } catch (e: any) {

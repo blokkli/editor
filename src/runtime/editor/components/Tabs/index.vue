@@ -9,10 +9,10 @@
         role="tab"
         :aria-selected="modelValue === tab.id"
         :class="{
-          'bg-white text-mono-900': modelValue === tab.id,
-          'hover:bg-mono-700': modelValue !== tab.id,
+          '!bg-white !text-mono-900': modelValue === tab.id,
+          'hover:!bg-mono-700': modelValue !== tab.id,
         }"
-        class="text-lg font-bold px-30 py-10 rounded-t-md"
+        class="text-lg font-bold px-30 py-10 rounded-t-md text-white"
         @click.prevent="modelValue = tab.id"
       >
         {{ tab.label }}

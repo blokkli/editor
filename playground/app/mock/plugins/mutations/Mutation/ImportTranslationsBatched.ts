@@ -8,6 +8,7 @@ export type MutationImportTranslationsBatchedArgs = {
     fieldName: string
     fieldValue: string
   }>
+  markUpToDate?: boolean
 }
 
 export class MutationImportTranslationsBatched extends Mutation {
@@ -43,20 +44,22 @@ export class MutationImportTranslationsBatched extends Mutation {
       for (const [langcode, values] of langMap) {
         proxy.block.setTranslationValues(langcode, values)
 
-        const raw = proxy.block.get('outdatedTranslations').getPropValue()
-        let current: string[] = []
-        if (raw) {
-          try {
-            current = JSON.parse(raw)
-          } catch {
-            /* ignore invalid JSON */
+        if (args.markUpToDate) {
+          const raw = proxy.block.get('outdatedTranslations').getPropValue()
+          let current: string[] = []
+          if (raw) {
+            try {
+              current = JSON.parse(raw)
+            } catch {
+              /* ignore invalid JSON */
+            }
           }
+          proxy.block.setValues({
+            outdatedTranslations: JSON.stringify(
+              current.filter((lc) => lc !== langcode),
+            ),
+          })
         }
-        proxy.block.setValues({
-          outdatedTranslations: JSON.stringify(
-            current.filter((lc) => lc !== langcode),
-          ),
-        })
       }
     }
   }

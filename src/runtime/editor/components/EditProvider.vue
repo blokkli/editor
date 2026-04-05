@@ -29,17 +29,23 @@
           <Banner
             v-if="!state.stateAvailable.value"
             id="state-unavailable"
-            icon="bk_mdi_sentiment_dissatisfied"
             scheme="red"
-            :text="stateNotAvailableText"
-          />
+          >
+            <BannerInner
+              icon="bk_mdi_sentiment_dissatisfied"
+              :text="stateNotAvailableText"
+            />
+          </Banner>
           <Banner
             v-if="viewOnlyBanner"
             id="view-only"
-            :icon="viewOnlyBanner.icon"
             scheme="yellow"
-            :text="viewOnlyBanner.text"
-          />
+          >
+            <BannerInner
+              :icon="viewOnlyBanner.icon"
+              :text="viewOnlyBanner.text"
+            />
+          </Banner>
         </div>
       </div>
 
@@ -90,6 +96,7 @@ import SystemRequirements from './SystemRequirements/index.vue'
 import Overlay from './Overlay/index.vue'
 import Konami from './Konami/index.vue'
 import Banner from './Banner/index.vue'
+import BannerInner from './Banner/Inner.vue'
 import animationProvider from '#blokkli/editor/providers/animation'
 import keyboardProvider from '#blokkli/editor/providers/keyboard'
 import selectionProvider from '#blokkli/editor/providers/selection'
