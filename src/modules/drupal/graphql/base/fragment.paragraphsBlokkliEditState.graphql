@@ -11,6 +11,8 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
     fieldName
     value
     fieldType
+    entityType
+    entityBundle
   }
 
   mutatedState {

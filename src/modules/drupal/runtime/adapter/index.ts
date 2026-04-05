@@ -349,6 +349,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           fieldName: v.fieldName,
           value: v.value,
           fieldType: v.fieldType as 'plain' | 'markup',
+          entityType: v.entityType,
+          entityBundle: v.entityBundle,
         })),
         ignoredAnalyzeIdentifiers:
           state.stateSettings?.ignoredAnalyzeIdentifiers || [],
@@ -751,6 +753,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             fieldName: tfv.fieldName,
             value: tfv.value,
             fieldType: tfv.fieldType as 'plain' | 'markup',
+            entityType: tfv.entityType,
+            entityBundle: tfv.entityBundle,
           })),
         )
     }

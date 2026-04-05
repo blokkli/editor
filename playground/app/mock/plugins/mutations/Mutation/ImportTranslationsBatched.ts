@@ -38,6 +38,14 @@ export class MutationImportTranslationsBatched extends Mutation {
     }
 
     for (const [uuid, langMap] of grouped) {
+      // Check if this is the host entity.
+      if (uuid === context.entity.uuid) {
+        for (const [langcode, values] of langMap) {
+          context.entity.setTranslationValues(langcode, values)
+        }
+        continue
+      }
+
       const proxy = context.getProxy(uuid)
       if (!proxy) continue
 

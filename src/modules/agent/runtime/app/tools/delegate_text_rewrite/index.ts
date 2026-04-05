@@ -78,6 +78,8 @@ export type ResolvedField = {
   fieldName: string
   currentValue: string
   fieldType: 'plain' | 'markup'
+  entityType: string
+  entityBundle: string
 }
 
 export type ComponentParams = {
@@ -159,7 +161,14 @@ export default defineBlokkliAgentTool({
         fieldType,
       )
 
-      resolvedFields.push({ uuid, fieldName, currentValue, fieldType })
+      resolvedFields.push({
+        uuid,
+        fieldName,
+        currentValue,
+        fieldType,
+        entityType,
+        entityBundle: bundle,
+      })
     }
 
     let templateParams = params.templateParams

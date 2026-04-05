@@ -36,11 +36,7 @@
               :text="stateNotAvailableText"
             />
           </Banner>
-          <Banner
-            v-if="viewOnlyBanner"
-            id="view-only"
-            scheme="yellow"
-          >
+          <Banner v-if="viewOnlyBanner" id="view-only" scheme="yellow">
             <BannerInner
               :icon="viewOnlyBanner.icon"
               :text="viewOnlyBanner.text"

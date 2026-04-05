@@ -355,6 +355,10 @@ export class EditState {
 
     const violations: Validation[] = []
 
+    // Apply translation to the host entity so its text fields reflect
+    // the current language (including any values set by mutations).
+    context.entity.getTranslation(langcode)
+
     const mutatedOptions: Record<string, any> = {}
     const proxiesByFieldKey: Record<string, BlockProxy[]> = {}
     context.proxies.forEach((proxy) => {

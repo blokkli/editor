@@ -71,6 +71,8 @@ export interface MappedState {
     fieldName: string
     value: string
     fieldType: 'plain' | 'markup'
+    entityType: string
+    entityBundle: string
   }[]
   ignoredAnalyzeIdentifiers?: string[]
 }

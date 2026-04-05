@@ -6387,6 +6387,8 @@ type ParagraphsBlokkliTemplatesSearchResults {
 }
 
 type ParagraphsBlokkliTextFieldValue {
+  entityBundle: String!
+  entityType: String!
   fieldName: String!
   fieldType: String!
   uuid: String!

@@ -568,6 +568,22 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     mapState(inputState) {
       const textFieldValues: TextFieldValue[] = []
+
+      const hostEntity = inputState.context.entity
+      for (const field of hostEntity.getTextFields()) {
+        const value = field.getUnprocessed()
+        if (value && value.trim()) {
+          textFieldValues.push({
+            uuid: hostEntity.uuid,
+            fieldName: field.id,
+            value,
+            fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            entityType: hostEntity.entityType,
+            entityBundle: hostEntity.bundle,
+          })
+        }
+      }
+
       for (const proxy of inputState.context.proxies) {
         if (proxy.isDeleted) continue
         const textFields = proxy.block.getTextFields()
@@ -579,6 +595,8 @@ export default defineBlokkliEditAdapter((ctx) => {
               fieldName: field.id,
               value,
               fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+              entityType: proxy.block.entityType,
+              entityBundle: proxy.block.bundle,
             })
           }
         }
@@ -675,6 +693,23 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
 
       const result: TextFieldValue[] = []
+
+      const hostEntity = mutatedState.context.entity
+      for (const field of hostEntity.getTextFields()) {
+        if (!field.isTranslatable) continue
+        const value = field.getUnprocessed()
+        if (value && value.trim()) {
+          result.push({
+            uuid: hostEntity.uuid,
+            fieldName: field.id,
+            value,
+            fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            entityType: hostEntity.entityType,
+            entityBundle: hostEntity.bundle,
+          })
+        }
+      }
+
       for (const proxy of mutatedState.context.proxies) {
         if (proxy.isDeleted) continue
         const textFields = proxy.block.getTextFields()
@@ -687,6 +722,8 @@ export default defineBlokkliEditAdapter((ctx) => {
               fieldName: field.id,
               value,
               fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+              entityType: proxy.block.entityType,
+              entityBundle: proxy.block.bundle,
             })
           }
         }

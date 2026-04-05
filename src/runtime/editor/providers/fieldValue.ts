@@ -20,6 +20,8 @@ export type TextFieldValue = {
   fieldName: string
   value: string
   fieldType: FieldValueType
+  entityType: string
+  entityBundle: string
 }
 
 /**
@@ -235,6 +237,8 @@ export default function fieldValueProvider(
               fieldName: config.name,
               value: result.value,
               fieldType: result.fieldType,
+              entityType: itemEntityType,
+              entityBundle: item.bundle,
             })
           }
         }

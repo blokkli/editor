@@ -9,6 +9,7 @@ export type CsvRow = {
 export type MultiLangRow = {
   key: string
   source: string
+  entityType?: string
   translations: Record<string, string>
 }
 

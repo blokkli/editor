@@ -126,6 +126,8 @@ const filteredRows = computed(() => {
         .map((b) => b.uuid),
     )
     rows = rows.filter((row) => {
+      // Host entity fields don't have outdated state, always include them.
+      if (row.entityType !== itemEntityType) return true
       const uuid = row.key.substring(0, row.key.indexOf(':'))
       return outdatedUuids.has(uuid)
     })
@@ -242,7 +244,15 @@ async function loadExportData() {
       translationMaps.set(langId, map)
     }
 
-    // Sort source values by DOM order: first by block position in the DOM,
+    // Separate host entity fields from block fields.
+    const hostFields = sourceValues.filter(
+      (sv) => sv.entityType !== itemEntityType,
+    )
+    const blockFields = sourceValues.filter(
+      (sv) => sv.entityType === itemEntityType,
+    )
+
+    // Sort block fields by DOM order: first by block position in the DOM,
     // then within each block by editable element position.
     const uuidOrder = element.queryAll(
       ui.providerElement,
@@ -258,9 +268,9 @@ async function loadExportData() {
       }
     }
 
-    // Group source values by UUID to sort fields within each block.
-    const grouped = new Map<string, typeof sourceValues>()
-    for (const sv of sourceValues) {
+    // Group block fields by UUID to sort fields within each block.
+    const grouped = new Map<string, typeof blockFields>()
+    for (const sv of blockFields) {
       let group = grouped.get(sv.uuid)
       if (!group) {
         group = []
@@ -286,8 +296,8 @@ async function loadExportData() {
       })
     }
 
-    // Build sorted source values: blocks in DOM order, fields in DOM order within each block.
-    const sortedValues = [...grouped.entries()]
+    // Build sorted values: host fields first, then blocks in DOM order.
+    const sortedBlockFields = [...grouped.entries()]
       .sort((a, b) => {
         const idxA = uuidIndexMap.get(a[0]) ?? Infinity
         const idxB = uuidIndexMap.get(b[0]) ?? Infinity
@@ -295,13 +305,15 @@ async function loadExportData() {
       })
       .flatMap(([, fields]) => fields)
 
+    const sortedValues = [...hostFields, ...sortedBlockFields]
+
     exportRows.value = sortedValues.map((sv) => {
       const key = `${sv.uuid}:${sv.fieldName}`
       const translations: Record<string, string> = {}
       for (const langId of langIds) {
         translations[langId] = translationMaps.get(langId)?.get(key) ?? ''
       }
-      return { key, source: sv.value, translations }
+      return { key, source: sv.value, entityType: sv.entityType, translations }
     })
   } finally {
     isLoading.value = false

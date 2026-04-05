@@ -13,6 +13,8 @@ query pbTextFieldValues(
       fieldName
       value
       fieldType
+      entityType
+      entityBundle
     }
   }
 }
