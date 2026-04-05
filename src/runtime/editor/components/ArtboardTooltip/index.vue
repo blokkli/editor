@@ -242,17 +242,16 @@ onBeforeUnmount(() => {
 
 .bk {
   .bk-artboard-tooltip-info {
-    @apply border-t border-t-mono-300 text-sm font-semibold flex justify-between items-center;
+    @apply border-t border-t-mono-300 text-sm font-semibold flex items-center;
+  }
+  .bk-artboard-tooltip-info-button {
+    @apply text-scheme-normal text-sm flex items-center;
+    @apply py-[6px] px-10;
+    @apply hover:bg-scheme-normal/10;
+    @apply border-r border-r-mono-300;
 
-    > button {
-      @apply text-red-normal text-sm;
-      @apply py-[6px] px-10;
-      @apply hover:bg-red-light;
-      @apply border-r border-r-mono-300;
-
-      &[disabled] {
-        @apply pointer-events-none text-mono-300;
-      }
+    &[disabled] {
+      @apply pointer-events-none text-mono-300;
     }
   }
 }

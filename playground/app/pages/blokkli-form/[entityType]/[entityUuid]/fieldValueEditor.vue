@@ -1,6 +1,11 @@
 <template>
   <div class="field-value-editor">
-    <RichText v-model="value" @ready="sendMessageToParent" is-field-value />
+    <RichText
+      ref="richText"
+      v-model="value"
+      @ready="sendMessageToParent"
+      is-field-value
+    />
   </div>
 </template>
 
@@ -8,6 +13,7 @@
 import {
   definePageMeta,
   useQueryString,
+  useTemplateRef,
   watch,
   ref,
   useParamString,
@@ -44,6 +50,7 @@ if (!block) {
 
 const field = block.get<FieldTextarea>(fieldName.value)
 
+const richText = useTemplateRef('richText')
 const value = ref(field.getUnprocessed())
 
 const getHeight = () => {
@@ -74,17 +81,28 @@ const onWheel = (e: WheelEvent) => {
   }
 }
 
+const onMessage = (e: MessageEvent) => {
+  if (
+    typeof e.data === 'object' &&
+    e.data.name === 'blokkli__editable_field_set_value'
+  ) {
+    richText.value?.setData(e.data.data.text)
+  }
+}
+
 watch(value, () => {
   sendMessageToParent()
 })
 
 onMounted(() => {
   sendMessageToParent()
+  window.addEventListener('message', onMessage)
   document.body.addEventListener('wheel', onWheel, { passive: false })
   document.documentElement.classList.add('allow-overscroll')
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('message', onMessage)
   document.body.removeEventListener('wheel', onWheel)
 })
 </script>

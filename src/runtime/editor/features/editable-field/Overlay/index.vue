@@ -21,6 +21,7 @@
 
         <InputFrame
           v-else-if="config.type === 'frame'"
+          ref="inputFrame"
           v-model="modelValue"
           :type="config.type"
           :field-name="fieldName"
@@ -40,8 +41,29 @@
       </div>
 
       <div class="bk-artboard-tooltip-info">
-        <button :disabled="!hasChanged" @click.prevent="discard">
+        <button
+          :disabled="!hasChanged"
+          class="bk-artboard-tooltip-info-button bk-scheme-red"
+          @click.prevent="discard"
+        >
           {{ $t('editableFieldDiscard', 'Discard') }}
+        </button>
+        <button
+          v-if="canTranslate"
+          :disabled="isAutoTranslating"
+          class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
+          @click.prevent="autoTranslate"
+        >
+          <Icon name="bk_mdi_translate" class="size-15" />
+          {{ $t('editableFieldTranslate', 'Translate') }}
+          <Tooltip
+            :label="
+              $t(
+                'editableFieldTranslateTooltip',
+                'Automatically translate the current text.',
+              )
+            "
+          />
         </button>
         <div v-if="errorText" class="bk-editable-field-info-error">
           {{ errorText }}
@@ -57,9 +79,20 @@
           :text="modelValue"
           :field-type="readabilityFieldType"
         />
-        <div v-if="!isMarkup" class="bk-editable-field-info-count">
+        <div
+          v-if="!isMarkup"
+          class="bk-editable-field-info-count relative group/tooltip"
+        >
           <span>{{ count }}</span>
           <span v-if="maxlength >= 1">&nbsp;/&nbsp;{{ maxlength }}</span>
+          <Tooltip
+            v-if="maxlength >= 1"
+            :label="
+              $t('editableFieldCharCountMax', '@count of @max characters used')
+                .replace('@count', count.toString())
+                .replace('@max', maxlength.toString())
+            "
+          />
         </div>
       </div>
     </form>
@@ -74,7 +107,7 @@
 
 <script lang="ts" setup>
 import type { EntityContext } from '#blokkli/types'
-import { ArtboardTooltip } from '#blokkli/editor/components'
+import { ArtboardTooltip, Icon, Tooltip } from '#blokkli/editor/components'
 import {
   computed,
   ref,
@@ -98,7 +131,14 @@ import type { EditableFieldConfig } from '../types'
 import ReadabilityIndicator from './ReadabilityIndicator/index.vue'
 import ChunkOverlay from './ReadabilityIndicator/ChunkOverlay.vue'
 
-const { state, adapter, $t, types, element: elementProvider } = useBlokkli()
+const {
+  state,
+  adapter,
+  $t,
+  types,
+  context,
+  element: elementProvider,
+} = useBlokkli()
 
 const props = defineProps<{
   fieldName: string
@@ -117,7 +157,9 @@ const loaded = ref(false)
 const originalText = ref('')
 const modelValue = ref('')
 const form = useTemplateRef('form')
+const inputFrame = useTemplateRef('inputFrame')
 const isClosing = ref(false)
+const isAutoTranslating = ref(false)
 
 // Create field override for live preview via the correct update strategy.
 const override = useEditableFieldOverride(props.fieldName, props.host)
@@ -174,6 +216,51 @@ const readabilityFieldType = computed<'plain' | 'markup'>(() =>
     ? 'markup'
     : 'plain',
 )
+
+const canTranslate = computed(
+  () =>
+    state.editMode.value === 'translating' &&
+    !!adapter.requestTranslation &&
+    !!adapter.loadTextFieldValuesForLanguage,
+)
+
+async function autoTranslate() {
+  if (isAutoTranslating.value) return
+  isAutoTranslating.value = true
+
+  try {
+    const sourceLanguage = state.translation.value.sourceLanguage || 'en'
+    const targetLanguage = context.value.language
+
+    // Load the source language value for this field.
+    const sourceValues =
+      await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
+    const key = `${props.host.uuid}:${props.fieldName}`
+    const sourceField = sourceValues.find(
+      (v) => `${v.uuid}:${v.fieldName}` === key,
+    )
+    if (!sourceField) return
+
+    const response = await adapter.requestTranslation!([
+      {
+        key,
+        text: sourceField.value,
+        isHtml: readabilityFieldType.value === 'markup',
+        sourceLanguage,
+        targetLanguage,
+      },
+    ])
+
+    if (response.success && response.data.length) {
+      const translatedText = response.data[0]!.translatedText
+      modelValue.value = translatedText
+      // For frame fields, push the value into the iframe's editor.
+      inputFrame.value?.setValue(translatedText)
+    }
+  } finally {
+    isAutoTranslating.value = false
+  }
+}
 
 /**
  * Restore the original state when discarding changes.
@@ -337,7 +424,7 @@ onBeforeUnmount(async () => {
     .bk-editable-field-textarea {
       @apply relative;
       @screen lg {
-        @apply min-w-[500px];
+        @apply min-w-[600px];
       }
     }
 
@@ -348,6 +435,13 @@ onBeforeUnmount(async () => {
       @apply min-h-[50px] w-full;
       @apply text-base lg:text-lg;
       @apply absolute top-0 left-0 h-full;
+    }
+  }
+  .bk-editable-field-translate {
+    @apply flex items-center gap-3 px-10 text-teal-dark border-r border-r-mono-300;
+
+    &:disabled {
+      @apply opacity-50;
     }
   }
   .bk-editable-field-info-error {

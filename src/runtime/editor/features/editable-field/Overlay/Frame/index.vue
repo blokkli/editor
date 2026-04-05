@@ -137,6 +137,18 @@ const onMessage = (e: MessageEvent) => {
   }
 }
 
+/**
+ * Push a new value into the iframe's editor.
+ */
+function setValue(text: string) {
+  iframe.value?.contentWindow?.postMessage(
+    { name: 'blokkli__editable_field_set_value', data: { text } },
+    '*',
+  )
+}
+
+defineExpose({ setValue })
+
 onMounted(() => {
   original.value = modelValue.value
   height.value = props.initialHeight

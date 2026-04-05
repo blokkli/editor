@@ -13,7 +13,7 @@
       {{ readability.formatScore(readabilityScore) }}</span
     >
     <Tooltip
-      placement="above-right"
+      placement="below-right"
       :label="
         $t(
           'readabilityTooltipDescription',
