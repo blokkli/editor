@@ -239,7 +239,17 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           },
           {},
         ),
+        entityTypeConfig: v.data.entityTypeConfig,
       }
+    })
+
+    const entityTypeConfigMap = new Map()
+
+    config.entityTypeConfig.forEach((entityType) => {
+      entityTypeConfigMap.set(entityType.id, entityType.label)
+      entityType.bundles.forEach((bundle) => {
+        entityTypeConfigMap.set(`${entityType.id}:${bundle.id}`, bundle.label)
+      })
     })
 
     const entityConfig = await useGraphqlQuery('pbEntityConfig', {
@@ -551,6 +561,28 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       moveBlock,
       moveMultipleBlocks,
       buildAnchorLink,
+      getEntityTypeInfo(id) {
+        const label = entityTypeConfigMap.get(id)
+        if (label) {
+          return {
+            id,
+            label,
+          }
+        }
+
+        return null
+      },
+      getEntityBundleInfo(entityTypeId: string, bundle: string) {
+        const label = entityTypeConfigMap.get(`${entityTypeId}:${bundle}`)
+        if (label) {
+          return {
+            id: bundle,
+            label,
+          }
+        }
+
+        return null
+      },
     }
 
     if (hasQuery('pbPublishOptions')) {
@@ -867,6 +899,23 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           uuid,
         }).then((v) => mapComments(v.data.action || []))
+    }
+
+    if (hasQuery('pbReferencedEntities')) {
+      adapter.getReferencedEntities = (uuids) =>
+        useGraphqlQuery('pbReferencedEntities', {
+          ...ctx.value,
+          uuids,
+        }).then((v) =>
+          (v.data.state?.referencedEntities || []).map((entity) => ({
+            editUrl: entity.editUrl,
+            entityBundle: entity.entityBundle,
+            entityType: entity.entityType,
+            entityUuid: entity.entityUuid,
+            label: entity.label ?? '',
+            uuids: entity.uuids || [],
+          })),
+        )
     }
 
     if (hasQuery('pbLibraryItems')) {

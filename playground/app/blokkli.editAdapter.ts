@@ -19,6 +19,7 @@ import { state, editState, mapBlockItem, exportState } from './mock/state'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
+import type { Entity } from './mock/state/Entity'
 import { FieldBlocks } from './mock/state/Field/Blocks'
 import {
   type MediaIcon,
@@ -477,6 +478,66 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     getConversions() {
       return Promise.resolve(conversions)
+    },
+    getReferencedEntities(uuids) {
+      const page = entityStorageManager.getContent(ctx.value.entityUuid)
+      if (!page) {
+        return Promise.resolve([])
+      }
+
+      const uuidSet = new Set(uuids)
+
+      // Collect all blocks from all block fields, including nested ones.
+      const allBlocks: Paragraph[] = []
+      const collectBlocks = (entity: { getBlockFields(): FieldBlocks[] }) => {
+        for (const field of entity.getBlockFields()) {
+          for (const block of field.getBlocks()) {
+            allBlocks.push(block)
+            collectBlocks(block)
+          }
+        }
+      }
+      collectBlocks(page)
+
+      // Filter to only requested blocks.
+      const filteredBlocks = allBlocks.filter((b) => uuidSet.has(b.uuid))
+
+      // Group paragraph UUIDs by referenced entity UUID.
+      const referencedMap = new Map<
+        string,
+        { entity: Entity; paragraphUuids: Set<string> }
+      >()
+
+      for (const block of filteredBlocks) {
+        for (const field of Object.values(block.fields)) {
+          if (field instanceof FieldReference) {
+            for (const refEntity of field.getReferencedEntities()) {
+              const existing = referencedMap.get(refEntity.uuid)
+              if (existing) {
+                existing.paragraphUuids.add(block.uuid)
+              } else {
+                referencedMap.set(refEntity.uuid, {
+                  entity: refEntity,
+                  paragraphUuids: new Set([block.uuid]),
+                })
+              }
+            }
+          }
+        }
+      }
+
+      return Promise.resolve(
+        Array.from(referencedMap.values()).map(
+          ({ entity, paragraphUuids }) => ({
+            editUrl: `/${entity.entityType}/${entity.uuid}/edit`,
+            entityBundle: entity.bundle,
+            entityType: entity.entityType,
+            entityUuid: entity.uuid,
+            label: entity.label || entity.uuid,
+            uuids: [...paragraphUuids],
+          }),
+        ),
+      )
     },
     getTransformPlugins() {
       return Promise.resolve(transforms)

@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="bk-blokkli-item-actions-dropdown"
-    class="bk-blokkli-item-actions-type-dropdown"
-  >
+  <div>
     <div
       v-for="group in groups"
       :key="group.name"

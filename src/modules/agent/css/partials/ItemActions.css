@@ -2,7 +2,9 @@
   @apply border-b-orange-light/30;
 }
 
-.bk .bk-blokkli-item-actions-type-dropdown-button.bk-is-variant-agent {
+.bk
+  .bk-blokkli-item-actions-type-dropdown
+  .bk-blokkli-item-actions-type-dropdown-button.bk-is-variant-agent {
   @apply hover:bg-orange-normal/10 hover:text-orange-light;
   .bk-icon {
     svg {

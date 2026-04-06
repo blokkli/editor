@@ -1,11 +1,20 @@
 <template>
   <div
-    class="bk-form-overlay-iframe"
+    class="relative h-full flex flex-col bk"
     @scroll.stop
     @touchstart.stop.capture.prevent
     @touchmove.stop.capture.prevent
   >
-    <iframe ref="iframe" allowtransparency :src="url" @load="onIFrameLoad" />
+    <NotEditStateInfo v-if="isNotEditState" />
+    <div class="relative flex-1">
+      <iframe
+        ref="iframe"
+        allowtransparency
+        :src="url"
+        class="absolute top-0 left-0 size-full"
+        @load="onIFrameLoad"
+      />
+    </div>
     <BlokkliTransition name="loading">
       <Loading v-if="!isLoaded" />
     </BlokkliTransition>
@@ -19,9 +28,14 @@ import {
   onUnmounted,
   onMounted,
   useTemplateRef,
+  computed,
 } from '#imports'
 import type { AdapterFormFrameBuilder } from '#blokkli/editor/adapter'
-import { Loading, BlokkliTransition } from '#blokkli/editor/components'
+import {
+  Loading,
+  BlokkliTransition,
+  NotEditStateInfo,
+} from '#blokkli/editor/components'
 
 const { eventBus } = useBlokkli()
 
@@ -36,6 +50,10 @@ const props = defineProps<{
   url: string
   form: AdapterFormFrameBuilder
 }>()
+
+const isNotEditState = computed<boolean>(() => {
+  return props.form.id === 'entity:edit' || props.form.id === 'entity:translate'
+})
 
 function onIFrameLoad() {
   isLoaded.value = true

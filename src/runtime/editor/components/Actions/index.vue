@@ -102,10 +102,17 @@
             class="bk-caret"
           />
         </button>
-        <EditActionsItemDropdown
-          v-if="showDropdown && editingEnabled"
-          @close="showDropdown = false"
-        />
+        <div
+          v-if="editingEnabled"
+          v-show="showDropdown"
+          id="bk-blokkli-item-actions-dropdown"
+          class="bk-blokkli-item-actions-type-dropdown"
+        >
+          <EditActionsItemDropdown
+            v-if="showDropdown"
+            @close="showDropdown = false"
+          />
+        </div>
       </div>
 
       <div
@@ -120,7 +127,6 @@
 <script lang="ts" setup>
 import {
   watch,
-  ref,
   computed,
   useBlokkli,
   useTemplateRef,
@@ -133,7 +139,7 @@ import {
   Tooltip,
   TooltipStatus,
 } from '#blokkli/editor/components'
-import EditActionsItemDropdown from './ItemDropdown.vue'
+import EditActionsItemDropdown from './ItemDropdown/index.vue'
 import Interactions from './Interactions/index.vue'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
 import type { BlokkliIcon } from '#blokkli-build/icons'
@@ -199,7 +205,14 @@ onBeforeUnmount(() => {
   }
 })
 
-const showDropdown = ref(false)
+const showDropdown = computed({
+  get() {
+    return ui.itemActionsOpen.value
+  },
+  set(isOpen: boolean) {
+    ui.itemActionsOpen.value = isOpen
+  },
+})
 
 const hasAnythingSelected = computed(
   () => selection.hasHostSelected.value || !!selection.items.value.length,
@@ -564,12 +577,14 @@ export default {
     h3 {
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-mono-400;
     }
-    .bk-blokkli-item-icon,
-    .bk-icon {
-      @apply flex items-center justify-center shrink-0;
-      @apply size-25;
-      svg {
-        @apply fill-current;
+    .bk-blokkli-item-actions-type-dropdown-button {
+      .bk-blokkli-item-icon,
+      .bk-icon {
+        @apply flex items-center justify-center shrink-0;
+        @apply size-25;
+        svg {
+          @apply fill-current;
+        }
       }
     }
   }

@@ -1,12 +1,12 @@
 <template>
   <SearchOverlay
+    v-slot="{ focusedIndex, onMouseEnter }"
     v-model:text="text"
     :title="$t('commandPaletteTitle', 'Command Palette')"
     :total-items="visibleCommands.length"
     :placeholder="$t('commandPalette.inputPlaceholder', 'Search commands...')"
     @select="onSelectByIndex"
     @close="emit('close')"
-    v-slot="{ focusedIndex, onMouseEnter }"
   >
     <Item
       v-for="(item, i) in visibleCommands"

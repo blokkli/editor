@@ -81,11 +81,6 @@ export default {
   @apply absolute left-0 top-0 w-full h-full z-form-overlay pointer-events-none;
   .bk-form-overlay-resizable {
     @apply ml-auto h-full shadow-2xl bg-mono-950 pointer-events-auto;
-    .bk-form-overlay-iframe {
-      iframe {
-        @apply absolute top-0 left-0 w-full h-full overscroll-contain;
-      }
-    }
   }
   .bk-resizable-inner {
     @apply h-full flex flex-col;

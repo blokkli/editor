@@ -522,6 +522,11 @@ export type UiProvider = {
    * so both can show a visual "active" state for the same highlight.
    */
   activeHighlightId: Ref<string>
+
+  /**
+   * Whether the item actions are open.
+   */
+  itemActionsOpen: Ref<boolean>
 }
 
 export default function (
@@ -560,6 +565,7 @@ export default function (
   const visibleViewportX = ref(0)
   const visibleViewportY = ref(0)
   const canvasFocused = ref(false)
+  const itemActionsOpen = ref(false)
 
   function setCanvasFocused(isFocused: boolean) {
     canvasFocused.value = isFocused
@@ -1056,5 +1062,6 @@ export default function (
     actionsToolbarLocked,
     isChangingOptions,
     activeHighlightId,
+    itemActionsOpen,
   }
 }

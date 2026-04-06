@@ -2312,6 +2312,14 @@ msgctxt "feature_publish_setting_closeAfterPublish_label"
 msgid "Close editor after publishing"
 msgstr "Editor noch em Publiziere schliesse"
 
+msgctxt "feature_referenced-entities_description"
+msgid "Renders referenced entities of blocks."
+msgstr ""
+
+msgctxt "feature_referenced-entities_label"
+msgid "Referenced Entities"
+msgstr ""
+
 msgctxt "feature_responsive-preview_description"
 msgid "Provides a responsive preview of the current edit state in an iframe."
 msgstr ""
@@ -2483,6 +2491,12 @@ msgstr "Käi Ergebnis"
 msgctxt "filterSelectSearch"
 msgid "Search..."
 msgstr "Sueche..."
+
+msgctxt "formSaveNotEditStateInfo"
+msgid ""
+"Saving this form applies changes immediately — they take effect without "
+"publishing the current blökkli page."
+msgstr ""
 
 msgctxt "fragmentsAddFragmentAction"
 msgid "Fragment"
@@ -2716,6 +2730,10 @@ msgctxt "libraryItemEditOverlayBackWithPage"
 msgid "Save and go back to \"@label\""
 msgstr "Zrugg zu «@label»"
 
+msgctxt "libraryItemEditOverlayBackWithPageNoSave"
+msgid "Go back to \"@label\""
+msgstr ""
+
 msgctxt "libraryItemEditOverlayTitle"
 msgid "Edit reusable block"
 msgstr "Wiederverwändbare Block bearbeite"
@@ -2743,6 +2761,10 @@ msgstr "Block us dr Bibliothek drzuefüege"
 msgctxt "libraryPreviewLabel"
 msgid "Preview"
 msgstr "Vorschau"
+
+msgctxt "loading"
+msgid "Loading..."
+msgstr ""
 
 msgctxt "manageSchedule"
 msgid "Manage schedule..."
@@ -3145,6 +3167,22 @@ msgstr "Dr Teggscht bruucht mindestens @count Wörter für d'Lesbarkeitsanalys."
 msgctxt "readabilityTooltipDescription"
 msgid "@label measures how easy the text is to read."
 msgstr "@label misst, wie eifach dr Teggscht z'läse isch."
+
+msgctxt "referencedEntitiesEditorOverlayTitle"
+msgid "Edit \"@label\""
+msgstr ""
+
+msgctxt "relatedContent"
+msgid "Related Content"
+msgstr ""
+
+msgctxt "relatedContentNoEntitiesFound"
+msgid "No related content found"
+msgstr ""
+
+msgctxt "relatedContentTooltip"
+msgid "Content like pages or images referenced or linked by this block."
+msgstr ""
 
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"

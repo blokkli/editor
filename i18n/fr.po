@@ -2276,6 +2276,14 @@ msgctxt "feature_publish_setting_closeAfterPublish_label"
 msgid "Close editor after publishing"
 msgstr "Fermer l'éditeur après publication"
 
+msgctxt "feature_referenced-entities_description"
+msgid "Renders referenced entities of blocks."
+msgstr ""
+
+msgctxt "feature_referenced-entities_label"
+msgid "Referenced Entities"
+msgstr ""
+
 msgctxt "feature_responsive-preview_description"
 msgid "Provides a responsive preview of the current edit state in an iframe."
 msgstr "Fournit un aperçu responsive de l'état d'édition actuel dans une iframe."
@@ -2447,6 +2455,12 @@ msgstr ""
 
 msgctxt "filterSelectSearch"
 msgid "Search..."
+msgstr ""
+
+msgctxt "formSaveNotEditStateInfo"
+msgid ""
+"Saving this form applies changes immediately — they take effect without "
+"publishing the current blökkli page."
 msgstr ""
 
 msgctxt "fragmentsAddFragmentAction"
@@ -2675,6 +2689,10 @@ msgctxt "libraryItemEditOverlayBackWithPage"
 msgid "Save and go back to \"@label\""
 msgstr ""
 
+msgctxt "libraryItemEditOverlayBackWithPageNoSave"
+msgid "Go back to \"@label\""
+msgstr ""
+
 msgctxt "libraryItemEditOverlayTitle"
 msgid "Edit reusable block"
 msgstr ""
@@ -2700,6 +2718,10 @@ msgstr ""
 msgctxt "libraryPreviewLabel"
 msgid "Preview"
 msgstr "Aperçu"
+
+msgctxt "loading"
+msgid "Loading..."
+msgstr ""
 
 msgctxt "manageSchedule"
 msgid "Manage schedule..."
@@ -3098,6 +3120,22 @@ msgstr "Le texte nécessite au moins @count mots pour l'analyse de lisibilité."
 msgctxt "readabilityTooltipDescription"
 msgid "@label measures how easy the text is to read."
 msgstr "@label mesure la facilité de lecture du texte."
+
+msgctxt "referencedEntitiesEditorOverlayTitle"
+msgid "Edit \"@label\""
+msgstr ""
+
+msgctxt "relatedContent"
+msgid "Related Content"
+msgstr ""
+
+msgctxt "relatedContentNoEntitiesFound"
+msgid "No related content found"
+msgstr ""
+
+msgctxt "relatedContentTooltip"
+msgid "Content like pages or images referenced or linked by this block."
+msgstr ""
 
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"

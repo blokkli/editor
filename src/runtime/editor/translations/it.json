@@ -2175,6 +2175,14 @@
     "source": "Close editor after publishing",
     "translation": "Chiudi editor dopo la pubblicazione"
   },
+  "feature_referenced-entities_description": {
+    "source": "Renders referenced entities of blocks.",
+    "translation": ""
+  },
+  "feature_referenced-entities_label": {
+    "source": "Referenced Entities",
+    "translation": ""
+  },
   "feature_responsive-preview_description": {
     "source": "Provides a responsive preview of the current edit state in an iframe.",
     "translation": "Fornisce un'anteprima responsive dello stato di modifica corrente in un iframe."
@@ -2325,6 +2333,10 @@
   },
   "filterSelectSearch": {
     "source": "Search...",
+    "translation": ""
+  },
+  "formSaveNotEditStateInfo": {
+    "source": "Saving this form applies changes immediately — they take effect without publishing the current blökkli page.",
     "translation": ""
   },
   "fragmentsAddFragmentAction": {
@@ -2535,6 +2547,10 @@
     "source": "Save and go back to \"@label\"",
     "translation": ""
   },
+  "libraryItemEditOverlayBackWithPageNoSave": {
+    "source": "Go back to \"@label\"",
+    "translation": ""
+  },
   "libraryItemEditOverlayTitle": {
     "source": "Edit reusable block",
     "translation": ""
@@ -2558,6 +2574,10 @@
   "libraryPreviewLabel": {
     "source": "Preview",
     "translation": "Anteprima"
+  },
+  "loading": {
+    "source": "Loading...",
+    "translation": ""
   },
   "manageSchedule": {
     "source": "Manage schedule...",
@@ -2950,6 +2970,22 @@
   "readabilityTooltipDescription": {
     "source": "@label measures how easy the text is to read.",
     "translation": "@label misura quanto è facile leggere il testo."
+  },
+  "referencedEntitiesEditorOverlayTitle": {
+    "source": "Edit \"@label\"",
+    "translation": ""
+  },
+  "relatedContent": {
+    "source": "Related Content",
+    "translation": ""
+  },
+  "relatedContentNoEntitiesFound": {
+    "source": "No related content found",
+    "translation": ""
+  },
+  "relatedContentTooltip": {
+    "source": "Content like pages or images referenced or linked by this block.",
+    "translation": ""
   },
   "responsivePreviewCustomViewport": {
     "source": "Custom",

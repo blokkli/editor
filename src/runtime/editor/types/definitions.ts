@@ -26,3 +26,13 @@ export type EntityTypeRestriction = {
   type: string
   bundles: string[]
 }
+
+export type EntityTypeInfo = {
+  id: string
+  label: string
+}
+
+export type EntityTypeBundleInfo = {
+  id: string
+  label: string
+}

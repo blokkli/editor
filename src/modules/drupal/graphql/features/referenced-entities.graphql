@@ -1,0 +1,21 @@
+query pbReferencedEntities(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuids: [String!]
+) {
+  state: getParagraphsEditState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
+    referencedEntities(langcode: $langcode, uuids: $uuids) {
+      editUrl
+      entityBundle
+      entityType
+      entityUuid
+      label
+      uuids
+    }
+  }
+}

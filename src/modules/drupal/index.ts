@@ -297,6 +297,11 @@ export declare const templateEditRouteName: string|null
       addGraphqlDocument('features/workspace.graphql')
     }
 
+    // Feature: Referenced Entities.
+    if (editStateFields.has('referencedEntities')) {
+      addGraphqlDocument('features/referenced-entities.graphql')
+    }
+
     // Feature: Preview Grant.
     if (editStateFields.has('previewUrl')) {
       addGraphqlDocument('features/preview-grant.graphql')

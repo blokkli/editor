@@ -36,13 +36,16 @@
       >
         <div class="bk-library-edit-overlay-frame">
           <slot>
-            <iframe
-              v-if="url"
-              ref="iframe"
-              :src="url"
-              style="width: 100%; height: 100%"
-              @load="onLoad"
-            />
+            <div class="flex flex-col h-full">
+              <NotEditStateInfo />
+              <iframe
+                v-if="url"
+                ref="iframe"
+                :src="url"
+                style="width: 100%; height: 100%"
+                @load="onLoad"
+              />
+            </div>
           </slot>
         </div>
       </div>
@@ -55,11 +58,12 @@ import {
   computed,
   onBeforeUnmount,
   onMounted,
+  onUnmounted,
   ref,
   useBlokkli,
   useTemplateRef,
 } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, NotEditStateInfo } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
@@ -71,6 +75,7 @@ export type NestedEditorOverlayProps = {
   icon: BlokkliIcon
   blockUuid?: string
   element?: HTMLElement | null
+  autoSave?: boolean
 }
 
 const props = defineProps<NestedEditorOverlayProps>()
@@ -98,10 +103,19 @@ const backLabel = computed(() => {
   if (!entityLabel) {
     return $t('libraryItemEditOverlayBack', 'Back to page')
   }
+
+  const entityLabelShort =
+    entityLabel.length > 40 ? entityLabel.substring(0, 37) + '...' : entityLabel
+  if (props.autoSave) {
+    return $t(
+      'libraryItemEditOverlayBackWithPage',
+      'Save and go back to "@label"',
+    ).replace('@label', entityLabelShort)
+  }
   return $t(
-    'libraryItemEditOverlayBackWithPage',
-    'Save and go back to "@label"',
-  ).replace('@label', entityLabel)
+    'libraryItemEditOverlayBackWithPageNoSave',
+    'Go back to "@label"',
+  ).replace('@label', entityLabelShort)
 })
 
 const FADE_DURATION = 150
@@ -341,6 +355,31 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   ui.setNestedEditor(null)
+})
+
+function onMessage(e: MessageEvent): void {
+  if (!e.data || typeof e.data !== 'object') {
+    return
+  }
+  if (e.data.event !== 'BLOKKLI') {
+    return
+  }
+
+  const { action } = e.data
+
+  if (action === 'SAVE') {
+    emit('submit')
+  } else if (action === 'CANCEL') {
+    emit('close')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', onMessage)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('message', onMessage)
 })
 
 onBroadcastEvent('published', onPublished)

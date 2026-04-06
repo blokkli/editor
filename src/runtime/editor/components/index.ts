@@ -56,3 +56,4 @@ export { default as ViewportBlockingRect } from './ViewportBlockingRect/index.vu
 export { default as Tooltip } from './Tooltip/index.vue'
 export { default as TooltipContext } from './Tooltip/Context.vue'
 export { default as TooltipStatus } from './Tooltip/Status.vue'
+export { default as NotEditStateInfo } from './NotEditStateInfo/index.vue'

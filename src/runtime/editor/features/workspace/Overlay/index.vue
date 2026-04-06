@@ -1,5 +1,6 @@
 <template>
   <SearchOverlay
+    v-slot="{ focusedIndex, onMouseEnter }"
     v-model:text="searchText"
     :title="$t('workspaceTitle', 'Switch page')"
     :total-items="displayItems.length"
@@ -9,7 +10,6 @@
     :is-loading
     @select="onSelectByIndex"
     @close="emit('close')"
-    v-slot="{ focusedIndex, onMouseEnter }"
   >
     <a
       v-for="(item, i) in displayItems"
