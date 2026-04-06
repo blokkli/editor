@@ -59,6 +59,7 @@ const props = defineProps<{
    * Different regions appear in different locations of the toolbar.
    */
   region:
+    | 'title'
     | 'after-title'
     | 'before-title'
     | 'before-sidebar'
@@ -159,9 +160,11 @@ function onClick() {
 const tooltipPlacement = computed<Placement>(() => {
   if (props.region === 'before-sidebar-right') {
     return 'below-before'
-  } else if (props.region === 'before-sidebar') {
-    return 'below-right'
-  } else if (props.region === 'artboard') {
+  } else if (
+    props.region === 'before-sidebar' ||
+    props.region === 'artboard' ||
+    props.region === 'title'
+  ) {
     return 'below-right'
   }
 

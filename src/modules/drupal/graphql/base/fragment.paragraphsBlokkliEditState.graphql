@@ -6,6 +6,9 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
   currentIndex
   currentUserIsOwner
   ownerName
+  user: uid {
+    id
+  }
   textFieldValues(langcode: $langcode) {
     uuid
     fieldName

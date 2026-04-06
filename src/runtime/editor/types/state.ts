@@ -55,6 +55,7 @@ export interface MappedState {
   mutations: MutationItem[]
   currentUserIsOwner: boolean
   ownerName: string
+  ownerId?: string
   mutatedState?: {
     mutatedOptions?: any
     mutatedHostOptions?: Record<string, string>

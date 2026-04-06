@@ -292,6 +292,11 @@ export declare const templateEditRouteName: string|null
       context.features.disableFeature('media-library')
     }
 
+    // Feature: Workspace.
+    if (queryFields.has('paragraphsBlokkliEntitiesSearch')) {
+      addGraphqlDocument('features/workspace.graphql')
+    }
+
     // Feature: Preview Grant.
     if (editStateFields.has('previewUrl')) {
       addGraphqlDocument('features/preview-grant.graphql')

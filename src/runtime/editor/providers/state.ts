@@ -35,6 +35,7 @@ import { fromLibraryBlockBundle } from '#blokkli-build/config'
 const HOST_OPTION_KEY = 'HOST'
 
 export type BlokkliOwner = {
+  id: string | undefined
   name: string | undefined
   currentUserIsOwner: boolean
 }
@@ -487,6 +488,7 @@ export default async function (
     const currentIndex = context?.currentIndex
     currentMutationIndex.value = currentIndex === undefined ? -1 : currentIndex
     owner.value = {
+      id: context?.ownerId,
       name: context?.ownerName,
       currentUserIsOwner: !!context?.currentUserIsOwner,
     }

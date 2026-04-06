@@ -1568,6 +1568,10 @@ msgctxt "commandPaletteOpen"
 msgid "Open Command Palette"
 msgstr ""
 
+msgctxt "commandPaletteTitle"
+msgid "Command Palette"
+msgstr ""
+
 msgctxt "commandPaletteTourText"
 msgid ""
 "Easily perform actions using your keyboard by launching the command "
@@ -2472,6 +2476,14 @@ msgctxt "feature_validations_label"
 msgid "Validations"
 msgstr "Validazioni"
 
+msgctxt "feature_workspace_description"
+msgid "Allows users to switch between edit states."
+msgstr ""
+
+msgctxt "feature_workspace_label"
+msgid "Workspace"
+msgstr ""
+
 msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Questo campo è obbligatorio"
@@ -2822,6 +2834,10 @@ msgstr ""
 
 msgctxt "overlayDoubleClickInfo"
 msgid "<strong>Double click</strong> to close overlay"
+msgstr ""
+
+msgctxt "owner"
+msgid "Owner"
 msgstr ""
 
 msgctxt "ownershipError"
@@ -3215,6 +3231,10 @@ msgstr ""
 
 msgctxt "searchContentReplaceFailed"
 msgid "Failed to replace content."
+msgstr ""
+
+msgctxt "searchOverlayNoResults"
+msgid "No results found."
 msgstr ""
 
 msgctxt "searchToolbarLabel"
@@ -3777,4 +3797,16 @@ msgstr ""
 
 msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
+msgstr ""
+
+msgctxt "workspaceOpen"
+msgid "Switch page"
+msgstr ""
+
+msgctxt "workspaceSearchPlaceholder"
+msgid "Search pages..."
+msgstr ""
+
+msgctxt "workspaceTitle"
+msgid "Switch page"
 msgstr ""

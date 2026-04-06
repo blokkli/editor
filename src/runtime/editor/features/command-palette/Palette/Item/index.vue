@@ -1,8 +1,7 @@
 <template>
   <button
-    ref="buttonEl"
     class="bk-command flex text-mono-300 pl-[12px] pr-10 w-full text-left gap-10 items-center border border-transparent"
-    :class="isFocused ? 'bg-mono-800 border-mono-700 text-white' : ''"
+    :class="isFocused ? 'bg-mono-700 border-mono-700 text-white' : ''"
     @mouseenter="$emit('focus', index)"
     @click.prevent="$emit('select', item.id)"
   >
@@ -21,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, useBlokkli, useTemplateRef } from '#imports'
+import { useBlokkli } from '#imports'
 import { Icon, ItemIcon, Highlight } from '#blokkli/editor/components'
 import type { Command, CommandGroup } from '../../types'
 
@@ -31,7 +30,7 @@ export type MappedCommandItem = Command & {
   visible?: boolean
 }
 
-const props = defineProps<{
+defineProps<{
   item: MappedCommandItem
   index: number
   isFocused: boolean
@@ -43,18 +42,6 @@ defineEmits<{
 }>()
 
 const { $t } = useBlokkli()
-
-const buttonEl = useTemplateRef('buttonEl')
-
-// Scroll into view when focused
-watch(
-  () => props.isFocused,
-  (focused) => {
-    if (focused && buttonEl.value) {
-      buttonEl.value.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-    }
-  },
-)
 
 const getGroupLabel = (id?: CommandGroup): string => {
   if (id === 'ui') {

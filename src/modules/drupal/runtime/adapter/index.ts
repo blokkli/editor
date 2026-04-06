@@ -334,6 +334,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         mutations,
         currentUserIsOwner,
         ownerName,
+        ownerId: state.user?.id,
         mutatedState: {
           fields,
           violations,
@@ -1243,7 +1244,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
     if (hasQuery('pbSearchEditStates')) {
       adapter.getEditStates = (e) => {
-        return useGraphqlQuery('pbSearchEditStates', { page: e?.page, ...e?.filters }).then((data) => {
+        return useGraphqlQuery('pbSearchEditStates', {
+          page: e?.page,
+          ...e?.filters,
+        }).then((data) => {
           return {
             items: (data.data.pbSearchEditStates?.items || [])
               .map<GetEditStatesItem | null>((v) => {
@@ -1276,6 +1280,36 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             filters: mapPluginConfigInputs(
               data.data.pbSearchEditStates?.filters ?? [],
             ),
+          }
+        })
+      }
+    }
+
+    if (hasQuery('pbEntitiesSearch')) {
+      adapter.getHostEntities = () => {
+        return useGraphqlQuery('pbEntitiesSearch').then((data) => {
+          const result = data.data.paragraphsBlokkliEntitiesSearch
+          const bundles: Record<string, string> = {}
+          for (const bundle of result?.bundleLabels ?? []) {
+            bundles[bundle.id] = bundle.label
+          }
+          return {
+            items: (result?.items ?? []).map((v) => ({
+              id: v.id,
+              uuid: v.uuid,
+              entityType: v.entityType,
+              bundle: v.bundle,
+              label: v.label ?? '',
+              url: v.url,
+              lastChanged: v.lastChanged ?? null,
+              uid: v.uid ?? null,
+              context: v.context ?? undefined,
+            })),
+            labelMap: {
+              label:
+                result?.entityTypeLabels?.[0]?.label ?? '',
+              bundles,
+            },
           }
         })
       }

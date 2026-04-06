@@ -1535,6 +1535,10 @@
     "source": "Open Command Palette",
     "translation": "Befehle öffnen"
   },
+  "commandPaletteTitle": {
+    "source": "Command Palette",
+    "translation": "Befehlspalette"
+  },
   "commandPaletteTourText": {
     "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
     "translation": "Führen Sie Aktionen ganz einfach mit Ihrer Tastatur aus, indem Sie «Befehle» öffnen. Fast alle Funktionen sind auch über «Befehle» ausführbar."
@@ -2343,6 +2347,14 @@
     "source": "Validations",
     "translation": "Validierungen"
   },
+  "feature_workspace_description": {
+    "source": "Allows users to switch between edit states.",
+    "translation": "Ermöglicht das Wechseln zwischen Bearbeitungszuständen."
+  },
+  "feature_workspace_label": {
+    "source": "Workspace",
+    "translation": "Arbeitsbereich"
+  },
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Feld darf nicht leer sein"
@@ -2674,6 +2686,10 @@
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
     "translation": "<strong>Doppelklicken</strong> um Dialog zu schliessen"
+  },
+  "owner": {
+    "source": "Owner",
+    "translation": "Besitzer"
   },
   "ownershipError": {
     "source": "Error in assigning",
@@ -3054,6 +3070,10 @@
   "searchContentReplaceFailed": {
     "source": "Failed to replace content.",
     "translation": "Inhalt konnte nicht ersetzt werden."
+  },
+  "searchOverlayNoResults": {
+    "source": "No results found.",
+    "translation": "Keine Ergebnisse gefunden."
   },
   "searchToolbarLabel": {
     "source": "Search content",
@@ -3586,5 +3606,17 @@
   "viewBannerViewTitle": {
     "source": "You are in view-only mode.",
     "translation": "Sie befinden sich im Ansichtsmodus."
+  },
+  "workspaceOpen": {
+    "source": "Switch page",
+    "translation": "Seite wechseln"
+  },
+  "workspaceSearchPlaceholder": {
+    "source": "Search pages...",
+    "translation": "Seiten durchsuchen..."
+  },
+  "workspaceTitle": {
+    "source": "Switch page",
+    "translation": "Seite wechseln"
   }
 }

@@ -1535,6 +1535,10 @@
     "source": "Open Command Palette",
     "translation": ""
   },
+  "commandPaletteTitle": {
+    "source": "Command Palette",
+    "translation": ""
+  },
   "commandPaletteTourText": {
     "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
     "translation": ""
@@ -2343,6 +2347,14 @@
     "source": "Validations",
     "translation": "Validations"
   },
+  "feature_workspace_description": {
+    "source": "Allows users to switch between edit states.",
+    "translation": ""
+  },
+  "feature_workspace_label": {
+    "source": "Workspace",
+    "translation": ""
+  },
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Ce champ est obligatoire"
@@ -2673,6 +2685,10 @@
   },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
+    "translation": ""
+  },
+  "owner": {
+    "source": "Owner",
     "translation": ""
   },
   "ownershipError": {
@@ -3053,6 +3069,10 @@
   },
   "searchContentReplaceFailed": {
     "source": "Failed to replace content.",
+    "translation": ""
+  },
+  "searchOverlayNoResults": {
+    "source": "No results found.",
     "translation": ""
   },
   "searchToolbarLabel": {
@@ -3585,6 +3605,18 @@
   },
   "viewBannerViewTitle": {
     "source": "You are in view-only mode.",
+    "translation": ""
+  },
+  "workspaceOpen": {
+    "source": "Switch page",
+    "translation": ""
+  },
+  "workspaceSearchPlaceholder": {
+    "source": "Search pages...",
+    "translation": ""
+  },
+  "workspaceTitle": {
+    "source": "Switch page",
     "translation": ""
   }
 }

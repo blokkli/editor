@@ -1595,6 +1595,10 @@ msgctxt "commandPaletteOpen"
 msgid "Open Command Palette"
 msgstr "Befehlspalette ufmache"
 
+msgctxt "commandPaletteTitle"
+msgid "Command Palette"
+msgstr ""
+
 msgctxt "commandPaletteTourText"
 msgid ""
 "Easily perform actions using your keyboard by launching the command "
@@ -2504,6 +2508,14 @@ msgctxt "feature_validations_label"
 msgid "Validations"
 msgstr "Validierige"
 
+msgctxt "feature_workspace_description"
+msgid "Allows users to switch between edit states."
+msgstr ""
+
+msgctxt "feature_workspace_label"
+msgid "Workspace"
+msgstr ""
+
 msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Das Fäld dörf nid leer sii"
@@ -2865,6 +2877,10 @@ msgstr ""
 msgctxt "overlayDoubleClickInfo"
 msgid "<strong>Double click</strong> to close overlay"
 msgstr "<strong>Doppelklick</strong> zum Overlay zuemache"
+
+msgctxt "owner"
+msgid "Owner"
+msgstr ""
 
 msgctxt "ownershipError"
 msgid "Error in assigning"
@@ -3263,6 +3279,10 @@ msgstr "@field ersetze"
 msgctxt "searchContentReplaceFailed"
 msgid "Failed to replace content."
 msgstr "Inhalt het nid chönne ersetzt wärde."
+
+msgctxt "searchOverlayNoResults"
+msgid "No results found."
+msgstr ""
 
 msgctxt "searchToolbarLabel"
 msgid "Search content"
@@ -3858,3 +3878,15 @@ msgstr "Du chasch Kommentär aaluege, aber kän Inhalt bearbeite."
 msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
 msgstr "Du bisch im Aaluege-Modus."
+
+msgctxt "workspaceOpen"
+msgid "Switch page"
+msgstr ""
+
+msgctxt "workspaceSearchPlaceholder"
+msgid "Search pages..."
+msgstr ""
+
+msgctxt "workspaceTitle"
+msgid "Switch page"
+msgstr ""

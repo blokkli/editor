@@ -1,7 +1,4 @@
-import type {
-  AdapterSearchArguments,
-  BlokkliAdapterSearchResults,
-} from '#blokkli/editor/adapter'
+import type { BlokkliAdapterSearchResults } from '#blokkli/editor/adapter'
 import type { EditEntity } from '#blokkli/editor/types/state'
 
 export type PublishOptions = {
