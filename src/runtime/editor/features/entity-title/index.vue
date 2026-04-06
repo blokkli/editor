@@ -17,14 +17,16 @@
     </button>
     <button
       ref="buttonEl"
-      class="bk-toolbar-button group/tooltip"
+      class="bk-toolbar-button group/tooltip w-full justify-start relative"
       :disabled="!state.canEdit.value"
       @click="eventBus.emit('editEntity')"
     >
-      <div class="bk-toolbar-title">
-        <div>
+      <div class="bk-toolbar-title relative w-full h-full">
+        <div
+          class="min-w-0 overflow-ellipsis overflow-hidden absolute top-1/2 left-0 w-full whitespace-nowrap -translate-y-1/2 text-left flex items-center"
+        >
           <StatusIndicator :status="statusIndicatorStatus" />
-          <strong>{{ entity.label }}</strong>
+          <strong class="text-mono-100">{{ entity.label }}</strong>
           <span>&nbsp;{{ entity.bundleLabel }}</span>
         </div>
       </div>

@@ -250,20 +250,6 @@ export default {
     }
     &#bk-toolbar-title {
       @apply flex-1 text-xs lg:text-sm xl:text-base;
-      .bk-toolbar-button {
-        @apply w-full justify-start relative;
-        .bk-toolbar-title {
-          @apply relative w-full h-full;
-          > div {
-            @apply min-w-0 overflow-ellipsis overflow-hidden absolute top-1/2 left-0 w-full whitespace-nowrap -translate-y-1/2 text-left;
-            @apply flex items-center;
-          }
-        }
-      }
-      strong {
-        @apply text-mono-100;
-      }
-
       .bk-toolbar-title-scheduled {
         @apply text-sm !leading-none border-r border-r-yellow-dark relative;
         @apply bg-yellow-dark/50 text-yellow-light/90;
@@ -350,6 +336,10 @@ export default {
 
     &:not(.bk-is-active) {
       @apply lg:hover:bg-mono-700;
+    }
+
+    &.bk-is-active {
+      @apply bg-mono-800;
     }
 
     &.bk-is-inactive {

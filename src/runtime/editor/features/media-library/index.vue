@@ -193,47 +193,6 @@ export default {
     @apply sticky bottom-0 z-50 bg-white;
   }
 
-  .bk-media-library-filters {
-    @apply flex whitespace-nowrap flex-wrap relative z-[5000];
-    flex: 0 0 auto;
-    > div {
-      @apply border-b border-b-mono-300 border-r border-r-mono-300 h-[54px] flex-1;
-      @apply hover:bg-mono-100;
-
-      .bk-checkbox-toggle {
-        @apply w-full py-15 px-10 cursor-pointer;
-        .bk-checkbox-toggle-label-label {
-          @apply text-sm;
-        }
-      }
-
-      .bk-form-text {
-        @apply relative;
-        .bk-icon {
-          @apply absolute top-1/2 left-5 -translate-y-1/2 z-50 size-20;
-          @apply text-mono-500;
-          svg {
-            @apply fill-current;
-          }
-        }
-        input {
-          @apply bg-transparent text-sm;
-        }
-
-        &:focus-within {
-          .bk-icon {
-            @apply text-accent-700;
-          }
-        }
-
-        > input {
-          @apply w-full pl-30 !pr-5 h-full block;
-          @apply min-w-[200px];
-        }
-      }
-    }
-  }
-
   .bk-media-library-items {
     @apply w-full min-w-0;
     > div {
@@ -281,67 +240,6 @@ export default {
 
     &.bk-is-horizontal > div {
       @apply grid;
-    }
-  }
-
-  .bk-media-library-filter-select {
-    @apply relative h-full;
-
-    > button {
-      @apply w-full h-full text-left px-10 cursor-pointer  flex items-center justify-between;
-      @apply min-w-[150px];
-
-      > div:first-child {
-        @apply flex flex-col h-full justify-center gap-5;
-      }
-
-      > .bk-icon {
-        @apply w-25 h-25 text-mono-500 shrink-0 transition-transform;
-        svg {
-          @apply fill-current;
-        }
-      }
-
-      .bk-media-library-filter-select-label {
-        @apply text-xs uppercase tracking-wide font-semibold text-mono-500 leading-none;
-      }
-
-      .bk-media-library-filter-select-value {
-        @apply text-sm font-semibold text-mono-900 !leading-none truncate max-w-full block;
-      }
-    }
-
-    &.bk-is-open > button > .bk-icon {
-      @apply rotate-180;
-    }
-
-    .bk-media-library-filter-select-dropdown {
-      @apply absolute top-full left-0 w-full  bg-white border border-mono-300 shadow-lg z-50 max-h-[300px] overflow-auto;
-
-      .bk-media-library-filter-select-search {
-        @apply sticky top-0  p-15 border-b border-mono-300 bg-white;
-      }
-
-      ul {
-        @apply py-3;
-      }
-
-      li button {
-        @apply w-full text-left px-20 py-8 text-sm cursor-pointer truncate text-mono-900;
-        @apply hover:bg-accent-50 hover:text-accent-900;
-
-        &.bk-is-highlighted {
-          @apply bg-accent-50 text-accent-900;
-        }
-
-        &.bk-is-active {
-          @apply bg-accent-100 text-accent-900 font-semibold;
-        }
-      }
-
-      .bk-media-library-filter-select-empty {
-        @apply px-20 py-10 text-sm text-mono-400 italic;
-      }
     }
   }
 

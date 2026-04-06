@@ -1,4 +1,7 @@
-import type { BlokkliAdapterSearchResults } from '#blokkli/editor/adapter'
+import type {
+  AdapterSearchArguments,
+  BlokkliAdapterSearchResults,
+} from '#blokkli/editor/adapter'
 import type { EditEntity } from '#blokkli/editor/types/state'
 
 export type PublishOptions = {
@@ -82,6 +85,10 @@ export type GetEditStatesItem = {
   hostEntityUuid: string
   entity: EditEntity
   currentUserIsOwner: boolean
+  lastChanged: string
+  pendingChanges: number
+  ownerName: string
+  url: string
 }
 
 export type BlokkliAdapterGetEditStatesResult =
@@ -119,7 +126,7 @@ declare module '#blokkli/editor/adapter' {
      * Search for edit states.
      */
     getEditStates?: (
-      page?: number,
+      e?: AdapterSearchArguments,
     ) => Promise<BlokkliAdapterGetEditStatesResult>
   }
 }

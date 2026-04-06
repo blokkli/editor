@@ -9,6 +9,7 @@ export { default as BlockPreviewRenderer } from './BlockPreviewRenderer/index.vu
 export { default as BlokkliTransition } from './Transition/index.vue'
 export { default as BundleSelector } from './BundleSelector/index.vue'
 export { default as ConfigForm } from './PluginConfigForm/index.vue'
+export { default as ConfigFormInline } from './PluginConfigFormInline/index.vue'
 export { default as DialogModal } from './Dialog/index.vue'
 export { default as DiffApproval } from './DiffApproval/index.vue'
 export { default as DiffDisplay } from './DiffViewer/DiffDisplay/index.vue'

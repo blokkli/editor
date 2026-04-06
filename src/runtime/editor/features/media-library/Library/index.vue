@@ -3,34 +3,18 @@
     <div v-if="status === 'pending'" class="bk-loading">
       <Icon name="loader" />
     </div>
-    <div class="bk-media-library-filters">
-      <div class="bk-media-library-filters-listview">
-        <button @click="toggleListView">
-          <Icon :name="listViewIcon" />
-        </button>
-      </div>
-      <div v-for="filter in filters" :key="filter.name">
-        <label v-if="filter.type === 'text'" class="bk-form-text">
-          <Icon name="bk_mdi_search" />
-          <input
-            v-model.lazy="filterValues[filter.name]"
-            type="text"
-            :placeholder="filter.placeholder"
-          />
-        </label>
-        <FilterSelect
-          v-else-if="filter.type === 'options'"
-          v-model="filterValues[filter.name]"
-          :label="filter.label"
-          :options="filter.options"
-        />
-        <FormToggle
-          v-else-if="filter.type === 'checkbox'"
-          v-model="filterValues[filter.name]"
-          :label="filter.label"
-        />
-      </div>
-    </div>
+    <ConfigFormInline
+      v-model="filterValues"
+      :filters="filters"
+    >
+      <template #before>
+        <div class="bk-media-library-filters-listview">
+          <button @click="toggleListView">
+            <Icon :name="listViewIcon" />
+          </button>
+        </div>
+      </template>
+    </ConfigFormInline>
     <div
       ref="listEl"
       class="bk-media-library-items"
@@ -74,11 +58,10 @@ import {
   Sortli,
   Icon,
   Pagination,
-  FormToggle,
+  ConfigFormInline,
 } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
-import FilterSelect from './FilterSelect/index.vue'
 import { falsy } from '#blokkli/helpers'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DraggableMediaLibraryItem } from '../types'

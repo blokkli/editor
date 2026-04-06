@@ -442,6 +442,10 @@ const stateItems = computed<Array<GetEditStatesItem & { id: string }>>(() => {
       hostEntityUuid,
       currentUserIsOwner: !!state.owner.value?.currentUserIsOwner,
       entity: state.entity.value,
+      lastChanged: '',
+      pendingChanges: state.mutations.value.length,
+      ownerName: state.owner.value?.name ?? '',
+      url: '',
     },
     ...editStates.value.items
       .map((v) => {

@@ -32,7 +32,10 @@ import type {
   HostTransformPlugin,
   TransformPlugin,
 } from '#blokkli/editor/features/transform/types'
-import type { PublishOptions } from '#blokkli/editor/features/publish/types'
+import type {
+  GetEditStatesItem,
+  PublishOptions,
+} from '#blokkli/editor/features/publish/types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type { TranslationState } from '#blokkli/editor/types/state'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
@@ -1239,24 +1242,30 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasQuery('pbSearchEditStates')) {
-      adapter.getEditStates = (page) => {
-        return useGraphqlQuery('pbSearchEditStates', { page }).then((data) => {
+      adapter.getEditStates = (e) => {
+        return useGraphqlQuery('pbSearchEditStates', { page: e?.page, ...e?.filters }).then((data) => {
           return {
             items: (data.data.pbSearchEditStates?.items || [])
-              .map((v) => {
+              .map<GetEditStatesItem | null>((v) => {
                 if (
                   v &&
                   v.uuid &&
                   v.hostEntityType &&
                   v.hostEntityUuid &&
-                  v.label
+                  v.label &&
+                  v.url?.path
                 ) {
                   return {
                     id: v.uuid,
                     hostEntityType: v.hostEntityType,
                     hostEntityUuid: v.hostEntityUuid,
                     label: v.label,
-                    ...v,
+                    ownerName: v.uid?.name ?? '',
+                    pendingChanges: v.mutations?.count ?? 0,
+                    lastChanged: v.changedRawField?.first?.formatted ?? '',
+                    url: v.url.path,
+                    entity: v.entity,
+                    currentUserIsOwner: v.currentUserIsOwner,
                   }
                 }
                 return null

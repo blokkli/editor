@@ -83,6 +83,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_menu',
   'bk_mdi_mobile',
   'bk_mdi_mobile_rotate',
+  'bk_mdi_more_horiz',
   'bk_mdi_newspaper',
   'bk_mdi_open_in_new',
   'bk_mdi_palette',
@@ -134,5 +135,6 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_visibility_off',
   'bk_mdi_warning',
   'bk_mdi_web_traffic',
+  'bk_mdi_workspaces',
   'bk_mdi_zoom_in',
 ] as const

@@ -47,7 +47,7 @@ import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
-import type { PublishOptions } from '#blokkli/editor/features/publish/types'
+import type { GetEditStatesItem, PublishOptions } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import { FieldUrl } from './mock/state/Field/Url'
@@ -56,7 +56,7 @@ import type {
   AgentConversationSummary,
 } from '#blokkli/agent/app/composables'
 
-const ENALBE_EDIT_STATES = false
+const ENABLE_EDIT_STATES = true
 const ENABLED_ASSISTANT = false
 
 function getPublishOptions(ctx: {
@@ -1831,8 +1831,8 @@ export default defineBlokkliEditAdapter((ctx) => {
       return addMutation('set_block_schedule', { blocks })
     },
 
-    getEditStates() {
-      if (!ENALBE_EDIT_STATES) {
+    getEditStates(e) {
+      if (!ENABLE_EDIT_STATES || !import.meta.dev) {
         return Promise.resolve({
           items: [],
           total: 0,
@@ -1841,12 +1841,15 @@ export default defineBlokkliEditAdapter((ctx) => {
         })
       }
 
-      return Promise.resolve({
-        items: [
-          {
+      const states: GetEditStatesItem[] = [
+{
             hostEntityType: 'page',
             hostEntityUuid: '123456',
             currentUserIsOwner: true,
+            ownerName: 'Jan Hug',
+            lastChanged: '2026-04-05T09:12:00Z',
+            pendingChanges: 7,
+            url: '/?blokkliEditing=1',
             entity: {
               bundleLabel: 'Page',
               status: true,
@@ -1857,6 +1860,10 @@ export default defineBlokkliEditAdapter((ctx) => {
             hostEntityType: 'page',
             hostEntityUuid: '123459',
             currentUserIsOwner: true,
+            ownerName: 'Jan Hug',
+            lastChanged: '2026-04-04T16:45:00Z',
+            pendingChanges: 2,
+            url: '/?blokkliEditing=1',
             entity: {
               bundleLabel: 'Page',
               status: true,
@@ -1867,6 +1874,10 @@ export default defineBlokkliEditAdapter((ctx) => {
             hostEntityType: 'page',
             hostEntityUuid: '123460',
             currentUserIsOwner: false,
+            ownerName: 'Alice Mueller',
+            lastChanged: '2026-04-03T11:30:00Z',
+            pendingChanges: 14,
+            url: '/?blokkliEditing=1',
             entity: {
               bundleLabel: 'Page',
               status: false,
@@ -1877,6 +1888,10 @@ export default defineBlokkliEditAdapter((ctx) => {
             hostEntityType: 'page',
             hostEntityUuid: '123465',
             currentUserIsOwner: false,
+            ownerName: 'Bob Schmidt',
+            lastChanged: '2026-03-28T08:00:00Z',
+            pendingChanges: 1,
+            url: '/?blokkliEditing=1',
             entity: {
               bundleLabel: 'Page',
               status: true,
@@ -1888,16 +1903,57 @@ export default defineBlokkliEditAdapter((ctx) => {
             hostEntityType: 'page',
             hostEntityUuid: 'error',
             currentUserIsOwner: true,
+            ownerName: 'Jan Hug',
+            lastChanged: '2026-04-01T14:20:00Z',
+            pendingChanges: 3,
+            url: '/?blokkliEditing=1',
             entity: {
               bundleLabel: 'Page',
               status: true,
               label: 'A page that will return a publish error',
             },
           },
+      ]
+
+      let items = [...states, ...states, ...states, ...states, ...states]
+
+      const search = e?.filters?.search
+      if (search && typeof search === 'string') {
+        const query = search.toLowerCase()
+        items = items.filter((v) =>
+          v.entity.label?.toLowerCase().includes(query),
+        )
+      }
+
+      if (e?.filters?.only_own) {
+        items = items.filter((v) => v.currentUserIsOwner)
+      }
+
+      const perPage = 7
+      const page = e?.page ?? 0
+      const start = page * perPage
+
+      return Promise.resolve({
+        items: items.slice(start, start + perPage),
+        total: items.length,
+        perPage,
+        filters: [
+          {
+            type: 'text' as const,
+            name: 'search',
+            label: 'Search',
+            required: false,
+            placeholder: 'Search by title...',
+          },
+          {
+            type: 'checkbox' as const,
+            name: 'only_own',
+            label: 'Ownership',
+            required: false,
+            checkboxLabel: 'Only show my edit states',
+            defaultValue: false,
+          },
         ],
-        total: 3,
-        perPage: 16,
-        filters: [],
       })
     },
 
