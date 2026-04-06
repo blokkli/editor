@@ -62,7 +62,7 @@
       </template>
       <template #default="{ width, height, isResizing }">
         <div class="bk-sidebar-content-wrapper">
-          <Loading v-if="isLoading" white />
+          <Loading v-if="isLoading" theme="white" />
           <div ref="sidebarContent" class="bk-sidebar-content">
             <slot
               :key="isRenderedDetached ? 'detached' : 'attached'"
@@ -98,7 +98,7 @@
         </button>
       </div>
       <div class="bk-sidebar-content-wrapper">
-        <Loading v-if="isLoading" white />
+        <Loading v-if="isLoading" theme="white" />
         <div ref="sidebarContent" class="bk-sidebar-content">
           <slot
             :key="isRenderedDetached ? 'detached' : 'attached'"

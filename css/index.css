@@ -84,20 +84,6 @@ html {
     --bk-scheme-dark: var(--bk-theme-accent-800);
     --bk-scheme-text: var(--bk-theme-accent-50);
   }
-
-  &.bk-loading-overlay {
-    @apply bg-mono-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
-    &.bk-is-screen {
-      @apply fixed w-screen h-screen bg-mono-100;
-    }
-
-    &.bk-is-white {
-      @apply bg-white/90;
-    }
-    svg {
-      @apply w-100 h-100 text-mono-200 animate-spin fill-mono-400;
-    }
-  }
 }
 
 .bk-blokkli-item-icon {

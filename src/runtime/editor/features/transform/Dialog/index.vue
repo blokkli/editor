@@ -26,7 +26,7 @@
                 @toggle="onToggleSelected"
               />
             </div>
-            <Loading v-if="isLocked" white />
+            <Loading v-if="isLocked" theme="white" />
           </main>
           <footer>
             <button
