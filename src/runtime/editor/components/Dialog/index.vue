@@ -161,7 +161,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-dialog {
+.bk.bk-dialog {
   @apply fixed top-0 left-0 w-screen bottom-0  z-dialog lg:p-15 pointer-events-none;
   @apply flex items-center justify-center;
 
@@ -196,6 +196,33 @@ export default {
     }
   }
 
+  .bk-overlay-header {
+    @apply bg-black text-white flex items-center pl-10 text-base leading-none;
+
+    > .bk-icon,
+    > .bk-blokkli-item-icon {
+      @apply w-auto h-auto mr-5;
+      svg {
+        @apply fill-current w-[1.25em] h-[1.25em];
+      }
+    }
+
+    h3 {
+      @apply font-bold;
+    }
+
+    > button {
+      @apply px-10 py-15 ml-auto flex items-center justify-center size-60;
+
+      .bk-icon {
+        @apply w-[1.25em] h-[1.25em];
+        svg {
+          @apply fill-current;
+        }
+      }
+    }
+  }
+
   .bk-dialog-content,
   .bk-dialog-pre-footer {
     @apply px-15 lg:px-20 xl:px-30;
@@ -225,56 +252,14 @@ export default {
   }
 }
 
-.bk-dialog-content-element {
+.bk .bk-dialog-content-element {
   @apply rounded p-20 min-h-[400px] mb-30 border border-mono-300 flex items-center justify-center overflow-hidden;
   &.bk-default-bg {
     @apply bg-mono-50;
   }
 }
 
-.bk-block-preview-renderer {
-  @apply rounded p-20 min-h-[200px] mb-30 border border-mono-300 overflow-hidden;
-  &.bk-default-bg {
-    @apply bg-mono-50;
-  }
-}
-
-.bk-block-preview-renderer-items {
-  @apply flex flex-col gap-10;
-}
-
-.bk-block-preview-renderer-item {
-  @apply rounded overflow-hidden;
-}
-
-.bk-message-info {
+.bk .bk-message-info {
   @apply font-sans text-base bg-yellow-light p-10 border border-yellow-normal rounded text-yellow-dark my-20;
-}
-
-.bk.bk-overlay-header {
-  @apply bg-black text-white flex items-center pl-10 text-base leading-none;
-
-  > .bk-icon,
-  > .bk-blokkli-item-icon {
-    @apply w-auto h-auto mr-5;
-    svg {
-      @apply fill-current w-[1.25em] h-[1.25em];
-    }
-  }
-
-  h3 {
-    @apply font-bold;
-  }
-
-  > button {
-    @apply px-10 py-15 ml-auto flex items-center justify-center size-60;
-
-    .bk-icon {
-      @apply w-[1.25em] h-[1.25em];
-      svg {
-        @apply fill-current;
-      }
-    }
-  }
 }
 </style>

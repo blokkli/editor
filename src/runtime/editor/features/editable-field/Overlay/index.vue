@@ -455,7 +455,7 @@ onBeforeUnmount(async () => {
 </script>
 
 <style lang="postcss">
-.bk-editable-field {
+.bk.bk-editable-field {
   --bk-bg: white;
   --bk-header-bg: theme('colors.teal.normal');
   --bk-header-text: theme('colors.teal.dark');
@@ -585,14 +585,6 @@ onBeforeUnmount(async () => {
   }
   .bk-editable-field-info-count {
     @apply px-10 h-[32px] flex items-center border-l border-l-mono-300;
-  }
-}
-
-.bk-editable-field-contenteditable {
-  @apply p-10;
-
-  > div {
-    @apply focus:outline-none;
   }
 }
 </style>

@@ -158,7 +158,7 @@ const tickmarks = computed(() => {
 </script>
 
 <style lang="postcss">
-.bk-input-range {
+.bk .bk-input-range {
   @apply block w-full;
   input {
     @apply w-full block accent-accent-700 bg-mono-100 rounded-full border border-mono-300;

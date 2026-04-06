@@ -14,8 +14,8 @@
       <span class="pl-15">{{ title }}</span>
       <button
         type="button"
-        @click.prevent="$emit('close')"
         class="size-40 flex items-center justify-center hover:bg-mono-800"
+        @click.prevent="$emit('close')"
       >
         <Icon name="bk_mdi_close" class="size-15" />
       </button>

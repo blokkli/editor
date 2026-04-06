@@ -458,7 +458,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-dragging-overlay {
+.bk-vars.bk-dragging-overlay {
   @apply fixed bottom-auto top-0 left-0 pointer-events-none z-dragging-overlay rounded select-none will-change-transform cursor-grabbing;
 
   * {
@@ -492,62 +492,64 @@ export default {
   }
 }
 
-.bk-dragging-overlay-markup {
-  @apply absolute top-0 left-0 origin-top-left w-full h-full pointer-events-none;
-  @apply rounded;
+.bk-vars {
+  .bk-dragging-overlay-markup {
+    @apply absolute top-0 left-0 origin-top-left w-full h-full pointer-events-none;
+    @apply rounded;
 
-  * {
-    @apply !pointer-events-none;
-  }
-
-  > * {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    margin: 0 !important;
-    /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
-    width: calc(100% + 1px) !important;
-    height: 100% !important;
-    /* Reset any transforms on the cloned element to prevent offset from cursor. */
-    transform: none !important;
-    translate: none !important;
-    rotate: none !important;
-    scale: none !important;
-    @apply !pointer-events-none;
-    @apply !select-none !shadow-none;
-  }
-  @screen md {
-    &:before {
-      content: '';
-      @apply absolute top-0 left-0 w-full h-full z-50 rounded;
-    }
-  }
-}
-
-.bk-dragging-overlay-fallback {
-  @apply relative h-full w-full text-xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
-
-  &.bk-is-top {
-    @apply shadow-xl-even z-50;
-  }
-
-  > div {
-    @apply flex flex-col items-center font-bold origin-top lg:origin-center;
-  }
-
-  .bk-blokkli-item-icon,
-  .bk-icon {
-    @apply relative overflow-hidden;
-    @apply text-[1.8em] mb-[0.2em];
-    @apply w-full h-full max-w-[1em] max-h-[1em] rounded-[0.2em] p-[0.1em] border-[0.02em];
-
-    svg {
-      @apply relative z-10;
+    * {
+      @apply !pointer-events-none;
     }
 
-    &:before {
-      content: '';
-      @apply absolute top-0 left-0 w-full h-full bg-current opacity-10;
+    > * {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      margin: 0 !important;
+      /* Prevent text wrapping for cloned ghost elements (in particular: buttons). */
+      width: calc(100% + 1px) !important;
+      height: 100% !important;
+      /* Reset any transforms on the cloned element to prevent offset from cursor. */
+      transform: none !important;
+      translate: none !important;
+      rotate: none !important;
+      scale: none !important;
+      @apply !pointer-events-none;
+      @apply !select-none !shadow-none;
+    }
+    @screen md {
+      &:before {
+        content: '';
+        @apply absolute top-0 left-0 w-full h-full z-50 rounded;
+      }
+    }
+  }
+
+  .bk-dragging-overlay-fallback {
+    @apply relative h-full w-full text-xl pt-30 lg:pt-0 lg:flex lg:items-center lg:justify-center;
+
+    &.bk-is-top {
+      @apply shadow-xl-even z-50;
+    }
+
+    > div {
+      @apply flex flex-col items-center font-bold origin-top lg:origin-center;
+    }
+
+    .bk-blokkli-item-icon,
+    .bk-icon {
+      @apply relative overflow-hidden;
+      @apply text-[1.8em] mb-[0.2em];
+      @apply w-full h-full max-w-[1em] max-h-[1em] rounded-[0.2em] p-[0.1em] border-[0.02em];
+
+      svg {
+        @apply relative z-10;
+      }
+
+      &:before {
+        content: '';
+        @apply absolute top-0 left-0 w-full h-full bg-current opacity-10;
+      }
     }
   }
 }

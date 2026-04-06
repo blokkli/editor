@@ -2,16 +2,20 @@
   <BlokkliTransition name="menu">
     <div
       v-if="menuOpen"
-      class="bk bk-menu-list"
+      class="bk fixed inset-y-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] flex flex-col pointer-events-auto z-menu w-[calc(100vw-40px)]"
       @wheel.passive.stop
       @touchstart.stop.passive
       @touchmove.stop.passive
     >
-      <button :class="{ 'bk-is-active': menuOpen }" @click="closeMenu">
-        <Icon name="bk_mdi_close" />
+      <button
+        :class="{ 'bk-is-active': menuOpen }"
+        class="h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25 bg-white text-mono-950"
+        @click="closeMenu"
+      >
+        <Icon name="bk_mdi_close" class="size-20 md:size-30 mr-25" />
       </button>
-      <div class="bk-menu-list-inner">
-        <div id="bk-menu-primary">
+      <div class="flex-1 overflow-auto flex flex-col">
+        <div id="bk-menu-primary" class="grid border-t border-t-mono-200">
           <MenuButton
             v-for="button in primaryButtons"
             :id="button.id"
@@ -24,7 +28,7 @@
             @click="onClick(button)"
           />
         </div>
-        <div id="bk-menu-secondary">
+        <div id="bk-menu-secondary" class="mt-auto">
           <MenuButton
             v-for="button in secondaryButtons"
             :id="button.id"
@@ -37,14 +41,24 @@
             @click="onClick(button)"
           />
         </div>
-        <aside class="bk-menu-meta">
-          <div class="bk-menu-meta-logo">
-            <Icon name="logo" />
+        <aside
+          class="px-15 py-10 text-xs bg-mono-100 text-mono-600 items-center leading-none flex justify-between"
+        >
+          <div class="flex gap-5 items-center">
+            <Icon
+              name="logo"
+              class="bg-accent-700 size-20 flex items-center justify-center rounded text-white"
+            />
             <div><strong>@blokkli/editor</strong> {{ blokkliVersion }}</div>
           </div>
 
           <div>
-            <a href="https://www.blokk.li" target="_blank">blokk.li</a>
+            <a
+              href="https://www.blokk.li"
+              target="_blank"
+              class="hover:text-accent-700 hover:underline"
+              >blokk.li</a
+            >
           </div>
         </aside>
       </div>
@@ -97,48 +111,3 @@ export default {
   name: 'AppMenu',
 }
 </script>
-
-<style lang="postcss">
-.bk.bk-menu-list {
-  @apply fixed top-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] bottom-0 flex flex-col pointer-events-auto;
-  @apply z-menu;
-  width: calc(100vw - 40px);
-
-  #bk-menu-secondary {
-    @apply mt-auto;
-  }
-
-  > button {
-    @apply h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25;
-    @apply bg-white text-mono-950;
-    svg {
-      @apply w-20 h-20  md:w-30 md:h-30 mr-25 fill-current;
-    }
-  }
-}
-
-.bk-menu-list-inner {
-  @apply flex-1 overflow-auto flex flex-col;
-  > div {
-    @apply grid;
-    @apply border-t border-t-mono-200;
-  }
-}
-
-.bk-menu-meta {
-  @apply px-15 py-10 text-xs bg-mono-100 text-mono-600 items-center leading-none flex justify-between;
-
-  a {
-    @apply hover:text-accent-700 hover:underline;
-  }
-}
-.bk-menu-meta-logo {
-  @apply flex gap-5 items-center;
-  .bk-icon {
-    @apply bg-accent-700 size-20 flex items-center justify-center rounded;
-  }
-  svg {
-    @apply text-white;
-  }
-}
-</style>

@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk.bk-debug {
+.bk .bk-debug {
   .bk-debug-section {
     @apply border-b border-b-mono-300;
   }
@@ -80,50 +80,52 @@ export default {
   }
 }
 
-.bk-debug-visible-viewport {
-  @apply fixed bg-red-normal/10 border-red-normal border-3 z-[999999999999] pointer-events-none;
-  > div {
-    @apply bg-red-normal text-xs p-2 text-white absolute top-0 left-0;
-  }
-}
-
-.bk-debug-intersection-rects {
-  @apply fixed bg-yellow-normal/25 z-[999999999999] pointer-events-none;
-  @apply outline outline-yellow-normal -outline-offset-1;
-}
-
-.bk-debug-visible-viewport-padded {
-  @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
-  > div {
-    @apply bg-red-normal text-xs p-2 text-white absolute top-0 left-0;
-  }
-}
-
-.bk-debug-viewport-blocking-rect {
-  @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
-}
-
-.bk-debug-viewport-lines {
-  @apply fixed bg-lime-normal z-[999999999999] pointer-events-none;
-}
-
-.debug-rect {
-  @apply fixed bg-accent-700/10 border border-accent-700 z-[999999999999] pointer-events-none;
-}
-
-.bk-debug-icons {
-  @apply grid grid-cols-4 gap-15 text-xs text-center;
-
-  .bk-icon {
-    @apply p-10;
+.bk {
+  .bk-debug-visible-viewport {
+    @apply fixed bg-red-normal/10 border-red-normal border-3 z-[999999999999] pointer-events-none;
+    > div {
+      @apply bg-red-normal text-xs p-2 text-white absolute top-0 left-0;
+    }
   }
 
-  svg {
-    @apply w-full aspect-square h-auto;
+  .bk-debug-intersection-rects {
+    @apply fixed bg-yellow-normal/25 z-[999999999999] pointer-events-none;
+    @apply outline outline-yellow-normal -outline-offset-1;
   }
-}
 
-.bk-debug-rects {
-  @apply fixed top-0 left-0 w-full h-full pointer-events-none z-[99999999999];
+  .bk-debug-visible-viewport-padded {
+    @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
+    > div {
+      @apply bg-red-normal text-xs p-2 text-white absolute top-0 left-0;
+    }
+  }
+
+  .bk-debug-viewport-blocking-rect {
+    @apply fixed border-red-normal border-3 z-[9999999] pointer-events-none;
+  }
+
+  .bk-debug-viewport-lines {
+    @apply fixed bg-lime-normal z-[999999999999] pointer-events-none;
+  }
+
+  .debug-rect {
+    @apply fixed bg-accent-700/10 border border-accent-700 z-[999999999999] pointer-events-none;
+  }
+
+  .bk-debug-icons {
+    @apply grid grid-cols-4 gap-15 text-xs text-center;
+
+    .bk-icon {
+      @apply p-10;
+    }
+
+    svg {
+      @apply w-full aspect-square h-auto;
+    }
+  }
+
+  .bk-debug-rects {
+    @apply fixed top-0 left-0 w-full h-full pointer-events-none z-[99999999999];
+  }
 }
 </style>

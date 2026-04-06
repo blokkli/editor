@@ -1,0 +1,25 @@
+.bk .bk-shortcut {
+  font-size: 13px !important;
+  @apply flex font-semibold items-center bg-transparent;
+  gap: calc(5em / 16);
+  height: calc(22em / 16);
+  color: inherit;
+  > kbd {
+    @apply rounded flex items-center justify-center h-full leading-none font-sans;
+    @apply text-mono-950;
+    @apply border border-mono-50;
+    padding: calc(1em / 16) calc(5em / 16) 0;
+    min-width: calc(22em / 16);
+    font-size: calc(11em / 16);
+    background: linear-gradient(
+      theme('colors.mono.300'),
+      theme('colors.mono.100')
+    );
+
+    &.bk-is-single {
+      font-size: 1em;
+      width: calc(24em / 16);
+      @apply !p-0 font-bold;
+    }
+  }
+}

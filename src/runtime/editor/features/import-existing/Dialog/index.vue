@@ -135,7 +135,7 @@ const fieldOptions = computed(() =>
 </script>
 
 <style lang="postcss">
-.bk-import-existing-dialog {
+.bk.bk-import-existing-dialog {
   .bk.bk-dialog-footer {
     @apply mt-0;
   }

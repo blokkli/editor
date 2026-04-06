@@ -15,7 +15,7 @@
     @cancel="$emit('close')"
     @submit="onSubmit"
   >
-    <div class="bk-block-scheduler-dialog">
+    <div class="bk bk-block-scheduler-dialog">
       <ScheduleSection
         v-model="publishOn"
         icon="bk_mdi_visibility"

@@ -68,7 +68,7 @@ const { $t } = useBlokkli()
 </script>
 
 <style lang="postcss">
-.bk-csv-table {
+.bk .bk-csv-table {
   border-collapse: collapse;
 
   th {

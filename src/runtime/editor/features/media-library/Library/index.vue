@@ -3,10 +3,7 @@
     <div v-if="status === 'pending'" class="bk-loading">
       <Icon name="loader" />
     </div>
-    <ConfigFormInline
-      v-model="filterValues"
-      :filters="filters"
-    >
+    <ConfigFormInline v-model="filterValues" :filters="filters">
       <template #before>
         <div class="bk-media-library-filters-listview">
           <button @click="toggleListView">

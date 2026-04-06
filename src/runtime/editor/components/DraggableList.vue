@@ -37,6 +37,7 @@
     :is="tag"
     v-else
     ref="root"
+    class="bk-vars"
     :class="['bk-draggable-list-container', attrs.class]"
   >
     <BlokkliItem
@@ -198,7 +199,7 @@ if (import.meta.hot) {
 </script>
 
 <style lang="postcss">
-.bk-draggable-list-container {
+.bk-vars.bk-draggable-list-container {
   .bk-list-item {
     @apply bg-white p-20 font-bold !rounded-none;
     &:after {

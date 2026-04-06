@@ -7,7 +7,7 @@
     icon="bk_mdi_campaign"
     @cancel="$emit('cancel')"
   >
-    <div class="bk bk-changelog grid gap-30 select-text">
+    <div class="bk-changelog grid gap-30 select-text">
       <div
         v-for="(entry, index) in entries"
         :key="entry.version"
@@ -55,37 +55,39 @@ const entries = computed(() =>
 </script>
 
 <style lang="postcss">
-.bk-changelog-content {
-  h3 {
-    @apply text-sm font-semibold text-accent-700 mt-25 mb-15 uppercase tracking-wide;
-  }
-
-  h4 {
-    @apply text-base font-bold mt-25;
-  }
-
-  h3 + h4 {
-    @apply mt-0;
-  }
-
-  > div:last-child > h3:first-child {
-    @apply mt-0;
-  }
-
-  ul {
-    @apply grid gap-5 mb-0;
-  }
-
-  li {
-    @apply pl-15 relative;
-
-    &::before {
-      content: '';
-      @apply absolute left-0 top-[9px] size-[5px] rounded-full bg-mono-400;
+.bk {
+  .bk-changelog-content {
+    h3 {
+      @apply text-sm font-semibold text-accent-700 mt-25 mb-15 uppercase tracking-wide;
     }
 
-    strong {
-      @apply text-mono-900 font-semibold;
+    h4 {
+      @apply text-base font-bold mt-25;
+    }
+
+    h3 + h4 {
+      @apply mt-0;
+    }
+
+    > div:last-child > h3:first-child {
+      @apply mt-0;
+    }
+
+    ul {
+      @apply grid gap-5 mb-0;
+    }
+
+    li {
+      @apply pl-15 relative;
+
+      &::before {
+        content: '';
+        @apply absolute left-0 top-[9px] size-[5px] rounded-full bg-mono-400;
+      }
+
+      strong {
+        @apply text-mono-900 font-semibold;
+      }
     }
   }
 }

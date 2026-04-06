@@ -472,3 +472,38 @@ export default {
   name: 'Translations',
 }
 </script>
+
+<style lang="postcss">
+.bk {
+  .bk-translations {
+    @apply relative text-xs lg:text-sm xl:text-base;
+    .bk-toolbar-button {
+      @apply uppercase h-full font-semibold;
+
+      &.bk-is-active {
+        @apply !bg-white text-mono-900;
+      }
+    }
+    .bk-translations-dropdown {
+      @apply absolute top-full right-0 lg:right-auto lg:left-0 max-w-[300px] bg-white z-toolbar-dropdown shadow-lg;
+
+      label {
+        @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-mono-100 whitespace-nowrap text-sm;
+        &.bk-is-muted {
+          @apply text-mono-400;
+        }
+        > div {
+          @apply flex items-center gap-10 md:gap-20 justify-between;
+          span {
+            @apply font-semibold order-last;
+          }
+        }
+      }
+
+      input {
+        @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
+      }
+    }
+  }
+}
+</style>

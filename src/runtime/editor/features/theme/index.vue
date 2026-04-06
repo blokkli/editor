@@ -123,66 +123,68 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-theme-editor {
+.bk.bk-theme-editor {
   container-type: inline-size;
 }
 
-.bk-theme-editor-groups {
-  @container (min-width: 600px) {
-    @apply grid grid-cols-2;
-  }
-}
-
-.bk-theme-editor-table {
-  @apply w-full text-sm;
-
-  tr {
-    @apply border-b border-b-mono-300;
-  }
-
-  td {
-    @apply px-10;
-  }
-
-  .bk-theme-editor-color-shade {
-    @apply text-right font-medium;
-  }
-
-  .bk-theme-editor-color-buttons {
-    svg {
-      @apply w-20 h-20;
+.bk {
+  .bk-theme-editor-groups {
+    @container (min-width: 600px) {
+      @apply grid grid-cols-2;
     }
   }
 
-  .bk-theme-editor-color-hex {
-    @apply w-full;
-    input {
-      @apply w-full font-mono;
+  .bk-theme-editor-table {
+    @apply w-full text-sm;
+
+    tr {
+      @apply border-b border-b-mono-300;
+    }
+
+    td {
+      @apply px-10;
+    }
+
+    .bk-theme-editor-color-shade {
+      @apply text-right font-medium;
+    }
+
+    .bk-theme-editor-color-buttons {
+      svg {
+        @apply w-20 h-20;
+      }
+    }
+
+    .bk-theme-editor-color-hex {
+      @apply w-full;
+      input {
+        @apply w-full font-mono;
+      }
+    }
+    .bk-theme-editor-color-color {
+      @apply w-0;
     }
   }
-  .bk-theme-editor-color-color {
-    @apply w-0;
-  }
-}
 
-.bk-theme-editor-code {
-  textarea {
-    @apply w-full font-mono text-sm;
+  .bk-theme-editor-code {
+    textarea {
+      @apply w-full font-mono text-sm;
+    }
   }
-}
 
-.bk-theme-editor-group {
-  h2 {
-    @apply uppercase font-semibold text-sm text-mono-600 px-15 py-5;
-    @apply border-b border-b-mono-300;
-    @apply bg-mono-100;
+  .bk-theme-editor-group {
+    h2 {
+      @apply uppercase font-semibold text-sm text-mono-600 px-15 py-5;
+      @apply border-b border-b-mono-300;
+      @apply bg-mono-100;
+    }
   }
-}
 
-.bk-theme-editor-select {
-  @apply border-b border-b-mono-500;
-  select {
-    @apply w-full px-15 py-15 font-semibold;
+  .bk-theme-editor-select {
+    @apply border-b border-b-mono-500;
+    select {
+      @apply w-full px-15 py-15 font-semibold;
+    }
   }
 }
 </style>

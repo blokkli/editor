@@ -1,6 +1,6 @@
 <template>
   <PluginSidebar id="debug" title="Debug" icon="bk_mdi_bug_report" weight="200">
-    <div class="bk bk-debug">
+    <div class="bk-debug">
       <DebugSection title="Keyboard">
         <SectionKeyboard />
       </DebugSection>

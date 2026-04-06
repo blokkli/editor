@@ -10,7 +10,7 @@
 
     <div
       ref="mainLayoutElement"
-      class="bk-main-layout"
+      class="bk-vars bk-main-layout"
       :lang="ui.interfaceLanguage.value"
     >
       <Toolbar @loaded="toolbarLoaded = true" />
@@ -517,12 +517,12 @@ onUnmounted(() => {
 </script>
 
 <style lang="postcss">
-.bk-viewport {
+.bk.bk-viewport {
   @apply relative;
   grid-area: viewport;
 }
 
-.bk-main-layout {
+.bk-vars.bk-main-layout {
   @apply fixed top-0 left-0 w-screen h-screen z-main-layout grid pointer-events-none;
 
   grid-template-areas:

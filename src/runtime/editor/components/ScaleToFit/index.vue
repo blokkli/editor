@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" class="bk-scale-to-fit" :style="style">
+  <div ref="rootEl" class="bk-vars bk-scale-to-fit" :style="style">
     <div ref="wrapper" class="bk-scale-to-fit-wrapper">
       <div ref="inner" class="bk-scale-to-fit-wrapper-item" :style="innerStyle">
         <slot />
@@ -88,24 +88,26 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-scale-to-fit {
+.bk-vars.bk-scale-to-fit {
   @apply relative;
 }
 
-.bk-scale-to-fit-wrapper {
-  @apply relative;
-}
-
-.bk-scale-to-fit-wrapper-item {
-  @apply absolute top-0 left-0 pointer-events-none select-none;
-  transform-origin: 0 0;
-  > * {
-    margin: 0 !important;
-    pointer-events: none;
+.bk-vars {
+  .bk-scale-to-fit-wrapper {
+    @apply relative;
   }
-  .container {
-    margin: 0 !important;
-    padding: 0 !important;
+
+  .bk-scale-to-fit-wrapper-item {
+    @apply absolute top-0 left-0 pointer-events-none select-none;
+    transform-origin: 0 0;
+    > * {
+      margin: 0 !important;
+      pointer-events: none;
+    }
+    .container {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
   }
 }
 </style>

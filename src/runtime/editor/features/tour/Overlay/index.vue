@@ -295,40 +295,35 @@ useAnimationFrame(() => {
   }
 }
 
-.bk-tour-inner {
-  /* @apply absolute top-0 left-0 w-full; */
-}
+.bk {
+  .bk-tour-title {
+    @apply font-bold text-lg pl-20 border-b border-b-yellow-dark/30 flex items-center justify-between bg-yellow-normal;
 
-.bk-tour-title {
-  @apply font-bold text-lg pl-20 border-b border-b-yellow-dark/30 flex items-center justify-between bg-yellow-normal;
+    button {
+      @apply p-15 hover:bg-yellow-dark/10;
+      svg {
+        @apply fill-yellow-dark;
+      }
+    }
 
-  button {
-    @apply p-15 hover:bg-yellow-dark/10;
     svg {
-      @apply fill-yellow-dark;
+      @apply w-20 h-20;
     }
   }
+  .bk-tour-content {
+    @apply p-20 pt-[17px];
 
-  svg {
-    @apply w-20 h-20;
+    > div {
+      @apply relative ease-swing transition-all overflow-hidden;
+    }
+
+    p:not(:last-child) {
+      @apply mb-18;
+    }
   }
-}
-.bk-tour-content {
-  @apply p-20 pt-[17px];
-
-  > div {
-    @apply relative ease-swing transition-all overflow-hidden;
+  .bk-tour-content-text {
+    @apply absolute top-0 left-0 w-full;
   }
-
-  p:not(:last-child) {
-    @apply mb-18;
-  }
-}
-.bk-tour-content-text {
-  @apply absolute top-0 left-0 w-full;
-}
-
-.bk {
   .bk-tour-button {
     @apply text-yellow-dark font-semibold py-15 px-15 flex items-center leading-none hover:bg-yellow-dark/5 relative;
 

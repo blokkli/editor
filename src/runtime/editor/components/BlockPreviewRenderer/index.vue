@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-block-preview-renderer"
+    class="bk-vars bk-block-preview-renderer"
     :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
     :style="backgroundClass ? {} : { backgroundColor }"
   >
@@ -40,3 +40,20 @@ function onBackgroundColor(color: string) {
   }
 }
 </script>
+
+<style lang="postcss">
+.bk-vars.bk-block-preview-renderer {
+  @apply rounded p-20 min-h-[200px] mb-30 border border-mono-300 overflow-hidden;
+  &.bk-default-bg {
+    @apply bg-mono-50;
+  }
+
+  .bk-block-preview-renderer-items {
+    @apply flex flex-col gap-10;
+  }
+
+  .bk-block-preview-renderer-item {
+    @apply rounded overflow-hidden;
+  }
+}
+</style>

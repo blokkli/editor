@@ -1306,8 +1306,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               context: v.context ?? undefined,
             })),
             labelMap: {
-              label:
-                result?.entityTypeLabels?.[0]?.label ?? '',
+              label: result?.entityTypeLabels?.[0]?.label ?? '',
               bundles,
             },
           }

@@ -21,9 +21,9 @@
       :disabled="!state.canEdit.value"
       @click="eventBus.emit('editEntity')"
     >
-      <div class="bk-toolbar-title relative w-full h-full">
+      <div class="bk-toolbar-title relative size-full">
         <div
-          class="min-w-0 overflow-ellipsis overflow-hidden absolute top-1/2 left-0 w-full whitespace-nowrap -translate-y-1/2 text-left flex items-center"
+          class="min-w-0 truncate absolute top-1/2 left-0 w-full -translate-y-1/2 text-left flex items-center"
         >
           <StatusIndicator :status="statusIndicatorStatus" />
           <strong class="text-mono-100">{{ entity.label }}</strong>

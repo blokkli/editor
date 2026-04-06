@@ -371,7 +371,7 @@ export default {
   }
 }
 
-.bk-dragging-overlay {
+.bk-vars.bk-dragging-overlay {
   .bk-media-library-items-item {
     @apply bg-mono-100 rounded-lg overflow-hidden;
   }

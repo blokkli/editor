@@ -81,23 +81,21 @@
     <ScrollBoundary
       v-else
       v-show="activeSidebar === id"
-      class="bk-sidebar-inner"
+      class="bk bk-sidebar-inner"
     >
-      <div class="bk">
-        <div class="bk-sidebar-title">
-          <span>{{ title }}</span>
-          <BetaIndicator
-            v-if="beta"
-            class="mr-auto ml-5"
-            :inverted="region === 'right-bottom'"
-          />
-          <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
-            <Icon name="dock-window" />
-          </button>
-          <button @click.prevent.stop="toggleSidebar">
-            <Icon name="bk_mdi_close" />
-          </button>
-        </div>
+      <div class="bk-sidebar-title">
+        <span>{{ title }}</span>
+        <BetaIndicator
+          v-if="beta"
+          class="mr-auto ml-5"
+          :inverted="region === 'right-bottom'"
+        />
+        <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
+          <Icon name="dock-window" />
+        </button>
+        <button @click.prevent.stop="toggleSidebar">
+          <Icon name="bk_mdi_close" />
+        </button>
       </div>
       <div class="bk-sidebar-content-wrapper">
         <Loading v-if="isLoading" white />
@@ -477,7 +475,7 @@ export default {
   }
 }
 
-.bk-sidebar {
+.bk.bk-sidebar {
   @apply bg-white z-sidebar w-sidebar-right pointer-events-auto;
 
   .bk-sidebar-padding {
@@ -511,9 +509,6 @@ export default {
   &.bk-is-hidden {
     @apply opacity-0 pointer-events-none translate-y-40;
   }
-  .bk-sidebar-inner {
-    @apply h-full flex flex-col;
-  }
 
   .bk-sidebar-title {
     @apply !font-semibold !font-sans !pl-15 !border-b !border-b-mono-300 flex items-center h-40;
@@ -532,7 +527,11 @@ export default {
   }
 }
 
-.bk-sidebar-right-wrapper {
+.bk.bk-sidebar-inner {
+  @apply h-full flex flex-col;
+}
+
+.bk.bk-sidebar-right-wrapper {
   @apply flex flex-col pointer-events-none bg-white relative z-sidebar;
   grid-area: sidebar-right;
   width: var(--bk-sidebar-width-right);
@@ -558,22 +557,22 @@ export default {
   }
 }
 
-.bk-sidebar-content-wrapper {
+.bk .bk-sidebar-content-wrapper {
   @apply flex-1 relative overflow-hidden;
 }
-.bk-sidebar-content {
+.bk .bk-sidebar-content {
   @apply absolute top-0 left-0 w-full h-full overflow-auto;
   &::-webkit-scrollbar {
     display: none;
   }
 }
 
-.bk-sidebar-padding {
+.bk .bk-sidebar-padding {
   @apply p-15 lg:p-20;
 }
 
-.bk-sidebar-detached {
-  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden will-change-transform;
+.bk.bk-sidebar-detached {
+  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden will-change-transform h-auto;
   @apply border border-mono-200;
   @apply pointer-events-auto;
   contain: layout paint style;
@@ -626,11 +625,11 @@ export default {
   }
 }
 
-.bk-sidebar-detached-inner {
+.bk .bk-sidebar-detached-inner {
   @apply h-full flex flex-col relative;
 }
 
-.bk-sidebar-detached-handle {
+.bk .bk-sidebar-detached-handle {
   @apply absolute z-50;
 
   &.bk-is-bottom {
@@ -641,17 +640,6 @@ export default {
   }
   &.bk-is-bottom-right {
     @apply right-0 bottom-0 h-10 w-10 cursor-se-resize;
-  }
-}
-
-html.bk-is-sidebar-interacting {
-  .bk-sidebar-detached,
-  iframe,
-  button,
-  input,
-  textarea,
-  a {
-    /* @apply !pointer-events-none; */
   }
 }
 
@@ -689,7 +677,8 @@ html.bk-is-sidebar-interacting {
     @apply md:h-50;
   }
 }
-.bk-sidebar-container-tabs {
+
+.bk .bk-sidebar-container-tabs {
   &.bk-is-right {
     @apply flex flex-row;
     @apply lg:flex-col;
@@ -731,7 +720,7 @@ html.bk-is-sidebar-interacting {
   }
 }
 
-.bk-sidebar-badge {
+.bk .bk-sidebar-badge {
   @apply absolute top-3 right-3 size-18 rounded-full flex items-center justify-center font-bold;
   font-size: 10px;
 

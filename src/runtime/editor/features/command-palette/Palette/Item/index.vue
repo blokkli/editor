@@ -67,7 +67,7 @@ const getGroupLabel = (id?: CommandGroup): string => {
   }
 }
 
-.bk-command-icon {
+.bk .bk-command-icon {
   .bk-blokkli-item-icon,
   .bk-icon {
     @apply w-full h-full;

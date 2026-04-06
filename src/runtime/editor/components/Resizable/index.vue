@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-resizable"
+    class="bk-vars bk-resizable"
     :style="style"
     :class="{ 'bk-is-resizing': isResizing }"
     @wheel.passive.stop
@@ -93,7 +93,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-resizable {
+.bk-vars.bk-resizable {
   @apply absolute left-0 w-full;
   @screen md {
     @apply relative w-auto;
@@ -109,31 +109,33 @@ export default {
   }
 }
 
-.bk-resizable-handle {
-  @apply opacity-50 hover:opacity-100 transition;
+.bk-vars {
+  .bk-resizable-handle {
+    @apply opacity-50 hover:opacity-100 transition;
 
-  &:hover:before {
-    @apply !bg-mono-400/40;
-  }
-  &:before {
-    content: '';
-    @apply bg-mono-400/25 absolute;
-  }
-  &:after {
-    content: '';
-    @apply absolute bg-mono-100 pointer-events-none;
-  }
+    &:hover:before {
+      @apply !bg-mono-400/40;
+    }
+    &:before {
+      content: '';
+      @apply bg-mono-400/25 absolute;
+    }
+    &:after {
+      content: '';
+      @apply absolute bg-mono-100 pointer-events-none;
+    }
 
-  &.bk-is-vertical {
-    @apply hidden;
-    @screen md {
-      @apply block;
-      @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize z-resizable;
-      &:before {
-        @apply top-0 h-full left-10 w-[12px];
-      }
-      &:after {
-        @apply top-1/2 -translate-y-1/2 h-100 w-[5px] left-[13px] border-x-2 border-x-mono-400;
+    &.bk-is-vertical {
+      @apply hidden;
+      @screen md {
+        @apply block;
+        @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize z-resizable;
+        &:before {
+          @apply top-0 h-full left-10 w-[12px];
+        }
+        &:after {
+          @apply top-1/2 -translate-y-1/2 h-100 w-[5px] left-[13px] border-x-2 border-x-mono-400;
+        }
       }
     }
   }

@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-touch-action-bar {
+.bk.bk-touch-action-bar {
   @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-mono-900 h-50 pointer-events-auto;
 
   button {

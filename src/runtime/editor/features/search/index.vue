@@ -211,15 +211,13 @@ export default {
   }
 }
 
-.bk .bk-search-box {
-  @apply relative h-full w-full flex flex-col md:overflow-hidden;
-}
-
-.bk-search-results {
-  @apply flex-1 relative bg-white;
-}
-
 .bk {
+  .bk-search-box {
+    @apply relative h-full w-full flex flex-col md:overflow-hidden;
+  }
+  .bk-search-results {
+    @apply flex-1 relative bg-white;
+  }
   .bk-search-loading {
     @apply absolute top-0 right-0 z-40 w-full h-full bg-white/40 flex items-center justify-center;
     svg {
@@ -315,50 +313,50 @@ export default {
       }
     }
   }
-}
 
-.bk-highlight {
-  @apply whitespace-pre;
-  em {
-    @apply not-italic relative inline-block rounded;
-    @apply bg-yellow-normal/30 outline outline-[1px] outline-yellow-normal;
+  .bk-highlight {
+    @apply whitespace-pre;
+    em {
+      @apply not-italic relative inline-block rounded;
+      @apply bg-yellow-normal/30 outline outline-[1px] outline-yellow-normal;
+    }
   }
-}
-
-.bk .bk-search-list {
-  @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
-}
-.bk.bk-search-item {
-  @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch bg-white;
-
-  &.bk-is-content {
-    @apply cursor-grab;
+  .bk-search-list {
+    @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
   }
 
-  &:after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-mono-200;
-  }
+  .bk-search-item {
+    @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch bg-white;
 
-  &.bk-is-active {
-    @apply bg-mono-100 text-mono-950;
-    .bk-search-item-icon {
-      @apply border-accent-700 bg-accent-600 text-white;
+    &.bk-is-content {
+      @apply cursor-grab;
+    }
 
-      &.bk-is-image {
-        @apply outline outline-accent-900 outline-[1px];
+    &:after {
+      content: '';
+      @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-mono-200;
+    }
+
+    &.bk-is-active {
+      @apply bg-mono-100 text-mono-950;
+      .bk-search-item-icon {
+        @apply border-accent-700 bg-accent-600 text-white;
+
+        &.bk-is-image {
+          @apply outline outline-accent-900 outline-[1px];
+        }
+      }
+    }
+
+    &:hover {
+      .bk-search-item-context {
+        @apply bg-mono-300 text-mono-950;
       }
     }
   }
-
-  &:hover {
-    .bk-search-item-context {
-      @apply bg-mono-300 text-mono-950;
-    }
-  }
 }
 
-.bk-dragging-overlay .bk-search-item {
+.bk-vars.bk-dragging-overlay .bk-search-item {
   @apply rounded-lg overflow-hidden;
 }
 </style>

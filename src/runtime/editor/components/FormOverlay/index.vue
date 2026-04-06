@@ -71,12 +71,13 @@ export default {
     @apply w-full;
   }
 }
-.bk-form-overlay-content {
+
+.bk-vars .bk-form-overlay-content {
   @apply flex-1 relative overscroll-contain overflow-auto rounded-t-xl bg-white md:rounded-t-none;
   container-type: inline-size;
 }
 
-.bk-form-overlay {
+.bk-vars.bk-form-overlay {
   @apply absolute left-0 top-0 w-full h-full z-form-overlay pointer-events-none;
   .bk-form-overlay-resizable {
     @apply ml-auto h-full shadow-2xl bg-mono-950 pointer-events-auto;

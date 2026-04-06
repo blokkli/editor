@@ -56,10 +56,10 @@ const { options } = defineBlokkli({
     url: null,
     title: {
       type: 'editable',
-      name: 'title'
+      name: 'title',
     },
-    icon: null
-  }
+    icon: null,
+  },
 })
 
 const props = defineProps<{

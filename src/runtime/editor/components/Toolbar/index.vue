@@ -2,14 +2,14 @@
   <div
     v-show="activeSidebarLeft && sidebarVisible"
     id="bk-sidebar-content-left"
-    class="bk-sidebar bk-is-left"
+    class="bk-sidebar bk-is-left bk"
     :class="{ 'bk-is-hidden': !sidebarVisible }"
   />
 
   <div
     v-show="activeSidebarRight || activeSidebarRightBottom"
     ref="sidebarRightWrapper"
-    class="bk-sidebar-right-wrapper"
+    class="bk bk-sidebar-right-wrapper"
     :class="{
       'bk-is-resizing-split': isResizingSplit,
       'bk-is-split': activeSidebarRightBottom,
@@ -18,7 +18,7 @@
     <div
       v-show="activeSidebarRight"
       id="bk-sidebar-content-right"
-      class="bk-sidebar bk-is-right"
+      class="bk-sidebar bk-is-right bk"
       :class="{ 'bk-is-hidden': !sidebarVisible }"
       :style="rightSidebarStyle"
     />
@@ -269,63 +269,6 @@ export default {
           }
         }
       }
-    }
-  }
-}
-
-.bk-translations {
-  @apply relative text-xs lg:text-sm xl:text-base;
-  .bk-toolbar-button {
-    @apply uppercase h-full font-semibold;
-
-    &.bk-is-active {
-      @apply !bg-white text-mono-900;
-    }
-  }
-  .bk-translations-dropdown {
-    @apply absolute top-full right-0 lg:right-auto lg:left-0 max-w-[300px] bg-white z-toolbar-dropdown shadow-lg;
-
-    label {
-      @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-mono-100 whitespace-nowrap text-sm;
-      &.bk-is-muted {
-        @apply text-mono-400;
-      }
-      > div {
-        @apply flex items-center gap-10 md:gap-20 justify-between;
-        span {
-          @apply font-semibold order-last;
-        }
-      }
-    }
-
-    input {
-      @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
-    }
-  }
-}
-
-.bk-shortcut {
-  font-size: 13px !important;
-  @apply flex font-semibold items-center bg-transparent;
-  gap: calc(5em / 16);
-  height: calc(22em / 16);
-  color: inherit;
-  > kbd {
-    @apply rounded flex items-center justify-center h-full leading-none font-sans;
-    @apply text-mono-950;
-    @apply border border-mono-50;
-    padding: calc(1em / 16) calc(5em / 16) 0;
-    min-width: calc(22em / 16);
-    font-size: calc(11em / 16);
-    background: linear-gradient(
-      theme('colors.mono.300'),
-      theme('colors.mono.100')
-    );
-
-    &.bk-is-single {
-      font-size: 1em;
-      width: calc(24em / 16);
-      @apply !p-0 font-bold;
     }
   }
 }

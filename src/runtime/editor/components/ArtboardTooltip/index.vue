@@ -14,7 +14,7 @@
   >
     <div class="bk bk-artboard-tooltip-inner bk-caret-tooltip-inner">
       <div class="bk-artboard-tooltip-header">
-        <div v-html="title" class="mr-auto" />
+        <div class="mr-auto" v-html="title" />
         <slot name="header" />
         <button @click="$emit('close')">
           <Icon :name="closeIcon" />

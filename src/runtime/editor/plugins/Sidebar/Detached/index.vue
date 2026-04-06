@@ -2,7 +2,7 @@
   <ViewportBlockingRect
     :id="storageKey"
     ref="root"
-    class="bk-sidebar-detached bk-sidebar-inner"
+    class="bk bk-sidebar-detached bk-sidebar-inner"
     :class="{ 'bk-is-focused': focusedSidebar === id }"
     :style="style"
     tabindex="10"
@@ -10,36 +10,32 @@
     @focus.capture="onFocus"
   >
     <ScrollBoundary>
-      <div class="bk">
-        <div
-          class="bk-sidebar-title"
-          @mousedown.stop="onMouseDown($event, 'move')"
-        >
-          <div class="bk-sidebar-title-icon">
-            <slot name="icon">
-              <Icon v-if="icon" :name="icon" />
-            </slot>
-          </div>
-          <span>{{ title }}</span>
-          <button
-            @click.prevent.stop.capture="isMinimized = !isMinimized"
-            @mousedown.capture.stop
-          >
-            <Icon :name="isMinimized ? 'window-maximize' : 'window-minimize'" />
-          </button>
-          <button
-            @click.prevent.stop.capture="$emit('attach')"
-            @mousedown.capture.stop
-          >
-            <Icon
-              :name="
-                region === 'left'
-                  ? 'bk_mdi_dock_to_left'
-                  : 'bk_mdi_dock_to_right'
-              "
-            />
-          </button>
+      <div
+        class="bk-sidebar-title"
+        @mousedown.stop="onMouseDown($event, 'move')"
+      >
+        <div class="bk-sidebar-title-icon">
+          <slot name="icon">
+            <Icon v-if="icon" :name="icon" />
+          </slot>
         </div>
+        <span>{{ title }}</span>
+        <button
+          @click.prevent.stop.capture="isMinimized = !isMinimized"
+          @mousedown.capture.stop
+        >
+          <Icon :name="isMinimized ? 'window-maximize' : 'window-minimize'" />
+        </button>
+        <button
+          @click.prevent.stop.capture="$emit('attach')"
+          @mousedown.capture.stop
+        >
+          <Icon
+            :name="
+              region === 'left' ? 'bk_mdi_dock_to_left' : 'bk_mdi_dock_to_right'
+            "
+          />
+        </button>
       </div>
       <div class="bk-sidebar-detached-inner" :style="innerStyle">
         <slot

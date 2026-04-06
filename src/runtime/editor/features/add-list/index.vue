@@ -428,15 +428,17 @@ export default {
   }
 }
 
-.bk-add-item-label {
-  @apply flex items-center flex-1 gap-8 pr-25;
+.bk,
+.bk-vars {
+  .bk-add-item-label {
+    @apply flex items-center flex-1 gap-8 pr-25;
+  }
+  .bk-add-item-description {
+    @apply hidden;
+  }
 }
 
-.bk-add-item-description {
-  @apply hidden;
-}
-
-.bk-add-list-inner {
+.bk .bk-add-list-inner {
   @apply absolute top-0 left-0 h-full overflow-auto transition-all ease-swing duration-200 w-auto;
   @apply bg-mono-900;
   @apply flex flex-col;
@@ -460,23 +462,23 @@ export default {
   }
 }
 
-.bk-add-list-inner,
-.bk-dragging-overlay {
+.bk .bk-add-list-inner,
+.bk-vars.bk-dragging-overlay {
   .bk-add-item-icon {
     @apply size-toolbar-left;
     padding: var(--bk-add-item-icon-padding);
   }
 }
 
-.bk-add-list-inner.bk-is-active,
-.bk-dragging-overlay {
+.bk .bk-add-list-inner.bk-is-active,
+.bk-vars.bk-dragging-overlay {
   .bk-add-item-label {
     @apply !opacity-100;
   }
 }
 
-.bk-add-item:hover,
-.bk-dragging-overlay {
+.bk .bk-add-item:hover,
+.bk-vars.bk-dragging-overlay {
   .bk-add-item {
     @apply !opacity-100;
   }
@@ -515,7 +517,7 @@ export default {
 .bk-item-icon-hover-parent:hover,
 .bk-add-item:hover,
 .bk-add-item:focus-visible,
-.bk-dragging-overlay {
+.bk-vars .bk-dragging-overlay {
   .bk-item-icon {
     @apply outline outline-white/40;
     outline-width: var(--bk-item-icon-outline);
@@ -527,7 +529,7 @@ export default {
   }
 }
 
-.bk-dragging-overlay .bk-add-item {
+.bk-vars.bk-dragging-overlay .bk-add-item {
   @apply rounded-lg overflow-hidden;
 }
 

@@ -15,6 +15,7 @@
 
 @import './components/pill.css';
 @import './components/button.css';
+@import './components/shortcut.css';
 
 @tailwind base;
 @tailwind components;
