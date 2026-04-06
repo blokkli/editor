@@ -151,7 +151,7 @@ export function mangleTemplateAndScript(code: string): string {
   // 1. Static class="..." attributes.
   // Negative lookbehind excludes :class and v-bind:class.
   result = result.replace(
-    /(?<![:.])\bclass="([^"]*)"/g,
+    /(?<![-:.])\bclass="([^"]*)"/g,
     (_match, value: string) => `class="${mangleClassString(value)}"`,
   )
 

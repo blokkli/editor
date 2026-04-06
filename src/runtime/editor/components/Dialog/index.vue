@@ -172,15 +172,15 @@ export default {
   }
 
   @screen md {
-    .bk-overlay-header {
-      @apply bg-white text-mono-950 pl-15 text-lg;
+    .bk.bk-overlay-header {
+      @apply pl-15 text-lg;
       > button {
         @apply p-15 hover:bg-mono-800 focus-visible:bg-mono-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-mono-100;
       }
     }
   }
   @screen lg {
-    .bk-overlay-header {
+    .bk.bk-overlay-header {
       @apply pl-25;
     }
   }
@@ -193,33 +193,6 @@ export default {
     flex: 0 0 auto;
     button {
       @apply w-full lg:w-auto;
-    }
-  }
-
-  .bk-overlay-header {
-    @apply bg-black text-white flex items-center pl-10 text-base leading-none;
-
-    > .bk-icon,
-    > .bk-blokkli-item-icon {
-      @apply w-auto h-auto mr-5;
-      svg {
-        @apply fill-current w-[1.25em] h-[1.25em];
-      }
-    }
-
-    h3 {
-      @apply font-bold;
-    }
-
-    > button {
-      @apply px-10 py-15 ml-auto flex items-center justify-center size-60;
-
-      .bk-icon {
-        @apply w-[1.25em] h-[1.25em];
-        svg {
-          @apply fill-current;
-        }
-      }
     }
   }
 
@@ -248,6 +221,33 @@ export default {
     @screen md {
       min-height: auto;
       @apply h-auto;
+    }
+  }
+}
+
+.bk.bk-overlay-header {
+  @apply bg-black text-white flex items-center pl-10 text-base leading-none;
+
+  > .bk-icon,
+  > .bk-blokkli-item-icon {
+    @apply w-auto h-auto mr-5;
+    svg {
+      @apply fill-current w-[1.25em] h-[1.25em];
+    }
+  }
+
+  h3 {
+    @apply font-bold;
+  }
+
+  > button {
+    @apply px-10 py-15 ml-auto flex items-center justify-center size-60;
+
+    .bk-icon {
+      @apply w-[1.25em] h-[1.25em];
+      svg {
+        @apply fill-current;
+      }
     }
   }
 }
