@@ -8,7 +8,6 @@
     @mousemove.once="hasUsedMouse = true"
   >
     <div
-      v-if="title"
       class="text-xs font-semibold text-mono-100 uppercase tracking-wide h-40 flex items-center bg-mono-950 border-b border-b-mono-600 justify-between"
     >
       <span class="pl-15">{{ title }}</span>
@@ -30,26 +29,32 @@
       />
     </div>
     <div
-      class="bk-command-palette-results border-t border-t-mono-600 overflow-auto bk-scrollbar-dark relative"
-      :style="{
-        height: itemHeight * visibleItems + 'px',
+      class="relative border-t border-t-mono-600"
+      :class="{
+        'opacity-50': isSearching,
       }"
     >
-      <div v-if="totalItems" ref="itemsContainer" class="relative">
-        <slot
-          name="items"
-          :focused-index="focusedIndex"
-          :on-mouse-enter="onItemMouseEnter"
-        />
-      </div>
       <div
-        v-else-if="text.trim() && !isSearching"
-        class="p-20 text-mono-500 text-base text-center size-full flex items-center justify-center"
+        class="bk-command-palette-results overflow-auto bk-scrollbar-dark relative"
+        :style="{
+          height: itemHeight * visibleItems + 'px',
+        }"
       >
-        {{ $t('searchOverlayNoResults', 'No results found.') }}
+        <div v-if="totalItems" ref="itemsContainer" class="relative">
+          <slot
+            :focused-index="focusedIndex"
+            :on-mouse-enter="onItemMouseEnter"
+          />
+        </div>
+        <div
+          v-else-if="text.trim() && !isSearching"
+          class="p-20 text-mono-500 text-base text-center size-full flex items-center justify-center"
+        >
+          {{ $t('searchOverlayNoResults', 'No results found.') }}
+        </div>
       </div>
+      <Loading v-show="isLoading" theme="dark" />
     </div>
-    <slot name="footer" />
   </ScrollBoundary>
 </template>
 
@@ -63,7 +68,7 @@ import {
   useBlokkli,
   nextTick,
 } from '#imports'
-import { Icon, ScrollBoundary } from '#blokkli/editor/components'
+import { Icon, ScrollBoundary, Loading } from '#blokkli/editor/components'
 import { modulo } from '#blokkli/editor/helpers/math'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
@@ -71,9 +76,10 @@ const { $t } = useBlokkli()
 
 const props = withDefaults(
   defineProps<{
-    title?: string
+    title: string
     totalItems: number
     isSearching?: boolean
+    isLoading?: boolean
     placeholder?: string
     itemHeight?: number
     visibleItems?: number

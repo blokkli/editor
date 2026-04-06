@@ -33,6 +33,7 @@ import type { AnalyzeProvider } from '../providers/analyze'
 import type { ReadabilityProvider } from '../providers/readability'
 import type { FieldValueProvider } from '../providers/fieldValue'
 import type { DragDropProvider } from '../providers/dragdrop'
+import type { CacheProvider } from '../providers/cache'
 
 export interface BlokkliApp {
   /**
@@ -76,4 +77,5 @@ export interface BlokkliApp {
   readability: ReadabilityProvider
   fieldValue: FieldValueProvider
   dragdrop: DragDropProvider
+  cache: CacheProvider
 }

@@ -6,18 +6,17 @@
     :placeholder="$t('commandPalette.inputPlaceholder', 'Search commands...')"
     @select="onSelectByIndex"
     @close="emit('close')"
+    v-slot="{ focusedIndex, onMouseEnter }"
   >
-    <template #items="{ focusedIndex, onMouseEnter }">
-      <Item
-        v-for="(item, i) in visibleCommands"
-        :key="item.id"
-        :item="item"
-        :index="i"
-        :is-focused="focusedIndex === i"
-        @focus="onMouseEnter"
-        @select="onSelect"
-      />
-    </template>
+    <Item
+      v-for="(item, i) in visibleCommands"
+      :key="item.id"
+      :item="item"
+      :index="i"
+      :is-focused="focusedIndex === i"
+      @focus="onMouseEnter"
+      @select="onSelect"
+    />
   </SearchOverlay>
 </template>
 
