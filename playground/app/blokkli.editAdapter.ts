@@ -41,7 +41,6 @@ import type {
   EditableFieldConfig,
 } from '#blokkli/editor/features/editable-field/types'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
-import type { AssistantResultMarkup } from '#blokkli/editor/features/assistant/types'
 import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
@@ -64,7 +63,6 @@ import type {
 } from '#blokkli/editor/features/workspace/types'
 
 const ENABLE_EDIT_STATES = true
-const ENABLED_ASSISTANT = false
 
 function getPublishOptions(ctx: {
   entityType: string
@@ -2372,32 +2370,6 @@ export default defineBlokkliEditAdapter((ctx) => {
 
   adapter.templatesGetEditUrl = function (e) {
     return '/edit-template/' + e.templateUuid
-  }
-
-  if (import.meta.dev && ENABLED_ASSISTANT) {
-    adapter.assistantGetResults = (e) => {
-      return $fetch<AssistantResultMarkup | undefined>('/api/gpt', {
-        method: 'post',
-        body: {
-          prompt: e.prompt,
-        },
-      })
-    }
-
-    adapter.assistantAddBlockFromResult = (e) => {
-      if (e.result.type === 'markup') {
-        return addMutation('add', {
-          bundle: 'text',
-          values: {
-            text: e.result.content,
-          },
-          hostEntityType: e.host.type,
-          hostEntityUuid: e.host.uuid,
-          hostField: e.host.fieldName,
-          preceedingUuid: e.preceedingUuid,
-        })
-      }
-    }
   }
 
   adapter.getAgentAuthToken = () =>
