@@ -46,6 +46,7 @@
           :field-name="fieldName"
           :host="host"
           :initial-height="scrollHeight"
+          :is-fullscreen
           @formatted="onFormattedValue"
         />
 
