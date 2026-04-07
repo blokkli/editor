@@ -6092,6 +6092,9 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
   """The publish options."""
   publishOptions: ParagraphsBlokkliPublishOptions
 
+  """The referenced entities of all paragraphs in the current edit state."""
+  referencedEntities(langcode: String, uuids: [String!]): [ParagraphsBlokkliReferencedEntity!]!
+
   """The state settings for this host entity."""
   stateSettings: ParagraphsBlokkliStateSettings!
 
@@ -6144,6 +6147,31 @@ enum ParagraphsBlokkliEditableFieldConfigType {
   plain
 }
 
+type ParagraphsBlokkliEntitiesSearchItem {
+  bundle: String!
+  context: String
+  entityType: String!
+  hasEditState: Boolean!
+  id: String!
+  label: String
+  lastChanged: String
+  mutationCount: Int!
+  uid: String
+  url: String!
+  uuid: String!
+}
+
+type ParagraphsBlokkliEntitiesSearchLabel {
+  id: String!
+  label: String!
+}
+
+type ParagraphsBlokkliEntitiesSearchResult {
+  bundleLabels: [ParagraphsBlokkliEntitiesSearchLabel!]!
+  entityTypeLabels: [ParagraphsBlokkliEntitiesSearchLabel!]!
+  items: [ParagraphsBlokkliEntitiesSearchItem!]!
+}
+
 type ParagraphsBlokkliEntity {
   bundleLabel: String
   label: String
@@ -6172,6 +6200,17 @@ type ParagraphsBlokkliEntityMetadata {
 type ParagraphsBlokkliEntityRestriction {
   bundles: [String!]!
   entityType: String!
+}
+
+type ParagraphsBlokkliEntityTypeConfig {
+  bundles: [ParagraphsBlokkliEntityTypeConfigBundle!]!
+  entityTypeId: String!
+  label: String!
+}
+
+type ParagraphsBlokkliEntityTypeConfigBundle {
+  bundle: String!
+  label: String!
 }
 
 type ParagraphsBlokkliFieldConfig {
@@ -6317,6 +6356,15 @@ type ParagraphsBlokkliPublishOptions {
   lastChanged: String
   publishOn: String
   revisionLogMessage: String
+}
+
+type ParagraphsBlokkliReferencedEntity {
+  editUrl: String!
+  entityBundle: String!
+  entityType: String!
+  entityUuid: String!
+  label: String
+  uuids: [String!]!
 }
 
 enum ParagraphsBlokkliRemoteVideoProvider {
@@ -6747,13 +6795,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """Die ID des Beitrags."""
@@ -7370,6 +7418,8 @@ type Query {
 
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliConversions: [ParagraphsBlokkliConversion!]
+  paragraphsBlokkliEntitiesSearch: ParagraphsBlokkliEntitiesSearchResult
+  paragraphsBlokkliEntityTypeConfig: [ParagraphsBlokkliEntityTypeConfig!]!
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliGetUser: ParagraphsBlokkliUser
