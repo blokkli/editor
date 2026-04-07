@@ -36,7 +36,7 @@
     <div
       v-show="activeSidebarRightBottom"
       id="bk-sidebar-content-right-bottom"
-      class="bk-sidebar bk-is-right-bottom"
+      class="bk-sidebar bk-is-right-bottom bk"
       :class="{ 'bk-is-hidden': !sidebarVisible }"
     />
   </div>
