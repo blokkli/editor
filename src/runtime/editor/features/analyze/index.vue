@@ -239,21 +239,27 @@ export default {
   }
 
   .bk-analyze-results-item {
-    @apply py-20 border-b border-b-mono-300 first:pt-0 last:border-b-0;
-    > h3 {
-      @apply font-semibold text-base;
-    }
-
-    > p {
-      @apply text-sm text-mono-600 mt-5;
-    }
-
     &:hover {
       .bk-analyze-results-item-help {
         span {
           @apply opacity-100;
         }
       }
+    }
+  }
+
+  .bk-analyze-results-item-description {
+    ul {
+      @apply list-disc ml-15;
+    }
+    ol {
+      @apply list-decimal ml-15;
+    }
+
+    ul,
+    ol,
+    p {
+      @apply my-8 first:mt-0 last:mb-0;
     }
   }
 

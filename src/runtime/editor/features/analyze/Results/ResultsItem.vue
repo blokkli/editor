@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-analyze-results-item">
+  <div class="py-20 border-b border-b-mono-300 first:pt-0 last:border-b-0">
     <div class="bk-analyze-results-item-tags">
       <Status :status :title="key" />
       <div class="bk-pill bk-is-mono">{{ categoryLabel }}</div>
@@ -10,10 +10,12 @@
         </a>
       </div>
     </div>
-    <h3>{{ title }}</h3>
-    <p v-if="descriptionMapped || link">
-      {{ descriptionMapped }}
-    </p>
+    <h3 class="font-semibold text-base">{{ title }}</h3>
+    <div
+      v-if="description"
+      class="text-sm text-mono-600 mt-5 bk-analyze-results-item-description"
+      v-html="description"
+    />
 
     <ResultsItemNodes :nodes :result-id="id" />
   </div>
@@ -50,19 +52,6 @@ const { $t } = useBlokkli()
 
 const categoryLabel = computed(() => {
   return getCategoryLabel(props.category)
-})
-
-const descriptionMapped = computed(() => {
-  if (!props.description) {
-    return ''
-  }
-  const punctuation = /[.!?]$/
-
-  if (punctuation.test(props.description.trim())) {
-    return props.description
-  }
-
-  return props.description + '.'
 })
 
 const key = computed(() => `${props.plugin}:${props.id}`)
