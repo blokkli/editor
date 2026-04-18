@@ -179,9 +179,22 @@ export default defineNuxtConfig({
         default: 'white',
         displayAs: 'colors',
         options: {
-          white: { class: 'bg-white', label: 'White' },
-          light: { class: 'bg-mono-100', label: 'Light' },
-          dark: { class: 'bg-mono-800', label: 'Dark' },
+          white: {
+            class: 'bg-white',
+            label: 'White',
+            description: 'A nice white color.',
+          },
+          light: {
+            class: 'bg-mono-100',
+            label: 'Light',
+            description: 'A slightly gray color.',
+          },
+          dark: {
+            class: 'bg-mono-800',
+            label: 'Dark',
+            description:
+              'A full dark color that also inverts text color to white.',
+          },
         },
       },
       alignment: {

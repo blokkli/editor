@@ -80,14 +80,17 @@
       "options": {
         "dark": {
           "class": "bg-mono-800",
+          "description": "A full dark color that also inverts text color to white.",
           "label": "Dark"
         },
         "light": {
           "class": "bg-mono-100",
+          "description": "A slightly gray color.",
           "label": "Light"
         },
         "white": {
           "class": "bg-white",
+          "description": "A nice white color.",
           "label": "White"
         }
       },
@@ -190,14 +193,17 @@
       "options": {
         "dark": {
           "class": "bg-mono-800",
+          "description": "A full dark color that also inverts text color to white.",
           "label": "Dark"
         },
         "light": {
           "class": "bg-mono-100",
+          "description": "A slightly gray color.",
           "label": "Light"
         },
         "white": {
           "class": "bg-white",
+          "description": "A nice white color.",
           "label": "White"
         }
       },
@@ -263,14 +269,17 @@
       "options": {
         "dark": {
           "class": "bg-mono-800",
+          "description": "A full dark color that also inverts text color to white.",
           "label": "Dark"
         },
         "light": {
           "class": "bg-mono-100",
+          "description": "A slightly gray color.",
           "label": "Light"
         },
         "white": {
           "class": "bg-white",
+          "description": "A nice white color.",
           "label": "White"
         }
       },
@@ -429,6 +438,22 @@
       "min": 0,
       "step": 1,
       "type": "range"
+    },
+    "radiosWithLabelDescription": {
+      "default": "one",
+      "description": "This is the option description.",
+      "label": "With double description",
+      "options": {
+        "one": {
+          "description": "The description for the first option option.",
+          "label": "One"
+        },
+        "two": {
+          "description": "The description for the second option option.",
+          "label": "Two"
+        }
+      },
+      "type": "radios"
     },
     "range": {
       "default": 0,

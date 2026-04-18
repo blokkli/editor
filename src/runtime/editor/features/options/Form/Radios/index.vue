@@ -43,12 +43,7 @@
             :style="{ flex: v }"
           />
         </div>
-        <span
-          v-else-if="
-            typeof option.value === 'string' ||
-            (typeof option.value === 'object' && displayAs === 'colors')
-          "
-        >
+        <span v-else>
           {{
             typeof option.value === 'string' ? option.value : option.value.label
           }}
@@ -127,14 +122,14 @@ const isDefaultRadios = computed(
 )
 
 function onOptionMouseEnter(option: (typeof mappedOptions.value)[number]) {
-  if (!isDefaultRadios.value) {
+  if (!isDefaultRadios.value || option.description) {
     active.value = option.label
   }
   activeDescription.value = option.description
 }
 
 function onMouseLeave() {
-  if (!isDefaultRadios.value) {
+  if (!isDefaultRadios.value || selectedOption.value?.description) {
     active.value = selectedOption.value?.label ?? ''
   }
   activeDescription.value = selectedOption.value?.description ?? ''
@@ -165,7 +160,7 @@ defineCommands(() => {
 })
 
 onMounted(() => {
-  if (!isDefaultRadios.value) {
+  if (!isDefaultRadios.value || selectedOption.value?.description) {
     active.value = selectedOption.value?.label ?? ''
   }
   activeDescription.value = selectedOption.value?.description ?? ''

@@ -196,6 +196,22 @@ const { options } = defineBlokkli({
         secondary: 'Secondary',
       },
     },
+    radiosWithLabelDescription: {
+      type: 'radios',
+      label: 'With double description',
+      description: 'This is the option description.',
+      default: 'one',
+      options: {
+        one: {
+          label: 'One',
+          description: 'The description for the first option option.',
+        },
+        two: {
+          label: 'Two',
+          description: 'The description for the second option option.',
+        },
+      },
+    },
     columnsGrid: {
       type: 'radios',
       group: 'Radios',
@@ -251,6 +267,7 @@ const { options } = defineBlokkli({
           'rows',
           'nestedCheckbox',
           'dateTimeLocal',
+          'radiosWithLabelDescription',
         ]
       }
       return ['showAllOptions']
