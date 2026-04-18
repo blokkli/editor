@@ -1,5 +1,8 @@
-import type { AnalyzeImpact } from '../analyzers/types'
-import type { ReadabilityAnalyzer, ReadabilityBand } from './types'
+import type { AnalyzeImpact } from '#blokkli/editor/features/analyze/analyzers/types'
+import type {
+  ReadabilityAnalyzer,
+  ReadabilityBand,
+} from '#blokkli/editor/features/analyze/readability/types'
 import type { Language, TextReadability } from '@lunarisapp/readability'
 
 type LangCode = 'en' | 'de' | 'fr' | 'it'
@@ -19,26 +22,50 @@ type ReadabilityScoreConfig = {
   impactThresholds: [number, number, number]
   minWords: number
   referenceTable: ReferenceRow[]
+  /**
+   * Optional language-specific score formatter. When provided, raw numeric
+   * scores are converted to a human-readable string (e.g. FRE → CEFR bucket).
+   */
+  formatScore?: (value: number) => string
+}
+
+/**
+ * Flesch Reading Ease → CEFR bucket.
+ * Source: Linguapress correspondence table.
+ * Note: this is an approximate mapping — FRE measures sentence length and
+ * syllables per word, so texts with short sentences but advanced vocabulary
+ * can fall into a lower-than-expected CEFR bucket.
+ */
+function fleschToCefr(score: number): string {
+  if (score >= 90) return 'A1'
+  if (score >= 80) return 'A2'
+  if (score >= 70) return 'B1'
+  if (score >= 60) return 'B2'
+  if (score >= 50) return 'C1'
+  return 'C2'
 }
 
 const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
   en: {
-    label: 'FRE',
+    label: 'CEFR',
     compute: (tr, text) => tr.fleschReadingEase(text),
     direction: 'higher_easier',
-    bands: { easy: 60, ok: 30 },
-    impactThresholds: [50, 30, 10],
+    // Aligned to CEFR buckets: easy = A1–B2 (FRE ≥ 60), ok = C1 (50–60),
+    // hard = C2 (< 50). Keeps each CEFR level in exactly one analyze section.
+    bands: { easy: 60, ok: 50 },
+    impactThresholds: [40, 25, 10],
     minWords: 15,
+    formatScore: fleschToCefr,
     referenceTable: [
-      { range: 'Above 70', label: 'Very easy (simple, conversational)' },
-      { range: '60–70', label: 'Easy (standard web content)' },
-      { range: '50–60', label: 'Fairly difficult (could be simpler)' },
-      { range: '30–50', label: 'Difficult (academic, technical)' },
+      { range: 'FRE 90–100', label: 'A1 — beginners' },
+      { range: 'FRE 80–90', label: 'A2 — elementary' },
+      { range: 'FRE 70–80', label: 'B1 — intermediate' },
+      { range: 'FRE 60–70', label: 'B2 — upper intermediate (target)' },
+      { range: 'FRE 50–60', label: 'C1 — advanced (could be simpler)' },
       {
-        range: 'Below 30',
-        label: 'Very difficult — this is what gets flagged',
+        range: 'FRE 0–50',
+        label: 'C2 — mastery — this is what gets flagged',
       },
-      { range: 'Below 10', label: 'Critical — must be simplified' },
     ],
   },
   de: {
@@ -260,6 +287,14 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
 
     getAgentContext(): string {
       return buildAgentContext(getConfig(currentLangcode))
+    },
+
+    formatScore(value: number): string {
+      const config = getConfig(currentLangcode)
+      if (config.formatScore) {
+        return config.formatScore(value)
+      }
+      return Number.isFinite(value) ? value.toFixed(1) : String(value)
     },
 
     getScaleInfo(langcode: string) {

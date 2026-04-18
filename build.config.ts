@@ -101,6 +101,17 @@ export default defineBuildConfig({
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },
+
+    /**
+     * Module: Readability.
+     */
+    './src/modules/readability/index.ts',
+    {
+      input: './src/modules/readability/runtime/',
+      outDir: `./dist/modules/readability/runtime`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
   ],
   externals: [
     './global/constants',

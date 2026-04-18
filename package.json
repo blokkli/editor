@@ -57,6 +57,9 @@
       ],
       "tailwind": [
         "./dist/modules/tailwind/index.d.mts"
+      ],
+      "readability": [
+        "./dist/modules/readability/index.d.mts"
       ]
     }
   },
@@ -93,6 +96,11 @@
       "types": "./dist/modules/tailwind/index.d.mts",
       "require": "./dist/modules/tailwind/index.mjs",
       "import": "./dist/modules/tailwind/index.mjs"
+    },
+    "./readability": {
+      "types": "./dist/modules/readability/index.d.mts",
+      "require": "./dist/modules/readability/index.mjs",
+      "import": "./dist/modules/readability/index.mjs"
     }
   },
   "scripts": {

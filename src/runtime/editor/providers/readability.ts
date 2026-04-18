@@ -84,24 +84,18 @@ export default function readabilityProvider(
   let initPromise: Promise<void> | null = null
 
   async function doInit(): Promise<void> {
-    const customAnalyzers = await adapters.getAggregated(
-      'getReadabilityAnalyzer',
-    )
-    if (customAnalyzers.length > 0) {
-      analyzer = customAnalyzers[0] as ReadabilityAnalyzer
-    } else {
-      const { createBuiltinReadabilityAnalyzer } = await import(
-        '../features/analyze/readability/builtinAnalyzer'
-      )
-      analyzer = createBuiltinReadabilityAnalyzer()
+    // The analyzer is provided by the readability sub-module via the
+    // `getReadabilityAnalyzer` adapter extension. If no module registered one,
+    // `analyzer` stays null — all analyzer-backed methods will then throw.
+    const registered = await adapters.getAggregated('getReadabilityAnalyzer')
+    if (registered.length > 0) {
+      analyzer = registered[0] as ReadabilityAnalyzer
+      if (analyzer.init) {
+        await analyzer.init(context.value.language)
+      }
+      scoreLabel.value = analyzer.scoreLabel
+      minWordsForConfidence.value = analyzer.minWordsForConfidence ?? 100
     }
-
-    if (analyzer.init) {
-      await analyzer.init(context.value.language)
-    }
-
-    scoreLabel.value = analyzer.scoreLabel
-    minWordsForConfidence.value = analyzer.minWordsForConfidence ?? 100
     isInitialized.value = true
   }
 

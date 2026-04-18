@@ -14,7 +14,9 @@
       @click.prevent="onClick"
     >
       <div v-if="node.score != null && node.scoreLabel">
-        <span class="bk-pill shrink-0">{{ node.score.toFixed(1) }}</span>
+        <span class="bk-pill shrink-0">{{
+          readability.formatScore(node.score)
+        }}</span>
       </div>
       <span class="truncate w-full inline-block font-mono">{{
         getLabel()
@@ -67,7 +69,7 @@ const props = defineProps<{
   target: AnalyzeNodeTargetMapped
 }>()
 
-const { $t, ui, eventBus, dom, blocks, element } = useBlokkli()
+const { $t, ui, eventBus, dom, blocks, element, readability } = useBlokkli()
 
 const activeIndex = computed(() => {
   const index = ui.activeHighlightId.value.split('_____')[1]

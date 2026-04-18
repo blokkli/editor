@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createBuiltinReadabilityAnalyzer } from './builtinAnalyzer'
-import type { ReadabilityAnalyzer } from './types'
+import { createBuiltinReadabilityAnalyzer } from './builtin'
+import type { ReadabilityAnalyzer } from '#blokkli/editor/features/analyze/readability/types'
 
 describe('createBuiltinReadabilityAnalyzer', () => {
   let analyzer: ReadabilityAnalyzer
@@ -105,8 +105,8 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   })
 
   describe('scoreLabel', () => {
-    it('returns FRE for English', () => {
-      expect(analyzer.scoreLabel).toBe('FRE')
+    it('returns CEFR for English', () => {
+      expect(analyzer.scoreLabel).toBe('CEFR')
     })
 
     it('returns Gulpease for Italian', async () => {
@@ -133,11 +133,12 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       expect(analyzer.classifyBand(75, 'en')).toBe('easy')
     })
 
-    it('classifies medium FRE as ok', () => {
-      expect(analyzer.classifyBand(45, 'en')).toBe('ok')
+    it('classifies medium FRE as ok (C1 band)', () => {
+      expect(analyzer.classifyBand(55, 'en')).toBe('ok')
     })
 
-    it('classifies low FRE as hard', () => {
+    it('classifies low FRE as hard (C2 band)', () => {
+      expect(analyzer.classifyBand(45, 'en')).toBe('hard')
       expect(analyzer.classifyBand(20, 'en')).toBe('hard')
     })
 
@@ -168,15 +169,15 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       expect(analyzer.impactForScore(5)).toBe('critical')
     })
 
-    it('returns serious for FRE < 30', () => {
+    it('returns serious for FRE < 25', () => {
       expect(analyzer.impactForScore(20)).toBe('serious')
     })
 
-    it('returns moderate for FRE < 50', () => {
-      expect(analyzer.impactForScore(45)).toBe('moderate')
+    it('returns moderate for FRE < 40', () => {
+      expect(analyzer.impactForScore(35)).toBe('moderate')
     })
 
-    it('returns minor for FRE >= 50', () => {
+    it('returns minor for FRE >= 40', () => {
       expect(analyzer.impactForScore(65)).toBe('minor')
     })
 
@@ -224,11 +225,11 @@ describe('createBuiltinReadabilityAnalyzer', () => {
   })
 
   describe('getAgentContext', () => {
-    it('returns FRE reference text for English', () => {
+    it('returns CEFR reference text for English', () => {
       const context = analyzer.getAgentContext()
-      expect(context).toContain('FRE Score Reference')
-      expect(context).toContain('Very easy')
-      expect(context).toContain('Critical')
+      expect(context).toContain('CEFR Score Reference')
+      expect(context).toContain('A1')
+      expect(context).toContain('C2')
     })
 
     it('returns Gulpease reference text for Italian', async () => {

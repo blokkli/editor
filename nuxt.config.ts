@@ -4,6 +4,7 @@ import agent from './src/modules/agent'
 import tableOfContents from './src/modules/table-of-contents'
 import charts from './src/modules/charts'
 import iframes from './src/modules/iframes'
+import readability from './src/modules/readability'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -168,6 +169,7 @@ fragment blokkliParagraphsType on ParagraphsType {
           desktop: { label: 'Desktop', width: 1440 },
         },
       }),
+      readability(),
     ],
   },
 })

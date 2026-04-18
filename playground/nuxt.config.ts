@@ -8,6 +8,7 @@ import agentModule from './../src/modules/agent'
 import tableOfContents from './../src/modules/table-of-contents'
 import charts from './../src/modules/charts'
 import iframes from './../src/modules/iframes'
+import readability from './../src/modules/readability'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -164,6 +165,7 @@ export default defineNuxtConfig({
           'Translate all content to German',
         ],
       }),
+      readability(),
     ],
     pattern: [
       playgroundFolder + 'app/components/Blokkli/**/*.vue',
