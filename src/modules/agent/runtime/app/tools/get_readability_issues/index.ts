@@ -38,6 +38,7 @@ export default defineBlokkliAgentTool({
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   requiredAdapterMethods: ['getAnalyzers'],
+  isAvailable: (app) => app.readability.isAvailable.value,
   label($t) {
     return $t('aiAgentAnalyzeContentRunning', 'Analyzing content...')
   },

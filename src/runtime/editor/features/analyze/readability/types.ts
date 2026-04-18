@@ -34,31 +34,36 @@ export type ReadabilityAnalysisResult = Record<string, ReadabilityFieldResult>
 /**
  * Interface for a readability analyzer.
  *
- * One analyzer is active at a time. The built-in default uses
- * LIX/CLI/ARI/Gulpease. Adapters can override with a custom implementation
- * (e.g. CEFR via API).
+ * Adapters can provide a custom analyzer via `getReadabilityAnalyzer`
+ * on an adapter extension; the built-in implementation lives in the
+ * `@blokkli/readability` sub-module.
+ *
+ * Every per-language method takes the active langcode explicitly — analyzers
+ * are stateless with respect to language. The `analyze` method is responsible
+ * for any async setup (e.g. loading language data on first call).
  */
 export type ReadabilityAnalyzer = {
   id: string
   label?: string | ((langcode: string) => string)
   description?: string
   supportedLanguages?: string[]
-  minWordsForConfidence?: number
 
   /**
-   * Short label for the primary score metric (e.g. "LIX", "Gulpease", "CEFR").
-   * Used by the UI to display scores like "LIX: 45".
+   * Short label for the primary score metric in the given language
+   * (e.g. "LIX", "Gulpease", "CEFR").
    */
-  scoreLabel: string
+  scoreLabel(langcode: string): string
 
   /**
-   * Optional initialization (e.g. lazy-load a library).
+   * Minimum word count required to produce a confident score in the given
+   * language.
    */
-  init?(langcode: string): void | Promise<void>
+  minWordsForConfidence?(langcode: string): number
 
   /**
    * Score an array of plain-text strings.
    * Returns one primary score per input text (null if not scorable).
+   * Implementations may perform lazy setup on first call.
    */
   analyze(texts: string[], langcode: string): Promise<(number | null)[]>
 
@@ -70,21 +75,20 @@ export type ReadabilityAnalyzer = {
   /**
    * Determine the impact severity for a score.
    */
-  impactForScore(score: number): AnalyzeImpact
+  impactForScore(score: number, langcode: string): AnalyzeImpact
 
   /**
-   * Return context text for the agent prompt (e.g. LIX reference table).
+   * Return context text for the agent prompt (e.g. score reference table).
    */
-  getAgentContext(): string
+  getAgentContext(langcode: string): string
 
   /**
    * Optional display formatting for a score value.
    */
-  formatScore?(value: number): string
+  formatScore?(value: number, langcode: string): string
 
   /**
    * Return scale information for visualizing score bands.
-   * Used by the UI to render a score bar with thresholds.
    *
    * - `thresholds`: The two boundary values between easy/ok and ok/hard.
    *   Listed in ascending order (lower value first).

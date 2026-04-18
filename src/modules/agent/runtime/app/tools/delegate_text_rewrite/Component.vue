@@ -328,7 +328,6 @@ async function analyzeReadability(): Promise<
   }
 
   // Call analyzeFieldValues directly to get ALL chunks with scores.
-  await props.context.app.readability.ensureInitialized()
   const rawAnalysis =
     await props.context.app.readability.analyzeFieldValues(textFields)
 

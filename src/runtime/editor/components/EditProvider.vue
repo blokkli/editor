@@ -259,7 +259,7 @@ const fieldValue = fieldValueProviderFn(
   definitions,
   blocks,
 )
-const readability = readabilityProviderFn(
+const readability = await readabilityProviderFn(
   adapters,
   context,
   directive,

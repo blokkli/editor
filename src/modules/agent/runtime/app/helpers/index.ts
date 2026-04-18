@@ -7,6 +7,7 @@ import type {
   ToolError,
 } from '#blokkli/agent/app/types'
 import type { BlokkliAdapter } from '#blokkli/editor/adapter'
+import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { EditMode } from '#blokkli/editor/types/state'
 
 /**
@@ -20,28 +21,37 @@ export function createToolMap(
 
 /**
  * Get tool names for the server.
- * Filters by edit mode and adapter methods if provided.
- * All tools are static and resolved from bundled metadata on the server.
+ *
+ * Applies three filters in order:
+ * 1. `tool.modes` must include the current edit mode.
+ * 2. `tool.requiredAdapterMethods` (if any) must all exist on the adapter.
+ * 3. `tool.isAvailable(app)` (if defined) must return (or resolve to) true.
  */
-export function getToolInfoForServer(
+export async function getToolInfoForServer(
   tools: McpToolDefinition[],
   editMode: EditMode,
+  app: BlokkliApp,
   adapter?: BlokkliAdapter<unknown>,
-): string[] {
-  return tools
-    .filter((tool) => {
-      // Filter by edit mode
-      if (!tool.modes.includes(editMode)) return false
+): Promise<string[]> {
+  const staticFiltered = tools.filter((tool) => {
+    if (!tool.modes.includes(editMode)) return false
+    if (!tool.requiredAdapterMethods) return true
+    if (!adapter) return true
+    return tool.requiredAdapterMethods.every(
+      (method) =>
+        typeof (adapter as unknown as Record<string, unknown>)[method] ===
+        'function',
+    )
+  })
 
-      // Filter by adapter methods
-      if (!tool.requiredAdapterMethods) return true
-      if (!adapter) return true
-      return tool.requiredAdapterMethods.every(
-        (method) =>
-          typeof (adapter as unknown as Record<string, unknown>)[method] ===
-          'function',
-      )
-    })
+  const availability = await Promise.all(
+    staticFiltered.map((tool) =>
+      tool.isAvailable ? Promise.resolve(tool.isAvailable(app)) : true,
+    ),
+  )
+
+  return staticFiltered
+    .filter((_, index) => availability[index])
     .map((t) => t.name)
 }
 

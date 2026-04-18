@@ -175,6 +175,12 @@ export default defineBlokkliAgentTool({
 
     // For fix_readability, auto-resolve issues from analyzers.
     if (params.template === 'fix_readability') {
+      if (!ctx.app.readability.isAvailable.value) {
+        return {
+          error:
+            'Readability analyzer is not configured for this project. The fix_readability template requires it.',
+        }
+      }
       const analysisResult = await runReadabilityAnalysis(ctx.app)
 
       const issues: {

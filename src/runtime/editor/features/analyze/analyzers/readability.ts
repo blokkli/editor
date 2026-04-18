@@ -59,6 +59,9 @@ async function analyzeViaProvider(
   langcode: string,
   $t: TextProvider,
 ): Promise<AnalyzeResult[]> {
+  if (!readabilityProvider.isAvailable.value) {
+    return []
+  }
   const result = await readabilityProvider.analyzeAllFields()
   const scoreLabel = readabilityProvider.scoreLabel.value
   const hardNodes: AnalyzeNode[] = []
@@ -160,9 +163,6 @@ export default defineAnalyzer(() => {
     description:
       'Analyzes text readability using language-specific algorithms. Flags hard-to-read text blocks.',
     continuous: true,
-    async init(context) {
-      await context.readability.ensureInitialized()
-    },
     run(context) {
       return analyzeViaProvider(
         context.readability,

@@ -105,6 +105,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/agent/runtime/shared/**/*',
         '../src/modules/table-of-contents/runtime/**/*',
         '../src/modules/iframes/runtime/**/*',
+        '../src/modules/readability/runtime/**/*',
         '../src/modules/charts/runtime/blokkli/tools/**/*',
         '../src/modules/charts/runtime/chartTypes/**/*',
         '../src/modules/charts/runtime/components/**/*',

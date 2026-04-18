@@ -1,15 +1,9 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { createBuiltinReadabilityAnalyzer } from './builtin'
-import type { ReadabilityAnalyzer } from '#blokkli/editor/features/analyze/readability/types'
+
+const analyzer = createBuiltinReadabilityAnalyzer()
 
 describe('createBuiltinReadabilityAnalyzer', () => {
-  let analyzer: ReadabilityAnalyzer
-
-  beforeAll(async () => {
-    analyzer = createBuiltinReadabilityAnalyzer()
-    await analyzer.init!('en')
-  })
-
   describe('analyze', () => {
     it('returns a score for a sufficiently long text', async () => {
       const texts = [
@@ -65,9 +59,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
     })
 
     it('produces a Gulpease score for Italian', async () => {
-      const itAnalyzer = createBuiltinReadabilityAnalyzer()
-      await itAnalyzer.init!('it')
-      const results = await itAnalyzer.analyze(
+      const results = await analyzer.analyze(
         [
           'Le complesse normative governative necessitano frequentemente di straordinari meccanismi di supervisione amministrativa.',
         ],
@@ -78,9 +70,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
     })
 
     it('produces a WSTF score for German', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      const results = await deAnalyzer.analyze(
+      const results = await analyzer.analyze(
         [
           'Die komplexen Verwaltungsvorschriften erfordern häufig ausserordentliche Aufsichtsmechanismen, die den bürokratischen Aufwand erheblich steigern.',
         ],
@@ -91,9 +81,7 @@ describe('createBuiltinReadabilityAnalyzer', () => {
     })
 
     it('produces a LIX score for French', async () => {
-      const frAnalyzer = createBuiltinReadabilityAnalyzer()
-      await frAnalyzer.init!('fr')
-      const results = await frAnalyzer.analyze(
+      const results = await analyzer.analyze(
         [
           'Les réglementations gouvernementales complexes nécessitent fréquemment des mécanismes de surveillance administrative extraordinaires.',
         ],
@@ -106,25 +94,19 @@ describe('createBuiltinReadabilityAnalyzer', () => {
 
   describe('scoreLabel', () => {
     it('returns CEFR for English', () => {
-      expect(analyzer.scoreLabel).toBe('CEFR')
+      expect(analyzer.scoreLabel('en')).toBe('CEFR')
     })
 
-    it('returns Gulpease for Italian', async () => {
-      const itAnalyzer = createBuiltinReadabilityAnalyzer()
-      await itAnalyzer.init!('it')
-      expect(itAnalyzer.scoreLabel).toBe('Gulpease')
+    it('returns Gulpease for Italian', () => {
+      expect(analyzer.scoreLabel('it')).toBe('Gulpease')
     })
 
-    it('returns WSTF for German', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      expect(deAnalyzer.scoreLabel).toBe('WSTF')
+    it('returns WSTF for German', () => {
+      expect(analyzer.scoreLabel('de')).toBe('WSTF')
     })
 
-    it('returns LIX for French', async () => {
-      const frAnalyzer = createBuiltinReadabilityAnalyzer()
-      await frAnalyzer.init!('fr')
-      expect(frAnalyzer.scoreLabel).toBe('LIX')
+    it('returns LIX for French', () => {
+      expect(analyzer.scoreLabel('fr')).toBe('LIX')
     })
   })
 
@@ -166,94 +148,74 @@ describe('createBuiltinReadabilityAnalyzer', () => {
 
   describe('impactForScore', () => {
     it('returns critical for FRE < 10', () => {
-      expect(analyzer.impactForScore(5)).toBe('critical')
+      expect(analyzer.impactForScore(5, 'en')).toBe('critical')
     })
 
     it('returns serious for FRE < 25', () => {
-      expect(analyzer.impactForScore(20)).toBe('serious')
+      expect(analyzer.impactForScore(20, 'en')).toBe('serious')
     })
 
     it('returns moderate for FRE < 40', () => {
-      expect(analyzer.impactForScore(35)).toBe('moderate')
+      expect(analyzer.impactForScore(35, 'en')).toBe('moderate')
     })
 
     it('returns minor for FRE >= 40', () => {
-      expect(analyzer.impactForScore(65)).toBe('minor')
+      expect(analyzer.impactForScore(65, 'en')).toBe('minor')
     })
 
-    it('returns critical for Italian Gulpease < 40', async () => {
-      const itAnalyzer = createBuiltinReadabilityAnalyzer()
-      await itAnalyzer.init!('it')
-      expect(itAnalyzer.impactForScore(30)).toBe('critical')
+    it('returns critical for Italian Gulpease < 40', () => {
+      expect(analyzer.impactForScore(30, 'it')).toBe('critical')
     })
 
-    it('returns serious for Italian Gulpease < 50', async () => {
-      const itAnalyzer = createBuiltinReadabilityAnalyzer()
-      await itAnalyzer.init!('it')
-      expect(itAnalyzer.impactForScore(45)).toBe('serious')
+    it('returns serious for Italian Gulpease < 50', () => {
+      expect(analyzer.impactForScore(45, 'it')).toBe('serious')
     })
 
-    it('returns minor for Italian Gulpease >= 60', async () => {
-      const itAnalyzer = createBuiltinReadabilityAnalyzer()
-      await itAnalyzer.init!('it')
-      expect(itAnalyzer.impactForScore(70)).toBe('minor')
+    it('returns minor for Italian Gulpease >= 60', () => {
+      expect(analyzer.impactForScore(70, 'it')).toBe('minor')
     })
 
-    it('returns critical for German WSTF >= 24', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(25)).toBe('critical')
+    it('returns critical for German WSTF >= 24', () => {
+      expect(analyzer.impactForScore(25, 'de')).toBe('critical')
     })
 
-    it('returns serious for German WSTF >= 20', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(21)).toBe('serious')
+    it('returns serious for German WSTF >= 20', () => {
+      expect(analyzer.impactForScore(21, 'de')).toBe('serious')
     })
 
-    it('returns moderate for German WSTF >= 16', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(17)).toBe('moderate')
+    it('returns moderate for German WSTF >= 16', () => {
+      expect(analyzer.impactForScore(17, 'de')).toBe('moderate')
     })
 
-    it('returns minor for German WSTF < 16', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      expect(deAnalyzer.impactForScore(10)).toBe('minor')
+    it('returns minor for German WSTF < 16', () => {
+      expect(analyzer.impactForScore(10, 'de')).toBe('minor')
     })
   })
 
   describe('getAgentContext', () => {
     it('returns CEFR reference text for English', () => {
-      const context = analyzer.getAgentContext()
+      const context = analyzer.getAgentContext('en')
       expect(context).toContain('CEFR Score Reference')
       expect(context).toContain('A1')
       expect(context).toContain('C2')
     })
 
-    it('returns Gulpease reference text for Italian', async () => {
-      const itAnalyzer = createBuiltinReadabilityAnalyzer()
-      await itAnalyzer.init!('it')
-      const context = itAnalyzer.getAgentContext()
+    it('returns Gulpease reference text for Italian', () => {
+      const context = analyzer.getAgentContext('it')
       expect(context).toContain('Gulpease Score Reference')
       expect(context).toContain('Very easy')
       expect(context).toContain('Critical')
     })
 
-    it('returns WSTF reference text for German', async () => {
-      const deAnalyzer = createBuiltinReadabilityAnalyzer()
-      await deAnalyzer.init!('de')
-      const context = deAnalyzer.getAgentContext()
+    it('returns WSTF reference text for German', () => {
+      const context = analyzer.getAgentContext('de')
       expect(context).toContain('WSTF Score Reference')
       expect(context).toContain('Very easy')
       expect(context).toContain('Critical')
     })
 
-    it('returns LIX reference text for French', async () => {
-      const frAnalyzer = createBuiltinReadabilityAnalyzer()
-      await frAnalyzer.init!('fr')
-      const context = frAnalyzer.getAgentContext()
+    it('returns LIX reference text for French', () => {
+      const context = analyzer.getAgentContext('fr')
       expect(context).toContain('LIX Score Reference')
       expect(context).toContain('Very easy')
     })

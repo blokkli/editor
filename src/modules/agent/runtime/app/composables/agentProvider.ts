@@ -534,9 +534,10 @@ export default function (
     const resolved = await resolveTools(mcpTools, ctx)
     toolMap = createToolMap(resolved)
 
-    const toolNames = getToolInfoForServer(
+    const toolNames = await getToolInfoForServer(
       resolved,
       state.editMode.value,
+      app,
       adapter,
     )
 

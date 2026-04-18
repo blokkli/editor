@@ -37,6 +37,7 @@ export default defineBlokkliAgentTool({
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   requiredAdapterMethods: ['getAnalyzers'],
+  isAvailable: (app) => app.readability.isAvailable.value,
   label($t) {
     return $t('aiAgentCheckReadabilityRunning', 'Checking readability...')
   },
@@ -48,8 +49,6 @@ export default defineBlokkliAgentTool({
   async execute(ctx, params) {
     const { readability, $t, context } = ctx.app
     const langcode = context.value.language
-
-    await readability.ensureInitialized()
 
     const results: z.infer<typeof textResultSchema>[] = []
 

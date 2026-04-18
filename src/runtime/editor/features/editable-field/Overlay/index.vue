@@ -161,6 +161,7 @@ const {
   fieldValue,
   element: elementProvider,
   storage,
+  readability,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -242,9 +243,10 @@ const errorText = computed(() => {
 
 const isReadabilityField = computed(
   () =>
-    props.config.type === 'plain' ||
-    props.config.type === 'markup' ||
-    props.config.type === 'frame',
+    readability.isAvailable.value &&
+    (props.config.type === 'plain' ||
+      props.config.type === 'markup' ||
+      props.config.type === 'frame'),
 )
 
 const readabilityFieldType = computed<'plain' | 'markup'>(() =>

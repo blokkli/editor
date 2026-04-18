@@ -215,11 +215,29 @@ function buildAgentContext(config: ReadabilityScoreConfig): string {
 
 /**
  * Create the built-in readability analyzer using language-specific algorithms:
- * LIX (en/fr), Wiener Sachtextformel (de), Gulpease (it).
+ * Flesch Reading Ease → CEFR (en), Wiener Sachtextformel (de), LIX (fr),
+ * Gulpease (it). The analyzer is stateless: each per-language method takes
+ * the active langcode as an argument. The heavy `@lunarisapp/readability`
+ * dependency is loaded lazily on the first `analyze()` call.
  */
 export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
   let textReadability: TextReadability | null = null
-  let currentLangcode = 'en'
+  let loadedLang: Language | null = null
+
+  async function ensureTextReadability(
+    langcode: string,
+  ): Promise<TextReadability> {
+    const mappedLang = mapLang(langcode)
+    if (!textReadability || loadedLang !== mappedLang) {
+      const { TextReadability } = await import('@lunarisapp/readability')
+      textReadability = new TextReadability({
+        lang: mappedLang,
+        cache: true,
+      })
+      loadedLang = mappedLang
+    }
+    return textReadability
+  }
 
   return {
     id: 'builtin',
@@ -230,21 +248,13 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
     description:
       'Analyzes text readability using language-specific algorithms (LIX, Wiener Sachtextformel, Gulpease).',
     supportedLanguages: SUPPORTED_LANGUAGES,
-    get minWordsForConfidence(): number {
-      return getConfig(currentLangcode).minWords
+
+    minWordsForConfidence(langcode: string): number {
+      return getConfig(langcode).minWords
     },
 
-    get scoreLabel(): string {
-      return getConfig(currentLangcode).label
-    },
-
-    async init(langcode: string) {
-      currentLangcode = langcode
-      const { TextReadability } = await import('@lunarisapp/readability')
-      textReadability = new TextReadability({
-        lang: mapLang(langcode),
-        cache: true,
-      })
+    scoreLabel(langcode: string): string {
+      return getConfig(langcode).label
     },
 
     async analyze(
@@ -255,16 +265,8 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
         return texts.map(() => null)
       }
 
-      if (!textReadability) {
-        const { TextReadability } = await import('@lunarisapp/readability')
-        textReadability = new TextReadability({
-          lang: mapLang(langcode),
-          cache: true,
-        })
-      }
-
+      const tr = await ensureTextReadability(langcode)
       const config = getConfig(langcode)
-      const tr = textReadability
       return texts.map((text) => {
         const trimmed = text.trim()
         if (!trimmed) return null
@@ -281,16 +283,16 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
       return classifyBandGeneric(score, getConfig(langcode))
     },
 
-    impactForScore(score: number): AnalyzeImpact {
-      return impactForScoreGeneric(score, getConfig(currentLangcode))
+    impactForScore(score: number, langcode: string): AnalyzeImpact {
+      return impactForScoreGeneric(score, getConfig(langcode))
     },
 
-    getAgentContext(): string {
-      return buildAgentContext(getConfig(currentLangcode))
+    getAgentContext(langcode: string): string {
+      return buildAgentContext(getConfig(langcode))
     },
 
-    formatScore(value: number): string {
-      const config = getConfig(currentLangcode)
+    formatScore(value: number, langcode: string): string {
+      const config = getConfig(langcode)
       if (config.formatScore) {
         return config.formatScore(value)
       }

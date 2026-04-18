@@ -251,6 +251,19 @@ export type McpToolDefinition<
   lazy?: boolean
 
   /**
+   * Runtime predicate that gates tool availability.
+   *
+   * Called once at connection time; the tool is excluded from the list sent
+   * to the LLM when this returns (or resolves to) `false`. Receives the full
+   * `BlokkliApp` so it can inspect provider state — e.g. a tool that relies
+   * on readability can return `app.readability.isAvailable.value`.
+   *
+   * Use this for capabilities that may be switched off at the project level.
+   * For static dependencies on adapter methods, prefer `requiredAdapterMethods`.
+   */
+  isAvailable?: (app: BlokkliApp) => boolean | Promise<boolean>
+
+  /**
    * Whether results become stale after any mutation.
    * When true, old results from this tool are marked as stale during pruning.
    * Typical for query tools that return page structure (e.g. get_child_blocks).

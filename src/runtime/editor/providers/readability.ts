@@ -1,4 +1,4 @@
-import { ref, readonly, type ComputedRef, type Ref } from '#imports'
+import { ref, readonly, computed, type ComputedRef, type Ref } from '#imports'
 import type { AdapterContext } from '#blokkli/editor/adapter'
 import type { AdaptersProvider } from './adapters'
 import type { DirectiveProvider } from './directive'
@@ -18,33 +18,27 @@ type ReadabilityScaleInfo = NonNullable<
 
 export type ReadabilityProvider = {
   /**
-   * Whether the readability analyzer has been loaded and initialized.
+   * Whether a readability analyzer is registered and usable.
    *
-   * Metadata refs (`scoreLabel`, `minWordsForConfidence`) and all methods
-   * require `ensureInitialized()` to have completed. Sync methods throw if
-   * called beforehand.
+   * Resolved at provider construction time. `true` when an adapter extension
+   * supplied `getReadabilityAnalyzer` (typically via the `@blokkli/readability`
+   * sub-module), `false` otherwise. Features that render readability UI
+   * should gate on this flag; method calls are safe no-ops when false.
    */
-  isInitialized: Readonly<Ref<boolean>>
+  isAvailable: Readonly<Ref<boolean>>
 
   /**
-   * Label of the primary score metric (e.g. "LIX", "Gulpease", "CEFR").
-   * Empty until `ensureInitialized()` completes.
+   * Label of the primary score metric for the current language
+   * (e.g. "LIX", "Gulpease", "CEFR"). Empty string when no analyzer is
+   * available.
    */
-  scoreLabel: Readonly<Ref<string>>
+  scoreLabel: ComputedRef<string>
 
   /**
-   * Minimum word count required for a confident score.
-   * `0` until `ensureInitialized()` completes.
+   * Minimum word count required for a confident score in the current
+   * language. `0` when no analyzer is available.
    */
-  minWordsForConfidence: Readonly<Ref<number>>
-
-  /**
-   * Load and initialize the active analyzer (adapter-provided or built-in).
-   *
-   * Must be awaited at least once before any other method or metadata ref
-   * is read. Idempotent: subsequent calls return the same promise.
-   */
-  ensureInitialized: () => Promise<void>
+  minWordsForConfidence: ComputedRef<number>
 
   analyzeAllFields: () => Promise<ReadabilityAnalysisResult>
   analyzeText: (
@@ -59,8 +53,8 @@ export type ReadabilityProvider = {
   formatScore: (value: number) => string
 
   /**
-   * Return scale information for visualizing score bands, or `null` if the
-   * analyzer does not provide one.
+   * Return scale information for visualizing score bands, or `null` if no
+   * analyzer is available (or it does not provide one).
    */
   getScaleInfo: (langcode: string) => ReadabilityScaleInfo | null
 
@@ -71,57 +65,30 @@ export type ReadabilityProvider = {
   getFieldElement: (uuid: string, fieldName: string) => HTMLElement | undefined
 }
 
-export default function readabilityProvider(
+export default async function readabilityProvider(
   adapters: AdaptersProvider,
   context: ComputedRef<AdapterContext>,
   directive: DirectiveProvider,
   fieldValue: FieldValueProvider,
-): ReadabilityProvider {
-  const isInitialized = ref(false)
-  const scoreLabel = ref('')
-  const minWordsForConfidence = ref(0)
-  let analyzer: ReadabilityAnalyzer | null = null
-  let initPromise: Promise<void> | null = null
+): Promise<ReadabilityProvider> {
+  const list = await adapters.getAggregated('getReadabilityAnalyzer')
+  const analyzer: ReadabilityAnalyzer | null =
+    (list[0] as ReadabilityAnalyzer | undefined) ?? null
 
-  async function doInit(): Promise<void> {
-    // The analyzer is provided by the readability sub-module via the
-    // `getReadabilityAnalyzer` adapter extension. If no module registered one,
-    // `analyzer` stays null — all analyzer-backed methods will then throw.
-    const registered = await adapters.getAggregated('getReadabilityAnalyzer')
-    if (registered.length > 0) {
-      analyzer = registered[0] as ReadabilityAnalyzer
-      if (analyzer.init) {
-        await analyzer.init(context.value.language)
-      }
-      scoreLabel.value = analyzer.scoreLabel
-      minWordsForConfidence.value = analyzer.minWordsForConfidence ?? 100
-    }
-    isInitialized.value = true
-  }
+  const isAvailable = ref(analyzer !== null)
 
-  function ensureInitialized(): Promise<void> {
-    if (isInitialized.value) {
-      return Promise.resolve()
-    }
-    if (!initPromise) {
-      initPromise = doInit()
-    }
-    return initPromise
-  }
+  const scoreLabel = computed(
+    () => analyzer?.scoreLabel(context.value.language) ?? '',
+  )
 
-  function requireAnalyzer(): ReadabilityAnalyzer {
-    if (!analyzer) {
-      throw new Error(
-        'Readability analyzer is not initialized. Call await readability.ensureInitialized() first.',
-      )
-    }
-    return analyzer
-  }
+  const minWordsForConfidence = computed(
+    () => analyzer?.minWordsForConfidence?.(context.value.language) ?? 0,
+  )
 
   async function analyzeFieldValues(
     fields: TextFieldValue[],
   ): Promise<ReadabilityAnalysisResult> {
-    const a = requireAnalyzer()
+    if (!analyzer) return {}
     const langcode = context.value.language
 
     // Chunk all fields and collect texts for batch analysis.
@@ -145,7 +112,7 @@ export default function readabilityProvider(
       }
     }
 
-    const scores = await a.analyze(allTexts, langcode)
+    const scores = await analyzer.analyze(allTexts, langcode)
 
     const result: ReadabilityAnalysisResult = {}
     let textIndex = 0
@@ -158,8 +125,9 @@ export default function readabilityProvider(
           text: chunk.text,
           html: chunk.html,
           score,
-          band: score != null ? a.classifyBand(score, langcode) : null,
-          impact: score != null ? a.impactForScore(score) : null,
+          band: score != null ? analyzer.classifyBand(score, langcode) : null,
+          impact:
+            score != null ? analyzer.impactForScore(score, langcode) : null,
         })
       }
       result[entry.key] = {
@@ -173,6 +141,7 @@ export default function readabilityProvider(
   }
 
   async function analyzeAllFields(): Promise<ReadabilityAnalysisResult> {
+    if (!analyzer) return {}
     const fields = fieldValue.getTextFieldValues()
     return analyzeFieldValues(fields)
   }
@@ -182,12 +151,12 @@ export default function readabilityProvider(
     langcode: string,
     fieldType: 'plain' | 'markup' = 'plain',
   ): Promise<ReadabilityChunkResult[]> {
-    const a = requireAnalyzer()
+    if (!analyzer) return []
     const chunks = chunkHtml(text, fieldType)
     if (chunks.length === 0) return []
 
     const texts = chunks.map((c) => c.text)
-    const scores = await a.analyze(texts, langcode)
+    const scores = await analyzer.analyze(texts, langcode)
 
     const results: ReadabilityChunkResult[] = []
     for (let i = 0; i < chunks.length; i++) {
@@ -196,15 +165,15 @@ export default function readabilityProvider(
         text: chunks[i]!.text,
         html: chunks[i]!.html,
         score,
-        band: score != null ? a.classifyBand(score, langcode) : null,
-        impact: score != null ? a.impactForScore(score) : null,
+        band: score != null ? analyzer.classifyBand(score, langcode) : null,
+        impact: score != null ? analyzer.impactForScore(score, langcode) : null,
       })
     }
     return results
   }
 
   function getAgentContext(): string {
-    return requireAnalyzer().getAgentContext()
+    return analyzer?.getAgentContext(context.value.language) ?? ''
   }
 
   function getFieldElement(
@@ -219,9 +188,8 @@ export default function readabilityProvider(
   }
 
   function formatScore(value: number): string {
-    const a = requireAnalyzer()
-    if (a.formatScore) {
-      return a.formatScore(value)
+    if (analyzer?.formatScore) {
+      return analyzer.formatScore(value, context.value.language)
     }
     return typeof value === 'number' && Number.isFinite(value)
       ? value.toFixed(1)
@@ -229,15 +197,13 @@ export default function readabilityProvider(
   }
 
   function getScaleInfo(langcode: string): ReadabilityScaleInfo | null {
-    const a = requireAnalyzer()
-    return a.getScaleInfo?.(langcode) ?? null
+    return analyzer?.getScaleInfo?.(langcode) ?? null
   }
 
   return {
-    isInitialized: readonly(isInitialized),
-    scoreLabel: readonly(scoreLabel),
-    minWordsForConfidence: readonly(minWordsForConfidence),
-    ensureInitialized,
+    isAvailable: readonly(isAvailable),
+    scoreLabel,
+    minWordsForConfidence,
     analyzeAllFields,
     analyzeText,
     analyzeFieldValues,

@@ -95,7 +95,6 @@ async function analyze(text: string) {
     return
   }
 
-  await readability.ensureInitialized()
   const chunkResults = await readability.analyzeText(
     text,
     context.value.language,
