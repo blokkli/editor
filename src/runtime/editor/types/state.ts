@@ -75,6 +75,13 @@ export interface MappedState {
     entityType: string
     entityBundle: string
   }[]
+  droppableFieldValues?: {
+    uuid: string
+    fieldName: string
+    count: number
+    entityType: string
+    entityBundle: string
+  }[]
   ignoredAnalyzeIdentifiers?: string[]
 }
 

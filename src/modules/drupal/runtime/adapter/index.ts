@@ -366,6 +366,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityType: v.entityType,
           entityBundle: v.entityBundle,
         })),
+        droppableFieldValues: (state.droppableFieldValues || []).map((v) => ({
+          uuid: v.uuid,
+          fieldName: v.fieldName,
+          count: v.count,
+          entityType: v.entityType,
+          entityBundle: v.entityBundle,
+        })),
         ignoredAnalyzeIdentifiers:
           state.stateSettings?.ignoredAnalyzeIdentifiers || [],
       }

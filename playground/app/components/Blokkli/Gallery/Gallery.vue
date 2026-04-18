@@ -1,11 +1,7 @@
 <template>
   <div class="container my-40">
     <div v-blokkli-droppable:images class="grid grid-cols-4 gap-20">
-      <div
-        v-for="(img, i) in images"
-        :key="img?.url || i"
-        v-blokkli-droppable-item:images="i"
-      >
+      <div v-for="(img, i) in images" :key="img?.url || i">
         <img
           v-if="img"
           :src="img.url"

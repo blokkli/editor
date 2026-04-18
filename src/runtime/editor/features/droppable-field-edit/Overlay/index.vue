@@ -172,9 +172,10 @@ const { $t, adapter, state, eventBus, keyboard, selection, ui } = useBlokkli()
 
 type LocalItem = {
   key: string
+  id: string
   label: string
   thumbnailSrc: string | null
-} & ({ type: 'existing'; uuid: string } | { type: 'new'; mediaId: string })
+}
 
 const localItems = ref<LocalItem[]>([])
 const originalItems = ref<LocalItem[]>([])
@@ -244,9 +245,7 @@ const hasChanged = computed(() => {
   return localItems.value.some((item, i) => {
     const orig = originalItems.value[i]
     if (!orig) return true
-    if (item.type === 'new') return true
-    if (orig.type === 'new') return true
-    return item.uuid !== orig.uuid
+    return item.id !== orig.id
   })
 })
 
@@ -314,9 +313,8 @@ function onListPointerUp(e: PointerEvent) {
   eventBus.emit('dragging:end')
   pushUndo()
   const newItem: LocalItem = {
-    key: `new-${Date.now()}`,
-    type: 'new',
-    mediaId: item.mediaId,
+    key: `new-${Date.now()}-${item.mediaId}`,
+    id: item.mediaId,
     label: item.label,
     thumbnailSrc: item.thumbnailSrc ?? null,
   }
@@ -328,9 +326,8 @@ function onListPointerUp(e: PointerEvent) {
 async function loadItems() {
   const items = await adapter.getDroppableFieldItems!({ host: host.value })
   localItems.value = items.map((item) => ({
-    key: item.uuid,
-    type: 'existing' as const,
-    uuid: item.uuid,
+    key: item.id,
+    id: item.id,
     label: item.label,
     thumbnailSrc: item.thumbnailSrc ?? null,
   }))
@@ -480,13 +477,9 @@ async function save() {
   isClosing.value = true
 
   if (hasChanged.value) {
-    const items = localItems.value.map((item) =>
-      item.type === 'existing'
-        ? { type: 'existing' as const, uuid: item.uuid }
-        : { type: 'new' as const, mediaId: item.mediaId },
-    )
+    const itemIds = localItems.value.map((item) => item.id)
     await state.mutateWithLoadingState(
-      () => adapter.updateDroppableField!({ host: host.value, items }),
+      () => adapter.updateDroppableField!({ host: host.value, itemIds }),
       $t('droppableFieldSaveFailed', 'Failed to save field.'),
     )
   }

@@ -17,6 +17,13 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
     entityType
     entityBundle
   }
+  droppableFieldValues {
+    uuid
+    fieldName
+    count
+    entityType
+    entityBundle
+  }
 
   mutatedState {
     fields(langcode: $langcode) {

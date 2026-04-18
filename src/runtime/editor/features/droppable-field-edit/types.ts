@@ -1,16 +1,12 @@
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 
 export type DroppableFieldItem = {
-  uuid: string
+  id: string
   entityType: string
   bundle: string
   label: string
   thumbnailSrc?: string
 }
-
-export type DroppableFieldUpdateItem =
-  | { type: 'existing'; uuid: string }
-  | { type: 'new'; mediaId: string }
 
 export type DroppableFieldGetItemsEvent = {
   host: BlokkliItemHost
@@ -18,7 +14,11 @@ export type DroppableFieldGetItemsEvent = {
 
 export type DroppableFieldUpdateEvent = {
   host: BlokkliItemHost
-  items: DroppableFieldUpdateItem[]
+  /**
+   * The new ordered list of entity IDs the field should hold. Missing IDs are
+   * removed; unknown IDs are attached.
+   */
+  itemIds: string[]
 }
 
 declare module '#blokkli/editor/adapter' {
@@ -33,9 +33,9 @@ declare module '#blokkli/editor/adapter' {
     /**
      * Atomically update the items of a multi-value droppable field.
      *
-     * The items array represents the complete desired state: existing items by
-     * UUID (order matters, missing = removed) and new items by mediaId
-     * (position in array = insertion point).
+     * `itemIds` is the complete desired state as an ordered list of entity
+     * IDs. IDs already in the field are kept (and reordered); missing IDs are
+     * removed; new IDs are attached.
      */
     updateDroppableField?: (
       e: DroppableFieldUpdateEvent,

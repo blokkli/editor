@@ -51,7 +51,10 @@ import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
-import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
+import type {
+  TextFieldValue,
+  DroppableFieldValue,
+} from '#blokkli/editor/providers/fieldValue'
 import type {
   GetEditStatesItem,
   PublishOptions,
@@ -639,6 +642,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     mapState(inputState) {
       const textFieldValues: TextFieldValue[] = []
+      const droppableFieldValues: DroppableFieldValue[] = []
 
       const hostEntity = inputState.context.entity
       for (const field of hostEntity.getTextFields()) {
@@ -649,6 +653,18 @@ export default defineBlokkliEditAdapter((ctx) => {
             fieldName: field.id,
             value,
             fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            entityType: hostEntity.entityType,
+            entityBundle: hostEntity.bundle,
+          })
+        }
+      }
+
+      for (const field of Object.values(hostEntity.fields)) {
+        if (field instanceof FieldReference) {
+          droppableFieldValues.push({
+            uuid: hostEntity.uuid,
+            fieldName: field.id,
+            count: field.list.length,
             entityType: hostEntity.entityType,
             entityBundle: hostEntity.bundle,
           })
@@ -671,6 +687,17 @@ export default defineBlokkliEditAdapter((ctx) => {
             })
           }
         }
+        for (const field of Object.values(proxy.block.fields)) {
+          if (field instanceof FieldReference) {
+            droppableFieldValues.push({
+              uuid: proxy.block.uuid,
+              fieldName: field.id,
+              count: field.list.length,
+              entityType: proxy.block.entityType,
+              entityBundle: proxy.block.bundle,
+            })
+          }
+        }
       }
 
       return {
@@ -687,6 +714,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           violations: inputState.violations,
         },
         textFieldValues,
+        droppableFieldValues,
         ignoredAnalyzeIdentifiers: inputState.ignoredAnalyzeIdentifiers,
         publishOptions: getPublishOptions(ctx.value),
         entity: {
@@ -1745,15 +1773,15 @@ export default defineBlokkliEditAdapter((ctx) => {
       if (!field || !(field instanceof FieldReference)) {
         return []
       }
-      return field.list.map((uuid) => {
-        const media = entityStorageManager.load('media', uuid) as
+      return field.list.map((id) => {
+        const media = entityStorageManager.load('media', id) as
           | Media
           | undefined
         return {
-          uuid,
+          id,
           entityType: 'media',
           bundle: media?.bundle ?? '',
-          label: media?.title() ?? uuid,
+          label: media?.title() ?? id,
           thumbnailSrc: media?.thumbnail(),
         }
       })
@@ -1761,9 +1789,9 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     updateDroppableField(e: DroppableFieldUpdateEvent) {
       return addMutation('droppable_field_update', {
-        blockUuid: e.host.uuid,
+        ownerUuid: e.host.uuid,
         fieldName: e.host.fieldName,
-        items: e.items,
+        itemIds: e.itemIds,
       })
     },
 

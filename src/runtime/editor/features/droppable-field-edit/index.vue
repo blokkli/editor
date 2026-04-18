@@ -43,7 +43,8 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['getDroppableFieldItems', 'updateDroppableField'],
 })
 
-const { selection, ui, directive, types, state, adapter, $t } = useBlokkli()
+const { selection, ui, directive, types, state, adapter, fieldValue, $t } =
+  useBlokkli()
 
 type ActiveField = {
   fieldName: string
@@ -193,7 +194,7 @@ defineDropAreas((dragItems) => {
         return
       }
 
-      const currentCount = directive.getDroppableItemCount(
+      const currentCount = fieldValue.getDroppableFieldCount(
         field.fieldName,
         field,
       )
@@ -217,15 +218,9 @@ defineDropAreas((dragItems) => {
         icon: 'bk_mdi_add',
         onDrop: async () => {
           const current = await adapter.getDroppableFieldItems!({ host })
-          const items = [
-            ...current.map((i) => ({
-              type: 'existing' as const,
-              uuid: i.uuid,
-            })),
-            { type: 'new' as const, mediaId: item.mediaId },
-          ]
+          const itemIds = [...current.map((i) => i.id), item.mediaId]
           return state.mutateWithLoadingState(
-            () => adapter.updateDroppableField!({ host, items }),
+            () => adapter.updateDroppableField!({ host, itemIds }),
             $t('droppableFieldAddFailed', 'Failed to add item.'),
           )
         },

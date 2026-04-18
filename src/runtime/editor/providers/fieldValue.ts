@@ -25,6 +25,18 @@ export type TextFieldValue = {
 }
 
 /**
+ * A droppable field value (count of items currently in the field) as provided
+ * by the adapter's mapped state.
+ */
+export type DroppableFieldValue = {
+  uuid: string
+  fieldName: string
+  count: number
+  entityType: string
+  entityBundle: string
+}
+
+/**
  * The result of reading a field value.
  */
 export type ReadFieldValueResult = {
@@ -73,6 +85,18 @@ export type FieldValueProvider = {
    * Reads from mapped state if available, falls back to reading from directive system.
    */
   getTextFieldValues: () => TextFieldValue[]
+
+  /**
+   * Get all droppable field values (item counts) from the mapped state.
+   * Returns an empty array when the adapter hasn't populated this.
+   */
+  getDroppableFieldValues: () => DroppableFieldValue[]
+
+  /**
+   * Get the current number of items in a droppable field.
+   * Reads from mapped state; returns 0 when the adapter hasn't populated it.
+   */
+  getDroppableFieldCount: (fieldName: string, host: EntityContext) => number
 }
 
 export default function fieldValueProvider(
@@ -248,10 +272,35 @@ export default function fieldValueProvider(
     return values
   }
 
+  function getDroppableFieldValues(): DroppableFieldValue[] {
+    const mappedState = state.getMappedState()
+    return mappedState.droppableFieldValues ?? []
+  }
+
+  function getDroppableFieldCount(
+    fieldName: string,
+    host: EntityContext,
+  ): number {
+    const values = getDroppableFieldValues()
+    for (let i = 0; i < values.length; i++) {
+      const v = values[i]!
+      if (
+        v.uuid === host.uuid &&
+        v.fieldName === fieldName &&
+        v.entityType === host.type
+      ) {
+        return v.count
+      }
+    }
+    return 0
+  }
+
   return {
     resolveFieldType,
     readValue,
     readFieldValue,
     getTextFieldValues,
+    getDroppableFieldValues,
+    getDroppableFieldCount,
   }
 }

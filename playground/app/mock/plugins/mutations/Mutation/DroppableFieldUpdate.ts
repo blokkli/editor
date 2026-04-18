@@ -3,11 +3,9 @@ import { FieldReference } from '~/mock/state/Field/Reference'
 import { Mutation } from '../Mutation'
 
 export type MutationDroppableFieldUpdateArgs = {
-  blockUuid: string
+  ownerUuid: string
   fieldName: string
-  items: Array<
-    { type: 'existing'; uuid: string } | { type: 'new'; mediaId: string }
-  >
+  itemIds: string[]
 }
 
 export class MutationDroppableFieldUpdate extends Mutation {
@@ -18,7 +16,7 @@ export class MutationDroppableFieldUpdate extends Mutation {
   override getAffectedUuid(
     args: MutationDroppableFieldUpdateArgs,
   ): string | undefined {
-    return args.blockUuid
+    return args.ownerUuid
   }
 
   override execute(
@@ -26,16 +24,13 @@ export class MutationDroppableFieldUpdate extends Mutation {
     args: MutationDroppableFieldUpdateArgs,
   ) {
     const field =
-      args.blockUuid === context.entity.uuid
+      args.ownerUuid === context.entity.uuid
         ? context.entity.get(args.fieldName)
-        : context.getProxy(args.blockUuid)?.block.get(args.fieldName)
+        : context.getProxy(args.ownerUuid)?.block.get(args.fieldName)
     if (!field || !(field instanceof FieldReference)) {
       return
     }
 
-    const newList = args.items.map((item) =>
-      item.type === 'existing' ? item.uuid : item.mediaId,
-    )
-    field.setList(newList)
+    field.setList(args.itemIds)
   }
 }
