@@ -1663,10 +1663,6 @@
     "source": "@count items",
     "translation": "@count Einträge"
   },
-  "droppableFieldMoveFailed": {
-    "source": "Failed to move item.",
-    "translation": "Eintrag konnte nicht verschoben werden."
-  },
   "droppableFieldOpenLibrary": {
     "source": "Media Library",
     "translation": "Medienbibliothek"
@@ -1675,9 +1671,13 @@
     "source": "@count remaining",
     "translation": "@count verbleibend"
   },
-  "droppableFieldRemoveFailed": {
-    "source": "Failed to remove item.",
-    "translation": "Eintrag konnte nicht entfernt werden."
+  "droppableFieldRequiredWarning": {
+    "source": "This field is required. Add an item before saving, or press Discard to abort.",
+    "translation": "Dieses Feld ist erforderlich. Fügen Sie ein Element hinzu, bevor Sie speichern, oder klicken Sie auf «Verwerfen», um abzubrechen."
+  },
+  "droppableFieldSaveFailed": {
+    "source": "Failed to save field.",
+    "translation": ""
   },
   "duplicate": {
     "source": "Duplicate",
@@ -2657,7 +2657,7 @@
   },
   "mediaLibraryReplaceMedia": {
     "source": "Replace @field",
-    "translation": "Medienelement ersetzen"
+    "translation": "@field ersetzen"
   },
   "mediaLibraryTourText": {
     "source": "Search for media like images and drag and drop them into the page.",

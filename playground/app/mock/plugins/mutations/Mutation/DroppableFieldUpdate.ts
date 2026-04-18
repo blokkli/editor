@@ -25,12 +25,10 @@ export class MutationDroppableFieldUpdate extends Mutation {
     context: MutationContext,
     args: MutationDroppableFieldUpdateArgs,
   ) {
-    const proxy = context.getProxy(args.blockUuid)
-    if (!proxy) {
-      return
-    }
-    const block = proxy.block
-    const field = block.get(args.fieldName)
+    const field =
+      args.blockUuid === context.entity.uuid
+        ? context.entity.get(args.fieldName)
+        : context.getProxy(args.blockUuid)?.block.get(args.fieldName)
     if (!field || !(field instanceof FieldReference)) {
       return
     }

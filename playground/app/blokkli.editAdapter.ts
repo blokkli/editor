@@ -1731,14 +1731,15 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     async getDroppableFieldItems(e: DroppableFieldGetItemsEvent) {
       const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity, {
-        save: false,
-      })
-      const proxy = mutatedState.context.getProxy(e.host.uuid)
-      if (!proxy) {
-        return []
-      }
-      const field = proxy.block.get(e.host.fieldName)
+      const mutatedState = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+        { save: false },
+      )
+      const field =
+        e.host.uuid === mutatedState.context.entity.uuid
+          ? mutatedState.context.entity.get(e.host.fieldName)
+          : mutatedState.context.getProxy(e.host.uuid)?.block.get(e.host.fieldName)
       if (!field || !(field instanceof FieldReference)) {
         return []
       }

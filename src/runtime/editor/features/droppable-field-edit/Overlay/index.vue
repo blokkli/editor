@@ -6,23 +6,23 @@
     placement-y="top"
     class="bk-droppable-field-edit"
     close-icon="bk_mdi_check"
+    :close-disabled="!canConfirm"
     @close="save"
   >
     <div
       ref="listEl"
-      class="bk-droppable-field-edit-list"
+      class="w-[680px] max-h-[300px] overflow-y-auto p-10 bg-mono-200"
       @pointerup="onListPointerUp"
     >
-      <div class="bk-droppable-field-edit-list-inner">
+      <div class="bg-white">
         <div
           v-for="(item, i) in localItems"
           :key="item.key"
-          class="bk-droppable-field-edit-item"
-          @pointerdown="onPointerDown($event, i)"
+          class="grid grid-cols-[minmax(0,1fr)_auto] items-center relative border-b border-b-mono-200 last:border-b-0"
         >
           <div
             v-if="i === 0"
-            class="bk-droppable-field-edit-indicator"
+            class="bk-droppable-field-edit-indicator col-span-2"
             :class="{
               'bk-is-visible':
                 (dragIndex !== null && dragIndex !== 0) ||
@@ -31,27 +31,29 @@
             }"
           />
           <div
-            class="bk-droppable-field-edit-item-inner"
-            :class="{ 'bk-is-dragging': dragIndex === i }"
+            class="flex items-center gap-5 px-8 py-5 cursor-grab touch-none active:cursor-grabbing"
+            :class="{ 'opacity-30': dragIndex === i }"
+            @pointerdown="onPointerDown($event, i)"
           >
-            <div class="bk-droppable-field-edit-item-thumb">
+            <div
+              class="size-50 rounded overflow-hidden flex items-center justify-center bg-mono-100 shrink-0 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_svg]:size-18 [&_svg]:fill-current [&_svg]:text-mono-400"
+            >
               <img v-if="item.thumbnailSrc" :src="item.thumbnailSrc" alt="" />
               <Icon v-else name="bk_mdi_image" />
             </div>
-            <span class="bk-droppable-field-edit-item-label">
+            <span class="flex-1 min-w-0 truncate text-sm text-mono-800">
               {{ item.label }}
             </span>
-            <button
-              type="button"
-              class="bk-droppable-field-edit-item-remove"
-              :disabled="config.required && localItems.length <= 1"
-              @click.stop.prevent="removeItem(i)"
-            >
-              <Icon name="bk_mdi_close" />
-            </button>
           </div>
+          <button
+            type="button"
+            class="size-25 mr-8 flex items-center justify-center rounded shrink-0 text-mono-400 hover:bg-red-light hover:text-red-dark disabled:opacity-30 disabled:pointer-events-none [&_svg]:w-[14px] [&_svg]:h-[14px] [&_svg]:fill-current"
+            @click.stop.prevent="removeItem(i)"
+          >
+            <Icon name="bk_mdi_close" />
+          </button>
           <div
-            class="bk-droppable-field-edit-indicator"
+            class="bk-droppable-field-edit-indicator col-span-2"
             :class="{
               'bk-is-visible':
                 (dragIndex !== null &&
@@ -63,28 +65,52 @@
           />
         </div>
 
-        <div v-if="canAddMore" class="bk-droppable-field-edit-drop-hint">
+        <div
+          v-if="canAddMore"
+          class="flex items-center gap-5 px-8 py-8 text-sm text-mono-400 [&_svg]:size-18 [&_svg]:fill-current [&_svg]:shrink-0"
+        >
           <Icon name="bk_mdi_image" />
           {{ $t('droppableFieldDropHint', 'Drop image here') }}
+        </div>
+
+        <div
+          v-if="config.required && localItems.length === 0"
+          class="flex items-center gap-5 px-8 py-8 text-sm text-red-dark bg-red-light [&_svg]:size-18 [&_svg]:fill-current [&_svg]:shrink-0"
+        >
+          <Icon name="bk_mdi_warning" />
+          {{
+            $t(
+              'droppableFieldRequiredWarning',
+              'This field is required. Add an item before saving, or press Discard to abort.',
+            )
+          }}
         </div>
       </div>
     </div>
 
     <div class="bk-artboard-tooltip-info">
       <button
-        class="bk-is-danger"
+        class="bk-artboard-tooltip-info-button bk-scheme-red"
         :disabled="!hasChanged"
         @click.prevent="discard"
       >
         {{ $t('editableFieldDiscard', 'Discard') }}
       </button>
-      <button :disabled="!undoStack.length" @click.prevent="undo">
+      <button
+        :disabled="!undoStack.length"
+        @click.prevent="undo"
+        class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
+      >
         <Icon name="bk_mdi_undo" />
       </button>
-      <button :disabled="!redoStack.length" @click.prevent="redo">
+      <button
+        :disabled="!redoStack.length"
+        @click.prevent="redo"
+        class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
+      >
         <Icon name="bk_mdi_redo" />
       </button>
-      <div class="bk-droppable-field-edit-count">
+      <div class="px-10 text-sm text-mono-600 mr-auto">
         <template v-if="config.cardinality > 0">
           {{
             $t('droppableFieldRemaining', '@count remaining').replace(
@@ -104,7 +130,7 @@
       </div>
       <button
         v-if="canAddMore"
-        class="bk-droppable-field-edit-open-library"
+        class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
         :disabled="ui.hasSidebarLeft.value"
         @click.prevent="onAddClick"
       >
@@ -229,6 +255,11 @@ const canAddMore = computed(() => {
     return true
   }
   return localItems.value.length < props.config.cardinality
+})
+
+const canConfirm = computed(() => {
+  if (!hasChanged.value) return true
+  return !(props.config.required && localItems.value.length === 0)
 })
 
 const host = computed(() => ({
@@ -398,10 +429,7 @@ function onPointerDown(e: PointerEvent, index: number) {
   if (e.button !== 0) {
     return
   }
-  if (
-    e.target instanceof Element &&
-    e.target.closest('.bk-droppable-field-edit-item-remove')
-  ) {
+  if (props.config.cardinality === 1) {
     return
   }
   e.preventDefault()
@@ -410,26 +438,23 @@ function onPointerDown(e: PointerEvent, index: number) {
   dropIndex.value = index
   snapshotIndicatorRects()
 
-  // Create ghost from the item-inner element.
+  // Create ghost from the drag-handle element (the pointerdown target).
   const target = e.currentTarget
   if (target instanceof HTMLElement) {
-    const inner = target.querySelector('.bk-droppable-field-edit-item-inner')
-    if (inner instanceof HTMLElement) {
-      const rect = inner.getBoundingClientRect()
-      ghostOffsetX = e.clientX - rect.left
-      ghostOffsetY = e.clientY - rect.top
-      const clone = cloneWithInlineStyles(inner) as HTMLElement
-      clone.style.position = 'fixed'
-      clone.style.left = `${rect.left}px`
-      clone.style.top = `${rect.top}px`
-      clone.style.width = `${rect.width}px`
-      clone.style.pointerEvents = 'none'
-      clone.style.zIndex = '999999'
-      clone.style.background = 'white'
-      clone.style.opacity = '0.8'
-      document.body.appendChild(clone)
-      ghostEl = clone
-    }
+    const rect = target.getBoundingClientRect()
+    ghostOffsetX = e.clientX - rect.left
+    ghostOffsetY = e.clientY - rect.top
+    const clone = cloneWithInlineStyles(target) as HTMLElement
+    clone.style.position = 'fixed'
+    clone.style.left = `${rect.left}px`
+    clone.style.top = `${rect.top}px`
+    clone.style.width = `${rect.width}px`
+    clone.style.pointerEvents = 'none'
+    clone.style.zIndex = '999999'
+    clone.style.background = 'white'
+    clone.style.opacity = '0.8'
+    document.body.appendChild(clone)
+    ghostEl = clone
   }
 
   document.addEventListener('pointermove', onDocumentPointerMove)
@@ -447,6 +472,9 @@ function onAddClick() {
 
 async function save() {
   if (isClosing.value) {
+    return
+  }
+  if (!canConfirm.value) {
     return
   }
   isClosing.value = true
@@ -489,3 +517,26 @@ onBeforeUnmount(() => {
   removeGhost()
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-droppable-field-edit {
+  --bk-bg: white;
+  --bk-header-bg: theme('colors.teal.normal');
+  --bk-header-text: theme('colors.teal.dark');
+  --bk-border: theme('colors.teal.normal');
+  --bk-header-hover: rgb(var(--bk-theme-teal-dark) / 0.2);
+
+  .bk-droppable-field-edit-indicator {
+    height: 4px;
+
+    &.bk-is-visible {
+      @apply bg-teal-normal/30;
+    }
+
+    &.bk-is-active {
+      @apply bg-teal-normal;
+    }
+  }
+
+}
+</style>

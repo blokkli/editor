@@ -1729,10 +1729,6 @@ msgctxt "droppableFieldItemCount"
 msgid "@count items"
 msgstr ""
 
-msgctxt "droppableFieldMoveFailed"
-msgid "Failed to move item."
-msgstr ""
-
 msgctxt "droppableFieldOpenLibrary"
 msgid "Media Library"
 msgstr ""
@@ -1741,8 +1737,14 @@ msgctxt "droppableFieldRemaining"
 msgid "@count remaining"
 msgstr ""
 
-msgctxt "droppableFieldRemoveFailed"
-msgid "Failed to remove item."
+msgctxt "droppableFieldRequiredWarning"
+msgid ""
+"This field is required. Add an item before saving, or press Discard to "
+"abort."
+msgstr ""
+
+msgctxt "droppableFieldSaveFailed"
+msgid "Failed to save field."
 msgstr ""
 
 msgctxt "duplicate"

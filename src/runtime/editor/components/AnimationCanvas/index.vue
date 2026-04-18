@@ -97,6 +97,7 @@ type InteractedElement = {
   editableFieldName?: string
   droppableFieldName?: string
   droppableEntityType?: string
+  droppableEntityUuid?: string
   timestamp: number
   x: number
   y: number
@@ -183,6 +184,7 @@ function getInteractedElement(
       return {
         droppableFieldName: droppableField.fieldName,
         droppableEntityType: droppableField.type,
+        droppableEntityUuid: droppableField.uuid,
         uuid: droppableUuid,
         timestamp: Date.now(),
         x,
@@ -463,13 +465,13 @@ function onPointerUp(e: PointerEvent) {
       }
       if (
         clicked.droppableFieldName &&
-        clicked.uuid &&
+        clicked.droppableEntityUuid &&
         clicked.droppableEntityType
       ) {
         pointerDownOnCanvas = false
         eventBus.emit('droppable:open', {
           fieldName: clicked.droppableFieldName,
-          uuid: clicked.uuid,
+          uuid: clicked.droppableEntityUuid,
           entityType: clicked.droppableEntityType,
         })
         return

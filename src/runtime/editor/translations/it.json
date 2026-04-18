@@ -1663,10 +1663,6 @@
     "source": "@count items",
     "translation": ""
   },
-  "droppableFieldMoveFailed": {
-    "source": "Failed to move item.",
-    "translation": ""
-  },
   "droppableFieldOpenLibrary": {
     "source": "Media Library",
     "translation": ""
@@ -1675,8 +1671,12 @@
     "source": "@count remaining",
     "translation": ""
   },
-  "droppableFieldRemoveFailed": {
-    "source": "Failed to remove item.",
+  "droppableFieldRequiredWarning": {
+    "source": "This field is required. Add an item before saving, or press Discard to abort.",
+    "translation": ""
+  },
+  "droppableFieldSaveFailed": {
+    "source": "Failed to save field.",
     "translation": ""
   },
   "duplicate": {

@@ -88,9 +88,6 @@ defineCommands(() => {
     )
     .map((field) => {
       const config = types.getDroppableFieldConfig(field.fieldName, field)
-      if (config.cardinality === 1) {
-        return undefined
-      }
       return {
         id: `feature:droppable-field:edit:${field.uuid}:${field.fieldName}`,
         group: 'selection' as const,
@@ -131,9 +128,6 @@ onBlokkliEvent('droppable:open', (e) => {
   }
 
   const config = types.getDroppableFieldConfig(e.fieldName, field)
-  if (config.cardinality === 1) {
-    return
-  }
 
   openField({
     fieldName: e.fieldName,

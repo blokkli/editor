@@ -280,6 +280,7 @@ function updateHoverState(
   let hoveredDroppableFieldRect: Rectangle | null = null
   if (!hoveredEditableFieldRect) {
     const droppableRects = directive.getVisible('droppable')
+    let fallbackDroppableRect: Rectangle | null = null
 
     for (let i = 0; i < droppableRects.length; i++) {
       const droppableRect = droppableRects[i]!
@@ -289,13 +290,18 @@ function updateHoverState(
       const entityUuid = key.split(':')[2]!
 
       if (deepestUuid && entityUuid === deepestUuid) {
-        const data = directive.getDroppableAtPoint(mouseX, mouseY)
-        if (!data) continue
-        const config = types.getDroppableFieldConfig(data.fieldName, data)
-        if (config.cardinality === 1) continue
         hoveredDroppableFieldRect = droppableRect
         break
       }
+
+      if (!fallbackDroppableRect && !hoveredUuids.includes(entityUuid)) {
+        // Non-block droppable (e.g. host entity) — use as fallback.
+        fallbackDroppableRect = droppableRect
+      }
+    }
+
+    if (!hoveredDroppableFieldRect) {
+      hoveredDroppableFieldRect = fallbackDroppableRect
     }
   }
 

@@ -10,7 +10,6 @@
 @import './partials/table.css';
 @import './../src/modules/agent/css/Agent.css';
 @import './../src/modules/charts/css/Charts.css';
-@import './partials/DroppableFieldEdit.css';
 
 @import './indicator.css';
 
