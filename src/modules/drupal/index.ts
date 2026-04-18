@@ -212,6 +212,7 @@ export declare const templateEditRouteName: string|null
     addMutation('update_host_options')
     addMutation('add_multiple')
     addMutation('replace_entity_reference')
+    addMutation('update_droppable_field')
     addMutation('bulk_update_field_values')
     addMutation('clear_outdated_translation')
     addMutation('bulk_translate_field_values')
@@ -300,6 +301,10 @@ export declare const templateEditRouteName: string|null
     // Feature: Referenced Entities.
     if (editStateFields.has('referencedEntities')) {
       addGraphqlDocument('features/referenced-entities.graphql')
+    }
+
+    if (editStateFields.has('droppableFieldItems')) {
+      addGraphqlDocument('features/droppable-field-items.graphql')
     }
 
     // Feature: Preview Grant.

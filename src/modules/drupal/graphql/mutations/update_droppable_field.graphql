@@ -1,0 +1,21 @@
+mutation pbUpdateDroppableField(
+  $langcode: String
+  $entityType: EntityType!
+  $entityUuid: String!
+  $paragraphUuid: String
+  $fieldName: String!
+  $itemIds: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: update_droppable_field(
+      paragraphUuid: $paragraphUuid
+      fieldName: $fieldName
+      itemIds: $itemIds
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

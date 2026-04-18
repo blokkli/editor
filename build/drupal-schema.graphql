@@ -5395,6 +5395,14 @@ type ParagraphsBlokkliDroppableFieldConfig {
   required: Boolean!
 }
 
+type ParagraphsBlokkliDroppableFieldItem {
+  bundle: String!
+  entityType: String!
+  id: String!
+  label: String!
+  thumbnailSrc: String
+}
+
 enum ParagraphsBlokkliDroppableFieldType {
   link
   reference
@@ -5444,6 +5452,14 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
 
   """Whether the current user is the owner."""
   currentUserIsOwner: Boolean!
+
+  """
+  The items currently in a droppable (reference) field. Pass a paragraphUuid
+  to target a field on that paragraph; omit to target a field on the host
+  entity. Reference-field structure does not vary per language, so there is
+  no langcode argument. Link fields currently return an empty list.
+  """
+  droppableFieldItems(fieldName: String!, paragraphUuid: String): [ParagraphsBlokkliDroppableFieldItem!]!
 
   """
   The item counts of all droppable (entity reference / link) fields for the
@@ -6579,6 +6595,21 @@ type ParagraphsEditMutationState {
 
     """The value of the setting."""
     value: String!
+  ): ParagraphsBlokkliMutationResult
+
+  """
+  Atomically replace the items of a droppable (reference) field on a paragraph
+  or the host entity with the given ordered list of entity IDs.
+  """
+  update_droppable_field(
+    """The name of the droppable field."""
+    fieldName: String!
+
+    """The new ordered list of referenced entity IDs."""
+    itemIds: [String]!
+
+    """The UUID of the paragraph. Omit to target a field on the host entity."""
+    paragraphUuid: String
   ): ParagraphsBlokkliMutationResult
 
   """Update a single field value of a paragraph."""

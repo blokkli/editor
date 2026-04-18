@@ -1101,6 +1101,35 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
+    if (hasMutation('pbUpdateDroppableField')) {
+      adapter.updateDroppableField = (e) =>
+        useGraphqlMutation('pbUpdateDroppableField', {
+          ...ctx.value,
+          paragraphUuid:
+            e.host.uuid === ctx.value.entityUuid ? null : e.host.uuid,
+          fieldName: e.host.fieldName,
+          itemIds: e.itemIds,
+        }).then(mapMutation)
+    }
+
+    if (hasQuery('pbDroppableFieldItems')) {
+      adapter.getDroppableFieldItems = (e) =>
+        useGraphqlQuery('pbDroppableFieldItems', {
+          ...ctx.value,
+          paragraphUuid:
+            e.host.uuid === ctx.value.entityUuid ? null : e.host.uuid,
+          fieldName: e.host.fieldName,
+        }).then((v) =>
+          (v.data.state?.droppableFieldItems || []).map((item) => ({
+            id: item.id,
+            entityType: item.entityType,
+            bundle: item.bundle,
+            label: item.label,
+            thumbnailSrc: item.thumbnailSrc ?? undefined,
+          })),
+        )
+    }
+
     if (hasMutation('pbUpdateHostEntityFieldValue')) {
       adapter.updateEntityFieldValue = (e) =>
         useGraphqlMutation('pbUpdateHostEntityFieldValue', {
