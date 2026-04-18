@@ -359,6 +359,7 @@ provide(INJECT_EDIT_CONTEXT, {
   dom,
   definitions,
   useBlockRegistration,
+  selectedUuids: computed<string[]>(() => selection.uuids.value),
 })
 const app: BlokkliApp = {
   $t,

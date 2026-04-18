@@ -120,6 +120,11 @@ export type DefineBlokkliContext<
    * The provider context.
    */
   provider: ComputedRef<BlokkliProviderEntityContext | null>
+
+  /**
+   * Whether the block is currently selected in the editor. Only available during editing.
+   */
+  isSelected?: ComputedRef<boolean>
 }
 
 export type DefineProviderContext<

@@ -26,6 +26,7 @@ type ItemEditContext = {
   mutatedOptions: MutatedOptions
   dom?: DomProvider
   definitions: DefinitionProvider
+  selectedUuids: ComputedRef<string[]>
   useBlockRegistration?: (dom: DomProvider, uuid: string) => void
 }
 

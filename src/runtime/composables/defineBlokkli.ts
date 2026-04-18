@@ -197,6 +197,10 @@ export function defineBlokkli<
     }
   }
 
+  const isSelected = editContext
+    ? computed<boolean>(() => editContext.selectedUuids.value.includes(uuid))
+    : undefined
+
   return {
     uuid,
     index,
@@ -207,5 +211,6 @@ export function defineBlokkli<
     siblings,
     rootBlocks,
     provider,
+    isSelected,
   }
 }
