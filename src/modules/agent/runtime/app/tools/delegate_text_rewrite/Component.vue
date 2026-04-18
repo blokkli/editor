@@ -328,6 +328,7 @@ async function analyzeReadability(): Promise<
   }
 
   // Call analyzeFieldValues directly to get ALL chunks with scores.
+  await props.context.app.readability.ensureInitialized()
   const rawAnalysis =
     await props.context.app.readability.analyzeFieldValues(textFields)
 
@@ -766,7 +767,7 @@ async function readabilityRetryLoop(authToken: string) {
 
     const retrySuccess = await fetchStream(retryToken, retryFields, {
       issues: retryIssues,
-      scoreLabel: props.context.app.readability.analyzer.value.scoreLabel,
+      scoreLabel: props.context.app.readability.scoreLabel.value,
       scoreReference: props.context.app.readability.getAgentContext(),
       retryFields: retryFieldsData,
       passingFields: passingFieldsData,

@@ -202,7 +202,7 @@ export default defineBlokkliAgentTool({
 
       templateParams = {
         issues,
-        scoreLabel: ctx.app.readability.analyzer.value.scoreLabel,
+        scoreLabel: ctx.app.readability.scoreLabel.value,
         scoreReference: ctx.app.readability.getAgentContext(),
       }
     }

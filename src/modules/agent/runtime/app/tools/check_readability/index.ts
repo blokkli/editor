@@ -49,6 +49,8 @@ export default defineBlokkliAgentTool({
     const { readability, $t, context } = ctx.app
     const langcode = context.value.language
 
+    await readability.ensureInitialized()
+
     const results: z.infer<typeof textResultSchema>[] = []
 
     for (const text of params.texts) {

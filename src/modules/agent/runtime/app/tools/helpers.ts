@@ -67,6 +67,7 @@ function mapAnalysisToResult(
 export async function runReadabilityAnalysis(
   app: BlokkliApp,
 ): Promise<ReadabilityResult> {
+  await app.readability.ensureInitialized()
   const analysis = await app.readability.analyzeAllFields()
   return mapAnalysisToResult(analysis)
 }
@@ -79,6 +80,7 @@ export async function runReadabilityAnalysisForValues(
   app: BlokkliApp,
   fields: TextFieldValue[],
 ): Promise<ReadabilityResult> {
+  await app.readability.ensureInitialized()
   const analysis = await app.readability.analyzeFieldValues(fields)
   return mapAnalysisToResult(analysis)
 }

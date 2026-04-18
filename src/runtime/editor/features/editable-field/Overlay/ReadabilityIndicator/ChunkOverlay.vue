@@ -58,7 +58,7 @@ const stale = ref(false)
 let timeout: number | null = null
 let lastFullUpdate = 0
 
-const scoreLabel = computed(() => readability.analyzer.value.scoreLabel)
+const scoreLabel = readability.scoreLabel
 
 function formatScore(value: number): string {
   return readability.formatScore(value)
@@ -95,6 +95,7 @@ async function analyze(text: string) {
     return
   }
 
+  await readability.ensureInitialized()
   const chunkResults = await readability.analyzeText(
     text,
     context.value.language,

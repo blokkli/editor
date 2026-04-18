@@ -9,7 +9,7 @@
       :class="'bk-is-' + readabilityBand"
     />
     <span
-      >{{ readability.analyzer.value.scoreLabel }}
+      >{{ readability.scoreLabel.value }}
       {{ readability.formatScore(readabilityScore) }}</span
     >
     <Tooltip
@@ -18,7 +18,7 @@
         $t(
           'readabilityTooltipDescription',
           '@label measures how easy the text is to read.',
-        ).replace('@label', readability.analyzer.value.scoreLabel)
+        ).replace('@label', readability.scoreLabel.value)
       "
       :description="
         fieldType === 'markup'
@@ -108,13 +108,11 @@ const tooShort = ref(false)
 const stale = ref(false)
 let timeout: number | null = null
 
-const scaleInfo = computed(() => {
-  const analyzer = readability.analyzer.value
-  if (analyzer.getScaleInfo) {
-    return analyzer.getScaleInfo(context.value.language)
-  }
-  return null
-})
+const scaleInfo = computed(() =>
+  readability.isInitialized.value
+    ? readability.getScaleInfo(context.value.language)
+    : null,
+)
 
 const thresholdPositions = computed(() => {
   const info = scaleInfo.value
@@ -141,7 +139,7 @@ const minWordsText = computed(() =>
     'Text needs at least @count words for readability analysis.',
   ).replace(
     '@count',
-    String(readability.analyzer.value.minWordsForConfidence || 100),
+    String(readability.minWordsForConfidence.value || 100),
   ),
 )
 
@@ -160,6 +158,7 @@ async function analyze(text: string) {
     const doc = new DOMParser().parseFromString(text, 'text/html')
     plainText = doc.body.textContent || ''
   }
+  await readability.ensureInitialized()
   const chunks = await readability.analyzeText(
     plainText,
     context.value.language,

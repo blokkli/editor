@@ -211,8 +211,7 @@ defineHighlight(() => {
           const id = result.id + '_____' + target.globalIndex
           let label = result.title
           if (node.score != null) {
-            const scoreLabel = readability.analyzer.value.scoreLabel
-            label += ` · ${scoreLabel} ${readability.formatScore(node.score)}`
+            label += ` · ${readability.scoreLabel.value} ${readability.formatScore(node.score)}`
           }
           highlights.push({
             id,

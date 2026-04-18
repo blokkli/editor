@@ -60,7 +60,7 @@ async function analyzeViaProvider(
   $t: TextProvider,
 ): Promise<AnalyzeResult[]> {
   const result = await readabilityProvider.analyzeAllFields()
-  const analyzer = readabilityProvider.analyzer.value
+  const scoreLabel = readabilityProvider.scoreLabel.value
   const hardNodes: AnalyzeNode[] = []
   const okNodes: AnalyzeNode[] = []
 
@@ -79,7 +79,12 @@ async function analyzeViaProvider(
 
     for (let i = 0; i < fieldResult.chunks.length; i++) {
       const chunk = fieldResult.chunks[i]!
-      if (chunk.band === 'easy' || chunk.band === null || chunk.score === null)
+      if (
+        chunk.band === 'easy' ||
+        chunk.band === null ||
+        chunk.score === null ||
+        chunk.impact === null
+      )
         continue
 
       // Match chunk to its DOM element by position index within the field.
@@ -91,9 +96,9 @@ async function analyzeViaProvider(
 
       const node: AnalyzeNode = {
         description: buildDescription(langcode, chunk.band, $t),
-        impact: analyzer.impactForScore(chunk.score),
+        impact: chunk.impact,
         score: chunk.score,
-        scoreLabel: analyzer.scoreLabel,
+        scoreLabel,
         uuid,
         identifier: hashString(chunk.text),
         targets,
