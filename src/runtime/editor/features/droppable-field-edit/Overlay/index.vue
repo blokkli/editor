@@ -11,7 +11,7 @@
   >
     <div
       ref="listEl"
-      class="w-[680px] max-h-[300px] overflow-y-auto p-10 bg-mono-200"
+      class="w-[680px] max-h-300 overflow-y-auto p-10 bg-mono-200"
       @pointerup="onListPointerUp"
     >
       <div class="bg-white">
@@ -36,7 +36,7 @@
             @pointerdown="onPointerDown($event, i)"
           >
             <div
-              class="size-50 rounded overflow-hidden flex items-center justify-center bg-mono-100 shrink-0 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_svg]:size-18 [&_svg]:fill-current [&_svg]:text-mono-400"
+              class="size-50 rounded overflow-hidden flex items-center justify-center bg-mono-100 shrink-0 [&_img]:size-full [&_img]:object-cover [&_svg]:size-18 [&_svg]:fill-current [&_svg]:text-mono-400"
             >
               <img v-if="item.thumbnailSrc" :src="item.thumbnailSrc" alt="" />
               <Icon v-else name="bk_mdi_image" />
@@ -47,7 +47,7 @@
           </div>
           <button
             type="button"
-            class="size-25 mr-8 flex items-center justify-center rounded shrink-0 text-mono-400 hover:bg-red-light hover:text-red-dark disabled:opacity-30 disabled:pointer-events-none [&_svg]:w-[14px] [&_svg]:h-[14px] [&_svg]:fill-current"
+            class="size-25 mr-8 flex items-center justify-center rounded shrink-0 text-mono-400 hover:bg-red-light hover:text-red-dark disabled:opacity-30 disabled:pointer-events-none [&_svg]:size-[14px] [&_svg]:fill-current"
             @click.stop.prevent="removeItem(i)"
           >
             <Icon name="bk_mdi_close" />
@@ -67,7 +67,7 @@
 
         <div
           v-if="canAddMore"
-          class="flex items-center gap-5 px-8 py-8 text-sm text-mono-400 [&_svg]:size-18 [&_svg]:fill-current [&_svg]:shrink-0"
+          class="flex items-center gap-5 p-8 text-sm text-mono-400 [&_svg]:size-18 [&_svg]:fill-current [&_svg]:shrink-0"
         >
           <Icon name="bk_mdi_image" />
           {{ $t('droppableFieldDropHint', 'Drop image here') }}
@@ -75,7 +75,7 @@
 
         <div
           v-if="config.required && localItems.length === 0"
-          class="flex items-center gap-5 px-8 py-8 text-sm text-red-dark bg-red-light [&_svg]:size-18 [&_svg]:fill-current [&_svg]:shrink-0"
+          class="flex items-center gap-5 p-8 text-sm text-red-dark bg-red-light [&_svg]:size-18 [&_svg]:fill-current [&_svg]:shrink-0"
         >
           <Icon name="bk_mdi_warning" />
           {{
@@ -98,15 +98,15 @@
       </button>
       <button
         :disabled="!undoStack.length"
-        @click.prevent="undo"
         class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
+        @click.prevent="undo"
       >
         <Icon name="bk_mdi_undo" />
       </button>
       <button
         :disabled="!redoStack.length"
-        @click.prevent="redo"
         class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
+        @click.prevent="redo"
       >
         <Icon name="bk_mdi_redo" />
       </button>
@@ -537,6 +537,5 @@ onBeforeUnmount(() => {
       @apply bg-teal-normal;
     }
   }
-
 }
 </style>

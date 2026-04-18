@@ -29,7 +29,6 @@ const {
   directive,
   blocks,
   fields,
-  types,
   permissions,
 } = useBlokkli()
 

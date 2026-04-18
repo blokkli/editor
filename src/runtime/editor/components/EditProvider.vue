@@ -87,6 +87,7 @@ import Messages from './Messages/index.vue'
 import FeaturesRenderer from './FeaturesRenderer/index.vue'
 import Indicators from './Indicators/index.vue'
 import DraggableList from './DraggableList.vue'
+import BlokkliEditableEdit from './BlokkliEditableEdit.vue'
 import AnimationCanvas from './AnimationCanvas/index.vue'
 import SystemRequirements from './SystemRequirements/index.vue'
 import Overlay from './Overlay/index.vue'
@@ -132,6 +133,7 @@ import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
+  INJECT_EDIT_EDITABLE_COMPONENT,
   INJECT_EDIT_LOGGER,
   INJECT_ENTITY_CONTEXT,
   INJECT_GLOBAL_PROXY_MODE,
@@ -349,6 +351,7 @@ provide(INJECT_ALL_COMPONENTS_CHUNK, allComponents)
 // Provide the edit <BlokkliField> component to it doesn't have to be loaded
 // async every time.
 provide(INJECT_EDIT_FIELD_LIST_COMPONENT, DraggableList)
+provide(INJECT_EDIT_EDITABLE_COMPONENT, BlokkliEditableEdit)
 provide(INJECT_IS_EDITING, true)
 provide(INJECT_EDIT_CONTEXT, {
   eventBus,

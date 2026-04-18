@@ -1739,7 +1739,9 @@ export default defineBlokkliEditAdapter((ctx) => {
       const field =
         e.host.uuid === mutatedState.context.entity.uuid
           ? mutatedState.context.entity.get(e.host.fieldName)
-          : mutatedState.context.getProxy(e.host.uuid)?.block.get(e.host.fieldName)
+          : mutatedState.context
+              .getProxy(e.host.uuid)
+              ?.block.get(e.host.fieldName)
       if (!field || !(field instanceof FieldReference)) {
         return []
       }
