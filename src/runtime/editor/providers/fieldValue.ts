@@ -25,13 +25,13 @@ export type TextFieldValue = {
 }
 
 /**
- * A droppable field value (count of items currently in the field) as provided
- * by the adapter's mapped state.
+ * A droppable field value (ordered list of referenced entity IDs currently in
+ * the field) as provided by the adapter's mapped state.
  */
 export type DroppableFieldValue = {
   uuid: string
   fieldName: string
-  count: number
+  ids: string[]
   entityType: string
   entityBundle: string
 }
@@ -97,6 +97,13 @@ export type FieldValueProvider = {
    * Reads from mapped state; returns 0 when the adapter hasn't populated it.
    */
   getDroppableFieldCount: (fieldName: string, host: EntityContext) => number
+
+  /**
+   * Get the ordered list of referenced entity IDs currently in a droppable
+   * field. Reads from mapped state; returns an empty array when the adapter
+   * hasn't populated it.
+   */
+  getDroppableFieldIds: (fieldName: string, host: EntityContext) => string[]
 }
 
 export default function fieldValueProvider(
@@ -277,10 +284,10 @@ export default function fieldValueProvider(
     return mappedState.droppableFieldValues ?? []
   }
 
-  function getDroppableFieldCount(
+  function getDroppableFieldIds(
     fieldName: string,
     host: EntityContext,
-  ): number {
+  ): string[] {
     const values = getDroppableFieldValues()
     for (let i = 0; i < values.length; i++) {
       const v = values[i]!
@@ -289,10 +296,17 @@ export default function fieldValueProvider(
         v.fieldName === fieldName &&
         v.entityType === host.type
       ) {
-        return v.count
+        return v.ids
       }
     }
-    return 0
+    return []
+  }
+
+  function getDroppableFieldCount(
+    fieldName: string,
+    host: EntityContext,
+  ): number {
+    return getDroppableFieldIds(fieldName, host).length
   }
 
   return {
@@ -302,5 +316,6 @@ export default function fieldValueProvider(
     getTextFieldValues,
     getDroppableFieldValues,
     getDroppableFieldCount,
+    getDroppableFieldIds,
   }
 }

@@ -216,9 +216,12 @@ defineDropAreas((dragItems) => {
         ),
         element: field.element,
         icon: 'bk_mdi_add',
-        onDrop: async () => {
-          const current = await adapter.getDroppableFieldItems!({ host })
-          const itemIds = [...current.map((i) => i.id), item.mediaId]
+        onDrop: () => {
+          const currentIds = fieldValue.getDroppableFieldIds(
+            field.fieldName,
+            field,
+          )
+          const itemIds = [...currentIds, item.mediaId]
           return state.mutateWithLoadingState(
             () => adapter.updateDroppableField!({ host, itemIds }),
             $t('droppableFieldAddFailed', 'Failed to add item.'),

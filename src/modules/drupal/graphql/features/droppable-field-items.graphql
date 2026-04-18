@@ -10,10 +10,7 @@ query pbDroppableFieldItems(
     entityUuid: $entityUuid
     langcode: $langcode
   ) {
-    droppableFieldItems(
-      paragraphUuid: $paragraphUuid
-      fieldName: $fieldName
-    ) {
+    droppableFieldItems(paragraphUuid: $paragraphUuid, fieldName: $fieldName) {
       id
       entityType
       bundle

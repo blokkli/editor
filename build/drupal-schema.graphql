@@ -5409,10 +5409,10 @@ enum ParagraphsBlokkliDroppableFieldType {
 }
 
 type ParagraphsBlokkliDroppableFieldValue {
-  count: Int!
   entityBundle: String!
   entityType: String!
   fieldName: String!
+  ids: [String!]!
   uuid: String!
 }
 

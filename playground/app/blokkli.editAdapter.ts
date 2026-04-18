@@ -664,7 +664,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           droppableFieldValues.push({
             uuid: hostEntity.uuid,
             fieldName: field.id,
-            count: field.list.length,
+            ids: [...field.list],
             entityType: hostEntity.entityType,
             entityBundle: hostEntity.bundle,
           })
@@ -692,7 +692,7 @@ export default defineBlokkliEditAdapter((ctx) => {
             droppableFieldValues.push({
               uuid: proxy.block.uuid,
               fieldName: field.id,
-              count: field.list.length,
+              ids: [...field.list],
               entityType: proxy.block.entityType,
               entityBundle: proxy.block.bundle,
             })

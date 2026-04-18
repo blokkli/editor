@@ -78,7 +78,7 @@ export interface MappedState {
   droppableFieldValues?: {
     uuid: string
     fieldName: string
-    count: number
+    ids: string[]
     entityType: string
     entityBundle: string
   }[]

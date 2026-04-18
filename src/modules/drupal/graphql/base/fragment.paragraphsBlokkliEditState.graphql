@@ -20,7 +20,7 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
   droppableFieldValues {
     uuid
     fieldName
-    count
+    ids
     entityType
     entityBundle
   }
