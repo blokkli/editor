@@ -42,6 +42,7 @@ export class ContentPage extends Content {
         'table',
         'on_this_page',
         'widget',
+        'gallery',
       ]),
       new FieldBlocks('buttons', 'Buttons', 3, false, ['button']),
       new FieldBlocks('icons', 'Icons', 9, false, ['icon']),

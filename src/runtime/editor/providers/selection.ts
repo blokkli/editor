@@ -74,6 +74,16 @@ export type SelectionProvider = {
   activeEditableLabel: Ref<string | null>
 
   /**
+   * The label of the active droppable field being edited.
+   */
+  activeDroppableFieldLabel: Ref<string | null>
+
+  /**
+   * The label of any active field-level editing mode (editable or droppable).
+   */
+  activeFieldLabel: ComputedRef<string | null>
+
+  /**
    * The items that are currently being dragged.
    */
   dragItems: Ref<DraggableItem[]>
@@ -107,6 +117,10 @@ export default function (
   const hasHostSelected = ref(false)
   const draggingMode = ref<InteractionMode | null>(null)
   const activeEditableLabel = ref<string | null>(null)
+  const activeDroppableFieldLabel = ref<string | null>(null)
+  const activeFieldLabel = computed<string | null>(
+    () => activeEditableLabel.value || activeDroppableFieldLabel.value,
+  )
   const isMultiSelecting = ref(false)
   const interactionMode = ref<InteractionMode>('mouse')
   const selectionLocks = ref<string[]>([])
@@ -282,6 +296,8 @@ export default function (
     isDragging,
     isDraggingExisting,
     activeEditableLabel,
+    activeDroppableFieldLabel,
+    activeFieldLabel,
     isMultiSelecting,
     draggingMode,
     interactionMode,

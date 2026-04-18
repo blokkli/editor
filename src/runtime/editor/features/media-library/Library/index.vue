@@ -222,6 +222,8 @@ function buildItem(element: HTMLElement): DraggableMediaLibraryItem | null {
     mediaBundle: item.mediaBundle ?? '',
     itemBundles: item.targetBundles,
     element: () => element,
+    label: item.label,
+    thumbnailSrc: item.thumbnail,
   }
 }
 

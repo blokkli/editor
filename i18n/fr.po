@@ -1675,6 +1675,48 @@ msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr ""
 
+msgctxt "droppableFieldAdd"
+msgid "Add to @field"
+msgstr ""
+
+msgctxt "droppableFieldAddFailed"
+msgid "Failed to add item."
+msgstr ""
+
+msgctxt "droppableFieldCommandEdit"
+msgid "Edit field \"@name\""
+msgstr ""
+
+msgctxt "droppableFieldDropHint"
+msgid "Drop image here"
+msgstr ""
+
+msgctxt "droppableFieldEditLabel"
+msgid "Edit @label"
+msgstr ""
+
+msgctxt "droppableFieldItemCount"
+msgid "@count items"
+msgstr ""
+
+msgctxt "droppableFieldOpenLibrary"
+msgid "Media Library"
+msgstr ""
+
+msgctxt "droppableFieldRemaining"
+msgid "@count remaining"
+msgstr ""
+
+msgctxt "droppableFieldRequiredWarning"
+msgid ""
+"This field is required. Add an item before saving, or press Discard to "
+"abort."
+msgstr ""
+
+msgctxt "droppableFieldSaveFailed"
+msgid "Failed to save field."
+msgstr ""
+
 msgctxt "duplicate"
 msgid "Duplicate"
 msgstr "Dupliquer"
@@ -2027,6 +2069,14 @@ msgstr "Affiche une superposition lors du glissement ou du placement d'un bloc."
 msgctxt "feature_dragging-overlay_label"
 msgid "Dragging Overlay"
 msgstr "Superposition de glissement"
+
+msgctxt "feature_droppable-field-edit_description"
+msgid "Editing mode for multi-value droppable fields (add, remove, reorder items)."
+msgstr ""
+
+msgctxt "feature_droppable-field-edit_label"
+msgid "Droppable Field Edit"
+msgstr ""
 
 msgctxt "feature_duplicate_description"
 msgid "Provides an action to duplicate one or more blocks in place."

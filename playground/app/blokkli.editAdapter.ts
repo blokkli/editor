@@ -22,6 +22,7 @@ import { ContentPage, type Content } from './mock/state/Entity/Content'
 import type { Entity } from './mock/state/Entity'
 import { FieldBlocks } from './mock/state/Field/Blocks'
 import {
+  type Media,
   type MediaIcon,
   MediaImage,
   type MediaVideo,
@@ -42,6 +43,10 @@ import type {
   EditableFieldConfig,
 } from '#blokkli/editor/features/editable-field/types'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
+import type {
+  DroppableFieldGetItemsEvent,
+  DroppableFieldUpdateEvent,
+} from '#blokkli/editor/features/droppable-field-edit/types'
 import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
@@ -1721,6 +1726,44 @@ export default defineBlokkliEditAdapter((ctx) => {
       return addMutation('replace_entity_media', {
         fieldName: e.host.fieldName,
         mediaUuid: e.mediaId,
+      })
+    },
+
+    async getDroppableFieldItems(e: DroppableFieldGetItemsEvent) {
+      const entity = getEntity()
+      const mutatedState = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+        { save: false },
+      )
+      const field =
+        e.host.uuid === mutatedState.context.entity.uuid
+          ? mutatedState.context.entity.get(e.host.fieldName)
+          : mutatedState.context
+              .getProxy(e.host.uuid)
+              ?.block.get(e.host.fieldName)
+      if (!field || !(field instanceof FieldReference)) {
+        return []
+      }
+      return field.list.map((uuid) => {
+        const media = entityStorageManager.load('media', uuid) as
+          | Media
+          | undefined
+        return {
+          uuid,
+          entityType: 'media',
+          bundle: media?.bundle ?? '',
+          label: media?.title() ?? uuid,
+          thumbnailSrc: media?.thumbnail(),
+        }
+      })
+    },
+
+    updateDroppableField(e: DroppableFieldUpdateEvent) {
+      return addMutation('droppable_field_update', {
+        blockUuid: e.host.uuid,
+        fieldName: e.host.fieldName,
+        items: e.items,
       })
     },
 

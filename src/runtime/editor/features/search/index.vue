@@ -105,6 +105,12 @@ defineDropAreas((dragItems) => {
       }
 
       const config = types.getDroppableFieldConfig(field.fieldName, field)
+
+      // Skip multi-value fields — the droppable-field-edit feature handles those.
+      if (config.cardinality !== 1) {
+        return
+      }
+
       const allowedBundles = config.allowed.find(
         (v) => v.type === searchItem.entityType,
       )?.bundles

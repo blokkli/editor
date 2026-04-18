@@ -1713,6 +1713,50 @@ msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr "Block-Typ zum Erstellen auswählen"
 
+msgctxt "droppableFieldAdd"
+msgid "Add to @field"
+msgstr "Zu @field hinzufügen"
+
+msgctxt "droppableFieldAddFailed"
+msgid "Failed to add item."
+msgstr "Eintrag konnte nicht hinzugefügt werden."
+
+msgctxt "droppableFieldCommandEdit"
+msgid "Edit field \"@name\""
+msgstr "Feld \"@name\" bearbeiten"
+
+msgctxt "droppableFieldDropHint"
+msgid "Drop image here"
+msgstr "Bild hierhin ziehen"
+
+msgctxt "droppableFieldEditLabel"
+msgid "Edit @label"
+msgstr "@label bearbeiten"
+
+msgctxt "droppableFieldItemCount"
+msgid "@count items"
+msgstr "@count Einträge"
+
+msgctxt "droppableFieldOpenLibrary"
+msgid "Media Library"
+msgstr "Medienbibliothek"
+
+msgctxt "droppableFieldRemaining"
+msgid "@count remaining"
+msgstr "@count verbleibend"
+
+msgctxt "droppableFieldRequiredWarning"
+msgid ""
+"This field is required. Add an item before saving, or press Discard to "
+"abort."
+msgstr ""
+"Dieses Feld ist erforderlich. Fügen Sie ein Element hinzu, bevor Sie "
+"speichern, oder klicken Sie auf «Verwerfen», um abzubrechen."
+
+msgctxt "droppableFieldSaveFailed"
+msgid "Failed to save field."
+msgstr ""
+
 msgctxt "duplicate"
 msgid "Duplicate"
 msgstr "Duplizieren"
@@ -2073,6 +2117,16 @@ msgstr "Zeigt ein Overlay beim Ziehen oder Platzieren eines Blocks an."
 msgctxt "feature_dragging-overlay_label"
 msgid "Dragging Overlay"
 msgstr "Drag-Overlay"
+
+msgctxt "feature_droppable-field-edit_description"
+msgid "Editing mode for multi-value droppable fields (add, remove, reorder items)."
+msgstr ""
+"Bearbeitungsmodus für mehrwertige Referenzfelder (hinzufügen, entfernen, "
+"umsortieren)."
+
+msgctxt "feature_droppable-field-edit_label"
+msgid "Droppable Field Edit"
+msgstr "Referenzfeld bearbeiten"
 
 msgctxt "feature_duplicate_description"
 msgid "Provides an action to duplicate one or more blocks in place."
@@ -2816,7 +2870,7 @@ msgstr "Das Medienelement konnte nicht ersetzt werden."
 
 msgctxt "mediaLibraryReplaceMedia"
 msgid "Replace @field"
-msgstr "Medienelement ersetzen"
+msgstr "@field ersetzen"
 
 msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."

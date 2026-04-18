@@ -95,6 +95,9 @@ watch(dom.isReady, buildRects)
 type InteractedElement = {
   uuid?: string
   editableFieldName?: string
+  droppableFieldName?: string
+  droppableEntityType?: string
+  droppableEntityUuid?: string
   timestamp: number
   x: number
   y: number
@@ -165,6 +168,24 @@ function getInteractedElement(
       return {
         editableFieldName: editableField.fieldName,
         uuid: editableUuid,
+        timestamp: Date.now(),
+        x,
+        y,
+      }
+    }
+  }
+
+  // Check if there is a droppable field at this point that belongs to the winning block.
+  const droppableField = directive.getDroppableAtPoint(x, y)
+  if (droppableField) {
+    const droppableUuid =
+      droppableField.type === itemEntityType ? droppableField.uuid : undefined
+    if (!droppableUuid || droppableUuid === deepestUuid) {
+      return {
+        droppableFieldName: droppableField.fieldName,
+        droppableEntityType: droppableField.type,
+        droppableEntityUuid: droppableField.uuid,
+        uuid: droppableUuid,
         timestamp: Date.now(),
         x,
         y,
@@ -294,6 +315,12 @@ function onPointerDown(e: PointerEvent) {
 
   canvasEl.value?.removeEventListener('pointermove', onPointerMove)
 
+  // When a field-level editing mode is active, only track the pointer down
+  // on canvas (so click-away works) but skip all block interaction logic.
+  if (selection.activeFieldLabel.value) {
+    return
+  }
+
   // Prevent starting any interactions if a tooltip is open.
   if (ui.openTooltip.value) {
     return
@@ -363,7 +390,7 @@ function onPointerUp(e: PointerEvent) {
   // If a tooltip is open, close it and prevent all other interactions.
   // Don't close the tooltip when an editable field is active, as the user
   // may be selecting text and releasing the pointer outside the overlay.
-  if (ui.openTooltip.value && !selection.activeEditableLabel.value) {
+  if (ui.openTooltip.value && !selection.activeFieldLabel.value) {
     ui.openTooltip.value = ''
     return
   }
@@ -399,7 +426,7 @@ function onPointerUp(e: PointerEvent) {
   if (keyboard.isPressingSpace.value) {
     return
   }
-  if (selection.activeEditableLabel.value) {
+  if (selection.activeFieldLabel.value) {
     if (pointerDownOnCanvas) {
       eventBus.emit('window:clickAway')
       lastInteractedElement = null
@@ -421,7 +448,8 @@ function onPointerUp(e: PointerEvent) {
     pointerUpTimestamp &&
     lastInteractedElement &&
     (clicked.uuid === lastInteractedElement.uuid ||
-      clicked.editableFieldName === lastInteractedElement.editableFieldName)
+      clicked.editableFieldName === lastInteractedElement.editableFieldName ||
+      clicked.droppableFieldName === lastInteractedElement.droppableFieldName)
   ) {
     const deltaTime = Date.now() - pointerUpTimestamp
     const deltaX = Math.abs(lastInteractedElement.x - e.clientX)
@@ -432,6 +460,19 @@ function onPointerUp(e: PointerEvent) {
         eventBus.emit('editable:open', {
           fieldName: clicked.editableFieldName,
           uuid: clicked.uuid,
+        })
+        return
+      }
+      if (
+        clicked.droppableFieldName &&
+        clicked.droppableEntityUuid &&
+        clicked.droppableEntityType
+      ) {
+        pointerDownOnCanvas = false
+        eventBus.emit('droppable:open', {
+          fieldName: clicked.droppableFieldName,
+          uuid: clicked.droppableEntityUuid,
+          entityType: clicked.droppableEntityType,
         })
         return
       }
@@ -624,7 +665,7 @@ function onClick(e: MouseEvent) {
   }
   if (
     canvasEl.value &&
-    !selection.activeEditableLabel.value &&
+    !selection.activeFieldLabel.value &&
     !ui.hasTooltipOpen.value
   ) {
     canvasEl.value.focus()

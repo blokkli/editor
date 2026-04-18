@@ -37,6 +37,15 @@ type DroppableFieldElementData = EditableFieldData & {
   element: HTMLElement
 }
 
+export type DroppableItemData = {
+  fieldName: string
+  index: number
+  element: HTMLElement
+  uuid: string
+  type: string
+  bundle: string
+}
+
 type EditableRectangle = Rectangle & { key: string }
 
 export type DirectiveProvider = {
@@ -109,6 +118,18 @@ export type DirectiveProvider = {
   getEditableAtPoint: (x: number, y: number) => EditableFieldData | undefined
 
   /**
+   * Find the droppable field at a specific screen coordinate.
+   *
+   * Converts screen coordinates to artboard space and checks if any visible
+   * droppable field contains the point.
+   *
+   * @param x - Screen X coordinate
+   * @param y - Screen Y coordinate
+   * @returns The droppable field data at that point, or undefined
+   */
+  getDroppableAtPoint: (x: number, y: number) => EditableFieldData | undefined
+
+  /**
    * Get all editable fields for a specific block.
    *
    * Only returns 'editable' type directives on block entities.
@@ -179,6 +200,55 @@ export type DirectiveProvider = {
   getValueElements: (type: ValueElementType) => ValueElementEntry[]
 
   /**
+   * Register a droppable item element for tracking.
+   *
+   * @param el - The HTML element with the v-blokkli-droppable-item directive
+   * @param fieldName - The field name
+   * @param entity - The entity context (type, bundle, UUID)
+   * @param index - The item's index in the field
+   */
+  registerDroppableItem: (
+    el: HTMLElement,
+    fieldName: string,
+    entity: EntityContext,
+    index: number,
+  ) => void
+
+  /**
+   * Unregister a droppable item element from tracking.
+   *
+   * @param el - The HTML element to unregister
+   * @param fieldName - The field name
+   * @param entity - The entity context
+   */
+  unregisterDroppableItem: (
+    el: HTMLElement,
+    fieldName: string,
+    entity: EntityContext,
+  ) => void
+
+  /**
+   * Get all droppable items for a specific field, sorted by index.
+   *
+   * @param fieldName - The field name
+   * @param entity - The entity context
+   * @returns Array of droppable item data sorted by index
+   */
+  getDroppableItems: (
+    fieldName: string,
+    entity: EntityContext,
+  ) => DroppableItemData[]
+
+  /**
+   * Get the count of droppable items for a specific field.
+   *
+   * @param fieldName - The field name
+   * @param entity - The entity context
+   * @returns The number of registered droppable items
+   */
+  getDroppableItemCount: (fieldName: string, entity: EntityContext) => number
+
+  /**
    * Whether the directive provider is ready.
    *
    * Ready when IntersectionObserver is initialized and initial measurements are complete.
@@ -210,6 +280,8 @@ export default function (
     string,
     Record<string, EditableFieldData | undefined>
   > = {}
+
+  const droppableItems: Map<string, DroppableItemData[]> = new Map()
 
   const valueElements = new Map<string, ValueElementEntry>()
 
@@ -419,6 +491,35 @@ export default function (
     return undefined
   }
 
+  function getDroppableAtPoint(
+    x: number,
+    y: number,
+  ): EditableFieldData | undefined {
+    const scale = ui.artboardScale.value
+    const offset = ui.artboardOffset.value
+
+    const artboardX = x / scale - offset.x / scale
+    const artboardY = y / scale - offset.y / scale
+
+    for (const key of visible) {
+      if (!key.startsWith('droppable:')) continue
+
+      const rect = rects[key]
+      if (!rect) continue
+
+      if (
+        artboardX >= rect.x &&
+        artboardX <= rect.x + rect.width &&
+        artboardY >= rect.y &&
+        artboardY <= rect.y + rect.height
+      ) {
+        return fieldData.get(key)
+      }
+    }
+
+    return undefined
+  }
+
   function updateRects() {
     const scale = ui.artboardScale.value
     const offset = ui.artboardOffset.value
@@ -512,6 +613,73 @@ export default function (
     return fieldData.get(key)
   }
 
+  function getDroppableItemsKey(
+    fieldName: string,
+    entity: EntityContext,
+  ): string {
+    return `${entity.type}:${entity.uuid}:${fieldName}`
+  }
+
+  function registerDroppableItem(
+    el: HTMLElement,
+    fieldName: string,
+    entity: EntityContext,
+    index: number,
+  ) {
+    const key = getDroppableItemsKey(fieldName, entity)
+    const item: DroppableItemData = {
+      fieldName,
+      index,
+      element: el,
+      uuid: entity.uuid,
+      type: entity.type,
+      bundle: entity.bundle,
+    }
+
+    const items = droppableItems.get(key) || []
+    // Remove any existing entry for this element.
+    const filtered = items.filter((v) => v.element !== el)
+    filtered.push(item)
+    // Sort by index.
+    filtered.sort((a, b) => a.index - b.index)
+    droppableItems.set(key, filtered)
+  }
+
+  function unregisterDroppableItem(
+    el: HTMLElement,
+    fieldName: string,
+    entity: EntityContext,
+  ) {
+    const key = getDroppableItemsKey(fieldName, entity)
+    const items = droppableItems.get(key)
+    if (!items) {
+      return
+    }
+
+    const filtered = items.filter((v) => v.element !== el)
+    if (filtered.length) {
+      droppableItems.set(key, filtered)
+    } else {
+      droppableItems.delete(key)
+    }
+  }
+
+  function getDroppableItems(
+    fieldName: string,
+    entity: EntityContext,
+  ): DroppableItemData[] {
+    const key = getDroppableItemsKey(fieldName, entity)
+    return droppableItems.get(key) || []
+  }
+
+  function getDroppableItemCount(
+    fieldName: string,
+    entity: EntityContext,
+  ): number {
+    const key = getDroppableItemsKey(fieldName, entity)
+    return droppableItems.get(key)?.length || 0
+  }
+
   onBlokkliEvent('state:reloaded', () => {
     handleRefresh()
     doSettleTimeout()
@@ -536,10 +704,15 @@ export default function (
     init,
     getVisible,
     getEditableAtPoint,
+    getDroppableAtPoint,
     findEditable,
     getEditablesForBlock,
     findEditableElement,
     getDroppableElements,
+    registerDroppableItem,
+    unregisterDroppableItem,
+    getDroppableItems,
+    getDroppableItemCount,
     registerValueElement,
     unregisterValueElement,
     getValueElement,

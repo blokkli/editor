@@ -16,7 +16,7 @@
       <div class="bk-artboard-tooltip-header">
         <div class="mr-auto" v-html="title" />
         <slot name="header" />
-        <button @click="$emit('close')">
+        <button :disabled="closeDisabled" @click="$emit('close')">
           <Icon :name="closeIcon" />
           <span v-if="buttonLabel">{{ buttonLabel }}</span>
         </button>
@@ -54,6 +54,7 @@ const props = withDefaults(
     placementY?: PlacementVertical
     placementX?: PlacementHorizontal
     closeIcon?: BlokkliIcon
+    closeDisabled?: boolean
     fullscreen?: boolean
   }>(),
   {
@@ -267,13 +268,17 @@ onBeforeUnmount(() => {
     @apply border-t border-t-mono-300 text-sm font-semibold flex items-center;
   }
   .bk-artboard-tooltip-info-button {
-    @apply text-scheme-normal text-sm flex items-center;
-    @apply py-[6px] px-10;
+    @apply text-scheme-normal text-sm flex items-center gap-5;
+    @apply py-[6px] px-10 h-[32px];
     @apply hover:bg-scheme-normal/10;
     @apply border-r border-r-mono-300;
 
     &[disabled] {
       @apply pointer-events-none text-mono-300;
+    }
+
+    svg {
+      @apply size-15;
     }
   }
 }

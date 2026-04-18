@@ -7,6 +7,7 @@ import type {
   ValidProviderTypes,
 } from '#blokkli-build/generated-types'
 import type DraggableListComponent from '../editor/components/DraggableList.vue'
+import type BlokkliEditableEditComponent from '../editor/components/BlokkliEditableEdit.vue'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type {
   MutatedField,
@@ -200,6 +201,13 @@ export const INJECT_PROVIDER_KEY = Symbol(
 export const INJECT_EDIT_FIELD_LIST_COMPONENT = Symbol(
   'blokkli_edit_field_list_component',
 ) as InjectionKey<typeof DraggableListComponent>
+
+/**
+ * The BlokkliEditableEdit component used during editing.
+ */
+export const INJECT_EDIT_EDITABLE_COMPONENT = Symbol(
+  'blokkli_edit_editable_component',
+) as InjectionKey<typeof BlokkliEditableEditComponent>
 
 /**
  * The reactive item props override object, used to override props values (during editing).
