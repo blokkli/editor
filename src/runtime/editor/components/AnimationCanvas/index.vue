@@ -51,6 +51,7 @@ const {
   blocks,
   fields,
   permissions,
+  types,
 } = useBlokkli()
 
 function onCanvasFocus() {
@@ -149,8 +150,12 @@ function getInteractedElement(
     }
   }
 
+  // While Ctrl is held, skip editable/droppable fields so double-click goes
+  // straight to the block (item:doubleClick — opens the block's edit form).
+  const skipFields = keyboard.isPressingControl.value
+
   // Check if there is an editable at this point that belongs to the winning block.
-  const editableField = directive.getEditableAtPoint(x, y)
+  const editableField = skipFields ? null : directive.getEditableAtPoint(x, y)
   if (editableField) {
     const editableUuid =
       editableField.type === itemEntityType ? editableField.uuid : undefined
@@ -176,19 +181,28 @@ function getInteractedElement(
   }
 
   // Check if there is a droppable field at this point that belongs to the winning block.
-  const droppableField = directive.getDroppableAtPoint(x, y)
+  // Only reference-type droppables participate in double-click-to-open — link
+  // droppables (e.g. URL fields) have no edit overlay, so we don't want them
+  // to swallow the double-click that should open the block's edit form.
+  const droppableField = skipFields ? null : directive.getDroppableAtPoint(x, y)
   if (droppableField) {
-    const droppableUuid =
-      droppableField.type === itemEntityType ? droppableField.uuid : undefined
-    if (!droppableUuid || droppableUuid === deepestUuid) {
-      return {
-        droppableFieldName: droppableField.fieldName,
-        droppableEntityType: droppableField.type,
-        droppableEntityUuid: droppableField.uuid,
-        uuid: droppableUuid,
-        timestamp: Date.now(),
-        x,
-        y,
+    const config = types.getDroppableFieldConfig(
+      droppableField.fieldName,
+      droppableField,
+    )
+    if (config.type === 'reference') {
+      const droppableUuid =
+        droppableField.type === itemEntityType ? droppableField.uuid : undefined
+      if (!droppableUuid || droppableUuid === deepestUuid) {
+        return {
+          droppableFieldName: droppableField.fieldName,
+          droppableEntityType: droppableField.type,
+          droppableEntityUuid: droppableField.uuid,
+          uuid: droppableUuid,
+          timestamp: Date.now(),
+          x,
+          y,
+        }
       }
     }
   }

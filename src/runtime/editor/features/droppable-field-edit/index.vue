@@ -99,6 +99,9 @@ defineCommands(() => {
     )
     .map((field) => {
       const config = types.getDroppableFieldConfig(field.fieldName, field)
+      if (config.type !== 'reference') {
+        return
+      }
       return {
         id: `feature:droppable-field:edit:${field.uuid}:${field.fieldName}`,
         group: 'selection' as const,
@@ -139,6 +142,9 @@ onBlokkliEvent('droppable:open', (e) => {
   }
 
   const config = types.getDroppableFieldConfig(e.fieldName, field)
+  if (config.type !== 'reference') {
+    return
+  }
 
   openField({
     fieldName: e.fieldName,

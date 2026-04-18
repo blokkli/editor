@@ -345,8 +345,6 @@ async function save() {
   isClosing.value = true
 
   if (hasChanged.value) {
-    console.log('modelValue', modelValue.value)
-    console.log('originalText', originalText.value)
     if (errorText.value) {
       // Validation error: restore original state instead of saving.
       restoreOriginalState()

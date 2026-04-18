@@ -156,27 +156,30 @@ export default function (eventBus: BlokkliEventBus): KeyboardProvider {
   }
 
   /**
-   * When the tab becomes inactive we set key modifier states to false.
-   *
-   * This solves a potential problem where someone might switch tabs using the
-   * control key, which would keep CTRL being active when coming back to the
-   * window, even though the key isn't being pressed anymore.
+   * Reset modifier states whenever the window loses focus — either from a tab
+   * switch (visibilitychange) or because focus moved into a same-page iframe
+   * (blur). Without this, keyup fired inside an iframe (e.g. the block edit
+   * form) never reaches our document listener and `isPressingControl` stays
+   * stuck until the next keydown on the main window.
    */
-  const onVisibilityChange = () => {
+  const resetModifierStates = () => {
     isPressingControl.value = false
     isPressingSpace.value = false
+    isPressingShift.value = false
   }
 
   onMounted(() => {
     document.addEventListener('keydown', onKeyDown)
     document.addEventListener('keyup', onKeyUp)
-    document.addEventListener('visibilitychange', onVisibilityChange)
+    document.addEventListener('visibilitychange', resetModifierStates)
+    window.addEventListener('blur', resetModifierStates)
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('keydown', onKeyDown)
     document.removeEventListener('keyup', onKeyUp)
-    document.removeEventListener('visibilitychange', onVisibilityChange)
+    document.removeEventListener('visibilitychange', resetModifierStates)
+    window.removeEventListener('blur', resetModifierStates)
   })
 
   const getShortcutKey = (shortcut: KeyboardShortcut) =>

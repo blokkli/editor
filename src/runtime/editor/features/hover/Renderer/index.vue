@@ -30,6 +30,8 @@ const {
   blocks,
   fields,
   permissions,
+  types,
+  keyboard,
 } = useBlokkli()
 
 // How many hover quads are supported.
@@ -233,52 +235,69 @@ function updateHoverState(
     ) ||
     deepestUuid !== previousDeepestUuid
 
+  // While Ctrl is held, suppress editable/droppable hover highlights — the
+  // user wants block-level interaction (e.g. double-click opens the block's
+  // edit form) without field-level decorations getting in the way.
+  const suppressFieldHover = keyboard.isPressingControl.value
+
   // Find hovered editable field that belongs to the deepest/winning block.
   // When blocks overlap at the same nesting level, only show the editable
   // from the block with the higher field z-index.
   let hoveredEditableFieldRect: Rectangle | null = null
-  const editableRects = directive.getVisible('editable')
-  let fallbackEditableRect: Rectangle | null = null
+  if (!suppressFieldHover) {
+    const editableRects = directive.getVisible('editable')
+    let fallbackEditableRect: Rectangle | null = null
 
-  for (let i = 0; i < editableRects.length; i++) {
-    const editableRect = editableRects[i]!
-    if (!isInsideRect(artboardMouseX, artboardMouseY, editableRect)) continue
+    for (let i = 0; i < editableRects.length; i++) {
+      const editableRect = editableRects[i]!
+      if (!isInsideRect(artboardMouseX, artboardMouseY, editableRect)) continue
 
-    // Extract entity UUID from the rect key (format: directive:entityType:uuid:fieldName).
-    const key = (editableRect as Rectangle & { key: string }).key
-    const entityUuid = key.split(':')[2]!
+      // Extract entity UUID from the rect key (format: directive:entityType:uuid:fieldName).
+      const key = (editableRect as Rectangle & { key: string }).key
+      const entityUuid = key.split(':')[2]!
 
-    // Skip editable fields on blocks where the user lacks edit permission
-    // or that are inside a restricted ancestor.
-    const block = blocks.getBlock(entityUuid)
-    if (
-      block &&
-      (!permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
-        permissions.blockHasRestrictedAncestor(entityUuid))
-    ) {
-      continue
+      // Skip editable fields on blocks where the user lacks edit permission
+      // or that are inside a restricted ancestor.
+      const block = blocks.getBlock(entityUuid)
+      if (
+        block &&
+        (!permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
+          permissions.blockHasRestrictedAncestor(entityUuid))
+      ) {
+        continue
+      }
+
+      if (deepestUuid && entityUuid === deepestUuid) {
+        // Editable belongs to the winning block.
+        hoveredEditableFieldRect = editableRect
+        break
+      }
+
+      if (!fallbackEditableRect && !hoveredUuids.includes(entityUuid)) {
+        // Non-block editable (e.g. host entity) — use as fallback.
+        fallbackEditableRect = editableRect
+      }
     }
 
-    if (deepestUuid && entityUuid === deepestUuid) {
-      // Editable belongs to the winning block.
-      hoveredEditableFieldRect = editableRect
-      break
-    }
-
-    if (!fallbackEditableRect && !hoveredUuids.includes(entityUuid)) {
-      // Non-block editable (e.g. host entity) — use as fallback.
-      fallbackEditableRect = editableRect
+    if (!hoveredEditableFieldRect) {
+      hoveredEditableFieldRect = fallbackEditableRect
     }
   }
 
-  if (!hoveredEditableFieldRect) {
-    hoveredEditableFieldRect = fallbackEditableRect
-  }
-
-  // Find hovered droppable field (same logic as editable).
+  // Find hovered droppable field (same logic as editable). Only reference-
+  // type fields participate in the hover UI — link-type droppables (which
+  // just accept URL replacements) must not trigger the hover highlight, so
+  // we exclude their keys up front.
   let hoveredDroppableFieldRect: Rectangle | null = null
-  if (!hoveredEditableFieldRect) {
+  if (!suppressFieldHover && !hoveredEditableFieldRect) {
     const droppableRects = directive.getVisible('droppable')
+    const excludedKeys = new Set<string>()
+    for (const el of directive.getDroppableElements()) {
+      const config = types.getDroppableFieldConfig(el.fieldName, el)
+      if (config.type !== 'reference') {
+        excludedKeys.add(el.key)
+      }
+    }
     let fallbackDroppableRect: Rectangle | null = null
 
     for (let i = 0; i < droppableRects.length; i++) {
@@ -286,6 +305,7 @@ function updateHoverState(
       if (!isInsideRect(artboardMouseX, artboardMouseY, droppableRect)) continue
 
       const key = (droppableRect as Rectangle & { key: string }).key
+      if (excludedKeys.has(key)) continue
       const entityUuid = key.split(':')[2]!
 
       if (deepestUuid && entityUuid === deepestUuid) {
