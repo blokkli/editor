@@ -16,6 +16,7 @@ query pbDroppableFieldItems(
       bundle
       label
       thumbnailSrc
+      targetBundles
     }
   }
 }

@@ -744,10 +744,16 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
 
     const lengthBefore = this.positions.length
 
-    // Skip field drop targets when a field edit overlay is open.
-    const visibleFields = selection.activeFieldLabel.value
-      ? []
-      : dom.getVisibleFields()
+    // Skip field drop targets when a field edit overlay is open — except when
+    // the drag originated from inside that overlay (droppable-field-edit
+    // drag-out), in which case the overlay wants page fields to accept drops.
+    const isDragFromFieldEdit = props.items.some(
+      (item) => item.itemType === 'droppable_field_item',
+    )
+    const visibleFields =
+      selection.activeFieldLabel.value && !isDragFromFieldEdit
+        ? []
+        : dom.getVisibleFields()
 
     for (let i = 0; i < visibleFields.length; i++) {
       const key = visibleFields[i]!

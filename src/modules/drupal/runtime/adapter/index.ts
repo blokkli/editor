@@ -1126,6 +1126,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             bundle: item.bundle,
             label: item.label,
             thumbnailSrc: item.thumbnailSrc ?? undefined,
+            targetBundles: item.targetBundles,
           })),
         )
     }
@@ -1171,6 +1172,20 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: e.host.uuid,
           hostFieldName: e.host.fieldName,
           afterUuid: e.preceedingUuid,
+        }).then(mapMutation)
+      }
+
+      adapter.addEntityReferenceBlock = (e) => {
+        return useGraphqlMutation('pbAddEntityReference', {
+          ...ctx.value,
+          targetId: e.entityId,
+          targetType: e.entityType,
+          targetBundle: e.entityBundle,
+          paragraphBundle: e.bundle,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
         }).then(mapMutation)
       }
     }

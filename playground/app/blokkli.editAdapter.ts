@@ -1699,6 +1699,43 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
     },
 
+    addEntityReferenceBlock(e) {
+      if (e.entityBundle === 'image') {
+        return addMutation('add', {
+          bundle: e.bundle,
+          values: {
+            imageReference: [e.entityId],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.entityBundle === 'video') {
+        return addMutation('add', {
+          bundle: e.bundle,
+          values: {
+            video: [e.entityId],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      } else if (e.entityBundle === 'icon') {
+        return addMutation('add', {
+          bundle: e.bundle,
+          values: {
+            icon: [e.entityId],
+          },
+          hostEntityType: e.host.type,
+          hostEntityUuid: e.host.uuid,
+          hostField: e.host.fieldName,
+          preceedingUuid: e.afterUuid,
+        })
+      }
+    },
+
     mediaLibraryAddBlocks(e) {
       const args: MutationAddArgs[] = e.items
         .map((item) => {
@@ -1783,6 +1820,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           bundle: media?.bundle ?? '',
           label: media?.title() ?? id,
           thumbnailSrc: media?.thumbnail(),
+          targetBundles: media ? getMediaTargetBundles(media.bundle) : [],
         }
       })
     },

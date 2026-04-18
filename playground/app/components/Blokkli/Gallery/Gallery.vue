@@ -29,6 +29,12 @@ defineBlokkli({
     icon: 'bk_mdi_grid_view',
     addBehaviour: 'no-form',
   },
+  propsFieldMapping: {
+    images: {
+      type: 'droppable',
+      name: 'images',
+    },
+  },
 })
 
 defineProps<Props>()

@@ -125,6 +125,9 @@ provide(INJECT_EDIT_CONTEXT, {
   mutatedOptions,
   eventBus,
   definitions,
+  selectedUuids: computed<string[]>(() => {
+    return []
+  }),
 })
 
 /**

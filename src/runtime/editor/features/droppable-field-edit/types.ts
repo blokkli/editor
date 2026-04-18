@@ -6,6 +6,11 @@ export type DroppableFieldItem = {
   bundle: string
   label: string
   thumbnailSrc?: string
+  /**
+   * The block bundles that can be produced from this referenced entity when
+   * dropped onto the page. Mirrors `MediaLibraryItem.targetBundles`.
+   */
+  targetBundles: string[]
 }
 
 export type DroppableFieldGetItemsEvent = {
@@ -19,6 +24,26 @@ export type DroppableFieldUpdateEvent = {
    * removed; unknown IDs are attached.
    */
   itemIds: string[]
+}
+
+export interface DraggableDroppableFieldItem {
+  itemType: 'droppable_field_item'
+  element: () => HTMLElement
+  itemBundles: string[]
+  entityId: string
+  entityType: string
+  entityBundle: string
+  label: string
+  thumbnailSrc?: string
+}
+
+export type AddEntityReferenceBlockEvent = {
+  entityId: string
+  entityType: string
+  entityBundle: string
+  host: BlokkliItemHost
+  bundle: string
+  afterUuid: string | null
 }
 
 declare module '#blokkli/editor/adapter' {
@@ -40,5 +65,21 @@ declare module '#blokkli/editor/adapter' {
     updateDroppableField?: (
       e: DroppableFieldUpdateEvent,
     ) => Promise<MutationResponseLike<T>>
+
+    /**
+     * Create a new block by referencing an existing entity.
+     *
+     * Generic counterpart to `mediaLibraryAddBlock` / `addContentSearchItem` —
+     * all three route to the same Drupal `pbAddEntityReference` mutation.
+     */
+    addEntityReferenceBlock?: (
+      e: AddEntityReferenceBlockEvent,
+    ) => Promise<MutationResponseLike<T>> | undefined
+  }
+}
+
+declare module '#blokkli/editor/types/draggable' {
+  interface DraggableItemTypes {
+    droppable_field_item: DraggableDroppableFieldItem
   }
 }

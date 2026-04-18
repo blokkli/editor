@@ -5400,6 +5400,7 @@ type ParagraphsBlokkliDroppableFieldItem {
   entityType: String!
   id: String!
   label: String!
+  targetBundles: [String!]!
   thumbnailSrc: String
 }
 

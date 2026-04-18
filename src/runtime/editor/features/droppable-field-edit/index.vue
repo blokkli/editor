@@ -23,6 +23,7 @@ import {
   onBlokkliEvent,
   defineDropAreas,
   defineCommands,
+  defineDropHandler,
 } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import { falsy } from '#blokkli/helpers'
@@ -43,8 +44,17 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['getDroppableFieldItems', 'updateDroppableField'],
 })
 
-const { selection, ui, directive, types, state, adapter, fieldValue, $t } =
-  useBlokkli()
+const {
+  selection,
+  ui,
+  directive,
+  types,
+  state,
+  adapter,
+  fieldValue,
+  permissions,
+  $t,
+} = useBlokkli()
 
 type ActiveField = {
   fieldName: string
@@ -230,6 +240,35 @@ defineDropAreas((dragItems) => {
       }
     })
     .filter(falsy)
+})
+
+// Drops of items dragged OUT of the edit overlay onto page drop targets.
+defineDropHandler('droppable_field_item', {
+  resolveBundles({ items, field }) {
+    const item = items[0]!
+    return field.allowedBundles.filter(
+      (b) =>
+        item.itemBundles.includes(b) &&
+        permissions.checkBlockBundlePermission(b, 'add'),
+    )
+  },
+
+  async execute({ items, host, afterUuid, bundle }) {
+    if (!adapter.addEntityReferenceBlock) {
+      throw new Error('Adapter does not implement "addEntityReferenceBlock".')
+    }
+    const item = items[0]!
+    await state.mutateWithLoadingState(() =>
+      adapter.addEntityReferenceBlock!({
+        entityId: item.entityId,
+        entityType: item.entityType,
+        entityBundle: item.entityBundle,
+        host,
+        bundle,
+        afterUuid,
+      }),
+    )
+  },
 })
 </script>
 

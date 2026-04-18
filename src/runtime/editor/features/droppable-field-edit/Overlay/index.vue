@@ -14,11 +14,11 @@
       class="w-[680px] max-h-300 overflow-y-auto p-10 bg-mono-200"
       @pointerup="onListPointerUp"
     >
-      <div class="bg-white">
+      <GrowOnly class="bg-white">
         <div
           v-for="(item, i) in localItems"
           :key="item.key"
-          class="grid grid-cols-[minmax(0,1fr)_auto] items-center relative border-b border-b-mono-200 last:border-b-0"
+          class="grid grid-cols-[minmax(0,1fr)_auto] items-center relative border-b border-b-mono-200 last:border-b-0 bg-white"
         >
           <div
             v-if="i === 0"
@@ -31,7 +31,7 @@
             }"
           />
           <div
-            class="flex items-center gap-5 px-8 py-5 cursor-grab touch-none active:cursor-grabbing"
+            class="flex items-center gap-5 px-8 py-5 cursor-grab touch-none active:cursor-grabbing bg-white"
             :class="{ 'opacity-30': dragIndex === i }"
             @pointerdown="onPointerDown($event, i)"
           >
@@ -85,7 +85,7 @@
             )
           }}
         </div>
-      </div>
+      </GrowOnly>
     </div>
 
     <div class="bk-artboard-tooltip-info">
@@ -143,7 +143,7 @@
 
 <script lang="ts" setup>
 import type { EntityContext } from '#blokkli/types'
-import { ArtboardTooltip, Icon } from '#blokkli/editor/components'
+import { ArtboardTooltip, GrowOnly, Icon } from '#blokkli/editor/components'
 import {
   computed,
   ref,
@@ -175,6 +175,9 @@ type LocalItem = {
   id: string
   label: string
   thumbnailSrc: string | null
+  entityType: string
+  bundle: string
+  targetBundles: string[]
 }
 
 const localItems = ref<LocalItem[]>([])
@@ -286,17 +289,9 @@ const showExternalDropTargets = computed(() => {
   return !!allowedBundles && allowedBundles.includes(item.mediaBundle)
 })
 
-function onExternalPointerMove(e: PointerEvent) {
-  externalDropIndex.value = computeDropIndex(e.clientY)
-}
-
 watch(showExternalDropTargets, (active) => {
-  if (active) {
-    snapshotIndicatorRects()
-    document.addEventListener('pointermove', onExternalPointerMove)
-  } else {
+  if (!active) {
     externalDropIndex.value = null
-    document.removeEventListener('pointermove', onExternalPointerMove)
   }
 })
 
@@ -307,7 +302,6 @@ function onListPointerUp(e: PointerEvent) {
   const item = items[0]!
   if (item.itemType !== 'media_library') return
 
-  snapshotIndicatorRects()
   const position = computeDropIndex(e.clientY)
 
   eventBus.emit('dragging:end')
@@ -317,6 +311,9 @@ function onListPointerUp(e: PointerEvent) {
     id: item.mediaId,
     label: item.label,
     thumbnailSrc: item.thumbnailSrc ?? null,
+    entityType: 'media',
+    bundle: item.mediaBundle,
+    targetBundles: item.itemBundles,
   }
   const newList = [...localItems.value]
   newList.splice(position, 0, newItem)
@@ -330,6 +327,9 @@ async function loadItems() {
     id: item.id,
     label: item.label,
     thumbnailSrc: item.thumbnailSrc ?? null,
+    entityType: item.entityType,
+    bundle: item.bundle,
+    targetBundles: item.targetBundles,
   }))
   originalItems.value = [...localItems.value]
 }
@@ -339,27 +339,17 @@ function isNoOpDrop(from: number, to: number): boolean {
 }
 
 // Snapshotted indicator Y positions, computed on drag start.
-let indicatorYPositions: number[] = []
-
-function snapshotIndicatorRects() {
-  if (!listEl.value) {
-    indicatorYPositions = []
-    return
-  }
+function computeDropIndex(pointerY: number): number {
+  if (!listEl.value) return 0
   const indicators = listEl.value.querySelectorAll(
     '.bk-droppable-field-edit-indicator',
   )
-  indicatorYPositions = Array.from(indicators).map((el) => {
-    const rect = el.getBoundingClientRect()
-    return rect.top + rect.height / 2
-  })
-}
-
-function computeDropIndex(pointerY: number): number {
   let closest = 0
   let closestDist = Infinity
-  for (let i = 0; i < indicatorYPositions.length; i++) {
-    const dist = Math.abs(pointerY - indicatorYPositions[i]!)
+  for (let i = 0; i < indicators.length; i++) {
+    const rect = indicators[i]!.getBoundingClientRect()
+    const y = rect.top + rect.height / 2
+    const dist = Math.abs(pointerY - y)
     if (dist < closestDist) {
       closestDist = dist
       closest = i
@@ -373,6 +363,16 @@ let ghostEl: HTMLElement | null = null
 let ghostOffsetX = 0
 let ghostOffsetY = 0
 
+// The original drag-handle DOM element captured at pointerdown. Used as the
+// drag source for the editor's drag overlay while the pointer is outside the
+// list (copy semantics — we never remove the item, so this element persists
+// in the DOM and can be safely read for outerHTML/rect measurements).
+let dragHandleEl: HTMLElement | null = null
+
+// Index of the item currently dragged out. Kept separate from dragIndex
+// because the latter is cleared while the editor owns the drag.
+let draggedOutIndex: number | null = null
+
 function removeGhost() {
   if (ghostEl) {
     ghostEl.remove()
@@ -380,20 +380,147 @@ function removeGhost() {
   }
 }
 
-function onDocumentPointerMove(e: PointerEvent) {
-  if (dragIndex.value === null) {
+function isPointerOutsideList(x: number, y: number): boolean {
+  const rect = listEl.value?.getBoundingClientRect()
+  if (!rect) return false
+  return x < rect.left || x > rect.right || y < rect.top || y > rect.bottom
+}
+
+function createGhost(from: HTMLElement, x: number, y: number) {
+  const rect = from.getBoundingClientRect()
+  const clone = cloneWithInlineStyles(from) as HTMLElement
+  clone.style.position = 'fixed'
+  clone.style.left = `${x - ghostOffsetX}px`
+  clone.style.top = `${y - ghostOffsetY}px`
+  clone.style.width = `${rect.width}px`
+  clone.style.pointerEvents = 'none'
+  clone.style.zIndex = '999999'
+  clone.style.background = 'white'
+  clone.style.opacity = '0.8'
+  document.body.appendChild(clone)
+  ghostEl = clone
+}
+
+function beginDragOut(x: number, y: number) {
+  if (dragIndex.value === null || !dragHandleEl) return
+  const index = dragIndex.value
+  const item = localItems.value[index]
+  if (!item) return
+
+  // Tear down internal-drag visuals. The original drag-handle element (still
+  // in the DOM — copy semantics means we never splice) is handed to the
+  // editor's drag overlay as the source for clone/measure.
+  removeGhost()
+  dragIndex.value = null
+  dropIndex.value = null
+  draggedOutIndex = index
+
+  const source = dragHandleEl
+
+  eventBus.emit('dragging:start', {
+    items: [
+      {
+        itemType: 'droppable_field_item',
+        element: () => source,
+        itemBundles: item.targetBundles,
+        entityId: item.id,
+        entityType: item.entityType,
+        entityBundle: item.bundle,
+        label: item.label,
+        thumbnailSrc: item.thumbnailSrc ?? undefined,
+      },
+    ],
+    coords: { x, y },
+    mode: 'mouse',
+  })
+}
+
+function resumeInternalDrag(x: number, y: number) {
+  if (draggedOutIndex === null || !dragHandleEl) return
+  const index = draggedOutIndex
+  draggedOutIndex = null
+
+  // Cancel the editor's drag: tears down its overlay + pointer listeners.
+  eventBus.emit('dragging:end')
+
+  // Restore internal-drag state and visuals.
+  dragIndex.value = index
+  dropIndex.value = computeDropIndex(y)
+  createGhost(dragHandleEl, x, y)
+}
+
+// Hysteresis: the pointer must stay on the "other side" of the list boundary
+// for this long before we switch between internal-reorder and drag-out. Any
+// opposing move during the wait cancels and restarts the clock, so small
+// accidental flicks don't trigger a mode change.
+const BOUNDARY_HYSTERESIS_MS = 500
+
+let pendingSwitch: ReturnType<typeof setTimeout> | null = null
+let lastPointerX = 0
+let lastPointerY = 0
+
+function cancelPendingSwitch() {
+  if (pendingSwitch !== null) {
+    clearTimeout(pendingSwitch)
+    pendingSwitch = null
+  }
+}
+
+// Single document-level pointermove dispatcher, mounted for the overlay's
+// lifetime. Routes to one of the three drag phases based on current state:
+//   - Internal reorder (dragIndex set): update dropIndex + move ghost, or
+//     (after hysteresis) hand off to the editor when the pointer stays out.
+//   - Drag-out (draggedOutIndex set): watch for re-entry and (after
+//     hysteresis) resume the internal reorder.
+//   - External drop (showExternalDropTargets true): update the insertion
+//     indicator for an incoming media-library item.
+function onPointerMove(e: PointerEvent) {
+  lastPointerX = e.clientX
+  lastPointerY = e.clientY
+
+  if (dragIndex.value !== null) {
+    const outside = isPointerOutsideList(e.clientX, e.clientY)
+    if (outside) {
+      if (pendingSwitch === null) {
+        pendingSwitch = setTimeout(() => {
+          pendingSwitch = null
+          beginDragOut(lastPointerX, lastPointerY)
+        }, BOUNDARY_HYSTERESIS_MS)
+      }
+    } else {
+      cancelPendingSwitch()
+    }
+    dropIndex.value = computeDropIndex(e.clientY)
+    if (ghostEl) {
+      ghostEl.style.left = `${e.clientX - ghostOffsetX}px`
+      ghostEl.style.top = `${e.clientY - ghostOffsetY}px`
+    }
     return
   }
-  dropIndex.value = computeDropIndex(e.clientY)
-  if (ghostEl) {
-    ghostEl.style.left = `${e.clientX - ghostOffsetX}px`
-    ghostEl.style.top = `${e.clientY - ghostOffsetY}px`
+
+  if (draggedOutIndex !== null) {
+    const inside = !isPointerOutsideList(e.clientX, e.clientY)
+    if (inside) {
+      if (pendingSwitch === null) {
+        pendingSwitch = setTimeout(() => {
+          pendingSwitch = null
+          resumeInternalDrag(lastPointerX, lastPointerY)
+        }, BOUNDARY_HYSTERESIS_MS)
+      }
+    } else {
+      cancelPendingSwitch()
+    }
+    return
+  }
+
+  if (showExternalDropTargets.value) {
+    externalDropIndex.value = computeDropIndex(e.clientY)
   }
 }
 
 function onDocumentPointerUp() {
-  document.removeEventListener('pointermove', onDocumentPointerMove)
   document.removeEventListener('pointerup', onDocumentPointerUp)
+  cancelPendingSwitch()
   removeGhost()
 
   if (dragIndex.value === null || dropIndex.value === null) {
@@ -426,35 +553,22 @@ function onPointerDown(e: PointerEvent, index: number) {
   if (e.button !== 0) {
     return
   }
-  if (props.config.cardinality === 1) {
-    return
-  }
   e.preventDefault()
 
-  dragIndex.value = index
-  dropIndex.value = index
-  snapshotIndicatorRects()
-
-  // Create ghost from the drag-handle element (the pointerdown target).
   const target = e.currentTarget
-  if (target instanceof HTMLElement) {
-    const rect = target.getBoundingClientRect()
-    ghostOffsetX = e.clientX - rect.left
-    ghostOffsetY = e.clientY - rect.top
-    const clone = cloneWithInlineStyles(target) as HTMLElement
-    clone.style.position = 'fixed'
-    clone.style.left = `${rect.left}px`
-    clone.style.top = `${rect.top}px`
-    clone.style.width = `${rect.width}px`
-    clone.style.pointerEvents = 'none'
-    clone.style.zIndex = '999999'
-    clone.style.background = 'white'
-    clone.style.opacity = '0.8'
-    document.body.appendChild(clone)
-    ghostEl = clone
+  if (!(target instanceof HTMLElement)) {
+    return
   }
 
-  document.addEventListener('pointermove', onDocumentPointerMove)
+  const rect = target.getBoundingClientRect()
+  ghostOffsetX = e.clientX - rect.left
+  ghostOffsetY = e.clientY - rect.top
+
+  dragHandleEl = target
+  dragIndex.value = index
+  dropIndex.value = index
+  createGhost(target, e.clientX, e.clientY)
+
   document.addEventListener('pointerup', onDocumentPointerUp)
 }
 
@@ -495,18 +609,31 @@ function discard() {
   emit('close')
 }
 
-onBlokkliEvent('window:clickAway', save)
+onBlokkliEvent('window:clickAway', () => {
+  if (selection.isDragging.value) {
+    return
+  }
+  save()
+})
+
+onBlokkliEvent('dragging:end', () => {
+  draggedOutIndex = null
+  cancelPendingSwitch()
+})
 
 onMounted(() => {
   keyboard.lockKeyboardEvents(KEYBOARD_LOCK_ID)
   document.addEventListener('keydown', onKeyDown, true)
+  document.addEventListener('pointermove', onPointerMove)
   loadItems()
 })
 
 onBeforeUnmount(() => {
   keyboard.unlockKeyboardEvents(KEYBOARD_LOCK_ID)
   document.removeEventListener('keydown', onKeyDown, true)
-  document.removeEventListener('pointermove', onExternalPointerMove)
+  document.removeEventListener('pointermove', onPointerMove)
+  document.removeEventListener('pointerup', onDocumentPointerUp)
+  cancelPendingSwitch()
   removeGhost()
 })
 </script>
