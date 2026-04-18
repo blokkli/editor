@@ -69,7 +69,7 @@ const tooltipData = computed<{
   text: string
   isField: boolean
 } | null>(() => {
-  if (hoveredCircle.value < 0) {
+  if (hoveredCircle.value < 0 || ui.openTooltip.value) {
     return null
   }
 
@@ -913,3 +913,18 @@ export default {
   name: 'AddButtonsRenderer',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-add-button-tooltip {
+  @apply absolute whitespace-nowrap pointer-events-none;
+  @apply bg-accent-600 font-semibold text-white rounded-full px-10 text-sm leading-none;
+  @apply will-change-transform;
+  @apply h-30;
+  @apply border-2 border-white flex items-center justify-center;
+  @apply z-add-buttons-label;
+
+  &.bk-is-field {
+    @apply bg-accent-400;
+  }
+}
+</style>

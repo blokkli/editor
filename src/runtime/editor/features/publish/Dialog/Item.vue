@@ -36,33 +36,19 @@
     </td>
     <td class="bk-is-status">
       <div v-if="isSuccess">
-        <span
-          class="bk-status-indicator"
-          :class="{
-            'bk-is-success': newStatus.status === true,
-            'bk-is-warning': newStatus.status === 'scheduled',
-          }"
-        />
+        <StatusIndicator :status="newStatusPropValue" class="mx-0" />
       </div>
       <div v-else-if="isSelected && isMutating">
         <Icon name="loader" />
       </div>
       <div v-else-if="isSelected">
-        <span
-          class="bk-status-indicator"
-          :class="{
-            'bk-is-success': isCurrentlyPublished,
-          }"
+        <StatusIndicator
+          :status="isCurrentlyPublished ? 'success' : 'error'"
+          class="mx-0"
         />
         <template v-if="newStatus.status !== isCurrentlyPublished">
           <Icon name="arrow-right-thin" />
-          <span
-            class="bk-status-indicator"
-            :class="{
-              'bk-is-success': newStatus.status === true,
-              'bk-is-warning': newStatus.status === 'scheduled',
-            }"
-          />
+          <StatusIndicator :status="newStatusPropValue" class="mx-0" />
         </template>
       </div>
     </td>
@@ -71,7 +57,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, StatusIndicator } from '#blokkli/editor/components'
 import type { MutationStatus } from './types'
 import type { GetEditStatesItem } from '../types'
 
@@ -165,5 +151,14 @@ const newStatus = computed(() => {
     }
   }
   return { label: '', status: false }
+})
+
+const newStatusPropValue = computed<'success' | 'warning' | 'error'>(() => {
+  if (newStatus.value.status === true) {
+    return 'success'
+  } else if (newStatus.value.status === 'scheduled') {
+    return 'warning'
+  }
+  return 'error'
 })
 </script>

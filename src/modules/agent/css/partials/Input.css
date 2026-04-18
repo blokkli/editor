@@ -74,14 +74,6 @@
 
     .bk-agent-input-actions-left {
       @apply flex items-center relative;
-      > button {
-        .bk-tooltip {
-          @apply absolute bottom-full left-5 mb-5;
-        }
-        &:not(:hover) .bk-tooltip {
-          @apply hidden;
-        }
-      }
     }
 
     .bk-agent-input-actions-keyboard {

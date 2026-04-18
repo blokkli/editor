@@ -4,6 +4,7 @@ export type AgentConversationData = {
   clientState: string
   serverState: string
   hash: string
+  feedbackItemIds?: string[]
 }
 
 export type AgentConversationSummary = {
@@ -11,6 +12,15 @@ export type AgentConversationSummary = {
   title: string
   createdAt: string
   updatedAt: string
+}
+
+export type AgentConversationFeedbackRating = 'bad' | 'fine' | 'good'
+
+export type AgentConversationFeedback = {
+  conversationId: string
+  rating: AgentConversationFeedbackRating
+  lastItemId: string
+  comment?: string
 }
 
 declare module '#blokkli/editor/types/permissions' {
@@ -21,14 +31,6 @@ declare module '#blokkli/editor/types/permissions' {
 
 declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
-    /**
-     * Swap two blocks.
-     */
-    swapBlocks?: (
-      first: string,
-      second: string,
-    ) => Promise<MutationResponseLike<T>>
-
     /**
      * Rearrange blocks within a field by specifying the desired order.
      *
@@ -63,5 +65,16 @@ declare module '#blokkli/editor/adapter' {
       list: () => Promise<AgentConversationSummary[]>
       delete: (uuid: string) => Promise<boolean>
     }
+
+    /**
+     * Submit user feedback for an agent conversation.
+     *
+     * Feedback is stored separately from the conversation data and should
+     * survive conversation deletion. The lastItemId references the
+     * conversation item visible when the user gave feedback.
+     */
+    submitConversationFeedback?: (
+      feedback: AgentConversationFeedback,
+    ) => Promise<boolean>
   }
 }

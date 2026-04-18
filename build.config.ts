@@ -33,6 +33,16 @@ export default defineBuildConfig({
     },
 
     /**
+     * Entry point for defining custom blökkli modules.
+     */
+    './src/modules/index.ts',
+
+    /**
+     * Entry point for the Tailwind config export.
+     */
+    './src/modules/tailwind/index.ts',
+
+    /**
      * Module: Drupal.
      */
     './src/modules/drupal/index.ts',
@@ -66,6 +76,17 @@ export default defineBuildConfig({
     {
       input: './src/modules/table-of-contents/runtime/',
       outDir: `./dist/modules/table-of-contents/runtime`,
+      addRelativeDeclarationExtensions: true,
+      ext: 'js',
+    },
+
+    /**
+     * Module: Iframes.
+     */
+    './src/modules/iframes/index.ts',
+    {
+      input: './src/modules/iframes/runtime/',
+      outDir: `./dist/modules/iframes/runtime`,
       addRelativeDeclarationExtensions: true,
       ext: 'js',
     },

@@ -1,47 +1,20 @@
 <template>
-  <div class="bk bk-media-library">
+  <div class="bk bk-media-library bk-scrollbar-light">
     <div v-if="status === 'pending'" class="bk-loading">
       <Icon name="loader" />
     </div>
-    <div class="bk-media-library-filters">
-      <div class="bk-media-library-filters-listview">
-        <button @click="toggleListView">
-          <Icon :name="listViewIcon" />
-        </button>
-      </div>
-      <div v-for="filter in filters" :key="filter.name">
-        <label v-if="filter.type === 'text'" class="bk-form-text">
-          <Icon name="bk_mdi_search" />
-          <input
-            v-model.lazy="filterValues[filter.name]"
-            type="text"
-            :placeholder="filter.placeholder"
-          />
-        </label>
-        <label v-else-if="filter.type === 'options'" class="bk-form-select">
-          <div v-if="!filterValues[filter.name]">
-            {{ filter.label }}
-          </div>
-          <select v-model="filterValues[filter.name]">
-            <option
-              v-for="option in filter.options"
-              :key="option.value"
-              :value="option.value"
-            >
-              {{ option.label }}
-            </option>
-          </select>
-        </label>
-        <FormToggle
-          v-else-if="filter.type === 'checkbox'"
-          v-model="filterValues[filter.name]"
-          :label="filter.label"
-        />
-      </div>
-    </div>
+    <ConfigFormInline v-model="filterValues" :filters="filters">
+      <template #before>
+        <div class="bk-media-library-filters-listview">
+          <button @click="toggleListView">
+            <Icon :name="listViewIcon" />
+          </button>
+        </div>
+      </template>
+    </ConfigFormInline>
     <div
       ref="listEl"
-      class="bk-media-library-items bk-scrollbar-light"
+      class="bk-media-library-items"
       :class="'bk-is-' + listView"
     >
       <Sortli no-transition :get-drag-items="getDragItems" :build-item>
@@ -82,7 +55,7 @@ import {
   Sortli,
   Icon,
   Pagination,
-  FormToggle,
+  ConfigFormInline,
 } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
@@ -163,6 +136,7 @@ const toggleListView = () => {
 }
 
 const filterValues = ref<Record<string, any>>({})
+const defaultsApplied = ref(false)
 
 watch(key, () => {
   page.value = 0
@@ -189,6 +163,23 @@ watch(data, () => {
 const items = computed(() => data.value?.items || [])
 const filters = computed<PluginConfigInput[]>(() => {
   return data.value?.filters ?? []
+})
+
+// Apply default values from filters on first load.
+watch(filters, (newFilters) => {
+  if (defaultsApplied.value || !newFilters.length) {
+    return
+  }
+  defaultsApplied.value = true
+  for (const filter of newFilters) {
+    if (
+      'defaultValue' in filter &&
+      filter.defaultValue !== undefined &&
+      filterValues.value[filter.name] === undefined
+    ) {
+      filterValues.value[filter.name] = filter.defaultValue
+    }
+  }
 })
 
 /**

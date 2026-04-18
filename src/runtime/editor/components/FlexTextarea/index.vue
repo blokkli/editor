@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-flex-textarea"
+    class="bk-flex-textarea relative"
     :class="{ 'bk-is-scrollable': isScrollable }"
     :style="{
       height: height + 'px',
@@ -10,8 +10,10 @@
       ref="textarea"
       v-bind="$attrs"
       v-model="modelValue"
+      class="absolute top-0 left-0 size-full resize-none"
       :class="{
         'bk-form-input': textareaClass,
+        'overflow-y-auto': isScrollable,
       }"
       @keydown.capture.stop="onKeydown"
       @keyup.capture.stop

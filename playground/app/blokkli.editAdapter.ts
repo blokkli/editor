@@ -19,6 +19,7 @@ import { state, editState, mapBlockItem, exportState } from './mock/state'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
+import type { Entity } from './mock/state/Entity'
 import { FieldBlocks } from './mock/state/Field/Blocks'
 import {
   type Media,
@@ -46,13 +47,15 @@ import type {
   DroppableFieldGetItemsEvent,
   DroppableFieldUpdateEvent,
 } from '#blokkli/editor/features/droppable-field-edit/types'
-import type { AssistantResultMarkup } from '#blokkli/editor/features/assistant/types'
 import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { ImportItem } from '#blokkli/editor/features/import-existing/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
-import type { PublishOptions } from '#blokkli/editor/features/publish/types'
+import type {
+  GetEditStatesItem,
+  PublishOptions,
+} from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import { FieldUrl } from './mock/state/Field/Url'
@@ -60,9 +63,12 @@ import type {
   AgentConversationData,
   AgentConversationSummary,
 } from '#blokkli/agent/app/composables'
+import type {
+  HostEntitySearchResult,
+  HostEntitySearchResultItem,
+} from '#blokkli/editor/features/workspace/types'
 
-const ENALBE_EDIT_STATES = false
-const ENABLED_ASSISTANT = false
+const ENABLE_EDIT_STATES = true
 
 function getPublishOptions(ctx: {
   entityType: string
@@ -241,7 +247,10 @@ export default defineBlokkliEditAdapter((ctx) => {
   ): Promise<MutationResponseLike<MutatedState>> => {
     editState.addMutation(id, args)
     const entity = getEntity()
-    const mutatedState = await editState.getMutatedState(entity)
+    const mutatedState = await editState.getMutatedState(
+      entity,
+      ctx.value.language,
+    )
     return mockResponse(mutatedState)
   }
 
@@ -278,6 +287,9 @@ export default defineBlokkliEditAdapter((ctx) => {
   const mediaLibraryGetResults: GetMediaLibraryFunction = (e) => {
     const perPage = 16
     const bundle = e.filters.bundle
+    const sortBy = e.filters.sort || 'name_asc'
+    const hasThumbnail = e.filters.has_thumbnail === 'true'
+
     const allItems: MediaLibraryItem[] = entityStorageManager
       .getStorage('media')
       .query(bundle && bundle !== 'all' ? { bundle } : {})
@@ -295,10 +307,26 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
       .filter((v) => {
         if (e.filters.text) {
-          return v.label.toLowerCase().includes(e.filters.text)
+          if (!v.label.toLowerCase().includes(e.filters.text)) {
+            return false
+          }
         }
-
+        if (hasThumbnail && !v.thumbnail) {
+          return false
+        }
         return true
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case 'name_asc':
+            return a.label.localeCompare(b.label)
+          case 'name_desc':
+            return b.label.localeCompare(a.label)
+          case 'newest':
+            return Number(b.mediaId) - Number(a.mediaId)
+          default:
+            return 0
+        }
       })
 
     const items = allItems.slice(e.page * perPage, e.page * perPage + perPage)
@@ -337,6 +365,74 @@ export default defineBlokkliEditAdapter((ctx) => {
             },
           ],
         },
+        {
+          type: 'checkbox',
+          name: 'has_thumbnail',
+          label: 'Has thumbnail',
+          checkboxLabel: 'Only show items with a thumbnail',
+          defaultValue: false,
+          required: false,
+        },
+        {
+          type: 'options',
+          variant: 'select',
+          name: 'sort',
+          label: 'Sort by',
+          defaultValue: 'name_asc',
+          required: false,
+          options: [
+            {
+              value: 'name_asc',
+              label: 'Name (A-Z)',
+            },
+            {
+              value: 'name_desc',
+              label: 'Name (Z-A)',
+            },
+            {
+              value: 'newest',
+              label: 'Newest first',
+            },
+          ],
+        },
+        ...(import.meta.dev
+          ? [
+              {
+                type: 'options' as const,
+                variant: 'select' as const,
+                name: 'organization',
+                label: 'Organization',
+                // defaultValue: 'all',
+                required: false,
+                options: [
+                  { value: 'all', label: 'All' },
+                  { value: 'executive_board', label: 'Executive Board' },
+                  { value: 'human_resources', label: 'Human Resources' },
+                  { value: 'finance', label: 'Finance & Accounting' },
+                  { value: 'legal', label: 'Legal & Compliance' },
+                  { value: 'marketing', label: 'Marketing' },
+                  { value: 'sales', label: 'Sales' },
+                  { value: 'customer_support', label: 'Customer Support' },
+                  { value: 'engineering', label: 'Engineering' },
+                  { value: 'product', label: 'Product Management' },
+                  { value: 'design', label: 'Design & UX' },
+                  { value: 'qa', label: 'Quality Assurance' },
+                  { value: 'devops', label: 'DevOps & Infrastructure' },
+                  { value: 'data_science', label: 'Data Science & Analytics' },
+                  { value: 'it', label: 'IT & Security' },
+                  { value: 'operations', label: 'Operations' },
+                  { value: 'logistics', label: 'Logistics & Supply Chain' },
+                  { value: 'procurement', label: 'Procurement' },
+                  {
+                    value: 'communications',
+                    label: 'Corporate Communications',
+                  },
+                  { value: 'research', label: 'Research & Development' },
+                  { value: 'facilities', label: 'Facilities Management' },
+                ],
+              },
+            ]
+          : []),
       ],
       items,
       total: allItems.length,
@@ -354,7 +450,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           'Failed to load page with UUID: ' + ctx.value.entityUuid,
         )
       }
-      const mutatedState = editState.getMutatedState(page)
+      const mutatedState = editState.getMutatedState(page, ctx.value.language)
       return Promise.resolve(mutatedState)
     },
     getUserPermissions() {
@@ -377,7 +473,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           'Failed to load page with UUID: ' + ctx.value.entityUuid,
         )
       }
-      return editState.getMutatedState(page, { index })
+      return editState.getMutatedState(page, ctx.value.language, { index })
     },
     getDisabledFeatures() {
       return Promise.resolve([])
@@ -387,6 +483,66 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     getConversions() {
       return Promise.resolve(conversions)
+    },
+    getReferencedEntities(uuids) {
+      const page = entityStorageManager.getContent(ctx.value.entityUuid)
+      if (!page) {
+        return Promise.resolve([])
+      }
+
+      const uuidSet = new Set(uuids)
+
+      // Collect all blocks from all block fields, including nested ones.
+      const allBlocks: Paragraph[] = []
+      const collectBlocks = (entity: { getBlockFields(): FieldBlocks[] }) => {
+        for (const field of entity.getBlockFields()) {
+          for (const block of field.getBlocks()) {
+            allBlocks.push(block)
+            collectBlocks(block)
+          }
+        }
+      }
+      collectBlocks(page)
+
+      // Filter to only requested blocks.
+      const filteredBlocks = allBlocks.filter((b) => uuidSet.has(b.uuid))
+
+      // Group paragraph UUIDs by referenced entity UUID.
+      const referencedMap = new Map<
+        string,
+        { entity: Entity; paragraphUuids: Set<string> }
+      >()
+
+      for (const block of filteredBlocks) {
+        for (const field of Object.values(block.fields)) {
+          if (field instanceof FieldReference) {
+            for (const refEntity of field.getReferencedEntities()) {
+              const existing = referencedMap.get(refEntity.uuid)
+              if (existing) {
+                existing.paragraphUuids.add(block.uuid)
+              } else {
+                referencedMap.set(refEntity.uuid, {
+                  entity: refEntity,
+                  paragraphUuids: new Set([block.uuid]),
+                })
+              }
+            }
+          }
+        }
+      }
+
+      return Promise.resolve(
+        Array.from(referencedMap.values()).map(
+          ({ entity, paragraphUuids }) => ({
+            editUrl: `/${entity.entityType}/${entity.uuid}/edit`,
+            entityBundle: entity.bundle,
+            entityType: entity.entityType,
+            entityUuid: entity.uuid,
+            label: entity.label || entity.uuid,
+            uuids: [...paragraphUuids],
+          }),
+        ),
+      )
     },
     getTransformPlugins() {
       return Promise.resolve(transforms)
@@ -460,9 +616,13 @@ export default defineBlokkliEditAdapter((ctx) => {
       await sleep(2000)
       editState.addMutation('transform', e, true)
       const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity, {
-        save: false,
-      })
+      const mutatedState = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+        {
+          save: false,
+        },
+      )
       editState._tempMutations = null
       editState.currentIndex--
       return mockResponse(mutatedState)
@@ -471,15 +631,54 @@ export default defineBlokkliEditAdapter((ctx) => {
     takeOwnership: async () => {
       isOwner = true
       const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity)
+      const mutatedState = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+      )
       return mockResponse(mutatedState)
     },
     mapState(inputState) {
+      const textFieldValues: TextFieldValue[] = []
+
+      const hostEntity = inputState.context.entity
+      for (const field of hostEntity.getTextFields()) {
+        const value = field.getUnprocessed()
+        if (value && value.trim()) {
+          textFieldValues.push({
+            uuid: hostEntity.uuid,
+            fieldName: field.id,
+            value,
+            fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            entityType: hostEntity.entityType,
+            entityBundle: hostEntity.bundle,
+          })
+        }
+      }
+
+      for (const proxy of inputState.context.proxies) {
+        if (proxy.isDeleted) continue
+        const textFields = proxy.block.getTextFields()
+        for (const field of textFields) {
+          const value = field.getUnprocessed()
+          if (value && value.trim()) {
+            textFieldValues.push({
+              uuid: proxy.block.uuid,
+              fieldName: field.id,
+              value,
+              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+              entityType: proxy.block.entityType,
+              entityBundle: proxy.block.bundle,
+            })
+          }
+        }
+      }
+
       return {
         currentIndex: editState.currentIndex,
         mutations: editState.getMutationItems(),
         currentUserIsOwner: isOwner,
         ownerName: state.owner.name,
+        ownerId: state.owner.id,
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,
@@ -487,6 +686,8 @@ export default defineBlokkliEditAdapter((ctx) => {
           fields: inputState.fields,
           violations: inputState.violations,
         },
+        textFieldValues,
+        ignoredAnalyzeIdentifiers: inputState.ignoredAnalyzeIdentifiers,
         publishOptions: getPublishOptions(ctx.value),
         entity: {
           id: ctx.value.entityUuid,
@@ -536,10 +737,72 @@ export default defineBlokkliEditAdapter((ctx) => {
               status: true,
               exists: true,
             },
+            {
+              id: 'fr',
+              url: '/fr',
+              status: true,
+              exists: true,
+            },
+            {
+              id: 'it',
+              url: '/it',
+              status: false,
+              exists: false,
+            },
           ],
         },
       }
     },
+    markTranslationUpToDate: (uuids, langcode) =>
+      addMutation('mark_translation_up_to_date', { uuids, langcode }),
+
+    async loadTextFieldValuesForLanguage(langcode) {
+      const page = entityStorageManager.getContent(ctx.value.entityUuid)
+      if (!page) return []
+
+      const mutatedState = await editState.getMutatedState(page, langcode, {
+        save: false,
+      })
+
+      const result: TextFieldValue[] = []
+
+      const hostEntity = mutatedState.context.entity
+      for (const field of hostEntity.getTextFields()) {
+        if (!field.isTranslatable) continue
+        const value = field.getUnprocessed()
+        if (value && value.trim()) {
+          result.push({
+            uuid: hostEntity.uuid,
+            fieldName: field.id,
+            value,
+            fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            entityType: hostEntity.entityType,
+            entityBundle: hostEntity.bundle,
+          })
+        }
+      }
+
+      for (const proxy of mutatedState.context.proxies) {
+        if (proxy.isDeleted) continue
+        const textFields = proxy.block.getTextFields()
+        for (const field of textFields) {
+          if (!field.isTranslatable) continue
+          const value = field.getUnprocessed()
+          if (value && value.trim()) {
+            result.push({
+              uuid: proxy.block.uuid,
+              fieldName: field.id,
+              value,
+              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+              entityType: proxy.block.entityType,
+              entityBundle: proxy.block.bundle,
+            })
+          }
+        }
+      }
+      return result
+    },
+
     changeLanguage(e) {
       return router.push({
         path: e.url,
@@ -548,7 +811,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     async revertAllChanges() {
       editState.revert()
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
     loadComments() {
       return loadComments()
@@ -706,12 +971,21 @@ export default defineBlokkliEditAdapter((ctx) => {
         preceedingUuid: e.preceedingUuid,
       }),
 
-    updateFieldValue: (e) =>
-      addMutation('update_field_value', {
+    updateFieldValue: (e) => {
+      const lang = ctx.value.language
+      if (lang && lang !== 'en') {
+        return addMutation('edit_translation', {
+          uuid: e.uuid,
+          langcode: lang,
+          values: { [e.fieldName]: e.fieldValue },
+        })
+      }
+      return addMutation('update_field_value', {
         uuid: e.uuid,
         fieldName: e.fieldName,
         fieldValue: e.fieldValue,
-      }),
+      })
+    },
 
     updateEntityFieldValue: (e) =>
       addMutation('update_entity_field_value', {
@@ -719,11 +993,60 @@ export default defineBlokkliEditAdapter((ctx) => {
         fieldValue: e.fieldValue,
       }),
 
-    updateFieldValueBatched: (e) =>
-      addMutation('update_field_value_batched', {
+    importTranslationsBatched: ({ items, markUpToDate }) =>
+      addMutation('import_translations_batched', { items, markUpToDate }),
+
+    async requestTranslation(items) {
+      try {
+        const data = await $fetch<{ key: string; translatedText: string }[]>(
+          '/api/translate',
+          {
+            method: 'POST',
+            body: {
+              items: items.map((item) => ({
+                key: item.key,
+                text: item.text,
+                isHtml: item.isHtml,
+                sourceLanguage: item.sourceLanguage,
+                targetLanguage: item.targetLanguage,
+              })),
+            },
+          },
+        )
+        return { success: true, data }
+      } catch (e: any) {
+        return {
+          success: false,
+          data: [],
+          errors: [e?.message || 'Translation request failed.'],
+        }
+      }
+    },
+
+    updateFieldValueBatched: (e) => {
+      const lang = ctx.value.language
+      if (lang && lang !== 'en') {
+        // Group by UUID into a single batched mutation.
+        const byUuid: Record<string, Record<string, any>> = {}
+        for (const item of e.items) {
+          if (!byUuid[item.uuid]) {
+            byUuid[item.uuid] = {}
+          }
+          byUuid[item.uuid]![item.fieldName] = item.fieldValue
+        }
+        return addMutation('edit_translation_batched', {
+          langcode: lang,
+          items: Object.entries(byUuid).map(([uuid, values]) => ({
+            uuid,
+            values,
+          })),
+        })
+      }
+      return addMutation('update_field_value_batched', {
         items: e.items,
         entityItems: e.entityItems,
-      }),
+      })
+    },
 
     getImportItems(args) {
       const items: ImportItem[] = [
@@ -932,7 +1255,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         Math.max(index, -1),
         editState.getMutations().length,
       )
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
 
     formFrameBuilder(e) {
@@ -1596,21 +1921,25 @@ export default defineBlokkliEditAdapter((ctx) => {
         revisionLogMessage: options.revisionLogMessage,
       }
       localStorage.setItem(scheduleKey, JSON.stringify(scheduleData))
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
 
     async unscheduleEditState(options) {
       const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
       localStorage.removeItem(scheduleKey)
-      return mockResponse(await editState.getMutatedState(getEntity()))
+      return mockResponse(
+        await editState.getMutatedState(getEntity(), ctx.value.language),
+      )
     },
 
     async setBlockScheduleDate(blocks) {
       return addMutation('set_block_schedule', { blocks })
     },
 
-    getEditStates() {
-      if (!ENALBE_EDIT_STATES) {
+    getEditStates(e) {
+      if (!ENABLE_EDIT_STATES || !import.meta.dev) {
         return Promise.resolve({
           items: [],
           total: 0,
@@ -1619,63 +1948,299 @@ export default defineBlokkliEditAdapter((ctx) => {
         })
       }
 
+      const states: GetEditStatesItem[] = [
+        {
+          hostEntityType: 'page',
+          hostEntityUuid: '123456',
+          currentUserIsOwner: true,
+          ownerName: 'Jan Hug',
+          lastChanged: '2026-04-05T09:12:00Z',
+          pendingChanges: 7,
+          url: '/?blokkliEditing=1',
+          entity: {
+            bundleLabel: 'Page',
+            status: true,
+            label: 'Homepage',
+          },
+        },
+        {
+          hostEntityType: 'page',
+          hostEntityUuid: '123459',
+          currentUserIsOwner: true,
+          ownerName: 'Jan Hug',
+          lastChanged: '2026-04-04T16:45:00Z',
+          pendingChanges: 2,
+          url: '/?blokkliEditing=1',
+          entity: {
+            bundleLabel: 'Page',
+            status: true,
+            label: 'Contact',
+          },
+        },
+        {
+          hostEntityType: 'page',
+          hostEntityUuid: '123460',
+          currentUserIsOwner: false,
+          ownerName: 'Alice Mueller',
+          lastChanged: '2026-04-03T11:30:00Z',
+          pendingChanges: 14,
+          url: '/?blokkliEditing=1',
+          entity: {
+            bundleLabel: 'Page',
+            status: false,
+            label: 'Services and Products',
+          },
+        },
+        {
+          hostEntityType: 'page',
+          hostEntityUuid: '123465',
+          currentUserIsOwner: false,
+          ownerName: 'Bob Schmidt',
+          lastChanged: '2026-03-28T08:00:00Z',
+          pendingChanges: 1,
+          url: '/?blokkliEditing=1',
+          entity: {
+            bundleLabel: 'Page',
+            status: true,
+            label:
+              'A page with a very long title to see what happens when the text breaks on a new line',
+          },
+        },
+        {
+          hostEntityType: 'page',
+          hostEntityUuid: 'error',
+          currentUserIsOwner: true,
+          ownerName: 'Jan Hug',
+          lastChanged: '2026-04-01T14:20:00Z',
+          pendingChanges: 3,
+          url: '/?blokkliEditing=1',
+          entity: {
+            bundleLabel: 'Page',
+            status: true,
+            label: 'A page that will return a publish error',
+          },
+        },
+      ]
+
+      let items = [...states, ...states, ...states, ...states, ...states]
+
+      const search = e?.filters?.search
+      if (search && typeof search === 'string') {
+        const query = search.toLowerCase()
+        items = items.filter((v) =>
+          v.entity.label?.toLowerCase().includes(query),
+        )
+      }
+
+      if (e?.filters?.only_own) {
+        items = items.filter((v) => v.currentUserIsOwner)
+      }
+
+      const perPage = 7
+      const page = e?.page ?? 0
+      const start = page * perPage
+
       return Promise.resolve({
-        items: [
+        items: items.slice(start, start + perPage),
+        total: items.length,
+        perPage,
+        filters: [
           {
-            hostEntityType: 'page',
-            hostEntityUuid: '123456',
-            currentUserIsOwner: true,
-            entity: {
-              bundleLabel: 'Page',
-              status: true,
-              label: 'Homepage',
-            },
+            type: 'text' as const,
+            name: 'search',
+            label: 'Search',
+            required: false,
+            placeholder: 'Search by title...',
           },
           {
-            hostEntityType: 'page',
-            hostEntityUuid: '123459',
-            currentUserIsOwner: true,
-            entity: {
-              bundleLabel: 'Page',
-              status: true,
-              label: 'Contact',
-            },
-          },
-          {
-            hostEntityType: 'page',
-            hostEntityUuid: '123460',
-            currentUserIsOwner: false,
-            entity: {
-              bundleLabel: 'Page',
-              status: false,
-              label: 'Services and Products',
-            },
-          },
-          {
-            hostEntityType: 'page',
-            hostEntityUuid: '123465',
-            currentUserIsOwner: false,
-            entity: {
-              bundleLabel: 'Page',
-              status: true,
-              label:
-                'A page with a very long title to see what happens when the text breaks on a new line',
-            },
-          },
-          {
-            hostEntityType: 'page',
-            hostEntityUuid: 'error',
-            currentUserIsOwner: true,
-            entity: {
-              bundleLabel: 'Page',
-              status: true,
-              label: 'A page that will return a publish error',
-            },
+            type: 'checkbox' as const,
+            name: 'only_own',
+            label: 'Ownership',
+            required: false,
+            checkboxLabel: 'Only show my edit states',
+            defaultValue: false,
           },
         ],
-        total: 3,
-        perPage: 16,
-        filters: [],
+      })
+    },
+
+    getHostEntities(): Promise<HostEntitySearchResult> {
+      const items: HostEntitySearchResultItem[] = [
+        // Items with edit states, owned by current user (id: '1')
+        {
+          id: '100',
+          uuid: '100',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Homepage',
+          url: '/?blokkliEditing=1',
+          lastChanged: '2026-04-05T09:12:00Z',
+          uid: '1',
+        },
+        {
+          id: '101',
+          uuid: '101',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Contact',
+          url: '/?blokkliEditing=1',
+          lastChanged: '2026-04-04T16:45:00Z',
+          uid: '1',
+        },
+        {
+          id: '102',
+          uuid: '102',
+          entityType: 'page',
+          bundle: 'landing_page',
+          label: 'A page that will return a publish error',
+          url: '/?blokkliEditing=1',
+          lastChanged: '2026-04-01T14:20:00Z',
+          uid: '1',
+        },
+        // Items with edit states, owned by other users
+        {
+          id: '103',
+          uuid: '103',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Services and Products',
+          url: '/?blokkliEditing=1',
+          lastChanged: '2026-04-03T11:30:00Z',
+          uid: '2',
+        },
+        {
+          id: '104',
+          uuid: '104',
+          entityType: 'page',
+          bundle: 'page',
+          label:
+            'A page with a very long title to see what happens when the text breaks on a new line',
+          url: '/?blokkliEditing=1',
+          lastChanged: '2026-03-28T08:00:00Z',
+          uid: '3',
+        },
+        {
+          id: '105',
+          uuid: '105',
+          entityType: 'page',
+          bundle: 'landing_page',
+          label: 'Summer Campaign',
+          url: '/?blokkliEditing=1',
+          lastChanged: '2026-03-25T10:00:00Z',
+          uid: '2',
+        },
+        // Items without edit states
+        {
+          id: '200',
+          uuid: '200',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'About Us',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '201',
+          uuid: '201',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Blog',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '202',
+          uuid: '202',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Careers',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '203',
+          uuid: '203',
+          entityType: 'page',
+          bundle: 'landing_page',
+          label: 'Event Registration',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '204',
+          uuid: '204',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'FAQ',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '205',
+          uuid: '205',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Impressum',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '206',
+          uuid: '206',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Newsletter',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '207',
+          uuid: '207',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Partners',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '208',
+          uuid: '208',
+          entityType: 'page',
+          bundle: 'landing_page',
+          label: 'Privacy Policy',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+        {
+          id: '209',
+          uuid: '209',
+          entityType: 'page',
+          bundle: 'page',
+          label: 'Terms of Service',
+          url: '/?blokkliEditing=1',
+          lastChanged: null,
+          uid: null,
+        },
+      ]
+
+      return Promise.resolve({
+        items,
+        labelMap: {
+          label: 'Page',
+          bundles: {
+            page: 'Page',
+            landing_page: 'Landing Page',
+          },
+        },
       })
     },
 
@@ -1683,30 +2248,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       addMutation('update_host_options', {
         options,
       }),
-
-    async getTextFieldValues(): Promise<TextFieldValue[]> {
-      const entity = getEntity()
-      const mutatedState = await editState.getMutatedState(entity, {
-        save: false,
-      })
-      const values: TextFieldValue[] = []
-      for (const proxy of mutatedState.context.proxies) {
-        if (proxy.isDeleted) continue
-        const textFields = proxy.block.getTextFields()
-        for (const field of textFields) {
-          const value = field.getUnprocessed()
-          if (value && value.trim()) {
-            values.push({
-              uuid: proxy.block.uuid,
-              fieldName: field.id,
-              value,
-              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
-            })
-          }
-        }
-      }
-      return values
-    },
 
     getAnalyzers: () => {
       return [
@@ -1729,6 +2270,12 @@ export default defineBlokkliEditAdapter((ctx) => {
         }),
       ]
     },
+
+    ignoreAnalyzeIdentifiers: (identifiers) =>
+      addMutation('ignore_analyze', { identifiers }),
+
+    unignoreAnalyzeIdentifiers: (identifiers) =>
+      addMutation('unignore_analyze', { identifiers }),
   }
 
   // Only available in dev mode.
@@ -1915,38 +2462,15 @@ export default defineBlokkliEditAdapter((ctx) => {
   adapter.templatesDelete = async function (e) {
     entityStorageManager.storages.template_item.delete(e.templateUuid)
     const entity = getEntity()
-    const mutatedState = await editState.getMutatedState(entity)
+    const mutatedState = await editState.getMutatedState(
+      entity,
+      ctx.value.language,
+    )
     return mockResponse(mutatedState)
   }
 
   adapter.templatesGetEditUrl = function (e) {
     return '/edit-template/' + e.templateUuid
-  }
-
-  if (import.meta.dev && ENABLED_ASSISTANT) {
-    adapter.assistantGetResults = (e) => {
-      return $fetch<AssistantResultMarkup | undefined>('/api/gpt', {
-        method: 'post',
-        body: {
-          prompt: e.prompt,
-        },
-      })
-    }
-
-    adapter.assistantAddBlockFromResult = (e) => {
-      if (e.result.type === 'markup') {
-        return addMutation('add', {
-          bundle: 'text',
-          values: {
-            text: e.result.content,
-          },
-          hostEntityType: e.host.type,
-          hostEntityUuid: e.host.uuid,
-          hostField: e.host.fieldName,
-          preceedingUuid: e.preceedingUuid,
-        })
-      }
-    }
   }
 
   adapter.getAgentAuthToken = () =>
@@ -1995,6 +2519,21 @@ export default defineBlokkliEditAdapter((ctx) => {
         query: conversationParams(),
       })
     },
+  }
+
+  adapter.submitConversationFeedback = async (feedback) => {
+    return $fetch<boolean>(
+      `/api/blokkli/agent/conversations/${feedback.conversationId}/feedback`,
+      {
+        method: 'POST',
+        query: conversationParams(),
+        body: {
+          itemId: feedback.lastItemId,
+          rating: feedback.rating,
+          explanation: feedback.comment,
+        },
+      },
+    )
   }
 
   return adapter

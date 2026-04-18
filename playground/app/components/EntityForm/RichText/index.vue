@@ -125,13 +125,22 @@ const markup = ref('')
 
 const emit = defineEmits(['update:modelValue', 'ready'])
 
-const onReady = () => {
+let editorInstance: { setData: (data: string) => void } | null = null
+
+const onReady = (editor: typeof editorInstance) => {
+  editorInstance = editor
   emit('ready')
   const ck = document.querySelector('[contenteditable]')
   if (ck instanceof HTMLElement) {
     ck.focus()
   }
 }
+
+function setData(data: string) {
+  editorInstance?.setData(data)
+}
+
+defineExpose({ setData })
 
 onMounted(() => {
   markup.value = props.modelValue

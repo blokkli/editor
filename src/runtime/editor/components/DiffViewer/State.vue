@@ -298,3 +298,236 @@ function scrollToBlock(uuid: string) {
   eventBus.emit('select', uuid)
 }
 </script>
+
+<style lang="postcss">
+/* Diff display in the artboard (page content), outside the .bk editor scope. */
+[data-bk-diff-active] {
+  del {
+    @apply line-through  decoration-red-normal text-red-normal/50;
+  }
+
+  ins {
+    @apply bg-lime-light rounded text-lime-dark border border-lime-normal/30 no-underline;
+  }
+}
+
+.bk {
+  &.bk-diff-sidebar-pane {
+    @apply absolute top-0 left-0 w-full h-full;
+    @apply overflow-auto overscroll-contain;
+  }
+
+  &.bk-diff-view {
+    @apply select-text;
+    container-type: inline-size;
+    .bk-blokkli-item-label {
+      @apply font-semibold flex-1;
+      span {
+        @apply leading-none;
+      }
+      &[disabled] {
+        @apply pointer-events-none;
+      }
+    }
+  }
+
+  .bk-diff-mode-selector {
+    @apply p-20 border-b border-mono-300;
+  }
+
+  .bk-diff-table {
+    @apply w-full;
+  }
+
+  .bk-diff-item {
+    @apply border-t border-t-mono-300 text-mono-900 w-full;
+    @apply hover:bg-mono-100;
+    &.bk-is-muted {
+      .bk-diff-item-diffs,
+      .bk-diff-status {
+        @apply opacity-50;
+      }
+      .bk-blokkli-item-label span {
+        @apply text-mono-400;
+      }
+    }
+  }
+
+  .bk-diff-item-diffs {
+  }
+
+  .bk-diff-item-header {
+    @apply flex w-full p-20 items-center;
+    &.bk-is-selected {
+      .bk-blokkli-item-label-icon {
+        @apply bg-orange-normal border-orange-dark/30 text-orange-dark;
+      }
+    }
+  }
+
+  .bk-diff-prop-row {
+    @apply px-20;
+    @apply mb-20;
+
+    h3 {
+      @apply font-semibold text-sm mb-5;
+    }
+  }
+
+  .bk-diff-monospace {
+    @apply font-mono text-sm;
+  }
+
+  .bk-diff-markup-style {
+    p,
+    ul,
+    ol,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply my-20 first:mt-0 last:mb-0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply leading-tight;
+    }
+
+    p,
+    ul,
+    ol {
+      @apply leading-normal;
+    }
+
+    h2 {
+      @apply font-bold text-[1.7em];
+    }
+
+    h3 {
+      @apply text-[1.5em] font-bold;
+    }
+
+    h4 {
+      @apply text-[1.3em] font-bold;
+    }
+
+    ul {
+      @apply list-disc ml-18;
+    }
+
+    ol {
+      @apply ml-30 list-decimal;
+    }
+
+    a {
+      @apply text-accent-700 underline;
+    }
+
+    blockquote {
+      @apply border-l-[6px] border-l-mono-300 pl-20;
+    }
+
+    pre {
+      @apply whitespace-break-spaces break-words w-full max-w-full;
+      word-break: break-all;
+    }
+  }
+
+  .bk-diff-value {
+    @apply inline;
+    word-break: break-word;
+
+    .bk-is-clipped {
+      del {
+        @apply line-clamp-4;
+      }
+    }
+
+    del {
+      @apply line-through text-mono-500;
+
+      &:has(img) {
+        @apply block overflow-hidden max-w-300 bg-red-normal;
+        @apply border-2 border-red-normal;
+        img {
+          opacity: 0.7;
+        }
+      }
+    }
+
+    ins {
+      @apply bg-lime-light rounded text-lime-dark border border-lime-normal/30 no-underline;
+
+      &:has(img) {
+        @apply border-2 border-lime-normal;
+        @apply block overflow-hidden max-w-300;
+      }
+    }
+
+    del:has(img) + ins:has(img) {
+      @apply mt-15;
+    }
+  }
+
+  .bk-diff-prop-side-by-side {
+    @apply grid gap-10;
+    @container (min-width: 700px) {
+      @apply grid-cols-2;
+    }
+
+    .bk-diff-prop-before,
+    .bk-diff-prop-after {
+      @apply border border-mono-300 rounded p-10;
+    }
+
+    .bk-diff-prop-before {
+      @apply bg-red-light/20;
+      .bk-diff-prop-label {
+        @apply text-red-normal;
+      }
+    }
+
+    .bk-diff-prop-after {
+      @apply bg-lime-light/20;
+      .bk-diff-prop-label {
+        @apply text-lime-normal;
+      }
+    }
+
+    .bk-diff-prop-label {
+      @apply text-xs font-semibold uppercase tracking-wider mb-5 text-mono-500;
+    }
+
+    .bk-diff-prop-content {
+      word-break: break-word;
+    }
+  }
+
+  .bk-diff-prop-after-only {
+    .bk-diff-prop-content {
+      @apply bg-lime-light/20 border border-lime-normal/30 rounded p-10;
+      word-break: break-word;
+    }
+  }
+
+  .bk-diff-status-label {
+    @apply uppercase text-xs font-semibold tracking-wider translate-y-[-3px] rounded-full px-[7px] py-[2px] inline-block;
+    @apply bg-mono-200 text-mono-500;
+
+    &.bk-is-added {
+      @apply text-white bg-lime-normal;
+    }
+
+    &.bk-is-removed {
+      @apply text-white bg-red-normal;
+    }
+  }
+}
+</style>

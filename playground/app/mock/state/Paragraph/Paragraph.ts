@@ -16,8 +16,16 @@ export abstract class Paragraph extends Entity {
       ...super.getFieldDefintions(),
       new FieldBoolean('isNew', 'is new'),
       new FieldOptions('options', 'Options'),
-      new FieldText('publishOn', 'Publish On'),
-      new FieldText('unpublishOn', 'Unpublish On'),
+      new FieldText('publishOn', 'Publish On', 1, false, -1, false),
+      new FieldText('unpublishOn', 'Unpublish On', 1, false, -1, false),
+      new FieldText(
+        'outdatedTranslations',
+        'Outdated Translations',
+        1,
+        false,
+        -1,
+        false,
+      ),
     ]
   }
 
@@ -61,11 +69,30 @@ export abstract class Paragraph extends Entity {
         isPublished = false
       }
     }
+    const rawOutdated = this.get('outdatedTranslations').getPropValue()
+    let outdatedTranslations: string[] = []
+    if (
+      rawOutdated === null ||
+      rawOutdated === undefined ||
+      rawOutdated === ''
+    ) {
+      // Field was never explicitly set: default to all languages that have
+      // translations on this entity.
+      outdatedTranslations = this.getTranslationLanguages()
+    } else {
+      try {
+        outdatedTranslations = JSON.parse(rawOutdated)
+      } catch {
+        /* ignore invalid JSON */
+      }
+    }
+
     return {
       isPublished,
       isNew,
       publishOn,
       unpublishOn,
+      outdatedTranslations,
     }
   }
 }

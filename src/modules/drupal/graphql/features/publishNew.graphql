@@ -45,7 +45,21 @@ query pbSearchEditStates($page: Int) {
       hostEntityUuid
       hostEntityType
       label
+      url(rel: "blokkli-editing") {
+        path
+      }
       currentUserIsOwner
+      mutations: mutationsRawField {
+        count
+      }
+      uid {
+        name
+      }
+      changedRawField {
+        first {
+          formatted(format: "c")
+        }
+      }
       entity {
         label
         status

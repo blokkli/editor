@@ -1,5 +1,6 @@
 import { defineAnalyzer } from '#blokkli/analyzer'
 import type { AnalyzeResult } from '#blokkli/analyzer/types'
+import { hashString } from '#blokkli/analyzer/helpers/hashString'
 
 export default defineAnalyzer(() => {
   return {
@@ -58,6 +59,7 @@ export default defineAnalyzer(() => {
               'Image without alt text',
             ),
             impact: 'serious' as const,
+            identifier: hashString(img.src),
             targets: img.element,
           })),
         })

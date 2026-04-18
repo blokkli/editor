@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
@@ -33,6 +37,18 @@ export default defineBlokkliAgentTool({
     if (params.uuids.length === 0) {
       return { error: 'No paragraph UUIDs provided' }
     }
+
+    // Check edit permission for from_library bundle
+    const denied = requireBundlePermission(
+      ctx.app,
+      [fromLibraryBlockBundle],
+      'edit',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    if (ancestorDenied) return ancestorDenied
 
     // Validate all blocks exist and are library blocks
     for (const uuid of params.uuids) {

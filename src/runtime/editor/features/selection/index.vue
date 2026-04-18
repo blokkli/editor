@@ -57,6 +57,7 @@ const {
   state,
   blocks,
   element,
+  permissions,
 } = useBlokkli()
 
 const originatesFromTextInput = (e: Event): boolean =>
@@ -109,7 +110,7 @@ const isVisible = computed(
  * Most visible is determined by how much of the block intersects with the
  * padded visible viewport area.
  */
-const findMostVisibleBlock = (): string | null => {
+const findMostVisibleBlock = (allowedSet?: Set<string>): string | null => {
   const viewport = ui.visibleViewportPadded.value
   const uuids = dom.getVisibleBlocks()
 
@@ -119,6 +120,9 @@ const findMostVisibleBlock = (): string | null => {
 
   for (let i = 0; i < uuids.length; i++) {
     const uuid = uuids[i]!
+    if (allowedSet && !allowedSet.has(uuid)) {
+      continue
+    }
     const absoluteRect = dom.getBlockRect(uuid)
     if (!absoluteRect) {
       continue
@@ -310,22 +314,86 @@ function selectBlock(uuid: string) {
 
 /**
  * Find the next or previous block.
+ *
+ * When allowedUuids is provided, only those UUIDs are considered as
+ * candidates (still in DOM order from getSelectionOrder).
+ *
+ * Skips over blocks whose restricted ancestor is already selected,
+ * so Tab doesn't get stuck cycling through children of a restricted block.
  */
-function selectInList(prev?: boolean) {
-  const currentUuid = selection.uuids.value[selection.uuids.value.length - 1]
+function selectInList(prev?: boolean, allowedUuids?: string[]) {
+  const allUuids = getSelectionOrder()
+  const uuids = allowedUuids
+    ? (() => {
+        const allowed = new Set(allowedUuids)
+        return allUuids.filter((uuid) => allowed.has(uuid))
+      })()
+    : allUuids
+
+  if (!uuids.length) {
+    return
+  }
+
+  // Use the current selection, or fall back to the most visible block
+  // as the starting point for navigation.
+  const currentUuid =
+    selection.uuids.value[selection.uuids.value.length - 1] ||
+    findMostVisibleBlock()
+
   if (!currentUuid) {
     return
   }
 
-  const selectionOrder = getSelectionOrder()
-  const currentIndex = selectionOrder.indexOf(currentUuid)
+  // Current selection is in the candidate list — navigate within it.
+  const currentIndex = uuids.indexOf(currentUuid)
+  if (currentIndex !== -1) {
+    const delta = prev ? -1 : 1
+    const length = uuids.length
+
+    for (let step = 1; step < length; step++) {
+      const newIndex = modulo(currentIndex + delta * step, length)
+      const candidate = uuids[newIndex]
+      if (!candidate) {
+        continue
+      }
+      const resolved = permissions.getRestrictedAncestor(candidate) ?? candidate
+      if (resolved !== currentUuid) {
+        selectBlock(candidate)
+        return
+      }
+    }
+    return
+  }
+
+  // A block is selected but it's not in the candidate list.
+  // Find the next/prev candidate relative to the current selection in
+  // full DOM order.
+  const fullIndex = allUuids.indexOf(currentUuid)
+  if (fullIndex === -1) {
+    return
+  }
+
+  const uuidSet = new Set(uuids)
   const delta = prev ? -1 : 1
-  const newIndex = modulo(currentIndex + delta, selectionOrder.length)
-  const newUuid = selectionOrder[newIndex]
-  if (newUuid) {
-    selectBlock(newUuid)
+  for (let step = 1; step < allUuids.length; step++) {
+    const idx = modulo(fullIndex + delta * step, allUuids.length)
+    const candidate = allUuids[idx]
+    if (candidate && uuidSet.has(candidate)) {
+      selectBlock(candidate)
+      return
+    }
   }
 }
+
+onBlokkliEvent('select:next', (allowedUuids) => {
+  selectInList(false, allowedUuids)
+  animation.requestDraw()
+})
+
+onBlokkliEvent('select:prev', (allowedUuids) => {
+  selectInList(true, allowedUuids)
+  animation.requestDraw()
+})
 
 onBlokkliEvent('keyPressed', (e) => {
   if (

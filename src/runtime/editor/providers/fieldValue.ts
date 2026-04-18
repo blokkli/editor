@@ -1,13 +1,11 @@
 import type { EntityContext } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { PropsFieldMapping } from '../../../global/types/definitions'
-import type { AdaptersProvider } from './adapters'
 import type { DefinitionProvider } from './definition'
 import type { DirectiveProvider } from './directive'
 import type { StateProvider } from './state'
 import type { BlockDefinitionProvider } from './types'
-// Side-effect import to register adapter type augmentation.
-import './fieldValueAdapterTypes'
+import type { BlocksProvider } from './blocks'
 
 /**
  * Simplified field type for editable fields.
@@ -22,6 +20,8 @@ export type TextFieldValue = {
   fieldName: string
   value: string
   fieldType: FieldValueType
+  entityType: string
+  entityBundle: string
 }
 
 /**
@@ -70,17 +70,17 @@ export type FieldValueProvider = {
 
   /**
    * Get all text field values from the page.
-   * Tries the adapter method first, falls back to reading from directive system.
+   * Reads from mapped state if available, falls back to reading from directive system.
    */
-  getTextFieldValues: () => Promise<TextFieldValue[]>
+  getTextFieldValues: () => TextFieldValue[]
 }
 
 export default function fieldValueProvider(
-  adapters: AdaptersProvider,
   directive: DirectiveProvider,
   state: StateProvider,
   types: BlockDefinitionProvider,
   definitions: DefinitionProvider,
+  blocks: BlocksProvider,
 ): FieldValueProvider {
   function resolveFieldType(
     entityType: string,
@@ -143,7 +143,12 @@ export default function fieldValueProvider(
 
     let matchingProp: string | null = null
     if (host.type === itemEntityType) {
-      const definition = definitions.getBlockDefinition(host.bundle, 'default')
+      const block = blocks.getBlock(host.uuid)
+      const definition = definitions.getBlockDefinition(
+        host.bundle,
+        block?.fieldListType ?? 'default',
+        block?.parentBlockBundle ?? null,
+      )
       if (definition?.propsFieldMapping) {
         matchingProp = findMatchingProp(definition.propsFieldMapping, fieldName)
       }
@@ -204,11 +209,11 @@ export default function fieldValueProvider(
     return ''
   }
 
-  async function getTextFieldValues(): Promise<TextFieldValue[]> {
-    // Try the adapter method first.
-    const adapter = adapters.adapter
-    if (adapter.getTextFieldValues) {
-      return adapter.getTextFieldValues()
+  function getTextFieldValues(): TextFieldValue[] {
+    // Read from mapped state if available (provided by adapter's mapState).
+    const mappedState = state.getMappedState()
+    if (mappedState.textFieldValues) {
+      return mappedState.textFieldValues
     }
 
     // Fallback: read from directive system using field configs.
@@ -232,6 +237,8 @@ export default function fieldValueProvider(
               fieldName: config.name,
               value: result.value,
               fieldType: result.fieldType,
+              entityType: itemEntityType,
+              entityBundle: item.bundle,
             })
           }
         }

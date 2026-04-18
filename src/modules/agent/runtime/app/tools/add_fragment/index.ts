@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
   name: z.string().describe('The fragment name to add'),
@@ -24,7 +25,22 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['fragmentsAddBlock'],
   execute(ctx, params) {
-    const { fields, definitions } = ctx.app
+    const { fields, definitions, permissions } = ctx.app
+
+    // Check add permission for the fragment block bundle
+    if (!permissions.checkBlockBundlePermission(fragmentBlockBundle, 'add')) {
+      return {
+        error: 'Permission denied: cannot add fragment blocks.',
+      }
+    }
+
+    // Check ancestor restrictions on the target parent
+    if (permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
+      return {
+        error:
+          'Permission denied: target parent is inside a block with restricted editing permissions',
+      }
+    }
 
     // Check if the fragment exists
     const fragment = definitions.fragmentDefinitions.value.find(

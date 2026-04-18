@@ -133,3 +133,17 @@ const fieldOptions = computed(() =>
     }),
 )
 </script>
+
+<style lang="postcss">
+.bk.bk-import-existing-dialog {
+  .bk.bk-dialog-footer {
+    @apply mt-0;
+  }
+  .bk-dialog-pre-footer {
+    @apply p-0 bg-white;
+  }
+  .bk-import-existing-dialog-results {
+    @apply mt-15 pt-15 border-t border-t-mono-300;
+  }
+}
+</style>

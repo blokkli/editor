@@ -19,7 +19,7 @@
     <div class="bk-agent-input-actions-bar">
       <div class="bk-agent-input-actions-left">
         <button
-          class="bk-agent-input-actions-button"
+          class="bk-agent-input-actions-button group/tooltip"
           :class="{ 'bk-is-active': isExpanded }"
           :disabled="!isConnected"
           @click="isExpanded = !isExpanded"
@@ -27,9 +27,11 @@
           <Icon
             :name="isExpanded ? 'bk_mdi_collapse_all' : 'bk_mdi_expand_all'"
           />
-          <div v-if="!isExpanded" class="bk-tooltip">
-            <span>{{ $t('aiAgentExpandButton', 'Show more') }}</span>
-          </div>
+          <Tooltip
+            v-show="!isExpanded"
+            :label="$t('aiAgentExpandButton', 'Show more')"
+            placement="above-left"
+          />
         </button>
         <button
           v-show="!hasText && hasConversation"
@@ -74,6 +76,7 @@ import {
   Icon,
   DropdownItem,
   TransitionHeight,
+  Tooltip,
 } from '#blokkli/editor/components'
 import TokenUsage from './TokenUsage/index.vue'
 import type { UsageTurn } from '#blokkli/agent/shared/types'

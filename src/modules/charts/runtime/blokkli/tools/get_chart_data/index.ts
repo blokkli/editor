@@ -48,7 +48,9 @@ export default defineBlokkliAgentTool({
     if ('error' in chartOption) return chartOption
 
     const item = state.getFieldListItem(params.uuid)
-    const rawData = item?.options?.[chartOption.key]
+    const rawData =
+      state.mutatedOptions[params.uuid]?.[chartOption.key] ||
+      item?.options?.[chartOption.key]
     let data
     if (rawData) {
       try {

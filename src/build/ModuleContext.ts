@@ -23,7 +23,7 @@ export interface ComplexOptionTypeDefinition {
   typeName: string
   typePath: string
   editorComponentPath: string
-  editorButtonLabel: string
+  editTitle: { key: string; defaultTranslation: string }
   editorIcon: string
 }
 
@@ -34,6 +34,9 @@ export class ModuleContext {
   private featureFragments: Set<string> = new Set()
   private complexOptionTypes: Map<string, ComplexOptionTypeDefinition> =
     new Map()
+  private cssFiles: string[] = []
+  private contentPaths: string[] = []
+  private additionalIcons: string[] = []
   public collectors: Collector[] = []
 
   constructor(
@@ -43,6 +46,39 @@ export class ModuleContext {
     public blocks: BlockCollector,
     public theme: ThemeData,
   ) {}
+
+  addCSS(filePath: string): void {
+    this.cssFiles.push(filePath)
+  }
+
+  getCSSFiles(): string[] {
+    return this.cssFiles
+  }
+
+  /**
+   * Register a directory containing Vue files that should participate in
+   * blökkli's CSS build pipeline. Files in these directories will:
+   * - Have their Tailwind utility classes generated and included in the output
+   * - Have their template class names mangled (_bk_ prefix) at build time
+   * - Have their <style> blocks processed through blökkli's PostCSS pipeline
+   *
+   * @param dirPath - Absolute path to a directory containing Vue components
+   */
+  addContentPath(dirPath: string): void {
+    this.contentPaths.push(dirPath)
+  }
+
+  getContentPaths(): string[] {
+    return this.contentPaths
+  }
+
+  addIcon(...names: string[]): void {
+    this.additionalIcons.push(...names)
+  }
+
+  getAdditionalIcons(): string[] {
+    return this.additionalIcons
+  }
 
   addFeatureFragment(name: string) {
     if (this.featureFragments.has(name)) {

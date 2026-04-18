@@ -1,6 +1,11 @@
 <template>
   <div class="field-value-editor">
-    <RichText v-model="value" @ready="sendMessageToParent" is-field-value />
+    <RichText
+      ref="richText"
+      v-model="value"
+      @ready="sendMessageToParent"
+      is-field-value
+    />
   </div>
 </template>
 
@@ -8,6 +13,7 @@
 import {
   definePageMeta,
   useQueryString,
+  useTemplateRef,
   watch,
   ref,
   useParamString,
@@ -34,7 +40,7 @@ if (!page) {
 }
 
 const editState = getEditState(entityType.value, entityUuid.value)
-const mutatedState = await editState.getMutatedState(page)
+const mutatedState = await editState.getMutatedState(page, 'en')
 
 const block = mutatedState.context.getProxy(uuid.value)?.block
 
@@ -44,6 +50,7 @@ if (!block) {
 
 const field = block.get<FieldTextarea>(fieldName.value)
 
+const richText = useTemplateRef('richText')
 const value = ref(field.getUnprocessed())
 
 const getHeight = () => {
@@ -59,10 +66,15 @@ const getHeight = () => {
 const sendMessageToParent = () => {
   if (window.parent !== window) {
     window.parent.postMessage({
-      name: 'blokkli__' + 'editable_field_update',
+      name: 'blokkli__editable_field_update',
       data: {
         text: value.value,
-        height: getHeight(),
+      },
+    })
+    window.parent.postMessage({
+      name: 'blokkli__editable_field_update_formatted',
+      data: {
+        text: value.value,
       },
     })
   }
@@ -74,17 +86,28 @@ const onWheel = (e: WheelEvent) => {
   }
 }
 
+const onMessage = (e: MessageEvent) => {
+  if (
+    typeof e.data === 'object' &&
+    e.data.name === 'blokkli__editable_field_set_value'
+  ) {
+    richText.value?.setData(e.data.data.text)
+  }
+}
+
 watch(value, () => {
   sendMessageToParent()
 })
 
 onMounted(() => {
   sendMessageToParent()
+  window.addEventListener('message', onMessage)
   document.body.addEventListener('wheel', onWheel, { passive: false })
   document.documentElement.classList.add('allow-overscroll')
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('message', onMessage)
   document.body.removeEventListener('wheel', onWheel)
 })
 </script>

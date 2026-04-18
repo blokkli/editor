@@ -1,26 +1,17 @@
 <template>
-  <div
-    @dragenter.stop.prevent="onDragEnter"
-    @dragleave.stop="onDragLeave"
-    @dragover.stop.prevent="onDragOver"
-    @drop.stop.prevent="onDrop"
+  <FileDropHandler
+    icon="bk_mdi_attach_file"
+    :label="$t('aiAgentDropFiles', 'Drop files to attach')"
+    :accept="acceptTextFile"
+    @drop="onDrop"
   >
     <slot />
-    <Transition name="bk-agent-drop" :duration="200">
-      <div v-if="isDragOver" class="bk-agent-drop-overlay">
-        <div class="bk-agent-drop-overlay-backdrop" />
-        <div class="bk-agent-drop-overlay-content">
-          <Icon name="bk_mdi_attach_file" />
-          <span>{{ $t('aiAgentDropFiles', 'Drop files to attach') }}</span>
-        </div>
-      </div>
-    </Transition>
-  </div>
+  </FileDropHandler>
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { useBlokkli } from '#imports'
+import { FileDropHandler } from '#blokkli/editor/components'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import type { Attachment, AttachmentFormat } from '#blokkli/agent/app/types'
 
@@ -187,60 +178,24 @@ async function extractDocxText(file: File): Promise<string> {
   )
   const turndown = new TurndownService({ headingStyle: 'atx' })
   const markdown = turndown.turndown(html)
-  // Strip any leftover image markdown (e.g. ![](data:...)) or bare data URIs.
   const cleaned = markdown.replace(/!\[[^\]]*\]\([^)]*\)/g, '').trim()
   return cleaned
 }
 
-let dragCounter = 0
-const isDragOver = ref(false)
-
-function hasTextItems(dt: DataTransfer): boolean {
-  for (const item of dt.items) {
-    if (item.kind !== 'file') continue
-    // Accept if MIME type is text-like.
-    if (
-      item.type.startsWith('text/') ||
-      TEXT_MIME_TYPES.has(item.type) ||
-      item.type === DOCX_MIME
-    ) {
-      return true
-    }
-    // Accept if MIME type is empty (browser doesn't know — we'll check the
-    // extension on drop).
-    if (!item.type) return true
+function acceptTextFile(item: DataTransferItem): boolean {
+  if (item.kind !== 'file') return false
+  if (
+    item.type.startsWith('text/') ||
+    TEXT_MIME_TYPES.has(item.type) ||
+    item.type === DOCX_MIME
+  ) {
+    return true
   }
+  if (!item.type) return true
   return false
 }
 
-function onDragEnter(e: DragEvent) {
-  dragCounter++
-  if (e.dataTransfer?.types.includes('Files') && hasTextItems(e.dataTransfer)) {
-    isDragOver.value = true
-  }
-}
-
-function onDragLeave() {
-  dragCounter--
-  if (dragCounter <= 0) {
-    dragCounter = 0
-    isDragOver.value = false
-  }
-}
-
-function onDragOver(e: DragEvent) {
-  if (e.dataTransfer) {
-    e.dataTransfer.dropEffect = 'copy'
-  }
-}
-
-async function onDrop(e: DragEvent) {
-  dragCounter = 0
-  isDragOver.value = false
-
-  const files = e.dataTransfer?.files
-  if (!files?.length) return
-
+async function onDrop(files: File[]) {
   const dropped: Attachment[] = []
 
   for (const file of files) {

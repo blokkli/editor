@@ -13,7 +13,7 @@ export class ParagraphTeaser extends Paragraph {
     return [
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),
-      new FieldText('url', 'Url'),
+      new FieldText('url', 'Url', 1, false, -1, false),
       new FieldTextarea('text', 'Text'),
     ]
   }

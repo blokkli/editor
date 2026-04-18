@@ -6,6 +6,7 @@ import { ParagraphChart } from './Chart'
 import { ParagraphFragment } from './Fragment'
 import { ParagraphFromLibrary } from './FromLibrary'
 import { ParagraphGrid } from './Grid'
+import { ParagraphIframe } from './Iframe'
 import { ParagraphIcon } from './Icon'
 import { ParagraphImage } from './Image'
 import { ParagraphNotImplemented } from './NotImplemented'
@@ -54,6 +55,8 @@ export const createParagraph = (bundle: string, uuid: string): Paragraph => {
       return new ParagraphOnThisPage(uuid)
     case 'blokkli_fragment':
       return new ParagraphFragment(uuid)
+    case 'iframe':
+      return new ParagraphIframe(uuid)
     case 'icon':
       return new ParagraphIcon(uuid)
     case 'button_list':
@@ -84,6 +87,7 @@ export const getParagraphBundles = (): Array<typeof Paragraph> => {
     ParagraphTable,
     ParagraphFromLibrary,
     ParagraphOnThisPage,
+    ParagraphIframe,
     ParagraphIcon,
     ParagraphButtonList,
     ParagraphGallery,

@@ -280,6 +280,11 @@ type DefinitionOptionRadiosGridOption = {
    * The label displayed for this option.
    */
   label: string
+
+  /**
+   * Optional description providing additional context for this option.
+   */
+  description?: string
 }
 
 type DefinitionOptionRadiosGrid = {
@@ -315,6 +320,11 @@ type DefinitionOptionRadiosColorsOption = {
    * The label displayed for this option.
    */
   label: string
+
+  /**
+   * Optional description providing additional context for this option.
+   */
+  description?: string
 }
 
 type DefinitionOptionRadiosColors = {
@@ -342,9 +352,10 @@ type DefinitionOptionRadiosRadios = {
   /**
    * Available options.
    *
-   * Key is the option value, value is the display label.
+   * Key is the option value, value is the display label or an object with
+   * label and optional description.
    */
-  options: Record<string, string>
+  options: Record<string, string | { label: string; description?: string }>
 }
 
 type DefinitionOptionRadiosIconsOptionBase<Icon extends string = string> = {
@@ -359,6 +370,11 @@ type DefinitionOptionRadiosIconsOptionBase<Icon extends string = string> = {
    * The label displayed for this option.
    */
   label: string
+
+  /**
+   * Optional description providing additional context for this option.
+   */
+  description?: string
 }
 
 type DefinitionOptionRadiosIconsBase<Icon extends string = string> = {

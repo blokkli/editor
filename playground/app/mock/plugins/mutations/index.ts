@@ -31,6 +31,10 @@ import {
   type MutationEditTranslationArgs,
 } from './Mutation/EditTranslation'
 import {
+  MutationEditTranslationBatched,
+  type MutationEditTranslationBatchedArgs,
+} from './Mutation/EditTranslationBatched'
+import {
   MutationHostTransform,
   type MutationHostTransformArgs,
 } from './Mutation/HostTransform'
@@ -89,6 +93,20 @@ import {
   type MutationUpdateFieldValueBatchedArgs,
 } from './Mutation/UpdateFieldValueBatched'
 import {
+  MutationMarkTranslationUpToDate,
+  type MutationMarkTranslationUpToDateArgs,
+} from './Mutation/MarkTranslationUpToDate'
+import {
+  MutationIgnoreAnalyze,
+  MutationUnignoreAnalyze,
+  type MutationIgnoreAnalyzeArgs,
+  type MutationUnignoreAnalyzeArgs,
+} from './Mutation/SetIgnoredAnalyze'
+import {
+  MutationImportTranslationsBatched,
+  type MutationImportTranslationsBatchedArgs,
+} from './Mutation/ImportTranslationsBatched'
+import {
   MutationDroppableFieldUpdate,
   type MutationDroppableFieldUpdateArgs,
 } from './Mutation/DroppableFieldUpdate'
@@ -100,6 +118,7 @@ export type MutationArgsMap = {
   duplicate: MutationDuplicateArgs
   edit: MutationEditArgs
   edit_translation: MutationEditTranslationArgs
+  edit_translation_batched: MutationEditTranslationBatchedArgs
   update_options: MutationUpdateOptionsArgs
   update_host_options: MutationUpdateHostOptionsArgs
   make_reusable: MutationMakeReusableArgs
@@ -120,6 +139,10 @@ export type MutationArgsMap = {
   swap: MutationSwapArgs
   rearrange: MutationRearrangeArgs
   update_field_value_batched: MutationUpdateFieldValueBatchedArgs
+  mark_translation_up_to_date: MutationMarkTranslationUpToDateArgs
+  ignore_analyze: MutationIgnoreAnalyzeArgs
+  unignore_analyze: MutationUnignoreAnalyzeArgs
+  import_translations_batched: MutationImportTranslationsBatchedArgs
   droppable_field_update: MutationDroppableFieldUpdateArgs
 }
 
@@ -140,6 +163,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationEdit(configuration)
     case 'edit_translation':
       return new MutationEditTranslation(configuration)
+    case 'edit_translation_batched':
+      return new MutationEditTranslationBatched(configuration)
     case 'update_options':
       return new MutationUpdateOptions(configuration)
     case 'update_host_options':
@@ -180,6 +205,14 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationRearrange(configuration)
     case 'update_field_value_batched':
       return new MutationUpdateFieldValueBatched(configuration)
+    case 'mark_translation_up_to_date':
+      return new MutationMarkTranslationUpToDate(configuration)
+    case 'ignore_analyze':
+      return new MutationIgnoreAnalyze(configuration)
+    case 'unignore_analyze':
+      return new MutationUnignoreAnalyze(configuration)
+    case 'import_translations_batched':
+      return new MutationImportTranslationsBatched(configuration)
     case 'droppable_field_update':
       return new MutationDroppableFieldUpdate(configuration)
   }

@@ -1,0 +1,23 @@
+query pbEntitiesSearch {
+  paragraphsBlokkliEntitiesSearch {
+    items {
+      id
+      uuid
+      entityType
+      bundle
+      label
+      url
+      lastChanged
+      uid
+      context
+    }
+    bundleLabels {
+      id
+      label
+    }
+    entityTypeLabels {
+      id
+      label
+    }
+  }
+}

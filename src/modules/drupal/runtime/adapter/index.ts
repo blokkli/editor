@@ -32,7 +32,10 @@ import type {
   HostTransformPlugin,
   TransformPlugin,
 } from '#blokkli/editor/features/transform/types'
-import type { PublishOptions } from '#blokkli/editor/features/publish/types'
+import type {
+  GetEditStatesItem,
+  PublishOptions,
+} from '#blokkli/editor/features/publish/types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type { TranslationState } from '#blokkli/editor/types/state'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
@@ -206,9 +209,24 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         clipboard: v.data.clipboards || [],
         userPermissions: v.data.userPermissions,
         availableFeatures: v.data.features,
-        allTypes: (v.data.allTypes.items || []).filter(
-          (v) => v && 'id' in v,
-        ) as BlockBundleDefinition[],
+        allTypes: (v.data.allTypes.items || [])
+          .map<BlockBundleDefinition | null>((v) => {
+            if (v && 'id' in v && v.id) {
+              return {
+                id: v.id,
+                label: v.label ?? '',
+                description: v.description ?? '',
+                allowReusable: !!v.allowReusable,
+                isTranslatable: !!v.isTranslatable,
+                hasPublishOn: !!v.hasPublishOn,
+                hasUnpublishOn: !!v.hasUnpublishOn,
+                permissions: v.permissions ?? [],
+              }
+            }
+
+            return null
+          })
+          .filter(falsy),
         fieldConfig: v.data.fieldConfig || [],
         editableFieldConfig: v.data.editableFieldConfig || [],
         droppableFieldConfig: v.data.droppableFieldConfig || [],
@@ -221,7 +239,17 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           },
           {},
         ),
+        entityTypeConfig: v.data.entityTypeConfig,
       }
+    })
+
+    const entityTypeConfigMap = new Map()
+
+    config.entityTypeConfig.forEach((entityType) => {
+      entityTypeConfigMap.set(entityType.id, entityType.label)
+      entityType.bundles.forEach((bundle) => {
+        entityTypeConfigMap.set(`${entityType.id}:${bundle.id}`, bundle.label)
+      })
     })
 
     const entityConfig = await useGraphqlQuery('pbEntityConfig', {
@@ -316,6 +344,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         mutations,
         currentUserIsOwner,
         ownerName,
+        ownerId: state.user?.id,
         mutatedState: {
           fields,
           violations,
@@ -329,6 +358,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         entity,
         mutatedEntity: state.mutatedEntity,
         translationState,
+        textFieldValues: (state.textFieldValues || []).map((v) => ({
+          uuid: v.uuid,
+          fieldName: v.fieldName,
+          value: v.value,
+          fieldType: v.fieldType as 'plain' | 'markup',
+          entityType: v.entityType,
+          entityBundle: v.entityBundle,
+        })),
+        ignoredAnalyzeIdentifiers:
+          state.stateSettings?.ignoredAnalyzeIdentifiers || [],
       }
     }
 
@@ -522,6 +561,28 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       moveBlock,
       moveMultipleBlocks,
       buildAnchorLink,
+      getEntityTypeInfo(id) {
+        const label = entityTypeConfigMap.get(id)
+        if (label) {
+          return {
+            id,
+            label,
+          }
+        }
+
+        return null
+      },
+      getEntityBundleInfo(entityTypeId: string, bundle: string) {
+        const label = entityTypeConfigMap.get(`${entityTypeId}:${bundle}`)
+        if (label) {
+          return {
+            id: bundle,
+            label,
+          }
+        }
+
+        return null
+      },
     }
 
     if (hasQuery('pbPublishOptions')) {
@@ -694,6 +755,66 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
+    if (hasMutation('pbClearOutdatedTranslation')) {
+      adapter.markTranslationUpToDate = (uuids, langcode) =>
+        useGraphqlMutation('pbClearOutdatedTranslation', {
+          ...ctx.value,
+          uuids,
+          langcode,
+        }).then(mapMutation)
+    }
+
+    if (hasMutation('pbBulkTranslateFieldValues')) {
+      adapter.importTranslationsBatched = ({ items, markUpToDate }) =>
+        useGraphqlMutation('pbBulkTranslateFieldValues', {
+          ...ctx.value,
+          clearOutdated: !!markUpToDate,
+          items: items.map((item) => ({
+            uuid: item.uuid,
+            name: item.fieldName,
+            value: item.fieldValue,
+            langcode: item.langcode,
+          })),
+        }).then(mapMutation)
+    }
+
+    if (hasQuery('pbTextFieldValues')) {
+      adapter.loadTextFieldValuesForLanguage = (langcode) =>
+        useGraphqlQuery('pbTextFieldValues', {
+          ...ctx.value,
+          langcode,
+        }).then((v) =>
+          (v.data.state?.textFieldValues || []).map((tfv) => ({
+            uuid: tfv.uuid,
+            fieldName: tfv.fieldName,
+            value: tfv.value,
+            fieldType: tfv.fieldType as 'plain' | 'markup',
+            entityType: tfv.entityType,
+            entityBundle: tfv.entityBundle,
+          })),
+        )
+    }
+
+    if (hasMutation('pbRequestTranslation')) {
+      adapter.requestTranslation = (items) =>
+        useGraphqlMutation('pbRequestTranslation', {
+          items: items.map((item) => ({
+            key: item.key,
+            text: item.text,
+            isMarkup: item.isHtml,
+            sourceLanguage: item.sourceLanguage,
+            targetLanguage: item.targetLanguage,
+          })),
+        }).then((v) => ({
+          success: v.data.result?.success ?? false,
+          errors: v.data.result?.errors ?? undefined,
+          data: (v.data.result?.items || []).map((item) => ({
+            key: item.key,
+            translatedText: item.text,
+          })),
+        }))
+    }
+
     if (hasMutation('pbAddReusableParagraph')) {
       adapter.addLibraryItem = (e) =>
         useGraphqlMutation('pbAddReusableParagraph', {
@@ -778,6 +899,23 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           uuid,
         }).then((v) => mapComments(v.data.action || []))
+    }
+
+    if (hasQuery('pbReferencedEntities')) {
+      adapter.getReferencedEntities = (uuids) =>
+        useGraphqlQuery('pbReferencedEntities', {
+          ...ctx.value,
+          uuids,
+        }).then((v) =>
+          (v.data.state?.referencedEntities || []).map((entity) => ({
+            editUrl: entity.editUrl,
+            entityBundle: entity.entityBundle,
+            entityType: entity.entityType,
+            entityUuid: entity.entityUuid,
+            label: entity.label ?? '',
+            uuids: entity.uuids || [],
+          })),
+        )
     }
 
     if (hasQuery('pbLibraryItems')) {
@@ -1154,24 +1292,33 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasQuery('pbSearchEditStates')) {
-      adapter.getEditStates = (page) => {
-        return useGraphqlQuery('pbSearchEditStates', { page }).then((data) => {
+      adapter.getEditStates = (e) => {
+        return useGraphqlQuery('pbSearchEditStates', {
+          page: e?.page,
+          ...e?.filters,
+        }).then((data) => {
           return {
             items: (data.data.pbSearchEditStates?.items || [])
-              .map((v) => {
+              .map<GetEditStatesItem | null>((v) => {
                 if (
                   v &&
                   v.uuid &&
                   v.hostEntityType &&
                   v.hostEntityUuid &&
-                  v.label
+                  v.label &&
+                  v.url?.path
                 ) {
                   return {
                     id: v.uuid,
                     hostEntityType: v.hostEntityType,
                     hostEntityUuid: v.hostEntityUuid,
                     label: v.label,
-                    ...v,
+                    ownerName: v.uid?.name ?? '',
+                    pendingChanges: v.mutations?.count ?? 0,
+                    lastChanged: v.changedRawField?.first?.formatted ?? '',
+                    url: v.url.path,
+                    entity: v.entity,
+                    currentUserIsOwner: v.currentUserIsOwner,
                   }
                 }
                 return null
@@ -1182,6 +1329,35 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             filters: mapPluginConfigInputs(
               data.data.pbSearchEditStates?.filters ?? [],
             ),
+          }
+        })
+      }
+    }
+
+    if (hasQuery('pbEntitiesSearch')) {
+      adapter.getHostEntities = () => {
+        return useGraphqlQuery('pbEntitiesSearch').then((data) => {
+          const result = data.data.paragraphsBlokkliEntitiesSearch
+          const bundles: Record<string, string> = {}
+          for (const bundle of result?.bundleLabels ?? []) {
+            bundles[bundle.id] = bundle.label
+          }
+          return {
+            items: (result?.items ?? []).map((v) => ({
+              id: v.id,
+              uuid: v.uuid,
+              entityType: v.entityType,
+              bundle: v.bundle,
+              label: v.label ?? '',
+              url: v.url,
+              lastChanged: v.lastChanged ?? null,
+              uid: v.uid ?? null,
+              context: v.context ?? undefined,
+            })),
+            labelMap: {
+              label: result?.entityTypeLabels?.[0]?.label ?? '',
+              bundles,
+            },
           }
         })
       }
@@ -1442,12 +1618,24 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           useGraphqlQuery('pbAgentConversation', {
             ...hostParams(),
             uuid,
-          }).then((v) => v.data.conversation ?? null),
+          }).then((v) => {
+            const c = v.data.conversation
+            if (!c) return null
+            return {
+              ...c,
+              feedbackItemIds: c.feedback.map((f) => f.itemId),
+            }
+          }),
 
         loadLatest: () =>
-          useGraphqlQuery('pbAgentConversation', hostParams()).then(
-            (v) => v.data.conversation ?? null,
-          ),
+          useGraphqlQuery('pbAgentConversation', hostParams()).then((v) => {
+            const c = v.data.conversation
+            if (!c) return null
+            return {
+              ...c,
+              feedbackItemIds: c.feedback.map((f) => f.itemId),
+            }
+          }),
 
         list: () =>
           useGraphqlQuery('pbAgentConversations', hostParams()).then(
@@ -1458,6 +1646,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           useGraphqlMutation('pbAgentConversationDelete', { uuid }).then(
             (v) => v.data.result.success,
           ),
+      }
+
+      if (hasMutation('pbAgentConversationFeedback')) {
+        adapter.submitConversationFeedback = (feedback) =>
+          useGraphqlMutation('pbAgentConversationFeedback', {
+            uuid: feedback.conversationId,
+            itemId: feedback.lastItemId,
+            rating: feedback.rating,
+            explanation: feedback.comment,
+          }).then((v) => v.data.result.success)
       }
     }
 
@@ -1498,6 +1696,18 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
       }
     }
+
+    adapter.ignoreAnalyzeIdentifiers = (identifiers) =>
+      useGraphqlMutation('pbIgnoreAnalyze', {
+        ...ctx.value,
+        ids: identifiers,
+      }).then(mapMutation)
+
+    adapter.unignoreAnalyzeIdentifiers = (identifiers) =>
+      useGraphqlMutation('pbUnignoreAnalyze', {
+        ...ctx.value,
+        ids: identifiers,
+      }).then(mapMutation)
 
     return adapter
   },

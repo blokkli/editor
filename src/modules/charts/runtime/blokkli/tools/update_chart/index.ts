@@ -72,7 +72,9 @@ export default defineBlokkliAgentTool({
     // Read current chart data from options.
     let current: BlokkliChartData
     const item = state.getFieldListItem(params.uuid)
-    const rawData = item?.options?.[chartOption.key]
+    const rawData =
+      state.mutatedOptions[params.uuid]?.[chartOption.key] ||
+      item?.options?.[chartOption.key]
     if (rawData) {
       try {
         current = JSON.parse(rawData)

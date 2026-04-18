@@ -19,6 +19,7 @@ type UseStickyToolbarOptions = {
   getAnchorCoordinates?: () => Coord | null
   getCaretWidth?: () => number
   allowHorizontalOverflow?: boolean
+  isFullscreen?: () => boolean
 }
 
 type UseStickyToolbar = {
@@ -345,6 +346,8 @@ export function useStickyToolbar(
     return 'left'
   }
 
+  let wasFullscreen = false
+
   onBlokkliEvent('canvas:draw', (ctx) => {
     if (!el.value) {
       return
@@ -354,6 +357,24 @@ export function useStickyToolbar(
       el.value.style.transform = ''
       shouldRender.value = true
       return
+    }
+
+    const fullscreen = !!options?.isFullscreen?.()
+
+    if (fullscreen) {
+      const vp = ui.visibleViewport.value
+      el.value.style.transform = `translate3d(${vp.x}px, ${vp.y}px, 0)`
+      el.value.style.width = `${vp.width}px`
+      el.value.style.height = `${vp.height}px`
+      shouldRender.value = true
+      wasFullscreen = true
+      return
+    }
+
+    if (wasFullscreen) {
+      el.value.style.width = ''
+      el.value.style.height = ''
+      wasFullscreen = false
     }
 
     if (options && options.shouldUpdate && !options.shouldUpdate()) {

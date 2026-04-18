@@ -8,13 +8,24 @@ import type {
 } from '../events'
 import type { PluginConfigInput } from '../types/pluginConfig'
 import type { EntityTranslation, MappedState } from '../types/state'
-import type { BlockBundleDefinition, FieldConfig } from '../types/definitions'
+import type {
+  BlockBundleDefinition,
+  EntityTypeBundleInfo,
+  EntityTypeInfo,
+  FieldConfig,
+} from '../types/definitions'
 import type { EditBlockEvent } from '../features/edit/types'
 import type { UserPermissions } from '../types/permissions'
 
 export interface MutationResponseLike<T> {
   success: boolean
   state?: T
+  errors?: string[]
+}
+
+export interface GenericAdapterResponse<T> {
+  success: boolean
+  data: T
   errors?: string[]
 }
 
@@ -167,6 +178,12 @@ export interface BlokkliAdapter<T> {
      */
     persist: (settings: string) => Promise<undefined>
   }
+
+  getEntityTypeInfo?: (entityType: string) => EntityTypeInfo | null
+  getEntityBundleInfo?: (
+    entityType: string,
+    bundle: string,
+  ) => EntityTypeBundleInfo | null
 }
 
 /**

@@ -4,7 +4,7 @@
       v-for="(item, i) in visibleItems"
       :key="item.item.uuid"
       ref="listItems"
-      class="bk bk-search-item"
+      class="bk-search-item"
       :class="{ 'bk-is-active': i === index }"
       @click.stop="clickItem"
       @mouseenter="index = i"

@@ -11,15 +11,15 @@
           </button>
         </div>
 
-        <ChartTypePicker v-model="data.type" />
+        <ChartTypePicker v-model="chartData.type" />
       </div>
 
       <ChartTypeOptions
         v-if="chartDef"
-        v-model:title="data.title"
+        v-model:title="chartData.title"
         :options="chartDef.editor.options"
-        :type-options="data.typeOptions || {}"
-        @update:type-options="data.typeOptions = $event"
+        :type-options="chartData.typeOptions || {}"
+        @update:type-options="chartData.typeOptions = $event"
       />
     </div>
 
@@ -55,18 +55,18 @@
       <div class="bk-chart-editor-section">
         <label class="bk-form-label">{{ $t('chartsData', 'Data') }}</label>
         <DataTable
-          :categories="data.categories"
-          :series="data.series"
-          :category-colors="data.categoryColors"
+          :categories="chartData.categories"
+          :series="chartData.series"
+          :category-colors="chartData.categoryColors"
           :has-multiple-series="caps.hasMultipleSeries"
           :has-series-colors="caps.hasSeriesColors"
           :has-category-colors="caps.hasCategoryColors"
           :colors="COLORS"
           :remove-row="removeRow"
           :remove-series="removeSeries"
-          @update:categories="data.categories = $event"
-          @update:series="data.series = $event"
-          @update:category-colors="data.categoryColors = $event"
+          @update:categories="chartData.categories = $event"
+          @update:series="chartData.series = $event"
+          @update:category-colors="chartData.categoryColors = $event"
         />
         <div class="bk-chart-data-table-actions">
           <button type="button" class="bk-button bk-is-small" @click="addRow">
@@ -88,8 +88,8 @@
 
       <div class="bk-chart-editor-section">
         <FootnoteEditor
-          :footnotes="data.footnotes"
-          @update:footnotes="data.footnotes = $event"
+          :footnotes="chartData.footnotes"
+          @update:footnotes="chartData.footnotes = $event"
         />
       </div>
     </div>
@@ -113,57 +113,51 @@ import ChartTypeOptions from './ChartTypeOptions/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{
+  data: BlokkliChartData | null
   uuid: string
   optionKey: string
 }>()
 
-const { $t, state } = useBlokkli()
+const { $t } = useBlokkli()
 
 function getCurrentData(): BlokkliChartData {
-  const rawData =
-    state.mutatedOptions[props.uuid]?.data ||
-    state.getFieldListItem(props.uuid)?.options?.data
-  if (rawData) {
-    try {
-      const parsed = JSON.parse(rawData)
-      if (parsed && Array.isArray(parsed.series) && parsed.series.length > 0) {
-        const fallbackId = getFirstColorId(COLORS)
-        for (const series of parsed.series) {
-          if (!COLORS[series.color]) {
-            series.color = fallbackId
-          }
+  if (props.data) {
+    const parsed = JSON.parse(JSON.stringify(props.data))
+    if (parsed && Array.isArray(parsed.series) && parsed.series.length > 0) {
+      const fallbackId = getFirstColorId(COLORS)
+      for (const series of parsed.series) {
+        if (!COLORS[series.color]) {
+          series.color = fallbackId
         }
-        if (Array.isArray(parsed.categoryColors)) {
-          for (let i = 0; i < parsed.categoryColors.length; i++) {
-            if (!COLORS[parsed.categoryColors[i]]) {
-              parsed.categoryColors[i] = fallbackId
-            }
-          }
-        } else {
-          parsed.categoryColors = parsed.categories.map(
-            (_: string, i: number) => {
-              const ids = Object.keys(COLORS)
-              return ids[i % ids.length] || fallbackId
-            },
-          )
-        }
-        if (!Array.isArray(parsed.footnotes)) {
-          parsed.footnotes = []
-        }
-        if (!parsed.typeOptions || typeof parsed.typeOptions !== 'object') {
-          parsed.typeOptions = getDefaultTypeOptions(parsed.type)
-        }
-        return parsed
       }
-    } catch {
-      // Ignore parse errors.
+      if (Array.isArray(parsed.categoryColors)) {
+        for (let i = 0; i < parsed.categoryColors.length; i++) {
+          if (!COLORS[parsed.categoryColors[i]]) {
+            parsed.categoryColors[i] = fallbackId
+          }
+        }
+      } else {
+        parsed.categoryColors = parsed.categories.map(
+          (_: string, i: number) => {
+            const ids = Object.keys(COLORS)
+            return ids[i % ids.length] || fallbackId
+          },
+        )
+      }
+      if (!Array.isArray(parsed.footnotes)) {
+        parsed.footnotes = []
+      }
+      if (!parsed.typeOptions || typeof parsed.typeOptions !== 'object') {
+        parsed.typeOptions = getDefaultTypeOptions(parsed.type)
+      }
+      return parsed
     }
   }
   return getDefaultChartData(COLORS)
 }
 
 const {
-  data,
+  data: chartData,
   canUndo,
   canRedo,
   undo,
@@ -177,18 +171,18 @@ const {
 
 const autoUpdate = ref(true)
 const previewData = ref<BlokkliChartData>(
-  JSON.parse(JSON.stringify(data.value)),
+  JSON.parse(JSON.stringify(chartData.value)),
 )
 const isStale = ref(false)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 function refreshPreview() {
-  previewData.value = JSON.parse(JSON.stringify(data.value))
+  previewData.value = JSON.parse(JSON.stringify(chartData.value))
   isStale.value = false
 }
 
 watch(
-  data,
+  chartData,
   () => {
     if (autoUpdate.value) {
       if (debounceTimer) clearTimeout(debounceTimer)
@@ -211,7 +205,7 @@ onBeforeUnmount(() => {
   if (debounceTimer) clearTimeout(debounceTimer)
 })
 
-const chartDef = computed(() => getChartType(data.value.type, $t))
+const chartDef = computed(() => getChartType(chartData.value.type, $t))
 const caps = computed(() => {
   const def = chartDef.value
   return {
@@ -222,11 +216,11 @@ const caps = computed(() => {
 })
 
 const typeOptionsCache: Record<string, unknown> = {
-  ...data.value.typeOptions,
+  ...chartData.value.typeOptions,
 }
 
 watch(
-  () => data.value.type,
+  () => chartData.value.type,
   (type) => {
     const defaults = getDefaultTypeOptions(type)
     const merged: Record<string, unknown> = {}
@@ -234,12 +228,12 @@ watch(
       merged[key] =
         key in typeOptionsCache ? typeOptionsCache[key] : defaults[key]
     }
-    data.value.typeOptions = merged
+    chartData.value.typeOptions = merged
   },
 )
 
 watch(
-  () => data.value.typeOptions,
+  () => chartData.value.typeOptions,
   (opts) => {
     if (opts) {
       Object.assign(typeOptionsCache, opts)
@@ -249,7 +243,7 @@ watch(
 )
 
 function getData(): BlokkliChartData {
-  return data.value
+  return chartData.value
 }
 
 onBlokkliEvent('keyPressed', (e) => {

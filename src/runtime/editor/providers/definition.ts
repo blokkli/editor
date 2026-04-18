@@ -33,8 +33,8 @@ export type DefinitionProvider = {
    */
   getBlockDefinition: (
     bundleOrBlock: string | RenderedFieldListItem,
-    fieldListType?: ValidFieldListTypes | null,
-    parentBundle?: BlockBundleWithNested | null,
+    fieldListType: ValidFieldListTypes | null,
+    parentBundle: BlockBundleWithNested | null,
   ) => BlockDefinition | undefined
 
   /**
@@ -212,8 +212,8 @@ export default function (providerType: ValidProviderTypes): DefinitionProvider {
 
   function getBlockDefinition(
     bundleOrBlock: string | RenderedFieldListItem,
-    maybeFieldListType?: ValidFieldListTypes | null,
-    maybeParentBundle?: BlockBundleWithNested | null,
+    maybeFieldListType: ValidFieldListTypes | null,
+    maybeParentBundle: BlockBundleWithNested | null,
   ): BlockDefinition | undefined {
     const bundle =
       typeof bundleOrBlock === 'string' ? bundleOrBlock : bundleOrBlock.bundle

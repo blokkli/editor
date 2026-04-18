@@ -18,6 +18,8 @@
         </button>
       </div>
 
+      <slot name="tabs" />
+
       <div
         class="bk-dialog-content"
         :class="{
@@ -157,3 +159,107 @@ export default {
   name: 'BlokkliDialog',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-dialog {
+  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog lg:p-15 pointer-events-none;
+  @apply flex items-center justify-center;
+
+  .bk-dialog-inner {
+    @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
+    @apply flex flex-col;
+    @apply bg-black md:bg-white pointer-events-auto;
+  }
+
+  @screen md {
+    .bk.bk-overlay-header {
+      @apply pl-15 text-lg;
+      > button {
+        @apply p-15 hover:bg-mono-800 focus-visible:bg-mono-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-mono-100;
+      }
+    }
+  }
+  @screen lg {
+    .bk.bk-overlay-header {
+      @apply pl-25;
+    }
+  }
+
+  .bk-dialog-lead {
+    @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-mono-700;
+  }
+  .bk-dialog-footer {
+    @apply flex gap-10 md:mt-30 p-15 lg:p-20 border-t bg-mono-50 border-t-mono-300;
+    flex: 0 0 auto;
+    button {
+      @apply w-full lg:w-auto;
+    }
+  }
+
+  .bk-dialog-content,
+  .bk-dialog-pre-footer {
+    @apply px-15 lg:px-20 xl:px-30;
+  }
+  .bk-dialog-pre-footer {
+    @apply py-15 lg:py-20 xl:py-30 bg-mono-50 border-t border-t-mono-300;
+  }
+
+  .bk-dialog-content {
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full  pt-15  lg:pt-20 lg:h-auto rounded-t-xl md:rounded-t-none bg-white;
+    @apply overscroll-contain;
+
+    &.bk-is-fullscreen {
+      @apply p-0;
+      .bk-dialog-content-inner {
+        @apply p-0 h-full;
+      }
+    }
+  }
+  .bk-dialog-content-inner {
+    min-height: calc(100vh - 160px);
+    @apply pb-20;
+    @screen md {
+      min-height: auto;
+      @apply h-auto;
+    }
+  }
+}
+
+.bk.bk-overlay-header {
+  @apply bg-black text-white flex items-center pl-10 text-base leading-none;
+
+  > .bk-icon,
+  > .bk-blokkli-item-icon {
+    @apply w-auto h-auto mr-5;
+    svg {
+      @apply fill-current w-[1.25em] h-[1.25em];
+    }
+  }
+
+  h3 {
+    @apply font-bold;
+  }
+
+  > button {
+    @apply px-10 py-15 ml-auto flex items-center justify-center size-60;
+
+    .bk-icon {
+      @apply w-[1.25em] h-[1.25em];
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+}
+
+.bk .bk-dialog-content-element {
+  @apply rounded p-20 min-h-[400px] mb-30 border border-mono-300 flex items-center justify-center overflow-hidden;
+  &.bk-default-bg {
+    @apply bg-mono-50;
+  }
+}
+
+.bk .bk-message-info {
+  @apply font-sans text-base bg-yellow-light p-10 border border-yellow-normal rounded text-yellow-dark my-20;
+}
+</style>

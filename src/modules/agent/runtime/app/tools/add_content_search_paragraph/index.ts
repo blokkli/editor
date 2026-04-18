@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
+import { requireBundlePermission } from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
 const paramsSchema = z.object({
@@ -35,6 +36,22 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['addContentSearchItem'],
   execute(ctx, params) {
+    // Check add permission for the target bundle
+    const denied = requireBundlePermission(
+      ctx.app,
+      [params.targetBundle],
+      'add',
+    )
+    if (denied) return denied
+
+    // Check ancestor restrictions on the target parent
+    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
+      return {
+        error:
+          'Permission denied: target parent is inside a block with restricted editing permissions',
+      }
+    }
+
     const { $t, types } = ctx.app
     const item: SearchContentItem = {
       id: params.itemId,

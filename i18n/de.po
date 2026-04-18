@@ -441,6 +441,34 @@ msgctxt "aiAgentExpandButton"
 msgid "Show more"
 msgstr "Mehr anzeigen"
 
+msgctxt "aiAgentFeedbackBad"
+msgid "Bad"
+msgstr "Schlecht"
+
+msgctxt "aiAgentFeedbackFine"
+msgid "Fine"
+msgstr "Okay"
+
+msgctxt "aiAgentFeedbackGood"
+msgid "Good"
+msgstr "Gut"
+
+msgctxt "aiAgentFeedbackPlaceholder"
+msgid "Tell us more (optional)..."
+msgstr "Erzählen Sie uns mehr (optional)..."
+
+msgctxt "aiAgentFeedbackPrompt"
+msgid "How was this response?"
+msgstr "Wie war diese Antwort?"
+
+msgctxt "aiAgentFeedbackSubmit"
+msgid "Submit"
+msgstr "Absenden"
+
+msgctxt "aiAgentFeedbackThanks"
+msgid "Thanks for your feedback!"
+msgstr "Danke für Ihr Feedback!"
+
 msgctxt "aiAgentFindBlocksDone"
 msgid "Found @count blocks"
 msgstr "@count Blöcke gefunden"
@@ -965,6 +993,14 @@ msgctxt "analyzeHeadingStructureLabel"
 msgid "Heading Structure"
 msgstr "Titelstruktur"
 
+msgctxt "analyzeIgnore"
+msgid "Ignore"
+msgstr "Ignorieren"
+
+msgctxt "analyzeIgnoredResults"
+msgid "Ignored"
+msgstr "Ignoriert"
+
 msgctxt "analyzeKeepVisible"
 msgid "Keep results visible"
 msgstr "Ergebnisse sichtbar halten"
@@ -993,6 +1029,10 @@ msgctxt "analyzeResultsOutdated"
 msgid "Results are outdated. Click the button to update."
 msgstr "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren."
 
+msgctxt "analyzeShowDetails"
+msgid "Show details"
+msgstr "Details anzeigen"
+
 msgctxt "analyzeSidebarTitle"
 msgid "Analyze"
 msgstr "Analysieren"
@@ -1013,10 +1053,6 @@ msgctxt "analyzeStatusStale"
 msgid "Stale"
 msgstr "Veraltet"
 
-msgctxt "analyzeStatusUpToDate"
-msgid "Up-to-date"
-msgstr "Aktuell"
-
 msgctxt "analyzeStatusViolation"
 msgid "Violation"
 msgstr "Fehler"
@@ -1024,6 +1060,10 @@ msgstr "Fehler"
 msgctxt "analyzeTourText"
 msgid "Analyze the content of your page"
 msgstr "Inhalte auf dieser Seite analysieren."
+
+msgctxt "analyzeUnignore"
+msgid "Restore"
+msgstr "Wiederherstellen"
 
 msgctxt "analyzerReadabiliyCouldBeSimpler"
 msgid "Could be simpler (@lang)."
@@ -1064,6 +1104,14 @@ msgstr "Anker-Links anzeigen"
 msgctxt "anchorToggle"
 msgid "Toggle anchor links"
 msgstr "Anzeige von Anker-Links umschalten"
+
+msgctxt "arrowLeft"
+msgid "Arrow Left"
+msgstr "Pfeil links"
+
+msgctxt "arrowRight"
+msgid "Arrow Right"
+msgstr "Pfeil rechts"
 
 msgctxt "artboard"
 msgid "Artboard"
@@ -1122,38 +1170,6 @@ msgid "Shows the current zoom factor. Click on it to reset the zoom back to 100%
 msgstr ""
 "Zeigt den aktuellen Zoom-Wert. Klicken Sie auf den Button um den Zoom auf "
 "100% zurückzusetzen."
-
-msgctxt "assistantAddAction"
-msgid "Add with AI Assistant"
-msgstr "Mit KI-Assistent hinzufügen"
-
-msgctxt "assistantAddActionDescription"
-msgid "Add content using an AI assistant."
-msgstr "Fügen Sie Inhalte mit dem KI-Assistenten hinzu."
-
-msgctxt "assistantAddResultError"
-msgid "Failed to add block from assistant."
-msgstr "Fehler beim hinzufügen mit KI."
-
-msgctxt "assistantDialogLead"
-msgid "Please enter what you'd like the assistant to generate."
-msgstr "Geben Sie ein was der KI-Assistent generieren soll."
-
-msgctxt "assistantDialogSubmit"
-msgid "Create blocks"
-msgstr "Blöcke erstellen"
-
-msgctxt "assistantDialogTitle"
-msgid "Generate content with AI assistant"
-msgstr "Inhalt mit KI generieren"
-
-msgctxt "assistantPromptLabel"
-msgid "Prompt"
-msgstr "Anweisung"
-
-msgctxt "assistantPromptPlaceholder"
-msgid "Generate content for a page about how taxes work in Switzerland"
-msgstr "Schreibe Text zum Thema Steuern in der Schweiz"
 
 msgctxt "availableBlocks"
 msgid "Available blocks"
@@ -1244,6 +1260,14 @@ msgctxt "bundle"
 msgid "Bundle"
 msgstr "Typ"
 
+msgctxt "bundleSelectorActionsLabel"
+msgid "Actions"
+msgstr "Aktionen"
+
+msgctxt "bundleSelectorFragmentsLabel"
+msgid "Fragments"
+msgstr "Fragmente"
+
 msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Auswahl abbrechen"
@@ -1324,15 +1348,7 @@ msgctxt "chartsDonutShowTotal"
 msgid "Show total"
 msgstr "Total anzeigen"
 
-msgctxt "chartsEditButton"
-msgid "Edit chart..."
-msgstr "Diagramm bearbeiten..."
-
-msgctxt "chartsEditorSaveError"
-msgid "The chart could not be saved."
-msgstr "Das Diagramm konnte nicht gespeichert werden."
-
-msgctxt "chartsEditorTitle"
+msgctxt "chartsEditTitle"
 msgid "Edit chart"
 msgstr "Diagramm bearbeiten"
 
@@ -1556,6 +1572,10 @@ msgctxt "commandPaletteOpen"
 msgid "Open Command Palette"
 msgstr "Befehle öffnen"
 
+msgctxt "commandPaletteTitle"
+msgid "Command Palette"
+msgstr "Befehlspalette"
+
 msgctxt "commandPaletteTourText"
 msgid ""
 "Easily perform actions using your keyboard by launching the command "
@@ -1589,6 +1609,10 @@ msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
 msgstr "Zeigt alle Kommentare auf der aktuellen Seite an."
 
+msgctxt "complexOptionsSaveError"
+msgid "The data could not be saved."
+msgstr "Die Daten konnten nicht gespeichert werden."
+
 msgctxt "conversionsConvertTo"
 msgid "Convert to: @bundle"
 msgstr "Konvertieren zu: @bundle"
@@ -1620,6 +1644,10 @@ msgstr "Löschen"
 msgctxt "deleteError"
 msgid "The block could not be deleted."
 msgstr "Das Element konnte nicht entfernt werden."
+
+msgctxt "deleteNoPermission"
+msgid "You do not have permission to delete this block."
+msgstr "Löschen aufgrund fehlender Berechtigung nicht möglich."
 
 msgctxt "diffAfter"
 msgid "After"
@@ -1669,9 +1697,17 @@ msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
 msgstr "Keine Änderung"
 
+msgctxt "download"
+msgid "Download"
+msgstr "Herunterladen"
+
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fehlerprotokoll herunterladen"
+
+msgctxt "downloadWithLabel"
+msgid "Download @label"
+msgstr "@label herunterladen"
 
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
@@ -1725,9 +1761,25 @@ msgctxt "duplicateError"
 msgid "The items could not be duplicated."
 msgstr "Die Elemente konnten nicht dupliziert werden."
 
+msgctxt "duplicateFieldFull"
+msgid "The field has reached its maximum number of blocks."
+msgstr "Das Feld hat die maximale Anzahl an Blöcken erreicht."
+
+msgctxt "duplicateNoPermission"
+msgid "You do not have permission to duplicate this block."
+msgstr "Duplizieren aufgrund fehlender Berechtigung nicht möglich."
+
+msgctxt "duplicateNotAllowed"
+msgid "This block type is not allowed in this field."
+msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
+
 msgctxt "edit"
 msgid "Edit..."
 msgstr "Bearbeiten..."
+
+msgctxt "editDisabledByDefinition"
+msgid "Editing is disabled for this block type."
+msgstr "Bearbeiten ist für diesen Blocktyp deaktiviert."
 
 msgctxt "editFormBlockAdd"
 msgid "Add @label"
@@ -1749,6 +1801,10 @@ msgctxt "editFormEntityTranslate"
 msgid "Translate \"@label\" (@language)"
 msgstr "\"@label\" übersetzen (@language)"
 
+msgctxt "editFragmentNotEditable"
+msgid "This fragment cannot be edited."
+msgstr "Dieses Fragment kann nicht bearbeitet werden."
+
 msgctxt "editIndicatorLabel"
 msgid "Edit blocks"
 msgstr "Elemente bearbeiten"
@@ -1761,13 +1817,45 @@ msgctxt "editIndicatorLabelView"
 msgid "View changes"
 msgstr "Änderungen ansehen"
 
+msgctxt "editLibraryNotAvailable"
+msgid "This reusable block cannot be edited right now."
+msgstr "Dieser wiederverwendbare Block kann momentan nicht bearbeitet werden."
+
+msgctxt "editNoLibraryPermission"
+msgid "You do not have permission to edit library items."
+msgstr "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+
+msgctxt "editNoPermission"
+msgid "You do not have permission to edit this block."
+msgstr "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr "Feld «@name» bearbeiten"
 
+msgctxt "editableFieldCharCountMax"
+msgid "@count of @max characters used"
+msgstr "@count von @max Zeichen verwendet"
+
 msgctxt "editableFieldDiscard"
 msgid "Discard"
 msgstr "Verwerfen"
+
+msgctxt "editableFieldExitFullscreen"
+msgid "Exit Fullscreen"
+msgstr "Vollbild beenden"
+
+msgctxt "editableFieldFullscreen"
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+msgctxt "editableFieldTranslate"
+msgid "Translate"
+msgstr "Übersetzen"
+
+msgctxt "editableFieldTranslateTooltip"
+msgid "Automatically translate the current text."
+msgstr "Den aktuellen Text automatisch übersetzen."
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -1909,18 +1997,6 @@ msgctxt "feature_artboard_setting_scrollSpeed_label"
 msgid "Artboard scroll speed"
 msgstr "Scrollgeschwindigkeit der Vorschau"
 
-msgctxt "feature_assistant_description"
-msgid ""
-"Provides a dynamic add block action to add one or more blocks generated by "
-"an AI assistant."
-msgstr ""
-"Stellt eine dynamische Aktion bereit, um einen oder mehrere Blöcke "
-"hinzuzufügen, die von einem KI-Assistenten generiert wurden."
-
-msgctxt "feature_assistant_label"
-msgid "Assistant"
-msgstr "Assistent"
-
 msgctxt "feature_block-scheduler_description"
 msgid "Adds support for scheduling blocks."
 msgstr "Ermöglicht das zeitgesteuerte Veröffentlichen von Blöcken."
@@ -1946,14 +2022,6 @@ msgstr ""
 msgctxt "feature_changelog_label"
 msgid "Changelog"
 msgstr "Änderungsprotokoll"
-
-msgctxt "feature_charts_description"
-msgid "Add and edit interactive charts."
-msgstr "Interaktive Diagramme hinzufügen und bearbeiten."
-
-msgctxt "feature_charts_label"
-msgid "Charts"
-msgstr "Diagramme"
 
 msgctxt "feature_clipboard_description"
 msgid ""
@@ -1987,6 +2055,14 @@ msgstr "Stellt Kommentarfunktionalität für Blöcke bereit."
 msgctxt "feature_comments_label"
 msgid "Comments"
 msgstr "Kommentare"
+
+msgctxt "feature_complex-options_description"
+msgid "Edit complex option types such as charts."
+msgstr "Ermöglicht die Bearbeitung komplexer Optionstypen wie z. B. Diagramme."
+
+msgctxt "feature_complex-options_label"
+msgid "Complex Options"
+msgstr "Komplexe Optionen"
 
 msgctxt "feature_conversions_description"
 msgid "Provides block actions to convert one or more blocks to a different bundle."
@@ -2138,6 +2214,18 @@ msgctxt "feature_help_label"
 msgid "Help"
 msgstr "Hilfe"
 
+msgctxt "feature_highlights_description"
+msgid ""
+"Renders persistent highlights for blocks with issues or outdated "
+"translations."
+msgstr ""
+"Zeigt dauerhafte Markierungen für Blöcke mit Problemen oder veralteten "
+"Übersetzungen an."
+
+msgctxt "feature_highlights_label"
+msgid "Highlights"
+msgstr "Markierungen"
+
 msgctxt "feature_history_description"
 msgid "Implements support for history features (undo, redo, list of mutations)."
 msgstr ""
@@ -2288,6 +2376,14 @@ msgctxt "feature_publish_setting_closeAfterPublish_label"
 msgid "Close editor after publishing"
 msgstr "Nach «Veröffentlichen» den Editor schliessen"
 
+msgctxt "feature_referenced-entities_description"
+msgid "Renders referenced entities of blocks."
+msgstr "Zeigt referenzierte Entitäten von Blöcken an."
+
+msgctxt "feature_referenced-entities_label"
+msgid "Referenced Entities"
+msgstr "Referenzierte Entitäten"
+
 msgctxt "feature_responsive-preview_description"
 msgid "Provides a responsive preview of the current edit state in an iframe."
 msgstr ""
@@ -2377,6 +2473,14 @@ msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struktur"
 
+msgctxt "feature_swap_description"
+msgid "Provides an action to swap two selected blocks."
+msgstr "Stellt eine Aktion zum Vertauschen von zwei ausgewählten Blöcken bereit."
+
+msgctxt "feature_swap_label"
+msgid "Swap"
+msgstr "Tauschen"
+
 msgctxt "feature_templates_description"
 msgid "Add blocks from templates."
 msgstr "Blöcke aus Vorlagen hinzufügen."
@@ -2433,9 +2537,33 @@ msgctxt "feature_validations_label"
 msgid "Validations"
 msgstr "Validierungen"
 
+msgctxt "feature_workspace_description"
+msgid "Allows users to switch between edit states."
+msgstr "Ermöglicht das Wechseln zwischen Bearbeitungszuständen."
+
+msgctxt "feature_workspace_label"
+msgid "Workspace"
+msgstr "Arbeitsbereich"
+
 msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Feld darf nicht leer sein"
+
+msgctxt "filterSelectNoResults"
+msgid "No results"
+msgstr "Keine Ergebnisse"
+
+msgctxt "filterSelectSearch"
+msgid "Search..."
+msgstr "Suchen..."
+
+msgctxt "formSaveNotEditStateInfo"
+msgid ""
+"Saving this form applies changes immediately — they take effect without "
+"publishing the current blökkli page."
+msgstr ""
+"Änderungen in diesem Formular werden sofort übernommen — ohne "
+"Veröffentlichung der aktuellen blökkli-Seite."
 
 msgctxt "fragmentsAddFragmentAction"
 msgid "Fragment"
@@ -2530,6 +2658,10 @@ msgctxt "historyUndoTourText"
 msgid "Undo the last change."
 msgstr "Letzte Änderung rückgängig machen."
 
+msgctxt "iframesEditTitle"
+msgid "Edit iframe size"
+msgstr "Iframe-Grösse bearbeiten"
+
 msgctxt "importExistingDescription"
 msgid "Import from an existing page"
 msgstr "Von einer bestehenden Seite importieren"
@@ -2596,9 +2728,29 @@ msgctxt "libraryAddFromLibrary"
 msgid "From library"
 msgstr "Aus der Bibliothek"
 
+msgctxt "libraryAddNoEditPermission"
+msgid "You do not have permission to edit this block."
+msgstr "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+
+msgctxt "libraryAddNoPermission"
+msgid "You do not have permission to create library items."
+msgstr "Erstellen aufgrund fehlender Berechtigung nicht möglich."
+
+msgctxt "libraryAddNotAllowedInField"
+msgid "Reusable blocks are not allowed in this field."
+msgstr "Wiederverwendbare Blöcke sind in diesem Feld nicht erlaubt."
+
+msgctxt "libraryAddNotSupported"
+msgid "This block type cannot be made reusable."
+msgstr "Dieser Blocktyp kann nicht wiederverwendbar gemacht werden."
+
 msgctxt "libraryDetach"
 msgid "Detach from library"
 msgstr "Von der Bibliothek loslösen"
+
+msgctxt "libraryDetachNoPermission"
+msgid "You do not have permission to detach this block."
+msgstr "Loslösen aufgrund fehlender Berechtigung nicht möglich."
 
 msgctxt "libraryDialogDescriptionLabel"
 msgid "Description"
@@ -2643,7 +2795,11 @@ msgid "Back to page"
 msgstr "Zurück zur Seite"
 
 msgctxt "libraryItemEditOverlayBackWithPage"
-msgid "Back to \"@label\""
+msgid "Save and go back to \"@label\""
+msgstr "Speichern und zurück zu «@label»"
+
+msgctxt "libraryItemEditOverlayBackWithPageNoSave"
+msgid "Go back to \"@label\""
 msgstr "Zurück zu «@label»"
 
 msgctxt "libraryItemEditOverlayTitle"
@@ -2673,6 +2829,10 @@ msgstr "Block aus Bibliothek hinzufügen"
 msgctxt "libraryPreviewLabel"
 msgid "Preview"
 msgstr "Vorschau"
+
+msgctxt "loading"
+msgid "Loading..."
+msgstr "Wird geladen…"
 
 msgctxt "manageSchedule"
 msgid "Manage schedule..."
@@ -2752,9 +2912,21 @@ msgctxt "optionsCommand.unselectCheckboxValue"
 msgid "Unselect \"@value\" in \"@option\""
 msgstr "«@value» in «@option» abwählen"
 
+msgctxt "outdatedTranslation"
+msgid "Outdated translation"
+msgstr "Veraltete Übersetzung"
+
+msgctxt "outdatedTranslationDescription"
+msgid "Mark translation as up-to-date"
+msgstr "Übersetzung als aktuell markieren"
+
 msgctxt "overlayDoubleClickInfo"
 msgid "<strong>Double click</strong> to close overlay"
 msgstr "<strong>Doppelklicken</strong> um Dialog zu schliessen"
+
+msgctxt "owner"
+msgid "Owner"
+msgstr "Besitzer"
 
 msgctxt "ownershipError"
 msgid "Error in assigning"
@@ -3066,6 +3238,24 @@ msgctxt "readabilityTooltipDescription"
 msgid "@label measures how easy the text is to read."
 msgstr "@label misst, wie leicht der Text zu lesen ist."
 
+msgctxt "referencedEntitiesEditorOverlayTitle"
+msgid "Edit \"@label\""
+msgstr "«@label» bearbeiten"
+
+msgctxt "relatedContent"
+msgid "Related Content"
+msgstr "Verwandte Inhalte"
+
+msgctxt "relatedContentNoEntitiesFound"
+msgid "No related content found"
+msgstr "Keine verwandten Inhalte gefunden"
+
+msgctxt "relatedContentTooltip"
+msgid "Content like pages or images referenced or linked by this block."
+msgstr ""
+"Inhalte wie Seiten oder Bilder, die von diesem Block referenziert oder "
+"verlinkt werden."
+
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"
 msgstr "Benutzerdefiniert"
@@ -3083,6 +3273,14 @@ msgstr ""
 "Sehen Sie, wie Ihre Änderungen auf kleineren Bildschirmen, wie Smartphones, "
 "aussehen. Klicken Sie auf den \"Loslösen\"-Button, um zusätzliche "
 "Ansichtsgrössen auswählen zu können."
+
+msgctxt "restrictedPermissionsAll"
+msgid "Some actions are not available due to missing permissions."
+msgstr "Einige Aktionen sind aufgrund fehlender Berechtigungen nicht verfügbar."
+
+msgctxt "restrictedPermissionsSome"
+msgid "Some actions are restricted due to missing permissions."
+msgstr "Einige Aktionen sind aufgrund fehlender Berechtigungen eingeschränkt."
 
 msgctxt "revertDialogLead"
 msgid ""
@@ -3116,9 +3314,17 @@ msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alle Änderungen wurden verworfen."
 
+msgctxt "save"
+msgid "Save"
+msgstr "Speichern"
+
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."
 msgstr "Die Änderungen werden an diesem Datum publiziert."
+
+msgctxt "schedulerNotSupported"
+msgid "Scheduling is not available for this block type."
+msgstr "Zeitplanung ist für diesen Blocktyp nicht verfügbar."
 
 msgctxt "searchBoxNoResultsFound"
 msgid "No results found"
@@ -3139,6 +3345,10 @@ msgstr "@field ersetzen"
 msgctxt "searchContentReplaceFailed"
 msgid "Failed to replace content."
 msgstr "Inhalt konnte nicht ersetzt werden."
+
+msgctxt "searchOverlayNoResults"
+msgid "No results found."
+msgstr "Keine Ergebnisse gefunden."
 
 msgctxt "searchToolbarLabel"
 msgid "Search content"
@@ -3163,6 +3373,10 @@ msgstr "Alle «@bundle» Blöcke auswählen"
 msgctxt "selectedIsNew"
 msgid "New"
 msgstr "Neu"
+
+msgctxt "selectedTranslationIsOutdated"
+msgid "Outdated"
+msgstr "Veraltet"
 
 msgctxt "settingsAdvanced"
 msgid "Advanced"
@@ -3243,6 +3457,18 @@ msgid ""
 msgstr ""
 "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. "
 "Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
+
+msgctxt "swapButton"
+msgid "Swap block positions"
+msgstr "Blockpositionen tauschen"
+
+msgctxt "swapError"
+msgid "The blocks could not be swapped."
+msgstr "Die Blöcke konnten nicht getauscht werden."
+
+msgctxt "swapNotPossible"
+msgid "Block positions cannot be swapped."
+msgstr "Blockpositionen können nicht getauscht werden."
 
 msgctxt "systemRequirementsDialogButton"
 msgid "Continue anyway"
@@ -3506,18 +3732,65 @@ msgctxt "transformDialogButtonPreview"
 msgid "Preview"
 msgstr "Vorschau"
 
+msgctxt "translateEditDisabled"
+msgid "Editing is disabled for this block type."
+msgstr "Bearbeiten ist für diesen Blocktyp deaktiviert."
+
+msgctxt "translateLibraryBlock"
+msgid "Reusable blocks cannot be translated here."
+msgstr "Wiederverwendbare Blöcke können hier nicht übersetzt werden."
+
+msgctxt "translateNotTranslatable"
+msgid "This block type is not translatable."
+msgstr "Dieser Blocktyp ist nicht übersetzbar."
+
+msgctxt "translationOutdatedHint"
+msgid "The translation is marked as outdated."
+msgstr "Die Übersetzung ist als veraltet markiert."
+
+msgctxt "translationsAddFiles"
+msgid "Add files..."
+msgstr "Dateien hinzufügen..."
+
+msgctxt "translationsAutoTranslate"
+msgid "Auto-translate"
+msgstr "Automatisch übersetzen"
+
+msgctxt "translationsAutoTranslateButton"
+msgid "Auto-translate..."
+msgstr "Automatisch übersetzen..."
+
+msgctxt "translationsAutoTranslateTooltip"
+msgid "Automatically translate all texts using a translation service"
+msgstr "Alle Texte automatisch mit einem Übersetzungsdienst übersetzen"
+
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
 msgstr "Originalsprache bearbeiten"
 
+msgctxt "translationsBannerMarkAllAsUpToDate"
+msgid "Mark all as up-to-date"
+msgstr "Alle als aktuell markieren"
+
+msgctxt "translationsBannerNext"
+msgid "Next block"
+msgstr "Nächster Block"
+
+msgctxt "translationsBannerOutdatedCount"
+msgid "@count blocks have <strong>outdated translations</strong>."
+msgstr "@count Blöcke haben <strong>veraltete Übersetzungen</strong>."
+
+msgctxt "translationsBannerOutdatedSingular"
+msgid "@count block has an <strong>outdated translation</strong>."
+msgstr "@count Block hat eine <strong>veraltete Übersetzung</strong>."
+
+msgctxt "translationsBannerPrev"
+msgid "Previous block"
+msgstr "Vorheriger Block"
+
 msgctxt "translationsBannerText"
-msgid ""
-"You are currently editing the <strong>@language</strong> translation. Some "
-"features like adding, moving or deleting blocks are not available."
-msgstr ""
-"Sie bearbeiten die Übersetzung <strong>«@language»</strong>. Einige "
-"Funktionen wie das Hinzufügen, Verschieben oder Löschen von Blöcken sind "
-"nicht verfügbar."
+msgid "You are currently editing the <strong>@language</strong> translation."
+msgstr "Sie bearbeiten die Übersetzung <strong>«@language»</strong>."
 
 msgctxt "translationsBatchTranslateMenuDescription"
 msgid "Translate all blocks"
@@ -3527,9 +3800,73 @@ msgctxt "translationsBatchTranslateMenuTitle"
 msgid "Translate..."
 msgstr "Übersetzen..."
 
+msgctxt "translationsCsvApply"
+msgid "Import @count translations"
+msgstr "@count Übersetzungen importieren"
+
+msgctxt "translationsCsvChangesLabel"
+msgid "fields will be updated"
+msgstr "Felder werden aktualisiert"
+
+msgctxt "translationsCsvDialogTitle"
+msgid "Import/Export Translations"
+msgstr "Übersetzungen importieren/exportieren"
+
+msgctxt "translationsCsvDiff"
+msgid "Changes"
+msgstr "Änderungen"
+
+msgctxt "translationsCsvExport"
+msgid "Export"
+msgstr "Export"
+
+msgctxt "translationsCsvImport"
+msgid "Import"
+msgstr "Import"
+
+msgctxt "translationsCsvLanguages"
+msgid "Languages"
+msgstr "Sprachen"
+
+msgctxt "translationsCsvMenuTitle"
+msgid "Import/export..."
+msgstr "Import/Export..."
+
+msgctxt "translationsCsvNoChanges"
+msgid "No changes found"
+msgstr "Keine Änderungen gefunden"
+
+msgctxt "translationsCsvOnlyMissing"
+msgid "Only missing translations"
+msgstr "Nur fehlende Übersetzungen"
+
+msgctxt "translationsCsvOnlyOutdated"
+msgid "Only outdated translations"
+msgstr "Nur veraltete Übersetzungen"
+
+msgctxt "translationsCsvTooltip"
+msgid "Import or export translations as CSV or PO files"
+msgstr "Übersetzungen als CSV- oder PO-Dateien importieren oder exportieren"
+
+msgctxt "translationsDropToImport"
+msgid "Drop CSV or PO file to import"
+msgstr "CSV- oder PO-Datei zum Importieren ablegen"
+
 msgctxt "translationsItemAction"
 msgid "Translate"
 msgstr "Übersetzen"
+
+msgctxt "translationsMarkUpToDate"
+msgid "Mark translations as up to date"
+msgstr "Übersetzung als aktuell markieren"
+
+msgctxt "translationsMarkUpToDateDisabled"
+msgid "No selected blocks have an outdated translation."
+msgstr "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
+
+msgctxt "translationsSelectImportFile"
+msgid "Select CSV or PO file"
+msgstr "CSV- oder PO-Datei auswählen"
 
 msgctxt "translationsTourText"
 msgid ""
@@ -3545,6 +3882,34 @@ msgstr ""
 msgctxt "translationsTourTitle"
 msgid "Translations"
 msgstr "Übersetzungen"
+
+msgctxt "translationsTranslateApply"
+msgid "Apply @count translations"
+msgstr "@count Übersetzungen anwenden"
+
+msgctxt "translationsTranslateButton"
+msgid "Request @count translations"
+msgstr "@count Übersetzungen anfordern"
+
+msgctxt "translationsTranslateCurrentColumn"
+msgid "Current translation (@language)"
+msgstr "Aktuelle Übersetzung (@language)"
+
+msgctxt "translationsTranslateDialogTitle"
+msgid "Automatic Translation"
+msgstr "Automatische Übersetzung"
+
+msgctxt "translationsTranslateFieldsLabel"
+msgid "fields selected"
+msgstr "Felder ausgewählt"
+
+msgctxt "translationsTranslateLoading"
+msgid "Translating..."
+msgstr "Wird übersetzt..."
+
+msgctxt "translationsTranslateNoTexts"
+msgid "No translatable texts found on this page."
+msgstr "Keine übersetzbaren Texte auf dieser Seite gefunden."
 
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
@@ -3577,3 +3942,15 @@ msgstr "Sie können Kommentare ansehen, aber keine Inhalte bearbeiten."
 msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
 msgstr "Sie befinden sich im Ansichtsmodus."
+
+msgctxt "workspaceOpen"
+msgid "Switch page"
+msgstr "Seite wechseln"
+
+msgctxt "workspaceSearchPlaceholder"
+msgid "Search pages..."
+msgstr "Seiten durchsuchen..."
+
+msgctxt "workspaceTitle"
+msgid "Switch page"
+msgstr "Seite wechseln"

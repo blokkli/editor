@@ -8,11 +8,19 @@
     @mousedown.stop
     @mousemove.stop
   >
-    <div ref="overviewArtboardEl" class="bk-artboard-overview-artboard">
-      <canvas ref="canvas" />
+    <div
+      ref="overviewArtboardEl"
+      class="bg-white absolute top-0 left-0 outline-mono-400 outline-1 outline pointer-events-none overflow-hidden"
+    >
+      <canvas ref="canvas" class="absolute top-0 left-0 size-full" />
     </div>
-    <div class="bk-artboard-overview-visible">
-      <button ref="overviewVisibleEl" />
+    <div
+      class="absolute top-0 left-0 size-full bg-mono-900/60 mix-blend-multiply"
+    >
+      <button
+        ref="overviewVisibleEl"
+        class="relative top-0 left-0 bg-white cursor-move will-change-transform rounded"
+      />
     </div>
   </ViewportBlockingRect>
 </template>
@@ -146,3 +154,15 @@ defineOptions({
   name: 'ArtboardOverview',
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-artboard-overview {
+  @apply w-[180px] h-[500px] z-artboard-overview bg-mono-100 absolute top-0 right-0 rounded;
+  @apply overflow-hidden contain-strict border border-mono-400 pointer-events-auto;
+  margin-top: var(--bk-viewport-padding);
+  margin-right: var(--bk-viewport-padding);
+  grid-area: viewport;
+  align-self: self-start;
+  justify-self: self-end;
+}
+</style>

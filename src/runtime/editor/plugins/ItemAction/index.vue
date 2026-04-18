@@ -2,9 +2,10 @@
   <Teleport to="#bk-blokkli-item-actions">
     <button
       v-if="shouldRender"
+      v-show="!hidden"
       ref="el"
       :disabled="isDisabled"
-      class="bk-item-action"
+      class="bk-item-action group/tooltip"
       :class="[
         { 'bk-is-active': active, 'bk-is-last': weight === 'last' },
         $attrs.class,
@@ -15,17 +16,24 @@
       <slot name="icon">
         <Icon v-if="icon" :name="icon" class="bk-item-action-icon" />
       </slot>
-      <div class="bk-tooltip">
-        <span>{{ title }}</span>
-        <ShortcutIndicator
-          v-if="keyCode"
-          :meta="meta"
-          :label="title"
-          :key-code="keyCode"
-          group="blocks"
-          @pressed="onClick"
-        />
-      </div>
+      <Tooltip :label="title" placement="above-left" class="min-w-full">
+        <template v-if="keyCode" #shortcut>
+          <ShortcutIndicator
+            :meta="meta"
+            :label="title"
+            :key-code="keyCode"
+            group="blocks"
+            @pressed="onClick"
+          />
+        </template>
+        <template #status>
+          <TooltipStatus
+            v-if="disabledReason"
+            :description="disabledReason"
+            :status="disabledReasonSuccess ? 'success' : 'warning'"
+          />
+        </template>
+      </Tooltip>
     </button>
   </Teleport>
   <slot :items="selection.items.value" :uuids="uuids" />
@@ -35,7 +43,12 @@
 import { computed, ref, useBlokkli } from '#imports'
 
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { Icon, ShortcutIndicator } from '#blokkli/editor/components'
+import {
+  Icon,
+  ShortcutIndicator,
+  Tooltip,
+  TooltipStatus,
+} from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
@@ -60,8 +73,11 @@ const props = defineProps<{
 
   /**
    * Whether the action is disabled.
+   *
+   * When a string is provided, the button is disabled and the string is
+   * displayed as the tooltip text explaining why.
    */
-  disabled?: boolean
+  disabled?: boolean | string
 
   /**
    * Whether the button should be displayed in an active state.
@@ -106,6 +122,21 @@ const props = defineProps<{
   weight?: number | string | 'last'
 
   /**
+   * Whether the action should be hidden.
+   *
+   * Unlike disabled, this completely hides the button via v-show.
+   */
+  hidden?: boolean
+
+  /**
+   * When true, the disabled reason tooltip is rendered in lime (success)
+   * instead of the default yellow (warning).
+   *
+   * Use this when the disabled state is a positive outcome rather than an error.
+   */
+  disabledReasonSuccess?: boolean
+
+  /**
    * Optional icon to display in the button.
    */
   icon?: BlokkliIcon
@@ -119,7 +150,12 @@ const props = defineProps<{
 }>()
 
 const isDisabled = computed(
-  () => props.disabled || (!props.multiple && selection.items.value.length > 1),
+  () =>
+    !!props.disabled || (!props.multiple && selection.items.value.length > 1),
+)
+
+const disabledReason = computed(() =>
+  typeof props.disabled === 'string' ? props.disabled : null,
 )
 
 const shouldRender = computed(() => {
@@ -147,7 +183,7 @@ defineCommands(() => ({
   group: 'selection',
   label: props.title,
   icon: props.icon,
-  disabled: props.disabled || !selection.items.value.length,
+  disabled: isDisabled.value || !selection.items.value.length,
   callback: onClick,
 }))
 

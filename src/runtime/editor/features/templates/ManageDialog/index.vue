@@ -14,12 +14,12 @@
     @cancel="$emit('cancel')"
   >
     <div ref="dialogEl" class="bk-templates-manage">
-      <div v-if="config.length" class="bk-form-group">
+      <div v-if="config.length" class="mt-20 mb-30">
         <ConfigForm v-model="filters" :config />
       </div>
       <Loading v-if="status === 'pending'" />
       <template v-if="items.length">
-        <table class="bk-table">
+        <table class="bk-table mt-40">
           <thead>
             <tr>
               <th>
@@ -34,7 +34,7 @@
               <th>
                 {{ $t('dateUpdated', 'Updated') }}
               </th>
-              <th>
+              <th class="text-right">
                 {{ $t('actions', 'Actions') }}
               </th>
             </tr>
@@ -118,3 +118,29 @@ watch(page, () => {
   confirmDeleteUuid.value = ''
 })
 </script>
+
+<style lang="postcss">
+.bk {
+  .bk-templates-manage {
+    min-height: 80vh;
+    @apply select-text relative;
+    @apply mt-25;
+    .bk-table {
+      tbody {
+        td {
+          @apply py-15;
+        }
+        td:first-child {
+          div:first-child {
+            @apply font-bold text-lg;
+
+            .bk-pill {
+              @apply ml-5;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>

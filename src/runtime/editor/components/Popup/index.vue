@@ -9,8 +9,8 @@
       >
         <div class="bk-popup-title">
           <h2>{{ title }}</h2>
-          <button class="bk-popup-close" @click="onClose">
-            <Icon name="bk_mdi_close" />
+          <button class="p-20 hover:bg-mono-50 text-mono-500" @click="onClose">
+            <Icon name="bk_mdi_close" class="size-20" />
           </button>
         </div>
 
@@ -92,3 +92,44 @@ onBeforeUnmount(() => {
   }
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-popup {
+  @apply relative w-full bg-white shadow-xl  hyphens-auto;
+  @apply z-tour-popup pointer-events-auto;
+  @apply border border-mono-200 overflow-hidden;
+  grid-area: viewport;
+
+  &.bk-is-top-left {
+    @apply self-start justify-self-start;
+  }
+
+  &.bk-is-bottom-right {
+    @apply self-end justify-self-end;
+  }
+
+  @screen lg {
+    @apply w-[360px] rounded-lg m-20;
+  }
+
+  @screen xl {
+    @apply w-[400px];
+  }
+
+  h2 {
+    @apply font-bold lg:text-xl;
+  }
+
+  .bk-button {
+    @apply w-full mt-20;
+  }
+
+  .bk-popup-title {
+    @apply flex justify-between items-center pl-20 border-b border-b-mono-200;
+  }
+
+  .bk-popup-content {
+    @apply p-20;
+  }
+}
+</style>

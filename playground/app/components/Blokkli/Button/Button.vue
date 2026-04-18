@@ -14,7 +14,7 @@
       }"
     >
       <Icon v-if="icon" :name="icon" />
-      <span v-blokkli-editable:title>{{ title }}</span>
+      <span v-blokkli-editable:title>{{ title || 'Learn more' }}</span>
     </Component>
   </div>
   <div
@@ -37,7 +37,7 @@
       }"
     >
       <Icon v-if="icon" :name="icon" />
-      <span v-blokkli-editable:title>{{ title }}</span>
+      <span v-blokkli-editable:title>{{ title || 'Learn more' }}</span>
     </Component>
   </div>
 </template>
@@ -77,11 +77,19 @@ const { options } = defineBlokkli({
     icon: 'bk_mdi_buttons_alt',
     editTitle: (el) => el.querySelector('a')?.textContent,
   },
+  propsFieldMapping: {
+    url: null,
+    title: {
+      type: 'editable',
+      name: 'title',
+    },
+    icon: null,
+  },
 })
 
 export type Props = {
   url: string
-  title: string
+  title?: string
   icon?: BlokkliIcon
 }
 

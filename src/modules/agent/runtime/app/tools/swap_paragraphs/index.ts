@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
+import { getSwapDisabledReason } from '#blokkli/editor/helpers/swap'
 
 const paramsSchema = z.object({
   uuidA: z.string().describe('First paragraph UUID'),
@@ -22,12 +23,7 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['swapBlocks'],
   execute(ctx, params) {
-    const { blocks, types, $t } = ctx.app
-
-    // Same block - nothing to do
-    if (params.uuidA === params.uuidB) {
-      return { error: 'Both UUIDs refer to the same paragraph' }
-    }
+    const { blocks, types, $t, permissions } = ctx.app
 
     // Validate block A exists
     const blockA = blocks.getBlock(params.uuidA)
@@ -41,42 +37,13 @@ export default defineBlokkliAgentTool({
       return { error: `Paragraph not found: ${params.uuidB}` }
     }
 
-    // Get field config for A's parent field
-    const fieldConfigA = types.getFieldConfig(
-      blockA.host.type,
-      blockA.host.bundle,
-      blockA.host.fieldName,
-    )
-    if (!fieldConfigA) {
-      return {
-        error: `Could not find field config for paragraph A's parent field`,
-      }
-    }
-
-    // Get field config for B's parent field
-    const fieldConfigB = types.getFieldConfig(
-      blockB.host.type,
-      blockB.host.bundle,
-      blockB.host.fieldName,
-    )
-    if (!fieldConfigB) {
-      return {
-        error: `Could not find field config for paragraph B's parent field`,
-      }
-    }
-
-    // Check if blockA's bundle is allowed in fieldB
-    if (!fieldConfigB.allowedBundles.includes(blockA.bundle)) {
-      return {
-        error: `Cannot swap: bundle "${blockA.bundle}" (uuid: ${params.uuidA}) is not allowed in field "${blockB.host.fieldName}" (parent: ${blockB.host.uuid}). Allowed bundles: ${fieldConfigB.allowedBundles.join(', ')}`,
-      }
-    }
-
-    // Check if blockB's bundle is allowed in fieldA
-    if (!fieldConfigA.allowedBundles.includes(blockB.bundle)) {
-      return {
-        error: `Cannot swap: bundle "${blockB.bundle}" (uuid: ${params.uuidB}) is not allowed in field "${blockA.host.fieldName}" (parent: ${blockA.host.uuid}). Allowed bundles: ${fieldConfigA.allowedBundles.join(', ')}`,
-      }
+    const reason = getSwapDisabledReason(blockA, blockB, {
+      getFieldConfig: types.getFieldConfig,
+      checkBlockBundlePermission: permissions.checkBlockBundlePermission,
+      blockHasRestrictedAncestor: permissions.blockHasRestrictedAncestor,
+    })
+    if (reason) {
+      return { error: reason }
     }
 
     // Create labels

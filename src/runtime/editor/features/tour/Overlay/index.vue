@@ -22,27 +22,37 @@
           </div>
         </div>
       </div>
-      <div class="bk-tour-buttons">
-        <button @click.stop.prevent="prev">
+      <div
+        class="border-t h-50 absolute bottom-0 left-0 w-full bg-white border-t-yellow-dark/20 flex justify-between items-center"
+      >
+        <button class="bk-tour-button group/tooltip" @click.stop.prevent="prev">
           <Icon name="bk_mdi_chevron_backward" />
           <span>{{ $t('tourPrev', 'Previous') }}</span>
-          <div class="bk-tooltip">
-            <span>Arrow Right</span>
-            <ShortcutIndicator label="Prev Tour Item" key-code="ArrowLeft" />
-          </div>
+          <Tooltip
+            :label="$t('arrowRight', 'Arrow Right')"
+            placement="below-left"
+          >
+            <template #shortcut>
+              <ShortcutIndicator label="Prev Tour Item" key-code="ArrowLeft" />
+            </template>
+          </Tooltip>
         </button>
-        <div>
+        <div class="text-yellow-dark/80 text-sm">
           <span>{{ activeIndex + 1 }}</span
           >&nbsp;/
           <span>{{ items.length }}</span>
         </div>
-        <button @click.stop.prevent="next">
+        <button class="bk-tour-button group/tooltip" @click.stop.prevent="next">
           <span>{{ $t('tourNext', 'Next') }}</span>
           <Icon name="bk_mdi_chevron_forward" />
-          <div class="bk-tooltip">
-            <span>Arrow Left</span>
-            <ShortcutIndicator label="Next Tour Item" key-code="ArrowRight" />
-          </div>
+          <Tooltip
+            :label="$t('arrowLeft', 'Arrow Left')"
+            placement="below-right"
+          >
+            <template #shortcut>
+              <ShortcutIndicator label="Next Tour Item" key-code="ArrowRight" />
+            </template>
+          </Tooltip>
         </button>
       </div>
     </div>
@@ -54,7 +64,7 @@
 import { useBlokkli, computed, ref, useTemplateRef } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { modulo } from '#blokkli/editor/helpers/math'
-import { Icon, ShortcutIndicator } from '#blokkli/editor/components'
+import { Icon, ShortcutIndicator, Tooltip } from '#blokkli/editor/components'
 import { onBlokkliEvent, useAnimationFrame } from '#blokkli/editor/composables'
 
 const emit = defineEmits(['close'])
@@ -274,3 +284,61 @@ useAnimationFrame(() => {
   tooltipHeight.value = contentEl.value.scrollHeight + 50
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-tour {
+  @apply fixed z-tour-item top-0 left-0 rounded-md;
+  @apply bg-white shadow-xl transition-all duration-200 ease-swing text-yellow-dark pointer-events-auto;
+
+  button {
+    @apply focus:outline-0 focus:ring-0 focus:border-0;
+  }
+}
+
+.bk {
+  .bk-tour-title {
+    @apply font-bold text-lg pl-20 border-b border-b-yellow-dark/30 flex items-center justify-between bg-yellow-normal;
+
+    button {
+      @apply p-15 hover:bg-yellow-dark/10;
+      svg {
+        @apply fill-yellow-dark;
+      }
+    }
+
+    svg {
+      @apply w-20 h-20;
+    }
+  }
+  .bk-tour-content {
+    @apply p-20 pt-[17px];
+
+    > div {
+      @apply relative ease-swing transition-all overflow-hidden;
+    }
+
+    p:not(:last-child) {
+      @apply mb-18;
+    }
+  }
+  .bk-tour-content-text {
+    @apply absolute top-0 left-0 w-full;
+  }
+  .bk-tour-button {
+    @apply text-yellow-dark font-semibold py-15 px-15 flex items-center leading-none hover:bg-yellow-dark/5 relative;
+
+    .bk-icon {
+      @apply w-20 h-20;
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+}
+
+.bk.bk-tour-overlay-element {
+  @apply fixed top-0 left-0 w-full h-full z-tour-overlay pointer-events-none;
+  @apply border-3 border-yellow-normal transition-all duration-200 ease-swing;
+  @apply ring-yellow-light/80 ring-1 bg-yellow-normal/30;
+}
+</style>

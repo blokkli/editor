@@ -31,6 +31,7 @@
           <label
             v-for="item in items"
             :key="item.id"
+            class="group/tooltip"
             :class="{ 'bk-is-muted': !item.translation?.exists }"
           >
             <div>
@@ -42,7 +43,7 @@
                 @click.stop.prevent="onClick(item, $event)"
               />
               <span>{{ item.code }}</span>
-              <div :class="{ 'bk-tooltip': !isDropdown }">{{ item.label }}</div>
+              <Tooltip v-show="!isOpen" :label="item.label" class="w-full" />
             </div>
           </label>
         </div>
@@ -51,16 +52,61 @@
   </Teleport>
 
   <Teleport to="#bk-banner-list">
-    <Banner v-if="isTranslating" :active-language />
+    <Banner
+      v-if="isTranslating"
+      :active-language
+      :show-csv="
+        !!adapter.loadTextFieldValuesForLanguage &&
+        !!adapter.importTranslationsBatched
+      "
+      :show-translate="
+        !!adapter.requestTranslation &&
+        !!adapter.loadTextFieldValuesForLanguage &&
+        !!adapter.importTranslationsBatched
+      "
+      :dialog-open="showCsvDialog"
+      @mark-all-up-to-date="onMarkUpToDate"
+      @open-csv="showCsvDialog = true"
+      @open-translate="showTranslateDialog = true"
+      @import-file="onImportFile"
+    />
+  </Teleport>
+
+  <PluginItemAction
+    v-if="isTranslating && adapter.markTranslationUpToDate"
+    id="mark-translation-up-to-date"
+    :disabled="markUpToDateDisabledReason"
+    disabled-reason-success
+    multiple
+    :title="$t('translationsMarkUpToDate', 'Mark translation as up-to-date')"
+    icon="bk_mdi_check_circle"
+    :weight="-100"
+    @click="onMarkUpToDate"
+  />
+
+  <Teleport :to="ui.mainLayoutElement.value">
+    <BlokkliTransition name="slide-up">
+      <CsvDialog
+        v-if="showCsvDialog"
+        :initial-files="pendingImportFiles"
+        @close="onCsvDialogClose"
+      />
+    </BlokkliTransition>
+    <BlokkliTransition name="slide-up">
+      <TranslateDialog
+        v-if="showTranslateDialog"
+        @close="showTranslateDialog = false"
+      />
+    </BlokkliTransition>
   </Teleport>
 
   <PluginItemAction
     v-if="isTranslating"
     id="translate"
-    :disabled="!canTranslateBlock"
+    :disabled="translateDisabledReason"
     :title="$t('translationsItemAction', 'Translate')"
     icon="bk_mdi_translate"
-    :weight="-100"
+    :weight="-90"
     @click="onTranslate"
   />
 </template>
@@ -76,8 +122,17 @@ import {
 import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import Banner from './Banner/index.vue'
-import { defineMenuButton, onBlokkliEvent } from '#blokkli/editor/composables'
+import CsvDialog from './CsvDialog/index.vue'
+import TranslateDialog from './TranslateDialog/index.vue'
+import {
+  defineMenuButton,
+  defineHighlight,
+  defineItemDropdownAction,
+  onBlokkliEvent,
+  useDialog,
+} from '#blokkli/editor/composables'
 import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
+import { BlokkliTransition, Tooltip } from '#blokkli/editor/components'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { adapter } = defineBlokkliFeature({
@@ -88,10 +143,120 @@ const { adapter } = defineBlokkliFeature({
   description: 'Adds support for block translations.',
 })
 
-const { eventBus, state, context, $t, ui, selection, types, definitions } =
-  useBlokkli()
+const {
+  eventBus,
+  state,
+  context,
+  $t,
+  ui,
+  selection,
+  types,
+  definitions,
+  blocks,
+} = useBlokkli()
+
+const showCsvDialog = useDialog('translations-csv', 'center')
+const showTranslateDialog = useDialog('translations-translate', 'center')
+const pendingImportFiles = ref<File[] | null>(null)
 
 const isTranslating = computed(() => state.editMode.value === 'translating')
+
+function onImportFile(files: File[]) {
+  pendingImportFiles.value = files
+  showCsvDialog.value = true
+}
+
+function onCsvDialogClose() {
+  showCsvDialog.value = false
+  pendingImportFiles.value = null
+}
+
+defineHighlight(() => {
+  if (!isTranslating.value) {
+    return
+  }
+  const lang = context.value.language
+  return blocks
+    .getAllBlocks()
+    .filter((block) => block.outdatedTranslations.includes(lang))
+    .map((block) => ({
+      uuid: block.uuid,
+      color: 'yellow' as const,
+      icon: 'bk_mdi_translate' as const,
+      label: $t('outdatedTranslation', 'Outdated translation'),
+      description: $t(
+        'outdatedTranslationDescription',
+        'Mark translation as up-to-date',
+      ),
+      onClick: () => onMarkUpToDate([block]),
+    }))
+})
+
+const autoTranslateLabel = computed(() => {
+  return $t('translationsAutoTranslate', 'Auto-translate')
+})
+
+defineItemDropdownAction(() => {
+  if (
+    !isTranslating.value ||
+    !adapter.requestTranslation ||
+    !adapter.loadTextFieldValuesForLanguage ||
+    !adapter.importTranslationsBatched
+  ) {
+    return
+  }
+
+  const selectedUuids = selection.uuids.value
+  if (!selectedUuids.length) return
+
+  return {
+    id: 'auto-translate',
+    label: autoTranslateLabel.value,
+    icon: 'bk_mdi_translate',
+    group: 'translate',
+    weight: -80,
+    callback: () => autoTranslateSelected(),
+  }
+})
+
+async function autoTranslateSelected() {
+  ui.setTransform(autoTranslateLabel.value)
+  const sourceLanguage = state.translation.value.sourceLanguage || 'en'
+  const targetLanguage = context.value.language
+  const selectedUuids = new Set(selection.uuids.value)
+
+  const sourceValues =
+    await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
+  const items = sourceValues
+    .filter((v) => selectedUuids.has(v.uuid))
+    .map((v) => ({
+      key: `${v.uuid}:${v.fieldName}`,
+      text: v.value,
+      isHtml: v.fieldType === 'markup',
+      sourceLanguage,
+      targetLanguage,
+    }))
+
+  if (items.length) {
+    const response = await adapter.requestTranslation!(items)
+    if (!response.success || !response.data.length) return
+
+    const importItems = response.data.map((result) => {
+      const separatorIndex = result.key.indexOf(':')
+      return {
+        langcode: targetLanguage,
+        uuid: result.key.substring(0, separatorIndex),
+        fieldName: result.key.substring(separatorIndex + 1),
+        fieldValue: result.translatedText,
+      }
+    })
+
+    await state.mutateWithLoadingState(() =>
+      adapter.importTranslationsBatched!({ items: importItems }),
+    )
+  }
+  ui.setTransform(null)
+}
 
 const isOpen = ref(false)
 
@@ -148,14 +313,17 @@ const items = computed<TranslationStateItem[]>(() => {
     .filter(falsy)
 })
 
-const canTranslateBlock = computed(() => {
+const translateDisabledReason = computed<false | string>(() => {
   const block = selection.item.value
   if (!block) {
     return false
   }
 
   if (block.library?.libraryItemUuid) {
-    return false
+    return $t(
+      'translateLibraryBlock',
+      'Reusable blocks cannot be translated here.',
+    )
   }
 
   const definition = definitions.getBlockDefinition(
@@ -165,19 +333,21 @@ const canTranslateBlock = computed(() => {
   )
 
   if (definition?.editor?.disableEdit) {
-    return false
+    return $t(
+      'translateEditDisabled',
+      'Editing is disabled for this block type.',
+    )
   }
   const type = types.getBlockBundleDefinition(block.bundle)
 
-  if (!type) {
-    return false
+  if (!type || !type.isTranslatable) {
+    return $t(
+      'translateNotTranslatable',
+      'This block type is not translatable.',
+    )
   }
 
-  if (!type.isTranslatable) {
-    return false
-  }
-
-  return true
+  return false
 })
 
 function onClick(item: TranslationStateItem, event: Event) {
@@ -191,6 +361,21 @@ function onClick(item: TranslationStateItem, event: Event) {
   }
 }
 
+const markUpToDateDisabledReason = computed<false | string>(() => {
+  const lang = context.value.language
+  if (
+    selection.items.value.some((item) =>
+      item.outdatedTranslations.includes(lang),
+    )
+  ) {
+    return false
+  }
+  return $t(
+    'translationsMarkUpToDateDisabled',
+    'No selected blocks have an outdated translation.',
+  )
+})
+
 function onTranslate(items: RenderedFieldListItem[]) {
   const item = items[0]
   if (item) {
@@ -201,8 +386,33 @@ function onTranslate(items: RenderedFieldListItem[]) {
   }
 }
 
+function onMarkUpToDate(items: RenderedFieldListItem[] | string[]) {
+  if (!adapter.markTranslationUpToDate) return
+  const lang = context.value.language
+  const uuids = items
+    .map((item) => {
+      if (typeof item === 'string') {
+        return item
+      }
+      if (item.outdatedTranslations.includes(lang)) {
+        return item.uuid
+      }
+
+      return null
+    })
+    .filter(falsy)
+
+  if (!uuids.length) {
+    return
+  }
+
+  state.mutateWithLoadingState(() =>
+    adapter.markTranslationUpToDate!(uuids, context.value.language),
+  )
+}
+
 onBlokkliEvent('item:doubleClick', function (block) {
-  if (isTranslating.value && canTranslateBlock.value) {
+  if (isTranslating.value && !translateDisabledReason.value) {
     onTranslate([block])
   }
 })
@@ -243,7 +453,15 @@ defineMenuButton(() => {
     disabled: !isTranslating.value,
     weight: 60,
     callback: () => {
-      eventBus.emit('batchTranslate')
+      if (
+        adapter.requestTranslation &&
+        adapter.loadTextFieldValuesForLanguage &&
+        adapter.importTranslationsBatched
+      ) {
+        showTranslateDialog.value = true
+      } else {
+        eventBus.emit('batchTranslate')
+      }
     },
   }
 })
@@ -254,3 +472,38 @@ export default {
   name: 'Translations',
 }
 </script>
+
+<style lang="postcss">
+.bk {
+  .bk-translations {
+    @apply relative text-xs lg:text-sm xl:text-base;
+    .bk-toolbar-button {
+      @apply uppercase h-full font-semibold;
+
+      &.bk-is-active {
+        @apply !bg-white text-mono-900;
+      }
+    }
+    .bk-translations-dropdown {
+      @apply absolute top-full right-0 lg:right-auto lg:left-0 max-w-[300px] bg-white z-toolbar-dropdown shadow-lg;
+
+      label {
+        @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-mono-100 whitespace-nowrap text-sm;
+        &.bk-is-muted {
+          @apply text-mono-400;
+        }
+        > div {
+          @apply flex items-center gap-10 md:gap-20 justify-between;
+          span {
+            @apply font-semibold order-last;
+          }
+        }
+      }
+
+      input {
+        @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
+      }
+    }
+  }
+}
+</style>

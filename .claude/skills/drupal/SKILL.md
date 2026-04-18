@@ -71,3 +71,30 @@ Requires `nuxt-graphql-middleware` to be loaded **before** `@blokkli/editor` in
 the Nuxt modules config. GraphQL documents in `graphql/` are registered
 conditionally based on schema introspection — roughly 30+ mutations and a dozen
 feature-specific query/fragment sets.
+
+## GraphQL Schema and Type Generation
+
+The Drupal GraphQL schema is stored at `build/drupal-schema.graphql`. This is
+the source of truth for type generation — the root `nuxt.config.ts` references
+it via `graphqlMiddleware.schemaPath`.
+
+**When adding or modifying GraphQL mutations/queries:**
+
+1. **Always read the schema first** — check `build/drupal-schema.graphql` to see
+   the exact field names, types, and argument names for the mutation/query
+   you're implementing. Do NOT guess field names.
+2. Write the `.graphql` document in `src/modules/drupal/graphql/` matching the
+   schema exactly
+3. Run `npm run dev:prepare` to regenerate types from the schema
+4. The `Mutation` and `Query` TypeScript types (from
+   `#nuxt-graphql-middleware/operation-types`) are generated from this schema —
+   after `dev:prepare`, new operations will be recognized
+
+**Adapter pattern for GraphQL operations:**
+
+- Use `hasMutation('operationName')` / `hasQuery('operationName')` to
+  conditionally register adapter methods
+- Call `useGraphqlMutation(name, variables)` or
+  `useGraphqlQuery(name, variables)`
+- Map responses: `.then((v) => v.data.result.success)` for standard mutation
+  results

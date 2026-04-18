@@ -20,8 +20,9 @@ export class FieldText extends Field<string> {
     cardinality = 1,
     required = false,
     maxLength = -1,
+    isTranslatable = true,
   ) {
-    super('text', id, label, cardinality, required)
+    super('text', id, label, cardinality, required, isTranslatable)
     this.maxLength = maxLength
   }
 

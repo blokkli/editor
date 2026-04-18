@@ -16,6 +16,7 @@ You have SEVERAL skills available that you MUST use!!
 - **translations** => Use when you add new translations or are tasked to
   translate!
 - **typecheck** => Use when you need to check Typescript types!
+- **changelog** => Use when creating changelog entries for a new release
 
 ## Project Overview
 
@@ -278,6 +279,13 @@ for Drupal backends. See the drupal skill for details on schema introspection,
 adapter methods, and configuration.
 
 ## Working with the Codebase
+
+### Editor Architecture
+
+Almost everything that touches the editor part of blökkli will use `useBlokkli`
+which is provided by `src/runtime/editor/components/EditProvider.vue`. It
+returns an object of type `BlokkliApp`. Each property is a provider, defined in
+`src/runtime/editor/providers/**`.
 
 ### Adding a New Feature
 

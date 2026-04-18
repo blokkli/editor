@@ -13,13 +13,18 @@
     icon="bk_mdi_zoom_in"
     meta
     key-code="0"
-    region="view-options"
+    region="artboard"
     weight="100"
-    @click="resetZoom"
+    class="!px-0"
+    @click="onClickToolbarButton"
   >
-    <div class="bk-feature-canvas-button">
+    <PluginContextMenu
+      id="artboard_zoom"
+      :menu="zoomMenu"
+      class="flex h-full items-center justify-center min-w-70 px-10 tabular-nums cursor-context-menu"
+    >
       <span>{{ zoomLevel }}</span>
-    </div>
+    </PluginContextMenu>
   </PluginToolbarButton>
 
   <PluginViewOption
@@ -60,7 +65,12 @@ import {
   isInsideRect,
   subtractRectFromViewport,
 } from '#blokkli/editor/helpers/geometry'
-import { PluginToolbarButton, PluginViewOption } from '#blokkli/editor/plugins'
+import {
+  PluginToolbarButton,
+  PluginViewOption,
+  PluginContextMenu,
+} from '#blokkli/editor/plugins'
+import type { ContextMenu } from '#blokkli/editor/types/ui'
 import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'
@@ -91,6 +101,36 @@ const { context, storage, ui, animation, $t, dom, selection } = useBlokkli()
 const artboardElement = ui.artboardElement()
 
 const zoomLevel = computed(() => Math.round(ui.artboardScale.value * 100) + '%')
+
+const ZOOM_LEVELS = [10, 25, 50, 75, 100, 125, 150, 200, 300]
+
+const zoomMenu = computed<ContextMenu[]>(() => [
+  ...ZOOM_LEVELS.map<ContextMenu>((level) => ({
+    type: 'button',
+    label: level + '%',
+    icon: 'bk_mdi_zoom_in',
+    callback: () => {
+      const targetScale = level / 100
+      artboard.scaleAroundPoint(
+        ui.viewport.value.width / 2,
+        ui.viewport.value.height / 2,
+        targetScale,
+        true,
+      )
+      animation.requestDraw()
+    },
+  })),
+  { type: 'rule' },
+  {
+    type: 'button',
+    label: $t('artboardScaleToFit', 'Scale to fit'),
+    icon: 'bk_mdi_fit_screen',
+    callback: () => {
+      artboard.scaleToFit()
+      animation.requestDraw()
+    },
+  },
+])
 
 const PADDING = 50
 
@@ -314,6 +354,11 @@ onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', saveState)
 })
 
+function onClickToolbarButton() {
+  ui.openContextMenu.value = ''
+  resetZoom()
+}
+
 const resetZoom = () => {
   artboard.resetZoom({
     duration: 500,
@@ -353,10 +398,6 @@ onBlokkliEvent('keyPressed', (e) => {
   } else if (e.code === '0' && e.meta) {
     e.originalEvent.preventDefault()
     resetZoom()
-  } else if (e.code === '1' && e.meta) {
-    e.originalEvent.preventDefault()
-    artboard.scaleToFit()
-    animation.requestDraw()
   }
 })
 
@@ -462,3 +503,21 @@ onBlokkliEvent('scrollSelectionIntoView', (e) => {
   })
 })
 </script>
+
+<style lang="postcss">
+.bk-html-root.bk-is-artboard {
+  .bk-body {
+    .bk-main-canvas {
+      @apply fixed top-0 left-1/2 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
+      background: white;
+      user-select: none;
+      image-rendering: crisp-edges;
+      backface-visibility: hidden;
+      transform-origin: 0 0;
+      /* Set initial position to be centered. The artboard feature will update it on mount. */
+      transform: translateX(-50%) translateY(100px);
+      contain: layout paint inline-size style;
+    }
+  }
+}
+</style>

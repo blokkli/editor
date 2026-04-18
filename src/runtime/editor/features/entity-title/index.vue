@@ -2,49 +2,35 @@
   <Teleport to="#bk-toolbar-title">
     <button
       v-if="scheduledDate"
-      class="bk-toolbar-title-scheduled"
+      class="bk-toolbar-title-scheduled group/tooltip"
       @click.prevent="eventBus.emit('publish:show-dialog')"
     >
       <Icon name="bk_mdi_calendar_clock" />
       <div class="bk-toolbar-title-scheduled-text">
         <div>{{ formattedScheduledDate }}</div>
       </div>
-      <div class="bk-tooltip">
-        <div>
-          {{
-            $t('scheduledFor', 'The changes will be published on this date.')
-          }}
-        </div>
-      </div>
+      <Tooltip
+        :label="
+          $t('scheduledFor', 'The changes will be published on this date.')
+        "
+      />
     </button>
     <button
       ref="buttonEl"
-      class="bk-toolbar-button"
+      class="bk-toolbar-button group/tooltip w-full justify-start relative"
       :disabled="!state.canEdit.value"
       @click="eventBus.emit('editEntity')"
     >
-      <div class="bk-toolbar-title">
-        <div>
-          <span
-            class="bk-status-indicator"
-            :class="{
-              'bk-is-success': entity.status && !mutations.length,
-              'bk-is-warning': entity.status && mutations.length,
-            }"
-          />
-          <strong>{{ entity.label }}</strong>
+      <div class="bk-toolbar-title relative size-full">
+        <div
+          class="min-w-0 truncate absolute top-1/2 left-0 w-full -translate-y-1/2 text-left flex items-center"
+        >
+          <StatusIndicator :status="statusIndicatorStatus" />
+          <strong class="text-mono-100">{{ entity.label }}</strong>
           <span>&nbsp;{{ entity.bundleLabel }}</span>
         </div>
       </div>
-      <div class="bk-tooltip">
-        <span v-if="entity.status && !mutations.length">{{
-          statusPublished
-        }}</span>
-        <span v-else-if="entity.status && mutations.length">{{
-          statusPending
-        }}</span>
-        <span v-else>{{ statusUnpublished }}</span>
-      </div>
+      <Tooltip :label="tooltipLabel" />
     </button>
   </Teleport>
 </template>
@@ -56,8 +42,9 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, StatusIndicator, Tooltip } from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
+import type { UiStatus } from '#blokkli/editor/types/ui'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -86,20 +73,18 @@ const formattedScheduledDate = computed(() => {
   })
 })
 
-const statusPublished = computed(() =>
-  $t('pageIsPublished', 'Page is published'),
-)
+const tooltipLabel = computed(() => {
+  if (entity.value.status && !mutations.value.length) {
+    return $t('pageIsPublished', 'Page is published')
+  } else if (entity.value.status && mutations.value.length) {
+    return $t(
+      'pageIsPublishedWithPendingChanges',
+      'Page is published (changes pending)',
+    )
+  }
 
-const statusPending = computed(() =>
-  $t(
-    'pageIsPublishedWithPendingChanges',
-    'Page is published (changes pending)',
-  ),
-)
-
-const statusUnpublished = computed(() =>
-  $t('pageIsNotPublished', 'Page is not published'),
-)
+  return $t('pageIsNotPublished', 'Page is not published')
+})
 
 defineCommands(() => {
   return {
@@ -114,29 +99,28 @@ defineCommands(() => {
   }
 })
 
-const tourText = computed(() => {
-  const intro = $t(
-    'entityTitleTourText',
-    '<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>',
-  )
-
-  return `
-  ${intro}
-  <ul>
-  <li><div class="bk-status-indicator"></div>${statusUnpublished.value}</li>
-  <li><div class="bk-status-indicator bk-is-warning"></div>${statusPending.value}</li>
-  <li><div class="bk-status-indicator bk-is-success"></div>${statusPublished.value}</li>
-  </ul>
-  `
-})
-
 defineTourItem(() => {
   return {
     id: 'entity-title',
     title: $t('entityTitleTourTitle', 'Page'),
-    text: tourText.value,
+    text: $t(
+      'entityTitleTourText',
+      '<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>',
+    ),
     element: buttonEl.value,
   }
+})
+
+const statusIndicatorStatus = computed<UiStatus>(() => {
+  if (entity.value.status) {
+    if (mutations.value.length) {
+      return 'warning'
+    } else {
+      return 'success'
+    }
+  }
+
+  return 'error'
 })
 </script>
 

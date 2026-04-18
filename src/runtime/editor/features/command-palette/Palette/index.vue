@@ -1,57 +1,30 @@
 <template>
-  <ScrollBoundary
-    class="bk-command-palette bk-control"
-    @keydown="onKeyDown"
-    @keyup.stop
-    @click.stop
-    @mousemove.once="hasUsedMouse = true"
+  <SearchOverlay
+    v-slot="{ focusedIndex, onMouseEnter }"
+    v-model:text="text"
+    :title="$t('commandPaletteTitle', 'Command Palette')"
+    :total-items="visibleCommands.length"
+    :placeholder="$t('commandPalette.inputPlaceholder', 'Search commands...')"
+    @select="onSelectByIndex"
+    @close="emit('close')"
   >
-    <div class="bk-command-palette-input">
-      <Icon name="bk_mdi_keyboard_command_key" />
-      <input
-        ref="inputEl"
-        v-model="text"
-        type="text"
-        :placeholder="
-          $t('commandPalette.inputPlaceholder', 'Search commands...')
-        "
-      />
-    </div>
-    <div class="bk-command-palette-results bk-scrollbar-dark">
-      <div class="bk-command-palette-results-list">
-        <div>
-          <Item
-            v-for="item in allCommands"
-            v-show="item.visible"
-            :key="item.id"
-            :item="item"
-            :index="getVisibleIndex(item.id)"
-            :is-focused="focusedIndex === getVisibleIndex(item.id)"
-            @focus="onFocus"
-            @select="onSelect"
-          />
-        </div>
-      </div>
-    </div>
-  </ScrollBoundary>
+    <Item
+      v-for="(item, i) in visibleCommands"
+      :key="item.id"
+      :item="item"
+      :index="i"
+      :is-focused="focusedIndex === i"
+      @focus="onMouseEnter"
+      @select="onSelect"
+    />
+  </SearchOverlay>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  onMounted,
-  ref,
-  useBlokkli,
-  watch,
-  nextTick,
-  onBeforeUnmount,
-  useTemplateRef,
-} from '#imports'
-import { Icon, ScrollBoundary } from '#blokkli/editor/components'
+import { computed, ref, useBlokkli, watch } from '#imports'
+import { SearchOverlay } from '#blokkli/editor/components'
 import { Fzf } from 'fzf'
-import { modulo } from '#blokkli/editor/helpers/math'
 import Item, { type MappedCommandItem } from './Item/index.vue'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Command } from '../types'
 
 const emit = defineEmits(['close'])
@@ -74,17 +47,7 @@ function incrementFrequency(id: string) {
   }
 }
 
-const inputEl = useTemplateRef('inputEl')
 const text = ref('')
-const focusedIndex = ref(0)
-const hasUsedMouse = ref(false)
-
-function onFocus(index: number) {
-  if (!hasUsedMouse.value) {
-    return
-  }
-  focusedIndex.value = index
-}
 
 const items = computed<Array<Command & { _id: number }>>(() => {
   return [
@@ -168,41 +131,7 @@ const visibleCommands = computed<MappedCommandItem[]>(() => {
   return allCommands.value.filter((v) => v.visible !== false)
 })
 
-const getVisibleIndex = (id: string): number => {
-  return visibleCommands.value.findIndex((v) => v.id === id)
-}
-
-watch(text, () => {
-  nextTick(() => {
-    focusFirst()
-  })
-})
-
 watch(selection.uuids, () => emit('close'))
-
-const focusFirst = () => {
-  focusedIndex.value = 0
-}
-
-const focusPrev = () => {
-  if (visibleCommands.value.length === 0) {
-    return
-  }
-  focusedIndex.value = modulo(
-    focusedIndex.value - 1,
-    visibleCommands.value.length,
-  )
-}
-
-const focusNext = () => {
-  if (visibleCommands.value.length === 0) {
-    return
-  }
-  focusedIndex.value = modulo(
-    focusedIndex.value + 1,
-    visibleCommands.value.length,
-  )
-}
 
 const onSelect = (id: string) => {
   const command = items.value.find((v) => v.id === id)
@@ -213,59 +142,10 @@ const onSelect = (id: string) => {
   }
 }
 
-const onKeyDown = (e: KeyboardEvent) => {
-  e.stopPropagation()
-  if (e.code === 'KeyK' && (e.ctrlKey || e.metaKey)) {
-    e.preventDefault()
-    emit('close')
-    return
-  }
-  if (e.code === 'Tab') {
-    e.preventDefault()
-    if (e.shiftKey) {
-      focusPrev()
-    } else {
-      focusNext()
-    }
-  } else if (
-    e.code === 'ArrowDown' ||
-    (e.code === 'KeyJ' && (e.ctrlKey || e.metaKey))
-  ) {
-    e.preventDefault()
-    focusNext()
-  } else if (e.code === 'ArrowUp') {
-    e.preventDefault()
-    focusPrev()
-  } else if (e.code === 'Enter') {
-    e.preventDefault()
-    const command = visibleCommands.value[focusedIndex.value]
-    if (command) {
-      onSelect(command.id)
-    }
-  } else if (e.code === 'Escape') {
-    e.preventDefault()
-    emit('close')
+const onSelectByIndex = (index: number) => {
+  const command = visibleCommands.value[index]
+  if (command) {
+    onSelect(command.id)
   }
 }
-
-const onWindowClick = () => {
-  emit('close')
-}
-
-onBlokkliEvent('overlay:close', () => {
-  emit('close')
-})
-
-onMounted(() => {
-  if (inputEl.value) {
-    inputEl.value.focus()
-    focusFirst()
-  }
-
-  document.body.addEventListener('click', onWindowClick)
-})
-
-onBeforeUnmount(() => {
-  document.body.removeEventListener('click', onWindowClick)
-})
 </script>

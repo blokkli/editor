@@ -11,6 +11,7 @@ import { resolvePosition, validateOptionValue } from '../helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'
+import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import {
   getAvailableOptions,
   optionValueToStorable,
@@ -148,11 +149,16 @@ function validateBlockOptions(
   ctx: McpToolContext,
   block: BlockInput,
   path: string,
+  parentBundle: BlockBundleWithNested | null,
 ): string | undefined {
   if (!block.options) return undefined
 
   const { definitions } = ctx.app
-  const definition = definitions.getBlockDefinition(block.bundle, 'default')
+  const definition = definitions.getBlockDefinition(
+    block.bundle,
+    'default',
+    parentBundle,
+  )
 
   if (!definition) {
     return `${path}: Paragraph definition not found for bundle "${block.bundle}".`
@@ -195,6 +201,7 @@ function validateBlockTree(
   allowedBundles: string[],
   fieldLabel: string,
   pathPrefix: string,
+  parentBundle: BlockBundleWithNested | null,
 ): string | undefined {
   const { types } = ctx.app
 
@@ -213,12 +220,17 @@ function validateBlockTree(
       return `${path}: Bundle "${block.bundle}" is not allowed in field "${fieldLabel}". Allowed bundles: ${allowedBundles.join(', ')}`
     }
 
+    // Check add permission for the bundle
+    if (!ctx.app.permissions.checkBlockBundlePermission(block.bundle, 'add')) {
+      return `${path}: Permission denied: cannot add "${bundleDefinition.label}" blocks.`
+    }
+
     // Validate content fields
     const contentError = validateContentFields(ctx, block, path)
     if (contentError) return contentError
 
     // Validate options
-    const optionsError = validateBlockOptions(ctx, block, path)
+    const optionsError = validateBlockOptions(ctx, block, path, parentBundle)
     if (optionsError) return optionsError
 
     // Validate children recursively
@@ -252,6 +264,7 @@ function validateBlockTree(
           childFieldConfig.allowedBundles,
           childFieldName,
           `${path} > ${childFieldName} > `,
+          block.bundle as BlockBundleWithNested,
         )
         if (childError) return childError
       }
@@ -268,6 +281,7 @@ function validateBlockTree(
 function buildEventBlocks(
   ctx: McpToolContext,
   blocks: BlockInput[],
+  parentBundle: BlockBundleWithNested | null,
 ): AddNewBlocksEventBlock[] {
   const { definitions } = ctx.app
 
@@ -283,7 +297,11 @@ function buildEventBlocks(
 
     let options: Record<string, string> | undefined
     if (block.options) {
-      const definition = definitions.getBlockDefinition(block.bundle, 'default')
+      const definition = definitions.getBlockDefinition(
+        block.bundle,
+        'default',
+        parentBundle,
+      )
       if (definition) {
         const availableOptions = getAvailableOptions(
           definition.options,
@@ -305,7 +323,11 @@ function buildEventBlocks(
       children = {}
       for (const [fieldName, childBlocks] of Object.entries(block.children)) {
         if (childBlocks.length) {
-          children[fieldName] = buildEventBlocks(ctx, childBlocks)
+          children[fieldName] = buildEventBlocks(
+            ctx,
+            childBlocks,
+            block.bundle as BlockBundleWithNested,
+          )
         }
       }
     }
@@ -393,20 +415,38 @@ export default defineBlokkliAgentTool({
       }
     }
 
+    // Check ancestor restrictions on the target parent
+    if (!isRootEntity) {
+      if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
+        return {
+          error:
+            'Permission denied: target parent is inside a block with restricted editing permissions',
+        }
+      }
+    }
+
     // Recursively validate the entire block tree
+    const topLevelParentBundle = isRootEntity
+      ? null
+      : (bundle as BlockBundleWithNested)
     const validationError = validateBlockTree(
       ctx,
       params.paragraphs,
       field.allowedBundles,
       params.parent.field,
       '',
+      topLevelParentBundle,
     )
     if (validationError) {
       return { error: validationError }
     }
 
     // Build the event tree with UUIDs and storable options
-    const eventBlocks = buildEventBlocks(ctx, params.paragraphs)
+    const eventBlocks = buildEventBlocks(
+      ctx,
+      params.paragraphs,
+      topLevelParentBundle,
+    )
     const totalCount = countBlocks(eventBlocks)
     const blockUuids = collectAllUuids(eventBlocks)
 

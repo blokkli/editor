@@ -1,0 +1,15 @@
+mutation pbIgnoreAnalyze(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $ids: [String]!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: ignore_analyze(ids: $ids) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

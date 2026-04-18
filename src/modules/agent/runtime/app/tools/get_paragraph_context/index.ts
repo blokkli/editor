@@ -353,7 +353,7 @@ export default defineBlokkliAgentTool({
       const definition = definitions.getBlockDefinition(
         block.bundle,
         selectionItem?.fieldListType ?? 'default',
-        selectionItem?.parentBlockBundle,
+        selectionItem?.parentBlockBundle ?? null,
       )
 
       if (definition) {

@@ -82,6 +82,10 @@ export type GetEditStatesItem = {
   hostEntityUuid: string
   entity: EditEntity
   currentUserIsOwner: boolean
+  lastChanged: string
+  pendingChanges: number
+  ownerName: string
+  url: string
 }
 
 export type BlokkliAdapterGetEditStatesResult =
@@ -119,7 +123,7 @@ declare module '#blokkli/editor/adapter' {
      * Search for edit states.
      */
     getEditStates?: (
-      page?: number,
+      e?: AdapterSearchArguments,
     ) => Promise<BlokkliAdapterGetEditStatesResult>
   }
 }

@@ -34,6 +34,7 @@ export class ContentPage extends Content {
         'slider',
         'button',
         'card',
+        'iframe',
         'image',
         'from_library',
         'blokkli_fragment',

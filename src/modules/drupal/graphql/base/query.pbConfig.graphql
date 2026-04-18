@@ -78,6 +78,15 @@ query pbConfig($entityType: String!, $entityBundle: String!) {
     langcode
     prefix
   }
+
+  entityTypeConfig: paragraphsBlokkliEntityTypeConfig {
+    id: entityTypeId
+    label
+    bundles {
+      id: bundle
+      label
+    }
+  }
 }
 
 fragment paragraphsBlokkliAvailableFeatures on ParagraphsBlokkliAvailableFeatures {

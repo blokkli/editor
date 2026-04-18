@@ -32,9 +32,9 @@
         "
       />
 
-      <div v-if="analyzerStatuses.length > 1" class="bk-analyze-statuses">
+      <div v-if="staleAnalyzerStatuses.length > 1" class="bk-analyze-statuses">
         <div
-          v-for="analyzer in analyzerStatuses"
+          v-for="analyzer in staleAnalyzerStatuses"
           :key="analyzer.id"
           class="bk-analyze-status-item"
         >
@@ -62,24 +62,17 @@
           :options="categoryOptions"
         />
       </div>
-      <AnalyzeSummary :results="results" />
-      <Results v-model="activeId" :results="results" />
+      <AnalyzeSummary :results="activeResults" />
+      <Results :results="activeResults" />
+      <IgnoredResults v-if="ignoredResults.length" :results="ignoredResults" />
     </div>
   </div>
-  <Renderer
-    v-if="results.length && (keepVisible || isShown) && !ui.isApproving.value"
-    v-model="activeId"
-    :results
-    :is-stale
-    :manual-analyzer-ids
-    :is-running
-    :is-shown
-  />
 </template>
 
 <script setup lang="ts">
 import {
   computed,
+  ref,
   useBlokkli,
   useState,
   onMounted,
@@ -95,8 +88,8 @@ import type {
 } from './analyzers/types'
 import type { AnalyzeProvider } from '#blokkli/editor/providers/analyze'
 import Results from './Results/Results.vue'
+import IgnoredResults from './Ignored/index.vue'
 import AnalyzeSummary from './Summary/index.vue'
-import Renderer from './Renderer/index.vue'
 import { useAnalyzeHelper } from './helper'
 import {
   FormSelect,
@@ -104,6 +97,8 @@ import {
   RelativeTime,
 } from '#blokkli/editor/components'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
+import { defineHighlight, onBlokkliEvent } from '#blokkli/editor/composables'
+import { falsy } from '#blokkli/helpers'
 
 const props = defineProps<{
   langcode: string
@@ -113,7 +108,19 @@ const props = defineProps<{
 
 const ALL = 'ALL'
 
-const { $t, ui, state, directive, dom, storage } = useBlokkli()
+const {
+  $t,
+  ui,
+  state,
+  directive,
+  dom,
+  storage,
+  element,
+  blocks,
+  eventBus,
+  readability,
+  adapter,
+} = useBlokkli()
 const { getCategoryLabel } = useAnalyzeHelper()
 
 const refreshKey = computed(() => {
@@ -137,12 +144,96 @@ const manualResults = useState<AnalyzeResultWithPluginId[]>(
   'blokkli:analyze:manual',
   () => [],
 )
-const activeId = useState(() => '')
+const activeId = ui.activeHighlightId
 const lastRun = useState(() => 0)
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
 const keepVisible = storage.use('analyze:keepVisible', true)
 const providerRootElement = ui.providerElement
+
+function getIgnoredFromState(): Set<string> {
+  try {
+    return new Set(state.getMappedState().ignoredAnalyzeIdentifiers)
+  } catch {
+    return new Set()
+  }
+}
+
+const ignoredIdentifiers = ref(getIgnoredFromState())
+
+defineHighlight(() => {
+  if (!keepVisible.value && !props.isShown) {
+    return
+  }
+
+  if (ui.isApproving.value) {
+    return
+  }
+
+  const highlights: import('#blokkli/editor/providers/plugin').HighlightItem[] =
+    []
+
+  for (const result of activeResults.value) {
+    if (result.status !== 'incomplete' && result.status !== 'violation') {
+      continue
+    }
+
+    for (const node of result.nodes) {
+      if (!node) {
+        continue
+      }
+
+      for (const target of node.targets) {
+        if (!target) {
+          continue
+        }
+
+        let targetElement: HTMLElement | null = null
+        let targetUuid: string | undefined = node.uuid
+
+        if (typeof target.target === 'string') {
+          targetElement = element.query(
+            ui.providerElement,
+            target.target,
+            'Find analyze highlight target element.',
+          )
+        } else if (target.target instanceof HTMLElement) {
+          targetElement = target.target
+        } else if ('uuid' in target.target) {
+          targetUuid = target.target.uuid
+          const item = blocks.getBlock(target.target.uuid)
+          if (item) {
+            targetElement = dom.getDragElement(item) ?? null
+          }
+        }
+
+        if (targetElement) {
+          const id = result.id + '_____' + target.globalIndex
+          let label = result.title
+          if (node.score != null) {
+            const scoreLabel = readability.analyzer.value.scoreLabel
+            label += ` · ${scoreLabel} ${readability.formatScore(node.score)}`
+          }
+          highlights.push({
+            id,
+            element: targetElement,
+            uuid: targetUuid,
+            color: result.status === 'violation' ? 'red' : 'yellow',
+            icon: 'bk_mdi_speed',
+            label,
+            description: $t('analyzeShowDetails', 'Show details'),
+            onClick: () => {
+              activeId.value = activeId.value === id ? '' : id
+              eventBus.emit('sidebar:open', 'analyze')
+            },
+          })
+        }
+      }
+    }
+  }
+
+  return highlights
+})
 
 // Split analyzers into continuous and manual
 const continuousAnalyzers = computed(() =>
@@ -193,9 +284,14 @@ const allResults = computed<AnalyzeResultMapped[]>(() => {
         currentIndex++
       }
 
+      const ignored =
+        !!node.identifier &&
+        ignoredIdentifiers.value.has(result.id + ':' + node.identifier)
+
       mappedNodes.push({
         ...node,
         targets: mappedTargets,
+        ignored,
       })
     }
 
@@ -218,8 +314,30 @@ const results = computed(() => {
   return allResults.value.filter((v) => v.category === selectedCategory.value)
 })
 
+function filterResultsByIgnored(
+  items: AnalyzeResultMapped[],
+  wantIgnored: boolean,
+): AnalyzeResultMapped[] {
+  const filtered: AnalyzeResultMapped[] = []
+  for (const result of items) {
+    const nodes = result.nodes.filter((n) => n.ignored === wantIgnored)
+    if (nodes.length) {
+      filtered.push({ ...result, nodes })
+    }
+  }
+  return filtered
+}
+
+const activeResults = computed(() =>
+  filterResultsByIgnored(results.value, false),
+)
+
+const ignoredResults = computed(() =>
+  filterResultsByIgnored(allResults.value, true),
+)
+
 watch(
-  allResults,
+  activeResults,
   (v) => {
     let count = 0
     for (const r of v) {
@@ -269,35 +387,32 @@ const staleMessage = computed(() => {
   return ''
 })
 
-const analyzerStatuses = computed(() => {
+const staleAnalyzerStatuses = computed(() => {
   if (!hasRunOnce.value) {
     return []
   }
 
-  return props.analyze.analyzers.value.map((analyzer) => {
-    const status = analyzer.continuous
-      ? $t('analyzeStatusUpToDate', 'Up-to-date')
-      : isStale.value
-        ? $t('analyzeStatusStale', 'Stale')
-        : $t('analyzeStatusUpToDate', 'Up-to-date')
+  return props.analyze.analyzers.value
+    .map((analyzer) => {
+      if (analyzer.continuous || !isStale.value) {
+        return
+      }
+      const status = $t('analyzeStatusStale', 'Stale')
 
-    const title =
-      typeof analyzer.label === 'function'
-        ? analyzer.label(ui.interfaceLanguage.value, $t)
-        : analyzer.label
+      const title =
+        typeof analyzer.label === 'function'
+          ? analyzer.label(ui.interfaceLanguage.value, $t)
+          : analyzer.label
 
-    return {
-      id: analyzer.id,
-      title: title ?? analyzer.id,
-      status,
-      isStale: !analyzer.continuous && isStale.value,
-    }
-  })
+      return {
+        id: analyzer.id,
+        title: title ?? analyzer.id,
+        status,
+        isStale: !analyzer.continuous && isStale.value,
+      }
+    })
+    .filter(falsy)
 })
-
-const manualAnalyzerIds = computed(
-  () => new Set(manualAnalyzers.value.map((a) => a.id)),
-)
 
 let refreshTimeout: number | null = null
 
@@ -502,6 +617,38 @@ const categoryOptions = computed<{ value: string; label: string }[]>(() => {
     },
     ...categories,
   ]
+})
+
+async function ignoreNode(resultId: string, identifier: string) {
+  const key = resultId + ':' + identifier
+  if (adapter.ignoreAnalyzeIdentifiers) {
+    await state.mutateWithLoadingState(
+      () => adapter.ignoreAnalyzeIdentifiers!([key]),
+      false,
+    )
+    ignoredIdentifiers.value = getIgnoredFromState()
+  }
+}
+
+async function unignoreNode(resultId: string, identifier: string) {
+  const key = resultId + ':' + identifier
+  if (adapter.unignoreAnalyzeIdentifiers) {
+    await state.mutateWithLoadingState(
+      () => adapter.unignoreAnalyzeIdentifiers!([key]),
+      false,
+    )
+    ignoredIdentifiers.value = getIgnoredFromState()
+  }
+}
+
+onBlokkliEvent('analyze:ignore', (e) => ignoreNode(e.resultId, e.identifier))
+onBlokkliEvent('analyze:unignore', (e) =>
+  unignoreNode(e.resultId, e.identifier),
+)
+
+// Sync ignored identifiers from state after mutations (including undo/redo).
+onBlokkliEvent('state:reloaded', () => {
+  ignoredIdentifiers.value = getIgnoredFromState()
 })
 
 // Fetch and init analyzers on mount, then auto-run continuous ones.

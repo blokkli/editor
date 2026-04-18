@@ -5,13 +5,17 @@
         <Icon :name="icon" />
         <span>{{ title }}</span>
       </div>
-      <div v-if="!hideCancel" class="bk-agent-tool-card-header-cancel">
+      <div
+        v-if="!hideCancel"
+        class="bk-agent-tool-card-header-cancel group/tooltip relative"
+      >
         <button type="button" @click="$emit('cancel')">
           <Icon name="bk_mdi_close" />
         </button>
-        <div class="bk-tooltip">
-          <span>{{ $t('aiAgentReject', 'Reject') }}</span>
-        </div>
+        <Tooltip
+          :label="$t('aiAgentReject', 'Reject')"
+          placement="above-right"
+        />
       </div>
     </div>
 
@@ -24,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '#blokkli/editor/components'
+import { Icon, Tooltip } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { useBlokkli } from '#imports'
 

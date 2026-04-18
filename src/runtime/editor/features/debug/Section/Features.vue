@@ -2,10 +2,7 @@
   <div class="bk-debug-features">
     <div v-for="feature in featuresList" :key="feature.id">
       <div>
-        <span
-          class="bk-status-indicator"
-          :class="feature.mounted ? 'bk-is-success' : 'bk-is-danger'"
-        />
+        <StatusIndicator :status="feature.mounted ? 'success' : 'error'" />
       </div>
       <div>
         <h3>{{ feature.label }}</h3>
@@ -18,6 +15,7 @@
 
 <script setup lang="ts">
 import { useBlokkli, computed } from '#imports'
+import { StatusIndicator } from '#blokkli/editor/components'
 
 const { features } = useBlokkli()
 

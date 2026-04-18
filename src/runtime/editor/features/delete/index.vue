@@ -3,6 +3,7 @@
     id="delete"
     edit-only
     :title="$t('deleteButton', 'Delete')"
+    :disabled="deleteDisabledReason"
     multiple
     key-code="Delete"
     icon="bk_mdi_delete"
@@ -12,12 +13,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { itemEntityType } from '#blokkli-build/config'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
-const { state, $t, eventBus, dom } = useBlokkli()
+const { state, $t, eventBus, dom, selection, permissions } = useBlokkli()
 
 const { adapter } = defineBlokkliFeature({
   id: 'delete',
@@ -25,6 +26,23 @@ const { adapter } = defineBlokkliFeature({
   label: 'Delete',
   requiredAdapterMethods: ['deleteBlocks'],
   description: 'Provides an action to delete one or more blocks.',
+})
+
+const deleteDisabledReason = computed<false | string>(() => {
+  const bundles = selection.bundles.value
+  if (!bundles.length) {
+    return false
+  }
+
+  const denied = permissions.filterDeniedBundles(bundles, 'delete')
+  if (denied.length) {
+    return $t(
+      'deleteNoPermission',
+      'You do not have permission to delete this block.',
+    )
+  }
+
+  return false
 })
 
 /**

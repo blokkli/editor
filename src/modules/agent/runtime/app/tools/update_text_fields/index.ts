@@ -1,5 +1,10 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
+import { onlyUnique } from '#blokkli/helpers'
 import Component from './Component.vue'
 import DetailsComponent from './Details/index.vue'
 
@@ -96,7 +101,33 @@ export default defineBlokkliAgentTool({
   component: Component,
   detailsComponent: DetailsComponent,
   buildDetails: (result) => result,
-  execute(_ctx, params) {
+  execute(ctx, params) {
+    // Collect all block UUIDs from both uuids and operations params
+    const blockUuids: string[] = []
+    if (params.uuids) {
+      blockUuids.push(...Object.keys(params.uuids))
+    }
+    if (params.operations) {
+      blockUuids.push(...params.operations.map((op) => op.uuid))
+    }
+
+    // Resolve bundles for permission check (skip entity-level UUIDs)
+    const bundles = blockUuids
+      .filter(onlyUnique)
+      .map((uuid) => ctx.app.blocks.getBlock(uuid)?.bundle)
+      .filter((b): b is string => !!b)
+      .filter(onlyUnique)
+
+    if (bundles.length) {
+      const denied = requireBundlePermission(ctx.app, bundles, 'edit')
+      if (denied) return denied
+    }
+
+    // Check ancestor restrictions
+    const uniqueUuids = blockUuids.filter(onlyUnique)
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, uniqueUuids)
+    if (ancestorDenied) return ancestorDenied
+
     return params
   },
   mockParams: () => ({

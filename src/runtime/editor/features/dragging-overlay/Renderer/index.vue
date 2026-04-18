@@ -67,6 +67,7 @@ const {
   fields,
   definitions,
   context,
+  permissions,
   selection,
 } = useBlokkli()
 
@@ -231,6 +232,16 @@ const emitDrop = async () => {
 }
 
 /**
+ * Whether the drag contains existing blocks (move/copy) as opposed to new items.
+ */
+const isDraggingExisting = computed<boolean>(() =>
+  props.items.some(
+    (item) =>
+      item.itemType === 'existing' || item.itemType === 'existing_structure',
+  ),
+)
+
+/**
  * The bundles being dragged.
  *
  * In case of dragging a from_library block, the bundle of the reusable block is also returned here.
@@ -285,7 +296,10 @@ const draggingFragments = computed<string[]>(() =>
 const selectionUuids = computed<string[]>(() =>
   props.items
     .map((item) => {
-      if (item.itemType === 'existing') {
+      if (
+        item.itemType === 'existing' ||
+        item.itemType === 'existing_structure'
+      ) {
         return item.block.uuid
       }
     })
@@ -624,6 +638,16 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   if (!field) {
     return
   }
+
+  // Skip fields inside a restricted block.
+  if (
+    field.hostEntityType === itemEntityType &&
+    (!permissions.checkBlockBundlePermission(field.hostEntityBundle, 'edit') ||
+      permissions.blockHasRestrictedAncestor(field.hostEntityUuid))
+  ) {
+    return
+  }
+
   const childElements = [...field.element.children] as HTMLElement[]
 
   const currentCount = state.getFieldBlockCount(field.key)
@@ -635,6 +659,9 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     props.items.length,
     draggingBundles.value,
     draggingFragments.value,
+    isDraggingExisting.value
+      ? undefined
+      : (bundle) => permissions.checkBlockBundlePermission(bundle, 'add'),
   )
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)

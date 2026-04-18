@@ -14,6 +14,7 @@ export class Entity {
   uuid: string
   fields: Record<string, Field<any>> = {}
   translationValues: Record<string, Record<string, string[]>> = {}
+  private _sourceValues: Record<string, any[]> | null = null
 
   constructor(uuid: string) {
     this.uuid = uuid
@@ -26,22 +27,60 @@ export class Entity {
   }
 
   addTranslation(language: string, values: Record<string, string[]>) {
-    this.translationValues[language] = values
+    const filtered: Record<string, string[]> = {}
+    for (const [fieldName, value] of Object.entries(values)) {
+      const field = this.fields[fieldName]
+      if (field?.isTranslatable) {
+        filtered[fieldName] = value
+      }
+    }
+    if (!this.translationValues[language]) {
+      this.translationValues[language] = {}
+    }
+    Object.assign(this.translationValues[language], filtered)
   }
 
   getTranslation(language: string) {
+    // Restore source values before applying any translation so that
+    // switching languages doesn't corrupt the entity.
+    if (this._sourceValues) {
+      for (const [fieldName, values] of Object.entries(this._sourceValues)) {
+        const field = this.fields[fieldName]
+        if (field) {
+          field.setList(values)
+        }
+      }
+      this._sourceValues = null
+    }
+
     if (language === 'en') {
+      this.langcode = 'en'
       return this
     }
 
     this.langcode = language
 
     if (this.translationValues[language]) {
-      Object.entries(this.translationValues[language]).forEach(
-        ([fieldName, values]) => {
-          this.get(fieldName).setList(values)
-        },
-      )
+      // Save source values for translatable fields before overwriting.
+      const source: Record<string, any[]> = {}
+      for (const [fieldName] of Object.entries(
+        this.translationValues[language],
+      )) {
+        const field = this.fields[fieldName]
+        if (field?.isTranslatable) {
+          source[fieldName] = [...field.list]
+        }
+      }
+      this._sourceValues = source
+
+      for (const [fieldName, values] of Object.entries(
+        this.translationValues[language],
+      )) {
+        const field = this.fields[fieldName]
+        if (field?.isTranslatable) {
+          field.setList(values)
+        }
+      }
     }
 
     return this
@@ -55,9 +94,12 @@ export class Entity {
       this.translationValues[langcode] = {}
     }
     Object.entries(valuesInput).forEach(([fieldName, value]) => {
-      this.translationValues[langcode]![fieldName] = Array.isArray(value)
-        ? value
-        : [value]
+      const field = this.fields[fieldName]
+      if (field?.isTranslatable) {
+        this.translationValues[langcode]![fieldName] = Array.isArray(value)
+          ? value
+          : [value]
+      }
     })
   }
 
@@ -102,6 +144,10 @@ export class Entity {
     return Object.values(this.fields).filter((field) => {
       return field instanceof FieldText || field instanceof FieldTextarea
     })
+  }
+
+  getTranslatableFields(): Field<any>[] {
+    return Object.values(this.fields).filter((field) => field.isTranslatable)
   }
 
   getValues(): Record<string, any> {

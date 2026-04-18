@@ -1,0 +1,20 @@
+.bk-body {
+  touch-action: none;
+  @apply select-none;
+
+  svg {
+    @apply select-none;
+  }
+
+  [data-bk-is-muted='true'] {
+    @apply opacity-30;
+  }
+}
+
+.bk-body-loading {
+  cursor: wait;
+  .bk-draggable-list-container,
+  .bk-control {
+    pointer-events: none;
+  }
+}

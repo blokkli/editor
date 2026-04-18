@@ -120,6 +120,14 @@
     }
   },
   "icon": {},
+  "iframe": {
+    "iframeHeight": {
+      "dataType": "iframe_heights",
+      "default": "{}",
+      "label": "Iframe heights",
+      "type": "json"
+    }
+  },
   "image": {
     "elevated": {
       "default": true,
@@ -197,6 +205,7 @@
     },
     "columns": {
       "default": "equal",
+      "description": "Define how wide the columns are.",
       "displayAs": "grid",
       "label": "Columns",
       "options": {
@@ -205,6 +214,7 @@
             1,
             1
           ],
+          "description": "Same width for both colums",
           "label": "Equal"
         },
         "oneTwo": {
@@ -212,6 +222,7 @@
             1,
             2
           ],
+          "description": "Use when you want a large image",
           "label": "One / Two"
         },
         "twoOne": {
@@ -219,6 +230,7 @@
             2,
             1
           ],
+          "description": "Use when you want a small image",
           "label": "Two / One"
         }
       },

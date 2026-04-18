@@ -51,3 +51,19 @@ export default {
   name: 'Help',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-help {
+  @apply p-20;
+  container-type: inline-size;
+
+  .bk-help-section {
+    &:not(:last-child) {
+      @apply mb-20;
+    }
+    > h3 {
+      @apply text-lg font-bold;
+    }
+  }
+}
+</style>

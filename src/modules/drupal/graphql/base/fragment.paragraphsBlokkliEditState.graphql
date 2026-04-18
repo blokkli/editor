@@ -6,6 +6,18 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
   currentIndex
   currentUserIsOwner
   ownerName
+  user: uid {
+    id
+  }
+  textFieldValues(langcode: $langcode) {
+    uuid
+    fieldName
+    value
+    fieldType
+    entityType
+    entityBundle
+  }
+
   mutatedState {
     fields(langcode: $langcode) {
       ...paragraphsBlokkliMutatedField
@@ -29,6 +41,10 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
 
   mutatedEntity {
     ...pbMutatedEntity
+  }
+
+  stateSettings {
+    ignoredAnalyzeIdentifiers
   }
 
   translationState {

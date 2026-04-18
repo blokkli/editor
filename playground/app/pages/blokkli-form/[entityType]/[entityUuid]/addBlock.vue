@@ -62,7 +62,7 @@ const onSubmit = async (values: Record<string, string>) => {
     hostField: hostField.value,
     preceedingUuid: preceedingUuid.value,
   })
-  await editState.getMutatedState(page)
+  await editState.getMutatedState(page, 'en')
   router.push({ name: 'blokkli-form-redirect' })
 }
 </script>

@@ -41,6 +41,22 @@ export function useBlockRegistration(dom: DomProvider, uuid: string) {
       return rootElement
     }
 
+    // For fragment components (multi-root, e.g. with leading comments),
+    // walk the VNode subtree to find the first HTMLElement.
+    const children = instance?.subTree?.children
+    if (Array.isArray(children)) {
+      for (const child of children) {
+        if (
+          child !== null &&
+          typeof child === 'object' &&
+          'el' in child &&
+          child.el instanceof HTMLElement
+        ) {
+          return child.el
+        }
+      }
+    }
+
     return null
   }
 

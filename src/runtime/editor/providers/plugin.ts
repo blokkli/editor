@@ -1,5 +1,6 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { ref } from '#imports'
+import type { ThemeColorName } from '../../../global/types/theme'
 import type { AddAction } from '../types/actions'
 
 type PluginAddFunction<T> = () => T | T[] | undefined
@@ -34,17 +35,32 @@ export type MenuButtonPlugin = {
 
 type MenuButtonFunction = PluginAddFunction<MenuButtonPlugin>
 
+export type HighlightItem = {
+  id?: string
+  uuid?: string
+  element?: HTMLElement
+  color: ThemeColorName
+  icon: BlokkliIcon
+  label: string
+  description?: string
+  onClick: () => void
+}
+
+type HighlightFunction = PluginAddFunction<HighlightItem>
+
 // Type mapping for generic plugin methods
 type PluginFunctionMap = {
   addAction: AddActionFunction
   itemDropdownAction: ItemDropdownActionFunction
   menuButton: MenuButtonFunction
+  highlight: HighlightFunction
 }
 
 type PluginDataMap = {
   addAction: AddAction
   itemDropdownAction: ItemDropdownAction
   menuButton: MenuButtonPlugin
+  highlight: HighlightItem
 }
 
 export type PluginProvider = {
@@ -101,6 +117,7 @@ export default function (): PluginProvider {
   const addActionPlugins = ref<AddActionFunction[]>([])
   const itemDropdownActionPlugins = ref<ItemDropdownActionFunction[]>([])
   const menuButtonPlugins = ref<MenuButtonFunction[]>([])
+  const highlightPlugins = ref<HighlightFunction[]>([])
 
   function add<T extends keyof PluginFunctionMap>(
     type: T,
@@ -112,6 +129,8 @@ export default function (): PluginProvider {
       itemDropdownActionPlugins.value.push(fn as ItemDropdownActionFunction)
     } else if (type === 'menuButton') {
       menuButtonPlugins.value.push(fn as MenuButtonFunction)
+    } else if (type === 'highlight') {
+      highlightPlugins.value.push(fn as HighlightFunction)
     }
   }
 
@@ -131,6 +150,10 @@ export default function (): PluginProvider {
       menuButtonPlugins.value = menuButtonPlugins.value.filter(
         (v) => v !== fn,
       ) as MenuButtonFunction[]
+    } else if (type === 'highlight') {
+      highlightPlugins.value = highlightPlugins.value.filter(
+        (v) => v !== fn,
+      ) as HighlightFunction[]
     }
   }
 
@@ -143,6 +166,8 @@ export default function (): PluginProvider {
       storage = itemDropdownActionPlugins.value
     } else if (type === 'menuButton') {
       storage = menuButtonPlugins.value
+    } else if (type === 'highlight') {
+      storage = highlightPlugins.value
     } else {
       return []
     }

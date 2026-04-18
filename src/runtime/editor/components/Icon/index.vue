@@ -40,3 +40,9 @@ export default {
   name: 'Icon',
 }
 </script>
+
+<style lang="postcss">
+.bk-icon svg {
+  @apply fill-current;
+}
+</style>

@@ -11,6 +11,7 @@ export type BlockEditContext = {
   isNew: boolean
   publishOn?: string | null
   unpublishOn?: string | null
+  outdatedTranslations?: string[]
 }
 
 export type FieldListItem = {

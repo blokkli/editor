@@ -32,5 +32,15 @@ export class MutationUpdateFieldValue extends Mutation {
       return
     }
     field.setList([JSON.parse(JSON.stringify(args.fieldValue))])
+
+    // Only mark translations as outdated when a translatable field changes.
+    if (field.isTranslatable) {
+      const languages = block.getTranslationLanguages()
+      if (languages.length) {
+        block.setValues({
+          outdatedTranslations: JSON.stringify(languages),
+        })
+      }
+    }
   }
 }

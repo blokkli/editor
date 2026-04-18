@@ -56,11 +56,24 @@ const { options } = defineBlokkli({
       type: 'radios',
       label: 'Columns',
       default: 'equal',
+      description: 'Define how wide the columns are.',
       displayAs: 'grid',
       options: {
-        equal: { columns: [1, 1], label: 'Equal' },
-        oneTwo: { columns: [1, 2], label: 'One / Two' },
-        twoOne: { columns: [2, 1], label: 'Two / One' },
+        equal: {
+          columns: [1, 1],
+          label: 'Equal',
+          description: 'Same width for both colums',
+        },
+        oneTwo: {
+          columns: [1, 2],
+          label: 'One / Two',
+          description: 'Use when you want a large image',
+        },
+        twoOne: {
+          columns: [2, 1],
+          label: 'Two / One',
+          description: 'Use when you want a small image',
+        },
       },
     },
     reverse: {

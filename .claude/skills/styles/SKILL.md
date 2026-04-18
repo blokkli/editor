@@ -115,16 +115,78 @@ values like `z-10` or `z-[9999]`. Always use `z-{name}` (e.g., `z-sidebar`,
 
 ## CSS Architecture
 
-- Entry point: `css/index.css`, partials in `css/partials/`
-- Sub-modules have their own CSS entry points and partials (e.g.,
-  `src/modules/agent/css/Agent.css` with partials in
-  `src/modules/agent/css/partials/`)
+There are **two ways** to write CSS for blökkli editor components:
+
+### 1. Utility classes in templates (preferred for simple styles)
+
+Write Tailwind utilities directly in `class="..."` attributes:
+
+```vue
+<div class="flex items-center gap-10 px-15 bg-mono-100">
+```
+
+A build-time mangling system transparently renames these (e.g., `flex` →
+`_bk_flex`) and scopes them under `.bk`, preventing collisions with host
+projects. This works automatically — just write normal Tailwind classes.
+
+### 2. `<style lang="postcss">` blocks (for complex CSS)
+
+Use co-located `<style lang="postcss">` blocks for CSS that can't be expressed
+as utility classes: nested selectors, container queries, pseudo-elements,
+styling `v-html` output, etc.
+
+```vue
+<style lang="postcss">
+.bk-my-component {
+  @apply flex items-center;
+
+  &:hover .bk-icon {
+    @apply text-accent-700;
+  }
+
+  @container (min-width: 300px) {
+    @apply grid;
+    grid-template-columns: auto 1fr;
+  }
+}
+</style>
+```
+
+Full `@apply`, `theme()`, and nesting are supported. These blocks are
+pre-processed through blökkli's PostCSS pipeline at build time — consumers
+receive plain, resolved CSS.
+
+Selectors in `<style>` blocks should use `bk-*` prefixed class names.
+
+### 3. Legacy CSS partials (being migrated)
+
+Some components still use separate CSS files in `css/partials/`. When modifying
+these components, consider migrating the CSS into the component using utility
+classes + `<style lang="postcss">`, then removing the `@import` from
+`css/index.css`.
+
+### `tw()` for script-section class names
+
+When referencing utility class names in `<script>` (e.g., `classList.add`,
+computed strings), wrap them in `tw()`:
+
+```ts
+import { tw } from '#blokkli/helpers/tw'
+element.classList.add(tw('flex pt-5'))
+```
+
+### Build pipeline
+
+- Global CSS entry point: `css/index.css`, partials in `css/partials/`
+- Sub-modules have their own CSS (e.g., `src/modules/agent/css/Agent.css`)
 - Output: `src/runtime/editor/css/output.css`
 - Build: `npm run styles:build` — but the developer always has
   `npm run styles:watch` running, so changes are picked up automatically. Only
   use `styles:build` to verify that CSS changes compile without errors, not to
   apply them.
 - All CSS is **scoped to `.bk`** container via PostCSS replace plugin
+- Utility class selectors are mangled and scoped: `.flex` →
+  `.bk ._bk_flex, .bk._bk_flex`
 - `rem` units are converted to `px` (base 16px) during build
 - Tailwind preflight is **disabled** — custom preflight in
   `css/partials/preflight.css`
@@ -134,9 +196,8 @@ values like `z-10` or `z-[9999]`. Always use `z-{name}` (e.g., `z-sidebar`,
 
 **ALWAYS** check for existing styles before writing new ones:
 
-1. **Read the relevant CSS partial first** — if you're working on a component
-   that has a CSS partial (e.g., `ApprovalToolbar.css`), read it before adding
-   or modifying any styles
+1. **Read the relevant CSS partial or `<style>` block first** — if you're
+   working on a component that has existing styles, read them before modifying
 2. **Check `css/components/`** — reusable classes like `.bk-button` already
    exist. Use them instead of writing custom button/toggle/pill styles
 3. **Grep for the class name** before creating it — it may already be defined

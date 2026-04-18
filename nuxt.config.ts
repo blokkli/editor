@@ -3,6 +3,7 @@ import drupal from './src/modules/drupal'
 import agent from './src/modules/agent'
 import tableOfContents from './src/modules/table-of-contents'
 import charts from './src/modules/charts'
+import iframes from './src/modules/iframes'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -102,6 +103,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/agent/runtime/app/**/*',
         '../src/modules/agent/runtime/shared/**/*',
         '../src/modules/table-of-contents/runtime/**/*',
+        '../src/modules/iframes/runtime/**/*',
         '../src/modules/charts/runtime/blokkli/tools/**/*',
         '../src/modules/charts/runtime/chartTypes/**/*',
         '../src/modules/charts/runtime/components/**/*',
@@ -158,6 +160,13 @@ fragment blokkliParagraphsType on ParagraphsType {
         // models: [{ name: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', isDefault: true }],
         provider: 'openai',
         models: [{ name: 'gpt-5', label: 'GPT-5', isDefault: true }],
+      }),
+      iframes({
+        viewports: {
+          mobile: { label: 'Mobile', width: 375 },
+          tablet: { label: 'Tablet', width: 768 },
+          desktop: { label: 'Desktop', width: 1440 },
+        },
       }),
     ],
   },

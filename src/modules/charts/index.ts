@@ -14,8 +14,6 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     options.blokkliDirs.push(resolve('./runtime/blokkli'))
   },
   setup({ context, helper, $t }, options) {
-    context.features.addFile(resolve('./runtime/features/charts/index.vue'))
-
     context.addTemplate(chartsConfigTemplate(options))
 
     helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
@@ -31,7 +29,7 @@ export default defineBlokkliModule<ChartsModuleOptions>({
       editorComponentPath: resolve(
         './runtime/features/charts/Editor/index.vue',
       ),
-      editorButtonLabel: $t('chartsEditButton', 'Edit chart...'),
+      editTitle: $t('chartsEditTitle', 'Edit chart'),
       editorIcon: 'bk_mdi_area_chart',
     })
   },

@@ -12,7 +12,6 @@
 @import './partials/Input.css';
 @import './partials/ToolQuestion.css';
 @import './partials/Attachments.css';
-@import './partials/DropHandler.css';
 
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;

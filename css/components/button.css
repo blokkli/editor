@@ -4,9 +4,18 @@
     @apply !text-mono-900 hover:!text-white;
     @apply !bg-mono-200 hover:!bg-mono-400;
     @apply !border-none;
+    @apply !whitespace-nowrap;
 
     &[disabled] {
       @apply !bg-mono-100 !text-mono-300 cursor-not-allowed;
+    }
+
+    &.bk-is-scheme {
+      @apply !bg-scheme-dark !text-scheme-light hover:!bg-scheme-dark/80;
+    }
+
+    &.bk-is-scheme-outline {
+      @apply !bg-transparent !text-scheme-dark outline outline-1 -outline-offset-1 outline-scheme-dark hover:!bg-scheme-dark/15;
     }
 
     &.bk-is-white {
@@ -56,6 +65,17 @@
 
     &.bk-is-warning {
       @apply !bg-yellow-normal !text-yellow-dark hover:!bg-yellow-normal/80 focus-visible:ring-yellow-dark/30;
+      &[disabled] {
+        @apply opacity-30;
+      }
+    }
+
+    &.bk-is-warning-outline-dark {
+      @apply !bg-transparent !text-yellow-dark outline outline-1 -outline-offset-1 hover:!bg-yellow-dark/10;
+    }
+
+    &.bk-is-warning-dark {
+      @apply !bg-yellow-dark !text-yellow-light hover:!bg-yellow-dark/80 focus-visible:ring-yellow-dark/30;
       &[disabled] {
         @apply opacity-30;
       }

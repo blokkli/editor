@@ -26,8 +26,9 @@ export class FieldTextarea extends Field<string> {
     cardinality = 1,
     required = false,
     maxLength = -1,
+    isTranslatable = true,
   ) {
-    super('textarea', id, label, cardinality, required)
+    super('textarea', id, label, cardinality, required, isTranslatable)
     this.maxLength = maxLength
   }
 

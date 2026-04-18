@@ -41,3 +41,17 @@ export default {
   name: 'EditableMask',
 }
 </script>
+
+<style lang="postcss">
+html.bk-hide-non-editable {
+  .bk-main-canvas {
+    > * {
+      @apply invisible;
+    }
+
+    [data-blokkli-provider-active='true'] {
+      @apply visible;
+    }
+  }
+}
+</style>

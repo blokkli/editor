@@ -1,10 +1,21 @@
 <template>
-  <div class="bk bk-context-menu" :style="{ left: x + 'px', top: y + 'px' }">
-    <div ref="rootEl" class="bk-context-menu-inner" :style="innerStyle">
+  <div
+    class="bk bk-context-menu fixed z-context-menu pointer-events-auto"
+    :style="{ left: x + 'px', top: y + 'px' }"
+  >
+    <div
+      ref="rootEl"
+      class="bk-context-menu-inner absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 rounded overflow-hidden min-w-200"
+      :style="innerStyle"
+    >
       <div v-for="(item, i) in menu" :key="i">
-        <hr v-if="item.type === 'rule'" />
-        <button v-else-if="item.type === 'button'" @click="onClick(i)">
-          <Icon :name="item.icon" />
+        <hr v-if="item.type === 'rule'" class="border-t-mono-600" />
+        <button
+          v-else-if="item.type === 'button'"
+          class="p-10 whitespace-nowrap text-left flex items-center gap-5 font-sans font-semibold hover:bg-mono-800 w-full text-base text-mono-300 hover:text-mono-50"
+          @click="onClick(i)"
+        >
+          <Icon :name="item.icon" class="size-20" />
           <span>{{ item.label }}</span>
         </button>
       </div>
@@ -38,17 +49,12 @@ const { ui, selection } = useBlokkli()
 const rootEl = ref<HTMLDivElement | null>(null)
 
 const innerStyle = computed(() => {
-  const horizontal =
-    props.x - 300 >
-    ui.visibleViewportPadded.value.x + ui.visibleViewportPadded.value.width
-      ? { right: 0 }
-      : { left: 0 }
+  const vp = ui.visibleViewportPadded.value
+  const vpRight = vp.x + vp.width
+  const vpBottom = vp.y + vp.height
 
-  const vertical =
-    props.y + 300 >
-    ui.visibleViewportPadded.value.y + ui.visibleViewportPadded.value.height
-      ? { bottom: 0 }
-      : { top: 0 }
+  const horizontal = props.x + 300 > vpRight ? { right: 0 } : { left: 0 }
+  const vertical = props.y + 300 > vpBottom ? { bottom: 0 } : { top: 0 }
 
   return {
     ...horizontal,

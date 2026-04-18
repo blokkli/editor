@@ -249,3 +249,10 @@ onBeforeUnmount(() => {
   frameEventBus.off('updateOption', onUpdateOption)
 })
 </script>
+
+<style lang="postcss">
+.bk-body-preview {
+  @apply overflow-hidden;
+  @apply overflow-y-auto;
+}
+</style>

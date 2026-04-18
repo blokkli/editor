@@ -135,6 +135,7 @@ export default function (
       isPublished: item.editContext.isPublished,
       publishOn: item.editContext.publishOn,
       unpublishOn: item.editContext.unpublishOn,
+      outdatedTranslations: item.editContext.outdatedTranslations ?? [],
       isNested: fieldList.entityType === itemEntityType,
       fieldListType: field?.fieldListType ?? 'default',
       library: getLibraryData(item as any),

@@ -8,9 +8,11 @@
         :anchor-el="addData.anchorEl"
         :anchor-coordinates="addData.anchorCoordinates"
         :label="addData.label"
+        :field="addData.field"
         @select="onSelectBundle"
         @close="closeOverlay"
         @action="onSelectAction"
+        @fragment="onSelectFragment"
       />
     </BlokkliTransition>
   </Teleport>
@@ -69,6 +71,8 @@ const {
   animation,
   context,
   selection,
+  permissions,
+  adapter,
 } = useBlokkli()
 
 const isLocked = ref(false)
@@ -350,6 +354,24 @@ function onSelectAction(action: AddAction) {
   closeOverlay()
 }
 
+async function onSelectFragment(name: string) {
+  const fragmentsAddBlock = adapter.fragmentsAddBlock
+  if (!addData.value || !fragmentsAddBlock) {
+    return
+  }
+
+  const { host, preceedingUuid } = addData.value
+  closeOverlay()
+
+  await state.mutateWithLoadingState(() =>
+    fragmentsAddBlock({
+      name,
+      host: { ...host },
+      preceedingUuid,
+    }),
+  )
+}
+
 type CachedState = {
   orientation: Orientation
   gap: number
@@ -480,7 +502,18 @@ function setAddData(
   anchorEl?: HTMLElement,
   anchorCoordinates?: { x: number; y: number },
 ) {
-  const allowedBundles = field.allowedBundles
+  // Don't show add buttons for fields inside a restricted block.
+  if (
+    field.hostEntityType === itemEntityType &&
+    (!permissions.checkBlockBundlePermission(field.hostEntityBundle, 'edit') ||
+      permissions.blockHasRestrictedAncestor(field.hostEntityUuid))
+  ) {
+    return
+  }
+
+  const allowedBundles = field.allowedBundles.filter((v) =>
+    permissions.checkBlockBundlePermission(v, 'add'),
+  )
   if (allowedBundles.length === 0) {
     return
   }

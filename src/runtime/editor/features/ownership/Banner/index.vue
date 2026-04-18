@@ -1,16 +1,17 @@
 <template>
-  <Banner
-    id="ownership"
-    icon="bk_mdi_person-fill"
-    :text
-    :button
-    @click="$emit('submit')"
-  />
+  <Banner id="ownership">
+    <BannerInner
+      icon="bk_mdi_person-fill"
+      :text
+      :button
+      @click="$emit('submit')"
+    />
+  </Banner>
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
-import { Banner } from '#blokkli/editor/components'
+import { Banner, BannerInner } from '#blokkli/editor/components'
 
 const props = defineProps<{
   canTakeOwnership: boolean

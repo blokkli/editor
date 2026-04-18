@@ -1,7 +1,7 @@
 <template>
+  <!-- Test useBlockRegistration and getDraggableElement when first node in template is a comment. -->
   <div :class="{ 'container my-40': !parentType }">
     <div
-      ref="blokkliDraggable"
       v-blokkli-droppable:imageReference
       :class="{
         'overflow-hidden shadow-xl rounded-lg bg-white': options.elevated,

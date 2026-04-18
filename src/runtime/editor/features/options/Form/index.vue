@@ -12,9 +12,6 @@
       :mutated-value="currentValues[plugin.property]"
       :uuid="firstUuid"
       class="bk-blokkli-item-options-item"
-      :class="{
-        'bk-is-disabled': isDisabled(plugin),
-      }"
       @keydown.stop
       @update="setOptionValue(plugin.property, $event)"
     />
@@ -315,7 +312,7 @@ function isDisabled(plugin: OptionItem) {
 }
 
 const singleVisibleOptions = computed(() =>
-  visibleOptions.value.filter((v) => !v.option.group),
+  visibleOptions.value.filter((v) => !v.option.group && !isDisabled(v)),
 )
 
 const optionGroups = computed<OptionGroup[]>(() => {

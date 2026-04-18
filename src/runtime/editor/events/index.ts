@@ -247,6 +247,8 @@ export interface EventbusEvents {
   'select:toggle': string
   'select:shiftToggle': string
   'select:end': string[] | undefined
+  'select:next': string[] | undefined
+  'select:prev': string[] | undefined
   'overlay:close': undefined
 
   // Add action dropped.
@@ -316,6 +318,9 @@ export interface EventbusEvents {
   'fragment:edit': { name: string; uuid: string }
 
   'block:rerender': string[]
+
+  'analyze:ignore': { resultId: string; identifier: string }
+  'analyze:unignore': { resultId: string; identifier: string }
 }
 
 type EventbusEventsType = {

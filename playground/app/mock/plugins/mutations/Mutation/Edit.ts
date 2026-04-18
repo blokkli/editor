@@ -22,5 +22,10 @@ export class MutationEdit extends Mutation {
     }
 
     proxy.block.setValues(args.values)
+
+    // Editing the source block marks all translations as outdated.
+    proxy.block.setValues({
+      outdatedTranslations: JSON.stringify(['de', 'fr', 'it']),
+    })
   }
 }

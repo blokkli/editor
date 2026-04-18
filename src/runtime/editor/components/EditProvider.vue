@@ -10,7 +10,7 @@
 
     <div
       ref="mainLayoutElement"
-      class="bk-main-layout"
+      class="bk-vars bk-main-layout"
       :lang="ui.interfaceLanguage.value"
     >
       <Toolbar @loaded="toolbarLoaded = true" />
@@ -18,22 +18,30 @@
         <Messages />
       </div>
       <Actions v-if="!isInitializing" />
-      <div id="bk-banner-container" class="bk">
-        <div id="bk-banner-list">
+      <div
+        id="bk-banner-container"
+        class="bk relative z-translations-banner-mobile lg:z-translations-banner-desktop grid pointer-events-auto"
+        :style="{
+          gridArea: 'banner',
+        }"
+      >
+        <div id="bk-banner-list" class="grid gap-10">
           <Banner
             v-if="!state.stateAvailable.value"
             id="state-unavailable"
-            icon="bk_mdi_sentiment_dissatisfied"
             scheme="red"
-            :text="stateNotAvailableText"
-          />
-          <Banner
-            v-if="viewOnlyBanner"
-            id="view-only"
-            :icon="viewOnlyBanner.icon"
-            scheme="yellow"
-            :text="viewOnlyBanner.text"
-          />
+          >
+            <BannerInner
+              icon="bk_mdi_sentiment_dissatisfied"
+              :text="stateNotAvailableText"
+            />
+          </Banner>
+          <Banner v-else-if="viewOnlyBanner" id="view-only" scheme="yellow">
+            <BannerInner
+              :icon="viewOnlyBanner.icon"
+              :text="viewOnlyBanner.text"
+            />
+          </Banner>
         </div>
       </div>
 
@@ -84,6 +92,7 @@ import SystemRequirements from './SystemRequirements/index.vue'
 import Overlay from './Overlay/index.vue'
 import Konami from './Konami/index.vue'
 import Banner from './Banner/index.vue'
+import BannerInner from './Banner/Inner.vue'
 import animationProvider from '#blokkli/editor/providers/animation'
 import keyboardProvider from '#blokkli/editor/providers/keyboard'
 import selectionProvider from '#blokkli/editor/providers/selection'
@@ -113,6 +122,7 @@ import analyzeProviderFn from '#blokkli/editor/providers/analyze'
 import readabilityProviderFn from '#blokkli/editor/providers/readability'
 import fieldValueProviderFn from '#blokkli/editor/providers/fieldValue'
 import dragdropProvider from '#blokkli/editor/providers/dragdrop'
+import cacheProvider from '#blokkli/editor/providers/cache'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -225,7 +235,8 @@ const ui = uiProvider(
 const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
-const selection = selectionProvider(blocks)
+const permissionsInstance = await permissionsProvider(adapter, blocks)
+const selection = selectionProvider(blocks, permissionsInstance)
 const keyboard = keyboardProvider(eventBus)
 const animation = animationProvider(
   eventBus,
@@ -239,13 +250,12 @@ const types = await typesProvider(adapter, selection, context)
 const indicators = indicatorsProvider()
 const directive = directiveProvider(debug, ui)
 const fields = fieldsProvider(dom, types, state)
-const permissionsInstance = await permissionsProvider(adapter)
 const fieldValue = fieldValueProviderFn(
-  adapters,
   directive,
   state,
   types,
   definitions,
+  blocks,
 )
 const readability = readabilityProviderFn(
   adapters,
@@ -255,6 +265,7 @@ const readability = readabilityProviderFn(
 )
 const analyze = analyzeProviderFn(adapters, state, ui, context, $t, readability)
 const dragdrop = dragdropProvider()
+const cache = cacheProvider()
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
 
@@ -379,6 +390,7 @@ const app: BlokkliApp = {
   readability,
   fieldValue,
   dragdrop,
+  cache,
 }
 
 provide(INJECT_APP, app)
@@ -506,3 +518,41 @@ onUnmounted(() => {
   setElementSymbolProperty(props.providerEl, INJECT_ENTITY_CONTEXT)
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-viewport {
+  @apply relative;
+  grid-area: viewport;
+}
+
+.bk-vars.bk-main-layout {
+  @apply fixed top-0 left-0 w-screen h-screen z-main-layout grid pointer-events-none;
+
+  grid-template-areas:
+    'toolbar toolbar      toolbar       toolbar     toolbar       right'
+    'left    mode         mode          mode        sidebar-right right'
+    'left    sidebar-left viewport      scrollbar-y sidebar-right right'
+    'left    sidebar-left banner        scrollbar-y sidebar-right right'
+    'left breadcrumbs breadcrumbs   breadcrumbs sidebar-right right';
+  grid-template-columns: auto auto 1fr 16px auto 50px;
+  grid-template-rows: 50px auto 1fr auto auto;
+}
+
+.bk.bk-canvas-overlay {
+  @apply fixed top-0 left-0 size-full z-canvas-overlay;
+}
+
+html.bk-isolate-provider {
+  [data-provider-uuid]:not([data-blokkli-provider-active='true']) {
+    @apply !hidden;
+  }
+}
+
+html.bk-html-root:not(.bk-use-animations) {
+  *,
+  *:before,
+  *:after {
+    transition: none !important;
+  }
+}
+</style>

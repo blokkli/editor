@@ -2,7 +2,7 @@
   <component
     :is="tag"
     ref="root"
-    :data-blokkli-editable-field="isEditing ? name : undefined"
+    :data-blokkli-editable-field="isEditingBuild ? name : undefined"
   >
     <slot :value="renderedValue" />
   </component>
@@ -16,6 +16,7 @@ import {
   onMounted,
   onBeforeUnmount,
   useTemplateRef,
+  watch,
 } from '#imports'
 import {
   INJECT_APP,
@@ -31,7 +32,7 @@ const props = withDefaults(
     /**
      * The (machine) name of the field that is editable.
      */
-    name: string
+    name?: string | null
 
     /**
      * The text value.
@@ -48,6 +49,7 @@ const props = withDefaults(
   {
     tag: 'div',
     value: '',
+    name: null,
   },
 )
 
@@ -55,67 +57,88 @@ defineSlots<{
   default(props: { value: string }): any
 }>()
 
-const root = useTemplateRef('root')
+const isEditingBuild = import.meta.blokkliEditing
 
 const valueOverride = ref('')
-const isEditing = inject(INJECT_IS_EDITING, false)
-const entity = inject(INJECT_ENTITY_CONTEXT, null)
-const editContext = inject(INJECT_EDIT_CONTEXT, null)
-const app = inject(INJECT_APP, null)
-const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
-
-if (!entity) {
-  throw new Error('Missing entity context.')
-}
-
-function getValueCallback() {
-  return props.value
-}
 
 const renderedValue = computed(() => valueOverride.value || props.value || '')
 
-const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
-  if (e.name === props.name && e.entityUuid === entity.uuid) {
-    valueOverride.value = e.value
+if (isEditingBuild) {
+  const root = useTemplateRef('root')
+  const isEditing = inject(INJECT_IS_EDITING, false)
+  const entity = inject(INJECT_ENTITY_CONTEXT, null)
+  const editContext = inject(INJECT_EDIT_CONTEXT, null)
+  const app = inject(INJECT_APP, null)
+  const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
+
+  const onEditableUpdateValue = (e: EditableFieldUpdateEvent) => {
+    if (e.name === props.name && e.entityUuid === entity?.uuid) {
+      valueOverride.value = e.value
+    }
   }
-}
 
-function onStateReloaded() {
-  valueOverride.value = ''
-}
-
-onMounted(() => {
-  if (!isEditing || !editContext || !app || isInReusable) {
-    return
+  function getValueCallback() {
+    return props.value
   }
 
-  editContext.eventBus.on('editable:update', onEditableUpdateValue)
-  editContext.eventBus.on('state:reloaded', onStateReloaded)
+  function onStateReloaded() {
+    valueOverride.value = ''
+  }
 
-  if (root.value instanceof HTMLElement && entity) {
+  function registerDirective(name: string | null | undefined) {
+    if (!name || !app || !(root.value instanceof HTMLElement) || !entity) {
+      return
+    }
     app.directive.registerDirectiveElement(
       root.value,
-      props.name,
+      name,
       entity,
       'editable',
       true,
       getValueCallback,
     )
   }
-})
 
-onBeforeUnmount(() => {
-  if (editContext) {
-    editContext.eventBus.off('editable:update', onEditableUpdateValue)
-    editContext.eventBus.off('state:reloaded', onStateReloaded)
-  }
-  if (app && root.value instanceof HTMLElement && entity) {
+  function unregisterDirective(name: string | null | undefined) {
+    if (!name || !app || !(root.value instanceof HTMLElement) || !entity) {
+      return
+    }
     app.directive.unregisterDirectiveElement(
       root.value,
-      props.name,
+      name,
       entity,
       'editable',
     )
   }
-})
+  onMounted(() => {
+    if (!isEditing || !editContext || !app || isInReusable) {
+      return
+    }
+
+    editContext.eventBus.on('editable:update', onEditableUpdateValue)
+    editContext.eventBus.on('state:reloaded', onStateReloaded)
+
+    registerDirective(props.name)
+  })
+
+  watch(
+    () => props.name,
+    (newName, oldName) => {
+      if (!isEditing || !app || !entity || isInReusable) {
+        return
+      }
+      unregisterDirective(oldName)
+      registerDirective(newName)
+    },
+  )
+
+  onBeforeUnmount(() => {
+    if (editContext) {
+      editContext.eventBus.off('editable:update', onEditableUpdateValue)
+      editContext.eventBus.off('state:reloaded', onStateReloaded)
+    }
+
+    unregisterDirective(props.name)
+  })
+}
 </script>

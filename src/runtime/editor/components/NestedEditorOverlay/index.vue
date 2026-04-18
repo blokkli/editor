@@ -36,13 +36,16 @@
       >
         <div class="bk-library-edit-overlay-frame">
           <slot>
-            <iframe
-              v-if="url"
-              ref="iframe"
-              :src="url"
-              style="width: 100%; height: 100%"
-              @load="onLoad"
-            />
+            <div class="flex flex-col h-full">
+              <NotEditStateInfo />
+              <iframe
+                v-if="url"
+                ref="iframe"
+                :src="url"
+                style="width: 100%; height: 100%"
+                @load="onLoad"
+              />
+            </div>
           </slot>
         </div>
       </div>
@@ -55,11 +58,12 @@ import {
   computed,
   onBeforeUnmount,
   onMounted,
+  onUnmounted,
   ref,
   useBlokkli,
   useTemplateRef,
 } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, NotEditStateInfo } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
@@ -71,6 +75,7 @@ export type NestedEditorOverlayProps = {
   icon: BlokkliIcon
   blockUuid?: string
   element?: HTMLElement | null
+  autoSave?: boolean
 }
 
 const props = defineProps<NestedEditorOverlayProps>()
@@ -98,10 +103,19 @@ const backLabel = computed(() => {
   if (!entityLabel) {
     return $t('libraryItemEditOverlayBack', 'Back to page')
   }
-  return $t('libraryItemEditOverlayBackWithPage', 'Back to "@label"').replace(
-    '@label',
-    entityLabel,
-  )
+
+  const entityLabelShort =
+    entityLabel.length > 40 ? entityLabel.substring(0, 37) + '...' : entityLabel
+  if (props.autoSave) {
+    return $t(
+      'libraryItemEditOverlayBackWithPage',
+      'Save and go back to "@label"',
+    ).replace('@label', entityLabelShort)
+  }
+  return $t(
+    'libraryItemEditOverlayBackWithPageNoSave',
+    'Go back to "@label"',
+  ).replace('@label', entityLabelShort)
 })
 
 const FADE_DURATION = 150
@@ -343,7 +357,161 @@ onBeforeUnmount(() => {
   ui.setNestedEditor(null)
 })
 
+function onMessage(e: MessageEvent): void {
+  if (!e.data || typeof e.data !== 'object') {
+    return
+  }
+  if (e.data.event !== 'BLOKKLI') {
+    return
+  }
+
+  const { action } = e.data
+
+  if (action === 'SAVE') {
+    emit('submit')
+  } else if (action === 'CANCEL') {
+    emit('close')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', onMessage)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('message', onMessage)
+})
+
 onBroadcastEvent('published', onPublished)
 onBroadcastEvent('closeEditor', onClosed)
 onBroadcastEvent('editorLoaded', onEditorLoaded)
 </script>
+
+<style lang="postcss">
+.bk.bk-nested-editor-overlay {
+  @apply fixed top-0 left-0 size-full pointer-events-auto;
+  @apply z-nested-editor-overlay-bg;
+
+  > .bk-icon {
+    @apply size-120 -rotate-12 absolute -left-15 -top-30;
+    svg {
+      @apply fill-current size-full;
+    }
+  }
+
+  header {
+    @apply flex items-center h-50 relative pl-10;
+    h2 {
+      @apply text-xl leading-none font-bold;
+    }
+  }
+
+  &.bk-is-red {
+    @apply bg-red-light text-red-dark;
+
+    > .bk-icon {
+      @apply text-red-normal opacity-15;
+    }
+
+    button {
+      @apply text-red-dark;
+      &:hover {
+        @apply bg-red-normal/15;
+      }
+    }
+  }
+
+  &.bk-is-lime {
+    @apply bg-lime-light text-lime-dark;
+
+    > .bk-icon {
+      @apply text-lime-normal opacity-35;
+    }
+
+    button {
+      @apply text-lime-dark;
+
+      &:hover {
+        @apply bg-lime-normal/15;
+      }
+    }
+  }
+
+  &.bk-is-accent {
+    @apply bg-accent-100 text-accent-800;
+
+    > .bk-icon {
+      @apply text-accent-200;
+    }
+
+    button {
+      @apply text-accent-600;
+
+      &:hover {
+        @apply bg-accent-600/10;
+      }
+    }
+  }
+
+  button {
+    @apply h-50 flex items-center px-10 gap-10 font-semibold leading-none;
+    @apply ml-auto;
+
+    svg {
+      @apply size-20 fill-current;
+    }
+  }
+}
+
+.bk-use-animations {
+  .bk-library-edit-header-enter-active,
+  .bk-library-edit-header-leave-active {
+    @apply transition duration-700 ease-swing;
+
+    > header {
+      @apply transition duration-700 ease-swing;
+    }
+  }
+  .bk-library-edit-header-enter-from,
+  .bk-library-edit-header-leave-to {
+    @apply opacity-0;
+
+    > header {
+      @apply -translate-y-full;
+    }
+  }
+}
+
+.bk.bk-library-edit-overlay {
+  @apply fixed top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto;
+  @apply z-nested-editor-overlay-iframe;
+  @apply px-10 pb-10;
+
+  &.bk-is-lime {
+    .bk-library-edit-overlay-frame {
+      box-shadow: 0px 2px 6px 0px rgb(var(--bk-theme-lime-dark) / 30%);
+    }
+  }
+
+  &.bk-is-red {
+    .bk-library-edit-overlay-frame {
+      box-shadow: 0px 2px 6px 0px rgb(var(--bk-theme-red-dark) / 30%);
+    }
+  }
+
+  &.bk-is-accent {
+    .bk-library-edit-overlay-frame {
+      box-shadow: 0px 2px 6px 0px rgb(var(--bk-theme-accent-600) / 30%);
+    }
+  }
+
+  .bk-library-edit-overlay-frame {
+    @apply relative top-0 left-0 w-full h-full bg-white rounded-md shadow overflow-hidden;
+    @apply border border-mono-300;
+
+    iframe {
+      @apply block size-full;
+    }
+  }
+}
+</style>

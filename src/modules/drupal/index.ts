@@ -213,6 +213,16 @@ export declare const templateEditRouteName: string|null
     addMutation('add_multiple')
     addMutation('replace_entity_reference')
     addMutation('bulk_update_field_values')
+    addMutation('clear_outdated_translation')
+    addMutation('bulk_translate_field_values')
+    if (mutationFields.has('paragraphsBlokkliRequestTranslation')) {
+      addGraphqlDocument('mutations/request_translation.graphql')
+    }
+    if (editStateFields.has('textFieldValues')) {
+      addGraphqlDocument('features/textFieldValues.graphql')
+    }
+    addMutation('ignore_analyze')
+    addMutation('unignore_analyze')
 
     // Feature: Comments.
     if (graphql.schemaHasType('CommentBlokkliNode')) {
@@ -280,6 +290,16 @@ export declare const templateEditRouteName: string|null
       addGraphqlDocument('features/media-library.graphql')
     } else {
       context.features.disableFeature('media-library')
+    }
+
+    // Feature: Workspace.
+    if (queryFields.has('paragraphsBlokkliEntitiesSearch')) {
+      addGraphqlDocument('features/workspace.graphql')
+    }
+
+    // Feature: Referenced Entities.
+    if (editStateFields.has('referencedEntities')) {
+      addGraphqlDocument('features/referenced-entities.graphql')
     }
 
     // Feature: Preview Grant.
@@ -379,6 +399,7 @@ fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEdit
         'isTranslatable',
         'hasPublishOn',
         'hasUnpublishOn',
+        'permissions',
       ].includes(field)
     })
 

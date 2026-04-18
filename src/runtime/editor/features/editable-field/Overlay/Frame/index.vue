@@ -1,9 +1,15 @@
 <template>
-  <div class="bk-editable-field-frame">
+  <div
+    class="bk-editable-field-frame"
+    :class="{
+      'bk-is-fullscreen': isFullscreen,
+    }"
+  >
     <iframe
       ref="iframe"
-      :style="{ height: Math.max(height, 150) + 'px' }"
+      :style
       :src="url"
+      class="block w-full"
       @load="onIframeLoad"
     />
   </div>
@@ -21,6 +27,7 @@ import {
 import type { EntityContext } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EditableFieldType } from '../../types'
+import type { StyleValue } from 'vue'
 
 const { adapter, ui, element } = useBlokkli()
 
@@ -33,9 +40,26 @@ const props = defineProps<{
   fieldName: string
   host: EntityContext
   initialHeight: number
+  isFullscreen: boolean
 }>()
 
 const modelValue = defineModel<string>({ required: true })
+
+const emit = defineEmits<{
+  formatted: [text: string]
+}>()
+
+const style = computed<StyleValue>(() => {
+  if (props.isFullscreen) {
+    return {
+      height: '100%',
+    }
+  }
+
+  return {
+    height: Math.max(height.value, 400) + 'px',
+  }
+})
 
 const iframe = useTemplateRef('iframe')
 
@@ -125,20 +149,31 @@ const url = computed(() => {
   })
 })
 
-const original = ref('')
-
 const onMessage = (e: MessageEvent) => {
   if (typeof e.data === 'object') {
     if (e.data.name === 'blokkli__editable_field_update') {
       modelValue.value = e.data.data.text
+    } else if (e.data.name === 'blokkli__editable_field_update_formatted') {
+      emit('formatted', e.data.data.text)
     } else if (e.data.name === 'blokkli__editable_field_update_height') {
       height.value = e.data.data.height
     }
   }
 }
 
+/**
+ * Push a new value into the iframe's editor.
+ */
+function setValue(text: string) {
+  iframe.value?.contentWindow?.postMessage(
+    { name: 'blokkli__editable_field_set_value', data: { text } },
+    '*',
+  )
+}
+
+defineExpose({ setValue })
+
 onMounted(() => {
-  original.value = modelValue.value
   height.value = props.initialHeight
 
   window.addEventListener('message', onMessage)
@@ -148,3 +183,21 @@ onBeforeUnmount(() => {
   window.removeEventListener('message', onMessage)
 })
 </script>
+
+<style lang="postcss">
+.bk .bk-editable-field-frame {
+  &:not(.bk-is-fullscreen) {
+    iframe {
+      max-height: calc(100vh - 500px);
+      @screen lg {
+        @apply min-w-[700px];
+        min-height: 400px;
+      }
+
+      @screen xl {
+        @apply min-w-[700px];
+      }
+    }
+  }
+}
+</style>

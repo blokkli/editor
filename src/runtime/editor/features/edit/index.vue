@@ -3,7 +3,7 @@
     id="edit"
     edit-only
     :title="$t('edit', 'Edit...')"
-    :disabled="!canEdit"
+    :disabled="editDisabledReason"
     meta
     key-code="E"
     icon="bk_mdi_edit"
@@ -35,6 +35,27 @@ const userCanEditLibraryItems = computed(() =>
   permissions.hasPermission('edit_library_item'),
 )
 
+function getComplexOption(
+  item: RenderedFieldListItem,
+): { key: string; dataType: string } | undefined {
+  const definition = definitions.getBlockDefinition(
+    item.bundle,
+    item.fieldListType,
+    item.parentBlockBundle,
+  )
+  if (!definition?.options) {
+    return
+  }
+  const keys = Object.keys(definition.options)
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    if (!key) continue
+    const option = definition.options[key]
+    if (option?.type !== 'json' || !option.dataType) continue
+    return { key, dataType: option.dataType }
+  }
+}
+
 function isFragment(item: RenderedFieldListItem): boolean {
   return item.bundle === fragmentBlockBundle
 }
@@ -45,7 +66,7 @@ function isFeatureFragment(item: RenderedFieldListItem): boolean {
   )
 }
 
-const canEdit = computed(() => {
+const editDisabledReason = computed<false | string>(() => {
   const item = selection.item.value
 
   // Editing is only possible when a single block is selected.
@@ -56,6 +77,8 @@ const canEdit = computed(() => {
   // Fragments provided by features can always be edited.
   if (isFragment(item)) {
     return isFeatureFragment(item)
+      ? false
+      : $t('editFragmentNotEditable', 'This fragment cannot be edited.')
   }
 
   const definition = definitions.getBlockDefinition(
@@ -64,26 +87,50 @@ const canEdit = computed(() => {
     item.parentBlockBundle,
   )
 
-  // Editing is explicitly disabled via the definition.
-  if (definition?.editor?.disableEdit) {
-    return false
+  // Editing is explicitly disabled via the definition, but still allow it if
+  // the block has a complex option that can be opened.
+  if (definition?.editor?.disableEdit && !getComplexOption(item)) {
+    return $t(
+      'editDisabledByDefinition',
+      'Editing is disabled for this block type.',
+    )
+  }
+
+  if (!permissions.checkBlockBundlePermission(item.bundle, 'edit')) {
+    return $t(
+      'editNoPermission',
+      'You do not have permission to edit this block.',
+    )
   }
 
   // For reusable blocks, editing is only possible if the adapter implements
   // the getLibraryItemEditUrl method.
   if (item.library?.libraryItemUuid) {
     if (!userCanEditLibraryItems.value) {
-      return false
+      return $t(
+        'editNoLibraryPermission',
+        'You do not have permission to edit library items.',
+      )
     }
-    return (
-      !!adapter.getLibraryItemEditUrl &&
-      (state.editMode.value === 'editing' ||
-        state.editMode.value === 'translating') &&
-      !item.isNew
-    )
+    if (
+      !adapter.getLibraryItemEditUrl ||
+      (state.editMode.value !== 'editing' &&
+        state.editMode.value !== 'translating') ||
+      item.isNew
+    ) {
+      return $t(
+        'editLibraryNotAvailable',
+        'This reusable block cannot be edited right now.',
+      )
+    }
+    return false
   }
 
-  return state.editMode.value === 'editing'
+  if (state.editMode.value !== 'editing') {
+    return false
+  }
+
+  return false
 })
 
 function onClick(items: RenderedFieldListItem[]) {
@@ -91,7 +138,7 @@ function onClick(items: RenderedFieldListItem[]) {
     return
   }
 
-  if (!canEdit.value) {
+  if (editDisabledReason.value) {
     return
   }
 
@@ -121,6 +168,24 @@ function onClick(items: RenderedFieldListItem[]) {
     return
   }
 
+  const definition = definitions.getBlockDefinition(
+    item.bundle,
+    item.fieldListType,
+    item.parentBlockBundle,
+  )
+
+  if (definition?.editor?.disableEdit) {
+    const complexOption = getComplexOption(item)
+    if (complexOption) {
+      eventBus.emit('option:edit-complex', {
+        uuid: item.uuid,
+        key: complexOption.key,
+        dataType: complexOption.dataType,
+      })
+      return
+    }
+  }
+
   eventBus.emit('item:edit', {
     uuid: item.uuid,
     bundle: item.bundle,
@@ -128,26 +193,6 @@ function onClick(items: RenderedFieldListItem[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
-  const definition = definitions.getBlockDefinition(block)
-  if (!definition) {
-    return
-  }
-  const options = definition.options
-  if (options) {
-    const keys = Object.keys(options)
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      if (!key) continue
-      const option = options[key]
-      if (option?.type !== 'json' || !option.dataType) continue
-      eventBus.emit('option:edit-complex', {
-        uuid: block.uuid,
-        key,
-        dataType: option.dataType,
-      })
-      return
-    }
-  }
   onClick([block])
 })
 </script>

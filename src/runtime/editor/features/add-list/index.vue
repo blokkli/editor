@@ -135,6 +135,7 @@ defineDropHandler('new', {
       definition?.editor?.disableEdit ||
       addBehaviour === 'no-form' ||
       addBehaviour.startsWith('editable:') ||
+      addBehaviour.startsWith('complex-option:') ||
       !adapter.formFrameBuilder
     ) {
       await state.mutateWithLoadingState(() =>
@@ -377,3 +378,256 @@ export default {
   name: 'AddList',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-add-list {
+  @apply pointer-events-auto relative z-add-list bg-mono-900;
+  @apply w-toolbar-left h-full relative;
+
+  grid-area: left;
+
+  .bk-add-item {
+    @apply cursor-grab;
+  }
+
+  .bk-add-item-description {
+    @apply block;
+    @apply absolute left-full;
+  }
+
+  #blokkli-add-list-blocks {
+    @apply grid pb-25;
+  }
+
+  #blokkli-add-list-actions {
+    @apply grid;
+    @apply sticky bottom-0 bg-mono-800 border-t border-t-mono-700 z-50;
+    @apply mt-auto;
+
+    .bk-add-item-label {
+      @apply text-mono-400;
+
+      .bk-icon {
+        @apply bg-mono-900;
+      }
+    }
+
+    .bk-item-icon {
+      --bk-item-icon-shadow-color: theme('colors.mono.900');
+    }
+
+    &:after {
+      content: '';
+      @apply block w-full h-40 sticky bottom-0 z-50 pointer-events-none;
+      @apply absolute bottom-full left-0 mb-1;
+      background: linear-gradient(
+        theme('colors.mono.900/0') 30%,
+        theme('colors.mono.900')
+      );
+    }
+  }
+}
+
+.bk,
+.bk-vars {
+  .bk-add-item-label {
+    @apply flex items-center flex-1 gap-8 pr-25;
+  }
+  .bk-add-item-description {
+    @apply hidden;
+  }
+}
+
+.bk .bk-add-list-inner {
+  @apply absolute top-0 left-0 h-full overflow-auto transition-all ease-swing duration-200 w-auto;
+  @apply bg-mono-900;
+  @apply flex flex-col;
+  @apply border-t border-t-mono-700;
+  clip-path: rect(0px var(--bk-toolbar-left-width) 100% 0px);
+
+  .bk-add-item-label {
+    @apply opacity-0;
+  }
+
+  .bk-add-item:not(:last-child) {
+    margin-bottom: calc(var(--bk-add-item-icon-padding) * -1);
+  }
+
+  &.bk-is-active {
+    clip-path: rect(0px 100% 100% 0px);
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.bk .bk-add-list-inner,
+.bk-vars.bk-dragging-overlay {
+  .bk-add-item-icon {
+    @apply size-toolbar-left;
+    padding: var(--bk-add-item-icon-padding);
+  }
+}
+
+.bk .bk-add-list-inner.bk-is-active,
+.bk-vars.bk-dragging-overlay {
+  .bk-add-item-label {
+    @apply !opacity-100;
+  }
+}
+
+.bk .bk-add-item:hover,
+.bk-vars.bk-dragging-overlay {
+  .bk-add-item {
+    @apply !opacity-100;
+  }
+  .bk-add-item-label {
+    @apply !text-white;
+  }
+}
+
+.bk {
+  .bk-add-item {
+    @apply bg-mono-900 relative overflow-hidden;
+    @apply flex whitespace-nowrap items-center w-full min-w-fit;
+
+    &.bk-is-action {
+      @apply bg-mono-800;
+    }
+
+    &.bk-is-disabled {
+      @apply opacity-30;
+      &:hover {
+        @apply opacity-100;
+      }
+    }
+  }
+
+  .bk-add-item-label {
+    @apply font-semibold pl-3  text-mono-400 transition-opacity duration-200;
+    font-size: var(--bk-add-item-font-size, 18px);
+  }
+
+  .bk-add-item-icon {
+    @apply shrink-0 relative z-50;
+  }
+}
+
+.bk-item-icon-hover-parent:hover,
+.bk-add-item:hover,
+.bk-add-item:focus-visible,
+.bk-vars .bk-dragging-overlay {
+  .bk-item-icon {
+    @apply outline outline-white/40;
+    outline-width: var(--bk-item-icon-outline);
+    outline-offset: calc(var(--bk-item-icon-outline) * -1);
+
+    svg {
+      @apply !opacity-100;
+    }
+  }
+}
+
+.bk-vars.bk-dragging-overlay .bk-add-item {
+  @apply rounded-lg overflow-hidden;
+}
+
+.bk .bk-item-icon {
+  --bk-item-icon-outline: 2px;
+  --bk-item-icon-size: calc(
+    var(--bk-toolbar-left-width) - 2 * (var(--bk-add-item-icon-padding, 0px))
+  );
+  --bk-item-icon-radius-base: var(--bk-item-icon-radius-base-toolbar, 8px);
+  --bk-item-icon-radius-multiplier: 1;
+  --bk-item-icon-shadow-color: theme('colors.mono.950');
+  @apply aspect-square flex items-center justify-center;
+  @apply border bg-gradient-to-b bg-black;
+  width: var(--bk-item-icon-size);
+  height: var(--bk-item-icon-size);
+  box-shadow: 0 2px 3px 1px var(--bk-item-icon-shadow-color);
+  border-radius: calc(
+    var(--bk-item-icon-radius-base) * var(--bk-item-icon-radius-multiplier)
+  );
+
+  @supports (corner-shape: squircle) {
+    corner-shape: squircle;
+    --bk-item-icon-radius-multiplier: 2.25;
+  }
+
+  &.bk-is-small {
+    --bk-item-icon-outline: 1px;
+    --bk-item-icon-size: 35px;
+    --bk-item-icon-radius-base: 6px;
+    box-shadow: 0 1px 1px 1px var(--bk-item-icon-shadow-color);
+
+    svg {
+      filter: drop-shadow(0px -1px 0px var(--bk-item-icon-shadow-color));
+    }
+  }
+
+  &.bk-is-tiny {
+    --bk-item-icon-outline: 1px;
+    --bk-item-icon-size: 25px;
+    --bk-item-icon-radius-base: 5px;
+    box-shadow: 0 1px 1px 1px var(--bk-item-icon-shadow-color);
+
+    svg {
+      filter: drop-shadow(0px -1px 0px var(--bk-item-icon-shadow-color));
+    }
+  }
+
+  > .bk-blokkli-item-icon,
+  > .bk-icon {
+    @apply size-[66.6666666%];
+  }
+
+  --bk-item-icon-shadow-color: theme('colors.mono.950');
+
+  svg {
+    @apply size-full fill-current opacity-80;
+    filter: drop-shadow(0px -1px 0px var(--bk-item-icon-shadow-color));
+  }
+
+  &.bk-is-default {
+    @apply border-mono-100/40 text-mono-100;
+    @apply from-mono-800;
+    @apply to-mono-600;
+  }
+
+  &.bk-is-yellow {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
+    @apply border-yellow-normal/50 text-yellow-light;
+    @apply from-yellow-normal/25;
+    @apply to-yellow-normal/40;
+  }
+
+  &.bk-is-rose {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
+    @apply border-red-normal text-red-light;
+    @apply from-red-normal/50;
+    @apply to-red-normal/70;
+  }
+
+  &.bk-is-lime {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
+    @apply border-lime-normal text-lime-light;
+    @apply from-lime-normal/50;
+    @apply to-lime-normal/70;
+  }
+
+  &.bk-is-accent {
+    --bk-item-icon-shadow-color: theme('colors.accent.900');
+    @apply border-accent-400 text-accent-50;
+    @apply from-accent-800;
+    @apply to-accent-600;
+  }
+
+  &.bk-is-orange {
+    --bk-item-icon-shadow-color: rgba(0, 0, 0, 0.2);
+    @apply border-orange-normal text-orange-light;
+    @apply from-orange-normal/50;
+    @apply to-orange-normal/70;
+  }
+}
+</style>

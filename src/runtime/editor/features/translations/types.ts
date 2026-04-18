@@ -1,12 +1,68 @@
 import type { EntityTranslation } from '#blokkli/editor/types/state'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
 declare module '#blokkli/editor/adapter' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface BlokkliAdapter<T> {
     /**
      * Change the language.
      */
     changeLanguage?: (translation: EntityTranslation) => Promise<any>
+
+    /**
+     * Mark the translation of a block as up-to-date, removing the langcode
+     * from the block's outdatedTranslations list.
+     */
+    markTranslationUpToDate?: (
+      uuids: string[],
+      langcode: string,
+    ) => Promise<MutationResponseLike<T>>
+
+    /**
+     * Load all text field values for a given language.
+     *
+     * Used by the CSV export to fetch source language values when the editor
+     * is viewing a translation.
+     */
+    loadTextFieldValuesForLanguage?: (
+      langcode: string,
+    ) => Promise<TextFieldValue[]>
+
+    /**
+     * Import translations for multiple languages at once.
+     *
+     * Each item includes the target language, block UUID, field name, and
+     * the new field value. Applied as a single mutation so it can be undone
+     * in one step.
+     */
+    importTranslationsBatched?: (arg: {
+      items: {
+        langcode: string
+        uuid: string
+        fieldName: string
+        fieldValue: string
+      }[]
+      markUpToDate?: boolean
+    }) => Promise<MutationResponseLike<T>>
+
+    /**
+     * Request automatic translations for a batch of text fields.
+     *
+     * Each item includes a key (uuid:fieldName), the source text, and the
+     * source/target language codes. Returns the translated texts keyed by
+     * the same key. This is a pure query with no side effects - applying
+     * the results uses importTranslationsBatched.
+     */
+    requestTranslation?: (
+      items: {
+        key: string
+        text: string
+        isHtml: boolean
+        sourceLanguage: string
+        targetLanguage: string
+      }[],
+    ) => Promise<
+      GenericAdapterResponse<{ key: string; translatedText: string }[]>
+    >
   }
 }
 

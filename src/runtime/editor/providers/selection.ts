@@ -2,6 +2,7 @@ import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { type Ref, type ComputedRef, computed, ref } from '#imports'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { BlocksProvider } from './blocks'
+import type { PermissionsProvider } from './permissions'
 import type { DraggableItem } from '../types/draggable'
 import type { RenderedFieldListItem } from '../types/field'
 import type { InteractionMode } from '../types/ui'
@@ -108,7 +109,10 @@ export type SelectionProvider = {
   unlockSelection: (key: string) => void
 }
 
-export default function (blocks: BlocksProvider): SelectionProvider {
+export default function (
+  blocks: BlocksProvider,
+  permissions: PermissionsProvider,
+): SelectionProvider {
   const selectedUuids = ref<string[]>([])
   const hasHostSelected = ref(false)
   const draggingMode = ref<InteractionMode | null>(null)
@@ -159,7 +163,7 @@ export default function (blocks: BlocksProvider): SelectionProvider {
   const dragItemsBundles = computed(() =>
     dragItems.value
       .map((v) => {
-        if (v.itemType === 'existing') {
+        if (v.itemType === 'existing' || v.itemType === 'existing_structure') {
           return v.block.bundle
         } else if ('itemBundle' in v) {
           return v.itemBundle
@@ -172,11 +176,16 @@ export default function (blocks: BlocksProvider): SelectionProvider {
 
   const isDragging = computed(() => !!draggingMode.value)
 
+  function resolveSelectableUuid(uuid: string): string {
+    const restrictedAncestor = permissions.getRestrictedAncestor(uuid)
+    return restrictedAncestor ?? uuid
+  }
+
   function updateSelectedUuids(uuids: string[], force?: boolean) {
     if (selectionIsLocked.value && !force) {
       return
     }
-    selectedUuids.value = uuids
+    selectedUuids.value = uuids.map(resolveSelectableUuid).filter(onlyUnique)
   }
 
   function unselectItems() {
@@ -204,10 +213,11 @@ export default function (blocks: BlocksProvider): SelectionProvider {
     interactionMode.value = e.mode
   })
   onBlokkliEvent('select:toggle', (uuid) => {
-    if (selectedUuids.value.includes(uuid)) {
-      updateSelectedUuids(selectedUuids.value.filter((v) => v !== uuid))
+    const resolved = resolveSelectableUuid(uuid)
+    if (selectedUuids.value.includes(resolved)) {
+      updateSelectedUuids(selectedUuids.value.filter((v) => v !== resolved))
     } else {
-      selectedUuids.value.push(uuid)
+      selectedUuids.value.push(resolved)
     }
   })
 

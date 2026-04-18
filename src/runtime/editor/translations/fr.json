@@ -411,6 +411,34 @@
     "source": "Show more",
     "translation": ""
   },
+  "aiAgentFeedbackBad": {
+    "source": "Bad",
+    "translation": ""
+  },
+  "aiAgentFeedbackFine": {
+    "source": "Fine",
+    "translation": ""
+  },
+  "aiAgentFeedbackGood": {
+    "source": "Good",
+    "translation": ""
+  },
+  "aiAgentFeedbackPlaceholder": {
+    "source": "Tell us more (optional)...",
+    "translation": ""
+  },
+  "aiAgentFeedbackPrompt": {
+    "source": "How was this response?",
+    "translation": ""
+  },
+  "aiAgentFeedbackSubmit": {
+    "source": "Submit",
+    "translation": ""
+  },
+  "aiAgentFeedbackThanks": {
+    "source": "Thanks for your feedback!",
+    "translation": ""
+  },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
     "translation": ""
@@ -911,6 +939,14 @@
     "source": "Heading Structure",
     "translation": ""
   },
+  "analyzeIgnore": {
+    "source": "Ignore",
+    "translation": ""
+  },
+  "analyzeIgnoredResults": {
+    "source": "Ignored",
+    "translation": ""
+  },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
     "translation": ""
@@ -935,6 +971,10 @@
     "source": "Results are outdated. Click the button to update.",
     "translation": ""
   },
+  "analyzeShowDetails": {
+    "source": "Show details",
+    "translation": ""
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": ""
@@ -955,16 +995,16 @@
     "source": "Stale",
     "translation": ""
   },
-  "analyzeStatusUpToDate": {
-    "source": "Up-to-date",
-    "translation": ""
-  },
   "analyzeStatusViolation": {
     "source": "Violation",
     "translation": ""
   },
   "analyzeTourText": {
     "source": "Analyze the content of your page",
+    "translation": ""
+  },
+  "analyzeUnignore": {
+    "source": "Restore",
     "translation": ""
   },
   "analyzerReadabiliyCouldBeSimpler": {
@@ -1005,6 +1045,14 @@
   },
   "anchorToggle": {
     "source": "Toggle anchor links",
+    "translation": ""
+  },
+  "arrowLeft": {
+    "source": "Arrow Left",
+    "translation": ""
+  },
+  "arrowRight": {
+    "source": "Arrow Right",
     "translation": ""
   },
   "artboard": {
@@ -1061,38 +1109,6 @@
   },
   "artboardToolbarButtonTourText": {
     "source": "Shows the current zoom factor. Click on it to reset the zoom back to 100%.",
-    "translation": ""
-  },
-  "assistantAddAction": {
-    "source": "Add with AI Assistant",
-    "translation": ""
-  },
-  "assistantAddActionDescription": {
-    "source": "Add content using an AI assistant.",
-    "translation": ""
-  },
-  "assistantAddResultError": {
-    "source": "Failed to add block from assistant.",
-    "translation": ""
-  },
-  "assistantDialogLead": {
-    "source": "Please enter what you'd like the assistant to generate.",
-    "translation": ""
-  },
-  "assistantDialogSubmit": {
-    "source": "Create blocks",
-    "translation": ""
-  },
-  "assistantDialogTitle": {
-    "source": "Generate content with AI assistant",
-    "translation": ""
-  },
-  "assistantPromptLabel": {
-    "source": "Prompt",
-    "translation": ""
-  },
-  "assistantPromptPlaceholder": {
-    "source": "Generate content for a page about how taxes work in Switzerland",
     "translation": ""
   },
   "availableBlocks": {
@@ -1175,6 +1191,14 @@
     "source": "Bundle",
     "translation": ""
   },
+  "bundleSelectorActionsLabel": {
+    "source": "Actions",
+    "translation": ""
+  },
+  "bundleSelectorFragmentsLabel": {
+    "source": "Fragments",
+    "translation": ""
+  },
   "cancelSelection": {
     "source": "Cancel selection",
     "translation": ""
@@ -1255,15 +1279,7 @@
     "source": "Show total",
     "translation": "Afficher le total"
   },
-  "chartsEditButton": {
-    "source": "Edit chart...",
-    "translation": ""
-  },
-  "chartsEditorSaveError": {
-    "source": "The chart could not be saved.",
-    "translation": ""
-  },
-  "chartsEditorTitle": {
+  "chartsEditTitle": {
     "source": "Edit chart",
     "translation": ""
   },
@@ -1487,6 +1503,10 @@
     "source": "Open Command Palette",
     "translation": ""
   },
+  "commandPaletteTitle": {
+    "source": "Command Palette",
+    "translation": ""
+  },
   "commandPaletteTourText": {
     "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
     "translation": ""
@@ -1513,6 +1533,10 @@
   },
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
+    "translation": ""
+  },
+  "complexOptionsSaveError": {
+    "source": "The data could not be saved.",
     "translation": ""
   },
   "conversionsConvertTo": {
@@ -1546,6 +1570,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "L'élément n'a pas pu être supprimé."
+  },
+  "deleteNoPermission": {
+    "source": "You do not have permission to delete this block.",
+    "translation": ""
   },
   "diffAfter": {
     "source": "After",
@@ -1595,8 +1623,16 @@
     "source": "Unchanged",
     "translation": ""
   },
+  "download": {
+    "source": "Download",
+    "translation": ""
+  },
   "downloadLogsButton": {
     "source": "Download Logs",
+    "translation": ""
+  },
+  "downloadWithLabel": {
+    "source": "Download @label",
     "translation": ""
   },
   "draggingOverlaySelectBundle": {
@@ -1651,9 +1687,25 @@
     "source": "The items could not be duplicated.",
     "translation": "Les éléments n'ont pas pu être dupliqués."
   },
+  "duplicateFieldFull": {
+    "source": "The field has reached its maximum number of blocks.",
+    "translation": ""
+  },
+  "duplicateNoPermission": {
+    "source": "You do not have permission to duplicate this block.",
+    "translation": ""
+  },
+  "duplicateNotAllowed": {
+    "source": "This block type is not allowed in this field.",
+    "translation": ""
+  },
   "edit": {
     "source": "Edit...",
     "translation": "Modifier"
+  },
+  "editDisabledByDefinition": {
+    "source": "Editing is disabled for this block type.",
+    "translation": ""
   },
   "editFormBlockAdd": {
     "source": "Add @label",
@@ -1675,6 +1727,10 @@
     "source": "Translate \"@label\" (@language)",
     "translation": ""
   },
+  "editFragmentNotEditable": {
+    "source": "This fragment cannot be edited.",
+    "translation": ""
+  },
   "editIndicatorLabel": {
     "source": "Edit blocks",
     "translation": "Modifier les éléments"
@@ -1687,12 +1743,44 @@
     "source": "View changes",
     "translation": ""
   },
+  "editLibraryNotAvailable": {
+    "source": "This reusable block cannot be edited right now.",
+    "translation": ""
+  },
+  "editNoLibraryPermission": {
+    "source": "You do not have permission to edit library items.",
+    "translation": ""
+  },
+  "editNoPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": ""
+  },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
     "translation": ""
   },
+  "editableFieldCharCountMax": {
+    "source": "@count of @max characters used",
+    "translation": ""
+  },
   "editableFieldDiscard": {
     "source": "Discard",
+    "translation": ""
+  },
+  "editableFieldExitFullscreen": {
+    "source": "Exit Fullscreen",
+    "translation": ""
+  },
+  "editableFieldFullscreen": {
+    "source": "Fullscreen",
+    "translation": ""
+  },
+  "editableFieldTranslate": {
+    "source": "Translate",
+    "translation": ""
+  },
+  "editableFieldTranslateTooltip": {
+    "source": "Automatically translate the current text.",
     "translation": ""
   },
   "entityTitleTourText": {
@@ -1815,14 +1903,6 @@
     "source": "Artboard scroll speed",
     "translation": "Vitesse de défilement de la zone de travail"
   },
-  "feature_assistant_description": {
-    "source": "Provides a dynamic add block action to add one or more blocks generated by an AI assistant.",
-    "translation": "Fournit une action dynamique pour ajouter un ou plusieurs blocs générés par un assistant IA."
-  },
-  "feature_assistant_label": {
-    "source": "Assistant",
-    "translation": "Assistant"
-  },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
     "translation": ""
@@ -1845,14 +1925,6 @@
   },
   "feature_changelog_label": {
     "source": "Changelog",
-    "translation": ""
-  },
-  "feature_charts_description": {
-    "source": "Add and edit interactive charts.",
-    "translation": ""
-  },
-  "feature_charts_label": {
-    "source": "Charts",
     "translation": ""
   },
   "feature_clipboard_description": {
@@ -1878,6 +1950,14 @@
   "feature_comments_label": {
     "source": "Comments",
     "translation": "Commentaires"
+  },
+  "feature_complex-options_description": {
+    "source": "Edit complex option types such as charts.",
+    "translation": ""
+  },
+  "feature_complex-options_label": {
+    "source": "Complex Options",
+    "translation": ""
   },
   "feature_conversions_description": {
     "source": "Provides block actions to convert one or more blocks to a different bundle.",
@@ -2015,6 +2095,14 @@
     "source": "Help",
     "translation": "Aide"
   },
+  "feature_highlights_description": {
+    "source": "Renders persistent highlights for blocks with issues or outdated translations.",
+    "translation": ""
+  },
+  "feature_highlights_label": {
+    "source": "Highlights",
+    "translation": ""
+  },
   "feature_history_description": {
     "source": "Implements support for history features (undo, redo, list of mutations).",
     "translation": "Implémente le support des fonctionnalités d'historique (annuler, rétablir, liste des mutations)."
@@ -2135,6 +2223,14 @@
     "source": "Close editor after publishing",
     "translation": "Fermer l'éditeur après publication"
   },
+  "feature_referenced-entities_description": {
+    "source": "Renders referenced entities of blocks.",
+    "translation": ""
+  },
+  "feature_referenced-entities_label": {
+    "source": "Referenced Entities",
+    "translation": ""
+  },
   "feature_responsive-preview_description": {
     "source": "Provides a responsive preview of the current edit state in an iframe.",
     "translation": "Fournit un aperçu responsive de l'état d'édition actuel dans une iframe."
@@ -2203,6 +2299,14 @@
     "source": "Structure",
     "translation": "Structure"
   },
+  "feature_swap_description": {
+    "source": "Provides an action to swap two selected blocks.",
+    "translation": ""
+  },
+  "feature_swap_label": {
+    "source": "Swap",
+    "translation": ""
+  },
   "feature_templates_description": {
     "source": "Add blocks from templates.",
     "translation": ""
@@ -2259,9 +2363,29 @@
     "source": "Validations",
     "translation": "Validations"
   },
+  "feature_workspace_description": {
+    "source": "Allows users to switch between edit states.",
+    "translation": ""
+  },
+  "feature_workspace_label": {
+    "source": "Workspace",
+    "translation": ""
+  },
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Ce champ est obligatoire"
+  },
+  "filterSelectNoResults": {
+    "source": "No results",
+    "translation": ""
+  },
+  "filterSelectSearch": {
+    "source": "Search...",
+    "translation": ""
+  },
+  "formSaveNotEditStateInfo": {
+    "source": "Saving this form applies changes immediately — they take effect without publishing the current blökkli page.",
+    "translation": ""
   },
   "fragmentsAddFragmentAction": {
     "source": "Fragment",
@@ -2347,6 +2471,10 @@
     "source": "Undo the last change.",
     "translation": ""
   },
+  "iframesEditTitle": {
+    "source": "Edit iframe size",
+    "translation": ""
+  },
   "importExistingDescription": {
     "source": "Import from an existing page",
     "translation": "Importer d’une page existante"
@@ -2407,8 +2535,28 @@
     "source": "From library",
     "translation": ""
   },
+  "libraryAddNoEditPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": ""
+  },
+  "libraryAddNoPermission": {
+    "source": "You do not have permission to create library items.",
+    "translation": ""
+  },
+  "libraryAddNotAllowedInField": {
+    "source": "Reusable blocks are not allowed in this field.",
+    "translation": ""
+  },
+  "libraryAddNotSupported": {
+    "source": "This block type cannot be made reusable.",
+    "translation": ""
+  },
   "libraryDetach": {
     "source": "Detach from library",
+    "translation": ""
+  },
+  "libraryDetachNoPermission": {
+    "source": "You do not have permission to detach this block.",
     "translation": ""
   },
   "libraryDialogDescriptionLabel": {
@@ -2444,7 +2592,11 @@
     "translation": ""
   },
   "libraryItemEditOverlayBackWithPage": {
-    "source": "Back to \"@label\"",
+    "source": "Save and go back to \"@label\"",
+    "translation": ""
+  },
+  "libraryItemEditOverlayBackWithPageNoSave": {
+    "source": "Go back to \"@label\"",
     "translation": ""
   },
   "libraryItemEditOverlayTitle": {
@@ -2470,6 +2622,10 @@
   "libraryPreviewLabel": {
     "source": "Preview",
     "translation": "Aperçu"
+  },
+  "loading": {
+    "source": "Loading...",
+    "translation": ""
   },
   "manageSchedule": {
     "source": "Manage schedule...",
@@ -2547,8 +2703,20 @@
     "source": "Unselect \"@value\" in \"@option\"",
     "translation": ""
   },
+  "outdatedTranslation": {
+    "source": "Outdated translation",
+    "translation": ""
+  },
+  "outdatedTranslationDescription": {
+    "source": "Mark translation as up-to-date",
+    "translation": ""
+  },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
+    "translation": ""
+  },
+  "owner": {
+    "source": "Owner",
     "translation": ""
   },
   "ownershipError": {
@@ -2851,6 +3019,22 @@
     "source": "@label measures how easy the text is to read.",
     "translation": "@label mesure la facilité de lecture du texte."
   },
+  "referencedEntitiesEditorOverlayTitle": {
+    "source": "Edit \"@label\"",
+    "translation": ""
+  },
+  "relatedContent": {
+    "source": "Related Content",
+    "translation": ""
+  },
+  "relatedContentNoEntitiesFound": {
+    "source": "No related content found",
+    "translation": ""
+  },
+  "relatedContentTooltip": {
+    "source": "Content like pages or images referenced or linked by this block.",
+    "translation": ""
+  },
   "responsivePreviewCustomViewport": {
     "source": "Custom",
     "translation": ""
@@ -2861,6 +3045,14 @@
   },
   "responsivePreviewTourText": {
     "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
+    "translation": ""
+  },
+  "restrictedPermissionsAll": {
+    "source": "Some actions are not available due to missing permissions.",
+    "translation": ""
+  },
+  "restrictedPermissionsSome": {
+    "source": "Some actions are restricted due to missing permissions.",
     "translation": ""
   },
   "revertDialogLead": {
@@ -2891,8 +3083,16 @@
     "source": "All changes have been discarded.",
     "translation": "Toutes les modifications ont été annulées."
   },
+  "save": {
+    "source": "Save",
+    "translation": ""
+  },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
+    "translation": ""
+  },
+  "schedulerNotSupported": {
+    "source": "Scheduling is not available for this block type.",
     "translation": ""
   },
   "searchBoxNoResultsFound": {
@@ -2915,6 +3115,10 @@
     "source": "Failed to replace content.",
     "translation": ""
   },
+  "searchOverlayNoResults": {
+    "source": "No results found.",
+    "translation": ""
+  },
   "searchToolbarLabel": {
     "source": "Search content",
     "translation": "Rechercher des contenus"
@@ -2933,6 +3137,10 @@
   },
   "selectedIsNew": {
     "source": "New",
+    "translation": ""
+  },
+  "selectedTranslationIsOutdated": {
+    "source": "Outdated",
     "translation": ""
   },
   "settingsAdvanced": {
@@ -3005,6 +3213,18 @@
   },
   "structureTourText": {
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
+    "translation": ""
+  },
+  "swapButton": {
+    "source": "Swap block positions",
+    "translation": ""
+  },
+  "swapError": {
+    "source": "The blocks could not be swapped.",
+    "translation": ""
+  },
+  "swapNotPossible": {
+    "source": "Block positions cannot be swapped.",
     "translation": ""
   },
   "systemRequirementsDialogButton": {
@@ -3227,12 +3447,64 @@
     "source": "Preview",
     "translation": ""
   },
+  "translateEditDisabled": {
+    "source": "Editing is disabled for this block type.",
+    "translation": ""
+  },
+  "translateLibraryBlock": {
+    "source": "Reusable blocks cannot be translated here.",
+    "translation": ""
+  },
+  "translateNotTranslatable": {
+    "source": "This block type is not translatable.",
+    "translation": ""
+  },
+  "translationOutdatedHint": {
+    "source": "The translation is marked as outdated.",
+    "translation": ""
+  },
+  "translationsAddFiles": {
+    "source": "Add files...",
+    "translation": ""
+  },
+  "translationsAutoTranslate": {
+    "source": "Auto-translate",
+    "translation": ""
+  },
+  "translationsAutoTranslateButton": {
+    "source": "Auto-translate...",
+    "translation": ""
+  },
+  "translationsAutoTranslateTooltip": {
+    "source": "Automatically translate all texts using a translation service",
+    "translation": ""
+  },
   "translationsBannerButton": {
     "source": "Edit source language instead",
     "translation": ""
   },
+  "translationsBannerMarkAllAsUpToDate": {
+    "source": "Mark all as up-to-date",
+    "translation": ""
+  },
+  "translationsBannerNext": {
+    "source": "Next block",
+    "translation": ""
+  },
+  "translationsBannerOutdatedCount": {
+    "source": "@count blocks have <strong>outdated translations</strong>.",
+    "translation": ""
+  },
+  "translationsBannerOutdatedSingular": {
+    "source": "@count block has an <strong>outdated translation</strong>.",
+    "translation": ""
+  },
+  "translationsBannerPrev": {
+    "source": "Previous block",
+    "translation": ""
+  },
   "translationsBannerText": {
-    "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
+    "source": "You are currently editing the <strong>@language</strong> translation.",
     "translation": ""
   },
   "translationsBatchTranslateMenuDescription": {
@@ -3243,9 +3515,73 @@
     "source": "Translate...",
     "translation": "Traduire..."
   },
+  "translationsCsvApply": {
+    "source": "Import @count translations",
+    "translation": ""
+  },
+  "translationsCsvChangesLabel": {
+    "source": "fields will be updated",
+    "translation": ""
+  },
+  "translationsCsvDialogTitle": {
+    "source": "Import/Export Translations",
+    "translation": ""
+  },
+  "translationsCsvDiff": {
+    "source": "Changes",
+    "translation": ""
+  },
+  "translationsCsvExport": {
+    "source": "Export",
+    "translation": ""
+  },
+  "translationsCsvImport": {
+    "source": "Import",
+    "translation": ""
+  },
+  "translationsCsvLanguages": {
+    "source": "Languages",
+    "translation": ""
+  },
+  "translationsCsvMenuTitle": {
+    "source": "Import/export...",
+    "translation": ""
+  },
+  "translationsCsvNoChanges": {
+    "source": "No changes found",
+    "translation": ""
+  },
+  "translationsCsvOnlyMissing": {
+    "source": "Only missing translations",
+    "translation": ""
+  },
+  "translationsCsvOnlyOutdated": {
+    "source": "Only outdated translations",
+    "translation": ""
+  },
+  "translationsCsvTooltip": {
+    "source": "Import or export translations as CSV or PO files",
+    "translation": ""
+  },
+  "translationsDropToImport": {
+    "source": "Drop CSV or PO file to import",
+    "translation": ""
+  },
   "translationsItemAction": {
     "source": "Translate",
     "translation": "Traduire..."
+  },
+  "translationsMarkUpToDate": {
+    "source": "Mark translations as up to date",
+    "translation": ""
+  },
+  "translationsMarkUpToDateDisabled": {
+    "source": "No selected blocks have an outdated translation.",
+    "translation": ""
+  },
+  "translationsSelectImportFile": {
+    "source": "Select CSV or PO file",
+    "translation": ""
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
@@ -3253,6 +3589,34 @@
   },
   "translationsTourTitle": {
     "source": "Translations",
+    "translation": ""
+  },
+  "translationsTranslateApply": {
+    "source": "Apply @count translations",
+    "translation": ""
+  },
+  "translationsTranslateButton": {
+    "source": "Request @count translations",
+    "translation": ""
+  },
+  "translationsTranslateCurrentColumn": {
+    "source": "Current translation (@language)",
+    "translation": ""
+  },
+  "translationsTranslateDialogTitle": {
+    "source": "Automatic Translation",
+    "translation": ""
+  },
+  "translationsTranslateFieldsLabel": {
+    "source": "fields selected",
+    "translation": ""
+  },
+  "translationsTranslateLoading": {
+    "source": "Translating...",
+    "translation": ""
+  },
+  "translationsTranslateNoTexts": {
+    "source": "No translatable texts found on this page.",
     "translation": ""
   },
   "unexpectedMutationError": {
@@ -3285,6 +3649,18 @@
   },
   "viewBannerViewTitle": {
     "source": "You are in view-only mode.",
+    "translation": ""
+  },
+  "workspaceOpen": {
+    "source": "Switch page",
+    "translation": ""
+  },
+  "workspaceSearchPlaceholder": {
+    "source": "Search pages...",
+    "translation": ""
+  },
+  "workspaceTitle": {
+    "source": "Switch page",
     "translation": ""
   }
 }

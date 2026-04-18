@@ -411,6 +411,34 @@
     "source": "Show more",
     "translation": "Mehr anzeigen"
   },
+  "aiAgentFeedbackBad": {
+    "source": "Bad",
+    "translation": "Schlecht"
+  },
+  "aiAgentFeedbackFine": {
+    "source": "Fine",
+    "translation": "Okay"
+  },
+  "aiAgentFeedbackGood": {
+    "source": "Good",
+    "translation": "Gut"
+  },
+  "aiAgentFeedbackPlaceholder": {
+    "source": "Tell us more (optional)...",
+    "translation": "Erzählen Sie uns mehr (optional)..."
+  },
+  "aiAgentFeedbackPrompt": {
+    "source": "How was this response?",
+    "translation": "Wie war diese Antwort?"
+  },
+  "aiAgentFeedbackSubmit": {
+    "source": "Submit",
+    "translation": "Absenden"
+  },
+  "aiAgentFeedbackThanks": {
+    "source": "Thanks for your feedback!",
+    "translation": "Danke für Ihr Feedback!"
+  },
   "aiAgentFindBlocksDone": {
     "source": "Found @count blocks",
     "translation": "@count Blöcke gefunden"
@@ -911,6 +939,14 @@
     "source": "Heading Structure",
     "translation": "Titelstruktur"
   },
+  "analyzeIgnore": {
+    "source": "Ignore",
+    "translation": "Ignorieren"
+  },
+  "analyzeIgnoredResults": {
+    "source": "Ignored",
+    "translation": "Ignoriert"
+  },
   "analyzeKeepVisible": {
     "source": "Keep results visible",
     "translation": "Ergebnisse sichtbar halten"
@@ -935,6 +971,10 @@
     "source": "Results are outdated. Click the button to update.",
     "translation": "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren."
   },
+  "analyzeShowDetails": {
+    "source": "Show details",
+    "translation": "Details anzeigen"
+  },
   "analyzeSidebarTitle": {
     "source": "Analyze",
     "translation": "Analysieren"
@@ -955,10 +995,6 @@
     "source": "Stale",
     "translation": "Veraltet"
   },
-  "analyzeStatusUpToDate": {
-    "source": "Up-to-date",
-    "translation": "Aktuell"
-  },
   "analyzeStatusViolation": {
     "source": "Violation",
     "translation": "Fehler"
@@ -966,6 +1002,10 @@
   "analyzeTourText": {
     "source": "Analyze the content of your page",
     "translation": "Inhalte auf dieser Seite analysieren."
+  },
+  "analyzeUnignore": {
+    "source": "Restore",
+    "translation": "Wiederherstellen"
   },
   "analyzerReadabiliyCouldBeSimpler": {
     "source": "Could be simpler (@lang).",
@@ -1006,6 +1046,14 @@
   "anchorToggle": {
     "source": "Toggle anchor links",
     "translation": "Anzeige von Anker-Links umschalten"
+  },
+  "arrowLeft": {
+    "source": "Arrow Left",
+    "translation": "Pfeil links"
+  },
+  "arrowRight": {
+    "source": "Arrow Right",
+    "translation": "Pfeil rechts"
   },
   "artboard": {
     "source": "Artboard",
@@ -1062,38 +1110,6 @@
   "artboardToolbarButtonTourText": {
     "source": "Shows the current zoom factor. Click on it to reset the zoom back to 100%.",
     "translation": "Zeigt den aktuellen Zoom-Wert. Klicken Sie auf den Button um den Zoom auf 100% zurückzusetzen."
-  },
-  "assistantAddAction": {
-    "source": "Add with AI Assistant",
-    "translation": "Mit KI-Assistent hinzufügen"
-  },
-  "assistantAddActionDescription": {
-    "source": "Add content using an AI assistant.",
-    "translation": "Fügen Sie Inhalte mit dem KI-Assistenten hinzu."
-  },
-  "assistantAddResultError": {
-    "source": "Failed to add block from assistant.",
-    "translation": "Fehler beim hinzufügen mit KI."
-  },
-  "assistantDialogLead": {
-    "source": "Please enter what you'd like the assistant to generate.",
-    "translation": "Geben Sie ein was der KI-Assistent generieren soll."
-  },
-  "assistantDialogSubmit": {
-    "source": "Create blocks",
-    "translation": "Blöcke erstellen"
-  },
-  "assistantDialogTitle": {
-    "source": "Generate content with AI assistant",
-    "translation": "Inhalt mit KI generieren"
-  },
-  "assistantPromptLabel": {
-    "source": "Prompt",
-    "translation": "Anweisung"
-  },
-  "assistantPromptPlaceholder": {
-    "source": "Generate content for a page about how taxes work in Switzerland",
-    "translation": "Schreibe Text zum Thema Steuern in der Schweiz"
   },
   "availableBlocks": {
     "source": "Available blocks",
@@ -1175,6 +1191,14 @@
     "source": "Bundle",
     "translation": "Typ"
   },
+  "bundleSelectorActionsLabel": {
+    "source": "Actions",
+    "translation": "Aktionen"
+  },
+  "bundleSelectorFragmentsLabel": {
+    "source": "Fragments",
+    "translation": "Fragmente"
+  },
   "cancelSelection": {
     "source": "Cancel selection",
     "translation": "Auswahl abbrechen"
@@ -1255,15 +1279,7 @@
     "source": "Show total",
     "translation": "Total anzeigen"
   },
-  "chartsEditButton": {
-    "source": "Edit chart...",
-    "translation": "Diagramm bearbeiten..."
-  },
-  "chartsEditorSaveError": {
-    "source": "The chart could not be saved.",
-    "translation": "Das Diagramm konnte nicht gespeichert werden."
-  },
-  "chartsEditorTitle": {
+  "chartsEditTitle": {
     "source": "Edit chart",
     "translation": "Diagramm bearbeiten"
   },
@@ -1487,6 +1503,10 @@
     "source": "Open Command Palette",
     "translation": "Befehle öffnen"
   },
+  "commandPaletteTitle": {
+    "source": "Command Palette",
+    "translation": "Befehlspalette"
+  },
   "commandPaletteTourText": {
     "source": "Easily perform actions using your keyboard by launching the command palette. Most of the features available using clicks is also available in the command palette.",
     "translation": "Führen Sie Aktionen ganz einfach mit Ihrer Tastatur aus, indem Sie «Befehle» öffnen. Fast alle Funktionen sind auch über «Befehle» ausführbar."
@@ -1514,6 +1534,10 @@
   "commentsTourText": {
     "source": "Shows all comments for the current page.",
     "translation": "Zeigt alle Kommentare auf der aktuellen Seite an."
+  },
+  "complexOptionsSaveError": {
+    "source": "The data could not be saved.",
+    "translation": "Die Daten konnten nicht gespeichert werden."
   },
   "conversionsConvertTo": {
     "source": "Convert to: @bundle",
@@ -1546,6 +1570,10 @@
   "deleteError": {
     "source": "The block could not be deleted.",
     "translation": "Das Element konnte nicht entfernt werden."
+  },
+  "deleteNoPermission": {
+    "source": "You do not have permission to delete this block.",
+    "translation": "Löschen aufgrund fehlender Berechtigung nicht möglich."
   },
   "diffAfter": {
     "source": "After",
@@ -1595,9 +1623,17 @@
     "source": "Unchanged",
     "translation": "Keine Änderung"
   },
+  "download": {
+    "source": "Download",
+    "translation": "Herunterladen"
+  },
   "downloadLogsButton": {
     "source": "Download Logs",
     "translation": "Fehlerprotokoll herunterladen"
+  },
+  "downloadWithLabel": {
+    "source": "Download @label",
+    "translation": "@label herunterladen"
   },
   "draggingOverlaySelectBundle": {
     "source": "Select block type to create",
@@ -1651,9 +1687,25 @@
     "source": "The items could not be duplicated.",
     "translation": "Die Elemente konnten nicht dupliziert werden."
   },
+  "duplicateFieldFull": {
+    "source": "The field has reached its maximum number of blocks.",
+    "translation": "Das Feld hat die maximale Anzahl an Blöcken erreicht."
+  },
+  "duplicateNoPermission": {
+    "source": "You do not have permission to duplicate this block.",
+    "translation": "Duplizieren aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "duplicateNotAllowed": {
+    "source": "This block type is not allowed in this field.",
+    "translation": "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
+  },
   "edit": {
     "source": "Edit...",
     "translation": "Bearbeiten..."
+  },
+  "editDisabledByDefinition": {
+    "source": "Editing is disabled for this block type.",
+    "translation": "Bearbeiten ist für diesen Blocktyp deaktiviert."
   },
   "editFormBlockAdd": {
     "source": "Add @label",
@@ -1675,6 +1727,10 @@
     "source": "Translate \"@label\" (@language)",
     "translation": "\"@label\" übersetzen (@language)"
   },
+  "editFragmentNotEditable": {
+    "source": "This fragment cannot be edited.",
+    "translation": "Dieses Fragment kann nicht bearbeitet werden."
+  },
   "editIndicatorLabel": {
     "source": "Edit blocks",
     "translation": "Elemente bearbeiten"
@@ -1687,13 +1743,45 @@
     "source": "View changes",
     "translation": "Änderungen ansehen"
   },
+  "editLibraryNotAvailable": {
+    "source": "This reusable block cannot be edited right now.",
+    "translation": "Dieser wiederverwendbare Block kann momentan nicht bearbeitet werden."
+  },
+  "editNoLibraryPermission": {
+    "source": "You do not have permission to edit library items.",
+    "translation": "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "editNoPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+  },
   "editableCommandEdit": {
     "source": "Edit field \"@name\"",
     "translation": "Feld «@name» bearbeiten"
   },
+  "editableFieldCharCountMax": {
+    "source": "@count of @max characters used",
+    "translation": "@count von @max Zeichen verwendet"
+  },
   "editableFieldDiscard": {
     "source": "Discard",
     "translation": "Verwerfen"
+  },
+  "editableFieldExitFullscreen": {
+    "source": "Exit Fullscreen",
+    "translation": "Vollbild beenden"
+  },
+  "editableFieldFullscreen": {
+    "source": "Fullscreen",
+    "translation": "Vollbild"
+  },
+  "editableFieldTranslate": {
+    "source": "Translate",
+    "translation": "Übersetzen"
+  },
+  "editableFieldTranslateTooltip": {
+    "source": "Automatically translate the current text.",
+    "translation": "Den aktuellen Text automatisch übersetzen."
   },
   "entityTitleTourText": {
     "source": "<p>Shows the title and status of the current page.</p><p>Click on the title to open the page edit form.</p>",
@@ -1815,14 +1903,6 @@
     "source": "Artboard scroll speed",
     "translation": "Scrollgeschwindigkeit der Vorschau"
   },
-  "feature_assistant_description": {
-    "source": "Provides a dynamic add block action to add one or more blocks generated by an AI assistant.",
-    "translation": "Stellt eine dynamische Aktion bereit, um einen oder mehrere Blöcke hinzuzufügen, die von einem KI-Assistenten generiert wurden."
-  },
-  "feature_assistant_label": {
-    "source": "Assistant",
-    "translation": "Assistent"
-  },
   "feature_block-scheduler_description": {
     "source": "Adds support for scheduling blocks.",
     "translation": "Ermöglicht das zeitgesteuerte Veröffentlichen von Blöcken."
@@ -1847,14 +1927,6 @@
     "source": "Changelog",
     "translation": "Änderungsprotokoll"
   },
-  "feature_charts_description": {
-    "source": "Add and edit interactive charts.",
-    "translation": "Interaktive Diagramme hinzufügen und bearbeiten."
-  },
-  "feature_charts_label": {
-    "source": "Charts",
-    "translation": "Diagramme"
-  },
   "feature_clipboard_description": {
     "source": "Provides clipboard integration to copy/paste existing blocks or paste supported clipboard content like text or images.",
     "translation": "Stellt Zwischenablage-Integration bereit zum Kopieren/Einfügen von bestehenden Blöcken oder zum Einfügen von unterstützten Inhalten wie Text oder Bildern."
@@ -1878,6 +1950,14 @@
   "feature_comments_label": {
     "source": "Comments",
     "translation": "Kommentare"
+  },
+  "feature_complex-options_description": {
+    "source": "Edit complex option types such as charts.",
+    "translation": "Ermöglicht die Bearbeitung komplexer Optionstypen wie z. B. Diagramme."
+  },
+  "feature_complex-options_label": {
+    "source": "Complex Options",
+    "translation": "Komplexe Optionen"
   },
   "feature_conversions_description": {
     "source": "Provides block actions to convert one or more blocks to a different bundle.",
@@ -2015,6 +2095,14 @@
     "source": "Help",
     "translation": "Hilfe"
   },
+  "feature_highlights_description": {
+    "source": "Renders persistent highlights for blocks with issues or outdated translations.",
+    "translation": "Zeigt dauerhafte Markierungen für Blöcke mit Problemen oder veralteten Übersetzungen an."
+  },
+  "feature_highlights_label": {
+    "source": "Highlights",
+    "translation": "Markierungen"
+  },
   "feature_history_description": {
     "source": "Implements support for history features (undo, redo, list of mutations).",
     "translation": "Implementiert Unterstützung für Verlaufsfunktionen (Rückgängig, Wiederherstellen, Liste der Änderungen)."
@@ -2135,6 +2223,14 @@
     "source": "Close editor after publishing",
     "translation": "Nach «Veröffentlichen» den Editor schliessen"
   },
+  "feature_referenced-entities_description": {
+    "source": "Renders referenced entities of blocks.",
+    "translation": "Zeigt referenzierte Entitäten von Blöcken an."
+  },
+  "feature_referenced-entities_label": {
+    "source": "Referenced Entities",
+    "translation": "Referenzierte Entitäten"
+  },
   "feature_responsive-preview_description": {
     "source": "Provides a responsive preview of the current edit state in an iframe.",
     "translation": "Stellt eine responsive Vorschau des aktuellen Bearbeitungszustands in einem iFrame bereit."
@@ -2203,6 +2299,14 @@
     "source": "Structure",
     "translation": "Struktur"
   },
+  "feature_swap_description": {
+    "source": "Provides an action to swap two selected blocks.",
+    "translation": "Stellt eine Aktion zum Vertauschen von zwei ausgewählten Blöcken bereit."
+  },
+  "feature_swap_label": {
+    "source": "Swap",
+    "translation": "Tauschen"
+  },
   "feature_templates_description": {
     "source": "Add blocks from templates.",
     "translation": "Blöcke aus Vorlagen hinzufügen."
@@ -2259,9 +2363,29 @@
     "source": "Validations",
     "translation": "Validierungen"
   },
+  "feature_workspace_description": {
+    "source": "Allows users to switch between edit states.",
+    "translation": "Ermöglicht das Wechseln zwischen Bearbeitungszuständen."
+  },
+  "feature_workspace_label": {
+    "source": "Workspace",
+    "translation": "Arbeitsbereich"
+  },
   "fieldIsRequired": {
     "source": "This field is required",
     "translation": "Feld darf nicht leer sein"
+  },
+  "filterSelectNoResults": {
+    "source": "No results",
+    "translation": "Keine Ergebnisse"
+  },
+  "filterSelectSearch": {
+    "source": "Search...",
+    "translation": "Suchen..."
+  },
+  "formSaveNotEditStateInfo": {
+    "source": "Saving this form applies changes immediately — they take effect without publishing the current blökkli page.",
+    "translation": "Änderungen in diesem Formular werden sofort übernommen — ohne Veröffentlichung der aktuellen blökkli-Seite."
   },
   "fragmentsAddFragmentAction": {
     "source": "Fragment",
@@ -2347,6 +2471,10 @@
     "source": "Undo the last change.",
     "translation": "Letzte Änderung rückgängig machen."
   },
+  "iframesEditTitle": {
+    "source": "Edit iframe size",
+    "translation": "Iframe-Grösse bearbeiten"
+  },
   "importExistingDescription": {
     "source": "Import from an existing page",
     "translation": "Von einer bestehenden Seite importieren"
@@ -2407,9 +2535,29 @@
     "source": "From library",
     "translation": "Aus der Bibliothek"
   },
+  "libraryAddNoEditPermission": {
+    "source": "You do not have permission to edit this block.",
+    "translation": "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "libraryAddNoPermission": {
+    "source": "You do not have permission to create library items.",
+    "translation": "Erstellen aufgrund fehlender Berechtigung nicht möglich."
+  },
+  "libraryAddNotAllowedInField": {
+    "source": "Reusable blocks are not allowed in this field.",
+    "translation": "Wiederverwendbare Blöcke sind in diesem Feld nicht erlaubt."
+  },
+  "libraryAddNotSupported": {
+    "source": "This block type cannot be made reusable.",
+    "translation": "Dieser Blocktyp kann nicht wiederverwendbar gemacht werden."
+  },
   "libraryDetach": {
     "source": "Detach from library",
     "translation": "Von der Bibliothek loslösen"
+  },
+  "libraryDetachNoPermission": {
+    "source": "You do not have permission to detach this block.",
+    "translation": "Loslösen aufgrund fehlender Berechtigung nicht möglich."
   },
   "libraryDialogDescriptionLabel": {
     "source": "Description",
@@ -2444,7 +2592,11 @@
     "translation": "Zurück zur Seite"
   },
   "libraryItemEditOverlayBackWithPage": {
-    "source": "Back to \"@label\"",
+    "source": "Save and go back to \"@label\"",
+    "translation": "Speichern und zurück zu «@label»"
+  },
+  "libraryItemEditOverlayBackWithPageNoSave": {
+    "source": "Go back to \"@label\"",
     "translation": "Zurück zu «@label»"
   },
   "libraryItemEditOverlayTitle": {
@@ -2470,6 +2622,10 @@
   "libraryPreviewLabel": {
     "source": "Preview",
     "translation": "Vorschau"
+  },
+  "loading": {
+    "source": "Loading...",
+    "translation": "Wird geladen…"
   },
   "manageSchedule": {
     "source": "Manage schedule...",
@@ -2547,9 +2703,21 @@
     "source": "Unselect \"@value\" in \"@option\"",
     "translation": "«@value» in «@option» abwählen"
   },
+  "outdatedTranslation": {
+    "source": "Outdated translation",
+    "translation": "Veraltete Übersetzung"
+  },
+  "outdatedTranslationDescription": {
+    "source": "Mark translation as up-to-date",
+    "translation": "Übersetzung als aktuell markieren"
+  },
   "overlayDoubleClickInfo": {
     "source": "<strong>Double click</strong> to close overlay",
     "translation": "<strong>Doppelklicken</strong> um Dialog zu schliessen"
+  },
+  "owner": {
+    "source": "Owner",
+    "translation": "Besitzer"
   },
   "ownershipError": {
     "source": "Error in assigning",
@@ -2851,6 +3019,22 @@
     "source": "@label measures how easy the text is to read.",
     "translation": "@label misst, wie leicht der Text zu lesen ist."
   },
+  "referencedEntitiesEditorOverlayTitle": {
+    "source": "Edit \"@label\"",
+    "translation": "«@label» bearbeiten"
+  },
+  "relatedContent": {
+    "source": "Related Content",
+    "translation": "Verwandte Inhalte"
+  },
+  "relatedContentNoEntitiesFound": {
+    "source": "No related content found",
+    "translation": "Keine verwandten Inhalte gefunden"
+  },
+  "relatedContentTooltip": {
+    "source": "Content like pages or images referenced or linked by this block.",
+    "translation": "Inhalte wie Seiten oder Bilder, die von diesem Block referenziert oder verlinkt werden."
+  },
   "responsivePreviewCustomViewport": {
     "source": "Custom",
     "translation": "Benutzerdefiniert"
@@ -2862,6 +3046,14 @@
   "responsivePreviewTourText": {
     "source": "See how your changes look like on smaller screens, such as smartphones. Click on the \"detach\" button to be able to select additional viewport sizes.",
     "translation": "Sehen Sie, wie Ihre Änderungen auf kleineren Bildschirmen, wie Smartphones, aussehen. Klicken Sie auf den \"Loslösen\"-Button, um zusätzliche Ansichtsgrössen auswählen zu können."
+  },
+  "restrictedPermissionsAll": {
+    "source": "Some actions are not available due to missing permissions.",
+    "translation": "Einige Aktionen sind aufgrund fehlender Berechtigungen nicht verfügbar."
+  },
+  "restrictedPermissionsSome": {
+    "source": "Some actions are restricted due to missing permissions.",
+    "translation": "Einige Aktionen sind aufgrund fehlender Berechtigungen eingeschränkt."
   },
   "revertDialogLead": {
     "source": "This will delete all changes and restore the currently published state. This action cannot be undone.",
@@ -2891,9 +3083,17 @@
     "source": "All changes have been discarded.",
     "translation": "Alle Änderungen wurden verworfen."
   },
+  "save": {
+    "source": "Save",
+    "translation": "Speichern"
+  },
   "scheduledFor": {
     "source": "The changes will be published on this date.",
     "translation": "Die Änderungen werden an diesem Datum publiziert."
+  },
+  "schedulerNotSupported": {
+    "source": "Scheduling is not available for this block type.",
+    "translation": "Zeitplanung ist für diesen Blocktyp nicht verfügbar."
   },
   "searchBoxNoResultsFound": {
     "source": "No results found",
@@ -2915,6 +3115,10 @@
     "source": "Failed to replace content.",
     "translation": "Inhalt konnte nicht ersetzt werden."
   },
+  "searchOverlayNoResults": {
+    "source": "No results found.",
+    "translation": "Keine Ergebnisse gefunden."
+  },
   "searchToolbarLabel": {
     "source": "Search content",
     "translation": "Inhalte suchen"
@@ -2934,6 +3138,10 @@
   "selectedIsNew": {
     "source": "New",
     "translation": "Neu"
+  },
+  "selectedTranslationIsOutdated": {
+    "source": "Outdated",
+    "translation": "Veraltet"
   },
   "settingsAdvanced": {
     "source": "Advanced",
@@ -3006,6 +3214,18 @@
   "structureTourText": {
     "source": "Shows a structured list of all blocks on the current page. Click on any block to quickly jump to it.",
     "translation": "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
+  },
+  "swapButton": {
+    "source": "Swap block positions",
+    "translation": "Blockpositionen tauschen"
+  },
+  "swapError": {
+    "source": "The blocks could not be swapped.",
+    "translation": "Die Blöcke konnten nicht getauscht werden."
+  },
+  "swapNotPossible": {
+    "source": "Block positions cannot be swapped.",
+    "translation": "Blockpositionen können nicht getauscht werden."
   },
   "systemRequirementsDialogButton": {
     "source": "Continue anyway",
@@ -3227,13 +3447,65 @@
     "source": "Preview",
     "translation": "Vorschau"
   },
+  "translateEditDisabled": {
+    "source": "Editing is disabled for this block type.",
+    "translation": "Bearbeiten ist für diesen Blocktyp deaktiviert."
+  },
+  "translateLibraryBlock": {
+    "source": "Reusable blocks cannot be translated here.",
+    "translation": "Wiederverwendbare Blöcke können hier nicht übersetzt werden."
+  },
+  "translateNotTranslatable": {
+    "source": "This block type is not translatable.",
+    "translation": "Dieser Blocktyp ist nicht übersetzbar."
+  },
+  "translationOutdatedHint": {
+    "source": "The translation is marked as outdated.",
+    "translation": "Die Übersetzung ist als veraltet markiert."
+  },
+  "translationsAddFiles": {
+    "source": "Add files...",
+    "translation": "Dateien hinzufügen..."
+  },
+  "translationsAutoTranslate": {
+    "source": "Auto-translate",
+    "translation": "Automatisch übersetzen"
+  },
+  "translationsAutoTranslateButton": {
+    "source": "Auto-translate...",
+    "translation": "Automatisch übersetzen..."
+  },
+  "translationsAutoTranslateTooltip": {
+    "source": "Automatically translate all texts using a translation service",
+    "translation": "Alle Texte automatisch mit einem Übersetzungsdienst übersetzen"
+  },
   "translationsBannerButton": {
     "source": "Edit source language instead",
     "translation": "Originalsprache bearbeiten"
   },
+  "translationsBannerMarkAllAsUpToDate": {
+    "source": "Mark all as up-to-date",
+    "translation": "Alle als aktuell markieren"
+  },
+  "translationsBannerNext": {
+    "source": "Next block",
+    "translation": "Nächster Block"
+  },
+  "translationsBannerOutdatedCount": {
+    "source": "@count blocks have <strong>outdated translations</strong>.",
+    "translation": "@count Blöcke haben <strong>veraltete Übersetzungen</strong>."
+  },
+  "translationsBannerOutdatedSingular": {
+    "source": "@count block has an <strong>outdated translation</strong>.",
+    "translation": "@count Block hat eine <strong>veraltete Übersetzung</strong>."
+  },
+  "translationsBannerPrev": {
+    "source": "Previous block",
+    "translation": "Vorheriger Block"
+  },
   "translationsBannerText": {
-    "source": "You are currently editing the <strong>@language</strong> translation. Some features like adding, moving or deleting blocks are not available.",
-    "translation": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>. Einige Funktionen wie das Hinzufügen, Verschieben oder Löschen von Blöcken sind nicht verfügbar."
+    "source": "You are currently editing the <strong>@language</strong> translation.",
+    "translation": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>."
   },
   "translationsBatchTranslateMenuDescription": {
     "source": "Translate all blocks",
@@ -3243,9 +3515,73 @@
     "source": "Translate...",
     "translation": "Übersetzen..."
   },
+  "translationsCsvApply": {
+    "source": "Import @count translations",
+    "translation": "@count Übersetzungen importieren"
+  },
+  "translationsCsvChangesLabel": {
+    "source": "fields will be updated",
+    "translation": "Felder werden aktualisiert"
+  },
+  "translationsCsvDialogTitle": {
+    "source": "Import/Export Translations",
+    "translation": "Übersetzungen importieren/exportieren"
+  },
+  "translationsCsvDiff": {
+    "source": "Changes",
+    "translation": "Änderungen"
+  },
+  "translationsCsvExport": {
+    "source": "Export",
+    "translation": "Export"
+  },
+  "translationsCsvImport": {
+    "source": "Import",
+    "translation": "Import"
+  },
+  "translationsCsvLanguages": {
+    "source": "Languages",
+    "translation": "Sprachen"
+  },
+  "translationsCsvMenuTitle": {
+    "source": "Import/export...",
+    "translation": "Import/Export..."
+  },
+  "translationsCsvNoChanges": {
+    "source": "No changes found",
+    "translation": "Keine Änderungen gefunden"
+  },
+  "translationsCsvOnlyMissing": {
+    "source": "Only missing translations",
+    "translation": "Nur fehlende Übersetzungen"
+  },
+  "translationsCsvOnlyOutdated": {
+    "source": "Only outdated translations",
+    "translation": "Nur veraltete Übersetzungen"
+  },
+  "translationsCsvTooltip": {
+    "source": "Import or export translations as CSV or PO files",
+    "translation": "Übersetzungen als CSV- oder PO-Dateien importieren oder exportieren"
+  },
+  "translationsDropToImport": {
+    "source": "Drop CSV or PO file to import",
+    "translation": "CSV- oder PO-Datei zum Importieren ablegen"
+  },
   "translationsItemAction": {
     "source": "Translate",
     "translation": "Übersetzen"
+  },
+  "translationsMarkUpToDate": {
+    "source": "Mark translations as up to date",
+    "translation": "Übersetzung als aktuell markieren"
+  },
+  "translationsMarkUpToDateDisabled": {
+    "source": "No selected blocks have an outdated translation.",
+    "translation": "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
+  },
+  "translationsSelectImportFile": {
+    "source": "Select CSV or PO file",
+    "translation": "CSV- oder PO-Datei auswählen"
   },
   "translationsTourText": {
     "source": "Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.",
@@ -3254,6 +3590,34 @@
   "translationsTourTitle": {
     "source": "Translations",
     "translation": "Übersetzungen"
+  },
+  "translationsTranslateApply": {
+    "source": "Apply @count translations",
+    "translation": "@count Übersetzungen anwenden"
+  },
+  "translationsTranslateButton": {
+    "source": "Request @count translations",
+    "translation": "@count Übersetzungen anfordern"
+  },
+  "translationsTranslateCurrentColumn": {
+    "source": "Current translation (@language)",
+    "translation": "Aktuelle Übersetzung (@language)"
+  },
+  "translationsTranslateDialogTitle": {
+    "source": "Automatic Translation",
+    "translation": "Automatische Übersetzung"
+  },
+  "translationsTranslateFieldsLabel": {
+    "source": "fields selected",
+    "translation": "Felder ausgewählt"
+  },
+  "translationsTranslateLoading": {
+    "source": "Translating...",
+    "translation": "Wird übersetzt..."
+  },
+  "translationsTranslateNoTexts": {
+    "source": "No translatable texts found on this page.",
+    "translation": "Keine übersetzbaren Texte auf dieser Seite gefunden."
   },
   "unexpectedMutationError": {
     "source": "An unexpected error happened.",
@@ -3286,5 +3650,17 @@
   "viewBannerViewTitle": {
     "source": "You are in view-only mode.",
     "translation": "Sie befinden sich im Ansichtsmodus."
+  },
+  "workspaceOpen": {
+    "source": "Switch page",
+    "translation": "Seite wechseln"
+  },
+  "workspaceSearchPlaceholder": {
+    "source": "Search pages...",
+    "translation": "Seiten durchsuchen..."
+  },
+  "workspaceTitle": {
+    "source": "Switch page",
+    "translation": "Seite wechseln"
   }
 }

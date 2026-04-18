@@ -28,7 +28,11 @@ const { adapter } = defineBlokkliFeature({
   dependencies: ['add-list'],
 })
 
-const { state, $t, types, dom, ui } = useBlokkli()
+const { state, $t, types, dom, ui, permissions } = useBlokkli()
+
+const canAddFragment = computed(() =>
+  permissions.checkBlockBundlePermission(fragmentBlockBundle, 'add'),
+)
 
 const placedAction = ref<ActionPlacedData | null>(null)
 
@@ -53,7 +57,7 @@ const isSupportedOnEntity = computed(() =>
 )
 
 defineAddAction(() => {
-  if (!isSupportedOnEntity.value) {
+  if (!isSupportedOnEntity.value || !canAddFragment.value) {
     return
   }
 

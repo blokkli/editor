@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-block-preview-item" :class="backgroundClass">
+  <div class="bk-vars bk-block-preview-item" :class="backgroundClass">
     <div class="bk bk-block-preview-item-header">
       <div v-if="bundle" class="bk-blokkli-item-label">
         <div class="bk-blokkli-item-label-icon">
@@ -111,3 +111,35 @@ provide(INJECT_FIELD_LIST_BLOCKS, blocks)
 provide(INJECT_PROVIDER_BLOCKS, blocks)
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 </script>
+
+<style lang="postcss">
+.bk-vars.bk-block-preview-item {
+  @apply h-full flex flex-col;
+
+  .bk-block-preview-item-header {
+    @apply p-15 bg-mono-100;
+
+    h3 {
+      @apply font-semibold;
+    }
+  }
+
+  .bk-block-preview-item-inner {
+    @apply p-20 overflow-hidden relative flex flex-col gap-5 items-center justify-center h-full;
+
+    > .bk-scale-to-fit {
+      @apply w-full;
+    }
+
+    &:after {
+      content: '';
+      @apply absolute bottom-0 left-0 w-full h-20;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0), white 40%);
+    }
+  }
+
+  .bk-block-preview-item-block {
+    @apply rounded overflow-hidden w-full;
+  }
+}
+</style>

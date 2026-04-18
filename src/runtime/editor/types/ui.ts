@@ -1,7 +1,9 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
+export type UiStatus = 'success' | 'warning' | 'error'
+
 export type Message = {
-  type: 'success' | 'error' | 'warning'
+  type: UiStatus
   message: string
   additional?: string | Error | unknown
   replace?: boolean
@@ -52,3 +54,21 @@ export type BlockIndicator = {
   element: HTMLElement
   position: 'left' | 'right'
 }
+
+export type Placement =
+  | 'above-before'
+  | 'above-left'
+  | 'above-center'
+  | 'above-right'
+  | 'above-after'
+  | 'below-before'
+  | 'below-left'
+  | 'below-center'
+  | 'below-right'
+  | 'below-after'
+  | 'top-before'
+  | 'top-after'
+  | 'center-before'
+  | 'center-after'
+  | 'bottom-before'
+  | 'bottom-after'

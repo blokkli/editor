@@ -25,6 +25,7 @@ const { state, $t, permissions } = useBlokkli()
 
 const shouldRender = computed<boolean>(
   () =>
+    state.stateAvailable.value &&
     !state.owner.value?.currentUserIsOwner &&
     state.permissions.value.includes('edit'),
 )

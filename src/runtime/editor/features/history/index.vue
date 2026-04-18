@@ -3,7 +3,6 @@
     id="history"
     v-slot="{ scrolledToEnd }"
     :title="$t('history', 'History')"
-    edit-only
     :tour-text="
       $t(
         'historyTourText',

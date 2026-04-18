@@ -54,7 +54,7 @@
   }
   .bk-checkbox,
   .bk-radio {
-    @apply flex items-start cursor-pointer py-5 hover:text-accent-600 relative text-balance;
+    @apply flex items-start cursor-pointer hover:text-accent-600 relative text-balance;
     input {
       @apply absolute opacity-0;
     }
@@ -104,6 +104,9 @@
     }
   }
   .bk-checkbox {
+    input:focus-visible ~ span:before {
+      @apply ring;
+    }
     input:checked ~ span:before {
       background-image: url('/_blokkli-assets/check.svg');
       background-size: 80% 80%;

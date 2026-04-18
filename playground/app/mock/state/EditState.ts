@@ -36,6 +36,10 @@ export class BlockProxy {
   static fromEntity(block: Paragraph, hostField: string, entity: Entity) {
     const clone = createParagraph(block.bundle, block.uuid)
     clone.setValues(block.getValues())
+    // Copy translation data so the clone can be translated.
+    clone.translationValues = JSON.parse(
+      JSON.stringify(block.translationValues),
+    )
     return new BlockProxy(clone, entity.entityType, entity.uuid, hostField)
   }
 
@@ -56,6 +60,7 @@ export class MutationContext {
   proxies: BlockProxy[] = []
   entity: Entity
   mutatedHostOptions: Record<string, string> = {}
+  ignoredAnalyzeIdentifiers: string[] = []
 
   constructor(hostEntity: Entity) {
     this.entity = hostEntity
@@ -230,6 +235,7 @@ export type MutatedState = {
   fields: MutatedField[]
   context: MutationContext
   violations: Validation[]
+  ignoredAnalyzeIdentifiers: string[]
 }
 
 export class EditState {
@@ -241,7 +247,7 @@ export class EditState {
   }
 
   getStorageKey(suffix: string) {
-    return '__29_blokkli_mock_' + this.uuid + '_' + suffix
+    return '__30_blokkli_mock_' + this.uuid + '_' + suffix
   }
 
   get currentIndex(): number {
@@ -328,9 +334,9 @@ export class EditState {
 
   async getMutatedState(
     entity: Entity,
+    langcode: string,
     options?: { save?: boolean; index?: number },
   ): Promise<MutatedState> {
-    const langcode = entity.langcode
     const context = new MutationContext(entity)
 
     const mutations = this.getMutations()
@@ -348,6 +354,10 @@ export class EditState {
     }
 
     const violations: Validation[] = []
+
+    // Apply translation to the host entity so its text fields reflect
+    // the current language (including any values set by mutations).
+    context.entity.getTranslation(langcode)
 
     const mutatedOptions: Record<string, any> = {}
     const proxiesByFieldKey: Record<string, BlockProxy[]> = {}
@@ -428,6 +438,7 @@ export class EditState {
       fields: Object.values(mutatedFields),
       context,
       violations,
+      ignoredAnalyzeIdentifiers: [...context.ignoredAnalyzeIdentifiers],
     }
   }
 }

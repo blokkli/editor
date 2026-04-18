@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { runReadabilityAnalysis } from '../helpers'
+import {
+  requireBundlePermission,
+  requireNoRestrictedAncestor,
+} from '../../helpers/validation'
+import { onlyUnique } from '#blokkli/helpers'
 import Component from './Component.vue'
 import DetailsComponent from './Details/index.vue'
 
@@ -73,6 +78,8 @@ export type ResolvedField = {
   fieldName: string
   currentValue: string
   fieldType: 'plain' | 'markup'
+  entityType: string
+  entityBundle: string
 }
 
 export type ComponentParams = {
@@ -101,6 +108,28 @@ export default defineBlokkliAgentTool({
   buildDetails: (result) => result,
   async execute(ctx, params) {
     const { blocks, context } = ctx.app
+
+    // Check edit permission for all block bundles
+    const bundles = params.fields
+      .map((f) => blocks.getBlock(f.uuid)?.bundle)
+      .filter((b): b is string => !!b)
+      .filter(onlyUnique)
+
+    if (bundles.length) {
+      const denied = requireBundlePermission(ctx.app, bundles, 'edit')
+      if (denied) return denied
+    }
+
+    // Check ancestor restrictions
+    const blockUuids = params.fields
+      .map((f) => f.uuid)
+      .filter((uuid) => uuid !== context.value.entityUuid)
+      .filter(onlyUnique)
+    if (blockUuids.length) {
+      const ancestorDenied = requireNoRestrictedAncestor(ctx.app, blockUuids)
+      if (ancestorDenied) return ancestorDenied
+    }
+
     const resolvedFields: ResolvedField[] = []
 
     for (const { uuid, fieldName } of params.fields) {
@@ -132,7 +161,14 @@ export default defineBlokkliAgentTool({
         fieldType,
       )
 
-      resolvedFields.push({ uuid, fieldName, currentValue, fieldType })
+      resolvedFields.push({
+        uuid,
+        fieldName,
+        currentValue,
+        fieldType,
+        entityType,
+        entityBundle: bundle,
+      })
     }
 
     let templateParams = params.templateParams

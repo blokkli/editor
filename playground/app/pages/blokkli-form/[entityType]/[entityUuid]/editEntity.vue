@@ -23,7 +23,7 @@ if (!page) {
 }
 
 const editState = getEditState(entityType.value, entityUuid.value)
-const mutatedState = await editState.getMutatedState(page)
+const mutatedState = await editState.getMutatedState(page, 'en')
 
 const fields = Object.values(page.fields)
 
@@ -31,7 +31,7 @@ const onSubmit = async (values: Record<string, string>) => {
   editState.addMutation('edit_entity', {
     values,
   })
-  await editState.getMutatedState(page)
+  await editState.getMutatedState(page, 'en')
   router.push({ name: 'blokkli-form-redirect' })
 }
 </script>

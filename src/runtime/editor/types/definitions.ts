@@ -1,3 +1,5 @@
+export type BlockPermission = 'add' | 'delete' | 'edit'
+
 export interface BlockBundleDefinition {
   id: string
   label: string
@@ -7,6 +9,7 @@ export interface BlockBundleDefinition {
   isTranslatable?: boolean
   hasPublishOn?: boolean
   hasUnpublishOn?: boolean
+  permissions: BlockPermission[]
 }
 
 export type FieldConfig = {
@@ -22,4 +25,14 @@ export type FieldConfig = {
 export type EntityTypeRestriction = {
   type: string
   bundles: string[]
+}
+
+export type EntityTypeInfo = {
+  id: string
+  label: string
+}
+
+export type EntityTypeBundleInfo = {
+  id: string
+  label: string
 }

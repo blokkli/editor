@@ -16,6 +16,9 @@ export class ParagraphFragment extends Paragraph {
   }
 
   static override getFieldDefintions(): Field<any>[] {
-    return [...super.getFieldDefintions(), new FieldText('name', 'Name')]
+    return [
+      ...super.getFieldDefintions(),
+      new FieldText('name', 'Name', 1, false, -1, false),
+    ]
   }
 }

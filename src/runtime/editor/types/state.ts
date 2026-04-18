@@ -55,6 +55,7 @@ export interface MappedState {
   mutations: MutationItem[]
   currentUserIsOwner: boolean
   ownerName: string
+  ownerId?: string
   mutatedState?: {
     mutatedOptions?: any
     mutatedHostOptions?: Record<string, string>
@@ -66,6 +67,15 @@ export interface MappedState {
   mutatedEntity?: any
   translationState: TranslationState
   previewUrl?: string
+  textFieldValues?: {
+    uuid: string
+    fieldName: string
+    value: string
+    fieldType: 'plain' | 'markup'
+    entityType: string
+    entityBundle: string
+  }[]
+  ignoredAnalyzeIdentifiers?: string[]
 }
 
 export type MutateWithLoadingStateFunction = (

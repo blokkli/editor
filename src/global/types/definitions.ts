@@ -8,6 +8,7 @@ export type BlokkliDefinitionAddBehaviour =
   | 'no-form'
   | 'form'
   | `editable:${string}`
+  | `complex-option:${string}`
 
 export type BlockDefinitionRenderForParentBase<
   BundleWithNested extends string = string,

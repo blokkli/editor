@@ -104,6 +104,7 @@ const {
   state,
   definitions,
   blocks,
+  permissions,
 } = useBlokkli()
 
 function buildItem(element: HTMLElement): DraggableNewItem | undefined {
@@ -152,6 +153,7 @@ const sortedList = computed<SortedListItem[]>(() => {
 
   return [...props.generallyAvailableBundles]
     .filter((v) => !isInternalBundle(v.id))
+    .filter((v) => permissions.checkBlockBundlePermission(v.id, 'add'))
     .map((v) => {
       const isVisible = determineVisibility(v.id, v.label)
       const isDisabled = !v.id || !props.selectableBundles.includes(v.id)
@@ -381,7 +383,9 @@ defineCommands(() => {
     ...getAppendCommands(),
     ...getInsertCommands(selection.items.value[0]),
     ...getAppendEndCommands(),
-  ]
+  ].filter(
+    (v) => v.bundle && permissions.checkBlockBundlePermission(v.bundle, 'add'),
+  )
 })
 </script>
 

@@ -63,7 +63,8 @@ defineBlokkliFeature({
     'Provides an overlay with shortcut to search for blocks on the current page or existing content to add as blocks.',
 })
 
-const { $t, selection, ui, adapter, state, types, directive } = useBlokkli()
+const { $t, selection, ui, adapter, state, types, directive, permissions } =
+  useBlokkli()
 
 const ERROR_MESSAGE = $t(
   'searchContentReplaceFailed',
@@ -91,6 +92,15 @@ defineDropAreas((dragItems) => {
     .getDroppableElements()
     .map<DropArea | undefined>((field) => {
       if (field.type !== itemEntityType) {
+        return
+      }
+
+      // Skip blocks where the user lacks edit permission or is inside
+      // a restricted ancestor.
+      if (
+        !permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
+        permissions.blockHasRestrictedAncestor(field.uuid)
+      ) {
         return
       }
 
@@ -145,7 +155,11 @@ defineDropAreas((dragItems) => {
 defineDropHandler('search_content', {
   resolveBundles({ items, field }) {
     const item = items[0]!
-    return field.allowedBundles.filter((b) => item.itemBundles.includes(b))
+    return field.allowedBundles.filter(
+      (b) =>
+        item.itemBundles.includes(b) &&
+        permissions.checkBlockBundlePermission(b, 'add'),
+    )
   },
 
   async execute({ items, host, afterUuid, bundle }) {
@@ -194,3 +208,161 @@ export default {
   name: 'FeatureSearch',
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-search {
+  @apply absolute right-0 bottom-0 z-search overflow-hidden md:shadow-xl-left top-40 md:top-0 w-full md:w-[600px] xl:w-[800px] transition pointer-events-auto;
+  &.bk-is-translucent {
+    @apply opacity-0 pointer-events-none;
+  }
+}
+
+.bk {
+  .bk-search-box {
+    @apply relative h-full w-full flex flex-col md:overflow-hidden;
+  }
+  .bk-search-results {
+    @apply flex-1 relative bg-white;
+  }
+  .bk-search-loading {
+    @apply absolute top-0 right-0 z-40 w-full h-full bg-white/40 flex items-center justify-center;
+    svg {
+      @apply w-50 h-50 text-mono-200 animate-spin fill-mono-400;
+    }
+  }
+  .bk-search-is-loading {
+    @apply opacity-50;
+  }
+  .bk-search-input {
+    @apply relative pl-30 md:pl-[50px] bg-mono-900 md:bg-mono-700;
+    > .bk-icon {
+      @apply text-mono-100 w-20 h-20 absolute top-1/2 -translate-y-1/2 left-10 md:left-20;
+      svg {
+        @apply fill-current;
+      }
+    }
+    input {
+      @apply h-40 md:h-50 appearance-none w-full focus:outline-none focus:shadow-none focus:border-none focus:ring-transparent bg-transparent;
+      @apply text-mono-100 md:text-lg font-bold leading-none;
+      @apply placeholder-mono-500 placeholder:font-normal;
+      @apply pl-10 md:pl-0;
+    }
+    button {
+      @apply absolute top-0 right-0 h-full px-15;
+      svg {
+        @apply w-20 h-20 fill-mono-100 pointer-events-none;
+      }
+    }
+  }
+
+  .bk-search-item-icon {
+    @apply bg-mono-100 flex items-center justify-center border border-mono-200 shrink-0 text-mono-500 relative overflow-hidden;
+    @apply p-[0.125em];
+    @apply rounded lg:rounded-md xl:rounded-lg;
+    @apply size-40 lg:size-50 xl:size-80;
+
+    .bk-blokkli-item-icon {
+      @apply w-full h-full;
+    }
+
+    img {
+      @apply absolute top-0 left-0 w-full h-full object-cover;
+    }
+  }
+
+  .bk-search-item-content {
+    @apply w-full max-w-full min-w-0;
+  }
+
+  .bk-search-item-title {
+    @apply font-bold text-sm lg:text-base !leading-tight align-baseline line-clamp-2;
+    @apply whitespace-normal break-words;
+    div {
+      @apply inline-block;
+    }
+  }
+  .bk-search-item-context {
+    @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold inline;
+    @apply bg-mono-100 text-mono-700 py-3 px-5 rounded;
+  }
+
+  .bk-search-item-subtitle {
+    @apply min-w-0 overflow-hidden w-full text-sm items-baseline;
+  }
+  .bk-search-item-text {
+    @apply min-w-0 whitespace-normal max-w-full break-words line-clamp-2 text-sm;
+  }
+
+  .bk-search-no-results {
+    @apply absolute top-0 left-0 h-full w-full flex items-center justify-center flex-col text-lg text-mono-500 font-medium;
+    svg {
+      @apply fill-current w-100 h-100 mb-15;
+    }
+  }
+
+  .bk-search-tabs {
+    @apply flex border-b justify-between bg-white border-b-mono-300;
+    li {
+      button {
+        @apply px-15 py-[12px] lg:p-20 w-full text-center uppercase text-xs md:text-sm text-mono-500;
+        &[disabled] {
+          @apply pointer-events-none text-mono-300;
+        }
+      }
+      &:not(.bk-is-active):hover button:not([disabled]) {
+        @apply text-mono-800;
+      }
+      &.bk-is-active {
+        button {
+          @apply font-bold text-accent-700;
+        }
+      }
+    }
+  }
+
+  .bk-highlight {
+    @apply whitespace-pre;
+    em {
+      @apply not-italic relative inline-block rounded;
+      @apply bg-yellow-normal/30 outline outline-[1px] outline-yellow-normal;
+    }
+  }
+  .bk-search-list {
+    @apply overflow-auto h-full overscroll-contain absolute top-0 left-0 w-full;
+  }
+
+  .bk-search-item {
+    @apply px-20 text-mono-700 py-15 md:py-20 cursor-pointer relative flex gap-10 text-left w-full items-stretch bg-white;
+
+    &.bk-is-content {
+      @apply cursor-grab;
+    }
+
+    &:after {
+      content: '';
+      @apply absolute bottom-0 left-0 w-full h-[0.5px] bg-mono-200;
+    }
+
+    &.bk-is-active {
+      @apply bg-mono-100 text-mono-950;
+      .bk-search-item-icon {
+        @apply border-accent-700 bg-accent-600 text-white;
+
+        &.bk-is-image {
+          @apply outline outline-accent-900 outline-[1px];
+        }
+      }
+    }
+
+    &:hover {
+      .bk-search-item-context {
+        @apply bg-mono-300 text-mono-950;
+      }
+    }
+  }
+}
+
+.bk-vars.bk-dragging-overlay .bk-search-item {
+  @apply rounded-lg overflow-hidden;
+}
+</style>

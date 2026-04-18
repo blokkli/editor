@@ -322,6 +322,8 @@ async function analyzeReadability(): Promise<
       fieldName: fs.fieldName,
       value: getProposedValue(fs),
       fieldType: field.fieldType,
+      entityType: field.entityType,
+      entityBundle: field.entityBundle,
     })
   }
 

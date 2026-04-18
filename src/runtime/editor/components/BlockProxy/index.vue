@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" class="bk-block-proxy">
+  <div ref="root" class="bk-vars bk-block-proxy">
     <div class="bk-block-proxy-header">
       <ItemIcon :bundle="bundle" />
       {{ type?.label }}
@@ -117,3 +117,40 @@ const fieldLayout = computed<FieldConfig[][]>(() => {
 
 useBlockRegistration(dom, props.uuid)
 </script>
+
+<style lang="postcss">
+.bk-vars.bk-block-proxy {
+  @apply text-mono-900 flex-1;
+  @apply border border-mono-400 p-15 rounded bg-white shadow-lg;
+}
+
+.bk-vars {
+  .bk-block-proxy-header {
+    @apply flex items-center gap-[7px] text-sm font-semibold text-mono-700;
+    .bk-blokkli-item-icon {
+      @apply size-25 border border-mono-300 rounded p-[3px] bg-mono-100 text-mono-700;
+    }
+  }
+
+  .bk-block-proxy-fields {
+    @apply grid gap-15 mt-15;
+  }
+
+  .bk-block-proxy-fields-row {
+    @apply grid gap-15;
+  }
+
+  .bk-block-proxy-fields-row-field {
+    @apply border border-mono-300 p-15 rounded bg-mono-50;
+
+    > span {
+      @apply text-xs uppercase inline-block mb-15 text-mono-400;
+      @apply font-semibold;
+    }
+  }
+
+  .bk-block-proxy-component {
+    @apply my-15 line-clamp-3 last:mb-0;
+  }
+}
+</style>

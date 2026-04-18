@@ -2,36 +2,45 @@
   <Teleport :to="'#bk-toolbar-' + region">
     <button
       ref="el"
-      class="bk-toolbar-button"
+      class="bk-toolbar-button group/tooltip"
       :disabled="disabled"
-      :class="[{ 'is-active': active }, id ? 'bk-is-' + id : undefined]"
+      :class="[
+        { 'bk-is-active': active },
+        id ? 'bk-is-' + id : undefined,
+        $attrs.class,
+      ]"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >
       <slot>
         <Icon v-if="icon" :name="icon" />
       </slot>
-      <div class="bk-tooltip">
-        <span>{{ title }}</span>
-        <ShortcutIndicator
-          v-if="keyCode"
-          :meta="meta"
-          :shift="shift"
-          :key-code="keyCode"
-          :label="title"
-          :group="shortcutGroup"
-          @pressed="onClick"
-        />
-      </div>
+      <Tooltip
+        :label="title"
+        :placement="tooltipPlacement"
+        :margin="region === 'before-sidebar'"
+      >
+        <template v-if="keyCode" #shortcut>
+          <ShortcutIndicator
+            :meta="meta"
+            :shift="shift"
+            :key-code="keyCode"
+            :label="title"
+            :group="shortcutGroup"
+            @pressed="onClick"
+          />
+        </template>
+      </Tooltip>
     </button>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ShortcutIndicator, Icon } from '#blokkli/editor/components'
+import { ShortcutIndicator, Icon, Tooltip } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { ref, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
+import type { Placement } from '#blokkli/editor/types/ui'
 
 const props = defineProps<{
   /**
@@ -50,12 +59,14 @@ const props = defineProps<{
    * Different regions appear in different locations of the toolbar.
    */
   region:
+    | 'title'
     | 'after-title'
     | 'before-title'
     | 'before-sidebar'
     | 'after-menu'
     | 'before-sidebar-right'
     | 'view-options'
+    | 'artboard'
 
   /**
    * Whether the button is only available in edit mode.
@@ -146,6 +157,20 @@ function onClick() {
   emit('click')
 }
 
+const tooltipPlacement = computed<Placement>(() => {
+  if (props.region === 'before-sidebar-right') {
+    return 'below-before'
+  } else if (
+    props.region === 'before-sidebar' ||
+    props.region === 'artboard' ||
+    props.region === 'title'
+  ) {
+    return 'below-right'
+  }
+
+  return 'below-left'
+})
+
 defineCommands(() => {
   if (props.noCommand) {
     return
@@ -172,10 +197,9 @@ defineTourItem(() => {
     element: () => el.value,
   }
 })
-</script>
 
-<script lang="ts">
-export default {
+defineOptions({
   name: 'PluginToolbarButton',
-}
+  inheritAttrs: false,
+})
 </script>

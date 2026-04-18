@@ -154,11 +154,9 @@ export default definitions
       if (!file.definition) {
         continue
       }
-      if (isBlock(file.definition)) {
-        continue
+      if (isFragment(file.definition)) {
+        fragmentNames.push(`'${file.definition.name}'`)
       }
-
-      fragmentNames.push(`'${file.definition.name}'`)
     }
 
     return `

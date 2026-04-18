@@ -1,3 +1,4 @@
+import mangleClassesPlugin from './mangleClassesPlugin'
 import { USED_MATERIAL_ICONS } from '../src/build/used-icons'
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
@@ -6,6 +7,7 @@ import testExtensionModule from './app/blokkli/modules/test-extension'
 import agentModule from './../src/modules/agent'
 import tableOfContents from './../src/modules/table-of-contents'
 import charts from './../src/modules/charts'
+import iframes from './../src/modules/iframes'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -48,6 +50,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     openaiKey: process.env.OPENAI_KEY || '',
     anthropicKey: process.env.ANTHROPIC_API_KEY || '',
+    deeplKey: process.env.DEEPL_KEY || '',
     public: {
       version: packageJson.version,
     },
@@ -69,6 +72,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    plugins: [mangleClassesPlugin()],
     build: {
       minify: false,
     },
@@ -106,6 +110,13 @@ export default defineNuxtConfig({
           pink: { color: '#ec4899', label: 'Pink' },
           teal: { color: '#14b8a6', label: 'Teal' },
           orange: { color: '#f97316', label: 'Orange' },
+        },
+      }),
+      iframes({
+        viewports: {
+          mobile: { label: 'Mobile', width: 375 },
+          tablet: { label: 'Tablet', width: 768 },
+          desktop: { label: 'Desktop', width: 1440 },
         },
       }),
       agentModule({

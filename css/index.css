@@ -1,86 +1,22 @@
+@import './global/body.css';
+@import './global/typography.css';
+@import './global/scrollbar.css';
+@import './global/html.css';
+@import './global/artboard.css';
+
 @import './partials/preflight.css';
-@import './partials/Datepicker.css';
 @import './partials/transitions.css';
-@import './partials/actions.css';
-@import './partials/toolbar.css';
-@import './partials/history.css';
-@import './partials/errors.css';
-@import './partials/options.css';
-@import './partials/dialog.css';
 @import './partials/forms.css';
-@import './partials/clipboard.css';
-@import './partials/sidebar.css';
-@import './partials/library.css';
-@import './partials/comments.css';
-@import './partials/structure.css';
-@import './partials/resizable.css';
-@import './partials/messages.css';
-@import './partials/settings.css';
-@import './partials/search.css';
-@import './partials/AddList.css';
-@import './partials/AddListHelp.css';
-@import './partials/artboard.css';
-@import './partials/debug.css';
-@import './partials/scaleToFit.css';
-@import './partials/DraggingOverlay.css';
-@import './partials/SelectionAdd.css';
-@import './partials/AddButtonsRenderer.css';
-@import './partials/EditableField.css';
-@import './partials/ReadabilityChunkOverlay.css';
-@import './partials/FlexTextarea.css';
-@import './partials/Assistant.css';
-@import './partials/AppMenu.css';
-@import './partials/Animator.css';
-@import './partials/FormOverlay.css';
-@import './partials/BlockNotImplemented.css';
-@import './partials/ResponsivePreview.css';
-@import './partials/Help.css';
-@import './partials/Theme.css';
-@import './partials/MediaLibrary.css';
-@import './partials/CommandPalette.css';
-@import './partials/ContextMenu.css';
-@import './partials/Tour.css';
-@import './partials/Error.css';
-@import './partials/Banner.css';
-@import './partials/AnimationCanvas.css';
-@import './partials/Scrollbar.css';
-@import './partials/SystemRequirements.css';
-@import './partials/Pagination.css';
-@import './partials/Validations.css';
-@import './partials/ProxyField.css';
-@import './partials/infobox.css';
-@import './partials/Diff.css';
 @import './partials/table.css';
-@import './partials/Indicators.css';
-@import './partials/Analyze.css';
-@import './partials/Transform.css';
 @import './../src/modules/agent/css/Agent.css';
 @import './../src/modules/charts/css/Charts.css';
-@import './partials/Konami.css';
-@import './partials/Publish.css';
-@import './partials/ArtboardTooltip.css';
-@import './partials/BlockScheduler.css';
-@import './partials/ImportExisting.css';
-@import './partials/breadcrumbs.css';
-@import './partials/BlockPreviewItem.css';
-@import './partials/Templates.css';
-@import './partials/PluginConfigForm.css';
-@import './partials/NestedEditorOverlay.css';
-@import './partials/StatusIcon.css';
-@import './partials/AutoHeight.css';
-@import './partials/Dropdown.css';
-@import './partials/DevMode.css';
-@import './partials/Popup.css';
-@import './partials/Changelog.css';
-@import './partials/DiffApproval/Highlight.css';
-@import './partials/DiffApproval/Toolbar.css';
 @import './partials/DroppableFieldEdit.css';
 
 @import './indicator.css';
 
 @import './components/pill.css';
 @import './components/button.css';
-@import './components/toggle.css';
+@import './components/shortcut.css';
 
 @tailwind base;
 @tailwind components;
@@ -127,6 +63,7 @@ html {
     --bk-scheme-light: var(--bk-theme-lime-light);
     --bk-scheme-normal: var(--bk-theme-lime-normal);
     --bk-scheme-dark: var(--bk-theme-lime-dark);
+    --bk-scheme-text: 255 255 255;
   }
 
   .bk-scheme-orange {
@@ -148,76 +85,6 @@ html {
     --bk-scheme-dark: var(--bk-theme-accent-800);
     --bk-scheme-text: var(--bk-theme-accent-50);
   }
-
-  &.bk-loading-overlay {
-    @apply bg-mono-100/90 absolute top-0 left-0 w-full h-full z-init-overlay  flex items-center justify-center;
-    &.bk-is-screen {
-      @apply fixed w-screen h-screen bg-mono-100;
-    }
-
-    &.bk-is-white {
-      @apply bg-white/90;
-    }
-    svg {
-      @apply w-100 h-100 text-mono-200 animate-spin fill-mono-400;
-    }
-  }
-}
-
-@keyframes pbSelectArea {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: 8;
-  }
-}
-
-.bk-body-loading {
-  cursor: wait;
-  .bk-draggable-list-container,
-  .bk-control {
-    pointer-events: none;
-  }
-}
-
-.bk-html-root.bk-is-artboard {
-  .bk-body {
-    .bk-main-canvas {
-      @apply fixed top-0 left-1/2 xl:w-[80vw] w-screen lg:w-full lg:min-w-[1280px] max-w-[1920px] pointer-events-none z-10;
-      background: white;
-      user-select: none;
-      image-rendering: crisp-edges;
-      backface-visibility: hidden;
-      transform-origin: 0 0;
-      /* Set initial position to be centered. The artboard feature will update it on mount. */
-      transform: translateX(-50%) translateY(100px);
-      contain: layout paint inline-size style;
-    }
-  }
-}
-
-.bk-is-analyzing {
-  .bk,
-  .bk-sidebar {
-    @apply !hidden;
-  }
-}
-
-.bk-draggable-list-container {
-  .bk-list-item {
-    @apply bg-white p-20 font-bold !rounded-none;
-    &:after {
-      @apply hidden;
-    }
-  }
-  .bk-list-item-inner {
-    @apply flex gap-20 h-full items-center;
-  }
-  .bk-list-item-icon {
-    width: 2rem;
-    height: 2rem;
-  }
 }
 
 .bk-blokkli-item-icon {
@@ -225,16 +92,6 @@ html {
   height: 1em;
   svg {
     @apply w-full h-full fill-current;
-  }
-}
-
-.bk-qr-code {
-  canvas {
-    @apply !w-full !h-auto aspect-square;
-  }
-
-  p {
-    @apply my-20;
   }
 }
 
@@ -259,117 +116,25 @@ html {
   @apply w-25 h-25 border rounded bg-mono-100 flex items-center justify-center text-mono-500 mr-[7px] relative z-20 border-mono-300;
 }
 
-.bk-scrollbar-dark {
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-mono-700;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-mono-500 border-mono-900 border-3;
-    border-radius: 20px;
-  }
-}
-
-.bk-scrollbar-light {
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-mono-300;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-mono-400 border-mono-900 border-3;
-    border-radius: 20px;
-  }
-}
-
-.bk-touch-action-bar {
-  @apply fixed bottom-0 left-0 w-full z-touch-action-bar bg-mono-900 h-50 pointer-events-auto;
-
-  button {
-    @apply w-full  h-full min-h-0 !rounded-none;
-  }
-}
-
-.bk-lead {
-  @apply text-xl text-mono-600;
-}
-
-html.bk-html-root:not(.bk-use-animations) {
-  *,
-  *:before,
-  *:after {
-    transition: none !important;
-  }
-}
-
-.bk-input-range {
-  @apply block w-full;
-  input {
-    @apply w-full block accent-accent-700 bg-mono-100 rounded-full border border-mono-300;
-  }
-
-  span {
-    @apply font-medium mb-5 inline-block;
-  }
-}
-
-html.bk-isolate-provider {
-  [data-provider-uuid]:not([data-blokkli-provider-active='true']) {
-    @apply !hidden;
-  }
-}
-
-.bk-form-select {
-  @apply relative;
-  > div {
-    @apply absolute top-0 h-full flex items-center pl-20 font-medium;
-  }
-
-  select {
-    @apply px-20 cursor-pointer font-medium bg-white;
-  }
-}
-
-html.bk-hide-non-editable {
-  .bk-main-canvas {
-    > * {
-      @apply invisible;
-    }
-
-    [data-blokkli-provider-active='true'] {
-      @apply visible;
-    }
-  }
-}
-
 .bk {
   @apply text-base;
-  strong,
-  label,
-  button {
+  :where(strong, label, button) {
     transition: none;
     min-inline-size: initial;
     margin: 0;
   }
-  strong {
+  :where(strong) {
     color: inherit;
     gap: 0;
   }
-  label {
+  :where(label) {
     font-size: inherit;
     color: inherit;
     font-family: inherit;
     gap: 0;
   }
-  button {
-    @apply text-white text-left items-start justify-start;
+  :where(button) {
+    @apply text-left items-start justify-start;
     block-size: initial;
     border-radius: 0;
     box-shadow: none !important;
@@ -380,87 +145,5 @@ html.bk-hide-non-editable {
     &:after {
       display: none;
     }
-  }
-}
-
-.bk-list-item {
-  @apply !rounded-none;
-  &:after {
-    @apply !hidden;
-  }
-}
-
-.bk-body {
-  touch-action: none;
-  @apply select-none;
-
-  svg {
-    @apply select-none;
-  }
-
-  [data-bk-is-muted='true'] {
-    @apply opacity-30;
-  }
-}
-
-.bk {
-  .bk-beta-indicator {
-    @apply bg-accent-700 text-white text-xs uppercase rounded-full font-semibold px-[7px] py-[1px];
-  }
-}
-
-.bk.bk-canvas-overlay {
-  @apply fixed top-0 left-0 size-full z-canvas-overlay;
-}
-
-.bk-main-layout {
-  @apply fixed top-0 left-0 w-screen h-screen z-main-layout grid pointer-events-none;
-
-  grid-template-areas:
-    'toolbar toolbar      toolbar       toolbar     toolbar       right'
-    'left    mode         mode          mode        sidebar-right right'
-    'left    sidebar-left viewport      scrollbar-y sidebar-right right'
-    'left    sidebar-left banner        scrollbar-y sidebar-right right'
-    'left breadcrumbs breadcrumbs   breadcrumbs sidebar-right right';
-  grid-template-columns: auto auto 1fr 16px auto 50px;
-  grid-template-rows: 50px auto 1fr auto auto;
-}
-
-.bk-viewport {
-  @apply relative;
-  grid-area: viewport;
-}
-
-.bk.bk-overlay {
-  @apply fixed top-0 left-0 w-screen bottom-0 pointer-events-auto z-overlay;
-  @apply bg-mono-800/95;
-  @apply flex items-start;
-
-  > div {
-    @apply text-base text-mono-100 bg-mono-300/20 m-20 rounded-md;
-    @apply py-10 pl-10 pr-15;
-    @apply inline-flex items-center gap-10;
-    @apply border border-mono-500 h-auto grow-0;
-
-    &.bk-is-right {
-      @apply ml-auto;
-    }
-
-    .bk-icon {
-      @apply size-25;
-
-      svg {
-        @apply fill-current;
-      }
-    }
-  }
-}
-
-html.bk-hide-interaction-layers {
-  #bk-canvas-overlay {
-    @apply !invisible;
-  }
-  .bk-main-canvas {
-    @apply !pointer-events-auto;
   }
 }

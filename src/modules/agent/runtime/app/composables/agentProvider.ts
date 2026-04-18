@@ -127,6 +127,9 @@ export type AgentProvider = {
   deleteConversation: (id: string) => void
   refreshConversationList: () => Promise<void>
 
+  // Feedback
+  feedbackItemIds: Ref<Set<string>>
+
   // Page context (built once during connection)
   pageContext: Ref<PageContext | null>
 }
@@ -206,6 +209,9 @@ export default function (
   const conversationList = ref<AgentConversationSummary[]>([])
   const showConversationList = ref(false)
 
+  // Item IDs that already have feedback (populated from backend on restore)
+  const feedbackItemIds = ref(new Set<string>())
+
   // In-memory tool details (ephemeral, cleared on new conversation)
   const toolDetails: Map<string, unknown> = reactive(new Map())
 
@@ -256,6 +262,7 @@ export default function (
     conversation: ConversationItem[]
     usageTurns: UsageTurn[]
     serverState: ConversationStateSnapshot
+    feedbackItemIds: string[]
   }
 
   function parseConversationData(
@@ -297,6 +304,7 @@ export default function (
       return {
         conversation: clientConversation,
         usageTurns: parsed.usageTurns ?? [],
+        feedbackItemIds: data.feedbackItemIds ?? [],
         serverState: {
           messages: serverParsed.messages,
           activatedLazyTools: serverParsed.activatedLazyTools,
@@ -356,6 +364,7 @@ export default function (
     // Restore UI state
     conversation.value = loaded.conversation
     usageTurns.value = loaded.usageTurns
+    feedbackItemIds.value = new Set(loaded.feedbackItemIds)
     activeItem.value = null
     activeConversationId.value = id
 
@@ -588,6 +597,7 @@ export default function (
             activeConversationId.value = latest.uuid
             conversation.value = parsed.conversation
             usageTurns.value = parsed.usageTurns
+            feedbackItemIds.value = new Set(parsed.feedbackItemIds)
             send({ type: 'restore_conversation', state: parsed.serverState })
           }
         }
@@ -1496,6 +1506,7 @@ export default function (
     activeConversationId.value = null
     plan.value = null
     usageTurns.value = []
+    feedbackItemIds.value = new Set()
     toolDetails.clear()
 
     // Tell server to clear conversation
@@ -1571,6 +1582,9 @@ export default function (
     switchConversation,
     deleteConversation,
     refreshConversationList,
+
+    // Feedback
+    feedbackItemIds,
 
     // Page context (built once during connection)
     pageContext: storedPageContext,
