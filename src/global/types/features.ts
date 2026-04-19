@@ -114,4 +114,9 @@ export type FeatureDefinitionBase<
    * If true, the feature has to be explicitly enabled before it is loaded.
    */
   beta?: boolean
+
+  /**
+   * If true, the feature is only enabled in dev mode.
+   */
+  devOnly?: boolean
 }

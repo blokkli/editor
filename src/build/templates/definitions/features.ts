@@ -16,6 +16,9 @@ export default defineCodeTemplate(
     const imports = new Map<string, string>()
 
     for (const feature of features) {
+      if (feature.definition.devOnly && !ctx.helper.isDev) {
+        continue
+      }
       const componentVarName = toValidVariableName(`component_${feature.id}`)
       const declarationVarName = toValidVariableName(`feature_${feature.id}`)
       declarations.push(

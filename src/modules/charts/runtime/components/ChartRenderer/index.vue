@@ -1,13 +1,15 @@
 <template>
   <div ref="rootEl">
-    <component
-      :is="ApexChart"
-      v-if="ApexChart"
-      :type="type"
-      :options="chartOptions"
-      :series="chartSeries"
-      height="350"
-    />
+    <ClientOnly>
+      <component
+        :is="ApexChart"
+        v-if="ApexChart"
+        :type="type"
+        :options="chartOptions"
+        :series="chartSeries"
+        height="350"
+      />
+    </ClientOnly>
     <ol v-if="footnotes?.length" class="bk-chart-footnotes">
       <li v-for="(note, i) in footnotes" :key="i">
         <span class="bk-chart-footnote-marker">{{

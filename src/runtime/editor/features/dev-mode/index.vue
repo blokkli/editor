@@ -62,6 +62,7 @@ defineBlokkliFeature({
   icon: 'bk_mdi_logo_dev',
   description: 'Feature enabled in development mode.',
   viewports: ['desktop'],
+  devOnly: true,
 })
 
 const { $t, types, definitions, ui } = useBlokkli()

@@ -73,6 +73,7 @@ defineBlokkliFeature({
   icon: 'bk_mdi_palette',
   label: 'Theme',
   description: 'Implements a theme editor.',
+  devOnly: true,
 })
 
 const { $t, theme } = useBlokkli()
