@@ -142,18 +142,18 @@ const buildViewportSubtitle = (
 }
 
 const viewportOptions = computed<ViewportOption[]>(() => {
-  return [
+  const base: ViewportOption[] = [
     {
       label: $t('responsivePreviewCustomViewport', 'Custom'),
       id: 'custom',
-      icon: 'resize',
+      icon: 'bk_mdi_resize',
     },
     {
       label: 'iPhone SE',
       id: 'iphone-se',
       width: 375,
       height: 667,
-      icon: 'cellphone',
+      icon: 'bk_mdi_mobile',
       canRotate: true,
     },
     {
@@ -161,7 +161,7 @@ const viewportOptions = computed<ViewportOption[]>(() => {
       id: 'iphone-15',
       width: 393,
       height: 852,
-      icon: 'cellphone',
+      icon: 'bk_mdi_mobile',
       canRotate: true,
     },
     {
@@ -169,7 +169,7 @@ const viewportOptions = computed<ViewportOption[]>(() => {
       id: 'iphone-15-pro-max',
       width: 430,
       height: 932,
-      icon: 'cellphone',
+      icon: 'bk_mdi_mobile',
       canRotate: true,
     },
     {
@@ -177,7 +177,7 @@ const viewportOptions = computed<ViewportOption[]>(() => {
       id: 'ipad-mini',
       width: 768,
       height: 1024,
-      icon: 'tablet',
+      icon: 'bk_mdi_tablet',
       canRotate: true,
     },
     {
@@ -185,16 +185,18 @@ const viewportOptions = computed<ViewportOption[]>(() => {
       id: '13-laptop',
       width: 1280,
       height: 800,
-      icon: 'laptop',
+      icon: 'bk_mdi_laptop_mac',
     },
     {
       label: '24" Monitor',
       id: '24-monitor',
       width: 1920,
       height: 1200,
-      icon: 'monitor',
+      icon: 'bk_mdi_monitor',
     },
-  ].map((option) => {
+  ]
+
+  return base.map((option) => {
     return {
       ...option,
       subtitle: buildViewportSubtitle(
@@ -202,7 +204,7 @@ const viewportOptions = computed<ViewportOption[]>(() => {
         option.height,
         option.canRotate,
       ),
-    } as ViewportOption
+    }
   })
 })
 
