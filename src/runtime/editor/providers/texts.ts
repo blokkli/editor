@@ -1,20 +1,20 @@
-import { type ComputedRef, computed, shallowRef, watch } from 'vue'
-import type { AdapterContext } from '../adapter'
+import { shallowRef } from 'vue'
 import {
   translationLoaders,
   type InterfaceLanguage,
   type TranslationMap,
+  type TranslationLoaders,
 } from '#blokkli-build/translations'
 import {
   defaultLanguage,
   forceDefaultLanguage,
 } from '#blokkli-build/editor-config'
-import { LANGUAGES } from '../../../global/constants'
+import { TRANSLATION_LANGUAGES } from '../../../global/constants'
 
 export type TextProvider = (key: string, defaultValue?: string) => string
 
 function isInterfaceLanguage(value: string): value is InterfaceLanguage {
-  return (LANGUAGES as readonly string[]).includes(value)
+  return (TRANSLATION_LANGUAGES as readonly string[]).includes(value)
 }
 
 const DEBUG_SWISS_GERMAN = false
@@ -23,9 +23,7 @@ const DEBUG_SWISS_GERMAN = false
  * Resolve the language whose JSON file should actually be loaded. On April
  * 1st, German users are silently redirected to Swiss German as an easter egg.
  */
-function resolveEffectiveLanguage(
-  requested: InterfaceLanguage,
-): InterfaceLanguage {
+function resolveEffectiveLanguage(requested: string): InterfaceLanguage {
   const today = new Date()
   const isAprilFirst = today.getMonth() === 3 && today.getDate() === 1
   if (
@@ -34,46 +32,46 @@ function resolveEffectiveLanguage(
   ) {
     return 'gsw_CH'
   }
-  return requested
+
+  if (forceDefaultLanguage) {
+    return defaultLanguage
+  }
+
+  if (isInterfaceLanguage(requested)) {
+    return requested
+  }
+
+  return defaultLanguage
 }
 
 export default async function (
-  context?: ComputedRef<AdapterContext>,
+  requestedLanguage: string,
 ): Promise<TextProvider> {
-  const language = computed<InterfaceLanguage>(() => {
-    if (forceDefaultLanguage) {
-      return defaultLanguage
+  const language = resolveEffectiveLanguage(requestedLanguage)
+
+  const currentTranslations = shallowRef<TranslationMap>({})
+
+  async function loadTranslations(
+    loaders: TranslationLoaders,
+    langcode: InterfaceLanguage,
+  ) {
+    const loader = loaders[langcode]
+    if (loader) {
+      currentTranslations.value = await loader()
+    } else {
+      currentTranslations.value = {}
     }
-
-    if (
-      context?.value.language &&
-      isInterfaceLanguage(context.value.language)
-    ) {
-      return context.value.language
-    }
-
-    return defaultLanguage
-  })
-
-  const currentTranslations = shallowRef<TranslationMap>(
-    await translationLoaders[resolveEffectiveLanguage(language.value)](),
-  )
-
-  watch(language, async (newLang) => {
-    currentTranslations.value =
-      await translationLoaders[resolveEffectiveLanguage(newLang)]()
-  })
+  }
 
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/translations', async (mod) => {
       if (mod?.translationLoaders) {
-        currentTranslations.value =
-          await mod.translationLoaders[
-            resolveEffectiveLanguage(language.value)
-          ]()
+        loadTranslations(mod.translationLoaders, language)
       }
     })
   }
+
+  await loadTranslations(translationLoaders, language)
 
   return (key: string, defaultValue?: string) => {
     return currentTranslations.value[key] || defaultValue || key

@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { LANGUAGES } from '../../../global/constants'
+import { TRANSLATION_LANGUAGES } from '../../../global/constants'
 
 const TRANSLATIONS_DIR = './runtime/editor/translations'
 
@@ -10,7 +10,7 @@ export default defineCodeTemplate(
     const hasUserTranslations =
       userTranslations && Object.keys(userTranslations).length > 0
 
-    const loaderEntries = LANGUAGES.map((lang) => {
+    const loaderEntries = TRANSLATION_LANGUAGES.map((lang) => {
       const relativePath = ctx.helper.toModuleBuildRelative(
         ctx.helper.resolvers.module.resolve(`${TRANSLATIONS_DIR}/${lang}.json`),
       )
@@ -33,11 +33,14 @@ ${loaderEntries}
 `
   },
   () => {
-    const typeUnion = LANGUAGES.map((lang) => `'${lang}'`).join(' | ')
+    const typeUnion = ['en', ...TRANSLATION_LANGUAGES]
+      .map((lang) => `'${lang}'`)
+      .join(' | ')
     return `
 export type InterfaceLanguage = ${typeUnion}
 export type TranslationMap = Record<string, string>
-export const translationLoaders: Record<InterfaceLanguage, () => Promise<TranslationMap>>
+export type TranslationLoaders = Partial<Record<InterfaceLanguage, () => Promise<TranslationMap>>>
+export const translationLoaders: TranslationLoaders
 `
   },
 )

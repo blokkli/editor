@@ -7,10 +7,7 @@ import { glob } from 'glob'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
-  LANGUAGES,
 } from '../../src/global/constants'
-
-export { LANGUAGES }
 
 export const INTERNAL_TRANSLATIONS = {
   [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',

@@ -11,7 +11,7 @@ export const SETTINGS_GROUP = [
 
 export const VIEWPORT = ['mobile', 'desktop'] as const
 
-export const LANGUAGES = ['de', 'fr', 'it', 'gsw_CH'] as const
+export const TRANSLATION_LANGUAGES = ['de', 'fr', 'it', 'gsw_CH'] as const
 
 export type SettingsGroup = (typeof SETTINGS_GROUP)[number]
 export type Viewport = (typeof VIEWPORT)[number]

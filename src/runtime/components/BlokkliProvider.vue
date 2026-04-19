@@ -7,7 +7,7 @@
     :data-blokkli-provider-active="isInEditor ? 'true' : 'false'"
   >
     <ClientOnly v-if="isInEditor">
-      <BlokkliRootErrorBoundary>
+      <BlokkliRootErrorBoundary :language>
         <PreviewProvider
           v-if="isPreviewing"
           v-slot="{ mutatedEntity }"
@@ -63,6 +63,7 @@
         :entity-type
         :edit-label
         :permissions
+        :language
         @edit="edit"
       />
     </ClientOnly>

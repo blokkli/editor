@@ -1,6 +1,7 @@
 import { program } from 'commander'
 import chalk from 'chalk'
-import { getSourceTexts, INTERNAL_TRANSLATIONS, LANGUAGES } from './extract'
+import { getSourceTexts, INTERNAL_TRANSLATIONS } from './extract'
+import { TRANSLATION_LANGUAGES } from '../../src/global/constants'
 import { updateTranslationFile, readPoFile, updatePoKeys } from './po'
 
 program.name('texts').description('Manage blökkli translation files')
@@ -16,7 +17,7 @@ program
     await updateTranslationFile('de', allTexts)
 
     await Promise.all(
-      LANGUAGES.filter((v) => v !== 'de').map((v) =>
+      TRANSLATION_LANGUAGES.filter((v) => v !== 'de').map((v) =>
         updateTranslationFile(v, allTexts),
       ),
     )
@@ -28,10 +29,10 @@ program
   .command('missing <language>')
   .description('List missing translations for a language')
   .action(async (language: string) => {
-    if (!(LANGUAGES as readonly string[]).includes(language)) {
+    if (!(TRANSLATION_LANGUAGES as readonly string[]).includes(language)) {
       console.error(
         chalk.red(
-          `Unknown language "${language}". Available: ${LANGUAGES.join(', ')}`,
+          `Unknown language "${language}". Available: ${TRANSLATION_LANGUAGES.join(', ')}`,
         ),
       )
       process.exit(1)
@@ -62,10 +63,10 @@ program
   .command('update <language> [pairs...]')
   .description('Update translations for specific keys (key="translated text")')
   .action(async (language: string, pairs: string[]) => {
-    if (!(LANGUAGES as readonly string[]).includes(language)) {
+    if (!(TRANSLATION_LANGUAGES as readonly string[]).includes(language)) {
       console.error(
         chalk.red(
-          `Unknown language "${language}". Available: ${LANGUAGES.join(', ')}`,
+          `Unknown language "${language}". Available: ${TRANSLATION_LANGUAGES.join(', ')}`,
         ),
       )
       process.exit(1)

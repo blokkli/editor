@@ -48,9 +48,13 @@ import { Icon } from '#blokkli/editor/components'
 import textProvider from '#blokkli/editor/providers/texts'
 import { useGlobalBlokkliObject } from '#blokkli/editor/composables'
 
+const props = defineProps<{
+  language: string
+}>()
+
 const errors = ref<Error[]>([])
 
-const $t = await textProvider()
+const $t = await textProvider(props.language)
 const globalBlokkli = useGlobalBlokkliObject()
 
 onErrorCaptured((err) => {

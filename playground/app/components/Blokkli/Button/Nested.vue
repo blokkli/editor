@@ -18,7 +18,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import { Icon } from '#blokkli/editor/components'
+import Icon from '#blokkli/editor/components/Icon/index.vue'
 
 const { options } = defineBlokkli({
   bundle: 'button',

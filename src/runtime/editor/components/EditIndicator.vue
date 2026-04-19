@@ -21,7 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import textProvider from '#blokkli/editor/providers/texts'
 import {
   ref,
   onMounted,
@@ -42,6 +41,7 @@ type IndicatorData = {
 
 const props = defineProps<{
   uuid: string
+  language: string
   entityType: string
   editLabel?: string
   permissions: Array<EditPermission | null>
@@ -49,7 +49,8 @@ const props = defineProps<{
 
 const key = computed(() => props.entityType + ':' + props.uuid)
 
-const $t = await textProvider()
+const textProvider = await import('./../providers/texts').then((v) => v.default)
+const $t = await textProvider(props.language)
 
 const label = computed(() => {
   if (props.editLabel) {
