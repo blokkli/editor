@@ -122,7 +122,6 @@ import {
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
-import Banner from './Banner/index.vue'
 import {
   defineMenuButton,
   defineHighlight,
@@ -138,6 +137,7 @@ const CsvDialog = defineAsyncComponent(() => import('./CsvDialog/index.vue'))
 const TranslateDialog = defineAsyncComponent(
   () => import('./TranslateDialog/index.vue'),
 )
+const Banner = defineAsyncComponent(() => import('./Banner/index.vue'))
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',

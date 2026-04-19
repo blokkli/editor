@@ -10,16 +10,12 @@ export { default as BlockPreviewItem } from './BlockPreviewItem/index.vue'
 export { default as BlokkliTransition } from './Transition/index.vue'
 export { default as ConfigForm } from './PluginConfigForm/index.vue'
 export { default as ConfigFormInline } from './PluginConfigFormInline/index.vue'
-export { default as DiffDisplay } from './DiffViewer/DiffDisplay/index.vue'
-export { default as DiffValue } from './DiffViewer/DiffValue.vue'
-export { default as DiffViewerState } from './DiffViewer/State.vue'
 export { default as Dropdown } from './Dropdown/index.vue'
 export { default as DropdownItem } from './DropdownItem/index.vue'
 export { default as ErrorBoundary } from './BlokkliErrorBoundary.vue'
 export { default as FileDropHandler } from './FileDropHandler/index.vue'
 export { default as FlexTextarea } from './FlexTextarea/index.vue'
 export { default as FormCheckboxes } from './Form/Checkboxes/index.vue'
-export { default as FormDatepicker } from './Form/Datepicker/index.vue'
 export { default as FormGroup } from './Form/Group/index.vue'
 export { default as FormItem } from './Form/Item/index.vue'
 export { default as FormOverlay } from './FormOverlay/index.vue'
@@ -77,4 +73,20 @@ export const BlockPreviewRenderer = defineAsyncComponent(
 
 export const ScheduleDate = defineAsyncComponent(
   () => import('./ScheduleDate/index.vue'),
+)
+
+export const DiffViewerState = defineAsyncComponent(
+  () => import('./DiffViewer/State.vue'),
+)
+
+export const DiffValue = defineAsyncComponent(
+  () => import('./DiffViewer/DiffValue.vue'),
+)
+
+export const DiffDisplay = defineAsyncComponent(
+  () => import('./DiffViewer/DiffDisplay/index.vue'),
+)
+
+export const FormDatepicker = defineAsyncComponent(
+  () => import('./Form/Datepicker/index.vue'),
 )
