@@ -60,17 +60,17 @@ export default async function (
   )
 
   watch(language, async (newLang) => {
-    currentTranslations.value = await translationLoaders[
-      resolveEffectiveLanguage(newLang)
-    ]()
+    currentTranslations.value =
+      await translationLoaders[resolveEffectiveLanguage(newLang)]()
   })
 
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/translations', async (mod) => {
       if (mod?.translationLoaders) {
-        currentTranslations.value = await mod.translationLoaders[
-          resolveEffectiveLanguage(language.value)
-        ]()
+        currentTranslations.value =
+          await mod.translationLoaders[
+            resolveEffectiveLanguage(language.value)
+          ]()
       }
     })
   }

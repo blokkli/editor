@@ -14,12 +14,12 @@ export default defineCodeTemplate(
       const relativePath = ctx.helper.toModuleBuildRelative(
         ctx.helper.resolvers.module.resolve(`${TRANSLATIONS_DIR}/${lang}.json`),
       )
-      const override = hasUserTranslations
-        ? `defu(userTranslations['${lang}'] ?? {}, process(mod.default))`
-        : `process(mod.default)`
+      const body = hasUserTranslations
+        ? `defu(userTranslations['${lang}'] ?? {}, mod.default)`
+        : `mod.default`
       return `  '${lang}': async () => {
     const mod = await import('${relativePath}')
-    return ${override}
+    return ${body}
   }`
     }).join(',\n')
 
@@ -27,13 +27,7 @@ export default defineCodeTemplate(
       ? `import { defu } from 'defu'\n\nconst userTranslations = ${JSON.stringify(userTranslations)}\n\n`
       : ''
 
-    return `${preamble}function process(raw) {
-  return Object.fromEntries(
-    Object.entries(raw).map(([k, v]) => [k, v.translation]),
-  )
-}
-
-export const translationLoaders = {
+    return `${preamble}export const translationLoaders = {
 ${loaderEntries}
 }
 `

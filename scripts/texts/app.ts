@@ -10,10 +10,14 @@ program
   .description('Extract source texts and update all PO/JSON files')
   .action(async () => {
     const sourceTexts = await getSourceTexts()
+    const allTexts = { ...sourceTexts, ...INTERNAL_TRANSLATIONS }
+
+    // Process DE first so gsw_CH's JSON fallback reads an up-to-date DE PO.
+    await updateTranslationFile('de', allTexts)
 
     await Promise.all(
-      LANGUAGES.map((v) =>
-        updateTranslationFile(v, { ...sourceTexts, ...INTERNAL_TRANSLATIONS }),
+      LANGUAGES.filter((v) => v !== 'de').map((v) =>
+        updateTranslationFile(v, allTexts),
       ),
     )
 

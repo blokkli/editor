@@ -61,7 +61,30 @@ export async function updateTranslationFile(
 
   const sorted = sortObjectKeys(existingTexts)
   await generatePO(language, sorted)
+  await writeJsonFile(language, sorted)
+}
 
+async function writeJsonFile(
+  language: string,
+  entries: Record<string, TranslationEntry>,
+): Promise<void> {
+  const flat: Record<string, string> = {}
+  for (const [key, entry] of Object.entries(entries)) {
+    if (entry.translation) {
+      flat[key] = entry.translation
+    }
+  }
+
+  if (language === 'gsw_CH') {
+    const de = await readPoFile('de')
+    for (const [key, entry] of Object.entries(de)) {
+      if (!flat[key] && entry.translation) {
+        flat[key] = entry.translation
+      }
+    }
+  }
+
+  const sorted = sortObjectKeys(flat)
   const filePath = path.resolve(
     __dirname,
     `./../../src/runtime/editor/translations/${language}.json`,
@@ -113,11 +136,5 @@ export async function updatePoKeys(
 
   const sorted = sortObjectKeys(entries)
   await generatePO(language, sorted)
-
-  const filePath = path.resolve(
-    __dirname,
-    `./../../src/runtime/editor/translations/${language}.json`,
-  )
-  const formatted = JSON.stringify(sorted, null, 2) + '\n'
-  await fs.promises.writeFile(filePath, formatted)
+  await writeJsonFile(language, sorted)
 }
