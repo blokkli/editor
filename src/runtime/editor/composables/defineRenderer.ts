@@ -14,13 +14,20 @@ export async function defineRenderer<T>(
 ): Promise<{ collector: T }> {
   const { animation } = useBlokkli()
 
+  // Handle the race where the component unmounts before registration resolves:
+  // onBeforeUnmount fires, the id isn't in the renderer map yet, then registration
+  // completes and would leak a renderer. Track unmount state and clean up after.
+  let unmounted = false
   onBeforeUnmount(() => {
-    unregister()
+    unmounted = true
+    animation.unregisterRenderer(id)
   })
 
-  // Register the renderer and get the collector instance
-  const { collector, unregister } = await animation.registerRenderer(id, config)
+  const { collector } = await animation.registerRenderer(id, config)
 
-  // Return the collector with inferred type
+  if (unmounted) {
+    animation.unregisterRenderer(id)
+  }
+
   return { collector }
 }
