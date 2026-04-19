@@ -50,7 +50,7 @@ import { useGlobalBlokkliObject } from '#blokkli/editor/composables'
 
 const errors = ref<Error[]>([])
 
-const $t = textProvider()
+const $t = await textProvider()
 const globalBlokkli = useGlobalBlokkliObject()
 
 onErrorCaptured((err) => {

@@ -1,7 +1,7 @@
-import { type ComputedRef, computed, ref } from 'vue'
+import { type ComputedRef, computed, shallowRef, watch } from 'vue'
 import type { AdapterContext } from '../adapter'
 import {
-  translations,
+  translationLoaders,
   type InterfaceLanguage,
   type TranslationMap,
 } from '#blokkli-build/translations'
@@ -19,18 +19,27 @@ function isInterfaceLanguage(value: string): value is InterfaceLanguage {
 
 const DEBUG_SWISS_GERMAN = false
 
-export default function (context?: ComputedRef<AdapterContext>): TextProvider {
-  const allTranslations =
-    ref<Record<InterfaceLanguage, TranslationMap>>(translations)
-
-  if (import.meta.hot) {
-    import.meta.hot.accept('#blokkli-build/translations', (mod) => {
-      if (mod?.translations) {
-        allTranslations.value = mod.translations
-      }
-    })
+/**
+ * Resolve the language whose JSON file should actually be loaded. On April
+ * 1st, German users are silently redirected to Swiss German as an easter egg.
+ */
+function resolveEffectiveLanguage(
+  requested: InterfaceLanguage,
+): InterfaceLanguage {
+  const today = new Date()
+  const isAprilFirst = today.getMonth() === 3 && today.getDate() === 1
+  if (
+    (isAprilFirst && requested === 'de') ||
+    (DEBUG_SWISS_GERMAN && import.meta.dev && requested === 'de')
+  ) {
+    return 'gsw_CH'
   }
+  return requested
+}
 
+export default async function (
+  context?: ComputedRef<AdapterContext>,
+): Promise<TextProvider> {
   const language = computed<InterfaceLanguage>(() => {
     if (forceDefaultLanguage) {
       return defaultLanguage
@@ -46,38 +55,27 @@ export default function (context?: ComputedRef<AdapterContext>): TextProvider {
     return defaultLanguage
   })
 
-  const currentTranslations = computed<TranslationMap>(() => {
-    const today = new Date()
-    const isAprilFirst = today.getMonth() === 3 && today.getDate() === 1
+  const currentTranslations = shallowRef<TranslationMap>(
+    await translationLoaders[resolveEffectiveLanguage(language.value)](),
+  )
 
-    // April Fools easter egg: Use Swiss German for German speakers.
-    if (
-      (isAprilFirst && language.value === 'de') ||
-      (DEBUG_SWISS_GERMAN && import.meta.dev)
-    ) {
-      return (
-        allTranslations.value.gsw_CH ||
-        allTranslations.value[language.value] ||
-        {}
-      )
-    }
-
-    return allTranslations.value[language.value] || {}
+  watch(language, async (newLang) => {
+    currentTranslations.value = await translationLoaders[
+      resolveEffectiveLanguage(newLang)
+    ]()
   })
 
-  return (key: string, defaultValue?: string) => {
-    const existingForCurrent = currentTranslations.value[key]
-    if (existingForCurrent) {
-      return existingForCurrent
-    }
-
-    if (language.value === 'gsw_CH') {
-      const fallback = translations.de[key]
-      if (fallback) {
-        return fallback
+  if (import.meta.hot) {
+    import.meta.hot.accept('#blokkli-build/translations', async (mod) => {
+      if (mod?.translationLoaders) {
+        currentTranslations.value = await mod.translationLoaders[
+          resolveEffectiveLanguage(language.value)
+        ]()
       }
-    }
+    })
+  }
 
-    return defaultValue || key
+  return (key: string, defaultValue?: string) => {
+    return currentTranslations.value[key] || defaultValue || key
   }
 }

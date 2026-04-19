@@ -49,7 +49,7 @@ const props = defineProps<{
 
 const key = computed(() => props.entityType + ':' + props.uuid)
 
-const $t = textProvider()
+const $t = await textProvider()
 
 const label = computed(() => {
   if (props.editLabel) {

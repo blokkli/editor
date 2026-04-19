@@ -206,7 +206,7 @@ const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
 const definitions = definitionProvider(props.providerType)
-const $t = textProvider(context)
+const $t = await textProvider(context)
 const state = await editStateProvider(
   eventBus,
   adapter,
