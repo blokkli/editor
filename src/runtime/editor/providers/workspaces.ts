@@ -1,5 +1,5 @@
 import { ref, computed, type Ref, type ComputedRef } from '#imports'
-import { AsyncFzf, asyncExtendedMatch } from 'fzf'
+import { loadFzf, type AsyncFzf } from '#blokkli/editor/libraries/fzf'
 import type {
   AdapterContext,
   FullBlokkliAdapter,
@@ -179,8 +179,9 @@ export default function workspacesProvider(
       })
   })
 
-  function getFzf(): AsyncFzf<HostEntitySearchResultItem[]> {
+  async function getFzf(): Promise<AsyncFzf<HostEntitySearchResultItem[]>> {
     if (!fzf) {
+      const { AsyncFzf, asyncExtendedMatch } = await loadFzf()
       fzf = new AsyncFzf(items.value, {
         selector: (item: HostEntitySearchResultItem) =>
           item.context ? item.label + ' ' + item.context : item.label,
@@ -196,7 +197,8 @@ export default function workspacesProvider(
       return []
     }
     await ensureLoaded()
-    const results = await getFzf().find(trimmed)
+    const instance = await getFzf()
+    const results = await instance.find(trimmed)
     return results
       .map((r) => r.item)
       .filter((v) => v.uuid !== currentEntityUuid.value)

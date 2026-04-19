@@ -36,11 +36,13 @@ import {
   onBeforeUnmount,
   onMounted,
   reactive,
+  defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { ScrollBoundary } from '#blokkli/editor/components'
-import List from './List/index.vue'
 import { defineDropHandler } from '#blokkli/editor/composables'
+
+const List = defineAsyncComponent(() => import('./List/index.vue'))
 
 defineBlokkliFeature({
   id: 'structure',

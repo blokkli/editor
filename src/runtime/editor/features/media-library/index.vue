@@ -17,14 +17,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import Library from './Library/index.vue'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineDropAreas, defineDropHandler } from '#blokkli/editor/composables'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
+
+const Library = defineAsyncComponent(() => import('./Library/index.vue'))
 
 defineBlokkliFeature({
   id: 'media-library',

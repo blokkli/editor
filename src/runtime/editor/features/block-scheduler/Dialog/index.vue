@@ -310,3 +310,56 @@ async function onSubmit() {
   emit('close')
 }
 </script>
+
+<style lang="postcss">
+.bk.bk-block-scheduler-dialog {
+  min-height: calc(100vh - 350px);
+}
+
+.bk {
+  .bk-schedule-section-content {
+    @apply pt-5 pb-25;
+  }
+
+  .bk-schedule-section-mixed {
+    .bk-button {
+      @apply mt-20;
+    }
+  }
+
+  .bk-schedule-section {
+    @apply border-b border-b-mono-300 first:border-t first:border-t-mono-300;
+    > .bk-checkbox-toggle {
+      @apply items-center py-15;
+    }
+  }
+
+  .bk-schedule-section-toggle-title {
+    @apply flex items-center mr-auto gap-10;
+    .bk-icon {
+      svg {
+        @apply size-25 fill-current;
+      }
+    }
+  }
+
+  .bk-schedule-section-toggle-title-label {
+    @apply font-bold text-xl;
+  }
+
+  .bk-block-scheduler-table {
+    @apply bg-mono-100 mt-20 p-20 rounded-md border border-mono-300;
+
+    table {
+      @apply mt-20;
+      thead {
+        @apply bg-mono-100;
+      }
+    }
+  }
+
+  .bk-block-scheduler-table-title {
+    @apply font-bold text-xl;
+  }
+}
+</style>

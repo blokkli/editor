@@ -41,8 +41,8 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   useTemplateRef,
+  defineAsyncComponent,
 } from '#imports'
-import Overlay from './Overlay/index.vue'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
 import {
@@ -54,6 +54,8 @@ import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
+
+const Overlay = defineAsyncComponent(() => import('./Overlay/index.vue'))
 
 defineBlokkliFeature({
   id: 'search',

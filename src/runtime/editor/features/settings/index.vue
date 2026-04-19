@@ -7,15 +7,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
-import SettingsDialog from './Dialog/index.vue'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  defineAsyncComponent,
+} from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import {
   addElementClasses,
   defineMenuButton,
 } from '#blokkli/editor/composables'
 
-const { ui, $t } = useBlokkli()
+const SettingsDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
 
 const { settings } = defineBlokkliFeature({
   id: 'settings',
@@ -50,6 +54,8 @@ const { settings } = defineBlokkliFeature({
     },
   },
 })
+
+const { ui, $t } = useBlokkli()
 
 const showSettings = computed(() => ui.currentDialog.value?.id === 'settings')
 

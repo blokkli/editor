@@ -70,11 +70,13 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   watch,
+  defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import PreviewFrame from './Frame/index.vue'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+
+const PreviewFrame = defineAsyncComponent(() => import('./Frame/index.vue'))
 
 defineBlokkliFeature({
   id: 'responsive-preview',

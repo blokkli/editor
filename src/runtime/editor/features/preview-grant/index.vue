@@ -42,10 +42,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  watch,
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
-import QrCode from './QrCode/index.vue'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
+
+const QrCode = defineAsyncComponent(() => import('./QrCode/index.vue'))
 
 const { adapter } = defineBlokkliFeature({
   id: 'preview-grant',

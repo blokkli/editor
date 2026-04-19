@@ -26,9 +26,15 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import Shortcuts from './Shortcuts/index.vue'
+
+const Shortcuts = defineAsyncComponent(() => import('./Shortcuts/index.vue'))
 
 defineBlokkliFeature({
   id: 'help',

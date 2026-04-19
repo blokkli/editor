@@ -32,10 +32,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, defineBlokkliFeature } from '#imports'
-import TemplatesDialog from './Dialog/index.vue'
-import CreateTemplateDialog from './CreateDialog/index.vue'
-import ManageDialog from './ManageDialog/index.vue'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import {
   defineAddAction,
@@ -44,6 +46,14 @@ import {
   useDialog,
 } from '#blokkli/editor/composables'
 import type { ActionPlacedData } from '#blokkli/editor/types/actions'
+
+const TemplatesDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
+const CreateTemplateDialog = defineAsyncComponent(
+  () => import('./CreateDialog/index.vue'),
+)
+const ManageDialog = defineAsyncComponent(
+  () => import('./ManageDialog/index.vue'),
+)
 
 const { adapter } = defineBlokkliFeature({
   id: 'templates',

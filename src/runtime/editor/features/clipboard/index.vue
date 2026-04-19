@@ -19,12 +19,12 @@ import {
   onUnmounted,
   computed,
   useTemplateRef,
+  defineAsyncComponent,
 } from '#imports'
-
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
-import getVideoId from 'get-video-id'
-import DropElement, { type DropElementItem } from './DropElement/index.vue'
+import type getVideoIdSync from 'get-video-id'
+import type { DropElementItem } from './DropElement/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
@@ -38,6 +38,17 @@ import type { BlokkliClipboardItem, DraggableNativeDropItem } from './types'
 import { buildMapBundleEvent, sanitizeHtml } from './helpers'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
+
+const DropElement = defineAsyncComponent(
+  () => import('./DropElement/index.vue'),
+)
+
+async function getVideoId(
+  url: string,
+): Promise<ReturnType<typeof getVideoIdSync>> {
+  const { default: fn } = await import('get-video-id')
+  return fn(url)
+}
 
 const { logger } = defineBlokkliFeature({
   id: 'clipboard',
@@ -696,11 +707,11 @@ function onPaste(e: ClipboardEvent) {
   }
 }
 
-const handlePastedText = (text: string) => {
+const handlePastedText = async (text: string) => {
   if (!adapter.clipboardMapBundle) {
     return
   }
-  const video = getVideoId(text)
+  const video = await getVideoId(text)
   if (video.id && video.service) {
     const itemBundles = normalizeBundles(
       adapter.clipboardMapBundle({
@@ -774,7 +785,7 @@ function extractBareUrl(text: string): string | null {
 }
 
 defineDropHandler('native_drop', {
-  resolveBundles({ items, field }) {
+  async resolveBundles({ items, field }) {
     const item = items[0]!
 
     if (!adapter.addBlockFromClipboardItem) {
@@ -837,7 +848,7 @@ defineDropHandler('native_drop', {
 
     if (adapter.clipboardMapBundle) {
       // Try video detection.
-      const video = getVideoId(text)
+      const video = await getVideoId(text)
       if (video.id && video.service) {
         const mapped = normalizeBundles(
           adapter.clipboardMapBundle({
@@ -1104,82 +1115,3 @@ export default {
   name: 'Clipboard',
 }
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-clipboard-drop-element {
-    @apply pointer-events-none;
-    @apply flex flex-col;
-    @apply bg-white rounded-lg shadow-lg border border-mono-200;
-    @apply overflow-hidden;
-    width: 350px;
-    height: 200px;
-
-    .bk-clipboard-drop-element-header {
-      @apply flex gap-10 p-15 font-semibold bg-mono-800 text-mono-100;
-    }
-
-    .bk-clipboard-drop-element-preview {
-      @apply flex;
-      @apply overflow-hidden;
-      flex: 1;
-      min-height: 0;
-
-      .bk-clipboard-drop-element-item {
-        @apply flex-1 min-w-0 relative overflow-hidden;
-      }
-
-      .bk-clipboard-drop-element-text {
-        @apply p-8 text-xs font-sans text-mono-700 line-clamp-6 h-full;
-      }
-
-      img {
-        @apply block w-full h-full object-cover;
-      }
-
-      .bk-clipboard-drop-element-file-icon {
-        @apply flex items-center justify-center h-full bg-mono-100;
-
-        svg {
-          @apply size-24 fill-mono-400;
-        }
-      }
-
-      .bk-clipboard-drop-element-item-label {
-        @apply absolute bottom-0 left-0 right-0;
-        @apply text-xs font-sans text-white leading-none truncate;
-        @apply p-5;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
-      }
-
-      .bk-clipboard-item-video {
-        @apply text-xs;
-      }
-    }
-  }
-
-  .bk-clipboard-item-video {
-    @apply relative aspect-video overflow-hidden border border-mono-300;
-    @apply bg-mono-900 text-mono-50;
-    img {
-      @apply block object-cover absolute top-0 left-0 w-full h-full;
-    }
-
-    > div {
-      @apply absolute z-30 left-0 w-full bottom-0 p-10;
-      @apply bg-gradient-to-b from-mono-900/0 to-mono-900;
-      svg {
-        @apply size-20 fill-current;
-      }
-
-      p {
-        @apply text-xs;
-      }
-
-      > div {
-        @apply flex gap-5 font-bold;
-      }
-    }
-  }
-}
-</style>

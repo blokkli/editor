@@ -14,8 +14,6 @@
 </template>
 
 <script lang="ts" setup>
-import Renderer from './Renderer/index.vue'
-import SelectionAddButtons from './AddButtons/index.vue'
 import {
   calculateIntersection,
   getBounds,
@@ -28,6 +26,7 @@ import {
   defineBlokkliFeature,
   ref,
   watch,
+  defineAsyncComponent,
 } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
 import {
@@ -37,6 +36,11 @@ import {
 } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+
+const Renderer = defineAsyncComponent(() => import('./Renderer/index.vue'))
+const SelectionAddButtons = defineAsyncComponent(
+  () => import('./AddButtons/index.vue'),
+)
 
 defineBlokkliFeature({
   id: 'selection',

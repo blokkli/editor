@@ -62,13 +62,17 @@ import {
   defineBlokkliFeature,
   computed,
   useTemplateRef,
+  defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import Comment from './Comment/index.vue'
-import CommentAddForm from './AddForm/index.vue'
-import CommentsOverlay from './Overlay/index.vue'
 import type { CommentItem } from './types'
+
+const CommentsOverlay = defineAsyncComponent(
+  () => import('./Overlay/index.vue'),
+)
+const CommentAddForm = defineAsyncComponent(() => import('./AddForm/index.vue'))
 
 const { adapter } = defineBlokkliFeature({
   id: 'comments',

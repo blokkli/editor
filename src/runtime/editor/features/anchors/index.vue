@@ -12,9 +12,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginViewOption } from '#blokkli/editor/plugins'
-import AnchorOverlay from './Overlay/index.vue'
+
+const AnchorOverlay = defineAsyncComponent(() => import('./Overlay/index.vue'))
 
 defineBlokkliFeature({
   id: 'anchors',

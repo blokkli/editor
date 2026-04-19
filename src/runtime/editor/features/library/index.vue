@@ -55,10 +55,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  ref,
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
-import ReusableDialog from './ReusableDialog/index.vue'
-import LibraryDialog from './LibraryDialog/index.vue'
 import {
   BlokkliTransition,
   NestedEditorOverlay,
@@ -72,6 +76,13 @@ import {
 import type { LibraryEditItemEvent } from './types'
 import type { ActionPlacedData } from '#blokkli/editor/types/actions'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
+
+const ReusableDialog = defineAsyncComponent(
+  () => import('./ReusableDialog/index.vue'),
+)
+const LibraryDialog = defineAsyncComponent(
+  () => import('./LibraryDialog/index.vue'),
+)
 
 const { adapter } = defineBlokkliFeature({
   id: 'library',

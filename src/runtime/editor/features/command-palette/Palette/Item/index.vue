@@ -57,23 +57,3 @@ const getGroupLabel = (id?: CommandGroup): string => {
   return $t('commandGroup.misc', 'Miscellaneous')
 }
 </script>
-
-<style lang="postcss">
-.bk .bk-command {
-  height: var(--bk-command-palette-item-height);
-
-  .bk-highlight em {
-    @apply bg-yellow-normal/20 outline outline-[1px] outline-yellow-normal/50 font-semibold text-white;
-  }
-}
-
-.bk .bk-command-icon {
-  .bk-blokkli-item-icon,
-  .bk-icon {
-    @apply w-full h-full;
-    svg {
-      @apply w-full h-full fill-current;
-    }
-  }
-}
-</style>

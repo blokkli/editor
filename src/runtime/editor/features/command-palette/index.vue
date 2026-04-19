@@ -26,11 +26,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import Palette from './Palette/index.vue'
 import { onBlokkliEvent, useDialog } from '#blokkli/editor/composables'
+
+const Palette = defineAsyncComponent(() => import('./Palette/index.vue'))
 
 defineBlokkliFeature({
   id: 'command-palette',

@@ -18,6 +18,7 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   watch,
+  defineAsyncComponent,
 } from '#imports'
 import {
   onBlokkliEvent,
@@ -32,8 +33,8 @@ import type { EntityContext } from '#blokkli/types'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import Overlay from './Overlay/index.vue'
-import './types'
+
+const Overlay = defineAsyncComponent(() => import('./Overlay/index.vue'))
 
 defineBlokkliFeature({
   id: 'droppable-field-edit',

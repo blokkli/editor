@@ -93,12 +93,13 @@ import {
   useBlokkli,
   computed,
   ref,
+  shallowRef,
   watch,
   onMounted,
 } from '#imports'
 import { ArtboardTooltip, AddListItem, Icon } from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
-import { Fzf } from 'fzf'
+import { loadFzf, type Fzf } from '#blokkli/editor/libraries/fzf'
 import type { AddListItemProps } from '#blokkli/editor/components/AddListItem/index.vue'
 import type { Coord } from '#blokkli/editor/types/geometry'
 import type { AddAction } from '#blokkli/editor/types/actions'
@@ -290,8 +291,13 @@ const allItems = computed<Item[]>(() => {
   return [...blocks.value, ...fragments.value, ...actions.value]
 })
 
-const fzf = new Fzf(allItems.value, {
-  selector: (item: Item) => item.label + ' ' + item.description,
+const fzf = shallowRef<Fzf<Item[]> | null>(null)
+
+onMounted(async () => {
+  const { Fzf } = await loadFzf()
+  fzf.value = new Fzf(allItems.value, {
+    selector: (item: Item) => item.label + ' ' + item.description,
+  })
 })
 
 function filterBySearch<T extends Item>(items: T[]): T[] {
@@ -309,11 +315,11 @@ function filterBySearch<T extends Item>(items: T[]): T[] {
 
 const filteredBlocks = computed<Item[]>(() => {
   const text = searchText.value.trim()
-  if (!text) {
+  if (!text || !fzf.value) {
     return blocks.value
   }
 
-  const results = fzf.find(text)
+  const results = fzf.value.find(text)
   const textLower = text.toLowerCase()
 
   return results

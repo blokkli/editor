@@ -115,3 +115,82 @@ const label = computed<string | null>(() => {
 
 const icon = computed<BlokkliIcon>(() => getItemIcon(itemType.value))
 </script>
+
+<style lang="postcss">
+.bk {
+  .bk-clipboard-drop-element {
+    @apply pointer-events-none;
+    @apply flex flex-col;
+    @apply bg-white rounded-lg shadow-lg border border-mono-200;
+    @apply overflow-hidden;
+    width: 350px;
+    height: 200px;
+
+    .bk-clipboard-drop-element-header {
+      @apply flex gap-10 p-15 font-semibold bg-mono-800 text-mono-100;
+    }
+
+    .bk-clipboard-drop-element-preview {
+      @apply flex;
+      @apply overflow-hidden;
+      flex: 1;
+      min-height: 0;
+
+      .bk-clipboard-drop-element-item {
+        @apply flex-1 min-w-0 relative overflow-hidden;
+      }
+
+      .bk-clipboard-drop-element-text {
+        @apply p-8 text-xs font-sans text-mono-700 line-clamp-6 h-full;
+      }
+
+      img {
+        @apply block w-full h-full object-cover;
+      }
+
+      .bk-clipboard-drop-element-file-icon {
+        @apply flex items-center justify-center h-full bg-mono-100;
+
+        svg {
+          @apply size-24 fill-mono-400;
+        }
+      }
+
+      .bk-clipboard-drop-element-item-label {
+        @apply absolute bottom-0 left-0 right-0;
+        @apply text-xs font-sans text-white leading-none truncate;
+        @apply p-5;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+      }
+
+      .bk-clipboard-item-video {
+        @apply text-xs;
+      }
+    }
+  }
+
+  .bk-clipboard-item-video {
+    @apply relative aspect-video overflow-hidden border border-mono-300;
+    @apply bg-mono-900 text-mono-50;
+    img {
+      @apply block object-cover absolute top-0 left-0 w-full h-full;
+    }
+
+    > div {
+      @apply absolute z-30 left-0 w-full bottom-0 p-10;
+      @apply bg-gradient-to-b from-mono-900/0 to-mono-900;
+      svg {
+        @apply size-20 fill-current;
+      }
+
+      p {
+        @apply text-xs;
+      }
+
+      > div {
+        @apply flex gap-5 font-bold;
+      }
+    }
+  }
+}
+</style>

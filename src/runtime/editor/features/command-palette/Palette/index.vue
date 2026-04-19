@@ -21,9 +21,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useBlokkli, watch } from '#imports'
+import {
+  computed,
+  onMounted,
+  ref,
+  shallowRef,
+  useBlokkli,
+  watch,
+} from '#imports'
 import { SearchOverlay } from '#blokkli/editor/components'
-import { Fzf } from 'fzf'
+import { loadFzf, type Fzf } from '#blokkli/editor/libraries/fzf'
 import Item, { type MappedCommandItem } from './Item/index.vue'
 import type { Command } from '../types'
 
@@ -78,18 +85,24 @@ const items = computed<Array<Command & { _id: number }>>(() => {
     })
 })
 
-const fzf = new Fzf(items.value, {
-  selector: (item) => item.label,
+type CommandItem = (typeof items.value)[number]
+const fzf = shallowRef<Fzf<CommandItem[]> | null>(null)
+
+onMounted(async () => {
+  const { Fzf } = await loadFzf()
+  fzf.value = new Fzf(items.value, {
+    selector: (item) => item.label,
+  })
 })
 
 const visibleIds = computed<
   { id: number; positions: number[]; score: number }[] | undefined
 >(() => {
-  if (!text.value) {
+  if (!text.value || !fzf.value) {
     return undefined
   }
 
-  const results = fzf.find(text.value)
+  const results = fzf.value.find(text.value)
   return results.map((v) => {
     return {
       id: v.item._id,

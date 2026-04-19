@@ -9,10 +9,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  defineAsyncComponent,
+} from '#imports'
 import { useStateBasedCache } from '#blokkli/editor/composables'
 import type { ReferencedEntity } from './types'
-import List from './List/index.vue'
+
+const List = defineAsyncComponent(() => import('./List/index.vue'))
 
 defineBlokkliFeature({
   id: 'referenced-entities',

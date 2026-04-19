@@ -37,10 +37,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, computed, ref } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  ref,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition, Icon } from '#blokkli/editor/components'
-import SchedulerDialog from './Dialog/index.vue'
+
+const SchedulerDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
 
 defineBlokkliFeature({
   id: 'block-scheduler',
@@ -120,54 +127,13 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk.bk-block-scheduler-dialog {
-  min-height: calc(100vh - 350px);
-}
-
 .bk {
-  .bk-schedule-section-content {
-    @apply pt-5 pb-25;
-  }
+  .bk-item-action.bk-has-schedule {
+    @apply bg-yellow-dark/50 hover:bg-yellow-dark/70;
 
-  .bk-schedule-section-mixed {
-    .bk-button {
-      @apply mt-20;
+    .bk-icon-clock {
+      @apply text-yellow-light;
     }
-  }
-
-  .bk-schedule-section {
-    @apply border-b border-b-mono-300 first:border-t first:border-t-mono-300;
-    > .bk-checkbox-toggle {
-      @apply items-center py-15;
-    }
-  }
-
-  .bk-schedule-section-toggle-title {
-    @apply flex items-center mr-auto gap-10;
-    .bk-icon {
-      svg {
-        @apply size-25 fill-current;
-      }
-    }
-  }
-
-  .bk-schedule-section-toggle-title-label {
-    @apply font-bold text-xl;
-  }
-
-  .bk-block-scheduler-table {
-    @apply bg-mono-100 mt-20 p-20 rounded-md border border-mono-300;
-
-    table {
-      @apply mt-20;
-      thead {
-        @apply bg-mono-100;
-      }
-    }
-  }
-
-  .bk-block-scheduler-table-title {
-    @apply font-bold text-xl;
   }
 
   .bk-schedule-action-icon {
@@ -179,14 +145,6 @@ export default {
       svg {
         @apply size-10;
       }
-    }
-  }
-
-  .bk-item-action.bk-has-schedule {
-    @apply bg-yellow-dark/50 hover:bg-yellow-dark/70;
-
-    .bk-icon-clock {
-      @apply text-yellow-light;
     }
   }
 }

@@ -39,8 +39,6 @@
 </template>
 
 <script lang="ts" setup>
-import DragItems from './DragItems/index.vue'
-import Renderer from './Renderer/index.vue'
 import {
   ref,
   useBlokkli,
@@ -48,6 +46,7 @@ import {
   defineBlokkliFeature,
   nextTick,
   useTemplateRef,
+  defineAsyncComponent,
 } from '#imports'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { BundleSelector, BlokkliTransition } from '#blokkli/editor/components'
@@ -57,6 +56,9 @@ import { MOUSE_BUTTON } from '#blokkli/editor/helpers/dom'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
 import type { DropExecuteResult } from '#blokkli/editor/providers/dragdrop'
+
+const DragItems = defineAsyncComponent(() => import('./DragItems/index.vue'))
+const Renderer = defineAsyncComponent(() => import('./Renderer/index.vue'))
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',

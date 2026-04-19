@@ -16,10 +16,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  defineAsyncComponent,
+} from '#imports'
 import { ErrorBoundary } from '#blokkli/editor/components'
-import Renderer from './Renderer/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+
+const Renderer = defineAsyncComponent(() => import('./Renderer/index.vue'))
 
 defineBlokkliFeature({
   id: 'multi-select',

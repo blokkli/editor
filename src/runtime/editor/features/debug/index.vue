@@ -3,9 +3,14 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkliFeature, useBlokkli } from '#imports'
-import DebugMain from './Main.vue'
+import {
+  defineAsyncComponent,
+  defineBlokkliFeature,
+  useBlokkli,
+} from '#imports'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+
+const DebugMain = defineAsyncComponent(() => import('./Main.vue'))
 
 const { logger } = defineBlokkliFeature({
   id: 'debug',

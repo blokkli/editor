@@ -49,10 +49,12 @@ import {
   defineBlokkliFeature,
   onMounted,
   onBeforeUnmount,
+  defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar, PluginToolbarButton } from '#blokkli/editor/plugins'
-import HistoryList from './List/index.vue'
 import { MOUSE_BUTTON } from '#blokkli/editor/helpers/dom'
+
+const HistoryList = defineAsyncComponent(() => import('./List/index.vue'))
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'history',

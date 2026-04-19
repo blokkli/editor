@@ -118,12 +118,11 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   onMounted,
+  defineAsyncComponent,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import Banner from './Banner/index.vue'
-import CsvDialog from './CsvDialog/index.vue'
-import TranslateDialog from './TranslateDialog/index.vue'
 import {
   defineMenuButton,
   defineHighlight,
@@ -134,6 +133,11 @@ import {
 import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
 import { BlokkliTransition, Tooltip } from '#blokkli/editor/components'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+
+const CsvDialog = defineAsyncComponent(() => import('./CsvDialog/index.vue'))
+const TranslateDialog = defineAsyncComponent(
+  () => import('./TranslateDialog/index.vue'),
+)
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',

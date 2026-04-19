@@ -16,15 +16,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { falsy, onlyUnique } from '#blokkli/helpers'
-import OptionsForm from './Form/index.vue'
 import type {
   BlockDefinitionInput,
   FragmentDefinitionInput,
   ProviderDefinitionInput,
 } from '#blokkli/types/definitions'
 import { fragmentBlockBundle } from '#blokkli-build/config'
+
+const OptionsForm = defineAsyncComponent(() => import('./Form/index.vue'))
 
 defineBlokkliFeature({
   id: 'options',

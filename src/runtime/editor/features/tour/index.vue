@@ -17,10 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkliFeature, useBlokkli } from '#imports'
-import Overlay from './Overlay/index.vue'
+import {
+  defineAsyncComponent,
+  defineBlokkliFeature,
+  useBlokkli,
+} from '#imports'
 import { defineMenuButton } from '#blokkli/editor/composables'
 import { Popup } from '#blokkli/editor/components'
+
+const Overlay = defineAsyncComponent(() => import('./Overlay/index.vue'))
 
 defineBlokkliFeature({
   id: 'tour',

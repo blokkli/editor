@@ -1,82 +1,19 @@
 <template>
   <BlokkliTransition name="menu">
-    <div
-      v-if="menuOpen"
-      class="bk fixed inset-y-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] flex flex-col pointer-events-auto z-menu w-[calc(100vw-40px)]"
-      @wheel.passive.stop
-      @touchstart.stop.passive
-      @touchmove.stop.passive
-    >
-      <button
-        :class="{ 'bk-is-active': menuOpen }"
-        class="h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25 bg-white text-mono-950"
-        @click="closeMenu"
-      >
-        <Icon name="bk_mdi_close" class="size-20 md:size-30 mr-25" />
-      </button>
-      <div class="flex-1 overflow-auto flex flex-col">
-        <div id="bk-menu-primary" class="grid border-t border-t-mono-200">
-          <MenuButton
-            v-for="button in primaryButtons"
-            :id="button.id"
-            :key="button.id"
-            :title="button.title"
-            :description="button.description"
-            :icon="button.icon"
-            :type="button.type"
-            :disabled="button.disabled"
-            @click="onClick(button)"
-          />
-        </div>
-        <div id="bk-menu-secondary" class="mt-auto">
-          <MenuButton
-            v-for="button in secondaryButtons"
-            :id="button.id"
-            :key="button.id"
-            :title="button.title"
-            :description="button.description"
-            :icon="button.icon"
-            :type="button.type"
-            :disabled="button.disabled"
-            @click="onClick(button)"
-          />
-        </div>
-        <aside
-          class="px-15 py-10 text-xs bg-mono-100 text-mono-600 items-center leading-none flex justify-between"
-        >
-          <div class="flex gap-5 items-center">
-            <Icon
-              name="logo"
-              class="bg-accent-700 size-20 flex items-center justify-center rounded text-white"
-            />
-            <div><strong>@blokkli/editor</strong> {{ blokkliVersion }}</div>
-          </div>
-
-          <div>
-            <a
-              href="https://www.blokk.li"
-              target="_blank"
-              class="hover:text-accent-700 hover:underline"
-              >blokk.li</a
-            >
-          </div>
-        </aside>
-      </div>
-    </div>
+    <AppMenuInner v-if="menuOpen" @close="closeMenu" />
   </BlokkliTransition>
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
-import { Icon, BlokkliTransition } from '#blokkli/editor/components'
-import { blokkliVersion } from '#blokkli-build/editor-config'
-import MenuButton from './MenuButton.vue'
-import type { MenuButtonPlugin } from '#blokkli/editor/providers/plugin'
+import { computed, defineAsyncComponent, useBlokkli } from '#imports'
+import { BlokkliTransition } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+
+const AppMenuInner = defineAsyncComponent(() => import('./Inner.vue'))
 
 const DIALOG_MENU = 'menu'
 
-const { ui, plugins } = useBlokkli()
+const { ui } = useBlokkli()
 
 const menuOpen = computed(() => ui.currentDialog.value?.id === DIALOG_MENU)
 
@@ -85,25 +22,6 @@ function closeMenu() {
 }
 
 onBlokkliEvent('overlay:close', closeMenu)
-
-const allButtons = computed(() => plugins.get('menuButton'))
-
-const primaryButtons = computed(() => {
-  return allButtons.value
-    .filter((button) => !button.secondary)
-    .sort((a, b) => (a.weight || 0) - (b.weight || 0))
-})
-
-const secondaryButtons = computed(() => {
-  return allButtons.value
-    .filter((button) => button.secondary)
-    .sort((a, b) => (a.weight || 0) - (b.weight || 0))
-})
-
-function onClick(button: MenuButtonPlugin) {
-  button.callback()
-  closeMenu()
-}
 </script>
 
 <script lang="ts">

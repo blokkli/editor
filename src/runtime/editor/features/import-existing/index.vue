@@ -12,11 +12,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
+import {
+  computed,
+  useBlokkli,
+  onMounted,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import ExistingDialog from './Dialog/index.vue'
 import { defineMenuButton, useDialog } from '#blokkli/editor/composables'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
+
+const ExistingDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',

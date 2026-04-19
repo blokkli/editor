@@ -14,9 +14,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import DiffView from './DiffView/index.vue'
+
+const DiffView = defineAsyncComponent(() => import('./DiffView/index.vue'))
 
 defineBlokkliFeature({
   id: 'diff',

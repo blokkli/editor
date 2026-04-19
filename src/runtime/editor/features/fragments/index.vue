@@ -12,12 +12,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, defineBlokkliFeature, computed } from '#imports'
-import FragmentsDialog from './Dialog/index.vue'
+import {
+  ref,
+  useBlokkli,
+  defineBlokkliFeature,
+  computed,
+  defineAsyncComponent,
+} from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { defineAddAction } from '#blokkli/editor/composables'
 import type { ActionPlacedData } from '#blokkli/editor/types/actions'
 import { fragmentBlockBundle } from '#blokkli-build/config'
+
+const FragmentsDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
 
 const { adapter } = defineBlokkliFeature({
   id: 'fragments',

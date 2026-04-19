@@ -22,11 +22,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  useBlokkli,
+  defineBlokkliFeature,
+  defineAsyncComponent,
+} from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
-import Overlay from './Overlay/index.vue'
 import { onBlokkliEvent, useDialog } from '#blokkli/editor/composables'
+
+const Overlay = defineAsyncComponent(() => import('./Overlay/index.vue'))
 
 defineBlokkliFeature({
   id: 'workspace',
