@@ -2499,9 +2499,17 @@
     "source": "Which content would you like to import?",
     "translation": "Weli Inhält sotte importiert wärde?"
   },
+  "importExistingNoResults": {
+    "source": "No pages found.",
+    "translation": ""
+  },
   "importExistingPagesTitle": {
     "source": "Select page",
     "translation": "Sitte uswähle"
+  },
+  "importExistingSearchPlaceholder": {
+    "source": "Search pages...",
+    "translation": ""
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",

@@ -3,6 +3,7 @@
     <BlokkliTransition name="slide-up">
       <ExistingDialog
         v-if="showModal"
+        :fields
         @confirm="onSubmit($event.sourceUuid, $event.fields)"
         @cancel="showModal = false"
       />
@@ -15,12 +16,13 @@ import { computed, useBlokkli, onMounted, defineBlokkliFeature } from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import ExistingDialog from './Dialog/index.vue'
 import { defineMenuButton, useDialog } from '#blokkli/editor/composables'
+import type { FieldConfig } from '#blokkli/editor/types/definitions'
 
 const { adapter, settings } = defineBlokkliFeature({
   id: 'import-existing',
   label: 'Import existing content',
   icon: 'bk_mdi_arrow_downward',
-  requiredAdapterMethods: ['getImportItems', 'importFromExisting'],
+  requiredAdapterMethods: ['getHostEntities', 'importFromExisting'],
   description:
     'Implements a menu action that renders a dialog to import blocks from another entity.',
 
@@ -36,13 +38,20 @@ const { adapter, settings } = defineBlokkliFeature({
   },
 })
 
-const { ui, state, $t } = useBlokkli()
+const { ui, state, $t, types, context } = useBlokkli()
 
 const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.list?.length),
 )
 
 const showModal = useDialog('import-existing', 'center')
+
+const fields = computed<FieldConfig[]>(() =>
+  types.fieldConfig.forEntityTypeAndBundle(
+    context.value.entityType,
+    context.value.entityBundle,
+  ),
+)
 
 function onSubmit(sourceUuid: string, sourceFields: string[]) {
   showModal.value = false
@@ -70,8 +79,8 @@ onMounted(() => {
 })
 
 defineMenuButton(() => {
-  // Only show the button if there are mutated fields
-  if (!state.mutatedFields.value.length) {
+  // Only show the button if there are actually fields to import from.
+  if (!fields.value.length) {
     return undefined
   }
 

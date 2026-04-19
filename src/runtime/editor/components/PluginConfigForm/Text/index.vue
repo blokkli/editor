@@ -14,6 +14,7 @@
     v-else
     :id="name"
     v-model="value"
+    lazy
     :label
     :required
     :description

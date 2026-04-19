@@ -7,47 +7,19 @@
     :is-searching
     :placeholder="$t('workspaceSearchPlaceholder', 'Search pages...')"
     :item-height="70"
-    :is-loading
+    :is-loading="workspaces.isLoading.value"
     @select="onSelectByIndex"
     @close="emit('close')"
   >
-    <a
+    <Item
       v-for="(item, i) in displayItems"
       :key="item.uuid"
-      ref="itemEls"
-      :href="item.url"
-      class="bk-command flex items-center gap-10 px-15 w-full text-left no-underline max-w-full min-w-0 border border-transparent"
-      :class="
-        focusedIndex === i
-          ? 'bg-mono-800 border-mono-100 text-white'
-          : 'text-mono-300'
-      "
+      v-bind="item"
+      :focused="focusedIndex === i"
+      :bundle-label="workspaces.getBundleLabel(item.bundle)"
+      :is-owner="!!(item.uid && item.uid === ownerId)"
       @mouseenter="onMouseEnter(i)"
-    >
-      <div class="flex-1 min-w-0">
-        <div class="truncate font-semibold text-base">
-          {{ item.label }}
-          <span class="font-normal text-mono-500">{{ item.id }}</span>
-        </div>
-        <ul class="flex gap-5 mt-3">
-          <li class="bk-workspace-pill px-0 text-mono-300">
-            {{ getBundleLabel(item) }}
-          </li>
-          <li
-            v-if="item.lastChanged"
-            class="bk-workspace-pill bg-yellow-dark/60 text-yellow-light"
-          >
-            <RelativeTime :timestamp="item.lastChanged" />
-          </li>
-          <li
-            v-if="item.uid && item.uid === ownerId"
-            class="bk-workspace-pill bg-accent-700/80"
-          >
-            <span>{{ $t('owner', 'Owner') }}</span>
-          </li>
-        </ul>
-      </div>
-    </a>
+    />
   </SearchOverlay>
 </template>
 
@@ -60,88 +32,34 @@ import {
   onBeforeUnmount,
   watch,
 } from '#imports'
-import { SearchOverlay, RelativeTime } from '#blokkli/editor/components'
-import { AsyncFzf, asyncExtendedMatch } from 'fzf'
-import type {
-  HostEntitySearchResultItem,
-  HostEntitySearchResult,
-} from '../types'
+import { SearchOverlay } from '#blokkli/editor/components'
+import Item from './Item.vue'
+import type { HostEntitySearchResultItem } from '#blokkli/editor/providers/workspaces'
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const { adapter, $t, context, state, cache } = useBlokkli()
+const { $t, state, workspaces } = useBlokkli()
 
 const searchText = ref('')
-const isLoading = ref(true)
-const allItems = ref<HostEntitySearchResultItem[]>([])
-const labelMap = ref<HostEntitySearchResult['labelMap'] | null>(null)
 const fzfResults = ref<HostEntitySearchResultItem[]>([])
 const isSearching = ref(false)
 
 const ownerId = computed(() => state.owner.value?.id)
 
-const currentEntityUuid = computed(() => context.value.entityUuid)
-
-const defaultSorted = computed(() => {
-  return allItems.value
-    .filter((v) => v.uuid !== currentEntityUuid.value)
-    .sort((a, b) => {
-      // Primary: entities with edit states first
-      const aHasState = a.lastChanged !== null ? 0 : 1
-      const bHasState = b.lastChanged !== null ? 0 : 1
-      if (aHasState !== bHasState) return aHasState - bHasState
-
-      // Secondary: current user is owner first
-      const aIsOwner = a.uid && a.uid === ownerId.value ? 0 : 1
-      const bIsOwner = b.uid && b.uid === ownerId.value ? 0 : 1
-      if (aIsOwner !== bIsOwner) return aIsOwner - bIsOwner
-
-      // Tertiary: by lastChanged (most recent first)
-      if (a.lastChanged && b.lastChanged) {
-        return (
-          new Date(b.lastChanged).getTime() - new Date(a.lastChanged).getTime()
-        )
-      }
-      if (a.lastChanged) return -1
-      if (b.lastChanged) return 1
-
-      // Quaternary: alphabetically by label
-      return a.label.localeCompare(b.label)
-    })
+const displayItems = computed<HostEntitySearchResultItem[]>(() => {
+  const source = searchText.value.trim()
+    ? fzfResults.value
+    : workspaces.defaultSorted.value
+  return source.slice(0, 50)
 })
-
-const allSortedItems = computed(() => {
-  if (searchText.value.trim()) {
-    return fzfResults.value.filter((v) => v.uuid !== currentEntityUuid.value)
-  }
-  return defaultSorted.value
-})
-
-const displayItems = computed(() => allSortedItems.value.slice(0, 50))
-
-function getBundleLabel(item: HostEntitySearchResultItem): string {
-  return labelMap.value?.bundles[item.bundle] ?? item.bundle
-}
 
 function onSelectByIndex(index: number) {
   const item = displayItems.value[index]
   if (item) {
     window.location.href = item.url
   }
-}
-
-function getFzf(): AsyncFzf<HostEntitySearchResultItem[]> {
-  return cache.get(
-    'workspace:fzf',
-    () =>
-      new AsyncFzf(allItems.value, {
-        selector: (item: HostEntitySearchResultItem) =>
-          item.context ? item.label + ' ' + item.context : item.label,
-        match: asyncExtendedMatch,
-      }),
-  )
 }
 
 // Debounced search.
@@ -168,10 +86,10 @@ watch(searchText, (newValue) => {
       return
     }
     try {
-      const results = await getFzf().find(query)
+      const results = await workspaces.search(query)
       // Guard against stale results.
       if (searchText.value.trim() === query) {
-        fzfResults.value = results.map((r) => r.item)
+        fzfResults.value = results
       }
     } finally {
       if (searchText.value.trim() === query) {
@@ -181,17 +99,7 @@ watch(searchText, (newValue) => {
   }, 150)
 })
 
-onMounted(async () => {
-  try {
-    const result = await cache.getAsync('workspace:hostEntities', () =>
-      adapter.getHostEntities!(),
-    )
-    allItems.value = result.items
-    labelMap.value = result.labelMap
-  } finally {
-    isLoading.value = false
-  }
-})
+onMounted(() => workspaces.ensureLoaded())
 
 onBeforeUnmount(() => {
   if (searchTimeout) {
@@ -199,9 +107,3 @@ onBeforeUnmount(() => {
   }
 })
 </script>
-
-<style lang="postcss">
-.bk .bk-workspace-pill {
-  @apply flex items-center gap-3 text-xs px-5 py-1 rounded-full font-medium;
-}
-</style>

@@ -6,7 +6,7 @@
     <div class="bk-form-text">
       <input
         :id
-        v-model.lazy="value"
+        :value="value"
         type="text"
         class="bk-form-input"
         :placeholder
@@ -14,6 +14,7 @@
         :disabled
         :minlength
         :maxlength
+        @[updateEvent]="onUpdate"
       />
       <button
         type="button"
@@ -29,9 +30,9 @@
 
 <script setup lang="ts">
 import { Icon } from '#blokkli/editor/components'
-import { useBlokkli } from '#imports'
+import { computed, useBlokkli } from '#imports'
 
-defineProps<{
+const props = defineProps<{
   id: string
   label: string
   description?: string
@@ -41,9 +42,20 @@ defineProps<{
   minlength?: string | number
   maxlength?: string | number
   type?: string
+  /**
+   * If true, the model is only updated on `change` (blur / Enter), matching
+   * Vue's `v-model.lazy` behavior. Defaults to eager (per-keystroke).
+   */
+  lazy?: boolean
 }>()
 
+const updateEvent = computed(() => (props.lazy ? 'change' : 'input'))
+
 const value = defineModel<string>()
+
+function onUpdate(event: Event) {
+  value.value = (event.target as HTMLInputElement).value
+}
 
 const { $t } = useBlokkli()
 </script>

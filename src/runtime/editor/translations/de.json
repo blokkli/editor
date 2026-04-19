@@ -1677,7 +1677,7 @@
   },
   "droppableFieldSaveFailed": {
     "source": "Failed to save field.",
-    "translation": ""
+    "translation": "Feld konnte nicht gespeichert werden."
   },
   "duplicate": {
     "source": "Duplicate",
@@ -2499,9 +2499,17 @@
     "source": "Which content would you like to import?",
     "translation": "Welche Inhalte möchten Sie importieren?"
   },
+  "importExistingNoResults": {
+    "source": "No pages found.",
+    "translation": "Keine Seiten gefunden."
+  },
   "importExistingPagesTitle": {
     "source": "Select page",
     "translation": "Seite auswählen"
+  },
+  "importExistingSearchPlaceholder": {
+    "source": "Search pages...",
+    "translation": "Seiten suchen..."
   },
   "importExistingSuccess": {
     "source": "Content imported successfully.",

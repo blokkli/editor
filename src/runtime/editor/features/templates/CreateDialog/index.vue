@@ -20,6 +20,7 @@
         <FormText
           id="template_label"
           v-model="label"
+          lazy
           :label="$t('templatesCreateDialogLabelLabel', 'Name')"
           type="text"
           :placeholder="

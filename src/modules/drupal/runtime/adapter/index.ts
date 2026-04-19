@@ -604,35 +604,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         })
     }
 
-    if (hasQuery('pbGetImportSourceEntities')) {
-      adapter.getImportItems = (args) =>
-        useGraphqlQuery('pbGetImportSourceEntities', {
-          entityType: (ctx.value.entityType as string).toLowerCase(),
-          entityUuid: ctx.value.entityUuid,
-          page: args.page,
-          filters: configObjectToUserConfigInput(args.filters),
-        }).then((data) => {
-          return {
-            perPage: data.data.pbGetImportSourceEntities?.perPage ?? 16,
-            total: data?.data.pbGetImportSourceEntities?.total || 0,
-            filters: mapPluginConfigInputs(
-              data.data.pbGetImportSourceEntities?.filters ?? [],
-            ),
-            items: (data?.data.pbGetImportSourceEntities?.items || [])
-              .map((item) => {
-                if (item?.uuid) {
-                  return {
-                    uuid: item.uuid,
-                    label: item.label,
-                    description: item.description,
-                  }
-                }
-              })
-              .filter(falsy),
-          }
-        })
-    }
-
     if (hasQuery('pbConversions')) {
       adapter.getConversions = () =>
         useGraphqlQuery('pbConversions').then(
@@ -1385,26 +1356,50 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    if (hasQuery('pbEntitiesSearch')) {
+    if (hasQuery('pbEntitiesSearch') && hasQuery('pbEditStatesSummary')) {
       adapter.getHostEntities = () => {
-        return useGraphqlQuery('pbEntitiesSearch').then((data) => {
-          const result = data.data.paragraphsBlokkliEntitiesSearch
+        return Promise.all([
+          useGraphqlQuery('pbEntitiesSearch'),
+          useGraphqlQuery('pbEditStatesSummary'),
+        ]).then(([entitiesData, statesData]) => {
+          const result = entitiesData.data.paragraphsBlokkliEntitiesSearch
+          const summaries =
+            statesData.data.paragraphsBlokkliEditStatesSummary ?? []
+
+          const stateMap = new Map<
+            string,
+            { lastChanged: string; uid: string | null }
+          >()
+          for (const summary of summaries) {
+            stateMap.set(
+              `${summary.hostEntityType}:${summary.hostEntityUuid}`,
+              {
+                lastChanged: summary.lastChanged,
+                uid: summary.uid ?? null,
+              },
+            )
+          }
+
           const bundles: Record<string, string> = {}
           for (const bundle of result?.bundleLabels ?? []) {
             bundles[bundle.id] = bundle.label
           }
+
           return {
-            items: (result?.items ?? []).map((v) => ({
-              id: v.id,
-              uuid: v.uuid,
-              entityType: v.entityType,
-              bundle: v.bundle,
-              label: v.label ?? '',
-              url: v.url,
-              lastChanged: v.lastChanged ?? null,
-              uid: v.uid ?? null,
-              context: v.context ?? undefined,
-            })),
+            items: (result?.items ?? []).map((v) => {
+              const state = stateMap.get(`${v.entityType}:${v.uuid}`)
+              return {
+                id: v.id,
+                uuid: v.uuid,
+                entityType: v.entityType,
+                bundle: v.bundle,
+                label: v.label ?? '',
+                url: v.url,
+                lastChanged: state?.lastChanged ?? null,
+                uid: state?.uid ?? null,
+                context: v.context ?? undefined,
+              }
+            }),
             labelMap: {
               label: result?.entityTypeLabels?.[0]?.label ?? '',
               bundles,

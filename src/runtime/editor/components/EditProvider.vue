@@ -124,6 +124,7 @@ import readabilityProviderFn from '#blokkli/editor/providers/readability'
 import fieldValueProviderFn from '#blokkli/editor/providers/fieldValue'
 import dragdropProvider from '#blokkli/editor/providers/dragdrop'
 import cacheProvider from '#blokkli/editor/providers/cache'
+import workspacesProvider from '#blokkli/editor/providers/workspaces'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -268,6 +269,7 @@ const readability = await readabilityProviderFn(
 const analyze = analyzeProviderFn(adapters, state, ui, context, $t, readability)
 const dragdrop = dragdropProvider()
 const cache = cacheProvider()
+const workspaces = workspacesProvider(adapter, context, state)
 
 const mutatedEntityProps = computed(() => state.mutatedItemProps.HOST)
 
@@ -395,6 +397,7 @@ const app: BlokkliApp = {
   fieldValue,
   dragdrop,
   cache,
+  workspaces,
 }
 
 provide(INJECT_APP, app)

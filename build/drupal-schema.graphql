@@ -5561,6 +5561,15 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
   uuid: String!
 }
 
+type ParagraphsBlokkliEditStateSummary {
+  editStateId: String!
+  hostEntityType: String!
+  hostEntityUuid: String!
+  lastChanged: String!
+  mutationCount: Int!
+  uid: String
+}
+
 type ParagraphsBlokkliEditStatesResults {
   filters: [ParagraphsBlokkliConfigInput!]!
   items: [ParagraphsBlokkliEditState!]
@@ -5587,12 +5596,8 @@ type ParagraphsBlokkliEntitiesSearchItem {
   bundle: String!
   context: String
   entityType: String!
-  hasEditState: Boolean!
   id: String!
   label: String
-  lastChanged: String
-  mutationCount: Int!
-  uid: String
   url: String!
   uuid: String!
 }
@@ -6971,6 +6976,7 @@ type Query {
 
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliConversions: [ParagraphsBlokkliConversion!]
+  paragraphsBlokkliEditStatesSummary: [ParagraphsBlokkliEditStateSummary!]!
   paragraphsBlokkliEntitiesSearch: ParagraphsBlokkliEntitiesSearchResult
   paragraphsBlokkliEntityTypeConfig: [ParagraphsBlokkliEntityTypeConfig!]!
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]

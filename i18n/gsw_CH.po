@@ -2672,9 +2672,17 @@ msgctxt "importExistingFieldsLabel"
 msgid "Which content would you like to import?"
 msgstr "Weli Inhält sotte importiert wärde?"
 
+msgctxt "importExistingNoResults"
+msgid "No pages found."
+msgstr ""
+
 msgctxt "importExistingPagesTitle"
 msgid "Select page"
 msgstr "Sitte uswähle"
+
+msgctxt "importExistingSearchPlaceholder"
+msgid "Search pages..."
+msgstr ""
 
 msgctxt "importExistingSuccess"
 msgid "Content imported successfully."

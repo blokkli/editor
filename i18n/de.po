@@ -1755,7 +1755,7 @@ msgstr ""
 
 msgctxt "droppableFieldSaveFailed"
 msgid "Failed to save field."
-msgstr ""
+msgstr "Feld konnte nicht gespeichert werden."
 
 msgctxt "duplicate"
 msgid "Duplicate"
@@ -2694,9 +2694,17 @@ msgctxt "importExistingFieldsLabel"
 msgid "Which content would you like to import?"
 msgstr "Welche Inhalte möchten Sie importieren?"
 
+msgctxt "importExistingNoResults"
+msgid "No pages found."
+msgstr "Keine Seiten gefunden."
+
 msgctxt "importExistingPagesTitle"
 msgid "Select page"
 msgstr "Seite auswählen"
+
+msgctxt "importExistingSearchPlaceholder"
+msgid "Search pages..."
+msgstr "Seiten suchen..."
 
 msgctxt "importExistingSuccess"
 msgid "Content imported successfully."

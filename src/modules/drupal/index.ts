@@ -280,7 +280,7 @@ export declare const templateEditRouteName: string|null
     }
 
     // Feature: Import Existing.
-    if (queryFields.has('pbGetImportSourceEntities')) {
+    if (editMutationStateFields.has('copy_from_existing')) {
       addGraphqlDocument('features/import-existing.graphql')
     } else {
       context.features.disableFeature('import-existing')
@@ -294,7 +294,10 @@ export declare const templateEditRouteName: string|null
     }
 
     // Feature: Workspace.
-    if (queryFields.has('paragraphsBlokkliEntitiesSearch')) {
+    if (
+      queryFields.has('paragraphsBlokkliEntitiesSearch') &&
+      queryFields.has('paragraphsBlokkliEditStatesSummary')
+    ) {
       addGraphqlDocument('features/workspace.graphql')
     }
 

@@ -7,8 +7,6 @@ query pbEntitiesSearch {
       bundle
       label
       url
-      lastChanged
-      uid
       context
     }
     bundleLabels {
@@ -19,5 +17,14 @@ query pbEntitiesSearch {
       id
       label
     }
+  }
+}
+
+query pbEditStatesSummary {
+  paragraphsBlokkliEditStatesSummary {
+    hostEntityType
+    hostEntityUuid
+    lastChanged
+    uid
   }
 }

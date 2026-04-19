@@ -15,6 +15,7 @@
         v-else-if="item.type === 'text'"
         v-bind="item"
         v-model="value[item.name]"
+        lazy
       />
       <FormOptions
         v-else-if="item.type === 'options'"

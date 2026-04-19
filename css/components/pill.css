@@ -6,6 +6,18 @@
       @apply bg-mono-100 text-mono-500;
     }
 
+    &.bk-is-mono-dark {
+      @apply bg-mono-700 text-mono-300;
+    }
+
+    &.bk-is-yellow-light {
+      @apply bg-yellow-light/40 text-yellow-dark;
+    }
+
+    &.bk-is-yellow-dark {
+      @apply bg-yellow-dark/60 text-yellow-light;
+    }
+
     &.bk-is-strong {
       @apply bg-accent-700 text-white;
     }

@@ -28,6 +28,7 @@
         <FormText
           id="reusable_label"
           v-model="label"
+          lazy
           :label="$t('libraryDialogDescriptionLabel', 'Description')"
           type="text"
           :placeholder="

@@ -1,28 +1,3 @@
-query pbGetImportSourceEntities(
-  $entityType: String!
-  $entityUuid: String!
-  $filters: [ParagraphsBlokkliUserConfigInput]
-  $page: Int
-) {
-  pbGetImportSourceEntities(
-    entityType: $entityType
-    entityUuid: $entityUuid
-    filters: $filters
-    page: $page
-  ) {
-    total
-    perPage
-    filters {
-      ...paragraphsBlokkliConfigInput
-    }
-    items {
-      uuid
-      label
-      description
-    }
-  }
-}
-
 mutation pbCopyFromExisting(
   $entityType: EntityType!
   $entityUuid: String!
