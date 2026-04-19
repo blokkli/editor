@@ -8,12 +8,10 @@ import { intersects } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
-import {
-  type BufferInfo,
-  setBuffersAndAttributes,
-  drawBufferInfo,
-  setUniforms,
-} from 'twgl.js'
+import type {
+  BufferInfo,
+  TwglHelpers,
+} from '#blokkli/editor/libraries/twgl'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { defineRenderer, useDebugLogger } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
@@ -44,6 +42,7 @@ type MultiSelectRectangle = Rectangle & {
 class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<MultiSelectRectangle> {
   getBufferInfo(
     gl?: WebGLRenderingContext,
+    twgl?: TwglHelpers,
     offset?: Coord,
     scale?: number,
   ): { info: BufferInfo | null; hasChanged: boolean } {
@@ -94,8 +93,8 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
     const hasChanged = lengthBefore !== this.positions.length
 
     // Only update the buffer info if it has changed.
-    if (hasChanged && gl) {
-      this.bufferInfo = this.createBufferInfo(gl)
+    if (hasChanged && gl && twgl) {
+      this.bufferInfo = this.createBufferInfo(gl, twgl)
     }
 
     return { info: this.bufferInfo, hasChanged }
@@ -179,7 +178,7 @@ function getSelectRect(
 
 // Register WebGL renderer with zIndex 450 (multi-select layer)
 // Set "only" to true so that when multi-selecting, only the selection box is rendered
-const { collector } = defineRenderer('multiselect-overlay', {
+const { collector } = await defineRenderer('multiselect-overlay', {
   zIndex: 450,
   only: true,
   collector: () => {
@@ -238,7 +237,7 @@ const { collector } = defineRenderer('multiselect-overlay', {
   },
   program: () => ({ shaders: [vs, fs] }),
   cursor: () => 'crosshair',
-  render: (ctx, gl, program) => {
+  render: (ctx, gl, program, twgl) => {
     mouseX = ctx.mouseX
     mouseY = ctx.mouseY
 
@@ -254,11 +253,11 @@ const { collector } = defineRenderer('multiselect-overlay', {
 
     const time = (Date.now() - startTimestamp) / 1000
 
-    setUniforms(program, {
+    twgl.setUniforms(program, {
       u_color_field_active: toShaderColor(uniforms.u_color_field_active),
       u_color_field_default: toShaderColor(uniforms.u_color_field_default),
     })
-    setUniforms(program, {
+    twgl.setUniforms(program, {
       u_select_all: shouldSelectAll ? 1 : 0,
       u_select_rect: [shader.x, shader.y, shader.width, shader.height],
       u_time: time,
@@ -267,6 +266,7 @@ const { collector } = defineRenderer('multiselect-overlay', {
     animation.setSharedUniforms(gl, program)
     const { info, hasChanged } = collector.getBufferInfo(
       gl,
+      twgl,
       ctx.artboardOffset,
       ctx.artboardScale,
     )
@@ -278,10 +278,10 @@ const { collector } = defineRenderer('multiselect-overlay', {
 
     // Only update buffer and attributes when they have changed.
     if (hasChanged) {
-      setBuffersAndAttributes(gl, program, info)
+      twgl.setBuffersAndAttributes(gl, program, info)
     }
 
-    drawBufferInfo(gl, info, gl.TRIANGLES)
+    twgl.drawBufferInfo(gl, info, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     mouseX = ctx.mouseX
@@ -296,7 +296,12 @@ const { collector } = defineRenderer('multiselect-overlay', {
     const shouldSelectAll = props.isPressingControl || !nested.length
 
     // Get buffer info to populate collector.rects
-    collector.getBufferInfo(undefined, ctx.artboardOffset, ctx.artboardScale)
+    collector.getBufferInfo(
+      undefined,
+      undefined,
+      ctx.artboardOffset,
+      ctx.artboardScale,
+    )
 
     const rects = Object.values(collector.rects)
 

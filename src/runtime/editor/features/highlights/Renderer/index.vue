@@ -31,13 +31,10 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed, ref } from '#imports'
-import {
-  setBuffersAndAttributes,
-  drawBufferInfo,
-  type BufferInfo,
-  setUniforms,
-  createBufferInfoFromArrays,
-} from 'twgl.js'
+import type {
+  BufferInfo,
+  TwglHelpers,
+} from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
@@ -176,8 +173,11 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
     }
   }
 
-  override createBufferInfo(gl: WebGLRenderingContext): BufferInfo {
-    return createBufferInfoFromArrays(gl, {
+  override createBufferInfo(
+    gl: WebGLRenderingContext,
+    twgl: TwglHelpers,
+  ): BufferInfo {
+    return twgl.createBufferInfoFromArrays(gl, {
       a_position: {
         numComponents: 3,
         data: this.positions,
@@ -229,6 +229,7 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
 
   getBufferInfo(
     gl?: WebGLRenderingContext,
+    twgl?: TwglHelpers,
     force?: boolean,
   ): {
     info: BufferInfo | null
@@ -312,15 +313,15 @@ class HighlightsRectangleBufferCollector extends RectangleBufferCollector<Highli
       this.prevKey = key
     }
 
-    if (hasChanged && gl) {
-      this.bufferInfo = this.createBufferInfo(gl)
+    if (hasChanged && gl && twgl) {
+      this.bufferInfo = this.createBufferInfo(gl, twgl)
     }
 
     return { info: this.bufferInfo, hasChanged }
   }
 }
 
-const { collector } = defineRenderer('highlights-overlay', {
+const { collector } = await defineRenderer('highlights-overlay', {
   zIndex: 500,
   collector: () => new HighlightsRectangleBufferCollector(),
   program: () => ({ shaders: [vs, fs] }),
@@ -330,22 +331,22 @@ const { collector } = defineRenderer('highlights-overlay', {
     !ui.isChangingOptions.value &&
     !selection.activeEditableLabel.value &&
     !ui.isApproving.value,
-  render: (_ctx, gl, program) => {
+  render: (_ctx, gl, program, twgl) => {
     gl.useProgram(program.program)
 
-    const { info } = collector.getBufferInfo(gl)
+    const { info } = collector.getBufferInfo(gl, twgl)
 
     if (!info) {
       return
     }
 
-    setUniforms(program, {
+    twgl.setUniforms(program, {
       u_opacity: 1.0,
     })
     animation.setSharedUniforms(gl, program)
 
-    setBuffersAndAttributes(gl, program, info)
-    drawBufferInfo(gl, info, gl.TRIANGLES)
+    twgl.setBuffersAndAttributes(gl, program, info)
+    twgl.drawBufferInfo(gl, info, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     collector.getBufferInfo()

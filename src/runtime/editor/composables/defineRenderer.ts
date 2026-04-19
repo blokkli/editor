@@ -8,18 +8,18 @@ import type { Renderer } from '../providers/animation'
  * @param config - Renderer configuration (zIndex, enabled, render, collector)
  * @returns Object containing the collector instance with inferred type
  */
-export function defineRenderer<T>(
+export async function defineRenderer<T>(
   id: string,
   config: Omit<Renderer<T>, 'id'>,
-): { collector: T } {
+): Promise<{ collector: T }> {
   const { animation } = useBlokkli()
-
-  // Register the renderer and get the collector instance
-  const { collector, unregister } = animation.registerRenderer(id, config)
 
   onBeforeUnmount(() => {
     unregister()
   })
+
+  // Register the renderer and get the collector instance
+  const { collector, unregister } = await animation.registerRenderer(id, config)
 
   // Return the collector with inferred type
   return { collector }

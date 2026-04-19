@@ -4,12 +4,10 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed, ref, watch } from '#imports'
-import {
-  setBuffersAndAttributes,
-  drawBufferInfo,
-  setUniforms,
-  type BufferInfo,
-} from 'twgl.js'
+import type {
+  BufferInfo,
+  TwglHelpers,
+} from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
@@ -114,9 +112,9 @@ const isHoveringSelectedBlock = ref(false)
 
 // Custom collector class
 class HoverRectangleBufferCollector extends RectangleBufferCollector<HoverRectangle> {
-  getBufferInfo(gl: WebGLRenderingContext): BufferInfo {
+  getBufferInfo(gl: WebGLRenderingContext, twgl: TwglHelpers): BufferInfo {
     if (!this.bufferInfo) {
-      this.bufferInfo = this.createBufferInfo(gl)
+      this.bufferInfo = this.createBufferInfo(gl, twgl)
     }
 
     return this.bufferInfo
@@ -502,7 +500,7 @@ onBlokkliEvent('ui:resized', () => {
 })
 
 // Register WebGL renderer with zIndex 200 (hover layer)
-const { collector } = defineRenderer('hover-overlay', {
+const { collector } = await defineRenderer('hover-overlay', {
   zIndex: 200,
   collector: () => {
     const c = new HoverRectangleBufferCollector()
@@ -539,8 +537,8 @@ const { collector } = defineRenderer('hover-overlay', {
 
     return null
   },
-  render: (ctx, gl, program) => {
-    const bufferInfo = collector.getBufferInfo(gl)
+  render: (ctx, gl, program, twgl) => {
+    const bufferInfo = collector.getBufferInfo(gl, twgl)
 
     if (!ui.openTooltip.value) {
       updateHoverState(
@@ -554,7 +552,7 @@ const { collector } = defineRenderer('hover-overlay', {
 
     gl.useProgram(program.program)
 
-    setUniforms(program, {
+    twgl.setUniforms(program, {
       u_color_mono: toShaderColor(uniforms.value.u_color_mono),
       u_color_accent: toShaderColor(uniforms.value.u_color_accent),
       u_color_teal: toShaderColor(uniforms.value.u_color_teal),
@@ -568,8 +566,8 @@ const { collector } = defineRenderer('hover-overlay', {
       u_opacity: ctx.changeOptionsTransition,
     })
     animation.setSharedUniforms(gl, program)
-    setBuffersAndAttributes(gl, program, bufferInfo)
-    drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
+    twgl.setBuffersAndAttributes(gl, program, bufferInfo)
+    twgl.drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     if (!ui.openTooltip.value) {

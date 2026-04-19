@@ -1,4 +1,5 @@
-import { createBufferInfoFromArrays, type BufferInfo } from 'twgl.js'
+import type { BufferInfo } from 'twgl.js'
+import type { TwglHelpers } from '#blokkli/editor/libraries/twgl'
 import { intersects } from './../geometry'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 
@@ -427,8 +428,8 @@ export class RectangleBufferCollector<T extends RectangleBufferRect> {
     // buffer.
   }
 
-  createBufferInfo(gl: WebGLRenderingContext): BufferInfo {
-    return createBufferInfoFromArrays(gl, {
+  createBufferInfo(gl: WebGLRenderingContext, twgl: TwglHelpers): BufferInfo {
+    return twgl.createBufferInfoFromArrays(gl, {
       a_position: {
         numComponents: 3,
         data: this.positions,

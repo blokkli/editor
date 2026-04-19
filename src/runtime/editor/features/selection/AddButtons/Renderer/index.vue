@@ -18,12 +18,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed, ref } from '#imports'
-import {
-  setBuffersAndAttributes,
-  drawBufferInfo,
-  setUniforms,
-  type BufferInfo,
-} from 'twgl.js'
+import type { BufferInfo } from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
@@ -475,7 +470,7 @@ function getCircleAtPoint(x: number, y: number): number {
 }
 
 // Register WebGL renderer with zIndex 350 (interaction layer)
-const { collector } = defineRenderer('add-buttons', {
+const { collector } = await defineRenderer('add-buttons', {
   zIndex: 1000,
   collector: () => {
     const c = new CircleBufferCollector()
@@ -549,10 +544,10 @@ const { collector } = defineRenderer('add-buttons', {
 
     return false
   },
-  render: (ctx, gl, program) => {
+  render: (ctx, gl, program, twgl) => {
     // Create bufferInfo on first render
     if (!bufferInfoCache) {
-      bufferInfoCache = collector.createBufferInfo(gl)
+      bufferInfoCache = collector.createBufferInfo(gl, twgl)
     }
 
     if (!bufferInfoCache) {
@@ -693,7 +688,7 @@ const { collector } = defineRenderer('add-buttons', {
 
     gl.useProgram(program.program)
 
-    setUniforms(program, {
+    twgl.setUniforms(program, {
       u_circle_positions: circlePositions,
       u_circle_visible: circleVisible,
       u_color: toShaderColor(color.value),
@@ -706,8 +701,8 @@ const { collector } = defineRenderer('add-buttons', {
     })
     animation.setSharedUniforms(gl, program)
 
-    setBuffersAndAttributes(gl, program, bufferInfoCache)
-    drawBufferInfo(gl, bufferInfoCache, gl.TRIANGLES)
+    twgl.setBuffersAndAttributes(gl, program, bufferInfoCache)
+    twgl.drawBufferInfo(gl, bufferInfoCache, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     // Reset all circles to invisible

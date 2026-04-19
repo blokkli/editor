@@ -4,12 +4,10 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
-import {
-  setBuffersAndAttributes,
-  drawBufferInfo,
-  type BufferInfo,
-  setUniforms,
-} from 'twgl.js'
+import type {
+  BufferInfo,
+  TwglHelpers,
+} from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
@@ -46,6 +44,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
 
   getBufferInfo(
     gl?: WebGLRenderingContext,
+    twgl?: TwglHelpers,
     force?: boolean,
   ): {
     info: BufferInfo | null
@@ -139,8 +138,8 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
     }
 
     // Only update the buffer info if it has changed.
-    if (hasChanged && gl) {
-      this.bufferInfo = this.createBufferInfo(gl)
+    if (hasChanged && gl && twgl) {
+      this.bufferInfo = this.createBufferInfo(gl, twgl)
     }
 
     return { info: this.bufferInfo, hasChanged }
@@ -219,21 +218,21 @@ const getTransforming = useTransitionedValue(() => {
 })
 
 // Register WebGL renderer with zIndex 100 (selection layer)
-const { collector } = defineRenderer('selection-overlay', {
+const { collector } = await defineRenderer('selection-overlay', {
   zIndex: 100,
   collector: () => new SelectionRectangleBufferCollector(),
   program: () => ({ shaders: [vs, fs] }),
-  render: (ctx, gl, program) => {
+  render: (ctx, gl, program, twgl) => {
     gl.useProgram(program.program)
 
-    const { info } = collector.getBufferInfo(gl)
+    const { info } = collector.getBufferInfo(gl, twgl)
 
     // Nothing to draw.
     if (!info) {
       return
     }
 
-    setUniforms(program, {
+    twgl.setUniforms(program, {
       u_color_default: toShaderColor(getColorDefault()),
       u_color_inverted: toShaderColor(getColorInverted()),
       u_color_library: toShaderColor(getColorLibrary()),
@@ -249,9 +248,9 @@ const { collector } = defineRenderer('selection-overlay', {
     })
     animation.setSharedUniforms(gl, program)
 
-    setBuffersAndAttributes(gl, program, info)
+    twgl.setBuffersAndAttributes(gl, program, info)
 
-    drawBufferInfo(gl, info, gl.TRIANGLES)
+    twgl.drawBufferInfo(gl, info, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     // Call getBufferInfo to populate collector.rects (we don't need the WebGL buffer)

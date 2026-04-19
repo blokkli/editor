@@ -18,12 +18,10 @@ import {
 } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor, rgbaToString } from '#blokkli/editor/helpers/color'
 import { ref, computed, useBlokkli } from '#imports'
-import {
-  setBuffersAndAttributes,
-  drawBufferInfo,
-  setUniforms,
-  type BufferInfo,
-} from 'twgl.js'
+import type {
+  BufferInfo,
+  TwglHelpers,
+} from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
@@ -736,7 +734,10 @@ function getRectType(field: BlokkliFieldElement): RectRenderType {
 }
 
 class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnRect> {
-  getBufferInfo(gl?: WebGLRenderingContext): {
+  getBufferInfo(
+    gl?: WebGLRenderingContext,
+    twgl?: TwglHelpers,
+  ): {
     info: BufferInfo | null
     hasChanged: boolean
   } {
@@ -830,8 +831,8 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
     const hasChanged = lengthBefore !== this.positions.length
 
     // Only update the buffer info if it has changed..
-    if (hasChanged && gl) {
-      this.bufferInfo = this.createBufferInfo(gl)
+    if (hasChanged && gl && twgl) {
+      this.bufferInfo = this.createBufferInfo(gl, twgl)
     }
 
     return { info: this.bufferInfo, hasChanged }
@@ -1134,7 +1135,7 @@ let bufferChanged = false
 
 // Register WebGL renderer with zIndex 400 (dragging layer - highest priority)
 // Set "only" to true so that when dragging, only drop targets are rendered
-const { collector } = defineRenderer('drop-targets', {
+const { collector } = await defineRenderer('drop-targets', {
   zIndex: 400,
   only: true,
   collector: () => {
@@ -1161,7 +1162,7 @@ const { collector } = defineRenderer('drop-targets', {
   },
   program: () => ({ shaders: [vs, fs] }),
   cursor: () => 'grabbing',
-  render: (_ctx, gl, program) => {
+  render: (_ctx, gl, program, twgl) => {
     const scale = ui.artboardScale.value
     const offset = { ...ui.artboardOffset.value }
 
@@ -1174,7 +1175,7 @@ const { collector } = defineRenderer('drop-targets', {
 
     const mouseAbsolute = toCanvasSpaceCoordinates(props.mouseX, props.mouseY)
 
-    const result = collector.getBufferInfo(gl)
+    const result = collector.getBufferInfo(gl, twgl)
     bufferInfo = result.info
     bufferChanged = result.hasChanged
 
@@ -1195,7 +1196,7 @@ const { collector } = defineRenderer('drop-targets', {
 
     gl.useProgram(program.program)
     animation.setSharedUniforms(gl, program)
-    setUniforms(program, uniforms.value)
+    twgl.setUniforms(program, uniforms.value)
 
     // Nothing to draw.
     if (!bufferInfo) {
@@ -1204,10 +1205,10 @@ const { collector } = defineRenderer('drop-targets', {
 
     // Only update buffer and attributes when they have changed.
     if (bufferChanged) {
-      setBuffersAndAttributes(gl, program, bufferInfo)
+      twgl.setBuffersAndAttributes(gl, program, bufferInfo)
     }
 
-    drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
+    twgl.drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
     const scale = ui.artboardScale.value

@@ -13,7 +13,8 @@ import {
   type WritableComputedRef,
 } from '#imports'
 import type { UiProvider } from './ui'
-import { createProgramInfo, type ProgramInfo } from 'twgl.js'
+import type { ProgramInfo } from 'twgl.js'
+import type { TwglHelpers } from '../libraries/twgl'
 import type { StorageProvider } from './storage'
 import type { CursorKeyword } from '#blokkli/editor/types'
 import type { SelectionProvider } from './selection'
@@ -114,6 +115,7 @@ export type Renderer<T = RectangleBufferCollector<any>> = {
     ctx: RenderContext,
     gl: WebGLRenderingContext,
     program: ProgramInfo,
+    twgl: TwglHelpers,
   ) => void
 
   /**
@@ -228,17 +230,6 @@ export type AnimationProvider = {
   removeCanvasElement: () => void
 
   /**
-   * Register a WebGL program.
-   *
-   * The programs are cached by the given ID.
-   */
-  registerProgram: (
-    id: string,
-    gl: WebGLRenderingContext,
-    shaders: string[],
-  ) => ProgramInfo
-
-  /**
    * Current cursor style determined by active renderers.
    *
    * Automatically updated each frame based on mouse position and renderer priorities.
@@ -264,7 +255,7 @@ export type AnimationProvider = {
   registerRenderer: <T = RectangleBufferCollector<any>>(
     id: string,
     config: Omit<Renderer<T>, 'id'>,
-  ) => { collector: T; unregister: () => void }
+  ) => Promise<{ collector: T; unregister: () => void }>
 
   /**
    * Unregister a WebGL renderer.
@@ -329,6 +320,9 @@ export default function (
   const renderers = new Map<string, Renderer>()
   const rendererPrograms = new Map<string, ProgramInfo>()
   const rendererCollectors = new Map<string, RectangleBufferCollector<any>>()
+  // Cached twgl module, populated the first time registerProgram loads it.
+  // Available by the time any renderer with a program actually runs.
+  let twglModule: TwglHelpers | null = null
 
   // Failure tracking for renderers
   const rendererFailures = new Map<string, number>() // Tracks consecutive failures
@@ -412,10 +406,12 @@ export default function (
         // Get the program for this renderer
         const program = rendererPrograms.get(renderer.id)
 
-        // Only execute if program exists (renderers with programs require them)
-        if (program) {
+        // Only execute if program exists (renderers with programs require them).
+        // twglModule is set during registerProgram, which is awaited before any
+        // program lands in rendererPrograms — so it's non-null here.
+        if (program && twglModule) {
           try {
-            renderer.render(ctx, glContext, program)
+            renderer.render(ctx, glContext, program, twglModule)
             handleRendererSuccess(renderer.id)
           } catch (error) {
             handleRendererFailure(renderer.id)
@@ -436,10 +432,10 @@ export default function (
     }
   }
 
-  function registerRenderer<T = RectangleBufferCollector<any>>(
+  async function registerRenderer<T = RectangleBufferCollector<any>>(
     id: string,
     config: Omit<Renderer<T>, 'id'>,
-  ): { collector: T; unregister: () => void } {
+  ): Promise<{ collector: T; unregister: () => void }> {
     logger.log('Registered Renderer: ' + id)
     const renderer = { id, ...config }
     renderers.set(id, renderer as Renderer)
@@ -455,7 +451,7 @@ export default function (
       const glContext = gl()
       if (glContext) {
         const { shaders } = renderer.program()
-        const programInfo = registerProgram(id, glContext, shaders)
+        const programInfo = await registerProgram(id, glContext, shaders)
         rendererPrograms.set(id, programInfo)
       }
     }
@@ -964,13 +960,16 @@ export default function (
   }
 
   const registeredPrograms = new Map<string, ProgramInfo>()
-  function registerProgram(
+  async function registerProgram(
     id: string,
     gl: WebGLRenderingContext,
     shaders: string[],
   ) {
+    if (!twglModule) {
+      twglModule = (await import('./../libraries/twgl')).twgl
+    }
     if (!registeredPrograms.has(id)) {
-      registeredPrograms.set(id, createProgramInfo(gl, shaders))
+      registeredPrograms.set(id, twglModule.createProgramInfo(gl, shaders))
     }
 
     return registeredPrograms.get(id)!
@@ -990,7 +989,6 @@ export default function (
     getRawGL,
     setSharedUniforms,
     dpi,
-    registerProgram,
     webglSupported: computed(() => webglSupported.value && webglEnabled.value),
     webglEnabled,
     preferredRenderingMode,
