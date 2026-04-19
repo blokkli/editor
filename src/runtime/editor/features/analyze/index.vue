@@ -11,7 +11,7 @@
     <template #icon>
       <AnalyzeIcon :is-running />
     </template>
-    <template #default="{ isShown }">
+    <template #default="{ isShown, shouldRender }">
       <div v-if="ui.isProxyMode.value" class="bk-sidebar-padding bk">
         <InfoBox
           :text="
@@ -32,6 +32,7 @@
         :langcode="context.language"
         :analyze
         :is-shown
+        :should-render
       />
     </template>
     <template v-if="issueCount" #badge>

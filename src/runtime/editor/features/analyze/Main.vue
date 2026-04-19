@@ -53,7 +53,7 @@
       </p>
     </div>
 
-    <div v-if="results.length" class="bk-analyze-wrapper">
+    <div v-if="results.length && shouldRender" class="bk-analyze-wrapper">
       <div v-if="categoryOptions.length > 2" class="bk-analyze-form">
         <FormSelect
           id="category"
@@ -78,6 +78,7 @@ import {
   onMounted,
   onUnmounted,
   watch,
+  defineAsyncComponent,
 } from '#imports'
 import type {
   AnalyzeCategory,
@@ -87,9 +88,6 @@ import type {
   AnalyzeResultMapped,
 } from './analyzers/types'
 import type { AnalyzeProvider } from '#blokkli/editor/providers/analyze'
-import Results from './Results/Results.vue'
-import IgnoredResults from './Ignored/index.vue'
-import AnalyzeSummary from './Summary/index.vue'
 import { useAnalyzeHelper } from './helper'
 import {
   FormSelect,
@@ -99,11 +97,17 @@ import {
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { defineHighlight, onBlokkliEvent } from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
+import type { HighlightItem } from '#blokkli/editor/providers/plugin'
+
+const AnalyzeSummary = defineAsyncComponent(() => import('./Summary/index.vue'))
+const IgnoredResults = defineAsyncComponent(() => import('./Ignored/index.vue'))
+const Results = defineAsyncComponent(() => import('./Results/Results.vue'))
 
 const props = defineProps<{
   langcode: string
   analyze: AnalyzeProvider
   isShown: boolean
+  shouldRender: boolean
 }>()
 
 const ALL = 'ALL'
@@ -170,8 +174,7 @@ defineHighlight(() => {
     return
   }
 
-  const highlights: import('#blokkli/editor/providers/plugin').HighlightItem[] =
-    []
+  const highlights: HighlightItem[] = []
 
   for (const result of activeResults.value) {
     if (result.status !== 'incomplete' && result.status !== 'violation') {
