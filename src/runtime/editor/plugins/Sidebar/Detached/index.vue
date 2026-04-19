@@ -32,7 +32,7 @@
         >
           <Icon
             :name="
-              region === 'left' ? 'bk_mdi_dock_to_left' : 'bk_mdi_dock_to_right'
+              region === 'left' ? 'bk_mdi_dock_to_right' : 'bk_mdi_dock_to_left'
             "
           />
         </button>
@@ -191,6 +191,10 @@ const headerHeight = computed(() => 40)
 
 const startMouseX = ref(0)
 const startMouseY = ref(0)
+const startX = ref(0)
+const startY = ref(0)
+const startWidth = ref(0)
+const startHeight = ref(0)
 
 const rootCursor = computed(() => {
   switch (mouseMode.value) {
@@ -259,52 +263,99 @@ const onMouseDown = (e: MouseEvent, mode: MouseMode) => {
   mouseMode.value = mode
   startMouseX.value = e.clientX
   startMouseY.value = e.clientY
+  // The visual position is `x - offsetX` (see `style` above). When the
+  // viewport shrinks (e.g. another sidebar attaches) `offsetX` visually
+  // pulls the sidebar back into view without changing `x`. Absorb that
+  // offset into `x` so the drag baseline matches the visual position;
+  // otherwise the first mousemove would jump by `offsetX`.
+  if (offsetX.value !== 0) {
+    x.value = x.value - offsetX.value
+  }
+  // Re-clamp position first (viewport may have shrunk since the last
+  // interaction), then size — `setSizes` uses the final x/y to compute
+  // maxWidth/maxHeight.
+  setCoordinates(x.value, y.value)
+  clampSizeToViewport()
+  // Capture the current position/size as the drag baseline so that clamping
+  // or stale storedData from a previous session can't offset subsequent drags.
+  startX.value = x.value
+  startY.value = y.value
+  startWidth.value = width.value
+  startHeight.value = height.value
 
   window.addEventListener('pointermove', onMouseMove, { capture: true })
   window.addEventListener('pointerup', onMouseUp, { capture: true })
 }
 
 const setCoordinates = (newX: number, newY: number) => {
-  x.value = Math.min(
-    Math.max(newX, ui.visibleViewport.value.x),
-    ui.visibleViewport.value.width + ui.visibleViewport.value.x - width.value,
+  // Inner `min` applies the right/bottom bound, outer `max` applies the
+  // left/top bound. When the two conflict (width > VV.width or height >
+  // VV.height) the left/top bound wins, keeping the sidebar inside the
+  // viewport; the size clamp that follows then reduces the size. The
+  // reverse order leaves `x` / `y` outside the viewport when the stored
+  // size exceeds the current viewport.
+  x.value = Math.max(
+    Math.min(
+      newX,
+      ui.visibleViewport.value.x + ui.visibleViewport.value.width - width.value,
+    ),
+    ui.visibleViewport.value.x,
   )
-  y.value = Math.min(
-    Math.max(newY, ui.visibleViewport.value.y),
-    ui.visibleViewport.value.y +
-      ui.visibleViewport.value.height -
-      headerHeight.value,
+  y.value = Math.max(
+    Math.min(
+      newY,
+      ui.visibleViewport.value.y +
+        ui.visibleViewport.value.height -
+        headerHeight.value,
+    ),
+    ui.visibleViewport.value.y,
   )
 }
 
 const setSizes = (newWidth?: number, newHeight?: number) => {
+  // Symmetric with the position clamps in `setCoordinates`: the width
+  // constraint mirrors `x + width ≤ visibleViewport.right`, the height
+  // constraint mirrors `y + height ≤ visibleViewport.bottom`. Inner `min`
+  // applies the max, outer `max` applies the min — so `minWidth` /
+  // `minHeight` always wins if the two conflict (a cramped viewport prefers
+  // overflowing the edge over a sub-usable sidebar with buttons cut off).
   if (newWidth !== undefined) {
     const maxWidth =
       ui.visibleViewport.value.x + ui.visibleViewport.value.width - x.value
-    userWidth.value = Math.min(Math.max(newWidth, props.minWidth), maxWidth)
+    userWidth.value = Math.max(Math.min(newWidth, maxWidth), props.minWidth)
   }
   if (newHeight !== undefined) {
-    userHeight.value = Math.min(
-      Math.max(newHeight, props.minHeight),
-      window.innerHeight - 50,
-    )
+    const maxHeight =
+      ui.visibleViewport.value.y + ui.visibleViewport.value.height - y.value
+    userHeight.value = Math.max(Math.min(newHeight, maxHeight), props.minHeight)
   }
+}
+
+/**
+ * Clamp `userWidth` / `userHeight` using the same max that `setSizes` uses
+ * during manual resizing. Used on load (a saved size from a previously-
+ * larger viewport may exceed the current viewport, putting title buttons
+ * off-screen) and on drag start (viewport may have shrunk since the last
+ * interaction, e.g. another sidebar attached).
+ */
+const clampSizeToViewport = () => {
+  setSizes(userWidth.value, userHeight.value)
 }
 
 const onMouseMove = (e: MouseEvent) => {
   if (mouseMode.value === 'move') {
     setCoordinates(
-      storedData.value.x + e.clientX - startMouseX.value,
-      storedData.value.y + e.clientY - startMouseY.value,
+      startX.value + e.clientX - startMouseX.value,
+      startY.value + e.clientY - startMouseY.value,
     )
   } else if (mouseMode.value === 'resize-right') {
-    setSizes(storedData.value.width + e.clientX - startMouseX.value)
+    setSizes(startWidth.value + e.clientX - startMouseX.value)
   } else if (mouseMode.value === 'resize-bottom') {
-    setSizes(undefined, storedData.value.height + e.clientY - startMouseY.value)
+    setSizes(undefined, startHeight.value + e.clientY - startMouseY.value)
   } else if (mouseMode.value === 'resize-bottom-right') {
     setSizes(
-      storedData.value.width + e.clientX - startMouseX.value,
-      storedData.value.height + e.clientY - startMouseY.value,
+      startWidth.value + e.clientX - startMouseX.value,
+      startHeight.value + e.clientY - startMouseY.value,
     )
   }
 }
@@ -336,7 +387,11 @@ const recalculatePositions = () => {
   storedData.value.viewportHeight = window.innerHeight
 }
 
+// Position first: `setCoordinates` now keeps x/y inside the viewport even
+// when stored size exceeds viewport. `clampSizeToViewport` then shrinks
+// size based on the final x/y, so both constraints end up consistent.
 recalculatePositions()
+clampSizeToViewport()
 
 watch(offsetX, () => {
   updateStored()

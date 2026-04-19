@@ -1,6 +1,8 @@
 <template>
   <Teleport v-if="isVisible" to="body">
-    <slot />
+    <div class="bk">
+      <slot />
+    </div>
   </Teleport>
 </template>
 
