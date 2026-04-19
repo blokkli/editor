@@ -1068,7 +1068,7 @@ onBlokkliEvent('canvas:draw', (e) => {
 .bk.bk-konami {
   --bg: #859018;
   @apply fixed top-0 left-0 z-[9999999999999] size-full;
-  @apply flex flex-col items-center justify-center gap-5;
+  @apply flex flex-col items-center justify-center gap-5 bg-mono-950/90;
 
   .bk-konami-game {
     @apply relative p-60 shadow-2xl outline outline-mono-900 outline-[5px];

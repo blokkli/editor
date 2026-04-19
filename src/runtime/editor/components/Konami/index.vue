@@ -1,7 +1,9 @@
 <template>
-  <BlokkliTransition name="slide-up">
-    <Game v-if="isEnabled" @close="isEnabled = false" />
-  </BlokkliTransition>
+  <Teleport to="body">
+    <BlokkliTransition name="slide-up">
+      <Game v-if="isEnabled" @close="isEnabled = false" />
+    </BlokkliTransition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>

@@ -22,9 +22,7 @@ export type FeaturesProvider = {
    * Features are mounted when their components are rendered in the editor.
    * This list is used to track which features are active in the current session.
    */
-  mountedFeatures: ComputedRef<
-    FeatureDefinition<AdapterMethods[]>[]
-  >
+  mountedFeatures: ComputedRef<FeatureDefinition<AdapterMethods[]>[]>
 
   /**
    * List of available beta features.
@@ -67,9 +65,7 @@ export type FeaturesProvider = {
 
 export default function (storage: StorageProvider): FeaturesProvider {
   const definitions = ref<FeatureDefinition[]>(featureDefinitions)
-  const mountedFeatures = ref<
-    FeatureDefinition<AdapterMethods[]>[]
-  >([])
+  const mountedFeatures = ref<FeatureDefinition<AdapterMethods[]>[]>([])
 
   if (import.meta.hot) {
     import.meta.hot.accept('#blokkli-build/features', (mod) => {
@@ -117,9 +113,7 @@ export default function (storage: StorageProvider): FeaturesProvider {
     mountedFeatures.value = mountedFeatures.value.filter((v) => v.id !== id)
   }
 
-  const mount = (
-    feature: FeatureDefinition<AdapterMethods[]>,
-  ) => {
+  const mount = (feature: FeatureDefinition<AdapterMethods[]>) => {
     mountedFeatures.value.push(feature)
   }
 

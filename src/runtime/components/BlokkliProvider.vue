@@ -1,5 +1,6 @@
 <template>
-  <div
+  <Component
+    :is="tag"
     ref="providerEl"
     :data-provider-uuid="entityUuid"
     :data-provider-entity-type="entityType"
@@ -70,7 +71,7 @@
         @edit="edit"
       />
     </ClientOnly>
-  </div>
+  </Component>
 </template>
 
 <script lang="ts" setup generic="T">
@@ -95,6 +96,10 @@ import type {
   EditPermission,
 } from '#blokkli/types/provider'
 import type { ValidProviderTypes } from '#blokkli-build/generated-types'
+import type PreviewProviderSFC from './../editor/components/PreviewProvider.vue'
+import type EditProviderSFC from './../editor/components/EditProvider.vue'
+import type BlokkliRootErrorBoundarySFC from './../editor/components/BlokkliRootErrorBoundary.vue'
+import type EditIndicatorSFC from './../editor/components/EditIndicator.vue'
 
 type BlokkliProviderProps = {
   /**
@@ -201,30 +206,39 @@ const providerEl = useTemplateRef('providerEl')
 
 // Guard editor imports with import.meta.client so the server build
 // tree-shakes the entire editor — these components only render inside
-// <ClientOnly> and are never needed during SSR.
-const PreviewProvider = import.meta.client
-  ? defineAsyncComponent(
-      () => import('./../editor/components/PreviewProvider.vue'),
-    )
-  : null
+// <ClientOnly> and are never needed during SSR. The casts preserve
+// per-component types for template prop/slot checking.
+const PreviewProvider = (
+  import.meta.client
+    ? defineAsyncComponent(
+        () => import('./../editor/components/PreviewProvider.vue'),
+      )
+    : null
+) as typeof PreviewProviderSFC
 
-const EditProvider = import.meta.client
-  ? defineAsyncComponent(
-      () => import('./../editor/components/EditProvider.vue'),
-    )
-  : null
+const EditProvider = (
+  import.meta.client
+    ? defineAsyncComponent(
+        () => import('./../editor/components/EditProvider.vue'),
+      )
+    : null
+) as typeof EditProviderSFC
 
-const BlokkliRootErrorBoundary = import.meta.client
-  ? defineAsyncComponent(
-      () => import('./../editor/components/BlokkliRootErrorBoundary.vue'),
-    )
-  : ('div' as never)
+const BlokkliRootErrorBoundary = (
+  import.meta.client
+    ? defineAsyncComponent(
+        () => import('./../editor/components/BlokkliRootErrorBoundary.vue'),
+      )
+    : null
+) as typeof BlokkliRootErrorBoundarySFC
 
-const EditIndicator = import.meta.client
-  ? defineAsyncComponent(
-      () => import('./../editor/components/EditIndicator.vue'),
-    )
-  : ('div' as never)
+const EditIndicator = (
+  import.meta.client
+    ? defineAsyncComponent(
+        () => import('./../editor/components/EditIndicator.vue'),
+      )
+    : null
+) as typeof EditIndicatorSFC
 
 const route = useRoute()
 const router = useRouter()
