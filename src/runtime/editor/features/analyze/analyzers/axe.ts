@@ -87,16 +87,17 @@ export default defineAnalyzer<{
     id: 'axe',
     label: 'Axe (Accessibility Check)',
     requireRawPage: true,
-    init: async function (context) {
-      const axeModule = await import('axe-core')
-      axe = axeModule.default as typeof import('axe-core')
+    run: async function (ctx) {
+      if (!axe) {
+        const axeModule = await import('axe-core')
+        axe = axeModule.default as typeof import('axe-core')
 
-      const locale = (await getLocale(context.interfaceLangcode)) ?? {}
-      axe.configure({
-        locale,
-      })
-    },
-    run: function () {
+        const locale = (await getLocale(ctx.langcode)) ?? {}
+        axe.configure({
+          locale,
+        })
+      }
+
       return axe
         .run(elementContext, options?.runOptions ?? {})
         .then((result) => {
