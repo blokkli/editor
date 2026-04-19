@@ -164,3 +164,43 @@ html {
     }
   }
 }
+
+.bk.bk-overlay-header {
+  @apply bg-black text-white flex items-center pl-10 text-base leading-none z-form-overlay-header;
+
+  > .bk-icon,
+  > .bk-blokkli-item-icon {
+    @apply w-auto h-auto mr-5;
+    svg {
+      @apply fill-current w-[1.25em] h-[1.25em];
+    }
+  }
+
+  h3 {
+    @apply font-bold;
+  }
+
+  > button {
+    @apply px-10 py-15 ml-auto flex items-center justify-center size-60;
+
+    .bk-icon {
+      @apply w-[1.25em] h-[1.25em];
+      svg {
+        @apply fill-current;
+      }
+    }
+  }
+
+  @screen md {
+    @apply pl-15 h-50 bg-mono-900;
+
+    > button {
+      @apply h-full aspect-square;
+      @apply hover:bg-mono-800;
+    }
+  }
+
+  @screen lg {
+    @apply h-60;
+  }
+}

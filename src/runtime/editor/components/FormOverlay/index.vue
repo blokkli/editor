@@ -85,17 +85,5 @@ export default {
   .bk-resizable-inner {
     @apply h-full flex flex-col;
   }
-
-  .bk.bk-overlay-header {
-    @apply z-form-overlay-header;
-    @screen md {
-      @apply pl-15 h-50 bg-mono-900;
-
-      > button {
-        @apply h-full aspect-square;
-        @apply hover:bg-mono-800;
-      }
-    }
-  }
 }
 </style>
