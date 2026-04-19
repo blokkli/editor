@@ -45,6 +45,10 @@ defineSlots<{
   default(props: { mutatedEntity: T }): any
 }>()
 
+const emit = defineEmits<{
+  (e: 'ready'): void
+}>()
+
 const context = computed<AdapterContext>(() => {
   return {
     entityType: props.entityType,
@@ -240,6 +244,7 @@ onMounted(() => {
     // We are a standalone page in preview mode. Setup polling for changes.
     checkChangedDate()
   }
+  emit('ready')
 })
 
 onBeforeUnmount(() => {

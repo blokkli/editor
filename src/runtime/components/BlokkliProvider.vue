@@ -17,6 +17,7 @@
           :entity-bundle
           :language
           :provider-type
+          @ready="isReady = true"
         >
           <slot
             :entity="mutatedEntity"
@@ -37,6 +38,7 @@
           :isolate
           :permissions
           :provider-type
+          @ready="isReady = true"
         >
           <slot
             :is-editing
@@ -46,6 +48,7 @@
           />
         </EditProvider>
       </BlokkliRootErrorBoundary>
+      <div v-if="!isReady" style="height: 100vh" />
     </ClientOnly>
 
     <slot
@@ -227,6 +230,7 @@ const route = useRoute()
 const router = useRouter()
 
 const shouldRender = ref(false)
+const isReady = ref(false)
 
 const isInEditor = computed<boolean>(
   () =>

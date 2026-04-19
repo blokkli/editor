@@ -176,6 +176,10 @@ defineSlots<{
   default(props: { mutatedEntity: T; key: string }): any
 }>()
 
+const emit = defineEmits<{
+  (e: 'ready'): void
+}>()
+
 const mainLayoutElement = useTemplateRef('mainLayoutElement')
 const viewportElement = useTemplateRef('viewportElement')
 
@@ -506,6 +510,7 @@ onMounted(async () => {
   await nextTick()
   isInitializing.value = false
   broadcast.emit('editorLoaded', { uuid: props.entityUuid })
+  emit('ready')
   baseLogger.log('onMounted - END')
 })
 
