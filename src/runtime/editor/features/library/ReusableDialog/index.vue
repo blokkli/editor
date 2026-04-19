@@ -44,44 +44,35 @@
         <div class="bk-form-label">
           {{ $t('libraryPreviewLabel', 'Preview') }}
         </div>
-        <div
-          class="bk-dialog-content-element"
-          :class="[backgroundClass, { 'bk-default-bg': !backgroundClass }]"
-          :style="backgroundClass ? {} : { backgroundColor }"
-        >
-          <div ref="previewEl" />
-        </div>
+        <BlockPreviewRenderer :uuids="[uuid]" />
       </FormItem>
     </div>
   </DialogModal>
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli, onMounted, useTemplateRef, watch } from '#imports'
+import { ref, useBlokkli, watch } from '#imports'
 import {
   DialogModal,
   InfoBox,
   FormText,
   FormItem,
+  BlockPreviewRenderer,
 } from '#blokkli/editor/components'
-import { realBackgroundColor } from '#blokkli/editor/helpers/dom'
 
 defineEmits<{
   (e: 'confirm', label: string): void
   (e: 'cancel'): void
 }>()
 
-const { dom, $t, blocks, ui } = useBlokkli()
+const { $t, ui } = useBlokkli()
 
-const props = defineProps<{
+defineProps<{
   uuid: string
   backgroundClass?: string
 }>()
 
 const label = ref('')
-const width = ref(450)
-const previewEl = useTemplateRef('previewEl')
-const backgroundColor = ref('')
 
 watch(
   label,
@@ -92,28 +83,4 @@ watch(
     once: true,
   },
 )
-
-onMounted(() => {
-  if (previewEl.value) {
-    const item = blocks.getBlock(props.uuid)
-    if (!item) {
-      return
-    }
-
-    // if (item.editTitle) {
-    //   label.value = item.editTitle.substring(0, 40)
-    // }
-
-    const element = dom.getDragElement(item)
-    if (!element) {
-      return
-    }
-    const markup = dom.getDropElementMarkup(item)
-    width.value = element.getBoundingClientRect().width + 40
-    const clone = document.createElement('div')
-    clone.innerHTML = markup
-    previewEl.value.appendChild(clone)
-    backgroundColor.value = realBackgroundColor(element)
-  }
-})
 </script>

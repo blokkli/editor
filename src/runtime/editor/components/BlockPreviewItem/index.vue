@@ -45,6 +45,7 @@ import {
   INJECT_IS_IN_REUSABLE,
   INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/injections'
+import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const props = withDefaults(
   defineProps<{
@@ -79,16 +80,18 @@ const bundleLabel = computed(() =>
     : '',
 )
 
-// Get the first item's bundle to determine preview settings
-const firstBundle = computed(
-  () => props.bundle || normalizedItems.value[0]?.bundle,
-)
+const definition = computed(() => {
+  const item = normalizedItems.value[0]
+  const bundle = props.bundle || item?.bundle
+  if (!bundle) {
+    return null
+  }
+  if (bundle === fragmentBlockBundle && item?.props) {
+    return definitions.getFragmentDefinition(item.props.name)
+  }
 
-const definition = computed(() =>
-  firstBundle.value
-    ? definitions.getDefaultDefinition(firstBundle.value)
-    : null,
-)
+  return definitions.getDefaultDefinition(bundle)
+})
 
 const previewWidth = computed(
   () => definition.value?.editor?.previewWidth || 400,
