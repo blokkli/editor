@@ -1,3 +1,5 @@
+import { defineAsyncComponent } from 'vue'
+
 export { default as AddListItem } from './AddListItem/index.vue'
 export { default as ArtboardTooltip } from './ArtboardTooltip/index.vue'
 export { default as AutoHeight } from './AutoHeight/index.vue'
@@ -5,13 +7,9 @@ export { default as Banner } from './Banner/index.vue'
 export { default as BannerInner } from './Banner/Inner.vue'
 export { default as BetaIndicator } from './BetaIndicator/index.vue'
 export { default as BlockPreviewItem } from './BlockPreviewItem/index.vue'
-export { default as BlockPreviewRenderer } from './BlockPreviewRenderer/index.vue'
 export { default as BlokkliTransition } from './Transition/index.vue'
-export { default as BundleSelector } from './BundleSelector/index.vue'
 export { default as ConfigForm } from './PluginConfigForm/index.vue'
 export { default as ConfigFormInline } from './PluginConfigFormInline/index.vue'
-export { default as DialogModal } from './Dialog/index.vue'
-export { default as DiffApproval } from './DiffApproval/index.vue'
 export { default as DiffDisplay } from './DiffViewer/DiffDisplay/index.vue'
 export { default as DiffValue } from './DiffViewer/DiffValue.vue'
 export { default as DiffViewerState } from './DiffViewer/State.vue'
@@ -38,13 +36,11 @@ export { default as InfoBox } from './InfoBox/index.vue'
 export { default as ItemIcon } from './ItemIcon/index.vue'
 export { default as ItemIconBox } from './ItemIconBox/index.vue'
 export { default as Loading } from './Loading/index.vue'
-export { default as NestedEditorOverlay } from './NestedEditorOverlay/index.vue'
 export { default as Pagination } from './Pagination/index.vue'
 export { default as Popup } from './Popup/index.vue'
 export { default as RelativeTime } from './RelativeTime/index.vue'
 export { default as Resizable } from './Resizable/index.vue'
 export { default as ScaleToFit } from './ScaleToFit/index.vue'
-export { default as ScheduleDate } from './ScheduleDate/index.vue'
 export { default as ScrollBoundary } from './ScrollBoundary/index.vue'
 export { default as SearchOverlay } from './SearchOverlay/index.vue'
 export { default as ShortcutIndicator } from './ShortcutIndicator/index.vue'
@@ -58,3 +54,27 @@ export { default as Tooltip } from './Tooltip/index.vue'
 export { default as TooltipContext } from './Tooltip/Context.vue'
 export { default as TooltipStatus } from './Tooltip/Status.vue'
 export { default as NotEditStateInfo } from './NotEditStateInfo/index.vue'
+
+export const NestedEditorOverlay = defineAsyncComponent(
+  () => import('./NestedEditorOverlay/index.vue'),
+)
+
+export const BundleSelector = defineAsyncComponent(
+  () => import('./BundleSelector/index.vue'),
+)
+
+export const DialogModal = defineAsyncComponent(
+  () => import('./Dialog/index.vue'),
+)
+
+export const DiffApproval = defineAsyncComponent(
+  () => import('./DiffApproval/index.vue'),
+)
+
+export const BlockPreviewRenderer = defineAsyncComponent(
+  () => import('./BlockPreviewRenderer/index.vue'),
+)
+
+export const ScheduleDate = defineAsyncComponent(
+  () => import('./ScheduleDate/index.vue'),
+)
