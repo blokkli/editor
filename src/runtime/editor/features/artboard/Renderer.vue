@@ -59,6 +59,7 @@ import {
   useBlokkli,
   onMounted,
   onBeforeUnmount,
+  defineAsyncComponent,
 } from '#imports'
 import {
   calculateIntersection,
@@ -71,7 +72,6 @@ import {
   PluginContextMenu,
 } from '#blokkli/editor/plugins'
 import type { ContextMenu } from '#blokkli/editor/types/ui'
-import Overview from './Overview/index.vue'
 import Scrollbar from './Scrollbar/index.vue'
 import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'
 import { asValidNumber } from '#blokkli/editor/helpers/math'
@@ -87,6 +87,8 @@ import {
   dom as domPlugin,
 } from 'artboard-deluxe'
 import type { Coord } from '#blokkli/editor/types/geometry'
+
+const Overview = defineAsyncComponent(() => import('./Overview/index.vue'))
 
 const props = defineProps<{
   persist: boolean

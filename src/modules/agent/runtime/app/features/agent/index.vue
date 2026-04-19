@@ -17,67 +17,18 @@
       <Icon name="stars" class="bk-is-animated" />
     </template>
     <template #default="{ isShown, shouldRender }">
-      <AgentPanel
+      <AgentContainer
         v-if="shouldRender"
         :is-shown
         :agent-name
-        :conversation
-        :active-item
-        :is-thinking
-        :is-processing
-        :is-connected
-        :has-been-ready
-        :pending-tool-call
-        :pending-mutation
-        :auto-approve
-        :conversation-list
-        :show-conversation-list
-        :plan
-        :tool-details
-        :usage-turns="usageTurns"
-        :page-context="pageContext"
-        :supports-feedback="!!adapter.submitConversationFeedback"
-        :feedback-item-ids="feedbackItemIds"
-        @connect="connect"
-        @send-prompt="sendPrompt"
-        @retry="retry"
-        @cancel="cancel"
-        @approve="approve"
-        @reject="reject"
-        @set-auto-approve="setAutoApprove"
-        @new-conversation="newConversation"
-        @get-transcript="getTranscript"
-        @tool-component-done="onToolComponentDone"
-        @switch-conversation="switchConversation"
-        @delete-conversation="deleteConversation"
-        @submit-feedback="onSubmitFeedback"
-        @feedback-done="onFeedbackDone"
-        @show-conversations="onShowConversations"
-        @hide-conversations="onHideConversations"
-        @approve-plan="approvePlan"
-        @reject-plan="rejectPlan"
+        :adapter
+        :pending-prompt-request="pendingPromptRequest"
+        @consumed="pendingPromptRequest = null"
       />
     </template>
   </PluginSidebar>
 
   <Teleport :to="ui.mainLayoutElement.value">
-    <BlokkliTransition name="slide-up">
-      <DialogModal
-        v-if="showTranscript"
-        id="agent-transcript"
-        title="Agent Transcript"
-        :width="900"
-        hide-buttons
-        full-screen
-        @cancel="showTranscript = false"
-      >
-        <AgentTranscript
-          v-if="transcriptContent"
-          :transcript="transcriptContent"
-        />
-      </DialogModal>
-    </BlokkliTransition>
-
     <Popup
       id="agent"
       ref="popup"
@@ -97,29 +48,20 @@
 import {
   useBlokkli,
   defineBlokkliFeature,
-  onBeforeUnmount,
   computed,
+  shallowRef,
   useTemplateRef,
   defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import {
-  DialogModal,
-  BlokkliTransition,
-  Icon,
-  Popup,
-} from '#blokkli/editor/components'
-import agentProvider from '#blokkli/agent/app/composables/agentProvider'
-import { agentPrompts, agentName } from '#blokkli-build/agent-client'
-import type { AgentConversationFeedbackRating } from './types'
+import { Icon, Popup } from '#blokkli/editor/components'
+import { agentPrompts, agentName } from '#blokkli-build/agent-prompts'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
+import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
+import type { PendingPromptRequest } from './types'
 
-const AgentTranscript = defineAsyncComponent(
-  () => import('./Transcript/index.vue'),
-)
-
-const AgentPanel = defineAsyncComponent(() => import('./Panel/index.vue'))
+const AgentContainer = defineAsyncComponent(() => import('./Container.vue'))
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',
@@ -139,6 +81,8 @@ const app = useBlokkli()
 const { $t, ui } = app
 
 const popup = useTemplateRef('popup')
+
+const pendingPromptRequest = shallowRef<PendingPromptRequest | null>(null)
 
 function closeAgentPopup() {
   if (popup.value) {
@@ -164,87 +108,6 @@ const tooltipTitle = computed(() => {
   )
 })
 
-const {
-  isConnected,
-  hasBeenReady,
-  connect,
-  disconnect,
-  conversation,
-  activeItem,
-  isProcessing,
-  isThinking,
-  autoApprove,
-  pendingMutation,
-  pendingToolCall,
-  plan,
-  approvePlan,
-  rejectPlan,
-  usageTurns,
-  sendPrompt,
-  runToolForPrompt,
-  retry,
-  approve,
-  reject,
-  setAutoApprove,
-  cancel,
-  newConversation,
-  getTranscript,
-  onToolComponentDone,
-  transcriptContent,
-  showTranscript,
-  toolDetails,
-  conversationList,
-  showConversationList,
-  switchConversation,
-  deleteConversation,
-  refreshConversationList,
-  activeConversationId,
-  feedbackItemIds,
-  pageContext,
-} = agentProvider(app, adapter, agentName)
-
-async function onSubmitFeedback(
-  rating: AgentConversationFeedbackRating,
-  comment?: string,
-) {
-  if (!adapter.submitConversationFeedback) return
-  const conversationId = activeConversationId.value
-  if (!conversationId) return
-  const lastItem = conversation.value[conversation.value.length - 1]
-  if (!lastItem) return
-
-  try {
-    await adapter.submitConversationFeedback({
-      conversationId,
-      rating,
-      lastItemId: lastItem.id,
-      comment,
-    })
-  } catch (e) {
-    console.warn('[blokkli agent] Failed to submit feedback:', e)
-  }
-}
-
-function onFeedbackDone() {
-  const lastItem = conversation.value[conversation.value.length - 1]
-  if (lastItem) {
-    feedbackItemIds.value.add(lastItem.id)
-  }
-}
-
-async function onShowConversations() {
-  await refreshConversationList()
-  showConversationList.value = true
-}
-
-function onHideConversations() {
-  showConversationList.value = false
-}
-
-onBeforeUnmount(() => {
-  disconnect()
-})
-
 defineItemDropdownAction(() => {
   return agentPrompts.flatMap((promptFactory) => {
     const promptsResult =
@@ -252,9 +115,7 @@ defineItemDropdownAction(() => {
     const prompts = Array.isArray(promptsResult)
       ? promptsResult
       : [promptsResult]
-    return prompts.map<ItemDropdownAction>((prompt) => {
-      const promptText = prompt.getPrompt(app)
-      const userPromptText = prompt.getUserPrompt?.(app)
+    return prompts.map<ItemDropdownAction>((prompt: AgentPromptDefinition) => {
       return {
         id: 'agent:prompt:' + prompt.id,
         label: prompt.getLabel(app),
@@ -262,35 +123,15 @@ defineItemDropdownAction(() => {
         group: 'agent',
         variant: 'agent',
         weight: -900,
-        callback: async () => {
+        callback: () => {
+          // Open the sidebar (which triggers the container to mount on first
+          // click) and queue the prompt. The container picks it up via its
+          // `immediate: true` watcher — either on mount or on change.
           app.eventBus.emit('sidebar:open', 'agent')
-          const selectedUuids = [...app.selection.uuids.value]
-
-          let preSeededResults = undefined
-          let autoExecuteTools = undefined
-
-          if (prompt.preExecute) {
-            const preResult = await prompt.preExecute({
-              app,
-              selectedUuids,
-              runTool: runToolForPrompt,
-            })
-            if (preResult) {
-              preSeededResults = preResult.preSeededResults
-              autoExecuteTools = preResult.autoExecuteTools
-            }
+          pendingPromptRequest.value = {
+            prompt,
+            selectedUuids: [...app.selection.uuids.value],
           }
-
-          sendPrompt(
-            promptText,
-            userPromptText,
-            selectedUuids,
-            undefined,
-            prompt.tools,
-            prompt.skills,
-            preSeededResults,
-            autoExecuteTools,
-          )
         },
       }
     })

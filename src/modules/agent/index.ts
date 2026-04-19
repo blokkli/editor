@@ -4,6 +4,7 @@ import * as path from 'node:path'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { AgentCollector } from './build/AgentCollector'
 import createClientTemplate from './build/templates/client'
+import createPromptsTemplate from './build/templates/prompts'
 import createServerTemplate from './build/templates/server'
 import { agentToolStripPlugin } from './build/AgentToolStripPlugin'
 import type {
@@ -147,16 +148,14 @@ export default defineNuxtConfig({
     })
     ctx.context.addCollector(skillsCollector)
 
-    // Register client template for MCP tools, prompts, and skills
+    // Register the heavy client template (tools, routes, models, etc.) and
+    // the lightweight prompts template (prompts + agent name only).
+    // Split into two so that the outer agent feature component can import
+    // prompts for dropdown registration without pulling in tools/zod/ws.
     ctx.context.addTemplate(
-      createClientTemplate(
-        mcpTools,
-        promptsCollector,
-        skillsCollector,
-        options,
-        routes,
-      ),
+      createClientTemplate(mcpTools, skillsCollector, options, routes),
     )
+    ctx.context.addTemplate(createPromptsTemplate(promptsCollector, options))
 
     // Initialize system prompt collector with both module and project directories
     const moduleSystemPromptsDir = moduleResolver.resolve(

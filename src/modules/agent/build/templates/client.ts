@@ -3,11 +3,14 @@ import type { AgentCollector } from '../AgentCollector'
 import type { AgentModuleOptions, AgentModuleOptionsRoutes } from '../types'
 
 /**
- * Creates the client template that imports all tool and prompt files and exports them as arrays.
+ * Creates the client template that imports all tool files and exports tool
+ * definitions, routes, and related constants. Does NOT include prompts or
+ * the agent name — those live in the lightweight `agent-prompts` template so
+ * that dropdown registration in the outer agent feature doesn't pull the
+ * tool/zod/websocket chain into the main editor chunk.
  */
 export default function (
   toolCollector: AgentCollector,
-  promptCollector: AgentCollector,
   skillsCollector: AgentCollector,
   options: AgentModuleOptions,
   routes: AgentModuleOptionsRoutes,
@@ -18,7 +21,6 @@ export default function (
       const rel = (p: string) =>
         ctx.helper.toModuleBuildRelative(p).replace(/\.ts$/, '')
       const tools = toolCollector.getItems()
-      const prompts = promptCollector.getItems()
 
       const imports: string[] = []
       const exports: string[] = []
@@ -35,20 +37,6 @@ export default function (
         )
       }
 
-      // Prompt imports and export
-      for (const prompt of prompts) {
-        imports.push(
-          `import ${prompt.importName} from '${rel(prompt.filePath)}'`,
-        )
-      }
-      if (prompts.length === 0) {
-        exports.push('export const agentPrompts = []')
-      } else {
-        exports.push(
-          `export const agentPrompts = [\n  ${prompts.map((p) => p.importName).join(',\n  ')}\n]`,
-        )
-      }
-
       // Default prompts
       exports.push(
         `export const defaultPrompts = ${JSON.stringify(options.defaultPrompts ?? [])}`,
@@ -56,10 +44,6 @@ export default function (
 
       // Models
       exports.push(`export const models = ${JSON.stringify(options.models)}`)
-
-      exports.push(
-        `export const agentName = ${JSON.stringify(options.agentName ?? 'Superblökkli')}`,
-      )
 
       exports.push(
         `export const hasWebFetch = ${JSON.stringify(!!options.allowedFetchOrigins)}`,
@@ -127,7 +111,7 @@ export default function (
       }
 
       return `import type { z } from 'zod'
-import type { McpToolDefinition, AgentPromptItem } from '#blokkli/agent/app/types'
+import type { McpToolDefinition } from '#blokkli/agent/app/types'
 import type { AgentModelDefinition } from '#blokkli/agent/shared/types'
 
 type _ToolParams<T> = T extends { paramsSchema: infer P extends z.ZodType } ? z.infer<P> : never
@@ -143,9 +127,7 @@ export const routeFetch: string
 export const routeStream: string
 export const routeRoute: string
 export const mcpTools: McpToolDefinition[]
-export const agentPrompts: AgentPromptItem[]
 export const defaultPrompts: string[]
-export const agentName: string
 export const models: AgentModelDefinition[]
 export const hasWebFetch: boolean
 export const toolNames: readonly AgentToolName[]

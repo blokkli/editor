@@ -1,3 +1,14 @@
+import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
+
+/**
+ * A pending request from the outer feature's item-dropdown action that the
+ * inner container consumes on mount (or on change if already mounted).
+ */
+export type PendingPromptRequest = {
+  prompt: AgentPromptDefinition
+  selectedUuids: string[]
+}
+
 export type AgentConversationData = {
   uuid: string
   title: string

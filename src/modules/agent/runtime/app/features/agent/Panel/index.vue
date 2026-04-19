@@ -144,7 +144,6 @@ import {
   watch,
   onBeforeUnmount,
   useBlokkli,
-  onMounted,
 } from '#imports'
 import { Icon, TransitionHeight } from '#blokkli/editor/components'
 import Conversation from './Conversation/index.vue'
@@ -398,8 +397,4 @@ function onFileDrop(dropped: Attachment[]) {
 function onNewConversation() {
   emit('newConversation')
 }
-
-onMounted(() => {
-  console.log('MOUNTED')
-})
 </script>
