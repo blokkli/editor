@@ -14,7 +14,7 @@ export type FeaturesProvider = {
    *
    * Updates automatically via HMR during development.
    */
-  features: ComputedRef<FeatureDefinition[]>
+  definitions: ComputedRef<FeatureDefinition[]>
 
   /**
    * List of currently mounted features.
@@ -23,7 +23,7 @@ export type FeaturesProvider = {
    * This list is used to track which features are active in the current session.
    */
   mountedFeatures: ComputedRef<
-    FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]
+    FeatureDefinition<AdapterMethods[]>[]
   >
 
   /**
@@ -52,7 +52,7 @@ export type FeaturesProvider = {
    *
    * @param feature - The feature definition to mount
    */
-  mount: (feature: FeatureDefinition<AdapterMethods[], ValidFeatureKey>) => void
+  mount: (feature: FeatureDefinition<AdapterMethods[]>) => void
 
   /**
    * Unmount a feature.
@@ -68,7 +68,7 @@ export type FeaturesProvider = {
 export default function (storage: StorageProvider): FeaturesProvider {
   const definitions = ref<FeatureDefinition[]>(featureDefinitions)
   const mountedFeatures = ref<
-    FeatureDefinition<AdapterMethods[], ValidFeatureKey>[]
+    FeatureDefinition<AdapterMethods[]>[]
   >([])
 
   if (import.meta.hot) {
@@ -118,13 +118,13 @@ export default function (storage: StorageProvider): FeaturesProvider {
   }
 
   const mount = (
-    feature: FeatureDefinition<AdapterMethods[], ValidFeatureKey>,
+    feature: FeatureDefinition<AdapterMethods[]>,
   ) => {
     mountedFeatures.value.push(feature)
   }
 
   return {
-    features: computed(() => definitions.value),
+    definitions: computed(() => definitions.value),
     mountedFeatures: computed(() => mountedFeatures.value),
     betaFeatures,
     enabledBetaFeatures,

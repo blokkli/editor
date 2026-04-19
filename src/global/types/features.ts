@@ -52,7 +52,6 @@ export type FeatureDefinitionSettingBase<Icon extends string = string> =
 export type FeatureDefinitionBase<
   AdapterMethodsType extends string = string,
   Icon extends string = string,
-  FeatureId extends string = string,
 > = {
   /**
    * The unique ID of the feature.
@@ -73,15 +72,6 @@ export type FeatureDefinitionBase<
    * Description of the feature.
    */
   description?: string
-
-  /**
-   * Dependencies of the feature.
-   *
-   * Loads this feature only after all of the given features have loaded.
-   *
-   * If one of the dependencies does not load, this feature won't load too.
-   */
-  dependencies?: FeatureId[]
 
   /**
    * The viewports for which this feature will be loaded.

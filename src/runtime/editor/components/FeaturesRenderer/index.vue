@@ -29,7 +29,7 @@ const disabledFeatures = adapter.getDisabledFeatures
   : await Promise.resolve([])
 
 const availableFeatures = computed<ValidFeatureKey[]>(() => {
-  return features.features.value
+  return features.definitions.value
     .filter((feature) => {
       // Feature is disabled at runtime.
       if (disabledFeatures.includes(feature.id)) {
@@ -60,14 +60,6 @@ const availableFeatures = computed<ValidFeatureKey[]>(() => {
         if (!hasAllPermissions) {
           return false
         }
-      }
-
-      // Feature has dependencies on other features that are not yet rendered.
-      if (
-        feature.dependencies?.length &&
-        !feature.dependencies.every((id) => renderedFeatures.value.includes(id))
-      ) {
-        return false
       }
 
       if (

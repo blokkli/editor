@@ -61,7 +61,6 @@ const { adapter } = defineBlokkliFeature({
   label: 'Templates',
   description: 'Add blocks from templates.',
   requiredAdapterMethods: ['templatesAdd', 'templatesSearch'],
-  dependencies: ['add-list', 'entity-title'],
 })
 
 const { state, $t, ui, selection } = useBlokkli()

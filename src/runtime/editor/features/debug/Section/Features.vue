@@ -20,13 +20,12 @@ import { StatusIndicator } from '#blokkli/editor/components'
 const { features } = useBlokkli()
 
 const featuresList = computed(() => {
-  return features.features.value.map((v) => {
+  return features.definitions.value.map((v) => {
     const feature = features.mountedFeatures.value.find((f) => f.id === v.id)
     return {
       id: v.id,
       label: v.label,
       description: v.description,
-      dependencies: v.dependencies?.join(', '),
       mounted: !!feature,
     }
   })

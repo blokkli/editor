@@ -10,7 +10,6 @@ import type {
   FullBlokkliAdapter,
   AdapterMethods,
 } from '#blokkli/editor/adapter'
-import type { ValidFeatureKey } from '#blokkli-build/features'
 import { settingsOverride } from '#blokkli-build/editor-config'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'
 import type { AdaptersProvider } from '#blokkli/editor/providers/adapters'
@@ -34,7 +33,7 @@ type RequireAdapterMethods<
   Methods extends readonly AdapterMethods[],
 > = Omit<T, Methods[number]> & Required<Pick<T, Methods[number] & keyof T>>
 
-type DefineBlokkliFeature<F extends FeatureDefinition<any, any>> = {
+type DefineBlokkliFeature<F extends FeatureDefinition<any>> = {
   adapter: F['requiredAdapterMethods'] extends readonly AdapterMethods[]
     ? RequireAdapterMethods<
         FullBlokkliAdapter<any>,
@@ -47,7 +46,7 @@ type DefineBlokkliFeature<F extends FeatureDefinition<any, any>> = {
 }
 
 export function defineBlokkliFeature<
-  const F extends FeatureDefinition<AdapterMethods[], ValidFeatureKey>,
+  const F extends FeatureDefinition<AdapterMethods[]>,
 >(feature: F): DefineBlokkliFeature<F> {
   const { adapter, adapters, storage, features, debug } = useBlokkli()
 

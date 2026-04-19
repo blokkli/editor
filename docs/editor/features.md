@@ -79,11 +79,6 @@ callback.
 
 This composable + compiler macro is used to define a feature. It is required.
 
-### dependencies: `string[]`
-
-When set the feature will only be mounted if the defined dependencies (IDs of
-other features) are mounted.
-
 ### viewports: `Viewport[]`
 
 This allows you to only mount the feature for the given viewports. Possible

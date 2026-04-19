@@ -16,11 +16,8 @@ export type FeatureDefinitionSetting =
   | FeatureDefinitionSettingMethod<BlokkliApp>
   | FeatureDefinitionSettingSlider
 
-export type FeatureDefinition<
-  Methods extends AdapterMethods[] = [],
-  T extends string = '',
-> = Omit<
-  FeatureDefinitionBase<AdapterMethods, BlokkliIcon, T>,
+export type FeatureDefinition<Methods extends AdapterMethods[] = []> = Omit<
+  FeatureDefinitionBase<AdapterMethods, BlokkliIcon>,
   'requiredAdapterMethods' | 'settings' | 'requiredPermissions'
 > & {
   requiredAdapterMethods?: [...Methods]

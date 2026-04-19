@@ -91,7 +91,6 @@ const { adapter } = defineBlokkliFeature({
   description:
     'Implements support for a block library to manage reusable blocks.',
   requiredAdapterMethods: ['makeBlockReusable', 'detachReusableBlock'],
-  dependencies: ['add-list'],
 })
 
 const { selection, state, types, $t, eventBus, definitions, ui, permissions } =
