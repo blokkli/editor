@@ -68,7 +68,8 @@
               :key="isRenderedDetached ? 'detached' : 'attached'"
               :scrolled-to-end
               :is-detached="isRenderedDetached"
-              :is-shown="isShown"
+              :is-shown
+              :should-render
               :width
               :height
               :toggle-sidebar
@@ -102,12 +103,13 @@
         <div ref="sidebarContent" class="bk-sidebar-content">
           <slot
             :key="isRenderedDetached ? 'detached' : 'attached'"
-            :scrolled-to-end="scrolledToEnd"
+            :scrolled-to-end
             :is-detached="isRenderedDetached"
-            :is-shown="isShown"
+            :is-shown
+            :should-render
             :width="undefined"
             :height="undefined"
-            :toggle-sidebar="toggleSidebar"
+            :toggle-sidebar
             :is-resizing="false"
           />
         </div>
@@ -307,6 +309,13 @@ const isShown = computed(
     (activeSidebar.value === props.id || isRenderedDetached.value) &&
     !isDisabled.value,
 )
+
+const shouldRender = ref(isShown.value)
+watch(isShown, (v) => {
+  if (v) {
+    shouldRender.value = true
+  }
+})
 
 watch(isDisabled, (v) => {
   if (v && activeSidebar.value === props.id) {

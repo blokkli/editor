@@ -4,10 +4,7 @@
 
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
-import type {
-  BufferInfo,
-  TwglHelpers,
-} from '#blokkli/editor/libraries/twgl'
+import type { BufferInfo, TwglHelpers } from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'

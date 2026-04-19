@@ -18,10 +18,7 @@ import {
 } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor, rgbaToString } from '#blokkli/editor/helpers/color'
 import { ref, computed, useBlokkli } from '#imports'
-import type {
-  BufferInfo,
-  TwglHelpers,
-} from '#blokkli/editor/libraries/twgl'
+import type { BufferInfo, TwglHelpers } from '#blokkli/editor/libraries/twgl'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'

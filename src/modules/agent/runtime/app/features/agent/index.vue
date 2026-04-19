@@ -16,8 +16,9 @@
     <template #icon>
       <Icon name="stars" class="bk-is-animated" />
     </template>
-    <template #default="{ isShown }">
+    <template #default="{ isShown, shouldRender }">
       <AgentPanel
+        v-if="shouldRender"
         :is-shown
         :agent-name
         :conversation
@@ -99,6 +100,7 @@ import {
   onBeforeUnmount,
   computed,
   useTemplateRef,
+  defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import {
@@ -109,11 +111,15 @@ import {
 } from '#blokkli/editor/components'
 import agentProvider from '#blokkli/agent/app/composables/agentProvider'
 import { agentPrompts, agentName } from '#blokkli-build/agent-client'
-import AgentPanel from './Panel/index.vue'
-import AgentTranscript from './Transcript/index.vue'
 import type { AgentConversationFeedbackRating } from './types'
 import { defineItemDropdownAction } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
+
+const AgentTranscript = defineAsyncComponent(
+  () => import('./Transcript/index.vue'),
+)
+
+const AgentPanel = defineAsyncComponent(() => import('./Panel/index.vue'))
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',

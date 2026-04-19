@@ -8,10 +8,7 @@ import { intersects } from '#blokkli/editor/helpers/geometry'
 import { toShaderColor } from '#blokkli/editor/helpers/color'
 import vs from './vertex.glsl?raw'
 import fs from './fragment.glsl?raw'
-import type {
-  BufferInfo,
-  TwglHelpers,
-} from '#blokkli/editor/libraries/twgl'
+import type { BufferInfo, TwglHelpers } from '#blokkli/editor/libraries/twgl'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { defineRenderer, useDebugLogger } from '#blokkli/editor/composables'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
