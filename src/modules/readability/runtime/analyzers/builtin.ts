@@ -3,7 +3,6 @@ import type {
   ReadabilityAnalyzer,
   ReadabilityBand,
 } from '#blokkli/editor/features/analyze/readability/types'
-import type { Language, TextReadability } from '@lunarisapp/readability'
 
 type LangCode = 'en' | 'de' | 'fr' | 'it'
 
@@ -16,7 +15,7 @@ type ReferenceRow = {
 
 type ReadabilityScoreConfig = {
   label: string
-  compute: (tr: TextReadability, text: string) => number
+  compute: (text: string, ctx: ComputeContext) => number
   direction: ScoreDirection
   bands: { easy: number; ok: number }
   impactThresholds: [number, number, number]
@@ -27,6 +26,196 @@ type ReadabilityScoreConfig = {
    * scores are converted to a human-readable string (e.g. FRE → CEFR bucket).
    */
   formatScore?: (value: number) => string
+}
+
+type ComputeContext = {
+  syllableCount: (word: string) => number
+}
+
+// Formulas copied verbatim from @lunarisapp/readability (MIT).
+// https://github.com/LunarisApp/text-tools
+
+function fleschReadingEase(
+  sentences: number,
+  syllablesPerWord: number,
+  coefficients: { base: number; sentences: number; syllablesPerWord: number },
+): number {
+  return (
+    coefficients.base -
+    coefficients.sentences * sentences -
+    coefficients.syllablesPerWord * syllablesPerWord
+  )
+}
+
+function gulpeaseIndex(
+  sentences: number,
+  chars: number,
+  words: number,
+): number {
+  const BASE = 89
+  const SENTENCES_COEF = 300
+  const CHARS_COEF = 10
+  return (SENTENCES_COEF * sentences - CHARS_COEF * chars) / words + BASE
+}
+
+function lix(
+  words: number,
+  longWords: number,
+  wordsPerSentence: number,
+): number {
+  if (words === 0) return 0
+  return wordsPerSentence + (longWords * 100) / words
+}
+
+const WSTF_VARIANT_1 = {
+  ms: 0.1935,
+  sl: 0.1672,
+  iw: 0.1297,
+  es: -0.0327,
+  base: -0.875,
+}
+
+function wienerSachtextformel(
+  words: number,
+  sentences: number,
+  longWords: number,
+  polysyllables: number,
+  monosyllables: number,
+): number {
+  const { ms, sl, iw, es, base } = WSTF_VARIANT_1
+  const msVal = (100 * polysyllables) / words
+  const slVal = words / sentences
+  const iwVal = (100 * longWords) / words
+  const esVal = (100 * monosyllables) / words
+  return base + ms * msVal + sl * slVal + iw * iwVal + es * esVal
+}
+
+// Per-language FRE coefficients from @lunarisapp/readability (MIT).
+const FRE_COEFFICIENTS: Record<
+  LangCode,
+  { base: number; sentences: number; syllablesPerWord: number }
+> = {
+  en: { base: 206.835, sentences: 1.015, syllablesPerWord: 84.6 },
+  de: { base: 180, sentences: 1, syllablesPerWord: 58.5 },
+  fr: { base: 207, sentences: 1.015, syllablesPerWord: 73.6 },
+  it: { base: 217, sentences: 1.3, syllablesPerWord: 0.6 },
+}
+
+// Tokenization mirrors @lunarisapp/language (MIT): keep letters, numbers,
+// whitespace and apostrophes (for contractions), lowercase, split on
+// whitespace runs.
+function getWords(text: string): string[] {
+  return text
+    .replace(/[^\p{L}\p{N}\s']/gu, '')
+    .toLowerCase()
+    .split(/\s+/g)
+    .filter(Boolean)
+}
+
+function getSentences(text: string): string[] {
+  return text.match(/[^.!?。！？\n\r]+[.!?。！？]*[\n\r]*/gu) || []
+}
+
+function sentenceCount(text: string): number {
+  const sentences = getSentences(text)
+  let ignored = 0
+  for (const s of sentences) {
+    if (getWords(s).length <= 2) ignored += 1
+  }
+  return Math.max(1, sentences.length - ignored)
+}
+
+function wordCount(text: string): number {
+  return getWords(text).length
+}
+
+function longWordCount(text: string, threshold = 6): number {
+  return getWords(text).filter((w) => w.length > threshold).length
+}
+
+function charCount(text: string): number {
+  return text.replace(/\s+/g, '').length
+}
+
+function avgSentenceLength(text: string): number {
+  const sentences = sentenceCount(text)
+  return sentences ? wordCount(text) / sentences : 0
+}
+
+function avgWordsPerSentence(text: string): number {
+  return avgSentenceLength(text)
+}
+
+function avgSyllablesPerWord(
+  text: string,
+  ctx: ComputeContext,
+  interval?: number,
+): number {
+  const words = getWords(text)
+  if (!words.length) return 0
+  let syllables = 0
+  for (const w of words) syllables += ctx.syllableCount(w)
+  return interval
+    ? (syllables * interval) / words.length
+    : syllables / words.length
+}
+
+function polysyllableCount(text: string, ctx: ComputeContext): number {
+  let count = 0
+  for (const w of getWords(text)) {
+    if (ctx.syllableCount(w) > 2) count += 1
+  }
+  return count
+}
+
+function monosyllableCount(text: string, ctx: ComputeContext): number {
+  let count = 0
+  for (const w of getWords(text)) {
+    if (ctx.syllableCount(w) === 1) count += 1
+  }
+  return count
+}
+
+// German syllable counter: count vowel groups, treating common diphthongs
+// (au, ei, eu, äu, ai, ie) as a single nucleus. Minimum of 1 per word.
+const DE_VOWELS = /[aeiouäöüy]/i
+const DE_DIPHTHONGS = /^(?:au|ei|eu|äu|ai|ie)/i
+
+function countSyllablesDe(word: string): number {
+  const w = word.toLowerCase()
+  if (!w) return 0
+  let count = 0
+  let i = 0
+  let inVowelGroup = false
+  while (i < w.length) {
+    const two = w.substring(i, i + 2)
+    if (DE_DIPHTHONGS.test(two)) {
+      if (!inVowelGroup) count += 1
+      inVowelGroup = true
+      i += 2
+      continue
+    }
+    if (DE_VOWELS.test(w[i]!)) {
+      if (!inVowelGroup) count += 1
+      inVowelGroup = true
+    } else {
+      inVowelGroup = false
+    }
+    i += 1
+  }
+  return Math.max(1, count)
+}
+
+// English syllable counting uses the `syllable` npm package. Declared as an
+// optional peer dep; dynamically imported so it ships in its own chunk.
+let englishSyllable: ((w: string) => number) | null = null
+
+async function loadEnglishSyllable(): Promise<(w: string) => number> {
+  if (!englishSyllable) {
+    const mod = await import('syllable')
+    englishSyllable = mod.syllable
+  }
+  return englishSyllable
 }
 
 /**
@@ -48,7 +237,12 @@ function fleschToCefr(score: number): string {
 const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
   en: {
     label: 'CEFR',
-    compute: (tr, text) => tr.fleschReadingEase(text),
+    compute: (text, ctx) =>
+      fleschReadingEase(
+        avgSentenceLength(text),
+        avgSyllablesPerWord(text, ctx),
+        FRE_COEFFICIENTS.en,
+      ),
     direction: 'higher_easier',
     // Aligned to CEFR buckets: easy = A1–B2 (FRE ≥ 60), ok = C1 (50–60),
     // hard = C2 (< 50). Keeps each CEFR level in exactly one analyze section.
@@ -70,7 +264,14 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
   },
   de: {
     label: 'WSTF',
-    compute: (tr, text) => tr.wienerSachtextformel(text, 1),
+    compute: (text, ctx) =>
+      wienerSachtextformel(
+        wordCount(text),
+        sentenceCount(text),
+        longWordCount(text),
+        polysyllableCount(text, ctx),
+        monosyllableCount(text, ctx),
+      ),
     direction: 'higher_harder',
     bands: { easy: 15, ok: 18 },
     impactThresholds: [16, 20, 24],
@@ -88,7 +289,8 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
   },
   fr: {
     label: 'LIX',
-    compute: (tr, text) => tr.lix(text),
+    compute: (text) =>
+      lix(wordCount(text), longWordCount(text), avgWordsPerSentence(text)),
     direction: 'higher_harder',
     bands: { easy: 40, ok: 59 },
     impactThresholds: [50, 60, 70],
@@ -107,7 +309,8 @@ const SCORE_CONFIGS: Record<LangCode, ReadabilityScoreConfig> = {
   },
   it: {
     label: 'Gulpease',
-    compute: (tr, text) => tr.gulpeaseIndex(text),
+    compute: (text) =>
+      gulpeaseIndex(sentenceCount(text), charCount(text), wordCount(text)),
     direction: 'higher_easier',
     bands: { easy: 80, ok: 60 },
     impactThresholds: [60, 50, 40],
@@ -137,14 +340,6 @@ function getConfig(langcode: string): ReadabilityScoreConfig {
 
 function isSupportedLangcode(v: string): v is LangCode {
   return v === 'en' || v === 'de' || v === 'fr' || v === 'it'
-}
-
-function mapLang(langcode: string): Language {
-  const lc = (langcode || '').toLowerCase()
-  if (lc.startsWith('de')) return 'de_CH'
-  if (lc.startsWith('fr')) return 'fr'
-  if (lc.startsWith('it')) return 'it'
-  return 'en_GB'
 }
 
 function segmentWords(text: string): string[] {
@@ -216,29 +411,12 @@ function buildAgentContext(config: ReadabilityScoreConfig): string {
 /**
  * Create the built-in readability analyzer using language-specific algorithms:
  * Flesch Reading Ease → CEFR (en), Wiener Sachtextformel (de), LIX (fr),
- * Gulpease (it). The analyzer is stateless: each per-language method takes
- * the active langcode as an argument. The heavy `@lunarisapp/readability`
- * dependency is loaded lazily on the first `analyze()` call.
+ * Gulpease (it). English syllable counting uses the `syllable` npm package,
+ * loaded lazily on the first `analyze()` call. German syllable counting uses
+ * a local vowel-group heuristic. French and Italian formulas don't need
+ * syllables at all.
  */
 export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
-  let textReadability: TextReadability | null = null
-  let loadedLang: Language | null = null
-
-  async function ensureTextReadability(
-    langcode: string,
-  ): Promise<TextReadability> {
-    const mappedLang = mapLang(langcode)
-    if (!textReadability || loadedLang !== mappedLang) {
-      const { TextReadability } = await import('@lunarisapp/readability')
-      textReadability = new TextReadability({
-        lang: mappedLang,
-        cache: true,
-      })
-      loadedLang = mappedLang
-    }
-    return textReadability
-  }
-
   return {
     id: 'builtin',
     label: (langcode: string) => {
@@ -265,8 +443,11 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
         return texts.map(() => null)
       }
 
-      const tr = await ensureTextReadability(langcode)
+      const syllableCount =
+        langcode === 'en' ? await loadEnglishSyllable() : countSyllablesDe
+      const ctx: ComputeContext = { syllableCount }
       const config = getConfig(langcode)
+
       return texts.map((text) => {
         const trimmed = text.trim()
         if (!trimmed) return null
@@ -274,7 +455,7 @@ export function createBuiltinReadabilityAnalyzer(): ReadabilityAnalyzer {
         const words = segmentWords(trimmed)
         if (words.length < config.minWords) return null
 
-        const score = safe(() => config.compute(tr, trimmed))
+        const score = safe(() => config.compute(trimmed, ctx))
         return score != null ? round(score) : null
       })
     },

@@ -90,6 +90,28 @@ describe('createBuiltinReadabilityAnalyzer', () => {
       expect(results[0]).not.toBeNull()
       expect(typeof results[0]).toBe('number')
     })
+
+    it('classifies a plain English text in the easy FRE band', async () => {
+      const results = await analyzer.analyze(
+        [
+          'The cat sat on the mat. The dog ran to the park. The sun was bright and warm. The kids played in the yard.',
+        ],
+        'en',
+      )
+      expect(results[0]).not.toBeNull()
+      expect(analyzer.classifyBand(results[0] as number, 'en')).toBe('easy')
+    })
+
+    it('classifies a simple German text in the easy WSTF band', async () => {
+      const results = await analyzer.analyze(
+        [
+          'Die Katze sitzt auf der Matte. Der Hund rennt in den Park. Die Sonne scheint hell und warm. Die Kinder spielen im Garten.',
+        ],
+        'de',
+      )
+      expect(results[0]).not.toBeNull()
+      expect(analyzer.classifyBand(results[0] as number, 'de')).toBe('easy')
+    })
   })
 
   describe('scoreLabel', () => {

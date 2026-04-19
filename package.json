@@ -117,6 +117,7 @@
     "dev:build": "npm run changelog && npm run dev:prepare && nuxi generate playground",
     "dev:start": "npx serve playground/.output/public",
     "dev:prepare": "PLAYGROUND_MODULE_BUILD=true nuxt-module-build build --stub && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare playground",
+    "dev:analyze": "npx nuxt analyze playground",
     "release": "npm run lint && npm run prepack && changelogen --release",
     "changelog": "node ./scripts/changelog/index.cjs",
     "texts": "node ./scripts/texts/index.cjs",
@@ -153,7 +154,6 @@
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@ckeditor/ckeditor5-vue": "^7.3.0",
-    "@lunarisapp/readability": "^1.0.2",
     "@nuxt/devtools": "^3.1.1",
     "@nuxt/eslint-config": "^1.12.1",
     "@nuxt/module-builder": "^1.0.2",
@@ -198,6 +198,7 @@
     "postcss-url": "^10.1.3",
     "prettier": "^3.7.4",
     "prettier-plugin-glsl": "^0.2.2",
+    "syllable": "^5.0.1",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.21.0",
     "unbuild": "^3.6.1",
@@ -208,7 +209,6 @@
   },
   "peerDependencies": {
     "@anthropic-ai/sdk": "*",
-    "@lunarisapp/readability": "*",
     "@thedutchcoder/postcss-rem-to-px": "*",
     "acorn": "^8.0.0",
     "axe-core": "*",
@@ -221,12 +221,13 @@
     "postcss": "*",
     "postcss-import": "*",
     "postcss-replace": "*",
+    "syllable": "*",
     "tailwindcss": "*",
     "turndown": "^7.2.2",
     "typescript": "^5.0.0"
   },
   "peerDependenciesMeta": {
-    "@lunarisapp/readability": {
+    "syllable": {
       "optional": true
     },
     "@thedutchcoder/postcss-rem-to-px": {
