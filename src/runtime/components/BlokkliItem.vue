@@ -108,7 +108,9 @@ const itemProps = computed<Record<string, string>>(() => {
 })
 
 const component =
-  isProxyMode || isGlobalProxyMode?.value
+  (isProxyMode || isGlobalProxyMode?.value) &&
+  isEditingComponent &&
+  import.meta.client
     ? defineAsyncComponent(
         () => import('./../editor/components/BlockProxy/index.vue'),
       )
@@ -123,9 +125,10 @@ const component =
         allComponentsChunk,
       )
 
-const blockNotImplemented = isEditingComponent
-  ? defineAsyncComponent(() => import('./Blocks/NotImplemented/index.vue'))
-  : null
+const blockNotImplemented =
+  isEditingComponent && import.meta.client
+    ? defineAsyncComponent(() => import('./Blocks/NotImplemented/index.vue'))
+    : null
 
 const index = computed<number>(() => componentProps.index)
 const item = computed<InjectedBlokkliItem>(() => ({

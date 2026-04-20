@@ -9,7 +9,12 @@
       'is-inverted': options.color === 'normal' && isInverted,
     }"
   >
-    <Icon v-if="icon" :name="icon" />
+    <ClientOnly v-if="icon">
+      <Icon :name="icon" />
+      <template #fallback>
+        <div class="bk-icon" />
+      </template>
+    </ClientOnly>
     <span v-blokkli-editable:title>{{ title || 'Learn more' }}</span>
   </Component>
 </template>

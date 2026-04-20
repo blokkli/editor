@@ -9,15 +9,15 @@
         :series="chartSeries"
         height="350"
       />
+      <ol v-if="footnotes?.length" class="bk-chart-footnotes">
+        <li v-for="(note, i) in footnotes" :key="i">
+          <span class="bk-chart-footnote-marker">{{
+            superscriptFor(i + 1)
+          }}</span>
+          {{ note }}
+        </li>
+      </ol>
     </ClientOnly>
-    <ol v-if="footnotes?.length" class="bk-chart-footnotes">
-      <li v-for="(note, i) in footnotes" :key="i">
-        <span class="bk-chart-footnote-marker">{{
-          superscriptFor(i + 1)
-        }}</span>
-        {{ note }}
-      </li>
-    </ol>
   </div>
 </template>
 
@@ -29,15 +29,22 @@ import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
 
-const ApexChart = defineAsyncComponent(() => import('vue3-apexcharts'))
+const ApexChart = import.meta.client
+  ? defineAsyncComponent(() => import('vue3-apexcharts'))
+  : undefined
 
 const props = defineProps<BlokkliChartData>()
 
 const rootEl = useTemplateRef('rootEl')
 
-const chartDef = computed(() => getChartTypeRuntime(props.type))
+const chartDef = computed(() =>
+  import.meta.client ? getChartTypeRuntime(props.type) : undefined,
+)
 
 function superscriptFor(n: number): string {
+  if (import.meta.server) {
+    return ''
+  }
   return String(n)
     .split('')
     .map((d) => SUPERSCRIPTS[d] || d)
@@ -66,6 +73,9 @@ function deepMerge(
 }
 
 const resolvedColors = computed(() => {
+  if (import.meta.server) {
+    return []
+  }
   const def = chartDef.value
   if (!def) return []
   if (def.hasCategoryColors) {
@@ -82,6 +92,9 @@ const resolvedColors = computed(() => {
 })
 
 const chartOptions = computed(() => {
+  if (import.meta.server) {
+    return {}
+  }
   const def = chartDef.value
   if (!def) return {}
 
@@ -120,6 +133,9 @@ const chartOptions = computed(() => {
 })
 
 const chartSeries = computed(() => {
+  if (import.meta.server) {
+    return []
+  }
   const def = chartDef.value
   if (!def) return []
 

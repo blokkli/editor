@@ -13,7 +13,12 @@
         'is-inverted': options.color === 'normal' && isInverted,
       }"
     >
-      <Icon v-if="icon" :name="icon" />
+      <ClientOnly v-if="icon">
+        <Icon :name="icon" />
+        <template #fallback>
+          <div class="bk-icon" />
+        </template>
+      </ClientOnly>
       <span v-blokkli-editable:title>{{ title || 'Learn more' }}</span>
     </Component>
   </div>
@@ -36,7 +41,12 @@
         'is-inverted': options.color === 'normal' && isInverted,
       }"
     >
-      <Icon v-if="icon" :name="icon" />
+      <ClientOnly v-if="icon">
+        <Icon :name="icon" />
+        <template #fallback>
+          <div class="bk-icon" />
+        </template>
+      </ClientOnly>
       <span v-blokkli-editable:title>{{ title || 'Learn more' }}</span>
     </Component>
   </div>
@@ -45,7 +55,7 @@
 <script lang="ts" setup>
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { NuxtLink } from '#components'
-import { Icon } from '#blokkli/editor/components'
+import Icon from '#blokkli/editor/components/Icon/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 
 const { options } = defineBlokkli({

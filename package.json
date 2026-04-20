@@ -1,6 +1,6 @@
 {
   "name": "@blokkli/editor",
-  "version": "2.0.0-alpha.54",
+  "version": "2.0.0-alpha.55",
   "description": "Interactive page building experience for Nuxt",
   "keywords": [
     "cms",
@@ -115,6 +115,7 @@
     "styles:build": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css",
     "styles:watch": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css --watch",
     "dev:build": "npm run changelog && npm run dev:prepare && nuxi generate playground",
+    "dev:build-ssr": "npm run dev:prepare && nuxt build playground",
     "dev:start": "npx serve playground/.output/public",
     "dev:prepare": "PLAYGROUND_MODULE_BUILD=true nuxt-module-build build --stub && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare playground",
     "dev:analyze": "npx nuxt analyze playground",
