@@ -10,7 +10,7 @@ export default defineBlokkliModule({
   setup({ context }) {
     context.registerAdapterExtension(
       '@blokkli/readability',
-      resolve('./runtime/adapter-extension.ts'),
+      resolve('./runtime/adapter-extension'),
     )
   },
 })
