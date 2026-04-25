@@ -2,57 +2,57 @@
   <AgentPanel
     :is-shown
     :agent-name
-    :conversation
-    :active-item
-    :is-thinking
-    :is-processing
-    :is-connected
-    :has-been-ready
-    :pending-tool-call
-    :pending-mutation
-    :auto-approve
-    :conversation-list
-    :show-conversation-list
-    :plan
-    :tool-details
-    :usage-turns="usageTurns"
-    :page-context="pageContext"
+    :conversation="conversation.items.value"
+    :active-item="conversation.activeItem.value"
+    :is-thinking="agent.isThinking.value"
+    :is-processing="agent.isProcessing.value"
+    :is-connected="socket.isConnected.value"
+    :has-been-ready="agent.hasBeenReady.value"
+    :pending-tool-call="tools.pendingToolCall.value"
+    :pending-mutation="tools.pendingMutation.value"
+    :auto-approve="tools.autoApprove.value"
+    :conversation-list="conversation.conversationList.value"
+    :show-conversation-list="conversation.showConversationList.value"
+    :plan="plan.plan.value"
+    :tool-details="conversation.toolDetails"
+    :usage-turns="conversation.usageTurns.value"
+    :page-context="tools.pageContext.value"
     :supports-feedback="!!adapter.submitConversationFeedback"
-    :feedback-item-ids="feedbackItemIds"
-    @connect="connect"
-    @send-prompt="sendPrompt"
-    @retry="retry"
-    @cancel="cancel"
-    @approve="approve"
-    @reject="reject"
-    @set-auto-approve="setAutoApprove"
-    @new-conversation="newConversation"
-    @get-transcript="getTranscript"
-    @tool-component-done="onToolComponentDone"
-    @switch-conversation="switchConversation"
-    @delete-conversation="deleteConversation"
+    :feedback-item-ids="conversation.feedbackItemIds.value"
+    @connect="agent.connect"
+    @send-prompt="agent.sendPrompt"
+    @retry="agent.retry"
+    @cancel="agent.cancel"
+    @approve="tools.approve"
+    @reject="tools.reject"
+    @set-auto-approve="tools.setAutoApprove"
+    @new-conversation="agent.newConversation"
+    @get-transcript="agent.getTranscript"
+    @tool-component-done="tools.onComponentDone"
+    @switch-conversation="agent.switchConversation"
+    @delete-conversation="agent.deleteConversation"
     @submit-feedback="onSubmitFeedback"
     @feedback-done="onFeedbackDone"
     @show-conversations="onShowConversations"
     @hide-conversations="onHideConversations"
-    @approve-plan="approvePlan"
-    @reject-plan="rejectPlan"
+    @approve-plan="plan.approve"
+    @reject-plan="plan.reject"
   />
 
   <Teleport :to="ui.mainLayoutElement.value">
     <BlokkliTransition name="slide-up">
       <DialogModal
-        v-if="showTranscript"
+        v-if="conversation.showTranscript.value"
         id="agent-transcript"
         title="Agent Transcript"
         :width="900"
         hide-buttons
         full-screen
-        @cancel="showTranscript = false"
+        @cancel="conversation.showTranscript.value = false"
       >
         <AgentTranscript
-          v-if="transcriptContent"
-          :transcript="transcriptContent"
+          v-if="conversation.transcriptContent.value"
+          :transcript="conversation.transcriptContent.value"
         />
       </DialogModal>
     </BlokkliTransition>
@@ -64,10 +64,17 @@ import {
   useBlokkli,
   onBeforeUnmount,
   watch,
+  provide,
   defineAsyncComponent,
 } from '#imports'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
-import agentProvider from '#blokkli/agent/app/composables/agentProvider'
+import socketProvider from '#blokkli/agent/app/providers/socketProvider'
+import conversationProvider from '#blokkli/agent/app/providers/conversationProvider'
+import planProvider from '#blokkli/agent/app/providers/planProvider'
+import toolsProvider from '#blokkli/agent/app/providers/toolsProvider'
+import agentProvider from '#blokkli/agent/app/providers/agentProvider'
+import { INJECT_AGENT_APP } from '#blokkli/agent/app/helpers/injections'
+import type { AgentApp } from '#blokkli/agent/app/types'
 import AgentPanel from './Panel/index.vue'
 import type {
   AgentConversationFeedbackRating,
@@ -90,60 +97,51 @@ const emit = defineEmits<{
   (e: 'consumed'): void
 }>()
 
-const app = useBlokkli()
-const { ui } = app
+const blokkli = useBlokkli()
+const { ui } = blokkli
 
-const {
-  connect,
-  disconnect,
+const socket = socketProvider()
+const conversation = conversationProvider({ adapter: props.adapter })
+const plan = planProvider({ socket, conversation })
+const tools = toolsProvider({
+  app: blokkli,
+  adapter: props.adapter,
+  socket,
   conversation,
-  activeItem,
-  isProcessing,
-  isThinking,
-  isConnected,
-  hasBeenReady,
-  autoApprove,
-  pendingMutation,
-  pendingToolCall,
+})
+const agent = agentProvider({
+  app: blokkli,
+  adapter: props.adapter,
+  agentName: props.agentName,
+  socket,
+  conversation,
   plan,
-  approvePlan,
-  rejectPlan,
-  usageTurns,
-  sendPrompt,
-  runToolForPrompt,
-  retry,
-  approve,
-  reject,
-  setAutoApprove,
-  cancel,
-  newConversation,
-  getTranscript,
-  onToolComponentDone,
-  transcriptContent,
-  showTranscript,
-  toolDetails,
-  conversationList,
-  showConversationList,
-  switchConversation,
-  deleteConversation,
-  refreshConversationList,
-  activeConversationId,
-  feedbackItemIds,
-  pageContext,
-} = agentProvider(app, props.adapter, props.agentName)
+  tools,
+})
+
+const adapter = props.adapter
+
+const agentApp: AgentApp = {
+  socket,
+  conversation,
+  plan,
+  tools,
+  ...agent,
+}
+provide(INJECT_AGENT_APP, agentApp)
 
 async function onSubmitFeedback(
   rating: AgentConversationFeedbackRating,
   comment?: string,
 ) {
-  if (!props.adapter.submitConversationFeedback) return
-  const conversationId = activeConversationId.value
+  if (!adapter.submitConversationFeedback) return
+  const conversationId = conversation.activeConversationId.value
   if (!conversationId) return
-  const lastItem = conversation.value[conversation.value.length - 1]
+  const lastItem = conversation.items.value[conversation.items.value.length - 1]
   if (!lastItem) return
 
   try {
-    await props.adapter.submitConversationFeedback({
+    await adapter.submitConversationFeedback({
       conversationId,
       rating,
       lastItemId: lastItem.id,
@@ -155,19 +153,19 @@ async function onSubmitFeedback(
 }
 
 function onFeedbackDone() {
-  const lastItem = conversation.value[conversation.value.length - 1]
+  const lastItem = conversation.items.value[conversation.items.value.length - 1]
   if (lastItem) {
-    feedbackItemIds.value.add(lastItem.id)
+    conversation.feedbackItemIds.value.add(lastItem.id)
   }
 }
 
 async function onShowConversations() {
-  await refreshConversationList()
-  showConversationList.value = true
+  await agent.refreshConversationList()
+  conversation.showConversationList.value = true
 }
 
 function onHideConversations() {
-  showConversationList.value = false
+  conversation.showConversationList.value = false
 }
 
 // Process a prompt request queued by the outer feature component's
@@ -181,17 +179,17 @@ watch(
     emit('consumed')
 
     const { prompt, selectedUuids } = request
-    const promptText = prompt.getPrompt(app)
-    const userPromptText = prompt.getUserPrompt?.(app)
+    const promptText = prompt.getPrompt(blokkli)
+    const userPromptText = prompt.getUserPrompt?.(blokkli)
 
     let preSeededResults = undefined
     let autoExecuteTools = undefined
 
     if (prompt.preExecute) {
       const preResult = await prompt.preExecute({
-        app,
+        app: blokkli,
         selectedUuids,
-        runTool: runToolForPrompt,
+        runTool: tools.runForPrompt,
       })
       if (preResult) {
         preSeededResults = preResult.preSeededResults
@@ -199,7 +197,7 @@ watch(
       }
     }
 
-    sendPrompt(
+    agent.sendPrompt(
       promptText,
       userPromptText,
       selectedUuids,
@@ -214,7 +212,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  disconnect()
+  agent.disconnect()
 })
 </script>
 

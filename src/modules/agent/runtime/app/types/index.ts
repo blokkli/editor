@@ -118,6 +118,18 @@ export type ToolOutcome =
   | { ok: true; result: unknown; meta: ToolMeta }
 
 /**
+ * Hierarchical API surface exposed via `provide(INJECT_AGENT_APP, ...)`.
+ * Mirrors `BlokkliApp` for the editor — each member is a provider, and the
+ * orchestrator's flat state/actions sit at the top level.
+ */
+export type AgentApp = {
+  socket: import('../providers/socketProvider').SocketProvider
+  conversation: import('../providers/conversationProvider').ConversationProvider
+  plan: import('../providers/planProvider').PlanProvider
+  tools: import('../providers/toolsProvider').ToolsProvider
+} & import('../providers/agentProvider').AgentOrchestrator
+
+/**
  * Makes specified adapter methods required (non-optional).
  */
 export type RequireAdapterMethods<

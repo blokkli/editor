@@ -5,10 +5,47 @@ import type {
   MutationAction,
   QueryResult,
   ToolError,
+  ToolMeta,
 } from '#blokkli/agent/app/types'
+import type { UsageTurn } from '#blokkli/agent/shared/types'
 import type { BlokkliAdapter } from '#blokkli/editor/adapter'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { EditMode } from '#blokkli/editor/types/state'
+
+/**
+ * Narrow an `unknown` to a plain record. One cast at the boundary so call
+ * sites can read `obj.foo` without scattering casts everywhere.
+ */
+export function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : null
+}
+
+/**
+ * Pull component side-channel meta (`_details`, `_usage`, `_skipLlmResponse`)
+ * off an emitted tool result so the LLM-facing payload can be sent without
+ * them.
+ */
+export function splitMeta(raw: unknown): {
+  payload: unknown
+  meta: ToolMeta
+} {
+  const obj = asRecord(raw)
+  if (!obj) return { payload: raw, meta: {} }
+
+  const meta: ToolMeta = {}
+  if (obj._details !== undefined) meta.details = obj._details
+  if (obj._usage) meta.usage = obj._usage as UsageTurn
+  if (obj._skipLlmResponse === true) meta.skipLlmResponse = true
+
+  if (Object.keys(meta).length === 0) {
+    return { payload: raw, meta }
+  }
+
+  const { _details: _, _usage: __, _skipLlmResponse: ___, ...payload } = obj
+  return { payload, meta }
+}
 
 /**
  * Create a map of tool name to tool definition for quick lookup.
