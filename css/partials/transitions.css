@@ -96,7 +96,7 @@
   .bk-actions-enter-active,
   .bk-actions-leave-active {
     transition: 0.2s ease-in-out;
-    @screen md {
+    @variant md {
       transition: none;
     }
   }
@@ -183,7 +183,7 @@
   .bk-editable-enter-from,
   .bk-editable-leave-to {
     @apply opacity-0 -translate-y-60;
-    @screen md {
+    @variant md {
       @apply opacity-0 translate-y-60 scale-75;
     }
   }

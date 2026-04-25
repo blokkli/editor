@@ -1,5 +1,9 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
+
+// v4 no longer exports the legacy `Config` type. This file is consumed at
+// runtime by the @config compat shim, so we skip the type annotation.
+export default {
   corePlugins: {
     container: false,
   },
@@ -97,10 +101,5 @@ module.exports = {
       4: '4px',
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography')({
-      className: 'ck-content',
-    }),
-  ],
+  plugins: [forms, typography({ className: 'ck-content' })],
 }

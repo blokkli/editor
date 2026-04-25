@@ -40,6 +40,11 @@ const distDirs = [
   join(process.cwd(), 'dist', 'modules'),
 ]
 
+// Use the source tailwind config — at this point dist/modules/tailwind has
+// been emitted by nuxt-module-build but processStyleBlocks runs against
+// source-equivalent paths.
+const tailwindConfigPath = join(process.cwd(), 'tailwind.config.ts')
+
 let filesProcessed = 0
 let filesChanged = 0
 
@@ -49,7 +54,11 @@ for (const distDir of distDirs) {
     let transformed = mangleTemplateAndScript(original)
     // Process <style> blocks in Vue files.
     if (filePath.endsWith('.vue')) {
-      transformed = await processStyleBlocks(transformed, filePath)
+      transformed = await processStyleBlocks(
+        transformed,
+        filePath,
+        tailwindConfigPath,
+      )
     }
     filesProcessed++
 

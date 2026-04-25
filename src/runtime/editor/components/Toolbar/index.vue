@@ -237,7 +237,7 @@ export default {
 .bk {
   .bk-toolbar-container {
     &:not(:first-child) {
-      @screen lg {
+      @variant lg {
         @apply border-l border-l-mono-600;
       }
     }

@@ -56,11 +56,11 @@ defineOptions({
 <style lang="postcss">
 .bk-html-root {
   --bk-artboard-scrollbar-size: 4px;
-  @screen md {
+  @variant md {
     --bk-artboard-scrollbar-size: 10px;
   }
 
-  @screen lg {
+  @variant lg {
     --bk-artboard-scrollbar-size: 16px;
   }
 }

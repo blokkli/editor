@@ -392,7 +392,7 @@ export default {
 
         &.bk-is-text {
           span {
-            @apply leading-6;
+            @apply leading-[24px];
           }
           &:hover span {
             @apply underline underline-offset-4;

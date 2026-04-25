@@ -34,7 +34,9 @@ const entities = computed(() => {
 })
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .media-selector {
   @apply flex;
 }

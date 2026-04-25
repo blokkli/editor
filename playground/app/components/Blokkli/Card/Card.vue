@@ -124,7 +124,9 @@ const iconClass = computed(() => {
 })
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 @keyframes card-test {
   from {
     transform: scaleX(0.7);

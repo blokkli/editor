@@ -42,7 +42,9 @@ export type Props = {
 defineProps<Props>()
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .block-slider {
   @apply overflow-auto;
   > * {

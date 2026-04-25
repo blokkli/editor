@@ -125,7 +125,9 @@ const attributes = computed(() => {
 })
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .playground-button {
   @apply inline-flex gap-10 items-center;
 

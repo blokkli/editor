@@ -4,9 +4,9 @@ module.exports = {
     require('postcss-import'),
     require('postcss-mixins'),
     require('postcss-nested-import'),
-    require('tailwindcss/nesting'),
+    require('postcss-nesting'),
     require('postcss-url'),
-    require('tailwindcss'),
+    require('@tailwindcss/postcss'),
     require('./src/build/postcssMangleClasses.cjs'),
     require('postcss-replace')({
       pattern: /(--tw|\*, ::before, ::after)/g,

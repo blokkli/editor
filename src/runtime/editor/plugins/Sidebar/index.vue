@@ -471,15 +471,15 @@ export default {
     --bk-add-item-font-size: 18px;
   }
 
-  @screen md {
+  @variant md {
     --bk-sidebar-width-right: 351px;
   }
 
-  @screen 2xl {
+  @variant 2xl {
     --bk-sidebar-width-right: 400px;
   }
 
-  @screen 3xl {
+  @variant 3xl {
     --bk-sidebar-width-right: 440px;
   }
 }
@@ -545,7 +545,7 @@ export default {
   grid-area: viewport;
   width: var(--bk-sidebar-width-right);
 
-  @screen md {
+  @variant md {
     grid-area: sidebar-right;
   }
 
@@ -666,7 +666,7 @@ export default {
     @apply flex;
   }
 
-  @screen lg {
+  @variant lg {
     @apply flex-col justify-start;
 
     #bk-sidebar-tabs-right-bottom {
@@ -706,7 +706,7 @@ export default {
       border-color: transparent transparent #ffffff transparent;
     }
 
-    @screen lg {
+    @variant lg {
       &.bk-is-right,
       &.bk-is-right-bottom {
         &:before {

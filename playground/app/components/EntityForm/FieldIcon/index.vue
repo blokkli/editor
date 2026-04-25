@@ -24,7 +24,9 @@ defineProps<{
 defineEmits(['update:modelValue'])
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .icon-selector {
   @apply flex gap-20 flex-wrap;
 

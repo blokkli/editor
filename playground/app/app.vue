@@ -19,7 +19,9 @@ useHead({
 })
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 /* Includes the CSS of all kinds of CSS frameworks/libraries to debug how they affect editor styles. */
 /* @import '~/assets/css/css-madness.css'; */
 

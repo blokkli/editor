@@ -1,7 +1,10 @@
+import { fileURLToPath } from 'node:url'
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 import tailwind from 'eslint-plugin-tailwindcss'
 import importX from 'eslint-plugin-import-x'
 import oxlint from 'eslint-plugin-oxlint'
+
+const tailwindEntryCSS = fileURLToPath(new URL('./css/index.css', import.meta.url))
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
 export default createConfigForNuxt(
@@ -16,6 +19,13 @@ export default createConfigForNuxt(
   },
   [
     ...tailwind.configs['flat/recommended'],
+    {
+      settings: {
+        tailwindcss: {
+          config: tailwindEntryCSS,
+        },
+      },
+    },
     // sonarjs.configs.recommended
   ],
 )

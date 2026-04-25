@@ -4,9 +4,10 @@
     v-slot="{ toggleSidebar }"
     title="Playground Demo"
     icon="logo"
+    :weight="0"
   >
     <div class="p-20 ck-content">
-      <h3>Welcome to the blökkli demo!</h3>
+      <h3 class="bk-demo-feature-title">Welcome to the blökkli demo!</h3>
 
       <p>
         You can freely try out all features of the editor, edit all content, add
@@ -25,6 +26,14 @@
         Additionally, since this is a static page with no server running, copy
         pasting images from the clipboard does not work as well.
       </p>
+
+      <div class="bk-demo-feature-badge">Styled by module CSS</div>
+
+      <div
+        class="mt-15 p-15 border-2 border-dashed border-accent-400 text-accent-700 rounded font-bold"
+      >
+        Styled by inline utility classes
+      </div>
 
       <button class="bk-button bk-is-primary w-full" @click="toggleSidebar">
         Close demo pane

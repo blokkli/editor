@@ -1,6 +1,7 @@
 import { useLogger } from '@nuxt/kit'
 import { defineFileTemplate } from '../defineTemplate'
 import { processCSS, resetProcessor } from '../../processCSS'
+import { withTailwindConfig } from '../../mangleTransform'
 
 const logger = useLogger('@blokkli/editor')
 
@@ -13,6 +14,7 @@ export default defineFileTemplate(
 
     let moduleCSS = ''
 
+    const tailwindConfigPath = ctx.helper.getTailwindConfigPath()
     const cssFiles = ctx.getCSSFiles()
     if (cssFiles.length > 0) {
       // Reset the processor so postcss-import re-reads partials from disk.
@@ -21,8 +23,9 @@ export default defineFileTemplate(
       const processed: string[] = []
       for (const filePath of cssFiles) {
         const content = await ctx.helper.fileCache.read(filePath)
+        const withConfig = withTailwindConfig(content, tailwindConfigPath)
         try {
-          const result = await processCSS(content, filePath)
+          const result = await processCSS(withConfig, filePath)
           processed.push(result)
         } catch (e: any) {
           logger.error(
@@ -39,11 +42,27 @@ export default defineFileTemplate(
     // Generate Tailwind utilities for user-land module content paths.
     // This ensures that utility classes used in module Vue templates
     // are available in the CSS output (mangled and scoped to .bk).
-    const contentPaths = ctx.getContentPaths()
+    //
+    // Skip blökkli's own runtime/ and modules/ dirs — those utilities are
+    // already baked into the precompiled output.css. Those paths only end
+    // up in contentPaths when the editor is consumed against its own source
+    // (e.g. the playground); they're registered there so the SFC mangle
+    // Vite plugin processes them, not so we re-emit utilities for them.
+    const editorOwnRuntime = ctx.helper.resolvers.module.resolve('./runtime')
+    const editorOwnModules = ctx.helper.resolvers.module.resolve('./modules')
+    const contentPaths = ctx
+      .getContentPaths()
+      .filter(
+        (p) =>
+          !p.startsWith(editorOwnRuntime) && !p.startsWith(editorOwnModules),
+      )
     if (contentPaths.length > 0) {
       try {
         const utilities = await processCSS(
-          '@tailwind utilities;',
+          `@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@config '${tailwindConfigPath}';`,
           'module-utilities.css',
           contentPaths,
         )

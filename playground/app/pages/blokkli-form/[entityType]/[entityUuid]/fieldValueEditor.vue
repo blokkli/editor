@@ -112,7 +112,9 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .field-value-editor .ck-editor {
   @apply overscroll-contain;
   .ck-editor__editable_inline {

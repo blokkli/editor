@@ -189,12 +189,12 @@ onBeforeUnmount(() => {
   &:not(.bk-is-fullscreen) {
     iframe {
       max-height: calc(100vh - 500px);
-      @screen lg {
+      @variant lg {
         @apply min-w-[700px];
         min-height: 400px;
       }
 
-      @screen xl {
+      @variant xl {
         @apply min-w-[700px];
       }
     }

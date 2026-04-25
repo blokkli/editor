@@ -95,7 +95,9 @@ onBeforeUnmount(() => {
 provide('hero_step', step)
 </script>
 
-<style lang="postcss">
+<style>
+@reference "../../assets/css/tailwind.css";
+
 .hero {
   &:after {
     content: '';
@@ -134,7 +136,7 @@ provide('hero_step', step)
   transform-style: preserve-3d;
   @apply inline-grid grid-cols-3 gap-50 w-full mt-[120px] -mb-[50px] md:mt-0 md:mb-0;
 
-  @screen lg {
+  @variant lg {
     perspective: 700px;
   }
 

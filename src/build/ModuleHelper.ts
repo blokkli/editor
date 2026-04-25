@@ -161,6 +161,24 @@ export class ModuleHelper implements ValidationInterface {
     return relative(this.paths.blokkliBuildDir, path)
   }
 
+  /**
+   * Path to the editor's compiled tailwind config. Used by the SFC mangle
+   * pipeline and module CSS processing to inject `@config` so consumer-side
+   * `@apply` resolves against the editor's theme + utilities.
+   *
+   * In dist (npm install): `dist/modules/tailwind/index.mjs`. In source (this
+   * repo's playground): `tailwind.config.ts` at the repo root.
+   */
+  public getTailwindConfigPath(): string {
+    const distPath = this.resolvers.module.resolve(
+      './modules/tailwind/index.mjs',
+    )
+    if (this.fileCache.fileExists(distPath)) {
+      return distPath
+    }
+    return this.resolvers.module.resolve('../tailwind.config.ts')
+  }
+
   private findEditAdapterPath(): string {
     const filePath = this.resolvers.app.resolve('blokkli.editAdapter.ts')
 

@@ -172,6 +172,42 @@ export function mangleTemplateAndScript(code: string): string {
 }
 
 /**
+ * Inject the directives needed for `@apply` / `theme()` to resolve against
+ * the blökkli theme + utilities:
+ * - `@reference 'tailwindcss'` registers the default Tailwind theme tokens
+ *   and utility names (e.g. `font-medium`) without emitting their CSS.
+ * - `@config '<path>'` layers the editor's theme overrides (custom colors,
+ *   spacing, z-index, etc.) on top.
+ *
+ * Skips injection if the source already declares its own @reference or
+ * @config directive.
+ *
+ * PERFORMANCE: every CSS chunk triggers Tailwind to load the config. With
+ * ~86 SFCs in the editor (plus user-land module SFCs) and HMR re-running
+ * on every save, this is a hot path during dev. If you ever notice slow
+ * editor startup or sluggish HMR after the Tailwind 4 migration, look here.
+ */
+export function withTailwindConfig(
+  cssContent: string,
+  tailwindConfigPath: string,
+): string {
+  if (cssContent.includes('@reference') || cssContent.includes('@config')) {
+    return cssContent
+  }
+
+  // CSS spec requires @import to precede most other at-rules (after @charset
+  // and @layer name declarations). postcss-import silently skips @imports
+  // that follow other at-rules, so we must inject AFTER any leading
+  // @charset / @import / @layer-name-only directives.
+  const leadingPattern =
+    /^(?:\s*(?:\/\*[\s\S]*?\*\/|@charset[^;]*;|@import[^;]*;|@layer\s+[\w\s,-]+;))*\s*/
+  const match = cssContent.match(leadingPattern)
+  const insertAt = match ? match[0].length : 0
+  const injection = `@reference 'tailwindcss';\n@config '${tailwindConfigPath}';\n`
+  return cssContent.slice(0, insertAt) + injection + cssContent.slice(insertAt)
+}
+
+/**
  * Process <style> blocks in a Vue SFC through blökkli's PostCSS pipeline.
  * Resolves @apply, nesting, theme(), mangles classes, scopes --tw-* vars,
  * and converts rem to px. Strips lang="postcss" after processing.
@@ -179,6 +215,7 @@ export function mangleTemplateAndScript(code: string): string {
 export async function processStyleBlocks(
   code: string,
   filePath: string,
+  tailwindConfigPath: string,
 ): Promise<string> {
   const styleRegex = /<style([^>]*)>([\s\S]*?)<\/style>/g
   let result = code
@@ -189,7 +226,8 @@ export async function processStyleBlocks(
     const attrs = styleMatch[1] || ''
     const cssContent = styleMatch[2] || ''
     if (cssContent.trim()) {
-      const processed = await processCSS(cssContent, filePath)
+      const withConfig = withTailwindConfig(cssContent, tailwindConfigPath)
+      const processed = await processCSS(withConfig, filePath)
       // Strip lang="postcss" since content is now plain CSS.
       const cleanAttrs = attrs.replace(/\s*lang=["']postcss["']/g, '')
       const replacement = `<style${cleanAttrs}>${processed}</style>`
@@ -214,9 +252,10 @@ export async function processStyleBlocks(
 export async function mangleVueSFC(
   code: string,
   id: string,
+  tailwindConfigPath: string,
 ): Promise<string | null> {
   let result = mangleTemplateAndScript(code)
-  result = await processStyleBlocks(result, id)
+  result = await processStyleBlocks(result, id, tailwindConfigPath)
   if (result === code) return null
   return result
 }

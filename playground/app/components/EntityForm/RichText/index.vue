@@ -147,7 +147,9 @@ onMounted(() => {
 })
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .rich-text.is-field-value {
   .ck.ck-editor__main > .ck-editor__editable {
     @apply !border-0 !border-t !border-t-mono-300;

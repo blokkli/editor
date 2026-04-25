@@ -417,7 +417,7 @@ export default {
     backface-visibility: hidden;
     /* contain: layout style paint; */
     bottom: var(--bk-root-offset-bottom);
-    @screen lg {
+    @variant lg {
       @apply top-0 w-auto;
       bottom: initial;
     }
@@ -447,7 +447,7 @@ export default {
     &::-webkit-scrollbar {
       display: none;
     }
-    @screen lg {
+    @variant lg {
       @apply filter-none backdrop-filter-none;
       @apply border border-mono-400;
       @apply outline outline-1 outline-mono-700;
@@ -459,7 +459,7 @@ export default {
     @apply text-mono-300 h-full flex items-center shrink-0  justify-center relative lg:static z-50;
     max-width: var(--bk-actions-height);
     flex: 1 0 auto;
-    @screen lg {
+    @variant lg {
       width: var(--bk-actions-height);
       flex: initial;
     }
@@ -567,7 +567,7 @@ export default {
     > div {
       @apply border-b border-b-mono-700;
     }
-    @screen lg {
+    @variant lg {
       @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b left-[23px];
       @apply border-b-2 border-mono-400 border-l-2 border-r-2;
     }
@@ -597,7 +597,7 @@ export default {
     &[disabled] {
       @apply pointer-events-none opacity-20;
     }
-    @screen lg {
+    @variant lg {
       &:hover {
         @apply text-white bg-mono-800;
         .bk-icon,

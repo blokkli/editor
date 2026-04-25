@@ -45,7 +45,9 @@ export type Props = {
 defineProps<Props>()
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .table {
   @apply w-full text-sm text-left rtl:text-right text-mono-500;
 

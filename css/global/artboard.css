@@ -9,6 +9,7 @@
   .bk-body {
     @apply overflow-hidden;
   }
+
   #nuxt-root {
     @apply bg-mono-200 overflow-hidden fixed right-0;
     left: 0;

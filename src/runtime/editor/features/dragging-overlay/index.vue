@@ -519,7 +519,7 @@ export default {
       @apply !pointer-events-none;
       @apply !select-none !shadow-none;
     }
-    @screen md {
+    @variant md {
       &:before {
         content: '';
         @apply absolute top-0 left-0 w-full h-full z-50 rounded;

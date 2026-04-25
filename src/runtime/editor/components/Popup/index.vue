@@ -108,11 +108,11 @@ onBeforeUnmount(() => {
     @apply self-end justify-self-end;
   }
 
-  @screen lg {
+  @variant lg {
     @apply w-[360px] rounded-lg m-20;
   }
 
-  @screen xl {
+  @variant xl {
     @apply w-[400px];
   }
 

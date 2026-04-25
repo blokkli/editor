@@ -552,7 +552,7 @@ onUnmounted(() => {
   grid-template-columns: auto auto 1fr 16px;
   grid-template-rows: var(--bk-toolbar-height) auto auto 1fr auto auto;
 
-  @screen md {
+  @variant md {
     --bk-toolbar-height: 50px;
 
     grid-template-areas:

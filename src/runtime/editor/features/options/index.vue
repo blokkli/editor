@@ -370,7 +370,7 @@ export default {
     > div {
       @apply fixed left-0 grid bg-mono-900 overflow-hidden min-w-full rounded-b-none rounded-t;
       @apply bottom-full;
-      @screen md {
+      @variant md {
         @apply absolute top-full bottom-auto rounded-t-none rounded-b;
       }
       label {
@@ -471,7 +471,7 @@ export default {
     @apply absolute bottom-full left-0;
     @apply fixed left-0 grid bg-mono-900 overflow-hidden min-w-full rounded-b-none rounded-t;
     @apply bottom-full;
-    @screen md {
+    @variant md {
       @apply absolute top-full bottom-auto rounded-t-none rounded-b;
     }
     > label {

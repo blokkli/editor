@@ -1,0 +1,7 @@
+.bk-demo-feature-title {
+  @apply text-accent-700 font-extrabold uppercase tracking-wider;
+}
+
+.bk-demo-feature-badge {
+  @apply inline-block px-15 py-5 rounded-full bg-lime-normal text-white font-bold text-sm my-15;
+}

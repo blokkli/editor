@@ -97,6 +97,18 @@ export default defineNuxtModule<ModuleOptions>({
       theme,
     )
 
+    // When the editor is consumed against its own source (e.g. the playground
+    // imports '../src/module' instead of the published package), the editor's
+    // SFCs need the same `_bk_` mangling consumers get from dist via
+    // scripts/mangle-dist.ts. Register runtime/ and modules/ as content paths
+    // so the existing mangle Vite plugin below picks them up. Skipped when
+    // running from node_modules — those SFCs are pre-mangled in dist.
+    const moduleRoot = helper.resolvers.module.resolve('.')
+    if (!moduleRoot.includes('/node_modules/')) {
+      context.addContentPath(helper.resolvers.module.resolve('./runtime'))
+      context.addContentPath(helper.resolvers.module.resolve('./modules'))
+    }
+
     const app: Blokkli = {
       helper,
       context,
@@ -217,13 +229,14 @@ export default defineNuxtModule<ModuleOptions>({
     // content directories.
     const contentPaths = context.getContentPaths()
     if (contentPaths.length > 0) {
+      const tailwindConfigPath = helper.getTailwindConfigPath()
       addVitePlugin({
         name: 'blokkli-mangle-module-classes',
         enforce: 'pre',
         async transform(code: string, id: string) {
           if (!id.endsWith('.vue')) return null
           if (!contentPaths.some((dir) => id.startsWith(dir))) return null
-          const result = await mangleVueSFC(code, id)
+          const result = await mangleVueSFC(code, id, tailwindConfigPath)
           return result ? { code: result, map: null } : null
         },
         hotUpdate: {

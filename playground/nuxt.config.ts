@@ -1,9 +1,10 @@
-import mangleClassesPlugin from './mangleClassesPlugin'
 import { USED_MATERIAL_ICONS } from '../src/build/used-icons'
 import packageJson from './../package.json'
 import { fileURLToPath } from 'node:url'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
+import tailwindcss from '@tailwindcss/vite'
 import testExtensionModule from './app/blokkli/modules/test-extension'
+import demoFeatureModule from './app/blokkli/modules/demo-feature'
 import agentModule from './../src/modules/agent'
 import tableOfContents from './../src/modules/table-of-contents'
 import charts from './../src/modules/charts'
@@ -32,15 +33,9 @@ export default defineNuxtConfig({
     '#mock': fileURLToPath(new URL('./app/mock', import.meta.url)),
   },
 
-  modules: [
-    '@nuxt/test-utils/module',
-    '../src/module',
-    '@nuxtjs/tailwindcss',
-    'nuxt-svg-icon-sprite',
-  ],
-  tailwindcss: {
-    cssPath: './app/assets/css/tailwind.css',
-  },
+  modules: ['@nuxt/test-utils/module', '../src/module', 'nuxt-svg-icon-sprite'],
+
+  css: ['~/assets/css/tailwind.css'],
 
   debug: false,
 
@@ -73,7 +68,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [mangleClassesPlugin()],
+    plugins: [tailwindcss()],
     build: {
       minify: false,
     },
@@ -100,6 +95,7 @@ export default defineNuxtConfig({
   blokkli: {
     modules: [
       testExtensionModule(),
+      demoFeatureModule(),
       tableOfContents(),
       charts({
         colors: {
@@ -243,8 +239,6 @@ export default defineNuxtConfig({
     storageDefaults: {
       blockFavorites: ['title', 'text', 'card', 'button'],
     },
-
-    featureImports: ['./blokkli/DemoFeature.vue'],
 
     getBundlePropsType: function (_bundle, definition) {
       // Every component exports its props as a type called Props.

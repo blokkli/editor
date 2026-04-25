@@ -1,5 +1,4 @@
-import plugin from 'tailwindcss/plugin'
-import type { Config } from 'tailwindcss'
+import plugin, { type Config } from 'tailwindcss/plugin'
 
 const z = (index: number, key: string) => {
   return `calc(var(--bk-z-index-base) + ${index}) /* "${key}" */`
@@ -61,12 +60,11 @@ const zIndex = zIndexKeys.reduce<Record<string, string>>((acc, key, index) => {
   return acc
 }, {})
 
+// Consumed at runtime by Tailwind v4 via the @config compat shim. Preflight
+// is disabled at the import level (selective `tailwindcss/utilities.css`
+// import in css/index.css), and container is no longer a core plugin in v4.
 const tailwindConfig: Config = {
   content: ['./src/runtime/**/*.vue', './src/modules/*/runtime/**/*.vue'],
-  corePlugins: {
-    preflight: false,
-    container: false,
-  },
   theme: {
     fontFamily: {
       sans: ['PB Inter, sans-serif'],

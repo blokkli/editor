@@ -95,7 +95,7 @@ export default {
 <style lang="postcss">
 .bk-vars.bk-resizable {
   @apply absolute left-0 w-full;
-  @screen md {
+  @variant md {
     @apply relative w-auto;
   }
   &.bk-is-resizing {
@@ -127,7 +127,7 @@ export default {
 
     &.bk-is-vertical {
       @apply hidden;
-      @screen md {
+      @variant md {
         @apply block;
         @apply absolute top-0 -left-10 w-[20px] h-full cursor-ew-resize z-resizable;
         &:before {

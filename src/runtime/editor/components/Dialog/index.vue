@@ -204,7 +204,7 @@ export default {
   .bk-dialog-content-inner {
     min-height: calc(100vh - 160px);
     @apply pb-20;
-    @screen md {
+    @variant md {
       min-height: auto;
       @apply h-auto;
     }

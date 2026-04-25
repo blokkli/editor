@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module'
 
-const processors = new Map<string, any>()
+let processor: any | null = null
 
 function postcssMangleClasses(selectorParser: any) {
   const plugin = () => ({
@@ -55,56 +55,60 @@ function postcssMangleClasses(selectorParser: any) {
  * internally. Resolves @apply directives, scopes selectors to .bk, and
  * renames --tw-* variables to --bk-tw-*.
  *
- * When contentPaths are provided, Tailwind will scan those files and generate
- * utility classes for any classes found in them.
+ * When contentPaths are provided, Tailwind v4 will scan those directories for
+ * utility classes via prepended @source directives.
  */
 export async function processCSS(
   css: string,
   from?: string,
   contentPaths?: string[],
 ): Promise<string> {
-  const key = contentPaths?.join(',') || ''
-  if (!processors.has(key)) {
-    processors.set(key, await createProcessor(contentPaths))
+  if (!processor) {
+    processor = await createProcessor()
   }
 
-  const processor = processors.get(key)!
-  const result = await processor.process(css, { from: from || 'module.css' })
+  // Append @source directives after the input CSS so they don't conflict
+  // with leading @import statements (CSS spec requires @import to precede
+  // most other at-rules).
+  const sourceDirectives = contentPaths?.length
+    ? '\n' + contentPaths.map((dir) => `@source "${dir}/**/*.vue";`).join('\n')
+    : ''
+
+  const result = await processor.process(css + sourceDirectives, {
+    from: from || 'module.css',
+  })
   return result.css
 }
 
 /**
- * Reset all cached PostCSS processors. Call this when module CSS files change
+ * Reset the cached PostCSS processor. Call this when module CSS files change
  * so that postcss-import re-reads imported partials from disk.
  */
 export function resetProcessor(): void {
-  processors.clear()
+  processor = null
 }
 
-async function createProcessor(contentPaths?: string[]): Promise<any> {
+async function createProcessor(): Promise<any> {
   const _require = createRequire(import.meta.url)
 
   try {
     const postcss = _require('postcss')
-    const { default: tailwindConfig } = await import('./tailwindConfig')
 
-    // When content paths are provided, scan those files for utility classes.
-    // Otherwise, use empty content — @apply directives still resolve.
-    const content = contentPaths?.length
-      ? contentPaths.map((dir) => dir + '/**/*.vue')
-      : [{ raw: ' ', extension: 'html' }]
+    const postcssImport = _require('postcss-import')
+    const postcssNesting = _require('postcss-nesting')
+    const tailwindPostcss = _require('@tailwindcss/postcss')
+    const selectorParser = _require('postcss-selector-parser')
+    const postcssReplace = _require('postcss-replace')
+    const remToPx = _require('@thedutchcoder/postcss-rem-to-px')
 
     const plugins = [
-      _require('postcss-import'),
-      _require('tailwindcss/nesting'),
-      _require('tailwindcss')({
-        ...tailwindConfig,
-        content,
-      }),
-      postcssMangleClasses(_require('postcss-selector-parser')),
+      (postcssImport.default || postcssImport)(),
+      (postcssNesting.default || postcssNesting)(),
+      (tailwindPostcss.default || tailwindPostcss)(),
+      postcssMangleClasses(selectorParser)(),
       // Same scoping rules as postcss.config.cjs: scope selectors to .bk
       // and rename Tailwind CSS variables from --tw-* to --bk-tw-*.
-      _require('postcss-replace')({
+      (postcssReplace.default || postcssReplace)({
         pattern: /(--tw|\*, ::before, ::after)/g,
         data: {
           '--tw': '--bk-tw',
@@ -113,7 +117,7 @@ async function createProcessor(contentPaths?: string[]): Promise<any> {
           '::backdrop': '.bk::backdrop, .bk ::backdrop',
         },
       }),
-      _require('@thedutchcoder/postcss-rem-to-px')({ baseValue: 16 }),
+      (remToPx.default || remToPx)({ baseValue: 16 }),
     ]
 
     return postcss(plugins)
@@ -124,7 +128,8 @@ async function createProcessor(contentPaths?: string[]): Promise<any> {
       throw new Error(
         `Missing dependency "${missing}" required for processing module CSS.\n` +
           `Install the required PostCSS packages:\n` +
-          `npm install -D postcss tailwindcss postcss-import postcss-replace ` +
+          `npm install -D postcss tailwindcss @tailwindcss/postcss ` +
+          `postcss-import postcss-nesting postcss-replace ` +
           `@thedutchcoder/postcss-rem-to-px`,
       )
     }

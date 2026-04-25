@@ -42,7 +42,9 @@ export default {
 </script>
 
 <style lang="postcss">
-.bk-icon svg {
-  @apply fill-current;
+@layer base {
+  .bk-icon svg {
+    @apply fill-current;
+  }
 }
 </style>

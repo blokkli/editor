@@ -477,13 +477,13 @@ onBeforeUnmount(async () => {
 
   .bk-editable-field-input {
     @apply w-full min-w-[360px] max-w-[700px];
-    @screen md {
+    @variant md {
       @apply rounded;
     }
 
     .bk-editable-field-textarea {
       @apply relative;
-      @screen lg {
+      @variant lg {
         @apply min-w-[600px];
       }
     }

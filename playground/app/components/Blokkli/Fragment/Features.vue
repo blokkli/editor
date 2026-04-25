@@ -50,7 +50,9 @@ const features = computed(() =>
 )
 </script>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 .fragment-feature-icon {
   svg {
     @apply w-full h-full;
@@ -70,7 +72,7 @@ const features = computed(() =>
     &:last-child {
       margin-right: 25%;
     }
-    @screen md {
+    @variant md {
       flex: 1;
       @apply !m-0;
     }
