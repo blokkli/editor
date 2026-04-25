@@ -1,0 +1,14 @@
+/**
+ * This CSS file should contain global CSS that is not prefixed using .bk, .bk-vars, etc.
+ */
+
+/* Diff display in the artboard (page content), outside the .bk editor scope. */
+[data-bk-diff-active] {
+  del {
+    @apply line-through decoration-red-normal text-red-normal/50;
+  }
+
+  ins {
+    @apply bg-lime-light rounded text-lime-dark border border-lime-normal/30 no-underline;
+  }
+}

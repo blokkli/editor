@@ -8,6 +8,7 @@
 @import './partials/transitions.css';
 @import './partials/forms.css';
 @import './partials/table.css';
+@import './partials/global.css';
 @import './../src/modules/agent/css/Agent.css';
 @import './../src/modules/charts/css/Charts.css';
 

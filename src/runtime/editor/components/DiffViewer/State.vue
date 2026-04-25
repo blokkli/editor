@@ -300,17 +300,6 @@ function scrollToBlock(uuid: string) {
 </script>
 
 <style lang="postcss">
-/* Diff display in the artboard (page content), outside the .bk editor scope. */
-[data-bk-diff-active] {
-  del {
-    @apply line-through  decoration-red-normal text-red-normal/50;
-  }
-
-  ins {
-    @apply bg-lime-light rounded text-lime-dark border border-lime-normal/30 no-underline;
-  }
-}
-
 .bk {
   &.bk-diff-sidebar-pane {
     @apply absolute top-0 left-0 w-full h-full;
