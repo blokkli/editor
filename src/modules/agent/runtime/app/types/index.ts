@@ -5,7 +5,10 @@ import type {
   AdapterMethods,
 } from '#blokkli/editor/adapter'
 import type { EditMode } from '#blokkli/editor/types/state'
-import { agentErrorTypeSchema } from '#blokkli/agent/shared/types'
+import {
+  agentErrorTypeSchema,
+  type UsageTurn,
+} from '#blokkli/agent/shared/types'
 import { z } from 'zod'
 import type { Component } from 'vue'
 import type {
@@ -80,6 +83,39 @@ export type QueryResult<T = unknown> = {
 export type ToolError = {
   error: string
 }
+
+/**
+ * Side-channel data that interactive tool components can attach to their
+ * emitted result alongside the LLM-facing payload. The provider strips
+ * these underscore-prefixed properties at the boundary so they never reach
+ * the server: `details` feeds `buildDetails()`, `usage` is folded into the
+ * conversation usage display, and `skipLlmResponse` ends the agent loop
+ * without an LLM reply when the user fully accepted the changes.
+ */
+export type ToolMeta = {
+  details?: unknown
+  usage?: UsageTurn
+  skipLlmResponse?: boolean
+}
+
+/**
+ * Shape an interactive tool component emits: the LLM-facing payload merged
+ * with optional side-channel metadata. Components can use this to type
+ * their `emit('done', ...)` payloads in a single place.
+ */
+export type ComponentToolResult<T = Record<string, unknown>> = T & {
+  _details?: ToolMeta['details']
+  _usage?: ToolMeta['usage']
+  _skipLlmResponse?: ToolMeta['skipLlmResponse']
+}
+
+/**
+ * Discriminated outcome returned by `executeToolLocally`. Callers branch
+ * on `ok` instead of runtime-checking the shape of an `unknown` result.
+ */
+export type ToolOutcome =
+  | { ok: false; error: string }
+  | { ok: true; result: unknown; meta: ToolMeta }
 
 /**
  * Makes specified adapter methods required (non-optional).

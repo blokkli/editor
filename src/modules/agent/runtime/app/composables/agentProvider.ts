@@ -8,6 +8,8 @@ import {
   type McpToolDefinition,
   type PreSeededToolResult,
   type AutoExecuteTool,
+  type ToolMeta,
+  type ToolOutcome,
 } from '#blokkli/agent/app/types'
 import type {
   ServerMessage,
@@ -960,8 +962,21 @@ export default function (
       timestamp,
     }
 
+    function finishItem(status: 'success' | 'error') {
+      conversation.value.push({
+        type: 'tool',
+        id: toolId,
+        callId,
+        tool,
+        label: currentLabel,
+        status,
+        timestamp,
+      })
+      activeItem.value = null
+    }
+
     try {
-      const result = await executeToolLocally(tool, params, (label) => {
+      const outcome = await executeToolLocally(tool, params, (label) => {
         currentLabel = label
         if (
           activeItem.value?.type === 'tool' &&
@@ -971,118 +986,57 @@ export default function (
         }
       })
 
-      if (isToolError(result)) {
-        conversation.value.push({
-          type: 'tool',
-          id: toolId,
-          callId,
-          tool,
-          label: currentLabel,
-          status: 'error',
-          timestamp,
-        })
-        activeItem.value = null
-
+      if (!outcome.ok) {
+        finishItem('error')
         send({
           type: 'tool_result',
           callId,
           result: null,
-          error: result.error,
+          error: outcome.error,
         })
-      } else {
-        conversation.value.push({
-          type: 'tool',
-          id: toolId,
-          callId,
-          tool,
-          label: currentLabel,
-          status: 'success',
-          timestamp,
-        })
-        activeItem.value = null
-
-        // Store ephemeral details if the tool provides a buildDetails callback.
-        if (toolDef.buildDetails) {
-          try {
-            // Check for _details on the result (set by interactive components).
-            const detailsSource =
-              typeof result === 'object' &&
-              result !== null &&
-              '_details' in result
-                ? (result as Record<string, unknown>)._details
-                : result
-            const details = toolDef.buildDetails(detailsSource)
-            if (details != null) {
-              toolDetails.set(callId, details)
-            }
-          } catch {
-            // buildDetails failed — skip
-          }
-        }
-
-        // Inject _summary from prunedSummary callback for use during server-side pruning.
-        // Also strip _details and _usage (ephemeral, not sent to server).
-        let resultForServer: unknown = result
-        let skipLlmResponse: boolean | undefined
-        if (typeof result === 'object' && result !== null) {
-          const rec = result as Record<string, unknown>
-          if ('_usage' in rec && rec._usage) {
-            usageTurns.value = [...usageTurns.value, rec._usage as UsageTurn]
-          }
-          if (rec._skipLlmResponse === true) {
-            skipLlmResponse = true
-          }
-          if (
-            '_details' in rec ||
-            '_usage' in rec ||
-            '_skipLlmResponse' in rec
-          ) {
-            const {
-              _details: _,
-              _usage: __,
-              _skipLlmResponse: ___,
-              ...rest
-            } = rec
-            resultForServer = rest
-          }
-        }
-        if (
-          toolDef.prunedSummary &&
-          typeof resultForServer === 'object' &&
-          resultForServer !== null
-        ) {
-          try {
-            const summary = toolDef.prunedSummary(resultForServer)
-            if (summary) {
-              resultForServer = {
-                ...(resultForServer as Record<string, unknown>),
-                _summary: summary,
-              }
-            }
-          } catch {
-            // prunedSummary failed — send original result
-          }
-        }
-
-        send({
-          type: 'tool_result',
-          callId,
-          result: resultForServer,
-          skipLlmResponse,
-        })
+        return
       }
-    } catch (error) {
-      conversation.value.push({
-        type: 'tool',
-        id: toolId,
-        callId,
-        tool,
-        label: currentLabel,
-        status: 'error',
-        timestamp,
-      })
-      activeItem.value = null
 
+      finishItem('success')
+
+      if (toolDef.buildDetails) {
+        try {
+          const detailsSource = outcome.meta.details ?? outcome.result
+          const details = toolDef.buildDetails(detailsSource)
+          if (details != null) {
+            toolDetails.set(callId, details)
+          }
+        } catch {
+          // buildDetails is user code — its failures must not break tool dispatch.
+        }
+      }
+
+      if (outcome.meta.usage) {
+        usageTurns.value = [...usageTurns.value, outcome.meta.usage]
+      }
+
+      // The server reads `_summary` from the wire payload during pruning.
+      let resultForServer = outcome.result
+      const resultObj = asRecord(resultForServer)
+      if (toolDef.prunedSummary && resultObj) {
+        try {
+          const summary = toolDef.prunedSummary(resultObj)
+          if (summary) {
+            resultForServer = { ...resultObj, _summary: summary }
+          }
+        } catch {
+          // prunedSummary is user code — fall back to the raw payload.
+        }
+      }
+
+      send({
+        type: 'tool_result',
+        callId,
+        result: resultForServer,
+        skipLlmResponse: outcome.meta.skipLlmResponse,
+      })
+    } catch (error) {
+      finishItem('error')
       send({
         type: 'tool_result',
         callId,
@@ -1141,11 +1095,36 @@ export default function (
     })
   }
 
+  function asRecord(value: unknown): Record<string, unknown> | null {
+    return typeof value === 'object' && value !== null
+      ? (value as Record<string, unknown>)
+      : null
+  }
+
+  // Pulls component side-channel meta (`_details`, `_usage`, `_skipLlmResponse`)
+  // off the emitted result so the LLM payload can be sent without them.
+  function splitMeta(raw: unknown): { payload: unknown; meta: ToolMeta } {
+    const obj = asRecord(raw)
+    if (!obj) return { payload: raw, meta: {} }
+
+    const meta: ToolMeta = {}
+    if (obj._details !== undefined) meta.details = obj._details
+    if (obj._usage) meta.usage = obj._usage as UsageTurn
+    if (obj._skipLlmResponse === true) meta.skipLlmResponse = true
+
+    if (Object.keys(meta).length === 0) {
+      return { payload: raw, meta }
+    }
+
+    const { _details: _, _usage: __, _skipLlmResponse: ___, ...payload } = obj
+    return { payload, meta }
+  }
+
   async function executeToolLocally(
     toolName: string,
     params: Record<string, unknown>,
     setLabel?: (label: string) => void,
-  ): Promise<unknown> {
+  ): Promise<ToolOutcome> {
     const toolContext = createToolContext()
     const toolDef = getToolDefinition(toolMap, toolName)
 
@@ -1157,61 +1136,50 @@ export default function (
         params,
       )
 
-      if (
-        typeof preparedParams === 'object' &&
-        preparedParams !== null &&
-        'error' in preparedParams
-      ) {
-        return preparedParams
+      if (isToolError(preparedParams)) {
+        return { ok: false, error: preparedParams.error }
       }
 
-      const result = await waitForToolComponent(
+      const raw = await waitForToolComponent(
         toolDef.name,
         preparedParams as Record<string, unknown>,
       )
+      const { payload, meta } = splitMeta(raw)
 
-      if (
-        setLabel &&
-        typeof result === 'object' &&
-        result !== null &&
-        'label' in result
-      ) {
-        setLabel((result as { label: string }).label)
+      const payloadObj = asRecord(payload)
+      if (setLabel && payloadObj && typeof payloadObj.label === 'string') {
+        setLabel(payloadObj.label)
       }
 
-      return result
+      return { ok: true, result: payload, meta }
     }
 
     const category = getToolCategory(toolMap, toolName)
     const result = await executeTool(toolMap, toolName, toolContext, params)
 
+    if (isToolError(result)) {
+      return { ok: false, error: result.error }
+    }
+
     if (category === 'query') {
       if (isQueryResult(result)) {
-        if (setLabel) {
-          setLabel(result.label)
-        }
+        if (setLabel) setLabel(result.label)
         if (result.affectedUuids?.length) {
           app.eventBus.emit('select', result.affectedUuids)
           app.eventBus.emit('scrollSelectionIntoView', {})
         }
-        return result.result
+        return { ok: true, result: result.result, meta: {} }
       }
-      return result
-    }
-
-    if (typeof result === 'object' && result !== null && 'error' in result) {
-      return result
+      return { ok: true, result, meta: {} }
     }
 
     if (!isMutationAction(result)) {
-      return { error: 'Invalid mutation tool result' }
+      return { ok: false, error: 'Invalid mutation tool result' }
     }
 
     const action = result
 
-    if (setLabel) {
-      setLabel(action.label)
-    }
+    if (setLabel) setLabel(action.label)
 
     async function applyMutation(): Promise<string[]> {
       const uuidsBefore = state.getAllUuids()
@@ -1272,20 +1240,18 @@ export default function (
 
     if (autoApprove.value || !toolDef.requiresApproval) {
       const newUuids = await applyMutation()
-      return buildMutationResult(newUuids)
+      return { ok: true, result: buildMutationResult(newUuids), meta: {} }
     }
 
     const approved = await waitForApproval(action)
 
     if (approved) {
       const newUuids = await applyMutation()
-      return buildMutationResult(newUuids)
-    } else {
-      if (action.revert) {
-        action.revert()
-      }
-      return { success: false, rejected: true }
+      return { ok: true, result: buildMutationResult(newUuids), meta: {} }
     }
+
+    if (action.revert) action.revert()
+    return { ok: true, result: { success: false, rejected: true }, meta: {} }
   }
 
   function waitForApproval(action: MutationAction): Promise<boolean> {
