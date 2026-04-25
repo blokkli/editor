@@ -224,6 +224,32 @@ describe('pruneMessages', () => {
     }
   })
 
+  it('does not empty user prompts that contain only skill+text blocks', () => {
+    // First user message with auto-loaded skills is built as an array
+    // [skill, text]. When this turn ages out it must NOT become an empty
+    // content array — Anthropic rejects messages.0 with empty content.
+    const messages: GenericMessage[] = [
+      {
+        role: 'user',
+        content: [
+          { type: 'skill', name: 'writing', text: '# Skill: writing...' },
+          { type: 'text', text: 'rewrite the intro' },
+        ],
+      },
+      makeAssistantMsg('done'),
+      makeUserMsg('next prompt'),
+      makeAssistantMsg('reply'),
+    ]
+
+    pruneMessages(messages, 1)
+
+    const first = messages[0]
+    expect(Array.isArray(first.content)).toBe(true)
+    if (Array.isArray(first.content)) {
+      expect(first.content.length).toBeGreaterThan(0)
+    }
+  })
+
   it('Bug 4: counts messages with mixed tool_result and text as tool responses', () => {
     const messages: GenericMessage[] = [
       makeUserMsg('first prompt'),

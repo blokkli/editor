@@ -353,7 +353,11 @@ export function pruneMessages(
       continue
     }
 
-    // User messages: compress tool_result blocks and remove text blocks
+    // User messages: compress tool_result blocks. Only strip auxiliary
+    // text/skill blocks from tool-response messages — for a genuine user
+    // prompt the text IS the message, and emptying the content array
+    // would cause the API to reject the request.
+    const hasToolResult = content.some((b) => b.type === 'tool_result')
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
       if (block.type === 'tool_result') {
@@ -369,7 +373,10 @@ export function pruneMessages(
         } else {
           block.content = compressToolResult(block.content)
         }
-      } else if (block.type === 'text' || block.type === 'skill') {
+      } else if (
+        hasToolResult &&
+        (block.type === 'text' || block.type === 'skill')
+      ) {
         content.splice(j, 1)
       }
     }
