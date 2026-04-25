@@ -428,6 +428,7 @@ export default function (
     isConnected.value = false
     isReady.value = false
     isProcessing.value = false
+    isThinking.value = false
 
     reconnectAttempts++
     if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
@@ -509,6 +510,8 @@ export default function (
     }
     isConnected.value = false
     isReady.value = false
+    isProcessing.value = false
+    isThinking.value = false
 
     // Re-enable editing
     ui.setTransform(null)
@@ -1470,6 +1473,7 @@ export default function (
     activeItem.value = null
     send({ type: 'cancel' })
     isProcessing.value = false
+    isThinking.value = false
 
     conversation.value.push({
       type: 'assistant',
