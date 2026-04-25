@@ -96,6 +96,7 @@ const { settings } = defineBlokkliFeature({
   },
 
   screenshot: 'feature-add-list.jpg',
+  viewports: ['desktop'],
 })
 
 const {

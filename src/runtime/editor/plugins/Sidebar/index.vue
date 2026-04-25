@@ -451,7 +451,7 @@ export default {
 
 <style lang="postcss">
 .bk-html-root {
-  --bk-sidebar-width-right: 100vw;
+  --bk-sidebar-width-right: 280px;
   --bk-toolbar-left-width: 50px;
   --bk-add-item-icon-padding: 6px;
   --bk-item-icon-radius-base-toolbar: 4px;
@@ -542,8 +542,12 @@ export default {
 
 .bk.bk-sidebar-right-wrapper {
   @apply flex flex-col pointer-events-none bg-white relative z-sidebar;
-  grid-area: sidebar-right;
+  grid-area: viewport;
   width: var(--bk-sidebar-width-right);
+
+  @screen md {
+    grid-area: sidebar-right;
+  }
 
   > * {
     @apply pointer-events-auto;

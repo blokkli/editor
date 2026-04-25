@@ -129,10 +129,6 @@ addElementClasses(
   'bk-hide-interaction-layers',
   isEnabled,
 )
-
-onMounted(() => {
-  console.log(fieldMappingValidations.value)
-})
 </script>
 
 <script lang="ts">

@@ -540,14 +540,31 @@ onUnmounted(() => {
 .bk-vars.bk-main-layout {
   @apply fixed top-0 left-0 w-screen h-screen z-main-layout grid pointer-events-none;
 
+  --bk-toolbar-height: 40px;
+
   grid-template-areas:
-    'toolbar toolbar      toolbar       toolbar     toolbar       right'
-    'left    mode         mode          mode        sidebar-right right'
-    'left    sidebar-left viewport      scrollbar-y sidebar-right right'
-    'left    sidebar-left banner        scrollbar-y sidebar-right right'
-    'left breadcrumbs breadcrumbs   breadcrumbs sidebar-right right';
-  grid-template-columns: auto auto 1fr 16px auto 50px;
-  grid-template-rows: 50px auto 1fr auto auto;
+    'toolbar toolbar      toolbar       toolbar     '
+    'left    right        right         right       '
+    'left    mode         mode          mode        '
+    'left    sidebar-left viewport      scrollbar-y '
+    'left    sidebar-left banner        scrollbar-y '
+    'left    breadcrumbs  breadcrumbs   breadcrumbs ';
+  grid-template-columns: auto auto 1fr 16px;
+  grid-template-rows: var(--bk-toolbar-height) auto auto 1fr auto auto;
+
+  @screen md {
+    --bk-toolbar-height: 50px;
+
+    grid-template-areas:
+      'toolbar toolbar      toolbar       toolbar     toolbar       right'
+      'left    mode         mode          mode        sidebar-right right'
+      'left    sidebar-left viewport      scrollbar-y sidebar-right right'
+      'left    sidebar-left banner        scrollbar-y sidebar-right right'
+      'left    breadcrumbs  breadcrumbs   breadcrumbs sidebar-right right';
+
+    grid-template-columns: auto auto 1fr 16px auto minmax(0, 50px);
+    grid-template-rows: var(--bk-toolbar-height) auto 1fr auto auto;
+  }
 }
 
 .bk.bk-canvas-overlay {
