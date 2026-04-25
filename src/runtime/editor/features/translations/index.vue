@@ -54,6 +54,7 @@
   <Teleport to="#bk-banner-list">
     <Banner
       v-if="isTranslating"
+      v-show="!ui.isApproving.value"
       :active-language
       :show-csv="
         !!adapter.loadTextFieldValuesForLanguage &&
