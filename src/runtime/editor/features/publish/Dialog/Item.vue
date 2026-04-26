@@ -6,7 +6,14 @@
       'bk-is-warning': isScheduled && isSelected && !isSuccess,
     }"
   >
-    <td>
+    <td
+      class="w-full pl-3"
+      :class="{
+        'bg-red-normal/10!': isError,
+        'bg-lime-light/40!': isSuccess,
+        'bg-mono-100': !isError && !isSuccess && isSelected,
+      }"
+    >
       <label class="bk-checkbox">
         <input
           v-if="isCurrent || isMutating || isSuccess"
@@ -31,16 +38,30 @@
         />
       </label>
     </td>
-    <td>
+    <td
+      class="text-right whitespace-nowrap pl-18"
+      :class="{
+        'bg-red-normal/10!': isError,
+        'bg-lime-light/40!': isSuccess,
+        'bg-mono-100': !isError && !isSuccess && isSelected,
+      }"
+    >
       <span v-if="mutationStatusLabel">{{ mutationStatusLabel }}</span>
       <span v-else-if="isSelected">{{ newStatus.label }}</span>
     </td>
-    <td class="bk-is-status">
+    <td
+      class="text-right whitespace-nowrap pl-18 [&>div]:w-[60px] [&>div]:flex [&>div]:items-center [&>div]:justify-end [&>div]:gap-10"
+      :class="{
+        'bg-red-normal/10!': isError,
+        'bg-lime-light/40!': isSuccess,
+        'bg-mono-100': !isError && !isSuccess && isSelected,
+      }"
+    >
       <div v-if="isSuccess">
         <StatusIndicator :status="newStatusPropValue" class="mx-0" />
       </div>
       <div v-else-if="isSelected && isMutating">
-        <Icon name="loader" />
+        <Icon name="loader" class="[&_svg]:size-30 [&_svg]:fill-mono-500 mr-15" />
       </div>
       <div v-else-if="isSelected">
         <StatusIndicator
@@ -48,7 +69,7 @@
           class="mx-0"
         />
         <template v-if="newStatus.status !== isCurrentlyPublished">
-          <Icon name="arrow-right-thin" />
+          <Icon name="arrow-right-thin" class="[&_svg]:size-15" />
           <StatusIndicator :status="newStatusPropValue" class="mx-0" />
         </template>
       </div>
@@ -163,3 +184,20 @@ const newStatusPropValue = computed<'success' | 'warning' | 'error'>(() => {
   return 'error'
 })
 </script>
+
+<style lang="postcss">
+.bk {
+  /*
+   * Override the checkbox indicator color when the row is in a success/error
+   * state. Targets the global `.bk-checkbox` `input:checked + span:before`
+   * pseudo-element, which can't be addressed via Tailwind utilities.
+   */
+  tr.bk-is-success input:checked + span:before {
+    @apply bg-lime-normal/50!;
+  }
+
+  tr.bk-is-error input:checked + span:before {
+    @apply bg-red-normal/90!;
+  }
+}
+</style>

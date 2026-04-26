@@ -1,6 +1,6 @@
 <template>
-  <div class="bk-schedule-date">
-    <div class="bk-schedule-date-picker">
+  <div class="flex-1 flex gap-20">
+    <div class="w-[300px] shrink-0">
       <FormDatepicker
         v-model="selectedDate"
         :min="minDate"
@@ -8,16 +8,19 @@
         :error="!!error"
       />
     </div>
-    <div v-if="selectedDate" class="bk-schedule-date-time">
-      <div v-if="formattedDateTime" class="bk-schedule-date-formatted">
+    <div v-if="selectedDate" class="flex-1">
+      <div
+        v-if="formattedDateTime"
+        class="mb-20 px-10 font-bold text-lg bg-mono-100 h-[52px] flex items-center"
+      >
         {{ formattedDateTime }}
       </div>
-      <div class="bk-schedule-date-time-input">
+      <div class="flex gap-10 items-stretch">
         <input
           id="schedule-time"
           v-model="selectedTime"
           type="time"
-          class="bk-form-input"
+          class="bk-form-input flex-1 w-full tabular-nums"
           :disabled="disabled"
           :class="{
             'bk-is-invalid': error,
@@ -25,7 +28,7 @@
         />
         <button
           type="button"
-          class="bk-button bk-schedule-date-time-button bk-is-icon-only"
+          class="bk-button bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
           :disabled="disabled"
           @click="decrementHour"
         >
@@ -33,7 +36,7 @@
         </button>
         <button
           type="button"
-          class="bk-button bk-schedule-date-time-button bk-is-icon-only"
+          class="bk-button bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
           :disabled="disabled"
           @click="incrementHour"
         >
@@ -41,17 +44,15 @@
         </button>
       </div>
 
+      <InfoBox v-if="error" :text="error" class="mt-20" color="red" small />
       <slot />
-      <div v-if="error" class="bk-schedule-date-error">
-        {{ error }}
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli } from '#imports'
-import { FormDatepicker, Icon } from '#blokkli/editor/components'
+import { FormDatepicker, Icon, InfoBox } from '#blokkli/editor/components'
 
 const { ui } = useBlokkli()
 
@@ -83,14 +84,12 @@ const formattedDateTime = computed(() => {
   })
 })
 
-// Initialize from modelValue if provided
 if (modelValue.value) {
   const date = new Date(modelValue.value)
   selectedDate.value = formatDate(date)
   selectedTime.value = formatTime(date)
 }
 
-// Min date is today
 const minDate = computed(() => {
   const today = new Date()
   return formatDate(today)
@@ -109,7 +108,6 @@ function formatTime(date: Date): string {
   return `${hours}:${minutes}`
 }
 
-// Watch for changes and update modelValue
 watch([selectedDate, selectedTime], () => {
   if (!selectedDate.value) {
     modelValue.value = undefined
@@ -121,7 +119,6 @@ watch([selectedDate, selectedTime], () => {
   modelValue.value = date.toISOString()
 })
 
-// Watch for external changes to modelValue
 watch(modelValue, (newValue) => {
   if (!newValue) {
     selectedDate.value = ''
@@ -139,17 +136,14 @@ watch(modelValue, (newValue) => {
   }
 })
 
-// Time adjustment functions
 function incrementHour() {
   const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
-  // If minutes are not 00, round up to next hour, otherwise increment hour
   const newHours = minutes > 0 ? (hours + 1) % 24 : (hours + 1) % 24
   selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
 }
 
 function decrementHour() {
   const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
-  // If minutes are not 00, round down to current hour, otherwise decrement hour
   const newHours = minutes > 0 ? hours : hours === 0 ? 23 : hours - 1
   selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
 }

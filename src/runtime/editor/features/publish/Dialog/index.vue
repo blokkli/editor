@@ -10,13 +10,15 @@
     @submit="onSubmit"
     @cancel="$emit('close')"
   >
-    <div class="bk bk-form bk-dialog-publish-form">
+    <div
+      class="bk bk-form flex flex-col min-h-[calc(100vh-500px)] [&_.bk-heading-2]:font-bold [&_.bk-heading-2]:text-xl [&_.bk-heading-2]:mb-10"
+    >
       <FormItem>
         <div class="bk-form-label">
           <span>{{ $t('publishMode', 'Publish mode') }}</span
           ><span class="bk-required-indicator">*</span>
         </div>
-        <div class="bk-publish-options">
+        <div class="grid grid-cols-3 gap-10 my-20">
           <PublishOption
             v-for="option in publishModeOptions"
             :id="option.id"
@@ -36,8 +38,13 @@
           <label class="bk-form-label">
             {{ $t('publishScheduleDate', 'Publication date') }}
           </label>
-          <div class="bk-publish-schedule-date-wrapper">
-            <div v-if="isAlreadyScheduled" class="bk-publish-scheduled-display">
+          <div
+            class="flex gap-20 items-stretch [&_.bk-button]:whitespace-nowrap [&_.bk-button]:shrink"
+          >
+            <div
+              v-if="isAlreadyScheduled"
+              class="flex-1 flex items-center font-bold text-xl bg-yellow-light text-yellow-dark pl-10 border border-yellow-normal tabular-nums"
+            >
               {{ formatScheduleDate(scheduleDate) }}
             </div>
             <ScheduleDate
@@ -46,9 +53,10 @@
               :disabled="isLoading"
               :error="scheduleDateError"
             >
-              <div
-                class="bk-schedule-date-info"
-                v-text="
+              <InfoBox
+                small
+                class="mt-15"
+                :text="
                   $t(
                     'publishScheduledInfo',
                     'You can still make changes until the scheduled publication date.',
@@ -107,11 +115,13 @@
           {{ $t('publishSuccessfullyPublished', 'Successfully published') }}
         </h2>
 
-        <table class="bk-table bk-publish-dialog-table">
+        <table class="bk-table">
           <thead>
             <tr>
-              <th>{{ $t('publishName', 'Name') }}</th>
-              <th colspan="2">{{ $t('publishStatus', 'Status') }}</th>
+              <th class="w-full">{{ $t('publishName', 'Name') }}</th>
+              <th colspan="2" class="text-right whitespace-nowrap pl-18">
+                {{ $t('publishStatus', 'Status') }}
+              </th>
             </tr>
           </thead>
 
@@ -131,11 +141,13 @@
           </tbody>
         </table>
 
-        <table class="bk-table bk-publish-dialog-table">
+        <table class="bk-table mt-40">
           <thead>
             <tr>
-              <th>{{ $t('publishName', 'Name') }}</th>
-              <th colspan="2">{{ $t('publishStatus', 'Status') }}</th>
+              <th class="w-full">{{ $t('publishName', 'Name') }}</th>
+              <th colspan="2" class="text-right whitespace-nowrap pl-18">
+                {{ $t('publishStatus', 'Status') }}
+              </th>
             </tr>
           </thead>
 
@@ -718,3 +730,17 @@ watch(
   },
 )
 </script>
+
+<style lang="postcss">
+.bk.bk-is-publish-dialog {
+  .bk-dialog-content .bk-dialog-content-inner {
+    @apply pb-0;
+  }
+  .bk-dialog-footer {
+    @apply mt-0;
+  }
+  .bk-form-item {
+    @apply py-20 first:pt-0;
+  }
+}
+</style>

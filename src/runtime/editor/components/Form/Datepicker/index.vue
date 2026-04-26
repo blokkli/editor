@@ -41,13 +41,13 @@
         @click="selectDate(day)"
       >
         <div
-          class="size-30 flex items-center justify-center rounded-full !leading-none text-sm text-mono-800 text-center border border-transparent ease-swing transition-all duration-150 group-hover:bg-mono-200"
+          class="size-30 flex items-center justify-center rounded-full !leading-none text-sm text-mono-800 text-center border border-transparent ease-swing transition-transform duration-150 group-hover:bg-mono-200"
           :class="{
             'text-mono-400': !day.isCurrentMonth,
             'border-mono-300': day.isToday,
             'bg-accent-700 text-white font-bold scale-125 group-hover:bg-accent-800!':
               day.isSelected,
-            'text-mono-300': day.isDisabled,
+            '!text-mono-300': day.isDisabled,
           }"
         >
           {{ day.day }}

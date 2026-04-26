@@ -36,7 +36,13 @@
       <div v-if="$slots['pre-footer']" class="bk-dialog-pre-footer">
         <slot name="pre-footer" />
       </div>
-      <div v-if="!hideButtons" class="bk bk-dialog-footer">
+      <div
+        v-if="!hideButtons"
+        class="bk bk-dialog-footer"
+        :class="{
+          'mt-0!': $slots['pre-footer'],
+        }"
+      >
         <button
           class="bk-button"
           :disabled="!canSubmit"
@@ -184,10 +190,10 @@ export default {
 
   .bk-dialog-content,
   .bk-dialog-pre-footer {
-    @apply px-15 lg:px-20 xl:px-30;
+    @apply px-15 lg:px-20;
   }
   .bk-dialog-pre-footer {
-    @apply py-15 lg:py-20 xl:py-30 bg-mono-50 border-t border-t-mono-300;
+    @apply py-15 lg:py-20 bg-mono-50 border-t border-t-mono-300;
   }
 
   .bk-dialog-content {
