@@ -4,7 +4,9 @@ import tailwind from 'eslint-plugin-tailwindcss'
 import importX from 'eslint-plugin-import-x'
 import oxlint from 'eslint-plugin-oxlint'
 
-const tailwindEntryCSS = fileURLToPath(new URL('./css/index.css', import.meta.url))
+const tailwindEntryCSS = fileURLToPath(
+  new URL('./css/index.css', import.meta.url),
+)
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
 export default createConfigForNuxt(

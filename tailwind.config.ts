@@ -1,1 +1,3 @@
-export { default } from './src/build/tailwindConfig'
+import config from './src/build/tailwindConfig'
+
+export default config

@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="bk-dropdown-menu">
+  <div ref="container" class="bk-dropdown-menu relative">
     <button
       class="bk-dropdown-menu-trigger"
       :disabled="disabled"
@@ -30,9 +30,9 @@ import {
   onMounted,
   onBeforeUnmount,
   useTemplateRef,
-  useBlokkli,
 } from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
+import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = withDefaults(
   defineProps<{
@@ -44,8 +44,6 @@ const props = withDefaults(
     disabled: false,
   },
 )
-
-const { eventBus } = useBlokkli()
 
 const container = useTemplateRef('container')
 const contentEl = useTemplateRef('contentEl')
@@ -118,12 +116,14 @@ function onDocumentClick(e: MouseEvent) {
   }
 }
 
-eventBus.on('mouse:up', close)
+onBlokkliEvent('mouse:up', close)
 
-onMounted(() => document.addEventListener('click', onDocumentClick))
+onMounted(() => {
+  document.addEventListener('click', onDocumentClick)
+})
+
 onBeforeUnmount(() => {
   document.removeEventListener('click', onDocumentClick)
-  eventBus.off('mouse:up', close)
 })
 
 defineExpose({ close })

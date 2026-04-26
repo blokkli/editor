@@ -21,6 +21,8 @@ export { default as FormItem } from './Form/Item/index.vue'
 export { default as FormOverlay } from './FormOverlay/index.vue'
 export { default as FormRadio } from './Form/Radio/index.vue'
 export { default as FormRadioTabs } from './Form/RadioTabs/index.vue'
+export { default as FormSearch } from './Form/Search/index.vue'
+export type { FormSearchItem } from './Form/Search/types'
 export { default as FormSelect } from './Form/Select/index.vue'
 export { default as FormText } from './Form/Text/index.vue'
 export { default as FormTextarea } from './Form/Textarea/index.vue'
@@ -50,6 +52,7 @@ export { default as Tooltip } from './Tooltip/index.vue'
 export { default as TooltipContext } from './Tooltip/Context.vue'
 export { default as TooltipStatus } from './Tooltip/Status.vue'
 export { default as NotEditStateInfo } from './NotEditStateInfo/index.vue'
+export { default as ButtonAction } from './ButtonAction/index.vue'
 
 export const NestedEditorOverlay = defineAsyncComponent(
   () => import('./NestedEditorOverlay/index.vue'),

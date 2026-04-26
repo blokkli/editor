@@ -6,6 +6,7 @@
     <div class="bk-form-text">
       <input
         :id
+        ref="inputRef"
         :value="value"
         type="text"
         class="bk-form-input"
@@ -30,7 +31,7 @@
 
 <script setup lang="ts">
 import { Icon } from '#blokkli/editor/components'
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, useTemplateRef } from '#imports'
 
 const props = defineProps<{
   id: string
@@ -56,6 +57,13 @@ const value = defineModel<string>()
 function onUpdate(event: Event) {
   value.value = (event.target as HTMLInputElement).value
 }
+
+const inputRef = useTemplateRef<HTMLInputElement>('inputRef')
+
+defineExpose({
+  focus: () => inputRef.value?.focus(),
+  select: () => inputRef.value?.select(),
+})
 
 const { $t } = useBlokkli()
 </script>

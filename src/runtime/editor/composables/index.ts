@@ -3,6 +3,10 @@ export { defineAddAction } from './defineAddAction'
 export { defineCommands } from './defineCommands'
 export { defineDropAreas } from './defineDropAreas'
 export { defineDropHandler } from './defineDropHandler'
+export {
+  defineEditorComponent,
+  defineEditorSnippet,
+} from './defineEditorComponent'
 export { defineElementStyle } from './defineElementStyle'
 export { defineHighlight } from './defineHighlight'
 export { defineItemDropdownAction } from './defineItemDropdownAction'

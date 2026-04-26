@@ -200,7 +200,7 @@ export function withTailwindConfig(
   // that follow other at-rules, so we must inject AFTER any leading
   // @charset / @import / @layer-name-only directives.
   const leadingPattern =
-    /^(?:\s*(?:\/\*[\s\S]*?\*\/|@charset[^;]*;|@import[^;]*;|@layer\s+[\w\s,-]+;))*\s*/
+    /^(?:\s*(?:\/\*[\s\S]*?\*\/|@charset[^;]*;|@import[^;]*;|@layer\s[\w\s,-]+;))*\s*/
   const match = cssContent.match(leadingPattern)
   const insertAt = match ? match[0].length : 0
   const injection = `@reference 'tailwindcss';\n@config '${tailwindConfigPath}';\n`
