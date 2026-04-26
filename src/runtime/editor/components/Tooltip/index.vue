@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white text-sm rounded select-none pointer-events-none leading-none whitespace-nowrap min-h-40 font-sans flex flex-col justify-center"
+    class="text-white text-sm select-none pointer-events-none leading-none whitespace-nowrap min-h-40 font-sans flex flex-col justify-center"
     :class="{
       '!text-xs !min-h-25 !px-5 !py-3': small,
       'absolute invisible group-hover/tooltip:visible bg-mono-800/90 p-10':

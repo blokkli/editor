@@ -137,7 +137,7 @@ defineExpose({ close })
 
   .bk-dropdown-menu-content {
     @apply absolute z-50;
-    @apply bg-white border border-mono-300 rounded-lg shadow-lg overflow-hidden;
+    @apply bg-white border border-mono-300 shadow-lg overflow-hidden;
 
     hr {
       @apply border-t-mono-300;

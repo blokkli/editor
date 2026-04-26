@@ -166,7 +166,7 @@ export default {
   @apply flex items-center justify-center;
 
   .bk-dialog-inner {
-    @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl md:rounded-md  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
+    @apply w-full lg:min-w-[450px] max-w-screen-xl bg-white shadow-2xl  relative z-20 max-h-full min-h-0 overflow-hidden h-full lg:h-auto;
     @apply flex flex-col;
     @apply bg-black md:bg-white pointer-events-auto;
   }

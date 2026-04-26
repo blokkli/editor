@@ -1,5 +1,5 @@
 <template>
-  <div class="bk bk-pagination">
+  <div class="bk bk-pagination bg-white">
     <button :disabled="page === 0" @click="page--">
       <Icon name="bk_mdi_arrow_left_alt" />
     </button>

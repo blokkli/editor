@@ -186,7 +186,7 @@ useAnimationFrame(() => {
     @apply relative;
     @apply will-change-transform;
     @apply text-mono-50 bg-mono-950/90 backdrop-blur-md;
-    @apply rounded-lg overflow-hidden;
+    @apply overflow-hidden;
   }
 
   .bk-add-list-help-content {
@@ -215,7 +215,7 @@ useAnimationFrame(() => {
   }
 
   .bk-add-list-help-image {
-    @apply bg-white rounded-md overflow-hidden;
+    @apply bg-white overflow-hidden;
     @apply float-right ml-20 w-300 h-200;
     @apply outline outline-1 outline-mono-700;
 

@@ -38,3 +38,42 @@ defineProps<{
 
 const value = defineModel<string>()
 </script>
+
+<style lang="postcss">
+.bk .bk-radio-tabs {
+  @apply flex border border-scheme-normal overflow-hidden;
+
+  label {
+    @apply flex-1 text-center cursor-pointer relative;
+
+    &:not(:last-child) {
+      @apply border-r border-r-scheme-normal;
+    }
+
+    input {
+      @apply absolute opacity-0 pointer-events-none;
+    }
+
+    span {
+      @apply block pt-10 pb-[9px] px-5 text-sm font-semibold text-scheme-normal transition-colors whitespace-nowrap leading-none;
+    }
+
+    &:has(input:checked) {
+      span {
+        @apply bg-scheme-normal text-white;
+      }
+    }
+    &:not(:has(input:checked)) {
+      &:hover {
+        span {
+          @apply bg-scheme-light;
+        }
+      }
+    }
+
+    &:has(input:disabled) {
+      @apply opacity-50 cursor-not-allowed;
+    }
+  }
+}
+</style>

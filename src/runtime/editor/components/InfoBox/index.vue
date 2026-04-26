@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-info-box" :class="'bk-is-' + color">
+  <div class="bk-info-box" :class="'bk-scheme-' + color">
     <Icon :name="icon" />
     <div>
       <slot>
@@ -12,12 +12,13 @@
 <script setup lang="ts">
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/editor/components'
+import type { ThemeColorName } from './../../../../global/types/theme'
 
 withDefaults(
   defineProps<{
     text?: string
     icon?: BlokkliIcon
-    color?: 'yellow' | 'accent'
+    color?: ThemeColorName
   }>(),
   {
     text: undefined,
@@ -29,16 +30,9 @@ withDefaults(
 
 <style lang="postcss">
 .bk .bk-info-box {
-  @apply p-15 rounded-md font-medium;
+  @apply p-15 font-medium;
   @apply flex gap-10 items-center;
-
-  &.bk-is-yellow {
-    @apply bg-yellow-light text-yellow-dark border border-yellow-normal;
-  }
-
-  &.bk-is-accent {
-    @apply bg-accent-50 text-accent-800 border border-accent-200;
-  }
+  @apply bg-scheme-light text-scheme-dark border-l-4 border-l-scheme-normal;
 
   .bk-icon {
     @apply size-30 shrink-0;

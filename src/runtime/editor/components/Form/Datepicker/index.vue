@@ -1,50 +1,53 @@
 <template>
   <div
-    class="bk-datepicker bg-white"
+    class="bk-datepicker bg-white select-none border border-mono-300"
     :class="{
-      'bk-is-invalid': error,
+      'ring-[3px] ring-red-normal/40 !border-red-normal': error,
     }"
   >
-    <div class="bk-datepicker-header">
-      <button
-        type="button"
-        class="bk-datepicker-nav"
+    <div
+      class="flex items-center justify-between mb-15 p-10 border-b border-b-mono-300"
+    >
+      <ButtonAction
         :disabled="!canGoPrevious"
+        icon="bk_mdi_arrow_left_alt"
         @click="previousMonth"
-      >
-        <Icon name="bk_mdi_arrow_left_alt" />
-      </button>
-      <div class="bk-datepicker-title">{{ monthName }} {{ currentYear }}</div>
-      <button
-        type="button"
-        class="bk-datepicker-nav"
+      />
+      <div class="font-bold text-lg text-mono-900">
+        {{ monthName }} {{ currentYear }}
+      </div>
+      <ButtonAction
         :disabled="!canGoNext"
+        icon="bk_mdi_arrow_right_alt"
         @click="nextMonth"
-      >
-        <Icon name="bk_mdi_arrow_right_alt" />
-      </button>
+      />
     </div>
-    <div class="bk-datepicker-weekdays">
-      <div v-for="day in weekdays" :key="day" class="bk-datepicker-weekday">
+    <div class="grid grid-cols-7 px-10">
+      <div
+        v-for="day in weekdays"
+        :key="day"
+        class="text-center text-sm font-semibold text-mono-600 h-30 flex items-center justify-center"
+      >
         {{ day }}
       </div>
     </div>
-    <div class="bk-datepicker-days">
+    <div class="px-10 grid grid-cols-7 pb-10">
       <button
         v-for="day in calendarDays"
         :key="day.key"
         type="button"
-        class="bk-datepicker-day"
+        class="flex items-center justify-center py-3 disabled:cursor-not-allowed group"
         :disabled="disabled || day.isDisabled"
         @click="selectDate(day)"
       >
         <div
-          class="bk-datepicker-day-inner"
+          class="size-30 flex items-center justify-center rounded-full !leading-none text-sm text-mono-800 text-center border border-transparent ease-swing transition-all duration-150 group-hover:bg-mono-200"
           :class="{
-            'bk-is-other-month': !day.isCurrentMonth,
-            'bk-is-today': day.isToday,
-            'bk-is-selected': day.isSelected,
-            'bk-is-disabled': day.isDisabled,
+            'text-mono-400': !day.isCurrentMonth,
+            'border-mono-300': day.isToday,
+            'bg-accent-700 text-white font-bold scale-125 group-hover:bg-accent-800!':
+              day.isSelected,
+            'text-mono-300': day.isDisabled,
           }"
         >
           {{ day.day }}
@@ -56,7 +59,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import ButtonAction from '#blokkli/editor/components/ButtonAction/index.vue'
 
 const props = defineProps<{
   min?: string
@@ -251,95 +254,3 @@ watch(modelValue, (newValue) => {
   }
 })
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-datepicker {
-    @apply select-none border border-mono-300 rounded-md;
-    &.bk-is-invalid {
-      @apply ring-[3px] ring-red-normal/40 !border-red-normal;
-    }
-  }
-
-  .bk-datepicker-header {
-    @apply flex items-center justify-between mb-15 p-10 border-b border-b-mono-300;
-  }
-
-  .bk-datepicker-nav {
-    @apply size-30 flex items-center justify-center rounded-md;
-    @apply disabled:opacity-50 disabled:cursor-not-allowed;
-    &:not([disabled]) {
-      @apply hover:bg-mono-100;
-    }
-
-    .bk-icon {
-      @apply size-20;
-      svg {
-        @apply size-full fill-mono-700;
-      }
-    }
-  }
-
-  .bk-datepicker-title {
-    @apply font-bold text-lg text-mono-900;
-  }
-
-  .bk-datepicker-weekdays,
-  .bk-datepicker-days {
-    @apply px-10;
-  }
-
-  .bk-datepicker-weekdays {
-    @apply grid grid-cols-7;
-  }
-
-  .bk-datepicker-weekday {
-    @apply text-center text-sm font-semibold text-mono-600;
-    @apply h-30 flex items-center justify-center;
-  }
-
-  .bk-datepicker-days {
-    @apply grid grid-cols-7 pb-10;
-  }
-
-  .bk-datepicker-day {
-    @apply flex items-center justify-center;
-    @apply disabled:cursor-not-allowed py-3;
-  }
-
-  .bk-datepicker-day-inner {
-    @apply size-30 flex items-center justify-center rounded-full !leading-none;
-    @apply text-sm text-mono-800 text-center;
-    @apply border border-transparent ease-swing transition-all duration-150;
-
-    &.bk-is-other-month {
-      @apply text-mono-400;
-    }
-
-    &.bk-is-today {
-      @apply border-mono-300;
-    }
-
-    &.bk-is-selected {
-      @apply bg-scheme-normal text-white font-bold;
-      @apply scale-125;
-    }
-
-    &.bk-is-disabled {
-      @apply text-mono-300;
-    }
-  }
-
-  .bk-datepicker-day:hover .bk-datepicker-day-inner {
-    @apply bg-mono-200;
-  }
-
-  .bk-datepicker-day:hover .bk-datepicker-day-inner.bk-is-selected {
-    @apply bg-scheme-normal;
-  }
-
-  .bk-datepicker-day:hover .bk-datepicker-day-inner.bk-is-disabled {
-    @apply bg-transparent;
-  }
-}
-</style>

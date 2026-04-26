@@ -12,7 +12,7 @@
 
     <div
       v-if="selectedLabel"
-      class="flex items-center gap-5 h-[46px] px-10 bg-mono-50 rounded-md text-mono-950 border border-mono-200"
+      class="flex items-center gap-5 h-[46px] px-10 bg-mono-50 text-mono-950 border border-mono-200"
       :class="{ 'opacity-50': disabled }"
     >
       <Icon
@@ -24,7 +24,7 @@
       </span>
       <button
         type="button"
-        class="flex items-center justify-center p-3 rounded text-mono-500 hover:bg-mono-200 hover:text-mono-900 [&_svg]:size-15 [&_svg]:fill-current"
+        class="flex items-center justify-center p-3 text-mono-500 hover:bg-mono-200 hover:text-mono-900 [&_svg]:size-15 [&_svg]:fill-current"
         :title="$t('formSearchClear', 'Clear')"
         :disabled
         @click="$emit('clear')"
@@ -39,7 +39,7 @@
       :class="{ 'opacity-50': disabled }"
     >
       <div
-        class="rounded-md overflow-hidden bg-white"
+        class="overflow-hidden bg-white"
         :class="{ 'ring-4 ring-accent-700': isFocused }"
       >
         <div class="group/search relative">
@@ -53,7 +53,6 @@
             v-model="query"
             type="text"
             class="bk-form-input pl-[35px]! focus:ring-0!"
-            :class="{ 'rounded-b-none!': showDropdown }"
             autocomplete="off"
             :placeholder
             :required

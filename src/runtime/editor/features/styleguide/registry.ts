@@ -1,5 +1,7 @@
 import type { EditorEntry } from '#blokkli/editor/composables/defineEditorComponent'
+import banner from '#blokkli/editor/components/Banner/story'
 import dropdown from '#blokkli/editor/components/Dropdown/story'
+import infoBox from '#blokkli/editor/components/InfoBox/story'
 import pagination from '#blokkli/editor/components/Pagination/story'
 import tabs from '#blokkli/editor/components/Tabs/story'
 import formCheckboxes from '#blokkli/editor/components/Form/Checkboxes/story'
@@ -30,7 +32,9 @@ import examplePanel from './examples/Panel'
  * automatically.
  */
 export const editorEntries: EditorEntry[] = [
+  banner,
   dropdown,
+  infoBox,
   pagination,
   tabs,
   formCheckboxes,

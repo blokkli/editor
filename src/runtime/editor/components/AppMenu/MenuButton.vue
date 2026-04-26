@@ -109,7 +109,7 @@ export default {
 }
 
 .bk .bk-menu-list-icon {
-  @apply flex items-center justify-center bg-mono-100 rounded text-mono-500 border border-mono-300;
+  @apply flex items-center justify-center bg-mono-100 text-mono-500 border border-mono-300;
   @apply w-40 h-40;
   grid-column: 1;
   grid-row: 1 / -1;

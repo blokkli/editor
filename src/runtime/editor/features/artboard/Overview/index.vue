@@ -19,7 +19,7 @@
     >
       <button
         ref="overviewVisibleEl"
-        class="relative top-0 left-0 bg-white cursor-move will-change-transform rounded"
+        class="relative top-0 left-0 bg-white cursor-move will-change-transform"
       />
     </div>
   </ViewportBlockingRect>
@@ -157,7 +157,7 @@ defineOptions({
 
 <style lang="postcss">
 .bk.bk-artboard-overview {
-  @apply w-[180px] h-[500px] z-artboard-overview bg-mono-100 absolute top-0 right-0 rounded;
+  @apply w-[180px] h-[500px] z-artboard-overview bg-mono-100 absolute top-0 right-0;
   @apply overflow-hidden contain-strict border border-mono-400 pointer-events-auto;
   margin-top: var(--bk-viewport-padding);
   margin-right: var(--bk-viewport-padding);

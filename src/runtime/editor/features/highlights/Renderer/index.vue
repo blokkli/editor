@@ -13,7 +13,7 @@
       <button
         v-for="(highlight, i) in tooltipHighlights"
         :key="i"
-        class="cursor-pointer relative flex items-center gap-5 px-8 h-25 text-xs font-semibold whitespace-nowrap bg-scheme-normal text-scheme-text first:rounded-l last:rounded-r bk-highlight-tooltip-item group/tooltip"
+        class="cursor-pointer relative flex items-center gap-5 px-8 h-25 text-xs font-semibold whitespace-nowrap bg-scheme-normal text-scheme-text bk-highlight-tooltip-item group/tooltip"
         :class="'bk-scheme-' + highlight.color"
         @click.prevent="onTooltipItemClick(highlight)"
       >

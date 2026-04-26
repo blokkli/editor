@@ -16,14 +16,16 @@
     @cancel="$emit('cancel')"
   >
     <div class="bk-reusable-dialog-form">
-      <InfoBox
-        :text="
-          $t(
-            'libraryDialogReusableInfo',
-            'The library item will be available for placement on other pages once this page has been published.',
-          )
-        "
-      />
+      <FormItem>
+        <InfoBox
+          :text="
+            $t(
+              'libraryDialogReusableInfo',
+              'The library item will be available for placement on other pages once this page has been published.',
+            )
+          "
+        />
+      </FormItem>
       <FormItem>
         <FormText
           id="reusable_label"

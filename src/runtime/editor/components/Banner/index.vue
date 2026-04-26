@@ -21,6 +21,7 @@ const props = withDefaults(
   defineProps<{
     id: string
     scheme?: ThemeColorName
+    standalone?: boolean
   }>(),
   {
     scheme: 'accent',
@@ -31,23 +32,25 @@ const { ui } = useBlokkli()
 
 const el = useTemplateRef('el')
 
-const observer = new ResizeObserver((entries) => {
-  const entry = entries.at(0)
-  if (!entry) {
-    return
-  }
-  const height = Math.ceil(entry.borderBoxSize.at(0)?.blockSize ?? 0)
-  ui.setBannerHeight(props.id, height)
-})
+if (!props.standalone) {
+  const observer = new ResizeObserver((entries) => {
+    const entry = entries.at(0)
+    if (!entry) {
+      return
+    }
+    const height = Math.ceil(entry.borderBoxSize.at(0)?.blockSize ?? 0)
+    ui.setBannerHeight(props.id, height)
+  })
 
-onMounted(() => {
-  if (el.value) {
-    observer.observe(el.value)
-  }
-})
+  onMounted(() => {
+    if (el.value) {
+      observer.observe(el.value)
+    }
+  })
 
-onBeforeUnmount(() => {
-  observer.disconnect()
-  ui.removeBanner(props.id)
-})
+  onBeforeUnmount(() => {
+    observer.disconnect()
+    ui.removeBanner(props.id)
+  })
+}
 </script>

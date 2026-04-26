@@ -506,7 +506,7 @@ onBroadcastEvent('editorLoaded', onEditorLoaded)
   }
 
   .bk-library-edit-overlay-frame {
-    @apply relative top-0 left-0 w-full h-full bg-white rounded-md shadow overflow-hidden;
+    @apply relative top-0 left-0 w-full h-full bg-white shadow overflow-hidden;
     @apply border border-mono-300;
 
     iframe {

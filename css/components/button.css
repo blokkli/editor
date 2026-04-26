@@ -1,6 +1,6 @@
 .bk {
   .bk-button {
-    @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-md !font-semibold  focus-visible:outline-none !font-sans !text-base focus-visible:!ring-[3px] focus-visible:ring-offset-2;
+    @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-none !font-semibold  focus-visible:outline-none !font-sans !text-base focus-visible:!ring-[3px] focus-visible:ring-offset-2;
     @apply !text-mono-900 hover:!text-white;
     @apply !bg-mono-200 hover:!bg-mono-400;
     @apply !border-none;

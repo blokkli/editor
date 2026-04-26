@@ -1,21 +1,21 @@
 .bk-scrollbar-dark {
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-track {
-    @apply bg-mono-700;
+    @apply bg-mono-800;
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-mono-500 border-mono-900 border-3;
-    border-radius: 20px;
+    @apply bg-mono-600 border-0;
+    border-radius: 0px;
   }
 }
 
 .bk-scrollbar-light {
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-track {
@@ -23,7 +23,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-mono-400 border-mono-900 border-3;
-    border-radius: 20px;
+    @apply bg-mono-500 border-0;
+    border-radius: 0px;
   }
 }

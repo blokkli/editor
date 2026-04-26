@@ -43,7 +43,7 @@ function onBackgroundColor(color: string) {
 
 <style lang="postcss">
 .bk-vars.bk-block-preview-renderer {
-  @apply rounded p-20 min-h-[200px] mb-30 border border-mono-300 overflow-hidden;
+  @apply p-20 min-h-[200px] mb-30 border border-mono-300 overflow-hidden;
   &.bk-default-bg {
     @apply bg-mono-50;
   }

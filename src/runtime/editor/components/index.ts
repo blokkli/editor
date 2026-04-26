@@ -2,7 +2,6 @@ import { defineAsyncComponent } from 'vue'
 
 export { default as AddListItem } from './AddListItem/index.vue'
 export { default as ArtboardTooltip } from './ArtboardTooltip/index.vue'
-export { default as AutoHeight } from './AutoHeight/index.vue'
 export { default as Banner } from './Banner/index.vue'
 export { default as BannerInner } from './Banner/Inner.vue'
 export { default as BetaIndicator } from './BetaIndicator/index.vue'

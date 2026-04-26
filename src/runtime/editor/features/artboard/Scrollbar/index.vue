@@ -71,7 +71,7 @@ defineOptions({
   grid-area: scrollbar-y;
 
   button {
-    @apply bg-mono-500/50 block rounded-full;
+    @apply bg-mono-500/50 block;
   }
 
   @apply py-5;

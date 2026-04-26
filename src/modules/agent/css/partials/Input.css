@@ -9,7 +9,6 @@
   .bk-agent-input {
     @apply flex flex-col shrink-0;
     @apply border border-mono-300 bg-white;
-    @apply rounded-lg;
     @apply shadow-md-even overflow-hidden;
 
     &:has(textarea:focus),

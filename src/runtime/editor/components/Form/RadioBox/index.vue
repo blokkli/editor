@@ -1,6 +1,6 @@
 <template>
   <label
-    class="flex items-start gap-5 cursor-pointer p-10 border border-mono-200 rounded-md min-w-0 hover:bg-mono-50 hover:border-mono-400"
+    class="flex items-start gap-5 cursor-pointer p-10 border border-mono-200 min-w-0 hover:bg-mono-50 hover:border-mono-400"
     :class="{
       'border-accent-600! outline-4 outline-accent-200 bg-accent-50!':
         isSelected,

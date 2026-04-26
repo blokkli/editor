@@ -3,7 +3,7 @@
 }
 
 .bk-form-input {
-  @apply !bg-white !border !border-mono-400 !text-mono-900 !rounded-md focus:!outline-none focus:!border-transparent !block !w-full p-10 !font-sans !text-base;
+  @apply !bg-white !border !border-mono-400 !text-mono-900 focus:!outline-none focus:!border-transparent !block !w-full p-10 !font-sans !text-base;
   @apply focus:ring-[3px] focus:ring-accent-700;
 
   &.bk-is-small {
@@ -74,7 +74,7 @@
       @apply font-semibold flex mt-[2px];
       &:before {
         content: '';
-        @apply shrink-0 w-[18px] h-[18px] text-accent-600 bg-mono-100 border border-mono-400 focus:ring-accent-100 focus:ring-2 outline-none rounded block mr-[6px];
+        @apply shrink-0 w-[18px] h-[18px] text-accent-600 bg-mono-100 border border-mono-400 focus:ring-accent-100 focus:ring-2 outline-none block mr-[6px];
         @apply mt-[2px];
       }
     }
@@ -126,7 +126,7 @@
   }
 
   .bk-form-item {
-    @apply py-15 border-y border-y-mono-200;
+    @apply py-20 border-y border-y-mono-400 border-dashed;
 
     &:last-child {
       @apply border-b-0 pb-0;
@@ -151,43 +151,6 @@
 
   .bk-form-group-title {
     @apply font-bold text-lg mb-10 lg:text-xl;
-  }
-
-  .bk-radio-tabs {
-    @apply flex border border-scheme-normal rounded overflow-hidden;
-
-    label {
-      @apply flex-1 text-center cursor-pointer relative;
-
-      &:not(:last-child) {
-        @apply border-r border-r-scheme-normal;
-      }
-
-      input {
-        @apply absolute opacity-0 pointer-events-none;
-      }
-
-      span {
-        @apply block pt-10 pb-[9px] px-5 text-sm font-semibold text-scheme-normal transition-colors whitespace-nowrap leading-none;
-      }
-
-      &:has(input:checked) {
-        span {
-          @apply bg-scheme-normal text-white;
-        }
-      }
-      &:not(:has(input:checked)) {
-        &:hover {
-          span {
-            @apply bg-scheme-light;
-          }
-        }
-      }
-
-      &:has(input:disabled) {
-        @apply opacity-50 cursor-not-allowed;
-      }
-    }
   }
 
   .bk-form {

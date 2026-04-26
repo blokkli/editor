@@ -1,10 +1,11 @@
 <template>
   <button
     :disabled
-    class="size-30 rounded-full flex items-center justify-center group/tooltip"
+    class="size-30 flex items-center justify-center group/tooltip"
     :class="{
       'hover:bg-mono-200': theme === 'mono',
       'hover:bg-red-normal hover:text-white': theme === 'danger',
+      'text-mono-400 bg-white!': disabled,
     }"
   >
     <Icon :name="icon" class="size-[14px]" />

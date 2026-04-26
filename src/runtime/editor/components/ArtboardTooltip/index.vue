@@ -234,7 +234,6 @@ onBeforeUnmount(() => {
   }
 
   .bk-artboard-tooltip-inner {
-    @apply lg:rounded-md;
     @apply lg:shadow-2xl;
     border: 1px solid var(--bk-border);
     background: var(--bk-bg);

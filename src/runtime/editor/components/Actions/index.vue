@@ -428,8 +428,6 @@ export default {
     @apply bg-mono-950/90 backdrop-blur;
     @apply relative z-50;
 
-    @apply lg:rounded-md;
-
     color-scheme: dark;
 
     &.bk-is-locked {
@@ -450,8 +448,7 @@ export default {
     @variant lg {
       @apply filter-none backdrop-filter-none;
       @apply border border-mono-400;
-      @apply outline outline-1 outline-mono-700;
-      @apply bg-mono-900;
+      @apply bg-mono-900 shadow-xl;
     }
   }
 
