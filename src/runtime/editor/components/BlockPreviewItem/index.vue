@@ -120,7 +120,7 @@ provide(INJECT_FIELD_LIST_TYPE, fieldListType)
   @apply h-full flex flex-col;
 
   .bk-block-preview-item-header {
-    @apply p-15 bg-mono-100;
+    @apply p-15;
 
     h3 {
       @apply font-semibold;
@@ -129,6 +129,7 @@ provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 
   .bk-block-preview-item-inner {
     @apply p-20 overflow-hidden relative flex flex-col gap-5 items-center justify-center h-full;
+    @apply bg-white;
 
     > .bk-scale-to-fit {
       @apply w-full;

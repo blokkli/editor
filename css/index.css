@@ -227,4 +227,52 @@
   .bk-panel-item + .bk-panel-item {
     @apply border-t border-t-mono-300;
   }
+
+  .bk-vars {
+    .bk-library-dialog-list {
+      @apply grid gap-20;
+      @container (min-width: 700px) {
+        @apply grid-cols-2;
+      }
+
+      > li {
+        @apply border cursor-pointer overflow-hidden border-mono-200 hover:border-mono-400;
+        .bk-blokkli-details-label {
+          @apply font-semibold pointer-events-none;
+        }
+
+        &.bk-is-selected {
+          @apply border-accent-600 outline-4 outline-accent-200 bg-accent-50;
+        }
+      }
+    }
+    .bk-library-dialog-content {
+      @apply relative;
+    }
+
+    .bk-reusable-dialog-form {
+      .bk-info-box {
+        @apply my-20;
+      }
+    }
+
+    .bk-library-dialog {
+      .bk-form-group,
+      .bk-lead {
+        @apply px-20 mt-20;
+      }
+
+      .bk-info-box {
+        @apply mx-20 my-15;
+      }
+
+      .bk-library-dialog-content {
+        @apply px-20 my-20 border-t border-t-mono-300 pt-20;
+      }
+    }
+
+    .bk-library-pagination {
+      @apply bg-white sticky bottom-0 z-50;
+    }
+  }
 }
