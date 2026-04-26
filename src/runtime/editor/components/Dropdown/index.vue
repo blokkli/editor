@@ -3,6 +3,7 @@
     <button
       class="bk-dropdown-menu-trigger"
       :disabled="disabled"
+      :class="buttonClass"
       @click="showMenu = !showMenu"
     >
       <slot name="button" />
@@ -38,6 +39,7 @@ const props = withDefaults(
   defineProps<{
     position?: 'bottom-left' | 'top-left' | 'top-right'
     disabled?: boolean
+    buttonClass?: string
   }>(),
   {
     position: 'bottom-left',

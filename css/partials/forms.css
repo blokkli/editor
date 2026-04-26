@@ -71,7 +71,7 @@
       @apply bg-accent-700;
     }
     input + span {
-      @apply font-semibold flex mt-[2px];
+      @apply font-semibold flex;
       &:before {
         content: '';
         @apply shrink-0 w-[18px] h-[18px] text-accent-600 bg-mono-100 border border-mono-400 focus:ring-accent-100 focus:ring-2 outline-none block mr-[6px];
@@ -86,9 +86,6 @@
 
   .bk-radio-inline {
     @apply flex flex-wrap gap-x-15;
-    .bk-radio {
-      @apply py-3;
-    }
   }
 
   .bk-radio {

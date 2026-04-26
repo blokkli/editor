@@ -1,7 +1,7 @@
 <template>
-  <div class="bk-chart-editor" @wheel.capture.stop>
-    <div class="bk-chart-editor-top">
-      <div class="bk-chart-editor-top-actions">
+  <div class="bg-mono-100 h-full flex flex-col" @wheel.capture.stop>
+    <div class="bg-mono-900 sticky top-0 z-50">
+      <div class="flex border-b border-mono-700">
         <div class="bk-chart-editor-actions">
           <button type="button" :disabled="!canUndo" @click="undo">
             <Icon name="bk_mdi_undo" />
@@ -13,23 +13,17 @@
 
         <ChartTypePicker v-model="chartData.type" />
       </div>
-
-      <ChartTypeOptions
-        v-if="chartDef"
-        v-model:title="chartData.title"
-        :options="chartDef.editor.options"
-        :type-options="chartData.typeOptions || {}"
-        @update:type-options="chartData.typeOptions = $event"
-      />
     </div>
 
-    <div class="bk-chart-editor-main">
-      <div class="bk-chart-editor-section">
-        <div class="bk-chart-editor-preview-header">
-          <label class="bk-form-label">{{
-            $t('chartsPreview', 'Preview')
-          }}</label>
-          <div class="bk-chart-editor-preview-actions">
+    <div class="grid grid-cols-[1fr_auto] flex-1 h-full">
+      <div class="relative bg-white border-r border-r-mono-300 overflow-hidden">
+        <div class="absolute top-0 left-0 size-full">
+          <div class="flex gap-20 p-20">
+            <FormToggle
+              v-model="autoUpdate"
+              :label="$t('chartsAutoUpdate', 'Auto-update')"
+            />
+
             <button
               v-if="!autoUpdate"
               type="button"
@@ -38,60 +32,76 @@
             >
               {{ $t('chartsRefreshPreview', 'Refresh Preview') }}
             </button>
-            <FormToggle
-              v-model="autoUpdate"
-              :label="$t('chartsAutoUpdate', 'Auto-update')"
-            />
           </div>
+          <Preview
+            :uuid
+            :option-key="optionKey"
+            :data="previewData"
+            :stale="isStale"
+          />
         </div>
-        <Preview
-          :uuid
-          :option-key="optionKey"
-          :data="previewData"
-          :stale="isStale"
-        />
       </div>
 
-      <div class="bk-chart-editor-section">
-        <label class="bk-form-label">{{ $t('chartsData', 'Data') }}</label>
-        <DataTable
-          :categories="chartData.categories"
-          :series="chartData.series"
-          :category-colors="chartData.categoryColors"
-          :has-multiple-series="caps.hasMultipleSeries"
-          :has-series-colors="caps.hasSeriesColors"
-          :has-category-colors="caps.hasCategoryColors"
-          :colors="COLORS"
-          :remove-row="removeRow"
-          :remove-series="removeSeries"
-          @update:categories="chartData.categories = $event"
-          @update:series="chartData.series = $event"
-          @update:category-colors="chartData.categoryColors = $event"
-        />
-        <div class="bk-chart-data-table-actions">
-          <button type="button" class="bk-button bk-is-small" @click="addRow">
-            <Icon name="bk_mdi_add_row_below" />
-            {{ $t('chartsAddRow', 'Add row') }}
-          </button>
-          <button
-            v-if="caps.hasMultipleSeries"
-            type="button"
-            class="bk-button bk-is-small"
-            @click="addSeries"
+      <Resizable
+        id="chart-editor"
+        class="h-full max-h-full relative w-[400px]"
+        @done="refreshPreview"
+      >
+        <div
+          class="absolute top-0 left-0 size-full p-20 overflow-auto bk-scrollbar-light"
+        >
+          <PanelSection :title="$t('chartsData', 'Data')">
+            <div>
+              <DataTable
+                :categories="chartData.categories"
+                :series="chartData.series"
+                :category-colors="chartData.categoryColors"
+                :has-multiple-series="caps.hasMultipleSeries"
+                :has-series-colors="caps.hasSeriesColors"
+                :has-category-colors="caps.hasCategoryColors"
+                :colors="COLORS"
+                :remove-row="removeRow"
+                :remove-series="removeSeries"
+                @update:categories="chartData.categories = $event"
+                @update:series="chartData.series = $event"
+                @update:category-colors="chartData.categoryColors = $event"
+              />
+            </div>
+
+            <template #actions>
+              <PanelAction
+                :title="$t('chartsAddRow', 'Add row')"
+                icon="bk_mdi_add_row_below"
+                @click="addRow"
+              />
+              <PanelAction
+                v-if="caps.hasMultipleSeries"
+                :title="$t('chartsAddColumn', 'Add column')"
+                icon="bk_mdi_add_column_right"
+                @click="addSeries"
+              />
+              <CsvImport :colors="COLORS" @import="importData" />
+            </template>
+          </PanelSection>
+
+          <FootnoteEditor
+            :footnotes="chartData.footnotes"
+            @update:footnotes="chartData.footnotes = $event"
+          />
+
+          <PanelSection
+            v-if="chartDef"
+            :title="$t('chartsSettings', 'Settings')"
           >
-            <Icon name="bk_mdi_add_column_right" />
-            {{ $t('chartsAddColumn', 'Add column') }}
-          </button>
-          <CsvImport :colors="COLORS" @import="importData" />
+            <ChartTypeOptions
+              v-model:title="chartData.title"
+              :options="chartDef.editor.options"
+              :type-options="chartData.typeOptions || {}"
+              @update:type-options="chartData.typeOptions = $event"
+            />
+          </PanelSection>
         </div>
-      </div>
-
-      <div class="bk-chart-editor-section">
-        <FootnoteEditor
-          :footnotes="chartData.footnotes"
-          @update:footnotes="chartData.footnotes = $event"
-        />
-      </div>
+      </Resizable>
     </div>
   </div>
 </template>
@@ -103,13 +113,15 @@ import { getDefaultChartData, getFirstColorId } from '../../../helpers'
 import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
 import { useChartEditorState } from './useChartEditorState'
-import { Icon, FormToggle } from '#blokkli/editor/components'
+import { Icon, FormToggle, Resizable } from '#blokkli/editor/components'
 import ChartTypePicker from './ChartTypePicker/index.vue'
 import DataTable from './DataTable/index.vue'
 import CsvImport from './CsvImport/index.vue'
 import FootnoteEditor from './FootnoteEditor/index.vue'
 import Preview from './Preview/index.vue'
 import ChartTypeOptions from './ChartTypeOptions/index.vue'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{

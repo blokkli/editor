@@ -1,11 +1,4 @@
 <template>
-  <button
-    type="button"
-    class="bk-button bk-is-small"
-    @click="fileInputEl?.click()"
-  >
-    {{ $t('chartsImportCsv', 'Import CSV') }}
-  </button>
   <input
     ref="fileInputEl"
     type="file"
@@ -13,9 +6,15 @@
     class="bk-chart-data-table-file-input"
     @change="onFileChange"
   />
+  <PanelAction
+    :title="$t('chartsImportCsv', 'Import CSV')"
+    icon="bk_mdi_csv"
+    @click="fileInputEl?.click()"
+  />
 </template>
 
 <script setup lang="ts">
+import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import { useTemplateRef, useBlokkli } from '#imports'
 import type { ChartSeries, ChartColor } from '../../../../types'
 import { getColorIdAtIndex, parseNumericInput } from '../../../../helpers'

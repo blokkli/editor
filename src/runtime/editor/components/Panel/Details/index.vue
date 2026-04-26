@@ -7,8 +7,8 @@
   >
     <button
       type="button"
-      @click.prevent="isOpen = !isOpen"
       class="p-15 flex items-center justify-between w-full"
+      @click.prevent="isOpen = !isOpen"
     >
       <div>
         <div class="font-semibold">{{ title }}</div>

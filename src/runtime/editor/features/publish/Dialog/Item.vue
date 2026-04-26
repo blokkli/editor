@@ -61,7 +61,10 @@
         <StatusIndicator :status="newStatusPropValue" class="mx-0" />
       </div>
       <div v-else-if="isSelected && isMutating">
-        <Icon name="loader" class="[&_svg]:size-30 [&_svg]:fill-mono-500 mr-15" />
+        <Icon
+          name="loader"
+          class="[&_svg]:size-30 [&_svg]:fill-mono-500 mr-15"
+        />
       </div>
       <div v-else-if="isSelected">
         <StatusIndicator

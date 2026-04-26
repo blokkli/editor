@@ -174,4 +174,3 @@ export default {
   name: 'Publish',
 }
 </script>
-

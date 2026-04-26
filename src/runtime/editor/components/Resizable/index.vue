@@ -24,6 +24,10 @@ const props = defineProps<{
   id: string
 }>()
 
+const emit = defineEmits<{
+  (e: 'done'): void
+}>()
+
 const storageKey = computed(() => 'resizable:width:' + props.id)
 const persistedWidth = storage.use(storageKey, 600)
 const width = ref(persistedWidth.value)
@@ -64,6 +68,7 @@ function onMouseUp(e: MouseEvent) {
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mouseup', onMouseUp)
   persistedWidth.value = width.value
+  emit('done')
 }
 
 function onMouseDown(e: MouseEvent) {
@@ -111,7 +116,7 @@ export default {
 
 .bk-vars {
   .bk-resizable-handle {
-    @apply opacity-50 hover:opacity-100 transition;
+    @apply opacity-0 hover:opacity-100 transition;
 
     &:hover:before {
       @apply !bg-mono-400/40;

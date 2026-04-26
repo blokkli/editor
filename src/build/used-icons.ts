@@ -50,6 +50,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_content_copy',
   'bk_mdi_content_paste',
   'bk_mdi_crop_square',
+  'bk_mdi_csv',
   'bk_mdi_dashboard',
   'bk_mdi_delete',
   'bk_mdi_dock_to_left',

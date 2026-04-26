@@ -1376,10 +1376,6 @@ msgctxt "chartsPositionTop"
 msgid "Top"
 msgstr "In alto"
 
-msgctxt "chartsPreview"
-msgid "Preview"
-msgstr ""
-
 msgctxt "chartsRadarFillOpacity"
 msgid "Fill opacity"
 msgstr "Opacità riempimento"
@@ -1403,6 +1399,10 @@ msgstr ""
 msgctxt "chartsRotationAuto"
 msgid "Auto"
 msgstr "Automatico"
+
+msgctxt "chartsSettings"
+msgid "Settings"
+msgstr "Impostazioni"
 
 msgctxt "chartsStrokeMedium"
 msgid "Medium"
@@ -1767,18 +1767,6 @@ msgstr ""
 
 msgctxt "editFragmentNotEditable"
 msgid "This fragment cannot be edited."
-msgstr ""
-
-msgctxt "editIndicatorLabel"
-msgid "Edit blocks"
-msgstr "Modifica elementi"
-
-msgctxt "editIndicatorLabelReview"
-msgid "Review changes"
-msgstr ""
-
-msgctxt "editIndicatorLabelView"
-msgid "View changes"
 msgstr ""
 
 msgctxt "editLibraryNotAvailable"
@@ -2426,6 +2414,14 @@ msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struttura"
 
+msgctxt "feature_styleguide_description"
+msgid "Browse blökkli editor components and their variants."
+msgstr ""
+
+msgctxt "feature_styleguide_label"
+msgid "Styleguide"
+msgstr ""
+
 msgctxt "feature_swap_description"
 msgid "Provides an action to swap two selected blocks."
 msgstr ""
@@ -2514,6 +2510,22 @@ msgctxt "formSaveNotEditStateInfo"
 msgid ""
 "Saving this form applies changes immediately — they take effect without "
 "publishing the current blökkli page."
+msgstr ""
+
+msgctxt "formSearchClear"
+msgid "Clear"
+msgstr ""
+
+msgctxt "formSearchLoading"
+msgid "Loading..."
+msgstr ""
+
+msgctxt "formSearchNoResults"
+msgid "No results."
+msgstr ""
+
+msgctxt "formSearchOther"
+msgid "Other"
 msgstr ""
 
 msgctxt "fragmentsAddFragmentAction"
@@ -3389,6 +3401,18 @@ msgctxt "structureTourText"
 msgid ""
 "Shows a structured list of all blocks on the current page. Click on any "
 "block to quickly jump to it."
+msgstr ""
+
+msgctxt "styleguideFilterPlaceholder"
+msgid "Filter components"
+msgstr ""
+
+msgctxt "styleguideNoMatches"
+msgid "No components match this filter."
+msgstr ""
+
+msgctxt "styleguidePickComponent"
+msgid "Pick a component to inspect."
 msgstr ""
 
 msgctxt "swapButton"

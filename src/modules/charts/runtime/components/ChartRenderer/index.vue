@@ -9,9 +9,9 @@
         :series="chartSeries"
         height="350"
       />
-      <ol v-if="footnotes?.length" class="bk-chart-footnotes">
+      <ol v-if="footnotes?.length" class="blokkli-chart-footnotes">
         <li v-for="(note, i) in footnotes" :key="i">
-          <span class="bk-chart-footnote-marker">{{
+          <span class="blokkli-chart-footnote-marker">{{
             superscriptFor(i + 1)
           }}</span>
           {{ note }}
@@ -28,6 +28,7 @@ import { resolveChartColor, applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import { COLORS } from '#blokkli-build/charts-config'
+import type { ApexOptions } from 'apexcharts'
 
 const ApexChart = import.meta.client
   ? defineAsyncComponent(() => import('vue3-apexcharts'))
@@ -91,16 +92,17 @@ const resolvedColors = computed(() => {
   return []
 })
 
-const chartOptions = computed(() => {
+const chartOptions = computed<ApexOptions>(() => {
   if (import.meta.server) {
     return {}
   }
   const def = chartDef.value
   if (!def) return {}
 
-  const base: Record<string, any> = {
+  const base: ApexOptions = {
     chart: {
       toolbar: { show: false },
+      redrawOnParentResize: false,
     },
   }
 

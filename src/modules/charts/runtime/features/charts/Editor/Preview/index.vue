@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'bk-is-stale': stale }">
+  <div :class="{ 'opacity-50': stale }">
     <BlokkliItem
       v-if="item"
       v-bind="item"

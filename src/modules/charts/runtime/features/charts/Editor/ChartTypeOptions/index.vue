@@ -1,46 +1,46 @@
 <template>
-  <div class="bk-chart-type-options">
-    <OptionsFormItem
-      :option="titleOption"
-      property="title"
-      :mutated-value="title"
-      @update="$emit('update:title', $event)"
-    />
+  <div class="p-15">
+    <FormItem>
+      <FormText
+        id="chart-title"
+        :label="$t('chartsTitle', 'Title')"
+        :model-value="title"
+        @update:model-value="$emit('update:title', $event ?? '')"
+      />
+    </FormItem>
 
-    <OptionsFormItem
-      v-for="item in ungroupedOptions"
-      :key="item.key"
-      :option="item.option"
-      :property="item.key"
-      :mutated-value="typeOptions[item.key] ?? item.option.default"
-      @update="updateOption(item.key, $event)"
-    />
+    <FormItem v-if="ungroupedOptions.length">
+      <div class="grid gap-15">
+        <Field
+          v-for="item in ungroupedOptions"
+          :key="item.key"
+          :option-key="item.key"
+          :option="item.option"
+          :value="typeOptions[item.key]"
+          @update="updateOption(item.key, $event)"
+        />
+      </div>
+    </FormItem>
 
-    <OptionsFormGroup
-      v-for="group in groups"
-      :key="'group_' + group.label"
-      :label="group.label"
-      :is-active="group.label === activeGroup"
-      @toggle="onToggleGroup(group.label)"
-    >
-      <OptionsFormItem
+    <FormItem v-for="group in groups" :key="'group_' + group.label">
+      <div class="bk-form-label">{{ group.label }}</div>
+      <Field
         v-for="item in group.options"
         :key="item.key"
+        :option-key="item.key"
         :option="item.option"
-        :property="item.key"
-        :mutated-value="typeOptions[item.key] ?? item.option.default"
-        is-grouped
+        :value="typeOptions[item.key]"
         @update="updateOption(item.key, $event)"
       />
-    </OptionsFormGroup>
+    </FormItem>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useBlokkli } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import type { ChartTypeDefinition } from '../../../../chartTypes/types'
-import OptionsFormItem from '#blokkli/editor/features/options/Form/Item.vue'
-import OptionsFormGroup from '#blokkli/editor/features/options/Form/Group.vue'
+import { FormText, FormItem } from '#blokkli/editor/components'
+import Field from './Field.vue'
 
 type ChartOption = ChartTypeDefinition['editor']['options'][string]
 
@@ -53,15 +53,9 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update:title': [value: unknown]
+  'update:title': [value: string]
   'update:typeOptions': [value: Record<string, unknown>]
 }>()
-
-const titleOption: ChartOption = {
-  type: 'text',
-  label: $t('chartsTitle', 'Title'),
-  default: '',
-}
 
 type OptionEntry = {
   key: string
@@ -71,16 +65,6 @@ type OptionEntry = {
 type OptionGroup = {
   label: string
   options: OptionEntry[]
-}
-
-const activeGroup = ref('')
-
-function onToggleGroup(label: string) {
-  if (activeGroup.value === label) {
-    activeGroup.value = ''
-  } else {
-    activeGroup.value = label
-  }
 }
 
 const allOptions = computed<OptionEntry[]>(() =>
@@ -97,7 +81,6 @@ function getGroupLabel(group: string): string {
   } else if (group === 'labels') {
     return $t('chartsOptionGroupLabels', 'Labels')
   }
-
   return group
 }
 

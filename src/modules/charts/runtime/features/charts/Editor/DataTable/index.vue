@@ -1,6 +1,6 @@
 <template>
   <table
-    class="bk-chart-data-table"
+    class="bk-chart-data-table border-collapse w-full"
     @keydown="onTableKeydown"
     @input="onTableInput"
     @click="onTableClick"
@@ -19,7 +19,7 @@
             <input
               type="text"
               :value="s.name"
-              class="bk-chart-data-table-series-name"
+              class="bk-chart-data-table-series-name bk-chart-data-table-input"
               @change="
                 updateSeriesName(si, ($event.target as HTMLInputElement).value)
               "
@@ -27,7 +27,7 @@
             <button
               v-if="series.length > 1"
               type="button"
-              class="bk-chart-data-table-remove"
+              class="bk-chart-data-table-remove bk-chart-data-table-input"
               @click="props.removeSeries(si)"
             >
               <Icon name="bk_mdi_delete" />
@@ -49,6 +49,10 @@
             />
             <input
               type="text"
+              class="bk-chart-data-table-input"
+              :class="{
+                'pl-0': hasCategoryColors,
+              }"
               :value="cat"
               @change="
                 updateCategory(ci, ($event.target as HTMLInputElement).value)
@@ -60,6 +64,7 @@
           <input
             type="text"
             inputmode="decimal"
+            class="bk-chart-data-table-input"
             :value="s.data[ci]"
             @blur="
               updateValue(si, ci, ($event.target as HTMLInputElement).value)
@@ -69,7 +74,7 @@
         <td v-if="canDeleteRows">
           <button
             type="button"
-            class="bk-chart-data-table-remove"
+            class="bk-chart-data-table-remove bk-chart-data-table-input"
             @click="props.removeRow(ci)"
           >
             <Icon name="bk_mdi_delete" />

@@ -22,10 +22,10 @@
     <div class="flex gap-5 justify-between items-center">
       <div
         class="font-bold text-sm"
-        v-html="label"
         :class="{
           'min-w-[250px] whitespace-normal': largeText,
         }"
+        v-html="label"
       />
       <slot name="shortcut" />
     </div>

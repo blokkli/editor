@@ -1,41 +1,51 @@
 <template>
-  <div class="bk-chart-data-table-footnotes">
-    <label class="bk-form-label">{{
-      $t('chartsFootnotes', 'Footnotes')
-    }}</label>
-    <div
-      v-for="(note, i) in footnotes"
-      :key="i"
-      class="bk-chart-data-table-footnote-row"
-    >
-      <span class="bk-chart-data-table-footnote-marker">{{
-        superscriptFor(i + 1)
-      }}</span>
-      <input
-        type="text"
-        :value="note"
-        class="bk-form-input"
-        @change="updateFootnote(i, ($event.target as HTMLInputElement).value)"
+  <PanelSection :title="$t('chartsFootnotes', 'Footnotes')">
+    <template v-if="footnotes.length" #default>
+      <div>
+        <div
+          v-for="(note, i) in footnotes"
+          :key="i"
+          class="flex items-center gap-8 mb-5 p-15"
+        >
+          <span
+            class="text-mono-500 text-2xl font-semibold shrink-0 text-center"
+            >{{ superscriptFor(i + 1) }}</span
+          >
+          <input
+            type="text"
+            :value="note"
+            class="bk-form-input"
+            @change="
+              updateFootnote(i, ($event.target as HTMLInputElement).value)
+            "
+          />
+          <button
+            type="button"
+            class="bk-chart-data-table-remove"
+            @click="removeFootnote(i)"
+          >
+            <Icon name="bk_mdi_delete" />
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <template #actions>
+      <PanelAction
+        :title="$t('chartsAddFootnote', 'Add footnote')"
+        icon="bk_mdi_add"
+        @click="addFootnote"
       />
-      <button
-        type="button"
-        class="bk-chart-data-table-remove"
-        @click="removeFootnote(i)"
-      >
-        <Icon name="bk_mdi_delete" />
-      </button>
-    </div>
-    <button type="button" class="bk-button bk-is-small" @click="addFootnote">
-      <Icon name="bk_mdi_add" />
-      {{ $t('chartsAddFootnote', 'Add footnote') }}
-    </button>
-  </div>
+    </template>
+  </PanelSection>
 </template>
 
 <script setup lang="ts">
 import { useBlokkli } from '#imports'
 import { SUPERSCRIPTS } from '../../../../helpers'
 import { Icon } from '#blokkli/editor/components'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 
 const { $t } = useBlokkli()
 

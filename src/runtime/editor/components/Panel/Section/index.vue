@@ -12,6 +12,7 @@
       {{ title }}
     </div>
     <div
+      v-if="$slots.default"
       class="bk-panel-section-inner"
       :class="{
         'opacity-50': disabled,
@@ -24,6 +25,7 @@
       class="flex items-center border-t border-t-mono-300 rounded-b-md overflow-hidden"
       :class="{
         'opacity-50': disabled,
+        '!border-t-0': !$slots.default,
       }"
     >
       <slot name="actions" />

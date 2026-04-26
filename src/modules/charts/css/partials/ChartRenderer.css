@@ -1,6 +1,0 @@
-.bk {
-  .bk-chart-preview-placeholder {
-    @apply flex items-center justify-center text-mono-500 border border-dashed border-mono-300 rounded-md;
-    min-height: 350px;
-  }
-}

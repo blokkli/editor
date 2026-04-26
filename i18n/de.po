@@ -1412,10 +1412,6 @@ msgctxt "chartsPositionTop"
 msgid "Top"
 msgstr "Oben"
 
-msgctxt "chartsPreview"
-msgid "Preview"
-msgstr "Vorschau"
-
 msgctxt "chartsRadarFillOpacity"
 msgid "Fill opacity"
 msgstr "Fülldeckkraft"
@@ -1439,6 +1435,10 @@ msgstr "Vorschau aktualisieren"
 msgctxt "chartsRotationAuto"
 msgid "Auto"
 msgstr "Automatisch"
+
+msgctxt "chartsSettings"
+msgid "Settings"
+msgstr "Einstellungen"
 
 msgctxt "chartsStrokeMedium"
 msgid "Medium"
@@ -1808,18 +1808,6 @@ msgstr "\"@label\" übersetzen (@language)"
 msgctxt "editFragmentNotEditable"
 msgid "This fragment cannot be edited."
 msgstr "Dieses Fragment kann nicht bearbeitet werden."
-
-msgctxt "editIndicatorLabel"
-msgid "Edit blocks"
-msgstr "Elemente bearbeiten"
-
-msgctxt "editIndicatorLabelReview"
-msgid "Review changes"
-msgstr "Änderungen überprüfen"
-
-msgctxt "editIndicatorLabelView"
-msgid "View changes"
-msgstr "Änderungen ansehen"
 
 msgctxt "editLibraryNotAvailable"
 msgid "This reusable block cannot be edited right now."
@@ -2477,6 +2465,14 @@ msgctxt "feature_structure_label"
 msgid "Structure"
 msgstr "Struktur"
 
+msgctxt "feature_styleguide_description"
+msgid "Browse blökkli editor components and their variants."
+msgstr ""
+
+msgctxt "feature_styleguide_label"
+msgid "Styleguide"
+msgstr ""
+
 msgctxt "feature_swap_description"
 msgid "Provides an action to swap two selected blocks."
 msgstr "Stellt eine Aktion zum Vertauschen von zwei ausgewählten Blöcken bereit."
@@ -2568,6 +2564,22 @@ msgid ""
 msgstr ""
 "Änderungen in diesem Formular werden sofort übernommen — ohne "
 "Veröffentlichung der aktuellen blökkli-Seite."
+
+msgctxt "formSearchClear"
+msgid "Clear"
+msgstr ""
+
+msgctxt "formSearchLoading"
+msgid "Loading..."
+msgstr ""
+
+msgctxt "formSearchNoResults"
+msgid "No results."
+msgstr ""
+
+msgctxt "formSearchOther"
+msgid "Other"
+msgstr ""
 
 msgctxt "fragmentsAddFragmentAction"
 msgid "Fragment"
@@ -3469,6 +3481,18 @@ msgid ""
 msgstr ""
 "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. "
 "Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
+
+msgctxt "styleguideFilterPlaceholder"
+msgid "Filter components"
+msgstr ""
+
+msgctxt "styleguideNoMatches"
+msgid "No components match this filter."
+msgstr ""
+
+msgctxt "styleguidePickComponent"
+msgid "Pick a component to inspect."
+msgstr ""
 
 msgctxt "swapButton"
 msgid "Swap block positions"

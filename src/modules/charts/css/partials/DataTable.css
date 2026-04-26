@@ -1,27 +1,13 @@
 .bk {
+  .bk-chart-data-table-input,
+  .bk-chart-color-dropdown-button {
+    @apply focus:outline-2 focus:-outline-offset-2 focus:outline-accent-600 focus:border-0 focus:ring-0;
+  }
+
   .bk-chart-data-table {
-    @apply border-collapse w-full;
-
-    .bk-dropdown-menu-trigger {
-      @apply size-40 flex items-center justify-center hover:bg-mono-200;
-    }
-
-    .bk-dropdown-menu {
-      @apply relative;
-    }
-
-    input,
-    button {
-      @apply focus:outline focus:outline-2 focus:outline-accent-600 focus:border-0 focus:ring-0 focus:outline-offset-0;
-    }
-
     thead {
       th {
-        @apply p-0 h-40;
-
-        input {
-          @apply text-sm;
-        }
+        @apply p-0 h-40 border-t-0;
       }
 
       th:empty {
@@ -39,11 +25,29 @@
 
     th,
     td {
-      @apply border border-mono-300 p-0;
+      @apply border border-mono-300 p-0 first:border-l-0 last:border-r-0;
+    }
+
+    tbody:first-child {
+      tr:first-child {
+        td,
+        th {
+          @apply border-t-0;
+        }
+      }
+    }
+
+    tbody tr {
+      &:last-child {
+        td,
+        th {
+          @apply border-b-0;
+        }
+      }
     }
 
     th {
-      @apply bg-mono-50 text-mono-700 text-sm font-semibold text-left px-8 py-5;
+      @apply text-mono-700 text-sm font-semibold text-left px-8 py-5;
     }
 
     td:last-child:has(.bk-chart-data-table-remove) {
@@ -100,7 +104,7 @@
     @apply text-mono-400 cursor-pointer bg-transparent border-none text-base leading-none;
     @apply hover:text-red-normal;
     @apply size-40 flex items-center justify-center;
-    @apply hover:bg-mono-200;
+    @apply hover:bg-red-light;
 
     svg {
       @apply size-15;
