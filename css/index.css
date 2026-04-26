@@ -223,4 +223,8 @@
       @apply my-8 first:mt-0 last:mb-0;
     }
   }
+
+  .bk-panel-item + .bk-panel-item {
+    @apply border-t border-t-mono-300;
+  }
 }

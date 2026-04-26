@@ -1,6 +1,6 @@
 <template>
   <button
-    class="bk-panel-action flex flex-col text-mono-800 flex-1 items-center py-10 gap-8 text-sm font-semibold hover:bg-accent-50 hover:text-accent-700"
+    class="bk-panel-action flex flex-col text-mono-800 flex-1 items-center py-10 gap-8 text-sm font-semibold hover:bg-mono-100 hover:text-accent-700"
     :class="{
       'bk-is-active': active,
       'pointer-events-none! bg-mono-100! text-mono-300!': disabled,

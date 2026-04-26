@@ -1,28 +1,4 @@
 .bk {
-  .bk-pill {
-    @apply bg-accent-100 inline-block text-accent-800 rounded-full px-[7px] pt-[2px] uppercase text-xs font-semibold;
-
-    &.bk-is-mono {
-      @apply bg-mono-100 text-mono-500;
-    }
-
-    &.bk-is-mono-dark {
-      @apply bg-mono-700 text-mono-300;
-    }
-
-    &.bk-is-yellow-light {
-      @apply bg-yellow-light/40 text-yellow-dark;
-    }
-
-    &.bk-is-yellow-dark {
-      @apply bg-yellow-dark/60 text-yellow-light;
-    }
-
-    &.bk-is-strong {
-      @apply bg-accent-700 text-white;
-    }
-  }
-
   .bk-pill-list {
     @apply inline-flex gap-5 flex-wrap;
   }

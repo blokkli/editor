@@ -1,5 +1,6 @@
 import { defineEditorComponent } from '#blokkli/editor/composables'
 import { h } from 'vue'
+import Pill from '#blokkli/editor/components/Pill/index.vue'
 import RadioBox from './index.vue'
 
 export default defineEditorComponent({
@@ -83,12 +84,10 @@ export default defineEditorComponent({
       },
       slots: {
         default: () =>
-          h('ul', { class: 'bk-pill-list mt-3' }, [
-            h('li', [h('span', { class: 'bk-pill bk-is-mono' }, 'Document')]),
-            h('li', [
-              h('span', { class: 'bk-pill bk-is-yellow-light' }, '2 days ago'),
-            ]),
-            h('li', [h('span', { class: 'bk-pill' }, 'Owner')]),
+          h('div', { class: 'flex flex-wrap gap-3 mt-3' }, [
+            h(Pill, { text: 'Document', scheme: 'mono' }),
+            h(Pill, { text: '2 days ago', scheme: 'yellow' }),
+            h(Pill, { text: 'Owner', scheme: 'accent' }),
           ]),
       },
     },

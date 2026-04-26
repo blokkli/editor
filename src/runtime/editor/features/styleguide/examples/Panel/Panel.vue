@@ -24,6 +24,37 @@
         />
       </template>
     </PanelSection>
+
+    <PanelSection title="Configuration">
+      <PanelDetails
+        v-model="snappingOpen"
+        title="Snapping"
+        description="Align new geometry to existing features."
+      >
+        <div>
+          <label class="flex items-center gap-8">
+            <input v-model="snapToVertices" type="checkbox" />
+            Snap to vertices
+          </label>
+          <label class="flex items-center gap-8">
+            <input v-model="snapToEdges" type="checkbox" />
+            Snap to edges
+          </label>
+        </div>
+      </PanelDetails>
+      <PanelDetails v-model="styleOpen" title="Layer style">
+        <div>
+          <label class="flex items-center gap-8">
+            <input v-model="showLabels" type="checkbox" />
+            Show labels
+          </label>
+          <label class="flex items-center gap-8">
+            <input v-model="showOutline" type="checkbox" />
+            Show outline
+          </label>
+        </div>
+      </PanelDetails>
+    </PanelSection>
   </div>
 </template>
 
@@ -31,6 +62,7 @@
 import { ref } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
+import PanelDetails from '#blokkli/editor/components/Panel/Details/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import TransitionList from '#blokkli/editor/components/Transition/List/index.vue'
 import Feature from './Feature.vue'
@@ -102,6 +134,14 @@ const features = ref<FeatureItem[]>([
   { id: nextId++, type: 'polygon', label: randomLabel() },
 ])
 const editingId = ref<number | null>(null)
+
+const snappingOpen = ref(false)
+const snapToVertices = ref(true)
+const snapToEdges = ref(false)
+
+const styleOpen = ref(false)
+const showLabels = ref(true)
+const showOutline = ref(false)
 
 function add(type: FeatureKind) {
   features.value.push({ id: nextId++, type, label: randomLabel() })

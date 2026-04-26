@@ -5,7 +5,7 @@
       ref="textarea"
       v-model="value"
       type="text"
-      class="bk-form-input"
+      class="bk-form-input bk-scheme-yellow"
       rows="4"
       :placeholder
       required

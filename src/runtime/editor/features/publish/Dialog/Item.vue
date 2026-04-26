@@ -25,9 +25,10 @@
             {{ bundleLabel }}
           </div>
         </div>
-        <div v-if="isCurrent" class="bk-pill">
-          {{ $t('publishCurrentPage', 'Current page') }}
-        </div>
+        <Pill
+          v-if="isCurrent"
+          :text="$t('publishCurrentPage', 'Current page')"
+        />
       </label>
     </td>
     <td>
@@ -57,7 +58,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { Icon, StatusIndicator } from '#blokkli/editor/components'
+import { Icon, StatusIndicator, Pill } from '#blokkli/editor/components'
 import type { MutationStatus } from './types'
 import type { GetEditStatesItem } from '../types'
 

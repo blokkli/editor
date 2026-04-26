@@ -218,13 +218,4 @@ export default {
     }
   }
 }
-
-.bk .bk-comment-textarea {
-  textarea {
-    @apply focus:!ring-yellow-normal;
-    @apply focus:!border-yellow-dark;
-    @apply !text-yellow-dark;
-    @apply !font-semibold;
-  }
-}
 </style>

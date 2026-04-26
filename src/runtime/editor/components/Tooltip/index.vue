@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white select-none pointer-events-none leading-none whitespace-nowrap min-h-40 font-sans flex flex-col justify-center"
+    class="text-white text-sm select-none pointer-events-none leading-none whitespace-nowrap min-h-40 font-sans flex flex-col justify-center"
     :class="{
       '!text-xs !min-h-25 !px-5 !py-3': small,
       'absolute invisible group-hover/tooltip:visible bg-mono-800/90 p-10':
@@ -20,7 +20,13 @@
     }"
   >
     <div class="flex gap-5 justify-between items-center">
-      <div class="font-bold whitespace-normal text-sm" v-html="label" />
+      <div
+        class="font-bold text-sm"
+        v-html="label"
+        :class="{
+          'min-w-[250px] whitespace-normal': largeText,
+        }"
+      />
       <slot name="shortcut" />
     </div>
     <div v-if="description" class="font-normal mt-5 text-xs">
@@ -32,8 +38,9 @@
 
 <script setup lang="ts">
 import type { Placement } from '#blokkli/editor/types/ui'
+import { computed } from '#imports'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     label: string
     placement?: Placement | 'inline'
@@ -47,4 +54,6 @@ withDefaults(
     margin: false,
   },
 )
+
+const largeText = computed(() => props.label.length > 20)
 </script>

@@ -15,7 +15,7 @@
       </div>
       <Icon
         name="bk_mdi_arrow_drop_down"
-        class="size-15 group-open:rotate-180"
+        class="size-20 group-open:rotate-180"
       />
     </summary>
     <ul :class="{ 'pt-20': open }" class="px-20">

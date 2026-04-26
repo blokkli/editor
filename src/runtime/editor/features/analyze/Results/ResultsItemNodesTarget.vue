@@ -14,9 +14,7 @@
       @click.prevent="onClick"
     >
       <div v-if="node.score != null && node.scoreLabel">
-        <span class="bk-pill shrink-0">{{
-          readability.formatScore(node.score)
-        }}</span>
+        <Pill :text="readability.formatScore(node.score)" />
       </div>
       <span class="truncate w-full inline-block font-mono">{{
         getLabel()
@@ -61,7 +59,7 @@ import type {
   AnalyzeNodeMapped,
   AnalyzeNodeTargetMapped,
 } from '#blokkli/analyzer/types'
-import { Icon, Tooltip } from '#blokkli/editor/components'
+import { Icon, Tooltip, Pill } from '#blokkli/editor/components'
 
 const props = defineProps<{
   resultId: string

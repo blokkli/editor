@@ -17,6 +17,7 @@ import formText from '#blokkli/editor/components/Form/Text/story'
 import formTextarea from '#blokkli/editor/components/Form/Textarea/story'
 import formToggle from '#blokkli/editor/components/Form/Toggle/story'
 import panelAction from '#blokkli/editor/components/Panel/Action/story'
+import panelDetails from '#blokkli/editor/components/Panel/Details/story'
 import panelItem from '#blokkli/editor/components/Panel/Item/story'
 import panelSection from '#blokkli/editor/components/Panel/Section/story'
 import cssButton from './snippets/button'
@@ -50,6 +51,7 @@ export const editorEntries: EditorEntry[] = [
   formTextarea,
   formToggle,
   panelAction,
+  panelDetails,
   panelItem,
   panelSection,
   examplePanel,

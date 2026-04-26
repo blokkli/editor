@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white border border-mono-400 shadow-md w-full"
+    class="bg-white border border-mono-400 shadow-md w-full bk-panel-section"
     :class="{ 'pointer-events-none bg-mono-100!': disabled }"
   >
     <div
@@ -41,3 +41,9 @@ defineOptions({
   name: 'PanelSection',
 })
 </script>
+
+<style>
+.bk-panel-section + .bk-panel-section {
+  @apply mt-20;
+}
+</style>

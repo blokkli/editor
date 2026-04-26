@@ -104,9 +104,3 @@ const namedTheme = computed<ThemeColorName>(() => {
   return 'accent'
 })
 </script>
-
-<style>
-.bk-panel-item + .bk-panel-item {
-  @apply border-t border-t-mono-300;
-}
-</style>
