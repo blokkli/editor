@@ -7,6 +7,7 @@ import formDatepicker from '#blokkli/editor/components/Form/Datepicker/story'
 import formGroup from '#blokkli/editor/components/Form/Group/story'
 import formItem from '#blokkli/editor/components/Form/Item/story'
 import formRadio from '#blokkli/editor/components/Form/Radio/story'
+import formRadioBox from '#blokkli/editor/components/Form/RadioBox/story'
 import formRadioTabs from '#blokkli/editor/components/Form/RadioTabs/story'
 import formSearch from '#blokkli/editor/components/Form/Search/story'
 import formSelect from '#blokkli/editor/components/Form/Select/story'
@@ -37,6 +38,7 @@ export const editorEntries: EditorEntry[] = [
   formGroup,
   formItem,
   formRadio,
+  formRadioBox,
   formRadioTabs,
   formSearch,
   formSelect,

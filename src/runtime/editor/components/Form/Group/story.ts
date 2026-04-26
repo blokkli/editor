@@ -19,6 +19,7 @@ export default defineEditorComponent({
   label: 'Group',
   category: 'Form',
   component: Group,
+  backgroundClass: '_bk_bg-white',
   description:
     'Wraps a set of related form fields under an optional title. Pass form fields via the default slot.',
   variants: [

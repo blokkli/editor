@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-datepicker"
+    class="bk-datepicker bg-white"
     :class="{
       'bk-is-invalid': error,
     }"
