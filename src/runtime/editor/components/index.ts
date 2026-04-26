@@ -54,6 +54,7 @@ export { default as TooltipStatus } from './Tooltip/Status.vue'
 export { default as NotEditStateInfo } from './NotEditStateInfo/index.vue'
 export { default as ButtonAction } from './ButtonAction/index.vue'
 export { default as Pill } from './Pill/index.vue'
+export { default as DialogModal } from './Dialog/index.vue'
 
 export const NestedEditorOverlay = defineAsyncComponent(
   () => import('./NestedEditorOverlay/index.vue'),
@@ -61,10 +62,6 @@ export const NestedEditorOverlay = defineAsyncComponent(
 
 export const BundleSelector = defineAsyncComponent(
   () => import('./BundleSelector/index.vue'),
-)
-
-export const DialogModal = defineAsyncComponent(
-  () => import('./Dialog/index.vue'),
 )
 
 export const DiffApproval = defineAsyncComponent(

@@ -11,7 +11,7 @@
     "
     :width="800"
     :submit-label="$t('importExistingDialogSubmit', 'Import content')"
-    :can-submit="!!(sourceEntityUuid && selectedFields.length)"
+    :can-submit
     :is-loading="isLoading || workspaces.isLoading.value || isSearching"
     @submit="onSubmit"
     @cancel="$emit('cancel')"
@@ -107,7 +107,7 @@ const fieldOptions = computed(() =>
 
 const sourceEntityUuid = ref('')
 
-const selectedFields = ref<string[]>(fieldOptions.value.map((v) => v.value))
+const selectedFields = ref<string[]>([])
 const isLoading = ref(false)
 const page = ref(0)
 const searchText = ref('')
@@ -116,6 +116,10 @@ const isSearching = ref(false)
 
 const ownerId = computed(() => state.owner.value?.id)
 const currentBundle = computed(() => context.value.entityBundle)
+
+const canSubmit = computed(() => {
+  return !!(sourceEntityUuid.value && selectedFields.value.length)
+})
 
 const sortedItems = computed<HostEntitySearchResultItem[]>(() =>
   searchText.value.trim() ? fzfResults.value : workspaces.defaultSorted.value,
@@ -182,7 +186,10 @@ function onSubmit() {
   isLoading.value = true
 }
 
-onMounted(() => workspaces.ensureLoaded())
+onMounted(async () => {
+  await workspaces.ensureLoaded()
+  selectedFields.value = fieldOptions.value.map((v) => v.value)
+})
 
 onBeforeUnmount(() => {
   if (searchTimeout) {

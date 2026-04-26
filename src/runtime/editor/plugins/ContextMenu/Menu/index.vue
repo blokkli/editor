@@ -5,7 +5,7 @@
   >
     <div
       ref="rootEl"
-      class="bk-context-menu-inner absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 rounded overflow-hidden min-w-200"
+      class="bk-context-menu-inner absolute bg-mono-950 text-mono-100 shadow-xl-even border border-mono-600 overflow-hidden min-w-200"
       :style="innerStyle"
     >
       <div v-for="(item, i) in menu" :key="i">
