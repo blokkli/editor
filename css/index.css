@@ -16,8 +16,6 @@
 @import './../src/modules/agent/css/Agent.css' layer(components);
 @import './../src/modules/charts/css/Charts.css' layer(components);
 
-@import './indicator.css' layer(base);
-
 @import './components/pill.css' layer(components);
 @import './components/button.css' layer(components);
 @import './components/shortcut.css' layer(components);

@@ -7,7 +7,7 @@
     "
   >
     <div class="flex-1 min-w-0">
-      <div class="truncate font-semibold text-lg">
+      <div class="truncate font-semibold text-base">
         {{ label }}
         <span class="font-normal text-mono-500">{{ id }}</span>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="inline-flex items-center rounded-full px-8 py-5 uppercase text-xs font-semibold tracking-wide leading-none"
+    class="inline-flex items-center rounded-full px-5 py-3 uppercase text-[10px] font-semibold tracking-wide leading-none"
     :class="[
       'bk-scheme-' + scheme,
       {

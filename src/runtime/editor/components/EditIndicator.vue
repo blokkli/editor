@@ -1,22 +1,16 @@
 <template>
   <Teleport to="body">
-    <div class="bk">
-      <button
-        ref="button"
-        class="bk-edit-indicator bk-button bk-is-primary"
-        @mouseenter="isHovering = true"
-        @mouseleave="isHovering = false"
-        @click="$emit('edit')"
-      >
-        {{ label }}
-      </button>
+    <button
+      ref="button"
+      class="bk-edit-indicator"
+      @mouseenter="isHovering = true"
+      @mouseleave="isHovering = false"
+      @click="$emit('edit')"
+    >
+      {{ label }}
+    </button>
 
-      <div
-        v-show="isHovering"
-        ref="overlay"
-        class="bk-edit-indicator-overlay"
-      />
-    </div>
+    <div v-show="isHovering" ref="overlay" class="bk-edit-indicator-overlay" />
   </Teleport>
 </template>
 
@@ -29,14 +23,46 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
-import '#blokkli-build/styles.css'
-import { useAnimationFrame } from '#blokkli/editor/composables'
 import type { EditPermission } from '#blokkli/types/provider'
 
 type IndicatorData = {
   key: string
   targetElement: HTMLElement
   buttonElement: HTMLButtonElement
+}
+
+/**
+ * Hardcoded labels for the few permission states this component renders.
+ * Inlined so the indicator can mount without pulling in the translation
+ * provider (and its async chunk).
+ */
+const LABELS = {
+  en: {
+    edit: 'Edit blocks',
+    review: 'Review changes',
+    view: 'View changes',
+  },
+  de: {
+    edit: 'Elemente bearbeiten',
+    review: 'Änderungen überprüfen',
+    view: 'Änderungen ansehen',
+  },
+  fr: {
+    edit: 'Modifier les éléments',
+    review: 'Examiner les modifications',
+    view: 'Voir les modifications',
+  },
+  it: {
+    edit: 'Modifica elementi',
+    review: 'Esamina modifiche',
+    view: 'Visualizza modifiche',
+  },
+} as const
+
+type IndicatorLanguage = keyof typeof LABELS
+
+function isIndicatorLanguage(value: string): value is IndicatorLanguage {
+  return value in LABELS
 }
 
 const props = defineProps<{
@@ -49,24 +75,28 @@ const props = defineProps<{
 
 const key = computed(() => props.entityType + ':' + props.uuid)
 
-const textProvider = await import('./../providers/texts').then((v) => v.default)
-const $t = await textProvider(props.language)
-
 const label = computed(() => {
   if (props.editLabel) {
     return props.editLabel
-  } else if (props.permissions.includes('edit')) {
-    return $t('editIndicatorLabel', 'Edit blocks')
+  }
+
+  const lang = isIndicatorLanguage(props.language) ? props.language : 'en'
+  const labels = LABELS[lang]
+
+  if (props.permissions.includes('edit')) {
+    return labels.edit
   } else if (props.permissions.includes('review')) {
-    return $t('editIndicatorLabelReview', 'Review changes')
+    return labels.review
   } else if (props.permissions.includes('view')) {
-    return $t('editIndicatorLabelView', 'View changes')
+    return labels.view
   }
 
   return null
 })
 
 defineEmits(['edit'])
+
+let raf: any = null
 
 const isHovering = ref(false)
 
@@ -167,7 +197,30 @@ function updateAllIndicatorPositions() {
   }
 }
 
+function loop() {
+  raf = window.requestAnimationFrame(loop)
+
+  if (!button.value || !targetElement.value) {
+    return
+  }
+
+  // The first indicator is the "manager" and is responsible for updating all
+  // indicator positions.
+  if (isManager.value) {
+    updateAllIndicatorPositions()
+  }
+
+  // Each component handles its own overlay
+  if (isHovering.value && overlay.value) {
+    const rect = targetElement.value.getBoundingClientRect()
+    overlay.value.style.width = rect.width + 'px'
+    overlay.value.style.height = rect.height + 'px'
+    overlay.value.style.transform = `translate(${rect.x}px, ${rect.y}px)`
+  }
+}
+
 onMounted(() => {
+  loop()
   const el = document.querySelector(`[data-provider-uuid="${props.uuid}"]`)
   if (el && el instanceof HTMLElement) {
     targetElement.value = el
@@ -187,25 +240,54 @@ onBeforeUnmount(() => {
   indicatorRegistry.value = indicatorRegistry.value.filter(
     (i) => i.key !== key.value,
   )
-})
 
-useAnimationFrame(() => {
-  if (!button.value || !targetElement.value) {
-    return
-  }
-
-  // The first indicator is the "manager" and is responsible for updating all
-  // indicator positions.
-  if (isManager.value) {
-    updateAllIndicatorPositions()
-  }
-
-  // Each component handles its own overlay
-  if (isHovering.value && overlay.value) {
-    const rect = targetElement.value.getBoundingClientRect()
-    overlay.value.style.width = rect.width + 'px'
-    overlay.value.style.height = rect.height + 'px'
-    overlay.value.style.transform = `translate(${rect.x}px, ${rect.y}px)`
+  if (raf) {
+    window.cancelAnimationFrame(raf)
+    raf = null
   }
 })
 </script>
+
+<style>
+:root {
+  --bk-edit-indicator-color: 5 80 230;
+  --bk-edit-indicator-z-index: 1000000;
+}
+
+@font-face {
+  font-family: 'PB Inter';
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  font-named-instance: 'Regular';
+  src: url('/_blokkli-assets/Inter.var.woff2') format('woff2');
+}
+
+.bk-edit-indicator {
+  appearance: none !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 15px !important;
+  z-index: var(--bk-edit-indicator-z-index) !important;
+  background: rgb(var(--bk-edit-indicator-color)) !important;
+  color: white !important;
+  cursor: pointer !important;
+  height: 50px !important;
+  padding: 0 20px !important;
+  font-family: 'PB Inter', sans-serif !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  line-height: 16px !important;
+}
+
+.bk-edit-indicator-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: calc(var(--bk-edit-indicator-z-index) - 1) !important;
+  background: rgb(var(--bk-edit-indicator-color) / 20%) !important;
+  outline: 2px solid rgb(var(--bk-edit-indicator-color)) !important;
+  outline-offset: -2px !important;
+  pointer-events: none !important;
+}
+</style>
