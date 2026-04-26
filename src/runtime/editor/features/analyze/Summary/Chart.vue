@@ -25,6 +25,7 @@
       dominant-baseline="middle"
       text-anchor="middle"
       fill="currentColor"
+      class="font-bold text-lime-normal"
     >
       {{ percentage }}%
     </text>

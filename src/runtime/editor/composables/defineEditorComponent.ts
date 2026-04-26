@@ -47,6 +47,12 @@ export interface EditorComponentVariant<TProps extends Record<string, any>> {
    * Each function may return any VNode-compatible value.
    */
   slots?: EditorComponentVariantSlots
+
+  /**
+   * Optional override for the entry-level `backgroundClass`. Useful when a
+   * single variant needs a different stage background to remain legible.
+   */
+  backgroundClass?: string
 }
 
 export interface EditorComponentMeta<C extends AnyComponent = AnyComponent> {
@@ -85,6 +91,12 @@ interface EditorSnippetVariantBase {
 
   /** Optional longer description. */
   description?: string
+
+  /**
+   * Optional override for the entry-level `backgroundClass`. Useful when a
+   * single variant needs a different stage background to remain legible.
+   */
+  backgroundClass?: string
 }
 
 interface EditorSnippetVariantRender extends EditorSnippetVariantBase {

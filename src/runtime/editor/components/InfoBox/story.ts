@@ -19,6 +19,14 @@ export default defineEditorComponent({
       },
     },
     {
+      label: 'Small',
+      description: 'Small variant.',
+      props: {
+        text: 'Heads up — unsaved changes will be lost when you leave this page.',
+        small: true,
+      },
+    },
+    {
       label: 'Accent',
       props: {
         color: 'accent',

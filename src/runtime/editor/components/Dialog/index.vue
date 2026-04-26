@@ -217,8 +217,4 @@ export default {
     @apply bg-mono-50;
   }
 }
-
-.bk .bk-message-info {
-  @apply font-sans text-base bg-yellow-light p-10 border border-yellow-normal rounded text-yellow-dark my-20;
-}
 </style>

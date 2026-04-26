@@ -1,42 +1,20 @@
 <template>
   <div>
-    <details
+    <Section
       v-for="group in grouped"
       :key="group.group"
+      :label="group.label"
+      :count="group.results.length"
+      :results="group.results"
       :open="group.open"
-      class="bk-analyze-results"
-    >
-      <summary v-show="!group.open">
-        <div>
-          <span>{{ group.label }}</span>
-          <div>
-            <span class="bk-pill">{{ group.results.length }}</span>
-          </div>
-        </div>
-        <Icon name="bk_mdi_arrow_drop_down" />
-      </summary>
-      <ul
-        :class="{
-          'bk-is-always-open': group.open,
-        }"
-      >
-        <li>
-          <ResultsItem
-            v-for="result in group.results"
-            v-bind="result"
-            :key="group.group + result.id"
-          />
-        </li>
-      </ul>
-    </details>
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import type { AnalyzeResultMapped, AnalyzeStatus } from '../analyzers/types'
-import ResultsItem from './ResultsItem.vue'
-import { Icon } from '#blokkli/editor/components'
+import Section from './Section.vue'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]

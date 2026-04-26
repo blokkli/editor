@@ -1,26 +1,32 @@
 <template>
   <tr class="hover:bg-mono-50">
-    <td>
-      <div>
-        <span>{{ label }}</span>
-        <span
-          v-if="isDefault"
-          class="bk-pill bk-is-strong"
-          :title="
-            $t(
-              'templatesDefaultPillDescription',
-              'This template is used when new blocks of this type are created.',
-            )
-          "
-          >{{ $t('templatesDefaultPill', 'Default') }}</span
-        >
+    <td class="py-15">
+      <div class="flex flex-wrap gap-5">
+        <span class="text-lg font-semibold items-center">{{ label }}</span>
+        <div v-if="isDefault">
+          <Pill
+            :text="$t('templatesDefaultPill', 'Default')"
+            variant="normal"
+            :title="
+              $t(
+                'templatesDefaultPillDescription',
+                'This template is used when new blocks of this type are created.',
+              )
+            "
+          />
+        </div>
       </div>
-      <div v-if="description">{{ description }}</div>
-      <ul class="bk-pill-list mt-8">
-        <li v-for="(bundle, index) in bundleLabels" :key="index">
-          <span class="bk-pill bk-is-mono" v-text="bundle" />
-        </li>
-      </ul>
+      <div v-if="description" class="text-sm text-mono-600">
+        {{ description }}
+      </div>
+      <div class="bk-pill-list mt-8">
+        <Pill
+          v-for="(bundle, index) in bundleLabels"
+          :key="index"
+          :text="bundle"
+          scheme="mono"
+        />
+      </div>
     </td>
     <td>
       <span v-if="metadata?.createdBy">{{ metadata.createdBy }}</span>
@@ -92,6 +98,7 @@ import {
   Icon,
   NestedEditorOverlay,
   RelativeTime,
+  Pill,
 } from '#blokkli/editor/components'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 

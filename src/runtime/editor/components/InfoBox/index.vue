@@ -1,6 +1,19 @@
 <template>
-  <div class="bk-info-box" :class="'bk-scheme-' + color">
-    <Icon :name="icon" />
+  <div
+    class="bg-scheme-light text-scheme-dark border-l-4 border-l-scheme-normal flex items-center"
+    :class="[
+      'bk-scheme-' + color,
+      {
+        'p-15 gap-10': !small,
+        'p-10 gap-5 text-sm': small,
+      },
+    ]"
+  >
+    <Icon
+      :name="icon"
+      class="shrink-0"
+      :class="small ? 'size-20' : 'size-30'"
+    />
     <div>
       <slot>
         <p v-html="text" />
@@ -19,27 +32,13 @@ withDefaults(
     text?: string
     icon?: BlokkliIcon
     color?: ThemeColorName
+    small?: boolean
   }>(),
   {
     text: undefined,
     icon: 'bk_mdi_info-fill',
     color: 'yellow',
+    small: false,
   },
 )
 </script>
-
-<style lang="postcss">
-.bk .bk-info-box {
-  @apply p-15 font-medium;
-  @apply flex gap-10 items-center;
-  @apply bg-scheme-light text-scheme-dark border-l-4 border-l-scheme-normal;
-
-  .bk-icon {
-    @apply size-30 shrink-0;
-
-    svg {
-      @apply fill-current;
-    }
-  }
-}
-</style>

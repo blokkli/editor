@@ -1,5 +1,5 @@
 <template>
-  <label class="bk-checkbox-toggle">
+  <label class="bk-checkbox-toggle group/tooltip">
     <slot />
     <input v-model="value" type="checkbox" class="peer" :disabled />
     <div class="bk-checkbox-toggle-toggle" />
@@ -12,13 +12,21 @@
         {{ disabledReason }}
       </div>
     </div>
+    <Tooltip
+      v-if="tooltip"
+      :label="tooltip"
+      class="max-w-full whitespace-normal"
+    />
   </label>
 </template>
 
 <script setup lang="ts">
+import Tooltip from '#blokkli/editor/components/Tooltip/index.vue'
+
 defineProps<{
   label?: string
   description?: string
+  tooltip?: string
   disabled?: boolean
   disabledReason?: string | null
 }>()
@@ -83,8 +91,8 @@ const value = defineModel<boolean>()
     .bk-checkbox-toggle-toggle {
       @apply relative w-[36px] h-20 bg-mono-400 rounded-full  flex-shrink-0;
       @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
-      @apply mr-5 mt-[2px];
-      @apply last:mr-0 mt-0;
+      @apply mr-5;
+      @apply last:mr-0 mt-[2px];
     }
   }
 }

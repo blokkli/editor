@@ -162,21 +162,6 @@ export default {
     }
   }
 
-  .bk-blokkli-item-options-item {
-    &:last-child {
-      > div {
-        > .bk-blokkli-item-options-text input,
-        > .bk-blokkli-item-options-checkbox,
-        > .bk-blokkli-item-options-checkboxes {
-          @apply lg:rounded-e-md;
-        }
-      }
-    }
-  }
-  .bk-blokkli-item-options-group:last-child > button {
-    @apply lg:rounded-e-md;
-  }
-
   .bk-blokkli-item-options-checkbox {
     @apply relative inline-flex items-center cursor-pointer h-full px-10 text-mono-200;
     @media not all and (hover: none) {
@@ -368,10 +353,10 @@ export default {
     }
 
     > div {
-      @apply fixed left-0 grid bg-mono-900 overflow-hidden min-w-full rounded-b-none rounded-t;
+      @apply fixed left-0 grid bg-mono-900 overflow-hidden min-w-full;
       @apply bottom-full;
       @variant md {
-        @apply absolute top-full bottom-auto rounded-t-none rounded-b;
+        @apply absolute top-full bottom-auto;
       }
       label {
         @apply py-10;
@@ -382,7 +367,7 @@ export default {
     }
 
     &.bk-is-active {
-      @apply bg-mono-800 !rounded-b-none;
+      @apply bg-mono-800;
       button {
         svg {
           @apply rotate-180;

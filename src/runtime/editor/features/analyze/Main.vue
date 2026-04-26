@@ -1,60 +1,63 @@
 <template>
-  <div class="bk bk-analyze">
-    <div class="bk-analyze-button">
-      <button
-        v-if="hasManualAnalyzers"
-        class="bk-button bk-is-primary"
-        :disabled="buttonDisabled"
-        @click.prevent="onClick"
-      >
-        {{ $t('analyzeButtonLabel', 'Analyze Page') }}
-      </button>
-
-      <p v-if="lastRun" class="bk-analyze-last-run">
-        <RelativeTime v-slot="{ formatted }" :timestamp="lastRun">
-          {{
-            $t('analyzeLastRun', 'Last run: @time').replace(
-              '@time',
-              formatted ?? 'never',
-            )
-          }}
-        </RelativeTime>
-      </p>
-
-      <FormToggle
-        v-model="keepVisible"
-        :label="$t('analyzeKeepVisible', 'Keep results visible')"
-        :description="
-          $t(
-            'analyzeKeepVisibleDescription',
-            'When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.',
-          )
-        "
-      />
-
-      <div v-if="staleAnalyzerStatuses.length > 1" class="bk-analyze-statuses">
-        <div
-          v-for="analyzer in staleAnalyzerStatuses"
-          :key="analyzer.id"
-          class="bk-analyze-status-item"
+  <div class="bk bk-analyze select-text">
+    <div class="p-20">
+      <FormItem v-if="hasManualAnalyzers">
+        <button
+          class="bk-button bk-is-primary w-full"
+          :disabled="buttonDisabled"
+          @click.prevent="onClick"
         >
-          <span class="bk-analyze-status-title">{{ analyzer.title }}</span>
-          <span
-            class="bk-analyze-status-label"
-            :class="{ 'bk-is-stale': analyzer.isStale }"
-          >
-            {{ analyzer.status }}
-          </span>
-        </div>
-      </div>
+          {{ $t('analyzeButtonLabel', 'Analyze Page') }}
+        </button>
 
-      <p v-if="staleMessage" class="bk-message-info">
-        {{ staleMessage }}
-      </p>
+        <p v-if="lastRun" class="tabular-nums text-xs text-mono-600 mt-10">
+          <RelativeTime v-slot="{ formatted }" :timestamp="lastRun">
+            {{
+              $t('analyzeLastRun', 'Last run: @time').replace(
+                '@time',
+                formatted ?? 'never',
+              )
+            }}
+          </RelativeTime>
+        </p>
+      </FormItem>
+
+      <FormItem class="relative">
+        <FormToggle
+          v-model="keepVisible"
+          :label="$t('analyzeKeepVisible', 'Keep results visible')"
+          :tooltip="
+            $t(
+              'analyzeKeepVisibleDescription',
+              'When enabled, analysis results remain highlighted on the page even when the analyze panel is closed.',
+            )
+          "
+        />
+      </FormItem>
+
+      <FormItem v-if="staleAnalyzerStatuses.length > 1">
+        <div class="grid gap-5">
+          <div
+            v-for="analyzer in staleAnalyzerStatuses"
+            :key="analyzer.id"
+            class="flex justify-between items-center text-sm"
+          >
+            <span class="font-medium text-mono-950">{{ analyzer.title }}</span>
+            <Pill
+              :text="analyzer.status"
+              :scheme="analyzer.isStale ? 'yellow' : 'lime'"
+            />
+          </div>
+        </div>
+        <InfoBox v-if="staleMessage" :text="staleMessage" small class="mt-15" />
+      </FormItem>
     </div>
 
-    <div v-if="results.length && shouldRender" class="bk-analyze-wrapper">
-      <div v-if="categoryOptions.length > 2" class="bk-analyze-form">
+    <div v-if="results.length && shouldRender" class="relative">
+      <div
+        v-if="categoryOptions.length > 2"
+        class="p-20 border-t border-t-mono-300"
+      >
         <FormSelect
           id="category"
           v-model="selectedCategory"
@@ -93,6 +96,9 @@ import {
   FormSelect,
   FormToggle,
   RelativeTime,
+  InfoBox,
+  Pill,
+  FormItem,
 } from '#blokkli/editor/components'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import { defineHighlight, onBlokkliEvent } from '#blokkli/editor/composables'

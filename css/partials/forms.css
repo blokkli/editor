@@ -126,7 +126,7 @@
   }
 
   .bk-form-item {
-    @apply py-20 border-y border-y-mono-400 border-dashed;
+    @apply py-15 border-y border-y-mono-400 border-dashed;
 
     &:last-child {
       @apply border-b-0 pb-0;

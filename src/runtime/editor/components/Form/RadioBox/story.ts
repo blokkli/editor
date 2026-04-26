@@ -27,7 +27,8 @@ export default defineEditorComponent({
         name: 'demo-desc',
         value: 'two',
         title: 'Quick build',
-        description: 'Skip the optimisation pass. Faster, slightly larger output.',
+        description:
+          'Skip the optimisation pass. Faster, slightly larger output.',
         modelValue: 'two',
       },
     },

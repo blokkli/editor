@@ -1,31 +1,15 @@
 <template>
-  <details class="bk-analyze-results">
-    <summary>
-      <div>
-        <span>{{ $t('analyzeIgnoredResults', 'Ignored') }}</span>
-        <div>
-          <span class="bk-pill">{{ totalCount }}</span>
-        </div>
-      </div>
-      <Icon name="bk_mdi_arrow_drop_down" />
-    </summary>
-    <ul>
-      <li>
-        <ResultsItem
-          v-for="result in results"
-          v-bind="result"
-          :key="result.id"
-        />
-      </li>
-    </ul>
-  </details>
+  <Section
+    :label="$t('analyzeIgnoredResults', 'Ignored')"
+    :count="totalCount"
+    :results="results"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
 import type { AnalyzeResultMapped } from '../analyzers/types'
-import ResultsItem from '../Results/ResultsItem.vue'
-import { Icon } from '#blokkli/editor/components'
+import Section from '../Results/Section.vue'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]

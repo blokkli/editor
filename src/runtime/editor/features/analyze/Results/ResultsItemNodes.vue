@@ -1,27 +1,44 @@
 <template>
   <details
     v-if="nodes.length"
-    class="bk-analyze-results-item-nodes"
+    class="bg-mono-100 mt-10 overflow-hidden group/nodes"
     :open="isSingle || isOpen"
     @toggle="shouldRender = true"
   >
-    <summary v-show="!isSingle">
+    <summary
+      v-show="!isSingle"
+      class="group-open/nodes:text-mono-950 text-sm font-semibold p-10 cursor-pointer appearance-none list-none flex justify-between items-center text-mono-600 hover:bg-mono-200 hover:text-mono-950"
+    >
       <span>{{ $t('multipleItemsLabel', 'Items') }}</span>
-      <Icon name="bk_mdi_arrow_drop_down" />
+      <Icon
+        name="bk_mdi_arrow_drop_down"
+        class="group-open/nodes:rotate-180 size-15"
+      />
     </summary>
 
     <div v-if="shouldRender" class="bk-analyze-results-item-nodes-list">
-      <ul v-for="(group, i) in grouped" :key="i">
+      <ul
+        v-for="(group, i) in grouped"
+        :key="i"
+        :class="{
+          'border-t border-t-mono-300 pt-10': i > 0,
+        }"
+      >
         <li>
           <p
             v-if="group.description && group.description !== 'NONE'"
+            class="text-xs text-mono-700 px-10 mb-3"
             :class="{
-              'bk-is-single': isSingle,
+              'pt-10': isSingle,
             }"
             v-html="group.description"
           />
           <ul>
-            <li v-for="(node, j) in group.nodes" :key="i + '_' + j">
+            <li
+              v-for="(node, j) in group.nodes"
+              :key="i + '_' + j"
+              class="text-xs"
+            >
               <ResultsItemNodesTarget
                 v-for="(target, k) in node.targets"
                 :key="i + '_' + j + '_' + k"

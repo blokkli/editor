@@ -208,4 +208,19 @@
       @apply h-60;
     }
   }
+
+  .bk-content {
+    ul {
+      @apply list-disc ml-15;
+    }
+    ol {
+      @apply list-decimal ml-15;
+    }
+
+    ul,
+    ol,
+    p {
+      @apply my-8 first:mt-0 last:mb-0;
+    }
+  }
 }

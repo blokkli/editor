@@ -1,11 +1,18 @@
 <template>
-  <div class="bk-analyze-summary">
-    <div class="bk-analyze-summary-chart">
+  <div class="px-20 pb-20 pt-0">
+    <div class="flex items-center gap-20">
       <Chart :data="summary" :percentage />
-      <ul>
-        <li v-for="item in summary" :key="item.status">
-          <div :style="{ backgroundColor: item.color }" />
-          <div>
+      <ul class="flex-1 flex flex-col gap-[7px]">
+        <li
+          v-for="item in summary"
+          :key="item.status"
+          class="flex items-center gap-[0.5em] leading-none"
+        >
+          <div
+            :style="{ backgroundColor: item.color }"
+            class="size-[0.75em] shrink-0 rounded-full"
+          />
+          <div class="font-semibold flex justify-between flex-1">
             <span>{{ item.label }}</span>
             <span>{{ item.value }}</span>
           </div>

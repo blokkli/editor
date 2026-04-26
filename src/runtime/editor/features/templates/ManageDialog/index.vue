@@ -125,22 +125,6 @@ watch(page, () => {
     min-height: 80vh;
     @apply select-text relative;
     @apply mt-25;
-    .bk-table {
-      tbody {
-        td {
-          @apply py-15;
-        }
-        td:first-child {
-          div:first-child {
-            @apply font-bold text-lg;
-
-            .bk-pill {
-              @apply ml-5;
-            }
-          }
-        }
-      }
-    }
   }
 }
 </style>

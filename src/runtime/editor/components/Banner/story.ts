@@ -115,18 +115,14 @@ export default defineEditorComponent({
       props: { id: 'banner-custom', scheme: 'accent', standalone: true },
       slots: {
         default: () =>
-          h(
-            'div',
-            { class: 'p-10 flex items-center justify-between gap-10' },
-            [
-              h('span', [
-                'Saved as ',
-                h('strong', 'Draft v3'),
-                ' · 2 minutes ago',
-              ]),
-              h('span', { class: 'text-xs opacity-80' }, 'autosave'),
-            ],
-          ),
+          h('div', { class: 'p-10 flex items-center justify-between gap-10' }, [
+            h('span', [
+              'Saved as ',
+              h('strong', 'Draft v3'),
+              ' · 2 minutes ago',
+            ]),
+            h('span', { class: 'text-xs opacity-80' }, 'autosave'),
+          ]),
       },
     },
   ],

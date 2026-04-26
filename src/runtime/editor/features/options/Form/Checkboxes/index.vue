@@ -6,12 +6,16 @@
     <button v-if="!isGrouped" @click="isOpen = !isOpen">
       <span>{{ visibleLabel }}</span>
       <div>
-        <template v-if="checked.length < 4">
-          <span v-for="item in checked" :key="item" class="bk-pill">{{
-            item
-          }}</span>
-        </template>
-        <span v-else class="bk-pill">{{ checked.length }}</span>
+        <div v-if="checked.length < 4" class="bk-pill-list">
+          <Pill
+            v-for="item in checked"
+            :key="item"
+            :text="item"
+            scheme="mono"
+            variant="normal"
+          />
+        </div>
+        <Pill v-else :text="checked.length" scheme="mono" variant="normal" />
       </div>
       <Icon name="bk_mdi_arrow_drop_down" />
     </button>
@@ -36,7 +40,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, Pill } from '#blokkli/editor/components'
 import { BK_VISIBLE_LANGUAGES } from './../../../../../../global/constants'
 import { defineCommands } from '#blokkli/editor/composables'
 
