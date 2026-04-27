@@ -1,85 +1,32 @@
 .bk {
   .bk-button {
-    @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-none !font-semibold  focus-visible:outline-none !font-sans !text-base focus-visible:!ring-[3px] focus-visible:ring-offset-2;
-    @apply !text-mono-900 hover:!text-white;
-    @apply !bg-mono-200 hover:!bg-mono-400;
-    @apply !border-none;
-    @apply !whitespace-nowrap;
+    @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-none !font-semibold focus-visible:outline-none !font-sans !text-base focus-visible:!ring-[3px] focus-visible:ring-offset-2;
+    @apply !whitespace-nowrap border;
 
-    &[disabled] {
-      @apply !bg-mono-100 !text-mono-300 cursor-not-allowed;
-    }
+    /* Default variant: scheme-normal background with scheme-text. */
+    @apply !bg-scheme-normal !text-scheme-text hover:!bg-scheme-normal-hover border-scheme-normal-hover hover:border-scheme-dark;
 
-    &.bk-is-scheme {
-      @apply !bg-scheme-dark !text-scheme-light hover:!bg-scheme-dark/80;
+    &.bk-is-light {
+      @apply !bg-scheme-light !text-scheme-dark hover:!bg-scheme-light-hover border-scheme-light-hover hover:border-scheme-dark;
     }
 
-    &.bk-is-scheme-outline {
-      @apply !bg-transparent !text-scheme-dark outline outline-1 -outline-offset-1 outline-scheme-dark hover:!bg-scheme-dark/15;
+    &.bk-is-dark {
+      @apply !bg-scheme-dark !text-scheme-light hover:!bg-scheme-dark-hover border-scheme-normal hover:border-scheme-light-hover;
     }
 
-    &.bk-is-white {
-      @apply !bg-white hover:!bg-mono-100 hover:!text-mono-600;
+    &.bk-is-outline {
+      @apply !bg-transparent !text-scheme-normal border-scheme-normal hover:!bg-scheme-dark/15;
     }
 
-    &.bk-is-primary {
-      @apply !bg-accent-700 !text-white hover:!bg-accent-800 focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
-      &[disabled]:not(.bk-is-loading) {
-        @apply !bg-accent-100 !text-white;
-      }
-    }
-    &.bk-is-teal {
-      @apply !bg-teal-normal !text-teal-dark hover:!bg-teal-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
-      &[disabled] {
-        @apply !bg-teal-light !text-teal-normal;
-      }
-    }
-    &.bk-is-orange {
-      @apply !bg-orange-normal !text-orange-dark hover:!bg-orange-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
-      &[disabled] {
-        @apply !bg-orange-light !text-orange-normal;
-      }
+    /*
+     * Outline + dark: outline using scheme-dark colors. Use on dark / saturated
+     * backgrounds (e.g. inside a banner with scheme-normal background) where
+     * scheme-normal would blend into the background.
+     */
+    &.bk-is-outline.bk-is-dark {
+      @apply !bg-transparent !text-scheme-dark border-scheme-dark hover:!bg-scheme-dark/15;
     }
 
-    &.bk-is-lime {
-      @apply !bg-lime-normal !text-black hover:!bg-lime-dark hover:!text-white focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
-      &[disabled] {
-        @apply opacity-15;
-      }
-    }
-
-    &.bk-is-lime-outline {
-      @apply !bg-transparent !text-lime-normal hover:!bg-lime-normal/20 hover:!text-lime-dark focus-visible:ring-accent-600 focus-visible:ring-offset-accent-100;
-    }
-
-    &.bk-is-danger {
-      @apply !bg-red-normal !text-white hover:!bg-red-dark focus-visible:ring-red-dark;
-      &[disabled] {
-        @apply opacity-30;
-      }
-    }
-
-    &.bk-is-fullwidth {
-      @apply w-full;
-    }
-
-    &.bk-is-warning {
-      @apply !bg-yellow-normal !text-yellow-dark hover:!bg-yellow-normal/80 focus-visible:ring-yellow-dark/30;
-      &[disabled] {
-        @apply opacity-30;
-      }
-    }
-
-    &.bk-is-warning-outline-dark {
-      @apply !bg-transparent !text-yellow-dark outline outline-1 -outline-offset-1 hover:!bg-yellow-dark/10;
-    }
-
-    &.bk-is-warning-dark {
-      @apply !bg-yellow-dark !text-yellow-light hover:!bg-yellow-dark/80 focus-visible:ring-yellow-dark/30;
-      &[disabled] {
-        @apply opacity-30;
-      }
-    }
     &.bk-is-small {
       @apply h-30 !px-[8px] !text-sm gap-5;
 
@@ -89,6 +36,7 @@
         }
       }
     }
+
     &.bk-is-icon-only {
       @apply !px-0 !w-50;
 
@@ -96,19 +44,25 @@
         @apply !w-30;
       }
     }
-    &[disabled] {
-      @apply !pointer-events-none;
-    }
-    svg {
-      @apply !fill-current;
-      width: 1.5em;
-      height: 1.5em;
+
+    &.bk-is-fullwidth {
+      @apply w-full;
     }
 
     &.bk-is-loading {
       @apply bg-no-repeat bg-center pointer-events-none;
       background-image: url('/_blokkli-assets/loader.svg');
       @apply !text-transparent;
+    }
+
+    &[disabled] {
+      @apply !pointer-events-none opacity-30;
+    }
+
+    svg {
+      @apply !fill-current;
+      width: 1.5em;
+      height: 1.5em;
     }
   }
 }

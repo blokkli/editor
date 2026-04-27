@@ -48,7 +48,7 @@
           :disabled="!canSubmit"
           :class="[
             { 'bk-is-loading': isLoading },
-            isDanger ? 'bk-is-danger' : 'bk-is-primary',
+            isDanger ? 'bk-scheme-red' : 'bk-scheme-accent',
           ]"
           @click="$emit('submit')"
         >

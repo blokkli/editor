@@ -93,7 +93,7 @@
         />
       </div>
 
-      <button class="bk-button bk-is-lime" @click="$emit('apply')">
+      <button class="bk-button bk-scheme-lime" @click="$emit('apply')">
         <span>{{ applyLabel }}</span>
       </button>
     </div>

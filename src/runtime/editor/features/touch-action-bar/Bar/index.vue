@@ -2,7 +2,7 @@
   <div class="bk bk-touch-action-bar bk-control">
     <button
       class="bk-button"
-      :class="danger ? 'bk-is-danger' : 'bk-is-primary'"
+      :class="danger ? 'bk-scheme-red' : 'bk-scheme-accent'"
       @click.stop.prevent.capture="$emit('click')"
     >
       {{ label }}

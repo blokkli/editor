@@ -31,7 +31,7 @@
           <footer>
             <button
               v-if="supportsPreview"
-              class="bk-button"
+              class="bk-button bk-scheme-mono bk-is-light"
               :disabled="disabled || (!hasChanged && !hasSeedInput)"
               :class="{
                 'bk-is-loading': isPreviewing,
@@ -41,7 +41,7 @@
               {{ previewButtonLabel }}
             </button>
             <button
-              class="bk-button bk-is-orange"
+              class="bk-button bk-scheme-orange"
               :disabled
               @click.prevent="onClickSubmit"
             >

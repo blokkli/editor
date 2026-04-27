@@ -46,7 +46,7 @@
     </div>
     <template #footer>
       <button
-        class="bk-button bk-is-primary"
+        class="bk-button bk-scheme-accent"
         :disabled="!selectedItem"
         @click="onSubmit"
       >

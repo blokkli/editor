@@ -3,7 +3,7 @@
     <div class="p-20">
       <FormItem v-if="hasManualAnalyzers">
         <button
-          class="bk-button bk-is-primary w-full"
+          class="bk-button bk-scheme-accent w-full"
           :disabled="buttonDisabled"
           @click.prevent="onClick"
         >

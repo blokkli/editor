@@ -54,7 +54,7 @@
         />
         <button
           v-if="commentText"
-          class="bk-button bk-is-warning"
+          class="bk-button bk-scheme-yellow"
           @click="addComment"
         >
           {{ $t('commentAdd', 'Add comment') }}

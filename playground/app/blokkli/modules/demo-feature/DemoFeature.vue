@@ -35,7 +35,7 @@
         Styled by inline utility classes
       </div>
 
-      <button class="bk-button bk-is-primary w-full" @click="toggleSidebar">
+      <button class="bk-button bk-scheme-accent w-full" @click="toggleSidebar">
         Close demo pane
       </button>
     </div>

@@ -10,7 +10,7 @@
       <footer>
         <button
           :disabled="!comment"
-          class="bk-button bk-is-warning"
+          class="bk-button bk-scheme-yellow"
           @click.prevent="onAdd"
         >
           {{ $t('commentSave', 'Submit comment') }}

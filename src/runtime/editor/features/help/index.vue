@@ -10,7 +10,7 @@
     <div class="bk bk-help">
       <div v-if="isTourEnabled" class="bk-help-section">
         <button
-          class="bk-button bk-is-warning bk-is-fullwidth"
+          class="bk-button bk-scheme-yellow bk-is-fullwidth"
           :disabled="tour.isTouring.value"
           @click="tour.isTouring.value = true"
         >

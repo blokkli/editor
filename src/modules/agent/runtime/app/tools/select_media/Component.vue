@@ -23,7 +23,7 @@
 
     <template #actions>
       <button
-        class="bk-button bk-is-small bk-is-lime bk-is-fullwidth"
+        class="bk-button bk-is-small bk-scheme-lime bk-is-fullwidth"
         :disabled="!selectedId"
         @click="confirm"
       >

@@ -57,7 +57,7 @@
       </div>
     </div>
     <template #footer>
-      <button class="bk-button bk-is-primary" @click="onSubmit">
+      <button class="bk-button bk-scheme-accent" @click="onSubmit">
         {{ $t('fragmentsPlaceDialogSubmitButton', 'Add selected fragment') }}
       </button>
     </template>

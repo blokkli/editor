@@ -67,7 +67,7 @@
             <button
               v-if="isAlreadyScheduled"
               type="button"
-              class="bk-button bk-is-danger"
+              class="bk-button bk-scheme-red"
               @click="removeScheduledDate"
             >
               {{ $t('publishRemoveSchedule', 'Remove schedule') }}

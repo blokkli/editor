@@ -14,7 +14,7 @@
           class="bk-schedule-section-mixed"
         >
           <InfoBox :text="mixedDatesMessage" />
-          <button type="button" class="bk-button" @click="enableOverride">
+          <button type="button" class="bk-button bk-scheme-mono bk-is-light" @click="enableOverride">
             {{ $t('blockSchedulerOverride', 'Set date for all') }}
           </button>
         </div>

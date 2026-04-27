@@ -21,7 +21,7 @@
                 <div class="text-base" v-html="outdatedLabel" />
                 <div class="flex gap-5 relative">
                   <button
-                    class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+                    class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
                     @click.prevent="$emit('mark-all-up-to-date', outdatedUuids)"
                   >
                     {{
@@ -32,14 +32,14 @@
                     }}
                   </button>
                   <button
-                    class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+                    class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
                     @click.prevent="eventBus.emit('select:prev', outdatedUuids)"
                   >
                     <Icon name="bk_mdi_arrow_left_alt" />
                     {{ $t('translationsBannerPrev', 'Previous block') }}
                   </button>
                   <button
-                    class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+                    class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
                     @click.prevent="eventBus.emit('select:next', outdatedUuids)"
                   >
                     {{ $t('translationsBannerNext', 'Next block') }}
@@ -54,7 +54,7 @@
           <div class="flex gap-10 relative">
             <button
               v-if="showTranslate"
-              class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+              class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
               @click.prevent="$emit('open-translate')"
             >
               <Icon name="bk_mdi_translate" />
@@ -71,7 +71,7 @@
             </button>
             <button
               v-if="showCsv"
-              class="bk-button bk-is-small bk-is-scheme-outline group/tooltip"
+              class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
               @click.prevent="$emit('open-csv')"
             >
               <Icon name="bk_mdi_upload" />

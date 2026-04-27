@@ -18,7 +18,7 @@
       <div ref="conversationContainer" class="bk-agent-panel-conversation">
         <button
           v-if="DEBUG_STYLING"
-          class="bk-button"
+          class="bk-button bk-scheme-mono bk-is-light"
           @click="debugShowPlan = !debugShowPlan"
         >
           {{ debugShowPlan ? 'Hide' : 'Show' }} Plan

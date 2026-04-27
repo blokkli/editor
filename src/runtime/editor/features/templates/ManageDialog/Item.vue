@@ -41,7 +41,7 @@
       <div class="flex gap-10 justify-end">
         <template v-if="confirmDelete">
           <button
-            class="bk-button bk-is-danger bk-is-small"
+            class="bk-button bk-scheme-red bk-is-small"
             :disabled="isDeleting"
             :class="{ 'bk-is-loading': isDeleting }"
             @click="onConfirmDelete"
@@ -49,7 +49,7 @@
             {{ $t('templatesManageDialogConfirmDelete', 'Delete') }}
           </button>
           <button
-            class="bk-button bk-is-small"
+            class="bk-button bk-scheme-mono bk-is-light bk-is-small"
             :disabled="isDeleting"
             @click="confirmDelete = false"
           >
@@ -60,7 +60,7 @@
           <button
             v-if="adapterHasEdit && permissions.includes('edit')"
             ref="editButtonEl"
-            class="bk-button bk-is-small"
+            class="bk-button bk-scheme-mono bk-is-light bk-is-small"
             @click.prevent="isEditing = true"
           >
             <Icon name="bk_mdi_edit" />
@@ -68,7 +68,7 @@
           </button>
           <button
             v-if="permissions.includes('delete')"
-            class="bk-button bk-is-small"
+            class="bk-button bk-scheme-mono bk-is-light bk-is-small"
             @click="confirmDelete = true"
           >
             <Icon name="bk_mdi_delete" />

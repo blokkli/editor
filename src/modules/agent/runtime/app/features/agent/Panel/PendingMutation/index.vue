@@ -2,14 +2,14 @@
   <ToolCard :icon="actionIcon" :title="action.label" @cancel="$emit('reject')">
     <template #actions>
       <button
-        class="bk-button bk-is-small bk-is-lime bk-is-fullwidth"
+        class="bk-button bk-is-small bk-scheme-lime bk-is-fullwidth"
         @click="$emit('approve')"
       >
         <Icon name="bk_mdi_check" />
         {{ $t('aiAgentApprove', 'Approve') }}
       </button>
       <button
-        class="bk-button bk-is-small bk-is-lime-outline"
+        class="bk-button bk-is-small bk-scheme-lime bk-is-outline"
         @click="$emit('always-approve')"
       >
         <Icon name="bk_mdi_done_all" />

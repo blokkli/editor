@@ -17,7 +17,7 @@
       class="bk-message-actions"
     >
       <button
-        class="bk-button bk-is-danger"
+        class="bk-button bk-scheme-red"
         @click.prevent="showDetails = true"
       >
         <Icon name="bk_mdi_bug_report" />

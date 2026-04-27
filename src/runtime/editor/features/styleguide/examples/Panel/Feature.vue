@@ -28,12 +28,15 @@
             label="Label"
           />
           <div class="flex gap-8 mt-20">
-            <button type="submit" class="bk-button bk-is-primary bk-is-small">
+            <button
+              type="submit"
+              class="bk-button bk-scheme-accent bk-is-small"
+            >
               Save
             </button>
             <button
               type="button"
-              class="bk-button bk-is-small"
+              class="bk-button bk-scheme-mono bk-is-light bk-is-small"
               @click="$emit('cancel')"
             >
               Cancel

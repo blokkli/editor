@@ -20,7 +20,7 @@ export default defineEditorComponent({
         button: () =>
           h(
             'span',
-            { class: 'bk-button bk-is-icon' },
+            { class: 'bk-button bk-is-icon-only' },
             h(Icon, { name: 'bk_mdi_menu' }),
           ),
         default: ({ close }: { close: () => void }) => [

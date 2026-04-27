@@ -27,7 +27,7 @@
 
     <template v-if="pendingApproval" #actions>
       <button
-        class="bk-button bk-is-lime bk-is-fullwidth"
+        class="bk-button bk-scheme-lime bk-is-fullwidth"
         @click="$emit('approve')"
       >
         <Icon name="bk_mdi_check" />

@@ -14,7 +14,7 @@
     </div>
     <div>
       <button
-        class="bk-button bk-is-small"
+        class="bk-button bk-scheme-mono bk-is-light bk-is-small"
         @click.prevent="() => console.log(dom.getDebugData())"
       >
         Log DOM state
@@ -22,7 +22,7 @@
     </div>
 
     <div>
-      <button class="bk-button bk-is-small" @click.prevent="getAllMessages">
+      <button class="bk-button bk-scheme-mono bk-is-light bk-is-small" @click.prevent="getAllMessages">
         Log all messages
       </button>
     </div>

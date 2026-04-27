@@ -1,43 +1,28 @@
 import { h } from '#imports'
 import { defineEditorSnippet } from '#blokkli/editor/composables'
+import Button from '#blokkli/editor/components/Button/index.vue'
 import { Icon } from '#blokkli/editor/components'
+import type { ThemeColorName } from './../../../../../global/types/theme'
 
-const variants = [
-  { label: 'Default', cls: '' },
-  { label: 'Primary', cls: 'bk-is-primary' },
-  { label: 'Teal', cls: 'bk-is-teal' },
-  { label: 'Orange', cls: 'bk-is-orange' },
-  { label: 'Lime', cls: 'bk-is-lime' },
-  { label: 'Lime outline', cls: 'bk-is-lime-outline' },
-  { label: 'Danger', cls: 'bk-is-danger' },
-  { label: 'Warning', cls: 'bk-is-warning' },
-  { label: 'Warning dark', cls: 'bk-is-warning-dark' },
-  { label: 'Warning outline dark', cls: 'bk-is-warning-outline-dark' },
-  { label: 'White', cls: 'bk-is-white' },
-  { label: 'Scheme', cls: 'bk-is-scheme' },
-  { label: 'Scheme outline', cls: 'bk-is-scheme-outline' },
+const schemes: ThemeColorName[] = [
+  'accent',
+  'mono',
+  'teal',
+  'yellow',
+  'red',
+  'lime',
+  'orange',
 ]
 
-function button(label: string, extra = '') {
-  return h(
-    'button',
-    {
-      type: 'button',
-      class: ['bk-button', extra].filter(Boolean).join(' '),
-    },
-    label,
-  )
-}
+type Variant = 'normal' | 'light' | 'dark' | 'outline' | 'outline-dark'
 
-function iconButton(extra = '') {
+function row(variant: Variant, extra: Record<string, unknown> = {}) {
   return h(
-    'button',
-    {
-      type: 'button',
-      class: ['bk-button bk-is-icon-only', extra].filter(Boolean).join(' '),
-      'aria-label': 'Add',
-    },
-    h(Icon, { name: 'bk_mdi_add' }),
+    'div',
+    { class: 'flex flex-wrap gap-10' },
+    schemes.map((scheme) =>
+      h(Button, { scheme, variant, label: scheme, ...extra }),
+    ),
   )
 }
 
@@ -46,45 +31,58 @@ export default defineEditorSnippet({
   label: 'Button',
   category: 'CSS',
   description:
-    'The `.bk-button` base class with semantic and color modifiers. Combine modifiers like `.bk-is-fullwidth`, `.bk-is-small` or `.bk-is-icon-only`.',
+    'The `.bk-button` base class. Color comes from `bk-scheme-*` (set on the button itself) combined with a variant modifier: default (`bk-scheme-normal` background), `.bk-is-light`, `.bk-is-dark`, or `.bk-is-outline`. Size is controlled with `.bk-is-small`; layout helpers `.bk-is-icon-only`, `.bk-is-fullwidth`, `.bk-is-loading`.',
   variants: [
     {
-      label: 'Color variants',
-      render: () =>
-        h(
-          'div',
-          { class: 'flex flex-wrap gap-10' },
-          variants.map(({ label, cls }) => button(label, cls)),
-        ),
+      label: 'Normal variant',
+      description:
+        'Default — `bg-scheme-normal` with `text-scheme-text`. No modifier needed.',
+      backgroundClass: '_bk_bg-white',
+      render: () => row('normal'),
     },
     {
-      label: 'Disabled',
+      label: 'Light variant',
+      description: '`.bk-is-light` — `bg-scheme-light` with `text-scheme-dark`.',
+      backgroundClass: '_bk_bg-white',
+      render: () => row('light'),
+    },
+    {
+      label: 'Dark variant',
+      description: '`.bk-is-dark` — `bg-scheme-dark` with `text-scheme-light`.',
+      backgroundClass: '_bk_bg-mono-800',
+      render: () => row('dark'),
+    },
+    {
+      label: 'Outline variant',
       description:
-        'Add the `disabled` attribute. Each variant has its own disabled treatment.',
-      render: () =>
-        h(
-          'div',
-          { class: 'flex flex-wrap gap-10' },
-          variants.map(({ label, cls }) =>
-            h(
-              'button',
-              {
-                type: 'button',
-                class: ['bk-button', cls].filter(Boolean).join(' '),
-                disabled: true,
-              },
-              label,
-            ),
-          ),
-        ),
+        '`.bk-is-outline` — transparent background with a `scheme-normal` outline and text.',
+      backgroundClass: '_bk_bg-white',
+      render: () => row('outline'),
+    },
+    {
+      label: 'Outline + dark variant',
+      description:
+        '`.bk-is-outline.bk-is-dark` — transparent background with a `scheme-dark` outline and text. Use on saturated backgrounds where `scheme-normal` blends in.',
+      backgroundClass: '_bk_bg-white',
+      render: () => row('outline-dark'),
     },
     {
       label: 'Sizes',
       description: 'Add `.bk-is-small` to shrink padding and font size.',
       render: () =>
         h('div', { class: 'flex items-center flex-wrap gap-10' }, [
-          button('Default', 'bk-is-primary'),
-          button('Small', 'bk-is-primary bk-is-small'),
+          h(Button, { scheme: 'accent', label: 'Default' }),
+          h(Button, { scheme: 'accent', size: 'small', label: 'Small' }),
+        ]),
+    },
+    {
+      label: 'Disabled',
+      description: 'Add the `disabled` attribute. All variants dim to 30%.',
+      render: () =>
+        h('div', { class: 'flex flex-col gap-10' }, [
+          row('normal', { disabled: true }),
+          row('light', { disabled: true }),
+          row('outline', { disabled: true }),
         ]),
     },
     {
@@ -92,23 +90,46 @@ export default defineEditorSnippet({
       description: 'Use `.bk-is-icon-only` for a square button.',
       render: () =>
         h('div', { class: 'flex items-center flex-wrap gap-10' }, [
-          iconButton('bk-is-primary'),
-          iconButton('bk-is-primary bk-is-small'),
-          iconButton('bk-is-danger'),
+          h(
+            Button,
+            { scheme: 'accent', iconOnly: true, 'aria-label': 'Add' },
+            { default: () => h(Icon, { name: 'bk_mdi_add' }) },
+          ),
+          h(
+            Button,
+            {
+              scheme: 'accent',
+              iconOnly: true,
+              size: 'small',
+              'aria-label': 'Add',
+            },
+            { default: () => h(Icon, { name: 'bk_mdi_add' }) },
+          ),
+          h(
+            Button,
+            { scheme: 'red', iconOnly: true, 'aria-label': 'Delete' },
+            { default: () => h(Icon, { name: 'bk_mdi_delete' }) },
+          ),
         ]),
     },
     {
       label: 'With icon',
       render: () =>
         h('div', { class: 'flex items-center flex-wrap gap-10' }, [
-          h('button', { type: 'button', class: 'bk-button bk-is-primary' }, [
-            h(Icon, { name: 'bk_mdi_save' }),
-            'Save',
-          ]),
-          h('button', { type: 'button', class: 'bk-button bk-is-danger' }, [
-            h(Icon, { name: 'bk_mdi_delete' }),
-            'Delete',
-          ]),
+          h(
+            Button,
+            { scheme: 'accent' },
+            {
+              default: () => [h(Icon, { name: 'bk_mdi_save' }), 'Save'],
+            },
+          ),
+          h(
+            Button,
+            { scheme: 'red' },
+            {
+              default: () => [h(Icon, { name: 'bk_mdi_delete' }), 'Delete'],
+            },
+          ),
         ]),
     },
     {
@@ -116,8 +137,8 @@ export default defineEditorSnippet({
       description: 'Add `.bk-is-fullwidth` to stretch to the container.',
       render: () =>
         h('div', { class: 'flex flex-col gap-10 w-full max-w-[400px]' }, [
-          button('Default', 'bk-is-fullwidth'),
-          button('Primary', 'bk-is-primary bk-is-fullwidth'),
+          h(Button, { scheme: 'mono', fullwidth: true, label: 'Default' }),
+          h(Button, { scheme: 'accent', fullwidth: true, label: 'Accent' }),
         ]),
     },
     {
@@ -126,8 +147,8 @@ export default defineEditorSnippet({
         '`.bk-is-loading` swaps the label for a spinner; the button is non-interactive.',
       render: () =>
         h('div', { class: 'flex flex-wrap gap-10' }, [
-          button('Saving', 'bk-is-primary bk-is-loading'),
-          button('Deleting', 'bk-is-danger bk-is-loading'),
+          h(Button, { scheme: 'accent', loading: true, label: 'Saving' }),
+          h(Button, { scheme: 'red', loading: true, label: 'Deleting' }),
         ]),
     },
   ],

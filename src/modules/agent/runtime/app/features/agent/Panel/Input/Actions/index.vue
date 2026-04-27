@@ -51,7 +51,7 @@
         </div>
         <button
           v-if="isProcessing"
-          class="bk-button bk-is-danger bk-is-small bk-is-icon-only"
+          class="bk-button bk-scheme-red bk-is-small bk-is-icon-only"
           :disabled="!isConnected"
           @click="$emit('cancel')"
         >
@@ -59,7 +59,7 @@
         </button>
         <button
           v-else
-          class="bk-button bk-is-primary bk-is-small bk-is-icon-only"
+          class="bk-button bk-scheme-accent bk-is-small bk-is-icon-only"
           :disabled="!canSubmit"
           @click="$emit('submit')"
         >

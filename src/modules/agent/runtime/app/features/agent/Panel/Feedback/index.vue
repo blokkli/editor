@@ -47,7 +47,7 @@
           "
         />
         <button
-          class="bk-button bk-is-small bk-is-primary self-end"
+          class="bk-button bk-is-small bk-scheme-accent self-end"
           :disabled="!comment"
           @click="onSubmit"
         >

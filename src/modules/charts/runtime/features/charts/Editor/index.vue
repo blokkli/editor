@@ -27,7 +27,7 @@
             <button
               v-if="!autoUpdate"
               type="button"
-              class="bk-button bk-is-small"
+              class="bk-button bk-scheme-mono bk-is-light bk-is-small"
               @click="refreshPreview"
             >
               {{ $t('chartsRefreshPreview', 'Refresh Preview') }}

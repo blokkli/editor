@@ -25,7 +25,7 @@
               }}
             </p>
             <div class="bk-fatal-error-buttons">
-              <button class="bk-button bk-is-danger" @click="errors = []">
+              <button class="bk-button bk-scheme-red" @click="errors = []">
                 {{ $t('fatalErrorButton', 'Continue anyway...') }}
               </button>
             </div>
@@ -33,7 +33,7 @@
         </div>
         <div class="bk-fatal-error-overlay-list">
           <h3>{{ title }}</h3>
-          <button class="bk-button" @click="downloadLogs">
+          <button class="bk-button bk-scheme-mono bk-is-light" @click="downloadLogs">
             {{ $t('downloadLogsButton', 'Download Logs') }}
           </button>
         </div>

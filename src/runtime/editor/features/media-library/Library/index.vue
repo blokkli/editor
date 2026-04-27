@@ -32,7 +32,7 @@
     </div>
 
     <div v-if="selected.length" class="bk-media-library-cancel">
-      <button class="bk-button bk-is-primary" @click.prevent="selected = []">
+      <button class="bk-button bk-scheme-accent" @click.prevent="selected = []">
         {{ $t('cancelSelection', 'Cancel selection') }}
       </button>
     </div>

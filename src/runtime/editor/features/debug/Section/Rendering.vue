@@ -31,7 +31,7 @@
   </div>
   <div>
     <button
-      class="bk-button bk-is-small"
+      class="bk-button bk-scheme-mono bk-is-light bk-is-small"
       @click.prevent="() => dom.updateVisibleRects()"
     >
       Refresh Rects
@@ -39,7 +39,7 @@
   </div>
   <div v-if="animation.hasWebGLContext.value">
     <button
-      class="bk-button bk-is-small"
+      class="bk-button bk-scheme-mono bk-is-light bk-is-small"
       :disabled="!animation.isRenderingWebGL.value"
       @click.prevent="loseContext"
     >
@@ -48,7 +48,7 @@
   </div>
   <div v-if="animation.hasWebGLContext.value">
     <button
-      class="bk-button bk-is-small"
+      class="bk-button bk-scheme-mono bk-is-light bk-is-small"
       :disabled="animation.isRenderingWebGL.value"
       @click.prevent="restoreContext"
     >

@@ -20,14 +20,14 @@
           <Icon name="bk_mdi_close" class="size-15" />
         </button>
       </div>
-      <button class="bk-button bk-is-small" @click.prevent="triggerFileDialog">
+      <button class="bk-button bk-scheme-mono bk-is-light bk-is-small" @click.prevent="triggerFileDialog">
         {{ $t('translationsAddFiles', 'Add files...') }}
       </button>
     </div>
     <div v-else class="mx-auto py-20">
       <button
         type="button"
-        class="bk-button"
+        class="bk-button bk-scheme-mono bk-is-light"
         @click.prevent="triggerFileDialog"
       >
         {{ $t('translationsSelectImportFile', 'Select CSV or PO file') }}
@@ -109,7 +109,7 @@
         </SelectionTable>
         <div class="flex items-center gap-10 mt-auto pt-20">
           <button
-            class="bk-button bk-is-primary"
+            class="bk-button bk-scheme-accent"
             :disabled="!selectedCount"
             @click="applyImport"
           >

@@ -125,9 +125,12 @@ const tailwindConfig: Config = {
       scheme: {
         light:
           'rgb(var(--bk-scheme-light, var(--bk-theme-accent-100)) / <alpha-value>)',
+        'light-hover': 'var(--bk-scheme-light-hover)',
         normal:
           'rgb(var(--bk-scheme-normal, var(--bk-theme-accent-600)) / <alpha-value>)',
+        'normal-hover': 'var(--bk-scheme-normal-hover)',
         dark: 'rgb(var(--bk-scheme-dark, var(--bk-theme-accent-800)) / <alpha-value>)',
+        'dark-hover': 'var(--bk-scheme-dark-hover)',
         text: 'rgb(var(--bk-scheme-text, var(--bk-scheme-dark)) / <alpha-value>)',
       },
       white: 'white',

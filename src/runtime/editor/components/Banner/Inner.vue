@@ -11,7 +11,7 @@
       <slot name="before-button" />
       <button
         v-if="button"
-        class="bk-button bk-is-small bk-is-scheme"
+        class="bk-button bk-is-small bk-is-dark"
         @click="$emit('click')"
       >
         {{ button }}

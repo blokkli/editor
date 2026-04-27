@@ -46,7 +46,7 @@ export default defineEditorComponent({
         addon: () =>
           h(
             'button',
-            { type: 'button', class: 'bk-button bk-is-icon bk-is-small' },
+            { type: 'button', class: 'bk-button bk-is-icon-only bk-is-small' },
             h(Icon, { name: 'bk_mdi_help' }),
           ),
         default: () => formItem('Internal name'),

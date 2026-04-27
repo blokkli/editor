@@ -40,17 +40,69 @@
     @apply font-sans text-base text-mono-950 tracking-normal;
     border-color: theme('colors.mono.200');
 
+    /*
+     * Hover/active versions of the active scheme colors, slightly darker.
+     * Computed via color-mix() in oklab for perceptually uniform darkening.
+     * Defaults below derive from accent (matching the Tailwind fallback);
+     * each `.bk-scheme-*` class redeclares them from its own source vars.
+     */
+    --bk-scheme-light-hover: color-mix(
+      in oklab,
+      rgb(var(--bk-theme-accent-100)) 92%,
+      black
+    );
+    --bk-scheme-normal-hover: color-mix(
+      in oklab,
+      rgb(var(--bk-theme-accent-600)) 88%,
+      black
+    );
+    --bk-scheme-dark-hover: color-mix(
+      in oklab,
+      rgb(var(--bk-theme-accent-800)) 80%,
+      white
+    );
+
     /* Scheme color classes */
     .bk-scheme-teal {
       --bk-scheme-light: var(--bk-theme-teal-light);
       --bk-scheme-normal: var(--bk-theme-teal-normal);
       --bk-scheme-dark: var(--bk-theme-teal-dark);
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-teal-light)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-teal-normal)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-teal-dark)) 80%,
+        white
+      );
     }
 
     .bk-scheme-yellow {
       --bk-scheme-light: var(--bk-theme-yellow-light);
       --bk-scheme-normal: var(--bk-theme-yellow-normal);
       --bk-scheme-dark: var(--bk-theme-yellow-dark);
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-yellow-light)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-yellow-normal)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-yellow-dark)) 80%,
+        white
+      );
     }
 
     .bk-scheme-red {
@@ -58,6 +110,21 @@
       --bk-scheme-normal: var(--bk-theme-red-normal);
       --bk-scheme-dark: var(--bk-theme-red-dark);
       --bk-scheme-text: 255 255 255;
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-red-light)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-red-normal)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-red-dark)) 80%,
+        white
+      );
     }
 
     .bk-scheme-lime {
@@ -65,12 +132,42 @@
       --bk-scheme-normal: var(--bk-theme-lime-normal);
       --bk-scheme-dark: var(--bk-theme-lime-dark);
       --bk-scheme-text: 255 255 255;
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-lime-light)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-lime-normal)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-lime-dark)) 80%,
+        white
+      );
     }
 
     .bk-scheme-orange {
       --bk-scheme-light: var(--bk-theme-orange-light);
       --bk-scheme-normal: var(--bk-theme-orange-normal);
       --bk-scheme-dark: var(--bk-theme-orange-dark);
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-orange-light)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-orange-normal)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-orange-dark)) 80%,
+        white
+      );
     }
 
     .bk-scheme-mono {
@@ -78,6 +175,21 @@
       --bk-scheme-normal: var(--bk-theme-mono-600);
       --bk-scheme-dark: var(--bk-theme-mono-800);
       --bk-scheme-text: var(--bk-theme-mono-50);
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-mono-100)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-mono-600)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-mono-800)) 80%,
+        white
+      );
     }
 
     .bk-scheme-accent {
@@ -85,6 +197,21 @@
       --bk-scheme-normal: var(--bk-theme-accent-600);
       --bk-scheme-dark: var(--bk-theme-accent-800);
       --bk-scheme-text: var(--bk-theme-accent-50);
+      --bk-scheme-light-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-accent-100)) 92%,
+        black
+      );
+      --bk-scheme-normal-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-accent-600)) 88%,
+        black
+      );
+      --bk-scheme-dark-hover: color-mix(
+        in oklab,
+        rgb(var(--bk-theme-accent-800)) 80%,
+        white
+      );
     }
   }
 
@@ -138,11 +265,7 @@
       @apply text-left items-start justify-start;
       block-size: initial;
       border-radius: 0;
-      box-shadow: none !important;
       gap: 0;
-      &:hover {
-        box-shadow: none !important;
-      }
       &:after {
         display: none;
       }

@@ -21,7 +21,7 @@
             </slot>
           </div>
 
-          <button class="bk-button" :class="'bk-is-' + theme" @click="onSubmit">
+          <button class="bk-button" :class="themeClass" @click="onSubmit">
             {{ cta }}
           </button>
         </div>
@@ -36,7 +36,7 @@ import {
   ViewportBlockingRect,
   BlokkliTransition,
 } from '#blokkli/editor/components'
-import { onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
+import { computed, onBeforeUnmount, onMounted, ref, useBlokkli } from '#imports'
 
 const props = defineProps<{
   id: string
@@ -46,6 +46,21 @@ const props = defineProps<{
   theme: 'default' | 'warning' | 'primary' | 'danger' | 'lime'
   position: 'top-left' | 'bottom-right'
 }>()
+
+const themeClass = computed(() => {
+  switch (props.theme) {
+    case 'primary':
+      return 'bk-scheme-accent'
+    case 'danger':
+      return 'bk-scheme-red'
+    case 'warning':
+      return 'bk-scheme-yellow'
+    case 'lime':
+      return 'bk-scheme-lime'
+    default:
+      return 'bk-scheme-mono bk-is-light'
+  }
+})
 
 const { ui, storage } = useBlokkli()
 
