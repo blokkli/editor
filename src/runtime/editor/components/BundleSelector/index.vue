@@ -16,25 +16,13 @@
         @keydown.capture.stop
         @keyup.capture.stop
       >
-        <form
-          class="bk-bundle-selector-form-input"
-          @submit.prevent.stop="onSubmitForm"
-        >
-          <Icon name="bk_mdi_search" />
-          <input
+        <form @submit.prevent.stop="onSubmitForm">
+          <FormTextDark
             ref="inputEl"
             v-model="searchText"
-            type="text"
             :placeholder="$t('searchBoxPlaceholder', 'Enter search term')"
+            clearable
           />
-          <button
-            v-if="searchText"
-            type="button"
-            tabindex="-1"
-            @click.prevent="onClearSearchText"
-          >
-            <Icon name="bk_mdi_close" />
-          </button>
         </form>
       </div>
       <div
@@ -97,7 +85,11 @@ import {
   watch,
   onMounted,
 } from '#imports'
-import { ArtboardTooltip, AddListItem, Icon } from '#blokkli/editor/components'
+import {
+  ArtboardTooltip,
+  AddListItem,
+  FormTextDark,
+} from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { loadFzf, type Fzf } from '#blokkli/editor/libraries/fzf'
 import type { AddListItemProps } from '#blokkli/editor/components/AddListItem/index.vue'
@@ -144,13 +136,6 @@ watch(
     once: true,
   },
 )
-
-function onClearSearchText() {
-  if (inputEl.value) {
-    inputEl.value.focus()
-  }
-  searchText.value = ''
-}
 
 type Item =
   | {
@@ -407,36 +392,6 @@ onMounted(() => {
 
   .bk-bundle-selector-wrapper {
     @apply max-h-[60vh] overflow-auto lg:max-h-[500px];
-  }
-
-  .bk-bundle-selector-form {
-    padding: var(--bk-gap);
-    padding-bottom: 0;
-  }
-
-  .bk-bundle-selector-form-input {
-    @apply relative;
-    .bk-icon {
-      @apply absolute top-0 left-0 aspect-square h-full p-10;
-      svg {
-        @apply size-full fill-white;
-      }
-    }
-
-    input {
-      @apply w-full appearance-none bg-mono-950;
-      @apply text-white text-lg h-40;
-      @apply rounded-md;
-      @apply border border-mono-700 pl-40;
-      @apply focus:outline-mono-800 focus:shadow-none;
-      @apply focus:border-mono-500;
-      @apply selection:bg-mono-700;
-      @apply placeholder:text-mono-600;
-    }
-
-    button {
-      @apply absolute right-0 top-0 h-full aspect-square;
-    }
   }
 
   .bk-bundle-selector-list {

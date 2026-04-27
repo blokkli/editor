@@ -19,17 +19,9 @@
         <Icon name="bk_mdi_close" class="size-15" />
       </button>
     </div>
-    <div class="bk-command-palette-input text-mono-100 relative">
-      <Icon name="bk_mdi_search" />
-      <input
-        ref="inputEl"
-        v-model="text"
-        type="text"
-        :placeholder="placeholder"
-      />
-    </div>
+    <FormTextDark ref="inputEl" v-model="text" :placeholder />
     <div
-      class="relative border-t border-t-mono-600"
+      class="relative"
       :class="{
         'opacity-50': isSearching,
       }"
@@ -68,7 +60,12 @@ import {
   useBlokkli,
   nextTick,
 } from '#imports'
-import { Icon, ScrollBoundary, Loading } from '#blokkli/editor/components'
+import {
+  Icon,
+  ScrollBoundary,
+  Loading,
+  FormTextDark,
+} from '#blokkli/editor/components'
 import { modulo } from '#blokkli/editor/helpers/math'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
@@ -190,25 +187,5 @@ onBeforeUnmount(() => {
   @apply top-120;
   @apply shadow-2xl shadow-mono-950/70;
   @apply border border-mono-600;
-}
-
-.bk .bk-command-palette-input {
-  .bk-icon {
-    @apply absolute top-1/2 left-15 -translate-y-1/2 w-20 h-20;
-    svg {
-      @apply fill-current;
-    }
-  }
-
-  input {
-    @apply h-60 appearance-none w-full bg-transparent !outline-none !ring-0;
-    @apply pl-[45px];
-    @apply !border-none;
-    @apply text-lg font-bold;
-
-    &::placeholder {
-      @apply font-normal text-mono-600;
-    }
-  }
 }
 </style>
