@@ -9,16 +9,16 @@
       },
     ]"
   >
+    <div>
+      <slot>
+        <p v-html="text" class="text-pretty" />
+      </slot>
+    </div>
     <Icon
       :name="icon"
       class="shrink-0"
       :class="small ? 'size-20' : 'size-30'"
     />
-    <div>
-      <slot>
-        <p v-html="text" />
-      </slot>
-    </div>
   </div>
 </template>
 

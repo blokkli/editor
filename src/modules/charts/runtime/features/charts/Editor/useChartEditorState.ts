@@ -96,6 +96,15 @@ export function useChartEditorState(
     data.value.categoryColors = payload.categoryColors
   }
 
+  function reverseRows() {
+    data.value.categories = [...data.value.categories].reverse()
+    data.value.categoryColors = [...data.value.categoryColors].reverse()
+    data.value.series = data.value.series.map((s) => ({
+      ...s,
+      data: [...s.data].reverse(),
+    }))
+  }
+
   return {
     data,
     canUndo,
@@ -107,5 +116,6 @@ export function useChartEditorState(
     removeRow,
     removeSeries,
     importData,
+    reverseRows,
   }
 }

@@ -25,7 +25,7 @@
           @click="onClick(button)"
         />
       </div>
-      <div id="bk-menu-secondary" class="mt-auto">
+      <div id="bk-menu-secondary" class="mt-auto border-t border-t-mono-200">
         <MenuButton
           v-for="button in secondaryButtons"
           :id="button.id"
@@ -36,6 +36,7 @@
           :type="button.type"
           :disabled="button.disabled"
           @click="onClick(button)"
+          small
         />
       </div>
       <aside

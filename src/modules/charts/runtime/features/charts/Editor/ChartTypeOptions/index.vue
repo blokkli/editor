@@ -24,14 +24,16 @@
 
     <FormItem v-for="group in groups" :key="'group_' + group.label">
       <div class="bk-form-label">{{ group.label }}</div>
-      <Field
-        v-for="item in group.options"
-        :key="item.key"
-        :option-key="item.key"
-        :option="item.option"
-        :value="typeOptions[item.key]"
-        @update="updateOption(item.key, $event)"
-      />
+      <div class="grid gap-10">
+        <Field
+          v-for="item in group.options"
+          :key="item.key"
+          :option-key="item.key"
+          :option="item.option"
+          :value="typeOptions[item.key]"
+          @update="updateOption(item.key, $event)"
+        />
+      </div>
     </FormItem>
   </div>
 </template>

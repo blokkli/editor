@@ -19,6 +19,7 @@
       />
       <button
         type="button"
+        v-show="value"
         :title="$t('clearInput', 'Clear input')"
         @click.prevent="value = ''"
       >

@@ -81,6 +81,11 @@
                 @click="addSeries"
               />
               <CsvImport :colors="COLORS" @import="importData" />
+              <PanelAction
+                :title="$t('chartsReverseRows', 'Reverse rows')"
+                icon="bk_mdi_table_convert"
+                @click="reverseRows"
+              />
             </template>
           </PanelSection>
 
@@ -179,6 +184,7 @@ const {
   removeRow,
   removeSeries,
   importData,
+  reverseRows,
 } = useChartEditorState(getCurrentData(), COLORS)
 
 const autoUpdate = ref(true)

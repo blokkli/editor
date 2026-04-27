@@ -1,18 +1,60 @@
 <template>
   <button
     :id="'bk-menu-list-button-' + id"
-    class="bk-menu-list-button grid items-center pl-15 pr-20 py-15 gap-x-10 w-full text-left whitespace-nowrap text-mono-950 text-sm lg:hover:bg-mono-100 border-b border-b-mono-200"
-    :disabled="disabled"
-    :class="type ? 'bk-is-' + type : ''"
+    class="w-full text-left whitespace-nowrap text-mono-950 lg:hover:bg-mono-100 border-b border-b-mono-200 group"
+    :disabled
+    :class="[
+      {
+        'bk-scheme-lime': type === 'success',
+        'bk-scheme-red': type === 'danger',
+        'bk-scheme-yellow': type === 'yellow',
+        'bk-scheme-mono': !type,
+        'pointer-events-none': disabled,
+      },
+    ]"
     @click.prevent.stop="onClick"
   >
-    <div class="bk-menu-list-icon">
-      <slot>
-        <Icon v-if="icon" :name="icon" />
-      </slot>
+    <div
+      class="grid pl-15 pr-20 gap-x-10 grid-cols-[auto_1fr]"
+      :class="{
+        'py-10': small,
+        'py-15': !small,
+        'opacity-30': disabled,
+      }"
+    >
+      <div
+        class="flex items-center justify-center border bg-scheme-light text-scheme-normal border-scheme-normal/50 group-hover:border-scheme-normal group-hover:text-scheme-dark"
+        :class="{
+          'size-[35px]': small,
+          'size-50': !small,
+        }"
+      >
+        <Icon v-if="icon" :name="icon" class="size-[60%]" />
+      </div>
+      <div
+        class="flex flex-col justify-center"
+        :class="{
+          'gap-2': !small,
+        }"
+      >
+        <strong
+          class="font-semibold"
+          :class="{
+            'text-xs': small,
+            'text-base': !small,
+          }"
+          >{{ title }}</strong
+        >
+        <span
+          class="text-mono-500 group-hover:text-mono-700"
+          :class="{
+            'text-xs': small,
+            'text-sm': !small,
+          }"
+          >{{ description }}</span
+        >
+      </div>
     </div>
-    <strong>{{ title }}</strong>
-    <span>{{ description }}</span>
   </button>
 </template>
 
@@ -27,6 +69,7 @@ defineProps<{
   disabled?: boolean
   icon?: BlokkliIcon
   type?: 'success' | 'danger' | 'yellow'
+  small?: boolean
 }>()
 
 const emit = defineEmits(['click'])
@@ -41,84 +84,3 @@ export default {
   name: 'MenuButton',
 }
 </script>
-
-<style lang="postcss">
-.bk .bk-menu-list-button {
-  @media screen and (min-height: 900px) {
-    @apply !gap-x-15 !text-base;
-  }
-
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  &[disabled] {
-    @apply pointer-events-none;
-    .bk-menu-list-icon {
-      @apply bg-white border-mono-100 text-mono-300;
-    }
-    span,
-    strong {
-      @apply text-mono-400;
-    }
-  }
-  strong {
-    @apply font-semibold;
-  }
-  span {
-    grid-column: 2;
-    @apply text-mono-700 text-sm;
-  }
-
-  &:not([disabled]).bk-is-danger {
-    .bk-menu-list-icon {
-      @apply bg-red-light text-red-normal border-red-normal/40;
-    }
-    &:hover {
-      .bk-menu-list-icon {
-        @apply bg-red-normal/20 text-red-dark border-red-normal/50;
-      }
-    }
-  }
-
-  &:not([disabled]).bk-is-success {
-    .bk-menu-list-icon {
-      @apply bg-lime-light text-lime-normal border-lime-normal/40;
-    }
-    &:hover {
-      .bk-menu-list-icon {
-        @apply bg-lime-normal/20 text-lime-dark  border-lime-normal/40;
-      }
-    }
-  }
-
-  &:not([disabled]).bk-is-yellow {
-    .bk-menu-list-icon {
-      @apply bg-yellow-light text-yellow-dark/60 border-yellow-normal/40;
-    }
-    &:hover {
-      .bk-menu-list-icon {
-        @apply bg-yellow-normal/20 text-yellow-dark  border-yellow-dark/50;
-      }
-    }
-  }
-
-  &:hover {
-    .bk-menu-list-icon {
-      @apply bg-mono-200 text-mono-900 border-mono-500;
-    }
-  }
-}
-
-.bk .bk-menu-list-icon {
-  @apply flex items-center justify-center bg-mono-100 text-mono-500 border border-mono-300;
-  @apply w-40 h-40;
-  grid-column: 1;
-  grid-row: 1 / -1;
-
-  @media screen and (min-height: 900px) {
-    @apply size-50;
-  }
-  svg {
-    @apply w-25 h-25 fill-current pointer-events-none;
-  }
-}
-</style>
