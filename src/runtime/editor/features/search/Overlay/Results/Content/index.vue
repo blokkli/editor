@@ -30,7 +30,7 @@
             <div class="bk-search-item-text bk-highlight" v-html="item.text" />
             <div
               v-if="item.context"
-              class="bk-search-item-context"
+              class="text-xs uppercase font-medium mt-5"
               v-html="item.context"
             />
           </div>

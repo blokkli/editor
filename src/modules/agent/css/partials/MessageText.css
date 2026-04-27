@@ -23,7 +23,6 @@
       }
 
       .bk-agent-attachment-text {
-        @apply rounded-md;
         @apply bg-accent-800 text-white/70 border-accent-500;
         @apply hover:bg-accent-900 hover:border-accent-400;
         .bk-agent-attachment-title {
@@ -78,7 +77,7 @@
     }
 
     code {
-      @apply px-[0.3em] rounded-md;
+      @apply px-[0.3em];
       background: var(--bk-code-bg);
       color: var(--bk-code-text);
     }
@@ -89,7 +88,7 @@
     }
 
     a[href^='#'] {
-      @apply no-underline rounded px-3 py-1 cursor-pointer;
+      @apply no-underline  px-3 py-1 cursor-pointer;
       @apply bg-mono-200 text-accent-600;
       @apply hover:bg-accent-600 hover:text-white;
       &:before {
@@ -99,7 +98,7 @@
     }
 
     blockquote {
-      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5 rounded-md;
+      @apply border-l-4 border-l-accent-400 px-10 bg-mono-200 py-5;
     }
 
     pre {

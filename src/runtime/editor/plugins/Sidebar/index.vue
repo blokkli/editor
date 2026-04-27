@@ -585,7 +585,7 @@ export default {
 }
 
 .bk.bk-sidebar-detached {
-  @apply fixed top-0 left-0 bg-white z-sidebar-detached rounded-md flex flex-col overflow-hidden will-change-transform h-auto;
+  @apply fixed top-0 left-0 bg-white z-sidebar-detached flex flex-col overflow-hidden will-change-transform h-auto;
   @apply border border-mono-200;
   @apply pointer-events-auto;
   contain: layout paint style;

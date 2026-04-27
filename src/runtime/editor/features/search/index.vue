@@ -260,7 +260,6 @@ export default {
   .bk-search-item-icon {
     @apply bg-mono-100 flex items-center justify-center border border-mono-200 shrink-0 text-mono-500 relative overflow-hidden;
     @apply p-[0.125em];
-    @apply rounded lg:rounded-md xl:rounded-lg;
     @apply size-40 lg:size-50 xl:size-80;
 
     .bk-blokkli-item-icon {
@@ -282,10 +281,6 @@ export default {
     div {
       @apply inline-block;
     }
-  }
-  .bk-search-item-context {
-    @apply whitespace-nowrap uppercase text-xs align-baseline font-semibold inline;
-    @apply bg-mono-100 text-mono-700 py-3 px-5 rounded;
   }
 
   .bk-search-item-subtitle {
@@ -353,12 +348,6 @@ export default {
         &.bk-is-image {
           @apply outline outline-accent-900 outline-[1px];
         }
-      }
-    }
-
-    &:hover {
-      .bk-search-item-context {
-        @apply bg-mono-300 text-mono-950;
       }
     }
   }

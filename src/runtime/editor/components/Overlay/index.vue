@@ -88,7 +88,7 @@ function onDoubleClick() {
   @apply flex items-start;
 
   > .bk-overlay-inner {
-    @apply text-base text-mono-100 bg-mono-300/20 m-20 rounded-md;
+    @apply text-base text-mono-100 bg-mono-300/20 m-20;
     @apply py-10 pl-10 pr-15;
     @apply inline-flex items-center gap-10;
     @apply border border-mono-500 h-auto grow-0;

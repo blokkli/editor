@@ -26,7 +26,7 @@
         />
         <Highlight
           v-if="item.context"
-          class="bk-search-item-context"
+          class="text-xs uppercase font-medium mt-5"
           :text="item.context"
           :regex="regex"
         />

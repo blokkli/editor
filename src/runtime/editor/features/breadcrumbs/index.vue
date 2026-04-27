@@ -360,7 +360,7 @@ export default {
         &.bk-is-editable {
           @apply uppercase text-xs tracking-wide min-w-0;
           span {
-            @apply rounded-md px-[8px] pt-[4px] pb-2;
+            @apply px-[8px] pt-[4px] pb-2;
             @apply border;
           }
         }

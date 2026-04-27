@@ -348,7 +348,7 @@ async function onSubmit() {
   }
 
   .bk-block-scheduler-table {
-    @apply bg-mono-100 mt-20 p-20 rounded-md border border-mono-300;
+    @apply bg-mono-100 mt-20 p-20 border border-mono-300;
 
     table {
       @apply mt-20;

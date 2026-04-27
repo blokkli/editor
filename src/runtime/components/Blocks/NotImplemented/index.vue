@@ -30,7 +30,7 @@ useBlockRegistration(dom, props.uuid)
 <style lang="postcss">
 .bk.bk-block-not-implemented {
   @apply bg-red-light text-red-normal font-medium py-15 font-sans;
-  @apply text-lg rounded-md;
+  @apply text-lg;
   @apply outline outline-1 outline-red-normal/30 -outline-offset-1;
   @apply flex gap-5 items-center justify-center;
 

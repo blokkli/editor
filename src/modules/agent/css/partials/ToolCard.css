@@ -1,5 +1,5 @@
 .bk .bk-agent-tool-card {
-  @apply mt-15 border border-mono-300 rounded-md bg-white;
+  @apply mt-15 border border-mono-300 bg-white;
 
   .bk-agent-tool-card-header {
     @apply flex items-center gap-5 font-medium justify-between;
@@ -22,7 +22,7 @@
   .bk-agent-tool-card-header-cancel {
     @apply relative;
     button {
-      @apply w-25 h-25 flex items-center justify-center rounded;
+      @apply w-25 h-25 flex items-center justify-center;
       @apply border-none cursor-pointer;
       @apply bg-red-normal hover:bg-red-dark;
 

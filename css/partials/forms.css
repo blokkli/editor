@@ -184,6 +184,6 @@
 
   .bk-form-disabled-reason {
     @apply bg-yellow-light text-yellow-dark border border-yellow-normal text-sm px-5 font-medium inline-block;
-    @apply rounded-md py-2;
+    @apply py-2;
   }
 }
