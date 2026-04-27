@@ -8,6 +8,7 @@ import {
   buildGridOptions,
   mergeShared,
 } from './shared'
+import { createNumberFormatter } from '../helpers/numberFormat'
 import type {
   XAxisTypeOptions,
   LegendTypeOptions,
@@ -28,8 +29,9 @@ export default defineChartType<TypeOptions>(($t) => {
     hasSeriesColors: false,
     hasCategoryColors: false,
     buildChartOptions(ctx) {
+      const formatter = createNumberFormatter(ctx.numberFormat)
       return {
-        dataLabels: { enabled: true },
+        dataLabels: { enabled: true, formatter },
         plotOptions: {
           heatmap: {
             colorScale: { ranges: [] },
@@ -38,6 +40,7 @@ export default defineChartType<TypeOptions>(($t) => {
         xaxis: {
           ...buildXAxisLabelOptions(ctx.typeOptions),
         },
+        tooltip: { y: { formatter } },
         ...buildLegendOptions(ctx.typeOptions),
         ...buildGridOptions(ctx.typeOptions),
       }

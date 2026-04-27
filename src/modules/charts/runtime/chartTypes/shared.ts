@@ -1,6 +1,8 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOptions'
 import type { TranslateFunction } from './types'
+import type { ChartNumberFormat } from '../types'
+import { createNumberFormatter } from '../helpers/numberFormat'
 
 type SharedOptions = {
   options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
@@ -72,8 +74,29 @@ export function dataLabelsOptions($t: TranslateFunction): SharedOptions {
  */
 export function buildDataLabelsOptions(
   typeOptions: DataLabelsTypeOptions,
+  format?: ChartNumberFormat,
 ): Record<string, any> {
-  return { dataLabels: { enabled: !!typeOptions.dataLabels } }
+  return {
+    dataLabels: {
+      enabled: !!typeOptions.dataLabels,
+      formatter: createNumberFormatter(format),
+    },
+  }
+}
+
+/**
+ * Build the standard yaxis-label + tooltip-y formatter pair for chart types
+ * that have a numeric axis (bar, line, area, radar). Spread the result into
+ * the chart options object.
+ */
+export function buildValueFormatOptions(
+  format: ChartNumberFormat | undefined,
+): Record<string, any> {
+  const formatter = createNumberFormatter(format)
+  return {
+    yaxis: { labels: { formatter } },
+    tooltip: { y: { formatter } },
+  }
 }
 
 /**

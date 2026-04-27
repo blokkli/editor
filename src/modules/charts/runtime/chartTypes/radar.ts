@@ -4,6 +4,7 @@ import {
   buildDataLabelsOptions,
   legendOptions,
   buildLegendOptions,
+  buildValueFormatOptions,
   mergeShared,
 } from './shared'
 import type { DataLabelsTypeOptions, LegendTypeOptions } from './shared'
@@ -26,7 +27,8 @@ export default defineChartType<TypeOptions>(($t) => {
         xaxis: { categories: ctx.categories },
         markers: { size: ctx.typeOptions.markers ? 5 : 0 },
         fill: { opacity: Number(ctx.typeOptions.fillOpacity) || 0.2 },
-        ...buildDataLabelsOptions(ctx.typeOptions),
+        ...buildDataLabelsOptions(ctx.typeOptions, ctx.numberFormat),
+        ...buildValueFormatOptions(ctx.numberFormat),
         ...buildLegendOptions(ctx.typeOptions),
       }
     },

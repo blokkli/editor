@@ -21,6 +21,19 @@ export type ChartSeries = {
   data: number[]
 }
 
+export type ChartNumberFormat = {
+  /** BCP-47 locale tag, e.g. 'de-CH', 'de-DE', 'en-US'. Empty = browser default. */
+  locale?: string
+  /** Forced fraction digits (0-4). Undefined leaves it to Intl. */
+  decimals?: number
+  /** String inserted before the formatted number, e.g. 'CHF '. */
+  prefix?: string
+  /** String appended after the formatted number, e.g. ' kg', '%'. */
+  suffix?: string
+  /** 'standard' for full numbers (1'234'500), 'compact' for short form (1.2M). */
+  notation?: 'standard' | 'compact'
+}
+
 type ChartDataBase = {
   title: string
   categories: string[]
@@ -31,6 +44,7 @@ type ChartDataBase = {
    */
   categoryColors: string[]
   footnotes: string[]
+  numberFormat?: ChartNumberFormat
 }
 
 export type BlokkliChartData = {

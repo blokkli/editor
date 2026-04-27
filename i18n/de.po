@@ -1376,6 +1376,50 @@ msgctxt "chartsLineMarkers"
 msgid "Show markers"
 msgstr "Markierungen anzeigen"
 
+msgctxt "chartsNumberFormat"
+msgid "Number format"
+msgstr "Zahlenformat"
+
+msgctxt "chartsNumberFormatDecimals"
+msgid "Decimals"
+msgstr "Dezimalstellen"
+
+msgctxt "chartsNumberFormatDecimalsAuto"
+msgid "Auto"
+msgstr "Automatisch"
+
+msgctxt "chartsNumberFormatLocale"
+msgid "Locale"
+msgstr "Sprachregion"
+
+msgctxt "chartsNumberFormatLocaleAuto"
+msgid "Auto (browser)"
+msgstr "Automatisch (Browser)"
+
+msgctxt "chartsNumberFormatNotation"
+msgid "Notation"
+msgstr "Notation"
+
+msgctxt "chartsNumberFormatNotationCompact"
+msgid "Compact (1.2M)"
+msgstr "Kompakt (1,2 Mio.)"
+
+msgctxt "chartsNumberFormatNotationStandard"
+msgid "Standard"
+msgstr "Standard"
+
+msgctxt "chartsNumberFormatPrefix"
+msgid "Prefix"
+msgstr "Präfix"
+
+msgctxt "chartsNumberFormatPreview"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "chartsNumberFormatSuffix"
+msgid "Suffix"
+msgstr "Suffix"
+
 msgctxt "chartsOpacityLight"
 msgid "Light"
 msgstr "Leicht"
@@ -1431,6 +1475,10 @@ msgstr "Total anzeigen"
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr "Vorschau aktualisieren"
+
+msgctxt "chartsReverseRows"
+msgid "Reverse rows"
+msgstr "Zeilen umkehren"
 
 msgctxt "chartsRotationAuto"
 msgid "Auto"
@@ -1778,7 +1826,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeiten..."
 
 msgctxt "editDisabledByDefinition"

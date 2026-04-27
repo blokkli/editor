@@ -1,5 +1,6 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOptions'
+import type { ChartNumberFormat } from '../types'
 
 export type TranslateFunction = (key: string, fallback: string) => string
 
@@ -12,6 +13,7 @@ export type ChartBuildContext<
   seriesColors: string[]
   categoryColors: string[]
   typeOptions: T
+  numberFormat?: ChartNumberFormat
 }
 
 export type ChartTypeDefinition<

@@ -1,4 +1,8 @@
 import { defineChartType } from './define'
+import {
+  createNumberFormatter,
+  createPercentFormatter,
+} from '../helpers/numberFormat'
 
 export type TypeOptions = { showLabels: boolean }
 
@@ -10,7 +14,11 @@ export default defineChartType<TypeOptions>(($t) => ({
   buildChartOptions(ctx) {
     return {
       labels: ctx.categories,
-      dataLabels: { enabled: !!ctx.typeOptions.showLabels },
+      dataLabels: {
+        enabled: !!ctx.typeOptions.showLabels,
+        formatter: createPercentFormatter(ctx.numberFormat),
+      },
+      tooltip: { y: { formatter: createNumberFormatter(ctx.numberFormat) } },
     }
   },
   buildSeries(ctx) {

@@ -94,6 +94,14 @@
             @update:footnotes="chartData.footnotes = $event"
           />
 
+          <NumberFormatEditor
+            :format="chartData.numberFormat ?? {}"
+            @update:format="
+              chartData.numberFormat =
+                Object.keys($event).length > 0 ? $event : undefined
+            "
+          />
+
           <PanelSection
             v-if="chartDef"
             :title="$t('chartsSettings', 'Settings')"
@@ -123,6 +131,7 @@ import ChartTypePicker from './ChartTypePicker/index.vue'
 import DataTable from './DataTable/index.vue'
 import CsvImport from './CsvImport/index.vue'
 import FootnoteEditor from './FootnoteEditor/index.vue'
+import NumberFormatEditor from './NumberFormatEditor/index.vue'
 import Preview from './Preview/index.vue'
 import ChartTypeOptions from './ChartTypeOptions/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'

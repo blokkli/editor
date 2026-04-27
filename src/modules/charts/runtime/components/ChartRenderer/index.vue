@@ -128,6 +128,7 @@ const chartOptions = computed<ApexOptions>(() => {
       ...getDefaultTypeOptions(props.type),
       ...props.typeOptions,
     },
+    numberFormat: props.numberFormat,
   }
 
   const typeOpts = def.buildChartOptions(ctx)
@@ -155,6 +156,7 @@ const chartSeries = computed(() => {
       ...getDefaultTypeOptions(props.type),
       ...props.typeOptions,
     },
+    numberFormat: props.numberFormat,
   }
 
   return def.buildSeries(ctx)

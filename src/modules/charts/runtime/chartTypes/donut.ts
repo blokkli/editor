@@ -1,4 +1,8 @@
 import { defineChartType } from './define'
+import {
+  createNumberFormatter,
+  createPercentFormatter,
+} from '../helpers/numberFormat'
 
 export type TypeOptions = { showTotal: boolean; showLabels: boolean }
 
@@ -9,15 +13,30 @@ export default defineChartType<TypeOptions>(($t) => ({
   hasCategoryColors: true,
   buildChartOptions(ctx) {
     const show = !!ctx.typeOptions.showTotal
+    const formatValue = createNumberFormatter(ctx.numberFormat)
     return {
       labels: ctx.categories,
-      dataLabels: { enabled: !!ctx.typeOptions.showLabels },
+      dataLabels: {
+        enabled: !!ctx.typeOptions.showLabels,
+        formatter: createPercentFormatter(ctx.numberFormat),
+      },
+      tooltip: { y: { formatter: formatValue } },
       plotOptions: {
         pie: {
           donut: {
             labels: {
               show,
-              total: { show },
+              value: { formatter: formatValue },
+              total: {
+                show,
+                formatter: (w: { globals: { seriesTotals: number[] } }) =>
+                  formatValue(
+                    (w.globals.seriesTotals || []).reduce(
+                      (sum, n) => sum + n,
+                      0,
+                    ),
+                  ),
+              },
             },
           },
         },

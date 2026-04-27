@@ -8,6 +8,7 @@ import {
   buildLegendOptions,
   gridOptions,
   buildGridOptions,
+  buildValueFormatOptions,
   mergeShared,
 } from './shared'
 import type {
@@ -51,7 +52,8 @@ export default defineChartType<TypeOptions>(($t) => {
           categories: ctx.categories,
           ...buildXAxisLabelOptions(ctx.typeOptions),
         },
-        ...buildDataLabelsOptions(ctx.typeOptions),
+        ...buildDataLabelsOptions(ctx.typeOptions, ctx.numberFormat),
+        ...buildValueFormatOptions(ctx.numberFormat),
         ...buildLegendOptions(ctx.typeOptions),
         ...buildGridOptions(ctx.typeOptions),
       }
