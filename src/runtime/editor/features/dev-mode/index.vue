@@ -43,13 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  useBlokkli,
-  defineBlokkliFeature,
-  ref,
-  computed,
-  onMounted,
-} from '#imports'
+import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
 import { PluginViewOption } from '#blokkli/editor/plugins'
 import { Banner, BannerInner } from '#blokkli/editor/components'
 import { addElementClasses } from '#blokkli/editor/composables'
