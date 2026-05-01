@@ -15,8 +15,8 @@
             <span>{{ title }}</span>
           </h2>
           <button
-            @click.prevent="closeOverlay"
             class="h-50 flex items-center px-10 gap-10 font-semibold leading-none ml-auto hover:bg-scheme-light-hover"
+            @click.prevent="closeOverlay"
           >
             <Icon name="bk_mdi_arrow_left_alt" class="size-20" />
             <span>{{ backLabel }}</span>

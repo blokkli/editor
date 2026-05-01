@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl">
+  <div>
     <ClientOnly>
       <component
         :is="ApexChart"
@@ -22,12 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, useTemplateRef } from '#imports'
+import { computed, defineAsyncComponent, useAppConfig } from '#imports'
 import type { BlokkliChartData } from '../../types'
-import { resolveChartColor, applyFootnotes, SUPERSCRIPTS } from '../../helpers'
+import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
-import { COLORS } from '#blokkli-build/charts-config'
 import type { ApexOptions } from 'apexcharts'
 
 const ApexChart = import.meta.client
@@ -36,7 +35,7 @@ const ApexChart = import.meta.client
 
 const props = defineProps<BlokkliChartData>()
 
-const rootEl = useTemplateRef('rootEl')
+const appConfig = useAppConfig()
 
 const chartDef = computed(() =>
   import.meta.client ? getChartTypeRuntime(props.type) : undefined,
@@ -73,6 +72,13 @@ function deepMerge(
   return result
 }
 
+function resolveHex(id: string): string {
+  const map = appConfig.blokkli?.colorOptions as
+    | Record<string, string>
+    | undefined
+  return map?.[id] || '#888888'
+}
+
 const resolvedColors = computed(() => {
   if (import.meta.server) {
     return []
@@ -80,14 +86,10 @@ const resolvedColors = computed(() => {
   const def = chartDef.value
   if (!def) return []
   if (def.hasCategoryColors) {
-    return props.categoryColors.map((id) =>
-      resolveChartColor(id, COLORS, rootEl.value),
-    )
+    return props.categoryColors.map(resolveHex)
   }
   if (def.hasSeriesColors) {
-    return props.series.map((s) =>
-      resolveChartColor(s.color, COLORS, rootEl.value),
-    )
+    return props.series.map((s) => resolveHex(s.color))
   }
   return []
 })

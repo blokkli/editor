@@ -56,10 +56,18 @@
 
     td input,
     th input {
-      @apply bg-transparent text-mono-900 w-full font-sans text-base px-8 py-5;
+      @apply bg-transparent text-mono-900 font-sans text-base px-8 py-5 w-full;
       border: none;
       outline: none;
+      min-width: 100px;
       @apply h-40;
+    }
+
+    td,
+    th {
+      &:hover {
+        @apply bg-mono-100;
+      }
     }
 
     td input[inputmode='decimal'] {

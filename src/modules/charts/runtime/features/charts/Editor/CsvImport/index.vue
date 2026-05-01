@@ -16,12 +16,8 @@
 <script setup lang="ts">
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import { useTemplateRef, useBlokkli } from '#imports'
-import type { ChartSeries, ChartColor } from '../../../../types'
+import type { ChartSeries } from '../../../../types'
 import { getColorIdAtIndex, parseNumericInput } from '../../../../helpers'
-
-const props = defineProps<{
-  colors: Record<string, ChartColor>
-}>()
 
 const emit = defineEmits<{
   import: [
@@ -33,7 +29,7 @@ const emit = defineEmits<{
   ]
 }>()
 
-const { $t } = useBlokkli()
+const { $t, config } = useBlokkli()
 const fileInputEl = useTemplateRef<HTMLInputElement>('fileInputEl')
 
 function parseCsvLine(line: string): string[] {
@@ -98,14 +94,15 @@ function onFileChange(event: Event) {
       }
     }
 
+    const options = config.colorOptions.value
     const series = seriesNames.map((name, i) => ({
       name: name || `Series ${i + 1}`,
-      color: getColorIdAtIndex(i, props.colors),
+      color: getColorIdAtIndex(i, options),
       data: seriesData[i]!,
     }))
 
     const categoryColors = categories.map((_, i) =>
-      getColorIdAtIndex(i, props.colors),
+      getColorIdAtIndex(i, options),
     )
 
     emit('import', { categories, series, categoryColors })

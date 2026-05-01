@@ -18,8 +18,8 @@
         @[updateEvent]="onUpdate"
       />
       <button
-        type="button"
         v-show="value"
+        type="button"
         :title="$t('clearInput', 'Clear input')"
         @click.prevent="value = ''"
       >

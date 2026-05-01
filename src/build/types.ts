@@ -3,6 +3,7 @@ import type { AdapterMethodsBase } from '../global/types/adapter'
 import type { Theme, ThemeName } from '../global/types/theme'
 import type { CollectedBlockFile } from './Collector/Blocks'
 import type { BlokkliModule } from '../modules/defineBlokkliModule'
+import type { ColorOption } from '../global/types/colorOptions'
 
 export type { AdapterMethodsBase as AdapterMethods }
 
@@ -282,4 +283,6 @@ export type ModuleOptions = {
    * ```
    */
   getBundlePropsType?: GetBundlePropsType
+
+  colorOptions?: Record<string, ColorOption>
 }

@@ -149,14 +149,7 @@ fragment blokkliParagraphsType on ParagraphsType {
     modules: [
       drupal(),
       tableOfContents(),
-      charts({
-        colors: {
-          red: {
-            color: '#ff0000',
-            label: 'Red',
-          },
-        },
-      }),
+      charts(),
       agent({
         // provider: 'anthropic',
         // models: [{ name: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', isDefault: true }],

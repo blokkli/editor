@@ -13,7 +13,6 @@
             <ColorDropdown
               v-if="hasSeriesColors"
               :color-id="s.color"
-              :colors="colors"
               @select="updateSeriesColor(si, $event)"
             />
             <input
@@ -44,7 +43,6 @@
             <ColorDropdown
               v-if="hasCategoryColors"
               :color-id="categoryColors[ci] || ''"
-              :colors="colors"
               @select="updateCategoryColor(ci, $event)"
             />
             <input
@@ -87,7 +85,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from '#imports'
-import type { ChartSeries, ChartColor } from '../../../../types'
+import type { ChartSeries } from '../../../../types'
 import { parseNumericInput } from '../../../../helpers'
 import { Icon } from '#blokkli/editor/components'
 import ColorDropdown from '../ColorDropdown/index.vue'
@@ -99,7 +97,6 @@ const props = defineProps<{
   hasMultipleSeries: boolean
   hasSeriesColors: boolean
   hasCategoryColors: boolean
-  colors: Record<string, ChartColor>
   removeRow: (index: number) => void
   removeSeries: (index: number) => void
 }>()

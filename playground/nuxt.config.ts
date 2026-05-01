@@ -97,18 +97,7 @@ export default defineNuxtConfig({
       testExtensionModule(),
       demoFeatureModule(),
       tableOfContents(),
-      charts({
-        colors: {
-          blue: { color: '#3b82f6', label: 'Blue' },
-          red: { color: '#ef4444', label: 'Red' },
-          green: { color: '#10b981', label: 'Green' },
-          amber: { color: '#f59e0b', label: 'Amber' },
-          purple: { color: '#8b5cf6', label: 'Purple' },
-          pink: { color: '#ec4899', label: 'Pink' },
-          teal: { color: '#14b8a6', label: 'Teal' },
-          orange: { color: '#f97316', label: 'Orange' },
-        },
-      }),
+      charts(),
       iframes({
         viewports: {
           mobile: { label: 'Mobile', width: 375 },
@@ -170,6 +159,16 @@ export default defineNuxtConfig({
     itemEntityType: 'paragraph',
     fieldListTypes: ['header', 'inline'],
     providerTypes: ['contentPage'],
+    colorOptions: {
+      blue: { hex: '#3b82f6', label: 'Blue' },
+      red: { hex: '#ef4444', label: 'Red' },
+      green: { hex: '#10b981', label: 'Green' },
+      amber: { hex: '#f59e0b', label: 'Amber' },
+      purple: { hex: '#8b5cf6', label: 'Purple' },
+      pink: { hex: '#ec4899', label: 'Pink' },
+      teal: { hex: '#14b8a6', label: 'Teal' },
+      orange: { hex: '#f97316', label: 'Orange' },
+    },
     globalOptions: {
       background: {
         type: 'radios',

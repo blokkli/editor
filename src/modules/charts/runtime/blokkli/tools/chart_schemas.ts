@@ -1,9 +1,10 @@
 import { z } from 'zod'
-import type { BlokkliChartData, ChartColor } from '#blokkli/charts/types'
+import type { BlokkliChartData } from '#blokkli/charts/types'
 import type { McpToolContext } from '#blokkli/agent/app/types'
+import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
-import { COLORS } from '#blokkli-build/charts-config'
+import { colorOptions } from '#blokkli-build/editor-config'
 
 const SINGLE_SERIES_TYPES = ['pie', 'donut', 'radialBar']
 
@@ -18,7 +19,7 @@ export const chartTypeEnum = z.enum([
   'radar',
 ])
 
-const colorIds = Object.keys(COLORS) as [string, ...string[]]
+const colorIds = Object.keys(colorOptions) as [string, ...string[]]
 export const chartColorEnum = z.enum(colorIds)
 
 export const chartSeriesSchema = z.object({
@@ -72,9 +73,10 @@ export const chartDataSchema = z.object({
  */
 export function validateChartData(
   data: BlokkliChartData,
-  colors: Record<string, ChartColor>,
+  options: ColorOption[],
 ): { error: string } | { data: BlokkliChartData } {
-  const colorIds = Object.keys(colors)
+  const validIds = new Set(options.map((c) => c.id))
+  const availableIds = options.map((c) => c.id)
 
   // Validate series data length matches categories.
   for (let i = 0; i < data.series.length; i++) {
@@ -90,10 +92,10 @@ export function validateChartData(
   for (let i = 0; i < data.series.length; i++) {
     const series = data.series[i]!
     if (!series.color) {
-      series.color = getColorIdAtIndex(i, colors)
-    } else if (!colors[series.color]) {
+      series.color = getColorIdAtIndex(i, options)
+    } else if (!validIds.has(series.color)) {
       return {
-        error: `Invalid color ID "${series.color}" on series "${series.name}". Available colors: ${colorIds.join(', ')}`,
+        error: `Invalid color ID "${series.color}" on series "${series.name}". Available colors: ${availableIds.join(', ')}`,
       }
     }
   }
@@ -106,14 +108,14 @@ export function validateChartData(
       data.categoryColors.length !== data.categories.length
     ) {
       data.categoryColors = data.categories.map((_, i) =>
-        getColorIdAtIndex(i, colors),
+        getColorIdAtIndex(i, options),
       )
     } else {
       for (let i = 0; i < data.categoryColors.length; i++) {
         const id = data.categoryColors[i]!
-        if (!colors[id]) {
+        if (!validIds.has(id)) {
           return {
-            error: `Invalid categoryColor ID "${id}" at index ${i}. Available colors: ${colorIds.join(', ')}`,
+            error: `Invalid categoryColor ID "${id}" at index ${i}. Available colors: ${availableIds.join(', ')}`,
           }
         }
       }
@@ -123,7 +125,7 @@ export function validateChartData(
     data.categoryColors.length !== data.categories.length
   ) {
     data.categoryColors = data.categories.map((_, i) =>
-      getColorIdAtIndex(i, colors),
+      getColorIdAtIndex(i, options),
     )
   }
 

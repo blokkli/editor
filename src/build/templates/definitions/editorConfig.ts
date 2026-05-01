@@ -6,6 +6,7 @@ export default defineCodeTemplate(
   'editor-config',
   (ctx) => {
     const settingsOverride = ctx.helper.options.settingsOverride || {}
+    const colorOptions = ctx.helper.options.colorOptions || {}
     const featureFragmentNames = ctx.getFeatureFragmentNames()
 
     return `
@@ -14,6 +15,8 @@ export const hasCustomTheme = ${JSON.stringify(ctx.theme.hasCustomTheme)}
 export const themes = ${JSON.stringify(themes, null, 2)}
 
 export const theme = ${JSON.stringify(ctx.theme.fullTheme, null, 2)}
+
+export const colorOptions = ${JSON.stringify(colorOptions, null, 2)}
 
 export const settingsOverride = ${JSON.stringify(settingsOverride)}
 
@@ -46,10 +49,15 @@ export const textAutoReplace = ${(() => {
 `
   },
   (ctx) => {
+    const validColorOptions = Object.keys(ctx.helper.options.colorOptions || {})
+      .map((v) => `'${v}'`)
+      .join(' | ')
     return `
 import type { Theme } from '${ctx.helper.relativePaths.TYPES_THEME}'
 import type { ModuleOptionsSettings } from '#blokkli-build/module-types'
 import type { InterfaceLanguage } from '#blokkli-build/translations'
+
+export type ValidColorOption = ${validColorOptions}
 
 /**
  * Whether the app uses a custom theme.
@@ -60,6 +68,11 @@ export declare const hasCustomTheme: boolean
  * All available themes.
  */
 export declare const themes: Record<string, Theme>
+
+/**
+ * The available color options.
+ */
+export declare const colorOptions: Record<ValidColorOption, { hex: string; label: string }>
 
 /**
  * The default theme.
@@ -110,5 +123,9 @@ export declare const textAutoReplace: {
   enDash: boolean
 }
 `
+  },
+  {
+    context: 'both',
+    write: true,
   },
 )

@@ -1,7 +1,6 @@
 import { createResolver } from '@nuxt/kit'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { fileURLToPath } from 'node:url'
-import chartsConfigTemplate from './build/templates/charts'
 import type { ChartsModuleOptions } from './build/types'
 
 const resolve = createResolver(
@@ -13,9 +12,7 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     options.blokkliDirs ??= []
     options.blokkliDirs.push(resolve('./runtime/blokkli'))
   },
-  setup({ context, helper, $t }, options) {
-    context.addTemplate(chartsConfigTemplate(options))
-
+  setup({ context, helper, $t }) {
     helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
     helper.addAlias(
       '#blokkli/charts/components',

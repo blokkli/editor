@@ -13,6 +13,18 @@ import { onlyUnique } from './helpers'
 import type { ValidationInterface } from './ValidationInterface'
 import type { IconCollector } from './Collector/Icons'
 import { validateOptions } from './validation/validateOptions'
+import type { ColorOption } from '../global/types/colorOptions'
+
+const defaultColorOptions: Record<string, ColorOption> = {
+  blue: { hex: '#3b82f6', label: 'Blue' },
+  red: { hex: '#ef4444', label: 'Red' },
+  green: { hex: '#10b981', label: 'Green' },
+  amber: { hex: '#f59e0b', label: 'Amber' },
+  purple: { hex: '#8b5cf6', label: 'Purple' },
+  pink: { hex: '#ec4899', label: 'Pink' },
+  teal: { hex: '#14b8a6', label: 'Teal' },
+  orange: { hex: '#f97316', label: 'Orange' },
+}
 
 type ModuleHelperResolvers = {
   /**
@@ -145,6 +157,7 @@ export class ModuleHelper implements ValidationInterface {
       fieldListTypes: fieldListTypes.filter(onlyUnique),
       providerTypes: providerTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
+      colorOptions: providedOptions.colorOptions || defaultColorOptions,
     }
 
     this.paths.editAdapter = this.findEditAdapterPath()

@@ -35,6 +35,7 @@ import type { FieldValueProvider } from '../providers/fieldValue'
 import type { DragDropProvider } from '../providers/dragdrop'
 import type { CacheProvider } from '../providers/cache'
 import type { WorkspacesProvider } from '../providers/workspaces'
+import type { ConfigProvider } from '../providers/config'
 
 export interface BlokkliApp {
   /**
@@ -80,4 +81,5 @@ export interface BlokkliApp {
   dragdrop: DragDropProvider
   cache: CacheProvider
   workspaces: WorkspacesProvider
+  config: ConfigProvider
 }

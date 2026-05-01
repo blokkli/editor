@@ -87,7 +87,9 @@
           :key="key"
           type="button"
           class="bk-button bk-scheme-mono bk-is-light bk-is-small"
-          :class="{ 'bk-scheme-accent bk-is-dark': containerWidth === vp.width }"
+          :class="{
+            'bk-scheme-accent bk-is-dark': containerWidth === vp.width,
+          }"
           @click="containerWidth = vp.width"
         >
           {{ vp.label }} ({{ vp.width }}px)

@@ -77,6 +77,18 @@ export default defineNuxtModule<ModuleOptions>({
       moduleOptions,
     )
 
+    const colorOptions = Object.entries(
+      helper.options.colorOptions || {},
+    ).reduce<Record<string, string>>((acc, entry) => {
+      acc[entry[0]] = entry[1].hex
+      return acc
+    }, {})
+
+    nuxt.options.appConfig.blokkli = {
+      // @ts-expect-error The module config type defined a generic Record type, but in userland, this type will automatically contain the actual color keys as properties.
+      colorOptions,
+    }
+
     const theme = new ThemeData(helper)
 
     const iconCollector = new IconCollector(helper)

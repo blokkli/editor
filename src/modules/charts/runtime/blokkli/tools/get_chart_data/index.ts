@@ -6,7 +6,6 @@ import {
   chartSeriesSchema,
   findChartOptionKey,
 } from '../chart_schemas'
-import { COLORS } from '#blokkli-build/charts-config'
 import { getDefaultChartData } from '../../../helpers'
 
 const paramsSchema = z.object({
@@ -43,6 +42,7 @@ export default defineBlokkliAgentTool({
   resultSchema,
   execute(ctx, params) {
     const { state, $t } = ctx.app
+    const options = ctx.app.config.colorOptions.value
 
     const chartOption = findChartOptionKey(ctx, params.uuid)
     if ('error' in chartOption) return chartOption
@@ -56,10 +56,10 @@ export default defineBlokkliAgentTool({
       try {
         data = JSON.parse(rawData)
       } catch {
-        data = getDefaultChartData(COLORS)
+        data = getDefaultChartData(options)
       }
     } else {
-      data = getDefaultChartData(COLORS)
+      data = getDefaultChartData(options)
     }
 
     return {

@@ -11,7 +11,6 @@ import {
   validateChartData,
   findChartBundle,
 } from '../chart_schemas'
-import { COLORS } from '#blokkli-build/charts-config'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 
 const paramsSchema = z.object({
@@ -69,7 +68,10 @@ export default defineBlokkliAgentTool({
     }
 
     // Validate and normalize.
-    const result = validateChartData(chartData, COLORS)
+    const result = validateChartData(
+      chartData,
+      ctx.app.config.colorOptions.value,
+    )
     if ('error' in result) return result
 
     // Resolve position.

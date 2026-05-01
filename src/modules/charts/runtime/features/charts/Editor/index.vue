@@ -51,7 +51,7 @@
           class="absolute top-0 left-0 size-full p-20 overflow-auto bk-scrollbar-light"
         >
           <PanelSection :title="$t('chartsData', 'Data')">
-            <div>
+            <div class="overflow-auto bk-scrollbar-light relative z-50">
               <DataTable
                 :categories="chartData.categories"
                 :series="chartData.series"
@@ -59,7 +59,6 @@
                 :has-multiple-series="caps.hasMultipleSeries"
                 :has-series-colors="caps.hasSeriesColors"
                 :has-category-colors="caps.hasCategoryColors"
-                :colors="COLORS"
                 :remove-row="removeRow"
                 :remove-series="removeSeries"
                 @update:categories="chartData.categories = $event"
@@ -80,7 +79,7 @@
                 icon="bk_mdi_add_column_right"
                 @click="addSeries"
               />
-              <CsvImport :colors="COLORS" @import="importData" />
+              <CsvImport @import="importData" />
               <PanelAction
                 :title="$t('chartsReverseRows', 'Reverse rows')"
                 icon="bk_mdi_table_convert"
@@ -124,7 +123,6 @@ import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliChartData } from '../../../types'
 import { getDefaultChartData, getFirstColorId } from '../../../helpers'
 import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
-import { COLORS } from '#blokkli-build/charts-config'
 import { useChartEditorState } from './useChartEditorState'
 import { Icon, FormToggle, Resizable } from '#blokkli/editor/components'
 import ChartTypePicker from './ChartTypePicker/index.vue'
@@ -144,29 +142,31 @@ const props = defineProps<{
   optionKey: string
 }>()
 
-const { $t } = useBlokkli()
+const { $t, config } = useBlokkli()
+
+const colorOptions = config.colorOptions.value
 
 function getCurrentData(): BlokkliChartData {
   if (props.data) {
     const parsed = JSON.parse(JSON.stringify(props.data))
     if (parsed && Array.isArray(parsed.series) && parsed.series.length > 0) {
-      const fallbackId = getFirstColorId(COLORS)
+      const validIds = new Set(colorOptions.map((c) => c.id))
+      const fallbackId = getFirstColorId(colorOptions)
       for (const series of parsed.series) {
-        if (!COLORS[series.color]) {
+        if (!validIds.has(series.color)) {
           series.color = fallbackId
         }
       }
       if (Array.isArray(parsed.categoryColors)) {
         for (let i = 0; i < parsed.categoryColors.length; i++) {
-          if (!COLORS[parsed.categoryColors[i]]) {
+          if (!validIds.has(parsed.categoryColors[i])) {
             parsed.categoryColors[i] = fallbackId
           }
         }
       } else {
         parsed.categoryColors = parsed.categories.map(
           (_: string, i: number) => {
-            const ids = Object.keys(COLORS)
-            return ids[i % ids.length] || fallbackId
+            return colorOptions[i % colorOptions.length]?.id || fallbackId
           },
         )
       }
@@ -179,7 +179,7 @@ function getCurrentData(): BlokkliChartData {
       return parsed
     }
   }
-  return getDefaultChartData(COLORS)
+  return getDefaultChartData(colorOptions)
 }
 
 const {
@@ -194,7 +194,7 @@ const {
   removeSeries,
   importData,
   reverseRows,
-} = useChartEditorState(getCurrentData(), COLORS)
+} = useChartEditorState(getCurrentData(), colorOptions)
 
 const autoUpdate = ref(true)
 const previewData = ref<BlokkliChartData>(

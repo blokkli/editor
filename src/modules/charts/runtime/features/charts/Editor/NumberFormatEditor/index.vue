@@ -13,8 +13,12 @@
         id="chart-number-decimals"
         :label="$t('chartsNumberFormatDecimals', 'Decimals')"
         :options="decimalsOptions"
-        :model-value="format.decimals === undefined ? '' : String(format.decimals)"
-        @update:model-value="update('decimals', $event === '' ? undefined : Number($event))"
+        :model-value="
+          format.decimals === undefined ? '' : String(format.decimals)
+        "
+        @update:model-value="
+          update('decimals', $event === '' ? undefined : Number($event))
+        "
       />
 
       <FormRadio
@@ -80,7 +84,7 @@ function update<K extends keyof ChartNumberFormat>(
 ) {
   const next: ChartNumberFormat = { ...props.format }
   if (value === undefined || value === '') {
-    delete next[key]
+    next[key] = undefined
   } else {
     next[key] = value
   }

@@ -33,7 +33,10 @@
         </div>
         <div class="bk-fatal-error-overlay-list">
           <h3>{{ title }}</h3>
-          <button class="bk-button bk-scheme-mono bk-is-light" @click="downloadLogs">
+          <button
+            class="bk-button bk-scheme-mono bk-is-light"
+            @click="downloadLogs"
+          >
             {{ $t('downloadLogsButton', 'Download Logs') }}
           </button>
         </div>

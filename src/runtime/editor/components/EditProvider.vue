@@ -125,6 +125,7 @@ import fieldValueProviderFn from '#blokkli/editor/providers/fieldValue'
 import dragdropProvider from '#blokkli/editor/providers/dragdrop'
 import cacheProvider from '#blokkli/editor/providers/cache'
 import workspacesProvider from '#blokkli/editor/providers/workspaces'
+import configProvider from '#blokkli/editor/providers/config'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -219,6 +220,7 @@ const state = await editStateProvider(
   providerKey,
   props.permissions.filter(falsy),
 )
+const config = configProvider()
 const storage = await storageProvider(adapter, context)
 const plugins = pluginProvider()
 const debug = debugProvider(eventBus, storage)
@@ -402,6 +404,7 @@ const app: BlokkliApp = {
   dragdrop,
   cache,
   workspaces,
+  config,
 }
 
 provide(INJECT_APP, app)

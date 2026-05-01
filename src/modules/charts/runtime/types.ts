@@ -53,8 +53,3 @@ export type BlokkliChartData = {
     typeOptions?: Partial<ChartTypeOptionsMap[K]>
   }
 }[ChartType]
-
-export type ChartColor = {
-  color: string
-  label: string
-}

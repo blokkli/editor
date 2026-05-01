@@ -35,8 +35,8 @@
           :icon="button.icon"
           :type="button.type"
           :disabled="button.disabled"
-          @click="onClick(button)"
           small
+          @click="onClick(button)"
         />
       </div>
       <aside

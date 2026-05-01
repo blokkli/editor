@@ -8,7 +8,6 @@ import {
   validateChartData,
   findChartOptionKey,
 } from '../chart_schemas'
-import { COLORS } from '#blokkli-build/charts-config'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 import { getDefaultChartData } from '../../../helpers'
 
@@ -64,6 +63,7 @@ export default defineBlokkliAgentTool({
   requiredAdapterMethods: ['updateOptions'],
   execute(ctx, params) {
     const { state } = ctx.app
+    const options = ctx.app.config.colorOptions.value
 
     // Find the chart option key on this block.
     const chartOption = findChartOptionKey(ctx, params.uuid)
@@ -79,10 +79,10 @@ export default defineBlokkliAgentTool({
       try {
         current = JSON.parse(rawData)
       } catch {
-        current = getDefaultChartData(COLORS)
+        current = getDefaultChartData(options)
       }
     } else {
-      current = getDefaultChartData(COLORS)
+      current = getDefaultChartData(options)
     }
 
     // Merge updates (top-level replace for provided fields).
@@ -114,7 +114,7 @@ export default defineBlokkliAgentTool({
     } as BlokkliChartData
 
     // Validate and normalize.
-    const result = validateChartData(merged, COLORS)
+    const result = validateChartData(merged, options)
     if ('error' in result) return result
 
     const { $t } = ctx.app

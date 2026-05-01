@@ -1,16 +1,17 @@
-import type { BlokkliChartData, ChartColor } from '../types'
+import type { BlokkliChartData } from '../types'
+import type { ColorOption } from '#blokkli/editor/types/config'
 
 export const SUPERSCRIPTS: Record<string, string> = {
-  '1': '\u00B9',
-  '2': '\u00B2',
-  '3': '\u00B3',
-  '4': '\u2074',
-  '5': '\u2075',
-  '6': '\u2076',
-  '7': '\u2077',
-  '8': '\u2078',
-  '9': '\u2079',
-  '0': '\u2070',
+  '1': '¹',
+  '2': '²',
+  '3': '³',
+  '4': '⁴',
+  '5': '⁵',
+  '6': '⁶',
+  '7': '⁷',
+  '8': '⁸',
+  '9': '⁹',
+  '0': '⁰',
 }
 
 /**
@@ -24,41 +25,10 @@ export function applyFootnotes(text: string): string {
 }
 
 /**
- * Resolve a color ID to a concrete CSS color value that ApexCharts can use.
- *
- * Plain values like '#ff0000' or 'rgb(255, 0, 0)' are returned as-is.
- * Values containing 'var(' (e.g. 'rgb(var(--theme-primary))') are resolved
- * by setting the value on a DOM element and reading the computed color.
- *
- * Falls back to the first defined color if the ID is not found.
- */
-export function resolveChartColor(
-  colorId: string,
-  colors: Record<string, ChartColor>,
-  el?: HTMLElement | null,
-): string {
-  const ids = Object.keys(colors)
-  const entry = colors[colorId] || colors[ids[0] || '']
-  if (!entry) {
-    return '#888888'
-  }
-  const value = entry.color
-  if (!value.includes('var(')) {
-    return value
-  }
-  const target = el || document.documentElement
-  const prev = target.style.color
-  target.style.color = value
-  const resolved = getComputedStyle(target).color
-  target.style.color = prev
-  return resolved || value
-}
-
-/**
  * Get the fallback color ID (first defined color).
  */
-export function getFirstColorId(colors: Record<string, ChartColor>): string {
-  return Object.keys(colors)[0] || ''
+export function getFirstColorId(options: ColorOption[]): string {
+  return options[0]?.id || ''
 }
 
 /**
@@ -66,15 +36,13 @@ export function getFirstColorId(colors: Record<string, ChartColor>): string {
  */
 export function getColorIdAtIndex(
   index: number,
-  colors: Record<string, ChartColor>,
+  options: ColorOption[],
 ): string {
-  const ids = Object.keys(colors)
-  return ids[index % ids.length] || ids[0] || ''
+  if (options.length === 0) return ''
+  return options[index % options.length]?.id || options[0]?.id || ''
 }
 
-export function getDefaultChartData(
-  colors: Record<string, ChartColor>,
-): BlokkliChartData {
+export function getDefaultChartData(options: ColorOption[]): BlokkliChartData {
   return {
     title: '',
     type: 'bar',
@@ -82,14 +50,14 @@ export function getDefaultChartData(
     series: [
       {
         name: 'Series 1',
-        color: getColorIdAtIndex(0, colors),
+        color: getColorIdAtIndex(0, options),
         data: [30, 40, 35],
       },
     ],
     categoryColors: [
-      getColorIdAtIndex(0, colors),
-      getColorIdAtIndex(1, colors),
-      getColorIdAtIndex(2, colors),
+      getColorIdAtIndex(0, options),
+      getColorIdAtIndex(1, options),
+      getColorIdAtIndex(2, options),
     ],
     footnotes: [],
     typeOptions: {},

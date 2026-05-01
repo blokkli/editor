@@ -11,7 +11,7 @@
   >
     <div>
       <slot>
-        <p v-html="text" class="text-pretty" />
+        <p class="text-pretty" v-html="text" />
       </slot>
     </div>
     <Icon

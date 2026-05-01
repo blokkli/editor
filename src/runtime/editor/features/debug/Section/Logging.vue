@@ -22,7 +22,10 @@
     </div>
 
     <div>
-      <button class="bk-button bk-scheme-mono bk-is-light bk-is-small" @click.prevent="getAllMessages">
+      <button
+        class="bk-button bk-scheme-mono bk-is-light bk-is-small"
+        @click.prevent="getAllMessages"
+      >
         Log all messages
       </button>
     </div>

@@ -1,5 +1,6 @@
 import { ref, watch, nextTick, computed } from '#imports'
-import type { BlokkliChartData, ChartColor, ChartSeries } from '../../../types'
+import type { BlokkliChartData, ChartSeries } from '../../../types'
+import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../../helpers'
 
 const MAX_HISTORY = 50
@@ -10,7 +11,7 @@ function clone(v: BlokkliChartData): BlokkliChartData {
 
 export function useChartEditorState(
   initial: BlokkliChartData,
-  colors: Record<string, ChartColor>,
+  options: ColorOption[],
 ) {
   const data = ref<BlokkliChartData>(clone(initial))
   const stack = ref<BlokkliChartData[]>([clone(initial)])
@@ -60,14 +61,14 @@ export function useChartEditorState(
       s.data.push(0)
     }
     data.value.categoryColors.push(
-      getColorIdAtIndex(data.value.categoryColors.length, colors),
+      getColorIdAtIndex(data.value.categoryColors.length, options),
     )
   }
 
   function addSeries() {
     data.value.series.push({
       name: `Series ${data.value.series.length + 1}`,
-      color: getColorIdAtIndex(data.value.series.length, colors),
+      color: getColorIdAtIndex(data.value.series.length, options),
       data: Array.from<number>({ length: data.value.categories.length }).fill(
         0,
       ),

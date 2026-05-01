@@ -33,7 +33,10 @@
       </ul>
     </div>
     <div v-else-if="setting.type === 'method'">
-      <button class="bk-button bk-scheme-mono bk-is-light" @click="setting.method(blokkliApp)">
+      <button
+        class="bk-button bk-scheme-mono bk-is-light"
+        @click="setting.method(blokkliApp)"
+      >
         {{ settingLabel }}
       </button>
     </div>
