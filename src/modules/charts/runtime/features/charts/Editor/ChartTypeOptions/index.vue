@@ -5,6 +5,7 @@
         id="chart-title"
         :label="$t('chartsTitle', 'Title')"
         :model-value="title"
+        lazy
         @update:model-value="$emit('update:title', $event ?? '')"
       />
     </FormItem>

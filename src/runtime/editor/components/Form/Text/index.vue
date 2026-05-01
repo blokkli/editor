@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="bk-form-label" :for="id">
+    <label v-if="!hideLabel" class="bk-form-label" :for="id">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </label>
     <div class="bk-form-text">
@@ -49,6 +49,8 @@ const props = defineProps<{
    * Vue's `v-model.lazy` behavior. Defaults to eager (per-keystroke).
    */
   lazy?: boolean
+
+  hideLabel?: boolean
 }>()
 
 const updateEvent = computed(() => (props.lazy ? 'change' : 'input'))

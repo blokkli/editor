@@ -1472,6 +1472,42 @@ msgctxt "chartsTitle"
 msgid "Title"
 msgstr ""
 
+msgctxt "chartsTranslations"
+msgid "Translations"
+msgstr "Traductions"
+
+msgctxt "chartsTranslationsCategories"
+msgid "Categories"
+msgstr "Catégories"
+
+msgctxt "chartsTranslationsFootnotes"
+msgid "Footnotes"
+msgstr "Notes de bas de page"
+
+msgctxt "chartsTranslationsLanguage"
+msgid "Language"
+msgstr "Langue"
+
+msgctxt "chartsTranslationsPrefix"
+msgid "Prefix"
+msgstr "Préfixe"
+
+msgctxt "chartsTranslationsSeries"
+msgid "Series"
+msgstr "Séries"
+
+msgctxt "chartsTranslationsSource"
+msgid "Source"
+msgstr "Source"
+
+msgctxt "chartsTranslationsSuffix"
+msgid "Suffix"
+msgstr "Suffixe"
+
+msgctxt "chartsTranslationsTitle"
+msgid "Title"
+msgstr "Titre"
+
 msgctxt "chartsTypeArea"
 msgid "Area"
 msgstr ""
@@ -1786,7 +1822,7 @@ msgid "This block type is not allowed in this field."
 msgstr ""
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Modifier"
 
 msgctxt "editDisabledByDefinition"
@@ -3595,14 +3631,6 @@ msgstr ""
 
 msgctxt "templatesManageDialogConfirmDelete"
 msgid "Delete"
-msgstr ""
-
-msgctxt "templatesManageDialogDelete"
-msgid "Delete"
-msgstr ""
-
-msgctxt "templatesManageDialogEdit"
-msgid "Edit"
 msgstr ""
 
 msgctxt "templatesManageDialogLead"

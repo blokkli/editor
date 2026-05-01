@@ -34,6 +34,21 @@ export type ChartNumberFormat = {
   notation?: 'standard' | 'compact'
 }
 
+/**
+ * Translated strings for one target language.
+ *
+ * Arrays are positionally aligned to the source arrays (categories, series,
+ * footnotes). Empty strings mean "no translation yet, fall back to source".
+ */
+export type ChartTranslation = {
+  title?: string
+  categories?: string[]
+  seriesNames?: string[]
+  footnotes?: string[]
+  prefix?: string
+  suffix?: string
+}
+
 type ChartDataBase = {
   title: string
   categories: string[]
@@ -45,6 +60,12 @@ type ChartDataBase = {
   categoryColors: string[]
   footnotes: string[]
   numberFormat?: ChartNumberFormat
+  /**
+   * Per-language translations of the translatable strings, keyed by
+   * langcode. Chart options are not translatable in blökkli, so
+   * translations live alongside the source data.
+   */
+  translations?: Record<string, ChartTranslation>
 }
 
 export type BlokkliChartData = {

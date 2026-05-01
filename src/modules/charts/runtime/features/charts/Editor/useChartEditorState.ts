@@ -1,5 +1,9 @@
 import { ref, watch, nextTick, computed } from '#imports'
-import type { BlokkliChartData, ChartSeries } from '../../../types'
+import type {
+  BlokkliChartData,
+  ChartSeries,
+  ChartTranslation,
+} from '../../../types'
 import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../../helpers'
 
@@ -55,6 +59,15 @@ export function useChartEditorState(
     })
   }
 
+  function forEachTranslation(fn: (t: ChartTranslation) => void) {
+    const translations = data.value.translations
+    if (!translations) return
+    for (const lang of Object.keys(translations)) {
+      const t = translations[lang]
+      if (t) fn(t)
+    }
+  }
+
   function addRow() {
     data.value.categories.push(`Category ${data.value.categories.length + 1}`)
     for (const s of data.value.series) {
@@ -63,6 +76,9 @@ export function useChartEditorState(
     data.value.categoryColors.push(
       getColorIdAtIndex(data.value.categoryColors.length, options),
     )
+    forEachTranslation((t) => {
+      if (t.categories) t.categories.push('')
+    })
   }
 
   function addSeries() {
@@ -73,6 +89,9 @@ export function useChartEditorState(
         0,
       ),
     })
+    forEachTranslation((t) => {
+      if (t.seriesNames) t.seriesNames.push('')
+    })
   }
 
   function removeRow(index: number) {
@@ -81,10 +100,16 @@ export function useChartEditorState(
       s.data.splice(index, 1)
     }
     data.value.categoryColors.splice(index, 1)
+    forEachTranslation((t) => {
+      if (t.categories) t.categories.splice(index, 1)
+    })
   }
 
   function removeSeries(index: number) {
     data.value.series.splice(index, 1)
+    forEachTranslation((t) => {
+      if (t.seriesNames) t.seriesNames.splice(index, 1)
+    })
   }
 
   function importData(payload: {
@@ -95,6 +120,18 @@ export function useChartEditorState(
     data.value.categories = payload.categories
     data.value.series = payload.series
     data.value.categoryColors = payload.categoryColors
+    forEachTranslation((t) => {
+      if (t.categories) {
+        t.categories = Array.from<string>({
+          length: payload.categories.length,
+        }).fill('')
+      }
+      if (t.seriesNames) {
+        t.seriesNames = Array.from<string>({
+          length: payload.series.length,
+        }).fill('')
+      }
+    })
   }
 
   function reverseRows() {
@@ -104,6 +141,27 @@ export function useChartEditorState(
       ...s,
       data: [...s.data].reverse(),
     }))
+    forEachTranslation((t) => {
+      if (t.categories) t.categories = [...t.categories].reverse()
+    })
+  }
+
+  function addFootnote() {
+    data.value.footnotes.push('')
+    forEachTranslation((t) => {
+      if (t.footnotes) t.footnotes.push('')
+    })
+  }
+
+  function removeFootnote(index: number) {
+    data.value.footnotes.splice(index, 1)
+    forEachTranslation((t) => {
+      if (t.footnotes) t.footnotes.splice(index, 1)
+    })
+  }
+
+  function updateFootnote(index: number, value: string) {
+    data.value.footnotes[index] = value
   }
 
   return {
@@ -118,5 +176,8 @@ export function useChartEditorState(
     removeSeries,
     importData,
     reverseRows,
+    addFootnote,
+    removeFootnote,
+    updateFootnote,
   }
 }

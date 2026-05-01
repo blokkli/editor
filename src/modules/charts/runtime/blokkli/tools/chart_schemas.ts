@@ -32,6 +32,15 @@ export const chartSeriesSchema = z.object({
   data: z.array(z.number()).describe('Data values, one per category'),
 })
 
+export const chartTranslationSchema = z.object({
+  title: z.string().optional(),
+  categories: z.array(z.string()).optional(),
+  seriesNames: z.array(z.string()).optional(),
+  footnotes: z.array(z.string()).optional(),
+  prefix: z.string().optional(),
+  suffix: z.string().optional(),
+})
+
 export const chartDataSchema = z.object({
   title: z.string().optional().default('').describe('Chart title'),
   type: chartTypeEnum.describe('Chart type'),
@@ -58,6 +67,12 @@ export const chartDataSchema = z.object({
     .optional()
     .describe(
       'Type-specific rendering options. Use get_chart_type_options to see available keys.',
+    ),
+  translations: z
+    .record(z.string(), chartTranslationSchema)
+    .optional()
+    .describe(
+      'Per-language translations of translatable strings, keyed by langcode. Managed in the editor; agents should not modify this.',
     ),
 })
 

@@ -47,7 +47,7 @@
             />
             <input
               type="text"
-              class="bk-chart-data-table-input"
+              class="bk-chart-data-table-input font-semibold"
               :class="{
                 'pl-0': hasCategoryColors,
               }"

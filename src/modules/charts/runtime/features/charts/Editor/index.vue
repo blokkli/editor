@@ -11,7 +11,7 @@
           </button>
         </div>
 
-        <ChartTypePicker v-model="chartData.type" />
+        <ChartTypePicker v-if="!isTranslation" v-model="chartData.type" />
       </div>
     </div>
 
@@ -50,68 +50,76 @@
         <div
           class="absolute top-0 left-0 size-full p-20 overflow-auto bk-scrollbar-light"
         >
-          <PanelSection :title="$t('chartsData', 'Data')">
-            <div class="overflow-auto bk-scrollbar-light relative z-50">
-              <DataTable
-                :categories="chartData.categories"
-                :series="chartData.series"
-                :category-colors="chartData.categoryColors"
-                :has-multiple-series="caps.hasMultipleSeries"
-                :has-series-colors="caps.hasSeriesColors"
-                :has-category-colors="caps.hasCategoryColors"
-                :remove-row="removeRow"
-                :remove-series="removeSeries"
-                @update:categories="chartData.categories = $event"
-                @update:series="chartData.series = $event"
-                @update:category-colors="chartData.categoryColors = $event"
-              />
-            </div>
+          <template v-if="!isTranslation">
+            <PanelSection :title="$t('chartsData', 'Data')">
+              <div class="overflow-auto bk-scrollbar-light relative z-50">
+                <DataTable
+                  :categories="chartData.categories"
+                  :series="chartData.series"
+                  :category-colors="chartData.categoryColors"
+                  :has-multiple-series="caps.hasMultipleSeries"
+                  :has-series-colors="caps.hasSeriesColors"
+                  :has-category-colors="caps.hasCategoryColors"
+                  :remove-row="removeRow"
+                  :remove-series="removeSeries"
+                  @update:categories="chartData.categories = $event"
+                  @update:series="chartData.series = $event"
+                  @update:category-colors="chartData.categoryColors = $event"
+                />
+              </div>
 
-            <template #actions>
-              <PanelAction
-                :title="$t('chartsAddRow', 'Add row')"
-                icon="bk_mdi_add_row_below"
-                @click="addRow"
-              />
-              <PanelAction
-                v-if="caps.hasMultipleSeries"
-                :title="$t('chartsAddColumn', 'Add column')"
-                icon="bk_mdi_add_column_right"
-                @click="addSeries"
-              />
-              <CsvImport @import="importData" />
-              <PanelAction
-                :title="$t('chartsReverseRows', 'Reverse rows')"
-                icon="bk_mdi_table_convert"
-                @click="reverseRows"
-              />
-            </template>
-          </PanelSection>
+              <template #actions>
+                <PanelAction
+                  :title="$t('chartsAddRow', 'Add row')"
+                  icon="bk_mdi_add_row_below"
+                  @click="addRow"
+                />
+                <PanelAction
+                  v-if="caps.hasMultipleSeries"
+                  :title="$t('chartsAddColumn', 'Add column')"
+                  icon="bk_mdi_add_column_right"
+                  @click="addSeries"
+                />
+                <CsvImport @import="importData" />
+                <PanelAction
+                  :title="$t('chartsReverseRows', 'Reverse rows')"
+                  icon="bk_mdi_table_convert"
+                  @click="reverseRows"
+                />
+              </template>
+            </PanelSection>
 
-          <FootnoteEditor
-            :footnotes="chartData.footnotes"
-            @update:footnotes="chartData.footnotes = $event"
-          />
-
-          <NumberFormatEditor
-            :format="chartData.numberFormat ?? {}"
-            @update:format="
-              chartData.numberFormat =
-                Object.keys($event).length > 0 ? $event : undefined
-            "
-          />
-
-          <PanelSection
-            v-if="chartDef"
-            :title="$t('chartsSettings', 'Settings')"
-          >
-            <ChartTypeOptions
-              v-model:title="chartData.title"
-              :options="chartDef.editor.options"
-              :type-options="chartData.typeOptions || {}"
-              @update:type-options="chartData.typeOptions = $event"
+            <FootnoteEditor
+              :footnotes="chartData.footnotes"
+              :add-footnote="addFootnote"
+              :remove-footnote="removeFootnote"
+              :update-footnote="updateFootnote"
             />
-          </PanelSection>
+
+            <NumberFormatEditor
+              :format="chartData.numberFormat ?? {}"
+              @update:format="
+                chartData.numberFormat =
+                  Object.keys($event).length > 0 ? $event : undefined
+              "
+            />
+
+            <PanelSection
+              v-if="chartDef"
+              :title="$t('chartsSettings', 'Settings')"
+            >
+              <ChartTypeOptions
+                v-model:title="chartData.title"
+                :options="chartDef.editor.options"
+                :type-options="chartData.typeOptions || {}"
+                @update:type-options="chartData.typeOptions = $event"
+              />
+            </PanelSection>
+          </template>
+          <TranslationsEditor
+            v-model:translations="chartData.translations"
+            :chart-data="chartData"
+          />
         </div>
       </Resizable>
     </div>
@@ -130,6 +138,7 @@ import DataTable from './DataTable/index.vue'
 import CsvImport from './CsvImport/index.vue'
 import FootnoteEditor from './FootnoteEditor/index.vue'
 import NumberFormatEditor from './NumberFormatEditor/index.vue'
+import TranslationsEditor from './TranslationsEditor/index.vue'
 import Preview from './Preview/index.vue'
 import ChartTypeOptions from './ChartTypeOptions/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
@@ -142,7 +151,9 @@ const props = defineProps<{
   optionKey: string
 }>()
 
-const { $t, config } = useBlokkli()
+const { $t, config, state } = useBlokkli()
+
+const isTranslation = computed(() => state.editMode.value === 'translating')
 
 const colorOptions = config.colorOptions.value
 
@@ -176,10 +187,51 @@ function getCurrentData(): BlokkliChartData {
       if (!parsed.typeOptions || typeof parsed.typeOptions !== 'object') {
         parsed.typeOptions = getDefaultTypeOptions(parsed.type)
       }
+      normalizeTranslations(parsed)
+      if (!parsed.translations) {
+        parsed.translations = {}
+      }
       return parsed
     }
   }
-  return getDefaultChartData(colorOptions)
+  const fresh = getDefaultChartData(colorOptions)
+  if (!fresh.translations) {
+    fresh.translations = {}
+  }
+  return fresh
+}
+
+function padOrTrim(arr: unknown, length: number): string[] {
+  const source = Array.isArray(arr) ? (arr as unknown[]) : []
+  const out: string[] = []
+  for (let i = 0; i < length; i++) {
+    const v = source[i]
+    out.push(typeof v === 'string' ? v : '')
+  }
+  return out
+}
+
+function normalizeTranslations(parsed: BlokkliChartData) {
+  if (!parsed.translations || typeof parsed.translations !== 'object') {
+    return
+  }
+  const cleaned: Record<
+    string,
+    NonNullable<BlokkliChartData['translations']>[string]
+  > = {}
+  for (const lang of Object.keys(parsed.translations)) {
+    const t = parsed.translations[lang]
+    if (!t || typeof t !== 'object') continue
+    cleaned[lang] = {
+      title: typeof t.title === 'string' ? t.title : '',
+      categories: padOrTrim(t.categories, parsed.categories.length),
+      seriesNames: padOrTrim(t.seriesNames, parsed.series.length),
+      footnotes: padOrTrim(t.footnotes, parsed.footnotes.length),
+      prefix: typeof t.prefix === 'string' ? t.prefix : '',
+      suffix: typeof t.suffix === 'string' ? t.suffix : '',
+    }
+  }
+  parsed.translations = cleaned
 }
 
 const {
@@ -194,6 +246,9 @@ const {
   removeSeries,
   importData,
   reverseRows,
+  addFootnote,
+  removeFootnote,
+  updateFootnote,
 } = useChartEditorState(getCurrentData(), colorOptions)
 
 const autoUpdate = ref(true)

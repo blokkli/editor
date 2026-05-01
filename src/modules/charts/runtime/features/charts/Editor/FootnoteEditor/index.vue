@@ -54,28 +54,10 @@ import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 
 const { $t } = useBlokkli()
 
-const props = defineProps<{
+defineProps<{
   footnotes: string[]
+  addFootnote: () => void
+  removeFootnote: (index: number) => void
+  updateFootnote: (index: number, value: string) => void
 }>()
-
-const emit = defineEmits<{
-  'update:footnotes': [value: string[]]
-}>()
-
-function updateFootnote(index: number, value: string) {
-  const updated = [...props.footnotes]
-  updated[index] = value
-  emit('update:footnotes', updated)
-}
-
-function addFootnote() {
-  emit('update:footnotes', [...props.footnotes, ''])
-}
-
-function removeFootnote(index: number) {
-  emit(
-    'update:footnotes',
-    props.footnotes.filter((_, i) => i !== index),
-  )
-}
 </script>

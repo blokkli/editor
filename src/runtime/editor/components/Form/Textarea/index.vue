@@ -1,11 +1,11 @@
 <template>
   <div>
-    <label class="bk-form-label" :for="id">
+    <label v-if="!hideLabel" class="bk-form-label" :for="id">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </label>
     <textarea
       :id
-      v-model="value"
+      :value
       class="bk-form-input"
       :placeholder
       :required
@@ -13,13 +13,16 @@
       :rows="rows ?? 5"
       :minlength
       :maxlength
+      @[updateEvent]="onUpdate"
     />
     <div v-if="description" class="bk-form-description">{{ description }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from '#imports'
+
+const props = defineProps<{
   id: string
   label: string
   description?: string
@@ -29,7 +32,15 @@ defineProps<{
   minlength?: string | number
   maxlength?: string | number
   rows?: string | number
+  hideLabel?: boolean
+  lazy?: boolean
 }>()
 
 const value = defineModel<string>()
+
+const updateEvent = computed(() => (props.lazy ? 'change' : 'input'))
+
+function onUpdate(event: Event) {
+  value.value = (event.target as HTMLInputElement).value
+}
 </script>

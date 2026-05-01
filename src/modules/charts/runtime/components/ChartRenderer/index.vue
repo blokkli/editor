@@ -7,10 +7,10 @@
         :type="type"
         :options="chartOptions"
         :series="chartSeries"
-        height="350"
+        height="550"
       />
-      <ol v-if="footnotes?.length" class="blokkli-chart-footnotes">
-        <li v-for="(note, i) in footnotes" :key="i">
+      <ol v-if="resolvedFootnotes.length" class="blokkli-chart-footnotes">
+        <li v-for="(note, i) in resolvedFootnotes" :key="i">
           <span class="blokkli-chart-footnote-marker">{{
             superscriptFor(i + 1)
           }}</span>
@@ -22,20 +22,74 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, useAppConfig } from '#imports'
+import { computed, defineAsyncComponent, inject, useAppConfig } from '#imports'
 import type { BlokkliChartData } from '../../types'
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import type { ApexOptions } from 'apexcharts'
+import { INJECT_PROVIDER_CONTEXT } from '#blokkli/helpers/injections'
 
 const ApexChart = import.meta.client
   ? defineAsyncComponent(() => import('vue3-apexcharts'))
   : undefined
 
-const props = defineProps<BlokkliChartData>()
+const props = defineProps<
+  BlokkliChartData & {
+    /**
+     * Override the language used to resolve translated strings. When unset,
+     * the language comes from the surrounding BlokkliProvider context.
+     */
+    languageOverride?: string
+  }
+>()
 
 const appConfig = useAppConfig()
+
+const providerEntity = inject(INJECT_PROVIDER_CONTEXT, null)
+
+const currentLanguage = computed(
+  () => props.languageOverride ?? providerEntity?.value.language ?? '',
+)
+
+const resolvedTitle = computed(() => {
+  const t = props.translations?.[currentLanguage.value]
+  return t?.title || props.title
+})
+
+const resolvedCategories = computed(() => {
+  const t = props.translations?.[currentLanguage.value]
+  if (!t?.categories) return props.categories
+  return props.categories.map((c, i) => t.categories?.[i] || c)
+})
+
+const resolvedSeries = computed(() => {
+  const t = props.translations?.[currentLanguage.value]
+  if (!t?.seriesNames) return props.series
+  return props.series.map((s, i) => ({
+    ...s,
+    name: t.seriesNames?.[i] || s.name,
+  }))
+})
+
+const resolvedFootnotes = computed(() => {
+  const t = props.translations?.[currentLanguage.value]
+  if (!t?.footnotes) return props.footnotes
+  return props.footnotes.map((f, i) => t.footnotes?.[i] || f)
+})
+
+const resolvedNumberFormat = computed(() => {
+  if (!props.numberFormat) return undefined
+  const t = props.translations?.[currentLanguage.value]
+  if (!t || (t.prefix === undefined && t.suffix === undefined)) {
+    return props.numberFormat
+  }
+  return {
+    ...props.numberFormat,
+    prefix: t.prefix || props.numberFormat.prefix,
+    suffix: t.suffix || props.numberFormat.suffix,
+  }
+})
 
 const chartDef = computed(() =>
   import.meta.client ? getChartTypeRuntime(props.type) : undefined,
@@ -113,14 +167,14 @@ const chartOptions = computed<ApexOptions>(() => {
     base.colors = resolvedColors.value
   }
 
-  if (props.title) {
-    base.title = { text: applyFootnotes(props.title), align: 'left' }
+  if (resolvedTitle.value) {
+    base.title = { text: applyFootnotes(resolvedTitle.value), align: 'left' }
   }
 
   const ctx: ChartBuildContext = {
-    title: props.title,
-    categories: props.categories.map(applyFootnotes),
-    series: props.series.map((s) => ({
+    title: resolvedTitle.value,
+    categories: resolvedCategories.value.map(applyFootnotes),
+    series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
       color: s.color,
       data: s.data,
@@ -131,7 +185,7 @@ const chartOptions = computed<ApexOptions>(() => {
       ...getDefaultTypeOptions(props.type),
       ...props.typeOptions,
     },
-    numberFormat: props.numberFormat,
+    numberFormat: resolvedNumberFormat.value,
   }
 
   const typeOpts = def.buildChartOptions(ctx)
@@ -146,9 +200,9 @@ const chartSeries = computed(() => {
   if (!def) return []
 
   const ctx: ChartBuildContext = {
-    title: props.title,
-    categories: props.categories.map(applyFootnotes),
-    series: props.series.map((s) => ({
+    title: resolvedTitle.value,
+    categories: resolvedCategories.value.map(applyFootnotes),
+    series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
       color: s.color,
       data: s.data,
@@ -159,7 +213,7 @@ const chartSeries = computed(() => {
       ...getDefaultTypeOptions(props.type),
       ...props.typeOptions,
     },
-    numberFormat: props.numberFormat,
+    numberFormat: resolvedNumberFormat.value,
   }
 
   return def.buildSeries(ctx)

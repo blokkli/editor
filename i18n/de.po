@@ -1508,6 +1508,42 @@ msgctxt "chartsTitle"
 msgid "Title"
 msgstr "Titel"
 
+msgctxt "chartsTranslations"
+msgid "Translations"
+msgstr "Übersetzungen"
+
+msgctxt "chartsTranslationsCategories"
+msgid "Categories"
+msgstr "Kategorien"
+
+msgctxt "chartsTranslationsFootnotes"
+msgid "Footnotes"
+msgstr "Fussnoten"
+
+msgctxt "chartsTranslationsLanguage"
+msgid "Language"
+msgstr "Sprache"
+
+msgctxt "chartsTranslationsPrefix"
+msgid "Prefix"
+msgstr "Präfix"
+
+msgctxt "chartsTranslationsSeries"
+msgid "Series"
+msgstr "Datenreihen"
+
+msgctxt "chartsTranslationsSource"
+msgid "Source"
+msgstr "Quelle"
+
+msgctxt "chartsTranslationsSuffix"
+msgid "Suffix"
+msgstr "Suffix"
+
+msgctxt "chartsTranslationsTitle"
+msgid "Title"
+msgstr "Titel"
+
 msgctxt "chartsTypeArea"
 msgid "Area"
 msgstr "Fläche"
@@ -1826,7 +1862,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeiten..."
 
 msgctxt "editDisabledByDefinition"
@@ -3695,14 +3731,6 @@ msgstr "Abbrechen"
 msgctxt "templatesManageDialogConfirmDelete"
 msgid "Delete"
 msgstr "Löschen"
-
-msgctxt "templatesManageDialogDelete"
-msgid "Delete"
-msgstr "Löschen"
-
-msgctxt "templatesManageDialogEdit"
-msgid "Edit"
-msgstr "Bearbeiten"
 
 msgctxt "templatesManageDialogLead"
 msgid "View, edit and delete your block templates."

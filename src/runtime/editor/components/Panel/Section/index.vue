@@ -4,12 +4,22 @@
     :class="{ 'pointer-events-none bg-mono-100!': disabled }"
   >
     <div
-      class="text-xs uppercase tracking-wider text-mono-800 font-semibold px-15 py-10 border-b border-b-mono-300 bg-mono-200"
+      class="text-xs uppercase tracking-wider text-mono-800 font-semibold px-15 py-10 bg-mono-200"
       :class="{
         'bg-mono-100! text-mono-400!': disabled,
+        'border-b border-b-mono-400': !$slots.tabs,
       }"
     >
       {{ title }}
+    </div>
+    <div
+      v-if="$slots.tabs"
+      class="border-b border-b-mono-400 bg-mono-200"
+      :class="{
+        'opacity-50': disabled,
+      }"
+    >
+      <slot name="tabs" />
     </div>
     <div
       v-if="$slots.default"

@@ -38,6 +38,7 @@
           :label="$t('chartsNumberFormatPrefix', 'Prefix')"
           :placeholder="prefixPlaceholder"
           :model-value="format.prefix ?? ''"
+          lazy
           @update:model-value="update('prefix', $event ? $event : undefined)"
         />
         <FormText
@@ -45,14 +46,15 @@
           :label="$t('chartsNumberFormatSuffix', 'Suffix')"
           :placeholder="suffixPlaceholder"
           :model-value="format.suffix ?? ''"
+          lazy
           @update:model-value="update('suffix', $event ? $event : undefined)"
         />
       </div>
 
       <div
-        class="bg-mono-100 border border-mono-300 rounded p-10 text-sm font-mono text-mono-700 flex items-center justify-between gap-10"
+        class="bg-mono-100 border border-mono-300 p-10 text-sm font-mono text-mono-700 flex items-center justify-between gap-10"
       >
-        <span class="text-xs uppercase tracking-wider text-mono-500">
+        <span class="bk-form-label mb-0!">
           {{ $t('chartsNumberFormatPreview', 'Preview') }}
         </span>
         <span>{{ preview }}</span>
