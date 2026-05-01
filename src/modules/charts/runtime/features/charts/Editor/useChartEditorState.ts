@@ -7,6 +7,7 @@ import type {
 } from '../../../types'
 import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../../helpers'
+import { nextCategoryValue } from '../../../helpers/nextCategoryValue'
 import { getDefaultTypeOptions } from '../../../chartTypes'
 
 const MAX_HISTORY = 50
@@ -71,7 +72,7 @@ export function useChartEditorState(
   }
 
   function addRow() {
-    data.value.categories.push(`Category ${data.value.categories.length + 1}`)
+    data.value.categories.push(nextCategoryValue(data.value.categories))
     for (const s of data.value.series) {
       s.data.push(0)
     }
