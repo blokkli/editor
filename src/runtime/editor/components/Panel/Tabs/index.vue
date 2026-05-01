@@ -10,7 +10,7 @@
       :class="
         modelValue === tab.id
           ? 'text-accent-700 border-mono-400 border-b-white! bg-white'
-          : 'text-mono-500 border-transparent border-b-mono-400! hover:text-mono-800'
+          : 'text-mono-500 border-transparent hover:text-mono-800'
       "
       @click.prevent="modelValue = tab.id"
     >
