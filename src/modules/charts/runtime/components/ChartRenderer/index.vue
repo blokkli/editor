@@ -103,6 +103,7 @@ const chartOptions = computed<ApexOptions>(() => {
     chart: {
       toolbar: { show: false },
       redrawOnParentResize: false,
+      zoom: { enabled: false },
     },
   }
 
