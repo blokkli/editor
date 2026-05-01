@@ -9,6 +9,7 @@ import {
   gridOptions,
   buildGridOptions,
   buildValueFormatOptions,
+  yAxisMinOptions,
   mergeShared,
 } from './shared'
 import type {
@@ -16,6 +17,7 @@ import type {
   DataLabelsTypeOptions,
   LegendTypeOptions,
   GridTypeOptions,
+  YAxisMinTypeOptions,
 } from './shared'
 
 export type TypeOptions = {
@@ -25,7 +27,8 @@ export type TypeOptions = {
 } & XAxisTypeOptions &
   DataLabelsTypeOptions &
   LegendTypeOptions &
-  GridTypeOptions
+  GridTypeOptions &
+  YAxisMinTypeOptions
 
 export default defineChartType<TypeOptions>(($t) => {
   const shared = mergeShared(
@@ -33,6 +36,7 @@ export default defineChartType<TypeOptions>(($t) => {
     dataLabelsOptions($t),
     legendOptions($t),
     gridOptions($t),
+    yAxisMinOptions($t),
   )
   return {
     id: 'bar',
@@ -53,7 +57,7 @@ export default defineChartType<TypeOptions>(($t) => {
           ...buildXAxisLabelOptions(ctx.typeOptions),
         },
         ...buildDataLabelsOptions(ctx.typeOptions, ctx.numberFormat),
-        ...buildValueFormatOptions(ctx.numberFormat),
+        ...buildValueFormatOptions(ctx.typeOptions, ctx.numberFormat),
         ...buildLegendOptions(ctx.typeOptions),
         ...buildGridOptions(ctx.typeOptions),
       }

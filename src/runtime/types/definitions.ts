@@ -36,15 +36,17 @@ type GetType<T> = T extends { options: infer O }
     ? boolean
     : T extends { type: 'range' }
       ? number
-      : T extends { type: 'number' }
-        ? number
-        : T extends { type: 'json'; dataType: infer D }
-          ? D extends keyof ComplexOptionTypeMap
-            ? ComplexOptionTypeMap[D]
-            : any
-          : T extends { type: 'json' }
-            ? any
-            : string
+      : T extends { type: 'number'; nullable: true }
+        ? number | undefined
+        : T extends { type: 'number' }
+          ? number
+          : T extends { type: 'json'; dataType: infer D }
+            ? D extends keyof ComplexOptionTypeMap
+              ? ComplexOptionTypeMap[D]
+              : any
+            : T extends { type: 'json' }
+              ? any
+              : string
 
 export type BlockDefinitionOptionsInput = {
   [key: string]: BlockOptionDefinition

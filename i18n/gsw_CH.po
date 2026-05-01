@@ -1247,6 +1247,10 @@ msgctxt "blockSchedulerSuccessMessage"
 msgid "Successfully updated schedule dates."
 msgstr "Planungsdate erfolgriich aktualisiert."
 
+msgctxt "blokkliOptionNumberAuto"
+msgid "Auto"
+msgstr "Automatisch"
+
 msgctxt "bundle"
 msgid "Bundle"
 msgstr "Typ"
@@ -1574,6 +1578,10 @@ msgstr "Radialdiagramm"
 msgctxt "chartsXAxisRotation"
 msgid "Label rotation"
 msgstr "Beschriftigswinkel"
+
+msgctxt "chartsYAxisMin"
+msgid "Y-axis start"
+msgstr "Y-Achse-Aafangswärt"
 
 msgctxt "clearInput"
 msgid "Clear input"

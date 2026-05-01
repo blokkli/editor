@@ -144,6 +144,68 @@ describe('getRuntimeOptionValue', () => {
     expect(getRuntimeOptionValue(option, undefined)).toEqual(50)
   })
 
+  test('Number with undefined min skips lower clamp', () => {
+    const option: [
+      'number',
+      number,
+      [number | undefined, number | undefined],
+    ] = ['number', 50, [undefined, 100]]
+    expect(getRuntimeOptionValue(option, -999)).toEqual(-999)
+    expect(getRuntimeOptionValue(option, 200)).toEqual(100)
+  })
+
+  test('Number with undefined max skips upper clamp', () => {
+    const option: [
+      'number',
+      number,
+      [number | undefined, number | undefined],
+    ] = ['number', 50, [0, undefined]]
+    expect(getRuntimeOptionValue(option, -10)).toEqual(0)
+    expect(getRuntimeOptionValue(option, 999999)).toEqual(999999)
+  })
+
+  test('Number without bounds tuple accepts any value', () => {
+    const option: ['number', number] = ['number', 50]
+    expect(getRuntimeOptionValue(option, 99999)).toEqual(99999)
+    expect(getRuntimeOptionValue(option, -99999)).toEqual(-99999)
+  })
+
+  test('Nullable number returns undefined for empty/null/undefined', () => {
+    const option: [
+      'number',
+      number | undefined,
+      [number | undefined, number | undefined],
+      true,
+    ] = ['number', undefined, [undefined, undefined], true]
+    expect(getRuntimeOptionValue(option, '')).toBeUndefined()
+    expect(getRuntimeOptionValue(option, null)).toBeUndefined()
+    expect(getRuntimeOptionValue(option, undefined)).toBeUndefined()
+  })
+
+  test('Nullable number still parses and clamps valid values', () => {
+    const option: [
+      'number',
+      number | undefined,
+      [number | undefined, number | undefined],
+      true,
+    ] = ['number', undefined, [0, 100], true]
+    expect(getRuntimeOptionValue(option, '42')).toEqual(42)
+    expect(getRuntimeOptionValue(option, -10)).toEqual(0)
+    expect(getRuntimeOptionValue(option, 200)).toEqual(100)
+  })
+
+  test('Nullable number with default returns undefined when value is empty', () => {
+    const option: [
+      'number',
+      number | undefined,
+      [number | undefined, number | undefined],
+      true,
+    ] = ['number', 50, [undefined, undefined], true]
+    expect(getRuntimeOptionValue(option, '')).toBeUndefined()
+    expect(getRuntimeOptionValue(option, null)).toEqual(50)
+    expect(getRuntimeOptionValue(option, undefined)).toEqual(50)
+  })
+
   test('Clamps range value to min/max bounds using RuntimeBlockOptionArray', () => {
     // Using tuple format with [min, max] bounds
     const option: ['range', number, [number, number]] = ['range', 5, [1, 10]]

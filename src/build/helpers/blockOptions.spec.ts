@@ -95,6 +95,69 @@ describe('toRuntimeOptionArray', () => {
     expect(toRuntimeOptionArray(option)).toEqual(['number', 50, [0, 100]])
   })
 
+  test('converts number option without bounds', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'number',
+      label: 'Number',
+      default: 0,
+    }
+    expect(toRuntimeOptionArray(option)).toEqual(['number', 0])
+  })
+
+  test('converts number option with min bound only', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'number',
+      label: 'Number',
+      default: 0,
+      min: 0,
+    }
+    expect(toRuntimeOptionArray(option)).toEqual(['number', 0, [0, undefined]])
+  })
+
+  test('converts number option with max bound only', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'number',
+      label: 'Number',
+      default: 0,
+      max: 100,
+    }
+    expect(toRuntimeOptionArray(option)).toEqual([
+      'number',
+      0,
+      [undefined, 100],
+    ])
+  })
+
+  test('converts nullable number option without default or bounds', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'number',
+      label: 'Number',
+      nullable: true,
+    }
+    expect(toRuntimeOptionArray(option)).toEqual([
+      'number',
+      undefined,
+      [undefined, undefined],
+      true,
+    ])
+  })
+
+  test('converts nullable number option with bounds', () => {
+    const option: BlockOptionDefinitionBase = {
+      type: 'number',
+      label: 'Number',
+      nullable: true,
+      min: 0,
+      max: 100,
+    }
+    expect(toRuntimeOptionArray(option)).toEqual([
+      'number',
+      undefined,
+      [0, 100],
+      true,
+    ])
+  })
+
   test('converts range option with min/max bounds', () => {
     const option: BlockOptionDefinitionBase = {
       type: 'range',

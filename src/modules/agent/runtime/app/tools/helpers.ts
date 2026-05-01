@@ -129,7 +129,7 @@ export function buildBlockOptionsMap(
       opt.property,
       opt.option.default,
     )
-    const currentValue = getRuntimeOptionValue(opt.option, rawValue)
+    const currentValue = getRuntimeOptionValue(opt.option, rawValue) ?? ''
 
     result[opt.property] = buildBlockOptionEntry(opt.option, currentValue)
   }
@@ -242,11 +242,13 @@ export function validateOptionValue(
     if (Number.isNaN(numValue)) {
       return `Option "${key}" expects a numeric value`
     }
-    if ('min' in optionDef.option && numValue < optionDef.option.min) {
-      return `Option "${key}" value must be >= ${optionDef.option.min}`
+    const optMin = (optionDef.option as { min?: unknown }).min
+    const optMax = (optionDef.option as { max?: unknown }).max
+    if (typeof optMin === 'number' && numValue < optMin) {
+      return `Option "${key}" value must be >= ${optMin}`
     }
-    if ('max' in optionDef.option && numValue > optionDef.option.max) {
-      return `Option "${key}" value must be <= ${optionDef.option.max}`
+    if (typeof optMax === 'number' && numValue > optMax) {
+      return `Option "${key}" value must be <= ${optMax}`
     }
   }
 

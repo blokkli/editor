@@ -13,6 +13,7 @@ export type DataLabelsTypeOptions = { dataLabels: boolean }
 export type LegendTypeOptions = { legendPosition: string }
 export type GridTypeOptions = { gridLines: boolean }
 export type StrokeWidthTypeOptions = { strokeWidth: string }
+export type YAxisMinTypeOptions = { yaxisMin: number | undefined }
 
 /**
  * Shared x-axis label options for chart types that display an x-axis.
@@ -85,16 +86,44 @@ export function buildDataLabelsOptions(
 }
 
 /**
+ * Y-axis manual start value option.
+ *
+ * When unset (`undefined`) the chart auto-scales from the data minimum.
+ * When set, ApexCharts forces the Y axis to start at the given value.
+ */
+export function yAxisMinOptions($t: TranslateFunction): SharedOptions {
+  return {
+    options: {
+      yaxisMin: {
+        type: 'number',
+        nullable: true,
+        label: $t('chartsYAxisMin', 'Y-axis start'),
+        group: 'display',
+      },
+    },
+  }
+}
+
+/**
  * Build the standard yaxis-label + tooltip-y formatter pair for chart types
- * that have a numeric axis (bar, line, area, radar). Spread the result into
- * the chart options object.
+ * that have a numeric axis (bar, line, area, radar). Also folds in an explicit
+ * `yaxis.min` from `yaxisMin` so the two helpers don't clobber each other when
+ * spread.
  */
 export function buildValueFormatOptions(
+  typeOptions: Partial<YAxisMinTypeOptions>,
   format: ChartNumberFormat | undefined,
 ): Record<string, any> {
   const formatter = createNumberFormatter(format)
+  const yaxis: Record<string, any> = { labels: { formatter } }
+  if (
+    typeof typeOptions.yaxisMin === 'number' &&
+    Number.isFinite(typeOptions.yaxisMin)
+  ) {
+    yaxis.min = typeOptions.yaxisMin
+  }
   return {
-    yaxis: { labels: { formatter } },
+    yaxis,
     tooltip: { y: { formatter } },
   }
 }

@@ -88,10 +88,24 @@ export function optionValueToStorable(
       return value
     }
   } else if (definition.type === 'number' || definition.type === 'range') {
-    if (typeof value === 'number') {
+    if (typeof value === 'number' && Number.isFinite(value)) {
       return String(value)
     } else if (typeof value === 'string') {
+      if (
+        definition.type === 'number' &&
+        definition.nullable &&
+        value.trim() === ''
+      ) {
+        return ''
+      }
       return value
+    }
+    if (
+      definition.type === 'number' &&
+      definition.nullable &&
+      (value === undefined || value === null)
+    ) {
+      return ''
     }
   } else if (definition.type === 'color') {
     if (typeof value === 'string') {

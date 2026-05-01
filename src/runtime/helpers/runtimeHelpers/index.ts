@@ -47,16 +47,30 @@ export function getRuntimeOptionValue(
     | Pick<BlockOptionDefinition, 'type' | 'default'>
     | RuntimeBlockOptionArray,
   value: string | string[] | boolean | undefined | null | number,
-): string | string[] | boolean | number {
+): string | string[] | boolean | number | undefined {
   const type = Array.isArray(definition) ? definition[0] : definition.type
 
   const defaultValue = Array.isArray(definition)
     ? definition[1]
     : definition.default
 
+  // For a nullable number option (4th tuple element), an unset value resolves
+  // to `undefined`, not the default — that's what makes "Auto" round-trip.
+  const isNullableNumber =
+    Array.isArray(definition) &&
+    definition[0] === 'number' &&
+    definition[3] === true
+
   // If no value is provided, return the default value.
   if ((value === null || value === undefined) && defaultValue !== undefined) {
     return defaultValue
+  }
+
+  if (
+    isNullableNumber &&
+    (value === null || value === undefined || value === '')
+  ) {
+    return undefined
   }
 
   // Get validation data (third element) from RuntimeBlockOptionArray
@@ -105,8 +119,9 @@ export function getRuntimeOptionValue(
       }
     }
     if (numValue !== undefined) {
-      // Clamp to min/max bounds if available
-      const bounds = validationData as [number, number] | undefined
+      const bounds = validationData as
+        | [number | undefined, number | undefined]
+        | undefined
       if (bounds) {
         const [min, max] = bounds
         if (min !== undefined && numValue < min) {
@@ -117,6 +132,9 @@ export function getRuntimeOptionValue(
         }
       }
       return numValue
+    }
+    if (isNullableNumber) {
+      return undefined
     }
   } else if (type === 'color') {
     if (typeof value === 'string') {

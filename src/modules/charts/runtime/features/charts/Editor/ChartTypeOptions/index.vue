@@ -25,7 +25,7 @@
 
     <FormItem v-for="group in groups" :key="'group_' + group.label">
       <div class="bk-form-label">{{ group.label }}</div>
-      <div class="grid gap-10">
+      <div class="grid gap-15">
         <Field
           v-for="item in group.options"
           :key="item.key"

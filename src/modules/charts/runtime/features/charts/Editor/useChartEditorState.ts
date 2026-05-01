@@ -3,9 +3,11 @@ import type {
   BlokkliChartData,
   ChartSeries,
   ChartTranslation,
+  ChartType,
 } from '../../../types'
 import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../../helpers'
+import { getDefaultTypeOptions } from '../../../chartTypes'
 
 const MAX_HISTORY = 50
 
@@ -164,6 +166,24 @@ export function useChartEditorState(
     data.value.footnotes[index] = value
   }
 
+  const typeOptionsByType: Partial<Record<ChartType, Record<string, unknown>>> =
+    {}
+
+  function setType(type: ChartType) {
+    if (data.value.type === type) return
+    if (data.value.typeOptions) {
+      typeOptionsByType[data.value.type] = { ...data.value.typeOptions }
+    }
+    const defaults = getDefaultTypeOptions(type)
+    const saved = typeOptionsByType[type] ?? {}
+    const merged: Record<string, unknown> = {}
+    for (const key of Object.keys(defaults)) {
+      merged[key] = key in saved ? saved[key] : defaults[key]
+    }
+    data.value.type = type
+    data.value.typeOptions = merged as BlokkliChartData['typeOptions']
+  }
+
   return {
     data,
     canUndo,
@@ -179,5 +199,6 @@ export function useChartEditorState(
     addFootnote,
     removeFootnote,
     updateFootnote,
+    setType,
   }
 }

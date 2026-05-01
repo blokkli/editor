@@ -213,7 +213,7 @@ function getOptionValue(
  */
 const currentValues = computed(() => {
   return availableOptions.value.reduce<
-    Record<string, string | string[] | boolean | number>
+    Record<string, string | string[] | boolean | number | undefined>
   >((acc, v) => {
     if (Array.isArray(props.uuids)) {
       // Get all current values.

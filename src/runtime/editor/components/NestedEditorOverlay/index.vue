@@ -8,17 +8,17 @@
       >
         <Icon
           :name="icon"
-          class="size-120 -rotate-12 absolute -left-15 -top-30 text-scheme-light-hover"
+          class="size-120 -rotate-12 absolute -left-15 -top-30 text-scheme-normal opacity-10"
         />
-        <header class="flex items-center h-50 relative pl-10">
-          <h2 class="text-xl leading-none font-bold">
+        <header class="flex items-center h-40 3xl:h-50 relative pl-10">
+          <h2 class="text-lg 3xl:text-xl leading-none font-bold">
             <span>{{ title }}</span>
           </h2>
           <button
-            class="h-50 flex items-center px-10 gap-10 font-semibold leading-none ml-auto hover:bg-scheme-light-hover"
+            class="h-40 3xl:h-50 flex items-center px-10 gap-10 font-semibold leading-none ml-auto hover:bg-scheme-light-hover text-sm 3xl:text-base"
             @click.prevent="closeOverlay"
           >
-            <Icon name="bk_mdi_arrow_left_alt" class="size-20" />
+            <Icon name="bk_mdi_arrow_left_alt" class="size-[1.25em]" />
             <span>{{ backLabel }}</span>
           </button>
         </header>
@@ -37,7 +37,7 @@
     >
       <div
         v-show="isLoaded"
-        class="bk bk-library-edit-overlay fixed top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto z-nested-editor-overlay-iframe"
+        class="bk bk-library-edit-overlay fixed top-40 3xl:top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto z-nested-editor-overlay-iframe"
         :class="'bk-is-' + theme"
       >
         <div

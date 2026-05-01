@@ -28,7 +28,7 @@ export default defineChartType<TypeOptions>(($t) => {
         markers: { size: ctx.typeOptions.markers ? 5 : 0 },
         fill: { opacity: Number(ctx.typeOptions.fillOpacity) || 0.2 },
         ...buildDataLabelsOptions(ctx.typeOptions, ctx.numberFormat),
-        ...buildValueFormatOptions(ctx.numberFormat),
+        ...buildValueFormatOptions({}, ctx.numberFormat),
         ...buildLegendOptions(ctx.typeOptions),
       }
     },

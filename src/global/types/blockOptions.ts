@@ -36,16 +36,11 @@ type DefinitionOptionText = {
   group?: string
 }
 
-type DefinitionOptionNumber = {
+type DefinitionOptionNumberBase = {
   /**
    * The option type.
    */
   type: 'number'
-
-  /**
-   * The default value.
-   */
-  default: number
 
   /**
    * The label displayed in the editor.
@@ -61,13 +56,17 @@ type DefinitionOptionNumber = {
 
   /**
    * Minimum allowed value.
+   *
+   * Optional — when omitted, no lower bound is enforced.
    */
-  min: number
+  min?: number
 
   /**
    * Maximum allowed value.
+   *
+   * Optional — when omitted, no upper bound is enforced.
    */
-  max: number
+  max?: number
 
   /**
    * Optional group name for organizing options.
@@ -76,6 +75,30 @@ type DefinitionOptionNumber = {
    */
   group?: string
 }
+
+type DefinitionOptionNumber = DefinitionOptionNumberBase &
+  (
+    | {
+        /**
+         * When true, the value can be unset (`undefined`). The editor renders
+         * an empty input as "Auto".
+         */
+        nullable: true
+
+        /**
+         * The default value. May be omitted when `nullable: true`.
+         */
+        default?: number
+      }
+    | {
+        nullable?: false
+
+        /**
+         * The default value.
+         */
+        default: number
+      }
+  )
 
 type DefinitionOptionRange = {
   /**
@@ -456,7 +479,9 @@ export type BlockOptionDefinitionBase<
  * Runtime block option array with validation data.
  * The third element varies by option type:
  * - radios/checkboxes: string[] of allowed keys (empty array = accept all)
- * - number/range: [min, max] tuple
+ * - number: optional [min?, max?] tuple. A 4th element `true` marks the option
+ *   as nullable (value may be `undefined`).
+ * - range: [min, max] tuple (always required).
  * - datetime-local: optional [min?, max?] tuple
  * - other types: no third element
  */
@@ -468,7 +493,14 @@ export type RuntimeBlockOptionArray =
   | ['color', `#${string}`]
   | ['radios', string, string[]]
   | ['checkboxes', string[], string[]]
-  | ['number', number, [number, number]]
+  | ['number', number | undefined]
+  | ['number', number | undefined, [number | undefined, number | undefined]]
+  | [
+      'number',
+      number | undefined,
+      [number | undefined, number | undefined],
+      true,
+    ]
   | ['range', number, [number, number]]
   | ['datetime-local', string | undefined]
   | [

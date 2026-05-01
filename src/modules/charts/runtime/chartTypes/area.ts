@@ -11,6 +11,7 @@ import {
   strokeWidthOptions,
   buildStrokeWidthOptions,
   buildValueFormatOptions,
+  yAxisMinOptions,
   mergeShared,
 } from './shared'
 import type {
@@ -19,6 +20,7 @@ import type {
   LegendTypeOptions,
   GridTypeOptions,
   StrokeWidthTypeOptions,
+  YAxisMinTypeOptions,
 } from './shared'
 
 export type TypeOptions = {
@@ -28,7 +30,8 @@ export type TypeOptions = {
   DataLabelsTypeOptions &
   LegendTypeOptions &
   GridTypeOptions &
-  StrokeWidthTypeOptions
+  StrokeWidthTypeOptions &
+  YAxisMinTypeOptions
 
 export default defineChartType<TypeOptions>(($t) => {
   const shared = mergeShared(
@@ -37,6 +40,7 @@ export default defineChartType<TypeOptions>(($t) => {
     legendOptions($t),
     gridOptions($t),
     strokeWidthOptions($t),
+    yAxisMinOptions($t),
   )
   return {
     id: 'area',
@@ -56,7 +60,7 @@ export default defineChartType<TypeOptions>(($t) => {
           ...buildXAxisLabelOptions(ctx.typeOptions),
         },
         ...buildDataLabelsOptions(ctx.typeOptions, ctx.numberFormat),
-        ...buildValueFormatOptions(ctx.numberFormat),
+        ...buildValueFormatOptions(ctx.typeOptions, ctx.numberFormat),
         ...buildLegendOptions(ctx.typeOptions),
         ...buildGridOptions(ctx.typeOptions),
       }

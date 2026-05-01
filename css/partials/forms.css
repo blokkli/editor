@@ -37,9 +37,6 @@
         }
       }
     }
-    input {
-      @apply !pr-40;
-    }
 
     &:has(input:placeholder-shown) {
       button {

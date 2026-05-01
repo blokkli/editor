@@ -11,7 +11,11 @@
           </button>
         </div>
 
-        <ChartTypePicker v-if="!isTranslation" v-model="chartData.type" />
+        <ChartTypePicker
+          v-if="!isTranslation"
+          :model-value="chartData.type"
+          @update:model-value="setType"
+        />
       </div>
     </div>
 
@@ -249,6 +253,7 @@ const {
   addFootnote,
   removeFootnote,
   updateFootnote,
+  setType,
 } = useChartEditorState(getCurrentData(), colorOptions)
 
 const autoUpdate = ref(true)
@@ -296,33 +301,6 @@ const caps = computed(() => {
     hasCategoryColors: def?.hasCategoryColors ?? false,
   }
 })
-
-const typeOptionsCache: Record<string, unknown> = {
-  ...chartData.value.typeOptions,
-}
-
-watch(
-  () => chartData.value.type,
-  (type) => {
-    const defaults = getDefaultTypeOptions(type)
-    const merged: Record<string, unknown> = {}
-    for (const key of Object.keys(defaults)) {
-      merged[key] =
-        key in typeOptionsCache ? typeOptionsCache[key] : defaults[key]
-    }
-    chartData.value.typeOptions = merged
-  },
-)
-
-watch(
-  () => chartData.value.typeOptions,
-  (opts) => {
-    if (opts) {
-      Object.assign(typeOptionsCache, opts)
-    }
-  },
-  { deep: true },
-)
 
 function getData(): BlokkliChartData {
   return chartData.value

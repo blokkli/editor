@@ -170,14 +170,14 @@ export default defineBlokkliAgentTool({
           if (availableOptions.length > 0) {
             options = {}
             for (const opt of availableOptions) {
-              const currentValue = getRuntimeOptionValue(
+              const resolvedValue = getRuntimeOptionValue(
                 opt.option,
                 opt.option.default,
               )
               const entry: BlockOptionsMap[string] = {
                 type: opt.option.type,
                 label: opt.option.label,
-                currentValue,
+                currentValue: resolvedValue ?? '',
               }
               if (opt.option.description) {
                 entry.description = opt.option.description
@@ -186,11 +186,13 @@ export default defineBlokkliAgentTool({
               if (labels) {
                 entry.options = labels
               }
-              if ('min' in opt.option) {
-                entry.min = opt.option.min
+              const optMin = (opt.option as { min?: unknown }).min
+              const optMax = (opt.option as { max?: unknown }).max
+              if (typeof optMin === 'number') {
+                entry.min = optMin
               }
-              if ('max' in opt.option) {
-                entry.max = opt.option.max
+              if (typeof optMax === 'number') {
+                entry.max = optMax
               }
               if ('step' in opt.option && opt.option.type === 'range') {
                 entry.step = opt.option.step

@@ -75,6 +75,7 @@
         :label="label"
         :min="option.min"
         :max="option.max"
+        :nullable="option.nullable"
       />
       <OptionDateTimeLocal
         v-else-if="option.type === 'datetime-local'"

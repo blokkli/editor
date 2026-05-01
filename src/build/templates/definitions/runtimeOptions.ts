@@ -131,8 +131,12 @@ ${toObject('FIELD_MAPPING', FIELD_MAPPING)}
           return `${key}: ${possibleValues}`
         } else if (option.type === 'color') {
           return key + ': ' + '`#${string}`'
-        } else if (option.type === 'range' || option.type === 'number') {
+        } else if (option.type === 'range') {
           return `${key}: number`
+        } else if (option.type === 'number') {
+          return option.nullable
+            ? `${key}: number | undefined`
+            : `${key}: number`
         }
       })
     }

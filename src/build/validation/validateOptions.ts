@@ -77,10 +77,16 @@ export function validateOption(
 
     case 'number':
     case 'range': {
-      // Validate that the default value is within the min/max range
       const defaultValue = option.default
       const min = option.min
       const max = option.max
+
+      if (typeof min === 'number' && typeof max === 'number' && min > max) {
+        errors.push({
+          message: `Option "${optionKey}" has minimum value ${min} which is greater than the maximum value ${max}`,
+          optionKey,
+        })
+      }
 
       if (typeof defaultValue === 'number') {
         if (typeof min === 'number' && defaultValue < min) {
@@ -95,6 +101,15 @@ export function validateOption(
             optionKey,
           })
         }
+      } else if (
+        defaultValue === undefined &&
+        option.type === 'number' &&
+        !option.nullable
+      ) {
+        errors.push({
+          message: `Option "${optionKey}" of type "number" must declare a default value (or set "nullable: true").`,
+          optionKey,
+        })
       }
       break
     }
