@@ -58,21 +58,19 @@
         </template>
         <template v-else>
           <button
-            v-if="adapterHasEdit && permissions.includes('edit')"
-            ref="editButtonEl"
-            class="bk-button bk-scheme-mono bk-is-light bk-is-small"
-            @click.prevent="isEditing = true"
-          >
-            <Icon name="bk_mdi_edit" />
-            {{ $t('templatesManageDialogEdit', 'Edit') }}
-          </button>
-          <button
             v-if="permissions.includes('delete')"
-            class="bk-button bk-scheme-mono bk-is-light bk-is-small"
+            class="bk-button bk-scheme-red bk-is-light bk-is-small bk-is-icon-only"
             @click="confirmDelete = true"
           >
             <Icon name="bk_mdi_delete" />
-            {{ $t('templatesManageDialogDelete', 'Delete') }}
+          </button>
+          <button
+            v-if="adapterHasEdit && permissions.includes('edit')"
+            ref="editButtonEl"
+            class="bk-button bk-scheme-accent bk-is-small bk-is-icon-only"
+            @click.prevent="isEditing = true"
+          >
+            <Icon name="bk_mdi_edit" />
           </button>
         </template>
       </div>

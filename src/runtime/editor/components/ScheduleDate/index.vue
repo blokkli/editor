@@ -28,7 +28,7 @@
         />
         <button
           type="button"
-          class="bk-button bk-scheme-mono bk-is-light bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
+          class="bk-button bk-scheme-mono bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
           :disabled="disabled"
           @click="decrementHour"
         >
@@ -36,7 +36,7 @@
         </button>
         <button
           type="button"
-          class="bk-button bk-scheme-mono bk-is-light bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
+          class="bk-button bk-scheme-mono bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
           :disabled="disabled"
           @click="incrementHour"
         >

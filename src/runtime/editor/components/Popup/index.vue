@@ -58,7 +58,7 @@ const themeClass = computed(() => {
     case 'lime':
       return 'bk-scheme-lime'
     default:
-      return 'bk-scheme-mono bk-is-light'
+      return 'bk-scheme-mono'
   }
 })
 

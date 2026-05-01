@@ -8,8 +8,7 @@
       {
         'bk-is-light': variant === 'light',
         'bk-is-dark': variant === 'dark' || variant === 'outline-dark',
-        'bk-is-outline':
-          variant === 'outline' || variant === 'outline-dark',
+        'bk-is-outline': variant === 'outline' || variant === 'outline-dark',
         'bk-is-small': size === 'small',
         'bk-is-icon-only': iconOnly,
         'bk-is-fullwidth': fullwidth,
@@ -39,7 +38,7 @@ withDefaults(
   }>(),
   {
     label: '',
-    scheme: 'accent',
+    scheme: undefined,
     variant: 'normal',
     size: 'normal',
   },

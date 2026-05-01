@@ -386,6 +386,11 @@ onMounted(() => {
   --bk-header-text: theme('colors.mono.100');
   --bk-border: theme('colors.mono.500');
 
+  @variant lg {
+    --bk-columns: 3;
+    --bk-item-width: 300px;
+  }
+
   .bk-artboard-tooltip-inner {
     @apply text-white;
   }

@@ -31,7 +31,7 @@
   </div>
   <div>
     <button
-      class="bk-button bk-scheme-mono bk-is-light bk-is-small"
+      class="bk-button bk-scheme-mono bk-is-small"
       @click.prevent="() => dom.updateVisibleRects()"
     >
       Refresh Rects

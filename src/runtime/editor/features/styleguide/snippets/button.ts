@@ -20,8 +20,8 @@ function row(variant: Variant, extra: Record<string, unknown> = {}) {
   return h(
     'div',
     { class: 'flex flex-wrap gap-10' },
-    schemes.map((scheme) =>
-      h(Button, { scheme, variant, label: scheme, ...extra }),
+    [undefined, ...schemes].map((scheme) =>
+      h(Button, { scheme, variant, label: scheme || 'No Scheme', ...extra }),
     ),
   )
 }
@@ -42,7 +42,8 @@ export default defineEditorSnippet({
     },
     {
       label: 'Light variant',
-      description: '`.bk-is-light` — `bg-scheme-light` with `text-scheme-dark`.',
+      description:
+        '`.bk-is-light` — `bg-scheme-light` with `text-scheme-dark`.',
       backgroundClass: '_bk_bg-white',
       render: () => row('light'),
     },

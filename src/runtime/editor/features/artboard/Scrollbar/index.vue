@@ -1,11 +1,11 @@
 <template>
   <Teleport :to="ui.mainLayoutElement.value" defer>
     <div
-      class="bk bk-artboard-scrollbar"
+      class="bk bk-artboard-scrollbar bg-mono-400 z-artboard-scrollbar overflow-hidden pointer-events-auto contain-strict group border-l border-l-mono-500"
       :class="'bk-orientation-' + orientation"
     >
       <div ref="el">
-        <button ref="thumb" />
+        <button ref="thumb" class="bk-button" />
       </div>
     </div>
   </Teleport>
@@ -66,15 +66,7 @@ defineOptions({
 }
 
 .bk.bk-artboard-scrollbar {
-  @apply bg-mono-300 z-artboard-scrollbar transition overflow-hidden pointer-events-auto;
-  contain: strict;
   grid-area: scrollbar-y;
-
-  button {
-    @apply bg-mono-500/50 block;
-  }
-
-  @apply py-5;
 
   &.bk-orientation-y {
     width: var(--bk-artboard-scrollbar-size);
@@ -99,19 +91,6 @@ defineOptions({
     > div {
       @apply w-full;
     }
-  }
-
-  &.bk-is-active,
-  &:hover {
-    @apply bg-mono-300;
-    button {
-      @apply bg-mono-600;
-    }
-  }
-
-  &.bk-is-active button,
-  button:hover {
-    @apply bg-mono-500;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <button
     :disabled
-    class="size-30 flex items-center justify-center group/tooltip"
+    class="size-30 flex items-center justify-center group/tooltip rounded-full"
     :class="{
       'hover:bg-mono-200': theme === 'mono',
       'hover:bg-red-normal hover:text-white': theme === 'danger',

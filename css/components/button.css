@@ -1,21 +1,64 @@
 .bk {
   .bk-button {
     @apply h-50 !px-20 inline-flex justify-center items-center gap-10 rounded-none !font-semibold focus-visible:outline-none !font-sans !text-base focus-visible:!ring-[3px] focus-visible:ring-offset-2;
-    @apply !whitespace-nowrap border;
+    @apply !whitespace-nowrap;
+    @apply border;
+    @apply select-none;
+    @apply rounded-xs;
+    box-shadow:
+      inset 1px 1px 0px 0px rgb(var(--bk-scheme-light) / 0.5),
+      inset -1px -1px 0px 0px rgb(var(--bk-scheme-dark) / 0.3);
+
+    &:active {
+      box-shadow:
+        inset -1px -1px 0px 0px rgb(var(--bk-scheme-light) / 0.5),
+        inset 1px 1px 0px 0px rgb(var(--bk-scheme-dark) / 0.3);
+    }
 
     /* Default variant: scheme-normal background with scheme-text. */
     @apply !bg-scheme-normal !text-scheme-text hover:!bg-scheme-normal-hover border-scheme-normal-hover hover:border-scheme-dark;
 
     &.bk-is-light {
       @apply !bg-scheme-light !text-scheme-dark hover:!bg-scheme-light-hover border-scheme-light-hover hover:border-scheme-dark;
+
+      box-shadow:
+        inset 1px 1px 0px 0px rgb(255 255 255 / 0.5),
+        inset -1px -1px 0px 0px rgb(var(--bk-scheme-dark) / 0.07);
+
+      &:active {
+        box-shadow:
+          inset -1px -1px 0px 0px rgb(255 255 255 / 0.5),
+          inset 1px 1px 0px 0px rgb(var(--bk-scheme-dark) / 0.07);
+      }
     }
 
     &.bk-is-dark {
-      @apply !bg-scheme-dark !text-scheme-light hover:!bg-scheme-dark-hover border-scheme-normal hover:border-scheme-light-hover;
+      @apply !bg-scheme-dark !text-scheme-light hover:!bg-scheme-dark-hover;
+      border-color: rgb(0 0 0 / 0.3);
+
+      box-shadow:
+        inset 1px 1px 0px 0px rgb(var(--bk-scheme-light) / 0.1),
+        inset -1px -1px 0px 0px rgb(0 0 0 / 0.4);
+
+      &:active {
+        box-shadow:
+          inset -1px -1px 0px 0px rgb(var(--bk-scheme-light) / 0.1),
+          inset 1px 1px 0px 0px rgb(0 0 0 / 0.4);
+      }
     }
 
     &.bk-is-outline {
       @apply !bg-transparent !text-scheme-normal border-scheme-normal hover:!bg-scheme-dark/15;
+
+      box-shadow:
+        inset 1px 1px 0px 0px rgb(var(--bk-scheme-light) / 0.5),
+        inset -1px -1px 0px 0px rgb(var(--bk-scheme-dark) / 0.2);
+
+      &:active {
+        box-shadow:
+          inset -1px -1px 0px 0px rgb(var(--bk-scheme-light) / 0.5),
+          inset 1px 1px 0px 0px rgb(var(--bk-scheme-dark) / 0.3);
+      }
     }
 
     /*
@@ -28,7 +71,7 @@
     }
 
     &.bk-is-small {
-      @apply h-30 !px-[8px] !text-sm gap-5;
+      @apply h-30 px-10! text-sm! gap-5;
 
       .bk-icon {
         svg {

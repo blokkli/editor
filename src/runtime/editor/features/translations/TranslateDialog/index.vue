@@ -89,7 +89,7 @@
 
         <div class="flex items-center gap-10 mt-auto pt-20">
           <button
-            class="bk-button bk-scheme-mono bk-is-light"
+            class="bk-button"
             :disabled="!selectedCount || isTranslating"
             @click="requestTranslations"
           >

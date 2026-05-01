@@ -3,16 +3,22 @@
     <Transition name="bk-library-edit-header">
       <div
         v-show="isLoaded"
-        class="bk bk-nested-editor-overlay"
-        :class="'bk-is-' + theme"
+        class="bk bk-nested-editor-overlay bg-scheme-light text-scheme-dark fixed top-0 left-0 size-full pointer-events-auto z-nested-editor-overlay-bg"
+        :class="'bk-scheme-' + theme"
       >
-        <Icon :name="icon" />
-        <header>
-          <h2>
+        <Icon
+          :name="icon"
+          class="size-120 -rotate-12 absolute -left-15 -top-30 text-scheme-light-hover"
+        />
+        <header class="flex items-center h-50 relative pl-10">
+          <h2 class="text-xl leading-none font-bold">
             <span>{{ title }}</span>
           </h2>
-          <button @click.prevent="closeOverlay">
-            <Icon name="bk_mdi_arrow_left_alt" />
+          <button
+            @click.prevent="closeOverlay"
+            class="h-50 flex items-center px-10 gap-10 font-semibold leading-none ml-auto hover:bg-scheme-light-hover"
+          >
+            <Icon name="bk_mdi_arrow_left_alt" class="size-20" />
             <span>{{ backLabel }}</span>
           </button>
         </header>
@@ -31,10 +37,12 @@
     >
       <div
         v-show="isLoaded"
-        class="bk bk-library-edit-overlay"
+        class="bk bk-library-edit-overlay fixed top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto z-nested-editor-overlay-iframe"
         :class="'bk-is-' + theme"
       >
-        <div class="bk-library-edit-overlay-frame">
+        <div
+          class="relative top-0 left-0 w-full h-full bg-white overflow-hidden"
+        >
           <slot>
             <div class="flex flex-col h-full">
               <NotEditStateInfo />
@@ -42,7 +50,7 @@
                 v-if="url"
                 ref="iframe"
                 :src="url"
-                style="width: 100%; height: 100%"
+                class="block size-full"
                 @load="onLoad"
               />
             </div>
@@ -66,12 +74,13 @@ import {
 import { Icon, NotEditStateInfo } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { ThemeColorName } from '../../../../global/types/theme'
 
 export type NestedEditorOverlayProps = {
   url?: string
   uuid: string
   title: string
-  theme: 'lime' | 'red' | 'accent'
+  theme: ThemeColorName
   icon: BlokkliIcon
   blockUuid?: string
   element?: HTMLElement | null
@@ -388,81 +397,6 @@ onBroadcastEvent('editorLoaded', onEditorLoaded)
 </script>
 
 <style lang="postcss">
-.bk.bk-nested-editor-overlay {
-  @apply fixed top-0 left-0 size-full pointer-events-auto;
-  @apply z-nested-editor-overlay-bg;
-
-  > .bk-icon {
-    @apply size-120 -rotate-12 absolute -left-15 -top-30;
-    svg {
-      @apply fill-current size-full;
-    }
-  }
-
-  header {
-    @apply flex items-center h-50 relative pl-10;
-    h2 {
-      @apply text-xl leading-none font-bold;
-    }
-  }
-
-  &.bk-is-red {
-    @apply bg-red-light text-red-dark;
-
-    > .bk-icon {
-      @apply text-red-normal opacity-15;
-    }
-
-    button {
-      @apply text-red-dark;
-      &:hover {
-        @apply bg-red-normal/15;
-      }
-    }
-  }
-
-  &.bk-is-lime {
-    @apply bg-lime-light text-lime-dark;
-
-    > .bk-icon {
-      @apply text-lime-normal opacity-35;
-    }
-
-    button {
-      @apply text-lime-dark;
-
-      &:hover {
-        @apply bg-lime-normal/15;
-      }
-    }
-  }
-
-  &.bk-is-accent {
-    @apply bg-accent-100 text-accent-800;
-
-    > .bk-icon {
-      @apply text-accent-200;
-    }
-
-    button {
-      @apply text-accent-600;
-
-      &:hover {
-        @apply bg-accent-600/10;
-      }
-    }
-  }
-
-  button {
-    @apply h-50 flex items-center px-10 gap-10 font-semibold leading-none;
-    @apply ml-auto;
-
-    svg {
-      @apply size-20 fill-current;
-    }
-  }
-}
-
 .bk-use-animations {
   .bk-library-edit-header-enter-active,
   .bk-library-edit-header-leave-active {
@@ -478,39 +412,6 @@ onBroadcastEvent('editorLoaded', onEditorLoaded)
 
     > header {
       @apply -translate-y-full;
-    }
-  }
-}
-
-.bk.bk-library-edit-overlay {
-  @apply fixed top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto;
-  @apply z-nested-editor-overlay-iframe;
-  @apply px-10 pb-10;
-
-  &.bk-is-lime {
-    .bk-library-edit-overlay-frame {
-      box-shadow: 0px 2px 6px 0px rgb(var(--bk-theme-lime-dark) / 30%);
-    }
-  }
-
-  &.bk-is-red {
-    .bk-library-edit-overlay-frame {
-      box-shadow: 0px 2px 6px 0px rgb(var(--bk-theme-red-dark) / 30%);
-    }
-  }
-
-  &.bk-is-accent {
-    .bk-library-edit-overlay-frame {
-      box-shadow: 0px 2px 6px 0px rgb(var(--bk-theme-accent-600) / 30%);
-    }
-  }
-
-  .bk-library-edit-overlay-frame {
-    @apply relative top-0 left-0 w-full h-full bg-white shadow overflow-hidden;
-    @apply border border-mono-300;
-
-    iframe {
-      @apply block size-full;
     }
   }
 }

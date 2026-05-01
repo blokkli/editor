@@ -27,7 +27,7 @@
       }"
     >
       <div
-        class="bk-command-palette-results overflow-auto bk-scrollbar-dark relative"
+        class="overflow-auto bk-scrollbar-dark relative max-h-[calc(100vh-300px)]"
         :style="{
           height: itemHeight * visibleItems + 'px',
         }"

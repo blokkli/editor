@@ -4,7 +4,7 @@
     :class="{ 'pointer-events-none bg-mono-100!': disabled }"
   >
     <div
-      class="text-xs uppercase tracking-wider text-mono-700 font-semibold px-15 py-10 border-b border-b-mono-300 rounded-t-md bg-white"
+      class="text-xs uppercase tracking-wider text-mono-800 font-semibold px-15 py-10 border-b border-b-mono-300 bg-mono-200"
       :class="{
         'bg-mono-100! text-mono-400!': disabled,
       }"
@@ -22,7 +22,7 @@
     </div>
     <div
       v-if="$slots.actions"
-      class="flex items-center border-t border-t-mono-300 rounded-b-md overflow-hidden"
+      class="flex items-center border-t border-t-mono-300 overflow-hidden"
       :class="{
         'opacity-50': disabled,
         '!border-t-0': !$slots.default,

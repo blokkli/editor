@@ -43,7 +43,7 @@
         </template>
       </SelectionTable>
       <div class="flex gap-10 flex-wrap pt-20">
-        <button class="bk-button bk-scheme-mono bk-is-light" @click="downloadCsv">
+        <button class="bk-button" @click="downloadCsv">
           <div
             class="uppercase font-bold border-2 leading-none rounded-md px-3 py-2 -ml-5"
           >
@@ -54,7 +54,7 @@
         <button
           v-for="lang in activeLanguages"
           :key="lang.id"
-          class="bk-button bk-scheme-mono bk-is-light"
+          class="bk-button"
           @click="downloadPo(lang.id)"
         >
           <div

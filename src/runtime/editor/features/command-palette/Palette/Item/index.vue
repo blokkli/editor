@@ -1,7 +1,7 @@
 <template>
   <button
-    class="bk-command flex text-mono-300 pl-[12px] pr-10 w-full text-left gap-10 items-center border border-transparent"
-    :class="isFocused ? 'bg-mono-700 border-mono-700 text-white' : ''"
+    class="bk-command flex pl-[12px] pr-10 w-full text-left gap-10 items-center border border-transparent"
+    :class="isFocused ? 'bg-mono-800 text-white' : 'text-mono-300'"
     @mouseenter="$emit('focus', index)"
     @click.prevent="$emit('select', item.id)"
   >

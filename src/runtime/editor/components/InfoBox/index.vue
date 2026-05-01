@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-scheme-light text-scheme-dark border-l-4 border-l-scheme-normal flex items-center"
+    class="bg-scheme-light text-scheme-dark border-l-4 border-l-scheme-normal flex items-center justify-between border border-scheme-light-hover"
     :class="[
       'bk-scheme-' + color,
       {

@@ -20,14 +20,17 @@
           <Icon name="bk_mdi_close" class="size-15" />
         </button>
       </div>
-      <button class="bk-button bk-scheme-mono bk-is-light bk-is-small" @click.prevent="triggerFileDialog">
+      <button
+        class="bk-button bk-scheme-mono bk-is-small"
+        @click.prevent="triggerFileDialog"
+      >
         {{ $t('translationsAddFiles', 'Add files...') }}
       </button>
     </div>
     <div v-else class="mx-auto py-20">
       <button
         type="button"
-        class="bk-button bk-scheme-mono bk-is-light"
+        class="bk-button bk-scheme-mono"
         @click.prevent="triggerFileDialog"
       >
         {{ $t('translationsSelectImportFile', 'Select CSV or PO file') }}
