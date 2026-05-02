@@ -6,20 +6,17 @@
     multiple
     edit-only
     meta
+    icon="bk_mdi_calendar_month"
+    :scheme="selectionHasDates ? 'yellow' : 'mono'"
     :weight="1000"
-    :class="{
-      'bk-has-schedule': selectionHasDates,
-    }"
     @click="onClick"
   >
-    <template #icon>
-      <div class="bk-schedule-action-icon">
-        <Icon name="bk_mdi_calendar_month" class="bk-item-action-icon" />
-        <Icon
-          v-if="selectionHasDates"
-          name="bk_mdi_check"
-          class="bk-schedule-action-icon-check"
-        />
+    <template #icon-addon>
+      <div
+        v-if="selectionHasDates"
+        class="absolute -top-5 -right-5 size-15 bg-yellow-normal rounded-full flex items-center justify-center text-yellow-dark"
+      >
+        <Icon name="bk_mdi_check" class="size-10" />
       </div>
     </template>
   </PluginItemAction>
@@ -125,27 +122,3 @@ export default {
   name: 'BlockScheduler',
 }
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-item-action.bk-has-schedule {
-    @apply bg-yellow-dark/50 hover:bg-yellow-dark/70;
-
-    .bk-icon-clock {
-      @apply text-yellow-light;
-    }
-  }
-
-  .bk-schedule-action-icon {
-    @apply relative;
-    .bk-schedule-action-icon-check {
-      @apply absolute -top-5 -right-5;
-      @apply size-15 bg-yellow-normal rounded-full flex items-center justify-center;
-
-      svg {
-        @apply size-10;
-      }
-    }
-  }
-}
-</style>
