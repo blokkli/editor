@@ -52,8 +52,8 @@ const src = computed(() =>
   route.fullPath.replace('blokkliEditing', 'blokkliPreview'),
 )
 
-onBlokkliEvent('updateMutatedFields', (e) =>
-  frameEventBus.emit('mutatedFields', e.fields),
+onBlokkliEvent('updatePreviewState', (e) =>
+  frameEventBus.emit('updatePreviewState', e),
 )
 onBlokkliEvent('select', (uuids) => {
   const uuid = Array.isArray(uuids) ? uuids[0] : uuids

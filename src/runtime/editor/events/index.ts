@@ -165,8 +165,9 @@ export type AddNewBlocksEvent = {
   afterUuid: string | null
 }
 
-export type UpdateMutatedFieldsEvent = {
+export type UpdatePreviewStateEvent = {
   fields: MutatedField[]
+  mutatedEntity: Record<any, any>
 }
 
 type MultiSelectStartEvent = {
@@ -234,7 +235,7 @@ export interface EventbusEvents {
   'dragging:move': Coord
   'dragging:end': undefined
   'add:block:new': AddNewBlockEvent
-  updateMutatedFields: UpdateMutatedFieldsEvent
+  updatePreviewState: UpdatePreviewStateEvent
   animationFrame: AnimationFrameEvent
   message: Message
   keyPressed: KeyPressedEvent
@@ -344,7 +345,7 @@ export const emitMessage = (
 
 type FrameEventBusEvents = {
   selectItems: string[]
-  mutatedFields: MutatedField[]
+  updatePreviewState: UpdatePreviewStateEvent
   focus: string
   updateOption: UpdateBlockOptionEvent
 }

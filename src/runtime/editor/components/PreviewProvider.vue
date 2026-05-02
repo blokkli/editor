@@ -25,7 +25,11 @@ import broadcastProvider from '#blokkli/editor/providers/broadcast'
 import { getFieldKey } from '#blokkli/helpers'
 import { intersects } from '#blokkli/editor/helpers/geometry'
 import type { AdapterContext } from '../../editor/adapter'
-import { eventBus, frameEventBus } from '#blokkli/editor/events'
+import {
+  eventBus,
+  frameEventBus,
+  type UpdatePreviewStateEvent,
+} from '#blokkli/editor/events'
 import definitionProvider from '#blokkli/editor/providers/definition'
 import { addElementClasses } from '#blokkli/editor/composables'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
@@ -76,12 +80,12 @@ const { data, refresh, error } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
 )
 
-function updateMutatedFields(fields: MutatedField[]) {
+function onUpdatePreviewState(e: UpdatePreviewStateEvent) {
   const existingKeys = Object.keys(mutatedFieldsMap)
   const newKeys = new Set<string>()
 
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i]!
+  for (let i = 0; i < e.fields.length; i++) {
+    const field = e.fields[i]!
     const key = getFieldKey(field.entityUuid, field.name)
     mutatedFieldsMap[key] = field
     newKeys.add(key)
@@ -93,12 +97,15 @@ function updateMutatedFields(fields: MutatedField[]) {
       mutatedFieldsMap[key] = undefined
     }
   }
+  mutatedEntityFromState.value = e.mutatedEntity
 }
 
 const updateState = () => {
   const fields = data.value?.mutatedState?.fields || []
-  updateMutatedFields(fields)
-  mutatedEntityFromState.value = data.value?.mutatedEntity
+  onUpdatePreviewState({
+    fields,
+    mutatedEntity: data.value?.mutatedEntity || {},
+  })
 
   const options =
     mutatedOptions.value || data.value?.mutatedState?.mutatedOptions || {}
@@ -227,7 +234,7 @@ addElementClasses(document.documentElement, 'bk-html-preview')
 
 onMounted(() => {
   if (isInIframe()) {
-    frameEventBus.on('mutatedFields', updateMutatedFields)
+    frameEventBus.on('updatePreviewState', onUpdatePreviewState)
     frameEventBus.on('focus', onFocusItem)
     frameEventBus.on('updateOption', onUpdateOption)
     // We are a preview inside the iframe of the main editing app.
@@ -252,7 +259,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('wheel', onWheel)
   window.removeEventListener('message', onMessage)
   document.documentElement.removeEventListener('mousedown', onMouseDown)
-  frameEventBus.off('mutatedFields', updateMutatedFields)
+  frameEventBus.off('updatePreviewState', onUpdatePreviewState)
   frameEventBus.off('focus', onFocusItem)
   frameEventBus.off('updateOption', onUpdateOption)
 })

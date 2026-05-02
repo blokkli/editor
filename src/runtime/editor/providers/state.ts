@@ -588,7 +588,10 @@ export default async function (
       mutatedItemProps[uuid] = undefined
     })
 
-    eventBus.emit('updateMutatedFields', { fields: newMutatedFields })
+    eventBus.emit('updatePreviewState', {
+      fields: newMutatedFields,
+      mutatedEntity: mutatedEntity.value,
+    })
 
     nextTick(() => {
       refreshKey.value = Date.now().toString()
