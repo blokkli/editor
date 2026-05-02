@@ -15,7 +15,7 @@
       >
         <div
           v-if="icon"
-          class="size-[36px] p-5"
+          class="size-[36px] p-5 shrink-0"
           :class="[
             namedTheme && typeof props.theme !== 'object'
               ? [

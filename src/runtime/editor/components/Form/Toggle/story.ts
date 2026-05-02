@@ -43,5 +43,15 @@ export default defineEditorComponent({
           'You need the "Publish" permission to enable this option.',
       },
     },
+    {
+      label: 'Dark color scheme',
+      backgroundClass: 'bg-mono-900',
+      props: {
+        label: 'Auto-save',
+        description: 'Persist edits as soon as you stop typing.',
+        modelValue: true,
+        colorScheme: 'dark',
+      },
+    },
   ],
 })

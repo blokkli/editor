@@ -26,6 +26,10 @@ export default defineChartType<TypeOptions>(($t) => ({
   },
   editor: {
     label: $t('chartsTypePie', 'Pie'),
+    description: $t(
+      'chartsTypePieDescription',
+      'Divides a circle into slices to show proportional shares of a whole.',
+    ),
     icon: 'bk_mdi_pie_chart',
     options: {
       showLabels: {

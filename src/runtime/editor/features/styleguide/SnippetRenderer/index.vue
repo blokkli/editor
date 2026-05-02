@@ -6,9 +6,7 @@
     </header>
     <div
       class="bk-styleguide-variant-stage"
-      :class="
-        variant.backgroundClass ?? entry.backgroundClass ?? 'bk-is-checkerboard'
-      "
+      :class="variant.backgroundClass ?? entry.backgroundClass ?? 'bg-white'"
     >
       <component :is="variant.component" v-if="variant.component" />
       <Stage v-else />

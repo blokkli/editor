@@ -76,8 +76,8 @@ export interface EditorComponentMeta<C extends AnyComponent = AnyComponent> {
 
   /**
    * Optional class applied to each variant's stage in place of the default
-   * checkerboard. Useful for components that need a solid or themed
-   * background to be legible (e.g. white-on-dark).
+   * white background. Useful for components that need a themed background to
+   * be legible (e.g. white-on-dark).
    */
   backgroundClass?: string
 
@@ -136,8 +136,8 @@ export interface EditorSnippetMeta {
 
   /**
    * Optional class applied to each variant's stage in place of the default
-   * checkerboard. Useful for snippets that need a solid or themed background
-   * to be legible (e.g. white-on-dark).
+   * white background. Useful for snippets that need a themed background to be
+   * legible (e.g. white-on-dark).
    */
   backgroundClass?: string
 

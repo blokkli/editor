@@ -27,6 +27,7 @@ export type ChartTypeDefinition<
   buildSeries: (ctx: ChartBuildContext<T>) => any
   editor: {
     label: string
+    description: string
     icon: BlokkliIcon
     options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
   }

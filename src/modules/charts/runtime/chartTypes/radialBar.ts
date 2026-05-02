@@ -38,6 +38,10 @@ export default defineChartType<TypeOptions>(($t) => ({
   },
   editor: {
     label: $t('chartsTypeRadialBar', 'Radial Bar'),
+    description: $t(
+      'chartsTypeRadialBarDescription',
+      'Shows progress or percentages as concentric circular bars, suited to KPIs and goal tracking.',
+    ),
     icon: 'bk_mdi_track_changes',
     options: {
       showLabels: {

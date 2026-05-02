@@ -1,33 +1,34 @@
 <template>
-  <div class="flex flex-1">
-    <button
-      v-for="option in chartTypes"
-      :key="option.value"
-      type="button"
-      class="h-50 flex items-center text-mono-300 px-15 flex-1 justify-center group"
-      :class="{ 'is-active': modelValue === option.value }"
-      @click="emit('update:modelValue', option.value)"
-    >
-      <div
-        class="flex items-center gap-8 text-base rounded-full px-10 py-3 group-hover:bg-mono-700 group-hover:text-mono-50"
-        :class="{
-          'bg-white! text-mono-950! font-semibold': modelValue === option.value,
-        }"
-      >
-        <Icon :name="option.icon" class="size-20" />
-        <span>{{ option.label }}</span>
+  <PanelItem
+    :title="activeChartType.editor.label"
+    :description="activeChartType.editor.description"
+    @click="showOptions = !showOptions"
+    :icon="activeChartType.editor.icon"
+  >
+    <TransitionCollapse>
+      <div v-if="showOptions" class="border-t border-t-mono-300">
+        <PanelItem
+          v-for="option in chartTypes"
+          :key="option.id"
+          @click="onClick(option.id)"
+          :title="option.editor.label"
+          :description="option.editor.description"
+          :icon="option.editor.icon"
+          :theme="option.id === modelValue ? 'accent' : 'mono'"
+        />
       </div>
-    </button>
-  </div>
+    </TransitionCollapse>
+  </PanelItem>
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import type { ChartType } from '../../../../types'
-import { getChartTypes } from '../../../../chartTypes'
-import { Icon } from '#blokkli/editor/components'
+import { getChartTypes, type ChartTypeDefinition } from '../../../../chartTypes'
+import PanelItem from '#blokkli/editor/components/Panel/Item/index.vue'
+import TransitionCollapse from '#blokkli/editor/components/Transition/Collapse/index.vue'
 
-defineProps<{
+const props = defineProps<{
   modelValue: ChartType
 }>()
 
@@ -37,11 +38,18 @@ const emit = defineEmits<{
 
 const { $t } = useBlokkli()
 
-const chartTypes = computed(() =>
-  getChartTypes($t).map((def) => ({
-    value: def.id as ChartType,
-    label: def.editor.label,
-    icon: def.editor.icon,
-  })),
-)
+const chartTypes = computed<ChartTypeDefinition[]>(() => getChartTypes($t))
+
+const showOptions = ref(false)
+
+const activeChartType = computed<ChartTypeDefinition>(() => {
+  return (
+    chartTypes.value.find((v) => v.id === props.modelValue) ||
+    chartTypes.value[0]!
+  )
+})
+
+function onClick(id: string) {
+  emit('update:modelValue', id as ChartType)
+}
 </script>

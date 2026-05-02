@@ -70,6 +70,10 @@ export default defineChartType<TypeOptions>(($t) => {
     },
     editor: {
       label: $t('chartsTypeLine', 'Line'),
+      description: $t(
+        'chartsTypeLineDescription',
+        'Connects data points with lines to show trends and changes across a continuous range.',
+      ),
       icon: 'bk_mdi_show_chart',
       options: {
         curved: {

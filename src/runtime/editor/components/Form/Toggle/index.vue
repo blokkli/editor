@@ -1,14 +1,57 @@
 <template>
-  <label class="bk-checkbox-toggle group/tooltip">
+  <label
+    class="bk-checkbox-toggle group/tooltip relative flex cursor-pointer h-full leading-none group/toggle"
+    :class="{
+      'h-full items-center': stretch,
+      'cursor-not-allowed!': disabled,
+    }"
+  >
     <slot />
-    <input v-model="value" type="checkbox" class="peer" :disabled />
-    <div class="bk-checkbox-toggle-toggle" />
-    <div v-if="label || description" class="bk-checkbox-toggle-label">
-      <div v-if="label" class="bk-checkbox-toggle-label-label">{{ label }}</div>
-      <div v-if="description" class="bk-checkbox-toggle-label-description">
+    <input v-model="value" type="checkbox" class="sr-only" :disabled />
+    <div
+      class="bk-checkbox-toggle-toggle group-focus-within/toggle:outline outline-accent-950/80 outline-offset-2 relative w-[36px] h-20 rounded-full shrink-0 mr-5 last:mr-0"
+      :class="{
+        'mt-2': !stretch,
+        'bg-mono-200!': disabled,
+        'bg-mono-500 group-hover/toggle:bg-mono-400': isDark,
+        'bg-mono-400 group-hover/toggle:bg-mono-500': !isDark,
+        'bg-accent-600! group-hover/toggle:bg-accent-500!': value && isDark,
+        'bg-accent-600! group-hover/toggle:bg-accent-700!': value && !isDark,
+      }"
+    >
+      <div
+        class="absolute top-2 left-2 bg-white rounded-full size-[16px]"
+        :class="{
+          'translate-x-full': value,
+        }"
+      />
+    </div>
+    <div
+      v-if="label || description"
+      class="bk-checkbox-toggle-label inline-block pr-10 text-base"
+    >
+      <div
+        v-if="label"
+        class="bk-checkbox-toggle-label-label font-semibold"
+        :class="{
+          'text-mono-200 group-hover/toggle:text-white': isDark,
+          'text-mono-700 group-hover/toggle:text-mono-950': !isDark,
+        }"
+      >
+        {{ label }}
+      </div>
+      <div
+        v-if="description"
+        class="text-sm text-pretty max-w-[500px]"
+        :class="{
+          'text-mono-400': isDark,
+          'text-mono-500': !isDark,
+          'text-mono-300!': disabled,
+        }"
+      >
         {{ description }}
       </div>
-      <div v-if="disabledReason" class="bk-form-disabled-reason">
+      <div v-if="disabledReason" class="bk-form-disabled-reason mt-8">
         {{ disabledReason }}
       </div>
     </div>
@@ -21,79 +64,31 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from '#imports'
 import Tooltip from '#blokkli/editor/components/Tooltip/index.vue'
 
-defineProps<{
-  label?: string
-  description?: string
-  tooltip?: string
-  disabled?: boolean
-  disabledReason?: string | null
-}>()
+const props = withDefaults(
+  defineProps<{
+    label?: string
+    description?: string
+    tooltip?: string
+    disabled?: boolean
+    disabledReason?: string | null
+    colorScheme?: 'light' | 'dark'
+    stretch?: boolean
+  }>(),
+  {
+    label: undefined,
+    description: undefined,
+    tooltip: undefined,
+    disabled: false,
+    disabledReason: null,
+    colorScheme: 'light',
+    stretch: false,
+  },
+)
+
+const isDark = computed<boolean>(() => props.colorScheme === 'dark')
 
 const value = defineModel<boolean>()
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-checkbox-toggle {
-    @apply relative flex cursor-pointer h-full text-mono-800 leading-none;
-
-    &:has(input[disabled]) {
-      @apply !cursor-not-allowed !text-mono-300;
-      .bk-checkbox-toggle-toggle {
-        @apply !bg-mono-200;
-      }
-
-      .bk-checkbox-toggle-label-description {
-        @apply text-mono-300;
-      }
-    }
-
-    .bk-form-disabled-reason {
-      @apply mt-8;
-    }
-
-    &:focus-within {
-      input + .bk-checkbox-toggle-toggle {
-        @apply outline outline-accent-950/80 outline-offset-2;
-      }
-    }
-
-    .bk-checkbox-toggle-label {
-      .bk-checkbox-toggle-label-label {
-        @apply font-semibold;
-      }
-      .bk-checkbox-toggle-label-description {
-        @apply text-sm text-mono-600 text-pretty max-w-[500px];
-      }
-      @apply inline-block pr-10 text-base;
-    }
-
-    @media not all and (hover: none) {
-      @apply hover:text-accent-800;
-    }
-    input {
-      @apply sr-only;
-    }
-    input:checked + .bk-checkbox-toggle-toggle {
-      @apply after:translate-x-full after:border-white bg-accent-800;
-    }
-    @media not all and (hover: none) {
-      input:not(:checked):hover + .bk-checkbox-toggle-toggle {
-        @apply bg-mono-500;
-      }
-      input:checked:hover + .bk-checkbox-toggle-toggle {
-        @apply bg-accent-700;
-      }
-    }
-
-    .bk-checkbox-toggle-toggle {
-      @apply relative w-[36px] h-20 bg-mono-400 rounded-full  flex-shrink-0;
-      @apply after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-[16px] after:w-[16px];
-      @apply mr-5;
-      @apply last:mr-0 mt-[2px];
-    }
-  }
-}
-</style>

@@ -14,7 +14,7 @@ const { $t, state } = useBlokkli()
 
 const props = defineProps<{
   label: string
-  property: string
+  property?: string
   modelValue?: boolean
   required?: boolean
 }>()
@@ -31,7 +31,7 @@ const checked = computed({
 })
 
 defineCommands(() => {
-  if (state.editMode.value !== 'editing') {
+  if (state.editMode.value !== 'editing' || !props.property) {
     return
   }
   return {

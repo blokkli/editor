@@ -56,6 +56,10 @@ export default defineChartType<TypeOptions>(($t) => {
     },
     editor: {
       label: $t('chartsTypeHeatmap', 'Heatmap'),
+      description: $t(
+        'chartsTypeHeatmapDescription',
+        'Visualises values across two dimensions using colour intensity to reveal patterns and outliers.',
+      ),
       icon: 'bk_mdi_grid_view',
       options: {
         ...shared.options,

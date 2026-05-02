@@ -1,37 +1,43 @@
 <template>
-  <div class="bg-mono-100 h-full flex flex-col" @wheel.capture.stop>
-    <div class="bg-mono-900 sticky top-0 z-50">
-      <div class="flex border-b border-mono-700">
-        <div class="bk-chart-editor-actions">
-          <button type="button" :disabled="!canUndo" @click="undo">
-            <Icon name="bk_mdi_undo" />
-          </button>
-          <button type="button" :disabled="!canRedo" @click="redo">
-            <Icon name="bk_mdi_redo" />
-          </button>
-        </div>
-
-        <ChartTypePicker
-          v-if="!isTranslation"
-          :model-value="chartData.type"
-          @update:model-value="setType"
-        />
-      </div>
-    </div>
-
+  <div
+    class="bg-mono-100 h-full flex flex-col border-t border-t-mono-400"
+    @wheel.capture.stop
+  >
     <div class="grid grid-cols-[1fr_auto] flex-1 h-full">
       <div class="relative bg-white border-r border-r-mono-300 overflow-hidden">
         <div class="absolute top-0 left-0 size-full">
-          <div class="flex gap-20 p-20">
+          <div
+            class="flex border-b border-mono-700 h-50 bg-mono-900 items-center"
+          >
+            <div class="flex items-center border-r border-r-mono-600">
+              <button
+                type="button"
+                class="bk-toolbar-button"
+                :disabled="!canUndo"
+                @click="undo"
+              >
+                <Icon name="bk_mdi_undo" />
+              </button>
+              <button
+                type="button"
+                :disabled="!canRedo"
+                @click="redo"
+                class="bk-toolbar-button"
+              >
+                <Icon name="bk_mdi_redo" />
+              </button>
+            </div>
             <FormToggle
               v-model="autoUpdate"
               :label="$t('chartsAutoUpdate', 'Auto-update')"
+              color-scheme="dark"
+              stretch
+              class="pl-15"
             />
-
             <button
               v-if="!autoUpdate"
               type="button"
-              class="bk-button bk-scheme-mono bk-is-light bk-is-small"
+              class="bk-button bk-scheme-mono bk-is-small"
               @click="refreshPreview"
             >
               {{ $t('chartsRefreshPreview', 'Refresh Preview') }}
@@ -55,6 +61,12 @@
           class="absolute top-0 left-0 size-full p-20 overflow-auto bk-scrollbar-light"
         >
           <template v-if="!isTranslation">
+            <PanelSection :title="$t('chartsType', 'Chart Type')">
+              <ChartTypePicker
+                :model-value="chartData.type"
+                @update:model-value="setType"
+              />
+            </PanelSection>
             <PanelSection :title="$t('chartsData', 'Data')">
               <div class="overflow-auto bk-scrollbar-light relative z-50">
                 <DataTable

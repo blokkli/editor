@@ -37,6 +37,10 @@ export default defineChartType<TypeOptions>(($t) => {
     },
     editor: {
       label: $t('chartsTypeRadar', 'Radar'),
+      description: $t(
+        'chartsTypeRadarDescription',
+        'Plots several variables on radial axes to compare strengths and weaknesses across categories.',
+      ),
       icon: 'bk_mdi_radar',
       options: {
         markers: {

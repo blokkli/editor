@@ -67,6 +67,10 @@ export default defineChartType<TypeOptions>(($t) => {
     },
     editor: {
       label: $t('chartsTypeBar', 'Bar'),
+      description: $t(
+        'chartsTypeBarDescription',
+        'Compares values across categories using rectangular bars, best for ranking and side-by-side comparisons.',
+      ),
       icon: 'bk_mdi_bar_chart',
       options: {
         stacked: {

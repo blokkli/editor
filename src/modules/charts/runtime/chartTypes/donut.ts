@@ -48,6 +48,10 @@ export default defineChartType<TypeOptions>(($t) => ({
   },
   editor: {
     label: $t('chartsTypeDonut', 'Donut'),
+    description: $t(
+      'chartsTypeDonutDescription',
+      'Displays parts of a whole as a ring, leaving room in the centre for a total or summary value.',
+    ),
     icon: 'bk_mdi_donut_large',
     options: {
       showTotal: {

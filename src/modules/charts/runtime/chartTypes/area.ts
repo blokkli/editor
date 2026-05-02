@@ -70,6 +70,10 @@ export default defineChartType<TypeOptions>(($t) => {
     },
     editor: {
       label: $t('chartsTypeArea', 'Area'),
+      description: $t(
+        'chartsTypeAreaDescription',
+        'Shows trends over time with filled regions, useful for emphasising volume or cumulative values.',
+      ),
       icon: 'bk_mdi_area_chart',
       options: {
         curved: {
