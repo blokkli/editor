@@ -81,21 +81,16 @@
                   @update:categories="chartData.categories = $event"
                   @update:series="chartData.series = $event"
                   @update:category-colors="chartData.categoryColors = $event"
+                  @add-column="addSeries"
                 />
               </div>
+              <PanelAddButton
+                :label="$t('chartsAddRow', 'Add row')"
+                icon="bk_mdi_add_row_below"
+                @click.prevent="addRow"
+              />
 
               <template #actions>
-                <PanelAction
-                  :title="$t('chartsAddRow', 'Add row')"
-                  icon="bk_mdi_add_row_below"
-                  @click="addRow"
-                />
-                <PanelAction
-                  v-if="caps.hasMultipleSeries"
-                  :title="$t('chartsAddColumn', 'Add column')"
-                  icon="bk_mdi_add_column_right"
-                  @click="addSeries"
-                />
                 <CsvImport @import="importData" />
                 <PanelAction
                   :title="$t('chartsReverseRows', 'Reverse rows')"
@@ -159,6 +154,7 @@ import Preview from './Preview/index.vue'
 import ChartTypeOptions from './ChartTypeOptions/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
+import PanelAddButton from '#blokkli/editor/components/Panel/AddButton/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const props = defineProps<{

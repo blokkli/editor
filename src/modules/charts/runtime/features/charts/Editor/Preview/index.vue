@@ -48,7 +48,7 @@ const blocks = computed(() => [] as FieldListItemTyped[])
 const fieldListType = computed(() => 'default' as ValidFieldListTypes)
 
 provide(INJECT_IS_IN_REUSABLE, true)
-provide(INJECT_IS_EDITING, false)
+provide(INJECT_IS_EDITING, true)
 provide(INJECT_FIELD_LIST_BLOCKS, blocks)
 provide(INJECT_PROVIDER_BLOCKS, blocks)
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)

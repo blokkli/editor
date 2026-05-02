@@ -33,7 +33,20 @@
             </button>
           </div>
         </th>
-        <th v-if="canDeleteRows" />
+        <th v-if="canDeleteRows" class="size-40 group/tooltip relative">
+          <button
+            v-if="hasMultipleSeries"
+            type="button"
+            class="bk-chart-data-table-input size-full flex items-center justify-center hover:text-accent-600 hover:bg-mono-100"
+            @click="$emit('addColumn')"
+          >
+            <Icon name="bk_mdi_add_column_right" class="size-18" />
+          </button>
+          <Tooltip
+            :label="$t('chartsAddColumn', 'Add column')"
+            placement="bottom-before"
+          />
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -84,10 +97,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import type { ChartSeries } from '../../../../types'
 import { parseNumericInput } from '../../../../helpers'
-import { Icon } from '#blokkli/editor/components'
+import { Icon, Tooltip } from '#blokkli/editor/components'
 import ColorDropdown from '../ColorDropdown/index.vue'
 
 const props = defineProps<{
@@ -105,7 +118,10 @@ const emit = defineEmits<{
   'update:categories': [value: string[]]
   'update:series': [value: ChartSeries[]]
   'update:categoryColors': [value: string[]]
+  addColumn: []
 }>()
+
+const { $t } = useBlokkli()
 
 const visibleSeries = computed(() =>
   props.hasMultipleSeries ? props.series : props.series.slice(0, 1),

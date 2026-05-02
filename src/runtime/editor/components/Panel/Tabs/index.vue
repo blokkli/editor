@@ -6,7 +6,7 @@
       type="button"
       role="tab"
       :aria-selected="modelValue === tab.id"
-      class="px-15 py-8 text-base font-semibold border first:border-l-0"
+      class="px-15 py-8 text-base font-semibold border first:border-l-0 border-t-0!"
       :class="
         modelValue === tab.id
           ? 'text-accent-700 border-mono-400 border-b-white! bg-white'

@@ -56,7 +56,7 @@
 
     td input,
     th input {
-      @apply bg-transparent text-mono-900 font-sans text-base px-8 py-5 w-full;
+      @apply bg-transparent text-mono-900 font-sans text-sm px-8 py-5 w-full;
       border: none;
       outline: none;
       min-width: 100px;
@@ -109,13 +109,13 @@
   }
 
   .bk-chart-data-table-remove {
-    @apply text-mono-400 cursor-pointer bg-transparent border-none text-base leading-none;
+    @apply text-mono-800 cursor-pointer bg-transparent border-none text-base leading-none;
     @apply hover:text-red-normal;
     @apply size-40 flex items-center justify-center;
     @apply hover:bg-red-light;
 
     svg {
-      @apply size-15;
+      @apply size-18;
     }
   }
 }

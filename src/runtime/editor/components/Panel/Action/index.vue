@@ -7,7 +7,7 @@
     }"
     :disabled
   >
-    <Icon :name="icon" class="size-20" />
+    <Icon :name="icon" class="size-30" />
     <span>{{ title }}</span>
   </button>
 </template>
@@ -26,6 +26,6 @@ defineProps<{
 
 <style>
 .bk-panel-action:not(:last-child) {
-  @apply border-r border-r-mono-300;
+  @apply border-r border-r-mono-400;
 }
 </style>

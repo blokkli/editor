@@ -28,7 +28,10 @@ import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import type { ApexOptions } from 'apexcharts'
-import { INJECT_PROVIDER_CONTEXT } from '#blokkli/helpers/injections'
+import {
+  INJECT_IS_EDITING,
+  INJECT_PROVIDER_CONTEXT,
+} from '#blokkli/helpers/injections'
 
 const ApexChart = import.meta.client
   ? defineAsyncComponent(() => import('vue3-apexcharts'))
@@ -43,6 +46,8 @@ const props = defineProps<
     languageOverride?: string
   }
 >()
+
+const isEditing = inject(INJECT_IS_EDITING, false)
 
 const appConfig = useAppConfig()
 
@@ -160,6 +165,7 @@ const chartOptions = computed<ApexOptions>(() => {
       toolbar: { show: false },
       redrawOnParentResize: false,
       zoom: { enabled: false },
+      animations: { enabled: !isEditing },
     },
   }
 
