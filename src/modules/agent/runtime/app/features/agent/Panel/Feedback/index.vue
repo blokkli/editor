@@ -48,7 +48,6 @@
         />
         <button
           class="bk-button bk-is-small bk-scheme-accent self-end"
-          :disabled="!comment"
           @click="onSubmit"
         >
           {{ $t('aiAgentFeedbackSubmit', 'Submit') }}
@@ -117,7 +116,9 @@ function onRate(value: AgentConversationFeedbackRating) {
 function onSubmit() {
   if (!rating.value) return
   submitted.value = true
-  emit('submit', rating.value, comment.value || undefined)
+  if (comment.value) {
+    emit('submit', rating.value, comment.value || undefined)
+  }
   emit('done')
 }
 </script>
