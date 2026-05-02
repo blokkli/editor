@@ -3,29 +3,11 @@
     <div
       v-for="group in groups"
       :key="group.name"
-      :class="'bk-is-' + group.name"
+      class="border-b border-b-mono-600"
     >
       <ol>
         <li v-for="action in group.actions" :key="action.id">
-          <button
-            class="bk-blokkli-item-actions-type-dropdown-button group/tooltip"
-            :class="'bk-is-variant-' + action.variant || 'default'"
-            :disabled="action.enabled === false"
-            @click.prevent="onActionClick(action)"
-          >
-            <div class="bk-blokkli-item-actions-type-dropdown-icon">
-              <Icon v-if="action.icon" :name="action.icon" />
-              <ItemIcon v-else-if="action.bundle" :bundle="action.bundle" />
-            </div>
-            <div>
-              <div>{{ action.label }}</div>
-            </div>
-            <Tooltip
-              v-if="action.description"
-              :label="action.description"
-              placement="center-after"
-            />
-          </button>
+          <Item :action @click.prevent="onActionClick(action)" />
         </li>
       </ol>
     </div>
@@ -34,8 +16,8 @@
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import { ItemIcon, Icon, Tooltip } from '#blokkli/editor/components'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
+import Item from './Item.vue'
 
 const emit = defineEmits<{
   close: []

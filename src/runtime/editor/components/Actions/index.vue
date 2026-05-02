@@ -489,8 +489,7 @@ export default {
     @apply lg:rounded-e-md;
   }
 
-  .bk-blokkli-item-actions-title-icon,
-  .bk-blokkli-item-actions-type-dropdown-icon {
+  .bk-blokkli-item-actions-title-icon {
     @apply text-xl lg:text-[34px] mr-[0.25em] size-[1em] relative;
     > .bk-blokkli-item-icon,
     > .bk-icon {
@@ -511,10 +510,6 @@ export default {
         @apply size-[12px] fill-lime-light;
       }
     }
-  }
-  .bk-blokkli-item-actions-type-button,
-  .bk-blokkli-item-actions-type-dropdown-button {
-    @apply pl-[9px] lg:pr-5;
   }
 
   .bk-blokkli-item-actions-type-button {
@@ -574,42 +569,6 @@ export default {
     h3 {
       @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-mono-400;
     }
-    .bk-blokkli-item-actions-type-dropdown-button {
-      .bk-blokkli-item-icon,
-      .bk-icon {
-        @apply flex items-center justify-center shrink-0;
-        @apply size-25;
-        svg {
-          @apply fill-current;
-        }
-      }
-    }
-  }
-
-  .bk-blokkli-item-actions-type-dropdown-button {
-    @apply flex w-full font-semibold lg:text-base text-mono-300 items-center;
-    text-align: left;
-    line-height: 1;
-    height: var(--bk-actions-height);
-    &[disabled] {
-      @apply pointer-events-none opacity-20;
-    }
-    @variant lg {
-      &:hover {
-        @apply text-white bg-mono-800;
-        .bk-icon,
-        .bk-blokkli-item-icon {
-          @apply border-mono-300;
-        }
-        .bk-description {
-          @apply text-white;
-        }
-      }
-    }
-  }
-
-  .bk-blokkli-item-actions-comment {
-    /* @apply relative; */
   }
 
   .bk-blokkli-item-actions-title-pill {
