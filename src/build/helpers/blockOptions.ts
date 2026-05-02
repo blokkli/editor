@@ -13,12 +13,7 @@ export function toRuntimeOptionArray(
   } else if (option.type === 'number') {
     const hasBounds = option.min !== undefined || option.max !== undefined
     if (option.nullable) {
-      return [
-        option.type,
-        option.default,
-        [option.min, option.max],
-        true,
-      ]
+      return [option.type, option.default, [option.min, option.max], true]
     }
     if (hasBounds) {
       return [option.type, option.default, [option.min, option.max]]

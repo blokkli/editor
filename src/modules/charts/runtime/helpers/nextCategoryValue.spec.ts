@@ -88,9 +88,9 @@ describe('nextCategoryValue', () => {
   })
 
   test('strips footnotes before MM/YYYY detection', () => {
-    expect(
-      nextCategoryValue(['10/2023{1}', '11/2023', '12/2023{2}']),
-    ).toBe('01/2024')
+    expect(nextCategoryValue(['10/2023{1}', '11/2023', '12/2023{2}'])).toBe(
+      '01/2024',
+    )
   })
 
   test('strips footnotes before YYYY-MM detection', () => {

@@ -145,21 +145,15 @@ describe('getRuntimeOptionValue', () => {
   })
 
   test('Number with undefined min skips lower clamp', () => {
-    const option: [
-      'number',
-      number,
-      [number | undefined, number | undefined],
-    ] = ['number', 50, [undefined, 100]]
+    const option: ['number', number, [number | undefined, number | undefined]] =
+      ['number', 50, [undefined, 100]]
     expect(getRuntimeOptionValue(option, -999)).toEqual(-999)
     expect(getRuntimeOptionValue(option, 200)).toEqual(100)
   })
 
   test('Number with undefined max skips upper clamp', () => {
-    const option: [
-      'number',
-      number,
-      [number | undefined, number | undefined],
-    ] = ['number', 50, [0, undefined]]
+    const option: ['number', number, [number | undefined, number | undefined]] =
+      ['number', 50, [0, undefined]]
     expect(getRuntimeOptionValue(option, -10)).toEqual(0)
     expect(getRuntimeOptionValue(option, 999999)).toEqual(999999)
   })

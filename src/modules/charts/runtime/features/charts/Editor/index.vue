@@ -21,8 +21,8 @@
               <button
                 type="button"
                 :disabled="!canRedo"
-                @click="redo"
                 class="bk-toolbar-button"
+                @click="redo"
               >
                 <Icon name="bk_mdi_redo" />
               </button>

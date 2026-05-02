@@ -1,9 +1,6 @@
 <template>
   <div class="bk-blokkli-item-options-number">
-    <button
-      :disabled="!canDecrement"
-      @click.stop.prevent="decrement"
-    >
+    <button :disabled="!canDecrement" @click.stop.prevent="decrement">
       <Icon name="bk_mdi_remove" />
     </button>
     <input
@@ -17,10 +14,7 @@
       }"
     />
 
-    <button
-      :disabled="!canIncrement"
-      @click.stop.prevent="increment"
-    >
+    <button :disabled="!canIncrement" @click.stop.prevent="increment">
       <Icon name="bk_mdi_add" />
     </button>
   </div>

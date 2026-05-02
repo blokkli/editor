@@ -2,19 +2,19 @@
   <PanelItem
     :title="activeChartType.editor.label"
     :description="activeChartType.editor.description"
-    @click="showOptions = !showOptions"
     :icon="activeChartType.editor.icon"
+    @click="showOptions = !showOptions"
   >
     <TransitionCollapse>
       <div v-if="showOptions" class="border-t border-t-mono-300">
         <PanelItem
           v-for="option in chartTypes"
           :key="option.id"
-          @click="onClick(option.id)"
           :title="option.editor.label"
           :description="option.editor.description"
           :icon="option.editor.icon"
           :theme="option.id === modelValue ? 'accent' : 'mono'"
+          @click="onClick(option.id)"
         />
       </div>
     </TransitionCollapse>

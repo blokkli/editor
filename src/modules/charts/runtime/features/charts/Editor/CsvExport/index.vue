@@ -34,7 +34,11 @@ function buildCsv(): string {
     const row = [props.categories[ci] || '']
     for (const s of props.series) {
       const value = s.data[ci]
-      row.push(typeof value === 'number' && Number.isFinite(value) ? String(value) : '')
+      row.push(
+        typeof value === 'number' && Number.isFinite(value)
+          ? String(value)
+          : '',
+      )
     }
     lines.push(row.map(escapeCell).join(','))
   }
