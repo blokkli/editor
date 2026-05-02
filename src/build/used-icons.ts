@@ -58,6 +58,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_docs',
   'bk_mdi_done_all',
   'bk_mdi_donut_large',
+  'bk_mdi_download',
   'bk_mdi_drag_pan',
   'bk_mdi_edit',
   'bk_mdi_error',

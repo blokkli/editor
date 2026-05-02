@@ -29,7 +29,19 @@
           <div class="bk-form-label">
             {{ $t('chartsTranslationsCategories', 'Categories') }}
           </div>
-          <div class="flex flex-col gap-10">
+          <InfoBox
+            v-if="chartData.categories.length > MAX_TRANSLATABLE_ITEMS"
+            small
+            :text="
+              $t(
+                'chartsTranslationsTooMany',
+                'Too many items to translate inline (@count, max @max).',
+              )
+                .replace('@count', String(chartData.categories.length))
+                .replace('@max', String(MAX_TRANSLATABLE_ITEMS))
+            "
+          />
+          <div v-else class="flex flex-col gap-10">
             <TranslationRow
               v-for="(category, i) in chartData.categories"
               :key="`category-${i}`"
@@ -53,7 +65,19 @@
           <div class="bk-form-label">
             {{ $t('chartsTranslationsSeries', 'Series') }}
           </div>
-          <div class="flex flex-col gap-10">
+          <InfoBox
+            v-if="chartData.series.length > MAX_TRANSLATABLE_ITEMS"
+            small
+            :text="
+              $t(
+                'chartsTranslationsTooMany',
+                'Too many items to translate inline (@count, max @max).',
+              )
+                .replace('@count', String(chartData.series.length))
+                .replace('@max', String(MAX_TRANSLATABLE_ITEMS))
+            "
+          />
+          <div v-else class="flex flex-col gap-10">
             <TranslationRow
               v-for="(series, i) in chartData.series"
               :key="`series-${i}`"
@@ -136,7 +160,12 @@
 
 <script setup lang="ts">
 import { computed, ref, useBlokkli, watch } from '#imports'
-import { FormItem, FormText, FormTextarea } from '#blokkli/editor/components'
+import {
+  FormItem,
+  FormText,
+  FormTextarea,
+  InfoBox,
+} from '#blokkli/editor/components'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelTabs from '#blokkli/editor/components/Panel/Tabs/index.vue'
 import TranslationRow from './TranslationRow/index.vue'
@@ -145,6 +174,8 @@ import type { BlokkliChartData, ChartTranslation } from '../../../../types'
 const props = defineProps<{
   chartData: BlokkliChartData
 }>()
+
+const MAX_TRANSLATABLE_ITEMS = 50
 
 const translations = defineModel<Record<string, ChartTranslation>>(
   'translations',

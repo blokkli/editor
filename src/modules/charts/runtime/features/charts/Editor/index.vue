@@ -107,6 +107,11 @@
 
               <template #actions>
                 <CsvImport @import="importData" />
+                <CsvExport
+                  :title="chartData.title"
+                  :categories="chartData.categories"
+                  :series="chartData.series"
+                />
                 <PanelAction
                   :title="$t('chartsReverseRows', 'Reverse rows')"
                   icon="bk_mdi_table_convert"
@@ -167,6 +172,7 @@ import {
 import ChartTypePicker from './ChartTypePicker/index.vue'
 import DataTable from './DataTable/index.vue'
 import CsvImport from './CsvImport/index.vue'
+import CsvExport from './CsvExport/index.vue'
 import FootnoteEditor from './FootnoteEditor/index.vue'
 import NumberFormatEditor from './NumberFormatEditor/index.vue'
 import TranslationsEditor from './TranslationsEditor/index.vue'

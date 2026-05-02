@@ -1353,6 +1353,10 @@ msgctxt "chartsEditTitle"
 msgid "Edit chart"
 msgstr ""
 
+msgctxt "chartsExportCsv"
+msgid "Export CSV"
+msgstr ""
+
 msgctxt "chartsFootnotes"
 msgid "Footnotes"
 msgstr "Fuessnote"
@@ -1548,6 +1552,10 @@ msgstr "Suffix"
 msgctxt "chartsTranslationsTitle"
 msgid "Title"
 msgstr "Titel"
+
+msgctxt "chartsTranslationsTooMany"
+msgid "Too many items to translate inline (@count, max @max)."
+msgstr ""
 
 msgctxt "chartsType"
 msgid "Chart Type"

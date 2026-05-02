@@ -43,7 +43,7 @@
         }"
       >
         <div
-          class="flex items-center bg-white border border-mono-400 rounded-sm overflow-hidden"
+          class="flex items-center bg-white border border-mono-400 overflow-hidden"
         >
           <slot name="actions" />
         </div>

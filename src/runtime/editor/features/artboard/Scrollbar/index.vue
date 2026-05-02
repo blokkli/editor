@@ -1,11 +1,11 @@
 <template>
   <Teleport :to="ui.mainLayoutElement.value" defer>
     <div
-      class="bk bk-artboard-scrollbar bg-mono-400 z-artboard-scrollbar overflow-hidden pointer-events-auto contain-strict group border-l border-l-mono-500"
+      class="bk bk-artboard-scrollbar bg-mono-300 z-artboard-scrollbar overflow-hidden pointer-events-auto contain-strict group border-l border-l-mono-400"
       :class="'bk-orientation-' + orientation"
     >
       <div ref="el">
-        <button ref="thumb" class="bk-button" />
+        <button ref="thumb" class="bg-mono-400 group-hover:bg-mono-500" />
       </div>
     </div>
   </Teleport>
