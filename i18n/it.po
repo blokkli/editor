@@ -1308,6 +1308,12 @@ msgctxt "chartsDataLabels"
 msgid "Data labels"
 msgstr "Etichette dati"
 
+msgctxt "chartsDataTableHidden"
+msgid ""
+"Data table hidden because the dataset is too large to edit cell-by-cell "
+"(@cells cells, max @max). Re-import a smaller CSV to edit values inline."
+msgstr ""
+
 msgctxt "chartsDonutShowLabels"
 msgid "Show labels"
 msgstr "Mostra etichette"

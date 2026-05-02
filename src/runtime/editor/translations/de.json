@@ -318,6 +318,7 @@
   "chartsBorderRadiusSmall": "Klein",
   "chartsData": "Daten",
   "chartsDataLabels": "Datenbeschriftungen",
+  "chartsDataTableHidden": "Datentabelle ausgeblendet, weil der Datensatz zu gross ist, um Zelle für Zelle bearbeitet zu werden (@cells Zellen, max. @max). Importieren Sie eine kleinere CSV-Datei, um Werte inline zu bearbeiten.",
   "chartsDonutShowLabels": "Beschriftungen anzeigen",
   "chartsDonutShowTotal": "Total anzeigen",
   "chartsEditTitle": "Diagramm bearbeiten",

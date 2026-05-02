@@ -68,27 +68,42 @@
               />
             </PanelSection>
             <PanelSection :title="$t('chartsData', 'Data')">
-              <div class="overflow-auto bk-scrollbar-light relative z-50">
-                <DataTable
-                  :categories="chartData.categories"
-                  :series="chartData.series"
-                  :category-colors="chartData.categoryColors"
-                  :has-multiple-series="caps.hasMultipleSeries"
-                  :has-series-colors="caps.hasSeriesColors"
-                  :has-category-colors="caps.hasCategoryColors"
-                  :remove-row="removeRow"
-                  :remove-series="removeSeries"
-                  @update:categories="chartData.categories = $event"
-                  @update:series="chartData.series = $event"
-                  @update:category-colors="chartData.categoryColors = $event"
-                  @add-column="addSeries"
+              <div v-if="dataTooLarge" class="p-15">
+                <InfoBox
+                  small
+                  :text="
+                    $t(
+                      'chartsDataTableHidden',
+                      'Data table hidden because the dataset is too large to edit cell-by-cell (@cells cells, max @max). Re-import a smaller CSV to edit values inline.',
+                    )
+                      .replace('@cells', String(cellCount))
+                      .replace('@max', String(MAX_DATA_TABLE_CELLS))
+                  "
                 />
               </div>
-              <PanelAddButton
-                :label="$t('chartsAddRow', 'Add row')"
-                icon="bk_mdi_add_row_below"
-                @click.prevent="addRow"
-              />
+              <template v-else>
+                <div class="overflow-auto bk-scrollbar-light relative z-50">
+                  <DataTable
+                    :categories="chartData.categories"
+                    :series="chartData.series"
+                    :category-colors="chartData.categoryColors"
+                    :has-multiple-series="caps.hasMultipleSeries"
+                    :has-series-colors="caps.hasSeriesColors"
+                    :has-category-colors="caps.hasCategoryColors"
+                    :remove-row="removeRow"
+                    :remove-series="removeSeries"
+                    @update:categories="chartData.categories = $event"
+                    @update:series="chartData.series = $event"
+                    @update:category-colors="chartData.categoryColors = $event"
+                    @add-column="addSeries"
+                  />
+                </div>
+                <PanelAddButton
+                  :label="$t('chartsAddRow', 'Add row')"
+                  icon="bk_mdi_add_row_below"
+                  @click.prevent="addRow"
+                />
+              </template>
 
               <template #actions>
                 <CsvImport @import="importData" />
@@ -143,7 +158,12 @@ import type { BlokkliChartData } from '../../../types'
 import { getDefaultChartData, getFirstColorId } from '../../../helpers'
 import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
 import { useChartEditorState } from './useChartEditorState'
-import { Icon, FormToggle, Resizable } from '#blokkli/editor/components'
+import {
+  Icon,
+  FormToggle,
+  Resizable,
+  InfoBox,
+} from '#blokkli/editor/components'
 import ChartTypePicker from './ChartTypePicker/index.vue'
 import DataTable from './DataTable/index.vue'
 import CsvImport from './CsvImport/index.vue'
@@ -309,6 +329,13 @@ const caps = computed(() => {
     hasCategoryColors: def?.hasCategoryColors ?? false,
   }
 })
+
+const MAX_DATA_TABLE_CELLS = 200
+
+const cellCount = computed(
+  () => chartData.value.categories.length * chartData.value.series.length,
+)
+const dataTooLarge = computed(() => cellCount.value > MAX_DATA_TABLE_CELLS)
 
 function getData(): BlokkliChartData {
   return chartData.value
