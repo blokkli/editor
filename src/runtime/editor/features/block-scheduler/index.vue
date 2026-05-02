@@ -7,7 +7,6 @@
     edit-only
     meta
     icon="bk_mdi_calendar_month"
-    :scheme="selectionHasDates ? 'yellow' : 'mono'"
     :weight="1000"
     @click="onClick"
   >

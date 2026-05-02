@@ -203,7 +203,7 @@ const getColorRestricted = useTransitionedValue(() => {
     return theme.orange.value.normal
   }
 
-  return theme.yellow.value.normal
+  return theme.mono.value[500]
 })
 
 const getColorHost = useTransitionedValue(() => {

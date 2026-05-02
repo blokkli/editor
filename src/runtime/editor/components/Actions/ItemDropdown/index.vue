@@ -6,7 +6,7 @@
       class="border-b border-b-mono-600"
     >
       <ol>
-        <li v-for="action in group.actions" :key="action.id">
+        <li v-for="action in group.actions" :key="action.id" class="relative">
           <Item :action @click.prevent="onActionClick(action)" />
         </li>
       </ol>

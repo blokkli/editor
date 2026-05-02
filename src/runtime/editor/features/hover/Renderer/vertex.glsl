@@ -142,8 +142,10 @@ void main() {
   v_rect_size_artboard = vec2(hoverPos.z, hoverPos.w);
 
   // Select color based on type: 0 = mono, 1 = accent, 2 = teal, 3 = white (inverted), 4 = lime (library), 5 = yellow (restricted), 6 = yellow (outdated)
-  if (hoverType > 4.5) {
+  if (hoverType > 5.5) {
     v_color = u_color_yellow;
+  } else if (hoverType > 4.5) {
+    v_color = u_color_mono;
   } else if (hoverType > 3.5) {
     v_color = u_color_lime;
   } else if (hoverType > 2.5) {

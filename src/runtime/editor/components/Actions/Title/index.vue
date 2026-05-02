@@ -7,17 +7,14 @@
     }"
   >
     <button
-      class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent group/tooltip"
+      class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent group/tooltip pl-10 pr-3 flex items-center lg:min-w-[180px] text-mono-300 font-bold h-full leading-none relative w-full cursor-pointer hover:text-mono-50 hover:bg-mono-700"
       tabindex="-1"
-      :disabled="!shouldRenderButton"
       :class="{
-        'is-open': showDropdown,
-        'is-interactive': shouldRenderButton,
+        'lg:bg-mono-700 text-white': showDropdown,
       }"
       @click.prevent="showDropdown = !showDropdown"
     >
       <Tooltip
-        v-if="shouldRenderButton"
         :label="$t('actionsDropdownToolip', 'Further actions')"
         placement="above-left"
         class="w-full"
@@ -40,56 +37,64 @@
           />
         </template>
       </Tooltip>
-      <div v-show="!hasSelectedHost" class="bk-blokkli-item-actions-title-icon">
-        <Icon v-if="ui.isTransforming.value" name="loader" />
+      <div
+        v-show="!hasSelectedHost && bundleIcon"
+        class="text-xl lg:text-[34px] mr-[0.25em] size-[1em] relative shrink-0"
+      >
         <ItemIconBox
-          v-else-if="bundleIcon"
+          v-if="bundleIcon"
           :icon="iconOverride"
           :bundle="bundleIcon"
           :color="isReusable ? 'lime' : undefined"
           is-small
         />
-        <Icon v-else name="bk_mdi_select_all" />
         <div
           v-if="itemBundle?.id === fromLibraryBlockBundle"
-          class="bk-blokkli-item-actions-title-icon-reusable"
+          class="absolute z-50 -top-[7px] -right-[7px] bg-lime-dark size-20 flex items-center justify-center rounded-full border border-lime-normal shadow-lg"
         >
-          <Icon name="reusable" />
+          <Icon name="reusable" class="size-[12px] fill-lime-light" />
         </div>
       </div>
-      <span class="bk-blokkli-item-actions-title-label">{{ title }}</span>
-      <span
+      <span class="truncate mr-auto">{{ title }}</span>
+      <Pill
         v-if="selection.items.value.length > 1"
-        class="bk-blokkli-item-actions-title-count"
-        >{{ selection.items.value.length }}</span
-      >
+        :text="selection.items.value.length"
+        scheme="mono"
+      />
 
       <span
         v-show="isPermissionRestricted"
-        class="bk-blokkli-item-actions-title-pill bk-is-warning bk-is-restricted"
+        class="size-25 text-yellow-normal p-5 bg-yellow-dark rounded-full"
       >
-        <Icon name="bk_mdi_lock" />
+        <Icon name="bk_mdi_lock" class="size-full" />
       </span>
 
-      <span v-show="selectedIsNew" class="bk-blokkli-item-actions-title-pill">{{
-        $t('selectedIsNew', 'New')
-      }}</span>
-      <span
+      <Pill
+        v-show="selectedIsNew"
+        :text="$t('selectedIsNew', 'New')"
+        variant="light"
+      />
+
+      <Pill
         v-show="selectedTranslationIsOutdated"
-        class="bk-blokkli-item-actions-title-pill bk-is-warning"
-        >{{ $t('selectedTranslationIsOutdated', 'Outdated') }}</span
-      >
+        :text="$t('selectedTranslationIsOutdated', 'Outdated')"
+        variant="light"
+        scheme="yellow"
+      />
+
       <Icon
-        v-if="shouldRenderButton"
         name="bk_mdi_arrow_drop_down"
-        class="bk-caret"
+        class="ml-2 pointer-events-none size-15 md:size-20"
+        :class="{
+          'rotate-180': showDropdown,
+        }"
       />
     </button>
     <div
       v-if="editingEnabled"
       v-show="showDropdown"
       id="bk-blokkli-item-actions-dropdown"
-      class="bk-blokkli-item-actions-type-dropdown"
+      class="absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 shadow-xl-inverted w-screen lg:w-auto flex flex-col lg:top-full lg:bottom-auto lg:shadow-xl lg:left-[23px]"
     >
       <EditActionsItemDropdown
         v-if="showDropdown"
@@ -107,6 +112,7 @@ import {
   ItemIconBox,
   Tooltip,
   TooltipStatus,
+  Pill,
 } from '#blokkli/editor/components'
 import EditActionsItemDropdown from '../ItemDropdown/index.vue'
 import type { FragmentDefinition } from '#blokkli-build/definitions'
@@ -295,8 +301,6 @@ const itemBundle = computed(() => {
   return types.getBlockBundleDefinition(bundle)
 })
 
-const shouldRenderButton = computed<boolean>(() => true)
-
 onBlokkliEvent('action:selected', () => {
   showDropdown.value = false
 })
@@ -313,113 +317,3 @@ export default {
   name: 'ItemActionsTitle',
 }
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-blokkli-item-actions-title-count {
-    @apply bg-mono-50 text-mono-900 inline-flex items-center justify-center px-3 min-w-[1.5em] h-[1.5em] rounded-full ml-10 text-xs lg:text-sm font-bold leading-none;
-    &.bk-is-hidden {
-      @apply opacity-0;
-    }
-  }
-
-  .bk-blokkli-item-actions-title-icon {
-    @apply text-xl lg:text-[34px] mr-[0.25em] size-[1em] relative;
-    > .bk-blokkli-item-icon,
-    > .bk-icon {
-      svg {
-        @apply w-[0.7em] h-[0.7em] fill-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-      }
-    }
-    .bk-blokkli-item-actions-title-icon-reusable {
-      @apply absolute z-50;
-      @apply -top-[7px] -right-[7px];
-      @apply bg-lime-dark;
-      @apply size-20;
-      @apply flex items-center justify-center;
-      @apply rounded-full;
-      @apply border border-lime-normal;
-      @apply shadow-lg;
-      svg {
-        @apply size-[12px] fill-lime-light;
-      }
-    }
-  }
-
-  .bk-blokkli-item-actions-type-button {
-    @apply flex items-center cursor-default lg:min-w-[180px] text-mono-300 font-bold h-full leading-none relative;
-    @apply text-xs lg:text-base;
-    @apply w-full;
-    @apply lg:rounded-l-md;
-    .bk-blokkli-item-actions-title-label {
-      @apply truncate mr-auto;
-    }
-    .bk-blokkli-item-actions-title-icon {
-      flex: 0 0 auto;
-    }
-
-    &.is-interactive {
-      @apply cursor-pointer;
-      @media not all and (hover: none) {
-        &:not(.is-open) {
-          @apply hover:text-mono-50 hover:bg-mono-700;
-        }
-      }
-    }
-    &.is-open {
-      @apply lg:bg-mono-700 text-white rounded-b-none;
-      .bk-caret {
-        @apply transform rotate-180;
-      }
-    }
-    .bk-caret {
-      @apply ml-2;
-      svg {
-        @apply pointer-events-none size-15 fill-current md:size-20;
-      }
-    }
-  }
-
-  .bk-blokkli-item-actions-type {
-    @apply relative h-full;
-  }
-
-  .bk-blokkli-item-actions-type-dropdown {
-    @apply absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 shadow-xl-inverted lg:rounded-tr w-screen lg:w-auto flex flex-col;
-    > div {
-      @apply border-b border-b-mono-700;
-    }
-    @variant lg {
-      @apply top-full bottom-auto shadow-xl rounded-t-none rounded-b left-[23px];
-      @apply border-b-2 border-mono-400 border-l-2 border-r-2;
-    }
-    li {
-      @apply relative;
-    }
-    h3 {
-      @apply p-10 pt-15 font-semibold uppercase text-xs tracking-wide text-mono-400;
-    }
-  }
-
-  .bk-blokkli-item-actions-title-pill {
-    font-size: 10px;
-    @apply uppercase leading-none ml-5;
-    @apply rounded-full px-5 h-20 flex items-center justify-center;
-    @apply bg-accent-900/80 text-accent-100;
-    @apply border border-accent-200/70 font-bold;
-    @apply leading-none;
-
-    &.bk-is-restricted {
-      @apply p-0 size-20;
-
-      svg {
-        @apply size-[1.25em] fill-current;
-      }
-    }
-
-    &.bk-is-warning {
-      @apply bg-yellow-normal/20 text-yellow-normal border-yellow-normal/80;
-    }
-  }
-}
-</style>

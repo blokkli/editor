@@ -695,8 +695,10 @@ const { collector } = await defineRenderer('hover-overlay', {
         // Type 0, 1, 3, 4, 5, 6 = blocks: dashed border only
         // Select color: 0=mono, 1=accent, 3=white, 4=lime, 5=yellow (restricted), 6=yellow (outdated)
         let strokeColor = colors.u_color_mono
-        if (type === 5 || type === 6) {
+        if (type === 6) {
           strokeColor = colors.u_color_yellow
+        } else if (type === 5) {
+          strokeColor = colors.u_color_mono
         } else if (type === 4) {
           strokeColor = colors.u_color_lime
         } else if (type === 3) {

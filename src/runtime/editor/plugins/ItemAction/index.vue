@@ -5,17 +5,12 @@
       v-show="!hidden"
       ref="el"
       :disabled="isDisabled"
-      class="group/tooltip flex items-center shrink-0 justify-center relative lg:static z-50 size-50"
+      class="group/tooltip flex items-center shrink-0 justify-center relative lg:static z-50 size-50 lg:hover:bg-mono-700 text-mono-300 lg:hover:text-mono-50"
       :class="[
-        'bk-scheme-' + scheme,
         {
           'bk-is-active': active,
           'bk-is-last': weight === 'last',
           'cursor-not-allowed text-mono-500!': disabled,
-          'lg:hover:bg-mono-700 lg:hover:text-mono-50':
-            scheme === 'mono' && !disabled,
-          'bg-scheme-dark/50 lg:hover:bg-scheme-dark/70 text-scheme-light lg:hover:text-white':
-            scheme !== 'mono' && !disabled,
         },
         $attrs.class,
       ]"
@@ -65,7 +60,6 @@ import {
 } from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
-import type { ThemeColorName } from './../../../../global/types/theme'
 
 const { selection, state } = useBlokkli()
 
@@ -163,11 +157,8 @@ const props = withDefaults(
      * If provided, this action will be included in the editor tour.
      */
     tourText?: string
-
-    scheme?: ThemeColorName
   }>(),
   {
-    scheme: 'mono',
     weight: undefined,
     icon: undefined,
     tourText: undefined,

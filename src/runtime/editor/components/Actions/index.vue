@@ -11,7 +11,7 @@
     <div
       id="bk-blokkli-item-actions-controls"
       ref="controlsEl"
-      class="bk-blokkli-item-actions-controls flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap bg-mono-950/90 scheme-dark relative z-50 lg:border lg:border-mono-400 lg:bg-mono-900"
+      class="bk-blokkli-item-actions-controls flex items-stretch whitespace-nowrap h-full flex-wrap lg:flex-nowrap bg-mono-950 scheme-dark relative z-50 lg:border lg:border-mono-400 lg:bg-mono-900"
       :class="{
         'pointer-events-none': ui.isTransforming.value,
       }"
@@ -101,7 +101,6 @@ export default {
   &.bk-blokkli-item-actions-inner {
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    /* contain: layout style paint; */
     bottom: var(--bk-root-offset-bottom);
     @variant lg {
       @apply top-0 w-auto;
