@@ -6,9 +6,11 @@
     :anchor-coordinates
     class="bk-bundle-selector"
     @close="$emit('close')"
-    @wheel.stop
   >
-    <div ref="scrollEl" class="bk-bundle-selector-wrapper bk-scrollbar-dark">
+    <div
+      ref="scrollEl"
+      class="bk-scrollbar-dark max-h-[60vh] overflow-auto lg:max-h-[500px]"
+    >
       <div
         v-if="allItems.length > 4"
         class="bk-bundle-selector-form"
@@ -27,49 +29,21 @@
       </div>
       <div
         ref="wrapperEl"
+        @wheel.passive="onWheel"
         :style="{
           width,
           height,
         }"
       >
-        <div
-          v-if="filteredBlocks.length"
-          class="bk-bundle-selector-list"
-          @wheel.passive="onWheel"
-        >
-          <AddListItem
-            v-for="item in filteredBlocks"
-            :key="item.props.id"
-            v-bind="item.props"
-            @click.prevent="onClick(item)"
-          />
-        </div>
-        <div v-if="filteredActions.length" class="bk-bundle-selector-section">
-          <div class="bk-bundle-selector-section-label">
-            <span>{{ $t('bundleSelectorActionsLabel', 'Actions') }}</span>
-          </div>
-          <div class="bk-bundle-selector-list" @wheel.passive="onWheel">
-            <AddListItem
-              v-for="item in filteredActions"
-              :key="item.props.id"
-              v-bind="item.props"
-              @click.prevent="onClick(item)"
-            />
-          </div>
-        </div>
-        <div v-if="filteredFragments.length" class="bk-bundle-selector-section">
-          <div class="bk-bundle-selector-section-label">
-            <span>{{ $t('bundleSelectorFragmentsLabel', 'Fragments') }}</span>
-          </div>
-          <div class="bk-bundle-selector-list" @wheel.passive="onWheel">
-            <AddListItem
-              v-for="item in filteredFragments"
-              :key="item.props.id"
-              v-bind="item.props"
-              @click.prevent="onClick(item)"
-            />
-          </div>
-        </div>
+        <ItemGroup :items="filteredBlocks" @select="onClick" />
+        <ItemGroup
+          :label="$t('bundleSelectorActionsLabel', 'Actions')"
+          :items="filteredActions"
+        />
+        <ItemGroup
+          :label="$t('bundleSelectorFragmentsLabel', 'Fragments')"
+          :items="filteredFragments"
+        />
       </div>
     </div>
   </ArtboardTooltip>
@@ -85,18 +59,15 @@ import {
   watch,
   onMounted,
 } from '#imports'
-import {
-  ArtboardTooltip,
-  AddListItem,
-  FormTextDark,
-} from '#blokkli/editor/components'
+import { ArtboardTooltip, FormTextDark } from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { loadFzf, type Fzf } from '#blokkli/editor/libraries/fzf'
-import type { AddListItemProps } from '#blokkli/editor/components/AddListItem/index.vue'
 import type { Coord } from '#blokkli/editor/types/geometry'
 import type { AddAction } from '#blokkli/editor/types/actions'
 import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 import { fragmentBlockBundle } from '#blokkli-build/config'
+import type { Item } from './types'
+import ItemGroup from './Group.vue'
 
 const props = defineProps<{
   bundles: string[]
@@ -136,29 +107,6 @@ watch(
     once: true,
   },
 )
-
-type Item =
-  | {
-      type: 'block'
-      bundle: string
-      label: string
-      description: string
-      props: AddListItemProps
-    }
-  | {
-      type: 'action'
-      action: AddAction
-      label: string
-      description: string
-      props: AddListItemProps
-    }
-  | {
-      type: 'fragment'
-      name: string
-      label: string
-      description: string
-      props: AddListItemProps
-    }
 
 const { types, plugins, storage, $t, definitions, permissions, ui } =
   useBlokkli()
@@ -378,54 +326,14 @@ onMounted(() => {
 
 <style lang="postcss">
 .bk.bk-bundle-selector {
-  --bk-item-width: 270px;
-  --bk-columns: 2;
   --bk-bg: theme('colors.mono.900');
   --bk-header-bg: theme('colors.mono.800');
   --bk-header-hover: theme('colors.mono.700');
   --bk-header-text: theme('colors.mono.100');
   --bk-border: theme('colors.mono.500');
 
-  @variant lg {
-    --bk-columns: 3;
-    --bk-item-width: 300px;
-  }
-
   .bk-artboard-tooltip-inner {
     @apply text-white;
-  }
-
-  .bk-bundle-selector-wrapper {
-    @apply max-h-[60vh] overflow-auto lg:max-h-[500px];
-  }
-
-  .bk-bundle-selector-list {
-    @apply flex flex-wrap items-start;
-    padding: calc(var(--bk-gap) / 2);
-
-    max-width: calc(
-      var(--bk-item-width) * var(--bk-columns) + var(--bk-gap) *
-        (var(--bk-columns) - 1) + 10px
-    );
-    button {
-      width: var(--bk-item-width);
-      padding: calc(var(--bk-gap) / 2);
-      @apply rounded-md;
-      @apply focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-mono-600 focus:!shadow-none;
-      @apply self-start;
-      .bk-add-item-label {
-        @apply pl-10;
-      }
-    }
-  }
-
-  .bk-bundle-selector-section {
-    @apply border-t border-mono-700;
-  }
-
-  .bk-bundle-selector-section-label {
-    @apply flex items-center gap-8 text-mono-400 uppercase font-semibold text-xs tracking-wide !leading-none;
-    padding: 15px var(--bk-gap) 0;
   }
 }
 </style>
