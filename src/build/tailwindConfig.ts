@@ -141,6 +141,7 @@ const tailwindConfig: Config = {
     extend: {
       screens: {
         '3xl': '1920px',
+        '4xl': '2440px',
       },
       transitionTimingFunction: {
         swing: 'cubic-bezier(0.56, 0.04, 0.25, 1)',

@@ -137,6 +137,13 @@
   "dependencies": {
     "@material-symbols/svg-600": "0.40.2",
     "@nuxt/kit": "^4.2.2",
+    "@tiptap/extension-mention": "^3.22.5",
+    "@tiptap/extension-task-item": "^3.22.5",
+    "@tiptap/extension-task-list": "^3.22.5",
+    "@tiptap/pm": "^3.22.5",
+    "@tiptap/starter-kit": "^3.22.5",
+    "@tiptap/suggestion": "^3.22.5",
+    "@tiptap/vue-3": "^3.22.5",
     "apexcharts": "^5.4.0",
     "artboard-deluxe": "^0.1.5",
     "estree-walker-ts": "^1.1.0",

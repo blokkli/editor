@@ -1,18 +1,25 @@
 <template>
-  <article class="bk-styleguide-variant">
-    <header class="bk-styleguide-variant-header">
-      <h3>{{ variant.label }}</h3>
-      <p v-if="variant.description">{{ variant.description }}</p>
+  <article class="bg-white border border-mono-200 rounded">
+    <header class="px-20 py-15 border-b border-b-mono-200">
+      <h3 class="text-base font-semibold m-0">{{ variant.label }}</h3>
+      <p v-if="variant.description" class="mt-3 text-sm text-mono-600">
+        {{ variant.description }}
+      </p>
     </header>
     <div
-      class="bk-styleguide-variant-stage"
+      class="p-30"
       :class="variant.backgroundClass ?? entry.backgroundClass ?? 'bg-white'"
     >
       <Stage />
     </div>
-    <details v-if="formattedState" class="bk-styleguide-variant-source">
+    <details
+      v-if="formattedState"
+      class="border-t border-t-mono-200 bg-mono-50 [&>summary]:px-20 [&>summary]:py-10 [&>summary]:cursor-pointer [&>summary]:text-xs [&>summary]:font-semibold [&>summary]:uppercase [&>summary]:tracking-wide [&>summary]:text-mono-600 [&>summary]:hover:bg-mono-100"
+    >
       <summary>Props</summary>
-      <pre>{{ formattedState }}</pre>
+      <pre
+        class="px-20 pb-15 m-0 text-xs font-mono text-mono-800 whitespace-pre-wrap"
+        >{{ formattedState }}</pre>
     </details>
   </article>
 </template>

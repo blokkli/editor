@@ -1754,8 +1754,16 @@ msgstr ""
 "dr Befehlspalette."
 
 msgctxt "commentAddPlaceholder"
-msgid "Add a comment…"
+msgid "Add new comment..."
 msgstr ""
+
+msgctxt "commentBlocksCountOne"
+msgid "1 block"
+msgstr "1 Block"
+
+msgctxt "commentBlocksCountOther"
+msgid "@count blocks"
+msgstr "@count Blöck"
 
 msgctxt "commentCancelEdit"
 msgid "Cancel"
@@ -1788,10 +1796,6 @@ msgstr "bearbeitet"
 msgctxt "commentReply"
 msgid "Reply"
 msgstr "Antworten"
-
-msgctxt "commentReplyPlaceholder"
-msgid "Write a reply…"
-msgstr "Antwort schriibe…"
 
 msgctxt "commentResolvedLabel"
 msgid "Resolved"
@@ -2010,7 +2014,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dr Blocktyp isch in dem Fäld nid erlaubt."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeite"
 
 msgctxt "editDisabledByDefinition"

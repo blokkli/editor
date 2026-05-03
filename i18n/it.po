@@ -1724,8 +1724,16 @@ msgid ""
 msgstr ""
 
 msgctxt "commentAddPlaceholder"
-msgid "Add a comment…"
+msgid "Add new comment..."
 msgstr ""
+
+msgctxt "commentBlocksCountOne"
+msgid "1 block"
+msgstr "1 blocco"
+
+msgctxt "commentBlocksCountOther"
+msgid "@count blocks"
+msgstr "@count blocchi"
 
 msgctxt "commentCancelEdit"
 msgid "Cancel"
@@ -1758,10 +1766,6 @@ msgstr "modificato"
 msgctxt "commentReply"
 msgid "Reply"
 msgstr "Rispondi"
-
-msgctxt "commentReplyPlaceholder"
-msgid "Write a reply…"
-msgstr "Scrivi una risposta…"
 
 msgctxt "commentResolvedLabel"
 msgid "Resolved"
@@ -1978,7 +1982,7 @@ msgid "This block type is not allowed in this field."
 msgstr ""
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Modifica"
 
 msgctxt "editDisabledByDefinition"

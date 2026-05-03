@@ -1,8 +1,25 @@
 <template>
   <div
-    class="group/comment relative flex gap-(--bk-comment-avatar-gap) px-(--bk-comment-pad-x) py-(--bk-comment-pad-y) hover:bg-mono-50 font-sans"
-    :class="{ 'cursor-pointer': clickable }"
-    @click.stop="$emit('clickComment')"
+    v-if="isEditing"
+    class="px-(--bk-comment-pad-x) font-sans"
+    :class="
+      isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
+    "
+    @click.stop
+  >
+    <CommentEditForm
+      :uuid="comment.uuid"
+      :body="comment.body"
+      @submit="onSubmitEdit"
+      @cancel="isEditing = false"
+    />
+  </div>
+  <div
+    v-else
+    class="group/comment relative flex gap-(--bk-comment-avatar-gap) px-(--bk-comment-pad-x) hover:bg-mono-50 font-sans"
+    :class="
+      isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
+    "
   >
     <CommentAvatar
       :name="comment.user.label"
@@ -15,30 +32,33 @@
           :created="comment.created"
           :updated="comment.updated"
         />
-        <Pill v-if="comment.resolved && !isReply" scheme="lime">
-          <Icon name="bk_mdi_check" class="size-10 mr-2" />
-          {{ $t('commentResolvedLabel', 'Resolved') }}
-        </Pill>
+        <Pill
+          v-if="comment.resolved && !isReply"
+          scheme="lime"
+          icon="bk_mdi_check"
+          :text="$t('commentResolvedLabel', 'Resolved')"
+        />
+        <Pill
+          v-if="!isReply && !hideBlocksPill && comment.blockUuids?.length"
+          tag="button"
+          type="button"
+          scheme="accent"
+          variant="light"
+          icon="bk_mdi_widgets"
+          :text="blocksLabel"
+          @click.stop="$emit('selectBlocks')"
+        />
       </div>
-      <CommentEditForm
-        v-if="isEditing"
-        :uuid="comment.uuid"
+      <RichTextRenderer
         :body="comment.body"
-        class="mt-5"
-        @submit="onSubmitEdit"
-        @cancel="isEditing = false"
-        @click.stop
+        :task-togglable="canToggleTasks"
+        class="mt-2"
+        @toggle-task="$emit('toggleTask', $event)"
       />
-      <div
-        v-else
-        class="text-sm text-mono-900 whitespace-pre-wrap break-words select-text mt-2"
-      >
-        {{ comment.body }}
-      </div>
     </div>
 
     <div
-      v-if="!isEditing && (canEdit || canDelete || canResolve || canUnresolve)"
+      v-if="canEdit || canDelete || canResolve || canUnresolve"
       class="absolute top-3 right-10 opacity-0 group-hover/comment:opacity-100 focus-within:opacity-100"
     >
       <CommentActions
@@ -58,11 +78,12 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import { Icon, Pill } from '#blokkli/editor/components'
-import CommentAvatar from '../CommentAvatar/index.vue'
-import CommentMeta from '../CommentMeta/index.vue'
-import CommentActions from '../CommentActions/index.vue'
-import CommentEditForm from '../CommentEditForm/index.vue'
+import { Pill } from '#blokkli/editor/components'
+import CommentAvatar from './Avatar/index.vue'
+import CommentMeta from './Meta/index.vue'
+import CommentActions from './Actions/index.vue'
+import CommentEditForm from './EditForm/index.vue'
+import RichTextRenderer from '#blokkli/editor/components/RichText/Renderer/index.vue'
 import type { CommentItem } from '../types'
 
 const { $t, adapter } = useBlokkli()
@@ -70,15 +91,25 @@ const { $t, adapter } = useBlokkli()
 const props = defineProps<{
   comment: CommentItem
   isReply: boolean
-  clickable?: boolean
+  hideBlocksPill?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'edit', body: string): void
-  (e: 'delete' | 'resolve' | 'unresolve' | 'clickComment'): void
+  (e: 'toggleTask', taskIndex: number): void
+  (e: 'delete' | 'resolve' | 'unresolve' | 'selectBlocks'): void
 }>()
 
 const isEditing = ref(false)
+
+const blocksLabel = computed(() => {
+  const count = props.comment.blockUuids?.length || 0
+  const template =
+    count === 1
+      ? $t('commentBlocksCountOne', '1 block')
+      : $t('commentBlocksCountOther', '@count blocks')
+  return template.replace('@count', count.toString())
+})
 
 const canEdit = computed(() => !!props.comment.isOwn && !!adapter.editComment)
 
@@ -93,6 +124,8 @@ const canResolve = computed(
 const canUnresolve = computed(
   () => !props.isReply && props.comment.resolved && !!adapter.unresolveComment,
 )
+
+const canToggleTasks = computed(() => !!adapter.toggleCommentTask)
 
 function onStartEdit() {
   isEditing.value = true

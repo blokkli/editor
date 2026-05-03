@@ -54,7 +54,7 @@
 import { useBlokkli } from '#imports'
 import { BlokkliTransition, DialogModal } from '#blokkli/editor/components'
 import { useDialog } from '#blokkli/editor/composables'
-import CommentActionButton from '../CommentActionButton/index.vue'
+import CommentActionButton from './Button/index.vue'
 
 const { $t, ui } = useBlokkli()
 

@@ -1765,8 +1765,16 @@ msgstr ""
 "«Befehle» öffnen. Fast alle Funktionen sind auch über «Befehle» ausführbar."
 
 msgctxt "commentAddPlaceholder"
-msgid "Add a comment…"
-msgstr "Kommentar schreiben…"
+msgid "Add new comment..."
+msgstr "Neuen Kommentar hinzufügen..."
+
+msgctxt "commentBlocksCountOne"
+msgid "1 block"
+msgstr "1 Block"
+
+msgctxt "commentBlocksCountOther"
+msgid "@count blocks"
+msgstr "@count Blöcke"
 
 msgctxt "commentCancelEdit"
 msgid "Cancel"
@@ -1799,10 +1807,6 @@ msgstr "bearbeitet"
 msgctxt "commentReply"
 msgid "Reply"
 msgstr "Antworten"
-
-msgctxt "commentReplyPlaceholder"
-msgid "Write a reply…"
-msgstr "Antwort schreiben…"
 
 msgctxt "commentResolvedLabel"
 msgid "Resolved"
@@ -2023,7 +2027,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
 
 msgctxt "edit"
-msgid "Edit"
+msgid "Edit..."
 msgstr "Bearbeiten..."
 
 msgctxt "editDisabledByDefinition"

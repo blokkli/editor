@@ -1,45 +1,59 @@
 <template>
-  <aside class="bk-styleguide-sidebar">
-    <header class="bk-styleguide-sidebar-header">
-      <h2>Styleguide</h2>
+  <aside
+    class="w-300 shrink-0 flex flex-col bg-white border-r border-r-mono-200"
+  >
+    <header
+      class="flex items-center justify-between px-20 py-15 border-b border-b-mono-200"
+    >
+      <h2 class="text-base font-bold m-0">Styleguide</h2>
       <button
         type="button"
-        class="bk-styleguide-sidebar-close"
+        class="size-30 flex items-center justify-center rounded text-mono-700 hover:bg-mono-100 hover:text-mono-950"
         :aria-label="$t('close', 'Close')"
         @click="$emit('close')"
       >
-        <Icon name="bk_mdi_close" />
+        <Icon name="bk_mdi_close" class="size-20" />
       </button>
     </header>
-    <div class="bk-styleguide-sidebar-search">
-      <Icon name="bk_mdi_search" />
+    <div class="flex items-center gap-8 px-20 py-10 border-b border-b-mono-200">
+      <Icon name="bk_mdi_search" class="size-15 shrink-0 text-mono-500" />
       <input
         v-model="filter"
         type="search"
+        class="w-full bg-transparent border-none outline-none text-sm text-mono-900 placeholder:text-mono-500"
         :placeholder="$t('styleguideFilterPlaceholder', 'Filter components')"
       />
     </div>
-    <nav class="bk-styleguide-sidebar-list">
+    <nav class="flex-1 overflow-y-auto py-10">
       <div
         v-for="group in groups"
         :key="group.label"
-        class="bk-styleguide-group"
+        class="mb-15 last:mb-0 border-b border-b-mono-300"
       >
-        <h4>{{ group.label }}</h4>
-        <ul>
+        <h4 class="bk-form-label px-20">
+          {{ group.label }}
+        </h4>
+        <ul class="flex flex-col">
           <li v-for="entry in group.entries" :key="entry.id">
             <button
               type="button"
-              :class="{ 'bk-is-active': entry.id === activeId }"
+              class="w-full flex items-center justify-between text-left px-20 py-8 text-sm"
+              :class="
+                entry.id === activeId
+                  ? 'bg-accent-50 text-accent-900 [&_span]:text-accent-700'
+                  : 'text-mono-700 hover:bg-mono-100 hover:text-mono-950 [&_span]:text-mono-500'
+              "
               @click="$emit('select', entry.id)"
             >
               {{ entry.label }}
-              <span>{{ entry.variants.length }}</span>
+              <span class="text-xs tabular-nums">
+                {{ entry.variants.length }}
+              </span>
             </button>
           </li>
         </ul>
       </div>
-      <p v-if="!groups.length" class="bk-styleguide-empty">
+      <p v-if="!groups.length" class="px-20 py-15 text-sm text-mono-500">
         {{ $t('styleguideNoMatches', 'No components match this filter.') }}
       </p>
     </nav>

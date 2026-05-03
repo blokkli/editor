@@ -13,6 +13,7 @@
 @import './partials/transitions.css' layer(base);
 @import './partials/forms.css' layer(components);
 @import './partials/table.css' layer(components);
+@import './partials/rich-text.css' layer(components);
 @import './partials/global.css' layer(base);
 @import './../src/modules/agent/css/Agent.css' layer(components);
 @import './../src/modules/charts/css/Charts.css' layer(components);

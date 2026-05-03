@@ -894,6 +894,15 @@ export default defineBlokkliEditAdapter((ctx) => {
       entityStorageManager.deleteComment(uuid)
       return loadComments()
     },
+    async toggleCommentTask(uuid, taskIndex) {
+      entityStorageManager.toggleCommentTask(uuid, taskIndex)
+      const all = await loadComments()
+      const updated = all.find((c) => c.uuid === uuid)
+      if (!updated) {
+        throw new Error(`Comment ${uuid} not found after task toggle.`)
+      }
+      return updated
+    },
     addNewBlock: (e) =>
       addMutation('add', {
         bundle: e.bundle,

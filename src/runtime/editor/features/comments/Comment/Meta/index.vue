@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { RelativeTime } from '#blokkli/editor/components'
-import type { CommentItem } from '../types'
+import type { CommentItem } from '../../types'
 
 const { $t } = useBlokkli()
 

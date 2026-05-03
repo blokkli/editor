@@ -1,11 +1,12 @@
 <template>
   <CommentInput
     :id="`comment_edit_${uuid}`"
-    v-model="value"
+    :initial-value="body"
     cancellable
     :submit-label="$t('commentSaveEdit', 'Save')"
     :can-submit="hasChange"
     boxed
+    @change="onChange"
     @submit="$emit('submit', $event)"
     @cancel="$emit('cancel')"
   />
@@ -13,7 +14,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import CommentInput from '../CommentInput/index.vue'
+import CommentInput from '../../CommentInput/index.vue'
 
 const { $t } = useBlokkli()
 
@@ -27,11 +28,16 @@ defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const value = ref(props.body)
+const current = ref(props.body)
 
-const hasChange = computed(
-  () => value.value.trim().length > 0 && value.value !== props.body,
-)
+function onChange(html: string) {
+  current.value = html
+}
+
+const hasChange = computed(() => {
+  const stripped = current.value.replace(/<[^>]*>/g, '').replace(/\s+/g, '')
+  return stripped.length > 0 && current.value !== props.body
+})
 </script>
 
 <script lang="ts">

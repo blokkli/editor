@@ -18,12 +18,12 @@
         :key="root.uuid"
         :root="root"
         :replies="repliesByRoot.get(root.uuid) || []"
-        select-blocks-on-click
         @reply="$emit('reply', $event)"
         @edit="$emit('edit', $event)"
         @delete="$emit('delete', $event)"
-        @resolve="$emit('resolve', root.uuid)"
-        @unresolve="$emit('unresolve', root.uuid)"
+        @resolve="onResolve(root.uuid)"
+        @unresolve="onUnresolve(root.uuid)"
+        @toggle-task="$emit('toggleTask', $event)"
       />
     </div>
     <div
@@ -45,10 +45,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import { FormToggle } from '#blokkli/editor/components'
-import CommentThread from '../CommentThread/index.vue'
-import SidebarAddForm from '../SidebarAddForm/index.vue'
+import CommentThread from '../Thread/index.vue'
+import SidebarAddForm from './AddForm/index.vue'
 import type { CommentItem } from '../types'
 
 const { $t, storage } = useBlokkli()
@@ -57,13 +57,37 @@ const props = defineProps<{
   comments: CommentItem[]
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'reply', value: { parentUuid: string; body: string }): void
   (e: 'edit', value: { uuid: string; body: string }): void
+  (e: 'toggleTask', value: { uuid: string; taskIndex: number }): void
   (e: 'add' | 'delete' | 'resolve' | 'unresolve', value: string): void
 }>()
 
 const showResolved = storage.useWithContextPrefix('commentsShowResolved', false)
+
+/**
+ * UUIDs of comments resolved during this sidebar session. They stay visible
+ * even when "Show resolved" is off, so the user can see what they just acted
+ * on instead of having it disappear from the list. Cleared on unmount —
+ * reopening the sidebar starts fresh.
+ */
+const recentlyResolved = ref<string[]>([])
+
+function onResolve(uuid: string) {
+  if (!recentlyResolved.value.includes(uuid)) {
+    recentlyResolved.value.push(uuid)
+  }
+  emit('resolve', uuid)
+}
+
+function onUnresolve(uuid: string) {
+  const idx = recentlyResolved.value.indexOf(uuid)
+  if (idx !== -1) {
+    recentlyResolved.value.splice(idx, 1)
+  }
+  emit('unresolve', uuid)
+}
 
 const roots = computed(() =>
   [...props.comments]
@@ -95,9 +119,14 @@ const repliesByRoot = computed(() => {
   return map
 })
 
-const visibleRoots = computed(() =>
-  showResolved.value ? roots.value : roots.value.filter((r) => !r.resolved),
-)
+const visibleRoots = computed(() => {
+  if (showResolved.value) {
+    return roots.value
+  }
+  return roots.value.filter(
+    (r) => !r.resolved || recentlyResolved.value.includes(r.uuid),
+  )
+})
 
 const resolvedCount = computed(
   () => roots.value.filter((r) => r.resolved).length,

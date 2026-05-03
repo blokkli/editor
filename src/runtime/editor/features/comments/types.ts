@@ -63,6 +63,17 @@ declare module '#blokkli/editor/adapter' {
      * Reopen a previously resolved thread.
      */
     unresolveComment?: (uuid: string) => Promise<CommentItem[]>
+
+    /**
+     * Toggle the checked state of a task item inside a comment body. The
+     * `taskIndex` is the document-order position (0-based) of the
+     * `<li data-type="taskItem">` to flip. Anyone with view access can
+     * toggle, regardless of comment ownership. Returns the updated comment.
+     */
+    toggleCommentTask?: (
+      uuid: string,
+      taskIndex: number,
+    ) => Promise<CommentItem>
   }
 }
 

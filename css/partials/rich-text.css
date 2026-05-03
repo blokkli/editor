@@ -1,0 +1,161 @@
+.bk .bk-rich-content {
+  @apply text-sm text-mono-900 leading-snug;
+
+  p,
+  ul,
+  ol,
+  blockquote {
+    @apply m-0;
+  }
+
+  p {
+    min-height: 1lh;
+  }
+
+  > p + *,
+  > ul + *,
+  > ol + *,
+  > blockquote + * {
+    @apply mt-15;
+  }
+
+  ul,
+  ol {
+    padding-inline-start: 24px;
+    list-style-position: outside;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    @apply my-3;
+
+    &::marker {
+      @apply text-mono-500;
+    }
+
+    > p {
+      @apply m-0;
+    }
+  }
+
+  ul[data-type='taskList'] {
+    @apply list-none p-0;
+
+    > li {
+      @apply flex items-start gap-8 my-3;
+
+      > label {
+        @apply flex-shrink-0 relative inline-flex items-center cursor-pointer select-none -translate-y-1;
+
+        > input {
+          @apply absolute opacity-0 w-0 h-0 pointer-events-none;
+        }
+
+        > span {
+          @apply relative inline-block size-[17px] rounded-full border border-mono-400 bg-white transition-colors;
+
+          &::after {
+            content: '';
+            @apply absolute opacity-0;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+          }
+        }
+
+        &:hover > span {
+          @apply border-accent-500;
+        }
+
+        > input:checked + span {
+          @apply bg-accent-700 border-accent-700;
+
+          &::after {
+            @apply opacity-100;
+          }
+        }
+      }
+
+      > div {
+        @apply flex-1 min-w-0;
+
+        > p {
+          @apply m-0;
+        }
+      }
+
+      &[data-checked='true'] > div {
+        @apply text-mono-500 line-through;
+      }
+    }
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+
+  em {
+    @apply italic;
+  }
+
+  a {
+    @apply text-accent-700 underline decoration-accent-300 underline-offset-2;
+    @apply hover:decoration-accent-700;
+  }
+
+  s {
+    @apply text-mono-500;
+    text-decoration: line-through;
+  }
+
+  code {
+    @apply font-mono text-[12px] bg-mono-100 text-mono-900 rounded px-3 py-1 border border-mono-200;
+  }
+
+  blockquote {
+    @apply bg-accent-50 p-10 border-l-2 border-l-accent-400;
+  }
+}
+
+/* Read-only display: prevent task-list checkbox interaction by default.
+   Re-enabled on `.bk-tasks-togglable` (when the adapter supports toggling). */
+.bk
+  .bk-rich-content:not(.bk-prose-mirror)
+  ul[data-type='taskList']
+  > li
+  > label {
+  pointer-events: none;
+}
+
+.bk .bk-rich-content.bk-tasks-togglable ul[data-type='taskList'] > li > label {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Editor-only: padding, min-height, focus, placeholder. */
+.bk .bk-prose-mirror {
+  @apply p-10 outline-none min-h-[100px];
+
+  /* Placeholder for empty editor — provided by TipTap's placeholder extension. */
+  p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    @apply text-mono-400 pointer-events-none float-left h-0;
+  }
+}
+
+.bk .bk-richtext-mention {
+  @apply inline-block px-3 py-0 rounded bg-accent-100 text-accent-900 font-semibold;
+  @apply hover:bg-accent-200 transition-colors;
+  cursor: default;
+}

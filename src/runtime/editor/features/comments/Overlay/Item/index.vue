@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-comments-overlay-item absolute top-0 left-0 pointer-events-auto origin-top-left text-[46px] size-[1em]"
+    class="bk-comments-overlay-item absolute top-0 left-0 pointer-events-auto origin-top-left size-[46px]"
     :style="style"
     :class="{
       'z-comments-overlay-active': showComments,
@@ -10,7 +10,7 @@
   >
     <button
       v-show="!showComments"
-      class="font-bold leading-none text-mono-600 z-20 origin-top-left size-full relative group"
+      class="font-bold leading-none text-[46px] text-mono-600 z-20 origin-top-left size-full relative group"
       @click.prevent="$emit('toggle')"
       @pointerdown.prevent.stop
       @pointerup.prevent.stop
@@ -82,6 +82,7 @@
           @delete="$emit('delete', $event)"
           @resolve="$emit('resolveComment', root.uuid)"
           @unresolve="$emit('unresolveComment', root.uuid)"
+          @toggle-task="$emit('toggleTask', $event)"
         />
       </div>
     </div>
@@ -91,7 +92,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import CommentThread from './../../CommentThread/index.vue'
+import CommentThread from './../../Thread/index.vue'
 import type { CommentItem } from '../../types'
 
 const { $t } = useBlokkli()
@@ -100,6 +101,7 @@ defineEmits<{
   (e: 'toggle'): void
   (e: 'reply', data: { parentUuid: string; body: string }): void
   (e: 'edit', data: { uuid: string; body: string }): void
+  (e: 'toggleTask', data: { uuid: string; taskIndex: number }): void
   (e: 'delete' | 'resolveComment' | 'unresolveComment', uuid: string): void
 }>()
 

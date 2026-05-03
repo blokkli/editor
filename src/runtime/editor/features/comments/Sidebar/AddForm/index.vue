@@ -1,44 +1,42 @@
 <template>
-  <div class="-my-10">
+  <SidebarFloater>
     <button
       v-if="!isOpen"
       type="button"
-      class="flex items-center text-xs font-medium gap-5 py-5 px-10 w-full hover:bg-mono-100 text-mono-500 border border-mono-200 rounded hover:border-mono-300"
+      class="bk-button w-full bk-scheme-yellow"
       @click="open"
     >
-      <Icon name="bk_mdi_reply" class="size-15" />
-      {{ $t('commentReply', 'Reply') }}
+      <Icon name="bk_mdi_add_comment" class="size-18" />
+      <span class="font-semibold">{{
+        $t('commentAddPlaceholder', 'Add new comment...')
+      }}</span>
     </button>
     <CommentInput
       v-else
-      :id="`comment_reply_${rootUuid}`"
-      v-model="draft"
+      id="comment_sidebar_add"
+      :initial-value="draft"
       cancellable
-      :placeholder="$t('commentReplyPlaceholder', 'Write a reply…')"
-      :submit-label="$t('commentReply', 'Reply')"
-      boxed
+      :submit-label="$t('commentSave', 'Submit comment')"
+      @change="draft = $event"
       @submit="onSubmit"
       @cancel="onCancel"
     />
-  </div>
+  </SidebarFloater>
 </template>
 
 <script lang="ts" setup>
 import { ref, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import CommentInput from '../CommentInput/index.vue'
+import CommentInput from '../../CommentInput/index.vue'
+import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
 
 const { $t, storage } = useBlokkli()
-
-const props = defineProps<{
-  rootUuid: string
-}>()
 
 const emit = defineEmits<{
   (e: 'submit', value: string): void
 }>()
 
-const draft = storage.useWithContextPrefix('commentReply_' + props.rootUuid, '')
+const draft = storage.useWithContextPrefix('commentSidebarAdd', '')
 
 const isOpen = ref(draft.value.trim().length > 0)
 
@@ -60,6 +58,6 @@ function onSubmit(value: string) {
 
 <script lang="ts">
 export default {
-  name: 'CommentReplyForm',
+  name: 'SidebarAddForm',
 }
 </script>

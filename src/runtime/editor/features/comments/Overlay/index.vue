@@ -18,6 +18,7 @@
         @delete="$emit('delete', $event)"
         @resolve-comment="$emit('resolveComment', $event)"
         @unresolve-comment="$emit('unresolveComment', $event)"
+        @toggle-task="$emit('toggleTask', $event)"
       />
     </div>
   </Teleport>
@@ -60,6 +61,7 @@ const props = defineProps<{
 defineEmits<{
   (e: 'reply', data: { parentUuid: string; body: string }): void
   (e: 'edit', data: { uuid: string; body: string }): void
+  (e: 'toggleTask', data: { uuid: string; taskIndex: number }): void
   (e: 'delete' | 'resolveComment' | 'unresolveComment', uuid: string): void
 }>()
 

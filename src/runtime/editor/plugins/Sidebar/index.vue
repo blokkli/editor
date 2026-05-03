@@ -472,15 +472,19 @@ export default {
   }
 
   @variant md {
-    --bk-sidebar-width-right: 351px;
+    --bk-sidebar-width-right: 400px;
   }
 
   @variant 2xl {
-    --bk-sidebar-width-right: 400px;
+    --bk-sidebar-width-right: 420px;
   }
 
   @variant 3xl {
     --bk-sidebar-width-right: 440px;
+  }
+
+  @variant 4xl {
+    --bk-sidebar-width-right: 480px;
   }
 }
 

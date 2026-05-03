@@ -39,7 +39,7 @@ function getDefaultComments(): StoredComment[] {
     // Active thread — multiple voices on a hero block.
     {
       uuid: 'seed-1-root',
-      body: 'Should we reword this section? It feels too technical for the audience we agreed on last week.',
+      body: '<p>Hey <span class="bk-richtext-mention" data-type="mention" data-id="1" data-label="John Miller">@John Miller</span> — should we reword this section? It feels <strong>too technical</strong> for the audience we agreed on last week.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -49,7 +49,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-1-r1',
-      body: 'Agreed — let’s simplify the first paragraph.',
+      body: '<p>Agreed — a few quick thoughts:</p><ul><li>Lead with the value, not the architecture</li><li>Drop the term <em>"adapter pattern"</em> here</li><li>Move the API note to the footer</li></ul>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -71,7 +71,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-1-r3',
-      body: 'Thanks Martin — ping me when there’s a draft.',
+      body: '<p>Thanks <span class="bk-richtext-mention" data-type="mention" data-id="2" data-label="Martin Faux">@Martin Faux</span> — <em>ping me</em> when there’s a draft.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -84,7 +84,7 @@ function getDefaultComments(): StoredComment[] {
     // Single root, no replies.
     {
       uuid: 'seed-2-root',
-      body: 'The spacing here feels off — looks too tight on mobile.',
+      body: '<p>The spacing here feels off — <code>mt-15</code> looks too tight on mobile. Compare against <a href="https://example.com/spec/spacing">the spec</a>.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -96,7 +96,7 @@ function getDefaultComments(): StoredComment[] {
     // General thread, no block reference.
     {
       uuid: 'seed-3-root',
-      body: 'Reminder: launch is moved to next Friday. Let’s freeze content changes by Wednesday EOD.',
+      body: '<p><strong>Reminder:</strong> launch is moved to next Friday. Schedule:</p><ol><li>Content freeze: <strong>Wednesday EOD</strong></li><li>Final review: <strong>Thursday morning</strong></li><li>Press kit out: <strong>Friday 9:00</strong></li></ol>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -106,7 +106,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-3-r1',
-      body: 'Got it 👍',
+      body: '<p>Got it 👍</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -117,7 +117,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-3-r2',
-      body: 'Will the press kit be done by then? Need it for the partner email.',
+      body: '<p>Will the press kit be done by then? Need it for the partner email — pinging <span class="bk-richtext-mention" data-type="mention" data-id="4" data-label="Aisha Patel">@Aisha Patel</span>.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -128,7 +128,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-3-r3',
-      body: 'Yes — Aisha is finishing the assets today.',
+      body: '<p>Yes — <span class="bk-richtext-mention" data-type="mention" data-id="4" data-label="Aisha Patel">@Aisha Patel</span> is finishing the assets today.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -141,7 +141,7 @@ function getDefaultComments(): StoredComment[] {
     // Quick typo fix thread.
     {
       uuid: 'seed-4-root',
-      body: 'Typo here — "recieve" should be "receive".',
+      body: '<p>Typo here — <code>recieve</code> should be <code>receive</code>:</p><blockquote><p>"You will recieve a confirmation email shortly."</p></blockquote>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -151,7 +151,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-4-r1',
-      body: 'Fixed, thanks!',
+      body: '<p>Fixed — <s>recieve</s> receive ✓</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -164,7 +164,7 @@ function getDefaultComments(): StoredComment[] {
     // Resolved thread.
     {
       uuid: 'seed-5-root',
-      body: 'Are we sure this animation is on-brand? It feels a bit playful for the homepage.',
+      body: '<p>Are we sure this animation is on-brand? It feels a bit <strong>playful</strong> for the homepage.</p><blockquote><p>"The brand voice is confident, never quirky."</p></blockquote><p>— from the brand guidelines.</p>',
       isResolved: true,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -174,7 +174,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-5-r1',
-      body: 'Marketing signed off yesterday — we’re good to keep it.',
+      body: '<p>Marketing signed off yesterday — see <a href="https://example.com/approvals/marketing-2024-q4">the approval thread</a>. We’re good to keep it.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -187,7 +187,7 @@ function getDefaultComments(): StoredComment[] {
     // Older standalone resolved.
     {
       uuid: 'seed-6-root',
-      body: 'Nice teaser — works well at this size.',
+      body: '<p><em>Nice teaser</em> — works well at this size.</p>',
       isResolved: true,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -199,7 +199,7 @@ function getDefaultComments(): StoredComment[] {
     // Recent comment by current user — to demo edit/delete affordances.
     {
       uuid: 'seed-7-root',
-      body: 'Bumping this to the top of my list — will revisit after standup.',
+      body: '<p><strong>Bumping this to the top of my list.</strong> After standup, I’ll knock these out:</p><ul data-type="taskList"><li data-type="taskItem" data-checked="true">Review the open feedback in this thread</li><li data-type="taskItem" data-checked="true">Draft the simplified hero copy</li><li data-type="taskItem" data-checked="false">Loop in <span class="bk-richtext-mention" data-type="mention" data-id="3" data-label="Sarah Chen">@Sarah Chen</span> for tone check</li><li data-type="taskItem" data-checked="false">Stage on preview branch</li></ul>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -285,6 +285,26 @@ export function editComment(uuid: string, body: string): void {
     comment.updated = Date.now()
     saveComments(comments)
   }
+}
+
+/**
+ * Flip the checked state of the Nth `<li data-type="taskItem">` in a comment
+ * body (document order, 0-based). No-op if the comment doesn't exist or the
+ * index is out of range.
+ */
+export function toggleCommentTask(uuid: string, taskIndex: number): void {
+  const comments = loadComments()
+  const comment = comments.find((c) => c.uuid === uuid)
+  if (!comment) return
+  const doc = new DOMParser().parseFromString(comment.body, 'text/html')
+  const items = doc.body.querySelectorAll('li[data-type="taskItem"]')
+  const li = items[taskIndex]
+  if (!li) return
+  const next = li.getAttribute('data-checked') === 'true' ? 'false' : 'true'
+  li.setAttribute('data-checked', next)
+  comment.body = doc.body.innerHTML
+  comment.updated = Date.now()
+  saveComments(comments)
 }
 
 /**

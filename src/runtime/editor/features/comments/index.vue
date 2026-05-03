@@ -16,6 +16,7 @@
       @delete="onDeleteComment($event)"
       @resolve="onResolveComment($event)"
       @unresolve="onUnresolveComment($event)"
+      @toggle-task="onToggleTask($event.uuid, $event.taskIndex)"
     />
 
     <template v-if="unresolvedCount" #badge>
@@ -52,6 +53,7 @@
     @delete="onDeleteComment($event)"
     @resolve-comment="onResolveComment($event)"
     @unresolve-comment="onUnresolveComment($event)"
+    @toggle-task="onToggleTask($event.uuid, $event.taskIndex)"
   />
 </template>
 
@@ -67,7 +69,7 @@ import {
 } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/editor/components'
-import CommentSidebar from './CommentSidebar/index.vue'
+import CommentSidebar from './Sidebar/index.vue'
 import type { CommentItem } from './types'
 
 const CommentsOverlay = defineAsyncComponent(
@@ -145,6 +147,17 @@ const onUnresolveComment = async (uuid: string) => {
     return
   }
   comments.value = await adapter.unresolveComment(uuid)
+}
+
+const onToggleTask = async (uuid: string, taskIndex: number) => {
+  if (!adapter.toggleCommentTask) {
+    return
+  }
+  const updated = await adapter.toggleCommentTask(uuid, taskIndex)
+  const idx = comments.value.findIndex((c) => c.uuid === updated.uuid)
+  if (idx >= 0) {
+    comments.value[idx] = updated
+  }
 }
 </script>
 

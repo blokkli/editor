@@ -6,13 +6,14 @@
     @close="$emit('close')"
   >
     <div
-      class="bk-add-comment-inner w-full min-w-[360px] p-(--bk-gap)"
+      class="bk-add-comment-inner w-full min-w-[400px] border-t border-t-yellow-dark"
       @keydown.capture.stop
     >
       <CommentInput
         id="comment_body"
-        v-model="comment"
+        :initial-value="comment"
         :submit-label="$t('commentSave', 'Submit comment')"
+        @change="comment = $event"
         @submit="onAdd"
       />
     </div>
@@ -39,8 +40,8 @@ const getComment = (): string => {
   return comment.value
 }
 
-function onAdd() {
-  emit('add', comment.value)
+function onAdd(value: string) {
+  emit('add', value)
   comment.value = ''
 }
 

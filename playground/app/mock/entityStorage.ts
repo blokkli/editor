@@ -583,6 +583,11 @@ export class EntityStorageManager {
     this.loadCommentsFromStorage()
   }
 
+  toggleCommentTask(uuid: string, taskIndex: number) {
+    commentStorage.toggleCommentTask(uuid, taskIndex)
+    this.loadCommentsFromStorage()
+  }
+
   addBlock(block: Paragraph) {
     this.storages.paragraph.add(block)
   }

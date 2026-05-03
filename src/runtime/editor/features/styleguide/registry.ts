@@ -1,5 +1,7 @@
 import type { EditorEntry } from '#blokkli/editor/composables/defineEditorComponent'
 import banner from '#blokkli/editor/components/Banner/story'
+import richText from '#blokkli/editor/components/RichText/Editor/story'
+import richTextRenderer from '#blokkli/editor/components/RichText/Renderer/story'
 import dropdown from '#blokkli/editor/components/Dropdown/story'
 import infoBox from '#blokkli/editor/components/InfoBox/story'
 import pagination from '#blokkli/editor/components/Pagination/story'
@@ -54,6 +56,8 @@ export const editorEntries: EditorEntry[] = [
   panelDetails,
   panelItem,
   panelSection,
+  richText,
+  richTextRenderer,
   examplePanel,
   cssButton,
   cssPill,
