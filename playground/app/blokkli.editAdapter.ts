@@ -269,14 +269,15 @@ export default defineBlokkliEditAdapter((ctx) => {
           parentUuid,
           resolved: item.isResolved(),
           body: item.getBody(),
-          created: (item.getCreated() / 1000).toString(),
+          created: new Date(item.getCreated()).toISOString(),
           updated:
-            updated !== undefined ? (updated / 1000).toString() : undefined,
+            updated !== undefined
+              ? new Date(updated).toISOString()
+              : undefined,
           user: {
             id: author.uuid,
-            label: author.getName(),
+            name: author.getName(),
           },
-          isOwn: author.uuid === state.owner.id,
         }
       })
     return Promise.resolve(comments)
@@ -475,6 +476,12 @@ export default defineBlokkliEditAdapter((ctx) => {
         'use_blokkli',
       ]
       return Promise.resolve(permissions)
+    },
+    getCurrentUser() {
+      return Promise.resolve({
+        id: state.owner.id,
+        name: state.owner.name,
+      })
     },
     loadStateAtIndex(index: number) {
       const page = entityStorageManager.getContent(ctx.value.entityUuid)

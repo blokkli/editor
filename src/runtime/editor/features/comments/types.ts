@@ -1,26 +1,20 @@
+import type { BlokkliUser } from '#blokkli/editor/types/user'
+
 export type CommentItem = {
   uuid: string
   blockUuids?: string[]
   parentUuid?: string
   resolved: boolean
   body: string
-  created: string | number
-  updated?: string | number
-  user: {
-    /**
-     * Stable identifier for the comment author. Adapters that support
-     * editing/deleting own comments should set this. Used for grouping and
-     * identity display.
-     */
-    id?: string
-    label: string
-  }
   /**
-   * True when the viewing user authored this comment. Adapters that support
-   * editing or deleting own comments must set this; the editor uses it to
-   * gate the corresponding UI affordances.
+   * ISO 8601 timestamp (e.g. `2026-05-03T14:32:18Z`).
    */
-  isOwn?: boolean
+  created: string
+  /**
+   * ISO 8601 timestamp; set when the comment has been edited.
+   */
+  updated?: string
+  user: BlokkliUser
 }
 
 declare module '#blokkli/editor/adapter' {

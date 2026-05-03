@@ -1,4 +1,6 @@
-fragment paragraphsBlokkliUserPermissions on ParagraphsBlokkliUser {
+fragment paragraphsBlokkliCurrentUser on ParagraphsBlokkliUser {
+  id
+  name
   use_blokkli: hasPermission(permission: "view paragraphs blokkli edit state")
   take_ownership: hasPermission(
     permission: "take ownership of paragraphs blokkli edit state"
@@ -18,8 +20,8 @@ fragment paragraphsBlokkliUserPermissions on ParagraphsBlokkliUser {
   use_agent: hasPermission(permission: "use paragraphs blokkli agent")
 }
 query pbConfig($entityType: String!, $entityBundle: String!) {
-  userPermissions: paragraphsBlokkliGetUser {
-    ...paragraphsBlokkliUserPermissions
+  currentUser: paragraphsBlokkliGetUser {
+    ...paragraphsBlokkliCurrentUser
   }
   clipboards: pbGetSupportedClipboards {
     ...paragraphsBlokkliSupportedClipboard

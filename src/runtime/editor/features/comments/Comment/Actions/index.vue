@@ -3,18 +3,6 @@
     class="flex items-center bg-white border border-mono-400 rounded shadow-sm relative"
   >
     <CommentActionButton
-      v-if="canResolve"
-      icon="bk_mdi_check"
-      :label="$t('commentsMarkAsResolved', 'Mark as resolved')"
-      @click="$emit('resolve')"
-    />
-    <CommentActionButton
-      v-if="canUnresolve"
-      icon="bk_mdi_replay"
-      :label="$t('commentsMarkAsUnresolved', 'Mark as unresolved')"
-      @click="$emit('unresolve')"
-    />
-    <CommentActionButton
       v-if="canEdit"
       icon="bk_mdi_edit"
       :label="$t('commentEdit', 'Edit')"
@@ -26,6 +14,18 @@
       :label="$t('commentDelete', 'Delete')"
       variant="danger"
       @click="onDeleteClick"
+    />
+    <CommentActionButton
+      v-if="canResolve"
+      icon="bk_mdi_check"
+      :label="$t('commentsMarkAsResolved', 'Mark as resolved')"
+      @click="$emit('resolve')"
+    />
+    <CommentActionButton
+      v-if="canUnresolve"
+      icon="bk_mdi_replay"
+      :label="$t('commentsMarkAsUnresolved', 'Mark as unresolved')"
+      @click="$emit('unresolve')"
     />
 
     <Teleport :to="ui.mainLayoutElement.value">

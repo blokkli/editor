@@ -2650,7 +2650,7 @@ type MetatagAttribute {
 type Mutation {
   masqueradeSwitchBack: Boolean!
   messengerMessages: MessengerMessage
-  paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!): [Comment]
+  paragraphsBlokkliAddComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String]!, parentUuid: String): [ParagraphsBlokkliComment]
 
   """
   Delete an agent conversation by its UUID. Returns a success/error result.
@@ -2717,11 +2717,15 @@ type Mutation {
   permission.
   """
   paragraphsBlokkliAgentToken: String
+  paragraphsBlokkliDeleteComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
+  paragraphsBlokkliEditComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
 
   """Request translations via DeepL."""
   paragraphsBlokkliRequestTranslation(items: [ParagraphsBlokkliTranslationInput!]!): ParagraphsBlokkliTranslationResult!
-  paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [Comment]
+  paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
+  paragraphsBlokkliToggleCommentTaskItem(entityType: EntityType!, entityUuid: String!, langcode: String!, taskIndex: Int!, uuid: String!): [ParagraphsBlokkliComment]
+  paragraphsBlokkliUnresolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
 
   """Get the edit state for an entity."""
   paragraphsEditMutationState(
@@ -5314,6 +5318,37 @@ input ParagraphsBlokkliBulkUpdateFieldValuesInput {
   value: String!
 }
 
+"""
+A comment authored against one or more paragraphs in a blökkli edit state.
+"""
+type ParagraphsBlokkliComment {
+  """UUIDs of the paragraphs this comment references."""
+  blockUuids: [String!]!
+
+  """The format-processed comment body markup."""
+  body: String!
+
+  """ISO 8601 timestamp of when the comment was created."""
+  created: String!
+
+  """
+  UUID of the parent comment, if this is a reply. NULL for top-level comments.
+  """
+  parentUuid: String
+
+  """Whether the comment has been marked as resolved."""
+  resolved: Boolean!
+
+  """ISO 8601 timestamp of when the comment was last updated, if available."""
+  updated: String
+
+  """The author of the comment. NULL for anonymous."""
+  user: ParagraphsBlokkliUser
+
+  """The UUID of the comment entity."""
+  uuid: String!
+}
+
 interface ParagraphsBlokkliConfigInput {
   description: String
   label: String!
@@ -5431,7 +5466,7 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
   {field: changed} The time that the paragraphs blokkli edit state was last edited.
   """
   changedRawField: FieldItemListChanged
-  comments: [Comment]
+  comments: [ParagraphsBlokkliComment]
 
   """
   {value} {field: created} The time that the paragraphs blokkli edit state was created.
@@ -5967,6 +6002,12 @@ input ParagraphsBlokkliUpdateHostOptionsInput {
 
 type ParagraphsBlokkliUser {
   hasPermission(permission: String!): Boolean!
+
+  """The user ID."""
+  id: ID!
+
+  """The display name of the user."""
+  name: String!
 }
 
 input ParagraphsBlokkliUserConfigInput {

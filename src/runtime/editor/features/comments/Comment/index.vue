@@ -21,10 +21,7 @@
       isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
     "
   >
-    <CommentAvatar
-      :name="comment.user.label"
-      :seed="comment.user.id || comment.user.label"
-    />
+    <CommentAvatar :name="comment.user.name" :seed="comment.user.id" />
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-5 flex-wrap">
         <CommentMeta
@@ -59,7 +56,7 @@
 
     <div
       v-if="canEdit || canDelete || canResolve || canUnresolve"
-      class="absolute top-3 right-10 opacity-0 group-hover/comment:opacity-100 focus-within:opacity-100"
+      class="absolute top-8 right-10 opacity-0 group-hover/comment:opacity-100 focus-within:opacity-100"
     >
       <CommentActions
         :uuid="comment.uuid"
@@ -86,7 +83,7 @@ import CommentEditForm from './EditForm/index.vue'
 import RichTextRenderer from '#blokkli/editor/components/RichText/Renderer/index.vue'
 import type { CommentItem } from '../types'
 
-const { $t, adapter } = useBlokkli()
+const { $t, adapter, user } = useBlokkli()
 
 const props = defineProps<{
   comment: CommentItem
@@ -111,11 +108,11 @@ const blocksLabel = computed(() => {
   return template.replace('@count', count.toString())
 })
 
-const canEdit = computed(() => !!props.comment.isOwn && !!adapter.editComment)
+const isOwn = computed(() => user.isCurrent(props.comment.user.id))
 
-const canDelete = computed(
-  () => !!props.comment.isOwn && !!adapter.deleteComment,
-)
+const canEdit = computed(() => isOwn.value && !!adapter.editComment)
+
+const canDelete = computed(() => isOwn.value && !!adapter.deleteComment)
 
 const canResolve = computed(
   () => !props.isReply && !props.comment.resolved && !!adapter.resolveComment,

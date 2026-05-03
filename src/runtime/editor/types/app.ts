@@ -28,6 +28,7 @@ import type { TourProvider } from '../providers/tour'
 import type { ThemeProvider } from '../providers/theme'
 import type { DefinitionProvider } from '../providers/definition'
 import type { PermissionsProvider } from '../providers/permissions'
+import type { UserProvider } from '../providers/user'
 import type { AdaptersProvider } from '../providers/adapters'
 import type { AnalyzeProvider } from '../providers/analyze'
 import type { ReadabilityProvider } from '../providers/readability'
@@ -75,6 +76,7 @@ export interface BlokkliApp {
   fields: FieldsProvider
   icons: IconsProvider
   permissions: PermissionsProvider
+  user: UserProvider
   analyze: AnalyzeProvider
   readability: ReadabilityProvider
   fieldValue: FieldValueProvider

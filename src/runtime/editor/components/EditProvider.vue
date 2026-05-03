@@ -118,6 +118,7 @@ import directiveProvider from '#blokkli/editor/providers/directive'
 import fieldsProvider from '#blokkli/editor/providers/fields'
 import iconsProvider from '#blokkli/editor/providers/icons'
 import permissionsProvider from '#blokkli/editor/providers/permissions'
+import userProvider from '#blokkli/editor/providers/user'
 import adaptersProvider from '#blokkli/editor/providers/adapters'
 import analyzeProviderFn from '#blokkli/editor/providers/analyze'
 import readabilityProviderFn from '#blokkli/editor/providers/readability'
@@ -245,6 +246,7 @@ const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)
 const permissionsInstance = await permissionsProvider(adapter, blocks)
+const user = await userProvider(adapter)
 const selection = selectionProvider(blocks, permissionsInstance)
 const keyboard = keyboardProvider(eventBus)
 const animation = animationProvider(
@@ -398,6 +400,7 @@ const app: BlokkliApp = {
   fields,
   icons,
   permissions: permissionsInstance,
+  user,
   analyze,
   readability,
   fieldValue,

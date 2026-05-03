@@ -75,14 +75,17 @@
         }
 
         &:hover > span {
-          @apply border-accent-500;
+          @apply border-lime-normal bg-lime-light;
+          &:after {
+            @apply opacity-100 border-lime-normal;
+          }
         }
 
         > input:checked + span {
-          @apply bg-accent-700 border-accent-700;
+          @apply bg-lime-normal border-lime-normal;
 
           &::after {
-            @apply opacity-100;
+            @apply opacity-100 border-white!;
           }
         }
       }

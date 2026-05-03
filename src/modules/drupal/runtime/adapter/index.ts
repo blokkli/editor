@@ -23,8 +23,8 @@ import type {
   ParagraphsBlokkliEditStateFragment,
   ParagraphsBlokkliMutationResultFragment,
   ParagraphsBlokkliPublishOptionsFragment,
+  ParagraphsBlokkliCurrentUserFragment,
   ParagraphsBlokkliUserConfigInput,
-  ParagraphsBlokkliUserPermissionsFragment,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
@@ -67,7 +67,7 @@ function mapPublishOptions(
  */
 const PERMISSION_FIELDS: Record<
   UserPermissions,
-  keyof ParagraphsBlokkliUserPermissionsFragment
+  keyof ParagraphsBlokkliCurrentUserFragment
 > = {
   use_blokkli: 'use_blokkli',
   take_ownership: 'take_ownership',
@@ -80,12 +80,12 @@ const PERMISSION_FIELDS: Record<
 }
 
 function mapUserPermissions(
-  user: ParagraphsBlokkliUserPermissionsFragment,
+  user: ParagraphsBlokkliCurrentUserFragment,
 ): UserPermissions[] {
   return (
     Object.entries(PERMISSION_FIELDS) as [
       UserPermissions,
-      keyof ParagraphsBlokkliUserPermissionsFragment,
+      keyof ParagraphsBlokkliCurrentUserFragment,
     ][]
   )
     .filter(([, field]) => user[field] === true)
@@ -207,7 +207,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }).then((v) => {
       return {
         clipboard: v.data.clipboards || [],
-        userPermissions: v.data.userPermissions,
+        currentUser: v.data.currentUser,
         availableFeatures: v.data.features,
         allTypes: (v.data.allTypes.items || [])
           .map<BlockBundleDefinition | null>((v) => {
@@ -549,10 +549,21 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       addNewBlock,
       buildEditableFrameUrl,
       getUserPermissions: function () {
-        const permissions = config.userPermissions
-          ? mapUserPermissions(config.userPermissions)
+        const permissions = config.currentUser
+          ? mapUserPermissions(config.currentUser)
           : []
         return Promise.resolve(permissions)
+      },
+      getCurrentUser: () => {
+        const user = config.currentUser
+        if (!user || user.id == null || !user.name) {
+          return Promise.reject(
+            new Error(
+              'paragraphsBlokkliGetUser did not return a valid id/name.',
+            ),
+          )
+        }
+        return Promise.resolve({ id: String(user.id), name: user.name })
       },
       changeLanguage,
       formFrameBuilder,
@@ -845,9 +856,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               blockUuids: (item.blockUuids || []).filter(falsy),
               resolved: !!item.resolved,
               body: item.body || '',
-              created: item.created?.first?.value || '',
+              created: item.created || '',
+              updated: item.updated || undefined,
               user: {
-                label: item.user?.label || '',
+                id: item.user?.id != null ? String(item.user.id) : '',
+                name: item.user?.name || '',
               },
             }
           }
@@ -869,6 +882,30 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           blockUuids,
           body,
         }).then((v) => mapComments(v.data.action || []))
+      adapter.replyToComment = (parentUuid, body) =>
+        useGraphqlMutation('pbAddComment', {
+          ...ctx.value,
+          blockUuids: [],
+          body,
+          parentUuid,
+        }).then((v) => mapComments(v.data.action || []))
+    }
+
+    if (hasMutation('pbEditComment')) {
+      adapter.editComment = (uuid, body) =>
+        useGraphqlMutation('pbEditComment', {
+          ...ctx.value,
+          uuid,
+          body,
+        }).then((v) => mapComments(v.data.action || []))
+    }
+
+    if (hasMutation('pbDeleteComment')) {
+      adapter.deleteComment = (uuid) =>
+        useGraphqlMutation('pbDeleteComment', {
+          ...ctx.value,
+          uuid,
+        }).then((v) => mapComments(v.data.action || []))
     }
 
     if (hasMutation('pbResolveComment')) {
@@ -877,6 +914,33 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           uuid,
         }).then((v) => mapComments(v.data.action || []))
+    }
+
+    if (hasMutation('pbUnresolveComment')) {
+      adapter.unresolveComment = (uuid) =>
+        useGraphqlMutation('pbUnresolveComment', {
+          ...ctx.value,
+          uuid,
+        }).then((v) => mapComments(v.data.action || []))
+    }
+
+    if (hasMutation('pbToggleCommentTaskItem')) {
+      adapter.toggleCommentTask = (uuid, taskIndex) =>
+        useGraphqlMutation('pbToggleCommentTaskItem', {
+          ...ctx.value,
+          uuid,
+          taskIndex,
+        }).then((v) => {
+          const updated = mapComments(v.data.action || []).find(
+            (c) => c.uuid === uuid,
+          )
+          if (!updated) {
+            throw new Error(
+              `Comment ${uuid} not found in toggleCommentTask response.`,
+            )
+          }
+          return updated
+        })
     }
 
     if (hasQuery('pbReferencedEntities')) {

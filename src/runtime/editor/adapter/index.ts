@@ -16,6 +16,7 @@ import type {
 } from '../types/definitions'
 import type { EditBlockEvent } from '../features/edit/types'
 import type { UserPermissions } from '../types/permissions'
+import type { BlokkliUser } from '../types/user'
 
 export interface MutationResponseLike<T> {
   success: boolean
@@ -111,6 +112,13 @@ export interface BlokkliAdapter<T> {
   mapState(state: T): MappedState
 
   getUserPermissions: () => Promise<UserPermissions[]>
+
+  /**
+   * Return the user currently editing. Must always return a non-null user;
+   * adapters should treat this as a hard requirement (anonymous editing is
+   * not supported by features that consume the user provider).
+   */
+  getCurrentUser: () => Promise<BlokkliUser>
 
   /**
    * Get disabled features at runtime.

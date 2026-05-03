@@ -90,11 +90,7 @@ const repliesByRoot = computed(() => {
     map.set(comment.parentUuid, list)
   }
   for (const list of map.values()) {
-    list.sort((a, b) => {
-      const aCreated = Number.parseInt(a.created.toString())
-      const bCreated = Number.parseInt(b.created.toString())
-      return aCreated - bCreated
-    })
+    list.sort((a, b) => Date.parse(a.created) - Date.parse(b.created))
   }
   return map
 })

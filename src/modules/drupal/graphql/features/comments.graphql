@@ -1,15 +1,13 @@
-fragment paragraphsBlokkliComment on CommentBlokkliNode {
+fragment paragraphsBlokkliComment on ParagraphsBlokkliComment {
   uuid
-  blockUuids: fieldTargetUuids
-  resolved: fieldResolved
-  body: commentBody
-  created: createdRawField {
-    first {
-      value
-    }
-  }
-  user: uid {
-    label
+  blockUuids
+  resolved
+  body
+  created
+  updated
+  user {
+    id
+    name
   }
 }
 
@@ -35,6 +33,7 @@ mutation pbAddComment(
   $langcode: String!
   $blockUuids: [String]!
   $body: String!
+  $parentUuid: String
 ) {
   action: paragraphsBlokkliAddComment(
     entityType: $entityType
@@ -42,6 +41,41 @@ mutation pbAddComment(
     langcode: $langcode
     body: $body
     paragraphUuids: $blockUuids
+    parentUuid: $parentUuid
+  ) {
+    ...paragraphsBlokkliComment
+  }
+}
+
+mutation pbEditComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuid: String!
+  $body: String!
+) {
+  action: paragraphsBlokkliEditComment(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+    uuid: $uuid
+    body: $body
+  ) {
+    ...paragraphsBlokkliComment
+  }
+}
+
+mutation pbDeleteComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuid: String!
+) {
+  action: paragraphsBlokkliDeleteComment(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+    uuid: $uuid
   ) {
     ...paragraphsBlokkliComment
   }
@@ -58,6 +92,40 @@ mutation pbResolveComment(
     entityUuid: $entityUuid
     langcode: $langcode
     uuid: $uuid
+  ) {
+    ...paragraphsBlokkliComment
+  }
+}
+
+mutation pbUnresolveComment(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuid: String!
+) {
+  action: paragraphsBlokkliUnresolveComment(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+    uuid: $uuid
+  ) {
+    ...paragraphsBlokkliComment
+  }
+}
+
+mutation pbToggleCommentTaskItem(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuid: String!
+  $taskIndex: Int!
+) {
+  action: paragraphsBlokkliToggleCommentTaskItem(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+    uuid: $uuid
+    taskIndex: $taskIndex
   ) {
     ...paragraphsBlokkliComment
   }
