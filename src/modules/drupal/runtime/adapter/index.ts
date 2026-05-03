@@ -44,6 +44,7 @@ import type { GraphqlResponse } from '#nuxt-graphql-middleware/response'
 import type { EditPermission } from '#blokkli/types/provider'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
+import type { CommentItem } from '#blokkli/editor/features/comments/types'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -849,7 +850,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       comments: Array<ParagraphsBlokkliCommentFragment | null>,
     ) =>
       comments
-        .map((item) => {
+        .map<CommentItem | null>((item) => {
           if (item && 'uuid' in item) {
             return {
               uuid: item.uuid,
@@ -858,6 +859,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               body: item.body || '',
               created: item.created || '',
               updated: item.updated || undefined,
+              parentUuid: item.parentUuid || undefined,
               user: {
                 id: item.user?.id != null ? String(item.user.id) : '',
                 name: item.user?.name || '',

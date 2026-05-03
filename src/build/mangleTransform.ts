@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import * as acorn from 'acorn'
 import { mangleClassName, mangleClassString } from './mangleClasses'
 import { processCSS } from './processCSS'
@@ -208,6 +209,81 @@ export function withTailwindConfig(
 }
 
 /**
+ * Strip Tailwind v4 boilerplate that gets emitted into every per-SFC <style>
+ * block when `@config '<v3-config>'` is present, AND flatten author-emitted
+ * cascade layers so the published per-SFC CSS is unlayered.
+ *
+ * Why unlayered: Tailwind v3 hosts that consume our CSS emit their own
+ * preflight to `@layer base { button { ... } }`. If our scoped preflight or
+ * component CSS lives in *any* layer (named or not), the host's later-
+ * declared layer wins on cascade-layer ordering — regardless of selector
+ * specificity. Unlayered rules always beat layered ones, so dropping the
+ * layer wrappers is the only reliable way to keep our resets winning.
+ *
+ * Tailwind 4 emits per-SFC content into these named layers:
+ * - `base`     — theme variable redeclarations (already shipped via
+ *                output.css; redundant per-SFC duplication)
+ * - `theme`    — same; redundant
+ * - `properties` — CSS Properties API registrations for `--bk-tw-*`
+ *                  (already shipped; redundant)
+ * - `components` — author-written CSS plus resolved `@apply` output
+ * - `utilities` — author-written utilities
+ *
+ * Behavior:
+ * - `base`, `theme`, `properties` blocks → drop entirely (already in
+ *   output.css).
+ * - `components`, `utilities` blocks → unwrap, promoting children to
+ *   the surrounding scope so they are unlayered.
+ * - Standalone `@layer a, b, c;` declarations → drop.
+ * - `@property --bk-tw-* { ... }` → drop (registered once via output.css).
+ * - Unknown layer names (author wrote their own `@layer foo`) → preserve.
+ *
+ * Kept: author-written rules, resolved @apply output, @font-face,
+ * @keyframes, @media, @supports.
+ */
+let stripProcessor: any | null = null
+async function stripDistBoilerplate(css: string): Promise<string> {
+  if (!stripProcessor) {
+    const _require = createRequire(import.meta.url)
+    const postcss = _require('postcss')
+    const plugin = () => ({
+      postcssPlugin: 'postcss-strip-blokkli-dist-boilerplate',
+      Once(root: any) {
+        const toUnwrap: any[] = []
+        const toRemove: any[] = []
+
+        root.walkAtRules('layer', (atRule: any) => {
+          // Standalone `@layer a, b, c;` (no body) — drop.
+          if (!atRule.nodes) {
+            toRemove.push(atRule)
+            return
+          }
+          const name = atRule.params.trim()
+          if (name === 'base' || name === 'theme' || name === 'properties') {
+            toRemove.push(atRule)
+          } else if (name === 'components' || name === 'utilities') {
+            toUnwrap.push(atRule)
+          }
+        })
+
+        root.walkAtRules('property', (atRule: any) => {
+          if (atRule.params.startsWith('--bk-tw-')) {
+            toRemove.push(atRule)
+          }
+        })
+
+        for (const r of toUnwrap) r.replaceWith(r.nodes)
+        for (const r of toRemove) r.remove()
+      },
+    })
+    plugin.postcss = true
+    stripProcessor = postcss([plugin()])
+  }
+  const result = await stripProcessor.process(css, { from: undefined })
+  return result.css
+}
+
+/**
  * Process <style> blocks in a Vue SFC through blökkli's PostCSS pipeline.
  * Resolves @apply, nesting, theme(), mangles classes, scopes --tw-* vars,
  * and converts rem to px. Strips lang="postcss" after processing.
@@ -228,9 +304,10 @@ export async function processStyleBlocks(
     if (cssContent.trim()) {
       const withConfig = withTailwindConfig(cssContent, tailwindConfigPath)
       const processed = await processCSS(withConfig, filePath)
+      const stripped = await stripDistBoilerplate(processed)
       // Strip lang="postcss" since content is now plain CSS.
       const cleanAttrs = attrs.replace(/\s*lang=["']postcss["']/g, '')
-      const replacement = `<style${cleanAttrs}>${processed}</style>`
+      const replacement = `<style${cleanAttrs}>${stripped}</style>`
       result =
         result.slice(0, styleMatch.index) +
         replacement +

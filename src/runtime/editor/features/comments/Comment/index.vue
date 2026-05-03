@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isEditing"
-    class="px-(--bk-comment-pad-x) font-sans"
+    class="px-(--bk-comment-pad-x) font-sans relative z-50"
     :class="
       isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
     "

@@ -5,6 +5,7 @@ fragment paragraphsBlokkliComment on ParagraphsBlokkliComment {
   body
   created
   updated
+  parentUuid
   user {
     id
     name

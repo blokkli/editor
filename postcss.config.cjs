@@ -18,5 +18,6 @@ module.exports = {
       },
     }),
     require('@thedutchcoder/postcss-rem-to-px')({ baseValue: 16 }),
+    require('./src/build/postcssUnwrapLayers.cjs'),
   ],
 }

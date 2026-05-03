@@ -20,12 +20,18 @@ function postcssMangleClasses(selectorParser: any) {
             let hasMangled = false
             let hasBk = false
 
+            // Idempotent: already-mangled selectors (`._bk_*`) are skipped so
+            // a re-process pass cannot turn them into `._bk__bk_*`.
             selector.walkClasses((classNode: any) => {
               if (classNode.value === 'bk') {
                 hasBk = true
                 return
               }
               if (classNode.value.startsWith('bk-')) return
+              if (classNode.value.startsWith('_bk_')) {
+                hasMangled = true
+                return
+              }
               classNode.value = '_bk_' + classNode.value
               hasMangled = true
             })
