@@ -260,15 +260,23 @@ export default defineBlokkliEditAdapter((ctx) => {
     const comments: CommentItem[] = entityStorageManager
       .getCommentsForPage(ctx.value.entityUuid)
       .map((item) => {
+        const author = item.getUser()
+        const parentUuid = item.getParentUuid()
+        const updated = item.getUpdated()
         return {
           uuid: item.uuid,
-          blockUuids: item.getBlockUuids(),
+          blockUuids: parentUuid ? undefined : item.getBlockUuids(),
+          parentUuid,
           resolved: item.isResolved(),
           body: item.getBody(),
           created: (item.getCreated() / 1000).toString(),
+          updated:
+            updated !== undefined ? (updated / 1000).toString() : undefined,
           user: {
-            label: item.getUser().getName(),
+            id: author.uuid,
+            label: author.getName(),
           },
+          isOwn: author.uuid === state.owner.id,
         }
       })
     return Promise.resolve(comments)
@@ -849,6 +857,10 @@ export default defineBlokkliEditAdapter((ctx) => {
       entityStorageManager.resolveComment(uuid)
       return loadComments()
     },
+    unresolveComment(uuid) {
+      entityStorageManager.unresolveComment(uuid)
+      return loadComments()
+    },
     addComment(blockUuids, body) {
       entityStorageManager.addComment({
         body,
@@ -857,8 +869,29 @@ export default defineBlokkliEditAdapter((ctx) => {
         parentEntityType: ctx.value.entityType,
         parentEntityUuid: ctx.value.entityUuid,
         referencedBlocks: blockUuids,
-        user: '1',
+        user: state.owner.id,
       })
+      return loadComments()
+    },
+    replyToComment(parentUuid, body) {
+      entityStorageManager.addComment({
+        body,
+        created: Date.now(),
+        isResolved: false,
+        parentEntityType: ctx.value.entityType,
+        parentEntityUuid: ctx.value.entityUuid,
+        parentUuid,
+        referencedBlocks: [],
+        user: state.owner.id,
+      })
+      return loadComments()
+    },
+    editComment(uuid, body) {
+      entityStorageManager.editComment(uuid, body)
+      return loadComments()
+    },
+    deleteComment(uuid) {
+      entityStorageManager.deleteComment(uuid)
       return loadComments()
     },
     addNewBlock: (e) =>

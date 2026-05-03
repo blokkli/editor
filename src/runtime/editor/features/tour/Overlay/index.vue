@@ -287,7 +287,7 @@ useAnimationFrame(() => {
 
 <style lang="postcss">
 .bk.bk-tour {
-  @apply fixed z-tour-item top-0 left-0 rounded-md;
+  @apply fixed z-tour-item top-0 left-0 rounded;
   @apply bg-white shadow-xl transition-all duration-200 ease-swing text-yellow-dark pointer-events-auto;
 
   button {

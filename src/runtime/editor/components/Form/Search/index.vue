@@ -39,7 +39,7 @@
       :class="{ 'opacity-50': disabled }"
     >
       <div
-        class="overflow-hidden bg-white"
+        class="overflow-hidden bg-white rounded"
         :class="{ 'ring-4 ring-accent-700': isFocused }"
       >
         <div class="group/search relative">
@@ -57,6 +57,9 @@
             :placeholder
             :required
             :disabled
+            :class="{
+              'rounded-b-none': showDropdown,
+            }"
             @keydown="onKeyDown"
           />
           <Icon

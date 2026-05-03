@@ -531,7 +531,7 @@ export default {
 }
 
 .bk-vars.bk-dragging-overlay .bk-add-item {
-  @apply rounded-lg overflow-hidden;
+  @apply rounded overflow-hidden;
 }
 
 .bk .bk-item-icon {

@@ -1,7 +1,12 @@
 <template>
   <div ref="rootEl" class="bk bk-add-list-help">
-    <div ref="innerEl" class="bk-add-list-help-inner">
-      <div class="bk-add-list-help-content">
+    <div
+      ref="innerEl"
+      class="bk-add-list-help-inner relative will-change-transform text-mono-50 bg-mono-950/90 backdrop-blur-md overflow-hidden rounded"
+    >
+      <div
+        class="bk-add-list-help-content absolute top-0 left-0 right-0 grid items-start"
+      >
         <HelpItemComponent
           v-for="item in items"
           :id="item.id"
@@ -178,21 +183,8 @@ useAnimationFrame(() => {
       }
     }
   }
-  .bk-add-list-help-label {
-    @apply uppercase text-sm font-semibold text-mono-300 tracking-wider mb-10;
-  }
-
-  .bk-add-list-help-inner {
-    @apply relative;
-    @apply will-change-transform;
-    @apply text-mono-50 bg-mono-950/90 backdrop-blur-md;
-    @apply overflow-hidden;
-  }
 
   .bk-add-list-help-content {
-    @apply absolute top-0 left-0 right-0;
-    @apply grid items-start;
-
     .bk-add-list-help-item {
       grid-area: 1 / 1;
     }
@@ -250,7 +242,7 @@ useAnimationFrame(() => {
       &.bk-is-field {
         @apply uppercase inline-block;
         @apply text-xs tracking-wide min-w-0;
-        @apply rounded-md px-[8px] pt-[4px] pb-2;
+        @apply rounded px-[8px] pt-[4px] pb-2;
         @apply border;
         @apply font-medium;
         @apply bg-mono-800/60;

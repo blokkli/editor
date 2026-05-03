@@ -5,7 +5,10 @@
       :class="'bk-orientation-' + orientation"
     >
       <div ref="el">
-        <button ref="thumb" class="bg-mono-400 group-hover:bg-mono-500" />
+        <button
+          ref="thumb"
+          class="bg-mono-400 group-hover:bg-mono-500 rounded-full"
+        />
       </div>
     </div>
   </Teleport>

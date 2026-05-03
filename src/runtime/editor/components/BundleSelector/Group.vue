@@ -11,8 +11,8 @@
         v-for="item in items"
         :key="item.props.id"
         v-bind="item.props"
-        @click.prevent="$emit('select', item)"
         class="px-20 py-10"
+        @click.prevent="$emit('select', item)"
       />
     </div>
   </div>

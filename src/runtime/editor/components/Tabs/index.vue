@@ -12,7 +12,7 @@
           '!bg-white !text-mono-900': modelValue === tab.id,
           'hover:!bg-mono-700': modelValue !== tab.id,
         }"
-        class="text-lg font-bold px-30 py-10 text-white"
+        class="text-lg font-bold px-30 py-10 text-white rounded-t"
         @click.prevent="modelValue = tab.id"
       >
         {{ tab.label }}

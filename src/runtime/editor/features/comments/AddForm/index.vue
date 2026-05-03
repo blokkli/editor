@@ -5,17 +5,16 @@
     class="bk-add-comment"
     @close="$emit('close')"
   >
-    <div class="bk-add-comment-inner" @keydown.capture.stop>
-      <CommentInput id="comment_body" v-model="comment" />
-      <footer>
-        <button
-          :disabled="!comment"
-          class="bk-button bk-scheme-yellow"
-          @click.prevent="onAdd"
-        >
-          {{ $t('commentSave', 'Submit comment') }}
-        </button>
-      </footer>
+    <div
+      class="bk-add-comment-inner w-full min-w-[360px] p-(--bk-gap)"
+      @keydown.capture.stop
+    >
+      <CommentInput
+        id="comment_body"
+        v-model="comment"
+        :submit-label="$t('commentSave', 'Submit comment')"
+        @submit="onAdd"
+      />
     </div>
   </ArtboardTooltip>
 </template>
@@ -55,3 +54,13 @@ onBeforeUnmount(() => {
   ui.removeSelectionColor('add-comment')
 })
 </script>
+
+<style lang="postcss">
+.bk.bk-add-comment {
+  --bk-bg: white;
+  --bk-header-bg: theme('colors.yellow.normal');
+  --bk-header-text: theme('colors.yellow.dark');
+  --bk-border: theme('colors.yellow.normal');
+  --bk-header-hover: rgb(var(--bk-theme-yellow-dark) / 0.2);
+}
+</style>

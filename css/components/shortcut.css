@@ -5,7 +5,7 @@
   height: calc(22em / 16);
   color: inherit;
   > kbd {
-    @apply flex items-center justify-center h-full leading-none font-sans;
+    @apply flex items-center justify-center h-full leading-none font-sans rounded;
     @apply text-mono-950;
     @apply border border-mono-50;
     padding: calc(1em / 16) calc(5em / 16) 0;

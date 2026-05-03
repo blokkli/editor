@@ -12,7 +12,7 @@
       <div
         v-if="showMenu"
         ref="contentEl"
-        class="bk-dropdown-menu-content"
+        class="bk-dropdown-menu-content rounded"
         :class="positionClass"
         @keydown="onContentKeydown"
       >

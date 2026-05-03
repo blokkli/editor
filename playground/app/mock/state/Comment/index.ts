@@ -23,10 +23,12 @@ export class Comment extends Entity {
     return [
       ...super.getFieldDefintions(),
       new FieldTimestamp('created', 'Created'),
+      new FieldTimestamp('updated', 'Updated'),
       new FieldTextarea('body', 'Body'),
       new FieldBoolean('isResolved', 'Is Resolved'),
       new FieldText('parentEntityType', 'Parent Entity Type'),
       new FieldText('parentEntityUuid', 'Parent Entity UUID'),
+      new FieldText('parentUuid', 'Parent Comment UUID'),
       new FieldReference('user', 'User', 1, false, 'user', []),
       new FieldReference(
         'referencedBlocks',
@@ -53,6 +55,15 @@ export class Comment extends Entity {
 
   getCreated(): number {
     return this.get<FieldTimestamp>('created').getTimestamp()
+  }
+
+  getUpdated(): number | undefined {
+    const value = this.get<FieldTimestamp>('updated').getTimestamp()
+    return value || undefined
+  }
+
+  getParentUuid(): string | undefined {
+    return this.get<FieldText>('parentUuid').getUnprocessed() || undefined
   }
 
   getUser(): User {

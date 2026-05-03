@@ -1,6 +1,9 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
-    <div ref="overlay" class="bk bk-comments-overlay bk-control">
+    <div
+      ref="overlay"
+      class="bk bk-comments-overlay bk-control fixed top-0 left-0 w-full h-full pointer-events-none z-comments-overlay"
+    >
       <Item
         v-for="item in indicators"
         :key="item.id"
@@ -10,8 +13,11 @@
         :show-comments="active === item.id"
         :width
         @toggle="toggle(item)"
-        @add-comment="$emit('addComment', { body: $event, uuids: item.uuids })"
+        @reply="$emit('reply', $event)"
+        @edit="$emit('edit', $event)"
+        @delete="$emit('delete', $event)"
         @resolve-comment="$emit('resolveComment', $event)"
+        @unresolve-comment="$emit('unresolveComment', $event)"
       />
     </div>
   </Teleport>
@@ -27,7 +33,8 @@ import type { CommentItem } from '../types'
 
 type Indicator = {
   id: string
-  comments: CommentItem[]
+  roots: CommentItem[]
+  replies: CommentItem[]
   uuids: string[]
   style: {
     transform: string
@@ -38,12 +45,12 @@ const { eventBus, ui, dom } = useBlokkli()
 
 const width = computed(() => {
   if (ui.viewport.value.width > 1600) {
-    return 400
+    return 460
   } else if (ui.viewport.value.width > 1300) {
-    return 350
+    return 400
   }
 
-  return 300
+  return 320
 })
 
 const props = defineProps<{
@@ -51,8 +58,9 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'addComment', data: { uuids: string[]; body: string }): void
-  (e: 'resolveComment', uuid: string): void
+  (e: 'reply', data: { parentUuid: string; body: string }): void
+  (e: 'edit', data: { uuid: string; body: string }): void
+  (e: 'delete' | 'resolveComment' | 'unresolveComment', uuid: string): void
 }>()
 
 const isReduced = ref(false)
@@ -68,6 +76,26 @@ function toggle(item: Indicator) {
     eventBus.emit('select:end', item.uuids)
   }
 }
+
+const repliesByRoot = computed(() => {
+  const map = new Map<string, CommentItem[]>()
+  for (const comment of props.comments) {
+    if (!comment.parentUuid) {
+      continue
+    }
+    const list = map.get(comment.parentUuid) || []
+    list.push(comment)
+    map.set(comment.parentUuid, list)
+  }
+  for (const list of map.values()) {
+    list.sort((a, b) => {
+      const aCreated = Number.parseInt(a.created.toString())
+      const bCreated = Number.parseInt(b.created.toString())
+      return aCreated - bCreated
+    })
+  }
+  return map
+})
 
 const indicators = ref<Indicator[]>([])
 
@@ -97,8 +125,10 @@ onBlokkliEvent('canvas:draw', (e) => {
     return y
   }
 
-  for (let i = 0; i < props.comments.length; i++) {
-    const comment = props.comments[i]!
+  const roots = props.comments.filter((c) => !c.parentUuid)
+
+  for (let i = 0; i < roots.length; i++) {
+    const comment = roots[i]!
     const uuids = comment.blockUuids || []
     const rects = uuids
       .filter(falsy)
@@ -127,7 +157,8 @@ onBlokkliEvent('canvas:draw', (e) => {
           const y = findY(Math.round(bounds.y))
           newIndicators[id] = {
             id,
-            comments: [comment],
+            roots: [comment],
+            replies: repliesByRoot.value.get(comment.uuid) || [],
             uuids,
             style: {
               // @TODO: Because the --bk-artboard-scale CSS variable was
@@ -138,7 +169,9 @@ onBlokkliEvent('canvas:draw', (e) => {
             },
           }
         } else {
-          newIndicators[id].comments.push(comment)
+          newIndicators[id].roots.push(comment)
+          const moreReplies = repliesByRoot.value.get(comment.uuid) || []
+          newIndicators[id].replies.push(...moreReplies)
         }
       }
     }

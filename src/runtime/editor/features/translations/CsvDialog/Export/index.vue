@@ -45,7 +45,7 @@
       <div class="flex gap-10 flex-wrap pt-20">
         <button class="bk-button" @click="downloadCsv">
           <div
-            class="uppercase font-bold border-2 leading-none rounded-md px-3 py-2 -ml-5"
+            class="uppercase font-bold border-2 leading-none rounded px-3 py-2 -ml-5"
           >
             csv
           </div>
@@ -58,7 +58,7 @@
           @click="downloadPo(lang.id)"
         >
           <div
-            class="uppercase font-bold border-2 leading-none rounded-md px-3 py-2 -ml-5"
+            class="uppercase font-bold border-2 leading-none rounded px-3 py-2 -ml-5"
           >
             po
           </div>

@@ -29,11 +29,11 @@
       </div>
       <div
         ref="wrapperEl"
-        @wheel.passive="onWheel"
         :style="{
           width,
           height,
         }"
+        @wheel.passive="onWheel"
       >
         <ItemGroup :items="filteredBlocks" @select="onClick" />
         <ItemGroup

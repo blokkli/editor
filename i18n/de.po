@@ -1764,25 +1764,91 @@ msgstr ""
 "Führen Sie Aktionen ganz einfach mit Ihrer Tastatur aus, indem Sie "
 "«Befehle» öffnen. Fast alle Funktionen sind auch über «Befehle» ausführbar."
 
-msgctxt "commentAdd"
-msgid "Add comment"
-msgstr "Kommentar hinzufügen"
+msgctxt "commentAddPlaceholder"
+msgid "Add a comment…"
+msgstr "Kommentar schreiben…"
 
-msgctxt "commentBodyPlaceholder"
-msgid "Add reply"
-msgstr "Antwort hinzufügen"
+msgctxt "commentCancelEdit"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "commentDelete"
+msgid "Delete"
+msgstr "Löschen"
+
+msgctxt "commentDeleteConfirmSubmit"
+msgid "Delete"
+msgstr "Löschen"
+
+msgctxt "commentDeleteConfirmText"
+msgid "This comment and any replies will be removed."
+msgstr "Dieser Kommentar und alle Antworten werden entfernt."
+
+msgctxt "commentDeleteConfirmTitle"
+msgid "Delete comment?"
+msgstr "Kommentar löschen?"
+
+msgctxt "commentEdit"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgctxt "commentEdited"
+msgid "edited"
+msgstr "bearbeitet"
+
+msgctxt "commentReply"
+msgid "Reply"
+msgstr "Antworten"
+
+msgctxt "commentReplyPlaceholder"
+msgid "Write a reply…"
+msgstr "Antwort schreiben…"
+
+msgctxt "commentResolvedLabel"
+msgid "Resolved"
+msgstr "Erledigt"
 
 msgctxt "commentSave"
 msgid "Submit comment"
 msgstr "Kommentar speichern"
 
+msgctxt "commentSaveEdit"
+msgid "Save"
+msgstr "Speichern"
+
 msgctxt "comments"
 msgid "Comments"
 msgstr "Kommentare"
 
+msgctxt "commentsAllResolved"
+msgid "All comments are resolved. Toggle \"Show resolved\" to view them."
+msgstr ""
+"Alle Kommentare sind erledigt. Aktivieren Sie «Erledigte anzeigen», um sie "
+"einzublenden."
+
+msgctxt "commentsCountOne"
+msgid "1 comment"
+msgstr "1 Kommentar"
+
+msgctxt "commentsCountOther"
+msgid "@count comments"
+msgstr "@count Kommentare"
+
+msgctxt "commentsEmpty"
+msgid "No comments yet."
+msgstr "Noch keine Kommentare."
+
 msgctxt "commentsMarkAsResolved"
-msgid "Resolve"
-msgstr "Erledigen"
+msgid "Mark as resolved"
+msgstr "Als erledigt markieren"
+
+msgctxt "commentsMarkAsUnresolved"
+msgid "Mark as unresolved"
+msgstr "Als nicht erledigt markieren"
+
+msgctxt "commentsShowResolved"
+msgid "Show resolved"
+msgstr "Erledigte anzeigen"
 
 msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
@@ -1957,7 +2023,7 @@ msgid "This block type is not allowed in this field."
 msgstr "Dieser Blocktyp ist in diesem Feld nicht erlaubt."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeiten..."
 
 msgctxt "editDisabledByDefinition"
@@ -3632,10 +3698,6 @@ msgstr "@title ausblenden"
 msgctxt "sidebar.show"
 msgid "Show @title"
 msgstr "@title anzeigen"
-
-msgctxt "singleComment"
-msgid "comment"
-msgstr "Kommentar"
 
 msgctxt "stateUnavailableText"
 msgid ""

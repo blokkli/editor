@@ -164,7 +164,7 @@ function onReasonInput(event: Event) {
   @apply flex items-center h-50;
   @apply bg-mono-900 text-mono-50;
   @apply select-none relative;
-  @apply mx-15 mb-15 rounded-md;
+  @apply mx-15 mb-15 rounded;
   @apply shadow-xl-even;
   @apply outline outline-1 outline-mono-400;
 

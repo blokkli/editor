@@ -82,7 +82,7 @@
         @apply inline-flex items-center justify-center;
         @apply border;
         @apply size-20;
-        @apply rounded-md;
+        @apply rounded;
         @apply text-mono-500;
       }
     }

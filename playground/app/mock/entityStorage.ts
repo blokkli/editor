@@ -163,6 +163,10 @@ export class EntityStorageManager {
 
     this.addUser('1', 'John Miller', 'john@example.com')
     this.addUser('2', 'Martin Faux', 'martin@example.com')
+    this.addUser('3', 'Sarah Chen', 'sarah@example.com')
+    this.addUser('4', 'Aisha Patel', 'aisha@example.com')
+    this.addUser('5', 'Lukas Müller', 'lukas@example.com')
+    this.addUser('6', 'Diego Ramírez', 'diego@example.com')
 
     // Load comments from localStorage (will initialize with defaults if empty)
     this.loadCommentsFromStorage()
@@ -512,7 +516,9 @@ export class EntityStorageManager {
         isResolved: stored.isResolved,
         parentEntityType: stored.parentEntityType,
         parentEntityUuid: stored.parentEntityUuid,
+        parentUuid: stored.parentUuid,
         created: stored.created,
+        updated: stored.updated,
         user: stored.user,
         referencedBlocks: stored.referencedBlocks,
       })
@@ -543,7 +549,9 @@ export class EntityStorageManager {
       isResolved: values.isResolved || false,
       parentEntityType: values.parentEntityType || '',
       parentEntityUuid: values.parentEntityUuid || '',
+      parentUuid: values.parentUuid || undefined,
       created: values.created || Date.now(),
+      updated: values.updated || undefined,
       user: values.user || '1',
       referencedBlocks: values.referencedBlocks || [],
     }
@@ -557,6 +565,21 @@ export class EntityStorageManager {
     commentStorage.resolveComment(uuid)
 
     // Reload from localStorage to update in-memory state
+    this.loadCommentsFromStorage()
+  }
+
+  unresolveComment(uuid: string) {
+    commentStorage.unresolveComment(uuid)
+    this.loadCommentsFromStorage()
+  }
+
+  editComment(uuid: string, body: string) {
+    commentStorage.editComment(uuid, body)
+    this.loadCommentsFromStorage()
+  }
+
+  deleteComment(uuid: string) {
+    commentStorage.deleteComment(uuid)
     this.loadCommentsFromStorage()
   }
 

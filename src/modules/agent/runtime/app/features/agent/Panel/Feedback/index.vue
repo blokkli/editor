@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-10 p-10 border border-mono-300 rounded-lg">
+  <div class="mt-10 p-10 border border-mono-300 rounded">
     <div class="flex items-center justify-between gap-8">
       <span class="text-sm font-semibold">
         {{

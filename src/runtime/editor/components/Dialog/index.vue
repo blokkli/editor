@@ -9,7 +9,7 @@
     @touchmove.stop
     @touchend.stop
   >
-    <div class="bk-dialog-inner" :style>
+    <div class="bk-dialog-inner rounded overflow-hidden" :style>
       <div class="bk bk-overlay-header">
         <Icon v-if="icon" :name="icon" />
         <h3>{{ title }}</h3>

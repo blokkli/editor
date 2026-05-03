@@ -4,7 +4,7 @@
     @apply !whitespace-nowrap;
     @apply border;
     @apply select-none;
-    @apply rounded-xs;
+    @apply rounded;
     box-shadow:
       inset 1px 1px 0px 0px rgb(var(--bk-scheme-light) / 0.5),
       inset -1px -1px 0px 0px rgb(var(--bk-scheme-dark) / 0.3);

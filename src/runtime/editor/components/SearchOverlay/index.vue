@@ -1,6 +1,6 @@
 <template>
   <ScrollBoundary
-    class="bk-command-palette bk-control"
+    class="bk-command-palette bk-control rounded overflow-hidden"
     :style="{ '--bk-command-palette-item-height': itemHeight + 'px' }"
     @keydown="onKeyDown"
     @keyup.stop

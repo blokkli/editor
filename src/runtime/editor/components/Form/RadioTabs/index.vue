@@ -41,7 +41,7 @@ const value = defineModel<string>()
 
 <style lang="postcss">
 .bk .bk-radio-tabs {
-  @apply flex border border-scheme-normal overflow-hidden;
+  @apply flex border border-scheme-normal overflow-hidden rounded;
 
   label {
     @apply flex-1 text-center cursor-pointer relative;

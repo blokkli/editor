@@ -23,7 +23,9 @@
 
     <template v-for="section in sections" :key="section.title">
       <hr />
-      <div class="bk-add-list-help-label">
+      <div
+        class="bk-add-list-help-label uppercase text-sm font-semibold text-mono-300 tracking-wider mb-10"
+      >
         {{ section.title }}
       </div>
       <div

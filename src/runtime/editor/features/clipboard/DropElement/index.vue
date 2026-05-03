@@ -121,7 +121,7 @@ const icon = computed<BlokkliIcon>(() => getItemIcon(itemType.value))
   .bk-clipboard-drop-element {
     @apply pointer-events-none;
     @apply flex flex-col;
-    @apply bg-white rounded-lg shadow-lg border border-mono-200;
+    @apply bg-white rounded shadow-lg border border-mono-200;
     @apply overflow-hidden;
     width: 350px;
     height: 200px;

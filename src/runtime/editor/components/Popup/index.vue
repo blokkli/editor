@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
   }
 
   @variant lg {
-    @apply w-[360px] rounded-lg m-20;
+    @apply w-[360px] rounded m-20;
   }
 
   @variant xl {

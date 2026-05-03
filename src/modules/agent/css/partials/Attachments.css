@@ -61,7 +61,7 @@
 
   .bk-agent-attachment-code {
     @apply text-sm overflow-auto;
-    @apply bg-mono-100 rounded-lg p-15;
+    @apply bg-mono-100 rounded p-15;
 
     code {
       @apply font-mono;

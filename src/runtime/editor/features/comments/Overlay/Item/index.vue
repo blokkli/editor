@@ -1,30 +1,51 @@
 <template>
   <div
-    class="bk-comments-overlay-item"
+    class="bk-comments-overlay-item absolute top-0 left-0 pointer-events-auto origin-top-left text-[46px] size-[1em]"
     :style="style"
     :class="{
-      'bk-is-active': showComments,
+      'z-comments-overlay-active': showComments,
       'bk-is-left': isLeft,
       'bk-is-right': !isLeft,
     }"
   >
     <button
-      class="bk-comments-overlay-item-button"
-      :class="{
-        'bk-has-unresolved-comments': unresolvedCount > 0,
-      }"
+      v-show="!showComments"
+      class="font-bold leading-none text-mono-600 z-20 origin-top-left size-full relative group"
       @click.prevent="$emit('toggle')"
       @pointerdown.prevent.stop
       @pointerup.prevent.stop
       @pointermove.prevent.stop
     >
-      <Icon v-if="showComments" name="bk_mdi_close" />
-      <span v-else>{{ unresolvedCount }}</span>
+      <div
+        class="absolute top-[0.069em] left-[0.069em] right-[0.069em] h-[0.7em]"
+        :class="[
+          unresolvedCount > 0
+            ? 'text-yellow-dark group-hover:text-yellow-light'
+            : 'text-white',
+        ]"
+      >
+        <div
+          class="size-full flex items-center justify-center text-[0.4em] leading-none"
+        >
+          <span>{{ unresolvedCount || roots.length }}</span>
+        </div>
+      </div>
+      <div v-show="!showComments" class="col-start-1 row-start-1">
+        <Icon
+          name="bk_mdi_chat_bubble-fill"
+          class="size-full"
+          :class="
+            unresolvedCount > 0
+              ? 'text-yellow-normal group-hover:text-yellow-dark'
+              : 'text-mono-400 group-hover:text-mono-600'
+          "
+        />
+      </div>
     </button>
     <div
       v-if="showComments"
-      class="bk-comments-overlay-comments"
-      :class="{ 'bk-is-left': isLeft, 'bk-is-right': !isLeft }"
+      class="bg-white shadow-xl origin-top-left absolute top-[7px] z-10 rounded overflow-hidden border border-mono-400"
+      :class="{ 'left-3': isLeft, 'right-3': !isLeft }"
       :style="{
         width: width + 'px',
       }"
@@ -32,33 +53,36 @@
       @pointerup.capture.stop
       @pointermove.capture.stop
     >
-      <div class="bk-comments-overlay-comments-header">
-        <Icon name="bk_mdi_comment" />
-        <span
-          >{{ comments.length }}
-          {{
-            comments.length === 1
-              ? $t('singleComment', 'comment')
-              : $t('comments', 'Comments')
-          }}</span
-        >
-      </div>
-      <div v-for="comment in comments" :key="comment.uuid">
-        <Comment v-bind="comment" @resolve="resolveComment(comment.uuid)" />
-      </div>
-      <div class="bk-comments-overlay-form" @keydown.capture.stop>
-        <CommentInput
-          id="comment_reply"
-          v-model.lazy="commentText"
-          :placeholder="$t('commentBodyPlaceholder', 'Add reply')"
-        />
+      <div
+        class="bg-mono-200 h-[32px] text-xs uppercase tracking-wide font-semibold flex items-center border-b border-b-mono-400 text-mono-700"
+        :class="{
+          'pl-15': !isLeft,
+        }"
+      >
+        <div>{{ countLabel }}</div>
         <button
-          v-if="commentText"
-          class="bk-button bk-scheme-yellow"
-          @click="addComment"
+          class="size-[32px] flex items-center justify-center hover:bg-mono-300"
+          :class="{
+            'ml-auto': !isLeft,
+            'order-first mr-3': isLeft,
+          }"
+          @click.prevent="$emit('toggle')"
         >
-          {{ $t('commentAdd', 'Add comment') }}
+          <Icon name="bk_mdi_close" class="size-15" />
         </button>
+      </div>
+      <div class="max-h-[60vh] overflow-y-auto">
+        <CommentThread
+          v-for="root in roots"
+          :key="root.uuid"
+          :root="root"
+          :replies="getRepliesFor(root.uuid)"
+          @reply="$emit('reply', $event)"
+          @edit="$emit('edit', $event)"
+          @delete="$emit('delete', $event)"
+          @resolve="$emit('resolveComment', root.uuid)"
+          @unresolve="$emit('unresolveComment', root.uuid)"
+        />
       </div>
     </div>
   </div>
@@ -67,40 +91,43 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
-import Comment from './../../Comment/index.vue'
-import CommentInput from './../../CommentInput/index.vue'
+import CommentThread from './../../CommentThread/index.vue'
 import type { CommentItem } from '../../types'
 
-const { $t, storage } = useBlokkli()
+const { $t } = useBlokkli()
 
-const commentText = storage.useWithContextPrefix('commentReply', '')
-const emit = defineEmits<{
+defineEmits<{
   (e: 'toggle'): void
-  (e: 'addComment' | 'resolveComment', text: string): void
+  (e: 'reply', data: { parentUuid: string; body: string }): void
+  (e: 'edit', data: { uuid: string; body: string }): void
+  (e: 'delete' | 'resolveComment' | 'unresolveComment', uuid: string): void
 }>()
 
 const props = defineProps<{
   isReduced: boolean
   isLeft: boolean
   uuids: string[]
-  comments: CommentItem[]
+  roots: CommentItem[]
+  replies: CommentItem[]
   style: any
   showComments: boolean
   width: number
 }>()
 
 const unresolvedCount = computed(
-  () => props.comments.filter((v) => !v.resolved).length,
+  () => props.roots.filter((r) => !r.resolved).length,
 )
 
-function addComment() {
-  emit('addComment', commentText.value)
-  commentText.value = ''
-}
+const countLabel = computed(() => {
+  const count = props.roots.length
+  const template =
+    count === 1
+      ? $t('commentsCountOne', '1 comment')
+      : $t('commentsCountOther', '@count comments')
+  return template.replace('@count', count.toString())
+})
 
-function resolveComment(uuid: string | undefined) {
-  if (uuid) {
-    emit('resolveComment', uuid)
-  }
+function getRepliesFor(rootUuid: string): CommentItem[] {
+  return props.replies.filter((r) => r.parentUuid === rootUuid)
 }
 </script>

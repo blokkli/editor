@@ -354,6 +354,6 @@ export default {
 }
 
 .bk-vars.bk-dragging-overlay .bk-search-item {
-  @apply rounded-lg overflow-hidden;
+  @apply rounded overflow-hidden;
 }
 </style>

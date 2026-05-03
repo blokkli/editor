@@ -5,6 +5,7 @@
 .bk-form-input {
   @apply !bg-white !border !border-mono-400 !text-mono-900 focus:!outline-none focus:border-scheme-dark! !block !w-full p-10 !font-sans !text-base;
   @apply focus:ring-4 focus:ring-scheme-normal/30 placeholder:text-mono-400;
+  @apply rounded;
   min-height: 46px;
 
   &.bk-is-small {

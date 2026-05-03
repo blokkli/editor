@@ -142,7 +142,7 @@ function downloadLogs() {
 
   .bk-fatal-error-overlay-list {
     @apply bg-white mt-20 p-20 md:min-w-[500px] flex flex-col items-center;
-    @apply shadow-xl rounded-md;
+    @apply shadow-xl rounded;
 
     h3 {
       @apply font-bold md:text-lg xl:text-xl mb-15 md:mb-20;

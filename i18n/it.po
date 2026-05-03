@@ -1723,25 +1723,89 @@ msgid ""
 "the command palette."
 msgstr ""
 
-msgctxt "commentAdd"
-msgid "Add comment"
+msgctxt "commentAddPlaceholder"
+msgid "Add a comment…"
 msgstr ""
 
-msgctxt "commentBodyPlaceholder"
-msgid "Add reply"
-msgstr ""
+msgctxt "commentCancelEdit"
+msgid "Cancel"
+msgstr "Annulla"
+
+msgctxt "commentDelete"
+msgid "Delete"
+msgstr "Elimina"
+
+msgctxt "commentDeleteConfirmSubmit"
+msgid "Delete"
+msgstr "Elimina"
+
+msgctxt "commentDeleteConfirmText"
+msgid "This comment and any replies will be removed."
+msgstr "Questo commento e tutte le risposte verranno rimossi."
+
+msgctxt "commentDeleteConfirmTitle"
+msgid "Delete comment?"
+msgstr "Eliminare il commento?"
+
+msgctxt "commentEdit"
+msgid "Edit"
+msgstr "Modifica"
+
+msgctxt "commentEdited"
+msgid "edited"
+msgstr "modificato"
+
+msgctxt "commentReply"
+msgid "Reply"
+msgstr "Rispondi"
+
+msgctxt "commentReplyPlaceholder"
+msgid "Write a reply…"
+msgstr "Scrivi una risposta…"
+
+msgctxt "commentResolvedLabel"
+msgid "Resolved"
+msgstr "Risolto"
 
 msgctxt "commentSave"
 msgid "Submit comment"
 msgstr "Salva commento"
 
+msgctxt "commentSaveEdit"
+msgid "Save"
+msgstr "Salva"
+
 msgctxt "comments"
 msgid "Comments"
 msgstr "Commenti"
 
+msgctxt "commentsAllResolved"
+msgid "All comments are resolved. Toggle \"Show resolved\" to view them."
+msgstr "Tutti i commenti sono risolti. Attiva «Mostra risolti» per vederli."
+
+msgctxt "commentsCountOne"
+msgid "1 comment"
+msgstr "1 commento"
+
+msgctxt "commentsCountOther"
+msgid "@count comments"
+msgstr "@count commenti"
+
+msgctxt "commentsEmpty"
+msgid "No comments yet."
+msgstr "Nessun commento."
+
 msgctxt "commentsMarkAsResolved"
-msgid "Resolve"
-msgstr ""
+msgid "Mark as resolved"
+msgstr "Segna come risolto"
+
+msgctxt "commentsMarkAsUnresolved"
+msgid "Mark as unresolved"
+msgstr "Segna come non risolto"
+
+msgctxt "commentsShowResolved"
+msgid "Show resolved"
+msgstr "Mostra risolti"
 
 msgctxt "commentsTourText"
 msgid "Shows all comments for the current page."
@@ -1914,7 +1978,7 @@ msgid "This block type is not allowed in this field."
 msgstr ""
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Modifica"
 
 msgctxt "editDisabledByDefinition"
@@ -3553,10 +3617,6 @@ msgstr ""
 
 msgctxt "sidebar.show"
 msgid "Show @title"
-msgstr ""
-
-msgctxt "singleComment"
-msgid "comment"
 msgstr ""
 
 msgctxt "stateUnavailableText"

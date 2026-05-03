@@ -218,7 +218,7 @@ export default {
 }
 
 .bk .bk-styleguide-variant {
-  @apply bg-white border border-mono-200 rounded-lg;
+  @apply bg-white border border-mono-200 rounded;
 }
 
 .bk .bk-styleguide-variant-header {

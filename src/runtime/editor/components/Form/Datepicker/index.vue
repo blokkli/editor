@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-datepicker bg-white select-none border border-mono-300"
+    class="bk-datepicker bg-white select-none border border-mono-300 rounded"
     :class="{
       'ring-[3px] ring-red-normal/40 !border-red-normal': error,
     }"

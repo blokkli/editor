@@ -9,7 +9,7 @@
   >
     <div class="text-mono-200 flex items-center gap-10 pl-2">
       <div
-        class="size-30 bg-mono-600 text-mono-100 border border-mono-300 flex items-center justify-center rounded-md"
+        class="size-30 bg-mono-600 text-mono-100 border border-mono-300 flex items-center justify-center rounded"
       >
         <Icon :name="icon" class="size-20" />
       </div>
