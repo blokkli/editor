@@ -82,7 +82,7 @@
         }
 
         > input:checked + span {
-          @apply bg-lime-normal border-lime-normal;
+          @apply bg-lime-normal border-lime-normal hover:bg-lime-dark;
 
           &::after {
             @apply opacity-100 border-white!;
@@ -100,6 +100,9 @@
 
       &[data-checked='true'] > div {
         @apply text-mono-500 line-through;
+        .bk-richtext-mention {
+          @apply line-through bg-mono-100 text-mono-500;
+        }
       }
     }
   }

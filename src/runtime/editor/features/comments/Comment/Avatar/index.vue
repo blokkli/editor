@@ -1,10 +1,10 @@
 <template>
   <div
-    class="shrink-0 rounded flex items-center justify-center font-semibold select-none size-(--bk-comment-avatar-size) text-[calc(var(--bk-comment-avatar-size)/2.5)]"
+    class="shrink-0 rounded flex items-center justify-center font-semibold select-none size-(--bk-comment-avatar-size) text-[calc(var(--bk-comment-avatar-size)/2.5)] border relative"
     :class="colorClass"
     :title="name"
   >
-    {{ initials }}
+    <span>{{ initials }}</span>
   </div>
 </template>
 
@@ -24,14 +24,35 @@ const props = withDefaults(
   },
 )
 
+function hash(input: string): number {
+  let h = 0
+  for (let i = 0; i < input.length; i++) {
+    h = (h * 31 + input.charCodeAt(i)) | 0
+  }
+  return Math.abs(h)
+}
+
 const PALETTE = [
-  tw('bg-accent-600 text-white'),
-  tw('bg-accent-100 text-accent-700'),
-  tw('bg-teal-dark text-white'),
-  tw('bg-orange-dark text-white'),
-  tw('bg-yellow-dark text-white'),
-  tw('bg-red-dark text-white'),
-  tw('bg-lime-dark text-white'),
+  tw('bg-accent-950 text-white border-current'),
+  tw('bg-accent-700 text-white border-current'),
+  tw('bg-accent-500 text-white border-current'),
+  tw('bg-accent-300 text-accent-700 border-accent-300'),
+  tw('bg-accent-100 text-accent-900 border-accent-300'),
+  tw('bg-teal-dark text-white border-teal-dark'),
+  tw('bg-orange-dark text-white border-orange-dark'),
+  tw('bg-yellow-dark text-white border-yellow-dark'),
+  tw('bg-red-dark text-white border-red-dark'),
+  tw('bg-lime-dark text-white border-lime-dark'),
+  tw('bg-yellow-light text-yellow-dark border-yellow-normal/50'),
+  tw('bg-yellow-normal text-yellow-dark border-yellow-dark/20'),
+  tw('bg-teal-light text-teal-dark border-teal-normal/50'),
+  tw('bg-teal-normal text-white'),
+  tw('bg-orange-light text-orange-dark border-orange-normal/40'),
+  tw('bg-orange-normal text-orange-light'),
+  tw('bg-red-light text-red-dark border-red-normal/30'),
+  tw('bg-red-normal text-red-light'),
+  tw('bg-lime-light text-lime-dark border-lime-normal/50'),
+  tw('bg-lime-normal text-lime-light border-lime-dark/50'),
 ]
 
 const initials = computed(() => {
@@ -47,12 +68,7 @@ const initials = computed(() => {
 })
 
 const colorClass = computed(() => {
-  const seed = props.seed || props.name || ''
-  let h = 0
-  for (let i = 0; i < seed.length; i++) {
-    h = (h * 31 + seed.charCodeAt(i)) | 0
-  }
-  return PALETTE[Math.abs(h) % PALETTE.length]
+  return PALETTE[hash(props.seed || props.name || '') % PALETTE.length]
 })
 </script>
 

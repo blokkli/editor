@@ -78,6 +78,7 @@ const PERMISSION_FIELDS: Record<
   create_comments: 'create_comments',
   view_comments: 'view_comments',
   use_agent: 'use_agent',
+  list_users: 'list_users',
 }
 
 function mapUserPermissions(

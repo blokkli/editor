@@ -474,6 +474,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         'use_agent',
         'take_ownership',
         'use_blokkli',
+        'list_users',
       ]
       return Promise.resolve(permissions)
     },

@@ -5,13 +5,13 @@
         boxed,
     }"
     @submit.prevent="onSubmit"
-    @keydown.capture.stop
+    @keydown.stop
   >
     <RichText
       ref="richTextRef"
       :initial-value="initialValue"
       :autofocus="autofocus"
-      :get-users="getUsers"
+      :get-users="canMention ? getUsers : undefined"
       no-border
       @change="onChange"
     />
@@ -80,7 +80,9 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { $t, user } = useBlokkli()
+const { $t, user, permissions } = useBlokkli()
+
+const canMention = permissions.hasPermission('list_users')
 
 function getUsers() {
   return user

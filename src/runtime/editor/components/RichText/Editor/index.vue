@@ -96,13 +96,6 @@
       </div>
       <EditorContent :editor="editor" class="bk-richtext-content" />
     </div>
-    <MentionList
-      v-if="mentionState"
-      ref="mentionListRef"
-      :items="mentionState.items"
-      :position="mentionState.position"
-      @pick="onPick"
-    />
   </div>
 </template>
 
@@ -110,11 +103,12 @@
 import {
   computed,
   onBeforeUnmount,
-  ref,
+  onMounted,
   shallowRef,
   useTemplateRef,
 } from '#imports'
-import { Editor, EditorContent } from '@tiptap/vue-3'
+import { Editor, EditorContent, VueRenderer } from '@tiptap/vue-3'
+import type { Extensions } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import Mention from '@tiptap/extension-mention'
 import TaskList from '@tiptap/extension-task-list'
@@ -141,45 +135,91 @@ const emit = defineEmits<{
   change: [{ html: string; isEmpty: boolean }]
 }>()
 
-type MentionState = {
-  items: MentionItem[]
-  position: { x: number; y: number }
-  command: (payload: { id: string; label: string }) => void
-}
-
 const editor = shallowRef<Editor | undefined>()
-const mentionState = ref<MentionState | null>(null)
 const rootEl = useTemplateRef<HTMLElement>('rootEl')
-const mentionListRef = useTemplateRef<{
-  onKeyDown: (event: KeyboardEvent) => boolean
-}>('mentionListRef')
 
-function getRelativePosition(
+function positionMentionList(
+  element: HTMLElement,
   clientRect: (() => DOMRect | null) | null | undefined,
-): { x: number; y: number } | null {
+) {
   if (!clientRect || !rootEl.value) {
-    return null
+    return
   }
   const caret = clientRect()
   if (!caret) {
-    return null
+    return
   }
   const root = rootEl.value.getBoundingClientRect()
-  return {
-    x: caret.left - root.left,
-    y: caret.bottom - root.top + 4,
-  }
+  element.style.left = `${caret.left - root.left}px`
+  element.style.top = `${caret.bottom - root.top + 4}px`
 }
 
-editor.value = new Editor({
-  content: props.initialValue,
-  autofocus: props.autofocus ? 'end' : false,
-  editorProps: {
-    attributes: {
-      class: 'bk-rich-content bk-prose-mirror',
+function buildMentionExtension(getUsers: () => Promise<MentionItem[]>) {
+  return Mention.configure({
+    HTMLAttributes: { class: 'bk-richtext-mention' },
+    renderText({ node }) {
+      return `@${node.attrs.label ?? node.attrs.id}`
     },
-  },
-  extensions: [
+    suggestion: {
+      items: async ({ query }) => {
+        const all = await getUsers()
+        return all
+          .filter((u) => u.label.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 6)
+      },
+      render: () => {
+        let renderer: VueRenderer | null = null
+        return {
+          onStart: (suggestProps) => {
+            renderer = new VueRenderer(MentionList, {
+              props: {
+                items: suggestProps.items,
+                command: suggestProps.command,
+              },
+              editor: suggestProps.editor,
+            })
+            const element = renderer.element as HTMLElement | null
+            if (!element || !rootEl.value) {
+              return
+            }
+            rootEl.value.appendChild(element)
+            positionMentionList(element, suggestProps.clientRect)
+          },
+          onUpdate: (suggestProps) => {
+            renderer?.updateProps({
+              items: suggestProps.items,
+              command: suggestProps.command,
+            })
+            const element = renderer?.element as HTMLElement | null
+            if (element) {
+              positionMentionList(element, suggestProps.clientRect)
+            }
+          },
+          onKeyDown: (suggestProps) => {
+            if (suggestProps.event.key === 'Escape') {
+              ;(renderer?.element as HTMLElement | null)?.remove()
+              renderer?.destroy()
+              renderer = null
+              return true
+            }
+            const ref = renderer?.ref as
+              | { onKeyDown: (p: { event: KeyboardEvent }) => boolean }
+              | undefined
+            return ref?.onKeyDown(suggestProps) ?? false
+          },
+          onExit: () => {
+            ;(renderer?.element as HTMLElement | null)?.remove()
+            renderer?.destroy()
+            renderer = null
+          },
+        }
+      },
+    },
+  })
+}
+
+onMounted(() => {
+  const extensions: Extensions = [
     StarterKit.configure({
       heading: false,
       codeBlock: false,
@@ -189,61 +229,24 @@ editor.value = new Editor({
     }),
     TaskList,
     CleanTaskItem.configure({ nested: true }),
-    Mention.configure({
-      HTMLAttributes: { class: 'bk-richtext-mention' },
-      renderText({ node }) {
-        return `@${node.attrs.label ?? node.attrs.id}`
+  ]
+  if (props.getUsers) {
+    extensions.push(buildMentionExtension(props.getUsers))
+  }
+
+  editor.value = new Editor({
+    content: props.initialValue,
+    autofocus: props.autofocus ? 'end' : false,
+    editorProps: {
+      attributes: {
+        class: 'bk-rich-content bk-prose-mirror',
       },
-      suggestion: {
-        items: async ({ query }) => {
-          if (!props.getUsers) {
-            return []
-          }
-          const all = await props.getUsers()
-          return all
-            .filter((u) => u.label.toLowerCase().includes(query.toLowerCase()))
-            .slice(0, 6)
-        },
-        render: () => ({
-          onStart: (suggestProps) => {
-            const position = getRelativePosition(suggestProps.clientRect)
-            if (!position) {
-              return
-            }
-            mentionState.value = {
-              items: suggestProps.items,
-              position,
-              command: suggestProps.command,
-            }
-          },
-          onUpdate: (suggestProps) => {
-            const position = getRelativePosition(suggestProps.clientRect)
-            if (!position) {
-              return
-            }
-            mentionState.value = {
-              items: suggestProps.items,
-              position,
-              command: suggestProps.command,
-            }
-          },
-          onKeyDown: ({ event }) => {
-            if (event.key === 'Escape') {
-              mentionState.value = null
-              return true
-            }
-            return mentionListRef.value?.onKeyDown(event) ?? false
-          },
-          onExit: () => {
-            mentionState.value = null
-          },
-        }),
-      },
-    }),
-  ],
-  onUpdate: ({ editor }) => {
-    emit('change', { html: editor.getHTML(), isEmpty: editor.isEmpty })
-  },
+    },
+    extensions,
+    onUpdate: ({ editor }) => {
+      emit('change', { html: editor.getHTML(), isEmpty: editor.isEmpty })
+    },
+  })
 })
 
 defineExpose({
@@ -261,14 +264,6 @@ const canToggleLink = computed(() => {
   }
   return !e.state.selection.empty
 })
-
-function onPick(index: number) {
-  const state = mentionState.value
-  if (!state || !state.items[index]) {
-    return
-  }
-  state.command({ id: state.items[index].id, label: state.items[index].label })
-}
 
 function onToggleLink() {
   if (!editor.value) {

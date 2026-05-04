@@ -13,6 +13,7 @@
  */
 export interface UserPermissionMap {
   use_blokkli: 'use the blökkli editor'
+  list_users: 'list users that can be referenced in the editor (e.g. for @-mentions in comments)'
 }
 
 export type UserPermissions = keyof UserPermissionMap

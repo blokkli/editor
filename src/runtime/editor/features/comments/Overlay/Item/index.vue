@@ -44,7 +44,7 @@
     </button>
     <div
       v-if="showComments"
-      class="bg-white shadow-xl origin-top-left absolute top-[7px] z-10 rounded overflow-hidden border border-mono-400"
+      class="bg-white shadow-xl origin-top-left absolute top-[4px] z-10 rounded overflow-hidden border border-mono-400"
       :class="{ 'left-3': isLeft, 'right-3': !isLeft }"
       :style="{
         width: width + 'px',
@@ -52,6 +52,7 @@
       @pointerdown.capture.stop
       @pointerup.capture.stop
       @pointermove.capture.stop
+      @wheel.passive="onWheel"
     >
       <div
         class="bg-mono-200 h-[32px] text-xs uppercase tracking-wide font-semibold flex items-center border-b border-b-mono-400 text-mono-700"
@@ -71,7 +72,7 @@
           <Icon name="bk_mdi_close" class="size-15" />
         </button>
       </div>
-      <div class="max-h-[60vh] overflow-y-auto">
+      <div ref="scrollEl" class="max-h-[60vh] overflow-y-auto">
         <CommentThread
           v-for="root in roots"
           :key="root.uuid"
@@ -90,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useBlokkli } from '#imports'
+import { computed, useBlokkli, useTemplateRef } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import CommentThread from './../../Thread/index.vue'
 import type { CommentItem } from '../../types'
@@ -128,6 +129,22 @@ const countLabel = computed(() => {
       : $t('commentsCountOther', '@count comments')
   return template.replace('@count', count.toString())
 })
+
+const scrollEl = useTemplateRef('scrollEl')
+
+let hasScrollbar: null | boolean = null
+
+const onWheel = (e: WheelEvent) => {
+  if (hasScrollbar === null) {
+    const element = scrollEl.value
+    hasScrollbar = element && element.scrollHeight > element.clientHeight
+  }
+  if (hasScrollbar) {
+    if (!e.ctrlKey && !e.metaKey) {
+      e.stopPropagation()
+    }
+  }
+}
 
 function getRepliesFor(rootUuid: string): CommentItem[] {
   return props.replies.filter((r) => r.parentUuid === rootUuid)

@@ -1,7 +1,6 @@
 <template>
   <div
     class="bk-richtext-mention-list absolute z-50 bg-white border border-mono-300 rounded shadow-lg py-3 min-w-[180px]"
-    :style="{ left: position.x + 'px', top: position.y + 'px' }"
   >
     <button
       v-for="(item, idx) in items"
@@ -13,7 +12,7 @@
           ? 'bg-accent-50 text-accent-900'
           : 'text-mono-800 hover:bg-mono-50'
       "
-      @click="$emit('pick', idx)"
+      @click="selectItem(idx)"
       @mouseenter="selectedIndex = idx"
     >
       <span class="font-medium">{{ item.label }}</span>
@@ -31,11 +30,7 @@ export type MentionItem = { id: string; label: string }
 
 const props = defineProps<{
   items: MentionItem[]
-  position: { x: number; y: number }
-}>()
-
-const emit = defineEmits<{
-  pick: [index: number]
+  command: (payload: { id: string; label: string }) => void
 }>()
 
 const selectedIndex = ref(0)
@@ -47,27 +42,28 @@ watch(
   },
 )
 
-function move(delta: number) {
-  if (!props.items.length) {
-    return
+function selectItem(index: number) {
+  const item = props.items[index]
+  if (item) {
+    props.command({ id: item.id, label: item.label })
   }
-  const len = props.items.length
-  selectedIndex.value = (selectedIndex.value + delta + len) % len
 }
 
-function onKeyDown(event: KeyboardEvent): boolean {
-  if (event.key === 'ArrowDown') {
-    move(1)
-    return true
+function onKeyDown({ event }: { event: KeyboardEvent }): boolean {
+  if (!props.items.length) {
+    return false
   }
   if (event.key === 'ArrowUp') {
-    move(-1)
+    selectedIndex.value =
+      (selectedIndex.value + props.items.length - 1) % props.items.length
+    return true
+  }
+  if (event.key === 'ArrowDown') {
+    selectedIndex.value = (selectedIndex.value + 1) % props.items.length
     return true
   }
   if (event.key === 'Enter' || event.key === 'Tab') {
-    if (props.items.length) {
-      emit('pick', selectedIndex.value)
-    }
+    selectItem(selectedIndex.value)
     return true
   }
   return false
