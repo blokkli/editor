@@ -1789,12 +1789,26 @@ msgid "Delete"
 msgstr "Löschen"
 
 msgctxt "commentDeleteConfirmText"
-msgid "This comment and any replies will be removed."
-msgstr "Dieser Kommentar und alle Antworten werden entfernt."
+msgid ""
+"The comment and all its replies will be permanently deleted. This action "
+"cannot be undone."
+msgstr ""
+"Der Kommentar und alle Antworten werden unwiderruflich gelöscht. Diese "
+"Aktion kann nicht rückgängig gemacht werden."
 
 msgctxt "commentDeleteConfirmTitle"
 msgid "Delete comment?"
 msgstr "Kommentar löschen?"
+
+msgctxt "commentDeleteReplyConfirmText"
+msgid "The reply will be permanently deleted. This action cannot be undone."
+msgstr ""
+"Die Antwort wird unwiderruflich gelöscht. Diese Aktion kann nicht "
+"rückgängig gemacht werden."
+
+msgctxt "commentDeleteReplyConfirmTitle"
+msgid "Delete reply?"
+msgstr "Antwort löschen?"
 
 msgctxt "commentEdit"
 msgid "Edit"

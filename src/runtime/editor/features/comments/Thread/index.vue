@@ -1,10 +1,17 @@
 <template>
   <article
-    class="bk-comment-thread relative font-sans border-b-2 border-mono-300 last:border-b-0"
+    class="bk-comment-thread relative font-sans"
+    :class="{
+      'rounded border hover:border-mono-400': boxed,
+      'bg-white': !boxed,
+      'shadow-sm hover:shadow bg-white border-mono-300':
+        boxed && !root.resolved,
+      'bg-mono-100 border-mono-200 ': boxed && root.resolved,
+    }"
   >
     <div
       :class="{
-        'opacity-50 hover:opacity-100': root.resolved,
+        'opacity-60 hover:opacity-100': root.resolved,
       }"
     >
       <Comment
@@ -16,7 +23,9 @@
         @delete="$emit('delete', root.uuid)"
         @resolve="$emit('resolve')"
         @unresolve="$emit('unresolve')"
-        @toggle-task="$emit('toggleTask', { uuid: root.uuid, taskIndex: $event })"
+        @toggle-task="
+          $emit('toggleTask', { uuid: root.uuid, taskIndex: $event })
+        "
       />
       <div
         v-if="replies.length"
@@ -62,6 +71,7 @@ const { adapter, eventBus } = useBlokkli()
 const props = defineProps<{
   root: CommentItem
   replies: CommentItem[]
+  boxed?: boolean
 }>()
 
 defineEmits<{
@@ -76,7 +86,9 @@ const canReply = computed(() => !!adapter.replyToComment)
 
 function onSelectBlocks() {
   if (props.root.blockUuids?.length) {
-    eventBus.emit('select:end', props.root.blockUuids)
+    const uuid = props.root.blockUuids[0]!
+    eventBus.emit('scrollIntoView', { uuid })
+    eventBus.emit('select', props.root.blockUuids)
   }
 }
 </script>
@@ -91,7 +103,7 @@ export default {
 .bk-comment-thread {
   /* Tunable values — change these and the layout adjusts everywhere. */
   --bk-comment-pad-x: 8px;
-  --bk-comment-pad-y: 15px;
+  --bk-comment-pad-y: 10px;
   --bk-comment-reply-pad-y: 5px;
   --bk-comment-avatar-size: 15px;
   --bk-comment-avatar-gap: 5px;
@@ -135,11 +147,13 @@ export default {
     --bk-comment-avatar-size: 30px;
     --bk-comment-avatar-gap: 10px;
     --bk-comment-reply-pad-y: 10px;
+    --bk-comment-pad-y: 10px;
   }
 
   @variant 4xl {
     --bk-comment-avatar-size: 35px;
-    --bk-comment-pad-x: 20px;
+    --bk-comment-pad-y: 15px;
+    --bk-comment-pad-x: 15px;
   }
 }
 </style>

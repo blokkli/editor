@@ -16,12 +16,16 @@
   </div>
   <div
     v-else
-    class="group/comment relative flex gap-(--bk-comment-avatar-gap) px-(--bk-comment-pad-x) hover:bg-mono-50 font-sans"
+    class="group/comment relative flex gap-(--bk-comment-avatar-gap) px-(--bk-comment-pad-x) font-sans"
     :class="
       isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
     "
   >
-    <CommentAvatar :name="comment.user.name" :seed="comment.user.id" />
+    <CommentAvatar
+      :name="comment.user.name"
+      :seed="comment.user.id"
+      :image-url="comment.user.imageUrl"
+    />
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-5 flex-wrap">
         <CommentMeta
@@ -60,6 +64,7 @@
     >
       <CommentActions
         :uuid="comment.uuid"
+        :is-reply="isReply"
         :can-edit="canEdit"
         :can-delete="canDelete"
         :can-resolve="canResolve"

@@ -1,6 +1,7 @@
 fragment paragraphsBlokkliCurrentUser on ParagraphsBlokkliUser {
   id
   name
+  imageUrl
   use_blokkli: hasPermission(permission: "view paragraphs blokkli edit state")
   take_ownership: hasPermission(
     permission: "take ownership of paragraphs blokkli edit state"

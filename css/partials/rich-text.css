@@ -16,20 +16,21 @@
   > ul + *,
   > ol + *,
   > blockquote + * {
-    @apply mt-15;
+    @apply mt-[0.75lh];
   }
 
   ul,
   ol {
-    padding-inline-start: 24px;
     list-style-position: outside;
   }
 
   ul {
+    padding-inline-start: 14px;
     list-style-type: disc;
   }
 
   ol {
+    padding-inline-start: 14px;
     list-style-type: decimal;
   }
 
@@ -98,7 +99,7 @@
         }
       }
 
-      &[data-checked='true'] > div {
+      &[data-checked='true'] > div > p {
         @apply text-mono-500 line-through;
         .bk-richtext-mention {
           @apply line-through bg-mono-100 text-mono-500;
@@ -130,7 +131,7 @@
   }
 
   blockquote {
-    @apply bg-accent-50 p-10 border-l-2 border-l-accent-400;
+    @apply pl-10 pr-5 border-l-2 border-l-mono-300 py-5 bg-mono-50 text-mono-700;
   }
 }
 
@@ -162,6 +163,4 @@
 
 .bk .bk-richtext-mention {
   @apply inline-block px-3 py-0 rounded bg-accent-100 text-accent-900 font-semibold;
-  @apply hover:bg-accent-200 transition-colors;
-  cursor: default;
 }

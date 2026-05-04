@@ -12,10 +12,16 @@ export class User extends Entity {
       ...super.getFieldDefintions(),
       new FieldText('name', 'Name'),
       new FieldText('email', 'Email'),
+      new FieldText('imageUrl', 'Image URL'),
     ]
   }
 
   getName(): string {
     return this.get<FieldText>('name').getText()
+  }
+
+  getImageUrl(): string | null {
+    const value = this.get<FieldText>('imageUrl').getText()
+    return value || null
   }
 }

@@ -1,6 +1,19 @@
 <template>
   <div
-    class="shrink-0 rounded flex items-center justify-center font-semibold select-none size-(--bk-comment-avatar-size) text-[calc(var(--bk-comment-avatar-size)/2.5)] border relative"
+    v-if="showImage"
+    class="shrink-0 rounded size-(--bk-comment-avatar-size) bk-avatar-image overflow-hidden relative"
+  >
+    <img
+      :src="imageUrl!"
+      :alt="name"
+      :title="name"
+      class="object-cover size-full block"
+      @error="imageFailed = true"
+    />
+  </div>
+  <div
+    v-else
+    class="shrink-0 rounded flex items-center justify-center font-semibold select-none size-(--bk-comment-avatar-size) text-[calc(var(--bk-comment-avatar-size)/2.25)] border relative"
     :class="colorClass"
     :title="name"
   >
@@ -9,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, ref, watch } from '#imports'
 import { tw } from '#blokkli/helpers/tw'
 
 const props = withDefaults(
@@ -17,10 +30,12 @@ const props = withDefaults(
     name: string
     seed?: string
     size?: 'sm' | 'md'
+    imageUrl?: string | null
   }>(),
   {
     seed: undefined,
     size: 'md',
+    imageUrl: null,
   },
 )
 
@@ -55,6 +70,18 @@ const PALETTE = [
   tw('bg-lime-normal text-lime-light border-lime-dark/50'),
 ]
 
+const imageFailed = ref(false)
+
+// Reset failure flag when the URL changes so a new user/url gets a fresh try.
+watch(
+  () => props.imageUrl,
+  () => {
+    imageFailed.value = false
+  },
+)
+
+const showImage = computed(() => !!props.imageUrl && !imageFailed.value)
+
 const initials = computed(() => {
   const name = (props.name || '').trim()
   if (!name) {
@@ -77,3 +104,12 @@ export default {
   name: 'CommentAvatar',
 }
 </script>
+
+<style lang="postcss">
+.bk-avatar-image {
+  &:before {
+    content: '';
+    @apply absolute top-0 left-0 rounded border border-mono-800 size-full opacity-30;
+  }
+}
+</style>

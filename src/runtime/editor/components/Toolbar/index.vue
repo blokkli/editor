@@ -18,7 +18,7 @@
     <div
       v-show="activeSidebarRight"
       id="bk-sidebar-content-right"
-      class="bk-sidebar bk-is-right bk"
+      class="bk-sidebar bk-is-right bk border-l border-l-mono-400"
       :class="{ 'bk-is-hidden': !sidebarVisible }"
       :style="rightSidebarStyle"
     />

@@ -161,7 +161,7 @@ export class EntityStorageManager {
       1400,
     )
 
-    this.addUser('1', 'John Miller', 'john@example.com')
+    this.addUser('1', 'John Miller', 'john@example.com', '/avatar-1.jpg')
     this.addUser('2', 'Martin Faux', 'martin@example.com')
     this.addUser('3', 'Sarah Chen', 'sarah@example.com')
     this.addUser('4', 'Aisha Patel', 'aisha@example.com')
@@ -475,11 +475,12 @@ export class EntityStorageManager {
     return this.storages.user.load(uuid)
   }
 
-  addUser(uuid: string, name: string, email: string) {
+  addUser(uuid: string, name: string, email: string, imageUrl?: string) {
     const user = new User(uuid)
     user.setValues({
       name,
       email,
+      imageUrl: imageUrl ?? '',
     })
     this.storages.user.add(user)
   }

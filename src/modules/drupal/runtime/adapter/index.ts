@@ -565,7 +565,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             ),
           )
         }
-        return Promise.resolve({ id: String(user.id), name: user.name })
+        return Promise.resolve({
+          id: String(user.id),
+          name: user.name,
+          imageUrl: user.imageUrl ?? null,
+        })
       },
       changeLanguage,
       formFrameBuilder,

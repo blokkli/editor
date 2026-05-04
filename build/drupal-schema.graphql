@@ -6005,6 +6005,7 @@ type ParagraphsBlokkliUser {
 
   """The user ID."""
   id: ID!
+  imageUrl: String
 
   """The display name of the user."""
   name: String!

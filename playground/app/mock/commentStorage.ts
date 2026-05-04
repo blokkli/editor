@@ -39,7 +39,7 @@ function getDefaultComments(): StoredComment[] {
     // Active thread — multiple voices on a hero block.
     {
       uuid: 'seed-1-root',
-      body: '<p>Hey <span class="bk-richtext-mention" data-type="mention" data-id="1" data-label="John Miller">@John Miller</span> — should we reword this section? It feels <strong>too technical</strong> for the audience we agreed on last week.</p>',
+      body: '<p>Hallo <span class="bk-richtext-mention" data-type="mention" data-id="1" data-label="John Miller">@John Miller</span> – sollten wir diesen Abschnitt umformulieren? Er wirkt <strong>zu technisch</strong> für die Zielgruppe, auf die wir uns letzte Woche geeinigt haben.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -49,7 +49,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-1-r1',
-      body: '<p>Agreed — a few quick thoughts:</p><ul><li>Lead with the value, not the architecture</li><li>Drop the term <em>"adapter pattern"</em> here</li><li>Move the API note to the footer</li></ul>',
+      body: '<p>Einverstanden – ein paar kurze Gedanken:</p><ul><li>Mit dem Mehrwert beginnen, nicht mit der Architektur</li><li>Den Begriff <em>"Adapter-Pattern"</em> hier weglassen</li><li>Den API-Hinweis in die Fußzeile verschieben</li></ul>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -60,7 +60,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-1-r2',
-      body: 'I can take a stab at it tomorrow morning.',
+      body: 'Ich kann mich morgen früh daran versuchen.',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -71,7 +71,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-1-r3',
-      body: '<p>Thanks <span class="bk-richtext-mention" data-type="mention" data-id="2" data-label="Martin Faux">@Martin Faux</span> — <em>ping me</em> when there’s a draft.</p>',
+      body: '<p>Danke <span class="bk-richtext-mention" data-type="mention" data-id="2" data-label="Martin Faux">@Martin Faux</span> – <em>melden Sie sich</em>, sobald ein Entwurf vorliegt.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -84,7 +84,7 @@ function getDefaultComments(): StoredComment[] {
     // Single root, no replies.
     {
       uuid: 'seed-2-root',
-      body: '<p>The spacing here feels off — <code>mt-15</code> looks too tight on mobile. Compare against <a href="https://example.com/spec/spacing">the spec</a>.</p>',
+      body: '<p>Die Abstände hier wirken nicht stimmig – <code>mt-15</code> sieht auf dem Handy zu eng aus. Bitte mit <a href="https://example.com/spec/spacing">der Spezifikation</a> vergleichen.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -96,7 +96,7 @@ function getDefaultComments(): StoredComment[] {
     // General thread, no block reference.
     {
       uuid: 'seed-3-root',
-      body: '<p><strong>Reminder:</strong> launch is moved to next Friday. Schedule:</p><ol><li>Content freeze: <strong>Wednesday EOD</strong></li><li>Final review: <strong>Thursday morning</strong></li><li>Press kit out: <strong>Friday 9:00</strong></li></ol>',
+      body: '<p><strong>Erinnerung:</strong> Der Launch wurde auf nächsten Freitag verschoben. Zeitplan:</p><ol><li>Inhalte-Freeze: <strong>Mittwoch Ende des Tages</strong></li><li>Finales Review: <strong>Donnerstagmorgen</strong></li><li>Pressekit raus: <strong>Freitag 9:00</strong></li></ol>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -106,7 +106,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-3-r1',
-      body: '<p>Got it 👍</p>',
+      body: '<p>Verstanden 👍</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -117,7 +117,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-3-r2',
-      body: '<p>Will the press kit be done by then? Need it for the partner email — pinging <span class="bk-richtext-mention" data-type="mention" data-id="4" data-label="Aisha Patel">@Aisha Patel</span>.</p>',
+      body: '<p>Wird das Pressekit bis dahin fertig sein? Wir brauchen es für die Partner-E-Mail – Ping an <span class="bk-richtext-mention" data-type="mention" data-id="4" data-label="Aisha Patel">@Aisha Patel</span>.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -128,7 +128,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-3-r3',
-      body: '<p>Yes — <span class="bk-richtext-mention" data-type="mention" data-id="4" data-label="Aisha Patel">@Aisha Patel</span> is finishing the assets today.</p>',
+      body: '<p>Ja – <span class="bk-richtext-mention" data-type="mention" data-id="4" data-label="Aisha Patel">@Aisha Patel</span> stellt die Assets heute fertig.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -141,7 +141,7 @@ function getDefaultComments(): StoredComment[] {
     // Quick typo fix thread.
     {
       uuid: 'seed-4-root',
-      body: '<p>Typo here — <code>recieve</code> should be <code>receive</code>:</p><blockquote><p>"You will recieve a confirmation email shortly."</p></blockquote>',
+      body: '<p>Tippfehler hier – <code>erhalen</code> sollte <code>erhalten</code> heißen:</p><blockquote><p>"Sie erhalen in Kürze eine Bestätigungs-E-Mail."</p></blockquote>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -151,7 +151,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-4-r1',
-      body: '<p>Fixed — <s>recieve</s> receive ✓</p>',
+      body: '<p>Behoben – <s>erhalen</s> erhalten ✓</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -164,7 +164,7 @@ function getDefaultComments(): StoredComment[] {
     // Resolved thread.
     {
       uuid: 'seed-5-root',
-      body: '<p>Are we sure this animation is on-brand? It feels a bit <strong>playful</strong> for the homepage.</p><blockquote><p>"The brand voice is confident, never quirky."</p></blockquote><p>— from the brand guidelines.</p>',
+      body: '<p>Sind wir sicher, dass diese Animation zur Marke passt? Sie wirkt für die Startseite etwas <strong>verspielt</strong>.</p><blockquote><p>"Die Markenstimme ist selbstbewusst, niemals schräg."</p></blockquote><p>– aus den Markenrichtlinien.</p>',
       isResolved: true,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -174,7 +174,7 @@ function getDefaultComments(): StoredComment[] {
     },
     {
       uuid: 'seed-5-r1',
-      body: '<p>Marketing signed off yesterday — see <a href="https://example.com/approvals/marketing-2024-q4">the approval thread</a>. We’re good to keep it.</p>',
+      body: '<p>Das Marketing hat gestern abgenickt – siehe <a href="https://example.com/approvals/marketing-2024-q4">den Freigabe-Thread</a>. Wir können sie behalten.</p>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -187,7 +187,7 @@ function getDefaultComments(): StoredComment[] {
     // Older standalone resolved.
     {
       uuid: 'seed-6-root',
-      body: '<p><em>Nice teaser</em> — works well at this size.</p>',
+      body: '<p><em>Schöner Teaser</em> – funktioniert gut in dieser Größe.</p>',
       isResolved: true,
       parentEntityType: 'content',
       parentEntityUuid: '1',
@@ -199,7 +199,7 @@ function getDefaultComments(): StoredComment[] {
     // Recent comment by current user — to demo edit/delete affordances.
     {
       uuid: 'seed-7-root',
-      body: '<p><strong>Bumping this to the top of my list.</strong> After standup, I’ll knock these out:</p><ul data-type="taskList"><li data-type="taskItem" data-checked="true">Review the open feedback in this thread</li><li data-type="taskItem" data-checked="true">Draft the simplified hero copy</li><li data-type="taskItem" data-checked="false">Loop in <span class="bk-richtext-mention" data-type="mention" data-id="3" data-label="Sarah Chen">@Sarah Chen</span> for tone check</li><li data-type="taskItem" data-checked="false">Stage on preview branch</li></ul>',
+      body: '<p><strong>Ich setze das ganz nach oben auf meine Liste.</strong> Nach dem Standup arbeite ich diese Punkte ab:</p><ul data-type="taskList"><li data-type="taskItem" data-checked="true">Offenes Feedback in diesem Thread durchgehen</li><li data-type="taskItem" data-checked="true">Vereinfachten Hero-Text entwerfen</li><li data-type="taskItem" data-checked="false"><span class="bk-richtext-mention" data-type="mention" data-id="3" data-label="Sarah Chen">@Sarah Chen</span> für eine Tonalitätsprüfung einbinden</li><li data-type="taskItem" data-checked="false">Auf Preview-Branch deployen</li></ul>',
       isResolved: false,
       parentEntityType: 'content',
       parentEntityUuid: '1',

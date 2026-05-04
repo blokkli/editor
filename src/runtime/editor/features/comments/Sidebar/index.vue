@@ -1,10 +1,9 @@
 <template>
   <div
-    class="bk bk-control h-full overflow-auto bk-scrollbar-light flex flex-col"
+    class="bk bk-control h-full overflow-auto bk-scrollbar-light flex flex-col bg-mono-100"
   >
     <div
-      v-if="resolvedCount"
-      class="flex items-center px-15 py-10 border-b border-b-mono-200"
+      class="flex items-center px-15 py-10 border-b border-b-mono-300 bg-white"
     >
       <FormToggle
         v-model="showResolved"
@@ -12,12 +11,16 @@
       />
     </div>
 
-    <div v-if="visibleRoots.length" class="select-text flex-1">
+    <div
+      v-if="visibleRoots.length"
+      class="select-text flex-1 p-10 flex flex-col gap-10"
+    >
       <CommentThread
         v-for="root in visibleRoots"
         :key="root.uuid"
         :root="root"
         :replies="repliesByRoot.get(root.uuid) || []"
+        boxed
         @reply="$emit('reply', $event)"
         @edit="$emit('edit', $event)"
         @delete="$emit('delete', $event)"

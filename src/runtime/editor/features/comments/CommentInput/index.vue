@@ -16,7 +16,7 @@
       @change="onChange"
     />
     <div
-      class="flex items-center justify-end gap-5 p-5 border-t border-t-mono-300 border-dashed"
+      class="flex items-center gap-5 p-5 border-t border-t-mono-300 border-dashed"
       :class="boxed ? 'mt-10 ' : ''"
     >
       <button
@@ -29,7 +29,7 @@
       </button>
       <button
         type="submit"
-        class="bk-button bk-scheme-yellow bk-is-small"
+        class="bk-button bk-scheme-yellow bk-is-small ml-auto"
         :disabled="!effectiveCanSubmit"
       >
         {{ submitLabel }}

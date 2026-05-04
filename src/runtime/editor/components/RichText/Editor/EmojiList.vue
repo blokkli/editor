@@ -6,7 +6,16 @@
     :get-payload="getPayload"
   >
     <template #item="{ item }">
-      <span class="font-medium">{{ item.label }}</span>
+      <span v-if="item.emoji" class="text-base leading-none">{{
+        item.emoji
+      }}</span>
+      <img
+        v-else-if="item.fallbackImage"
+        :src="item.fallbackImage"
+        :alt="item.name"
+        class="size-15"
+      />
+      <span class="text-mono-600">:{{ item.name }}:</span>
     </template>
   </SuggestionList>
 </template>
@@ -15,20 +24,26 @@
 import { useTemplateRef } from '#imports'
 import SuggestionList from './SuggestionList.vue'
 
-export type MentionItem = { id: string; label: string }
-type MentionPayload = { id: string; label: string }
+export type EmojiItem = {
+  name: string
+  emoji?: string
+  fallbackImage?: string
+  shortcodes?: string[]
+  tags?: string[]
+}
+type EmojiPayload = { name: string }
 
 defineProps<{
-  items: MentionItem[]
-  command: (payload: MentionPayload) => void
+  items: EmojiItem[]
+  command: (payload: EmojiPayload) => void
 }>()
 
 const listRef = useTemplateRef<{
   onKeyDown: (p: { event: KeyboardEvent }) => boolean
 }>('listRef')
 
-function getPayload(item: MentionItem): MentionPayload {
-  return { id: item.id, label: item.label }
+function getPayload(item: EmojiItem): EmojiPayload {
+  return { name: item.name }
 }
 
 function onKeyDown(p: { event: KeyboardEvent }): boolean {
@@ -40,6 +55,6 @@ defineExpose({ onKeyDown })
 
 <script lang="ts">
 export default {
-  name: 'MentionList',
+  name: 'EmojiList',
 }
 </script>

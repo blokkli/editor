@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-baseline gap-5 flex-wrap min-w-0 text-sm">
+  <div class="flex items-baseline gap-3 flex-wrap min-w-0 text-sm -mt-2">
     <span class="font-semibold text-mono-900 truncate">
       {{ user.name }}
     </span>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center bg-white border border-mono-400 rounded shadow-sm relative"
+    class="flex items-center bg-white border border-mono-400 rounded shadow relative"
   >
     <CommentActionButton
       v-if="canEdit"
@@ -12,18 +12,20 @@
       v-if="canDelete"
       icon="bk_mdi_delete"
       :label="$t('commentDelete', 'Delete')"
-      variant="danger"
+      scheme="red"
       @click="onDeleteClick"
     />
     <CommentActionButton
       v-if="canResolve"
-      icon="bk_mdi_check"
+      icon="bk_mdi_check_circle"
+      scheme="lime"
       :label="$t('commentsMarkAsResolved', 'Mark as resolved')"
       @click="$emit('resolve')"
     />
     <CommentActionButton
       v-if="canUnresolve"
-      icon="bk_mdi_replay"
+      icon="bk_mdi_unpublished"
+      scheme="lime"
       :label="$t('commentsMarkAsUnresolved', 'Mark as unresolved')"
       @click="$emit('unresolve')"
     />
@@ -33,12 +35,21 @@
         <DialogModal
           v-if="showConfirm"
           :id="dialogId"
-          :title="$t('commentDeleteConfirmTitle', 'Delete comment?')"
+          :title="
+            isReply
+              ? $t('commentDeleteReplyConfirmTitle', 'Delete reply?')
+              : $t('commentDeleteConfirmTitle', 'Delete comment?')
+          "
           :lead="
-            $t(
-              'commentDeleteConfirmText',
-              'This comment and any replies will be removed.',
-            )
+            isReply
+              ? $t(
+                  'commentDeleteReplyConfirmText',
+                  'The reply will be permanently deleted. This action cannot be undone.',
+                )
+              : $t(
+                  'commentDeleteConfirmText',
+                  'The comment and all its replies will be permanently deleted. This action cannot be undone.',
+                )
           "
           :submit-label="$t('commentDeleteConfirmSubmit', 'Delete')"
           is-danger
@@ -60,6 +71,7 @@ const { $t, ui } = useBlokkli()
 
 const props = defineProps<{
   uuid: string
+  isReply: boolean
   canEdit: boolean
   canDelete: boolean
   canResolve: boolean

@@ -158,6 +158,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_translate',
   'bk_mdi_tune',
   'bk_mdi_undo',
+  'bk_mdi_unpublished',
   'bk_mdi_upload',
   'bk_mdi_video_camera_back',
   'bk_mdi_visibility',

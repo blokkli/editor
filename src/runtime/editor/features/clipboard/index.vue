@@ -661,6 +661,7 @@ function onPaste(e: ClipboardEvent) {
   ) {
     return
   }
+  console.log(e.target)
 
   // Stop data actually being pasted into div.
   e.stopPropagation()

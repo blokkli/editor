@@ -72,7 +72,10 @@
           <Icon name="bk_mdi_close" class="size-15" />
         </button>
       </div>
-      <div ref="scrollEl" class="max-h-[60vh] overflow-y-auto">
+      <div
+        ref="scrollEl"
+        class="max-h-[60vh] overflow-y-auto bg-mono-100 flex flex-col gap-10"
+      >
         <CommentThread
           v-for="root in roots"
           :key="root.uuid"

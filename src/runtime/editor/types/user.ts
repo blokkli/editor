@@ -5,4 +5,5 @@
 export type BlokkliUser = {
   id: string
   name: string
+  imageUrl?: string | null
 }

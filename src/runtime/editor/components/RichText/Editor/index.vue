@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" class="relative">
+  <div ref="rootEl" class="relative" @paste.stop>
     <div
       class="bk-richtext relative rounded bg-white overflow-hidden"
       :class="{
@@ -108,11 +108,14 @@ import {
   useTemplateRef,
 } from '#imports'
 import { Editor, EditorContent, VueRenderer } from '@tiptap/vue-3'
+import type { Component } from 'vue'
 import type { Extensions } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import Mention from '@tiptap/extension-mention'
+import Emoji, { gitHubEmojis } from '@tiptap/extension-emoji'
 import TaskList from '@tiptap/extension-task-list'
 import MentionList, { type MentionItem } from './MentionList.vue'
+import EmojiList from './EmojiList.vue'
 import ToolbarButton from './ToolbarButton.vue'
 import ToolbarGroup from './ToolbarGroup.vue'
 import { CleanTaskItem } from './CleanTaskItem'
@@ -138,7 +141,7 @@ const emit = defineEmits<{
 const editor = shallowRef<Editor | undefined>()
 const rootEl = useTemplateRef<HTMLElement>('rootEl')
 
-function positionMentionList(
+function positionPopup(
   element: HTMLElement,
   clientRect: (() => DOMRect | null) | null | undefined,
 ) {
@@ -150,8 +153,88 @@ function positionMentionList(
     return
   }
   const root = rootEl.value.getBoundingClientRect()
-  element.style.left = `${caret.left - root.left}px`
-  element.style.top = `${caret.bottom - root.top + 4}px`
+  const popup = element.getBoundingClientRect()
+
+  // Default: below the caret, left-aligned to it.
+  let x = caret.left - root.left
+  let y = caret.bottom - root.top + 4
+
+  // Clamp horizontally so the popup never exceeds the editor frame.
+  const maxX = Math.max(0, root.width - popup.width)
+  if (x > maxX) {
+    x = maxX
+  }
+  if (x < 0) {
+    x = 0
+  }
+
+  // If the popup would overflow the bottom edge, flip it above the caret —
+  // but only when there's actually room above. Otherwise keep it below.
+  if (y + popup.height > root.height) {
+    const above = caret.top - root.top - popup.height - 4
+    if (above >= 0) {
+      y = above
+    }
+  }
+
+  element.style.left = `${x}px`
+  element.style.top = `${y}px`
+}
+
+/**
+ * Generic Tiptap suggestion `render` factory: mounts `ListComponent` via
+ * VueRenderer, positions it relative to `rootEl`, and forwards key events
+ * to the component's exposed `onKeyDown`. Used for both `@`-mentions and
+ * `:`-emoji pickers.
+ */
+function buildSuggestionRender(ListComponent: Component) {
+  return () => {
+    let renderer: VueRenderer | null = null
+    return {
+      onStart: (suggestProps: any) => {
+        renderer = new VueRenderer(ListComponent, {
+          props: {
+            items: suggestProps.items,
+            command: suggestProps.command,
+          },
+          editor: suggestProps.editor,
+        })
+        const element = renderer.element as HTMLElement | null
+        if (!element || !rootEl.value) {
+          return
+        }
+        rootEl.value.appendChild(element)
+        positionPopup(element, suggestProps.clientRect)
+      },
+      onUpdate: (suggestProps: any) => {
+        renderer?.updateProps({
+          items: suggestProps.items,
+          command: suggestProps.command,
+        })
+        const element = renderer?.element as HTMLElement | null
+        if (element) {
+          positionPopup(element, suggestProps.clientRect)
+        }
+      },
+      onKeyDown: (suggestProps: { event: KeyboardEvent }) => {
+        if (suggestProps.event.key === 'Escape') {
+          ;(renderer?.element as HTMLElement | null)?.remove()
+          renderer?.destroy()
+          renderer = null
+          return true
+        }
+        const ref = renderer?.ref as
+          | { onKeyDown: (p: { event: KeyboardEvent }) => boolean }
+          | undefined
+        return ref?.onKeyDown(suggestProps) ?? false
+      },
+      onExit: () => {
+        ;(renderer?.element as HTMLElement | null)?.remove()
+        renderer?.destroy()
+        renderer = null
+      },
+    }
+  }
 }
 
 function buildMentionExtension(getUsers: () => Promise<MentionItem[]>) {
@@ -167,53 +250,43 @@ function buildMentionExtension(getUsers: () => Promise<MentionItem[]>) {
           .filter((u) => u.label.toLowerCase().includes(query.toLowerCase()))
           .slice(0, 6)
       },
-      render: () => {
-        let renderer: VueRenderer | null = null
-        return {
-          onStart: (suggestProps) => {
-            renderer = new VueRenderer(MentionList, {
-              props: {
-                items: suggestProps.items,
-                command: suggestProps.command,
-              },
-              editor: suggestProps.editor,
-            })
-            const element = renderer.element as HTMLElement | null
-            if (!element || !rootEl.value) {
-              return
-            }
-            rootEl.value.appendChild(element)
-            positionMentionList(element, suggestProps.clientRect)
-          },
-          onUpdate: (suggestProps) => {
-            renderer?.updateProps({
-              items: suggestProps.items,
-              command: suggestProps.command,
-            })
-            const element = renderer?.element as HTMLElement | null
-            if (element) {
-              positionMentionList(element, suggestProps.clientRect)
-            }
-          },
-          onKeyDown: (suggestProps) => {
-            if (suggestProps.event.key === 'Escape') {
-              ;(renderer?.element as HTMLElement | null)?.remove()
-              renderer?.destroy()
-              renderer = null
-              return true
-            }
-            const ref = renderer?.ref as
-              | { onKeyDown: (p: { event: KeyboardEvent }) => boolean }
-              | undefined
-            return ref?.onKeyDown(suggestProps) ?? false
-          },
-          onExit: () => {
-            ;(renderer?.element as HTMLElement | null)?.remove()
-            renderer?.destroy()
-            renderer = null
-          },
-        }
+      render: buildSuggestionRender(MentionList),
+    },
+  })
+}
+
+// `@tiptap/extension-emoji` runs a canvas-based check (via `is-emoji-supported`)
+// to decide whether to render the unicode glyph or fall back to a CDN image.
+// That detection misfires on a lot of OS/font combos, leaving plain emoji as
+// images. Trust the browser's font: force `isSupported` to true so the
+// renderer prefers the unicode `emoji` field whenever it exists. Entries with
+// no unicode (custom GitHub emojis like `:octocat:`) still use the image.
+const ConfiguredEmoji = Emoji.extend({
+  addStorage() {
+    const parent = this.parent!()
+    return {
+      ...parent,
+      isSupported: () => true,
+    }
+  },
+})
+
+function buildEmojiExtension() {
+  return ConfiguredEmoji.configure({
+    emojis: gitHubEmojis,
+    enableEmoticons: true,
+    suggestion: {
+      items: ({ editor, query }) => {
+        const q = query.toLowerCase()
+        return (editor.storage.emoji.emojis as any[])
+          .filter(
+            (e) =>
+              e.shortcodes?.some((s: string) => s.startsWith(q)) ||
+              e.tags?.some((t: string) => t.startsWith(q)),
+          )
+          .slice(0, 6)
       },
+      render: buildSuggestionRender(EmojiList),
     },
   })
 }
@@ -225,10 +298,15 @@ onMounted(() => {
       codeBlock: false,
       horizontalRule: false,
       trailingNode: false,
-      link: { openOnClick: false, autolink: true },
+      link: {
+        openOnClick: false,
+        autolink: true,
+        HTMLAttributes: { target: '_blank', rel: 'noopener noreferrer' },
+      },
     }),
     TaskList,
     CleanTaskItem.configure({ nested: true }),
+    buildEmojiExtension(),
   ]
   if (props.getUsers) {
     extensions.push(buildMentionExtension(props.getUsers))
