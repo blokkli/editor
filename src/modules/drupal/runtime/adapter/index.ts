@@ -604,6 +604,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       },
     }
 
+    if (hasQuery('pbUsers')) {
+      adapter.getBlokkliUsers = () =>
+        useGraphqlQuery('pbUsers').then((v) => v.data.users ?? [])
+    }
+
     if (hasQuery('pbPublishOptions')) {
       adapter.getPublishOptions = () =>
         useGraphqlQuery('pbPublishOptions', ctx.value).then((v) => {

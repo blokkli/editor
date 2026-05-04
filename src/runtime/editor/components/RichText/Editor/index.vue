@@ -126,21 +126,14 @@ import { CleanTaskItem } from './CleanTaskItem'
 const props = withDefaults(
   defineProps<{
     initialValue?: string
-    users?: MentionItem[]
+    getUsers?: () => Promise<MentionItem[]>
     autofocus?: boolean
     noBorder?: boolean
   }>(),
   {
     initialValue: '',
     autofocus: false,
-    users: () => [
-      { id: '1', label: 'John Miller' },
-      { id: '2', label: 'Martin Faux' },
-      { id: '3', label: 'Sarah Chen' },
-      { id: '4', label: 'Aisha Patel' },
-      { id: '5', label: 'Lukas Müller' },
-      { id: '6', label: 'Diego Ramírez' },
-    ],
+    getUsers: undefined,
   },
 )
 
@@ -202,10 +195,15 @@ editor.value = new Editor({
         return `@${node.attrs.label ?? node.attrs.id}`
       },
       suggestion: {
-        items: ({ query }) =>
-          props.users
+        items: async ({ query }) => {
+          if (!props.getUsers) {
+            return []
+          }
+          const all = await props.getUsers()
+          return all
             .filter((u) => u.label.toLowerCase().includes(query.toLowerCase()))
-            .slice(0, 6),
+            .slice(0, 6)
+        },
         render: () => ({
           onStart: (suggestProps) => {
             const position = getRelativePosition(suggestProps.clientRect)

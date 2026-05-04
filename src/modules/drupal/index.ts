@@ -182,6 +182,10 @@ export declare const templateEditRouteName: string|null
       addGraphqlDocument('base/' + fileName)
     })
 
+    if (queryFields.has('paragraphsBlokkliGetUsers')) {
+      addGraphqlDocument('base/query.pbUsers.graphql')
+    }
+
     // Add mutations only if they exist in the schema.
     addMutation('add')
     addMutation('swap')

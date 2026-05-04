@@ -6015,6 +6015,15 @@ input ParagraphsBlokkliUserConfigInput {
   value: String
 }
 
+"""A reduced type for querying users that only exposes id and name."""
+type ParagraphsBlokkliUserSearchItem {
+  """The user ID."""
+  id: String!
+
+  """The display name of the user."""
+  name: String!
+}
+
 type ParagraphsBuilderUrlPrefix {
   langcode: String!
   prefix: String!
@@ -6277,13 +6286,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """The field name of the target host."""
+    """Der Feldname des Ziel-Hosts."""
     hostFieldName: String!
 
-    """The entity type of the target host."""
+    """Der Entitätstyp des Ziel-Hosts."""
     hostType: String!
 
-    """The UUID of the target host."""
+    """Die UUID des Ziel-Hosts."""
     hostUuid: String!
 
     """The node ID."""
@@ -7023,6 +7032,7 @@ type Query {
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliGetUser: ParagraphsBlokkliUser
+  paragraphsBlokkliGetUsers: [ParagraphsBlokkliUserSearchItem!]!
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
   paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults
   paragraphsBlokkliSearchTabs: [ParagraphsBlokkliSearchTab]

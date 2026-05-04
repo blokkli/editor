@@ -1,0 +1,10 @@
+fragment paragraphsBlokkliUserListItem on ParagraphsBlokkliUserSearchItem {
+  id
+  name
+}
+
+query pbUsers {
+  users: paragraphsBlokkliGetUsers {
+    ...paragraphsBlokkliUserListItem
+  }
+}

@@ -121,6 +121,16 @@ export interface BlokkliAdapter<T> {
   getCurrentUser: () => Promise<BlokkliUser>
 
   /**
+   * Return the list of users that can be referenced in the editor (e.g. for
+   * `@` mentions in comments). Called lazily on demand and cached by the
+   * user provider, so this may be a relatively expensive operation.
+   *
+   * Optional. Adapters that don't implement this expose an empty user list
+   * to consumers — mention pickers will simply show no suggestions.
+   */
+  getBlokkliUsers?: () => Promise<BlokkliUser[]>
+
+  /**
    * Get disabled features at runtime.
    *
    * For example, the "Translation" feature can be disabled if the current

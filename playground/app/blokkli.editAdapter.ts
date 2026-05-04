@@ -483,6 +483,17 @@ export default defineBlokkliEditAdapter((ctx) => {
         name: state.owner.name,
       })
     },
+    getBlokkliUsers() {
+      return Promise.resolve([
+        { id: state.owner.id, name: state.owner.name },
+        { id: '101', name: 'John Miller' },
+        { id: '102', name: 'Martin Faux' },
+        { id: '103', name: 'Sarah Chen' },
+        { id: '104', name: 'Aisha Patel' },
+        { id: '105', name: 'Lukas Müller' },
+        { id: '106', name: 'Diego Ramírez' },
+      ])
+    },
     loadStateAtIndex(index: number) {
       const page = entityStorageManager.getContent(ctx.value.entityUuid)
       if (!page) {

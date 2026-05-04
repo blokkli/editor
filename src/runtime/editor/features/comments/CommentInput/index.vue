@@ -11,6 +11,7 @@
       ref="richTextRef"
       :initial-value="initialValue"
       :autofocus="autofocus"
+      :get-users="getUsers"
       no-border
       @change="onChange"
     />
@@ -79,7 +80,13 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { $t } = useBlokkli()
+const { $t, user } = useBlokkli()
+
+function getUsers() {
+  return user
+    .loadUsers()
+    .then((users) => users.map((u) => ({ id: u.id, label: u.name })))
+}
 
 const richTextRef = useTemplateRef<{
   getHTML: () => string

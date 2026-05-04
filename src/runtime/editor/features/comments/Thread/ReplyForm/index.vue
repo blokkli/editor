@@ -1,25 +1,27 @@
 <template>
-  <div>
-    <button
-      v-if="!isOpen"
-      type="button"
-      class="flex items-center text-xs font-medium gap-5 py-8 px-8 w-full hover:bg-mono-100 text-mono-500 border border-mono-200 rounded hover:border-mono-300"
-      @click="open"
-    >
-      <Icon name="bk_mdi_reply" class="size-15" />
-      {{ $t('commentReply', 'Reply') }}
-    </button>
-    <CommentInput
-      v-else
-      :id="`comment_reply_${rootUuid}`"
-      :initial-value="draft"
-      cancellable
-      :submit-label="$t('commentReply', 'Reply')"
-      boxed
-      @change="draft = $event"
-      @submit="onSubmit"
-      @cancel="onCancel"
-    />
+  <div class="grid grid-cols-1 grid-rows-1">
+    <div class="col-start-1 row-start-1">
+      <button
+        type="button"
+        class="flex items-center text-xs font-medium gap-5 py-8 px-8 w-full hover:bg-mono-100 text-mono-500 border border-mono-200 rounded hover:border-mono-300 cursor-text!"
+        @click="open"
+      >
+        <Icon name="bk_mdi_reply" class="size-15" />
+        {{ $t('commentReply', 'Reply') }}
+      </button>
+    </div>
+    <div v-if="isOpen" class="col-start-1 row-start-1 relative z-50">
+      <CommentInput
+        :id="`comment_reply_${rootUuid}`"
+        :initial-value="draft"
+        cancellable
+        :submit-label="$t('commentReply', 'Reply')"
+        boxed
+        @change="draft = $event"
+        @submit="onSubmit"
+        @cancel="onCancel"
+      />
+    </div>
   </div>
 </template>
 

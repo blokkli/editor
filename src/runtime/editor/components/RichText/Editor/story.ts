@@ -7,12 +7,12 @@ export default defineEditorComponent({
   category: 'Rich Text',
   component: RichText,
   description:
-    'Proof-of-concept WYSIWYG editor built on TipTap v3. Supports bold, italic, strikethrough, inline code, bulleted/numbered/task lists, blockquotes, links, and Slack-style @-mentions with hardcoded fake users. Output is HTML via `v-model`. This is a sandbox to evaluate fit; the comment input does not yet use it.',
+    'Proof-of-concept WYSIWYG editor built on TipTap v3. Supports bold, italic, strikethrough, inline code, bulleted/numbered/task lists, blockquotes, links, and Slack-style @-mentions. Mentions are wired via the optional `getUsers` async callback (omitted here = no suggestions). Output is HTML via `v-model`.',
   variants: [
     {
       label: 'Empty',
       description:
-        'Empty editor. Type "@" to open the mention popover (filtered fake users). Use the toolbar for formatting; Cmd/Ctrl+B and Cmd/Ctrl+I work too.',
+        'Empty editor with no `getUsers` callback — typing "@" opens the popover but it stays empty. Use the toolbar for formatting; Cmd/Ctrl+B and Cmd/Ctrl+I work too.',
       props: {
         initialValue: '',
       },
@@ -37,13 +37,14 @@ export default defineEditorComponent({
     {
       label: 'Custom user list',
       description:
-        'The mention popover is fed via the `users` prop; here only two users are mentionable.',
+        'The mention popover is fed via the `getUsers` prop — an async callback so consumers can lazy-load users on first @-press. Here it resolves to two hardcoded users.',
       props: {
         initialValue: '',
-        users: [
-          { id: 'a', label: 'Alice Anderson' },
-          { id: 'b', label: 'Bob Baker' },
-        ],
+        getUsers: () =>
+          Promise.resolve([
+            { id: 'a', label: 'Alice Anderson' },
+            { id: 'b', label: 'Bob Baker' },
+          ]),
       },
     },
   ],
