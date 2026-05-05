@@ -48,12 +48,18 @@ export function parseTsObject<T>(tsObjectStr: string): {
   const result = ts.transpileModule(source, {
     compilerOptions: {
       target: ts.ScriptTarget.ESNext,
-      module: ts.ModuleKind.None,
+      module: ts.ModuleKind.ESNext,
       removeComments: true,
     },
   })
 
-  const jsCode = result.outputText.trim()
+  // TypeScript >= 6 prepends a `"use strict";` directive prologue to the
+  // transpiled output even for module: None. Without stripping it, the wrapped
+  // `return ${jsCode}` becomes `return "use strict"; (...)` which returns the
+  // string instead of the object. Strip any leading string-literal directives.
+  const jsCode = result.outputText
+    .trim()
+    .replace(/^(?:["'][^"'\n]*["']\s*;?\s*)+/, '')
 
   // Safely evaluate the JavaScript which will return our definition object.
   const createObj = new Function(`return ${jsCode}`)

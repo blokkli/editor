@@ -5,9 +5,9 @@ This method should import blocks from the given source entity and field.
 The method is called when the user opens the "Import from existing" dialog,
 selects a source entity and one or more fields and clicks on submit.
 
-For this feature to work the [getHostEntities()](/adapter/getHostEntities)
-method must also be implemented — the dialog reuses the workspaces provider's
-host entity list, filtered to entities of the same bundle as the current page.
+For this feature to work the `getHostEntities()` method must also be
+implemented — the dialog reuses the workspaces provider's host entity list,
+filtered to entities of the same bundle as the current page.
 
 ## Example
 

@@ -1,4 +1,4 @@
-import { defineBlokkliModule } from '@blokkli/editor/modules'
+import { defineBlokkliModule } from './../../../../../src/modules'
 import { createResolver } from '@nuxt/kit'
 import { fileURLToPath } from 'node:url'
 
