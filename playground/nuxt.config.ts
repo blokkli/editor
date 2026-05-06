@@ -67,6 +67,11 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    // @todo remove once fix landed in Nuxt: https://github.com/nuxt/nuxt/issues/34957#issuecomment-4355775463
+    viteEnvironmentApi: true,
+  },
+
   vite: {
     plugins: [tailwindcss()],
     build: {

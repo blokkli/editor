@@ -1,4 +1,8 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type MarkdownRenderer } from 'vitepress'
+
+type RuleCore = Parameters<MarkdownRenderer['core']['ruler']['push']>[1]
+type StateCore = Parameters<RuleCore>[0]
+type Token = StateCore['tokens'][number]
 import features from './../../.nuxt/blokkli/features-data.json'
 import fs from 'fs'
 import path from 'path'
@@ -15,7 +19,7 @@ const TYPE_FILES = [
 ]
 
 const featureMenuItems = features
-  .filter((v) => v.id !== 'demo-feature')
+  .filter((v) => v.definition.id !== 'demo-feature')
   .map((v) => {
     return {
       text: v.definition.label,
@@ -48,8 +52,8 @@ const getTypeFiles = () => {
       .filter(Boolean)
   })
 
-  return allFiles.reduce((acc, v) => {
-    acc[v.typeName] = v.githubUrl
+  return allFiles.reduce<Record<string, string>>((acc, v) => {
+    if (v) acc[v.typeName] = v.githubUrl
     return acc
   }, {})
 }
@@ -100,10 +104,10 @@ const getPluginDocs = () => {
 
 const pluginDocs = getPluginDocs()
 
-function linkPlugin(md) {
+function linkPlugin(md: MarkdownRenderer) {
   const regex = /\[adapter\.([^\]]+)\]/g
 
-  function replaceToken(tokens, idx) {
+  function replaceToken(tokens: Token[], idx: number) {
     const token = tokens[idx]
     const match = token.content.match(regex)
 
@@ -120,23 +124,22 @@ function linkPlugin(md) {
   md.core.ruler.push('replace_adapter_method', function (state) {
     state.tokens.forEach((blockToken) => {
       if (blockToken.type === 'inline' && blockToken.children) {
-        blockToken.children.forEach((token, idx) => {
-          replaceToken(blockToken.children, idx)
+        blockToken.children.forEach((_token, idx) => {
+          replaceToken(blockToken.children!, idx)
         })
       }
     })
   })
 }
 
-function typeReferencePlugin(md) {
+function typeReferencePlugin(md: MarkdownRenderer) {
   const regex = /\[type\.(\w+(\[\])?)\]/g
 
-  function replaceToken(tokens, idx) {
+  function replaceToken(tokens: Token[], idx: number) {
     const token = tokens[idx]
     const match = [...token.content.matchAll(regex)][0]
 
     if (match) {
-      console.log(token)
       const arg = match[0].slice(6, -1)
       const typeName = arg.replace('[', '').replace(']', '')
 
@@ -157,8 +160,8 @@ function typeReferencePlugin(md) {
   md.core.ruler.push('replace_type_reference', function (state) {
     state.tokens.forEach((blockToken) => {
       if (blockToken.type === 'inline' && blockToken.children) {
-        blockToken.children.forEach((token, idx) => {
-          replaceToken(blockToken.children, idx)
+        blockToken.children.forEach((_token, idx) => {
+          replaceToken(blockToken.children!, idx)
         })
       }
     })
@@ -169,6 +172,15 @@ function typeReferencePlugin(md) {
 export default defineConfig({
   title: 'blökkli docs',
   description: 'Documentation for the blökkli page builder',
+  vite: {
+    css: {
+      // The repo root has a postcss.config.cjs targeted at the editor build
+      // (Tailwind, class mangling, scoping `*` selectors to `.bk *`). Vite
+      // would otherwise auto-discover it and apply it to vitepress's CSS,
+      // wiping out the default theme styles.
+      postcss: { plugins: [] },
+    },
+  },
   markdown: {
     config: (md) => {
       md.use(linkPlugin)
