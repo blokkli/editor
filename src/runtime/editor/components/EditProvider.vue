@@ -14,9 +14,8 @@
       :lang="ui.interfaceLanguage.value"
     >
       <Toolbar @loaded="toolbarLoaded = true" />
-      <div ref="viewportElement" class="bk bk-viewport">
-        <Messages />
-      </div>
+      <div ref="viewportElement" class="bk bk-viewport" />
+      <Messages />
       <Actions v-if="!isInitializing" />
       <div
         id="bk-banner-container"
@@ -241,6 +240,7 @@ const ui = uiProvider(
   element,
   mainLayoutElement,
   viewportElement,
+  $t,
 )
 const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)

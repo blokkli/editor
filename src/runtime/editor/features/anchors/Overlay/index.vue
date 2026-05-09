@@ -13,7 +13,6 @@
 <script lang="ts" setup>
 import { useBlokkli, useRoute, ref, onMounted } from '#imports'
 import { PluginBlockIndicator } from '#blokkli/editor/plugins'
-import { emitMessage } from '#blokkli/editor/events'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 type Item = {
@@ -23,7 +22,7 @@ type Item = {
 
 const route = useRoute()
 
-const { $t, adapter, ui } = useBlokkli()
+const { adapter, ui } = useBlokkli()
 
 function getAnchorItems(): Item[] {
   const anchorItems: Item[] = []
@@ -71,15 +70,8 @@ function getLinkForClipboard(item: Item) {
 }
 
 function onClick(item: Item) {
-  if (navigator.clipboard?.writeText) {
-    const link = getLinkForClipboard(item)
-    navigator.clipboard.writeText(link)
-    const message = $t(
-      'copiedToClipboardMessage',
-      '"@text" has been copied to your clipboard',
-    ).replace('@text', link)
-    emitMessage(message, 'success', undefined, true)
-  }
+  const link = getLinkForClipboard(item)
+  ui.copyTextToClipboard(link)
 }
 
 onBlokkliEvent('state:reloaded', () => {

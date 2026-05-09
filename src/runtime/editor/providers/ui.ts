@@ -24,8 +24,9 @@ import {
 } from '#blokkli-build/editor-config'
 import type { ThemeColorName } from './../../../global/types/theme'
 import type { ElementProvider } from './element'
-import type { BlokkliEventBus } from '../events'
+import { emitMessage, type BlokkliEventBus } from '../events'
 import type { Coord, Rectangle, Size } from '../types/geometry'
+import type { TextProvider } from './texts'
 
 type ResizeElementKey = 'visible-viewport' | 'artboard'
 
@@ -527,6 +528,8 @@ export type UiProvider = {
    * Whether the item actions are open.
    */
   itemActionsOpen: Ref<boolean>
+
+  copyTextToClipboard: (text: string | number) => void
 }
 
 export default function (
@@ -537,6 +540,7 @@ export default function (
   element: ElementProvider,
   mainLayoutElement: Readonly<ShallowRef<HTMLDivElement | null>>,
   visibleViewportElement: Readonly<ShallowRef<HTMLDivElement | null>>,
+  $t: TextProvider,
 ): UiProvider {
   let cachedRootElement: HTMLElement | null = null
   let cachedArtboardElement: HTMLElement | null = null
@@ -1001,6 +1005,16 @@ export default function (
   defineElementStyle('--bk-viewport-padding', viewportPadding)
   defineElementStyle('--bk-scrollbar-width', scrollbarWidth)
 
+  function copyTextToClipboard(input: string | number) {
+    const text = input.toString()
+    navigator.clipboard.writeText(text)
+    const message = $t(
+      'copiedToClipboardMessage',
+      '"@text" has been copied to your clipboard',
+    ).replace('@text', text)
+    emitMessage(message, 'success', undefined, true)
+  }
+
   return {
     artboardElement,
     rootElement,
@@ -1063,5 +1077,6 @@ export default function (
     isChangingOptions,
     activeHighlightId,
     itemActionsOpen,
+    copyTextToClipboard,
   }
 }

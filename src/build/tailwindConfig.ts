@@ -41,7 +41,6 @@ const zIndexKeys = [
   'search',
   'form-overlay',
   'form-overlay-header',
-  'messages',
   'menu',
   'command-palette',
   'library-edit-dialog',
@@ -49,6 +48,7 @@ const zIndexKeys = [
   'nested-editor-overlay-iframe',
   'overlay',
   'dialog',
+  'messages',
   'init-overlay',
 ]
 

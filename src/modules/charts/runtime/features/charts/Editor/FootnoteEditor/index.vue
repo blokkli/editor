@@ -61,7 +61,7 @@ import { Icon } from '#blokkli/editor/components'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAddButton from '#blokkli/editor/components/Panel/AddButton/index.vue'
 
-const { $t } = useBlokkli()
+const { $t, ui } = useBlokkli()
 
 defineProps<{
   footnotes: string[]
@@ -71,8 +71,6 @@ defineProps<{
 }>()
 
 function copyFootnoteToClipboard(index: number) {
-  if (navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(`{${index + 1}}`)
-  }
+  ui.copyTextToClipboard(`{${index + 1}}`)
 }
 </script>
