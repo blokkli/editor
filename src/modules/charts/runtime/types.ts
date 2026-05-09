@@ -35,6 +35,28 @@ export type ChartNumberFormat = {
 }
 
 /**
+ * Display style applied to category labels when they are detected as dates.
+ * `auto` picks a sensible default based on the detected source granularity.
+ */
+export type ChartDateFormatStyle =
+  | 'auto'
+  | 'none'
+  | 'monthYearShort'
+  | 'monthYearLong'
+  | 'monthOnly'
+  | 'monthYearNumeric'
+  | 'iso'
+  | 'dateShort'
+  | 'dateLong'
+  | 'yearOnly'
+
+export type ChartDateFormat = {
+  /** Display style. Falls back to `auto` if undefined. Locale is reused
+   * from `numberFormat.locale`. */
+  style?: ChartDateFormatStyle
+}
+
+/**
  * Translated strings for one target language.
  *
  * Arrays are positionally aligned to the source arrays (categories, series,
@@ -60,6 +82,7 @@ type ChartDataBase = {
   categoryColors: string[]
   footnotes: string[]
   numberFormat?: ChartNumberFormat
+  dateFormat?: ChartDateFormat
   /**
    * Per-language translations of the translatable strings, keyed by
    * langcode. Chart options are not translatable in blökkli, so

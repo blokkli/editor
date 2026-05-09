@@ -123,10 +123,6 @@ const visibleRoots = computed(() => {
     (r) => !r.resolved || recentlyResolved.value.includes(r.uuid),
   )
 })
-
-const resolvedCount = computed(
-  () => roots.value.filter((r) => r.resolved).length,
-)
 </script>
 
 <script lang="ts">

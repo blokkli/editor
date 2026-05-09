@@ -1,5 +1,6 @@
 import type { BlokkliChartData } from '../types'
 import type { ColorOption } from '#blokkli/editor/types/config'
+import { detectDateFormat } from './dateFormat'
 
 export const SUPERSCRIPTS: Record<string, string> = {
   '1': '¹',
@@ -78,6 +79,15 @@ export function categoriesAreNumeric(categories: string[]): boolean {
     hasAny = true
   }
   return hasAny
+}
+
+/**
+ * Whether all (non-empty) category labels match a known date source format
+ * (MM/YYYY, YYYY-MM, YYYY-MM-DD, DD.MM.YYYY). Used to decide whether to apply
+ * date formatting and to gate categories from being translatable.
+ */
+export function categoriesAreDates(categories: string[]): boolean {
+  return detectDateFormat(categories) !== null
 }
 
 export function parseNumericInput(raw: string): number {

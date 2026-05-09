@@ -1401,6 +1401,18 @@ msgid ""
 "(@cells cells, max @max). Re-import a smaller CSV to edit values inline."
 msgstr ""
 
+msgctxt "chartsDateFormat"
+msgid "Date format"
+msgstr "Datumsformat"
+
+msgctxt "chartsDateFormatStyleAuto"
+msgid "Auto"
+msgstr "Automatisch"
+
+msgctxt "chartsDateFormatStyleNone"
+msgid "No formatting"
+msgstr "Kei (Rohwärt bruche)"
+
 msgctxt "chartsDonutShowLabels"
 msgid "Show labels"
 msgstr "Beschriftige aazeige"

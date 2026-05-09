@@ -271,9 +271,7 @@ export default defineBlokkliEditAdapter((ctx) => {
           body: item.getBody(),
           created: new Date(item.getCreated()).toISOString(),
           updated:
-            updated !== undefined
-              ? new Date(updated).toISOString()
-              : undefined,
+            updated !== undefined ? new Date(updated).toISOString() : undefined,
           user: {
             id: author.uuid,
             name: author.getName(),

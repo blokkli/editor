@@ -25,6 +25,7 @@
 import { computed, defineAsyncComponent, inject, useAppConfig } from '#imports'
 import type { BlokkliChartData } from '../../types'
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
+import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import type { ApexOptions } from 'apexcharts'
@@ -81,6 +82,16 @@ const resolvedFootnotes = computed(() => {
   const t = props.translations?.[currentLanguage.value]
   if (!t?.footnotes) return props.footnotes
   return props.footnotes.map((f, i) => t.footnotes?.[i] || f)
+})
+
+const formattedCategories = computed(() => {
+  const cats = resolvedCategories.value
+  const detected = detectDateFormat(cats)
+  if (!detected) return cats
+  const locale = props.numberFormat?.locale
+  return cats.map((c) =>
+    formatDateCategory(c, detected, props.dateFormat, locale),
+  )
 })
 
 const resolvedNumberFormat = computed(() => {
@@ -179,7 +190,7 @@ const chartOptions = computed<ApexOptions>(() => {
 
   const ctx: ChartBuildContext = {
     title: resolvedTitle.value,
-    categories: resolvedCategories.value.map(applyFootnotes),
+    categories: formattedCategories.value.map(applyFootnotes),
     series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
       color: s.color,
@@ -207,7 +218,7 @@ const chartSeries = computed(() => {
 
   const ctx: ChartBuildContext = {
     title: resolvedTitle.value,
-    categories: resolvedCategories.value.map(applyFootnotes),
+    categories: formattedCategories.value.map(applyFootnotes),
     series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
       color: s.color,

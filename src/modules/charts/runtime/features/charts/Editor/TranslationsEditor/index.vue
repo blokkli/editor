@@ -25,7 +25,13 @@
           </TranslationRow>
         </FormItem>
 
-        <FormItem v-if="chartData.categories.length && !hasNumericCategories">
+        <FormItem
+          v-if="
+            chartData.categories.length &&
+            !hasNumericCategories &&
+            !hasDateFormattedCategories
+          "
+        >
           <div class="bk-form-label">
             {{ $t('chartsTranslationsCategories', 'Categories') }}
           </div>
@@ -174,6 +180,7 @@ import type { BlokkliChartData, ChartTranslation } from '../../../../types'
 const props = defineProps<{
   chartData: BlokkliChartData
   hasNumericCategories: boolean
+  hasDateFormattedCategories: boolean
 }>()
 
 const MAX_TRANSLATABLE_ITEMS = 50

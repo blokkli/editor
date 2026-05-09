@@ -11,7 +11,7 @@
  *    host doesn't, because we ship pre-compiled CSS.
  * 2. Layer cascade ordering is host-vs-us. The host's preflight emits to
  *    `@layer base { button { ... } }`. If we keep our scoped preflight in
- *    *any* layer, the layer cascade rules (later-declared layer wins, and
+ *    any* layer, the layer cascade rules (later-declared layer wins, and
  *    unlayered always beats layered) decide the fight, not specificity.
  *    Renamed `bk-base` loses to host `base` whenever host CSS is loaded
  *    after ours. Unlayered always wins.

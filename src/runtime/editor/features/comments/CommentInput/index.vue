@@ -75,8 +75,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'submit', value: string): void
-  (e: 'change', value: string): void
+  (e: 'submit' | 'change', value: string): void
   (e: 'cancel'): void
 }>()
 

@@ -133,7 +133,22 @@
                 chartData.numberFormat =
                   Object.keys($event).length > 0 ? $event : undefined
               "
-            />
+            >
+              <DateFormatEditor
+                v-if="hasDateFormattedCategories"
+                :format="chartData.dateFormat ?? {}"
+                :categories="chartData.categories"
+                :locale="chartData.numberFormat?.locale"
+                @update:format="
+                  chartData.dateFormat =
+                    Object.keys($event).filter(
+                      (k) => $event[k as keyof typeof $event] !== undefined,
+                    ).length > 0
+                      ? $event
+                      : undefined
+                "
+              />
+            </NumberFormatEditor>
 
             <PanelSection
               v-if="chartDef"
@@ -151,6 +166,7 @@
             v-model:translations="chartData.translations"
             :chart-data="chartData"
             :has-numeric-categories
+            :has-date-formatted-categories="hasDateFormattedCategories"
           />
         </div>
       </Resizable>
@@ -162,6 +178,7 @@
 import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliChartData } from '../../../types'
 import {
+  categoriesAreDates,
   categoriesAreNumeric,
   getDefaultChartData,
   getFirstColorId,
@@ -180,6 +197,7 @@ import CsvImport from './CsvImport/index.vue'
 import CsvExport from './CsvExport/index.vue'
 import FootnoteEditor from './FootnoteEditor/index.vue'
 import NumberFormatEditor from './NumberFormatEditor/index.vue'
+import DateFormatEditor from './DateFormatEditor/index.vue'
 import TranslationsEditor from './TranslationsEditor/index.vue'
 import Preview from './Preview/index.vue'
 import ChartTypeOptions from './ChartTypeOptions/index.vue'
@@ -350,6 +368,10 @@ const dataTooLarge = computed(() => cellCount.value > MAX_DATA_TABLE_CELLS)
 
 const hasNumericCategories = computed(() =>
   categoriesAreNumeric(chartData.value.categories),
+)
+
+const hasDateFormattedCategories = computed(() =>
+  categoriesAreDates(chartData.value.categories),
 )
 
 function getData(): BlokkliChartData {

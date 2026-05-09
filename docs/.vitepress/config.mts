@@ -1,11 +1,11 @@
 import { defineConfig, type MarkdownRenderer } from 'vitepress'
+import features from './../../.nuxt/blokkli/features-data.json'
+import fs from 'fs'
+import path from 'path'
 
 type RuleCore = Parameters<MarkdownRenderer['core']['ruler']['push']>[1]
 type StateCore = Parameters<RuleCore>[0]
 type Token = StateCore['tokens'][number]
-import features from './../../.nuxt/blokkli/features-data.json'
-import fs from 'fs'
-import path from 'path'
 
 const TYPE_FILES = [
   './../../src/runtime/types/index.ts',

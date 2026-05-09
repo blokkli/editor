@@ -1413,6 +1413,18 @@ msgstr ""
 "Zelle bearbeitet zu werden (@cells Zellen, max. @max). Importieren Sie eine "
 "kleinere CSV-Datei, um Werte inline zu bearbeiten."
 
+msgctxt "chartsDateFormat"
+msgid "Date format"
+msgstr "Datumsformat"
+
+msgctxt "chartsDateFormatStyleAuto"
+msgid "Auto"
+msgstr "Automatisch"
+
+msgctxt "chartsDateFormatStyleNone"
+msgid "No formatting"
+msgstr "Keine Formatierung"
+
 msgctxt "chartsDonutShowLabels"
 msgid "Show labels"
 msgstr "Beschriftungen anzeigen"

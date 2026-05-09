@@ -19,7 +19,8 @@
       <summary>Props</summary>
       <pre
         class="px-20 pb-15 m-0 text-xs font-mono text-mono-800 whitespace-pre-wrap"
-        >{{ formattedState }}</pre>
+        >{{ formattedState }}</pre
+      >
     </details>
   </article>
 </template>
