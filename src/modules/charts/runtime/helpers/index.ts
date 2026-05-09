@@ -64,6 +64,22 @@ export function getDefaultChartData(options: ColorOption[]): BlokkliChartData {
   }
 }
 
+/**
+ * Whether all (non-empty) category labels look like numbers — e.g. years
+ * (2012, 2013, …) or plain numeric values. Used to decide whether categories
+ * should be exposed for translation. Empty arrays return `false`.
+ */
+export function categoriesAreNumeric(categories: string[]): boolean {
+  let hasAny = false
+  for (const c of categories) {
+    const trimmed = c.trim()
+    if (!trimmed) continue
+    if (!Number.isFinite(Number(trimmed))) return false
+    hasAny = true
+  }
+  return hasAny
+}
+
 export function parseNumericInput(raw: string): number {
   let str = raw.trim()
   if (!str) return 0

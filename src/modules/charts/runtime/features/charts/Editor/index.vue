@@ -150,6 +150,7 @@
           <TranslationsEditor
             v-model:translations="chartData.translations"
             :chart-data="chartData"
+            :has-numeric-categories
           />
         </div>
       </Resizable>
@@ -160,7 +161,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
 import type { BlokkliChartData } from '../../../types'
-import { getDefaultChartData, getFirstColorId } from '../../../helpers'
+import {
+  categoriesAreNumeric,
+  getDefaultChartData,
+  getFirstColorId,
+} from '../../../helpers'
 import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
 import { useChartEditorState } from './useChartEditorState'
 import {
@@ -342,6 +347,10 @@ const cellCount = computed(
   () => chartData.value.categories.length * chartData.value.series.length,
 )
 const dataTooLarge = computed(() => cellCount.value > MAX_DATA_TABLE_CELLS)
+
+const hasNumericCategories = computed(() =>
+  categoriesAreNumeric(chartData.value.categories),
+)
 
 function getData(): BlokkliChartData {
   return chartData.value
