@@ -1336,6 +1336,66 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Klein"
 
+msgctxt "chartsCsvCategoriesHeader"
+msgid "Categories"
+msgstr "Kategorien"
+
+msgctxt "chartsCsvInvalidFile"
+msgid "The CSV file does not contain enough data to import."
+msgstr "Die CSV-Datei enthält nicht genügend Daten für einen Import."
+
+msgctxt "chartsCsvMoreRows"
+msgid "+ @count more rows"
+msgstr "+ @count weitere Zeilen"
+
+msgctxt "chartsCsvNoSeries"
+msgid "Select at least one column to import."
+msgstr "Wählen Sie mindestens eine Spalte zum Importieren aus."
+
+msgctxt "chartsCsvOptions"
+msgid "Options"
+msgstr "Optionen"
+
+msgctxt "chartsCsvPreviewLead"
+msgid ""
+"Review the data that will be imported. Adjust orientation and pick which "
+"columns to include."
+msgstr ""
+"Prüfen Sie die zu importierenden Daten. Passen Sie die Ausrichtung an und "
+"wählen Sie aus, welche Spalten übernommen werden sollen."
+
+msgctxt "chartsCsvPreviewSection"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "chartsCsvPreviewSubmit"
+msgid "Import"
+msgstr "Importieren"
+
+msgctxt "chartsCsvPreviewTitle"
+msgid "Preview CSV import"
+msgstr "CSV-Import vorschauen"
+
+msgctxt "chartsCsvReverseColumns"
+msgid "Reverse column order"
+msgstr "Spaltenreihenfolge umkehren"
+
+msgctxt "chartsCsvReverseRows"
+msgid "Reverse row order"
+msgstr "Zeilenreihenfolge umkehren"
+
+msgctxt "chartsCsvTranspose"
+msgid "Transpose (swap rows and columns)"
+msgstr "Transponieren (Zeilen und Spalten tauschen)"
+
+msgctxt "chartsCsvTransposeDescription"
+msgid ""
+"Use this when the CSV has the categories along the top row instead of the "
+"first column."
+msgstr ""
+"Aktivieren Sie diese Option, wenn die Kategorien in der CSV-Datei in der "
+"obersten Zeile statt in der ersten Spalte stehen."
+
 msgctxt "chartsData"
 msgid "Data"
 msgstr "Daten"

@@ -39,16 +39,16 @@ const zIndexKeys = [
   'transform-overlay',
   'sidebar-detached',
   'search',
-  'overlay',
   'form-overlay',
   'form-overlay-header',
-  'dialog',
   'messages',
   'menu',
   'command-palette',
   'library-edit-dialog',
   'nested-editor-overlay-bg',
   'nested-editor-overlay-iframe',
+  'overlay',
+  'dialog',
   'init-overlay',
 ]
 

@@ -11,105 +11,58 @@
     icon="bk_mdi_csv"
     @click="fileInputEl?.click()"
   />
+  <Teleport :to="ui.mainLayoutElement.value">
+    <BlokkliTransition name="slide-up">
+      <PreviewDialog
+        v-if="grid && showDialog"
+        :grid="grid"
+        @submit="onDialogSubmit"
+        @cancel="grid = null"
+      />
+    </BlokkliTransition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
+import { ref, useTemplateRef, useBlokkli } from '#imports'
+import { BlokkliTransition } from '#blokkli/editor/components'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
-import { useTemplateRef, useBlokkli } from '#imports'
-import type { ChartSeries } from '../../../../types'
-import { getColorIdAtIndex, parseNumericInput } from '../../../../helpers'
+import PreviewDialog from './PreviewDialog.vue'
+import { type CsvGrid, type CsvImportPayload, parseCsvText } from './csvHelpers'
+import { useDialog } from '#blokkli/editor/composables'
 
 const emit = defineEmits<{
-  import: [
-    payload: {
-      categories: string[]
-      series: ChartSeries[]
-      categoryColors: string[]
-    },
-  ]
+  import: [payload: CsvImportPayload]
 }>()
 
-const { $t, config } = useBlokkli()
+const { $t, ui } = useBlokkli()
 const fileInputEl = useTemplateRef<HTMLInputElement>('fileInputEl')
 
-function parseCsvLine(line: string): string[] {
-  const cells: string[] = []
-  let current = ''
-  let inQuotes = false
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i]
-    if (inQuotes) {
-      if (char === '"' && line[i + 1] === '"') {
-        current += '"'
-        i++
-      } else if (char === '"') {
-        inQuotes = false
-      } else {
-        current += char
-      }
-    } else if (char === '"') {
-      inQuotes = true
-    } else if (char === ',' || char === ';' || char === '\t') {
-      cells.push(current.trim())
-      current = ''
-    } else {
-      current += char
-    }
-  }
-  cells.push(current.trim())
-  return cells
-}
+const grid = ref<CsvGrid | null>(null)
+const showDialog = useDialog('charts-csv-preview', 'center')
 
 function onFileChange(event: Event) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
+  // Reset so the same file can be re-selected.
+  input.value = ''
   if (!file) return
 
   const reader = new FileReader()
   reader.onload = (e) => {
     const text = e.target?.result
     if (typeof text !== 'string') return
-
-    const lines = text
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0)
-
-    if (lines.length < 2) return
-
-    const header = parseCsvLine(lines[0]!)
-    // First column is categories, rest are series.
-    const seriesNames = header.slice(1)
-    if (seriesNames.length === 0) return
-
-    const categories: string[] = []
-    const seriesData: number[][] = seriesNames.map(() => [])
-
-    for (let i = 1; i < lines.length; i++) {
-      const cells = parseCsvLine(lines[i]!)
-      categories.push(cells[0] || `Category ${i}`)
-      for (let si = 0; si < seriesNames.length; si++) {
-        seriesData[si]!.push(parseNumericInput(cells[si + 1] || ''))
-      }
-    }
-
-    const options = config.colorOptions.value
-    const series = seriesNames.map((name, i) => ({
-      name: name || `Series ${i + 1}`,
-      color: getColorIdAtIndex(i, options),
-      data: seriesData[i]!,
-    }))
-
-    const categoryColors = categories.map((_, i) =>
-      getColorIdAtIndex(i, options),
-    )
-
-    emit('import', { categories, series, categoryColors })
+    const parsed = parseCsvText(text)
+    if (parsed.length === 0) return
+    grid.value = parsed
+    showDialog.value = true
   }
   reader.readAsText(file)
+}
 
-  // Reset so the same file can be re-selected.
-  input.value = ''
+function onDialogSubmit(payload: CsvImportPayload) {
+  emit('import', payload)
+  grid.value = null
+  showDialog.value = false
 }
 </script>
