@@ -6,33 +6,42 @@
     hide-buttons
     icon="bk_mdi_settings"
     @cancel="$emit('cancel')"
+    mono
   >
-    <div class="bk bk-settings">
-      <div v-for="group in groups" :key="group.key" class="bk-form-section">
-        <h3 class="bk-settings-group-title">
-          <span>{{ group.label }}</span>
-          <BetaIndicator
-            v-if="group.id === 'beta'"
-            class="inline-block ml-5 -translate-y-3"
-          />
-        </h3>
-        <div>
-          <FeatureSettingComponent
+    <div class="bk">
+      <PanelSection
+        v-for="group in groups"
+        :key="group.key"
+        class="bk-form-section"
+        :title="group.label"
+      >
+        <template #post-title v-if="group.id === 'beta'">
+          <BetaIndicator />
+        </template>
+        <div class="p-15">
+          <FormItem
             v-for="setting in group.settings"
             :key="group.key + setting.settingsKey"
-            :feature-id="setting.featureId"
-            :settings-key="setting.settingsKey"
-            :setting="setting.setting"
-          />
+          >
+            <FeatureSettingComponent
+              :feature-id="setting.featureId"
+              :settings-key="setting.settingsKey"
+              :setting="setting.setting"
+            />
+          </FormItem>
         </div>
-      </div>
+      </PanelSection>
     </div>
   </DialogModal>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
-import { DialogModal, BetaIndicator } from '#blokkli/editor/components'
+import {
+  DialogModal,
+  BetaIndicator,
+  FormItem,
+} from '#blokkli/editor/components'
 import FeatureSettingComponent from './FeatureSetting/index.vue'
 import type { ValidFeatureKey } from '#blokkli-build/features'
 import {
@@ -42,6 +51,7 @@ import {
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { settingsOverride } from '#blokkli-build/editor-config'
 import type { FeatureDefinitionSetting } from '#blokkli/editor/types/features'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 const { $t, features, ui } = useBlokkli()
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-form-item" :class="'bk-is-' + setting.type">
+  <div>
     <FormToggle
       v-if="setting.type === 'checkbox'"
       :label="settingLabel"

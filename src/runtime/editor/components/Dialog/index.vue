@@ -22,9 +22,12 @@
 
       <div
         class="bk-dialog-content"
-        :class="{
-          'bk-is-fullscreen': fullScreen,
-        }"
+        :class="[
+          {
+            'bk-is-fullscreen': fullScreen,
+          },
+          mono ? 'bg-mono-100' : 'bg-white',
+        ]"
       >
         <div class="bk-dialog-content-inner">
           <div v-if="lead" class="bk bk-dialog-lead">
@@ -90,6 +93,7 @@ const props = withDefaults(
     hideButtons?: boolean
     icon?: BlokkliIcon
     fullScreen?: boolean
+    mono?: boolean
   }>(),
   {
     width: 600,
@@ -197,7 +201,7 @@ export default {
   }
 
   .bk-dialog-content {
-    @apply overflow-auto flex-1 min-h-0 max-h-full h-full  pt-15  lg:pt-20 lg:h-auto rounded-t-xl md:rounded-t-none bg-white;
+    @apply overflow-auto flex-1 min-h-0 max-h-full h-full  pt-15  lg:pt-20 lg:h-auto rounded-t-xl md:rounded-t-none;
     @apply overscroll-contain;
 
     &.bk-is-fullscreen {

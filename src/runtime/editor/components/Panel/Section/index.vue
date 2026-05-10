@@ -2,6 +2,7 @@
   <div class="w-full bk-panel-section">
     <div class="flex items-center gap-5 mb-10">
       <span class="text-lg text-mono-700 font-bold">{{ title }}</span>
+      <slot name="post-title" />
       <div v-if="help" class="relative group/tooltip cursor-help group">
         <div
           class="size-18 bg-mono-600 rounded-full p-3 pointer-events-none group-hover:bg-accent-700"
