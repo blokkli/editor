@@ -32,6 +32,7 @@
         is-danger
         hide-buttons
         :width="490"
+        mono
         @submit="qrCodeVisible = false"
         @cancel="qrCodeVisible = false"
       >

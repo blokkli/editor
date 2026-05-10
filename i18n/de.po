@@ -3196,6 +3196,10 @@ msgctxt "libraryPlaceDialogTitle"
 msgid "Add block from library"
 msgstr "Block aus Bibliothek hinzufügen"
 
+msgctxt "link"
+msgid "Link"
+msgstr "Link"
+
 msgctxt "loading"
 msgid "Loading..."
 msgstr "Wird geladen…"
@@ -3587,6 +3591,10 @@ msgstr "Wird publiziert"
 msgctxt "publishWillBeScheduled"
 msgid "Will be scheduled"
 msgstr "Wird geplant"
+
+msgctxt "qrCode"
+msgid "QR code"
+msgstr "QR-Code"
 
 msgctxt "readabilityEntireText"
 msgid "This score is calculated for the entire text."
@@ -4235,7 +4243,7 @@ msgid "Translate"
 msgstr "Übersetzen"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
+msgid "Mark translation as up-to-date"
 msgstr "Übersetzung als aktuell markieren"
 
 msgctxt "translationsMarkUpToDateDisabled"

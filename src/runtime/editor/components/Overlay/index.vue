@@ -65,7 +65,6 @@ function onClick() {
 const isVisible = computed(() => ui.hasDialogOpen.value)
 
 const zIndexHigh = computed<boolean>(() => {
-  console.log(ui.currentDialog.value)
   return ui.currentDialog.value?.zIndex === 'high'
 })
 

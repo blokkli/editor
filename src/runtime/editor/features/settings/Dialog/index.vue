@@ -5,8 +5,8 @@
     :width="900"
     hide-buttons
     icon="bk_mdi_settings"
-    @cancel="$emit('cancel')"
     mono
+    @cancel="$emit('cancel')"
   >
     <div class="bk">
       <PanelSection
@@ -15,7 +15,7 @@
         class="bk-form-section"
         :title="group.label"
       >
-        <template #post-title v-if="group.id === 'beta'">
+        <template v-if="group.id === 'beta'" #post-title>
           <BetaIndicator />
         </template>
         <div class="p-15">
