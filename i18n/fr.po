@@ -1178,10 +1178,6 @@ msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
 msgstr ""
 
-msgctxt "blockSchedulerChangesPreview"
-msgid "Changes to be applied"
-msgstr ""
-
 msgctxt "blockSchedulerDialogLead"
 msgid ""
 "Schedule automatic publishing and unpublishing dates for the selected "
@@ -1190,6 +1186,12 @@ msgstr ""
 
 msgctxt "blockSchedulerDialogPublishOn"
 msgid "Publish on"
+msgstr ""
+
+msgctxt "blockSchedulerDialogPublishOnHelp"
+msgid ""
+"Pick a date and time when the selected blocks should automatically become "
+"visible to visitors. Until then, they remain unpublished."
 msgstr ""
 
 msgctxt "blockSchedulerDialogSubmit"
@@ -1204,12 +1206,15 @@ msgctxt "blockSchedulerDialogUnpublishOn"
 msgid "Unpublish on"
 msgstr ""
 
-msgctxt "blockSchedulerMixedDates"
-msgid "Selected blocks have different dates: @dates"
+msgctxt "blockSchedulerDialogUnpublishOnHelp"
+msgid ""
+"Pick a date and time when the selected blocks should automatically be "
+"hidden from visitors. After that, they will no longer be displayed on the "
+"page."
 msgstr ""
 
-msgctxt "blockSchedulerNoChanges"
-msgid "No changes to be applied."
+msgctxt "blockSchedulerMixedDates"
+msgid "Selected blocks have different dates: @dates"
 msgstr ""
 
 msgctxt "blockSchedulerOverride"
@@ -1537,10 +1542,6 @@ msgstr ""
 msgctxt "chartsRotationAuto"
 msgid "Auto"
 msgstr "Automatique"
-
-msgctxt "chartsSettings"
-msgid "Settings"
-msgstr "Paramètres"
 
 msgctxt "chartsStrokeMedium"
 msgid "Medium"
@@ -2819,6 +2820,10 @@ msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Ce champ est obligatoire"
 
+msgctxt "filter"
+msgid "Filter"
+msgstr ""
+
 msgctxt "filterSelectNoResults"
 msgid "No results"
 msgstr ""
@@ -3109,10 +3114,6 @@ msgctxt "libraryPlaceDialogTitle"
 msgid "Add block from library"
 msgstr ""
 
-msgctxt "libraryPreviewLabel"
-msgid "Preview"
-msgstr "Aperçu"
-
 msgctxt "loading"
 msgid "Loading..."
 msgstr ""
@@ -3243,6 +3244,10 @@ msgstr "La page est publiée (modifications en attente)"
 
 msgctxt "paste"
 msgid "Paste"
+msgstr ""
+
+msgctxt "preview"
+msgid "Preview"
 msgstr ""
 
 msgctxt "previewDialogLead"
@@ -3487,10 +3492,6 @@ msgctxt "publishSuccessfullySaved"
 msgid "Successfully saved"
 msgstr ""
 
-msgctxt "publishSummary"
-msgid "Summary"
-msgstr ""
-
 msgctxt "publishWillBePublished"
 msgid "Will be published"
 msgstr ""
@@ -3590,6 +3591,10 @@ msgctxt "save"
 msgid "Save"
 msgstr ""
 
+msgctxt "scheduleEnable"
+msgid "Enable schedule"
+msgstr ""
+
 msgctxt "scheduledFor"
 msgid "The changes will be published on this date."
 msgstr ""
@@ -3646,6 +3651,10 @@ msgstr ""
 
 msgctxt "selectedTranslationIsOutdated"
 msgid "Outdated"
+msgstr ""
+
+msgctxt "settings"
+msgid "Settings"
 msgstr ""
 
 msgctxt "settingsAdvanced"
@@ -3732,6 +3741,10 @@ msgctxt "styleguidePickComponent"
 msgid "Pick a component to inspect."
 msgstr ""
 
+msgctxt "summary"
+msgid "Summary"
+msgstr ""
+
 msgctxt "swapButton"
 msgid "Swap block positions"
 msgstr ""
@@ -3772,6 +3785,10 @@ msgid ""
 "blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli "
 "will resort to fallback rendering, which is slower and lacks full feature "
 "support."
+msgstr ""
+
+msgctxt "templates"
+msgid "Templates"
 msgstr ""
 
 msgctxt "templatesAddTemplate"
@@ -3823,10 +3840,6 @@ msgctxt "templatesCreateDialogLead"
 msgid ""
 "Create a reusable template from the selected blocks. Templates can be added "
 "to any page."
-msgstr ""
-
-msgctxt "templatesCreateDialogPreviewLabel"
-msgid "Preview"
 msgstr ""
 
 msgctxt "templatesCreateDialogSubmit"

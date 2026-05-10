@@ -12,6 +12,7 @@
     "
     :is-loading
     :can-submit
+    mono
     @cancel="$emit('close')"
     @submit="onSubmit"
   >
@@ -19,6 +20,12 @@
       <ScheduleSection
         v-model="publishOn"
         icon="bk_mdi_visibility"
+        :help="
+          $t(
+            'blockSchedulerDialogPublishOnHelp',
+            'Pick a date and time when the selected blocks should automatically become visible to visitors. Until then, they remain unpublished.',
+          )
+        "
         :label="$t('blockSchedulerDialogPublishOn', 'Publish on')"
         :items="publishOnItems"
         :supported-bundles="bundlesWithPublish"
@@ -29,21 +36,19 @@
         v-model="unpublishOn"
         icon="bk_mdi_visibility_off"
         :label="$t('blockSchedulerDialogUnpublishOn', 'Unpublish on')"
+        :help="
+          $t(
+            'blockSchedulerDialogUnpublishOnHelp',
+            'Pick a date and time when the selected blocks should automatically be hidden from visitors. After that, they will no longer be displayed on the page.',
+          )
+        "
         :items="unpublishOnItems"
         :supported-bundles="bundlesWithUnpublish"
         :disabled="unpublishDisabled"
       />
 
-      <div class="bk-block-scheduler-table">
-        <h3 class="bk-block-scheduler-table-title">
-          <span v-if="canSubmit">{{
-            $t('blockSchedulerChangesPreview', 'Changes to be applied')
-          }}</span>
-          <span v-else>
-            {{ $t('blockSchedulerNoChanges', 'No changes to be applied.') }}
-          </span>
-        </h3>
-        <table v-if="canSubmit" class="bk-table">
+      <PanelSection :title="$t('summary', 'Summary')">
+        <table v-if="canSubmit" class="bk-table bk-padded">
           <thead>
             <tr>
               <th>{{ $t('bundle', 'Bundle') }}</th>
@@ -61,7 +66,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </PanelSection>
     </div>
   </DialogModal>
 </template>
@@ -73,6 +78,7 @@ import ScheduleSection from './ScheduleSection.vue'
 import type { ScheduleItemData } from './ScheduleSection.vue'
 import { DialogModal } from '#blokkli/editor/components'
 import type { BlokkliAdapterSetBlockScheduleOptions } from '../types'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 const props = defineProps<{
   uuids: string[]
@@ -314,52 +320,5 @@ async function onSubmit() {
 <style lang="postcss">
 .bk.bk-block-scheduler-dialog {
   min-height: calc(100vh - 350px);
-}
-
-.bk {
-  .bk-schedule-section-content {
-    @apply pt-5 pb-25;
-  }
-
-  .bk-schedule-section-mixed {
-    .bk-button {
-      @apply mt-20;
-    }
-  }
-
-  .bk-schedule-section {
-    @apply border-b border-b-mono-300 first:border-t first:border-t-mono-300;
-    > .bk-checkbox-toggle {
-      @apply items-center py-15;
-    }
-  }
-
-  .bk-schedule-section-toggle-title {
-    @apply flex items-center mr-auto gap-10;
-    .bk-icon {
-      svg {
-        @apply size-25 fill-current;
-      }
-    }
-  }
-
-  .bk-schedule-section-toggle-title-label {
-    @apply font-bold text-xl;
-  }
-
-  .bk-block-scheduler-table {
-    @apply bg-mono-100 mt-20 p-20 border border-mono-300;
-
-    table {
-      @apply mt-20;
-      thead {
-        @apply bg-mono-100;
-      }
-    }
-  }
-
-  .bk-block-scheduler-table-title {
-    @apply font-bold text-xl;
-  }
 }
 </style>

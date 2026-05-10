@@ -96,7 +96,7 @@
           }}
         </div>
       </PanelSection>
-      <PanelSection :title="$t('publishSummary', 'Summary')" padded>
+      <PanelSection :title="$t('summary', 'Summary')" padded>
         <FormItem>
           <Summary
             :is-published="isCurrentlyPublished"

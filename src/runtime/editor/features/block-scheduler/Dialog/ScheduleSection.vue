@@ -1,34 +1,36 @@
 <template>
-  <div class="bk-schedule-section">
-    <FormToggle v-model="isEnabled" :disabled="disabled">
-      <div class="bk-schedule-section-toggle-title">
-        <Icon :name="icon" />
-        <div class="bk-schedule-section-toggle-title-label">{{ label }}</div>
-      </div>
-    </FormToggle>
+  <PanelSection :title="label" padded :help>
+    <div class="bk-schedule-section">
+      <FormToggle
+        v-model="isEnabled"
+        :disabled
+        :label="$t('scheduleEnable', 'Enable schedule')"
+      />
 
-    <TransitionHeight opacity>
-      <div v-if="isEnabled" class="bk-schedule-section-content">
-        <div
-          v-if="hasMixedDates && !overrideMode"
-          class="bk-schedule-section-mixed"
-        >
-          <InfoBox :text="mixedDatesMessage" />
-          <button
-            type="button"
-            class="bk-button bk-scheme-mono bk-is-light"
-            @click="enableOverride"
-          >
-            {{ $t('blockSchedulerOverride', 'Set date for all') }}
-          </button>
-        </div>
+      <TransitionHeight opacity>
+        <div v-if="isEnabled">
+          <div class="pt-20">
+            <div v-if="hasMixedDates && !overrideMode">
+              <InfoBox :text="mixedDatesMessage" />
+              <div class="mt-15">
+                <button
+                  type="button"
+                  class="bk-button bk-scheme-mono bk-is-light"
+                  @click="enableOverride"
+                >
+                  {{ $t('blockSchedulerOverride', 'Set date for all') }}
+                </button>
+              </div>
+            </div>
 
-        <div v-if="!hasMixedDates || overrideMode">
-          <ScheduleDate v-model="selectedDate" />
+            <div v-if="!hasMixedDates || overrideMode">
+              <ScheduleDate v-model="selectedDate" />
+            </div>
+          </div>
         </div>
-      </div>
-    </TransitionHeight>
-  </div>
+      </TransitionHeight>
+    </div>
+  </PanelSection>
 </template>
 
 <script setup lang="ts">
@@ -37,10 +39,10 @@ import {
   FormToggle,
   ScheduleDate,
   InfoBox,
-  Icon,
   TransitionHeight,
 } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 export type ScheduleItemData = {
   uuid: string
@@ -51,6 +53,7 @@ export type ScheduleItemData = {
 const props = withDefaults(
   defineProps<{
     label: string
+    help: string
     icon: BlokkliIcon
     items: ScheduleItemData[]
     supportedBundles: string[]

@@ -42,7 +42,7 @@
       </div>
       <div
         v-if="description"
-        class="text-sm text-pretty max-w-[500px]"
+        class="text-sm text-pretty"
         :class="{
           'text-mono-400': isDark,
           'text-mono-500': !isDark,
