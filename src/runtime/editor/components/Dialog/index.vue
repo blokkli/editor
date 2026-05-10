@@ -2,6 +2,7 @@
   <div
     ref="rootEl"
     class="bk bk-dialog bk-control"
+    :class="zIndex === 'high' ? 'z-dialog-high' : 'z-dialog'"
     @wheel.passive.stop
     @keydown.stop="handleKeyDown"
     @keyup.stop
@@ -94,6 +95,7 @@ const props = withDefaults(
     icon?: BlokkliIcon
     fullScreen?: boolean
     mono?: boolean
+    zIndex?: 'default' | 'high'
   }>(),
   {
     width: 600,
@@ -157,7 +159,7 @@ onBlokkliEvent('overlay:close', () => {
   emit('cancel')
 })
 
-ui.openDialog({ id: props.id, alignment: 'center' })
+ui.openDialog({ id: props.id, alignment: 'center', zIndex: props.zIndex })
 
 onBeforeUnmount(() => {
   ui.closeDialog(props.id)
@@ -172,7 +174,7 @@ export default {
 
 <style lang="postcss">
 .bk.bk-dialog {
-  @apply fixed top-0 left-0 w-screen bottom-0  z-dialog lg:p-15 pointer-events-none;
+  @apply fixed top-0 left-0 w-screen bottom-0  lg:p-15 pointer-events-none;
   @apply flex items-center justify-center;
 
   .bk-dialog-inner {
@@ -185,7 +187,7 @@ export default {
     @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-mono-700;
   }
   .bk-dialog-footer {
-    @apply flex gap-10 md:mt-30 p-15 lg:p-20 border-t bg-mono-50 border-t-mono-300;
+    @apply flex gap-10 p-15 lg:p-20 border-t bg-mono-50 border-t-mono-300;
     flex: 0 0 auto;
     button {
       @apply w-full lg:w-auto;

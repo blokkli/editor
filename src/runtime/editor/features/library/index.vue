@@ -78,10 +78,10 @@ import type { ActionPlacedData } from '#blokkli/editor/types/actions'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const ReusableDialog = defineAsyncComponent(
-  () => import('./ReusableDialog/index.vue'),
+  () => import('./DialogMakeReusable/index.vue'),
 )
 const LibraryDialog = defineAsyncComponent(
-  () => import('./LibraryDialog/index.vue'),
+  () => import('./DialogBrowseLibrary/index.vue'),
 )
 
 const { adapter } = defineBlokkliFeature({

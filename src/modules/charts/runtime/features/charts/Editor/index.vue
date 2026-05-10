@@ -150,10 +150,7 @@
               />
             </NumberFormatEditor>
 
-            <PanelSection
-              v-if="chartDef"
-              :title="$t('chartsSettings', 'Settings')"
-            >
+            <PanelSection v-if="chartDef" :title="$t('settings', 'Settings')">
               <ChartTypeOptions
                 v-model:title="chartData.title"
                 :options="chartDef.editor.options"

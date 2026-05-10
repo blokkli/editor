@@ -4,6 +4,7 @@ import type { GlobalUiDialog } from '../types/ui'
 export function useDialog(
   id: string,
   alignment: GlobalUiDialog['alignment'],
+  zIndex?: 'default' | 'high',
 ): WritableComputedRef<boolean> {
   const { ui } = useBlokkli()
 
@@ -13,7 +14,7 @@ export function useDialog(
     },
     set(isOpen) {
       if (isOpen) {
-        ui.openDialog({ id, alignment })
+        ui.openDialog({ id, alignment, zIndex })
       } else {
         ui.closeDialog(id)
       }

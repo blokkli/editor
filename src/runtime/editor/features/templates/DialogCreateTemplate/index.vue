@@ -12,10 +12,11 @@
     icon="bk_mdi_dashboard"
     :submit-label="$t('templatesCreateDialogSubmit', 'Create template')"
     :can-submit="!!label.length"
+    mono
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <div>
+    <PanelSection :title="$t('settings', 'Settings')" padded>
       <FormItem>
         <FormText
           id="template_label"
@@ -56,13 +57,10 @@
           "
         />
       </FormItem>
-      <FormItem>
-        <div class="bk-form-label">
-          {{ $t('templatesCreateDialogPreviewLabel', 'Preview') }}
-        </div>
-        <BlockPreviewRenderer :uuids="uuids" />
-      </FormItem>
-    </div>
+    </PanelSection>
+    <PanelSection :title="$t('preview', 'Preview')">
+      <BlockPreviewRenderer :uuids="uuids" />
+    </PanelSection>
   </DialogModal>
 </template>
 
@@ -76,6 +74,7 @@ import {
   FormToggle,
   BlockPreviewRenderer,
 } from '#blokkli/editor/components'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 const emit = defineEmits<{
   (e: 'confirm', label: string, description: string, isDefault: boolean): void

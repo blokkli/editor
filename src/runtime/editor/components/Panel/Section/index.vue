@@ -31,6 +31,7 @@
         class="bk-panel-section-inner"
         :class="{
           'opacity-50': disabled,
+          'p-15': padded,
         }"
       >
         <slot />
@@ -60,6 +61,7 @@ defineProps<{
   title: string
   help?: string
   disabled?: boolean
+  padded?: boolean
 }>()
 
 defineOptions({

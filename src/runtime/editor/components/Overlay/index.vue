@@ -3,6 +3,7 @@
     <div
       v-if="isVisible"
       class="bk bk-overlay"
+      :class="zIndexHigh ? 'z-overlay-high' : 'z-overlay'"
       @click.prevent.stop.capture="onClick"
       @dblclick.prevent="onDoubleClick"
       @wheel.capture.stop.prevent
@@ -63,6 +64,11 @@ function onClick() {
 
 const isVisible = computed(() => ui.hasDialogOpen.value)
 
+const zIndexHigh = computed<boolean>(() => {
+  console.log(ui.currentDialog.value)
+  return ui.currentDialog.value?.zIndex === 'high'
+})
+
 watch(isVisible, () => {
   if (clickTimeout) {
     window.clearTimeout(clickTimeout)
@@ -83,7 +89,7 @@ function onDoubleClick() {
 
 <style lang="postcss">
 .bk.bk-overlay {
-  @apply fixed top-0 left-0 w-screen bottom-0 pointer-events-auto z-overlay;
+  @apply fixed top-0 left-0 w-screen bottom-0 pointer-events-auto;
   @apply bg-mono-800/95;
   @apply flex items-start;
 

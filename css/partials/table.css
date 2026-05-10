@@ -1,5 +1,20 @@
 .bk-table {
   @apply w-full;
+
+  &.bk-padded {
+    thead {
+      th {
+        @apply first:pl-15 py-15 last:pr-15;
+      }
+    }
+
+    tbody {
+      td,
+      th {
+        @apply first:pl-15 last:pr-15;
+      }
+    }
+  }
   thead {
     @apply sticky top-0 bg-white z-50;
     box-shadow: 0px 1px 0 0 theme('colors.mono.300');

@@ -12,6 +12,7 @@
     icon="bk_mdi_csv"
     :submit-label="$t('chartsCsvPreviewSubmit', 'Import')"
     :can-submit="canSubmit"
+    z-index="high"
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >

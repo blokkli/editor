@@ -15,6 +15,7 @@ export type GlobalUiDialog = {
   id: string
   alignment: 'left' | 'right' | 'center'
   confirmClose?: boolean
+  zIndex?: 'default' | 'high'
 }
 
 export type ContextMenuRule = {

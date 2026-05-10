@@ -12,42 +12,42 @@
     icon="reusable"
     :submit-label="$t('libraryDialogSubmit', 'Add to library')"
     :can-submit="!!label.length"
+    mono
     @submit="$emit('confirm', label)"
     @cancel="$emit('cancel')"
   >
-    <div class="bk-reusable-dialog-form">
-      <FormItem>
-        <InfoBox
-          :text="
-            $t(
-              'libraryDialogReusableInfo',
-              'The library item will be available for placement on other pages once this page has been published.',
-            )
-          "
-        />
-      </FormItem>
-      <FormItem>
-        <FormText
-          id="reusable_label"
-          v-model="label"
-          lazy
-          :label="$t('libraryDialogDescriptionLabel', 'Description')"
-          type="text"
-          :placeholder="
-            $t(
-              'libraryDialogTitleInputPlaceholder',
-              'e.g. Teaser Campaign 2024',
-            )
-          "
-          required
-        />
-      </FormItem>
-      <FormItem>
-        <div class="bk-form-label">
-          {{ $t('libraryPreviewLabel', 'Preview') }}
-        </div>
+    <div>
+      <PanelSection padded :title="$t('settings', 'Settings')">
+        <FormItem>
+          <InfoBox
+            :text="
+              $t(
+                'libraryDialogReusableInfo',
+                'The library item will be available for placement on other pages once this page has been published.',
+              )
+            "
+          />
+        </FormItem>
+        <FormItem>
+          <FormText
+            id="reusable_label"
+            v-model="label"
+            lazy
+            :label="$t('libraryDialogDescriptionLabel', 'Description')"
+            type="text"
+            :placeholder="
+              $t(
+                'libraryDialogTitleInputPlaceholder',
+                'e.g. Teaser Campaign 2024',
+              )
+            "
+            required
+          />
+        </FormItem>
+      </PanelSection>
+      <PanelSection :title="$t('preview', 'Preview')">
         <BlockPreviewRenderer :uuids="[uuid]" />
-      </FormItem>
+      </PanelSection>
     </div>
   </DialogModal>
 </template>
@@ -61,6 +61,7 @@ import {
   FormItem,
   BlockPreviewRenderer,
 } from '#blokkli/editor/components'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 defineEmits<{
   (e: 'confirm', label: string): void

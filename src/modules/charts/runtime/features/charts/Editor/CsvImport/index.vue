@@ -39,7 +39,7 @@ const { $t, ui } = useBlokkli()
 const fileInputEl = useTemplateRef<HTMLInputElement>('fileInputEl')
 
 const grid = ref<CsvGrid | null>(null)
-const showDialog = useDialog('charts-csv-preview', 'center')
+const showDialog = useDialog('charts-csv-preview', 'center', 'high')
 
 function onFileChange(event: Event) {
   const input = event.target as HTMLInputElement

@@ -39,10 +39,10 @@ const zIndexKeys = [
   'transform-overlay',
   'sidebar-detached',
   'search',
-  'nested-editor-overlay-bg',
-  'nested-editor-overlay-iframe',
   'overlay',
   'dialog',
+  'nested-editor-overlay-bg',
+  'nested-editor-overlay-iframe',
   'messages',
   'form-overlay',
   'form-overlay-header',
@@ -50,6 +50,8 @@ const zIndexKeys = [
   'command-palette',
   'library-edit-dialog',
   'init-overlay',
+  'overlay-high',
+  'dialog-high',
 ]
 
 // Keys to expose as CSS variables on :root

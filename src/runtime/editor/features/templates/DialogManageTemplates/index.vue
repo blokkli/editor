@@ -11,50 +11,53 @@
     :width="1200"
     icon="bk_mdi_dashboard"
     hide-buttons
+    mono
     @cancel="$emit('cancel')"
   >
-    <div ref="dialogEl" class="bk-templates-manage">
-      <div v-if="config.length" class="mt-20 mb-30">
-        <ConfigForm v-model="filters" :config />
-      </div>
-      <Loading v-if="status === 'pending'" />
-      <template v-if="items.length">
-        <table class="bk-table mt-40">
-          <thead>
-            <tr>
-              <th>
-                {{ $t('nameDescription', 'Name / Description') }}
-              </th>
-              <th>
-                {{ $t('createdBy', 'Created by') }}
-              </th>
-              <th>
-                {{ $t('created', 'Created') }}
-              </th>
-              <th>
-                {{ $t('dateUpdated', 'Updated') }}
-              </th>
-              <th class="text-right">
-                {{ $t('actions', 'Actions') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <TabelRow
-              v-for="item in items"
-              :key="item.uuid"
-              v-bind="item"
-              @refresh="refresh"
-            />
-          </tbody>
-        </table>
-        <div v-if="totalPages > 1">
-          <Pagination v-model="page" :total-pages />
-        </div>
-      </template>
-      <p v-else class="bk-lead">
-        {{ $t('templatesManageDialogNoResults', 'No templates found.') }}
-      </p>
+    <div class="bk-templates-manage select-text relative">
+      <PanelSection :title="$t('filter', 'Filter')" padded>
+        <ConfigForm v-if="config.length" v-model="filters" :config />
+      </PanelSection>
+      <PanelSection :title="$t('templates', 'Templates')">
+        <Loading v-if="status === 'pending'" />
+        <template v-if="items.length">
+          <table class="bk-table bk-padded">
+            <thead>
+              <tr>
+                <th>
+                  {{ $t('nameDescription', 'Name / Description') }}
+                </th>
+                <th>
+                  {{ $t('createdBy', 'Created by') }}
+                </th>
+                <th>
+                  {{ $t('created', 'Created') }}
+                </th>
+                <th>
+                  {{ $t('dateUpdated', 'Updated') }}
+                </th>
+                <th class="text-right">
+                  {{ $t('actions', 'Actions') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <TabelRow
+                v-for="item in items"
+                :key="item.uuid"
+                v-bind="item"
+                @refresh="refresh"
+              />
+            </tbody>
+          </table>
+          <div v-if="totalPages > 1">
+            <Pagination v-model="page" :total-pages />
+          </div>
+        </template>
+        <p v-else class="bk-lead">
+          {{ $t('templatesManageDialogNoResults', 'No templates found.') }}
+        </p>
+      </PanelSection>
     </div>
   </DialogModal>
 </template>
@@ -79,6 +82,7 @@ import type {
   TemplatesSearchArguments,
 } from '../types'
 import TabelRow from './Item.vue'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 defineEmits<{
   (e: 'cancel'): void
@@ -122,9 +126,7 @@ watch(page, () => {
 <style lang="postcss">
 .bk {
   .bk-templates-manage {
-    min-height: 80vh;
-    @apply select-text relative;
-    @apply mt-25;
+    min-height: 70vh;
   }
 }
 </style>

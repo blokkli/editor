@@ -47,12 +47,14 @@ import {
 } from '#blokkli/editor/composables'
 import type { ActionPlacedData } from '#blokkli/editor/types/actions'
 
-const TemplatesDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
+const TemplatesDialog = defineAsyncComponent(
+  () => import('./DialogBrowseTemplates/index.vue'),
+)
 const CreateTemplateDialog = defineAsyncComponent(
-  () => import('./CreateDialog/index.vue'),
+  () => import('./DialogCreateTemplate/index.vue'),
 )
 const ManageDialog = defineAsyncComponent(
-  () => import('./ManageDialog/index.vue'),
+  () => import('./DialogManageTemplates/index.vue'),
 )
 
 const { adapter } = defineBlokkliFeature({
