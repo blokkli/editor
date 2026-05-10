@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-if="!hideLabel" class="bk-form-label" :for="id">
+    <label v-if="!hideLabel && label" class="bk-form-label" :for="id">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </label>
     <div class="bk-form-text">
@@ -36,7 +36,7 @@ import { computed, useBlokkli, useTemplateRef } from '#imports'
 
 const props = defineProps<{
   id: string
-  label: string
+  label?: string
   description?: string
   placeholder?: string
   required?: boolean

@@ -98,7 +98,7 @@ const props = withDefaults(
     zIndex?: 'default' | 'high'
   }>(),
   {
-    width: 600,
+    width: 900,
     canSubmit: true,
     lead: '',
     submitLabel: '',

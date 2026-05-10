@@ -9,37 +9,42 @@
         'Import content from an existing page. The items will be added to the end of the list. This action can be undone.',
       )
     "
-    :width="800"
     :submit-label="$t('importExistingDialogSubmit', 'Import content')"
     :can-submit
     :is-loading="isLoading || workspaces.isLoading.value || isSearching"
+    mono
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <div class="bk">
+    <PanelSection
+      v-if="fieldOptions.length > 1"
+      padded
+      :title="
+        $t(
+          'importExistingFieldsLabel',
+          'Which content would you like to import?',
+        )
+      "
+    >
       <FormCheckboxes
-        v-if="fieldOptions.length > 1"
         id="import-existing-fields"
         v-model="selectedFields"
-        :label="
-          $t(
-            'importExistingFieldsLabel',
-            'Which content would you like to import?',
-          )
-        "
         :options="fieldOptions"
         inline
       />
-      <div class="mt-15 pt-15 border-t border-t-mono-300">
+    </PanelSection>
+    <PanelSection padded :title="$t('importExistingPagesTitle', 'Select page')">
+      <FormItem>
         <FormText
           id="import-existing-search"
           v-model="searchText"
-          :label="$t('importExistingPagesTitle', 'Select page')"
           :placeholder="
             $t('importExistingSearchPlaceholder', 'Search pages...')
           "
         />
-        <GrowOnly class="mt-20 min-w-0">
+      </FormItem>
+      <FormItem>
+        <GrowOnly>
           <div
             v-if="!pagedItems.length && !workspaces.isLoading.value"
             class="py-20 text-center text-mono-500 text-sm"
@@ -57,11 +62,10 @@
             />
           </div>
         </GrowOnly>
-      </div>
-    </div>
-    <template v-if="totalPages > 1" #pre-footer>
-      <Pagination v-model="page" :total-pages />
-    </template>
+      </FormItem>
+
+      <Pagination v-if="totalPages > 1" v-model="page" :total-pages />
+    </PanelSection>
   </DialogModal>
 </template>
 
@@ -80,10 +84,12 @@ import {
   FormCheckboxes,
   FormText,
   GrowOnly,
+  FormItem,
 } from '#blokkli/editor/components'
 import Item from './Item.vue'
 import type { HostEntitySearchResultItem } from '#blokkli/editor/providers/workspaces'
 import type { FieldConfig } from '#blokkli/editor/types/definitions'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 const { $t, context, state, workspaces } = useBlokkli()
 
