@@ -15,6 +15,7 @@
   > p + *,
   > ul + *,
   > ol + *,
+  > h3 + *,
   > blockquote + * {
     @apply mt-[0.75lh];
   }
@@ -132,6 +133,24 @@
 
   blockquote {
     @apply pl-10 pr-5 border-l-2 border-l-mono-300 py-5 bg-mono-50 text-mono-700;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  ol {
+    @apply first:mt-0 last:mb-0;
+  }
+
+  h3 {
+    @apply font-semibold text-accent-700 uppercase tracking-wide;
+  }
+
+  h4 {
+    @apply font-bold;
   }
 }
 

@@ -2,35 +2,32 @@
   <DialogModal
     id="changelog"
     :title="$t('changelogDialogTitle', 'What\'s New')"
-    :width="876"
     hide-buttons
     icon="bk_mdi_campaign"
+    mono
     @cancel="$emit('cancel')"
   >
-    <div class="bk-changelog grid gap-30 select-text">
-      <div
-        v-for="(entry, index) in entries"
+    <div class="select-text">
+      <PanelSection
+        v-for="entry in entries"
         :key="entry.version"
-        :class="{ 'pt-30 border-t border-mono-400 border-dashed': index > 0 }"
+        :title="entry.date"
+        padded
       >
-        <div class="flex items-center gap-10 mb-15 justify-between">
-          <h2
-            class="text-sm font-bold font-mono bg-accent-100 text-accent-800 rounded-full px-10 py-2"
-          >
-            {{ entry.date }}
-          </h2>
-          <span class="text-mono-500">{{ entry.version }}</span>
-        </div>
-        <div class="bk-changelog-content" v-html="entry.html" />
-      </div>
+        <template #post-title>
+          <Pill :text="entry.version" />
+        </template>
+        <div class="bk-rich-content" v-html="entry.html" />
+      </PanelSection>
     </div>
   </DialogModal>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
-import { DialogModal } from '#blokkli/editor/components'
+import { DialogModal, Pill } from '#blokkli/editor/components'
 import data from '../changelog.json'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 const { $t, ui } = useBlokkli()
 
@@ -53,42 +50,3 @@ const entries = computed(() =>
   }),
 )
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-changelog-content {
-    h3 {
-      @apply text-sm font-semibold text-accent-700 mt-25 mb-15 uppercase tracking-wide;
-    }
-
-    h4 {
-      @apply text-base font-bold mt-25;
-    }
-
-    h3 + h4 {
-      @apply mt-0;
-    }
-
-    > div:last-child > h3:first-child {
-      @apply mt-0;
-    }
-
-    ul {
-      @apply grid gap-5 mb-0;
-    }
-
-    li {
-      @apply pl-15 relative;
-
-      &::before {
-        content: '';
-        @apply absolute left-0 top-[9px] size-[5px] rounded-full bg-mono-400;
-      }
-
-      strong {
-        @apply text-mono-900 font-semibold;
-      }
-    }
-  }
-}
-</style>
