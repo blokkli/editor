@@ -110,6 +110,7 @@ import {
   MutationDroppableFieldUpdate,
   type MutationDroppableFieldUpdateArgs,
 } from './Mutation/DroppableFieldUpdate'
+import { MutationImport, type MutationImportArgs } from './Mutation/Import'
 
 export type MutationArgsMap = {
   add: MutationAddArgs | MutationAddArgs[]
@@ -144,6 +145,7 @@ export type MutationArgsMap = {
   unignore_analyze: MutationUnignoreAnalyzeArgs
   import_translations_batched: MutationImportTranslationsBatchedArgs
   droppable_field_update: MutationDroppableFieldUpdateArgs
+  import: MutationImportArgs
 }
 
 export const createMutation = <T extends keyof MutationArgsMap>(
@@ -215,6 +217,8 @@ export const createMutation = <T extends keyof MutationArgsMap>(
       return new MutationImportTranslationsBatched(configuration)
     case 'droppable_field_update':
       return new MutationDroppableFieldUpdate(configuration)
+    case 'import':
+      return new MutationImport(configuration)
   }
 
   throw new Error('Missing mutation plugin with ID: ' + id)

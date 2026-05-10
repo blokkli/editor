@@ -692,13 +692,29 @@ function onPaste(e: ClipboardEvent) {
     if (pastedData.startsWith('{')) {
       try {
         const data = JSON.parse(pastedData)
-        if (
-          typeof data === 'object' &&
-          data.type &&
-          data.type === 'selection'
-        ) {
-          const uuids: string[] = data.uuids
-          return handleSelectionPaste(uuids)
+        if (typeof data === 'object' && data) {
+          if (data.type === 'selection') {
+            const uuids: string[] = data.uuids
+            return handleSelectionPaste(uuids)
+          }
+
+          // Block transfer payload. Hand off the parsed metadata + the
+          // opaque transferable string to the block-transfer feature,
+          // which owns the import flow (drag interaction or direct
+          // paste depending on page state).
+          if (
+            data.type === 'block_transfer' &&
+            Array.isArray(data.bundles) &&
+            typeof data.transferable === 'string'
+          ) {
+            eventBus.emit('blockTransfer:paste', {
+              bundles: data.bundles.filter(
+                (b: unknown): b is string => typeof b === 'string',
+              ),
+              transferable: data.transferable,
+            })
+            return
+          }
         }
       } catch (_e) {
         // Noop.

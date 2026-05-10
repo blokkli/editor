@@ -5689,6 +5689,17 @@ type ParagraphsBlokkliEntityTypeConfigBundle {
   label: String!
 }
 
+"""Result of exporting paragraphs into a transferable payload."""
+type ParagraphsBlokkliExportResult {
+  """Root-level block bundles, in the order the user selected them."""
+  bundles: [String!]!
+
+  """
+  Opaque envelope payload — round-tripped verbatim back to the import mutation.
+  """
+  transferable: String!
+}
+
 type ParagraphsBlokkliFieldConfig {
   allowedBundles: [String!]!
   canEdit: Boolean!
@@ -5707,6 +5718,22 @@ type ParagraphsBlokkliHostTransformPlugin {
   label: String!
 }
 
+type ParagraphsBlokkliImportDroppedField {
+  bundle: String!
+  fieldName: String!
+}
+
+type ParagraphsBlokkliImportLabelMatch {
+  entityType: String!
+  label: String!
+  targetId: String!
+}
+
+type ParagraphsBlokkliImportSkippedBundle {
+  bundle: String!
+  count: Int!
+}
+
 type ParagraphsBlokkliImportSourceEntities {
   filters: [ParagraphsBlokkliConfigInput!]!
   items: [ParagraphsBlokkliImportSourceEntity]
@@ -5718,6 +5745,37 @@ type ParagraphsBlokkliImportSourceEntity {
   description: String
   label: String!
   uuid: String!
+}
+
+"""Per-import summary returned by the Import paragraph mutation."""
+type ParagraphsBlokkliImportSummary {
+  """
+  Field names dropped during resolution because the field doesn't exist on
+  the target paragraph bundle.
+  """
+  droppedFields: [ParagraphsBlokkliImportDroppedField!]!
+
+  """Total paragraphs successfully created (root + nested)."""
+  paragraphsImported: Int!
+
+  """Per-reference detail for matches resolved by label fallback."""
+  referencesResolvedByLabel: [ParagraphsBlokkliImportLabelMatch!]!
+
+  """Count of entity references that resolved by UUID match."""
+  referencesResolvedByUuid: Int!
+
+  """References that could not be resolved and were left empty."""
+  referencesUnresolved: [ParagraphsBlokkliImportUnresolved!]!
+
+  """Bundles that were skipped (missing on target or access denied)."""
+  skippedBundles: [ParagraphsBlokkliImportSkippedBundle!]!
+}
+
+type ParagraphsBlokkliImportUnresolved {
+  entityType: String!
+  label: String
+  reason: String!
+  uuid: String
 }
 
 type ParagraphsBlokkliLibraryItemsSearchResults {
@@ -5771,6 +5829,11 @@ type ParagraphsBlokkliMutatedState {
 
 type ParagraphsBlokkliMutationPlugin {
   affectedParagraphUuid: String
+
+  """
+  The structured summary of an Import mutation. Null for any other plugin.
+  """
+  importSummary: ParagraphsBlokkliImportSummary
   label: String
 }
 
@@ -6287,13 +6350,13 @@ type ParagraphsEditMutationState {
     """The UUID of the paragraph after which to add this one."""
     afterUuid: String
 
-    """Der Feldname des Ziel-Hosts."""
+    """The field name of the target host."""
     hostFieldName: String!
 
-    """Der Entitätstyp des Ziel-Hosts."""
+    """The entity type of the target host."""
     hostType: String!
 
-    """Die UUID des Ziel-Hosts."""
+    """The UUID of the target host."""
     hostUuid: String!
 
     """The node ID."""
@@ -6473,6 +6536,28 @@ type ParagraphsEditMutationState {
   ignore_analyze(
     """The analyze identifiers to ignore."""
     ids: [String]!
+  ): ParagraphsBlokkliMutationResult
+
+  """
+  Imports paragraphs from a portable JSON envelope (cross-page or cross-environment paste).
+  """
+  import(
+    """The UUID of the paragraph after which to insert."""
+    afterUuid: String
+
+    """The field name of the target host."""
+    hostFieldName: String!
+
+    """The entity type of the target host."""
+    hostType: String!
+
+    """The UUID of the target host."""
+    hostUuid: String!
+
+    """
+    The JSON-encoded transferable payload, as returned by paragraphsBlokkliExportParagraphs.transferable.
+    """
+    transferable: String!
   ): ParagraphsBlokkliMutationResult
 
   """Makes a paragraph reusable."""
@@ -7030,6 +7115,13 @@ type Query {
   paragraphsBlokkliEditStatesSummary: [ParagraphsBlokkliEditStateSummary!]!
   paragraphsBlokkliEntitiesSearch: ParagraphsBlokkliEntitiesSearchResult
   paragraphsBlokkliEntityTypeConfig: [ParagraphsBlokkliEntityTypeConfig!]!
+
+  """
+  Serialize selected paragraphs from an edit state into a portable
+  transferable payload. Returns null when the user lacks the export
+  permission or the state cannot be loaded.
+  """
+  paragraphsBlokkliExportParagraphs(entityType: EntityType!, entityUuid: String!, langcode: String!, paragraphUuids: [String!]!): ParagraphsBlokkliExportResult
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliGetUser: ParagraphsBlokkliUser

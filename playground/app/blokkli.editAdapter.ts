@@ -33,6 +33,10 @@ import type {
   MediaLibraryItem,
 } from '#blokkli/editor/features/media-library/types'
 import type { MutationArgsMap } from './mock/plugins/mutations'
+import type {
+  MockImportSummary,
+  SerializedParagraph,
+} from './mock/plugins/mutations/Mutation/Import'
 import { FieldText } from './mock/state/Field/Text'
 import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Paragraph } from './mock/state/Paragraph/Paragraph'
@@ -474,6 +478,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         'take_ownership',
         'use_blokkli',
         'list_users',
+        'transfer_blocks',
       ]
       return Promise.resolve(permissions)
     },
@@ -1055,6 +1060,85 @@ export default defineBlokkliEditAdapter((ctx) => {
         hostField: e.host.fieldName,
         preceedingUuid: e.preceedingUuid,
       }),
+
+    exportBlocksToTransferable: async (e) => {
+      const entity = getEntity()
+      const mutated = await editState.getMutatedState(
+        entity,
+        ctx.value.language,
+      )
+      const context = mutated.context
+
+      const serialize = (uuid: string): SerializedParagraph | null => {
+        const proxy = context.getProxy(uuid)
+        if (!proxy || proxy.isDeleted) {
+          return null
+        }
+        const block = proxy.block
+        const values: Record<string, any> = {}
+        for (const [fieldId, field] of Object.entries(block.fields)) {
+          // Block fields are walked separately; isNew is reset on import.
+          if (field.type === 'blocks' || fieldId === 'isNew') {
+            continue
+          }
+          values[fieldId] = JSON.parse(JSON.stringify(field.list))
+        }
+
+        const children: SerializedParagraph['children'] = []
+        for (const blockField of block.getBlockFields()) {
+          const nested = context
+            .getProxiesForHost(block.entityType, block.uuid)
+            .filter((p) => p.hostField === blockField.id && !p.isDeleted)
+            .map((p) => serialize(p.block.uuid))
+            .filter((v): v is SerializedParagraph => v !== null)
+          if (nested.length) {
+            children!.push({ fieldName: blockField.id, paragraphs: nested })
+          }
+        }
+
+        return {
+          bundle: block.bundle,
+          values,
+          options: {
+            ...block.options().getOptions(),
+            ...proxy.overrideOptions,
+          },
+          children: children!.length ? children : undefined,
+        }
+      }
+
+      const paragraphs = e.uuids.map(serialize).filter(falsy)
+      if (!paragraphs.length) {
+        return null
+      }
+
+      return {
+        bundles: paragraphs.map((p) => p.bundle),
+        transferable: JSON.stringify({ version: 1, paragraphs }),
+      }
+    },
+
+    importBlocksFromTransferable: async (e) => {
+      const result = await addMutation('import', {
+        transferable: e.transferable,
+        hostEntityType: e.host.type,
+        hostEntityUuid: e.host.uuid,
+        hostField: e.host.fieldName,
+        afterUuid: e.afterUuid ?? null,
+      })
+
+      // The import mutation tracks validation outcomes (skipped bundles,
+      // dropped fields, …) on its own configuration as a side-effect of
+      // running. Read the latest run's summary back here so the editor
+      // can render the post-paste dialog.
+      const mutations = editState.getMutations()
+      const lastMutation = mutations[editState.currentIndex]
+      const importSummary = lastMutation?.configuration?.importSummary as
+        | MockImportSummary
+        | undefined
+
+      return { ...result, importSummary }
+    },
 
     updateFieldValue: (e) => {
       const lang = ctx.value.language

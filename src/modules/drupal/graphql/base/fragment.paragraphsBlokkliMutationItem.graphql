@@ -5,5 +5,28 @@ fragment paragraphsBlokkliMutationItem on FieldItemTypeParagraphsBlokkliMutation
   plugin {
     label
     affectedItemUuid: affectedParagraphUuid
+    importSummary {
+      paragraphsImported
+      referencesResolvedByUuid
+      skippedBundles {
+        bundle
+        count
+      }
+      droppedFields {
+        bundle
+        fieldName
+      }
+      referencesResolvedByLabel {
+        entityType
+        label
+        targetId
+      }
+      referencesUnresolved {
+        entityType
+        uuid
+        label
+        reason
+      }
+    }
   }
 }

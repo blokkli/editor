@@ -21,6 +21,7 @@ import type {
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
+  ParagraphsBlokkliMutationItemFragment,
   ParagraphsBlokkliMutationResultFragment,
   ParagraphsBlokkliPublishOptionsFragment,
   ParagraphsBlokkliCurrentUserFragment,
@@ -45,6 +46,7 @@ import type { EditPermission } from '#blokkli/types/provider'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
+import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -79,6 +81,7 @@ const PERMISSION_FIELDS: Record<
   view_comments: 'view_comments',
   use_agent: 'use_agent',
   list_users: 'list_users',
+  transfer_blocks: 'transfer_blocks',
 }
 
 function mapUserPermissions(
@@ -447,6 +450,42 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         success: !!action?.success,
         state: action?.state,
         errors: (action?.errors ?? []).filter(falsy),
+      }
+    }
+
+    type ImportSummaryFragment = NonNullable<
+      NonNullable<
+        ParagraphsBlokkliMutationItemFragment['plugin']
+      >['importSummary']
+    >
+
+    const mapImportSummary = (
+      summary: ImportSummaryFragment,
+    ): BlockTransferImportSummary => {
+      return {
+        paragraphsImported: summary.paragraphsImported,
+        referencesResolvedByUuid: summary.referencesResolvedByUuid,
+        skippedBundles: summary.skippedBundles.map((s) => ({
+          bundle: s.bundle,
+          count: s.count,
+        })),
+        droppedFields: summary.droppedFields.map((d) => ({
+          bundle: d.bundle,
+          fieldName: d.fieldName,
+        })),
+        referencesResolvedByLabel: summary.referencesResolvedByLabel.map(
+          (r) => ({
+            entityType: r.entityType,
+            label: r.label,
+            targetId: r.targetId,
+          }),
+        ),
+        referencesUnresolved: summary.referencesUnresolved.map((r) => ({
+          entityType: r.entityType,
+          uuid: r.uuid ?? null,
+          label: r.label ?? null,
+          reason: r.reason,
+        })),
       }
     }
     const route = useRoute()
@@ -873,6 +912,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               user: {
                 id: item.user?.id != null ? String(item.user.id) : '',
                 name: item.user?.name || '',
+                imageUrl: item.user?.imageUrl,
               },
             }
           }
@@ -1830,6 +1870,50 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         ...ctx.value,
         ids: identifiers,
       }).then(mapMutation)
+
+    if (hasQuery('pbExportParagraphs')) {
+      adapter.exportBlocksToTransferable = (e) =>
+        useGraphqlQuery('pbExportParagraphs', {
+          ...ctx.value,
+          paragraphUuids: e.uuids,
+        }).then((v) => {
+          const result = v.data.result
+          if (!result || !result.transferable) {
+            return null
+          }
+          return {
+            bundles: (result.bundles ?? []).filter(falsy),
+            transferable: result.transferable,
+          }
+        })
+    }
+
+    if (hasMutation('pbImport')) {
+      adapter.importBlocksFromTransferable = (e) =>
+        useGraphqlMutation('pbImport', {
+          ...ctx.value,
+          transferable: e.transferable,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
+          afterUuid: e.afterUuid,
+        }).then((v) => {
+          const base = mapMutation(v)
+          // The import summary lives on the most recent mutation's plugin
+          // payload — null on every other plugin, so we just pick the last
+          // non-null one in the returned mutations list.
+          const mutations = base.state?.mutations ?? []
+          let importSummary: ReturnType<typeof mapImportSummary> | undefined
+          for (let i = mutations.length - 1; i >= 0; i--) {
+            const summary = mutations[i]?.plugin?.importSummary
+            if (summary) {
+              importSummary = mapImportSummary(summary)
+              break
+            }
+          }
+          return { ...base, importSummary }
+        })
+    }
 
     return adapter
   },

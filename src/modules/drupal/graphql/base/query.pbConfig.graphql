@@ -20,7 +20,9 @@ fragment paragraphsBlokkliCurrentUser on ParagraphsBlokkliUser {
   view_comments: hasPermission(permission: "access comments")
   use_agent: hasPermission(permission: "use paragraphs blokkli agent")
   list_users: hasPermission(permission: "load id and name of blokkli users")
+  transfer_blocks: hasPermission(permission: "transfer blokkli paragraphs")
 }
+
 query pbConfig($entityType: String!, $entityBundle: String!) {
   currentUser: paragraphsBlokkliGetUser {
     ...paragraphsBlokkliCurrentUser

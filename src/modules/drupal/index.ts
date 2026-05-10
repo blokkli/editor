@@ -290,6 +290,16 @@ export declare const templateEditRouteName: string|null
       context.features.disableFeature('import-existing')
     }
 
+    // Feature: Block Transfer (export/import via clipboard).
+    if (
+      editMutationStateFields.has('import') &&
+      queryFields.has('paragraphsBlokkliExportParagraphs')
+    ) {
+      addGraphqlDocument('features/block-transfer.graphql')
+    } else {
+      context.features.disableFeature('block-transfer')
+    }
+
     // Feature: Media Library.
     if (queryFields.has('pbMediaLibraryGetResults')) {
       addGraphqlDocument('features/media-library.graphql')

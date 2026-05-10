@@ -1252,6 +1252,128 @@ msgctxt "blockSchedulerSuccessMessage"
 msgid "Successfully updated schedule dates."
 msgstr "Planungsdate erfolgriich aktualisiert."
 
+msgctxt "blockTransferClipboardError"
+msgid "Failed to write to the clipboard. Please check your browser permissions."
+msgstr ""
+
+msgctxt "blockTransferCount"
+msgid "Count"
+msgstr ""
+
+msgctxt "blockTransferDragLabel"
+msgid "@count blocks"
+msgstr ""
+
+msgctxt "blockTransferDroppedFields"
+msgid "Removed fields"
+msgstr ""
+
+msgctxt "blockTransferDroppedFieldsHelp"
+msgid ""
+"These fields were dropped because they no longer exist on the target block "
+"type."
+msgstr ""
+
+msgctxt "blockTransferEntityType"
+msgid "Entity type"
+msgstr ""
+
+msgctxt "blockTransferExport"
+msgid "Export to clipboard"
+msgstr ""
+
+msgctxt "blockTransferExportDescription"
+msgid ""
+"Copy the selected blocks to the clipboard so you can paste them into "
+"another field, page or blökkli editor."
+msgstr ""
+
+msgctxt "blockTransferExportError"
+msgid "Could not export the selected blocks."
+msgstr ""
+
+msgctxt "blockTransferExportSuccess"
+msgid "Blocks exported to clipboard."
+msgstr ""
+
+msgctxt "blockTransferFieldName"
+msgid "Field"
+msgstr ""
+
+msgctxt "blockTransferImportError"
+msgid "Could not import the blocks."
+msgstr ""
+
+msgctxt "blockTransferImportSuccess"
+msgid "@count blocks imported."
+msgstr ""
+
+msgctxt "blockTransferImportUnsupported"
+msgid "Importing exported blocks is not supported by this editor."
+msgstr ""
+
+msgctxt "blockTransferLabel"
+msgid "Label"
+msgstr ""
+
+msgctxt "blockTransferPasteNoTarget"
+msgid "No place to paste imported content."
+msgstr ""
+
+msgctxt "blockTransferReason"
+msgid "Reason"
+msgstr ""
+
+msgctxt "blockTransferReferencesByLabel"
+msgid "References matched by label — please verify"
+msgstr ""
+
+msgctxt "blockTransferReferencesByLabelHelp"
+msgid ""
+"These references could not be matched by ID and were resolved by label "
+"instead. Verify they point to the correct entity."
+msgstr ""
+
+msgctxt "blockTransferReferencesByUuid"
+msgid "@count references resolved exactly."
+msgstr ""
+
+msgctxt "blockTransferReferencesUnresolved"
+msgid "Unresolved references"
+msgstr ""
+
+msgctxt "blockTransferReferencesUnresolvedHelp"
+msgid ""
+"These references could not be resolved on the target site and were left "
+"empty."
+msgstr ""
+
+msgctxt "blockTransferSkippedBundles"
+msgid "Skipped block types"
+msgstr ""
+
+msgctxt "blockTransferSkippedBundlesHelp"
+msgid ""
+"These block types were not imported because they don’t exist on the target "
+"site or you don’t have permission to use them."
+msgstr ""
+
+msgctxt "blockTransferSummaryClose"
+msgid "Close"
+msgstr ""
+
+msgctxt "blockTransferSummaryHeadline"
+msgid "@count blocks imported."
+msgstr ""
+
+msgctxt "blockTransferSummaryTitle"
+msgid "Import summary"
+msgstr ""
+
+msgctxt "blockTransferTargetId"
+msgid "Target ID"
+msgstr ""
+
 msgctxt "blokkliOptionNumberAuto"
 msgid "Auto"
 msgstr "Automatisch"
@@ -2319,6 +2441,16 @@ msgstr "Ermöglicht s'zitgstüürti Veröffentliche vo Blöck."
 msgctxt "feature_block-scheduler_label"
 msgid "Block Scheduler"
 msgstr "Block-Planung"
+
+msgctxt "feature_block-transfer_description"
+msgid ""
+"Export selected blocks to a portable clipboard envelope and paste them back "
+"in any blökkli editor."
+msgstr ""
+
+msgctxt "feature_block-transfer_label"
+msgid "Block Transfer"
+msgstr ""
 
 msgctxt "feature_breadcrumbs_description"
 msgid "Provides a breadcrumb of the selection."
@@ -4211,7 +4343,7 @@ msgid "Translate"
 msgstr "Übersetze..."
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"

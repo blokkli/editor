@@ -1267,6 +1267,142 @@ msgctxt "blockSchedulerSuccessMessage"
 msgid "Successfully updated schedule dates."
 msgstr "Planungsdaten erfolgreich aktualisiert."
 
+msgctxt "blockTransferClipboardError"
+msgid "Failed to write to the clipboard. Please check your browser permissions."
+msgstr ""
+"Schreiben in die Zwischenablage fehlgeschlagen. Bitte überprüfen Sie die "
+"Berechtigungen Ihres Browsers."
+
+msgctxt "blockTransferCount"
+msgid "Count"
+msgstr "Anzahl"
+
+msgctxt "blockTransferDragLabel"
+msgid "@count blocks"
+msgstr "@count Blöcke"
+
+msgctxt "blockTransferDroppedFields"
+msgid "Removed fields"
+msgstr "Entfernte Felder"
+
+msgctxt "blockTransferDroppedFieldsHelp"
+msgid ""
+"These fields were dropped because they no longer exist on the target block "
+"type."
+msgstr ""
+"Diese Felder wurden verworfen, weil sie auf dem Ziel-Blocktyp nicht mehr "
+"vorhanden sind."
+
+msgctxt "blockTransferEntityType"
+msgid "Entity type"
+msgstr "Entitätstyp"
+
+msgctxt "blockTransferExport"
+msgid "Export to clipboard"
+msgstr "In die Zwischenablage exportieren"
+
+msgctxt "blockTransferExportDescription"
+msgid ""
+"Copy the selected blocks to the clipboard so you can paste them into "
+"another field, page or blökkli editor."
+msgstr ""
+"Kopiert die ausgewählten Blöcke in die Zwischenablage, damit Sie sie in "
+"einem anderen Feld, einer anderen Seite oder einem anderen blökkli-Editor "
+"einfügen können."
+
+msgctxt "blockTransferExportError"
+msgid "Could not export the selected blocks."
+msgstr "Die ausgewählten Blöcke konnten nicht exportiert werden."
+
+msgctxt "blockTransferExportSuccess"
+msgid "Blocks exported to clipboard."
+msgstr "Blöcke wurden in die Zwischenablage exportiert."
+
+msgctxt "blockTransferFieldName"
+msgid "Field"
+msgstr "Feld"
+
+msgctxt "blockTransferImportError"
+msgid "Could not import the blocks."
+msgstr "Die Blöcke konnten nicht importiert werden."
+
+msgctxt "blockTransferImportSuccess"
+msgid "@count blocks imported."
+msgstr "@count Blöcke importiert."
+
+msgctxt "blockTransferImportUnsupported"
+msgid "Importing exported blocks is not supported by this editor."
+msgstr "Der Import exportierter Blöcke wird von diesem Editor nicht unterstützt."
+
+msgctxt "blockTransferLabel"
+msgid "Label"
+msgstr "Bezeichnung"
+
+msgctxt "blockTransferPasteNoTarget"
+msgid "No place to paste imported content."
+msgstr "Es gibt keinen Ort, an den die importierten Inhalte eingefügt werden können."
+
+msgctxt "blockTransferReason"
+msgid "Reason"
+msgstr "Grund"
+
+msgctxt "blockTransferReferencesByLabel"
+msgid "References matched by label — please verify"
+msgstr "Referenzen anhand der Bezeichnung zugeordnet — bitte prüfen"
+
+msgctxt "blockTransferReferencesByLabelHelp"
+msgid ""
+"These references could not be matched by ID and were resolved by label "
+"instead. Verify they point to the correct entity."
+msgstr ""
+"Diese Referenzen konnten nicht anhand der ID zugeordnet werden und wurden "
+"stattdessen über die Bezeichnung aufgelöst. Bitte prüfen Sie, ob sie auf "
+"die richtige Entität verweisen."
+
+msgctxt "blockTransferReferencesByUuid"
+msgid "@count references resolved exactly."
+msgstr "@count Referenzen exakt aufgelöst."
+
+msgctxt "blockTransferReferencesUnresolved"
+msgid "Unresolved references"
+msgstr "Nicht aufgelöste Referenzen"
+
+msgctxt "blockTransferReferencesUnresolvedHelp"
+msgid ""
+"These references could not be resolved on the target site and were left "
+"empty."
+msgstr ""
+"Diese Referenzen konnten auf der Zielseite nicht aufgelöst werden und "
+"blieben leer."
+
+msgctxt "blockTransferSkippedBundles"
+msgid "Skipped block types"
+msgstr "Übersprungene Blocktypen"
+
+msgctxt "blockTransferSkippedBundlesHelp"
+msgid ""
+"These block types were not imported because they don’t exist on the target "
+"site or you don’t have permission to use them."
+msgstr ""
+"Diese Blocktypen wurden nicht importiert, weil sie auf der Zielseite nicht "
+"existieren oder Sie keine Berechtigung haben, sie zu verwenden."
+
+msgctxt "blockTransferSummaryClose"
+msgid "Close"
+msgstr "Schliessen"
+
+msgctxt "blockTransferSummaryHeadline"
+msgid "@count blocks imported."
+msgstr "@count Blöcke importiert."
+
+msgctxt "blockTransferSummaryTitle"
+msgid "Import summary"
+msgstr "Import-Zusammenfassung"
+
+msgctxt "blockTransferTargetId"
+msgid "Target ID"
+msgstr "Ziel-ID"
+
 msgctxt "blokkliOptionNumberAuto"
 msgid "Auto"
 msgstr "Automatisch"
@@ -1385,7 +1521,7 @@ msgstr "Importieren"
 
 msgctxt "chartsCsvPreviewTitle"
 msgid "Preview CSV import"
-msgstr "CSV-Import vorschauen"
+msgstr "Vorschau des CSV-Imports"
 
 msgctxt "chartsCsvReverseColumns"
 msgid "Reverse column order"
@@ -2338,6 +2474,18 @@ msgstr "Ermöglicht das zeitgesteuerte Veröffentlichen von Blöcken."
 msgctxt "feature_block-scheduler_label"
 msgid "Block Scheduler"
 msgstr "Block-Planung"
+
+msgctxt "feature_block-transfer_description"
+msgid ""
+"Export selected blocks to a portable clipboard envelope and paste them back "
+"in any blökkli editor."
+msgstr ""
+"Ausgewählte Blöcke als portable Zwischenablage-Daten exportieren und in "
+"einem beliebigen blökkli-Editor wieder einfügen."
+
+msgctxt "feature_block-transfer_label"
+msgid "Block Transfer"
+msgstr "Block-Transfer"
 
 msgctxt "feature_breadcrumbs_description"
 msgid "Provides a breadcrumb of the selection."
@@ -4243,7 +4391,7 @@ msgid "Translate"
 msgstr "Übersetzen"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr "Übersetzung als aktuell markieren"
 
 msgctxt "translationsMarkUpToDateDisabled"

@@ -1,0 +1,42 @@
+query pbExportParagraphs(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $paragraphUuids: [String!]!
+) {
+  result: paragraphsBlokkliExportParagraphs(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+    paragraphUuids: $paragraphUuids
+  ) {
+    bundles
+    transferable
+  }
+}
+
+mutation pbImport(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String
+  $transferable: String!
+  $hostType: String!
+  $hostUuid: String!
+  $hostFieldName: String!
+  $afterUuid: String
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+  ) {
+    action: import(
+      transferable: $transferable
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+      afterUuid: $afterUuid
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}
