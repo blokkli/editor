@@ -7,18 +7,13 @@
     :is-loading="isLoading"
     :can-submit="canSubmit"
     class="bk-is-publish-dialog"
+    mono
     @submit="onSubmit"
     @cancel="$emit('close')"
   >
-    <div
-      class="bk bk-form flex flex-col min-h-[calc(100vh-500px)] [&_.bk-heading-2]:font-bold [&_.bk-heading-2]:text-xl [&_.bk-heading-2]:mb-10"
-    >
-      <FormItem>
-        <div class="bk-form-label">
-          <span>{{ $t('publishMode', 'Publish mode') }}</span
-          ><span class="bk-required-indicator">*</span>
-        </div>
-        <div class="grid grid-cols-3 gap-10 my-20">
+    <div class="min-h-[900px]">
+      <PanelSection :title="$t('publishMode', 'Publish mode')" padded>
+        <div class="grid grid-cols-3 gap-10">
           <PublishOption
             v-for="option in publishModeOptions"
             :id="option.id"
@@ -31,60 +26,13 @@
             :disabled="option.disabled"
           />
         </div>
-      </FormItem>
+      </PanelSection>
 
-      <FormItem v-if="publishMode === 'scheduled'">
-        <div>
-          <label class="bk-form-label">
-            {{ $t('publishScheduleDate', 'Publication date') }}
-          </label>
-          <div
-            class="flex gap-20 items-stretch [&_.bk-button]:whitespace-nowrap [&_.bk-button]:shrink"
-          >
-            <div
-              v-if="isAlreadyScheduled"
-              class="flex-1 flex items-center font-bold text-xl bg-yellow-light text-yellow-dark pl-10 border border-yellow-normal tabular-nums"
-            >
-              {{ formatScheduleDate(scheduleDate) }}
-            </div>
-            <ScheduleDate
-              v-else
-              v-model="scheduleDate"
-              :disabled="isLoading"
-              :error="scheduleDateError"
-            >
-              <InfoBox
-                small
-                class="mt-15"
-                :text="
-                  $t(
-                    'publishScheduledInfo',
-                    'You can still make changes until the scheduled publication date.',
-                  )
-                "
-              />
-            </ScheduleDate>
-            <button
-              v-if="isAlreadyScheduled"
-              type="button"
-              class="bk-button bk-scheme-red"
-              @click="removeScheduledDate"
-            >
-              {{ $t('publishRemoveSchedule', 'Remove schedule') }}
-            </button>
-          </div>
-          <div v-if="isAlreadyScheduled" class="bk-form-description">
-            {{
-              $t(
-                'publishAlreadyScheduledDescription',
-                'This page is already scheduled for publishing',
-              )
-            }}
-          </div>
-        </div>
-      </FormItem>
-
-      <FormItem v-if="publishOptions?.hasRevisionLogMessage">
+      <PanelSection
+        v-if="publishOptions?.hasRevisionLogMessage"
+        :title="$t('settings', 'Settings')"
+        padded
+      >
         <FormTextarea
           id="revision-message"
           v-model="revisionMessage"
@@ -98,90 +46,136 @@
           :disabled="isLoading || isAlreadyScheduled"
           rows="2"
         />
-      </FormItem>
-
-      <FormItem v-if="publishMode !== 'save' && scheduledBlocks.length">
-        <InfoBox>
-          <p
-            v-for="(text, index) in scheduledBlocks"
-            :key="'infobox' + index"
-            v-html="text"
+      </PanelSection>
+      <PanelSection
+        v-if="publishMode === 'scheduled'"
+        :title="$t('publishScheduleDate', 'Publication date')"
+        padded
+      >
+        <div
+          class="flex gap-20 items-stretch [&_.bk-button]:whitespace-nowrap [&_.bk-button]:shrink"
+        >
+          <div
+            v-if="isAlreadyScheduled"
+            class="flex-1 flex items-center font-bold text-xl bg-yellow-light text-yellow-dark pl-10 border border-yellow-normal tabular-nums"
+          >
+            {{ formatScheduleDate(scheduleDate) }}
+          </div>
+          <ScheduleDate
+            v-else
+            v-model="scheduleDate"
+            :disabled="isLoading"
+            :error="scheduleDateError"
+          >
+            <InfoBox
+              small
+              class="mt-15"
+              :text="
+                $t(
+                  'publishScheduledInfo',
+                  'You can still make changes until the scheduled publication date.',
+                )
+              "
+            />
+          </ScheduleDate>
+          <button
+            v-if="isAlreadyScheduled"
+            type="button"
+            class="bk-button bk-scheme-red"
+            @click="removeScheduledDate"
+          >
+            {{ $t('publishRemoveSchedule', 'Remove schedule') }}
+          </button>
+        </div>
+        <div v-if="isAlreadyScheduled" class="bk-form-description">
+          {{
+            $t(
+              'publishAlreadyScheduledDescription',
+              'This page is already scheduled for publishing',
+            )
+          }}
+        </div>
+      </PanelSection>
+      <PanelSection :title="$t('publishSummary', 'Summary')" padded>
+        <FormItem>
+          <Summary
+            :is-published="isCurrentlyPublished"
+            :mode="publishMode"
+            :current-state-label="currentStateLabel"
+            :action-label="actionLabel"
+            :result-state-label="resultStateLabel"
           />
-        </InfoBox>
-      </FormItem>
-
-      <FormItem v-if="successItems.length && showTable">
-        <h2 class="bk-heading-2">
-          {{ $t('publishSuccessfullyPublished', 'Successfully published') }}
-        </h2>
-
-        <table class="bk-table">
-          <thead>
-            <tr>
-              <th class="w-full">{{ $t('publishName', 'Name') }}</th>
-              <th colspan="2" class="text-right whitespace-nowrap pl-18">
-                {{ $t('publishStatus', 'Status') }}
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <Item
-              v-for="item in successItems"
-              :key="'success' + item.id"
-              v-bind="item"
-              v-model="states"
-              :is-current="item.id === currentId"
-              :should-publish
-              :is-mutating
-              :mutation-status="mutationStatusItems[item.id]"
-              :is-scheduled="enableScheduling"
-              :schedule-date
+        </FormItem>
+        <FormItem v-if="publishMode !== 'save' && scheduledBlocks.length">
+          <InfoBox>
+            <p
+              v-for="(text, index) in scheduledBlocks"
+              :key="'infobox' + index"
+              v-html="text"
             />
-          </tbody>
-        </table>
-
-        <table class="bk-table mt-40">
-          <thead>
-            <tr>
-              <th class="w-full">{{ $t('publishName', 'Name') }}</th>
-              <th colspan="2" class="text-right whitespace-nowrap pl-18">
-                {{ $t('publishStatus', 'Status') }}
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <Item
-              v-for="item in toPublishItems"
-              :key="'to_publish_' + item.id"
-              v-bind="item"
-              v-model="states"
-              :is-current="item.id === currentId"
-              :should-publish
-              :is-mutating
-              :mutation-status="mutationStatusItems[item.id]"
-              :is-scheduled="enableScheduling"
-              :schedule-date
-            />
-          </tbody>
-        </table>
-      </FormItem>
-    </div>
-    <template #pre-footer>
+          </InfoBox>
+        </FormItem>
+      </PanelSection>
       <div>
-        <h3 class="bk-form-label">
-          {{ $t('publishSummary', 'Summary') }}
-        </h3>
-        <Summary
-          :is-published="isCurrentlyPublished"
-          :mode="publishMode"
-          :current-state-label="currentStateLabel"
-          :action-label="actionLabel"
-          :result-state-label="resultStateLabel"
-        />
+        <FormItem v-if="successItems.length && showTable">
+          <h2 class="bk-heading-2">
+            {{ $t('publishSuccessfullyPublished', 'Successfully published') }}
+          </h2>
+
+          <table class="bk-table">
+            <thead>
+              <tr>
+                <th class="w-full">{{ $t('publishName', 'Name') }}</th>
+                <th colspan="2" class="text-right whitespace-nowrap pl-18">
+                  {{ $t('publishStatus', 'Status') }}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <Item
+                v-for="item in successItems"
+                :key="'success' + item.id"
+                v-bind="item"
+                v-model="states"
+                :is-current="item.id === currentId"
+                :should-publish
+                :is-mutating
+                :mutation-status="mutationStatusItems[item.id]"
+                :is-scheduled="enableScheduling"
+                :schedule-date
+              />
+            </tbody>
+          </table>
+
+          <table class="bk-table mt-40">
+            <thead>
+              <tr>
+                <th class="w-full">{{ $t('publishName', 'Name') }}</th>
+                <th colspan="2" class="text-right whitespace-nowrap pl-18">
+                  {{ $t('publishStatus', 'Status') }}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <Item
+                v-for="item in toPublishItems"
+                :key="'to_publish_' + item.id"
+                v-bind="item"
+                v-model="states"
+                :is-current="item.id === currentId"
+                :should-publish
+                :is-mutating
+                :mutation-status="mutationStatusItems[item.id]"
+                :is-scheduled="enableScheduling"
+                :schedule-date
+              />
+            </tbody>
+          </table>
+        </FormItem>
       </div>
-    </template>
+    </div>
   </DialogModal>
 </template>
 
@@ -206,6 +200,7 @@ import { emitMessage } from '#blokkli/editor/events'
 import Item from './Item.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import type { MutationStatus } from './types'
 import type { GetEditStatesItem } from '../types'
 
@@ -730,17 +725,3 @@ watch(
   },
 )
 </script>
-
-<style lang="postcss">
-.bk.bk-is-publish-dialog {
-  .bk-dialog-content .bk-dialog-content-inner {
-    @apply pb-0;
-  }
-  .bk-dialog-footer {
-    @apply mt-0;
-  }
-  .bk-form-item {
-    @apply py-20 first:pt-0;
-  }
-}
-</style>
