@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { useTemplateRef } from '#imports'
-import SuggestionList from './SuggestionList.vue'
+import SuggestionList from './index.vue'
 
 export type MentionItem = { id: string; label: string }
 type MentionPayload = { id: string; label: string }

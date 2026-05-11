@@ -1,5 +1,5 @@
 <template>
-  <SidebarFloater>
+  <SidebarFloater mono>
     <button
       v-if="!isOpen"
       type="button"
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useBlokkli } from '#imports'
+import { nextTick, ref, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import CommentInput from '../../CommentInput/index.vue'
 import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
@@ -34,6 +34,7 @@ const { $t, storage } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'submit', value: string): void
+  (e: 'start'): void
 }>()
 
 const draft = storage.useWithContextPrefix('commentSidebarAdd', '')
@@ -42,6 +43,9 @@ const isOpen = ref(draft.value.trim().length > 0)
 
 function open() {
   isOpen.value = true
+  nextTick(() => {
+    emit('start')
+  })
 }
 
 function onCancel() {

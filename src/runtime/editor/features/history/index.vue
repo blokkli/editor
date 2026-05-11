@@ -17,7 +17,7 @@
 
   <PluginToolbarButton
     id="undo"
-    :title="$t('historyUndo', 'Undo')"
+    :title="$t('undo', 'Undo')"
     meta
     key-code="Z"
     region="before-title"
@@ -29,7 +29,7 @@
 
   <PluginToolbarButton
     id="redo"
-    :title="$t('historyRedo', 'Redo')"
+    :title="$t('redo', 'Redo')"
     meta
     shift
     key-code="Z"

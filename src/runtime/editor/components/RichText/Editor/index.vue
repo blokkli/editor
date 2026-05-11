@@ -1,25 +1,23 @@
 <template>
   <div ref="rootEl" class="relative" @paste.stop>
     <div
-      class="bk-richtext relative rounded bg-white overflow-hidden"
+      class="bk-richtext relative overflow-hidden flex flex-col"
       :class="{
-        'border border-mono-300 focus-within:border-mono-400': !noBorder,
+        'border border-mono-300 focus-within:border-mono-400 rounded':
+          !noBorder,
       }"
     >
-      <div
-        v-if="editor"
-        class="bk-richtext-toolbar flex items-center border-b border-mono-200 bg-mono-100 overflow-hidden"
-      >
+      <Toolbar v-if="editor">
         <ToolbarGroup>
           <ToolbarButton
             icon="bk_mdi_undo"
-            label="Undo"
+            :label="$t('undo', 'Undo')"
             :disabled="!editor.can().undo()"
             @click="editor.chain().focus().undo().run()"
           />
           <ToolbarButton
             icon="bk_mdi_redo"
-            label="Redo"
+            :label="$t('redo', 'Redo')"
             :disabled="!editor.can().redo()"
             @click="editor.chain().focus().redo().run()"
           />
@@ -27,28 +25,28 @@
         <ToolbarGroup>
           <ToolbarButton
             icon="bk_mdi_format_bold"
-            label="Bold"
+            :label="$t('bold', 'Bold')"
             :active="editor.isActive('bold')"
             :disabled="!editor.can().chain().focus().toggleBold().run()"
             @click="editor.chain().focus().toggleBold().run()"
           />
           <ToolbarButton
             icon="bk_mdi_format_italic"
-            label="Italic"
+            :label="$t('italic', 'Italic')"
             :active="editor.isActive('italic')"
             :disabled="!editor.can().chain().focus().toggleItalic().run()"
             @click="editor.chain().focus().toggleItalic().run()"
           />
           <ToolbarButton
             icon="bk_mdi_format_strikethrough"
-            label="Strikethrough"
+            :label="$t('strikethrough', 'Strikethrough')"
             :active="editor.isActive('strike')"
             :disabled="!editor.can().chain().focus().toggleStrike().run()"
             @click="editor.chain().focus().toggleStrike().run()"
           />
           <ToolbarButton
             icon="bk_mdi_code"
-            label="Inline code"
+            :label="$t('inlineCode', 'Inline code')"
             :active="editor.isActive('code')"
             :disabled="!editor.can().chain().focus().toggleCode().run()"
             @click="editor.chain().focus().toggleCode().run()"
@@ -57,28 +55,28 @@
         <ToolbarGroup>
           <ToolbarButton
             icon="bk_mdi_format_list_bulleted"
-            label="Bulleted list"
+            :label="$t('bulletedList', 'Bulleted list')"
             :active="editor.isActive('bulletList')"
             :disabled="!editor.can().chain().focus().toggleBulletList().run()"
             @click="editor.chain().focus().toggleBulletList().run()"
           />
           <ToolbarButton
             icon="bk_mdi_format_list_numbered"
-            label="Numbered list"
+            :label="$t('numberedList', 'Numbered list')"
             :active="editor.isActive('orderedList')"
             :disabled="!editor.can().chain().focus().toggleOrderedList().run()"
             @click="editor.chain().focus().toggleOrderedList().run()"
           />
           <ToolbarButton
             icon="bk_mdi_checklist"
-            label="Task list"
+            :label="$t('taskList', 'Task list')"
             :active="editor.isActive('taskList')"
             :disabled="!editor.can().chain().focus().toggleTaskList().run()"
             @click="editor.chain().focus().toggleTaskList().run()"
           />
           <ToolbarButton
             icon="bk_mdi_format_quote"
-            label="Blockquote"
+            :label="$t('blockquote', 'Blockquote')"
             :active="editor.isActive('blockquote')"
             :disabled="!editor.can().chain().focus().toggleBlockquote().run()"
             @click="editor.chain().focus().toggleBlockquote().run()"
@@ -87,14 +85,31 @@
         <ToolbarGroup>
           <ToolbarButton
             icon="bk_mdi_link"
-            label="Link"
+            :label="$t('link', 'Link')"
             :active="editor.isActive('link')"
             :disabled="!canToggleLink"
             @click="onToggleLink"
           />
         </ToolbarGroup>
+      </Toolbar>
+      <div
+        class="flex-1 overflow-auto bk-scrollbar-light relative overscroll-contain"
+      >
+        <EditorContent
+          :editor="editor"
+          class="bk-richtext-content min-h-[160px] max-h-[400px]"
+        />
       </div>
-      <EditorContent :editor="editor" class="bk-richtext-content" />
+
+      <Transition name="bk-richtext-panel">
+        <PanelLink
+          v-if="linkEditor"
+          :initial-href="linkEditor.initialHref"
+          @save="onSaveLink"
+          @cancel="onCancelLink"
+          @remove="onRemoveLink"
+        />
+      </Transition>
     </div>
   </div>
 </template>
@@ -104,20 +119,25 @@ import {
   computed,
   onBeforeUnmount,
   onMounted,
+  ref,
   shallowRef,
+  useBlokkli,
   useTemplateRef,
 } from '#imports'
 import { Editor, EditorContent, VueRenderer } from '@tiptap/vue-3'
 import type { Component } from 'vue'
-import type { Extensions } from '@tiptap/core'
+import { posToDOMRect, type Extensions } from '@tiptap/core'
+import { computePosition, flip, shift } from '@floating-ui/dom'
 import StarterKit from '@tiptap/starter-kit'
 import Mention from '@tiptap/extension-mention'
 import Emoji, { gitHubEmojis } from '@tiptap/extension-emoji'
 import TaskList from '@tiptap/extension-task-list'
-import MentionList, { type MentionItem } from './MentionList.vue'
-import EmojiList from './EmojiList.vue'
-import ToolbarButton from './ToolbarButton.vue'
-import ToolbarGroup from './ToolbarGroup.vue'
+import MentionList, { type MentionItem } from './SuggestionList/Mentions.vue'
+import EmojiList from './SuggestionList/Emojis.vue'
+import Toolbar from './Toolbar/index.vue'
+import ToolbarButton from './Toolbar/Button/index.vue'
+import ToolbarGroup from './Toolbar/Group/index.vue'
+import PanelLink from './Panel/Link/index.vue'
 import { CleanTaskItem } from './CleanTaskItem'
 
 const props = withDefaults(
@@ -138,58 +158,42 @@ const emit = defineEmits<{
   change: [{ html: string; isEmpty: boolean }]
 }>()
 
+const { $t } = useBlokkli()
+
 const editor = shallowRef<Editor | undefined>()
+const linkEditor = ref<{ initialHref: string } | null>(null)
 const rootEl = useTemplateRef<HTMLElement>('rootEl')
-
-function positionPopup(
-  element: HTMLElement,
-  clientRect: (() => DOMRect | null) | null | undefined,
-) {
-  if (!clientRect || !rootEl.value) {
-    return
-  }
-  const caret = clientRect()
-  if (!caret) {
-    return
-  }
-  const root = rootEl.value.getBoundingClientRect()
-  const popup = element.getBoundingClientRect()
-
-  // Default: below the caret, left-aligned to it.
-  let x = caret.left - root.left
-  let y = caret.bottom - root.top + 4
-
-  // Clamp horizontally so the popup never exceeds the editor frame.
-  const maxX = Math.max(0, root.width - popup.width)
-  if (x > maxX) {
-    x = maxX
-  }
-  if (x < 0) {
-    x = 0
-  }
-
-  // If the popup would overflow the bottom edge, flip it above the caret —
-  // but only when there's actually room above. Otherwise keep it below.
-  if (y + popup.height > root.height) {
-    const above = caret.top - root.top - popup.height - 4
-    if (above >= 0) {
-      y = above
-    }
-  }
-
-  element.style.left = `${x}px`
-  element.style.top = `${y}px`
-}
 
 /**
  * Generic Tiptap suggestion `render` factory: mounts `ListComponent` via
- * VueRenderer, positions it relative to `rootEl`, and forwards key events
- * to the component's exposed `onKeyDown`. Used for both `@`-mentions and
- * `:`-emoji pickers.
+ * VueRenderer, positions it with floating-ui (flip + shift), and forwards
+ * key events to the component's exposed `onKeyDown`. Used for both
+ * `@`-mentions and `:`-emoji pickers.
  */
 function buildSuggestionRender(ListComponent: Component) {
   return () => {
     let renderer: VueRenderer | null = null
+
+    function updatePosition(editor: Editor, element: HTMLElement) {
+      const virtualElement = {
+        getBoundingClientRect: () =>
+          posToDOMRect(
+            editor.view,
+            editor.state.selection.from,
+            editor.state.selection.to,
+          ),
+      }
+      computePosition(virtualElement, element, {
+        placement: 'bottom-start',
+        strategy: 'absolute',
+        middleware: [shift(), flip()],
+      }).then(({ x, y, strategy }) => {
+        element.style.position = strategy
+        element.style.left = `${x}px`
+        element.style.top = `${y}px`
+      })
+    }
+
     return {
       onStart: (suggestProps: any) => {
         renderer = new VueRenderer(ListComponent, {
@@ -203,8 +207,9 @@ function buildSuggestionRender(ListComponent: Component) {
         if (!element || !rootEl.value) {
           return
         }
+        element.style.position = 'absolute'
         rootEl.value.appendChild(element)
-        positionPopup(element, suggestProps.clientRect)
+        updatePosition(suggestProps.editor, element)
       },
       onUpdate: (suggestProps: any) => {
         renderer?.updateProps({
@@ -213,7 +218,7 @@ function buildSuggestionRender(ListComponent: Component) {
         })
         const element = renderer?.element as HTMLElement | null
         if (element) {
-          positionPopup(element, suggestProps.clientRect)
+          updatePosition(suggestProps.editor, element)
         }
       },
       onKeyDown: (suggestProps: { event: KeyboardEvent }) => {
@@ -348,19 +353,43 @@ function onToggleLink() {
     return
   }
   if (editor.value.isActive('link')) {
-    editor.value.chain().focus().unsetLink().run()
+    onEditLink()
     return
   }
-  const url = window.prompt('URL')
-  if (!url) {
+  if (editor.value.state.selection.empty) {
     return
   }
-  editor.value
-    .chain()
-    .focus()
-    .extendMarkRange('link')
-    .setLink({ href: url })
-    .run()
+  linkEditor.value = { initialHref: '' }
+}
+
+function onEditLink() {
+  if (!editor.value) {
+    return
+  }
+  const current =
+    (editor.value.getAttributes('link').href as string | undefined) ?? ''
+  linkEditor.value = { initialHref: current }
+}
+
+function onSaveLink({ href }: { href: string }) {
+  if (!editor.value) {
+    return
+  }
+  editor.value.chain().focus().extendMarkRange('link').setLink({ href }).run()
+  linkEditor.value = null
+}
+
+function onCancelLink() {
+  linkEditor.value = null
+  editor.value?.chain().focus().run()
+}
+
+function onRemoveLink() {
+  if (!editor.value) {
+    return
+  }
+  editor.value.chain().focus().extendMarkRange('link').unsetLink().run()
+  linkEditor.value = null
 }
 
 onBeforeUnmount(() => {
@@ -373,3 +402,20 @@ export default {
   name: 'RichText',
 }
 </script>
+
+<style lang="postcss">
+.bk-richtext-panel-enter-active,
+.bk-richtext-panel-leave-active {
+  @apply transition ease-swing duration-300;
+  .bk-richtext-panel-inner {
+    @apply transition ease-swing duration-300;
+  }
+}
+.bk-richtext-panel-enter-from,
+.bk-richtext-panel-leave-to {
+  @apply opacity-0;
+  .bk-richtext-panel-inner {
+    @apply scale-90;
+  }
+}
+</style>

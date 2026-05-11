@@ -1374,9 +1374,21 @@ msgctxt "blockTransferTargetId"
 msgid "Target ID"
 msgstr ""
 
+msgctxt "blockquote"
+msgid "Blockquote"
+msgstr "Zitat"
+
 msgctxt "blokkliOptionNumberAuto"
 msgid "Auto"
 msgstr "Automatisch"
+
+msgctxt "bold"
+msgid "Bold"
+msgstr "Fett"
+
+msgctxt "bulletedList"
+msgid "Bulleted list"
+msgstr "Ufzellig"
 
 msgctxt "bundle"
 msgid "Bundle"
@@ -3093,10 +3105,6 @@ msgctxt "historyEmpty"
 msgid "There are now changes yet."
 msgstr "S'git no keini Änderige."
 
-msgctxt "historyRedo"
-msgid "Redo"
-msgstr "Wiederhole"
-
 msgctxt "historyRedoTourText"
 msgid "Redo the previous change."
 msgstr "Di vorig Änderig widerhärstelle."
@@ -3112,10 +3120,6 @@ msgid ""
 msgstr ""
 "Zeigt e Lischt vo allne bisher gmachte Änderige aa und wächsle zwüsche de "
 "Änderige hin und här."
-
-msgctxt "historyUndo"
-msgid "Undo"
-msgstr "Rückgängig"
 
 msgctxt "historyUndoTourText"
 msgid "Undo the last change."
@@ -3173,6 +3177,10 @@ msgctxt "importExistingTitle"
 msgid "Import..."
 msgstr "Importiere..."
 
+msgctxt "inlineCode"
+msgid "Inline code"
+msgstr "Inline-Code"
+
 msgctxt "interactionLayerOff"
 msgid "Show interaction layers"
 msgstr "Interaktionsebene aazeige"
@@ -3180,6 +3188,10 @@ msgstr "Interaktionsebene aazeige"
 msgctxt "interactionLayersOn"
 msgid "Hide interaction layers"
 msgstr "Interaktionsebene usbländen"
+
+msgctxt "italic"
+msgid "Italic"
+msgstr "Kursiv"
 
 msgctxt "keyboardSpace"
 msgid "Space"
@@ -3299,7 +3311,7 @@ msgstr "Block us dr Bibliothek drzuefüege"
 
 msgctxt "link"
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 msgctxt "loading"
 msgid "Loading..."
@@ -3366,6 +3378,10 @@ msgstr "Nid gsetzt"
 msgctxt "notSupported"
 msgid "Not supported"
 msgstr "Nid unterstützt"
+
+msgctxt "numberedList"
+msgid "Numbered list"
+msgstr "Nummerierti Lischt"
 
 msgctxt "optionBkVisibleLanguagesAll"
 msgid "All languages"
@@ -3711,6 +3727,10 @@ msgctxt "readabilityTooltipDescription"
 msgid "@label measures how easy the text is to read."
 msgstr "@label misst, wie eifach dr Teggscht z'läse isch."
 
+msgctxt "redo"
+msgid "Redo"
+msgstr "Wiederhole"
+
 msgctxt "referencedEntitiesEditorOverlayTitle"
 msgid "Edit \"@label\""
 msgstr ""
@@ -3725,6 +3745,10 @@ msgstr ""
 
 msgctxt "relatedContentTooltip"
 msgid "Content like pages or images referenced or linked by this block."
+msgstr ""
+
+msgctxt "remove"
+msgid "Remove"
 msgstr ""
 
 msgctxt "responsivePreviewCustomViewport"
@@ -3784,6 +3808,14 @@ msgstr "Verwärfe..."
 msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alli Änderige sin glöscht worde."
+
+msgctxt "richTextAddLink"
+msgid "Add link"
+msgstr ""
+
+msgctxt "richTextEditLink"
+msgid "Edit link"
+msgstr ""
 
 msgctxt "save"
 msgid "Save"
@@ -3921,6 +3953,10 @@ msgctxt "stateUnavailableTitle"
 msgid "The edit state could not be loaded."
 msgstr "Dr Bearbeitszuestand het nid chönne glade wärde."
 
+msgctxt "strikethrough"
+msgid "Strikethrough"
+msgstr "Durechgschtriche"
+
 msgctxt "structureToolbarLabel"
 msgid "Structure"
 msgstr "Struktur"
@@ -4000,6 +4036,10 @@ msgstr ""
 "Drag-and-Drop-Indikatore z'rendere. Wenn WebGL nid understützt wird, wird "
 "blökkli uf Fallback-Rendering zruggriife, wo langsamer isch und nid alli "
 "Funktione understützt."
+
+msgctxt "taskList"
+msgid "Task list"
+msgstr "Ufgabe-Lischt"
 
 msgctxt "templates"
 msgid "Templates"
@@ -4395,6 +4435,10 @@ msgstr ""
 msgctxt "translationsTranslateNoTexts"
 msgid "No translatable texts found on this page."
 msgstr ""
+
+msgctxt "undo"
+msgid "Undo"
+msgstr "Rückgängig"
 
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."

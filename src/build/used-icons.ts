@@ -99,6 +99,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_lightbulb',
   'bk_mdi_line_axis',
   'bk_mdi_link',
+  'bk_mdi_link_off',
   'bk_mdi_lists',
   'bk_mdi_location_on',
   'bk_mdi_lock',

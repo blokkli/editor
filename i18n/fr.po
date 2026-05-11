@@ -1347,9 +1347,21 @@ msgctxt "blockTransferTargetId"
 msgid "Target ID"
 msgstr ""
 
+msgctxt "blockquote"
+msgid "Blockquote"
+msgstr ""
+
 msgctxt "blokkliOptionNumberAuto"
 msgid "Auto"
 msgstr "Automatique"
+
+msgctxt "bold"
+msgid "Bold"
+msgstr ""
+
+msgctxt "bulletedList"
+msgid "Bulleted list"
+msgstr ""
 
 msgctxt "bundle"
 msgid "Bundle"
@@ -3048,10 +3060,6 @@ msgctxt "historyEmpty"
 msgid "There are now changes yet."
 msgstr ""
 
-msgctxt "historyRedo"
-msgid "Redo"
-msgstr ""
-
 msgctxt "historyRedoTourText"
 msgid "Redo the previous change."
 msgstr ""
@@ -3064,10 +3072,6 @@ msgctxt "historyTourText"
 msgid ""
 "See a list of all changes made so far and switch back and forth between "
 "changes."
-msgstr ""
-
-msgctxt "historyUndo"
-msgid "Undo"
 msgstr ""
 
 msgctxt "historyUndoTourText"
@@ -3126,12 +3130,20 @@ msgctxt "importExistingTitle"
 msgid "Import..."
 msgstr "Importer..."
 
+msgctxt "inlineCode"
+msgid "Inline code"
+msgstr ""
+
 msgctxt "interactionLayerOff"
 msgid "Show interaction layers"
 msgstr ""
 
 msgctxt "interactionLayersOn"
 msgid "Hide interaction layers"
+msgstr ""
+
+msgctxt "italic"
+msgid "Italic"
 msgstr ""
 
 msgctxt "keyboardSpace"
@@ -3312,6 +3324,10 @@ msgstr ""
 
 msgctxt "notSupported"
 msgid "Not supported"
+msgstr ""
+
+msgctxt "numberedList"
+msgid "Numbered list"
 msgstr ""
 
 msgctxt "optionBkVisibleLanguagesAll"
@@ -3656,6 +3672,10 @@ msgctxt "readabilityTooltipDescription"
 msgid "@label measures how easy the text is to read."
 msgstr "@label mesure la facilité de lecture du texte."
 
+msgctxt "redo"
+msgid "Redo"
+msgstr ""
+
 msgctxt "referencedEntitiesEditorOverlayTitle"
 msgid "Edit \"@label\""
 msgstr ""
@@ -3670,6 +3690,10 @@ msgstr ""
 
 msgctxt "relatedContentTooltip"
 msgid "Content like pages or images referenced or linked by this block."
+msgstr ""
+
+msgctxt "remove"
+msgid "Remove"
 msgstr ""
 
 msgctxt "responsivePreviewCustomViewport"
@@ -3726,6 +3750,14 @@ msgstr "Annuler..."
 msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Toutes les modifications ont été annulées."
+
+msgctxt "richTextAddLink"
+msgid "Add link"
+msgstr ""
+
+msgctxt "richTextEditLink"
+msgid "Edit link"
+msgstr ""
 
 msgctxt "save"
 msgid "Save"
@@ -3859,6 +3891,10 @@ msgctxt "stateUnavailableTitle"
 msgid "The edit state could not be loaded."
 msgstr ""
 
+msgctxt "strikethrough"
+msgid "Strikethrough"
+msgstr ""
+
 msgctxt "structureToolbarLabel"
 msgid "Structure"
 msgstr "Structure"
@@ -3925,6 +3961,10 @@ msgid ""
 "blocks and drag-and-drop indicators. If WebGL is not supported, Blökkli "
 "will resort to fallback rendering, which is slower and lacks full feature "
 "support."
+msgstr ""
+
+msgctxt "taskList"
+msgid "Task list"
 msgstr ""
 
 msgctxt "templates"
@@ -4303,6 +4343,10 @@ msgstr ""
 
 msgctxt "translationsTranslateNoTexts"
 msgid "No translatable texts found on this page."
+msgstr ""
+
+msgctxt "undo"
+msgid "Undo"
 msgstr ""
 
 msgctxt "unexpectedMutationError"

@@ -135,6 +135,7 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.6",
     "@material-symbols/svg-600": "0.40.2",
     "@tiptap/extension-emoji": "^3.22.5",
     "@tiptap/extension-mention": "^3.22.5",

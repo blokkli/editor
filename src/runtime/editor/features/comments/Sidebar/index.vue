@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="rootEl"
     class="bk bk-control h-full overflow-auto bk-scrollbar-light flex flex-col bg-mono-100"
   >
     <div
@@ -43,12 +44,12 @@
       }}
     </div>
 
-    <SidebarAddForm @submit="$emit('add', $event)" />
+    <SidebarAddForm @submit="$emit('add', $event)" @start="onStartNewComment" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useBlokkli } from '#imports'
+import { computed, nextTick, ref, useBlokkli, useTemplateRef } from '#imports'
 import { FormToggle } from '#blokkli/editor/components'
 import CommentThread from '../Thread/index.vue'
 import SidebarAddForm from './AddForm/index.vue'
@@ -66,6 +67,8 @@ const emit = defineEmits<{
   (e: 'toggleTask', value: { uuid: string; taskIndex: number }): void
   (e: 'add' | 'delete' | 'resolve' | 'unresolve', value: string): void
 }>()
+
+const rootEl = useTemplateRef('rootEl')
 
 const showResolved = storage.useWithContextPrefix('commentsShowResolved', false)
 
@@ -123,6 +126,21 @@ const visibleRoots = computed(() => {
     (r) => !r.resolved || recentlyResolved.value.includes(r.uuid),
   )
 })
+
+let scrollTimeout: number | null = null
+
+function onStartNewComment() {
+  if (scrollTimeout) {
+    window.clearTimeout(scrollTimeout)
+    scrollTimeout = null
+  }
+  scrollTimeout = window.setTimeout(() => {
+    if (!rootEl.value) {
+      return
+    }
+    rootEl.value.scrollTop = rootEl.value.scrollHeight
+  }, 10)
+}
 </script>
 
 <script lang="ts">

@@ -10,7 +10,7 @@
     min-height: 46px;
 
     &.bk-is-small {
-      @apply h-[32px] !px-8 !text-sm gap-5;
+      @apply min-h-30! !px-8 py-3! !text-sm gap-5;
     }
 
     &[disabled] {

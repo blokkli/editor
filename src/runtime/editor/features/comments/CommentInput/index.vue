@@ -7,7 +7,7 @@
     @submit.prevent="onSubmit"
     @keydown.stop
   >
-    <RichText
+    <RichTextEditor
       ref="richTextRef"
       :initial-value="initialValue"
       :autofocus="autofocus"
@@ -17,7 +17,6 @@
     />
     <div
       class="flex items-center gap-5 p-5 border-t border-t-mono-300 border-dashed"
-      :class="boxed ? 'mt-10 ' : ''"
     >
       <button
         v-if="cancellable"
@@ -47,7 +46,7 @@ import {
   useTemplateRef,
 } from '#imports'
 
-const RichText = defineAsyncComponent(
+const RichTextEditor = defineAsyncComponent(
   () => import('#blokkli/editor/components/RichText/Editor/index.vue'),
 )
 
