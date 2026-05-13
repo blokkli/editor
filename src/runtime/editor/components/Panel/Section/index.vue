@@ -69,7 +69,11 @@ defineOptions({
 })
 </script>
 
-<style>
+<style lang="postcss">
+.bk-panel-section {
+  container-type: inline-size;
+}
+
 .bk-panel-section + .bk-panel-section {
   @apply mt-20;
 

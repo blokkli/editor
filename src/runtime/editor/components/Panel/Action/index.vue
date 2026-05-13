@@ -1,15 +1,17 @@
 <template>
-  <button
-    class="bk-panel-action flex flex-col text-mono-800 flex-1 items-center py-10 gap-8 text-sm font-semibold hover:bg-mono-100 hover:text-accent-700"
-    :class="{
-      'bk-is-active': active,
-      'pointer-events-none! bg-mono-100! text-mono-300!': disabled,
-    }"
-    :disabled
-  >
-    <Icon :name="icon" class="size-30" />
-    <span>{{ title }}</span>
-  </button>
+  <div class="flex-1 shrink-0 bk-panel-action">
+    <button
+      class="flex text-mono-800 items-center justify-center py-10 text-sm font-semibold hover:bg-mono-100 hover:text-accent-700 w-full"
+      :class="{
+        'bk-is-active': active,
+        'pointer-events-none! bg-mono-100! text-mono-300!': disabled,
+      }"
+      :disabled
+    >
+      <Icon :name="icon" />
+      <span>{{ title }}</span>
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +27,23 @@ defineProps<{
 </script>
 
 <style>
+.bk-panel-action {
+  container-type: inline-size;
+  > button {
+    @apply flex-row px-5 gap-3;
+
+    @container (min-width: 200px) {
+      @apply flex-col gap-8;
+      .bk-icon {
+        @apply size-30;
+      }
+    }
+  }
+
+  .bk-icon {
+    @apply size-20;
+  }
+}
 .bk-panel-action:not(:last-child) {
   @apply border-r border-r-mono-400;
 }
