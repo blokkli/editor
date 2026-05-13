@@ -1,5 +1,5 @@
 <template>
-  <div @keydown.stop class="absolute top-0 left-0 z-50 p-10 size-full">
+  <div class="absolute top-0 left-0 z-50 p-10 size-full" @keydown.stop>
     <div
       class="absolute top-0 left-0 size-full bg-mono-700/95 z-30"
       @click="$emit('close')"

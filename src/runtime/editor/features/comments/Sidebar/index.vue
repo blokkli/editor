@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, useBlokkli, useTemplateRef } from '#imports'
+import { computed, ref, useBlokkli, useTemplateRef } from '#imports'
 import { FormToggle } from '#blokkli/editor/components'
 import CommentThread from '../Thread/index.vue'
 import SidebarAddForm from './AddForm/index.vue'
