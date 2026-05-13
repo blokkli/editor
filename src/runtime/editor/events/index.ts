@@ -9,6 +9,7 @@ import type {
   BlokkliItemHost,
   RenderedFieldListItem,
 } from '../types/field'
+import type { BlokkliClipboardPasteEvent } from '../types/clipboard'
 
 export type SelectStartEvent = {
   uuids: string[]
@@ -291,6 +292,17 @@ export interface EventbusEvents {
   'droppable:open': DroppableFieldOpenEvent
 
   'drop:clipboardItem': DropClipboardItemEvent
+
+  /**
+   * Emitted when a blökkli clipboard envelope is pasted into the editor.
+   *
+   * `data` is a discriminated union of all registered clipboard types
+   * (augmentable via `BlokkliClipboardTypes` in
+   * `#blokkli/editor/types/clipboard`). `meta` describes the host the
+   * payload was produced from, so listeners can apply same-host
+   * validation where it matters. Each feature filters by `data.type`.
+   */
+  'clipboard:paste': BlokkliClipboardPasteEvent
 
   'sidebar:close': undefined
   'sidebar:open': string

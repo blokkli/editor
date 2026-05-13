@@ -149,3 +149,14 @@ declare module '#blokkli/editor/types/draggable' {
     native_drop: DraggableNativeDropItem
   }
 }
+
+export type ClipboardSelectionPayload = {
+  type: 'selection'
+  uuids: string[]
+}
+
+declare module '#blokkli/editor/types/clipboard' {
+  interface BlokkliClipboardTypes {
+    selection: ClipboardSelectionPayload
+  }
+}

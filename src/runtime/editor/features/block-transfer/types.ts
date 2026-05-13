@@ -48,7 +48,8 @@ export type BlockTransferImportResponse<T> = MutationResponseLike<T> & {
   importSummary?: BlockTransferImportSummary
 }
 
-export type BlockTransferPasteEvent = {
+export type BlockTransferClipboardPayload = {
+  type: 'block_transfer'
   bundles: string[]
   transferable: string
 }
@@ -97,9 +98,9 @@ declare module '#blokkli/editor/adapter' {
   }
 }
 
-declare module '#blokkli/editor/events' {
-  interface EventbusEvents {
-    'blockTransfer:paste': BlockTransferPasteEvent
+declare module '#blokkli/editor/types/clipboard' {
+  interface BlokkliClipboardTypes {
+    block_transfer: BlockTransferClipboardPayload
   }
 }
 

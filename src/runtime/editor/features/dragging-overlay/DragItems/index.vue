@@ -547,7 +547,8 @@ onMounted(() => {
         isTop,
         from:
           ui.lowPerformanceMode.value ||
-          (!mouseInsideBound && !isExisting.value)
+          (!mouseInsideBound && !isExisting.value) ||
+          (item.item.itemType === 'existing' && item.item.isCopy)
             ? to
             : from,
         to,

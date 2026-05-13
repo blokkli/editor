@@ -86,18 +86,12 @@ async function onClickExport() {
     return
   }
 
-  // The clipboard payload is owned by this feature: a discriminator plus
-  // the metadata + opaque transferable returned by the adapter. Paste
-  // detection in the clipboard feature matches on `type` and emits a
-  // typed event back.
-  const payload = JSON.stringify({
-    type: 'block_transfer',
-    bundles: envelope.bundles,
-    transferable: envelope.transferable,
-  })
-
   try {
-    await navigator.clipboard.writeText(payload)
+    await ui.setClipboardData({
+      type: 'block_transfer',
+      bundles: envelope.bundles,
+      transferable: envelope.transferable,
+    })
   } catch (_e) {
     emitMessage(
       $t(
@@ -179,7 +173,14 @@ async function runImport(
   )
 }
 
-onBlokkliEvent('blockTransfer:paste', ({ bundles, transferable }) => {
+onBlokkliEvent('clipboard:paste', ({ data }) => {
+  if (data.type !== 'block_transfer') return
+  if (!Array.isArray(data.bundles) || typeof data.transferable !== 'string') {
+    return
+  }
+  const bundles = data.bundles.filter((b): b is string => typeof b === 'string')
+  const { transferable } = data
+
   if (
     !adapter.importBlocksFromTransferable ||
     !permissions.hasPermission('transfer_blocks')

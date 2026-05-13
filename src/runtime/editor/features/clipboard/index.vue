@@ -21,13 +21,11 @@ import {
   useTemplateRef,
   defineAsyncComponent,
 } from '#imports'
-import { falsy, getFieldKey } from '#blokkli/helpers'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import type getVideoIdSync from 'get-video-id'
 import type { DropElementItem } from './DropElement/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
-import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
 import {
   defineDropHandler,
   defineItemDropdownAction,
@@ -38,6 +36,7 @@ import type { BlokkliClipboardItem, DraggableNativeDropItem } from './types'
 import { buildMapBundleEvent, sanitizeHtml } from './helpers'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
+import { parseClipboardEnvelope } from '#blokkli/editor/types/clipboard'
 
 const DropElement = defineAsyncComponent(
   () => import('./DropElement/index.vue'),
@@ -66,13 +65,10 @@ const {
   adapter,
   state,
   ui,
-  types,
-  keyboard,
   blocks,
-  fields,
   eventBus,
   animation,
-  permissions,
+  context,
 } = useBlokkli()
 
 const selectionClipboard = ref<string[]>([])
@@ -469,185 +465,12 @@ function startCopyDrag(existingBlocks: RenderedFieldListItem[]) {
 }
 
 const handleSelectionPaste = (pastedUuids: string[]) => {
-  if (!adapter.pasteExistingBlocks) {
-    return
-  }
-
-  if (!pastedUuids.length) {
-    return
-  }
-
-  // Validate that the copied blocks still exist.
+  if (!pastedUuids.length) return
   const existingBlocks = pastedUuids
     .map((uuid) => blocks.getBlock(uuid))
     .filter((block): block is RenderedFieldListItem => !!block)
-
-  if (!existingBlocks.length) {
-    return
-  }
-
-  // Check that the user has "add" permission for all block bundles.
-  const deniedBundles = existingBlocks
-    .map((b) => b.bundle)
-    .filter((bundle) => !permissions.checkBlockBundlePermission(bundle, 'add'))
-  if (deniedBundles.length) {
-    return
-  }
-
-  // If nothing is selected, start a drag interaction.
-  if (selection.uuids.value.length !== 1) {
-    startCopyDrag(existingBlocks)
-    return
-  }
-
-  const block = selection.items.value[0]
-  if (!block) {
-    startCopyDrag(existingBlocks)
-    return
-  }
-
-  let targetField = null
-  let targetFieldElement = null
-  let targetFieldKey = null
-  let preceedingUuid: string | null = null
-
-  // Only try to paste into nested fields if Shift is not pressed
-  if (!keyboard.isPressingShift.value) {
-    // Get bundles and fragments of pasted blocks first
-    const pastedBundles = existingBlocks
-      .map((b) => b.bundle)
-      .filter((bundle): bundle is string => !!bundle)
-
-    const pastedFragments = existingBlocks
-      .map((b) => {
-        if (b.bundle === fragmentBlockBundle && b.fragment?.name) {
-          return b.fragment.name
-        }
-        return null
-      })
-      .filter(falsy)
-
-    if (pastedBundles.length) {
-      // Check if the selected block has nested fields that can accept any of the pasted blocks
-      const nestedFields = types.fieldConfig.forEntityTypeAndBundle(
-        itemEntityType,
-        block.bundle,
-      )
-
-      // Try to find a nested field that accepts the pasted blocks
-      for (const fieldConfig of nestedFields) {
-        // Get the actual field element to check allowed bundles/fragments
-        const fieldElement = fields.find(block.uuid, fieldConfig.name)
-        if (!fieldElement) {
-          continue
-        }
-
-        const allowedPastedBundles = pastedBundles.filter((bundle) =>
-          fieldElement.allowedBundles.includes(bundle),
-        )
-
-        // If there are fragment restrictions, also check fragments
-        let fragmentsAllowed = true
-        if (
-          pastedFragments.length > 0 &&
-          fieldElement.allowedFragments.length > 0
-        ) {
-          fragmentsAllowed = pastedFragments.every((fragment) =>
-            fieldElement.allowedFragments.includes(fragment),
-          )
-        }
-
-        if (allowedPastedBundles.length > 0 && fragmentsAllowed) {
-          const nestedFieldKey = getFieldKey(block.uuid, fieldConfig.name)
-          const currentCount = state.getFieldBlockCount(nestedFieldKey)
-
-          // Check cardinality
-          if (
-            fieldElement.cardinality === -1 ||
-            currentCount + allowedPastedBundles.length <=
-              fieldElement.cardinality
-          ) {
-            targetField = {
-              entityType: itemEntityType,
-              entityUuid: block.uuid,
-              name: fieldConfig.name,
-            }
-            targetFieldElement = fieldElement
-            targetFieldKey = nestedFieldKey
-            preceedingUuid = null // Paste at the beginning of the nested field
-            break
-          }
-        }
-      }
-    }
-  }
-
-  // If no suitable nested field found, use the parent field
-  if (!targetField || !targetFieldElement || !targetFieldKey) {
-    const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
-    if (field) {
-      const fieldElement = fields.find(field.entityUuid, field.name)
-      if (fieldElement) {
-        targetField = {
-          entityType: field.entityType,
-          entityUuid: field.entityUuid,
-          name: field.name,
-        }
-        targetFieldElement = fieldElement
-        targetFieldKey = getFieldKey(field.entityUuid, field.name)
-        preceedingUuid = selection.uuids.value[0] ?? null
-      }
-    }
-  }
-
-  // If we couldn't resolve a target field, fall back to drag.
-  if (!targetField || !targetFieldElement || !targetFieldKey) {
-    startCopyDrag(existingBlocks)
-    return
-  }
-
-  // Filter blocks to only those allowed in the target field.
-  const pastedBlocks = existingBlocks.filter((b) => {
-    if (!targetFieldElement.allowedBundles.includes(b.bundle)) {
-      return false
-    }
-    if (
-      b.bundle === fragmentBlockBundle &&
-      b.fragment?.name &&
-      targetFieldElement.allowedFragments.length > 0
-    ) {
-      return targetFieldElement.allowedFragments.includes(b.fragment.name)
-    }
-    return true
-  })
-
-  // If none of the blocks are allowed, fall back to drag.
-  if (!pastedBlocks.length) {
-    startCopyDrag(existingBlocks)
-    return
-  }
-
-  // Check cardinality.
-  const count = state.getFieldBlockCount(targetFieldKey)
-  if (
-    targetFieldElement.cardinality !== -1 &&
-    count + pastedBlocks.length > targetFieldElement.cardinality
-  ) {
-    startCopyDrag(existingBlocks)
-    return
-  }
-
-  state.mutateWithLoadingState(() =>
-    adapter.pasteExistingBlocks!({
-      uuids: pastedBlocks.map((v) => v.uuid),
-      host: {
-        type: targetField.entityType,
-        uuid: targetField.entityUuid,
-        fieldName: targetField.name,
-      },
-      preceedingUuid,
-    }),
-  )
+  if (!existingBlocks.length) return
+  startCopyDrag(existingBlocks)
 }
 
 function onPaste(e: ClipboardEvent) {
@@ -661,7 +484,6 @@ function onPaste(e: ClipboardEvent) {
   ) {
     return
   }
-  console.log(e.target)
 
   // Stop data actually being pasted into div.
   e.stopPropagation()
@@ -691,30 +513,10 @@ function onPaste(e: ClipboardEvent) {
   if (pastedData) {
     if (pastedData.startsWith('{')) {
       try {
-        const data = JSON.parse(pastedData)
-        if (typeof data === 'object' && data) {
-          if (data.type === 'selection') {
-            const uuids: string[] = data.uuids
-            return handleSelectionPaste(uuids)
-          }
-
-          // Block transfer payload. Hand off the parsed metadata + the
-          // opaque transferable string to the block-transfer feature,
-          // which owns the import flow (drag interaction or direct
-          // paste depending on page state).
-          if (
-            data.type === 'block_transfer' &&
-            Array.isArray(data.bundles) &&
-            typeof data.transferable === 'string'
-          ) {
-            eventBus.emit('blockTransfer:paste', {
-              bundles: data.bundles.filter(
-                (b: unknown): b is string => typeof b === 'string',
-              ),
-              transferable: data.transferable,
-            })
-            return
-          }
+        const payload = parseClipboardEnvelope(JSON.parse(pastedData))
+        if (payload) {
+          eventBus.emit('clipboard:paste', payload)
+          return
         }
       } catch (_e) {
         // Noop.
@@ -1036,29 +838,28 @@ defineDropHandler('clipboard', {
   },
 })
 
-function setClipboard(text: string) {
-  const type = 'text/plain'
-  const blob = new Blob([text], { type })
-  const data = [new ClipboardItem({ [type]: blob })]
-
-  try {
-    navigator.clipboard.write(data)
-  } catch (_e) {
-    // Noop.
-  }
-}
-
 function copyCurrentSelectionToClipboard() {
   if (!selection.items.value.length) {
     selectionClipboard.value = []
     return
   }
 
-  setClipboard(
-    JSON.stringify({ type: 'selection', uuids: selection.uuids.value }),
-  )
+  ui.setClipboardData({
+    type: 'selection',
+    uuids: selection.uuids.value,
+  })
   selectionClipboard.value = selection.uuids.value
 }
+
+onBlokkliEvent('clipboard:paste', ({ meta, data }) => {
+  if (data.type !== 'selection') return
+  // Selection UUIDs are scoped to a host entity — they only resolve
+  // back to real blocks on the page they were copied from.
+  if (meta.hostUuid !== context.value.entityUuid) return
+  if (!Array.isArray(data.uuids)) return
+  const uuids = data.uuids.filter((u): u is string => typeof u === 'string')
+  handleSelectionPaste(uuids)
+})
 
 onBlokkliEvent('keyPressed', (e) => {
   if (

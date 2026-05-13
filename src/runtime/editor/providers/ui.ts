@@ -11,6 +11,11 @@ import {
 import type { ShallowRef } from 'vue'
 import type { StorageProvider } from './storage'
 import type { GlobalUiDialog, SidebarRegion } from '#blokkli/editor/types/ui'
+import {
+  CLIPBOARD_ENVELOPE_FLAG,
+  type BlokkliClipboardEnvelope,
+  type BlokkliClipboardPayload,
+} from '#blokkli/editor/types/clipboard'
 import type { Viewport } from '../../../global/constants'
 import { falsy } from '../../helpers'
 import {
@@ -530,6 +535,20 @@ export type UiProvider = {
   itemActionsOpen: Ref<boolean>
 
   copyTextToClipboard: (text: string | number) => void
+
+  /**
+   * Write a typed blökkli clipboard payload to the system clipboard.
+   *
+   * Wraps the payload in a marker envelope so paste detection never
+   * confuses arbitrary user-pasted JSON with a blökkli payload. The
+   * `BlokkliClipboardPayload` discriminated union is augmentable by
+   * features (`#blokkli/editor/types/clipboard`), so each call site is
+   * type-checked against the registered clipboard types.
+   *
+   * Throws on `navigator.clipboard.writeText` failure so callers can
+   * surface a domain-specific error message.
+   */
+  setClipboardData: (payload: BlokkliClipboardPayload) => Promise<void>
 }
 
 export default function (
@@ -1015,6 +1034,22 @@ export default function (
     emitMessage(message, 'success', undefined, true)
   }
 
+  async function setClipboardData(
+    payload: BlokkliClipboardPayload,
+  ): Promise<void> {
+    const ctx = context.value
+    const envelope: BlokkliClipboardEnvelope = {
+      [CLIPBOARD_ENVELOPE_FLAG]: true,
+      meta: {
+        hostUuid: ctx.entityUuid,
+        hostEntityType: ctx.entityType,
+        hostBundle: ctx.entityBundle,
+      },
+      data: payload,
+    }
+    await navigator.clipboard.writeText(JSON.stringify(envelope))
+  }
+
   return {
     artboardElement,
     rootElement,
@@ -1078,5 +1113,6 @@ export default function (
     activeHighlightId,
     itemActionsOpen,
     copyTextToClipboard,
+    setClipboardData,
   }
 }
