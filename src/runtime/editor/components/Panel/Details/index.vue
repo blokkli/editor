@@ -7,7 +7,7 @@
   >
     <button
       type="button"
-      class="p-15 flex items-center justify-between w-full"
+      class="p-panel-gap flex items-center justify-between w-full"
       @click.prevent="isOpen = !isOpen"
     >
       <div>
@@ -26,7 +26,7 @@
     </button>
     <TransitionHeight>
       <div v-if="isOpen">
-        <div class="px-15 pb-15">
+        <div class="px-panel-gap pb-panel-gap">
           <slot />
         </div>
       </div>

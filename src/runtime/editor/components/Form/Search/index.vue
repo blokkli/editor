@@ -6,7 +6,7 @@
     @focusin="isFocused = true"
     @focusout="onFocusOut"
   >
-    <label class="bk-form-label" :for="id">
+    <label v-if="label" class="bk-form-label" :for="id">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </label>
 
@@ -159,7 +159,7 @@ const props = withDefaults(
     id: string
 
     /** Field label shown above the input. */
-    label: string
+    label?: string
 
     /** Optional small description shown under the input. */
     description?: string

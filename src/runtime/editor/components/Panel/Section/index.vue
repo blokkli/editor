@@ -79,7 +79,7 @@ defineOptions({
 }
 
 .bk-panel-section-inner {
-  @container (min-width: 700px) {
+  @container (min-width: 500px) {
     --bk-panel-gap: 15px;
   }
 }

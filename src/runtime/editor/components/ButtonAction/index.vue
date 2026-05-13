@@ -9,7 +9,7 @@
     }"
   >
     <Icon :name="icon" class="size-[14px]" />
-    <Tooltip v-if="label" :label placement="center-before" />
+    <Tooltip v-if="label" :label placement="center-before" small />
   </button>
 </template>
 

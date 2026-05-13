@@ -1,7 +1,7 @@
 <template>
   <div
     class="bg-mono-100 h-full flex flex-col border-t border-t-mono-400"
-    @wheel.capture.stop
+    @wheel.stop
   >
     <div class="grid grid-cols-[1fr_auto] flex-1 h-full">
       <div
@@ -9,17 +9,20 @@
         class="relative bg-white border-r border-r-mono-300 overflow-hidden"
       >
         <div
-          class="absolute top-0 left-0 h-full"
+          class="absolute top-0 left-0 h-full flex flex-col"
           :style="{
             width: width + 'px',
           }"
         >
           <div
+            v-if="$slots.toolbar"
             class="flex border-b border-mono-700 h-50 bg-mono-900 items-center"
           >
             <slot name="toolbar" />
           </div>
-          <slot name="left" />
+          <div class="flex-1">
+            <slot name="left" />
+          </div>
         </div>
       </div>
 
