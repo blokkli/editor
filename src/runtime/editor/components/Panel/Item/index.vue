@@ -9,7 +9,7 @@
       }"
     >
       <button
-        class="p-15 flex gap-8 w-full col-start-1 -col-end-1 row-start-1"
+        class="p-panel-gap flex gap-8 w-full col-start-1 -col-end-1 row-start-1"
         type="button"
         @click.prevent="$emit('click')"
       >

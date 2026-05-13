@@ -1,5 +1,5 @@
 <template>
-  <div class="p-15">
+  <div>
     <FormItem>
       <FormText
         id="chart-title"

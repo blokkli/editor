@@ -59,7 +59,7 @@
           />
         </PanelSection>
         <PanelSection :title="$t('chartsData', 'Data')">
-          <div v-if="dataTooLarge" class="p-15">
+          <div v-if="dataTooLarge" class="p-panel-gap">
             <InfoBox
               small
               :text="
@@ -141,7 +141,11 @@
           />
         </NumberFormatEditor>
 
-        <PanelSection v-if="chartDef" :title="$t('settings', 'Settings')">
+        <PanelSection
+          v-if="chartDef"
+          :title="$t('settings', 'Settings')"
+          padded
+        >
           <ChartTypeOptions
             v-model:title="chartData.title"
             :options="chartDef.editor.options"

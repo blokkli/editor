@@ -208,6 +208,7 @@ const tailwindConfig: Config = {
       scrollbar: 'var(--bk-artboard-scrollbar-size)',
       'sidebar-right': 'var(--bk-sidebar-width-right)',
       'toolbar-left': 'var(--bk-toolbar-left-width)',
+      'panel-gap': 'var(--bk-panel-gap)',
     },
     borderWidth: {
       DEFAULT: '1px',

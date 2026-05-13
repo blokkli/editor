@@ -8,6 +8,7 @@
   --bk-root-offset-bottom: 0px;
   --bk-root-offset-right: 0px;
   --bk-actions-height: 50px;
+  --bk-panel-gap: 10px;
   @variant lg {
     --bk-root-offset-top: 50px;
     --bk-root-offset-right: 50px;

@@ -1,6 +1,6 @@
 <template>
   <PanelSection :title="$t('chartsNumberFormat', 'Number format')">
-    <div class="p-15 grid gap-15">
+    <div class="p-panel-gap grid gap-15">
       <slot />
       <FormSelect
         id="chart-number-locale"

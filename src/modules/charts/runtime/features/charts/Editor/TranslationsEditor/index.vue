@@ -2,12 +2,13 @@
   <PanelSection
     v-if="targetLanguages.length"
     :title="$t('chartsTranslations', 'Translations')"
+    padded
   >
     <template v-if="!isTranslation" #tabs>
       <PanelTabs v-model="activeLanguage" :tabs="languageTabs" />
     </template>
 
-    <div class="p-15">
+    <div>
       <template v-if="active">
         <FormItem v-if="chartData.title">
           <div class="bk-form-label">
