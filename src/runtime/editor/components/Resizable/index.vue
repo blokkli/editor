@@ -22,6 +22,8 @@ const { storage, ui } = useBlokkli()
 
 const props = defineProps<{
   id: string
+  minWidth?: number
+  maxWidth?: number
 }>()
 
 const emit = defineEmits<{
@@ -52,9 +54,9 @@ function onMouseMove(e: MouseEvent) {
   width.value = Math.max(
     Math.min(
       startWidth.value + (startX.value - e.clientX),
-      window.innerWidth - 200,
+      props.maxWidth ?? window.innerWidth - 200,
     ),
-    350,
+    props.minWidth ?? 350,
   )
 }
 
