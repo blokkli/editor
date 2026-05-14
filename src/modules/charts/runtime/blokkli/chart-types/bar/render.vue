@@ -14,10 +14,8 @@ import {
   LegendComponent,
   TitleComponent,
 } from 'echarts/components'
-import {
-  legendPositionToEcharts,
-  type ChartTypeRenderProps,
-} from '../../../chart-types/componentProps'
+import type { ChartTypeRenderProps } from '#blokkli/charts/types'
+import { legendPositionToEcharts } from '../../../helpers/echarts'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
 import type { TypeOptions } from './definition'
 

@@ -1,4 +1,4 @@
-import { defineChartType } from '#blokkli/charts/types'
+import { defineChartType } from '#blokkli/charts/definition'
 
 export type TypeOptions = {
   showValues: boolean

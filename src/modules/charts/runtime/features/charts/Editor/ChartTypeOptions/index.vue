@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import type { ChartTypeDefinition } from '../../../../chart-types/types'
+import type { ChartTypeDefinition } from '../../../../types'
 import { FormText, FormItem } from '#blokkli/editor/components'
 import Field from './Field.vue'
 

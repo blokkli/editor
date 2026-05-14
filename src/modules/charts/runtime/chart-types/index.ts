@@ -3,15 +3,8 @@ import type {
   ChartTypeDefinition,
   ChartTypeDefinitionEntry,
   TranslateFunction,
-} from './types'
+} from '../types'
 
-export type {
-  ChartTypeDefinition,
-  ChartTypeDefinitionEntry,
-  ChartTypeFactory,
-  TranslateFunction,
-} from './types'
-export { defineChartType } from './define'
 export type {
   ChartTypeOptionsMap,
   ChartTypeId,

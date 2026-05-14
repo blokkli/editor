@@ -1,26 +1,88 @@
-import type { ChartTypeId } from './chart-types/index'
+import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { BlockOptionDefinitionBase } from '../../../global/types/blockOptions'
 
-export type ChartType = ChartTypeId
+// ─── Chart-type API (types only) ─────────────────────────────────────────────
+
+export type TranslateFunction = (key: string, fallback: string) => string
+
+export type ChartTypeDefinitionBody<
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  hasMultipleSeries: boolean
+  hasSeriesColors: boolean
+  hasCategoryColors: boolean
+  editor: {
+    label: string
+    description: string
+    icon: BlokkliIcon
+    options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
+  }
+}
+
+export type ChartTypeFactory<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = ($t: TranslateFunction) => ChartTypeDefinitionBody<T>
+
+/** What `defineChartType` returns and what the registry stores. */
+export type ChartTypeDefinitionEntry<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  id: string
+  factory: ChartTypeFactory<T>
+}
+
+/** Resolved at registry time. What downstream consumers see. */
+export type ChartTypeDefinition<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = ChartTypeDefinitionBody<T> & { id: string }
+
+/**
+ * The props every chart-type render component receives from `ChartRenderer`.
+ * Values are fully resolved (translations, date formatting, footnotes,
+ * dynamic-data overrides, hex colors).
+ */
+export type ChartTypeRenderProps = {
+  title: string
+  categories: string[]
+  series: { name: string; data: number[] }[]
+  /** Hex colors aligned with `series` order. Read by types with series colors. */
+  seriesHexColors: string[]
+  /** Hex colors aligned with `categories` order. Read by types with category colors. */
+  categoryHexColors: string[]
+  typeOptions: Record<string, unknown>
+  numberFormat?: ChartNumberFormat
+  isEditing: boolean
+}
+
+// ─── Shared TypeOptions interfaces ───────────────────────────────────────────
+// Paired with the option-schema helpers in
+// `chart-types/definition/options/index.ts`. Intersected by definition.ts
+// `TypeOptions` exports and read by render.vue files.
+
+export type XAxisTypeOptions = { xaxisRotation: string }
+export type DataLabelsTypeOptions = { dataLabels: boolean }
+export type LegendTypeOptions = { legendPosition: string }
+export type GridTypeOptions = { gridLines: boolean }
+export type StrokeWidthTypeOptions = { strokeWidth: string }
+export type YAxisMinTypeOptions = { yaxisMin: number | undefined }
+
+// ─── Chart-data types ────────────────────────────────────────────────────────
+
+/**
+ * Chart-type id. Plain `string` to avoid a circular type dependency with the
+ * build-time `#blokkli-build/charts-definitions` template (whose generated
+ * `.d.ts` imports types from this file). If you want a strongly-typed
+ * union of known ids, import `ChartTypeId` from
+ * `#blokkli-build/charts-definitions` directly.
+ */
+export type ChartType = string
 
 export type ChartTypeOptions = Record<string, unknown>
 
-// Re-exports so userland can import everything needed to write a chart-type
-// definition.ts + render.vue from a single alias.
-export { defineChartType } from './chart-types/define'
-export type {
-  ChartTypeDefinition,
-  ChartTypeDefinitionEntry,
-  ChartTypeDefinitionBody,
-  ChartTypeFactory,
-  TranslateFunction,
-} from './chart-types/types'
-export type { ChartTypeRenderProps } from './chart-types/componentProps'
-
 export type ChartSeries = {
   name: string
-  /**
-   * The color identifier as defined in the module options.
-   */
+  /** The color identifier as defined in the module options. */
   color: string
   data: number[]
 }

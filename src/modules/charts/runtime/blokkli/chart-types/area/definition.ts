@@ -1,4 +1,4 @@
-import { defineChartType } from '../../../chart-types/define'
+import { defineChartType } from '#blokkli/charts/definition'
 import {
   xAxisOptions,
   dataLabelsOptions,
@@ -7,7 +7,7 @@ import {
   strokeWidthOptions,
   yAxisMinOptions,
   mergeShared,
-} from '../../../chart-types/shared'
+} from '#blokkli/charts/definition/options'
 import type {
   XAxisTypeOptions,
   DataLabelsTypeOptions,
@@ -15,7 +15,7 @@ import type {
   GridTypeOptions,
   StrokeWidthTypeOptions,
   YAxisMinTypeOptions,
-} from '../../../chart-types/shared'
+} from '#blokkli/charts/types'
 
 export type TypeOptions = {
   curved: boolean

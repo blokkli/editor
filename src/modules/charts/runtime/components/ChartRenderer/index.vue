@@ -24,11 +24,11 @@ import type {
   BlokkliChartData,
   ChartDataSourcePayload,
   ChartSeries,
+  ChartTypeRenderProps,
 } from '../../types'
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
-import type { ChartTypeRenderProps } from '../../chart-types/componentProps'
 import { chartTypeComponents } from '#blokkli-build/charts-components'
 import {
   INJECT_IS_EDITING,
@@ -205,7 +205,12 @@ function resolveHex(id: string): string {
   return map?.[id] || '#888888'
 }
 
-const typeComponent = computed(() => chartTypeComponents[props.type])
+const typeComponent = computed(
+  () =>
+    chartTypeComponents[
+      props.type as keyof typeof chartTypeComponents
+    ],
+)
 
 const renderProps = computed<ChartTypeRenderProps | null>(() => {
   const data = effectiveData.value

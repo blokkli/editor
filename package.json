@@ -146,7 +146,6 @@
     "@tiptap/starter-kit": "^3.22.5",
     "@tiptap/suggestion": "^3.22.5",
     "@tiptap/vue-3": "^3.22.5",
-    "apexcharts": "^5.4.0",
     "artboard-deluxe": "^0.1.5",
     "echarts": "^6.0.0",
     "estree-walker-ts": "^1.1.0",
@@ -160,7 +159,6 @@
     "qrcode.vue": "^3.6.0",
     "twgl.js": "^7.0.0",
     "vue-echarts": "^8.0.1",
-    "vue3-apexcharts": "^1.10.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {

@@ -1,13 +1,13 @@
-import { defineChartType } from '../../../chart-types/define'
+import { defineChartType } from '#blokkli/charts/definition'
 import {
   dataLabelsOptions,
   legendOptions,
   mergeShared,
-} from '../../../chart-types/shared'
+} from '#blokkli/charts/definition/options'
 import type {
   DataLabelsTypeOptions,
   LegendTypeOptions,
-} from '../../../chart-types/shared'
+} from '#blokkli/charts/types'
 
 export type TypeOptions = {
   markers: boolean

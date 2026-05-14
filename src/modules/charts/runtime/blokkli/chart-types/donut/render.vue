@@ -14,7 +14,7 @@ import {
   TitleComponent,
   GraphicComponent,
 } from 'echarts/components'
-import type { ChartTypeRenderProps } from '../../../chart-types/componentProps'
+import type { ChartTypeRenderProps } from '#blokkli/charts/types'
 import {
   createNumberFormatter,
   createPercentFormatter,

@@ -19,6 +19,10 @@ export default defineBlokkliModule<ChartsModuleOptions>({
   setup({ context, helper, $t }) {
     helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
     helper.addAlias(
+      '#blokkli/charts/definition',
+      resolve('./runtime/chart-types/definition'),
+    )
+    helper.addAlias(
       '#blokkli/charts/adapter',
       resolve('./runtime/helpers/adapterTypes'),
     )

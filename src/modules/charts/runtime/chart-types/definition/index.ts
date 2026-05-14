@@ -1,4 +1,4 @@
-import type { ChartTypeDefinitionEntry, ChartTypeFactory } from './types'
+import type { ChartTypeDefinitionEntry, ChartTypeFactory } from '../../types'
 
 /**
  * Declare a chart type. The id is the first positional argument so the

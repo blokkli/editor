@@ -1,15 +1,15 @@
-import { defineChartType } from '../../../chart-types/define'
+import { defineChartType } from '#blokkli/charts/definition'
 import {
   xAxisOptions,
   legendOptions,
   gridOptions,
   mergeShared,
-} from '../../../chart-types/shared'
+} from '#blokkli/charts/definition/options'
 import type {
   XAxisTypeOptions,
   LegendTypeOptions,
   GridTypeOptions,
-} from '../../../chart-types/shared'
+} from '#blokkli/charts/types'
 
 export type TypeOptions = XAxisTypeOptions &
   LegendTypeOptions &

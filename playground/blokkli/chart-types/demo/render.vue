@@ -11,7 +11,7 @@
     <strong>Demo chart-type</strong>
     <p>title: {{ title }}</p>
     <p>categories: {{ categories.join(', ') || '(none)' }}</p>
-    <p v-if="(typeOptions as TypeOptions).showValues">
+    <p v-if="(typeOptions).showValues">
       values:
       {{
         (series[0]?.data ?? [])
@@ -25,7 +25,6 @@
 
 <script setup lang="ts">
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
-import type { TypeOptions } from './definition'
 
 defineProps<ChartTypeRenderProps>()
 </script>

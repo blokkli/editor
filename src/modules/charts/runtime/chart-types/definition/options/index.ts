@@ -1,17 +1,10 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOptions'
-import type { TranslateFunction } from './types'
+import type { BlockOptionDefinitionBase } from '../../../../../../global/types/blockOptions'
+import type { TranslateFunction } from '../../../types'
 
 type SharedOptions = {
   options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
 }
-
-export type XAxisTypeOptions = { xaxisRotation: string }
-export type DataLabelsTypeOptions = { dataLabels: boolean }
-export type LegendTypeOptions = { legendPosition: string }
-export type GridTypeOptions = { gridLines: boolean }
-export type StrokeWidthTypeOptions = { strokeWidth: string }
-export type YAxisMinTypeOptions = { yaxisMin: number | undefined }
 
 /**
  * Shared x-axis label options for chart types that display an x-axis.

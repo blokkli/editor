@@ -14,7 +14,7 @@ import {
   TitleComponent,
   VisualMapComponent,
 } from 'echarts/components'
-import type { ChartTypeRenderProps } from '../../../chart-types/componentProps'
+import type { ChartTypeRenderProps } from '#blokkli/charts/types'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
 import type { TypeOptions } from './definition'
 

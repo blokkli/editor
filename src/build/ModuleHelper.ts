@@ -255,7 +255,7 @@ export class ModuleHelper implements ValidationInterface {
    * Add a directory to the app TypeScript tsconfig includes.
    */
   public addAppTsInclude(absolutePath: string) {
-    const rel = relative(this.nuxt.options.buildDir, absolutePath)
+    const rel = relative(this.nuxt.options.buildDir, absolutePath) + '/**/*'
     this.nuxt.options.typescript.tsConfig ||= {}
     this.nuxt.options.typescript.tsConfig.include ||= []
     this.nuxt.options.typescript.tsConfig.include.push(rel)
@@ -265,7 +265,7 @@ export class ModuleHelper implements ValidationInterface {
    * Add a directory to the server/Nitro TypeScript tsconfig includes.
    */
   public addServerTsInclude(absolutePath: string) {
-    const rel = relative(this.nuxt.options.buildDir, absolutePath)
+    const rel = relative(this.nuxt.options.buildDir, absolutePath) + '/**/*'
     this.nuxt.options.nitro.typescript ||= {}
     this.nuxt.options.nitro.typescript.tsConfig ||= {}
     this.nuxt.options.nitro.typescript.tsConfig.include ||= []
