@@ -28,6 +28,7 @@
 
         <FormItem
           v-if="
+            !chartData.dataSource &&
             chartData.categories.length &&
             !hasNumericCategories &&
             !hasDateFormattedCategories
@@ -68,7 +69,7 @@
           </div>
         </FormItem>
 
-        <FormItem v-if="chartData.series.length">
+        <FormItem v-if="!chartData.dataSource && chartData.series.length">
           <div class="bk-form-label">
             {{ $t('chartsTranslationsSeries', 'Series') }}
           </div>

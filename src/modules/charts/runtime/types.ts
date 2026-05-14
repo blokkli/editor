@@ -71,6 +71,66 @@ export type ChartTranslation = {
   suffix?: string
 }
 
+/**
+ * A backend-provided chart data source descriptor.
+ */
+export type ChartDataSource = {
+  id: string
+  label: string
+  description?: string
+}
+
+/**
+ * Capabilities flag set returned by the adapter to tell the editor how to
+ * call `getChartDataSources`. Reserved for future flags.
+ */
+export type ChartDataSourceCapabilities = {
+  /**
+   * When true, `getChartDataSources` is called with `text` + `page` args
+   * and is expected to return `BlokkliAdapterSearchResults<ChartDataSource>`.
+   * When false, it is called once with no args and is expected to return
+   * the full list as `ChartDataSource[]` (editor performs fuzzy filtering
+   * client-side).
+   */
+  supportsSearch: boolean
+}
+
+/**
+ * Raw data returned by `getChartDataSourceData` (editor) and by the
+ * integrator's runtime fetch (passed via `ChartRenderer`'s `dynamicData`
+ * prop).
+ */
+export type ChartDataSourcePayload = {
+  categories: string[]
+  series: { name: string; data: number[] }[]
+}
+
+/**
+ * Per-series presentation overrides for dynamic data, keyed by the
+ * fetched series name.
+ */
+export type ChartSeriesOverride = {
+  color?: string
+  hidden?: boolean
+}
+
+/**
+ * Reference to a dynamic data source stored on a chart block.
+ *
+ * When set, the block's inline `categories` / `series` are ignored at
+ * render time. Inline data is preserved as a "shadow" state so the user
+ * can switch back to the custom-data tab without losing their input.
+ */
+export type ChartDataSourceRef = {
+  id: string
+  /** Cached label for display when the live source has been removed. */
+  label: string
+  /** Keyed by fetched series name. */
+  seriesOverrides?: Record<string, ChartSeriesOverride>
+  /** Keyed by fetched category label, used by pie/donut charts. */
+  categoryColorOverrides?: Record<string, string>
+}
+
 type ChartDataBase = {
   title: string
   categories: string[]
@@ -89,6 +149,14 @@ type ChartDataBase = {
    * translations live alongside the source data.
    */
   translations?: Record<string, ChartTranslation>
+  /**
+   * Optional reference to a dynamic data source. When set, the block
+   * renders data fetched from the source at runtime (via the integrator's
+   * fetching logic + the `dynamicData` prop on `ChartRenderer`). The
+   * inline `categories` / `series` are kept as a snapshot so switching
+   * back to custom data restores the user's last input.
+   */
+  dataSource?: ChartDataSourceRef
 }
 
 export type BlokkliChartData = {

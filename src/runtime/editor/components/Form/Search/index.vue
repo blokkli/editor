@@ -24,7 +24,7 @@
       </span>
       <button
         type="button"
-        class="flex items-center justify-center p-3 text-mono-500 hover:bg-mono-200 hover:text-mono-900 [&_svg]:size-15 [&_svg]:fill-current"
+        class="flex items-center justify-center p-3 text-mono-500 hover:bg-mono-200 hover:text-mono-900 [&_svg]:size-15 [&_svg]:fill-current rounded-full"
         :title="$t('formSearchClear', 'Clear')"
         :disabled
         @click="$emit('clear')"

@@ -3,7 +3,7 @@
     <ClientOnly>
       <component
         :is="ApexChart"
-        v-if="ApexChart"
+        v-if="ApexChart && hasRenderableData"
         :type="type"
         :options="chartOptions"
         :series="chartSeries"
@@ -23,9 +23,14 @@
 
 <script setup lang="ts">
 import { computed, defineAsyncComponent, inject, useAppConfig } from '#imports'
-import type { BlokkliChartData } from '../../types'
+import type {
+  BlokkliChartData,
+  ChartDataSourcePayload,
+  ChartSeries,
+} from '../../types'
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
+import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
 import type { ChartBuildContext } from '../../chartTypes'
 import type { ApexOptions } from 'apexcharts'
@@ -45,6 +50,17 @@ const props = defineProps<
      * the language comes from the surrounding BlokkliProvider context.
      */
     languageOverride?: string
+
+    /**
+     * Data fetched at runtime for a dynamic data source. Required when
+     * `props.dataSource` is set; otherwise ignored.
+     *
+     * The integrator's chart block component is responsible for fetching
+     * (e.g. via `useFetch` / `useLazyFetch`) and passing the result here.
+     * For large payloads, prefer `useLazyFetch` or `useAsyncData` with
+     * `server: false` to avoid bloating SSR HTML.
+     */
+    dynamicData?: ChartDataSourcePayload | null
   }
 >()
 
@@ -54,9 +70,76 @@ const appConfig = useAppConfig()
 
 const providerEntity = inject(INJECT_PROVIDER_CONTEXT, null)
 
+// Editor preview falls back to this inject when the integrator's block
+// component does not pass a `dynamicData` prop. At runtime (outside the
+// editor) this is never provided.
+const previewDynamicData = inject(INJECT_CHART_PREVIEW_DYNAMIC_DATA, null)
+
 const currentLanguage = computed(
   () => props.languageOverride ?? providerEntity?.value.language ?? '',
 )
+
+const colorPalette = computed(() => {
+  const map = appConfig.blokkli?.colorOptions as
+    | Record<string, string>
+    | undefined
+  if (!map) return [] as { id: string; hex: string }[]
+  return Object.keys(map).map((id) => ({ id, hex: map[id]! }))
+})
+
+const hasDynamicSource = computed(() => !!props.dataSource)
+
+const effectiveDynamicPayload = computed(() => {
+  if (props.dynamicData !== undefined && props.dynamicData !== null) {
+    return props.dynamicData
+  }
+  return previewDynamicData?.value ?? null
+})
+
+const effectiveData = computed<{
+  categories: string[]
+  series: ChartSeries[]
+  categoryColors: string[]
+} | null>(() => {
+  if (hasDynamicSource.value) {
+    const payload = effectiveDynamicPayload.value
+    if (!payload) return null
+    const overrides = props.dataSource?.seriesOverrides ?? {}
+    const categoryOverrides = props.dataSource?.categoryColorOverrides ?? {}
+    const palette = colorPalette.value
+    const fallback = palette[0]?.id ?? ''
+    const visibleSeries = payload.series.filter(
+      (s) => overrides[s.name]?.hidden !== true,
+    )
+    const series: ChartSeries[] = visibleSeries.map((s, i) => ({
+      name: s.name,
+      color:
+        overrides[s.name]?.color ??
+        palette[i % Math.max(palette.length, 1)]?.id ??
+        fallback,
+      data: s.data,
+    }))
+    const categoryColors = payload.categories.map((label, i) => {
+      return (
+        categoryOverrides[label] ??
+        palette[i % Math.max(palette.length, 1)]?.id ??
+        fallback
+      )
+    })
+    return {
+      categories: payload.categories,
+      series,
+      categoryColors,
+    }
+  }
+  return {
+    categories: props.categories,
+    series: props.series,
+    categoryColors: props.categoryColors,
+  }
+})
+
+const hasRenderableData = computed(() => !!effectiveData.value)
 
 const resolvedTitle = computed(() => {
   const t = props.translations?.[currentLanguage.value]
@@ -64,15 +147,23 @@ const resolvedTitle = computed(() => {
 })
 
 const resolvedCategories = computed(() => {
+  const data = effectiveData.value
+  if (!data) return [] as string[]
+  // Translations for categories are positional and only safe for inline data.
+  if (hasDynamicSource.value) return data.categories
   const t = props.translations?.[currentLanguage.value]
-  if (!t?.categories) return props.categories
-  return props.categories.map((c, i) => t.categories?.[i] || c)
+  if (!t?.categories) return data.categories
+  return data.categories.map((c, i) => t.categories?.[i] || c)
 })
 
 const resolvedSeries = computed(() => {
+  const data = effectiveData.value
+  if (!data) return [] as ChartSeries[]
+  // Translations for series names are positional and only safe for inline data.
+  if (hasDynamicSource.value) return data.series
   const t = props.translations?.[currentLanguage.value]
-  if (!t?.seriesNames) return props.series
-  return props.series.map((s, i) => ({
+  if (!t?.seriesNames) return data.series
+  return data.series.map((s, i) => ({
     ...s,
     name: t.seriesNames?.[i] || s.name,
   }))
@@ -154,12 +245,13 @@ const resolvedColors = computed(() => {
     return []
   }
   const def = chartDef.value
-  if (!def) return []
+  const data = effectiveData.value
+  if (!def || !data) return []
   if (def.hasCategoryColors) {
-    return props.categoryColors.map(resolveHex)
+    return data.categoryColors.map(resolveHex)
   }
   if (def.hasSeriesColors) {
-    return props.series.map((s) => resolveHex(s.color))
+    return data.series.map((s) => resolveHex(s.color))
   }
   return []
 })
@@ -169,7 +261,7 @@ const chartOptions = computed<ApexOptions>(() => {
     return {}
   }
   const def = chartDef.value
-  if (!def) return {}
+  if (!def || !effectiveData.value) return {}
 
   const base: ApexOptions = {
     chart: {
@@ -214,7 +306,7 @@ const chartSeries = computed(() => {
     return []
   }
   const def = chartDef.value
-  if (!def) return []
+  if (!def || !effectiveData.value) return []
 
   const ctx: ChartBuildContext = {
     title: resolvedTitle.value,

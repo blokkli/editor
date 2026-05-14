@@ -1534,6 +1534,14 @@ msgctxt "chartsDataLabels"
 msgid "Data labels"
 msgstr "Datebeschriftige"
 
+msgctxt "chartsDataTabCustom"
+msgid "Custom data"
+msgstr ""
+
+msgctxt "chartsDataTabDynamic"
+msgid "Dynamic data"
+msgstr ""
+
 msgctxt "chartsDataTableHidden"
 msgid ""
 "Data table hidden because the dataset is too large to edit cell-by-cell "
@@ -1559,6 +1567,54 @@ msgstr "Beschriftige aazeige"
 msgctxt "chartsDonutShowTotal"
 msgid "Show total"
 msgstr "Total aazeige"
+
+msgctxt "chartsDynamicCategoryColors"
+msgid "Category colors"
+msgstr ""
+
+msgctxt "chartsDynamicHideSeries"
+msgid "Hide series"
+msgstr ""
+
+msgctxt "chartsDynamicNoCategories"
+msgid "No categories."
+msgstr ""
+
+msgctxt "chartsDynamicNoSeries"
+msgid "No series."
+msgstr ""
+
+msgctxt "chartsDynamicOverridesTooMany"
+msgid "Too many items to configure inline (@count, max @max)."
+msgstr ""
+
+msgctxt "chartsDynamicPickSource"
+msgid "Pick a data source"
+msgstr ""
+
+msgctxt "chartsDynamicPreviewEmpty"
+msgid "The data source returned no rows or series."
+msgstr ""
+
+msgctxt "chartsDynamicPreviewError"
+msgid "Failed to load data:"
+msgstr ""
+
+msgctxt "chartsDynamicPreviewLoading"
+msgid "Loading data from the source…"
+msgstr ""
+
+msgctxt "chartsDynamicPreviewMissing"
+msgid "Source no longer available (was: @label)."
+msgstr ""
+
+msgctxt "chartsDynamicSearchPlaceholder"
+msgid "Search…"
+msgstr ""
+
+msgctxt "chartsDynamicShowSeries"
+msgid "Show series"
+msgstr ""
 
 msgctxt "chartsEditTitle"
 msgid "Edit chart"
@@ -1663,6 +1719,18 @@ msgstr "Aazeig"
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr "Beschriftige"
+
+msgctxt "chartsOrphanOverridesIntro"
+msgid "These overrides reference items not present in the current data:"
+msgstr ""
+
+msgctxt "chartsOrphanOverridesRemove"
+msgid "Remove override"
+msgstr ""
+
+msgctxt "chartsOverrideScopeCategory"
+msgid "Category"
+msgstr ""
 
 msgctxt "chartsPieShowLabels"
 msgid "Show labels"

@@ -1563,6 +1563,14 @@ msgctxt "chartsDataLabels"
 msgid "Data labels"
 msgstr "Datenbeschriftungen"
 
+msgctxt "chartsDataTabCustom"
+msgid "Custom data"
+msgstr "Eigene Daten"
+
+msgctxt "chartsDataTabDynamic"
+msgid "Dynamic data"
+msgstr "Dynamische Daten"
+
 msgctxt "chartsDataTableHidden"
 msgid ""
 "Data table hidden because the dataset is too large to edit cell-by-cell "
@@ -1591,6 +1599,54 @@ msgstr "Beschriftungen anzeigen"
 msgctxt "chartsDonutShowTotal"
 msgid "Show total"
 msgstr "Total anzeigen"
+
+msgctxt "chartsDynamicCategoryColors"
+msgid "Category colors"
+msgstr "Kategoriefarben"
+
+msgctxt "chartsDynamicHideSeries"
+msgid "Hide series"
+msgstr "Datenreihe ausblenden"
+
+msgctxt "chartsDynamicNoCategories"
+msgid "No categories."
+msgstr "Keine Kategorien."
+
+msgctxt "chartsDynamicNoSeries"
+msgid "No series."
+msgstr "Keine Datenreihen."
+
+msgctxt "chartsDynamicOverridesTooMany"
+msgid "Too many items to configure inline (@count, max @max)."
+msgstr "Zu viele Einträge zum Konfigurieren (@count, max. @max)."
+
+msgctxt "chartsDynamicPickSource"
+msgid "Pick a data source"
+msgstr "Datenquelle auswählen"
+
+msgctxt "chartsDynamicPreviewEmpty"
+msgid "The data source returned no rows or series."
+msgstr "Die Datenquelle hat keine Zeilen oder Datenreihen zurückgegeben."
+
+msgctxt "chartsDynamicPreviewError"
+msgid "Failed to load data:"
+msgstr "Daten konnten nicht geladen werden:"
+
+msgctxt "chartsDynamicPreviewLoading"
+msgid "Loading data from the source…"
+msgstr "Daten werden aus der Quelle geladen..."
+
+msgctxt "chartsDynamicPreviewMissing"
+msgid "Source no longer available (was: @label)."
+msgstr "Quelle nicht mehr verfügbar (war: @label)."
+
+msgctxt "chartsDynamicSearchPlaceholder"
+msgid "Search…"
+msgstr "Suchen..."
+
+msgctxt "chartsDynamicShowSeries"
+msgid "Show series"
+msgstr "Datenreihe einblenden"
 
 msgctxt "chartsEditTitle"
 msgid "Edit chart"
@@ -1695,6 +1751,20 @@ msgstr "Darstellung"
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr "Beschriftungen"
+
+msgctxt "chartsOrphanOverridesIntro"
+msgid "These overrides reference items not present in the current data:"
+msgstr ""
+"Diese Anpassungen verweisen auf Einträge, die in den aktuellen Daten nicht "
+"vorhanden sind:"
+
+msgctxt "chartsOrphanOverridesRemove"
+msgid "Remove override"
+msgstr "Anpassung entfernen"
+
+msgctxt "chartsOverrideScopeCategory"
+msgid "Category"
+msgstr "Kategorie"
 
 msgctxt "chartsPieShowLabels"
 msgid "Show labels"
@@ -3862,11 +3932,11 @@ msgstr "Alle Änderungen wurden verworfen."
 
 msgctxt "richTextAddLink"
 msgid "Add link"
-msgstr ""
+msgstr "Link hinzufügen"
 
 msgctxt "richTextEditLink"
 msgid "Edit link"
-msgstr ""
+msgstr "Link bearbeiten"
 
 msgctxt "save"
 msgid "Save"

@@ -73,6 +73,8 @@ import type {
   HostEntitySearchResult,
   HostEntitySearchResultItem,
 } from '#blokkli/editor/providers/workspaces'
+// Augments BlokkliAdapter with chart data source methods.
+import '#blokkli/charts/adapter'
 
 const ENABLE_EDIT_STATES = true
 
@@ -2601,6 +2603,152 @@ export default defineBlokkliEditAdapter((ctx) => {
         },
       },
     )
+  }
+
+  // =============================================================================
+  // Chart Data Sources (mock)
+  // =============================================================================
+  // Switch this to `true` to exercise the paginated search code path.
+  const CHART_SOURCES_USE_SEARCH = false
+
+  type MockChartSource = {
+    id: string
+    label: string
+    description?: string
+    categories: string[]
+    series: { name: string; data: number[] }[]
+  }
+
+  const mockChartSources: MockChartSource[] = [
+    {
+      id: 'monthly-sales',
+      label: 'Monthly Sales 2024',
+      description: 'Revenue, costs and profit per month',
+      categories: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ],
+      series: [
+        {
+          name: 'Revenue',
+          data: [120, 135, 148, 162, 158, 175, 182, 190, 185, 198, 205, 220],
+        },
+        {
+          name: 'Costs',
+          data: [80, 88, 92, 98, 96, 105, 108, 112, 110, 118, 122, 130],
+        },
+        {
+          name: 'Profit',
+          data: [40, 47, 56, 64, 62, 70, 74, 78, 75, 80, 83, 90],
+        },
+      ],
+    },
+    {
+      id: 'website-traffic',
+      label: 'Website Traffic by Channel',
+      description: 'Sessions per acquisition channel (last 30 days)',
+      categories: ['Organic', 'Direct', 'Referral', 'Social', 'Email', 'Paid'],
+      series: [
+        {
+          name: 'Sessions',
+          data: [12400, 8200, 3100, 5400, 2200, 4800],
+        },
+      ],
+    },
+    {
+      id: 'product-units',
+      label: 'Product Units Sold',
+      description: 'Units sold per product line, last quarter',
+      categories: ['Widgets', 'Gadgets', 'Sprockets', 'Cogs', 'Bolts'],
+      series: [
+        { name: 'Q1', data: [120, 95, 78, 110, 65] },
+        { name: 'Q2', data: [135, 105, 88, 118, 72] },
+      ],
+    },
+    {
+      id: 'temperature-zh',
+      label: 'Average Temperature Zurich',
+      description: 'Monthly mean temperature in °C',
+      categories: [
+        '2024-01',
+        '2024-02',
+        '2024-03',
+        '2024-04',
+        '2024-05',
+        '2024-06',
+      ],
+      series: [
+        { name: 'Temperature', data: [1.2, 2.8, 6.5, 10.4, 14.2, 17.8] },
+      ],
+    },
+    {
+      id: 'broken-source',
+      label: 'Always Errors (test)',
+      description: 'This source intentionally fails — useful for error testing',
+      categories: [],
+      series: [],
+    },
+  ]
+
+  adapter.getChartDataSourceCapabilities = () => {
+    return { supportsSearch: CHART_SOURCES_USE_SEARCH }
+  }
+
+  adapter.getChartDataSources = async (args) => {
+    if (CHART_SOURCES_USE_SEARCH) {
+      const text = (args.text ?? '').trim().toLowerCase()
+      const filtered = text
+        ? mockChartSources.filter(
+            (s) =>
+              s.label.toLowerCase().includes(text) ||
+              (s.description?.toLowerCase().includes(text) ?? false),
+          )
+        : mockChartSources
+      const perPage = 10
+      const page = args.page ?? 0
+      const items = filtered
+        .slice(page * perPage, (page + 1) * perPage)
+        .map((s) => ({
+          id: s.id,
+          label: s.label,
+          description: s.description,
+        }))
+      return {
+        items,
+        total: filtered.length,
+        perPage,
+        filters: [],
+      }
+    }
+    return mockChartSources.map((s) => ({
+      id: s.id,
+      label: s.label,
+      description: s.description,
+    }))
+  }
+
+  adapter.getChartDataSourceData = async ({ id }) => {
+    if (id === 'broken-source') {
+      throw new Error('Mock data source intentionally failed.')
+    }
+    const source = mockChartSources.find((s) => s.id === id)
+    if (!source) {
+      throw new Error(`Unknown data source: ${id}`)
+    }
+    return {
+      categories: source.categories,
+      series: source.series.map((s) => ({ name: s.name, data: [...s.data] })),
+    }
   }
 
   return adapter

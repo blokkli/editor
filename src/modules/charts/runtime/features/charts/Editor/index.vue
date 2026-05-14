@@ -46,6 +46,7 @@
         :uuid
         :option-key="optionKey"
         :data="previewData"
+        :dynamic-data="previewDynamicData"
         :stale="isStale"
       />
     </template>
@@ -59,46 +60,93 @@
           />
         </PanelSection>
         <PanelSection :title="$t('chartsData', 'Data')">
-          <div v-if="dataTooLarge" class="p-panel-gap">
-            <InfoBox
-              small
-              :text="
-                $t(
-                  'chartsDataTableHidden',
-                  'Data table hidden because the dataset is too large to edit cell-by-cell (@cells cells, max @max). Re-import a smaller CSV to edit values inline.',
-                )
-                  .replace('@cells', String(cellCount))
-                  .replace('@max', String(MAX_DATA_TABLE_CELLS))
-              "
-            />
-          </div>
-          <template v-else>
-            <div class="overflow-auto bk-scrollbar-light relative z-50">
-              <DataTable
-                :categories="chartData.categories"
-                :series="chartData.series"
-                :category-colors="chartData.categoryColors"
-                :has-multiple-series="caps.hasMultipleSeries"
-                :has-series-colors="caps.hasSeriesColors"
-                :has-category-colors="caps.hasCategoryColors"
-                :remove-row="removeRow"
-                :remove-series="removeSeries"
-                @update:categories="chartData.categories = $event"
-                @update:series="chartData.series = $event"
-                @update:category-colors="chartData.categoryColors = $event"
-                @add-column="addSeries"
-              />
-            </div>
-            <PanelAddButton
-              :label="$t('chartsAddRow', 'Add row')"
-              icon="bk_mdi_add_row_below"
-              @click.prevent="addRow"
-            />
+          <template v-if="capabilities" #tabs>
+            <PanelTabs v-model="dataTab" :tabs="dataTabs" />
           </template>
 
-          <template #actions>
+          <template v-if="dataTab === 'dynamic' && capabilities">
+            <DataSourcePicker
+              :capabilities
+              :selected="selectedDataSource"
+              @select="onSelectDataSource"
+              @clear="onClearDataSource"
+              @update:known-ids="onKnownIdsUpdated"
+            />
+            <template v-if="chartData.dataSource">
+              <DynamicPreviewStatus
+                :status="previewStatus"
+                :error="previewError ?? null"
+                :missing="sourceMissing"
+                :missing-label="chartData.dataSource.label"
+                :empty="previewEmpty"
+              />
+              <OrphanOverridesWarning
+                v-if="previewPayload"
+                :series-override-names="seriesOverrideNames"
+                :category-override-names="categoryOverrideNames"
+                :known-series="previewSeriesNames"
+                :known-categories="previewPayload.categories"
+                @remove="onRemoveOrphan"
+              />
+              <SeriesOverridesPanel
+                v-if="previewPayload && caps.hasMultipleSeries"
+                :series-names="previewSeriesNames"
+                :overrides="chartData.dataSource.seriesOverrides ?? {}"
+                :has-series-colors="caps.hasSeriesColors"
+                @update:overrides="onUpdateSeriesOverrides"
+              />
+              <CategoryColorOverridesPanel
+                v-if="previewPayload && caps.hasCategoryColors"
+                :categories="previewPayload.categories"
+                :overrides="chartData.dataSource.categoryColorOverrides ?? {}"
+                @update:overrides="onUpdateCategoryOverrides"
+              />
+            </template>
+          </template>
+
+          <template v-else-if="dataTab === 'custom'">
+            <div v-if="dataTooLarge" class="p-panel-gap">
+              <InfoBox
+                small
+                :text="
+                  $t(
+                    'chartsDataTableHidden',
+                    'Data table hidden because the dataset is too large to edit cell-by-cell (@cells cells, max @max). Re-import a smaller CSV to edit values inline.',
+                  )
+                    .replace('@cells', String(cellCount))
+                    .replace('@max', String(MAX_DATA_TABLE_CELLS))
+                "
+              />
+            </div>
+            <template v-else>
+              <div class="overflow-auto bk-scrollbar-light relative z-50">
+                <DataTable
+                  :categories="chartData.categories"
+                  :series="chartData.series"
+                  :category-colors="chartData.categoryColors"
+                  :has-multiple-series="caps.hasMultipleSeries"
+                  :has-series-colors="caps.hasSeriesColors"
+                  :has-category-colors="caps.hasCategoryColors"
+                  :remove-row="removeRow"
+                  :remove-series="removeSeries"
+                  @update:categories="chartData.categories = $event"
+                  @update:series="chartData.series = $event"
+                  @update:category-colors="chartData.categoryColors = $event"
+                  @add-column="addSeries"
+                />
+              </div>
+              <PanelAddButton
+                :label="$t('chartsAddRow', 'Add row')"
+                icon="bk_mdi_add_row_below"
+                @click.prevent="addRow"
+              />
+            </template>
+          </template>
+
+          <template v-if="dataTab === 'custom'" #actions>
             <CsvImport @import="importData" />
             <CsvExport
+              v-if="!chartData.dataSource"
               :title="chartData.title"
               :categories="chartData.categories"
               :series="chartData.series"
@@ -156,7 +204,7 @@
       </template>
       <TranslationsEditor
         v-model:translations="chartData.translations"
-        :chart-data="chartData"
+        :chart-data="effectiveChartData"
         :has-numeric-categories
         :has-date-formatted-categories="hasDateFormattedCategories"
       />
@@ -165,8 +213,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, useBlokkli, onBeforeUnmount } from '#imports'
-import type { BlokkliChartData } from '../../../types'
+import {
+  ref,
+  computed,
+  watch,
+  useAsyncData,
+  useBlokkli,
+  onBeforeUnmount,
+} from '#imports'
+import type {
+  BlokkliChartData,
+  ChartDataSource,
+  ChartSeriesOverride,
+} from '../../../types'
+// Load adapter type augmentation (declare module).
+import '#blokkli/charts/adapter'
 import {
   categoriesAreDates,
   categoriesAreNumeric,
@@ -175,6 +236,7 @@ import {
 } from '../../../helpers'
 import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
 import { useChartEditorState } from './useChartEditorState'
+import { useChartDataSourcePreview } from './useChartDataSourcePreview'
 import { Icon, FormToggle, InfoBox } from '#blokkli/editor/components'
 import ChartTypePicker from './ChartTypePicker/index.vue'
 import DataTable from './DataTable/index.vue'
@@ -186,7 +248,14 @@ import DateFormatEditor from './DateFormatEditor/index.vue'
 import TranslationsEditor from './TranslationsEditor/index.vue'
 import Preview from './Preview/index.vue'
 import ChartTypeOptions from './ChartTypeOptions/index.vue'
+import DataSourcePicker from './DataSourcePicker/index.vue'
+import DynamicPreviewStatus from './DynamicPreviewStatus/index.vue'
+import SeriesOverridesPanel from './SeriesOverridesPanel/index.vue'
+import CategoryColorOverridesPanel from './CategoryColorOverridesPanel/index.vue'
+import OrphanOverridesWarning from './OrphanOverridesWarning/index.vue'
+import type { OrphanOverride } from './OrphanOverridesWarning/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import PanelTabs from '#blokkli/editor/components/Panel/Tabs/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import PanelAddButton from '#blokkli/editor/components/Panel/AddButton/index.vue'
 import ResizableEditorView from '#blokkli/editor/components/ResizableEditorView/index.vue'
@@ -198,7 +267,7 @@ const props = defineProps<{
   optionKey: string
 }>()
 
-const { $t, config, state } = useBlokkli()
+const { $t, config, state, adapter } = useBlokkli()
 
 const isTranslation = computed(() => state.editMode.value === 'translating')
 
@@ -299,20 +368,46 @@ const {
   setType,
 } = useChartEditorState(getCurrentData(), colorOptions)
 
+// The active "mode" the user is in. The tab is the source of truth for
+// what is shown and what is persisted — it doesn't mutate chartData. The
+// inline categories/series stay on the block as "shadow" data even while
+// a dataSource is selected, so flipping back to Custom restores them
+// without any state shuffling.
+const dataTab = ref<'custom' | 'dynamic'>(
+  chartData.value.dataSource ? 'dynamic' : 'custom',
+)
+
+// View of chartData that respects the current tab. When the user is on
+// the Custom tab, the dataSource is dropped so every downstream consumer
+// (renderer, translations editor, persistence) sees the chart as inline
+// data — even if a source is still stashed on the block.
+const effectiveChartData = computed<BlokkliChartData>(() => {
+  if (dataTab.value === 'custom' && chartData.value.dataSource) {
+    return { ...chartData.value, dataSource: undefined }
+  }
+  return chartData.value
+})
+
+function getData(): BlokkliChartData {
+  return effectiveChartData.value
+}
+
+defineExpose({ getData })
+
 const autoUpdate = ref(true)
 const previewData = ref<BlokkliChartData>(
-  JSON.parse(JSON.stringify(chartData.value)),
+  JSON.parse(JSON.stringify(effectiveChartData.value)),
 )
 const isStale = ref(false)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 function refreshPreview() {
-  previewData.value = JSON.parse(JSON.stringify(chartData.value))
+  previewData.value = JSON.parse(JSON.stringify(effectiveChartData.value))
   isStale.value = false
 }
 
 watch(
-  chartData,
+  effectiveChartData,
   () => {
     if (autoUpdate.value) {
       if (debounceTimer) clearTimeout(debounceTimer)
@@ -360,8 +455,142 @@ const hasDateFormattedCategories = computed(() =>
   categoriesAreDates(chartData.value.categories),
 )
 
-function getData(): BlokkliChartData {
-  return chartData.value
+// --- Dynamic data sources ---
+
+const { data: capabilities } = await useAsyncData(
+  () =>
+    adapter.getChartDataSourceCapabilities
+      ? Promise.resolve(adapter.getChartDataSourceCapabilities())
+      : Promise.resolve(null),
+  { default: () => null },
+)
+
+// If the adapter doesn't support data sources but a saved chart still has
+// a dataSource ref, fall back to the Custom tab so the user can interact
+// with the inline data.
+if (!capabilities.value && dataTab.value === 'dynamic') {
+  dataTab.value = 'custom'
+}
+
+const dataTabs = computed(() => [
+  { id: 'custom' as const, label: $t('chartsDataTabCustom', 'Custom data') },
+  { id: 'dynamic' as const, label: $t('chartsDataTabDynamic', 'Dynamic data') },
+])
+
+const knownSourceIds = ref<Set<string>>(new Set())
+
+const currentSourceId = computed(() => chartData.value.dataSource?.id)
+
+const {
+  status: previewStatus,
+  error: previewError,
+  payload: previewPayload,
+} = useChartDataSourcePreview(currentSourceId)
+
+const sourceMissing = computed(() => {
+  const id = chartData.value.dataSource?.id
+  if (!id) return false
+  if (knownSourceIds.value.size === 0) return false
+  return !knownSourceIds.value.has(id)
+})
+
+const selectedDataSource = computed<ChartDataSource | null>(() => {
+  const ref = chartData.value.dataSource
+  if (!ref) return null
+  return {
+    id: ref.id,
+    label: ref.label,
+  }
+})
+
+const previewSeriesNames = computed<string[]>(() => {
+  return previewPayload.value?.series.map((s) => s.name) ?? []
+})
+
+const previewEmpty = computed(() => {
+  const p = previewPayload.value
+  if (!p) return false
+  return p.categories.length === 0 || p.series.length === 0
+})
+
+const seriesOverrideNames = computed(() =>
+  Object.keys(chartData.value.dataSource?.seriesOverrides ?? {}),
+)
+
+const categoryOverrideNames = computed(() =>
+  Object.keys(chartData.value.dataSource?.categoryColorOverrides ?? {}),
+)
+
+// Compute the preview's dynamicData snapshot used by the Preview component.
+// We snapshot on each preview refresh so toggling autoUpdate behaves
+// consistently with the rest of the preview pipeline.
+const previewDynamicData = computed(() => {
+  if (!previewData.value.dataSource) return null
+  return previewPayload.value
+})
+
+function onSelectDataSource(source: ChartDataSource) {
+  chartData.value.dataSource = {
+    id: source.id,
+    label: source.label,
+  }
+}
+
+function onClearDataSource() {
+  chartData.value.dataSource = undefined
+}
+
+function onKnownIdsUpdated(ids: Set<string>) {
+  knownSourceIds.value = ids
+}
+
+function onUpdateSeriesOverrides(
+  overrides: Record<string, ChartSeriesOverride>,
+) {
+  if (!chartData.value.dataSource) return
+  chartData.value.dataSource = {
+    ...chartData.value.dataSource,
+    seriesOverrides:
+      Object.keys(overrides).length === 0 ? undefined : overrides,
+  }
+}
+
+function onUpdateCategoryOverrides(overrides: Record<string, string>) {
+  if (!chartData.value.dataSource) return
+  chartData.value.dataSource = {
+    ...chartData.value.dataSource,
+    categoryColorOverrides:
+      Object.keys(overrides).length === 0 ? undefined : overrides,
+  }
+}
+
+function withoutKey<V>(
+  source: Record<string, V> | undefined,
+  key: string,
+): Record<string, V> {
+  const next: Record<string, V> = {}
+  if (source) {
+    for (const k of Object.keys(source)) {
+      if (k !== key) next[k] = source[k]!
+    }
+  }
+  return next
+}
+
+function onRemoveOrphan(orphan: OrphanOverride) {
+  if (!chartData.value.dataSource) return
+  if (orphan.scope === 'series') {
+    onUpdateSeriesOverrides(
+      withoutKey(chartData.value.dataSource.seriesOverrides, orphan.name),
+    )
+  } else {
+    onUpdateCategoryOverrides(
+      withoutKey(
+        chartData.value.dataSource.categoryColorOverrides,
+        orphan.name,
+      ),
+    )
+  }
 }
 
 onBlokkliEvent('keyPressed', (e) => {
@@ -377,6 +606,4 @@ onBlokkliEvent('keyPressed', (e) => {
     }
   }
 })
-
-defineExpose({ getData })
 </script>

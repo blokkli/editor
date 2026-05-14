@@ -1,8 +1,9 @@
 <template>
   <div class="container mx-auto my-20">
     <ChartRenderer
-      v-if="chartData && chartData.series?.length > 0"
-      v-bind="chartData"
+      v-if="hasRenderableData"
+      v-bind="chartData!"
+      :dynamic-data="dynamicData"
     />
     <div
       v-else
@@ -14,9 +15,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli, computed } from '#imports'
+import { defineBlokkli, computed, ref, watch } from '#imports'
 import { ChartRenderer } from '#blokkli/charts/components'
-import type { BlokkliChartData } from '#blokkli/charts/types'
+import type {
+  BlokkliChartData,
+  ChartDataSourcePayload,
+} from '#blokkli/charts/types'
 
 const { options } = defineBlokkli({
   bundle: 'chart',
@@ -38,7 +42,37 @@ const { options } = defineBlokkli({
 
 export type Props = Record<string, never>
 
-const chartData = computed<BlokkliChartData | null>(() => {
-  return options.value.data
+const chartData = computed<BlokkliChartData | null>(() => options.value.data)
+
+const sourceId = computed(() => chartData.value?.dataSource?.id)
+
+const dynamicData = ref<ChartDataSourcePayload | null>(null)
+
+watch(
+  sourceId,
+  async (id) => {
+    if (!id) {
+      dynamicData.value = null
+      return
+    }
+    if (import.meta.server) return
+    try {
+      dynamicData.value = await $fetch<ChartDataSourcePayload>(
+        `/api/mock-chart-data/${id}`,
+      )
+    } catch {
+      dynamicData.value = null
+    }
+  },
+  { immediate: true },
+)
+
+const hasRenderableData = computed(() => {
+  if (!chartData.value) return false
+  // For dynamic sources, defer to ChartRenderer — it falls back to the
+  // editor preview inject when this component is rendered inside the
+  // editor's preview pane and the runtime fetch hasn't completed yet.
+  if (chartData.value.dataSource) return true
+  return (chartData.value.series?.length ?? 0) > 0
 })
 </script>
