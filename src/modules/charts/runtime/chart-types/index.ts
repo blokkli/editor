@@ -4,23 +4,20 @@ import type {
   ChartTypeFactory,
 } from './types'
 
-import type { TypeOptions as BarTypeOptions } from './bar'
+import type { TypeOptions as BarTypeOptions } from './bar/meta'
+import type { TypeOptions as PieTypeOptions } from './pie/meta'
+// Type-only imports for the unported chart types. Elided at runtime, so
+// they don't drag the Apex-shaped factory code into the bundle. The
+// runtime registry below only ships bar and pie. See the plan for context.
 import type { TypeOptions as LineTypeOptions } from './line'
 import type { TypeOptions as AreaTypeOptions } from './area'
-import type { TypeOptions as PieTypeOptions } from './pie'
 import type { TypeOptions as DonutTypeOptions } from './donut'
 import type { TypeOptions as HeatmapTypeOptions } from './heatmap'
 import type { TypeOptions as RadialBarTypeOptions } from './radialBar'
 import type { TypeOptions as RadarTypeOptions } from './radar'
 
-import barFactory from './bar'
-import lineFactory from './line'
-import areaFactory from './area'
-import pieFactory from './pie'
-import donutFactory from './donut'
-import heatmapFactory from './heatmap'
-import radialBarFactory from './radialBar'
-import radarFactory from './radar'
+import barFactory from './bar/meta'
+import pieFactory from './pie/meta'
 
 export type ChartTypeOptionsMap = {
   bar: BarTypeOptions
@@ -33,16 +30,7 @@ export type ChartTypeOptionsMap = {
   radar: RadarTypeOptions
 }
 
-const factories: ChartTypeFactory<any>[] = [
-  barFactory,
-  lineFactory,
-  pieFactory,
-  areaFactory,
-  donutFactory,
-  heatmapFactory,
-  radialBarFactory,
-  radarFactory,
-]
+const factories: ChartTypeFactory<any>[] = [barFactory, pieFactory]
 
 const noopT: TranslateFunction = (_key, fallback) => fallback
 

@@ -2,12 +2,9 @@
   <div>
     <ClientOnly>
       <component
-        :is="ApexChart"
-        v-if="ApexChart && hasRenderableData"
-        :type="type"
-        :options="chartOptions"
-        :series="chartSeries"
-        height="550"
+        :is="typeComponent"
+        v-if="typeComponent && renderProps"
+        v-bind="renderProps"
       />
       <ol v-if="resolvedFootnotes.length" class="blokkli-chart-footnotes">
         <li v-for="(note, i) in resolvedFootnotes" :key="i">
@@ -31,17 +28,16 @@ import type {
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
-import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
-import type { ChartBuildContext } from '../../chartTypes'
-import type { ApexOptions } from 'apexcharts'
+import type { ChartTypeRenderProps } from '../../chartTypes/componentProps'
 import {
   INJECT_IS_EDITING,
   INJECT_PROVIDER_CONTEXT,
 } from '#blokkli/helpers/injections'
 
-const ApexChart = import.meta.client
-  ? defineAsyncComponent(() => import('vue3-apexcharts'))
-  : undefined
+const typeComponents = {
+  bar: defineAsyncComponent(() => import('../../chartTypes/bar/index.vue')),
+  pie: defineAsyncComponent(() => import('../../chartTypes/pie/index.vue')),
+} as const
 
 const props = defineProps<
   BlokkliChartData & {
@@ -139,8 +135,6 @@ const effectiveData = computed<{
   }
 })
 
-const hasRenderableData = computed(() => !!effectiveData.value)
-
 const resolvedTitle = computed(() => {
   const t = props.translations?.[currentLanguage.value]
   return t?.title || props.title
@@ -198,10 +192,6 @@ const resolvedNumberFormat = computed(() => {
   }
 })
 
-const chartDef = computed(() =>
-  import.meta.client ? getChartTypeRuntime(props.type) : undefined,
-)
-
 function superscriptFor(n: number): string {
   if (import.meta.server) {
     return ''
@@ -212,27 +202,6 @@ function superscriptFor(n: number): string {
     .join('')
 }
 
-function deepMerge(
-  target: Record<string, any>,
-  source: Record<string, any>,
-): Record<string, any> {
-  const result = { ...target }
-  for (const key of Object.keys(source)) {
-    if (
-      result[key] &&
-      typeof result[key] === 'object' &&
-      !Array.isArray(result[key]) &&
-      typeof source[key] === 'object' &&
-      !Array.isArray(source[key])
-    ) {
-      result[key] = deepMerge(result[key], source[key])
-    } else {
-      result[key] = source[key]
-    }
-  }
-  return result
-}
-
 function resolveHex(id: string): string {
   const map = appConfig.blokkli?.colorOptions as
     | Record<string, string>
@@ -240,91 +209,25 @@ function resolveHex(id: string): string {
   return map?.[id] || '#888888'
 }
 
-const resolvedColors = computed(() => {
-  if (import.meta.server) {
-    return []
-  }
-  const def = chartDef.value
+const typeComponent = computed(
+  () => typeComponents[props.type as keyof typeof typeComponents],
+)
+
+const renderProps = computed<ChartTypeRenderProps | null>(() => {
   const data = effectiveData.value
-  if (!def || !data) return []
-  if (def.hasCategoryColors) {
-    return data.categoryColors.map(resolveHex)
-  }
-  if (def.hasSeriesColors) {
-    return data.series.map((s) => resolveHex(s.color))
-  }
-  return []
-})
-
-const chartOptions = computed<ApexOptions>(() => {
-  if (import.meta.server) {
-    return {}
-  }
-  const def = chartDef.value
-  if (!def || !effectiveData.value) return {}
-
-  const base: ApexOptions = {
-    chart: {
-      toolbar: { show: false },
-      redrawOnParentResize: false,
-      zoom: { enabled: false },
-      animations: { enabled: !isEditing },
-    },
-  }
-
-  if (resolvedColors.value.length) {
-    base.colors = resolvedColors.value
-  }
-
-  if (resolvedTitle.value) {
-    base.title = { text: applyFootnotes(resolvedTitle.value), align: 'left' }
-  }
-
-  const ctx: ChartBuildContext = {
-    title: resolvedTitle.value,
+  if (!data) return null
+  return {
+    title: applyFootnotes(resolvedTitle.value),
     categories: formattedCategories.value.map(applyFootnotes),
     series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
-      color: s.color,
       data: s.data,
     })),
-    seriesColors: resolvedColors.value,
-    categoryColors: resolvedColors.value,
-    typeOptions: {
-      ...getDefaultTypeOptions(props.type),
-      ...props.typeOptions,
-    },
+    seriesHexColors: data.series.map((s) => resolveHex(s.color)),
+    categoryHexColors: data.categoryColors.map(resolveHex),
+    typeOptions: (props.typeOptions ?? {}) as Record<string, unknown>,
     numberFormat: resolvedNumberFormat.value,
+    isEditing,
   }
-
-  const typeOpts = def.buildChartOptions(ctx)
-  return deepMerge(base, typeOpts)
-})
-
-const chartSeries = computed(() => {
-  if (import.meta.server) {
-    return []
-  }
-  const def = chartDef.value
-  if (!def || !effectiveData.value) return []
-
-  const ctx: ChartBuildContext = {
-    title: resolvedTitle.value,
-    categories: formattedCategories.value.map(applyFootnotes),
-    series: resolvedSeries.value.map((s) => ({
-      name: applyFootnotes(s.name),
-      color: s.color,
-      data: s.data,
-    })),
-    seriesColors: resolvedColors.value,
-    categoryColors: resolvedColors.value,
-    typeOptions: {
-      ...getDefaultTypeOptions(props.type),
-      ...props.typeOptions,
-    },
-    numberFormat: resolvedNumberFormat.value,
-  }
-
-  return def.buildSeries(ctx)
 })
 </script>

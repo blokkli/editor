@@ -1,8 +1,8 @@
-import { defineChartType } from './define'
+import { defineChartType } from '../define'
 import {
   createNumberFormatter,
   createPercentFormatter,
-} from '../helpers/numberFormat'
+} from '../../helpers/numberFormat'
 
 export type TypeOptions = { showLabels: boolean }
 

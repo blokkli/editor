@@ -1,4 +1,4 @@
-import { defineChartType } from './define'
+import { defineChartType } from '../define'
 import {
   xAxisOptions,
   buildXAxisLabelOptions,
@@ -11,14 +11,14 @@ import {
   buildValueFormatOptions,
   yAxisMinOptions,
   mergeShared,
-} from './shared'
+} from '../shared'
 import type {
   XAxisTypeOptions,
   DataLabelsTypeOptions,
   LegendTypeOptions,
   GridTypeOptions,
   YAxisMinTypeOptions,
-} from './shared'
+} from '../shared'
 
 export type TypeOptions = {
   stacked: boolean
