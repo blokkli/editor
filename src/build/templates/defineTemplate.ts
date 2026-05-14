@@ -13,6 +13,7 @@ export type TemplateDependency =
   | 'agent-server'
   | 'agent-prompts'
   | 'module-css'
+  | 'chart-types'
 
 /**
  * Where the template should be available:

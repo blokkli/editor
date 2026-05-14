@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, useAppConfig } from '#imports'
+import { computed, inject, useAppConfig } from '#imports'
 import type {
   BlokkliChartData,
   ChartDataSourcePayload,
@@ -28,16 +28,12 @@ import type {
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
-import type { ChartTypeRenderProps } from '../../chartTypes/componentProps'
+import type { ChartTypeRenderProps } from '../../chart-types/componentProps'
+import { chartTypeComponents } from '#blokkli-build/charts-components'
 import {
   INJECT_IS_EDITING,
   INJECT_PROVIDER_CONTEXT,
 } from '#blokkli/helpers/injections'
-
-const typeComponents = {
-  bar: defineAsyncComponent(() => import('../../chartTypes/bar/index.vue')),
-  pie: defineAsyncComponent(() => import('../../chartTypes/pie/index.vue')),
-} as const
 
 const props = defineProps<
   BlokkliChartData & {
@@ -209,9 +205,7 @@ function resolveHex(id: string): string {
   return map?.[id] || '#888888'
 }
 
-const typeComponent = computed(
-  () => typeComponents[props.type as keyof typeof typeComponents],
-)
+const typeComponent = computed(() => chartTypeComponents[props.type])
 
 const renderProps = computed<ChartTypeRenderProps | null>(() => {
   const data = effectiveData.value

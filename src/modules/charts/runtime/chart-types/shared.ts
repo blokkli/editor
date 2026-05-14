@@ -1,8 +1,6 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOptions'
 import type { TranslateFunction } from './types'
-import type { ChartNumberFormat } from '../types'
-import { createNumberFormatter } from '../helpers/numberFormat'
 
 type SharedOptions = {
   options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
@@ -36,25 +34,6 @@ export function xAxisOptions($t: TranslateFunction): SharedOptions {
 }
 
 /**
- * Build x-axis label config from type options.
- * Returns properties to merge into the xaxis config object.
- */
-export function buildXAxisLabelOptions(
-  typeOptions: XAxisTypeOptions,
-): Record<string, any> {
-  const rotation = typeOptions.xaxisRotation
-  if (rotation && rotation !== 'auto') {
-    return {
-      labels: {
-        rotate: Number(rotation),
-        rotateAlways: true,
-      },
-    }
-  }
-  return {}
-}
-
-/**
  * Data labels option — show values directly on chart elements.
  */
 export function dataLabelsOptions($t: TranslateFunction): SharedOptions {
@@ -71,25 +50,10 @@ export function dataLabelsOptions($t: TranslateFunction): SharedOptions {
 }
 
 /**
- * Build data labels config from type options.
- */
-export function buildDataLabelsOptions(
-  typeOptions: DataLabelsTypeOptions,
-  format?: ChartNumberFormat,
-): Record<string, any> {
-  return {
-    dataLabels: {
-      enabled: !!typeOptions.dataLabels,
-      formatter: createNumberFormatter(format),
-    },
-  }
-}
-
-/**
  * Y-axis manual start value option.
  *
  * When unset (`undefined`) the chart auto-scales from the data minimum.
- * When set, ApexCharts forces the Y axis to start at the given value.
+ * When set, chart types may force the Y axis to start at the given value.
  */
 export function yAxisMinOptions($t: TranslateFunction): SharedOptions {
   return {
@@ -101,30 +65,6 @@ export function yAxisMinOptions($t: TranslateFunction): SharedOptions {
         group: 'display',
       },
     },
-  }
-}
-
-/**
- * Build the standard yaxis-label + tooltip-y formatter pair for chart types
- * that have a numeric axis (bar, line, area, radar). Also folds in an explicit
- * `yaxis.min` from `yaxisMin` so the two helpers don't clobber each other when
- * spread.
- */
-export function buildValueFormatOptions(
-  typeOptions: Partial<YAxisMinTypeOptions>,
-  format: ChartNumberFormat | undefined,
-): Record<string, any> {
-  const formatter = createNumberFormatter(format)
-  const yaxis: Record<string, any> = { labels: { formatter } }
-  if (
-    typeof typeOptions.yaxisMin === 'number' &&
-    Number.isFinite(typeOptions.yaxisMin)
-  ) {
-    yaxis.min = typeOptions.yaxisMin
-  }
-  return {
-    yaxis,
-    tooltip: { y: { formatter } },
   }
 }
 
@@ -149,15 +89,6 @@ export function legendOptions($t: TranslateFunction): SharedOptions {
 }
 
 /**
- * Build legend config from type options.
- */
-export function buildLegendOptions(
-  typeOptions: LegendTypeOptions,
-): Record<string, any> {
-  return { legend: { position: typeOptions.legendPosition || 'bottom' } }
-}
-
-/**
  * Grid lines option for chart types with axes.
  */
 export function gridOptions($t: TranslateFunction): SharedOptions {
@@ -171,15 +102,6 @@ export function gridOptions($t: TranslateFunction): SharedOptions {
       },
     },
   }
-}
-
-/**
- * Build grid config from type options.
- */
-export function buildGridOptions(
-  typeOptions: GridTypeOptions,
-): Record<string, any> {
-  return { grid: { show: !!typeOptions.gridLines } }
 }
 
 /**
@@ -200,15 +122,6 @@ export function strokeWidthOptions($t: TranslateFunction): SharedOptions {
       },
     },
   }
-}
-
-/**
- * Build stroke width config from type options.
- */
-export function buildStrokeWidthOptions(
-  typeOptions: StrokeWidthTypeOptions,
-): Record<string, any> {
-  return { stroke: { width: Number(typeOptions.strokeWidth) || 2 } }
 }
 
 /**

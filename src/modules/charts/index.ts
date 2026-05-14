@@ -1,6 +1,10 @@
 import { createResolver } from '@nuxt/kit'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { fileURLToPath } from 'node:url'
+import * as path from 'node:path'
+import { ChartTypeCollector } from './build/ChartTypeCollector'
+import createDefinitionsTemplate from './build/templates/definitions'
+import createComponentsTemplate from './build/templates/components'
 import type { ChartsModuleOptions } from './build/types'
 
 const resolve = createResolver(
@@ -22,6 +26,32 @@ export default defineBlokkliModule<ChartsModuleOptions>({
       '#blokkli/charts/components',
       resolve('./runtime/components'),
     )
+
+    const nuxt = helper.nuxt
+    const moduleBlokkliDirs = helper.options.blokkliDirs || []
+
+    const projectChartsDir = path.resolve(
+      nuxt.options.rootDir,
+      'blokkli/chart-types',
+    )
+
+    // The charts module's own built-in types (bar, pie) live at
+    // ./runtime/blokkli/chart-types/, picked up via the blokkliDirs loop
+    // below — this module consumes the same convention it offers to userland.
+    const chartTypes = new ChartTypeCollector(helper, {
+      dirs: [
+        projectChartsDir,
+        ...moduleBlokkliDirs.map((d) => path.join(d, 'chart-types')),
+      ],
+    })
+    context.addCollector(chartTypes)
+    context.addTemplate(createDefinitionsTemplate(chartTypes))
+    context.addTemplate(createComponentsTemplate(chartTypes))
+
+    helper.addAppTsInclude(projectChartsDir)
+    for (const dir of moduleBlokkliDirs) {
+      helper.addAppTsInclude(path.join(dir, 'chart-types'))
+    }
 
     context.registerComplexOptionType({
       id: 'chart',

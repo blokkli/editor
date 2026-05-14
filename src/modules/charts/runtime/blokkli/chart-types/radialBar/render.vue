@@ -1,9 +1,5 @@
 <template>
-  <VChart
-    :option="option"
-    autoresize
-    style="height: 550px; width: 100%"
-  />
+  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
 </template>
 
 <script setup lang="ts">
@@ -11,24 +7,21 @@ import { computed } from '#imports'
 import VChart from 'vue-echarts'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { PieChart } from 'echarts/charts'
+import { BarChart } from 'echarts/charts'
 import {
+  PolarComponent,
   TooltipComponent,
-  LegendComponent,
   TitleComponent,
 } from 'echarts/components'
-import type { ChartTypeRenderProps } from '../componentProps'
-import {
-  createNumberFormatter,
-  createPercentFormatter,
-} from '../../helpers/numberFormat'
-import type { TypeOptions } from './meta'
+import type { ChartTypeRenderProps } from '../../../chart-types/componentProps'
+import { createNumberFormatter } from '../../../helpers/numberFormat'
+import type { TypeOptions } from './definition'
 
 use([
   CanvasRenderer,
-  PieChart,
+  BarChart,
+  PolarComponent,
   TooltipComponent,
-  LegendComponent,
   TitleComponent,
 ])
 
@@ -39,29 +32,41 @@ const option = computed(() => {
   const showLabels = t.showLabels ?? true
   const values = props.series[0]?.data ?? []
   const valueFormatter = createNumberFormatter(props.numberFormat)
-  const percentFormatter = createPercentFormatter(props.numberFormat)
+  const max = Math.max(0, ...values.map((v) => v ?? 0))
+
   const data = props.categories.map((name, i) => ({
     name,
     value: values[i] ?? 0,
     itemStyle: { color: props.categoryHexColors[i] },
   }))
+
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
     animation: !props.isEditing,
+    polar: { radius: ['20%', '70%'] },
     tooltip: {
       trigger: 'item' as const,
-      valueFormatter: (v: number) => valueFormatter(v),
+      formatter: (p: { name: string; value: number }) =>
+        `${p.name}: ${valueFormatter(p.value)}`,
     },
-    legend: { left: 'center', bottom: 0, orient: 'horizontal' as const },
+    angleAxis: { max: max || 1, startAngle: 90, show: false },
+    radiusAxis: {
+      type: 'category' as const,
+      data: props.categories,
+      axisLabel: { show: showLabels },
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
     series: [
       {
-        type: 'pie' as const,
-        radius: '60%',
-        center: ['50%', '50%'],
+        type: 'bar' as const,
+        coordinateSystem: 'polar' as const,
         data,
+        roundCap: true,
         label: {
           show: showLabels,
-          formatter: (p: { percent: number }) => percentFormatter(p.percent),
+          position: 'middle' as const,
+          formatter: (p: { value: number }) => valueFormatter(p.value),
         },
       },
     ],

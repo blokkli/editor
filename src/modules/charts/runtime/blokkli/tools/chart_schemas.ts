@@ -3,7 +3,7 @@ import type { BlokkliChartData } from '#blokkli/charts/types'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../helpers'
-import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chartTypes'
+import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chart-types'
 import { colorOptions } from '#blokkli-build/editor-config'
 
 const SINGLE_SERIES_TYPES = ['pie', 'donut', 'radialBar']

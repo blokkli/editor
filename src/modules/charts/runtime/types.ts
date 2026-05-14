@@ -1,16 +1,20 @@
-import type { ChartTypeOptionsMap } from './chartTypes/index'
+import type { ChartTypeId } from './chart-types/index'
 
-export type ChartType =
-  | 'bar'
-  | 'line'
-  | 'pie'
-  | 'area'
-  | 'donut'
-  | 'heatmap'
-  | 'radialBar'
-  | 'radar'
+export type ChartType = ChartTypeId
 
-export type ChartTypeOptions = ChartTypeOptionsMap[ChartType]
+export type ChartTypeOptions = Record<string, unknown>
+
+// Re-exports so userland can import everything needed to write a chart-type
+// definition.ts + render.vue from a single alias.
+export { defineChartType } from './chart-types/define'
+export type {
+  ChartTypeDefinition,
+  ChartTypeDefinitionEntry,
+  ChartTypeDefinitionBody,
+  ChartTypeFactory,
+  TranslateFunction,
+} from './chart-types/types'
+export type { ChartTypeRenderProps } from './chart-types/componentProps'
 
 export type ChartSeries = {
   name: string
@@ -159,9 +163,7 @@ type ChartDataBase = {
   dataSource?: ChartDataSourceRef
 }
 
-export type BlokkliChartData = {
-  [K in ChartType]: ChartDataBase & {
-    type: K
-    typeOptions?: Partial<ChartTypeOptionsMap[K]>
-  }
-}[ChartType]
+export type BlokkliChartData = ChartDataBase & {
+  type: ChartType
+  typeOptions?: Record<string, unknown>
+}

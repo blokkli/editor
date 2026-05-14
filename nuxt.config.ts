@@ -107,7 +107,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/iframes/runtime/**/*',
         '../src/modules/readability/runtime/**/*',
         '../src/modules/charts/runtime/blokkli/tools/**/*',
-        '../src/modules/charts/runtime/chartTypes/**/*',
+        '../src/modules/charts/runtime/chart-types/**/*',
         '../src/modules/charts/runtime/components/**/*',
         '../src/modules/charts/runtime/features/**/*',
         '../src/modules/charts/runtime/helpers/**/*',

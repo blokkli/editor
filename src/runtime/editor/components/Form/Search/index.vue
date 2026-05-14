@@ -15,10 +15,7 @@
       class="flex items-center gap-5 h-[46px] px-10 bg-mono-50 text-mono-950 border border-mono-200"
       :class="{ 'opacity-50': disabled }"
     >
-      <Icon
-        :name="icon ?? 'bk_mdi_search'"
-        class="[&_svg]:size-15 [&_svg]:fill-mono-500"
-      />
+      <Icon :name="icon ?? 'bk_mdi_search'" class="size-20 text-mono-500" />
       <span class="flex-1 truncate text-sm font-medium">
         {{ selectedLabel }}
       </span>

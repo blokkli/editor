@@ -234,7 +234,7 @@ import {
   getDefaultChartData,
   getFirstColorId,
 } from '../../../helpers'
-import { getChartType, getDefaultTypeOptions } from '../../../chartTypes'
+import { getChartType, getDefaultTypeOptions } from '../../../chart-types'
 import { useChartEditorState } from './useChartEditorState'
 import { useChartDataSourcePreview } from './useChartDataSourcePreview'
 import { Icon, FormToggle, InfoBox } from '#blokkli/editor/components'

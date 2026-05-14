@@ -24,7 +24,10 @@
 <script setup lang="ts">
 import { computed, ref, useBlokkli } from '#imports'
 import type { ChartType } from '../../../../types'
-import { getChartTypes, type ChartTypeDefinition } from '../../../../chartTypes'
+import {
+  getChartTypes,
+  type ChartTypeDefinition,
+} from '../../../../chart-types'
 import PanelItem from '#blokkli/editor/components/Panel/Item/index.vue'
 import TransitionCollapse from '#blokkli/editor/components/Transition/Collapse/index.vue'
 

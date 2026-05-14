@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { computed } from '#imports'
 import { FormToggle, FormRadio, FormNumber } from '#blokkli/editor/components'
-import type { ChartTypeDefinition } from '../../../../chartTypes/types'
+import type { ChartTypeDefinition } from '../../../../chart-types/types'
 
 type ChartOption = ChartTypeDefinition['editor']['options'][string]
 

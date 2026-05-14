@@ -1,59 +1,40 @@
+import { definitions } from '#blokkli-build/charts-definitions'
 import type {
-  TranslateFunction,
   ChartTypeDefinition,
-  ChartTypeFactory,
+  ChartTypeDefinitionEntry,
+  TranslateFunction,
 } from './types'
 
-import type { TypeOptions as BarTypeOptions } from './bar/meta'
-import type { TypeOptions as PieTypeOptions } from './pie/meta'
-// Type-only imports for the unported chart types. Elided at runtime, so
-// they don't drag the Apex-shaped factory code into the bundle. The
-// runtime registry below only ships bar and pie. See the plan for context.
-import type { TypeOptions as LineTypeOptions } from './line'
-import type { TypeOptions as AreaTypeOptions } from './area'
-import type { TypeOptions as DonutTypeOptions } from './donut'
-import type { TypeOptions as HeatmapTypeOptions } from './heatmap'
-import type { TypeOptions as RadialBarTypeOptions } from './radialBar'
-import type { TypeOptions as RadarTypeOptions } from './radar'
-
-import barFactory from './bar/meta'
-import pieFactory from './pie/meta'
-
-export type ChartTypeOptionsMap = {
-  bar: BarTypeOptions
-  line: LineTypeOptions
-  area: AreaTypeOptions
-  pie: PieTypeOptions
-  donut: DonutTypeOptions
-  heatmap: HeatmapTypeOptions
-  radialBar: RadialBarTypeOptions
-  radar: RadarTypeOptions
-}
-
-const factories: ChartTypeFactory<any>[] = [barFactory, pieFactory]
+export type {
+  ChartTypeDefinition,
+  ChartTypeDefinitionEntry,
+  ChartTypeFactory,
+  TranslateFunction,
+} from './types'
+export { defineChartType } from './define'
+export type {
+  ChartTypeOptionsMap,
+  ChartTypeId,
+} from '#blokkli-build/charts-definitions'
 
 const noopT: TranslateFunction = (_key, fallback) => fallback
 
-const runtimeCache: Record<string, ChartTypeDefinition> = {}
-
-function ensureRuntimeCache() {
-  if (Object.keys(runtimeCache).length === 0) {
-    for (const factory of factories) {
-      const def = factory(noopT)
-      runtimeCache[def.id] = def
-    }
-  }
+function resolve<T extends Record<string, unknown>>(
+  entry: ChartTypeDefinitionEntry<T>,
+  $t: TranslateFunction,
+): ChartTypeDefinition<T> {
+  return { id: entry.id, ...entry.factory($t) }
 }
 
 /**
  * Get a chart type definition using fallback labels (no real translations).
- * Used by ChartRenderer which runs in both edit mode and production.
+ * Used by agent tools that don't have access to `$t`.
  */
 export function getChartTypeRuntime(
   id: string,
 ): ChartTypeDefinition | undefined {
-  ensureRuntimeCache()
-  return runtimeCache[id]
+  const entry = definitions.find((d) => d.id === id)
+  return entry ? resolve(entry, noopT) : undefined
 }
 
 /**
@@ -61,7 +42,7 @@ export function getChartTypeRuntime(
  * Used by editor components only.
  */
 export function getChartTypes($t: TranslateFunction): ChartTypeDefinition[] {
-  return factories.map((factory) => factory($t))
+  return definitions.map((entry) => resolve(entry, $t))
 }
 
 /**
@@ -72,7 +53,8 @@ export function getChartType(
   id: string,
   $t: TranslateFunction,
 ): ChartTypeDefinition | undefined {
-  return getChartTypes($t).find((def) => def.id === id)
+  const entry = definitions.find((d) => d.id === id)
+  return entry ? resolve(entry, $t) : undefined
 }
 
 /**
@@ -87,9 +69,3 @@ export function getDefaultTypeOptions(id: string): Record<string, unknown> {
   }
   return defaults
 }
-
-export type {
-  ChartTypeDefinition,
-  ChartBuildContext,
-  TranslateFunction,
-} from './types'

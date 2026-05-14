@@ -1,30 +1,15 @@
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { BlockOptionDefinitionBase } from '../../../../global/types/blockOptions'
-import type { ChartNumberFormat } from '../types'
 
 export type TranslateFunction = (key: string, fallback: string) => string
 
-export type ChartBuildContext<
+export type ChartTypeDefinitionBody<
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
-  title: string
-  categories: string[]
-  series: Array<{ name: string; color: string; data: number[] }>
-  seriesColors: string[]
-  categoryColors: string[]
-  typeOptions: T
-  numberFormat?: ChartNumberFormat
-}
-
-export type ChartTypeDefinition<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = {
-  id: string
   hasMultipleSeries: boolean
   hasSeriesColors: boolean
   hasCategoryColors: boolean
-  buildChartOptions: (ctx: ChartBuildContext<T>) => Record<string, any>
-  buildSeries: (ctx: ChartBuildContext<T>) => any
   editor: {
     label: string
     description: string
@@ -35,4 +20,23 @@ export type ChartTypeDefinition<
 
 export type ChartTypeFactory<
   T extends Record<string, unknown> = Record<string, unknown>,
-> = ($t: TranslateFunction) => ChartTypeDefinition<T>
+> = ($t: TranslateFunction) => ChartTypeDefinitionBody<T>
+
+/**
+ * What `defineChartType` returns and what the registry stores.
+ */
+export type ChartTypeDefinitionEntry<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  id: string
+  factory: ChartTypeFactory<T>
+}
+
+/**
+ * Resolved at registry time. What downstream consumers see.
+ */
+export type ChartTypeDefinition<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = ChartTypeDefinitionBody<T> & { id: string }
+
+export { defineChartType } from './define'

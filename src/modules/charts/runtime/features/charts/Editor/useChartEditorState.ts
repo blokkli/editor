@@ -8,7 +8,7 @@ import type {
 import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../../helpers'
 import { nextCategoryValue } from '../../../helpers/nextCategoryValue'
-import { getDefaultTypeOptions } from '../../../chartTypes'
+import { getDefaultTypeOptions } from '../../../chart-types'
 
 const MAX_HISTORY = 50
 

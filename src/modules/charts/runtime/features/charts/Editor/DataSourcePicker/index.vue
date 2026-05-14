@@ -67,7 +67,11 @@ const formMode = computed<'fzf' | 'async'>(() =>
   props.capabilities.supportsSearch ? 'async' : 'fzf',
 )
 
-const { data: sources, status, error } = await useAsyncData<ChartDataSource[]>(
+const {
+  data: sources,
+  status,
+  error,
+} = await useAsyncData<ChartDataSource[]>(
   async () => {
     if (!adapter.getChartDataSources) return []
     const args = props.capabilities.supportsSearch

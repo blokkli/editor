@@ -1,24 +1,19 @@
-import { defineChartType } from '../define'
+import { defineChartType } from '../../../chart-types/define'
 import {
   xAxisOptions,
-  buildXAxisLabelOptions,
   dataLabelsOptions,
-  buildDataLabelsOptions,
   legendOptions,
-  buildLegendOptions,
   gridOptions,
-  buildGridOptions,
-  buildValueFormatOptions,
   yAxisMinOptions,
   mergeShared,
-} from '../shared'
+} from '../../../chart-types/shared'
 import type {
   XAxisTypeOptions,
   DataLabelsTypeOptions,
   LegendTypeOptions,
   GridTypeOptions,
   YAxisMinTypeOptions,
-} from '../shared'
+} from '../../../chart-types/shared'
 
 export type TypeOptions = {
   stacked: boolean
@@ -30,7 +25,7 @@ export type TypeOptions = {
   GridTypeOptions &
   YAxisMinTypeOptions
 
-export default defineChartType<TypeOptions>(($t) => {
+export default defineChartType<TypeOptions>('bar', ($t) => {
   const shared = mergeShared(
     xAxisOptions($t),
     dataLabelsOptions($t),
@@ -39,32 +34,9 @@ export default defineChartType<TypeOptions>(($t) => {
     yAxisMinOptions($t),
   )
   return {
-    id: 'bar',
     hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
-    buildChartOptions(ctx) {
-      return {
-        chart: { stacked: !!ctx.typeOptions.stacked },
-        plotOptions: {
-          bar: {
-            horizontal: !!ctx.typeOptions.horizontal,
-            borderRadius: Number(ctx.typeOptions.borderRadius) || 0,
-          },
-        },
-        xaxis: {
-          categories: ctx.categories,
-          ...buildXAxisLabelOptions(ctx.typeOptions),
-        },
-        ...buildDataLabelsOptions(ctx.typeOptions, ctx.numberFormat),
-        ...buildValueFormatOptions(ctx.typeOptions, ctx.numberFormat),
-        ...buildLegendOptions(ctx.typeOptions),
-        ...buildGridOptions(ctx.typeOptions),
-      }
-    },
-    buildSeries(ctx) {
-      return ctx.series.map((s) => ({ name: s.name, data: s.data }))
-    },
     editor: {
       label: $t('chartsTypeBar', 'Bar'),
       description: $t(

@@ -231,6 +231,62 @@ export function extractStringProperty(
   return undefined
 }
 
+/**
+ * Extracts the first string-literal positional argument of a specific
+ * composable call. Sibling to extractStringProperty, but for calls of the
+ * form `defineFoo('id', ...)` rather than `defineFoo({ id: '...' })`.
+ */
+export function extractFirstStringArg(
+  fileContents: string,
+  composables: string[],
+): string | undefined {
+  if (!composables.some((composable) => fileContents.includes(composable))) {
+    return undefined
+  }
+
+  const scripts = extractScriptContent(fileContents)
+
+  for (const script of scripts) {
+    try {
+      let result: string | undefined
+
+      const filename = script.loader === 'tsx' ? 'temp.tsx' : 'temp.ts'
+
+      parseAndWalk(script.code, filename, {
+        parseOptions: {
+          range: true,
+        },
+        enter(node) {
+          if (result) return
+
+          if (
+            node.type === 'CallExpression' &&
+            node.callee.type === 'Identifier' &&
+            composables.includes(node.callee.name)
+          ) {
+            const first = node.arguments[0]
+            if (
+              first &&
+              first.type === 'Literal' &&
+              typeof first.value === 'string'
+            ) {
+              result = first.value
+            }
+          }
+        },
+      })
+
+      if (result) {
+        return result
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return undefined
+}
+
 export function onlyUnique(value: string, index: number, self: Array<string>) {
   return self.indexOf(value) === index
 }
