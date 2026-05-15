@@ -24,7 +24,6 @@ export default defineChartType<TypeOptions>('agePyramid', ($t) => {
     legendOptions($t),
   )
   return {
-    hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
     editor: {

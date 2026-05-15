@@ -89,7 +89,7 @@
                 @remove="onRemoveOrphan"
               />
               <SeriesOverridesPanel
-                v-if="previewPayload && caps.hasMultipleSeries"
+                v-if="previewPayload"
                 :series-names="previewSeriesNames"
                 :overrides="chartData.dataSource.seriesOverrides ?? {}"
                 :has-series-colors="caps.hasSeriesColors"
@@ -124,7 +124,6 @@
                   :categories="chartData.categories"
                   :series="chartData.series"
                   :category-colors="chartData.categoryColors"
-                  :has-multiple-series="caps.hasMultipleSeries"
                   :has-series-colors="caps.hasSeriesColors"
                   :has-category-colors="caps.hasCategoryColors"
                   :remove-row="removeRow"
@@ -434,7 +433,6 @@ const chartDef = computed(() => getChartType(chartData.value.type, $t))
 const caps = computed(() => {
   const def = chartDef.value
   return {
-    hasMultipleSeries: def?.hasMultipleSeries ?? true,
     hasSeriesColors: def?.hasSeriesColors ?? true,
     hasCategoryColors: def?.hasCategoryColors ?? false,
   }

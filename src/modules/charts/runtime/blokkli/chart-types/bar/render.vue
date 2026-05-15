@@ -44,6 +44,7 @@ const opts = computed(() => {
       typeof t.yaxisMin === 'number' && Number.isFinite(t.yaxisMin)
         ? t.yaxisMin
         : undefined,
+    categoryFilter: t.categoryFilter === true,
   }
 })
 
@@ -73,26 +74,40 @@ const option = computed(() => {
       valueFormatter: (v: number) => valueFormatter(v),
     },
     legend: {
+      show: !o.categoryFilter,
       ...legendPositionToEcharts(o.legendPosition),
       data: props.series.map((s) => s.name),
     },
     grid: { containLabel: true, top: 50, left: 10, right: 10, bottom: 40 },
     xAxis: o.horizontal ? valueAxis : categoryAxis,
     yAxis: o.horizontal ? categoryAxis : valueAxis,
-    series: props.series.map((s, i) => ({
-      type: 'bar' as const,
-      name: s.name,
-      data: s.data,
-      stack: o.stacked ? 'total' : undefined,
-      itemStyle: {
-        color: props.seriesHexColors[i],
-        borderRadius: o.borderRadius,
-      },
-      label: {
-        show: o.dataLabels,
-        formatter: (p: { value: number }) => valueFormatter(p.value),
-      },
-    })),
+    series: props.series.map((s, i) => {
+      const useCategoryColors =
+        o.categoryFilter &&
+        props.series.length === 1 &&
+        props.categoryHexColors.length === s.data.length
+      return {
+        type: 'bar' as const,
+        name: s.name,
+        data: useCategoryColors
+          ? s.data.map((value, di) => ({
+              value,
+              itemStyle: { color: props.categoryHexColors[di] },
+            }))
+          : s.data,
+        stack: o.stacked ? 'total' : undefined,
+        itemStyle: useCategoryColors
+          ? { borderRadius: o.borderRadius }
+          : {
+              color: props.seriesHexColors[i],
+              borderRadius: o.borderRadius,
+            },
+        label: {
+          show: o.dataLabels,
+          formatter: (p: { value: number }) => valueFormatter(p.value),
+        },
+      }
+    }),
   }
 })
 </script>

@@ -5,10 +5,10 @@
     @input="onTableInput"
     @click="onTableClick"
   >
-    <thead v-if="hasMultipleSeries">
+    <thead>
       <tr>
         <th />
-        <th v-for="(s, si) in visibleSeries" :key="si">
+        <th v-for="(s, si) in series" :key="si">
           <div class="bk-chart-data-table-series-header">
             <ColorDropdown
               v-if="hasSeriesColors"
@@ -35,7 +35,6 @@
         </th>
         <th v-if="canDeleteRows" class="size-40 group/tooltip relative">
           <button
-            v-if="hasMultipleSeries"
             type="button"
             class="bk-chart-data-table-input size-full flex items-center justify-center hover:text-accent-600 hover:bg-mono-100"
             @click="$emit('addColumn')"
@@ -71,7 +70,7 @@
             />
           </div>
         </td>
-        <td v-for="(s, si) in visibleSeries" :key="si">
+        <td v-for="(s, si) in series" :key="si">
           <input
             type="text"
             inputmode="decimal"
@@ -107,7 +106,6 @@ const props = defineProps<{
   categories: string[]
   series: ChartSeries[]
   categoryColors: string[]
-  hasMultipleSeries: boolean
   hasSeriesColors: boolean
   hasCategoryColors: boolean
   removeRow: (index: number) => void
@@ -122,10 +120,6 @@ const emit = defineEmits<{
 }>()
 
 const { $t } = useBlokkli()
-
-const visibleSeries = computed(() =>
-  props.hasMultipleSeries ? props.series : props.series.slice(0, 1),
-)
 
 const canDeleteRows = computed(() => props.categories.length > 1)
 

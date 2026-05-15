@@ -6,6 +6,7 @@ import {
   gridOptions,
   strokeWidthOptions,
   yAxisMinOptions,
+  categoryFilterOptions,
   mergeShared,
 } from '#blokkli/charts/definition/options'
 import type {
@@ -15,6 +16,7 @@ import type {
   GridTypeOptions,
   StrokeWidthTypeOptions,
   YAxisMinTypeOptions,
+  CategoryFilterTypeOptions,
 } from '#blokkli/charts/types'
 
 export type TypeOptions = {
@@ -25,7 +27,8 @@ export type TypeOptions = {
   LegendTypeOptions &
   GridTypeOptions &
   StrokeWidthTypeOptions &
-  YAxisMinTypeOptions
+  YAxisMinTypeOptions &
+  CategoryFilterTypeOptions
 
 export default defineChartType<TypeOptions>('line', ($t) => {
   const shared = mergeShared(
@@ -35,9 +38,9 @@ export default defineChartType<TypeOptions>('line', ($t) => {
     gridOptions($t),
     strokeWidthOptions($t),
     yAxisMinOptions($t),
+    categoryFilterOptions($t),
   )
   return {
-    hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
     editor: {

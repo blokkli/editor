@@ -70,9 +70,15 @@ type OptionGroup = {
   options: OptionEntry[]
 }
 
-const allOptions = computed<OptionEntry[]>(() =>
-  Object.entries(props.options).map(([key, option]) => ({ key, option })),
-)
+const allOptions = computed<OptionEntry[]>(() => {
+  const ctx = { options: props.typeOptions }
+  return Object.entries(props.options)
+    .filter(
+      ([, option]) =>
+        typeof option.shouldRender !== 'function' || option.shouldRender(ctx),
+    )
+    .map(([key, option]) => ({ key, option }))
+})
 
 const ungroupedOptions = computed(() =>
   allOptions.value.filter((v) => !v.option.group),

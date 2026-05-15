@@ -5,6 +5,7 @@ import * as path from 'node:path'
 import { ChartTypeCollector } from './build/ChartTypeCollector'
 import createDefinitionsTemplate from './build/templates/definitions'
 import createComponentsTemplate from './build/templates/components'
+import createIllustrationsTemplate from './build/templates/illustrations'
 import type { ChartsModuleOptions } from './build/types'
 
 const resolve = createResolver(
@@ -51,6 +52,7 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     context.addCollector(chartTypes)
     context.addTemplate(createDefinitionsTemplate(chartTypes))
     context.addTemplate(createComponentsTemplate(chartTypes))
+    context.addTemplate(createIllustrationsTemplate(chartTypes))
 
     helper.addAppTsInclude(projectChartsDir)
     for (const dir of moduleBlokkliDirs) {

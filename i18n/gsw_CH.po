@@ -1478,6 +1478,14 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Chli"
 
+msgctxt "chartsCategoryFilter"
+msgid "Filterable category axis"
+msgstr "Filterbari Kategorie-Achse"
+
+msgctxt "chartsCategoryFilterLabel"
+msgid "Filter label"
+msgstr "Filter-Bezeichnig"
+
 msgctxt "chartsCsvAddFilter"
 msgid "Add filter"
 msgstr "Filter zuefüege"
@@ -1492,8 +1500,7 @@ msgstr "Kategorie-Spalte"
 
 msgctxt "chartsCsvCategoryColumnDescription"
 msgid "Distinct values in this column become the categories of the chart."
-msgstr ""
-"D'verschiedene Wärt vo derre Spalte wärde zu de Kategorie vom Diagramm."
+msgstr "D'verschiedene Wärt vo derre Spalte wärde zu de Kategorie vom Diagramm."
 
 msgctxt "chartsCsvData"
 msgid "Data"
@@ -1544,7 +1551,7 @@ msgid "Add"
 msgstr "Zuefüege"
 
 msgctxt "chartsCsvGroupByDescription"
-msgid "Each distinct combination across these columns becomes one series."
+msgid "Each distinct combination across these columns becomes one data series."
 msgstr "Jedi eigeti Kombi vo dene Spaltewärt git e eigeti Datereihe."
 
 msgctxt "chartsCsvGroupByPickColumn"
@@ -2019,6 +2026,14 @@ msgid ""
 msgstr ""
 "Verbindet Datepünkt mit Linie, zum Trends und Veränderige über en "
 "durchlaufende Beriich z'zeige."
+
+msgctxt "chartsTypePickerSubmit"
+msgid "Apply"
+msgstr "Übernäh"
+
+msgctxt "chartsTypePickerTitle"
+msgid "Choose a chart type"
+msgstr "Diagrammtyp uswähle"
 
 msgctxt "chartsTypePie"
 msgid "Pie"

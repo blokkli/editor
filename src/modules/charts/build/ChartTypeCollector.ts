@@ -8,6 +8,7 @@ import { extractFirstStringArg } from '../../../build/helpers'
 
 const DEFINITION_FILENAME = 'definition.ts'
 const RENDER_FILENAME = 'render.vue'
+const ILLUSTRATION_FILENAME = 'illustration.vue'
 
 export type ChartTypeItem = {
   /** Chart-type id, extracted from `defineChartType('<id>', ...)`. */
@@ -18,6 +19,11 @@ export type ChartTypeItem = {
   definitionPath: string
   /** Absolute path to `render.vue`. */
   renderPath: string
+  /**
+   * Absolute path to `illustration.vue`, if the chart-type folder has one.
+   * Used by the editor's chart-type picker to render a preview card.
+   */
+  illustrationPath: string | null
 }
 
 export type ChartTypeCollectorOptions = {
@@ -38,13 +44,14 @@ function toImportName(rawId: string): string {
 
 class CollectedChartTypeFile extends CollectedFile {
   /**
-   * The chart-type id, parsed only for `definition.ts` files. Render files
-   * leave this `null` — they're tracked only so the watcher rebuilds the
-   * templates on `render.vue` add/change/unlink.
+   * The chart-type id, parsed only for `definition.ts` files. Render and
+   * illustration files leave this `null` — they're tracked only so the
+   * watcher rebuilds the templates on add/change/unlink.
    */
   public id: string | null = null
   public readonly isDefinition: boolean
   public readonly isRender: boolean
+  public readonly isIllustration: boolean
   public readonly typeDir: string
 
   constructor(filePath: string, fileContents: string) {
@@ -52,6 +59,7 @@ class CollectedChartTypeFile extends CollectedFile {
     const base = path.basename(filePath)
     this.isDefinition = base === DEFINITION_FILENAME
     this.isRender = base === RENDER_FILENAME
+    this.isIllustration = base === ILLUSTRATION_FILENAME
     this.typeDir = path.dirname(filePath)
   }
 
@@ -88,7 +96,11 @@ export class ChartTypeCollector extends Collector<CollectedChartTypeFile> {
 
       const files = await resolveFiles(
         dir,
-        [`**/${DEFINITION_FILENAME}`, `**/${RENDER_FILENAME}`],
+        [
+          `**/${DEFINITION_FILENAME}`,
+          `**/${RENDER_FILENAME}`,
+          `**/${ILLUSTRATION_FILENAME}`,
+        ],
         { followSymbolicLinks: false },
       )
 
@@ -104,7 +116,11 @@ export class ChartTypeCollector extends Collector<CollectedChartTypeFile> {
 
   override async applies(filePath: string): Promise<boolean> {
     const base = path.basename(filePath)
-    if (base !== DEFINITION_FILENAME && base !== RENDER_FILENAME) {
+    if (
+      base !== DEFINITION_FILENAME &&
+      base !== RENDER_FILENAME &&
+      base !== ILLUSTRATION_FILENAME
+    ) {
       return false
     }
     return this.options.dirs.some((dir) => filePath.startsWith(dir))
@@ -128,18 +144,23 @@ export class ChartTypeCollector extends Collector<CollectedChartTypeFile> {
   getItems(): ChartTypeItem[] {
     const byDir = new Map<
       string,
-      { definition?: CollectedChartTypeFile; render?: CollectedChartTypeFile }
+      {
+        definition?: CollectedChartTypeFile
+        render?: CollectedChartTypeFile
+        illustration?: CollectedChartTypeFile
+      }
     >()
     for (const file of this.files.values()) {
       const slot = byDir.get(file.typeDir) ?? {}
       if (file.isDefinition) slot.definition = file
       if (file.isRender) slot.render = file
+      if (file.isIllustration) slot.illustration = file
       byDir.set(file.typeDir, slot)
     }
 
     const items: ChartTypeItem[] = []
     const seenIds = new Set<string>()
-    for (const { definition, render } of byDir.values()) {
+    for (const { definition, render, illustration } of byDir.values()) {
       if (!definition || !render || !definition.id) continue
       const id = definition.id
       if (seenIds.has(id)) {
@@ -154,6 +175,7 @@ export class ChartTypeCollector extends Collector<CollectedChartTypeFile> {
         importName: toImportName(id),
         definitionPath: definition.filePath,
         renderPath: render.filePath,
+        illustrationPath: illustration?.filePath ?? null,
       })
     }
 

@@ -1,10 +1,20 @@
 <template>
   <div>
+    <div v-if="showCategoryFilter" class="blokkli-chart-category-filter">
+      <label>
+        <span v-if="categoryFilterLabel">{{ categoryFilterLabel }}:</span>
+        <select v-model.number="selectedCategoryIndex">
+          <option v-for="(c, i) in formattedCategories" :key="i" :value="i">
+            {{ c }}
+          </option>
+        </select>
+      </label>
+    </div>
     <ClientOnly>
       <component
         :is="typeComponent"
-        v-if="typeComponent && renderProps"
-        v-bind="renderProps"
+        v-if="typeComponent && finalRenderProps"
+        v-bind="finalRenderProps"
       />
       <ol v-if="resolvedFootnotes.length" class="blokkli-chart-footnotes">
         <li v-for="(note, i) in resolvedFootnotes" :key="i">
@@ -19,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, useAppConfig } from '#imports'
+import { computed, inject, ref, useAppConfig } from '#imports'
 import type {
   BlokkliChartData,
   ChartDataSourcePayload,
@@ -206,10 +216,7 @@ function resolveHex(id: string): string {
 }
 
 const typeComponent = computed(
-  () =>
-    chartTypeComponents[
-      props.type as keyof typeof chartTypeComponents
-    ],
+  () => chartTypeComponents[props.type as keyof typeof chartTypeComponents],
 )
 
 const renderProps = computed<ChartTypeRenderProps | null>(() => {
@@ -227,6 +234,60 @@ const renderProps = computed<ChartTypeRenderProps | null>(() => {
     typeOptions: (props.typeOptions ?? {}) as Record<string, unknown>,
     numberFormat: resolvedNumberFormat.value,
     isEditing,
+  }
+})
+
+const typeOptionsBag = computed(
+  () =>
+    (props.typeOptions ?? {}) as {
+      categoryFilter?: boolean
+      categoryFilterLabel?: string
+    },
+)
+
+const categoryFilterEnabled = computed(
+  () => typeOptionsBag.value.categoryFilter === true,
+)
+
+const categoryFilterLabel = computed(
+  () => typeOptionsBag.value.categoryFilterLabel ?? '',
+)
+
+const selectedCategoryIndex = ref(0)
+
+const clampedSelectedIndex = computed(() => {
+  const max = (renderProps.value?.categories.length ?? 0) - 1
+  if (max < 0) return -1
+  return Math.min(Math.max(selectedCategoryIndex.value, 0), max)
+})
+
+const showCategoryFilter = computed(() => {
+  if (!categoryFilterEnabled.value) return false
+  const base = renderProps.value
+  if (!base) return false
+  return base.categories.length > 1 && base.series.length > 0
+})
+
+const finalRenderProps = computed<ChartTypeRenderProps | null>(() => {
+  const base = renderProps.value
+  if (!base) return null
+  if (!categoryFilterEnabled.value) return base
+  const idx = clampedSelectedIndex.value
+  if (idx < 0) return base
+  return {
+    ...base,
+    categories: base.series.map((s) => s.name),
+    series: [
+      {
+        name: base.categories[idx] ?? '',
+        data: base.series.map((s) => s.data[idx] ?? 0),
+      },
+    ],
+    // The original series colors become per-bar colors via the
+    // category-color slot — types that natively colour per category
+    // (bar in filter mode, donut, pie) pick them up automatically.
+    categoryHexColors: base.seriesHexColors,
+    seriesHexColors: [base.seriesHexColors[0] ?? '#888888'],
   }
 })
 </script>

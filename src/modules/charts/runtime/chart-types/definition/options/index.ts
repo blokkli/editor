@@ -1,9 +1,7 @@
-import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { BlockOptionDefinitionBase } from '../../../../../../global/types/blockOptions'
-import type { TranslateFunction } from '../../../types'
+import type { ChartOption, TranslateFunction } from '../../../types'
 
 type SharedOptions = {
-  options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
+  options: Record<string, ChartOption>
 }
 
 /**
@@ -98,6 +96,32 @@ export function gridOptions($t: TranslateFunction): SharedOptions {
 }
 
 /**
+ * Runtime category filter — when enabled, the chart wrapper renders a
+ * `<select>` above the chart so viewers can pick one category at a time.
+ * The wrapper pivots the payload to a 1-series × N-bar shape and passes
+ * the original series colors as per-bar colors via `categoryHexColors`.
+ */
+export function categoryFilterOptions($t: TranslateFunction): SharedOptions {
+  return {
+    options: {
+      categoryFilter: {
+        type: 'checkbox',
+        label: $t('chartsCategoryFilter', 'Filterable category axis'),
+        default: false,
+        group: 'filter',
+      },
+      categoryFilterLabel: {
+        type: 'text',
+        label: $t('chartsCategoryFilterLabel', 'Filter label'),
+        default: '',
+        group: 'filter',
+        shouldRender: ({ options }) => options.categoryFilter === true,
+      },
+    },
+  }
+}
+
+/**
  * Stroke width option for line-based chart types.
  */
 export function strokeWidthOptions($t: TranslateFunction): SharedOptions {
@@ -121,7 +145,7 @@ export function strokeWidthOptions($t: TranslateFunction): SharedOptions {
  * Merge multiple shared option sets into one.
  */
 export function mergeShared(...sets: SharedOptions[]): SharedOptions {
-  const options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>> = {}
+  const options: Record<string, ChartOption> = {}
   for (const set of sets) {
     Object.assign(options, set.options)
   }

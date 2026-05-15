@@ -5,6 +5,7 @@ import {
   legendOptions,
   gridOptions,
   yAxisMinOptions,
+  categoryFilterOptions,
   mergeShared,
 } from '#blokkli/charts/definition/options'
 import type {
@@ -13,6 +14,7 @@ import type {
   LegendTypeOptions,
   GridTypeOptions,
   YAxisMinTypeOptions,
+  CategoryFilterTypeOptions,
 } from '#blokkli/charts/types'
 
 export type TypeOptions = {
@@ -23,7 +25,8 @@ export type TypeOptions = {
   DataLabelsTypeOptions &
   LegendTypeOptions &
   GridTypeOptions &
-  YAxisMinTypeOptions
+  YAxisMinTypeOptions &
+  CategoryFilterTypeOptions
 
 export default defineChartType<TypeOptions>('bar', ($t) => {
   const shared = mergeShared(
@@ -32,9 +35,9 @@ export default defineChartType<TypeOptions>('bar', ($t) => {
     legendOptions($t),
     gridOptions($t),
     yAxisMinOptions($t),
+    categoryFilterOptions($t),
   )
   return {
-    hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
     editor: {

@@ -2,23 +2,29 @@ import { defineChartType } from '#blokkli/charts/definition'
 import {
   dataLabelsOptions,
   legendOptions,
+  categoryFilterOptions,
   mergeShared,
 } from '#blokkli/charts/definition/options'
 import type {
   DataLabelsTypeOptions,
   LegendTypeOptions,
+  CategoryFilterTypeOptions,
 } from '#blokkli/charts/types'
 
 export type TypeOptions = {
   markers: boolean
   fillOpacity: string
 } & DataLabelsTypeOptions &
-  LegendTypeOptions
+  LegendTypeOptions &
+  CategoryFilterTypeOptions
 
 export default defineChartType<TypeOptions>('radar', ($t) => {
-  const shared = mergeShared(dataLabelsOptions($t), legendOptions($t))
+  const shared = mergeShared(
+    dataLabelsOptions($t),
+    legendOptions($t),
+    categoryFilterOptions($t),
+  )
   return {
-    hasMultipleSeries: true,
     hasSeriesColors: true,
     hasCategoryColors: false,
     editor: {

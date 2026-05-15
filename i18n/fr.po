@@ -1449,6 +1449,14 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Petit"
 
+msgctxt "chartsCategoryFilter"
+msgid "Filterable category axis"
+msgstr "Axe de catégories filtrable"
+
+msgctxt "chartsCategoryFilterLabel"
+msgid "Filter label"
+msgstr "Libellé du filtre"
+
 msgctxt "chartsCsvAddFilter"
 msgid "Add filter"
 msgstr ""
@@ -1514,7 +1522,7 @@ msgid "Add"
 msgstr ""
 
 msgctxt "chartsCsvGroupByDescription"
-msgid "Each distinct combination across these columns becomes one series."
+msgid "Each distinct combination across these columns becomes one data series."
 msgstr ""
 
 msgctxt "chartsCsvGroupByPickColumn"
@@ -1979,6 +1987,14 @@ msgid ""
 msgstr ""
 "Relie les points de données par des lignes pour montrer les tendances et "
 "les évolutions sur une plage continue."
+
+msgctxt "chartsTypePickerSubmit"
+msgid "Apply"
+msgstr "Appliquer"
+
+msgctxt "chartsTypePickerTitle"
+msgid "Choose a chart type"
+msgstr "Choisir un type de diagramme"
 
 msgctxt "chartsTypePie"
 msgid "Pie"

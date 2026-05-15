@@ -28,11 +28,25 @@
     lazy
     @update:model-value="$emit('update', $event)"
   />
+  <FormText
+    v-else-if="option.type === 'text'"
+    :id="`chart-option-${optionKey}`"
+    :label="option.label"
+    :description="option.description"
+    :model-value="String(value ?? option.default ?? '')"
+    lazy
+    @update:model-value="$emit('update', $event ?? '')"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import { FormToggle, FormRadio, FormNumber } from '#blokkli/editor/components'
+import {
+  FormToggle,
+  FormRadio,
+  FormNumber,
+  FormText,
+} from '#blokkli/editor/components'
 import type { ChartTypeDefinition } from '../../../../types'
 
 type ChartOption = ChartTypeDefinition['editor']['options'][string]

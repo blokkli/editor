@@ -3,26 +3,29 @@ import {
   xAxisOptions,
   legendOptions,
   gridOptions,
+  categoryFilterOptions,
   mergeShared,
 } from '#blokkli/charts/definition/options'
 import type {
   XAxisTypeOptions,
   LegendTypeOptions,
   GridTypeOptions,
+  CategoryFilterTypeOptions,
 } from '#blokkli/charts/types'
 
 export type TypeOptions = XAxisTypeOptions &
   LegendTypeOptions &
-  GridTypeOptions
+  GridTypeOptions &
+  CategoryFilterTypeOptions
 
 export default defineChartType<TypeOptions>('heatmap', ($t) => {
   const shared = mergeShared(
     xAxisOptions($t),
     legendOptions($t),
     gridOptions($t),
+    categoryFilterOptions($t),
   )
   return {
-    hasMultipleSeries: true,
     hasSeriesColors: false,
     hasCategoryColors: false,
     editor: {

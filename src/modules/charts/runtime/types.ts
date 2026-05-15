@@ -5,18 +5,49 @@ import type { BlockOptionDefinitionBase } from '../../../global/types/blockOptio
 
 export type TranslateFunction = (key: string, fallback: string) => string
 
+/**
+ * Context object passed to `ChartOption.shouldRender`. Currently exposes the
+ * current values of all type-options on the block; more fields may be added
+ * here over time (e.g. resolved payload, chart-type id) without breaking
+ * existing predicates.
+ */
+export type ChartOptionRenderContext = {
+  /** Current values of all chart-type options on this block. */
+  options: Record<string, unknown>
+}
+
+/**
+ * A chart-type option definition. Extends the generic blökkli block option
+ * schema with chart-specific extras — currently a `shouldRender` predicate
+ * for conditional visibility in the editor.
+ */
+export type ChartOption = BlockOptionDefinitionBase<BlokkliIcon> & {
+  /**
+   * Optional predicate that decides whether this option is rendered in the
+   * editor. Receives a context object so options can react to other
+   * options' current values. When omitted the option is always rendered.
+   *
+   * @example
+   * categoryFilterLabel: {
+   *   type: 'text',
+   *   …,
+   *   shouldRender: ({ options }) => options.categoryFilter === true,
+   * }
+   */
+  shouldRender?: (ctx: ChartOptionRenderContext) => boolean
+}
+
 export type ChartTypeDefinitionBody<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
-  hasMultipleSeries: boolean
   hasSeriesColors: boolean
   hasCategoryColors: boolean
   editor: {
     label: string
     description: string
     icon: BlokkliIcon
-    options: Record<string, BlockOptionDefinitionBase<BlokkliIcon>>
+    options: Record<string, ChartOption>
   }
 }
 
@@ -66,6 +97,10 @@ export type LegendTypeOptions = { legendPosition: string }
 export type GridTypeOptions = { gridLines: boolean }
 export type StrokeWidthTypeOptions = { strokeWidth: string }
 export type YAxisMinTypeOptions = { yaxisMin: number | undefined }
+export type CategoryFilterTypeOptions = {
+  categoryFilter: boolean
+  categoryFilterLabel: string
+}
 
 // ─── Chart-data types ────────────────────────────────────────────────────────
 
