@@ -16,6 +16,7 @@
       <PreviewDialog
         v-if="grid && showDialog"
         :grid="grid"
+        :file-name="fileName"
         @submit="onDialogSubmit"
         @cancel="grid = null"
       />
@@ -39,6 +40,7 @@ const { $t, ui } = useBlokkli()
 const fileInputEl = useTemplateRef<HTMLInputElement>('fileInputEl')
 
 const grid = ref<CsvGrid | null>(null)
+const fileName = ref<string>('')
 const showDialog = useDialog('charts-csv-preview', 'center', 'high')
 
 function onFileChange(event: Event) {
@@ -54,6 +56,7 @@ function onFileChange(event: Event) {
     if (typeof text !== 'string') return
     const parsed = parseCsvText(text)
     if (parsed.length === 0) return
+    fileName.value = file.name
     grid.value = parsed
     showDialog.value = true
   }

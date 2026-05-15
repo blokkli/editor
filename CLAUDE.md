@@ -313,6 +313,9 @@ default colors, spacing, and fonts. Standard classes like `p-4`,
 `text-gray-500`, or `gap-6` do not exist. Always consult the styles skill before
 writing any CSS or Tailwind classes.
 
+DO NOT create CSS classes when it's possible to directly use tailwind utility
+classes in templates!
+
 ### Translations
 
 For all translation tasks, use the `/translations` skill. It has full details on

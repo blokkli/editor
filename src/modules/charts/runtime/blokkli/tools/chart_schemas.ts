@@ -17,6 +17,7 @@ export const chartTypeEnum = z.enum([
   'heatmap',
   'radialBar',
   'radar',
+  'agePyramid',
 ])
 
 const colorIds = Object.keys(colorOptions) as [string, ...string[]]

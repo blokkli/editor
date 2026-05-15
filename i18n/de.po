@@ -1459,6 +1459,18 @@ msgctxt "chartsAddRow"
 msgid "Add row"
 msgstr "Zeile hinzufügen"
 
+msgctxt "chartsAgePyramidSplitIndex"
+msgid "Right-side start index"
+msgstr "Startindex rechte Seite"
+
+msgctxt "chartsAgePyramidSplitIndexDescription"
+msgid ""
+"Index of the first series rendered on the right. Series before this index "
+"render on the left. Defaults to half the number of series."
+msgstr ""
+"Index der ersten Datenreihe, die rechts dargestellt wird. Datenreihen vor "
+"diesem Index erscheinen links."
+
 msgctxt "chartsAreaCurved"
 msgid "Smooth curves"
 msgstr "Glatte Kurven"
@@ -1495,37 +1507,117 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Klein"
 
+msgctxt "chartsCsvAddFilter"
+msgid "Add filter"
+msgstr "Filter hinzufügen"
+
 msgctxt "chartsCsvCategoriesHeader"
 msgid "Categories"
 msgstr "Kategorien"
+
+msgctxt "chartsCsvCategoryColumn"
+msgid "Category column"
+msgstr "Kategorie-Spalte"
+
+msgctxt "chartsCsvCategoryColumnDescription"
+msgid "Distinct values in this column become the categories of the chart."
+msgstr ""
+"Die unterschiedlichen Werte dieser Spalte werden zu den Kategorien des "
+"Diagramms."
+
+msgctxt "chartsCsvData"
+msgid "Data"
+msgstr "Daten"
+
+msgctxt "chartsCsvEmptyOutput"
+msgid "No data after filtering — adjust filter selections."
+msgstr "Keine Daten nach dem Filtern — Filterauswahl anpassen."
+
+msgctxt "chartsCsvFilterCancel"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "chartsCsvFilterColumn"
+msgid "Column"
+msgstr "Spalte"
+
+msgctxt "chartsCsvFilterPickColumn"
+msgid "Pick a column…"
+msgstr "Spalte wählen…"
+
+msgctxt "chartsCsvFilterRemove"
+msgid "Remove filter"
+msgstr "Filter entfernen"
+
+msgctxt "chartsCsvFilterSave"
+msgid "Save filter"
+msgstr "Filter speichern"
+
+msgctxt "chartsCsvFilterValues"
+msgid "Allowed values"
+msgstr "Erlaubte Werte"
+
+msgctxt "chartsCsvFilters"
+msgid "Filters"
+msgstr "Filter"
+
+msgctxt "chartsCsvGroupBy"
+msgid "Group series by"
+msgstr "Datenreihen gruppieren nach"
+
+msgctxt "chartsCsvGroupByAdd"
+msgid "Add a grouping column"
+msgstr "Spalte für Gruppierung hinzufügen…"
+
+msgctxt "chartsCsvGroupByAddConfirm"
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgctxt "chartsCsvGroupByDescription"
+msgid "Each distinct combination across these columns becomes one series."
+msgstr ""
+"Jede eindeutige Kombination dieser Spaltenwerte ergibt eine eigene "
+"Datenreihe."
+
+msgctxt "chartsCsvGroupByPickColumn"
+msgid "Pick a column…"
+msgstr "Spalte wählen…"
+
+msgctxt "chartsCsvGroupByRemove"
+msgid "Remove grouping column"
+msgstr "Gruppierungsspalte entfernen"
 
 msgctxt "chartsCsvInvalidFile"
 msgid "The CSV file does not contain enough data to import."
 msgstr "Die CSV-Datei enthält nicht genügend Daten für einen Import."
 
+msgctxt "chartsCsvLayout"
+msgid "Layout"
+msgstr "Anordnung"
+
 msgctxt "chartsCsvMoreRows"
 msgid "+ @count more rows"
 msgstr "+ @count weitere Zeilen"
 
-msgctxt "chartsCsvNoSeries"
-msgid "Select at least one column to import."
-msgstr "Wählen Sie mindestens eine Spalte zum Importieren aus."
+msgctxt "chartsCsvNoCategories"
+msgid "No categories produced — check the Category column and filters."
+msgstr "Keine Kategorien erzeugt — Kategorie-Spalte und Filter prüfen."
 
-msgctxt "chartsCsvOptions"
-msgid "Options"
-msgstr "Optionen"
+msgctxt "chartsCsvNoValues"
+msgid "Pick at least one value column to import."
+msgstr "Wählen Sie mindestens eine Wert-Spalte zum Importieren aus."
+
+msgctxt "chartsCsvOutputPreview"
+msgid "Output preview"
+msgstr "Vorschau Ergebnis"
 
 msgctxt "chartsCsvPreviewLead"
 msgid ""
-"Review the data that will be imported. Adjust orientation and pick which "
-"columns to include."
+"Adjust the column mapping if needed; the preview below shows exactly what "
+"will be imported."
 msgstr ""
-"Prüfen Sie die zu importierenden Daten. Passen Sie die Ausrichtung an und "
-"wählen Sie aus, welche Spalten übernommen werden sollen."
-
-msgctxt "chartsCsvPreviewSection"
-msgid "Preview"
-msgstr "Vorschau"
+"Passen Sie bei Bedarf die Spaltenzuordnung an. Die Vorschau unten zeigt "
+"genau, was importiert wird."
 
 msgctxt "chartsCsvPreviewSubmit"
 msgid "Import"
@@ -1535,13 +1627,25 @@ msgctxt "chartsCsvPreviewTitle"
 msgid "Preview CSV import"
 msgstr "Vorschau des CSV-Imports"
 
-msgctxt "chartsCsvReverseColumns"
-msgid "Reverse column order"
-msgstr "Spaltenreihenfolge umkehren"
-
 msgctxt "chartsCsvReverseRows"
 msgid "Reverse row order"
 msgstr "Zeilenreihenfolge umkehren"
+
+msgctxt "chartsCsvSort"
+msgid "Sort categories"
+msgstr "Kategorien sortieren"
+
+msgctxt "chartsCsvSortAlphabetical"
+msgid "Alphabetical"
+msgstr "Alphabetisch"
+
+msgctxt "chartsCsvSortFirstOccurrence"
+msgid "First occurrence"
+msgstr "Erstes Vorkommen"
+
+msgctxt "chartsCsvSortNumeric"
+msgid "Numeric"
+msgstr "Numerisch"
 
 msgctxt "chartsCsvTranspose"
 msgid "Transpose (swap rows and columns)"
@@ -1554,6 +1658,19 @@ msgid ""
 msgstr ""
 "Aktivieren Sie diese Option, wenn die Kategorien in der CSV-Datei in der "
 "obersten Zeile statt in der ersten Spalte stehen."
+
+msgctxt "chartsCsvValueColumns"
+msgid "Value columns"
+msgstr "Wert-Spalten"
+
+msgctxt "chartsCsvValueColumnsDescription"
+msgid ""
+"Numeric columns to import. Pick multiple to use each as its own series. "
+"Pick one to split rows into series via Group by."
+msgstr ""
+"Numerische Spalten zum Importieren. Wählen Sie mehrere, um jede als eigene "
+"Datenreihe zu verwenden. Wählen Sie eine einzige, um die Zeilen über "
+"«Datenreihen gruppieren nach» in Datenreihen aufzuteilen."
 
 msgctxt "chartsData"
 msgid "Data"
@@ -1865,6 +1982,20 @@ msgstr "Zu viele Einträge für Inline-Übersetzung (@count, max. @max)."
 msgctxt "chartsType"
 msgid "Chart Type"
 msgstr "Diagrammtyp"
+
+msgctxt "chartsTypeAgePyramid"
+msgid "Age pyramid"
+msgstr "Alterspyramide"
+
+msgctxt "chartsTypeAgePyramidDescription"
+msgid ""
+"Back-to-back horizontal bars by category, with series before the split "
+"index rendered on the left and the rest on the right. Multiple series on "
+"the same side stack."
+msgstr ""
+"Horizontale Balken Rücken an Rücken nach Kategorie. Datenreihen vor dem "
+"Aufteilungsindex werden links dargestellt, die übrigen rechts. Mehrere "
+"Datenreihen auf derselben Seite werden gestapelt."
 
 msgctxt "chartsTypeArea"
 msgid "Area"
@@ -4497,7 +4628,7 @@ msgid "Translate"
 msgstr "Übersetzen"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr "Übersetzung als aktuell markieren"
 
 msgctxt "translationsMarkUpToDateDisabled"

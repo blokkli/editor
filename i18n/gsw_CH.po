@@ -1430,6 +1430,18 @@ msgctxt "chartsAddRow"
 msgid "Add row"
 msgstr "Ziile drzuefüege"
 
+msgctxt "chartsAgePyramidSplitIndex"
+msgid "Right-side start index"
+msgstr "Startindex rächti Site"
+
+msgctxt "chartsAgePyramidSplitIndexDescription"
+msgid ""
+"Index of the first series rendered on the right. Series before this index "
+"render on the left. Defaults to half the number of series."
+msgstr ""
+"Index vo de erste Datereihe, wo rächts dargstellt wird. Datereihe vor dem "
+"Index chömed lings."
+
 msgctxt "chartsAreaCurved"
 msgid "Smooth curves"
 msgstr "Glatti Churve"
@@ -1466,37 +1478,114 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Chli"
 
+msgctxt "chartsCsvAddFilter"
+msgid "Add filter"
+msgstr "Filter zuefüege"
+
 msgctxt "chartsCsvCategoriesHeader"
 msgid "Categories"
 msgstr "Kategorie"
+
+msgctxt "chartsCsvCategoryColumn"
+msgid "Category column"
+msgstr "Kategorie-Spalte"
+
+msgctxt "chartsCsvCategoryColumnDescription"
+msgid "Distinct values in this column become the categories of the chart."
+msgstr ""
+"D'verschiedene Wärt vo derre Spalte wärde zu de Kategorie vom Diagramm."
+
+msgctxt "chartsCsvData"
+msgid "Data"
+msgstr "Date"
+
+msgctxt "chartsCsvEmptyOutput"
+msgid "No data after filtering — adjust filter selections."
+msgstr "Kei Date nach em Filter — Filterauswahl apasse."
+
+msgctxt "chartsCsvFilterCancel"
+msgid "Cancel"
+msgstr "Abbräche"
+
+msgctxt "chartsCsvFilterColumn"
+msgid "Column"
+msgstr "Spalte"
+
+msgctxt "chartsCsvFilterPickColumn"
+msgid "Pick a column…"
+msgstr "Spalte wähle…"
+
+msgctxt "chartsCsvFilterRemove"
+msgid "Remove filter"
+msgstr "Filter entferne"
+
+msgctxt "chartsCsvFilterSave"
+msgid "Save filter"
+msgstr "Filter speichere"
+
+msgctxt "chartsCsvFilterValues"
+msgid "Allowed values"
+msgstr "Erlaubti Wärt"
+
+msgctxt "chartsCsvFilters"
+msgid "Filters"
+msgstr "Filter"
+
+msgctxt "chartsCsvGroupBy"
+msgid "Group series by"
+msgstr "Datereihe gruppiere nach"
+
+msgctxt "chartsCsvGroupByAdd"
+msgid "Add a grouping column"
+msgstr "Spalte für Gruppierig zuefüege"
+
+msgctxt "chartsCsvGroupByAddConfirm"
+msgid "Add"
+msgstr "Zuefüege"
+
+msgctxt "chartsCsvGroupByDescription"
+msgid "Each distinct combination across these columns becomes one series."
+msgstr "Jedi eigeti Kombi vo dene Spaltewärt git e eigeti Datereihe."
+
+msgctxt "chartsCsvGroupByPickColumn"
+msgid "Pick a column…"
+msgstr "Spalte wähle…"
+
+msgctxt "chartsCsvGroupByRemove"
+msgid "Remove grouping column"
+msgstr "Gruppierig-Spalte entferne"
 
 msgctxt "chartsCsvInvalidFile"
 msgid "The CSV file does not contain enough data to import."
 msgstr "D'CSV-Datei het nid gnueg Date für e Import."
 
+msgctxt "chartsCsvLayout"
+msgid "Layout"
+msgstr "Aaornig"
+
 msgctxt "chartsCsvMoreRows"
 msgid "+ @count more rows"
 msgstr "+ @count witeri Zeile"
 
-msgctxt "chartsCsvNoSeries"
-msgid "Select at least one column to import."
-msgstr "Wähle Sie mindeschtens ei Spalte zum Importiere uus."
+msgctxt "chartsCsvNoCategories"
+msgid "No categories produced — check the Category column and filters."
+msgstr "Kei Kategorie erzügt — Kategorie-Spalte und Filter prüefe."
 
-msgctxt "chartsCsvOptions"
-msgid "Options"
-msgstr "Optione"
+msgctxt "chartsCsvNoValues"
+msgid "Pick at least one value column to import."
+msgstr "Wähle Sie mindestens ei Wärt-Spalte zum Importiere."
+
+msgctxt "chartsCsvOutputPreview"
+msgid "Output preview"
+msgstr "Vorschau Resultat"
 
 msgctxt "chartsCsvPreviewLead"
 msgid ""
-"Review the data that will be imported. Adjust orientation and pick which "
-"columns to include."
+"Adjust the column mapping if needed; the preview below shows exactly what "
+"will be imported."
 msgstr ""
-"Luege Sie d'Date aa, wo importiert wärde. Passe Sie d'Uusrichtig aa und "
-"wähle Sie us, weli Spalte übernoo wärde söled."
-
-msgctxt "chartsCsvPreviewSection"
-msgid "Preview"
-msgstr "Vorschau"
+"Passe Sie bi Bedarf d'Spaltezuetailig aa. D'Vorschau unde zeigt genau, was "
+"importiert wird."
 
 msgctxt "chartsCsvPreviewSubmit"
 msgid "Import"
@@ -1506,13 +1595,25 @@ msgctxt "chartsCsvPreviewTitle"
 msgid "Preview CSV import"
 msgstr "CSV-Import aaluege"
 
-msgctxt "chartsCsvReverseColumns"
-msgid "Reverse column order"
-msgstr "Spalteriihefolg umchehre"
-
 msgctxt "chartsCsvReverseRows"
 msgid "Reverse row order"
 msgstr "Zeileriihefolg umchehre"
+
+msgctxt "chartsCsvSort"
+msgid "Sort categories"
+msgstr "Kategorie sortiere"
+
+msgctxt "chartsCsvSortAlphabetical"
+msgid "Alphabetical"
+msgstr "Alfabetisch"
+
+msgctxt "chartsCsvSortFirstOccurrence"
+msgid "First occurrence"
+msgstr "Erschts Vorchoo"
+
+msgctxt "chartsCsvSortNumeric"
+msgid "Numeric"
+msgstr "Numerisch"
 
 msgctxt "chartsCsvTranspose"
 msgid "Transpose (swap rows and columns)"
@@ -1525,6 +1626,19 @@ msgid ""
 msgstr ""
 "Aktiviere Sie die Option, wenn d'Kategorie in dr CSV-Datei in dr obersten "
 "Zeile statt in dr erste Spalte stönd."
+
+msgctxt "chartsCsvValueColumns"
+msgid "Value columns"
+msgstr "Wärt-Spalte"
+
+msgctxt "chartsCsvValueColumnsDescription"
+msgid ""
+"Numeric columns to import. Pick multiple to use each as its own series. "
+"Pick one to split rows into series via Group by."
+msgstr ""
+"Numerischi Spalte zum Importiere. Wähle Sie mehreri, damit jedi e eigeti "
+"Datereihe wird. Wähle Sie eini, damit d'Zeile über «Datereihe gruppiere "
+"nach» in Datereihene ufteilt wärde."
 
 msgctxt "chartsData"
 msgid "Data"
@@ -1831,6 +1945,20 @@ msgstr ""
 msgctxt "chartsType"
 msgid "Chart Type"
 msgstr ""
+
+msgctxt "chartsTypeAgePyramid"
+msgid "Age pyramid"
+msgstr "Alterspyramide"
+
+msgctxt "chartsTypeAgePyramidDescription"
+msgid ""
+"Back-to-back horizontal bars by category, with series before the split "
+"index rendered on the left and the rest on the right. Multiple series on "
+"the same side stack."
+msgstr ""
+"Horizontali Balke Rugge a Rugge nach Kategorie. Datereihe vor em "
+"Uufteilig-Index chömed lings, die andere rächts. Mehreri Datereihe uf de "
+"gliiche Site werded gstapled."
 
 msgctxt "chartsTypeArea"
 msgid "Area"
@@ -4447,7 +4575,7 @@ msgid "Translate"
 msgstr "Übersetze..."
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"

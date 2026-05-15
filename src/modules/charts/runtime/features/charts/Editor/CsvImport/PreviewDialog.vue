@@ -5,18 +5,19 @@
     :lead="
       $t(
         'chartsCsvPreviewLead',
-        'Review the data that will be imported. Adjust orientation and pick which columns to include.',
+        'Adjust the column mapping if needed; the preview below shows exactly what will be imported.',
       )
     "
-    :width="1680"
+    :width="1200"
     icon="bk_mdi_csv"
     :submit-label="$t('chartsCsvPreviewSubmit', 'Import')"
     :can-submit="canSubmit"
     z-index="high"
+    mono
     @submit="onSubmit"
     @cancel="$emit('cancel')"
   >
-    <FormGroup :title="$t('chartsCsvOptions', 'Options')">
+    <PanelSection :title="$t('chartsCsvLayout', 'Layout')" padded>
       <FormItem>
         <FormToggle
           v-model="transpose"
@@ -28,23 +29,70 @@
             )
           "
         />
+        <div class="mt-15">
+          <FormToggle
+            v-model="reverseRows"
+            :label="$t('chartsCsvReverseRows', 'Reverse row order')"
+          />
+        </div>
       </FormItem>
       <FormItem>
-        <FormToggle
-          v-model="reverseRows"
-          :label="$t('chartsCsvReverseRows', 'Reverse row order')"
+        <FormSelect
+          id="charts-csv-sort"
+          v-model="sort"
+          :label="$t('chartsCsvSort', 'Sort categories')"
+          :options="sortOptions"
         />
       </FormItem>
-      <FormItem>
-        <FormToggle
-          v-model="reverseColumns"
-          :label="$t('chartsCsvReverseColumns', 'Reverse column order')"
-        />
-      </FormItem>
-    </FormGroup>
+    </PanelSection>
 
-    <FormGroup :title="$t('chartsCsvPreviewSection', 'Preview')">
-      <div v-if="!hasEnoughData" class="mb-15">
+    <PanelSection :title="$t('chartsCsvData', 'Data')" padded>
+      <FormItem v-if="hasEnoughData">
+        <FormSelect
+          id="charts-csv-category"
+          v-model="categoryColumnStr"
+          :label="$t('chartsCsvCategoryColumn', 'Category column')"
+          :description="
+            $t(
+              'chartsCsvCategoryColumnDescription',
+              'Distinct values in this column become the categories of the chart.',
+            )
+          "
+          :options="categoryColumnOptions"
+        />
+      </FormItem>
+      <FormItem v-if="hasEnoughData && valueOptions.length > 0">
+        <FormCheckboxes
+          id="charts-csv-values"
+          v-model="valueColumnsStr"
+          :label="$t('chartsCsvValueColumns', 'Value columns')"
+          :description="
+            $t(
+              'chartsCsvValueColumnsDescription',
+              'Numeric columns to import. Pick multiple to use each as its own series. Pick one to split rows into series via Group by.',
+            )
+          "
+          :options="valueOptions"
+        />
+      </FormItem>
+    </PanelSection>
+
+    <GroupBySection
+      v-if="hasEnoughData && valueColumns.length === 1"
+      v-model="groupByColumns"
+      :grid="orientedGrid"
+      :header-cells="headerCells"
+      :available-columns="availableGroupByColumns"
+    />
+
+    <FiltersSection
+      v-model="filters"
+      :grid="orientedGrid"
+      :header-cells="headerCells"
+    />
+
+    <PanelSection :title="$t('chartsCsvOutputPreview', 'Output preview')">
+      <div v-if="!hasEnoughData" class="p-15">
         <InfoBox
           small
           :text="
@@ -55,68 +103,15 @@
           "
         />
       </div>
-      <div
+      <div v-else-if="submitError" class="p-15">
+        <InfoBox small :text="submitError" />
+      </div>
+      <OutputPreviewTable
         v-else
-        class="bk-csv-preview-table-wrap overflow-auto bk-scrollbar-light border border-mono-300 rounded"
-      >
-        <table class="bk-csv-preview-table">
-          <thead>
-            <tr>
-              <th class="bk-csv-preview-category-header">
-                {{ $t('chartsCsvCategoriesHeader', 'Categories') }}
-              </th>
-              <th
-                v-for="(name, si) in seriesHeaders"
-                :key="si"
-                class="bk-csv-preview-series-header"
-              >
-                <label class="bk-checkbox bk-is-stacked">
-                  <input
-                    type="checkbox"
-                    :checked="selectedSeriesIndices.includes(si)"
-                    @change="toggleSeries(si)"
-                  />
-                  <span>{{ name || `Series ${si + 1}` }}</span>
-                </label>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, ri) in visibleRows" :key="ri">
-              <td class="bk-csv-preview-category-cell">{{ row[0] }}</td>
-              <td
-                v-for="(name, si) in seriesHeaders"
-                :key="si"
-                :class="{
-                  'bk-is-excluded': !selectedSeriesIndices.includes(si),
-                }"
-              >
-                {{ row[si + 1] ?? '' }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div v-if="hiddenRowCount > 0" class="bk-csv-preview-more">
-          {{
-            $t('chartsCsvMoreRows', '+ @count more rows').replace(
-              '@count',
-              String(hiddenRowCount),
-            )
-          }}
-        </div>
-      </div>
-      <div
-        v-if="hasEnoughData && selectedSeriesIndices.length === 0"
-        class="mt-10"
-      >
-        <InfoBox
-          small
-          :text="
-            $t('chartsCsvNoSeries', 'Select at least one column to import.')
-          "
-        />
-      </div>
-    </FormGroup>
+        :payload="orderedPayload"
+        @move="onSeriesMove"
+      />
+    </PanelSection>
   </DialogModal>
 </template>
 
@@ -124,25 +119,33 @@
 import { ref, computed, watch, useBlokkli } from '#imports'
 import {
   DialogModal,
-  FormGroup,
-  FormItem,
   FormToggle,
+  FormSelect,
+  FormCheckboxes,
   InfoBox,
+  FormItem,
 } from '#blokkli/editor/components'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import {
+  type CategorySort,
   type CsvGrid,
+  type CsvImportConfig,
+  type CsvImportFilter,
   type CsvImportPayload,
+  type ColumnRole,
+  columnLabelWithSample,
   gridToImportPayload,
+  inferSmartConfig,
   reverseRowsKeepingHeader,
-  reverseSeriesColumns,
-  selectSeriesColumns,
   transposeGrid,
 } from './csvHelpers'
-
-const PREVIEW_ROW_LIMIT = 20
+import GroupBySection from './GroupBySection/index.vue'
+import FiltersSection from './FiltersSection/index.vue'
+import OutputPreviewTable from './OutputPreviewTable/index.vue'
 
 const props = defineProps<{
   grid: CsvGrid
+  fileName: string
 }>()
 
 const emit = defineEmits<{
@@ -150,124 +153,249 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
-const { $t, config } = useBlokkli()
+const { $t, config, storage } = useBlokkli()
 
-const transpose = ref(false)
-const reverseRows = ref(false)
-const reverseColumns = ref(false)
+type SavedImportConfig = {
+  transpose: boolean
+  reverseRows: boolean
+  sort: CategorySort
+  categoryColumn: number
+  valueColumns: number[]
+  groupByColumns: number[]
+  filters: CsvImportFilter[]
+  seriesOrder: string[]
+}
 
-/**
- * Grid after orientation changes (transpose + reverses), before column
- * filtering. The preview table renders this so users can see every column they
- * could include.
- */
+const savedConfig = storage.use<SavedImportConfig | null>(
+  computed(() => `charts:csvImport:${props.fileName}`),
+  null,
+)
+
+const initial = savedConfig.value
+
+const transpose = ref(initial?.transpose ?? false)
+const reverseRows = ref(initial?.reverseRows ?? false)
+const sort = ref<CategorySort>(initial?.sort ?? 'firstOccurrence')
+
 const orientedGrid = computed<CsvGrid>(() => {
   let grid = props.grid
   if (transpose.value) grid = transposeGrid(grid)
   if (reverseRows.value) grid = reverseRowsKeepingHeader(grid)
-  if (reverseColumns.value) grid = reverseSeriesColumns(grid)
   return grid
 })
 
-const seriesHeaders = computed<string[]>(() => {
-  const header = orientedGrid.value[0]
-  if (!header) return []
-  return header.slice(1)
-})
+const headerCells = computed<string[]>(() => orientedGrid.value[0] ?? [])
 
-const visibleRows = computed<string[][]>(() => {
-  return orientedGrid.value.slice(1, 1 + PREVIEW_ROW_LIMIT)
-})
-
-const hiddenRowCount = computed(() => {
-  const dataRows = Math.max(0, orientedGrid.value.length - 1)
-  return Math.max(0, dataRows - PREVIEW_ROW_LIMIT)
-})
-
-const hasEnoughData = computed(() => {
-  return orientedGrid.value.length >= 2 && seriesHeaders.value.length > 0
-})
-
-const selectedSeriesIndices = ref<number[]>([])
-
-function resetSelection() {
-  selectedSeriesIndices.value = seriesHeaders.value.map((_, i) => i)
-}
-
-watch(
-  seriesHeaders,
-  () => {
-    resetSelection()
-  },
-  { immediate: true },
+const hasEnoughData = computed(
+  () => orientedGrid.value.length >= 2 && headerCells.value.length > 0,
 )
 
-function toggleSeries(index: number) {
-  if (selectedSeriesIndices.value.includes(index)) {
-    selectedSeriesIndices.value = selectedSeriesIndices.value.filter(
-      (i) => i !== index,
-    )
-  } else {
-    selectedSeriesIndices.value = [...selectedSeriesIndices.value, index]
-  }
+const categoryColumn = ref<number>(initial?.categoryColumn ?? 0)
+const valueColumns = ref<number[]>(initial?.valueColumns ?? [])
+const groupByColumns = ref<number[]>(initial?.groupByColumns ?? [])
+const filters = ref<CsvImportFilter[]>(initial?.filters ?? [])
+
+// Only run smart inference when there's no saved config for this file. If a
+// saved config exists the user already curated it; re-inferring on every
+// orientation change would clobber their choices.
+if (!initial) {
+  watch(
+    orientedGrid,
+    (g) => {
+      const inferred = inferSmartConfig(g)
+      categoryColumn.value = inferred.category
+      valueColumns.value = inferred.values
+      groupByColumns.value = inferred.groupBy
+      filters.value = inferred.filters
+    },
+    { immediate: true },
+  )
 }
 
-const canSubmit = computed(() => {
-  return hasEnoughData.value && selectedSeriesIndices.value.length > 0
+// Strip stale role assignments when category or value selection changes.
+watch(categoryColumn, (cat) => {
+  if (valueColumns.value.includes(cat)) {
+    valueColumns.value = valueColumns.value.filter((c) => c !== cat)
+  }
+  if (groupByColumns.value.includes(cat)) {
+    groupByColumns.value = groupByColumns.value.filter((c) => c !== cat)
+  }
 })
+
+watch(valueColumns, (cols) => {
+  if (cols.length !== 1) {
+    if (groupByColumns.value.length > 0) groupByColumns.value = []
+    return
+  }
+  const vc = cols[0]!
+  if (groupByColumns.value.includes(vc)) {
+    groupByColumns.value = groupByColumns.value.filter((c) => c !== vc)
+  }
+})
+
+const categoryColumnStr = computed<string>({
+  get() {
+    return String(categoryColumn.value)
+  },
+  set(v) {
+    const n = Number(v)
+    if (Number.isFinite(n)) categoryColumn.value = n
+  },
+})
+
+const categoryColumnOptions = computed(() =>
+  headerCells.value.map((_name, i) => ({
+    value: String(i),
+    label: columnLabelWithSample(orientedGrid.value, i),
+  })),
+)
+
+const valueColumnsStr = computed<string[]>({
+  get() {
+    return valueColumns.value.map(String)
+  },
+  set(v) {
+    valueColumns.value = v
+      .map((s) => Number(s))
+      .filter((n) => Number.isFinite(n))
+  },
+})
+
+const valueOptions = computed(() =>
+  headerCells.value
+    .map((_name, i) => i)
+    .filter((i) => i !== categoryColumn.value)
+    .map((i) => ({
+      value: String(i),
+      label: columnLabelWithSample(orientedGrid.value, i),
+    })),
+)
+
+const availableGroupByColumns = computed<number[]>(() => {
+  const used = new Set<number>([
+    categoryColumn.value,
+    ...valueColumns.value,
+    ...groupByColumns.value,
+  ])
+  return headerCells.value.map((_, i) => i).filter((i) => !used.has(i))
+})
+
+const sortOptions = computed(() => [
+  {
+    value: 'firstOccurrence',
+    label: $t('chartsCsvSortFirstOccurrence', 'First occurrence'),
+  },
+  {
+    value: 'alphabetical',
+    label: $t('chartsCsvSortAlphabetical', 'Alphabetical'),
+  },
+  { value: 'numeric', label: $t('chartsCsvSortNumeric', 'Numeric') },
+])
+
+const roles = computed<ColumnRole[]>(() => {
+  const out: ColumnRole[] = headerCells.value.map(() => 'ignore')
+  if (categoryColumn.value >= 0 && categoryColumn.value < out.length) {
+    out[categoryColumn.value] = 'category'
+  }
+  if (valueColumns.value.length === 1) {
+    const vc = valueColumns.value[0]!
+    if (vc < out.length && out[vc] === 'ignore') out[vc] = 'value'
+    for (const gb of groupByColumns.value) {
+      if (gb < out.length && out[gb] === 'ignore') out[gb] = 'groupBy'
+    }
+  } else {
+    for (const v of valueColumns.value) {
+      if (v < out.length && out[v] === 'ignore') out[v] = 'series'
+    }
+  }
+  return out
+})
+
+const importConfig = computed<CsvImportConfig>(() => ({
+  roles: roles.value,
+  filters: filters.value,
+  sort: sort.value,
+  groupBySeparator: ' · ',
+}))
+
+const outputPayload = computed<CsvImportPayload>(() =>
+  gridToImportPayload(
+    orientedGrid.value,
+    importConfig.value,
+    config.colorOptions.value,
+  ),
+)
+
+// User-driven series order by name. Series not listed here render after the
+// listed ones in their natural pivot order, so config changes that introduce
+// new series don't strand them.
+const seriesOrder = ref<string[]>(initial?.seriesOrder ?? [])
+
+const orderedPayload = computed<CsvImportPayload>(() => {
+  const remaining = new Map(
+    outputPayload.value.series.map((s) => [s.name, s]),
+  )
+  const reordered: typeof outputPayload.value.series = []
+  for (const name of seriesOrder.value) {
+    const s = remaining.get(name)
+    if (s) {
+      reordered.push(s)
+      remaining.delete(name)
+    }
+  }
+  for (const s of outputPayload.value.series) {
+    if (remaining.has(s.name)) reordered.push(s)
+  }
+  return { ...outputPayload.value, series: reordered }
+})
+
+function onSeriesMove({ from, to }: { from: number; to: number }) {
+  const names = orderedPayload.value.series.map((s) => s.name)
+  if (from < 0 || from >= names.length || to < 0 || to >= names.length) {
+    return
+  }
+  const [moved] = names.splice(from, 1)
+  if (moved === undefined) return
+  names.splice(to, 0, moved)
+  seriesOrder.value = names
+}
+
+const submitError = computed<string | null>(() => {
+  if (!hasEnoughData.value) return null
+  if (valueColumns.value.length === 0) {
+    return $t('chartsCsvNoValues', 'Pick at least one value column to import.')
+  }
+  if (outputPayload.value.series.length === 0) {
+    return $t(
+      'chartsCsvEmptyOutput',
+      'No data after filtering — adjust filter selections.',
+    )
+  }
+  if (outputPayload.value.categories.length === 0) {
+    return $t(
+      'chartsCsvNoCategories',
+      'No categories produced — check the Category column and filters.',
+    )
+  }
+  return null
+})
+
+const canSubmit = computed(
+  () => hasEnoughData.value && submitError.value === null,
+)
 
 function onSubmit() {
   if (!canSubmit.value) return
-  const finalGrid = selectSeriesColumns(
-    orientedGrid.value,
-    selectedSeriesIndices.value,
-  )
-  emit('submit', gridToImportPayload(finalGrid, config.colorOptions.value))
+  savedConfig.value = {
+    transpose: transpose.value,
+    reverseRows: reverseRows.value,
+    sort: sort.value,
+    categoryColumn: categoryColumn.value,
+    valueColumns: valueColumns.value,
+    groupByColumns: groupByColumns.value,
+    filters: filters.value,
+    seriesOrder: orderedPayload.value.series.map((s) => s.name),
+  }
+  emit('submit', orderedPayload.value)
 }
 </script>
-
-<style lang="postcss">
-.bk-csv-preview-table-wrap {
-  max-height: 600px;
-}
-
-.bk-csv-preview-table {
-  @apply w-full text-sm border-collapse;
-
-  th,
-  td {
-    @apply border-b border-r border-mono-200 p-10 text-left align-top;
-    &:last-child {
-      @apply border-r-0;
-    }
-  }
-
-  thead th {
-    @apply bg-mono-50 sticky top-0 font-semibold text-mono-800 border-b-mono-300;
-  }
-
-  tbody tr:last-child td {
-    @apply border-b-0;
-  }
-
-  .bk-csv-preview-category-header,
-  .bk-csv-preview-category-cell {
-    @apply bg-mono-50 font-semibold text-mono-800;
-  }
-
-  td.bk-is-excluded {
-    @apply text-mono-400 line-through;
-  }
-}
-
-.bk-csv-preview-more {
-  @apply p-10 text-center text-mono-600 text-sm bg-mono-50 border-t border-mono-200;
-}
-
-.bk-checkbox.bk-is-stacked {
-  @apply flex flex-col items-start gap-5 cursor-pointer;
-  span {
-    @apply text-sm;
-  }
-}
-</style>

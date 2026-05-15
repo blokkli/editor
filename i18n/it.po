@@ -1403,6 +1403,16 @@ msgctxt "chartsAddRow"
 msgid "Add row"
 msgstr ""
 
+msgctxt "chartsAgePyramidSplitIndex"
+msgid "Right-side start index"
+msgstr ""
+
+msgctxt "chartsAgePyramidSplitIndexDescription"
+msgid ""
+"Index of the first series rendered on the right. Series before this index "
+"render on the left. Defaults to half the number of series."
+msgstr ""
+
 msgctxt "chartsAreaCurved"
 msgid "Smooth curves"
 msgstr "Curve morbide"
@@ -1439,34 +1449,110 @@ msgctxt "chartsBorderRadiusSmall"
 msgid "Small"
 msgstr "Piccolo"
 
+msgctxt "chartsCsvAddFilter"
+msgid "Add filter"
+msgstr ""
+
 msgctxt "chartsCsvCategoriesHeader"
 msgid "Categories"
+msgstr ""
+
+msgctxt "chartsCsvCategoryColumn"
+msgid "Category column"
+msgstr ""
+
+msgctxt "chartsCsvCategoryColumnDescription"
+msgid "Distinct values in this column become the categories of the chart."
+msgstr ""
+
+msgctxt "chartsCsvData"
+msgid "Data"
+msgstr ""
+
+msgctxt "chartsCsvEmptyOutput"
+msgid "No data after filtering — adjust filter selections."
+msgstr ""
+
+msgctxt "chartsCsvFilterCancel"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "chartsCsvFilterColumn"
+msgid "Column"
+msgstr ""
+
+msgctxt "chartsCsvFilterPickColumn"
+msgid "Pick a column…"
+msgstr ""
+
+msgctxt "chartsCsvFilterRemove"
+msgid "Remove filter"
+msgstr ""
+
+msgctxt "chartsCsvFilterSave"
+msgid "Save filter"
+msgstr ""
+
+msgctxt "chartsCsvFilterValues"
+msgid "Allowed values"
+msgstr ""
+
+msgctxt "chartsCsvFilters"
+msgid "Filters"
+msgstr ""
+
+msgctxt "chartsCsvGroupBy"
+msgid "Group series by"
+msgstr ""
+
+msgctxt "chartsCsvGroupByAdd"
+msgid "Add a grouping column"
+msgstr ""
+
+msgctxt "chartsCsvGroupByAddConfirm"
+msgid "Add"
+msgstr ""
+
+msgctxt "chartsCsvGroupByDescription"
+msgid "Each distinct combination across these columns becomes one series."
+msgstr ""
+
+msgctxt "chartsCsvGroupByPickColumn"
+msgid "Pick a column…"
+msgstr ""
+
+msgctxt "chartsCsvGroupByRemove"
+msgid "Remove grouping column"
 msgstr ""
 
 msgctxt "chartsCsvInvalidFile"
 msgid "The CSV file does not contain enough data to import."
 msgstr ""
 
+msgctxt "chartsCsvLayout"
+msgid "Layout"
+msgstr ""
+
 msgctxt "chartsCsvMoreRows"
 msgid "+ @count more rows"
 msgstr ""
 
-msgctxt "chartsCsvNoSeries"
-msgid "Select at least one column to import."
+msgctxt "chartsCsvNoCategories"
+msgid "No categories produced — check the Category column and filters."
 msgstr ""
 
-msgctxt "chartsCsvOptions"
-msgid "Options"
+msgctxt "chartsCsvNoValues"
+msgid "Pick at least one value column to import."
+msgstr ""
+
+msgctxt "chartsCsvOutputPreview"
+msgid "Output preview"
 msgstr ""
 
 msgctxt "chartsCsvPreviewLead"
 msgid ""
-"Review the data that will be imported. Adjust orientation and pick which "
-"columns to include."
-msgstr ""
-
-msgctxt "chartsCsvPreviewSection"
-msgid "Preview"
+"Adjust the column mapping if needed; the preview below shows exactly what "
+"will be imported."
 msgstr ""
 
 msgctxt "chartsCsvPreviewSubmit"
@@ -1477,12 +1563,24 @@ msgctxt "chartsCsvPreviewTitle"
 msgid "Preview CSV import"
 msgstr ""
 
-msgctxt "chartsCsvReverseColumns"
-msgid "Reverse column order"
-msgstr ""
-
 msgctxt "chartsCsvReverseRows"
 msgid "Reverse row order"
+msgstr ""
+
+msgctxt "chartsCsvSort"
+msgid "Sort categories"
+msgstr ""
+
+msgctxt "chartsCsvSortAlphabetical"
+msgid "Alphabetical"
+msgstr ""
+
+msgctxt "chartsCsvSortFirstOccurrence"
+msgid "First occurrence"
+msgstr ""
+
+msgctxt "chartsCsvSortNumeric"
+msgid "Numeric"
 msgstr ""
 
 msgctxt "chartsCsvTranspose"
@@ -1493,6 +1591,16 @@ msgctxt "chartsCsvTransposeDescription"
 msgid ""
 "Use this when the CSV has the categories along the top row instead of the "
 "first column."
+msgstr ""
+
+msgctxt "chartsCsvValueColumns"
+msgid "Value columns"
+msgstr ""
+
+msgctxt "chartsCsvValueColumnsDescription"
+msgid ""
+"Numeric columns to import. Pick multiple to use each as its own series. "
+"Pick one to split rows into series via Group by."
 msgstr ""
 
 msgctxt "chartsData"
@@ -1799,6 +1907,17 @@ msgstr ""
 
 msgctxt "chartsType"
 msgid "Chart Type"
+msgstr ""
+
+msgctxt "chartsTypeAgePyramid"
+msgid "Age pyramid"
+msgstr ""
+
+msgctxt "chartsTypeAgePyramidDescription"
+msgid ""
+"Back-to-back horizontal bars by category, with series before the split "
+"index rendered on the left and the rest on the right. Multiple series on "
+"the same side stack."
 msgstr ""
 
 msgctxt "chartsTypeArea"
@@ -4364,7 +4483,7 @@ msgid "Translate"
 msgstr "Traduci..."
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translation as up-to-date"
+msgid "Mark translations as up to date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"
