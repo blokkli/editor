@@ -6,7 +6,10 @@
     }"
   >
     <TransitionHeight opacity :duration="600">
-      <div v-if="attachments.length" class="bk-agent-input-attachments">
+      <div
+        v-if="attachments.length"
+        class="flex flex-wrap gap-5 p-10 border-b border-b-mono-300 border-dashed"
+      >
         <AttachmentChip
           v-for="att in attachments"
           :key="att.id"

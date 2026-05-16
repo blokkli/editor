@@ -70,7 +70,8 @@ export default defineBlokkliAgentTool({
   }),
   mockParamsVariants: () => [
     {
-      question: 'Which sections should be included on the page?',
+      question:
+        'Which of the following sections should be included on the page?',
       options: [
         { value: 'hero', label: 'Hero' },
         { value: 'features', label: 'Features' },

@@ -1,27 +1,30 @@
 <template>
   <ToolCard
-    class="bk-agent-plan"
+    class="mt-0! overflow-hidden border-0 rounded-b-none rounded-t-lg border-dashed border-b border-b-mono-300"
     icon="bk_mdi_inventory"
     :title="plan.title"
     :hide-cancel="!pendingApproval"
     @cancel="$emit('reject')"
   >
-    <div class="bk-agent-plan-steps">
+    <div class="flex flex-col gap-10 px-10 text-sm py-8">
       <div
         v-for="(step, index) in plan.steps"
         :key="index"
-        class="bk-agent-plan-step"
-        :class="{
-          'bk-is-pending': step.status === 'pending',
-          'bk-is-in-progress': step.status === 'in_progress',
-          'bk-is-completed': step.status === 'completed',
-        }"
+        class="flex items-center gap-8"
       >
         <StatusIcon
           :status="planStepToStatus(step.status)"
           :bullet-text="index + 1"
         />
-        <span class="bk-agent-plan-step-label">{{ step.label }}</span>
+        <span
+          :class="{
+            'text-mono-500 line-through': step.status === 'completed',
+            'font-medium': step.status === 'in_progress',
+            'text-mono-600': step.status === 'pending',
+          }"
+        >
+          {{ step.label }}
+        </span>
       </div>
     </div>
 

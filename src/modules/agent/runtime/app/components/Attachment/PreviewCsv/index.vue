@@ -33,3 +33,22 @@ const bodyRows = computed(() => {
   return props.content.trim().split('\n').slice(1).map(parseRow)
 })
 </script>
+
+<style lang="postcss">
+.bk-agent-attachment-table {
+  @apply w-full text-sm border-collapse;
+
+  th,
+  td {
+    @apply border border-mono-300 px-10 py-5 text-left;
+  }
+
+  th {
+    @apply bg-mono-100 font-semibold;
+  }
+
+  tr:hover td {
+    @apply bg-mono-50;
+  }
+}
+</style>

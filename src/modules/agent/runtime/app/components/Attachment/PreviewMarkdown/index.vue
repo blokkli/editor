@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="bk-agent-attachment-rendered bk-agent-message-text"
-    v-html="html"
-  />
+  <div class="whitespace-normal bk-agent-message-text" v-html="html" />
 </template>
 
 <script lang="ts" setup>

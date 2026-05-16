@@ -67,7 +67,7 @@
 
     button {
       @apply text-left text-sm text-pretty font-medium;
-      @apply border border-accent-300 rounded px-10 py-8;
+      @apply border border-accent-300 rounded-xl px-10 py-8;
       @apply text-accent-700 bg-accent-50;
       @apply hover:border-accent-700 hover:text-accent-50 hover:bg-accent-700;
       @apply cursor-pointer;

@@ -1,21 +1,32 @@
 <template>
-  <div class="bk-agent-attachment">
+  <div class="relative max-w-full min-w-0">
     <button
       v-if="removable"
       :title="$t('aiAgentRemoveAttachment', 'Remove attachment')"
-      class="bk-agent-attachment-close"
+      class="absolute -top-5 -right-5 bg-white border border-mono-300 size-20 flex items-center justify-center shrink-0 cursor-pointer rounded-full text-mono-700 hover:bg-red-normal hover:text-white hover:border-red-normal"
       @click="$emit('remove')"
     >
-      <Icon name="bk_mdi_close" />
+      <Icon name="bk_mdi_close" class="size-15" />
     </button>
     <button
-      class="bk-agent-attachment-text"
       :title="$t('aiAgentViewAttachment', 'View attachment')"
+      class="p-10 text-xs rounded border w-full text-left"
+      :class="{
+        'bg-accent-50 border-accent-300 text-accent-700/70 hover:bg-accent-100 hover:border-accent-400':
+          !inverted,
+        'bg-accent-800 border-accent-500 text-white/70 hover:bg-accent-900 hover:border-accent-400':
+          inverted,
+      }"
       @click="showAttachment = true"
     >
-      <div>
-        <span class="bk-agent-attachment-title">{{ title }}</span>
-        <span class="bk-agent-attachment-preview">{{ preview }}</span>
+      <div class="line-clamp-4">
+        <span
+          class="font-semibold mb-2 uppercase tracking-wider block"
+          :class="inverted ? 'text-white' : 'text-accent-800'"
+        >
+          {{ title }}
+        </span>
+        <span class="break-all">{{ preview }}</span>
       </div>
     </button>
   </div>
@@ -27,10 +38,12 @@
         :title
         :width="1200"
         hide-buttons
-        class="bk-agent-attachment-modal"
+        flush
         @cancel="showAttachment = false"
       >
-        <component :is="previewComponent" :content="bodyContent" />
+        <div class="p-10 whitespace-pre-wrap select-text">
+          <component :is="previewComponent" :content="bodyContent" />
+        </div>
       </DialogModal>
     </BlokkliTransition>
   </Teleport>
@@ -60,6 +73,7 @@ const PREVIEW_COMPONENTS = {
 const props = defineProps<{
   attachment: Attachment
   removable?: boolean
+  inverted?: boolean
 }>()
 
 defineEmits<{

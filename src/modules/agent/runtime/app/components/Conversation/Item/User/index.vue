@@ -1,11 +1,16 @@
 <template>
   <div class="bk-agent-message bk-is-user">
     <div v-if="html" class="bk-agent-message-text" v-html="html" />
-    <div v-if="attachments?.length" class="bk-agent-message-attachments">
+    <div
+      v-if="attachments?.length"
+      class="grid gap-8"
+      :class="{ 'mt-10': html }"
+    >
       <AttachmentChip
         v-for="att in attachments"
         :key="att.id"
         :attachment="att"
+        inverted
       />
     </div>
   </div>

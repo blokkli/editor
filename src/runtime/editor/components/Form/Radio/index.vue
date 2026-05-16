@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bk-form-label">
+    <div v-if="label" class="bk-form-label">
       {{ label }}<span v-if="required" class="bk-required-indicator">*</span>
     </div>
     <div :class="{ 'bk-radio-inline': inline }">
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 defineProps<{
   id: string
-  label: string
+  label?: string
   options: { value: string; label: string }[]
   required?: boolean
   disabled?: boolean

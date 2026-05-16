@@ -1,38 +1,33 @@
 <template>
-  <ToolCard
-    icon="bk_mdi_help"
-    :title="params.question"
-    class="bk-agent-tool-question"
-    @cancel="cancel"
-  >
-    <div class="bk-agent-tool-question-inner">
+  <ToolCard icon="bk_mdi_help" :title="params.question" @cancel="cancel">
+    <div class="p-10 bk-agent-tool-question-list">
       <FormCheckboxes
         v-if="params.multiSelect"
         id="ask-question"
         v-model="selectedMulti"
-        label=""
         :options="params.options"
+        class="bk-agent-tool-question-options"
       />
 
-      <div v-else>
+      <template v-else>
         <FormRadio
           id="ask-question"
           v-model="selectedSingle"
-          label=""
           :options="radioOptions"
+          class="bk-agent-tool-question-options"
         />
-        <div v-if="isOtherSelected" class="bk-agent-tool-question-other">
+        <div v-if="isOtherSelected" class="px-10 pt-5 pb-5">
           <textarea
             ref="otherTextarea"
             v-model="otherText"
-            class="bk-form-input"
+            class="bk-form-input bk-is-small mt-10"
             :rows="2"
             :placeholder="
               $t('aiAgentAskQuestionOtherPlaceholder', 'Type your answer...')
             "
           />
         </div>
-      </div>
+      </template>
     </div>
 
     <template #actions>
@@ -141,3 +136,20 @@ function cancel() {
   emit('done', { selected: null, label: $t('aiAgentCancelled', 'Cancelled') })
 }
 </script>
+
+<style lang="postcss">
+.bk-agent-tool-question-list {
+  .bk-radio,
+  .bk-checkbox {
+    input + span {
+      @apply font-medium text-sm;
+    }
+  }
+}
+
+.bk-agent-tool-question-options {
+  > div {
+    @apply grid gap-5;
+  }
+}
+</style>

@@ -1,7 +1,5 @@
 @import './partials/MessageText.css';
 @import './partials/ConversationList.css';
-@import './partials/Plan.css';
-@import './partials/ToolCard.css';
 @import './partials/Transcript.css';
 @import './partials/Sidebar.css';
 @import './partials/Welcome.css';
@@ -9,8 +7,6 @@
 @import './partials/DelegateTextRewrite.css';
 @import './partials/MediaSelect.css';
 @import './partials/Input.css';
-@import './partials/ToolQuestion.css';
-@import './partials/Attachments.css';
 
 .bk-agent-connecting {
   @apply flex items-center justify-center gap-8 p-20 text-mono-500;
