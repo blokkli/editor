@@ -69,6 +69,9 @@ watch(
 
 const hasRenderableData = computed(() => {
   if (!chartData.value) return false
+  if (chartData.value.type === 'advanced') {
+    return !!chartData.value.advancedConfig?.parsed
+  }
   // For dynamic sources, defer to ChartRenderer — it falls back to the
   // editor preview inject when this component is rendered inside the
   // editor's preview pane and the runtime fetch hasn't completed yet.

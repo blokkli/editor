@@ -8,6 +8,8 @@ import { colorOptions } from '#blokkli-build/editor-config'
 
 const SINGLE_SERIES_TYPES = ['pie', 'donut', 'radialBar']
 
+// 'advanced' is intentionally omitted — it stores raw ECharts JSON and has no
+// structured data the agent can produce reliably. Editor-only feature.
 export const chartTypeEnum = z.enum([
   'bar',
   'line',

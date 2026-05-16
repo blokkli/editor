@@ -234,6 +234,7 @@ const renderProps = computed<ChartTypeRenderProps | null>(() => {
     typeOptions: (props.typeOptions ?? {}) as Record<string, unknown>,
     numberFormat: resolvedNumberFormat.value,
     isEditing,
+    advancedConfig: props.advancedConfig?.parsed,
   }
 })
 

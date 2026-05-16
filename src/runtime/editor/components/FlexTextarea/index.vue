@@ -1,7 +1,10 @@
 <template>
   <div
     class="bk-flex-textarea relative"
-    :class="{ 'bk-is-scrollable': isScrollable }"
+    :class="{
+      'bk-is-scrollable': isScrollable,
+      'overflow-hidden': !isScrollable,
+    }"
     :style="{
       height: height + 'px',
     }"
@@ -14,6 +17,7 @@
       :class="{
         'bk-form-input': textareaClass,
         'overflow-y-auto': isScrollable,
+        'overflow-hidden': !isScrollable,
       }"
       @keydown.capture.stop="onKeydown"
       @keyup.capture.stop
@@ -32,7 +36,7 @@ import {
   onMounted,
   useBlokkli,
 } from '#imports'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { useAnimationFrame } from '#blokkli/editor/composables'
 import { ClipboardData } from '#blokkli/editor/helpers/clipboardData'
 import { textAutoReplace } from '#blokkli-build/editor-config'
 
@@ -448,7 +452,7 @@ function onPaste(e: ClipboardEvent) {
   })
 }
 
-onBlokkliEvent('animationFrame', () => {
+useAnimationFrame(() => {
   const scrollHeight = textarea.value?.scrollHeight ?? props.minHeight
   const newHeight = Math.max(scrollHeight, props.minHeight)
   height.value = props.maxHeight

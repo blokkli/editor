@@ -72,7 +72,9 @@ describe('inferSmartConfig', () => {
     const inferred = inferSmartConfig(grid)
 
     expect(AGE_PYRAMID_HEADER[inferred.category]).toBe('altersklasse')
-    expect(inferred.values.map((i) => AGE_PYRAMID_HEADER[i])).toEqual(['anzahl'])
+    expect(inferred.values.map((i) => AGE_PYRAMID_HEADER[i])).toEqual([
+      'anzahl',
+    ])
     expect(inferred.groupBy.map((i) => AGE_PYRAMID_HEADER[i])).toEqual([
       'heimat',
       'geschlecht',

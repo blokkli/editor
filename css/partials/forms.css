@@ -9,6 +9,10 @@
     @apply rounded;
     min-height: 46px;
 
+    &.bk-is-mono {
+      @apply font-mono! !text-sm;
+    }
+
     &.bk-is-small {
       @apply min-h-30! !px-8 py-3! !text-sm gap-5;
     }

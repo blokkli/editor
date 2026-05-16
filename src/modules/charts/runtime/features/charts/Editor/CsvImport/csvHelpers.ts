@@ -4,12 +4,7 @@ import { getColorIdAtIndex, parseNumericInput } from '../../../../helpers'
 
 export type CsvGrid = string[][]
 
-export type ColumnRole =
-  | 'category'
-  | 'series'
-  | 'value'
-  | 'groupBy'
-  | 'ignore'
+export type ColumnRole = 'category' | 'series' | 'value' | 'groupBy' | 'ignore'
 
 export type CategorySort = 'firstOccurrence' | 'alphabetical' | 'numeric'
 
@@ -177,8 +172,7 @@ const BOOLEAN_TOKENS = new Set([
 
 function isDateLikeCell(s: string): boolean {
   return (
-    /^\d{4}-\d{1,2}-\d{1,2}/.test(s) ||
-    /^\d{1,2}[./]\d{1,2}[./]\d{2,4}/.test(s)
+    /^\d{4}-\d{1,2}-\d{1,2}/.test(s) || /^\d{1,2}[./]\d{1,2}[./]\d{2,4}/.test(s)
   )
 }
 
@@ -327,9 +321,7 @@ export function inferSmartConfig(grid: CsvGrid): {
       !c.isGeoNamed,
   )
 
-  const categoricals = usable.filter(
-    (c) => !c.isAllNumeric && !c.isYearLike,
-  )
+  const categoricals = usable.filter((c) => !c.isAllNumeric && !c.isYearLike)
   const yearCols = usable.filter((c) => c.isYearLike)
   let measures = usable.filter((c) => c.isAllNumeric && !c.isYearLike)
 
@@ -356,14 +348,10 @@ export function inferSmartConfig(grid: CsvGrid): {
     category = 0
   }
 
-  const values = measures
-    .map((c) => c.index)
-    .filter((i) => i !== category)
+  const values = measures.map((c) => c.index).filter((i) => i !== category)
 
   const groupBy = categoricals
-    .filter(
-      (c) => c.index !== category && c.distinct >= 2 && c.distinct <= 50,
-    )
+    .filter((c) => c.index !== category && c.distinct >= 2 && c.distinct <= 50)
     .map((c) => c.index)
 
   const filters: CsvImportFilter[] = yearCols
@@ -527,9 +515,7 @@ export function gridToImportPayload(
       const cIdx = registerCategory(catLabel)
       const seriesName =
         groupByCols.length > 0
-          ? groupByCols
-              .map((c) => row[c] ?? '')
-              .join(config.groupBySeparator)
+          ? groupByCols.map((c) => row[c] ?? '').join(config.groupBySeparator)
           : header[valueCol] || 'Value'
       const sIdx = registerSeries(seriesName)
       const v = parseNumericInput(row[valueCol] ?? '')

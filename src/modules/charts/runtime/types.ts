@@ -38,8 +38,7 @@ export type ChartOption = BlockOptionDefinitionBase<BlokkliIcon> & {
 }
 
 export type ChartTypeDefinitionBody<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  T extends Record<string, unknown> = Record<string, unknown>,
+  _T extends Record<string, unknown> = Record<string, unknown>,
 > = {
   hasSeriesColors: boolean
   hasCategoryColors: boolean
@@ -84,6 +83,11 @@ export type ChartTypeRenderProps = {
   typeOptions: Record<string, unknown>
   numberFormat?: ChartNumberFormat
   isEditing: boolean
+  /**
+   * Pre-parsed ECharts option object — only relevant for the `advanced`
+   * chart type. Renderers for other types ignore this field.
+   */
+  advancedConfig?: Record<string, unknown>
 }
 
 // ─── Shared TypeOptions interfaces ───────────────────────────────────────────
@@ -232,6 +236,18 @@ export type ChartDataSourceRef = {
   categoryColorOverrides?: Record<string, string>
 }
 
+/**
+ * Storage shape for the `advanced` chart type. The renderer reads `parsed`
+ * directly — no JSON parsing required. `source` is the textarea text
+ * (JSON5-tolerant) and is editor-only: it is stripped before persisting.
+ */
+export type ChartAdvancedConfig = {
+  /** Parsed ECharts option object — what the renderer consumes. */
+  parsed: Record<string, unknown>
+  /** Raw textarea text. Editor-only; stripped on save. */
+  source?: string
+}
+
 type ChartDataBase = {
   title: string
   categories: string[]
@@ -258,6 +274,10 @@ type ChartDataBase = {
    * back to custom data restores the user's last input.
    */
   dataSource?: ChartDataSourceRef
+  /**
+   * Raw ECharts configuration, used only when `type === 'advanced'`.
+   */
+  advancedConfig?: ChartAdvancedConfig
 }
 
 export type BlokkliChartData = ChartDataBase & {

@@ -1403,6 +1403,44 @@ msgctxt "chartsAddRow"
 msgid "Add row"
 msgstr ""
 
+msgctxt "chartsAdvancedConfigHelp"
+msgid ""
+"Paste any ECharts option object. Keys without quotes, single quotes and "
+"trailing commas are allowed. Functions (e.g. custom formatters) are not "
+"supported."
+msgstr ""
+"Collez un objet d'options ECharts. Les clés sans guillemets, les "
+"apostrophes et les virgules de fin sont autorisées. Les fonctions "
+"(formateurs personnalisés, etc.) ne sont pas prises en charge."
+
+msgctxt "chartsAdvancedConfigLabel"
+msgid "ECharts config"
+msgstr "Configuration ECharts"
+
+msgctxt "chartsAdvancedConfigTitle"
+msgid "ECharts configuration"
+msgstr "Configuration ECharts"
+
+msgctxt "chartsAdvancedNoTranslations"
+msgid ""
+"Advanced charts have no translatable strings — the ECharts configuration is "
+"stored as-is."
+msgstr ""
+"Les graphiques avancés n'ont pas de chaînes traduisibles — la configuration "
+"ECharts est enregistrée telle quelle."
+
+msgctxt "chartsAdvancedOpenExamples"
+msgid "Open examples"
+msgstr ""
+
+msgctxt "chartsAdvancedParseError"
+msgid "Parse error"
+msgstr "Erreur d'analyse"
+
+msgctxt "chartsAdvancedParseErrorNotObject"
+msgid "Configuration must be an object."
+msgstr "La configuration doit être un objet."
+
 msgctxt "chartsAgePyramidSplitIndex"
 msgid "Right-side start index"
 msgstr ""
@@ -1916,6 +1954,16 @@ msgstr ""
 msgctxt "chartsType"
 msgid "Chart Type"
 msgstr ""
+
+msgctxt "chartsTypeAdvanced"
+msgid "Advanced"
+msgstr "Avancé"
+
+msgctxt "chartsTypeAdvancedDescription"
+msgid "Paste a raw ECharts configuration. Full control, no structured data table."
+msgstr ""
+"Collez une configuration ECharts brute. Contrôle total, sans tableau de "
+"données structuré."
 
 msgctxt "chartsTypeAgePyramid"
 msgid "Age pyramid"
@@ -4367,6 +4415,10 @@ msgstr ""
 
 msgctxt "transformDialogButtonPreview"
 msgid "Preview"
+msgstr ""
+
+msgctxt "translate"
+msgid "Translate"
 msgstr ""
 
 msgctxt "translateEditDisabled"

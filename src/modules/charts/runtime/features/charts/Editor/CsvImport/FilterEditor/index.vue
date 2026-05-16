@@ -41,7 +41,7 @@ import { ref, computed, useBlokkli } from '#imports'
 import {
   FormSelect,
   FormCheckboxes,
-  FormItem as FormItem,
+  FormItem,
 } from '#blokkli/editor/components'
 import type { CsvGrid, CsvImportFilter } from '../csvHelpers'
 import { columnLabelWithSample, distinctColumnValues } from '../csvHelpers'

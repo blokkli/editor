@@ -332,9 +332,7 @@ const outputPayload = computed<CsvImportPayload>(() =>
 const seriesOrder = ref<string[]>(initial?.seriesOrder ?? [])
 
 const orderedPayload = computed<CsvImportPayload>(() => {
-  const remaining = new Map(
-    outputPayload.value.series.map((s) => [s.name, s]),
-  )
+  const remaining = new Map(outputPayload.value.series.map((s) => [s.name, s]))
   const reordered: typeof outputPayload.value.series = []
   for (const name of seriesOrder.value) {
     const s = remaining.get(name)

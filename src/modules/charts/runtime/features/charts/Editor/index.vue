@@ -56,10 +56,11 @@
         <PanelSection :title="$t('chartsType', 'Chart Type')">
           <ChartTypePicker
             :model-value="chartData.type"
-            @update:model-value="setType"
+            @update:model-value="onChangeType"
           />
         </PanelSection>
-        <PanelSection :title="$t('chartsData', 'Data')">
+        <AdvancedConfigPanel v-if="isAdvanced" v-model="advancedConfig" />
+        <PanelSection v-if="!isAdvanced" :title="$t('chartsData', 'Data')">
           <template v-if="capabilities" #tabs>
             <PanelTabs v-model="dataTab" :tabs="dataTabs" />
           </template>
@@ -158,55 +159,71 @@
           </template>
         </PanelSection>
 
-        <FootnoteEditor
-          :footnotes="chartData.footnotes"
-          :add-footnote="addFootnote"
-          :remove-footnote="removeFootnote"
-          :update-footnote="updateFootnote"
-        />
+        <template v-if="!isAdvanced">
+          <FootnoteEditor
+            :footnotes="chartData.footnotes"
+            :add-footnote="addFootnote"
+            :remove-footnote="removeFootnote"
+            :update-footnote="updateFootnote"
+          />
 
-        <NumberFormatEditor
-          :format="chartData.numberFormat ?? {}"
-          @update:format="
-            chartData.numberFormat =
-              Object.keys($event).length > 0 ? $event : undefined
-          "
-        >
-          <DateFormatEditor
-            v-if="hasDateFormattedCategories"
-            :format="chartData.dateFormat ?? {}"
-            :categories="chartData.categories"
-            :locale="chartData.numberFormat?.locale"
+          <NumberFormatEditor
+            :format="chartData.numberFormat ?? {}"
             @update:format="
-              chartData.dateFormat =
-                Object.keys($event).filter(
-                  (k) => $event[k as keyof typeof $event] !== undefined,
-                ).length > 0
-                  ? $event
-                  : undefined
+              chartData.numberFormat =
+                Object.keys($event).length > 0 ? $event : undefined
             "
-          />
-        </NumberFormatEditor>
+          >
+            <DateFormatEditor
+              v-if="hasDateFormattedCategories"
+              :format="chartData.dateFormat ?? {}"
+              :categories="chartData.categories"
+              :locale="chartData.numberFormat?.locale"
+              @update:format="
+                chartData.dateFormat =
+                  Object.keys($event).filter(
+                    (k) => $event[k as keyof typeof $event] !== undefined,
+                  ).length > 0
+                    ? $event
+                    : undefined
+              "
+            />
+          </NumberFormatEditor>
 
-        <PanelSection
-          v-if="chartDef"
-          :title="$t('settings', 'Settings')"
-          padded
-        >
-          <ChartTypeOptions
-            v-model:title="chartData.title"
-            :options="chartDef.editor.options"
-            :type-options="chartData.typeOptions || {}"
-            @update:type-options="chartData.typeOptions = $event"
-          />
-        </PanelSection>
+          <PanelSection
+            v-if="chartDef"
+            :title="$t('settings', 'Settings')"
+            padded
+          >
+            <ChartTypeOptions
+              v-model:title="chartData.title"
+              :options="chartDef.editor.options"
+              :type-options="chartData.typeOptions || {}"
+              @update:type-options="chartData.typeOptions = $event"
+            />
+          </PanelSection>
+        </template>
       </template>
       <TranslationsEditor
+        v-if="!isAdvanced"
         v-model:translations="chartData.translations"
         :chart-data="effectiveChartData"
         :has-numeric-categories
         :has-date-formatted-categories="hasDateFormattedCategories"
       />
+      <PanelSection
+        v-else-if="isTranslation"
+        :title="$t('translate', 'Translate')"
+      >
+        <div class="p-panel-gap text-mono-700">
+          {{
+            $t(
+              'chartsAdvancedNoTranslations',
+              'Advanced charts have no translatable strings — the ECharts configuration is stored as-is.',
+            )
+          }}
+        </div>
+      </PanelSection>
     </template>
   </ResizableEditorView>
 </template>
@@ -222,9 +239,15 @@ import {
 } from '#imports'
 import type {
   BlokkliChartData,
+  ChartAdvancedConfig,
   ChartDataSource,
   ChartSeriesOverride,
+  ChartType,
 } from '../../../types'
+import {
+  ADVANCED_DEFAULT_PARSED,
+  ADVANCED_DEFAULT_SOURCE,
+} from '../../../blokkli/chart-types/advanced/definition'
 // Load adapter type augmentation (declare module).
 import '#blokkli/charts/adapter'
 import {
@@ -252,6 +275,7 @@ import DynamicPreviewStatus from './DynamicPreviewStatus/index.vue'
 import SeriesOverridesPanel from './SeriesOverridesPanel/index.vue'
 import CategoryColorOverridesPanel from './CategoryColorOverridesPanel/index.vue'
 import OrphanOverridesWarning from './OrphanOverridesWarning/index.vue'
+import AdvancedConfigPanel from './AdvancedConfigPanel/index.vue'
 import type { OrphanOverride } from './OrphanOverridesWarning/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelTabs from '#blokkli/editor/components/Panel/Tabs/index.vue'
@@ -275,26 +299,47 @@ const colorOptions = config.colorOptions.value
 function getCurrentData(): BlokkliChartData {
   if (props.data) {
     const parsed = JSON.parse(JSON.stringify(props.data))
-    if (parsed && Array.isArray(parsed.series) && parsed.series.length > 0) {
-      const validIds = new Set(colorOptions.map((c) => c.id))
-      const fallbackId = getFirstColorId(colorOptions)
-      for (const series of parsed.series) {
-        if (!validIds.has(series.color)) {
-          series.color = fallbackId
-        }
-      }
-      if (Array.isArray(parsed.categoryColors)) {
-        for (let i = 0; i < parsed.categoryColors.length; i++) {
-          if (!validIds.has(parsed.categoryColors[i])) {
-            parsed.categoryColors[i] = fallbackId
+    const isAdvanced = parsed?.type === 'advanced'
+    const hasSeries = Array.isArray(parsed?.series) && parsed.series.length > 0
+    if (parsed && (isAdvanced || hasSeries)) {
+      if (!isAdvanced) {
+        const validIds = new Set(colorOptions.map((c) => c.id))
+        const fallbackId = getFirstColorId(colorOptions)
+        for (const series of parsed.series) {
+          if (!validIds.has(series.color)) {
+            series.color = fallbackId
           }
         }
+        if (Array.isArray(parsed.categoryColors)) {
+          for (let i = 0; i < parsed.categoryColors.length; i++) {
+            if (!validIds.has(parsed.categoryColors[i])) {
+              parsed.categoryColors[i] = fallbackId
+            }
+          }
+        } else {
+          parsed.categoryColors = parsed.categories.map(
+            (_: string, i: number) => {
+              return colorOptions[i % colorOptions.length]?.id || fallbackId
+            },
+          )
+        }
       } else {
-        parsed.categoryColors = parsed.categories.map(
-          (_: string, i: number) => {
-            return colorOptions[i % colorOptions.length]?.id || fallbackId
-          },
-        )
+        if (!Array.isArray(parsed.series)) parsed.series = []
+        if (!Array.isArray(parsed.categories)) parsed.categories = []
+        if (!Array.isArray(parsed.categoryColors)) parsed.categoryColors = []
+        // Ensure advancedConfig is fully populated. Persisted data only has
+        // `parsed`; we hydrate `source` here so the textarea has something
+        // to show without round-tripping through formatting on every render.
+        const ac = parsed.advancedConfig
+        const parsedObj =
+          ac && typeof ac.parsed === 'object' && ac.parsed !== null
+            ? ac.parsed
+            : { ...ADVANCED_DEFAULT_PARSED }
+        const source =
+          ac && typeof ac.source === 'string'
+            ? ac.source
+            : JSON.stringify(parsedObj, null, 2)
+        parsed.advancedConfig = { parsed: parsedObj, source }
       }
       if (!Array.isArray(parsed.footnotes)) {
         parsed.footnotes = []
@@ -388,7 +433,15 @@ const effectiveChartData = computed<BlokkliChartData>(() => {
 })
 
 function getData(): BlokkliChartData {
-  return effectiveChartData.value
+  const data = effectiveChartData.value
+  // The textarea source is editor-only state — strip it before persisting.
+  if (data.type === 'advanced' && data.advancedConfig?.source !== undefined) {
+    return {
+      ...data,
+      advancedConfig: { parsed: data.advancedConfig.parsed },
+    }
+  }
+  return data
 }
 
 defineExpose({ getData })
@@ -411,7 +464,11 @@ watch(
     if (autoUpdate.value) {
       if (debounceTimer) clearTimeout(debounceTimer)
       isStale.value = true
-      debounceTimer = setTimeout(refreshPreview, 500)
+      // Advanced mode parses raw JSON5 on every keystroke and re-renders the
+      // full echarts option, so we wait longer to avoid flickering and broken
+      // intermediate parses while the user types.
+      const delay = isAdvanced.value ? 1500 : 500
+      debounceTimer = setTimeout(refreshPreview, delay)
     } else {
       isStale.value = true
     }
@@ -427,6 +484,29 @@ watch(autoUpdate, (enabled) => {
 
 onBeforeUnmount(() => {
   if (debounceTimer) clearTimeout(debounceTimer)
+})
+
+const isAdvanced = computed(() => chartData.value.type === 'advanced')
+
+function onChangeType(next: ChartType) {
+  setType(next)
+  if (next === 'advanced' && !chartData.value.advancedConfig) {
+    chartData.value.advancedConfig = {
+      parsed: { ...ADVANCED_DEFAULT_PARSED },
+      source: ADVANCED_DEFAULT_SOURCE,
+    }
+  }
+}
+
+const advancedConfig = computed<ChartAdvancedConfig>({
+  get: () =>
+    chartData.value.advancedConfig ?? {
+      parsed: { ...ADVANCED_DEFAULT_PARSED },
+      source: ADVANCED_DEFAULT_SOURCE,
+    },
+  set: (next: ChartAdvancedConfig) => {
+    chartData.value.advancedConfig = next
+  },
 })
 
 const chartDef = computed(() => getChartType(chartData.value.type, $t))
