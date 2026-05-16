@@ -105,7 +105,7 @@ export default {
   --bk-comment-pad-x: 8px;
   --bk-comment-pad-y: 10px;
   --bk-comment-reply-pad-y: 5px;
-  --bk-comment-avatar-size: 15px;
+  --bk-avatar-size: 15px;
   --bk-comment-avatar-gap: 5px;
   --bk-comment-line-width: 2px;
   /* Gap between the bottom of the root avatar and the start of the thread line. */
@@ -116,10 +116,10 @@ export default {
 
   /* Derived — do not change directly. */
   --bk-comment-avatar-center: calc(
-    var(--bk-comment-pad-x) + var(--bk-comment-avatar-size) / 2
+    var(--bk-comment-pad-x) + var(--bk-avatar-size) / 2
   );
   --bk-comment-content-x: calc(
-    var(--bk-comment-pad-x) + var(--bk-comment-avatar-size) +
+    var(--bk-comment-pad-x) + var(--bk-avatar-size) +
       var(--bk-comment-avatar-gap)
   );
   /* Padding inside the replies column so a reply Comment lines up with the root content. */
@@ -129,8 +129,7 @@ export default {
   );
   /* Line top: just below the root avatar, regardless of root content length. */
   --bk-comment-line-top: calc(
-    var(--bk-comment-pad-y) + var(--bk-comment-avatar-size) +
-      var(--bk-comment-line-gap)
+    var(--bk-comment-pad-y) + var(--bk-avatar-size) + var(--bk-comment-line-gap)
   );
   /* Line X position: centered on the avatar column. */
   --bk-comment-line-x: calc(
@@ -138,20 +137,20 @@ export default {
   );
 
   @variant 2xl {
-    --bk-comment-avatar-size: 25px;
+    --bk-avatar-size: 25px;
     --bk-comment-avatar-gap: 8px;
     --bk-comment-pad-x: 10px;
   }
 
   @variant 3xl {
-    --bk-comment-avatar-size: 30px;
+    --bk-avatar-size: 30px;
     --bk-comment-avatar-gap: 10px;
     --bk-comment-reply-pad-y: 10px;
     --bk-comment-pad-y: 10px;
   }
 
   @variant 4xl {
-    --bk-comment-avatar-size: 35px;
+    --bk-avatar-size: 35px;
     --bk-comment-pad-y: 15px;
     --bk-comment-pad-x: 15px;
   }

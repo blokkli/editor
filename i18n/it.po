@@ -99,6 +99,66 @@ msgid ""
 "placed inside or after the selected block.</p>"
 msgstr ""
 
+msgctxt "agentConversationsBackendMissing"
+msgid "This backend does not expose the admin conversation list."
+msgstr ""
+
+msgctxt "agentConversationsDelete"
+msgid "Delete conversation"
+msgstr ""
+
+msgctxt "agentConversationsDeleteConfirm"
+msgid "Delete this conversation? This cannot be undone."
+msgstr ""
+
+msgctxt "agentConversationsDetailError"
+msgid "Failed to load conversation."
+msgstr ""
+
+msgctxt "agentConversationsDetailMissing"
+msgid "Conversation could not be loaded."
+msgstr ""
+
+msgctxt "agentConversationsDetailUnparseable"
+msgid "Conversation data is malformed."
+msgstr ""
+
+msgctxt "agentConversationsListEmpty"
+msgid "No agent conversations yet."
+msgstr ""
+
+msgctxt "agentConversationsListError"
+msgid "Failed to load conversations."
+msgstr ""
+
+msgctxt "agentConversationsMenuDescription"
+msgid "Browse and manage all agent conversations."
+msgstr ""
+
+msgctxt "agentConversationsMenuTitle"
+msgid "Agent conversations"
+msgstr ""
+
+msgctxt "agentConversationsSelectPrompt"
+msgid "Select a conversation from the list to view it."
+msgstr ""
+
+msgctxt "agentConversationsTabConversations"
+msgid "Conversations"
+msgstr ""
+
+msgctxt "agentConversationsTabRatings"
+msgid "Ratings"
+msgstr ""
+
+msgctxt "agentConversationsTitle"
+msgid "Agent conversations"
+msgstr ""
+
+msgctxt "agentConversationsUntitled"
+msgid "Untitled"
+msgstr ""
+
 msgctxt "agentPromptReadabilityLabel"
 msgid "Fix readability..."
 msgstr ""
@@ -112,6 +172,34 @@ msgstr ""
 
 msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
+msgstr ""
+
+msgctxt "agentRatingsAggregateTotal"
+msgid "@count ratings"
+msgstr ""
+
+msgctxt "agentRatingsBackendMissing"
+msgid "This backend does not expose the ratings list."
+msgstr ""
+
+msgctxt "agentRatingsEmpty"
+msgid "No ratings yet."
+msgstr ""
+
+msgctxt "agentRatingsFilterAll"
+msgid "All"
+msgstr ""
+
+msgctxt "agentRatingsListError"
+msgid "Failed to load ratings."
+msgstr ""
+
+msgctxt "agentRatingsNoComment"
+msgid "No comment"
+msgstr ""
+
+msgctxt "agentRatingsSelectPrompt"
+msgid "Select a rating to view the conversation it was given on."
 msgstr ""
 
 msgctxt "agentSidebarTooltipLabel"
@@ -1412,10 +1500,6 @@ msgstr ""
 "Incolla un oggetto di opzioni ECharts. Sono ammessi chiavi senza "
 "virgolette, apostrofi e virgole finali. Le funzioni (ad esempio formatter "
 "personalizzati) non sono supportate."
-
-msgctxt "chartsAdvancedConfigLabel"
-msgid "ECharts config"
-msgstr "Configurazione ECharts"
 
 msgctxt "chartsAdvancedConfigTitle"
 msgid "ECharts configuration"

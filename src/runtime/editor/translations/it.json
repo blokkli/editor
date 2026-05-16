@@ -32,7 +32,6 @@
   "analyzerReadabiliyOkTitle": "Il testo potrebbe essere più semplice",
   "blokkliOptionNumberAuto": "Automatico",
   "chartsAdvancedConfigHelp": "Incolla un oggetto di opzioni ECharts. Sono ammessi chiavi senza virgolette, apostrofi e virgole finali. Le funzioni (ad esempio formatter personalizzati) non sono supportate.",
-  "chartsAdvancedConfigLabel": "Configurazione ECharts",
   "chartsAdvancedConfigTitle": "Configurazione ECharts",
   "chartsAdvancedNoTranslations": "I grafici avanzati non hanno stringhe traducibili — la configurazione ECharts viene memorizzata così com'è.",
   "chartsAdvancedParseError": "Errore di analisi",

@@ -42,64 +42,50 @@ type StoredFeedback = {
   explanation?: string
 }
 
-type StoredConversation = Omit<
-  AgentConversationData,
-  'host' | 'author' | 'feedback' | 'feedbackItemIds'
-> & {
-  feedback?: StoredFeedback[]
-}
-
 export default defineEventHandler<Promise<AgentConversationData | null>>(
   async (event) => {
-    const query = getQuery(event)
-    const entityType = query.entityType as string
-    const entityUuid = query.entityUuid as string
-
-    if (!entityType || !entityUuid) {
-      throw createError({
-        statusCode: 400,
-        message: 'entityType and entityUuid are required',
-      })
+    const id = getRouterParam(event, 'id')
+    if (!id) {
+      throw createError({ statusCode: 400, message: 'id is required' })
     }
 
     const storage = useAgentConversationStorage()
-    const prefix = conversationPrefix(entityType, entityUuid)
-    const keys = await storage.getKeys(prefix)
+    const keys = await storage.getKeys()
+    const match = keys.find((k) => k.endsWith(`:${id}`))
+    if (!match) return null
 
-    let latest: StoredConversation | null = null
-    let latestUpdatedAt = ''
+    const data = await storage.getItem(match)
+    if (!data || typeof data !== 'object') return null
 
-    for (const key of keys) {
-      const data = await storage.getItem(key)
-      if (!data || typeof data !== 'object') continue
-      const conv = data as StoredConversation
-      if (conv.updatedAt > latestUpdatedAt) {
-        latestUpdatedAt = conv.updatedAt
-        latest = conv
-      }
+    const conv = data as Omit<
+      AgentConversationData,
+      'host' | 'author' | 'feedback' | 'feedbackItemIds'
+    > & {
+      feedback?: StoredFeedback[]
+      feedbackItemIds?: string[]
     }
+    const [entityType, entityUuid] = match.split(':')
+    if (!entityType || !entityUuid) return null
 
-    if (!latest) return null
-
-    const stored = latest.feedback ?? []
+    const stored = conv.feedback ?? []
     const feedback: FeedbackItem[] = stored.map((f) => ({
-      id: f.id ?? `legacy-${latest!.uuid}-${f.itemId}`,
-      createdAt: f.createdAt ?? latest!.updatedAt,
+      id: f.id ?? `legacy-${conv.uuid}-${f.itemId}`,
+      createdAt: f.createdAt ?? conv.updatedAt,
       rating: f.rating,
       comment: f.explanation ?? null,
       itemId: f.itemId,
       author: f.author ?? { id: '1', name: 'John Wayne', imageUrl: null },
-      conversationUuid: latest!.uuid,
+      conversationUuid: conv.uuid,
     }))
 
     return {
-      uuid: latest.uuid,
-      title: latest.title,
-      createdAt: latest.createdAt,
-      updatedAt: latest.updatedAt,
-      clientState: latest.clientState,
-      serverState: latest.serverState,
-      hash: latest.hash,
+      uuid: conv.uuid,
+      title: conv.title,
+      createdAt: conv.createdAt,
+      updatedAt: conv.updatedAt,
+      clientState: conv.clientState,
+      serverState: conv.serverState,
+      hash: conv.hash,
       host: {
         entityType,
         entityUuid,

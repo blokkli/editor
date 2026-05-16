@@ -103,6 +103,66 @@ msgstr ""
 "usgwählt isch, sin gwüssi Blöck uusggruet. Das zeigt aa, welchi Blöck in "
 "oder noch däm usgwählte Block chönne platziert wärde.</p>"
 
+msgctxt "agentConversationsBackendMissing"
+msgid "This backend does not expose the admin conversation list."
+msgstr ""
+
+msgctxt "agentConversationsDelete"
+msgid "Delete conversation"
+msgstr ""
+
+msgctxt "agentConversationsDeleteConfirm"
+msgid "Delete this conversation? This cannot be undone."
+msgstr ""
+
+msgctxt "agentConversationsDetailError"
+msgid "Failed to load conversation."
+msgstr ""
+
+msgctxt "agentConversationsDetailMissing"
+msgid "Conversation could not be loaded."
+msgstr ""
+
+msgctxt "agentConversationsDetailUnparseable"
+msgid "Conversation data is malformed."
+msgstr ""
+
+msgctxt "agentConversationsListEmpty"
+msgid "No agent conversations yet."
+msgstr ""
+
+msgctxt "agentConversationsListError"
+msgid "Failed to load conversations."
+msgstr ""
+
+msgctxt "agentConversationsMenuDescription"
+msgid "Browse and manage all agent conversations."
+msgstr ""
+
+msgctxt "agentConversationsMenuTitle"
+msgid "Agent conversations"
+msgstr ""
+
+msgctxt "agentConversationsSelectPrompt"
+msgid "Select a conversation from the list to view it."
+msgstr ""
+
+msgctxt "agentConversationsTabConversations"
+msgid "Conversations"
+msgstr ""
+
+msgctxt "agentConversationsTabRatings"
+msgid "Ratings"
+msgstr ""
+
+msgctxt "agentConversationsTitle"
+msgid "Agent conversations"
+msgstr ""
+
+msgctxt "agentConversationsUntitled"
+msgid "Untitled"
+msgstr ""
+
 msgctxt "agentPromptReadabilityLabel"
 msgid "Fix readability..."
 msgstr "Läsbarkäit verbessere..."
@@ -119,6 +179,34 @@ msgstr ""
 msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
 msgstr "Verbessere d'Läsbarkäit vo de usgwählte Blöck."
+
+msgctxt "agentRatingsAggregateTotal"
+msgid "@count ratings"
+msgstr ""
+
+msgctxt "agentRatingsBackendMissing"
+msgid "This backend does not expose the ratings list."
+msgstr ""
+
+msgctxt "agentRatingsEmpty"
+msgid "No ratings yet."
+msgstr ""
+
+msgctxt "agentRatingsFilterAll"
+msgid "All"
+msgstr ""
+
+msgctxt "agentRatingsListError"
+msgid "Failed to load ratings."
+msgstr ""
+
+msgctxt "agentRatingsNoComment"
+msgid "No comment"
+msgstr ""
+
+msgctxt "agentRatingsSelectPrompt"
+msgid "Select a rating to view the conversation it was given on."
+msgstr ""
 
 msgctxt "agentSidebarTooltipLabel"
 msgid "@name (AI-Assistant)"
@@ -1439,10 +1527,6 @@ msgstr ""
 "Füeget Sie es ECharts-Optionsobjäkt y. Schlüssel ohni Aaführigszeichä, "
 "eifachi Aaführigszeichä und Kommas am Schluss sind erloubt. Funktione (z.B. "
 "eigeni Formatter) wärdet nid unterstützt."
-
-msgctxt "chartsAdvancedConfigLabel"
-msgid "ECharts config"
-msgstr "ECharts-Konfiguration"
 
 msgctxt "chartsAdvancedConfigTitle"
 msgid "ECharts configuration"

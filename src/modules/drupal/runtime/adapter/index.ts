@@ -26,6 +26,7 @@ import type {
   ParagraphsBlokkliPublishOptionsFragment,
   ParagraphsBlokkliCurrentUserFragment,
   ParagraphsBlokkliUserConfigInput,
+  PbAgentConversationQuery,
 } from '#graphql-operations'
 import { ParagraphsBlokkliRemoteVideoProvider } from '#graphql-operations'
 import type { Mutation, Query } from '#nuxt-graphql-middleware/operation-types'
@@ -80,6 +81,7 @@ const PERMISSION_FIELDS: Record<
   create_comments: 'create_comments',
   view_comments: 'view_comments',
   use_agent: 'use_agent',
+  manage_agent_conversations: 'manage_agent_conversations',
   list_users: 'list_users',
   transfer_blocks: 'transfer_blocks',
 }
@@ -1757,18 +1759,68 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (
       hasMutation('pbAgentConversationUpsert') &&
       hasMutation('pbAgentConversationDelete') &&
-      hasQuery('pbAgentConversations') &&
-      hasQuery('pbAgentConversation')
+      hasQuery('pbAgentConversation') &&
+      hasQuery('pbAgentConversationLatest') &&
+      hasQuery('pbAgentConversations')
     ) {
-      const hostParams = () => ({
-        hostEntityType: providedContext.value.entityType,
-        hostEntityUuid: providedContext.value.entityUuid,
+      const hostInput = () => ({
+        entityType: providedContext.value.entityType,
+        entityUuid: providedContext.value.entityUuid,
       })
+
+      type GqlFeedback = NonNullable<
+        PbAgentConversationQuery['conversation']
+      >['feedback'][number]
+
+      const mapFeedback = (f: GqlFeedback) => ({
+        id: f.id,
+        createdAt: f.createdAt,
+        rating: f.rating,
+        comment: f.explanation ?? null,
+        itemId: f.itemId,
+        author: {
+          id: String(f.author.id),
+          name: f.author.name,
+          imageUrl: f.author.imageUrl ?? null,
+        },
+        conversationUuid: f.conversationUuid,
+      })
+
+      const mapConversation = (c: PbAgentConversationQuery['conversation']) => {
+        if (!c) return null
+        return {
+          uuid: c.uuid,
+          title: c.title,
+          createdAt: c.createdAt,
+          updatedAt: c.updatedAt,
+          host: c.host
+            ? {
+                entityType: c.host.entityType,
+                entityUuid: c.host.entityUuid,
+                label: c.host.label ?? null,
+                editUrl: c.host.editUrl ?? null,
+              }
+            : null,
+          author: {
+            id: String(c.author.id),
+            name: c.author.name,
+            imageUrl: c.author.imageUrl ?? null,
+          },
+          clientState: c.clientState,
+          serverState: c.serverState,
+          hash: c.hash,
+          feedbackItemIds: c.feedback.map((f) => f.itemId),
+          feedback: c.feedback.map(mapFeedback),
+        }
+      }
 
       adapter.agentConversations = {
         upsert: (data) =>
           useGraphqlMutation('pbAgentConversationUpsert', {
-            ...hostParams(),
+            ...{
+              hostEntityType: providedContext.value.entityType,
+              hostEntityUuid: providedContext.value.entityUuid,
+            },
             uuid: data.uuid,
             title: data.title,
             dataUser: data.clientState,
@@ -1777,31 +1829,18 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           }).then((v) => v.data.result.success),
 
         load: (uuid) =>
-          useGraphqlQuery('pbAgentConversation', {
-            ...hostParams(),
-            uuid,
-          }).then((v) => {
-            const c = v.data.conversation
-            if (!c) return null
-            return {
-              ...c,
-              feedbackItemIds: c.feedback.map((f) => f.itemId),
-            }
-          }),
+          useGraphqlQuery('pbAgentConversation', { uuid }).then((v) =>
+            mapConversation(v.data.conversation),
+          ),
 
         loadLatest: () =>
-          useGraphqlQuery('pbAgentConversation', hostParams()).then((v) => {
-            const c = v.data.conversation
-            if (!c) return null
-            return {
-              ...c,
-              feedbackItemIds: c.feedback.map((f) => f.itemId),
-            }
-          }),
+          useGraphqlQuery('pbAgentConversationLatest', {
+            host: hostInput(),
+          }).then((v) => mapConversation(v.data.conversation)),
 
         list: () =>
-          useGraphqlQuery('pbAgentConversations', hostParams()).then(
-            (v) => v.data.conversations,
+          useGraphqlQuery('pbAgentConversations', { host: hostInput() }).then(
+            (v) => v.data.result.items,
           ),
 
         delete: (uuid) =>
@@ -1811,13 +1850,53 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
 
       if (hasMutation('pbAgentConversationFeedback')) {
-        adapter.submitConversationFeedback = (feedback) =>
+        adapter.agentConversations.submitFeedback = (feedback) =>
           useGraphqlMutation('pbAgentConversationFeedback', {
             uuid: feedback.conversationId,
             itemId: feedback.lastItemId,
             rating: feedback.rating,
             explanation: feedback.comment,
           }).then((v) => v.data.result.success)
+      }
+
+      if (hasQuery('pbAgentConversationsAll')) {
+        adapter.agentConversations.queryConversations = (e) =>
+          useGraphqlQuery('pbAgentConversationsAll', { page: e.page }).then(
+            (v) => ({
+              filters: mapPluginConfigInputs(v.data.result.filters),
+              items: v.data.result.items.map((c) => ({
+                uuid: c.uuid,
+                title: c.title,
+                createdAt: c.createdAt,
+                updatedAt: c.updatedAt,
+                host: c.host
+                  ? {
+                      entityType: c.host.entityType,
+                      entityUuid: c.host.entityUuid,
+                      label: c.host.label ?? null,
+                      editUrl: c.host.editUrl ?? null,
+                    }
+                  : null,
+                author: {
+                  id: String(c.author.id),
+                  name: c.author.name,
+                  imageUrl: c.author.imageUrl ?? null,
+                },
+              })),
+              perPage: v.data.result.perPage,
+              total: v.data.result.total,
+            }),
+          )
+      }
+
+      if (hasQuery('pbAgentFeedbackAll')) {
+        adapter.agentConversations.queryFeedback = (e) =>
+          useGraphqlQuery('pbAgentFeedbackAll', { page: e.page }).then((v) => ({
+            filters: mapPluginConfigInputs(v.data.result.filters),
+            items: v.data.result.items.map(mapFeedback),
+            perPage: v.data.result.perPage,
+            total: v.data.result.total,
+          }))
       }
     }
 

@@ -1,13 +1,42 @@
-fragment pbAgentConversation on ParagraphsBlokkliAgentConversation {
+fragment pbAgentConversationItem on ParagraphsBlokkliAgentConversation {
   uuid
   title
+  createdAt: created
+  updatedAt: changed
+  host {
+    entityType
+    entityUuid
+    label
+    editUrl: url
+  }
+  author {
+    id
+    name
+    imageUrl
+  }
+}
+
+fragment pbAgentConversation on ParagraphsBlokkliAgentConversation {
+  ...pbAgentConversationItem
   clientState: dataUser
   serverState: dataServer
   hash
-  createdAt: created
-  updatedAt: changed
   feedback {
-    itemId
+    ...pbAgentFeedbackItem
+  }
+}
+
+fragment pbAgentFeedbackItem on ParagraphsBlokkliAgentFeedback {
+  id
+  createdAt
+  rating
+  explanation
+  itemId
+  conversationUuid
+  author {
+    id
+    name
+    imageUrl
   }
 }
 
@@ -62,28 +91,51 @@ mutation pbAgentConversationFeedback(
   }
 }
 
-query pbAgentConversations($hostEntityType: String!, $hostEntityUuid: String!) {
-  conversations: paragraphsBlokkliAgentConversations(
-    hostEntityType: $hostEntityType
-    hostEntityUuid: $hostEntityUuid
-  ) {
-    uuid
-    title
-    createdAt: created
-    updatedAt: changed
+query pbAgentConversation($uuid: String!) {
+  conversation: paragraphsBlokkliAgentConversation(uuid: $uuid) {
+    ...pbAgentConversation
   }
 }
 
-query pbAgentConversation(
-  $hostEntityType: String!
-  $hostEntityUuid: String!
-  $uuid: String
-) {
-  conversation: paragraphsBlokkliAgentConversation(
-    hostEntityType: $hostEntityType
-    hostEntityUuid: $hostEntityUuid
-    uuid: $uuid
-  ) {
+query pbAgentConversationLatest($host: ParagraphsBlokkliHostEntityInput!) {
+  conversation: paragraphsBlokkliAgentConversationLatest(host: $host) {
     ...pbAgentConversation
+  }
+}
+
+query pbAgentConversations($host: ParagraphsBlokkliHostEntityInput!) {
+  result: paragraphsBlokkliAgentConversations(host: $host) {
+    items {
+      uuid
+      title
+      createdAt: created
+      updatedAt: changed
+    }
+  }
+}
+
+query pbAgentConversationsAll($page: Int) {
+  result: paragraphsBlokkliAgentConversations(page: $page) {
+    filters {
+      ...paragraphsBlokkliConfigInput
+    }
+    items {
+      ...pbAgentConversationItem
+    }
+    perPage
+    total
+  }
+}
+
+query pbAgentFeedbackAll($page: Int) {
+  result: paragraphsBlokkliAgentConversationFeedbacks(page: $page) {
+    filters {
+      ...paragraphsBlokkliConfigInput
+    }
+    items {
+      ...pbAgentFeedbackItem
+    }
+    perPage
+    total
   }
 }

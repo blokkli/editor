@@ -17,7 +17,7 @@
     :tool-details="conversation.toolDetails"
     :usage-turns="conversation.usageTurns.value"
     :page-context="tools.pageContext.value"
-    :supports-feedback="!!adapter.submitConversationFeedback"
+    :supports-feedback="!!adapter.agentConversations?.submitFeedback"
     :feedback-item-ids="conversation.feedbackItemIds.value"
     @connect="agent.connect"
     @send-prompt="agent.sendPrompt"
@@ -134,14 +134,14 @@ async function onSubmitFeedback(
   rating: AgentConversationFeedbackRating,
   comment?: string,
 ) {
-  if (!adapter.submitConversationFeedback) return
+  if (!adapter.agentConversations?.submitFeedback) return
   const conversationId = conversation.activeConversationId.value
   if (!conversationId) return
   const lastItem = conversation.items.value[conversation.items.value.length - 1]
   if (!lastItem) return
 
   try {
-    await adapter.submitConversationFeedback({
+    await adapter.agentConversations.submitFeedback({
       conversationId,
       rating,
       lastItemId: lastItem.id,

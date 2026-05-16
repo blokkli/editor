@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-wrap gap-15 [--bk-comment-avatar-size:40px]">
-    <CommentAvatar
+  <div class="flex flex-wrap gap-15 [--bk-avatar-size:40px]">
+    <Avatar
       v-for="i in COLOR_COUNT"
       :key="i"
       :name="nameFor(i)"
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import CommentAvatar from './index.vue'
+import Avatar from './index.vue'
 
 const COLOR_COUNT = 20
 
@@ -47,6 +47,6 @@ function nameFor(i: number): string {
 
 <script lang="ts">
 export default {
-  name: 'CommentAvatarStoryColors',
+  name: 'AvatarStoryColors',
 }
 </script>

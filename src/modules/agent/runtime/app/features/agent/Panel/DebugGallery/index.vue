@@ -40,7 +40,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import Conversation from '../Conversation/index.vue'
+import Conversation from '#blokkli/agent/app/components/Conversation/index.vue'
 import PendingMutation from '../PendingMutation/index.vue'
 import type {
   ConversationItem,

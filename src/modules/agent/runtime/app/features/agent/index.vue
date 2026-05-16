@@ -42,6 +42,15 @@
       <p v-html="popupText" />
     </Popup>
   </Teleport>
+
+  <Teleport v-if="canManageConversations" :to="ui.mainLayoutElement.value">
+    <BlokkliTransition name="slide-up">
+      <ConversationsAdminDialog
+        v-if="showConversationsAdmin"
+        @cancel="closeConversationsAdmin"
+      />
+    </BlokkliTransition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -54,14 +63,20 @@ import {
   defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import { Icon, Popup } from '#blokkli/editor/components'
+import { Icon, Popup, BlokkliTransition } from '#blokkli/editor/components'
 import { agentPrompts, agentName } from '#blokkli-build/agent-prompts'
-import { defineItemDropdownAction } from '#blokkli/editor/composables'
+import {
+  defineItemDropdownAction,
+  defineMenuButton,
+} from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
 import type { PendingPromptRequest } from './types'
 
 const AgentContainer = defineAsyncComponent(() => import('./Container.vue'))
+const ConversationsAdminDialog = defineAsyncComponent(
+  () => import('./ConversationsAdmin/index.vue'),
+)
 
 const { adapter } = defineBlokkliFeature({
   id: 'agent',
@@ -78,7 +93,36 @@ const { adapter } = defineBlokkliFeature({
 })
 
 const app = useBlokkli()
-const { $t, ui } = app
+const { $t, ui, permissions } = app
+
+const canManageConversations = permissions.hasPermission(
+  'manage_agent_conversations',
+)
+
+const showConversationsAdmin = computed(
+  () => ui.currentDialog.value?.id === 'agentConversations',
+)
+
+function closeConversationsAdmin() {
+  ui.closeDialog('agentConversations')
+}
+
+defineMenuButton(() => {
+  if (!canManageConversations) return undefined
+  if (!adapter.agentConversations?.queryConversations) return undefined
+  return {
+    id: 'agentConversations',
+    title: $t('agentConversationsMenuTitle', 'Agent conversations'),
+    description: $t(
+      'agentConversationsMenuDescription',
+      'Browse and manage all agent conversations.',
+    ),
+    icon: 'bk_mdi_forum',
+    secondary: true,
+    callback: () =>
+      ui.openDialog({ id: 'agentConversations', alignment: 'center' }),
+  }
+})
 
 const popup = useTemplateRef('popup')
 

@@ -1,9 +1,5 @@
 <template>
-  <VChart
-    :option="option"
-    autoresize
-    style="height: 550px; width: 100%"
-  />
+  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
 </template>
 
 <script setup lang="ts">
@@ -113,7 +109,6 @@ const props = defineProps<ChartTypeRenderProps>()
 
 const option = computed(() => ({
   animation: !props.isEditing,
-  ...(props.advancedConfig ?? {}),
+  ...props.advancedConfig,
 }))
 </script>
-

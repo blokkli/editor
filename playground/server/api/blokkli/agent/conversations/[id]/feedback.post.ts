@@ -35,7 +35,20 @@ export default defineEventHandler<Promise<boolean>>(async (event) => {
     (f: { itemId: string }) => f.itemId === body.itemId,
   )
 
+  const now = new Date().toISOString()
+  const previous =
+    existing >= 0 ? (feedback[existing] as Record<string, unknown>) : undefined
+
   const entry = {
+    id:
+      (previous?.id as string | undefined) ??
+      `mock-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    createdAt: (previous?.createdAt as string | undefined) ?? now,
+    author: previous?.author ?? {
+      id: '1',
+      name: 'John Wayne',
+      imageUrl: null,
+    },
     itemId: body.itemId as string,
     rating: body.rating as string,
     explanation: (body.explanation as string) || undefined,

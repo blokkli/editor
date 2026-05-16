@@ -1,6 +1,6 @@
 import type { EditorEntry } from '#blokkli/editor/composables/defineEditorComponent'
+import avatar from '#blokkli/editor/components/Avatar/story'
 import banner from '#blokkli/editor/components/Banner/story'
-import commentAvatar from '#blokkli/editor/features/comments/Comment/Avatar/story'
 import richText from '#blokkli/editor/components/RichText/Editor/story'
 import richTextRenderer from '#blokkli/editor/components/RichText/Renderer/story'
 import dropdown from '#blokkli/editor/components/Dropdown/story'
@@ -36,8 +36,8 @@ import examplePanel from './examples/Panel'
  * automatically.
  */
 export const editorEntries: EditorEntry[] = [
+  avatar,
   banner,
-  commentAvatar,
   dropdown,
   infoBox,
   pagination,

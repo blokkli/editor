@@ -146,7 +146,7 @@ import {
   useBlokkli,
 } from '#imports'
 import { Icon, TransitionHeight } from '#blokkli/editor/components'
-import Conversation from './Conversation/index.vue'
+import Conversation from '#blokkli/agent/app/components/Conversation/index.vue'
 import PendingMutation from './PendingMutation/index.vue'
 import DebugGallery from './DebugGallery/index.vue'
 import Welcome from './Welcome/index.vue'
@@ -155,7 +155,7 @@ import ConversationList from './ConversationList/index.vue'
 import Feedback from './Feedback/index.vue'
 import type { AgentConversationFeedbackRating } from '../types'
 import type {
-  AgentConversationSummary,
+  AgentConversationItemSummary,
   PendingMutationState,
   PendingToolCall,
 } from '#blokkli/agent/app/composables'
@@ -187,7 +187,7 @@ const props = defineProps<{
   pendingMutation: PendingMutationState | null
   autoApprove: boolean
   toolDetails: Map<string, unknown>
-  conversationList: AgentConversationSummary[]
+  conversationList: AgentConversationItemSummary[]
   showConversationList: boolean
   plan: ClientPlanState | null
   usageTurns: UsageTurn[]

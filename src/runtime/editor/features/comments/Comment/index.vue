@@ -21,7 +21,7 @@
       isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
     "
   >
-    <CommentAvatar
+    <Avatar
       :name="comment.user.name"
       :seed="comment.user.id"
       :image-url="comment.user.imageUrl"
@@ -80,8 +80,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import { Pill } from '#blokkli/editor/components'
-import CommentAvatar from './Avatar/index.vue'
+import { Avatar, Pill } from '#blokkli/editor/components'
 import CommentMeta from './Meta/index.vue'
 import CommentActions from './Actions/index.vue'
 import CommentEditForm from './EditForm/index.vue'

@@ -1,13 +1,12 @@
 import { ref, reactive, type Ref } from '#imports'
-import {
-  conversationItemSchema,
-  type ConversationItem,
-  type ActiveItem,
-  type AssistantConversationItem,
-  type ToolConversationItem,
-  type ServerToolConversationItem,
-  type ErrorConversationItem,
-  type Attachment,
+import type {
+  ConversationItem,
+  ActiveItem,
+  AssistantConversationItem,
+  ToolConversationItem,
+  ServerToolConversationItem,
+  ErrorConversationItem,
+  Attachment,
 } from '#blokkli/agent/app/types'
 import type {
   ConversationStateSnapshot,
@@ -16,17 +15,16 @@ import type {
 } from '#blokkli/agent/shared/types'
 import type {
   AgentConversationData,
-  AgentConversationSummary,
+  AgentConversationItemSummary,
 } from '#blokkli/agent/app/features/agent/types'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import {
+  parseConversationData,
+  type ParsedConversation,
+} from '#blokkli/agent/app/helpers/parseConversationData'
 
-export type ParsedConversation = {
-  conversation: ConversationItem[]
-  usageTurns: UsageTurn[]
-  serverState: ConversationStateSnapshot
-  feedbackItemIds: string[]
-}
+export type { ParsedConversation }
 
 export type ConversationProvider = {
   // History state
@@ -38,7 +36,7 @@ export type ConversationProvider = {
 
   // Conversation list state
   activeConversationId: Ref<string | null>
-  conversationList: Ref<AgentConversationSummary[]>
+  conversationList: Ref<AgentConversationItemSummary[]>
   showConversationList: Ref<boolean>
 
   // Transcript dialog state
@@ -100,7 +98,7 @@ export default function conversationProvider({
   const toolDetails: Map<string, unknown> = reactive(new Map())
 
   const activeConversationId = ref<string | null>(null)
-  const conversationList = ref<AgentConversationSummary[]>([])
+  const conversationList = ref<AgentConversationItemSummary[]>([])
   const showConversationList = ref(false)
 
   const transcriptContent = ref<Transcript | null>(null)
@@ -223,50 +221,7 @@ export default function conversationProvider({
     showTranscript.value = true
   }
 
-  function parseFromAdapter(
-    data: AgentConversationData,
-  ): ParsedConversation | null {
-    try {
-      const parsed: {
-        conversation?: unknown[]
-        usageTurns?: UsageTurn[]
-      } = JSON.parse(data.clientState)
-
-      if (!parsed.conversation?.length) return null
-
-      const clientConversation: ConversationItem[] = parsed.conversation.map(
-        (item) => {
-          const result = conversationItemSchema.safeParse(item)
-          if (result.success) return result.data
-          return {
-            type: 'unknown' as const,
-            id: generateId(),
-            timestamp: Date.now(),
-          }
-        },
-      )
-
-      const serverParsed: {
-        messages: ConversationStateSnapshot['messages']
-        activatedLazyTools: ConversationStateSnapshot['activatedLazyTools']
-      } = JSON.parse(data.serverState)
-
-      if (!serverParsed?.messages?.length) return null
-
-      return {
-        conversation: clientConversation,
-        usageTurns: parsed.usageTurns ?? [],
-        feedbackItemIds: data.feedbackItemIds ?? [],
-        serverState: {
-          messages: serverParsed.messages,
-          activatedLazyTools: serverParsed.activatedLazyTools,
-          hash: data.hash,
-        },
-      }
-    } catch {
-      return null
-    }
-  }
+  const parseFromAdapter = parseConversationData
 
   function applyRestoredData(parsed: ParsedConversation): void {
     items.value = parsed.conversation

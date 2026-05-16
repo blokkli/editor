@@ -42,10 +42,10 @@
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
 import { Icon, RelativeTime } from '#blokkli/editor/components'
-import type { AgentConversationSummary } from '#blokkli/agent/app/composables'
+import type { AgentConversationItemSummary } from '#blokkli/agent/app/composables'
 
 defineProps<{
-  conversations: AgentConversationSummary[]
+  conversations: AgentConversationItemSummary[]
 }>()
 
 const emit = defineEmits<{

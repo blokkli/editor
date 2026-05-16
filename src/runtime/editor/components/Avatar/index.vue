@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="showImage"
-    class="shrink-0 rounded size-(--bk-comment-avatar-size) bk-avatar-image overflow-hidden relative"
+    class="shrink-0 rounded size-(--bk-avatar-size) bk-avatar-image overflow-hidden relative"
   >
     <img
       :src="imageUrl!"
@@ -13,7 +13,7 @@
   </div>
   <div
     v-else
-    class="shrink-0 rounded flex items-center justify-center font-semibold select-none size-(--bk-comment-avatar-size) text-[calc(var(--bk-comment-avatar-size)/2.25)] border relative"
+    class="shrink-0 rounded flex items-center justify-center font-semibold select-none size-(--bk-avatar-size) text-[calc(var(--bk-avatar-size)/2.25)] border relative"
     :class="colorClass"
     :title="name"
   >
@@ -101,7 +101,7 @@ const colorClass = computed(() => {
 
 <script lang="ts">
 export default {
-  name: 'CommentAvatar',
+  name: 'Avatar',
 }
 </script>
 

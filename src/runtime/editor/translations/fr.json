@@ -32,7 +32,6 @@
   "analyzerReadabiliyOkTitle": "Le texte pourrait être plus simple",
   "blokkliOptionNumberAuto": "Automatique",
   "chartsAdvancedConfigHelp": "Collez un objet d'options ECharts. Les clés sans guillemets, les apostrophes et les virgules de fin sont autorisées. Les fonctions (formateurs personnalisés, etc.) ne sont pas prises en charge.",
-  "chartsAdvancedConfigLabel": "Configuration ECharts",
   "chartsAdvancedConfigTitle": "Configuration ECharts",
   "chartsAdvancedNoTranslations": "Les graphiques avancés n'ont pas de chaînes traduisibles — la configuration ECharts est enregistrée telle quelle.",
   "chartsAdvancedParseError": "Erreur d'analyse",

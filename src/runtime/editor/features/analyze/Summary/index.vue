@@ -1,7 +1,11 @@
 <template>
   <div class="px-20 pb-20 pt-0">
     <div class="flex items-center gap-20">
-      <Chart :data="summary" :percentage />
+      <DonutChart
+        :data="summary"
+        :center-text="`${percentage}%`"
+        class="text-lime-normal"
+      />
       <ul class="flex-1 flex flex-col gap-[7px]">
         <li
           v-for="item in summary"
@@ -27,7 +31,7 @@ import { rgbaToString } from '#blokkli/editor/helpers/color'
 import { computed, useBlokkli } from '#imports'
 import { useAnalyzeHelper } from '../helper'
 import type { AnalyzeResultMapped, AnalyzeStatus } from '../analyzers/types'
-import Chart from './Chart.vue'
+import { DonutChart } from '#blokkli/editor/components'
 
 const props = defineProps<{
   results: AnalyzeResultMapped[]

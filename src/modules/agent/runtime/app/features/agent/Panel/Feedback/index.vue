@@ -58,11 +58,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useBlokkli } from '#imports'
+import { ref, useBlokkli } from '#imports'
 import { Icon, TransitionHeight, Tooltip } from '#blokkli/editor/components'
+import { useAgentFeedbackOptions } from '#blokkli/agent/app/composables'
 import type { AgentConversationFeedbackRating } from '../../types'
-import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { ThemeColorName } from '~~/src/global/types/theme'
 
 const { $t } = useBlokkli()
 
@@ -71,35 +70,7 @@ const emit = defineEmits<{
   done: []
 }>()
 
-type FeedbackOption = {
-  value: AgentConversationFeedbackRating
-  label: string
-  icon: BlokkliIcon
-  theme: ThemeColorName
-}
-
-const options = computed<FeedbackOption[]>(() => {
-  return [
-    {
-      value: 'bad',
-      label: $t('aiAgentFeedbackBad', 'Bad'),
-      icon: 'bk_mdi_thumb_down',
-      theme: 'red',
-    },
-    {
-      value: 'fine',
-      label: $t('aiAgentFeedbackFine', 'Fine'),
-      icon: 'bk_mdi_thumb_up',
-      theme: 'yellow',
-    },
-    {
-      value: 'good',
-      label: $t('aiAgentFeedbackGood', 'Good'),
-      icon: 'bk_mdi_thumbs_up_double',
-      theme: 'lime',
-    },
-  ]
-})
+const options = useAgentFeedbackOptions()
 
 const rating = ref<AgentConversationFeedbackRating | null>(null)
 const comment = ref('')

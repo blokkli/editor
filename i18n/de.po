@@ -104,6 +104,70 @@ msgstr ""
 "dass nur die hervorgehobenen Blöcke im oder nach dem ausgewählten Block "
 "hinzugefügt werden können.</p>"
 
+msgctxt "agentConversationsBackendMissing"
+msgid "This backend does not expose the admin conversation list."
+msgstr ""
+"Dieses Backend unterstützt die Administrationsansicht der Konversationen "
+"nicht."
+
+msgctxt "agentConversationsDelete"
+msgid "Delete conversation"
+msgstr "Konversation löschen"
+
+msgctxt "agentConversationsDeleteConfirm"
+msgid "Delete this conversation? This cannot be undone."
+msgstr ""
+"Diese Konversation löschen? Diese Aktion kann nicht rückgängig gemacht "
+"werden."
+
+msgctxt "agentConversationsDetailError"
+msgid "Failed to load conversation."
+msgstr "Konversation konnte nicht geladen werden."
+
+msgctxt "agentConversationsDetailMissing"
+msgid "Conversation could not be loaded."
+msgstr "Konversation konnte nicht gefunden werden."
+
+msgctxt "agentConversationsDetailUnparseable"
+msgid "Conversation data is malformed."
+msgstr "Die Konversationsdaten sind ungültig."
+
+msgctxt "agentConversationsListEmpty"
+msgid "No agent conversations yet."
+msgstr "Noch keine Agenten-Konversationen vorhanden."
+
+msgctxt "agentConversationsListError"
+msgid "Failed to load conversations."
+msgstr "Konversationen konnten nicht geladen werden."
+
+msgctxt "agentConversationsMenuDescription"
+msgid "Browse and manage all agent conversations."
+msgstr "Alle Agenten-Konversationen anzeigen und verwalten."
+
+msgctxt "agentConversationsMenuTitle"
+msgid "Agent conversations"
+msgstr "Agenten-Konversationen"
+
+msgctxt "agentConversationsSelectPrompt"
+msgid "Select a conversation from the list to view it."
+msgstr "Wählen Sie eine Konversation aus der Liste, um sie anzuzeigen."
+
+msgctxt "agentConversationsTabConversations"
+msgid "Conversations"
+msgstr "Konversationen"
+
+msgctxt "agentConversationsTabRatings"
+msgid "Ratings"
+msgstr "Bewertungen"
+
+msgctxt "agentConversationsTitle"
+msgid "Agent conversations"
+msgstr "Agenten-Konversationen"
+
+msgctxt "agentConversationsUntitled"
+msgid "Untitled"
+msgstr "Ohne Titel"
+
 msgctxt "agentPromptReadabilityLabel"
 msgid "Fix readability..."
 msgstr "Lesbarkeit verbessern..."
@@ -120,6 +184,34 @@ msgstr ""
 msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
 msgstr "Verbessere die Lesbarkeit der ausgewählten Blöcke."
+
+msgctxt "agentRatingsAggregateTotal"
+msgid "@count ratings"
+msgstr "@count Bewertungen"
+
+msgctxt "agentRatingsBackendMissing"
+msgid "This backend does not expose the ratings list."
+msgstr "Dieses Backend stellt die Bewertungsliste nicht zur Verfügung."
+
+msgctxt "agentRatingsEmpty"
+msgid "No ratings yet."
+msgstr "Noch keine Bewertungen vorhanden."
+
+msgctxt "agentRatingsFilterAll"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "agentRatingsListError"
+msgid "Failed to load ratings."
+msgstr "Bewertungen konnten nicht geladen werden."
+
+msgctxt "agentRatingsNoComment"
+msgid "No comment"
+msgstr "Kein Kommentar"
+
+msgctxt "agentRatingsSelectPrompt"
+msgid "Select a rating to view the conversation it was given on."
+msgstr "Wählen Sie eine Bewertung, um die zugehörige Konversation anzuzeigen."
 
 msgctxt "agentSidebarTooltipLabel"
 msgid "@name (AI-Assistant)"
@@ -1468,10 +1560,6 @@ msgstr ""
 "Fügen Sie ein beliebiges ECharts-Optionsobjekt ein. Schlüssel ohne "
 "Anführungszeichen, einfache Anführungszeichen und nachgestellte Kommas sind "
 "erlaubt. Funktionen (z. B. eigene Formatter) werden nicht unterstützt."
-
-msgctxt "chartsAdvancedConfigLabel"
-msgid "ECharts config"
-msgstr "ECharts-Konfiguration"
 
 msgctxt "chartsAdvancedConfigTitle"
 msgid "ECharts configuration"

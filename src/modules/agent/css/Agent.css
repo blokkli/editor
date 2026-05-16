@@ -55,8 +55,11 @@
   .bk-agent-panel-conversation {
     @apply p-15 flex-1 relative;
   }
+}
 
-  /* Conversation */
+/* Conversation rendering — applies anywhere the Conversation component is
+ * mounted (sidebar panel, admin dialog, etc.), not just the agent sidebar. */
+.bk {
   .bk-agent-conversation {
     @apply grid;
   }
@@ -146,8 +149,6 @@
     }
   }
 
-  .bk-agent-tool-details {
-  }
   .bk-agent-tool-details-inner {
     @apply pt-10;
   }

@@ -9,7 +9,8 @@
         role="tab"
         :aria-selected="modelValue === tab.id"
         :class="{
-          '!bg-white !text-mono-900': modelValue === tab.id,
+          '!bg-mono-100 !text-mono-900': modelValue === tab.id && mono,
+          '!bg-white !text-mono-900': modelValue === tab.id && !mono,
           'hover:!bg-mono-700': modelValue !== tab.id,
         }"
         class="text-lg font-bold px-30 py-10 text-white rounded-t"
@@ -32,6 +33,7 @@ export type TabItem<Id extends string = string> = {
 
 defineProps<{
   tabs: TabItem<T>[]
+  mono?: boolean
 }>()
 
 const modelValue = defineModel<T>({ required: true })

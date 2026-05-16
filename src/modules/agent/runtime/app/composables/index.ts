@@ -1,6 +1,10 @@
 export { defineBlokkliAgentTool } from './defineBlokkliAgentTool'
 export { defineBlokkliAgentPrompt } from './defineBlokkliAgentPrompt'
 export { useAgent } from './useAgent'
+export { useAgentFeedbackOptions } from './useAgentFeedbackOptions'
+export type { AgentFeedbackOption } from './useAgentFeedbackOptions'
+export { useAgentPaginatedQuery } from './useAgentPaginatedQuery'
+export type { AgentPaginatedQuery } from './useAgentPaginatedQuery'
 export type {
   PendingMutationState,
   PendingToolCall,
@@ -8,5 +12,11 @@ export type {
 export type { AgentApp } from '../types'
 export type {
   AgentConversationData,
-  AgentConversationSummary,
+  AgentConversationItem,
+  AgentConversationItemSummary,
+  AgentConversationHostInfo,
+  AgentConversationFeedbackRating,
+  AgentConversationFeedbackItem,
+  AgentConversationQueryResult,
+  AgentConversationFeedbackQueryResult,
 } from '../features/agent/types'

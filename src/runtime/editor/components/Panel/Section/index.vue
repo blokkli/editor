@@ -1,7 +1,7 @@
 <template>
   <div class="w-full bk-panel-section">
     <div class="bk-panel-section-inner">
-      <div class="flex items-center gap-5 mb-10">
+      <div v-if="title" class="flex items-center gap-5 mb-10">
         <span class="text-lg text-mono-700 font-bold">{{ title }}</span>
         <slot name="post-title" />
         <div v-if="help" class="relative group/tooltip cursor-help group z-50">
@@ -62,7 +62,7 @@
 import { Icon, Tooltip } from '#blokkli/editor/components'
 
 defineProps<{
-  title: string
+  title?: string
   help?: string
   disabled?: boolean
   padded?: boolean

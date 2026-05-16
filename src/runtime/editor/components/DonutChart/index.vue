@@ -19,15 +19,15 @@
     </g>
     <circle :cx="radius" :cy="radius" :r="radius - thickness" fill="white" />
     <text
-      v-if="percentage !== undefined"
+      v-if="centerText"
       x="50%"
       y="50%"
       dominant-baseline="middle"
       text-anchor="middle"
       fill="currentColor"
-      class="font-bold text-lime-normal"
+      class="font-bold"
     >
-      {{ percentage }}%
+      {{ centerText }}
     </text>
   </svg>
 </template>
@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { computed } from '#imports'
 
-interface DataItem {
+type DataItem = {
   label: string
   value: number
   color: string
@@ -46,12 +46,12 @@ const props = withDefaults(
     data: DataItem[]
     radius?: number
     thickness?: number
-    percentage?: number
+    centerText?: string
   }>(),
   {
     radius: 34,
     thickness: 10,
-    percentage: undefined,
+    centerText: undefined,
   },
 )
 

@@ -1,12 +1,17 @@
 <template>
   <div class="bk-agent-conversation" @click="onClick">
-    <ConversationItemComponent
-      v-for="item in history"
-      :key="item.id"
-      :item="item"
-      :tool-details
-      @retry="emit('retry')"
-    />
+    <template v-for="item in history" :key="item.id">
+      <ConversationItemComponent
+        :item="item"
+        :tool-details
+        @retry="emit('retry')"
+      />
+      <InlineFeedback
+        v-for="entry in feedbackByItemId.get(item.id)"
+        :key="entry.id"
+        :entry="entry"
+      />
+    </template>
     <ConversationItemComponent
       v-if="activeItem"
       :key="activeItem.id"
@@ -19,17 +24,30 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useBlokkli } from '#imports'
 import ConversationItemComponent from './Item/index.vue'
 import Thinking from './Thinking/index.vue'
-import { useBlokkli } from '#imports'
+import InlineFeedback from './InlineFeedback/index.vue'
 import type { ConversationItem, ActiveItem } from '#blokkli/agent/app/types'
+import type { AgentConversationFeedbackItem } from '#blokkli/agent/app/features/agent/types'
 
-const _props = defineProps<{
+const props = defineProps<{
   history: ConversationItem[]
   activeItem: ActiveItem | null
   isThinking: boolean
   toolDetails: Map<string, unknown>
+  inlineFeedback?: AgentConversationFeedbackItem[]
 }>()
+
+const feedbackByItemId = computed(() => {
+  const map = new Map<string, AgentConversationFeedbackItem[]>()
+  for (const f of props.inlineFeedback ?? []) {
+    const bucket = map.get(f.itemId)
+    if (bucket) bucket.push(f)
+    else map.set(f.itemId, [f])
+  }
+  return map
+})
 
 const emit = defineEmits<{
   retry: []

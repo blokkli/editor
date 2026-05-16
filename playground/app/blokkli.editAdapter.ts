@@ -67,7 +67,9 @@ import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import { FieldUrl } from './mock/state/Field/Url'
 import type {
   AgentConversationData,
-  AgentConversationSummary,
+  AgentConversationItemSummary,
+  AgentConversationQueryResult,
+  AgentConversationFeedbackQueryResult,
 } from '#blokkli/agent/app/composables'
 import type {
   HostEntitySearchResult,
@@ -477,6 +479,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         'create_comments',
         'view_comments',
         'use_agent',
+        'manage_agent_conversations',
         'take_ownership',
         'use_blokkli',
         'list_users',
@@ -2560,10 +2563,7 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     async load(id) {
       return $fetch<AgentConversationData | null>(
-        `/api/blokkli/agent/conversations/${id}`,
-        {
-          query: conversationParams(),
-        },
+        `/api/blokkli/agent/conversations/any/${id}`,
       )
     },
     async loadLatest() {
@@ -2575,7 +2575,7 @@ export default defineBlokkliEditAdapter((ctx) => {
       )
     },
     async list() {
-      return $fetch<AgentConversationSummary[]>(
+      return $fetch<AgentConversationItemSummary[]>(
         '/api/blokkli/agent/conversations',
         {
           query: conversationParams(),
@@ -2588,21 +2588,40 @@ export default defineBlokkliEditAdapter((ctx) => {
         query: conversationParams(),
       })
     },
-  }
-
-  adapter.submitConversationFeedback = async (feedback) => {
-    return $fetch<boolean>(
-      `/api/blokkli/agent/conversations/${feedback.conversationId}/feedback`,
-      {
-        method: 'POST',
-        query: conversationParams(),
-        body: {
-          itemId: feedback.lastItemId,
-          rating: feedback.rating,
-          explanation: feedback.comment,
+    async submitFeedback(feedback) {
+      return $fetch<boolean>(
+        `/api/blokkli/agent/conversations/${feedback.conversationId}/feedback`,
+        {
+          method: 'POST',
+          query: conversationParams(),
+          body: {
+            itemId: feedback.lastItemId,
+            rating: feedback.rating,
+            explanation: feedback.comment,
+          },
         },
-      },
-    )
+      )
+    },
+    async queryConversations(e) {
+      return $fetch<AgentConversationQueryResult>(
+        '/api/blokkli/agent/conversations/all',
+        {
+          query: {
+            page: e.page,
+          },
+        },
+      )
+    },
+    async queryFeedback(e) {
+      return $fetch<AgentConversationFeedbackQueryResult>(
+        '/api/blokkli/agent/feedback/all',
+        {
+          query: {
+            page: e.page,
+          },
+        },
+      )
+    },
   }
 
   // =============================================================================

@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli, useTemplateRef } from '#imports'
 import { FlexTextarea, TransitionHeight } from '#blokkli/editor/components'
-import AttachmentChip from '../Attachment/index.vue'
+import AttachmentChip from '#blokkli/agent/app/components/Attachment/index.vue'
 import Actions from './Actions/index.vue'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
 import type { ClipboardData } from '#blokkli/editor/helpers/clipboardData'

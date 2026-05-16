@@ -26,6 +26,7 @@
         :class="[
           {
             'bk-is-fullscreen': fullScreen,
+            'bk-is-flush': flush,
           },
           mono ? 'bg-mono-100' : 'bg-white',
         ]"
@@ -94,6 +95,7 @@ const props = withDefaults(
     hideButtons?: boolean
     icon?: BlokkliIcon
     fullScreen?: boolean
+    flush?: boolean
     mono?: boolean
     zIndex?: 'default' | 'high'
   }>(),
@@ -210,6 +212,13 @@ export default {
       @apply p-0;
       .bk-dialog-content-inner {
         @apply p-0 h-full;
+      }
+    }
+
+    &.bk-is-flush {
+      @apply p-0;
+      .bk-dialog-content-inner {
+        @apply p-0;
       }
     }
   }

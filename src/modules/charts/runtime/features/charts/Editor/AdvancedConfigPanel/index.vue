@@ -75,9 +75,7 @@ const parseError = ref('')
 
 function parseSource(
   raw: string,
-):
-  | { ok: true; value: Record<string, unknown> }
-  | { ok: false; error: string } {
+): { ok: true; value: Record<string, unknown> } | { ok: false; error: string } {
   const trimmed = raw.trim()
   if (!trimmed) {
     return { ok: true, value: {} }
