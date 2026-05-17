@@ -56,6 +56,8 @@ const width = computed(() => {
 
 const props = defineProps<{
   comments: CommentItem[]
+  showResolved: boolean
+  recentlyResolved: string[]
 }>()
 
 defineEmits<{
@@ -127,6 +129,13 @@ onBlokkliEvent('canvas:draw', (e) => {
 
   for (let i = 0; i < roots.length; i++) {
     const comment = roots[i]!
+    if (
+      comment.resolved &&
+      !props.showResolved &&
+      !props.recentlyResolved.includes(comment.uuid)
+    ) {
+      continue
+    }
     const uuids = comment.blockUuids || []
     const rects = uuids
       .filter(falsy)

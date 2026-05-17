@@ -25,8 +25,8 @@
         @reply="$emit('reply', $event)"
         @edit="$emit('edit', $event)"
         @delete="$emit('delete', $event)"
-        @resolve="onResolve(root.uuid)"
-        @unresolve="onUnresolve(root.uuid)"
+        @resolve="$emit('resolve', root.uuid)"
+        @unresolve="$emit('unresolve', root.uuid)"
         @toggle-task="$emit('toggleTask', $event)"
       />
     </div>
@@ -49,19 +49,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useBlokkli, useTemplateRef } from '#imports'
+import { computed, useBlokkli, useTemplateRef } from '#imports'
 import { FormToggle } from '#blokkli/editor/components'
 import CommentThread from '../Thread/index.vue'
 import SidebarAddForm from './AddForm/index.vue'
 import type { CommentItem } from '../types'
 
-const { $t, storage } = useBlokkli()
+const { $t } = useBlokkli()
 
 const props = defineProps<{
   comments: CommentItem[]
+  recentlyResolved: string[]
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'reply', value: { parentUuid: string; body: string }): void
   (e: 'edit', value: { uuid: string; body: string }): void
   (e: 'toggleTask', value: { uuid: string; taskIndex: number }): void
@@ -70,30 +71,9 @@ const emit = defineEmits<{
 
 const rootEl = useTemplateRef('rootEl')
 
-const showResolved = storage.useWithContextPrefix('commentsShowResolved', false)
-
-/**
- * UUIDs of comments resolved during this sidebar session. They stay visible
- * even when "Show resolved" is off, so the user can see what they just acted
- * on instead of having it disappear from the list. Cleared on unmount —
- * reopening the sidebar starts fresh.
- */
-const recentlyResolved = ref<string[]>([])
-
-function onResolve(uuid: string) {
-  if (!recentlyResolved.value.includes(uuid)) {
-    recentlyResolved.value.push(uuid)
-  }
-  emit('resolve', uuid)
-}
-
-function onUnresolve(uuid: string) {
-  const idx = recentlyResolved.value.indexOf(uuid)
-  if (idx !== -1) {
-    recentlyResolved.value.splice(idx, 1)
-  }
-  emit('unresolve', uuid)
-}
+const showResolved = defineModel<boolean>('showResolved', {
+  default: false,
+})
 
 const byCreated = (a: CommentItem, b: CommentItem) =>
   Date.parse(a.created) - Date.parse(b.created)
@@ -123,7 +103,7 @@ const visibleRoots = computed(() => {
     return roots.value
   }
   return roots.value.filter(
-    (r) => !r.resolved || recentlyResolved.value.includes(r.uuid),
+    (r) => !r.resolved || props.recentlyResolved.includes(r.uuid),
   )
 })
 

@@ -9,7 +9,9 @@
     weight="-20"
   >
     <CommentSidebar
-      :comments="comments"
+      :comments
+      v-model:show-resolved="showResolved"
+      :recently-resolved
       @add="onAddComment($event, [])"
       @reply="onReply($event.parentUuid, $event.body)"
       @edit="onEditComment($event.uuid, $event.body)"
@@ -47,7 +49,9 @@
 
   <CommentsOverlay
     v-if="comments.length"
-    :comments="comments"
+    :comments
+    :show-resolved
+    :recently-resolved
     @reply="onReply($event.parentUuid, $event.body)"
     @edit="onEditComment($event.uuid, $event.body)"
     @delete="onDeleteComment($event)"
@@ -87,7 +91,17 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-comments.jpg',
 })
 
-const { $t, selection, ui } = useBlokkli()
+const { $t, selection, ui, storage } = useBlokkli()
+
+const showResolved = storage.useWithContextPrefix('commentsShowResolved', false)
+
+/**
+ * UUIDs of comments resolved during this sidebar session. They stay visible
+ * even when "Show resolved" is off, so the user can see what they just acted
+ * on instead of having it disappear from the list. Cleared on unmount —
+ * reopening the sidebar starts fresh.
+ */
+const recentlyResolved = ref<string[]>([])
 
 const commentForm = useTemplateRef('commentForm')
 const showAddComment = ref(false)
@@ -139,12 +153,19 @@ const onResolveComment = async (uuid: string) => {
   if (!adapter.resolveComment) {
     return
   }
+  if (!recentlyResolved.value.includes(uuid)) {
+    recentlyResolved.value.push(uuid)
+  }
   comments.value = await adapter.resolveComment(uuid)
 }
 
 const onUnresolveComment = async (uuid: string) => {
   if (!adapter.unresolveComment) {
     return
+  }
+  const idx = recentlyResolved.value.indexOf(uuid)
+  if (idx !== -1) {
+    recentlyResolved.value.splice(idx, 1)
   }
   comments.value = await adapter.unresolveComment(uuid)
 }
