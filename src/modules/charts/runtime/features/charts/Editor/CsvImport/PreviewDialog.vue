@@ -20,7 +20,7 @@
     <PanelSection :title="$t('chartsCsvLayout', 'Layout')" padded>
       <FormItem>
         <FormToggle
-          v-model="transpose"
+          :model-value="transpose"
           :label="$t('chartsCsvTranspose', 'Transpose (swap rows and columns)')"
           :description="
             $t(
@@ -28,6 +28,7 @@
               'Use this when the CSV has the categories along the top row instead of the first column.',
             )
           "
+          @update:model-value="setTranspose"
         />
         <div class="mt-15">
           <FormToggle
@@ -116,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, useBlokkli } from '#imports'
+import { ref, computed, useBlokkli } from '#imports'
 import {
   DialogModal,
   FormToggle,
@@ -195,43 +196,38 @@ const valueColumns = ref<number[]>(initial?.valueColumns ?? [])
 const groupByColumns = ref<number[]>(initial?.groupByColumns ?? [])
 const filters = ref<CsvImportFilter[]>(initial?.filters ?? [])
 
-// Only run smart inference when there's no saved config for this file. If a
-// saved config exists the user already curated it; re-inferring on every
-// orientation change would clobber their choices.
-if (!initial) {
-  watch(
-    orientedGrid,
-    (g) => {
-      const inferred = inferSmartConfig(g)
-      categoryColumn.value = inferred.category
-      valueColumns.value = inferred.values
-      groupByColumns.value = inferred.groupBy
-      filters.value = inferred.filters
-    },
-    { immediate: true },
-  )
+function runInference() {
+  const inferred = inferSmartConfig(orientedGrid.value)
+  categoryColumn.value = inferred.category
+  valueColumns.value = inferred.values
+  groupByColumns.value = inferred.groupBy
+  filters.value = inferred.filters
 }
 
-// Strip stale role assignments when category or value selection changes.
-watch(categoryColumn, (cat) => {
-  if (valueColumns.value.includes(cat)) {
-    valueColumns.value = valueColumns.value.filter((c) => c !== cat)
-  }
-  if (groupByColumns.value.includes(cat)) {
-    groupByColumns.value = groupByColumns.value.filter((c) => c !== cat)
-  }
-})
+// Smart inference only runs when there's no saved config. If one exists the
+// user already curated it; re-inferring would clobber their choices.
+if (!initial) runInference()
 
-watch(valueColumns, (cols) => {
-  if (cols.length !== 1) {
+// Group-by only makes sense with exactly one value column, and that value
+// column can't double as a group-by source.
+function pruneGroupBy() {
+  if (valueColumns.value.length !== 1) {
     if (groupByColumns.value.length > 0) groupByColumns.value = []
     return
   }
-  const vc = cols[0]!
+  const vc = valueColumns.value[0]!
   if (groupByColumns.value.includes(vc)) {
     groupByColumns.value = groupByColumns.value.filter((c) => c !== vc)
   }
-})
+}
+
+function setTranspose(value: boolean | undefined) {
+  transpose.value = !!value
+  // Transposing rearranges the data so existing column indices no longer
+  // refer to the same thing — re-infer. Reverse-rows leaves columns intact,
+  // so it deliberately does not trigger this.
+  if (!initial) runInference()
+}
 
 const categoryColumnStr = computed<string>({
   get() {
@@ -239,7 +235,15 @@ const categoryColumnStr = computed<string>({
   },
   set(v) {
     const n = Number(v)
-    if (Number.isFinite(n)) categoryColumn.value = n
+    if (!Number.isFinite(n)) return
+    categoryColumn.value = n
+    if (valueColumns.value.includes(n)) {
+      valueColumns.value = valueColumns.value.filter((c) => c !== n)
+    }
+    if (groupByColumns.value.includes(n)) {
+      groupByColumns.value = groupByColumns.value.filter((c) => c !== n)
+    }
+    pruneGroupBy()
   },
 })
 
@@ -258,6 +262,7 @@ const valueColumnsStr = computed<string[]>({
     valueColumns.value = v
       .map((s) => Number(s))
       .filter((n) => Number.isFinite(n))
+    pruneGroupBy()
   },
 })
 
