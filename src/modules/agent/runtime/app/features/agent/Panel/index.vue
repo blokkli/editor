@@ -15,7 +15,7 @@
       :class="{ 'bk-is-pending-approval': isPlanPendingApproval }"
       @scroll="onScroll"
     >
-      <div ref="conversationContainer" class="p-15 flex-1 relative">
+      <div ref="conversationContainer" class="p-10 flex-1 relative">
         <button
           v-if="DEBUG_STYLING"
           class="bk-button bk-scheme-mono bk-is-light"
@@ -69,7 +69,7 @@
         </template>
       </div>
 
-      <div class="bk-agent-panel-input">
+      <SidebarFloater>
         <AgentInput
           ref="inputEl"
           v-model="inputValue"
@@ -107,7 +107,7 @@
             />
           </TransitionHeight>
         </AgentInput>
-      </div>
+      </SidebarFloater>
     </div>
     <BlokkliTransition name="panel-sheet">
       <PanelSheet
@@ -176,6 +176,7 @@ import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
 import PanelSheet from '#blokkli/editor/components/Panel/Sheet/index.vue'
+import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
 
 const props = defineProps<{
   agentName: string

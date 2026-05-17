@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sticky bottom-0 z-50 p-10 bg-linear-0 bk-sidebar-floater mt-30"
+    class="sticky bottom-0 z-50 p-10 bg-linear-0 bk-sidebar-floater mt-30 group-floater"
     :class="{
       'bg-mono-100 before:from-mono-100 before:to-mono-100/0 ': mono,
       'bg-white before:from-white before:to-white/0 ': !mono,
@@ -8,6 +8,9 @@
   >
     <div
       class="border border-mono-300 shadow-md-even overflow-hidden rounded focus-within:border-mono-500 relative z-50 bg-white"
+      :class="{
+        'group-floater/focus-within:border-mono-500': !mono,
+      }"
     >
       <slot />
     </div>

@@ -1,11 +1,4 @@
 @import './partials/MessageText.css';
-@import './partials/Transcript.css';
-@import './partials/Sidebar.css';
-@import './partials/Welcome.css';
-@import './partials/BatchRewrite.css';
-@import './partials/DelegateTextRewrite.css';
-@import './partials/MediaSelect.css';
-@import './partials/Input.css';
 
 /* Conversation rendering — applies anywhere the Conversation component is
  * mounted (sidebar panel, admin dialog, etc.), not just the agent sidebar. */
@@ -59,26 +52,6 @@
     }
   }
 
-  .bk-agent-tool-call {
-    &.bk-is-server-tool {
-      .bk-agent-tool-call-status {
-        @apply text-mono-500 p-0 shrink-0 size-18;
-      }
-    }
-  }
-
-  .bk-agent-tool-call-inner {
-    @apply flex items-start text-sm gap-5;
-  }
-
-  .bk-agent-tool-call-name {
-    @apply flex-1 break-words min-w-0;
-  }
-
-  .bk-agent-tool-call .bk-status-icon {
-    @apply shrink-0;
-  }
-
   .bk-batch-rewrite-details {
     @apply flex flex-col divide-y divide-mono-300;
   }
@@ -93,57 +66,5 @@
 
   .bk-batch-rewrite-details-label {
     @apply text-xs font-medium text-mono-600 mb-3;
-  }
-
-  /* Debug gallery */
-  .bk-agent-debug-gallery {
-    @apply flex flex-col gap-20;
-
-    h3 {
-      @apply text-sm font-bold text-mono-700 uppercase tracking-wide;
-    }
-  }
-
-  .bk-agent-error-bubble {
-    @apply flex items-start gap-8 p-10 rounded-xl mt-15;
-    @apply bg-red-light text-red-dark text-sm;
-
-    .bk-icon {
-      @apply size-18 shrink-0 bg-red-normal text-white rounded-full p-2;
-      svg {
-        @apply fill-current;
-      }
-    }
-
-    .bk-agent-error-retry {
-      @apply text-red-dark font-bold underline cursor-pointer ml-auto;
-    }
-  }
-
-  .bk-agent-thinking {
-    @apply flex gap-8 items-center text-sm;
-    .bk-icon {
-      @apply size-20;
-      svg {
-        @apply fill-mono-700;
-      }
-    }
-  }
-}
-
-.bk-popup.bk-is-agent {
-  .bk-popup-content-text {
-    .bk-icon {
-      @apply float-right ml-2;
-      svg {
-        @apply fill-accent-600 size-60;
-      }
-    }
-    p {
-      @apply hyphens-auto;
-      em {
-        @apply not-italic text-accent-600 font-bold hyphens-none;
-      }
-    }
   }
 }

@@ -5,19 +5,27 @@
     :title="streamingTitle"
     @cancel="onCancel"
   >
-    <div class="bk-delegate-text-rewrite-progress">
+    <div class="flex flex-col gap-3 px-10 py-10">
       <div
         v-for="field in fieldStates"
         :key="field.uuid + field.fieldName"
-        class="bk-delegate-text-rewrite-progress-item"
+        class="flex items-center gap-5 text-sm text-mono-600"
         :class="{
-          'bk-is-active': field.status === 'streaming',
-          'bk-is-done': field.status === 'done',
+          'text-accent-700 font-medium': field.status === 'streaming',
+          'text-lime-dark': field.status === 'done',
         }"
       >
-        <Icon v-if="field.status === 'done'" name="bk_mdi_check" />
-        <Icon v-else-if="field.status === 'streaming'" name="bk_mdi_edit" />
-        <Icon v-else name="bk_mdi_hourglass_empty" />
+        <Icon
+          v-if="field.status === 'done'"
+          name="bk_mdi_check"
+          class="size-15"
+        />
+        <Icon
+          v-else-if="field.status === 'streaming'"
+          name="bk_mdi_edit"
+          class="size-15"
+        />
+        <Icon v-else name="bk_mdi_hourglass_empty" class="size-15" />
         <span>{{ field.fieldLabel }}</span>
       </div>
     </div>

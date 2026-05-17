@@ -1,21 +1,11 @@
 <template>
-  <div class="bk-agent-assistant-bubble bk-is-tool bk-is-server-tool">
-    <div class="bk-agent-tool-call bk-is-server-tool">
-      <div class="bk-agent-tool-call-inner">
-        <Icon
-          :name="getServerSideToolIcon(tool)"
-          class="bk-agent-tool-call-status"
-        />
-        <span>{{ serverToolLabel }}</span>
-      </div>
-    </div>
-  </div>
+  <BubbleTool :text :icon />
 </template>
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import BubbleTool from '../Bubble/Tool/index.vue'
 
 const props = defineProps<{
   id: string
@@ -32,7 +22,7 @@ const props = defineProps<{
 
 const { $t } = useBlokkli()
 
-const serverToolLabel = computed(() => {
+const text = computed(() => {
   if (props.tool === 'load_skills') {
     return $t('aiAgentLoadSkill', 'Using skill "@label"').replace(
       '@label',
@@ -66,27 +56,17 @@ const serverToolLabel = computed(() => {
   return props.label
 })
 
-function getServerSideToolIcon(
-  id:
-    | 'load_skills'
-    | 'load_tools'
-    | 'create_plan'
-    | 'complete_plan_step'
-    | 'plan_completed',
-): BlokkliIcon {
-  if (id === 'load_skills') {
+const icon = computed<BlokkliIcon>(() => {
+  if (props.tool === 'load_skills') {
     return 'bk_mdi_book_2'
-  }
-  if (id === 'create_plan') {
+  } else if (props.tool === 'create_plan') {
     return 'bk_mdi_inventory'
-  }
-  if (id === 'complete_plan_step') {
+  } else if (props.tool === 'complete_plan_step') {
     return 'bk_mdi_check'
-  }
-  if (id === 'plan_completed') {
+  } else if (props.tool === 'plan_completed') {
     return 'bk_mdi_done_all'
   }
 
   return 'bk_mdi_build-fill'
-}
+})
 </script>

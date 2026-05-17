@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bk-agent-input"
+    class="bk-agent-input flex flex-col shrink-0"
     :class="{
       'bk-is-active': hasActivePlan,
     }"
@@ -31,6 +31,7 @@
           :on-before-paste="onPaste"
           rows="2"
           :placeholder="placeholder"
+          class="min-h-60 w-full resize-none text-base p-10 pb-0 border-none bg-transparent appearance-none text-mono-800 rounded-t-lg focus:outline-none focus:shadow-none placeholder:text-mono-400"
           @submit="onSubmit"
         />
       </div>

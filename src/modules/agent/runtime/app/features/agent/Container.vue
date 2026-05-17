@@ -45,9 +45,9 @@
         v-if="conversation.showTranscript.value"
         id="agent-transcript"
         title="Agent Transcript"
-        :width="900"
+        :width="1200"
         hide-buttons
-        full-screen
+        mono
         @cancel="conversation.showTranscript.value = false"
       >
         <AgentTranscript

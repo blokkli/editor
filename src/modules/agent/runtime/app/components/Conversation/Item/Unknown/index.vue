@@ -1,13 +1,10 @@
 <template>
-  <div class="bk-agent-error-bubble">
-    <Icon name="bk_mdi_priority_high" />
-    <span>{{ $t('aiAgentUnknownMessage', 'Unknown message type') }}</span>
-  </div>
+  <ErrorBubble :text="$t('aiAgentUnknownMessage', 'Unknown message type')" />
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import ErrorBubble from '../ErrorBubble/index.vue'
 
 defineProps<{
   id: string

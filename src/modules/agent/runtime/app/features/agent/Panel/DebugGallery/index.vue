@@ -1,6 +1,6 @@
 <template>
-  <div class="bk-agent-debug-gallery">
-    <h3>Conversation</h3>
+  <div class="flex flex-col gap-20">
+    <h3 class="bk-form-label">Conversation</h3>
     <Conversation
       :history="mockHistory"
       :active-item="mockActiveItem"
@@ -8,7 +8,7 @@
       :tool-details="mockToolDetails"
     />
 
-    <h3>Pending Mutations</h3>
+    <h3 class="bk-form-label">Pending Mutations</h3>
     <PendingMutation
       v-for="action in mockMutations"
       :key="action.type"
@@ -18,7 +18,7 @@
       @always-approve="() => {}"
     />
 
-    <h3>Tool Components</h3>
+    <h3 class="bk-form-label">Tool Components</h3>
     <template v-for="tool in toolsWithMockParams" :key="tool.name">
       <component
         :is="tool.component"

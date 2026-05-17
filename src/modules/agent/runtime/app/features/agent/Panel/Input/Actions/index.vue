@@ -1,7 +1,7 @@
 <template>
-  <div class="bk-agent-input-actions">
+  <div class="border-t border-t-mono-300 border-dashed relative z-50">
     <TransitionHeight opacity>
-      <div v-if="isExpanded" class="bk-agent-input-actions-expanded">
+      <div v-if="isExpanded" class="border-b border-b-mono-300 border-dashed">
         <TokenUsage :usage-turns />
         <DropdownItem
           icon="bk_mdi_bug_report"
@@ -16,8 +16,8 @@
         />
       </div>
     </TransitionHeight>
-    <div class="bk-agent-input-actions-bar">
-      <div class="bk-agent-input-actions-left">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center relative">
         <button
           class="bk-agent-input-actions-button group/tooltip"
           :class="{ 'bk-is-active': isExpanded }"
@@ -45,8 +45,8 @@
           }}</span>
         </button>
       </div>
-      <div class="bk-agent-input-actions-right">
-        <div v-show="hasText" class="bk-agent-input-actions-keyboard">
+      <div class="flex gap-8 items-center pr-5">
+        <div v-show="hasText" class="text-xs text-mono-500">
           {{ $t('textareaNewLineHint', 'Shift + Enter for new line') }}
         </div>
         <button
@@ -102,3 +102,24 @@ const { $t } = useBlokkli()
 
 const isExpanded = ref(false)
 </script>
+
+<style lang="postcss">
+.bk-agent-input-actions-button {
+  @apply h-40 min-w-40 flex items-center justify-center text-sm px-8 gap-3 font-medium;
+  @apply text-mono-500;
+  @apply hover:bg-mono-100 hover:text-accent-700;
+  &:not(:first-child) {
+    @apply border-l border-l-mono-300 border-dashed;
+  }
+  &.bk-is-active {
+    @apply text-accent-700;
+  }
+  &[disabled] {
+    @apply text-mono-200 pointer-events-none;
+  }
+
+  svg {
+    @apply size-18 fill-current;
+  }
+}
+</style>

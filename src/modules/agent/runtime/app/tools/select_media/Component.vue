@@ -4,20 +4,35 @@
     :title="params.prompt || $t('mediaSelectTitle', 'Select a media item')"
     @cancel="cancel"
   >
-    <div class="bk-media-select-list">
+    <div class="flex flex-col divide-y divide-mono-200">
       <button
         v-for="item in params.items"
         :key="item.mediaId"
         type="button"
-        class="bk-media-select-item"
-        :class="{ 'bk-is-selected': selectedId === item.mediaId }"
+        class="flex items-center gap-10 px-10 py-8 cursor-pointer hover:bg-mono-50"
+        :class="{ 'bg-accent-100': selectedId === item.mediaId }"
         @click="selectedId = item.mediaId"
       >
-        <div class="bk-media-select-thumbnail">
-          <img v-if="item.thumbnail" :src="item.thumbnail" :alt="item.label" />
-          <Icon v-else name="bk_mdi_image" />
+        <div
+          class="w-40 h-40 bg-mono-100 rounded overflow-hidden shrink-0 flex items-center justify-center"
+          :class="{
+            'outline outline-accent-700 relative z-40':
+              selectedId === item.mediaId,
+          }"
+        >
+          <img
+            v-if="item.thumbnail"
+            :src="item.thumbnail"
+            :alt="item.label"
+            class="w-full h-full object-cover"
+          />
+          <Icon v-else name="bk_mdi_image" class="w-20 h-20 text-mono-300" />
         </div>
-        <div class="bk-media-select-label">{{ item.label }}</div>
+        <div
+          class="text-sm text-mono-700 flex-1 break-words max-w-full overflow-hidden"
+        >
+          {{ item.label }}
+        </div>
       </button>
     </div>
 

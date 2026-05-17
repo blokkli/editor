@@ -188,3 +188,64 @@ export default {
   name: 'Agent',
 }
 </script>
+
+<style lang="postcss">
+@keyframes bk-sparkle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+}
+
+.bk {
+  #bk-sidebar-button-agent {
+    @apply text-white;
+
+    svg {
+      @apply size-30;
+      @apply translate-x-[-7%];
+    }
+  }
+
+  .bk-icon-stars.bk-is-animated {
+    svg path {
+      animation: bk-sparkle 3s ease-in-out infinite;
+
+      &:nth-child(1) {
+        transform-origin: 19px 19px;
+        animation-delay: 0.6s;
+      }
+      &:nth-child(2) {
+        transform-origin: 9px 12px;
+        animation-delay: 0s;
+      }
+      &:nth-child(3) {
+        transform-origin: 19px 5px;
+        animation-delay: 1.2s;
+      }
+    }
+  }
+}
+
+.bk-popup.bk-is-agent {
+  .bk-popup-content-text {
+    .bk-icon {
+      @apply float-right ml-2;
+      svg {
+        @apply fill-accent-600 size-60;
+      }
+    }
+    p {
+      @apply hyphens-auto;
+      em {
+        @apply not-italic text-accent-600 font-bold hyphens-none;
+      }
+    }
+  }
+}
+</style>

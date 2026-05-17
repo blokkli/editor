@@ -15,6 +15,7 @@
         <hr class="flex-1 border-mono-300 ml-5" />
       </div>
       <div
+        v-if="$slots.tabs || $slots.default"
         class="bg-white border border-mono-400 shadow-md"
         :class="{ 'pointer-events-none bg-mono-100!': disabled }"
       >
