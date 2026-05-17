@@ -534,6 +534,13 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
         }),
       )
       .optional(),
+    /**
+     * When present, the server truncates Session.messages so that the Nth
+     * real user turn and everything after it are removed before processing
+     * this prompt. Used by retry/edit to rewind the conversation.
+     * 0-based index, counts only true user turns (not tool-result relays).
+     */
+    rollbackToUserMessageIndex: z.number().int().nonnegative().optional(),
   }),
   z.object({
     type: z.literal('tool_result'),

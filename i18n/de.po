@@ -185,10 +185,6 @@ msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
 msgstr "Verbessere die Lesbarkeit der ausgewählten Blöcke."
 
-msgctxt "agentRatingsAggregateTotal"
-msgid "@count ratings"
-msgstr "@count Bewertungen"
-
 msgctxt "agentRatingsBackendMissing"
 msgid "This backend does not expose the ratings list."
 msgstr "Dieses Backend stellt die Bewertungsliste nicht zur Verfügung."
@@ -196,10 +192,6 @@ msgstr "Dieses Backend stellt die Bewertungsliste nicht zur Verfügung."
 msgctxt "agentRatingsEmpty"
 msgid "No ratings yet."
 msgstr "Noch keine Bewertungen vorhanden."
-
-msgctxt "agentRatingsFilterAll"
-msgid "All"
-msgstr "Alle"
 
 msgctxt "agentRatingsListError"
 msgid "Failed to load ratings."
@@ -389,6 +381,14 @@ msgctxt "aiAgentConnecting"
 msgid "Connecting..."
 msgstr "Verbinden..."
 
+msgctxt "aiAgentCreateAdvancedChartDone"
+msgid "Added advanced chart"
+msgstr ""
+
+msgctxt "aiAgentCreateAdvancedChartRunning"
+msgid "Creating advanced chart..."
+msgstr ""
+
 msgctxt "aiAgentCreateChartDone"
 msgid "Added chart"
 msgstr "Diagramm hinzugefügt"
@@ -489,6 +489,18 @@ msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
 msgstr "@count Blöcke nach @field dupliziert"
 
+msgctxt "aiAgentEdit"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgctxt "aiAgentEditCancel"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "aiAgentEditSave"
+msgid "Save"
+msgstr "Speichern"
+
 msgctxt "aiAgentErrorAuthentication"
 msgid "API authentication failed. Please check your API key."
 msgstr "API-Authentifizierung ist fehlgeschlagen. Bitte API-Key überprüfen."
@@ -568,6 +580,14 @@ msgstr "@count Blöcke gefunden"
 msgctxt "aiAgentFindBlocksRunning"
 msgid "Finding blocks..."
 msgstr "Blöcke suchen..."
+
+msgctxt "aiAgentGetAdvancedChartConfigDone"
+msgid "Got advanced chart config"
+msgstr ""
+
+msgctxt "aiAgentGetAdvancedChartConfigRunning"
+msgid "Getting advanced chart config..."
+msgstr ""
 
 msgctxt "aiAgentGetAllFragments"
 msgid "Get all fragments"
@@ -916,6 +936,14 @@ msgstr "@count Änderungen rückgängig gemacht"
 msgctxt "aiAgentUnknownMessage"
 msgid "Unknown message type"
 msgstr "Unbekannter Nachrichtentyp"
+
+msgctxt "aiAgentUpdateAdvancedChartDone"
+msgid "Updated advanced chart"
+msgstr ""
+
+msgctxt "aiAgentUpdateAdvancedChartRunning"
+msgid "Updating advanced chart..."
+msgstr ""
 
 msgctxt "aiAgentUpdateChartDone"
 msgid "Updated chart"

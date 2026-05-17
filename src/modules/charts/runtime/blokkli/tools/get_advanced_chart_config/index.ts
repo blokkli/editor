@@ -1,9 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  advancedConfigSchema,
-  findChartOptionKey,
-} from '../chart_schemas'
+import { advancedConfigSchema, findChartOptionKey } from '../chart_schemas'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 import { getDefaultChartData } from '../../../helpers'
 

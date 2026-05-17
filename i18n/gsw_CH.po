@@ -180,20 +180,12 @@ msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
 msgstr "Verbessere d'Läsbarkäit vo de usgwählte Blöck."
 
-msgctxt "agentRatingsAggregateTotal"
-msgid "@count ratings"
-msgstr ""
-
 msgctxt "agentRatingsBackendMissing"
 msgid "This backend does not expose the ratings list."
 msgstr ""
 
 msgctxt "agentRatingsEmpty"
 msgid "No ratings yet."
-msgstr ""
-
-msgctxt "agentRatingsFilterAll"
-msgid "All"
 msgstr ""
 
 msgctxt "agentRatingsListError"
@@ -384,6 +376,14 @@ msgctxt "aiAgentConnecting"
 msgid "Connecting..."
 msgstr "Verbinde..."
 
+msgctxt "aiAgentCreateAdvancedChartDone"
+msgid "Added advanced chart"
+msgstr ""
+
+msgctxt "aiAgentCreateAdvancedChartRunning"
+msgid "Creating advanced chart..."
+msgstr ""
+
 msgctxt "aiAgentCreateChartDone"
 msgid "Added chart"
 msgstr "Diagramm drzuegfüegt"
@@ -484,6 +484,18 @@ msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
 msgstr "@count Blöck in @field dupliziert"
 
+msgctxt "aiAgentEdit"
+msgid "Edit"
+msgstr ""
+
+msgctxt "aiAgentEditCancel"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "aiAgentEditSave"
+msgid "Save"
+msgstr ""
+
 msgctxt "aiAgentErrorAuthentication"
 msgid "API authentication failed. Please check your API key."
 msgstr "API-Authentifizierig fählgschlage. Bitte überprüef din API-Schlüssel."
@@ -557,6 +569,14 @@ msgstr "@count Blöck gfunde"
 msgctxt "aiAgentFindBlocksRunning"
 msgid "Finding blocks..."
 msgstr "Blöck wärde gsuecht..."
+
+msgctxt "aiAgentGetAdvancedChartConfigDone"
+msgid "Got advanced chart config"
+msgstr ""
+
+msgctxt "aiAgentGetAdvancedChartConfigRunning"
+msgid "Getting advanced chart config..."
+msgstr ""
 
 msgctxt "aiAgentGetAllFragments"
 msgid "Get all fragments"
@@ -905,6 +925,14 @@ msgstr "@count Änderige rückgängig gmacht"
 msgctxt "aiAgentUnknownMessage"
 msgid "Unknown message type"
 msgstr "Unbekannte Nachrichtetyp"
+
+msgctxt "aiAgentUpdateAdvancedChartDone"
+msgid "Updated advanced chart"
+msgstr ""
+
+msgctxt "aiAgentUpdateAdvancedChartRunning"
+msgid "Updating advanced chart..."
+msgstr ""
 
 msgctxt "aiAgentUpdateChartDone"
 msgid "Updated chart"

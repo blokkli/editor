@@ -9,9 +9,10 @@ import { definitionIds } from '#blokkli-build/charts-definitions'
 
 // All registered chart types except `advanced` — `advanced` stores raw ECharts
 // JSON and has no structured data the agent can produce reliably.
-const agentChartTypeIds = definitionIds.filter(
-  (id) => id !== 'advanced',
-) as [string, ...string[]]
+const agentChartTypeIds = definitionIds.filter((id) => id !== 'advanced') as [
+  string,
+  ...string[],
+]
 export const chartTypeEnum = z.enum(agentChartTypeIds)
 
 const colorIds = Object.keys(colorOptions) as [string, ...string[]]

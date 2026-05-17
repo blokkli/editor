@@ -197,16 +197,16 @@ watch(
       }
     }
 
-    agent.sendPrompt(
-      promptText,
-      userPromptText,
+    agent.sendPrompt({
+      prompt: promptText,
+      displayPrompt: userPromptText,
       selectedUuids,
-      undefined,
-      prompt.tools,
-      prompt.skills,
+      autoLoadTools: prompt.tools,
+      autoLoadSkills: prompt.skills,
       preSeededResults,
       autoExecuteTools,
-    )
+      promptId: prompt.id,
+    })
   },
   { immediate: true },
 )

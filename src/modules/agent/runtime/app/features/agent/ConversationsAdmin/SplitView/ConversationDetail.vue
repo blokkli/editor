@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="pb-15 border-b border-mono-300 py-15 px-20">
-      <h4 class="text-lg font-medium text-mono-900 mb-5">
+      <h4 class="text-lg font-bold text-mono-900 mb-5">
         {{ parsed.title || $t('agentConversationsUntitled', 'Untitled') }}
       </h4>
       <div

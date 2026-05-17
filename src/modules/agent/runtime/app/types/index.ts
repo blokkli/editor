@@ -471,6 +471,58 @@ const userConversationItemSchema = conversationItemBase.extend({
       }),
     )
     .optional(),
+  /**
+   * Editor history index at the moment this message was sent. Used by
+   * retry/edit to restore the editor state before re-running the prompt.
+   * Optional for back-compat with conversations persisted before this field
+   * existed.
+   */
+  historyIndexAtSend: z.number().optional(),
+  /**
+   * Identity of the mutation at `historyIndexAtSend` when the snapshot was
+   * taken. Compared against the current mutation at that index to detect
+   * staleness — if the user manually undid + re-mutated, the snapshot is no
+   * longer reachable and retry/edit must be disabled.
+   */
+  historySignatureAtSend: z.string().optional(),
+  /**
+   * Original send parameters captured so retry produces byte-identical
+   * execution — important for prompt-definition-driven sends where the
+   * displayed text is a friendly label but the real work was driven by
+   * `selectedUuids`, pre-computed tool results, auto-executed tools, and
+   * auto-loaded tools/skills.
+   *
+   * Retry replays this context as-is. Edit discards `preSeededResults` and
+   * `autoExecuteTools` (the intent has changed) but preserves selection,
+   * tools, and skills — the edited prompt runs through a normal LLM round.
+   */
+  sendContext: z
+    .object({
+      promptId: z.string().optional(),
+      serverPrompt: z.string().optional(),
+      selectedUuids: z.array(z.string()).optional(),
+      autoLoadTools: z.array(z.string()).optional(),
+      autoLoadSkills: z.array(z.string()).optional(),
+      preSeededResults: z
+        .array(
+          z.object({
+            toolName: z.string(),
+            params: z.record(z.string(), z.unknown()),
+            result: z.unknown(),
+            label: z.string(),
+          }),
+        )
+        .optional(),
+      autoExecuteTools: z
+        .array(
+          z.object({
+            toolName: z.string(),
+            params: z.record(z.string(), z.unknown()),
+          }),
+        )
+        .optional(),
+    })
+    .optional(),
 })
 
 /**

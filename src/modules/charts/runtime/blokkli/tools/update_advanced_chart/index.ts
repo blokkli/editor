@@ -25,10 +25,7 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t(
-      'aiAgentUpdateAdvancedChartRunning',
-      'Updating advanced chart...',
-    )
+    return $t('aiAgentUpdateAdvancedChartRunning', 'Updating advanced chart...')
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

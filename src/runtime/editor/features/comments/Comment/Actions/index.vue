@@ -1,28 +1,26 @@
 <template>
-  <div
-    class="flex items-center bg-white border border-mono-400 rounded shadow relative"
-  >
-    <CommentActionButton
+  <InlineActions>
+    <InlineActionsButton
       v-if="canEdit"
       icon="bk_mdi_edit"
       :label="$t('commentEdit', 'Edit')"
       @click="$emit('edit')"
     />
-    <CommentActionButton
+    <InlineActionsButton
       v-if="canDelete"
       icon="bk_mdi_delete"
       :label="$t('commentDelete', 'Delete')"
       scheme="red"
       @click="onDeleteClick"
     />
-    <CommentActionButton
+    <InlineActionsButton
       v-if="canResolve"
       icon="bk_mdi_check_circle"
       scheme="lime"
       :label="$t('commentsMarkAsResolved', 'Mark as resolved')"
       @click="$emit('resolve')"
     />
-    <CommentActionButton
+    <InlineActionsButton
       v-if="canUnresolve"
       icon="bk_mdi_unpublished"
       scheme="lime"
@@ -58,14 +56,15 @@
         />
       </BlokkliTransition>
     </Teleport>
-  </div>
+  </InlineActions>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
 import { BlokkliTransition, DialogModal } from '#blokkli/editor/components'
 import { useDialog } from '#blokkli/editor/composables'
-import CommentActionButton from './Button/index.vue'
+import InlineActions from '#blokkli/editor/components/InlineActions/index.vue'
+import InlineActionsButton from '#blokkli/editor/components/InlineActions/Button/index.vue'
 
 const { $t, ui } = useBlokkli()
 

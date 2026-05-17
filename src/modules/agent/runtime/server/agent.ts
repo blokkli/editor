@@ -111,6 +111,7 @@ export default defineWebSocketHandler({
             data.autoLoadSkills,
             data.preSeededResults,
             data.autoExecuteTools,
+            data.rollbackToUserMessageIndex,
           )
           break
 

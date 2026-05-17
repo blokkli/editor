@@ -7,6 +7,7 @@ import type {
   ServerToolConversationItem,
   ErrorConversationItem,
   Attachment,
+  UserConversationItem,
 } from '#blokkli/agent/app/types'
 import type {
   ConversationStateSnapshot,
@@ -44,7 +45,12 @@ export type ConversationProvider = {
   showTranscript: Ref<boolean>
 
   // History mutation
-  pushUser: (content: string, attachments?: Attachment[]) => void
+  pushUser: (
+    content: string,
+    attachments?: Attachment[],
+    history?: { index: number; signature: string },
+    sendContext?: UserConversationItem['sendContext'],
+  ) => void
   appendToActive: (text: string) => void
   setActive: (item: ActiveItem | null) => void
   finalizeActive: () => void
@@ -104,13 +110,21 @@ export default function conversationProvider({
   const transcriptContent = ref<Transcript | null>(null)
   const showTranscript = ref(false)
 
-  function pushUser(content: string, attachments?: Attachment[]): void {
+  function pushUser(
+    content: string,
+    attachments?: Attachment[],
+    history?: { index: number; signature: string },
+    sendContext?: UserConversationItem['sendContext'],
+  ): void {
     items.value.push({
       type: 'user',
       id: generateId(),
       content,
       timestamp: Date.now(),
       attachments: attachments?.length ? attachments : undefined,
+      historyIndexAtSend: history?.index,
+      historySignatureAtSend: history?.signature,
+      sendContext,
     })
   }
 

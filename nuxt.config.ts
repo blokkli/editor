@@ -69,6 +69,9 @@ fragment blokkliParagraphsType on ParagraphsType {
     },
     typescript: {
       tsConfig: {
+        compilerOptions: {
+          noUncheckedIndexedAccess: false,
+        },
         include: [
           '../src/modules/agent/runtime/server/**/*',
           '../src/modules/agent/runtime/shared/**/*',

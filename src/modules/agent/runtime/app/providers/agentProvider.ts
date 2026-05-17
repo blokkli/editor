@@ -13,12 +13,16 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { routeRoute } from '#blokkli-build/agent-client'
 import { buildPageContext } from '#blokkli/agent/app/helpers/buildPageContext'
+import {
+  computeHistorySignature,
+  isHistorySnapshotReachable,
+} from '#blokkli/agent/app/helpers/historySignature'
 import type { SocketProvider } from './socketProvider'
 import type { ConversationProvider } from './conversationProvider'
 import type { PlanProvider } from './planProvider'
 import type { ToolsProvider } from './toolsProvider'
 
-type PendingPrompt = {
+export type SendPromptOptions = {
   prompt: string
   displayPrompt?: string
   selectedUuids?: string[]
@@ -27,6 +31,17 @@ type PendingPrompt = {
   autoLoadSkills?: string[]
   preSeededResults?: PreSeededToolResult[]
   autoExecuteTools?: AutoExecuteTool[]
+  /**
+   * When set, the server truncates Session.messages at the Nth real user
+   * turn (0-based) before processing this prompt. Used by retry/edit.
+   */
+  rollbackToUserMessageIndex?: number
+  /**
+   * Id of the prompt definition that triggered this send, if any. Stored on
+   * the user message so retry can re-run `preExecute` against current
+   * (post-rollback) page state.
+   */
+  promptId?: string
 }
 
 type PendingInit = {
@@ -43,17 +58,9 @@ export type AgentOrchestrator = {
   connect: () => void
   disconnect: () => void
 
-  sendPrompt: (
-    prompt: string,
-    displayPrompt?: string,
-    selectedUuids?: string[],
-    attachments?: Attachment[],
-    autoLoadTools?: string[],
-    autoLoadSkills?: string[],
-    preSeededResults?: PreSeededToolResult[],
-    autoExecuteTools?: AutoExecuteTool[],
-  ) => void
-  retry: () => void
+  sendPrompt: (options: SendPromptOptions) => void
+  retry: (targetItemId?: string) => void
+  rollbackAndSend: (targetItemId: string, newPrompt?: string) => void
   cancel: () => void
   newConversation: () => void
   getTranscript: () => void
@@ -87,7 +94,7 @@ export default function agentProvider({
   const isProcessing = ref(false)
   const isThinking = ref(false)
 
-  let pendingPrompt: PendingPrompt | null = null
+  let pendingPrompt: SendPromptOptions | null = null
   let pendingInit: PendingInit | null = null
   let sentToolNames: string[] = []
 
@@ -186,16 +193,7 @@ export default function agentProvider({
     if (pendingPrompt) {
       const queued = pendingPrompt
       pendingPrompt = null
-      sendPrompt(
-        queued.prompt,
-        queued.displayPrompt,
-        queued.selectedUuids,
-        queued.attachments,
-        queued.autoLoadTools,
-        queued.autoLoadSkills,
-        queued.preSeededResults,
-        queued.autoExecuteTools,
-      )
+      sendPrompt(queued)
     }
   }
 
@@ -305,38 +303,79 @@ export default function agentProvider({
   // User actions
   // --------------------------------------------------------------------------
 
-  async function sendPrompt(
-    prompt: string,
-    displayPrompt?: string,
-    selectedUuids?: string[],
-    attachments?: Attachment[],
-    autoLoadTools?: string[],
-    autoLoadSkills?: string[],
-    preSeededResults?: PreSeededToolResult[],
-    autoExecuteTools?: AutoExecuteTool[],
-  ): Promise<void> {
+  async function sendPrompt(options: SendPromptOptions): Promise<void> {
+    const {
+      prompt,
+      displayPrompt,
+      selectedUuids,
+      attachments,
+      autoLoadTools,
+      autoLoadSkills,
+      preSeededResults,
+      autoExecuteTools,
+      rollbackToUserMessageIndex,
+      promptId,
+    } = options
+
     if (!prompt.trim() || isProcessing.value) return
 
     if (!isReady.value) {
-      pendingPrompt = {
-        prompt,
-        displayPrompt,
-        selectedUuids,
-        attachments,
-        autoLoadTools,
-        autoLoadSkills,
-        preSeededResults,
-        autoExecuteTools,
-      }
+      pendingPrompt = options
       return
     }
 
     isProcessing.value = true
     conversation.ensureConversationId()
 
+    // Snapshot editor history at send time so retry/edit can later restore
+    // the state to this point.
+    const historyMutations = app.state.mutations.value
+    const historyIndex = app.state.currentMutationIndex.value
+    const historySignature = computeHistorySignature(
+      historyMutations,
+      historyIndex,
+    )
+
+    // Capture the original send context so retry can replay it byte-for-byte
+    // — preExecute can read arbitrary editor state, so we cannot re-derive
+    // preSeededResults / autoExecuteTools on retry.
+    const sendContextHasData =
+      !!promptId ||
+      (displayPrompt !== undefined && displayPrompt !== prompt) ||
+      !!selectedUuids?.length ||
+      !!autoLoadTools?.length ||
+      !!autoLoadSkills?.length ||
+      !!preSeededResults?.length ||
+      !!autoExecuteTools?.length
+    const sendContext = sendContextHasData
+      ? {
+          promptId,
+          serverPrompt:
+            displayPrompt !== undefined && displayPrompt !== prompt
+              ? prompt
+              : undefined,
+          selectedUuids: selectedUuids?.length ? [...selectedUuids] : undefined,
+          autoLoadTools: autoLoadTools?.length ? [...autoLoadTools] : undefined,
+          autoLoadSkills: autoLoadSkills?.length
+            ? [...autoLoadSkills]
+            : undefined,
+          preSeededResults: preSeededResults?.length
+            ? preSeededResults
+            : undefined,
+          autoExecuteTools: autoExecuteTools?.length
+            ? autoExecuteTools
+            : undefined,
+        }
+      : undefined
+
     // Push user message + show thinking before any async work so the UI
     // stays responsive while routing fetches.
-    conversation.pushUser(displayPrompt ?? prompt, attachments)
+    conversation.pushUser(
+      displayPrompt ?? prompt,
+      attachments,
+      { index: historyIndex, signature: historySignature },
+      sendContext,
+    )
     isThinking.value = true
 
     const isFirstMessage =
@@ -407,11 +446,97 @@ export default function agentProvider({
         : undefined,
       preSeededResults: serverPreSeeded,
       autoExecuteTools: autoExecuteTools?.length ? autoExecuteTools : undefined,
+      rollbackToUserMessageIndex,
     })
   }
 
-  function retry(): void {
+  /**
+   * Rewind the conversation (and the editor history, when reachable) to the
+   * point right before the given user message, then re-run it — optionally
+   * with edited text.
+   */
+  async function rollbackAndSend(
+    targetItemId: string,
+    newPrompt?: string,
+  ): Promise<void> {
     if (isProcessing.value || !isReady.value) return
+
+    const items = conversation.items.value
+    const targetIdx = items.findIndex((it) => it.id === targetItemId)
+    if (targetIdx < 0) return
+    const target = items[targetIdx]
+    if (!target || target.type !== 'user') return
+
+    // 0-based index of this user message among user-typed items, matching
+    // the count the server uses to identify real user turns.
+    const userMessageIndex = items
+      .slice(0, targetIdx)
+      .filter((it) => it.type === 'user').length
+
+    // Restore editor history if the snapshot is still reachable. Use
+    // mutateWithLoadingState so the rest of the editor state syncs.
+    const setHistoryIndex = app.adapter.setHistoryIndex
+    if (
+      setHistoryIndex &&
+      isHistorySnapshotReachable(
+        app.state.mutations.value,
+        target.historyIndexAtSend,
+        target.historySignatureAtSend,
+      ) &&
+      target.historyIndexAtSend !== app.state.currentMutationIndex.value
+    ) {
+      const targetIndex = target.historyIndexAtSend!
+      try {
+        await app.state.mutateWithLoadingState(() =>
+          setHistoryIndex(targetIndex),
+        )
+      } catch (e) {
+        console.warn('[blokkli agent] Failed to restore editor history:', e)
+      }
+    }
+
+    // Drop everything from the target onwards. sendPrompt() will push the
+    // new user message itself with a fresh history snapshot.
+    conversation.items.value = items.slice(0, targetIdx)
+    conversation.setActive(null)
+    tools.cancelPending()
+
+    const ctx = target.sendContext
+    const isEdit = newPrompt !== undefined
+    const displayedText = newPrompt ?? target.content
+    // Retry: replay the original server prompt (which may differ from the
+    // user-visible label) plus preSeeded/autoExecute results. Edit: the
+    // intent changed, so drop preSeeded/autoExecute and treat the new text
+    // as the prompt itself.
+    const serverPrompt = isEdit
+      ? displayedText
+      : (ctx?.serverPrompt ?? displayedText)
+
+    await sendPrompt({
+      prompt: serverPrompt,
+      displayPrompt: isEdit ? undefined : displayedText,
+      attachments: target.attachments,
+      rollbackToUserMessageIndex: userMessageIndex,
+      selectedUuids: ctx?.selectedUuids,
+      autoLoadTools: ctx?.autoLoadTools,
+      autoLoadSkills: ctx?.autoLoadSkills,
+      preSeededResults: isEdit ? undefined : ctx?.preSeededResults,
+      autoExecuteTools: isEdit ? undefined : ctx?.autoExecuteTools,
+      promptId: isEdit ? undefined : ctx?.promptId,
+    })
+  }
+
+  /**
+   * Retry button on error states: re-run the last user message in place.
+   * Strips retryable error items first so they don't pile up.
+   */
+  function retry(targetItemId?: string): void {
+    if (isProcessing.value || !isReady.value) return
+
+    if (targetItemId) {
+      rollbackAndSend(targetItemId)
+      return
+    }
 
     const lastUserItem = [...conversation.items.value]
       .reverse()
@@ -486,6 +611,7 @@ export default function agentProvider({
 
     sendPrompt,
     retry,
+    rollbackAndSend,
     cancel,
     newConversation,
     getTranscript,

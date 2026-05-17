@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { Icon, Tooltip } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
-import type { ThemeColorName } from './../../../../../../../global/types/theme'
+import type { ThemeColorName } from './../../../../../global/types/theme'
 
 withDefaults(
   defineProps<{
@@ -33,6 +33,6 @@ defineEmits<{
 
 <script lang="ts">
 export default {
-  name: 'CommentActionButton',
+  name: 'InlineActionsButton',
 }
 </script>

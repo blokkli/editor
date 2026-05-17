@@ -18,6 +18,26 @@ export function send(peer: Peer, message: ServerMessage): void {
 export const KEEP_RECENT_TURNS = 8
 
 /**
+ * Returns true when a message is a tool-result relay (`{role:'user',
+ * content:[tool_result, ...]}`) rather than a real user turn. The protocol
+ * encodes tool results as user-role messages, so distinguishing them is
+ * required wherever we count "real" user turns — pruning, persistence,
+ * rollback indexing.
+ */
+export function isToolResultOnly(msg: GenericMessage): boolean {
+  if (msg.role !== 'user') return false
+  const content = msg.content
+  if (!Array.isArray(content) || content.length === 0) return false
+  return content.some(
+    (block) =>
+      typeof block === 'object' &&
+      block !== null &&
+      'type' in block &&
+      block.type === 'tool_result',
+  )
+}
+
+/**
  * Resolve a skill label to a string, optionally using the given language.
  */
 export function resolveSkillLabel(
@@ -169,6 +189,7 @@ export function findToolNameForResult(
   // The assistant message with the matching tool_use should be immediately before
   for (let i = userMsgIndex - 1; i >= 0; i--) {
     const msg = messages[i]
+    if (!msg) continue
     if (msg.role !== 'assistant' || !Array.isArray(msg.content)) continue
     for (const block of msg.content) {
       if (block.type === 'tool_use' && block.id === toolUseId) {
@@ -251,6 +272,7 @@ function hasMutationBetween(
 ): boolean {
   for (let i = afterIndex + 1; i < beforeIndex; i++) {
     const msg = messages[i]
+    if (!msg) continue
     if (msg.role !== 'user' || !Array.isArray(msg.content)) continue
     for (const block of msg.content) {
       if (block.type !== 'tool_result') continue
@@ -300,26 +322,10 @@ export function pruneMessages(
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i]
-    if (msg.role === 'user') {
-      const content = msg.content
-      // Bug 4 fix: use .some() instead of .every() — a message with tool_results
-      // mixed with text blocks (e.g. skill injections) is still a tool response,
-      // not a real user turn.
-      const containsToolResult =
-        Array.isArray(content) &&
-        content.length > 0 &&
-        content.some(
-          (block) =>
-            typeof block === 'object' &&
-            block !== null &&
-            'type' in block &&
-            block.type === 'tool_result',
-        )
-
-      if (!containsToolResult) {
-        turnCount++
-        turnStartIndices.push(i)
-      }
+    if (!msg) continue
+    if (msg.role === 'user' && !isToolResultOnly(msg)) {
+      turnCount++
+      turnStartIndices.push(i)
     }
   }
 
@@ -336,6 +342,7 @@ export function pruneMessages(
   // Prune messages before the cutoff
   for (let i = 0; i < cutoffMessageIndex; i++) {
     const msg = messages[i]
+    if (!msg) continue
     const content = msg.content
 
     // Only process array content (tool results are in arrays)
@@ -360,6 +367,7 @@ export function pruneMessages(
     const hasToolResult = content.some((b) => b.type === 'tool_result')
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
+      if (!block) continue
       if (block.type === 'tool_result') {
         const toolName = findToolNameForResult(messages, i, block.tool_use_id)
         const meta = toolName ? metadata.get(toolName) : undefined
@@ -413,23 +421,10 @@ export function pruneForPersistence(
 
   for (let i = 0; i < cloned.length; i++) {
     const msg = cloned[i]
-    if (msg.role === 'user') {
-      const content = msg.content
-      const containsToolResult =
-        Array.isArray(content) &&
-        content.length > 0 &&
-        content.some(
-          (block) =>
-            typeof block === 'object' &&
-            block !== null &&
-            'type' in block &&
-            block.type === 'tool_result',
-        )
-
-      if (!containsToolResult) {
-        turnCount++
-        turnStartIndices.push(i)
-      }
+    if (!msg) continue
+    if (msg.role === 'user' && !isToolResultOnly(msg)) {
+      turnCount++
+      turnStartIndices.push(i)
     }
   }
 
@@ -446,28 +441,17 @@ export function pruneForPersistence(
   let lastTurnStart = 0
   for (let i = trimmed.length - 1; i >= 0; i--) {
     const msg = trimmed[i]
-    if (msg.role === 'user') {
-      const content = msg.content
-      const containsToolResult =
-        Array.isArray(content) &&
-        content.length > 0 &&
-        content.some(
-          (block) =>
-            typeof block === 'object' &&
-            block !== null &&
-            'type' in block &&
-            block.type === 'tool_result',
-        )
-      if (!containsToolResult) {
-        lastTurnStart = i
-        break
-      }
+    if (!msg) continue
+    if (msg.role === 'user' && !isToolResultOnly(msg)) {
+      lastTurnStart = i
+      break
     }
   }
 
   // Compress all tool results and strip old tool_use inputs
   for (let i = 0; i < trimmed.length; i++) {
     const msg = trimmed[i]
+    if (!msg) continue
     const content = msg.content
     if (!Array.isArray(content)) continue
 
@@ -486,6 +470,7 @@ export function pruneForPersistence(
     // User messages: compress ALL tool_result blocks, remove text blocks in old turns
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
+      if (!block) continue
       if (block.type === 'tool_result') {
         block.content = compressToolResult(block.content)
       } else if (block.type === 'text' && i < lastTurnStart) {
@@ -547,9 +532,11 @@ export function validateMessages(messages: GenericMessage[]): string[] {
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i]
+    if (!msg) continue
 
     // Check for consecutive same-role messages
-    if (i > 0 && messages[i - 1].role === msg.role) {
+    const prevMsg = i > 0 ? messages[i - 1] : undefined
+    if (prevMsg && prevMsg.role === msg.role) {
       issues.push(
         `Consecutive ${msg.role} messages at indices ${i - 1} and ${i}`,
       )

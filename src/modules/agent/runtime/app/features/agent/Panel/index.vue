@@ -166,6 +166,7 @@ import type {
   ActiveItem,
   Attachment,
 } from '#blokkli/agent/app/types'
+import type { SendPromptOptions } from '#blokkli/agent/app/providers/agentProvider'
 import type {
   ClientPlanState,
   PageContext,
@@ -202,12 +203,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   connect: []
-  sendPrompt: [
-    prompt: string,
-    displayPrompt?: string,
-    selectedUuids?: string[],
-    attachments?: Attachment[],
-  ]
+  sendPrompt: [options: SendPromptOptions]
   cancel: []
   approve: []
   reject: []
@@ -360,7 +356,7 @@ function scrollToBottomOnSend() {
 }
 
 function onWelcomePrompt(prompt: string) {
-  emit('sendPrompt', prompt)
+  emit('sendPrompt', { prompt })
   scrollToBottomOnSend()
 }
 
@@ -374,7 +370,7 @@ function onSubmit(submitAttachments: Attachment[]) {
     return
 
   if (!submitAttachments.length) {
-    emit('sendPrompt', inputValue.value)
+    emit('sendPrompt', { prompt: inputValue.value })
   } else {
     const attachmentBlocks = submitAttachments
       .map(
@@ -385,7 +381,11 @@ function onSubmit(submitAttachments: Attachment[]) {
 
     const prompt = text ? `${text}\n\n${attachmentBlocks}` : attachmentBlocks
 
-    emit('sendPrompt', prompt, text, undefined, submitAttachments)
+    emit('sendPrompt', {
+      prompt,
+      displayPrompt: text,
+      attachments: submitAttachments,
+    })
   }
 
   inputValue.value = ''

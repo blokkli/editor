@@ -29,6 +29,7 @@ import {
   computeStateHash,
   verifyStateHash,
   validateMessages,
+  isToolResultOnly,
 } from './helpers'
 import type {
   ServerPlan,
@@ -195,6 +196,7 @@ export class Session {
       toolName: string
       params: Record<string, unknown>
     }[],
+    rollbackToUserMessageIndex?: number,
   ): void {
     if (this.isProcessing) {
       send(peer, {
@@ -204,6 +206,21 @@ export class Session {
       })
       return
     }
+
+    if (rollbackToUserMessageIndex !== undefined) {
+      try {
+        this.truncateAtUserMessage(rollbackToUserMessageIndex)
+      } catch (e) {
+        send(peer, {
+          type: 'error',
+          errorType: 'bad_request',
+          message:
+            e instanceof Error ? e.message : 'Rollback target out of range',
+        })
+        return
+      }
+    }
+
     this.runAgentLoop(
       peer,
       prompt,
@@ -214,6 +231,43 @@ export class Session {
       autoLoadSkills,
       preSeededResults,
       autoExecuteTools,
+    )
+  }
+
+  /**
+   * Remove the Nth real user turn (0-based) and every message after it.
+   * "Real user turn" excludes tool-result relays. Throws if the index is
+   * out of range — typically because the target turn has been pruned away.
+   */
+  private truncateAtUserMessage(targetIndex: number): void {
+    let userCount = 0
+    for (let i = 0; i < this.messages.length; i++) {
+      const msg = this.messages[i]
+      if (!msg) continue
+      if (msg.role === 'user' && !isToolResultOnly(msg)) {
+        if (userCount === targetIndex) {
+          this.messages = this.messages.slice(0, i)
+          // Caches tied to the truncated turns are no longer valid.
+          this.unprunedMessages = []
+          this.lastTools = []
+          this.lastDebugPayload = null
+          // Cancel any pending tool calls or plan approval — the conversation
+          // those belonged to no longer exists.
+          for (const pending of this.pendingToolCalls.values()) {
+            pending.reject(new Error('Rollback cancelled pending tool call'))
+          }
+          this.pendingToolCalls.clear()
+          if (this.pendingPlanApproval) {
+            this.pendingPlanApproval.resolve(false)
+            this.pendingPlanApproval = null
+          }
+          return
+        }
+        userCount++
+      }
+    }
+    throw new Error(
+      `rollbackToUserMessageIndex ${targetIndex} out of range (only ${userCount} real user turns)`,
     )
   }
 

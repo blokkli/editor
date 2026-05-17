@@ -174,20 +174,12 @@ msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
 msgstr ""
 
-msgctxt "agentRatingsAggregateTotal"
-msgid "@count ratings"
-msgstr ""
-
 msgctxt "agentRatingsBackendMissing"
 msgid "This backend does not expose the ratings list."
 msgstr ""
 
 msgctxt "agentRatingsEmpty"
 msgid "No ratings yet."
-msgstr ""
-
-msgctxt "agentRatingsFilterAll"
-msgid "All"
 msgstr ""
 
 msgctxt "agentRatingsListError"
@@ -376,6 +368,14 @@ msgctxt "aiAgentConnecting"
 msgid "Connecting..."
 msgstr ""
 
+msgctxt "aiAgentCreateAdvancedChartDone"
+msgid "Added advanced chart"
+msgstr ""
+
+msgctxt "aiAgentCreateAdvancedChartRunning"
+msgid "Creating advanced chart..."
+msgstr ""
+
 msgctxt "aiAgentCreateChartDone"
 msgid "Added chart"
 msgstr ""
@@ -476,6 +476,18 @@ msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
 msgstr ""
 
+msgctxt "aiAgentEdit"
+msgid "Edit"
+msgstr ""
+
+msgctxt "aiAgentEditCancel"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "aiAgentEditSave"
+msgid "Save"
+msgstr ""
+
 msgctxt "aiAgentErrorAuthentication"
 msgid "API authentication failed. Please check your API key."
 msgstr ""
@@ -546,6 +558,14 @@ msgstr ""
 
 msgctxt "aiAgentFindBlocksRunning"
 msgid "Finding blocks..."
+msgstr ""
+
+msgctxt "aiAgentGetAdvancedChartConfigDone"
+msgid "Got advanced chart config"
+msgstr ""
+
+msgctxt "aiAgentGetAdvancedChartConfigRunning"
+msgid "Getting advanced chart config..."
 msgstr ""
 
 msgctxt "aiAgentGetAllFragments"
@@ -892,6 +912,14 @@ msgstr ""
 
 msgctxt "aiAgentUnknownMessage"
 msgid "Unknown message type"
+msgstr ""
+
+msgctxt "aiAgentUpdateAdvancedChartDone"
+msgid "Updated advanced chart"
+msgstr ""
+
+msgctxt "aiAgentUpdateAdvancedChartRunning"
+msgid "Updating advanced chart..."
 msgstr ""
 
 msgctxt "aiAgentUpdateChartDone"
