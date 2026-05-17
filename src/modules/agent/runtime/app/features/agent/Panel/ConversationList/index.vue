@@ -1,48 +1,35 @@
 <template>
-  <div class="bk-agent-conversation-list">
-    <div class="bk-agent-conversation-list-header">
-      <span>{{ $t('aiAgentPastConversations', 'Past conversations') }}</span>
-      <button @click="emit('close')">
-        <Icon name="bk_mdi_close" />
-      </button>
-    </div>
-    <div
-      v-if="conversations.length"
-      class="bk-agent-conversation-list-items bk-scrollbar-light"
+  <div v-if="conversations.length">
+    <PanelItem
+      v-for="conv in conversations"
+      :key="conv.uuid"
+      :title="conv.title"
+      is-button
+      @click="emit('switch', conv.uuid)"
     >
-      <div
-        v-for="conv in conversations"
-        :key="conv.uuid"
-        class="bk-agent-conversation-list-item"
-        @click="emit('switch', conv.uuid)"
-      >
-        <div class="bk-agent-conversation-list-item-content">
-          <div class="bk-agent-conversation-list-item-text">
-            {{ conv.title }}
-          </div>
-          <span class="bk-agent-conversation-list-item-time">
-            <RelativeTime :timestamp="conv.updatedAt" />
-          </span>
-        </div>
-        <button
-          class="bk-agent-conversation-list-item-delete"
-          :title="$t('aiAgentDeleteConversation', 'Delete conversation')"
+      <template #description>
+        <RelativeTime :timestamp="conv.updatedAt" />
+      </template>
+      <template #actions>
+        <ButtonAction
+          :label="$t('aiAgentDeleteConversation', 'Delete conversation')"
+          icon="bk_mdi_delete"
           @click.stop="emit('delete', conv.uuid)"
-        >
-          <Icon name="bk_mdi_delete" />
-        </button>
-      </div>
-    </div>
-    <div v-else class="bk-agent-conversation-list-empty">
-      {{ $t('aiAgentNoConversations', 'No past conversations.') }}
-    </div>
+        />
+      </template>
+    </PanelItem>
+  </div>
+  <div v-else class="text-sm text-mono-400 text-center py-20">
+    {{ $t('aiAgentNoConversations', 'No past conversations.') }}
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli } from '#imports'
-import { Icon, RelativeTime } from '#blokkli/editor/components'
+import { RelativeTime } from '#blokkli/editor/components'
 import type { AgentConversationItemSummary } from '#blokkli/agent/app/composables'
+import PanelItem from '#blokkli/editor/components/Panel/Item/index.vue'
+import ButtonAction from '#blokkli/editor/components/ButtonAction/index.vue'
 
 defineProps<{
   conversations: AgentConversationItemSummary[]

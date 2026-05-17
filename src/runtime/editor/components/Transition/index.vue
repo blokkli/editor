@@ -23,6 +23,7 @@ type TransitionName =
   | 'context-menu'
   | 'command-palette'
   | 'caret-tooltip'
+  | 'panel-sheet'
 
 const props = withDefaults(
   defineProps<{
@@ -51,6 +52,7 @@ const DURATION: Partial<Record<TransitionName, number>> = {
   'command-palette': 100,
   'caret-tooltip': 150,
   'drop-up': 200,
+  'panel-sheet': 500,
 }
 
 const name = computed(() => {

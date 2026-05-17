@@ -8,11 +8,17 @@
         }}</span>
         <button
           v-if="details != null && detailsComponent"
-          class="bk-agent-tool-details-toggle"
+          class="shrink-0 size-18 flex items-center justify-center rounded text-mono-500 hover:text-mono-900 hover:bg-mono-200"
           :class="{ 'bk-is-expanded': isExpanded }"
           @click="isExpanded = !isExpanded"
         >
-          <Icon name="bk_mdi_keyboard_arrow_down" />
+          <Icon
+            name="bk_mdi_keyboard_arrow_down"
+            class="size-15 fill-current transition-transform duration-200 ease-swing"
+            :class="{
+              'rotate-180': isExpanded,
+            }"
+          />
         </button>
       </div>
       <TransitionHeight
@@ -21,7 +27,7 @@
         opacity
       >
         <div v-if="isExpanded" class="bk-agent-tool-details">
-          <div class="bk-agent-tool-details-inner">
+          <div class="pt-10">
             <component :is="detailsComponent" :details="details" />
           </div>
         </div>

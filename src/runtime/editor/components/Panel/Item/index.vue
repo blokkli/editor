@@ -36,7 +36,9 @@
         </div>
         <div>
           <div class="text-sm font-semibold">{{ title }}</div>
-          <div v-if="description" class="text-xs">{{ description }}</div>
+          <div v-if="description || $slots.description" class="text-xs">
+            <slot name="description">{{ description }}</slot>
+          </div>
         </div>
       </Component>
       <div

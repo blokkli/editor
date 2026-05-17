@@ -1,5 +1,4 @@
 @import './partials/MessageText.css';
-@import './partials/ConversationList.css';
 @import './partials/Transcript.css';
 @import './partials/Sidebar.css';
 @import './partials/Welcome.css';
@@ -8,58 +7,9 @@
 @import './partials/MediaSelect.css';
 @import './partials/Input.css';
 
-.bk-agent-connecting {
-  @apply flex items-center justify-center gap-8 p-20 text-mono-500;
-}
-
-.bk-agent-disconnected {
-  @apply border-b border-b-mono-300 border-dashed;
-  @apply flex items-center gap-8 px-10 py-10 text-mono-500 text-sm;
-  @apply bg-red-light;
-  @apply font-medium;
-  @apply text-red-normal;
-
-  .bk-icon {
-    svg {
-      @apply size-18 fill-current;
-    }
-  }
-}
-
-.bk.bk-agent-panel {
-  @apply flex flex-col h-full min-h-[200px] select-text relative;
-
-  .bk-agent-panel-inner {
-    @apply flex-1 overflow-y-scroll;
-    @apply flex flex-col;
-
-    &::after {
-      content: '';
-      @apply absolute inset-0 pointer-events-none opacity-0;
-      @apply transition-opacity ease-swing duration-300;
-      @apply bg-mono-200/95;
-      @apply backdrop-blur-lg;
-    }
-
-    &.bk-is-pending-approval {
-      &::after {
-        @apply opacity-100;
-      }
-    }
-  }
-
-  .bk-agent-panel-conversation {
-    @apply p-15 flex-1 relative;
-  }
-}
-
 /* Conversation rendering — applies anywhere the Conversation component is
  * mounted (sidebar panel, admin dialog, etc.), not just the agent sidebar. */
 .bk {
-  .bk-agent-conversation {
-    @apply grid;
-  }
-
   .bk-agent-message {
     @apply min-w-0;
   }
@@ -127,26 +77,6 @@
 
   .bk-agent-tool-call .bk-status-icon {
     @apply shrink-0;
-  }
-
-  .bk-agent-tool-details-toggle {
-    @apply shrink-0 size-18 flex items-center justify-center;
-    @apply rounded text-mono-500 hover:text-mono-900 hover:bg-mono-200;
-
-    .bk-icon svg {
-      @apply size-15 fill-current;
-      @apply transition-transform duration-200 ease-swing;
-    }
-
-    &.bk-is-expanded {
-      svg {
-        @apply rotate-180;
-      }
-    }
-  }
-
-  .bk-agent-tool-details-inner {
-    @apply pt-10;
   }
 
   .bk-batch-rewrite-details {

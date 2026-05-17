@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-agent-conversation" @click="onClick">
+  <div class="grid" @click="onClick">
     <template v-for="item in history" :key="item.id">
       <ConversationItemComponent
         :item="item"

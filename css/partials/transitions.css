@@ -227,4 +227,26 @@
   .bk-drag-item-leave-to {
     @apply translate-y-25 opacity-0;
   }
+
+  .bk-panel-sheet-enter-active,
+  .bk-panel-sheet-leave-active {
+    .bk-panel-sheet-backdrop {
+      @apply transition-opacity ease-swing duration-500;
+    }
+
+    .bk-panel-sheet-sheet {
+      @apply transition-transform ease-swing duration-500;
+    }
+  }
+
+  .bk-panel-sheet-enter-from,
+  .bk-panel-sheet-leave-to {
+    .bk-panel-sheet-backdrop {
+      opacity: 0;
+    }
+
+    .bk-panel-sheet-sheet {
+      transform: translateY(100%);
+    }
+  }
 }

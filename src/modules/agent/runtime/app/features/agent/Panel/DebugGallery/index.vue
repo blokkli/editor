@@ -5,7 +5,7 @@
       :history="mockHistory"
       :active-item="mockActiveItem"
       :is-thinking="false"
-      :tool-details="new Map()"
+      :tool-details="mockToolDetails"
     />
 
     <h3>Pending Mutations</h3>
@@ -57,13 +57,37 @@ const mockContext: Partial<McpToolContext> = {
   pageContext: null,
 }
 
-// Flat conversation history - each item is immutable after being added
+// Flat conversation history - each item is immutable after being added.
+// Designed to cover every Conversation item variant in a realistic flow:
+// user, assistant, tool (success/error), server_tool (all 5 variants),
+// and a tool with expandable details (see mockToolDetails below).
 const mockHistory: ConversationItem[] = [
   {
     type: 'user',
     id: 'msg-1',
-    content: 'Add a new text block with a welcome message to the hero section.',
+    content: 'Help me restructure the page content.',
     timestamp: Date.now() - 120000,
+  },
+  {
+    type: 'server_tool',
+    id: 'srv-1',
+    tool: 'load_skills',
+    label: 'Editing blocks',
+    timestamp: Date.now() - 119000,
+  },
+  {
+    type: 'server_tool',
+    id: 'srv-2',
+    tool: 'load_tools',
+    label: '12',
+    timestamp: Date.now() - 118500,
+  },
+  {
+    type: 'server_tool',
+    id: 'srv-3',
+    tool: 'create_plan',
+    label: 'Restructure page content',
+    timestamp: Date.now() - 118000,
   },
   {
     type: 'tool',
@@ -72,7 +96,14 @@ const mockHistory: ConversationItem[] = [
     tool: 'get_child_blocks',
     label: 'Get child blocks',
     status: 'success',
-    timestamp: Date.now() - 118000,
+    timestamp: Date.now() - 117000,
+  },
+  {
+    type: 'server_tool',
+    id: 'srv-4',
+    tool: 'complete_plan_step',
+    label: 'Analyze current page structure',
+    timestamp: Date.now() - 116500,
   },
   {
     type: 'tool',
@@ -93,7 +124,22 @@ const mockHistory: ConversationItem[] = [
   {
     type: 'user',
     id: 'msg-3',
-    content: 'Now delete the old introduction block.',
+    content: 'Now rewrite the title and tagline.',
+    timestamp: Date.now() - 100000,
+  },
+  {
+    type: 'tool',
+    id: 'call-4',
+    callId: 'call-4',
+    tool: 'update_text_fields',
+    label: 'Rewrite text',
+    status: 'success',
+    timestamp: Date.now() - 98000,
+  },
+  {
+    type: 'user',
+    id: 'msg-4',
+    content: 'Delete the old introduction block and move the card block.',
     timestamp: Date.now() - 90000,
   },
   {
@@ -107,24 +153,16 @@ const mockHistory: ConversationItem[] = [
   },
   {
     type: 'assistant',
-    id: 'msg-4',
+    id: 'msg-5',
     content: 'I tried to delete the block but encountered an error.',
     timestamp: Date.now() - 85000,
   },
   {
-    type: 'user',
-    id: 'msg-5',
-    content: 'Can you rewrite the title and move the card block?',
-    timestamp: Date.now() - 60000,
-  },
-  {
-    type: 'tool',
-    id: 'call-4',
-    callId: 'call-4',
-    tool: 'update_text_fields',
-    label: 'Rewrite text',
-    status: 'success',
-    timestamp: Date.now() - 58000,
+    type: 'server_tool',
+    id: 'srv-5',
+    tool: 'plan_completed',
+    label: 'Restructure page content',
+    timestamp: Date.now() - 80000,
   },
 ]
 
@@ -161,6 +199,26 @@ const mockMutations: MutationAction[] = [
   //   apply: () => undefined,
   // },
 ]
+
+// Details payload for tool items that have a detailsComponent.
+// `update_text_fields` (call-4) renders the rewrite diff list.
+const mockToolDetails = new Map<string, unknown>([
+  [
+    'call-4',
+    [
+      {
+        fieldLabel: 'Title',
+        before: 'Old welcome heading',
+        after: 'New, sharper welcome heading',
+      },
+      {
+        fieldLabel: 'Tagline',
+        before: 'A short intro line.',
+        after: 'A punchier, shorter intro.',
+      },
+    ],
+  ],
+])
 
 const toolsWithMockParams = computed(() =>
   mcpTools.filter(

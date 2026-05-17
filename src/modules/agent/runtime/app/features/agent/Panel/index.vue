@@ -1,7 +1,7 @@
 <template>
   <DropHandler
     v-if="hasBeenReady || DEBUG_STYLING"
-    class="bk bk-agent-panel"
+    class="bk flex flex-col h-full min-h-[200px] select-text relative bk-agent-panel"
     @mousedown.capture.stop
     @pointerdown.capture.stop
     @pointerup.capture.stop
@@ -11,11 +11,11 @@
   >
     <div
       ref="scrollContainer"
-      class="bk-agent-panel-inner bk-scrollbar-light"
+      class="bk-agent-panel-inner bk-scrollbar-light flex-1 overflow-y-scroll flex flex-col"
       :class="{ 'bk-is-pending-approval': isPlanPendingApproval }"
       @scroll="onScroll"
     >
-      <div ref="conversationContainer" class="bk-agent-panel-conversation">
+      <div ref="conversationContainer" class="p-15 flex-1 relative">
         <button
           v-if="DEBUG_STYLING"
           class="bk-button bk-scheme-mono bk-is-light"
@@ -89,9 +89,9 @@
           <TransitionHeight opacity :duration="300">
             <div
               v-if="!isConnected && hasBeenReady && !DEBUG_STYLING"
-              class="bk-agent-disconnected"
+              class="border-b border-b-mono-300 border-dashed flex items-center gap-8 px-10 py-10 text-mono-500 text-sm bg-red-light font-medium text-red-normal"
             >
-              <Icon name="loader" />
+              <Icon name="loader" class="size-18" />
               <span>{{
                 $t('aiAgentDisconnected', 'Connection lost. Reconnecting...')
               }}</span>
@@ -109,27 +109,25 @@
         </AgentInput>
       </div>
     </div>
-    <Transition name="bk-agent-overlay" :duration="500">
-      <div
+    <BlokkliTransition name="panel-sheet">
+      <PanelSheet
         v-if="showConversationList"
-        class="bk-agent-conversation-list-overlay"
+        :title="$t('aiAgentPastConversations', 'Past conversations')"
+        @close="emit('hideConversations')"
       >
-        <div
-          class="bk-agent-conversation-list-backdrop"
-          @click="emit('hideConversations')"
+        <ConversationList
+          :conversations="conversationList"
+          @switch="(id: string) => emit('switchConversation', id)"
+          @delete="(id: string) => emit('deleteConversation', id)"
+          @close="emit('hideConversations')"
         />
-        <div class="bk-agent-conversation-list-sheet bk-scrollbar-light">
-          <ConversationList
-            :conversations="conversationList"
-            @switch="(id: string) => emit('switchConversation', id)"
-            @delete="(id: string) => emit('deleteConversation', id)"
-            @close="emit('hideConversations')"
-          />
-        </div>
-      </div>
-    </Transition>
+      </PanelSheet>
+    </BlokkliTransition>
   </DropHandler>
-  <div v-else-if="!hasBeenReady" class="bk-agent-connecting">
+  <div
+    v-else-if="!hasBeenReady"
+    class="flex items-center justify-center gap-8 p-20 text-mono-500"
+  >
     <Icon name="loader" />
     <span>{{ $t('aiAgentConnecting', 'Connecting...') }}</span>
   </div>
@@ -145,7 +143,11 @@ import {
   onBeforeUnmount,
   useBlokkli,
 } from '#imports'
-import { Icon, TransitionHeight } from '#blokkli/editor/components'
+import {
+  Icon,
+  TransitionHeight,
+  BlokkliTransition,
+} from '#blokkli/editor/components'
 import Conversation from '#blokkli/agent/app/components/Conversation/index.vue'
 import PendingMutation from './PendingMutation/index.vue'
 import DebugGallery from './DebugGallery/index.vue'
@@ -173,6 +175,7 @@ import Plan from './Plan/index.vue'
 import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
+import PanelSheet from '#blokkli/editor/components/Panel/Sheet/index.vue'
 
 const props = defineProps<{
   agentName: string
