@@ -7,28 +7,32 @@ import {
 } from '#blokkli/agent/app/tools/schemas'
 import { resolvePosition } from '#blokkli/agent/app/tools/helpers'
 import {
-  chartDataSchema,
-  validateChartData,
+  advancedConfigSchema,
+  validateAdvancedConfig,
   findChartBundle,
 } from '../chart_schemas'
 import type { BlokkliChartData } from '#blokkli/charts/types'
+import { getDefaultChartData } from '../../../helpers'
 
 const paramsSchema = z.object({
-  chart: chartDataSchema,
+  config: advancedConfigSchema,
   parent: parentSchema.describe('The parent entity to add the chart to'),
   position: positionSchema,
 })
 
 export default defineBlokkliAgentTool({
-  name: 'create_chart',
+  name: 'create_advanced_chart',
   description:
-    'Create a new chart on the page. Series colors are auto-assigned if omitted. For pie/donut/radialBar charts, only the first series is used and each category gets its own color (auto-assigned if categoryColors is omitted). Use get_chart_type_options to discover available typeOptions for the chosen chart type before setting them.',
+    'Create a new advanced chart that renders a raw ECharts option object. Use this only when the user needs a chart type or layout not covered by the structured chart types (bar, line, pie, area, donut, heatmap, radialBar, radar, agePyramid). For those, use create_chart instead.',
   category: 'mutation',
-  prunedSummary: (r) => (r.success ? 'created chart' : 'rejected'),
+  prunedSummary: (r) => (r.success ? 'created advanced chart' : 'rejected'),
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentCreateChartRunning', 'Creating chart...')
+    return $t(
+      'aiAgentCreateAdvancedChartRunning',
+      'Creating advanced chart...',
+    )
   },
   paramsSchema,
   resultSchema: mutationResultSchema,
@@ -36,7 +40,6 @@ export default defineBlokkliAgentTool({
   execute(ctx, params) {
     const { fields } = ctx.app
 
-    // Check if the target field exists.
     const field = fields.find(params.parent.uuid, params.parent.field)
     if (!field) {
       return {
@@ -44,7 +47,6 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    // Find a bundle that has a chart option among the field's allowed bundles.
     const chartBundle = findChartBundle(ctx, field.allowedBundles)
     if ('error' in chartBundle) {
       return {
@@ -52,35 +54,19 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    // Build chart data from params.
+    const validated = validateAdvancedConfig(params.config)
+    if ('error' in validated) return validated
+
+    // Start from a structured default so required fields (categories, series,
+    // categoryColors) are present — they're ignored at render for advanced
+    // charts but the type requires them.
+    const base = getDefaultChartData(ctx.app.config.colorOptions.value)
     const chartData: BlokkliChartData = {
-      title: params.chart.title,
-      type: params.chart.type,
-      categories: params.chart.categories,
-      series: params.chart.series.map((s) => ({
-        name: s.name,
-        color: s.color || '',
-        data: s.data,
-      })),
-      categoryColors: params.chart.categoryColors || [],
-      footnotes: params.chart.footnotes,
-      typeOptions: params.chart.typeOptions || {},
-      ...(params.chart.numberFormat
-        ? { numberFormat: params.chart.numberFormat }
-        : {}),
-      ...(params.chart.dateFormat
-        ? { dateFormat: params.chart.dateFormat }
-        : {}),
+      ...base,
+      type: 'advanced',
+      advancedConfig: { parsed: validated.value },
     }
 
-    // Validate and normalize.
-    const result = validateChartData(
-      chartData,
-      ctx.app.config.colorOptions.value,
-    )
-    if ('error' in result) return result
-
-    // Resolve position.
     const resolved = resolvePosition(
       ctx.app,
       params.parent.uuid,
@@ -94,7 +80,7 @@ export default defineBlokkliAgentTool({
 
     return {
       type: 'add' as const,
-      label: $t('aiAgentCreateChartDone', 'Added chart'),
+      label: $t('aiAgentCreateAdvancedChartDone', 'Added advanced chart'),
       apply: (adapter) =>
         adapter.addNewBlocks({
           blocks: [
@@ -102,7 +88,7 @@ export default defineBlokkliAgentTool({
               bundle: chartBundle.bundle,
               blockUuid,
               options: {
-                [chartBundle.key]: JSON.stringify(result.data),
+                [chartBundle.key]: JSON.stringify(chartData),
               },
             },
           ],

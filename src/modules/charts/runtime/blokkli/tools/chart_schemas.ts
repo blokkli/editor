@@ -5,22 +5,14 @@ import type { ColorOption } from '#blokkli/editor/types/config'
 import { getColorIdAtIndex } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chart-types'
 import { colorOptions } from '#blokkli-build/editor-config'
+import { definitionIds } from '#blokkli-build/charts-definitions'
 
-const SINGLE_SERIES_TYPES = ['pie', 'donut', 'radialBar']
-
-// 'advanced' is intentionally omitted — it stores raw ECharts JSON and has no
-// structured data the agent can produce reliably. Editor-only feature.
-export const chartTypeEnum = z.enum([
-  'bar',
-  'line',
-  'pie',
-  'area',
-  'donut',
-  'heatmap',
-  'radialBar',
-  'radar',
-  'agePyramid',
-])
+// All registered chart types except `advanced` — `advanced` stores raw ECharts
+// JSON and has no structured data the agent can produce reliably.
+const agentChartTypeIds = definitionIds.filter(
+  (id) => id !== 'advanced',
+) as [string, ...string[]]
+export const chartTypeEnum = z.enum(agentChartTypeIds)
 
 const colorIds = Object.keys(colorOptions) as [string, ...string[]]
 export const chartColorEnum = z.enum(colorIds)
@@ -44,6 +36,52 @@ export const chartTranslationSchema = z.object({
   suffix: z.string().optional(),
 })
 
+export const numberFormatSchema = z.object({
+  locale: z
+    .string()
+    .optional()
+    .describe("BCP-47 locale tag (e.g. 'de-CH', 'en-US'). Empty = default."),
+  decimals: z
+    .number()
+    .int()
+    .min(0)
+    .max(4)
+    .optional()
+    .describe('Forced fraction digits 0-4. Omit to let Intl decide.'),
+  prefix: z
+    .string()
+    .optional()
+    .describe("String before the number (e.g. 'CHF ')."),
+  suffix: z
+    .string()
+    .optional()
+    .describe("String after the number (e.g. ' kg', '%')."),
+  notation: z
+    .enum(['standard', 'compact'])
+    .optional()
+    .describe("'standard' for full numbers, 'compact' for short form (1.2M)."),
+})
+
+export const dateFormatSchema = z.object({
+  style: z
+    .enum([
+      'auto',
+      'none',
+      'monthYearShort',
+      'monthYearLong',
+      'monthOnly',
+      'monthYearNumeric',
+      'iso',
+      'dateShort',
+      'dateLong',
+      'yearOnly',
+    ])
+    .optional()
+    .describe(
+      'Display style applied to category labels when they look like dates. Falls back to `auto`. Locale is reused from `numberFormat.locale`.',
+    ),
+})
+
 export const chartDataSchema = z.object({
   title: z.string().optional().default('').describe('Chart title'),
   type: chartTypeEnum.describe('Chart type'),
@@ -56,7 +94,7 @@ export const chartDataSchema = z.object({
     .array(chartColorEnum)
     .optional()
     .describe(
-      'Color IDs per category (for pie/donut/radialBar). Auto-assigned if omitted.',
+      'Color IDs per category. Only used by chart types with per-category colors (pie, donut, radialBar). Auto-assigned if omitted.',
     ),
   footnotes: z
     .array(z.string())
@@ -66,10 +104,23 @@ export const chartDataSchema = z.object({
       'Footnote texts. Reference in categories/series names as {1}, {2}, etc.',
     ),
   typeOptions: z
-    .record(z.string(), z.union([z.string(), z.boolean(), z.number()]))
+    .record(
+      z.string(),
+      z.union([z.string(), z.boolean(), z.number(), z.null()]),
+    )
     .optional()
     .describe(
-      'Type-specific rendering options. Use get_chart_type_options to see available keys.',
+      'Type-specific rendering options. Use get_chart_type_options to see available keys. Pass `null` to clear a nullable option (e.g. `yaxisMin`).',
+    ),
+  numberFormat: numberFormatSchema
+    .optional()
+    .describe(
+      'Number formatting for axes, data labels and tooltips. Locale, decimals, prefix/suffix and notation.',
+    ),
+  dateFormat: dateFormatSchema
+    .optional()
+    .describe(
+      'How to format category labels detected as dates. Locale is reused from numberFormat.locale.',
     ),
   translations: z
     .record(z.string(), chartTranslationSchema)
@@ -78,6 +129,34 @@ export const chartDataSchema = z.object({
       'Per-language translations of translatable strings, keyed by langcode. Managed in the editor; agents should not modify this.',
     ),
 })
+
+export const advancedConfigSchema = z
+  .record(z.string(), z.unknown())
+  .describe(
+    'Raw ECharts option object — same shape ECharts.setOption() accepts. Pass the structured object; no JSON-stringify needed.',
+  )
+
+/**
+ * Structural validation for an `advanced` chart's ECharts config. ECharts
+ * itself ships no validator and is permissive at runtime, so this mirrors
+ * the editor's textarea check: non-null object, not an array, non-empty.
+ */
+export function validateAdvancedConfig(
+  value: unknown,
+): { error: string } | { value: Record<string, unknown> } {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      error: 'Configuration must be a non-null JSON object, not an array.',
+    }
+  }
+  if (Object.keys(value as Record<string, unknown>).length === 0) {
+    return {
+      error:
+        'Configuration is empty. Provide at least a `series` (or similar) top-level key.',
+    }
+  }
+  return { value: value as Record<string, unknown> }
+}
 
 /**
  * Validate and normalize chart data.
@@ -118,9 +197,9 @@ export function validateChartData(
     }
   }
 
-  // Handle categoryColors for pie/donut/radialBar.
-  const isSingleSeries = SINGLE_SERIES_TYPES.includes(data.type)
-  if (isSingleSeries) {
+  // Handle categoryColors only for chart types that actually use them.
+  const typeDef = getChartTypeRuntime(data.type)
+  if (typeDef?.hasCategoryColors) {
     if (
       !data.categoryColors ||
       data.categoryColors.length !== data.categories.length
@@ -138,18 +217,10 @@ export function validateChartData(
         }
       }
     }
-  } else if (
-    !data.categoryColors ||
-    data.categoryColors.length !== data.categories.length
-  ) {
-    data.categoryColors = data.categories.map((_, i) =>
-      getColorIdAtIndex(i, options),
-    )
   }
 
   // Validate and fill typeOptions.
   const defaults = getDefaultTypeOptions(data.type)
-  const typeDef = getChartTypeRuntime(data.type)
 
   if (data.typeOptions && typeDef) {
     for (const key of Object.keys(data.typeOptions)) {

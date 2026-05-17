@@ -1,5 +1,5 @@
 <template>
-  <div class="grid" @click="onClick">
+  <div @click="onClick">
     <template v-for="item in history" :key="item.id">
       <ConversationItemComponent
         :item="item"
