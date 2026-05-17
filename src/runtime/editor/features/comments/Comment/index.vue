@@ -108,7 +108,7 @@ const blocksLabel = computed(() => {
   const template =
     count === 1
       ? $t('commentBlocksCountOne', '1 block')
-      : $t('commentBlocksCountOther', '@count blocks')
+      : $t('blocksCount', '@count blocks')
   return template.replace('@count', count.toString())
 })
 

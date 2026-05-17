@@ -74,7 +74,7 @@ function toOption(
 
 const styleOptions = computed(() => [
   toOption('none', $t('chartsDateFormatStyleNone', 'No formatting')),
-  toOption('auto', $t('chartsDateFormatStyleAuto', 'Auto')),
+  toOption('auto', $t('auto', 'Auto')),
   toOption('monthYearShort'),
   toOption('monthYearLong'),
   toOption('monthOnly'),

@@ -53,13 +53,13 @@ export default defineChartType<TypeOptions>('area', ($t) => {
       options: {
         curved: {
           type: 'checkbox',
-          label: $t('chartsAreaCurved', 'Smooth curves'),
+          label: $t('smoothCurves', 'Smooth curves'),
           default: false,
           group: 'display',
         },
         markers: {
           type: 'checkbox',
-          label: $t('chartsAreaMarkers', 'Show markers'),
+          label: $t('showMarkers', 'Show markers'),
           default: false,
           group: 'display',
         },

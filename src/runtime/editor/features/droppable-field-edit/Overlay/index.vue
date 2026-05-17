@@ -135,7 +135,7 @@
         @click.prevent="onAddClick"
       >
         <Icon name="bk_mdi_image" />
-        {{ $t('droppableFieldOpenLibrary', 'Media Library') }}
+        {{ $t('mediaLibrary', 'Media Library') }}
       </button>
     </div>
   </ArtboardTooltip>
@@ -237,7 +237,7 @@ const activeIndicator = computed(() => {
 })
 
 const title = computed(() =>
-  $t('droppableFieldEditLabel', 'Edit @label').replace(
+  $t('editLabel', 'Edit @label').replace(
     '@label',
     props.config.label,
   ),

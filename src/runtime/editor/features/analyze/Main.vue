@@ -61,7 +61,7 @@
         <FormSelect
           id="category"
           v-model="selectedCategory"
-          :label="$t('analyzeCategory', 'Category')"
+          :label="$t('category', 'Category')"
           :options="categoryOptions"
         />
       </div>

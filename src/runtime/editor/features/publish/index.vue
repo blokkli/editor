@@ -63,7 +63,7 @@ const publishLabel = computed(() => {
 
   // Check if there's a scheduled publication
   if (isScheduled.value) {
-    return $t('publishManageSchedule', 'Manage scheduling') + suffix
+    return $t('manageScheduling', 'Manage scheduling') + suffix
   }
 
   // Entity is published. Clicking the button will make the changes go "live".
@@ -71,14 +71,14 @@ const publishLabel = computed(() => {
     return (
       (settings.value.closeAfterPublish
         ? $t('publishAndCloseLabel', 'Publish & Close')
-        : $t('publishLabel', 'Publish')) + suffix
+        : $t('publish', 'Publish')) + suffix
     )
   }
 
   return (
     (settings.value.closeAfterPublish
       ? $t('publishAndCloseLabelUnpublished', 'Save & Close')
-      : $t('publishLabelUnpublished', 'Save')) + suffix
+      : $t('save', 'Save')) + suffix
   )
 })
 

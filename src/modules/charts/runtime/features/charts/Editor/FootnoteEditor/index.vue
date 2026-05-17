@@ -1,6 +1,6 @@
 <template>
   <PanelSection
-    :title="$t('chartsFootnotes', 'Footnotes')"
+    :title="$t('footnotes', 'Footnotes')"
     :help="
       $t(
         'chartsFootnotesHelp',

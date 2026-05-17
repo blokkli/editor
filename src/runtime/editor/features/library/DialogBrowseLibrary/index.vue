@@ -22,7 +22,7 @@
               <FormSelect
                 id="library_bundle"
                 v-model="selectedBundle"
-                :label="$t('libraryPlaceBundleSelectLabel', 'Bundle')"
+                :label="$t('bundle', 'Bundle')"
                 :options="bundleOptions"
               />
             </FormItem>

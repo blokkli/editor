@@ -26,7 +26,7 @@
   </button>
   <div class="shrink-0 flex items-center px-5 relative">
     <ButtonAction
-      :label="$t('agentConversationsDelete', 'Delete conversation')"
+      :label="$t('deleteConversation', 'Delete conversation')"
       icon="bk_mdi_delete"
       theme="danger"
       @click.stop="emit('delete')"

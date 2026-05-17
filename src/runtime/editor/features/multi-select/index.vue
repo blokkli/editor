@@ -1,7 +1,7 @@
 <template>
   <ErrorBoundary
     v-model="isLocked"
-    :label="$t('feature_multi-select_label', 'Multiselect')"
+    label="Multiselect"
     @error="onError"
   >
     <Renderer
@@ -37,7 +37,7 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { keyboard, eventBus, selection, animation, $t } = useBlokkli()
+const { keyboard, eventBus, selection, animation } = useBlokkli()
 
 const isLocked = ref(false)
 const enabled = computed(

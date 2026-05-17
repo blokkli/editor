@@ -5,7 +5,7 @@
         id="diff-viewer-state-display"
         v-model="diffMode"
         :options="diffModeOptions"
-        :label="$t('diffModeLabel', 'Display')"
+        :label="$t('display', 'Display')"
         :scheme
       />
     </div>
@@ -113,7 +113,7 @@ const diffModeOptions = computed(() => [
   },
   {
     value: 'after',
-    label: $t('diffModeAfter', 'After'),
+    label: $t('after', 'After'),
   },
 ])
 

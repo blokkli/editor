@@ -1,7 +1,7 @@
 <template>
   <PluginSidebar
     id="diff"
-    :title="$t('diffSidebarTitle', 'Changes')"
+    :title="$t('changes', 'Changes')"
     :tour-text="
       $t('diffSidebarTourText', 'Displays all the changes made during editing.')
     "

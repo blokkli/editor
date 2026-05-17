@@ -53,13 +53,13 @@ export default defineChartType<TypeOptions>('line', ($t) => {
       options: {
         curved: {
           type: 'checkbox',
-          label: $t('chartsLineCurved', 'Smooth curves'),
+          label: $t('smoothCurves', 'Smooth curves'),
           default: false,
           group: 'display',
         },
         markers: {
           type: 'checkbox',
-          label: $t('chartsLineMarkers', 'Show markers'),
+          label: $t('showMarkers', 'Show markers'),
           default: false,
           group: 'display',
         },

@@ -54,7 +54,7 @@
           <template #header>
             <th>{{ sourceLangName }}</th>
             <th v-if="!isMultiLang">
-              {{ $t('translationsCsvDiff', 'Changes') }}
+              {{ $t('changes', 'Changes') }}
             </th>
             <th v-for="lang in languages" v-else :key="lang">
               {{ langName(lang) }}

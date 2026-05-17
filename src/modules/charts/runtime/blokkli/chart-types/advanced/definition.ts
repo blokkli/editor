@@ -20,7 +20,7 @@ export default defineChartType<TypeOptions>('advanced', ($t) => ({
   hasSeriesColors: false,
   hasCategoryColors: false,
   editor: {
-    label: $t('chartsTypeAdvanced', 'Advanced'),
+    label: $t('advanced', 'Advanced'),
     description: $t(
       'chartsTypeAdvancedDescription',
       'Paste a raw ECharts configuration. Full control, no structured data table.',

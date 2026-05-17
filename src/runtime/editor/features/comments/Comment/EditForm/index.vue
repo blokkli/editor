@@ -3,7 +3,7 @@
     :id="`comment_edit_${uuid}`"
     :initial-value="body"
     cancellable
-    :submit-label="$t('commentSaveEdit', 'Save')"
+    :submit-label="$t('save', 'Save')"
     :can-submit="hasChange"
     boxed
     @change="onChange"

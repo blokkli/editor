@@ -35,7 +35,7 @@
           class="bk-button bk-scheme-mono bk-is-light bk-is-small"
           @click="cancelEdit"
         >
-          {{ $t('aiAgentEditCancel', 'Cancel') }}
+          {{ $t('cancel', 'Cancel') }}
         </button>
         <button
           type="button"
@@ -43,7 +43,7 @@
           :disabled="!editValue.trim() || editValue.trim() === content.trim()"
           @click="submitEdit"
         >
-          {{ $t('aiAgentEditSave', 'Save') }}
+          {{ $t('save', 'Save') }}
         </button>
       </div>
     </div>

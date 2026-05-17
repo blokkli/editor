@@ -47,7 +47,7 @@
       </FormItem>
     </PanelSection>
 
-    <PanelSection :title="$t('chartsCsvData', 'Data')" padded>
+    <PanelSection :title="$t('data', 'Data')" padded>
       <FormItem v-if="hasEnoughData">
         <FormSelect
           id="charts-csv-category"

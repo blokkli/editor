@@ -24,7 +24,7 @@ export default defineChartType<TypeOptions>('radialBar', ($t) => {
       options: {
         showLabels: {
           type: 'checkbox',
-          label: $t('chartsRadialBarShowLabels', 'Show labels'),
+          label: $t('showLabels', 'Show labels'),
           default: true,
           group: 'labels',
         },

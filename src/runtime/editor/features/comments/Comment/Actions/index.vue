@@ -3,13 +3,13 @@
     <InlineActionsButton
       v-if="canEdit"
       icon="bk_mdi_edit"
-      :label="$t('commentEdit', 'Edit')"
+      :label="$t('edit', 'Edit')"
       @click="$emit('edit')"
     />
     <InlineActionsButton
       v-if="canDelete"
       icon="bk_mdi_delete"
-      :label="$t('commentDelete', 'Delete')"
+      :label="$t('delete', 'Delete')"
       scheme="red"
       @click="onDeleteClick"
     />
@@ -49,7 +49,7 @@
                   'The comment and all its replies will be permanently deleted. This action cannot be undone.',
                 )
           "
-          :submit-label="$t('commentDeleteConfirmSubmit', 'Delete')"
+          :submit-label="$t('delete', 'Delete')"
           is-danger
           @submit="onConfirmDelete"
           @cancel="showConfirm = false"

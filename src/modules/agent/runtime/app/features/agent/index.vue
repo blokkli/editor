@@ -112,7 +112,7 @@ defineMenuButton(() => {
   if (!adapter.agentConversations?.queryConversations) return undefined
   return {
     id: 'agentConversations',
-    title: $t('agentConversationsMenuTitle', 'Agent conversations'),
+    title: $t('agentConversations', 'Agent conversations'),
     description: $t(
       'agentConversationsMenuDescription',
       'Browse and manage all agent conversations.',

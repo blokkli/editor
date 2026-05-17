@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     id="block-scheduler"
-    :title="$t('blockSchedulerDialogTitle', 'Manage scheduling')"
+    :title="$t('manageScheduling', 'Manage scheduling')"
     :submit-label="$t('blockSchedulerDialogSubmit', 'Save schedule')"
     :width="900"
     :lead="

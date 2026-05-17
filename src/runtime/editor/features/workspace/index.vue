@@ -9,7 +9,7 @@
 
   <PluginToolbarButton
     id="workspace"
-    :title="$t('workspaceOpen', 'Switch page')"
+    :title="$t('switchPage', 'Switch page')"
     meta
     key-code="P"
     no-command

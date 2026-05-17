@@ -76,7 +76,7 @@
           @click.prevent="autoTranslate"
         >
           <Icon name="bk_mdi_translate" class="size-15" />
-          {{ $t('editableFieldTranslate', 'Translate') }}
+          {{ $t('translate', 'Translate') }}
           <Tooltip
             :label="
               $t(

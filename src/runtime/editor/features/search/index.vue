@@ -129,7 +129,7 @@ defineDropAreas((dragItems) => {
         fieldName: field.fieldName,
       }
 
-      const label = $t('searchContentReplace', 'Replace @field').replace(
+      const label = $t('replaceField', 'Replace @field').replace(
         '@field',
         config.label,
       )

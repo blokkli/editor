@@ -70,7 +70,7 @@ const { $t } = useBlokkli()
 
 const resolvedPlaceholder = computed(() => {
   if (props.placeholder) return props.placeholder
-  return props.nullable ? $t('blokkliOptionNumberAuto', 'Auto') : ''
+  return props.nullable ? $t('auto', 'Auto') : ''
 })
 
 function onUpdate(event: Event) {

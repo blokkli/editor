@@ -49,7 +49,7 @@ const getGroupLabel = (id?: CommandGroup): string => {
   } else if (id === 'add') {
     return $t('commandGroup.add', 'Add new')
   } else if (id === 'action') {
-    return $t('commandGroup.action', 'Actions')
+    return $t('actions', 'Actions')
   } else if (id === 'selection') {
     return $t('commandGroup.selection', 'Selection')
   }

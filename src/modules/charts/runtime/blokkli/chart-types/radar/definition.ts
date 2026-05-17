@@ -37,7 +37,7 @@ export default defineChartType<TypeOptions>('radar', ($t) => {
       options: {
         markers: {
           type: 'checkbox',
-          label: $t('chartsRadarMarkers', 'Show markers'),
+          label: $t('showMarkers', 'Show markers'),
           default: false,
           group: 'display',
         },

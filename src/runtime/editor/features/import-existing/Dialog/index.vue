@@ -33,7 +33,7 @@
         inline
       />
     </PanelSection>
-    <PanelSection padded :title="$t('importExistingPagesTitle', 'Select page')">
+    <PanelSection padded :title="$t('selectPage', 'Select page')">
       <FormItem>
         <FormText
           id="import-existing-search"

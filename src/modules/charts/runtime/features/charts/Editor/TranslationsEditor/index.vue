@@ -1,7 +1,7 @@
 <template>
   <PanelSection
     v-if="targetLanguages.length"
-    :title="$t('chartsTranslations', 'Translations')"
+    :title="$t('translations', 'Translations')"
     padded
   >
     <template v-if="!isTranslation" #tabs>
@@ -12,7 +12,7 @@
       <template v-if="active">
         <FormItem v-if="chartData.title">
           <div class="bk-form-label">
-            {{ $t('chartsTranslationsTitle', 'Title') }}
+            {{ $t('title', 'Title') }}
           </div>
           <TranslationRow :source="chartData.title">
             <FormText
@@ -35,7 +35,7 @@
           "
         >
           <div class="bk-form-label">
-            {{ $t('chartsTranslationsCategories', 'Categories') }}
+            {{ $t('categories', 'Categories') }}
           </div>
           <InfoBox
             v-if="chartData.categories.length > MAX_TRANSLATABLE_ITEMS"
@@ -107,7 +107,7 @@
 
         <FormItem v-if="chartData.footnotes.length">
           <div class="bk-form-label">
-            {{ $t('chartsTranslationsFootnotes', 'Footnotes') }}
+            {{ $t('footnotes', 'Footnotes') }}
           </div>
           <div class="flex flex-col gap-10">
             <TranslationRow
@@ -132,7 +132,7 @@
 
         <FormItem v-if="chartData.numberFormat?.prefix">
           <div class="bk-form-label">
-            {{ $t('chartsTranslationsPrefix', 'Prefix') }}
+            {{ $t('prefix', 'Prefix') }}
           </div>
           <TranslationRow :source="chartData.numberFormat.prefix">
             <FormText
@@ -148,7 +148,7 @@
 
         <FormItem v-if="chartData.numberFormat?.suffix">
           <div class="bk-form-label">
-            {{ $t('chartsTranslationsSuffix', 'Suffix') }}
+            {{ $t('suffix', 'Suffix') }}
           </div>
           <TranslationRow :source="chartData.numberFormat.suffix">
             <FormText

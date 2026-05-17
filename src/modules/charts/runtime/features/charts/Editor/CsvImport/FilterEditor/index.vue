@@ -30,7 +30,7 @@
         class="bk-button bk-is-light bk-is-small"
         @click="$emit('cancel')"
       >
-        {{ $t('chartsCsvFilterCancel', 'Cancel') }}
+        {{ $t('cancel', 'Cancel') }}
       </button>
     </FormItem>
   </div>
@@ -77,7 +77,7 @@ const columnStr = computed<string>({
 })
 
 const columnOptions = computed(() => [
-  { value: '', label: $t('chartsCsvFilterPickColumn', 'Pick a column…') },
+  { value: '', label: $t('pickColumn', 'Pick a column…') },
   ...props.availableColumns.map((i) => ({
     value: String(i),
     label: columnLabelWithSample(props.grid, i),

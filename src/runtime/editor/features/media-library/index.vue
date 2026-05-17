@@ -105,7 +105,7 @@ defineDropAreas((dragItems) => {
         type: field.type,
         fieldName: field.fieldName,
       }
-      const label = $t('mediaLibraryReplaceMedia', 'Replace @field').replace(
+      const label = $t('replaceField', 'Replace @field').replace(
         '@field',
         config.label,
       )

@@ -31,7 +31,7 @@ export default defineChartType<TypeOptions>('donut', ($t) => {
         },
         showLabels: {
           type: 'checkbox',
-          label: $t('chartsDonutShowLabels', 'Show labels'),
+          label: $t('showLabels', 'Show labels'),
           default: true,
           group: 'labels',
         },

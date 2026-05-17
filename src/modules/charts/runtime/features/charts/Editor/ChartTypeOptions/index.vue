@@ -3,7 +3,7 @@
     <FormItem>
       <FormText
         id="chart-title"
-        :label="$t('chartsTitle', 'Title')"
+        :label="$t('title', 'Title')"
         :model-value="title"
         lazy
         @update:model-value="$emit('update:title', $event ?? '')"
@@ -86,7 +86,7 @@ const ungroupedOptions = computed(() =>
 
 function getGroupLabel(group: string): string {
   if (group === 'display') {
-    return $t('chartsOptionGroupDisplay', 'Display')
+    return $t('display', 'Display')
   } else if (group === 'labels') {
     return $t('chartsOptionGroupLabels', 'Labels')
   }

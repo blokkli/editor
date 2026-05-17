@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     id="library-reusable"
-    :title="$t('libraryDialogTitle', 'Add to library')"
+    :title="$t('addToLibrary', 'Add to library')"
     :lead="
       $t(
         'libraryDialogLead',
@@ -10,7 +10,7 @@
     "
     :width="1200"
     icon="reusable"
-    :submit-label="$t('libraryDialogSubmit', 'Add to library')"
+    :submit-label="$t('addToLibrary', 'Add to library')"
     :can-submit="!!label.length"
     mono
     @submit="$emit('confirm', label)"
@@ -33,7 +33,7 @@
             id="reusable_label"
             v-model="label"
             lazy
-            :label="$t('libraryDialogDescriptionLabel', 'Description')"
+            :label="$t('description', 'Description')"
             type="text"
             :placeholder="
               $t(

@@ -46,7 +46,7 @@ function onClose() {
 defineMenuButton(() => {
   return {
     id: 'changelog',
-    title: $t('changelogMenuTitle', "What's New"),
+    title: $t('whatsNew', "What's New"),
     description: $t(
       'changelogMenuDescription',
       'View recent changes and new features',

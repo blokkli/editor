@@ -74,7 +74,7 @@ const titleText = computed(() => {
     case 'block:translate':
       return $t('editFormBlockTranslate', 'Translate @label (@language)')
     case 'block:edit':
-      return $t('editFormBlockEdit', 'Edit @label')
+      return $t('editLabel', 'Edit @label')
     case 'entity:edit':
       return $t('editFormEntityEdit', 'Edit @label')
     case 'entity:translate':

@@ -61,7 +61,7 @@ const orphans = computed<OrphanOverride[]>(() => {
   const knownSeries = new Set(props.knownSeries)
   const knownCategories = new Set(props.knownCategories)
   const seriesLabel = $t('chartsTranslationsSeries', 'Series')
-  const categoryLabel = $t('chartsOverrideScopeCategory', 'Category')
+  const categoryLabel = $t('category', 'Category')
   for (const name of props.seriesOverrideNames) {
     if (!knownSeries.has(name)) {
       result.push({ scope: 'series', scopeLabel: seriesLabel, name })

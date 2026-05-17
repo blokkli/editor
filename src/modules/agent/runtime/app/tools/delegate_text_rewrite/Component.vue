@@ -40,7 +40,7 @@
   <ToolCard
     v-if="phase === 'error'"
     icon="bk_mdi_error"
-    :title="$t('aiAgentDelegateRewriteError', 'Rewriting failed')"
+    :title="$t('rewritingFailed', 'Rewriting failed')"
     @cancel="finishWithError"
   >
     <p>{{ errorMessage }}</p>
@@ -647,7 +647,7 @@ async function fetchStream(
 async function readabilityRetryLoop(authToken: string) {
   for (let attempt = 0; attempt < MAX_READABILITY_RETRIES; attempt++) {
     streamingTitle.value = $t(
-      'aiAgentDelegateRewriteChecking',
+      'checkingReadability',
       'Checking readability...',
     )
 
@@ -901,7 +901,7 @@ function finishWithError() {
   emit('done', {
     acceptedCount: 0,
     rejectedByUser: {},
-    label: $t('aiAgentDelegateRewriteFailed', 'Rewriting failed'),
+    label: $t('rewritingFailed', 'Rewriting failed'),
     agentMessage: `Rewriting failed: ${errorMessage.value}`,
     _usage: streamUsage.value,
   })

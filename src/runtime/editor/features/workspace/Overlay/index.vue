@@ -2,7 +2,7 @@
   <SearchOverlay
     v-slot="{ focusedIndex, onMouseEnter }"
     v-model:text="searchText"
-    :title="$t('workspaceTitle', 'Switch page')"
+    :title="$t('switchPage', 'Switch page')"
     :total-items="displayItems.length"
     :is-searching
     :placeholder="$t('workspaceSearchPlaceholder', 'Search pages...')"

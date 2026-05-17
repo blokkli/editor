@@ -36,7 +36,7 @@
       <div class="grid grid-cols-2 gap-15">
         <FormText
           id="chart-number-prefix"
-          :label="$t('chartsNumberFormatPrefix', 'Prefix')"
+          :label="$t('prefix', 'Prefix')"
           :placeholder="prefixPlaceholder"
           :model-value="format.prefix ?? ''"
           lazy
@@ -44,7 +44,7 @@
         />
         <FormText
           id="chart-number-suffix"
-          :label="$t('chartsNumberFormatSuffix', 'Suffix')"
+          :label="$t('suffix', 'Suffix')"
           :placeholder="suffixPlaceholder"
           :model-value="format.suffix ?? ''"
           lazy
@@ -56,7 +56,7 @@
         class="bg-mono-100 border border-mono-300 p-10 text-sm font-mono text-mono-700 flex items-center justify-between gap-10"
       >
         <span class="bk-form-label mb-0!">
-          {{ $t('chartsNumberFormatPreview', 'Preview') }}
+          {{ $t('preview', 'Preview') }}
         </span>
         <span>{{ preview }}</span>
       </div>
@@ -106,7 +106,7 @@ const localeOptions = computed(() => [
 ])
 
 const decimalsOptions = computed(() => [
-  { value: '', label: $t('chartsNumberFormatDecimalsAuto', 'Auto') },
+  { value: '', label: $t('auto', 'Auto') },
   { value: '0', label: '0' },
   { value: '1', label: '1' },
   { value: '2', label: '2' },

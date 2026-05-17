@@ -27,7 +27,7 @@ function onClick() {
 defineMenuButton(() => {
   return {
     id: 'exit',
-    title: $t('exitTitle', 'Close'),
+    title: $t('close', 'Close'),
     description: $t('exitDescription', 'Close editor without publishing'),
     icon: 'bk_mdi_exit_to_app',
     weight: 100,

@@ -2,7 +2,7 @@
   <div>
     <FormToggle
       v-if="setting.type === 'checkbox'"
-      :label="settingLabel"
+      :label="setting.label"
       :description="settingDescription"
       :model-value="
         (settingsStorage[settingsKey] ?? setting.default) as boolean
@@ -11,7 +11,7 @@
     />
     <div v-else-if="setting.type === 'radios'">
       <h3 class="bk-form-label">
-        {{ settingLabel }}
+        {{ setting.label }}
       </h3>
       <ul class="bk-settings-ui">
         <li
@@ -27,7 +27,7 @@
               @change="setRadioValue(value)"
             />
             <Icon v-if="config.icon" :name="config.icon" />
-            <span>{{ getOptionLabel(value, config.label) }}</span>
+            <span>{{ config.label }}</span>
           </label>
         </li>
       </ul>
@@ -37,12 +37,12 @@
         class="bk-button bk-scheme-mono bk-is-light"
         @click="setting.method(blokkliApp)"
       >
-        {{ settingLabel }}
+        {{ setting.label }}
       </button>
     </div>
     <div v-else-if="setting.type === 'slider'">
       <label class="bk-input-range">
-        <span>{{ settingLabel }}: {{ settingsStorage[settingsKey] }}</span>
+        <span>{{ setting.label }}: {{ settingsStorage[settingsKey] }}</span>
         <input
           :value="settingsStorage[settingsKey]"
           type="range"
@@ -72,45 +72,15 @@ const props = defineProps<{
   setting: FeatureDefinitionSetting
 }>()
 
-const { storage, $t: textTranslation } = useBlokkli()
+const { storage } = useBlokkli()
 const blokkliApp = useBlokkli()
 
-const settingLabel = computed(() => {
-  return (
-    textTranslation(
-      'feature_' + props.featureId + '_setting_' + props.settingsKey + '_label',
-    ) || props.setting.label
-  )
-})
-
 const settingDescription = computed(() => {
-  const translated = textTranslation(
-    'feature_' +
-      props.featureId +
-      '_setting_' +
-      props.settingsKey +
-      '_description',
-  )
-
-  if (!translated && 'description' in props.setting) {
+  if ('description' in props.setting) {
     return props.setting.description
   }
-
-  return translated
+  return undefined
 })
-
-const getOptionLabel = (key: string, defaultLabel: string) => {
-  return (
-    textTranslation(
-      'feature_' +
-        props.featureId +
-        '_setting_' +
-        props.settingsKey +
-        '_option_' +
-        key,
-    ) || defaultLabel
-  )
-}
 
 const settingsStorage = storage.use(
   `feature:${props.featureId}:settings`,

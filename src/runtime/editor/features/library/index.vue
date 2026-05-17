@@ -242,7 +242,7 @@ const makeReusableDisabledReason = computed<false | string>(() => {
   const item = selection.item.value
   if (item && !permissions.checkBlockBundlePermission(item.bundle, 'edit')) {
     return $t(
-      'libraryAddNoEditPermission',
+      'noEditPermission',
       'You do not have permission to edit this block.',
     )
   }

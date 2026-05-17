@@ -24,7 +24,7 @@
         class="bk-button bk-is-small bk-is-light"
         @click="$emit('cancel')"
       >
-        {{ $t('commentCancelEdit', 'Cancel') }}
+        {{ $t('cancel', 'Cancel') }}
       </button>
       <button
         type="submit"

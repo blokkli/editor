@@ -6,8 +6,8 @@
     @apply select-none;
     @apply rounded;
     box-shadow:
-      inset 1px 1px 0px 0px rgb(var(--bk-scheme-light) / 0.5),
-      inset -1px -1px 0px 0px rgb(var(--bk-scheme-dark) / 0.3);
+      inset 1px 1px 1px 0px rgb(var(--bk-scheme-light) / 0.5),
+      inset -1px -1px 1px 0px rgb(var(--bk-scheme-dark) / 0.2);
 
     &:active {
       box-shadow:
@@ -16,7 +16,8 @@
     }
 
     /* Default variant: scheme-normal background with scheme-text. */
-    @apply !bg-scheme-normal !text-scheme-text hover:!bg-scheme-normal-hover border-scheme-normal-hover hover:border-scheme-dark;
+    @apply !bg-scheme-normal !text-scheme-text hover:!bg-scheme-normal-hover hover:border-scheme-dark;
+    border-color: rgb(var(--bk-scheme-dark) / 0.5);
 
     &.bk-is-light {
       @apply !bg-scheme-light !text-scheme-dark hover:!bg-scheme-light-hover border-scheme-light-hover hover:border-scheme-dark;

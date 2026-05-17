@@ -65,7 +65,7 @@ const parentButtonLabel = computed(() => {
         '@label',
         parentLabel.value,
       )
-    : $t('actionsSelectPage', 'Select page')
+    : $t('selectPage', 'Select page')
 })
 
 const moveButtonLabel = computed(() => {

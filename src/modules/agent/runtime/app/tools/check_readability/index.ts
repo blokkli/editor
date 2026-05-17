@@ -39,7 +39,7 @@ export default defineBlokkliAgentTool({
   requiredAdapterMethods: ['getAnalyzers'],
   isAvailable: (app) => app.readability.isAvailable.value,
   label($t) {
-    return $t('aiAgentCheckReadabilityRunning', 'Checking readability...')
+    return $t('checkingReadability', 'Checking readability...')
   },
   prunedSummary: (r) => {
     return `checked readability for ${r.results.length} texts`

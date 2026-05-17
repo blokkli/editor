@@ -9,7 +9,7 @@
     </div>
     <div class="bk-diff-prop-after">
       <div class="bk-diff-prop-label">
-        {{ $t('diffAfter', 'After') }}
+        {{ $t('after', 'After') }}
       </div>
       <div class="bk-diff-prop-content bk-diff-markup-style" v-html="after" />
     </div>

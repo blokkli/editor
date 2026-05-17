@@ -34,7 +34,7 @@
       <FormSelect
         id="charts-csv-groupby-add"
         v-model="draft"
-        :label="$t('chartsCsvGroupByPickColumn', 'Pick a column…')"
+        :label="$t('pickColumn', 'Pick a column…')"
         :options="addOptions"
       />
       <div class="flex gap-5 mt-10">
@@ -47,7 +47,7 @@
           {{ $t('chartsCsvGroupByAddConfirm', 'Add') }}
         </button>
         <button type="button" class="bk-button" @click="cancelAdd">
-          {{ $t('chartsCsvFilterCancel', 'Cancel') }}
+          {{ $t('cancel', 'Cancel') }}
         </button>
       </div>
     </div>
@@ -80,7 +80,7 @@ const adding = ref(false)
 const draft = ref<string>('')
 
 const addOptions = computed(() => [
-  { value: '', label: $t('chartsCsvGroupByPickColumn', 'Pick a column…') },
+  { value: '', label: $t('pickColumn', 'Pick a column…') },
   ...props.availableColumns.map((i) => ({
     value: String(i),
     label: columnLabelWithSample(props.grid, i),

@@ -3,7 +3,7 @@
     <PluginTourItem
       v-if="items.length > 1"
       id="translations"
-      :title="$t('translationsTourTitle', 'Translations')"
+      :title="$t('translations', 'Translations')"
       :text="
         $t(
           'translationsTourText',
@@ -105,7 +105,7 @@
     v-if="isTranslating"
     id="translate"
     :disabled="translateDisabledReason"
-    :title="$t('translationsItemAction', 'Translate')"
+    :title="$t('translate', 'Translate')"
     icon="bk_mdi_translate"
     :weight="-90"
     @click="onTranslate"
@@ -339,7 +339,7 @@ const translateDisabledReason = computed<false | string>(() => {
 
   if (definition?.editor?.disableEdit) {
     return $t(
-      'translateEditDisabled',
+      'editingDisabled',
       'Editing is disabled for this block type.',
     )
   }

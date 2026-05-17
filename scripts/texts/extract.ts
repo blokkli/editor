@@ -22,27 +22,20 @@ export interface Extraction {
   defaultText?: string
 }
 
-type ExtractedFeatureSettings = {
-  label: string
-  description?: string
-  options?: Record<string, { label: string }>
-}
-
-type ExtractedFeature = {
-  id: string
-  label: string
-  description: string
-  settings: Record<string, ExtractedFeatureSettings>
+export type FunctionCall = {
+  code: string
+  start: number
 }
 
 export function extractFunctionCalls(
   name: string,
   sourceCode: string,
-): string[] {
+): FunctionCall[] {
   let inTCall = false
   let parenthesisCount = 0
   let currentTCall = ''
-  const tCalls: string[] = []
+  let currentStart = 0
+  const tCalls: FunctionCall[] = []
 
   for (let i = 0; i < sourceCode.length; i++) {
     const char = sourceCode[i]
@@ -54,7 +47,7 @@ export function extractFunctionCalls(
       } else if (char === ')') {
         parenthesisCount--
         if (parenthesisCount === 0) {
-          tCalls.push(currentTCall)
+          tCalls.push({ code: currentTCall, start: currentStart })
           inTCall = false
           currentTCall = ''
         }
@@ -63,6 +56,7 @@ export function extractFunctionCalls(
       inTCall = true
       parenthesisCount = 1
       currentTCall = name
+      currentStart = i
       i += name.length - 1
     }
   }
@@ -99,6 +93,60 @@ function extractLiteral(
     }
   }
   throw new Error(`Failed to extract value for argument "${argument}".`)
+}
+
+/**
+ * Replace `$t('oldKey', ...)` with `$t('newKey', ...)` in the given source.
+ *
+ * Uses the same parser-based discovery as extraction, so only real string
+ * literals are touched (template literals with the same content are skipped).
+ * Preserves the original quote style around the key.
+ */
+export function replaceTranslationKeyInSource(
+  source: string,
+  oldKey: string,
+  newKey: string,
+): { source: string; count: number } {
+  const calls = extractFunctionCalls('$t(', source)
+
+  type Edit = { start: number; end: number; replacement: string }
+  const edits: Edit[] = []
+
+  for (const call of calls) {
+    let tree: any
+    try {
+      tree = parse(call.code, { ecmaVersion: 'latest' })
+    } catch {
+      continue
+    }
+    const firstArg = tree.body[0]?.expression?.arguments?.[0]
+    if (!firstArg || firstArg.type !== 'Literal' || firstArg.value !== oldKey) {
+      continue
+    }
+
+    const literalRaw = call.code.substring(firstArg.start, firstArg.end)
+    const quote = literalRaw[0]
+    if (quote !== "'" && quote !== '"') {
+      continue
+    }
+    edits.push({
+      start: call.start + firstArg.start,
+      end: call.start + firstArg.end,
+      replacement: `${quote}${newKey}${quote}`,
+    })
+  }
+
+  if (edits.length === 0) {
+    return { source, count: 0 }
+  }
+
+  edits.sort((a, b) => b.start - a.start)
+  let result = source
+  for (const edit of edits) {
+    result = result.substring(0, edit.start) + edit.replacement + result.substring(edit.end)
+  }
+
+  return { source: result, count: edits.length }
 }
 
 function extractText(program: any): Extraction | undefined {
@@ -162,10 +210,6 @@ export class Extractor {
     if (source.includes('$t(')) {
       extractions.push(...this.extractSingle(source, filePath))
     }
-
-    if (source.includes('defineBlokkliFeature(')) {
-      extractions.push(...this.extractFeatureSettings(source, filePath))
-    }
     return extractions
   }
 
@@ -187,7 +231,7 @@ export class Extractor {
    */
   extractSingle(source: string, filePath: string): Extraction[] {
     return extractFunctionCalls('$t(', source)
-      .map((code) => {
+      .map(({ code }) => {
         try {
           const tree = parse(code, {
             ecmaVersion: 'latest',
@@ -200,74 +244,6 @@ export class Extractor {
           this.handleError(filePath, code, e)
         }
       })
-      .filter(falsy)
-  }
-
-  extractFeatureSettings(source: string, _filePath: string): Extraction[] {
-    return extractFunctionCalls('defineBlokkliFeature(', source)
-      .map((code) => {
-        const extractions: Extraction[] = []
-
-        const obj = code
-          .substring(0, code.length - 1)
-          .replace('defineBlokkliFeature(', '')
-
-        // eslint-disable-next-line prefer-const
-        let result: ExtractedFeature | null = null
-        // oxlint-disable-next-line
-        eval('result = ' + obj)
-        const feature: ExtractedFeature | null = result as any
-
-        if (feature?.label) {
-          extractions.push({
-            key: 'feature_' + feature.id + '_label',
-            defaultText: feature.label,
-          })
-        }
-
-        if (feature?.description) {
-          extractions.push({
-            key: 'feature_' + feature.id + '_description',
-            defaultText: feature.description,
-          })
-        }
-
-        if (feature?.settings) {
-          Object.keys(feature.settings).forEach((key) => {
-            const setting = feature.settings[key]!
-            extractions.push({
-              key: 'feature_' + feature.id + '_setting_' + key + '_label',
-              defaultText: setting.label,
-            })
-
-            if (setting.description) {
-              extractions.push({
-                key:
-                  'feature_' + feature.id + '_setting_' + key + '_description',
-                defaultText: setting.description,
-              })
-            }
-
-            if (setting.options) {
-              Object.entries(setting.options).forEach(([optionKey, option]) => {
-                extractions.push({
-                  key:
-                    'feature_' +
-                    feature.id +
-                    '_setting_' +
-                    key +
-                    '_option_' +
-                    optionKey,
-                  defaultText: option.label,
-                })
-              })
-            }
-          })
-        }
-
-        return extractions
-      })
-      .flat()
       .filter(falsy)
   }
 
@@ -285,12 +261,16 @@ export class Extractor {
   }
 }
 
-export async function getSourceTexts(): Promise<Record<string, string>> {
-  const extractor = new Extractor()
+export function getSourceFiles(): string[] {
   const srcPattern = path.resolve(__dirname, './../../src') + '/**/*.{vue,ts}'
   const packagesPattern =
     path.resolve(__dirname, './../../packages') + '/*/src/runtime/**/*.{vue,ts}'
-  const files = [...glob.sync(srcPattern), ...glob.sync(packagesPattern)]
+  return [...glob.sync(srcPattern), ...glob.sync(packagesPattern)]
+}
+
+export async function getSourceTexts(): Promise<Record<string, string>> {
+  const extractor = new Extractor()
+  const files = getSourceFiles()
   await extractor.addFiles(files)
 
   return extractor

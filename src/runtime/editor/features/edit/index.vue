@@ -91,14 +91,14 @@ const editDisabledReason = computed<false | string>(() => {
   // the block has a complex option that can be opened.
   if (definition?.editor?.disableEdit && !getComplexOption(item)) {
     return $t(
-      'editDisabledByDefinition',
+      'editingDisabled',
       'Editing is disabled for this block type.',
     )
   }
 
   if (!permissions.checkBlockBundlePermission(item.bundle, 'edit')) {
     return $t(
-      'editNoPermission',
+      'noEditPermission',
       'You do not have permission to edit this block.',
     )
   }

@@ -2,7 +2,7 @@
   <PluginItemAction
     id="delete"
     edit-only
-    :title="$t('deleteButton', 'Delete')"
+    :title="$t('delete', 'Delete')"
     :disabled="deleteDisabledReason"
     multiple
     key-code="Delete"

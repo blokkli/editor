@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     id="agentConversations"
-    :title="$t('agentConversationsTitle', 'Agent conversations')"
+    :title="$t('agentConversations', 'Agent conversations')"
     icon="bk_mdi_forum"
     :width="1200"
     hide-buttons

@@ -55,8 +55,6 @@ import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
 const { $t, features, ui } = useBlokkli()
 
-const getTranslation = $t
-
 type FeatureSetting = {
   featureId: ValidFeatureKey
   settingsKey: string
@@ -77,9 +75,9 @@ const getGroupLabel = (key: SettingsGroup): string => {
   } else if (key === 'appearance') {
     return $t('settingsAppearance', 'Appearance')
   } else if (key === 'advanced') {
-    return $t('settingsAdvanced', 'Advanced')
+    return $t('advanced', 'Advanced')
   } else if (key === 'artboard') {
-    return $t('settingsArtboard', 'Artboard')
+    return $t('artboard', 'Artboard')
   } else if (key === 'beta') {
     return $t('settingsBeta', 'New Features')
   }
@@ -153,17 +151,14 @@ const groups = computed<GroupedSettings[]>(() => {
     }
 
     features.betaFeatures.value.forEach((v) => {
-      const label = getTranslation(`feature_${v.id}_label`) || v.label
-      const description =
-        getTranslation(`feature_${v.id}_description`) || v.description
       settingGroups.beta!.settings.push({
         featureId: 'settings',
         settingsKey: 'beta:' + v.id,
         setting: {
           type: 'checkbox',
           default: false,
-          label,
-          description,
+          label: v.label,
+          description: v.description,
           group: 'beta',
         },
       })

@@ -38,9 +38,7 @@ const emit = defineEmits<{
 
 const { $t } = useBlokkli()
 
-const placeholder = computed(() =>
-  props.nullable ? $t('blokkliOptionNumberAuto', 'Auto') : '',
-)
+const placeholder = computed(() => (props.nullable ? $t('auto', 'Auto') : ''))
 
 const width = computed(() => {
   const candidates = [

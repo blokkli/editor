@@ -24,7 +24,7 @@ export default defineChartType<TypeOptions>('pie', ($t) => {
       options: {
         showLabels: {
           type: 'checkbox',
-          label: $t('chartsPieShowLabels', 'Show labels'),
+          label: $t('showLabels', 'Show labels'),
           default: true,
           group: 'labels',
         },

@@ -19,10 +19,6 @@ msgctxt "actionsMoveBlocks"
 msgid "Move @count blocks"
 msgstr "@count Blöck verschiebe"
 
-msgctxt "actionsSelectPage"
-msgid "Select page"
-msgstr "Sitte uswähle"
-
 msgctxt "actionsSelectParent"
 msgid "Select parent (@label)"
 msgstr "Übergeordnete (@label) uswähle"
@@ -103,12 +99,24 @@ msgstr ""
 "usgwählt isch, sin gwüssi Blöck uusggruet. Das zeigt aa, welchi Blöck in "
 "oder noch däm usgwählte Block chönne platziert wärde.</p>"
 
-msgctxt "agentConversationsBackendMissing"
-msgid "This backend does not expose the admin conversation list."
+msgctxt "addToLibrary"
+msgid "Add to library"
 msgstr ""
 
-msgctxt "agentConversationsDelete"
-msgid "Delete conversation"
+msgctxt "advanced"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "after"
+msgid "After"
+msgstr ""
+
+msgctxt "agentConversations"
+msgid "Agent conversations"
+msgstr ""
+
+msgctxt "agentConversationsBackendMissing"
+msgid "This backend does not expose the admin conversation list."
 msgstr ""
 
 msgctxt "agentConversationsDeleteConfirm"
@@ -139,10 +147,6 @@ msgctxt "agentConversationsMenuDescription"
 msgid "Browse and manage all agent conversations."
 msgstr ""
 
-msgctxt "agentConversationsMenuTitle"
-msgid "Agent conversations"
-msgstr ""
-
 msgctxt "agentConversationsSelectPrompt"
 msgid "Select a conversation from the list to view it."
 msgstr ""
@@ -153,10 +157,6 @@ msgstr ""
 
 msgctxt "agentConversationsTabRatings"
 msgid "Ratings"
-msgstr ""
-
-msgctxt "agentConversationsTitle"
-msgid "Agent conversations"
 msgstr ""
 
 msgctxt "agentConversationsUntitled"
@@ -360,10 +360,6 @@ msgctxt "aiAgentCheckReadabilityDone"
 msgid "Checked readability for @count texts"
 msgstr "Läsbarkäit vo @count Teggscht überprüeft"
 
-msgctxt "aiAgentCheckReadabilityRunning"
-msgid "Checking readability..."
-msgstr "Läsbarkäit würd überprüeft..."
-
 msgctxt "aiAgentCompletePlanStep"
 msgid "Completed: @label"
 msgstr "Abgschlosse: @label"
@@ -400,18 +396,6 @@ msgctxt "aiAgentDelegateRewriteCancelled"
 msgid "Rewriting cancelled"
 msgstr "Umschriibe abbroche"
 
-msgctxt "aiAgentDelegateRewriteChecking"
-msgid "Checking readability..."
-msgstr "Läsbarkäit würd überprüeft..."
-
-msgctxt "aiAgentDelegateRewriteError"
-msgid "Rewriting failed"
-msgstr "Umschriibe fählgschlage"
-
-msgctxt "aiAgentDelegateRewriteFailed"
-msgid "Rewriting failed"
-msgstr "Umschriibe fählgschlage"
-
 msgctxt "aiAgentDelegateRewriteNoChanges"
 msgid "No changes detected"
 msgstr "Käi Änderige erkannt"
@@ -439,10 +423,6 @@ msgstr "@count Blöck glöscht"
 msgctxt "aiAgentDeleteBlocksRunning"
 msgid "Deleting blocks..."
 msgstr "Blöck wärde glöscht..."
-
-msgctxt "aiAgentDeleteConversation"
-msgid "Delete conversation"
-msgstr "Konversation lösche"
 
 msgctxt "aiAgentDetachLibraryBlockDone"
 msgid "Detached library block"
@@ -486,14 +466,6 @@ msgstr "@count Blöck in @field dupliziert"
 
 msgctxt "aiAgentEdit"
 msgid "Edit"
-msgstr ""
-
-msgctxt "aiAgentEditCancel"
-msgid "Cancel"
-msgstr ""
-
-msgctxt "aiAgentEditSave"
-msgid "Save"
 msgstr ""
 
 msgctxt "aiAgentErrorAuthentication"
@@ -1010,10 +982,6 @@ msgctxt "analyzeButtonLabel"
 msgid "Analyze Page"
 msgstr "Sitte analysiere"
 
-msgctxt "analyzeCategory"
-msgid "Category"
-msgstr "Kategorie"
-
 msgctxt "analyzeCategoryAccessibility"
 msgid "Accessibility"
 msgstr "Barrierefreiheit"
@@ -1278,6 +1246,10 @@ msgctxt "artboardToolbarButtonTourText"
 msgid "Shows the current zoom factor. Click on it to reset the zoom back to 100%."
 msgstr "Zeigt dr aktuäll Zoom-Faktor aa. Klick druf zum dr Zoom uf 100% zruggzsetze."
 
+msgctxt "auto"
+msgid "Auto"
+msgstr ""
+
 msgctxt "availableBlocks"
 msgid "Available blocks"
 msgstr "Verfüegbari Blöck"
@@ -1341,10 +1313,6 @@ msgctxt "blockSchedulerDialogSubmit"
 msgid "Save schedule"
 msgstr "Planung speichere"
 
-msgctxt "blockSchedulerDialogTitle"
-msgid "Manage scheduling"
-msgstr "Planung verwalte"
-
 msgctxt "blockSchedulerDialogUnpublishOn"
 msgid "Unpublish on"
 msgstr "Depubliziere am"
@@ -1374,10 +1342,6 @@ msgstr ""
 
 msgctxt "blockTransferCount"
 msgid "Count"
-msgstr ""
-
-msgctxt "blockTransferDragLabel"
-msgid "@count blocks"
 msgstr ""
 
 msgctxt "blockTransferDroppedFields"
@@ -1418,10 +1382,6 @@ msgstr ""
 
 msgctxt "blockTransferImportError"
 msgid "Could not import the blocks."
-msgstr ""
-
-msgctxt "blockTransferImportSuccess"
-msgid "@count blocks imported."
 msgstr ""
 
 msgctxt "blockTransferImportUnsupported"
@@ -1474,14 +1434,6 @@ msgid ""
 "site or you don’t have permission to use them."
 msgstr ""
 
-msgctxt "blockTransferSummaryClose"
-msgid "Close"
-msgstr ""
-
-msgctxt "blockTransferSummaryHeadline"
-msgid "@count blocks imported."
-msgstr ""
-
 msgctxt "blockTransferSummaryTitle"
 msgid "Import summary"
 msgstr ""
@@ -1494,9 +1446,13 @@ msgctxt "blockquote"
 msgid "Blockquote"
 msgstr "Zitat"
 
-msgctxt "blokkliOptionNumberAuto"
-msgid "Auto"
-msgstr "Automatisch"
+msgctxt "blocksCount"
+msgid "@count blocks"
+msgstr ""
+
+msgctxt "blocksImported"
+msgid "@count blocks imported."
+msgstr ""
 
 msgctxt "bold"
 msgid "Bold"
@@ -1510,29 +1466,33 @@ msgctxt "bundle"
 msgid "Bundle"
 msgstr "Typ"
 
-msgctxt "bundleSelectorActionsLabel"
-msgid "Actions"
-msgstr "Aktione"
-
 msgctxt "bundleSelectorFragmentsLabel"
 msgid "Fragments"
 msgstr "Fragmänt"
+
+msgctxt "cancel"
+msgid "Cancel"
+msgstr ""
 
 msgctxt "cancelSelection"
 msgid "Cancel selection"
 msgstr "Uswahl abbräche"
 
-msgctxt "changelogDialogTitle"
-msgid "What's New"
-msgstr "Neuigkeite"
+msgctxt "categories"
+msgid "Categories"
+msgstr ""
+
+msgctxt "category"
+msgid "Category"
+msgstr ""
 
 msgctxt "changelogMenuDescription"
 msgid "View recent changes and new features"
 msgstr "Aktuelli Änderige und nöii Funktione aazeige"
 
-msgctxt "changelogMenuTitle"
-msgid "What's New"
-msgstr "Neuigkeite"
+msgctxt "changes"
+msgid "Changes"
+msgstr ""
 
 msgctxt "chartsAddColumn"
 msgid "Add column"
@@ -1592,14 +1552,6 @@ msgstr ""
 "Index vo de erste Datereihe, wo rächts dargstellt wird. Datereihe vor dem "
 "Index chömed lings."
 
-msgctxt "chartsAreaCurved"
-msgid "Smooth curves"
-msgstr "Glatti Churve"
-
-msgctxt "chartsAreaMarkers"
-msgid "Show markers"
-msgstr "Markierige aazeige"
-
 msgctxt "chartsAutoUpdate"
 msgid "Auto-update"
 msgstr "Automatisch aktualisiere"
@@ -1640,10 +1592,6 @@ msgctxt "chartsCsvAddFilter"
 msgid "Add filter"
 msgstr "Filter zuefüege"
 
-msgctxt "chartsCsvCategoriesHeader"
-msgid "Categories"
-msgstr "Kategorie"
-
 msgctxt "chartsCsvCategoryColumn"
 msgid "Category column"
 msgstr "Kategorie-Spalte"
@@ -1652,25 +1600,13 @@ msgctxt "chartsCsvCategoryColumnDescription"
 msgid "Distinct values in this column become the categories of the chart."
 msgstr "D'verschiedene Wärt vo derre Spalte wärde zu de Kategorie vom Diagramm."
 
-msgctxt "chartsCsvData"
-msgid "Data"
-msgstr "Date"
-
 msgctxt "chartsCsvEmptyOutput"
 msgid "No data after filtering — adjust filter selections."
 msgstr "Kei Date nach em Filter — Filterauswahl apasse."
 
-msgctxt "chartsCsvFilterCancel"
-msgid "Cancel"
-msgstr "Abbräche"
-
 msgctxt "chartsCsvFilterColumn"
 msgid "Column"
 msgstr "Spalte"
-
-msgctxt "chartsCsvFilterPickColumn"
-msgid "Pick a column…"
-msgstr "Spalte wähle…"
 
 msgctxt "chartsCsvFilterRemove"
 msgid "Remove filter"
@@ -1703,10 +1639,6 @@ msgstr "Zuefüege"
 msgctxt "chartsCsvGroupByDescription"
 msgid "Each distinct combination across these columns becomes one data series."
 msgstr "Jedi eigeti Kombi vo dene Spaltewärt git e eigeti Datereihe."
-
-msgctxt "chartsCsvGroupByPickColumn"
-msgid "Pick a column…"
-msgstr "Spalte wähle…"
 
 msgctxt "chartsCsvGroupByRemove"
 msgid "Remove grouping column"
@@ -1797,10 +1729,6 @@ msgstr ""
 "Datereihe wird. Wähle Sie eini, damit d'Zeile über «Datereihe gruppiere "
 "nach» in Datereihene ufteilt wärde."
 
-msgctxt "chartsData"
-msgid "Data"
-msgstr "Date"
-
 msgctxt "chartsDataLabels"
 msgid "Data labels"
 msgstr "Datebeschriftige"
@@ -1823,17 +1751,9 @@ msgctxt "chartsDateFormat"
 msgid "Date format"
 msgstr "Datumsformat"
 
-msgctxt "chartsDateFormatStyleAuto"
-msgid "Auto"
-msgstr "Automatisch"
-
 msgctxt "chartsDateFormatStyleNone"
 msgid "No formatting"
 msgstr "Kei (Rohwärt bruche)"
-
-msgctxt "chartsDonutShowLabels"
-msgid "Show labels"
-msgstr "Beschriftige aazeige"
 
 msgctxt "chartsDonutShowTotal"
 msgid "Show total"
@@ -1895,10 +1815,6 @@ msgctxt "chartsExportCsv"
 msgid "Export CSV"
 msgstr ""
 
-msgctxt "chartsFootnotes"
-msgid "Footnotes"
-msgstr "Fuessnote"
-
 msgctxt "chartsFootnotesHelp"
 msgid ""
 "Footnotes are numbered automatically. Reference them in category or series "
@@ -1919,24 +1835,12 @@ msgctxt "chartsLegendPosition"
 msgid "Legend position"
 msgstr "Legendeposition"
 
-msgctxt "chartsLineCurved"
-msgid "Smooth curves"
-msgstr "Glatti Churve"
-
-msgctxt "chartsLineMarkers"
-msgid "Show markers"
-msgstr "Markierige aazeige"
-
 msgctxt "chartsNumberFormat"
 msgid "Number format"
 msgstr ""
 
 msgctxt "chartsNumberFormatDecimals"
 msgid "Decimals"
-msgstr ""
-
-msgctxt "chartsNumberFormatDecimalsAuto"
-msgid "Auto"
 msgstr ""
 
 msgctxt "chartsNumberFormatLocale"
@@ -1959,18 +1863,6 @@ msgctxt "chartsNumberFormatNotationStandard"
 msgid "Standard"
 msgstr ""
 
-msgctxt "chartsNumberFormatPrefix"
-msgid "Prefix"
-msgstr ""
-
-msgctxt "chartsNumberFormatPreview"
-msgid "Preview"
-msgstr ""
-
-msgctxt "chartsNumberFormatSuffix"
-msgid "Suffix"
-msgstr ""
-
 msgctxt "chartsOpacityLight"
 msgid "Light"
 msgstr "Liecht"
@@ -1983,10 +1875,6 @@ msgctxt "chartsOpacityTransparent"
 msgid "Transparent"
 msgstr "Transparent"
 
-msgctxt "chartsOptionGroupDisplay"
-msgid "Display"
-msgstr "Aazeig"
-
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr "Beschriftige"
@@ -1998,14 +1886,6 @@ msgstr ""
 msgctxt "chartsOrphanOverridesRemove"
 msgid "Remove override"
 msgstr ""
-
-msgctxt "chartsOverrideScopeCategory"
-msgid "Category"
-msgstr ""
-
-msgctxt "chartsPieShowLabels"
-msgid "Show labels"
-msgstr "Beschriftige aazeige"
 
 msgctxt "chartsPositionBottom"
 msgid "Bottom"
@@ -2023,14 +1903,6 @@ msgctxt "chartsRadarFillOpacity"
 msgid "Fill opacity"
 msgstr "Fülldeckchraft"
 
-msgctxt "chartsRadarMarkers"
-msgid "Show markers"
-msgstr "Markierige aazeige"
-
-msgctxt "chartsRadialBarShowLabels"
-msgid "Show labels"
-msgstr "Beschriftige aazeige"
-
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr "Vorschau aktualisiere"
@@ -2038,10 +1910,6 @@ msgstr "Vorschau aktualisiere"
 msgctxt "chartsReverseRows"
 msgid "Reverse rows"
 msgstr ""
-
-msgctxt "chartsRotationAuto"
-msgid "Auto"
-msgstr "Automatisch"
 
 msgctxt "chartsStrokeMedium"
 msgid "Medium"
@@ -2059,26 +1927,6 @@ msgctxt "chartsStrokeWidth"
 msgid "Line thickness"
 msgstr "Liniestärchi"
 
-msgctxt "chartsTitle"
-msgid "Title"
-msgstr "Titel"
-
-msgctxt "chartsTranslations"
-msgid "Translations"
-msgstr "Übersetzige"
-
-msgctxt "chartsTranslationsCategories"
-msgid "Categories"
-msgstr "Kategorie"
-
-msgctxt "chartsTranslationsFootnotes"
-msgid "Footnotes"
-msgstr "Fuessnote"
-
-msgctxt "chartsTranslationsPrefix"
-msgid "Prefix"
-msgstr "Präfix"
-
 msgctxt "chartsTranslationsSeries"
 msgid "Series"
 msgstr "Datereihe"
@@ -2087,14 +1935,6 @@ msgctxt "chartsTranslationsSource"
 msgid "Source"
 msgstr "Quelle"
 
-msgctxt "chartsTranslationsSuffix"
-msgid "Suffix"
-msgstr "Suffix"
-
-msgctxt "chartsTranslationsTitle"
-msgid "Title"
-msgstr "Titel"
-
 msgctxt "chartsTranslationsTooMany"
 msgid "Too many items to translate inline (@count, max @max)."
 msgstr ""
@@ -2102,10 +1942,6 @@ msgstr ""
 msgctxt "chartsType"
 msgid "Chart Type"
 msgstr ""
-
-msgctxt "chartsTypeAdvanced"
-msgid "Advanced"
-msgstr "Erwiteret"
 
 msgctxt "chartsTypeAdvancedDescription"
 msgid "Paste a raw ECharts configuration. Full control, no structured data table."
@@ -2237,6 +2073,10 @@ msgctxt "chartsYAxisMin"
 msgid "Y-axis start"
 msgstr "Y-Achse-Aafangswärt"
 
+msgctxt "checkingReadability"
+msgid "Checking readability..."
+msgstr ""
+
 msgctxt "clearInput"
 msgid "Clear input"
 msgstr "Iigab lösche"
@@ -2285,10 +2125,6 @@ msgctxt "close"
 msgid "Close"
 msgstr "Zuemache"
 
-msgctxt "commandGroup.action"
-msgid "Actions"
-msgstr "Aktione"
-
 msgctxt "commandGroup.add"
 msgid "Add new"
 msgstr "Drzuefüege"
@@ -2335,22 +2171,6 @@ msgctxt "commentBlocksCountOne"
 msgid "1 block"
 msgstr "1 Block"
 
-msgctxt "commentBlocksCountOther"
-msgid "@count blocks"
-msgstr "@count Blöck"
-
-msgctxt "commentCancelEdit"
-msgid "Cancel"
-msgstr "Abbrechen"
-
-msgctxt "commentDelete"
-msgid "Delete"
-msgstr "Löschen"
-
-msgctxt "commentDeleteConfirmSubmit"
-msgid "Delete"
-msgstr "Löschen"
-
 msgctxt "commentDeleteConfirmText"
 msgid ""
 "The comment and all its replies will be permanently deleted. This action "
@@ -2373,10 +2193,6 @@ msgctxt "commentDeleteReplyConfirmTitle"
 msgid "Delete reply?"
 msgstr "Antwort löschen?"
 
-msgctxt "commentEdit"
-msgid "Edit"
-msgstr "Bearbeiten"
-
 msgctxt "commentEdited"
 msgid "edited"
 msgstr "bearbeitet"
@@ -2392,10 +2208,6 @@ msgstr "Erledigt"
 msgctxt "commentSave"
 msgid "Submit comment"
 msgstr "Kommentar speichere"
-
-msgctxt "commentSaveEdit"
-msgid "Save"
-msgstr "Speichern"
 
 msgctxt "comments"
 msgid "Comments"
@@ -2451,6 +2263,10 @@ msgctxt "copy"
 msgid "Copy"
 msgstr "Kopiere"
 
+msgctxt "createTemplate"
+msgid "Create template"
+msgstr ""
+
 msgctxt "created"
 msgid "Created"
 msgstr "Erstellt"
@@ -2459,13 +2275,21 @@ msgctxt "createdBy"
 msgid "Created by"
 msgstr "Erstellt vo"
 
+msgctxt "data"
+msgid "Data"
+msgstr ""
+
 msgctxt "dateUpdated"
 msgid "Updated"
 msgstr "Aktualisiert"
 
-msgctxt "deleteButton"
+msgctxt "delete"
 msgid "Delete"
-msgstr "Lösche"
+msgstr ""
+
+msgctxt "deleteConversation"
+msgid "Delete conversation"
+msgstr ""
 
 msgctxt "deleteError"
 msgid "The block could not be deleted."
@@ -2475,33 +2299,21 @@ msgctxt "deleteNoPermission"
 msgid "You do not have permission to delete this block."
 msgstr "Lösche ufgrund fählender Berächtigung nid möglich."
 
-msgctxt "diffAfter"
-msgid "After"
-msgstr "Nochhär"
+msgctxt "description"
+msgid "Description"
+msgstr ""
 
 msgctxt "diffBefore"
 msgid "Before"
 msgstr "Vorhär"
 
-msgctxt "diffModeAfter"
-msgid "After"
-msgstr "Nochhär"
-
 msgctxt "diffModeInline"
 msgid "Inline"
 msgstr "Inline"
 
-msgctxt "diffModeLabel"
-msgid "Display"
-msgstr "Aazaig"
-
 msgctxt "diffModeSideBySide"
 msgid "Both"
 msgstr "Beidi"
-
-msgctxt "diffSidebarTitle"
-msgid "Changes"
-msgstr "Änderige"
 
 msgctxt "diffSidebarTourText"
 msgid "Displays all the changes made during editing."
@@ -2522,6 +2334,10 @@ msgstr "Bearbeitet"
 msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
 msgstr "Unveränderet"
+
+msgctxt "display"
+msgid "Display"
+msgstr ""
 
 msgctxt "download"
 msgid "Download"
@@ -2555,16 +2371,8 @@ msgctxt "droppableFieldDropHint"
 msgid "Drop image here"
 msgstr ""
 
-msgctxt "droppableFieldEditLabel"
-msgid "Edit @label"
-msgstr ""
-
 msgctxt "droppableFieldItemCount"
 msgid "@count items"
-msgstr ""
-
-msgctxt "droppableFieldOpenLibrary"
-msgid "Media Library"
 msgstr ""
 
 msgctxt "droppableFieldRemaining"
@@ -2602,20 +2410,12 @@ msgid "This block type is not allowed in this field."
 msgstr "Dr Blocktyp isch in dem Fäld nid erlaubt."
 
 msgctxt "edit"
-msgid "Edit..."
+msgid "Edit"
 msgstr "Bearbeite"
-
-msgctxt "editDisabledByDefinition"
-msgid "Editing is disabled for this block type."
-msgstr "Bearbeite isch für dr Blocktyp deaktiviert."
 
 msgctxt "editFormBlockAdd"
 msgid "Add @label"
 msgstr "@label drzuefüege"
-
-msgctxt "editFormBlockEdit"
-msgid "Edit @label"
-msgstr "@label bearbeite"
 
 msgctxt "editFormBlockTranslate"
 msgid "Translate @label (@language)"
@@ -2633,16 +2433,16 @@ msgctxt "editFragmentNotEditable"
 msgid "This fragment cannot be edited."
 msgstr "Das Fragmänt cha nid bearbeitet wärde."
 
+msgctxt "editLabel"
+msgid "Edit @label"
+msgstr ""
+
 msgctxt "editLibraryNotAvailable"
 msgid "This reusable block cannot be edited right now."
 msgstr "De wiederverwendbar Block cha momentan nid bearbeitet wärde."
 
 msgctxt "editNoLibraryPermission"
 msgid "You do not have permission to edit library items."
-msgstr "Bearbeite ufgrund fählender Berächtigung nid möglich."
-
-msgctxt "editNoPermission"
-msgid "You do not have permission to edit this block."
 msgstr "Bearbeite ufgrund fählender Berächtigung nid möglich."
 
 msgctxt "editableCommandEdit"
@@ -2665,12 +2465,12 @@ msgctxt "editableFieldFullscreen"
 msgid "Fullscreen"
 msgstr ""
 
-msgctxt "editableFieldTranslate"
-msgid "Translate"
-msgstr ""
-
 msgctxt "editableFieldTranslateTooltip"
 msgid "Automatically translate the current text."
+msgstr ""
+
+msgctxt "editingDisabled"
+msgid "Editing is disabled for this block type."
 msgstr ""
 
 msgctxt "entityTitleTourText"
@@ -2696,10 +2496,6 @@ msgstr "«@label» het meh als 3 Fähler verursacht. D'Funktion würd deaktivier
 msgctxt "exitDescription"
 msgid "Close editor without publishing"
 msgstr "Dr Editor zuemache ohni z'veröffentliche"
-
-msgctxt "exitTitle"
-msgid "Close"
-msgstr "Zuemache"
 
 msgctxt "failedToConvert"
 msgid "The block could not be converted."
@@ -2735,641 +2531,6 @@ msgctxt "featureHelpTitle"
 msgid "Help"
 msgstr "Hilf"
 
-msgctxt "feature_add-list_description"
-msgid "Provides the container to render a list of blocks to add or add actions."
-msgstr ""
-"Stellt dr Container bereit zum e Lischt vo Blöck oder Aktione zum "
-"drzuefüege z'rendere."
-
-msgctxt "feature_add-list_label"
-msgid "Add List"
-msgstr "Drzuefüeg-Lischt"
-
-msgctxt "feature_add-list_setting_hideDisabledBlocks_description"
-msgid "Hides blocks from the \"Add List\" if they can't be added to anywhere."
-msgstr ""
-"Versteckt Blöck in de «Drzuefüege-Lischt» wo nirgends chönne drzuegfüegt "
-"wärde."
-
-msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
-msgid "Hide blocks that can't be added"
-msgstr "Blöck verstecke wo nid chönne drzuegfüegt wärde"
-
-msgctxt "feature_agent_description"
-msgid "Chat with an AI assistant to edit page content."
-msgstr "Mitem KI-Assischtänt chatte zum Sitteinhalt z'bearbeite."
-
-msgctxt "feature_agent_label"
-msgid "AI Agent"
-msgstr "KI-Agänt"
-
-msgctxt "feature_analyze_description"
-msgid "Analyze blocks and page for SEO, accessibility, etc."
-msgstr "Blöck und Sitte analysiere für SEO, Barrierefreiheit usw."
-
-msgctxt "feature_analyze_label"
-msgid "Analyze"
-msgstr "Analysiere"
-
-msgctxt "feature_anchors_description"
-msgid "Displays indicators for blocks with anchor IDs"
-msgstr "Zeigt Markierige für Blöck mit Anker-IDs aa."
-
-msgctxt "feature_anchors_label"
-msgid "Anchors"
-msgstr "Anker"
-
-msgctxt "feature_artboard_description"
-msgid ""
-"Wraps the entire page in an artboard that can be zoomed and moved using the "
-"mouse."
-msgstr ""
-"Packt di ganzi Sitte in e Zeichenflächi, wo mit dr Muus chamer zoome und "
-"verschiebe."
-
-msgctxt "feature_artboard_label"
-msgid "Artboard"
-msgstr "Zeichenflächi"
-
-msgctxt "feature_artboard_setting_momentum_description"
-msgid "Applies smooth animations when scrolling or zooming the artboard."
-msgstr "Wendet sanfti Animatione aa bim Scrolle oder Zoome vo dr Zeichenflächi."
-
-msgctxt "feature_artboard_setting_momentum_label"
-msgid "Use smooth scrolling"
-msgstr "Sanfts Scrolle verwände"
-
-msgctxt "feature_artboard_setting_persist_description"
-msgid "Stores and restores the last position and zoom factor of the artboard."
-msgstr ""
-"Speicheret und stellt di letscht Position und dr Zoom-Faktor vo dr "
-"Zeichenflächi widerhär."
-
-msgctxt "feature_artboard_setting_persist_label"
-msgid "Persist position and zoom"
-msgstr "Position und Zoom speichere"
-
-msgctxt "feature_artboard_setting_scrollSpeed_label"
-msgid "Artboard scroll speed"
-msgstr "Scrollgschwindigkeit vo dr Zeicheflächi"
-
-msgctxt "feature_block-scheduler_description"
-msgid "Adds support for scheduling blocks."
-msgstr "Ermöglicht s'zitgstüürti Veröffentliche vo Blöck."
-
-msgctxt "feature_block-scheduler_label"
-msgid "Block Scheduler"
-msgstr "Block-Planung"
-
-msgctxt "feature_block-transfer_description"
-msgid ""
-"Export selected blocks to a portable clipboard envelope and paste them back "
-"in any blökkli editor."
-msgstr ""
-
-msgctxt "feature_block-transfer_label"
-msgid "Block Transfer"
-msgstr ""
-
-msgctxt "feature_breadcrumbs_description"
-msgid "Provides a breadcrumb of the selection."
-msgstr "Zeigt de Breadcrumbs-Pfad vo de Uswahl aa."
-
-msgctxt "feature_breadcrumbs_label"
-msgid "Breadcrumbs"
-msgstr "Breadcrumbs"
-
-msgctxt "feature_changelog_description"
-msgid "Provides a menu button to display a changelog of what's new."
-msgstr "Stellt e Menü-Button bereit zum e Änderigsverlauf aazzeige."
-
-msgctxt "feature_changelog_label"
-msgid "Changelog"
-msgstr "Änderigsverlauf"
-
-msgctxt "feature_clipboard_description"
-msgid ""
-"Provides clipboard integration to copy/paste existing blocks or paste "
-"supported clipboard content like text or images."
-msgstr ""
-"Stellt Zwüscheablag-Integration bereit zum bestehendi Blöck "
-"z'kopiere/iizfüege oder understützti Inhält wie Teggscht oder Bilder "
-"iizfüege."
-
-msgctxt "feature_clipboard_label"
-msgid "Clipboard"
-msgstr "Zwüscheablag"
-
-msgctxt "feature_command-palette_description"
-msgid ""
-"Provides a command palette with search to access most UI features with a "
-"keyboard."
-msgstr ""
-"Stellt e Befehlspalette mit Suechfunktion bereit zum di meischte "
-"UI-Funktione mit dr Tastatuur z'verwände."
-
-msgctxt "feature_command-palette_label"
-msgid "Command Palette"
-msgstr "Befehlspalette"
-
-msgctxt "feature_comments_description"
-msgid "Provides comment functionality for blocks."
-msgstr "Stellt Kommentarfunktionalität für Blöck bereit."
-
-msgctxt "feature_comments_label"
-msgid "Comments"
-msgstr "Kommentär"
-
-msgctxt "feature_complex-options_description"
-msgid "Edit complex option types such as charts."
-msgstr ""
-
-msgctxt "feature_complex-options_label"
-msgid "Complex Options"
-msgstr ""
-
-msgctxt "feature_conversions_description"
-msgid "Provides block actions to convert one or more blocks to a different bundle."
-msgstr ""
-"Stellt Block-Aktione bereit zum ei oder mehreri Blöck in es anders Bundle "
-"z'konvertiere."
-
-msgctxt "feature_conversions_label"
-msgid "Conversions"
-msgstr "Konvertierige"
-
-msgctxt "feature_debug_description"
-msgid "Provides debugging functionality."
-msgstr "Stellt Debug-Funktionalität bereit."
-
-msgctxt "feature_debug_label"
-msgid "Debug"
-msgstr "Debug"
-
-msgctxt "feature_delete_description"
-msgid "Provides an action to delete one or more blocks."
-msgstr "Stellt e Aktion bereit zum ei oder mehreri Blöck z'lösche."
-
-msgctxt "feature_delete_label"
-msgid "Delete"
-msgstr "Lösche"
-
-msgctxt "feature_dev-mode_description"
-msgid "Feature enabled in development mode."
-msgstr "Funktion isch im Dev Mode aktiviert."
-
-msgctxt "feature_dev-mode_label"
-msgid "Dev Mode"
-msgstr "Dev Mode"
-
-msgctxt "feature_diff_description"
-msgid "Displays a diff of all changes in the edit state."
-msgstr "Zeigt e Diff vo allne Änderige im Bearbeitszuestand aa."
-
-msgctxt "feature_diff_label"
-msgid "Diff"
-msgstr "Diff"
-
-msgctxt "feature_dragging-overlay_description"
-msgid "Renders an overlay when dragging or placing a block."
-msgstr "Renderet es Overlay bim Ziehe oder Platziere von emne Block."
-
-msgctxt "feature_dragging-overlay_label"
-msgid "Dragging Overlay"
-msgstr "Zieh-Overlay"
-
-msgctxt "feature_droppable-field-edit_description"
-msgid "Editing mode for multi-value droppable fields (add, remove, reorder items)."
-msgstr ""
-
-msgctxt "feature_droppable-field-edit_label"
-msgid "Droppable Field Edit"
-msgstr ""
-
-msgctxt "feature_duplicate_description"
-msgid "Provides an action to duplicate one or more blocks in place."
-msgstr ""
-"Stellt e Aktion bereit zum ei oder mehreri Blöck an Ort und Stell "
-"z'dupliziere."
-
-msgctxt "feature_duplicate_label"
-msgid "Duplicate"
-msgstr "Dupliziere"
-
-msgctxt "feature_edit-form_description"
-msgid "Listens to edit events and renders an iframe containing the edit form."
-msgstr ""
-"Losst uf Bearbeitigs-Events und renderet es iframe mit em "
-"Bearbeitigsformular."
-
-msgctxt "feature_edit-form_label"
-msgid "Edit Form"
-msgstr "Bearbeitigsformular"
-
-msgctxt "feature_edit_description"
-msgid "Provides an action to edit a block."
-msgstr "Stellt e Aktion bereit zum e Block z'bearbeite."
-
-msgctxt "feature_edit_label"
-msgid "Edit"
-msgstr "Bearbeite"
-
-msgctxt "feature_editable-field_description"
-msgid "Implements a form overlay to edit a single field of a block."
-msgstr ""
-"Implementiert es Formular-Overlay zum es einzels Fäld von emne Block "
-"z'bearbeite."
-
-msgctxt "feature_editable-field_label"
-msgid "Editable Field"
-msgstr "Bearbeitbars Fäld"
-
-msgctxt "feature_editable-mask_description"
-msgid "Provides a view option to hide non-editable parts of the page."
-msgstr ""
-"Stellt e Aasigsoptio bereit zum nid-bearbeitbari Teile vo dr Sitte "
-"z'verstecke."
-
-msgctxt "feature_editable-mask_label"
-msgid "Editable Mask"
-msgstr "Bearbeitigs-Maske"
-
-msgctxt "feature_entity-title_description"
-msgid "Renders the title and status of the page entity."
-msgstr "Renderet dr Titel und Status vo dr Sitte-Entität."
-
-msgctxt "feature_entity-title_label"
-msgid "Entity Title"
-msgstr "Entitäts-Titel"
-
-msgctxt "feature_exit_description"
-msgid "Provides a menu button to exit the editor without saving."
-msgstr "Stellt e Menü-Button bereit zum dr Editor z'verloh ohni z'speichere."
-
-msgctxt "feature_exit_label"
-msgid "Exit"
-msgstr "Verlo"
-
-msgctxt "feature_fragments_description"
-msgid "Provides way to add content fragments defined by the frontend."
-msgstr ""
-"Stellt e Möglichkeit bereit zum Inhaltsfragmänt vom Frontend z'definiere "
-"und drzuefüege."
-
-msgctxt "feature_fragments_label"
-msgid "Fragments"
-msgstr "Fragmänt"
-
-msgctxt "feature_grid_description"
-msgid "Provides a view option to render a grid."
-msgstr "Stellt e Aasigsoptio bereit zum es Raster aazzeige."
-
-msgctxt "feature_grid_label"
-msgid "Grid"
-msgstr "Raster"
-
-msgctxt "feature_help_description"
-msgid "Provides a sidebar pane with helpful information on how to use blokkli."
-msgstr ""
-"Stellt e Sitteleischte-Panel mit nützliche Informatione über d'Bedienig vo "
-"blökkli bereit."
-
-msgctxt "feature_help_label"
-msgid "Help"
-msgstr "Hilf"
-
-msgctxt "feature_highlights_description"
-msgid ""
-"Renders persistent highlights for blocks with issues or outdated "
-"translations."
-msgstr ""
-
-msgctxt "feature_highlights_label"
-msgid "Highlights"
-msgstr ""
-
-msgctxt "feature_history_description"
-msgid "Implements support for history features (undo, redo, list of mutations)."
-msgstr ""
-"Implementiert Understützig für Verlaufs-Funktione (Rückgängig, "
-"Widerhärstelle, Lischt vo Änderige)."
-
-msgctxt "feature_history_label"
-msgid "History"
-msgstr "Verlauf"
-
-msgctxt "feature_history_setting_useMouseButtons_description"
-msgid ""
-"When enabled you can use the backwards/forwards buttons on your mouse to "
-"undo and redo."
-msgstr ""
-"Wenn aktiviert, chasch d'Zrugg/Vorwärts-Taschte vo dinere Muus zum "
-"Rückgängig mache und Widerhärstelle bruche."
-
-msgctxt "feature_history_setting_useMouseButtons_label"
-msgid "Use mouse buttons for undo/redo"
-msgstr "Muustaschte für Rückgängig/Wiederhärstelle bruche"
-
-msgctxt "feature_hover_description"
-msgid "Renders a border around blocks that are currently being hovered."
-msgstr "Zeigt e Rahme um Blöck aa wo de Muuszeiger drüber isch."
-
-msgctxt "feature_hover_label"
-msgid "Hover"
-msgstr "Hover"
-
-msgctxt "feature_import-existing_description"
-msgid ""
-"Implements a menu action that renders a dialog to import blocks from "
-"another entity."
-msgstr ""
-"Implementiert e Menü-Aktion wo e Dialog renderet zum Blöck vonere andere "
-"Entität z'importiere."
-
-msgctxt "feature_import-existing_label"
-msgid "Import existing content"
-msgstr "Bestehendi Inhält importiere"
-
-msgctxt "feature_import-existing_setting_showDialogWhenEmpty_description"
-msgid "Displays the import dialog when starting blökkli if the page is empty."
-msgstr "Zeigt dr Importdialog bim Start vo blökkli aa, wenn d'Sitte leer isch."
-
-msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
-msgid "Show import dialog at start"
-msgstr "Importdialog bim Start aazeige wenn d'Sitte leer isch"
-
-msgctxt "feature_library_description"
-msgid "Implements support for a block library to manage reusable blocks."
-msgstr ""
-"Implementiert Understützig für e Block-Bibliothek zum wiederverwändbare "
-"Blöck z'verwallte."
-
-msgctxt "feature_library_label"
-msgid "Library"
-msgstr "Bibliothek"
-
-msgctxt "feature_media-library_description"
-msgid ""
-"Implements a media library to easily drag and drop media like images or "
-"videos."
-msgstr ""
-"Implementiert e Medie-Bibliothek zum eifach Medie wie Bilder oder Videos "
-"per Drag-and-Drop iizfüege."
-
-msgctxt "feature_media-library_label"
-msgid "Media Library"
-msgstr "Medie-Bibliothek"
-
-msgctxt "feature_multi-select_description"
-msgid "Implements support for selecting multiple blocks using a select rectangle."
-msgstr ""
-"Implementiert Understützig zum mehreri Blöck mit emne Uswahl-Rechteck "
-"z'markiere."
-
-msgctxt "feature_multi-select_label"
-msgid "Multiselect"
-msgstr "Merfachuswahl"
-
-msgctxt "feature_options_description"
-msgid "Renders the options form for one or more blocks."
-msgstr "Renderet s'Optione-Formular für ei oder mehreri Blöck."
-
-msgctxt "feature_options_label"
-msgid "Options"
-msgstr "Optione"
-
-msgctxt "feature_ownership_description"
-msgid "Renders a large button to take ownership of the current edit state."
-msgstr ""
-"Renderet e grosse Button zum dr Bsitz vom aktuälle Bearbeitszuestand "
-"z'übernäh."
-
-msgctxt "feature_ownership_label"
-msgid "Ownership"
-msgstr "Bsitz"
-
-msgctxt "feature_preview-grant_description"
-msgid ""
-"Provides a button to open a dialog with a QR code to preview the page on a "
-"smartphone."
-msgstr ""
-"Stellt e Button bereit zum e Dialog mit emne QR-Code z'öffne zum d'Sitte "
-"ufem Smartphone z'betrachte."
-
-msgctxt "feature_preview-grant_label"
-msgid "Preview Grant"
-msgstr "Vorschau-Freigab"
-
-msgctxt "feature_preview_description"
-msgid "Provides a button to open a preview in a new window."
-msgstr "Stellt e Button bereit zum e Vorschau in emne neue Fänschter z'öffne."
-
-msgctxt "feature_preview_label"
-msgid "Preview"
-msgstr "Vorschau"
-
-msgctxt "feature_proxy_view_description"
-msgid "Displays the blocks as a structure in the preview."
-msgstr "Zeigt d'Blöck als Struktur in dr Vorschau aa."
-
-msgctxt "feature_proxy_view_label"
-msgid "Proxy View"
-msgstr "Strukturaasicht"
-
-msgctxt "feature_publish_description"
-msgid "Provides a menu button to publish the changes of the current entity."
-msgstr ""
-"Stellt e Menü-Button bereit zum d'Änderige vo dr aktuälle Entität "
-"z'publiziere."
-
-msgctxt "feature_publish_label"
-msgid "Publish"
-msgstr "Publiziere"
-
-msgctxt "feature_publish_setting_closeAfterPublish_description"
-msgid "Immediately closes the editor after successfully publishing or saving."
-msgstr "Schliesst dr Editor sofort noch em erfolgriche Publiziere oder Speichere."
-
-msgctxt "feature_publish_setting_closeAfterPublish_label"
-msgid "Close editor after publishing"
-msgstr "Editor noch em Publiziere schliesse"
-
-msgctxt "feature_referenced-entities_description"
-msgid "Renders referenced entities of blocks."
-msgstr ""
-
-msgctxt "feature_referenced-entities_label"
-msgid "Referenced Entities"
-msgstr ""
-
-msgctxt "feature_responsive-preview_description"
-msgid "Provides a responsive preview of the current edit state in an iframe."
-msgstr ""
-"Stellt e responsivi Vorschau vom aktuälle Bearbeitszuestand in emne iframe "
-"bereit."
-
-msgctxt "feature_responsive-preview_label"
-msgid "Responsive Preview"
-msgstr "Responsivi Vorschau"
-
-msgctxt "feature_revert_description"
-msgid "Provides a menu button to revert all changes done on the current entity."
-msgstr ""
-"Stellt e Menü-Button bereit zum alli Änderige vo dr aktuälle Entität "
-"rückgängig z'mache."
-
-msgctxt "feature_revert_label"
-msgid "Revert"
-msgstr "Zruggsetze"
-
-msgctxt "feature_search_description"
-msgid ""
-"Provides an overlay with shortcut to search for blocks on the current page "
-"or existing content to add as blocks."
-msgstr ""
-"Stellt es Overlay mit Shortcut bereit zum uf dr aktuälle Sitte noch Blöck "
-"z'sueche oder bestehendi Inhält als Blöck drzuefüege."
-
-msgctxt "feature_search_label"
-msgid "Search"
-msgstr "Sueche"
-
-msgctxt "feature_selection_description"
-msgid "Renders an overlay that highlights the selected blocks."
-msgstr "Renderet es Overlay wo di usgwählte Blöck hervorhebt."
-
-msgctxt "feature_selection_label"
-msgid "Selection"
-msgstr "Uswahl"
-
-msgctxt "feature_settings_description"
-msgid "Provides a menu button to display a settings dialog."
-msgstr "Stellt e Menü-Button bereit zum e Iistelligs-Dialog aazzeige."
-
-msgctxt "feature_settings_label"
-msgid "Settings"
-msgstr "Iistellige"
-
-msgctxt "feature_settings_setting_lowPerformanceMode_description"
-msgid ""
-"Reduces the animations and interactivity to a minimum for devices with low "
-"performance."
-msgstr ""
-"Reduziert d'Animatione und Interaktivität uf es Minimum für Gerät mit "
-"tiefer Leistig."
-
-msgctxt "feature_settings_setting_lowPerformanceMode_label"
-msgid "Enable low performance mode"
-msgstr "Energie-Sparmodus aktiviere"
-
-msgctxt "feature_settings_setting_resetAllSettings_label"
-msgid "Reset all settings"
-msgstr "Alli Iistellige Zruggsetze"
-
-msgctxt "feature_settings_setting_useAnimations_description"
-msgid ""
-"Animates UI elements like dialogs or drawers or interactions like drag and "
-"drop or scroll changes."
-msgstr ""
-"Animiert UI-Elemänt wie Dialoge oder Schublade oder Interaktione wie "
-"Drag-and-Drop oder Scroll-Änderige."
-
-msgctxt "feature_settings_setting_useAnimations_label"
-msgid "Use animations"
-msgstr "Animatione aazeige"
-
-msgctxt "feature_structure_description"
-msgid ""
-"Provides a sidebar button to render a structured list of all blocks on the "
-"current page."
-msgstr ""
-"Stellt e Sitteleischte-Button bereit zum e strukturierti Lischt vo allne "
-"Blöck uf dr aktuälle Sitte z'rendere."
-
-msgctxt "feature_structure_label"
-msgid "Structure"
-msgstr "Struktur"
-
-msgctxt "feature_styleguide_description"
-msgid "Browse blökkli editor components and their variants."
-msgstr ""
-
-msgctxt "feature_styleguide_label"
-msgid "Styleguide"
-msgstr ""
-
-msgctxt "feature_swap_description"
-msgid "Provides an action to swap two selected blocks."
-msgstr ""
-
-msgctxt "feature_swap_label"
-msgid "Swap"
-msgstr ""
-
-msgctxt "feature_templates_description"
-msgid "Add blocks from templates."
-msgstr "Blöck us Vorlage drzuefüege."
-
-msgctxt "feature_templates_label"
-msgid "Templates"
-msgstr "Vorlage"
-
-msgctxt "feature_theme_description"
-msgid "Implements a theme editor."
-msgstr "Implementiert e Theme-Editor."
-
-msgctxt "feature_theme_label"
-msgid "Theme"
-msgstr "Theme"
-
-msgctxt "feature_touch-action-bar_description"
-msgid "Renders a button on touch devices to cancel touch actions."
-msgstr "Renderet e Button uf Touch-Gerät zum Touch-Aktione abzbräche."
-
-msgctxt "feature_touch-action-bar_label"
-msgid "Touch Action Bar"
-msgstr "Touch-Aktionsleischte"
-
-msgctxt "feature_tour_description"
-msgid "Provides a tour overlay to get to know the editor."
-msgstr "Stellt es Tour-Overlay bereit zum dr Editor kennezlehrne."
-
-msgctxt "feature_tour_label"
-msgid "Tour"
-msgstr "Tour"
-
-msgctxt "feature_transform_description"
-msgid "Provides integration for block transform plugins."
-msgstr "Stellt Integration für Block-Transform-Plugins bereit."
-
-msgctxt "feature_transform_label"
-msgid "Transform"
-msgstr "Transform"
-
-msgctxt "feature_translations_description"
-msgid "Adds support for block translations."
-msgstr "Füegt Understützig für Block-Übersetzige hinzu."
-
-msgctxt "feature_translations_label"
-msgid "Translations"
-msgstr "Übersetzige"
-
-msgctxt "feature_validations_description"
-msgid "Provides a sidebar pane to render validations."
-msgstr "Stellt es Sitteleischte-Panel bereit zum Validierige z'rendere."
-
-msgctxt "feature_validations_label"
-msgid "Validations"
-msgstr "Validierige"
-
-msgctxt "feature_workspace_description"
-msgid "Allows users to switch between edit states."
-msgstr ""
-
-msgctxt "feature_workspace_label"
-msgid "Workspace"
-msgstr ""
-
 msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Das Fäld dörf nid leer sii"
@@ -3385,6 +2546,10 @@ msgstr "Käi Ergebnis"
 msgctxt "filterSelectSearch"
 msgid "Search..."
 msgstr "Sueche..."
+
+msgctxt "footnotes"
+msgid "Footnotes"
+msgstr ""
 
 msgctxt "formSaveNotEditStateInfo"
 msgid ""
@@ -3528,10 +2693,6 @@ msgctxt "importExistingNoResults"
 msgid "No pages found."
 msgstr ""
 
-msgctxt "importExistingPagesTitle"
-msgid "Select page"
-msgstr "Sitte uswähle"
-
 msgctxt "importExistingSearchPlaceholder"
 msgid "Search pages..."
 msgstr ""
@@ -3578,10 +2739,6 @@ msgctxt "libraryAddFromLibrary"
 msgid "From library"
 msgstr "Us dr Bibliothek drzuefüege"
 
-msgctxt "libraryAddNoEditPermission"
-msgid "You do not have permission to edit this block."
-msgstr "Bearbeite ufgrund fählender Berächtigung nid möglich."
-
 msgctxt "libraryAddNoPermission"
 msgid "You do not have permission to create library items."
 msgstr "Erstelle ufgrund fählender Berächtigung nid möglich."
@@ -3602,10 +2759,6 @@ msgctxt "libraryDetachNoPermission"
 msgid "You do not have permission to detach this block."
 msgstr "Loslöse ufgrund fählender Berächtigung nid möglich."
 
-msgctxt "libraryDialogDescriptionLabel"
-msgid "Description"
-msgstr "Beschriibig"
-
 msgctxt "libraryDialogLead"
 msgid ""
 "When you add an item to the library, you can use it on multiple pages at "
@@ -3623,14 +2776,6 @@ msgid ""
 msgstr ""
 "Dr Bibliotheksblock würd verfüegbar für d'Platzierig uf andere Sitte, "
 "sobald die Sitte publiziert worde isch."
-
-msgctxt "libraryDialogSubmit"
-msgid "Add to library"
-msgstr "Zur Bibliothek drzuefüege"
-
-msgctxt "libraryDialogTitle"
-msgid "Add to library"
-msgstr "Zur Bibliothek drzuefüege"
 
 msgctxt "libraryDialogTitleInputPlaceholder"
 msgid "e.g. Teaser Campaign 2024"
@@ -3655,10 +2800,6 @@ msgstr ""
 msgctxt "libraryItemEditOverlayTitle"
 msgid "Edit reusable block"
 msgstr "Wiederverwändbare Block bearbeite"
-
-msgctxt "libraryPlaceBundleSelectLabel"
-msgid "Bundle"
-msgstr "Bundle"
 
 msgctxt "libraryPlaceDialogLead"
 msgid ""
@@ -3688,6 +2829,10 @@ msgctxt "manageSchedule"
 msgid "Manage schedule..."
 msgstr "Planung verwalte..."
 
+msgctxt "manageScheduling"
+msgid "Manage scheduling"
+msgstr ""
+
 msgctxt "maskHide"
 msgid "Hide non-editable areas"
 msgstr "Inhaltsfälder verstecke"
@@ -3714,10 +2859,6 @@ msgctxt "mediaLibraryReplaceFailed"
 msgid "Failed to replace media."
 msgstr "Medie het nid chönne ersetzt wärde."
 
-msgctxt "mediaLibraryReplaceMedia"
-msgid "Replace @field"
-msgstr "@field ersetze"
-
 msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
 msgstr "Suech noch Medie wie Bilder und zieh si per Drag-and-Drop in d'Sitte."
@@ -3734,9 +2875,17 @@ msgctxt "multipleItemsLabel"
 msgid "Items"
 msgstr "Elemänt"
 
+msgctxt "name"
+msgid "Name"
+msgstr ""
+
 msgctxt "nameDescription"
 msgid "Name / Description"
 msgstr "Name / Beschriibig"
+
+msgctxt "noEditPermission"
+msgid "You do not have permission to edit this block."
+msgstr ""
 
 msgctxt "notSet"
 msgid "Not set"
@@ -3818,6 +2967,14 @@ msgctxt "paste"
 msgid "Paste"
 msgstr "Iifüege"
 
+msgctxt "pickColumn"
+msgid "Pick a column…"
+msgstr ""
+
+msgctxt "prefix"
+msgid "Prefix"
+msgstr ""
+
 msgctxt "preview"
 msgid "Preview"
 msgstr ""
@@ -3870,6 +3027,10 @@ msgctxt "proxyViewTourText"
 msgid "Displays the content blocks as a structured view."
 msgstr "Zeigt d'Inhaltblöck als strukturierti Aasicht aa."
 
+msgctxt "publish"
+msgid "Publish"
+msgstr ""
+
 msgctxt "publishAlreadyScheduledDescription"
 msgid "This page is already scheduled for publishing"
 msgstr "Die Sitte isch scho zur Veröffentlichig plant"
@@ -3885,10 +3046,6 @@ msgstr "Speichere & Zuemache"
 msgctxt "publishCurrentPage"
 msgid "Current page"
 msgstr "Aktuelli Sitte"
-
-msgctxt "publishCurrentlyPublished"
-msgid "Page is published"
-msgstr "Sitte isch publiziert"
 
 msgctxt "publishCurrentlyUnpublished"
 msgid "Page is unpublished"
@@ -3914,18 +3071,6 @@ msgctxt "publishError"
 msgid "Changes could not be published."
 msgstr "D'Änderige hän nid chönne publiziert wärde."
 
-msgctxt "publishLabel"
-msgid "Publish"
-msgstr "Publiziere"
-
-msgctxt "publishLabelUnpublished"
-msgid "Save"
-msgstr "Speichere"
-
-msgctxt "publishManageSchedule"
-msgid "Manage scheduling"
-msgstr "Planung verwalte"
-
 msgctxt "publishMode"
 msgid "Publish mode"
 msgstr "Veröffentlichigsmodus"
@@ -3934,17 +3079,9 @@ msgctxt "publishModeImmediateDescription"
 msgid "Publish changes immediately"
 msgstr "Änderige sofort veröffentliche"
 
-msgctxt "publishModeImmediateTitle"
-msgid "Publish"
-msgstr "Veröffentliche"
-
 msgctxt "publishModeSaveDescription"
 msgid "Save changes without publishing"
 msgstr "Änderige speichere ohni veröffentliche"
-
-msgctxt "publishModeSaveTitle"
-msgid "Save"
-msgstr "Speichere"
 
 msgctxt "publishModeScheduledDescription"
 msgid "Schedule changes for publishing"
@@ -3953,10 +3090,6 @@ msgstr "Änderige plant veröffentliche"
 msgctxt "publishModeScheduledTitle"
 msgid "Schedule"
 msgstr "Plane"
-
-msgctxt "publishName"
-msgid "Name"
-msgstr "Name"
 
 msgctxt "publishPublicationScheduled"
 msgid "Publication scheduled"
@@ -4118,6 +3251,10 @@ msgctxt "remove"
 msgid "Remove"
 msgstr ""
 
+msgctxt "replaceField"
+msgid "Replace @field"
+msgstr ""
+
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"
 msgstr "Benutzerdefiniert"
@@ -4176,6 +3313,10 @@ msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Alli Änderige sin glöscht worde."
 
+msgctxt "rewritingFailed"
+msgid "Rewriting failed"
+msgstr ""
+
 msgctxt "richTextAddLink"
 msgid "Add link"
 msgstr ""
@@ -4212,10 +3353,6 @@ msgctxt "searchBoxPlaceholder"
 msgid "Enter search term"
 msgstr "Suechbegriff iigeh"
 
-msgctxt "searchContentReplace"
-msgid "Replace @field"
-msgstr "@field ersetze"
-
 msgctxt "searchContentReplaceFailed"
 msgid "Failed to replace content."
 msgstr "Inhalt het nid chönne ersetzt wärde."
@@ -4244,6 +3381,10 @@ msgctxt "selectAllOfBundle"
 msgid "Select all \"@bundle\" blocks"
 msgstr "Alli «@bundle»-Blöck uswähle"
 
+msgctxt "selectPage"
+msgid "Select page"
+msgstr ""
+
 msgctxt "selectedIsNew"
 msgid "New"
 msgstr "Nöi"
@@ -4256,17 +3397,9 @@ msgctxt "settings"
 msgid "Settings"
 msgstr ""
 
-msgctxt "settingsAdvanced"
-msgid "Advanced"
-msgstr "Erwiiteret"
-
 msgctxt "settingsAppearance"
 msgid "Appearance"
 msgstr "Darstellig"
-
-msgctxt "settingsArtboard"
-msgid "Artboard"
-msgstr "Zeichenflächi"
 
 msgctxt "settingsBehaviour"
 msgid "Behaviour"
@@ -4284,10 +3417,6 @@ msgctxt "settingsMenuDescription"
 msgid "Personal settings for the editor"
 msgstr "Persönlichi Iistellige für dr Editor"
 
-msgctxt "settingsMenuTitle"
-msgid "Settings"
-msgstr "Iistellige"
-
 msgctxt "shortcutGroupBlocks"
 msgid "Blocks"
 msgstr "Blöck"
@@ -4300,6 +3429,14 @@ msgctxt "shortcutGroupUi"
 msgid "UI"
 msgstr "Oberflächi"
 
+msgctxt "showLabels"
+msgid "Show labels"
+msgstr ""
+
+msgctxt "showMarkers"
+msgid "Show markers"
+msgstr ""
+
 msgctxt "sidebar.hide"
 msgid "Hide @title"
 msgstr "@title usblände"
@@ -4307,6 +3444,10 @@ msgstr "@title usblände"
 msgctxt "sidebar.show"
 msgid "Show @title"
 msgstr "@title aazeige"
+
+msgctxt "smoothCurves"
+msgid "Smooth curves"
+msgstr ""
 
 msgctxt "stateUnavailableText"
 msgid ""
@@ -4348,6 +3489,10 @@ msgctxt "styleguidePickComponent"
 msgid "Pick a component to inspect."
 msgstr ""
 
+msgctxt "suffix"
+msgid "Suffix"
+msgstr ""
+
 msgctxt "summary"
 msgid "Summary"
 msgstr ""
@@ -4362,6 +3507,10 @@ msgstr ""
 
 msgctxt "swapNotPossible"
 msgid "Block positions cannot be swapped."
+msgstr ""
+
+msgctxt "switchPage"
+msgid "Switch page"
 msgstr ""
 
 msgctxt "systemRequirementsDialogButton"
@@ -4446,17 +3595,9 @@ msgctxt "templatesCreateDialogDefaultLabel"
 msgid "Use as default"
 msgstr "Als Standard verwände"
 
-msgctxt "templatesCreateDialogDescriptionLabel"
-msgid "Description"
-msgstr "Beschriibig"
-
 msgctxt "templatesCreateDialogDescriptionPlaceholder"
 msgid "Optional description of the template"
 msgstr "Optionali Beschriibig vo de Vorlag"
-
-msgctxt "templatesCreateDialogLabelLabel"
-msgid "Name"
-msgstr "Name"
 
 msgctxt "templatesCreateDialogLabelPlaceholder"
 msgid "e.g. Hero Section"
@@ -4469,14 +3610,6 @@ msgid ""
 msgstr ""
 "Erstell e wiederverwendbari Vorlag us de usgwählte Blöck. Vorlage chönne uf "
 "jeder Sitte drzuegfüegt wärde."
-
-msgctxt "templatesCreateDialogSubmit"
-msgid "Create template"
-msgstr "Vorlag erstelle"
-
-msgctxt "templatesCreateDialogTitle"
-msgid "Create template"
-msgstr "Vorlag erstelle"
 
 msgctxt "templatesCreateError"
 msgid "Failed to create template."
@@ -4501,14 +3634,6 @@ msgstr "Vorlag erfolgriich glöscht."
 msgctxt "templatesEditOverlayTitle"
 msgid "Edit template"
 msgstr "Vorlag bearbeite"
-
-msgctxt "templatesManageDialogCancelDelete"
-msgid "Cancel"
-msgstr "Abbräche"
-
-msgctxt "templatesManageDialogConfirmDelete"
-msgid "Delete"
-msgstr "Lösche"
 
 msgctxt "templatesManageDialogLead"
 msgid "View, edit and delete your block templates."
@@ -4570,6 +3695,10 @@ msgctxt "themeTourText"
 msgid "Change the colors of the theme and generate a theme file."
 msgstr "Änderi d'Farbe vom Theme und generier e Theme-Datei."
 
+msgctxt "title"
+msgid "Title"
+msgstr ""
+
 msgctxt "toggleInteractionLayers"
 msgid "Toggle interaction layers"
 msgstr "Interaktionsebene umschalte"
@@ -4618,17 +3747,9 @@ msgctxt "transformDialogButtonNewSuggestion"
 msgid "New suggestion"
 msgstr "Nöie Vorschlag"
 
-msgctxt "transformDialogButtonPreview"
-msgid "Preview"
-msgstr "Vorschau"
-
 msgctxt "translate"
 msgid "Translate"
 msgstr ""
-
-msgctxt "translateEditDisabled"
-msgid "Editing is disabled for this block type."
-msgstr "Bearbeite isch für dr Blocktyp deaktiviert."
 
 msgctxt "translateLibraryBlock"
 msgid "Reusable blocks cannot be translated here."
@@ -4640,6 +3761,10 @@ msgstr "Dr Blocktyp isch nid übersetzbar."
 
 msgctxt "translationOutdatedHint"
 msgid "The translation is marked as outdated."
+msgstr ""
+
+msgctxt "translations"
+msgid "Translations"
 msgstr ""
 
 msgctxt "translationsAddFiles"
@@ -4709,10 +3834,6 @@ msgctxt "translationsCsvDialogTitle"
 msgid "Import/Export Translations"
 msgstr ""
 
-msgctxt "translationsCsvDiff"
-msgid "Changes"
-msgstr ""
-
 msgctxt "translationsCsvExport"
 msgid "Export"
 msgstr ""
@@ -4749,10 +3870,6 @@ msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
 msgstr ""
 
-msgctxt "translationsItemAction"
-msgid "Translate"
-msgstr "Übersetze..."
-
 msgctxt "translationsMarkUpToDate"
 msgid "Mark translations as up to date"
 msgstr ""
@@ -4774,10 +3891,6 @@ msgstr ""
 "Wächsle schnäll zwüsche verfüegbare Übersetzige. E uusgrueti Sproch zeigt "
 "aa, dass dr Inhalt no nid übersetzt worde isch. E Klick druf macht "
 "s'Formular uf zum e neui Übersetztig für die Sproch z'erstelle."
-
-msgctxt "translationsTourTitle"
-msgid "Translations"
-msgstr "Übersetzige"
 
 msgctxt "translationsTranslateApply"
 msgid "Apply @count translations"
@@ -4843,14 +3956,10 @@ msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
 msgstr "Du bisch im Aaluege-Modus."
 
-msgctxt "workspaceOpen"
-msgid "Switch page"
+msgctxt "whatsNew"
+msgid "What's New"
 msgstr ""
 
 msgctxt "workspaceSearchPlaceholder"
 msgid "Search pages..."
-msgstr ""
-
-msgctxt "workspaceTitle"
-msgid "Switch page"
 msgstr ""

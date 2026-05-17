@@ -12,7 +12,7 @@
       </template>
       <template #actions>
         <ButtonAction
-          :label="$t('aiAgentDeleteConversation', 'Delete conversation')"
+          :label="$t('deleteConversation', 'Delete conversation')"
           icon="bk_mdi_delete"
           @click.stop="emit('delete', conv.uuid)"
         />

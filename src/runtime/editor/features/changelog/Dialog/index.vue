@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     id="changelog"
-    :title="$t('changelogDialogTitle', 'What\'s New')"
+    :title="$t('whatsNew', 'What\'s New')"
     hide-buttons
     icon="bk_mdi_campaign"
     mono

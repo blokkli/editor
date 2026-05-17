@@ -46,14 +46,14 @@
             :class="{ 'bk-is-loading': isDeleting }"
             @click="onConfirmDelete"
           >
-            {{ $t('templatesManageDialogConfirmDelete', 'Delete') }}
+            {{ $t('delete', 'Delete') }}
           </button>
           <button
             class="bk-button bk-scheme-mono bk-is-light bk-is-small"
             :disabled="isDeleting"
             @click="confirmDelete = false"
           >
-            {{ $t('templatesManageDialogCancelDelete', 'Cancel') }}
+            {{ $t('cancel', 'Cancel') }}
           </button>
         </template>
         <template v-else>

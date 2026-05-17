@@ -125,7 +125,7 @@
           <table class="bk-table">
             <thead>
               <tr>
-                <th class="w-full">{{ $t('publishName', 'Name') }}</th>
+                <th class="w-full">{{ $t('name', 'Name') }}</th>
                 <th colspan="2" class="text-right whitespace-nowrap pl-18">
                   {{ $t('publishStatus', 'Status') }}
                 </th>
@@ -151,7 +151,7 @@
           <table class="bk-table mt-40">
             <thead>
               <tr>
-                <th class="w-full">{{ $t('publishName', 'Name') }}</th>
+                <th class="w-full">{{ $t('name', 'Name') }}</th>
                 <th colspan="2" class="text-right whitespace-nowrap pl-18">
                   {{ $t('publishStatus', 'Status') }}
                 </th>
@@ -332,7 +332,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
       id: 'save',
       icon: 'bk_mdi_save',
       color: 'red',
-      label: $t('publishModeSaveTitle', 'Save'),
+      label: $t('save', 'Save'),
       description: $t(
         'publishModeSaveDescription',
         'Save changes without publishing',
@@ -343,7 +343,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
       id: 'immediate',
       icon: 'bk_mdi_publish',
       color: 'lime',
-      label: $t('publishModeImmediateTitle', 'Publish'),
+      label: $t('publish', 'Publish'),
       description: $t(
         'publishModeImmediateDescription',
         'Publish changes immediately',
@@ -557,18 +557,18 @@ const submitLabel = computed(() => {
 
 const currentStateLabel = computed(() =>
   isCurrentlyPublished.value
-    ? $t('publishCurrentlyPublished', 'Page is published')
+    ? $t('pageIsPublished', 'Page is published')
     : $t('publishCurrentlyUnpublished', 'Page is unpublished'),
 )
 
 const actionLabel = computed(() => {
   if (publishMode.value === 'save') {
-    return $t('publishModeSaveTitle', 'Save')
+    return $t('save', 'Save')
   }
   if (publishMode.value === 'scheduled') {
     return $t('publishModeScheduledTitle', 'Schedule')
   }
-  return $t('publishModeImmediateTitle', 'Publish')
+  return $t('publish', 'Publish')
 })
 
 const resultStateLabel = computed(() => {

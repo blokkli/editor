@@ -2,7 +2,7 @@
   <DialogModal
     id="block-transfer-summary"
     :title="$t('blockTransferSummaryTitle', 'Import summary')"
-    :submit-label="$t('blockTransferSummaryClose', 'Close')"
+    :submit-label="$t('close', 'Close')"
     :width="700"
     :lead="leadText"
     mono
@@ -174,7 +174,7 @@ const { $t } = useBlokkli()
 
 const leadText = computed(() => {
   const imported = $t(
-    'blockTransferSummaryHeadline',
+    'blocksImported',
     '@count blocks imported.',
   ).replace('@count', String(props.summary.paragraphsImported))
 

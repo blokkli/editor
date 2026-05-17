@@ -15,7 +15,7 @@ export function xAxisOptions($t: TranslateFunction): SharedOptions {
         label: $t('chartsXAxisRotation', 'Label rotation'),
         default: 'auto',
         options: {
-          auto: $t('chartsRotationAuto', 'Auto'),
+          auto: $t('auto', 'Auto'),
           '-45': '-45°',
           '-90': '-90°',
         },

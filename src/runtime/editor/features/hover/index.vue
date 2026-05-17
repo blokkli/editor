@@ -1,5 +1,5 @@
 <template>
-  <ErrorBoundary v-model="isLocked" :label="$t('feature_hover_label', 'Hover')">
+  <ErrorBoundary v-model="isLocked" label="Hover">
     <Renderer v-if="isVisible" :key="animation.renderKey.value" />
   </ErrorBoundary>
 </template>
@@ -17,7 +17,7 @@ defineBlokkliFeature({
     'Renders a border around blocks that are currently being hovered.',
 })
 
-const { selection, ui, dom, animation, $t } = useBlokkli()
+const { selection, ui, dom, animation } = useBlokkli()
 
 const isLocked = ref(false)
 

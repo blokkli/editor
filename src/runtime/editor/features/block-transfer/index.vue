@@ -5,7 +5,7 @@
         <Icon name="bk_mdi_upload" />
         <span>
           {{
-            $t('blockTransferDragLabel', '@count blocks').replace(
+            $t('blocksCount', '@count blocks').replace(
               '@count',
               String(pendingDrag?.count ?? 0),
             )
@@ -159,7 +159,7 @@ async function runImport(
           summary.value = result.importSummary
         } else {
           emitMessage(
-            $t('blockTransferImportSuccess', '@count blocks imported.').replace(
+            $t('blocksImported', '@count blocks imported.').replace(
               '@count',
               String(result.importSummary.paragraphsImported),
             ),

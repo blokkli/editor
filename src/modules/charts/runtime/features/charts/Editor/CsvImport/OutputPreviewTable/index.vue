@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th class="bk-csv-preview-category-cell">
-            {{ $t('chartsCsvCategoriesHeader', 'Categories') }}
+            {{ $t('categories', 'Categories') }}
           </th>
           <th
             v-for="(s, si) in visibleSeries"

@@ -60,7 +60,7 @@
           />
         </PanelSection>
         <AdvancedConfigPanel v-if="isAdvanced" v-model="advancedConfig" />
-        <PanelSection v-if="!isAdvanced" :title="$t('chartsData', 'Data')">
+        <PanelSection v-if="!isAdvanced" :title="$t('data', 'Data')">
           <template v-if="capabilities" #tabs>
             <PanelTabs v-model="dataTab" :tabs="dataTabs" />
           </template>

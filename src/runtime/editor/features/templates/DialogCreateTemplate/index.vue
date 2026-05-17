@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     id="templates-create"
-    :title="$t('templatesCreateDialogTitle', 'Create template')"
+    :title="$t('createTemplate', 'Create template')"
     :lead="
       $t(
         'templatesCreateDialogLead',
@@ -10,7 +10,7 @@
     "
     :width="1200"
     icon="bk_mdi_dashboard"
-    :submit-label="$t('templatesCreateDialogSubmit', 'Create template')"
+    :submit-label="$t('createTemplate', 'Create template')"
     :can-submit="!!label.length"
     mono
     @submit="onSubmit"
@@ -22,7 +22,7 @@
           id="template_label"
           v-model="label"
           lazy
-          :label="$t('templatesCreateDialogLabelLabel', 'Name')"
+          :label="$t('name', 'Name')"
           type="text"
           :placeholder="
             $t('templatesCreateDialogLabelPlaceholder', 'e.g. Hero Section')
@@ -34,7 +34,7 @@
         <FormTextarea
           id="template_description"
           v-model="description"
-          :label="$t('templatesCreateDialogDescriptionLabel', 'Description')"
+          :label="$t('description', 'Description')"
           :placeholder="
             $t(
               'templatesCreateDialogDescriptionPlaceholder',

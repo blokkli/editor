@@ -78,7 +78,7 @@ addElementClasses(
 defineMenuButton(() => {
   return {
     id: 'settings',
-    title: $t('settingsMenuTitle', 'Settings'),
+    title: $t('settings', 'Settings'),
     description: $t(
       'settingsMenuDescription',
       'Personal settings for the editor',

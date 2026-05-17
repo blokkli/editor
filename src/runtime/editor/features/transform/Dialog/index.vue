@@ -115,7 +115,7 @@ const previewButtonLabel = computed(() => {
   if (hasSeedInput.value) {
     return $t('transformDialogButtonNewSuggestion', 'New suggestion')
   }
-  return $t('transformDialogButtonPreview', 'Preview')
+  return $t('preview', 'Preview')
 })
 
 const isLocked = ref(false)
