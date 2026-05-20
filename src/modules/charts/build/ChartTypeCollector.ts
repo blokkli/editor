@@ -6,9 +6,13 @@ import type { TemplateDependency } from '../../../build/templates/defineTemplate
 import type { ModuleHelper } from '../../../build/ModuleHelper'
 import { extractFirstStringArg } from '../../../build/helpers'
 
-const DEFINITION_FILENAME = 'definition.ts'
+const DEFINITION_FILENAMES = ['definition.ts', 'definition.js']
 const RENDER_FILENAME = 'render.vue'
 const ILLUSTRATION_FILENAME = 'illustration.vue'
+
+function isDefinitionFile(filePath: string): boolean {
+  return DEFINITION_FILENAMES.includes(path.basename(filePath))
+}
 
 export type ChartTypeItem = {
   /** Chart-type id, extracted from `defineChartType('<id>', ...)`. */
@@ -57,7 +61,7 @@ class CollectedChartTypeFile extends CollectedFile {
   constructor(filePath: string, fileContents: string) {
     super(filePath, fileContents)
     const base = path.basename(filePath)
-    this.isDefinition = base === DEFINITION_FILENAME
+    this.isDefinition = isDefinitionFile(filePath)
     this.isRender = base === RENDER_FILENAME
     this.isIllustration = base === ILLUSTRATION_FILENAME
     this.typeDir = path.dirname(filePath)
@@ -97,7 +101,7 @@ export class ChartTypeCollector extends Collector<CollectedChartTypeFile> {
       const files = await resolveFiles(
         dir,
         [
-          `**/${DEFINITION_FILENAME}`,
+          ...DEFINITION_FILENAMES.map((name) => `**/${name}`),
           `**/${RENDER_FILENAME}`,
           `**/${ILLUSTRATION_FILENAME}`,
         ],
@@ -117,7 +121,7 @@ export class ChartTypeCollector extends Collector<CollectedChartTypeFile> {
   override async applies(filePath: string): Promise<boolean> {
     const base = path.basename(filePath)
     if (
-      base !== DEFINITION_FILENAME &&
+      !isDefinitionFile(filePath) &&
       base !== RENDER_FILENAME &&
       base !== ILLUSTRATION_FILENAME
     ) {

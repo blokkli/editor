@@ -13,7 +13,7 @@ export default function (collector: ChartTypeCollector) {
     'charts-definitions',
     (ctx) => {
       const rel = (p: string) =>
-        ctx.helper.toModuleBuildRelative(p).replace(/\.ts$/, '')
+        ctx.helper.toModuleBuildRelative(p).replace(/\.(ts|js)$/, '')
       const items = collector.getItems()
       const imports = items.map(
         (it) => `import ${it.importName} from '${rel(it.definitionPath)}'`,
@@ -32,7 +32,7 @@ export const definitionIds = [${ids}]
     },
     (ctx) => {
       const rel = (p: string) =>
-        ctx.helper.toModuleBuildRelative(p).replace(/\.ts$/, '')
+        ctx.helper.toModuleBuildRelative(p).replace(/\.(ts|js)$/, '')
       const items = collector.getItems()
       const typeImports = items
         .map(
