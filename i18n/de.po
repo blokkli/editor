@@ -75,6 +75,10 @@ msgctxt "addCommentToItem"
 msgid "Add Comment..."
 msgstr "Kommentar hinzufügen..."
 
+msgctxt "addCommentToItemDescription"
+msgid "Add a new comment for the selected blocks."
+msgstr "Fügt einen neuen Kommentar für die ausgewählten Blöcke hinzu."
+
 msgctxt "addListItemFavoriteAdd"
 msgid "Add to favorites"
 msgstr "Zu Favoriten hinzufügen"
@@ -379,11 +383,11 @@ msgstr "Verbinden..."
 
 msgctxt "aiAgentCreateAdvancedChartDone"
 msgid "Added advanced chart"
-msgstr ""
+msgstr "Erweitertes Diagramm hinzugefügt"
 
 msgctxt "aiAgentCreateAdvancedChartRunning"
 msgid "Creating advanced chart..."
-msgstr ""
+msgstr "Erweitertes Diagramm wird erstellt..."
 
 msgctxt "aiAgentCreateChartDone"
 msgid "Added chart"
@@ -555,11 +559,11 @@ msgstr "Blöcke suchen..."
 
 msgctxt "aiAgentGetAdvancedChartConfigDone"
 msgid "Got advanced chart config"
-msgstr ""
+msgstr "Konfiguration des erweiterten Diagramms abgerufen"
 
 msgctxt "aiAgentGetAdvancedChartConfigRunning"
 msgid "Getting advanced chart config..."
-msgstr ""
+msgstr "Konfiguration des erweiterten Diagramms wird abgerufen..."
 
 msgctxt "aiAgentGetAllFragments"
 msgid "Get all fragments"
@@ -911,11 +915,11 @@ msgstr "Unbekannter Nachrichtentyp"
 
 msgctxt "aiAgentUpdateAdvancedChartDone"
 msgid "Updated advanced chart"
-msgstr ""
+msgstr "Erweitertes Diagramm aktualisiert"
 
 msgctxt "aiAgentUpdateAdvancedChartRunning"
 msgid "Updating advanced chart..."
-msgstr ""
+msgstr "Erweitertes Diagramm wird aktualisiert..."
 
 msgctxt "aiAgentUpdateChartDone"
 msgid "Updated chart"
@@ -2488,6 +2492,14 @@ msgctxt "editNoLibraryPermission"
 msgid "You do not have permission to edit library items."
 msgstr "Bearbeiten aufgrund fehlender Berechtigung nicht möglich."
 
+msgctxt "editTranslation"
+msgid "Edit translation"
+msgstr "Übersetzung bearbeiten"
+
+msgctxt "editTranslationDescription"
+msgid "Manually add or edit the translations."
+msgstr "Die Übersetzungen manuell hinzufügen oder bearbeiten."
+
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr "Feld «@name» bearbeiten"
@@ -3829,6 +3841,10 @@ msgctxt "translationsAutoTranslateButton"
 msgid "Auto-translate..."
 msgstr "Automatisch übersetzen..."
 
+msgctxt "translationsAutoTranslateDescription"
+msgid "Automatically translate all texts of this block."
+msgstr "Übersetzt automatisch alle Texte dieses Blocks."
+
 msgctxt "translationsAutoTranslateTooltip"
 msgid "Automatically translate all texts using a translation service"
 msgstr "Alle Texte automatisch mit einem Übersetzungsdienst übersetzen"
@@ -3918,8 +3934,12 @@ msgid "Drop CSV or PO file to import"
 msgstr "CSV- oder PO-Datei zum Importieren ablegen"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
-msgstr "Übersetzung als aktuell markieren"
+msgid "Mark as up-to-date"
+msgstr "Als aktuell markieren"
+
+msgctxt "translationsMarkUpToDateDescription"
+msgid "Marks all text translations of this block as up-to-date."
+msgstr "Markiert alle Textübersetzungen dieses Blocks als aktuell."
 
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."

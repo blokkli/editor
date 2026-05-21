@@ -25,7 +25,12 @@
         />
         <slot name="icon-addon" />
       </div>
-      <Tooltip :label="title" placement="above-left" class="min-w-full">
+      <Tooltip
+        :label="title"
+        :description
+        placement="above-left"
+        class="min-w-full"
+      >
         <template v-if="keyCode" #shortcut>
           <ShortcutIndicator
             :meta="meta"
@@ -80,6 +85,8 @@ const props = withDefaults(
      * Displayed in the tooltip and keyboard shortcut hints.
      */
     title: string
+
+    description?: string
 
     /**
      * Whether the action is disabled.

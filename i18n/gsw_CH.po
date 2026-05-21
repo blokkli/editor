@@ -75,6 +75,10 @@ msgctxt "addCommentToItem"
 msgid "Add Comment..."
 msgstr "Kommentiere"
 
+msgctxt "addCommentToItemDescription"
+msgid "Add a new comment for the selected blocks."
+msgstr ""
+
 msgctxt "addListItemFavoriteAdd"
 msgid "Add to favorites"
 msgstr "Zu de Favorite drzuefüege"
@@ -2445,6 +2449,14 @@ msgctxt "editNoLibraryPermission"
 msgid "You do not have permission to edit library items."
 msgstr "Bearbeite ufgrund fählender Berächtigung nid möglich."
 
+msgctxt "editTranslation"
+msgid "Edit translation"
+msgstr ""
+
+msgctxt "editTranslationDescription"
+msgid "Manually add or edit the translations."
+msgstr ""
+
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
 msgstr "Fäld «@name» bearbeite"
@@ -3779,6 +3791,10 @@ msgctxt "translationsAutoTranslateButton"
 msgid "Auto-translate..."
 msgstr ""
 
+msgctxt "translationsAutoTranslateDescription"
+msgid "Automatically translate all texts of this block."
+msgstr ""
+
 msgctxt "translationsAutoTranslateTooltip"
 msgid "Automatically translate all texts using a translation service"
 msgstr ""
@@ -3871,7 +3887,11 @@ msgid "Drop CSV or PO file to import"
 msgstr ""
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
+msgid "Mark as up-to-date"
+msgstr ""
+
+msgctxt "translationsMarkUpToDateDescription"
+msgid "Marks all text translations of this block as up-to-date."
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"

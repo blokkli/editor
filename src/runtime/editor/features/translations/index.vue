@@ -79,7 +79,13 @@
     :disabled="markUpToDateDisabledReason"
     disabled-reason-success
     multiple
-    :title="$t('translationsMarkUpToDate', 'Mark translation as up-to-date')"
+    :title="$t('translationsMarkUpToDate', 'Mark as up-to-date')"
+    :description="
+      $t(
+        'translationsMarkUpToDateDescription',
+        'Marks all text translations of this block as up-to-date.',
+      )
+    "
     icon="bk_mdi_check_circle"
     :weight="-100"
     @click="onMarkUpToDate"
@@ -105,10 +111,34 @@
     v-if="isTranslating"
     id="translate"
     :disabled="translateDisabledReason"
-    :title="$t('translate', 'Translate')"
-    icon="bk_mdi_translate"
+    :title="$t('editTranslation', 'Edit translation') + '...'"
+    :description="
+      $t('editTranslationDescription', 'Manually add or edit the translations.')
+    "
+    icon="bk_mdi_edit"
     :weight="-90"
     @click="onTranslate"
+  />
+
+  <PluginItemAction
+    v-if="
+      isTranslating &&
+      adapter.requestTranslation &&
+      adapter.loadTextFieldValuesForLanguage &&
+      adapter.importTranslationsBatched
+    "
+    id="auto-translate"
+    multiple
+    :title="autoTranslateLabel"
+    :description="
+      $t(
+        'translationsAutoTranslateDescription',
+        'Automatically translate all texts of this block.',
+      )
+    "
+    icon="bk_mdi_translate"
+    :weight="-80"
+    @click="autoTranslateSelected"
   />
 </template>
 
@@ -126,7 +156,6 @@ import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
 import {
   defineMenuButton,
   defineHighlight,
-  defineItemDropdownAction,
   onBlokkliEvent,
   useDialog,
 } from '#blokkli/editor/composables'
@@ -199,29 +228,6 @@ defineHighlight(() => {
 
 const autoTranslateLabel = computed(() => {
   return $t('translationsAutoTranslate', 'Auto-translate')
-})
-
-defineItemDropdownAction(() => {
-  if (
-    !isTranslating.value ||
-    !adapter.requestTranslation ||
-    !adapter.loadTextFieldValuesForLanguage ||
-    !adapter.importTranslationsBatched
-  ) {
-    return
-  }
-
-  const selectedUuids = selection.uuids.value
-  if (!selectedUuids.length) return
-
-  return {
-    id: 'auto-translate',
-    label: autoTranslateLabel.value,
-    icon: 'bk_mdi_translate',
-    group: 'translate',
-    weight: -80,
-    callback: () => autoTranslateSelected(),
-  }
 })
 
 async function autoTranslateSelected() {
@@ -338,10 +344,7 @@ const translateDisabledReason = computed<false | string>(() => {
   )
 
   if (definition?.editor?.disableEdit) {
-    return $t(
-      'editingDisabled',
-      'Editing is disabled for this block type.',
-    )
+    return $t('editingDisabled', 'Editing is disabled for this block type.')
   }
   const type = types.getBlockBundleDefinition(block.bundle)
 

@@ -29,6 +29,12 @@
   <PluginItemAction
     id="add_comment"
     :title="$t('addCommentToItem', 'Add Comment...')"
+    :description="
+      $t(
+        'addCommentToItemDescription',
+        'Add a new comment for the selected blocks.',
+      )
+    "
     :active="showAddComment"
     weight="last"
     icon="bk_mdi_add_comment"

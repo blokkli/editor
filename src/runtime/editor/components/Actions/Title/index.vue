@@ -78,7 +78,7 @@
       <Pill
         v-show="selectedTranslationIsOutdated"
         :text="$t('selectedTranslationIsOutdated', 'Outdated')"
-        variant="light"
+        variant="normal"
         scheme="yellow"
       />
 

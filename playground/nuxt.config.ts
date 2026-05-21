@@ -116,7 +116,8 @@ export default defineNuxtConfig({
         provider: 'anthropic',
         models: [
           {
-            name: 'claude-haiku-4-5',
+            // name: 'claude-haiku-4-5',
+            name: 'claude-sonnet-4-6',
             label: 'Claude Haiku 4.5',
             isDefault: true,
             routing: true,
