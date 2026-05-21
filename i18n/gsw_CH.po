@@ -2343,16 +2343,16 @@ msgctxt "display"
 msgid "Display"
 msgstr ""
 
-msgctxt "download"
-msgid "Download"
+msgctxt "downloadCsv"
+msgid "Download CSV"
 msgstr ""
 
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fählerprotokoll abelade"
 
-msgctxt "downloadWithLabel"
-msgid "Download @label"
+msgctxt "downloadPoWithLabel"
+msgid "Download @label PO"
 msgstr ""
 
 msgctxt "draggingOverlaySelectBundle"
@@ -3842,8 +3842,8 @@ msgctxt "translationsCsvApply"
 msgid "Import @count translations"
 msgstr ""
 
-msgctxt "translationsCsvChangesLabel"
-msgid "fields will be updated"
+msgctxt "translationsCsvChangesTitle"
+msgid "@count/@total fields will be updated"
 msgstr ""
 
 msgctxt "translationsCsvDialogTitle"
@@ -3854,8 +3854,16 @@ msgctxt "translationsCsvExport"
 msgid "Export"
 msgstr ""
 
+msgctxt "translationsCsvExportFieldsTitle"
+msgid "@count fields"
+msgstr ""
+
 msgctxt "translationsCsvImport"
 msgid "Import"
+msgstr ""
+
+msgctxt "translationsCsvImportFileTitle"
+msgid "File"
 msgstr ""
 
 msgctxt "translationsCsvLanguages"
@@ -3887,7 +3895,7 @@ msgid "Drop CSV or PO file to import"
 msgstr ""
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark as up-to-date"
+msgid "Mark translations as up to date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDescription"

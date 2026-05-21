@@ -28,7 +28,7 @@
     </div>
     <div
       v-if="label || description"
-      class="bk-checkbox-toggle-label inline-block pr-10 text-base"
+      class="bk-checkbox-toggle-label inline-block text-base"
     >
       <div
         v-if="label"

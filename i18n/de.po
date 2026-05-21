@@ -2384,17 +2384,17 @@ msgctxt "display"
 msgid "Display"
 msgstr "Darstellung"
 
-msgctxt "download"
-msgid "Download"
-msgstr "Herunterladen"
+msgctxt "downloadCsv"
+msgid "Download CSV"
+msgstr "CSV herunterladen"
 
 msgctxt "downloadLogsButton"
 msgid "Download Logs"
 msgstr "Fehlerprotokoll herunterladen"
 
-msgctxt "downloadWithLabel"
-msgid "Download @label"
-msgstr "@label herunterladen"
+msgctxt "downloadPoWithLabel"
+msgid "Download @label PO"
+msgstr "@label PO herunterladen"
 
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
@@ -3889,9 +3889,9 @@ msgctxt "translationsCsvApply"
 msgid "Import @count translations"
 msgstr "@count Übersetzungen importieren"
 
-msgctxt "translationsCsvChangesLabel"
-msgid "fields will be updated"
-msgstr "Felder werden aktualisiert"
+msgctxt "translationsCsvChangesTitle"
+msgid "@count/@total fields will be updated"
+msgstr "@count/@total Felder werden aktualisiert"
 
 msgctxt "translationsCsvDialogTitle"
 msgid "Import/Export Translations"
@@ -3901,9 +3901,17 @@ msgctxt "translationsCsvExport"
 msgid "Export"
 msgstr "Export"
 
+msgctxt "translationsCsvExportFieldsTitle"
+msgid "@count fields"
+msgstr "@count Felder"
+
 msgctxt "translationsCsvImport"
 msgid "Import"
 msgstr "Import"
+
+msgctxt "translationsCsvImportFileTitle"
+msgid "File"
+msgstr "Datei"
 
 msgctxt "translationsCsvLanguages"
 msgid "Languages"
@@ -3934,7 +3942,7 @@ msgid "Drop CSV or PO file to import"
 msgstr "CSV- oder PO-Datei zum Importieren ablegen"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark as up-to-date"
+msgid "Mark translations as up to date"
 msgstr "Als aktuell markieren"
 
 msgctxt "translationsMarkUpToDateDescription"

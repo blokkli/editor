@@ -3,39 +3,40 @@
     icon="bk_mdi_translate"
     :label="$t('translationsDropToImport', 'Drop CSV or PO file to import')"
     :accept="acceptTranslationFile"
-    class="flex flex-col h-full"
     @drop="addFiles"
   >
-    <div v-if="files.length" class="flex flex-wrap items-center gap-8 pb-20">
-      <div
-        v-for="(file, index) in files"
-        :key="index"
-        class="flex items-center gap-5 bg-mono-100 rounded-full pl-10 pr-5 py-3 text-sm text-mono-800"
-      >
-        <span>{{ file.name }}</span>
-        <button
-          class="rounded-full p-2 text-mono-400 hover:text-mono-900 hover:bg-mono-200"
-          @click="removeFile(file)"
+    <PanelSection :title="$t('translationsCsvImportFileTitle', 'File')" padded>
+      <div v-if="files.length" class="flex flex-wrap items-center gap-8">
+        <div
+          v-for="(file, index) in files"
+          :key="index"
+          class="flex items-center gap-5 bg-mono-100 rounded-full pl-10 pr-5 py-3 text-sm text-mono-800"
         >
-          <Icon name="bk_mdi_close" class="size-15" />
+          <span>{{ file.name }}</span>
+          <button
+            class="rounded-full p-2 text-mono-400 hover:text-mono-900 hover:bg-mono-200"
+            @click="removeFile(file)"
+          >
+            <Icon name="bk_mdi_close" class="size-15" />
+          </button>
+        </div>
+        <button
+          class="bk-button bk-scheme-mono bk-is-small"
+          @click.prevent="triggerFileDialog"
+        >
+          {{ $t('translationsAddFiles', 'Add files...') }}
         </button>
       </div>
       <button
-        class="bk-button bk-scheme-mono bk-is-small"
-        @click.prevent="triggerFileDialog"
-      >
-        {{ $t('translationsAddFiles', 'Add files...') }}
-      </button>
-    </div>
-    <div v-else class="mx-auto py-20">
-      <button
+        v-else
         type="button"
         class="bk-button bk-scheme-mono"
         @click.prevent="triggerFileDialog"
       >
         {{ $t('translationsSelectImportFile', 'Select CSV or PO file') }}
       </button>
-    </div>
+    </PanelSection>
+
     <template v-if="files.length">
       <div
         v-if="changes && !changes.length"
@@ -43,12 +44,21 @@
       >
         {{ $t('translationsCsvNoChanges', 'No changes found') }}
       </div>
-      <template v-else-if="changes && changes.length">
+      <PanelSection
+        v-else-if="changes && changes.length"
+        :title="
+          $t(
+            'translationsCsvChangesTitle',
+            '@count/@total fields will be updated',
+          )
+            .replace('@count', selectedCount.toString())
+            .replace('@total', changes.length.toString())
+        "
+      >
         <SelectionTable
           show-selection
           :selected-count="selectedCount"
           :total-count="changes.length"
-          :label="$t('translationsCsvChangesLabel', 'fields will be updated')"
           @toggle-all="toggleAll"
         >
           <template #header>
@@ -110,19 +120,8 @@
             </tr>
           </template>
         </SelectionTable>
-        <div class="flex items-center gap-10 mt-auto pt-20">
-          <button
-            class="bk-button bk-scheme-accent"
-            :disabled="!selectedCount"
-            @click="applyImport"
-          >
-            {{
-              $t('translationsCsvApply', 'Import @count translations').replace(
-                '@count',
-                selectedCount.toString(),
-              )
-            }}
-          </button>
+
+        <div class="mt-15">
           <FormToggle
             v-model="markUpToDate"
             class="!h-auto"
@@ -131,7 +130,21 @@
             "
           />
         </div>
-      </template>
+
+        <template #actions>
+          <PanelAction
+            icon="bk_mdi_check"
+            :disabled="!selectedCount"
+            :title="
+              $t('translationsCsvApply', 'Import @count translations').replace(
+                '@count',
+                selectedCount.toString(),
+              )
+            "
+            @click="applyImport"
+          />
+        </template>
+      </PanelSection>
     </template>
     <input
       ref="fileInputEl"
@@ -154,6 +167,8 @@ import {
 } from '#blokkli/editor/components'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../../SelectionTable/index.vue'
 
 type ImportChange = {

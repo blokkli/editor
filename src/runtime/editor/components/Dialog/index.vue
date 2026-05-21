@@ -42,23 +42,25 @@
         <slot name="pre-footer" />
       </div>
       <div
-        v-if="!hideButtons"
-        class="bk bk-dialog-footer"
+        v-if="!hideButtons || $slots.footer"
+        class="flex gap-10 p-15 lg:p-20 border-t bg-mono-50 border-t-mono-300 items-center"
         :class="{
           'mt-0!': $slots['pre-footer'],
         }"
       >
-        <button
-          class="bk-button"
-          :disabled="!canSubmit"
-          :class="[
-            { 'bk-is-loading': isLoading },
-            isDanger ? 'bk-scheme-red' : 'bk-scheme-accent',
-          ]"
-          @click="$emit('submit')"
-        >
-          {{ submitLabel }}
-        </button>
+        <slot name="footer">
+          <button
+            class="bk-button"
+            :disabled="!canSubmit"
+            :class="[
+              { 'bk-is-loading': isLoading },
+              isDanger ? 'bk-scheme-red' : 'bk-scheme-accent',
+            ]"
+            @click="$emit('submit')"
+          >
+            {{ submitLabel }}
+          </button>
+        </slot>
       </div>
     </div>
   </div>
@@ -75,6 +77,7 @@ import {
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/editor/components'
 import { onBlokkliEvent, useFocusTrap } from '#blokkli/editor/composables'
+import GrowOnly from '../GrowOnly/index.vue'
 
 const { ui } = useBlokkli()
 
@@ -105,6 +108,7 @@ const props = withDefaults(
     lead: '',
     submitLabel: '',
     icon: undefined,
+    zIndex: 'default',
   },
 )
 
@@ -187,13 +191,6 @@ export default {
 
   .bk-dialog-lead {
     @apply text-base md:text-lg lg:text-xl font-sans mb-10 lg:mb-20 text-mono-700;
-  }
-  .bk-dialog-footer {
-    @apply flex gap-10 p-15 lg:p-20 border-t bg-mono-50 border-t-mono-300;
-    flex: 0 0 auto;
-    button {
-      @apply w-full lg:w-auto;
-    }
   }
 
   .bk-dialog-content,

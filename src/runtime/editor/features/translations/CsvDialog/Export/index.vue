@@ -1,25 +1,43 @@
 <template>
-  <div class="flex flex-col h-full">
-    <div v-if="isLoading" class="flex items-center gap-10 py-20">
+  <div>
+    <PanelSection :title="$t('filter', 'Filter')" padded>
+      <div class="flex items-end gap-40">
+        <FormCheckboxes
+          id="export-languages"
+          v-model="selectedLanguages"
+          :label="$t('translationsCsvLanguages', 'Languages')"
+          :options="languageOptions"
+          inline
+          @update:model-value="loadExportData"
+        />
+        <FormToggle
+          v-model="onlyOutdated"
+          :label="
+            $t('translationsCsvOnlyOutdated', 'Only outdated translations')
+          "
+        />
+        <FormToggle
+          v-model="onlyMissing"
+          :label="$t('translationsCsvOnlyMissing', 'Only missing translations')"
+        />
+      </div>
+    </PanelSection>
+
+    <div v-if="isLoading" class="flex items-center justify-center py-60">
       <Loading />
     </div>
-    <template v-else-if="exportRows.length">
-      <SelectionTable
-        v-model:only-outdated="onlyOutdated"
-        v-model:only-untranslated="onlyMissing"
-        show-filters
-        :total-count="filteredRows.length"
-      >
-        <template #toolbar>
-          <FormCheckboxes
-            id="export-languages"
-            v-model="selectedLanguages"
-            :label="$t('translationsCsvLanguages', 'Languages')"
-            :options="languageOptions"
-            inline
-            @update:model-value="loadExportData"
-          />
-        </template>
+
+    <PanelSection
+      v-else-if="exportRows.length"
+      sticky-actions
+      :title="
+        $t('translationsCsvExportFieldsTitle', '@count fields').replace(
+          '@count',
+          filteredRows.length.toString(),
+        )
+      "
+    >
+      <SelectionTable :total-count="filteredRows.length">
         <template #header>
           <th>Key</th>
           <th>{{ sourceLangName }}</th>
@@ -42,46 +60,40 @@
           </tr>
         </template>
       </SelectionTable>
-      <div class="flex gap-10 flex-wrap pt-20">
-        <button class="bk-button" @click="downloadCsv">
-          <div
-            class="uppercase font-bold border-2 leading-none rounded px-3 py-2 -ml-5"
-          >
-            csv
-          </div>
-          <span>{{ $t('download', 'Download') }}</span>
-        </button>
-        <button
+
+      <template #actions>
+        <PanelAction
+          icon="bk_mdi_download"
+          :title="$t('downloadCsv', 'Download CSV')"
+          @click="downloadCsv"
+        />
+        <PanelAction
           v-for="lang in activeLanguages"
           :key="lang.id"
-          class="bk-button"
-          @click="downloadPo(lang.id)"
-        >
-          <div
-            class="uppercase font-bold border-2 leading-none rounded px-3 py-2 -ml-5"
-          >
-            po
-          </div>
-          <span>{{
-            $t('downloadWithLabel', 'Download @label').replace(
+          icon="bk_mdi_download"
+          :title="
+            $t('downloadPoWithLabel', 'Download @label PO').replace(
               '@label',
               lang.name,
             )
-          }}</span>
-        </button>
-      </div>
-    </template>
+          "
+          @click="downloadPo(lang.id)"
+        />
+      </template>
+    </PanelSection>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, useBlokkli, onMounted } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
-import { Loading, FormCheckboxes } from '#blokkli/editor/components'
+import { Loading, FormCheckboxes, FormToggle } from '#blokkli/editor/components'
 import type { MultiLangRow } from '../csv'
 import { buildMultiLangCsv } from '../csv'
 import { buildPo } from '../po'
 import type { Language } from '#blokkli/editor/types/state'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../../SelectionTable/index.vue'
 
 const { adapter, $t, state, blocks, context, element, ui, directive } =

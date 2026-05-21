@@ -44,6 +44,7 @@
           :class="{
             'opacity-50': disabled,
             '!border-t-0': !$slots.default,
+            'sticky bottom-0 z-50': stickyActions,
           }"
         >
           <div
@@ -67,6 +68,7 @@ defineProps<{
   help?: string
   disabled?: boolean
   padded?: boolean
+  stickyActions?: boolean
 }>()
 
 defineOptions({

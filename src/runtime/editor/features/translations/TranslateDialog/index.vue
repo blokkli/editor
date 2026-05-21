@@ -4,135 +4,146 @@
     :title="$t('translationsTranslateDialogTitle', 'Automatic Translation')"
     icon="bk_mdi_translate"
     :width="1800"
-    hide-buttons
+    mono
     @cancel="$emit('close')"
   >
-    <div class="bk h-[calc(100vh-200px)] overflow-hidden flex flex-col">
-      <template v-if="isLoading">
-        <div class="flex items-center justify-center py-60">
-          <Loading />
-        </div>
-      </template>
+    <PanelSection
+      v-if="!isLoading && sourceValues.length"
+      :title="$t('filter', 'Filter')"
+      padded
+    >
+      <div class="flex items-center gap-20">
+        <FormToggle
+          v-model="onlyOutdated"
+          :label="
+            $t('translationsCsvOnlyOutdated', 'Only outdated translations')
+          "
+        />
+        <FormToggle
+          v-model="onlyUntranslated"
+          :label="$t('translationsCsvOnlyMissing', 'Only missing translations')"
+        />
+      </div>
+    </PanelSection>
 
-      <template v-else-if="!sourceValues.length">
-        <div class="py-20 text-center text-mono-500">
-          {{
-            $t(
-              'translationsTranslateNoTexts',
-              'No translatable texts found on this page.',
-            )
-          }}
-        </div>
-      </template>
-
-      <template v-else>
-        <SelectionTable
-          v-model:only-outdated="onlyOutdated"
-          v-model:only-untranslated="onlyUntranslated"
-          show-filters
-          show-selection
-          :selected-count="selectedCount"
-          :total-count="filteredValues.length"
-          :label="$t('translationsTranslateFieldsLabel', 'fields selected')"
-          @toggle-all="toggleAll"
-        >
-          <template #header>
-            <th>{{ sourceLangName }}</th>
-            <th v-if="hasTranslated">
-              {{ targetLangName }}
-            </th>
-            <th v-else>
-              {{
-                $t(
-                  'translationsTranslateCurrentColumn',
-                  'Current translation (@language)',
-                ).replace('@language', targetLangName)
-              }}
-            </th>
-          </template>
-          <template #body>
-            <tr v-for="item in filteredValues" :key="item.key">
-              <td>
-                <div class="bk-checkbox">
-                  <input
-                    type="checkbox"
-                    :checked="selected[item.key]"
-                    @change="selected[item.key] = !selected[item.key]"
-                  />
-                  <span class="!mt-0 before:!mt-0" />
-                </div>
-              </td>
-              <td v-text="stripHtml(item.value)" />
-              <td v-if="hasTranslated && translations.has(item.key)">
-                <DiffValue
-                  :before="currentValues.get(item.key) || ''"
-                  :after="translations.get(item.key) || ''"
-                  :after-only="
-                    !currentValues.get(item.key) ||
-                    currentValues.get(item.key) === item.value
-                  "
-                />
-              </td>
-              <td v-else>
-                <span
-                  v-if="
-                    currentValues.get(item.key) &&
-                    currentValues.get(item.key) !== item.value
-                  "
-                  v-text="stripHtml(currentValues.get(item.key)!)"
-                />
-                <span v-else class="text-mono-400 italic">&mdash;</span>
-              </td>
-            </tr>
-          </template>
-        </SelectionTable>
-
-        <div class="flex items-center gap-10 mt-auto pt-20">
-          <button
-            class="bk-button"
-            :disabled="!selectedCount || isTranslating"
-            @click="requestTranslations"
-          >
-            <template v-if="isTranslating">
-              {{ $t('translationsTranslateLoading', 'Translating...') }}
-            </template>
-            <template v-else>
-              {{
-                $t(
-                  'translationsTranslateButton',
-                  'Request @count translations',
-                ).replace('@count', selectedCount.toString())
-              }}
-            </template>
-          </button>
-          <button
-            class="bk-button bk-scheme-accent"
-            :disabled="!hasTranslated || !selectedCount || isApplying"
-            @click="applyTranslations"
-          >
-            {{
-              $t(
-                'translationsTranslateApply',
-                'Apply @count translations',
-              ).replace('@count', selectedCount.toString())
-            }}
-          </button>
-          <FormToggle
-            v-model="markUpToDate"
-            class="!h-auto"
-            :label="
-              $t('translationsMarkUpToDate', 'Mark translations as up to date')
-            "
-          />
-        </div>
-      </template>
+    <PanelSection :title="sourceValues.length ? fieldsTitle : undefined">
+      <div v-if="isLoading" class="flex items-center justify-center py-60">
+        <Loading />
+      </div>
 
       <div
-        v-if="errorMessage"
-        class="text-red-normal text-sm"
-        v-text="errorMessage"
+        v-else-if="!sourceValues.length"
+        class="py-20 text-center text-mono-500"
+      >
+        {{
+          $t(
+            'translationsTranslateNoTexts',
+            'No translatable texts found on this page.',
+          )
+        }}
+      </div>
+
+      <SelectionTable
+        v-else
+        show-selection
+        :selected-count="selectedCount"
+        :total-count="filteredValues.length"
+        @toggle-all="toggleAll"
+      >
+        <template #header>
+          <th>{{ sourceLangName }}</th>
+          <th v-if="hasTranslated">
+            {{ targetLangName }}
+          </th>
+          <th v-else>
+            {{
+              $t(
+                'translationsTranslateCurrentColumn',
+                'Current translation (@language)',
+              ).replace('@language', targetLangName)
+            }}
+          </th>
+        </template>
+        <template #body>
+          <tr v-for="item in filteredValues" :key="item.key">
+            <td>
+              <div class="bk-checkbox">
+                <input
+                  type="checkbox"
+                  :checked="selected[item.key]"
+                  @change="selected[item.key] = !selected[item.key]"
+                />
+                <span class="!mt-0 before:!mt-0" />
+              </div>
+            </td>
+            <td v-text="stripHtml(item.value)" />
+            <td v-if="hasTranslated && translations.has(item.key)">
+              <DiffValue
+                :before="currentValues.get(item.key) || ''"
+                :after="translations.get(item.key) || ''"
+                :after-only="
+                  !currentValues.get(item.key) ||
+                  currentValues.get(item.key) === item.value
+                "
+              />
+            </td>
+            <td v-else>
+              <span
+                v-if="
+                  currentValues.get(item.key) &&
+                  currentValues.get(item.key) !== item.value
+                "
+                v-text="stripHtml(currentValues.get(item.key)!)"
+              />
+              <span v-else class="text-mono-400 italic">&mdash;</span>
+            </td>
+          </tr>
+        </template>
+      </SelectionTable>
+    </PanelSection>
+
+    <template v-if="errorMessage" #pre-footer>
+      <div class="text-red-normal text-sm" v-text="errorMessage" />
+    </template>
+
+    <template #footer>
+      <button
+        class="bk-button"
+        :disabled="!selectedCount || isTranslating"
+        @click="requestTranslations"
+      >
+        <template v-if="isTranslating">
+          {{ $t('translationsTranslateLoading', 'Translating...') }}
+        </template>
+        <template v-else>
+          {{
+            $t(
+              'translationsTranslateButton',
+              'Request @count translations',
+            ).replace('@count', selectedCount.toString())
+          }}
+        </template>
+      </button>
+      <button
+        class="bk-button bk-scheme-accent"
+        :disabled="!hasTranslated || !selectedCount || isApplying"
+        @click="applyTranslations"
+      >
+        {{
+          $t('translationsTranslateApply', 'Apply @count translations').replace(
+            '@count',
+            selectedCount.toString(),
+          )
+        }}
+      </button>
+      <FormToggle
+        v-model="markUpToDate"
+        class="!h-auto"
+        :label="
+          $t('translationsMarkUpToDate', 'Mark translations as up to date')
+        "
       />
-    </div>
+    </template>
   </DialogModal>
 </template>
 
@@ -145,6 +156,7 @@ import {
   Loading,
 } from '#blokkli/editor/components'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
+import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import SelectionTable from '../SelectionTable/index.vue'
 
 const emit = defineEmits<{
@@ -202,6 +214,12 @@ const filteredValues = computed(() => {
 
 const selectedCount = computed(
   () => filteredValues.value.filter((item) => selected.value[item.key]).length,
+)
+
+const fieldsTitle = computed(
+  () =>
+    `${selectedCount.value}/${filteredValues.value.length} ` +
+    $t('translationsTranslateFieldsLabel', 'fields selected'),
 )
 
 const sourceLangName = computed(() => {
