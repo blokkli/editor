@@ -1,7 +1,7 @@
 <template>
   <div class="w-full bk-panel-item">
     <div
-      class="bg-white w-full grid grid-cols-[1fr_auto] group/panel-item"
+      class="bg-white w-full grid grid-cols-[1fr_auto] group/panel-item relative"
       :class="{
         'hover:bg-mono-100': renderAsButton,
         'bg-white! pointer-events-none! text-mono-300': disabled,
@@ -9,6 +9,25 @@
         'bg-white!': active,
       }"
     >
+      <button
+        v-if="handleProps"
+        class="absolute top-0 left-0 w-panel-gap bottom-0 py-panel-gap overflow-hidden text-mono-400 hover:text-accent-600 invisible group-hover/panel-item:visible group/handle"
+        v-bind="handleProps"
+        :title="$t('dragToMove', 'Drag to move')"
+      >
+        <div
+          type="button"
+          class="flex items-center justify-center cursor-grab w-panel-gap h-full"
+        >
+          <div class="flex flex-col gap-3">
+            <div
+              v-for="n in 3"
+              :key="'dot_' + n"
+              class="bg-current rounded-full size-[4px]"
+            />
+          </div>
+        </div>
+      </button>
       <Component
         :is="renderAsButton ? 'button' : 'div'"
         class="p-panel-gap flex gap-8 w-full col-start-1 -col-end-1 row-start-1"
@@ -56,7 +75,7 @@
 <script setup lang="ts">
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Icon from '#blokkli/editor/components/Icon/index.vue'
-import { computed, useSlots } from '#imports'
+import { computed, useSlots, useBlokkli } from '#imports'
 import type { ThemeColorName } from './../../../../../global/types/theme'
 
 const props = defineProps<{
@@ -99,6 +118,12 @@ const props = defineProps<{
    * Whether to render a button. Automatically set to true if a default slot is provided.
    */
   isButton?: boolean
+
+  /**
+   * When provided, renders a drag handle in the actions area. Bind the
+   * `handleProps` slot prop from `<Reorder>` here to make the item draggable.
+   */
+  handleProps?: Record<string, unknown>
 }>()
 
 defineEmits<{
@@ -106,6 +131,7 @@ defineEmits<{
 }>()
 
 const slots = useSlots()
+const { $t } = useBlokkli()
 
 const renderAsButton = computed<boolean>(
   () => !!slots.default || !!props.isButton,

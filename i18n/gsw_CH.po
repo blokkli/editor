@@ -2355,6 +2355,10 @@ msgctxt "downloadPoWithLabel"
 msgid "Download @label PO"
 msgstr ""
 
+msgctxt "dragToMove"
+msgid "Drag to move"
+msgstr ""
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr "Blocktyp zum Erstelle uswähle"

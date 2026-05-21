@@ -548,6 +548,7 @@
   "downloadCsv": "CSV herunterladen",
   "downloadLogsButton": "Fehlerprotokoll herunterladen",
   "downloadPoWithLabel": "@label PO herunterladen",
+  "dragToMove": "Zum Verschieben ziehen",
   "draggingOverlaySelectBundle": "Block-Typ zum Erstellen auswählen",
   "droppableFieldAdd": "Zu @field hinzufügen",
   "droppableFieldAddFailed": "Eintrag konnte nicht hinzugefügt werden.",

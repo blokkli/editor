@@ -109,6 +109,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_mobile',
   'bk_mdi_mobile_rotate',
   'bk_mdi_monitor',
+  'bk_mdi_more_vert',
   'bk_mdi_newspaper',
   'bk_mdi_open_in_new',
   'bk_mdi_palette',

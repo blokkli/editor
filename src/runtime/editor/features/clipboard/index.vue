@@ -264,6 +264,9 @@ function onDragOver(e: DragEvent) {
 
 function onNativeDrop(e: DragEvent) {
   e.preventDefault()
+  if (ui.hasDialogOpen.value || ui.isApproving.value) {
+    return
+  }
 
   if (isDragFromInput) {
     isDragFromInput = false

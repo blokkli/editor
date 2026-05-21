@@ -5,6 +5,7 @@
     :icon="icon"
     :muted="editingId !== null && !isEditing"
     :active="isEditing"
+    :handle-props
     @click="onItemClick"
   >
     <template #actions>
@@ -66,6 +67,7 @@ const props = defineProps<{
   feature: Feature
   icon: BlokkliIcon
   editingId: number | null
+  handleProps?: Record<string, unknown>
 }>()
 
 const emit = defineEmits<{

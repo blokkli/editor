@@ -1,19 +1,21 @@
 <template>
   <div class="w-full">
     <PanelSection title="Map features">
-      <TransitionList>
-        <Feature
-          v-for="feature in features"
-          :key="feature.id"
-          :feature="feature"
-          :icon="featureIcons[feature.type]"
-          :editing-id
-          @edit="editingId = feature.id"
-          @cancel="editingId = null"
-          @delete="remove(feature.id)"
-          @save="(label) => updateLabel(feature.id, label)"
-        />
-      </TransitionList>
+      <Reorder :items="features" key-field="id" transition @reorder="onReorder">
+        <template #default="{ item, handleProps, isDragging }">
+          <Feature
+            :feature="item"
+            :icon="featureIcons[item.type]"
+            :editing-id
+            :handle-props
+            :class="{ 'opacity-50': isDragging }"
+            @edit="editingId = item.id"
+            @cancel="editingId = null"
+            @delete="remove(item.id)"
+            @save="(label) => updateLabel(item.id, label)"
+          />
+        </template>
+      </Reorder>
       <template #actions>
         <PanelAction
           v-for="kind in featureKinds"
@@ -64,7 +66,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import PanelDetails from '#blokkli/editor/components/Panel/Details/index.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
-import TransitionList from '#blokkli/editor/components/Transition/List/index.vue'
+import Reorder from '#blokkli/editor/components/Reorder/index.vue'
 import Feature from './Feature.vue'
 
 type FeatureKind = 'point' | 'line' | 'rectangle' | 'polygon'
@@ -156,5 +158,12 @@ function updateLabel(id: number, label: string) {
   const feature = features.value.find((f) => f.id === id)
   if (feature) feature.label = label
   editingId.value = null
+}
+
+function onReorder({ from, to }: { from: number; to: number }) {
+  const next = features.value.slice()
+  const [moved] = next.splice(from, 1)
+  next.splice(to, 0, moved!)
+  features.value = next
 }
 </script>
