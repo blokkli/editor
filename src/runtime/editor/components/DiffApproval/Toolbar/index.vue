@@ -1,101 +1,126 @@
 <template>
   <Teleport v-if="ui.mainLayoutElement.value" :to="ui.mainLayoutElement.value">
-    <div class="bk bk-diff-approval-toolbar-hint bk-control">
-      {{
-        $t(
-          'aiAgentApprovalHint',
-          'Review changes and accept or reject them individually. Tab/Arrow keys: navigate, Space/Enter: accept/reject.',
-        )
-      }}
-    </div>
-    <div class="bk bk-diff-approval-toolbar bk-control">
-      <button
-        class="bk-diff-approval-toolbar-nav group/tooltip"
-        @click="$emit('prev')"
-      >
-        <Icon name="bk_mdi_chevron_left" />
-        <Tooltip
-          :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
-          placement="above-left"
-        >
-          <template #shortcut>
-            <ShortcutIndicator
-              key-code="ArrowLeft"
-              :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
-              @pressed="$emit('prev')"
-            />
-          </template>
-        </Tooltip>
-      </button>
-      <button
-        class="bk-diff-approval-toolbar-nav group/tooltip"
-        @click="$emit('next')"
-      >
-        <Icon name="bk_mdi_chevron_right" />
-        <Tooltip
-          placement="above-left"
-          :label="$t('aiAgentApprovalNextChange', 'Next change')"
-        >
-          <template #shortcut>
-            <ShortcutIndicator
-              key-code="ArrowRight"
-              :label="$t('aiAgentApprovalNextChange', 'Next change')"
-              @pressed="$emit('next')"
-            />
-          </template>
-        </Tooltip>
-      </button>
-
-      <div class="bk-diff-approval-toolbar-info">
-        <span class="bk-diff-approval-toolbar-counter">
-          {{ currentIndex + 1 }} / {{ totalItems }}
-        </span>
-        <span class="bk-diff-approval-toolbar-label">
-          {{ currentItem.fieldLabel }}
-          <template v-if="bundleLabel"> &middot; {{ bundleLabel }}</template>
-        </span>
-      </div>
-
-      <div class="bk-diff-approval-toolbar-toggle group/tooltip">
-        <FormToggle
-          :model-value="selected[currentItem.id]"
-          :label="$t('aiAgentApprovalAccept', 'Accept')"
-          @update:model-value="toggleCurrent"
-        />
-        <Tooltip
-          :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
-          placement="above-left"
-        >
-          <template #shortcut>
-            <ShortcutIndicator
-              key-code="Enter"
-              :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
-              @pressed="toggleCurrent"
-            />
-          </template>
-        </Tooltip>
-      </div>
-
+    <div
+      class="bk bk-control bk-diff-approval-toolbar-hint p-15 pointer-events-auto"
+    ></div>
+    <div
+      class="bk bk-control bk-diff-approval-toolbar self-end pointer-events-auto bg-mono-900 text-mono-50 select-none relative mx-15 mb-15 rounded shadow-xl-even outline outline-1 outline-mono-400"
+    >
       <div
-        v-if="!selected[currentItem.id]"
-        class="bk-diff-approval-toolbar-reason"
+        class="text-mono-100 font-medium text-sm border-b border-b-mono-600 flex justify-between items-center"
       >
-        <input
-          type="text"
-          :value="reasons[currentItem.id]"
-          :placeholder="
-            $t(
-              'aiAgentBatchRewriteReasonPlaceholder',
-              'Reason for rejection (optional)',
-            )
-          "
-          @input="onReasonInput"
-        />
+        <span class="p-10">{{
+          $t(
+            'aiAgentApprovalHint',
+            'Review changes and accept or reject them individually. Tab/Arrow keys: navigate, Space/Enter: accept/reject.',
+          )
+        }}</span>
+        <button
+          class="hover:bg-mono-800 h-40 px-8 flex items-center gap-5 font-semibold"
+          @click="$emit('cancel')"
+        >
+          <span>{{ $t('cancel', 'Cancel') }}</span>
+          <Icon name="bk_mdi_close" class="size-20" />
+        </button>
       </div>
+      <div class="flex items-center h-50">
+        <button
+          class="bk-toolbar-button group/tooltip relative rounded-l-md"
+          @click="$emit('prev')"
+        >
+          <Icon name="bk_mdi_arrow_back" />
+          <Tooltip
+            :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
+            placement="above-left"
+          >
+            <template #shortcut>
+              <ShortcutIndicator
+                key-code="ArrowLeft"
+                :label="$t('aiAgentApprovalPrevChange', 'Previous change')"
+                @pressed="$emit('prev')"
+              />
+            </template>
+          </Tooltip>
+        </button>
+        <button
+          class="bk-toolbar-button group/tooltip relative"
+          @click="$emit('next')"
+        >
+          <Icon name="bk_mdi_arrow_forward" />
+          <Tooltip
+            placement="above-left"
+            :label="$t('aiAgentApprovalNextChange', 'Next change')"
+          >
+            <template #shortcut>
+              <ShortcutIndicator
+                key-code="ArrowRight"
+                :label="$t('aiAgentApprovalNextChange', 'Next change')"
+                @pressed="$emit('next')"
+              />
+            </template>
+          </Tooltip>
+        </button>
 
-      <button class="bk-button bk-scheme-lime" @click="$emit('apply')">
-        <span>{{ applyLabel }}</span>
-      </button>
+        <div
+          class="flex items-center gap-10 px-15 border-l border-l-mono-600 h-full"
+        >
+          <span class="text-mono-400 tabular-nums whitespace-nowrap">
+            {{ currentIndex + 1 }} / {{ totalItems }}
+          </span>
+          <span class="font-medium whitespace-nowrap">
+            {{ currentItem.fieldLabel }}
+            <template v-if="bundleLabel"> &middot; {{ bundleLabel }}</template>
+          </span>
+        </div>
+
+        <div class="group/tooltip relative h-full mr-auto">
+          <FormToggle
+            class="mx-15"
+            color-scheme="dark"
+            stretch
+            :model-value="selected[currentItem.id]"
+            :label="$t('aiAgentApprovalAccept', 'Accept')"
+            @update:model-value="toggleCurrent"
+          />
+          <Tooltip
+            :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
+            placement="above-left"
+          >
+            <template #shortcut>
+              <ShortcutIndicator
+                key-code="Enter"
+                :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
+                @pressed="toggleCurrent"
+              />
+            </template>
+          </Tooltip>
+        </div>
+
+        <div
+          v-if="!selected[currentItem.id] && showReason"
+          class="flex-1 min-w-0 px-10"
+        >
+          <input
+            type="text"
+            class="w-full h-30 px-10 rounded bg-mono-800 text-mono-100 text-sm border border-mono-600 outline-none placeholder:text-mono-500 focus:border-mono-400"
+            :value="reasons[currentItem.id]"
+            :placeholder="
+              $t(
+                'aiAgentBatchRewriteReasonPlaceholder',
+                'Reason for rejection (optional)',
+              )
+            "
+            @input="onReasonInput"
+          />
+        </div>
+
+        <button
+          class="bk-button bk-scheme-lime rounded-l-none! rounded-tr-none!"
+          @click="$emit('apply')"
+        >
+          <span>{{ applyLabel }}</span>
+        </button>
+      </div>
     </div>
   </Teleport>
 </template>
@@ -117,12 +142,19 @@ const props = defineProps<{
   selected: Record<number, boolean>
   reasons: Record<number, string>
   applyLabel: string
+  /**
+   * Whether to show the rejection reason input.
+   *
+   * Used by the agent tools to capture feedback for the LLM. Features that
+   * apply changes directly (e.g. automatic translation) leave it off.
+   */
+  showReason?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'update:selected', id: number, value: boolean): void
   (e: 'update:reasons', id: number, value: string): void
-  (e: 'apply' | 'prev' | 'next'): void
+  (e: 'apply' | 'prev' | 'next' | 'cancel'): void
 }>()
 
 const { ui, blocks, types, $t } = useBlokkli()
@@ -147,87 +179,13 @@ function onReasonInput(event: Event) {
 </script>
 
 <style lang="postcss">
+/* Only properties that have no Tailwind utility remain here. Layout, colors and
+   spacing live as utility classes in the template. */
 .bk.bk-diff-approval-toolbar-hint {
   grid-area: mode;
-  @apply self-start justify-self-stretch;
-  @apply h-40 flex items-center px-10 py-5;
-  @apply text-mono-100;
-  @apply bg-mono-900;
-  @apply border-t border-t-mono-600;
-  @apply font-medium;
-  @apply text-sm;
 }
 .bk.bk-diff-approval-toolbar {
   grid-area: viewport;
-  align-self: end;
-  @apply pointer-events-auto;
-  @apply flex items-center h-50;
-  @apply bg-mono-900 text-mono-50;
-  @apply select-none relative;
-  @apply mx-15 mb-15 rounded;
-  @apply shadow-xl-even;
-  @apply outline outline-1 outline-mono-400;
-
   color-scheme: dark;
-
-  .bk-diff-approval-toolbar-toggle,
-  .bk-diff-approval-toolbar-nav {
-    @apply relative h-full;
-  }
-
-  .bk-diff-approval-toolbar-toggle {
-    @apply mr-auto;
-  }
-
-  > .bk-button {
-    @apply rounded-l-none;
-  }
-
-  .bk-diff-approval-toolbar-nav {
-    @apply shrink-0 size-50 flex items-center justify-center;
-    @apply text-mono-300 hover:text-white hover:bg-mono-800 relative;
-
-    &:first-child {
-      @apply rounded-l-md;
-    }
-
-    svg {
-      @apply size-30 fill-current;
-    }
-  }
-
-  .bk-checkbox-toggle {
-    @apply flex items-center text-mono-200 hover:text-white mx-15;
-  }
-
-  .bk-diff-approval-toolbar-info {
-    @apply flex items-center gap-10 px-15;
-    @apply border-l border-l-mono-600 h-full;
-  }
-
-  .bk-diff-approval-toolbar-counter {
-    @apply text-mono-400 tabular-nums whitespace-nowrap;
-  }
-
-  .bk-diff-approval-toolbar-label {
-    @apply font-medium whitespace-nowrap;
-  }
-
-  .bk-diff-approval-toolbar-reason {
-    @apply flex-1 min-w-0 px-10;
-
-    input {
-      @apply w-full h-30 px-10 rounded bg-mono-800 text-mono-100 text-sm;
-      @apply border border-mono-600 outline-none;
-      @apply placeholder:text-mono-500;
-      @apply focus:border-mono-400;
-    }
-  }
-
-  .bk-diff-approval-toolbar-apply {
-    @apply shrink-0 h-30 px-10 rounded font-medium ml-auto mr-10;
-    @apply bg-lime-normal text-mono-950;
-    @apply hover:brightness-110;
-  }
 }
 </style>

@@ -1,28 +1,41 @@
 <template>
   <div
-    class="bk-diff-approval-highlight-item"
-    :class="{
-      'bk-is-active': active,
-      'bk-is-approved': selected,
-      'bk-is-rejected': !selected,
-    }"
+    class="absolute top-0 left-0 rounded"
+    :class="[
+      selected
+        ? 'border-lime-normal outline-lime-normal/30'
+        : 'border-red-normal outline-red-normal/30',
+      active
+        ? 'border-4 outline-[5px] rounded-tl-none'
+        : 'border hover:border-mono-500 hover:bg-mono-400/20',
+    ]"
     :style="rect"
   >
-    <button
-      class="bk-diff-approval-highlight-item-area"
-      @click.prevent="$emit('activate')"
-    />
+    <button class="size-full block" @click.prevent="$emit('activate')" />
     <button
       v-show="active"
-      class="bk-diff-approval-highlight-item-badge"
+      class="absolute left-[-3px] bottom-full h-30 px-8 flex items-center justify-center gap-5 text-white rounded-t-md"
+      :class="
+        selected
+          ? 'bg-lime-normal hover:bg-lime-dark'
+          : 'bg-red-normal hover:bg-red-dark'
+      "
       @click.prevent="$emit('toggle')"
     >
-      <Icon :name="selected ? 'bk_mdi_check' : 'bk_mdi_close'" />
-      <span>{{
-        selected
-          ? $t('aiAgentApprovalAccepted', 'Accepted')
-          : $t('aiAgentApprovalRejected', 'Rejected')
-      }}</span>
+      <Icon
+        :name="selected ? 'bk_mdi_check' : 'bk_mdi_close'"
+        class="size-20 p-2 rounded flex items-center justify-center border border-white"
+        :class="selected ? 'text-lime-normal bg-white' : 'text-white'"
+      />
+      <span
+        class="text-xs font-semibold uppercase tracking-wider leading-none translate-y-1"
+      >
+        {{
+          selected
+            ? $t('aiAgentApprovalAccepted', 'Accepted')
+            : $t('aiAgentApprovalRejected', 'Rejected')
+        }}
+      </span>
     </button>
   </div>
 </template>

@@ -34,6 +34,7 @@
   <DiffApproval
     v-else-if="phase === 'approval' && completedItems.length > 0"
     :items="completedItems"
+    show-reason
     @apply="applySelected"
   />
 

@@ -563,7 +563,7 @@ onUnmounted(() => {
 
     grid-template-areas:
       'toolbar toolbar      toolbar       toolbar     toolbar       right'
-      'left    mode         mode          mode        sidebar-right right'
+      'left    mode         mode          scrollbar-y sidebar-right right'
       'left    sidebar-left viewport      scrollbar-y sidebar-right right'
       'left    sidebar-left banner        scrollbar-y sidebar-right right'
       'left    breadcrumbs  breadcrumbs   breadcrumbs sidebar-right right';

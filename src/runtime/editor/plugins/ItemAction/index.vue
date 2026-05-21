@@ -66,7 +66,7 @@ import {
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
-const { selection, state } = useBlokkli()
+const { selection, state, ui } = useBlokkli()
 
 const el = ref<HTMLElement | null>(null)
 
@@ -197,7 +197,7 @@ const emit = defineEmits<{
 }>()
 
 const onClick = () => {
-  if (isDisabled.value || !uuids.value.length) {
+  if (isDisabled.value || !uuids.value.length || ui.isApproving.value) {
     return
   }
 

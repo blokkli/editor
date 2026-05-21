@@ -120,26 +120,7 @@
     @click="onTranslate"
   />
 
-  <PluginItemAction
-    v-if="
-      isTranslating &&
-      adapter.requestTranslation &&
-      adapter.loadTextFieldValuesForLanguage &&
-      adapter.importTranslationsBatched
-    "
-    id="auto-translate"
-    multiple
-    :title="autoTranslateLabel"
-    :description="
-      $t(
-        'translationsAutoTranslateDescription',
-        'Automatically translate all texts of this block.',
-      )
-    "
-    icon="bk_mdi_translate"
-    :weight="-80"
-    @click="autoTranslateSelected"
-  />
+  <AutoTranslate />
 </template>
 
 <script lang="ts" setup>
@@ -168,6 +149,9 @@ const TranslateDialog = defineAsyncComponent(
   () => import('./TranslateDialog/index.vue'),
 )
 const Banner = defineAsyncComponent(() => import('./Banner/index.vue'))
+const AutoTranslate = defineAsyncComponent(
+  () => import('./AutoTranslate/index.vue'),
+)
 
 const { adapter } = defineBlokkliFeature({
   id: 'translations',
@@ -225,49 +209,6 @@ defineHighlight(() => {
       onClick: () => onMarkUpToDate([block]),
     }))
 })
-
-const autoTranslateLabel = computed(() => {
-  return $t('translationsAutoTranslate', 'Auto-translate')
-})
-
-async function autoTranslateSelected() {
-  ui.setTransform(autoTranslateLabel.value)
-  const sourceLanguage = state.translation.value.sourceLanguage || 'en'
-  const targetLanguage = context.value.language
-  const selectedUuids = new Set(selection.uuids.value)
-
-  const sourceValues =
-    await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
-  const items = sourceValues
-    .filter((v) => selectedUuids.has(v.uuid))
-    .map((v) => ({
-      key: `${v.uuid}:${v.fieldName}`,
-      text: v.value,
-      isHtml: v.fieldType === 'markup',
-      sourceLanguage,
-      targetLanguage,
-    }))
-
-  if (items.length) {
-    const response = await adapter.requestTranslation!(items)
-    if (!response.success || !response.data.length) return
-
-    const importItems = response.data.map((result) => {
-      const separatorIndex = result.key.indexOf(':')
-      return {
-        langcode: targetLanguage,
-        uuid: result.key.substring(0, separatorIndex),
-        fieldName: result.key.substring(separatorIndex + 1),
-        fieldValue: result.translatedText,
-      }
-    })
-
-    await state.mutateWithLoadingState(() =>
-      adapter.importTranslationsBatched!({ items: importItems }),
-    )
-  }
-  ui.setTransform(null)
-}
 
 const isOpen = ref(false)
 

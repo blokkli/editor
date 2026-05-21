@@ -44,38 +44,56 @@
   <AppMenu />
 
   <div class="bk bk-toolbar" @touchstart.stop.passive @touchmove.stop.passive>
-    <div class="bk bk-toolbar-menu">
-      <button class="bk-toolbar-menu-button" @click.prevent.stop="openMenu">
-        <Icon name="bk_mdi_menu" />
-      </button>
-    </div>
-    <div class="bk-toolbar-container">
+    <div
+      class="flex h-full"
+      :class="{
+        'opacity-20 pointer-events-none!': isApproving,
+      }"
+    >
+      <div class="bk bk-toolbar-menu">
+        <button class="bk-toolbar-menu-button" @click.prevent.stop="openMenu">
+          <Icon name="bk_mdi_menu" />
+        </button>
+      </div>
+      <div class="bk-toolbar-container">
+        <div
+          id="bk-sidebar-tabs-left"
+          class="bk-sidebar-container-tabs bk-is-left"
+        />
+      </div>
+      <div id="bk-toolbar-after-menu" class="bk-toolbar-container" />
+      <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
+      <div id="bk-toolbar-title" class="bk-toolbar-container" />
+      <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
+      <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
+      <div id="bk-toolbar-artboard" class="bk-toolbar-container" />
       <div
-        id="bk-sidebar-tabs-left"
-        class="bk-sidebar-container-tabs bk-is-left"
+        id="bk-toolbar-before-sidebar"
+        class="bk-sidebar-container-tabs bk-toolbar-container"
       />
     </div>
-    <div id="bk-toolbar-after-menu" class="bk-toolbar-container" />
-    <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
-    <div id="bk-toolbar-title" class="bk-toolbar-container" />
-    <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
-    <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
-    <div id="bk-toolbar-artboard" class="bk-toolbar-container" />
-    <div
-      id="bk-toolbar-before-sidebar"
-      class="bk-sidebar-container-tabs bk-toolbar-container"
-    />
   </div>
 
   <div class="bk bk-sidebar-tabs">
-    <div id="bk-toolbar-before-sidebar-right" />
+    <div
+      id="bk-toolbar-before-sidebar-right"
+      :class="{
+        'opacity-20 pointer-events-none': isApproving,
+      }"
+    />
     <div
       id="bk-sidebar-tabs-right"
       class="bk-sidebar-container-tabs bk-is-right"
+      :class="{
+        'opacity-20 pointer-events-none': isApproving,
+      }"
     />
     <div
       id="bk-sidebar-tabs-right-bottom"
       class="bk-sidebar-container-tabs bk-is-right"
+      :class="{
+        'opacity-20 pointer-events-none': isApproving,
+      }"
     />
   </div>
 </template>
@@ -94,6 +112,8 @@ import AppMenu from './../AppMenu/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { ui, selection, storage } = useBlokkli()
+
+const isApproving = computed<boolean>(() => ui.isApproving.value)
 
 function openMenu() {
   ui.openDialog({ id: 'menu', alignment: 'left' })
@@ -210,7 +230,7 @@ export default {
 
 <style lang="postcss">
 .bk.bk-toolbar-menu {
-  @apply relative z-menu h-full pointer-events-auto;
+  @apply relative z-menu h-full;
   grid-area: menu;
   .bk-toolbar-menu-button {
     @apply lg:bg-accent-700 w-toolbar-left flex items-center justify-center text-mono-50 h-full focus:outline-none relative z-50 transition;
@@ -229,7 +249,7 @@ export default {
 .bk.bk-toolbar {
   @apply relative z-toolbar;
   @apply select-none;
-  @apply text-base flex bg-mono-900 pointer-events-auto;
+  @apply text-base bg-mono-900 pointer-events-auto;
   contain: style size;
   grid-area: toolbar;
 }

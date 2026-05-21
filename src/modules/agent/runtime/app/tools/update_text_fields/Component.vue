@@ -2,6 +2,7 @@
   <DiffApproval
     v-if="params.requireApproval !== false"
     :items="items"
+    show-reason
     @apply="applySelected"
     @cancel="rejectAll"
   />

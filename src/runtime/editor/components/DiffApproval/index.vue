@@ -7,9 +7,11 @@
     :selected
     :reasons
     :apply-label
+    :show-reason="showReason"
     @update:selected="onUpdateSelected"
     @update:reasons="onUpdateReasons"
     @apply="onApply"
+    @cancel="emit('cancel')"
     @prev="prev"
     @next="next"
   />
@@ -43,6 +45,13 @@ import type { ApprovalItem } from './types'
 
 const props = defineProps<{
   items: ApprovalItem[]
+  /**
+   * Whether to show the per-item rejection reason input.
+   *
+   * Used by the agent tools to feed feedback back to the LLM. Leave it off when
+   * changes are applied directly with no agent loop.
+   */
+  showReason?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -56,7 +65,7 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { $t, ui, eventBus, directive, context, blocks } = useBlokkli()
+const { $t, ui, state, eventBus, directive, context, blocks } = useBlokkli()
 
 const highlight = useTemplateRef('highlight')
 
@@ -191,5 +200,9 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   ui.setIsApproving(false)
+  // Clear any preview overlays applied via setDiffHtml by re-rendering the
+  // dirty blocks from committed state. This keeps cleanup self-contained so
+  // callers don't need to flush dirty state themselves.
+  state.flushDirty()
 })
 </script>
