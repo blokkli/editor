@@ -21,6 +21,7 @@
     v-model="currentIndex"
     :items
     :selected
+    :insertions-only
     @toggle="onToggle"
   />
 </template>
@@ -52,6 +53,16 @@ const props = defineProps<{
    * changes are applied directly with no agent loop.
    */
   showReason?: boolean
+
+  /**
+   * Render the new value entirely as an insertion (<ins>) instead of a diff
+   * against the original.
+   *
+   * For features like translation the new text bears little resemblance to the
+   * original, so a word-level diff is just noise. Enabling this shows the new
+   * value as a single insertion in the preview.
+   */
+  insertionsOnly?: boolean
 }>()
 
 const emit = defineEmits<{

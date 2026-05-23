@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest'
-import { computeDiff } from './index'
+import { computeDiff, computeInsertion } from './index'
 
 function d(before: string, after: string) {
   return computeDiff(before, after)
@@ -154,5 +154,32 @@ describe('computeDiff block-aware', () => {
     expect(result).toMatch(
       /<p>.*<del.*>Changed<\/del>.*<ins.*>Different<\/ins>.*<\/p>/,
     )
+  })
+})
+
+describe('computeInsertion', () => {
+  it('wraps plain text in a single insertion', () => {
+    expect(computeInsertion('Bonjour le monde')).toMatchInlineSnapshot(
+      `"<ins>Bonjour le monde</ins>"`,
+    )
+  })
+
+  it('wraps inline HTML in a single insertion', () => {
+    expect(
+      computeInsertion('<strong>Gras</strong> et normal'),
+    ).toMatchInlineSnapshot(`"<ins><strong>Gras</strong> et normal</ins>"`)
+  })
+
+  it('wraps each block element content individually', () => {
+    expect(
+      computeInsertion('<h2>Titre</h2><p>Paragraphe.</p>'),
+    ).toMatchInlineSnapshot(
+      `"<h2><ins>Titre</ins></h2><p><ins>Paragraphe.</ins></p>"`,
+    )
+  })
+
+  it('produces no deletions', () => {
+    const result = computeInsertion('<p>Texte traduit</p>')
+    expect(result).not.toContain('<del')
   })
 })

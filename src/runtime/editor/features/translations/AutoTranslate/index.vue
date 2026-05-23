@@ -30,6 +30,7 @@
   <DiffApproval
     v-if="phase === 'approving'"
     :items="approvalItems"
+    insertions-only
     @apply="onApply"
     @cancel="onCancel"
   />

@@ -359,3 +359,29 @@ export function computeDiff(before: string, after: string): string {
   const raw = diff(before, after)
   return cleanupDiffMods(raw)
 }
+
+/**
+ * Render the new value entirely as an insertion, with no deletions.
+ *
+ * Used when diffing against the original is pointless — e.g. translations,
+ * where virtually the whole text changes and an interleaved del/ins diff is
+ * just noise. The result reuses the same <ins> markup as computeDiff, so the
+ * approval preview styling is identical.
+ *
+ * Block-level HTML is preserved by wrapping each block's inner content in
+ * <ins> rather than wrapping the block tags themselves.
+ */
+export function computeInsertion(after: string): string {
+  const blocks = parseBlocks(after)
+
+  if (blocks && blocks.length > 0) {
+    return blocks
+      .map(
+        (block) =>
+          `${block.openTag}<ins>${block.innerHTML}</ins></${block.tag}>`,
+      )
+      .join('')
+  }
+
+  return `<ins>${after}</ins>`
+}

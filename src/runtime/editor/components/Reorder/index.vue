@@ -49,15 +49,6 @@ import TransitionList from '#blokkli/editor/components/Transition/List/index.vue
  *
  * Note: native HTML5 drag-and-drop does not fire from touch input, so this is
  * mouse-only. A pointer-based variant would be needed for touch support.
- *
- * @example
- * <Reorder :items="rows" key-field="id" @reorder="onReorder">
- *   <template #default="{ item, handleProps, isDragging }">
- *     <MyRow :class="{ 'opacity-50': isDragging }">
- *       <button v-bind="handleProps">⠿</button>
- *     </MyRow>
- *   </template>
- * </Reorder>
  */
 defineProps<{
   /**

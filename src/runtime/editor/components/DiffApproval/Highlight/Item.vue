@@ -49,7 +49,7 @@ import {
 import { Icon } from '#blokkli/editor/components'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
-import { computeDiff } from '#blokkli/editor/helpers/diff'
+import { computeDiff, computeInsertion } from '#blokkli/editor/helpers/diff'
 
 type ItemRect = {
   width: string
@@ -64,6 +64,12 @@ const props = defineProps<{
   value: string
   selected: boolean
   active: boolean
+  /**
+   * Render the new value entirely as an insertion instead of a diff.
+   *
+   * See the prop of the same name on DiffApproval.
+   */
+  insertionsOnly?: boolean
 }>()
 
 defineEmits<{
@@ -92,7 +98,9 @@ const host = resolveHost()
 const override = useEditableFieldOverride(props.fieldName, host)
 
 const diffHtml = computed(() =>
-  computeDiff(override.originalValue, props.value),
+  props.insertionsOnly
+    ? computeInsertion(props.value)
+    : computeDiff(override.originalValue, props.value),
 )
 
 function applyOverride() {

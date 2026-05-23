@@ -13,6 +13,7 @@
         :value="item.value"
         :selected="!!selected[item.id]"
         :active="i === activeIndex"
+        :insertions-only
         @activate="activeIndex = i"
         @toggle="emit('toggle', item.id)"
       />
@@ -28,6 +29,7 @@ import Item from './Item.vue'
 defineProps<{
   items: ApprovalItem[]
   selected: Record<number, boolean>
+  insertionsOnly?: boolean
 }>()
 
 const emit = defineEmits<{

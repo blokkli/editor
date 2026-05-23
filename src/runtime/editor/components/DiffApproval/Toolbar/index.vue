@@ -2,7 +2,7 @@
   <Teleport v-if="ui.mainLayoutElement.value" :to="ui.mainLayoutElement.value">
     <div
       class="bk bk-control bk-diff-approval-toolbar-hint p-15 pointer-events-auto"
-    ></div>
+    />
     <div
       class="bk bk-control bk-diff-approval-toolbar self-end pointer-events-auto bg-mono-900 text-mono-50 select-none relative mx-15 mb-15 rounded shadow-xl-even outline outline-1 outline-mono-400"
     >
