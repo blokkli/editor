@@ -113,7 +113,9 @@
         @click="requestTranslations"
       >
         <template v-if="isTranslating">
-          {{ $t('translationsTranslateLoading', 'Translating...') }}
+          {{
+            $t('translationsTranslateLoading', 'Translating', { more: true })
+          }}
         </template>
         <template v-else>
           {{

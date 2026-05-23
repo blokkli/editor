@@ -26,7 +26,10 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t(
       'aiAgentGetAdvancedChartConfigRunning',
-      'Getting advanced chart config...',
+      'Getting advanced chart config',
+      {
+        more: true,
+      },
     )
   },
   paramsSchema,

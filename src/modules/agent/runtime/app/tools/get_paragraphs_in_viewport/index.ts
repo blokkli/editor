@@ -262,7 +262,10 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t(
       'aiAgentGetBlocksInViewportRunning',
-      'Getting blocks in viewport...',
+      'Getting blocks in viewport',
+      {
+        more: true,
+      },
     )
   },
   paramsSchema,

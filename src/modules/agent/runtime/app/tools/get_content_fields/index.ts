@@ -94,7 +94,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `fields for ${Object.keys(r || {}).length} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentGetContentFieldsRunning', 'Getting content fields...')
+    return $t('aiAgentGetContentFieldsRunning', 'Getting content fields', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

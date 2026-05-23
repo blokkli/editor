@@ -10,8 +10,20 @@ import {
   forceDefaultLanguage,
 } from '#blokkli-build/editor-config'
 import { TRANSLATION_LANGUAGES } from '../../../global/constants'
+import { HORIZONTAL_ELLIPSIS } from '../helpers/string'
 
-export type TextProvider = (key: string, defaultValue?: string) => string
+type TextOptions = {
+  /**
+   * Appends "..." to the string.
+   */
+  more?: boolean
+}
+
+export type TextProvider = (
+  key: string,
+  defaultValue?: string,
+  options?: TextOptions,
+) => string
 
 function isInterfaceLanguage(value: string): value is InterfaceLanguage {
   return (TRANSLATION_LANGUAGES as readonly string[]).includes(value)
@@ -73,7 +85,9 @@ export default async function (
 
   await loadTranslations(translationLoaders, language)
 
-  return (key: string, defaultValue?: string) => {
-    return currentTranslations.value[key] || defaultValue || key
+  return (key: string, defaultValue?: string, options?: TextOptions) => {
+    const text = currentTranslations.value[key] || defaultValue || key
+    const suffix = options?.more ? HORIZONTAL_ELLIPSIS : ''
+    return text + suffix
   }
 }

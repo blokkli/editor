@@ -93,7 +93,9 @@
             >
               <Icon name="loader" class="size-18" />
               <span>{{
-                $t('aiAgentDisconnected', 'Connection lost. Reconnecting...')
+                $t('aiAgentDisconnected', 'Connection lost. Reconnecting', {
+                  more: true,
+                })
               }}</span>
             </div>
           </TransitionHeight>
@@ -129,7 +131,7 @@
     class="flex items-center justify-center gap-8 p-20 text-mono-500"
   >
     <Icon name="loader" />
-    <span>{{ $t('aiAgentConnecting', 'Connecting...') }}</span>
+    <span>{{ $t('aiAgentConnecting', 'Connecting', { more: true }) }}</span>
   </div>
 </template>
 

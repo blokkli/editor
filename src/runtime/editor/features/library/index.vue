@@ -13,7 +13,7 @@
   <PluginItemAction
     v-else-if="!isReusable"
     id="library_make_reusable"
-    :title="$t('libraryAdd', 'Add to library...')"
+    :title="$t('addToLibrary', 'Add to library', { more: true })"
     :disabled="makeReusableDisabledReason"
     edit-only
     icon="reusable"

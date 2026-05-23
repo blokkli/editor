@@ -90,16 +90,16 @@ const label = computed<string | null>(() => {
   } else {
     switch (itemType.value) {
       case 'image':
-        base = $t('clipboardTypeImage', 'Image')
+        base = $t('image', 'Image')
         break
       case 'video':
-        base = $t('clipboardTypeVideo', 'Video')
+        base = $t('video', 'Video')
         break
       case 'file':
-        base = $t('clipboardTypeFile', 'File')
+        base = $t('file', 'File')
         break
       case 'text':
-        base = $t('clipboardTypeText', 'Text')
+        base = $t('text', 'Text')
         break
     }
   }

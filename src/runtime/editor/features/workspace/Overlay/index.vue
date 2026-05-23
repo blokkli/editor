@@ -5,7 +5,9 @@
     :title="$t('switchPage', 'Switch page')"
     :total-items="displayItems.length"
     :is-searching
-    :placeholder="$t('workspaceSearchPlaceholder', 'Search pages...')"
+    :placeholder="
+      $t('workspaceSearchPlaceholder', 'Search pages', { more: true })
+    "
     :item-height="70"
     :is-loading="workspaces.isLoading.value"
     @select="onSelectByIndex"

@@ -29,7 +29,8 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t(
       'aiAgentAddContentSearchBlockRunning',
-      'Adding content paragraph...',
+      'Adding content paragraph',
+      { more: true },
     )
   },
   paramsSchema,

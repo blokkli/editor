@@ -161,7 +161,9 @@ export default defineBlokkliAgentTool({
     `context for ${r.bundle || 'paragraph'} (${r.uuid?.slice(0, 8) || '?'})`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentGetBlockContextRunning', 'Getting block context...')
+    return $t('aiAgentGetBlockContextRunning', 'Getting block context', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

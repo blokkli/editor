@@ -33,7 +33,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `${r.content?.length || 0} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentGetAllPageContentRunning', 'Getting all page content...')
+    return $t('aiAgentGetAllPageContentRunning', 'Getting all page content', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

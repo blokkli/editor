@@ -108,9 +108,9 @@ const tooltipData = computed<{
       }
     } else {
       if (index === 0) {
-        text = $t('addButtonBeforeBundle', 'Add before...')
+        text = $t('addButtonBeforeBundle', 'Add before', { more: true })
       } else {
-        text = $t('addButtonAfterBundle', 'Add after...')
+        text = $t('addButtonAfterBundle', 'Add after', { more: true })
       }
     }
 
@@ -348,7 +348,8 @@ function getBlockState(uuid: string): BlockStateCache {
                 emptyFieldTooltips.push(
                   $t(
                     'addButtonInsideField',
-                    'Add inside @parentBundle » @fieldLabel...',
+                    'Add inside @parentBundle » @fieldLabel',
+                    { more: true },
                   )
                     .replace('@parentBundle', bundleLabel)
                     .replace('@fieldLabel', fieldLabel),
@@ -358,7 +359,8 @@ function getBlockState(uuid: string): BlockStateCache {
               emptyFieldTooltips.push(
                 $t(
                   'addButtonInsideField',
-                  'Add inside @parentBundle » @fieldLabel...',
+                  'Add inside @parentBundle » @fieldLabel',
+                  { more: true },
                 )
                   .replace('@parentBundle', bundleLabel)
                   .replace('@fieldLabel', fieldLabel),
@@ -368,7 +370,8 @@ function getBlockState(uuid: string): BlockStateCache {
             emptyFieldTooltips.push(
               $t(
                 'addButtonInsideField',
-                'Add inside @parentBundle » @fieldLabel...',
+                'Add inside @parentBundle » @fieldLabel',
+                { more: true },
               )
                 .replace('@parentBundle', bundleLabel)
                 .replace('@fieldLabel', fieldLabel),

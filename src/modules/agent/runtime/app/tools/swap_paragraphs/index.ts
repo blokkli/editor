@@ -16,7 +16,7 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => (r.success ? 'swapped paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentSwapBlocksRunning', 'Swapping blocks...')
+    return $t('aiAgentSwapBlocksRunning', 'Swapping blocks', { more: true })
   },
   lazy: true,
   paramsSchema,

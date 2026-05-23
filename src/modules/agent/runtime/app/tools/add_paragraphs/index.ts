@@ -383,7 +383,7 @@ export default defineBlokkliAgentTool({
     r.success ? `added ${r.newParagraphs?.length || 0} paragraphs` : 'rejected',
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentAddBlocksRunning', 'Adding blocks...')
+    return $t('aiAgentAddBlocksRunning', 'Adding blocks', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

@@ -33,7 +33,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => (r.success ? 'updated options' : 'rejected'),
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentSetBlockOptionsRunning', 'Setting block options...')
+    return $t('aiAgentSetBlockOptionsRunning', 'Setting block options', {
+      more: true,
+    })
   },
   lazy: true,
   paramsSchema,

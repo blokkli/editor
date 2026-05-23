@@ -31,7 +31,7 @@ export default defineBlokkliAgentTool({
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentWebFetchRunning', 'Fetching web page...')
+    return $t('aiAgentWebFetchRunning', 'Fetching web page', { more: true })
   },
   paramsSchema,
   resultSchema,

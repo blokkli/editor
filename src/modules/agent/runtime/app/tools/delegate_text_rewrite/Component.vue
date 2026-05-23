@@ -106,10 +106,9 @@ const MAX_READABILITY_RETRIES = 10
 const isFixReadability = props.params.template === 'fix_readability'
 const retryAttempt = ref(0)
 const streamingTitle = ref(
-  $t('aiAgentDelegateRewriteStreaming', 'Rewriting @count fields...').replace(
-    '@count',
-    String(props.params.fields.length),
-  ),
+  $t('aiAgentDelegateRewriteStreaming', 'Rewriting @count fields', {
+    more: true,
+  }).replace('@count', String(props.params.fields.length)),
 )
 
 type FieldState = {
@@ -758,7 +757,8 @@ async function readabilityRetryLoop(authToken: string) {
 
     streamingTitle.value = $t(
       'aiAgentDelegateRewriteRetrying',
-      'Retrying @count fields (attempt @attempt)...',
+      'Retrying @count fields (attempt @attempt)',
+      { more: true },
     )
       .replace('@count', String(failing.length))
       .replace('@attempt', String(retryAttempt.value + 1))

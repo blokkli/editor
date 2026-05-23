@@ -24,7 +24,7 @@
           class="bk-button bk-scheme-mono bk-is-small"
           @click.prevent="triggerFileDialog"
         >
-          {{ $t('translationsAddFiles', 'Add files...') }}
+          {{ $t('addFiles', 'Add files', { more: true }) }}
         </button>
       </div>
       <button

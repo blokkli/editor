@@ -292,7 +292,7 @@ onMounted(() => {
 defineMenuButton(() => {
   return {
     id: 'translations',
-    title: $t('translationsBatchTranslateMenuTitle', 'Translate...'),
+    title: $t('translate', 'Translate', { more: true }),
     description: $t(
       'translationsBatchTranslateMenuDescription',
       'Translate all blocks',

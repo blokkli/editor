@@ -39,7 +39,9 @@
           id="import-existing-search"
           v-model="searchText"
           :placeholder="
-            $t('importExistingSearchPlaceholder', 'Search pages...')
+            $t('importExistingSearchPlaceholder', 'Search pages', {
+              more: true,
+            })
           "
         />
       </FormItem>

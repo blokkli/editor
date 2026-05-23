@@ -8,7 +8,7 @@
     >
       <Icon name="bk_mdi_add_comment" class="size-18" />
       <span class="font-semibold">{{
-        $t('commentAddPlaceholder', 'Add new comment...')
+        $t('commentAddPlaceholder', 'Add new comment', { more: true })
       }}</span>
     </button>
     <CommentInput

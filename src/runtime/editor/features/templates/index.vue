@@ -164,7 +164,7 @@ defineItemDropdownAction(() => {
   }
   return {
     id: 'templates-create',
-    label: $t('templatesCreate', 'Create template...'),
+    label: $t('templatesCreate', 'Create template', { more: true }),
     icon: 'bk_mdi_dashboard',
     group: 'templates',
     weight: 200,
@@ -180,7 +180,7 @@ defineMenuButton(() => {
   }
   return {
     id: 'templates',
-    title: $t('templatesMenuLabel', 'Templates...'),
+    title: $t('templates', 'Templates', { more: true }),
     weight: -100,
     description: $t(
       'templatesMenuDescription',

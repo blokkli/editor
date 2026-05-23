@@ -35,7 +35,9 @@ export default defineBlokkliAgentTool({
   modes: ['readonly', 'editing', 'translating', 'review'],
   lazy: true,
   label($t) {
-    return $t('aiAgentSearchLibraryRunning', 'Searching reusable blocks...')
+    return $t('aiAgentSearchLibraryRunning', 'Searching reusable blocks', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

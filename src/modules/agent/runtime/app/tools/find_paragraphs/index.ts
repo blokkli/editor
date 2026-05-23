@@ -88,7 +88,7 @@ export default defineBlokkliAgentTool({
     `found ${r.total || 0} paragraphs${r.hasMore ? ' (more available)' : ''}`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentFindBlocksRunning', 'Finding blocks...')
+    return $t('aiAgentFindBlocksRunning', 'Finding blocks', { more: true })
   },
   paramsSchema,
   resultSchema,

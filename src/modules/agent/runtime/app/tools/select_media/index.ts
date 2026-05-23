@@ -40,7 +40,7 @@ export default defineBlokkliAgentTool({
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentSelectMediaRunning', 'Selecting media...')
+    return $t('aiAgentSelectMediaRunning', 'Selecting media', { more: true })
   },
   lazy: true,
   paramsSchema,

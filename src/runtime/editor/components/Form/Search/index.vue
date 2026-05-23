@@ -75,7 +75,7 @@
             v-if="mode === 'async' && loading && filteredItems.length === 0"
             class="text-mono-500 text-sm py-15 text-center"
           >
-            {{ $t('formSearchLoading', 'Loading...') }}
+            {{ $t('loading', 'Loading', { more: true }) }}
           </div>
           <div
             v-else-if="filteredItems.length === 0"

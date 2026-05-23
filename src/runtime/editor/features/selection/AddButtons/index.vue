@@ -55,6 +55,7 @@ import type {
   BlokkliItemHost,
   RenderedFieldListItem,
 } from '#blokkli/editor/types/field'
+import { HORIZONTAL_ELLIPSIS } from '#blokkli/editor/helpers/string'
 
 const props = defineProps<{
   items: RenderedFieldListItem[]
@@ -189,7 +190,7 @@ const beforeTooltip = computed(() => {
       singleAllowedBundleLabel.value,
     )
   }
-  return $t('addButtonBeforeBundle', 'Add before...')
+  return $t('addButtonBeforeBundle', 'Add before', { more: true })
 })
 
 const afterTooltip = computed(() => {
@@ -200,7 +201,7 @@ const afterTooltip = computed(() => {
     )
   }
 
-  return $t('addButtonAfterBundle', 'Add after...')
+  return $t('addButtonAfterBundle', 'Add after', { more: true })
 })
 
 const fieldTooltips = computed(() => {
@@ -240,7 +241,8 @@ const fieldTooltips = computed(() => {
 
     return $t(
       'addButtonInsideField',
-      'Add inside @parentBundle » @fieldLabel...',
+      'Add inside @parentBundle » @fieldLabel',
+      { more: true },
     )
       .replace('@parentBundle', bundleLabel.value)
       .replace('@fieldLabel', fieldLabel)
@@ -277,7 +279,7 @@ const hostFieldTooltips = computed(() => {
       }
     }
 
-    return $t('addButtonToField', 'Add to @fieldLabel...').replace(
+    return $t('addButtonToField', 'Add to @fieldLabel', { more: true }).replace(
       '@fieldLabel',
       fieldLabel,
     )
@@ -606,10 +608,10 @@ function onRendererToggle(data: {
 
   if (data.position === 'before') {
     preceedingUuid = getPreceedingUuidBefore(uuid.value, field)
-    label = beforeTooltip.value.replace('...', '')
+    label = beforeTooltip.value.replace(HORIZONTAL_ELLIPSIS, '')
   } else {
     preceedingUuid = uuid.value
-    label = afterTooltip.value.replace('...', '')
+    label = afterTooltip.value.replace(HORIZONTAL_ELLIPSIS, '')
   }
 
   setAddData(key, field, label, preceedingUuid, undefined, data.coordinates)
@@ -652,7 +654,7 @@ function onRendererToggleField(data: {
     return
   }
 
-  const label = (tooltips[data.index] || '').replace('...', '')
+  const label = (tooltips[data.index] || '').replace(HORIZONTAL_ELLIPSIS, '')
   setAddData(key, field, label, null, undefined, data.coordinates)
 }
 

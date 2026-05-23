@@ -98,7 +98,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
   label($t) {
-    return $t('aiAgentDelegateRewriteRunning', 'Rewriting texts...')
+    return $t('aiAgentDelegateRewriteRunning', 'Rewriting texts', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

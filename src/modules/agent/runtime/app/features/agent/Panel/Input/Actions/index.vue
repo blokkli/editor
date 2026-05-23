@@ -5,7 +5,7 @@
         <TokenUsage :usage-turns />
         <DropdownItem
           icon="bk_mdi_bug_report"
-          :text="$t('aiAgentShowTranscript', 'Show transcript...')"
+          :text="$t('aiAgentShowTranscript', 'Show transcript', { more: true })"
           @click="$emit('show-transcript')"
         />
         <DropdownItem

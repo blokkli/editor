@@ -25,7 +25,9 @@ export default defineBlokkliAgentTool({
   requiredAdapterMethods: ['getContentSearchTabs', 'getContentSearchResults'],
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentSearchContentRunning', 'Searching content...')
+    return $t('aiAgentSearchContentRunning', 'Searching content', {
+      more: true,
+    })
   },
   paramsSchema: z.object({
     tab: z

@@ -43,7 +43,9 @@
           class="text-sm p-8 rounded border border-mono-300 bg-white resize-none focus:border-mono-500 focus:outline-none"
           :rows="2"
           :placeholder="
-            $t('aiAgentFeedbackPlaceholder', 'Tell us more (optional)...')
+            $t('aiAgentFeedbackPlaceholder', 'Tell us more (optional)', {
+              more: true,
+            })
           "
         />
         <button

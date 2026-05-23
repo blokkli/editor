@@ -26,7 +26,9 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentAddMediaBlockRunning', 'Adding media block...')
+    return $t('aiAgentAddMediaBlockRunning', 'Adding media block', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

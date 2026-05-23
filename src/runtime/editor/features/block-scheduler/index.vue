@@ -1,7 +1,7 @@
 <template>
   <PluginItemAction
     id="block-scheduler"
-    :title="$t('manageSchedule', 'Manage schedule...')"
+    :title="$t('manageSchedule', 'Manage schedule', { more: true })"
     :disabled
     multiple
     edit-only

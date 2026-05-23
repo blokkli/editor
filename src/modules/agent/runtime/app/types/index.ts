@@ -16,15 +16,11 @@ import type {
   AgentSkillName,
   AgentToolMap,
 } from '#blokkli-build/agent-client'
+import type { TextProvider } from '#blokkli/editor/providers/texts'
 
 // ============================================================================
 // Tool Definitions - Common Types
 // ============================================================================
-
-/**
- * Translation function type (matches $t from BlokkliApp).
- */
-export type TranslationFunction = (key: string, defaultValue: string) => string
 
 /**
  * A host entity (parent of a block).
@@ -225,7 +221,7 @@ export type McpToolDefinition<
    * Returns the label to display while the tool is executing.
    * This is shown before the tool completes and provides its final label.
    */
-  label: ($t: TranslationFunction) => string
+  label: ($t: TextProvider) => string
 
   /** Zod schema for input parameters */
   paramsSchema: TParamsSchema

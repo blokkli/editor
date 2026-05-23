@@ -28,7 +28,7 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentCreateChartRunning', 'Creating chart...')
+    return $t('aiAgentCreateChartRunning', 'Creating chart', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

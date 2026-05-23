@@ -35,7 +35,9 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks...')
+    return $t('aiAgentDuplicateBlocksRunning', 'Duplicating blocks', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

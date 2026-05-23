@@ -26,7 +26,9 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentAddLibraryItemRunning', 'Adding reusable block...')
+    return $t('aiAgentAddLibraryItemRunning', 'Adding reusable block', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

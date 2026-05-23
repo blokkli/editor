@@ -56,7 +56,9 @@ export default defineBlokkliAgentTool({
   modes: ['readonly', 'editing', 'translating', 'review'],
   lazy: true,
   label($t) {
-    return $t('aiAgentGetChartDataRunning', 'Getting chart data...')
+    return $t('aiAgentGetChartDataRunning', 'Getting chart data', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

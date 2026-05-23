@@ -23,7 +23,9 @@
             class="bk-form-input bk-is-small mt-10"
             :rows="2"
             :placeholder="
-              $t('aiAgentAskQuestionOtherPlaceholder', 'Type your answer...')
+              $t('aiAgentAskQuestionOtherPlaceholder', 'Type your answer', {
+                more: true,
+              })
             "
           />
         </div>

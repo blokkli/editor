@@ -10,7 +10,7 @@
     "
     :width="1200"
     icon="bk_mdi_csv"
-    :submit-label="$t('chartsCsvPreviewSubmit', 'Import')"
+    :submit-label="$t('import', 'Import')"
     :can-submit="canSubmit"
     z-index="high"
     mono

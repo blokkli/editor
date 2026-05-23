@@ -4,7 +4,9 @@
     v-model:text="text"
     :title="$t('commandPaletteTitle', 'Command Palette')"
     :total-items="visibleCommands.length"
-    :placeholder="$t('commandPalette.inputPlaceholder', 'Search commands...')"
+    :placeholder="
+      $t('commandPalette.inputPlaceholder', 'Search commands', { more: true })
+    "
     @select="onSelectByIndex"
     @close="emit('close')"
   >

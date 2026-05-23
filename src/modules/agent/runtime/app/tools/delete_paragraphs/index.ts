@@ -19,7 +19,7 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => (r.success ? 'deleted paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentDeleteBlocksRunning', 'Deleting blocks...')
+    return $t('aiAgentDeleteBlocksRunning', 'Deleting blocks', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

@@ -51,7 +51,7 @@ async function onSubmit() {
 defineMenuButton(() => {
   return {
     id: 'revert',
-    title: $t('revertMenuTitle', 'Discard...'),
+    title: $t('discard', 'Discard', { more: true }),
     description: $t(
       'revertMenuDescription',
       'Restore currently published state',

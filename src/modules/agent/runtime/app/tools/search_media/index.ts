@@ -42,7 +42,7 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `found ${r.total || 0} media items`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentSearchMediaRunning', 'Searching media...')
+    return $t('aiAgentSearchMediaRunning', 'Searching media', { more: true })
   },
   paramsSchema,
   resultSchema,

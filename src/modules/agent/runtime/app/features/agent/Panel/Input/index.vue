@@ -78,13 +78,15 @@ const { $t } = useBlokkli()
 
 const placeholder = computed(() => {
   if (props.isProcessing) {
-    return $t('aiAgentProcessing', 'Processing...')
+    return $t('aiAgentProcessing', 'Processing', { more: true })
   }
   if (props.hasPendingApproval) {
-    return $t('aiAgentAwaitingApproval', 'Awaiting your approval...')
+    return $t('aiAgentAwaitingApproval', 'Awaiting your approval', {
+      more: true,
+    })
   }
   if (props.hasConversation) {
-    return $t('aiAgentPlaceholderReply', 'Reply...')
+    return $t('reply', 'Reply', { more: true })
   }
   return $t('aiAgentPlaceholder', 'What should we work on?')
 })

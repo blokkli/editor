@@ -2,7 +2,7 @@
   <PluginItemAction
     id="edit"
     edit-only
-    :title="$t('edit', 'Edit...')"
+    :title="$t('edit', 'Edit', { more: true })"
     :disabled="editDisabledReason"
     meta
     key-code="E"

@@ -24,7 +24,7 @@
           v-model="search"
           class="bk-form-input bk-is-small"
           type="text"
-          :placeholder="$t('filterSelectSearch', 'Search...')"
+          :placeholder="$t('search', 'Search', { more: true })"
         />
       </div>
       <ul ref="listEl">

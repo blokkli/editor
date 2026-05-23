@@ -58,7 +58,11 @@
               @click.prevent="$emit('open-translate')"
             >
               <Icon name="bk_mdi_translate" />
-              {{ $t('translationsAutoTranslateButton', 'Auto-translate...') }}
+              {{
+                $t('translationsAutoTranslateButton', 'Auto-translate', {
+                  more: true,
+                })
+              }}
               <Tooltip
                 :label="
                   $t(
@@ -75,7 +79,9 @@
               @click.prevent="$emit('open-csv')"
             >
               <Icon name="bk_mdi_upload" />
-              {{ $t('translationsCsvMenuTitle', 'Import/export...') }}
+              {{
+                $t('translationsCsvMenuTitle', 'Import/export', { more: true })
+              }}
               <Tooltip
                 :label="
                   $t(

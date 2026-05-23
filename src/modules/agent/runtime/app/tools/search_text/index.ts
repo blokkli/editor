@@ -42,7 +42,7 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `${r.totalMatches || 0} paragraphs matched`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentSearchTextRunning', 'Searching text...')
+    return $t('aiAgentSearchTextRunning', 'Searching text', { more: true })
   },
   paramsSchema,
   resultSchema,

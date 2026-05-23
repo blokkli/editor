@@ -93,7 +93,7 @@ defineMenuButton(() => {
 
   return {
     id: 'import_existing',
-    title: $t('importExistingTitle', 'Import...'),
+    title: $t('import', 'Import', { more: true }),
     description: $t(
       'importExistingDescription',
       'Import from an existing page',

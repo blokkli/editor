@@ -1,7 +1,7 @@
 <template>
   <ArtboardTooltip
     id="add-comment"
-    :title="$t('addCommentHeader', 'Add Comment')"
+    :title="$t('addComment', 'Add Comment')"
     class="bk-add-comment"
     @close="$emit('close')"
   >

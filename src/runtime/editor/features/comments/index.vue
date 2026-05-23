@@ -28,7 +28,7 @@
 
   <PluginItemAction
     id="add_comment"
-    :title="$t('addCommentToItem', 'Add Comment...')"
+    :title="$t('addComment', 'Add Comment', { more: true })"
     :description="
       $t(
         'addCommentToItemDescription',

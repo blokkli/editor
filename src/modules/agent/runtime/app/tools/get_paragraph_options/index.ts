@@ -23,7 +23,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `options for ${Object.keys(r || {}).length} paragraphs`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentGetBlockOptionsRunning', 'Getting block options...')
+    return $t('aiAgentGetBlockOptionsRunning', 'Getting block options', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

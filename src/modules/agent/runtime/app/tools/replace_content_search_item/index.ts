@@ -27,7 +27,8 @@ export default defineBlokkliAgentTool({
   label($t) {
     return $t(
       'aiAgentReplaceContentSearchItemRunning',
-      'Replacing content reference...',
+      'Replacing content reference',
+      { more: true },
     )
   },
   lazy: true,

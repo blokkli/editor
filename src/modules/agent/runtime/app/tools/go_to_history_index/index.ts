@@ -19,7 +19,9 @@ export default defineBlokkliAgentTool({
     r.success ? `navigated to index ${r.historyIndex ?? '?'}` : 'rejected',
   modes: ['editing', 'translating'],
   label($t) {
-    return $t('aiAgentGoToHistoryIndexRunning', 'Navigating history...')
+    return $t('aiAgentGoToHistoryIndexRunning', 'Navigating history', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

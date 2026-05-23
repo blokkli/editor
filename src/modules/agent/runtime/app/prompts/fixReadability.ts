@@ -13,7 +13,9 @@ export default defineBlokkliAgentPrompt({
           'delegate_text_rewrite',
         ],
         getLabel: ({ $t }) => {
-          return $t('agentPromptReadabilityLabel', 'Fix readability...')
+          return $t('fixReadability', 'Fix readability', {
+            more: true,
+          })
         },
         getPrompt: ({ $t }) => {
           return $t(

@@ -24,7 +24,7 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentReplaceMediaRunning', 'Replacing media...')
+    return $t('aiAgentReplaceMediaRunning', 'Replacing media', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

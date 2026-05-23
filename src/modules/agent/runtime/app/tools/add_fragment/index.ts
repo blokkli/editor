@@ -19,7 +19,7 @@ export default defineBlokkliAgentTool({
   modes: ['editing'],
   lazy: true,
   label($t) {
-    return $t('aiAgentAddFragmentRunning', 'Adding fragment...')
+    return $t('aiAgentAddFragmentRunning', 'Adding fragment', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

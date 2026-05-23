@@ -82,7 +82,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `page structure (${r.totalParagraphs ?? 0} paragraphs)`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentGetPageStructureRunning', 'Getting page structure...')
+    return $t('aiAgentGetPageStructureRunning', 'Getting page structure', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

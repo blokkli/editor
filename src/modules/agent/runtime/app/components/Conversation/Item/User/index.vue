@@ -11,7 +11,7 @@
       />
       <InlineActionsButton
         icon="bk_mdi_edit"
-        :label="$t('aiAgentEdit', 'Edit')"
+        :label="$t('edit', 'Edit')"
         @click="startEdit"
       />
     </InlineActions>

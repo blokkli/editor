@@ -24,7 +24,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `options for ${r.type}`,
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentGetChartTypeOptionsRunning', 'Getting chart options...')
+    return $t('aiAgentGetChartTypeOptionsRunning', 'Getting chart options', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

@@ -36,11 +36,11 @@ msgid "Insert \"@block\" into \"@field\""
 msgstr "Inserisci «@block» in «@field»"
 
 msgctxt "addButtonAfterBundle"
-msgid "Add after..."
+msgid "Add after"
 msgstr "Aggiungi dopo..."
 
 msgctxt "addButtonBeforeBundle"
-msgid "Add before..."
+msgid "Add before"
 msgstr "Aggiungi prima..."
 
 msgctxt "addButtonBundleAfter"
@@ -60,23 +60,23 @@ msgid "Add \"@bundle\" to @fieldLabel"
 msgstr ""
 
 msgctxt "addButtonInsideField"
-msgid "Add inside @parentBundle » @fieldLabel..."
+msgid "Add inside @parentBundle » @fieldLabel"
 msgstr "Aggiungi in @parentBundle » @fieldLabel..."
 
 msgctxt "addButtonToField"
-msgid "Add to @fieldLabel..."
+msgid "Add to @fieldLabel"
 msgstr ""
 
-msgctxt "addCommentHeader"
+msgctxt "addComment"
 msgid "Add Comment"
 msgstr ""
 
-msgctxt "addCommentToItem"
-msgid "Add Comment..."
-msgstr "Commenta"
-
 msgctxt "addCommentToItemDescription"
 msgid "Add a new comment for the selected blocks."
+msgstr ""
+
+msgctxt "addFiles"
+msgid "Add files"
 msgstr ""
 
 msgctxt "addListItemFavoriteAdd"
@@ -167,10 +167,6 @@ msgctxt "agentConversationsUntitled"
 msgid "Untitled"
 msgstr ""
 
-msgctxt "agentPromptReadabilityLabel"
-msgid "Fix readability..."
-msgstr ""
-
 msgctxt "agentPromptReadabilityPrompt"
 msgid ""
 "The readability issues have already been analyzed and the fix has been "
@@ -215,7 +211,7 @@ msgid "Added @count blocks"
 msgstr ""
 
 msgctxt "aiAgentAddBlocksRunning"
-msgid "Adding blocks..."
+msgid "Adding blocks"
 msgstr ""
 
 msgctxt "aiAgentAddContentSearchBlockDone"
@@ -223,7 +219,7 @@ msgid "Added @bundle with content ID @id"
 msgstr ""
 
 msgctxt "aiAgentAddContentSearchBlockRunning"
-msgid "Adding content paragraph..."
+msgid "Adding content paragraph"
 msgstr ""
 
 msgctxt "aiAgentAddFragmentDone"
@@ -231,7 +227,7 @@ msgid "Added fragment \"@label\""
 msgstr ""
 
 msgctxt "aiAgentAddFragmentRunning"
-msgid "Adding fragment..."
+msgid "Adding fragment"
 msgstr ""
 
 msgctxt "aiAgentAddLibraryItemDone"
@@ -239,7 +235,7 @@ msgid "Added reusable block"
 msgstr ""
 
 msgctxt "aiAgentAddLibraryItemRunning"
-msgid "Adding reusable block..."
+msgid "Adding reusable block"
 msgstr ""
 
 msgctxt "aiAgentAddMediaBlockDone"
@@ -247,7 +243,7 @@ msgid "Added @bundle with media ID @id"
 msgstr ""
 
 msgctxt "aiAgentAddMediaBlockRunning"
-msgid "Adding media block..."
+msgid "Adding media block"
 msgstr ""
 
 msgctxt "aiAgentAddTemplateDone"
@@ -255,7 +251,7 @@ msgid "Added template"
 msgstr ""
 
 msgctxt "aiAgentAddTemplateRunning"
-msgid "Adding template..."
+msgid "Adding template"
 msgstr ""
 
 msgctxt "aiAgentAlwaysApprove"
@@ -267,7 +263,7 @@ msgid "Analyzed @count results"
 msgstr "@count risultati analizzati"
 
 msgctxt "aiAgentAnalyzeContentRunning"
-msgid "Analyzing content..."
+msgid "Analyzing content"
 msgstr "Analisi del contenuto..."
 
 msgctxt "aiAgentApprovalAccept"
@@ -313,15 +309,15 @@ msgid "None of the above"
 msgstr ""
 
 msgctxt "aiAgentAskQuestionOtherPlaceholder"
-msgid "Type your answer..."
+msgid "Type your answer"
 msgstr ""
 
 msgctxt "aiAgentAskQuestionRunning"
-msgid "Waiting for answer..."
+msgid "Waiting for answer"
 msgstr ""
 
 msgctxt "aiAgentAwaitingApproval"
-msgid "Awaiting your approval..."
+msgid "Awaiting your approval"
 msgstr ""
 
 msgctxt "aiAgentBatchRewriteAllApplied"
@@ -345,7 +341,7 @@ msgid "@applied of @total changes applied"
 msgstr ""
 
 msgctxt "aiAgentBatchRewriteTextRunning"
-msgid "Rewriting multiple texts..."
+msgid "Rewriting multiple texts"
 msgstr ""
 
 msgctxt "aiAgentBlockNotFound"
@@ -369,7 +365,7 @@ msgid "Confirm"
 msgstr ""
 
 msgctxt "aiAgentConnecting"
-msgid "Connecting..."
+msgid "Connecting"
 msgstr ""
 
 msgctxt "aiAgentCreateAdvancedChartDone"
@@ -377,7 +373,7 @@ msgid "Added advanced chart"
 msgstr ""
 
 msgctxt "aiAgentCreateAdvancedChartRunning"
-msgid "Creating advanced chart..."
+msgid "Creating advanced chart"
 msgstr ""
 
 msgctxt "aiAgentCreateChartDone"
@@ -385,7 +381,7 @@ msgid "Added chart"
 msgstr ""
 
 msgctxt "aiAgentCreateChartRunning"
-msgid "Creating chart..."
+msgid "Creating chart"
 msgstr ""
 
 msgctxt "aiAgentCreatePlan"
@@ -401,15 +397,15 @@ msgid "No changes detected"
 msgstr ""
 
 msgctxt "aiAgentDelegateRewriteRetrying"
-msgid "Retrying @count fields (attempt @attempt)..."
+msgid "Retrying @count fields (attempt @attempt)"
 msgstr ""
 
 msgctxt "aiAgentDelegateRewriteRunning"
-msgid "Rewriting texts..."
+msgid "Rewriting texts"
 msgstr ""
 
 msgctxt "aiAgentDelegateRewriteStreaming"
-msgid "Rewriting @count fields..."
+msgid "Rewriting @count fields"
 msgstr ""
 
 msgctxt "aiAgentDeleteBlockDone"
@@ -421,7 +417,7 @@ msgid "Deleted @count blocks"
 msgstr ""
 
 msgctxt "aiAgentDeleteBlocksRunning"
-msgid "Deleting blocks..."
+msgid "Deleting blocks"
 msgstr ""
 
 msgctxt "aiAgentDetachLibraryBlockDone"
@@ -429,7 +425,7 @@ msgid "Detached library block"
 msgstr ""
 
 msgctxt "aiAgentDetachLibraryBlockRunning"
-msgid "Detaching library block..."
+msgid "Detaching library block"
 msgstr ""
 
 msgctxt "aiAgentDetachLibraryBlocksDone"
@@ -437,7 +433,7 @@ msgid "Detached @count library blocks"
 msgstr ""
 
 msgctxt "aiAgentDisconnected"
-msgid "Connection lost. Reconnecting..."
+msgid "Connection lost. Reconnecting"
 msgstr ""
 
 msgctxt "aiAgentDropFiles"
@@ -457,15 +453,11 @@ msgid "Duplicated @count blocks"
 msgstr ""
 
 msgctxt "aiAgentDuplicateBlocksRunning"
-msgid "Duplicating blocks..."
+msgid "Duplicating blocks"
 msgstr ""
 
 msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
-msgstr ""
-
-msgctxt "aiAgentEdit"
-msgid "Edit"
 msgstr ""
 
 msgctxt "aiAgentErrorAuthentication"
@@ -517,7 +509,7 @@ msgid "Good"
 msgstr ""
 
 msgctxt "aiAgentFeedbackPlaceholder"
-msgid "Tell us more (optional)..."
+msgid "Tell us more (optional)"
 msgstr ""
 
 msgctxt "aiAgentFeedbackPrompt"
@@ -537,7 +529,7 @@ msgid "Found @count blocks"
 msgstr ""
 
 msgctxt "aiAgentFindBlocksRunning"
-msgid "Finding blocks..."
+msgid "Finding blocks"
 msgstr ""
 
 msgctxt "aiAgentGetAdvancedChartConfigDone"
@@ -545,7 +537,7 @@ msgid "Got advanced chart config"
 msgstr ""
 
 msgctxt "aiAgentGetAdvancedChartConfigRunning"
-msgid "Getting advanced chart config..."
+msgid "Getting advanced chart config"
 msgstr ""
 
 msgctxt "aiAgentGetAllFragments"
@@ -561,7 +553,7 @@ msgid "Got content from @count blocks"
 msgstr ""
 
 msgctxt "aiAgentGetAllPageContentRunning"
-msgid "Getting all page content..."
+msgid "Getting all page content"
 msgstr ""
 
 msgctxt "aiAgentGetBlockContextDone"
@@ -569,7 +561,7 @@ msgid "Got context for @bundle"
 msgstr ""
 
 msgctxt "aiAgentGetBlockContextRunning"
-msgid "Getting block context..."
+msgid "Getting block context"
 msgstr ""
 
 msgctxt "aiAgentGetBlockOptionsDone"
@@ -581,7 +573,7 @@ msgid "Got options of @count blocks"
 msgstr ""
 
 msgctxt "aiAgentGetBlockOptionsRunning"
-msgid "Getting block options..."
+msgid "Getting block options"
 msgstr ""
 
 msgctxt "aiAgentGetBlocksInViewportDone"
@@ -589,7 +581,7 @@ msgid "Got @count blocks in viewport"
 msgstr ""
 
 msgctxt "aiAgentGetBlocksInViewportRunning"
-msgid "Getting blocks in viewport..."
+msgid "Getting blocks in viewport"
 msgstr ""
 
 msgctxt "aiAgentGetBundleInfoDone"
@@ -597,7 +589,7 @@ msgid "Got bundle info for @field"
 msgstr ""
 
 msgctxt "aiAgentGetBundleInfoRunning"
-msgid "Getting bundle info..."
+msgid "Getting bundle info"
 msgstr ""
 
 msgctxt "aiAgentGetChartDataDone"
@@ -605,11 +597,11 @@ msgid "Got chart data"
 msgstr ""
 
 msgctxt "aiAgentGetChartDataRunning"
-msgid "Getting chart data..."
+msgid "Getting chart data"
 msgstr ""
 
 msgctxt "aiAgentGetChartTypeOptionsRunning"
-msgid "Getting chart options..."
+msgid "Getting chart options"
 msgstr ""
 
 msgctxt "aiAgentGetChildBlocks"
@@ -633,7 +625,7 @@ msgid "Got content fields of @count blocks"
 msgstr ""
 
 msgctxt "aiAgentGetContentFieldsRunning"
-msgid "Getting content fields..."
+msgid "Getting content fields"
 msgstr ""
 
 msgctxt "aiAgentGetEntityContentFieldsDone"
@@ -645,7 +637,7 @@ msgid "Got mutation history"
 msgstr ""
 
 msgctxt "aiAgentGetMutationHistoryRunning"
-msgid "Getting mutation history..."
+msgid "Getting mutation history"
 msgstr ""
 
 msgctxt "aiAgentGetPageStructureDone"
@@ -653,7 +645,7 @@ msgid "Got page structure (@count paragraphs)"
 msgstr ""
 
 msgctxt "aiAgentGetPageStructureRunning"
-msgid "Getting page structure..."
+msgid "Getting page structure"
 msgstr ""
 
 msgctxt "aiAgentGetSelectedBlocksDone"
@@ -665,11 +657,11 @@ msgid "No blocks selected"
 msgstr ""
 
 msgctxt "aiAgentGetSelectedBlocksRunning"
-msgid "Getting selected blocks..."
+msgid "Getting selected blocks"
 msgstr ""
 
 msgctxt "aiAgentGoToHistoryIndexRunning"
-msgid "Navigating history..."
+msgid "Navigating history"
 msgstr ""
 
 msgctxt "aiAgentIntroPopup"
@@ -699,7 +691,7 @@ msgid "Moved @count blocks"
 msgstr ""
 
 msgctxt "aiAgentMoveBlocksRunning"
-msgid "Moving blocks..."
+msgid "Moving blocks"
 msgstr ""
 
 msgctxt "aiAgentNewConversation"
@@ -722,10 +714,6 @@ msgctxt "aiAgentPlaceholder"
 msgid "What should we work on?"
 msgstr ""
 
-msgctxt "aiAgentPlaceholderReply"
-msgid "Reply..."
-msgstr "Rispondi..."
-
 msgctxt "aiAgentPlanCompleted"
 msgid "Plan completed: @label"
 msgstr ""
@@ -735,7 +723,7 @@ msgid "AI-Assistant"
 msgstr ""
 
 msgctxt "aiAgentProcessing"
-msgid "Processing..."
+msgid "Processing"
 msgstr ""
 
 msgctxt "aiAgentRearrangeBlocksDone"
@@ -743,7 +731,7 @@ msgid "Rearranged @count blocks"
 msgstr ""
 
 msgctxt "aiAgentRearrangeBlocksRunning"
-msgid "Rearranging blocks..."
+msgid "Rearranging blocks"
 msgstr ""
 
 msgctxt "aiAgentRedoDone"
@@ -763,7 +751,7 @@ msgid "Replaced content reference on @field"
 msgstr ""
 
 msgctxt "aiAgentReplaceContentSearchItemRunning"
-msgid "Replacing content reference..."
+msgid "Replacing content reference"
 msgstr ""
 
 msgctxt "aiAgentReplaceMediaDone"
@@ -771,7 +759,7 @@ msgid "Replaced media on @field"
 msgstr ""
 
 msgctxt "aiAgentReplaceMediaRunning"
-msgid "Replacing media..."
+msgid "Replacing media"
 msgstr ""
 
 msgctxt "aiAgentRetry"
@@ -779,7 +767,7 @@ msgid "Retry"
 msgstr ""
 
 msgctxt "aiAgentSearchContentRunning"
-msgid "Searching content..."
+msgid "Searching content"
 msgstr ""
 
 msgctxt "aiAgentSearchLibraryDone"
@@ -787,7 +775,7 @@ msgid "Searched library"
 msgstr ""
 
 msgctxt "aiAgentSearchLibraryRunning"
-msgid "Searching reusable blocks..."
+msgid "Searching reusable blocks"
 msgstr ""
 
 msgctxt "aiAgentSearchMediaAllDone"
@@ -799,7 +787,7 @@ msgid "Searched media for '@query'"
 msgstr ""
 
 msgctxt "aiAgentSearchMediaRunning"
-msgid "Searching media..."
+msgid "Searching media"
 msgstr ""
 
 msgctxt "aiAgentSearchTemplatesAllDone"
@@ -811,7 +799,7 @@ msgid "Searched templates for '@query'"
 msgstr ""
 
 msgctxt "aiAgentSearchTemplatesRunning"
-msgid "Searching templates..."
+msgid "Searching templates"
 msgstr ""
 
 msgctxt "aiAgentSearchTextDone"
@@ -823,19 +811,19 @@ msgid "Invalid regex pattern"
 msgstr ""
 
 msgctxt "aiAgentSearchTextRunning"
-msgid "Searching text..."
+msgid "Searching text"
 msgstr ""
 
 msgctxt "aiAgentSelectMediaRunning"
-msgid "Selecting media..."
+msgid "Selecting media"
 msgstr ""
 
 msgctxt "aiAgentSetBlockOptionsRunning"
-msgid "Setting block options..."
+msgid "Setting block options"
 msgstr ""
 
 msgctxt "aiAgentShowTranscript"
-msgid "Show transcript..."
+msgid "Show transcript"
 msgstr ""
 
 msgctxt "aiAgentSwapBlocksDone"
@@ -843,11 +831,11 @@ msgid "Swapped @bundleA and @bundleB"
 msgstr ""
 
 msgctxt "aiAgentSwapBlocksRunning"
-msgid "Swapping blocks..."
+msgid "Swapping blocks"
 msgstr ""
 
 msgctxt "aiAgentThinking"
-msgid "Thinking..."
+msgid "Thinking"
 msgstr ""
 
 msgctxt "aiAgentTokensCached"
@@ -899,7 +887,7 @@ msgid "Updated advanced chart"
 msgstr ""
 
 msgctxt "aiAgentUpdateAdvancedChartRunning"
-msgid "Updating advanced chart..."
+msgid "Updating advanced chart"
 msgstr ""
 
 msgctxt "aiAgentUpdateChartDone"
@@ -907,7 +895,7 @@ msgid "Updated chart"
 msgstr ""
 
 msgctxt "aiAgentUpdateChartRunning"
-msgid "Updating chart..."
+msgid "Updating chart"
 msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
@@ -927,7 +915,7 @@ msgid "Fetched '@title'"
 msgstr ""
 
 msgctxt "aiAgentWebFetchRunning"
-msgid "Fetching web page..."
+msgid "Fetching web page"
 msgstr ""
 
 msgctxt "aiAgentWelcomeDisclaimer"
@@ -1653,10 +1641,6 @@ msgid ""
 "will be imported."
 msgstr ""
 
-msgctxt "chartsCsvPreviewSubmit"
-msgid "Import"
-msgstr ""
-
 msgctxt "chartsCsvPreviewTitle"
 msgid "Preview CSV import"
 msgstr ""
@@ -2043,7 +2027,7 @@ msgid "Y-axis start"
 msgstr "Inizio asse Y"
 
 msgctxt "checkingReadability"
-msgid "Checking readability..."
+msgid "Checking readability"
 msgstr ""
 
 msgctxt "clearInput"
@@ -2068,22 +2052,6 @@ msgstr ""
 
 msgctxt "clipboardPasteShortcutHelp"
 msgid "Paste text, image or copied blocks"
-msgstr ""
-
-msgctxt "clipboardTypeFile"
-msgid "File"
-msgstr ""
-
-msgctxt "clipboardTypeImage"
-msgid "Image"
-msgstr ""
-
-msgctxt "clipboardTypeText"
-msgid "Text"
-msgstr ""
-
-msgctxt "clipboardTypeVideo"
-msgid "Video"
 msgstr ""
 
 msgctxt "clipboardUnsupportedFileType"
@@ -2111,7 +2079,7 @@ msgid "Interface"
 msgstr ""
 
 msgctxt "commandPalette.inputPlaceholder"
-msgid "Search commands..."
+msgid "Search commands"
 msgstr ""
 
 msgctxt "commandPaletteOpen"
@@ -2130,7 +2098,7 @@ msgid ""
 msgstr ""
 
 msgctxt "commentAddPlaceholder"
-msgid "Add new comment..."
+msgid "Add new comment"
 msgstr ""
 
 msgctxt "commentBlocksCountOne"
@@ -2162,10 +2130,6 @@ msgstr "Eliminare la risposta?"
 msgctxt "commentEdited"
 msgid "edited"
 msgstr "modificato"
-
-msgctxt "commentReply"
-msgid "Reply"
-msgstr "Rispondi"
 
 msgctxt "commentResolvedLabel"
 msgid "Resolved"
@@ -2297,6 +2261,10 @@ msgstr ""
 
 msgctxt "diffStatusUnchanged"
 msgid "Unchanged"
+msgstr ""
+
+msgctxt "discard"
+msgid "Discard"
 msgstr ""
 
 msgctxt "display"
@@ -2480,7 +2448,7 @@ msgid "The action \"@name\" could not be executed."
 msgstr "The action \"@name\" could not be executed."
 
 msgctxt "fatalErrorButton"
-msgid "Continue anyway..."
+msgid "Continue anyway"
 msgstr ""
 
 msgctxt "fatalErrorText"
@@ -2506,6 +2474,10 @@ msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Questo campo è obbligatorio"
 
+msgctxt "file"
+msgid "File"
+msgstr ""
+
 msgctxt "filter"
 msgid "Filter"
 msgstr ""
@@ -2514,8 +2486,8 @@ msgctxt "filterSelectNoResults"
 msgid "No results"
 msgstr ""
 
-msgctxt "filterSelectSearch"
-msgid "Search..."
+msgctxt "fixReadability"
+msgid "Fix readability"
 msgstr ""
 
 msgctxt "footnotes"
@@ -2530,10 +2502,6 @@ msgstr ""
 
 msgctxt "formSearchClear"
 msgid "Clear"
-msgstr ""
-
-msgctxt "formSearchLoading"
-msgid "Loading..."
 msgstr ""
 
 msgctxt "formSearchNoResults"
@@ -2628,6 +2596,14 @@ msgctxt "iframesEditTitle"
 msgid "Edit iframe size"
 msgstr ""
 
+msgctxt "image"
+msgid "Image"
+msgstr ""
+
+msgctxt "import"
+msgid "Import"
+msgstr ""
+
 msgctxt "importExistingDescription"
 msgid "Import from an existing page"
 msgstr "Importa da una pagina esistente"
@@ -2661,16 +2637,12 @@ msgid "No pages found."
 msgstr ""
 
 msgctxt "importExistingSearchPlaceholder"
-msgid "Search pages..."
+msgid "Search pages"
 msgstr ""
 
 msgctxt "importExistingSuccess"
 msgid "Content imported successfully."
 msgstr "Contenuti importati con successo."
-
-msgctxt "importExistingTitle"
-msgid "Import..."
-msgstr "Importa..."
 
 msgctxt "inlineCode"
 msgid "Inline code"
@@ -2691,10 +2663,6 @@ msgstr ""
 msgctxt "keyboardSpace"
 msgid "Space"
 msgstr ""
-
-msgctxt "libraryAdd"
-msgid "Add to library..."
-msgstr "Aggiungi alla biblioteca"
 
 msgctxt "libraryAddDescription"
 msgid ""
@@ -2785,11 +2753,11 @@ msgid "Link"
 msgstr ""
 
 msgctxt "loading"
-msgid "Loading..."
+msgid "Loading"
 msgstr ""
 
 msgctxt "manageSchedule"
-msgid "Manage schedule..."
+msgid "Manage schedule"
 msgstr ""
 
 msgctxt "manageScheduling"
@@ -3214,6 +3182,10 @@ msgctxt "replaceField"
 msgid "Replace @field"
 msgstr ""
 
+msgctxt "reply"
+msgid "Reply"
+msgstr ""
+
 msgctxt "responsivePreviewCustomViewport"
 msgid "Custom"
 msgstr ""
@@ -3261,10 +3233,6 @@ msgctxt "revertMenuDescription"
 msgid "Restore currently published state"
 msgstr "Ripristina lo stato attualmente pubblicato"
 
-msgctxt "revertMenuTitle"
-msgid "Discard..."
-msgstr "Annulla..."
-
 msgctxt "revertSuccess"
 msgid "All changes have been discarded."
 msgstr "Tutte le modifiche sono state scartate."
@@ -3295,6 +3263,10 @@ msgstr ""
 
 msgctxt "schedulerNotSupported"
 msgid "Scheduling is not available for this block type."
+msgstr ""
+
+msgctxt "search"
+msgid "Search"
 msgstr ""
 
 msgctxt "searchBoxNoResultsFound"
@@ -3509,7 +3481,7 @@ msgid "Only single blocks can be made default."
 msgstr ""
 
 msgctxt "templatesCreate"
-msgid "Create template..."
+msgid "Create template"
 msgstr ""
 
 msgctxt "templatesCreateDialogDefaultDescription"
@@ -3576,10 +3548,6 @@ msgctxt "templatesMenuDescription"
 msgid "Edit and delete block templates"
 msgstr ""
 
-msgctxt "templatesMenuLabel"
-msgid "Templates..."
-msgstr ""
-
 msgctxt "templatesMissingDefaultPermissions"
 msgid "Missing permission to create default templates."
 msgstr ""
@@ -3604,6 +3572,10 @@ msgstr ""
 
 msgctxt "templatesSuccessMessage"
 msgid "Successfully created template \"@label\""
+msgstr ""
+
+msgctxt "text"
+msgid "Text"
 msgstr ""
 
 msgctxt "textareaNewLineHint"
@@ -3692,16 +3664,12 @@ msgctxt "translations"
 msgid "Translations"
 msgstr ""
 
-msgctxt "translationsAddFiles"
-msgid "Add files..."
-msgstr ""
-
 msgctxt "translationsAutoTranslate"
 msgid "Auto-translate"
 msgstr ""
 
 msgctxt "translationsAutoTranslateButton"
-msgid "Auto-translate..."
+msgid "Auto-translate"
 msgstr ""
 
 msgctxt "translationsAutoTranslateDescription"
@@ -3744,10 +3712,6 @@ msgctxt "translationsBatchTranslateMenuDescription"
 msgid "Translate all blocks"
 msgstr "Traduci tutti gli elementi"
 
-msgctxt "translationsBatchTranslateMenuTitle"
-msgid "Translate..."
-msgstr "Traduci..."
-
 msgctxt "translationsCsvApply"
 msgid "Import @count translations"
 msgstr ""
@@ -3781,7 +3745,7 @@ msgid "Languages"
 msgstr ""
 
 msgctxt "translationsCsvMenuTitle"
-msgid "Import/export..."
+msgid "Import/export"
 msgstr ""
 
 msgctxt "translationsCsvNoChanges"
@@ -3848,7 +3812,7 @@ msgid "fields selected"
 msgstr ""
 
 msgctxt "translationsTranslateLoading"
-msgid "Translating..."
+msgid "Translating"
 msgstr ""
 
 msgctxt "translationsTranslateNoTexts"
@@ -3875,6 +3839,10 @@ msgctxt "validationsTourText"
 msgid "See validation errors for content or structure on the current page."
 msgstr ""
 
+msgctxt "video"
+msgid "Video"
+msgstr ""
+
 msgctxt "viewBannerReviewText"
 msgid "You can view and add comments but cannot edit content."
 msgstr ""
@@ -3896,5 +3864,5 @@ msgid "What's New"
 msgstr ""
 
 msgctxt "workspaceSearchPlaceholder"
-msgid "Search pages..."
+msgid "Search pages"
 msgstr ""

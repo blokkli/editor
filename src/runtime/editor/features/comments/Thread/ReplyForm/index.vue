@@ -7,7 +7,7 @@
         @click="open"
       >
         <Icon name="bk_mdi_reply" class="size-15" />
-        {{ $t('commentReply', 'Reply') }}
+        {{ $t('reply', 'Reply') }}
       </button>
     </div>
     <div v-if="isOpen" class="col-start-1 row-start-1 relative z-50">
@@ -15,7 +15,7 @@
         :id="`comment_reply_${rootUuid}`"
         :initial-value="draft"
         cancellable
-        :submit-label="$t('commentReply', 'Reply')"
+        :submit-label="$t('reply', 'Reply')"
         boxed
         @change="draft = $event"
         @submit="onSubmit"

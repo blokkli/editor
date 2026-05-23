@@ -93,7 +93,9 @@ export default defineBlokkliAgentTool({
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
   modes: ['editing', 'translating'],
   label($t) {
-    return $t('aiAgentBatchRewriteTextRunning', 'Rewriting multiple texts...')
+    return $t('aiAgentBatchRewriteTextRunning', 'Rewriting multiple texts', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

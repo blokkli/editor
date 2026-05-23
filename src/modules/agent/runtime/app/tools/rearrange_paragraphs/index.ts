@@ -26,7 +26,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => (r.success ? 'rearranged paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentRearrangeBlocksRunning', 'Rearranging blocks...')
+    return $t('aiAgentRearrangeBlocksRunning', 'Rearranging blocks', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

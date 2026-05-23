@@ -26,7 +26,7 @@
             </p>
             <div class="bk-fatal-error-buttons">
               <button class="bk-button bk-scheme-red" @click="errors = []">
-                {{ $t('fatalErrorButton', 'Continue anyway...') }}
+                {{ $t('fatalErrorButton', 'Continue anyway', { more: true }) }}
               </button>
             </div>
           </div>

@@ -25,7 +25,7 @@ export default defineBlokkliAgentTool({
   lazy: true,
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentAddTemplateRunning', 'Adding template...')
+    return $t('aiAgentAddTemplateRunning', 'Adding template', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

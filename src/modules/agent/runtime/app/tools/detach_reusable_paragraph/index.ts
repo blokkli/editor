@@ -26,7 +26,9 @@ export default defineBlokkliAgentTool({
   lazy: true,
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentDetachLibraryBlockRunning', 'Detaching library block...')
+    return $t('aiAgentDetachLibraryBlockRunning', 'Detaching library block', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

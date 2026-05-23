@@ -31,7 +31,9 @@ export default defineBlokkliAgentTool({
   modes: ['readonly', 'editing', 'translating', 'review'],
   lazy: true,
   label($t) {
-    return $t('aiAgentSearchTemplatesRunning', 'Searching templates...')
+    return $t('aiAgentSearchTemplatesRunning', 'Searching templates', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,

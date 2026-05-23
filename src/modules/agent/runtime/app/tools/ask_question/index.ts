@@ -45,7 +45,7 @@ export default defineBlokkliAgentTool({
   category: 'query',
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentAskQuestionRunning', 'Waiting for answer...')
+    return $t('aiAgentAskQuestionRunning', 'Waiting for answer', { more: true })
   },
   paramsSchema,
   resultSchema,

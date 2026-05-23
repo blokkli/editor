@@ -40,7 +40,9 @@ export default defineBlokkliAgentTool({
   requiredAdapterMethods: ['getAnalyzers'],
   isAvailable: (app) => app.readability.isAvailable.value,
   label($t) {
-    return $t('aiAgentAnalyzeContentRunning', 'Analyzing content...')
+    return $t('aiAgentAnalyzeContentRunning', 'Analyzing content', {
+      more: true,
+    })
   },
   prunedSummary: (r) => {
     let count = 0

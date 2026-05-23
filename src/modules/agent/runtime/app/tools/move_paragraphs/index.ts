@@ -22,7 +22,7 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => (r.success ? 'moved paragraphs' : 'rejected'),
   modes: ['editing'],
   label($t) {
-    return $t('aiAgentMoveBlocksRunning', 'Moving blocks...')
+    return $t('aiAgentMoveBlocksRunning', 'Moving blocks', { more: true })
   },
   paramsSchema,
   resultSchema: mutationResultSchema,

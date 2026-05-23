@@ -25,7 +25,9 @@ export default defineBlokkliAgentTool({
   prunedSummary: (r) => `${r.paragraphs?.length || 0} paragraphs selected`,
   modes: ['readonly', 'editing', 'translating', 'review'],
   label($t) {
-    return $t('aiAgentGetSelectedBlocksRunning', 'Getting selected blocks...')
+    return $t('aiAgentGetSelectedBlocksRunning', 'Getting selected blocks', {
+      more: true,
+    })
   },
   paramsSchema,
   resultSchema,
