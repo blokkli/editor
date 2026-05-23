@@ -36,10 +36,7 @@
         @wheel.passive="onWheel"
       >
         <ItemGroup :items="filteredBlocks" @select="onClick" />
-        <ItemGroup
-          :label="$t('actions', 'Actions')"
-          :items="filteredActions"
-        />
+        <ItemGroup :label="$t('actions', 'Actions')" :items="filteredActions" />
         <ItemGroup
           :label="$t('bundleSelectorFragmentsLabel', 'Fragments')"
           :items="filteredFragments"

@@ -1,9 +1,5 @@
 <template>
-  <ErrorBoundary
-    v-model="isLocked"
-    label="Multiselect"
-    @error="onError"
-  >
+  <ErrorBoundary v-model="isLocked" label="Multiselect" @error="onError">
     <Renderer
       v-if="shouldRender"
       :key="animation.renderKey.value"

@@ -173,10 +173,10 @@ defineEmits<{
 const { $t } = useBlokkli()
 
 const leadText = computed(() => {
-  const imported = $t(
-    'blocksImported',
-    '@count blocks imported.',
-  ).replace('@count', String(props.summary.paragraphsImported))
+  const imported = $t('blocksImported', '@count blocks imported.').replace(
+    '@count',
+    String(props.summary.paragraphsImported),
+  )
 
   if (props.summary.referencesResolvedByUuid > 0) {
     const refs = $t(

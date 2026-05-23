@@ -647,10 +647,7 @@ async function fetchStream(
  */
 async function readabilityRetryLoop(authToken: string) {
   for (let attempt = 0; attempt < MAX_READABILITY_RETRIES; attempt++) {
-    streamingTitle.value = $t(
-      'checkingReadability',
-      'Checking readability...',
-    )
+    streamingTitle.value = $t('checkingReadability', 'Checking readability...')
 
     // Run readability analysis on proposed values.
     const analysis = await analyzeReadability()

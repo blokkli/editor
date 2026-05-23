@@ -237,10 +237,7 @@ const activeIndicator = computed(() => {
 })
 
 const title = computed(() =>
-  $t('editLabel', 'Edit @label').replace(
-    '@label',
-    props.config.label,
-  ),
+  $t('editLabel', 'Edit @label').replace('@label', props.config.label),
 )
 
 const hasChanged = computed(() => {

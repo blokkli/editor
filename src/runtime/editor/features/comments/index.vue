@@ -9,8 +9,8 @@
     weight="-20"
   >
     <CommentSidebar
-      :comments
       v-model:show-resolved="showResolved"
+      :comments
       :recently-resolved
       @add="onAddComment($event, [])"
       @reply="onReply($event.parentUuid, $event.body)"

@@ -77,7 +77,6 @@ import {
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { Icon } from '#blokkli/editor/components'
 import { onBlokkliEvent, useFocusTrap } from '#blokkli/editor/composables'
-import GrowOnly from '../GrowOnly/index.vue'
 
 const { ui } = useBlokkli()
 

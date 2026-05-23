@@ -143,7 +143,10 @@ export function replaceTranslationKeyInSource(
   edits.sort((a, b) => b.start - a.start)
   let result = source
   for (const edit of edits) {
-    result = result.substring(0, edit.start) + edit.replacement + result.substring(edit.end)
+    result =
+      result.substring(0, edit.start) +
+      edit.replacement +
+      result.substring(edit.end)
   }
 
   return { source: result, count: edits.length }

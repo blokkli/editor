@@ -40,9 +40,12 @@ reason.
 
 - Prefer using props over `provide`/`inject`. Dependency injection should
   **ONLY** be used for truly "global" objects or state, such as `useBlokkli`.
-- Prefer using shorthand syntax for passing props: so
-  `<MyComponent :can-submit />` instead of
-  `<MyComponent :can-submit="canSubmit" />`!
+- **ALWAYS** use the same-name shorthand syntax when the bound variable matches
+  the prop name: `<MyComponent :can-submit />` instead of
+  `<MyComponent :can-submit="canSubmit" />`. This applies even when the
+  attribute is kebab-case and the variable is camelCase (`:insertions-only`
+  binds `insertionsOnly`). Only write the explicit `="..."` form when the value
+  is an expression or a differently-named variable.
 
 ## Styling Components
 
