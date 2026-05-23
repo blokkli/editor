@@ -11,8 +11,11 @@
     >
       <Icon name="bk_mdi_close" class="size-20 md:size-30 mr-25" />
     </button>
-    <div class="flex-1 overflow-auto flex flex-col">
-      <div id="bk-menu-primary" class="grid border-t border-t-mono-200">
+    <div class="flex-1 overflow-auto flex flex-col bg-mono-200">
+      <div
+        id="bk-menu-primary"
+        class="grid border-t border-t-mono-200 bg-white"
+      >
         <MenuButton
           v-for="button in primaryButtons"
           :id="button.id"
@@ -25,7 +28,7 @@
           @click="onClick(button)"
         />
       </div>
-      <div id="bk-menu-secondary" class="mt-auto border-t border-t-mono-200">
+      <div id="bk-menu-secondary" class="mt-auto grid grid-cols-2">
         <MenuButton
           v-for="button in secondaryButtons"
           :id="button.id"
@@ -40,12 +43,12 @@
         />
       </div>
       <aside
-        class="px-15 py-10 text-xs bg-mono-100 text-mono-600 items-center leading-none flex justify-between"
+        class="px-15 py-10 text-xs bg-accent-600 text-white items-center leading-none flex justify-between"
       >
         <div class="flex gap-5 items-center">
           <Icon
             name="logo"
-            class="bg-accent-700 size-20 flex items-center justify-center rounded text-white"
+            class="bg-white size-20 flex items-center justify-center rounded text-accent-600"
           />
           <div><strong>@blokkli/editor</strong> {{ blokkliVersion }}</div>
         </div>

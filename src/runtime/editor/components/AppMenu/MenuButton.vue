@@ -1,7 +1,7 @@
 <template>
   <button
     :id="'bk-menu-list-button-' + id"
-    class="w-full text-left whitespace-nowrap text-mono-950 lg:hover:bg-mono-100 border-b border-b-mono-200 group"
+    class="w-full text-left whitespace-nowrap text-mono-950 group"
     :disabled
     :class="[
       {
@@ -10,22 +10,23 @@
         'bk-scheme-yellow': type === 'yellow',
         'bk-scheme-mono': !type,
         'pointer-events-none': disabled,
+        'lg:hover:bg-mono-100 border-b border-b-mono-200': !small,
       },
     ]"
     @click.prevent.stop="onClick"
   >
     <div
-      class="grid pl-15 pr-20 gap-x-10 grid-cols-[auto_1fr]"
+      class="grid pl-15 pr-20 grid-cols-[auto_1fr]"
       :class="{
-        'py-10': small,
-        'py-15': !small,
+        'py-8 gap-x-5': small,
+        'py-15 gap-x-10': !small,
         'opacity-30': disabled,
       }"
     >
       <div
         class="flex items-center justify-center border bg-scheme-light text-scheme-normal border-scheme-normal/50 group-hover:border-scheme-normal group-hover:text-scheme-dark rounded"
         :class="{
-          'size-[35px]': small,
+          'size-25': small,
           'size-50': !small,
         }"
       >
@@ -38,14 +39,14 @@
         }"
       >
         <strong
-          class="font-semibold"
           :class="{
-            'text-xs': small,
-            'text-base': !small,
+            'text-xs font-medium': small,
+            'text-base font-semibold': !small,
           }"
           >{{ title }}</strong
         >
         <span
+          v-if="!small"
           class="text-mono-500 group-hover:text-mono-700"
           :class="{
             'text-xs': small,
