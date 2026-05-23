@@ -115,7 +115,7 @@
     :description="
       $t('editTranslationDescription', 'Manually add or edit the translations.')
     "
-    icon="bk_mdi_edit"
+    icon="bk_mdi_translate"
     :weight="-90"
     @click="onTranslate"
   />

@@ -13,7 +13,19 @@
     icon="bk_mdi_translate"
     :weight="-80"
     @click="onClick"
-  />
+  >
+    <template #icon>
+      <Icon
+        name="bk_mdi_translate"
+        class="size-25 pointer-events-none text-orange-normal"
+      />
+      <div
+        class="text-[9px] font-bold absolute left-1/2 -translate-x-1/2 bottom-[-4px] text-orange-dark bg-orange-normal rounded-full px-3 leading-[11px] border-2 border-mono-900 group-hover/button:border-mono-700"
+      >
+        AUTO
+      </div>
+    </template>
+  </PluginItemAction>
 
   <DiffApproval
     v-if="phase === 'approving'"
@@ -26,7 +38,7 @@
 <script lang="ts" setup>
 import { ref, computed, useBlokkli } from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
-import { DiffApproval } from '#blokkli/editor/components'
+import { DiffApproval, Icon } from '#blokkli/editor/components'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 

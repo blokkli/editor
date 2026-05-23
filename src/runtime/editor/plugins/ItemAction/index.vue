@@ -5,7 +5,7 @@
       v-show="!hidden"
       ref="el"
       :disabled="isDisabled"
-      class="group/tooltip flex items-center shrink-0 justify-center relative lg:static z-50 size-50 lg:hover:bg-mono-700 text-mono-300 lg:hover:text-mono-50"
+      class="group/tooltip flex items-center shrink-0 justify-center relative lg:static z-50 size-50 lg:hover:bg-mono-700 text-mono-300 lg:hover:text-mono-50 group/button"
       :class="[
         {
           'bk-is-active': active,
@@ -18,12 +18,14 @@
       @click.prevent.stop="onClick"
     >
       <div class="relative">
-        <Icon
-          v-if="icon"
-          :name="icon"
-          class="size-20 lg:size-24 fill-current pointer-events-none"
-        />
-        <slot name="icon-addon" />
+        <slot name="icon">
+          <Icon
+            v-if="icon"
+            :name="icon"
+            class="size-20 lg:size-24 fill-current pointer-events-none"
+          />
+          <slot name="icon-addon" />
+        </slot>
       </div>
       <Tooltip
         :label="title"
