@@ -190,7 +190,7 @@ function getInteractedElement(
       droppableField.fieldName,
       droppableField,
     )
-    if (config.type === 'reference') {
+    if (config.type === 'reference' && config.cardinality !== 1) {
       const droppableUuid =
         droppableField.type === itemEntityType ? droppableField.uuid : undefined
       if (!droppableUuid || droppableUuid === deepestUuid) {

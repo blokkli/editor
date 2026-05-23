@@ -289,7 +289,7 @@ function updateHoverState(
     const excludedKeys = new Set<string>()
     for (const el of directive.getDroppableElements()) {
       const config = types.getDroppableFieldConfig(el.fieldName, el)
-      if (config.type !== 'reference') {
+      if (config.type !== 'reference' || config.cardinality === 1) {
         excludedKeys.add(el.key)
       }
     }
