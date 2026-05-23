@@ -54,7 +54,11 @@ const uuids = computed(() => {
 })
 
 const key = computed(() => {
-  const parts: string[] = [ui.currentDialog.value?.id ?? 'no-dialog']
+  // The form remounts when the selected blocks change so it can re-capture the
+  // option baseline. Pending changes are persisted before the remount via the
+  // flush handler registered on the UI provider (see ./Form/index.vue), which
+  // action buttons await through ui.flushPendingChanges().
+  const parts: string[] = []
   if (typeof uuids.value === 'string') {
     parts.push(uuids.value)
   } else if (uuids.value && typeof uuids.value === 'object') {

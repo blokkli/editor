@@ -78,9 +78,11 @@ onBlokkliEvent('window:clickAway', () => {
 
 watch(selection.uuids, () => emit('close'))
 
-const onClick = (index: number) => {
+const onClick = async (index: number) => {
   const item = props.menu[index]
   if (item && item.type === 'button') {
+    // Persist any pending option changes before running the action.
+    await ui.flushPendingChanges()
     item.callback()
   }
   emit('close')

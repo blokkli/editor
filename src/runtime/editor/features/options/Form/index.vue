@@ -361,6 +361,68 @@ function setOptionValue(key: string, value: unknown) {
   }
 }
 
+/**
+ * The option changes that still need to be persisted: current values that
+ * differ from the values present when the form was mounted or last flushed.
+ */
+function getPendingValues() {
+  return updated
+    .getEntries()
+    .map((entry) => {
+      // Skip values that are unchanged from the baseline.
+      const originalValue = original.get(entry.uuid, entry.key)
+      if (originalValue === entry.value) {
+        return
+      }
+      return entry
+    })
+    .filter(falsy)
+}
+
+let inflight: Promise<unknown> | null = null
+
+/**
+ * Persist pending option changes via the adapter.
+ *
+ * Registered as a flush handler on the UI provider so action buttons can
+ * await it before they run. Safe to call repeatedly: resolves immediately when
+ * nothing is pending and de-dupes against an in-flight flush, so the same
+ * changes are never persisted twice. On success the baseline is moved forward
+ * so subsequent calls become no-ops.
+ */
+function flushOptions(): Promise<unknown> {
+  if (inflight) {
+    return inflight
+  }
+
+  const values = getPendingValues()
+  if (!values.length) {
+    return Promise.resolve()
+  }
+
+  const run = Array.isArray(props.uuids)
+    ? () => adapter.updateOptions!(values)
+    : () =>
+        adapter.updateHostOptions!(
+          values.map((v) => ({ ...v, uuid: undefined })),
+        )
+
+  inflight = state
+    .mutateWithLoadingState(run)
+    .then((success) => {
+      if (success) {
+        values.forEach((v) => original.set(v.uuid, v.key, v.value))
+      }
+    })
+    .finally(() => {
+      inflight = null
+    })
+
+  return inflight
+}
+
+let unregisterFlush: (() => void) | null = null
+
 onMounted(() => {
   if (Array.isArray(props.uuids)) {
     props.uuids.forEach((uuid) => {
@@ -391,40 +453,18 @@ onMounted(() => {
       )
     })
   }
+
+  unregisterFlush = ui.registerFlushHandler(flushOptions)
 })
 
 onBeforeUnmount(() => {
-  const values = updated
-    .getEntries()
-    .map((entry) => {
-      // Check if the original value is the same as the updated value.
-      // If yes, we can skip updating it, since it's the same.
-      const originalValue = original.get(entry.uuid, entry.key)
-      if (originalValue === entry.value) {
-        return
-      }
-      return entry
-    })
-    .filter(falsy)
+  unregisterFlush?.()
 
-  if (!values.length) {
-    return
-  }
-
-  if (Array.isArray(props.uuids)) {
-    state.mutateWithLoadingState(() => adapter.updateOptions!(values))
-  } else {
-    state.mutateWithLoadingState(() =>
-      adapter.updateHostOptions!(
-        values.map((v) => {
-          return {
-            ...v,
-            uuid: undefined,
-          }
-        }),
-      ),
-    )
-  }
+  // The form unmounts when the selection changes (its key includes the
+  // selected uuids). Clicking another block is not an action button, so flush
+  // any pending changes here. Other "move away" cases are handled by action
+  // buttons awaiting ui.flushPendingChanges() before they run.
+  flushOptions()
 })
 </script>
 

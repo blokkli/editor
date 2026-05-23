@@ -198,12 +198,17 @@ const emit = defineEmits<{
   (e: 'click', items: RenderedFieldListItem[]): void
 }>()
 
-const onClick = () => {
+const onClick = async () => {
   if (isDisabled.value || !uuids.value.length || ui.isApproving.value) {
     return
   }
 
-  emit('click', selection.items.value)
+  const items = selection.items.value
+  // Persist any pending option changes before running the action, so an action
+  // that depends on persisted state (e.g. the edit form built from server
+  // state) sees the latest values.
+  await ui.flushPendingChanges()
+  emit('click', items)
 }
 
 defineCommands(() => ({

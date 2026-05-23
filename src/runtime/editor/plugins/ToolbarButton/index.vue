@@ -140,20 +140,22 @@ const props = defineProps<{
   noCommand?: boolean
 }>()
 
-const { debug } = useBlokkli()
+const { debug, ui } = useBlokkli()
 const logger = debug.createLogger('PluginToolbar')
 
 const emit = defineEmits(['click'])
 
 const el = ref<HTMLButtonElement | null>(null)
 
-function onClick() {
+async function onClick() {
   if (props.disabled) {
     return
   }
 
   logger.log(`Click ${props.id}`)
 
+  // Persist any pending option changes before running the action.
+  await ui.flushPendingChanges()
   emit('click')
 }
 

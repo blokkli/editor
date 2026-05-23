@@ -335,7 +335,10 @@ const onAttachDetached = () => {
   emit('updated')
 }
 
-const toggleSidebar = () => {
+const toggleSidebar = async () => {
+  // Toggling a sidebar moves away from the options form; persist any pending
+  // option changes first.
+  await ui.flushPendingChanges()
   emit('toggle')
   if (isDetached.value) {
     isDetached.value = false

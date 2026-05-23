@@ -522,6 +522,33 @@ export type UiProvider = {
   isChangingOptions: Ref<boolean>
 
   /**
+   * Register a handler that persists pending, not-yet-saved changes.
+   *
+   * Some features buffer changes locally while the user is interacting (e.g.
+   * the options form defers persisting option changes while the user tries
+   * them out). Such a feature registers a flush handler here so the rest of
+   * the editor can trigger and await that persistence via
+   * {@link flushPendingChanges}.
+   *
+   * Each handler is responsible for being safe to call when nothing is pending
+   * (resolve immediately) and for de-duping concurrent calls.
+   *
+   * @returns A function that unregisters the handler.
+   */
+  registerFlushHandler: (handler: () => Promise<unknown>) => () => void
+
+  /**
+   * Persist any pending changes from all registered flush handlers and resolve
+   * once they are done.
+   *
+   * Action buttons should await this before they run, so that an action which
+   * depends on persisted state (e.g. opening an edit form built from server
+   * state, or publishing) sees the latest values. Resolves immediately when no
+   * handlers are registered.
+   */
+  flushPendingChanges: () => Promise<unknown>
+
+  /**
    * ID of the currently active (focused) highlight, or empty string.
    *
    * Shared between the analyze sidebar and the highlights canvas renderer
@@ -602,6 +629,19 @@ export default function (
   const isApproving = ref(false)
   const actionsToolbarLocked = ref(false)
   const isChangingOptions = ref(false)
+
+  const flushHandlers = new Set<() => Promise<unknown>>()
+
+  function registerFlushHandler(handler: () => Promise<unknown>) {
+    flushHandlers.add(handler)
+    return () => {
+      flushHandlers.delete(handler)
+    }
+  }
+
+  function flushPendingChanges(): Promise<unknown> {
+    return Promise.all([...flushHandlers].map((handler) => handler()))
+  }
   const activeHighlightId = ref('')
   const currentDialog = ref<GlobalUiDialog | null>(null)
   const openTooltip = ref('')
@@ -1101,6 +1141,8 @@ export default function (
     closeDialog,
     currentDialog: readonly(currentDialog),
     requireDialogCloseConfirm,
+    registerFlushHandler,
+    flushPendingChanges,
     toArtboardCoords,
     hasNestedEditorOpen,
     setNestedEditor,

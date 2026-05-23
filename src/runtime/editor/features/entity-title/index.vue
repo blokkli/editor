@@ -3,7 +3,7 @@
     <button
       v-if="scheduledDate"
       class="bk-toolbar-title-scheduled group/tooltip"
-      @click.prevent="eventBus.emit('publish:show-dialog')"
+      @click.prevent="onShowPublishDialog"
     >
       <Icon name="bk_mdi_calendar_clock" />
       <div class="bk-toolbar-title-scheduled-text">
@@ -19,7 +19,7 @@
       ref="buttonEl"
       class="bk-toolbar-button group/tooltip w-full justify-start relative"
       :disabled="!state.canEdit.value"
-      @click="eventBus.emit('editEntity')"
+      @click="onEditEntity"
     >
       <div class="bk-toolbar-title relative size-full">
         <div
@@ -56,6 +56,18 @@ defineBlokkliFeature({
 const { state, eventBus, $t, ui } = useBlokkli()
 const { entity, mutations } = state
 const buttonEl = useTemplateRef('buttonEl')
+
+// Persist any pending option changes before opening the entity edit form
+// (built from server state) or the publish dialog.
+async function onEditEntity() {
+  await ui.flushPendingChanges()
+  eventBus.emit('editEntity')
+}
+
+async function onShowPublishDialog() {
+  await ui.flushPendingChanges()
+  eventBus.emit('publish:show-dialog')
+}
 
 const scheduledDate = computed(() => state.publishOptions.value?.publishOn)
 
@@ -94,7 +106,7 @@ defineCommands(() => {
       '@label',
       entity.value.label || 'Page',
     ),
-    callback: () => eventBus.emit('editEntity'),
+    callback: onEditEntity,
     icon: 'bk_mdi_edit',
   }
 })

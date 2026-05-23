@@ -12,7 +12,7 @@
       :class="{
         'lg:bg-mono-700 text-white': showDropdown,
       }"
-      @click.prevent="showDropdown = !showDropdown"
+      @click.prevent="onToggleDropdown"
     >
       <Tooltip
         :label="$t('actionsDropdownToolip', 'Further actions')"
@@ -150,6 +150,16 @@ const showDropdown = computed({
     ui.itemActionsOpen.value = isOpen
   },
 })
+
+async function onToggleDropdown() {
+  const willOpen = !showDropdown.value
+  // Opening the dropdown moves away from the options form; persist any pending
+  // option changes first.
+  if (willOpen) {
+    await ui.flushPendingChanges()
+  }
+  showDropdown.value = willOpen
+}
 
 watch(selection.items, () => {
   showDropdown.value = false

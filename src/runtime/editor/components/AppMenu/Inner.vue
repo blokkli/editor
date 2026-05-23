@@ -70,7 +70,7 @@ import { blokkliVersion } from '#blokkli-build/editor-config'
 import MenuButton from './MenuButton.vue'
 import type { MenuButtonPlugin } from '#blokkli/editor/providers/plugin'
 
-const { plugins } = useBlokkli()
+const { plugins, ui } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -90,7 +90,10 @@ const secondaryButtons = computed(() => {
     .sort((a, b) => (a.weight || 0) - (b.weight || 0))
 })
 
-function onClick(button: MenuButtonPlugin) {
+async function onClick(button: MenuButtonPlugin) {
+  // Persist any pending option changes before running the menu action (e.g.
+  // publish must include the latest options).
+  await ui.flushPendingChanges()
   button.callback()
   emit('close')
 }

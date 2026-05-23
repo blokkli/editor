@@ -495,7 +495,11 @@ function onPointerUp(e: PointerEvent) {
         if (!block) {
           return
         }
-        eventBus.emit('item:doubleClick', block)
+        // Persist any pending option changes before opening the edit/translate
+        // form, which is built from server state.
+        ui.flushPendingChanges().then(() =>
+          eventBus.emit('item:doubleClick', block),
+        )
       }
     }
   }
