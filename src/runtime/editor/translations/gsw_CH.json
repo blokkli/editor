@@ -79,6 +79,7 @@
   "aiAgentBatchRewriteAllApplied": "Alli @count Änderige aagwändet",
   "aiAgentBatchRewriteAllRejected": "Alli Änderige abglähnt",
   "aiAgentBatchRewriteApply": "@count vo @total aawände",
+  "aiAgentBatchRewriteNoChanges": "Kei Änderige feststellt",
   "aiAgentBatchRewriteReasonPlaceholder": "Grund für d'Ablähnig (optional)",
   "aiAgentBatchRewriteSomeApplied": "@applied vo @total Änderige aagwändet",
   "aiAgentBatchRewriteTextRunning": "Mehreri Teggscht wärde umgschriibe...",

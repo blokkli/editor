@@ -28,13 +28,25 @@
 <script lang="ts" setup>
 import { computed } from '#imports'
 import { DiffDisplay } from '#blokkli/editor/components'
-import type { StreamTextFieldsDetailItem } from '../Component.vue'
+
+/**
+ * A before/after diff entry shown in the collapsible tool details panel.
+ * `operations` is set by patch-mode rewrites to show per-operation diffs;
+ * otherwise the full before/after pair is shown.
+ */
+export type FieldDiffDetailItem = {
+  fieldLabel: string
+  before: string
+  after: string
+  mode?: 'full' | 'patch'
+  operations?: Array<{ search: string; replace: string }>
+}
 
 const props = defineProps<{
   details: unknown
 }>()
 
-const items = computed<StreamTextFieldsDetailItem[]>(() => {
+const items = computed<FieldDiffDetailItem[]>(() => {
   if (!Array.isArray(props.details)) return []
   return props.details
 })

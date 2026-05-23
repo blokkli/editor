@@ -66,28 +66,25 @@ import {
   resolveHost as resolveBlockHost,
   type ReadabilityResult,
 } from '../helpers'
+import {
+  applyFieldDiffs,
+  rejectedWithoutReasonMessage,
+} from '../fieldDiffApproval'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
 
 const props = defineProps<{
   context: McpToolContext
   params: ComponentParams
 }>()
 
-export type StreamTextFieldsDetailItem = {
-  fieldLabel: string
-  before: string
-  after: string
-  mode: 'full' | 'patch'
-  operations: Array<{ search: string; replace: string }>
-}
-
 const emit = defineEmits<{
   (e: 'done', result: ComponentToolResult<StreamTextFieldsResult>): void
 }>()
 
 const blokkli = useBlokkli()
-const { $t, state, context: editorContext, types, eventBus } = blokkli
+const { $t, state, types, eventBus } = blokkli
 
 type Phase = 'streaming' | 'approval' | 'error'
 const phase = ref<Phase>('streaming')
@@ -897,63 +894,14 @@ async function applySelected(data: {
   reasons: Record<number, string>
 }) {
   const { selected, reasons } = data
-  const rejectedByUser: Record<
-    string,
-    Record<string, { reasonForRejection: string }>
-  > = {}
 
-  const entityUuid = editorContext.value.entityUuid
-
-  const batchItems: Array<{
-    uuid: string
-    fieldName: string
-    fieldValue: string
-  }> = []
-  const entityItems: Array<{ fieldName: string; fieldValue: string }> = []
-
-  for (const item of completedItems.value) {
-    if (!selected[item.id]) {
-      const fields = rejectedByUser[item.uuid] ?? {}
-      fields[item.fieldName] = { reasonForRejection: reasons[item.id] || '' }
-      rejectedByUser[item.uuid] = fields
-      continue
-    }
-
-    if (item.uuid === entityUuid) {
-      entityItems.push({
-        fieldName: item.fieldName,
-        fieldValue: item.value,
-      })
-    } else {
-      batchItems.push({
-        uuid: item.uuid,
-        fieldName: item.fieldName,
-        fieldValue: item.value,
-      })
-    }
-  }
-
-  await state.mutateWithLoadingState(() =>
-    props.context.adapter.updateFieldValueBatched!({
-      items: batchItems,
-      entityItems,
-    }),
+  const { acceptedCount, rejectedByUser, label } = await applyFieldDiffs(
+    blokkli,
+    props.context.adapter,
+    completedItems.value,
+    selected,
+    reasons,
   )
-
-  const acceptedCount = batchItems.length + entityItems.length
-
-  const label =
-    acceptedCount === completedItems.value.length
-      ? $t(
-          'aiAgentBatchRewriteAllApplied',
-          'All @count changes applied',
-        ).replace('@count', String(acceptedCount))
-      : $t(
-          'aiAgentBatchRewriteSomeApplied',
-          '@applied of @total changes applied',
-        )
-          .replace('@applied', String(acceptedCount))
-          .replace('@total', String(completedItems.value.length))
 
   // Build a detailed agentMessage so the main agent knows what the sub-agent produced.
   const parts: string[] = []
@@ -982,32 +930,13 @@ async function applySelected(data: {
     }
   }
 
-  let agentMessage: string | undefined = parts.join('\n')
+  let agentMessage = parts.join('\n')
 
   // Add follow-up instructions for rejections without reasons.
-  const rejectedWithoutReason: Array<{ uuid: string; fieldName: string }> = []
-  for (const [uuid, fields] of Object.entries(rejectedByUser)) {
-    for (const [fieldName, v] of Object.entries(fields)) {
-      if (!v?.reasonForRejection) {
-        rejectedWithoutReason.push({ uuid, fieldName })
-      }
-    }
-  }
+  const followUp = rejectedWithoutReasonMessage(rejectedByUser)
+  if (followUp) agentMessage += '\n' + followUp
 
-  if (
-    rejectedWithoutReason.length === 1 ||
-    rejectedWithoutReason.length === 2
-  ) {
-    const fieldList = rejectedWithoutReason
-      .map((r) => `"${r.fieldName}" of paragraph ${r.uuid}`)
-      .join(' and ')
-    agentMessage += `\nThe user rejected ${fieldList} without a reason. Use the ask_question tool to present the user with 2 or more alternative texts for each rejected field.`
-  } else if (rejectedWithoutReason.length > 2) {
-    agentMessage +=
-      '\nSome changes were rejected without a reason. Ask the user what they would like to change instead.'
-  }
-
-  const _details: StreamTextFieldsDetailItem[] = completedItems.value
+  const _details: FieldDiffDetailItem[] = completedItems.value
     .filter((item) => selected[item.id])
     .map((item) => {
       const fs = findFieldState(item.uuid, item.fieldName)
@@ -1035,29 +964,6 @@ async function applySelected(data: {
     _details,
     _usage: streamUsage.value,
     _skipLlmResponse: rejectedItems.length === 0,
-  })
-}
-
-async function _rejectAll() {
-  await state.flushDirty()
-
-  const rejectedByUser: Record<
-    string,
-    Record<string, { reasonForRejection: string }>
-  > = {}
-  for (const item of completedItems.value) {
-    const fields = rejectedByUser[item.uuid] ?? {}
-    fields[item.fieldName] = { reasonForRejection: '' }
-    rejectedByUser[item.uuid] = fields
-  }
-
-  emit('done', {
-    acceptedCount: 0,
-    rejectedByUser,
-    label: $t('aiAgentBatchRewriteAllRejected', 'All changes rejected'),
-    agentMessage:
-      'All changes were rejected by the user. Ask the user what they would like to change instead.',
-    _usage: streamUsage.value,
   })
 }
 

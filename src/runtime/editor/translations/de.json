@@ -79,6 +79,7 @@
   "aiAgentBatchRewriteAllApplied": "Alle @count Änderungen angewendet",
   "aiAgentBatchRewriteAllRejected": "Alle Änderungen abgelehnt",
   "aiAgentBatchRewriteApply": "@count von @total anwenden",
+  "aiAgentBatchRewriteNoChanges": "Keine Änderungen festgestellt",
   "aiAgentBatchRewriteReasonPlaceholder": "Grund für Ablehnung (optional)",
   "aiAgentBatchRewriteSomeApplied": "@applied von @total Änderungen angewendet",
   "aiAgentBatchRewriteTextRunning": "Mehrere Texte umschreiben",

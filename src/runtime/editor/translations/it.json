@@ -14,6 +14,7 @@
   "addListSidebarTitle": "Aggiungi blocchi",
   "aiAgentAnalyzeContentDone": "@count risultati analizzati",
   "aiAgentAnalyzeContentRunning": "Analisi del contenuto...",
+  "aiAgentBatchRewriteNoChanges": "Nessuna modifica rilevata",
   "aiAgentPastedText": "Testo incollato",
   "aiAgentRemoveAttachment": "Rimuovi allegato",
   "aiAgentTokensCached": "Token di input riutilizzati (più economici)",

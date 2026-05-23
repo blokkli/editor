@@ -332,6 +332,10 @@ msgctxt "aiAgentBatchRewriteApply"
 msgid "Apply @count of @total"
 msgstr ""
 
+msgctxt "aiAgentBatchRewriteNoChanges"
+msgid "No changes detected"
+msgstr "Aucune modification détectée"
+
 msgctxt "aiAgentBatchRewriteReasonPlaceholder"
 msgid "Reason for rejection (optional)"
 msgstr ""

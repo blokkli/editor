@@ -102,6 +102,39 @@ export const positionSchema = z
   )
 
 /**
+ * Shared result schema for the interactive field-diff rewrite tools
+ * (`update_text_fields`, `delegate_text_rewrite`). Both present a diff approval
+ * UI and report what the user accepted/rejected.
+ */
+export const fieldDiffResultSchema = z.object({
+  acceptedCount: z.number().describe('Number of changes accepted by the user'),
+  rejectedByUser: z
+    .record(
+      z.string(),
+      z.record(
+        z.string(),
+        z.object({
+          reasonForRejection: z
+            .string()
+            .describe(
+              'Reason provided by the user for rejecting, empty if no reason given',
+            ),
+        }),
+      ),
+    )
+    .describe('Map of rejected paragraph UUID to field name to rejection details'),
+  label: z.string().describe('Human-readable summary shown in the UI'),
+  agentMessage: z
+    .string()
+    .optional()
+    .describe('Detailed message for the agent, replaces label in the LLM context'),
+  historyIndex: z
+    .number()
+    .optional()
+    .describe('The mutation history index after applying changes'),
+})
+
+/**
  * Schema for the success result sent back to the AI after mutation is applied.
  */
 export const mutationSuccessSchema = z.union([

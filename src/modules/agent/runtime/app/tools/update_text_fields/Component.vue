@@ -1,6 +1,6 @@
 <template>
   <DiffApproval
-    v-if="params.requireApproval !== false"
+    v-if="items.length > 0 && params.requireApproval !== false"
     :items="items"
     show-reason
     @apply="applySelected"
@@ -17,29 +17,43 @@ import type {
 } from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
 import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
+import {
+  applyFieldDiffs,
+  rejectedWithoutReasonMessage,
+} from '../fieldDiffApproval'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
 
 const props = defineProps<{
   context: McpToolContext
   params: BatchRewriteParams
 }>()
 
-export type BatchRewriteDetailItem = {
-  fieldLabel: string
-  before: string
-  after: string
-}
-
 const emit = defineEmits<{
   (e: 'done', result: ComponentToolResult<BatchRewriteResult>): void
 }>()
 
 const blokkli = useBlokkli()
-const { $t, state, context: editorContext, types, directive } = blokkli
+const { $t, state, types, directive } = blokkli
 
 const isApplying = ref(false)
 
 onMounted(() => {
+  // No applicable changes (e.g. the proposed values already match the current
+  // field values, so every item was filtered out). DiffApproval renders no
+  // toolbar — and therefore no cancel button — for an empty item list, so emit
+  // immediately to avoid a stuck state with no way out.
+  if (items.length === 0) {
+    emit('done', {
+      acceptedCount: 0,
+      rejectedByUser: {},
+      label: $t('aiAgentBatchRewriteNoChanges', 'No changes detected'),
+      agentMessage:
+        'No changes were applied — the requested values already matched the current field values.',
+    })
+    return
+  }
+
   if (props.params.requireApproval === false) {
     applySelected({
       selected: Object.fromEntries(items.map((item) => [item.id, true])),
@@ -162,93 +176,19 @@ async function applySelected(data: {
   reasons: Record<number, string>
 }) {
   const { selected, reasons } = data
-  const rejectedByUser: Record<
-    string,
-    Record<string, { reasonForRejection: string }>
-  > = {}
-
-  // Apply all selected changes via the adapter in a single batch.
-  const entityUuid = editorContext.value.entityUuid
-
-  const batchItems: Array<{
-    uuid: string
-    fieldName: string
-    fieldValue: string
-  }> = []
-  const entityItems: Array<{ fieldName: string; fieldValue: string }> = []
-
-  for (const item of items) {
-    if (!selected[item.id]) {
-      const fields = rejectedByUser[item.uuid] ?? {}
-      fields[item.fieldName] = { reasonForRejection: reasons[item.id] || '' }
-      rejectedByUser[item.uuid] = fields
-      continue
-    }
-
-    if (item.uuid === entityUuid) {
-      entityItems.push({
-        fieldName: item.fieldName,
-        fieldValue: item.value,
-      })
-    } else {
-      batchItems.push({
-        uuid: item.uuid,
-        fieldName: item.fieldName,
-        fieldValue: item.value,
-      })
-    }
-  }
 
   isApplying.value = true
 
-  await state.mutateWithLoadingState(() =>
-    props.context.adapter.updateFieldValueBatched!({
-      items: batchItems,
-      entityItems,
-    }),
+  const { acceptedCount, rejectedByUser, label } = await applyFieldDiffs(
+    blokkli,
+    props.context.adapter,
+    items,
+    selected,
+    reasons,
   )
 
-  const acceptedCount = batchItems.length + entityItems.length
-
-  const label =
-    acceptedCount === items.length
-      ? $t(
-          'aiAgentBatchRewriteAllApplied',
-          'All @count changes applied',
-        ).replace('@count', String(acceptedCount))
-      : $t(
-          'aiAgentBatchRewriteSomeApplied',
-          '@applied of @total changes applied',
-        )
-          .replace('@applied', String(acceptedCount))
-          .replace('@total', String(items.length))
-
-  // Collect rejected fields without a reason.
-  const rejectedWithoutReason: Array<{ uuid: string; fieldName: string }> = []
-  for (const [uuid, fields] of Object.entries(rejectedByUser)) {
-    for (const [fieldName, v] of Object.entries(fields)) {
-      if (!v?.reasonForRejection) {
-        rejectedWithoutReason.push({ uuid, fieldName })
-      }
-    }
-  }
-
-  let agentMessage: string | undefined
-  if (
-    rejectedWithoutReason.length === 1 ||
-    rejectedWithoutReason.length === 2
-  ) {
-    const fieldList = rejectedWithoutReason
-      .map((r) => `"${r.fieldName}" of paragraph ${r.uuid}`)
-      .join(' and ')
-    agentMessage = `The user rejected ${fieldList} without a reason. Use the ask_question tool to present the user with 2 or more alternative texts for each rejected field.`
-  } else if (rejectedWithoutReason.length > 2) {
-    agentMessage =
-      'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
-  }
-
   // Capture before/after diffs for the details panel.
-  const _details: BatchRewriteDetailItem[] = items
+  const _details: FieldDiffDetailItem[] = items
     .filter((item) => selected[item.id])
     .map((item) => ({
       fieldLabel: item.fieldLabel,
@@ -260,7 +200,7 @@ async function applySelected(data: {
     acceptedCount,
     rejectedByUser,
     label,
-    agentMessage,
+    agentMessage: rejectedWithoutReasonMessage(rejectedByUser),
     historyIndex: state.currentMutationIndex.value,
     _details,
   })

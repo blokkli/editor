@@ -5,8 +5,9 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
+import { fieldDiffResultSchema } from '../schemas'
 import Component from './Component.vue'
-import DetailsComponent from './Details/index.vue'
+import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
 const operationSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
@@ -48,40 +49,8 @@ const paramsSchema = z.object({
     .describe('Whether to show the approval UI.'),
 })
 
-const resultSchema = z.object({
-  acceptedCount: z.number().describe('Number of changes accepted by the user'),
-  rejectedByUser: z
-    .record(
-      z.string(),
-      z.record(
-        z.string(),
-        z.object({
-          reasonForRejection: z
-            .string()
-            .describe(
-              'Reason provided by the user for rejecting, empty if no reason given',
-            ),
-        }),
-      ),
-    )
-    .describe(
-      'Map of rejected paragraph UUID to field name to rejection details',
-    ),
-  label: z.string().describe('Human-readable summary shown in the UI'),
-  agentMessage: z
-    .string()
-    .optional()
-    .describe(
-      'Detailed message for the agent, replaces label in the LLM context',
-    ),
-  historyIndex: z
-    .number()
-    .optional()
-    .describe('The mutation history index after applying changes'),
-})
-
 export type BatchRewriteParams = z.infer<typeof paramsSchema>
-export type BatchRewriteResult = z.infer<typeof resultSchema>
+export type BatchRewriteResult = z.infer<typeof fieldDiffResultSchema>
 
 export default defineBlokkliAgentTool({
   name: 'update_text_fields',
@@ -98,7 +67,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema,
+  resultSchema: fieldDiffResultSchema,
   requiredAdapterMethods: ['updateFieldValueBatched'],
   component: Component,
   detailsComponent: DetailsComponent,
