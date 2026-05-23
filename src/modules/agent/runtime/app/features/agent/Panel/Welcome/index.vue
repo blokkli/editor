@@ -9,10 +9,10 @@
         v-for="(prompt, index) in defaultPrompts"
         :key="index"
         type="button"
-        class="bk-button bk-is-small bk-scheme-accent bk-is-light justify-start!"
+        class="flex text-sm bg-accent-100 text-accent-700 py-5 px-8 gap-5 rounded hover:bg-accent-700 hover:text-white font-medium"
         @click.prevent="emit('prompt', prompt)"
       >
-        <Icon name="bk_mdi_chat" />
+        <Icon name="bk_mdi_chat" class="size-15 mt-2" />
         <span>{{ prompt }}</span>
       </button>
     </div>
