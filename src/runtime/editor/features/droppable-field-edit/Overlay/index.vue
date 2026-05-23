@@ -14,7 +14,7 @@
       class="w-[680px] max-h-300 overflow-y-auto p-10 bg-mono-200"
       @pointerup="onListPointerUp"
     >
-      <GrowOnly class="bg-white">
+      <GrowOnly class="bg-white shadow-md">
         <div
           v-for="(item, i) in localItems"
           :key="item.key"
@@ -45,13 +45,12 @@
               {{ item.label }}
             </span>
           </div>
-          <button
-            type="button"
-            class="size-25 mr-8 flex items-center justify-center rounded shrink-0 text-mono-400 hover:bg-red-light hover:text-red-dark disabled:opacity-30 disabled:pointer-events-none [&_svg]:size-[14px] [&_svg]:fill-current"
+          <ButtonAction
+            icon="bk_mdi_close"
+            class="mr-10 relative"
+            :label="$t('remove', 'Remove')"
             @click.stop.prevent="removeItem(i)"
-          >
-            <Icon name="bk_mdi_close" />
-          </button>
+          />
           <div
             class="bk-droppable-field-edit-indicator col-span-2"
             :class="{
@@ -143,7 +142,12 @@
 
 <script lang="ts" setup>
 import type { EntityContext } from '#blokkli/types'
-import { ArtboardTooltip, GrowOnly, Icon } from '#blokkli/editor/components'
+import {
+  ArtboardTooltip,
+  GrowOnly,
+  Icon,
+  ButtonAction,
+} from '#blokkli/editor/components'
 import {
   computed,
   ref,
