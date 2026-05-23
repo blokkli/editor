@@ -220,6 +220,13 @@ export function compressToolResult(content: string): string {
       return JSON.stringify({ summary: parsed.label })
     }
 
+    // Already-compressed result (from a previous pruning pass). Pruning runs
+    // in place every turn, so an old result is re-compressed repeatedly —
+    // preserve its summary instead of degrading it to the generic fallback.
+    if (parsed.summary !== undefined) {
+      return JSON.stringify({ summary: parsed.summary })
+    }
+
     // Error results - keep the error message
     if (parsed.error) {
       return JSON.stringify({ error: parsed.error })
@@ -467,13 +474,22 @@ export function pruneForPersistence(
       continue
     }
 
-    // User messages: compress ALL tool_result blocks, remove text blocks in old turns
+    // User messages: compress ALL tool_result blocks. Only strip auxiliary
+    // text/skill blocks from tool-response messages (those containing a
+    // tool_result) — for a genuine user prompt the text IS the message, and
+    // emptying the content array would make restore reject it. Matches the
+    // gating in pruneMessages.
+    const hasToolResult = content.some((b) => b.type === 'tool_result')
     for (let j = content.length - 1; j >= 0; j--) {
       const block = content[j]
       if (!block) continue
       if (block.type === 'tool_result') {
         block.content = compressToolResult(block.content)
-      } else if (block.type === 'text' && i < lastTurnStart) {
+      } else if (
+        hasToolResult &&
+        (block.type === 'text' || block.type === 'skill') &&
+        i < lastTurnStart
+      ) {
         content.splice(j, 1)
       }
     }
@@ -503,6 +519,12 @@ export function verifyStateHash(
   snapshot: ConversationStateSnapshot,
   secret: string,
 ): boolean {
+  // Fail closed when no secret is configured. An empty secret still produces a
+  // deterministic HMAC that the client could reproduce, so without this guard
+  // forged conversation state would verify. Mirrors the auth-token path, which
+  // also rejects on `!authSecret`.
+  if (!secret) return false
+
   const expected = computeStateHash(
     snapshot.messages,
     snapshot.activatedLazyTools,

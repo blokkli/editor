@@ -126,7 +126,17 @@ export class AnthropicProvider implements AIProvider {
       yield { type: 'debug_request', payload: requestParams }
     }
 
-    const stream = client.messages.stream(requestParams)
+    // Pass the abort signal into the SDK so cancellation tears down the
+    // underlying HTTP request immediately, rather than only being noticed when
+    // the next stream event arrives (the in-loop `signal.aborted` poll below).
+    const stream = client.messages.stream(requestParams, {
+      signal: options.signal,
+    })
+
+    // Track whether a terminal `message_end` was emitted. Only `message_stop`
+    // emits one; if the stream ends without it (abrupt disconnect) we emit a
+    // fallback after the loop so the agent loop never hangs waiting for it.
+    let messageEnded = false
 
     try {
       for await (const event of stream) {
@@ -178,6 +188,11 @@ export class AnthropicProvider implements AIProvider {
                 | 'tool_use'
                 | 'max_tokens'
                 | 'stop',
+              // Anthropic's `input_tokens` already excludes cached tokens
+              // (cache reads/writes are reported separately below), so it is
+              // emitted raw. OpenAI's `input_tokens` includes cached tokens, so
+              // that provider subtracts them — both ultimately emit the
+              // non-cached input count for `inputTokens`.
               inputTokens: finalMessage.usage?.input_tokens,
               outputTokens: finalMessage.usage?.output_tokens,
               cacheCreationInputTokens:
@@ -185,9 +200,18 @@ export class AnthropicProvider implements AIProvider {
               cacheReadInputTokens:
                 finalMessage.usage?.cache_read_input_tokens ?? undefined,
             }
+            messageEnded = true
             break
           }
         }
+      }
+
+      // Recovery guard: if the stream ended without a `message_stop` (e.g. an
+      // abrupt disconnect) and we weren't aborted, emit a terminal event so the
+      // agent loop terminates cleanly instead of hanging. Mirrors the OpenAI
+      // provider's end-of-stream recovery.
+      if (!messageEnded && !options.signal?.aborted) {
+        yield { type: 'message_end', stop_reason: 'end_turn' }
       }
     } catch (error) {
       yield { type: 'error', error: error as Error }

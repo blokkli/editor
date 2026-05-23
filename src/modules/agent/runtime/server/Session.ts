@@ -221,6 +221,13 @@ export class Session {
       }
     }
 
+    // Claim the session synchronously, before the un-awaited runAgentLoop call.
+    // runAgentLoop does async work (pre-seeded results, auto-executed tools that
+    // await client round-trips) before it would otherwise set this flag, leaving
+    // a window in which a second `start` could pass the guard above and run a
+    // concurrent loop over the same `this.messages`.
+    this.isProcessing = true
+
     this.runAgentLoop(
       peer,
       prompt,
@@ -503,6 +510,7 @@ export class Session {
     }[],
   ): Promise<void> {
     if (this.toolNames.length === 0) {
+      this.isProcessing = false
       send(peer, {
         type: 'error',
         errorType: 'bad_request',
@@ -513,6 +521,7 @@ export class Session {
     }
 
     if (!this.pageContext) {
+      this.isProcessing = false
       send(peer, {
         type: 'error',
         errorType: 'bad_request',
@@ -733,7 +742,8 @@ export class Session {
     }
 
     this.abortController = new AbortController()
-    this.isProcessing = true
+    // isProcessing was already set in start(); the early-skip path above and the
+    // finally block both reset it to false.
     let toolCallCounter = 0
     let planRetryCount = 0
     let streamRetryCount = 0

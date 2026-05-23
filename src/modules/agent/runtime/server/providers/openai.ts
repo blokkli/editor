@@ -402,6 +402,10 @@ function buildMessageEnd(
   return {
     type: 'message_end',
     stop_reason: stopReason,
+    // OpenAI's `input_tokens` includes cached tokens, so subtract them to emit
+    // the non-cached input count. (Anthropic's `input_tokens` already excludes
+    // cached tokens, so that provider emits it raw — both ultimately report the
+    // same non-cached `inputTokens` semantics.)
     inputTokens: usage ? usage.input_tokens - cachedTokens : undefined,
     outputTokens: usage?.output_tokens,
     cacheReadInputTokens: cachedTokens || undefined,

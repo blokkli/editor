@@ -1,10 +1,14 @@
 import { describe, it, expect, vi } from 'vitest'
 import type { GenericMessage } from './providers/types'
+import type { ConversationStateSnapshot } from '../shared/types'
 import {
   compressToolResult,
   pruneMessages,
+  pruneForPersistence,
   validateMessages,
   findToolNameForResult,
+  computeStateHash,
+  verifyStateHash,
   type ToolPruningMetadata,
 } from './helpers'
 
@@ -84,6 +88,19 @@ describe('compressToolResult', () => {
   it('keeps short non-JSON content as-is', () => {
     const input = 'short text'
     expect(compressToolResult(input)).toBe('short text')
+  })
+
+  it('Bug 2: is idempotent — re-compressing keeps the summary', () => {
+    // pruneMessages mutates messages in place every turn, so an already-
+    // compressed result is fed back through compressToolResult on later turns.
+    // It must not degrade to the generic { summary: 'completed' } fallback.
+    const once = compressToolResult(
+      JSON.stringify({ label: 'Found 3 items', data: [1, 2, 3] }),
+    )
+    expect(JSON.parse(once)).toEqual({ summary: 'Found 3 items' })
+
+    const twice = compressToolResult(once)
+    expect(JSON.parse(twice)).toEqual({ summary: 'Found 3 items' })
   })
 })
 
@@ -447,5 +464,109 @@ describe('validateMessages', () => {
       },
     ]
     expect(validateMessages(messages)).toEqual([])
+  })
+})
+
+// ============================================================================
+// pruneForPersistence
+// ============================================================================
+
+describe('pruneForPersistence', () => {
+  it('Bug 4: keeps the user prompt text in an aged-out skill+text message', () => {
+    // The first user message with auto-loaded skills is built as [skill, text].
+    // When it ages out (but is still retained), pruneForPersistence must not
+    // strip its text block — that text IS the user's prompt, and stripping it
+    // loses content (and would empty a text-only array, which restore rejects).
+    const messages: GenericMessage[] = [
+      {
+        role: 'user',
+        content: [
+          { type: 'skill', name: 'writing', text: '# Skill: writing...' },
+          { type: 'text', text: 'rewrite the intro' },
+        ],
+      },
+      { role: 'assistant', content: [{ type: 'text', text: 'done' }] },
+      { role: 'user', content: 'next prompt' },
+      { role: 'assistant', content: [{ type: 'text', text: 'reply' }] },
+    ]
+
+    const pruned = pruneForPersistence(messages, 2)
+
+    expect(validateMessages(pruned)).toEqual([])
+    const first = pruned[0]
+    expect(Array.isArray(first.content)).toBe(true)
+    if (Array.isArray(first.content)) {
+      const textBlocks = first.content.filter((b) => b.type === 'text')
+      expect(textBlocks).toHaveLength(1)
+    }
+  })
+
+  it('still compresses tool_result blocks and strips their auxiliary text', () => {
+    const messages: GenericMessage[] = [
+      { role: 'user', content: 'first prompt' },
+      {
+        role: 'assistant',
+        content: [{ type: 'tool_use', id: 'tu_0', name: 'find_blocks', input: {} }],
+      },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'tool_result',
+            tool_use_id: 'tu_0',
+            content: JSON.stringify({ label: 'found 3', data: [1, 2, 3] }),
+          },
+          { type: 'text', text: 'auxiliary text' },
+        ],
+      },
+      { role: 'assistant', content: [{ type: 'text', text: 'done' }] },
+      { role: 'user', content: 'second prompt' },
+      { role: 'assistant', content: [{ type: 'text', text: 'reply' }] },
+    ]
+
+    const pruned = pruneForPersistence(messages, 2)
+
+    const toolMsg = pruned[2]
+    expect(Array.isArray(toolMsg.content)).toBe(true)
+    if (Array.isArray(toolMsg.content)) {
+      // tool_result compressed to its summary, auxiliary text stripped.
+      const textBlocks = toolMsg.content.filter((b) => b.type === 'text')
+      expect(textBlocks).toHaveLength(0)
+      const resultBlock = toolMsg.content.find((b) => b.type === 'tool_result')
+      expect(resultBlock && resultBlock.type === 'tool_result').toBe(true)
+      if (resultBlock && resultBlock.type === 'tool_result') {
+        expect(JSON.parse(resultBlock.content)).toEqual({ summary: 'found 3' })
+      }
+    }
+  })
+})
+
+// ============================================================================
+// computeStateHash / verifyStateHash
+// ============================================================================
+
+describe('verifyStateHash', () => {
+  function snapshot(secret: string): ConversationStateSnapshot {
+    const messages: GenericMessage[] = [{ role: 'user', content: 'hi' }]
+    const activatedLazyTools: string[] = ['some_tool']
+    return {
+      messages,
+      activatedLazyTools,
+      hash: computeStateHash(messages, activatedLazyTools, secret),
+    }
+  }
+
+  it('verifies a snapshot hashed with the same non-empty secret', () => {
+    expect(verifyStateHash(snapshot('s3cr3t'), 's3cr3t')).toBe(true)
+  })
+
+  it('rejects a snapshot hashed with a different secret', () => {
+    expect(verifyStateHash(snapshot('s3cr3t'), 'other')).toBe(false)
+  })
+
+  it('Bug 3: rejects when the secret is empty even if hashes match', () => {
+    // authSecret defaults to '' when unconfigured. The token path guards this,
+    // but the state-hash path must too — otherwise forged state verifies.
+    expect(verifyStateHash(snapshot(''), '')).toBe(false)
   })
 })
