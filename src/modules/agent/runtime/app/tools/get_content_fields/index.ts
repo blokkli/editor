@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import { readBlockContentFields } from '../helpers'
 
 const paramsSchema = z.object({
   uuids: z
@@ -101,7 +102,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { blocks, directive, state, types, $t, context } = ctx.app
+    const { blocks, state, types, $t, context } = ctx.app
     const result: Result = {}
     const processedUuids = new Set<string>()
 
@@ -156,32 +157,21 @@ export default defineBlokkliAgentTool({
       const block = blocks.getBlock(blockUuid)
       if (!block) return
 
-      const editables = directive.getEditablesForBlock(blockUuid)
-      for (const editable of editables) {
-        const fieldType = ctx.app.fieldValue.resolveFieldType(
-          ctx.itemEntityType,
-          block.bundle,
-          editable.fieldName,
-        )
-        if (!fieldType) continue
-
-        const currentValue = ctx.app.fieldValue.readValue(
-          ctx.itemEntityType,
-          blockUuid,
-          block.bundle,
-          editable.fieldName,
-          fieldType,
-        )
-
+      for (const f of readBlockContentFields(
+        ctx.app,
+        blockUuid,
+        ctx.itemEntityType,
+        block.bundle,
+      )) {
         const config = types.editableFieldConfig.forName(
           ctx.itemEntityType,
           block.bundle,
-          editable.fieldName,
+          f.fieldName,
         )
 
-        addField(result, blockUuid, editable.fieldName, {
-          type: fieldType,
-          currentValue,
+        addField(result, blockUuid, f.fieldName, {
+          type: f.fieldType,
+          currentValue: f.value,
           required: config?.required ?? false,
           maxLength: config?.maxLength ?? 0,
         })

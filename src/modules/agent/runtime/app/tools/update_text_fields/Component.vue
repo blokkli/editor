@@ -11,10 +11,12 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
-import type { McpToolContext } from '#blokkli/agent/app/types'
+import type {
+  McpToolContext,
+  ComponentToolResult,
+} from '#blokkli/agent/app/types'
 import type { BatchRewriteParams, BatchRewriteResult } from './index'
-import { itemEntityType } from '#blokkli-build/config'
-import { applyOperations } from '../helpers'
+import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 
 const props = defineProps<{
@@ -29,20 +31,11 @@ export type BatchRewriteDetailItem = {
 }
 
 const emit = defineEmits<{
-  (
-    e: 'done',
-    result: BatchRewriteResult & { _details?: BatchRewriteDetailItem[] },
-  ): void
+  (e: 'done', result: ComponentToolResult<BatchRewriteResult>): void
 }>()
 
-const {
-  $t,
-  state,
-  blocks,
-  context: editorContext,
-  types,
-  directive,
-} = useBlokkli()
+const blokkli = useBlokkli()
+const { $t, state, context: editorContext, types, directive } = blokkli
 
 const isApplying = ref(false)
 
@@ -58,15 +51,7 @@ onMounted(() => {
 function resolveHost(
   uuid: string,
 ): { entityType: string; bundle: string } | null {
-  if (uuid === editorContext.value.entityUuid) {
-    return {
-      entityType: editorContext.value.entityType,
-      bundle: editorContext.value.entityBundle,
-    }
-  }
-  const block = blocks.getBlock(uuid)
-  if (!block) return null
-  return { entityType: itemEntityType, bundle: block.bundle }
+  return resolveBlockHost(blokkli, uuid)
 }
 
 function resolveFieldLabel(uuid: string, fieldName: string): string {

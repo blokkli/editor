@@ -1,8 +1,7 @@
-import { createHmac, timingSafeEqual } from 'node:crypto'
 import { Session } from './Session'
 import type { ServerToolMetadata } from '../shared/types'
+import { validateToken, TOKEN_EXPIRY_SECONDS } from './helpers'
 
-const TOKEN_EXPIRY_SECONDS = 300
 const SESSION_IDLE_TIMEOUT_MS = 5 * 60 * 1000
 
 export class SessionManager {
@@ -44,35 +43,12 @@ export class SessionManager {
    * Returns true only if the token is valid, not expired, and not previously used.
    */
   authenticate(token: string | undefined, authSecret: string): boolean {
-    if (!token) return false
+    if (!token || !validateToken(token, authSecret)) return false
 
-    const colonIndex = token.indexOf(':')
-    if (colonIndex === -1) return false
-
-    const timestampStr = token.substring(0, colonIndex)
-    const providedHmac = token.substring(colonIndex + 1)
-
-    const timestamp = parseInt(timestampStr, 10)
-    if (isNaN(timestamp)) return false
-
-    const now = Math.floor(Date.now() / 1000)
-    if (Math.abs(now - timestamp) > TOKEN_EXPIRY_SECONDS) return false
-
-    const expectedHmac = createHmac('sha256', authSecret)
-      .update(timestampStr)
-      .digest('hex')
-
-    if (providedHmac.length !== expectedHmac.length) return false
-
-    const valid = timingSafeEqual(
-      Buffer.from(providedHmac, 'hex'),
-      Buffer.from(expectedHmac, 'hex'),
-    )
-    if (!valid) return false
-
-    // Reject reused tokens.
+    // Reject reused tokens (replay protection layered on the shared validator).
     this.pruneTokens()
     if (this.usedTokens.has(token)) return false
+    const timestamp = parseInt(token.substring(0, token.indexOf(':')), 10)
     this.usedTokens.set(token, timestamp)
 
     return true

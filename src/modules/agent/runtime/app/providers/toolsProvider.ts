@@ -23,6 +23,7 @@ import {
 import { mcpTools } from '#blokkli-build/agent-client'
 import type { AgentToolName, AgentToolMap } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
+import { generateId } from '#blokkli/agent/app/helpers/id'
 import type { SocketProvider } from './socketProvider'
 import type { ConversationProvider } from './conversationProvider'
 
@@ -63,10 +64,6 @@ export type ToolsProvider = {
   setAutoApprove: (value: boolean) => void
   onComponentDone: (result: unknown) => void
   cancelPending: () => void
-}
-
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
 export default function toolsProvider({

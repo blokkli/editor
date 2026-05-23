@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, nextTick, useBlokkli } from '#imports'
-import { marked } from 'marked'
+import { renderMarkdown } from '#blokkli/agent/app/helpers/markdown'
 import { PLACEHOLDER_USER_NAME } from '#blokkli/agent/shared/placeholders'
 
 const props = defineProps<{
@@ -24,10 +24,9 @@ function renderContent(content: string) {
   const container = contentEl.value
   if (!container) return
   const ownerName = state.owner.value?.name || ''
-  container.innerHTML = marked.parse(
+  container.innerHTML = renderMarkdown(
     content.replaceAll(PLACEHOLDER_USER_NAME, ownerName),
-    { gfm: true, breaks: true },
-  ) as string
+  )
 }
 
 watch(

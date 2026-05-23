@@ -2,6 +2,7 @@ import {
   conversationItemSchema,
   type ConversationItem,
 } from '#blokkli/agent/app/types'
+import { generateId } from '#blokkli/agent/app/helpers/id'
 import type {
   ConversationStateSnapshot,
   UsageTurn,
@@ -25,10 +26,6 @@ export type ParsedConversation = {
   serverState: ConversationStateSnapshot
   feedbackItemIds: string[]
   feedback: AgentConversationFeedbackItem[]
-}
-
-function fallbackId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
 /**
@@ -57,7 +54,7 @@ export function parseConversationData(
         if (result.success) return result.data
         return {
           type: 'unknown' as const,
-          id: fallbackId(),
+          id: generateId(),
           timestamp: Date.now(),
         }
       },

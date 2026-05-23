@@ -4,13 +4,11 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { marked } from 'marked'
+import { renderMarkdown } from '#blokkli/agent/app/helpers/markdown'
 
 const props = defineProps<{
   content: string
 }>()
 
-const html = computed(() => {
-  return marked.parse(props.content, { gfm: true, breaks: true }) as string
-})
+const html = computed(() => renderMarkdown(props.content))
 </script>

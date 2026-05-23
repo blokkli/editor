@@ -1,9 +1,9 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
-import { resolvePosition } from '../helpers'
+import { resolvePosition, resolveHost } from '../helpers'
 import { requireBundlePermission } from '../../helpers/validation'
-import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
   libraryItemUuid: z
@@ -50,7 +50,7 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    const { types, fields, context, blocks, $t } = ctx.app
+    const { types, fields, $t } = ctx.app
 
     const field = fields.find(params.parent.uuid, params.parent.field)
     if (!field) {
@@ -60,18 +60,11 @@ export default defineBlokkliAgentTool({
     }
 
     // Resolve field config to check allowed bundles.
-    const isRootEntity = params.parent.uuid === context.value.entityUuid
-    const parentEntityType = isRootEntity
-      ? context.value.entityType
-      : itemEntityType
-    const parentBundle = isRootEntity
-      ? context.value.entityBundle
-      : blocks.getBlock(params.parent.uuid)?.bundle
-
-    if (parentBundle) {
+    const host = resolveHost(ctx.app, params.parent.uuid)
+    if (host) {
       const fieldConfig = types.getFieldConfig(
-        parentEntityType,
-        parentBundle,
+        host.entityType,
+        host.bundle,
         params.parent.field,
       )
 

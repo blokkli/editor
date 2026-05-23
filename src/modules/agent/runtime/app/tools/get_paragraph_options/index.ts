@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 import { blockOptionsMapSchema } from '../schemas'
-import { buildBlockOptionsMap } from '../helpers'
+import { buildBlockOptionsMap, getResolvedOptions } from '../helpers'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The paragraph UUIDs to get options for'),
@@ -30,7 +29,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { blocks, state, definitions, selection, types, $t } = ctx.app
+    const { blocks, state, selection, types, $t } = ctx.app
 
     const result: z.infer<typeof resultSchema> = {}
     const affectedUuids: string[] = []
@@ -42,19 +41,14 @@ export default defineBlokkliAgentTool({
       // For from_library blocks, use the reusable block's actual bundle.
       const bundle = block.library?.reusableBundle || block.bundle
       const selectionItem = selection.items.value.find((v) => v.uuid === uuid)
-      const definition = definitions.getBlockDefinition(
+      const availableOptions = getResolvedOptions(
+        ctx.app,
         bundle,
         selectionItem?.fieldListType ?? 'default',
         selectionItem?.parentBlockBundle ?? null,
       )
 
-      if (!definition) continue
-
-      const availableOptions = getAvailableOptions(
-        definition.options,
-        definition.globalOptions as string[] | undefined,
-        definitions.globalOptions.value as Record<string, any>,
-      )
+      if (!availableOptions) continue
 
       result[uuid] = buildBlockOptionsMap(
         availableOptions,

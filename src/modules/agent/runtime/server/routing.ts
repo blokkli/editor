@@ -1,4 +1,5 @@
 import { provider, models } from '#blokkli-build/agent-server'
+import { createUsageTurn } from './helpers'
 import type { ResolvedSkill } from './skills/types'
 import type { AgentModelDefinition, UsageTurn } from '../shared/types'
 
@@ -125,18 +126,7 @@ Given the user's message, select which skills and tools should be pre-loaded. On
       if (event.type === 'tool_use_delta') {
         toolInput += event.partial_json
       } else if (event.type === 'message_end') {
-        if (
-          event.inputTokens !== undefined &&
-          event.outputTokens !== undefined
-        ) {
-          usage = {
-            inputTokens: event.inputTokens,
-            outputTokens: event.outputTokens,
-            cacheCreationInputTokens: event.cacheCreationInputTokens ?? 0,
-            cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
-            pricing: routingModelDef.pricing ?? null,
-          }
-        }
+        usage = createUsageTurn(event, routingModelDef) ?? usage
       } else if (event.type === 'error') {
         console.warn('[blokkli:agent] Routing error:', event.error.message)
         return null

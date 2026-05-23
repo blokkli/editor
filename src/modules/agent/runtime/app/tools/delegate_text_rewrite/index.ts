@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { runReadabilityAnalysis } from '../helpers'
+import { runReadabilityAnalysis, resolveHost } from '../helpers'
 import {
   requireBundlePermission,
   requireNoRestrictedAncestor,
@@ -135,18 +135,9 @@ export default defineBlokkliAgentTool({
     const resolvedFields: ResolvedField[] = []
 
     for (const { uuid, fieldName } of params.fields) {
-      let entityType: string
-      let bundle: string
-
-      if (uuid === context.value.entityUuid) {
-        entityType = context.value.entityType
-        bundle = context.value.entityBundle
-      } else {
-        const block = blocks.getBlock(uuid)
-        if (!block) continue
-        entityType = ctx.itemEntityType
-        bundle = block.bundle
-      }
+      const host = resolveHost(ctx.app, uuid)
+      if (!host) continue
+      const { entityType, bundle } = host
 
       const fieldType = ctx.app.fieldValue.resolveFieldType(
         entityType,

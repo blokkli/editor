@@ -67,7 +67,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import { marked } from 'marked'
+import { renderMarkdown } from '#blokkli/agent/app/helpers/markdown'
 import AttachmentChip from '../../../Attachment/index.vue'
 import type { Attachment } from '#blokkli/agent/app/types'
 import InlineActions from '#blokkli/editor/components/InlineActions/index.vue'
@@ -93,9 +93,7 @@ const isEditing = ref(false)
 const editValue = ref('')
 
 const html = computed(() => {
-  return props.content
-    ? (marked.parse(props.content, { gfm: true, breaks: true }) as string)
-    : ''
+  return props.content ? renderMarkdown(props.content) : ''
 })
 
 const canRollback = computed(

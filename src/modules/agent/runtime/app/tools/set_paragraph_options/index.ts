@@ -1,11 +1,8 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import {
-  getAvailableOptions,
-  optionValueToStorable,
-} from '#blokkli/editor/helpers/options'
+import { optionValueToStorable } from '#blokkli/editor/helpers/options'
 import { mutationResultSchema, optionValueSchema } from '../schemas'
-import { validateOptionValue } from '../helpers'
+import { validateOptionValue, getResolvedOptions } from '../helpers'
 import { onlyUnique } from '#blokkli/helpers'
 import {
   requireBundlePermission,
@@ -42,7 +39,7 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['updateOptions'],
   execute(ctx, params) {
-    const { blocks, definitions, selection } = ctx.app
+    const { blocks, selection } = ctx.app
 
     if (params.paragraphs.length === 0) {
       return { error: 'No paragraphs provided' }
@@ -83,24 +80,19 @@ export default defineBlokkliAgentTool({
       const selectionItem = selection.items.value.find(
         (v) => v.uuid === blockEntry.uuid,
       )
-      const definition = definitions.getBlockDefinition(
+      // Get available options for this block
+      const availableOptions = getResolvedOptions(
+        ctx.app,
         bundle,
         selectionItem?.fieldListType ?? 'default',
         selectionItem?.parentBlockBundle ?? null,
       )
 
-      if (!definition) {
+      if (!availableOptions) {
         return {
           error: `Paragraph definition not found for bundle: ${bundle}`,
         }
       }
-
-      // Get available options for this block
-      const availableOptions = getAvailableOptions(
-        definition.options,
-        definition.globalOptions as string[] | undefined,
-        definitions.globalOptions.value as Record<string, any>,
-      )
 
       // Validate and process each option
       for (const [key, value] of optionEntries) {

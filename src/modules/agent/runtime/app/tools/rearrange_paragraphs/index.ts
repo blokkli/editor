@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema } from '../schemas'
-import { itemEntityType } from '#blokkli-build/config'
+import { resolveHost } from '../helpers'
 import {
   requireBundlePermission,
   requireNoRestrictedAncestor,
@@ -34,18 +34,14 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['rearrangeBlocks'],
   execute(ctx, params) {
-    const { blocks, types, context, state, $t } = ctx.app
+    const { blocks, types, state, $t } = ctx.app
 
     // Resolve parent entity type and bundle
-    const isRootEntity = params.parent.uuid === context.value.entityUuid
-    const entityType = isRootEntity ? context.value.entityType : itemEntityType
-    const bundle = isRootEntity
-      ? context.value.entityBundle
-      : blocks.getBlock(params.parent.uuid)?.bundle
-
-    if (!bundle) {
+    const host = resolveHost(ctx.app, params.parent.uuid)
+    if (!host) {
       return { error: 'Parent not found.' }
     }
+    const { entityType, bundle } = host
 
     // Validate the field exists
     const field = types.getFieldConfig(entityType, bundle, params.parent.field)

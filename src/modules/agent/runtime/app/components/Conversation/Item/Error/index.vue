@@ -4,21 +4,14 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
+import type { AgentErrorType } from '#blokkli/agent/shared/types'
 import ErrorBubble from '../ErrorBubble/index.vue'
 
 const props = defineProps<{
   id: string
   timestamp: number
   type: 'error'
-  errorType:
-    | 'authentication'
-    | 'rate_limit'
-    | 'overloaded'
-    | 'not_found'
-    | 'bad_request'
-    | 'connection'
-    | 'unauthorized'
-    | 'unknown'
+  errorType: AgentErrorType
   retryable?: boolean
 }>()
 

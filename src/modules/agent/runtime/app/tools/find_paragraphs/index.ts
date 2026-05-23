@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
+import { getResolvedOptions } from '../helpers'
 import {
-  getAvailableOptions,
   getMutatedOptionValue,
   optionValueToStorable,
 } from '#blokkli/editor/helpers/options'
@@ -93,7 +93,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { blocks, state, context, types, dom, definitions, $t } = ctx.app
+    const { blocks, state, context, types, dom, $t } = ctx.app
     const limit = params.limit ?? 50
 
     // Start with all blocks
@@ -163,20 +163,14 @@ export default defineBlokkliAgentTool({
     if (params.optionEquals) {
       const { key, value } = params.optionEquals
       candidates = candidates.filter((block) => {
-        // Get the block definition with proper context
-        const definition = definitions.getBlockDefinition(
+        // Get available options for this block (with proper context)
+        const availableOptions = getResolvedOptions(
+          ctx.app,
           block.bundle,
           block.fieldListType,
           block.parentBlockBundle,
         )
-        if (!definition) return false
-
-        // Get available options for this block
-        const availableOptions = getAvailableOptions(
-          definition.options,
-          definition.globalOptions as string[] | undefined,
-          definitions.globalOptions.value as Record<string, any>,
-        )
+        if (!availableOptions) return false
 
         // Find the option definition
         const optionDef = availableOptions.find((o) => o.property === key)

@@ -30,6 +30,8 @@ import {
   verifyStateHash,
   validateMessages,
   isToolResultOnly,
+  getDefaultModel,
+  createUsageTurn,
 } from './helpers'
 import type {
   ServerPlan,
@@ -840,7 +842,7 @@ export class Session {
         const stream = provider.createStream(
           {
             apiKey,
-            model: (models.find((m) => m.isDefault) || models[0]!).name,
+            model: getDefaultModel(models)?.name ?? '',
           },
           {
             systemPrompt,
@@ -1159,26 +1161,13 @@ export class Session {
                 })
                 break
 
-              case 'message_end':
-                if (
-                  event.inputTokens !== undefined &&
-                  event.outputTokens !== undefined
-                ) {
-                  const defaultModel =
-                    models.find((m) => m.isDefault) || models[0]
-                  send(peer, {
-                    type: 'usage',
-                    usage: {
-                      inputTokens: event.inputTokens,
-                      outputTokens: event.outputTokens,
-                      cacheCreationInputTokens:
-                        event.cacheCreationInputTokens ?? 0,
-                      cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
-                      pricing: defaultModel?.pricing ?? null,
-                    },
-                  })
+              case 'message_end': {
+                const usage = createUsageTurn(event, getDefaultModel(models))
+                if (usage) {
+                  send(peer, { type: 'usage', usage })
                 }
                 break
+              }
 
               case 'error':
                 throw event.error

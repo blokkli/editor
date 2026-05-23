@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
-import { resolvePosition } from '../helpers'
+import { resolvePosition, resolveHost } from '../helpers'
 import {
   validateBlocksExist,
   validateSameField,
@@ -11,7 +11,6 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
-import { itemEntityType } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).min(1).describe('Paragraph UUIDs to duplicate'),
@@ -43,7 +42,7 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['duplicateBlocks'],
   execute(ctx, params) {
-    const { $t, types, context, blocks } = ctx.app
+    const { $t, types } = ctx.app
 
     // 1. Validate all blocks exist
     const blocksResult = validateBlocksExist(ctx.app, params.uuids)
@@ -72,17 +71,11 @@ export default defineBlokkliAgentTool({
       }
 
       // Determine if target parent is the root entity or a block
-      const isRootEntity = params.parent.uuid === context.value.entityUuid
-      const entityType = isRootEntity
-        ? context.value.entityType
-        : itemEntityType
-      const targetBundle = isRootEntity
-        ? context.value.entityBundle
-        : blocks.getBlock(params.parent.uuid)?.bundle
-
-      if (!targetBundle) {
+      const host = resolveHost(ctx.app, params.parent.uuid)
+      if (!host) {
         return { error: 'Target parent not found.' }
       }
+      const { entityType, bundle: targetBundle, isRoot: isRootEntity } = host
 
       // Check ancestor restrictions on target parent
       if (

@@ -1,10 +1,17 @@
 import type { OptionItem } from '#blokkli/editor/helpers/options'
-import { getMutatedOptionValue } from '#blokkli/editor/helpers/options'
+import {
+  getMutatedOptionValue,
+  getAvailableOptions,
+} from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
+import { itemEntityType } from '#blokkli-build/config'
 import type { BlockOptionsMap } from './schemas'
 import type { ReadabilityAnalysisResult } from '#blokkli/editor/features/analyze/readability/types'
-import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
+import type {
+  FieldValueType,
+  TextFieldValue,
+} from '#blokkli/editor/providers/fieldValue'
 
 type ReadabilityIssue = {
   text: string
@@ -440,4 +447,97 @@ export function resolvePosition(
   return {
     error: `Invalid position value: "${position}". Use "start", "end", "after:<UUID>", or "before:<UUID>".`,
   }
+}
+
+/**
+ * The host entity of a UUID: the page entity itself when `uuid` is the root
+ * entity (`isRoot: true`), otherwise the block with that UUID. Returns null
+ * when the UUID is neither. The shape carries `entityType` + `bundle` (callers
+ * needing an `EntityContext` map `type ← entityType`).
+ */
+export function resolveHost(
+  app: BlokkliApp,
+  uuid: string,
+): {
+  entityType: string
+  bundle: string
+  uuid: string
+  isRoot: boolean
+} | null {
+  const ctx = app.context.value
+  if (uuid === ctx.entityUuid) {
+    return {
+      entityType: ctx.entityType,
+      bundle: ctx.entityBundle,
+      uuid,
+      isRoot: true,
+    }
+  }
+  const block = app.blocks.getBlock(uuid)
+  if (!block) return null
+  return { entityType: itemEntityType, bundle: block.bundle, uuid, isRoot: false }
+}
+
+/**
+ * Resolve the available options for a block definition. Wraps
+ * `getBlockDefinition` + `getAvailableOptions` and localizes the global-options
+ * cast to this one place. Returns null when the definition is unknown.
+ */
+export function getResolvedOptions(
+  app: BlokkliApp,
+  bundleOrBlock: Parameters<
+    BlokkliApp['definitions']['getBlockDefinition']
+  >[0],
+  fieldListType: Parameters<
+    BlokkliApp['definitions']['getBlockDefinition']
+  >[1],
+  parentBundle: Parameters<
+    BlokkliApp['definitions']['getBlockDefinition']
+  >[2],
+): OptionItem[] | null {
+  const definition = app.definitions.getBlockDefinition(
+    bundleOrBlock,
+    fieldListType,
+    parentBundle,
+  )
+  if (!definition) return null
+  return getAvailableOptions(
+    definition.options,
+    definition.globalOptions as string[] | undefined,
+    app.definitions.globalOptions.value as Record<string, any>,
+  )
+}
+
+/**
+ * Read every editable content field of a block (or entity), skipping fields
+ * with no resolvable type. Callers map the result into their own output shape.
+ */
+export function readBlockContentFields(
+  app: BlokkliApp,
+  uuid: string,
+  entityType: string,
+  bundle: string,
+): Array<{ fieldName: string; fieldType: FieldValueType; value: string }> {
+  const result: Array<{
+    fieldName: string
+    fieldType: FieldValueType
+    value: string
+  }> = []
+  for (const editable of app.directive.getEditablesForBlock(uuid)) {
+    const fieldType = app.fieldValue.resolveFieldType(
+      entityType,
+      bundle,
+      editable.fieldName,
+    )
+    if (!fieldType) continue
+    const value = app.fieldValue.readValue(
+      entityType,
+      uuid,
+      bundle,
+      editable.fieldName,
+      fieldType,
+    )
+    result.push({ fieldName: editable.fieldName, fieldType, value })
+  }
+  return result
 }

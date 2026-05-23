@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
+import { createHmac } from 'node:crypto'
 import type { GenericMessage } from './providers/types'
-import type { ConversationStateSnapshot } from '../shared/types'
+import type {
+  AgentModelDefinition,
+  ConversationStateSnapshot,
+} from '../shared/types'
 import {
   compressToolResult,
   pruneMessages,
@@ -9,6 +13,9 @@ import {
   findToolNameForResult,
   computeStateHash,
   verifyStateHash,
+  getDefaultModel,
+  createUsageTurn,
+  validateToken,
   type ToolPruningMetadata,
 } from './helpers'
 
@@ -568,5 +575,112 @@ describe('verifyStateHash', () => {
     // authSecret defaults to '' when unconfigured. The token path guards this,
     // but the state-hash path must too — otherwise forged state verifies.
     expect(verifyStateHash(snapshot(''), '')).toBe(false)
+  })
+})
+
+// ============================================================================
+// getDefaultModel
+// ============================================================================
+
+describe('getDefaultModel', () => {
+  const model = (
+    name: string,
+    extra: Partial<AgentModelDefinition> = {},
+  ): AgentModelDefinition => ({ name, label: name, ...extra })
+
+  it('returns the model flagged isDefault', () => {
+    const models = [model('a'), model('b', { isDefault: true }), model('c')]
+    expect(getDefaultModel(models)?.name).toBe('b')
+  })
+
+  it('falls back to the first model when none is flagged', () => {
+    const models = [model('a'), model('b')]
+    expect(getDefaultModel(models)?.name).toBe('a')
+  })
+
+  it('returns undefined for an empty list', () => {
+    expect(getDefaultModel([])).toBeUndefined()
+  })
+})
+
+// ============================================================================
+// createUsageTurn
+// ============================================================================
+
+describe('createUsageTurn', () => {
+  const pricing = { input: 1, cacheWrite: 2, cacheRead: 3, output: 4 }
+  const model: AgentModelDefinition = { name: 'm', label: 'm', pricing }
+
+  it('builds a usage turn, defaulting cache fields and pricing', () => {
+    expect(createUsageTurn({ inputTokens: 10, outputTokens: 5 }, model)).toEqual(
+      {
+        inputTokens: 10,
+        outputTokens: 5,
+        cacheCreationInputTokens: 0,
+        cacheReadInputTokens: 0,
+        pricing,
+      },
+    )
+  })
+
+  it('passes through cache fields and null pricing when no model', () => {
+    expect(
+      createUsageTurn(
+        {
+          inputTokens: 10,
+          outputTokens: 5,
+          cacheCreationInputTokens: 2,
+          cacheReadInputTokens: 7,
+        },
+        undefined,
+      ),
+    ).toEqual({
+      inputTokens: 10,
+      outputTokens: 5,
+      cacheCreationInputTokens: 2,
+      cacheReadInputTokens: 7,
+      pricing: null,
+    })
+  })
+
+  it('returns undefined when token counts are missing', () => {
+    expect(createUsageTurn({ outputTokens: 5 }, model)).toBeUndefined()
+    expect(createUsageTurn({ inputTokens: 10 }, model)).toBeUndefined()
+  })
+})
+
+// ============================================================================
+// validateToken
+// ============================================================================
+
+describe('validateToken', () => {
+  const SECRET = 's3cr3t'
+
+  function makeToken(timestamp: number, secret = SECRET): string {
+    const hmac = createHmac('sha256', secret).update(String(timestamp)).digest('hex')
+    return `${timestamp}:${hmac}`
+  }
+
+  it('accepts a fresh, correctly-signed token', () => {
+    const now = Math.floor(Date.now() / 1000)
+    expect(validateToken(makeToken(now), SECRET)).toBe(true)
+  })
+
+  it('rejects an expired token', () => {
+    const stale = Math.floor(Date.now() / 1000) - 301
+    expect(validateToken(makeToken(stale), SECRET)).toBe(false)
+  })
+
+  it('rejects a token signed with a different secret', () => {
+    const now = Math.floor(Date.now() / 1000)
+    expect(validateToken(makeToken(now, 'other'), SECRET)).toBe(false)
+  })
+
+  it('rejects an empty secret, empty token, or malformed token', () => {
+    const now = Math.floor(Date.now() / 1000)
+    expect(validateToken(makeToken(now), '')).toBe(false)
+    expect(validateToken('', SECRET)).toBe(false)
+    expect(validateToken('no-colon', SECRET)).toBe(false)
+    expect(validateToken('notanumber:abcd', SECRET)).toBe(false)
   })
 })

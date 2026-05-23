@@ -2,10 +2,12 @@ import type { Peer } from 'crossws'
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import type {
   AgentErrorType,
+  AgentModelDefinition,
   ConversationStateSnapshot,
   PageContext,
   ServerMessage,
   GenericMessage,
+  UsageTurn,
 } from '../shared/types'
 import type { ResolvedSkill, SkillDefinition } from './skills/types'
 import { skills } from '#blokkli-build/agent-server'
@@ -159,6 +161,89 @@ export function classifyError(error: unknown): {
         message: `API error (${status}).`,
         detail,
       }
+  }
+}
+
+// ============================================================================
+// Auth tokens
+// ============================================================================
+
+/** Seconds an agent auth token remains valid after issuance. */
+export const TOKEN_EXPIRY_SECONDS = 300
+
+/**
+ * Validate an HMAC auth token: well-formed `<timestamp>:<hmac>`, not expired,
+ * and HMAC matches. Does NOT track one-time use — `SessionManager` layers its
+ * replay check on top. Returns false (never throws) on any malformed input.
+ */
+export function validateToken(token: string, secret: string): boolean {
+  if (!secret || !token) return false
+
+  const colonIndex = token.indexOf(':')
+  if (colonIndex === -1) return false
+
+  const timestampStr = token.substring(0, colonIndex)
+  const providedHmac = token.substring(colonIndex + 1)
+
+  const timestamp = parseInt(timestampStr, 10)
+  if (isNaN(timestamp)) return false
+
+  const now = Math.floor(Date.now() / 1000)
+  if (Math.abs(now - timestamp) > TOKEN_EXPIRY_SECONDS) return false
+
+  const expectedHmac = createHmac('sha256', secret)
+    .update(timestampStr)
+    .digest('hex')
+
+  if (providedHmac.length !== expectedHmac.length) return false
+
+  try {
+    return timingSafeEqual(
+      Buffer.from(providedHmac, 'hex'),
+      Buffer.from(expectedHmac, 'hex'),
+    )
+  } catch {
+    return false
+  }
+}
+
+// ============================================================================
+// Models & usage
+// ============================================================================
+
+/**
+ * The model used for the main agent loop: the one flagged `isDefault`, or the
+ * first configured model as a fallback.
+ */
+export function getDefaultModel(
+  models: AgentModelDefinition[],
+): AgentModelDefinition | undefined {
+  return models.find((m) => m.isDefault) || models[0]
+}
+
+/**
+ * Build a `UsageTurn` from a provider `message_end` event and the model that
+ * produced it (for pricing). Returns undefined when token counts are absent,
+ * so callers can skip emitting a usage message.
+ */
+export function createUsageTurn(
+  event: {
+    inputTokens?: number
+    outputTokens?: number
+    cacheCreationInputTokens?: number
+    cacheReadInputTokens?: number
+  },
+  model: AgentModelDefinition | null | undefined,
+): UsageTurn | undefined {
+  if (event.inputTokens === undefined || event.outputTokens === undefined) {
+    return undefined
+  }
+  return {
+    inputTokens: event.inputTokens,
+    outputTokens: event.outputTokens,
+    cacheCreationInputTokens: event.cacheCreationInputTokens ?? 0,
+    cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
+    pricing: model?.pricing ?? null,
   }
 }
 

@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
-import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import { fromLibraryBlockBundle } from '#blokkli-build/config'
+import { resolveHost } from '../helpers'
 
 const paramsSchema = z.object({
   parent: parentSchema
@@ -43,33 +44,26 @@ export default defineBlokkliAgentTool({
   resultSchema,
   requiredAdapterMethods: ['getLibraryItems'],
   async execute(ctx, params) {
-    const { types, context, blocks, $t } = ctx.app
+    const { types, $t } = ctx.app
 
     // Determine which bundles to filter by.
     let bundles: string[] = []
 
     if (params.parent) {
-      const isRootEntity = params.parent.uuid === context.value.entityUuid
-      const parentEntityType = isRootEntity
-        ? context.value.entityType
-        : itemEntityType
-      const parentBundle = isRootEntity
-        ? context.value.entityBundle
-        : blocks.getBlock(params.parent.uuid)?.bundle
-
-      if (!parentBundle) {
+      const host = resolveHost(ctx.app, params.parent.uuid)
+      if (!host) {
         return { error: `Parent not found: ${params.parent.uuid}` }
       }
 
       const field = types.getFieldConfig(
-        parentEntityType,
-        parentBundle,
+        host.entityType,
+        host.bundle,
         params.parent.field,
       )
 
       if (!field) {
         return {
-          error: `Field "${params.parent.field}" not found on bundle "${parentBundle}".`,
+          error: `Field "${params.parent.field}" not found on bundle "${host.bundle}".`,
         }
       }
 

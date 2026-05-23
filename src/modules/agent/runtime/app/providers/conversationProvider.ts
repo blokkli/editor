@@ -20,6 +20,7 @@ import type {
 } from '#blokkli/agent/app/features/agent/types'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import { generateId } from '#blokkli/agent/app/helpers/id'
 import {
   parseConversationData,
   type ParsedConversation,
@@ -86,10 +87,6 @@ export type ConversationProvider = {
   } | null>
   deleteFromAdapter: (uuid: string) => Promise<void>
   refreshList: () => Promise<void>
-}
-
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
 export default function conversationProvider({

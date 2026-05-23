@@ -52,14 +52,20 @@
 import { useBlokkli, ref, reactive, onMounted, onBeforeUnmount } from '#imports'
 import { Icon, DiffApproval } from '#blokkli/editor/components'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
-import type { McpToolContext } from '#blokkli/agent/app/types'
+import type {
+  McpToolContext,
+  ComponentToolResult,
+} from '#blokkli/agent/app/types'
 import type { ComponentParams, StreamTextFieldsResult } from './index'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
-import { itemEntityType } from '#blokkli-build/config'
 import { routeStream } from '#blokkli-build/agent-client'
 import type { EntityContext } from '#blokkli/types'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
-import { applyOperations, type ReadabilityResult } from '../helpers'
+import {
+  applyOperations,
+  resolveHost as resolveBlockHost,
+  type ReadabilityResult,
+} from '../helpers'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 
@@ -77,24 +83,11 @@ export type StreamTextFieldsDetailItem = {
 }
 
 const emit = defineEmits<{
-  (
-    e: 'done',
-    result: StreamTextFieldsResult & {
-      _details?: StreamTextFieldsDetailItem[]
-      _usage?: UsageTurn
-      _skipLlmResponse?: boolean
-    },
-  ): void
+  (e: 'done', result: ComponentToolResult<StreamTextFieldsResult>): void
 }>()
 
-const {
-  $t,
-  state,
-  blocks,
-  context: editorContext,
-  types,
-  eventBus,
-} = useBlokkli()
+const blokkli = useBlokkli()
+const { $t, state, context: editorContext, types, eventBus } = blokkli
 
 type Phase = 'streaming' | 'approval' | 'error'
 const phase = ref<Phase>('streaming')
@@ -160,16 +153,10 @@ const completedItems = ref<ApprovalItem[]>([])
 const beforeValues = new Map<number, string>()
 
 function resolveHost(uuid: string): EntityContext | null {
-  if (uuid === editorContext.value.entityUuid) {
-    return {
-      type: editorContext.value.entityType,
-      bundle: editorContext.value.entityBundle,
-      uuid,
-    }
-  }
-  const block = blocks.getBlock(uuid)
-  if (!block) return null
-  return { type: itemEntityType, bundle: block.bundle, uuid }
+  const host = resolveBlockHost(blokkli, uuid)
+  return host
+    ? { type: host.entityType, bundle: host.bundle, uuid: host.uuid }
+    : null
 }
 
 function resolveFieldLabel(uuid: string, fieldName: string): string {

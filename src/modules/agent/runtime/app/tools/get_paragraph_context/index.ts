@@ -1,8 +1,11 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema, blockOptionsMapSchema } from '../schemas'
-import { buildBlockOptionsMap } from '../helpers'
-import { getAvailableOptions } from '#blokkli/editor/helpers/options'
+import {
+  buildBlockOptionsMap,
+  getResolvedOptions,
+  readBlockContentFields,
+} from '../helpers'
 import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
@@ -168,16 +171,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const {
-      blocks,
-      state,
-      context,
-      types,
-      directive,
-      definitions,
-      selection,
-      $t,
-    } = ctx.app
+    const { blocks, state, context, types, selection, $t } = ctx.app
 
     // Get the block
     const block = blocks.getBlock(params.uuid)
@@ -302,27 +296,16 @@ export default defineBlokkliAgentTool({
       const fields: z.infer<typeof contentFieldSchema>[] = []
 
       // Editable text fields
-      const editables = directive.getEditablesForBlock(params.uuid)
-      for (const editable of editables) {
-        const fieldType = ctx.app.fieldValue.resolveFieldType(
-          ctx.itemEntityType,
-          block.bundle,
-          editable.fieldName,
-        )
-        if (!fieldType) continue
-
-        const currentValue = ctx.app.fieldValue.readValue(
-          ctx.itemEntityType,
-          params.uuid,
-          block.bundle,
-          editable.fieldName,
-          fieldType,
-        )
-
+      for (const f of readBlockContentFields(
+        ctx.app,
+        params.uuid,
+        ctx.itemEntityType,
+        block.bundle,
+      )) {
         fields.push({
-          field: editable.fieldName,
-          type: fieldType,
-          currentValue,
+          field: f.fieldName,
+          type: f.fieldType,
+          currentValue: f.value,
         })
       }
 
@@ -352,26 +335,19 @@ export default defineBlokkliAgentTool({
       const selectionItem = selection.items.value.find(
         (v) => v.uuid === params.uuid,
       )
-      const definition = definitions.getBlockDefinition(
+      const availableOptions = getResolvedOptions(
+        ctx.app,
         block.bundle,
         selectionItem?.fieldListType ?? 'default',
         selectionItem?.parentBlockBundle ?? null,
       )
 
-      if (definition) {
-        const availableOptions = getAvailableOptions(
-          definition.options,
-          definition.globalOptions as string[] | undefined,
-          definitions.globalOptions.value as Record<string, any>,
+      if (availableOptions && availableOptions.length > 0) {
+        result.options = buildBlockOptionsMap(
+          availableOptions,
+          state.mutatedOptions,
+          params.uuid,
         )
-
-        if (availableOptions.length > 0) {
-          result.options = buildBlockOptionsMap(
-            availableOptions,
-            state.mutatedOptions,
-            params.uuid,
-          )
-        }
       }
     }
 

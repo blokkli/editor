@@ -5,18 +5,14 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
+import type { ServerToolName } from '#blokkli/agent/app/types'
 import BubbleTool from '../Bubble/Tool/index.vue'
 
 const props = defineProps<{
   id: string
   timestamp: number
   type: 'server_tool'
-  tool:
-    | 'load_skills'
-    | 'load_tools'
-    | 'create_plan'
-    | 'complete_plan_step'
-    | 'plan_completed'
+  tool: ServerToolName
   label: string
 }>()
 

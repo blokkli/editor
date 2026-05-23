@@ -3,7 +3,10 @@ import type {
   PageStructure,
   PageStructureBlock,
 } from '#blokkli/agent/shared/types'
-import { getParagraphChildren } from '#blokkli/agent/app/tools/helpers'
+import {
+  getParagraphChildren,
+  readBlockContentFields,
+} from '#blokkli/agent/app/tools/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
 const MAX_CONTENT_LENGTH = 150
@@ -22,28 +25,12 @@ export function buildBlock(
   const block: PageStructureBlock = { uuid, bundle }
 
   // Collect content fields (plain + markup only).
-  const editables = app.directive.getEditablesForBlock(uuid)
   const content: Record<string, string> = {}
 
-  for (const editable of editables) {
-    const fieldType = app.fieldValue.resolveFieldType(
-      itemEntityType,
-      bundle,
-      editable.fieldName,
-    )
-    if (!fieldType) continue
-
-    const raw = app.fieldValue.readValue(
-      itemEntityType,
-      uuid,
-      bundle,
-      editable.fieldName,
-      fieldType,
-    )
-    const text = raw
-    const truncated = truncate(text)
+  for (const f of readBlockContentFields(app, uuid, itemEntityType, bundle)) {
+    const truncated = truncate(f.value)
     if (truncated) {
-      content[editable.fieldName] = truncated
+      content[f.fieldName] = truncated
     }
   }
 

@@ -542,17 +542,26 @@ const toolConversationItemSchema = conversationItemBase.extend({
 })
 
 /**
+ * Names of server-side tools, plus `plan_completed` which is synthesized
+ * client-side (not a wire value). Single source for the conversation item and
+ * the components that render it.
+ */
+export const serverToolNameSchema = z.enum([
+  'load_skills',
+  'load_tools',
+  'create_plan',
+  'complete_plan_step',
+  'plan_completed',
+])
+
+export type ServerToolName = z.infer<typeof serverToolNameSchema>
+
+/**
  * A server-side tool call result in the conversation history.
  */
 const serverToolConversationItemSchema = conversationItemBase.extend({
   type: z.literal('server_tool'),
-  tool: z.enum([
-    'load_skills',
-    'load_tools',
-    'create_plan',
-    'complete_plan_step',
-    'plan_completed',
-  ]),
+  tool: serverToolNameSchema,
   label: z.string(),
 })
 

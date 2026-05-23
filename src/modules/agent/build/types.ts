@@ -1,5 +1,8 @@
 export type AgentProvider = 'anthropic' | 'openai'
 
+// NOTE: kept structurally in sync with `AgentModelDefinition` in
+// runtime/shared/types.ts. The two cannot share a file — build and runtime are
+// isolated TS projects, so a cross-project import is rejected (TS6307).
 export type AgentModelDefinition = {
   name: string
   label: string

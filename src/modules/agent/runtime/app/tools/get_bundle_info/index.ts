@@ -1,10 +1,9 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { getAvailableOptions } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import { blockOptionsMapSchema } from '../schemas'
 import type { BlockOptionsMap } from '../schemas'
-import { extractOptionLabels } from '../helpers'
+import { extractOptionLabels, getResolvedOptions } from '../helpers'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
 const paramsSchema = z.object({
@@ -90,7 +89,7 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { fields, types, state, definitions, $t, context, blocks } = ctx.app
+    const { fields, types, state, $t, context, blocks } = ctx.app
     const label = $t(
       'aiAgentGetBundleInfoDone',
       'Got bundle info for @field',
@@ -158,17 +157,13 @@ export default defineBlokkliAgentTool({
 
       let options: BlockOptionsMap | undefined
       if (includeOptions) {
-        const definition = definitions.getBlockDefinition(
+        const availableOptions = getResolvedOptions(
+          ctx.app,
           bundle,
           'default',
           parentBundle,
         )
-        if (definition) {
-          const availableOptions = getAvailableOptions(
-            definition.options,
-            definition.globalOptions as string[] | undefined,
-            definitions.globalOptions.value as Record<string, any>,
-          )
+        if (availableOptions) {
           if (availableOptions.length > 0) {
             options = {}
             for (const opt of availableOptions) {

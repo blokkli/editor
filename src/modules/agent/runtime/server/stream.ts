@@ -4,46 +4,15 @@ import {
   readBody,
   useRuntimeConfig,
 } from '#imports'
-import { createHmac, timingSafeEqual } from 'node:crypto'
 import { provider, models, skills } from '#blokkli-build/agent-server'
 import { FieldStreamParser, type ParserEvent } from './streamParser'
 import { resolveTemplate, type TemplateCall } from './templates'
+import { validateToken, getDefaultModel, createUsageTurn } from './helpers'
 import type { UsageTurn } from '../shared/types'
-
-const TOKEN_EXPIRY_SECONDS = 300
 
 const config = useRuntimeConfig()
 const authSecret = config.blokkli?.agent?.authSecret || ''
 const apiKey = config.blokkli?.agent?.apiKey || ''
-
-/**
- * Validate an HMAC auth token (same logic as SessionManager).
- * Returns true if the token is valid and not expired.
- */
-function validateToken(token: string, authSecret: string): boolean {
-  const colonIndex = token.indexOf(':')
-  if (colonIndex === -1) return false
-
-  const timestampStr = token.substring(0, colonIndex)
-  const providedHmac = token.substring(colonIndex + 1)
-
-  const timestamp = parseInt(timestampStr, 10)
-  if (isNaN(timestamp)) return false
-
-  const now = Math.floor(Date.now() / 1000)
-  if (Math.abs(now - timestamp) > TOKEN_EXPIRY_SECONDS) return false
-
-  const expectedHmac = createHmac('sha256', authSecret)
-    .update(timestampStr)
-    .digest('hex')
-
-  if (providedHmac.length !== expectedHmac.length) return false
-
-  return timingSafeEqual(
-    Buffer.from(providedHmac, 'hex'),
-    Buffer.from(expectedHmac, 'hex'),
-  )
-}
 
 /**
  * Write an SSE event to the response.
@@ -217,19 +186,7 @@ export default defineEventHandler(async (event) => {
       }
 
       if (streamEvent.type === 'message_end') {
-        if (
-          streamEvent.inputTokens !== undefined &&
-          streamEvent.outputTokens !== undefined
-        ) {
-          const defaultModel = models.find((m) => m.isDefault) || models[0]
-          usage = {
-            inputTokens: streamEvent.inputTokens,
-            outputTokens: streamEvent.outputTokens,
-            cacheCreationInputTokens: streamEvent.cacheCreationInputTokens ?? 0,
-            cacheReadInputTokens: streamEvent.cacheReadInputTokens ?? 0,
-            pricing: defaultModel?.pricing ?? null,
-          }
-        }
+        usage = createUsageTurn(streamEvent, getDefaultModel(models)) ?? usage
       }
 
       if (streamEvent.type === 'error') {

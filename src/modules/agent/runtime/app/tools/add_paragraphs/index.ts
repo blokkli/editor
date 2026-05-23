@@ -7,15 +7,16 @@ import {
   positionSchema,
   optionValueSchema,
 } from '../schemas'
-import { resolvePosition, validateOptionValue } from '../helpers'
-import { itemEntityType } from '#blokkli-build/config'
+import {
+  resolvePosition,
+  validateOptionValue,
+  getResolvedOptions,
+  resolveHost,
+} from '../helpers'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
-import {
-  getAvailableOptions,
-  optionValueToStorable,
-} from '#blokkli/editor/helpers/options'
+import { optionValueToStorable } from '#blokkli/editor/helpers/options'
 
 const contentFieldValueSchema = z.union([
   z
@@ -153,22 +154,16 @@ function validateBlockOptions(
 ): string | undefined {
   if (!block.options) return undefined
 
-  const { definitions } = ctx.app
-  const definition = definitions.getBlockDefinition(
+  const availableOptions = getResolvedOptions(
+    ctx.app,
     block.bundle,
     'default',
     parentBundle,
   )
 
-  if (!definition) {
+  if (!availableOptions) {
     return `${path}: Paragraph definition not found for bundle "${block.bundle}".`
   }
-
-  const availableOptions = getAvailableOptions(
-    definition.options,
-    definition.globalOptions as string[] | undefined,
-    definitions.globalOptions.value as Record<string, any>,
-  )
 
   for (const [key, value] of Object.entries(block.options)) {
     const optionDef = availableOptions.find((o) => o.property === key)
@@ -283,8 +278,6 @@ function buildEventBlocks(
   blocks: BlockInput[],
   parentBundle: BlockBundleWithNested | null,
 ): AddNewBlocksEventBlock[] {
-  const { definitions } = ctx.app
-
   return blocks.map((block) => {
     const blockUuid = generateUUID()
 
@@ -297,17 +290,13 @@ function buildEventBlocks(
 
     let options: Record<string, string> | undefined
     if (block.options) {
-      const definition = definitions.getBlockDefinition(
+      const availableOptions = getResolvedOptions(
+        ctx.app,
         block.bundle,
         'default',
         parentBundle,
       )
-      if (definition) {
-        const availableOptions = getAvailableOptions(
-          definition.options,
-          definition.globalOptions as string[] | undefined,
-          definitions.globalOptions.value as Record<string, any>,
-        )
+      if (availableOptions) {
         options = {}
         for (const [key, value] of Object.entries(block.options)) {
           const optionDef = availableOptions.find((o) => o.property === key)
@@ -389,20 +378,16 @@ export default defineBlokkliAgentTool({
   resultSchema: mutationResultSchema,
   requiredAdapterMethods: ['addNewBlocks'],
   execute(ctx, params) {
-    const { types, context, blocks } = ctx.app
+    const { types } = ctx.app
 
     // Determine if parent is the root entity or a block
-    const isRootEntity = params.parent.uuid === context.value.entityUuid
-    const entityType = isRootEntity ? context.value.entityType : itemEntityType
-    const bundle = isRootEntity
-      ? context.value.entityBundle
-      : blocks.getBlock(params.parent.uuid)?.bundle
-
-    if (!bundle) {
+    const host = resolveHost(ctx.app, params.parent.uuid)
+    if (!host) {
       return {
         error: 'Parent not found.',
       }
     }
+    const { entityType, bundle, isRoot: isRootEntity } = host
 
     const field = types.getFieldConfig(entityType, bundle, params.parent.field)
 
