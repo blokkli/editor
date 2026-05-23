@@ -22,7 +22,6 @@ import {
   send,
   KEEP_RECENT_TURNS,
   resolveSkills,
-  transformText,
   classifyError,
   pruneMessages,
   pruneForPersistence,
@@ -38,8 +37,11 @@ import type {
   ServerSideTool,
   ServerToolContext,
   ToolDefinitionContext,
+  ToolResultEntry,
 } from './server-tools'
+import type { ResolvedSkill } from './skills/types'
 import { buildDefinition, stripSchemaOverhead } from './server-tools'
+import { StreamAccumulator } from './StreamAccumulator'
 
 import loadSkillTool from './server-tools/load_skills'
 import loadToolsTool from './server-tools/load_tools'
@@ -602,26 +604,10 @@ export class Session {
       for (let i = 0; i < preSeededResults.length; i++) {
         const preSeeded = preSeededResults[i]!
         const toolUseId = `preseed_${i}`
-        this.messages.push({
-          role: 'assistant',
-          content: [
-            {
-              type: 'tool_use',
-              id: toolUseId,
-              name: preSeeded.toolName,
-              input: preSeeded.params,
-            },
-          ],
-        })
-        this.messages.push({
-          role: 'user',
-          content: [
-            {
-              type: 'tool_result',
-              tool_use_id: toolUseId,
-              content: JSON.stringify(preSeeded.result),
-            },
-          ],
+        this.pushToolExchange(toolUseId, preSeeded.toolName, preSeeded.params, {
+          type: 'tool_result',
+          tool_use_id: toolUseId,
+          content: JSON.stringify(preSeeded.result),
         })
       }
     }
@@ -647,32 +633,16 @@ export class Session {
         try {
           const clientResult = await this.waitForToolResult(callId)
 
-          this.messages.push({
-            role: 'assistant',
-            content: [
-              {
-                type: 'tool_use',
-                id: toolUseId,
-                name: autoTool.toolName,
-                input: autoTool.params,
-              },
-            ],
-          })
-
+          let toolResult: ToolResultEntry
           if (clientResult.error) {
             hasErrors = true
             allSkip = false
-            this.messages.push({
-              role: 'user',
-              content: [
-                {
-                  type: 'tool_result',
-                  tool_use_id: toolUseId,
-                  content: JSON.stringify({ error: clientResult.error }),
-                  is_error: true,
-                },
-              ],
-            })
+            toolResult = {
+              type: 'tool_result',
+              tool_use_id: toolUseId,
+              content: JSON.stringify({ error: clientResult.error }),
+              is_error: true,
+            }
           } else {
             if (!clientResult.skipLlmResponse) {
               allSkip = false
@@ -689,45 +659,30 @@ export class Session {
               >
               resultForLLM = { ...rest, label: agentMessage }
             }
-            this.messages.push({
-              role: 'user',
-              content: [
-                {
-                  type: 'tool_result',
-                  tool_use_id: toolUseId,
-                  content: JSON.stringify(resultForLLM),
-                },
-              ],
-            })
+            toolResult = {
+              type: 'tool_result',
+              tool_use_id: toolUseId,
+              content: JSON.stringify(resultForLLM),
+            }
           }
+          this.pushToolExchange(
+            toolUseId,
+            autoTool.toolName,
+            autoTool.params,
+            toolResult,
+          )
         } catch {
           hasErrors = true
           allSkip = false
           // Client disconnected or cancelled — inject error result so the
           // LLM can see the failure and decide what to do.
-          this.messages.push({
-            role: 'assistant',
-            content: [
-              {
-                type: 'tool_use',
-                id: toolUseId,
-                name: autoTool.toolName,
-                input: autoTool.params,
-              },
-            ],
-          })
-          this.messages.push({
-            role: 'user',
-            content: [
-              {
-                type: 'tool_result',
-                tool_use_id: toolUseId,
-                content: JSON.stringify({
-                  error: 'Auto-executed tool call was cancelled.',
-                }),
-                is_error: true,
-              },
-            ],
+          this.pushToolExchange(toolUseId, autoTool.toolName, autoTool.params, {
+            type: 'tool_result',
+            tool_use_id: toolUseId,
+            content: JSON.stringify({
+              error: 'Auto-executed tool call was cancelled.',
+            }),
+            is_error: true,
           })
         }
       }
@@ -766,8 +721,12 @@ export class Session {
         // Send thinking indicator
         send(peer, { type: 'thinking' })
 
-        // Track content blocks as they complete
-        const assistantContent: GenericContentBlock[] = []
+        // Accumulate streamed text + tool_use deltas into completed content
+        // blocks for this assistant turn. `assistantContent` aliases the
+        // accumulator's live block array so the dispatch/commit code below can
+        // keep appending to (and resetting) it directly.
+        const accumulator = new StreamAccumulator()
+        const assistantContent = accumulator.blocks
         const toolResults: Array<{
           type: 'tool_result'
           tool_use_id: string
@@ -778,17 +737,6 @@ export class Session {
 
         // Flag set by create_plan: messages already committed, skip normal commit
         let messagesCommittedByPlanTool = false
-
-        // Track current tool use being streamed
-        let currentToolUse: {
-          id: string
-          name: string
-          inputJson: string
-        } | null = null
-
-        // Track current text block
-        let currentTextContent = ''
-        let inTextBlock = false
 
         // Resolve eager tools from names
         const eagerTools = this.resolveToolDefinitions(this.toolNames)
@@ -867,84 +815,53 @@ export class Session {
                 break
 
               case 'text_start':
-                inTextBlock = true
-                currentTextContent = ''
+                accumulator.startText()
                 break
 
-              case 'text_delta':
-                if (inTextBlock) {
-                  const transformed = transformText(event.text)
-                  currentTextContent += transformed
+              case 'text_delta': {
+                const transformed = accumulator.pushTextDelta(event.text)
+                if (transformed !== null) {
                   send(peer, { type: 'text_delta', content: transformed })
                 }
                 break
+              }
 
               case 'text_end':
-                if (inTextBlock && currentTextContent) {
-                  assistantContent.push({
-                    type: 'text',
-                    text: currentTextContent,
-                  })
-                }
-                currentTextContent = ''
-                inTextBlock = false
+                accumulator.endText()
                 break
 
               case 'tool_use_start':
-                currentToolUse = {
-                  id: event.id,
-                  name: event.name,
-                  inputJson: '',
-                }
+                accumulator.startToolUse(event.id, event.name)
                 break
 
               case 'tool_use_delta':
-                if (currentToolUse) {
-                  currentToolUse.inputJson += event.partial_json
-                }
+                accumulator.pushToolUseDelta(event.partial_json)
                 break
 
-              case 'tool_use_end':
-                if (currentToolUse) {
-                  let input: Record<string, unknown>
-                  try {
-                    input = JSON.parse(currentToolUse.inputJson || '{}')
-                  } catch {
-                    // Malformed JSON from the model — record an empty tool_use
-                    // so the message structure stays valid, then return an error
-                    // result so the LLM can retry.
-                    input = {}
-                    assistantContent.push({
-                      type: 'tool_use',
-                      id: currentToolUse.id,
-                      name: currentToolUse.name,
-                      input,
-                    })
+              case 'tool_use_end': {
+                const finished = accumulator.finishToolUse()
+                if (finished) {
+                  if (!finished.ok) {
+                    // Malformed JSON from the model — the tool_use block was
+                    // recorded so the message structure stays valid; return an
+                    // error result so the LLM can retry.
                     toolResults.push({
                       type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
+                      tool_use_id: finished.id,
                       content: JSON.stringify({
                         error:
                           'Your tool call produced malformed JSON input. Please try again.',
                       }),
                       is_error: true,
                     })
-                    currentToolUse = null
                     break
                   }
+                  const { id: toolUseId, name: toolName, input } = finished
+                  const inputJson = finished.inputJson
                   const callId = `tc_${toolCallCounter++}`
 
-                  // Add to assistant content
-                  assistantContent.push({
-                    type: 'tool_use',
-                    id: currentToolUse.id,
-                    name: currentToolUse.name,
-                    input,
-                  })
-
                   // Detect repeated identical tool calls (same name + input).
-                  const toolCallKey =
-                    currentToolUse.name + ':' + currentToolUse.inputJson
+                  const toolCallKey = toolName + ':' + inputJson
                   if (toolCallKey === lastToolCallKey) {
                     consecutiveIdenticalCalls++
                   } else {
@@ -955,198 +872,47 @@ export class Session {
                   if (consecutiveIdenticalCalls > MAX_IDENTICAL_CALLS) {
                     toolResults.push({
                       type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
+                      tool_use_id: toolUseId,
                       content: JSON.stringify({
-                        error: `You have called "${currentToolUse.name}" ${consecutiveIdenticalCalls} times in a row with identical parameters and received the same result each time. Stop repeating this call. Use the information you already have or try a different approach.`,
+                        error: `You have called "${toolName}" ${consecutiveIdenticalCalls} times in a row with identical parameters and received the same result each time. Stop repeating this call. Use the information you already have or try a different approach.`,
                       }),
                       is_error: true,
                     })
-                    currentToolUse = null
                     break
                   }
 
-                  // Check if this is a server-side tool
+                  // Server-side tool: dispatch in-process.
                   const matchedServerTool = serverTools.find(
-                    (t) => t.name === currentToolUse!.name,
+                    (t) => t.name === toolName,
                   )
                   if (matchedServerTool) {
-                    // Reject if the tool is not available in this context
-                    // (e.g. LLM hallucinated a tool that was not offered).
-                    if (
-                      matchedServerTool.isAvailable &&
-                      !matchedServerTool.isAvailable(defCtx)
-                    ) {
-                      toolResults.push({
-                        type: 'tool_result',
-                        tool_use_id: currentToolUse.id,
-                        content: JSON.stringify({
-                          error: 'This tool is not available right now.',
-                        }),
-                        is_error: true,
-                      })
-                      currentToolUse = null
-                      break
+                    const dispatch = await this.dispatchServerTool(
+                      matchedServerTool,
+                      { toolUseId, input, defCtx, resolvedSkills, peer, assistantContent },
+                    )
+                    toolResults.push(...dispatch.toolResults)
+                    if (dispatch.extraBlocks) {
+                      extraBlocks.push(...dispatch.extraBlocks)
                     }
-                    const handlerCtx: ServerToolContext = {
-                      toolUseId: currentToolUse.id,
-                      send: (msg) => send(peer, msg),
-                      resolvedSkills,
-                      lazyToolNames: this.lazyToolNames,
-                      activatedLazyTools: this.activatedLazyTools,
-                      loadedSkills: this.loadedSkills,
-                      plan: this.plan,
-                      setPlan: (p) => {
-                        this.plan = p
-                      },
-                      toClientPlan: () => this.toClientPlan(),
-                      waitForPlanApproval: () => this.waitForPlanApproval(),
-                      assistantContent,
-                      commitMessagesEarly: (toolResult) => {
-                        if (assistantContent.length) {
-                          this.messages.push({
-                            role: 'assistant',
-                            content: [...assistantContent],
-                          })
-                          assistantContent.length = 0
-                        }
-                        this.messages.push({
-                          role: 'user',
-                          content: [toolResult],
-                        })
-                      },
-                      updateLastToolResult: (toolUseId, content) => {
-                        const lastMsg = this.messages[this.messages.length - 1]
-                        if (
-                          lastMsg.role === 'user' &&
-                          Array.isArray(lastMsg.content)
-                        ) {
-                          const resultBlock = lastMsg.content.find(
-                            (b) =>
-                              b.type === 'tool_result' &&
-                              b.tool_use_id === toolUseId,
-                          )
-                          if (
-                            resultBlock &&
-                            resultBlock.type === 'tool_result'
-                          ) {
-                            resultBlock.content = content
-                          }
-                        }
-                      },
-                      planStepHasWork: this.planStepHasWork,
-                      markPlanStepWork: () => {
-                        this.planStepHasWork = true
-                      },
-                      resetPlanStepWork: () => {
-                        this.planStepHasWork = false
-                      },
+                    if (dispatch.messagesCommitted) {
+                      messagesCommittedByPlanTool = true
                     }
-                    try {
-                      // Coerce stringified arrays/objects before validation.
-                      // LLMs sometimes double-serialize parameters.
-                      const coercedInput: Record<string, unknown> = {}
-                      for (const key of Object.keys(input)) {
-                        const value = input[key]
-                        if (
-                          typeof value === 'string' &&
-                          (value[0] === '[' || value[0] === '{')
-                        ) {
-                          try {
-                            coercedInput[key] = JSON.parse(value)
-                          } catch {
-                            coercedInput[key] = value
-                          }
-                        } else {
-                          coercedInput[key] = value
-                        }
-                      }
-                      const parsed = matchedServerTool
-                        .inputSchema(defCtx)
-                        .parse(coercedInput)
-                      const result = await matchedServerTool.handle(
-                        handlerCtx,
-                        parsed,
-                      )
-                      toolResults.push(...result.toolResults)
-                      if (result.extraBlocks) {
-                        extraBlocks.push(...result.extraBlocks)
-                      }
-                      if (result.messagesCommitted) {
-                        messagesCommittedByPlanTool = true
-                      }
-                    } catch (e) {
-                      toolResults.push({
-                        type: 'tool_result',
-                        tool_use_id: currentToolUse.id,
-                        content: JSON.stringify({
-                          error: `Invalid input: ${(e as Error).message}`,
-                        }),
-                        is_error: true,
-                      })
-                    }
-                    currentToolUse = null
                     break
                   }
 
-                  // Send tool call to client
-                  send(peer, {
-                    type: 'tool_call',
-                    callId,
-                    tool: currentToolUse.name,
-                    params: input as Record<string, unknown>,
-                  })
-
-                  // Wait for client to respond
-                  try {
-                    const clientResult = await this.waitForToolResult(callId)
-
-                    if (clientResult.error) {
-                      toolResults.push({
-                        type: 'tool_result',
-                        tool_use_id: currentToolUse.id,
-                        content: JSON.stringify({
-                          error: clientResult.error,
-                        }),
-                        is_error: true,
-                      })
-                    } else {
-                      // If the result has an agentMessage, replace label
-                      // with it in the payload sent to the LLM. The label
-                      // is only shown in the UI.
-                      let resultForLLM = clientResult.result
-                      if (
-                        typeof resultForLLM === 'object' &&
-                        resultForLLM !== null &&
-                        'agentMessage' in resultForLLM
-                      ) {
-                        const { agentMessage, ...rest } =
-                          resultForLLM as Record<string, unknown>
-                        resultForLLM = { ...rest, label: agentMessage }
-                      }
-
-                      toolResults.push({
-                        type: 'tool_result',
-                        tool_use_id: currentToolUse.id,
-                        content: JSON.stringify(resultForLLM),
-                      })
-
-                      // Client-side tool completed successfully — counts as real work
-                      this.planStepHasWork = true
-                    }
-                  } catch (error) {
-                    toolResults.push({
-                      type: 'tool_result',
-                      tool_use_id: currentToolUse.id,
-                      content: JSON.stringify({
-                        error: (error as Error).message,
-                      }),
-                      is_error: true,
-                    })
-                  }
-
-                  currentToolUse = null
+                  // Client-side tool: round-trip to the peer.
+                  toolResults.push(
+                    ...(await this.dispatchClientTool({
+                      toolUseId,
+                      toolName,
+                      callId,
+                      input,
+                      peer,
+                    })),
+                  )
                 }
                 break
+              }
 
               case 'reasoning_summary':
                 // Store reasoning in assistant content so it's fed back on
@@ -1322,6 +1088,239 @@ export class Session {
         },
       })
     })
+  }
+
+  /**
+   * Build the context object passed to a server-side tool handler. `assistantContent`
+   * is the live block array for the current turn — `commitMessagesEarly` flushes and
+   * resets it in place, so it must be the same reference the stream loop appends to.
+   */
+  private buildServerToolContext(args: {
+    toolUseId: string
+    peer: Peer
+    resolvedSkills: ResolvedSkill[]
+    assistantContent: GenericContentBlock[]
+  }): ServerToolContext {
+    const { toolUseId, peer, resolvedSkills, assistantContent } = args
+    return {
+      toolUseId,
+      send: (msg) => send(peer, msg),
+      resolvedSkills,
+      lazyToolNames: this.lazyToolNames,
+      activatedLazyTools: this.activatedLazyTools,
+      loadedSkills: this.loadedSkills,
+      plan: this.plan,
+      setPlan: (p) => {
+        this.plan = p
+      },
+      toClientPlan: () => this.toClientPlan(),
+      waitForPlanApproval: () => this.waitForPlanApproval(),
+      assistantContent,
+      commitMessagesEarly: (toolResult) => {
+        if (assistantContent.length) {
+          this.messages.push({
+            role: 'assistant',
+            content: [...assistantContent],
+          })
+          assistantContent.length = 0
+        }
+        this.messages.push({
+          role: 'user',
+          content: [toolResult],
+        })
+      },
+      updateLastToolResult: (id, content) => {
+        const lastMsg = this.messages[this.messages.length - 1]
+        if (lastMsg.role === 'user' && Array.isArray(lastMsg.content)) {
+          const resultBlock = lastMsg.content.find(
+            (b) => b.type === 'tool_result' && b.tool_use_id === id,
+          )
+          if (resultBlock && resultBlock.type === 'tool_result') {
+            resultBlock.content = content
+          }
+        }
+      },
+      planStepHasWork: this.planStepHasWork,
+      markPlanStepWork: () => {
+        this.planStepHasWork = true
+      },
+      resetPlanStepWork: () => {
+        this.planStepHasWork = false
+      },
+    }
+  }
+
+  /**
+   * Dispatch a server-side tool: reject if unavailable, coerce + validate input,
+   * run the handler. Returns the blocks to merge into the turn's results.
+   */
+  private async dispatchServerTool(
+    tool: ServerSideTool,
+    args: {
+      toolUseId: string
+      input: Record<string, unknown>
+      defCtx: ToolDefinitionContext
+      resolvedSkills: ResolvedSkill[]
+      peer: Peer
+      assistantContent: GenericContentBlock[]
+    },
+  ): Promise<{
+    toolResults: ToolResultEntry[]
+    extraBlocks?: (GenericTextBlock | GenericSkillBlock)[]
+    messagesCommitted?: boolean
+  }> {
+    const { toolUseId, input, defCtx, resolvedSkills, peer, assistantContent } =
+      args
+
+    // Reject if the tool is not available in this context (e.g. the LLM
+    // hallucinated a tool that was not offered).
+    if (tool.isAvailable && !tool.isAvailable(defCtx)) {
+      return {
+        toolResults: [
+          {
+            type: 'tool_result',
+            tool_use_id: toolUseId,
+            content: JSON.stringify({
+              error: 'This tool is not available right now.',
+            }),
+            is_error: true,
+          },
+        ],
+      }
+    }
+
+    const handlerCtx = this.buildServerToolContext({
+      toolUseId,
+      peer,
+      resolvedSkills,
+      assistantContent,
+    })
+
+    try {
+      // Coerce stringified arrays/objects before validation. LLMs sometimes
+      // double-serialize parameters.
+      const coercedInput: Record<string, unknown> = {}
+      for (const key of Object.keys(input)) {
+        const value = input[key]
+        if (
+          typeof value === 'string' &&
+          (value[0] === '[' || value[0] === '{')
+        ) {
+          try {
+            coercedInput[key] = JSON.parse(value)
+          } catch {
+            coercedInput[key] = value
+          }
+        } else {
+          coercedInput[key] = value
+        }
+      }
+      const parsed = tool.inputSchema(defCtx).parse(coercedInput)
+      const result = await tool.handle(handlerCtx, parsed)
+      return {
+        toolResults: result.toolResults,
+        extraBlocks: result.extraBlocks,
+        messagesCommitted: result.messagesCommitted,
+      }
+    } catch (e) {
+      return {
+        toolResults: [
+          {
+            type: 'tool_result',
+            tool_use_id: toolUseId,
+            content: JSON.stringify({
+              error: `Invalid input: ${(e as Error).message}`,
+            }),
+            is_error: true,
+          },
+        ],
+      }
+    }
+  }
+
+  /**
+   * Dispatch a client-side tool: send the call to the peer and await its result.
+   * An `agentMessage` on the result replaces the `label` in the payload fed back
+   * to the LLM (the label is UI-only). Returns the tool_result block(s).
+   */
+  private async dispatchClientTool(args: {
+    toolUseId: string
+    toolName: string
+    callId: string
+    input: Record<string, unknown>
+    peer: Peer
+  }): Promise<ToolResultEntry[]> {
+    const { toolUseId, toolName, callId, input, peer } = args
+
+    send(peer, {
+      type: 'tool_call',
+      callId,
+      tool: toolName,
+      params: input,
+    })
+
+    try {
+      const clientResult = await this.waitForToolResult(callId)
+
+      if (clientResult.error) {
+        return [
+          {
+            type: 'tool_result',
+            tool_use_id: toolUseId,
+            content: JSON.stringify({ error: clientResult.error }),
+            is_error: true,
+          },
+        ]
+      }
+
+      let resultForLLM = clientResult.result
+      if (
+        typeof resultForLLM === 'object' &&
+        resultForLLM !== null &&
+        'agentMessage' in resultForLLM
+      ) {
+        const { agentMessage, ...rest } = resultForLLM as Record<string, unknown>
+        resultForLLM = { ...rest, label: agentMessage }
+      }
+
+      // Client-side tool completed successfully — counts as real work.
+      this.planStepHasWork = true
+
+      return [
+        {
+          type: 'tool_result',
+          tool_use_id: toolUseId,
+          content: JSON.stringify(resultForLLM),
+        },
+      ]
+    } catch (error) {
+      return [
+        {
+          type: 'tool_result',
+          tool_use_id: toolUseId,
+          content: JSON.stringify({ error: (error as Error).message }),
+          is_error: true,
+        },
+      ]
+    }
+  }
+
+  /**
+   * Append a synthetic assistant `tool_use` + user `tool_result` message pair —
+   * the shape used to inject pre-seeded results and to record auto-executed tool
+   * calls before the LLM loop starts.
+   */
+  private pushToolExchange(
+    toolUseId: string,
+    toolName: string,
+    input: Record<string, unknown>,
+    toolResult: ToolResultEntry,
+  ): void {
+    this.messages.push({
+      role: 'assistant',
+      content: [{ type: 'tool_use', id: toolUseId, name: toolName, input }],
+    })
+    this.messages.push({ role: 'user', content: [toolResult] })
   }
 
   /**

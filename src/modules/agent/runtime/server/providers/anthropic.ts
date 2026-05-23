@@ -138,6 +138,12 @@ export class AnthropicProvider implements AIProvider {
     // fallback after the loop so the agent loop never hangs waiting for it.
     let messageEnded = false
 
+    // Track the type of the currently-open content block so `content_block_stop`
+    // can emit the single matching end event (Anthropic's stop event carries no
+    // block type), mirroring the OpenAI provider's one-end-event-per-block
+    // contract instead of emitting both and leaning on the consumer to ignore one.
+    let openBlockType: 'text' | 'tool_use' | null = null
+
     try {
       for await (const event of stream) {
         // Check abort signal
@@ -149,8 +155,10 @@ export class AnthropicProvider implements AIProvider {
         switch (event.type) {
           case 'content_block_start':
             if (event.content_block.type === 'text') {
+              openBlockType = 'text'
               yield { type: 'text_start' }
             } else if (event.content_block.type === 'tool_use') {
+              openBlockType = 'tool_use'
               yield {
                 type: 'tool_use_start',
                 id: event.content_block.id,
@@ -171,11 +179,14 @@ export class AnthropicProvider implements AIProvider {
             break
 
           case 'content_block_stop':
-            // We don't know if it was text or tool_use from the stop event alone,
-            // but the agent handler tracks this state
-            // Emit both end events - handler will use the appropriate one based on its state
-            yield { type: 'text_end' }
-            yield { type: 'tool_use_end' }
+            // The stop event carries no block type, so emit the end event for the
+            // block we recorded as open at `content_block_start`.
+            if (openBlockType === 'text') {
+              yield { type: 'text_end' }
+            } else if (openBlockType === 'tool_use') {
+              yield { type: 'tool_use_end' }
+            }
+            openBlockType = null
             break
 
           case 'message_stop': {

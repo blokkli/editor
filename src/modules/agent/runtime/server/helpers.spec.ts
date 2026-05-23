@@ -16,6 +16,8 @@ import {
   getDefaultModel,
   createUsageTurn,
   validateToken,
+  countUserTurns,
+  compressUserMessageContent,
   type ToolPruningMetadata,
 } from './helpers'
 
@@ -682,5 +684,147 @@ describe('validateToken', () => {
     expect(validateToken('', SECRET)).toBe(false)
     expect(validateToken('no-colon', SECRET)).toBe(false)
     expect(validateToken('notanumber:abcd', SECRET)).toBe(false)
+  })
+})
+
+// ============================================================================
+// countUserTurns
+// ============================================================================
+
+describe('countUserTurns', () => {
+  it('counts only user messages without tool_result blocks as turns', () => {
+    const messages: GenericMessage[] = [
+      { role: 'user', content: 'prompt one' },
+      { role: 'assistant', content: 'reply one' },
+      // A tool-response user message is NOT a turn.
+      {
+        role: 'user',
+        content: [
+          { type: 'tool_result', tool_use_id: 'tu_0', content: '{}' },
+        ],
+      },
+      { role: 'user', content: 'prompt two' },
+      { role: 'assistant', content: 'reply two' },
+    ]
+
+    const { turnCount, turnStartIndices } = countUserTurns(messages)
+    expect(turnCount).toBe(2)
+    expect(turnStartIndices).toEqual([0, 3])
+  })
+
+  it('returns zero turns for an empty array', () => {
+    expect(countUserTurns([])).toEqual({ turnCount: 0, turnStartIndices: [] })
+  })
+})
+
+// ============================================================================
+// compressUserMessageContent
+// ============================================================================
+
+describe('compressUserMessageContent', () => {
+  it('compresses tool_result blocks to their summary', () => {
+    const content: GenericMessage['content'] = [
+      {
+        type: 'tool_result',
+        tool_use_id: 'tu_0',
+        content: JSON.stringify({
+          blocks: Array(50).fill({ uuid: 'x' }),
+          _summary: 'found 50 blocks',
+        }),
+      },
+    ]
+    const messages: GenericMessage[] = [{ role: 'user', content }]
+
+    compressUserMessageContent(content as never, messages, 0, new Map(), {
+      volatileCheck: false,
+      stripAux: false,
+    })
+
+    const block = (content as never[])[0] as {
+      type: string
+      content: string
+    }
+    const parsed = JSON.parse(block.content)
+    expect(parsed.blocks).toBeUndefined()
+    expect(parsed.summary).toBe('found 50 blocks')
+  })
+
+  it('strips aux text/skill blocks only when stripAux is true', () => {
+    const build = () =>
+      [
+        { type: 'skill', name: 'writing', text: '# Skill' },
+        { type: 'text', text: 'aux text' },
+        { type: 'tool_result', tool_use_id: 'tu_0', content: '{}' },
+      ] as never[]
+
+    const kept = build()
+    compressUserMessageContent(
+      kept,
+      [{ role: 'user', content: kept as never }],
+      0,
+      new Map(),
+      { volatileCheck: false, stripAux: false },
+    )
+    // No stripping: skill + text + tool_result all retained.
+    expect(kept.length).toBe(3)
+
+    const stripped = build()
+    compressUserMessageContent(
+      stripped,
+      [{ role: 'user', content: stripped as never }],
+      0,
+      new Map(),
+      { volatileCheck: false, stripAux: true },
+    )
+    // Aux blocks removed, tool_result kept.
+    expect(stripped.length).toBe(1)
+    expect((stripped[0] as { type: string }).type).toBe('tool_result')
+  })
+
+  it('marks volatile query results stale when a mutation follows', () => {
+    const volatileResult = {
+      type: 'tool_result' as const,
+      tool_use_id: 'tu_query',
+      content: JSON.stringify({ _summary: 'queried blocks' }),
+    }
+    const messages: GenericMessage[] = [
+      { role: 'user', content: 'prompt' },
+      {
+        role: 'assistant',
+        content: [
+          { type: 'tool_use', id: 'tu_query', name: 'find_blocks', input: {} },
+        ],
+      },
+      { role: 'user', content: [volatileResult] },
+      // A later mutation result makes the earlier query stale.
+      {
+        role: 'assistant',
+        content: [
+          { type: 'tool_use', id: 'tu_mut', name: 'add_paragraphs', input: {} },
+        ],
+      },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'tool_result',
+            tool_use_id: 'tu_mut',
+            content: JSON.stringify({ success: true }),
+          },
+        ],
+      },
+    ]
+    const metadata = new Map<string, ToolPruningMetadata>([
+      ['find_blocks', { volatile: true }],
+    ])
+
+    const content = messages[2].content as never[]
+    compressUserMessageContent(content, messages, 2, metadata, {
+      volatileCheck: true,
+      stripAux: true,
+    })
+
+    const parsed = JSON.parse((content[0] as { content: string }).content)
+    expect(parsed.stale).toBe(true)
   })
 })

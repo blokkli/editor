@@ -7,6 +7,7 @@ import type {
   PageContext,
   ServerMessage,
   GenericMessage,
+  GenericContentBlock,
   UsageTurn,
 } from '../shared/types'
 import type { ResolvedSkill, SkillDefinition } from './skills/types'
@@ -387,6 +388,74 @@ function hasMutationBetween(
 }
 
 /**
+ * Count "real" user turns and record where each starts.
+ *
+ * A "turn" is a user message that contains actual user text — NOT a tool-response
+ * message (one carrying `tool_result` blocks). Shared by both prune functions,
+ * which use the turn boundaries to decide how much recent history to keep intact.
+ */
+export function countUserTurns(messages: GenericMessage[]): {
+  turnCount: number
+  turnStartIndices: number[]
+} {
+  let turnCount = 0
+  const turnStartIndices: number[] = []
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i]
+    if (!msg) continue
+    if (msg.role === 'user' && !isToolResultOnly(msg)) {
+      turnCount++
+      turnStartIndices.push(i)
+    }
+  }
+  return { turnCount, turnStartIndices }
+}
+
+/**
+ * Compress one user message's content in place: shrink every `tool_result` block
+ * to its essential summary, and (when `stripAux`) drop auxiliary `text`/`skill`
+ * blocks that accompany a tool result. A genuine user prompt has no tool_result,
+ * so its text is never stripped — emptying the array would make the API reject it.
+ *
+ * Shared by `pruneMessages` and `pruneForPersistence`:
+ * - `volatileCheck` enables the stale-query path (used only by `pruneMessages`,
+ *   which has the tool metadata + later mutations needed to detect staleness).
+ * - `stripAux` lets the caller gate the text/skill stripping by message age.
+ */
+export function compressUserMessageContent(
+  content: GenericContentBlock[],
+  messages: GenericMessage[],
+  i: number,
+  metadata: Map<string, ToolPruningMetadata>,
+  opts: { volatileCheck: boolean; stripAux: boolean },
+): void {
+  const hasToolResult = content.some((b) => b.type === 'tool_result')
+  for (let j = content.length - 1; j >= 0; j--) {
+    const block = content[j]
+    if (!block) continue
+    if (block.type === 'tool_result') {
+      let stale = false
+      if (opts.volatileCheck) {
+        const toolName = findToolNameForResult(messages, i, block.tool_use_id)
+        const meta = toolName ? metadata.get(toolName) : undefined
+        stale =
+          !!meta?.volatile &&
+          hasMutationBetween(messages, i, messages.length, metadata)
+      }
+      block.content = stale
+        ? compressVolatileToolResult(block.content)
+        : compressToolResult(block.content)
+    } else if (
+      opts.stripAux &&
+      hasToolResult &&
+      (block.type === 'text' || block.type === 'skill')
+    ) {
+      content.splice(j, 1)
+    }
+  }
+}
+
+/**
  * Prune old messages to reduce context size.
  * Keeps recent messages intact, compresses old tool results to just their summary.
  *
@@ -405,21 +474,10 @@ export function pruneMessages(
 
   const metadata = toolMetadata || new Map<string, ToolPruningMetadata>()
 
-  // Count user messages to determine turns.
   // A user message that contains any tool_result blocks is NOT a real turn —
   // it's a tool response message. Only messages without tool_result blocks
   // (i.e. actual user prompts or system messages) count as turns.
-  let turnCount = 0
-  const turnStartIndices: number[] = []
-
-  for (let i = 0; i < messages.length; i++) {
-    const msg = messages[i]
-    if (!msg) continue
-    if (msg.role === 'user' && !isToolResultOnly(msg)) {
-      turnCount++
-      turnStartIndices.push(i)
-    }
-  }
+  const { turnCount, turnStartIndices } = countUserTurns(messages)
 
   // If we have fewer turns than the keep threshold, no pruning needed
   if (turnCount <= keepRecentTurns) {
@@ -452,34 +510,12 @@ export function pruneMessages(
       continue
     }
 
-    // User messages: compress tool_result blocks. Only strip auxiliary
-    // text/skill blocks from tool-response messages — for a genuine user
-    // prompt the text IS the message, and emptying the content array
-    // would cause the API to reject the request.
-    const hasToolResult = content.some((b) => b.type === 'tool_result')
-    for (let j = content.length - 1; j >= 0; j--) {
-      const block = content[j]
-      if (!block) continue
-      if (block.type === 'tool_result') {
-        const toolName = findToolNameForResult(messages, i, block.tool_use_id)
-        const meta = toolName ? metadata.get(toolName) : undefined
-
-        // If the tool is volatile and a mutation happened after it, mark as stale
-        if (
-          meta?.volatile &&
-          hasMutationBetween(messages, i, messages.length, metadata)
-        ) {
-          block.content = compressVolatileToolResult(block.content)
-        } else {
-          block.content = compressToolResult(block.content)
-        }
-      } else if (
-        hasToolResult &&
-        (block.type === 'text' || block.type === 'skill')
-      ) {
-        content.splice(j, 1)
-      }
-    }
+    // Everything in this loop is before the cutoff, so it's all old — compress
+    // tool results (with the stale-query check) and strip aux blocks.
+    compressUserMessageContent(content, messages, i, metadata, {
+      volatileCheck: true,
+      stripAux: true,
+    })
   }
 }
 
@@ -508,17 +544,7 @@ export function pruneForPersistence(
   const cloned: GenericMessage[] = JSON.parse(JSON.stringify(messages))
 
   // Identify user turns (messages without tool_result blocks)
-  let turnCount = 0
-  const turnStartIndices: number[] = []
-
-  for (let i = 0; i < cloned.length; i++) {
-    const msg = cloned[i]
-    if (!msg) continue
-    if (msg.role === 'user' && !isToolResultOnly(msg)) {
-      turnCount++
-      turnStartIndices.push(i)
-    }
-  }
+  const { turnCount, turnStartIndices } = countUserTurns(cloned)
 
   // Trim to last keepTurns turns
   let startIndex = 0
@@ -540,6 +566,10 @@ export function pruneForPersistence(
     }
   }
 
+  // Persistence has no tool metadata or "later mutations" to consult, so the
+  // volatile/stale path is disabled — every tool_result is compressed normally.
+  const emptyMetadata = new Map<string, ToolPruningMetadata>()
+
   // Compress all tool results and strip old tool_use inputs
   for (let i = 0; i < trimmed.length; i++) {
     const msg = trimmed[i]
@@ -559,25 +589,12 @@ export function pruneForPersistence(
       continue
     }
 
-    // User messages: compress ALL tool_result blocks. Only strip auxiliary
-    // text/skill blocks from tool-response messages (those containing a
-    // tool_result) — for a genuine user prompt the text IS the message, and
-    // emptying the content array would make restore reject it. Matches the
-    // gating in pruneMessages.
-    const hasToolResult = content.some((b) => b.type === 'tool_result')
-    for (let j = content.length - 1; j >= 0; j--) {
-      const block = content[j]
-      if (!block) continue
-      if (block.type === 'tool_result') {
-        block.content = compressToolResult(block.content)
-      } else if (
-        hasToolResult &&
-        (block.type === 'text' || block.type === 'skill') &&
-        i < lastTurnStart
-      ) {
-        content.splice(j, 1)
-      }
-    }
+    // User messages: compress ALL tool_result blocks, but only strip auxiliary
+    // text/skill blocks from old (pre-last-turn) tool-response messages.
+    compressUserMessageContent(content, trimmed, i, emptyMetadata, {
+      volatileCheck: false,
+      stripAux: i < lastTurnStart,
+    })
   }
 
   return trimmed
