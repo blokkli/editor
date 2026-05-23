@@ -2,6 +2,35 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   hooks: {
+    /**
+     * Exclude styleguide stories and unit tests from the published package.
+     *
+     * Story definitions (`**\/story.ts`) and their helper components
+     * (`**\/*.story.vue`) are only consumed by the playground styleguide, and
+     * `*.spec`/`*.test` files are tests — none of them belong in `dist`. mkdist
+     * forwards each entry's `pattern` to its glob (negation supported), so we
+     * append the ignores to every directory entry — including the `src/runtime`
+     * entry injected by nuxt-module-build, which we don't declare ourselves.
+     * (That injected entry already ignores tests, but our per-module runtime
+     * entries below don't, which is why the test ignores are needed here.)
+     *
+     * Stub builds (`dev:prepare`) skip mkdist and symlink the source dir, so the
+     * styleguide keeps resolving these files during development.
+     */
+    'mkdist:entries': (_ctx, entries) => {
+      const ignore = [
+        '!**/story.ts',
+        '!**/*.story.vue',
+        '!**/*.spec.*',
+        '!**/*.test.*',
+      ]
+      for (const entry of entries) {
+        const existing = Array.isArray(entry.pattern)
+          ? entry.pattern
+          : [entry.pattern ?? '**']
+        entry.pattern = [...existing, ...ignore]
+      }
+    },
     'rollup:options': (_ctx, options) => {
       // Fix incorrect path resolution for global constants.
       // Without this, unbuild generates incorrect import paths like

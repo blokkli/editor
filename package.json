@@ -104,7 +104,7 @@
     }
   },
   "scripts": {
-    "prepack": "rm -rf dist && nuxt-module-build build && find dist/ -type f -name '*.*' | grep '.spec.' | xargs rm -f && npx tsx scripts/mangle-dist.ts",
+    "prepack": "rm -rf dist && nuxt-module-build build && npx tsx scripts/mangle-dist.ts",
     "dev": "nuxi dev playground --host",
     "typecheck": "npm run typecheck:build && npm run typecheck:runtime && npm run typecheck:server && npm run typecheck:playground",
     "typecheck:build": "vue-tsc --noEmit -p .nuxt/tsconfig.node.json",
