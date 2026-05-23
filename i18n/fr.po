@@ -103,6 +103,10 @@ msgctxt "addToLibrary"
 msgid "Add to library"
 msgstr ""
 
+msgctxt "addTranslation"
+msgid "Add translation"
+msgstr ""
+
 msgctxt "advanced"
 msgid "Advanced"
 msgstr ""
@@ -3397,6 +3401,10 @@ msgctxt "smoothCurves"
 msgid "Smooth curves"
 msgstr ""
 
+msgctxt "sourceLanguage"
+msgid "Source language"
+msgstr ""
+
 msgctxt "stateUnavailableText"
 msgid ""
 "This could be due to missing permissions or a temporary problem. Please try "
@@ -3419,18 +3427,6 @@ msgctxt "structureTourText"
 msgid ""
 "Shows a structured list of all blocks on the current page. Click on any "
 "block to quickly jump to it."
-msgstr ""
-
-msgctxt "styleguideFilterPlaceholder"
-msgid "Filter components"
-msgstr ""
-
-msgctxt "styleguideNoMatches"
-msgid "No components match this filter."
-msgstr ""
-
-msgctxt "styleguidePickComponent"
-msgid "Pick a component to inspect."
 msgstr ""
 
 msgctxt "suffix"
@@ -3680,6 +3676,10 @@ msgstr ""
 
 msgctxt "translateNotTranslatable"
 msgid "This block type is not translatable."
+msgstr ""
+
+msgctxt "translation"
+msgid "Translation"
 msgstr ""
 
 msgctxt "translationOutdatedHint"

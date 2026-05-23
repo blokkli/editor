@@ -1,54 +1,6 @@
 <template>
   <Teleport to="#bk-toolbar-after-title">
-    <PluginTourItem
-      v-if="items.length > 1"
-      id="translations"
-      :title="$t('translations', 'Translations')"
-      :text="
-        $t(
-          'translationsTourText',
-          'Quickly switch between available translations. A greyed out language indicates the content is not yet translated. Clicking on it opens the form to create a new translation for this language.',
-        )
-      "
-    >
-      <div class="bk-translations">
-        <button
-          v-if="isDropdown"
-          class="bk-toolbar-button"
-          :class="{ 'bk-is-active': isOpen }"
-          @click.stop.prevent="isOpen = !isOpen"
-        >
-          {{ activeLangcode }}
-        </button>
-        <div
-          v-if="isOpen || !isDropdown"
-          :class="
-            isDropdown
-              ? 'bk-translations-dropdown'
-              : 'bk-blokkli-item-options-radios bk-is-language'
-          "
-        >
-          <label
-            v-for="item in items"
-            :key="item.id"
-            class="group/tooltip"
-            :class="{ 'bk-is-muted': !item.translation?.exists }"
-          >
-            <div>
-              <input
-                type="radio"
-                :checked="item.checked"
-                :value="item.id"
-                name="pb_language"
-                @click.stop.prevent="onClick(item, $event)"
-              />
-              <span>{{ item.code }}</span>
-              <Tooltip v-show="!isOpen" :label="item.label" class="w-full" />
-            </div>
-          </label>
-        </div>
-      </div>
-    </PluginTourItem>
+    <LanguageSwitcher :active-language />
   </Teleport>
 
   <Teleport to="#bk-banner-list">
@@ -133,16 +85,17 @@ import {
   defineAsyncComponent,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
-import { PluginItemAction, PluginTourItem } from '#blokkli/editor/plugins'
+import { PluginItemAction } from '#blokkli/editor/plugins'
 import {
   defineMenuButton,
   defineHighlight,
   onBlokkliEvent,
   useDialog,
 } from '#blokkli/editor/composables'
-import type { EntityTranslation, Language } from '#blokkli/editor/types/state'
-import { BlokkliTransition, Tooltip } from '#blokkli/editor/components'
+import type { Language } from '#blokkli/editor/types/state'
+import { BlokkliTransition } from '#blokkli/editor/components'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
+import LanguageSwitcher from './LanguageSwitcher/index.vue'
 
 const CsvDialog = defineAsyncComponent(() => import('./CsvDialog/index.vue'))
 const TranslateDialog = defineAsyncComponent(
@@ -210,22 +163,6 @@ defineHighlight(() => {
     }))
 })
 
-const isOpen = ref(false)
-
-const isDropdown = computed(() => {
-  // Always a dropdown on mobile.
-  if (ui.isMobile.value) {
-    return true
-  }
-
-  // It is a dropdown if all langcodes combined is greater than 15.
-  // That way up to 7 languages with 2-char langcodes are displayed as radio buttons.
-  // This handles cases where langcodes are e.g. 'en-US', 'en-GB', 'de-CH', etc.
-  // In this case it switches to a dropdown. This is better than relying on the number
-  // languages.
-  const allCodes = items.value.map((v) => v.code).join('')
-  return allCodes.length > 15
-})
 const activeLangcode = computed(() => context.value.language)
 const activeLanguage = computed<Language>(() => {
   return (
@@ -236,33 +173,6 @@ const activeLanguage = computed<Language>(() => {
       name: activeLangcode.value,
     }
   )
-})
-
-type TranslationStateItem = {
-  id: string
-  code: string
-  label: string
-  checked: boolean
-  translation?: EntityTranslation
-}
-
-const items = computed<TranslationStateItem[]>(() => {
-  return (state.translation.value.availableLanguages || [])
-    .map((language) => {
-      if (language && language.id) {
-        return {
-          id: language.id,
-          code: language.id.toUpperCase(),
-          label: language.name,
-          checked: context.value.language === language.id,
-          translation: (state.translation.value.translations || []).find(
-            (v) => v.id === language.id,
-          ),
-        }
-      }
-      return null
-    })
-    .filter(falsy)
 })
 
 const translateDisabledReason = computed<false | string>(() => {
@@ -298,17 +208,6 @@ const translateDisabledReason = computed<false | string>(() => {
 
   return false
 })
-
-function onClick(item: TranslationStateItem, event: Event) {
-  if (item.translation?.exists) {
-    return adapter.changeLanguage(item.translation)
-  }
-
-  event.preventDefault()
-  if (item.translation) {
-    eventBus.emit('translateEntity', item.translation)
-  }
-}
 
 const markUpToDateDisabledReason = computed<false | string>(() => {
   const lang = context.value.language
@@ -421,38 +320,3 @@ export default {
   name: 'Translations',
 }
 </script>
-
-<style lang="postcss">
-.bk {
-  .bk-translations {
-    @apply relative text-xs lg:text-sm xl:text-base;
-    .bk-toolbar-button {
-      @apply uppercase h-full font-semibold;
-
-      &.bk-is-active {
-        @apply !bg-white text-mono-900;
-      }
-    }
-    .bk-translations-dropdown {
-      @apply absolute top-full right-0 lg:right-auto lg:left-0 max-w-[300px] bg-white z-toolbar-dropdown shadow-lg;
-
-      label {
-        @apply relative px-15 py-10 block cursor-pointer lg:hover:bg-mono-100 whitespace-nowrap text-sm;
-        &.bk-is-muted {
-          @apply text-mono-400;
-        }
-        > div {
-          @apply flex items-center gap-10 md:gap-20 justify-between;
-          span {
-            @apply font-semibold order-last;
-          }
-        }
-      }
-
-      input {
-        @apply appearance-none opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer;
-      }
-    }
-  }
-}
-</style>

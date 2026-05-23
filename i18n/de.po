@@ -108,6 +108,10 @@ msgctxt "addToLibrary"
 msgid "Add to library"
 msgstr "Zur Bibliothek hinzufügen"
 
+msgctxt "addTranslation"
+msgid "Add translation"
+msgstr "Übersetzung hinzufügen"
+
 msgctxt "advanced"
 msgid "Advanced"
 msgstr "Erweitert"
@@ -3515,6 +3519,10 @@ msgctxt "smoothCurves"
 msgid "Smooth curves"
 msgstr "Glatte Kurven"
 
+msgctxt "sourceLanguage"
+msgid "Source language"
+msgstr "Originalsprache"
+
 msgctxt "stateUnavailableText"
 msgid ""
 "This could be due to missing permissions or a temporary problem. Please try "
@@ -3542,18 +3550,6 @@ msgid ""
 msgstr ""
 "Zeigt eine strukturierte Liste aller Blöcke auf der aktuellen Seite. "
 "Klicken Sie auf einen Block, um ihn auf der Seite anzuzeigen."
-
-msgctxt "styleguideFilterPlaceholder"
-msgid "Filter components"
-msgstr "Komponenten filtern"
-
-msgctxt "styleguideNoMatches"
-msgid "No components match this filter."
-msgstr "Keine Komponenten entsprechen diesem Filter."
-
-msgctxt "styleguidePickComponent"
-msgid "Pick a component to inspect."
-msgstr "Wählen Sie eine Komponente zur Ansicht aus."
 
 msgctxt "suffix"
 msgid "Suffix"
@@ -3824,6 +3820,10 @@ msgstr "Wiederverwendbare Blöcke können hier nicht übersetzt werden."
 msgctxt "translateNotTranslatable"
 msgid "This block type is not translatable."
 msgstr "Dieser Blocktyp ist nicht übersetzbar."
+
+msgctxt "translation"
+msgid "Translation"
+msgstr "Übersetzung"
 
 msgctxt "translationOutdatedHint"
 msgid "The translation is marked as outdated."

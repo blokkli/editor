@@ -107,6 +107,10 @@ msgctxt "addToLibrary"
 msgid "Add to library"
 msgstr ""
 
+msgctxt "addTranslation"
+msgid "Add translation"
+msgstr ""
+
 msgctxt "advanced"
 msgid "Advanced"
 msgstr ""
@@ -3465,6 +3469,10 @@ msgctxt "smoothCurves"
 msgid "Smooth curves"
 msgstr ""
 
+msgctxt "sourceLanguage"
+msgid "Source language"
+msgstr ""
+
 msgctxt "stateUnavailableText"
 msgid ""
 "This could be due to missing permissions or a temporary problem. Please try "
@@ -3492,18 +3500,6 @@ msgid ""
 msgstr ""
 "Zeigt e strukturierti Lischt vo allne Blöck uf dr aktuälle Sitte aa. Klick "
 "uf e belibige Block zum schnäll dohii z'springe."
-
-msgctxt "styleguideFilterPlaceholder"
-msgid "Filter components"
-msgstr ""
-
-msgctxt "styleguideNoMatches"
-msgid "No components match this filter."
-msgstr ""
-
-msgctxt "styleguidePickComponent"
-msgid "Pick a component to inspect."
-msgstr ""
 
 msgctxt "suffix"
 msgid "Suffix"
@@ -3774,6 +3770,10 @@ msgstr "Wiederverwändbari Blöck chönne do nid übersetzt wärde."
 msgctxt "translateNotTranslatable"
 msgid "This block type is not translatable."
 msgstr "Dr Blocktyp isch nid übersetzbar."
+
+msgctxt "translation"
+msgid "Translation"
+msgstr ""
 
 msgctxt "translationOutdatedHint"
 msgid "The translation is marked as outdated."
