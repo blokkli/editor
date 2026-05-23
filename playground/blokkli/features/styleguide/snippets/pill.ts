@@ -1,7 +1,7 @@
 import { h } from '#imports'
 import { defineEditorSnippet } from '#blokkli/editor/composables'
 import Pill from '#blokkli/editor/components/Pill/index.vue'
-import type { ThemeColorName } from './../../../../../global/types/theme'
+import type { ThemeColorName } from './../../../../../src/global/types/theme'
 
 const schemes: ThemeColorName[] = [
   'accent',

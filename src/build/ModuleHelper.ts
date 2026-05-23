@@ -46,6 +46,11 @@ type ModuleHelperResolvers = {
    * Resolver for the app directory.
    */
   app: Resolver
+
+  /**
+   * Resolver for the Nuxt app root dir.
+   */
+  root: Resolver
 }
 
 type ModuleHelperPaths = {
@@ -81,6 +86,7 @@ export class ModuleHelper implements ValidationInterface {
       build: createResolver(nuxt.options.buildDir),
       src: createResolver(nuxt.options.srcDir),
       app: createResolver(nuxt.options.dir.app),
+      root: createResolver(nuxt.options.rootDir),
     }
     this.paths = {
       blokkliBuildDir: this.resolvers.build.resolve('blokkli'),

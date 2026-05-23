@@ -77,12 +77,15 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
   private disabledFeatures = new Set<string>()
 
   private srcFromModule: string
+  private srcFromBlokkliDir: string
 
   constructor(helper: ModuleHelper) {
     super(helper)
     this.srcFromModule = helper.resolvers.module.resolve(
       './runtime/editor/features',
     )
+
+    this.srcFromBlokkliDir = helper.resolvers.root.resolve('./blokkli/features')
   }
 
   public getEnabledFeatures(): ExtractedFeatureDefinition[] {
@@ -102,6 +105,14 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
       },
     )
 
+    const blokkliDirFeatures = await resolveFiles(
+      this.srcFromBlokkliDir,
+      ['*/index.vue'],
+      {
+        followSymbolicLinks: false,
+      },
+    )
+
     const customFeatures = this.helper.options.featureImports
       ? await resolveFiles(
           this.helper.paths.srcDir,
@@ -113,7 +124,9 @@ export class FeatureCollector extends Collector<CollectedFeatureFile> {
       : []
 
     await Promise.all(
-      [...builtinFeatures, ...customFeatures].map((v) => this.addFile(v)),
+      [...builtinFeatures, ...blokkliDirFeatures, ...customFeatures].map((v) =>
+        this.addFile(v),
+      ),
     )
 
     const features = [...this.files.values()]

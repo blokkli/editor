@@ -25,6 +25,7 @@ import { ThemeData } from './build/ThemeData'
 import { BlockCollector } from './build/Collector/Blocks'
 import { mangleVueSFC } from './build/mangleTransform'
 import type { Blokkli } from './modules/defineBlokkliModule'
+import * as path from 'node:path'
 
 const logger = useLogger('@blokkli/editor')
 
@@ -213,6 +214,10 @@ export default defineNuxtModule<ModuleOptions>({
     const blokkliModulesDir = resolve(nuxt.options.rootDir, 'blokkli/modules')
     helper.addAppTsInclude(join(blokkliModulesDir, '*/app'))
     helper.addServerTsInclude(join(blokkliModulesDir, '*/server'))
+
+    const blokkliFeaturesDir =
+      helper.resolvers.root.resolve('./blokkli/features')
+    context.addContentPath(blokkliFeaturesDir)
 
     nuxt.hook('nitro:config', (nitroConfig) => {
       nitroConfig.publicAssets ||= []

@@ -2,7 +2,7 @@ import { h } from '#imports'
 import { defineEditorSnippet } from '#blokkli/editor/composables'
 import Button from '#blokkli/editor/components/Button/index.vue'
 import { Icon } from '#blokkli/editor/components'
-import type { ThemeColorName } from './../../../../../global/types/theme'
+import type { ThemeColorName } from './../../../../../src/global/types/theme'
 
 const schemes: ThemeColorName[] = [
   'accent',

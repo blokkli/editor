@@ -1,5 +1,5 @@
 import { defineEditorSnippet } from '#blokkli/editor/composables'
-import StoryColors from './StoryColors.vue'
+import StoryColors from './StoryColors.story.vue'
 
 export default defineEditorSnippet({
   id: 'avatar',
