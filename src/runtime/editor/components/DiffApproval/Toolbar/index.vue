@@ -110,6 +110,8 @@
                 'Reason for rejection (optional)',
               )
             "
+            @keydown.stop
+            @keyup.stop
             @input="onReasonInput"
           />
         </div>

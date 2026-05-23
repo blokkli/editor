@@ -180,7 +180,7 @@ defineMenuButton(() => {
   }
   return {
     id: 'templates',
-    title: $t('templates', 'Templates', { more: true }),
+    title: $t('templates', 'Templates'),
     weight: -100,
     description: $t(
       'templatesMenuDescription',

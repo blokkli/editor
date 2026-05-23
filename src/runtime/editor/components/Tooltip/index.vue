@@ -3,7 +3,7 @@
     class="text-white text-sm select-none pointer-events-none leading-none whitespace-nowrap min-h-40 font-sans flex flex-col justify-center rounded"
     :class="{
       '!min-h-25 !px-5 !py-3': small,
-      'absolute invisible group-hover/tooltip:visible bg-mono-800/90 p-10':
+      'absolute invisible group-hover/tooltip:visible bg-mono-800/95 p-10':
         placement !== 'inline',
       'top-full mt-5': placement.startsWith('below-'),
       'bottom-full mb-5': placement.startsWith('above-'),
