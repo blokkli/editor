@@ -1,6 +1,6 @@
 import { Session } from '../Session'
 import type { ServerToolMetadata } from '../../../shared/types'
-import { validateToken, TOKEN_EXPIRY_SECONDS } from '../../helpers'
+import { validateToken, TOKEN_EXPIRY_SECONDS } from '../../helpers/security'
 
 const SESSION_IDLE_TIMEOUT_MS = 5 * 60 * 1000
 

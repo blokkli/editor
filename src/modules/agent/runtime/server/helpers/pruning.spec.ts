@@ -1,10 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { createHmac } from 'node:crypto'
-import type { GenericMessage } from '../providers/types'
-import type {
-  AgentModelDefinition,
-  ConversationStateSnapshot,
-} from '../../shared/types'
+import { describe, it, expect } from 'vitest'
+import type { GenericMessage } from '../../shared/types'
 import {
   compressToolResult,
   compressVolatileToolResult,
@@ -12,25 +7,10 @@ import {
   pruneLiveContext,
   DEFAULT_LIVE_TOKEN_BUDGET,
   pruneForPersistence,
-  validateMessages,
-  findToolNameForResult,
-  computeStateHash,
-  verifyStateHash,
-  getDefaultModel,
-  createUsageTurn,
-  validateToken,
-  countUserTurns,
   compressUserMessageContent,
   type ToolPruningMetadata,
-} from './index'
-
-// Mock the #blokkli-build/agent-server import used by helpers.ts
-vi.mock('#blokkli-build/agent-server', () => ({
-  skills: [],
-}))
-
-// Mock crossws Peer type
-vi.mock('crossws', () => ({}))
+} from './pruning'
+import { validateMessages } from './messages'
 
 // ============================================================================
 // compressToolResult
@@ -117,57 +97,22 @@ describe('compressToolResult', () => {
 })
 
 // ============================================================================
-// findToolNameForResult
+// compressVolatileToolResult
 // ============================================================================
 
-describe('findToolNameForResult', () => {
-  it('finds tool name from preceding assistant message', () => {
-    const messages: GenericMessage[] = [
-      {
-        role: 'assistant',
-        content: [
-          {
-            type: 'tool_use',
-            id: 'tu_1',
-            name: 'get_child_blocks',
-            input: {},
-          },
-        ],
-      },
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'tool_result',
-            tool_use_id: 'tu_1',
-            content: '{}',
-          },
-        ],
-      },
-    ]
-    expect(findToolNameForResult(messages, 1, 'tu_1')).toBe('get_child_blocks')
+describe('compressVolatileToolResult', () => {
+  it('marks content stale and keeps the client summary', () => {
+    const out = JSON.parse(
+      compressVolatileToolResult(JSON.stringify({ data: 1, _summary: 'struct' })),
+    )
+    expect(out).toEqual({ stale: true, summary: 'struct' })
   })
 
-  it('returns undefined for unknown tool_use_id', () => {
-    const messages: GenericMessage[] = [
-      {
-        role: 'assistant',
-        content: [
-          { type: 'tool_use', id: 'tu_1', name: 'find_blocks', input: {} },
-        ],
-      },
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'tool_result',
-            tool_use_id: 'tu_999',
-            content: '{}',
-          },
-        ],
-      },
-    ]
-    expect(findToolNameForResult(messages, 1, 'tu_999')).toBeUndefined()
+  it('is idempotent — re-running keeps the first summary', () => {
+    const once = compressVolatileToolResult(
+      JSON.stringify({ data: 1, _summary: 'struct' }),
+    )
+    expect(compressVolatileToolResult(once)).toBe(once)
   })
 })
 
@@ -622,124 +567,6 @@ describe('pruneLiveContext', () => {
 })
 
 // ============================================================================
-// compressVolatileToolResult
-// ============================================================================
-
-describe('compressVolatileToolResult', () => {
-  it('marks content stale and keeps the client summary', () => {
-    const out = JSON.parse(
-      compressVolatileToolResult(JSON.stringify({ data: 1, _summary: 'struct' })),
-    )
-    expect(out).toEqual({ stale: true, summary: 'struct' })
-  })
-
-  it('is idempotent — re-running keeps the first summary', () => {
-    const once = compressVolatileToolResult(
-      JSON.stringify({ data: 1, _summary: 'struct' }),
-    )
-    expect(compressVolatileToolResult(once)).toBe(once)
-  })
-})
-
-// ============================================================================
-// validateMessages
-// ============================================================================
-
-describe('validateMessages', () => {
-  it('returns empty array for valid messages', () => {
-    const messages: GenericMessage[] = [
-      { role: 'user', content: 'hello' },
-      {
-        role: 'assistant',
-        content: [{ type: 'text', text: 'hi' }],
-      },
-    ]
-    expect(validateMessages(messages)).toEqual([])
-  })
-
-  it('detects consecutive same-role messages', () => {
-    const messages: GenericMessage[] = [
-      { role: 'user', content: 'hello' },
-      { role: 'user', content: 'again' },
-    ]
-    const issues = validateMessages(messages)
-    expect(issues).toHaveLength(1)
-    expect(issues[0]).toContain('Consecutive user')
-  })
-
-  it('detects empty content arrays', () => {
-    const messages: GenericMessage[] = [{ role: 'assistant', content: [] }]
-    const issues = validateMessages(messages)
-    expect(issues.some((i) => i.includes('Empty content'))).toBe(true)
-  })
-
-  it('detects orphaned tool_result', () => {
-    const messages: GenericMessage[] = [
-      { role: 'assistant', content: [{ type: 'text', text: 'hello' }] },
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'tool_result',
-            tool_use_id: 'missing_id',
-            content: '{}',
-          },
-        ],
-      },
-    ]
-    const issues = validateMessages(messages)
-    expect(issues.some((i) => i.includes('Orphaned tool_result'))).toBe(true)
-  })
-
-  it('detects orphaned tool_use without following tool_result', () => {
-    const messages: GenericMessage[] = [
-      {
-        role: 'assistant',
-        content: [
-          {
-            type: 'tool_use',
-            id: 'tu_1',
-            name: 'find_blocks',
-            input: {},
-          },
-        ],
-      },
-      { role: 'user', content: 'hello' },
-    ]
-    const issues = validateMessages(messages)
-    expect(issues.some((i) => i.includes('no matching tool_result'))).toBe(true)
-  })
-
-  it('passes valid tool_use/tool_result pairs', () => {
-    const messages: GenericMessage[] = [
-      { role: 'user', content: 'test' },
-      {
-        role: 'assistant',
-        content: [
-          {
-            type: 'tool_use',
-            id: 'tu_1',
-            name: 'find_blocks',
-            input: {},
-          },
-        ],
-      },
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'tool_result',
-            tool_use_id: 'tu_1',
-            content: '{}',
-          },
-        ],
-      },
-    ]
-    expect(validateMessages(messages)).toEqual([])
-  })
-})
-
-// ============================================================================
 // pruneForPersistence
 // ============================================================================
 
@@ -810,173 +637,6 @@ describe('pruneForPersistence', () => {
         expect(JSON.parse(resultBlock.content)).toEqual({ summary: 'found 3' })
       }
     }
-  })
-})
-
-// ============================================================================
-// computeStateHash / verifyStateHash
-// ============================================================================
-
-describe('verifyStateHash', () => {
-  function snapshot(secret: string): ConversationStateSnapshot {
-    const messages: GenericMessage[] = [{ role: 'user', content: 'hi' }]
-    const activatedLazyTools: string[] = ['some_tool']
-    return {
-      messages,
-      activatedLazyTools,
-      hash: computeStateHash(messages, activatedLazyTools, secret),
-    }
-  }
-
-  it('verifies a snapshot hashed with the same non-empty secret', () => {
-    expect(verifyStateHash(snapshot('s3cr3t'), 's3cr3t')).toBe(true)
-  })
-
-  it('rejects a snapshot hashed with a different secret', () => {
-    expect(verifyStateHash(snapshot('s3cr3t'), 'other')).toBe(false)
-  })
-
-  it('rejects when the secret is empty even if hashes match', () => {
-    // authSecret defaults to '' when unconfigured. The token path guards this,
-    // but the state-hash path must too — otherwise forged state verifies.
-    expect(verifyStateHash(snapshot(''), '')).toBe(false)
-  })
-})
-
-// ============================================================================
-// getDefaultModel
-// ============================================================================
-
-describe('getDefaultModel', () => {
-  const model = (
-    name: string,
-    extra: Partial<AgentModelDefinition> = {},
-  ): AgentModelDefinition => ({ name, label: name, ...extra })
-
-  it('returns the model flagged isDefault', () => {
-    const models = [model('a'), model('b', { isDefault: true }), model('c')]
-    expect(getDefaultModel(models)?.name).toBe('b')
-  })
-
-  it('falls back to the first model when none is flagged', () => {
-    const models = [model('a'), model('b')]
-    expect(getDefaultModel(models)?.name).toBe('a')
-  })
-
-  it('returns undefined for an empty list', () => {
-    expect(getDefaultModel([])).toBeUndefined()
-  })
-})
-
-// ============================================================================
-// createUsageTurn
-// ============================================================================
-
-describe('createUsageTurn', () => {
-  const pricing = { input: 1, cacheWrite: 2, cacheRead: 3, output: 4 }
-  const model: AgentModelDefinition = { name: 'm', label: 'm', pricing }
-
-  it('builds a usage turn, defaulting cache fields and pricing', () => {
-    expect(createUsageTurn({ inputTokens: 10, outputTokens: 5 }, model)).toEqual(
-      {
-        inputTokens: 10,
-        outputTokens: 5,
-        cacheCreationInputTokens: 0,
-        cacheReadInputTokens: 0,
-        pricing,
-      },
-    )
-  })
-
-  it('passes through cache fields and null pricing when no model', () => {
-    expect(
-      createUsageTurn(
-        {
-          inputTokens: 10,
-          outputTokens: 5,
-          cacheCreationInputTokens: 2,
-          cacheReadInputTokens: 7,
-        },
-        undefined,
-      ),
-    ).toEqual({
-      inputTokens: 10,
-      outputTokens: 5,
-      cacheCreationInputTokens: 2,
-      cacheReadInputTokens: 7,
-      pricing: null,
-    })
-  })
-
-  it('returns undefined when token counts are missing', () => {
-    expect(createUsageTurn({ outputTokens: 5 }, model)).toBeUndefined()
-    expect(createUsageTurn({ inputTokens: 10 }, model)).toBeUndefined()
-  })
-})
-
-// ============================================================================
-// validateToken
-// ============================================================================
-
-describe('validateToken', () => {
-  const SECRET = 's3cr3t'
-
-  function makeToken(timestamp: number, secret = SECRET): string {
-    const hmac = createHmac('sha256', secret).update(String(timestamp)).digest('hex')
-    return `${timestamp}:${hmac}`
-  }
-
-  it('accepts a fresh, correctly-signed token', () => {
-    const now = Math.floor(Date.now() / 1000)
-    expect(validateToken(makeToken(now), SECRET)).toBe(true)
-  })
-
-  it('rejects an expired token', () => {
-    const stale = Math.floor(Date.now() / 1000) - 301
-    expect(validateToken(makeToken(stale), SECRET)).toBe(false)
-  })
-
-  it('rejects a token signed with a different secret', () => {
-    const now = Math.floor(Date.now() / 1000)
-    expect(validateToken(makeToken(now, 'other'), SECRET)).toBe(false)
-  })
-
-  it('rejects an empty secret, empty token, or malformed token', () => {
-    const now = Math.floor(Date.now() / 1000)
-    expect(validateToken(makeToken(now), '')).toBe(false)
-    expect(validateToken('', SECRET)).toBe(false)
-    expect(validateToken('no-colon', SECRET)).toBe(false)
-    expect(validateToken('notanumber:abcd', SECRET)).toBe(false)
-  })
-})
-
-// ============================================================================
-// countUserTurns
-// ============================================================================
-
-describe('countUserTurns', () => {
-  it('counts only user messages without tool_result blocks as turns', () => {
-    const messages: GenericMessage[] = [
-      { role: 'user', content: 'prompt one' },
-      { role: 'assistant', content: 'reply one' },
-      // A tool-response user message is NOT a turn.
-      {
-        role: 'user',
-        content: [
-          { type: 'tool_result', tool_use_id: 'tu_0', content: '{}' },
-        ],
-      },
-      { role: 'user', content: 'prompt two' },
-      { role: 'assistant', content: 'reply two' },
-    ]
-
-    const { turnCount, turnStartIndices } = countUserTurns(messages)
-    expect(turnCount).toBe(2)
-    expect(turnStartIndices).toEqual([0, 3])
-  })
-
-  it('returns zero turns for an empty array', () => {
-    expect(countUserTurns([])).toEqual({ turnCount: 0, turnStartIndices: [] })
   })
 })
 

@@ -1,10 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { StreamAccumulator } from './index'
-
-// StreamAccumulator imports transformText from helpers.ts, which pulls in the
-// build-generated skills module — stub it (mirrors helpers.spec.ts).
-vi.mock('#blokkli-build/agent-server', () => ({ skills: [] }))
-vi.mock('crossws', () => ({}))
 
 describe('StreamAccumulator', () => {
   it('assembles a text block from multiple deltas', () => {

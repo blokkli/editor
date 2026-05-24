@@ -1,5 +1,5 @@
 import type { GenericContentBlock } from '../../../shared/types'
-import { transformText } from '../../helpers'
+import { transformText } from '../../helpers/text'
 
 /**
  * The outcome of finalizing a streamed tool_use block.

@@ -1,291 +1,38 @@
-import type { Peer } from 'crossws'
-import { createHmac, timingSafeEqual } from 'node:crypto'
-import type {
-  AgentErrorType,
-  AgentModelDefinition,
-  ConversationStateSnapshot,
-  PageContext,
-  ServerMessage,
-  GenericMessage,
-  GenericContentBlock,
-  UsageTurn,
-} from '../../shared/types'
-import type { ResolvedSkill, SkillDefinition } from '../skills/types'
-import { skills } from '#blokkli-build/agent-server'
+import type { GenericMessage, GenericContentBlock } from '../../shared/types'
+import {
+  isToolResultOnly,
+  findToolNameForResult,
+  countUserTurns,
+} from './messages'
 
-export function send(peer: Peer, message: ServerMessage): void {
-  peer.send(JSON.stringify(message))
-}
+/**
+ * Conversation pruning: shrink the message history sent to the LLM to bound
+ * token cost. Three entry points share the same compression primitives:
+ * - `pruneMessages` — age ceiling (keyed on user turns), run once per turn.
+ * - `pruneLiveContext` — size ceiling (token budget), run between tool rounds.
+ * - `pruneForPersistence` — pure deep-clone variant for storage.
+ *
+ * See PRUNING_REFACTOR.md for why these currently mutate in place.
+ */
 
 /** Number of recent turns to keep uncompressed when pruning messages */
 export const KEEP_RECENT_TURNS = 8
 
-/**
- * Returns true when a message is a tool-result relay (`{role:'user',
- * content:[tool_result, ...]}`) rather than a real user turn. The protocol
- * encodes tool results as user-role messages, so distinguishing them is
- * required wherever we count "real" user turns — pruning, persistence,
- * rollback indexing.
- */
-export function isToolResultOnly(msg: GenericMessage): boolean {
-  if (msg.role !== 'user') return false
-  const content = msg.content
-  if (!Array.isArray(content) || content.length === 0) return false
-  return content.some(
-    (block) =>
-      typeof block === 'object' &&
-      block !== null &&
-      'type' in block &&
-      block.type === 'tool_result',
-  )
-}
+/** Number of recent turns to keep when pruning for persistence */
+const PERSISTENCE_KEEP_TURNS = 7
 
 /**
- * Resolve a skill label to a string, optionally using the given language.
+ * Estimated token budget for full tool-result content kept in the live (in-loop)
+ * context. Tunable. The newest tool-result round is always kept full regardless,
+ * so this caps the *older* results, not the freshly-read one.
  */
-export function resolveSkillLabel(
-  label: SkillDefinition['label'],
-  language?: string,
-): string {
-  if (typeof label === 'string') return label
-  if (language && language in label) {
-    return label[language as keyof typeof label] || label.en
-  }
-  return label.en
-}
-
-/**
- * Resolve skills for the given page context.
- * Calls getContents on each skill and filters out nulls.
- */
-export function resolveSkills(context: PageContext): ResolvedSkill[] {
-  return skills
-    .map((skill) => {
-      const content = skill.getContents(context)
-      if (content === null) return null
-      return {
-        name: skill.name,
-        label: resolveSkillLabel(skill.label, context.interfaceLanguage),
-        englishLabel: resolveSkillLabel(skill.label),
-        description: skill.description,
-        content,
-        tools: skill.tools ?? [],
-      }
-    })
-    .filter((s): s is ResolvedSkill => s !== null)
-}
-
-/**
- * Transform text before sending to client or storing in conversation.
- * Replaces ß with ss for Swiss German audiences.
- */
-export function transformText(text: string): string {
-  return text.replace(/ß/g, 'ss')
-}
-
-/**
- * Classify an API error into a structured error with type, message, and detail.
- * Works with both Anthropic and OpenAI SDK errors (both use HTTP status codes).
- */
-export function classifyError(error: unknown): {
-  errorType: AgentErrorType
-  message: string
-  detail?: string
-} {
-  if (!(error instanceof Error)) {
-    return {
-      errorType: 'unknown',
-      message: 'An unexpected error occurred.',
-    }
-  }
-
-  const detail = error.message || undefined
-
-  // Both Anthropic and OpenAI SDK APIError classes expose .status
-  const status = (error as Error & { status?: number }).status
-
-  // Connection errors have no status (e.g. APIConnectionError in both SDKs)
-  if (status === undefined) {
-    if (error.constructor.name === 'APIConnectionError') {
-      return {
-        errorType: 'connection',
-        message: 'Could not connect to the AI service.',
-        detail,
-      }
-    }
-    return {
-      errorType: 'unknown',
-      message: error.message || 'An unexpected error occurred.',
-      detail,
-    }
-  }
-
-  // Map by HTTP status code (works for both Anthropic and OpenAI)
-  switch (status) {
-    case 401:
-      return {
-        errorType: 'authentication',
-        message: 'API authentication failed. Please check your API key.',
-        detail,
-      }
-    case 400:
-      return {
-        errorType: 'bad_request',
-        message: 'The request to the AI service was invalid.',
-        detail,
-      }
-    case 404:
-      return {
-        errorType: 'not_found',
-        message:
-          'The configured AI model was not found. Please check the configuration.',
-        detail,
-      }
-    case 429:
-      return {
-        errorType: 'rate_limit',
-        message:
-          'Rate limit exceeded. Please wait a moment before trying again.',
-        detail,
-      }
-    case 529:
-    case 503:
-      return {
-        errorType: 'overloaded',
-        message:
-          'The AI service is currently overloaded. Please try again in a moment.',
-        detail,
-      }
-    default:
-      return {
-        errorType: 'unknown',
-        message: `API error (${status}).`,
-        detail,
-      }
-  }
-}
-
-// ============================================================================
-// Auth tokens
-// ============================================================================
-
-/** Seconds an agent auth token remains valid after issuance. */
-export const TOKEN_EXPIRY_SECONDS = 300
-
-/**
- * Validate an HMAC auth token: well-formed `<timestamp>:<hmac>`, not expired,
- * and HMAC matches. Does NOT track one-time use — `SessionManager` layers its
- * replay check on top. Returns false (never throws) on any malformed input.
- */
-export function validateToken(token: string, secret: string): boolean {
-  if (!secret || !token) return false
-
-  const colonIndex = token.indexOf(':')
-  if (colonIndex === -1) return false
-
-  const timestampStr = token.substring(0, colonIndex)
-  const providedHmac = token.substring(colonIndex + 1)
-
-  const timestamp = parseInt(timestampStr, 10)
-  if (isNaN(timestamp)) return false
-
-  const now = Math.floor(Date.now() / 1000)
-  if (Math.abs(now - timestamp) > TOKEN_EXPIRY_SECONDS) return false
-
-  const expectedHmac = createHmac('sha256', secret)
-    .update(timestampStr)
-    .digest('hex')
-
-  if (providedHmac.length !== expectedHmac.length) return false
-
-  try {
-    return timingSafeEqual(
-      Buffer.from(providedHmac, 'hex'),
-      Buffer.from(expectedHmac, 'hex'),
-    )
-  } catch {
-    return false
-  }
-}
-
-// ============================================================================
-// Models & usage
-// ============================================================================
-
-/**
- * The model used for the main agent loop: the one flagged `isDefault`, or the
- * first configured model as a fallback.
- */
-export function getDefaultModel(
-  models: AgentModelDefinition[],
-): AgentModelDefinition | undefined {
-  return models.find((m) => m.isDefault) || models[0]
-}
-
-/**
- * Build a `UsageTurn` from a provider `message_end` event and the model that
- * produced it (for pricing). Returns undefined when token counts are absent,
- * so callers can skip emitting a usage message.
- */
-export function createUsageTurn(
-  event: {
-    inputTokens?: number
-    outputTokens?: number
-    cacheCreationInputTokens?: number
-    cacheReadInputTokens?: number
-  },
-  model: AgentModelDefinition | null | undefined,
-): UsageTurn | undefined {
-  if (event.inputTokens === undefined || event.outputTokens === undefined) {
-    return undefined
-  }
-  return {
-    inputTokens: event.inputTokens,
-    outputTokens: event.outputTokens,
-    cacheCreationInputTokens: event.cacheCreationInputTokens ?? 0,
-    cacheReadInputTokens: event.cacheReadInputTokens ?? 0,
-    pricing: model?.pricing ?? null,
-  }
-}
-
-// ============================================================================
-// Pruning Types
-// ============================================================================
+export const DEFAULT_LIVE_TOKEN_BUDGET = 6000
 
 /**
  * Metadata about a tool used during message pruning.
  */
 export type ToolPruningMetadata = {
   volatile?: boolean
-}
-
-// ============================================================================
-// Pruning Helpers
-// ============================================================================
-
-/**
- * Find the tool name for a tool_result block by looking up the matching
- * tool_use block in the preceding assistant message.
- */
-export function findToolNameForResult(
-  messages: GenericMessage[],
-  userMsgIndex: number,
-  toolUseId: string,
-): string | undefined {
-  // The assistant message with the matching tool_use should be immediately before
-  for (let i = userMsgIndex - 1; i >= 0; i--) {
-    const msg = messages[i]
-    if (!msg) continue
-    if (msg.role !== 'assistant' || !Array.isArray(msg.content)) continue
-    for (const block of msg.content) {
-      if (block.type === 'tool_use' && block.id === toolUseId) {
-        return block.name
-      }
-    }
-    // Only check the immediately preceding assistant message
-    break
-  }
-  return undefined
 }
 
 /**
@@ -389,30 +136,6 @@ function hasMutationBetween(
     }
   }
   return false
-}
-
-/**
- * Count "real" user turns and record where each starts.
- *
- * A "turn" is a user message that contains actual user text — NOT a tool-response
- * message (one carrying `tool_result` blocks). Shared by both prune functions,
- * which use the turn boundaries to decide how much recent history to keep intact.
- */
-export function countUserTurns(messages: GenericMessage[]): {
-  turnCount: number
-  turnStartIndices: number[]
-} {
-  let turnCount = 0
-  const turnStartIndices: number[] = []
-  for (let i = 0; i < messages.length; i++) {
-    const msg = messages[i]
-    if (!msg) continue
-    if (msg.role === 'user' && !isToolResultOnly(msg)) {
-      turnCount++
-      turnStartIndices.push(i)
-    }
-  }
-  return { turnCount, turnStartIndices }
 }
 
 /**
@@ -524,13 +247,6 @@ export function pruneMessages(
 }
 
 /**
- * Estimated token budget for full tool-result content kept in the live (in-loop)
- * context. Tunable. The newest tool-result round is always kept full regardless,
- * so this caps the *older* results, not the freshly-read one.
- */
-export const DEFAULT_LIVE_TOKEN_BUDGET = 6000
-
-/**
  * Prune the live (in-loop) conversation context to bound per-round token cost.
  *
  * Unlike `pruneMessages` (age-based, keyed on user turns, run once per turn),
@@ -638,13 +354,6 @@ export function pruneLiveContext(
   }
 }
 
-// ============================================================================
-// Persistence Helpers
-// ============================================================================
-
-/** Number of recent turns to keep when pruning for persistence */
-const PERSISTENCE_KEEP_TURNS = 7
-
 /**
  * Create a deep-cloned, aggressively pruned copy of messages for persistence.
  * Does NOT mutate the original array.
@@ -717,122 +426,4 @@ export function pruneForPersistence(
   }
 
   return trimmed
-}
-
-/**
- * Compute an HMAC-SHA256 hash for a conversation state snapshot.
- */
-export function computeStateHash(
-  messages: GenericMessage[],
-  activatedLazyTools: string[],
-  secret: string,
-): string {
-  const payload =
-    JSON.stringify(messages) + '|' + JSON.stringify(activatedLazyTools)
-  return createHmac('sha256', secret).update(payload).digest('hex')
-}
-
-/**
- * Verify the HMAC hash of a conversation state snapshot.
- * Uses timing-safe comparison to prevent timing attacks.
- */
-export function verifyStateHash(
-  snapshot: ConversationStateSnapshot,
-  secret: string,
-): boolean {
-  // Fail closed when no secret is configured. An empty secret still produces a
-  // deterministic HMAC that the client could reproduce, so without this guard
-  // forged conversation state would verify. Mirrors the auth-token path, which
-  // also rejects on `!authSecret`.
-  if (!secret) return false
-
-  const expected = computeStateHash(
-    snapshot.messages,
-    snapshot.activatedLazyTools,
-    secret,
-  )
-  if (expected.length !== snapshot.hash.length) return false
-  try {
-    return timingSafeEqual(
-      Buffer.from(expected, 'hex'),
-      Buffer.from(snapshot.hash, 'hex'),
-    )
-  } catch {
-    return false
-  }
-}
-
-// ============================================================================
-// Message Validation
-// ============================================================================
-
-/**
- * Validate message array for issues that would cause API errors.
- * Returns an array of issue descriptions (empty if valid).
- */
-export function validateMessages(messages: GenericMessage[]): string[] {
-  const issues: string[] = []
-
-  for (let i = 0; i < messages.length; i++) {
-    const msg = messages[i]
-    if (!msg) continue
-
-    // Check for consecutive same-role messages
-    const prevMsg = i > 0 ? messages[i - 1] : undefined
-    if (prevMsg && prevMsg.role === msg.role) {
-      issues.push(
-        `Consecutive ${msg.role} messages at indices ${i - 1} and ${i}`,
-      )
-    }
-
-    // Check for empty content
-    if (Array.isArray(msg.content) && msg.content.length === 0) {
-      issues.push(`Empty content array in ${msg.role} message at index ${i}`)
-    }
-
-    // Check for orphaned tool_result (no matching tool_use in preceding assistant)
-    if (msg.role === 'user' && Array.isArray(msg.content)) {
-      for (const block of msg.content) {
-        if (block.type === 'tool_result') {
-          const toolName = findToolNameForResult(messages, i, block.tool_use_id)
-          if (!toolName) {
-            issues.push(
-              `Orphaned tool_result for ${block.tool_use_id} at message index ${i}`,
-            )
-          }
-        }
-      }
-    }
-
-    // Check for orphaned tool_use (no matching tool_result in following user message)
-    if (msg.role === 'assistant' && Array.isArray(msg.content)) {
-      for (const block of msg.content) {
-        if (block.type === 'tool_use') {
-          const nextMsg = messages[i + 1]
-          if (!nextMsg || nextMsg.role !== 'user') {
-            issues.push(
-              `tool_use "${block.name}" (${block.id}) at message index ${i} has no following user message`,
-            )
-            continue
-          }
-          if (!Array.isArray(nextMsg.content)) {
-            issues.push(
-              `tool_use "${block.name}" (${block.id}) at message index ${i} has no matching tool_result`,
-            )
-            continue
-          }
-          const hasResult = nextMsg.content.some(
-            (b) => b.type === 'tool_result' && b.tool_use_id === block.id,
-          )
-          if (!hasResult) {
-            issues.push(
-              `tool_use "${block.name}" (${block.id}) at message index ${i} has no matching tool_result`,
-            )
-          }
-        }
-      }
-    }
-  }
-
-  return issues
 }

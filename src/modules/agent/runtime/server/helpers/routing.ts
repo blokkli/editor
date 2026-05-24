@@ -1,5 +1,5 @@
 import { provider, models } from '#blokkli-build/agent-server'
-import { createUsageTurn } from './index'
+import { createUsageTurn } from './models'
 import type { ResolvedSkill } from '../skills/types'
 import type { AgentModelDefinition, UsageTurn } from '../../shared/types'
 

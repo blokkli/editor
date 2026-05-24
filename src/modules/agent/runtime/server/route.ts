@@ -1,7 +1,7 @@
 import { defineEventHandler, readBody, useRuntimeConfig } from '#imports'
 import { toolDefinitions } from '#blokkli-build/agent-server'
 import type { PageContext, UsageTurn } from '../shared/types'
-import { resolveSkills } from './helpers'
+import { resolveSkills } from './helpers/skills'
 import { preprocessPrompt } from './helpers/routing'
 
 const config = useRuntimeConfig()

@@ -7,7 +7,8 @@ import {
 import { provider, models, skills } from '#blokkli-build/agent-server'
 import { FieldStreamParser, type ParserEvent } from './classes/FieldStreamParser'
 import { resolveTemplate, type TemplateCall } from './templates'
-import { validateToken, getDefaultModel, createUsageTurn } from './helpers'
+import { validateToken } from './helpers/security'
+import { getDefaultModel, createUsageTurn } from './helpers/models'
 import type { UsageTurn } from '../shared/types'
 
 const config = useRuntimeConfig()
