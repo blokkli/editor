@@ -1,7 +1,7 @@
 import type { Peer, Message } from 'crossws'
 import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
 import { clientMessageSchema } from '../shared/types'
-import { SessionManager } from './SessionManager'
+import { SessionManager } from './classes/SessionManager'
 import { send } from './helpers'
 import { toolDefinitions } from '#blokkli-build/agent-server'
 

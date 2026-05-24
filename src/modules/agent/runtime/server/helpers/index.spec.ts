@@ -1,13 +1,16 @@
 import { describe, it, expect, vi } from 'vitest'
 import { createHmac } from 'node:crypto'
-import type { GenericMessage } from './providers/types'
+import type { GenericMessage } from '../providers/types'
 import type {
   AgentModelDefinition,
   ConversationStateSnapshot,
-} from '../shared/types'
+} from '../../shared/types'
 import {
   compressToolResult,
+  compressVolatileToolResult,
   pruneMessages,
+  pruneLiveContext,
+  DEFAULT_LIVE_TOKEN_BUDGET,
   pruneForPersistence,
   validateMessages,
   findToolNameForResult,
@@ -19,7 +22,7 @@ import {
   countUserTurns,
   compressUserMessageContent,
   type ToolPruningMetadata,
-} from './helpers'
+} from './index'
 
 // Mock the #blokkli-build/agent-server import used by helpers.ts
 vi.mock('#blokkli-build/agent-server', () => ({
@@ -375,6 +378,266 @@ describe('pruneMessages', () => {
         expect(parsed.summary).toBeDefined()
       }
     }
+  })
+})
+
+// ============================================================================
+// pruneLiveContext
+// ============================================================================
+
+describe('pruneLiveContext', () => {
+  function userPrompt(text: string): GenericMessage {
+    return { role: 'user', content: text }
+  }
+
+  function toolAssistant(name: string, id: string): GenericMessage {
+    return {
+      role: 'assistant',
+      content: [{ type: 'tool_use', id, name, input: { some: 'input' } }],
+    }
+  }
+
+  /** A tool-result relay whose JSON content is ~`tokens` tokens (≈ tokens*4 chars). */
+  function relay(id: string, tokens: number, summary: string): GenericMessage {
+    return {
+      role: 'user',
+      content: [
+        {
+          type: 'tool_result',
+          tool_use_id: id,
+          content: JSON.stringify({ data: 'x'.repeat(tokens * 4), _summary: summary }),
+        },
+      ],
+    }
+  }
+
+  function mutationRelay(id: string, summary: string): GenericMessage {
+    return {
+      role: 'user',
+      content: [
+        {
+          type: 'tool_result',
+          tool_use_id: id,
+          content: JSON.stringify({ success: true, _summary: summary }),
+        },
+      ],
+    }
+  }
+
+  function parseResult(msg: GenericMessage, blockIndex = 0): any {
+    if (!Array.isArray(msg.content)) throw new Error('expected array content')
+    const block = msg.content[blockIndex]
+    if (!block || block.type !== 'tool_result')
+      throw new Error('expected tool_result')
+    return JSON.parse(block.content)
+  }
+
+  it('keeps the newest relay full even when it alone exceeds the budget', () => {
+    const messages: GenericMessage[] = [
+      userPrompt('go'),
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 500, 'big'),
+    ]
+    pruneLiveContext(messages, new Map(), 10)
+    expect(parseResult(messages[2]).data).toHaveLength(2000)
+  })
+
+  it('compresses older results once cumulative size exceeds the budget', () => {
+    const messages: GenericMessage[] = [
+      userPrompt('go'),
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 30, 's0'),
+      toolAssistant('find', 'tu_1'),
+      relay('tu_1', 30, 's1'),
+      toolAssistant('find', 'tu_2'),
+      relay('tu_2', 30, 's2'),
+    ]
+    // newest (~30) + tu_1 (~60) under 80; tu_0 crosses → compressed.
+    pruneLiveContext(messages, new Map(), 80)
+
+    // Oldest compressed to a summary, two newest kept full.
+    expect(parseResult(messages[2]).data).toBeUndefined()
+    expect(parseResult(messages[2]).summary).toBe('s0')
+    expect(parseResult(messages[4]).data).toBeDefined()
+    expect(parseResult(messages[6]).data).toBeDefined()
+  })
+
+  it('prunes tool_use inputs only for compressed (older) rounds', () => {
+    const messages: GenericMessage[] = [
+      userPrompt('go'),
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 30, 's0'),
+      toolAssistant('find', 'tu_1'),
+      relay('tu_1', 30, 's1'),
+      toolAssistant('find', 'tu_2'),
+      relay('tu_2', 30, 's2'),
+    ]
+    pruneLiveContext(messages, new Map(), 80)
+
+    const oldAsst = messages[1]
+    const keptAsst = messages[3]
+    if (Array.isArray(oldAsst.content) && oldAsst.content[0].type === 'tool_use')
+      expect(oldAsst.content[0].input).toEqual({ _pruned: true })
+    if (
+      Array.isArray(keptAsst.content) &&
+      keptAsst.content[0].type === 'tool_use'
+    )
+      expect(keptAsst.content[0].input).toEqual({ some: 'input' })
+  })
+
+  it('eagerly marks a volatile result stale once a mutation follows it', () => {
+    const metadata = new Map<string, ToolPruningMetadata>([
+      ['get_structure', { volatile: true }],
+    ])
+    const messages: GenericMessage[] = [
+      userPrompt('show'),
+      toolAssistant('get_structure', 'tu_0'),
+      relay('tu_0', 20, 'structure'),
+      toolAssistant('add_blocks', 'tu_1'),
+      mutationRelay('tu_1', 'added'),
+    ]
+    // Generous budget: nothing compressed for size — only the volatile pass acts.
+    pruneLiveContext(messages, metadata, DEFAULT_LIVE_TOKEN_BUDGET)
+    expect(parseResult(messages[2]).stale).toBe(true)
+    expect(parseResult(messages[2]).summary).toBe('structure')
+  })
+
+  it('does NOT mark a volatile result stale when no mutation follows', () => {
+    const metadata = new Map<string, ToolPruningMetadata>([
+      ['get_structure', { volatile: true }],
+    ])
+    const messages: GenericMessage[] = [
+      userPrompt('show'),
+      toolAssistant('get_structure', 'tu_0'),
+      relay('tu_0', 20, 'structure'),
+    ]
+    pruneLiveContext(messages, metadata, DEFAULT_LIVE_TOKEN_BUDGET)
+    expect(parseResult(messages[2]).stale).toBeUndefined()
+    expect(parseResult(messages[2]).data).toBeDefined()
+  })
+
+  it('runs the volatile pass before the budget pass (stale result frees budget)', () => {
+    const metadata = new Map<string, ToolPruningMetadata>([
+      ['get_structure', { volatile: true }],
+    ])
+    const messages: GenericMessage[] = [
+      userPrompt('go'),
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 50, 'realA'), // older non-volatile result we want to keep
+      toolAssistant('get_structure', 'tu_1'),
+      relay('tu_1', 1000, 'bigvol'), // huge volatile result, made stale below
+      toolAssistant('add_blocks', 'tu_2'),
+      mutationRelay('tu_2', 'added'),
+    ]
+    // Budget would be blown by the 1000-token volatile result if counted full,
+    // evicting realA. Since it's stale-compressed first, realA stays full.
+    pruneLiveContext(messages, metadata, 200)
+    expect(parseResult(messages[4]).stale).toBe(true)
+    expect(parseResult(messages[2]).data).toBeDefined()
+  })
+
+  it('never strips genuine user-prompt text or empties a content array', () => {
+    const messages: GenericMessage[] = [
+      {
+        role: 'user',
+        content: [
+          { type: 'skill', name: 'writing', text: '# Skill: writing' },
+          { type: 'text', text: 'rewrite the intro' },
+        ],
+      },
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 100, 's0'),
+      toolAssistant('find', 'tu_1'),
+      relay('tu_1', 100, 's1'),
+    ]
+    pruneLiveContext(messages, new Map(), 50)
+    const first = messages[0]
+    expect(Array.isArray(first.content) && first.content.length).toBeGreaterThan(0)
+    if (Array.isArray(first.content)) {
+      const text = first.content.find((b) => b.type === 'text')
+      expect(text && text.type === 'text' && text.text).toBe('rewrite the intro')
+    }
+  })
+
+  it('leaves reasoning blocks untouched while pruning tool_use inputs', () => {
+    const messages: GenericMessage[] = [
+      userPrompt('go'),
+      {
+        role: 'assistant',
+        content: [
+          { type: 'reasoning', id: 'r0', text: 'thinking', encryptedContent: 'enc' },
+          { type: 'tool_use', id: 'tu_0', name: 'find', input: { q: 1 } },
+        ],
+      },
+      relay('tu_0', 100, 's0'),
+      toolAssistant('find', 'tu_1'),
+      relay('tu_1', 100, 's1'),
+    ]
+    pruneLiveContext(messages, new Map(), 50)
+    const asst = messages[1]
+    if (Array.isArray(asst.content)) {
+      const reasoning = asst.content.find((b) => b.type === 'reasoning')
+      expect(reasoning && reasoning.type === 'reasoning' && reasoning.text).toBe(
+        'thinking',
+      )
+      const toolUse = asst.content.find((b) => b.type === 'tool_use')
+      expect(toolUse && toolUse.type === 'tool_use' && toolUse.input).toEqual({
+        _pruned: true,
+      })
+    }
+  })
+
+  it('is idempotent across repeated calls', () => {
+    const build = (): GenericMessage[] => [
+      userPrompt('go'),
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 30, 's0'),
+      toolAssistant('find', 'tu_1'),
+      relay('tu_1', 30, 's1'),
+      toolAssistant('find', 'tu_2'),
+      relay('tu_2', 30, 's2'),
+    ]
+    const messages = build()
+    pruneLiveContext(messages, new Map(), 80)
+    const afterFirst = JSON.stringify(messages)
+    pruneLiveContext(messages, new Map(), 80)
+    expect(JSON.stringify(messages)).toBe(afterFirst)
+  })
+
+  it('keeps messages valid and the same length after pruning', () => {
+    const messages: GenericMessage[] = [
+      userPrompt('go'),
+      toolAssistant('find', 'tu_0'),
+      relay('tu_0', 30, 's0'),
+      toolAssistant('find', 'tu_1'),
+      relay('tu_1', 30, 's1'),
+      toolAssistant('find', 'tu_2'),
+      relay('tu_2', 30, 's2'),
+    ]
+    const before = messages.length
+    pruneLiveContext(messages, new Map(), 80)
+    expect(messages).toHaveLength(before)
+    expect(validateMessages(messages)).toEqual([])
+  })
+})
+
+// ============================================================================
+// compressVolatileToolResult
+// ============================================================================
+
+describe('compressVolatileToolResult', () => {
+  it('marks content stale and keeps the client summary', () => {
+    const out = JSON.parse(
+      compressVolatileToolResult(JSON.stringify({ data: 1, _summary: 'struct' })),
+    )
+    expect(out).toEqual({ stale: true, summary: 'struct' })
+  })
+
+  it('is idempotent — re-running keeps the first summary', () => {
+    const once = compressVolatileToolResult(
+      JSON.stringify({ data: 1, _summary: 'struct' }),
+    )
+    expect(compressVolatileToolResult(once)).toBe(once)
   })
 })
 

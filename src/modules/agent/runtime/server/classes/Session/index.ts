@@ -13,18 +13,22 @@ import type {
   GenericSkillBlock,
   Transcript,
   TranscriptMessage,
-} from '../shared/types'
-import { coerceStringifiedParams } from '../shared/toolParams'
-import { buildSystemPrompt, buildSystemPromptEntries } from './agentPrompt'
-import type { ActivePlanContext } from './system-prompts/types'
+} from '../../../shared/types'
+import { coerceStringifiedParams } from '../../../shared/toolParams'
+import {
+  buildSystemPrompt,
+  buildSystemPromptEntries,
+} from '../../helpers/agentPrompt'
+import type { ActivePlanContext } from '../../system-prompts/types'
 import { provider, models } from '#blokkli-build/agent-server'
-import type { ToolPruningMetadata } from './helpers'
+import type { ToolPruningMetadata } from '../../helpers'
 import {
   send,
   KEEP_RECENT_TURNS,
   resolveSkills,
   classifyError,
   pruneMessages,
+  pruneLiveContext,
   pruneForPersistence,
   computeStateHash,
   verifyStateHash,
@@ -32,22 +36,22 @@ import {
   isToolResultOnly,
   getDefaultModel,
   createUsageTurn,
-} from './helpers'
+} from '../../helpers'
 import type {
   ServerPlan,
   ServerSideTool,
   ServerToolContext,
   ToolDefinitionContext,
   ToolResultEntry,
-} from './server-tools'
-import type { ResolvedSkill } from './skills/types'
-import { buildDefinition, stripSchemaOverhead } from './server-tools'
-import { StreamAccumulator } from './StreamAccumulator'
+} from '../../server-tools'
+import type { ResolvedSkill } from '../../skills/types'
+import { buildDefinition, stripSchemaOverhead } from '../../server-tools'
+import { StreamAccumulator } from '../StreamAccumulator'
 
-import loadSkillTool from './server-tools/load_skills'
-import loadToolsTool from './server-tools/load_tools'
-import createPlanTool from './server-tools/create_plan'
-import completePlanStepTool from './server-tools/complete_plan_step'
+import loadSkillTool from '../../server-tools/load_skills'
+import loadToolsTool from '../../server-tools/load_tools'
+import createPlanTool from '../../server-tools/create_plan'
+import completePlanStepTool from '../../server-tools/complete_plan_step'
 
 const serverTools: ServerSideTool[] = [
   loadSkillTool,
@@ -1039,6 +1043,12 @@ export class Session {
           // Reset retry counters — the LLM is making progress
           planRetryCount = 0
           streamRetryCount = 0
+
+          // Prune between rounds so the next LLM call doesn't re-send every
+          // verbose/stale tool result. Snapshot first to preserve the full
+          // form for the debug transcript.
+          this.snapshotUnpruned()
+          pruneLiveContext(this.messages, this.buildToolMetadataMap())
         }
 
         // If no tool calls were made, check if there's an active plan.
@@ -1082,10 +1092,14 @@ export class Session {
       this.isProcessing = false
       this.abortController = null
 
-      // Snapshot messages before pruning so the transcript can show both versions.
-      this.unprunedMessages = structuredClone(this.messages)
+      // Snapshot any not-yet-captured messages before pruning so the transcript
+      // can still show the full (pre-compression) form. Incremental because
+      // pruneLiveContext already compressed messages in place during the loop.
+      this.snapshotUnpruned()
 
-      // Prune in `finally` so messages are compressed even after errors.
+      // Prune in `finally` so messages are compressed even after errors. This is
+      // the age-based ceiling (KEEP_RECENT_TURNS); pruneLiveContext applied the
+      // size-based ceiling between rounds. Both are idempotent.
       pruneMessages(
         this.messages,
         KEEP_RECENT_TURNS,
@@ -1401,6 +1415,21 @@ export class Session {
   /**
    * Build a map of tool name to pruning metadata from all known tools.
    */
+  /**
+   * Capture the full (pre-pruning) form of any message not already snapshotted.
+   * Pruning compresses messages in place, so the original must be cloned before
+   * the first prune touches it. Never overwrites — the first capture wins — and
+   * since pruning never removes messages, indices stay aligned with
+   * `this.messages` for `buildTranscript`'s seen/full zip.
+   */
+  private snapshotUnpruned(): void {
+    for (let i = 0; i < this.messages.length; i++) {
+      if (this.unprunedMessages[i] === undefined && this.messages[i]) {
+        this.unprunedMessages[i] = structuredClone(this.messages[i]!)
+      }
+    }
+  }
+
   private buildToolMetadataMap(): Map<string, ToolPruningMetadata> {
     const map = new Map<string, ToolPruningMetadata>()
     for (const name of [...this.toolNames, ...this.lazyToolNames]) {

@@ -9,8 +9,8 @@ import type {
   GenericMessage,
   GenericContentBlock,
   UsageTurn,
-} from '../shared/types'
-import type { ResolvedSkill, SkillDefinition } from './skills/types'
+} from '../../shared/types'
+import type { ResolvedSkill, SkillDefinition } from '../skills/types'
 import { skills } from '#blokkli-build/agent-server'
 
 export function send(peer: Peer, message: ServerMessage): void {
@@ -338,12 +338,16 @@ export function compressToolResult(content: string): string {
 
 /**
  * Compress a volatile tool result — the page state has changed since this
- * query ran, so the data is stale.
+ * query ran, so the data is stale. Falls back to an existing `summary` so that
+ * re-running over an already-stale result keeps the first summary (idempotent).
  */
-function compressVolatileToolResult(content: string): string {
+export function compressVolatileToolResult(content: string): string {
   try {
     const parsed = JSON.parse(content)
-    const summary = parsed._summary || 'page state has changed since this query'
+    const summary =
+      parsed._summary ||
+      parsed.summary ||
+      'page state has changed since this query'
     return JSON.stringify({ stale: true, summary })
   } catch {
     return JSON.stringify({
@@ -514,6 +518,121 @@ export function pruneMessages(
     // tool results (with the stale-query check) and strip aux blocks.
     compressUserMessageContent(content, messages, i, metadata, {
       volatileCheck: true,
+      stripAux: true,
+    })
+  }
+}
+
+/**
+ * Estimated token budget for full tool-result content kept in the live (in-loop)
+ * context. Tunable. The newest tool-result round is always kept full regardless,
+ * so this caps the *older* results, not the freshly-read one.
+ */
+export const DEFAULT_LIVE_TOKEN_BUDGET = 6000
+
+/**
+ * Prune the live (in-loop) conversation context to bound per-round token cost.
+ *
+ * Unlike `pruneMessages` (age-based, keyed on user turns, run once per turn),
+ * this runs BETWEEN tool-call rounds and is keyed on a token budget over
+ * tool-result rounds — so a single user turn that fans out into many tool calls
+ * doesn't keep re-sending every verbose query result on every round.
+ *
+ * Two ordered passes, mutating `messages` in place:
+ *  1. Eager volatile eviction: any volatile query result with a later mutation
+ *     is stale — collapse it to `{ stale: true }` regardless of recency.
+ *  2. Budget recency: walk tool-result relays from the newest, keeping them full
+ *     until their estimated size exceeds `tokenBudget`; the newest relay is
+ *     always kept full. Compress everything older.
+ *
+ * Only `tool_result` content and `tool_use` inputs are rewritten and aux
+ * text/skill blocks stripped — tool_use/tool_result blocks are never removed, so
+ * message validity (pairing, alternation) holds. `reasoning` blocks are left
+ * untouched.
+ *
+ * Cache-safe: the budget cutoff is monotonic (history only grows) and
+ * `compressToolResult` is idempotent, so the already-compressed prefix is
+ * re-emitted byte-identical and stays cacheable across rounds.
+ */
+export function pruneLiveContext(
+  messages: GenericMessage[],
+  toolMetadata: Map<string, ToolPruningMetadata>,
+  tokenBudget: number = DEFAULT_LIVE_TOKEN_BUDGET,
+): void {
+  if (messages.length === 0) return
+
+  // Pass 1: eager volatile eviction. Single backward scan — once a mutation
+  // result has been seen, every earlier volatile query result is stale.
+  let seenMutationAfter = false
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i]
+    if (!msg || msg.role !== 'user' || !Array.isArray(msg.content)) continue
+    for (const block of msg.content) {
+      if (block.type !== 'tool_result') continue
+      const toolName = findToolNameForResult(messages, i, block.tool_use_id)
+      const isVolatile = !!(toolName && toolMetadata.get(toolName)?.volatile)
+      if (isVolatile) {
+        if (seenMutationAfter) {
+          block.content = compressVolatileToolResult(block.content)
+        }
+        continue
+      }
+      // Mutation result detection (same heuristic as hasMutationBetween).
+      try {
+        const parsed = JSON.parse(block.content)
+        if (parsed && parsed.success !== undefined) seenMutationAfter = true
+      } catch {
+        // not JSON, ignore
+      }
+    }
+  }
+
+  // Pass 2: budget recency. Walk tool-result relays from the end, summing the
+  // estimated size of full results; the boundary is the first relay that pushes
+  // cumulative size past the budget. The newest relay is always kept full.
+  let budgetUsed = 0
+  let seenNewestRelay = false
+  let boundaryIndex = 0 // messages before this index get compressed
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i]
+    if (!msg || !isToolResultOnly(msg) || !Array.isArray(msg.content)) continue
+
+    let size = 0
+    for (const block of msg.content) {
+      // tool_result content is already a string — measure it directly.
+      if (block.type === 'tool_result') size += block.content.length / 4
+    }
+
+    if (!seenNewestRelay) {
+      // Always keep the newest relay full, whatever its size.
+      seenNewestRelay = true
+      budgetUsed += size
+      continue
+    }
+
+    budgetUsed += size
+    if (budgetUsed > tokenBudget) {
+      boundaryIndex = i + 1 // keep this relay and newer; compress older
+      break
+    }
+  }
+
+  if (boundaryIndex === 0) return // everything fits within the budget
+
+  for (let i = 0; i < boundaryIndex; i++) {
+    const msg = messages[i]
+    if (!msg || !Array.isArray(msg.content)) continue
+    if (msg.role === 'assistant') {
+      // Only tool_use inputs — leave text/reasoning blocks intact.
+      for (const block of msg.content) {
+        if (block.type === 'tool_use') block.input = { _pruned: true }
+      }
+      continue
+    }
+    // User relays: volatility already handled in pass 1, so skip the (costly)
+    // stale check here and just summarize + strip aux blocks.
+    compressUserMessageContent(msg.content, messages, i, toolMetadata, {
+      volatileCheck: false,
       stripAux: true,
     })
   }

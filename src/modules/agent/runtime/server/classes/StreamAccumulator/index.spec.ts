@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { StreamAccumulator } from './StreamAccumulator'
+import { StreamAccumulator } from './index'
 
 // StreamAccumulator imports transformText from helpers.ts, which pulls in the
 // build-generated skills module — stub it (mirrors helpers.spec.ts).

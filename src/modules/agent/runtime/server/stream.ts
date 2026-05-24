@@ -5,7 +5,7 @@ import {
   useRuntimeConfig,
 } from '#imports'
 import { provider, models, skills } from '#blokkli-build/agent-server'
-import { FieldStreamParser, type ParserEvent } from './streamParser'
+import { FieldStreamParser, type ParserEvent } from './classes/FieldStreamParser'
 import { resolveTemplate, type TemplateCall } from './templates'
 import { validateToken, getDefaultModel, createUsageTurn } from './helpers'
 import type { UsageTurn } from '../shared/types'

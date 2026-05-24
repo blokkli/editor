@@ -1,11 +1,11 @@
-import type { PageContext, TranscriptSystemPrompt } from '../shared/types'
-import type { ResolvedSkill } from './skills/types'
+import type { PageContext, TranscriptSystemPrompt } from '../../shared/types'
+import type { ResolvedSkill } from '../skills/types'
 import type {
   ActivePlanContext,
   SystemPromptBlock,
   SystemPromptContext,
   SystemPromptDefinition,
-} from './system-prompts/types'
+} from '../system-prompts/types'
 import { debugPrompt, systemPrompts } from '#blokkli-build/agent-server'
 
 /**

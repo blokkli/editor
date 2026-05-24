@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { FieldStreamParser, type ParserEvent } from './streamParser'
+import { FieldStreamParser, type ParserEvent } from './index'
 
 describe('FieldStreamParser', () => {
   it('parses a single field with [[[FULL]]]', () => {
