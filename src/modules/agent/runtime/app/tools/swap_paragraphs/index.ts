@@ -4,8 +4,8 @@ import { mutationResultSchema } from '../schemas'
 import { getSwapDisabledReason } from '#blokkli/editor/helpers/swap'
 
 const paramsSchema = z.object({
-  uuidA: z.string().describe('First paragraph UUID'),
-  uuidB: z.string().describe('Second paragraph UUID'),
+  uuid1: z.string().describe('First paragraph UUID'),
+  uuid2: z.string().describe('Second paragraph UUID'),
 })
 
 export default defineBlokkliAgentTool({
@@ -26,15 +26,15 @@ export default defineBlokkliAgentTool({
     const { blocks, types, $t, permissions } = ctx.app
 
     // Validate block A exists
-    const blockA = blocks.getBlock(params.uuidA)
+    const blockA = blocks.getBlock(params.uuid1)
     if (!blockA) {
-      return { error: `Paragraph not found: ${params.uuidA}` }
+      return { error: `Paragraph not found: ${params.uuid1}` }
     }
 
     // Validate block B exists
-    const blockB = blocks.getBlock(params.uuidB)
+    const blockB = blocks.getBlock(params.uuid2)
     if (!blockB) {
-      return { error: `Paragraph not found: ${params.uuidB}` }
+      return { error: `Paragraph not found: ${params.uuid2}` }
     }
 
     const reason = getSwapDisabledReason(blockA, blockB, {
@@ -56,8 +56,8 @@ export default defineBlokkliAgentTool({
     return {
       type: 'move' as const,
       label,
-      affectedUuids: [params.uuidA, params.uuidB],
-      apply: (adapter) => adapter.swapBlocks(params.uuidA, params.uuidB),
+      affectedUuids: [params.uuid1, params.uuid2],
+      apply: (adapter) => adapter.swapBlocks(params.uuid1, params.uuid2),
     }
   },
 })
