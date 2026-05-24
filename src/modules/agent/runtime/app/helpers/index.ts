@@ -8,6 +8,7 @@ import type {
   ToolMeta,
 } from '#blokkli/agent/app/types'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
+import { coerceStringifiedParams } from '#blokkli/agent/shared/toolParams'
 import type { BlokkliAdapter } from '#blokkli/editor/adapter'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { EditMode } from '#blokkli/editor/types/state'
@@ -90,33 +91,6 @@ export async function getToolInfoForServer(
   return staticFiltered
     .filter((_, index) => availability[index])
     .map((t) => t.name)
-}
-
-/**
- * Coerce stringified JSON values back to their actual types.
- *
- * LLMs sometimes double-serialize array or object parameters, sending e.g.
- * `"[\"readability\"]"` (a string) instead of `["readability"]` (an array).
- * This walks the params and attempts JSON.parse on any string that looks like
- * a JSON array or object.
- */
-export function coerceStringifiedParams(
-  params: Record<string, unknown>,
-): Record<string, unknown> {
-  const result: Record<string, unknown> = {}
-  for (const key of Object.keys(params)) {
-    const value = params[key]
-    if (typeof value === 'string' && (value[0] === '[' || value[0] === '{')) {
-      try {
-        result[key] = JSON.parse(value)
-      } catch {
-        result[key] = value
-      }
-    } else {
-      result[key] = value
-    }
-  }
-  return result
 }
 
 /**

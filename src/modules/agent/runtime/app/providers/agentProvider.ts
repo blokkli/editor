@@ -298,6 +298,13 @@ export default function agentProvider({
         break
 
       case 'usage':
+        // `usage` is sent at message_end — i.e. the assistant turn completed
+        // successfully. Commit its streamed text now, decoupled from whether a
+        // `tool_call` follows. Without this, a turn whose tool call is not sent
+        // to the client (e.g. rejected by server-side validation) would have its
+        // text discarded by the next turn's `thinking` (which clears partial
+        // text from *failed* streams — those never emit `usage`).
+        conversation.finalizeActive()
         conversation.pushUsage(data.usage)
         break
 

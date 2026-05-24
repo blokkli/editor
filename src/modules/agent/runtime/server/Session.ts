@@ -14,6 +14,7 @@ import type {
   Transcript,
   TranscriptMessage,
 } from '../shared/types'
+import { coerceStringifiedParams } from '../shared/toolParams'
 import { buildSystemPrompt, buildSystemPromptEntries } from './agentPrompt'
 import type { ActivePlanContext } from './system-prompts/types'
 import { provider, models } from '#blokkli-build/agent-server'
@@ -711,6 +712,12 @@ export class Session {
     let consecutiveIdenticalCalls = 0
     const MAX_IDENTICAL_CALLS = 2
 
+    // Track consecutive client-tool calls rejected by server-side schema
+    // validation. These are hidden from the UI and retried silently; after this
+    // many in a row we let the next one through so the failure surfaces.
+    let consecutiveValidationFailures = 0
+    const MAX_HIDDEN_VALIDATION_FAILURES = 2
+
     try {
       while (true) {
         // Check for abort
@@ -901,7 +908,31 @@ export class Session {
                     break
                   }
 
-                  // Client-side tool: round-trip to the peer.
+                  // Client-side tool: validate the arguments server-side first.
+                  // A malformed call is rejected silently — the error goes to
+                  // the LLM (and the transcript) for a retry, but no `tool_call`
+                  // is sent to the peer, so the UI shows nothing. If the model
+                  // keeps failing, fall through after a couple tries so the
+                  // error surfaces instead of spinning invisibly.
+                  const validation = this.validateClientToolInput(
+                    toolName,
+                    input,
+                  )
+                  if (
+                    !validation.ok &&
+                    consecutiveValidationFailures < MAX_HIDDEN_VALIDATION_FAILURES
+                  ) {
+                    consecutiveValidationFailures++
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: toolUseId,
+                      content: JSON.stringify({ error: validation.error }),
+                      is_error: true,
+                    })
+                    break
+                  }
+                  consecutiveValidationFailures = 0
+
                   toolResults.push(
                     ...(await this.dispatchClientTool({
                       toolUseId,
@@ -1200,23 +1231,7 @@ export class Session {
     try {
       // Coerce stringified arrays/objects before validation. LLMs sometimes
       // double-serialize parameters.
-      const coercedInput: Record<string, unknown> = {}
-      for (const key of Object.keys(input)) {
-        const value = input[key]
-        if (
-          typeof value === 'string' &&
-          (value[0] === '[' || value[0] === '{')
-        ) {
-          try {
-            coercedInput[key] = JSON.parse(value)
-          } catch {
-            coercedInput[key] = value
-          }
-        } else {
-          coercedInput[key] = value
-        }
-      }
-      const parsed = tool.inputSchema(defCtx).parse(coercedInput)
+      const parsed = tool.inputSchema(defCtx).parse(coerceStringifiedParams(input))
       const result = await tool.handle(handlerCtx, parsed)
       return {
         toolResults: result.toolResults,
@@ -1244,6 +1259,23 @@ export class Session {
    * An `agentMessage` on the result replaces the `label` in the payload fed back
    * to the LLM (the label is UI-only). Returns the tool_result block(s).
    */
+  /**
+   * Validate an LLM-generated client tool call against its Zod `paramsSchema`
+   * (the same schema the client parses with), server-side, before dispatching
+   * to the peer. Returns an error string on a schema failure so the caller can
+   * reject it silently. Unknown tools pass through (handled by normal dispatch).
+   */
+  private validateClientToolInput(
+    toolName: string,
+    input: Record<string, unknown>,
+  ): { ok: true } | { ok: false; error: string } {
+    const bundled = this.bundledToolMap.get(toolName)
+    if (!bundled) return { ok: true }
+    const parsed = bundled.paramsSchema.safeParse(coerceStringifiedParams(input))
+    if (parsed.success) return { ok: true }
+    return { ok: false, error: `Invalid input: ${z.prettifyError(parsed.error)}` }
+  }
+
   private async dispatchClientTool(args: {
     toolUseId: string
     toolName: string
