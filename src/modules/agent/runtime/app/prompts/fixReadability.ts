@@ -53,8 +53,7 @@ export default defineBlokkliAgentPrompt({
                     {
                       toolName: 'delegate_text_rewrite',
                       params: {
-                        template: 'fix_readability',
-                        templateParams: {},
+                        request: { template: 'fix_readability' },
                         fields,
                       },
                     },

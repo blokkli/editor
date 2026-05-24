@@ -15,8 +15,7 @@ The \`delegate_text_rewrite\` tool uses prompt templates for precise control. Ch
 For translating text fields to another language. Always uses FULL mode.
 \`\`\`json
 {
-  "template": "translate",
-  "templateParams": { "targetLanguage": "German" },
+  "request": { "template": "translate", "targetLanguage": "German" },
   "fields": [{ "uuid": "...", "fieldName": "..." }]
 }
 \`\`\`
@@ -25,8 +24,7 @@ For translating text fields to another language. Always uses FULL mode.
 For general-purpose rewrites with a free-form instruction.
 \`\`\`json
 {
-  "template": "rewrite",
-  "templateParams": { "instruction": "Make more concise and professional" },
+  "request": { "template": "rewrite", "instruction": "Make more concise and professional" },
   "fields": [{ "uuid": "...", "fieldName": "..." }]
 }
 \`\`\`
@@ -35,8 +33,11 @@ For general-purpose rewrites with a free-form instruction.
 For writing new content for empty fields (e.g. after adding blocks). Optionally include page context.
 \`\`\`json
 {
-  "template": "generate_content",
-  "templateParams": { "instruction": "Write an introductory paragraph about sustainable energy", "context": "This is a blog post about renewable energy sources." },
+  "request": {
+    "template": "generate_content",
+    "instruction": "Write an introductory paragraph about sustainable energy",
+    "context": "This is a blog post about renewable energy sources."
+  },
   "fields": [{ "uuid": "...", "fieldName": "..." }]
 }
 \`\`\`

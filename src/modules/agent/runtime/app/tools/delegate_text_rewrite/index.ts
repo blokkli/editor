@@ -15,25 +15,55 @@ const fieldSchema = z.object({
   fieldName: z.string().describe('The editable field name'),
 })
 
+/**
+ * The transform to perform, as a discriminated union on `template`. Each branch
+ * declares exactly the parameters its template needs, so the model cannot pair a
+ * template with the wrong parameters (e.g. `translate` without `targetLanguage`).
+ * The heavy `fix_readability` params (issues, etc.) are resolved server-side in
+ * `execute`, so that branch takes no parameters from the model.
+ */
+const requestSchema = z
+  .discriminatedUnion('template', [
+    z.object({
+      template: z.literal('fix_readability'),
+    }),
+    z.object({
+      template: z.literal('translate'),
+      targetLanguage: z
+        .string()
+        .describe('The language to translate every field into, e.g. "German".'),
+    }),
+    z.object({
+      template: z.literal('rewrite'),
+      instruction: z
+        .string()
+        .describe(
+          'Free-form instruction describing how to rewrite the fields.',
+        ),
+    }),
+    z.object({
+      template: z.literal('generate_content'),
+      instruction: z
+        .string()
+        .describe('What content to write for the (typically empty) fields.'),
+      context: z
+        .string()
+        .optional()
+        .describe(
+          'Optional page or topic context to ground the generated content.',
+        ),
+    }),
+  ])
+  .describe(
+    'The transform to perform. Pick a template and provide its parameters:\n' +
+      '- fix_readability: fix flagged readability issues (no extra params — issues are resolved automatically).\n' +
+      '- translate: translate all fields into `targetLanguage`.\n' +
+      '- rewrite: general-purpose rewrite using `instruction`.\n' +
+      '- generate_content: write new content using `instruction` (optional `context`).',
+  )
+
 const paramsSchema = z.object({
-  template: z
-    .enum(['fix_readability', 'translate', 'rewrite', 'generate_content'])
-    .describe(
-      'The prompt template to use. ' +
-        'fix_readability: fix specific flagged readability issues (requires templateParams.issues). ' +
-        'translate: translate all fields to a target language (requires templateParams.targetLanguage). ' +
-        'rewrite: general-purpose rewrite with a free-form instruction (requires templateParams.instruction). ' +
-        'generate_content: write new content for empty fields (requires templateParams.instruction, optional templateParams.context).',
-    ),
-  templateParams: z
-    .record(z.string(), z.unknown())
-    .describe(
-      'Parameters for the chosen template. ' +
-        'fix_readability: {} (no params needed — issues are resolved automatically). ' +
-        'translate: { targetLanguage: string }. ' +
-        'rewrite: { instruction: string }. ' +
-        'generate_content: { instruction: string, context?: string }.',
-    ),
+  request: requestSchema,
   fields: z
     .array(fieldSchema)
     .describe('The fields to transform (UUIDs and field names only)'),
@@ -60,7 +90,7 @@ export type ComponentParams = {
 export default defineBlokkliAgentTool({
   name: 'delegate_text_rewrite',
   description:
-    'Rewrite, translate, fix readability, or generate text fields with live streaming preview. Choose a template (fix_readability, translate, rewrite, generate_content) and provide the corresponding templateParams. The content will be streamed live into the page for immediate visual feedback.',
+    'Rewrite, translate, fix readability, or generate text fields with live streaming preview. Set `request` to the chosen template and its parameters (see the request field). The content will be streamed live into the page for immediate visual feedback.',
   category: 'mutation',
   lazy: true,
   modes: ['editing', 'translating'],
@@ -133,10 +163,15 @@ export default defineBlokkliAgentTool({
       })
     }
 
-    let templateParams = params.templateParams
+    // The model picks a template + its params via the discriminated `request`.
+    // Downstream (Component, stream, templates) consumes the legacy
+    // `{ template, templateParams }` shape, so split the discriminant from its
+    // inline params here.
+    const { template, ...inlineParams } = params.request
+    let templateParams: Record<string, unknown> = inlineParams
 
     // For fix_readability, auto-resolve issues from analyzers.
-    if (params.template === 'fix_readability') {
+    if (template === 'fix_readability') {
       if (!ctx.app.readability.isAvailable.value) {
         return {
           error:
@@ -176,7 +211,7 @@ export default defineBlokkliAgentTool({
     }
 
     return {
-      template: params.template,
+      template,
       templateParams,
       fields: resolvedFields,
     }
