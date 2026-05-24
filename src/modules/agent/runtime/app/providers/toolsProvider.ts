@@ -129,52 +129,57 @@ export default function toolsProvider({
     })
   }
 
-  async function executeLocally(
-    toolName: string,
+  type ToolContext = ReturnType<typeof createToolContext>
+
+  /** Component-rendering tool: prepare params, await the component, split meta. */
+  async function executeComponentTool(
+    toolDef: McpToolDefinition,
+    ctx: ToolContext,
     params: Record<string, unknown>,
     setLabel?: (label: string) => void,
   ): Promise<ToolOutcome> {
-    const ctx = createToolContext()
-    const toolDef = getToolDefinition(toolMap, toolName)
+    const preparedParams = await executeTool(toolMap, toolDef.name, ctx, params)
 
-    if (toolDef.component) {
-      const preparedParams = await executeTool(toolMap, toolName, ctx, params)
-
-      if (isToolError(preparedParams)) {
-        return { ok: false, error: preparedParams.error }
-      }
-
-      const raw = await waitForToolComponent(
-        toolDef.name,
-        preparedParams as Record<string, unknown>,
-      )
-      const { payload, meta } = splitMeta(raw)
-
-      const payloadObj = asRecord(payload)
-      if (setLabel && payloadObj && typeof payloadObj.label === 'string') {
-        setLabel(payloadObj.label)
-      }
-
-      return { ok: true, result: payload, meta }
+    if (isToolError(preparedParams)) {
+      return { ok: false, error: preparedParams.error }
     }
 
-    const category = getToolCategory(toolMap, toolName)
-    const result = await executeTool(toolMap, toolName, ctx, params)
+    const raw = await waitForToolComponent(
+      toolDef.name,
+      preparedParams as Record<string, unknown>,
+    )
+    const { payload, meta } = splitMeta(raw)
 
-    if (isToolError(result)) return { ok: false, error: result.error }
-
-    if (category === 'query') {
-      if (isQueryResult(result)) {
-        if (setLabel) setLabel(result.label)
-        if (result.affectedUuids?.length) {
-          app.eventBus.emit('select', result.affectedUuids)
-          app.eventBus.emit('scrollSelectionIntoView', {})
-        }
-        return { ok: true, result: result.result, meta: {} }
-      }
-      return { ok: true, result, meta: {} }
+    const payloadObj = asRecord(payload)
+    if (setLabel && payloadObj && typeof payloadObj.label === 'string') {
+      setLabel(payloadObj.label)
     }
 
+    return { ok: true, result: payload, meta }
+  }
+
+  /** Read-only query tool: surface the label and select/scroll any affected blocks. */
+  function executeQueryTool(
+    result: unknown,
+    setLabel?: (label: string) => void,
+  ): ToolOutcome {
+    if (isQueryResult(result)) {
+      if (setLabel) setLabel(result.label)
+      if (result.affectedUuids?.length) {
+        app.eventBus.emit('select', result.affectedUuids)
+        app.eventBus.emit('scrollSelectionIntoView', {})
+      }
+      return { ok: true, result: result.result, meta: {} }
+    }
+    return { ok: true, result, meta: {} }
+  }
+
+  /** Mutation tool: apply (with optional approval), then build the result payload. */
+  async function executeMutationTool(
+    result: unknown,
+    toolDef: McpToolDefinition,
+    setLabel?: (label: string) => void,
+  ): Promise<ToolOutcome> {
     if (!isMutationAction(result)) {
       return { ok: false, error: 'Invalid mutation tool result' }
     }
@@ -248,6 +253,30 @@ export default function toolsProvider({
 
     if (action.revert) action.revert()
     return { ok: true, result: { success: false, rejected: true }, meta: {} }
+  }
+
+  async function executeLocally(
+    toolName: string,
+    params: Record<string, unknown>,
+    setLabel?: (label: string) => void,
+  ): Promise<ToolOutcome> {
+    const ctx = createToolContext()
+    const toolDef = getToolDefinition(toolMap, toolName)
+
+    if (toolDef.component) {
+      return executeComponentTool(toolDef, ctx, params, setLabel)
+    }
+
+    const category = getToolCategory(toolMap, toolName)
+    const result = await executeTool(toolMap, toolName, ctx, params)
+
+    if (isToolError(result)) return { ok: false, error: result.error }
+
+    if (category === 'query') {
+      return executeQueryTool(result, setLabel)
+    }
+
+    return executeMutationTool(result, toolDef, setLabel)
   }
 
   async function dispatch(

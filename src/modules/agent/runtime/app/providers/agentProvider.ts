@@ -70,6 +70,76 @@ export type AgentOrchestrator = {
   refreshConversationList: () => Promise<void>
 }
 
+/**
+ * Build the replayable send context stored on the user message — the data
+ * retry/edit needs to re-run a prompt byte-for-byte (preExecute can read
+ * arbitrary editor state, so this cannot be re-derived later). Returns
+ * `undefined` when there's nothing worth storing.
+ */
+function buildSendContext(options: SendPromptOptions) {
+  const {
+    prompt,
+    displayPrompt,
+    selectedUuids,
+    autoLoadTools,
+    autoLoadSkills,
+    preSeededResults,
+    autoExecuteTools,
+    promptId,
+  } = options
+
+  const hasData =
+    !!promptId ||
+    (displayPrompt !== undefined && displayPrompt !== prompt) ||
+    !!selectedUuids?.length ||
+    !!autoLoadTools?.length ||
+    !!autoLoadSkills?.length ||
+    !!preSeededResults?.length ||
+    !!autoExecuteTools?.length
+  if (!hasData) return undefined
+
+  return {
+    promptId,
+    serverPrompt:
+      displayPrompt !== undefined && displayPrompt !== prompt
+        ? prompt
+        : undefined,
+    selectedUuids: selectedUuids?.length ? [...selectedUuids] : undefined,
+    autoLoadTools: autoLoadTools?.length ? [...autoLoadTools] : undefined,
+    autoLoadSkills: autoLoadSkills?.length ? [...autoLoadSkills] : undefined,
+    preSeededResults: preSeededResults?.length ? preSeededResults : undefined,
+    autoExecuteTools: autoExecuteTools?.length ? autoExecuteTools : undefined,
+  }
+}
+
+/**
+ * Ask the routing endpoint which skills/tools to preload for the first message.
+ * Swallows failures (returns empty) so a routing outage never blocks the prompt.
+ */
+async function fetchRouting(
+  prompt: string,
+  toolNames: string[],
+  pageContext: PageContext,
+): Promise<{ tools: string[]; skills: string[]; usage: UsageTurn | null }> {
+  try {
+    return await fetch(routeRoute, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, toolNames, pageContext }),
+    }).then(
+      (r) =>
+        r.json() as Promise<{
+          skills: string[]
+          tools: string[]
+          usage: UsageTurn | null
+        }>,
+    )
+  } catch {
+    // Routing failed — proceed without preloaded skills/tools.
+    return { tools: [], skills: [], usage: null }
+  }
+}
+
 export default function agentProvider({
   app,
   adapter,
@@ -314,7 +384,6 @@ export default function agentProvider({
       preSeededResults,
       autoExecuteTools,
       rollbackToUserMessageIndex,
-      promptId,
     } = options
 
     if (!prompt.trim() || isProcessing.value) return
@@ -336,37 +405,8 @@ export default function agentProvider({
       historyIndex,
     )
 
-    // Capture the original send context so retry can replay it byte-for-byte
-    // — preExecute can read arbitrary editor state, so we cannot re-derive
-    // preSeededResults / autoExecuteTools on retry.
-    const sendContextHasData =
-      !!promptId ||
-      (displayPrompt !== undefined && displayPrompt !== prompt) ||
-      !!selectedUuids?.length ||
-      !!autoLoadTools?.length ||
-      !!autoLoadSkills?.length ||
-      !!preSeededResults?.length ||
-      !!autoExecuteTools?.length
-    const sendContext = sendContextHasData
-      ? {
-          promptId,
-          serverPrompt:
-            displayPrompt !== undefined && displayPrompt !== prompt
-              ? prompt
-              : undefined,
-          selectedUuids: selectedUuids?.length ? [...selectedUuids] : undefined,
-          autoLoadTools: autoLoadTools?.length ? [...autoLoadTools] : undefined,
-          autoLoadSkills: autoLoadSkills?.length
-            ? [...autoLoadSkills]
-            : undefined,
-          preSeededResults: preSeededResults?.length
-            ? preSeededResults
-            : undefined,
-          autoExecuteTools: autoExecuteTools?.length
-            ? autoExecuteTools
-            : undefined,
-        }
-      : undefined
+    // Capture the original send context so retry can replay it byte-for-byte.
+    const sendContext = buildSendContext(options)
 
     // Push user message + show thinking before any async work so the UI
     // stays responsive while routing fetches.
@@ -388,41 +428,26 @@ export default function agentProvider({
     let resolvedAutoLoadSkills = autoLoadSkills
 
     if (isFirstMessage && !hasClientDirectives && tools.pageContext.value) {
-      try {
-        const routingResult = await fetch(routeRoute, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt,
-            toolNames: sentToolNames,
-            pageContext: tools.pageContext.value,
-          }),
-        }).then(
-          (r) =>
-            r.json() as Promise<{
-              skills: string[]
-              tools: string[]
-              usage: UsageTurn | null
-            }>,
-        )
+      const routingResult = await fetchRouting(
+        prompt,
+        sentToolNames,
+        tools.pageContext.value,
+      )
 
-        if (routingResult.usage) {
-          conversation.pushUsage(routingResult.usage)
-        }
-        if (routingResult.tools?.length) {
-          resolvedAutoLoadTools = [
-            ...(resolvedAutoLoadTools || []),
-            ...routingResult.tools,
-          ]
-        }
-        if (routingResult.skills?.length) {
-          resolvedAutoLoadSkills = [
-            ...(resolvedAutoLoadSkills || []),
-            ...routingResult.skills,
-          ]
-        }
-      } catch {
-        // Routing failed — proceed without preloaded skills/tools.
+      if (routingResult.usage) {
+        conversation.pushUsage(routingResult.usage)
+      }
+      if (routingResult.tools.length) {
+        resolvedAutoLoadTools = [
+          ...(resolvedAutoLoadTools || []),
+          ...routingResult.tools,
+        ]
+      }
+      if (routingResult.skills.length) {
+        resolvedAutoLoadSkills = [
+          ...(resolvedAutoLoadSkills || []),
+          ...routingResult.skills,
+        ]
       }
     }
 
