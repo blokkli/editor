@@ -75,6 +75,20 @@ export const mutationResultSchema = z.union([
 ])
 
 /**
+ * A parameter that accepts an array of strings OR a single string (normalized
+ * to a one-element array). LLMs frequently send a bare string for array params
+ * and otherwise fail validation on the first call. The generated JSON Schema
+ * still advertises an array, so the model is guided toward the array form while
+ * a single string is accepted as a fallback.
+ */
+export function stringArrayParam(description: string) {
+  return z.preprocess(
+    (value) => (typeof value === 'string' ? [value] : value),
+    z.array(z.string()).describe(description),
+  )
+}
+
+/**
  * Shared schema for option values (used by add_blocks and set_block_options).
  */
 export const optionValueSchema = z.union([

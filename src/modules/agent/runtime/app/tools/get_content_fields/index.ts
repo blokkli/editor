@@ -1,13 +1,12 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { readBlockContentFields } from '../helpers'
+import { stringArrayParam } from '../schemas'
 
 const paramsSchema = z.object({
-  uuids: z
-    .array(z.string())
-    .describe(
-      'One or more paragraph UUIDs (or the page UUID to get page-level fields)',
-    ),
+  uuids: stringArrayParam(
+    'One or more paragraph UUIDs (or the page UUID to get page-level fields)',
+  ),
   includeNested: z
     .boolean()
     .optional()

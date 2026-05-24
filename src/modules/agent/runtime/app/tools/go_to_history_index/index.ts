@@ -3,7 +3,9 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
 const paramsSchema = z.object({
-  index: z
+  // Coerce so a numeric string (e.g. "5") is accepted — the LLM often sends the
+  // index as a string. A non-numeric string is still rejected.
+  index: z.coerce
     .number()
     .describe(
       'History index to navigate to (-1 = pristine state, 0+ = mutation index)',
