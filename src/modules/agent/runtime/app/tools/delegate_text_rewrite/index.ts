@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { runReadabilityAnalysis, resolveHost } from '../helpers'
+import { resolveHost } from '../helpers'
+import { runReadabilityAnalysis } from '../readability'
 import {
   requireBundlePermission,
   requireNoRestrictedAncestor,

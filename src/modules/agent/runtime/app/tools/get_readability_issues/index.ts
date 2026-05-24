@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { runReadabilityAnalysis } from '../helpers'
+import { runReadabilityAnalysis } from '../readability'
 
 const issueSchema = z.object({
   text: z.string(),

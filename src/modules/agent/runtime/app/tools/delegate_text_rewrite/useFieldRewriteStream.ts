@@ -5,11 +5,8 @@ import type { UsageTurn } from '#blokkli/agent/shared/types'
 import { routeStream } from '#blokkli-build/agent-client'
 import type { EntityContext } from '#blokkli/types'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
-import {
-  applyOperations,
-  resolveHost as resolveBlockHost,
-  type ReadabilityResult,
-} from '../helpers'
+import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
+import { worstReadability, type ReadabilityResult } from '../readability'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
 export type Phase = 'streaming' | 'approval' | 'error'
@@ -272,8 +269,6 @@ export function useFieldRewriteStream(options: {
     const rawAnalysis =
       await context.app.readability.analyzeFieldValues(textFields)
 
-    const bandOrder: Record<string, number> = { easy: 0, ok: 1, hard: 2 }
-
     const fieldMap = new Map<
       string,
       {
@@ -299,20 +294,12 @@ export function useFieldRewriteStream(options: {
         )
         .map((c) => ({ text: c.text, impact: c.impact, score: c.score }))
 
-      // Find the worst chunk across ALL bands to get representative score.
-      let worstBandValue = -1
-      let worstScore: number | undefined
-      for (const chunk of chunks) {
-        if (chunk.band === null || chunk.score === null) continue
-        const value = bandOrder[chunk.band] ?? 0
-        if (value > worstBandValue) {
-          worstBandValue = value
-          worstScore = chunk.score
-        }
-      }
-
-      const worstLevel: 'good' | 'ok' | 'hard' =
-        worstBandValue >= 2 ? 'hard' : worstBandValue >= 1 ? 'ok' : 'good'
+      // Reduce to the single worst chunk for a representative level + score.
+      // A field too short to score yields no worst chunk → treated as "good"
+      // (nothing to retry) with no score.
+      const worst = worstReadability(chunks)
+      const worstLevel = worst?.level ?? 'good'
+      const worstScore = worst?.score
 
       fieldMap.set(key, { issues, worstLevel, worstScore })
     }

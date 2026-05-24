@@ -1,15 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import type { ReadabilityBand } from '#blokkli/editor/features/analyze/readability/types'
-
-/**
- * Map a readability band to a user-friendly level.
- */
-function bandToLevel(band: ReadabilityBand): 'good' | 'ok' | 'hard' {
-  if (band === 'hard') return 'hard'
-  if (band === 'ok') return 'ok'
-  return 'good'
-}
+import { worstReadability } from '../readability'
 
 const textResultSchema = z.object({
   text: z.string(),
@@ -17,13 +8,6 @@ const textResultSchema = z.object({
   score: z.number().nullable(),
   note: z.string().optional(),
 })
-
-// Worst-first severity ordering for readability bands.
-const LEVEL_SEVERITY: Record<'good' | 'ok' | 'hard', number> = {
-  good: 0,
-  ok: 1,
-  hard: 2,
-}
 
 const paramsSchema = z.object({
   texts: z
@@ -62,26 +46,11 @@ export default defineBlokkliAgentTool({
 
     for (const text of params.texts) {
       const chunks = await readability.analyzeText(text, langcode)
+      const worst = worstReadability(chunks)
 
-      // Determine the worst band and the worst (lowest) score across all
-      // scorable chunks. Chunks with a null score/band can't be analyzed (e.g.
-      // the text is below the analyzer's minimum word count).
-      let worstLevel: 'good' | 'ok' | 'hard' = 'good'
-      let worstScore: number | null = null
-
-      for (const chunk of chunks) {
-        if (chunk.band === null || chunk.score === null) continue
-        const level = bandToLevel(chunk.band)
-        if (LEVEL_SEVERITY[level] > LEVEL_SEVERITY[worstLevel]) {
-          worstLevel = level
-        }
-        if (worstScore === null || chunk.score < worstScore) {
-          worstScore = chunk.score
-        }
-      }
-
-      if (worstScore === null) {
-        // Nothing could be scored — report honestly instead of a false "good".
+      if (!worst) {
+        // Nothing could be scored (e.g. the text is below the analyzer's
+        // minimum word count) — report honestly instead of a false "good".
         results.push({
           text,
           level: 'unknown',
@@ -89,11 +58,7 @@ export default defineBlokkliAgentTool({
           note: 'Text too short to score reliably.',
         })
       } else {
-        results.push({
-          text,
-          level: worstLevel,
-          score: worstScore,
-        })
+        results.push({ text, level: worst.level, score: worst.score })
       }
     }
 
