@@ -1,36 +1,16 @@
 import type { GenericMessage } from '../../shared/types'
 
 /**
- * Message-structure utilities shared across the server: predicates and
- * validation over the `GenericMessage[]` conversation array. Pruning builds on
- * these; the agent loop uses them for turn indexing and pre-send validation.
+ * Message-structure validation over the `GenericMessage[]` wire form. Used at
+ * the restore boundary to reject malformed client-supplied snapshots before they
+ * are rehydrated into the conversation history.
  */
-
-/**
- * Returns true when a message is a tool-result relay (`{role:'user',
- * content:[tool_result, ...]}`) rather than a real user turn. The protocol
- * encodes tool results as user-role messages, so distinguishing them is
- * required wherever we count "real" user turns — pruning, persistence,
- * rollback indexing.
- */
-export function isToolResultOnly(msg: GenericMessage): boolean {
-  if (msg.role !== 'user') return false
-  const content = msg.content
-  if (!Array.isArray(content) || content.length === 0) return false
-  return content.some(
-    (block) =>
-      typeof block === 'object' &&
-      block !== null &&
-      'type' in block &&
-      block.type === 'tool_result',
-  )
-}
 
 /**
  * Find the tool name for a tool_result block by looking up the matching
  * tool_use block in the preceding assistant message.
  */
-export function findToolNameForResult(
+function findToolNameForResult(
   messages: GenericMessage[],
   userMsgIndex: number,
   toolUseId: string,
@@ -49,30 +29,6 @@ export function findToolNameForResult(
     break
   }
   return undefined
-}
-
-/**
- * Count "real" user turns and record where each starts.
- *
- * A "turn" is a user message that contains actual user text — NOT a tool-response
- * message (one carrying `tool_result` blocks). Shared by both prune functions,
- * which use the turn boundaries to decide how much recent history to keep intact.
- */
-export function countUserTurns(messages: GenericMessage[]): {
-  turnCount: number
-  turnStartIndices: number[]
-} {
-  let turnCount = 0
-  const turnStartIndices: number[] = []
-  for (let i = 0; i < messages.length; i++) {
-    const msg = messages[i]
-    if (!msg) continue
-    if (msg.role === 'user' && !isToolResultOnly(msg)) {
-      turnCount++
-      turnStartIndices.push(i)
-    }
-  }
-  return { turnCount, turnStartIndices }
 }
 
 /**

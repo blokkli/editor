@@ -7,14 +7,13 @@ import type {
   ClientPlanState,
   ClientPlanStep,
   ConversationStateSnapshot,
-  GenericMessage,
   GenericContentBlock,
   GenericTextBlock,
   GenericSkillBlock,
   Transcript,
-  TranscriptMessage,
 } from '../../../shared/types'
 import { coerceStringifiedParams } from '../../../shared/toolParams'
+import { ToolResult } from '../../../shared/toolResult'
 import {
   buildSystemPrompt,
   buildSystemPromptEntries,
@@ -22,17 +21,16 @@ import {
 import type { ActivePlanContext } from '../../system-prompts/types'
 import { provider, models } from '#blokkli-build/agent-server'
 import { send } from '../../helpers/socket'
+import { ConversationHistory, type VolatileLookup } from '../ConversationHistory'
 import {
-  KEEP_RECENT_TURNS,
-  pruneMessages,
-  pruneLiveContext,
-  pruneForPersistence,
-  type ToolPruningMetadata,
-} from '../../helpers/pruning'
+  UserPromptMessage,
+  AssistantMessage,
+  ToolRelayMessage,
+} from '../ConversationMessage'
 import { resolveSkills } from '../../helpers/skills'
 import { classifyError } from '../../helpers/errors'
 import { computeStateHash, verifyStateHash } from '../../helpers/security'
-import { validateMessages, isToolResultOnly } from '../../helpers/messages'
+import { validateMessages } from '../../helpers/messages'
 import { getDefaultModel, createUsageTurn } from '../../helpers/models'
 import type {
   ServerPlan,
@@ -62,7 +60,8 @@ const serverTools: ServerSideTool[] = [
 // ============================================================================
 
 export class Session {
-  messages: GenericMessage[] = []
+  /** The single, immutable source of truth for the conversation. */
+  private history = new ConversationHistory()
   pendingToolCalls = new Map<
     string,
     {
@@ -95,8 +94,6 @@ export class Session {
   planStepHasWork = false
   /** Pending plan approval promise resolver */
   pendingPlanApproval: { resolve: (approved: boolean) => void } | null = null
-  /** Pre-pruned messages snapshot for transcript (captured before pruneMessages) */
-  private unprunedMessages: GenericMessage[] = []
   /** Last generic tool definitions for transcript */
   private lastTools: ClientToolDefinition[] = []
   /** Last raw request payload for transcript (dev only) */
@@ -253,35 +250,22 @@ export class Session {
    * out of range — typically because the target turn has been pruned away.
    */
   private truncateAtUserMessage(targetIndex: number): void {
-    let userCount = 0
-    for (let i = 0; i < this.messages.length; i++) {
-      const msg = this.messages[i]
-      if (!msg) continue
-      if (msg.role === 'user' && !isToolResultOnly(msg)) {
-        if (userCount === targetIndex) {
-          this.messages = this.messages.slice(0, i)
-          // Caches tied to the truncated turns are no longer valid.
-          this.unprunedMessages = []
-          this.lastTools = []
-          this.lastDebugPayload = null
-          // Cancel any pending tool calls or plan approval — the conversation
-          // those belonged to no longer exists.
-          for (const pending of this.pendingToolCalls.values()) {
-            pending.reject(new Error('Rollback cancelled pending tool call'))
-          }
-          this.pendingToolCalls.clear()
-          if (this.pendingPlanApproval) {
-            this.pendingPlanApproval.resolve(false)
-            this.pendingPlanApproval = null
-          }
-          return
-        }
-        userCount++
-      }
+    // Throws if out of range — leaves state untouched in that case.
+    this.history.truncateAtUserTurn(targetIndex)
+
+    // Caches tied to the truncated turns are no longer valid.
+    this.lastTools = []
+    this.lastDebugPayload = null
+    // Cancel any pending tool calls or plan approval — the conversation
+    // those belonged to no longer exists.
+    for (const pending of this.pendingToolCalls.values()) {
+      pending.reject(new Error('Rollback cancelled pending tool call'))
     }
-    throw new Error(
-      `rollbackToUserMessageIndex ${targetIndex} out of range (only ${userCount} real user turns)`,
-    )
+    this.pendingToolCalls.clear()
+    if (this.pendingPlanApproval) {
+      this.pendingPlanApproval.resolve(false)
+      this.pendingPlanApproval = null
+    }
   }
 
   resolveToolResult(
@@ -347,8 +331,7 @@ export class Session {
 
   newConversation(peer: Peer, authSecret: string): void {
     this.abortController?.abort()
-    this.messages = []
-    this.unprunedMessages = []
+    this.history.clear()
     this.lastTools = []
     this.lastDebugPayload = null
     this.activatedLazyTools.clear()
@@ -374,7 +357,7 @@ export class Session {
       this.pendingPlanApproval = null
     }
     this.plan = null
-    this.messages = []
+    this.history.clear()
     this.toolNames = []
     this.lazyToolNames = []
     this.activatedLazyTools.clear()
@@ -397,7 +380,7 @@ export class Session {
   getConversationStateForPersistence(
     authSecret: string,
   ): ConversationStateSnapshot {
-    const prunedMessages = pruneForPersistence(this.messages)
+    const prunedMessages = this.history.projectForPersistence()
     const activatedLazyTools = Array.from(this.activatedLazyTools)
     const hash = computeStateHash(
       prunedMessages,
@@ -431,8 +414,7 @@ export class Session {
       return { success: false, reason: 'Invalid message structure' }
     }
 
-    this.messages = state.messages
-    this.unprunedMessages = []
+    this.history.replaceAll(state.messages)
     this.lastTools = []
 
     // Only restore lazy tools that still exist in the current tool set
@@ -587,17 +569,14 @@ export class Session {
 
     userParts.push(prompt)
 
-    const userMessage: GenericMessage =
+    const userMessage =
       autoLoadedSkillBlocks.length > 0
-        ? {
-            role: 'user',
-            content: [
-              ...autoLoadedSkillBlocks,
-              { type: 'text', text: userParts.join('\n\n') },
-            ],
-          }
-        : { role: 'user', content: userParts.join('\n\n') }
-    this.messages.push(userMessage)
+        ? new UserPromptMessage([
+            ...autoLoadedSkillBlocks,
+            { type: 'text', text: userParts.join('\n\n') },
+          ])
+        : new UserPromptMessage(userParts.join('\n\n'))
+    this.history.append(userMessage)
 
     // Inject pre-seeded tool results as synthetic assistant/user message pairs.
     // These appear in the conversation history so the LLM sees the analysis
@@ -606,11 +585,12 @@ export class Session {
       for (let i = 0; i < preSeededResults.length; i++) {
         const preSeeded = preSeededResults[i]!
         const toolUseId = `preseed_${i}`
-        this.pushToolExchange(toolUseId, preSeeded.toolName, preSeeded.params, {
-          type: 'tool_result',
-          tool_use_id: toolUseId,
-          content: JSON.stringify(preSeeded.result),
-        })
+        this.pushToolExchange(
+          toolUseId,
+          preSeeded.toolName,
+          preSeeded.params,
+          ToolResult.fromWire(JSON.stringify(preSeeded.result)),
+        )
       }
     }
 
@@ -635,57 +615,34 @@ export class Session {
         try {
           const clientResult = await this.waitForToolResult(callId)
 
-          let toolResult: ToolResultEntry
+          let result: ToolResult
           if (clientResult.error) {
             hasErrors = true
             allSkip = false
-            toolResult = {
-              type: 'tool_result',
-              tool_use_id: toolUseId,
-              content: JSON.stringify({ error: clientResult.error }),
-              is_error: true,
-            }
+            result = ToolResult.error(clientResult.error)
           } else {
             if (!clientResult.skipLlmResponse) {
               allSkip = false
             }
-            let resultForLLM = clientResult.result
-            if (
-              typeof resultForLLM === 'object' &&
-              resultForLLM !== null &&
-              'agentMessage' in resultForLLM
-            ) {
-              const { agentMessage, ...rest } = resultForLLM as Record<
-                string,
-                unknown
-              >
-              resultForLLM = { ...rest, label: agentMessage }
-            }
-            toolResult = {
-              type: 'tool_result',
-              tool_use_id: toolUseId,
-              content: JSON.stringify(resultForLLM),
-            }
+            result = ToolResult.fromClientResult(clientResult.result)
           }
           this.pushToolExchange(
             toolUseId,
             autoTool.toolName,
             autoTool.params,
-            toolResult,
+            result,
           )
         } catch {
           hasErrors = true
           allSkip = false
           // Client disconnected or cancelled — inject error result so the
           // LLM can see the failure and decide what to do.
-          this.pushToolExchange(toolUseId, autoTool.toolName, autoTool.params, {
-            type: 'tool_result',
-            tool_use_id: toolUseId,
-            content: JSON.stringify({
-              error: 'Auto-executed tool call was cancelled.',
-            }),
-            is_error: true,
-          })
+          this.pushToolExchange(
+            toolUseId,
+            autoTool.toolName,
+            autoTool.params,
+            ToolResult.error('Auto-executed tool call was cancelled.'),
+          )
         }
       }
       allAutoToolsSkipLlm = allSkip && !hasErrors
@@ -803,7 +760,10 @@ export class Session {
           },
           {
             systemPrompt,
-            messages: this.messages,
+            // Pure projection of the immutable history — recomputed each round
+            // from pristine canonical (applies the age + token-budget ceilings
+            // and eager volatile-staleness without ever mutating the source).
+            messages: this.history.projectForLlm(this.volatileLookup()),
             tools: allTools,
             maxTokens: 4096,
             signal: this.abortController.signal,
@@ -993,11 +953,8 @@ export class Session {
           // For transient errors that exhausted retries: roll back the
           // user message (if no turns committed anything to messages)
           // so the user can simply re-send their prompt.
-          if (
-            isRetryable &&
-            this.messages[this.messages.length - 1] === userMessage
-          ) {
-            this.messages.pop()
+          if (isRetryable && this.history.peekLast() === userMessage) {
+            this.history.popLast()
             console.error(
               '[blokkli agent] Transient stream error, retries exhausted:',
               streamError,
@@ -1023,29 +980,26 @@ export class Session {
           continue
         }
 
-        // Add assistant response to history if we have content
+        // Commit the assistant turn (a copy — the accumulator buffer for this
+        // round is reused by `commitMessagesEarly`).
+        let assistantNames: Map<string, string> | undefined
         if (assistantContent.length) {
-          this.messages.push({
-            role: 'assistant',
-            content: assistantContent,
-          })
+          const assistant = new AssistantMessage([...assistantContent])
+          assistantNames = assistant.toolUseNames()
+          this.history.append(assistant)
         }
 
-        // Add tool results to history if we have any
+        // Commit the tool-result relay, resolving each result's tool name from
+        // the assistant's tool_use blocks (drives volatile-staleness checks).
         if (toolResults.length) {
-          this.messages.push({
+          const relay = ToolRelayMessage.fromWire({
             role: 'user',
             content: [...toolResults, ...extraBlocks],
-          })
+          }).withResolvedNames((id) => assistantNames?.get(id))
+          this.history.append(relay)
           // Reset retry counters — the LLM is making progress
           planRetryCount = 0
           streamRetryCount = 0
-
-          // Prune between rounds so the next LLM call doesn't re-send every
-          // verbose/stale tool result. Snapshot first to preserve the full
-          // form for the debug transcript.
-          this.snapshotUnpruned()
-          pruneLiveContext(this.messages, this.buildToolMetadataMap())
         }
 
         // If no tool calls were made, check if there's an active plan.
@@ -1089,27 +1043,9 @@ export class Session {
       this.isProcessing = false
       this.abortController = null
 
-      // Snapshot any not-yet-captured messages before pruning so the transcript
-      // can still show the full (pre-compression) form. Incremental because
-      // pruneLiveContext already compressed messages in place during the loop.
-      this.snapshotUnpruned()
-
-      // Prune in `finally` so messages are compressed even after errors. This is
-      // the age-based ceiling (KEEP_RECENT_TURNS); pruneLiveContext applied the
-      // size-based ceiling between rounds. Both are idempotent.
-      pruneMessages(
-        this.messages,
-        KEEP_RECENT_TURNS,
-        this.buildToolMetadataMap(),
-      )
-
-      // Reconcile loadedSkills: if pruning removed a skill's text block,
-      // remove it from the set so the system prompt no longer says it's loaded.
-      if (this.loadedSkills.size > 0) {
-        this.reconcileLoadedSkills()
-      }
-
-      // Send conversation state for client-side persistence
+      // No pruning here: the canonical history is never compressed. The LLM
+      // view and the persistence snapshot are derived by pure projection.
+      // Send conversation state for client-side persistence.
       this.sendConversationState(peer, authSecret)
     }
   }
@@ -1160,28 +1096,24 @@ export class Session {
       waitForPlanApproval: () => this.waitForPlanApproval(),
       assistantContent,
       commitMessagesEarly: (toolResult) => {
+        let names: Map<string, string> | undefined
         if (assistantContent.length) {
-          this.messages.push({
-            role: 'assistant',
-            content: [...assistantContent],
-          })
+          const assistant = new AssistantMessage([...assistantContent])
+          names = assistant.toolUseNames()
+          this.history.append(assistant)
           assistantContent.length = 0
         }
-        this.messages.push({
-          role: 'user',
-          content: [toolResult],
-        })
+        this.history.append(
+          ToolRelayMessage.fromWire({
+            role: 'user',
+            content: [toolResult],
+          }).withResolvedNames((id) => names?.get(id)),
+        )
       },
       updateLastToolResult: (id, content) => {
-        const lastMsg = this.messages[this.messages.length - 1]
-        if (lastMsg.role === 'user' && Array.isArray(lastMsg.content)) {
-          const resultBlock = lastMsg.content.find(
-            (b) => b.type === 'tool_result' && b.tool_use_id === id,
-          )
-          if (resultBlock && resultBlock.type === 'tool_result') {
-            resultBlock.content = content
-          }
-        }
+        // A server tool (create_plan) finalising the placeholder relay it
+        // committed earlier — an immutable swap, not an in-place edit.
+        this.history.replaceLastResult(id, ToolResult.fromWire(content))
       },
       planStepHasWork: this.planStepHasWork,
       markPlanStepWork: () => {
@@ -1358,13 +1290,14 @@ export class Session {
     toolUseId: string,
     toolName: string,
     input: Record<string, unknown>,
-    toolResult: ToolResultEntry,
+    result: ToolResult,
   ): void {
-    this.messages.push({
-      role: 'assistant',
-      content: [{ type: 'tool_use', id: toolUseId, name: toolName, input }],
-    })
-    this.messages.push({ role: 'user', content: [toolResult] })
+    this.history.appendToolExchange(
+      new AssistantMessage([
+        { type: 'tool_use', id: toolUseId, name: toolName, input },
+      ]),
+      new ToolRelayMessage([{ toolUseId, toolName, result }]),
+    )
   }
 
   /**
@@ -1372,70 +1305,16 @@ export class Session {
    * user message — the LLM API rejects consecutive same-role messages.
    */
   private safePushUserMessage(text: string): void {
-    const lastMessage = this.messages[this.messages.length - 1]
-    if (lastMessage && lastMessage.role === 'user') {
-      // Merge into existing user message
-      if (typeof lastMessage.content === 'string') {
-        lastMessage.content = lastMessage.content + '\n' + text
-      } else {
-        // Array content — append as text block
-        lastMessage.content.push({ type: 'text', text })
-      }
-    } else {
-      this.messages.push({ role: 'user', content: text })
-    }
+    this.history.mergeOrAppendUserText(text)
   }
 
   /**
-   * Remove skills from loadedSkills whose text content has been pruned
-   * from the conversation messages.
+   * Whether a tool's results go stale after a mutation — used by the live
+   * projection's eager volatile eviction. Volatility is a property of the tool
+   * definition, so it holds regardless of the current tool set.
    */
-  private reconcileLoadedSkills(): void {
-    // Collect skill names still present as skill blocks in messages
-    const presentSkills = new Set<string>()
-    for (const msg of this.messages) {
-      if (msg.role !== 'user' || !Array.isArray(msg.content)) continue
-      for (const block of msg.content) {
-        if (block.type === 'skill') {
-          presentSkills.add(block.name)
-        }
-      }
-    }
-    // Remove any skills that are no longer in the messages
-    for (const name of this.loadedSkills) {
-      if (!presentSkills.has(name)) {
-        this.loadedSkills.delete(name)
-      }
-    }
-  }
-
-  /**
-   * Build a map of tool name to pruning metadata from all known tools.
-   */
-  /**
-   * Capture the full (pre-pruning) form of any message not already snapshotted.
-   * Pruning compresses messages in place, so the original must be cloned before
-   * the first prune touches it. Never overwrites — the first capture wins — and
-   * since pruning never removes messages, indices stay aligned with
-   * `this.messages` for `buildTranscript`'s seen/full zip.
-   */
-  private snapshotUnpruned(): void {
-    for (let i = 0; i < this.messages.length; i++) {
-      if (this.unprunedMessages[i] === undefined && this.messages[i]) {
-        this.unprunedMessages[i] = structuredClone(this.messages[i]!)
-      }
-    }
-  }
-
-  private buildToolMetadataMap(): Map<string, ToolPruningMetadata> {
-    const map = new Map<string, ToolPruningMetadata>()
-    for (const name of [...this.toolNames, ...this.lazyToolNames]) {
-      const bundled = this.bundledToolMap.get(name)
-      if (bundled?.volatile) {
-        map.set(name, { volatile: true })
-      }
-    }
-    return map
+  private volatileLookup(): VolatileLookup {
+    return (name) => !!(name && this.bundledToolMap.get(name)?.volatile)
   }
 
   private buildTranscript(): Transcript {
@@ -1455,24 +1334,9 @@ export class Session {
         )
       : []
 
-    // Zip pruned (seen) messages with unpruned (full) messages
-    const messages: TranscriptMessage[] = this.messages.map((msg, i) => {
-      const entry: TranscriptMessage = {
-        type: msg.role === 'assistant' ? 'agent' : 'user',
-        seen: msg.content,
-      }
-
-      const unpruned = this.unprunedMessages[i]
-      if (unpruned) {
-        const seenJson = JSON.stringify(msg.content)
-        const fullJson = JSON.stringify(unpruned.content)
-        if (seenJson !== fullJson) {
-          entry.full = unpruned.content
-        }
-      }
-
-      return entry
-    })
+    // `seen` is the projected (compressed) view; `full` the canonical message,
+    // included only where they differ.
+    const messages = this.history.buildTranscriptMessages(this.volatileLookup())
 
     // Map last tools to transcript format
     const tools = this.lastTools.map((t) => ({

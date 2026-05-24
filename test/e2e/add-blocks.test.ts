@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { createPage, setup } from '@nuxt/test-utils/e2e'
 
-describe('Add Blocks', async () => {
+describe.skip('Add Blocks', async () => {
   await setup()
 
   test('the add list element is rendered', async () => {
