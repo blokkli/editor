@@ -1,12 +1,12 @@
 <template>
   <div class="bk-agent-message bk-is-assistant bk-agent-assistant-bubble">
-    <div ref="contentEl" class="bk-agent-message-text" />
+    <Markdown class="bk-agent-message-text" :content="renderedContent" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick, useBlokkli } from '#imports'
-import { renderMarkdown } from '#blokkli/agent/app/helpers/markdown'
+import { computed, useBlokkli } from '#imports'
+import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
 import { PLACEHOLDER_USER_NAME } from '#blokkli/agent/shared/placeholders'
 
 const props = defineProps<{
@@ -18,25 +18,7 @@ const props = defineProps<{
 
 const { state } = useBlokkli()
 
-const contentEl = ref<HTMLElement>()
-
-function renderContent(content: string) {
-  const container = contentEl.value
-  if (!container) return
-  const ownerName = state.owner.value?.name || ''
-  container.innerHTML = renderMarkdown(
-    content.replaceAll(PLACEHOLDER_USER_NAME, ownerName),
-  )
-}
-
-watch(
-  () => props.content,
-  async (content) => {
-    if (content) {
-      await nextTick()
-      renderContent(content)
-    }
-  },
-  { immediate: true },
+const renderedContent = computed(() =>
+  props.content.replaceAll(PLACEHOLDER_USER_NAME, state.owner.value?.name || ''),
 )
 </script>

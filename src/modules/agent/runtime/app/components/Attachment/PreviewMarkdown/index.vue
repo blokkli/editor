@@ -1,14 +1,11 @@
 <template>
-  <div class="whitespace-normal bk-agent-message-text" v-html="html" />
+  <Markdown class="whitespace-normal bk-agent-message-text" :content />
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { renderMarkdown } from '#blokkli/agent/app/helpers/markdown'
+import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
 
-const props = defineProps<{
+defineProps<{
   content: string
 }>()
-
-const html = computed(() => renderMarkdown(props.content))
 </script>

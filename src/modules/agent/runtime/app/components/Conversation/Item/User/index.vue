@@ -48,11 +48,15 @@
       </div>
     </div>
     <template v-else>
-      <div v-if="html" class="bk-agent-message-text" v-html="html" />
+      <Markdown
+        v-if="content"
+        class="bk-agent-message-text"
+        :content="content"
+      />
       <div
         v-if="attachments?.length"
         class="grid gap-8"
-        :class="{ 'mt-10': html }"
+        :class="{ 'mt-10': content }"
       >
         <AttachmentChip
           v-for="att in attachments"
@@ -67,7 +71,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useBlokkli } from '#imports'
-import { renderMarkdown } from '#blokkli/agent/app/helpers/markdown'
+import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
 import AttachmentChip from '../../../Attachment/index.vue'
 import type { Attachment } from '#blokkli/agent/app/types'
 import InlineActions from '#blokkli/editor/components/InlineActions/index.vue'
@@ -91,10 +95,6 @@ const agent = useAgent(true)
 
 const isEditing = ref(false)
 const editValue = ref('')
-
-const html = computed(() => {
-  return props.content ? renderMarkdown(props.content) : ''
-})
 
 const canRollback = computed(
   () =>

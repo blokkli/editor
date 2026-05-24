@@ -20,7 +20,6 @@
       <AgentContainer
         v-if="shouldRender"
         :is-shown
-        :agent-name
         :adapter
         :pending-prompt-request="pendingPromptRequest"
         @consumed="pendingPromptRequest = null"

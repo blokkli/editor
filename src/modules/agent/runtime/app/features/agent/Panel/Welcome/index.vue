@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div
+    <Markdown
       class="bk-agent-message-text bk-agent-welcome-text"
-      v-html="welcomeHtml"
+      :content="welcomeContent"
     />
     <div v-if="defaultPrompts.length" class="grid gap-5 mt-10">
       <button
@@ -22,11 +22,11 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
-import { marked } from 'marked'
 import welcomeMdEn from './en.md?raw'
 import welcomeMdDe from './de.md?raw'
 import { defaultPrompts } from '#blokkli-build/agent-client'
 import { Icon, InfoBox } from '#blokkli/editor/components'
+import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
 
 const props = defineProps<{
   agentName: string
@@ -41,9 +41,7 @@ const { $t, ui } = useBlokkli()
 const welcomeMd =
   ui.interfaceLanguage.value === 'de' ? welcomeMdDe : welcomeMdEn
 
-const welcomeHtml = await Promise.resolve(marked.parse(welcomeMd)).then((v) =>
-  v.replaceAll('@agent-name', props.agentName),
-)
+const welcomeContent = welcomeMd.replaceAll('@agent-name', props.agentName)
 
 const disclaimer = computed(() => {
   return $t(

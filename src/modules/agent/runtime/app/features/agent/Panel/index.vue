@@ -32,20 +32,20 @@
             :active-item="activeItem"
             :is-thinking="isThinking"
             :tool-details
-            @retry="emit('retry')"
+            @retry="agent.retry"
           />
           <component
             :is="pendingToolComponent"
             v-if="pendingToolComponent && pendingToolCall"
             :context="toolContext"
             :params="pendingToolCall.params"
-            @done="(result: unknown) => emit('toolComponentDone', result)"
+            @done="agent.tools.onComponentDone"
           />
           <PendingMutation
             v-else-if="pendingMutation && !autoApprove"
             :action="pendingMutation.action"
-            @approve="emit('approve')"
-            @reject="emit('reject')"
+            @approve="agent.tools.approve"
+            @reject="agent.tools.reject"
             @always-approve="onAlwaysApprove"
           />
           <TransitionHeight opacity :duration="300">
@@ -59,11 +59,8 @@
                 conversation[conversation.length - 1]?.type === 'assistant' &&
                 !feedbackItemIds.has(conversation[conversation.length - 1]!.id)
               "
-              @submit="
-                (rating: AgentConversationFeedbackRating, comment?: string) =>
-                  emit('submitFeedback', rating, comment)
-              "
-              @done="emit('feedbackDone')"
+              @submit="onSubmitFeedback"
+              @done="onFeedbackDone"
             />
           </TransitionHeight>
         </template>
@@ -81,10 +78,10 @@
           :usage-turns
           :has-active-plan="!!activePlan"
           @submit="onSubmit"
-          @cancel="emit('cancel')"
+          @cancel="agent.cancel"
           @new-conversation="onNewConversation"
-          @show-transcript="emit('getTranscript')"
-          @show-conversations="emit('showConversations')"
+          @show-transcript="agent.getTranscript"
+          @show-conversations="onShowConversations"
         >
           <TransitionHeight opacity :duration="300">
             <div
@@ -104,8 +101,8 @@
               v-if="activePlan"
               :plan="activePlan"
               :pending-approval="isPlanPendingApproval"
-              @approve="emit('approvePlan')"
-              @reject="emit('rejectPlan')"
+              @approve="agent.plan.approve"
+              @reject="agent.plan.reject"
             />
           </TransitionHeight>
         </AgentInput>
@@ -115,13 +112,13 @@
       <PanelSheet
         v-if="showConversationList"
         :title="$t('aiAgentPastConversations', 'Past conversations')"
-        @close="emit('hideConversations')"
+        @close="onHideConversations"
       >
         <ConversationList
           :conversations="conversationList"
-          @switch="(id: string) => emit('switchConversation', id)"
-          @delete="(id: string) => emit('deleteConversation', id)"
-          @close="emit('hideConversations')"
+          @switch="agent.switchConversation"
+          @delete="agent.deleteConversation"
+          @close="onHideConversations"
         />
       </PanelSheet>
     </BlokkliTransition>
@@ -158,70 +155,19 @@ import AgentInput from './Input/index.vue'
 import ConversationList from './ConversationList/index.vue'
 import Feedback from './Feedback/index.vue'
 import type { AgentConversationFeedbackRating } from '../types'
-import type {
-  AgentConversationItemSummary,
-  PendingMutationState,
-  PendingToolCall,
-} from '#blokkli/agent/app/composables'
-import type {
-  ConversationItem,
-  ActiveItem,
-  Attachment,
-} from '#blokkli/agent/app/types'
-import type { SendPromptOptions } from '#blokkli/agent/app/providers/agentProvider'
-import type {
-  ClientPlanState,
-  PageContext,
-  UsageTurn,
-} from '#blokkli/agent/shared/types'
+import type { Attachment } from '#blokkli/agent/app/types'
+import type { ClientPlanState } from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
 import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
+import { agentName } from '#blokkli-build/agent-prompts'
 import PanelSheet from '#blokkli/editor/components/Panel/Sheet/index.vue'
 import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
+import { useAgent } from '#blokkli/agent/app/composables/useAgent'
 
 const props = defineProps<{
-  agentName: string
   isShown: boolean
-  conversation: ConversationItem[]
-  activeItem: ActiveItem | null
-  isThinking: boolean
-  isProcessing: boolean
-  isConnected: boolean
-  hasBeenReady: boolean
-  pendingToolCall: PendingToolCall | null
-  pendingMutation: PendingMutationState | null
-  autoApprove: boolean
-  toolDetails: Map<string, unknown>
-  conversationList: AgentConversationItemSummary[]
-  showConversationList: boolean
-  plan: ClientPlanState | null
-  usageTurns: UsageTurn[]
-  pageContext: PageContext | null
-  supportsFeedback: boolean
-  feedbackItemIds: Set<string>
-}>()
-
-const emit = defineEmits<{
-  connect: []
-  sendPrompt: [options: SendPromptOptions]
-  cancel: []
-  approve: []
-  reject: []
-  setAutoApprove: [value: boolean]
-  newConversation: []
-  getTranscript: []
-  toolComponentDone: [result: unknown]
-  switchConversation: [id: string]
-  deleteConversation: [id: string]
-  showConversations: []
-  hideConversations: []
-  retry: []
-  approvePlan: []
-  rejectPlan: []
-  submitFeedback: [rating: AgentConversationFeedbackRating, comment?: string]
-  feedbackDone: []
 }>()
 
 const DEBUG_STYLING = import.meta.dev && false
@@ -229,12 +175,32 @@ const DEBUG_STYLING = import.meta.dev && false
 const app = useBlokkli()
 const { $t } = app
 
+const agent = useAgent()
+const { isThinking, isProcessing, hasBeenReady } = agent
+const { isConnected } = agent.socket
+const {
+  items: conversation,
+  activeItem,
+  conversationList,
+  showConversationList,
+  usageTurns,
+  feedbackItemIds,
+  toolDetails,
+} = agent.conversation
+const { pendingToolCall, pendingMutation, autoApprove, pageContext } =
+  agent.tools
+const { plan } = agent.plan
+
+const supportsFeedback = computed(
+  () => !!app.adapter.agentConversations?.submitFeedback,
+)
+
 // Connect when sidebar first becomes visible (provider guards against duplicate calls)
 watch(
   () => props.isShown,
   (isShown) => {
     if (isShown && !DEBUG_STYLING) {
-      emit('connect')
+      agent.connect()
     }
   },
   { immediate: true },
@@ -245,12 +211,12 @@ const toolContext = computed(() => ({
   app,
   itemEntityType,
   adapter: app.adapter,
-  pageContext: props.pageContext,
+  pageContext: pageContext.value,
 }))
 
 const pendingToolComponent = computed(() => {
-  if (!props.pendingToolCall) return null
-  const tool = mcpTools.find((t) => t.name === props.pendingToolCall!.toolName)
+  if (!pendingToolCall.value) return null
+  const tool = mcpTools.find((t) => t.name === pendingToolCall.value!.toolName)
   return tool?.component || null
 })
 
@@ -304,14 +270,11 @@ onBeforeUnmount(() => {
 })
 
 // Focus textarea when processing completes
-watch(
-  () => props.isProcessing,
-  (isProcessing, wasProcessing) => {
-    if (wasProcessing && !isProcessing) {
-      nextTick(() => inputEl.value?.focus())
-    }
-  },
-)
+watch(isProcessing, (isProcessing, wasProcessing) => {
+  if (wasProcessing && !isProcessing) {
+    nextTick(() => inputEl.value?.focus())
+  }
+})
 
 const debugPlan: ClientPlanState = {
   title: 'Restructure page content',
@@ -330,11 +293,11 @@ const debugIsProcessing = computed(() => {
   if (DEBUG_STYLING) {
     return debugShowPlan.value
   }
-  return props.isProcessing
+  return isProcessing.value
 })
 
 const activePlan = computed(() => {
-  return DEBUG_STYLING ? (debugShowPlan.value ? debugPlan : null) : props.plan
+  return DEBUG_STYLING ? (debugShowPlan.value ? debugPlan : null) : plan.value
 })
 
 const isPlanPendingApproval = computed(() => {
@@ -345,11 +308,11 @@ const isPlanPendingApproval = computed(() => {
 })
 
 const showWelcome = computed(() => {
-  return !props.conversation.length && !props.activeItem && !props.isThinking
+  return !conversation.value.length && !activeItem.value && !isThinking.value
 })
 
 function onAlwaysApprove() {
-  emit('setAutoApprove', true)
+  agent.tools.setAutoApprove(true)
 }
 
 function scrollToBottomOnSend() {
@@ -358,7 +321,7 @@ function scrollToBottomOnSend() {
 }
 
 function onWelcomePrompt(prompt: string) {
-  emit('sendPrompt', { prompt })
+  agent.sendPrompt({ prompt })
   scrollToBottomOnSend()
 }
 
@@ -366,13 +329,13 @@ function onSubmit(submitAttachments: Attachment[]) {
   const text = inputValue.value.trim()
   if (
     (!text && !submitAttachments.length) ||
-    props.isProcessing ||
-    !props.isConnected
+    isProcessing.value ||
+    !isConnected.value
   )
     return
 
   if (!submitAttachments.length) {
-    emit('sendPrompt', { prompt: inputValue.value })
+    agent.sendPrompt({ prompt: inputValue.value })
   } else {
     const attachmentBlocks = submitAttachments
       .map(
@@ -383,7 +346,7 @@ function onSubmit(submitAttachments: Attachment[]) {
 
     const prompt = text ? `${text}\n\n${attachmentBlocks}` : attachmentBlocks
 
-    emit('sendPrompt', {
+    agent.sendPrompt({
       prompt,
       displayPrompt: text,
       attachments: submitAttachments,
@@ -401,6 +364,44 @@ function onFileDrop(dropped: Attachment[]) {
 }
 
 function onNewConversation() {
-  emit('newConversation')
+  agent.newConversation()
+}
+
+async function onSubmitFeedback(
+  rating: AgentConversationFeedbackRating,
+  comment?: string,
+) {
+  if (!app.adapter.agentConversations?.submitFeedback) return
+  const conversationId = agent.conversation.activeConversationId.value
+  if (!conversationId) return
+  const lastItem = conversation.value[conversation.value.length - 1]
+  if (!lastItem) return
+
+  try {
+    await app.adapter.agentConversations.submitFeedback({
+      conversationId,
+      rating,
+      lastItemId: lastItem.id,
+      comment,
+    })
+  } catch (e) {
+    console.warn('[blokkli agent] Failed to submit feedback:', e)
+  }
+}
+
+function onFeedbackDone() {
+  const lastItem = conversation.value[conversation.value.length - 1]
+  if (lastItem) {
+    agent.conversation.feedbackItemIds.value.add(lastItem.id)
+  }
+}
+
+async function onShowConversations() {
+  await agent.refreshConversationList()
+  agent.conversation.showConversationList.value = true
+}
+
+function onHideConversations() {
+  agent.conversation.showConversationList.value = false
 }
 </script>
