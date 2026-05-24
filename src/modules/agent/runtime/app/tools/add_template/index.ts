@@ -16,7 +16,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_template',
   description:
-    "Add a template to the page. Templates are copied when added, so changes to the added paragraphs won't affect other pages using the same template. Requires user approval before the template is actually added.",
+    "Add a template to the page. Templates are copied when added, so changes to the added paragraphs won't affect other pages using the same template.",
   category: 'mutation',
   prunedSummary: (r) =>
     r.success

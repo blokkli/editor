@@ -12,8 +12,7 @@ const paramsSchema = z.object({
 
 export default defineBlokkliAgentTool({
   name: 'delete_paragraphs',
-  description:
-    'Delete one or more paragraphs from the page. Requires user approval before the paragraphs are actually deleted.',
+  description: 'Delete one or more paragraphs from the page.',
   category: 'mutation',
   lazy: true,
   prunedSummary: (r) => (r.success ? 'deleted paragraphs' : 'rejected'),

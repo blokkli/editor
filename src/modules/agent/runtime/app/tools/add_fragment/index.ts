@@ -12,8 +12,7 @@ const paramsSchema = z.object({
 
 export default defineBlokkliAgentTool({
   name: 'add_fragment',
-  description:
-    'Add a fragment paragraph to the page. Requires user approval before the fragment is actually added.',
+  description: 'Add a fragment paragraph to the page.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added fragment' : 'rejected'),
   modes: ['editing'],

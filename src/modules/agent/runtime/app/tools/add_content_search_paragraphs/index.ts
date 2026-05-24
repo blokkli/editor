@@ -21,7 +21,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_content_search_paragraphs',
   description:
-    'Add a paragraph using a content item from search results. Use search_content first to find content items, then use this tool to add one to the page. Requires user approval.',
+    'Add a paragraph using a content item from search results. Use search_content first to find content items, then use this tool to add one to the page.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added content paragraph' : 'rejected'),
   modes: ['editing'],

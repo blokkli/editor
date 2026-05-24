@@ -20,7 +20,7 @@ const paramsSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'add_media_paragraph',
   description:
-    'Add a paragraph using a media item from the library. Use search_media first to find media items, then use this tool to add one to the page. Requires user approval.',
+    'Add a paragraph using a media item from the library. Use search_media first to find media items, then use this tool to add one to the page.',
   category: 'mutation',
   prunedSummary: (r) => (r.success ? 'added media paragraph' : 'rejected'),
   modes: ['editing'],
