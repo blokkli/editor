@@ -760,6 +760,7 @@ export class Session {
           resolvedSkills,
           plan: this.plan,
           unloadedLazyTools,
+          lazyToolNames: this.lazyToolNames,
         }
         const serverToolDefs = serverTools
           .map((t) => buildDefinition(t, defCtx))

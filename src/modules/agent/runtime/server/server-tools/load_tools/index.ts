@@ -7,13 +7,12 @@ export default defineServerSideTool({
     'Load additional tools by name before using them. You must call this before using any tool listed under "Additional Tools" in the system prompt.',
 
   inputSchema(ctx) {
+    // Accept any lazy tool name, not just the currently-unloaded ones. The LLM
+    // sometimes re-loads a tool it already activated; rejecting that as invalid
+    // input only forces a wasted retry loop. `handle` re-activates idempotently.
     return z.object({
       tools: z
-        .array(
-          z.enum(
-            ctx.unloadedLazyTools.map((t) => t.name) as [string, ...string[]],
-          ),
-        )
+        .array(z.enum(ctx.lazyToolNames as [string, ...string[]]))
         .describe('Tool names to activate'),
     })
   },

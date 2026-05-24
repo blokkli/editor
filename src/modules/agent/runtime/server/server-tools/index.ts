@@ -47,6 +47,8 @@ export type ToolDefinitionContext = {
   resolvedSkills: ResolvedSkill[]
   plan: ServerPlan | null
   unloadedLazyTools: { name: string; description: string }[]
+  /** All lazy tool names, including ones already activated. */
+  lazyToolNames: string[]
 }
 
 /**
