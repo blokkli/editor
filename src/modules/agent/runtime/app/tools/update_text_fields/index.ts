@@ -30,12 +30,20 @@ const operationSchema = z.object({
     ),
 })
 
+const updateSchema = z.object({
+  uuid: z.string().describe('The paragraph UUID'),
+  fieldName: z.string().describe('The editable field name'),
+  value: z
+    .string()
+    .describe('The complete new field value — overwrites the entire field'),
+})
+
 const paramsSchema = z.object({
-  uuids: z
-    .record(z.string(), z.record(z.string(), z.string()))
+  updates: z
+    .array(updateSchema)
     .optional()
     .describe(
-      'Full-replacement mode: map of paragraph UUID → field name → the complete new field value. The entire field is overwritten. Use when you have the final text or the value changes substantially.',
+      'Full-replacement mode: a list of { uuid, fieldName, value } entries. Each overwrites the entire field with the given value. Use when the value changes substantially or you already have the final text.',
     ),
   operations: z
     .array(operationSchema)
@@ -57,7 +65,7 @@ export type BatchRewriteResult = z.infer<typeof fieldDiffResultSchema>
 export default defineBlokkliAgentTool({
   name: 'update_text_fields',
   description:
-    'Update text content fields on one or more paragraphs. Two modes, which may be combined in a single call:\n- Full replacement via `uuids`: overwrite the entire field with a complete new value. Use when the value changes substantially or you already have the final text.\n- Patch via `operations`: search/replace pairs applied to each field\'s CURRENT value (so `search` must match the existing content). Best for small edits like typo fixes, since you only send the changed part. Set `selector: true` on an operation to treat `search` as a CSS selector (e.g. "p:nth-child(3)") and `replace` as the matched element\'s innerHTML.\nThe approval UI is shown by default; set requireApproval to false to apply immediately (only when the user supplied the exact text).',
+    'Update text content fields on one or more paragraphs. Two modes, which may be combined in a single call:\n- Full replacement via `updates`: a list of { uuid, fieldName, value } entries, each overwriting the entire field with a complete new value. Use when the value changes substantially or you already have the final text.\n- Patch via `operations`: search/replace pairs applied to each field\'s CURRENT value (so `search` must match the existing content). Best for small edits like typo fixes, since you only send the changed part. Set `selector: true` on an operation to treat `search` as a CSS selector (e.g. "p:nth-child(3)") and `replace` as the matched element\'s innerHTML.\nThe approval UI is shown by default; set requireApproval to false to apply immediately (only when the user supplied the exact text).',
   category: 'mutation',
   lazy: true,
   prunedSummary: (r) =>
@@ -75,10 +83,10 @@ export default defineBlokkliAgentTool({
   detailsComponent: DetailsComponent,
   buildDetails: (result) => result,
   execute(ctx, params) {
-    // Collect all block UUIDs from both uuids and operations params
+    // Collect all block UUIDs from both updates and operations params
     const blockUuids: string[] = []
-    if (params.uuids) {
-      blockUuids.push(...Object.keys(params.uuids))
+    if (params.updates) {
+      blockUuids.push(...params.updates.map((u) => u.uuid))
     }
     if (params.operations) {
       blockUuids.push(...params.operations.map((op) => op.uuid))
@@ -104,21 +112,36 @@ export default defineBlokkliAgentTool({
     return params
   },
   mockParams: () => ({
-    uuids: {
-      '4526d2d0-f122-4093-902f-e2f00a433981': {
-        title: 'Seamlessly integrates in any Nuxt setup',
-        tagline: 'Great Developer Experience',
+    updates: [
+      {
+        uuid: '4526d2d0-f122-4093-902f-e2f00a433981',
+        fieldName: 'title',
+        value: 'Seamlessly integrates in any Nuxt setup',
       },
-      '9485812c-0ecd-4699-85b2-3a031d47a0a1': {
-        text: '<ul><li>Fully responsive design</li><li>Touch gestures and smooth interactions</li><li>All editing features available on mobile</li><li>Optimized for tablets</li></ul>',
+      {
+        uuid: '4526d2d0-f122-4093-902f-e2f00a433981',
+        fieldName: 'tagline',
+        value: 'Great Developer Experience',
       },
-      '67a9e26f-8028-4283-8b7d-8f836355b949': {
-        text: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><p>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra.</p>',
+      {
+        uuid: '9485812c-0ecd-4699-85b2-3a031d47a0a1',
+        fieldName: 'text',
+        value:
+          '<ul><li>Fully responsive design</li><li>Touch gestures and smooth interactions</li><li>All editing features available on mobile</li><li>Optimized for tablets</li></ul>',
       },
-      '3a2617ed-6844-4d39-859c-82869f4ea5aa': {
-        text: '<ul><li>Auto import block components</li><li>Directly define options inside the component</li><li>Support for import chunks</li></ul>',
+      {
+        uuid: '67a9e26f-8028-4283-8b7d-8f836355b949',
+        fieldName: 'text',
+        value:
+          '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><p>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra.</p>',
       },
-    },
+      {
+        uuid: '3a2617ed-6844-4d39-859c-82869f4ea5aa',
+        fieldName: 'text',
+        value:
+          '<ul><li>Auto import block components</li><li>Directly define options inside the component</li><li>Support for import chunks</li></ul>',
+      },
+    ],
     requireApproval: true,
   }),
 })

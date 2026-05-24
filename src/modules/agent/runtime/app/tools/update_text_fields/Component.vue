@@ -103,18 +103,16 @@ const beforeValues = new Map<number, string>()
 function buildItems(): ApprovalItem[] {
   const result: ApprovalItem[] = []
 
-  // Process full-value replacements from `uuids`.
-  if (props.params.uuids) {
-    for (const [uuid, fields] of Object.entries(props.params.uuids)) {
-      for (const [fieldName, value] of Object.entries(fields)) {
-        result.push({
-          id: idCounter++,
-          uuid,
-          fieldName,
-          fieldLabel: resolveFieldLabel(uuid, fieldName),
-          value,
-        })
-      }
+  // Process full-value replacements from `updates`.
+  if (props.params.updates) {
+    for (const { uuid, fieldName, value } of props.params.updates) {
+      result.push({
+        id: idCounter++,
+        uuid,
+        fieldName,
+        fieldLabel: resolveFieldLabel(uuid, fieldName),
+        value,
+      })
     }
   }
 

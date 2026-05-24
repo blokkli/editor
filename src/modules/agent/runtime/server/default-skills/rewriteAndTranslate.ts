@@ -47,7 +47,7 @@ For writing new content for empty fields (e.g. after adding blocks). Optionally 
 - Fall back to \`update_text_fields\` for small/direct text changes where you already have the final values (e.g. fixing a typo, or setting text provided by the user).
 - Use \`update_text_fields\` with \`operations\` (search/replace) for small targeted edits like typo fixes — avoids outputting the entire field value.
 - Use \`operations\` with \`selector: true\` to target a specific HTML element by CSS selector (e.g. \`p:nth-child(3)\`, \`h2\`, \`li:last-child\`) and replace its innerHTML.
-- Use \`update_text_fields\` with \`uuids\` for full rewrites where the entire value changes.
+- Use \`update_text_fields\` with \`updates\` (a list of { uuid, fieldName, value }) for full rewrites where the entire value changes.
 - The \`update_text_fields\` tool can also be used when requireApproval is "false" (e.g. when the user provided the text themselves).
 - Both tools will ASK the user to accept each changed text by default - no need to manually ask the user beforehand!
 - When the user rejects one or more texts, they can provide a reason. Carefully read the reason if provided!
