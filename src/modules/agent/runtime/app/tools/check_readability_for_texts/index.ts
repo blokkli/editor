@@ -13,9 +13,17 @@ function bandToLevel(band: ReadabilityBand): 'good' | 'ok' | 'hard' {
 
 const textResultSchema = z.object({
   text: z.string(),
-  level: z.enum(['good', 'ok', 'hard']),
-  score: z.number(),
+  level: z.enum(['good', 'ok', 'hard', 'unknown']),
+  score: z.number().nullable(),
+  note: z.string().optional(),
 })
+
+// Worst-first severity ordering for readability bands.
+const LEVEL_SEVERITY: Record<'good' | 'ok' | 'hard', number> = {
+  good: 0,
+  ok: 1,
+  hard: 2,
+}
 
 const paramsSchema = z.object({
   texts: z
@@ -32,7 +40,7 @@ const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'check_readability_for_texts',
   description:
-    'Check readability scores for one or more text strings. Returns a readability level ("good", "ok", or "hard") and metrics (LIX, CLI, ARI) for each text. Use this to evaluate whether a rewritten text has better readability before applying it.',
+    'Check readability scores for one or more text strings. Returns a readability level ("good", "ok", or "hard") and a score for each text. Use this to evaluate whether a rewritten text has better readability before applying it. Texts too short to score reliably return level "unknown" and score null.',
   category: 'query',
   lazy: true,
   modes: ['readonly', 'editing', 'translating', 'review'],
@@ -55,24 +63,38 @@ export default defineBlokkliAgentTool({
     for (const text of params.texts) {
       const chunks = await readability.analyzeText(text, langcode)
 
-      // Determine worst band/score across all chunks.
+      // Determine the worst band and the worst (lowest) score across all
+      // scorable chunks. Chunks with a null score/band can't be analyzed (e.g.
+      // the text is below the analyzer's minimum word count).
       let worstLevel: 'good' | 'ok' | 'hard' = 'good'
-      let worstScore = 0
+      let worstScore: number | null = null
 
       for (const chunk of chunks) {
         if (chunk.band === null || chunk.score === null) continue
         const level = bandToLevel(chunk.band)
-        if (level === 'hard' || (level === 'ok' && worstLevel === 'good')) {
+        if (LEVEL_SEVERITY[level] > LEVEL_SEVERITY[worstLevel]) {
           worstLevel = level
+        }
+        if (worstScore === null || chunk.score < worstScore) {
           worstScore = chunk.score
         }
       }
 
-      results.push({
-        text,
-        level: worstLevel,
-        score: worstScore,
-      })
+      if (worstScore === null) {
+        // Nothing could be scored — report honestly instead of a false "good".
+        results.push({
+          text,
+          level: 'unknown',
+          score: null,
+          note: 'Text too short to score reliably.',
+        })
+      } else {
+        results.push({
+          text,
+          level: worstLevel,
+          score: worstScore,
+        })
+      }
     }
 
     return {
