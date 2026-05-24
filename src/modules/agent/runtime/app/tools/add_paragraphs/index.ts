@@ -13,6 +13,8 @@ import {
   getResolvedOptions,
   resolveHost,
 } from '../helpers'
+import { validateFieldCardinality } from '../../helpers/validation'
+import { getFieldKey } from '#blokkli/helpers'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
@@ -253,6 +255,16 @@ function validateBlockTree(
 
         if (!childBlocks.length) continue
 
+        // The parent block is freshly created, so this field starts empty —
+        // validate the requested children against the field's cardinality
+        // (-1 means unlimited).
+        if (
+          childFieldConfig.cardinality !== -1 &&
+          childBlocks.length > childFieldConfig.cardinality
+        ) {
+          return `${path}: Field "${childFieldName}" can only hold ${childFieldConfig.cardinality} paragraph(s), but ${childBlocks.length} were provided.`
+        }
+
         const childError = validateBlockTree(
           ctx,
           childBlocks,
@@ -384,7 +396,7 @@ export default defineBlokkliAgentTool({
     const host = resolveHost(ctx.app, params.parent.uuid)
     if (!host) {
       return {
-        error: 'Parent not found.',
+        error: `Parent paragraph "${params.parent.uuid}" not found. Use get_page_structure or get_child_paragraphs to find a valid parent UUID.`,
       }
     }
     const { entityType, bundle, isRoot: isRootEntity } = host
@@ -398,6 +410,23 @@ export default defineBlokkliAgentTool({
       return {
         error: `Field "${params.parent.field}" not found on bundle "${bundle}". Available fields: ${availableFields.length ? availableFields.join(', ') : 'none'}. Use get_child_paragraphs to get the correct parent object.`,
       }
+    }
+
+    // Validate the target field can hold the new top-level paragraphs alongside
+    // its existing children (-1 cardinality means unlimited).
+    const cardinality = validateFieldCardinality(
+      ctx.app,
+      {
+        type: entityType,
+        uuid: params.parent.uuid,
+        fieldName: params.parent.field,
+        bundle,
+      },
+      getFieldKey(params.parent.uuid, params.parent.field),
+      params.paragraphs.length,
+    )
+    if (!cardinality.valid) {
+      return { error: cardinality.error }
     }
 
     // Check ancestor restrictions on the target parent

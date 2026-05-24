@@ -1,11 +1,13 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
-import { resolvePosition } from '../helpers'
+import { resolvePosition, resolveHost } from '../helpers'
 import {
   requireBundlePermission,
   requireNoRestrictedAncestor,
+  validateFieldCardinality,
 } from '../../helpers/validation'
+import { getFieldKey } from '#blokkli/helpers'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the paragraphs to move'),
@@ -35,13 +37,21 @@ export default defineBlokkliAgentTool({
     }
 
     // Validate that all blocks exist
-    const validBlocks: Array<{ uuid: string; bundle: string }> = []
+    const validBlocks: Array<{
+      uuid: string
+      bundle: string
+      currentFieldKey: string
+    }> = []
     for (const uuid of params.uuids) {
       const block = blocks.getBlock(uuid)
       if (!block) {
         return { error: `Paragraph not found: ${uuid}` }
       }
-      validBlocks.push({ uuid, bundle: block.bundle })
+      validBlocks.push({
+        uuid,
+        bundle: block.bundle,
+        currentFieldKey: getFieldKey(block.host.uuid, block.host.fieldName),
+      })
     }
 
     // Check edit permission for all bundles being moved
@@ -59,6 +69,35 @@ export default defineBlokkliAgentTool({
       return {
         error:
           'Permission denied: target parent is inside a block with restricted editing permissions',
+      }
+    }
+
+    // Validate target field cardinality. Only blocks coming from another field
+    // increase the target's count — same-field reorders leave it unchanged.
+    const targetHost = resolveHost(ctx.app, params.parent.uuid)
+    if (!targetHost) {
+      return {
+        error: `Target parent "${params.parent.uuid}" not found. Use get_page_structure or get_child_paragraphs to find a valid parent UUID.`,
+      }
+    }
+    const targetFieldKey = getFieldKey(params.parent.uuid, params.parent.field)
+    const additionalCount = validBlocks.filter(
+      (b) => b.currentFieldKey !== targetFieldKey,
+    ).length
+    if (additionalCount > 0) {
+      const cardinality = validateFieldCardinality(
+        ctx.app,
+        {
+          type: targetHost.entityType,
+          uuid: params.parent.uuid,
+          fieldName: params.parent.field,
+          bundle: targetHost.bundle,
+        },
+        targetFieldKey,
+        additionalCount,
+      )
+      if (!cardinality.valid) {
+        return { error: cardinality.error }
       }
     }
 
