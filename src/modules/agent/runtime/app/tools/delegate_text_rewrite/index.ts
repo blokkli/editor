@@ -8,6 +8,7 @@ import {
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
+import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
 import Component from './Component.vue'
 import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
@@ -86,6 +87,8 @@ export type ComponentParams = {
   template: string
   templateParams: Record<string, unknown>
   fields: ResolvedField[]
+  /** Field references dropped because the paragraph/field doesn't exist. */
+  skipped: SkippedField[]
 }
 
 export default defineBlokkliAgentTool({
@@ -133,10 +136,14 @@ export default defineBlokkliAgentTool({
     }
 
     const resolvedFields: ResolvedField[] = []
+    const skipped: SkippedField[] = []
 
     for (const { uuid, fieldName } of params.fields) {
       const host = resolveHost(ctx.app, uuid)
-      if (!host) continue
+      if (!host) {
+        skipped.push({ uuid, fieldName, reason: 'paragraph not found' })
+        continue
+      }
       const { entityType, bundle } = host
 
       const fieldType = ctx.app.fieldValue.resolveFieldType(
@@ -144,7 +151,10 @@ export default defineBlokkliAgentTool({
         bundle,
         fieldName,
       )
-      if (!fieldType) continue
+      if (!fieldType) {
+        skipped.push({ uuid, fieldName, reason: 'field not found' })
+        continue
+      }
 
       const currentValue = ctx.app.fieldValue.readValue(
         entityType,
@@ -162,6 +172,16 @@ export default defineBlokkliAgentTool({
         entityType,
         entityBundle: bundle,
       })
+    }
+
+    // Nothing resolved — don't open the streaming UI for zero fields. Report the
+    // invalid references so the agent can correct them.
+    if (resolvedFields.length === 0) {
+      return {
+        error:
+          skippedFieldsMessage(skipped) ??
+          'No valid fields to rewrite were provided.',
+      }
     }
 
     // The model picks a template + its params via the discriminated `request`.
@@ -215,6 +235,7 @@ export default defineBlokkliAgentTool({
       template,
       templateParams,
       fields: resolvedFields,
-    }
+      skipped,
+    } satisfies ComponentParams
   },
 })

@@ -8,6 +8,45 @@ export type RejectedByUser = Record<
   Record<string, { reasonForRejection: string }>
 >
 
+/**
+ * A field reference (uuid + field name) that was dropped before applying,
+ * because the paragraph or the field does not exist. Reported back to the agent
+ * so it can correct the reference instead of silently getting no change.
+ */
+export type SkippedField = {
+  uuid: string
+  fieldName: string
+  reason: string
+}
+
+/**
+ * Build the agent-facing note listing skipped field references. Returns
+ * undefined when nothing was skipped. Shared by `update_text_fields` and
+ * `delegate_text_rewrite`, which both drop references that don't resolve.
+ */
+export function skippedFieldsMessage(
+  skipped: SkippedField[],
+): string | undefined {
+  if (!skipped.length) return undefined
+  const list = skipped
+    .map((s) => `"${s.uuid}" ${s.fieldName} (${s.reason})`)
+    .join(', ')
+  return `Skipped ${skipped.length} field update(s) for references that don't exist: ${list}. Use get_page_structure or find_paragraphs to get valid paragraph UUIDs and field names.`
+}
+
+/**
+ * Append a secondary note to an agent message, tolerating undefined on either
+ * side. Used to add the skipped-fields note to every terminal `agentMessage`.
+ */
+export function appendAgentNote(
+  message: string | undefined,
+  note: string | undefined,
+): string | undefined {
+  if (!note) return message
+  if (!message) return note
+  return `${message}\n\n${note}`
+}
+
 export type FieldDiffApplyResult = {
   acceptedCount: number
   rejectedByUser: RejectedByUser

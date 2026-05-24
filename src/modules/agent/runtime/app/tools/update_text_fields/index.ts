@@ -6,6 +6,11 @@ import {
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
+import { resolveHost } from '../helpers'
+import {
+  skippedFieldsMessage,
+  type SkippedField,
+} from '../fieldDiffApproval'
 import Component from './Component.vue'
 import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
@@ -62,6 +67,19 @@ const paramsSchema = z.object({
 export type BatchRewriteParams = z.infer<typeof paramsSchema>
 export type BatchRewriteResult = z.infer<typeof fieldDiffResultSchema>
 
+/**
+ * The resolved params handed to the component after `execute` has dropped
+ * references that don't exist. `updates`/`operations` are pre-filtered to valid
+ * (uuid, fieldName) pairs; `skipped` lists what was dropped so the component can
+ * report it back to the agent.
+ */
+export type ComponentParams = {
+  updates?: z.infer<typeof updateSchema>[]
+  operations?: z.infer<typeof operationSchema>[]
+  requireApproval?: boolean
+  skipped: SkippedField[]
+}
+
 export default defineBlokkliAgentTool({
   name: 'update_text_fields',
   description:
@@ -83,18 +101,55 @@ export default defineBlokkliAgentTool({
   detailsComponent: DetailsComponent,
   buildDetails: (result) => result,
   execute(ctx, params) {
-    // Collect all block UUIDs from both updates and operations params
-    const blockUuids: string[] = []
-    if (params.updates) {
-      blockUuids.push(...params.updates.map((u) => u.uuid))
-    }
-    if (params.operations) {
-      blockUuids.push(...params.operations.map((op) => op.uuid))
+    // Validate every (uuid, fieldName) reference. Drop the ones that point at a
+    // non-existent paragraph or field and report them back, instead of silently
+    // producing an empty diff or an orphan mutation.
+    const skipped: SkippedField[] = []
+
+    const skipReason = (uuid: string, fieldName: string): string | undefined => {
+      const host = resolveHost(ctx.app, uuid)
+      if (!host) return 'paragraph not found'
+      const field = ctx.app.types.editableFieldConfig.forName(
+        host.entityType,
+        host.bundle,
+        fieldName,
+      )
+      if (!field) return 'field not found'
+      return undefined
     }
 
-    // Resolve bundles for permission check (skip entity-level UUIDs)
+    const keep = <T extends { uuid: string; fieldName: string }>(
+      entries: T[] | undefined,
+    ): T[] | undefined =>
+      entries?.filter((entry) => {
+        const reason = skipReason(entry.uuid, entry.fieldName)
+        if (reason) {
+          skipped.push({ uuid: entry.uuid, fieldName: entry.fieldName, reason })
+          return false
+        }
+        return true
+      })
+
+    const updates = keep(params.updates)
+    const operations = keep(params.operations)
+
+    // Nothing valid left — don't render an empty approval UI. Report the invalid
+    // references (or the empty input) so the agent can correct them.
+    if (!updates?.length && !operations?.length) {
+      return {
+        error:
+          skippedFieldsMessage(skipped) ??
+          'No updates or operations were provided.',
+      }
+    }
+
+    // Resolve bundles for permission check on the kept UUIDs (skip entity-level)
+    const blockUuids = [
+      ...(updates?.map((u) => u.uuid) ?? []),
+      ...(operations?.map((op) => op.uuid) ?? []),
+    ].filter(onlyUnique)
+
     const bundles = blockUuids
-      .filter(onlyUnique)
       .map((uuid) => ctx.app.blocks.getBlock(uuid)?.bundle)
       .filter((b): b is string => !!b)
       .filter(onlyUnique)
@@ -105,11 +160,15 @@ export default defineBlokkliAgentTool({
     }
 
     // Check ancestor restrictions
-    const uniqueUuids = blockUuids.filter(onlyUnique)
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, uniqueUuids)
+    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, blockUuids)
     if (ancestorDenied) return ancestorDenied
 
-    return params
+    return {
+      updates,
+      operations,
+      requireApproval: params.requireApproval,
+      skipped,
+    } satisfies ComponentParams
   },
   mockParams: () => ({
     updates: [

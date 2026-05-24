@@ -15,18 +15,20 @@ import type {
   McpToolContext,
   ComponentToolResult,
 } from '#blokkli/agent/app/types'
-import type { BatchRewriteParams, BatchRewriteResult } from './index'
+import type { ComponentParams, BatchRewriteResult } from './index'
 import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
 import {
   applyFieldDiffs,
   rejectedWithoutReasonMessage,
+  skippedFieldsMessage,
+  appendAgentNote,
 } from '../fieldDiffApproval'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
 
 const props = defineProps<{
   context: McpToolContext
-  params: BatchRewriteParams
+  params: ComponentParams
 }>()
 
 const emit = defineEmits<{
@@ -38,13 +40,24 @@ const { $t, state, types, directive } = blokkli
 
 const isApplying = ref(false)
 
+// References that `execute` dropped because the paragraph/field doesn't exist.
+// Appended to every terminal agentMessage so the agent learns what was skipped.
+const skippedNote = skippedFieldsMessage(props.params.skipped)
+
+function emitDone(result: ComponentToolResult<BatchRewriteResult>): void {
+  emit('done', {
+    ...result,
+    agentMessage: appendAgentNote(result.agentMessage, skippedNote),
+  })
+}
+
 onMounted(() => {
   // No applicable changes (e.g. the proposed values already match the current
   // field values, so every item was filtered out). DiffApproval renders no
   // toolbar — and therefore no cancel button — for an empty item list, so emit
   // immediately to avoid a stuck state with no way out.
   if (items.length === 0) {
-    emit('done', {
+    emitDone({
       acceptedCount: 0,
       rejectedByUser: {},
       label: $t('aiAgentBatchRewriteNoChanges', 'No changes detected'),
@@ -194,7 +207,7 @@ async function applySelected(data: {
       after: item.value,
     }))
 
-  emit('done', {
+  emitDone({
     acceptedCount,
     rejectedByUser,
     label,
@@ -221,7 +234,7 @@ async function rejectAll() {
     rejectedByUser[item.uuid] = fields
   }
 
-  emit('done', {
+  emitDone({
     acceptedCount: 0,
     rejectedByUser,
     label: $t('aiAgentBatchRewriteAllRejected', 'All changes rejected'),

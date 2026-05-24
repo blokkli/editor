@@ -61,6 +61,8 @@ import { applyOperations } from '../helpers'
 import {
   applyFieldDiffs,
   rejectedWithoutReasonMessage,
+  skippedFieldsMessage,
+  appendAgentNote,
 } from '../fieldDiffApproval'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
@@ -77,6 +79,17 @@ const emit = defineEmits<{
 
 const blokkli = useBlokkli()
 const { $t, state } = blokkli
+
+// References that `execute` dropped because the paragraph/field doesn't exist.
+// Appended to every terminal agentMessage so the agent learns what was skipped.
+const skippedNote = skippedFieldsMessage(props.params.skipped)
+
+function emitDone(result: ComponentToolResult<StreamTextFieldsResult>): void {
+  emit('done', {
+    ...result,
+    agentMessage: appendAgentNote(result.agentMessage, skippedNote),
+  })
+}
 
 const completedItems = ref<ApprovalItem[]>([])
 const beforeValues = new Map<number, string>()
@@ -141,7 +154,7 @@ function transitionToApproval() {
   if (items.length === 0) {
     // No changes — restore and finish.
     restoreAll()
-    emit('done', {
+    emitDone({
       acceptedCount: 0,
       rejectedByUser: {},
       label: $t('aiAgentDelegateRewriteNoChanges', 'No changes detected'),
@@ -162,7 +175,7 @@ function transitionToApproval() {
 function onCancel() {
   abort()
   restoreAll()
-  emit('done', {
+  emitDone({
     acceptedCount: 0,
     rejectedByUser: {},
     label: $t('aiAgentDelegateRewriteCancelled', 'Rewriting cancelled'),
@@ -173,7 +186,7 @@ function onCancel() {
 
 function finishWithError() {
   restoreAll()
-  emit('done', {
+  emitDone({
     acceptedCount: 0,
     rejectedByUser: {},
     label: $t('rewritingFailed', 'Rewriting failed'),
@@ -248,7 +261,7 @@ async function applySelected(data: {
       }
     })
 
-  emit('done', {
+  emitDone({
     acceptedCount,
     rejectedByUser,
     label,
@@ -256,14 +269,16 @@ async function applySelected(data: {
     historyIndex: state.currentMutationIndex.value,
     _details,
     _usage: streamUsage.value,
-    _skipLlmResponse: rejectedItems.length === 0,
+    // Let the agent respond if anything was rejected or skipped, so it can
+    // retry the skipped references.
+    _skipLlmResponse: rejectedItems.length === 0 && !skippedNote,
   })
 }
 
 onMounted(async () => {
   const { cancelled } = await start()
   if (cancelled) {
-    emit('done', {
+    emitDone({
       acceptedCount: 0,
       rejectedByUser: {},
       label: $t('aiAgentDelegateRewriteCancelled', 'Rewriting cancelled'),
