@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema, blockOptionsMapSchema } from '../schemas'
+import { booleanParam } from '#blokkli/agent/shared/toolParams'
 import {
   buildBlockOptionsMap,
   getResolvedOptions,
@@ -10,31 +11,27 @@ import { fragmentBlockBundle } from '#blokkli-build/config'
 
 const paramsSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
-  includeParentChain: z
-    .boolean()
+  includeParentChain: booleanParam(
+    'Include ancestor parent paragraphs up to the page',
+  )
     .optional()
-    .default(true)
-    .describe('Include ancestor parent paragraphs up to the page'),
-  includeSiblings: z
-    .boolean()
+    .default(true),
+  includeSiblings: booleanParam(
+    'Include sibling paragraphs in the same field',
+  )
     .optional()
-    .default(false)
-    .describe('Include sibling paragraphs in the same field'),
-  includeChildren: z
-    .boolean()
+    .default(false),
+  includeChildren: booleanParam('Include child fields summary')
     .optional()
-    .default(true)
-    .describe('Include child fields summary'),
-  includeContentFields: z
-    .boolean()
+    .default(true),
+  includeContentFields: booleanParam(
+    'Include content fields (text, media, links) with values',
+  )
     .optional()
-    .default(true)
-    .describe('Include content fields (text, media, links) with values'),
-  includeOptions: z
-    .boolean()
+    .default(true),
+  includeOptions: booleanParam('Include paragraph options')
     .optional()
-    .default(true)
-    .describe('Include paragraph options'),
+    .default(true),
 })
 
 const parentChainItemSchema = z.object({

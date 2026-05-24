@@ -6,6 +6,7 @@ import {
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
+import { booleanParam } from '#blokkli/agent/shared/toolParams'
 import { resolveHost } from '../helpers'
 import {
   skippedFieldsMessage,
@@ -27,12 +28,9 @@ const operationSchema = z.object({
     .describe(
       'The replacement text (or innerHTML when search is a CSS selector)',
     ),
-  selector: z
-    .boolean()
-    .optional()
-    .describe(
-      'Set to true when search is a CSS selector instead of a text search',
-    ),
+  selector: booleanParam(
+    'Set to true when search is a CSS selector instead of a text search',
+  ).optional(),
 })
 
 const updateSchema = z.object({
@@ -56,12 +54,9 @@ const paramsSchema = z.object({
     .describe(
       "Patch mode: search/replace operations applied to each field's CURRENT value, so `search` must match the existing content exactly. Best for small targeted edits like typo fixes — avoids re-sending the whole value. If `search` is not found, that field is left unchanged.",
     ),
-  requireApproval: z
-    .boolean()
-    .optional()
-    .describe(
-      'The approval UI is shown by default. Set to false to apply the changes immediately without confirmation — only when the user supplied the exact text themselves.',
-    ),
+  requireApproval: booleanParam(
+    'The approval UI is shown by default. Set to false to apply the changes immediately without confirmation — only when the user supplied the exact text themselves.',
+  ).optional(),
 })
 
 export type BatchRewriteParams = z.infer<typeof paramsSchema>

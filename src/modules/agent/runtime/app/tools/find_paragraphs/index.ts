@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
+import { booleanParam } from '#blokkli/agent/shared/toolParams'
 import { getResolvedOptions } from '../helpers'
 import {
   getMutatedOptionValue,
@@ -16,14 +17,12 @@ const paramsSchema = z.object({
     .describe('Filter by any of these bundles'),
 
   // Structure filters
-  hasChildren: z
-    .boolean()
-    .optional()
-    .describe('Filter by whether paragraph has child paragraphs'),
-  isRootLevel: z
-    .boolean()
-    .optional()
-    .describe('Filter to root level paragraphs (nesting 0)'),
+  hasChildren: booleanParam(
+    'Filter by whether paragraph has child paragraphs',
+  ).optional(),
+  isRootLevel: booleanParam(
+    'Filter to root level paragraphs (nesting 0)',
+  ).optional(),
   nestingLevel: z.number().optional().describe('Filter to exact nesting level'),
   parentBundle: z
     .string()

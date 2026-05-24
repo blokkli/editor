@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import { booleanParam } from '#blokkli/agent/shared/toolParams'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({
@@ -9,13 +10,11 @@ const paramsSchema = z.object({
     .describe(
       'Maximum nesting depth to include (0 = only root paragraphs, 1 = root + direct children, etc.). Omit for unlimited depth.',
     ),
-  includeDimensions: z
-    .boolean()
+  includeDimensions: booleanParam(
+    'Include x, y, width, height for each paragraph (default: false)',
+  )
     .optional()
-    .default(false)
-    .describe(
-      'Include x, y, width, height for each paragraph (default: false)',
-    ),
+    .default(false),
 })
 
 // Block dimensions in artboard coordinates
