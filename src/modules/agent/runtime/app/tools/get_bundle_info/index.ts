@@ -8,7 +8,7 @@ import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
 const paramsSchema = z.object({
   parentUuid: z.string().describe('The parent entity UUID'),
-  field: z.string().describe('The field name'),
+  parentField: z.string().describe('The field name on the parent'),
   bundles: z
     .array(z.string())
     .optional()
@@ -93,14 +93,14 @@ export default defineBlokkliAgentTool({
     const label = $t(
       'aiAgentGetBundleInfoDone',
       'Got bundle info for @field',
-    ).replace('@field', params.field)
+    ).replace('@field', params.parentField)
 
-    const field = fields.find(params.parentUuid, params.field)
+    const field = fields.find(params.parentUuid, params.parentField)
     if (!field) {
       return {
         label,
         result: {
-          fieldLabel: params.field,
+          fieldLabel: params.parentField,
           cardinality: -1,
           currentCount: 0,
           bundles: [],
@@ -109,7 +109,7 @@ export default defineBlokkliAgentTool({
     }
 
     // Get field key for counting blocks
-    const fieldKey = `${params.parentUuid}:${params.field}`
+    const fieldKey = `${params.parentUuid}:${params.parentField}`
     const currentCount = state.getFieldBlockCount(fieldKey)
 
     const allowedBundles = params.bundles
