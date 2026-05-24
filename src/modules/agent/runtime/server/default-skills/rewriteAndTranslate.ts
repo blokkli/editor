@@ -51,6 +51,5 @@ For writing new content for empty fields (e.g. after adding blocks). Optionally 
 - The \`update_text_fields\` tool can also be used when requireApproval is "false" (e.g. when the user provided the text themselves).
 - Both tools will ASK the user to accept each changed text by default - no need to manually ask the user beforehand!
 - When the user rejects one or more texts, they can provide a reason. Carefully read the reason if provided!
-- When asked for suggestions by the user: USE THE ask_question TOOL!
 `,
 })

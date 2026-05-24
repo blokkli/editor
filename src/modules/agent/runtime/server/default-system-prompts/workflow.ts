@@ -14,7 +14,6 @@ export default defineBlokkliAgentSystemPrompt({
       'Use get_paragraph_context to get comprehensive info about a specific paragraph (parent chain, siblings, children, content fields, options) - prefer this over multiple individual calls',
       'Use find_paragraphs to search for paragraphs by bundle, text content, nesting level, or options',
       "Use get_child_paragraphs to see a paragraph's or page's fields with their paragraphs - returns parent objects ready for add_paragraphs",
-      'If you need specialized tools (media search, content search, templates, etc.), use load_tools to activate them first',
       'Add up to 5 paragraphs at a time. For more paragraphs, use multiple add_paragraphs calls.',
       'For paragraphs with lots of text (more than 100 words), add one at a time.',
     ]
