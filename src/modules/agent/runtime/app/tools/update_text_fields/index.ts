@@ -35,18 +35,20 @@ const paramsSchema = z.object({
     .record(z.string(), z.record(z.string(), z.string()))
     .optional()
     .describe(
-      'Full value replacements: map of paragraph UUID → field name → new value.',
+      'Full-replacement mode: map of paragraph UUID → field name → the complete new field value. The entire field is overwritten. Use when you have the final text or the value changes substantially.',
     ),
   operations: z
     .array(operationSchema)
     .optional()
     .describe(
-      'Patch operations: search/replace pairs applied to current field values. Use for small targeted edits like typo fixes.',
+      "Patch mode: search/replace operations applied to each field's CURRENT value, so `search` must match the existing content exactly. Best for small targeted edits like typo fixes — avoids re-sending the whole value. If `search` is not found, that field is left unchanged.",
     ),
   requireApproval: z
     .boolean()
     .optional()
-    .describe('Whether to show the approval UI.'),
+    .describe(
+      'The approval UI is shown by default. Set to false to apply the changes immediately without confirmation — only when the user supplied the exact text themselves.',
+    ),
 })
 
 export type BatchRewriteParams = z.infer<typeof paramsSchema>
@@ -55,7 +57,7 @@ export type BatchRewriteResult = z.infer<typeof fieldDiffResultSchema>
 export default defineBlokkliAgentTool({
   name: 'update_text_fields',
   description:
-    'Update text content fields on one or more paragraphs. Supports two modes: (1) Full replacement via "uuids" — provide complete new values. (2) Patch via "operations" — search/replace pairs applied to current values, ideal for small edits like typo fixes. Set "selector" to true to use a CSS selector instead of text search. Set requireApproval to true when the user should confirm the changes first.',
+    'Update text content fields on one or more paragraphs. Two modes, which may be combined in a single call:\n- Full replacement via `uuids`: overwrite the entire field with a complete new value. Use when the value changes substantially or you already have the final text.\n- Patch via `operations`: search/replace pairs applied to each field\'s CURRENT value (so `search` must match the existing content). Best for small edits like typo fixes, since you only send the changed part. Set `selector: true` on an operation to treat `search` as a CSS selector (e.g. "p:nth-child(3)") and `replace` as the matched element\'s innerHTML.\nThe approval UI is shown by default; set requireApproval to false to apply immediately (only when the user supplied the exact text).',
   category: 'mutation',
   lazy: true,
   prunedSummary: (r) =>
