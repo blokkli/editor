@@ -19,10 +19,7 @@ export default defineBlokkliAgentTool({
     'The result includes newParagraphs containing the UUIDs and bundles of the newly created editable paragraph. ' +
     'Use these new UUIDs for any subsequent operations.',
   category: 'mutation',
-  prunedSummary: (r) =>
-    r.success
-      ? `detached ${r.newParagraphs?.length || 0} paragraphs`
-      : 'rejected',
+  prunedSummary: (r) => (r.success ? 'detached paragraphs' : 'rejected'),
   lazy: true,
   modes: ['editing'],
   label($t) {
