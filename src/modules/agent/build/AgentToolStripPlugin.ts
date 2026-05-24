@@ -29,8 +29,6 @@ const PROPERTIES_TO_KEEP = new Set([
   'lazy',
   'volatile',
   'requiredAdapterMethods',
-  'requiredFeatures',
-  'resolve',
 ])
 
 type ASTNode = Node & { start: number; end: number }

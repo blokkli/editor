@@ -287,7 +287,6 @@ export default function agentProvider({
         isThinking.value = true
         break
 
-      case 'text':
       case 'text_delta':
         isThinking.value = false
         conversation.appendToActive(data.content)

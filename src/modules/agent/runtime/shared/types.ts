@@ -580,7 +580,6 @@ export type ServerMessage =
       params: Record<string, unknown>
     }
   | { type: 'thinking'; content?: string }
-  | { type: 'text'; content: string }
   | { type: 'text_delta'; content: string }
   | { type: 'done'; message?: string }
   | {

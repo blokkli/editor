@@ -1,6 +1,6 @@
 <template>
   <DropHandler
-    v-if="hasBeenReady || DEBUG_STYLING"
+    v-if="hasBeenReady"
     class="bk flex flex-col h-full min-h-[200px] select-text relative bk-agent-panel"
     @mousedown.capture.stop
     @pointerdown.capture.stop
@@ -16,54 +16,44 @@
       @scroll="onScroll"
     >
       <div ref="conversationContainer" class="p-10 flex-1 relative">
-        <button
-          v-if="DEBUG_STYLING"
-          class="bk-button bk-scheme-mono bk-is-light"
-          @click="debugShowPlan = !debugShowPlan"
-        >
-          {{ debugShowPlan ? 'Hide' : 'Show' }} Plan
-        </button>
-        <DebugGallery v-if="DEBUG_STYLING" />
-        <template v-else>
-          <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
-          <Conversation
-            v-if="conversation.length || activeItem || isThinking"
-            :history="conversation"
-            :active-item="activeItem"
-            :is-thinking="isThinking"
-            :tool-details
-            @retry="agent.retry"
+        <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
+        <Conversation
+          v-if="conversation.length || activeItem || isThinking"
+          :history="conversation"
+          :active-item="activeItem"
+          :is-thinking="isThinking"
+          :tool-details
+          @retry="agent.retry"
+        />
+        <component
+          :is="pendingToolComponent"
+          v-if="pendingToolComponent && pendingToolCall"
+          :context="toolContext"
+          :params="pendingToolCall.params"
+          @done="agent.tools.onComponentDone"
+        />
+        <PendingMutation
+          v-else-if="pendingMutation && !autoApprove"
+          :action="pendingMutation.action"
+          @approve="agent.tools.approve"
+          @reject="agent.tools.reject"
+          @always-approve="onAlwaysApprove"
+        />
+        <TransitionHeight opacity :duration="300">
+          <Feedback
+            v-if="
+              supportsFeedback &&
+              !isProcessing &&
+              !pendingMutation &&
+              !pendingToolCall &&
+              conversation.length > 0 &&
+              conversation[conversation.length - 1]?.type === 'assistant' &&
+              !feedbackItemIds.has(conversation[conversation.length - 1]!.id)
+            "
+            @submit="onSubmitFeedback"
+            @done="onFeedbackDone"
           />
-          <component
-            :is="pendingToolComponent"
-            v-if="pendingToolComponent && pendingToolCall"
-            :context="toolContext"
-            :params="pendingToolCall.params"
-            @done="agent.tools.onComponentDone"
-          />
-          <PendingMutation
-            v-else-if="pendingMutation && !autoApprove"
-            :action="pendingMutation.action"
-            @approve="agent.tools.approve"
-            @reject="agent.tools.reject"
-            @always-approve="onAlwaysApprove"
-          />
-          <TransitionHeight opacity :duration="300">
-            <Feedback
-              v-if="
-                supportsFeedback &&
-                !isProcessing &&
-                !pendingMutation &&
-                !pendingToolCall &&
-                conversation.length > 0 &&
-                conversation[conversation.length - 1]?.type === 'assistant' &&
-                !feedbackItemIds.has(conversation[conversation.length - 1]!.id)
-              "
-              @submit="onSubmitFeedback"
-              @done="onFeedbackDone"
-            />
-          </TransitionHeight>
-        </template>
+        </TransitionHeight>
       </div>
 
       <SidebarFloater>
@@ -71,12 +61,12 @@
           ref="inputEl"
           v-model="inputValue"
           v-model:attachments="attachments"
-          :is-processing="debugIsProcessing"
+          :is-processing="isProcessing"
           :is-connected
           :has-pending-approval="!!(pendingMutation || pendingToolCall)"
           :has-conversation="conversation.length > 0"
           :usage-turns
-          :has-active-plan="!!activePlan"
+          :has-active-plan="!!plan"
           @submit="onSubmit"
           @cancel="agent.cancel"
           @new-conversation="onNewConversation"
@@ -85,7 +75,7 @@
         >
           <TransitionHeight opacity :duration="300">
             <div
-              v-if="!isConnected && hasBeenReady && !DEBUG_STYLING"
+              v-if="!isConnected && hasBeenReady"
               class="border-b border-b-mono-300 border-dashed flex items-center gap-8 px-10 py-10 text-mono-500 text-sm bg-red-light font-medium text-red-normal"
             >
               <Icon name="loader" class="size-18" />
@@ -98,8 +88,8 @@
           </TransitionHeight>
           <TransitionHeight :duration="600" opacity>
             <Plan
-              v-if="activePlan"
-              :plan="activePlan"
+              v-if="plan"
+              :plan
               :pending-approval="isPlanPendingApproval"
               @approve="agent.plan.approve"
               @reject="agent.plan.reject"
@@ -149,14 +139,12 @@ import {
 } from '#blokkli/editor/components'
 import Conversation from '#blokkli/agent/app/components/Conversation/index.vue'
 import PendingMutation from './PendingMutation/index.vue'
-import DebugGallery from './DebugGallery/index.vue'
 import Welcome from './Welcome/index.vue'
 import AgentInput from './Input/index.vue'
 import ConversationList from './ConversationList/index.vue'
 import Feedback from './Feedback/index.vue'
 import type { AgentConversationFeedbackRating } from '../types'
 import type { Attachment } from '#blokkli/agent/app/types'
-import type { ClientPlanState } from '#blokkli/agent/shared/types'
 import Plan from './Plan/index.vue'
 import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
@@ -169,8 +157,6 @@ import { useAgent } from '#blokkli/agent/app/composables/useAgent'
 const props = defineProps<{
   isShown: boolean
 }>()
-
-const DEBUG_STYLING = import.meta.dev && false
 
 const app = useBlokkli()
 const { $t } = app
@@ -199,7 +185,7 @@ const supportsFeedback = computed(
 watch(
   () => props.isShown,
   (isShown) => {
-    if (isShown && !DEBUG_STYLING) {
+    if (isShown) {
       agent.connect()
     }
   },
@@ -276,34 +262,10 @@ watch(isProcessing, (isProcessing, wasProcessing) => {
   }
 })
 
-const debugPlan: ClientPlanState = {
-  title: 'Restructure page content',
-  steps: [
-    { label: 'Analyze current page structure', status: 'completed' },
-    { label: 'Add hero section with title', status: 'completed' },
-    { label: 'Rewrite introduction text', status: 'in_progress' },
-    { label: 'Add feature cards grid', status: 'pending' },
-    { label: 'Add footer with contact info', status: 'pending' },
-  ],
-}
-
-const debugShowPlan = ref(true)
-
-const debugIsProcessing = computed(() => {
-  if (DEBUG_STYLING) {
-    return debugShowPlan.value
-  }
-  return isProcessing.value
-})
-
-const activePlan = computed(() => {
-  return DEBUG_STYLING ? (debugShowPlan.value ? debugPlan : null) : plan.value
-})
-
 const isPlanPendingApproval = computed(() => {
   return (
-    activePlan.value !== null &&
-    activePlan.value.steps.every((s) => s.status === 'pending')
+    plan.value !== null &&
+    plan.value.steps.every((s) => s.status === 'pending')
   )
 })
 

@@ -210,13 +210,3 @@ export function isToolError(result: unknown): result is ToolError {
   )
 }
 
-/**
- * Resolve an array of tool definitions into a flat array.
- * All tools are now static — no factory resolution needed.
- */
-export async function resolveTools(
-  tools: McpToolDefinition[],
-  _context: McpToolContext,
-): Promise<McpToolDefinition[]> {
-  return tools
-}

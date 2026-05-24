@@ -6,7 +6,7 @@ export default defineBlokkliAgentPrompt({
     return [
       {
         id: 'fix_readability',
-        skills: ['rewrite-and-translate', 'asses-and-fix-readability'],
+        skills: ['rewrite-and-translate', 'assess-and-fix-readability'],
         tools: [
           'get_readability_issues',
           'check_readability_for_texts',

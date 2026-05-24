@@ -94,6 +94,7 @@ export default defineNuxtConfig({
       composable: 'defineBlokkliAgentTool',
       importPrefix: 'tool',
       dependency: 'agent-mcp-tools',
+      requiresName: true,
       dirs: [
         moduleToolsDir,
         projectToolsDir,
@@ -140,6 +141,7 @@ export default defineNuxtConfig({
       composable: 'defineBlokkliAgentSkill',
       importPrefix: 'skill',
       dependency: 'agent-server',
+      requiresName: true,
       dirs: [
         moduleSkillsDir,
         projectSkillsDir,

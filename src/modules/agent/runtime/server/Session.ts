@@ -294,8 +294,8 @@ export class Session {
 
   cancel(peer: Peer): void {
     this.abortController?.abort()
-    // Bug 1 fix: reject all pending tool call promises so the agent loop
-    // doesn't hang waiting for a client response that will never come.
+    // Reject all pending tool call promises so the agent loop doesn't hang
+    // waiting for a client response that will never come.
     for (const pending of this.pendingToolCalls.values()) {
       pending.reject(new Error('Cancelled'))
     }
@@ -1054,7 +1054,7 @@ export class Session {
       // Snapshot messages before pruning so the transcript can show both versions.
       this.unprunedMessages = structuredClone(this.messages)
 
-      // Bug 2 fix: prune in finally so messages are compressed even after errors.
+      // Prune in `finally` so messages are compressed even after errors.
       pruneMessages(
         this.messages,
         KEEP_RECENT_TURNS,
@@ -1325,8 +1325,8 @@ export class Session {
   }
 
   /**
-   * Bug 3 fix: safely push a user message, merging with the last message
-   * if it's also a user message to avoid consecutive same-role messages.
+   * Safely push a user message, merging with the last message if it's also a
+   * user message — the LLM API rejects consecutive same-role messages.
    */
   private safePushUserMessage(text: string): void {
     const lastMessage = this.messages[this.messages.length - 1]

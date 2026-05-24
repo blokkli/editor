@@ -21,6 +21,13 @@ export type AgentCollectorOptions = {
   dependency: TemplateDependency
   /** Directories to scan. */
   dirs: string[]
+  /**
+   * Whether the definition is identified by a static string `name`. Only tools
+   * and skills are (their `name` feeds the generated `load_tools`/`load_skills`
+   * enums); a missing/non-literal `name` is then warned about. Prompts and
+   * system prompts are identified by `id`/weight, so they leave this false.
+   */
+  requiresName?: boolean
 }
 
 /**
@@ -45,6 +52,7 @@ class CollectedAgentFile extends CollectedFile {
     fileContents: string,
     private composable: string,
     private importPrefix: string,
+    private requiresName: boolean,
   ) {
     super(filePath, fileContents)
   }
@@ -69,6 +77,16 @@ class CollectedAgentFile extends CollectedFile {
       [this.composable],
       'name',
     )
+
+    // The file calls the composable but no static string `name` could be
+    // extracted — it's a variable, template literal, or concatenation. Such a
+    // definition is silently excluded from the generated tool/skill enums (and
+    // thus invisible to the LLM), so warn loudly instead of dropping it quietly.
+    if (this.requiresName && !name) {
+      console.warn(
+        `[blokkli agent] ${this.filePath}: \`${this.composable}\` definition has no static string \`name\`. It will be excluded from the generated definitions. Use a string literal for \`name\`.`,
+      )
+    }
 
     this.item = {
       filePath: this.filePath,
@@ -146,6 +164,7 @@ export class AgentCollector extends Collector<CollectedAgentFile> {
       fileContents,
       this.options.composable,
       this.options.importPrefix,
+      this.options.requiresName ?? false,
     )
   }
 

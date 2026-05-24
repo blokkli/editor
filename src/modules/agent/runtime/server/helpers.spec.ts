@@ -99,7 +99,7 @@ describe('compressToolResult', () => {
     expect(compressToolResult(input)).toBe('short text')
   })
 
-  it('Bug 2: is idempotent — re-compressing keeps the summary', () => {
+  it('is idempotent — re-compressing keeps the summary', () => {
     // pruneMessages mutates messages in place every turn, so an already-
     // compressed result is fed back through compressToolResult on later turns.
     // It must not degrade to the generic { summary: 'completed' } fallback.
@@ -276,7 +276,7 @@ describe('pruneMessages', () => {
     }
   })
 
-  it('Bug 4: counts messages with mixed tool_result and text as tool responses', () => {
+  it('counts messages with mixed tool_result and text as tool responses', () => {
     const messages: GenericMessage[] = [
       makeUserMsg('first prompt'),
       {
@@ -481,7 +481,7 @@ describe('validateMessages', () => {
 // ============================================================================
 
 describe('pruneForPersistence', () => {
-  it('Bug 4: keeps the user prompt text in an aged-out skill+text message', () => {
+  it('keeps the user prompt text in an aged-out skill+text message', () => {
     // The first user message with auto-loaded skills is built as [skill, text].
     // When it ages out (but is still retained), pruneForPersistence must not
     // strip its text block — that text IS the user's prompt, and stripping it
@@ -573,7 +573,7 @@ describe('verifyStateHash', () => {
     expect(verifyStateHash(snapshot('s3cr3t'), 'other')).toBe(false)
   })
 
-  it('Bug 3: rejects when the secret is empty even if hashes match', () => {
+  it('rejects when the secret is empty even if hashes match', () => {
     // authSecret defaults to '' when unconfigured. The token path guards this,
     // but the state-hash path must too — otherwise forged state verifies.
     expect(verifyStateHash(snapshot(''), '')).toBe(false)

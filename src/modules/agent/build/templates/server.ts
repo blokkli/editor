@@ -91,7 +91,7 @@ export default function (options: AgentServerTemplateOptions) {
       const toolDefinitionsExport =
         tools.length === 0
           ? `export const toolDefinitions = []`
-          : `export const toolDefinitions = [\n  ${tools.map((t) => t.importName).join(',\n  ')},\n].filter(v => v !== null)`
+          : `export const toolDefinitions = [\n  ${tools.map((t) => t.importName).join(',\n  ')},\n]`
 
       const originsJson = JSON.stringify(allowedFetchOrigins, null, 2)
 

@@ -16,7 +16,6 @@ import {
   isMutationAction,
   isQueryResult,
   isToolError,
-  resolveTools,
   asRecord,
   splitMeta,
 } from '#blokkli/agent/app/helpers'
@@ -97,11 +96,9 @@ export default function toolsProvider({
   }
 
   async function init(): Promise<{ toolNames: string[] }> {
-    const ctx = createToolContext()
-    const resolved = await resolveTools(mcpTools, ctx)
-    toolMap = createToolMap(resolved)
+    toolMap = createToolMap(mcpTools)
     const toolNames = await getToolInfoForServer(
-      resolved,
+      mcpTools,
       state.editMode.value,
       app,
       adapter,
@@ -392,8 +389,7 @@ export default function toolsProvider({
     // The tool map may not be populated yet if preExecute runs before the
     // WebSocket has connected.
     if (!Object.keys(toolMap).length) {
-      const resolved = await resolveTools(mcpTools, ctx)
-      toolMap = createToolMap(resolved)
+      toolMap = createToolMap(mcpTools)
     }
 
     const toolDef = getToolDefinition(toolMap, toolName)
