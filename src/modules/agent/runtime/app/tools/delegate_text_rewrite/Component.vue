@@ -296,8 +296,5 @@ onBeforeUnmount(() => {
   if (phase.value === 'streaming') {
     restoreAll()
   }
-  // Force re-render any blocks whose DOM was manipulated via setDiffHtml.
-  // No-op on the apply path (already flushed inside mutateWithLoadingState).
-  state.flushDirty()
 })
 </script>

@@ -8,9 +8,10 @@
             :value="titleValue"
             required
             name="title"
-          >
-            <h1
+            tag="h1"
               class="text-4xl lg:text-6xl hero-title"
+          >
+            <div
               v-html="getTitleMarkup(value)"
             />
           </BlokkliEditable>

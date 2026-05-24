@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
+import { useBlokkli, ref, onMounted } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
 import type {
   McpToolContext,
@@ -217,13 +217,7 @@ async function applySelected(data: {
   })
 }
 
-onBeforeUnmount(() => {
-  state.flushDirty()
-})
-
 async function rejectAll() {
-  await state.flushDirty()
-
   const rejectedByUser: Record<
     string,
     Record<string, { reasonForRejection: string }>

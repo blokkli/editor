@@ -167,8 +167,8 @@ function onCancel() {
 }
 
 function finishApproval() {
-  // Setting the phase to idle unmounts DiffApproval, which clears its own
-  // preview overlays on unmount — no flushDirty needed here.
+  // Setting the phase to idle unmounts DiffApproval, which restores its own
+  // preview overlays on unmount.
   phase.value = 'idle'
   approvalItems.value = []
 }

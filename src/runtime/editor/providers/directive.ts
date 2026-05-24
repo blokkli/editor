@@ -131,6 +131,15 @@ export type DirectiveProvider = {
   getEditablesForBlock: (uuid: string) => EditableFieldData[]
 
   /**
+   * Get all currently registered editable fields, across both the host entity
+   * and all blocks. Intended for debug/test tooling that needs to enumerate
+   * every editable on the page.
+   *
+   * @returns Array of all 'editable' type directive fields
+   */
+  getAllEditables: () => EditableFieldData[]
+
+  /**
    * Get all droppable field elements.
    *
    * Returns fields with the 'droppable' directive type along with their HTML elements.
@@ -515,6 +524,12 @@ export default function (
     return Object.values(editables).filter(falsy)
   }
 
+  function getAllEditables(): EditableFieldData[] {
+    return [...fieldData.values()].filter(
+      (item) => item.directiveType === 'editable',
+    )
+  }
+
   function getDroppableElements(): DroppableFieldElementData[] {
     const droppableElements: DroppableFieldElementData[] = []
 
@@ -580,6 +595,7 @@ export default function (
     getDroppableAtPoint,
     findEditable,
     getEditablesForBlock,
+    getAllEditables,
     findEditableElement,
     getDroppableElements,
     registerValueElement,

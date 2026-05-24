@@ -23,7 +23,7 @@
           <p
             v-if="entity.lead"
             v-blokkli-editable:lead
-            class="mt-20 text-lg lg:text-xl text-mono-700"
+            class="mt-20 text-lg lg:text-xl text-mono-700 playground-entity-lead"
           >
             {{ entity.lead }}
           </p>

@@ -24,6 +24,10 @@
       <DebugSection title="Features">
         <SectionFeatures />
       </DebugSection>
+
+      <DebugSection title="Test Cases">
+        <SectionTestCases />
+      </DebugSection>
     </div>
   </PluginSidebar>
 
@@ -46,6 +50,7 @@ import SectionRendering from './Section/Rendering.vue'
 import SectionLogging from './Section/Logging.vue'
 import SectionIcons from './Section/Icons.vue'
 import SectionFeatures from './Section/Features.vue'
+import SectionTestCases from './Section/TestCases.vue'
 import DebugViewport from './Viewport/index.vue'
 import DebugRects from './Rects/index.vue'
 import type { DebugLogger } from '#blokkli/editor/providers/debug'

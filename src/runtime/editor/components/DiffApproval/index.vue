@@ -76,7 +76,7 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const { $t, ui, state, eventBus, directive, context, blocks } = useBlokkli()
+const { $t, ui, eventBus, directive, context, blocks } = useBlokkli()
 
 const highlight = useTemplateRef('highlight')
 
@@ -211,9 +211,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   ui.setIsApproving(false)
-  // Clear any preview overlays applied via setDiffHtml by re-rendering the
-  // dirty blocks from committed state. This keeps cleanup self-contained so
-  // callers don't need to flush dirty state themselves.
-  state.flushDirty()
+  // Each Item restores its own preview overlay on unmount (re-inserting the
+  // original Vue-managed nodes), so no global cleanup is needed here.
 })
 </script>

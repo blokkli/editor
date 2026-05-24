@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, useBlokkli } from '#imports'
+import { watch, ref, computed, onBeforeUnmount, useBlokkli } from '#imports'
 import {
   useEditableFieldOverride,
   onBlokkliEvent,
@@ -119,6 +119,12 @@ watch(
   () => props.selected,
   () => applyOverride(),
 )
+
+// Undo the preview when the approval UI closes. Accepted items still have the
+// diff markup applied at this point (only deselected ones were restored above),
+// so this re-inserts the original Vue-managed nodes. restore() is idempotent, so
+// it's a no-op for already-restored items.
+onBeforeUnmount(() => override.restore())
 
 const rect = ref<ItemRect>({ width: '0', height: '0', transform: '' })
 
