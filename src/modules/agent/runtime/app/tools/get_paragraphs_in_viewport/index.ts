@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
 const paramsSchema = z.object({
-  maxNestingLevel: z
+  maxNestingLevel: z.coerce
     .number()
     .optional()
     .describe(

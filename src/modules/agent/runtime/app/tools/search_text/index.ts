@@ -11,7 +11,7 @@ const paramsSchema = z.object({
     .string()
     .optional()
     .describe('Optional: only search in paragraphs of this bundle type'),
-  limit: z
+  limit: z.coerce
     .number()
     .optional()
     .default(20)

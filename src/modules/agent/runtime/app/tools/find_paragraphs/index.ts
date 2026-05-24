@@ -52,7 +52,7 @@ const paramsSchema = z.object({
     .describe('Filter to paragraphs where an option equals a value'),
 
   // Pagination
-  limit: z
+  limit: z.coerce
     .number()
     .optional()
     .default(50)

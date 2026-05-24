@@ -2,11 +2,11 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
 const paramsSchema = z.object({
-  before: z
+  before: z.coerce
     .number()
     .optional()
     .describe('How many mutations before current to include'),
-  after: z
+  after: z.coerce
     .number()
     .optional()
     .describe('How many mutations after current to include (redo-able)'),
