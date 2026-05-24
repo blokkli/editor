@@ -1,18 +1,26 @@
 <template>
   <div class="bk-agent-message bk-is-user group/message relative">
     <InlineActions
-      v-if="!isEditing && canRollback"
+      v-if="!isEditing && (canRollback || content)"
       class="absolute top-[7px] right-10 opacity-0 group-hover/message:opacity-100 focus-within:opacity-100"
     >
       <InlineActionsButton
+        v-if="canRollback"
         icon="bk_mdi_replay"
         :label="$t('aiAgentRetry', 'Retry')"
         @click="onRetry"
       />
       <InlineActionsButton
+        v-if="canRollback"
         icon="bk_mdi_edit"
         :label="$t('edit', 'Edit')"
         @click="startEdit"
+      />
+      <InlineActionsButton
+        v-if="content"
+        icon="bk_mdi_content_copy"
+        :label="$t('copy', 'Copy')"
+        @click="onCopy"
       />
     </InlineActions>
 
@@ -90,7 +98,7 @@ const props = defineProps<{
   historySignatureAtSend?: string
 }>()
 
-const { $t, state } = useBlokkli()
+const { $t, state, ui } = useBlokkli()
 const agent = useAgent(true)
 
 const isEditing = ref(false)
@@ -112,6 +120,10 @@ function onRetry(): void {
     return
   }
   agent.rollbackAndSend(props.id)
+}
+
+function onCopy(): void {
+  ui.copyTextToClipboard(props.content)
 }
 
 function startEdit(): void {

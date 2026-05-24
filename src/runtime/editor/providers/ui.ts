@@ -18,6 +18,7 @@ import {
 } from '#blokkli/editor/types/clipboard'
 import type { Viewport } from '../../../global/constants'
 import { falsy } from '../../helpers'
+import { truncate } from '../helpers/string'
 import {
   addElementClasses,
   defineElementStyle,
@@ -1070,7 +1071,7 @@ export default function (
     const message = $t(
       'copiedToClipboardMessage',
       '"@text" has been copied to your clipboard',
-    ).replace('@text', text)
+    ).replace('@text', truncate(text, 50))
     emitMessage(message, 'success', undefined, true)
   }
 
