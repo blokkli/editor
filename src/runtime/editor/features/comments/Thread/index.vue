@@ -1,6 +1,9 @@
 <template>
   <article
     class="bk-comment-thread relative font-sans"
+    data-test="comment-thread"
+    :data-test-uuid="root.uuid"
+    :data-test-resolved="root.resolved"
     :class="{
       'rounded border hover:border-mono-400': boxed,
       'bg-white': !boxed,

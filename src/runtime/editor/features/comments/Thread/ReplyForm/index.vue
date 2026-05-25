@@ -4,6 +4,7 @@
       <button
         type="button"
         class="flex items-center text-xs font-medium gap-5 py-8 px-8 w-full hover:bg-mono-100 text-mono-500 border border-mono-200 rounded hover:border-mono-400 cursor-text!"
+        data-test="comment-reply-button"
         @click="open"
       >
         <Icon name="bk_mdi_reply" class="size-15" />

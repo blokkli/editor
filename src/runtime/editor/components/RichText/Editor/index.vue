@@ -323,6 +323,7 @@ onMounted(() => {
     editorProps: {
       attributes: {
         class: 'bk-rich-content bk-prose-mirror',
+        'data-test': 'richtext-editor',
       },
     },
     extensions,

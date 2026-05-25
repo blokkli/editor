@@ -22,7 +22,12 @@
     />
 
     <template v-if="unresolvedCount" #badge>
-      <div class="bk-sidebar-badge bk-is-yellow">{{ unresolvedCount }}</div>
+      <div
+        class="bk-sidebar-badge bk-is-yellow"
+        data-test="comments-unresolved-badge"
+      >
+        {{ unresolvedCount }}
+      </div>
     </template>
   </PluginSidebar>
 

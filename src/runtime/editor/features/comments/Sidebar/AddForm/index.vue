@@ -4,6 +4,7 @@
       v-if="!isOpen"
       type="button"
       class="bk-button w-full bk-scheme-yellow"
+      data-test="comments-sidebar-add-button"
       @click="open"
     >
       <Icon name="bk_mdi_add_comment" class="size-18" />

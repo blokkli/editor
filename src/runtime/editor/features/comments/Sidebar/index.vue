@@ -9,6 +9,7 @@
       <FormToggle
         v-model="showResolved"
         :label="$t('commentsShowResolved', 'Show resolved')"
+        data-test="comments-show-resolved"
       />
     </div>
 

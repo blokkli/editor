@@ -1,5 +1,6 @@
 <template>
   <form
+    data-test="comment-input"
     :class="{
       'border border-mono-300 rounded bg-white focus-within:border-mono-400':
         boxed,
@@ -22,6 +23,7 @@
         v-if="cancellable"
         type="button"
         class="bk-button bk-is-small bk-is-light"
+        data-test="comment-input-cancel"
         @click="$emit('cancel')"
       >
         {{ $t('cancel', 'Cancel') }}
@@ -29,6 +31,7 @@
       <button
         type="submit"
         class="bk-button bk-scheme-yellow bk-is-small ml-auto"
+        data-test="comment-input-submit"
         :disabled="!effectiveCanSubmit"
       >
         {{ submitLabel }}

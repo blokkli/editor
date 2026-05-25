@@ -17,6 +17,8 @@
   <div
     v-else
     class="group/comment relative flex gap-(--bk-comment-avatar-gap) px-(--bk-comment-pad-x) font-sans"
+    data-test="comment"
+    :data-test-uuid="comment.uuid"
     :class="
       isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
     "

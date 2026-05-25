@@ -7,6 +7,7 @@
   >
     <div
       class="bk-add-comment-inner w-full min-w-[400px] border-t border-t-yellow-dark"
+      data-test="comment-add-form"
       @keydown.capture.stop
     >
       <CommentInput

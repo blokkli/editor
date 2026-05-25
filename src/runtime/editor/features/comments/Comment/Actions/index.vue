@@ -4,6 +4,7 @@
       v-if="canEdit"
       icon="bk_mdi_edit"
       :label="$t('edit', 'Edit')"
+      data-test="comment-action-edit"
       @click="$emit('edit')"
     />
     <InlineActionsButton
@@ -11,6 +12,7 @@
       icon="bk_mdi_delete"
       :label="$t('delete', 'Delete')"
       scheme="red"
+      data-test="comment-action-delete"
       @click="onDeleteClick"
     />
     <InlineActionsButton
@@ -18,6 +20,7 @@
       icon="bk_mdi_check_circle"
       scheme="lime"
       :label="$t('commentsMarkAsResolved', 'Mark as resolved')"
+      data-test="comment-action-resolve"
       @click="$emit('resolve')"
     />
     <InlineActionsButton
@@ -25,6 +28,7 @@
       icon="bk_mdi_unpublished"
       scheme="lime"
       :label="$t('commentsMarkAsUnresolved', 'Mark as unresolved')"
+      data-test="comment-action-unresolve"
       @click="$emit('unresolve')"
     />
 
