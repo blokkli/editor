@@ -2,6 +2,8 @@
   <div
     ref="el"
     class="bk-add-list-help-item"
+    :data-test="'add-list-help-' + type + '-' + id"
+    :data-test-visible="isVisible"
     :style="{
       visibility: isVisible ? 'visible' : 'hidden',
     }"
@@ -13,13 +15,18 @@
       </div>
     </div>
     <h2>
-      <ItemIconBox :bundle :icon :color />
-      <span>{{ title }}</span>
+      <ItemIconBox data-test="add-list-help-icon" :bundle :icon :color />
+      <span data-test="add-list-help-title">{{ title }}</span>
     </h2>
 
     <hr />
 
-    <div v-if="text" class="bk-add-list-help-description" v-html="text" />
+    <div
+      v-if="text"
+      class="bk-add-list-help-description"
+      data-test="add-list-help-description"
+      v-html="text"
+    />
 
     <template v-for="section in sections" :key="section.title">
       <hr />
@@ -32,6 +39,7 @@
         v-for="field in section.fields"
         :key="field.name"
         class="bk-add-list-help-fields-item"
+        :data-test="'add-list-help-field-' + field.name"
       >
         <ul>
           <li v-if="section.fields.length > 1" class="bk-is-field">
@@ -39,8 +47,9 @@
           </li>
           <li
             v-for="allowed in field.items"
-            :key="field.name + allowed.bundle"
+            :key="field.name + allowed.bundle + allowed.label"
             class="bk-is-bundle"
+            :data-test="'add-list-help-allowed-' + allowed.bundle"
           >
             <ItemIconBox
               :bundle="allowed.bundle"

@@ -9,8 +9,15 @@ import type { EntityContext } from '../../../src/runtime/types'
 // the playground's `test` namespace augmentation (test-cases `global.d.ts`).
 // No local re-declaration — that would conflict with the real type.
 
-/** Default playground editor route (entity `1`, edit mode on). */
-export const EDITOR_PATH = '/page/1?blokkliEditing=1'
+/**
+ * Default playground editor route (entity `1`, edit mode on). `testing=true`
+ * puts the mock adapter in E2E mode: it records selected adapter calls and,
+ * crucially, does not restore persisted UI state (e.g. the responsive-preview
+ * sidebar the dev user last left open) — so every test starts from the same
+ * clean layout. Tests that need the recorder simply read it; tests that need a
+ * particular sidebar open it explicitly.
+ */
+export const EDITOR_PATH = '/page/1?blokkliEditing=1&testing=true'
 
 export interface OpenEditorOptions {
   /**

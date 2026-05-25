@@ -1,5 +1,9 @@
 <template>
-  <Sortli id="blokkli-add-list-actions" :build-item="buildItemAction">
+  <Sortli
+    id="blokkli-add-list-actions"
+    data-test="add-list-actions"
+    :build-item="buildItemAction"
+  >
     <ActionButton
       v-for="action in actions"
       :key="action.id"

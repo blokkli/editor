@@ -2370,9 +2370,21 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     adapter.userSettings = {
       load() {
+        // Under E2E, don't restore persisted UI state (open sidebars such as the
+        // responsive preview, etc.) so the editor always starts from a clean,
+        // deterministic layout — and tests don't inherit whatever the dev user
+        // last had open.
+        if (isTesting) {
+          return Promise.resolve({})
+        }
         return $fetch<string>('/api/user-settings')
       },
       async persist(data) {
+        // Likewise, never write test-driven UI changes back to the shared dev
+        // user settings.
+        if (isTesting) {
+          return
+        }
         await $fetch<string>('/api/user-settings', {
           method: 'post',
           body: {

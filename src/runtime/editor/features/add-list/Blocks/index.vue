@@ -1,5 +1,10 @@
 <template>
-  <Sortli v-if="shouldRender" id="blokkli-add-list-blocks" :build-item>
+  <Sortli
+    v-if="shouldRender"
+    id="blokkli-add-list-blocks"
+    data-test="add-list-blocks"
+    :build-item
+  >
     <AddListItem
       v-for="type in sortedList"
       v-show="type.isVisible"

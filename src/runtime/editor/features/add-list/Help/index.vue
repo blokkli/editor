@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" class="bk bk-add-list-help">
+  <div ref="rootEl" data-test="add-list-help" class="bk bk-add-list-help">
     <div
       ref="innerEl"
       class="bk-add-list-help-inner relative will-change-transform text-mono-50 bg-mono-950/90 backdrop-blur-md overflow-hidden rounded"

@@ -4,6 +4,7 @@
       v-show="!ui.isApproving.value"
       id="bk-add-list"
       ref="wrapper"
+      data-test="add-list"
       class="bk bk-add-list bk-control"
       @wheel.capture.passive="onWheel"
       @mouseenter="onMouseEnter"
@@ -12,6 +13,7 @@
     >
       <div
         class="bk-add-list-inner"
+        :data-test-expanded="isActive"
         :class="{
           'bk-is-active': isActive,
         }"

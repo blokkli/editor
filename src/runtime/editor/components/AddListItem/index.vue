@@ -8,6 +8,7 @@
     :menu="menu"
     :data-sortli-id="id"
     :data-test="'add-list-item-' + id"
+    :data-test-disabled="disabled"
     :class="[
       {
         'bk-is-disabled': disabled,
