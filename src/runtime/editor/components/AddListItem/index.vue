@@ -7,6 +7,7 @@
     class="bk-add-item"
     :menu="menu"
     :data-sortli-id="id"
+    :data-test="'add-list-item-' + id"
     :class="[
       {
         'bk-is-disabled': disabled,

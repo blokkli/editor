@@ -11,6 +11,7 @@
       ref="inputEl"
       v-model="value"
       type="text"
+      data-test="text-input"
       class="h-60 appearance-none w-full bg-transparent !outline-none !ring-0 pl-50 !border-none text-lg font-bold placeholder:font-normal placeholder:text-mono-500 text-mono-100 group-focus-within:outline! group-focus-within:outline-white -outline-offset-2"
       :placeholder
       :class="{

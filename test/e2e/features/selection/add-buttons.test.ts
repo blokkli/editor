@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { describe, expect, test } from 'vitest'
-import type { Page } from 'playwright-core'
+import type { Locator, Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { addBlocks, selectBlock } from './../../support/blocks'
 import { emitEvent } from './../../support/events'
@@ -8,104 +8,295 @@ import { setupEditorE2E } from './../../support/setup'
 
 /**
  * The "add buttons" (selection/AddButtons feature) are drawn on the WebGL
- * canvas — there is no DOM element to click. To click one we reproduce the
- * Renderer's geometry: the before/after buttons sit at the selected block's
- * edge centers (left/right for a horizontally-laid-out field, top/bottom for a
- * vertical one), converted to a screen coordinate via the artboard
- * scale/offset. When the target field allows more than one bundle, clicking the
- * button opens the `BundleSelector` overlay (`data-test="bundle-selector"`).
+ * canvas, so there is no DOM element to click. Instead we drive them with the
+ * `selection:add-button:trigger` event, which the feature handles exactly like
+ * a canvas click on the corresponding button of the current selection — and,
+ * like the canvas buttons, only acts when the button would actually be shown.
+ * When the target field allows more than one bundle, this opens the
+ * `BundleSelector` overlay (`data-test="bundle-selector"`).
  */
 
 /**
- * Screen coordinates of a selected block's `before`/`after` add button. Reads
- * the live block rect + artboard transform and mirrors the Renderer's
- * edge-center placement, picking the axis from the parent field's orientation.
+ * Add a grid holding a title (in its single-cardinality `header` field) and
+ * three cards (in its `blocks` field). Returns the created uuids.
  */
-function addButtonScreenPoint(
-  page: Page,
-  uuid: string,
-  position: 'before' | 'after',
-): Promise<{ x: number; y: number }> {
-  return page.evaluate(
-    ({ uuid, position }) => {
-      const app = window.__BLOKKLI__!.app!
-      const block = app.blocks.getBlock(uuid)
-      if (!block) {
-        throw new Error(`Block ${uuid} not found`)
-      }
-      const field = app.fields.find(block.host.uuid, block.host.fieldName)
-      if (!field) {
-        throw new Error(`Field for block ${uuid} not found`)
-      }
-
-      app.dom.refreshBlockRect(uuid)
-      const rect = app.dom.getBlockRect(uuid)
-      if (!rect) {
-        throw new Error(`No rect for block ${uuid}`)
-      }
-
-      const scale = app.ui.artboardScale.value
-      const offset = app.ui.artboardOffset.value
-      const shift = 2 / scale // BUTTON_SHIFT in the Renderer
-
-      // Mirror getChildrenOrientation() on the field's container element.
-      const cs = getComputedStyle(field.element)
-      let horizontal = false
-      if (cs.display.includes('flex')) {
-        horizontal =
-          cs.flexDirection === 'row' || cs.flexDirection === 'row-reverse'
-      } else if (cs.display.includes('grid')) {
-        horizontal = cs.gridTemplateColumns.split(' ').length > 1
-      }
-
-      let artX: number
-      let artY: number
-      if (horizontal) {
-        artY = rect.y + rect.height / 2
-        artX =
-          position === 'before' ? rect.x - shift : rect.x + rect.width + shift
-      } else {
-        artX = rect.x + rect.width / 2
-        artY =
-          position === 'before' ? rect.y - shift : rect.y + rect.height + shift
-      }
-
-      return { x: artX * scale + offset.x, y: artY * scale + offset.y }
+async function addGrid(page: Page) {
+  const grid = randomUUID()
+  const title = randomUUID()
+  const cards = [randomUUID(), randomUUID(), randomUUID()] as const
+  await addBlocks(page, [
+    {
+      bundle: 'grid',
+      uuid: grid,
+      children: {
+        header: [{ bundle: 'title', uuid: title }],
+        blocks: cards.map((uuid) => ({ bundle: 'card', uuid })),
+      },
     },
-    { uuid, position },
-  )
+  ])
+  return { grid, title, cards }
+}
+
+/**
+ * Add a grid, select its last card and trigger that card's "after" add button
+ * (its `blocks` field allows several bundles → the selector opens). Returns the
+ * open `BundleSelector` locator.
+ */
+async function openCardBundleSelector(page: Page): Promise<Locator> {
+  const { cards } = await addGrid(page)
+  await selectBlock(page, cards[2])
+  await emitEvent(page, 'selection:add-button:trigger', { position: 'after' })
+
+  const bundleSelector = page.locator('[data-test="bundle-selector"]')
+  await bundleSelector.waitFor({ state: 'visible' })
+  return bundleSelector
+}
+
+/**
+ * The item identifiers shown in one of the selector's groups (`blocks`,
+ * `actions`, `fragments`), read from each item's `data-test="add-list-item-<id>"`.
+ */
+function groupItemIds(
+  page: Page,
+  group: 'blocks' | 'actions' | 'fragments',
+): Promise<string[]> {
+  return page
+    .locator(
+      `[data-test="bundle-selector-${group}"] [data-test^="add-list-item-"]`,
+    )
+    .evaluateAll((els) =>
+      els.map((el) =>
+        el.getAttribute('data-test')!.replace('add-list-item-', ''),
+      ),
+    )
+}
+
+/**
+ * Wait for a block that isn't in `before` to appear and return its identity.
+ * `fragment` is the fragment name for fragment blocks, else null.
+ */
+async function newBlock(
+  page: Page,
+  before: string[],
+): Promise<{ uuid: string; bundle: string; fragment: string | null } | null> {
+  const handle = await page.waitForFunction((before) => {
+    const app = window.__BLOKKLI__!.app!
+    const uuid = app.state.getAllUuids().find((u) => !before.includes(u))
+    if (!uuid) {
+      return null
+    }
+    const block = app.blocks.getBlock(uuid)
+    if (!block) {
+      return null
+    }
+    return {
+      uuid,
+      bundle: block.bundle,
+      fragment: block.fragment?.name ?? null,
+    }
+  }, before)
+  return handle.jsonValue()
 }
 
 describe('The selection add buttons', async () => {
   await setupEditorE2E()
 
-  test('clicking a card add button opens the bundle selector', async () => {
+  test("triggering a card's add button opens the bundle selector", async () => {
     const page = await openEditor()
-
-    // A grid with three cards in its (horizontal) `blocks` field.
-    const grid = randomUUID()
-    const cards = [randomUUID(), randomUUID(), randomUUID()] as const
-    await addBlocks(page, [
-      {
-        bundle: 'grid',
-        uuid: grid,
-        children: { blocks: cards.map((uuid) => ({ bundle: 'card', uuid })) },
-      },
-    ])
 
     const bundleSelector = page.locator('[data-test="bundle-selector"]')
     expect(await bundleSelector.count()).toBe(0)
 
-    // Select the last card and bring it into view so the canvas button is
-    // on-screen, then click the "after" button on its right edge.
-    await selectBlock(page, cards[2])
-    await emitEvent(page, 'scrollIntoView', { uuid: cards[2], immediate: true })
-
-    const point = await addButtonScreenPoint(page, cards[2], 'after')
-    await page.mouse.click(point.x, point.y)
-
-    // The card's `blocks` field allows several bundles, so the selector opens.
+    await openCardBundleSelector(page)
     await bundleSelector.waitFor({ state: 'visible' })
+
+    await page.close()
+  })
+
+  test('a title in the grid has no add buttons (its header field holds a single block)', async () => {
+    const page = await openEditor()
+    const { title } = await addGrid(page)
+
+    // The grid's `header` field has a cardinality of 1 and already holds the
+    // title, so neither the before nor the after add button is shown —
+    // triggering them is a no-op and no selector opens.
+    await selectBlock(page, title)
+    await emitEvent(page, 'selection:add-button:trigger', { position: 'before' })
+    await emitEvent(page, 'selection:add-button:trigger', { position: 'after' })
+
+    // Give any (erroneous) selector a chance to appear before asserting absence.
+    await page.waitForTimeout(300)
+    expect(
+      await page.locator('[data-test="bundle-selector"]').count(),
+    ).toBe(0)
+
+    await page.close()
+  })
+
+  test("the grid's empty header field offers the title/text bundles and the template action", async () => {
+    const page = await openEditor()
+
+    // A grid whose `header` field is left empty (the `blocks` field has a card,
+    // so `header` is the grid's only empty field → index 0).
+    const grid = randomUUID()
+    await addBlocks(page, [
+      {
+        bundle: 'grid',
+        uuid: grid,
+        children: { blocks: [{ bundle: 'card', uuid: randomUUID() }] },
+      },
+    ])
+
+    // Selecting the grid surfaces its empty-field add button; triggering it
+    // opens the selector scoped to the `header` field (allows `title`/`text`).
+    await selectBlock(page, grid)
+    await emitEvent(page, 'selection:add-button:trigger', {
+      position: 'field',
+      index: 0,
+    })
+
+    const bundleSelector = page.locator('[data-test="bundle-selector"]')
+    await bundleSelector.waitFor({ state: 'visible' })
+
+    expect((await groupItemIds(page, 'blocks')).sort()).toEqual(
+      ['text', 'title'].sort(),
+    )
+    // No fragments (the field allows none) and no "From library" action (the
+    // field doesn't allow the from-library bundle) — only "Template".
+    expect(await groupItemIds(page, 'actions')).toEqual(['template'])
+    expect(await groupItemIds(page, 'fragments')).toEqual([])
+
+    await page.close()
+  })
+
+  test('starting a drag closes the bundle selector', async () => {
+    const page = await openEditor()
+    const bundleSelector = await openCardBundleSelector(page)
+    await bundleSelector.waitFor({ state: 'visible' })
+
+    await emitEvent(page, 'dragging:start', {
+      items: [],
+      coords: { x: 0, y: 0 },
+      mode: 'mouse',
+    })
+
+    await bundleSelector.waitFor({ state: 'hidden' })
+
+    await page.close()
+  })
+
+  test('the bundle selector lists the expected blocks, actions and fragments', async () => {
+    const page = await openEditor()
+    await openCardBundleSelector(page)
+
+    // Blocks allowed in the grid's `blocks` field (the internal `from_library`
+    // and `blokkli_fragment` bundles surface as an action / fragments instead).
+    expect((await groupItemIds(page, 'blocks')).sort()).toEqual(
+      ['card', 'image', 'teaser', 'text', 'video'].sort(),
+    )
+
+    // "Template" (always) and "From library" (because the field allows the
+    // from-library bundle).
+    expect((await groupItemIds(page, 'actions')).sort()).toEqual(
+      ['library', 'template'].sort(),
+    )
+
+    // The field's single allowed fragment.
+    expect(await groupItemIds(page, 'fragments')).toEqual([
+      'fragment:demo_card',
+    ])
+
+    await page.close()
+  })
+
+  test('searching narrows to matching blocks and fragments and hides the actions group', async () => {
+    const page = await openEditor()
+    const bundleSelector = await openCardBundleSelector(page)
+
+    await bundleSelector.locator('[data-test="text-input"]').fill('card')
+
+    // Only the "card" bundle and the "demo_card" fragment match; no action
+    // matches, so the actions group is hidden entirely.
+    await expect.poll(() => groupItemIds(page, 'blocks')).toEqual(['card'])
+    await expect
+      .poll(() => groupItemIds(page, 'fragments'))
+      .toEqual(['fragment:demo_card'])
+
+    expect(await groupItemIds(page, 'actions')).toEqual([])
+    expect(
+      await page.locator('[data-test="bundle-selector-actions"]').isVisible(),
+    ).toBe(false)
+
+    await page.close()
+  })
+
+  test('searching for "card" and pressing enter adds a card', async () => {
+    const page = await openEditor()
+    const bundleSelector = await openCardBundleSelector(page)
+    const input = bundleSelector.locator('[data-test="text-input"]')
+
+    await input.fill('card')
+    await expect.poll(() => groupItemIds(page, 'blocks')).toEqual(['card'])
+
+    const before = await page.evaluate(() =>
+      window.__BLOKKLI__!.app!.state.getAllUuids(),
+    )
+    await input.press('Enter')
+
+    // Submitting picks the first result — the "card" block.
+    const added = await newBlock(page, before)
+    expect(added?.bundle).toBe('card')
+    expect(added?.fragment).toBeNull()
+
+    await page.close()
+  })
+
+  test('searching for "demo card" and pressing enter adds the demo card fragment', async () => {
+    const page = await openEditor()
+    const bundleSelector = await openCardBundleSelector(page)
+    const input = bundleSelector.locator('[data-test="text-input"]')
+
+    await input.fill('demo card')
+    // Wait until fzf has filtered the blocks away, so the first result — and
+    // thus what Enter submits — is the fragment, not a block.
+    await expect.poll(() => groupItemIds(page, 'blocks')).toEqual([])
+    await expect
+      .poll(() => groupItemIds(page, 'fragments'))
+      .toEqual(['fragment:demo_card'])
+
+    const before = await page.evaluate(() =>
+      window.__BLOKKLI__!.app!.state.getAllUuids(),
+    )
+    await input.press('Enter')
+
+    const added = await newBlock(page, before)
+    expect(added?.fragment).toBe('demo_card')
+
+    await page.close()
+  })
+
+  test('clicking the "Template" action opens the template form overlay', async () => {
+    const page = await openEditor()
+    const bundleSelector = await openCardBundleSelector(page)
+
+    await bundleSelector.locator('[data-test="add-list-item-template"]').click()
+
+    await page
+      .locator('[data-test="form-overlay-templates"]')
+      .waitFor({ state: 'visible' })
+
+    await page.close()
+  })
+
+  test('clicking the "From library" action opens the library form overlay', async () => {
+    const page = await openEditor()
+    const bundleSelector = await openCardBundleSelector(page)
+
+    await bundleSelector.locator('[data-test="add-list-item-library"]').click()
+
+    await page
+      .locator('[data-test="form-overlay-library"]')
+      .waitFor({ state: 'visible' })
 
     await page.close()
   })

@@ -1,6 +1,7 @@
 <template>
   <div
     class="bk-form-overlay bk-vars"
+    :data-test="'form-overlay-' + id"
     @click.stop
     @mousedown.stop
     @keyup.stop

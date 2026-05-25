@@ -659,4 +659,23 @@ function onRendererToggleField(data: {
 }
 
 onBlokkliEvent('dragging:start', closeOverlay)
+
+onBlokkliEvent('selection:add-button:trigger', (e) => {
+  if (e.position === 'field') {
+    onRendererToggleField({ index: e.index, coordinates: { x: 0, y: 0 } })
+    return
+  }
+
+  // before/after only act when the field can actually accept another block —
+  // the canvas buttons aren't rendered otherwise (e.g. a single-cardinality
+  // field that's already full), so neither should this.
+  if (selection.hasHostSelected.value || !uuid.value) {
+    return
+  }
+  updateCache(uuid.value)
+  if (!cache.get(uuid.value)?.canShowBeforeAfter) {
+    return
+  }
+  onRendererToggle({ position: e.position, coordinates: { x: 0, y: 0 } })
+})
 </script>
