@@ -3,6 +3,7 @@
     :id="'bk-menu-list-button-' + id"
     class="w-full text-left whitespace-nowrap text-mono-950 group"
     :data-test="'app-menu-button-' + id"
+    :data-test-type="type"
     :disabled
     :class="[
       {

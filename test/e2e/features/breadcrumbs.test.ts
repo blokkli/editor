@@ -90,7 +90,7 @@ describe('The breadcrumbs feature', async () => {
     const page = await openEditor()
     const { grid, cards } = await addGridWithCards(page, 1)
 
-    await emitEvent(page, 'select', cards[0])
+    await emitEvent(page, 'select', cards[0]!)
 
     // root → host → content (field) → grid (block) → blocks (field) → card
     // (block, current). The chain alternates field/block crumbs up the tree.
@@ -102,7 +102,7 @@ describe('The breadcrumbs feature', async () => {
         { id: 'breadcrumb-field', current: false, uuid: null, field: 'content', count: null },
         { id: 'breadcrumb-block', current: false, uuid: grid, field: null, count: null },
         { id: 'breadcrumb-field', current: false, uuid: null, field: 'blocks', count: null },
-        { id: 'breadcrumb-block', current: true, uuid: cards[0], field: null, count: null },
+        { id: 'breadcrumb-block', current: true, uuid: cards[0]!, field: null, count: null },
       ])
 
     await page.close()
@@ -112,8 +112,8 @@ describe('The breadcrumbs feature', async () => {
     const page = await openEditor()
     const { grid, cards } = await addGridWithCards(page, 1)
 
-    await emitEvent(page, 'select', cards[0])
-    await expect.poll(() => selectedUuids(page)).toEqual([cards[0]])
+    await emitEvent(page, 'select', cards[0]!)
+    await expect.poll(() => selectedUuids(page)).toEqual([cards[0]!])
 
     await clickCrumb(page, `[data-test="breadcrumb-block"][data-test-uuid="${grid}"]`)
 
@@ -130,7 +130,7 @@ describe('The breadcrumbs feature', async () => {
     const page = await openEditor()
     const { cards } = await addGridWithCards(page, 3)
 
-    await emitEvent(page, 'select', cards[0])
+    await emitEvent(page, 'select', cards[0]!)
     await expect.poll(() => readCrumbs(page)).toContainEqual(
       expect.objectContaining({ id: 'breadcrumb-field', field: 'blocks' }),
     )
@@ -150,7 +150,7 @@ describe('The breadcrumbs feature', async () => {
     const { cards } = await addGridWithCards(page, 3)
 
     // Two of the three cards → the field crumb plus a "multiple" count crumb.
-    await emitEvent(page, 'select', [cards[0], cards[1]])
+    await emitEvent(page, 'select', [cards[0]!, cards[1]!])
 
     await expect.poll(() => readCrumbs(page)).toEqual([
       { id: 'breadcrumb-root', current: false, uuid: null, field: null, count: null },
@@ -206,8 +206,8 @@ describe('The breadcrumbs feature', async () => {
     const page = await openEditor()
     const { cards } = await addGridWithCards(page, 1)
 
-    await emitEvent(page, 'select', cards[0])
-    await openEditableField(page, 'title', cards[0])
+    await emitEvent(page, 'select', cards[0]!)
+    await openEditableField(page, 'title', cards[0]!)
 
     // The editable field is always the final crumb and is the current one.
     await expect
