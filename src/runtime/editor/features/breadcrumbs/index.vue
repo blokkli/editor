@@ -6,7 +6,7 @@
     >
       <ul class="flex items-center gap-1 h-full min-w-0">
         <!-- Artboard root. -->
-        <Crumb is-first :is-last="rootIsLast">
+        <Crumb is-first test-id="root" :is-last="rootIsLast">
           <button
             type="button"
             class="group flex items-center h-full px-10 relative hover:text-white"
@@ -18,7 +18,7 @@
         </Crumb>
 
         <!-- Host entity. -->
-        <Crumb v-if="showHost" shrinkable :is-last="hostIsLast">
+        <Crumb v-if="showHost" shrinkable test-id="host" :is-last="hostIsLast">
           <button
             type="button"
             class="group flex items-center h-full px-10 relative hover:text-white min-w-0"
@@ -42,7 +42,7 @@
         />
 
         <!-- Active editable field (always the last crumb). -->
-        <Crumb v-if="hasEditable" is-last>
+        <Crumb v-if="hasEditable" is-last test-id="editable">
           <div
             class="flex items-center h-full px-10 relative uppercase text-xs tracking-wide min-w-0 font-bold text-white"
           >

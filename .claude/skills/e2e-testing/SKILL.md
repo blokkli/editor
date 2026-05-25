@@ -161,63 +161,15 @@ build), no tag/role/text selectors. If you need to reach an element, add a
 `data-test` to the (shared) component — don't reach for a CSS/id selector. This
 is the stable contract between the editor's DOM and the tests.
 
-Existing hooks (extend this list as you add them):
-
-- Toolbar buttons (`PluginToolbarButton`): `data-test-toolbar-button="<id>"` →
-  `toolbarButton(page, 'undo')`.
-- App-menu toggle (`Toolbar`) + buttons (`AppMenu/MenuButton`):
-  `data-test="app-menu-toggle"` and `data-test="app-menu-button-<id>"` →
-  `openAppMenu(page)` / `appMenuButton(page, id)`.
-- Popups (`Popup`): `data-test-popup="<id>"` + `data-test-popup-close="<id>"` →
-  `popup(page, id)` / `dismissPopup(page, id)`.
-- Modal dialogs (`DialogModal`): `data-test="dialog-<id>"` on the container,
-  `data-test="dialog-submit"` / `data-test="dialog-cancel"` on its buttons →
-  `dialog(page, id)` / `dialogSubmit(page)` / `dialogCancel(page)`.
-- Publish dialog: `data-test="publish-mode-<save|immediate|scheduled>"` (with
-  `data-test-checked` reflecting selection); scheduler
-  `data-test="schedule-date"`, `"schedule-time"`, `"schedule-error"`, and
-  `"datepicker-day-<YYYY-MM-DD>"`; the revision-log message is the dialog's
-  single `data-test="textarea"`.
-- Toolbar scheduled-date (`entity-title`): `data-test="toolbar-scheduled-date"`
-  with `data-test-scheduled-date="<ISO>"` (the raw instant — the visible text is
-  locale-formatted, so assert against the attribute).
-- Responsive preview iframe (`responsive-preview/Frame`):
-  `data-test="preview-iframe"`.
-- Block options (`options/Form`): the per-option wrapper (`Item.vue`) carries
-  `data-test="option-<property>"`; the control inside carries its type,
-  `data-test="option-type-<checkbox|radios|text|color|range|number|checkboxes|datetime-local|json>"`.
-  Scope to disambiguate: `blockOption(page, 'box')` /
-  `toggleCheckboxOption(page, 'box')`. This split — id on the wrapper, type on
-  the control — is the pattern for a shared control rendered for many keys.
-- DiffApproval toolbar: `data-test="diff-approval-cancel|diff-approval-apply"`.
-- Block scheduler (`block-scheduler`): the action button is the generic
-  `data-test="plugin-item-action-block-scheduler"` (native `disabled` — assert
-  `.isDisabled()`); the dialog (`dialog-block-scheduler`) has a publish and an
-  unpublish section `data-test="scheduler-<publish|unpublish>"` each carrying
-  `data-test-disabled` (whether that bundle supports it) with an enable
-  `data-test="scheduler-<type>-toggle"`; the action's "has dates" dot is
-  `data-test="block-scheduler-indicator"`. Both sections embed the shared
-  `ScheduleDate` widget — scope `support/schedule` helpers to the section.
-- Publish dialog scheduled-blocks notice (`publish/Dialog`):
-  `data-test="publish-scheduled-blocks-notice"`, one
-  `data-test="publish-scheduled-block"` per distinct scheduled date.
-- Item-actions **dropdown** (the "further actions" menu, separate from the
-  direct `PluginItemAction`s): the toggle on the actions title is
-  `data-test="item-actions-dropdown-toggle"`; each entry registered via
-  `defineItemDropdownAction` is `data-test="item-dropdown-action-<id>"`. Helpers
-  `openItemDropdown(page)` / `itemDropdownAction(page, id)` /
-  `clickItemDropdownAction(page, id)` in `support/itemActions.ts`. **The menu
-  opens downward from the selected block's actions bar**, so when the block sits
-  low in the viewport it overflows the bottom and entries aren't clickable
-  (Playwright reports the target "outside of the viewport" — there's no scroll
-  container, so `scrollIntoViewIfNeeded` can't save it). `openItemDropdown`
-  presses `PageDown` first to scroll the artboard so the selection rises and the
-  menu has room. The new-block insertion position (and thus this overflow) is
-  non-deterministic, so always go through the helper.
-- Block transfer (`block-transfer`): export is the dropdown action
-  `item-dropdown-action-block-transfer-export`; the import summary is the shared
-  `DialogModal` `dialog-block-transfer-summary` with one row per warning —
-  `data-test="transfer-summary-{skipped,dropped,references-label,unresolved}-row"`.
+Don't catalogue every attribute here — which hooks a feature has is obvious from
+its spec and component. Just follow the conventions: name them
+`data-test="<feature>-<thing>"` (parametrised by id where there are many, e.g.
+`dialog-<id>`, `option-<property>`); put the id on a wrapper and the variant on
+the control for a shared component rendered many times (`option-<property>` +
+`option-type-<kind>`); and store any value the test needs to assert in the
+attribute itself (`data-test-scheduled-date="<ISO>"`) since the visible text is
+locale-formatted. Where an interaction is non-trivial or repeated, wrap it in a
+`support/` helper rather than re-deriving the selector dance per spec.
 
 A boolean `:data-test-x="bool"` renders in **both** states — Vue only drops
 `null`/`undefined` for `data-*` attributes, not `false`, so `false` serialises

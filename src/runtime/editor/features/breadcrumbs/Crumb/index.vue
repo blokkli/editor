@@ -5,6 +5,11 @@
       canShrink ? 'shrink min-w-0' : 'shrink-0',
       isLast ? 'text-mono-50 pointer-events-none' : '',
     ]"
+    :data-test="`breadcrumb-${testId ?? crumb?.type}`"
+    :data-test-current="isLast"
+    :data-test-uuid="crumb?.type === 'block' ? crumb.uuid : undefined"
+    :data-test-field="crumb?.type === 'field' ? crumb.fieldName : undefined"
+    :data-test-count="crumb?.type === 'multiple' ? crumb.count : undefined"
   >
     <span v-if="!isFirst" class="text-mono-400 shrink-0">»</span>
 
@@ -69,6 +74,8 @@ const props = defineProps<{
   isLast: boolean
   /** Whether this crumb may shrink with an ellipsis (field crumbs always do). */
   shrinkable?: boolean
+  /** Test identity for slot crumbs (root/host/editable); data crumbs use their type. */
+  testId?: string
 }>()
 
 const { $t, state, eventBus } = useBlokkli()
