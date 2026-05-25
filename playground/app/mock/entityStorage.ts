@@ -193,11 +193,6 @@ export class EntityStorageManager {
     })
     this.storages.content.add(page)
 
-    const cypressPage = new ContentPage('2')
-    cypressPage.title().setText('Interactive $page building$ cypress test.')
-    cypressPage.lead().setText('Test page for cypress tests.')
-    this.storages.content.add(cypressPage)
-
     const usedBlocks: string[] = []
 
     data.fields.forEach((item) => {

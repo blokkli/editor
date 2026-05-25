@@ -133,8 +133,7 @@
     "format:fix": "prettier . --write",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "cypress:open": "cypress open"
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
@@ -188,7 +187,6 @@
     "changelogen": "^0.6.2",
     "ckeditor5": "^47.3.0",
     "commander": "^13.1.0",
-    "cypress": "^15.8.1",
     "deepl-node": "^1.25.0",
     "eslint": "^9.39.2",
     "eslint-plugin-oxlint": "^1.35.0",
@@ -294,9 +292,6 @@
     "prettier-plugin-glsl": {
       "chevrotain": "^12.0.0",
       "lodash": "^4.17.24"
-    },
-    "cypress": {
-      "@cypress/request": "^4.0.0"
     }
   }
 }

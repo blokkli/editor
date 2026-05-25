@@ -65,7 +65,6 @@ npm run lint                   # Lint source files
 npm run lint:fix               # Auto-fix linting issues
 npm run prettier               # Check code formatting
 npm run prettier:fix           # Auto-fix formatting
-npm run cypress:open           # Open Cypress for E2E tests
 ```
 
 ### Documentation
@@ -258,7 +257,6 @@ Key options in `nuxt.config.ts` under `blokkli` key:
 ### Testing
 
 - Unit tests use Vitest, located alongside source files as `*.spec.ts`
-- E2E tests use Cypress
 - Tests are excluded from the built package via the prepack script
 
 ### Type Safety
