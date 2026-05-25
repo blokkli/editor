@@ -1117,13 +1117,30 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       const paragraphs = e.uuids.map(serialize).filter(falsy)
       if (!paragraphs.length) {
+        if (isTesting) {
+          recordAdapterCall('exportBlocksToTransferable', {
+            uuids: e.uuids,
+            bundles: null,
+            transferable: null,
+          })
+        }
         return null
       }
 
-      return {
+      const envelope = {
         bundles: paragraphs.map((p) => p.bundle),
         transferable: JSON.stringify({ version: 1, paragraphs }),
       }
+
+      if (isTesting) {
+        recordAdapterCall('exportBlocksToTransferable', {
+          uuids: e.uuids,
+          bundles: envelope.bundles,
+          transferable: envelope.transferable,
+        })
+      }
+
+      return envelope
     },
 
     importBlocksFromTransferable: async (e) => {
@@ -1144,6 +1161,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       const importSummary = lastMutation?.configuration?.importSummary as
         | MockImportSummary
         | undefined
+
+      if (isTesting) {
+        recordAdapterCall('importBlocksFromTransferable', {
+          host: e.host,
+          afterUuid: e.afterUuid ?? null,
+          importSummary,
+        })
+      }
 
       return { ...result, importSummary }
     },

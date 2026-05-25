@@ -1,5 +1,6 @@
 <template>
   <button
+    :data-test="`item-dropdown-action-${action.id}`"
     class="gap-10 group/tooltip grid grid-cols-[20px_1fr] w-full text-mono-300 items-center left-left leading-none disabled:opacity-20 disabled:pointer-events-none hover:text-white hover:bg-mono-800 px-10"
     :class="{
       'hover:bg-orange-normal/10! hover:text-orange-light!':

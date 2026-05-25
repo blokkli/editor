@@ -7,6 +7,7 @@
     }"
   >
     <button
+      data-test="item-actions-dropdown-toggle"
       class="bk-blokkli-item-actions-type-button bk-item-icon-hover-parent group/tooltip pl-10 pr-3 flex items-center lg:min-w-[180px] text-mono-300 font-bold h-full leading-none relative w-full cursor-pointer hover:text-mono-50 hover:bg-mono-700"
       tabindex="-1"
       :class="{

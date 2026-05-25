@@ -193,6 +193,23 @@ Existing hooks (extend this list as you add them):
 - Publish dialog scheduled-blocks notice (`publish/Dialog`):
   `data-test="publish-scheduled-blocks-notice"`, one
   `data-test="publish-scheduled-block"` per distinct scheduled date.
+- Item-actions **dropdown** (the "further actions" menu, separate from the direct
+  `PluginItemAction`s): the toggle on the actions title is
+  `data-test="item-actions-dropdown-toggle"`; each entry registered via
+  `defineItemDropdownAction` is `data-test="item-dropdown-action-<id>"`. Helpers
+  `openItemDropdown(page)` / `itemDropdownAction(page, id)` /
+  `clickItemDropdownAction(page, id)` in `support/itemActions.ts`. **The menu
+  opens downward from the selected block's actions bar**, so when the block sits
+  low in the viewport it overflows the bottom and entries aren't clickable
+  (Playwright reports the target "outside of the viewport" — there's no scroll
+  container, so `scrollIntoViewIfNeeded` can't save it). `openItemDropdown`
+  presses `PageDown` first to scroll the artboard so the selection rises and the
+  menu has room. The new-block insertion position (and thus this overflow) is
+  non-deterministic, so always go through the helper.
+- Block transfer (`block-transfer`): export is the dropdown action
+  `item-dropdown-action-block-transfer-export`; the import summary is the shared
+  `DialogModal` `dialog-block-transfer-summary` with one row per warning —
+  `data-test="transfer-summary-{skipped,dropped,references-label,unresolved}-row"`.
 
 A boolean `:data-test-x="bool"` renders in **both** states — Vue only drops
 `null`/`undefined` for `data-*` attributes, not `false`, so `false` serialises to
@@ -299,6 +316,16 @@ fieldName, bundle } }`.
   drag. One drag per test sidesteps it.
 - Canvas double-click to edit is unreliable (artboard vs screen coords); drive
   `eventBus.emit('editable:open', { fieldName, uuid? })` instead.
+- **Drop logic without a canvas drop:** a feature's drop handler is registered on
+  `app.dragdrop` — `app.dragdrop.getDropHandler('<itemType>')` returns it, and
+  you can `await handler.execute({ items, host, afterUuid, field, bundle })`
+  directly in a `withApp`/`page.evaluate` to exercise the *drop's* logic (import,
+  summary, mutation) without driving the brittle canvas drag. Reach for this when
+  the drag *gesture* belongs to another feature (the `dragging-overlay`) and isn't
+  what's under test — e.g. block-transfer's import. To assert the *decision* to
+  begin a drag (vs. act immediately), emit the triggering event and read
+  `app.selection.isDragging` / `dragItems` (then `emitEvent(page,'dragging:end')`
+  to clean up).
 - **Deterministic time:** `setFixedTime(page, instant)` fakes only `Date` (rAF
   and timers keep running, so transitions/canvas survive). Pair it with
   `openEditor(path, { timezoneId: 'UTC' })` so the instant maps to a known local

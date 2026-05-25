@@ -31,7 +31,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in summary.skippedBundles" :key="row.bundle">
+            <tr
+              v-for="row in summary.skippedBundles"
+              :key="row.bundle"
+              data-test="transfer-summary-skipped-row"
+            >
               <td>
                 <code>{{ row.bundle }}</code>
               </td>
@@ -63,6 +67,7 @@
             <tr
               v-for="(row, i) in summary.droppedFields"
               :key="`${row.bundle}-${row.fieldName}-${i}`"
+              data-test="transfer-summary-dropped-row"
             >
               <td>
                 <code>{{ row.bundle }}</code>
@@ -103,6 +108,7 @@
             <tr
               v-for="(row, i) in summary.referencesResolvedByLabel"
               :key="`${row.entityType}-${row.targetId}-${i}`"
+              data-test="transfer-summary-references-label-row"
             >
               <td>
                 <code>{{ row.entityType }}</code>
@@ -141,6 +147,7 @@
             <tr
               v-for="(row, i) in summary.referencesUnresolved"
               :key="`${row.uuid ?? row.label ?? ''}-${i}`"
+              data-test="transfer-summary-unresolved-row"
             >
               <td>
                 <code>{{ row.entityType }}</code>
