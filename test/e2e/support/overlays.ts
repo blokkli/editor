@@ -41,3 +41,12 @@ export function dialogSubmit(page: Page): Locator {
 export function dialogCancel(page: Page): Locator {
   return page.locator('[data-test="dialog-cancel"]')
 }
+
+/**
+ * Locate a form overlay by its `id` (the `id` prop of `<FormOverlay>`, surfaced
+ * as `data-test="form-overlay-<id>"`, e.g. `edit-form` for the block edit form,
+ * or the add-action form ids). Returns a Locator for presence / visibility.
+ */
+export function formOverlay(page: Page, id: string): Locator {
+  return page.locator(`[data-test="form-overlay-${id}"]`)
+}

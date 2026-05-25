@@ -41,7 +41,7 @@ type CommentItem = {
 }
 
 const loadComments = (page: Page): Promise<CommentItem[]> =>
-  withApp(page, (app) => app.adapter.loadComments() as Promise<CommentItem[]>)
+  withApp(page, (app) => app.adapter.loadComments!() as Promise<CommentItem[]>)
 
 const roots = async (page: Page): Promise<CommentItem[]> =>
   (await loadComments(page)).filter((c) => !c.parentUuid)

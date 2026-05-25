@@ -28,3 +28,32 @@ export function emitEvent<K extends keyof EventbusEvents>(
     { name: name as string, payload: args[0] as unknown },
   )
 }
+
+/**
+ * Resolve with the payload of the next `name` event on the editor's event bus.
+ *
+ * Call this BEFORE the action that triggers it and hold the promise (do not
+ * await yet) — the in-page listener is registered synchronously when the
+ * evaluate runs, and page commands serialize, so it's in place before any
+ * subsequent interaction. Await the promise afterwards.
+ *
+ * The payload is structured-cloned out of the page, so it must be serializable
+ * — events carrying live DOM nodes can't be captured this way.
+ */
+export function nextEvent<K extends keyof EventbusEvents>(
+  page: Page,
+  name: K,
+): Promise<EventbusEvents[K]> {
+  return page.evaluate(
+    (name) =>
+      new Promise<unknown>((resolve) =>
+        (
+          window.__BLOKKLI__!.app!.eventBus.on as (
+            name: string,
+            cb: (payload: unknown) => void,
+          ) => void
+        )(name, (payload) => resolve(payload)),
+      ),
+    name as string,
+  ) as Promise<EventbusEvents[K]>
+}

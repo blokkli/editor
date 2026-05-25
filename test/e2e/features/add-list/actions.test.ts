@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
+import { formOverlay } from './../../support/overlays'
 
 /**
  * The add list offers three add actions — `template`, `library` (from library)
@@ -71,15 +72,11 @@ describe('The add list actions', async () => {
       const page = await openEditor()
 
       // No form overlay before the drop.
-      expect(
-        await page.locator(`[data-test="form-overlay-${overlayId}"]`).count(),
-      ).toBe(0)
+      expect(await formOverlay(page, overlayId).count()).toBe(0)
 
       await dropActionOnContentField(page, actionId)
 
-      await page
-        .locator(`[data-test="form-overlay-${overlayId}"]`)
-        .waitFor({ state: 'visible' })
+      await formOverlay(page, overlayId).waitFor({ state: 'visible' })
 
       await page.close()
     })

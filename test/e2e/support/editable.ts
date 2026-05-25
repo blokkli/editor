@@ -1,6 +1,6 @@
 import type { Locator, Page } from 'playwright-core'
 import type { EntityContext } from '../../../src/runtime/types'
-import { emitEvent } from './events'
+import { emitEvent, nextEvent } from './events'
 
 /**
  * Open a field's inline editor.
@@ -97,14 +97,7 @@ export function waitForEditableText(
  * the captured event on a `window` global (and the casts that come with it).
  */
 export function nextEditableOpen(page: Page): Promise<string> {
-  return page.evaluate(
-    () =>
-      new Promise<string>((resolve) => {
-        window.__BLOKKLI__!.app!.eventBus.on('editable:open', (e) =>
-          resolve(e.fieldName),
-        )
-      }),
-  )
+  return nextEvent(page, 'editable:open').then((e) => e.fieldName)
 }
 
 /**
