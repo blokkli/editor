@@ -1,5 +1,6 @@
 import type { Page } from 'playwright-core'
 import { withApp } from './session'
+import { emitEvent } from './events'
 
 /** The number of blocks currently in the document (all fields). */
 export function blockCount(page: Page): Promise<number> {
@@ -8,10 +9,7 @@ export function blockCount(page: Page): Promise<number> {
 
 /** Select a block by `uuid` (emits the editor's `select` event). */
 export function selectBlock(page: Page, uuid: string): Promise<void> {
-  return page.evaluate(
-    (uuid) => window.__BLOKKLI__!.app!.eventBus.emit('select', uuid),
-    uuid,
-  )
+  return emitEvent(page, 'select', uuid)
 }
 
 /**
@@ -70,6 +68,95 @@ export function addBlock(
       bundle: opts.bundle ?? 'text',
       fieldName: opts.fieldName ?? 'content',
       hostUuid: opts.hostUuid,
+    },
+  )
+}
+
+/**
+ * A block to add via `addBlocks`. `uuid` is caller-provided (so the test knows
+ * each block's id up front); `children` nests blocks keyed by the parent's
+ * block-field name (e.g. `header`, `blocks`), recursively.
+ */
+export type NewBlockTree = {
+  bundle: string
+  uuid: string
+  children?: Record<string, NewBlockTree[]>
+}
+
+/**
+ * Add a whole tree of blocks in a single mutation — the same `adapter.addNewBlocks`
+ * call the agent's `add_paragraphs` tool uses, which inserts nested structures
+ * (and several top-level blocks) at once. Unlike `addBlock`, the caller supplies
+ * each block's `uuid`, so the resulting document layout is fully known to the
+ * test. Adds to the host entity's `content` field by default; pass `hostUuid` +
+ * `fieldName` to target another entity's field.
+ */
+export function addBlocks(
+  page: Page,
+  blocks: NewBlockTree[],
+  opts: {
+    fieldName?: string
+    hostUuid?: string
+    afterUuid?: string | null
+  } = {},
+): Promise<void> {
+  return page.evaluate(
+    async ({ blocks, fieldName, hostUuid, afterUuid }) => {
+      const app = window.__BLOKKLI__!.app!
+
+      type EventBlock = {
+        bundle: string
+        blockUuid: string
+        children?: Record<string, EventBlock[]>
+      }
+      const toEventBlocks = (nodes: typeof blocks): EventBlock[] =>
+        nodes.map((node) => ({
+          bundle: node.bundle,
+          blockUuid: node.uuid,
+          children: node.children
+            ? Object.fromEntries(
+                Object.entries(node.children).map(([field, children]) => [
+                  field,
+                  toEventBlocks(children),
+                ]),
+              )
+            : undefined,
+        }))
+
+      let host: { type: string; uuid: string; fieldName: string }
+      if (hostUuid) {
+        const field = app.fields.find(hostUuid, fieldName)
+        if (!field) {
+          throw new Error(
+            `Field "${fieldName}" not registered on block ${hostUuid}`,
+          )
+        }
+        host = {
+          type: field.hostEntityType,
+          uuid: field.hostEntityUuid,
+          fieldName,
+        }
+      } else {
+        host = {
+          type: app.context.value.entityType,
+          uuid: app.context.value.entityUuid,
+          fieldName,
+        }
+      }
+
+      await app.state.mutateWithLoadingState(() =>
+        app.adapter.addNewBlocks!({
+          blocks: toEventBlocks(blocks),
+          host,
+          afterUuid: afterUuid ?? null,
+        }),
+      )
+    },
+    {
+      blocks,
+      fieldName: opts.fieldName ?? 'content',
+      hostUuid: opts.hostUuid,
+      afterUuid: opts.afterUuid ?? null,
     },
   )
 }

@@ -1,4 +1,5 @@
 import type { Page } from 'playwright-core'
+import { emitEvent } from './events'
 
 /**
  * Open an editor sidebar pane by its `PluginSidebar` id (e.g. `test-cases`,
@@ -8,8 +9,5 @@ import type { Page } from 'playwright-core'
  * sidebar is opened.
  */
 export function openSidebar(page: Page, id: string): Promise<void> {
-  return page.evaluate(
-    (id) => window.__BLOKKLI__!.app!.eventBus.emit('sidebar:open', id),
-    id,
-  )
+  return emitEvent(page, 'sidebar:open', id)
 }

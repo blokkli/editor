@@ -1,5 +1,6 @@
 import type { Locator, Page } from 'playwright-core'
 import type { EntityContext } from '../../../src/runtime/types'
+import { emitEvent } from './events'
 
 /**
  * Open a field's inline editor.
@@ -19,15 +20,7 @@ export function openEditableField(
   fieldName: string,
   uuid?: string,
 ): Promise<void> {
-  return page.evaluate(
-    ({ fieldName, uuid }) => {
-      window.__BLOKKLI__!.app!.eventBus.emit('editable:open', {
-        fieldName,
-        uuid,
-      })
-    },
-    { fieldName, uuid },
-  )
+  return emitEvent(page, 'editable:open', { fieldName, uuid })
 }
 
 export interface EditableState {

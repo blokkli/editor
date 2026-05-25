@@ -5,6 +5,7 @@
     :anchor-el
     :anchor-coordinates
     class="bk-bundle-selector"
+    data-test="bundle-selector"
     @close="$emit('close')"
   >
     <div

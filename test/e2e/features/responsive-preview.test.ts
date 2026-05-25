@@ -92,10 +92,7 @@ describe('The responsive preview', async () => {
     await expect
       .poll(
         async () => {
-          await page.evaluate(
-            (uuid) => window.__BLOKKLI__!.app!.eventBus.emit('select', uuid),
-            uuid,
-          )
+          await selectBlock(page, uuid)
           return blockInView(frame, uuid)
         },
         { timeout: 15000, interval: 500 },
@@ -117,10 +114,7 @@ describe('The responsive preview', async () => {
     await expect.poll(() => cardDataTest(frame, uuid!)).toBe('card-is-box')
 
     // Select it so the block-actions toolbar shows its options.
-    await page.evaluate(
-      (uuid) => window.__BLOKKLI__!.app!.eventBus.emit('select', uuid),
-      uuid!,
-    )
+    await selectBlock(page, uuid!)
 
     // Toggle the "Box" option; the change must propagate to the preview.
     await toggleCheckboxOption(page, 'box')
