@@ -1054,6 +1054,16 @@ export default defineBlokkliEditAdapter((ctx) => {
         uuids,
       }),
 
+    convertBlocks: (uuids, targetBundle) => {
+      if (isTesting) {
+        recordAdapterCall('convertBlocks', { uuids, targetBundle })
+      }
+      return addMutation('convert', {
+        uuids,
+        targetBundle,
+      })
+    },
+
     swapBlocks: (first: string, second: string) =>
       addMutation('swap', {
         firstUuid: first,
