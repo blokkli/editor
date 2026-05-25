@@ -3,6 +3,8 @@
     <div
       ref="el"
       class="bk-indicator-item"
+      :data-test-block-indicator="id"
+      :data-test-uuid="uuid"
       @click.prevent="$emit('click')"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"

@@ -2395,6 +2395,15 @@ export default defineBlokkliEditAdapter((ctx) => {
     }
   }
 
+  // E2E seam: when opened with `?anchorLink=adapter`, provide a custom anchor
+  // link builder so the anchors feature uses the adapter path instead of the
+  // `route.path + '#id'` fallback. Both `uuid` and `id` are used so the test can
+  // verify they are passed through.
+  if (route.query.anchorLink === 'adapter') {
+    adapter.buildAnchorLink = (id: string, uuid: string) =>
+      `https://blokk.li/p/${uuid}#${id}`
+  }
+
   adapter.templatesSearch = function (e) {
     const templateItems = entityStorageManager.storages.template_item.loadAll()
     const perPage = 10

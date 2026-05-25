@@ -4,6 +4,8 @@
       v-if="!ui.isMobile.value"
       ref="button"
       class="bk-toolbar-button group/tooltip"
+      :data-test-view-option="id"
+      :data-test-active="isActive"
       :class="{ 'bk-is-inactive': !isActive }"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
