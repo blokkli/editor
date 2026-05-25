@@ -23,7 +23,9 @@ const DESCRIPTION = '[data-test="add-list-help-description"]'
 
 /** Locator for the help heading's icon (the `Icon` carries `data-test="icon-<name>"`). */
 function helpIcon(help: Locator, icon: string): Locator {
-  return help.locator(`[data-test="add-list-help-icon"] [data-test="icon-${icon}"]`)
+  return help.locator(
+    `[data-test="add-list-help-icon"] [data-test="icon-${icon}"]`,
+  )
 }
 
 /** Hover an add-list item's icon and resolve once its help item is visible. */
@@ -80,9 +82,9 @@ describe('The add list interaction', async () => {
     expect(await inner.getAttribute('data-test-expanded')).toBe('false')
 
     await page.locator('[data-test="add-list"]').hover()
-    await expect.poll(() => inner.getAttribute('data-test-expanded')).toBe(
-      'true',
-    )
+    await expect
+      .poll(() => inner.getAttribute('data-test-expanded'))
+      .toBe('true')
 
     await page.close()
   })
@@ -157,9 +159,7 @@ describe('The add list interaction', async () => {
         )
         .evaluateAll((els) =>
           els.map((el) =>
-            el
-              .getAttribute('data-test')!
-              .replace('add-list-help-allowed-', ''),
+            el.getAttribute('data-test')!.replace('add-list-help-allowed-', ''),
           ),
         )
       expect(allowed.sort()).toEqual([...field.allowed].sort())
@@ -177,7 +177,9 @@ describe('The add list interaction', async () => {
       const app = window.__BLOKKLI__!.app!
       const available = app.dom.generallyAvailableFragments.value
       return app.definitions.fragmentDefinitions.value
-        .filter((definition) => available.includes(definition.name))
+        .filter((definition) =>
+          (available as string[]).includes(definition.name),
+        )
         .map((definition) => definition.label)
     })
     expect(expectedLabels.length).toBeGreaterThan(0)

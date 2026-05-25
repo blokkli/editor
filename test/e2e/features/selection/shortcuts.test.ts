@@ -111,7 +111,9 @@ describe('The selection feature keyboard shortcuts', async () => {
 
     const expected = sorted(await topLevelBlockUuids(page))
     expect(expected.length).toBeGreaterThan(1)
-    await expect.poll(async () => sorted(await selectedUuids(page))).toEqual(expected)
+    await expect
+      .poll(async () => sorted(await selectedUuids(page)))
+      .toEqual(expected)
 
     await page.close()
   })

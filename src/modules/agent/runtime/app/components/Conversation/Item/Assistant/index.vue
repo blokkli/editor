@@ -19,6 +19,9 @@ const props = defineProps<{
 const { state } = useBlokkli()
 
 const renderedContent = computed(() =>
-  props.content.replaceAll(PLACEHOLDER_USER_NAME, state.owner.value?.name || ''),
+  props.content.replaceAll(
+    PLACEHOLDER_USER_NAME,
+    state.owner.value?.name || '',
+  ),
 )
 </script>

@@ -15,7 +15,9 @@ describe('ToolResult.fromWire + compressed (parity with old compressToolResult)'
 
   it('prefers _summary over label', () => {
     expect(
-      compress(JSON.stringify({ _summary: 'custom summary', label: 'a label' })),
+      compress(
+        JSON.stringify({ _summary: 'custom summary', label: 'a label' }),
+      ),
     ).toEqual({ summary: 'custom summary' })
   })
 
@@ -32,9 +34,9 @@ describe('ToolResult.fromWire + compressed (parity with old compressToolResult)'
   })
 
   it('keeps success', () => {
-    expect(compress(JSON.stringify({ success: true, historyIndex: 5 }))).toEqual(
-      { success: true },
-    )
+    expect(
+      compress(JSON.stringify({ success: true, historyIndex: 5 })),
+    ).toEqual({ success: true })
   })
 
   it('keeps a rejected mutation as success:false', () => {
@@ -97,7 +99,9 @@ describe('ToolResult.stale (parity with old compressVolatileToolResult)', () => 
   })
 
   it('falls back to the default stale message', () => {
-    const out = ToolResult.fromWire(JSON.stringify({ data: 1 })).stale().toWire()
+    const out = ToolResult.fromWire(JSON.stringify({ data: 1 }))
+      .stale()
+      .toWire()
     expect(JSON.parse(out)).toEqual({
       stale: true,
       summary: 'page state has changed since this query',
@@ -125,7 +129,9 @@ describe('ToolResult accessors', () => {
 
   it('reports isMutationSuccess only for success:true', () => {
     expect(
-      ToolResult.fromWire(JSON.stringify({ success: true })).isMutationSuccess(),
+      ToolResult.fromWire(
+        JSON.stringify({ success: true }),
+      ).isMutationSuccess(),
     ).toBe(true)
     expect(
       ToolResult.fromWire(
@@ -141,9 +147,9 @@ describe('ToolResult accessors', () => {
     expect(
       ToolResult.fromWire(JSON.stringify({ error: 'x' })).isErrorResult(),
     ).toBe(true)
-    expect(
-      ToolResult.fromWire('plain message', true).isErrorResult(),
-    ).toBe(true)
+    expect(ToolResult.fromWire('plain message', true).isErrorResult()).toBe(
+      true,
+    )
     expect(
       ToolResult.fromWire(JSON.stringify({ label: 'x' })).isErrorResult(),
     ).toBe(false)

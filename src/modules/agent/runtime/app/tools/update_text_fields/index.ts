@@ -8,10 +8,7 @@ import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
 import { booleanParam } from '#blokkli/agent/shared/toolParams'
 import { resolveHost } from '../helpers'
-import {
-  skippedFieldsMessage,
-  type SkippedField,
-} from '../fieldDiffApproval'
+import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
 import Component from './Component.vue'
 import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
@@ -101,7 +98,10 @@ export default defineBlokkliAgentTool({
     // producing an empty diff or an orphan mutation.
     const skipped: SkippedField[] = []
 
-    const skipReason = (uuid: string, fieldName: string): string | undefined => {
+    const skipReason = (
+      uuid: string,
+      fieldName: string,
+    ): string | undefined => {
       const host = resolveHost(ctx.app, uuid)
       if (!host) return 'paragraph not found'
       const field = ctx.app.types.editableFieldConfig.forName(

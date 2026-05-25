@@ -50,7 +50,10 @@ export class ConversationHistory {
   }
 
   /** Append a synthetic assistant `tool_use` + the matching tool-result relay. */
-  appendToolExchange(assistant: AssistantMessage, relay: ToolRelayMessage): void {
+  appendToolExchange(
+    assistant: AssistantMessage,
+    relay: ToolRelayMessage,
+  ): void {
     this.messages.push(assistant)
     this.messages.push(relay)
   }
@@ -214,7 +217,11 @@ export class ConversationHistory {
       }
       if (message instanceof ToolRelayMessage) {
         return message
-          .project({ staleToolUseIds: noStale, compressBody: true, stripAux: old })
+          .project({
+            staleToolUseIds: noStale,
+            compressBody: true,
+            stripAux: old,
+          })
           .toWire()
       }
       return message.toWire()

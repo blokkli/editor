@@ -25,12 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  provide,
-  inject,
-  defineAsyncComponent,
-} from '#imports'
+import { computed, provide, inject, defineAsyncComponent } from '#imports'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,

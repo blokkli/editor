@@ -394,7 +394,12 @@ export function resolveHost(
   }
   const block = app.blocks.getBlock(uuid)
   if (!block) return null
-  return { entityType: itemEntityType, bundle: block.bundle, uuid, isRoot: false }
+  return {
+    entityType: itemEntityType,
+    bundle: block.bundle,
+    uuid,
+    isRoot: false,
+  }
 }
 
 /**
@@ -404,15 +409,9 @@ export function resolveHost(
  */
 export function getResolvedOptions(
   app: BlokkliApp,
-  bundleOrBlock: Parameters<
-    BlokkliApp['definitions']['getBlockDefinition']
-  >[0],
-  fieldListType: Parameters<
-    BlokkliApp['definitions']['getBlockDefinition']
-  >[1],
-  parentBundle: Parameters<
-    BlokkliApp['definitions']['getBlockDefinition']
-  >[2],
+  bundleOrBlock: Parameters<BlokkliApp['definitions']['getBlockDefinition']>[0],
+  fieldListType: Parameters<BlokkliApp['definitions']['getBlockDefinition']>[1],
+  parentBundle: Parameters<BlokkliApp['definitions']['getBlockDefinition']>[2],
 ): OptionItem[] | null {
   const definition = app.definitions.getBlockDefinition(
     bundleOrBlock,

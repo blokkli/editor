@@ -163,7 +163,9 @@ describe('The publish dialog', async () => {
     // The revision log message must reach the adapter call too. The dialog's
     // only textarea is the revision message field.
     const message = 'Tweaked the hero copy'
-    await dialog(page, 'publish').locator('[data-test="textarea"]').fill(message)
+    await dialog(page, 'publish')
+      .locator('[data-test="textarea"]')
+      .fill(message)
     await dialogSubmit(page).click()
 
     // Saving calls `publish` but must not flip the page live.
@@ -202,7 +204,9 @@ describe('The publish dialog', async () => {
     await scheduleDate(page).waitFor({ state: 'visible' })
 
     const message = 'Publish the autumn campaign'
-    await dialog(page, 'publish').locator('[data-test="textarea"]').fill(message)
+    await dialog(page, 'publish')
+      .locator('[data-test="textarea"]')
+      .fill(message)
 
     // Default schedule is tomorrow at noon; submit it as-is.
     await dialogSubmit(page).click()
@@ -244,9 +248,7 @@ describe('The publish dialog', async () => {
     await appMenuButton(page, 'publish').click()
     await dialog(page, 'publish').waitFor({ state: 'visible' })
 
-    const notice = page.locator(
-      '[data-test="publish-scheduled-blocks-notice"]',
-    )
+    const notice = page.locator('[data-test="publish-scheduled-blocks-notice"]')
 
     // The page is unpublished, so the default mode is "save" — the notice only
     // matters once something actually goes live, so it stays hidden.

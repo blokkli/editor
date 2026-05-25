@@ -264,8 +264,7 @@ watch(isProcessing, (isProcessing, wasProcessing) => {
 
 const isPlanPendingApproval = computed(() => {
   return (
-    plan.value !== null &&
-    plan.value.steps.every((s) => s.status === 'pending')
+    plan.value !== null && plan.value.steps.every((s) => s.status === 'pending')
   )
 })
 

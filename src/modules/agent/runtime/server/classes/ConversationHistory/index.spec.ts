@@ -147,7 +147,10 @@ describe('projectForLlm — token-budget recency', () => {
     const p = history(wire).projectForLlm(noVolatile, { tokenBudget: 80 })
     const oldAsst = p[1]
     const keptAsst = p[3]
-    if (Array.isArray(oldAsst.content) && oldAsst.content[0].type === 'tool_use')
+    if (
+      Array.isArray(oldAsst.content) &&
+      oldAsst.content[0].type === 'tool_use'
+    )
       expect(oldAsst.content[0].input).toEqual({ _pruned: true })
     if (
       Array.isArray(keptAsst.content) &&
@@ -171,10 +174,14 @@ describe('projectForLlm — token-budget recency', () => {
       relay('tu_1', 100, 's1'),
     ])
     const first = h.projectForLlm(noVolatile, { tokenBudget: 50 })[0]
-    expect(Array.isArray(first.content) && first.content.length).toBeGreaterThan(0)
+    expect(
+      Array.isArray(first.content) && first.content.length,
+    ).toBeGreaterThan(0)
     if (Array.isArray(first.content)) {
       const text = first.content.find((b) => b.type === 'text')
-      expect(text && text.type === 'text' && text.text).toBe('rewrite the intro')
+      expect(text && text.type === 'text' && text.text).toBe(
+        'rewrite the intro',
+      )
     }
   })
 
@@ -184,7 +191,12 @@ describe('projectForLlm — token-budget recency', () => {
       {
         role: 'assistant',
         content: [
-          { type: 'reasoning', id: 'r0', text: 'thinking', encryptedContent: 'e' },
+          {
+            type: 'reasoning',
+            id: 'r0',
+            text: 'thinking',
+            encryptedContent: 'e',
+          },
           { type: 'tool_use', id: 'tu_0', name: 'find', input: { q: 1 } },
         ],
       },
@@ -195,9 +207,9 @@ describe('projectForLlm — token-budget recency', () => {
     const asst = h.projectForLlm(noVolatile, { tokenBudget: 50 })[1]
     if (Array.isArray(asst.content)) {
       const reasoning = asst.content.find((b) => b.type === 'reasoning')
-      expect(reasoning && reasoning.type === 'reasoning' && reasoning.text).toBe(
-        'thinking',
-      )
+      expect(
+        reasoning && reasoning.type === 'reasoning' && reasoning.text,
+      ).toBe('thinking')
       const toolUse = asst.content.find((b) => b.type === 'tool_use')
       expect(toolUse && toolUse.type === 'tool_use' && toolUse.input).toEqual({
         _pruned: true,
@@ -320,7 +332,9 @@ describe('projectForPersistence', () => {
       userPrompt('first prompt'),
       {
         role: 'assistant',
-        content: [{ type: 'tool_use', id: 'tu_0', name: 'find_blocks', input: {} }],
+        content: [
+          { type: 'tool_use', id: 'tu_0', name: 'find_blocks', input: {} },
+        ],
       },
       {
         role: 'user',

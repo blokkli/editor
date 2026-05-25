@@ -231,7 +231,9 @@ export async function dragNewBlockIntoPage(
       const block = app.state
         .getAllUuids()
         .map((u) => app.blocks.getBlock(u))
-        .find((b) => b && b.host.fieldName === fieldName && b.host.uuid === host)
+        .find(
+          (b) => b && b.host.fieldName === fieldName && b.host.uuid === host,
+        )
       if (!block) return null
       app.eventBus.emit('scrollIntoView', { uuid: block.uuid, immediate: true })
       return block.uuid

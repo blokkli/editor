@@ -136,12 +136,16 @@ export const fieldDiffResultSchema = z.object({
         }),
       ),
     )
-    .describe('Map of rejected paragraph UUID to field name to rejection details'),
+    .describe(
+      'Map of rejected paragraph UUID to field name to rejection details',
+    ),
   label: z.string().describe('Human-readable summary shown in the UI'),
   agentMessage: z
     .string()
     .optional()
-    .describe('Detailed message for the agent, replaces label in the LLM context'),
+    .describe(
+      'Detailed message for the agent, replaces label in the LLM context',
+    ),
   historyIndex: z
     .number()
     .optional()

@@ -14,7 +14,9 @@ describe('validateToken', () => {
   const SECRET = 's3cr3t'
 
   function makeToken(timestamp: number, secret = SECRET): string {
-    const hmac = createHmac('sha256', secret).update(String(timestamp)).digest('hex')
+    const hmac = createHmac('sha256', secret)
+      .update(String(timestamp))
+      .digest('hex')
     return `${timestamp}:${hmac}`
   }
 

@@ -77,7 +77,9 @@ function importTransfer(
         ],
         host: { type: ctx.entityType, uuid: ctx.entityUuid, fieldName },
         afterUuid: null,
-        field: app.fields.find(ctx.entityUuid, fieldName),
+        // The `block_transfer` handler only reads `items`/`host`/`afterUuid`;
+        // `field`/`bundle` are part of the generic drop contract but unused here.
+        field: app.fields.find(ctx.entityUuid, fieldName)!,
         bundle: '',
       })
     },
@@ -242,9 +244,9 @@ describe('The block transfer feature', async () => {
       data: { type: 'selection', uuids: ['some-uuid'] },
     })
 
-    expect(
-      await withApp(page, (app) => app.selection.isDragging.value),
-    ).toBe(false)
+    expect(await withApp(page, (app) => app.selection.isDragging.value)).toBe(
+      false,
+    )
     expect(await importCalls(page)).toHaveLength(0)
     expect(await blockCount(page)).toBe(before)
 

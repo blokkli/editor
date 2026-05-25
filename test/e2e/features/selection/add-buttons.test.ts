@@ -121,14 +121,14 @@ describe('The selection add buttons', async () => {
     // title, so neither the before nor the after add button is shown —
     // triggering them is a no-op and no selector opens.
     await selectBlock(page, title)
-    await emitEvent(page, 'selection:add-button:trigger', { position: 'before' })
+    await emitEvent(page, 'selection:add-button:trigger', {
+      position: 'before',
+    })
     await emitEvent(page, 'selection:add-button:trigger', { position: 'after' })
 
     // Give any (erroneous) selector a chance to appear before asserting absence.
     await page.waitForTimeout(300)
-    expect(
-      await page.locator('[data-test="bundle-selector"]').count(),
-    ).toBe(0)
+    expect(await page.locator('[data-test="bundle-selector"]').count()).toBe(0)
 
     await page.close()
   })

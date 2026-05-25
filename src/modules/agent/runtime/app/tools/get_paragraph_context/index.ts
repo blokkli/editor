@@ -16,9 +16,7 @@ const paramsSchema = z.object({
   )
     .optional()
     .default(true),
-  includeSiblings: booleanParam(
-    'Include sibling paragraphs in the same field',
-  )
+  includeSiblings: booleanParam('Include sibling paragraphs in the same field')
     .optional()
     .default(false),
   includeChildren: booleanParam('Include child fields summary')

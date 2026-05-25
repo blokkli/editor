@@ -1,5 +1,8 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import type { ConversationStateSnapshot, GenericMessage } from '../../shared/types'
+import type {
+  ConversationStateSnapshot,
+  GenericMessage,
+} from '../../shared/types'
 
 /**
  * HMAC-based verification: agent auth tokens (WebSocket handshake) and

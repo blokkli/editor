@@ -1,5 +1,8 @@
 <template>
-  <label class="bk-blokkli-item-options-checkbox" data-test="option-type-checkbox">
+  <label
+    class="bk-blokkli-item-options-checkbox"
+    data-test="option-type-checkbox"
+  >
     <input v-model="checked" type="checkbox" class="peer" :required />
     <div />
     <span>{{ label }}</span>

@@ -54,7 +54,12 @@ describe('toWire round-trips', () => {
     {
       role: 'assistant',
       content: [
-        { type: 'reasoning', id: 'r0', text: 'thinking', encryptedContent: 'e' },
+        {
+          type: 'reasoning',
+          id: 'r0',
+          text: 'thinking',
+          encryptedContent: 'e',
+        },
         { type: 'tool_use', id: 'tu_0', name: 'find', input: { q: 1 } },
       ],
     },
@@ -124,7 +129,11 @@ describe('ToolRelayMessage projection', () => {
 
   it('compresses the body and strips aux when asked', () => {
     const wire = relay()
-      .project({ staleToolUseIds: new Set(), compressBody: true, stripAux: true })
+      .project({
+        staleToolUseIds: new Set(),
+        compressBody: true,
+        stripAux: true,
+      })
       .toWire()
     const blocks = wire.content as any[]
     expect(blocks).toHaveLength(1) // aux stripped
@@ -167,9 +176,9 @@ describe('ToolRelayMessage projection', () => {
       error: 'rejected',
     })
     // original unchanged
-    expect(
-      JSON.parse((r.toWire().content as any[])[0].content)._summary,
-    ).toBe('structure')
+    expect(JSON.parse((r.toWire().content as any[])[0].content)._summary).toBe(
+      'structure',
+    )
   })
 
   it('withResolvedNames fills missing tool names', () => {
@@ -187,7 +196,11 @@ describe('ToolRelayMessage projection', () => {
   it('estimatedTokens sums full result sizes', () => {
     const content = JSON.stringify({ data: 'x'.repeat(400) })
     const r = new ToolRelayMessage([
-      { toolUseId: 'tu_0', toolName: 'find', result: ToolResult.fromWire(content) },
+      {
+        toolUseId: 'tu_0',
+        toolName: 'find',
+        result: ToolResult.fromWire(content),
+      },
     ])
     expect(r.estimatedTokens()).toBeCloseTo(content.length / 4)
   })

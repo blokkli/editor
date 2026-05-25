@@ -9,11 +9,9 @@
             required
             name="title"
             tag="h1"
-              class="text-4xl lg:text-6xl hero-title"
+            class="text-4xl lg:text-6xl hero-title"
           >
-            <div
-              v-html="getTitleMarkup(value)"
-            />
+            <div v-html="getTitleMarkup(value)" />
           </BlokkliEditable>
           <slot name="lead" />
           <slot />

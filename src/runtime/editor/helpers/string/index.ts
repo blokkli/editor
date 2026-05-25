@@ -10,5 +10,7 @@ export function truncate(value: string, maxLength: number): string {
   if (value.length <= maxLength) {
     return value
   }
-  return value.slice(0, maxLength - HORIZONTAL_ELLIPSIS.length) + HORIZONTAL_ELLIPSIS
+  return (
+    value.slice(0, maxLength - HORIZONTAL_ELLIPSIS.length) + HORIZONTAL_ELLIPSIS
+  )
 }

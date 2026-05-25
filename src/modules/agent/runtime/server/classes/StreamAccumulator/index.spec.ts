@@ -50,7 +50,12 @@ describe('StreamAccumulator', () => {
     })
     // The tool_use block is recorded on the assistant turn.
     expect(acc.blocks).toEqual([
-      { type: 'tool_use', id: 'tu_1', name: 'add_paragraphs', input: { count: 3 } },
+      {
+        type: 'tool_use',
+        id: 'tu_1',
+        name: 'add_paragraphs',
+        input: { count: 3 },
+      },
     ])
   })
 

@@ -6,7 +6,11 @@ import { addBlock, selectBlock, isBlockMuted } from './../support/blocks'
 import { itemAction } from './../support/itemActions'
 import { dialog, dialogSubmit } from './../support/overlays'
 import { recordedAdapterCalls, waitForAdapterCall } from './../support/recorder'
-import { scheduleDate, pickScheduleDay, setScheduleTime } from './../support/schedule'
+import {
+  scheduleDate,
+  pickScheduleDay,
+  setScheduleTime,
+} from './../support/schedule'
 
 /**
  * The block-scheduler feature: a block-actions item action (id `block-scheduler`)
@@ -65,7 +69,10 @@ async function openScheduler(page: Page, uuid: string): Promise<void> {
 }
 
 /** Toggle a section's "Enable schedule" switch (the dialog `FormToggle`). */
-const enableSection = (page: Page, type: 'publish' | 'unpublish'): Promise<void> =>
+const enableSection = (
+  page: Page,
+  type: 'publish' | 'unpublish',
+): Promise<void> =>
   page.locator(`[data-test="scheduler-${type}-toggle"]`).click()
 
 describe('The block scheduler', async () => {
@@ -85,11 +92,15 @@ describe('The block scheduler', async () => {
 
     // Publish is unavailable (toggle disabled), unpublish is available.
     expect(
-      await schedulerSection(page, 'publish').getAttribute('data-test-disabled'),
+      await schedulerSection(page, 'publish').getAttribute(
+        'data-test-disabled',
+      ),
     ).toBe('true')
     expect(
       await page
-        .locator('[data-test="scheduler-publish-toggle"] input[type="checkbox"]')
+        .locator(
+          '[data-test="scheduler-publish-toggle"] input[type="checkbox"]',
+        )
         .isDisabled(),
     ).toBe(true)
     expect(
@@ -106,7 +117,9 @@ describe('The block scheduler', async () => {
     await openScheduler(page, uuid)
 
     expect(
-      await schedulerSection(page, 'publish').getAttribute('data-test-disabled'),
+      await schedulerSection(page, 'publish').getAttribute(
+        'data-test-disabled',
+      ),
     ).toBe('false')
     expect(
       await schedulerSection(page, 'unpublish').getAttribute(
@@ -200,10 +213,11 @@ describe('The block scheduler', async () => {
     // A second schedule call lands; its publish entry clears the date (the
     // `undefined` date is dropped from the recorded JSON).
     await expect
-      .poll(async () =>
-        (await recordedAdapterCalls(page)).filter(
-          (c) => c.method === 'setBlockScheduleDate',
-        ).length,
+      .poll(
+        async () =>
+          (await recordedAdapterCalls(page)).filter(
+            (c) => c.method === 'setBlockScheduleDate',
+          ).length,
       )
       .toBe(2)
     const calls = await recordedAdapterCalls<RecordedSchedule>(page)

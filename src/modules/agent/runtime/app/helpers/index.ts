@@ -183,4 +183,3 @@ export function isToolError(result: unknown): result is ToolError {
     typeof (result as ToolError).error === 'string'
   )
 }
-

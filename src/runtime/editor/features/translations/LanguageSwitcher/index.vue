@@ -14,8 +14,8 @@
     <InlineButtons
       v-else
       :items
-      @select="onClick"
       :active-langcode="activeLanguage.id"
+      @select="onClick"
     />
   </PluginTourItem>
 </template>

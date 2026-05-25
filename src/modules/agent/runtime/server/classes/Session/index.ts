@@ -21,7 +21,10 @@ import {
 import type { ActivePlanContext } from '../../system-prompts/types'
 import { provider, models } from '#blokkli-build/agent-server'
 import { send } from '../../helpers/socket'
-import { ConversationHistory, type VolatileLookup } from '../ConversationHistory'
+import {
+  ConversationHistory,
+  type VolatileLookup,
+} from '../ConversationHistory'
 import {
   UserPromptMessage,
   AssistantMessage,
@@ -857,7 +860,14 @@ export class Session {
                   if (matchedServerTool) {
                     const dispatch = await this.dispatchServerTool(
                       matchedServerTool,
-                      { toolUseId, input, defCtx, resolvedSkills, peer, assistantContent },
+                      {
+                        toolUseId,
+                        input,
+                        defCtx,
+                        resolvedSkills,
+                        peer,
+                        assistantContent,
+                      },
                     )
                     toolResults.push(...dispatch.toolResults)
                     if (dispatch.extraBlocks) {
@@ -881,7 +891,8 @@ export class Session {
                   )
                   if (
                     !validation.ok &&
-                    consecutiveValidationFailures < MAX_HIDDEN_VALIDATION_FAILURES
+                    consecutiveValidationFailures <
+                      MAX_HIDDEN_VALIDATION_FAILURES
                   ) {
                     consecutiveValidationFailures++
                     toolResults.push({
@@ -1174,7 +1185,9 @@ export class Session {
     try {
       // Coerce stringified arrays/objects before validation. LLMs sometimes
       // double-serialize parameters.
-      const parsed = tool.inputSchema(defCtx).parse(coerceStringifiedParams(input))
+      const parsed = tool
+        .inputSchema(defCtx)
+        .parse(coerceStringifiedParams(input))
       const result = await tool.handle(handlerCtx, parsed)
       return {
         toolResults: result.toolResults,
@@ -1214,9 +1227,14 @@ export class Session {
   ): { ok: true } | { ok: false; error: string } {
     const bundled = this.bundledToolMap.get(toolName)
     if (!bundled) return { ok: true }
-    const parsed = bundled.paramsSchema.safeParse(coerceStringifiedParams(input))
+    const parsed = bundled.paramsSchema.safeParse(
+      coerceStringifiedParams(input),
+    )
     if (parsed.success) return { ok: true }
-    return { ok: false, error: `Invalid input: ${z.prettifyError(parsed.error)}` }
+    return {
+      ok: false,
+      error: `Invalid input: ${z.prettifyError(parsed.error)}`,
+    }
   }
 
   private async dispatchClientTool(args: {
@@ -1255,7 +1273,10 @@ export class Session {
         resultForLLM !== null &&
         'agentMessage' in resultForLLM
       ) {
-        const { agentMessage, ...rest } = resultForLLM as Record<string, unknown>
+        const { agentMessage, ...rest } = resultForLLM as Record<
+          string,
+          unknown
+        >
         resultForLLM = { ...rest, label: agentMessage }
       }
 

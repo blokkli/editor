@@ -107,10 +107,10 @@ export async function applyFieldDiffs(
 
   const label =
     acceptedCount === items.length
-      ? $t('aiAgentBatchRewriteAllApplied', 'All @count changes applied').replace(
-          '@count',
-          String(acceptedCount),
-        )
+      ? $t(
+          'aiAgentBatchRewriteAllApplied',
+          'All @count changes applied',
+        ).replace('@count', String(acceptedCount))
       : $t(
           'aiAgentBatchRewriteSomeApplied',
           '@applied of @total changes applied',

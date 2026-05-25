@@ -1,6 +1,10 @@
 <template>
   <PanelSection :title="label" padded :help>
-    <div class="bk-schedule-section" :data-test="testId" :data-test-disabled="disabled">
+    <div
+      class="bk-schedule-section"
+      :data-test="testId"
+      :data-test-disabled="disabled"
+    >
       <FormToggle
         v-model="isEnabled"
         :disabled

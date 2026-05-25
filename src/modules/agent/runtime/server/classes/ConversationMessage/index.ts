@@ -102,7 +102,9 @@ export class AssistantMessage extends ConversationMessage {
   withPrunedToolUseInputs(): AssistantMessage {
     if (!Array.isArray(this.content)) return this
     const blocks = this.content.map((block) =>
-      block.type === 'tool_use' ? { ...block, input: { _pruned: true } } : block,
+      block.type === 'tool_use'
+        ? { ...block, input: { _pruned: true } }
+        : block,
     )
     return new AssistantMessage(blocks)
   }

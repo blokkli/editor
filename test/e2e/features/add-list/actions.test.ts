@@ -53,7 +53,11 @@ function dropActionOnContentField(page: Page, actionId: string): Promise<void> {
         },
       ],
       field,
-      host: { type: ctx.entityType, uuid: ctx.entityUuid, fieldName: 'content' },
+      host: {
+        type: ctx.entityType,
+        uuid: ctx.entityUuid,
+        fieldName: 'content',
+      },
       preceedingUuid: null,
     })
   }, actionId)

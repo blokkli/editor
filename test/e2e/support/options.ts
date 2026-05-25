@@ -17,7 +17,9 @@ export function blockOptionControl(
   property: string,
   type: string,
 ): Locator {
-  return blockOption(page, property).locator(`[data-test="option-type-${type}"]`)
+  return blockOption(page, property).locator(
+    `[data-test="option-type-${type}"]`,
+  )
 }
 
 /** Toggle a `checkbox` option (clicks the checkbox control within it). */

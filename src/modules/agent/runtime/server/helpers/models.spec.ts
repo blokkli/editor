@@ -36,15 +36,15 @@ describe('createUsageTurn', () => {
   const model: AgentModelDefinition = { name: 'm', label: 'm', pricing }
 
   it('builds a usage turn, defaulting cache fields and pricing', () => {
-    expect(createUsageTurn({ inputTokens: 10, outputTokens: 5 }, model)).toEqual(
-      {
-        inputTokens: 10,
-        outputTokens: 5,
-        cacheCreationInputTokens: 0,
-        cacheReadInputTokens: 0,
-        pricing,
-      },
-    )
+    expect(
+      createUsageTurn({ inputTokens: 10, outputTokens: 5 }, model),
+    ).toEqual({
+      inputTokens: 10,
+      outputTokens: 5,
+      cacheCreationInputTokens: 0,
+      cacheReadInputTokens: 0,
+      pricing,
+    })
   })
 
   it('passes through cache fields and null pricing when no model', () => {

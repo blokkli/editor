@@ -36,9 +36,7 @@ function blockItemStates(page: Page): Promise<Record<string, boolean>> {
 /** Whether the given add action is in its disabled (transparent) state. */
 async function actionIsDisabled(page: Page, id: string): Promise<boolean> {
   const value = await page
-    .locator(
-      `[data-test="add-list-actions"] [data-test="add-list-item-${id}"]`,
-    )
+    .locator(`[data-test="add-list-actions"] [data-test="add-list-item-${id}"]`)
     .getAttribute('data-test-disabled')
   return value === 'true'
 }

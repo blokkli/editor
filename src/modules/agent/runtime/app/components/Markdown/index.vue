@@ -10,5 +10,7 @@ const props = defineProps<{
   content: string
 }>()
 
-const html = computed(() => (props.content ? renderMarkdown(props.content) : ''))
+const html = computed(() =>
+  props.content ? renderMarkdown(props.content) : '',
+)
 </script>
