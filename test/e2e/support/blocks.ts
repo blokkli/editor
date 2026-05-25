@@ -13,6 +13,24 @@ export function selectBlock(page: Page, uuid: string): Promise<void> {
 }
 
 /**
+ * A block's bundle and rendered field props (e.g. `props.text`), read off the
+ * live state. Returns nulls when the block isn't found. Useful for asserting
+ * *what* a block is and what it holds, locale-independently.
+ */
+export function blockState(
+  page: Page,
+  uuid: string,
+): Promise<{ bundle: string | null; props: Record<string, any> | null }> {
+  return page.evaluate((u) => {
+    const app = window.__BLOKKLI__!.app!
+    return {
+      bundle: app.blocks.getBlock(u)?.bundle ?? null,
+      props: app.state.getFieldListItem(u)?.props ?? null,
+    }
+  }, uuid)
+}
+
+/**
  * Whether a block is rendered "muted" — `DraggableList` sets
  * `data-bk-is-muted="true"` on blocks that aren't currently published (e.g. a
  * future `publishOn` schedule) or hidden by their visibility options.

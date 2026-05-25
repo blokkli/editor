@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor } from './../support/session'
 import { setupEditorE2E } from './../support/setup'
+import { captureClipboard, copiedText } from './../support/clipboard'
 
 /**
  * The anchors feature is a toolbar view option (`anchor`). When enabled it scans
@@ -140,24 +141,6 @@ function blockSnappedY(page: Page, uuid: string): Promise<number | null> {
     const rect = window.__BLOKKLI__!.app!.dom.getBlockRect(uuid, true)
     return rect ? Math.ceil(Math.round(rect.y) / 30) * 30 : null
   }, uuid)
-}
-
-/** Replace `clipboard.writeText` with a recorder (see file header for why). */
-function captureClipboard(page: Page): Promise<void> {
-  return page.evaluate(() => {
-    const w = window as unknown as { __copied: string[] }
-    w.__copied = []
-    navigator.clipboard.writeText = (text: string) => {
-      w.__copied.push(text)
-      return Promise.resolve()
-    }
-  })
-}
-
-function copiedText(page: Page): Promise<string[]> {
-  return page.evaluate(
-    () => (window as unknown as { __copied: string[] }).__copied,
-  )
 }
 
 describe('The anchors feature', async () => {

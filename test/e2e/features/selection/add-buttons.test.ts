@@ -5,6 +5,12 @@ import { openEditor } from './../../support/session'
 import { addBlocks, selectBlock } from './../../support/blocks'
 import { emitEvent } from './../../support/events'
 import { setupEditorE2E } from './../../support/setup'
+import {
+  bundleSelector,
+  bundleSelectorItemIds,
+  bundleSelectorSearch,
+  pickBundle,
+} from './../../support/bundleSelector'
 
 /**
  * The "add buttons" (selection/AddButtons feature) are drawn on the WebGL
@@ -47,28 +53,9 @@ async function openCardBundleSelector(page: Page): Promise<Locator> {
   await selectBlock(page, cards[2])
   await emitEvent(page, 'selection:add-button:trigger', { position: 'after' })
 
-  const bundleSelector = page.locator('[data-test="bundle-selector"]')
-  await bundleSelector.waitFor({ state: 'visible' })
-  return bundleSelector
-}
-
-/**
- * The item identifiers shown in one of the selector's groups (`blocks`,
- * `actions`, `fragments`), read from each item's `data-test="add-list-item-<id>"`.
- */
-function groupItemIds(
-  page: Page,
-  group: 'blocks' | 'actions' | 'fragments',
-): Promise<string[]> {
-  return page
-    .locator(
-      `[data-test="bundle-selector-${group}"] [data-test^="add-list-item-"]`,
-    )
-    .evaluateAll((els) =>
-      els.map((el) =>
-        el.getAttribute('data-test')!.replace('add-list-item-', ''),
-      ),
-    )
+  const selector = bundleSelector(page)
+  await selector.waitFor({ state: 'visible' })
+  return selector
 }
 
 /**
@@ -104,11 +91,10 @@ describe('The selection add buttons', async () => {
   test("triggering a card's add button opens the bundle selector", async () => {
     const page = await openEditor()
 
-    const bundleSelector = page.locator('[data-test="bundle-selector"]')
-    expect(await bundleSelector.count()).toBe(0)
+    expect(await bundleSelector(page).count()).toBe(0)
 
     await openCardBundleSelector(page)
-    await bundleSelector.waitFor({ state: 'visible' })
+    await bundleSelector(page).waitFor({ state: 'visible' })
 
     await page.close()
   })
@@ -128,7 +114,7 @@ describe('The selection add buttons', async () => {
 
     // Give any (erroneous) selector a chance to appear before asserting absence.
     await page.waitForTimeout(300)
-    expect(await page.locator('[data-test="bundle-selector"]').count()).toBe(0)
+    expect(await bundleSelector(page).count()).toBe(0)
 
     await page.close()
   })
@@ -155,24 +141,23 @@ describe('The selection add buttons', async () => {
       index: 0,
     })
 
-    const bundleSelector = page.locator('[data-test="bundle-selector"]')
-    await bundleSelector.waitFor({ state: 'visible' })
+    await bundleSelector(page).waitFor({ state: 'visible' })
 
-    expect((await groupItemIds(page, 'blocks')).sort()).toEqual(
+    expect((await bundleSelectorItemIds(page, 'blocks')).sort()).toEqual(
       ['text', 'title'].sort(),
     )
     // No fragments (the field allows none) and no "From library" action (the
     // field doesn't allow the from-library bundle) — only "Template".
-    expect(await groupItemIds(page, 'actions')).toEqual(['template'])
-    expect(await groupItemIds(page, 'fragments')).toEqual([])
+    expect(await bundleSelectorItemIds(page, 'actions')).toEqual(['template'])
+    expect(await bundleSelectorItemIds(page, 'fragments')).toEqual([])
 
     await page.close()
   })
 
   test('starting a drag closes the bundle selector', async () => {
     const page = await openEditor()
-    const bundleSelector = await openCardBundleSelector(page)
-    await bundleSelector.waitFor({ state: 'visible' })
+    const selector = await openCardBundleSelector(page)
+    await selector.waitFor({ state: 'visible' })
 
     await emitEvent(page, 'dragging:start', {
       items: [],
@@ -180,7 +165,7 @@ describe('The selection add buttons', async () => {
       mode: 'mouse',
     })
 
-    await bundleSelector.waitFor({ state: 'hidden' })
+    await selector.waitFor({ state: 'hidden' })
 
     await page.close()
   })
@@ -191,18 +176,18 @@ describe('The selection add buttons', async () => {
 
     // Blocks allowed in the grid's `blocks` field (the internal `from_library`
     // and `blokkli_fragment` bundles surface as an action / fragments instead).
-    expect((await groupItemIds(page, 'blocks')).sort()).toEqual(
+    expect((await bundleSelectorItemIds(page, 'blocks')).sort()).toEqual(
       ['card', 'image', 'teaser', 'text', 'video'].sort(),
     )
 
     // "Template" (always) and "From library" (because the field allows the
     // from-library bundle).
-    expect((await groupItemIds(page, 'actions')).sort()).toEqual(
+    expect((await bundleSelectorItemIds(page, 'actions')).sort()).toEqual(
       ['library', 'template'].sort(),
     )
 
     // The field's single allowed fragment.
-    expect(await groupItemIds(page, 'fragments')).toEqual([
+    expect(await bundleSelectorItemIds(page, 'fragments')).toEqual([
       'fragment:demo_card',
     ])
 
@@ -211,18 +196,20 @@ describe('The selection add buttons', async () => {
 
   test('searching narrows to matching blocks and fragments and hides the actions group', async () => {
     const page = await openEditor()
-    const bundleSelector = await openCardBundleSelector(page)
+    await openCardBundleSelector(page)
 
-    await bundleSelector.locator('[data-test="text-input"]').fill('card')
+    await bundleSelectorSearch(page).fill('card')
 
     // Only the "card" bundle and the "demo_card" fragment match; no action
     // matches, so the actions group is hidden entirely.
-    await expect.poll(() => groupItemIds(page, 'blocks')).toEqual(['card'])
     await expect
-      .poll(() => groupItemIds(page, 'fragments'))
+      .poll(() => bundleSelectorItemIds(page, 'blocks'))
+      .toEqual(['card'])
+    await expect
+      .poll(() => bundleSelectorItemIds(page, 'fragments'))
       .toEqual(['fragment:demo_card'])
 
-    expect(await groupItemIds(page, 'actions')).toEqual([])
+    expect(await bundleSelectorItemIds(page, 'actions')).toEqual([])
     expect(
       await page.locator('[data-test="bundle-selector-actions"]').isVisible(),
     ).toBe(false)
@@ -232,11 +219,13 @@ describe('The selection add buttons', async () => {
 
   test('searching for "card" and pressing enter adds a card', async () => {
     const page = await openEditor()
-    const bundleSelector = await openCardBundleSelector(page)
-    const input = bundleSelector.locator('[data-test="text-input"]')
+    await openCardBundleSelector(page)
+    const input = bundleSelectorSearch(page)
 
     await input.fill('card')
-    await expect.poll(() => groupItemIds(page, 'blocks')).toEqual(['card'])
+    await expect
+      .poll(() => bundleSelectorItemIds(page, 'blocks'))
+      .toEqual(['card'])
 
     const before = await page.evaluate(() =>
       window.__BLOKKLI__!.app!.state.getAllUuids(),
@@ -253,15 +242,15 @@ describe('The selection add buttons', async () => {
 
   test('searching for "demo card" and pressing enter adds the demo card fragment', async () => {
     const page = await openEditor()
-    const bundleSelector = await openCardBundleSelector(page)
-    const input = bundleSelector.locator('[data-test="text-input"]')
+    await openCardBundleSelector(page)
+    const input = bundleSelectorSearch(page)
 
     await input.fill('demo card')
     // Wait until fzf has filtered the blocks away, so the first result — and
     // thus what Enter submits — is the fragment, not a block.
-    await expect.poll(() => groupItemIds(page, 'blocks')).toEqual([])
+    await expect.poll(() => bundleSelectorItemIds(page, 'blocks')).toEqual([])
     await expect
-      .poll(() => groupItemIds(page, 'fragments'))
+      .poll(() => bundleSelectorItemIds(page, 'fragments'))
       .toEqual(['fragment:demo_card'])
 
     const before = await page.evaluate(() =>
@@ -277,9 +266,9 @@ describe('The selection add buttons', async () => {
 
   test('clicking the "Template" action opens the template form overlay', async () => {
     const page = await openEditor()
-    const bundleSelector = await openCardBundleSelector(page)
+    await openCardBundleSelector(page)
 
-    await bundleSelector.locator('[data-test="add-list-item-template"]').click()
+    await pickBundle(page, 'template')
 
     await page
       .locator('[data-test="form-overlay-templates"]')
@@ -290,9 +279,9 @@ describe('The selection add buttons', async () => {
 
   test('clicking the "From library" action opens the library form overlay', async () => {
     const page = await openEditor()
-    const bundleSelector = await openCardBundleSelector(page)
+    await openCardBundleSelector(page)
 
-    await bundleSelector.locator('[data-test="add-list-item-library"]').click()
+    await pickBundle(page, 'library')
 
     await page
       .locator('[data-test="form-overlay-library"]')
