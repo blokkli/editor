@@ -1,54 +1,58 @@
 <template>
   <Teleport v-if="ui.mainLayoutElement.value" :to="ui.mainLayoutElement.value">
-    <div v-show="!ui.isApproving.value" class="bk bk-breadcrumbs">
-      <ul>
-        <li>
+    <div
+      v-show="!ui.isApproving.value"
+      class="bk bk-breadcrumbs bg-mono-900 pointer-events-auto h-50 border-r border-r-mono-700 overflow-hidden"
+    >
+      <ul class="flex items-center gap-1 h-full min-w-0">
+        <!-- Artboard root. -->
+        <Crumb is-first :is-last="rootIsLast">
           <button
             type="button"
-            class="bk-breadcrumb-inner"
+            class="group flex items-center h-full px-10 relative hover:text-white"
+            :class="rootIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'"
             @click.prevent="onClickRoot"
           >
-            <Icon name="artboard" />
+            <Icon name="artboard" class="size-20 shrink-0" />
           </button>
-        </li>
-        <li v-if="selection.hasHostSelected.value || crumbs.length">
+        </Crumb>
+
+        <!-- Host entity. -->
+        <Crumb v-if="showHost" shrinkable :is-last="hostIsLast">
           <button
             type="button"
-            class="bk-breadcrumb-inner bk-is-host bk-is-text"
+            class="group flex items-center h-full px-10 relative hover:text-white min-w-0"
+            :class="hostIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'"
             @click.prevent="onClickHost"
           >
-            <span>{{ hostLabel }}</span>
+            <span
+              class="whitespace-nowrap overflow-hidden text-ellipsis leading-[24px] group-hover:underline group-hover:underline-offset-4"
+            >
+              {{ hostLabel }}
+            </span>
           </button>
-        </li>
-        <li v-for="(crumb, index) in crumbs" :key="crumb.type + index">
-          <button
-            v-if="crumb.type === 'block'"
-            type="button"
-            class="bk-breadcrumb-inner bk-is-text"
-            @click.prevent="onClickCrumb(crumb)"
+        </Crumb>
+
+        <!-- Block / field / multiple chain. -->
+        <Crumb
+          v-for="(crumb, index) in crumbs"
+          :key="crumb.type + index"
+          :crumb
+          :is-last="index === crumbs.length - 1 && !hasEditable"
+        />
+
+        <!-- Active editable field (always the last crumb). -->
+        <Crumb v-if="hasEditable" is-last>
+          <div
+            class="flex items-center h-full px-10 relative uppercase text-xs tracking-wide min-w-0 font-bold text-white"
           >
-            <span>{{ crumb.label }}</span>
-          </button>
-          <span
-            v-else-if="crumb.type === 'multiple'"
-            class="bk-breadcrumb-inner"
-          >
-            {{ crumb.count }} {{ $t('multipleItemsLabel', 'Items') }}
-          </span>
-          <button
-            v-else-if="crumb.type === 'field'"
-            type="button"
-            class="bk-breadcrumb-inner bk-is-field"
-            @click.prevent="onClickField(crumb)"
-          >
-            <span>{{ crumb.label }}</span>
-          </button>
-        </li>
-        <li v-if="selection.activeFieldLabel.value">
-          <div class="bk-breadcrumb-inner bk-is-editable">
-            <span>{{ selection.activeFieldLabel.value }}</span>
+            <span
+              class="whitespace-nowrap overflow-hidden text-ellipsis px-[8px] pt-[4px] pb-2 border bg-teal-normal text-teal-dark border-teal-normal"
+            >
+              {{ selection.activeFieldLabel.value }}
+            </span>
           </div>
-        </li>
+        </Crumb>
       </ul>
     </div>
   </Teleport>
@@ -62,6 +66,8 @@ import {
   fragmentBlockBundle,
   fromLibraryBlockBundle,
 } from '#blokkli-build/config'
+import Crumb from './Crumb/index.vue'
+import type { Crumb as CrumbType, CrumbBlock, CrumbField } from './types'
 
 defineBlokkliFeature({
   id: 'breadcrumbs',
@@ -71,28 +77,8 @@ defineBlokkliFeature({
   viewports: ['desktop'],
 })
 
-const { $t, ui, selection, state, types, definitions, eventBus, context } =
+const { ui, selection, state, types, definitions, eventBus, context } =
   useBlokkli()
-
-type CrumbField = {
-  type: 'field'
-  label: string
-  entityUuid: string
-  fieldName: string
-}
-
-type CrumbBlock = {
-  type: 'block'
-  label: string
-  uuid: string
-}
-
-type CrumbMultiple = {
-  type: 'multiple'
-  count: number
-}
-
-type Crumb = CrumbField | CrumbBlock | CrumbMultiple
 
 // Cache stores the full chain including field crumbs.
 const getChainCache = useStateBasedCache(
@@ -223,7 +209,7 @@ function buildCrumbs(
   selectedBundle: string | null,
   multipleCount: number,
   commonFieldKey: string | null,
-): Crumb[] {
+): CrumbType[] {
   if (hasHostSelected) {
     return []
   }
@@ -256,7 +242,7 @@ function buildCrumbs(
   return []
 }
 
-const crumbs = computed<Crumb[]>(() =>
+const crumbs = computed<CrumbType[]>(() =>
   buildCrumbs(
     selection.hasHostSelected.value,
     selection.items.value[0]?.uuid ?? null,
@@ -266,20 +252,17 @@ const crumbs = computed<Crumb[]>(() =>
   ),
 )
 
-function onClickCrumb(crumb: CrumbBlock) {
-  eventBus.emit('select', crumb.uuid)
-  eventBus.emit('scrollIntoView', { uuid: crumb.uuid })
-}
-
-function onClickField(crumb: CrumbField) {
-  const field = state.getMutatedField(crumb.entityUuid, crumb.fieldName)
-  if (!field || !field.list.length) {
-    return
-  }
-
-  const uuids = field.list.map((item) => item.uuid)
-  eventBus.emit('select', uuids)
-}
+// The host crumb shows whenever a block (→ has crumbs) or the host itself is
+// selected. The editable field, when open, is always the final crumb — which
+// makes the root/host "current" only when nothing follows them.
+const hasEditable = computed(() => !!selection.activeFieldLabel.value)
+const showHost = computed(
+  () => selection.hasHostSelected.value || crumbs.value.length > 0,
+)
+const rootIsLast = computed(() => !showHost.value && !hasEditable.value)
+const hostIsLast = computed(
+  () => crumbs.value.length === 0 && !hasEditable.value,
+)
 
 function onClickHost() {
   eventBus.emit('select:unselect')
@@ -300,119 +283,7 @@ export default {
 
 <style lang="postcss">
 .bk.bk-breadcrumbs {
-  @apply bg-mono-900 pointer-events-auto h-50;
-  @apply border-r border-r-mono-700;
-  @apply overflow-hidden;
+  /* Placed by the editor's main layout grid; no utility for a named area. */
   grid-area: breadcrumbs;
-  ul {
-    @apply flex items-center gap-1 h-full;
-    @apply min-w-0;
-
-    li {
-      @apply flex items-center h-full;
-      @apply text-base leading-none;
-      @apply flex-shrink-0;
-
-      &:before {
-        content: '»';
-        @apply text-mono-400 flex-shrink-0;
-      }
-
-      &:first-child:before {
-        content: none;
-      }
-
-      @apply relative;
-
-      &:last-child {
-        @apply text-mono-50 pointer-events-none;
-
-        .bk-breadcrumb-inner {
-          @apply font-bold text-white;
-
-          &.bk-is-field {
-            span {
-              @apply bg-mono-600 text-white border-mono-200;
-            }
-          }
-        }
-      }
-
-      /* Items that can shrink with ellipsis. */
-      &:has(.bk-is-field),
-      &:has(.bk-is-host) {
-        @apply flex-shrink min-w-0;
-
-        /* Don't shrink the last item. */
-        &:last-child {
-          @apply flex-shrink-0;
-        }
-      }
-
-      .bk-breadcrumb-inner {
-        @apply flex items-center text-mono-300 h-full px-10 relative;
-
-        span {
-          @apply whitespace-nowrap overflow-hidden text-ellipsis;
-        }
-
-        &.bk-is-field,
-        &.bk-is-editable {
-          @apply uppercase text-xs tracking-wide min-w-0;
-          span {
-            @apply px-[8px] pt-[4px] pb-2;
-            @apply border;
-          }
-        }
-
-        &.bk-is-field {
-          span {
-            @apply bg-mono-800;
-            @apply text-mono-300;
-            @apply border-mono-600;
-          }
-          &:hover {
-            span {
-              @apply bg-mono-700 text-white border-mono-500;
-            }
-          }
-        }
-
-        &.bk-is-editable {
-          span {
-            @apply bg-teal-normal;
-            @apply text-teal-dark;
-            @apply border-teal-normal;
-          }
-        }
-
-        &.bk-is-host {
-          @apply min-w-0;
-        }
-
-        &.bk-is-text {
-          span {
-            @apply leading-[24px];
-          }
-          &:hover span {
-            @apply underline underline-offset-4;
-          }
-        }
-
-        .bk-icon {
-          @apply size-20 flex-shrink-0;
-          svg {
-            @apply fill-current;
-          }
-        }
-      }
-
-      button.bk-breadcrumb-inner {
-        @apply hover:text-white;
-
-        @apply font-medium;
-      }
-    }
-  }
 }
 </style>
