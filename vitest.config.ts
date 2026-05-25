@@ -32,6 +32,11 @@ export default defineConfig({
           name: 'e2e',
           include: ['test/e2e/*.{test,spec}.ts'],
           environment: 'node',
+          // E2E runs against a real (production) build driven by a browser:
+          // page load + hydration + editor mount take well over the 5s default,
+          // and `setup()` builds the app in a hook.
+          testTimeout: 60000,
+          hookTimeout: 180000,
         },
       },
       await defineVitestProject({

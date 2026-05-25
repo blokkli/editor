@@ -91,6 +91,7 @@ export default defineNuxtConfig({
     shim: true,
     strict: true,
     tsConfig: {
+      include: ['../../test/e2e/**/*', '../blokkli/features/**/*'],
       compilerOptions: {
         noUncheckedIndexedAccess: true,
       },

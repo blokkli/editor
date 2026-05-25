@@ -17,6 +17,7 @@
         }}</span>
         <button
           class="hover:bg-mono-800 h-40 px-8 flex items-center gap-5 font-semibold"
+          data-test="diff-approval-cancel"
           @click="$emit('cancel')"
         >
           <span>{{ $t('cancel', 'Cancel') }}</span>
@@ -118,6 +119,7 @@
 
         <button
           class="bk-button bk-scheme-lime rounded-l-none! rounded-tr-none!"
+          data-test="diff-approval-apply"
           @click="$emit('apply')"
         >
           <span>{{ applyLabel }}</span>

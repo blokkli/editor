@@ -9,6 +9,7 @@
         id ? 'bk-is-' + id : undefined,
         $attrs.class,
       ]"
+      :data-test-toolbar-button="id"
       :style="{ order: weight || 0 }"
       @click.prevent.stop="onClick"
     >

@@ -1,11 +1,15 @@
 import { describe, expect, test } from 'vitest'
-import { createPage, setup } from '@nuxt/test-utils/e2e'
+import { openEditor } from './support/editor'
+import { setupEditorE2E } from './support/setup'
 
 describe('Add Blocks', async () => {
-  await setup()
+  await setupEditorE2E()
 
   test('the add list element is rendered', async () => {
-    const page = await createPage('/page/1?blokkliEditing=1')
-    expect(page.locator('#bk-add-list')).toBeTruthy()
+    const page = await openEditor()
+    // `.count()` is asserted (not the locator itself — a locator is always
+    // truthy, which is how this spec used to pass against a non-built app).
+    expect(await page.locator('#bk-add-list').count()).toBe(1)
+    await page.close()
   })
 })

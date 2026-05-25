@@ -77,3 +77,4 @@ playground/public/uploads/
 
 packages/agent
 packages/kit
+.playwright-mcp

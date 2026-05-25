@@ -6,10 +6,15 @@
         :id="'popup-' + id"
         class="bk bk-popup"
         :class="['bk-is-' + position, 'bk-is-' + id]"
+        :data-test-popup="id"
       >
         <div class="bk-popup-title">
           <h2>{{ title }}</h2>
-          <button class="p-20 hover:bg-mono-50 text-mono-500" @click="onClose">
+          <button
+            class="p-20 hover:bg-mono-50 text-mono-500"
+            :data-test-popup-close="id"
+            @click="onClose"
+          >
             <Icon name="bk_mdi_close" class="size-20" />
           </button>
         </div>

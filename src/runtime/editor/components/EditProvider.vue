@@ -150,6 +150,7 @@ import { falsy } from '#blokkli/helpers'
 import {
   addElementClasses,
   useBlockRegistration,
+  useGlobalBlokkliObject,
 } from '#blokkli/editor/composables'
 import type { BlokkliApp } from '../types/app'
 import type { EditPermission } from '#blokkli/types/provider'
@@ -411,6 +412,15 @@ const app: BlokkliApp = {
 }
 
 provide(INJECT_APP, app)
+
+// Expose the full editor API on window for E2E tests.
+//
+// TODO: This is intentionally unconditional for now. E2E currently runs against
+// a production build because running it in dev mode triggers HMR reloads (from
+// async component imports like DiffApproval) that break the tests. Once that is
+// solved we should run E2E in dev mode and re-gate this behind `import.meta.dev`
+// (or a dedicated build flag) so it never reaches a real production bundle.
+useGlobalBlokkliObject().setApp(app)
 
 function textWithHighlight(title: string, text: string): string {
   return `<strong>${title}</strong> ${text}`
