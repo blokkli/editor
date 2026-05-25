@@ -1,5 +1,9 @@
 <template>
-  <div class="bk-blokkli-item-options-item group/tooltip" @keydown.stop>
+  <div
+    class="bk-blokkli-item-options-item group/tooltip"
+    :data-test="'option-' + property"
+    @keydown.stop
+  >
     <Tooltip
       :label
       :description

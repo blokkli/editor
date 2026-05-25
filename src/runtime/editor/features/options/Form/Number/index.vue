@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-blokkli-item-options-number">
+  <div class="bk-blokkli-item-options-number" data-test="option-type-number">
     <button :disabled="!canDecrement" @click.stop.prevent="decrement">
       <Icon name="bk_mdi_remove" />
     </button>

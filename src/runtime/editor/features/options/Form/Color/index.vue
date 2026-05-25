@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-blokkli-item-options-color">
+  <div class="bk-blokkli-item-options-color" data-test="option-type-color">
     <input v-model="text" type="color" />
     <div
       class="bk-blokkli-item-options-color-preview"

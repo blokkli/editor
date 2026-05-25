@@ -6,6 +6,7 @@
   >
     <div
       ref="blokkliDraggable"
+      :data-test="'card-is-' + (options.box ? 'box' : 'plain')"
       :class="{
         'p-10 lg:p-20 rounded shadow-lg border h-full': options.box,
         'bg-mono-700 border-mono-600': options.box && isInverted,

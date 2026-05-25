@@ -12,7 +12,12 @@
         pointerEvents: isResizing ? 'none' : 'auto',
       }"
     >
-      <iframe ref="iframe" :src="src" @load="isLoading = false" />
+      <iframe
+        ref="iframe"
+        :src="src"
+        data-test="preview-iframe"
+        @load="isLoading = false"
+      />
     </div>
   </div>
 </template>

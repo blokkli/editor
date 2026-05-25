@@ -5,6 +5,7 @@
       v-show="!hidden"
       ref="el"
       :disabled="isDisabled"
+      :data-test="'plugin-item-action-' + id"
       class="group/tooltip flex items-center shrink-0 justify-center relative lg:static z-50 size-50 lg:hover:bg-mono-700 text-mono-300 lg:hover:text-mono-50 group/button"
       :class="[
         {

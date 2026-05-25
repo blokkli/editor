@@ -2,6 +2,7 @@
   <button
     v-if="config"
     class="bk-blokkli-item-options-complex-type"
+    data-test="option-type-json"
     @click="onClick"
   >
     <Icon :name="config.editorIcon" />

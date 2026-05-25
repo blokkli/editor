@@ -1,5 +1,8 @@
 <template>
-  <div class="bk-blokkli-item-options-date">
+  <div
+    class="bk-blokkli-item-options-date"
+    data-test="option-type-datetime-local"
+  >
     <input
       v-model="text"
       type="datetime-local"

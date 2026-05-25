@@ -1,6 +1,7 @@
 <template>
   <div
     class="bk-blokkli-item-options-checkboxes"
+    data-test="option-type-checkboxes"
     :class="{ 'bk-is-active': isOpen, 'bk-is-grouped': isGrouped }"
   >
     <button v-if="!isGrouped" @click="isOpen = !isOpen">

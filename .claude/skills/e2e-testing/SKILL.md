@@ -16,8 +16,9 @@ gestures, frame-timed drop logic, and DOM lifecycle.
   `from './support/diff'`, …; there is no barrel). The modules: `session` (open
   the editor + `withApp`), `blocks` (state + the canvas drag), `editable`,
   `diff`, `toolbar`, `menu`, `sidebar`, `overlays` (popups + modal dialogs),
-  `recorder` (assert which adapter calls a flow made), and `setup` (the
-  host-aware `setup()` wrapper).
+  `options` (a selected block's options toolbar), `preview` (the
+  responsive-preview iframe), `recorder` (assert which adapter calls a flow
+  made), and `setup` (the host-aware `setup()` wrapper).
 
 ## Running tests — two modes
 
@@ -144,6 +145,14 @@ Existing hooks (extend this list as you add them):
 - Toolbar scheduled-date (`entity-title`): `data-test="toolbar-scheduled-date"`
   with `data-test-scheduled-date="<ISO>"` (the raw instant — the visible text is
   locale-formatted, so assert against the attribute).
+- Responsive preview iframe (`responsive-preview/Frame`):
+  `data-test="preview-iframe"`.
+- Block options (`options/Form`): the per-option wrapper (`Item.vue`) carries
+  `data-test="option-<property>"`; the control inside carries its type,
+  `data-test="option-type-<checkbox|radios|text|color|range|number|checkboxes|datetime-local|json>"`.
+  Scope to disambiguate: `blockOption(page, 'box')` /
+  `toggleCheckboxOption(page, 'box')`. This split — id on the wrapper, type on
+  the control — is the pattern for a shared control rendered for many keys.
 - DiffApproval toolbar: `data-test="diff-approval-cancel|diff-approval-apply"`.
 
 A boolean `:data-test-x="bool"` renders the attribute only when `true` (Vue drops
@@ -169,9 +178,13 @@ has exactly one textarea, the revision-log message).
   `plaintextEditor` (the textarea a plaintext editable mounts + focuses).
 - `addBlock(page, { bundle='text', fieldName='content', entityUuid? })` — add a
   block via a plain adapter mutation (the same `addNewBlock` call the agent tools
-  and the add-list use). **This is the cheap way to get a pending mutation** —
-  most tests just need *a* change (to enable Publish/Discard, etc.); reach for
-  this, not the drag. No canvas, no editable overlay to clean up.
+  and the add-list use); resolves with the new block's **uuid**. **This is the
+  cheap way to get a pending mutation** — most tests just need *a* change (to
+  enable Publish/Discard, etc.); reach for this, not the drag. No canvas, no
+  editable overlay to clean up.
+- `getPreviewFrame(page)` — the responsive-preview iframe's `Frame`, gated on
+  hydration (so relayed events aren't dropped). `blockOption` /
+  `toggleCheckboxOption` — a selected block's options.
 - `dragNewBlockIntoPage(page, bundle, { fieldName='content', entityUuid? })` —
   the real pointer drag (see below). Use ONLY when the drag gesture itself is
   what's under test.
@@ -247,6 +260,18 @@ fieldName, bundle } }`.
   instant so timezone offsets can't shift "today".
 - E2E timeouts are bumped in `vitest.config.ts` (prod build + hydration). Its
   e2e `include` is `test/e2e/**` (recurses into `features/`).
+- **Responsive-preview iframe sync:** the preview is a same-origin iframe
+  (`?blokkliPreview`); reach into it with
+  `(await page.locator('[data-test="preview-iframe"]').elementHandle()).contentFrame()`
+  and inspect via `frame.evaluate`. Inside it there's no `window.__BLOKKLI__`
+  (preview mode) — blocks are identified by `[data-bk-uuid]` (the runtime's own
+  block id, used by `PreviewProvider`). Sync is driven by editor events relayed
+  as `postMessage` (e.g. `select` → focus → `scrollIntoView`). **TRAP:** the
+  iframe's blocks are SSR-rendered *before* it hydrates, but the postMessage
+  listener only registers on hydration — so an event emitted right after the
+  blocks appear can be dropped. Re-emit inside `expect.poll` (with a generous
+  `timeout`), and don't run the assertion only standalone: this surfaced as a
+  pass-alone/fail-in-suite flake because parallel load slows hydration.
 - Browser: the project's `playwright-core` pins a chromium revision. If browsers
   go missing, reinstall with `node node_modules/playwright-core/cli.js install
   chromium chromium-headless-shell` (pinned rev, no sudo). Do **not**

@@ -1,6 +1,7 @@
 <template>
   <div
     class="bk-blokkli-item-options-radios"
+    data-test="option-type-radios"
     :class="{
       'bk-is-color': displayAs === 'colors',
       'bk-is-grid': displayAs === 'grid',

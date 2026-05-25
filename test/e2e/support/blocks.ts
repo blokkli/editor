@@ -6,6 +6,14 @@ export function blockCount(page: Page): Promise<number> {
   return withApp(page, (app) => app.state.getAllUuids().length)
 }
 
+/** Select a block by `uuid` (emits the editor's `select` event). */
+export function selectBlock(page: Page, uuid: string): Promise<void> {
+  return page.evaluate(
+    (uuid) => window.__BLOKKLI__!.app!.eventBus.emit('select', uuid),
+    uuid,
+  )
+}
+
 /**
  * Add a block programmatically — the cheap way to get a real mutation when a
  * test just needs pending changes (most do). This runs the same adapter call
@@ -14,32 +22,54 @@ export function blockCount(page: Page): Promise<number> {
  * produces a genuine mutation + history entry — without the canvas drag, the
  * add-list, or the editable-overlay that a real drop opens.
  *
- * Defaults to a `text` block in the host entity's `content` field. For testing
- * the drag gesture itself, use `dragNewBlockIntoPage` instead.
+ * Defaults to a `text` block in the host entity's `content` field. To nest a
+ * block inside another block's field, pass `hostUuid` (the parent block's uuid)
+ * + the parent's `fieldName` — the host entity type/uuid are resolved from the
+ * registered field, so this works at any nesting level. For testing the drag
+ * gesture itself, use `dragNewBlockIntoPage` instead. Resolves with the new
+ * block's uuid (diffed from the document before/after the mutation).
  */
 export function addBlock(
   page: Page,
-  opts: { bundle?: string; fieldName?: string; entityUuid?: string } = {},
-): Promise<void> {
+  opts: { bundle?: string; fieldName?: string; hostUuid?: string } = {},
+): Promise<string | null> {
   return page.evaluate(
-    async ({ bundle, fieldName, entityUuid }) => {
+    async ({ bundle, fieldName, hostUuid }) => {
       const app = window.__BLOKKLI__!.app!
+
+      let host: { type: string; uuid: string; fieldName: string }
+      if (hostUuid) {
+        // Nesting: resolve the host entity type/uuid from the parent block's
+        // registered field.
+        const field = app.fields.find(hostUuid, fieldName)
+        if (!field) {
+          throw new Error(
+            `Field "${fieldName}" not registered on block ${hostUuid}`,
+          )
+        }
+        host = {
+          type: field.hostEntityType,
+          uuid: field.hostEntityUuid,
+          fieldName,
+        }
+      } else {
+        host = {
+          type: app.context.value.entityType,
+          uuid: app.context.value.entityUuid,
+          fieldName,
+        }
+      }
+
+      const before = new Set(app.state.getAllUuids())
       await app.state.mutateWithLoadingState(() =>
-        app.adapter.addNewBlock({
-          bundle,
-          host: {
-            type: app.context.value.entityType,
-            uuid: entityUuid ?? app.context.value.entityUuid,
-            fieldName,
-          },
-          afterUuid: null,
-        }),
+        app.adapter.addNewBlock({ bundle, host, afterUuid: null }),
       )
+      return app.state.getAllUuids().find((uuid) => !before.has(uuid)) ?? null
     },
     {
       bundle: opts.bundle ?? 'text',
       fieldName: opts.fieldName ?? 'content',
-      entityUuid: opts.entityUuid,
+      hostUuid: opts.hostUuid,
     },
   )
 }

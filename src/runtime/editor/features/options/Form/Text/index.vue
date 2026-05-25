@@ -1,5 +1,5 @@
 <template>
-  <div class="bk-blokkli-item-options-text">
+  <div class="bk-blokkli-item-options-text" data-test="option-type-text">
     <input v-model="text" :type="type" :placeholder="label" />
     <div>{{ text }}</div>
   </div>
