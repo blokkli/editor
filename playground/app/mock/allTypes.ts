@@ -28,8 +28,8 @@ export const allTypes: BlockBundleDefinition[] = getParagraphBundles().map(
       description: block.description,
       allowReusable: block.allowReusable,
       isTranslatable: block.isTranslatable,
-      hasPublishOn: block.bundle !== 'title',
-      hasUnpublishOn: block.bundle !== 'image',
+      hasPublishOn: block.bundle !== 'title' && block.bundle !== 'button',
+      hasUnpublishOn: block.bundle !== 'image' && block.bundle !== 'button',
       imageUrl: block.imageUrl,
       permissions,
     }

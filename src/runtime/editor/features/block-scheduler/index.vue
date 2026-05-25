@@ -13,6 +13,7 @@
     <template #icon-addon>
       <div
         v-if="selectionHasDates"
+        data-test="block-scheduler-indicator"
         class="absolute -top-5 -right-5 size-15 bg-yellow-normal rounded-full flex items-center justify-center text-yellow-dark"
       >
         <Icon name="bk_mdi_check" class="size-10" />

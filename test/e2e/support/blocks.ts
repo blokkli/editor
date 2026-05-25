@@ -13,6 +13,18 @@ export function selectBlock(page: Page, uuid: string): Promise<void> {
 }
 
 /**
+ * Whether a block is rendered "muted" — `DraggableList` sets
+ * `data-bk-is-muted="true"` on blocks that aren't currently published (e.g. a
+ * future `publishOn` schedule) or hidden by their visibility options.
+ */
+export async function isBlockMuted(page: Page, uuid: string): Promise<boolean> {
+  const muted = await page
+    .locator(`[data-bk-uuid="${uuid}"]`)
+    .getAttribute('data-bk-is-muted')
+  return muted === 'true'
+}
+
+/**
  * Add a block programmatically — the cheap way to get a real mutation when a
  * test just needs pending changes (most do). This runs the same adapter call
  * the agent's add tools and the add-list drop handler use

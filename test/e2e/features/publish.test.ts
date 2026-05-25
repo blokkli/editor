@@ -6,6 +6,13 @@ import { dialog, dialogSubmit } from './../support/overlays'
 import { addBlock } from './../support/blocks'
 import { waitForAdapterCall } from './../support/recorder'
 import { setupEditorE2E } from './../support/setup'
+import {
+  scheduleDate,
+  scheduleTime,
+  scheduleError,
+  pickScheduleDay,
+  setScheduleTime,
+} from './../support/schedule'
 
 /**
  * The publish dialog (the playground adapter implements `getPublishOptions`, so
@@ -22,6 +29,25 @@ const TODAY = '2026-06-15'
 
 function publishMode(page: Page, mode: 'save' | 'immediate' | 'scheduled') {
   return page.locator(`[data-test="publish-mode-${mode}"]`)
+}
+
+/** Schedule `uuids` to be published on `date` (a real adapter mutation). */
+function scheduleBlocksPublish(
+  page: Page,
+  uuids: string[],
+  date: string,
+): Promise<void> {
+  return page.evaluate(
+    async ({ uuids, date }) => {
+      const app = window.__BLOKKLI__!.app!
+      await app.state.mutateWithLoadingState(() =>
+        app.adapter.setBlockScheduleDate!(
+          uuids.map((uuid) => ({ uuid, type: 'publish' as const, date })),
+        ),
+      )
+    },
+    { uuids, date },
+  )
 }
 
 /** Whether a publish-mode option is the currently selected one. */
@@ -74,7 +100,7 @@ describe('The publish dialog', async () => {
 
   test('switching mode toggles the schedule UI', async () => {
     const page = await openPublishDialog()
-    const scheduleUi = page.locator('[data-test="schedule-date"]')
+    const scheduleUi = scheduleDate(page)
 
     // The page is unpublished, so `save` is the initial mode and there's no
     // schedule UI.
@@ -87,9 +113,7 @@ describe('The publish dialog', async () => {
       .poll(() => isModeChecked(publishMode(page, 'scheduled')))
       .toBe(true)
     await scheduleUi.waitFor({ state: 'visible' })
-    await page
-      .locator('[data-test="schedule-time"]')
-      .waitFor({ state: 'visible' })
+    await scheduleTime(page).waitFor({ state: 'visible' })
 
     // Publishing immediately hides it again.
     await publishMode(page, 'immediate').click()
@@ -105,12 +129,9 @@ describe('The publish dialog', async () => {
     const page = await openPublishDialog({ now: NOW, timezoneId: 'UTC' })
 
     await publishMode(page, 'scheduled').click()
-    await page
-      .locator('[data-test="schedule-date"]')
-      .waitFor({ state: 'visible' })
+    await scheduleDate(page).waitFor({ state: 'visible' })
 
-    const error = page.locator('[data-test="schedule-error"]')
-    const time = page.locator('[data-test="schedule-time"]')
+    const error = scheduleError(page)
 
     // Default schedule is tomorrow at noon — valid, so no error and submit is
     // enabled.
@@ -119,14 +140,14 @@ describe('The publish dialog', async () => {
 
     // Move it to today (10:00 now) at 08:00 — in the past, so it fails the
     // "must be in the future" rule: error shows, submit is blocked.
-    await page.locator(`[data-test="datepicker-day-${TODAY}"]`).click()
-    await time.fill('08:00')
+    await pickScheduleDay(page, TODAY)
+    await setScheduleTime(page, '08:00')
     await error.waitFor({ state: 'visible' })
     await expect.poll(() => dialogSubmit(page).isDisabled()).toBe(true)
 
     // Bump it to 11:00, comfortably in the future — the error clears and submit
     // is enabled again.
-    await time.fill('11:00')
+    await setScheduleTime(page, '11:00')
     await error.waitFor({ state: 'hidden' })
     await expect.poll(() => dialogSubmit(page).isDisabled()).toBe(false)
 
@@ -178,9 +199,7 @@ describe('The publish dialog', async () => {
     const page = await openPublishDialog({ now: NOW, timezoneId: 'UTC' })
 
     await publishMode(page, 'scheduled').click()
-    await page
-      .locator('[data-test="schedule-date"]')
-      .waitFor({ state: 'visible' })
+    await scheduleDate(page).waitFor({ state: 'visible' })
 
     const message = 'Publish the autumn campaign'
     await dialog(page, 'publish').locator('[data-test="textarea"]').fill(message)
@@ -205,6 +224,45 @@ describe('The publish dialog', async () => {
     expect(await scheduled.getAttribute('data-test-scheduled-date')).toBe(
       '2026-06-16T12:00:00.000Z',
     )
+
+    await page.close()
+  })
+
+  test('warns when blocks are scheduled to be published', async () => {
+    const page = await openEditor('/page/1?blokkliEditing=1&testing=true', {
+      timezoneId: 'UTC',
+    })
+
+    // Two blocks scheduled for the same future date (relative to NOW). The
+    // scheduling itself is the pending mutation that enables the Publish button.
+    const a = await addBlock(page)
+    const b = await addBlock(page)
+    await scheduleBlocksPublish(page, [a!, b!], '2026-06-20T09:00:00.000Z')
+    await setFixedTime(page, NOW)
+
+    await openAppMenu(page)
+    await appMenuButton(page, 'publish').click()
+    await dialog(page, 'publish').waitFor({ state: 'visible' })
+
+    const notice = page.locator(
+      '[data-test="publish-scheduled-blocks-notice"]',
+    )
+
+    // The page is unpublished, so the default mode is "save" — the notice only
+    // matters once something actually goes live, so it stays hidden.
+    expect(await isModeChecked(publishMode(page, 'save'))).toBe(true)
+    expect(await notice.count()).toBe(0)
+
+    // Switching to "publish immediately" surfaces the notice. Both blocks share
+    // one publish date, so they group into a single message.
+    await publishMode(page, 'immediate').click()
+    await notice.waitFor({ state: 'visible' })
+    const messages = notice.locator('[data-test="publish-scheduled-block"]')
+    expect(await messages.count()).toBe(1)
+
+    // The message names the scheduled date (locale-independent: the year).
+    const text = (await messages.first().textContent()) ?? ''
+    expect(text).toContain('2026')
 
     await page.close()
   })

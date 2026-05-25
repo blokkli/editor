@@ -18,7 +18,19 @@ gestures, frame-timed drop logic, and DOM lifecycle.
   `diff`, `toolbar`, `menu`, `sidebar`, `overlays` (popups + modal dialogs),
   `options` (a selected block's options toolbar), `preview` (the
   responsive-preview iframe), `recorder` (assert which adapter calls a flow
-  made), and `setup` (the host-aware `setup()` wrapper).
+  made), `schedule` (the shared `ScheduleDate` date/time widget), and `setup`
+  (the host-aware `setup()` wrapper).
+
+**When to extract a `support/` helper vs keep it local.** An interaction used by
+**more than one spec file** belongs in `support/` (and refactor the existing file
+onto it — don't leave a copy behind): e.g. the `ScheduleDate` widget, once both
+the publish dialog and the block-scheduler dialog drove it, became
+`support/schedule.ts` (`scheduleDate`/`scheduleTime`/`scheduleError`/
+`pickScheduleDay`/`setScheduleTime`, each taking an optional `within?: Locator`
+scope since a dialog can show two widgets). A helper repeated **within one file
+only** stays a local function there (e.g. publish.test's `openPublishDialog`).
+Generic block-state reads live in `blocks` (e.g. `isBlockMuted(page, uuid)` reads
+`data-bk-is-muted`).
 
 ## Running tests — two modes
 
@@ -107,6 +119,22 @@ To record a new method, add `recordAdapterCall('name', args)` (gated by the
 adapter's `isTesting`) in `playground/app/mock/blokkli.editAdapter.ts`; the
 recorder + shared storage key live in `playground/app/mock/testRecorder.ts`.
 
+Caveats when asserting recorded args:
+
+- **`waitForAdapterCall` resolves on the FIRST matching call.** To assert a
+  *second* call of the same method (e.g. schedule, then clear), don't call it
+  again — it returns immediately with the first. Instead poll until the count is
+  right, then take the last: `expect.poll(async () => (await
+  recordedAdapterCalls(page)).filter(c => c.method === 'm').length).toBe(2)`,
+  then `…filter(…).at(-1)!.args`.
+- **`undefined` fields are dropped** (it's JSON in `localStorage`): a cleared
+  value records as `{ uuid, type }`, not `{ uuid, type, date: undefined }` —
+  assert the trimmed object.
+- **One submit can record extra entries.** A form may emit a no-op change for an
+  untouched section (e.g. the scheduler sends a `null`→clear for the section you
+  didn't touch), so a payload array can hold more than you set. `.find()` by a
+  discriminator (`b.type === 'publish'`), don't assume length or order.
+
 ### Capturing an editor event without a window-global bridge
 
 ```ts
@@ -154,9 +182,23 @@ Existing hooks (extend this list as you add them):
   `toggleCheckboxOption(page, 'box')`. This split — id on the wrapper, type on
   the control — is the pattern for a shared control rendered for many keys.
 - DiffApproval toolbar: `data-test="diff-approval-cancel|diff-approval-apply"`.
+- Block scheduler (`block-scheduler`): the action button is the generic
+  `data-test="plugin-item-action-block-scheduler"` (native `disabled` — assert
+  `.isDisabled()`); the dialog (`dialog-block-scheduler`) has a publish and an
+  unpublish section `data-test="scheduler-<publish|unpublish>"` each carrying
+  `data-test-disabled` (whether that bundle supports it) with an enable
+  `data-test="scheduler-<type>-toggle"`; the action's "has dates" dot is
+  `data-test="block-scheduler-indicator"`. Both sections embed the shared
+  `ScheduleDate` widget — scope `support/schedule` helpers to the section.
+- Publish dialog scheduled-blocks notice (`publish/Dialog`):
+  `data-test="publish-scheduled-blocks-notice"`, one
+  `data-test="publish-scheduled-block"` per distinct scheduled date.
 
-A boolean `:data-test-x="bool"` renders the attribute only when `true` (Vue drops
-`false`), so assert via `getAttribute(...) === 'true'`.
+A boolean `:data-test-x="bool"` renders in **both** states — Vue only drops
+`null`/`undefined` for `data-*` attributes, not `false`, so `false` serialises to
+the literal string `"false"`. So `[data-test-x]` matches whether it's true or
+false (use that for a stable selector), and you assert the exact value:
+`getAttribute('data-test-x') === 'true'` / `=== 'false'`.
 
 **Generic hooks on shared inputs — scope, don't parametrise.** For a shared
 field component (e.g. `Form/Textarea`), add a *fixed* `data-test="textarea"` to
@@ -229,6 +271,12 @@ fieldName, bundle } }`.
   `addBehaviour` race that a shortcut test would have hidden.
 - A locator is always truthy: assert `await locator.count()` /
   `expect.poll(() => blockCount(page))`, never `expect(locator).toBeTruthy()`.
+- **No translation dependencies.** The playground renders a non-English locale,
+  so never assert on translated copy — not even by reading `app.$t` to build the
+  expected string. Assert locale-independent facts instead: structure (one
+  `[data-test="…"]` per item), a `data-test-*` attribute holding the raw value
+  (e.g. `data-test-scheduled-date` is the ISO instant; the visible text is
+  formatted), or a stable substring like the year (`text.includes('2026')`).
 - **TRAP: these are Vitest tests, not `@playwright/test`.** The
   `expect(locator).toBeVisible()/toBeHidden()/toBeDisabled()/toBeEnabled()`
   web-first matchers DO NOT EXIST here — `expect(locator).toBeDisabled()` throws

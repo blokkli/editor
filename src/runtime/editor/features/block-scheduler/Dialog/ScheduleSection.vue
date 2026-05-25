@@ -1,9 +1,10 @@
 <template>
   <PanelSection :title="label" padded :help>
-    <div class="bk-schedule-section">
+    <div class="bk-schedule-section" :data-test="testId" :data-test-disabled="disabled">
       <FormToggle
         v-model="isEnabled"
         :disabled
+        :data-test="testId + '-toggle'"
         :label="$t('scheduleEnable', 'Enable schedule')"
       />
 
@@ -58,6 +59,8 @@ const props = withDefaults(
     items: ScheduleItemData[]
     supportedBundles: string[]
     disabled?: boolean
+    /** `data-test` id for the section root (e.g. `scheduler-publish`). */
+    testId: string
   }>(),
   {
     disabled: false,

@@ -107,10 +107,11 @@
           />
         </FormItem>
         <FormItem v-if="publishMode !== 'save' && scheduledBlocks.length">
-          <InfoBox>
+          <InfoBox data-test="publish-scheduled-blocks-notice">
             <p
               v-for="(text, index) in scheduledBlocks"
               :key="'infobox' + index"
+              data-test="publish-scheduled-block"
               v-html="text"
             />
           </InfoBox>

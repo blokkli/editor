@@ -2019,6 +2019,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async setBlockScheduleDate(blocks) {
+      if (isTesting) {
+        recordAdapterCall('setBlockScheduleDate', { blocks })
+      }
       return addMutation('set_block_schedule', { blocks })
     },
 

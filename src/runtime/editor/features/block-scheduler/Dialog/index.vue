@@ -19,6 +19,7 @@
     <div class="bk bk-block-scheduler-dialog">
       <ScheduleSection
         v-model="publishOn"
+        test-id="scheduler-publish"
         icon="bk_mdi_visibility"
         :help="
           $t(
@@ -34,6 +35,7 @@
 
       <ScheduleSection
         v-model="unpublishOn"
+        test-id="scheduler-unpublish"
         icon="bk_mdi_visibility_off"
         :label="$t('blockSchedulerDialogUnpublishOn', 'Unpublish on')"
         :help="
