@@ -17,6 +17,8 @@ You have SEVERAL skills available that you MUST use!!
   translate!
 - **typecheck** => Use when you need to check Typescript types!
 - **changelog** => Use when creating changelog entries for a new release
+- **e2e-testing** => Use when writing, debugging, or running the Playwright E2E
+  tests (`test/e2e/`)
 
 ## Project Overview
 

@@ -51,7 +51,11 @@
       }"
     >
       <div class="bk bk-toolbar-menu">
-        <button class="bk-toolbar-menu-button" @click.prevent.stop="openMenu">
+        <button
+          class="bk-toolbar-menu-button"
+          data-test="app-menu-toggle"
+          @click.prevent.stop="openMenu"
+        >
           <Icon name="bk_mdi_menu" />
         </button>
       </div>
