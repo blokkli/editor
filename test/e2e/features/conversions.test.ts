@@ -2,8 +2,12 @@ import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor, withApp } from './../support/session'
 import { setupEditorE2E } from './../support/setup'
-import { addBlock, blockState, selectBlock } from './../support/blocks'
-import { emitEvent } from './../support/events'
+import {
+  addBlock,
+  blockState,
+  selectBlock,
+  selectBlocks,
+} from './../support/blocks'
 import { clickItemDropdownAction } from './../support/itemActions'
 import { recordedAdapterCalls } from './../support/recorder'
 
@@ -25,11 +29,6 @@ import { recordedAdapterCalls } from './../support/recorder'
  * The feature loads the conversion list lazily on the first selection, so the
  * registered entries are polled until they settle.
  */
-
-/** Select several blocks at once (the `select` event takes a uuid array). */
-function selectBlocks(page: Page, uuids: string[]): Promise<void> {
-  return emitEvent(page, 'select', uuids)
-}
 
 /**
  * The ids of the conversion entries the feature currently registers in the

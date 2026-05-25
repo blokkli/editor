@@ -12,6 +12,19 @@ export function selectBlock(page: Page, uuid: string): Promise<void> {
   return emitEvent(page, 'select', uuid)
 }
 
+/** Select multiple blocks at once (the `select` event accepts a uuid array). */
+export function selectBlocks(page: Page, uuids: string[]): Promise<void> {
+  return emitEvent(page, 'select', uuids)
+}
+
+/** Whether a block is still present in the editor state. */
+export function blockExists(page: Page, uuid: string): Promise<boolean> {
+  return page.evaluate(
+    (u) => !!window.__BLOKKLI__!.app!.blocks.getBlock(u),
+    uuid,
+  )
+}
+
 /**
  * A block's bundle and rendered field props (e.g. `props.text`), read off the
  * live state. Returns nulls when the block isn't found. Useful for asserting

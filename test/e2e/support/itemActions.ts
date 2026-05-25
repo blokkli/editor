@@ -15,6 +15,15 @@ export function clickItemAction(page: Page, id: string): Promise<void> {
   return itemAction(page, id).click()
 }
 
+/**
+ * Whether a block-actions item action is disabled (its button carries the
+ * native `disabled` attribute). Poll-friendly: `expect.poll(() =>
+ * itemActionDisabled(page, 'duplicate')).toBe(true)`.
+ */
+export function itemActionDisabled(page: Page, id: string): Promise<boolean> {
+  return itemAction(page, id).isDisabled()
+}
+
 // The item-actions *dropdown* holds the "further actions" registered via
 // `defineItemDropdownAction` (export to clipboard, …) — a separate menu from the
 // direct `PluginItemAction`s above. The toggle lives on the actions title
