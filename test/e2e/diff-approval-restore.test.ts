@@ -1,18 +1,20 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
+import { openEditor, getHostContext } from './support/session'
 import {
-  openEditor,
-  getHostContext,
   editableState,
   editableText,
   waitForEditableText,
   openEditableField,
+} from './support/editable'
+import {
   runDiffApproval,
   applyFieldDiff,
   cancelDiff,
   applyDiff,
-  undo,
-} from './support/editor'
+} from './support/diff'
+import { undo } from './support/toolbar'
+import { openSidebar } from './support/sidebar'
 import { setupEditorE2E } from './support/setup'
 import type { EntityContext } from '../../src/runtime/types'
 
@@ -48,6 +50,11 @@ describe('DiffApproval DOM restore', async () => {
   }> {
     const page = await openEditor()
     const host = await getHostContext(page)
+
+    // The diff scenarios are driven through the playground `test-cases` feature,
+    // which only registers its `window.__BLOKKLI__.test` API once its sidebar
+    // pane is mounted — so open it before any `runDiffApproval`/`applyFieldDiff`.
+    await openSidebar(page, 'test-cases')
 
     // Precondition: both host editables are present on this page.
     const title = await editableState(page, 'title', host)

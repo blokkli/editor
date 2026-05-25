@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { openEditor } from './support/editor'
+import { openEditor } from './support/session'
 import { setupEditorE2E } from './support/setup'
 
 describe('Add Blocks', async () => {

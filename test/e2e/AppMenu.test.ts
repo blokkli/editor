@@ -1,12 +1,8 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import {
-  openEditor,
-  openAppMenu,
-  appMenuButton,
-  dragNewBlockIntoPage,
-  withApp,
-} from './support/editor'
+import { openEditor, withApp } from './support/session'
+import { openAppMenu, appMenuButton } from './support/menu'
+import { dragNewBlockIntoPage } from './support/blocks'
 import { setupEditorE2E } from './support/setup'
 
 /**

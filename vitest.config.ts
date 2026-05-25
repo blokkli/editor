@@ -30,7 +30,8 @@ export default defineConfig({
       {
         test: {
           name: 'e2e',
-          include: ['test/e2e/*.{test,spec}.ts'],
+          // Recurse: feature-specific specs live under `test/e2e/features/`.
+          include: ['test/e2e/**/*.{test,spec}.ts'],
           environment: 'node',
           // E2E runs against a real (production) build driven by a browser:
           // page load + hydration + editor mount take well over the 5s default,

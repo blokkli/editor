@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 flex gap-20">
+  <div class="flex-1 flex gap-20" data-test="schedule-date">
     <div class="w-[300px] shrink-0">
       <FormDatepicker
         v-model="selectedDate"
@@ -20,6 +20,7 @@
           id="schedule-time"
           v-model="selectedTime"
           type="time"
+          data-test="schedule-time"
           class="bk-form-input flex-1 w-full tabular-nums"
           :disabled="disabled"
           :class="{
@@ -44,7 +45,14 @@
         </button>
       </div>
 
-      <InfoBox v-if="error" :text="error" class="mt-20" color="red" small />
+      <InfoBox
+        v-if="error"
+        :text="error"
+        class="mt-20"
+        color="red"
+        small
+        data-test="schedule-error"
+      />
       <slot />
     </div>
   </div>

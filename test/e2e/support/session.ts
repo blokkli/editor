@@ -1,0 +1,112 @@
+import { createPage, url } from '@nuxt/test-utils/e2e'
+import type { JSHandle, Page } from 'playwright-core'
+import type { BlokkliApp } from '../../../src/runtime/editor/types/app'
+import type { EntityContext } from '../../../src/runtime/types'
+
+// `window.__BLOKKLI__` is typed by its real augmentations, both pulled into
+// scope by `test/e2e/tsconfig.json`: the global `Window` augmentation +
+// `BlokkliGlobalWindowObject` (with `app`) from `useGlobalBlokkliObject`, and
+// the playground's `test` namespace augmentation (test-cases `global.d.ts`).
+// No local re-declaration — that would conflict with the real type.
+
+/** Default playground editor route (entity `1`, edit mode on). */
+export const EDITOR_PATH = '/page/1?blokkliEditing=1'
+
+export interface OpenEditorOptions {
+  /**
+   * Pin the browser timezone (IANA id, e.g. `'UTC'`). Set at context creation
+   * (before navigation). Pair with `setFixedTime` so a fixed instant maps to a
+   * known local date/time regardless of the host machine.
+   */
+  timezoneId?: string
+}
+
+/**
+ * Open the editor and wait until it has mounted and exposed its API on
+ * `window.__BLOKKLI__.app`. Returns the Playwright page.
+ *
+ * Onboarding popups (the tour and the agent intro) are pre-dismissed via
+ * localStorage before navigation — otherwise they overlay the bottom-right of
+ * the editor and intercept clicks on the DiffApproval toolbar. The keys mirror
+ * the `Popup` component's `popup:<id>:closed` storage (prefixed with `blokkli:`).
+ */
+export async function openEditor(
+  path: string = EDITOR_PATH,
+  opts: OpenEditorOptions = {},
+): Promise<Page> {
+  const page = await createPage(
+    undefined,
+    opts.timezoneId ? { timezoneId: opts.timezoneId } : undefined,
+  )
+  await page.addInitScript(() => {
+    localStorage.setItem('blokkli:popup:agent:closed', 'true')
+    localStorage.setItem('blokkli:popup:tour:closed', 'true')
+  })
+  await page.goto(url(path), { waitUntil: 'hydration' })
+  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
+  // Wait for the full-screen init/loading overlay (`z-init-overlay`) to fully
+  // leave — until it detaches it covers the viewport and intercepts pointer
+  // input. `.click()` auto-retries past it, but raw `page.mouse` drags do not.
+  // The class is mangled (`_bk_z-init-overlay`), so match by substring.
+  await page.waitForFunction(
+    () => !document.querySelector('[class*="z-init-overlay"]'),
+  )
+  return page
+}
+
+/**
+ * Pin the browser clock to a fixed instant (anything `Date` accepts), making
+ * time-dependent UI (e.g. the publish scheduler's future-date validation)
+ * deterministic. Only `Date.now()`/`new Date()` are faked — timers and rAF keep
+ * running, so transitions and the canvas still work.
+ *
+ * Call this AFTER any pointer-driven interaction (the drag's move-throttling
+ * compares `Date.now()` deltas, so a frozen clock stalls it) and BEFORE the UI
+ * under test reads the time. Pair with `openEditor`'s `timezoneId` so the fixed
+ * instant maps to a known local date.
+ */
+export function setFixedTime(
+  page: Page,
+  now: Date | number | string,
+): Promise<void> {
+  return page.clock.setFixedTime(now)
+}
+
+/**
+ * Run `fn` in the page with the resolved blökkli editor app, waiting for it to
+ * be exposed first. The app is bridged in as a real argument (via a JSHandle),
+ * so `fn` receives a fully-typed `BlokkliApp` — no `window.__BLOKKLI__!.app!`
+ * boilerplate or casts at the call site.
+ *
+ * `fn` is serialized and runs in the browser, so it must be self-contained (no
+ * Node closures) — `app` is its only input. It may return a value or a Promise;
+ * the resolved value is returned. Use this for AWAITED one-shot reads/actions;
+ * for a fire-before-the-action listener (`nextEditableOpen`) the registration
+ * must be a single synchronous evaluate, so that one stays direct.
+ */
+export async function withApp<T>(
+  page: Page,
+  fn: (app: BlokkliApp) => T | Promise<T>,
+): Promise<T> {
+  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
+  const handle: JSHandle<BlokkliApp> = await page.evaluateHandle(
+    () => window.__BLOKKLI__!.app!,
+  )
+  try {
+    return await page.evaluate(fn, handle)
+  } finally {
+    await handle.dispose()
+  }
+}
+
+/** The host entity's context (type/bundle/uuid), read from the live editor. */
+export function getHostContext(page: Page): Promise<EntityContext> {
+  return withApp(page, (app) => {
+    const ctx = app.context.value
+    return {
+      type: ctx.entityType,
+      bundle: ctx.entityBundle,
+      uuid: ctx.entityUuid,
+    }
+  })
+}

@@ -3,6 +3,8 @@
     <button
       v-if="scheduledDate"
       class="bk-toolbar-title-scheduled group/tooltip"
+      data-test="toolbar-scheduled-date"
+      :data-test-scheduled-date="scheduledDate"
       @click.prevent="onShowPublishDialog"
     >
       <Icon name="bk_mdi_calendar_clock" />

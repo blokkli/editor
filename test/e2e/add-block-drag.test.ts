@@ -1,12 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import {
-  openEditor,
-  blockCount,
-  dragNewBlockIntoPage,
-  nextEditableOpen,
-  plaintextEditor,
-  withApp,
-} from './support/editor'
+import { openEditor, withApp } from './support/session'
+import { blockCount, dragNewBlockIntoPage } from './support/blocks'
+import { nextEditableOpen, plaintextEditor } from './support/editable'
 import { setupEditorE2E } from './support/setup'
 
 /**

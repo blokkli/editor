@@ -1,6 +1,8 @@
 <template>
   <label
     class="group relative grid grid-cols-[auto_1fr] gap-15 items-center leading-none cursor-pointer hyphens-auto"
+    :data-test="'publish-mode-' + id"
+    :data-test-checked="isChecked"
     :class="{ 'pointer-events-none': disabled }"
   >
     <input

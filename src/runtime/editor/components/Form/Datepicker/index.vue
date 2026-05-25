@@ -37,6 +37,7 @@
         :key="day.key"
         type="button"
         class="flex items-center justify-center py-3 disabled:cursor-not-allowed group"
+        :data-test="'datepicker-day-' + day.dateString"
         :disabled="disabled || day.isDisabled"
         @click="selectDate(day)"
       >

@@ -6,6 +6,7 @@
     <textarea
       :id
       :value
+      data-test="textarea"
       class="bk-form-input"
       :placeholder
       :required

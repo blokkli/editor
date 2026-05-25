@@ -16,6 +16,7 @@ import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem, exportState } from './mock/state'
+import { recordAdapterCall } from './mock/testRecorder'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
@@ -247,6 +248,8 @@ export default defineBlokkliEditAdapter((ctx) => {
       state: mutatedState,
     })
   }
+
+  const isTesting = route.query.testing === 'true'
 
   const getEntity = () =>
     entityStorageManager.getContent(ctx.value.entityUuid) as ContentPage
@@ -1944,6 +1947,10 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async publish(options) {
+      if (isTesting) {
+        recordAdapterCall('publish', options)
+      }
+
       const delay = getRandomNumberInRange(400, 1600)
       await sleep(delay)
 
@@ -1957,8 +1964,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         }
       }
 
-      // Only persist in dev mode
-      if (import.meta.dev) {
+      // Only persist in dev mode (and not under E2E, so tests don't clobber the
+      // playground's persisted snapshot).
+      if (import.meta.dev && !isTesting) {
         try {
           const data = await exportState()
 
@@ -1987,6 +1995,10 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async scheduleEditState(options) {
+      if (isTesting) {
+        recordAdapterCall('scheduleEditState', options)
+      }
+
       const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
       const scheduleData = {
         date: options.date,

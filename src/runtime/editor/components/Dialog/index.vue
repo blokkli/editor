@@ -2,6 +2,7 @@
   <div
     ref="rootEl"
     class="bk bk-dialog bk-control"
+    :data-test="'dialog-' + id"
     :class="zIndex === 'high' ? 'z-dialog-high' : 'z-dialog'"
     @wheel.passive.stop
     @keydown.stop="handleKeyDown"
@@ -14,7 +15,7 @@
       <div class="bk bk-overlay-header">
         <Icon v-if="icon" :name="icon" />
         <h3>{{ title }}</h3>
-        <button @click="$emit('cancel')">
+        <button data-test="dialog-cancel" @click="$emit('cancel')">
           <Icon name="bk_mdi_close" />
         </button>
       </div>
@@ -51,6 +52,7 @@
         <slot name="footer">
           <button
             class="bk-button"
+            data-test="dialog-submit"
             :disabled="!canSubmit"
             :class="[
               { 'bk-is-loading': isLoading },
