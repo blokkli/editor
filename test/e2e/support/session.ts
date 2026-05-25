@@ -2,6 +2,10 @@ import { createPage, url } from '@nuxt/test-utils/e2e'
 import type { JSHandle, Page } from 'playwright-core'
 import type { BlokkliApp } from '../../../src/runtime/editor/types/app'
 import type { EntityContext } from '../../../src/runtime/types'
+import {
+  PERMISSION_OVERRIDES_KEY,
+  type PermissionOverrides,
+} from '../../../playground/app/mock/permissionOverrides'
 
 // `window.__BLOKKLI__` is typed by its real augmentations, both pulled into
 // scope by `test/e2e/tsconfig.json`: the global `Window` augmentation +
@@ -26,6 +30,15 @@ export interface OpenEditorOptions {
    * known local date/time regardless of the host machine.
    */
   timezoneId?: string
+
+  /**
+   * Override the mock adapter's permissions for this session — deny/grant block
+   * permissions per bundle, or replace the user permissions. Seeded into
+   * localStorage before navigation, because the permissions provider reads them
+   * once at editor init. Requires the `testing=true` query (the default
+   * `EDITOR_PATH` has it). See `playground/app/mock/permissionOverrides.ts`.
+   */
+  permissions?: PermissionOverrides
 }
 
 /**
@@ -49,6 +62,12 @@ export async function openEditor(
     localStorage.setItem('blokkli:popup:agent:closed', 'true')
     localStorage.setItem('blokkli:popup:tour:closed', 'true')
   })
+  if (opts.permissions) {
+    await page.addInitScript(
+      ({ key, value }) => localStorage.setItem(key, JSON.stringify(value)),
+      { key: PERMISSION_OVERRIDES_KEY, value: opts.permissions },
+    )
+  }
   await page.goto(url(path), { waitUntil: 'hydration' })
   await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
   // Wait for the full-screen init/loading overlay (`z-init-overlay`) to fully

@@ -17,6 +17,7 @@ import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem, exportState } from './mock/state'
 import { recordAdapterCall } from './mock/testRecorder'
+import { readPermissionOverrides } from './mock/permissionOverrides'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
@@ -65,6 +66,7 @@ import type {
 } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
+import type { BlockPermission } from '#blokkli/editor/types/definitions'
 import { FieldUrl } from './mock/state/Field/Url'
 import type {
   AgentConversationData,
@@ -488,6 +490,13 @@ export default defineBlokkliEditAdapter((ctx) => {
         'list_users',
         'transfer_blocks',
       ]
+      // Let E2E specs replace the user permissions (see permissionOverrides.ts).
+      if (isTesting) {
+        const override = readPermissionOverrides().userPermissions
+        if (override) {
+          return Promise.resolve(override as UserPermissions[])
+        }
+      }
       return Promise.resolve(permissions)
     },
     getCurrentUser() {
@@ -518,6 +527,23 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve([])
     },
     getAllBundles() {
+      // Let E2E specs override per-bundle block permissions (see
+      // permissionOverrides.ts) without hardcoding test cases in the adapter.
+      if (isTesting) {
+        const overrides = readPermissionOverrides().blockPermissions
+        if (overrides) {
+          return Promise.resolve(
+            allTypes.map((type) =>
+              overrides[type.id]
+                ? {
+                    ...type,
+                    permissions: overrides[type.id] as BlockPermission[],
+                  }
+                : type,
+            ),
+          )
+        }
+      }
       return Promise.resolve(allTypes)
     },
     getConversions() {
