@@ -2,6 +2,7 @@
   <SearchOverlay
     v-slot="{ focusedIndex, onMouseEnter }"
     v-model:text="text"
+    data-test="command-palette"
     :title="$t('commandPaletteTitle', 'Command Palette')"
     :total-items="visibleCommands.length"
     :placeholder="

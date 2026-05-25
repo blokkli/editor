@@ -2,6 +2,9 @@
   <button
     class="bk-command flex pl-[12px] pr-10 w-full text-left gap-10 items-center border border-transparent"
     :class="isFocused ? 'bg-mono-800 text-white' : 'text-mono-300'"
+    data-test="command-palette-item"
+    :data-test-command-id="item.id"
+    :data-test-focused="isFocused"
     @mouseenter="$emit('focus', index)"
     @click.prevent="$emit('select', item.id)"
   >
