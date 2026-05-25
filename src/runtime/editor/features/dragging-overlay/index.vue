@@ -198,13 +198,94 @@ defineDropHandler('existing', {
 })
 
 // ---------------------------------------------------------------------------
+// Post-add: select the newly added block and, per its definition's
+// addBehaviour, open its editable field (or complex-option editor).
+//
+// Called directly after the drop handler's `execute` resolves — at that point
+// the mutation has completed and the drop result (e.g. `focusEditable`) is
+// known. This must NOT hang off `state:reloaded`: the mutation emits that event
+// from inside `execute` (via `setContext`, on a `nextTick`), so it fires before
+// `execute` returns its result — and `state:reloaded` also fires on unrelated
+// reloads (undo/redo, every mutation), so it is the wrong signal for add-only
+// behaviour.
+// ---------------------------------------------------------------------------
+async function selectAndFocusAddedBlock(
+  uuidsBefore: string[],
+  dropResult: DropExecuteResult | undefined,
+) {
+  const newUuid = state
+    .getAllUuids()
+    .find((uuid) => !uuidsBefore.includes(uuid))
+
+  if (!newUuid) {
+    return
+  }
+
+  eventBus.emit('select', newUuid)
+
+  // Wait one render cycle for the freshly added block's component (and its
+  // editable directives) to mount before looking it up.
+  await renderCycle()
+  const newBlock = blocks.getBlock(newUuid)
+  if (!newBlock) {
+    return
+  }
+
+  eventBus.emit('select', [...selection.uuids.value, newBlock.uuid])
+
+  const definition = definitions.getBlockDefinition(
+    newBlock.bundle,
+    newBlock.fieldListType,
+    newBlock.parentBlockBundle,
+  )
+  const addBehaviour = definition?.editor?.addBehaviour
+
+  if (addBehaviour?.startsWith('complex-option:')) {
+    const optionKey = addBehaviour.split(':')[1]
+    if (!optionKey) {
+      return
+    }
+    const option = definition?.options?.[optionKey]
+    if (option?.type !== 'json' || !option.dataType) {
+      return
+    }
+    eventBus.emit('option:edit-complex', {
+      uuid: newUuid,
+      key: optionKey,
+      dataType: option.dataType,
+    })
+    return
+  }
+
+  if (!dropResult?.focusEditable) {
+    return
+  }
+
+  if (addBehaviour?.startsWith('editable:')) {
+    const editableField = addBehaviour.split(':')[1]
+    if (!editableField) {
+      return
+    }
+
+    const editableFieldElement = directive
+      .getEditablesForBlock(newUuid)
+      .find((v) => v.fieldName === editableField)
+    if (!editableFieldElement) {
+      return
+    }
+
+    eventBus.emit('editable:open', {
+      fieldName: editableField,
+      uuid: newUuid,
+    })
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Thin dispatcher: onDrop.
 // ---------------------------------------------------------------------------
-let allUuidsBefore: string[] = []
-let lastDropResult: DropExecuteResult | null = null
-
 const onDrop = async (e: DropTargetEvent) => {
-  allUuidsBefore = state.getAllUuids()
+  const uuidsBefore = state.getAllUuids()
 
   await nextTick(async () => {
     const itemType = e.items[0]?.itemType
@@ -251,96 +332,15 @@ const onDrop = async (e: DropTargetEvent) => {
       result = (await handler.execute({ ...baseCtx, bundle: '' })) || undefined
     }
 
-    lastDropResult = result ?? null
-
     eventBus.emit('dragging:end')
     eventBus.emit('item:dropped')
+
+    await selectAndFocusAddedBlock(uuidsBefore, result)
   })
 
   mouseX.value = 0
   mouseY.value = 0
 }
-
-// ---------------------------------------------------------------------------
-// Post-drop: detect new blocks, select them, focus editable field.
-// ---------------------------------------------------------------------------
-onBlokkliEvent('state:reloaded', async function () {
-  if (!allUuidsBefore.length) {
-    return
-  }
-  const allUuidsAfter = state.getAllUuids()
-  const newUuid = allUuidsAfter.find((uuid) => !allUuidsBefore.includes(uuid))
-  const dropResult = lastDropResult
-  allUuidsBefore = []
-  lastDropResult = null
-
-  if (!newUuid) {
-    return
-  }
-  eventBus.emit('select', newUuid)
-  // @todo: DOM is not ready yet, so the block is never found.
-  // figure out a reliable way to open the editable field after a block
-  // was added.
-  await renderCycle()
-  const newBlock = blocks.getBlock(newUuid)
-
-  if (!newBlock) {
-    return
-  }
-
-  const allSelected = [...selection.uuids.value, newBlock.uuid]
-
-  eventBus.emit('select', allSelected)
-
-  const definition = definitions.getBlockDefinition(
-    newBlock.bundle,
-    newBlock.fieldListType,
-    newBlock.parentBlockBundle,
-  )
-  const addBehaviour = definition?.editor?.addBehaviour
-
-  if (addBehaviour?.startsWith('complex-option:')) {
-    const optionKey = addBehaviour.split(':')[1]
-    if (!optionKey) {
-      return
-    }
-    const option = definition?.options?.[optionKey]
-    if (option?.type !== 'json' || !option.dataType) {
-      return
-    }
-    eventBus.emit('option:edit-complex', {
-      uuid: newUuid,
-      key: optionKey,
-      dataType: option.dataType,
-    })
-    return
-  }
-
-  if (!dropResult?.focusEditable) {
-    return
-  }
-
-  if (addBehaviour?.startsWith('editable:')) {
-    const editableField = addBehaviour.split(':')[1]
-
-    if (!editableField) {
-      return
-    }
-
-    const editableFieldElement = directive
-      .getEditablesForBlock(newUuid)
-      .find((v) => v.fieldName === editableField)
-
-    if (!editableFieldElement) {
-      return
-    }
-
-    eventBus.emit('editable:open', {
-      fieldName: editableField,
-      uuid: newUuid,
-    })
-  }
-})
 
 // ---------------------------------------------------------------------------
 // Drag interaction lifecycle.
@@ -426,7 +426,7 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 onBlokkliEvent('block:append', async (e) => {
-  allUuidsBefore = state.getAllUuids()
+  const uuidsBefore = state.getAllUuids()
   // Use the new handler to add a block via the 'new' drop handler.
   const handler = dragdrop.getDropHandler('new')
   if (handler) {
@@ -443,7 +443,7 @@ onBlokkliEvent('block:append', async (e) => {
       afterUuid: e.afterUuid,
       bundle: e.bundle,
     })
-    lastDropResult = result ?? null
+    await selectAndFocusAddedBlock(uuidsBefore, result ?? undefined)
   }
 })
 
