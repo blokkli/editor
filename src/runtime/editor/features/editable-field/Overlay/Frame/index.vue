@@ -10,6 +10,8 @@
       :style
       :src="url"
       class="block w-full"
+      data-test="editable-frame"
+      :data-test-src="url"
       @load="onIframeLoad"
     />
   </div>

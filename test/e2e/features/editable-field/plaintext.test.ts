@@ -1,0 +1,185 @@
+import { describe, expect, test } from 'vitest'
+import { openEditor } from './../../support/session'
+import { addBlock } from './../../support/blocks'
+import {
+  openEditableField,
+  plaintextEditor,
+  editableText,
+  waitForEditableText,
+  editableOverlay,
+  discardButton,
+  discardEditable,
+  charCount,
+  blockHost,
+  saveByClickAway,
+  nextEditableOpen,
+} from './../../support/editable'
+import { recordedAdapterCalls, waitForAdapterCall } from './../../support/recorder'
+import { setupEditorE2E } from './../../support/setup'
+
+/** The recorded `updateFieldValue` payload (block-field saves). */
+type FieldValueCall = { uuid?: string; fieldName: string; fieldValue: string }
+
+/** Recorded `updateFieldValue` calls so far (the recorder is per-test isolated). */
+async function fieldValueCalls(page: Parameters<typeof recordedAdapterCalls>[0]) {
+  const calls = await recordedAdapterCalls<FieldValueCall>(page)
+  return calls.filter((c) => c.method === 'updateFieldValue')
+}
+
+/**
+ * The plaintext editor (`type: 'plain'`) — the textarea variant of the inline
+ * editable overlay. Covers the value path (save → DOM + adapter call), discard,
+ * the unchanged/required/validation branches, the character counter and the
+ * implicit save points (click-away, switching editables).
+ *
+ * Already covered elsewhere (not repeated here): auto-open after add
+ * (`add-block-drag.test.ts`) and inline editing of the host `lead` after a diff
+ * cycle (`diff-approval-restore.test.ts`).
+ */
+describe('Editable field — plaintext', async () => {
+  await setupEditorE2E()
+
+  test('saving persists the value and writes it into the block DOM', async () => {
+    const page = await openEditor()
+    const uuid = (await addBlock(page, { bundle: 'card' }))!
+    const host = await blockHost(page, uuid)
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+
+    // The overlay reports the field type, and focuses the textarea on open.
+    expect(await editableOverlay(page).getAttribute('data-test-type')).toBe('plain')
+    expect(await textarea.evaluate((el) => el === document.activeElement)).toBe(true)
+
+    await textarea.fill('Edited card title')
+    await textarea.press('Enter')
+
+    await waitForEditableText(page, 'title', host, 'Edited card title')
+    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    expect(call.uuid).toBe(uuid)
+    expect(call.fieldName).toBe('title')
+    expect(call.fieldValue).toBe('Edited card title')
+
+    await page.close()
+  })
+
+  test('discarding restores the original value and persists nothing', async () => {
+    const page = await openEditor()
+    const uuid = (await addBlock(page, { bundle: 'card' }))!
+    const host = await blockHost(page, uuid)
+    const original = await editableText(page, 'title', host)
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+
+    // Discard is disabled until the value actually changes.
+    expect(await discardButton(page).isDisabled()).toBe(true)
+    await textarea.fill('Throwaway change')
+    await expect.poll(() => discardButton(page).isDisabled()).toBe(false)
+
+    await discardEditable(page)
+
+    await waitForEditableText(page, 'title', host, original)
+    expect(await fieldValueCalls(page)).toHaveLength(0)
+
+    await page.close()
+  })
+
+  test('closing without changes persists nothing', async () => {
+    const page = await openEditor()
+    const uuid = (await addBlock(page, { bundle: 'card' }))!
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+
+    // Submit without editing — `hasChanged` is false, so nothing is persisted.
+    await textarea.press('Enter')
+    await textarea.waitFor({ state: 'hidden' })
+
+    expect(await fieldValueCalls(page)).toHaveLength(0)
+
+    await page.close()
+  })
+
+  test('a required field left empty restores instead of saving', async () => {
+    const page = await openEditor()
+    // The `title` block's `title` field is required (and capped at 50 chars).
+    const uuid = (await addBlock(page, { bundle: 'title' }))!
+    const host = await blockHost(page, uuid)
+    const original = await editableText(page, 'title', host)
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+    expect(await textarea.getAttribute('maxlength')).toBe('50')
+
+    await textarea.fill('')
+    // Enter is a no-op while a required field is empty, so close via click-away:
+    // the overlay detects the validation error and restores the original value.
+    await saveByClickAway(page)
+
+    await waitForEditableText(page, 'title', host, original)
+    expect(await fieldValueCalls(page)).toHaveLength(0)
+
+    await page.close()
+  })
+
+  test('the character counter reflects the typed length', async () => {
+    const page = await openEditor()
+    const uuid = (await addBlock(page, { bundle: 'title' }))!
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+
+    await textarea.fill('Twelve chars') // 12 characters
+    await expect.poll(() => charCount(page)).toBe(12)
+
+    await page.close()
+  })
+
+  test('clicking away saves the field', async () => {
+    const page = await openEditor()
+    const uuid = (await addBlock(page, { bundle: 'card' }))!
+    const host = await blockHost(page, uuid)
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+    await textarea.fill('Saved on click-away')
+
+    await saveByClickAway(page)
+
+    await waitForEditableText(page, 'title', host, 'Saved on click-away')
+    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    expect(call.fieldValue).toBe('Saved on click-away')
+
+    await page.close()
+  })
+
+  test('opening another editable saves the current one', async () => {
+    const page = await openEditor()
+    const uuid = (await addBlock(page, { bundle: 'card' }))!
+    const host = await blockHost(page, uuid)
+
+    await openEditableField(page, 'title', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+    await textarea.fill('Auto-saved on switch')
+
+    // Switch to the card's `text` field; the title overlay unmounts and saves.
+    const opened = nextEditableOpen(page)
+    await openEditableField(page, 'text', uuid)
+    expect(await opened).toBe('text')
+
+    await waitForEditableText(page, 'title', host, 'Auto-saved on switch')
+    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    expect(call.fieldName).toBe('title')
+    expect(call.fieldValue).toBe('Auto-saved on switch')
+
+    await page.close()
+  })
+})

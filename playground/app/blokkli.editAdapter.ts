@@ -1210,6 +1210,16 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     updateFieldValue: (e) => {
+      if (isTesting) {
+        // Record the editor-facing method (not the mutation it maps to): in a
+        // German locale this routes to `edit_translation`, so keying on the
+        // mutation id would make E2E assertions mode-dependent.
+        recordAdapterCall('updateFieldValue', {
+          uuid: e.uuid,
+          fieldName: e.fieldName,
+          fieldValue: e.fieldValue,
+        })
+      }
       const lang = ctx.value.language
       if (lang && lang !== 'en') {
         return addMutation('edit_translation', {
@@ -1225,11 +1235,18 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
     },
 
-    updateEntityFieldValue: (e) =>
-      addMutation('update_entity_field_value', {
+    updateEntityFieldValue: (e) => {
+      if (isTesting) {
+        recordAdapterCall('updateEntityFieldValue', {
+          fieldName: e.fieldName,
+          fieldValue: e.fieldValue,
+        })
+      }
+      return addMutation('update_entity_field_value', {
         fieldName: e.fieldName,
         fieldValue: e.fieldValue,
-      }),
+      })
+    },
 
     importTranslationsBatched: ({ items, markUpToDate }) =>
       addMutation('import_translations_batched', { items, markUpToDate }),

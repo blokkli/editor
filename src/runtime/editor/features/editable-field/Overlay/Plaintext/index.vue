@@ -3,6 +3,7 @@
     id="bk-editable-field-textarea"
     v-model="modelValue"
     class="bk bk-editable-field-textarea"
+    data-test="editable-plaintext"
     enterkeyhint="done"
     submit-on-enter
     rows="2"

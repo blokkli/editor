@@ -29,7 +29,13 @@
         }}</span>
       </button>
     </template>
-    <form ref="form" class="bk-editable-field-input" @submit.prevent="save">
+    <form
+      ref="form"
+      class="bk-editable-field-input"
+      data-test="editable-overlay"
+      :data-test-type="config.type"
+      @submit.prevent="save"
+    >
       <div ref="input">
         <InputContenteditable
           v-if="config.type === 'markup'"
@@ -65,6 +71,7 @@
         <button
           :disabled="!hasChanged"
           class="bk-artboard-tooltip-info-button bk-scheme-red"
+          data-test="editable-discard"
           @click.prevent="discard"
         >
           {{ $t('editableFieldDiscard', 'Discard') }}
@@ -103,6 +110,8 @@
         <div
           v-if="!isMarkup"
           class="bk-editable-field-info-count relative group/tooltip"
+          data-test="editable-char-count"
+          :data-test-count="count"
         >
           <span>{{ count }}</span>
           <span v-if="maxlength >= 1">&nbsp;/&nbsp;{{ maxlength }}</span>

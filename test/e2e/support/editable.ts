@@ -1,4 +1,4 @@
-import type { Locator, Page } from 'playwright-core'
+import type { Frame, Locator, Page } from 'playwright-core'
 import type { EntityContext } from '../../../src/runtime/types'
 import { emitEvent, nextEvent } from './events'
 
@@ -108,4 +108,113 @@ export function nextEditableOpen(page: Page): Promise<string> {
  */
 export function plaintextEditor(page: Page): Locator {
   return page.locator('#bk-editable-field-textarea')
+}
+
+/** The open editable overlay's form (carries `data-test-type` = the field type). */
+export function editableOverlay(page: Page): Locator {
+  return page.locator('[data-test="editable-overlay"]')
+}
+
+/** The overlay's Discard button (disabled until the value changes). */
+export function discardButton(page: Page): Locator {
+  return page.locator('[data-test="editable-discard"]')
+}
+
+/** Discard the current edit (restores the original value, no mutation). */
+export async function discardEditable(page: Page): Promise<void> {
+  await discardButton(page).click()
+}
+
+/** The plaintext overlay's character count (read from `data-test-count`). */
+export async function charCount(page: Page): Promise<number> {
+  const value = await page
+    .locator('[data-test="editable-char-count"]')
+    .getAttribute('data-test-count')
+  return Number(value)
+}
+
+/**
+ * The readability indicator's current state. Waits for the indicator to be
+ * visible first (analysis is debounced ~500ms, so poll around this). `band` is
+ * one of `easy|ok|hard` (or `null` when too short); `tooShort` is the
+ * below-confidence state.
+ */
+export async function readabilityState(
+  page: Page,
+): Promise<{ band: string | null; tooShort: boolean }> {
+  const indicator = page.locator('[data-test="editable-readability"]')
+  await indicator.waitFor({ state: 'visible' })
+  const band = await indicator.getAttribute('data-test-band')
+  const tooShort = await indicator.getAttribute('data-test-too-short')
+  return { band: band || null, tooShort: tooShort === 'true' }
+}
+
+/**
+ * The host `EntityContext` (`type`/`bundle`/`uuid`) for a block — the shape
+ * `editableState`/`editableText`/`waitForEditableText` expect for a block field.
+ * Resolved from the block's own registered editable so we never hardcode the
+ * item entity type.
+ */
+export function blockHost(page: Page, uuid: string): Promise<EntityContext> {
+  return page.evaluate((u) => {
+    const editable =
+      window.__BLOKKLI__!.app!.directive.getEditablesForBlock(u)[0]
+    if (!editable) {
+      throw new Error(`No editable registered for block ${u}`)
+    }
+    return { type: editable.type, bundle: editable.bundle, uuid: editable.uuid }
+  }, uuid)
+}
+
+/** The open frame (CKEditor iframe) editor's `data-test-src` (the computed url). */
+export function frameSrc(page: Page): Promise<string | null> {
+  return page.locator('[data-test="editable-frame"]').getAttribute('data-test-src')
+}
+
+/**
+ * The open frame editable's content frame, once its CKEditor has mounted.
+ *
+ * The frame is a same-origin page (`/blokkli-form/.../fieldValueEditor`) hosting
+ * a CKEditor. Wait for `.ck-editor__editable` (the editor's own, non-mangled
+ * markup) so a subsequent `setFrameValue` actually applies.
+ */
+export async function editableFrame(page: Page): Promise<Frame> {
+  const locator = page.locator('[data-test="editable-frame"]')
+  await locator.waitFor({ state: 'attached' })
+  const handle = await locator.elementHandle()
+  const frame = await handle?.contentFrame()
+  if (!frame) {
+    throw new Error('Editable frame has no content frame')
+  }
+  await frame.waitForFunction(
+    () => !!document.querySelector('.ck-editor__editable'),
+  )
+  return frame
+}
+
+/**
+ * Set the frame editor's value deterministically.
+ *
+ * Posts the same `blokkli__editable_field_set_value` message the editor uses to
+ * push translations/undo back into the iframe → CKEditor `setData` → the editor
+ * re-emits the value to the parent (live preview + persist on save). This is the
+ * robust equivalent of typing into CKEditor, whose keystroke handling inside an
+ * iframe is unreliable under Playwright. Call `editableFrame()` first so the
+ * editor is mounted.
+ */
+export function setFrameValue(page: Page, html: string): Promise<void> {
+  return page.evaluate((text) => {
+    const iframe = document.querySelector('[data-test="editable-frame"]')
+    if (iframe instanceof HTMLIFrameElement) {
+      iframe.contentWindow?.postMessage(
+        { name: 'blokkli__editable_field_set_value', data: { text } },
+        '*',
+      )
+    }
+  }, html)
+}
+
+/** Save the open editable by emitting the click-away event (the overlay saves on it). */
+export function saveByClickAway(page: Page): Promise<void> {
+  return emitEvent(page, 'window:clickAway')
 }

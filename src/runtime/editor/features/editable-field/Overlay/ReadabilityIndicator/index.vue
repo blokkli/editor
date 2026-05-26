@@ -3,6 +3,9 @@
     v-if="readabilityScore != null && readabilityBand"
     class="bk-editable-field-readability group/tooltip"
     :class="{ 'bk-is-stale': stale }"
+    data-test="editable-readability"
+    :data-test-band="readabilityBand"
+    :data-test-too-short="false"
   >
     <span
       class="bk-editable-field-readability-dot"
@@ -76,7 +79,12 @@
       </template>
     </Tooltip>
   </div>
-  <div v-else-if="tooShort" class="bk-editable-field-readability">
+  <div
+    v-else-if="tooShort"
+    class="bk-editable-field-readability"
+    data-test="editable-readability"
+    :data-test-too-short="true"
+  >
     <span class="bk-editable-field-readability-dot" />
     <span>{{ $t('readabilityTooShort', 'Too short') }}</span>
     <Tooltip :label="minWordsText" />
