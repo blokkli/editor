@@ -782,7 +782,13 @@ export default defineBlokkliEditAdapter((ctx) => {
         entity: {
           id: ctx.value.entityUuid,
           label: 'Demo Page',
-          status: false,
+          // The mock entity is unpublished by default. E2E specs flip this via
+          // localStorage to exercise the entity-title status indicator's
+          // published branches (gated by `isTesting`, like the permission and
+          // schedule overrides).
+          status:
+            isTesting &&
+            localStorage.getItem('blokkli:test:entityStatus') === 'true',
           bundleLabel: 'Page',
         },
         translationState: {

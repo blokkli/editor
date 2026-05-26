@@ -39,6 +39,15 @@ export interface OpenEditorOptions {
    * `EDITOR_PATH` has it). See `playground/app/mock/permissionOverrides.ts`.
    */
   permissions?: PermissionOverrides
+
+  /**
+   * Seed arbitrary `localStorage` key/value pairs before navigation, for mock
+   * adapter state the editor reads once at init (e.g. the entity published flag
+   * `blokkli:test:entityStatus`, or a scheduled-publish key
+   * `blokkli_schedule_<type>_<uuid>`). Test-only seams are gated by the
+   * `testing=true` query.
+   */
+  localStorage?: Record<string, string>
 }
 
 /**
@@ -67,6 +76,13 @@ export async function openEditor(
       ({ key, value }) => localStorage.setItem(key, JSON.stringify(value)),
       { key: PERMISSION_OVERRIDES_KEY, value: opts.permissions },
     )
+  }
+  if (opts.localStorage) {
+    await page.addInitScript((entries) => {
+      for (const [key, value] of Object.entries(entries)) {
+        localStorage.setItem(key, value)
+      }
+    }, opts.localStorage)
   }
   await page.goto(url(path), { waitUntil: 'hydration' })
   await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))

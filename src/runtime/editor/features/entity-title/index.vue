@@ -20,6 +20,8 @@
     <button
       ref="buttonEl"
       class="bk-toolbar-button group/tooltip w-full justify-start relative"
+      data-test="entity-title"
+      :data-test-entity-status="statusIndicatorStatus"
       :disabled="!state.canEdit.value"
       @click="onEditEntity"
     >
