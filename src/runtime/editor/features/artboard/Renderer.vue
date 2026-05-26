@@ -427,6 +427,17 @@ onBlokkliEvent('scrollIntoView', (e) => {
       behavior: e.immediate ? 'instant' : 'auto',
       area: 'blocking',
     })
+  } else if ('rect' in e) {
+    // Always center the given artboard-space rect on both axes within the full
+    // viewport, regardless of how much of it is already visible.
+    artboard.scrollIntoView(e.rect, {
+      scale: 'none',
+      axis: 'both',
+      block: 'center',
+      inline: 'center',
+      area: 'viewport',
+      behavior: e.immediate ? 'instant' : 'auto',
+    })
   } else {
     if (artboardElement.contains(e.element)) {
       const elRect = e.element.getBoundingClientRect()

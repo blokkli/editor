@@ -1,6 +1,11 @@
 import type { Page } from 'playwright-core'
 import { withApp } from './session'
 import { emitEvent } from './events'
+// Pull the dragging-overlay's event-bus augmentation into the e2e TS program so
+// `dragging:moveToDropTarget` is known here — feature files under `src/runtime`
+// aren't otherwise part of the playground-rooted e2e scope. Type-only side
+// effect (the module has no runtime code).
+import '../../../src/runtime/editor/features/dragging-overlay/types'
 
 /** The number of blocks currently in the document (all fields). */
 export function blockCount(page: Page): Promise<number> {
@@ -216,33 +221,42 @@ function nextFrames(page: Page): Promise<void> {
 }
 
 /**
- * Drag a new block of `bundle` from the add-list into a field via real pointer
- * input, dropping it just before the field's first block. Targets the host
- * entity's `content` field by default.
+ * Where to drop a dragged block. Defaults to the start of the host entity's
+ * `content` field; pass `fieldName`/`entityUuid` to target another field, or
+ * `block`/`position` to insert relative to an existing block.
+ */
+export type DropTarget = {
+  fieldName?: string
+  entityUuid?: string
+  block?: string
+  position?: 'before' | 'after'
+}
+
+/**
+ * Drag a new block of `bundle` from the add-list onto a drop slot via real
+ * pointer input. Defaults to the start of the host entity's `content` field.
  *
- * No debug instrumentation is needed — the drop point is derived entirely from
- * already-exposed editor API. The drag itself is intricate, so the sequence is:
+ * The drop slots are WebGL-rendered and live in artboard coordinates, so
+ * chasing their on-screen position is fragile — a slot anchored on a block
+ * taller than the viewport (or scrolled off-screen) can land above y=0 and the
+ * drop silently misses. Instead we let the editor place the target for us:
  *  1. Press the add-list rail item. The list is a ~50px rail but the item's
  *     rect reports its full expanded width, so clamp x to the rail width or the
  *     press lands on the canvas behind it.
- *  2. Arm the drag (`pointermove` > 7px while the button is held).
- *  3. Resolve the target field's first block and pan it into view via the
- *     `scrollIntoView` event — fields like `content` are taller than the
- *     viewport and start off-screen, so no insertion slot is reachable until a
- *     real block is visible. Then read that block's on-screen rect
- *     (`dom.getBlockRect` → `ui.getViewportRelativeRect`, which is zoom-correct).
- *  4. Carry the cursor toward the block's top edge, finishing with 2px steps so
- *     the final WebGL render frame latches the insert-before slot — `active`
- *     only updates while the cursor moves and `mouse:up` reads it synchronously,
- *     so a jump-then-release races the rAF and drops nothing. Then release.
+ *  2. Arm the drag (`pointermove` > 7px while held) so the dragging overlay
+ *     mounts and its `dragging:moveToDropTarget` listener registers.
+ *  3. Emit `dragging:moveToDropTarget` — the overlay resolves the exact slot
+ *     rect and centers it in the viewport.
+ *  4. Carry the cursor to the viewport centre (where the slot now sits) and
+ *     release. `active` is recomputed each render frame while the cursor moves
+ *     and `mouse:up` reads it synchronously, so finish the movement *on* the
+ *     centre (the final frame latches the slot) before releasing.
  */
 export async function dragNewBlockIntoPage(
   page: Page,
   bundle: string,
-  opts: { fieldName?: string; entityUuid?: string } = {},
+  opts: DropTarget = {},
 ): Promise<void> {
-  const fieldName = opts.fieldName ?? 'content'
-
   const start = await page.evaluate((b) => {
     const al = document.querySelector('#bk-add-list')!.getBoundingClientRect()
     const item = document
@@ -254,54 +268,39 @@ export async function dragNewBlockIntoPage(
     }
   }, bundle)
 
-  // Pan the target field's first block into view (instant), then read its rect.
-  const targetUuid = await page.evaluate(
-    ({ fieldName, entityUuid }) => {
-      const app = window.__BLOKKLI__!.app!
-      const host = entityUuid ?? app.context.value.entityUuid
-      const block = app.state
-        .getAllUuids()
-        .map((u) => app.blocks.getBlock(u))
-        .find(
-          (b) => b && b.host.fieldName === fieldName && b.host.uuid === host,
-        )
-      if (!block) return null
-      app.eventBus.emit('scrollIntoView', { uuid: block.uuid, immediate: true })
-      return block.uuid
-    },
-    { fieldName, entityUuid: opts.entityUuid },
-  )
-  if (!targetUuid) {
-    throw new Error(
-      `No block found in field "${fieldName}" to anchor the drop against`,
-    )
-  }
-
-  await nextFrames(page)
-
-  const rect = await page.evaluate((uuid) => {
-    const app = window.__BLOKKLI__!.app!
-    app.dom.refreshBlockRect(uuid)
-    const r = app.dom.getBlockRect(uuid)
-    if (!r) return null
-    const v = app.ui.getViewportRelativeRect(r)
-    return { x: v.x, y: v.y, width: v.width, height: v.height }
-  }, targetUuid)
-  if (!rect) {
-    throw new Error(`Could not read on-screen rect for block ${targetUuid}`)
-  }
-
-  const dropX = Math.round(rect.x + rect.width / 2)
-  const dropY = Math.round(rect.y) + 6 // top edge → insert-before slot
-  const carryFrom = Math.max(dropY - 40, 0)
-
+  // Press the item and arm the drag (move > 7px while held).
   await page.mouse.move(start.x, start.y)
   await page.mouse.down()
-  await page.mouse.move(start.x, start.y + 12, { steps: 4 }) // arm (> 7px)
-  await page.mouse.move(dropX, carryFrom, { steps: 15 }) // carry toward the slot
-  // Finish with small steps so the final render frame latches `active`.
-  for (let y = carryFrom; y <= dropY; y += 2) {
-    await page.mouse.move(dropX, y)
-  }
+  await page.mouse.move(start.x, start.y + 12, { steps: 4 })
+
+  // Ask the editor to centre the target drop slot in the viewport, then resolve
+  // where the viewport centre is (the slot is now there).
+  const center = await page.evaluate(
+    ({ fieldName, entityUuid, block, position }) => {
+      const app = window.__BLOKKLI__!.app!
+      app.eventBus.emit(
+        'dragging:moveToDropTarget',
+        block
+          ? { block, position: position ?? 'before' }
+          : {
+              host: entityUuid ?? app.context.value.entityUuid,
+              fieldName: fieldName ?? 'content',
+            },
+      )
+      const v = app.ui.viewport.value
+      return { x: Math.round(v.width / 2), y: Math.round(v.height / 2) }
+    },
+    {
+      fieldName: opts.fieldName,
+      entityUuid: opts.entityUuid,
+      block: opts.block,
+      position: opts.position,
+    },
+  )
+
+  // Let the (instant) centring settle, carry the cursor onto the slot, release.
+  await nextFrames(page)
+  await page.mouse.move(center.x, center.y, { steps: 12 })
+  await nextFrames(page)
   await page.mouse.up()
 }

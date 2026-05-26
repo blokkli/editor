@@ -1,6 +1,6 @@
 import mitt, { type Emitter } from 'mitt'
 import type { UpdateBlockOptionEvent } from '../features/options/types'
-import type { Coord, Size } from '../types/geometry'
+import type { Coord, Rectangle, Size } from '../types/geometry'
 import type { MutatedField } from '../types/state'
 import type { DraggableExistingBlock, DraggableItem } from '../types/draggable'
 import type { InteractionMode, Message } from '../types/ui'
@@ -27,6 +27,17 @@ export type ScrollIntoViewEvent =
       center?: boolean
       immediate?: boolean
       highlight?: boolean
+    }
+  | {
+      /**
+       * An explicit rectangle, in artboard coordinates, to center in the
+       * viewport. Unlike the `uuid`/`element` variants — which only scroll when
+       * the target is mostly off-screen — this always centers the rect on both
+       * axes within the full viewport. Used to bring a precise point (e.g. a
+       * drag drop slot) to the exact viewport center.
+       */
+      rect: Rectangle
+      immediate?: boolean
     }
 
 export type KeyPressedEvent = {

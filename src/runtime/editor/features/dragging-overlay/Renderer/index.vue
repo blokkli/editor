@@ -227,6 +227,78 @@ const emitDrop = async () => {
 }
 
 /**
+ * Move the active drag onto a specific drop slot and center that slot in the
+ * viewport. The slot rect is resolved with the exact same geometry the collector
+ * uses to draw the live drop targets, so once it's centered a consumer can drop
+ * onto it by moving the pointer to the viewport center. See `../types`.
+ */
+onBlokkliEvent('dragging:moveToDropTarget', (e) => {
+  // Resolve the host field and the uuid to insert after (null = start of field).
+  let host: string
+  let fieldName: string
+  let preceedingUuid: string | null = null
+
+  if ('block' in e) {
+    const fieldInfo = state.getFieldListForBlock(e.block)
+    if (!fieldInfo) {
+      return
+    }
+    host = fieldInfo.entityUuid
+    fieldName = fieldInfo.name
+    if (e.position === 'after') {
+      preceedingUuid = e.block
+    } else {
+      const index = fieldInfo.list.findIndex((item) => item.uuid === e.block)
+      preceedingUuid = index > 0 ? (fieldInfo.list[index - 1]?.uuid ?? null) : null
+    }
+  } else {
+    host = e.host
+    fieldName = e.fieldName
+  }
+
+  const field = fields.find(host, fieldName)
+  if (!field) {
+    return
+  }
+
+  const fieldRect = buildFieldRect(field.key)
+  if (!fieldRect) {
+    return
+  }
+
+  let target: FieldRectChild | undefined
+  if (fieldRect.emptyChild) {
+    // An empty field has a single slot spanning the whole field.
+    target = fieldRect.emptyChild
+  } else {
+    // Build every slot of the field (passing all uuids so off-screen blocks are
+    // included), then pick the one matching the requested insert position. Child
+    // ids are `<fieldKey>:<preceedingUuid>:<type>:<uuid>`, so the third segment
+    // is the preceding uuid ('' at the start of the field).
+    const allUuids = ([...field.element.children] as HTMLElement[])
+      .map((el) => el.dataset.bkUuid)
+      .filter(falsy)
+    const children = buildChildren(fieldRect, allUuids)
+    const wanted = preceedingUuid ?? ''
+    target = children.find((child) => child.id.split(':')[2] === wanted)
+  }
+
+  if (!target) {
+    return
+  }
+
+  eventBus.emit('scrollIntoView', {
+    rect: {
+      x: fieldRect.x + target.x,
+      y: fieldRect.y + target.y,
+      width: target.width,
+      height: target.height,
+    },
+    immediate: true,
+  })
+})
+
+/**
  * Whether the drag contains existing blocks (move/copy) as opposed to new items.
  */
 const isDraggingExisting = computed<boolean>(() =>
