@@ -23,11 +23,14 @@
       </span>
       <span class="text-xs text-mono-500 flex items-center gap-5 mt-3">
         <Avatar
-          :name="item.author.name"
-          :seed="item.author.id"
-          :image-url="item.author.imageUrl"
+          :deleted="!item.author"
+          :name="item.author?.name || $t('userDeleted', '[deleted]')"
+          :seed="item.author?.id"
+          :image-url="item.author?.imageUrl"
         />
-        <span class="truncate">{{ item.author.name }}</span>
+        <span class="truncate">{{
+          item.author?.name || $t('userDeleted', '[deleted]')
+        }}</span>
         <span class="ml-auto shrink-0">
           <RelativeTime :timestamp="item.createdAt" />
         </span>

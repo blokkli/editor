@@ -910,6 +910,7 @@
   "translationsTranslateNoTexts": "Keine übersetzbaren Texte auf dieser Seite gefunden.",
   "undo": "Rückgängig",
   "unexpectedMutationError": "Ein unerwarteter Fehler ist aufgetreten",
+  "userDeleted": "[gelöscht]",
   "validationsNoneFound": "Keine Validierungsfehler gefunden.",
   "validationsToolbarLabel": "Validierungen",
   "validationsTourText": "Zeigt Validierungsfehler für Inhalte auf der aktuellen Seite an.",

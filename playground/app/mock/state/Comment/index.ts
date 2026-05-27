@@ -66,7 +66,12 @@ export class Comment extends Entity {
     return this.get<FieldText>('parentUuid').getUnprocessed() || undefined
   }
 
-  getUser(): User {
-    return this.get<FieldReference<User>>('user').getReferencedEntities()[0]!
+  /**
+   * The comment's author, or `undefined` when the referenced user no longer
+   * exists (a deleted account) — the adapter maps this to a `null` user so the
+   * editor renders the "deleted" fallback.
+   */
+  getUser(): User | undefined {
+    return this.get<FieldReference<User>>('user').getReferencedEntities()[0]
   }
 }

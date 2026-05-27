@@ -1,6 +1,14 @@
 <template>
   <div
-    v-if="showImage"
+    v-if="deleted"
+    class="bk-avatar-deleted shrink-0 rounded flex items-center justify-center size-(--bk-avatar-size) border border-mono-300 bg-mono-100 text-mono-400 relative"
+    data-test="avatar-deleted"
+    :title="name"
+  >
+    <Icon name="ghost" />
+  </div>
+  <div
+    v-else-if="showImage"
     class="shrink-0 rounded size-(--bk-avatar-size) bk-avatar-image overflow-hidden relative"
   >
     <img
@@ -24,6 +32,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from '#imports'
 import { tw } from '#blokkli/helpers/tw'
+import Icon from '#blokkli/editor/components/Icon/index.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -31,11 +40,18 @@ const props = withDefaults(
     seed?: string
     size?: 'sm' | 'md'
     imageUrl?: string | null
+    /**
+     * Render a neutral "deleted user" placeholder (ghost icon) instead of an
+     * image or initials. Use when the author is unknown — e.g. an anonymous
+     * comment or a since-deleted account.
+     */
+    deleted?: boolean
   }>(),
   {
     seed: undefined,
     size: 'md',
     imageUrl: null,
+    deleted: false,
   },
 )
 
@@ -111,5 +127,9 @@ export default {
     content: '';
     @apply absolute top-0 left-0 rounded border border-mono-800 size-full opacity-30;
   }
+}
+
+.bk-avatar-deleted svg {
+  @apply size-[calc(var(--bk-avatar-size)*0.6)];
 }
 </style>

@@ -3976,6 +3976,10 @@ msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr "Ein unerwarteter Fehler ist aufgetreten"
 
+msgctxt "userDeleted"
+msgid "[deleted]"
+msgstr "[gelöscht]"
+
 msgctxt "validationsNoneFound"
 msgid "No validation errors found."
 msgstr "Keine Validierungsfehler gefunden."

@@ -15,7 +15,8 @@ import { dialog, dialogSubmit } from './../support/overlays'
  * the unresolved badge). The canvas Overlay is intentionally skipped.
  *
  * The playground mock seeds comments (German bodies, deterministic `seed-*`
- * uuids: 7 roots — 2 resolved, 5 unresolved — + 8 replies) into localStorage,
+ * uuids: 8 roots — 2 resolved, 6 unresolved (one authored by a since-deleted
+ * user, `seed-deleted-user`) — + 8 replies) into localStorage,
  * fresh per page. The feature loads them once at editor init and replaces its
  * list after each of its own handlers, so driving the UI keeps the sidebar in
  * sync. The source of truth for assertions is `adapter.loadComments()` (read via
@@ -38,6 +39,7 @@ type CommentItem = {
   blockUuids?: string[]
   body: string
   updated?: string
+  user: { name: string } | null
 }
 
 const loadComments = (page: Page): Promise<CommentItem[]> =>
@@ -307,6 +309,32 @@ describe('The comments feature', async () => {
         return c?.body.includes('EDITED_BODY_MARKER') && !!c?.updated
       })
       .toBe(true)
+
+    await page.close()
+  })
+
+  test('a comment from a deleted user renders the deleted-author avatar', async () => {
+    const page = await openEditor()
+    await openComments(page)
+
+    // Exactly one seeded root has no author (the user's account was deleted);
+    // the adapter maps that to `user: null`.
+    const authorless = (await roots(page)).filter((c) => !c.user)
+    expect(authorless).toHaveLength(1)
+    const deletedUuid = authorless[0]!.uuid
+
+    // Its comment shows the deleted-author avatar (ghost placeholder)...
+    const el = commentEl(page, deletedUuid)
+    await el.waitFor({ state: 'visible' })
+    expect(await el.locator('[data-test="avatar-deleted"]').count()).toBe(1)
+
+    // ...while a comment that still has an author does not.
+    const withAuthor = (await roots(page)).find((c) => c.user)!.uuid
+    expect(
+      await commentEl(page, withAuthor)
+        .locator('[data-test="avatar-deleted"]')
+        .count(),
+    ).toBe(0)
 
     await page.close()
   })

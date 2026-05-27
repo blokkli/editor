@@ -5,16 +5,17 @@
     @click="emit('select')"
   >
     <Avatar
-      :name="item.author.name"
-      :seed="item.author.id"
-      :image-url="item.author.imageUrl"
+      :deleted="!item.author"
+      :name="item.author?.name || $t('userDeleted', '[deleted]')"
+      :seed="item.author?.id"
+      :image-url="item.author?.imageUrl"
     />
     <span class="flex flex-col gap-2 min-w-0 flex-1">
       <span class="text-sm font-medium text-mono-900 truncate">
         {{ item.title || $t('agentConversationsUntitled', 'Untitled') }}
       </span>
       <span class="text-xs text-mono-600 truncate flex gap-2">
-        <span>{{ item.author.name }}</span>
+        <span>{{ item.author?.name || $t('userDeleted', '[deleted]') }}</span>
         <span v-if="item.host?.label" class="truncate">
           · {{ item.host.label }}
         </span>

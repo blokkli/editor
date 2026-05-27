@@ -48,7 +48,10 @@ import type {
   DroppableFieldConfig,
   EditableFieldConfig,
 } from '#blokkli/editor/features/editable-field/types'
-import type { FieldConfig } from '#blokkli/editor/types/definitions'
+import type {
+  FieldConfig,
+  BlockPermission,
+} from '#blokkli/editor/types/definitions'
 import type {
   DroppableFieldGetItemsEvent,
   DroppableFieldUpdateEvent,
@@ -66,7 +69,6 @@ import type {
 } from '#blokkli/editor/features/publish/types'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
-import type { BlockPermission } from '#blokkli/editor/types/definitions'
 import { FieldUrl } from './mock/state/Field/Url'
 import type {
   AgentConversationData,
@@ -285,11 +287,13 @@ export default defineBlokkliEditAdapter((ctx) => {
           created: new Date(item.getCreated()).toISOString(),
           updated:
             updated !== undefined ? new Date(updated).toISOString() : undefined,
-          user: {
-            id: author.uuid,
-            name: author.getName(),
-            imageUrl: author.getImageUrl(),
-          },
+          user: author
+            ? {
+                id: author.uuid,
+                name: author.getName(),
+                imageUrl: author.getImageUrl(),
+              }
+            : null,
         }
       })
     return Promise.resolve(comments)

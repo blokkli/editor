@@ -14,7 +14,11 @@ export type CommentItem = {
    * ISO 8601 timestamp; set when the comment has been edited.
    */
   updated?: string
-  user: BlokkliUser
+  /**
+   * The author of the comment, or `null` when the comment is anonymous or the
+   * author's account has since been deleted.
+   */
+  user: BlokkliUser | null
 }
 
 declare module '#blokkli/editor/adapter' {

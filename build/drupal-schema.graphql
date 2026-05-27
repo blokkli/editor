@@ -5204,8 +5204,13 @@ input ParagraphsBlokkliAddMultipleItemInput {
 
 """A persisted agent conversation belonging to a user and host entity."""
 type ParagraphsBlokkliAgentConversation {
-  """The user who originally created the conversation."""
-  author: ParagraphsBlokkliUser!
+  """
+  The user who originally created the conversation.
+  
+  Nullable: the resolver loads the owner account, which returns NULL when
+  the account has since been deleted.
+  """
+  author: ParagraphsBlokkliUser
 
   """ISO 8601 timestamp of when the conversation was last changed."""
   changed: String!
@@ -5269,8 +5274,13 @@ type ParagraphsBlokkliAgentConversationSearchResults {
 
 """A single feedback item on an agent conversation."""
 type ParagraphsBlokkliAgentFeedback {
-  """The user who left the feedback."""
-  author: ParagraphsBlokkliUser!
+  """
+  The user who left the feedback.
+  
+  Nullable: the resolver loads the owner account, which returns NULL when
+  the account has since been deleted.
+  """
+  author: ParagraphsBlokkliUser
 
   """The UUID of the parent conversation this feedback belongs to."""
   conversationUuid: String!

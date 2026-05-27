@@ -25,7 +25,8 @@ export type AgentConversationItem = {
   createdAt: string
   updatedAt: string
   host: AgentConversationHostInfo | null
-  author: BlokkliUser
+  /** The conversation's creator, or `null` when their account has been deleted. */
+  author: BlokkliUser | null
 }
 
 export type AgentConversationItemSummary = Omit<
@@ -61,7 +62,8 @@ export type AgentConversationFeedbackItem = {
   rating: AgentConversationFeedbackRating
   comment: string | null
   itemId: string
-  author: BlokkliUser
+  /** Who left the feedback, or `null` when their account has been deleted. */
+  author: BlokkliUser | null
   conversationUuid: string
 }
 

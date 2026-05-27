@@ -47,9 +47,32 @@ import type { EditPermission } from '#blokkli/types/provider'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
+import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
+
+/**
+ * Map a GraphQL user/author to a `BlokkliUser`. The field is nullable in the
+ * schema (anonymous comments, or an account that has since been deleted), in
+ * which case we return `null` so the editor can render a "deleted" fallback —
+ * rather than fabricating an empty-string user.
+ */
+function mapBlokkliUser(
+  user:
+    | { id: string | number; name: string; imageUrl?: string | null }
+    | null
+    | undefined,
+): BlokkliUser | null {
+  if (!user) {
+    return null
+  }
+  return {
+    id: String(user.id),
+    name: user.name,
+    imageUrl: user.imageUrl ?? null,
+  }
+}
 
 function mapPublishOptions(
   publishOptions: ParagraphsBlokkliPublishOptionsFragment,
@@ -911,11 +934,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               created: item.created || '',
               updated: item.updated || undefined,
               parentUuid: item.parentUuid || undefined,
-              user: {
-                id: item.user?.id != null ? String(item.user.id) : '',
-                name: item.user?.name || '',
-                imageUrl: item.user?.imageUrl,
-              },
+              user: mapBlokkliUser(item.user),
             }
           }
           return null
@@ -1778,11 +1797,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         rating: f.rating,
         comment: f.explanation ?? null,
         itemId: f.itemId,
-        author: {
-          id: String(f.author.id),
-          name: f.author.name,
-          imageUrl: f.author.imageUrl ?? null,
-        },
+        author: mapBlokkliUser(f.author),
         conversationUuid: f.conversationUuid,
       })
 
@@ -1801,11 +1816,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 editUrl: c.host.editUrl ?? null,
               }
             : null,
-          author: {
-            id: String(c.author.id),
-            name: c.author.name,
-            imageUrl: c.author.imageUrl ?? null,
-          },
+          author: mapBlokkliUser(c.author),
           clientState: c.clientState,
           serverState: c.serverState,
           hash: c.hash,
@@ -1877,11 +1888,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                       editUrl: c.host.editUrl ?? null,
                     }
                   : null,
-                author: {
-                  id: String(c.author.id),
-                  name: c.author.name,
-                  imageUrl: c.author.imageUrl ?? null,
-                },
+                author: mapBlokkliUser(c.author),
               })),
               perPage: v.data.result.perPage,
               total: v.data.result.total,

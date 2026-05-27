@@ -24,9 +24,10 @@
     "
   >
     <Avatar
-      :name="comment.user.name"
-      :seed="comment.user.id"
-      :image-url="comment.user.imageUrl"
+      :deleted="!comment.user"
+      :name="comment.user?.name || $t('userDeleted', '[deleted]')"
+      :seed="comment.user?.id"
+      :image-url="comment.user?.imageUrl"
     />
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-5 flex-wrap">
@@ -114,7 +115,9 @@ const blocksLabel = computed(() => {
   return template.replace('@count', count.toString())
 })
 
-const isOwn = computed(() => user.isCurrent(props.comment.user.id))
+const isOwn = computed(() =>
+  props.comment.user ? user.isCurrent(props.comment.user.id) : false,
+)
 
 const canEdit = computed(() => isOwn.value && !!adapter.editComment)
 

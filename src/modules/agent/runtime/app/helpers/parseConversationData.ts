@@ -20,7 +20,7 @@ export type ParsedConversation = {
   createdAt: string
   updatedAt: string
   host: AgentConversationHostInfo | null
-  author: BlokkliUser
+  author: BlokkliUser | null
   conversation: ConversationItem[]
   usageTurns: UsageTurn[]
   serverState: ConversationStateSnapshot

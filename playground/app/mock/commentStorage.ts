@@ -184,6 +184,19 @@ function getDefaultComments(): StoredComment[] {
       user: '1',
     },
 
+    // Authored by a since-deleted user — `user: 'deleted'` resolves to no user,
+    // so the editor renders the "[deleted]" fallback (ghost avatar + label).
+    {
+      uuid: 'seed-deleted-user',
+      body: '<p>Bitte prüfen Sie, ob dieser Abschnitt noch aktuell ist – ich verlasse das Projekt Ende der Woche.</p>',
+      isResolved: false,
+      parentEntityType: 'content',
+      parentEntityUuid: '1',
+      created: t(3 * day),
+      referencedBlocks: [blockText],
+      user: 'deleted',
+    },
+
     // Older standalone resolved.
     {
       uuid: 'seed-6-root',

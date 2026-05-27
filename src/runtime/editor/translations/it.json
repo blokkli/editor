@@ -152,6 +152,7 @@
   "settingsMenuDescription": "Impostazioni personali per l'editor",
   "structureToolbarLabel": "Struttura",
   "translationsBatchTranslateMenuDescription": "Traduci tutti gli elementi",
+  "userDeleted": "[eliminato]",
   "validationsNoneFound": "Nessun errore di validazione trovato.",
   "validationsToolbarLabel": "Validazioni"
 }

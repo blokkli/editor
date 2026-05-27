@@ -3928,6 +3928,10 @@ msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr "Es isch e unerwartete Fähler ufträte."
 
+msgctxt "userDeleted"
+msgid "[deleted]"
+msgstr "[glöscht]"
+
 msgctxt "validationsNoneFound"
 msgid "No validation errors found."
 msgstr "Keini Validierigsfähler gfunde."
