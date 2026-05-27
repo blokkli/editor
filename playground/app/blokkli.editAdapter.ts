@@ -1924,6 +1924,13 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async fragmentsAddBlock(e) {
+      if (isTesting) {
+        recordAdapterCall('fragmentsAddBlock', {
+          name: e.name,
+          host: e.host,
+          preceedingUuid: e.preceedingUuid ?? null,
+        })
+      }
       const blockUuid = e.options ? crypto.randomUUID() : undefined
       const result = await addMutation('add', {
         bundle: 'blokkli_fragment',

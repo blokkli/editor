@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
-import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { formOverlay } from './../../support/overlays'
+import { dropAddAction } from './../../support/blocks'
 
 /**
  * The add list offers three add actions — `template`, `library` (from library)
@@ -11,9 +11,9 @@ import { formOverlay } from './../../support/overlays'
  * which invokes the action's callback; each action's callback opens a form
  * overlay (`data-test="form-overlay-<id>"`).
  *
- * Rather than perform the canvas pointer drag, we emit `dragging:drop` directly
- * with an action draggable built from the live action plugin — the exact event
- * the dragging-overlay's drop dispatcher (`onDrop`) consumes.
+ * Rather than perform the canvas pointer drag, `dropAddAction` emits
+ * `dragging:drop` directly with an action draggable built from the live action
+ * plugin — the exact event the dragging-overlay's drop dispatcher consumes.
  */
 
 /** The form overlay each add action opens when dropped. */
@@ -22,47 +22,6 @@ const ACTION_OVERLAYS = {
   library: 'library',
   fragment: 'fragments',
 } as const
-
-/**
- * Drop the given add action onto the host entity's `content` field by emitting
- * the `dragging:drop` event the drop dispatcher listens for.
- */
-function dropActionOnContentField(page: Page, actionId: string): Promise<void> {
-  return page.evaluate((actionId) => {
-    const app = window.__BLOKKLI__!.app!
-    const action = app.plugins
-      .get('addAction')
-      .find((candidate) => candidate.id === actionId)
-    if (!action) {
-      throw new Error(`Add action "${actionId}" is not registered.`)
-    }
-
-    const ctx = app.context.value
-    const field = app.fields.find(ctx.entityUuid, 'content')
-    if (!field) {
-      throw new Error('The host entity has no registered "content" field.')
-    }
-
-    app.eventBus.emit('dragging:drop', {
-      items: [
-        {
-          itemType: 'action',
-          action,
-          actionType: action.id,
-          itemBundle: action.itemBundle,
-          element: () => document.body,
-        },
-      ],
-      field,
-      host: {
-        type: ctx.entityType,
-        uuid: ctx.entityUuid,
-        fieldName: 'content',
-      },
-      preceedingUuid: null,
-    })
-  }, actionId)
-}
 
 describe('The add list actions', async () => {
   await setupEditorE2E()
@@ -74,7 +33,7 @@ describe('The add list actions', async () => {
       // No form overlay before the drop.
       expect(await formOverlay(page, overlayId).count()).toBe(0)
 
-      await dropActionOnContentField(page, actionId)
+      await dropAddAction(page, actionId)
 
       await formOverlay(page, overlayId).waitFor({ state: 'visible' })
 

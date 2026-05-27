@@ -209,6 +209,68 @@ export function addBlocks(
   )
 }
 
+/**
+ * Place an add-list *action* (e.g. `fragment`, `library`, `template`) on a field
+ * by emitting the `dragging:drop` event the dragging-overlay's drop dispatcher
+ * consumes — the same path a real pointer drop takes, minus the brittle canvas
+ * gesture. The action is read live from `app.plugins.get('addAction')` (so it's
+ * never hardcoded), and the add-list's `defineDropHandler('action')` runs its
+ * `callback(ActionPlacedData)` — typically opening the action's form overlay.
+ *
+ * Defaults to the host entity's `content` field at the start (`preceedingUuid`
+ * null); pass `preceedingUuid` to insert after an existing block, or `fieldName`
+ * to target another field.
+ */
+export function dropAddAction(
+  page: Page,
+  actionId: string,
+  opts: { fieldName?: string; preceedingUuid?: string | null } = {},
+): Promise<void> {
+  return page.evaluate(
+    ({ actionId, fieldName, preceedingUuid }) => {
+      const app = window.__BLOKKLI__!.app!
+      const action = app.plugins
+        .get('addAction')
+        .find((candidate) => candidate.id === actionId)
+      if (!action) {
+        throw new Error(`Add action "${actionId}" is not registered.`)
+      }
+
+      const ctx = app.context.value
+      const field = app.fields.find(ctx.entityUuid, fieldName)
+      if (!field) {
+        throw new Error(
+          `The host entity has no registered "${fieldName}" field.`,
+        )
+      }
+
+      app.eventBus.emit('dragging:drop', {
+        items: [
+          {
+            itemType: 'action',
+            action,
+            actionType: action.id,
+            itemBundle: action.itemBundle,
+            element: () => document.body,
+          },
+        ],
+        field,
+        host: {
+          type: ctx.entityType,
+          uuid: ctx.entityUuid,
+          fieldName,
+        },
+        preceedingUuid,
+      })
+    },
+    {
+      actionId,
+      fieldName: opts.fieldName ?? 'content',
+      preceedingUuid: opts.preceedingUuid ?? null,
+    },
+  )
+}
+
 /** Resolve after two animation frames — long enough for an instant artboard
  *  pan + re-render to settle so freshly-read rects reflect the new position. */
 function nextFrames(page: Page): Promise<void> {

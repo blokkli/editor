@@ -25,6 +25,7 @@
               v-model="searchText"
               type="text"
               class="bk-form-input"
+              data-test="fragments-search"
               :placeholder="
                 $t('fragmentsPlaceDialogSearchPlaceholder', 'Search fragments')
               "
@@ -44,6 +45,8 @@
               'bk-is-selected': selectedItem === item.name,
             }"
             :data-bk-fragment-name="item.name"
+            data-test="fragment-option"
+            :data-test-fragment-name="item.name"
             @click="selectedItem = item.name"
           >
             <FragmentItem
@@ -57,7 +60,11 @@
       </div>
     </div>
     <template #footer>
-      <button class="bk-button bk-scheme-accent" @click="onSubmit">
+      <button
+        class="bk-button bk-scheme-accent"
+        data-test="fragments-submit"
+        @click="onSubmit"
+      >
         {{ $t('fragmentsPlaceDialogSubmitButton', 'Add selected fragment') }}
       </button>
     </template>
