@@ -80,7 +80,13 @@ describe('The breadcrumbs feature', async () => {
     const page = await openEditor()
 
     expect(await readCrumbs(page)).toEqual([
-      { id: 'breadcrumb-root', current: true, uuid: null, field: null, count: null },
+      {
+        id: 'breadcrumb-root',
+        current: true,
+        uuid: null,
+        field: null,
+        count: null,
+      },
     ])
 
     await page.close()
@@ -97,12 +103,48 @@ describe('The breadcrumbs feature', async () => {
     await expect
       .poll(() => readCrumbs(page))
       .toEqual([
-        { id: 'breadcrumb-root', current: false, uuid: null, field: null, count: null },
-        { id: 'breadcrumb-host', current: false, uuid: null, field: null, count: null },
-        { id: 'breadcrumb-field', current: false, uuid: null, field: 'content', count: null },
-        { id: 'breadcrumb-block', current: false, uuid: grid, field: null, count: null },
-        { id: 'breadcrumb-field', current: false, uuid: null, field: 'blocks', count: null },
-        { id: 'breadcrumb-block', current: true, uuid: cards[0]!, field: null, count: null },
+        {
+          id: 'breadcrumb-root',
+          current: false,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-host',
+          current: false,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-field',
+          current: false,
+          uuid: null,
+          field: 'content',
+          count: null,
+        },
+        {
+          id: 'breadcrumb-block',
+          current: false,
+          uuid: grid,
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-field',
+          current: false,
+          uuid: null,
+          field: 'blocks',
+          count: null,
+        },
+        {
+          id: 'breadcrumb-block',
+          current: true,
+          uuid: cards[0]!,
+          field: null,
+          count: null,
+        },
       ])
 
     await page.close()
@@ -115,13 +157,20 @@ describe('The breadcrumbs feature', async () => {
     await emitEvent(page, 'select', cards[0]!)
     await expect.poll(() => selectedUuids(page)).toEqual([cards[0]!])
 
-    await clickCrumb(page, `[data-test="breadcrumb-block"][data-test-uuid="${grid}"]`)
+    await clickCrumb(
+      page,
+      `[data-test="breadcrumb-block"][data-test-uuid="${grid}"]`,
+    )
 
     // Selection jumps up to the grid, and the chain now ends at the grid block.
     await expect.poll(() => selectedUuids(page)).toEqual([grid])
     const crumbs = await readCrumbs(page)
     const last = crumbs[crumbs.length - 1]
-    expect(last).toMatchObject({ id: 'breadcrumb-block', uuid: grid, current: true })
+    expect(last).toMatchObject({
+      id: 'breadcrumb-block',
+      uuid: grid,
+      current: true,
+    })
 
     await page.close()
   })
@@ -131,11 +180,16 @@ describe('The breadcrumbs feature', async () => {
     const { cards } = await addGridWithCards(page, 3)
 
     await emitEvent(page, 'select', cards[0]!)
-    await expect.poll(() => readCrumbs(page)).toContainEqual(
-      expect.objectContaining({ id: 'breadcrumb-field', field: 'blocks' }),
-    )
+    await expect
+      .poll(() => readCrumbs(page))
+      .toContainEqual(
+        expect.objectContaining({ id: 'breadcrumb-field', field: 'blocks' }),
+      )
 
-    await clickCrumb(page, '[data-test="breadcrumb-field"][data-test-field="blocks"]')
+    await clickCrumb(
+      page,
+      '[data-test="breadcrumb-field"][data-test-field="blocks"]',
+    )
 
     // The whole `blocks` field is now selected.
     await expect
@@ -152,14 +206,52 @@ describe('The breadcrumbs feature', async () => {
     // Two of the three cards → the field crumb plus a "multiple" count crumb.
     await emitEvent(page, 'select', [cards[0]!, cards[1]!])
 
-    await expect.poll(() => readCrumbs(page)).toEqual([
-      { id: 'breadcrumb-root', current: false, uuid: null, field: null, count: null },
-      { id: 'breadcrumb-host', current: false, uuid: null, field: null, count: null },
-      { id: 'breadcrumb-field', current: false, uuid: null, field: 'content', count: null },
-      { id: 'breadcrumb-block', current: false, uuid: 'bc-grid', field: null, count: null },
-      { id: 'breadcrumb-field', current: false, uuid: null, field: 'blocks', count: null },
-      { id: 'breadcrumb-multiple', current: true, uuid: null, field: null, count: 2 },
-    ])
+    await expect
+      .poll(() => readCrumbs(page))
+      .toEqual([
+        {
+          id: 'breadcrumb-root',
+          current: false,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-host',
+          current: false,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-field',
+          current: false,
+          uuid: null,
+          field: 'content',
+          count: null,
+        },
+        {
+          id: 'breadcrumb-block',
+          current: false,
+          uuid: 'bc-grid',
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-field',
+          current: false,
+          uuid: null,
+          field: 'blocks',
+          count: null,
+        },
+        {
+          id: 'breadcrumb-multiple',
+          current: true,
+          uuid: null,
+          field: null,
+          count: 2,
+        },
+      ])
 
     await page.close()
   })
@@ -174,7 +266,11 @@ describe('The breadcrumbs feature', async () => {
     const crumbs = await readCrumbs(page)
     expect(crumbs.some((c) => c.id === 'breadcrumb-multiple')).toBe(false)
     const last = crumbs[crumbs.length - 1]
-    expect(last).toMatchObject({ id: 'breadcrumb-field', field: 'blocks', current: true })
+    expect(last).toMatchObject({
+      id: 'breadcrumb-field',
+      field: 'blocks',
+      current: true,
+    })
 
     await page.close()
   })
@@ -187,17 +283,39 @@ describe('The breadcrumbs feature', async () => {
     await emitEvent(page, 'select:unselect')
     await emitEvent(page, 'select:host')
 
-    await expect.poll(() => readCrumbs(page)).toEqual([
-      { id: 'breadcrumb-root', current: false, uuid: null, field: null, count: null },
-      { id: 'breadcrumb-host', current: true, uuid: null, field: null, count: null },
-    ])
+    await expect
+      .poll(() => readCrumbs(page))
+      .toEqual([
+        {
+          id: 'breadcrumb-root',
+          current: false,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+        {
+          id: 'breadcrumb-host',
+          current: true,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+      ])
 
     // Clicking the root crumb unselects everything, leaving only the root.
     await clickCrumb(page, '[data-test="breadcrumb-root"]')
 
-    await expect.poll(() => readCrumbs(page)).toEqual([
-      { id: 'breadcrumb-root', current: true, uuid: null, field: null, count: null },
-    ])
+    await expect
+      .poll(() => readCrumbs(page))
+      .toEqual([
+        {
+          id: 'breadcrumb-root',
+          current: true,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+      ])
 
     await page.close()
   })

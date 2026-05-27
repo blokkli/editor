@@ -22,7 +22,7 @@
         @click.prevent="onClickBlock"
       >
         <span
-          class="whitespace-nowrap overflow-hidden text-ellipsis leading-[24px] group-hover:underline group-hover:underline-offset-4"
+          class="truncate leading-[24px] group-hover:underline group-hover:underline-offset-4"
         >
           {{ crumb.label }}
         </span>
@@ -44,7 +44,7 @@
         @click.prevent="onClickField"
       >
         <span
-          class="whitespace-nowrap overflow-hidden text-ellipsis px-[8px] pt-[4px] pb-2 border"
+          class="truncate px-[8px] pt-[4px] pb-2 border"
           :class="
             isLast
               ? 'bg-mono-600 text-white border-mono-200'

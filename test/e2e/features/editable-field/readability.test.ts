@@ -54,7 +54,9 @@ describe('Editable field — readability', async () => {
 
     await textarea.fill('Hi')
     await expect
-      .poll(async () => (await readabilityState(page)).tooShort, { timeout: 5000 })
+      .poll(async () => (await readabilityState(page)).tooShort, {
+        timeout: 5000,
+      })
       .toBe(true)
     expect((await readabilityState(page)).band).toBeNull()
 
@@ -71,7 +73,9 @@ describe('Editable field — readability', async () => {
     // Start too short…
     await textarea.fill('Hi')
     await expect
-      .poll(async () => (await readabilityState(page)).tooShort, { timeout: 5000 })
+      .poll(async () => (await readabilityState(page)).tooShort, {
+        timeout: 5000,
+      })
       .toBe(true)
 
     // …then a full passage flips it to a scored band (debounced recompute).

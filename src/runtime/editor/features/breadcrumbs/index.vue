@@ -10,7 +10,9 @@
           <button
             type="button"
             class="group flex items-center h-full px-10 relative hover:text-white"
-            :class="rootIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'"
+            :class="
+              rootIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'
+            "
             @click.prevent="onClickRoot"
           >
             <Icon name="artboard" class="size-20 shrink-0" />
@@ -22,11 +24,13 @@
           <button
             type="button"
             class="group flex items-center h-full px-10 relative hover:text-white min-w-0"
-            :class="hostIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'"
+            :class="
+              hostIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'
+            "
             @click.prevent="onClickHost"
           >
             <span
-              class="whitespace-nowrap overflow-hidden text-ellipsis leading-[24px] group-hover:underline group-hover:underline-offset-4"
+              class="truncate leading-[24px] group-hover:underline group-hover:underline-offset-4"
             >
               {{ hostLabel }}
             </span>
@@ -47,7 +51,7 @@
             class="flex items-center h-full px-10 relative uppercase text-xs tracking-wide min-w-0 font-bold text-white"
           >
             <span
-              class="whitespace-nowrap overflow-hidden text-ellipsis px-[8px] pt-[4px] pb-2 border bg-teal-normal text-teal-dark border-teal-normal"
+              class="truncate px-[8px] pt-[4px] pb-2 border bg-teal-normal text-teal-dark border-teal-normal"
             >
               {{ selection.activeFieldLabel.value }}
             </span>

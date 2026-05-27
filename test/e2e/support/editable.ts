@@ -168,7 +168,9 @@ export function blockHost(page: Page, uuid: string): Promise<EntityContext> {
 
 /** The open frame (CKEditor iframe) editor's `data-test-src` (the computed url). */
 export function frameSrc(page: Page): Promise<string | null> {
-  return page.locator('[data-test="editable-frame"]').getAttribute('data-test-src')
+  return page
+    .locator('[data-test="editable-frame"]')
+    .getAttribute('data-test-src')
 }
 
 /**

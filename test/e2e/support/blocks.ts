@@ -36,7 +36,10 @@ export function blockExists(page: Page, uuid: string): Promise<boolean> {
  * reads editor state), this asserts the page itself reflects the change, so it's
  * the right check after undo/redo or a history jump.
  */
-export async function blockRendered(page: Page, uuid: string): Promise<boolean> {
+export async function blockRendered(
+  page: Page,
+  uuid: string,
+): Promise<boolean> {
   return (await page.locator(`[data-bk-uuid="${uuid}"]`).count()) > 0
 }
 

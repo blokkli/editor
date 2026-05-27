@@ -14,14 +14,19 @@ import {
   saveByClickAway,
   nextEditableOpen,
 } from './../../support/editable'
-import { recordedAdapterCalls, waitForAdapterCall } from './../../support/recorder'
+import {
+  recordedAdapterCalls,
+  waitForAdapterCall,
+} from './../../support/recorder'
 import { setupEditorE2E } from './../../support/setup'
 
 /** The recorded `updateFieldValue` payload (block-field saves). */
 type FieldValueCall = { uuid?: string; fieldName: string; fieldValue: string }
 
 /** Recorded `updateFieldValue` calls so far (the recorder is per-test isolated). */
-async function fieldValueCalls(page: Parameters<typeof recordedAdapterCalls>[0]) {
+async function fieldValueCalls(
+  page: Parameters<typeof recordedAdapterCalls>[0],
+) {
   const calls = await recordedAdapterCalls<FieldValueCall>(page)
   return calls.filter((c) => c.method === 'updateFieldValue')
 }
@@ -49,14 +54,21 @@ describe('Editable field — plaintext', async () => {
     await textarea.waitFor({ state: 'visible' })
 
     // The overlay reports the field type, and focuses the textarea on open.
-    expect(await editableOverlay(page).getAttribute('data-test-type')).toBe('plain')
-    expect(await textarea.evaluate((el) => el === document.activeElement)).toBe(true)
+    expect(await editableOverlay(page).getAttribute('data-test-type')).toBe(
+      'plain',
+    )
+    expect(await textarea.evaluate((el) => el === document.activeElement)).toBe(
+      true,
+    )
 
     await textarea.fill('Edited card title')
     await textarea.press('Enter')
 
     await waitForEditableText(page, 'title', host, 'Edited card title')
-    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    const call = await waitForAdapterCall<FieldValueCall>(
+      page,
+      'updateFieldValue',
+    )
     expect(call.uuid).toBe(uuid)
     expect(call.fieldName).toBe('title')
     expect(call.fieldValue).toBe('Edited card title')
@@ -154,7 +166,10 @@ describe('Editable field — plaintext', async () => {
     await saveByClickAway(page)
 
     await waitForEditableText(page, 'title', host, 'Saved on click-away')
-    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    const call = await waitForAdapterCall<FieldValueCall>(
+      page,
+      'updateFieldValue',
+    )
     expect(call.fieldValue).toBe('Saved on click-away')
 
     await page.close()
@@ -176,7 +191,10 @@ describe('Editable field — plaintext', async () => {
     expect(await opened).toBe('text')
 
     await waitForEditableText(page, 'title', host, 'Auto-saved on switch')
-    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    const call = await waitForAdapterCall<FieldValueCall>(
+      page,
+      'updateFieldValue',
+    )
     expect(call.fieldName).toBe('title')
     expect(call.fieldValue).toBe('Auto-saved on switch')
 

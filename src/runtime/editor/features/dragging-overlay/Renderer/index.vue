@@ -249,7 +249,8 @@ onBlokkliEvent('dragging:moveToDropTarget', (e) => {
       preceedingUuid = e.block
     } else {
       const index = fieldInfo.list.findIndex((item) => item.uuid === e.block)
-      preceedingUuid = index > 0 ? (fieldInfo.list[index - 1]?.uuid ?? null) : null
+      preceedingUuid =
+        index > 0 ? (fieldInfo.list[index - 1]?.uuid ?? null) : null
     }
   } else {
     host = e.host

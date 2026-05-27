@@ -41,7 +41,9 @@ describe('Editable field — frame (rich text)', async () => {
       `/blokkli-form/${host.type}/${host.uuid}/fieldValueEditor?fieldName=text&uuid=${uuid}`,
     )
     // A rich-text (markup) field has no plaintext character counter.
-    expect(await page.locator('[data-test="editable-char-count"]').count()).toBe(0)
+    expect(
+      await page.locator('[data-test="editable-char-count"]').count(),
+    ).toBe(0)
 
     await page.close()
   })
@@ -60,7 +62,10 @@ describe('Editable field — frame (rich text)', async () => {
     await waitForEditableText(page, 'text', host, 'Edited rich text')
 
     await saveByClickAway(page)
-    const call = await waitForAdapterCall<FieldValueCall>(page, 'updateFieldValue')
+    const call = await waitForAdapterCall<FieldValueCall>(
+      page,
+      'updateFieldValue',
+    )
     expect(call.uuid).toBe(uuid)
     expect(call.fieldName).toBe('text')
     expect(call.fieldValue).toContain('Edited rich text')

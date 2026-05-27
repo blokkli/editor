@@ -52,7 +52,9 @@ describe('The history feature', async () => {
     // One mutation applied: the block is rendered, undo enabled, redo disabled.
     expect(await currentMutationIndex(page)).toBe(0)
     await expect.poll(() => blockRendered(page, uuid!)).toBe(true)
-    await expect.poll(() => toolbarButton(page, 'undo').isDisabled()).toBe(false)
+    await expect
+      .poll(() => toolbarButton(page, 'undo').isDisabled())
+      .toBe(false)
     await expect.poll(() => toolbarButton(page, 'redo').isDisabled()).toBe(true)
 
     await toolbarButton(page, 'undo').click()
@@ -63,7 +65,9 @@ describe('The history feature', async () => {
     await expect.poll(() => blockRendered(page, uuid!)).toBe(false)
     await expect.poll(() => currentMutationIndex(page)).toBe(-1)
     await expect.poll(() => toolbarButton(page, 'undo').isDisabled()).toBe(true)
-    await expect.poll(() => toolbarButton(page, 'redo').isDisabled()).toBe(false)
+    await expect
+      .poll(() => toolbarButton(page, 'redo').isDisabled())
+      .toBe(false)
 
     await toolbarButton(page, 'redo').click()
 
