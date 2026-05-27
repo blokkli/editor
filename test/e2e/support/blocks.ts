@@ -31,6 +31,16 @@ export function blockExists(page: Page, uuid: string): Promise<boolean> {
 }
 
 /**
+ * Whether a block is actually *rendered* on the canvas — i.e. its
+ * `[data-bk-uuid]` element is present in the DOM. Unlike `blockExists` (which
+ * reads editor state), this asserts the page itself reflects the change, so it's
+ * the right check after undo/redo or a history jump.
+ */
+export async function blockRendered(page: Page, uuid: string): Promise<boolean> {
+  return (await page.locator(`[data-bk-uuid="${uuid}"]`).count()) > 0
+}
+
+/**
  * A block's bundle and rendered field props (e.g. `props.text`), read off the
  * live state. Returns nulls when the block isn't found. Useful for asserting
  * *what* a block is and what it holds, locale-independently.

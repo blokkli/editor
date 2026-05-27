@@ -1,9 +1,12 @@
 <template>
-  <div class="bk bk-history bk-control">
+  <div class="bk bk-history bk-control" data-test="history-list">
     <ul v-if="mapped.length">
       <li
         v-for="item in mapped"
         :key="item.index"
+        data-test="history-item"
+        :data-test-history-index="item.index"
+        :data-test-history-active="item.index === currentMutationIndex"
         :class="{
           'bk-is-not-active': item.index > currentMutationIndex,
           'bk-is-active': item.index === currentMutationIndex,
@@ -14,6 +17,7 @@
         <button
           :disabled="!canEdit"
           class="bk-history-item-button"
+          data-test="history-item-button"
           @click="setHistoryIndex(item.index)"
         >
           <div>
@@ -51,12 +55,18 @@
       </li>
       <li
         class="bk-is-last"
+        data-test="history-current-revision"
+        :data-test-history-active="currentMutationIndex === -1"
         :class="[
           currentMutationIndex === -1 ? 'bk-is-active' : 'bk-is-applied',
           { 'bk-has-shadow': !scrolledToEnd },
         ]"
       >
-        <button class="bk-history-item-button" @click="setHistoryIndex(-1)">
+        <button
+          class="bk-history-item-button"
+          data-test="history-item-button"
+          @click="setHistoryIndex(-1)"
+        >
           <div>
             <strong>{{
               $t('historyCurrentRevision', 'Current revision')
@@ -73,7 +83,7 @@
         </button>
       </li>
     </ul>
-    <div v-else class="bk-history-empty-message">
+    <div v-else class="bk-history-empty-message" data-test="history-empty">
       {{ $t('historyEmpty', 'There are now changes yet.') }}
     </div>
   </div>
