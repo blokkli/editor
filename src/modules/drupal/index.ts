@@ -230,10 +230,21 @@ export declare const templateEditRouteName: string|null
     addMutation('unignore_analyze')
 
     // Feature: Comments.
-    if (graphql.schemaHasType('CommentBlokkliNode')) {
+    if (graphql.schemaHasType('ParagraphsBlokkliComment')) {
       addGraphqlDocument('features/comments.graphql')
     } else {
       context.features.disableFeature('comments')
+    }
+
+    // Feature: Notifications.
+    if (
+      queryFields.has('pbGetNotifications') &&
+      queryFields.has('pbGetNotificationCount') &&
+      mutationFields.has('pbMarkNotificationsAsRead')
+    ) {
+      addGraphqlDocument('features/notifications.graphql')
+    } else {
+      context.features.disableFeature('notifications')
     }
 
     // Feature: Agent.

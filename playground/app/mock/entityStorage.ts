@@ -14,6 +14,8 @@ import type { FieldBlocks } from './state/Field/Blocks'
 import { generateUUID } from './uuid'
 import * as commentStorage from './commentStorage'
 import type { StoredComment } from './commentStorage'
+import * as notificationStorage from './notificationStorage'
+import type { StoredNotification } from './notificationStorage'
 
 export class EntityStorage<T extends Entity> {
   private entities: Record<string, T>
@@ -582,6 +584,22 @@ export class EntityStorageManager {
   toggleCommentTask(uuid: string, taskIndex: number) {
     commentStorage.toggleCommentTask(uuid, taskIndex)
     this.loadCommentsFromStorage()
+  }
+
+  getNotifications(): StoredNotification[] {
+    return notificationStorage.loadNotifications()
+  }
+
+  getUnreadNotificationsCount(): number {
+    return notificationStorage.getUnreadCount()
+  }
+
+  markNotificationsAsRead(uuids: string[]) {
+    notificationStorage.markAsRead(uuids)
+  }
+
+  markAllNotificationsAsRead() {
+    notificationStorage.markAllAsRead()
   }
 
   addBlock(block: Paragraph) {

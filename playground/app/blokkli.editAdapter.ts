@@ -60,6 +60,11 @@ import type { LibraryItem } from '#blokkli/editor/features/library/types'
 import type { HostTransformPlugin } from '#blokkli/editor/features/transform/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import type {
+  BlokkliNotification,
+  BlokkliNotificationList,
+} from '#blokkli/editor/features/notifications/types'
+import type { StoredNotification } from './mock/notificationStorage'
+import type {
   TextFieldValue,
   DroppableFieldValue,
 } from '#blokkli/editor/providers/fieldValue'
@@ -297,6 +302,73 @@ export default defineBlokkliEditAdapter((ctx) => {
         }
       })
     return Promise.resolve(comments)
+  }
+
+  const NOTIFICATIONS_PER_PAGE = 3
+
+  const mapNotification = (item: StoredNotification): BlokkliNotification => {
+    const author = item.user
+      ? entityStorageManager.getUser(item.user)
+      : undefined
+    const hostEntity = item.host
+      ? entityStorageManager.getContent(item.host.entityUuid)
+      : undefined
+    return {
+      uuid: item.uuid,
+      read: item.read,
+      created: new Date(item.created).toISOString(),
+      type: item.type,
+      title: item.title,
+      message: item.message,
+      user: author
+        ? {
+            id: author.uuid,
+            name: author.getName(),
+            imageUrl: author.getImageUrl(),
+          }
+        : null,
+      relatedEntityUuid: item.relatedEntityUuid,
+      host:
+        item.host && hostEntity
+          ? {
+              uuid: item.host.entityUuid,
+              entityType: item.host.entityType,
+              entityBundle: hostEntity.bundle,
+              label: hostEntity.title().getText(),
+              url: route.path,
+            }
+          : null,
+    }
+  }
+
+  const loadNotifications = (
+    after: string | undefined,
+    markAsRead: boolean,
+  ): Promise<BlokkliNotificationList> => {
+    const all = entityStorageManager
+      .getNotifications()
+      .slice()
+      .sort((a, b) => b.created - a.created)
+    // The cursor is the UUID of the last item returned by the previous page;
+    // start at the item immediately after it. Stable against insertions
+    // (which arrive at the top, before the cursor).
+    const startIndex = after ? all.findIndex((n) => n.uuid === after) + 1 : 0
+    const items = all.slice(startIndex, startIndex + NOTIFICATIONS_PER_PAGE)
+    // Map BEFORE marking — `mapNotification` reads `item.read` from the
+    // stored object, which `markNotificationsAsRead` mutates in place. If we
+    // marked first, the returned items would always carry `read: true` and
+    // the UI would never see the pre-mark state.
+    const mapped = items.map(mapNotification)
+    if (markAsRead) {
+      entityStorageManager.markNotificationsAsRead(items.map((n) => n.uuid))
+    }
+    const endIndex = startIndex + items.length
+    return Promise.resolve({
+      items: mapped,
+      nextCursor:
+        endIndex < all.length ? (items[items.length - 1]?.uuid ?? null) : null,
+      unreadCount: entityStorageManager.getUnreadNotificationsCount(),
+    })
   }
 
   function getMediaTargetBundles(bundle: string): string[] {
@@ -917,6 +989,16 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     loadComments() {
       return loadComments()
+    },
+    loadNotifications(options) {
+      return loadNotifications(options.after, options.markAsRead)
+    },
+    loadUnreadNotificationsCount() {
+      return Promise.resolve(entityStorageManager.getUnreadNotificationsCount())
+    },
+    markAllNotificationsAsRead() {
+      entityStorageManager.markAllNotificationsAsRead()
+      return Promise.resolve(0)
     },
     resolveComment(uuid) {
       entityStorageManager.resolveComment(uuid)

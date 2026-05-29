@@ -2933,6 +2933,36 @@ msgctxt "notSupported"
 msgid "Not supported"
 msgstr "Nicht unterstützt"
 
+msgctxt "notifications"
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+msgctxt "notificationsEmpty"
+msgid "No notifications."
+msgstr "Keine Benachrichtigungen."
+
+msgctxt "notificationsLoadError"
+msgid "Failed to load notifications."
+msgstr "Benachrichtigungen konnten nicht geladen werden."
+
+msgctxt "notificationsLoadMore"
+msgid "Load more"
+msgstr "Mehr laden"
+
+msgctxt "notificationsMarkAllRead"
+msgid "Mark all as read"
+msgstr "Alle als gelesen markieren"
+
+msgctxt "notificationsMarkAllReadError"
+msgid "Failed to mark notifications as read."
+msgstr "Benachrichtigungen konnten nicht als gelesen markiert werden."
+
+msgctxt "notificationsTourText"
+msgid "Shows notifications about mentions, resolved comments and other events."
+msgstr ""
+"Zeigt Benachrichtigungen über Erwähnungen, gelöste Kommentare und andere "
+"Ereignisse."
+
 msgctxt "numberedList"
 msgid "Numbered list"
 msgstr "Nummerierte Liste"

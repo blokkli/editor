@@ -2887,6 +2887,36 @@ msgctxt "notSupported"
 msgid "Not supported"
 msgstr "Nid unterstützt"
 
+msgctxt "notifications"
+msgid "Notifications"
+msgstr "Benachrichtigunge"
+
+msgctxt "notificationsEmpty"
+msgid "No notifications."
+msgstr "Kei Benachrichtigunge."
+
+msgctxt "notificationsLoadError"
+msgid "Failed to load notifications."
+msgstr "Benachrichtigunge chönd nöd glade wärde."
+
+msgctxt "notificationsLoadMore"
+msgid "Load more"
+msgstr "Meh lade"
+
+msgctxt "notificationsMarkAllRead"
+msgid "Mark all as read"
+msgstr "Alli als gläse markiere"
+
+msgctxt "notificationsMarkAllReadError"
+msgid "Failed to mark notifications as read."
+msgstr "Benachrichtigunge chönd nöd als gläse markiert wärde."
+
+msgctxt "notificationsTourText"
+msgid "Shows notifications about mentions, resolved comments and other events."
+msgstr ""
+"Zeigt Benachrichtigunge über Erwähnige, glösti Kommentär und anderi "
+"Ereignis aa."
+
 msgctxt "numberedList"
 msgid "Numbered list"
 msgstr "Nummerierti Lischt"

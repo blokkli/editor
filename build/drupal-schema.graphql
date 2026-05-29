@@ -2758,6 +2758,14 @@ type Mutation {
 
   """Login with a timestamp and hash from the password reset email."""
   userPasswordResetLogin(hash: String!, id: ID!, timestamp: Int!): UserPasswordResetLoginResponse
+
+  """
+  Mark notifications as read for the current user.
+
+  When uuids is empty or omitted, all of the user's notifications are marked
+  read. Otherwise only the listed (and owned) notifications are marked read.
+  """
+  pbMarkNotificationsAsRead(uuids: [String!]): Int!
 }
 
 """Content"""
@@ -5206,7 +5214,7 @@ input ParagraphsBlokkliAddMultipleItemInput {
 type ParagraphsBlokkliAgentConversation {
   """
   The user who originally created the conversation.
-  
+
   Nullable: the resolver loads the owner account, which returns NULL when
   the account has since been deleted.
   """
@@ -5276,7 +5284,7 @@ type ParagraphsBlokkliAgentConversationSearchResults {
 type ParagraphsBlokkliAgentFeedback {
   """
   The user who left the feedback.
-  
+
   Nullable: the resolver loads the owner account, which returns NULL when
   the account has since been deleted.
   """
@@ -5768,6 +5776,7 @@ human-readable label and a canonical URL when resolvable.
 type ParagraphsBlokkliHostEntity {
   entityType: String!
   entityUuid: String!
+  entityBundle: String!
   label: String
   url: String
 }
@@ -7093,7 +7102,7 @@ type Query {
   entityById(entityType: EntityType!, id: ID!, langcode: Langcode): Entity
   entityByUuid(entityType: EntityType!, langcode: Langcode, uuid: String!): Entity
   entityQuery(
-    """ The machine name of the entity type (e.g. "node", "taxonomy_term", etc.) 
+    """ The machine name of the entity type (e.g. "node", "taxonomy_term", etc.)
     """
     entityType: EntityType!
 
@@ -7317,6 +7326,24 @@ type Query {
     """The full document ID, internally also called "search_api_id"."""
     id: String!
   ): TypesenseHitDocument
+
+  """
+  Get the current user's notifications, newest first, 16 per page.
+
+  Uses cursor (keyset) pagination: pass the previous result's nextCursor as
+  `after` to load the next (older) page. This is stable when notifications are
+  added or removed mid-pagination, unlike a numeric page offset.
+
+  When markAsRead is true, the notifications returned by this query are marked
+  read immediately, and the list's unreadCount reflects the new count.
+  """
+  pbGetNotifications(after: String, markAsRead: Boolean): ParagraphsBlokkliNotificationList
+
+  """
+  Get the number of unread notifications for the current user. Cheap to poll;
+  invalidated whenever the user's notifications change.
+  """
+  pbGetNotificationCount: Int!
 }
 
 """Redirect"""
@@ -7917,10 +7944,10 @@ type TypesenseFacet {
 input TypesenseFacetFieldInput {
   """
   Enable disjunctive faceting for this facet.
-  
+
   When true (disjunctive): Shows all available options with global counts,
   even when a value is selected. Allows users to see what other options exist.
-  
+
   When false (conjunctive, default): Shows only values that exist in the
   filtered results. When a value is selected, only that value appears.
   """
@@ -8151,7 +8178,7 @@ enum TypesenseHierarchicalFacetSortBy {
 type TypesenseHighlights {
   """
   Get highlight for a specific field by name.
-  
+
   @param field
     The field name to get highlights for.
   @param fullField
@@ -8636,4 +8663,92 @@ type UserPasswordResetResponse {
 
   """Password reset was successful."""
   success: Boolean
+}
+
+"""
+A single blökkli notification for the current user.
+
+Title and message are rendered at read time in the current request language by
+the matching notification type plugin; they are never stored.
+"""
+type ParagraphsBlokkliNotification {
+  """
+  The notification UUID.
+  """
+  uuid: String!
+
+  """
+  Whether the current user has read this notification.
+  """
+  read: Boolean!
+
+  """
+  The creation time as an ISO 8601 UTC timestamp, e.g. 2026-05-28T14:32:18Z.
+  """
+  created: String!
+
+  """
+  The raw notification type id, e.g. "comment:mention".
+  """
+  type: String!
+
+  """
+  The main, human readable text (plain).
+  """
+  title: String!
+
+  """
+  Optional secondary line (plain).
+  """
+  message: String
+
+  """
+  The user that triggered the event (mention author, resolver, ...), or null
+  when there is no associated user or the account was deleted.
+  """
+  user: ParagraphsBlokkliUser
+
+  """
+  UUID of the entity this notification points at. Its meaning depends on the
+  type (e.g. a comment UUID for comment:* notifications).
+  """
+  relatedEntityUuid: String
+
+  """
+  The host entity (page) the notification lives on, or null when the host was
+  deleted or the notification has no host at all.
+  """
+  host: ParagraphsBlokkliHostEntity
+}
+
+"""
+A page of notifications for the current user.
+"""
+type ParagraphsBlokkliNotificationList {
+  """
+  The notifications for the requested page (newest first).
+  """
+  items: [ParagraphsBlokkliNotification!]!
+
+  """
+  Total number of notifications across all pages.
+  """
+  total: Int!
+
+  """
+  Number of notifications returned per page.
+  """
+  perPage: Int!
+
+  """
+  The number of unread notifications for the current user, reflecting any
+  marking applied by this query (see the markAsRead argument).
+  """
+  unreadCount: Int!
+
+  """
+  Opaque cursor for the next (older) page, or null when there are no more.
+  Pass it back as the `after` argument. Stable against insertions/deletions.
+  """
+  nextCursor: String
 }

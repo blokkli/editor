@@ -1,38 +1,41 @@
 <template>
   <Teleport :to="'#bk-toolbar-' + region">
-    <button
-      ref="el"
-      class="bk-toolbar-button group/tooltip"
-      :disabled="disabled"
-      :class="[
-        { 'bk-is-active': active },
-        id ? 'bk-is-' + id : undefined,
-        $attrs.class,
-      ]"
-      :data-test-toolbar-button="id"
-      :style="{ order: weight || 0 }"
-      @click.prevent.stop="onClick"
-    >
-      <slot>
-        <Icon v-if="icon" :name="icon" />
-      </slot>
-      <Tooltip
-        :label="title"
-        :placement="tooltipPlacement"
-        :margin="region === 'before-sidebar'"
+    <div :style="{ order: weight || 0 }" class="relative">
+      <button
+        ref="el"
+        class="bk-toolbar-button group/tooltip"
+        :disabled="disabled"
+        :class="[
+          { 'bk-is-active': active },
+          id ? 'bk-is-' + id : undefined,
+          $attrs.class,
+        ]"
+        :data-test-toolbar-button="id"
+        @click.prevent.stop="onClick"
       >
-        <template v-if="keyCode" #shortcut>
-          <ShortcutIndicator
-            :meta="meta"
-            :shift="shift"
-            :key-code="keyCode"
-            :label="title"
-            :group="shortcutGroup"
-            @pressed="onClick"
-          />
-        </template>
-      </Tooltip>
-    </button>
+        <slot>
+          <Icon v-if="icon" :name="icon" />
+          <slot name="icon-addon" />
+        </slot>
+        <Tooltip
+          :label="title"
+          :placement="tooltipPlacement"
+          :margin="region === 'before-sidebar'"
+        >
+          <template v-if="keyCode" #shortcut>
+            <ShortcutIndicator
+              :meta="meta"
+              :shift="shift"
+              :key-code="keyCode"
+              :label="title"
+              :group="shortcutGroup"
+              @pressed="onClick"
+            />
+          </template>
+        </Tooltip>
+      </button>
+      <slot name="after" />
+    </div>
   </Teleport>
 </template>
 
@@ -200,6 +203,8 @@ defineTourItem(() => {
     element: () => el.value,
   }
 })
+
+defineExpose({ el })
 
 defineOptions({
   name: 'PluginToolbarButton',

@@ -1,0 +1,39 @@
+fragment paragraphsBlokkliNotification on ParagraphsBlokkliNotification {
+  uuid
+  type
+  read
+  created
+  title
+  message
+  relatedEntityUuid
+  user {
+    id
+    name
+    imageUrl
+  }
+  host {
+    entityType
+    entityUuid
+    entityBundle
+    label
+    url
+  }
+}
+
+query pbGetNotifications($after: String, $markAsRead: Boolean) {
+  result: pbGetNotifications(after: $after, markAsRead: $markAsRead) {
+    items {
+      ...paragraphsBlokkliNotification
+    }
+    unreadCount
+    nextCursor
+  }
+}
+
+query pbGetNotificationCount {
+  count: pbGetNotificationCount
+}
+
+mutation pbMarkNotificationsAsRead($uuids: [String!]) {
+  count: pbMarkNotificationsAsRead(uuids: $uuids)
+}

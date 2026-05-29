@@ -26,15 +26,8 @@
 <script lang="ts" setup>
 import type { ContextMenu } from '#blokkli/editor/types/ui'
 import { Icon } from '#blokkli/editor/components'
-import { onBlokkliEvent } from '#blokkli/editor/composables'
-import {
-  watch,
-  ref,
-  computed,
-  onMounted,
-  useBlokkli,
-  onBeforeUnmount,
-} from '#imports'
+import { useDismiss } from '#blokkli/editor/composables'
+import { ref, computed, useBlokkli } from '#imports'
 
 const props = defineProps<{
   menu: ContextMenu[]
@@ -44,7 +37,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['close'])
 
-const { ui, selection } = useBlokkli()
+const { ui } = useBlokkli()
 
 const rootEl = ref<HTMLDivElement | null>(null)
 
@@ -62,21 +55,7 @@ const innerStyle = computed(() => {
   }
 })
 
-onBlokkliEvent('keyPressed', (e) => {
-  if (ui.hasDialogOpen.value) {
-    return
-  }
-
-  if (e.code === 'Escape') {
-    emit('close')
-  }
-})
-
-onBlokkliEvent('window:clickAway', () => {
-  emit('close')
-})
-
-watch(selection.uuids, () => emit('close'))
+useDismiss({ element: rootEl, onDismiss: () => emit('close') })
 
 const onClick = async (index: number) => {
   const item = props.menu[index]
@@ -87,25 +66,4 @@ const onClick = async (index: number) => {
   }
   emit('close')
 }
-
-const onMouseDown = (e: MouseEvent) => {
-  if (!rootEl.value) {
-    return
-  }
-
-  if (
-    (e.target instanceof HTMLElement || e.target instanceof SVGElement) &&
-    !e.target.contains(rootEl.value)
-  ) {
-    emit('close')
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('click', onMouseDown)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('click', onMouseDown)
-})
 </script>

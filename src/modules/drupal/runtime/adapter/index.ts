@@ -47,6 +47,7 @@ import type { EditPermission } from '#blokkli/types/provider'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
+import type { BlokkliNotification } from '#blokkli/editor/features/notifications/types'
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
 
@@ -1014,6 +1015,51 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           }
           return updated
         })
+    }
+
+    if (hasQuery('pbGetNotifications')) {
+      adapter.loadNotifications = (options) =>
+        useGraphqlQuery('pbGetNotifications', {
+          after: options.after,
+          markAsRead: options.markAsRead,
+        }).then((v) => {
+          const result = v.data.result
+          return {
+            items: (result?.items ?? []).map((item) => ({
+              uuid: item.uuid,
+              type: item.type as BlokkliNotification['type'],
+              read: item.read,
+              created: item.created,
+              title: item.title,
+              message: item.message ?? undefined,
+              relatedEntityUuid: item.relatedEntityUuid ?? undefined,
+              user: mapBlokkliUser(item.user),
+              host: item.host
+                ? {
+                    uuid: item.host.entityUuid,
+                    entityType: item.host.entityType,
+                    entityBundle: item.host.entityBundle,
+                    label: item.host.label ?? '',
+                    url: item.host.url ?? '',
+                  }
+                : null,
+            })),
+            nextCursor: result?.nextCursor ?? null,
+            unreadCount: result?.unreadCount ?? 0,
+          }
+        })
+    }
+
+    if (hasQuery('pbGetNotificationCount')) {
+      adapter.loadUnreadNotificationsCount = () =>
+        useGraphqlQuery('pbGetNotificationCount').then((v) => v.data.count ?? 0)
+    }
+
+    if (hasMutation('pbMarkNotificationsAsRead')) {
+      adapter.markAllNotificationsAsRead = () =>
+        useGraphqlMutation('pbMarkNotificationsAsRead', {
+          uuids: undefined,
+        }).then((v) => v.data.count)
     }
 
     if (hasQuery('pbReferencedEntities')) {

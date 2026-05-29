@@ -47,6 +47,11 @@ npm run dev:start              # Serve static playground build
 replacement. Do NOT start the dev server to verify changes - it's already
 running and will automatically reload. Same for styles, no need to build styles.
 
+**Do NOT verify changes in the browser (Playwright) unless explicitly asked.**
+For UI/editor changes, running the targeted typechecks and prettier is enough by
+default - only reach for the browser when the user asks you to test/verify it
+there.
+
 ### Building & Packaging
 
 ```bash
