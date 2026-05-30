@@ -39,10 +39,9 @@ describe('Auto-translate', async () => {
   test('translating an added card updates the editable DOM after Apply', async () => {
     // Open in EN editing mode first — adding blocks is forbidden in translating
     // mode, so we set up the fixture here, then switch the URL to /de below.
-    const page = await openEditor(
-      '/page/1?blokkliEditing=1&testing=true',
-      { localStorage: autoTranslateMockEntry() },
-    )
+    const page = await openEditor('/page/1?blokkliEditing=1&testing=true', {
+      localStorage: autoTranslateMockEntry(),
+    })
 
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))

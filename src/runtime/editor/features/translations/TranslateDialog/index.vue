@@ -26,13 +26,17 @@
       </div>
     </PanelSection>
 
-    <PanelSection :title="sourceValues.length ? fieldsTitle : undefined">
+    <PanelSection
+      data-test="translations-batch-fields"
+      :title="sourceValues.length ? fieldsTitle : undefined"
+    >
       <div v-if="isLoading" class="flex items-center justify-center py-60">
         <Loading />
       </div>
 
       <div
         v-else-if="!sourceValues.length"
+        data-test="translations-batch-empty"
         class="py-20 text-center text-mono-500"
       >
         {{
@@ -65,7 +69,12 @@
           </th>
         </template>
         <template #body>
-          <tr v-for="item in filteredValues" :key="item.key">
+          <tr
+            v-for="item in filteredValues"
+            :key="item.key"
+            data-test="translations-batch-row"
+            :data-test-key="item.key"
+          >
             <td>
               <div class="bk-checkbox">
                 <input
@@ -109,6 +118,7 @@
     <template #footer>
       <button
         class="bk-button"
+        data-test="translations-batch-request"
         :disabled="!selectedCount || isTranslating"
         @click="requestTranslations"
       >
@@ -128,6 +138,7 @@
       </button>
       <button
         class="bk-button bk-scheme-accent"
+        data-test="translations-batch-apply"
         :disabled="!hasTranslated || !selectedCount || isApplying"
         @click="applyTranslations"
       >

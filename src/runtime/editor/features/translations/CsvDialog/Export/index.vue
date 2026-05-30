@@ -29,6 +29,7 @@
 
     <PanelSection
       v-else-if="exportRows.length"
+      data-test="translations-csv-export-loaded"
       sticky-actions
       :title="
         $t('translationsCsvExportFieldsTitle', '@count fields').replace(
@@ -63,6 +64,7 @@
 
       <template #actions>
         <PanelAction
+          data-test="translations-csv-export-csv"
           icon="bk_mdi_download"
           :title="$t('downloadCsv', 'Download CSV')"
           @click="downloadCsv"
@@ -70,6 +72,7 @@
         <PanelAction
           v-for="lang in activeLanguages"
           :key="lang.id"
+          :data-test="`translations-csv-export-po-${lang.id}`"
           icon="bk_mdi_download"
           :title="
             $t('downloadPoWithLabel', 'Download @label PO').replace(

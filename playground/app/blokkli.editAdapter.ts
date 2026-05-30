@@ -926,8 +926,12 @@ export default defineBlokkliEditAdapter((ctx) => {
         },
       }
     },
-    markTranslationUpToDate: (uuids, langcode) =>
-      addMutation('mark_translation_up_to_date', { uuids, langcode }),
+    markTranslationUpToDate: (uuids, langcode) => {
+      if (isTesting) {
+        recordAdapterCall('mark_translation_up_to_date', { uuids, langcode })
+      }
+      return addMutation('mark_translation_up_to_date', { uuids, langcode })
+    },
 
     async loadTextFieldValuesForLanguage(langcode) {
       const page = entityStorageManager.getContent(ctx.value.entityUuid)
@@ -1341,8 +1345,15 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
     },
 
-    importTranslationsBatched: ({ items, markUpToDate }) =>
-      addMutation('import_translations_batched', { items, markUpToDate }),
+    importTranslationsBatched: ({ items, markUpToDate }) => {
+      if (isTesting) {
+        recordAdapterCall('import_translations_batched', {
+          items,
+          markUpToDate,
+        })
+      }
+      return addMutation('import_translations_batched', { items, markUpToDate })
+    },
 
     async requestTranslation(items) {
       // E2E mock: when seeded, return a deterministic decoration of the source

@@ -7,6 +7,7 @@
         v-for="tab in tabs"
         :key="tab.id"
         role="tab"
+        :data-test-tab="tab.id"
         :aria-selected="modelValue === tab.id"
         :class="{
           '!bg-mono-100 !text-mono-900': modelValue === tab.id && mono,

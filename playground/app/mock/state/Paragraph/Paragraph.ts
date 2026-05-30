@@ -5,6 +5,7 @@ import { FieldOptions } from '../Field/Options'
 import { FieldText } from '../Field/Text'
 import type { EntityValidation } from '../Validation'
 import { Entity } from '../Entity'
+import { readOutdatedTranslationsOverride } from '../../outdatedTranslationsOverride'
 
 export abstract class Paragraph extends Entity {
   public static override entityType = 'paragraph'
@@ -79,6 +80,21 @@ export abstract class Paragraph extends Entity {
       // Field was never explicitly set: default to all languages that have
       // translations on this entity.
       outdatedTranslations = this.getTranslationLanguages()
+
+      // E2E test seam: when no explicit outdated value has been written, merge
+      // in any seeded outdated languages for this uuid. This lets a spec reach
+      // the outdated state without driving the full add → translate → re-edit
+      // UI loop. The override is scoped to the "unset" branch on purpose: once
+      // `mark_translation_up_to_date` writes an explicit value, that wins —
+      // otherwise clearing outdated would never stick. See
+      // outdatedTranslationsOverride.ts.
+      const override = readOutdatedTranslationsOverride()
+      const seeded = override?.[this.uuid]
+      if (seeded?.length) {
+        const merged = new Set(outdatedTranslations)
+        for (const lang of seeded) merged.add(lang)
+        outdatedTranslations = [...merged]
+      }
     } else {
       try {
         outdatedTranslations = JSON.parse(rawOutdated)

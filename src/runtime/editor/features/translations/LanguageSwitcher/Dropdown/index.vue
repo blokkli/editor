@@ -2,6 +2,7 @@
   <div class="relative">
     <button
       class="bk-toolbar-button"
+      data-test="language-switcher-toggle"
       :class="{ 'bk-is-active': isOpen }"
       @click.stop.prevent="isOpen = !isOpen"
     >
@@ -18,6 +19,7 @@
       <button
         v-for="item in items"
         :key="item.id"
+        :data-test="`language-switcher-option-${item.id}`"
         class="group/tooltip px-10 py-8 w-full text-left min-w-[120px]"
         :class="{
           'bg-white! text-mono-900 font-bold': item.id === activeLanguage.id,

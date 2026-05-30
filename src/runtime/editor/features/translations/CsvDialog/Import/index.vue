@@ -40,12 +40,14 @@
     <template v-if="files.length">
       <div
         v-if="changes && !changes.length"
+        data-test="translations-csv-import-no-changes"
         class="py-20 text-center text-mono-500"
       >
         {{ $t('translationsCsvNoChanges', 'No changes found') }}
       </div>
       <PanelSection
         v-else-if="changes && changes.length"
+        data-test="translations-csv-import-changes"
         :title="
           $t(
             'translationsCsvChangesTitle',
@@ -71,7 +73,12 @@
             </th>
           </template>
           <template #body>
-            <tr v-for="row in rows" :key="row.key">
+            <tr
+              v-for="row in rows"
+              :key="row.key"
+              data-test="translations-csv-import-row"
+              :data-test-key="row.key"
+            >
               <td>
                 <div class="bk-checkbox">
                   <input
@@ -133,6 +140,7 @@
 
         <template #actions>
           <PanelAction
+            data-test="translations-csv-import-apply"
             icon="bk_mdi_check"
             :disabled="!selectedCount"
             :title="
@@ -148,6 +156,7 @@
     </template>
     <input
       ref="fileInputEl"
+      data-test="translations-csv-import-file"
       type="file"
       accept=".csv,.po,text/csv"
       multiple

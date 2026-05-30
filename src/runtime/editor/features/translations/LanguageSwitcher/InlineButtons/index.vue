@@ -3,6 +3,7 @@
     <button
       v-for="item in items"
       :key="item.id"
+      :data-test="`language-switcher-option-${item.id}`"
       class="group/tooltip h-full flex items-center justify-center group px-3 first:pl-0 last:pr-0"
       @click.stop.prevent="$emit('select', item)"
     >

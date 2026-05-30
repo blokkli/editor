@@ -1,5 +1,10 @@
 <template>
-  <Banner id="translate" scheme="yellow">
+  <Banner
+    id="translate"
+    scheme="yellow"
+    data-test="translations-banner"
+    :data-test-outdated-count="outdatedUuids.length"
+  >
     <FileDropHandler
       icon="bk_mdi_translate"
       :label="$t('translationsDropToImport', 'Drop CSV or PO file to import')"
@@ -22,6 +27,7 @@
                 <div class="flex gap-5 relative">
                   <button
                     class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
+                    data-test="translations-banner-mark-all"
                     @click.prevent="$emit('mark-all-up-to-date', outdatedUuids)"
                   >
                     {{
@@ -55,6 +61,7 @@
             <button
               v-if="showTranslate"
               class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
+              data-test="translations-banner-translate"
               @click.prevent="$emit('open-translate')"
             >
               <Icon name="bk_mdi_translate" />
@@ -76,6 +83,7 @@
             <button
               v-if="showCsv"
               class="bk-button bk-is-small bk-is-outline bk-is-dark group/tooltip"
+              data-test="translations-banner-csv"
               @click.prevent="$emit('open-csv')"
             >
               <Icon name="bk_mdi_upload" />
