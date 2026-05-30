@@ -18,6 +18,7 @@ import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem, exportState } from './mock/state'
 import { recordAdapterCall } from './mock/testRecorder'
 import { readPermissionOverrides } from './mock/permissionOverrides'
+import { readOwnershipOverride } from './mock/ownershipOverride'
 import { readAutoTranslateMock } from './mock/translationOverride'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
@@ -242,14 +243,18 @@ const textAnalyzer = defineAnalyzer(() => {
 })
 
 export default defineBlokkliEditAdapter((ctx) => {
+  const router = useRouter()
+  const route = useRoute()
+
+  const isTesting = route.query.testing === 'true'
+
   // =============================================================================
   // Debugging
   // =============================================================================
-  // Set to false to debug the "take ownership" flow.
-  let isOwner = true
-
-  const router = useRouter()
-  const route = useRoute()
+  // Set to false to debug the "take ownership" flow. In E2E specs the initial
+  // state is seeded via `ownershipOverride.ts` (gated on `isTesting`).
+  const ownershipOverride = isTesting ? readOwnershipOverride() : null
+  let isOwner = ownershipOverride?.currentUserIsOwner ?? true
   const mockResponse = (
     mutatedState: MutatedState,
   ): Promise<MutationResponseLike<MutatedState>> => {
@@ -258,8 +263,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       state: mutatedState,
     })
   }
-
-  const isTesting = route.query.testing === 'true'
 
   const getEntity = () =>
     entityStorageManager.getContent(ctx.value.entityUuid) as ContentPage
@@ -771,6 +774,9 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     applyHostTransformPlugin: (e) => addMutation('transform_host', e),
     takeOwnership: async () => {
+      if (isTesting) {
+        recordAdapterCall('take_ownership', {})
+      }
       isOwner = true
       const entity = getEntity()
       const mutatedState = await editState.getMutatedState(
@@ -843,8 +849,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         currentIndex: editState.currentIndex,
         mutations: editState.getMutationItems(),
         currentUserIsOwner: isOwner,
-        ownerName: state.owner.name,
-        ownerId: state.owner.id,
+        ownerName: ownershipOverride?.ownerName ?? state.owner.name,
+        ownerId: ownershipOverride?.ownerId ?? state.owner.id,
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,

@@ -1,5 +1,9 @@
 <template>
-  <Banner id="ownership">
+  <Banner
+    id="ownership"
+    data-test="ownership-banner"
+    :data-test-owner-name="state.owner.value?.name ?? ''"
+  >
     <BannerInner
       icon="bk_mdi_person-fill"
       :text
