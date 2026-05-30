@@ -18,6 +18,7 @@ import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem, exportState } from './mock/state'
 import { recordAdapterCall } from './mock/testRecorder'
 import { readPermissionOverrides } from './mock/permissionOverrides'
+import { readAutoTranslateMock } from './mock/translationOverride'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
@@ -1344,6 +1345,27 @@ export default defineBlokkliEditAdapter((ctx) => {
       addMutation('import_translations_batched', { items, markUpToDate }),
 
     async requestTranslation(items) {
+      // E2E mock: when seeded, return a deterministic decoration of the source
+      // text instead of hitting `/api/translate` (paid DeepL). Specs MUST seed
+      // this — otherwise running the auto-translate flow burns real API credit.
+      // See playground/app/mock/translationOverride.ts.
+      if (isTesting) {
+        const mock = readAutoTranslateMock()
+        if (mock) {
+          return {
+            success: true,
+            data: items.map((item) => {
+              const prefix =
+                mock.prefix ?? `[${item.targetLanguage.toUpperCase()}] `
+              const suffix = mock.suffix ?? ''
+              return {
+                key: item.key,
+                translatedText: `${prefix}${item.text}${suffix}`,
+              }
+            }),
+          }
+        }
+      }
       try {
         const data = await $fetch<{ key: string; translatedText: string }[]>(
           '/api/translate',

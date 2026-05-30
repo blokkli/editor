@@ -120,11 +120,33 @@ watch(
   () => applyOverride(),
 )
 
-// Undo the preview when the approval UI closes. Accepted items still have the
-// diff markup applied at this point (only deselected ones were restored above),
-// so this re-inserts the original Vue-managed nodes. restore() is idempotent, so
-// it's a no-op for already-restored items.
-onBeforeUnmount(() => override.restore())
+// True once `commitForApply` has run — DiffApproval calls it for accepted
+// items BEFORE the consumer's mutation, so the Vue-tracked nodes are back in
+// the DOM when reactive patches flow in. Skipping the restore() here then
+// avoids clobbering the just-committed value with the pre-mutation snapshot.
+let committed = false
+
+/**
+ * Restore the original Vue-managed nodes immediately, in preparation for the
+ * consumer's mutation. After this runs, Vue's reactive patch can write the
+ * new value into the live tracked nodes — and the post-mutation
+ * `onBeforeUnmount` restore is skipped so it doesn't clobber that value.
+ */
+function commitForApply() {
+  override.restore()
+  committed = true
+}
+
+// Undo the preview when the approval UI closes — for rejected items and the
+// cancel path. Accepted items go through `commitForApply` above instead.
+onBeforeUnmount(() => {
+  if (committed) {
+    return
+  }
+  override.restore()
+})
+
+defineExpose({ updateRect, commitForApply })
 
 const rect = ref<ItemRect>({ width: '0', height: '0', transform: '' })
 
@@ -156,6 +178,4 @@ onBlokkliEvent('animationFrame', (ctx) => {
   lastFullUpdate = ctx.time
   updateRect()
 })
-
-defineExpose({ updateRect })
 </script>

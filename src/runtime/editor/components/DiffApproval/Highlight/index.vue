@@ -26,7 +26,7 @@ import { computed, useTemplateRef, useBlokkli } from '#imports'
 import type { ApprovalItem } from '../types'
 import Item from './Item.vue'
 
-defineProps<{
+const props = defineProps<{
   items: ApprovalItem[]
   selected: Record<number, boolean>
   insertionsOnly?: boolean
@@ -62,5 +62,24 @@ function updateRects() {
   }
 }
 
-defineExpose({ updateRects })
+/**
+ * Reset each accepted item's editable to its original Vue-tracked DOM, then
+ * mark them committed so the post-mutation unmount-restore is a no-op. Called
+ * by DiffApproval BEFORE emitting `apply`, so the consumer's mutation patches
+ * onto the freshly-restored nodes instead of the throwaway diff markup.
+ */
+function commitSelected() {
+  if (!itemRefs.value) {
+    return
+  }
+  for (let i = 0; i < itemRefs.value.length; i++) {
+    const ref = itemRefs.value[i]
+    const item = props.items[i]
+    if (ref && item && props.selected[item.id]) {
+      ref.commitForApply()
+    }
+  }
+}
+
+defineExpose({ updateRects, commitSelected })
 </script>

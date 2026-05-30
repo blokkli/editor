@@ -148,6 +148,14 @@ function onUpdateReasons(id: number, value: string) {
 }
 
 function onApply() {
+  // Reset accepted items' editables to their original Vue-tracked DOM BEFORE
+  // notifying the consumer. The consumer typically commits the new value via a
+  // mutation, which Vue then patches onto the editable — those patches must
+  // land on the tracked nodes, not on the throwaway `<ins>`/`<del>` markup
+  // setDiffHtml wrote. Without this, the post-mutation `onBeforeUnmount`
+  // restore would re-insert the pre-mutation snapshot and clobber the
+  // committed value.
+  highlight.value?.commitSelected()
   emit('apply', {
     selected: { ...selected },
     reasons: { ...reasons },
