@@ -14,16 +14,21 @@
     :weight="-100"
     region="before-sidebar"
     icon="bk_mdi_notifications"
-    class="border-r border-r-mono-600"
+    class="border-r border-r-mono-600 bk-has-dropdown"
     @click="isVisible = !isVisible"
   >
     <template #after>
-      <NotificationsList
-        v-if="isVisible"
-        v-model:unread-count="unreadCount"
-        :toggle-element
-        @close="isVisible = false"
-      />
+      <BlokkliTransition name="context-menu">
+        <ToolbarDropdown
+          v-if="isVisible"
+          :toggle-element
+          class="origin-top-right"
+          :title="$t('notifications', 'Notifications')"
+          @close="isVisible = false"
+        >
+          <NotificationsList v-model:unread-count="unreadCount" />
+        </ToolbarDropdown>
+      </BlokkliTransition>
     </template>
     <template #icon-addon>
       <div
@@ -48,6 +53,7 @@ import {
   onUnmounted,
 } from '#imports'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
+import { ToolbarDropdown, BlokkliTransition } from '#blokkli/editor/components'
 import NotificationsList from './List/index.vue'
 
 const { adapter } = defineBlokkliFeature({

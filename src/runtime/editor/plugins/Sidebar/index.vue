@@ -3,7 +3,7 @@
     <button
       :id="'bk-sidebar-button-' + id"
       ref="tourElement"
-      class="bk-toolbar-button group/tooltip"
+      class="bk-toolbar-button group/tooltip bk-has-dropdown"
       :class="[
         { 'bk-is-active': activeSidebar === id && !isDisabled },
         'bk-is-' + region,
@@ -705,14 +705,6 @@ export default {
   }
 
   .bk-toolbar-button {
-    &:before {
-      @apply content-[''] w-0 h-0 border-solid;
-      @apply absolute bottom-0 left-[17.5px] transition origin-bottom;
-      @apply scale-y-0;
-      border-width: 0 8px 6px;
-      border-color: transparent transparent #ffffff transparent;
-    }
-
     @variant lg {
       &.bk-is-right,
       &.bk-is-right-bottom {
@@ -733,9 +725,6 @@ export default {
 
     &.bk-is-active {
       @apply bg-mono-700;
-      &:before {
-        @apply scale-100;
-      }
     }
   }
 }

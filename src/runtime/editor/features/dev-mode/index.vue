@@ -55,9 +55,11 @@ const { $t, types, definitions, ui } = useBlokkli()
 
 const { isVisible } = defineViewOption({
   id: 'dev_mode',
-  label: $t('toggleInteractionLayers', 'Toggle interaction layers'),
-  titleOn: $t('interactionLayersOn', 'Hide interaction layers'),
-  titleOff: $t('interactionLayerOff', 'Show interaction layers'),
+  label: $t('viewOptionInteractionLayers', 'Interaction layers'),
+  description: $t(
+    'viewOptionInteractionLayersDescription',
+    'Hides the editor overlays to preview the page as it will render.',
+  ),
   icon: 'bk_mdi_logo_dev',
   keyCode: 'I',
   weight: -99999,

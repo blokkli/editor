@@ -24,9 +24,11 @@ const { $t } = useBlokkli()
 
 const { isVisible } = defineViewOption({
   id: 'anchor',
-  label: $t('anchorToggle', 'Toggle anchor links'),
-  titleOn: $t('anchorShow', 'Show anchor links'),
-  titleOff: $t('anchorHide', 'Hide anchor links'),
+  label: $t('viewOptionAnchors', 'Anchor links'),
+  description: $t(
+    'viewOptionAnchorsDescription',
+    'Highlights blocks that have an anchor ID.',
+  ),
   icon: 'bk_mdi_anchor',
 })
 </script>

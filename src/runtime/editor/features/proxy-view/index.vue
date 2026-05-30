@@ -18,15 +18,16 @@ const { $t, ui, eventBus } = useBlokkli()
 
 const { isVisible } = defineViewOption({
   id: 'proxy_view',
-  label: $t('proxyViewToggle', 'Toggle structure view'),
-  titleOn: $t('proxyViewShow', 'Show structure view'),
-  titleOff: $t('proxyViewHide', 'Show content preview'),
+  label: $t('viewOptionStructureView', 'Structure view'),
+  description: $t(
+    'viewOptionStructureViewDescription',
+    'Shows blocks as a structured outline instead of the rendered preview.',
+  ),
   tourText: $t(
     'proxyViewTourText',
     'Displays the content blocks as a structured view.',
   ),
   icon: 'bk_mdi_account_tree',
-  keyCode: 'P',
 })
 
 watch(

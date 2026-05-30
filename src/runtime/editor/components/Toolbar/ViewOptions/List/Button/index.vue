@@ -1,40 +1,41 @@
 <template>
   <button
     ref="buttonEl"
-    class="bk-toolbar-button group/tooltip"
+    class="flex gap-8 whitespace-nowrap w-full px-10 text-mono-800 items-center hover:bg-mono-200 min-h-50 group/tooltip relative"
     :data-test-view-option="id"
     :data-test-active="isActive"
     :class="{ 'bk-is-inactive': !isActive }"
-    :style="{ order: weight ?? 0 }"
     @click.prevent.stop="toggle"
   >
-    <Icon v-if="icon" :name="icon" />
-    <Tooltip
-      :label="isActive ? titleOff : titleOn"
-      class="w-full"
-      placement="below-left"
-    >
-      <ShortcutIndicator
-        v-if="keyCode"
-        meta
-        :key-code
-        :label
-        group="ui"
-        @pressed="toggle"
-      />
+    <Icon v-if="icon" :name="icon" class="size-20" />
+    <div class="font-semibold text-base">
+      {{ label }}
+    </div>
+    <div class="ml-auto">
+      <FormToggle :model-value="isActive" />
+    </div>
+    <Tooltip :label="description" placement="center-before">
+      <template v-if="keyCode" #shortcut>
+        <ShortcutIndicator meta :key-code :label group="ui" @pressed="toggle" />
+      </template>
     </Tooltip>
   </button>
 </template>
 
 <script setup lang="ts">
 import { useBlokkli, useTemplateRef, watch } from '#imports'
-import { Icon, Tooltip, ShortcutIndicator } from '#blokkli/editor/components'
+import {
+  Icon,
+  ShortcutIndicator,
+  Tooltip,
+  FormToggle,
+} from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
-import type { ViewOption } from '../../../../providers/plugin'
+import type { ViewOption } from '#blokkli/editor/providers/plugin'
 
 const props = defineProps<ViewOption>()
 
-const { storage, eventBus } = useBlokkli()
+const { storage, eventBus, $t } = useBlokkli()
 
 const buttonEl = useTemplateRef('buttonEl')
 const isActive = storage.use('view_option_' + props.id, false, true)
@@ -49,7 +50,10 @@ watch(isActive, () => {
 
 defineCommands(() => ({
   id: 'plugin:view_option:' + props.id,
-  label: isActive.value ? props.titleOff : props.titleOn,
+  label: (isActive.value
+    ? $t('viewOptionDisable', 'Disable "@option"')
+    : $t('viewOptionEnable', 'Enable "@option"')
+  ).replace('@option', props.label),
   icon: props.icon,
   group: 'ui',
   callback: toggle,

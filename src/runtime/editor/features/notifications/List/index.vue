@@ -1,7 +1,6 @@
 <template>
   <ScrollBoundary
-    ref="root"
-    class="absolute top-full right-0 w-[400px] bg-white overflow-auto bk-scrollbar-light max-h-[600px] shadow-2xl border border-mono-300 border-t-0"
+    class="w-[400px] overflow-auto bk-scrollbar-light max-h-[600px]"
   >
     <TransitionHeight>
       <div
@@ -47,42 +46,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useBlokkli, useTemplateRef } from '#imports'
+import { computed, ref, useBlokkli } from '#imports'
 import {
   Icon,
   ScrollBoundary,
   TransitionHeight,
 } from '#blokkli/editor/components'
-import { useDismiss } from '#blokkli/editor/composables'
 import { emitMessage } from '#blokkli/editor/events'
 import NotificationItem from '../Item/index.vue'
 import type { BlokkliNotification } from '../types'
 
 const { $t, adapter } = useBlokkli()
 
-const props = defineProps<{
-  /**
-   * The element that toggles this list. Clicks on it are ignored by the
-   * outside-click dismiss handler so the toggle doesn't immediately
-   * re-close the dropdown it just opened.
-   */
-  toggleElement: HTMLElement | null
-}>()
-
 const unreadCount = defineModel<number | null>('unreadCount', {
   required: true,
-})
-
-const emit = defineEmits<{
-  (e: 'close'): void
-}>()
-
-const root = useTemplateRef('root')
-
-useDismiss({
-  element: () => (root.value?.$el as HTMLElement | null) ?? null,
-  ignore: () => props.toggleElement,
-  onDismiss: () => emit('close'),
 })
 
 const notifications = ref<BlokkliNotification[]>([])
@@ -107,7 +84,7 @@ try {
   reportError(err)
   // The dropdown can't render without data — close it. The badge state on
   // the toolbar is preserved from the parent's earlier fetch.
-  emit('close')
+  // @TODO: Render error.
 }
 
 const onLoadMore = async () => {

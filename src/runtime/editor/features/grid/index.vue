@@ -21,9 +21,11 @@ const { $t } = useBlokkli()
 
 const { isVisible } = defineViewOption({
   id: 'grid',
-  label: $t('gridToggle', 'Toggle grid'),
-  titleOn: $t('gridShow', 'Show grid'),
-  titleOff: $t('gridHide', 'Hide grid'),
+  label: $t('viewOptionGrid', 'Grid'),
+  description: $t(
+    'viewOptionGridDescription',
+    'Shows a layout grid overlay on top of the page.',
+  ),
   tourText: $t(
     'gridTourText',
     'Display a layout grid overlay on top of the page.',

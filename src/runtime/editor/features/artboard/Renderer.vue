@@ -85,14 +85,16 @@ const { context, storage, ui, animation, $t, dom, selection } = useBlokkli()
 
 const { isVisible: isOverviewVisible } = defineViewOption({
   id: 'artboardOverview',
-  label: $t('artboardOverviewToggle', 'Toggle overview'),
-  titleOn: $t('artboardOverviewShow', 'Show overview'),
-  titleOff: $t('artboardOverviewHide', 'Hide overview'),
+  label: $t('viewOptionArtboardOverview', 'Overview'),
+  description: $t(
+    'viewOptionArtboardOverviewDescription',
+    'Displays a top-level overview of all content blocks.',
+  ),
   tourText: $t(
     'artboardOverviewTourText',
     'Displays a top level overview of your content.',
   ),
-  icon: 'bk_mdi_visibility',
+  icon: 'bk_mdi_crop_9_16',
   keyCode: 'O',
   weight: 90,
 })

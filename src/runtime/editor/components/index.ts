@@ -60,6 +60,7 @@ export { default as NotEditStateInfo } from './NotEditStateInfo/index.vue'
 export { default as ButtonAction } from './ButtonAction/index.vue'
 export { default as Pill } from './Pill/index.vue'
 export { default as DialogModal } from './Dialog/index.vue'
+export { default as ToolbarDropdown } from './ToolbarDropdown/index.vue'
 
 export const NestedEditorOverlay = defineAsyncComponent(
   () => import('./NestedEditorOverlay/index.vue'),

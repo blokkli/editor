@@ -1170,18 +1170,6 @@ msgctxt "analyzerReadabiliyTitle"
 msgid "Text readability issues"
 msgstr "Läsbarkeitsproblem im Teggscht"
 
-msgctxt "anchorHide"
-msgid "Hide anchor links"
-msgstr "Anker-Links verstecke"
-
-msgctxt "anchorShow"
-msgid "Show anchor links"
-msgstr "Anker-Links aazeige"
-
-msgctxt "anchorToggle"
-msgid "Toggle anchor links"
-msgstr "Anker-Links umschalte"
-
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -1193,18 +1181,6 @@ msgstr ""
 msgctxt "artboard"
 msgid "Artboard"
 msgstr "Zeichenflächi"
-
-msgctxt "artboardOverviewHide"
-msgid "Hide overview"
-msgstr "Übersicht verstecke"
-
-msgctxt "artboardOverviewShow"
-msgid "Show overview"
-msgstr "Übersicht aazeige"
-
-msgctxt "artboardOverviewToggle"
-msgid "Toggle overview"
-msgstr "Übersicht umschalte"
 
 msgctxt "artboardOverviewTourText"
 msgid "Displays a top level overview of your content."
@@ -2597,18 +2573,6 @@ msgctxt "fragmentsPlaceDialogTitle"
 msgid "Add fragment block"
 msgstr "Fragmänt-Block drzuefüege"
 
-msgctxt "gridHide"
-msgid "Hide grid"
-msgstr "Spalte verstecke"
-
-msgctxt "gridShow"
-msgid "Show grid"
-msgstr "Spalte aazeige"
-
-msgctxt "gridToggle"
-msgid "Toggle grid"
-msgstr "Spalte aazeige"
-
 msgctxt "gridTourText"
 msgid "Display a layout grid overlay on top of the page."
 msgstr "Zeigt es Layout-Raster-Overlay über dr Sitte aa."
@@ -2704,14 +2668,6 @@ msgstr "Inhält erfolgriich importiert"
 msgctxt "inlineCode"
 msgid "Inline code"
 msgstr "Inline-Code"
-
-msgctxt "interactionLayerOff"
-msgid "Show interaction layers"
-msgstr "Interaktionsebene aazeige"
-
-msgctxt "interactionLayersOn"
-msgid "Hide interaction layers"
-msgstr "Interaktionsebene usbländen"
 
 msgctxt "italic"
 msgid "Italic"
@@ -2824,18 +2780,6 @@ msgstr "Planung verwalte..."
 msgctxt "manageScheduling"
 msgid "Manage scheduling"
 msgstr ""
-
-msgctxt "maskHide"
-msgid "Hide non-editable areas"
-msgstr "Inhaltsfälder verstecke"
-
-msgctxt "maskShow"
-msgid "Show non-editable areas"
-msgstr "Inhaltsfelder aazeige"
-
-msgctxt "maskToggle"
-msgid "Toggle non-editable areas"
-msgstr "Inhaltsfelder aazeige"
 
 msgctxt "maskTourText"
 msgid "Toggle between showing or hiding non-editable parts of the page."
@@ -3032,18 +2976,6 @@ msgid ""
 msgstr ""
 "Zeigt e QR-Code aa zum schnäll e Vorschau vo de Änderige mitem Smartphone "
 "z'öffne."
-
-msgctxt "proxyViewHide"
-msgid "Show content preview"
-msgstr "Inhaltsvorschau aazeige"
-
-msgctxt "proxyViewShow"
-msgid "Show structure view"
-msgstr "Strukturaasicht aazeige"
-
-msgctxt "proxyViewToggle"
-msgid "Toggle structure view"
-msgstr "Strukturaasicht umschalte"
 
 msgctxt "proxyViewTourText"
 msgid "Displays the content blocks as a structured view."
@@ -3717,10 +3649,6 @@ msgctxt "title"
 msgid "Title"
 msgstr ""
 
-msgctxt "toggleInteractionLayers"
-msgid "Toggle interaction layers"
-msgstr "Interaktionsebene umschalte"
-
 msgctxt "touchBarCancelDragging"
 msgid "Cancel dragging"
 msgstr "Platziere abbräche"
@@ -3993,6 +3921,66 @@ msgstr "Du chasch Kommentär aaluege, aber kän Inhalt bearbeite."
 msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
 msgstr "Du bisch im Aaluege-Modus."
+
+msgctxt "viewOptionAnchors"
+msgid "Anchor links"
+msgstr "Ankerlinks"
+
+msgctxt "viewOptionAnchorsDescription"
+msgid "Highlights blocks that have an anchor ID."
+msgstr ""
+
+msgctxt "viewOptionArtboardOverview"
+msgid "Overview"
+msgstr "Übersicht"
+
+msgctxt "viewOptionArtboardOverviewDescription"
+msgid "Displays a top-level overview of all content blocks."
+msgstr ""
+
+msgctxt "viewOptionDisable"
+msgid "Disable \"@option\""
+msgstr ""
+
+msgctxt "viewOptionEnable"
+msgid "Enable \"@option\""
+msgstr ""
+
+msgctxt "viewOptionGrid"
+msgid "Grid"
+msgstr "Raster"
+
+msgctxt "viewOptionGridDescription"
+msgid "Shows a layout grid overlay on top of the page."
+msgstr ""
+
+msgctxt "viewOptionInteractionLayers"
+msgid "Interaction layers"
+msgstr "Interaktionsebene"
+
+msgctxt "viewOptionInteractionLayersDescription"
+msgid "Hides the editor overlays to preview the page as it will render."
+msgstr ""
+
+msgctxt "viewOptionNonEditableAreas"
+msgid "Only editable areas"
+msgstr "Nid-bearbeitbari Beriich"
+
+msgctxt "viewOptionNonEditableAreasDescription"
+msgid "Hides parts of the page that cannot be edited."
+msgstr ""
+
+msgctxt "viewOptionStructureView"
+msgid "Structure view"
+msgstr "Strukturaasicht"
+
+msgctxt "viewOptionStructureViewDescription"
+msgid "Shows blocks as a structured outline instead of the rendered preview."
+msgstr ""
+
+msgctxt "viewOptions"
+msgid "View options"
+msgstr ""
 
 msgctxt "whatsNew"
 msgid "What's New"

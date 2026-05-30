@@ -1181,18 +1181,6 @@ msgctxt "analyzerReadabiliyTitle"
 msgid "Text readability issues"
 msgstr "Probleme bei Lesbarkeit"
 
-msgctxt "anchorHide"
-msgid "Hide anchor links"
-msgstr "Anker-Links verstecken"
-
-msgctxt "anchorShow"
-msgid "Show anchor links"
-msgstr "Anker-Links anzeigen"
-
-msgctxt "anchorToggle"
-msgid "Toggle anchor links"
-msgstr "Anzeige von Anker-Links umschalten"
-
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr "Pfeil links"
@@ -1204,18 +1192,6 @@ msgstr "Pfeil rechts"
 msgctxt "artboard"
 msgid "Artboard"
 msgstr "Vorschau"
-
-msgctxt "artboardOverviewHide"
-msgid "Hide overview"
-msgstr "Übersicht verstecken"
-
-msgctxt "artboardOverviewShow"
-msgid "Show overview"
-msgstr "Übersicht anzeigen"
-
-msgctxt "artboardOverviewToggle"
-msgid "Toggle overview"
-msgstr "Übersicht umschalten"
 
 msgctxt "artboardOverviewTourText"
 msgid "Displays a top level overview of your content."
@@ -2643,18 +2619,6 @@ msgctxt "fragmentsPlaceDialogTitle"
 msgid "Add fragment block"
 msgstr "Fragment hinzufügen"
 
-msgctxt "gridHide"
-msgid "Hide grid"
-msgstr "Spalten verstecken"
-
-msgctxt "gridShow"
-msgid "Show grid"
-msgstr "Spalten anzeigen"
-
-msgctxt "gridToggle"
-msgid "Toggle grid"
-msgstr "Spalten anzeigen"
-
 msgctxt "gridTourText"
 msgid "Display a layout grid overlay on top of the page."
 msgstr "Zeigt die Layout-Spalten als Overlay über die Seite an."
@@ -2750,14 +2714,6 @@ msgstr "Inhalte erfolgreich übernommen."
 msgctxt "inlineCode"
 msgid "Inline code"
 msgstr "Inline-Code"
-
-msgctxt "interactionLayerOff"
-msgid "Show interaction layers"
-msgstr "Interaktionsebenen anzeigen"
-
-msgctxt "interactionLayersOn"
-msgid "Hide interaction layers"
-msgstr "Interaktionsebenen ausblenden"
 
 msgctxt "italic"
 msgid "Italic"
@@ -2870,18 +2826,6 @@ msgstr "Planung verwalten"
 msgctxt "manageScheduling"
 msgid "Manage scheduling"
 msgstr "Planung verwalten"
-
-msgctxt "maskHide"
-msgid "Hide non-editable areas"
-msgstr "Nicht-editierbare Bereiche verstecken"
-
-msgctxt "maskShow"
-msgid "Show non-editable areas"
-msgstr "Nicht-editierbare Bereiche anzeigen"
-
-msgctxt "maskToggle"
-msgid "Toggle non-editable areas"
-msgstr "Nicht-editierbare Bereiche anzeigen"
 
 msgctxt "maskTourText"
 msgid "Toggle between showing or hiding non-editable parts of the page."
@@ -3078,18 +3022,6 @@ msgid ""
 msgstr ""
 "Zeigt einen QR-Code an, um eine Vorschau der Änderungen mit Ihrem "
 "Smartphone zu öffnen."
-
-msgctxt "proxyViewHide"
-msgid "Show content preview"
-msgstr "Inhaltsvorschau anzeigen"
-
-msgctxt "proxyViewShow"
-msgid "Show structure view"
-msgstr "Strukturierte Vorschau anzeigen"
-
-msgctxt "proxyViewToggle"
-msgid "Toggle structure view"
-msgstr "Vorschau wechseln"
 
 msgctxt "proxyViewTourText"
 msgid "Displays the content blocks as a structured view."
@@ -3767,10 +3699,6 @@ msgctxt "title"
 msgid "Title"
 msgstr "Titel"
 
-msgctxt "toggleInteractionLayers"
-msgid "Toggle interaction layers"
-msgstr "Interaktionsebenen umschalten"
-
 msgctxt "touchBarCancelDragging"
 msgid "Cancel dragging"
 msgstr "Platzieren abbrechen"
@@ -4041,6 +3969,70 @@ msgstr "Sie können Kommentare ansehen, aber keine Inhalte bearbeiten."
 msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
 msgstr "Sie befinden sich im Ansichtsmodus."
+
+msgctxt "viewOptionAnchors"
+msgid "Anchor links"
+msgstr "Ankerlinks"
+
+msgctxt "viewOptionAnchorsDescription"
+msgid "Highlights blocks that have an anchor ID."
+msgstr "Hebt Blöcke mit einer Anker-ID hervor."
+
+msgctxt "viewOptionArtboardOverview"
+msgid "Overview"
+msgstr "Übersicht"
+
+msgctxt "viewOptionArtboardOverviewDescription"
+msgid "Displays a top-level overview of all content blocks."
+msgstr "Zeigt eine Übersicht aller Inhaltsblöcke an."
+
+msgctxt "viewOptionDisable"
+msgid "Disable \"@option\""
+msgstr "«@option» deaktivieren"
+
+msgctxt "viewOptionEnable"
+msgid "Enable \"@option\""
+msgstr "«@option» aktivieren"
+
+msgctxt "viewOptionGrid"
+msgid "Grid"
+msgstr "Raster"
+
+msgctxt "viewOptionGridDescription"
+msgid "Shows a layout grid overlay on top of the page."
+msgstr "Zeigt ein Layoutraster über der Seite an."
+
+msgctxt "viewOptionInteractionLayers"
+msgid "Interaction layers"
+msgstr "Interaktionsebenen"
+
+msgctxt "viewOptionInteractionLayersDescription"
+msgid "Hides the editor overlays to preview the page as it will render."
+msgstr ""
+"Blendet die Editor-Overlays aus, um die Seite in der finalen Darstellung "
+"anzuzeigen."
+
+msgctxt "viewOptionNonEditableAreas"
+msgid "Only editable areas"
+msgstr "Nur bearbeitbare Bereiche"
+
+msgctxt "viewOptionNonEditableAreasDescription"
+msgid "Hides parts of the page that cannot be edited."
+msgstr "Versteckt nicht bearbeitbare Teile der Seite."
+
+msgctxt "viewOptionStructureView"
+msgid "Structure view"
+msgstr "Strukturansicht"
+
+msgctxt "viewOptionStructureViewDescription"
+msgid "Shows blocks as a structured outline instead of the rendered preview."
+msgstr ""
+"Zeigt die Blöcke als strukturierte Übersicht anstelle der gerenderten "
+"Vorschau an."
+
+msgctxt "viewOptions"
+msgid "View options"
+msgstr "Darstellung"
 
 msgctxt "whatsNew"
 msgid "What's New"

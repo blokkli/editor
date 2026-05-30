@@ -21,9 +21,11 @@ const { $t } = useBlokkli()
 
 const { isVisible } = defineViewOption({
   id: 'mask',
-  label: $t('maskToggle', 'Toggle non-editable areas'),
-  titleOn: $t('maskHide', 'Hide non-editable areas'),
-  titleOff: $t('maskShow', 'Show non-editable areas'),
+  label: $t('viewOptionNonEditableAreas', 'Only editable areas'),
+  description: $t(
+    'viewOptionNonEditableAreasDescription',
+    'Hides parts of the page that cannot be edited.',
+  ),
   tourText: $t(
     'maskTourText',
     'Toggle between showing or hiding non-editable parts of the page.',

@@ -51,9 +51,8 @@ type HighlightFunction = PluginAddFunction<HighlightItem>
 export type ViewOption = {
   id: string
   label: string
-  titleOn: string
-  titleOff: string
-  icon?: BlokkliIcon
+  description: string
+  icon: BlokkliIcon
   keyCode?: string
   tourText?: string
   weight?: number

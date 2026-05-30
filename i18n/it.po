@@ -1148,18 +1148,6 @@ msgctxt "analyzerReadabiliyTitle"
 msgid "Text readability issues"
 msgstr ""
 
-msgctxt "anchorHide"
-msgid "Hide anchor links"
-msgstr ""
-
-msgctxt "anchorShow"
-msgid "Show anchor links"
-msgstr ""
-
-msgctxt "anchorToggle"
-msgid "Toggle anchor links"
-msgstr ""
-
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -1170,18 +1158,6 @@ msgstr ""
 
 msgctxt "artboard"
 msgid "Artboard"
-msgstr ""
-
-msgctxt "artboardOverviewHide"
-msgid "Hide overview"
-msgstr ""
-
-msgctxt "artboardOverviewShow"
-msgid "Show overview"
-msgstr ""
-
-msgctxt "artboardOverviewToggle"
-msgid "Toggle overview"
 msgstr ""
 
 msgctxt "artboardOverviewTourText"
@@ -2546,18 +2522,6 @@ msgctxt "fragmentsPlaceDialogTitle"
 msgid "Add fragment block"
 msgstr ""
 
-msgctxt "gridHide"
-msgid "Hide grid"
-msgstr "Nascondi griglia"
-
-msgctxt "gridShow"
-msgid "Show grid"
-msgstr "Mostra griglia"
-
-msgctxt "gridToggle"
-msgid "Toggle grid"
-msgstr ""
-
 msgctxt "gridTourText"
 msgid "Display a layout grid overlay on top of the page."
 msgstr ""
@@ -2650,14 +2614,6 @@ msgstr "Contenuti importati con successo."
 
 msgctxt "inlineCode"
 msgid "Inline code"
-msgstr ""
-
-msgctxt "interactionLayerOff"
-msgid "Show interaction layers"
-msgstr ""
-
-msgctxt "interactionLayersOn"
-msgid "Hide interaction layers"
 msgstr ""
 
 msgctxt "italic"
@@ -2766,18 +2722,6 @@ msgstr ""
 
 msgctxt "manageScheduling"
 msgid "Manage scheduling"
-msgstr ""
-
-msgctxt "maskHide"
-msgid "Hide non-editable areas"
-msgstr "Nascondi campi di contenuto"
-
-msgctxt "maskShow"
-msgid "Show non-editable areas"
-msgstr "Mostra campi di contenuto"
-
-msgctxt "maskToggle"
-msgid "Toggle non-editable areas"
 msgstr ""
 
 msgctxt "maskTourText"
@@ -2968,18 +2912,6 @@ msgctxt "previewWithSmartphoneTourText"
 msgid ""
 "Shows a QR code to quickly open a preview of the changes with your "
 "smartphone."
-msgstr ""
-
-msgctxt "proxyViewHide"
-msgid "Show content preview"
-msgstr ""
-
-msgctxt "proxyViewShow"
-msgid "Show structure view"
-msgstr ""
-
-msgctxt "proxyViewToggle"
-msgid "Toggle structure view"
 msgstr ""
 
 msgctxt "proxyViewTourText"
@@ -3626,10 +3558,6 @@ msgctxt "title"
 msgid "Title"
 msgstr ""
 
-msgctxt "toggleInteractionLayers"
-msgid "Toggle interaction layers"
-msgstr ""
-
 msgctxt "touchBarCancelDragging"
 msgid "Cancel dragging"
 msgstr ""
@@ -3893,6 +3821,66 @@ msgstr ""
 
 msgctxt "viewBannerViewTitle"
 msgid "You are in view-only mode."
+msgstr ""
+
+msgctxt "viewOptionAnchors"
+msgid "Anchor links"
+msgstr ""
+
+msgctxt "viewOptionAnchorsDescription"
+msgid "Highlights blocks that have an anchor ID."
+msgstr ""
+
+msgctxt "viewOptionArtboardOverview"
+msgid "Overview"
+msgstr ""
+
+msgctxt "viewOptionArtboardOverviewDescription"
+msgid "Displays a top-level overview of all content blocks."
+msgstr ""
+
+msgctxt "viewOptionDisable"
+msgid "Disable \"@option\""
+msgstr ""
+
+msgctxt "viewOptionEnable"
+msgid "Enable \"@option\""
+msgstr ""
+
+msgctxt "viewOptionGrid"
+msgid "Grid"
+msgstr ""
+
+msgctxt "viewOptionGridDescription"
+msgid "Shows a layout grid overlay on top of the page."
+msgstr ""
+
+msgctxt "viewOptionInteractionLayers"
+msgid "Interaction layers"
+msgstr ""
+
+msgctxt "viewOptionInteractionLayersDescription"
+msgid "Hides the editor overlays to preview the page as it will render."
+msgstr ""
+
+msgctxt "viewOptionNonEditableAreas"
+msgid "Only editable areas"
+msgstr ""
+
+msgctxt "viewOptionNonEditableAreasDescription"
+msgid "Hides parts of the page that cannot be edited."
+msgstr ""
+
+msgctxt "viewOptionStructureView"
+msgid "Structure view"
+msgstr ""
+
+msgctxt "viewOptionStructureViewDescription"
+msgid "Shows blocks as a structured outline instead of the rendered preview."
+msgstr ""
+
+msgctxt "viewOptions"
+msgid "View options"
 msgstr ""
 
 msgctxt "whatsNew"

@@ -70,7 +70,7 @@
       <div id="bk-toolbar-title" class="bk-toolbar-container" />
       <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
       <ViewOptions />
-      <div id="bk-toolbar-artboard" class="bk-toolbar-container" />
+      <div id="bk-toolbar-artboard" class="bk-toolbar-container group" />
       <div
         id="bk-toolbar-before-sidebar"
         class="bk-sidebar-container-tabs bk-toolbar-container"
@@ -270,9 +270,6 @@ export default {
       @apply hidden;
     }
     @apply relative flex h-full;
-    &#bk-toolbar-view-options {
-      @apply hidden lg:flex;
-    }
     &#bk-toolbar-title {
       @apply flex-1 text-xs lg:text-sm xl:text-base;
       .bk-toolbar-title-scheduled {
@@ -306,8 +303,22 @@ export default {
       @apply lg:hover:bg-mono-700;
     }
 
+    &.bk-has-dropdown {
+      &:before {
+        @apply content-[''] w-0 h-0 border-solid;
+        @apply absolute bottom-0 left-[17.5px] transition origin-bottom;
+        @apply scale-y-0;
+        border-width: 0 8px 6px;
+        border-color: transparent transparent #ffffff transparent;
+      }
+    }
+
     &.bk-is-active {
-      @apply bg-mono-800;
+      @apply bg-mono-700;
+
+      &:before {
+        @apply scale-100!;
+      }
     }
 
     &.bk-is-inactive {
@@ -319,9 +330,6 @@ export default {
     }
     svg {
       @apply size-18 lg:size-20;
-    }
-    .bk-icon svg {
-      @apply fill-current;
     }
   }
 }

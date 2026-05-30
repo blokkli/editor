@@ -7,7 +7,13 @@
     }"
   >
     <slot />
-    <input v-model="value" type="checkbox" class="sr-only" :disabled />
+    <input
+      v-if="!hideInput"
+      v-model="value"
+      type="checkbox"
+      class="sr-only"
+      :disabled
+    />
     <div
       class="bk-checkbox-toggle-toggle group-focus-within/toggle:outline outline-accent-950/80 outline-offset-2 relative w-[36px] h-20 rounded-full shrink-0 mr-5 last:mr-0"
       :class="{
@@ -76,6 +82,7 @@ const props = withDefaults(
     disabledReason?: string | null
     colorScheme?: 'light' | 'dark'
     stretch?: boolean
+    hideInput?: boolean
   }>(),
   {
     label: undefined,
