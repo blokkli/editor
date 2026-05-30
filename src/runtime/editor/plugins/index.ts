@@ -5,7 +5,6 @@ import PluginItemAction from './ItemAction/index.vue'
 import PluginSidebar from './Sidebar/index.vue'
 import PluginToolbarButton from './ToolbarButton/index.vue'
 import PluginTourItem from './TourItem/index.vue'
-import PluginViewOption from './ViewOption/index.vue'
 
 export {
   PluginBlockIndicator,
@@ -15,5 +14,4 @@ export {
   PluginSidebar,
   PluginToolbarButton,
   PluginTourItem,
-  PluginViewOption,
 }

@@ -1,25 +1,13 @@
 <template>
-  <PluginViewOption
-    id="mask"
-    v-model="isActive"
-    :label="$t('maskToggle', 'Toggle non-editable areas')"
-    :title-on="$t('maskHide', 'Hide non-editable areas')"
-    :title-off="$t('maskShow', 'Show non-editable areas')"
-    :tour-text="
-      $t(
-        'maskTourText',
-        'Toggle between showing or hiding non-editable parts of the page.',
-      )
-    "
-    icon="bk_mdi_texture"
-    key-code="M"
-  />
+  <div />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, ref } from '#imports'
-import { PluginViewOption } from '#blokkli/editor/plugins'
-import { addElementClasses } from '#blokkli/editor/composables'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
+import {
+  addElementClasses,
+  defineViewOption,
+} from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'editable-mask',
@@ -31,9 +19,20 @@ defineBlokkliFeature({
 
 const { $t } = useBlokkli()
 
-const isActive = ref(false)
+const { isVisible } = defineViewOption({
+  id: 'mask',
+  label: $t('maskToggle', 'Toggle non-editable areas'),
+  titleOn: $t('maskHide', 'Hide non-editable areas'),
+  titleOff: $t('maskShow', 'Show non-editable areas'),
+  tourText: $t(
+    'maskTourText',
+    'Toggle between showing or hiding non-editable parts of the page.',
+  ),
+  icon: 'bk_mdi_texture',
+  keyCode: 'M',
+})
 
-addElementClasses(document.documentElement, 'bk-hide-non-editable', isActive)
+addElementClasses(document.documentElement, 'bk-hide-non-editable', isVisible)
 </script>
 
 <script lang="ts">

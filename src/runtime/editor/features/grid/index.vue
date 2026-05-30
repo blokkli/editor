@@ -1,23 +1,10 @@
 <template>
-  <PluginViewOption
-    id="grid"
-    v-slot="{ isActive }"
-    :label="$t('gridToggle', 'Toggle grid')"
-    :title-on="$t('gridShow', 'Show grid')"
-    :title-off="$t('gridHide', 'Hide grid')"
-    :tour-text="
-      $t('gridTourText', 'Display a layout grid overlay on top of the page.')
-    "
-    key-code="G"
-    icon="bk_mdi_grid_view"
-  >
-    <div v-if="isActive" class="bk-grid-overlay" v-html="gridMarkup" />
-  </PluginViewOption>
+  <div v-if="isVisible" class="bk-grid-overlay" v-html="gridMarkup" />
 </template>
 
 <script lang="ts" setup>
 import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { defineViewOption } from '#blokkli/editor/composables'
 
 const { adapter } = defineBlokkliFeature({
   id: 'grid',
@@ -31,6 +18,19 @@ const { adapter } = defineBlokkliFeature({
 const gridMarkup = await Promise.resolve(adapter.getGridMarkup())
 
 const { $t } = useBlokkli()
+
+const { isVisible } = defineViewOption({
+  id: 'grid',
+  label: $t('gridToggle', 'Toggle grid'),
+  titleOn: $t('gridShow', 'Show grid'),
+  titleOff: $t('gridHide', 'Hide grid'),
+  tourText: $t(
+    'gridTourText',
+    'Display a layout grid overlay on top of the page.',
+  ),
+  keyCode: 'G',
+  icon: 'bk_mdi_grid_view',
+})
 </script>
 
 <script lang="ts">

@@ -27,29 +27,12 @@
     </PluginContextMenu>
   </PluginToolbarButton>
 
-  <PluginViewOption
-    id="artboardOverview"
-    v-slot="{ isActive }"
-    :label="$t('artboardOverviewToggle', 'Toggle overview')"
-    :title-on="$t('artboardOverviewShow', 'Show overview')"
-    :title-off="$t('artboardOverviewHide', 'Hide overview')"
-    :tour-text="
-      $t(
-        'artboardOverviewTourText',
-        `Displays a top level overview of your content.`,
-      )
-    "
-    icon="bk_mdi_visibility"
-    key-code="O"
-    weight="90"
+  <Teleport
+    v-if="isOverviewVisible && dom.isReady.value"
+    :to="ui.mainLayoutElement.value"
   >
-    <Teleport
-      v-if="isActive && dom.isReady.value"
-      :to="ui.mainLayoutElement.value"
-    >
-      <Overview :artboard="artboard" />
-    </Teleport>
-  </PluginViewOption>
+    <Overview :artboard="artboard" />
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -66,14 +49,14 @@ import {
   isInsideRect,
   subtractRectFromViewport,
 } from '#blokkli/editor/helpers/geometry'
-import {
-  PluginToolbarButton,
-  PluginViewOption,
-  PluginContextMenu,
-} from '#blokkli/editor/plugins'
+import { PluginToolbarButton, PluginContextMenu } from '#blokkli/editor/plugins'
 import type { ContextMenu } from '#blokkli/editor/types/ui'
 import Scrollbar from './Scrollbar/index.vue'
-import { addElementClasses, onBlokkliEvent } from '#blokkli/editor/composables'
+import {
+  addElementClasses,
+  defineViewOption,
+  onBlokkliEvent,
+} from '#blokkli/editor/composables'
 import { asValidNumber } from '#blokkli/editor/helpers/math'
 import {
   createArtboard,
@@ -99,6 +82,20 @@ const props = defineProps<{
 addElementClasses(document.documentElement, 'bk-is-artboard')
 
 const { context, storage, ui, animation, $t, dom, selection } = useBlokkli()
+
+const { isVisible: isOverviewVisible } = defineViewOption({
+  id: 'artboardOverview',
+  label: $t('artboardOverviewToggle', 'Toggle overview'),
+  titleOn: $t('artboardOverviewShow', 'Show overview'),
+  titleOff: $t('artboardOverviewHide', 'Hide overview'),
+  tourText: $t(
+    'artboardOverviewTourText',
+    'Displays a top level overview of your content.',
+  ),
+  icon: 'bk_mdi_visibility',
+  keyCode: 'O',
+  weight: 90,
+})
 
 const artboardElement = ui.artboardElement()
 

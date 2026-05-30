@@ -1,14 +1,4 @@
 <template>
-  <PluginViewOption
-    id="dev_mode"
-    v-model="isEnabled"
-    :label="$t('toggleInteractionLayers', 'Toggle interaction layers')"
-    :title-on="$t('interactionLayersOn', 'Hide interaction layers')"
-    :title-off="$t('interactionLayerOff', 'Show interaction layers')"
-    icon="bk_mdi_logo_dev"
-    key-code="I"
-    weight="-99999"
-  />
   <Teleport :to="ui.mainLayoutElement.value">
     <div v-if="fieldMappingValidations.length" class="bk bk-dev-mode">
       <div class="bk-dev-mode-inner">
@@ -43,10 +33,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature, ref, computed } from '#imports'
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { useBlokkli, defineBlokkliFeature, computed } from '#imports'
 import { Banner, BannerInner } from '#blokkli/editor/components'
-import { addElementClasses } from '#blokkli/editor/composables'
+import {
+  addElementClasses,
+  defineViewOption,
+} from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
 import { itemEntityType } from '#blokkli-build/config'
 
@@ -61,7 +53,15 @@ defineBlokkliFeature({
 
 const { $t, types, definitions, ui } = useBlokkli()
 
-const isEnabled = ref(false)
+const { isVisible } = defineViewOption({
+  id: 'dev_mode',
+  label: $t('toggleInteractionLayers', 'Toggle interaction layers'),
+  titleOn: $t('interactionLayersOn', 'Hide interaction layers'),
+  titleOff: $t('interactionLayerOff', 'Show interaction layers'),
+  icon: 'bk_mdi_logo_dev',
+  keyCode: 'I',
+  weight: -99999,
+})
 
 const fieldMappingValidations = computed(() => {
   return definitions.blockDefinitions.value
@@ -121,7 +121,7 @@ const fieldMappingValidations = computed(() => {
 addElementClasses(
   document.documentElement,
   'bk-hide-interaction-layers',
-  isEnabled,
+  isVisible,
 )
 </script>
 

@@ -1,14 +1,5 @@
 <template>
-  <PluginViewOption
-    id="anchor"
-    v-slot="{ isActive }"
-    :label="$t('anchorToggle', 'Toggle anchor links')"
-    :title-on="$t('anchorShow', 'Show anchor links')"
-    :title-off="$t('anchorHide', 'Hide anchor links')"
-    icon="bk_mdi_anchor"
-  >
-    <AnchorOverlay v-if="isActive" />
-  </PluginViewOption>
+  <AnchorOverlay v-if="isVisible" />
 </template>
 
 <script lang="ts" setup>
@@ -17,7 +8,7 @@ import {
   defineBlokkliFeature,
   defineAsyncComponent,
 } from '#imports'
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { defineViewOption } from '#blokkli/editor/composables'
 
 const AnchorOverlay = defineAsyncComponent(() => import('./Overlay/index.vue'))
 
@@ -30,6 +21,14 @@ defineBlokkliFeature({
 })
 
 const { $t } = useBlokkli()
+
+const { isVisible } = defineViewOption({
+  id: 'anchor',
+  label: $t('anchorToggle', 'Toggle anchor links'),
+  titleOn: $t('anchorShow', 'Show anchor links'),
+  titleOff: $t('anchorHide', 'Hide anchor links'),
+  icon: 'bk_mdi_anchor',
+})
 </script>
 
 <script lang="ts">

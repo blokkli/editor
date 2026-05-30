@@ -69,7 +69,7 @@
       <div id="bk-toolbar-before-title" class="bk-toolbar-container" />
       <div id="bk-toolbar-title" class="bk-toolbar-container" />
       <div id="bk-toolbar-after-title" class="bk-toolbar-container" />
-      <div id="bk-toolbar-view-options" class="bk-toolbar-container" />
+      <ViewOptions />
       <div id="bk-toolbar-artboard" class="bk-toolbar-container" />
       <div
         id="bk-toolbar-before-sidebar"
@@ -113,6 +113,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import AppMenu from './../AppMenu/index.vue'
+import ViewOptions from './ViewOptions/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 
 const { ui, selection, storage } = useBlokkli()

@@ -48,12 +48,26 @@ export type HighlightItem = {
 
 type HighlightFunction = PluginAddFunction<HighlightItem>
 
+export type ViewOption = {
+  id: string
+  label: string
+  titleOn: string
+  titleOff: string
+  icon?: BlokkliIcon
+  keyCode?: string
+  tourText?: string
+  weight?: number
+}
+
+type ViewOptionFunction = PluginAddFunction<ViewOption>
+
 // Type mapping for generic plugin methods
 type PluginFunctionMap = {
   addAction: AddActionFunction
   itemDropdownAction: ItemDropdownActionFunction
   menuButton: MenuButtonFunction
   highlight: HighlightFunction
+  viewOption: ViewOptionFunction
 }
 
 type PluginDataMap = {
@@ -61,6 +75,7 @@ type PluginDataMap = {
   itemDropdownAction: ItemDropdownAction
   menuButton: MenuButtonPlugin
   highlight: HighlightItem
+  viewOption: ViewOption
 }
 
 export type PluginProvider = {
@@ -118,6 +133,7 @@ export default function (): PluginProvider {
   const itemDropdownActionPlugins = ref<ItemDropdownActionFunction[]>([])
   const menuButtonPlugins = ref<MenuButtonFunction[]>([])
   const highlightPlugins = ref<HighlightFunction[]>([])
+  const viewOptionPlugins = ref<ViewOptionFunction[]>([])
 
   function add<T extends keyof PluginFunctionMap>(
     type: T,
@@ -131,6 +147,8 @@ export default function (): PluginProvider {
       menuButtonPlugins.value.push(fn as MenuButtonFunction)
     } else if (type === 'highlight') {
       highlightPlugins.value.push(fn as HighlightFunction)
+    } else if (type === 'viewOption') {
+      viewOptionPlugins.value.push(fn as ViewOptionFunction)
     }
   }
 
@@ -154,6 +172,10 @@ export default function (): PluginProvider {
       highlightPlugins.value = highlightPlugins.value.filter(
         (v) => v !== fn,
       ) as HighlightFunction[]
+    } else if (type === 'viewOption') {
+      viewOptionPlugins.value = viewOptionPlugins.value.filter(
+        (v) => v !== fn,
+      ) as ViewOptionFunction[]
     }
   }
 
@@ -168,6 +190,8 @@ export default function (): PluginProvider {
       storage = menuButtonPlugins.value
     } else if (type === 'highlight') {
       storage = highlightPlugins.value
+    } else if (type === 'viewOption') {
+      storage = viewOptionPlugins.value
     } else {
       return []
     }

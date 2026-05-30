@@ -1,25 +1,10 @@
 <template>
-  <PluginViewOption
-    id="proxy_view"
-    v-model="ui.isProxyMode.value"
-    :label="$t('proxyViewToggle', 'Toggle structure view')"
-    :title-on="$t('proxyViewShow', 'Show structure view')"
-    :title-off="$t('proxyViewHide', 'Show content preview')"
-    :tour-text="
-      $t(
-        'proxyViewTourText',
-        'Displays the content blocks as a structured view.',
-      )
-    "
-    key-code="P"
-    icon="bk_mdi_account_tree"
-    @update:model-value="onToggleProxyMode"
-  />
+  <div />
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, defineBlokkliFeature } from '#imports'
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { useBlokkli, defineBlokkliFeature, watch } from '#imports'
+import { defineViewOption } from '#blokkli/editor/composables'
 
 defineBlokkliFeature({
   id: 'proxy_view',
@@ -31,9 +16,27 @@ defineBlokkliFeature({
 
 const { $t, ui, eventBus } = useBlokkli()
 
-function onToggleProxyMode() {
-  eventBus.emit('state:reloaded')
-}
+const { isVisible } = defineViewOption({
+  id: 'proxy_view',
+  label: $t('proxyViewToggle', 'Toggle structure view'),
+  titleOn: $t('proxyViewShow', 'Show structure view'),
+  titleOff: $t('proxyViewHide', 'Show content preview'),
+  tourText: $t(
+    'proxyViewTourText',
+    'Displays the content blocks as a structured view.',
+  ),
+  icon: 'bk_mdi_account_tree',
+  keyCode: 'P',
+})
+
+watch(
+  isVisible,
+  (v) => {
+    ui.isProxyMode.value = v
+    eventBus.emit('state:reloaded')
+  },
+  { immediate: true },
+)
 </script>
 
 <script lang="ts">
