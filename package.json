@@ -167,7 +167,7 @@
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
-    "@ckeditor/ckeditor5-vue": "^7.3.0",
+    "@ckeditor/ckeditor5-vue": "^8.0.0",
     "@nuxt/devtools": "^3.1.1",
     "@nuxt/eslint-config": "^1.12.1",
     "@nuxt/kit": "^4.4.4",
@@ -187,7 +187,7 @@
     "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.11.0",
     "changelogen": "^0.6.2",
-    "ckeditor5": "^47.3.0",
+    "ckeditor5": "^48.1.1",
     "commander": "^13.1.0",
     "deepl-node": "^1.25.0",
     "eslint": "^9.39.2",

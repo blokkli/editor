@@ -26,7 +26,7 @@
       }"
     >
       <div
-        class="flex items-center justify-center border bg-scheme-light text-scheme-normal border-scheme-normal/50 group-hover:border-scheme-normal group-hover:text-scheme-dark rounded"
+        class="flex items-center justify-center border bg-scheme-light text-scheme-dark border-scheme-normal/50 group-hover:border-scheme-normal group-hover:text-scheme-dark rounded"
         :class="{
           'size-25': small,
           'size-50': !small,

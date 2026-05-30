@@ -1,28 +1,9 @@
 <template>
-  <PluginSidebar
-    id="help"
-    :title="$t('featureHelpTitle', 'Help')"
-    :tour-text="$t('helpTourText', 'Shows a list of available shortcuts.')"
-    icon="bk_mdi_help"
-    weight="100"
-    key-code="F1"
-  >
-    <div class="bk bk-help">
-      <div v-if="isTourEnabled" class="bk-help-section">
-        <button
-          class="bk-button bk-scheme-yellow bk-is-fullwidth"
-          :disabled="tour.isTouring.value"
-          @click="tour.isTouring.value = true"
-        >
-          {{ $t('tourLabel', 'Take a tour') }}
-        </button>
-      </div>
-      <div class="bk-help-section">
-        <h3>{{ $t('featureHelpShortcuts', 'Shortcuts') }}</h3>
-        <Shortcuts />
-      </div>
-    </div>
-  </PluginSidebar>
+  <Teleport :to="ui.mainLayoutElement.value">
+    <BlokkliTransition name="slide-up">
+      <HelpDialog v-if="showDialog" @cancel="onClose" />
+    </BlokkliTransition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -32,24 +13,69 @@ import {
   computed,
   defineAsyncComponent,
 } from '#imports'
-import { PluginSidebar } from '#blokkli/editor/plugins'
+import { BlokkliTransition } from '#blokkli/editor/components'
+import {
+  defineMenuButton,
+  defineShortcut,
+  onBlokkliEvent,
+} from '#blokkli/editor/composables'
 
-const Shortcuts = defineAsyncComponent(() => import('./Shortcuts/index.vue'))
+const HelpDialog = defineAsyncComponent(() => import('./Dialog/index.vue'))
 
 defineBlokkliFeature({
   id: 'help',
   icon: 'bk_mdi_help',
   label: 'Help',
   description:
-    'Provides a sidebar pane with helpful information on how to use blokkli.',
+    'Provides a menu button to display a dialog with shortcuts and a link to the editor tour.',
   viewports: ['desktop'],
 })
 
-const { $t, features, tour } = useBlokkli()
+const { $t, ui } = useBlokkli()
 
-const isTourEnabled = computed(() =>
-  features.mountedFeatures.value.find((v) => v.id === 'tour'),
-)
+const showDialog = computed(() => ui.currentDialog.value?.id === 'help')
+
+function onOpen() {
+  ui.openDialog({ id: 'help', alignment: 'center' })
+}
+
+function onClose() {
+  ui.closeDialog('help')
+}
+
+defineMenuButton(() => {
+  return {
+    id: 'help',
+    title: $t('featureHelpTitle', 'Help'),
+    description: $t('helpMenuDescription', 'View available keyboard shortcuts'),
+    icon: 'bk_mdi_help',
+    secondary: true,
+    callback: onOpen,
+  }
+})
+
+defineShortcut({
+  code: 'F1',
+  label: $t('featureHelpTitle', 'Help'),
+})
+
+onBlokkliEvent('keyPressed', (e) => {
+  if (e.code !== 'F1') {
+    return
+  }
+  if (ui.hasNestedEditorOpen.value) {
+    return
+  }
+  if (ui.hasDialogOpen.value && !showDialog.value) {
+    return
+  }
+  e.originalEvent.preventDefault()
+  if (showDialog.value) {
+    onClose()
+  } else {
+    onOpen()
+  }
+})
 </script>
 
 <script lang="ts">
@@ -57,19 +83,3 @@ export default {
   name: 'Help',
 }
 </script>
-
-<style lang="postcss">
-.bk.bk-help {
-  @apply p-20;
-  container-type: inline-size;
-
-  .bk-help-section {
-    &:not(:last-child) {
-      @apply mb-20;
-    }
-    > h3 {
-      @apply text-lg font-bold;
-    }
-  }
-}
-</style>
