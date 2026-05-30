@@ -2,7 +2,7 @@
   <div>
     <FormToggle
       v-if="setting.type === 'checkbox'"
-      :label="setting.label"
+      :label="settingLabel"
       :description="settingDescription"
       :model-value="
         (settingsStorage[settingsKey] ?? setting.default) as boolean
@@ -11,7 +11,7 @@
     />
     <div v-else-if="setting.type === 'radios'">
       <h3 class="bk-form-label">
-        {{ setting.label }}
+        {{ settingLabel }}
       </h3>
       <ul class="bk-settings-ui">
         <li
@@ -27,7 +27,7 @@
               @change="setRadioValue(value)"
             />
             <Icon v-if="config.icon" :name="config.icon" />
-            <span>{{ config.label }}</span>
+            <span>{{ getOptionLabel(value, config.label) }}</span>
           </label>
         </li>
       </ul>
@@ -37,12 +37,12 @@
         class="bk-button bk-scheme-mono bk-is-light"
         @click="setting.method(blokkliApp)"
       >
-        {{ setting.label }}
+        {{ settingLabel }}
       </button>
     </div>
     <div v-else-if="setting.type === 'slider'">
       <label class="bk-input-range">
-        <span>{{ setting.label }}: {{ settingsStorage[settingsKey] }}</span>
+        <span>{{ settingLabel }}: {{ settingsStorage[settingsKey] }}</span>
         <input
           :value="settingsStorage[settingsKey]"
           type="range"
@@ -72,15 +72,29 @@ const props = defineProps<{
   setting: FeatureDefinitionSetting
 }>()
 
-const { storage } = useBlokkli()
+const { storage, $t } = useBlokkli()
 const blokkliApp = useBlokkli()
 
+const settingKeyPrefix = computed(
+  () => 'feature_' + props.featureId + '_setting_' + props.settingsKey,
+)
+
+const settingLabel = computed(() =>
+  $t(settingKeyPrefix.value + '_label', props.setting.label),
+)
+
 const settingDescription = computed(() => {
-  if ('description' in props.setting) {
-    return props.setting.description
+  if ('description' in props.setting && props.setting.description) {
+    return $t(
+      settingKeyPrefix.value + '_description',
+      props.setting.description,
+    )
   }
   return undefined
 })
+
+const getOptionLabel = (key: string, defaultLabel: string) =>
+  $t(settingKeyPrefix.value + '_option_' + key, defaultLabel)
 
 const settingsStorage = storage.use(
   `feature:${props.featureId}:settings`,

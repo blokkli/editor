@@ -2450,6 +2450,84 @@ msgctxt "featureHelpTitle"
 msgid "Help"
 msgstr ""
 
+msgctxt "feature_add-list_setting_hideDisabledBlocks_description"
+msgid "Hides blocks from the \"Add List\" if they can't be added to anywhere."
+msgstr ""
+
+msgctxt "feature_add-list_setting_hideDisabledBlocks_label"
+msgid "Hide blocks that can't be added"
+msgstr ""
+
+msgctxt "feature_artboard_setting_momentum_description"
+msgid "Applies smooth animations when scrolling or zooming the artboard."
+msgstr ""
+
+msgctxt "feature_artboard_setting_momentum_label"
+msgid "Use smooth scrolling"
+msgstr "Usa scorrimento fluido"
+
+msgctxt "feature_artboard_setting_persist_description"
+msgid "Stores and restores the last position and zoom factor of the artboard."
+msgstr ""
+
+msgctxt "feature_artboard_setting_persist_label"
+msgid "Persist position and zoom"
+msgstr "Mantieni posizione e zoom"
+
+msgctxt "feature_artboard_setting_scrollSpeed_label"
+msgid "Artboard scroll speed"
+msgstr "Velocità di scorrimento dell'area di lavoro"
+
+msgctxt "feature_history_setting_useMouseButtons_description"
+msgid ""
+"When enabled you can use the backwards/forwards buttons on your mouse to "
+"undo and redo."
+msgstr ""
+
+msgctxt "feature_history_setting_useMouseButtons_label"
+msgid "Use mouse buttons for undo/redo"
+msgstr "Usa i pulsanti del mouse per annulla/ripeti"
+
+msgctxt "feature_import-existing_setting_showDialogWhenEmpty_description"
+msgid "Displays the import dialog when starting blökkli if the page is empty."
+msgstr ""
+
+msgctxt "feature_import-existing_setting_showDialogWhenEmpty_label"
+msgid "Show import dialog at start"
+msgstr "Mostra finestra di dialogo di importazione all'avvio"
+
+msgctxt "feature_publish_setting_closeAfterPublish_description"
+msgid "Immediately closes the editor after successfully publishing or saving."
+msgstr ""
+
+msgctxt "feature_publish_setting_closeAfterPublish_label"
+msgid "Close editor after publishing"
+msgstr "Chiudi editor dopo la pubblicazione"
+
+msgctxt "feature_settings_setting_lowPerformanceMode_description"
+msgid ""
+"Reduces the animations and interactivity to a minimum for devices with low "
+"performance."
+msgstr ""
+
+msgctxt "feature_settings_setting_lowPerformanceMode_label"
+msgid "Enable low performance mode"
+msgstr "Abilita modalità basse prestazioni"
+
+msgctxt "feature_settings_setting_resetAllSettings_label"
+msgid "Reset all settings"
+msgstr "Ripristina tutte le impostazioni"
+
+msgctxt "feature_settings_setting_useAnimations_description"
+msgid ""
+"Animates UI elements like dialogs or drawers or interactions like drag and "
+"drop or scroll changes."
+msgstr ""
+
+msgctxt "feature_settings_setting_useAnimations_label"
+msgid "Use animations"
+msgstr "Usa animazioni"
+
 msgctxt "fieldIsRequired"
 msgid "This field is required"
 msgstr "Questo campo è obbligatorio"
@@ -2526,8 +2604,8 @@ msgctxt "gridTourText"
 msgid "Display a layout grid overlay on top of the page."
 msgstr ""
 
-msgctxt "helpTourText"
-msgid "Shows a list of available shortcuts."
+msgctxt "helpMenuDescription"
+msgid "View available keyboard shortcuts"
 msgstr ""
 
 msgctxt "history"

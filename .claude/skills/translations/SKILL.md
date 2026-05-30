@@ -75,3 +75,43 @@ stale ones, and regenerate all JSON files.
 - Translation entries have both a `source` (English text) and a `translation`
   (localized text)
 - Keys with an empty `translation` are considered missing
+
+## Translation Style Rules
+
+Before translating any string into a target language, follow these rules. They
+exist because past machine-style translations produced nonsense.
+
+### Match the existing PO file's conventions
+
+**Always grep `i18n/<lang>.po` for existing renderings of similar concepts
+before inventing your own translation.** The project already has a voice and
+terminology — match it.
+
+- Reuse term choices already in the file (e.g. blökkli's `de.po` uses
+  `Datenreihe` for chart "series", `Panel` for "panel", `Vorschau` for
+  "artboard" — don't invent alternatives).
+- Match the file's orthography. `de.po` uses **Swiss spelling**: no `ß`, use
+  `ss` (`schliessen`, not `schließen`).
+- Match the file's quotation style — `de.po` uses `«»` guillemets, not `„"`.
+
+### Form of address
+
+- **`de` and `gsw_CH`**: use formal **Sie** for direct instructions, or
+  **impersonal third-person** for descriptions (e.g. setting descriptions:
+  `Verwendet sanftes Scrollen…`, `Zeigt den Importdialog…`). **Never** use
+  `du`-imperatives.
+
+### UI element names — do NOT literal-translate
+
+This is a common failure mode. English UI terms like **drawer, modal, tab,
+panel, toast, chip, dropdown, sidebar, popover** name *abstract UI widgets*,
+not their literal-domain meaning. Translating "drawer" as `Schublade` (kitchen
+drawer) or "toast" as `Toast` (bread) is nonsense in a UI context.
+
+**Rule:** for UI element names, default to the German loanword (`Drawer`,
+`Panel`, `Dialog`, `Tab`, `Tooltip`) **or** reuse a more abstract term the
+project already uses (e.g. blökkli uses `Panel` widely — prefer that). Never
+emit a literal kitchen/clothing/food translation for a UI widget.
+
+When unsure between two acceptable renderings of a UI term, ask before
+applying.

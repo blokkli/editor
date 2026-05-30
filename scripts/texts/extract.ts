@@ -27,6 +27,17 @@ export type FunctionCall = {
   start: number
 }
 
+type ExtractedFeatureSetting = {
+  label: string
+  description?: string
+  options?: Record<string, { label: string }>
+}
+
+type ExtractedFeature = {
+  id: string
+  settings?: Record<string, ExtractedFeatureSetting>
+}
+
 export function extractFunctionCalls(
   name: string,
   sourceCode: string,
@@ -213,6 +224,9 @@ export class Extractor {
     if (source.includes('$t(')) {
       extractions.push(...this.extractSingle(source, filePath))
     }
+    if (source.includes('defineBlokkliFeature(')) {
+      extractions.push(...this.extractFeatureSettings(source, filePath))
+    }
     return extractions
   }
 
@@ -248,6 +262,72 @@ export class Extractor {
         }
       })
       .filter(falsy)
+  }
+
+  /**
+   * Extract translatable labels/descriptions from `defineBlokkliFeature()`
+   * settings (and their radio options).
+   *
+   * Only setting-level texts are extracted — the feature's own `label` and
+   * `description` are not translated.
+   */
+  extractFeatureSettings(source: string, filePath: string): Extraction[] {
+    return extractFunctionCalls('defineBlokkliFeature(', source)
+      .map(({ code }) => {
+        const obj = code
+          .substring(0, code.length - 1)
+          .replace('defineBlokkliFeature(', '')
+
+        let result: ExtractedFeature | null = null
+        try {
+          // The feature definition is a plain object literal — eval is the
+          // simplest way to get its runtime shape (template literals, etc.).
+          // oxlint-disable-next-line
+          eval('result = ' + obj)
+        } catch (e) {
+          this.handleError(filePath, code, e)
+          return []
+        }
+
+        const feature = result
+        if (!feature?.settings) {
+          return []
+        }
+
+        const extractions: Extraction[] = []
+        for (const key of Object.keys(feature.settings)) {
+          const setting = feature.settings[key]!
+          const baseKey = `feature_${feature.id}_setting_${key}`
+
+          if (setting.label) {
+            extractions.push({
+              key: `${baseKey}_label`,
+              defaultText: setting.label,
+            })
+          }
+
+          if (setting.description) {
+            extractions.push({
+              key: `${baseKey}_description`,
+              defaultText: setting.description,
+            })
+          }
+
+          if (setting.options) {
+            for (const [optionKey, option] of Object.entries(setting.options)) {
+              if (option?.label) {
+                extractions.push({
+                  key: `${baseKey}_option_${optionKey}`,
+                  defaultText: option.label,
+                })
+              }
+            }
+          }
+        }
+
+        return extractions
+      })
+      .flat()
   }
 
   /**
