@@ -1,5 +1,5 @@
 import type { Locator, Page } from 'playwright-core'
-import { withApp } from './session'
+import { emitEvent } from './events'
 
 /**
  * Locate an onboarding popup by its `id` (the `id` prop of `<Popup>`, surfaced
@@ -59,8 +59,17 @@ export function formOverlay(page: Page, id: string): Locator {
  * the next interaction starts from a clean slate.
  */
 export async function closeFormOverlay(page: Page, id: string): Promise<void> {
-  await withApp(page, (app) => {
-    app.eventBus.emit('overlay:close')
-  })
+  await emitEvent(page, 'overlay:close')
   await formOverlay(page, id).waitFor({ state: 'hidden' })
+}
+
+/**
+ * Dismiss every currently-visible toast message by emitting `message:clear` on
+ * the eventBus. Messages auto-dismiss after ~6s, but on a shared page they
+ * accumulate at the viewport bottom and can intercept clicks on action
+ * toolbars near the bottom edge — call this in `afterEach` on shared pages
+ * where any test submits a mutation that emits a success/error message.
+ */
+export function dismissMessages(page: Page): Promise<void> {
+  return emitEvent(page, 'message:clear')
 }

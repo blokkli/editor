@@ -5,7 +5,11 @@
     @mouseenter="stopTimer"
     @mouseleave="startTimer"
   >
-    <button class="bk-message-content" @click="$emit('close')">
+    <button
+      class="bk-message-content"
+      data-test="message-close"
+      @click="$emit('close')"
+    >
       <p>{{ message }}</p>
       <p v-if="additionalText" class="bk-message-additional">
         {{ additionalText }}

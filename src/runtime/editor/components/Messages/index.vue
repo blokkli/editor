@@ -37,6 +37,10 @@ onBlokkliEvent('message', (message) => {
     messages.value.push(message)
   }
 })
+
+onBlokkliEvent('message:clear', () => {
+  messages.value = []
+})
 </script>
 
 <script lang="ts">

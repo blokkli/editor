@@ -272,6 +272,7 @@ export interface EventbusEvents {
   updatePreviewState: UpdatePreviewStateEvent
   animationFrame: AnimationFrameEvent
   message: Message
+  'message:clear': undefined
   keyPressed: KeyPressedEvent
   editEntity: undefined
   reloadState: undefined

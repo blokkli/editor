@@ -1,11 +1,13 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor, setFixedTime } from '../../support/session'
 import { setupEditorE2E } from '../../support/setup'
 import { addBlock, selectBlock, isBlockMuted } from '../../support/blocks'
 import { itemAction } from '../../support/itemActions'
-import { dialog, dialogSubmit } from '../../support/overlays'
+import { dialog, dialogSubmit, dismissMessages } from '../../support/overlays'
+import { emitEvent } from '../../support/events'
 import {
+  clearAdapterCalls,
   recordedAdapterCalls,
   waitForAdapterCall,
 } from '../../support/recorder'
@@ -45,32 +47,6 @@ const indicator = (page: Page): Locator =>
 const schedulerSection = (page: Page, type: 'publish' | 'unpublish'): Locator =>
   page.locator(`[data-test="scheduler-${type}"]`)
 
-/** Open the editor, add one `bundle` block, and (optionally) pin the clock. */
-async function setup(
-  bundle: string,
-  opts: { now?: string } = {},
-): Promise<{ page: Page; uuid: string }> {
-  // `testing=true` makes the mock record adapter calls; `UTC` keeps the
-  // scheduler's wall-clock maths deterministic.
-  const page = await openEditor('/page/1?blokkliEditing=1&testing=true', {
-    timezoneId: 'UTC',
-  })
-  const uuid = await addBlock(page, { bundle })
-  expect(uuid).toBeTruthy()
-  // Pin the clock after the mutation, before the dialog reads it.
-  if (opts.now !== undefined) {
-    await setFixedTime(page, opts.now)
-  }
-  return { page, uuid: uuid! }
-}
-
-/** Select the block and open its scheduler dialog. */
-async function openScheduler(page: Page, uuid: string): Promise<void> {
-  await selectBlock(page, uuid)
-  await scheduleAction(page).click()
-  await dialog(page, 'block-scheduler').waitFor({ state: 'visible' })
-}
-
 /** Toggle a section's "Enable schedule" switch (the dialog `FormToggle`). */
 const enableSection = (
   page: Page,
@@ -78,20 +54,77 @@ const enableSection = (
 ): Promise<void> =>
   page.locator(`[data-test="scheduler-${type}-toggle"]`).click()
 
+/**
+ * Page lifecycle: one editor page (with `?testing=true` for the adapter
+ * recorder, `UTC` timezone, and the clock pinned to {@link NOW}) is shared by
+ * every test. Each test adds its own block (the bundles differ, so blocks
+ * just accumulate harmlessly between tests). `afterEach` closes any open
+ * dialog, dismisses the success toast each submit emits (toasts otherwise
+ * stick around for ~6s and intercept clicks on the next block-actions
+ * toolbar), and clears the adapter recorder so `waitForAdapterCall` doesn't
+ * pick up a stale call.
+ */
 describe('The block scheduler', async () => {
   await setupEditorE2E()
 
-  test('cannot be opened for a "button" block (neither publish nor unpublish)', async () => {
-    const { page, uuid } = await setup('button')
+  let page: Page
+
+  /** Add a `bundle` block on the shared page and return its uuid. */
+  async function addOne(bundle: string): Promise<string> {
+    const uuid = await addBlock(page, { bundle })
+    expect(uuid).toBeTruthy()
+    return uuid!
+  }
+
+  /** Select the block and open its scheduler dialog. */
+  async function openScheduler(uuid: string): Promise<void> {
     await selectBlock(page, uuid)
-    await scheduleAction(page).waitFor({ state: 'visible' })
-    expect(await scheduleAction(page).isDisabled()).toBe(true)
+    await scheduleAction(page).click()
+    await dialog(page, 'block-scheduler').waitFor({ state: 'visible' })
+  }
+
+  beforeAll(async () => {
+    page = await openEditor('/page/1?blokkliEditing=1&testing=true', {
+      timezoneId: 'UTC',
+    })
+    // Pin the clock once for all tests. None of these tests drives the canvas
+    // drag, so the frozen-`Date.now()` drag-stall trap doesn't apply.
+    await setFixedTime(page, NOW)
+  })
+
+  afterAll(async () => {
     await page.close()
   })
 
+  afterEach(async () => {
+    // Close the scheduler dialog when open — its `<Dialog>` listens for
+    // `overlay:close` on the eventbus and emits `cancel`.
+    if (await dialog(page, 'block-scheduler').isVisible()) {
+      await emitEvent(page, 'overlay:close')
+      await dialog(page, 'block-scheduler').waitFor({ state: 'hidden' })
+    }
+
+    // Dismiss the success toast each submit emits — toasts otherwise hang
+    // around for ~6s and overlay the bottom of the canvas, intercepting
+    // clicks on the next test's block-actions toolbar.
+    await dismissMessages(page)
+
+    // Clear the adapter recorder so the next test starts with empty records.
+    // (`waitForAdapterCall` returns the latest matching call, so a stale
+    // record from a previous test would resolve a subsequent wait too early.)
+    await clearAdapterCalls(page)
+  })
+
+  test('cannot be opened for a "button" block (neither publish nor unpublish)', async () => {
+    const uuid = await addOne('button')
+    await selectBlock(page, uuid)
+    await scheduleAction(page).waitFor({ state: 'visible' })
+    expect(await scheduleAction(page).isDisabled()).toBe(true)
+  })
+
   test('offers only the unpublish section for a "title" block', async () => {
-    const { page, uuid } = await setup('title')
-    await openScheduler(page, uuid)
+    const uuid = await addOne('title')
+    await openScheduler(uuid)
 
     // Publish is unavailable (toggle disabled), unpublish is available.
     expect(
@@ -111,13 +144,11 @@ describe('The block scheduler', async () => {
         'data-test-disabled',
       ),
     ).toBe('false')
-
-    await page.close()
   })
 
   test('offers both sections for a "card" block', async () => {
-    const { page, uuid } = await setup('card')
-    await openScheduler(page, uuid)
+    const uuid = await addOne('card')
+    await openScheduler(uuid)
 
     expect(
       await schedulerSection(page, 'publish').getAttribute(
@@ -129,18 +160,16 @@ describe('The block scheduler', async () => {
         'data-test-disabled',
       ),
     ).toBe('false')
-
-    await page.close()
   })
 
   test('scheduling a publish date persists it and mutes the block', async () => {
-    const { page, uuid } = await setup('card', { now: NOW })
+    const uuid = await addOne('card')
 
     // Nothing scheduled yet: not muted, no indicator on the action.
     expect(await isBlockMuted(page, uuid)).toBe(false)
     expect(await indicator(page).count()).toBe(0)
 
-    await openScheduler(page, uuid)
+    await openScheduler(uuid)
     await enableSection(page, 'publish')
 
     // Pick an explicit future date + time in the publish section's date widget.
@@ -166,14 +195,12 @@ describe('The block scheduler', async () => {
     // action shows its "has dates" indicator (the block is still selected).
     await expect.poll(() => isBlockMuted(page, uuid)).toBe(true)
     await indicator(page).waitFor({ state: 'visible' })
-
-    await page.close()
   })
 
   test('scheduling only an unpublish date does not mute the block', async () => {
-    const { page, uuid } = await setup('card', { now: NOW })
+    const uuid = await addOne('card')
 
-    await openScheduler(page, uuid)
+    await openScheduler(uuid)
     await enableSection(page, 'unpublish')
     // Submit the default (tomorrow at noon) — no datepicker interaction.
     await dialogSubmit(page).click()
@@ -192,15 +219,13 @@ describe('The block scheduler', async () => {
     // indicator shows it has a schedule, but it is not muted.
     await indicator(page).waitFor({ state: 'visible' })
     expect(await isBlockMuted(page, uuid)).toBe(false)
-
-    await page.close()
   })
 
   test('clearing the publish date un-mutes the block again', async () => {
-    const { page, uuid } = await setup('card', { now: NOW })
+    const uuid = await addOne('card')
 
     // First schedule a publish date so the block is muted.
-    await openScheduler(page, uuid)
+    await openScheduler(uuid)
     await enableSection(page, 'publish')
     await scheduleDate(page, schedulerSection(page, 'publish')).waitFor({
       state: 'visible',
@@ -209,12 +234,14 @@ describe('The block scheduler', async () => {
     await expect.poll(() => isBlockMuted(page, uuid)).toBe(true)
 
     // Reopen and turn the publish toggle back off — disabling clears the date.
-    await openScheduler(page, uuid)
+    await openScheduler(uuid)
     await enableSection(page, 'publish')
     await dialogSubmit(page).click()
 
     // A second schedule call lands; its publish entry clears the date (the
-    // `undefined` date is dropped from the recorded JSON).
+    // `undefined` date is dropped from the recorded JSON). The recorder was
+    // cleared in `afterEach` from the previous test, so both calls are this
+    // test's.
     await expect
       .poll(
         async () =>
@@ -235,7 +262,5 @@ describe('The block scheduler', async () => {
     // The block is no longer muted and the indicator is gone.
     await expect.poll(() => isBlockMuted(page, uuid)).toBe(false)
     await indicator(page).waitFor({ state: 'detached' })
-
-    await page.close()
   })
 })

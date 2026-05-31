@@ -23,6 +23,18 @@ export function recordedAdapterCalls<T = unknown>(
 }
 
 /**
+ * Wipe the adapter call recorder so the next test starts with an empty log.
+ * Useful when sharing a page across tests — `waitForAdapterCall` returns the
+ * most recent matching call, so stale entries from earlier tests can resolve
+ * its `waitFor` prematurely with the wrong args.
+ */
+export function clearAdapterCalls(page: Page): Promise<void> {
+  return page.evaluate((key) => {
+    localStorage.removeItem(key)
+  }, ADAPTER_CALLS_KEY)
+}
+
+/**
  * Wait until the adapter records a call to `method` and resolve with its args.
  * Polls `localStorage`, so it works across the publish reload. Returns the most
  * recent matching call's args.
