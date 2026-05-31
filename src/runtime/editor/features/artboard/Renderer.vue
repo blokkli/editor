@@ -462,6 +462,11 @@ onBlokkliEvent('scrollIntoView', (e) => {
   }
 })
 
+onBlokkliEvent('setArtboardOffset', (e) => {
+  artboard.setOffset(e.x ?? null, e.y ?? null, e.immediate ?? false)
+  animation.requestDraw()
+})
+
 onBlokkliEvent('scrollSelectionIntoView', (e) => {
   const uuids = selection.uuids.value
   if (uuids.length === 0) {

@@ -235,6 +235,18 @@ export type ScrollSelectionIntoViewEvent = {
   immediate?: boolean
 }
 
+/**
+ * Pan the artboard to a specific offset. Pass `null` for an axis to leave it
+ * unchanged. `immediate` skips the easing animation. Useful for E2E tests that
+ * need to bring overflowing UI (e.g. the options toolbar with many options on
+ * a narrow viewport) into view by panning horizontally.
+ */
+export type SetArtboardOffsetEvent = {
+  x?: number | null
+  y?: number | null
+  immediate?: boolean
+}
+
 export interface EventbusEvents {
   select: string | string[]
   'select:unselect': undefined
@@ -272,6 +284,7 @@ export interface EventbusEvents {
 
   scrollIntoView: ScrollIntoViewEvent
   scrollSelectionIntoView: ScrollSelectionIntoViewEvent
+  setArtboardOffset: SetArtboardOffsetEvent
   highlight: HTMLElement | null
   'animationFrame:before': AnimationFrameBeforeEvent
   'animationFrame:after': undefined

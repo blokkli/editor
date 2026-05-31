@@ -5,6 +5,7 @@
       :style="{
         color: options.textColor,
       }"
+      :data-test-text-color="options.textColor"
     >
       This block demonstrates all possible option types.
     </h2>
@@ -21,57 +22,128 @@
           <tr>
             <th>showAllOptions</th>
             <td>checkbox</td>
-            <td>{{ JSON.stringify(options.showAllOptions) }}</td>
+            <td data-test="widget-option-showAllOptions">
+              {{ JSON.stringify(options.showAllOptions) }}
+            </td>
           </tr>
           <tr>
             <th>columns</th>
             <td>radios</td>
-            <td>{{ JSON.stringify(options.columns) }}</td>
+            <td data-test="widget-option-columns">
+              {{ JSON.stringify(options.columns) }}
+            </td>
           </tr>
           <tr>
             <th>rows</th>
-            <td>radios</td>
-            <td>{{ JSON.stringify(options.rows) }}</td>
+            <td>number</td>
+            <td data-test="widget-option-rows">
+              {{ JSON.stringify(options.rows) }}
+            </td>
           </tr>
           <tr>
             <th>range</th>
             <td>range</td>
-            <td>{{ JSON.stringify(options.range) }}</td>
+            <td data-test="widget-option-range">
+              {{ JSON.stringify(options.range) }}
+            </td>
           </tr>
           <tr>
             <th>countries</th>
             <td>checkboxes</td>
-            <td>{{ JSON.stringify(options.countries) }}</td>
+            <td data-test="widget-option-countries">
+              {{ JSON.stringify(options.countries) }}
+            </td>
           </tr>
           <tr>
             <th>anchorId</th>
             <td>text</td>
-            <td>{{ JSON.stringify(options.anchorId) }}</td>
+            <td data-test="widget-option-anchorId">
+              {{ JSON.stringify(options.anchorId) }}
+            </td>
           </tr>
           <tr>
             <th>buttonType</th>
             <td>radios</td>
-            <td>{{ JSON.stringify(options.buttonType) }}</td>
+            <td data-test="widget-option-buttonType">
+              {{ JSON.stringify(options.buttonType) }}
+            </td>
           </tr>
           <tr>
             <th>columnsGrid</th>
             <td>radios</td>
-            <td>{{ JSON.stringify(options.columnsGrid) }}</td>
+            <td data-test="widget-option-columnsGrid">
+              {{ JSON.stringify(options.columnsGrid) }}
+            </td>
           </tr>
           <tr>
             <th>color</th>
             <td>radios</td>
-            <td>{{ JSON.stringify(options.color) }}</td>
+            <td data-test="widget-option-color">
+              {{ JSON.stringify(options.color) }}
+            </td>
           </tr>
           <tr>
             <th>background</th>
             <td>radios</td>
-            <td>{{ JSON.stringify(options.background) }}</td>
+            <td data-test="widget-option-background">
+              {{ JSON.stringify(options.background) }}
+            </td>
           </tr>
           <tr>
             <th>dateTimeLocal</th>
             <td>datetime-local</td>
-            <td>{{ JSON.stringify(options.dateTimeLocal) }}</td>
+            <td data-test="widget-option-dateTimeLocal">
+              {{ JSON.stringify(options.dateTimeLocal) }}
+            </td>
+          </tr>
+          <tr>
+            <th>textColor</th>
+            <td>color</td>
+            <td data-test="widget-option-textColor">
+              {{ JSON.stringify(options.textColor) }}
+            </td>
+          </tr>
+          <tr>
+            <th>paddingTop</th>
+            <td>range</td>
+            <td data-test="widget-option-paddingTop">
+              {{ JSON.stringify(options.paddingTop) }}
+            </td>
+          </tr>
+          <tr>
+            <th>paddingBottom</th>
+            <td>range</td>
+            <td data-test="widget-option-paddingBottom">
+              {{ JSON.stringify(options.paddingBottom) }}
+            </td>
+          </tr>
+          <tr>
+            <th>paddingLeft</th>
+            <td>range</td>
+            <td data-test="widget-option-paddingLeft">
+              {{ JSON.stringify(options.paddingLeft) }}
+            </td>
+          </tr>
+          <tr>
+            <th>paddingRight</th>
+            <td>range</td>
+            <td data-test="widget-option-paddingRight">
+              {{ JSON.stringify(options.paddingRight) }}
+            </td>
+          </tr>
+          <tr>
+            <th>nestedCheckbox</th>
+            <td>checkbox</td>
+            <td data-test="widget-option-nestedCheckbox">
+              {{ JSON.stringify(options.nestedCheckbox) }}
+            </td>
+          </tr>
+          <tr>
+            <th>radiosWithLabelDescription</th>
+            <td>radios</td>
+            <td data-test="widget-option-radiosWithLabelDescription">
+              {{ JSON.stringify(options.radiosWithLabelDescription) }}
+            </td>
           </tr>
         </tbody>
       </table>

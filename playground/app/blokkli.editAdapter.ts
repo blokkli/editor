@@ -1532,10 +1532,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
     },
 
-    updateOptions: (options) =>
-      addMutation('update_options', {
+    updateOptions: (options) => {
+      if (isTesting) {
+        recordAdapterCall('update_options', { options })
+      }
+      return addMutation('update_options', {
         options,
-      }),
+      })
+    },
 
     makeBlockReusable: (e) => addMutation('make_reusable', e),
 
@@ -2547,10 +2551,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       })
     },
 
-    updateHostOptions: (options) =>
-      addMutation('update_host_options', {
+    updateHostOptions: (options) => {
+      if (isTesting) {
+        recordAdapterCall('update_host_options', { options })
+      }
+      return addMutation('update_host_options', {
         options,
-      }),
+      })
+    },
 
     getAnalyzers: () => {
       return [

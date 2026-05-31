@@ -2,6 +2,9 @@
   <div
     class="bk-blokkli-item-options-group"
     :class="{ 'bk-is-active': isActive }"
+    data-test="option-group"
+    :data-test-group="label"
+    :data-test-active="isActive"
   >
     <button @click.stop.prevent="$emit('toggle')">
       <div>{{ label }}</div>
