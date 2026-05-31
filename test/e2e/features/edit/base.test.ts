@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { EDITOR_PATH, openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -7,8 +7,8 @@ import {
   clickItemAction,
   itemActionDisabled,
 } from './../../support/itemActions'
-import { nextEvent } from './../../support/events'
-import { formOverlay } from './../../support/overlays'
+import { emitEvent, nextEvent } from './../../support/events'
+import { closeFormOverlay, formOverlay } from './../../support/overlays'
 import { pressShortcut } from './../../support/keyboard'
 
 /**
@@ -41,88 +41,101 @@ function doubleClickBlock(page: Page, uuid: string): Promise<void> {
   }, uuid)
 }
 
+/**
+ * Page lifecycle: two editor pages opened in parallel — `defaultPage` for
+ * the six tests on default permissions and `denyPage` for the one test that
+ * needs `text` edit permission denied. Each test adds its own block (or
+ * picks the seeded fragment for test 7), so accumulating blocks don't matter.
+ * `afterEach` closes the edit-form overlay (test 1 leaves it open) and
+ * deselects on both pages.
+ */
 describe('The edit feature', async () => {
   await setupEditorE2E()
 
-  test('clicking edit on an editable block emits item:edit and opens the form', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
+  let defaultPage: Page
+  let denyPage: Page
 
-    await selectBlock(page, uuid!)
-    const edited = nextEvent(page, 'item:edit')
-    await clickItemAction(page, 'edit')
+  beforeAll(async () => {
+    ;[defaultPage, denyPage] = await Promise.all([
+      openEditor(),
+      openEditor(EDITOR_PATH, {
+        permissions: { blockPermissions: { text: ['add', 'delete'] } },
+      }),
+    ])
+  })
+
+  afterAll(async () => {
+    await Promise.all([defaultPage.close(), denyPage.close()])
+  })
+
+  afterEach(async () => {
+    if (await formOverlay(defaultPage, 'edit-form').isVisible()) {
+      await closeFormOverlay(defaultPage, 'edit-form')
+    }
+    await Promise.all([
+      emitEvent(defaultPage, 'select:unselect'),
+      emitEvent(denyPage, 'select:unselect'),
+    ])
+  })
+
+  test('clicking edit on an editable block emits item:edit and opens the form', async () => {
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
+
+    await selectBlock(defaultPage, uuid!)
+    const edited = nextEvent(defaultPage, 'item:edit')
+    await clickItemAction(defaultPage, 'edit')
 
     expect(await edited).toEqual({ uuid, bundle: 'text' })
-    await formOverlay(page, 'edit-form').waitFor({ state: 'visible' })
-
-    await page.close()
+    await formOverlay(defaultPage, 'edit-form').waitFor({ state: 'visible' })
   })
 
   test('the Cmd/Ctrl+E shortcut triggers edit', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
 
-    await selectBlock(page, uuid!)
-    const edited = nextEvent(page, 'item:edit')
-    await pressShortcut(page, 'ControlOrMeta+e')
+    await selectBlock(defaultPage, uuid!)
+    const edited = nextEvent(defaultPage, 'item:edit')
+    await pressShortcut(defaultPage, 'ControlOrMeta+e')
 
     expect(await edited).toEqual({ uuid, bundle: 'text' })
-
-    await page.close()
   })
 
   test('double-clicking a block triggers edit', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
 
-    const edited = nextEvent(page, 'item:edit')
-    await doubleClickBlock(page, uuid!)
+    const edited = nextEvent(defaultPage, 'item:edit')
+    await doubleClickBlock(defaultPage, uuid!)
 
     expect(await edited).toEqual({ uuid, bundle: 'text' })
-
-    await page.close()
   })
 
   test('a multi-selection disables editing', async () => {
-    const page = await openEditor()
-    const first = await addBlock(page, { bundle: 'text' })
-    const second = await addBlock(page, { bundle: 'text' })
+    const first = await addBlock(defaultPage, { bundle: 'text' })
+    const second = await addBlock(defaultPage, { bundle: 'text' })
 
     // The edit action has no `multiple`, so selecting more than one disables it.
-    await selectBlocks(page, [first!, second!])
-    await expect.poll(() => itemActionDisabled(page, 'edit')).toBe(true)
-
-    await page.close()
+    await selectBlocks(defaultPage, [first!, second!])
+    await expect.poll(() => itemActionDisabled(defaultPage, 'edit')).toBe(true)
   })
 
   test('without edit permission, editing is disabled', async () => {
-    const page = await openEditor(EDITOR_PATH, {
-      permissions: { blockPermissions: { text: ['add', 'delete'] } },
-    })
-    const uuid = await addBlock(page, { bundle: 'text' })
+    const uuid = await addBlock(denyPage, { bundle: 'text' })
 
-    await selectBlock(page, uuid!)
-    await expect.poll(() => itemActionDisabled(page, 'edit')).toBe(true)
-
-    await page.close()
+    await selectBlock(denyPage, uuid!)
+    await expect.poll(() => itemActionDisabled(denyPage, 'edit')).toBe(true)
   })
 
   test('a block type with disableEdit is not editable', async () => {
-    const page = await openEditor()
     // `two_columns` sets `editor.disableEdit` and has no complex option.
-    const uuid = await addBlock(page, { bundle: 'two_columns' })
+    const uuid = await addBlock(defaultPage, { bundle: 'two_columns' })
 
-    await selectBlock(page, uuid!)
-    await expect.poll(() => itemActionDisabled(page, 'edit')).toBe(true)
-
-    await page.close()
+    await selectBlock(defaultPage, uuid!)
+    await expect.poll(() => itemActionDisabled(defaultPage, 'edit')).toBe(true)
   })
 
   test('a fragment block cannot be edited', async () => {
-    const page = await openEditor()
     // The playground seeds non-feature fragments, which are never editable.
     const fragmentUuid = await withApp(
-      page,
+      defaultPage,
       (app) =>
         app.blocks
           .getAllBlocks()
@@ -130,9 +143,7 @@ describe('The edit feature', async () => {
     )
     expect(fragmentUuid).toBeTruthy()
 
-    await selectBlock(page, fragmentUuid!)
-    await expect.poll(() => itemActionDisabled(page, 'edit')).toBe(true)
-
-    await page.close()
+    await selectBlock(defaultPage, fragmentUuid!)
+    await expect.poll(() => itemActionDisabled(defaultPage, 'edit')).toBe(true)
   })
 })

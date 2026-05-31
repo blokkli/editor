@@ -1,9 +1,12 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import {
   openEditableField,
   plaintextEditor,
+  editableOverlay,
   readabilityState,
+  saveByClickAway,
 } from './../../support/editable'
 import { setupEditorE2E } from './../../support/setup'
 
@@ -17,8 +20,17 @@ import { setupEditorE2E } from './../../support/setup'
  * Driven on the host `lead` field (plaintext, no max length) so we can feed
  * passages of any length.
  */
+/**
+ * Page lifecycle: one editor page shared. All tests edit the host `lead`
+ * field — each `textarea.fill(...)` replaces the prior test's content, so
+ * persisted lead state across tests doesn't affect readability assertions.
+ * `afterEach` closes any open editable via `saveByClickAway`; the persisted
+ * value (or its absence) is irrelevant because no test reads the recorder.
+ */
 describe('Editable field — readability', async () => {
   await setupEditorE2E()
+
+  let page: Page
 
   const BANDS = ['easy', 'ok', 'hard']
 
@@ -26,9 +38,22 @@ describe('Editable field — readability', async () => {
     'The quick brown fox jumps over the lazy dog. ' +
     'This is a clear and simple sentence that anyone can read with ease.'
 
-  test('shows a readability band for a long enough passage', async () => {
-    const page = await openEditor()
+  beforeAll(async () => {
+    page = await openEditor()
+  })
 
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await editableOverlay(page).isVisible()) {
+      await saveByClickAway(page)
+      await editableOverlay(page).waitFor({ state: 'detached' })
+    }
+  })
+
+  test('shows a readability band for a long enough passage', async () => {
     await openEditableField(page, 'lead')
     const textarea = plaintextEditor(page)
     await textarea.waitFor({ state: 'visible' })
@@ -41,13 +66,9 @@ describe('Editable field — readability', async () => {
     const state = await readabilityState(page)
     expect(BANDS).toContain(state.band)
     expect(state.tooShort).toBe(false)
-
-    await page.close()
   })
 
   test('shows the "too short" state for very little text', async () => {
-    const page = await openEditor()
-
     await openEditableField(page, 'lead')
     const textarea = plaintextEditor(page)
     await textarea.waitFor({ state: 'visible' })
@@ -59,13 +80,9 @@ describe('Editable field — readability', async () => {
       })
       .toBe(true)
     expect((await readabilityState(page)).band).toBeNull()
-
-    await page.close()
   })
 
   test('recomputes as the text changes', async () => {
-    const page = await openEditor()
-
     await openEditableField(page, 'lead')
     const textarea = plaintextEditor(page)
     await textarea.waitFor({ state: 'visible' })
@@ -84,7 +101,5 @@ describe('Editable field — readability', async () => {
       .poll(async () => (await readabilityState(page)).band, { timeout: 5000 })
       .toBeTruthy()
     expect((await readabilityState(page)).tooShort).toBe(false)
-
-    await page.close()
   })
 })

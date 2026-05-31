@@ -333,9 +333,13 @@ export async function dragNewBlockIntoPage(
   opts: DropTarget = {},
 ): Promise<void> {
   const start = await page.evaluate((b) => {
-    const al = document.querySelector('#bk-add-list')!.getBoundingClientRect()
+    const al = document
+      .querySelector('[data-test="add-list"]')!
+      .getBoundingClientRect()
     const item = document
-      .querySelector(`#blokkli-add-list-blocks [data-sortli-id="${b}"]`)!
+      .querySelector(
+        `[data-test="add-list-blocks"] [data-test="add-list-item-${b}"]`,
+      )!
       .getBoundingClientRect()
     return {
       x: Math.round(al.x + Math.min(al.width, item.width) / 2),

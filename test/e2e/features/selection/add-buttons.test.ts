@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto'
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { addBlocks, selectBlock } from './../../support/blocks'
 import { emitEvent } from './../../support/events'
+import { closeFormOverlay, formOverlay } from './../../support/overlays'
 import { setupEditorE2E } from './../../support/setup'
 import {
   bundleSelector,
@@ -85,22 +86,57 @@ async function newBlock(
   return handle.jsonValue()
 }
 
+/**
+ * Page lifecycle: one editor page shared. Every helper (`addGrid`,
+ * `openCardBundleSelector`) uses `randomUUID()` so per-test grids never
+ * collide. `afterEach` closes the bundle selector (Escape — the
+ * `ArtboardTooltip` reacts), any form overlay opened by tests 9/10
+ * (`templates` / `library`), and deselects. Test 1 only asserts the
+ * selector opens, but its `bundleSelector.count() === 0` precheck still
+ * works on a shared page because `afterEach` always reaches a clean state.
+ */
 describe('The selection add buttons', async () => {
   await setupEditorE2E()
 
-  test("triggering a card's add button opens the bundle selector", async () => {
-    const page = await openEditor()
+  let page: Page
 
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    // The selector unmounts via `BlokkliTransition` (`v-if` on `addData`), so
+    // after a test that picked a bundle the element can still be in the DOM
+    // mid leave-transition. Give the auto-close a short grace period; only
+    // click the close button if it really stayed open.
+    try {
+      await bundleSelector(page).waitFor({ state: 'hidden', timeout: 500 })
+    } catch {
+      await bundleSelector(page)
+        .locator('[data-test="artboard-tooltip-close"]')
+        .click()
+      await bundleSelector(page).waitFor({ state: 'hidden' })
+    }
+    for (const id of ['templates', 'library'] as const) {
+      if (await formOverlay(page, id).isVisible()) {
+        await closeFormOverlay(page, id)
+      }
+    }
+    await emitEvent(page, 'select:unselect')
+  })
+
+  test("triggering a card's add button opens the bundle selector", async () => {
     expect(await bundleSelector(page).count()).toBe(0)
 
     await openCardBundleSelector(page)
     await bundleSelector(page).waitFor({ state: 'visible' })
-
-    await page.close()
   })
 
   test('a title in the grid has no add buttons (its header field holds a single block)', async () => {
-    const page = await openEditor()
     const { title } = await addGrid(page)
 
     // The grid's `header` field has a cardinality of 1 and already holds the
@@ -115,13 +151,9 @@ describe('The selection add buttons', async () => {
     // Give any (erroneous) selector a chance to appear before asserting absence.
     await page.waitForTimeout(300)
     expect(await bundleSelector(page).count()).toBe(0)
-
-    await page.close()
   })
 
   test("the grid's empty header field offers the title/text bundles and the template action", async () => {
-    const page = await openEditor()
-
     // A grid whose `header` field is left empty (the `blocks` field has a card,
     // so `header` is the grid's only empty field → index 0).
     const grid = randomUUID()
@@ -150,12 +182,9 @@ describe('The selection add buttons', async () => {
     // field doesn't allow the from-library bundle) — only "Template".
     expect(await bundleSelectorItemIds(page, 'actions')).toEqual(['template'])
     expect(await bundleSelectorItemIds(page, 'fragments')).toEqual([])
-
-    await page.close()
   })
 
   test('starting a drag closes the bundle selector', async () => {
-    const page = await openEditor()
     const selector = await openCardBundleSelector(page)
     await selector.waitFor({ state: 'visible' })
 
@@ -167,11 +196,11 @@ describe('The selection add buttons', async () => {
 
     await selector.waitFor({ state: 'hidden' })
 
-    await page.close()
+    // End the drag so afterEach starts from a clean state.
+    await emitEvent(page, 'dragging:end')
   })
 
   test('the bundle selector lists the expected blocks, actions and fragments', async () => {
-    const page = await openEditor()
     await openCardBundleSelector(page)
 
     // Blocks allowed in the grid's `blocks` field (the internal `from_library`
@@ -190,12 +219,9 @@ describe('The selection add buttons', async () => {
     expect(await bundleSelectorItemIds(page, 'fragments')).toEqual([
       'fragment:demo_card',
     ])
-
-    await page.close()
   })
 
   test('searching narrows to matching blocks and fragments and hides the actions group', async () => {
-    const page = await openEditor()
     await openCardBundleSelector(page)
 
     await bundleSelectorSearch(page).fill('card')
@@ -213,12 +239,9 @@ describe('The selection add buttons', async () => {
     expect(
       await page.locator('[data-test="bundle-selector-actions"]').isVisible(),
     ).toBe(false)
-
-    await page.close()
   })
 
   test('searching for "card" and pressing enter adds a card', async () => {
-    const page = await openEditor()
     await openCardBundleSelector(page)
     const input = bundleSelectorSearch(page)
 
@@ -236,12 +259,9 @@ describe('The selection add buttons', async () => {
     const added = await newBlock(page, before)
     expect(added?.bundle).toBe('card')
     expect(added?.fragment).toBeNull()
-
-    await page.close()
   })
 
   test('searching for "demo card" and pressing enter adds the demo card fragment', async () => {
-    const page = await openEditor()
     await openCardBundleSelector(page)
     const input = bundleSelectorSearch(page)
 
@@ -260,12 +280,9 @@ describe('The selection add buttons', async () => {
 
     const added = await newBlock(page, before)
     expect(added?.fragment).toBe('demo_card')
-
-    await page.close()
   })
 
   test('clicking the "Template" action opens the template form overlay', async () => {
-    const page = await openEditor()
     await openCardBundleSelector(page)
 
     await pickBundle(page, 'template')
@@ -273,12 +290,9 @@ describe('The selection add buttons', async () => {
     await page
       .locator('[data-test="form-overlay-templates"]')
       .waitFor({ state: 'visible' })
-
-    await page.close()
   })
 
   test('clicking the "From library" action opens the library form overlay', async () => {
-    const page = await openEditor()
     await openCardBundleSelector(page)
 
     await pickBundle(page, 'library')
@@ -286,7 +300,5 @@ describe('The selection add buttons', async () => {
     await page
       .locator('[data-test="form-overlay-library"]')
       .waitFor({ state: 'visible' })
-
-    await page.close()
   })
 })

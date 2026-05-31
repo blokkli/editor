@@ -12,6 +12,7 @@
       <button
         v-if="button"
         class="bk-button bk-is-small bk-is-dark"
+        data-test="banner-button"
         @click="$emit('click')"
       >
         {{ button }}

@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
 import { openEditor, withApp, EDITOR_PATH } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { waitForAdapterCall } from './../../support/recorder'
@@ -35,18 +36,50 @@ function ownershipOverrideEntry(
  * dropped one half (banner-disappears-but-no-call, or call-fires-but-banner-stuck)
  * would slip past either assertion alone.
  */
+/**
+ * Page lifecycle: two pages opened in parallel.
+ *
+ * `alicePage` (currentUserIsOwner=false, ownerName="Alice", default user
+ * permissions) serves tests 1 & 2. Test order matters: test 1 just asserts
+ * the banner is visible / state has `currentUserIsOwner=false`; test 2
+ * mutates by calling takeOwnership and flips the state to `true`,
+ * permanently unmounting the banner — so it must run last on this page.
+ *
+ * `bobPage` (currentUserIsOwner=false, ownerName="Bob", `take_ownership`
+ * permission removed) serves test 3 only.
+ */
 describe('Ownership', async () => {
   await setupEditorE2E()
 
-  test('banner appears when current user is not the owner and shows the owner name', async () => {
-    const page = await openEditor(EDITOR_PATH, {
-      localStorage: ownershipOverrideEntry({
-        currentUserIsOwner: false,
-        ownerName: 'Alice Example',
-      }),
-    })
+  let alicePage: Page
+  let bobPage: Page
 
-    const banner = page.locator('[data-test="ownership-banner"]')
+  beforeAll(async () => {
+    ;[alicePage, bobPage] = await Promise.all([
+      openEditor(EDITOR_PATH, {
+        localStorage: ownershipOverrideEntry({
+          currentUserIsOwner: false,
+          ownerName: 'Alice Example',
+        }),
+      }),
+      openEditor(EDITOR_PATH, {
+        localStorage: ownershipOverrideEntry({
+          currentUserIsOwner: false,
+          ownerName: 'Bob Reader',
+        }),
+        permissions: {
+          userPermissions: ['edit', 'use_blokkli'],
+        },
+      }),
+    ])
+  })
+
+  afterAll(async () => {
+    await Promise.all([alicePage.close(), bobPage.close()])
+  })
+
+  test('banner appears when current user is not the owner and shows the owner name', async () => {
+    const banner = alicePage.locator('[data-test="ownership-banner"]')
     await banner.waitFor({ state: 'visible' })
 
     // Locale-independent assertion: the displayed owner name is exposed via
@@ -61,39 +94,30 @@ describe('Ownership', async () => {
     // wired through `mapState`, not just that the banner happens to render.
     expect(
       await withApp(
-        page,
+        alicePage,
         (app) => app.state.owner.value?.currentUserIsOwner ?? null,
       ),
     ).toBe(false)
-
-    await page.close()
   })
 
   test('clicking "Assign to me" calls takeOwnership, flips ownership state, and dismisses the banner', async () => {
-    const page = await openEditor(EDITOR_PATH, {
-      localStorage: ownershipOverrideEntry({
-        currentUserIsOwner: false,
-        ownerName: 'Alice Example',
-      }),
-    })
-
-    const banner = page.locator('[data-test="ownership-banner"]')
+    const banner = alicePage.locator('[data-test="ownership-banner"]')
     await banner.waitFor({ state: 'visible' })
 
-    // BannerInner renders exactly one <button> when the `button` prop is
-    // truthy — `canTakeOwnership` is true here (default user permissions
-    // include `take_ownership`).
-    await banner.locator('button').click()
+    // BannerInner renders exactly one `data-test="banner-button"` when the
+    // `button` prop is truthy — `canTakeOwnership` is true here (default user
+    // permissions include `take_ownership`).
+    await banner.locator('[data-test="banner-button"]').click()
 
     // Adapter recorded the takeOwnership call. Payload is empty (the method
     // takes no args), but the recorded entry's presence is the assertion.
-    await waitForAdapterCall<Record<string, never>>(page, 'take_ownership')
+    await waitForAdapterCall<Record<string, never>>(alicePage, 'take_ownership')
 
     // Editor's owner state flipped to "current user is owner".
     await expect
       .poll(() =>
         withApp(
-          page,
+          alicePage,
           (app) => app.state.owner.value?.currentUserIsOwner ?? null,
         ),
       )
@@ -102,33 +126,15 @@ describe('Ownership', async () => {
     // Banner unmounts — `shouldRender` in features/ownership/index.vue gates
     // on `!currentUserIsOwner`, so the Teleport drops it.
     await expect.poll(() => banner.count()).toBe(0)
-
-    await page.close()
   })
 
   test('banner shows but the action button is hidden when the user lacks take_ownership permission', async () => {
-    // Drop `take_ownership` from the user permissions while keeping `edit`,
-    // `use_blokkli`, and the state-level permission that `shouldRender` reads
-    // from `state.permissions` (the latter is sourced from the edit state's
-    // `permissions` field, not the user permissions — unaffected here).
-    const page = await openEditor(EDITOR_PATH, {
-      localStorage: ownershipOverrideEntry({
-        currentUserIsOwner: false,
-        ownerName: 'Bob Reader',
-      }),
-      permissions: {
-        userPermissions: ['edit', 'use_blokkli'],
-      },
-    })
-
-    const banner = page.locator('[data-test="ownership-banner"]')
+    const banner = bobPage.locator('[data-test="ownership-banner"]')
     await banner.waitFor({ state: 'visible' })
 
     // With `canTakeOwnership` false, the `button` prop on BannerInner is
     // `undefined`, so its `v-if="button"` drops the action entirely. No
-    // button rendered means the banner is informational only.
-    expect(await banner.locator('button').count()).toBe(0)
-
-    await page.close()
+    // banner-button rendered means the banner is informational only.
+    expect(await banner.locator('[data-test="banner-button"]').count()).toBe(0)
   })
 })

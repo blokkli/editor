@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import {
@@ -10,6 +11,7 @@ import {
 import { toolbarButton, undo } from './../../support/toolbar'
 import { pressShortcut } from './../../support/keyboard'
 import { selectedUuids } from './../../support/selection'
+import { emitEvent } from './../../support/events'
 import {
   activeHistoryIndex,
   clickCurrentRevision,
@@ -33,20 +35,57 @@ import {
  * cheap way to produce a real mutation (= one history entry).
  */
 
+/**
+ * Page lifecycle: one editor page shared. Every test except 1 & 8 makes
+ * mutations whose exact count is asserted (0, 1, or 2), so `afterEach`
+ * resets state to a pristine session. The reset clears the playground's
+ * `EditState` localStorage keys (`__30_blokkli_mock_1_{mutations,index}` —
+ * matching `EditState.revert()`) and emits `reloadState`, which calls
+ * `adapter.loadState` and refreshes the editor's mutation list from the
+ * now-empty EditState. No `page.reload()` needed, so each reset is ~200ms
+ * instead of ~2s.
+ */
 describe('The history feature', async () => {
   await setupEditorE2E()
 
-  test('both toolbar buttons are disabled with no mutations', async () => {
-    const page = await openEditor()
+  let page: Page
 
-    await expect.poll(() => toolbarButton(page, 'undo').isDisabled()).toBe(true)
-    await expect.poll(() => toolbarButton(page, 'redo').isDisabled()).toBe(true)
+  /**
+   * Reset to a pristine editor session WITHOUT a full page reload. The
+   * playground's `EditState` persists its mutation list AND current index to
+   * `__30_blokkli_mock_<uuid>_*` localStorage keys (so an accidental tab
+   * refresh keeps your work). Clearing those keys + emitting `reloadState`
+   * makes the editor re-read the mock and arrive at an empty mutation list.
+   */
+  async function resetEditor(): Promise<void> {
+    await page.evaluate(() => {
+      localStorage.removeItem('__30_blokkli_mock_1_mutations')
+      localStorage.removeItem('__30_blokkli_mock_1_index')
+    })
+    await emitEvent(page, 'reloadState')
+    await page.waitForFunction(
+      () => window.__BLOKKLI__?.app?.state.mutations.value.length === 0,
+    )
+  }
 
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
     await page.close()
   })
 
+  afterEach(async () => {
+    await resetEditor()
+  })
+
+  test('both toolbar buttons are disabled with no mutations', async () => {
+    await expect.poll(() => toolbarButton(page, 'undo').isDisabled()).toBe(true)
+    await expect.poll(() => toolbarButton(page, 'redo').isDisabled()).toBe(true)
+  })
+
   test('undo removes the block, then redo restores it', async () => {
-    const page = await openEditor()
     const uuid = await addBlock(page, { bundle: 'text' })
 
     // One mutation applied: the block is rendered, undo enabled, redo disabled.
@@ -76,12 +115,9 @@ describe('The history feature', async () => {
     await expect.poll(() => blockRendered(page, uuid!)).toBe(true)
     await expect.poll(() => currentMutationIndex(page)).toBe(0)
     await expect.poll(() => toolbarButton(page, 'redo').isDisabled()).toBe(true)
-
-    await page.close()
   })
 
   test('the Cmd/Ctrl+Z and Cmd/Ctrl+Shift+Z shortcuts undo and redo', async () => {
-    const page = await openEditor()
     const uuid = await addBlock(page, { bundle: 'text' })
 
     await pressShortcut(page, 'ControlOrMeta+z')
@@ -91,12 +127,9 @@ describe('The history feature', async () => {
     await pressShortcut(page, 'ControlOrMeta+Shift+z')
     await expect.poll(() => blockExists(page, uuid!)).toBe(true)
     await expect.poll(() => currentMutationIndex(page)).toBe(0)
-
-    await page.close()
   })
 
   test('the sidebar lists one item per mutation and marks the active one', async () => {
-    const page = await openEditor()
     await addBlock(page, { bundle: 'text' })
     await addBlock(page, { bundle: 'text' })
 
@@ -112,12 +145,9 @@ describe('The history feature', async () => {
         .locator('[data-test="history-current-revision"]')
         .getAttribute('data-test-history-active'),
     ).toBe('false')
-
-    await page.close()
   })
 
   test('clicking an older list item reverts the document to that point', async () => {
-    const page = await openEditor()
     const first = await addBlock(page, { bundle: 'text' })
     const second = await addBlock(page, { bundle: 'text' })
 
@@ -131,12 +161,9 @@ describe('The history feature', async () => {
     expect(await blockExists(page, second!)).toBe(false)
     expect(await blockRendered(page, first!)).toBe(true)
     await expect.poll(() => activeHistoryIndex(page)).toBe(0)
-
-    await page.close()
   })
 
   test('"Current revision" reverts everything, and a later item reapplies it', async () => {
-    const page = await openEditor()
     const first = await addBlock(page, { bundle: 'text' })
     const second = await addBlock(page, { bundle: 'text' })
 
@@ -155,12 +182,9 @@ describe('The history feature', async () => {
     await expect.poll(() => blockExists(page, first!)).toBe(true)
     expect(await blockExists(page, second!)).toBe(true)
     await expect.poll(() => activeHistoryIndex(page)).toBe(1)
-
-    await page.close()
   })
 
   test('selection is restored per history index when jumping back and forth', async () => {
-    const page = await openEditor()
     const a = await addBlock(page, { bundle: 'text' }) // index 0
     const b = await addBlock(page, { bundle: 'text' }) // index 1
 
@@ -183,19 +207,14 @@ describe('The history feature', async () => {
     await undo(page)
     await expect.poll(() => currentMutationIndex(page)).toBe(0)
     await expect.poll(() => selectedUuids(page)).toEqual([a!])
-
-    await page.close()
   })
 
   test('the sidebar shows an empty state when there are no mutations', async () => {
-    const page = await openEditor()
     await openHistory(page)
 
     await page
       .locator('[data-test="history-empty"]')
       .waitFor({ state: 'visible' })
     expect(await historyItems(page).count()).toBe(0)
-
-    await page.close()
   })
 })

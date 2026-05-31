@@ -9,6 +9,7 @@
         <Crumb is-first test-id="root" :is-last="rootIsLast">
           <button
             type="button"
+            data-test="crumb-button"
             class="group flex items-center h-full px-10 relative hover:text-white"
             :class="
               rootIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'
@@ -23,6 +24,7 @@
         <Crumb v-if="showHost" shrinkable test-id="host" :is-last="hostIsLast">
           <button
             type="button"
+            data-test="crumb-button"
             class="group flex items-center h-full px-10 relative hover:text-white min-w-0"
             :class="
               hostIsLast ? 'font-bold text-white' : 'font-medium text-mono-300'

@@ -1,8 +1,13 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor, withApp } from './../../support/session'
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import {
+  openEditor,
+  waitForEditorReady,
+  withApp,
+} from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { addBlock } from './../../support/blocks'
-import { waitForAdapterCall } from './../../support/recorder'
+import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
 import { outdatedTranslationsEntry } from './../../support/translations'
 
 /**
@@ -14,11 +19,36 @@ import { outdatedTranslationsEntry } from './../../support/translations'
  * primary entry points into the rest of the translations feature — if they
  * silently break, no other flow becomes reachable from the UI.
  */
+/**
+ * Page lifecycle: one editor page shared. Opens at the EN page in `beforeAll`;
+ * `beforeEach` navigates back to that EN URL if the prior test ended elsewhere
+ * (test 1 ends at `/de`, test 2 at `/de/page/1`). Adapter recorder is cleared
+ * each test so `waitForAdapterCall` isn't polluted by a prior recording.
+ */
 describe('Banner & language switcher', async () => {
   await setupEditorE2E()
 
+  let page: Page
+  let enUrl: string
+
+  beforeAll(async () => {
+    page = await openEditor('/page/1?blokkliEditing=1&testing=true')
+    enUrl = page.url()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  beforeEach(async () => {
+    if (page.url() !== enUrl) {
+      await page.goto(enUrl)
+      await waitForEditorReady(page)
+    }
+    await clearAdapterCalls(page)
+  })
+
   test('language switcher navigates to the translation and enters translating mode', async () => {
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('editing')
@@ -35,21 +65,15 @@ describe('Banner & language switcher', async () => {
     // The mock's changeLanguage routes via router.push(e.url) — playground's
     // DE home is `/de`, not `/de/page/1`. Match `/de` followed by `?` or end.
     await page.waitForURL(/\/de(\?|$)/)
-    await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-    await page.waitForFunction(
-      () => !document.querySelector('[class*="z-init-overlay"]'),
-    )
+    await waitForEditorReady(page)
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('translating')
-
-    await page.close()
   })
 
   test('mark-all-up-to-date dispatches the mutation and clears the banner count', async () => {
     // Step 1 (EN): add a card. The outdated override (set up in step 2) keys
     // by uuid, so we need the uuid to seed before we reach DE.
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('editing')
@@ -71,10 +95,7 @@ describe('Banner & language switcher', async () => {
     }, seed)
     const deUrl = page.url().replace('/page/1', '/de/page/1')
     await page.goto(deUrl)
-    await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-    await page.waitForFunction(
-      () => !document.querySelector('[class*="z-init-overlay"]'),
-    )
+    await waitForEditorReady(page)
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('translating')
@@ -120,7 +141,5 @@ describe('Banner & language switcher', async () => {
     await expect
       .poll(() => banner.getAttribute('data-test-outdated-count'))
       .toBe('0')
-
-    await page.close()
   })
 })

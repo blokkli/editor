@@ -17,6 +17,7 @@
       <button
         v-if="crumb.type === 'block'"
         type="button"
+        data-test="crumb-button"
         class="group flex items-center h-full px-10 relative hover:text-white"
         :class="isLast ? 'font-bold text-white' : 'font-medium text-mono-300'"
         @click.prevent="onClickBlock"
@@ -39,6 +40,7 @@
       <button
         v-else-if="crumb.type === 'field'"
         type="button"
+        data-test="crumb-button"
         class="group flex items-center h-full px-10 relative hover:text-white uppercase text-xs tracking-wide min-w-0"
         :class="isLast ? 'font-bold text-white' : 'font-medium text-mono-300'"
         @click.prevent="onClickField"

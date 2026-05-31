@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
 import { openEditor, getHostContext } from './../../support/session'
 import { addBlock } from './../../support/blocks'
 import {
@@ -6,11 +7,12 @@ import {
   blockHost,
   waitForEditableText,
   editableFrame,
+  editableOverlay,
   frameSrc,
   setFrameValue,
   saveByClickAway,
 } from './../../support/editable'
-import { waitForAdapterCall } from './../../support/recorder'
+import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
 import { setupEditorE2E } from './../../support/setup'
 
 type FieldValueCall = { uuid?: string; fieldName: string; fieldValue: string }
@@ -25,11 +27,36 @@ type FieldValueCall = { uuid?: string; fieldName: string; fieldValue: string }
  * is unreliable under Playwright, so we exercise the parent↔iframe value path
  * deterministically instead.
  */
+/**
+ * Page lifecycle: one editor page shared. Each test adds its own text block,
+ * so the per-test uuid is unique. `afterEach` closes any open editable via
+ * `saveByClickAway` — the overlay's `save` early-returns when nothing
+ * changed, so closing test 1's pristine editable doesn't record a stray
+ * `updateFieldValue` call. The adapter recorder is also cleared so test 2's
+ * `waitForAdapterCall('updateFieldValue')` only sees its own write.
+ */
 describe('Editable field — frame (rich text)', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await editableOverlay(page).isVisible()) {
+      await saveByClickAway(page)
+      await editableOverlay(page).waitFor({ state: 'detached' })
+    }
+    await clearAdapterCalls(page)
+  })
+
   test('opens the rich-text iframe pointed at the field editor', async () => {
-    const page = await openEditor()
     const host = await getHostContext(page)
     const uuid = (await addBlock(page, { bundle: 'text' }))!
 
@@ -44,12 +71,9 @@ describe('Editable field — frame (rich text)', async () => {
     expect(
       await page.locator('[data-test="editable-char-count"]').count(),
     ).toBe(0)
-
-    await page.close()
   })
 
   test('editing the rich text updates the block and persists on save', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'text' }))!
     const host = await blockHost(page, uuid)
 
@@ -69,7 +93,5 @@ describe('Editable field — frame (rich text)', async () => {
     expect(call.uuid).toBe(uuid)
     expect(call.fieldName).toBe('text')
     expect(call.fieldValue).toContain('Edited rich text')
-
-    await page.close()
   })
 })

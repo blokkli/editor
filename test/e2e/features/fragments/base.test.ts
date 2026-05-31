@@ -1,12 +1,13 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor, withApp, getHostContext } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { dropAddAction } from './../../support/blocks'
 import { topLevelBlockUuids } from './../../support/selection'
-import { formOverlay } from './../../support/overlays'
+import { closeFormOverlay, formOverlay } from './../../support/overlays'
 import { emitEvent } from './../../support/events'
 import {
+  clearAdapterCalls,
   waitForAdapterCall,
   recordedAdapterCalls,
 } from './../../support/recorder'
@@ -79,11 +80,35 @@ async function openFragmentsDialog(
   await formOverlay(page, 'fragments').waitFor({ state: 'visible' })
 }
 
+/**
+ * Page lifecycle: one editor page shared. Each test opens the fragments
+ * dialog freshly via `openFragmentsDialog`. `afterEach` closes the dialog
+ * if open (tests 1/3/6 leave it open) and clears the adapter recorder so
+ * tests 3 and 4 see `fragmentAddCalls === 0` even after test 2's add.
+ * Local `before` snapshots in tests 2/4 keep accumulating fragments
+ * harmless.
+ */
 describe('The fragments feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await formOverlay(page, 'fragments').isVisible()) {
+      await closeFormOverlay(page, 'fragments')
+    }
+    await clearAdapterCalls(page)
+  })
+
   test('the dialog lists only the fragments allowed on the field', async () => {
-    const page = await openEditor()
     await openFragmentsDialog(page)
 
     const names = await fragmentOptionNames(page)
@@ -91,12 +116,9 @@ describe('The fragments feature', async () => {
     // The other defined fragments are not allowed on `content`.
     expect(names).not.toContain('demo_card')
     expect(names).not.toContain('features_list')
-
-    await page.close()
   })
 
   test('selecting a fragment and submitting adds a fragment block', async () => {
-    const page = await openEditor()
     const host = await getHostContext(page)
     const before = await fragmentBlockCount(page)
 
@@ -121,12 +143,9 @@ describe('The fragments feature', async () => {
     // The dialog closes and a fragment block was actually added.
     await formOverlay(page, 'fragments').waitFor({ state: 'detached' })
     await expect.poll(() => fragmentBlockCount(page)).toBe(before + 1)
-
-    await page.close()
   })
 
   test('submitting without a selection is a no-op', async () => {
-    const page = await openEditor()
     await openFragmentsDialog(page)
 
     // No fragment picked → the submit guard (`if (selectedItem.value)`) returns
@@ -135,12 +154,9 @@ describe('The fragments feature', async () => {
 
     expect(await formOverlay(page, 'fragments').count()).toBe(1)
     expect(await fragmentAddCalls(page)).toBe(0)
-
-    await page.close()
   })
 
   test('closing the dialog adds nothing', async () => {
-    const page = await openEditor()
     const before = await fragmentBlockCount(page)
     await openFragmentsDialog(page)
 
@@ -150,12 +166,9 @@ describe('The fragments feature', async () => {
 
     expect(await fragmentAddCalls(page)).toBe(0)
     expect(await fragmentBlockCount(page)).toBe(before)
-
-    await page.close()
   })
 
   test('the placed position (preceeding block) is forwarded to the adapter', async () => {
-    const page = await openEditor()
     const first = (await topLevelBlockUuids(page))[0]!
 
     await openFragmentsDialog(page, { preceedingUuid: first })
@@ -168,12 +181,9 @@ describe('The fragments feature', async () => {
     )
     expect(args.name).toBe('top_level_link')
     expect(args.preceedingUuid).toBe(first)
-
-    await page.close()
   })
 
   test('the search field filters the fragment list', async () => {
-    const page = await openEditor()
     await openFragmentsDialog(page)
 
     // The filter uses `v-show`, so the items stay in the DOM — assert visibility.
@@ -186,7 +196,5 @@ describe('The fragments feature', async () => {
     await expect
       .poll(() => fragmentOption(page, 'top_level_link').isVisible())
       .toBe(false)
-
-    await page.close()
   })
 })

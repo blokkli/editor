@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from './../../support/session'
+import { openEditor, waitForEditorReady } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { openAppMenu, appMenuButton } from './../../support/menu'
 import { dialog } from './../../support/overlays'
@@ -42,14 +42,11 @@ function changelogHighlight(page: Page): Promise<string | null> {
  *  waits `openEditor` does. Simulates the user opening the editor again. */
 async function reopenEditor(page: Page): Promise<void> {
   // `page.goto` to the same URL reloads. The base Playwright `Page` type doesn't
-  // know `@nuxt/test-utils`' `'hydration'` waitUntil, and we don't need it — the
-  // explicit waits below already gate on the app being mounted and the overlay
-  // gone, which only happens post-hydration.
+  // know `@nuxt/test-utils`' `'hydration'` waitUntil, and we don't need it —
+  // `waitForEditorReady` already gates on the app being mounted and the
+  // overlay gone, which only happens post-hydration.
   await page.goto(page.url())
-  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-  await page.waitForFunction(
-    () => !document.querySelector('[class*="z-init-overlay"]'),
-  )
+  await waitForEditorReady(page)
 }
 
 /** Seed the stored "last seen version", then re-open so the feature reads it on

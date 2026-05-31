@@ -5,7 +5,7 @@
 
   <Teleport to="body">
     <Transition :name="ui.useAnimations.value ? 'bk-loading' : undefined">
-      <Loading v-if="showLoading" screen />
+      <Loading v-if="showLoading" screen data-test="init-overlay" />
     </Transition>
 
     <div

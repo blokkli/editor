@@ -1,62 +1,21 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor, withApp } from './../../support/session'
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
-import { addBlock } from './../../support/blocks'
 import {
   blockHost,
   editableState,
   waitForEditableText,
 } from './../../support/editable'
-import { waitForAdapterCall } from './../../support/recorder'
+import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
 import { dialog } from './../../support/overlays'
 import {
+  addCardWithSourceTitle,
   buildPoFixture,
   buildSingleLangCsv,
   switchToCsvImportTab,
   uploadTranslationsFile,
 } from './../../support/translations'
-
-/**
- * Set up the fixture: open in EN, add a card, capture its EN title + uuid,
- * then switch to /de. Returns everything the import tests need.
- */
-async function setupCardAndSwitchToDe() {
-  const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
-  await expect
-    .poll(() => withApp(page, (app) => app.state.editMode.value))
-    .toBe('editing')
-
-  const cardUuid = await addBlock(page, {
-    bundle: 'card',
-    fieldName: 'content',
-  })
-  if (!cardUuid) throw new Error('Failed to add card.')
-
-  const enTitle = await page.evaluate((uuid) => {
-    const app = window.__BLOKKLI__!.app!
-    const block = app.blocks.getBlock(uuid)
-    if (!block) return ''
-    const el = app.directive.findEditableElement('title', {
-      type: 'paragraph',
-      bundle: block.bundle,
-      uuid,
-    })
-    return el?.textContent?.trim() ?? ''
-  }, cardUuid)
-  if (!enTitle) throw new Error('Added card has no source title.')
-
-  const deUrl = page.url().replace('/page/1', '/de/page/1')
-  await page.goto(deUrl)
-  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-  await page.waitForFunction(
-    () => !document.querySelector('[class*="z-init-overlay"]'),
-  )
-  await expect
-    .poll(() => withApp(page, (app) => app.state.editMode.value))
-    .toBe('translating')
-
-  return { page, cardUuid, enTitle }
-}
 
 /**
  * Regression tests for CSV and PO import.
@@ -67,19 +26,46 @@ async function setupCardAndSwitchToDe() {
  * "applied items disagree with selected rows" — silent drift, off-by-one in
  * the change set, parser regressions. We assert the DOM updates AND the
  * adapter payload.
+ *
+ * Page lifecycle: one editor page shared, opened **directly in /de** (the
+ * comment "adding blocks is forbidden in translating mode" describes the
+ * UI add-list — the adapter's `addNewBlock` works fine in any language).
+ * Skipping the EN→DE navigation saves ~2.3s per test that an EN-then-goto
+ * setup paid waiting for the post-goto hydration + init-overlay teardown.
+ *
+ * `beforeEach` only clears the adapter recorder; mock state accumulates
+ * across tests (each test's CSV references its own uuid so the diff
+ * detector only ever returns the test's own rows).
  */
+
 describe('Translations CSV/PO import', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor('/de/page/1?blokkliEditing=1&testing=true')
+    // The editor's `loadState` resolves the edit mode before hydration
+    // finishes; `openEditor` already waits for both, so by the time it
+    // returns the mode is settled.
+    await page.waitForFunction(
+      () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
+    )
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  beforeEach(async () => {
+    await clearAdapterCalls(page)
+  })
+
   test('CSV import applies the translation to the editable', async () => {
-    const { page, cardUuid, enTitle } = await setupCardAndSwitchToDe()
+    const { uuid, sourceTitle } = await addCardWithSourceTitle(page)
 
     const csv = buildSingleLangCsv([
-      {
-        key: `${cardUuid}:title`,
-        source: enTitle,
-        translation: 'Karte alpha',
-      },
+      { key: `${uuid}:title`, source: sourceTitle, translation: 'Karte alpha' },
     ])
 
     await page.locator('[data-test="translations-banner-csv"]').click()
@@ -98,7 +84,7 @@ describe('Translations CSV/PO import', async () => {
     await page.locator('[data-test="translations-csv-import-apply"]').click()
     await dialog(page, 'translations-csv').waitFor({ state: 'hidden' })
 
-    const host = await blockHost(page, cardUuid)
+    const host = await blockHost(page, uuid)
     await waitForEditableText(page, 'title', host, 'Karte alpha')
     expect((await editableState(page, 'title', host))?.text.trim()).toBe(
       'Karte alpha',
@@ -115,22 +101,20 @@ describe('Translations CSV/PO import', async () => {
     expect(call.items).toHaveLength(1)
     expect(call.items[0]).toMatchObject({
       langcode: 'de',
-      uuid: cardUuid,
+      uuid,
       fieldName: 'title',
       fieldValue: 'Karte alpha',
     })
-
-    await page.close()
   })
 
   test('PO import applies the translation to the editable', async () => {
-    const { page, cardUuid, enTitle } = await setupCardAndSwitchToDe()
+    const { uuid, sourceTitle } = await addCardWithSourceTitle(page)
 
     const po = buildPoFixture(
       [
         {
-          key: `${cardUuid}:title`,
-          source: enTitle,
+          key: `${uuid}:title`,
+          source: sourceTitle,
           translation: 'Karte beta',
         },
       ],
@@ -151,7 +135,7 @@ describe('Translations CSV/PO import', async () => {
     await page.locator('[data-test="translations-csv-import-apply"]').click()
     await dialog(page, 'translations-csv').waitFor({ state: 'hidden' })
 
-    const host = await blockHost(page, cardUuid)
+    const host = await blockHost(page, uuid)
     await waitForEditableText(page, 'title', host, 'Karte beta')
 
     const call = await waitForAdapterCall<{
@@ -165,57 +149,21 @@ describe('Translations CSV/PO import', async () => {
     expect(call.items).toHaveLength(1)
     expect(call.items[0]).toMatchObject({
       langcode: 'de',
-      uuid: cardUuid,
+      uuid,
       fieldName: 'title',
       fieldValue: 'Karte beta',
     })
-
-    await page.close()
   })
 
   test('unchecking a row excludes it from the applied items', async () => {
     // Two cards → two import rows. We uncheck the first; only the second
     // should make it into the apply payload AND the DOM.
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
-    await expect
-      .poll(() => withApp(page, (app) => app.state.editMode.value))
-      .toBe('editing')
-    const uuidA = await addBlock(page, { bundle: 'card', fieldName: 'content' })
-    const uuidB = await addBlock(page, { bundle: 'card', fieldName: 'content' })
-    if (!uuidA || !uuidB) throw new Error('Failed to add cards.')
-
-    const titles = await page.evaluate(
-      ([a, b]) => {
-        const app = window.__BLOKKLI__!.app!
-        const get = (u: string) => {
-          const block = app.blocks.getBlock(u)
-          if (!block) return ''
-          const el = app.directive.findEditableElement('title', {
-            type: 'paragraph',
-            bundle: block.bundle,
-            uuid: u,
-          })
-          return el?.textContent?.trim() ?? ''
-        }
-        return { a: get(a), b: get(b) }
-      },
-      [uuidA, uuidB] as const,
-    )
-    if (!titles.a || !titles.b) throw new Error('Cards missing source titles.')
-
-    const deUrl = page.url().replace('/page/1', '/de/page/1')
-    await page.goto(deUrl)
-    await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-    await page.waitForFunction(
-      () => !document.querySelector('[class*="z-init-overlay"]'),
-    )
-    await expect
-      .poll(() => withApp(page, (app) => app.state.editMode.value))
-      .toBe('translating')
+    const a = await addCardWithSourceTitle(page)
+    const b = await addCardWithSourceTitle(page)
 
     const csv = buildSingleLangCsv([
-      { key: `${uuidA}:title`, source: titles.a, translation: 'Karte A' },
-      { key: `${uuidB}:title`, source: titles.b, translation: 'Karte B' },
+      { key: `${a.uuid}:title`, source: a.sourceTitle, translation: 'Karte A' },
+      { key: `${b.uuid}:title`, source: b.sourceTitle, translation: 'Karte B' },
     ])
 
     await page.locator('[data-test="translations-banner-csv"]').click()
@@ -234,29 +182,29 @@ describe('Translations CSV/PO import', async () => {
 
     // Uncheck the row keyed by card A.
     const rowA = page.locator(
-      `[data-test="translations-csv-import-row"][data-test-key="${uuidA}:title"]`,
+      `[data-test="translations-csv-import-row"][data-test-key="${a.uuid}:title"]`,
     )
-    await rowA.locator('input[type="checkbox"]').click()
+    await rowA
+      .locator('[data-test="translations-csv-import-row-checkbox"]')
+      .click()
 
     await page.locator('[data-test="translations-csv-import-apply"]').click()
     await dialog(page, 'translations-csv').waitFor({ state: 'hidden' })
 
-    const hostA = await blockHost(page, uuidA)
-    const hostB = await blockHost(page, uuidB)
+    const hostA = await blockHost(page, a.uuid)
+    const hostB = await blockHost(page, b.uuid)
     await waitForEditableText(page, 'title', hostB, 'Karte B')
     const stateA = await editableState(page, 'title', hostA)
-    expect(stateA?.text.trim()).toBe(titles.a) // unchanged
+    expect(stateA?.text.trim()).toBe(a.sourceTitle) // unchanged
 
     const call = await waitForAdapterCall<{
       items: Array<{ uuid: string; fieldName: string; fieldValue: string }>
     }>(page, 'import_translations_batched')
     expect(call.items).toHaveLength(1)
     expect(call.items[0]).toMatchObject({
-      uuid: uuidB,
+      uuid: b.uuid,
       fieldName: 'title',
       fieldValue: 'Karte B',
     })
-
-    await page.close()
   })
 })

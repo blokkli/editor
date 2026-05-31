@@ -68,8 +68,8 @@ npm run test:watch             # Watch mode for tests
 npm run typecheck              # Type check all (see /typecheck skill for targeted commands)
 npm run lint                   # Lint source files
 npm run lint:fix               # Auto-fix linting issues
-npm run prettier               # Check code formatting
-npm run prettier:fix           # Auto-fix formatting
+npm run format                 # Check code formatting
+npm run format:fix           # Auto-fix formatting
 ```
 
 ### Documentation

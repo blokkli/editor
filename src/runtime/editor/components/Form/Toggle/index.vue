@@ -11,6 +11,7 @@
       v-if="!hideInput"
       v-model="value"
       type="checkbox"
+      data-test="form-toggle-input"
       class="sr-only"
       :disabled
     />

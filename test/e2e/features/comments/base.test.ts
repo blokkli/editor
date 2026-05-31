@@ -122,34 +122,30 @@ async function addSidebarComment(page: Page, text: string): Promise<string> {
 }
 
 /**
- * Reset the playground's comment localStorage (the mock's source of truth)
- * AND the per-context `commentsShowResolved` storage key (a `useWithContextPrefix`
- * value), then reload the editor so the feature re-reads the seed defaults.
- * Used by tests that assert on the pristine seed (counts, specific authorless,
- * "Show resolved OFF" default).
+ * Idempotently set the "Show resolved" toggle. Reads the underlying checkbox
+ * (`form-toggle-input` inside the `FormToggle` label) and clicks only when the
+ * current state differs from `on` — so a test can declare the state it needs
+ * without caring what the previous test left behind.
  */
-async function resetCommentsState(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    localStorage.removeItem('blokkli_playground_comments')
-    Object.keys(localStorage)
-      .filter((k) => k.startsWith('blokkli:commentsShowResolved'))
-      .forEach((k) => localStorage.removeItem(k))
-  })
-  await page.goto(page.url())
-  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-  await page.waitForFunction(
-    () => !document.querySelector('[class*="z-init-overlay"]'),
-  )
+async function setShowResolved(page: Page, on: boolean): Promise<void> {
+  const checkbox = page
+    .locator('[data-test="comments-show-resolved"]')
+    .locator('[data-test="form-toggle-input"]')
+  if ((await checkbox.isChecked()) !== on) {
+    await page.locator('[data-test="comments-show-resolved"]').click()
+    await expect.poll(() => checkbox.isChecked()).toBe(on)
+  }
 }
 
 /**
- * Page lifecycle: one editor page shared by all tests. Tests 3/4/6/10 require
- * the original seed (specific structure: 8 roots / 2 resolved / authorless
- * present + Show resolved OFF), so each begins with `resetCommentsState` which
- * clears the comment + UI-prefs storage keys and reloads the page. Other
- * tests share state — they either mutate without reading seed structure or
- * read it dynamically (e.g. "first unresolved root"). `afterEach` closes any
- * lingering add form / dialog and deselects.
+ * Page lifecycle: one editor page shared by all tests. No page reload between
+ * tests — every spec reads current state dynamically and (where it matters)
+ * sets `showResolved` to the value it needs via `setShowResolved`. Test order
+ * is intentional: test 3 must run before any resolve (else `recentlyResolved`
+ * would keep a resolved thread visible and break its count assertion); the
+ * seeded authorless comment (test 10) is an invariant — no test can add or
+ * delete one, so it survives the whole file. `afterEach` closes any lingering
+ * add form / dialog and deselects.
  */
 describe('The comments feature', async () => {
   await setupEditorE2E()
@@ -214,8 +210,10 @@ describe('The comments feature', async () => {
   })
 
   test('the sidebar lists unresolved threads and hides resolved ones by default', async () => {
-    await resetCommentsState(page)
     await openComments(page)
+    // Must run before any resolve in this file — `recentlyResolved` would
+    // otherwise keep a resolved thread visible and break the count below.
+    await setShowResolved(page, false)
 
     const allRoots = await roots(page)
     const unresolved = allRoots.filter((r) => !r.resolved)
@@ -230,8 +228,8 @@ describe('The comments feature', async () => {
   })
 
   test('"Show resolved" reveals resolved threads', async () => {
-    await resetCommentsState(page)
     await openComments(page)
+    await setShowResolved(page, false)
 
     const allRoots = await roots(page)
     const resolvedUuid = allRoots.find((r) => r.resolved)!.uuid
@@ -247,6 +245,9 @@ describe('The comments feature', async () => {
 
   test('resolving a thread marks it resolved, keeps it visible, and updates the badge', async () => {
     await openComments(page)
+    // The "stays visible" assertion below tests the `recentlyResolved`
+    // mechanism — only meaningful with show-resolved OFF.
+    await setShowResolved(page, false)
 
     const badgeBefore = await unresolvedBadge(page)
     const target = (await roots(page)).find((r) => !r.resolved)!.uuid
@@ -261,15 +262,14 @@ describe('The comments feature', async () => {
           (await roots(page)).find((r) => r.uuid === target)?.resolved,
       )
       .toBe(true)
-    // Resolved during this session → it stays visible (show-resolved is still off).
+    // Resolved during this session → it stays visible (show-resolved is off).
     expect(await commentThread(page, target).count()).toBe(1)
     await expect.poll(() => unresolvedBadge(page)).toBe((badgeBefore ?? 0) - 1)
   })
 
   test('unresolving a resolved thread flips it back', async () => {
-    await resetCommentsState(page)
     await openComments(page)
-    await page.locator('[data-test="comments-show-resolved"]').click()
+    await setShowResolved(page, true)
 
     const badgeBefore = (await unresolvedBadge(page)) ?? 0
     const target = (await roots(page)).find((r) => r.resolved)!.uuid
@@ -341,11 +341,11 @@ describe('The comments feature', async () => {
   })
 
   test('a comment from a deleted user renders the deleted-author avatar', async () => {
-    await resetCommentsState(page)
     await openComments(page)
 
     // Exactly one seeded root has no author (the user's account was deleted);
-    // the adapter maps that to `user: null`.
+    // the adapter maps that to `user: null`. No test in this file can add or
+    // delete it, so the count is invariant.
     const authorless = (await roots(page)).filter((c) => !c.user)
     expect(authorless).toHaveLength(1)
     const deletedUuid = authorless[0]!.uuid

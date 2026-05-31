@@ -1,10 +1,11 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { addBlock } from './../../support/blocks'
-import { formOverlay, dialog } from './../../support/overlays'
+import { closeFormOverlay, dialog, formOverlay } from './../../support/overlays'
 import { toolbarButton } from './../../support/toolbar'
+import { emitEvent } from './../../support/events'
 
 /**
  * The entity-title feature (`features/entity-title/index.vue`) renders the
@@ -45,101 +46,132 @@ function entityStatus(page: Page): Promise<string | null> {
   return entityTitle(page).getAttribute('data-test-entity-status')
 }
 
+/**
+ * Page lifecycle: three editor pages opened in parallel:
+ * - `defaultPage` (unpublished) — tests 1, 4, 5, 6
+ * - `publishedPage` (entityStatus=true) — tests 2 and 3
+ * - `scheduledPage` (with a `publishOn` localStorage seed) — test 7
+ *
+ * Per-page test order matters on `publishedPage`: test 2 reads the
+ * `success` status before any mutation; test 3 mutates and expects the
+ * status to flip to `warning`. After test 3 the pending mutation persists on
+ * `publishedPage`, but no subsequent test uses that page.
+ *
+ * `afterEach` closes the `edit-form` overlay on `defaultPage` (tests 5 & 6
+ * leave it open), the `publish` dialog on `scheduledPage` (test 7 leaves it
+ * open), and the command palette on `defaultPage` (test 6 opens it).
+ */
 describe('The entity-title feature', async () => {
   await setupEditorE2E()
 
-  test('an unpublished page shows the error status and no scheduled badge', async () => {
-    const page = await openEditor()
+  let defaultPage: Page
+  let publishedPage: Page
+  let scheduledPage: Page
 
+  beforeAll(async () => {
+    ;[defaultPage, publishedPage, scheduledPage] = await Promise.all([
+      openEditor(),
+      openEditor(undefined, {
+        localStorage: { 'blokkli:test:entityStatus': 'true' },
+      }),
+      openEditor(undefined, {
+        localStorage: {
+          blokkli_schedule_content_1: JSON.stringify({
+            date: SCHEDULED_AT,
+            revisionLogMessage: null,
+          }),
+        },
+      }),
+    ])
+  })
+
+  afterAll(async () => {
+    await Promise.all([
+      defaultPage.close(),
+      publishedPage.close(),
+      scheduledPage.close(),
+    ])
+  })
+
+  afterEach(async () => {
+    if (await formOverlay(defaultPage, 'edit-form').isVisible()) {
+      await closeFormOverlay(defaultPage, 'edit-form')
+    }
+    if (
+      await defaultPage.locator('[data-test="command-palette"]').isVisible()
+    ) {
+      await defaultPage.keyboard.press('Escape')
+      await defaultPage
+        .locator('[data-test="command-palette"]')
+        .waitFor({ state: 'detached' })
+    }
+    if (await dialog(scheduledPage, 'publish').isVisible()) {
+      await emitEvent(scheduledPage, 'overlay:close')
+      await dialog(scheduledPage, 'publish').waitFor({ state: 'hidden' })
+    }
+  })
+
+  test('an unpublished page shows the error status and no scheduled badge', async () => {
     // The mock entity is unpublished by default → the status indicator is in its
     // `error` state, and with nothing scheduled the date badge is absent.
-    await expect.poll(() => entityStatus(page)).toBe('error')
-    expect(await scheduledBadge(page).count()).toBe(0)
-
-    await page.close()
+    await expect.poll(() => entityStatus(defaultPage)).toBe('error')
+    expect(await scheduledBadge(defaultPage).count()).toBe(0)
   })
 
   test('a published page with no pending changes shows the success status', async () => {
-    const page = await openEditor(undefined, {
-      localStorage: { 'blokkli:test:entityStatus': 'true' },
-    })
-
-    await expect.poll(() => entityStatus(page)).toBe('success')
-
-    await page.close()
+    await expect.poll(() => entityStatus(publishedPage)).toBe('success')
   })
 
   test('a published page with pending changes shows the warning status', async () => {
-    const page = await openEditor(undefined, {
-      localStorage: { 'blokkli:test:entityStatus': 'true' },
-    })
-    await expect.poll(() => entityStatus(page)).toBe('success')
+    await expect.poll(() => entityStatus(publishedPage)).toBe('success')
 
     // A pending mutation on a published page flips success → warning.
-    await addBlock(page)
-    await expect.poll(() => entityStatus(page)).toBe('warning')
-
-    await page.close()
+    await addBlock(publishedPage)
+    await expect.poll(() => entityStatus(publishedPage)).toBe('warning')
   })
 
   test('pending changes do not upgrade the status of an unpublished page', async () => {
-    const page = await openEditor()
-    await expect.poll(() => entityStatus(page)).toBe('error')
+    await expect.poll(() => entityStatus(defaultPage)).toBe('error')
 
     // The `warning` state is gated on the page being published — a pending
     // mutation alone must NOT promote an unpublished page out of `error`.
-    await addBlock(page)
+    await addBlock(defaultPage)
     await expect
-      .poll(() => withApp(page, (app) => app.state.mutations.value.length))
+      .poll(() =>
+        withApp(defaultPage, (app) => app.state.mutations.value.length),
+      )
       .toBeGreaterThan(0)
-    expect(await entityStatus(page)).toBe('error')
-
-    await page.close()
+    expect(await entityStatus(defaultPage)).toBe('error')
   })
 
   test('clicking the title opens the entity edit form', async () => {
-    const page = await openEditor()
-
-    await entityTitle(page).click()
+    await entityTitle(defaultPage).click()
     // Entity edit reuses the `edit-form` overlay id.
-    await formOverlay(page, 'edit-form').waitFor({ state: 'visible' })
-    expect(await formOverlay(page, 'edit-form').count()).toBe(1)
-
-    await page.close()
+    await formOverlay(defaultPage, 'edit-form').waitFor({ state: 'visible' })
+    expect(await formOverlay(defaultPage, 'edit-form').count()).toBe(1)
   })
 
   test('the registered edit-entity command opens the entity edit form', async () => {
-    const page = await openEditor()
-
     // The feature registers its command unconditionally.
-    const commandIds = await withApp(page, (app) =>
+    const commandIds = await withApp(defaultPage, (app) =>
       app.commands.getCommands().map((c) => c.id),
     )
     expect(commandIds).toContain(COMMAND_ID)
 
     // Run it through the palette (same `onEditEntity` target as the button).
-    await toolbarButton(page, 'command_palette').click()
-    const command = page.locator(`[data-test-command-id="${COMMAND_ID}"]`)
+    await toolbarButton(defaultPage, 'command_palette').click()
+    const command = defaultPage.locator(
+      `[data-test-command-id="${COMMAND_ID}"]`,
+    )
     await command.waitFor({ state: 'visible' })
     await command.click()
 
-    await formOverlay(page, 'edit-form').waitFor({ state: 'visible' })
-    expect(await formOverlay(page, 'edit-form').count()).toBe(1)
-
-    await page.close()
+    await formOverlay(defaultPage, 'edit-form').waitFor({ state: 'visible' })
+    expect(await formOverlay(defaultPage, 'edit-form').count()).toBe(1)
   })
 
   test('a scheduled publish shows the badge with the raw ISO and opens the publish dialog', async () => {
-    const page = await openEditor(undefined, {
-      localStorage: {
-        blokkli_schedule_content_1: JSON.stringify({
-          date: SCHEDULED_AT,
-          revisionLogMessage: null,
-        }),
-      },
-    })
-
-    const badge = scheduledBadge(page)
+    const badge = scheduledBadge(scheduledPage)
     await badge.waitFor({ state: 'visible' })
     // The visible text is locale-formatted; the attribute carries the raw instant.
     expect(await badge.getAttribute('data-test-scheduled-date')).toBe(
@@ -149,9 +181,7 @@ describe('The entity-title feature', async () => {
     // Clicking the badge opens the publish dialog (a different handler than the
     // title button's edit flow).
     await badge.click()
-    await dialog(page, 'publish').waitFor({ state: 'visible' })
-    expect(await dialog(page, 'publish').count()).toBe(1)
-
-    await page.close()
+    await dialog(scheduledPage, 'publish').waitFor({ state: 'visible' })
+    expect(await dialog(scheduledPage, 'publish').count()).toBe(1)
   })
 })

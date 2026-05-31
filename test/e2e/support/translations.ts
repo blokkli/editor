@@ -12,8 +12,30 @@ import {
   type CsvRow,
 } from '../../../src/runtime/editor/features/translations/CsvDialog/csv'
 import { buildPo } from '../../../src/runtime/editor/features/translations/CsvDialog/po'
+import { addBlock } from './blocks'
+import { blockHost, editableText } from './editable'
 import { openAppMenu, appMenuButton } from './menu'
 import { dialog } from './overlays'
+
+/**
+ * Add a card to `content` and read its source-language `title` (the LOREM
+ * default the `card` bundle gives a new block). Tests that drive a
+ * translation flow need both — the uuid keys the CSV/PO row, and the title
+ * goes into the `source` column.
+ *
+ * Works whether the editor is open in EN or DE: in DE the displayed title
+ * falls back to the EN source when no DE translation exists yet.
+ */
+export async function addCardWithSourceTitle(
+  page: Page,
+): Promise<{ uuid: string; sourceTitle: string }> {
+  const uuid = await addBlock(page, { bundle: 'card', fieldName: 'content' })
+  if (!uuid) throw new Error('Failed to add card.')
+  const host = await blockHost(page, uuid)
+  const sourceTitle = await editableText(page, 'title', host)
+  if (!sourceTitle) throw new Error('Added card has no source title.')
+  return { uuid, sourceTitle }
+}
 
 /**
  * Build the `openEditor({ localStorage })` entry that puts the mock adapter's

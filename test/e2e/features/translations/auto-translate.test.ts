@@ -1,11 +1,14 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor, withApp } from './../../support/session'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { emitEvent } from './../../support/events'
 import { applyDiff } from './../../support/diff'
 import { editableState, blockHost } from './../../support/editable'
-import { addBlock } from './../../support/blocks'
-import { autoTranslateMockEntry } from './../../support/translations'
+import {
+  addCardWithSourceTitle,
+  autoTranslateMockEntry,
+} from './../../support/translations'
 
 /**
  * Regression test for the auto-translate DOM-staleness bug.
@@ -27,59 +30,31 @@ import { autoTranslateMockEntry } from './../../support/translations'
  * returns a deterministic `[<LANG>] <source>` decoration for each item — so
  * this test does NOT hit the real API.
  *
- * **Why a fresh card is added.** The test owns its block: it adds a card in
- * EN editing mode (with the bundle's default LOREM title/text), then switches
- * the URL to `/de` so the same persisted edit-state surfaces in translating
- * mode. The new card has no DE translation yet, so its rendered text is the
- * EN source — the auto-translate diff must replace that text with `[DE] …`.
+ * Page lifecycle: one editor page shared, opened **directly in /de**. Adding
+ * blocks via the adapter works in translating mode (the UI add-list doesn't,
+ * but `addBlock` calls `addNewBlock` directly), so we skip the ~2.3s EN→DE
+ * goto that the original setup paid.
  */
 describe('Auto-translate', async () => {
   await setupEditorE2E()
 
-  test('translating an added card updates the editable DOM after Apply', async () => {
-    // Open in EN editing mode first — adding blocks is forbidden in translating
-    // mode, so we set up the fixture here, then switch the URL to /de below.
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true', {
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor('/de/page/1?blokkliEditing=1&testing=true', {
       localStorage: autoTranslateMockEntry(),
     })
-
-    await expect
-      .poll(() => withApp(page, (app) => app.state.editMode.value))
-      .toBe('editing')
-
-    // Add a fresh card to the host `content` field. Default values give it a
-    // translatable `title` (LOREM_TITLE), which is what we'll auto-translate.
-    const cardUuid = await addBlock(page, {
-      bundle: 'card',
-      fieldName: 'content',
-    })
-    if (!cardUuid) {
-      throw new Error('Failed to add a card block.')
-    }
-
-    // Navigate to the German URL of the same page — same browser context, so
-    // the mock's edit-state localStorage (keyed by entity uuid, not language)
-    // carries the new card across the reload.
-    const enUrl = page.url()
-    const deUrl = enUrl.replace('/page/1', '/de/page/1')
-    await page.goto(deUrl)
-    await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
     await page.waitForFunction(
-      () => !document.querySelector('[class*="z-init-overlay"]'),
+      () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
     )
+  })
 
-    await expect
-      .poll(() => withApp(page, (app) => app.state.editMode.value))
-      .toBe('translating')
+  afterAll(async () => {
+    await page.close()
+  })
 
-    // The card survived the navigation and is registered in the editor.
-    const stillExists = await page.evaluate(
-      (uuid) => Boolean(window.__BLOKKLI__!.app!.blocks.getBlock(uuid)),
-      cardUuid,
-    )
-    expect(stillExists, 'added card should exist after switching to /de').toBe(
-      true,
-    )
+  test('translating an added card updates the editable DOM after Apply', async () => {
+    const { uuid: cardUuid } = await addCardWithSourceTitle(page)
 
     const host = await blockHost(page, cardUuid)
     const before = await editableState(page, 'title', host)
@@ -92,9 +67,6 @@ describe('Auto-translate', async () => {
 
     // Select the card so AutoTranslate's `selection.uuids` filter picks it up.
     await emitEvent(page, 'select', cardUuid)
-    await expect
-      .poll(() => withApp(page, (app) => app.selection.uuids.value.length))
-      .toBe(1)
 
     // The PluginItemAction renders with `data-test="plugin-item-action-<id>"`.
     const autoTranslateButton = page.locator(
@@ -136,7 +108,5 @@ describe('Auto-translate', async () => {
     // Sanity: the applied text really is the mock decoration of the source —
     // not an unrelated value that happened to contain '[DE]'.
     expect(after?.text.trim().startsWith('[DE]')).toBe(true)
-
-    await page.close()
   })
 })

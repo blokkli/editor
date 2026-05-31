@@ -1,47 +1,15 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor, withApp } from './../../support/session'
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
-import { addBlock } from './../../support/blocks'
 import { blockHost, editableState } from './../../support/editable'
-import { waitForAdapterCall } from './../../support/recorder'
+import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
 import { dialog } from './../../support/overlays'
 import {
+  addCardWithSourceTitle,
   autoTranslateMockEntry,
   openTranslateDialog,
 } from './../../support/translations'
-
-/**
- * Set up the fixture for a batch-translate test: open the editor in EN, add
- * two cards (their default `title` is the source text we translate), then
- * switch the same browser context to `/de` so the persisted edit-state
- * carries the cards across. Returns the two card uuids.
- */
-async function setupTwoCards() {
-  const page = await openEditor('/page/1?blokkliEditing=1&testing=true', {
-    localStorage: autoTranslateMockEntry(),
-  })
-  await expect
-    .poll(() => withApp(page, (app) => app.state.editMode.value))
-    .toBe('editing')
-
-  const cardA = await addBlock(page, { bundle: 'card', fieldName: 'content' })
-  const cardB = await addBlock(page, { bundle: 'card', fieldName: 'content' })
-  if (!cardA || !cardB) {
-    throw new Error('Failed to add cards.')
-  }
-
-  const deUrl = page.url().replace('/page/1', '/de/page/1')
-  await page.goto(deUrl)
-  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-  await page.waitForFunction(
-    () => !document.querySelector('[class*="z-init-overlay"]'),
-  )
-  await expect
-    .poll(() => withApp(page, (app) => app.state.editMode.value))
-    .toBe('translating')
-
-  return { page, cardA, cardB }
-}
 
 /**
  * Regression tests for the batch-translate flow (TranslateDialog).
@@ -54,12 +22,39 @@ async function setupTwoCards() {
  * Why both assertions: a shallow test (just adapter call OR just DOM) misses
  * the failure modes that matter — sending the wrong items, or sending right
  * items that fail to render. We assert both.
+ *
+ * Page lifecycle: one editor page shared, opened **directly in /de** with the
+ * auto-translate mock seeded. Skipping the EN→DE goto saves ~2.3s per test.
+ * `beforeEach` clears the adapter recorder. Each test adds its own two cards
+ * via `addCardWithSourceTitle`; prior tests' cards remain in mock state but
+ * don't interfere — each test's adapter-call assertion is keyed on its own
+ * uuids.
  */
 describe('Batch translate (TranslateDialog)', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor('/de/page/1?blokkliEditing=1&testing=true', {
+      localStorage: autoTranslateMockEntry(),
+    })
+    await page.waitForFunction(
+      () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
+    )
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  beforeEach(async () => {
+    await clearAdapterCalls(page)
+  })
+
   test("requests, applies, and mutates all added cards' editables", async () => {
-    const { page, cardA, cardB } = await setupTwoCards()
+    const a = await addCardWithSourceTitle(page)
+    const b = await addCardWithSourceTitle(page)
 
     await openTranslateDialog(page)
 
@@ -84,20 +79,16 @@ describe('Batch translate (TranslateDialog)', async () => {
 
     // BOTH added cards' title editables should now show the `[DE] …` mock
     // translation. Wait on each one — the mutation patches asynchronously.
-    const hostA = await blockHost(page, cardA)
-    const hostB = await blockHost(page, cardB)
+    const hostA = await blockHost(page, a.uuid)
+    const hostB = await blockHost(page, b.uuid)
     await page.waitForFunction(
       ({ ua, ub }) => {
         const app = window.__BLOKKLI__!.app!
-        const a = app.directive.findEditableElement('title', {
-          ...JSON.parse(ua),
-        })
-        const b = app.directive.findEditableElement('title', {
-          ...JSON.parse(ub),
-        })
+        const ea = app.directive.findEditableElement('title', JSON.parse(ua))
+        const eb = app.directive.findEditableElement('title', JSON.parse(ub))
         return (
-          !!a?.textContent?.includes('[DE]') &&
-          !!b?.textContent?.includes('[DE]')
+          !!ea?.textContent?.includes('[DE]') &&
+          !!eb?.textContent?.includes('[DE]')
         )
       },
       { ua: JSON.stringify(hostA), ub: JSON.stringify(hostB) },
@@ -123,14 +114,13 @@ describe('Batch translate (TranslateDialog)', async () => {
     const sentUuids = new Set(
       call.items.filter((i) => i.fieldName === 'title').map((i) => i.uuid),
     )
-    expect(sentUuids.has(cardA)).toBe(true)
-    expect(sentUuids.has(cardB)).toBe(true)
-
-    await page.close()
+    expect(sentUuids.has(a.uuid)).toBe(true)
+    expect(sentUuids.has(b.uuid)).toBe(true)
   })
 
   test('applying with one row unchecked excludes that row from the apply', async () => {
-    const { page, cardA, cardB } = await setupTwoCards()
+    const a = await addCardWithSourceTitle(page)
+    const b = await addCardWithSourceTitle(page)
 
     await openTranslateDialog(page)
     const requestButton = page.locator(
@@ -142,24 +132,23 @@ describe('Batch translate (TranslateDialog)', async () => {
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
 
     // Uncheck the row keyed by cardA's title via its `data-test-key` attribute.
-    // The checkbox is the row's `<input type="checkbox">`.
     const rowA = page.locator(
-      `[data-test="translations-batch-row"][data-test-key="${cardA}:title"]`,
+      `[data-test="translations-batch-row"][data-test-key="${a.uuid}:title"]`,
     )
     await rowA.waitFor({ state: 'visible' })
-    await rowA.locator('input[type="checkbox"]').click()
+    await rowA.locator('[data-test="translations-batch-row-checkbox"]').click()
 
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
 
     // Card B has been translated; Card A still shows its original EN title.
-    const hostA = await blockHost(page, cardA)
-    const hostB = await blockHost(page, cardB)
+    const hostA = await blockHost(page, a.uuid)
+    const hostB = await blockHost(page, b.uuid)
     await page.waitForFunction(
       ({ ub }) => {
         const app = window.__BLOKKLI__!.app!
-        const b = app.directive.findEditableElement('title', JSON.parse(ub))
-        return !!b?.textContent?.includes('[DE]')
+        const eb = app.directive.findEditableElement('title', JSON.parse(ub))
+        return !!eb?.textContent?.includes('[DE]')
       },
       { ub: JSON.stringify(hostB) },
     )
@@ -175,9 +164,7 @@ describe('Batch translate (TranslateDialog)', async () => {
     const sentTitleUuids = new Set(
       call.items.filter((i) => i.fieldName === 'title').map((i) => i.uuid),
     )
-    expect(sentTitleUuids.has(cardA)).toBe(false)
-    expect(sentTitleUuids.has(cardB)).toBe(true)
-
-    await page.close()
+    expect(sentTitleUuids.has(a.uuid)).toBe(false)
+    expect(sentTitleUuids.has(b.uuid)).toBe(true)
   })
 })

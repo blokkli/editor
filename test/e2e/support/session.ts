@@ -85,15 +85,24 @@ export async function openEditor(
     }, opts.localStorage)
   }
   await page.goto(url(path), { waitUntil: 'hydration' })
-  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
-  // Wait for the full-screen init/loading overlay (`z-init-overlay`) to fully
-  // leave — until it detaches it covers the viewport and intercepts pointer
-  // input. `.click()` auto-retries past it, but raw `page.mouse` drags do not.
-  // The class is mangled (`_bk_z-init-overlay`), so match by substring.
-  await page.waitForFunction(
-    () => !document.querySelector('[class*="z-init-overlay"]'),
-  )
+  await waitForEditorReady(page)
   return page
+}
+
+/**
+ * Wait until the editor is mounted and the full-screen init/loading overlay
+ * (`data-test="init-overlay"`) has detached. `openEditor` already does this
+ * after its initial `page.goto`, but a test that navigates to another route
+ * (e.g. `/en/page/1` → `/de/page/1`) needs to wait again before interacting.
+ *
+ * Until the overlay detaches it covers the viewport and intercepts pointer
+ * input — `.click()` auto-retries past it but raw mouse drags don't.
+ */
+export async function waitForEditorReady(page: Page): Promise<void> {
+  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
+  await page
+    .locator('[data-test="init-overlay"]')
+    .waitFor({ state: 'detached' })
 }
 
 /**

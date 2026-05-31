@@ -15,6 +15,13 @@ import {
   pickBundle,
 } from './../../support/bundleSelector'
 
+/** The `caret-tooltip` BlokkliTransition keeps the BundleSelector in the DOM
+ *  during its leave (~150ms). Wait for it to detach so a follow-up test that
+ *  asserts the selector did NOT appear isn't tripped by a prior test's ghost. */
+async function waitForBundleSelectorGone(page: Page): Promise<void> {
+  await bundleSelector(page).waitFor({ state: 'detached' })
+}
+
 /**
  * Dragging content from the OS into the editor (a native drag, as opposed to a
  * `Cmd+V` paste). `dragenter` → `tryStartDirectDrop` maps the dragged kind to
@@ -70,6 +77,7 @@ describe('Native (OS) drag and drop', async () => {
         new DragEvent('dragleave', { bubbles: true, cancelable: true }),
       )
     })
+    await waitForBundleSelectorGone(page)
   })
 
   test('dropping dragged text opens the bundle selector and adds the chosen block', async () => {

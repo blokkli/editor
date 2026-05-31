@@ -79,6 +79,7 @@
               <div class="bk-checkbox">
                 <input
                   type="checkbox"
+                  data-test="translations-batch-row-checkbox"
                   :checked="selected[item.key]"
                   @change="selected[item.key] = !selected[item.key]"
                 />

@@ -135,7 +135,7 @@ describe('The block scheduler', async () => {
     expect(
       await page
         .locator(
-          '[data-test="scheduler-publish-toggle"] input[type="checkbox"]',
+          '[data-test="scheduler-publish-toggle"] [data-test="form-toggle-input"]',
         )
         .isDisabled(),
     ).toBe(true)

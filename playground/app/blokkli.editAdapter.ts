@@ -195,6 +195,10 @@ const textAnalyzer = defineAnalyzer(() => {
     id: 'text-analyzer',
     continuous: true,
     run: async function (context) {
+      const isTesting = window.location.search.includes('testing=true')
+      if (isTesting) {
+        return null
+      }
       const allTextElements = context.getTextElements()
 
       // Prepare data for API call

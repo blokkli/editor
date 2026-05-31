@@ -53,7 +53,7 @@ function readCrumbs(page: Page): Promise<ReadCrumb[]> {
 
 /** Click the interactive button inside a crumb (block/field/root crumbs). */
 function clickCrumb(page: Page, selector: string): Promise<void> {
-  return page.locator(`${selector} button`).click()
+  return page.locator(`${selector} [data-test="crumb-button"]`).click()
 }
 
 /** A grid (in `content`) holding `cardCount` cards in its `blocks` field. */

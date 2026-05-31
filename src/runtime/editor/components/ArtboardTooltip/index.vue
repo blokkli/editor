@@ -16,7 +16,11 @@
       <div class="bk-artboard-tooltip-header">
         <div class="mr-auto" v-html="title" />
         <slot name="header" />
-        <button :disabled="closeDisabled" @click="$emit('close')">
+        <button
+          data-test="artboard-tooltip-close"
+          :disabled="closeDisabled"
+          @click="$emit('close')"
+        >
           <Icon :name="closeIcon" />
           <span v-if="buttonLabel">{{ buttonLabel }}</span>
         </button>

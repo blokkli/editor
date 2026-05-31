@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'vitest'
-import type { Frame } from 'playwright-core'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Frame, Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { openSidebar } from './../../support/sidebar'
 import { addBlock, selectBlock } from './../../support/blocks'
@@ -7,6 +7,7 @@ import { getPreviewFrame } from './../../support/preview'
 import { toggleCheckboxOption } from './../../support/options'
 import { clickItemAction } from './../../support/itemActions'
 import { setupEditorE2E } from './../../support/setup'
+import { emitEvent } from './../../support/events'
 
 /**
  * The responsive preview renders the page in an iframe (`?blokkliPreview`) and
@@ -71,17 +72,37 @@ function cardDataTest(frame: Frame, uuid: string): Promise<string | null> {
   }, uuid)
 }
 
+/**
+ * Page lifecycle: one editor page shared. The preview iframe is mounted by
+ * opening the `mobile-preview` sidebar in `beforeAll`, and the resulting
+ * `Frame` handle is cached for every test. Test 1 (scroll-into-view) MUST run
+ * first — it relies on the seeded last block sitting far below the fold;
+ * once tests 2/3 add blocks at the top of the field that assumption breaks
+ * because the new last block is the just-added one in the visible area.
+ * `afterEach` only deselects — the sidebar stays open so the iframe handle
+ * keeps working.
+ */
 describe('The responsive preview', async () => {
   await setupEditorE2E()
 
-  test('scrolls the selected block into view inside the iframe', async () => {
-    const page = await openEditor()
+  let page: Page
+  let frame: Frame
 
-    // Opening the sidebar mounts the iframe; `getPreviewFrame` waits for it to
-    // hydrate so relayed events aren't dropped.
+  beforeAll(async () => {
+    page = await openEditor()
     await openSidebar(page, 'mobile-preview')
-    const frame = await getPreviewFrame(page)
+    frame = await getPreviewFrame(page)
+  })
 
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    await emitEvent(page, 'select:unselect')
+  })
+
+  test('scrolls the selected block into view inside the iframe', async () => {
     // The last rendered block sits far below the fold in the narrow viewport.
     const uuid = await lastBlockUuid(frame)
     expect(await blockInView(frame, uuid)).toBe(false)
@@ -98,15 +119,9 @@ describe('The responsive preview', async () => {
         { timeout: 15000, interval: 500 },
       )
       .toBe(true)
-
-    await page.close()
   })
 
   test('syncs a block option change to the iframe', async () => {
-    const page = await openEditor()
-    await openSidebar(page, 'mobile-preview')
-    const frame = await getPreviewFrame(page)
-
     // Add a card (its `box` option defaults on) and confirm it renders boxed in
     // the preview.
     const uuid = await addBlock(page, { bundle: 'card' })
@@ -119,15 +134,9 @@ describe('The responsive preview', async () => {
     // Toggle the "Box" option; the change must propagate to the preview.
     await toggleCheckboxOption(page, 'box')
     await expect.poll(() => cardDataTest(frame, uuid!)).toBe('card-is-plain')
-
-    await page.close()
   })
 
   test('renders a nested block added inside a grid in the iframe', async () => {
-    const page = await openEditor()
-    await openSidebar(page, 'mobile-preview')
-    const frame = await getPreviewFrame(page)
-
     // Add a grid to the page; it should render in the preview.
     const gridUuid = await addBlock(page, { bundle: 'grid' })
     expect(gridUuid).toBeTruthy()
@@ -142,15 +151,9 @@ describe('The responsive preview', async () => {
     })
     expect(titleUuid).toBeTruthy()
     await expect.poll(() => blockExists(frame, titleUuid!)).toBe(true)
-
-    await page.close()
   })
 
   test('removes a deleted block from the iframe', async () => {
-    const page = await openEditor()
-    await openSidebar(page, 'mobile-preview')
-    const frame = await getPreviewFrame(page)
-
     // The last rendered block in the preview also exists in the editor.
     const uuid = await lastBlockUuid(frame)
     expect(await blockExists(frame, uuid)).toBe(true)
@@ -162,7 +165,5 @@ describe('The responsive preview', async () => {
 
     // The deletion must propagate to the preview.
     await expect.poll(() => blockExists(frame, uuid)).toBe(false)
-
-    await page.close()
   })
 })

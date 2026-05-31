@@ -1,10 +1,11 @@
 import { randomUUID } from 'node:crypto'
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { addBlocks, selectBlock } from './../../support/blocks'
 import { selectedUuids, topLevelBlockUuids } from './../../support/selection'
 import { setupEditorE2E } from './../../support/setup'
+import { emitEvent } from './../../support/events'
 
 /**
  * The `selection` feature owns the editor's block-selection keyboard shortcuts
@@ -50,11 +51,32 @@ async function addGridStructure(page: Page) {
 
 const sorted = (uuids: string[]) => [...uuids].sort()
 
+/**
+ * Page lifecycle: one editor page shared. Every test calls `page.keyboard`
+ * shortcuts which the editor's keyboard provider relays to `keyPressed` — it
+ * gates on the canvas being focused, which the initial editor mount sets and
+ * subsequent tests don't disturb. `afterEach` deselects so tests 1, 3, & 5
+ * see an empty initial selection. `addGridStructure` uses `randomUUID()` so
+ * tests 2 and 4 don't collide.
+ */
 describe('The selection feature keyboard shortcuts', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    await emitEvent(page, 'select:unselect')
+  })
+
   test('Tab with nothing selected selects the most visible block', async () => {
-    const page = await openEditor()
     expect(await selectedUuids(page)).toEqual([])
 
     await page.keyboard.press('Tab')
@@ -65,12 +87,9 @@ describe('The selection feature keyboard shortcuts', async () => {
     const [selected] = await selectedUuids(page)
     const visible = await withApp(page, (app) => app.dom.getVisibleBlocks())
     expect(visible).toContain(selected)
-
-    await page.close()
   })
 
   test('Tab/Shift+Tab walk through blocks in document order, into nested fields', async () => {
-    const page = await openEditor()
     const { grid, title, cards, text } = await addGridStructure(page)
 
     const expectSelected = (uuid: string) =>
@@ -99,12 +118,9 @@ describe('The selection feature keyboard shortcuts', async () => {
     // Tab steps forward again: grid → title.
     await page.keyboard.press('Tab')
     await expectSelected(title)
-
-    await page.close()
   })
 
   test('Ctrl+A with nothing selected selects all top-level blocks', async () => {
-    const page = await openEditor()
     expect(await selectedUuids(page)).toEqual([])
 
     await page.keyboard.press('Control+a')
@@ -114,12 +130,9 @@ describe('The selection feature keyboard shortcuts', async () => {
     await expect
       .poll(async () => sorted(await selectedUuids(page)))
       .toEqual(expected)
-
-    await page.close()
   })
 
   test('Ctrl+A widens from a nested block to its field siblings, then to all top-level blocks', async () => {
-    const page = await openEditor()
     const { cards } = await addGridStructure(page)
 
     // Selecting one card and pressing Ctrl+A grabs all of that card's siblings
@@ -139,13 +152,9 @@ describe('The selection feature keyboard shortcuts', async () => {
     await expect
       .poll(async () => sorted(await selectedUuids(page)))
       .toEqual(topLevel)
-
-    await page.close()
   })
 
   test('Escape clears the selection', async () => {
-    const page = await openEditor()
-
     await page.keyboard.press('Control+a')
     await expect
       .poll(async () => (await selectedUuids(page)).length)
@@ -153,7 +162,5 @@ describe('The selection feature keyboard shortcuts', async () => {
 
     await page.keyboard.press('Escape')
     await expect.poll(() => selectedUuids(page)).toEqual([])
-
-    await page.close()
   })
 })

@@ -33,11 +33,13 @@ export default defineConfig({
           // Recurse: feature-specific specs live under `test/e2e/features/`.
           include: ['test/e2e/**/*.{test,spec}.ts'],
           environment: 'node',
-          // E2E runs against a real (production) build driven by a browser:
-          // page load + hydration + editor mount take well over the 5s default,
-          // and `setup()` builds the app in a hook.
-          testTimeout: 60000,
-          hookTimeout: 180000,
+          // E2E drives a real browser against the locally-running playground.
+          // No build runs in `setup()` (host mode), so timeouts only need to
+          // cover page load + hydration + a few editor interactions — not a
+          // ~30s Nuxt build. A genuinely stuck test fails fast instead of
+          // burning a minute on a transition that never finishes.
+          testTimeout: 15000,
+          hookTimeout: 15000,
         },
       },
       await defineVitestProject({

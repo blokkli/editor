@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { addBlock } from './../../support/blocks'
 import {
@@ -15,6 +16,7 @@ import {
   nextEditableOpen,
 } from './../../support/editable'
 import {
+  clearAdapterCalls,
   recordedAdapterCalls,
   waitForAdapterCall,
 } from './../../support/recorder'
@@ -41,11 +43,37 @@ async function fieldValueCalls(
  * (`add-block-drag.test.ts`) and inline editing of the host `lead` after a diff
  * cycle (`diff-approval-restore.test.ts`).
  */
+/**
+ * Page lifecycle: one editor page shared. Each test adds its own block
+ * (card / title), so per-test uuids don't collide. `afterEach` closes any
+ * open editable via `saveByClickAway` (the overlay's `save` is a no-op when
+ * nothing changed; on a dirty close it persists, but that doesn't pollute
+ * subsequent tests because the recorder is also cleared) and clears the
+ * adapter recorder so each test's `fieldValueCalls`/`waitForAdapterCall`
+ * sees only its own writes.
+ */
 describe('Editable field — plaintext', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await editableOverlay(page).isVisible()) {
+      await saveByClickAway(page)
+      await editableOverlay(page).waitFor({ state: 'detached' })
+    }
+    await clearAdapterCalls(page)
+  })
+
   test('saving persists the value and writes it into the block DOM', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'card' }))!
     const host = await blockHost(page, uuid)
 
@@ -72,12 +100,9 @@ describe('Editable field — plaintext', async () => {
     expect(call.uuid).toBe(uuid)
     expect(call.fieldName).toBe('title')
     expect(call.fieldValue).toBe('Edited card title')
-
-    await page.close()
   })
 
   test('discarding restores the original value and persists nothing', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'card' }))!
     const host = await blockHost(page, uuid)
     const original = await editableText(page, 'title', host)
@@ -95,12 +120,9 @@ describe('Editable field — plaintext', async () => {
 
     await waitForEditableText(page, 'title', host, original)
     expect(await fieldValueCalls(page)).toHaveLength(0)
-
-    await page.close()
   })
 
   test('closing without changes persists nothing', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'card' }))!
 
     await openEditableField(page, 'title', uuid)
@@ -112,12 +134,9 @@ describe('Editable field — plaintext', async () => {
     await textarea.waitFor({ state: 'hidden' })
 
     expect(await fieldValueCalls(page)).toHaveLength(0)
-
-    await page.close()
   })
 
   test('a required field left empty restores instead of saving', async () => {
-    const page = await openEditor()
     // The `title` block's `title` field is required (and capped at 50 chars).
     const uuid = (await addBlock(page, { bundle: 'title' }))!
     const host = await blockHost(page, uuid)
@@ -135,12 +154,9 @@ describe('Editable field — plaintext', async () => {
 
     await waitForEditableText(page, 'title', host, original)
     expect(await fieldValueCalls(page)).toHaveLength(0)
-
-    await page.close()
   })
 
   test('the character counter reflects the typed length', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'title' }))!
 
     await openEditableField(page, 'title', uuid)
@@ -149,12 +165,9 @@ describe('Editable field — plaintext', async () => {
 
     await textarea.fill('Twelve chars') // 12 characters
     await expect.poll(() => charCount(page)).toBe(12)
-
-    await page.close()
   })
 
   test('clicking away saves the field', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'card' }))!
     const host = await blockHost(page, uuid)
 
@@ -171,12 +184,9 @@ describe('Editable field — plaintext', async () => {
       'updateFieldValue',
     )
     expect(call.fieldValue).toBe('Saved on click-away')
-
-    await page.close()
   })
 
   test('opening another editable saves the current one', async () => {
-    const page = await openEditor()
     const uuid = (await addBlock(page, { bundle: 'card' }))!
     const host = await blockHost(page, uuid)
 
@@ -197,7 +207,5 @@ describe('Editable field — plaintext', async () => {
     )
     expect(call.fieldName).toBe('title')
     expect(call.fieldValue).toBe('Auto-saved on switch')
-
-    await page.close()
   })
 })

@@ -83,6 +83,7 @@
                 <div class="bk-checkbox">
                   <input
                     type="checkbox"
+                    data-test="translations-csv-import-row-checkbox"
                     :checked="isRowSelected(row)"
                     @change="toggleRow(row)"
                   />

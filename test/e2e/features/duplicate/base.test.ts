@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { EDITOR_PATH, openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -16,6 +16,7 @@ import {
 } from './../../support/itemActions'
 import { selectedUuids } from './../../support/selection'
 import { pressShortcut } from './../../support/keyboard'
+import { emitEvent } from './../../support/events'
 
 /**
  * The duplicate feature (`features/duplicate/index.vue`) duplicates the selected
@@ -58,95 +59,120 @@ async function addFullGridHeaderTitle(page: Page): Promise<string> {
   return headerTitle
 }
 
+/**
+ * Page lifecycle: two editor pages opened in parallel — `defaultPage` for
+ * tests 1/2/3/5 and `denyPage` (with `DENY_TITLE_ADD`) for tests 4/6.
+ * Permissions are seeded into localStorage before init, so a page per
+ * permission set is cheaper than reloading. `addFullGridHeaderTitle` uses
+ * hardcoded uuids and can only run once per page, so the grid + header title
+ * are seeded in `beforeAll` on `defaultPage` and the resulting
+ * `sharedHeaderTitle` uuid is reused by tests 3 and 5 (neither test mutates
+ * the grid: test 3 force-clicks a no-op, test 5 only multi-selects).
+ * `afterEach` deselects both pages.
+ */
 describe('The duplicate feature', async () => {
   await setupEditorE2E()
 
+  let defaultPage: Page
+  let denyPage: Page
+  let sharedHeaderTitle: string
+
+  beforeAll(async () => {
+    ;[defaultPage, denyPage] = await Promise.all([
+      openEditor(),
+      openEditor(EDITOR_PATH, DENY_TITLE_ADD),
+    ])
+    sharedHeaderTitle = await addFullGridHeaderTitle(defaultPage)
+  })
+
+  afterAll(async () => {
+    await Promise.all([defaultPage.close(), denyPage.close()])
+  })
+
+  afterEach(async () => {
+    await Promise.all([
+      emitEvent(defaultPage, 'select:unselect'),
+      emitEvent(denyPage, 'select:unselect'),
+    ])
+  })
+
   test('clicking duplicate adds a copy in an unlimited field and selects it', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
-    const countBefore = await blockCount(page)
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
+    const countBefore = await blockCount(defaultPage)
 
-    await selectBlock(page, uuid!)
-    await clickItemAction(page, 'duplicate')
+    await selectBlock(defaultPage, uuid!)
+    await clickItemAction(defaultPage, 'duplicate')
 
-    await expect.poll(() => blockCount(page)).toBe(countBefore + 1)
+    await expect.poll(() => blockCount(defaultPage)).toBe(countBefore + 1)
     // The duplicate (a new block, not the original) becomes the selection.
-    const selected = await selectedUuids(page)
+    const selected = await selectedUuids(defaultPage)
     expect(selected).toHaveLength(1)
     expect(selected[0]).not.toBe(uuid)
-
-    await page.close()
   })
 
   test('the Cmd/Ctrl+D shortcut duplicates the selected block', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
-    const countBefore = await blockCount(page)
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
+    const countBefore = await blockCount(defaultPage)
 
-    await selectBlock(page, uuid!)
-    await pressShortcut(page, 'ControlOrMeta+d')
+    await selectBlock(defaultPage, uuid!)
+    await pressShortcut(defaultPage, 'ControlOrMeta+d')
 
-    await expect.poll(() => blockCount(page)).toBe(countBefore + 1)
-
-    await page.close()
+    await expect.poll(() => blockCount(defaultPage)).toBe(countBefore + 1)
   })
 
   test('a block in a full cardinality-1 field cannot be duplicated', async () => {
-    const page = await openEditor()
-    const headerTitle = await addFullGridHeaderTitle(page)
-
-    await selectBlock(page, headerTitle)
+    await selectBlock(defaultPage, sharedHeaderTitle)
     // The grid header holds at most one block and already has it.
-    await expect.poll(() => itemActionDisabled(page, 'duplicate')).toBe(true)
+    await expect
+      .poll(() => itemActionDisabled(defaultPage, 'duplicate'))
+      .toBe(true)
 
     // Even forcing the click past the disabled state duplicates nothing.
-    const countBefore = await blockCount(page)
-    await itemAction(page, 'duplicate').click({ force: true })
-    await page.waitForTimeout(300)
-    expect(await blockCount(page)).toBe(countBefore)
-
-    await page.close()
+    const countBefore = await blockCount(defaultPage)
+    await itemAction(defaultPage, 'duplicate').click({ force: true })
+    await defaultPage.waitForTimeout(300)
+    expect(await blockCount(defaultPage)).toBe(countBefore)
   })
 
   test('without add permission, duplicate is disabled', async () => {
-    const page = await openEditor(EDITOR_PATH, DENY_TITLE_ADD)
-    const uuid = await addBlock(page, { bundle: 'title' })
+    const uuid = await addBlock(denyPage, { bundle: 'title' })
 
-    await selectBlock(page, uuid!)
-    await expect.poll(() => itemActionDisabled(page, 'duplicate')).toBe(true)
-
-    await page.close()
+    await selectBlock(denyPage, uuid!)
+    await expect
+      .poll(() => itemActionDisabled(denyPage, 'duplicate'))
+      .toBe(true)
   })
 
   test('a multi-selection is blocked entirely when one block sits in a full field', async () => {
-    const page = await openEditor()
-    const headerTitle = await addFullGridHeaderTitle(page)
-    const text = await addBlock(page, { bundle: 'text' })
+    const text = await addBlock(defaultPage, { bundle: 'text' })
 
     // The content text on its own is duplicatable.
-    await selectBlock(page, text!)
-    await expect.poll(() => itemActionDisabled(page, 'duplicate')).toBe(false)
+    await selectBlock(defaultPage, text!)
+    await expect
+      .poll(() => itemActionDisabled(defaultPage, 'duplicate'))
+      .toBe(false)
 
     // Adding the full-header title to the selection disables the whole action.
-    await selectBlocks(page, [text!, headerTitle])
-    await expect.poll(() => itemActionDisabled(page, 'duplicate')).toBe(true)
-
-    await page.close()
+    await selectBlocks(defaultPage, [text!, sharedHeaderTitle])
+    await expect
+      .poll(() => itemActionDisabled(defaultPage, 'duplicate'))
+      .toBe(true)
   })
 
   test('a multi-selection is blocked entirely when one block lacks add permission', async () => {
-    const page = await openEditor(EDITOR_PATH, DENY_TITLE_ADD)
-    const text = await addBlock(page, { bundle: 'text' })
-    const title = await addBlock(page, { bundle: 'title' })
+    const text = await addBlock(denyPage, { bundle: 'text' })
+    const title = await addBlock(denyPage, { bundle: 'title' })
 
     // The text alone can be duplicated...
-    await selectBlock(page, text!)
-    await expect.poll(() => itemActionDisabled(page, 'duplicate')).toBe(false)
+    await selectBlock(denyPage, text!)
+    await expect
+      .poll(() => itemActionDisabled(denyPage, 'duplicate'))
+      .toBe(false)
 
     // ...but adding the add-denied title disables duplication for the selection.
-    await selectBlocks(page, [text!, title!])
-    await expect.poll(() => itemActionDisabled(page, 'duplicate')).toBe(true)
-
-    await page.close()
+    await selectBlocks(denyPage, [text!, title!])
+    await expect
+      .poll(() => itemActionDisabled(denyPage, 'duplicate'))
+      .toBe(true)
   })
 })
