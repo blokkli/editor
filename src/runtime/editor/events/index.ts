@@ -237,14 +237,24 @@ export type ScrollSelectionIntoViewEvent = {
 
 /**
  * Pan the artboard to a specific offset. Pass `null` for an axis to leave it
- * unchanged. `immediate` skips the easing animation. Useful for E2E tests that
- * need to bring overflowing UI (e.g. the options toolbar with many options on
- * a narrow viewport) into view by panning horizontally.
+ * unchanged. `immediate` skips the easing animation.
  */
 export type SetArtboardOffsetEvent = {
   x?: number | null
   y?: number | null
   immediate?: boolean
+}
+
+/**
+ * Ask the actions toolbar to make a specific element reachable. If the element
+ * lives inside the toolbar's horizontally-scrolled content and is past either
+ * edge, the toolbar scrolls so the element clears the arrow buttons. Elements
+ * outside the toolbar's vertical extent (group popups, unrelated nodes) are
+ * ignored — they sit below the toolbar and are already visible once the group
+ * itself is in view.
+ */
+export type ActionsScrollIntoViewEvent = {
+  element: HTMLElement
 }
 
 export interface EventbusEvents {
@@ -285,6 +295,7 @@ export interface EventbusEvents {
   scrollIntoView: ScrollIntoViewEvent
   scrollSelectionIntoView: ScrollSelectionIntoViewEvent
   setArtboardOffset: SetArtboardOffsetEvent
+  'actions:scrollIntoView': ActionsScrollIntoViewEvent
   highlight: HTMLElement | null
   'animationFrame:before': AnimationFrameBeforeEvent
   'animationFrame:after': undefined

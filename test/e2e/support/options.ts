@@ -7,90 +7,44 @@ import { withApp } from './session'
 // control inside carries its type via `data-test="option-type-<type>"`
 // (`checkbox`, `radios`, `text`, …). Select a block first so its options render.
 //
-// **Toolbar overflow.** The options toolbar is `min-w-[100vw]` with
-// `lg:overflow-visible`. A block with many options pushes the right-hand
-// items past the viewport edge with no scrollable ancestor for Playwright to
-// auto-scroll. The mutator helpers below call `bringOptionIntoView` for you:
-// it pans the artboard horizontally (via the `setArtboardOffset` event) so
-// the *target option* sits inside the viewport. The toolbar tracks the
-// selected block via `useStickyToolbar`, so panning the artboard moves the
-// toolbar with it.
-//
-// **Viewport size matters.** The artboard's `overscrollBounds` clamp pan to
-// keep page content roughly visible, so panning far past the page width
-// is blocked. The options spec sets a 2400×900 viewport in its setup so the
-// toolbar fits inside the artboard's bounds and `bringOptionIntoView` can
-// reach every item.
+// **Toolbar overflow.** A block with many options overflows the toolbar
+// viewport. The toolbar handles this via its own horizontal scroll
+// (transform-translate inside `.bk-blokkli-item-actions-inner`), driven at
+// runtime by press-and-hold ScrollArrow buttons. For test ergonomics, the
+// editor exposes the `actions:scrollIntoView` event bus event: emit it with
+// the target HTMLElement and the Actions component will adjust scrollX so the
+// element clears the arrow-overlap zones on both sides. The mutator helpers
+// below call `bringElementIntoView` for you. Elements outside the toolbar's
+// vertical extent (group-popup contents) are a no-op — the popup drops below
+// the toolbar and is already in viewport once the group itself is in view.
 
 /**
- * Pan the artboard horizontally so a specific element fits inside the
- * viewport. Targeted (not whole-toolbar) because the toolbar can be wider
- * than even a widened test viewport — bringing the right end into view can
- * push the left end off-screen.
+ * Ask the actions toolbar to make `locator` reachable. Emits the
+ * `actions:scrollIntoView` event bus event with the resolved HTMLElement; the
+ * Actions component updates scrollX so the element is clear of the
+ * ScrollArrow overlay zones. Waits one animation frame so the transform
+ * applies before subsequent interactions.
  *
- * Reads the element's bounding rect, computes the overflow past either
- * viewport edge (with a 40px margin to clear the scrollbar / be comfortably
- * away from screen edges), and emits a `setArtboardOffset` event with the
- * corrected `x`. The renderer applies it via `artboard.setOffset` immediately
- * (no easing) and the next `canvas:draw` repositions the
- * `useStickyToolbar`-tracked toolbar to match.
- *
- * No-op if the element is already inside the viewport with margin.
- *
- * Targeting the wrapper (`[data-test="option-<prop>"]`) is not enough when
- * the click target is a child that overflows past `overflow-hidden` on an
- * ancestor (e.g. group-dropdown content): the wrapper's BB is clipped while
- * the child's screen position isn't. Pass the actual click-target locator.
+ * No-op when the element is already in view or sits outside the toolbar's
+ * vertical extent (group popups, unrelated nodes).
  */
 async function bringElementIntoView(
   page: Page,
   locator: Locator,
 ): Promise<void> {
-  const rect = await locator.boundingBox()
-  if (!rect) return
-  const panned = await page.evaluate(
-    ({ rect, viewportWidth }) => {
-      const app = window.__BLOKKLI__!.app!
-      const margin = 40
-      const right = rect.x + rect.width
-      const overflowRight = right + margin - viewportWidth
-      const overflowLeft = margin - rect.x
-      const currentX = app.ui.artboardOffset.value.x
-      let nextX = currentX
-      if (overflowRight > 0) {
-        nextX = currentX - overflowRight
-      } else if (overflowLeft > 0) {
-        nextX = currentX + overflowLeft
-      } else {
-        return false
-      }
-      // The OptionsForm's `onPointerUp` sets `actionsToolbarLocked = true` on
-      // every pointer release inside the toolbar — and `useStickyToolbar`'s
-      // `shouldUpdate` gates on `!actionsToolbarLocked`, so a locked toolbar
-      // won't reposition when we pan the artboard. Clear it (along with the
-      // sibling `isChangingOptions` flag the same handler sets) before
-      // emitting the pan. The next pointerup resets both naturally.
-      app.ui.actionsToolbarLocked.value = false
-      app.ui.isChangingOptions.value = false
-      app.eventBus.emit('setArtboardOffset', { x: nextX, immediate: true })
-      return true
-    },
-    { rect, viewportWidth: page.viewportSize()?.width ?? 1280 },
+  await locator.evaluate((el) => {
+    if (!(el instanceof HTMLElement)) return
+    window.__BLOKKLI__!.app!.eventBus.emit('actions:scrollIntoView', {
+      element: el,
+    })
+  })
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
   )
-  if (panned) {
-    // Two animation frames: one for the canvas:draw that reads the new
-    // offset and writes to ui.artboardOffset, one for useStickyToolbar's
-    // reposition.
-    await page.evaluate(
-      () =>
-        new Promise<void>((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-        ),
-    )
-  }
 }
 
-/** Pan to bring a specific option's wrapper into view. See `bringElementIntoView`. */
+/** Scroll a specific option's wrapper into view. See `bringElementIntoView`. */
 export function bringOptionIntoView(
   page: Page,
   property: string,
@@ -129,16 +83,18 @@ export async function toggleCheckboxOption(
  * grid / colors): every variant renders `<label><input value="key">…</label>`
  * — the input itself is sometimes opacity-0 (colors/grid) so we click the
  * wrapping label which is always pointer-interactive.
+ *
+ * Two scroll-into-view calls: the first centers the option wrapper inside the
+ * toolbar (or popup column position), the second targets the specific label —
+ * for grouped popups a single radio's icons can extend horizontally beyond
+ * the option-wrapper's edge, so the wrapper being in view doesn't guarantee
+ * the chosen icon is.
  */
 export async function selectRadiosOption(
   page: Page,
   property: string,
   key: string,
 ): Promise<void> {
-  // First pan to the wrapper, then pan to the specific label — the radios
-  // editor's labels can extend past the wrapper's clipped BB inside a
-  // group-dropdown (overflow-hidden), so a second pan on the actual click
-  // target is required.
   await bringOptionIntoView(page, property)
   const label = blockOptionControl(page, property, 'radios').locator(
     `label:has(input[type="radio"][value="${key}"])`,
@@ -256,7 +212,6 @@ export async function toggleCheckboxesOption(
     await control.locator('> button').click()
     await label.waitFor()
   }
-  await bringElementIntoView(page, label)
   await label.click()
 }
 
@@ -276,35 +231,9 @@ export async function openOptionGroup(
   if ((await group.getAttribute('data-test-active')) === 'true') {
     return
   }
-  // Pan to the group's wrapper element. The group sits in the toolbar's
-  // flex flow (after the ungrouped options), so we target it by the same
-  // `data-test`/`data-test-group` pair the locator above uses.
-  await page.evaluate(
-    ({ panLabel }) => {
-      const app = window.__BLOKKLI__!.app!
-      const el = document.querySelector(
-        `[data-test="option-group"][data-test-group="${panLabel}"]`,
-      )
-      if (!(el instanceof HTMLElement)) return
-      const rect = el.getBoundingClientRect()
-      const margin = 40
-      const overflowRight = rect.right + margin - window.innerWidth
-      const overflowLeft = margin - rect.left
-      const currentX = app.ui.artboardOffset.value.x
-      let nextX = currentX
-      if (overflowRight > 0) nextX = currentX - overflowRight
-      else if (overflowLeft > 0) nextX = currentX + overflowLeft
-      else return
-      app.eventBus.emit('setArtboardOffset', { x: nextX, immediate: true })
-    },
-    { panLabel: label },
-  )
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-      ),
-  )
+  // Scroll the toolbar so the group button is clear of the arrow-overlap
+  // zones before clicking it.
+  await bringElementIntoView(page, group)
   await group.locator('> button').click()
   await page
     .locator(

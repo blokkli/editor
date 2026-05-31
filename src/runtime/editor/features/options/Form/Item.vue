@@ -7,7 +7,7 @@
     <Tooltip
       :label
       :description
-      :placement="isGrouped ? 'inline' : 'above-left'"
+      :placement="isGrouped ? 'inline' : 'above-right'"
       class="!whitespace-normal"
       :class="{
         'w-full px-10 pt-10': isGrouped,

@@ -141,7 +141,7 @@ export default {
 
     @apply overflow-auto lg:overflow-visible;
     @apply lg:border-l lg:border-l-mono-700;
-    @apply order-first min-w-full lg:min-w-0 lg:order-none;
+    @apply order-first min-w-full lg:min-w-[auto] lg:order-none;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -454,6 +454,16 @@ export default {
           @apply rotate-180;
         }
       }
+    }
+  }
+  /* The last group sits at the right end of the toolbar — its popup would
+   * extend past the toolbar's right edge and get clipped by
+   * `.bk-blokkli-item-actions-inner`'s clip-path. Anchor it to the group's
+   * right edge so it grows leftward instead. */
+  .bk-blokkli-item-options-group:last-child
+    > .bk-blokkli-item-options-group-content {
+    @variant md {
+      @apply left-auto right-0;
     }
   }
   .bk-blokkli-item-options-group-content {

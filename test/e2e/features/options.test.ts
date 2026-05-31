@@ -41,14 +41,12 @@ interface UpdateOptionsCall {
  * props?" become a simple JSON read.
  */
 async function setupWidget(page: Page): Promise<string> {
-  // The Widget renders ~11 toolbar items (9 ungrouped + Radios + Padding
-  // groups), each at `min-w-[200px]`. At the default 1280px viewport, the
-  // toolbar overflows past the right edge — and the artboard's
-  // `overscrollBounds` clamp would prevent panning far enough to reach it
-  // (the artboard refuses to scroll content past its own boundary so the
-  // page doesn't disappear). A wider viewport keeps the whole toolbar
-  // reachable via the `bringOptionIntoView` pan helper.
-  await page.setViewportSize({ width: 2400, height: 900 })
+  // The Widget renders many toolbar items and overflows the default 1280px
+  // viewport. The Actions toolbar caps at the editor's safe area and exposes
+  // overflowing items via its own horizontal scroll (driven at runtime by
+  // ScrollArrow press-and-hold). For tests, `bringElementIntoView` emits the
+  // `actions:scrollIntoView` event so any target is reachable without
+  // resizing the viewport or panning the artboard.
   const uuid = await addBlock(page, { bundle: 'widget', fieldName: 'content' })
   if (!uuid) {
     throw new Error('Failed to add widget')
