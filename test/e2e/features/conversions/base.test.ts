@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -9,7 +9,11 @@ import {
   selectBlocks,
 } from './../../support/blocks'
 import { clickItemDropdownAction } from './../../support/itemActions'
-import { recordedAdapterCalls } from './../../support/recorder'
+import {
+  clearAdapterCalls,
+  recordedAdapterCalls,
+} from './../../support/recorder'
+import { emitEvent } from './../../support/events'
 
 /**
  * The conversions feature (`features/conversions/index.vue`) registers
@@ -64,11 +68,33 @@ async function lastConvertCall(
   return calls.filter((call) => call.method === 'convertBlocks').at(-1)!.args
 }
 
+/**
+ * Page lifecycle: one editor page shared by all tests (the default
+ * `?testing=true` URL is needed so `convertBlocks` is recorded). Each test
+ * adds its own blocks via `addBlock` (auto-generated uuids — no collisions),
+ * so it doesn't depend on prior tests' blocks. `afterEach` deselects and
+ * clears the adapter recorder so each test's `lastConvertCall` only sees its
+ * own conversion.
+ */
 describe('The conversions feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    await emitEvent(page, 'select:unselect')
+    await clearAdapterCalls(page)
+  })
+
   test('offers a matching conversion for a single convertible block', async () => {
-    const page = await openEditor()
     const uuid = await addBlock(page, { bundle: 'title' })
 
     await selectBlock(page, uuid!)
@@ -77,12 +103,9 @@ describe('The conversions feature', async () => {
     await expect
       .poll(() => conversionActionIds(page))
       .toEqual(['conversion-text'])
-
-    await page.close()
   })
 
   test('converting a block changes its bundle and maps its fields', async () => {
-    const page = await openEditor()
     const uuid = await addBlock(page, { bundle: 'title' })
 
     await selectBlock(page, uuid!)
@@ -102,12 +125,9 @@ describe('The conversions feature', async () => {
       uuids: [uuid],
       targetBundle: 'text',
     })
-
-    await page.close()
   })
 
   test('converts in the reverse direction, flattening text into a title', async () => {
-    const page = await openEditor()
     const uuid = await addBlock(page, { bundle: 'text' })
 
     await selectBlock(page, uuid!)
@@ -121,12 +141,9 @@ describe('The conversions feature', async () => {
     // The text block's content is flattened into the title's `title` field.
     expect(after.props!.title).toBeTruthy()
     expect(stripTags(before.props!.text)).toContain(after.props!.title)
-
-    await page.close()
   })
 
   test('offers no conversion for a block whose bundle has none', async () => {
-    const page = await openEditor()
     const titleUuid = await addBlock(page, { bundle: 'title' })
     const imageUuid = await addBlock(page, { bundle: 'image' })
 
@@ -140,12 +157,9 @@ describe('The conversions feature', async () => {
     // `image` is no conversion's source bundle.
     await selectBlock(page, imageUuid!)
     await expect.poll(() => conversionActionIds(page)).toEqual([])
-
-    await page.close()
   })
 
   test('offers no conversion when blocks of different bundles are selected', async () => {
-    const page = await openEditor()
     const titleUuid = await addBlock(page, { bundle: 'title' })
     const imageUuid = await addBlock(page, { bundle: 'image' })
 
@@ -157,12 +171,9 @@ describe('The conversions feature', async () => {
     // A mixed-bundle selection has no single source bundle, so nothing is offered.
     await selectBlocks(page, [titleUuid!, imageUuid!])
     await expect.poll(() => conversionActionIds(page)).toEqual([])
-
-    await page.close()
   })
 
   test('converts every block in a same-bundle multi-selection', async () => {
-    const page = await openEditor()
     const first = await addBlock(page, { bundle: 'title' })
     const second = await addBlock(page, { bundle: 'title' })
 
@@ -179,7 +190,5 @@ describe('The conversions feature', async () => {
     const call = await lastConvertCall(page)
     expect(call.targetBundle).toBe('text')
     expect([...call.uuids].sort()).toEqual([first, second].sort())
-
-    await page.close()
   })
 })
