@@ -1,10 +1,11 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { selectBlock } from './../../support/blocks'
 import { topLevelBlockUuids } from './../../support/selection'
 import { toolbarButton } from './../../support/toolbar'
+import { emitEvent } from './../../support/events'
 
 /**
  * The command palette (`features/command-palette`) is a keyboard-driven launcher
@@ -76,12 +77,36 @@ function commandFrequency(page: Page): Promise<Record<string, number>> {
   }, FREQUENCY_KEY)
 }
 
+/**
+ * Page lifecycle: one editor page shared by all tests. `afterEach` closes the
+ * palette if open, clears the `blokkli:commandPaletteFrequency` localStorage
+ * (so tests 9/10 see exactly `{ <cmd>: 1 }` and test 3 sees `{}`), and
+ * deselects (test 5 leaves a block selected). The palette is fully unmounted
+ * when closed, so input text and focused index reset naturally on each open.
+ */
 describe('The command palette', async () => {
   await setupEditorE2E()
 
-  test('the toolbar button opens the palette and focuses the search input', async () => {
-    const page = await openEditor()
+  let page: Page
 
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await palette(page).isVisible()) {
+      await page.keyboard.press('Escape')
+      await palette(page).waitFor({ state: 'detached' })
+    }
+    await page.evaluate((key) => localStorage.removeItem(key), FREQUENCY_KEY)
+    await emitEvent(page, 'select:unselect')
+  })
+
+  test('the toolbar button opens the palette and focuses the search input', async () => {
     expect(await palette(page).count()).toBe(0)
     await openPalette(page)
 
@@ -91,12 +116,9 @@ describe('The command palette', async () => {
       await paletteInput(page).evaluate((el) => el === document.activeElement),
     ).toBe(true)
     expect(await paletteItems(page).count()).toBeGreaterThan(0)
-
-    await page.close()
   })
 
   test('Cmd/Ctrl+K opens the palette', async () => {
-    const page = await openEditor()
     expect(await palette(page).count()).toBe(0)
 
     await page.keyboard.press('Control+k')
@@ -107,12 +129,9 @@ describe('The command palette', async () => {
 
     await palette(page).waitFor({ state: 'visible' })
     expect(await palette(page).count()).toBe(1)
-
-    await page.close()
   })
 
   test('Escape closes the palette without running a command', async () => {
-    const page = await openEditor()
     await openPalette(page)
 
     await page.keyboard.press('Escape')
@@ -120,12 +139,9 @@ describe('The command palette', async () => {
     expect(await palette(page).count()).toBe(0)
     // Escape closes — it must not select the focused command.
     expect(await commandFrequency(page)).toEqual({})
-
-    await page.close()
   })
 
   test('clicking outside the palette closes it', async () => {
-    const page = await openEditor()
     await openPalette(page)
 
     // The open palette lays a full-screen overlay over the editor; a click on it
@@ -133,12 +149,9 @@ describe('The command palette', async () => {
     await page.mouse.click(5, 5)
     await palette(page).waitFor({ state: 'detached' })
     expect(await palette(page).count()).toBe(0)
-
-    await page.close()
   })
 
   test('selecting a block closes the palette', async () => {
-    const page = await openEditor()
     const first = (await topLevelBlockUuids(page))[0]!
     await openPalette(page)
 
@@ -146,12 +159,9 @@ describe('The command palette', async () => {
     await selectBlock(page, first)
     await palette(page).waitFor({ state: 'detached' })
     expect(await palette(page).count()).toBe(0)
-
-    await page.close()
   })
 
   test('typing filters the command list', async () => {
-    const page = await openEditor()
     await openPalette(page)
     const totalBefore = await paletteItems(page).count()
 
@@ -174,12 +184,9 @@ describe('The command palette', async () => {
     // A query that matches nothing empties the list.
     await paletteInput(page).fill('zzzqxwv123nomatch')
     await expect.poll(() => paletteItems(page).count()).toBe(0)
-
-    await page.close()
   })
 
   test('typing resets the focus to the first item', async () => {
-    const page = await openEditor()
     await openPalette(page)
 
     await page.keyboard.press('ArrowDown')
@@ -188,12 +195,9 @@ describe('The command palette', async () => {
     // Any text change resets the highlighted index back to the top.
     await paletteInput(page).fill('a')
     await expect.poll(() => focusedIndex(page)).toBe(0)
-
-    await page.close()
   })
 
   test('arrow keys move and wrap the focused item', async () => {
-    const page = await openEditor()
     await openPalette(page)
     const total = await paletteItems(page).count()
     expect(total).toBeGreaterThan(1)
@@ -208,12 +212,9 @@ describe('The command palette', async () => {
     // Wrap around: up from the first item lands on the last.
     await page.keyboard.press('ArrowUp')
     expect(await focusedIndex(page)).toBe(total - 1)
-
-    await page.close()
   })
 
   test('Tab and Shift+Tab navigate the focused item', async () => {
-    const page = await openEditor()
     await openPalette(page)
     expect(await paletteItems(page).count()).toBeGreaterThan(1)
     expect(await focusedIndex(page)).toBe(0)
@@ -224,12 +225,9 @@ describe('The command palette', async () => {
 
     await page.keyboard.press('Shift+Tab')
     expect(await focusedIndex(page)).toBe(0)
-
-    await page.close()
   })
 
   test('Enter runs the focused command and closes the palette', async () => {
-    const page = await openEditor()
     await openPalette(page)
 
     const focusedId = (await itemIds(page))[await focusedIndex(page)]!
@@ -239,12 +237,9 @@ describe('The command palette', async () => {
     expect(await palette(page).count()).toBe(0)
     // Selecting records the command's use — proving it ran, and which one.
     expect((await commandFrequency(page))[focusedId]).toBe(1)
-
-    await page.close()
   })
 
   test('clicking an item runs its command and closes the palette', async () => {
-    const page = await openEditor()
     await openPalette(page)
 
     // Click a specific (non-first) item and assert exactly that one ran.
@@ -255,7 +250,5 @@ describe('The command palette', async () => {
     await palette(page).waitFor({ state: 'detached' })
     expect(await palette(page).count()).toBe(0)
     expect((await commandFrequency(page))[targetId]).toBe(1)
-
-    await page.close()
   })
 })
