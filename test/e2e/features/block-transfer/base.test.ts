@@ -1,12 +1,13 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { addBlock, selectBlock, blockCount } from './../../support/blocks'
 import { clickItemDropdownAction } from './../../support/itemActions'
-import { dialog, dialogSubmit } from './../../support/overlays'
+import { dialog, dialogSubmit, dismissMessages } from './../../support/overlays'
 import { emitEvent } from './../../support/events'
 import {
+  clearAdapterCalls,
   recordedAdapterCalls,
   waitForAdapterCall,
 } from './../../support/recorder'
@@ -108,11 +109,42 @@ async function importCalls(page: Page): Promise<ImportArgs[]> {
     .map((c) => c.args)
 }
 
+/**
+ * Page lifecycle: one editor page (with `?testing=true` for the adapter
+ * recorder) shared by every test. Each test that mutates takes a local
+ * `blockCount` snapshot, so accumulated blocks between tests don't matter.
+ * `afterEach` ends any leftover drag (test 4 starts one), closes the summary
+ * dialog if it's still open, dismisses success toasts (they auto-dismiss after
+ * ~6s but can intercept clicks in the meantime), and clears the adapter
+ * recorder so the next test's `importCalls` / `waitForAdapterCall` sees only
+ * its own calls.
+ */
 describe('The block transfer feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor('/page/1?blokkliEditing=1&testing=true')
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await withApp(page, (app) => app.selection.isDragging.value)) {
+      await emitEvent(page, 'dragging:end')
+    }
+    if (await dialog(page, 'block-transfer-summary').isVisible()) {
+      await emitEvent(page, 'overlay:close')
+      await dialog(page, 'block-transfer-summary').waitFor({ state: 'hidden' })
+    }
+    await dismissMessages(page)
+    await clearAdapterCalls(page)
+  })
+
   test('exports the selected block to a transferable envelope', async () => {
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
     const uuid = await addBlock(page, { bundle: 'card' })
     await selectBlock(page, uuid!)
 
@@ -124,12 +156,9 @@ describe('The block transfer feature', async () => {
     expect(args.bundles).toEqual(['card'])
     expect(typeof args.transferable).toBe('string')
     expect(args.transferable!.length).toBeGreaterThan(0)
-
-    await page.close()
   })
 
   test('round-trips: exported blocks import back into the page', async () => {
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
     const uuid = await addBlock(page, { bundle: 'card' })
     await selectBlock(page, uuid!)
 
@@ -148,13 +177,9 @@ describe('The block transfer feature', async () => {
     expect(args.importSummary?.paragraphsImported).toBe(1)
     await expect.poll(() => blockCount(page)).toBe(before + 1)
     expect(await dialog(page, 'block-transfer-summary').count()).toBe(0)
-
-    await page.close()
   })
 
   test('shows an import summary when bundles are skipped or fields dropped', async () => {
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
-
     // One block of an unknown bundle (skipped entirely) and one valid `text`
     // block carrying a field that doesn't exist on it (dropped, but the block
     // still imports).
@@ -191,12 +216,9 @@ describe('The block transfer feature', async () => {
     // Submitting closes the dialog.
     await dialogSubmit(page).click()
     await dialog(page, 'block-transfer-summary').waitFor({ state: 'detached' })
-
-    await page.close()
   })
 
   test('a multi-field host paste starts a drag instead of importing', async () => {
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
     const before = await blockCount(page)
 
     // The page host has three block fields, so pasting can't pick a target on
@@ -228,13 +250,10 @@ describe('The block transfer feature', async () => {
     expect(await importCalls(page)).toHaveLength(0)
     expect(await blockCount(page)).toBe(before)
 
-    // End the drag so it doesn't leak into teardown.
-    await emitEvent(page, 'dragging:end')
-    await page.close()
+    // `afterEach` will end the drag.
   })
 
   test('ignores a paste that is not a block transfer', async () => {
-    const page = await openEditor('/page/1?blokkliEditing=1&testing=true')
     const before = await blockCount(page)
 
     // A non-transfer clipboard payload: the listener bails immediately.
@@ -252,7 +271,5 @@ describe('The block transfer feature', async () => {
     )
     expect(await importCalls(page)).toHaveLength(0)
     expect(await blockCount(page)).toBe(before)
-
-    await page.close()
   })
 })
