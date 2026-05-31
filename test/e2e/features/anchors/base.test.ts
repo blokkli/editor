@@ -1,8 +1,13 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor } from '../../support/session'
 import { setupEditorE2E } from '../../support/setup'
 import { captureClipboard, copiedText } from '../../support/clipboard'
+import {
+  closeViewOptions,
+  openViewOptions,
+  viewOption,
+} from '../../support/toolbar'
 
 /**
  * The anchors feature is a toolbar view option (`anchor`). When enabled it scans
@@ -31,8 +36,9 @@ import { captureClipboard, copiedText } from '../../support/clipboard'
 
 const ANCHOR = 'my-section'
 
-function viewOption(page: Page): Locator {
-  return page.locator('[data-test-view-option="anchor"]')
+/** Shorthand for the anchors view-option button (requires the dropdown open). */
+function anchorViewOption(page: Page): Locator {
+  return viewOption(page, 'anchor')
 }
 
 function anchorIndicator(page: Page, uuid: string): Locator {
@@ -107,7 +113,8 @@ function deleteBlock(page: Page, uuid: string): Promise<void> {
 }
 
 /** Enable the anchors view option. If `waitForElementId` is given, wait for that
- * anchored element to be in the DOM first so the overlay's mount scan sees it. */
+ * anchored element to be in the DOM first so the overlay's mount scan sees it.
+ * Opens the view-options dropdown if it's not already open. */
 async function enableAnchors(
   page: Page,
   waitForElementId?: string,
@@ -118,7 +125,8 @@ async function enableAnchors(
       waitForElementId,
     )
   }
-  await viewOption(page).click()
+  await openViewOptions(page)
+  await anchorViewOption(page).click()
 }
 
 /** The indicator's current `translateY` (px), or null if not positioned yet. */
@@ -143,14 +151,65 @@ function blockSnappedY(page: Page, uuid: string): Promise<number | null> {
   }, uuid)
 }
 
+/**
+ * Page lifecycle: a shared editor page is opened in `beforeAll`. After each
+ * test, `afterEach` deletes any blocks added beyond the initial snapshot and
+ * resets the `anchor` view option to OFF so the next test starts from the
+ * same baseline. The last test uses its own page because it needs a different
+ * URL (`?anchorLink=adapter`) to swap the adapter's `buildAnchorLink`.
+ */
 describe('The anchors feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+  let baselineUuids: string[]
+
+  beforeAll(async () => {
+    page = await openEditor()
+    await captureClipboard(page)
+    baselineUuids = await page.evaluate(() =>
+      window.__BLOKKLI__!.app!.state.getAllUuids(),
+    )
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    // Delete every block not present at baseline. Single round-trip; tolerates
+    // already-deleted uuids (test 5 deletes its own block).
+    await page.evaluate(async (baseline) => {
+      const app = window.__BLOKKLI__!.app!
+      const baselineSet = new Set(baseline)
+      const toDelete = app.state
+        .getAllUuids()
+        .filter((u) => !baselineSet.has(u))
+      if (toDelete.length) {
+        await app.state.mutateWithLoadingState(() =>
+          app.adapter.deleteBlocks!(toDelete),
+        )
+      }
+    }, baselineUuids)
+
+    // Reset the anchor view option to OFF (needs the dropdown open to click).
+    await openViewOptions(page)
+    if (
+      (await anchorViewOption(page).getAttribute('data-test-active')) === 'true'
+    ) {
+      await anchorViewOption(page).click()
+    }
+    await closeViewOptions(page)
+
+    // Clear the clipboard recorder so the next clipboard assertion starts empty.
+    await captureClipboard(page)
+  })
+
   test('toggling the view option shows and hides the indicator', async () => {
-    const page = await openEditor()
     const uuid = await addAnchored(page, ANCHOR)
     const indicator = anchorIndicator(page, uuid)
-    const vo = viewOption(page)
+    await openViewOptions(page)
+    const vo = anchorViewOption(page)
 
     // Off by default: no indicator.
     expect(await vo.getAttribute('data-test-active')).toBe('false')
@@ -166,12 +225,9 @@ describe('The anchors feature', async () => {
     expect(await vo.getAttribute('data-test-active')).toBe('false')
     await indicator.waitFor({ state: 'detached' })
     expect(await indicator.count()).toBe(0)
-
-    await page.close()
   })
 
   test('the indicator shows the "#<anchorId>" label', async () => {
-    const page = await openEditor()
     const uuid = await addAnchored(page, ANCHOR)
 
     await enableAnchors(page, ANCHOR)
@@ -179,12 +235,9 @@ describe('The anchors feature', async () => {
     await indicator.waitFor({ state: 'attached' })
 
     expect((await indicator.textContent())?.trim()).toBe('#' + ANCHOR)
-
-    await page.close()
   })
 
   test('a block with an empty anchor id has no indicator', async () => {
-    const page = await openEditor()
     // An anchored block (proves the overlay is active) ...
     const anchored = await addAnchored(page, ANCHOR)
     // ... and one whose `anchorId` is left empty — it must not get an indicator.
@@ -195,12 +248,9 @@ describe('The anchors feature', async () => {
 
     expect(await anchorIndicator(page, anchored).count()).toBe(1)
     expect(await anchorIndicator(page, plain).count()).toBe(0)
-
-    await page.close()
   })
 
   test('each anchored block gets its own indicator', async () => {
-    const page = await openEditor()
     const alpha = await addAnchored(page, 'alpha')
     const beta = await addAnchored(page, 'beta')
 
@@ -215,12 +265,9 @@ describe('The anchors feature', async () => {
     expect((await anchorIndicator(page, beta).textContent())?.trim()).toBe(
       '#beta',
     )
-
-    await page.close()
   })
 
   test('the indicator is removed when its block is deleted', async () => {
-    const page = await openEditor()
     const uuid = await addAnchored(page, ANCHOR)
 
     await enableAnchors(page, ANCHOR)
@@ -231,12 +278,9 @@ describe('The anchors feature', async () => {
 
     await indicator.waitFor({ state: 'detached' })
     expect(await indicator.count()).toBe(0)
-
-    await page.close()
   })
 
   test('the indicator reacts to anchor id changes while shown', async () => {
-    const page = await openEditor()
     const uuid = await addContentBlock(page, 'two_columns')
 
     // Enable anchors while the block has no anchor id → no indicator yet.
@@ -259,12 +303,9 @@ describe('The anchors feature', async () => {
     await setAnchorId(page, uuid, '')
     await indicator.waitFor({ state: 'detached' })
     expect(await indicator.count()).toBe(0)
-
-    await page.close()
   })
 
   test('the indicator repositions when a preceding block is deleted', async () => {
-    const page = await openEditor()
     // A tall block ABOVE the anchored one (explicit `afterUuid` so the anchored
     // block really follows it — `afterUuid: null` would prepend instead).
     const preceding = await addContentBlock(page, 'card')
@@ -290,13 +331,9 @@ describe('The anchors feature', async () => {
     const after = await blockSnappedY(page, anchored)
     expect(after).toBeLessThan(before!)
     expect(await indicatorTranslateY(page, anchored)).toBe(after)
-
-    await page.close()
   })
 
   test('clicking the indicator copies the fallback anchor link', async () => {
-    const page = await openEditor()
-    await captureClipboard(page)
     const uuid = await addAnchored(page, ANCHOR)
 
     await enableAnchors(page, ANCHOR)
@@ -307,27 +344,28 @@ describe('The anchors feature', async () => {
     // No `buildAnchorLink` adapter method → fallback `route.path + '#' + id`.
     const pathname = await page.evaluate(() => location.pathname)
     await expect.poll(() => copiedText(page)).toContain(`${pathname}#${ANCHOR}`)
-
-    await page.close()
   })
 
   test('clicking the indicator copies the adapter link when buildAnchorLink is defined', async () => {
-    // `?anchorLink=adapter` makes the mock adapter provide `buildAnchorLink`.
-    const page = await openEditor(
+    // `?anchorLink=adapter` makes the mock adapter provide `buildAnchorLink` —
+    // own page because it's a different URL than the shared editor.
+    const adapterPage = await openEditor(
       '/page/1?blokkliEditing=1&testing=true&anchorLink=adapter',
     )
-    await captureClipboard(page)
-    const uuid = await addAnchored(page, ANCHOR)
+    try {
+      await captureClipboard(adapterPage)
+      const uuid = await addAnchored(adapterPage, ANCHOR)
 
-    await enableAnchors(page, ANCHOR)
-    const indicator = anchorIndicator(page, uuid)
-    await indicator.waitFor({ state: 'attached' })
-    await indicator.dispatchEvent('click')
+      await enableAnchors(adapterPage, ANCHOR)
+      const indicator = anchorIndicator(adapterPage, uuid)
+      await indicator.waitFor({ state: 'attached' })
+      await indicator.dispatchEvent('click')
 
-    await expect
-      .poll(() => copiedText(page))
-      .toContain(`https://blokk.li/p/${uuid}#${ANCHOR}`)
-
-    await page.close()
+      await expect
+        .poll(() => copiedText(adapterPage))
+        .toContain(`https://blokk.li/p/${uuid}#${ANCHOR}`)
+    } finally {
+      await adapterPage.close()
+    }
   })
 })

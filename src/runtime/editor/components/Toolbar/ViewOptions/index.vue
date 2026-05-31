@@ -9,6 +9,8 @@
       :class="{
         'bk-is-active': isVisible,
       }"
+      data-test="view-options-toggle"
+      :data-test-open="isVisible"
       @click.prevent="isVisible = !isVisible"
     >
       <Icon name="bk_mdi_visibility" />
@@ -23,6 +25,7 @@
         :toggle-element
         :title="$t('viewOptions', 'View options')"
         class="origin-top-right"
+        data-test="view-options-dropdown"
         @close="isVisible = false"
       >
         <ViewOptionsList :options />
