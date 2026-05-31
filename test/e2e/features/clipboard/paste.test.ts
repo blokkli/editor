@@ -1,8 +1,10 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor } from './../../support/session'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { blockCount, blockState } from './../../support/blocks'
-import { selectedUuids, topLevelBlockUuids } from './../../support/selection'
+import { topLevelBlockUuids } from './../../support/selection'
+import { emitEvent } from './../../support/events'
 import {
   pasteText,
   draggedBundles,
@@ -36,11 +38,41 @@ import {
 const MARKER = 'UNIQUE_PASTE_MARKER_123'
 const YOUTUBE_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 
+/**
+ * Page lifecycle: one editor page shared. Each test pastes once (the file's
+ * preamble: "Only one paste per test: a second is swallowed by `onPaste`'s
+ * in-drag guard"). On a shared page that's fine as long as every test cleanly
+ * ends its drag — `afterEach` cancels a lingering bundle selector via Escape
+ * (which the `ArtboardTooltip` listens for via `keyPressed`) and emits
+ * `dragging:end` defensively. Each test takes a local `before` snapshot and
+ * finds the newly-added block via uuid-diff rather than `selectedUuids[0]`
+ * (a prior test's block can still be selected — see the same trap in
+ * `native-drop.test.ts`).
+ */
 describe('The clipboard feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await bundleSelector(page).isVisible()) {
+      await page.keyboard.press('Escape')
+      await bundleSelector(page).waitFor({ state: 'hidden' })
+    }
+    if (await withApp(page, (app) => app.selection.isDragging.value)) {
+      await emitEvent(page, 'dragging:end')
+    }
+  })
+
   test('pasting plain text opens a bundle selector with the mapped bundles', async () => {
-    const page = await openEditor()
     await pasteText(page, MARKER)
 
     const before = await blockCount(page)
@@ -54,84 +86,78 @@ describe('The clipboard feature', async () => {
       'title',
     ])
     expect(await blockCount(page)).toBe(before)
-
-    await page.close()
   })
 
   test('picking "text" adds a text block carrying the pasted content', async () => {
-    const page = await openEditor()
     await pasteText(page, MARKER)
-    const before = await blockCount(page)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropDragInto(page)
     await bundleSelector(page).waitFor({ state: 'visible' })
 
     await pickBundle(page, 'text')
 
-    await expect.poll(() => blockCount(page)).toBe(before + 1)
-    const uuid = (await selectedUuids(page))[0]!
-    const info = await blockState(page, uuid)
+    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
+    const newUuid = (
+      await withApp(page, (app) => app.state.getAllUuids())
+    ).find((uuid) => !uuidsBefore.includes(uuid))!
+    const info = await blockState(page, newUuid)
     expect(info.bundle).toBe('text')
     expect(info.props?.text).toBe(MARKER)
     // The selector closes once a bundle is chosen.
     await expect.poll(() => bundleSelector(page).count()).toBe(0)
-
-    await page.close()
   })
 
   test('picking "title" instead creates a title block', async () => {
-    const page = await openEditor()
     await pasteText(page, MARKER)
-    const before = await blockCount(page)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropDragInto(page)
     await bundleSelector(page).waitFor({ state: 'visible' })
 
     await pickBundle(page, 'title')
 
-    await expect.poll(() => blockCount(page)).toBe(before + 1)
-    const uuid = (await selectedUuids(page))[0]!
-    const info = await blockState(page, uuid)
+    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
+    const newUuid = (
+      await withApp(page, (app) => app.state.getAllUuids())
+    ).find((uuid) => !uuidsBefore.includes(uuid))!
+    const info = await blockState(page, newUuid)
     // The chosen bundle drives which block type is created.
     expect(info.bundle).toBe('title')
     expect(info.props?.title).toBe(MARKER)
-
-    await page.close()
   })
 
   test('pasting a YouTube URL adds a video block directly (no selector)', async () => {
-    const page = await openEditor()
     await pasteText(page, YOUTUBE_URL)
 
     // The URL was detected as a video, so a single bundle resolves — no choice.
     expect(await draggedBundles(page)).toEqual(['video'])
 
-    const before = await blockCount(page)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropDragInto(page)
 
-    await expect.poll(() => blockCount(page)).toBe(before + 1)
+    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
     expect(await bundleSelector(page).count()).toBe(0)
-    const uuid = (await selectedUuids(page))[0]!
-    expect((await blockState(page, uuid)).bundle).toBe('video')
-
-    await page.close()
+    const newUuid = (
+      await withApp(page, (app) => app.state.getAllUuids())
+    ).find((uuid) => !uuidsBefore.includes(uuid))!
+    expect((await blockState(page, newUuid)).bundle).toBe('video')
   })
 
   test('the drop inserts the block at the chosen position', async () => {
-    const page = await openEditor()
     const topBefore = await topLevelBlockUuids(page)
     const first = topBefore[0]!
 
     await pasteText(page, MARKER)
-    const before = await blockCount(page)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropDragInto(page, { preceedingUuid: first })
     await bundleSelector(page).waitFor({ state: 'visible' })
     await pickBundle(page, 'text')
-    await expect.poll(() => blockCount(page)).toBe(before + 1)
+    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
 
     // Dropping after `first` places the new block immediately after it.
-    const uuid = (await selectedUuids(page))[0]!
+    const newUuid = (
+      await withApp(page, (app) => app.state.getAllUuids())
+    ).find((uuid) => !uuidsBefore.includes(uuid))!
     const topAfter = await topLevelBlockUuids(page)
-    expect(topAfter[topAfter.indexOf(first) + 1]).toBe(uuid)
-
-    await page.close()
+    expect(topAfter[topAfter.indexOf(first) + 1]).toBe(newUuid)
   })
 })

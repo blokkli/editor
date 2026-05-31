@@ -1,8 +1,9 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor } from './../../support/session'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { blockCount, blockState } from './../../support/blocks'
-import { selectedUuids } from './../../support/selection'
+import { emitEvent } from './../../support/events'
 import {
   nativeDragEnterText,
   dropNativeDrag,
@@ -31,17 +32,53 @@ import {
 
 const YOUTUBE_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 
+/**
+ * Page lifecycle: one editor page shared. Each test starts its own native drag
+ * via `nativeDragEnterText` and consumes it with `dropNativeDrag`; both end
+ * with the drag cleared. Each test takes a local `before` snapshot so the
+ * blocks added by earlier tests don't matter. Unlike `copy-paste.test.ts`,
+ * native drags go through `onDragEnter`, not the `onPaste` `isLoading` guard
+ * — no ordering constraint applies here.
+ */
 describe('Native (OS) drag and drop', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    // End any lingering drag — the bundle-selector flow doesn't go through
+    // the regular pointerup path.
+    if (await withApp(page, (app) => app.selection.isDragging.value)) {
+      await emitEvent(page, 'dragging:end')
+    }
+    // The clipboard feature tracks its own `dragCounter` / `isDirectDrop` /
+    // `nativeDropItem` state that's set on `dragenter` and cleared either on
+    // `onNativeDrop` (real drop event) or `dragleave`. The test path emits
+    // `dragging:drop` directly, so neither runs — dispatch `dragleave` to
+    // reset the clipboard feature's counter so the next test's `dragenter`
+    // hits `dragCounter === 1` and calls `tryStartDirectDrop`.
+    await page.evaluate(() => {
+      document.dispatchEvent(
+        new DragEvent('dragleave', { bubbles: true, cancelable: true }),
+      )
+    })
+  })
+
   test('dropping dragged text opens the bundle selector and adds the chosen block', async () => {
-    const page = await openEditor()
     await nativeDragEnterText(page, 'dragged text')
 
     // The drag knows only that it's text → the plaintext bundles.
     expect((await draggedBundles(page)).sort()).toEqual(['text', 'title'])
 
-    const before = await blockCount(page)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropNativeDrag(page, { text: 'dragged text' })
 
     await bundleSelector(page).waitFor({ state: 'visible' })
@@ -51,31 +88,32 @@ describe('Native (OS) drag and drop', async () => {
     ])
     await pickBundle(page, 'text')
 
-    await expect.poll(() => blockCount(page)).toBe(before + 1)
-    const uuid = (await selectedUuids(page))[0]!
-    const info = await blockState(page, uuid)
+    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
+    // Find the newly-added block by diffing uuids — selection isn't reliably
+    // replaced on a shared page (a prior test's block can still be selected).
+    const newUuid = (
+      await withApp(page, (app) => app.state.getAllUuids())
+    ).find((uuid) => !uuidsBefore.includes(uuid))!
+    const info = await blockState(page, newUuid)
     expect(info.bundle).toBe('text')
     expect(info.props?.text).toBe('dragged text')
-
-    await page.close()
   })
 
   test('dropping a dragged YouTube URL adds a video block directly (no selector)', async () => {
-    const page = await openEditor()
     await nativeDragEnterText(page, YOUTUBE_URL)
 
     // Still just "text" at drag-enter — the URL hasn't been read yet.
     expect((await draggedBundles(page)).sort()).toEqual(['text', 'title'])
 
-    const before = await blockCount(page)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     // resolveBundles reads the transfer at drop time and detects the video.
     await dropNativeDrag(page, { text: YOUTUBE_URL })
 
-    await expect.poll(() => blockCount(page)).toBe(before + 1)
+    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
     expect(await bundleSelector(page).count()).toBe(0)
-    const uuid = (await selectedUuids(page))[0]!
-    expect((await blockState(page, uuid)).bundle).toBe('video')
-
-    await page.close()
+    const newUuid = (
+      await withApp(page, (app) => app.state.getAllUuids())
+    ).find((uuid) => !uuidsBefore.includes(uuid))!
+    expect((await blockState(page, newUuid)).bundle).toBe('video')
   })
 })
