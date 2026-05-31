@@ -1,12 +1,14 @@
 <template>
   <div
     class="bk fixed inset-y-0 left-0 bg-white shadow-lg max-w-[480px] lg:min-w-[400px] flex flex-col pointer-events-auto z-menu w-[calc(100vw-40px)]"
+    data-test="app-menu"
     @wheel.passive.stop
     @touchstart.stop.passive
     @touchmove.stop.passive
   >
     <button
       class="h-40 md:h-50 flex items-center text-base font-bold pl-15 md:pl-25 bg-white text-mono-950"
+      data-test="app-menu-close"
       @click="$emit('close')"
     >
       <Icon name="bk_mdi_close" class="size-20 md:size-30 mr-25" />
