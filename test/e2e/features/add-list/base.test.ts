@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { addBlocks, selectBlock } from './../../support/blocks'
@@ -41,20 +41,32 @@ async function actionIsDisabled(page: Page, id: string): Promise<boolean> {
   return value === 'true'
 }
 
+/**
+ * Page lifecycle: one editor page is opened in `beforeAll` and shared by all
+ * three tests. Tests 1 & 2 are read-only, and run first while nothing is
+ * selected. Test 3 adds a grid block and selects it; it runs LAST because
+ * that selection would defeat the "nothing selected" assertions in test 2.
+ */
 describe('The add list', async () => {
   await setupEditorE2E()
 
-  test('the add list element is rendered', async () => {
-    const page = await openEditor()
-    // `.count()` is asserted (not the locator itself — a locator is always
-    // truthy, which is how this spec used to pass against a non-built app).
-    expect(await page.locator('#bk-add-list').count()).toBe(1)
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
     await page.close()
   })
 
-  test('with nothing selected every block and action is active', async () => {
-    const page = await openEditor()
+  test('the add list element is rendered', async () => {
+    // `.count()` is asserted (not the locator itself — a locator is always
+    // truthy, which is how this spec used to pass against a non-built app).
+    expect(await page.locator('[data-test="add-list"]').count()).toBe(1)
+  })
 
+  test('with nothing selected every block and action is active', async () => {
     const states = await blockItemStates(page)
     // Sanity: blocks are actually rendered.
     expect(Object.keys(states).length).toBeGreaterThan(0)
@@ -65,13 +77,9 @@ describe('The add list', async () => {
     for (const id of ACTIONS) {
       expect(await actionIsDisabled(page, id)).toBe(false)
     }
-
-    await page.close()
   })
 
   test('selecting a grid keeps only its allowed bundles (and all actions) active', async () => {
-    const page = await openEditor()
-
     const grid = randomUUID()
     await addBlocks(page, [{ bundle: 'grid', uuid: grid }])
     await selectBlock(page, grid)
@@ -112,7 +120,5 @@ describe('The add list', async () => {
     for (const id of ACTIONS) {
       expect(await actionIsDisabled(page, id)).toBe(false)
     }
-
-    await page.close()
   })
 })

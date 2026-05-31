@@ -1,4 +1,5 @@
 import type { Locator, Page } from 'playwright-core'
+import { withApp } from './session'
 
 /**
  * Locate an onboarding popup by its `id` (the `id` prop of `<Popup>`, surfaced
@@ -49,4 +50,17 @@ export function dialogCancel(page: Page): Locator {
  */
 export function formOverlay(page: Page, id: string): Locator {
   return page.locator(`[data-test="form-overlay-${id}"]`)
+}
+
+/**
+ * Close an open `<FormOverlay>` by emitting `overlay:close` on the eventBus —
+ * the same path the canvas overlay's "click outside" triggers, but without
+ * the `confirmClose` two-click dance. Waits for the overlay to be removed so
+ * the next interaction starts from a clean slate.
+ */
+export async function closeFormOverlay(page: Page, id: string): Promise<void> {
+  await withApp(page, (app) => {
+    app.eventBus.emit('overlay:close')
+  })
+  await formOverlay(page, id).waitFor({ state: 'hidden' })
 }

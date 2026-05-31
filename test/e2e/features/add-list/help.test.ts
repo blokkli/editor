@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -72,12 +72,29 @@ function actionInfo(page: Page, id: string) {
   }, id)
 }
 
+/**
+ * Page lifecycle: one editor page is opened in `beforeAll` and shared by all
+ * tests. The "expands on hover" test MUST run first — it relies on the
+ * collapsed initial state, which any subsequent hover would expand. The
+ * remaining tests assume the list is expanded (the state test leaves it that
+ * way) and each hovers a different item; the help overlay's per-item
+ * `data-test-visible` is poll-asserted, so a lingering previous-item hover
+ * resolves naturally as the new item takes over.
+ */
 describe('The add list interaction', async () => {
   await setupEditorE2E()
 
-  test('hovering the add list expands it', async () => {
-    const page = await openEditor()
+  let page: Page
 
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  test('hovering the add list expands it', async () => {
     const inner = page.locator('[data-test="add-list"] [data-test-expanded]')
     expect(await inner.getAttribute('data-test-expanded')).toBe('false')
 
@@ -85,13 +102,10 @@ describe('The add list interaction', async () => {
     await expect
       .poll(() => inner.getAttribute('data-test-expanded'))
       .toBe('true')
-
-    await page.close()
   })
 
   for (const bundle of ['card', 'grid']) {
     test(`hovering the "${bundle}" block shows its help with the correct icon, label and description`, async () => {
-      const page = await openEditor()
       const expected = await bundleInfo(page, bundle)
 
       const help = await hoverForHelp(
@@ -111,14 +125,10 @@ describe('The add list interaction', async () => {
       expect(await help.locator(DESCRIPTION).innerHTML()).toBe(
         expected.description,
       )
-
-      await page.close()
     })
   }
 
   test('the grid help lists its fields and their allowed blocks', async () => {
-    const page = await openEditor()
-
     // Expected fields + allowed bundles, from the live grid field config (the
     // help lists every allowed bundle per field — internal ones included).
     const expectedFields = await page.evaluate(() => {
@@ -164,13 +174,9 @@ describe('The add list interaction', async () => {
         )
       expect(allowed.sort()).toEqual([...field.allowed].sort())
     }
-
-    await page.close()
   })
 
   test('the fragment action help lists all available fragments', async () => {
-    const page = await openEditor()
-
     // The fragments available for placement, from the live definitions. They all
     // share the `blokkli_fragment` bundle, so each is identified by its label.
     const expectedLabels = await page.evaluate(() => {
@@ -198,12 +204,9 @@ describe('The add list interaction', async () => {
       .evaluateAll((els) => els.map((el) => el.textContent!.trim()))
 
     expect(renderedLabels.sort()).toEqual([...expectedLabels].sort())
-
-    await page.close()
   })
 
   test('hovering an action shows its help with the correct icon, label and description', async () => {
-    const page = await openEditor()
     const expected = await actionInfo(page, 'template')
 
     const help = await hoverForHelp(
@@ -222,7 +225,5 @@ describe('The add list interaction', async () => {
     expect(await help.locator(DESCRIPTION).innerHTML()).toBe(
       expected.description,
     )
-
-    await page.close()
   })
 })
