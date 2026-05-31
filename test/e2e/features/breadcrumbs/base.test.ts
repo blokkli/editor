@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -73,29 +73,51 @@ async function addGridWithCards(
   return { grid, cards }
 }
 
+/**
+ * Page lifecycle: one editor page shared by all tests. A single grid with 3
+ * cards is seeded in `beforeAll`; tests 1/7 don't read the chain (they assert
+ * the empty / host-only shape), tests 2/3/8 use `cards[0]` only, and tests
+ * 4/5/6 use all three. `afterEach` deselects everything so each test starts
+ * from a known empty selection. Test 8 opens an inline editable and is ordered
+ * last — `afterAll` closes the page so the leftover overlay is harmless.
+ */
 describe('The breadcrumbs feature', async () => {
   await setupEditorE2E()
 
-  test('shows only the root crumb (current) when nothing is selected', async () => {
-    const page = await openEditor()
+  let page: Page
+  let grid: string
+  let cards: string[]
 
-    expect(await readCrumbs(page)).toEqual([
-      {
-        id: 'breadcrumb-root',
-        current: true,
-        uuid: null,
-        field: null,
-        count: null,
-      },
-    ])
+  beforeAll(async () => {
+    page = await openEditor()
+    const setup = await addGridWithCards(page, 3)
+    grid = setup.grid
+    cards = setup.cards
+  })
 
+  afterAll(async () => {
     await page.close()
   })
 
-  test('renders the full parent chain for a nested selection', async () => {
-    const page = await openEditor()
-    const { grid, cards } = await addGridWithCards(page, 1)
+  afterEach(async () => {
+    await emitEvent(page, 'select:unselect')
+  })
 
+  test('shows only the root crumb (current) when nothing is selected', async () => {
+    await expect
+      .poll(() => readCrumbs(page))
+      .toEqual([
+        {
+          id: 'breadcrumb-root',
+          current: true,
+          uuid: null,
+          field: null,
+          count: null,
+        },
+      ])
+  })
+
+  test('renders the full parent chain for a nested selection', async () => {
     await emitEvent(page, 'select', cards[0]!)
 
     // root → host → content (field) → grid (block) → blocks (field) → card
@@ -146,14 +168,9 @@ describe('The breadcrumbs feature', async () => {
           count: null,
         },
       ])
-
-    await page.close()
   })
 
   test('clicking a block crumb re-selects that block', async () => {
-    const page = await openEditor()
-    const { grid, cards } = await addGridWithCards(page, 1)
-
     await emitEvent(page, 'select', cards[0]!)
     await expect.poll(() => selectedUuids(page)).toEqual([cards[0]!])
 
@@ -171,14 +188,9 @@ describe('The breadcrumbs feature', async () => {
       uuid: grid,
       current: true,
     })
-
-    await page.close()
   })
 
   test('clicking a field crumb selects every block in that field', async () => {
-    const page = await openEditor()
-    const { cards } = await addGridWithCards(page, 3)
-
     await emitEvent(page, 'select', cards[0]!)
     await expect
       .poll(() => readCrumbs(page))
@@ -195,14 +207,9 @@ describe('The breadcrumbs feature', async () => {
     await expect
       .poll(async () => (await selectedUuids(page)).slice().sort())
       .toEqual(cards.slice().sort())
-
-    await page.close()
   })
 
   test('selecting some blocks in one field shows a "multiple" crumb with the count', async () => {
-    const page = await openEditor()
-    const { cards } = await addGridWithCards(page, 3)
-
     // Two of the three cards → the field crumb plus a "multiple" count crumb.
     await emitEvent(page, 'select', [cards[0]!, cards[1]!])
 
@@ -252,35 +259,33 @@ describe('The breadcrumbs feature', async () => {
           count: 2,
         },
       ])
-
-    await page.close()
   })
 
   test('selecting all blocks in a field makes the field crumb current (no "multiple")', async () => {
-    const page = await openEditor()
-    const { cards } = await addGridWithCards(page, 3)
-
     // All three cards selected → the field collapses to the last/current crumb.
     await emitEvent(page, 'select', cards)
 
-    const crumbs = await readCrumbs(page)
-    expect(crumbs.some((c) => c.id === 'breadcrumb-multiple')).toBe(false)
-    const last = crumbs[crumbs.length - 1]
-    expect(last).toMatchObject({
-      id: 'breadcrumb-field',
-      field: 'blocks',
-      current: true,
-    })
-
-    await page.close()
+    await expect
+      .poll(async () => {
+        const crumbs = await readCrumbs(page)
+        return {
+          hasMultiple: crumbs.some((c) => c.id === 'breadcrumb-multiple'),
+          last: crumbs[crumbs.length - 1],
+        }
+      })
+      .toEqual({
+        hasMultiple: false,
+        last: expect.objectContaining({
+          id: 'breadcrumb-field',
+          field: 'blocks',
+          current: true,
+        }),
+      })
   })
 
   test('host selection makes the host crumb current; clicking root resets', async () => {
-    const page = await openEditor()
-
     // `select:host` mirrors the host-crumb click (clear selection, then select
     // the host) — the host becomes the current crumb with no chain after it.
-    await emitEvent(page, 'select:unselect')
     await emitEvent(page, 'select:host')
 
     await expect
@@ -316,14 +321,9 @@ describe('The breadcrumbs feature', async () => {
           count: null,
         },
       ])
-
-    await page.close()
   })
 
   test('opening an inline editable adds a final, current editable crumb', async () => {
-    const page = await openEditor()
-    const { cards } = await addGridWithCards(page, 1)
-
     await emitEvent(page, 'select', cards[0]!)
     await openEditableField(page, 'title', cards[0]!)
 
@@ -334,7 +334,5 @@ describe('The breadcrumbs feature', async () => {
         return crumbs[crumbs.length - 1]
       })
       .toMatchObject({ id: 'breadcrumb-editable', current: true })
-
-    await page.close()
   })
 })
