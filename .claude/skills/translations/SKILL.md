@@ -104,8 +104,8 @@ terminology — match it.
 ### UI element names — do NOT literal-translate
 
 This is a common failure mode. English UI terms like **drawer, modal, tab,
-panel, toast, chip, dropdown, sidebar, popover** name *abstract UI widgets*,
-not their literal-domain meaning. Translating "drawer" as `Schublade` (kitchen
+panel, toast, chip, dropdown, sidebar, popover** name _abstract UI widgets_, not
+their literal-domain meaning. Translating "drawer" as `Schublade` (kitchen
 drawer) or "toast" as `Toast` (bread) is nonsense in a UI context.
 
 **Rule:** for UI element names, default to the German loanword (`Drawer`,
@@ -113,5 +113,4 @@ drawer) or "toast" as `Toast` (bread) is nonsense in a UI context.
 project already uses (e.g. blökkli uses `Panel` widely — prefer that). Never
 emit a literal kitchen/clothing/food translation for a UI widget.
 
-When unsure between two acceptable renderings of a UI term, ask before
-applying.
+When unsure between two acceptable renderings of a UI term, ask before applying.

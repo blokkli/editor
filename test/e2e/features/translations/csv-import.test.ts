@@ -12,7 +12,6 @@ import { dialog } from './../../support/overlays'
 import {
   buildPoFixture,
   buildSingleLangCsv,
-  openCsvExportDialog,
   switchToCsvImportTab,
   uploadTranslationsFile,
 } from './../../support/translations'

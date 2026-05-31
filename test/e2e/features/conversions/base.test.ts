@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
+import { openEditor, withApp } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
 import {
   addBlock,
   blockState,
   selectBlock,
   selectBlocks,
-} from './../support/blocks'
-import { clickItemDropdownAction } from './../support/itemActions'
-import { recordedAdapterCalls } from './../support/recorder'
+} from './../../support/blocks'
+import { clickItemDropdownAction } from './../../support/itemActions'
+import { recordedAdapterCalls } from './../../support/recorder'
 
 /**
  * The conversions feature (`features/conversions/index.vue`) registers

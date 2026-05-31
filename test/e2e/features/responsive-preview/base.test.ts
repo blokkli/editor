@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest'
 import type { Frame } from 'playwright-core'
-import { openEditor } from './../support/session'
-import { openSidebar } from './../support/sidebar'
-import { addBlock, selectBlock } from './../support/blocks'
-import { getPreviewFrame } from './../support/preview'
-import { toggleCheckboxOption } from './../support/options'
-import { clickItemAction } from './../support/itemActions'
-import { setupEditorE2E } from './../support/setup'
+import { openEditor } from './../../support/session'
+import { openSidebar } from './../../support/sidebar'
+import { addBlock, selectBlock } from './../../support/blocks'
+import { getPreviewFrame } from './../../support/preview'
+import { toggleCheckboxOption } from './../../support/options'
+import { clickItemAction } from './../../support/itemActions'
+import { setupEditorE2E } from './../../support/setup'
 
 /**
  * The responsive preview renders the page in an iframe (`?blokkliPreview`) and

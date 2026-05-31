@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { selectBlock } from './../support/blocks'
-import { topLevelBlockUuids } from './../support/selection'
-import { toolbarButton } from './../support/toolbar'
+import { openEditor, withApp } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { selectBlock } from './../../support/blocks'
+import { topLevelBlockUuids } from './../../support/selection'
+import { toolbarButton } from './../../support/toolbar'
 
 /**
  * The command palette (`features/command-palette`) is a keyboard-driven launcher

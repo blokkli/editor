@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { selectBlock } from './../support/blocks'
-import { topLevelBlockUuids } from './../support/selection'
-import { itemAction } from './../support/itemActions'
-import { openSidebar } from './../support/sidebar'
-import { dialog, dialogSubmit } from './../support/overlays'
+import { openEditor, withApp } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { selectBlock } from './../../support/blocks'
+import { topLevelBlockUuids } from './../../support/selection'
+import { itemAction } from './../../support/itemActions'
+import { openSidebar } from './../../support/sidebar'
+import { dialog, dialogSubmit } from './../../support/overlays'
 
 /**
  * The comments feature has three parts; we cover the **item action** (attach a

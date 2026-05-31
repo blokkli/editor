@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { openEditor, withApp, getHostContext } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { openAppMenu, appMenuButton } from './../support/menu'
+import { openEditor, withApp, getHostContext } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { openAppMenu, appMenuButton } from './../../support/menu'
 
 /**
  * The exit feature (`features/exit/index.vue`) adds a single app-menu button that

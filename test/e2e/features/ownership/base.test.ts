@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'vitest'
-import { openEditor, withApp, EDITOR_PATH } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { waitForAdapterCall } from './../support/recorder'
+import { openEditor, withApp, EDITOR_PATH } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { waitForAdapterCall } from './../../support/recorder'
 import {
   OWNERSHIP_OVERRIDE_KEY,
   type OwnershipOverride,
-} from '../../../playground/app/mock/ownershipOverride'
+} from '../../../../playground/app/mock/ownershipOverride'
 
 /**
  * Build the `openEditor({ localStorage })` entry that seeds the mock's

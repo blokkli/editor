@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { addBlock } from './../support/blocks'
-import { formOverlay, dialog } from './../support/overlays'
-import { toolbarButton } from './../support/toolbar'
+import { openEditor, withApp } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { addBlock } from './../../support/blocks'
+import { formOverlay, dialog } from './../../support/overlays'
+import { toolbarButton } from './../../support/toolbar'
 
 /**
  * The entity-title feature (`features/entity-title/index.vue`) renders the

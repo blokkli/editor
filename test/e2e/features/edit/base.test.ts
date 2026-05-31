@@ -1,12 +1,15 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { EDITOR_PATH, openEditor, withApp } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { addBlock, selectBlock, selectBlocks } from './../support/blocks'
-import { clickItemAction, itemActionDisabled } from './../support/itemActions'
-import { nextEvent } from './../support/events'
-import { formOverlay } from './../support/overlays'
-import { pressShortcut } from './../support/keyboard'
+import { EDITOR_PATH, openEditor, withApp } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { addBlock, selectBlock, selectBlocks } from './../../support/blocks'
+import {
+  clickItemAction,
+  itemActionDisabled,
+} from './../../support/itemActions'
+import { nextEvent } from './../../support/events'
+import { formOverlay } from './../../support/overlays'
+import { pressShortcut } from './../../support/keyboard'
 
 /**
  * The edit feature (`features/edit/index.vue`) decides whether the selected

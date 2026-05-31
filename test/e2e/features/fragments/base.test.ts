@@ -1,12 +1,15 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp, getHostContext } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { dropAddAction } from './../support/blocks'
-import { topLevelBlockUuids } from './../support/selection'
-import { formOverlay } from './../support/overlays'
-import { emitEvent } from './../support/events'
-import { waitForAdapterCall, recordedAdapterCalls } from './../support/recorder'
+import { openEditor, withApp, getHostContext } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { dropAddAction } from './../../support/blocks'
+import { topLevelBlockUuids } from './../../support/selection'
+import { formOverlay } from './../../support/overlays'
+import { emitEvent } from './../../support/events'
+import {
+  waitForAdapterCall,
+  recordedAdapterCalls,
+} from './../../support/recorder'
 
 /**
  * The fragments feature (`features/fragments/index.vue`) registers a `fragment`

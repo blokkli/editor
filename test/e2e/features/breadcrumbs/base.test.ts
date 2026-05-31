@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { addBlocks } from './../support/blocks'
-import { selectedUuids } from './../support/selection'
-import { emitEvent } from './../support/events'
-import { openEditableField } from './../support/editable'
+import { openEditor } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { addBlocks } from './../../support/blocks'
+import { selectedUuids } from './../../support/selection'
+import { emitEvent } from './../../support/events'
+import { openEditableField } from './../../support/editable'
 
 /**
  * The breadcrumbs feature renders a `<ul>` reflecting the current selection: an

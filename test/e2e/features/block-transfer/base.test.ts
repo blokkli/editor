@@ -1,12 +1,15 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { addBlock, selectBlock, blockCount } from './../support/blocks'
-import { clickItemDropdownAction } from './../support/itemActions'
-import { dialog, dialogSubmit } from './../support/overlays'
-import { emitEvent } from './../support/events'
-import { recordedAdapterCalls, waitForAdapterCall } from './../support/recorder'
+import { openEditor, withApp } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { addBlock, selectBlock, blockCount } from './../../support/blocks'
+import { clickItemDropdownAction } from './../../support/itemActions'
+import { dialog, dialogSubmit } from './../../support/overlays'
+import { emitEvent } from './../../support/events'
+import {
+  recordedAdapterCalls,
+  waitForAdapterCall,
+} from './../../support/recorder'
 
 /**
  * The block-transfer feature: export the selected blocks to a portable

@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { captureClipboard, copiedText } from './../support/clipboard'
+import { openEditor } from '../../support/session'
+import { setupEditorE2E } from '../../support/setup'
+import { captureClipboard, copiedText } from '../../support/clipboard'
 
 /**
  * The anchors feature is a toolbar view option (`anchor`). When enabled it scans

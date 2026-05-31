@@ -1,16 +1,19 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, setFixedTime } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { addBlock, selectBlock, isBlockMuted } from './../support/blocks'
-import { itemAction } from './../support/itemActions'
-import { dialog, dialogSubmit } from './../support/overlays'
-import { recordedAdapterCalls, waitForAdapterCall } from './../support/recorder'
+import { openEditor, setFixedTime } from '../../support/session'
+import { setupEditorE2E } from '../../support/setup'
+import { addBlock, selectBlock, isBlockMuted } from '../../support/blocks'
+import { itemAction } from '../../support/itemActions'
+import { dialog, dialogSubmit } from '../../support/overlays'
+import {
+  recordedAdapterCalls,
+  waitForAdapterCall,
+} from '../../support/recorder'
 import {
   scheduleDate,
   pickScheduleDay,
   setScheduleTime,
-} from './../support/schedule'
+} from '../../support/schedule'
 
 /**
  * The block-scheduler feature: a block-actions item action (id `block-scheduler`)

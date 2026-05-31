@@ -1,18 +1,18 @@
 import { describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp, setFixedTime } from './../support/session'
-import { openAppMenu, appMenuButton } from './../support/menu'
-import { dialog, dialogSubmit } from './../support/overlays'
-import { addBlock } from './../support/blocks'
-import { waitForAdapterCall } from './../support/recorder'
-import { setupEditorE2E } from './../support/setup'
+import { openEditor, withApp, setFixedTime } from './../../support/session'
+import { openAppMenu, appMenuButton } from './../../support/menu'
+import { dialog, dialogSubmit } from './../../support/overlays'
+import { addBlock } from './../../support/blocks'
+import { waitForAdapterCall } from './../../support/recorder'
+import { setupEditorE2E } from './../../support/setup'
 import {
   scheduleDate,
   scheduleTime,
   scheduleError,
   pickScheduleDay,
   setScheduleTime,
-} from './../support/schedule'
+} from './../../support/schedule'
 
 /**
  * The publish dialog (the playground adapter implements `getPublishOptions`, so

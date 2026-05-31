@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest'
-import { openEditor } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
+import { openEditor } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
 import {
   addBlock,
   blockExists,
   blockRendered,
   selectBlock,
-} from './../support/blocks'
-import { toolbarButton, undo } from './../support/toolbar'
-import { pressShortcut } from './../support/keyboard'
-import { selectedUuids } from './../support/selection'
+} from './../../support/blocks'
+import { toolbarButton, undo } from './../../support/toolbar'
+import { pressShortcut } from './../../support/keyboard'
+import { selectedUuids } from './../../support/selection'
 import {
   activeHistoryIndex,
   clickCurrentRevision,
@@ -18,7 +18,7 @@ import {
   historyItems,
   mutationCount,
   openHistory,
-} from './../support/history'
+} from './../../support/history'
 
 /**
  * The history feature (`features/history/index.vue` + its `List`) provides

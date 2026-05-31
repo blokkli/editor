@@ -1,18 +1,18 @@
 import { describe, expect, test } from 'vitest'
-import { EDITOR_PATH, openEditor } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
+import { EDITOR_PATH, openEditor } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
 import {
   addBlock,
   blockCount,
   blockExists,
   selectBlock,
-} from './../support/blocks'
+} from './../../support/blocks'
 import {
   clickItemAction,
   itemAction,
   itemActionDisabled,
-} from './../support/itemActions'
-import { pressShortcut } from './../support/keyboard'
+} from './../../support/itemActions'
+import { pressShortcut } from './../../support/keyboard'
 
 /**
  * The delete feature (`features/delete/index.vue`) renders a `delete` item

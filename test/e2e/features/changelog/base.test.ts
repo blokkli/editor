@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { openAppMenu, appMenuButton } from './../support/menu'
-import { dialog } from './../support/overlays'
+import { openEditor } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { openAppMenu, appMenuButton } from './../../support/menu'
+import { dialog } from './../../support/overlays'
 
 /**
  * The changelog feature adds a "What's New" app-menu button and remembers, in

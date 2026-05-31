@@ -1,21 +1,21 @@
 import { describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { EDITOR_PATH, openEditor } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
+import { EDITOR_PATH, openEditor } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
 import {
   addBlock,
   addBlocks,
   blockCount,
   selectBlock,
   selectBlocks,
-} from './../support/blocks'
+} from './../../support/blocks'
 import {
   clickItemAction,
   itemAction,
   itemActionDisabled,
-} from './../support/itemActions'
-import { selectedUuids } from './../support/selection'
-import { pressShortcut } from './../support/keyboard'
+} from './../../support/itemActions'
+import { selectedUuids } from './../../support/selection'
+import { pressShortcut } from './../../support/keyboard'
 
 /**
  * The duplicate feature (`features/duplicate/index.vue`) duplicates the selected
