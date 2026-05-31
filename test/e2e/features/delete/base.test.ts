@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
 import { EDITOR_PATH, openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import {
@@ -13,6 +14,7 @@ import {
   itemActionDisabled,
 } from './../../support/itemActions'
 import { pressShortcut } from './../../support/keyboard'
+import { emitEvent } from './../../support/events'
 
 /**
  * The delete feature (`features/delete/index.vue`) renders a `delete` item
@@ -40,76 +42,93 @@ const DENY_TEXT_DELETE = {
   permissions: { blockPermissions: { text: ['add', 'edit'] } },
 }
 
+/**
+ * Page lifecycle: two editor pages are opened in parallel in `beforeAll` —
+ * one with default permissions (`defaultPage`, used by tests 1 & 2) and one
+ * with the `DENY_TEXT_DELETE` override applied at init (`denyPage`, used by
+ * tests 3, 4, & 5). Permissions are seeded via `localStorage` *before*
+ * navigation and read once at editor init, so they can't be toggled
+ * post-hoc without a reload — sharing a page per permission set is the
+ * cheapest option. Each test still picks a fresh uuid via `addBlock`, so the
+ * accumulating blocks between tests are irrelevant. `afterEach` deselects on
+ * both pages.
+ */
 describe('The delete feature', async () => {
   await setupEditorE2E()
 
+  let defaultPage: Page
+  let denyPage: Page
+
+  beforeAll(async () => {
+    ;[defaultPage, denyPage] = await Promise.all([
+      openEditor(),
+      openEditor(EDITOR_PATH, DENY_TEXT_DELETE),
+    ])
+  })
+
+  afterAll(async () => {
+    await Promise.all([defaultPage.close(), denyPage.close()])
+  })
+
+  afterEach(async () => {
+    await Promise.all([
+      emitEvent(defaultPage, 'select:unselect'),
+      emitEvent(denyPage, 'select:unselect'),
+    ])
+  })
+
   test('clicking the delete action removes the selected block', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
 
-    await selectBlock(page, uuid!)
-    await clickItemAction(page, 'delete')
+    await selectBlock(defaultPage, uuid!)
+    await clickItemAction(defaultPage, 'delete')
 
-    await expect.poll(() => blockExists(page, uuid!)).toBe(false)
-
-    await page.close()
+    await expect.poll(() => blockExists(defaultPage, uuid!)).toBe(false)
   })
 
   test('the Delete shortcut removes the selected block', async () => {
-    const page = await openEditor()
-    const uuid = await addBlock(page, { bundle: 'text' })
+    const uuid = await addBlock(defaultPage, { bundle: 'text' })
 
-    await selectBlock(page, uuid!)
-    await pressShortcut(page, 'Delete')
+    await selectBlock(defaultPage, uuid!)
+    await pressShortcut(defaultPage, 'Delete')
 
-    await expect.poll(() => blockExists(page, uuid!)).toBe(false)
-
-    await page.close()
+    await expect.poll(() => blockExists(defaultPage, uuid!)).toBe(false)
   })
 
   test('without delete permission the action is disabled and clicking is a no-op', async () => {
-    const page = await openEditor(EDITOR_PATH, DENY_TEXT_DELETE)
-    const uuid = await addBlock(page, { bundle: 'text' })
+    const uuid = await addBlock(denyPage, { bundle: 'text' })
 
-    await selectBlock(page, uuid!)
+    await selectBlock(denyPage, uuid!)
 
-    await expect.poll(() => itemActionDisabled(page, 'delete')).toBe(true)
+    await expect.poll(() => itemActionDisabled(denyPage, 'delete')).toBe(true)
 
     // Even forcing the click past the disabled state deletes nothing.
-    await itemAction(page, 'delete').click({ force: true })
-    await page.waitForTimeout(300)
-    expect(await blockExists(page, uuid!)).toBe(true)
-
-    await page.close()
+    await itemAction(denyPage, 'delete').click({ force: true })
+    await denyPage.waitForTimeout(300)
+    expect(await blockExists(denyPage, uuid!)).toBe(true)
   })
 
   test('without delete permission the Delete shortcut is a no-op', async () => {
-    const page = await openEditor(EDITOR_PATH, DENY_TEXT_DELETE)
-    const uuid = await addBlock(page, { bundle: 'text' })
-    const countBefore = await blockCount(page)
+    const uuid = await addBlock(denyPage, { bundle: 'text' })
+    const countBefore = await blockCount(denyPage)
 
-    await selectBlock(page, uuid!)
-    await pressShortcut(page, 'Delete')
-    await page.waitForTimeout(300)
+    await selectBlock(denyPage, uuid!)
+    await pressShortcut(denyPage, 'Delete')
+    await denyPage.waitForTimeout(300)
 
-    expect(await blockExists(page, uuid!)).toBe(true)
-    expect(await blockCount(page)).toBe(countBefore)
-
-    await page.close()
+    expect(await blockExists(denyPage, uuid!)).toBe(true)
+    expect(await blockCount(denyPage)).toBe(countBefore)
   })
 
   test('the permission override is per-bundle: other bundles stay deletable', async () => {
     // `text` delete is denied, but `title` is untouched and can still be deleted.
-    const page = await openEditor(EDITOR_PATH, DENY_TEXT_DELETE)
-    const uuid = await addBlock(page, { bundle: 'title' })
+    const uuid = await addBlock(denyPage, { bundle: 'title' })
 
-    await selectBlock(page, uuid!)
+    await selectBlock(denyPage, uuid!)
 
-    await expect.poll(() => itemActionDisabled(page, 'delete')).toBe(false)
+    await expect.poll(() => itemActionDisabled(denyPage, 'delete')).toBe(false)
 
-    await clickItemAction(page, 'delete')
-    await expect.poll(() => blockExists(page, uuid!)).toBe(false)
-
-    await page.close()
+    await clickItemAction(denyPage, 'delete')
+    await expect.poll(() => blockExists(denyPage, uuid!)).toBe(false)
   })
 })
