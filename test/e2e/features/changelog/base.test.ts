@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -25,7 +25,7 @@ const LAST_SEEN_KEY = 'blokkli:changelog:lastSeenVersion'
 
 /** The editor version `blokkliVersion` is generated from, read in Node. */
 const currentVersion: string = JSON.parse(
-  readFileSync(new URL('./../../../package.json', import.meta.url), 'utf8'),
+  readFileSync(new URL('./../../../../package.json', import.meta.url), 'utf8'),
 ).version
 
 /** The raw stored `lastSeenVersion` (JSON string, or null if never set). */
@@ -71,34 +71,44 @@ async function openWithLastSeen(
   await reopenEditor(page)
 }
 
+/**
+ * Page lifecycle: one editor page is opened in `beforeAll`. Every test's
+ * `openWithLastSeen` already reloads the page (the feature reads
+ * `lastSeenVersion` on mount, so testing it requires a fresh load each time) —
+ * so per-test state is whatever the reload brings up, and no `afterEach` reset
+ * is needed.
+ */
 describe('The changelog feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
   test('highlights the menu button when a newer version exists', async () => {
-    const page = await openEditor()
     // Last seen an older version → there is something new to show.
     await openWithLastSeen(page, '0.0.0')
 
     await openAppMenu(page)
     await expect.poll(() => changelogHighlight(page)).toBe('yellow')
-
-    await page.close()
   })
 
   test('does not highlight when the last seen version is the current one', async () => {
-    const page = await openEditor()
     await openWithLastSeen(page, currentVersion)
 
     await openAppMenu(page)
     // The button is present but carries no highlight scheme.
     await expect.poll(() => appMenuButton(page, 'changelog').count()).toBe(1)
     expect(await changelogHighlight(page)).toBe(null)
-
-    await page.close()
   })
 
   test('opening the changelog records the version and clears the highlight on next open', async () => {
-    const page = await openEditor()
     // A pristine editor (never opened the changelog) treats the current version
     // as new.
     await openWithLastSeen(page, null)
@@ -116,7 +126,5 @@ describe('The changelog feature', async () => {
     await openAppMenu(page)
     await expect.poll(() => appMenuButton(page, 'changelog').count()).toBe(1)
     expect(await changelogHighlight(page)).toBe(null)
-
-    await page.close()
   })
 })
