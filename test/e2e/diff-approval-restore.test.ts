@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openEditor, getHostContext } from './support/session'
 import {
@@ -6,6 +6,7 @@ import {
   editableText,
   waitForEditableText,
   openEditableField,
+  plaintextEditor,
 } from './support/editable'
 import {
   runDiffApproval,
@@ -35,21 +36,28 @@ import type { EntityContext } from '../../src/runtime/types'
  *
  * Plus the end-to-end value paths: inline editing still works after a diff
  * cycle, and a real apply commits the proposed value (with undo reverting it).
+ *
+ * Page lifecycle: one editor page is opened in `beforeAll` with the
+ * `test-cases` sidebar already open (the playground's imperative `.test` API
+ * only registers once its pane is mounted). Each test reads its own
+ * preconditions fresh, so state that builds up between tests (test 3 mutates
+ * `lead`; test 4 mutates then undoes) doesn't pollute the assertions — every
+ * test's "original" is just whatever the current state is.
  */
 describe('DiffApproval DOM restore', async () => {
   await setupEditorE2E()
 
+  let page: Page
+  let host: EntityContext
+
   /** Count elements still showing diff-preview markup anywhere in the page. */
-  function countDiffActive(page: Page): Promise<number> {
+  function countDiffActive(): Promise<number> {
     return page.locator('[data-bk-diff-active]').count()
   }
 
-  async function openWithHostFields(): Promise<{
-    page: Page
-    host: EntityContext
-  }> {
-    const page = await openEditor()
-    const host = await getHostContext(page)
+  beforeAll(async () => {
+    page = await openEditor()
+    host = await getHostContext(page)
 
     // The diff scenarios are driven through the playground `test-cases` feature,
     // which only registers its `window.__BLOKKLI__.test` API once its sidebar
@@ -61,20 +69,20 @@ describe('DiffApproval DOM restore', async () => {
     const lead = await editableState(page, 'lead', host)
     expect(title, 'host "title" editable should exist').not.toBeNull()
     expect(lead, 'host "lead" editable should exist').not.toBeNull()
+  })
 
-    return { page, host }
-  }
+  afterAll(async () => {
+    await page.close()
+  })
 
   test('shows diff markup, then restores it on cancel', async () => {
-    const { page, host } = await openWithHostFields()
-
     const done = runDiffApproval(page)
 
     // Preview shown: the toolbar appears and host fields carry diff markup.
     await page.locator('[data-test="diff-approval-cancel"]').waitFor()
     expect((await editableState(page, 'title', host))?.diffActive).toBe(true)
     expect((await editableState(page, 'lead', host))?.diffActive).toBe(true)
-    expect(await countDiffActive(page)).toBeGreaterThanOrEqual(2)
+    expect(await countDiffActive()).toBeGreaterThanOrEqual(2)
 
     await cancelDiff(page)
     const { applied } = await done
@@ -88,13 +96,9 @@ describe('DiffApproval DOM restore', async () => {
     const lead = await editableState(page, 'lead', host)
     expect(title?.hasDiffMarkup).toBe(false)
     expect(lead?.hasDiffMarkup).toBe(false)
-
-    await page.close()
   })
 
   test('restores the DOM on apply', async () => {
-    const { page, host } = await openWithHostFields()
-
     const done = runDiffApproval(page)
     await page.locator('[data-test="diff-approval-apply"]').waitFor()
     expect((await editableState(page, 'lead', host))?.diffActive).toBe(true)
@@ -107,13 +111,9 @@ describe('DiffApproval DOM restore', async () => {
       () => document.querySelectorAll('[data-bk-diff-active]').length === 0,
     )
     expect((await editableState(page, 'lead', host))?.hasDiffMarkup).toBe(false)
-
-    await page.close()
   })
 
   test('the lead field still updates on inline edit after a diff-approval cycle', async () => {
-    const { page, host } = await openWithHostFields()
-
     // Reproduce the original bug condition: run a diff-approval cycle first.
     const done = runDiffApproval(page)
     await page.locator('[data-test="diff-approval-cancel"]').waitFor()
@@ -126,7 +126,7 @@ describe('DiffApproval DOM restore', async () => {
     // Now edit the lead inline: open the field editor, type, submit.
     const newLead = 'Updated lead via E2E'
     await openEditableField(page, 'lead')
-    const textarea = page.locator('#bk-editable-field-textarea')
+    const textarea = plaintextEditor(page)
     await textarea.waitFor()
     await textarea.fill(newLead)
     await textarea.press('Enter')
@@ -136,13 +136,9 @@ describe('DiffApproval DOM restore', async () => {
     const lead = await editableState(page, 'lead', host)
     expect(lead?.text.trim()).toBe(newLead)
     expect(lead?.hasDiffMarkup).toBe(false)
-
-    await page.close()
   })
 
   test('apply commits the new value, and undo restores the original', async () => {
-    const { page, host } = await openWithHostFields()
-
     const original = await editableText(page, 'lead', host)
     const proposed = `${original} — applied by E2E`
 
@@ -161,7 +157,5 @@ describe('DiffApproval DOM restore', async () => {
     await undo(page)
     await waitForEditableText(page, 'lead', host, original)
     expect((await editableState(page, 'lead', host))?.hasDiffMarkup).toBe(false)
-
-    await page.close()
   })
 })

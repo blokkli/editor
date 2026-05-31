@@ -107,7 +107,7 @@ export function nextEditableOpen(page: Page): Promise<string> {
  * element when open, so focus can be asserted via `document.activeElement`.
  */
 export function plaintextEditor(page: Page): Locator {
-  return page.locator('#bk-editable-field-textarea')
+  return page.locator('[data-test="editable-plaintext"]')
 }
 
 /** The open editable overlay's form (carries `data-test-type` = the field type). */
