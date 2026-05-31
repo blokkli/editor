@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
@@ -7,6 +7,7 @@ import { topLevelBlockUuids } from './../../support/selection'
 import { itemAction } from './../../support/itemActions'
 import { openSidebar } from './../../support/sidebar'
 import { dialog, dialogSubmit } from './../../support/overlays'
+import { emitEvent } from './../../support/events'
 
 /**
  * The comments feature has three parts; we cover the **item action** (attach a
@@ -120,11 +121,60 @@ async function addSidebarComment(page: Page, text: string): Promise<string> {
   return added.uuid
 }
 
+/**
+ * Reset the playground's comment localStorage (the mock's source of truth)
+ * AND the per-context `commentsShowResolved` storage key (a `useWithContextPrefix`
+ * value), then reload the editor so the feature re-reads the seed defaults.
+ * Used by tests that assert on the pristine seed (counts, specific authorless,
+ * "Show resolved OFF" default).
+ */
+async function resetCommentsState(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    localStorage.removeItem('blokkli_playground_comments')
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith('blokkli:commentsShowResolved'))
+      .forEach((k) => localStorage.removeItem(k))
+  })
+  await page.goto(page.url())
+  await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))
+  await page.waitForFunction(
+    () => !document.querySelector('[class*="z-init-overlay"]'),
+  )
+}
+
+/**
+ * Page lifecycle: one editor page shared by all tests. Tests 3/4/6/10 require
+ * the original seed (specific structure: 8 roots / 2 resolved / authorless
+ * present + Show resolved OFF), so each begins with `resetCommentsState` which
+ * clears the comment + UI-prefs storage keys and reloads the page. Other
+ * tests share state — they either mutate without reading seed structure or
+ * read it dynamically (e.g. "first unresolved root"). `afterEach` closes any
+ * lingering add form / dialog and deselects.
+ */
 describe('The comments feature', async () => {
   await setupEditorE2E()
 
+  let page: Page
+
+  beforeAll(async () => {
+    page = await openEditor()
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  afterEach(async () => {
+    if (await page.locator('[data-test="comment-add-form"]').isVisible()) {
+      await page.keyboard.press('Escape')
+      await page
+        .locator('[data-test="comment-add-form"]')
+        .waitFor({ state: 'detached' })
+    }
+    await emitEvent(page, 'select:unselect')
+  })
+
   test('the add-comment action shows for a selection and opens the add form', async () => {
-    const page = await openEditor()
     const uuid = (await topLevelBlockUuids(page))[0]!
 
     const action = itemAction(page, 'add_comment')
@@ -139,12 +189,9 @@ describe('The comments feature', async () => {
     await page.locator('[data-test="comment-add-form"]').waitFor({
       state: 'visible',
     })
-
-    await page.close()
   })
 
   test('adding a comment via the item action attaches it to the selected block', async () => {
-    const page = await openEditor()
     const MARKER = 'ITEM_ACTION_MARKER_1'
     const uuid = (await topLevelBlockUuids(page))[0]!
 
@@ -164,12 +211,10 @@ describe('The comments feature', async () => {
       .toBeTruthy()
     // The form closes after submitting.
     await addForm.waitFor({ state: 'detached' })
-
-    await page.close()
   })
 
   test('the sidebar lists unresolved threads and hides resolved ones by default', async () => {
-    const page = await openEditor()
+    await resetCommentsState(page)
     await openComments(page)
 
     const allRoots = await roots(page)
@@ -182,12 +227,10 @@ describe('The comments feature', async () => {
       unresolved.length,
     )
     expect(await commentThread(page, resolved[0]!.uuid).count()).toBe(0)
-
-    await page.close()
   })
 
   test('"Show resolved" reveals resolved threads', async () => {
-    const page = await openEditor()
+    await resetCommentsState(page)
     await openComments(page)
 
     const allRoots = await roots(page)
@@ -200,12 +243,9 @@ describe('The comments feature', async () => {
     expect(await page.locator('[data-test="comment-thread"]').count()).toBe(
       allRoots.length,
     )
-
-    await page.close()
   })
 
   test('resolving a thread marks it resolved, keeps it visible, and updates the badge', async () => {
-    const page = await openEditor()
     await openComments(page)
 
     const badgeBefore = await unresolvedBadge(page)
@@ -224,12 +264,10 @@ describe('The comments feature', async () => {
     // Resolved during this session → it stays visible (show-resolved is still off).
     expect(await commentThread(page, target).count()).toBe(1)
     await expect.poll(() => unresolvedBadge(page)).toBe((badgeBefore ?? 0) - 1)
-
-    await page.close()
   })
 
   test('unresolving a resolved thread flips it back', async () => {
-    const page = await openEditor()
+    await resetCommentsState(page)
     await openComments(page)
     await page.locator('[data-test="comments-show-resolved"]').click()
 
@@ -247,12 +285,9 @@ describe('The comments feature', async () => {
       )
       .toBe(false)
     await expect.poll(() => unresolvedBadge(page)).toBe(badgeBefore + 1)
-
-    await page.close()
   })
 
   test('replying adds a reply under the thread', async () => {
-    const page = await openEditor()
     const MARKER = 'REPLY_MARKER_1'
     await openComments(page)
 
@@ -269,12 +304,9 @@ describe('The comments feature', async () => {
         ),
       )
       .toBe(true)
-
-    await page.close()
   })
 
   test('the sidebar add form creates a root comment', async () => {
-    const page = await openEditor()
     const MARKER = 'SIDEBAR_ADD_MARKER_1'
     await openComments(page)
 
@@ -286,12 +318,9 @@ describe('The comments feature', async () => {
     expect(created.blockUuids ?? []).toHaveLength(0)
     // It shows up as a thread in the list.
     await commentThread(page, uuid).waitFor({ state: 'visible' })
-
-    await page.close()
   })
 
   test('editing an own comment updates the body', async () => {
-    const page = await openEditor()
     await openComments(page)
     const uuid = await addSidebarComment(page, 'ORIGINAL_BODY_MARKER')
 
@@ -309,12 +338,10 @@ describe('The comments feature', async () => {
         return c?.body.includes('EDITED_BODY_MARKER') && !!c?.updated
       })
       .toBe(true)
-
-    await page.close()
   })
 
   test('a comment from a deleted user renders the deleted-author avatar', async () => {
-    const page = await openEditor()
+    await resetCommentsState(page)
     await openComments(page)
 
     // Exactly one seeded root has no author (the user's account was deleted);
@@ -335,12 +362,9 @@ describe('The comments feature', async () => {
         .locator('[data-test="avatar-deleted"]')
         .count(),
     ).toBe(0)
-
-    await page.close()
   })
 
   test('deleting an own comment removes it via the confirm dialog', async () => {
-    const page = await openEditor()
     await openComments(page)
     const uuid = await addSidebarComment(page, 'TO_DELETE_MARKER')
 
@@ -356,7 +380,5 @@ describe('The comments feature', async () => {
       .poll(async () => (await loadComments(page)).some((c) => c.uuid === uuid))
       .toBe(false)
     expect(await commentThread(page, uuid).count()).toBe(0)
-
-    await page.close()
   })
 })
