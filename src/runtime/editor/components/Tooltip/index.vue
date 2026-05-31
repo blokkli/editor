@@ -27,11 +27,16 @@
           'text-xs': small,
           'text-sm': !small,
         }"
+        data-test="tooltip-label"
         v-html="label"
       />
       <slot name="shortcut" />
     </div>
-    <div v-if="description" class="font-normal mt-5 text-xs">
+    <div
+      v-if="description"
+      class="font-normal mt-5 text-xs"
+      data-test="tooltip-description"
+    >
       <div v-if="description" v-html="description" />
     </div>
     <slot name="status" />

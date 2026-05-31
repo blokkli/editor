@@ -1,6 +1,6 @@
 <template>
   <div class="bk-blokkli-item-options-color" data-test="option-type-color">
-    <input v-model="text" type="color" />
+    <input v-model="text" type="color" data-test="color-input" />
     <div
       class="bk-blokkli-item-options-color-preview"
       :style="{

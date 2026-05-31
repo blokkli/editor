@@ -3,9 +3,15 @@
     class="bk-blokkli-item-options-checkbox"
     data-test="option-type-checkbox"
   >
-    <input v-model="checked" type="checkbox" class="peer" :required />
+    <input
+      v-model="checked"
+      type="checkbox"
+      class="peer"
+      :required
+      data-test="checkbox-input"
+    />
     <div />
-    <span>{{ label }}</span>
+    <span data-test="checkbox-label">{{ label }}</span>
   </label>
 </template>
 

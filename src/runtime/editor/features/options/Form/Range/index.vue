@@ -1,7 +1,14 @@
 <template>
   <div class="bk-blokkli-item-options-range" data-test="option-type-range">
-    <input v-model="text" type="range" :min="min" :max="max" :step="step" />
-    <div>{{ formatted }}</div>
+    <input
+      v-model="text"
+      type="range"
+      :min="min"
+      :max="max"
+      :step="step"
+      data-test="range-input"
+    />
+    <div data-test="range-value">{{ formatted }}</div>
   </div>
 </template>
 

@@ -1,13 +1,14 @@
-import { describe, expect, test } from 'vitest'
-import { openEditor, EDITOR_PATH } from './../support/session'
-import { setupEditorE2E } from './../support/setup'
-import { addBlock, selectBlock, selectBlocks } from './../support/blocks'
-import { waitForAdapterCall } from './../support/recorder'
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import type { Page } from 'playwright-core'
+import { openEditor, EDITOR_PATH } from './../../support/session'
+import { setupEditorE2E } from './../../support/setup'
+import { addBlock, selectBlock, selectBlocks } from './../../support/blocks'
 import {
   blockOption,
   blockOptionControl,
   clickNumberStepper,
   flushOptions,
+  lastUpdateOptions,
   openOptionGroup,
   selectRadiosOption,
   setColorValue,
@@ -15,73 +16,15 @@ import {
   setNumberValue,
   setRangeValue,
   setTextValue,
+  setupWidget,
   toggleCheckboxesOption,
   toggleCheckboxOption,
   widgetOptionValue,
   widgetTextColorAttr,
-} from './../support/options'
-import type { Page } from 'playwright-core'
+} from './../../support/options'
 
 /**
- * Payload shape recorded by the mock adapter's `updateOptions` method —
- * one storable triple per (block uuid, option key).
- */
-interface UpdateOptionsCall {
-  options: Array<{ uuid: string; key: string; value: string }>
-}
-
-/**
- * Add a Widget block to the contentPage host and select it. Waits until the
- * options toolbar's form has actually rendered (`Padding` group is one of the
- * always-present elements on the Widget's `InContentPage` variant).
- *
- * Returns the new block's uuid. The Widget renders a JSON table of every
- * `options.X` value — each cell has a `data-test="widget-option-<key>"`
- * attribute, so assertions about "did the editor's edit reach the block's
- * props?" become a simple JSON read.
- */
-async function setupWidget(page: Page): Promise<string> {
-  // The Widget renders many toolbar items and overflows the default 1280px
-  // viewport. The Actions toolbar caps at the editor's safe area and exposes
-  // overflowing items via its own horizontal scroll (driven at runtime by
-  // ScrollArrow press-and-hold). For tests, `bringElementIntoView` emits the
-  // `actions:scrollIntoView` event so any target is reachable without
-  // resizing the viewport or panning the artboard.
-  const uuid = await addBlock(page, { bundle: 'widget', fieldName: 'content' })
-  if (!uuid) {
-    throw new Error('Failed to add widget')
-  }
-  await selectBlock(page, uuid)
-  // The block is appended at the end of `content` — typically off-screen on a
-  // multi-block page. Explicitly centring it ensures the toolbar that tracks
-  // it is also in view (`useStickyToolbar`).
-  await page.evaluate((u) => {
-    window.__BLOKKLI__!.app!.eventBus.emit('scrollIntoView', {
-      uuid: u,
-      immediate: true,
-      center: true,
-    })
-  }, uuid)
-  // The Padding group is rendered whenever the Widget's full options are
-  // visible — a stable signal that the form mounted with the block selected.
-  await page
-    .locator('[data-test="option-group"][data-test-group="Padding"]')
-    .waitFor({ state: 'visible' })
-  return uuid
-}
-
-/**
- * The most recent `update_options` payload recorded by the mock adapter. Used
- * after `flushOptions(page)` to assert *what* was persisted. The recorder is
- * cumulative within a page lifetime, so each test reads "the last call" — that
- * is the assertion target (no other test interleaves).
- */
-async function lastUpdateOptions(page: Page): Promise<UpdateOptionsCall> {
-  return waitForAdapterCall<UpdateOptionsCall>(page, 'update_options')
-}
-
-/**
- * Regression tests for the `options` feature.
+ * Regression tests for the `options` feature — mutation path.
  *
  * Under test: the options toolbar's per-type editors, the
  * `state.mutatedOptions` → `props.options` → block-template re-render path,
@@ -93,13 +36,57 @@ async function lastUpdateOptions(page: Page): Promise<UpdateOptionsCall> {
  * that updates state but fails to persist (or vice versa) fails the test;
  * a bug that updates the wrong storable form (e.g. checkbox not serialised to
  * `'0'`/`'1'`) fails on the adapter assertion alone.
+ *
+ * Page lifecycle: editor opened ONCE per file via `beforeAll`, and ONE
+ * shared Widget is seeded up front. Each test mutates a *different* option
+ * key on that widget — the diff against the baseline is what's flushed, so
+ * stale mutations from earlier tests don't pollute later assertions
+ * (`getPendingValues()` only includes keys whose current value differs from
+ * the baseline at the time of the flush). `lastUpdateOptions` returns the
+ * recorder's most recent call; tests don't interleave, so that call is
+ * always *this* test's flush.
+ *
+ * `beforeEach` re-selects the shared widget so tests that intentionally
+ * change selection (flush-on-unmount, multi-select, per-block remount)
+ * don't leave the next test stranded on a different block.
+ *
+ * Special cases that don't fit the "one widget" model and seed their own
+ * blocks inline:
+ *   - The `showAllOptions=false` test collapses the toolbar to just
+ *     `showAllOptions`; it restores the toggle at the end so subsequent
+ *     tests see the full toolbar.
+ *   - The `multi-select` and `per-block remount` tests need TWO widgets in
+ *     known default state, so they call `setupWidget` again. The shared
+ *     widget (whose `buttonType` / `anchorId` have already been mutated by
+ *     earlier tests) would defeat the assertions otherwise.
  */
-describe('Options feature', async () => {
+describe('Options — mutations', async () => {
   await setupEditorE2E()
 
+  let page: Page
+  let widgetUuid: string
+
+  beforeAll(async () => {
+    page = await openEditor(EDITOR_PATH)
+    widgetUuid = await setupWidget(page)
+  })
+
+  beforeEach(async () => {
+    // Restore the shared widget as the sole selection. No-op when it's
+    // already selected; otherwise selects it and waits for the Padding
+    // group (which lives on the Widget's options) to re-mount.
+    await selectBlock(page, widgetUuid)
+    await page
+      .locator('[data-test="option-group"][data-test-group="Padding"]')
+      .waitFor({ state: 'visible' })
+  })
+
+  afterAll(async () => {
+    await page?.close()
+  })
+
   test('defaults: a freshly added Widget renders defineBlokkli defaults', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     // Each cell mirrors `JSON.stringify(options.<key>)` — the source of truth
     // for "what's actually in props". Defaults come straight from
@@ -137,13 +124,10 @@ describe('Options feature', async () => {
     expect(await widgetOptionValue<string>(page, uuid, 'background')).toBe(
       'white',
     )
-
-    await page.close()
   })
 
   test('checkbox option flips block prop AND records `0` storable; turning showAllOptions off collapses the toolbar', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     // Sanity: other options ARE in the toolbar (determineVisibleOptions
     // returns the full list when showAllOptions is true). Pick `buttonType`
@@ -189,12 +173,14 @@ describe('Options feature', async () => {
       value: '0',
     })
 
-    await page.close()
+    // Restore the toolbar to its full state so subsequent tests in this
+    // describe (which share the same widget) can still see other options.
+    await toggleCheckboxOption(page, 'showAllOptions')
+    await flushOptions(page)
   })
 
   test('radios (default displayAs): picking another option syncs to props and records the key', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     // `buttonType` is in the Radios group — open it first.
     await openOptionGroup(page, 'Radios')
@@ -211,13 +197,10 @@ describe('Options feature', async () => {
       key: 'buttonType',
       value: 'secondary',
     })
-
-    await page.close()
   })
 
   test('radios with displayAs:"icons" syncs', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await openOptionGroup(page, 'Radios')
     await selectRadiosOption(page, 'columns', 'four')
@@ -233,13 +216,10 @@ describe('Options feature', async () => {
       key: 'columns',
       value: 'four',
     })
-
-    await page.close()
   })
 
   test('radios with displayAs:"grid" syncs', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await openOptionGroup(page, 'Radios')
     await selectRadiosOption(page, 'columnsGrid', 'twoOne')
@@ -255,13 +235,10 @@ describe('Options feature', async () => {
       key: 'columnsGrid',
       value: 'twoOne',
     })
-
-    await page.close()
   })
 
   test('radios with displayAs:"colors" syncs', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await openOptionGroup(page, 'Radios')
     await selectRadiosOption(page, 'color', 'primary')
@@ -277,13 +254,10 @@ describe('Options feature', async () => {
       key: 'color',
       value: 'primary',
     })
-
-    await page.close()
   })
 
   test('checkboxes: selecting a new value records the comma-joined storable and reaches props as an array', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await toggleCheckboxesOption(page, 'countries', 'fr')
 
@@ -299,13 +273,10 @@ describe('Options feature', async () => {
       key: 'countries',
       value: 'ch,de,at,fr',
     })
-
-    await page.close()
   })
 
   test('text option syncs', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await setTextValue(page, 'anchorId', 'main')
 
@@ -320,13 +291,10 @@ describe('Options feature', async () => {
       key: 'anchorId',
       value: 'main',
     })
-
-    await page.close()
   })
 
   test('color option syncs to both the JSON cell and the bound style attribute', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await setColorValue(page, 'textColor', '#ff8800')
 
@@ -345,13 +313,10 @@ describe('Options feature', async () => {
       key: 'textColor',
       value: '#ff8800',
     })
-
-    await page.close()
   })
 
   test('range option syncs and the JSON cell reflects the step precision', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     // `range` is configured with min=0, max=1, step=0.01.
     await setRangeValue(page, 'range', '0.42')
@@ -367,13 +332,10 @@ describe('Options feature', async () => {
       key: 'range',
       value: '0.42',
     })
-
-    await page.close()
   })
 
   test('number option syncs via both fill and the increment button', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await setNumberValue(page, 'rows', '5')
     await expect
@@ -392,13 +354,10 @@ describe('Options feature', async () => {
       key: 'rows',
       value: '6',
     })
-
-    await page.close()
   })
 
   test('datetime-local option syncs', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     await setDateTimeValue(page, 'dateTimeLocal', '2026-08-14T09:30')
 
@@ -413,13 +372,10 @@ describe('Options feature', async () => {
       key: 'dateTimeLocal',
       value: '2026-08-14T09:30',
     })
-
-    await page.close()
   })
 
   test('grouped option (Padding): clicking the group opens it; changing a member syncs', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const uuid = await setupWidget(page)
+    const uuid = widgetUuid
 
     // `paddingTop`/`paddingBottom`/`paddingLeft`/`paddingRight` live behind
     // the `Padding` group dropdown. Until the group opens, the editors aren't
@@ -445,13 +401,9 @@ describe('Options feature', async () => {
       key: 'paddingTop',
       value: '15',
     })
-
-    await page.close()
   })
 
   test('flush-on-unmount: switching selection persists pending option changes before the form remounts', async () => {
-    const page = await openEditor(EDITOR_PATH)
-    const widgetUuid = await setupWidget(page)
     // A second block to switch the selection TO. Bundle 'text' has its own
     // options form; the important bit is that selecting it triggers the
     // current form's onBeforeUnmount → flushOptions path.
@@ -481,12 +433,9 @@ describe('Options feature', async () => {
       key: 'anchorId',
       value: 'flush-test',
     })
-
-    await page.close()
   })
 
   test('multi-select: changing a shared option mutates every selected block and the payload covers every uuid', async () => {
-    const page = await openEditor(EDITOR_PATH)
     const uuidA = await setupWidget(page)
     const uuidB = await addBlock(page, {
       bundle: 'widget',
@@ -525,15 +474,12 @@ describe('Options feature', async () => {
     for (const entry of buttonTypeEntries) {
       expect(entry.value).toBe('secondary')
     }
-
-    await page.close()
   })
 
   test('per-block remount: options reflect the block under cursor, not the previous selection', async () => {
     // Bug class: a stale OptionCollector / mutatedOptions cache survives a
     // selection change and shows block A's modified value when block B is now
     // selected (or persists nothing when switching back).
-    const page = await openEditor(EDITOR_PATH)
     const uuidA = await setupWidget(page)
     const uuidB = await addBlock(page, {
       bundle: 'widget',
@@ -570,7 +516,5 @@ describe('Options feature', async () => {
     expect(await widgetOptionValue<string>(page, uuidA, 'anchorId')).toBe(
       'value-A',
     )
-
-    await page.close()
   })
 })

@@ -4,33 +4,53 @@
     data-test="option-type-checkboxes"
     :class="{ 'bk-is-active': isOpen, 'bk-is-grouped': isGrouped }"
   >
-    <button v-if="!isGrouped" @click="isOpen = !isOpen">
+    <button
+      v-if="!isGrouped"
+      data-test="checkboxes-toggle"
+      @click="isOpen = !isOpen"
+    >
       <span>{{ visibleLabel }}</span>
       <div>
-        <div v-if="checked.length < 4" class="bk-pill-list">
+        <div
+          v-if="checked.length < 4"
+          class="bk-pill-list"
+          data-test="checkboxes-pills"
+        >
           <Pill
             v-for="item in checked"
             :key="item"
             :text="item"
             scheme="mono"
             variant="normal"
+            data-test="checkboxes-pill"
+            :data-test-value="item"
           />
         </div>
-        <Pill v-else :text="checked.length" scheme="mono" variant="normal" />
+        <Pill
+          v-else
+          :text="checked.length"
+          scheme="mono"
+          variant="normal"
+          data-test="checkboxes-pill-count"
+        />
       </div>
       <Icon name="bk_mdi_arrow_drop_down" />
     </button>
-    <div v-if="isOpen || isGrouped">
+    <div v-if="isOpen || isGrouped" data-test="checkboxes-options">
       <label
         v-for="option in options"
         :key="option.value"
         class="bk-blokkli-item-options-checkbox"
+        data-test="checkboxes-option"
+        :data-test-value="option.value"
       >
         <input
           v-model="checked"
           type="checkbox"
           class="peer"
           :value="option.value"
+          data-test="checkboxes-input"
+          :data-test-value="option.value"
         />
         <div />
         <span>{{ option.label }}</span>

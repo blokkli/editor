@@ -6,6 +6,7 @@
       '--bk-actions-max-width': `${paddedViewportWidth}px`,
     }"
     class="bk bk-blokkli-item-actions-inner absolute left-0 p-0 z-actions w-full text-mono-50 select-none text-sm pointer-events-auto"
+    data-test="actions-toolbar"
     @mouseleave="onMouseLeave"
     @mouseenter="onMouseEnter"
   >

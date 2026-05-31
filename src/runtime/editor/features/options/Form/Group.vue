@@ -6,7 +6,10 @@
     :data-test-group="label"
     :data-test-active="isActive"
   >
-    <button @click.stop.prevent="$emit('toggle')">
+    <button
+      data-test="option-group-toggle"
+      @click.stop.prevent="$emit('toggle')"
+    >
       <div>{{ label }}</div>
       <Icon name="bk_mdi_arrow_drop_down" />
     </button>

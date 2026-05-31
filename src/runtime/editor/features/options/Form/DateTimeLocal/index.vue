@@ -9,6 +9,7 @@
       :placeholder="label"
       :min
       :max
+      data-test="datetime-input"
     />
   </div>
 </template>

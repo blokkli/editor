@@ -1,5 +1,7 @@
 import type { Locator, Page } from 'playwright-core'
 import { withApp } from './session'
+import { addBlock, selectBlock } from './blocks'
+import { waitForAdapterCall } from './recorder'
 
 // Interact with a selected block's options in the block-actions toolbar
 // (the `options` feature). Each option is wrapped by
@@ -97,14 +99,14 @@ export async function selectRadiosOption(
 ): Promise<void> {
   await bringOptionIntoView(page, property)
   const label = blockOptionControl(page, property, 'radios').locator(
-    `label:has(input[type="radio"][value="${key}"])`,
+    `[data-test="radios-option"][data-test-value="${key}"]`,
   )
   await bringElementIntoView(page, label)
   await label.click()
 }
 
 /**
- * Set a `range` option's value. Uses `fill()` on the native `<input type=range>`,
+ * Set a `range` option's value. Uses `fill()` on the native range input,
  * which dispatches both `input` and `change` events — what the editor's
  * `v-model` binds to.
  */
@@ -115,12 +117,12 @@ export async function setRangeValue(
 ): Promise<void> {
   await bringOptionIntoView(page, property)
   await blockOptionControl(page, property, 'range')
-    .locator('input[type="range"]')
+    .locator('[data-test="range-input"]')
     .fill(String(value))
 }
 
 /**
- * Set a `number` option's value by filling the `<input type=number>` directly.
+ * Set a `number` option's value by filling the native number input directly.
  * For the increment/decrement buttons, use `clickNumberStepper`.
  */
 export async function setNumberValue(
@@ -130,7 +132,7 @@ export async function setNumberValue(
 ): Promise<void> {
   await bringOptionIntoView(page, property)
   await blockOptionControl(page, property, 'number')
-    .locator('input[type="number"]')
+    .locator('[data-test="number-input"]')
     .fill(String(value))
 }
 
@@ -146,19 +148,22 @@ export async function clickNumberStepper(
 ): Promise<void> {
   await bringOptionIntoView(page, property)
   await blockOptionControl(page, property, 'number')
-    .locator('button')
-    .nth(direction === 'inc' ? 1 : 0)
+    .locator(
+      `[data-test="number-${direction === 'inc' ? 'increment' : 'decrement'}"]`,
+    )
     .click()
 }
 
-/** Set a `text` option's value (fills the `<input>` inside the editor). */
+/** Set a `text` option's value (fills the input inside the editor). */
 export async function setTextValue(
   page: Page,
   property: string,
   value: string,
 ): Promise<void> {
   await bringOptionIntoView(page, property)
-  await blockOptionControl(page, property, 'text').locator('input').fill(value)
+  await blockOptionControl(page, property, 'text')
+    .locator('[data-test="text-input"]')
+    .fill(value)
 }
 
 /** Set a `color` option's value (hex like `#ff8800`). */
@@ -169,7 +174,7 @@ export async function setColorValue(
 ): Promise<void> {
   await bringOptionIntoView(page, property)
   await blockOptionControl(page, property, 'color')
-    .locator('input[type="color"]')
+    .locator('[data-test="color-input"]')
     .fill(hex)
 }
 
@@ -184,7 +189,7 @@ export async function setDateTimeValue(
 ): Promise<void> {
   await bringOptionIntoView(page, property)
   await blockOptionControl(page, property, 'datetime-local')
-    .locator('input[type="datetime-local"]')
+    .locator('[data-test="datetime-input"]')
     .fill(value)
 }
 
@@ -202,14 +207,14 @@ export async function toggleCheckboxesOption(
   await bringOptionIntoView(page, property)
   const control = blockOptionControl(page, property, 'checkboxes')
   const label = control.locator(
-    `label:has(input[type="checkbox"][value="${value}"])`,
+    `[data-test="checkboxes-option"][data-test-value="${value}"]`,
   )
   // The label sits inside the dropdown panel (`v-if="isOpen || isGrouped"`).
   // For the grouped layout the panel is always open; for the ungrouped layout
   // it starts collapsed and the wrapper renders a top-level toggle button.
   // `count() === 0` means the panel hasn't mounted yet — toggle to open it.
   if ((await label.count()) === 0) {
-    await control.locator('> button').click()
+    await control.locator('[data-test="checkboxes-toggle"]').click()
     await label.waitFor()
   }
   await label.click()
@@ -234,7 +239,7 @@ export async function openOptionGroup(
   // Scroll the toolbar so the group button is clear of the arrow-overlap
   // zones before clicking it.
   await bringElementIntoView(page, group)
-  await group.locator('> button').click()
+  await group.locator('[data-test="option-group-toggle"]').click()
   await page
     .locator(
       `[data-test="option-group"][data-test-group="${label}"][data-test-active="true"]`,
@@ -289,4 +294,57 @@ export function widgetTextColorAttr(
   return page
     .locator(`[data-bk-uuid="${uuid}"] [data-test-text-color]`)
     .getAttribute('data-test-text-color')
+}
+
+/**
+ * Payload shape recorded by the mock adapter's `updateOptions` method —
+ * one storable triple per (block uuid, option key).
+ */
+export interface UpdateOptionsCall {
+  options: Array<{ uuid: string; key: string; value: string }>
+}
+
+/**
+ * Wait for and return the most recent `update_options` payload recorded by
+ * the mock adapter. Pair with `flushOptions(page)` to assert *what* was
+ * persisted. The recorder is cumulative within a page lifetime, so each test
+ * reads "the last call" — that is the assertion target (no other test
+ * interleaves).
+ */
+export function lastUpdateOptions(page: Page): Promise<UpdateOptionsCall> {
+  return waitForAdapterCall<UpdateOptionsCall>(page, 'update_options')
+}
+
+/**
+ * Add a Widget block to the contentPage host and select it. Waits until the
+ * options toolbar's form has actually rendered (`Padding` group is one of the
+ * always-present elements on the Widget's `InContentPage` variant).
+ *
+ * Returns the new block's uuid. The Widget renders a JSON table of every
+ * `options.X` value — each cell has a `data-test="widget-option-<key>"`
+ * attribute, so assertions about "did the editor's edit reach the block's
+ * props?" become a simple JSON read.
+ */
+export async function setupWidget(page: Page): Promise<string> {
+  const uuid = await addBlock(page, { bundle: 'widget', fieldName: 'content' })
+  if (!uuid) {
+    throw new Error('Failed to add widget')
+  }
+  await selectBlock(page, uuid)
+  // The block is appended at the end of `content` — typically off-screen on a
+  // multi-block page. Explicitly centring it ensures the toolbar that tracks
+  // it is also in view (`useStickyToolbar`).
+  await page.evaluate((u) => {
+    window.__BLOKKLI__!.app!.eventBus.emit('scrollIntoView', {
+      uuid: u,
+      immediate: true,
+      center: true,
+    })
+  }, uuid)
+  // The Padding group is rendered whenever the Widget's full options are
+  // visible — a stable signal that the form mounted with the block selected.
+  await page
+    .locator('[data-test="option-group"][data-test-group="Padding"]')
+    .waitFor({ state: 'visible' })
+  return uuid
 }

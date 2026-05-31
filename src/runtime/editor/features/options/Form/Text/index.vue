@@ -1,6 +1,11 @@
 <template>
   <div class="bk-blokkli-item-options-text" data-test="option-type-text">
-    <input v-model="text" :type="type" :placeholder="label" />
+    <input
+      v-model="text"
+      :type="type"
+      :placeholder="label"
+      data-test="text-input"
+    />
     <div>{{ text }}</div>
   </div>
 </template>

@@ -1,6 +1,10 @@
 <template>
   <div class="bk-blokkli-item-options-number" data-test="option-type-number">
-    <button :disabled="!canDecrement" @click.stop.prevent="decrement">
+    <button
+      :disabled="!canDecrement"
+      data-test="number-decrement"
+      @click.stop.prevent="decrement"
+    >
       <Icon name="bk_mdi_remove" />
     </button>
     <input
@@ -9,12 +13,17 @@
       :min="min"
       :max="max"
       :placeholder="placeholder"
+      data-test="number-input"
       :style="{
         width: width + 'px',
       }"
     />
 
-    <button :disabled="!canIncrement" @click.stop.prevent="increment">
+    <button
+      :disabled="!canIncrement"
+      data-test="number-increment"
+      @click.stop.prevent="increment"
+    >
       <Icon name="bk_mdi_add" />
     </button>
   </div>

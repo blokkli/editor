@@ -12,15 +12,23 @@
     <label
       v-for="option in mappedOptions"
       :key="option.key"
+      data-test="radios-option"
+      :data-test-value="option.key"
       @mouseenter="onOptionMouseEnter(option)"
     >
-      <div v-bind="getInputWrapperAttributes(option.value)">
+      <div
+        v-bind="getInputWrapperAttributes(option.value)"
+        :data-test="displayAs === 'colors' ? 'radios-swatch' : undefined"
+        :data-test-value="displayAs === 'colors' ? option.key : undefined"
+      >
         <input
           :id="option.key"
           type="radio"
           :name="property"
           :value="option.key"
           :checked="modelValue === option.key"
+          data-test="radios-input"
+          :data-test-value="option.key"
           @change="value = option.key"
         />
         <div
@@ -30,21 +38,27 @@
             option.value.icon
           "
           class="bk-blokkli-item-options-radios-icon"
+          data-test="radios-icon"
+          :data-test-value="option.key"
         >
-          <Icon :name="option.value.icon as any" />
+          <Icon :name="option.value.icon as any" data-test="radios-icon-svg" />
         </div>
 
         <div
           v-else-if="typeof option.value === 'object' && option.value.columns"
           class="bk-blokkli-item-options-radios-flex"
+          data-test="radios-grid"
+          :data-test-value="option.key"
         >
           <div
             v-for="(v, i) in option.value.columns"
             :key="i"
             :style="{ flex: v }"
+            data-test="radios-grid-cell"
+            :data-test-flex="v"
           />
         </div>
-        <span v-else>
+        <span v-else data-test="radios-label" :data-test-value="option.key">
           {{
             typeof option.value === 'string' ? option.value : option.value.label
           }}
