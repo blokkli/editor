@@ -16,12 +16,16 @@
   </div>
   <div
     v-else
+    ref="rootEl"
     class="group/comment relative flex gap-(--bk-comment-avatar-gap) px-(--bk-comment-pad-x) font-sans"
     data-test="comment"
     :data-test-uuid="comment.uuid"
-    :class="
-      isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)'
-    "
+    :data-test-highlight="highlighted"
+    :class="[
+      isReply ? 'py-(--bk-comment-reply-pad-y)' : 'py-(--bk-comment-pad-y)',
+      { 'outline-2 outline-yellow-normal rounded': highlighted },
+    ]"
+    @pointerleave="highlighted ? $emit('dismissHighlight') : null"
   >
     <Avatar
       :deleted="!comment.user"
@@ -82,7 +86,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useBlokkli } from '#imports'
+import {
+  computed,
+  nextTick,
+  ref,
+  useBlokkli,
+  useTemplateRef,
+  watch,
+} from '#imports'
 import { Avatar, Pill } from '#blokkli/editor/components'
 import CommentMeta from './Meta/index.vue'
 import CommentActions from './Actions/index.vue'
@@ -96,15 +107,41 @@ const props = defineProps<{
   comment: CommentItem
   isReply: boolean
   hideBlocksPill?: boolean
+  /**
+   * Whether this specific comment is the deep-link target. Renders a
+   * persistent highlight ring; cleared by emitting `dismissHighlight`
+   * on the first `pointerleave` after the user has engaged with it.
+   */
+  highlighted?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'edit', body: string): void
   (e: 'toggleTask', taskIndex: number): void
-  (e: 'delete' | 'resolve' | 'unresolve' | 'selectBlocks'): void
+  (
+    e: 'delete' | 'resolve' | 'unresolve' | 'selectBlocks' | 'dismissHighlight',
+  ): void
 }>()
 
 const isEditing = ref(false)
+const rootEl = useTemplateRef<HTMLElement>('rootEl')
+
+// When this comment becomes the deep-link target, scroll it into view.
+// Fires only when the prop flips to `true` (not on every render), so the
+// scroll is a one-shot per mount. Reopening the sidebar mounts a fresh
+// Comment; if the parent still holds the deep-link uuid, this watch
+// re-scrolls — which is desirable, the deep-link is still active.
+watch(
+  () => props.highlighted,
+  async (isHighlighted) => {
+    if (!isHighlighted) {
+      return
+    }
+    await nextTick()
+    rootEl.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  },
+  { immediate: true },
+)
 
 const blocksLabel = computed(() => {
   const count = props.comment.blockUuids?.length || 0

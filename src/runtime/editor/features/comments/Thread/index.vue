@@ -14,12 +14,13 @@
   >
     <div
       :class="{
-        'opacity-60 hover:opacity-100': root.resolved,
+        'opacity-60 hover:opacity-100': root.resolved && !hasHighlightedComment,
       }"
     >
       <Comment
         :comment="root"
         :is-reply="false"
+        :highlighted="root.uuid === highlightUuid"
         class="pb-10!"
         @select-blocks="onSelectBlocks"
         @edit="$emit('edit', { uuid: root.uuid, body: $event })"
@@ -29,6 +30,7 @@
         @toggle-task="
           $emit('toggleTask', { uuid: root.uuid, taskIndex: $event })
         "
+        @dismiss-highlight="$emit('dismissHighlight')"
       />
       <div
         v-if="replies.length"
@@ -42,12 +44,14 @@
           v-for="reply in replies"
           :key="reply.uuid"
           :comment="reply"
+          :highlighted="reply.uuid === highlightUuid"
           is-reply
           @edit="$emit('edit', { uuid: reply.uuid, body: $event })"
           @delete="$emit('delete', reply.uuid)"
           @toggle-task="
             $emit('toggleTask', { uuid: reply.uuid, taskIndex: $event })
           "
+          @dismiss-highlight="$emit('dismissHighlight')"
         />
         <div
           v-if="canReply"
@@ -75,6 +79,13 @@ const props = defineProps<{
   root: CommentItem
   replies: CommentItem[]
   boxed?: boolean
+  /**
+   * UUID of the deep-link target inside this thread (root or reply).
+   * The matching `<Comment>` renders with a persistent highlight ring
+   * and emits `dismissHighlight` on the first `pointerleave` after
+   * engagement, which the thread forwards up.
+   */
+  highlightUuid?: string | null
 }>()
 
 defineEmits<{
@@ -82,10 +93,33 @@ defineEmits<{
   (e: 'edit', value: { uuid: string; body: string }): void
   (e: 'toggleTask', value: { uuid: string; taskIndex: number }): void
   (e: 'delete', uuid: string): void
-  (e: 'resolve' | 'unresolve'): void
+  (e: 'resolve' | 'unresolve' | 'dismissHighlight'): void
 }>()
 
 const canReply = computed(() => !!adapter.replyToComment)
+
+const hasHighlightedComment = computed(() => {
+  if (!props.highlightUuid) {
+    return false
+  }
+
+  if (props.root.uuid === props.highlightUuid) {
+    return true
+  }
+
+  for (let i = 0; i < props.replies.length; i++) {
+    const reply = props.replies[i]
+    if (!reply) {
+      continue
+    }
+
+    if (reply.uuid === props.highlightUuid) {
+      return true
+    }
+  }
+
+  return false
+})
 
 function onSelectBlocks() {
   if (props.root.blockUuids?.length) {

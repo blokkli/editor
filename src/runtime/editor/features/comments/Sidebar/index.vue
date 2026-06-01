@@ -22,6 +22,7 @@
         :key="root.uuid"
         :root="root"
         :replies="repliesByRoot.get(root.uuid) || []"
+        :highlight-uuid="highlightUuid"
         boxed
         @reply="$emit('reply', $event)"
         @edit="$emit('edit', $event)"
@@ -29,6 +30,7 @@
         @resolve="$emit('resolve', root.uuid)"
         @unresolve="$emit('unresolve', root.uuid)"
         @toggle-task="$emit('toggleTask', $event)"
+        @dismiss-highlight="$emit('dismissHighlight')"
       />
     </div>
     <div
@@ -64,6 +66,13 @@ const { $t } = useBlokkli()
 const props = defineProps<{
   comments: CommentItem[]
   recentlyResolved: string[]
+  /**
+   * UUID of the deep-link target comment (root or reply). Passed through
+   * to each `<Comment>` via the thread; the matching comment self-scrolls
+   * and shows a persistent highlight ring. Cleared by the parent on the
+   * `dismissHighlight` event.
+   */
+  highlightUuid?: string | null
 }>()
 
 defineEmits<{
@@ -71,6 +80,7 @@ defineEmits<{
   (e: 'edit', value: { uuid: string; body: string }): void
   (e: 'toggleTask', value: { uuid: string; taskIndex: number }): void
   (e: 'add' | 'delete' | 'resolve' | 'unresolve', value: string): void
+  (e: 'dismissHighlight'): void
 }>()
 
 const rootEl = useTemplateRef('rootEl')

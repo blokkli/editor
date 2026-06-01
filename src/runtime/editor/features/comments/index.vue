@@ -12,6 +12,7 @@
       v-model:show-resolved="showResolved"
       :comments
       :recently-resolved
+      :highlight-uuid="deepLinkUuid"
       @add="onAddComment($event, [])"
       @reply="onReply($event.parentUuid, $event.body)"
       @edit="onEditComment($event.uuid, $event.body)"
@@ -19,6 +20,7 @@
       @resolve="onResolveComment($event)"
       @unresolve="onUnresolveComment($event)"
       @toggle-task="onToggleTask($event.uuid, $event.taskIndex)"
+      @dismiss-highlight="deepLinkUuid = null"
     />
 
     <template v-if="unresolvedCount" #badge>
@@ -81,6 +83,8 @@ import {
   computed,
   useTemplateRef,
   defineAsyncComponent,
+  onMounted,
+  useRoute,
 } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/editor/components'
@@ -102,7 +106,8 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-comments.jpg',
 })
 
-const { $t, selection, ui, storage } = useBlokkli()
+const { $t, selection, ui, storage, eventBus } = useBlokkli()
+const route = useRoute()
 
 const showResolved = storage.useWithContextPrefix('commentsShowResolved', false)
 
@@ -129,6 +134,42 @@ comments.value = await adapter.loadComments()
 const unresolvedCount = computed(
   () => comments.value.filter((c) => !c.parentUuid && !c.resolved).length,
 )
+
+/**
+ * The exact UUID (root or reply) from `?blokkliComment=<uuid>` when the
+ * editor is opened via a notification deep link. The matching `<Comment>`
+ * self-scrolls and shows a persistent highlight ring; this clears on the
+ * sidebar's `dismissHighlight` event, fired on the first `pointerleave`
+ * after engagement. The URL is intentionally preserved — the link is a
+ * stable representation of the view, and a refresh should land the user
+ * back in the same place.
+ */
+const deepLinkUuid = ref<string | null>(null)
+
+onMounted(() => {
+  const requested = route.query.blokkliComment
+  if (typeof requested !== 'string' || !requested) {
+    return
+  }
+  const target = comments.value.find((c) => c.uuid === requested)
+  if (!target) {
+    return
+  }
+  // Walk up to the root only to check whether the surrounding thread is
+  // resolved — the visibility filter operates on roots. The deep-link uuid
+  // passed down is still the exact target so the specific comment (root or
+  // reply) is highlighted.
+  const rootUuid = target.parentUuid ?? target.uuid
+  const root = comments.value.find((c) => c.uuid === rootUuid)
+  if (!root) {
+    return
+  }
+  if (root.resolved) {
+    showResolved.value = true
+  }
+  eventBus.emit('sidebar:open', 'comments')
+  deepLinkUuid.value = target.uuid
+})
 
 const onAddComment = async (body: string, providedUuids?: string[]) => {
   if (!adapter.addComment) {
