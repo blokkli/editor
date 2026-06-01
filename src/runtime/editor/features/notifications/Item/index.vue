@@ -52,6 +52,8 @@ const props = defineProps<BlokkliNotification>()
 const ICONS: Record<BlokkliNotificationType, BlokkliIcon> = {
   'comment:mention': 'bk_mdi_alternate_email',
   'comment:resolved': 'bk_mdi_check_circle',
+  'comment:reply': 'bk_mdi_chat',
+  'comment:thread': 'bk_mdi_chat',
   'edit-state:approved': 'bk_mdi_verified',
 }
 
@@ -66,13 +68,16 @@ function extraQuery(): Record<string, string> {
   if (!props.relatedEntityUuid) {
     return {}
   }
+
   switch (props.type) {
     case 'comment:mention':
+    case 'comment:reply':
     case 'comment:resolved':
+    case 'comment:thread':
       return { blokkliComment: props.relatedEntityUuid }
-    case 'edit-state:approved':
-      return {}
   }
+
+  return {}
 }
 
 /**

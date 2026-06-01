@@ -9,6 +9,8 @@ import type { BlokkliUser } from '#blokkli/editor/types/user'
 export type BlokkliNotificationType =
   | 'comment:mention'
   | 'comment:resolved'
+  | 'comment:reply'
+  | 'comment:thread'
   | 'edit-state:approved'
 
 /**
