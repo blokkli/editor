@@ -103,6 +103,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_lists',
   'bk_mdi_lock',
   'bk_mdi_logo_dev',
+  'bk_mdi_mark_chat_read',
   'bk_mdi_menu',
   'bk_mdi_mobile',
   'bk_mdi_mobile_rotate',

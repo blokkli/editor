@@ -604,7 +604,7 @@ onBeforeUnmount(() => {
 
 <style>
 .bk.bk-dragging-overlay-label {
-  @apply fixed top-0 left-0;
+  @apply fixed top-0 left-0 rounded;
   @apply p-8 whitespace-nowrap;
   @apply flex items-center gap-5 font-sans text-sm;
   @apply z-dragging-overlay;

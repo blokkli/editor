@@ -33,16 +33,19 @@
     </div>
     <div
       v-else
-      class="flex-1 flex items-center justify-center p-30 text-center text-sm text-mono-500"
+      class="flex-1 flex flex-col items-center justify-center p-30 text-center text-base text-mono-500"
     >
-      {{
-        roots.length
-          ? $t(
-              'commentsAllResolved',
-              'All comments are resolved. Toggle "Show resolved" to view them.',
-            )
-          : $t('commentsEmpty', 'No comments yet.')
-      }}
+      <Icon name="bk_mdi_mark_chat_read" class="size-70 mb-20" />
+      <div class="text-balance">
+        {{
+          roots.length
+            ? $t(
+                'commentsAllResolved',
+                'All comments are resolved. Toggle "Show resolved" to view them.',
+              )
+            : $t('commentsEmpty', 'No comments yet.')
+        }}
+      </div>
     </div>
 
     <SidebarAddForm @submit="$emit('add', $event)" @start="onStartNewComment" />
@@ -51,7 +54,7 @@
 
 <script lang="ts" setup>
 import { computed, useBlokkli, useTemplateRef } from '#imports'
-import { FormToggle } from '#blokkli/editor/components'
+import { FormToggle, Icon } from '#blokkli/editor/components'
 import CommentThread from '../Thread/index.vue'
 import SidebarAddForm from './AddForm/index.vue'
 import type { CommentItem } from '../types'
