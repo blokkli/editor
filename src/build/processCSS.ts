@@ -1,6 +1,10 @@
 import { createRequire } from 'node:module'
+import { useLogger } from '@nuxt/kit'
+
+const logger = useLogger('@blokkli/editor')
 
 let processor: any | null = null
+let processorUnavailable = false
 
 function postcssMangleClasses(selectorParser: any) {
   const plugin = () => ({
@@ -57,21 +61,34 @@ function postcssMangleClasses(selectorParser: any) {
 }
 
 /**
+ * Lazily build and cache the PostCSS processor. Returns null (and warns
+ * once) if the required deps aren't installed — see createProcessor for the
+ * rationale.
+ */
+export async function ensureProcessor(): Promise<any | null> {
+  if (processor || processorUnavailable) return processor
+  processor = await createProcessor()
+  return processor
+}
+
+/**
  * Process CSS through the same PostCSS+Tailwind pipeline used by blökkli
  * internally. Resolves @apply directives, scopes selectors to .bk, and
  * renames --tw-* variables to --bk-tw-*.
  *
  * When contentPaths are provided, Tailwind v4 will scan those directories for
  * utility classes via prepended @source directives.
+ *
+ * Returns the input unchanged when the PostCSS pipeline is unavailable
+ * (consumer project on Tailwind v3, missing peer deps, etc.).
  */
 export async function processCSS(
   css: string,
   from?: string,
   contentPaths?: string[],
 ): Promise<string> {
-  if (!processor) {
-    processor = await createProcessor()
-  }
+  const proc = await ensureProcessor()
+  if (!proc) return css
 
   // Append @source directives after the input CSS so they don't conflict
   // with leading @import statements (CSS spec requires @import to precede
@@ -80,7 +97,7 @@ export async function processCSS(
     ? '\n' + contentPaths.map((dir) => `@source "${dir}/**/*.vue";`).join('\n')
     : ''
 
-  const result = await processor.process(css + sourceDirectives, {
+  const result = await proc.process(css + sourceDirectives, {
     from: from || 'module.css',
   })
   return result.css
@@ -129,15 +146,24 @@ async function createProcessor(): Promise<any> {
     return postcss(plugins)
   } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
+      // The PostCSS pipeline is only needed for user-land blökkli modules /
+      // features that use `@apply` or `theme()` from blökkli's Tailwind v4
+      // setup. A consumer with no such modules — or one still on Tailwind v3
+      // — shouldn't be required to install these packages. Warn once and
+      // disable the pipeline; processCSS() will return its input unchanged.
+      processorUnavailable = true
       const missing =
         e.message.match(/Cannot find module '([^']+)'/)?.[1] || 'unknown'
-      throw new Error(
-        `Missing dependency "${missing}" required for processing module CSS.\n` +
-          `Install the required PostCSS packages:\n` +
-          `npm install -D postcss tailwindcss @tailwindcss/postcss ` +
+      logger.warn(
+        `blökkli's PostCSS pipeline is disabled — missing dependency ` +
+          `"${missing}". This is only required if you author custom blökkli ` +
+          `modules or features that use Tailwind v4 \`@apply\` / \`theme()\` ` +
+          `in their <style> blocks. To enable it, install:\n` +
+          `  npm install -D postcss tailwindcss @tailwindcss/postcss ` +
           `postcss-import postcss-nesting postcss-replace ` +
           `@thedutchcoder/postcss-rem-to-px`,
       )
+      return null
     }
     throw e
   }

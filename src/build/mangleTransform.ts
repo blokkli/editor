@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module'
 import * as acorn from 'acorn'
 import { mangleClassName, mangleClassString } from './mangleClasses'
-import { processCSS } from './processCSS'
+import { ensureProcessor, processCSS } from './processCSS'
 
 type Replacement = { start: number; end: number; value: string }
 
@@ -206,14 +206,8 @@ export function stripTestSeams(code: string): string {
 
   // `data-test*` attributes. Two passes (one per quote style) so a bound value
   // can safely contain the other quote — e.g. `:data-test="'icon-' + name"`.
-  result = result.replace(
-    /\s+(?:v-bind:|:)?data-test(?:-[\w-]+)?="[^"]*"/g,
-    '',
-  )
-  result = result.replace(
-    /\s+(?:v-bind:|:)?data-test(?:-[\w-]+)?='[^']*'/g,
-    '',
-  )
+  result = result.replace(/\s+(?:v-bind:|:)?data-test(?:-[\w-]+)?="[^"]*"/g, '')
+  result = result.replace(/\s+(?:v-bind:|:)?data-test(?:-[\w-]+)?='[^']*'/g, '')
 
   return result
 }
@@ -339,6 +333,12 @@ export async function processStyleBlocks(
   filePath: string,
   tailwindConfigPath: string,
 ): Promise<string> {
+  // If the PostCSS pipeline isn't available (e.g. Tailwind v3 host without
+  // the v4 peer deps), leave style blocks completely untouched. Injecting
+  // `@reference` / `@config` directives would otherwise poison the host's
+  // own style processing.
+  if (!(await ensureProcessor())) return code
+
   const styleRegex = /<style([^>]*)>([\s\S]*?)<\/style>/g
   let result = code
   let styleMatch: RegExpExecArray | null

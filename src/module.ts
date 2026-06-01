@@ -114,9 +114,14 @@ export default defineNuxtModule<ModuleOptions>({
     // SFCs need the same `_bk_` mangling consumers get from dist via
     // scripts/mangle-dist.ts. Register runtime/ and modules/ as content paths
     // so the existing mangle Vite plugin below picks them up. Skipped when
-    // running from node_modules — those SFCs are pre-mangled in dist.
-    const moduleRoot = helper.resolvers.module.resolve('.')
-    if (!moduleRoot.includes('/node_modules/')) {
+    // running from a built dist (npm install, yalc, etc.) — those SFCs are
+    // already pre-mangled and processing them again would also force the
+    // consumer to install blökkli's PostCSS pipeline dependencies.
+    const distMarker = helper.resolvers.module.resolve(
+      './modules/tailwind/index.mjs',
+    )
+    const isRunningFromDist = helper.fileCache.fileExists(distMarker)
+    if (!isRunningFromDist) {
       context.addContentPath(helper.resolvers.module.resolve('./runtime'))
       context.addContentPath(helper.resolvers.module.resolve('./modules'))
     }
