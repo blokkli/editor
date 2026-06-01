@@ -159,6 +159,8 @@
   "aiAgentGetMutationHistoryRunning": "Änderigsverlauf würd gholt...",
   "aiAgentGetPageStructureDone": "Sittestruktur gholt (@count Blöck)",
   "aiAgentGetPageStructureRunning": "Sittestruktur würd gholt...",
+  "aiAgentGetReferencedEntitiesDone": "@count verwandti Inhalt glade",
+  "aiAgentGetReferencedEntitiesRunning": "Verwandti Inhalt wärde glade...",
   "aiAgentGetSelectedBlocksDone": "@count Block/Blöck usgwählt",
   "aiAgentGetSelectedBlocksNone": "Käi Blöck usgwählt",
   "aiAgentGetSelectedBlocksRunning": "Usgwählti Blöck wärde gholt...",

@@ -662,6 +662,14 @@ msgctxt "aiAgentGetPageStructureRunning"
 msgid "Getting page structure"
 msgstr "Sittestruktur würd gholt..."
 
+msgctxt "aiAgentGetReferencedEntitiesDone"
+msgid "Resolved @count referenced entities"
+msgstr "@count verwandti Inhalt glade"
+
+msgctxt "aiAgentGetReferencedEntitiesRunning"
+msgid "Resolving references"
+msgstr "Verwandti Inhalt wärde glade..."
+
 msgctxt "aiAgentGetSelectedBlocksDone"
 msgid "@count block(s) selected"
 msgstr "@count Block/Blöck usgwählt"

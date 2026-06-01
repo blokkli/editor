@@ -673,6 +673,14 @@ msgctxt "aiAgentGetPageStructureRunning"
 msgid "Getting page structure"
 msgstr "Seitenstruktur wird geladen"
 
+msgctxt "aiAgentGetReferencedEntitiesDone"
+msgid "Resolved @count referenced entities"
+msgstr "@count verwandte Inhalte geladen"
+
+msgctxt "aiAgentGetReferencedEntitiesRunning"
+msgid "Resolving references"
+msgstr "Verwandte Inhalte laden"
+
 msgctxt "aiAgentGetSelectedBlocksDone"
 msgid "@count block(s) selected"
 msgstr "@count Blöcke ausgewählt"

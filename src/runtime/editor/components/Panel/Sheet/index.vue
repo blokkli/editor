@@ -18,7 +18,7 @@
           <Icon name="bk_mdi_close" class="size-15" />
         </button>
       </div>
-      <div class="overflow-auto bk-scrollbar-light h-[500px]">
+      <div class="overflow-auto bk-scrollbar-light h-[500px] bg-white">
         <slot />
       </div>
     </div>

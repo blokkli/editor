@@ -652,6 +652,14 @@ msgctxt "aiAgentGetPageStructureRunning"
 msgid "Getting page structure"
 msgstr ""
 
+msgctxt "aiAgentGetReferencedEntitiesDone"
+msgid "Resolved @count referenced entities"
+msgstr ""
+
+msgctxt "aiAgentGetReferencedEntitiesRunning"
+msgid "Resolving references"
+msgstr ""
+
 msgctxt "aiAgentGetSelectedBlocksDone"
 msgid "@count block(s) selected"
 msgstr ""
