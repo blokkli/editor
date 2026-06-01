@@ -12,7 +12,7 @@
       :data-test="'notification-' + uuid"
     >
       <div
-        class="bk-notification-icon shrink-0 size-20 rounded-full flex items-center justify-center"
+        class="shrink-0 size-25 rounded-full flex items-center justify-center"
         :class="{
           'bg-mono-200 text-mono-500': read,
           'text-yellow-dark! bg-yellow-normal': !read,
@@ -55,6 +55,7 @@ const ICONS: Record<BlokkliNotificationType, BlokkliIcon> = {
   'comment:reply': 'bk_mdi_chat',
   'comment:thread': 'bk_mdi_chat',
   'edit-state:approved': 'bk_mdi_verified',
+  generic: 'bk_mdi_notifications',
 }
 
 const icon = computed(() => ICONS[props.type])

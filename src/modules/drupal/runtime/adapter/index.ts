@@ -47,7 +47,7 @@ import type { EditPermission } from '#blokkli/types/provider'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import type { ContentSearchTab } from '#blokkli/editor/features/search/types'
 import type { CommentItem } from '#blokkli/editor/features/comments/types'
-import type { BlokkliNotification } from '#blokkli/editor/features/notifications/types'
+import { toValidNotificationType } from '#blokkli/editor/features/notifications/types'
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
 
@@ -1027,7 +1027,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           return {
             items: (result?.items ?? []).map((item) => ({
               uuid: item.uuid,
-              type: item.type as BlokkliNotification['type'],
+              type: toValidNotificationType(item.type),
               read: item.read,
               created: item.created,
               title: item.title,

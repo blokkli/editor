@@ -1,17 +1,55 @@
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 
 /**
- * Discriminates the kind of event a notification represents.
+ * The complete set of notification types the frontend can render. Used as
+ * a runtime allow-list at the adapter boundary — backend payloads with a
+ * `type` outside this list are coerced to `'generic'` (and a warning is
+ * logged) rather than fed through an `as` cast that would silently lie
+ * about being a known type.
  *
- * Follows a `<feature>:<event>` convention. Extend this union as new
+ * Follows a `<feature>:<event>` convention. Add new entries here as new
  * notification sources are added (e.g. `'edit-state:rejected'`).
+ *
+ * `'generic'` is the fallback for unknown types: rendered with a neutral
+ * icon, deep-linked to its host (no type-specific query parameters).
  */
+export const BLOKKLI_NOTIFICATION_TYPES = [
+  'comment:mention',
+  'comment:resolved',
+  'comment:reply',
+  'comment:thread',
+  'edit-state:approved',
+  'generic',
+] as const
+
 export type BlokkliNotificationType =
-  | 'comment:mention'
-  | 'comment:resolved'
-  | 'comment:reply'
-  | 'comment:thread'
-  | 'edit-state:approved'
+  (typeof BLOKKLI_NOTIFICATION_TYPES)[number]
+
+/**
+ * Type guard for raw backend `type` strings.
+ */
+export function isBlokkliNotificationType(
+  value: string,
+): value is BlokkliNotificationType {
+  return (BLOKKLI_NOTIFICATION_TYPES as readonly string[]).includes(value)
+}
+
+/**
+ * Coerce a raw backend `type` string into a known `BlokkliNotificationType`.
+ * Falls back to `'generic'` (with a warning) for unknown values — use this
+ * at the adapter boundary instead of `as`-casting.
+ */
+export function toValidNotificationType(
+  value: string,
+): BlokkliNotificationType {
+  if (isBlokkliNotificationType(value)) {
+    return value
+  }
+  console.warn(
+    `[blokkli] Unknown notification type "${value}", rendering as generic`,
+  )
+  return 'generic'
+}
 
 /**
  * The host entity (page) a notification relates to.
