@@ -3,9 +3,13 @@
     <button
       :id="'bk-sidebar-button-' + id"
       ref="tourElement"
-      class="bk-toolbar-button group/tooltip bk-has-dropdown"
+      class="bk-toolbar-button group/tooltip"
       :class="[
-        { 'bk-is-active': activeSidebar === id && !isDisabled },
+        {
+          'bk-is-active': activeSidebar === id && !isDisabled,
+          'bk-has-dropdown-bottom': region === 'left',
+          'bk-has-dropdown-left': region !== 'left',
+        },
         'bk-is-' + region,
       ]"
       :disabled="isDisabled"
@@ -703,34 +707,10 @@ export default {
     @apply flex flex-row;
     @apply lg:flex-col;
   }
-
-  .bk-toolbar-button {
-    @variant lg {
-      &.bk-is-right,
-      &.bk-is-right-bottom {
-        &:before {
-          border-width: 10px 0 10px 10px;
-          border-color: transparent transparent transparent #ffffff;
-          @apply absolute top-15 left-0 transition origin-left;
-          @apply scale-x-0;
-        }
-      }
-      &.bk-is-left {
-        &:before {
-          border-width: 0 10px 10px;
-          @apply left-15;
-        }
-      }
-    }
-
-    &.bk-is-active {
-      @apply bg-mono-700;
-    }
-  }
 }
 
 .bk .bk-sidebar-badge {
-  @apply absolute top-3 right-3 size-18 rounded-full flex items-center justify-center font-bold;
+  @apply absolute top-5 right-5 size-18 rounded-full flex items-center justify-center font-bold;
   font-size: 10px;
 
   &.bk-is-yellow {

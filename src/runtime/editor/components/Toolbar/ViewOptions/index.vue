@@ -5,7 +5,7 @@
   >
     <button
       ref="toggleElement"
-      class="bk-toolbar-button bk-has-dropdown group/tooltip"
+      class="bk-toolbar-button bk-has-dropdown-bottom group/tooltip"
       :class="{
         'bk-is-active': isVisible,
       }"

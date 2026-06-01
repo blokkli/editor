@@ -14,7 +14,7 @@
     :weight="-100"
     region="before-sidebar"
     icon="bk_mdi_notifications"
-    class="border-r border-r-mono-600 bk-has-dropdown"
+    class="border-r border-r-mono-600 bk-has-dropdown-bottom"
     @click="isVisible = !isVisible"
   >
     <template #after>

@@ -32,9 +32,12 @@
       {{ $t('notificationsEmpty', 'No notifications.') }}
     </div>
 
-    <div v-if="hasMore" class="border-t border-t-mono-300">
+    <div
+      v-if="hasMore"
+      class="sticky bottom-0 z-50 bg-linear-0 from-white to-white/0 via-65% via-white"
+    >
       <button
-        class="w-full py-10 text-sm text-mono-700 hover:text-accent-700 disabled:opacity-40 disabled:cursor-default text-center"
+        class="w-full py-15 text-sm text-mono-700 hover:text-accent-700 disabled:opacity-40 disabled:cursor-default text-center font-semibold"
         :disabled="isLoadingMore"
         data-test="notifications-load-more"
         @click.stop="onLoadMore"

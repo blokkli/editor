@@ -294,43 +294,4 @@ export default {
     }
   }
 }
-
-.bk {
-  .bk-toolbar-button {
-    @apply text-mono-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
-
-    &:not(.bk-is-active) {
-      @apply lg:hover:bg-mono-700;
-    }
-
-    &.bk-has-dropdown {
-      &:before {
-        @apply content-[''] w-0 h-0 border-solid;
-        @apply absolute bottom-0 left-[17.5px] transition origin-bottom;
-        @apply scale-y-0;
-        border-width: 0 8px 6px;
-        border-color: transparent transparent #ffffff transparent;
-      }
-    }
-
-    &.bk-is-active {
-      @apply bg-mono-700;
-
-      &:before {
-        @apply scale-100!;
-      }
-    }
-
-    &.bk-is-inactive {
-      @apply text-mono-600;
-    }
-
-    &[disabled] {
-      @apply pointer-events-none text-mono-700;
-    }
-    svg {
-      @apply size-18 lg:size-20;
-    }
-  }
-}
 </style>

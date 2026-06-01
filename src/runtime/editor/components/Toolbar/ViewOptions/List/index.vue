@@ -1,6 +1,10 @@
 <template>
   <div>
-    <ViewOptionButton v-for="vo in options" :key="vo.id" v-bind="vo" />
+    <ViewOptionButton
+      v-for="option in options"
+      :key="option.id"
+      v-bind="option"
+    />
   </div>
 </template>
 

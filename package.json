@@ -129,7 +129,7 @@
     "test:watch": "vitest watch --project unit --project e2e --no-file-parallelism",
     "test:unit": "vitest run --project unit",
     "test:unit:watch": "vitest watch --project unit",
-    "test:e2e": "vitest run --project e2e --no-file-parallelism",
+    "test:e2e": "vitest run --project e2e",
     "format": "prettier . --check",
     "format:fix": "prettier . --write",
     "docs:dev": "vitepress dev docs",

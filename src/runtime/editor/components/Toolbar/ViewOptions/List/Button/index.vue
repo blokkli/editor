@@ -1,14 +1,14 @@
 <template>
   <button
     ref="buttonEl"
-    class="flex gap-8 whitespace-nowrap w-full px-10 text-mono-800 items-center hover:bg-mono-200 min-h-50 group/tooltip relative"
+    class="flex gap-8 whitespace-nowrap w-full px-10 text-mono-800 items-center hover:bg-mono-100 min-h-50 group/tooltip relative border-b border-b-mono-200 last:border-b-0 group/toggle"
     :data-test-view-option="id"
     :data-test-active="isActive"
     :class="{ 'bk-is-inactive': !isActive }"
     @click.prevent.stop="toggle"
   >
     <Icon v-if="icon" :name="icon" class="size-20" />
-    <div class="font-semibold text-base">
+    <div class="font-medium text-base">
       {{ label }}
     </div>
     <div class="ml-auto">

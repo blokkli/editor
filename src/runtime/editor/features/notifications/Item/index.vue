@@ -1,5 +1,5 @@
 <template>
-  <li class="border-b border-b-mono-300 last:border-b-0">
+  <li class="border-b border-b-mono-300">
     <component
       :is="href ? 'a' : 'div'"
       :href="href || undefined"

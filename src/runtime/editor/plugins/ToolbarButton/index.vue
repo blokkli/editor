@@ -211,3 +211,56 @@ defineOptions({
   inheritAttrs: false,
 })
 </script>
+
+<style lang="postcss">
+.bk {
+  .bk-toolbar-button {
+    @apply text-mono-200 flex gap-5 items-center px-10 min-w-[50px] justify-center h-40 lg:h-50;
+
+    &:not(.bk-is-active) {
+      @apply lg:hover:bg-mono-700;
+    }
+
+    &.bk-has-dropdown-left:before,
+    &.bk-has-dropdown-bottom:before {
+      @apply content-[''] w-0 h-0 border-solid;
+      @apply absolute transition;
+    }
+
+    &.bk-has-dropdown-bottom:before {
+      @apply bottom-0 origin-bottom;
+      border-width: 0 10px 10px;
+      @apply border-t-transparent border-r-transparent border-b-mono-200 border-l-transparent;
+      @apply scale-y-0;
+      @apply left-1/2 -translate-x-1/2;
+    }
+
+    &.bk-has-dropdown-left:before {
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent #ffffff;
+      @apply transition origin-left;
+      @apply scale-x-0;
+      @apply left-0 top-1/2 -translate-y-1/2;
+    }
+
+    &.bk-is-active {
+      @apply bg-mono-700;
+
+      &:before {
+        @apply scale-100!;
+      }
+    }
+
+    &.bk-is-inactive {
+      @apply text-mono-600;
+    }
+
+    &[disabled] {
+      @apply pointer-events-none text-mono-700;
+    }
+    svg {
+      @apply size-18 lg:size-20;
+    }
+  }
+}
+</style>
