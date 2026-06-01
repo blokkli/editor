@@ -128,11 +128,13 @@ let pollInterval: ReturnType<typeof setInterval> | null = null
 
 onMounted(async () => {
   await fetchUnreadCount()
+
   // Poll periodically. The List owns the count while the dropdown is open
   // (it writes through `v-model:unread-count` after every interaction), so
   // we skip the tick to avoid a redundant request that could clobber the
   // List's fresher value with a stale one.
   pollInterval = setInterval(maybeRefresh, POLL_INTERVAL_MS)
+
   // Refresh on tab refocus too, but only when the last fetch is stale —
   // quick tab-flipping must not trigger a request storm.
   document.addEventListener('visibilitychange', maybeRefresh)
