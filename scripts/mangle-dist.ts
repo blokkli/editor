@@ -14,6 +14,7 @@ import { join } from 'node:path'
 import {
   mangleTemplateAndScript,
   processStyleBlocks,
+  stripTestSeams,
 } from '../src/build/mangleTransform'
 
 // --- Walk directory ---
@@ -52,6 +53,8 @@ for (const distDir of distDirs) {
   for await (const filePath of walkFiles(distDir, ['.vue', '.ts'])) {
     const original = await readFile(filePath, 'utf-8')
     let transformed = mangleTemplateAndScript(original)
+    // Remove E2E-only test seams (data-test attributes + marked code regions).
+    transformed = stripTestSeams(transformed)
     // Process <style> blocks in Vue files.
     if (filePath.endsWith('.vue')) {
       transformed = await processStyleBlocks(

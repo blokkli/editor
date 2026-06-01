@@ -173,6 +173,52 @@ export function mangleTemplateAndScript(code: string): string {
 }
 
 /**
+ * Remove E2E test seams that must not ship in the published library:
+ *
+ * 1. `data-test*` attributes (static `data-test="…"`, and bound
+ *    `:data-test-…="…"` / `v-bind:data-test="…"`). These exist only as the
+ *    stable selector contract for the Playwright specs in `test/e2e/`. There
+ *    are no script/style usages of `data-test` in `src/`, so a template-level
+ *    strip is safe and complete.
+ * 2. Code regions wrapped in test-only markers:
+ *
+ *      // blokkli-test-only:start
+ *      useGlobalBlokkliObject().setApp(app)
+ *      // blokkli-test-only:end
+ *
+ *    Everything from the line containing `blokkli-test-only:start` through the
+ *    line containing `blokkli-test-only:end` is removed, regardless of comment
+ *    syntax (`//`, block, or `<!-- -->`), so the same marker works in scripts
+ *    and templates.
+ *
+ * Only the dist post-process (`scripts/mangle-dist.ts`) runs this. The
+ * playground builds the editor from `src/`, not `dist/`, so the seams stay
+ * intact there and E2E keeps working against a production build.
+ */
+export function stripTestSeams(code: string): string {
+  let result = code
+
+  // Marker-delimited regions (works for any comment style).
+  result = result.replace(
+    /^[ \t]*[^\n]*blokkli-test-only:start[\s\S]*?blokkli-test-only:end[^\n]*\n?/gm,
+    '',
+  )
+
+  // `data-test*` attributes. Two passes (one per quote style) so a bound value
+  // can safely contain the other quote — e.g. `:data-test="'icon-' + name"`.
+  result = result.replace(
+    /\s+(?:v-bind:|:)?data-test(?:-[\w-]+)?="[^"]*"/g,
+    '',
+  )
+  result = result.replace(
+    /\s+(?:v-bind:|:)?data-test(?:-[\w-]+)?='[^']*'/g,
+    '',
+  )
+
+  return result
+}
+
+/**
  * Inject the directives needed for `@apply` / `theme()` to resolve against
  * the blökkli theme + utilities:
  * - `@reference 'tailwindcss'` registers the default Tailwind theme tokens

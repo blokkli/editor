@@ -415,12 +415,14 @@ provide(INJECT_APP, app)
 
 // Expose the full editor API on window for E2E tests.
 //
-// TODO: This is intentionally unconditional for now. E2E currently runs against
-// a production build because running it in dev mode triggers HMR reloads (from
-// async component imports like DiffApproval) that break the tests. Once that is
-// solved we should run E2E in dev mode and re-gate this behind `import.meta.dev`
-// (or a dedicated build flag) so it never reaches a real production bundle.
+// Expose the editor API on `window.__BLOKKLI__.app` so the Playwright E2E specs
+// can drive and assert against the live editor. This is a test-only seam: the
+// markers below strip it from the published library during the dist build (see
+// `scripts/mangle-dist.ts` / `stripTestSeams`). The playground builds from
+// `src/`, so the seam survives there and E2E runs against a production build.
+// blokkli-test-only:start
 useGlobalBlokkliObject().setApp(app)
+// blokkli-test-only:end
 
 function textWithHighlight(title: string, text: string): string {
   return `<strong>${title}</strong> ${text}`

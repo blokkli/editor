@@ -12,9 +12,9 @@ export interface BlokkliGlobalWindowObject {
    * augments this interface with a `test` namespace (see the playground
    * `test-cases` feature).
    *
-   * TODO: currently assigned unconditionally so E2E can run against a production
-   * build (dev-mode E2E triggers HMR reloads). Re-gate behind `import.meta.dev`
-   * so it never reaches a real production bundle once E2E can run in dev mode.
+   * The assignment is a test-only seam: its call site (in `EditProvider.vue`)
+   * is wrapped in `blokkli-test-only` markers and stripped from the published
+   * library during the dist build, so `.app` is never set in a real bundle.
    */
   app?: BlokkliApp
 }
@@ -48,10 +48,9 @@ export function useGlobalBlokkliObject() {
   }
 
   /**
-   * Expose the editor API on `window.__BLOKKLI__.app` for E2E tests.
-   *
-   * TODO: should eventually be guarded by `import.meta.dev` at the call site so
-   * it never reaches a production bundle — see the `app` field doc above.
+   * Expose the editor API on `window.__BLOKKLI__.app` for E2E tests. The call
+   * site is wrapped in `blokkli-test-only` markers and stripped from the
+   * published library during the dist build — see the `app` field doc above.
    */
   function setApp(app: BlokkliApp) {
     if (typeof window !== 'undefined' && window.__BLOKKLI__) {
