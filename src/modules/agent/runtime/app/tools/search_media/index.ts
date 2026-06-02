@@ -6,7 +6,7 @@ const paramsSchema = z.object({
     .string()
     .optional()
     .describe(
-      'Search text to filter media items. Omit or leave empty to list all available media.',
+      'Search text to filter media items. Searching for "foobar test" will search the exact full string, so prefer searching single for words.',
     ),
   bundle: z
     .string()

@@ -1,19 +1,22 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { readBlockContentFields } from '../helpers'
-import { stringArrayParam } from '../schemas'
+import { stringArrayParam, tolerantSingularKeys } from '../schemas'
 import { booleanParam } from '#blokkli/agent/shared/toolParams'
 
-const paramsSchema = z.object({
-  uuids: stringArrayParam(
-    'One or more paragraph UUIDs (or the page UUID to get page-level fields)',
-  ),
-  includeNested: booleanParam(
-    'Recursively include content fields from all nested child paragraphs (default: true). Set to false to only get direct fields.',
-  )
-    .optional()
-    .default(true),
-})
+const paramsSchema = tolerantSingularKeys(
+  z.object({
+    uuids: stringArrayParam(
+      'Array of paragraph UUIDs. To get page-level fields, pass the page UUID in this array.',
+    ),
+    includeNested: booleanParam(
+      'Recursively include content fields from all nested child paragraphs (default: true). Set to false to only get direct fields.',
+    )
+      .optional()
+      .default(true),
+  }),
+  { uuid: 'uuids' },
+)
 
 const fieldSchema = z.discriminatedUnion('type', [
   z.object({
