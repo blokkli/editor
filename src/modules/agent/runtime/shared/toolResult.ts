@@ -220,9 +220,14 @@ export class ToolResult {
   /**
    * Stale form: a volatile query whose data is outdated because a mutation
    * happened after it. Pure and idempotent.
+   *
+   * Error results are preserved verbatim — a failed call isn't "stale data",
+   * it's a failure the LLM may still need to act on (e.g. fix its input and
+   * retry). Collapsing it to a generic stale summary hides the cause.
    */
   stale(): ToolResult {
     if (this.envelope.kind === 'stale') return this
+    if (this.envelope.kind === 'error') return this
     return ToolResult.fromWire(
       JSON.stringify({ stale: true, summary: this.staleSummary }),
     )

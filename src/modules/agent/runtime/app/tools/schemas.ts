@@ -89,6 +89,39 @@ export function stringArrayParam(description: string) {
 }
 
 /**
+ * Wraps an object params schema to tolerate a singular key when the schema
+ * actually expects its plural form (e.g. `uuid` → `uuids`). LLMs — especially
+ * the smaller models — frequently pick the singular form when a tool
+ * description mentions both ("one or more UUIDs"). Without this, the call
+ * fails validation and the model often retries with the same wrong key.
+ *
+ * The generated JSON Schema is unchanged (the wrapping happens via
+ * `z.preprocess`), so the model is still guided to the plural form; the
+ * singular form is silently accepted as a fallback.
+ */
+export function tolerantSingularKeys<T extends z.ZodType>(
+  schema: T,
+  aliases: Record<string, string>,
+) {
+  return z.preprocess((value) => {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+      return value
+    }
+    const obj = value as Record<string, unknown>
+    let mutated: Record<string, unknown> | undefined
+    for (const singular of Object.keys(aliases)) {
+      const plural = aliases[singular]!
+      if (singular in obj && !(plural in obj)) {
+        if (!mutated) mutated = { ...obj }
+        mutated[plural] = mutated[singular]
+        delete mutated[singular]
+      }
+    }
+    return mutated ?? obj
+  }, schema)
+}
+
+/**
  * Shared schema for option values (used by add_blocks and set_block_options).
  */
 export const optionValueSchema = z.union([
