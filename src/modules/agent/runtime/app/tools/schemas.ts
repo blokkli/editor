@@ -108,16 +108,18 @@ export function tolerantSingularKeys<T extends z.ZodType>(
       return value
     }
     const obj = value as Record<string, unknown>
-    let mutated: Record<string, unknown> | undefined
-    for (const singular of Object.keys(aliases)) {
-      const plural = aliases[singular]!
-      if (singular in obj && !(plural in obj)) {
-        if (!mutated) mutated = { ...obj }
-        mutated[plural] = mutated[singular]
-        delete mutated[singular]
+    const remapped: Record<string, unknown> = {}
+    let touched = false
+    for (const key of Object.keys(obj)) {
+      const plural = aliases[key]
+      if (plural && !(plural in obj)) {
+        remapped[plural] = obj[key]
+        touched = true
+      } else {
+        remapped[key] = obj[key]
       }
     }
-    return mutated ?? obj
+    return touched ? remapped : obj
   }, schema)
 }
 

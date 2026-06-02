@@ -200,7 +200,7 @@ export function stripTestSeams(code: string): string {
 
   // Marker-delimited regions (works for any comment style).
   result = result.replace(
-    /^[ \t]*[^\n]*blokkli-test-only:start[\s\S]*?blokkli-test-only:end[^\n]*\n?/gm,
+    /^[^\n]*blokkli-test-only:start[\s\S]*?blokkli-test-only:end[^\n]*\n?/gm,
     '',
   )
 

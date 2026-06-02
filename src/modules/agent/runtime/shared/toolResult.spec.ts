@@ -120,7 +120,7 @@ describe('ToolResult.stale (parity with old compressVolatileToolResult)', () => 
     expect(stale.compressed().toWire()).toBe(stale.toWire())
   })
 
-  it('preserves an error result verbatim — a failed call isn\'t stale data', () => {
+  it("preserves an error result verbatim — a failed call isn't stale data", () => {
     const wire = JSON.stringify({ error: 'Invalid input: expected array' })
     const r = ToolResult.fromWire(wire)
     expect(r.stale().toWire()).toBe(wire)

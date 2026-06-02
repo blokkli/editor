@@ -427,8 +427,14 @@ export function getResolvedOptions(
 }
 
 /**
- * Read every editable content field of a block (or entity), skipping fields
- * with no resolvable type. Callers map the result into their own output shape.
+ * Read every editable content field of a block (or entity), skipping `table`
+ * fields (no text payload). Iterates the declared `editableFieldConfig` rather
+ * than the runtime `v-blokkli-editable` directive registry — the former is the
+ * canonical declaration (it sees fields exposed via `propsFieldMapping` even
+ * when no directive is present in the template), while the latter only sees
+ * fields whose template marks them with the directive. `fieldValue.readValue`
+ * already knows how to resolve a value through `propsFieldMapping`, so this
+ * one swap surfaces all editable fields to every caller.
  */
 export function readBlockContentFields(
   app: BlokkliApp,
@@ -441,21 +447,22 @@ export function readBlockContentFields(
     fieldType: FieldValueType
     value: string
   }> = []
-  for (const editable of app.directive.getEditablesForBlock(uuid)) {
-    const fieldType = app.fieldValue.resolveFieldType(
-      entityType,
-      bundle,
-      editable.fieldName,
-    )
-    if (!fieldType) continue
+  const configs = app.types.editableFieldConfig.forEntityTypeAndBundle(
+    entityType,
+    bundle,
+  )
+  for (const cfg of configs) {
+    if (cfg.type === 'table') continue
+    const fieldType: FieldValueType =
+      cfg.type === 'frame' || cfg.type === 'markup' ? 'markup' : 'plain'
     const value = app.fieldValue.readValue(
       entityType,
       uuid,
       bundle,
-      editable.fieldName,
+      cfg.name,
       fieldType,
     )
-    result.push({ fieldName: editable.fieldName, fieldType, value })
+    result.push({ fieldName: cfg.name, fieldType, value })
   }
   return result
 }

@@ -16,6 +16,7 @@
       <!-- One self-contained component per test case. Each renders its own
            trigger(s) and registers its slice of the imperative test API. -->
       <DiffApprovalCase @register="register" />
+      <AgentToolCase @register="register" />
     </div>
   </PluginSidebar>
 </template>
@@ -24,6 +25,7 @@
 import { defineBlokkliFeature, onMounted, onBeforeUnmount } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import DiffApprovalCase from './cases/DiffApproval/index.vue'
+import AgentToolCase from './cases/AgentTool/index.vue'
 import type { BlokkliTestApi } from './types'
 
 defineBlokkliFeature({

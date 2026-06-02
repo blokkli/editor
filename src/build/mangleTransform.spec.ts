@@ -3,9 +3,9 @@ import { stripTestSeams } from './mangleTransform'
 
 describe('stripTestSeams', () => {
   test('removes static data-test attributes but keeps other attributes', () => {
-    expect(
-      stripTestSeams('<div data-test="comment" class="x">a</div>'),
-    ).toBe('<div class="x">a</div>')
+    expect(stripTestSeams('<div data-test="comment" class="x">a</div>')).toBe(
+      '<div class="x">a</div>',
+    )
   })
 
   test('removes bound :data-test and v-bind:data-test attributes', () => {
@@ -14,9 +14,9 @@ describe('stripTestSeams', () => {
         '<li data-test="history-item" :data-test-history-active="i === cur" :class="{a:b}">x</li>',
       ),
     ).toBe('<li :class="{a:b}">x</li>')
-    expect(
-      stripTestSeams('<i v-bind:data-test-foo="bar" name="n" />'),
-    ).toBe('<i name="n" />')
+    expect(stripTestSeams('<i v-bind:data-test-foo="bar" name="n" />')).toBe(
+      '<i name="n" />',
+    )
   })
 
   test('handles a bound value that contains the other quote style', () => {

@@ -145,13 +145,6 @@ export default function fieldValueProvider(
     fieldName: string,
     host: EntityContext,
   ): ReadFieldValueResult | null {
-    const element = directive.findEditableElement(fieldName, host)
-    if (!element) {
-      return null
-    }
-
-    const editableData = directive.findEditable(fieldName, host)
-
     const cfg = types.editableFieldConfig.forName(
       host.type,
       host.bundle,
@@ -163,10 +156,12 @@ export default function fieldValueProvider(
 
     const fieldType: FieldValueType =
       cfg.type === 'frame' || cfg.type === 'markup' ? 'markup' : 'plain'
-    const isMarkup = cfg.type !== 'plain'
-    const isComponent = !!editableData?.isComponent
 
-    // Determine if this field uses mutated props.
+    // propsFieldMapping resolves the value directly off the block's props /
+    // entity state — no DOM element required. Try this BEFORE asking the
+    // directive registry for an element, so a field declared purely via
+    // `propsFieldMapping` (no `v-blokkli-editable` directive in the template)
+    // still resolves to its current value.
     const providerDefinition = definitions.getProviderDefinition(
       host.type,
       host.bundle,
@@ -190,16 +185,27 @@ export default function fieldValueProvider(
       }
     }
 
-    // Read the value using the correct strategy.
+    if (matchingProp) {
+      const value = providerDefinition
+        ? state.mutatedEntity.value[matchingProp] || ''
+        : (state.getFieldListItem(host.uuid)?.props?.[matchingProp] ?? '')
+      return { value, fieldType }
+    }
+
+    // No propsFieldMapping — fall back to reading from the directive-bound
+    // DOM element (or its component getter).
+    const element = directive.findEditableElement(fieldName, host)
+    if (!element) {
+      return null
+    }
+
+    const editableData = directive.findEditable(fieldName, host)
+    const isMarkup = cfg.type !== 'plain'
+    const isComponent = !!editableData?.isComponent
+
     let value: string
     if (isComponent && editableData?.getValue) {
       value = editableData.getValue()
-    } else if (matchingProp) {
-      if (providerDefinition) {
-        value = state.mutatedEntity.value[matchingProp] || ''
-      } else {
-        value = state.getFieldListItem(host.uuid)?.props?.[matchingProp] ?? ''
-      }
     } else if (isMarkup) {
       value = element.innerHTML
     } else {

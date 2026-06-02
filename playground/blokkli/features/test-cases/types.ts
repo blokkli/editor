@@ -1,3 +1,5 @@
+import type { AgentToolMap, AgentToolName } from '#blokkli-build/agent-client'
+
 /**
  * Imperative test API exposed on `window.__BLOKKLI__.test` by the playground
  * `test-cases` feature.
@@ -28,4 +30,15 @@ export interface BlokkliTestApi {
     uuid?: string
     value: string
   }) => Promise<{ applied: boolean }>
+
+  /**
+   * Invoke an agent client tool directly (no LLM, no WebSocket) and return its
+   * result — exactly what the LLM would see in the tool_result `content`,
+   * unwrapped from the query envelope. Use for assertions about a tool's
+   * return value (what content it exposes), not about how the agent frames it.
+   */
+  runAgentTool: <T extends AgentToolName>(
+    name: T,
+    params: AgentToolMap[T]['params'],
+  ) => Promise<AgentToolMap[T]['result']>
 }

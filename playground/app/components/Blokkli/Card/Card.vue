@@ -30,7 +30,6 @@
         v-text="title"
       />
       <p
-        v-blokkli-editable:text
         class="text-sm md:text-base"
         :class="{ 'text-mono-400': isInverted }"
         v-text="text"
