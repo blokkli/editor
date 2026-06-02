@@ -12,3 +12,5 @@ declare module '#blokkli/editor/types/permissions' {
     take_ownership: 'Take ownership of edit state'
   }
 }
+
+export {}

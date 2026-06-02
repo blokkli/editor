@@ -6,3 +6,5 @@ declare module '#blokkli/editor/adapter' {
     deleteBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
   }
 }
+
+export {}

@@ -7,3 +7,5 @@ declare module '#blokkli/editor/adapter' {
     getGridMarkup?: () => Promise<string> | string
   }
 }
+
+export {}

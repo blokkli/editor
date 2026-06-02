@@ -14,3 +14,5 @@ declare module '#blokkli/editor/adapter' {
     ) => Promise<MutationResponseLike<T>>
   }
 }
+
+export {}

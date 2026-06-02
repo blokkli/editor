@@ -7,3 +7,5 @@ declare module '#blokkli/editor/adapter' {
     buildAnchorLink?: (id: string, uuid: string) => string
   }
 }
+
+export {}

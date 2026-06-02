@@ -6,3 +6,5 @@ declare module '#blokkli/editor/adapter' {
     revertAllChanges?: () => Promise<MutationResponseLike<T>>
   }
 }
+
+export {}

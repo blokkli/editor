@@ -13,3 +13,5 @@ declare module '#blokkli/editor/adapter' {
       | null
   }
 }
+
+export {}

@@ -6,3 +6,5 @@ declare module '#blokkli/editor/adapter' {
     duplicateBlocks?: (uuids: string[]) => Promise<MutationResponseLike<T>>
   }
 }
+
+export {}
