@@ -36,7 +36,7 @@ export default defineBlokkliAgentTool({
   description:
     "Translate every editable text field of one or more paragraphs into the currently-edited language using the backend's configured translation service (e.g. DeepL via Drupal) — not the agent's own LLM. The user reviews each translation in a diff approval UI before it is applied. Only available in translating mode and only when the adapter exposes a translation service. Prefer this when the user asks for an automatic translation; use `delegate_text_rewrite` with `template: 'translate'` only when the user specifically wants the agent to do the translation, or when no backend translation service is configured.",
   category: 'mutation',
-  lazy: true,
+  lazy: false,
   modes: ['translating'],
   prunedSummary: (r) =>
     `${r.acceptedCount || 0} accepted, ${Object.keys(r.rejectedByUser || {}).length} rejected`,
