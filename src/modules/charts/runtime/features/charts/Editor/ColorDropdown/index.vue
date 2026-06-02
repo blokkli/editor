@@ -7,12 +7,10 @@
       />
     </template>
     <template #default="{ close }">
-      <button
+      <DropdownItem
         v-for="entry in colorOptions"
         :key="entry.id"
-        type="button"
-        class="bk-dropdown-menu-item min-w-[200px] group/item"
-        :class="{ 'bk-is-active': colorId === entry.id }"
+        :text="entry.label"
         @click="
           () => {
             emit('select', entry.id)
@@ -24,22 +22,14 @@
           class="bk-chart-color-swatch"
           :style="{ backgroundColor: entry.hex }"
         />
-        <span
-          :class="{
-            'text-mono-500 font-normal group-hover/item:text-mono-900':
-              colorId !== entry.id,
-            'font-bold': colorId === entry.id,
-          }"
-          >{{ entry.label }}</span
-        >
-      </button>
+      </DropdownItem>
     </template>
   </Dropdown>
 </template>
 
 <script setup lang="ts">
 import { computed, useBlokkli } from '#imports'
-import { Dropdown } from '#blokkli/editor/components'
+import { Dropdown, DropdownItem } from '#blokkli/editor/components'
 
 const props = defineProps<{
   colorId: string

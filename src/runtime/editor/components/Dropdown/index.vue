@@ -160,21 +160,5 @@ defineExpose({ close })
       @apply origin-top-right;
     }
   }
-
-  .bk-dropdown-menu-item {
-    @apply w-full flex items-center gap-8 px-10 py-10;
-    @apply text-sm text-mono-700 text-left;
-    @apply border-none bg-transparent cursor-pointer;
-    @apply hover:bg-mono-100 hover:text-mono-950;
-    @apply whitespace-nowrap leading-none;
-
-    &:hover svg {
-      @apply fill-accent-700;
-    }
-
-    svg {
-      @apply size-18 fill-current;
-    }
-  }
 }
 </style>
