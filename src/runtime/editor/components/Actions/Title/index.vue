@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, useBlokkli } from '#imports'
+import { watch, computed, nextTick, useBlokkli } from '#imports'
 import { falsy } from '#blokkli/helpers'
 import {
   Icon,
@@ -155,9 +155,14 @@ const showDropdown = computed({
 async function onToggleDropdown() {
   const willOpen = !showDropdown.value
   // Opening the dropdown moves away from the options form; persist any pending
-  // option changes first.
+  // option changes first. The flush triggers a mutation that bumps
+  // `state.refreshKey`, which remounts the teleported OptionsForm inside the
+  // same parent as the dropdown — toggling the v-if synchronously after the
+  // await would race with that remount and crash the renderer on a null
+  // anchor (`nextSibling`). One nextTick lets the teleport patch settle.
   if (willOpen) {
     await ui.flushPendingChanges()
+    await nextTick()
   }
   showDropdown.value = willOpen
 }
