@@ -5,6 +5,8 @@
     />
     <div
       class="bk bk-control bk-diff-approval-toolbar self-end pointer-events-auto bg-mono-900 text-mono-50 select-none relative mx-15 mb-15 rounded shadow-xl-even outline outline-1 outline-mono-400"
+      data-test="diff-approval-toolbar"
+      :data-test-selected="!!selected[currentItem.id]"
     >
       <div
         class="text-mono-100 font-medium text-sm border-b border-b-mono-600 flex justify-between items-center"

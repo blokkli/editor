@@ -10,6 +10,9 @@
         : 'border hover:border-mono-500 hover:bg-mono-400/20',
     ]"
     :style="rect"
+    data-test="diff-approval-highlight-item"
+    :data-test-active="active"
+    :data-test-selected="selected"
   >
     <button class="size-full block" @click.prevent="$emit('activate')" />
     <button

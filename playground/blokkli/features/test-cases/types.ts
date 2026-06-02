@@ -17,8 +17,14 @@ export interface BlokkliTestApi {
    * Resolves with `{ applied }` once the preview is applied or cancelled (from
    * the toolbar or programmatically). Applying does not mutate anything — this
    * is a pure preview/cleanup scenario that exercises DOM restoration.
+   *
+   * Pass `{ reverseOrder: true }` to send the items in reverse visual order, so
+   * `props.items` order differs from the sorted display order — used by the
+   * keyboard-sync regression test.
    */
-  runDiffApproval: () => Promise<{ applied: boolean }>
+  runDiffApproval: (opts?: {
+    reverseOrder?: boolean
+  }) => Promise<{ applied: boolean }>
 
   /**
    * Show a single-field diff whose apply performs a REAL mutation (persists

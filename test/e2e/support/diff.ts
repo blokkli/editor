@@ -16,6 +16,7 @@ import type { Page } from 'playwright-core'
  */
 export async function runDiffApproval(
   page: Page,
+  opts?: { reverseOrder?: boolean },
 ): Promise<{ applied: boolean }> {
   // The `test-cases` feature registers this once its sidebar pane mounts, so
   // the test must `openSidebar(page, 'test-cases')` first. Wait for the actual
@@ -23,7 +24,10 @@ export async function runDiffApproval(
   await page.waitForFunction(
     () => typeof window.__BLOKKLI__?.test?.runDiffApproval === 'function',
   )
-  return page.evaluate(() => window.__BLOKKLI__!.test!.runDiffApproval())
+  return page.evaluate(
+    (opts) => window.__BLOKKLI__!.test!.runDiffApproval(opts),
+    opts,
+  )
 }
 
 /**

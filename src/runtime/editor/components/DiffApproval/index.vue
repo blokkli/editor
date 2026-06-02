@@ -114,7 +114,7 @@ const items = [...props.items].sort((a, b) => {
 const currentIndex = ref(0)
 
 const currentItem = computed<ApprovalItem | null>(() => {
-  return props.items.at(currentIndex.value) ?? null
+  return items.at(currentIndex.value) ?? null
 })
 
 const selected = reactive<Record<number, boolean>>(
@@ -201,7 +201,7 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 onBlokkliEvent('editable:focus', (e) => {
-  const index = props.items.findIndex(
+  const index = items.findIndex(
     (item) => item.fieldName === e.fieldName && item.uuid === e.uuid,
   )
   if (index !== -1) {

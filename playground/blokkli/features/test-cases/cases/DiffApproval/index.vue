@@ -4,7 +4,7 @@
     class="bk-button bk-scheme-mono bk-is-small"
     data-test="run-diff-approval"
     :disabled="!!pendingDiff"
-    @click.prevent="runDiffApproval"
+    @click.prevent="() => runDiffApproval()"
   >
     Diff approval (host title + lead + a card title)
   </button>
@@ -100,10 +100,18 @@ function buildDiffApprovalItems(): ApprovalItem[] {
   return items
 }
 
-function runDiffApproval(): Promise<{ applied: boolean }> {
-  const items = buildDiffApprovalItems()
+function runDiffApproval(opts?: {
+  reverseOrder?: boolean
+}): Promise<{ applied: boolean }> {
+  let items = buildDiffApprovalItems()
   if (!items.length) {
     return Promise.resolve({ applied: false })
+  }
+  // Pass items in reverse so prop order ≠ visual sort order — required to
+  // exercise the keyboard-sync bug between toolbar and highlight (Space/Enter
+  // would silently agree if both orders matched).
+  if (opts?.reverseOrder) {
+    items = items.slice().reverse()
   }
   applyMutates = false
   pendingDiff.value = items
