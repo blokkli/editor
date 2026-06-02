@@ -7,6 +7,8 @@ import type {
 import type { EditMode } from '#blokkli/editor/types/state'
 import {
   agentErrorTypeSchema,
+  selectedBlockSchema,
+  type SelectedBlock,
   type UsageTurn,
 } from '#blokkli/agent/shared/types'
 import { z } from 'zod'
@@ -406,7 +408,7 @@ export type AgentPromptDefinition = {
    */
   preExecute?: (ctx: {
     app: BlokkliApp
-    selectedUuids: string[]
+    selectedBlocks: SelectedBlock[]
     runTool: <T extends AgentToolName>(
       toolName: T,
       params: AgentToolMap[T]['params'],
@@ -485,7 +487,7 @@ const userConversationItemSchema = conversationItemBase.extend({
    * Original send parameters captured so retry produces byte-identical
    * execution — important for prompt-definition-driven sends where the
    * displayed text is a friendly label but the real work was driven by
-   * `selectedUuids`, pre-computed tool results, auto-executed tools, and
+   * `selectedBlocks`, pre-computed tool results, auto-executed tools, and
    * auto-loaded tools/skills.
    *
    * Retry replays this context as-is. Edit discards `preSeededResults` and
@@ -496,7 +498,7 @@ const userConversationItemSchema = conversationItemBase.extend({
     .object({
       promptId: z.string().optional(),
       serverPrompt: z.string().optional(),
-      selectedUuids: z.array(z.string()).optional(),
+      selectedBlocks: z.array(selectedBlockSchema).optional(),
       autoLoadTools: z.array(z.string()).optional(),
       autoLoadSkills: z.array(z.string()).optional(),
       preSeededResults: z

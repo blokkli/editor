@@ -30,12 +30,12 @@ export default defineBlokkliAgentPrompt({
           )
         },
 
-        async preExecute({ selectedUuids, runTool }) {
+        async preExecute({ selectedBlocks, runTool }) {
           const readability = await runTool(
             'get_readability_issues',
-            selectedUuids.length
+            selectedBlocks.length
               ? {
-                  uuids: selectedUuids,
+                  uuids: selectedBlocks.map((b) => b.uuid),
                 }
               : {},
           )

@@ -94,7 +94,7 @@ provide(INJECT_AGENT_APP, agentApp)
 async function consumePromptRequest(request: PendingPromptRequest) {
   emit('consumed')
 
-  const { prompt, selectedUuids } = request
+  const { prompt, selectedBlocks } = request
   const promptText = prompt.getPrompt(blokkli)
   const userPromptText = prompt.getUserPrompt?.(blokkli)
 
@@ -104,7 +104,7 @@ async function consumePromptRequest(request: PendingPromptRequest) {
   if (prompt.preExecute) {
     const preResult = await prompt.preExecute({
       app: blokkli,
-      selectedUuids,
+      selectedBlocks,
       runTool: tools.runForPrompt,
     })
     if (preResult) {
@@ -116,7 +116,7 @@ async function consumePromptRequest(request: PendingPromptRequest) {
   agent.sendPrompt({
     prompt: promptText,
     displayPrompt: userPromptText,
-    selectedUuids,
+    selectedBlocks,
     autoLoadTools: prompt.tools,
     autoLoadSkills: prompt.skills,
     preSeededResults,

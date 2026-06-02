@@ -7,6 +7,7 @@ import type {
 import type {
   ServerMessage,
   PageContext,
+  SelectedBlock,
   UsageTurn,
 } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
@@ -25,7 +26,7 @@ import type { ToolsProvider } from './toolsProvider'
 export type SendPromptOptions = {
   prompt: string
   displayPrompt?: string
-  selectedUuids?: string[]
+  selectedBlocks?: SelectedBlock[]
   attachments?: Attachment[]
   autoLoadTools?: string[]
   autoLoadSkills?: string[]
@@ -80,7 +81,7 @@ function buildSendContext(options: SendPromptOptions) {
   const {
     prompt,
     displayPrompt,
-    selectedUuids,
+    selectedBlocks,
     autoLoadTools,
     autoLoadSkills,
     preSeededResults,
@@ -91,7 +92,7 @@ function buildSendContext(options: SendPromptOptions) {
   const hasData =
     !!promptId ||
     (displayPrompt !== undefined && displayPrompt !== prompt) ||
-    !!selectedUuids?.length ||
+    !!selectedBlocks?.length ||
     !!autoLoadTools?.length ||
     !!autoLoadSkills?.length ||
     !!preSeededResults?.length ||
@@ -104,7 +105,7 @@ function buildSendContext(options: SendPromptOptions) {
       displayPrompt !== undefined && displayPrompt !== prompt
         ? prompt
         : undefined,
-    selectedUuids: selectedUuids?.length ? [...selectedUuids] : undefined,
+    selectedBlocks: selectedBlocks?.length ? [...selectedBlocks] : undefined,
     autoLoadTools: autoLoadTools?.length ? [...autoLoadTools] : undefined,
     autoLoadSkills: autoLoadSkills?.length ? [...autoLoadSkills] : undefined,
     preSeededResults: preSeededResults?.length ? preSeededResults : undefined,
@@ -383,7 +384,7 @@ export default function agentProvider({
     const {
       prompt,
       displayPrompt,
-      selectedUuids,
+      selectedBlocks,
       attachments,
       autoLoadTools,
       autoLoadSkills,
@@ -468,7 +469,7 @@ export default function agentProvider({
     socket.send({
       type: 'start',
       prompt,
-      selectedUuids: selectedUuids?.length ? selectedUuids : undefined,
+      selectedBlocks: selectedBlocks?.length ? selectedBlocks : undefined,
       autoLoadTools: resolvedAutoLoadTools?.length
         ? resolvedAutoLoadTools
         : undefined,
@@ -548,7 +549,7 @@ export default function agentProvider({
       displayPrompt: isEdit ? undefined : displayedText,
       attachments: target.attachments,
       rollbackToUserMessageIndex: userMessageIndex,
-      selectedUuids: ctx?.selectedUuids,
+      selectedBlocks: ctx?.selectedBlocks,
       autoLoadTools: ctx?.autoLoadTools,
       autoLoadSkills: ctx?.autoLoadSkills,
       preSeededResults: isEdit ? undefined : ctx?.preSeededResults,

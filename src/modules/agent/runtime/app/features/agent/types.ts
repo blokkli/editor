@@ -2,6 +2,7 @@ import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { AdapterSearchArguments } from '#blokkli/editor/adapter'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
+import type { SelectedBlock } from '#blokkli/agent/shared/types'
 
 /**
  * A pending request from the outer feature's item-dropdown action that the
@@ -9,7 +10,7 @@ import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
  */
 export type PendingPromptRequest = {
   prompt: AgentPromptDefinition
-  selectedUuids: string[]
+  selectedBlocks: SelectedBlock[]
 }
 
 export type AgentConversationHostInfo = {

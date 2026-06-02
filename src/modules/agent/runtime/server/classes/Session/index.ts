@@ -10,6 +10,7 @@ import type {
   GenericContentBlock,
   GenericTextBlock,
   GenericSkillBlock,
+  SelectedBlock,
   Transcript,
 } from '../../../shared/types'
 import { coerceStringifiedParams } from '../../../shared/toolParams'
@@ -190,7 +191,7 @@ export class Session {
     prompt: string,
     apiKey: string,
     authSecret: string,
-    selectedUuids?: string[],
+    selectedBlocks?: SelectedBlock[],
     autoLoadTools?: string[],
     autoLoadSkills?: string[],
     preSeededResults?: {
@@ -239,7 +240,7 @@ export class Session {
       prompt,
       apiKey,
       authSecret,
-      selectedUuids,
+      selectedBlocks,
       autoLoadTools,
       autoLoadSkills,
       preSeededResults,
@@ -494,7 +495,7 @@ export class Session {
     prompt: string,
     apiKey: string,
     authSecret: string,
-    selectedUuids?: string[],
+    selectedBlocks?: SelectedBlock[],
     autoLoadTools?: string[],
     autoLoadSkills?: string[],
     preSeededResults?: {
@@ -571,9 +572,14 @@ export class Session {
     // Build initial user message with context
     const userParts: string[] = []
 
-    if (selectedUuids?.length) {
+    if (selectedBlocks?.length) {
+      const formatted = selectedBlocks
+        .map((b) => `${b.bundle} (${b.uuid})`)
+        .join(', ')
       userParts.push(
-        `[User has selected the following paragraphs: ${selectedUuids.join(', ')}]`,
+        selectedBlocks.length === 1
+          ? `[User has selected one block: ${formatted}]`
+          : `[User has selected: ${formatted}]`,
       )
     }
 

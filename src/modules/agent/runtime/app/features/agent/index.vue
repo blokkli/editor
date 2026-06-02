@@ -173,7 +173,11 @@ defineItemDropdownAction(() => {
           app.eventBus.emit('sidebar:open', 'agent')
           pendingPromptRequest.value = {
             prompt,
-            selectedUuids: [...app.selection.uuids.value],
+            selectedBlocks: app.selection.items.value.map((item) => ({
+              uuid: item.uuid,
+              bundle: item.bundle,
+              label: app.types.getBlockLabel(item.bundle),
+            })),
           }
         },
       }

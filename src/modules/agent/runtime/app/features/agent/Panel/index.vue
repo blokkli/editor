@@ -281,8 +281,25 @@ function scrollToBottomOnSend() {
   nextTick(scrollToBottom)
 }
 
+/**
+ * Snapshot the current selection in the wire shape — but only on the first
+ * user message of a conversation. After that the user may have re-selected,
+ * so the agent should call `get_selected_paragraphs` to read the current
+ * selection rather than trust a stale snapshot.
+ */
+function snapshotInitialSelection() {
+  if (conversation.value.length) return undefined
+  const items = app.selection.items.value
+  if (!items.length) return undefined
+  return items.map((item) => ({
+    uuid: item.uuid,
+    bundle: item.bundle,
+    label: app.types.getBlockLabel(item.bundle),
+  }))
+}
+
 function onWelcomePrompt(prompt: string) {
-  agent.sendPrompt({ prompt })
+  agent.sendPrompt({ prompt, selectedBlocks: snapshotInitialSelection() })
   scrollToBottomOnSend()
 }
 
@@ -295,8 +312,10 @@ function onSubmit(submitAttachments: Attachment[]) {
   )
     return
 
+  const selectedBlocks = snapshotInitialSelection()
+
   if (!submitAttachments.length) {
-    agent.sendPrompt({ prompt: inputValue.value })
+    agent.sendPrompt({ prompt: inputValue.value, selectedBlocks })
   } else {
     const attachmentBlocks = submitAttachments
       .map(
@@ -311,6 +330,7 @@ function onSubmit(submitAttachments: Attachment[]) {
       prompt,
       displayPrompt: text,
       attachments: submitAttachments,
+      selectedBlocks,
     })
   }
 

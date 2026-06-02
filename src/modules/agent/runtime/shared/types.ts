@@ -470,6 +470,23 @@ export const pageStructureSchema = z.object({
 
 export type PageStructure = z.infer<typeof pageStructureSchema>
 
+/**
+ * A block the user had selected when sending the initial message. The bundle
+ * and label travel with the UUID so the LLM can disambiguate "this" / "these"
+ * without an extra `get_selected_paragraphs` round-trip.
+ */
+export type SelectedBlock = {
+  uuid: string
+  bundle: string
+  label: string
+}
+
+export const selectedBlockSchema = z.object({
+  uuid: z.string(),
+  bundle: z.string(),
+  label: z.string(),
+})
+
 const genericContentBlockSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('text'), text: z.string() }),
   z.object({ type: z.literal('skill'), name: z.string(), text: z.string() }),
@@ -514,7 +531,7 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('start'),
     prompt: z.string(),
-    selectedUuids: z.array(z.string()).optional(),
+    selectedBlocks: z.array(selectedBlockSchema).optional(),
     autoLoadTools: z.array(z.string()).optional(),
     autoLoadSkills: z.array(z.string()).optional(),
     preSeededResults: z

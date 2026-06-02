@@ -108,7 +108,7 @@ export default defineWebSocketHandler({
             data.prompt,
             apiKey,
             authSecret,
-            data.selectedUuids,
+            data.selectedBlocks,
             data.autoLoadTools,
             data.autoLoadSkills,
             data.preSeededResults,
