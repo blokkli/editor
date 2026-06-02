@@ -71,6 +71,7 @@ export const USED_MATERIAL_ICONS = [
   'bk_mdi_exit_to_app',
   'bk_mdi_expand_all',
   'bk_mdi_extension',
+  'bk_mdi_eye_tracking',
   'bk_mdi_feature_search',
   'bk_mdi_fit_screen',
   'bk_mdi_format_bold',

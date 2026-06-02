@@ -13,7 +13,7 @@
       :data-test-open="isVisible"
       @click.prevent="isVisible = !isVisible"
     >
-      <Icon name="bk_mdi_visibility" />
+      <Icon name="bk_mdi_eye_tracking" />
       <Tooltip
         :label="$t('viewOptions', 'View options')"
         placement="below-right"
