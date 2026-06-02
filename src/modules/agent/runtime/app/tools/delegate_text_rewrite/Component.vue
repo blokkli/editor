@@ -36,6 +36,7 @@
     :items="completedItems"
     show-reason
     @apply="applySelected"
+    @cancel="rejectAllFromApproval"
   />
 
   <ToolCard
@@ -63,6 +64,7 @@ import {
   rejectedWithoutReasonMessage,
   skippedFieldsMessage,
   appendAgentNote,
+  type RejectedByUser,
 } from '../fieldDiffApproval'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
@@ -191,6 +193,24 @@ function finishWithError() {
     rejectedByUser: {},
     label: $t('rewritingFailed', 'Rewriting failed'),
     agentMessage: `Rewriting failed: ${errorMessage.value}`,
+    _usage: streamUsage.value,
+  })
+}
+
+function rejectAllFromApproval() {
+  const rejectedByUser: RejectedByUser = {}
+  for (const item of completedItems.value) {
+    const fields = rejectedByUser[item.uuid] ?? {}
+    fields[item.fieldName] = { reasonForRejection: '' }
+    rejectedByUser[item.uuid] = fields
+  }
+
+  emitDone({
+    acceptedCount: 0,
+    rejectedByUser,
+    label: $t('aiAgentDelegateRewriteAllRejected', 'All changes rejected'),
+    agentMessage:
+      'All proposed changes were rejected by the user. Ask the user what they would like to change instead.',
     _usage: streamUsage.value,
   })
 }

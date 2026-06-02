@@ -70,12 +70,14 @@ export default defineWebSocketHandler({
       }
 
       // Reject state-mutating messages while the agent is processing.
+      // `new_conversation` is intentionally allowed through: it aborts the
+      // in-flight LLM call and clears pending tool calls, which is exactly
+      // what the user wants when they hit "new conversation" mid-approval.
       if (session.isProcessing) {
         switch (data.type) {
           case 'init':
           case 'accept':
           case 'reject':
-          case 'new_conversation':
           case 'restore_conversation':
             send(peer, {
               type: 'error',

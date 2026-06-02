@@ -334,6 +334,13 @@ export class Session {
 
   newConversation(peer: Peer, authSecret: string): void {
     this.abortController?.abort()
+    // Reject any in-flight tool calls so the agent loop doesn't hang and any
+    // late tool_result the client sends for them is a no-op against the fresh
+    // session (resolveToolResult silently ignores unknown callIds).
+    for (const pending of this.pendingToolCalls.values()) {
+      pending.reject(new Error('Cancelled'))
+    }
+    this.pendingToolCalls.clear()
     this.history.clear()
     this.lastTools = []
     this.lastDebugPayload = null
