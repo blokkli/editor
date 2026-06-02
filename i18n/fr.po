@@ -316,6 +316,34 @@ msgctxt "aiAgentAskQuestionRunning"
 msgid "Waiting for answer"
 msgstr ""
 
+msgctxt "aiAgentAutoTranslateAllApplied"
+msgid "All @count translations applied"
+msgstr ""
+
+msgctxt "aiAgentAutoTranslateAllRejected"
+msgid "All translations rejected"
+msgstr ""
+
+msgctxt "aiAgentAutoTranslateFailed"
+msgid "Translation request failed"
+msgstr ""
+
+msgctxt "aiAgentAutoTranslateNoFields"
+msgid "No text fields to translate"
+msgstr ""
+
+msgctxt "aiAgentAutoTranslateNoSource"
+msgid "No source language available"
+msgstr ""
+
+msgctxt "aiAgentAutoTranslateRunning"
+msgid "Auto-translating"
+msgstr ""
+
+msgctxt "aiAgentAutoTranslateSomeApplied"
+msgid "@applied of @total translations applied"
+msgstr ""
+
 msgctxt "aiAgentAwaitingApproval"
 msgid "Awaiting your approval"
 msgstr ""
@@ -2021,7 +2049,7 @@ msgid "Y-axis start"
 msgstr "Début de l'axe Y"
 
 msgctxt "checkingReadability"
-msgid "Checking readability..."
+msgid "Checking readability"
 msgstr ""
 
 msgctxt "clearInput"
