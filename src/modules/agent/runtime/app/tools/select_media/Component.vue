@@ -14,7 +14,7 @@
         @click="selectedId = item.mediaId"
       >
         <div
-          class="w-40 h-40 bg-mono-100 rounded overflow-hidden shrink-0 flex items-center justify-center"
+          class="size-100 bg-mono-100 rounded overflow-hidden shrink-0 flex items-center justify-center"
           :class="{
             'outline outline-accent-700 relative z-40':
               selectedId === item.mediaId,
