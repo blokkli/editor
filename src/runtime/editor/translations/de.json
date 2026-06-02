@@ -159,6 +159,8 @@
   "aiAgentGetMutationHistoryRunning": "Änderungsverlauf abrufen",
   "aiAgentGetPageStructureDone": "Seitenstruktur erhalten (@count Absätze)",
   "aiAgentGetPageStructureRunning": "Seitenstruktur wird geladen",
+  "aiAgentGetPageTextDone": "Seitentext gelesen",
+  "aiAgentGetPageTextRunning": "Seitentext lesen",
   "aiAgentGetReferencedEntitiesDone": "@count verwandte Inhalte geladen",
   "aiAgentGetReferencedEntitiesRunning": "Verwandte Inhalte laden",
   "aiAgentGetSelectedBlocksDone": "@count Blöcke ausgewählt",

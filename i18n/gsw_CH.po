@@ -662,6 +662,14 @@ msgctxt "aiAgentGetPageStructureRunning"
 msgid "Getting page structure"
 msgstr "Sittestruktur würd gholt..."
 
+msgctxt "aiAgentGetPageTextDone"
+msgid "Read page content"
+msgstr "Sittetext gläse"
+
+msgctxt "aiAgentGetPageTextRunning"
+msgid "Reading page content"
+msgstr "Sittetext würd gläse..."
+
 msgctxt "aiAgentGetReferencedEntitiesDone"
 msgid "Resolved @count referenced entities"
 msgstr "@count verwandti Inhalt glade"
@@ -2054,7 +2062,7 @@ msgid "Y-axis start"
 msgstr "Y-Achse-Aafangswärt"
 
 msgctxt "checkingReadability"
-msgid "Checking readability"
+msgid "Checking readability..."
 msgstr ""
 
 msgctxt "clearInput"

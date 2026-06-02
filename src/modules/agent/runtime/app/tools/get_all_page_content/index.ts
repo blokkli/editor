@@ -27,7 +27,15 @@ const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'get_all_page_content',
   description:
-    'Get all text content from the entire page in a single call. Returns a flat list of all paragraphs with their concatenated text. Use this as the first tool when reviewing or analyzing page content.',
+    'Get a flat list of every paragraph on the page with its uuid, bundle, ' +
+    'and the concatenated text of its OWN editable fields (does NOT follow ' +
+    'references — a teaser appears with empty text). Use this when you need ' +
+    'per-block uuids to act on specific blocks (translate, rewrite, delete). ' +
+    'For any question about what the page SAYS — summarising, writing an ' +
+    'intro that matches the content, translating the page, reviewing meaning ' +
+    '— call `get_page_text` instead; it reads the actual rendered DOM (so ' +
+    'teaser/referenced content is included) and returns Markdown the LLM can ' +
+    'reason about directly.',
   category: 'query',
   lazy: true,
   volatile: true,
