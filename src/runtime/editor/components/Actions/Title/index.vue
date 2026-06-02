@@ -92,15 +92,16 @@
       />
     </button>
     <div
-      v-if="editingEnabled"
-      v-show="showDropdown"
+      v-show="showDropdown && editingEnabled"
       id="bk-blokkli-item-actions-dropdown"
       class="absolute bottom-full left-0 min-w-[300px] bg-mono-900 text-mono-200 shadow-xl-inverted w-screen lg:w-auto flex flex-col lg:top-full lg:bottom-auto lg:shadow-xl lg:left-[23px]"
     >
-      <EditActionsItemDropdown
-        v-if="showDropdown"
-        @close="showDropdown = false"
-      />
+      <div>
+        <EditActionsItemDropdown
+          v-if="showDropdown"
+          @close="showDropdown = false"
+        />
+      </div>
     </div>
   </div>
 </template>
