@@ -2721,7 +2721,7 @@ type Mutation {
   paragraphsBlokkliEditComment(body: String!, entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
 
   """Request translations via DeepL."""
-  paragraphsBlokkliRequestTranslation(items: [ParagraphsBlokkliTranslationInput!]!): ParagraphsBlokkliTranslationResult!
+  paragraphsBlokkliRequestTranslation(items: [ParagraphsBlokkliTranslationInput!]!): ParagraphsBlokkliTranslationResult
   paragraphsBlokkliResolveComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
   paragraphsBlokkliToggleCommentTaskItem(entityType: EntityType!, entityUuid: String!, langcode: String!, taskIndex: Int!, uuid: String!): [ParagraphsBlokkliComment]
@@ -7175,7 +7175,7 @@ type Query {
 
     """Zero-indexed page number for pagination."""
     page: Int
-  ): ParagraphsBlokkliAgentFeedbackSearchResults!
+  ): ParagraphsBlokkliAgentFeedbackSearchResults
 
   """
   Returns the most recently changed conversation of the current user for the
@@ -7205,7 +7205,7 @@ type Query {
 
     """Zero-indexed page number for pagination."""
     page: Int
-  ): ParagraphsBlokkliAgentConversationSearchResults!
+  ): ParagraphsBlokkliAgentConversationSearchResults
 
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliAllowedTypes: [ParagraphsBlokkliAllowedType!]
@@ -7213,9 +7213,9 @@ type Query {
 
   """Get the array of allowed paragraph types by entity field."""
   paragraphsBlokkliConversions: [ParagraphsBlokkliConversion!]
-  paragraphsBlokkliEditStatesSummary: [ParagraphsBlokkliEditStateSummary!]!
+  paragraphsBlokkliEditStatesSummary: [ParagraphsBlokkliEditStateSummary!]
   paragraphsBlokkliEntitiesSearch: ParagraphsBlokkliEntitiesSearchResult
-  paragraphsBlokkliEntityTypeConfig: [ParagraphsBlokkliEntityTypeConfig!]!
+  paragraphsBlokkliEntityTypeConfig: [ParagraphsBlokkliEntityTypeConfig!]
 
   """
   Serialize selected paragraphs from an edit state into a portable
@@ -7226,7 +7226,7 @@ type Query {
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliGetUser: ParagraphsBlokkliUser
-  paragraphsBlokkliGetUsers: [ParagraphsBlokkliUserSearchItem!]!
+  paragraphsBlokkliGetUsers: [ParagraphsBlokkliUserSearchItem!]
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
   paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults
   paragraphsBlokkliSearchTabs: [ParagraphsBlokkliSearchTab]
@@ -7343,7 +7343,7 @@ type Query {
   Get the number of unread notifications for the current user. Cheap to poll;
   invalidated whenever the user's notifications change.
   """
-  pbGetNotificationCount: Int!
+  pbGetNotificationCount: Int
 }
 
 """Redirect"""

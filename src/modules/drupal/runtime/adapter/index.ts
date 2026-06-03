@@ -270,7 +270,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           },
           {},
         ),
-        entityTypeConfig: v.data.entityTypeConfig,
+        entityTypeConfig: v.data.entityTypeConfig ?? [],
       }
     })
 
@@ -1897,7 +1897,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
         list: () =>
           useGraphqlQuery('pbAgentConversations', { host: hostInput() }).then(
-            (v) => v.data.result.items,
+            (v) => v.data.result?.items ?? [],
           ),
 
         delete: (uuid) =>
@@ -1919,37 +1919,47 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       if (hasQuery('pbAgentConversationsAll')) {
         adapter.agentConversations.queryConversations = (e) =>
           useGraphqlQuery('pbAgentConversationsAll', { page: e.page }).then(
-            (v) => ({
-              filters: mapPluginConfigInputs(v.data.result.filters),
-              items: v.data.result.items.map((c) => ({
-                uuid: c.uuid,
-                title: c.title,
-                createdAt: c.createdAt,
-                updatedAt: c.updatedAt,
-                host: c.host
-                  ? {
-                      entityType: c.host.entityType,
-                      entityUuid: c.host.entityUuid,
-                      label: c.host.label ?? null,
-                      editUrl: c.host.editUrl ?? null,
-                    }
-                  : null,
-                author: mapBlokkliUser(c.author),
-              })),
-              perPage: v.data.result.perPage,
-              total: v.data.result.total,
-            }),
+            (v) => {
+              if (!v.data.result) {
+                throw new Error('Failed to load agent conversations.')
+              }
+              return {
+                filters: mapPluginConfigInputs(v.data.result.filters),
+                items: v.data.result.items.map((c) => ({
+                  uuid: c.uuid,
+                  title: c.title,
+                  createdAt: c.createdAt,
+                  updatedAt: c.updatedAt,
+                  host: c.host
+                    ? {
+                        entityType: c.host.entityType,
+                        entityUuid: c.host.entityUuid,
+                        label: c.host.label ?? null,
+                        editUrl: c.host.editUrl ?? null,
+                      }
+                    : null,
+                  author: mapBlokkliUser(c.author),
+                })),
+                perPage: v.data.result.perPage,
+                total: v.data.result.total,
+              }
+            },
           )
       }
 
       if (hasQuery('pbAgentFeedbackAll')) {
         adapter.agentConversations.queryFeedback = (e) =>
-          useGraphqlQuery('pbAgentFeedbackAll', { page: e.page }).then((v) => ({
-            filters: mapPluginConfigInputs(v.data.result.filters),
-            items: v.data.result.items.map(mapFeedback),
-            perPage: v.data.result.perPage,
-            total: v.data.result.total,
-          }))
+          useGraphqlQuery('pbAgentFeedbackAll', { page: e.page }).then((v) => {
+            if (!v.data.result) {
+              throw new Error('Failed to load agent feedback.')
+            }
+            return {
+              filters: mapPluginConfigInputs(v.data.result.filters),
+              items: v.data.result.items.map(mapFeedback),
+              perPage: v.data.result.perPage,
+              total: v.data.result.total,
+            }
+          })
       }
     }
 
