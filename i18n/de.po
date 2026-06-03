@@ -433,6 +433,10 @@ msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr "Plan: @label"
 
+msgctxt "aiAgentDelegateRewriteAllRejected"
+msgid "All changes rejected"
+msgstr "Alle Änderungen abgelehnt"
+
 msgctxt "aiAgentDelegateRewriteCancelled"
 msgid "Rewriting cancelled"
 msgstr "Umschreiben abgebrochen"
@@ -2759,7 +2763,7 @@ msgstr "Zeigt die Layout-Spalten als Overlay über die Seite an."
 
 msgctxt "helpMenuDescription"
 msgid "View available keyboard shortcuts"
-msgstr ""
+msgstr "Verfügbare Tastenkürzel anzeigen"
 
 msgctxt "history"
 msgid "History"

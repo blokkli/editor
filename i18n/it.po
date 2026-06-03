@@ -420,6 +420,10 @@ msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr ""
 
+msgctxt "aiAgentDelegateRewriteAllRejected"
+msgid "All changes rejected"
+msgstr ""
+
 msgctxt "aiAgentDelegateRewriteCancelled"
 msgid "Rewriting cancelled"
 msgstr ""
