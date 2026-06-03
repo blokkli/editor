@@ -10,9 +10,11 @@ const fragmentSchema = z.object({
     .describe('A short description of the fragment'),
 })
 
-const paramsSchema = z.object({})
+export const paramsSchema = z.object({})
 
-const resultSchema = z.array(fragmentSchema).describe('All available fragments')
+export const resultSchema = z
+  .array(fragmentSchema)
+  .describe('All available fragments')
 
 export default defineBlokkliAgentTool({
   name: 'get_all_fragments',

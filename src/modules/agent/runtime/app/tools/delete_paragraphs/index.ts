@@ -6,9 +6,11 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the paragraphs to delete'),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'delete_paragraphs',
@@ -21,7 +23,7 @@ export default defineBlokkliAgentTool({
     return $t('aiAgentDeleteBlocksRunning', 'Deleting blocks', { more: true })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['deleteBlocks'],
   execute(ctx, params) {
     const { blocks, types } = ctx.app

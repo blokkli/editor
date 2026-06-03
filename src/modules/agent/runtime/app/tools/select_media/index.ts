@@ -9,7 +9,7 @@ const mediaItemSchema = z.object({
   thumbnail: z.string().optional().describe('URL of the thumbnail image'),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   items: z
     .array(mediaItemSchema)
     .describe('Media items from search_media to display for selection'),
@@ -19,7 +19,7 @@ const paramsSchema = z.object({
     .describe('Optional message to show the user explaining what to select'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   selected: mediaItemSchema
     .nullable()
     .describe('The selected media item, or null if the user cancelled'),

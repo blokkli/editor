@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   // Coerce so a numeric string (e.g. "5") is accepted — the LLM often sends the
   // index as a string. A non-numeric string is still rejected.
   index: z.coerce
@@ -11,6 +11,8 @@ const paramsSchema = z.object({
       'History index to navigate to (-1 = pristine state, 0+ = mutation index)',
     ),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'go_to_history_index',
@@ -26,7 +28,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['setHistoryIndex'],
   execute(ctx, params) {
     const { $t, state } = ctx.app

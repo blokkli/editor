@@ -87,8 +87,13 @@ export default function (
           ? skillNamesList.map((n) => `'${n}'`).join(' | ')
           : 'string'
 
-      // Generate per-tool type map using typeof import() to preserve
-      // the exact paramsSchema/resultSchema generic arguments.
+      // Generate per-tool type map by reading each tool's named `paramsSchema`
+      // and `resultSchema` exports. Going through the default export is not
+      // viable: mkdist's isolated-declaration emit can't synthesize the type
+      // of `defineBlokkliAgentTool({...})` and writes `_default: any`, which
+      // collapses every tool's `params`/`result` to `any` in consumer projects.
+      // Named consts emit their full Zod schema type, so `z.infer<>` resolves
+      // both in this monorepo (source files) and downstream (against dist).
       const toolsWithNames = tools.filter((t) => t.name !== undefined)
       let toolMapBlock: string
       let agentToolNameType: string
@@ -98,8 +103,8 @@ export default function (
           .map((t) => {
             const importPath = rel(t.filePath)
             return `  '${t.name}': {
-    params: _ToolParams<typeof import('${importPath}')['default']>
-    result: _ToolResult<typeof import('${importPath}')['default']>
+    params: z.infer<typeof import('${importPath}')['paramsSchema']>
+    result: z.infer<typeof import('${importPath}')['resultSchema']>
   }`
           })
           .join('\n')
@@ -113,9 +118,6 @@ export default function (
       return `import type { z } from 'zod'
 import type { McpToolDefinition } from '#blokkli/agent/app/types'
 import type { AgentModelDefinition } from '#blokkli/agent/shared/types'
-
-type _ToolParams<T> = T extends { paramsSchema: infer P extends z.ZodType } ? z.infer<P> : never
-type _ToolResult<T> = T extends { resultSchema: infer R extends z.ZodType } ? z.infer<R> : never
 
 ${toolMapBlock}
 

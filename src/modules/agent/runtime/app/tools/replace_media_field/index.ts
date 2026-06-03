@@ -6,7 +6,7 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuid: z
     .string()
     .describe('The paragraph UUID or entity UUID containing the media field'),
@@ -14,6 +14,8 @@ const paramsSchema = z.object({
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'replace_media_field',
@@ -27,7 +29,7 @@ export default defineBlokkliAgentTool({
     return $t('aiAgentReplaceMediaRunning', 'Replacing media', { more: true })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['mediaLibraryReplaceMedia'],
   execute(ctx, params) {
     const { blocks, types, $t, context } = ctx.app

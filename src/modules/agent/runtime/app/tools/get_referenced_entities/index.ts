@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { stringArrayParam } from '../schemas'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: stringArrayParam(
     'Paragraph UUIDs to resolve references for. Returns the entities ' +
       '(media, nodes, taxonomy terms, ...) currently referenced by these ' +
@@ -10,7 +10,7 @@ const paramsSchema = z.object({
   ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   entities: z.array(
     z.object({
       entityUuid: z

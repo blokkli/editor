@@ -13,7 +13,7 @@ const fieldResultSchema = z.object({
   issues: z.array(issueSchema),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: z
     .array(z.string())
     .optional()
@@ -22,7 +22,7 @@ const paramsSchema = z.object({
     ),
 })
 
-const resultSchema = z.record(
+export const resultSchema = z.record(
   z.string(),
   z.record(z.string(), fieldResultSchema),
 )

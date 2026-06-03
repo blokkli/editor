@@ -9,7 +9,7 @@ const textResultSchema = z.object({
   note: z.string().optional(),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   texts: z
     .array(z.string())
     .describe(
@@ -17,7 +17,7 @@ const paramsSchema = z.object({
     ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   results: z.array(textResultSchema),
 })
 

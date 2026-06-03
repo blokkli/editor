@@ -81,7 +81,7 @@ const blockSchema: z.ZodType<BlockInput> = z.object({
     ),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   paragraphs: z
     .array(blockSchema)
     .min(1)
@@ -375,6 +375,8 @@ function collectAllUuids(blocks: AddNewBlocksEventBlock[]): string[] {
   return uuids
 }
 
+export const resultSchema = mutationResultSchema
+
 export default defineBlokkliAgentTool({
   name: 'add_paragraphs',
   description:
@@ -390,7 +392,7 @@ export default defineBlokkliAgentTool({
     return $t('aiAgentAddBlocksRunning', 'Adding blocks', { more: true })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['addNewBlocks'],
   execute(ctx, params) {
     const { types } = ctx.app

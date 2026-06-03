@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { readBlockContentFields } from '../helpers'
 
-const paramsSchema = z.object({})
+export const paramsSchema = z.object({})
 
 const blockContentSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
@@ -18,7 +18,7 @@ const blockContentSchema = z.object({
     ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   content: z
     .array(blockContentSchema)
     .describe('All paragraphs with their text content, flattened'),

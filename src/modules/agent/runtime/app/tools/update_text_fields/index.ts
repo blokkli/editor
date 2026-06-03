@@ -6,7 +6,7 @@ import {
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
-import { booleanParam } from '#blokkli/agent/shared/toolParams'
+import { optionalBooleanParam } from '../../../shared/toolParams'
 import { resolveHost } from '../helpers'
 import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
 import Component from './Component.vue'
@@ -25,9 +25,9 @@ const operationSchema = z.object({
     .describe(
       'The replacement text (or innerHTML when search is a CSS selector)',
     ),
-  selector: booleanParam(
+  selector: optionalBooleanParam(
     'Set to true when search is a CSS selector instead of a text search',
-  ).optional(),
+  ),
 })
 
 const updateSchema = z.object({
@@ -38,7 +38,7 @@ const updateSchema = z.object({
     .describe('The complete new field value — overwrites the entire field'),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   updates: z
     .array(updateSchema)
     .optional()
@@ -51,9 +51,9 @@ const paramsSchema = z.object({
     .describe(
       "Patch mode: search/replace operations applied to each field's CURRENT value, so `search` must match the existing content exactly. Best for small targeted edits like typo fixes — avoids re-sending the whole value. If `search` is not found, that field is left unchanged.",
     ),
-  requireApproval: booleanParam(
+  requireApproval: optionalBooleanParam(
     'The approval UI is shown by default. Set to false to apply the changes immediately without confirmation — only when the user supplied the exact text themselves.',
-  ).optional(),
+  ),
 })
 
 export type BatchRewriteParams = z.infer<typeof paramsSchema>
@@ -72,6 +72,8 @@ export type ComponentParams = {
   skipped: SkippedField[]
 }
 
+export const resultSchema = fieldDiffResultSchema
+
 export default defineBlokkliAgentTool({
   name: 'update_text_fields',
   description:
@@ -87,7 +89,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: fieldDiffResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['updateFieldValueBatched'],
   component: Component,
   detailsComponent: DetailsComponent,

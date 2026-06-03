@@ -1,9 +1,9 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const paramsSchema = z.object({})
+export const paramsSchema = z.object({})
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   text: z
     .string()
     .describe(

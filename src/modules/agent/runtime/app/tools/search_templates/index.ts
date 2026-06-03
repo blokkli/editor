@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   query: z.string().optional().describe('Search text to filter templates'),
 })
 
@@ -17,7 +17,7 @@ const templateSchema = z.object({
     .describe('Paragraph types contained in the template'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   templates: z.array(templateSchema).describe('Matching templates'),
   total: z.number().describe('Total number of matching templates'),
 })

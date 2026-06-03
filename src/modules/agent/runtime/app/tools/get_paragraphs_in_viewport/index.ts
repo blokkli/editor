@@ -1,20 +1,19 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { booleanParam } from '#blokkli/agent/shared/toolParams'
+import { booleanParamWithDefault } from '../../../shared/toolParams'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   maxNestingLevel: z.coerce
     .number()
     .optional()
     .describe(
       'Maximum nesting depth to include (0 = only root paragraphs, 1 = root + direct children, etc.). Omit for unlimited depth.',
     ),
-  includeDimensions: booleanParam(
+  includeDimensions: booleanParamWithDefault(
     'Include x, y, width, height for each paragraph (default: false)',
-  )
-    .optional()
-    .default(false),
+    false,
+  ),
 })
 
 // Block dimensions in artboard coordinates
@@ -96,7 +95,7 @@ const rootBlockSchema = z.object({
     .describe('Child paragraphs organized by field name'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   paragraphs: z
     .array(rootBlockSchema)
     .describe('Root-level paragraphs currently visible in the viewport'),

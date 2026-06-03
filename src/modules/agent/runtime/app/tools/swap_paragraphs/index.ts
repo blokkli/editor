@@ -3,10 +3,12 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import { getSwapDisabledReason } from '#blokkli/editor/helpers/swap'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuid1: z.string().describe('First paragraph UUID'),
   uuid2: z.string().describe('Second paragraph UUID'),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'swap_paragraphs',
@@ -20,7 +22,7 @@ export default defineBlokkliAgentTool({
   },
   lazy: true,
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['swapBlocks'],
   execute(ctx, params) {
     const { blocks, types, $t, permissions } = ctx.app

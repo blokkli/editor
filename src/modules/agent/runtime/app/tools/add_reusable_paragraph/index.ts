@@ -5,7 +5,7 @@ import { resolvePosition, resolveHost } from '../helpers'
 import { requireBundlePermission } from '../../helpers/validation'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   libraryItemUuid: z
     .string()
     .describe(
@@ -16,6 +16,8 @@ const paramsSchema = z.object({
   ),
   position: positionSchema,
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'add_reusable_paragraph',
@@ -31,7 +33,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['addLibraryItem'],
   execute(ctx, params) {
     // Check add permission for from_library bundle

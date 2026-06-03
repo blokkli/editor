@@ -13,7 +13,7 @@ import {
 import { getFieldKey } from '#blokkli/helpers'
 import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: z.array(z.string()).min(1).describe('Paragraph UUIDs to duplicate'),
   parent: parentSchema
     .optional()
@@ -22,6 +22,8 @@ const paramsSchema = z.object({
     'Where to place the duplicated paragraphs (only when parent is provided). Defaults to "end".',
   ),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'duplicate_paragraphs',
@@ -40,7 +42,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['duplicateBlocks'],
   execute(ctx, params) {
     const { $t, types } = ctx.app

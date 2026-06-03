@@ -1,14 +1,14 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
-import { booleanParam } from '#blokkli/agent/shared/toolParams'
+import { optionalBooleanParam } from '../../../shared/toolParams'
 import { getResolvedOptions } from '../helpers'
 import {
   getMutatedOptionValue,
   optionValueToStorable,
 } from '#blokkli/editor/helpers/options'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   // Bundle filters
   bundle: z.string().optional().describe('Filter by exact bundle name'),
   bundles: z
@@ -17,12 +17,12 @@ const paramsSchema = z.object({
     .describe('Filter by any of these bundles'),
 
   // Structure filters
-  hasChildren: booleanParam(
+  hasChildren: optionalBooleanParam(
     'Filter by whether paragraph has child paragraphs',
-  ).optional(),
-  isRootLevel: booleanParam(
+  ),
+  isRootLevel: optionalBooleanParam(
     'Filter to root level paragraphs (nesting 0)',
-  ).optional(),
+  ),
   nestingLevel: z.number().optional().describe('Filter to exact nesting level'),
   parentBundle: z
     .string()
@@ -66,7 +66,7 @@ const paragraphResultSchema = z.object({
   parent: parentSchema.describe('The parent entity containing this paragraph'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   paragraphs: z
     .array(paragraphResultSchema)
     .describe('paragraphs matching the filters'),

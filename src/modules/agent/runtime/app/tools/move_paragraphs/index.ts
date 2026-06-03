@@ -9,11 +9,13 @@ import {
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The UUIDs of the paragraphs to move'),
   parent: parentSchema.describe('The target parent entity'),
   position: positionSchema,
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'move_paragraphs',
@@ -27,7 +29,7 @@ export default defineBlokkliAgentTool({
     return $t('aiAgentMoveBlocksRunning', 'Moving blocks', { more: true })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['moveMultipleBlocks'],
   execute(ctx, params) {
     const { blocks, types } = ctx.app

@@ -16,11 +16,13 @@ const paragraphOptionsSchema = z.object({
     .describe('Options to set as key-value pairs'),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   paragraphs: z
     .array(paragraphOptionsSchema)
     .describe('Array of paragraphs with their options to set'),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'set_paragraph_options',
@@ -36,7 +38,7 @@ export default defineBlokkliAgentTool({
   },
   lazy: true,
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['updateOptions'],
   execute(ctx, params) {
     const { blocks, selection } = ctx.app

@@ -4,7 +4,7 @@ import { parentSchema } from '../schemas'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 import { resolveHost } from '../helpers'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   parent: parentSchema
     .optional()
     .describe(
@@ -20,7 +20,7 @@ const reusableParagraphSchema = z.object({
     .describe('The paragraph bundle type of the reusable paragraph'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   items: z
     .array(reusableParagraphSchema)
     .describe('Matching reusable paragraphs'),

@@ -4,11 +4,13 @@ import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
 import { fragmentBlockBundle } from '#blokkli-build/config'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   name: z.string().describe('The fragment name to add'),
   parent: parentSchema.describe('The parent entity to add the fragment to'),
   position: positionSchema,
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'add_fragment',
@@ -21,7 +23,7 @@ export default defineBlokkliAgentTool({
     return $t('aiAgentAddFragmentRunning', 'Adding fragment', { more: true })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['fragmentsAddBlock'],
   execute(ctx, params) {
     const { fields, definitions, permissions } = ctx.app

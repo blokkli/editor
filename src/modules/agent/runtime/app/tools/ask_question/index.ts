@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { booleanParam } from '#blokkli/agent/shared/toolParams'
+import { booleanParamWithDefault } from '../../../shared/toolParams'
 import Component from './Component.vue'
 
 const optionSchema = z.object({
@@ -8,12 +8,13 @@ const optionSchema = z.object({
   label: z.string().describe('The display label'),
 })
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   question: z.string().describe('The question to ask the user'),
   options: z.array(optionSchema).describe('Available options to choose from'),
-  multiSelect: booleanParam(
+  multiSelect: booleanParamWithDefault(
     `Allow selecting multiple options. If false, the user has the option to enter a custom option if none of the options are good.`,
-  ).default(false),
+    false,
+  ),
   paragraphUuids: z
     .array(z.string())
     .optional()
@@ -22,7 +23,7 @@ const paramsSchema = z.object({
     ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   selected: z
     .union([z.string(), z.array(z.string())])
     .nullable()

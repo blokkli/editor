@@ -7,7 +7,7 @@ import {
 } from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuid: z
     .string()
     .describe('The paragraph UUID containing the content reference field'),
@@ -16,6 +16,8 @@ const paramsSchema = z.object({
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'replace_content_search_item',
@@ -33,7 +35,7 @@ export default defineBlokkliAgentTool({
   },
   lazy: true,
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['replaceContentSearchItem'],
   execute(ctx, params) {
     const { blocks, types, $t } = ctx.app

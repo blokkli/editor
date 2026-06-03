@@ -64,7 +64,7 @@ const requestSchema = z
       '- generate_content: write new content using `instruction` (optional `context`).',
   )
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   request: requestSchema,
   fields: z
     .array(fieldSchema)
@@ -91,6 +91,8 @@ export type ComponentParams = {
   skipped: SkippedField[]
 }
 
+export const resultSchema = fieldDiffResultSchema
+
 export default defineBlokkliAgentTool({
   name: 'delegate_text_rewrite',
   description:
@@ -106,7 +108,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: fieldDiffResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['updateFieldValueBatched'],
   component: Component,
   detailsComponent: DetailsComponent,

@@ -4,7 +4,7 @@ import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
 import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   templateUuid: z
     .string()
     .describe(
@@ -13,6 +13,8 @@ const paramsSchema = z.object({
   parent: parentSchema.describe('The parent entity to add the template to'),
   position: positionSchema,
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'add_template',
@@ -29,7 +31,7 @@ export default defineBlokkliAgentTool({
     return $t('aiAgentAddTemplateRunning', 'Adding template', { more: true })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['templatesAdd'],
   execute(ctx, params) {
     const { fields, $t } = ctx.app

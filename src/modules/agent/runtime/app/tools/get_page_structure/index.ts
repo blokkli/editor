@@ -7,7 +7,7 @@ import {
 } from '#blokkli/agent/app/helpers/pageStructure'
 import type { PageStructureBlock } from '#blokkli/agent/shared/types'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuid: z
     .string()
     .optional()
@@ -16,7 +16,7 @@ const paramsSchema = z.object({
     ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   totalParagraphs: z
     .number()
     .describe(

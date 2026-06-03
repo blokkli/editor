@@ -30,14 +30,13 @@ confuses jump-to-definition, and creates two names for the same thing.
 
 **Don't sprinkle one-off re-exports into unrelated files.** Adding a single
 `export type { Foo } from '...'` to `types/index.ts` just to make it "feel
-complete" is noise — especially if nothing actually consumes the re-export.
-Make consumers import from the canonical source.
+complete" is noise — especially if nothing actually consumes the re-export. Make
+consumers import from the canonical source.
 
-**Real barrels are fine.** A file like
-`src/runtime/editor/components/index.ts` that groups a set of genuinely
-related symbols for ergonomic import is a legitimate pattern — that's what
-barrels are for. The rule above is about gratuitous re-exports, not all
-re-exports.
+**Real barrels are fine.** A file like `src/runtime/editor/components/index.ts`
+that groups a set of genuinely related symbols for ergonomic import is a
+legitimate pattern — that's what barrels are for. The rule above is about
+gratuitous re-exports, not all re-exports.
 
 Test: if you can't say a one-line reason the re-export belongs there (beyond
 "it's convenient"), don't add it.

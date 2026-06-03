@@ -7,7 +7,7 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   parent: parentSchema.describe('The parent field containing the paragraphs'),
   uuids: z
     .array(z.string())
@@ -16,6 +16,8 @@ const paramsSchema = z.object({
       'The UUIDs of the paragraphs in the desired order. Must include ALL paragraphs currently in the field.',
     ),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'rearrange_paragraphs',
@@ -31,7 +33,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['rearrangeBlocks'],
   execute(ctx, params) {
     const { blocks, types, state, $t } = ctx.app

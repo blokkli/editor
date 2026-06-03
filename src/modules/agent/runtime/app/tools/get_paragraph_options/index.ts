@@ -3,11 +3,11 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { blockOptionsMapSchema } from '../schemas'
 import { buildBlockOptionsMap, getResolvedOptions } from '../helpers'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('The paragraph UUIDs to get options for'),
 })
 
-const resultSchema = z.record(
+export const resultSchema = z.record(
   z.string().describe('Paragraph UUID'),
   blockOptionsMapSchema.describe('Options for this paragraph'),
 )

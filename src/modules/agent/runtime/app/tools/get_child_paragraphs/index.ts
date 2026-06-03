@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuid: z
     .string()
     .optional()
@@ -25,7 +25,7 @@ const fieldWithParagraphsSchema = z.object({
   paragraphs: z.array(paragraphSchema).describe('Paragraphs in this field'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   parentBundle: z
     .string()
     .describe('The bundle type of the parent (page or paragraph)'),

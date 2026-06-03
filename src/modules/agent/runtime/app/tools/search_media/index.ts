@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   query: z
     .string()
     .optional()
@@ -14,7 +14,7 @@ const paramsSchema = z.object({
     .describe('Media bundle filter (e.g., "image", "video")'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   items: z.array(
     z.object({
       mediaId: z.string().describe('The unique ID of the media item'),

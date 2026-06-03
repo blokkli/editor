@@ -5,7 +5,7 @@ import { resolvePosition } from '../helpers'
 import { requireBundlePermission } from '../../helpers/validation'
 import type { DraggableMediaLibraryItem } from '#blokkli/editor/features/media-library/types'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   mediaId: z.string().describe('Media item ID from search_media results'),
   mediaBundle: z.string().describe('Media bundle type (e.g., "image")'),
   targetBundle: z
@@ -16,6 +16,8 @@ const paramsSchema = z.object({
   parent: parentSchema.describe('The parent entity to add the paragraph to'),
   position: positionSchema,
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'add_media_paragraph',
@@ -31,7 +33,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['mediaLibraryAddBlock'],
   execute(ctx, params) {
     // Check add permission for the target bundle

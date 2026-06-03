@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const paramsSchema = z.object({})
+export const paramsSchema = z.object({})
 
 const paragraphSchema = z.object({
   uuid: z.string().describe('The paragraph UUID'),
@@ -9,7 +9,7 @@ const paragraphSchema = z.object({
   label: z.string().describe('Human-readable paragraph label'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   paragraphs: z
     .array(paragraphSchema)
     .describe('Currently selected paragraphs'),

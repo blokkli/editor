@@ -5,7 +5,7 @@ import { resolvePosition } from '../helpers'
 import { requireBundlePermission } from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   itemId: z.string().describe('Content item ID from search_content results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
@@ -17,6 +17,8 @@ const paramsSchema = z.object({
   parent: parentSchema.describe('The parent entity to add the paragraph to'),
   position: positionSchema,
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'add_content_search_paragraphs',
@@ -34,7 +36,7 @@ export default defineBlokkliAgentTool({
     )
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['addContentSearchItem'],
   execute(ctx, params) {
     // Check add permission for the target bundle

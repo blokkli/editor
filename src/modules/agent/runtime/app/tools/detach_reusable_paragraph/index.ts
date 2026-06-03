@@ -7,9 +7,11 @@ import {
 } from '../../helpers/validation'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: z.array(z.string()).describe('UUIDs of library paragraphs to detach'),
 })
+
+export const resultSchema = mutationResultSchema
 
 export default defineBlokkliAgentTool({
   name: 'detach_reusable_paragraph',
@@ -28,7 +30,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: mutationResultSchema,
+  resultSchema,
   requiredAdapterMethods: ['detachReusableBlock'],
   execute(ctx, params) {
     const { blocks, $t } = ctx.app

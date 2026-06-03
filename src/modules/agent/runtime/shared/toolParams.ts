@@ -14,8 +14,15 @@ import { z } from 'zod'
  *
  * Lives in `shared/` so both client tools and server-only tools build the same
  * coercion into their respective bundles from one source.
+ *
+ * Return type is explicit so mkdist's isolated-declaration emit preserves it
+ * when this helper appears nested inside another schema. Chaining `.optional()`
+ * or `.default()` on the result would degrade to `any` in the published `.d.ts`
+ * — use {@link optionalBooleanParam} / {@link booleanParamWithDefault} instead.
  */
-export function booleanParam(description: string) {
+export function booleanParam(
+  description: string,
+): z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodBoolean> {
   return z.preprocess((value) => {
     if (typeof value === 'string') {
       const lower = value.trim().toLowerCase()
@@ -24,6 +31,33 @@ export function booleanParam(description: string) {
     }
     return value
   }, z.boolean().describe(description))
+}
+
+/**
+ * Optional variant of {@link booleanParam}. Use instead of
+ * `booleanParam(...).optional()` so isolated-declaration emit can preserve the
+ * type — chained Zod method calls aren't resolvable by mkdist's per-file
+ * declaration emit and collapse to `any` in the published `.d.ts`.
+ */
+export function optionalBooleanParam(
+  description: string,
+): z.ZodOptional<z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodBoolean>> {
+  return booleanParam(description).optional()
+}
+
+/**
+ * Optional boolean with a default. Use instead of
+ * `booleanParam(...).optional().default(value)` so isolated-declaration emit
+ * can preserve the type. The default value applies when the param is omitted
+ * or `undefined` at parse time.
+ */
+export function booleanParamWithDefault(
+  description: string,
+  defaultValue: boolean,
+): z.ZodDefault<
+  z.ZodOptional<z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodBoolean>>
+> {
+  return booleanParam(description).optional().default(defaultValue)
 }
 
 /**

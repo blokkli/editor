@@ -11,7 +11,7 @@ import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
 import Component from './Component.vue'
 import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   uuids: stringArrayParam(
     "UUIDs of paragraphs to auto-translate. Every editable text field on each paragraph is sent to the backend's translation service. The user reviews and accepts/rejects each translation before it is applied. The source language is always the host entity's source language; the target language is the currently-edited language.",
   ),
@@ -30,6 +30,8 @@ export type ComponentParams = {
   skipped: SkippedField[]
 }
 
+export const resultSchema = fieldDiffResultSchema
+
 export default defineBlokkliAgentTool({
   name: 'auto_translate_paragraphs',
   description:
@@ -45,7 +47,7 @@ export default defineBlokkliAgentTool({
     })
   },
   paramsSchema,
-  resultSchema: fieldDiffResultSchema,
+  resultSchema,
   requiredAdapterMethods: [
     'loadTextFieldValuesForLanguage',
     'requestTranslation',

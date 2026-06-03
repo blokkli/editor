@@ -1,7 +1,16 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const resultSchema = z.array(
+export const paramsSchema = z.object({
+  tab: z
+    .string()
+    .describe(
+      'The tab ID to search in. See the system prompt for available tab IDs.',
+    ),
+  query: z.string().describe('The search query'),
+})
+
+export const resultSchema = z.array(
   z.object({
     id: z.string().describe('The unique ID of the content item'),
     title: z.string().describe('The display title of the content item'),
@@ -29,14 +38,7 @@ export default defineBlokkliAgentTool({
       more: true,
     })
   },
-  paramsSchema: z.object({
-    tab: z
-      .string()
-      .describe(
-        'The tab ID to search in. See the system prompt for available tab IDs.',
-      ),
-    query: z.string().describe('The search query'),
-  }),
+  paramsSchema,
   resultSchema,
   async execute(ctx, params) {
     const tabs = await ctx.adapter.getContentSearchTabs()

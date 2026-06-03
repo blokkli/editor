@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { routeFetch } from '#blokkli-build/agent-client'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   url: z.string().url().describe('The URL to fetch content from'),
   format: z
     .enum(['markdown', 'html'])
@@ -12,7 +12,7 @@ const paramsSchema = z.object({
     ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   content: z
     .string()
     .describe('The page content in the requested format (markdown or html)'),

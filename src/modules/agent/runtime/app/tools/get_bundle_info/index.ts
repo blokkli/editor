@@ -6,7 +6,7 @@ import type { BlockOptionsMap } from '../schemas'
 import { extractOptionLabels, getResolvedOptions } from '../helpers'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   parentUuid: z.string().describe('The parent entity UUID'),
   parentField: z.string().describe('The field name on the parent'),
   bundles: z
@@ -59,7 +59,7 @@ const bundleSchema = z.object({
     ),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   fieldLabel: z.string().describe('Human-readable field label'),
   cardinality: z.number().describe('Max paragraphs allowed (-1 = unlimited)'),
   currentCount: z

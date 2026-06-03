@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 
-const paramsSchema = z.object({
+export const paramsSchema = z.object({
   before: z.coerce
     .number()
     .optional()
@@ -27,7 +27,7 @@ const currentMutationSchema = z.object({
     .describe('UUID of the paragraph that was affected'),
 })
 
-const resultSchema = z.object({
+export const resultSchema = z.object({
   currentIndex: z
     .number()
     .describe('Current position in history (-1 = pristine state)'),
