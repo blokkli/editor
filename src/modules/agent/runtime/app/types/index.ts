@@ -19,6 +19,7 @@ import type {
   AgentToolMap,
 } from '#blokkli-build/agent-client'
 import type { TextProvider } from '#blokkli/editor/providers/texts'
+import type { NewParagraphNode } from '#blokkli/agent/app/helpers/mutationResult'
 
 // ============================================================================
 // Tool Definitions - Common Types
@@ -48,11 +49,7 @@ export type MutationToolResult =
   | {
       success: true
       historyIndex: number
-      newParagraphs?: Array<{
-        uuid: string
-        bundle: string
-        paragraphFields?: string[]
-      }>
+      newParagraphs?: NewParagraphNode[]
     }
   | {
       success: false

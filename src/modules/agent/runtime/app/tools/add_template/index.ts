@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
+import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
 
 const paramsSchema = z.object({
   templateUuid: z
@@ -20,7 +21,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) =>
     r.success
-      ? `added template (${r.newParagraphs?.length || 0} paragraphs)`
+      ? `added template (${countNewParagraphs(r.newParagraphs ?? [])} paragraphs)`
       : 'rejected',
   lazy: true,
   modes: ['editing'],

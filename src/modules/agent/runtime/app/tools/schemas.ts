@@ -188,27 +188,50 @@ export const fieldDiffResultSchema = z.object({
 })
 
 /**
+ * Schema for a single entry in a mutation's `newParagraphs` payload. Recursive
+ * so nested children appear under their parent's `children` keyed by paragraph
+ * field name — mirroring the input shape of `add_paragraphs`.
+ */
+type NewParagraphEntry = {
+  uuid: string
+  bundle: string
+  paragraphFields?: string[]
+  children?: Record<string, NewParagraphEntry[]>
+}
+
+const newParagraphEntrySchema: z.ZodType<NewParagraphEntry> = z.lazy(() =>
+  z.object({
+    uuid: z.string(),
+    bundle: z.string(),
+    paragraphFields: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Paragraph fields on this new paragraph that can hold nested paragraphs. Call get_child_paragraphs with this paragraph's UUID to add paragraphs to these fields.",
+      ),
+    children: z
+      .record(
+        z.string().describe('Paragraph field name'),
+        z.array(newParagraphEntrySchema),
+      )
+      .optional()
+      .describe(
+        'Nested paragraphs created inside this entry, keyed by paragraph field name. Mirrors the `children` shape used by add_paragraphs — the structure round-trips, so a child here means it actually landed inside this parent.',
+      ),
+  }),
+)
+
+/**
  * Schema for the success result sent back to the AI after mutation is applied.
  */
 export const mutationSuccessSchema = z.union([
   z.object({
     success: z.literal(true),
     newParagraphs: z
-      .array(
-        z.object({
-          uuid: z.string(),
-          bundle: z.string(),
-          paragraphFields: z
-            .array(z.string())
-            .optional()
-            .describe(
-              "Paragraph fields on this new paragraph that can hold nested paragraphs. Call get_child_paragraphs with this paragraph's UUID to add paragraphs to these fields.",
-            ),
-        }),
-      )
+      .array(newParagraphEntrySchema)
       .optional()
       .describe(
-        'Paragraphs created by this mutation (for add/duplicate operations), with their UUIDs and bundle types',
+        "Top-level paragraphs created by this mutation (for add/duplicate operations). Nested children appear under each entry's `children` keyed by paragraph field name; the tree mirrors what was requested.",
       ),
     historyIndex: z
       .number()

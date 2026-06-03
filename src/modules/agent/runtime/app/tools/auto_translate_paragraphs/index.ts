@@ -5,8 +5,7 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
-import { fieldDiffResultSchema } from '../schemas'
-import { stringArrayParam } from '../schemas'
+import { fieldDiffResultSchema, stringArrayParam } from '../schemas'
 import { resolveHost } from '../helpers'
 import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
 import Component from './Component.vue'

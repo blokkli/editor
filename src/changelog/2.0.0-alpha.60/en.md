@@ -8,8 +8,8 @@ date: '2026-06-02'
 
 A new notifications button has been added to the toolbar. A small badge shows
 how many unread notifications you have. Opening the dropdown reveals a list of
-relevant events — for example, when you have been mentioned in a comment, when
-a comment has been resolved or when an edit has been approved.
+relevant events — for example, when you have been mentioned in a comment, when a
+comment has been resolved or when an edit has been approved.
 
 Clicking a notification opens the related page directly in edit mode in a new
 tab — and for comment mentions, jumps straight to the relevant comment.

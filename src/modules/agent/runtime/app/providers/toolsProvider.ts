@@ -19,6 +19,7 @@ import {
   asRecord,
   splitMeta,
 } from '#blokkli/agent/app/helpers'
+import { buildNewParagraphsTree } from '#blokkli/agent/app/helpers/mutationResult'
 import { mcpTools } from '#blokkli-build/agent-client'
 import type { AgentToolName, AgentToolMap } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
@@ -202,37 +203,14 @@ export default function toolsProvider({
 
     function buildMutationResult(newUuids: string[]) {
       const newParagraphs =
-        action.type === 'add' && newUuids.length
-          ? newUuids
-              .map((uuid) => {
-                const block = app.blocks.getBlock(uuid)
-                if (!block) return null
-                const blockFieldNames = app.types.fieldConfig
-                  .forEntityTypeAndBundle(itemEntityType, block.bundle)
-                  .map((f) => f.name)
-                return {
-                  uuid,
-                  bundle: block.bundle,
-                  ...(blockFieldNames.length
-                    ? { paragraphFields: blockFieldNames }
-                    : {}),
-                }
-              })
-              .filter(
-                (
-                  b,
-                ): b is {
-                  uuid: string
-                  bundle: string
-                  paragraphFields?: string[]
-                } => b !== null,
-              )
-          : undefined
+        action.type === 'add'
+          ? buildNewParagraphsTree(newUuids, app, itemEntityType)
+          : []
 
       return {
         success: true,
         historyIndex: state.currentMutationIndex.value,
-        newParagraphs: newParagraphs?.length ? newParagraphs : undefined,
+        newParagraphs: newParagraphs.length ? newParagraphs : undefined,
         ...action.result,
       }
     }

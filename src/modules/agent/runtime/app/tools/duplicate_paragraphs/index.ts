@@ -11,6 +11,7 @@ import {
   requireNoRestrictedAncestor,
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
+import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
 
 const paramsSchema = z.object({
   uuids: z.array(z.string()).min(1).describe('Paragraph UUIDs to duplicate'),
@@ -29,7 +30,7 @@ export default defineBlokkliAgentTool({
   category: 'mutation',
   prunedSummary: (r) =>
     r.success
-      ? `duplicated ${r.newParagraphs?.length || 0} paragraphs`
+      ? `duplicated ${countNewParagraphs(r.newParagraphs ?? [])} paragraphs`
       : 'rejected',
   modes: ['editing'],
   lazy: true,

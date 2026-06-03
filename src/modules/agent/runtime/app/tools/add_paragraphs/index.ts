@@ -19,6 +19,7 @@ import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import { optionValueToStorable } from '#blokkli/editor/helpers/options'
+import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
 
 const contentFieldValueSchema = z.union([
   z
@@ -377,11 +378,13 @@ function collectAllUuids(blocks: AddNewBlocksEventBlock[]): string[] {
 export default defineBlokkliAgentTool({
   name: 'add_paragraphs',
   description:
-    'Add one or more new paragraphs to the page. Supports nested structures via the `children` property — define entire paragraph trees in a single call. IMPORTANT: Always provide content field values (text, media/entity references) directly via contentFields, instead of adding empty paragraphs! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT paragraph fields! For nested paragraphs, use the `children` property keyed by paragraph field name. You can also set paragraph options inline via the `options` property (key-value pairs).',
+    'Add one or more new paragraphs to the page. Supports nested structures via the `children` property — define entire paragraph trees in a single call. IMPORTANT: Always provide content field values (text, media/entity references) directly via contentFields, instead of adding empty paragraphs! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT paragraph fields! For nested paragraphs, use the `children` property keyed by paragraph field name. You can also set paragraph options inline via the `options` property (key-value pairs). The success result mirrors the input shape: each top-level entry in `newParagraphs` includes its own `children` keyed by paragraph field, so the structure round-trips and a nested child does NOT appear as a sibling — treat the tree as the source of truth instead of guessing from order.',
   category: 'mutation',
   lazy: false,
   prunedSummary: (r) =>
-    r.success ? `added ${r.newParagraphs?.length || 0} paragraphs` : 'rejected',
+    r.success
+      ? `added ${countNewParagraphs(r.newParagraphs ?? [])} paragraphs`
+      : 'rejected',
   modes: ['editing'],
   label($t) {
     return $t('aiAgentAddBlocksRunning', 'Adding blocks', { more: true })

@@ -20,6 +20,45 @@ You have SEVERAL skills available that you MUST use!!
 - **e2e-testing** => Use when writing, debugging, or running the Playwright E2E
   tests (`test/e2e/`)
 
+## NON-NEGOTIABLE RULES (READ THIS EVERY TIME)
+
+### NEVER rename in a re-export. Don't add one-off re-exports.
+
+**Renamed re-exports are always wrong.** Do NOT write
+`export type { Foo as Bar } from './x'` — it fragments the canonical name,
+confuses jump-to-definition, and creates two names for the same thing.
+
+**Don't sprinkle one-off re-exports into unrelated files.** Adding a single
+`export type { Foo } from '...'` to `types/index.ts` just to make it "feel
+complete" is noise — especially if nothing actually consumes the re-export.
+Make consumers import from the canonical source.
+
+**Real barrels are fine.** A file like
+`src/runtime/editor/components/index.ts` that groups a set of genuinely
+related symbols for ergonomic import is a legitimate pattern — that's what
+barrels are for. The rule above is about gratuitous re-exports, not all
+re-exports.
+
+Test: if you can't say a one-line reason the re-export belongs there (beyond
+"it's convenient"), don't add it.
+
+### Typechecks: use the npm scripts. NEVER `npx vue-tsc ...`.
+
+The dedicated package.json scripts ARE the typecheck:
+
+```bash
+npm run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
+npm run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
+npm run typecheck:server      # server code (.nuxt/tsconfig.server.json)
+npm run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
+npm run typecheck             # runs all four
+```
+
+Never improvise a `vue-tsc --project tsconfig.something.json` call. The
+project's tsconfigs live under `.nuxt/`, not at the repo root, and the scripts
+already encode the right paths. See the `/typecheck` skill for which targets
+apply to which files.
+
 ## Project Overview
 
 blökkli is an interactive page editor/builder for Nuxt that integrates with any
