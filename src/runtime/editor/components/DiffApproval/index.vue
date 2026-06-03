@@ -1,9 +1,11 @@
 <template>
   <Toolbar
-    v-if="currentItem"
-    :current-item
-    :current-index
-    :total-items="items.length"
+    v-if="currentUnit"
+    :current-unit
+    :current-item="currentUnit.item"
+    :unit-index="currentIndex + 1"
+    :total-units="units.length"
+    :segment-index="segmentIndex"
     :selected
     :reasons
     :apply-label
@@ -20,6 +22,7 @@
     ref="highlight"
     v-model="currentIndex"
     :items
+    :units
     :selected
     :insertions-only
     @toggle="onToggle"
@@ -42,12 +45,13 @@ import Highlight from './Highlight/index.vue'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
-import type { ApprovalItem } from './types'
+import type { ApprovalItem, ApprovalUnit } from './types'
+import { unitsFromItems } from './types'
 
 const props = defineProps<{
   items: ApprovalItem[]
   /**
-   * Whether to show the per-item rejection reason input.
+   * Whether to show the per-unit rejection reason input.
    *
    * Used by the agent tools to feed feedback back to the LLM. Leave it off when
    * changes are applied directly with no agent loop.
@@ -55,7 +59,7 @@ const props = defineProps<{
   showReason?: boolean
 
   /**
-   * Render the new value entirely as an insertion (<ins>) instead of a diff
+   * Render new values entirely as insertions (<ins>) instead of a diff
    * against the original.
    *
    * For features like translation the new text bears little resemblance to the
@@ -69,8 +73,12 @@ const emit = defineEmits<{
   (
     e: 'apply',
     data: {
-      selected: Record<number, boolean>
-      reasons: Record<number, string>
+      /**
+       * Acceptance keyed by unit. For unsegmented items the key is the
+       * stringified item id; for segmented items it's `${itemId}:${segmentId}`.
+       */
+      selected: Record<string, boolean>
+      reasons: Record<string, string>
     },
   ): void
   (e: 'cancel'): void
@@ -101,7 +109,8 @@ function getItemRect(item: ApprovalItem): { x: number; y: number } | null {
   return ui.getAbsoluteElementRect(el)
 }
 
-// Sort items once by visual position (top to bottom, left to right).
+// Sort items once by visual position (top to bottom, left to right). Segments
+// inside an item stay in reading order via `unitsFromItems`.
 const items = [...props.items].sort((a, b) => {
   const rectA = getItemRect(a)
   const rectB = getItemRect(b)
@@ -111,50 +120,57 @@ const items = [...props.items].sort((a, b) => {
   return rectA.x - rectB.x
 })
 
+const units = computed<ApprovalUnit[]>(() => unitsFromItems(items))
+
 const currentIndex = ref(0)
 
-const currentItem = computed<ApprovalItem | null>(() => {
-  return items.at(currentIndex.value) ?? null
+const currentUnit = computed<ApprovalUnit | null>(() => {
+  return units.value.at(currentIndex.value) ?? null
 })
 
-const selected = reactive<Record<number, boolean>>(
-  Object.fromEntries(items.map((item) => [item.id, true])),
+/** 1-based segment index within the current field. 0 when not segmented. */
+const segmentIndex = computed(() => {
+  const unit = currentUnit.value
+  if (!unit || unit.kind !== 'segment') return 0
+  const fieldUnits = units.value.filter(
+    (u) => u.kind === 'segment' && u.item.id === unit.item.id,
+  )
+  return fieldUnits.findIndex((u) => u.key === unit.key) + 1
+})
+
+const selected = reactive<Record<string, boolean>>(
+  Object.fromEntries(units.value.map((u) => [u.key, true])),
 )
-const reasons = reactive<Record<number, string>>(
-  Object.fromEntries(items.map((item) => [item.id, ''])),
+const reasons = reactive<Record<string, string>>(
+  Object.fromEntries(units.value.map((u) => [u.key, ''])),
 )
 
 const selectedCount = computed(
-  () => items.filter((item) => selected[item.id]).length,
+  () => units.value.filter((u) => selected[u.key]).length,
 )
 
 const applyLabel = computed(() => {
   return $t('aiAgentBatchRewriteApply', 'Apply @count of @total')
     .replace('@count', selectedCount.value.toString())
-    .replace('@total', items.length.toString())
+    .replace('@total', units.value.length.toString())
 })
 
-function onUpdateSelected(id: number, value: boolean) {
-  selected[id] = value
+function onUpdateSelected(key: string, value: boolean) {
+  selected[key] = value
   nextTick(() => highlight.value?.updateRects())
 }
 
-function onToggle(id: number) {
-  onUpdateSelected(id, !selected[id])
+function onToggle(key: string) {
+  onUpdateSelected(key, !selected[key])
 }
 
-function onUpdateReasons(id: number, value: string) {
-  reasons[id] = value
+function onUpdateReasons(key: string, value: string) {
+  reasons[key] = value
 }
 
 function onApply() {
   // Reset accepted items' editables to their original Vue-tracked DOM BEFORE
-  // notifying the consumer. The consumer typically commits the new value via a
-  // mutation, which Vue then patches onto the editable — those patches must
-  // land on the tracked nodes, not on the throwaway `<ins>`/`<del>` markup
-  // setDiffHtml wrote. Without this, the post-mutation `onBeforeUnmount`
-  // restore would re-insert the pre-mutation snapshot and clobber the
-  // committed value.
+  // notifying the consumer (see Highlight/Item.vue for the rationale).
   highlight.value?.commitSelected()
   emit('apply', {
     selected: { ...selected },
@@ -162,26 +178,42 @@ function onApply() {
   })
 }
 
-function scrollToItem(item: ApprovalItem) {
-  const host = resolveHost(item.uuid)
+function scrollToUnit(unit: ApprovalUnit) {
+  const host = resolveHost(unit.item.uuid)
   if (host) {
-    const el = directive.findEditableElement(item.fieldName, host)
-    if (el) {
-      eventBus.emit('scrollIntoView', { element: el, immediate: false })
+    const fieldEl = directive.findEditableElement(unit.item.fieldName, host)
+    if (fieldEl) {
+      // For segment units, scroll the specific chunk element into view via the
+      // data-chunk-index marker rendered by `renderSegmentDiff`. Falls back to
+      // the field root when the marker isn't there yet (preview still pending).
+      let target: HTMLElement = fieldEl
+      if (unit.kind === 'segment') {
+        const segEl = fieldEl.querySelector<HTMLElement>(
+          `[data-chunk-index="${CSS.escape(unit.segment.id)}"]`,
+        )
+        if (segEl) target = segEl
+      }
+      eventBus.emit('scrollIntoView', { element: target, immediate: false })
       return
     }
   }
-  eventBus.emit('scrollIntoView', { uuid: item.uuid, immediate: false })
+  eventBus.emit('scrollIntoView', { uuid: unit.item.uuid, immediate: false })
 }
 
 function prev() {
-  currentIndex.value = (currentIndex.value - 1 + items.length) % items.length
-  scrollToItem(items[currentIndex.value]!)
+  const total = units.value.length
+  if (total === 0) return
+  currentIndex.value = (currentIndex.value - 1 + total) % total
+  const u = units.value[currentIndex.value]
+  if (u) scrollToUnit(u)
 }
 
 function next() {
-  currentIndex.value = (currentIndex.value + 1) % items.length
-  scrollToItem(items[currentIndex.value]!)
+  const total = units.value.length
+  if (total === 0) return
+  currentIndex.value = (currentIndex.value + 1) % total
+  const u = units.value[currentIndex.value]
+  if (u) scrollToUnit(u)
 }
 
 onBlokkliEvent('keyPressed', (e) => {
@@ -193,27 +225,31 @@ onBlokkliEvent('keyPressed', (e) => {
     prev()
   } else if (e.code === ' ') {
     e.originalEvent.preventDefault()
-    const item = items[currentIndex.value]
-    if (item) {
-      onUpdateSelected(item.id, !selected[item.id])
+    const u = units.value[currentIndex.value]
+    if (u) {
+      onUpdateSelected(u.key, !selected[u.key])
     }
   }
 })
 
 onBlokkliEvent('editable:focus', (e) => {
-  const index = items.findIndex(
-    (item) => item.fieldName === e.fieldName && item.uuid === e.uuid,
+  // Jump to the first unit belonging to the focused field — for unsegmented
+  // items that's the field itself, for segmented items it's the first changed
+  // segment, which is the most useful entry point.
+  const idx = units.value.findIndex(
+    (u) => u.item.fieldName === e.fieldName && u.item.uuid === e.uuid,
   )
-  if (index !== -1) {
-    currentIndex.value = index
+  if (idx !== -1) {
+    currentIndex.value = idx
   }
 })
 
 onMounted(async () => {
   ui.setIsApproving(true)
   await nextTick()
-  if (items[0]) {
-    scrollToItem(items[0])
+  const first = units.value[0]
+  if (first) {
+    scrollToUnit(first)
   }
 })
 

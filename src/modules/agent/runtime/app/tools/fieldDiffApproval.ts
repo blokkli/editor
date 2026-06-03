@@ -1,12 +1,33 @@
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import { flattenSegments, reassembleValue } from '#blokkli/editor/helpers/diff'
 
-/** Map of rejected paragraph UUID → field name → rejection details. */
-export type RejectedByUser = Record<
-  string,
-  Record<string, { reasonForRejection: string }>
->
+export type RejectedSegment = {
+  tag: string
+  beforeHtml: string
+  afterHtml: string
+  status: 'matched' | 'inserted' | 'deleted'
+  reasonForRejection: string
+}
+
+export type FieldRejection = {
+  reasonForRejection: string
+  /**
+   * Present when the user evaluated a segmented field chunk-by-chunk. When
+   * `accepted > 0` the field was updated with a hybrid value; when
+   * `accepted === 0` every chunk was rejected and the field stayed at its
+   * original value.
+   */
+  partial?: {
+    accepted: number
+    total: number
+    rejectedSegments: RejectedSegment[]
+  }
+}
+
+/** Map of paragraph UUID → field name → rejection details. */
+export type RejectedByUser = Record<string, Record<string, FieldRejection>>
 
 /**
  * A field reference (uuid + field name) that was dropped before applying,
@@ -47,54 +68,175 @@ export function appendAgentNote(
   return `${message}\n\n${note}`
 }
 
-export type FieldDiffApplyResult = {
-  acceptedCount: number
+export type DecidedUpdate = {
+  itemId: number
+  uuid: string
+  fieldName: string
+  fieldValue: string
+}
+
+export type FieldDecisionResult = {
+  /**
+   * One entry per accepted item, with the value that should be written. For
+   * segmented items this is the reassembled hybrid (accepted chunks + original
+   * chunks for rejected ones); for unsegmented items it's `item.value`.
+   */
+  updates: DecidedUpdate[]
   rejectedByUser: RejectedByUser
-  label: string
+  /**
+   * Number of accepted toggle units across the whole batch. For unsegmented
+   * fields this is "field accepted" / "field rejected"; for segmented fields
+   * each changed chunk counts as one unit.
+   */
+  acceptedCount: number
+  /** Total number of toggle units the user could have selected. */
+  totalCount: number
 }
 
 /**
- * Apply the user's accept/reject decisions for a batch of field diffs: split
- * the accepted items into entity-level vs block-level updates, run the batched
- * mutation, and return the accepted count, rejection map, and a summary label.
+ * Walk the approval items and decide, per field, what gets written and what
+ * gets reported as rejected. Pure: does no IO and does not depend on the
+ * adapter. The caller picks the mutation strategy (entity vs. batch update,
+ * translation import, …).
  *
- * Shared by `update_text_fields` and `delegate_text_rewrite`, which both render
- * the same diff-approval UI and report the same accepted/rejected outcome. Each
- * caller layers its own `agentMessage` / details / usage on top of the result.
+ * `selected` and `reasons` are keyed by `ApprovalUnit.key` — the stringified
+ * item id for unsegmented items, `${itemId}:${segmentId}` for segmented.
+ */
+export function decideFieldUpdates(
+  items: ApprovalItem[],
+  selected: Record<string, boolean>,
+  reasons: Record<string, string>,
+): FieldDecisionResult {
+  const rejectedByUser: RejectedByUser = {}
+  const updates: DecidedUpdate[] = []
+  let acceptedCount = 0
+  let totalCount = 0
+
+  for (const item of items) {
+    if (item.segments) {
+      const atoms = flattenSegments(item.segments).filter(
+        (s) => s.status !== 'matched' || s.beforeHtml !== s.afterHtml,
+      )
+      totalCount += atoms.length
+
+      const acceptedById: Record<string, boolean> = {}
+      const rejectedSegments: RejectedSegment[] = []
+      let accepted = 0
+
+      for (const atom of atoms) {
+        const key = `${item.id}:${atom.id}`
+        const isAccepted = selected[key] !== false
+        acceptedById[atom.id] = isAccepted
+        if (isAccepted) {
+          accepted++
+        } else {
+          rejectedSegments.push({
+            tag: atom.tag,
+            beforeHtml: atom.beforeHtml,
+            afterHtml: atom.afterHtml,
+            status: atom.status,
+            reasonForRejection: reasons[key] || '',
+          })
+        }
+      }
+
+      acceptedCount += accepted
+
+      if (accepted > 0) {
+        updates.push({
+          itemId: item.id,
+          uuid: item.uuid,
+          fieldName: item.fieldName,
+          fieldValue: reassembleValue(item.segments, acceptedById),
+        })
+      }
+
+      if (rejectedSegments.length > 0) {
+        const fields = rejectedByUser[item.uuid] ?? {}
+        fields[item.fieldName] = {
+          reasonForRejection: '',
+          partial: {
+            accepted,
+            total: atoms.length,
+            rejectedSegments,
+          },
+        }
+        rejectedByUser[item.uuid] = fields
+      }
+    } else {
+      totalCount++
+      const key = String(item.id)
+      const isAccepted = selected[key] !== false
+
+      if (isAccepted) {
+        acceptedCount++
+        updates.push({
+          itemId: item.id,
+          uuid: item.uuid,
+          fieldName: item.fieldName,
+          fieldValue: item.value,
+        })
+      } else {
+        const fields = rejectedByUser[item.uuid] ?? {}
+        fields[item.fieldName] = {
+          reasonForRejection: reasons[key] || '',
+        }
+        rejectedByUser[item.uuid] = fields
+      }
+    }
+  }
+
+  return { updates, rejectedByUser, acceptedCount, totalCount }
+}
+
+export type FieldDiffApplyResult = FieldDecisionResult & {
+  label: string
+  /**
+   * The value that was actually written for each accepted item, keyed by
+   * `ApprovalItem.id`. Used by the caller to build the `_details` panel
+   * (agent-facing audit log).
+   */
+  appliedByItemId: Record<number, string>
+}
+
+/**
+ * Apply the user's accept/reject decisions for a batch of field diffs through
+ * `updateFieldValueBatched`. Shared by `update_text_fields` and
+ * `delegate_text_rewrite`. The translation tool calls `decideFieldUpdates`
+ * directly because it imports through a different adapter method.
  */
 export async function applyFieldDiffs(
   app: BlokkliApp,
   adapter: FullBlokkliAdapter<any>,
   items: ApprovalItem[],
-  selected: Record<number, boolean>,
-  reasons: Record<number, string>,
+  selected: Record<string, boolean>,
+  reasons: Record<string, string>,
 ): Promise<FieldDiffApplyResult> {
   const { $t, state, context } = app
   const entityUuid = context.value.entityUuid
 
-  const rejectedByUser: RejectedByUser = {}
+  const decision = decideFieldUpdates(items, selected, reasons)
+
   const batchItems: Array<{
     uuid: string
     fieldName: string
     fieldValue: string
   }> = []
   const entityItems: Array<{ fieldName: string; fieldValue: string }> = []
+  const appliedByItemId: Record<number, string> = {}
 
-  for (const item of items) {
-    if (!selected[item.id]) {
-      const fields = rejectedByUser[item.uuid] ?? {}
-      fields[item.fieldName] = { reasonForRejection: reasons[item.id] || '' }
-      rejectedByUser[item.uuid] = fields
-      continue
-    }
-
-    if (item.uuid === entityUuid) {
-      entityItems.push({ fieldName: item.fieldName, fieldValue: item.value })
+  for (const update of decision.updates) {
+    appliedByItemId[update.itemId] = update.fieldValue
+    if (update.uuid === entityUuid) {
+      entityItems.push({
+        fieldName: update.fieldName,
+        fieldValue: update.fieldValue,
+      })
     } else {
       batchItems.push({
-        uuid: item.uuid,
-        fieldName: item.fieldName,
-        fieldValue: item.value,
+        uuid: update.uuid,
+        fieldName: update.fieldName,
+        fieldValue: update.fieldValue,
       })
     }
   }
@@ -103,47 +245,117 @@ export async function applyFieldDiffs(
     adapter.updateFieldValueBatched!({ items: batchItems, entityItems }),
   )
 
-  const acceptedCount = batchItems.length + entityItems.length
-
   const label =
-    acceptedCount === items.length
+    decision.acceptedCount === decision.totalCount
       ? $t(
           'aiAgentBatchRewriteAllApplied',
           'All @count changes applied',
-        ).replace('@count', String(acceptedCount))
+        ).replace('@count', String(decision.acceptedCount))
       : $t(
           'aiAgentBatchRewriteSomeApplied',
           '@applied of @total changes applied',
         )
-          .replace('@applied', String(acceptedCount))
-          .replace('@total', String(items.length))
+          .replace('@applied', String(decision.acceptedCount))
+          .replace('@total', String(decision.totalCount))
 
-  return { acceptedCount, rejectedByUser, label }
+  return {
+    ...decision,
+    label,
+    appliedByItemId,
+  }
+}
+
+/**
+ * Inline guidance the agent should follow when ANY field in this result came
+ * back with `partial` set AND at least one chunk was accepted — i.e. the
+ * field was updated with a hybrid value. Returns undefined when there were
+ * no such hybrids.
+ *
+ * Scoping a follow-up to the rejected chunks (instead of rewriting the field
+ * whole) is non-obvious — without this hint the model tends to re-propose
+ * the entire field and clobber the accepted chunks. The guidance only
+ * appears when a hybrid was actually written, so it costs nothing on the
+ * normal "all accepted" or "all rejected" paths.
+ */
+export function partialRejectionGuidance(
+  rejected: RejectedByUser,
+): string | undefined {
+  const partials: Array<{ uuid: string; fieldName: string }> = []
+  for (const [uuid, fields] of Object.entries(rejected)) {
+    for (const [fieldName, v] of Object.entries(fields)) {
+      if (v.partial && v.partial.accepted > 0) {
+        partials.push({ uuid, fieldName })
+      }
+    }
+  }
+  if (partials.length === 0) return undefined
+
+  const fieldList = partials
+    .map((p) => `"${p.fieldName}" (paragraph ${p.uuid})`)
+    .join(', ')
+  const noun = partials.length === 1 ? 'This field was' : 'These fields were'
+  return `${noun} updated with a hybrid value — accepted chunks plus the original content of the rejected ones: ${fieldList}. If you follow up on the rejected chunks, scope your change to those chunks only — use update_text_fields patch mode (operations) with search matching the rejected chunk's original content. Do NOT re-rewrite the whole field; the accepted chunks must stay byte-for-byte identical.`
 }
 
 /**
  * The follow-up instruction to give the agent when the user rejected fields
- * without a reason. Returns undefined when every rejection had a reason (or
- * there were none).
+ * or chunks without a reason. Returns undefined when every rejection had a
+ * reason (or there were none).
+ *
+ * Partial rejections are surfaced at chunk granularity so the agent knows to
+ * offer alternatives for the specific paragraph or list item, not the whole
+ * field.
  */
 export function rejectedWithoutReasonMessage(
-  rejectedByUser: RejectedByUser,
+  rejected: RejectedByUser,
 ): string | undefined {
-  const rejected: Array<{ uuid: string; fieldName: string }> = []
-  for (const [uuid, fields] of Object.entries(rejectedByUser)) {
+  type Entry =
+    | { kind: 'field'; uuid: string; fieldName: string }
+    | {
+        kind: 'segment'
+        uuid: string
+        fieldName: string
+        tag: string
+        status: 'matched' | 'inserted' | 'deleted'
+      }
+
+  const entries: Entry[] = []
+  for (const [uuid, fields] of Object.entries(rejected)) {
     for (const [fieldName, v] of Object.entries(fields)) {
-      if (!v?.reasonForRejection) rejected.push({ uuid, fieldName })
+      if (v.partial) {
+        for (const seg of v.partial.rejectedSegments) {
+          if (!seg.reasonForRejection) {
+            entries.push({
+              kind: 'segment',
+              uuid,
+              fieldName,
+              tag: seg.tag,
+              status: seg.status,
+            })
+          }
+        }
+      } else if (!v.reasonForRejection) {
+        entries.push({ kind: 'field', uuid, fieldName })
+      }
     }
   }
 
-  if (rejected.length === 1 || rejected.length === 2) {
-    const fieldList = rejected
-      .map((r) => `"${r.fieldName}" of paragraph ${r.uuid}`)
-      .join(' and ')
-    return `The user rejected ${fieldList} without a reason. Use the ask_question tool to present the user with 2 or more alternative texts for each rejected field.`
+  if (entries.length === 0) return undefined
+
+  const describe = (e: Entry): string =>
+    e.kind === 'segment'
+      ? `a <${e.tag}> ${e.status === 'matched' ? 'change' : e.status === 'inserted' ? 'insertion' : 'deletion'} in "${e.fieldName}" of paragraph ${e.uuid}`
+      : `"${e.fieldName}" of paragraph ${e.uuid}`
+
+  if (entries.length === 1) {
+    const it = entries[0]!
+    if (it.kind === 'segment') {
+      return `The user rejected ${describe(it)} without a reason. Use the ask_question tool to present 2 or more alternative wordings for that specific chunk — do not rewrite the whole field.`
+    }
+    return `The user rejected ${describe(it)} without a reason. Use the ask_question tool to present the user with 2 or more alternative texts.`
   }
-  if (rejected.length > 2) {
-    return 'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
+  if (entries.length === 2) {
+    return `The user rejected ${describe(entries[0]!)} and ${describe(entries[1]!)} without a reason. Use the ask_question tool to present 2 or more alternative texts for each.`
   }
-  return undefined
+  return 'Some changes were rejected without a reason. Ask the user what they would like to change instead.'
 }

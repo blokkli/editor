@@ -9,6 +9,19 @@
     Diff approval (host title + lead + a card title)
   </button>
 
+  <button
+    type="button"
+    class="bk-button bk-scheme-mono bk-is-small"
+    data-test="run-chunk-diff-approval"
+    :disabled="!!pendingDiff"
+    @click.prevent="runChunkDemo"
+  >
+    Chunk approval (multi-paragraph rewrite on a Text block)
+  </button>
+  <p v-if="chunkMessage" class="text-xs text-mono-500 px-5">
+    {{ chunkMessage }}
+  </p>
+
   <!-- DiffApproval teleports its UI into the canvas overlay + main layout, so it
        renders correctly even though this host is otherwise invisible. -->
   <DiffApproval
@@ -24,6 +37,11 @@
 import { ref, useBlokkli, onMounted } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import {
+  flattenSegments,
+  reassembleValue,
+  splitIntoSegments,
+} from '#blokkli/editor/helpers/diff'
 import { itemEntityType } from '#blokkli-build/config'
 import type { BlokkliTestApi } from '../../types'
 
@@ -44,6 +62,9 @@ let resolvePending: ((result: { applied: boolean }) => void) | null = null
 // When true, applying the current scenario persists the accepted items via the
 // adapter (a real mutation + history entry); otherwise apply is a no-op cleanup.
 let applyMutates = false
+
+/** Inline hint shown below the chunk-demo button (e.g. "add a Text block first"). */
+const chunkMessage = ref('')
 
 /**
  * Produce a value that visibly differs from the original so the diff preview
@@ -157,22 +178,67 @@ function applyFieldDiff(target: {
 
 /** Persist one accepted item via the adapter (host vs. block field). */
 async function persistItem(item: ApprovalItem): Promise<void> {
-  if (item.uuid === context.value.entityUuid) {
+  await persistValue(item.uuid, item.fieldName, item.value)
+}
+
+async function persistValue(
+  uuid: string,
+  fieldName: string,
+  value: string,
+): Promise<void> {
+  if (uuid === context.value.entityUuid) {
     await state.mutateWithLoadingState(() =>
-      adapter.updateEntityFieldValue!({
-        fieldName: item.fieldName,
-        fieldValue: item.value,
-      }),
+      adapter.updateEntityFieldValue!({ fieldName, fieldValue: value }),
     )
     return
   }
   await state.mutateWithLoadingState(() =>
-    adapter.updateFieldValue!({
-      uuid: item.uuid,
-      fieldName: item.fieldName,
-      fieldValue: item.value,
-    }),
+    adapter.updateFieldValue!({ uuid, fieldName, fieldValue: value }),
   )
+}
+
+/**
+ * Chunk-level diff scenario: seeds the field with `before`, then drives a
+ * DiffApproval with `before → after` segmented via `splitIntoSegments`. On
+ * apply, the reassembled hybrid (accepted chunks + original chunks for
+ * rejected ones) is persisted exactly like the agent tools do. Used by the
+ * chunk e2e test to drive a deterministic markup-field shape.
+ */
+async function applyChunkFieldDiff(target: {
+  fieldName: string
+  uuid?: string
+  before: string
+  after: string
+}): Promise<{ applied: boolean }> {
+  const uuid = target.uuid ?? context.value.entityUuid
+  const editable = directive
+    .getAllEditables()
+    .find((e) => e.fieldName === target.fieldName && e.uuid === uuid)
+  if (!editable) {
+    return Promise.resolve({ applied: false })
+  }
+
+  // Seed the field so the rendered DOM matches `before` — segments line up
+  // with actual child elements, and the after-apply read-back is meaningful.
+  await persistValue(uuid, target.fieldName, target.before)
+
+  const segments =
+    splitIntoSegments(target.before, target.after, 'markup') ?? undefined
+
+  applyMutates = true
+  pendingDiff.value = [
+    {
+      id: 0,
+      uuid,
+      fieldName: target.fieldName,
+      fieldLabel: `${target.fieldName} (${editable.type})`,
+      value: target.after,
+      segments,
+    },
+  ]
+  return new Promise((resolve) => {
+    resolvePending = resolve
+  })
 }
 
 /**
@@ -188,14 +254,35 @@ function settle(applied: boolean) {
 }
 
 async function onApply(data: {
-  selected: Record<number, boolean>
-  reasons: Record<number, string>
+  selected: Record<string, boolean>
+  reasons: Record<string, string>
 }) {
   if (applyMutates && pendingDiff.value) {
     // Mutate before closing so the field is patched to the new value as the
     // preview overlay is torn down (the real consumer order).
-    for (const item of pendingDiff.value.filter((i) => data.selected[i.id])) {
-      await persistItem(item)
+    for (const item of pendingDiff.value) {
+      if (item.segments) {
+        const atoms = flattenSegments(item.segments).filter(
+          (s) => s.status !== 'matched' || s.beforeHtml !== s.afterHtml,
+        )
+        if (!atoms.length) continue
+        const acceptedById: Record<string, boolean> = {}
+        let accepted = 0
+        for (const atom of atoms) {
+          const key = `${item.id}:${atom.id}`
+          const isAccepted = data.selected[key] !== false
+          acceptedById[atom.id] = isAccepted
+          if (isAccepted) accepted++
+        }
+        if (!accepted) continue
+        await persistValue(
+          item.uuid,
+          item.fieldName,
+          reassembleValue(item.segments, acceptedById),
+        )
+      } else if (data.selected[String(item.id)]) {
+        await persistItem(item)
+      }
     }
   }
   settle(true)
@@ -205,8 +292,57 @@ function onCancel() {
   settle(false)
 }
 
+/**
+ * Inline demo: target the first Text block on the page and trigger a
+ * chunk-level DiffApproval using a multi-paragraph rewrite. Lets you try
+ * per-`<li>` accept/reject from the playground without writing an E2E test.
+ *
+ * Seeds the chosen block's `text` field with the demo `before` so the chunk
+ * shape is deterministic regardless of prior edits. Undoing rolls back both
+ * the seed and the apply.
+ */
+async function runChunkDemo(): Promise<void> {
+  chunkMessage.value = ''
+  const target = directive
+    .getAllEditables()
+    .find(
+      (e) =>
+        e.type === itemEntityType &&
+        e.bundle === 'text' &&
+        e.fieldName === 'text',
+    )
+  if (!target) {
+    chunkMessage.value =
+      'Add a Text block to the page first, then click this button again.'
+    return
+  }
+
+  const before = `<p>Bei einer Namensänderung benötigen Sie einen neuen Ausweis. Reichen Sie das Gesuch beim Strassenverkehrsamt ein.</p>
+<ul>
+  <li>Kopie von ID, Pass oder Aufenthaltsbewilligung</li>
+  <li>Aktueller Ausweis im Original</li>
+  <li>Aktuelles Passfoto</li>
+</ul>
+<p>Sie können das Gesuch auch schriftlich einreichen.</p>`
+
+  const after = `<p>Bei einer Namensänderung (z. B. durch Heirat) benötigen Sie einen neuen Lernfahr- oder Führerausweis. Sobald die Namensänderung beim Einwohnerdienst gemeldet ist, können Sie das Formular «Änderung Führerausweis» nutzen.</p>
+<ul>
+  <li>Kopie von ID, Pass oder Aufenthaltsbewilligung mit dem neuen Namen</li>
+  <li>Aktueller Lernfahr- und/oder Führerausweis im Original</li>
+  <li>Ein aktuelles, farbiges Passfoto in der Grösse 35 x 45 mm; frontale Aufnahme mit neutralem Hintergrund.</li>
+</ul>
+<p>Sie können uns die Namensänderung und das Gesuch für einen neuen Ausweis auch schriftlich einreichen.</p>`
+
+  await applyChunkFieldDiff({
+    fieldName: 'text',
+    uuid: target.uuid,
+    before,
+    after,
+  })
+}
+
 onMounted(() => {
-  emit('register', { runDiffApproval, applyFieldDiff })
+  emit('register', { runDiffApproval, applyFieldDiff, applyChunkFieldDiff })
 })
 
 defineOptions({

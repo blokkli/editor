@@ -11,6 +11,7 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
+import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
 import type {
   McpToolContext,
   ComponentToolResult,
@@ -20,8 +21,10 @@ import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
 import {
   applyFieldDiffs,
   rejectedWithoutReasonMessage,
+  partialRejectionGuidance,
   skippedFieldsMessage,
   appendAgentNote,
+  type RejectedByUser,
 } from '../fieldDiffApproval'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
@@ -92,6 +95,22 @@ function resolveFieldLabel(uuid: string, fieldName: string): string {
   return config?.label || fieldName
 }
 
+function getFieldType(
+  uuid: string,
+  fieldName: string,
+): 'plain' | 'markup' | null {
+  const host = resolveHost(uuid)
+  if (!host) return null
+  const cfg = types.editableFieldConfig.forName(
+    host.entityType,
+    host.bundle,
+    fieldName,
+  )
+  if (!cfg || cfg.type === 'table') return null
+  // 'frame' is a markup variant — chunkable like any other rich-text field.
+  return cfg.type === 'plain' ? 'plain' : 'markup'
+}
+
 function getCurrentValue(uuid: string, fieldName: string): string | null {
   const host = resolveHost(uuid)
   if (!host) return null
@@ -101,37 +120,48 @@ function getCurrentValue(uuid: string, fieldName: string): string | null {
     uuid,
   })
   if (!el) return null
-  const cfg = types.editableFieldConfig.forName(
-    host.entityType,
-    host.bundle,
-    fieldName,
-  )
-  if (!cfg || cfg.type === 'table') return null
-  return cfg.type === 'plain' ? el.textContent || '' : el.innerHTML
+  const fieldType = getFieldType(uuid, fieldName)
+  if (fieldType === null) return null
+  return fieldType === 'plain' ? el.textContent || '' : el.innerHTML
 }
 
 let idCounter = 0
 const beforeValues = new Map<number, string>()
 
-function buildItems(): ApprovalItem[] {
-  const result: ApprovalItem[] = []
+type DraftItem = Omit<ApprovalItem, 'segments'> & {
+  fieldType: 'plain' | 'markup'
+}
+
+function buildItems(): DraftItem[] {
+  const result: DraftItem[] = []
+
+  const pushItem = (
+    uuid: string,
+    fieldName: string,
+    value: string,
+    fieldType: 'plain' | 'markup',
+  ) => {
+    result.push({
+      id: idCounter++,
+      uuid,
+      fieldName,
+      fieldLabel: resolveFieldLabel(uuid, fieldName),
+      value,
+      fieldType,
+    })
+  }
 
   // Process full-value replacements from `updates`.
   if (props.params.updates) {
     for (const { uuid, fieldName, value } of props.params.updates) {
-      result.push({
-        id: idCounter++,
-        uuid,
-        fieldName,
-        fieldLabel: resolveFieldLabel(uuid, fieldName),
-        value,
-      })
+      const fieldType = getFieldType(uuid, fieldName)
+      if (fieldType === null) continue
+      pushItem(uuid, fieldName, value, fieldType)
     }
   }
 
   // Process patch operations — group by uuid+fieldName, apply to current value.
   if (props.params.operations?.length) {
-    // Group operations by uuid+fieldName.
     const grouped = new Map<
       string,
       {
@@ -157,71 +187,83 @@ function buildItems(): ApprovalItem[] {
     for (const { uuid, fieldName, ops } of grouped.values()) {
       const current = getCurrentValue(uuid, fieldName)
       if (current === null) continue
+      const fieldType = getFieldType(uuid, fieldName)
+      if (fieldType === null) continue
 
       const newValue = applyOperations(current, ops)
       if (newValue === current) continue
 
-      result.push({
-        id: idCounter++,
-        uuid,
-        fieldName,
-        fieldLabel: resolveFieldLabel(uuid, fieldName),
-        value: newValue,
-      })
+      pushItem(uuid, fieldName, newValue, fieldType)
     }
   }
 
   return result
 }
 
-const items: ApprovalItem[] = buildItems().filter((item) => {
-  const current = getCurrentValue(item.uuid, item.fieldName)
+const items: ApprovalItem[] = []
+for (const draft of buildItems()) {
+  const current = getCurrentValue(draft.uuid, draft.fieldName)
   if (current !== null) {
-    beforeValues.set(item.id, current)
+    beforeValues.set(draft.id, current)
+    if (current === draft.value) continue
   }
-  return current === null || current !== item.value
-})
+  const segments =
+    current !== null
+      ? (splitIntoSegments(current, draft.value, draft.fieldType) ?? undefined)
+      : undefined
+  items.push({
+    id: draft.id,
+    uuid: draft.uuid,
+    fieldName: draft.fieldName,
+    fieldLabel: draft.fieldLabel,
+    value: draft.value,
+    segments,
+  })
+}
 
 async function applySelected(data: {
-  selected: Record<number, boolean>
-  reasons: Record<number, string>
+  selected: Record<string, boolean>
+  reasons: Record<string, string>
 }) {
   const { selected, reasons } = data
 
   isApplying.value = true
 
-  const { acceptedCount, rejectedByUser, label } = await applyFieldDiffs(
-    blokkli,
-    props.context.adapter,
-    items,
-    selected,
-    reasons,
-  )
+  const { acceptedCount, rejectedByUser, label, appliedByItemId } =
+    await applyFieldDiffs(
+      blokkli,
+      props.context.adapter,
+      items,
+      selected,
+      reasons,
+    )
 
-  // Capture before/after diffs for the details panel.
+  // Capture before/after diffs for the details panel. For segmented items the
+  // "after" is the reassembled hybrid we actually wrote, not the agent's
+  // proposed value.
   const _details: FieldDiffDetailItem[] = items
-    .filter((item) => selected[item.id])
+    .filter((item) => appliedByItemId[item.id] !== undefined)
     .map((item) => ({
       fieldLabel: item.fieldLabel,
       before: beforeValues.get(item.id) || '',
-      after: item.value,
+      after: appliedByItemId[item.id]!,
     }))
 
   emitDone({
     acceptedCount,
     rejectedByUser,
     label,
-    agentMessage: rejectedWithoutReasonMessage(rejectedByUser),
+    agentMessage: appendAgentNote(
+      partialRejectionGuidance(rejectedByUser),
+      rejectedWithoutReasonMessage(rejectedByUser),
+    ),
     historyIndex: state.currentMutationIndex.value,
     _details,
   })
 }
 
 async function rejectAll() {
-  const rejectedByUser: Record<
-    string,
-    Record<string, { reasonForRejection: string }>
-  > = {}
+  const rejectedByUser: RejectedByUser = {}
   for (const item of items) {
     const fields = rejectedByUser[item.uuid] ?? {}
     fields[item.fieldName] = { reasonForRejection: '' }

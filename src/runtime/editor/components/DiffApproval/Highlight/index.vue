@@ -5,17 +5,16 @@
       :style="containerStyle"
     >
       <Item
-        v-for="(item, i) in items"
+        v-for="item in items"
         :key="item.id"
         ref="itemRefs"
-        :uuid="item.uuid"
-        :field-name="item.fieldName"
-        :value="item.value"
-        :selected="!!selected[item.id]"
-        :active="i === activeIndex"
+        :item
+        :units="unitsByItemId[item.id] ?? []"
+        :selected
+        :active-key
         :insertions-only
-        @activate="activeIndex = i"
-        @toggle="emit('toggle', item.id)"
+        @activate="(key: string) => onActivate(key)"
+        @toggle="(key: string) => emit('toggle', key)"
       />
     </div>
   </Teleport>
@@ -23,17 +22,18 @@
 
 <script lang="ts" setup>
 import { computed, useTemplateRef, useBlokkli } from '#imports'
-import type { ApprovalItem } from '../types'
+import type { ApprovalItem, ApprovalUnit } from '../types'
 import Item from './Item.vue'
 
 const props = defineProps<{
   items: ApprovalItem[]
-  selected: Record<number, boolean>
+  units: ApprovalUnit[]
+  selected: Record<string, boolean>
   insertionsOnly?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'toggle', id: number): void
+  (e: 'toggle', key: string): void
 }>()
 
 const activeIndex = defineModel<number>({ default: -1 })
@@ -51,13 +51,31 @@ const containerStyle = computed(() => {
   }
 })
 
+/** Group units by their owning item, in unit reading order. */
+const unitsByItemId = computed<Record<number, ApprovalUnit[]>>(() => {
+  const out: Record<number, ApprovalUnit[]> = {}
+  for (const unit of props.units) {
+    const list = out[unit.item.id] ?? []
+    list.push(unit)
+    out[unit.item.id] = list
+  }
+  return out
+})
+
+const activeKey = computed<string | null>(() => {
+  return props.units.at(activeIndex.value)?.key ?? null
+})
+
+function onActivate(key: string) {
+  const idx = props.units.findIndex((u) => u.key === key)
+  if (idx !== -1) activeIndex.value = idx
+}
+
 function updateRects() {
   if (itemRefs.value) {
     for (const item of itemRefs.value) {
-      if (!item) {
-        continue
-      }
-      item.updateRect()
+      if (!item) continue
+      item.updateRects()
     }
   }
 }
@@ -65,19 +83,13 @@ function updateRects() {
 /**
  * Reset each accepted item's editable to its original Vue-tracked DOM, then
  * mark them committed so the post-mutation unmount-restore is a no-op. Called
- * by DiffApproval BEFORE emitting `apply`, so the consumer's mutation patches
- * onto the freshly-restored nodes instead of the throwaway diff markup.
+ * by DiffApproval BEFORE emitting `apply`.
  */
 function commitSelected() {
-  if (!itemRefs.value) {
-    return
-  }
-  for (let i = 0; i < itemRefs.value.length; i++) {
-    const ref = itemRefs.value[i]
-    const item = props.items[i]
-    if (ref && item && props.selected[item.id]) {
-      ref.commitForApply()
-    }
+  if (!itemRefs.value) return
+  for (const ref of itemRefs.value) {
+    if (!ref) continue
+    ref.commitForApply()
   }
 }
 

@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
+import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
 import type {
   McpToolContext,
   ComponentToolResult,
@@ -22,6 +23,8 @@ import {
   skippedFieldsMessage,
   appendAgentNote,
   rejectedWithoutReasonMessage,
+  partialRejectionGuidance,
+  decideFieldUpdates,
   type RejectedByUser,
 } from '../fieldDiffApproval'
 import type { ComponentParams, AutoTranslateResult } from './index'
@@ -135,6 +138,16 @@ onMounted(async () => {
     const uuid = result.key.substring(0, separatorIndex)
     const fieldName = result.key.substring(separatorIndex + 1)
     const source = byKey.get(result.key)
+    // Use the source-language value as `before` so rejecting a translated
+    // chunk restores the source-language chunk at the same position (the
+    // user explicitly chose this behaviour over all-or-nothing).
+    const segments = source
+      ? (splitIntoSegments(
+          source.value,
+          result.translatedText,
+          source.fieldType,
+        ) ?? undefined)
+      : undefined
     return {
       id: id++,
       uuid,
@@ -143,6 +156,7 @@ onMounted(async () => {
         ? resolveFieldLabel(source.entityType, source.entityBundle, fieldName)
         : fieldName,
       value: result.translatedText,
+      segments,
     }
   })
 
@@ -150,42 +164,30 @@ onMounted(async () => {
 })
 
 async function onApply(data: {
-  selected: Record<number, boolean>
-  reasons: Record<number, string>
+  selected: Record<string, boolean>
+  reasons: Record<string, string>
 }) {
   const targetLanguage = entityContext.value.language
   const items = approvalItems.value
-  const rejectedByUser: RejectedByUser = {}
-  const accepted: ApprovalItem[] = []
 
-  for (const item of items) {
-    if (data.selected[item.id]) {
-      accepted.push(item)
-      continue
-    }
-    const fields = rejectedByUser[item.uuid] ?? {}
-    fields[item.fieldName] = {
-      reasonForRejection: data.reasons[item.id] || '',
-    }
-    rejectedByUser[item.uuid] = fields
-  }
+  const { updates, rejectedByUser, acceptedCount, totalCount } =
+    decideFieldUpdates(items, data.selected, data.reasons)
 
-  if (accepted.length) {
+  if (updates.length) {
     await state.mutateWithLoadingState(() =>
       adapter.importTranslationsBatched!({
-        items: accepted.map((item) => ({
+        items: updates.map((u) => ({
           langcode: targetLanguage,
-          uuid: item.uuid,
-          fieldName: item.fieldName,
-          fieldValue: item.value,
+          uuid: u.uuid,
+          fieldName: u.fieldName,
+          fieldValue: u.fieldValue,
         })),
       }),
     )
   }
 
-  const acceptedCount = accepted.length
   const label =
-    acceptedCount === items.length
+    acceptedCount === totalCount
       ? $t(
           'aiAgentAutoTranslateAllApplied',
           'All @count translations applied',
@@ -195,19 +197,30 @@ async function onApply(data: {
           '@applied of @total translations applied',
         )
           .replace('@applied', String(acceptedCount))
-          .replace('@total', String(items.length))
+          .replace('@total', String(totalCount))
 
-  const _details: FieldDiffDetailItem[] = accepted.map((item) => ({
-    fieldLabel: item.fieldLabel,
-    before: '',
-    after: item.value,
-  }))
+  // The "before" stays empty: source-language and target-language live in
+  // different translations, so a direct side-by-side isn't meaningful in the
+  // details panel.
+  const updatesByItem = new Map<string, string>(
+    updates.map((u) => [`${u.uuid}:${u.fieldName}`, u.fieldValue]),
+  )
+  const _details: FieldDiffDetailItem[] = items
+    .filter((item) => updatesByItem.has(`${item.uuid}:${item.fieldName}`))
+    .map((item) => ({
+      fieldLabel: item.fieldLabel,
+      before: '',
+      after: updatesByItem.get(`${item.uuid}:${item.fieldName}`)!,
+    }))
 
   emitDone({
     acceptedCount,
     rejectedByUser,
     label,
-    agentMessage: rejectedWithoutReasonMessage(rejectedByUser),
+    agentMessage: appendAgentNote(
+      partialRejectionGuidance(rejectedByUser),
+      rejectedWithoutReasonMessage(rejectedByUser),
+    ),
     historyIndex: state.currentMutationIndex.value,
     _details,
   })

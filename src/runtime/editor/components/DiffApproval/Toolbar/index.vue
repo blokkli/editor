@@ -6,7 +6,8 @@
     <div
       class="bk bk-control bk-diff-approval-toolbar self-end pointer-events-auto bg-mono-900 text-mono-50 select-none relative mx-15 mb-15 rounded shadow-xl-even outline outline-1 outline-mono-400"
       data-test="diff-approval-toolbar"
-      :data-test-selected="!!selected[currentItem.id]"
+      :data-test-selected="!!selected[currentUnit.key]"
+      :data-test-unit-kind="currentUnit.kind"
     >
       <div
         class="text-mono-100 font-medium text-sm border-b border-b-mono-600 flex justify-between items-center"
@@ -68,11 +69,18 @@
           class="flex items-center gap-10 px-15 border-l border-l-mono-600 h-full"
         >
           <span class="text-mono-400 tabular-nums whitespace-nowrap">
-            {{ currentIndex + 1 }} / {{ totalItems }}
+            {{ unitIndex }} / {{ totalUnits }}
           </span>
           <span class="font-medium whitespace-nowrap">
             {{ currentItem.fieldLabel }}
             <template v-if="bundleLabel"> &middot; {{ bundleLabel }}</template>
+            <template v-if="currentUnit.kind === 'segment'">
+              &middot;
+              <span class="font-mono text-mono-300"
+                >&lt;{{ currentUnit.segment.tag }}&gt;</span
+              >
+              {{ segmentIndex }}
+            </template>
           </span>
         </div>
 
@@ -81,7 +89,7 @@
             class="mx-15"
             color-scheme="dark"
             stretch
-            :model-value="selected[currentItem.id]"
+            :model-value="selected[currentUnit.key]"
             :label="$t('aiAgentApprovalAccept', 'Accept')"
             @update:model-value="toggleCurrent"
           />
@@ -100,13 +108,13 @@
         </div>
 
         <div
-          v-if="!selected[currentItem.id] && showReason"
+          v-if="!selected[currentUnit.key] && showReason"
           class="flex-1 min-w-0 px-10"
         >
           <input
             type="text"
             class="w-full h-30 px-10 rounded bg-mono-800 text-mono-100 text-sm border border-mono-600 outline-none placeholder:text-mono-500 focus:border-mono-400"
-            :value="reasons[currentItem.id]"
+            :value="reasons[currentUnit.key]"
             :placeholder="
               $t(
                 'aiAgentBatchRewriteReasonPlaceholder',
@@ -139,14 +147,24 @@ import {
   ShortcutIndicator,
   Tooltip,
 } from '#blokkli/editor/components'
-import type { ApprovalItem } from '../types'
+import type { ApprovalItem, ApprovalUnit } from '../types'
 
 const props = defineProps<{
+  currentUnit: ApprovalUnit
   currentItem: ApprovalItem
-  currentIndex: number
-  totalItems: number
-  selected: Record<number, boolean>
-  reasons: Record<number, string>
+  /**
+   * 1-based position of the current unit across the whole batch — a single
+   * progress count that includes per-chunk units for segmented fields.
+   */
+  unitIndex: number
+  totalUnits: number
+  /**
+   * 1-based segment index within the current field. 0 when the current unit
+   * is whole-field (the segment chip is hidden in that case).
+   */
+  segmentIndex: number
+  selected: Record<string, boolean>
+  reasons: Record<string, string>
   applyLabel: string
   /**
    * Whether to show the rejection reason input.
@@ -158,8 +176,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:selected', id: number, value: boolean): void
-  (e: 'update:reasons', id: number, value: string): void
+  (e: 'update:selected', key: string, value: boolean): void
+  (e: 'update:reasons', key: string, value: string): void
   (e: 'apply' | 'prev' | 'next' | 'cancel'): void
 }>()
 
@@ -174,13 +192,13 @@ const bundleLabel = computed(() => {
 })
 
 function toggleCurrent() {
-  const item = props.currentItem
-  emit('update:selected', item.id, !props.selected[item.id])
+  const key = props.currentUnit.key
+  emit('update:selected', key, !props.selected[key])
 }
 
 function onReasonInput(event: Event) {
   const value = (event.target as HTMLInputElement).value
-  emit('update:reasons', props.currentItem.id, value)
+  emit('update:reasons', props.currentUnit.key, value)
 }
 </script>
 

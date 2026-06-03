@@ -51,6 +51,28 @@ export async function applyFieldDiff(
   )
 }
 
+/**
+ * Seed the field with `before`, then drive a chunk-level DiffApproval whose
+ * segments come from `splitIntoSegments(before, after, 'markup')`. Applying
+ * persists the reassembled hybrid value. Resolves on apply/cancel.
+ *
+ * The `data-test="diff-approval-highlight-item"` rectangles each carry a
+ * `data-test-kind="segment"` attribute the test can use to assert per-chunk
+ * highlights.
+ */
+export async function applyChunkFieldDiff(
+  page: Page,
+  args: { fieldName: string; uuid?: string; before: string; after: string },
+): Promise<{ applied: boolean }> {
+  await page.waitForFunction(
+    () => typeof window.__BLOKKLI__?.test?.applyChunkFieldDiff === 'function',
+  )
+  return page.evaluate(
+    (args) => window.__BLOKKLI__!.test!.applyChunkFieldDiff(args),
+    args,
+  )
+}
+
 /** Click the DiffApproval toolbar's Cancel button. */
 export function cancelDiff(page: Page): Promise<void> {
   return page.locator('[data-test="diff-approval-cancel"]').click()

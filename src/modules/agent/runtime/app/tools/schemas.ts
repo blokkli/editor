@@ -155,24 +155,62 @@ export const positionSchema = z
  * (`update_text_fields`, `delegate_text_rewrite`). Both present a diff approval
  * UI and report what the user accepted/rejected.
  */
+const rejectedSegmentSchema = z.object({
+  tag: z
+    .string()
+    .describe('HTML tag of the rejected chunk (e.g. "p", "li", "h2")'),
+  beforeHtml: z
+    .string()
+    .describe(
+      'The original innerHTML kept in the field (empty for newly inserted chunks that were rejected and dropped)',
+    ),
+  afterHtml: z
+    .string()
+    .describe(
+      'The innerHTML you proposed for this chunk and the user rejected (empty for deletions that were rejected and restored)',
+    ),
+  status: z
+    .enum(['matched', 'inserted', 'deleted'])
+    .describe(
+      'Whether your proposal modified an existing chunk (matched), added a new one (inserted), or removed one (deleted)',
+    ),
+  reasonForRejection: z
+    .string()
+    .describe('Per-chunk rejection reason; empty if none given'),
+})
+
+const fieldRejectionSchema = z.object({
+  reasonForRejection: z
+    .string()
+    .describe(
+      'Field-level rejection reason; empty when no reason given or when rejection is per-chunk (see `partial`)',
+    ),
+  partial: z
+    .object({
+      accepted: z
+        .number()
+        .describe('Number of changed chunks in this field the user accepted'),
+      total: z
+        .number()
+        .describe('Total number of changed chunks in this field'),
+      rejectedSegments: z
+        .array(rejectedSegmentSchema)
+        .describe(
+          'Details for each rejected chunk. The field still gets updated with a hybrid value combining the accepted chunks and the original content of the rejected ones.',
+        ),
+    })
+    .optional()
+    .describe(
+      'Present when the user evaluated chunk-by-chunk. When `accepted > 0`, the field was updated with a hybrid value; when `accepted === 0`, every chunk was rejected and the field stayed at its original value.',
+    ),
+})
+
 export const fieldDiffResultSchema = z.object({
   acceptedCount: z.number().describe('Number of changes accepted by the user'),
   rejectedByUser: z
-    .record(
-      z.string(),
-      z.record(
-        z.string(),
-        z.object({
-          reasonForRejection: z
-            .string()
-            .describe(
-              'Reason provided by the user for rejecting, empty if no reason given',
-            ),
-        }),
-      ),
-    )
+    .record(z.string(), z.record(z.string(), fieldRejectionSchema))
     .describe(
-      'Map of rejected paragraph UUID to field name to rejection details',
+      'Map of paragraph UUID → field name → rejection details. A field appears here when at least one chunk was rejected (or, for non-chunked fields, when the whole field was rejected).',
     ),
   label: z.string().describe('Human-readable summary shown in the UI'),
   agentMessage: z

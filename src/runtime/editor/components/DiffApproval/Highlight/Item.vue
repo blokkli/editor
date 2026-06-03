@@ -1,40 +1,47 @@
 <template>
   <div
+    v-for="unit in units"
+    :key="unit.key"
     class="absolute top-0 left-0 rounded"
     :class="[
-      selected
+      selected[unit.key]
         ? 'border-lime-normal outline-lime-normal/30'
         : 'border-red-normal outline-red-normal/30',
-      active
+      activeKey === unit.key
         ? 'border-4 outline-[5px] rounded-tl-none'
         : 'border hover:border-mono-500 hover:bg-mono-400/20',
     ]"
-    :style="rect"
+    :style="rects[unit.key]"
     data-test="diff-approval-highlight-item"
-    :data-test-active="active"
-    :data-test-selected="selected"
+    :data-test-active="activeKey === unit.key"
+    :data-test-selected="!!selected[unit.key]"
+    :data-test-kind="unit.kind"
+    :data-test-segment-id="unit.kind === 'segment' ? unit.segment.id : null"
   >
-    <button class="size-full block" @click.prevent="$emit('activate')" />
     <button
-      v-show="active"
+      class="size-full block"
+      @click.prevent="emit('activate', unit.key)"
+    />
+    <button
+      v-show="activeKey === unit.key"
       class="absolute left-[-3px] bottom-full h-30 px-8 flex items-center justify-center gap-5 text-white rounded-t-md"
       :class="
-        selected
+        selected[unit.key]
           ? 'bg-lime-normal hover:bg-lime-dark'
           : 'bg-red-normal hover:bg-red-dark'
       "
-      @click.prevent="$emit('toggle')"
+      @click.prevent="emit('toggle', unit.key)"
     >
       <Icon
-        :name="selected ? 'bk_mdi_check' : 'bk_mdi_close'"
+        :name="selected[unit.key] ? 'bk_mdi_check' : 'bk_mdi_close'"
         class="size-20 p-2 rounded flex items-center justify-center border border-white"
-        :class="selected ? 'text-lime-normal bg-white' : 'text-white'"
+        :class="selected[unit.key] ? 'text-lime-normal bg-white' : 'text-white'"
       />
       <span
         class="text-xs font-semibold uppercase tracking-wider leading-none translate-y-1"
       >
         {{
-          selected
+          selected[unit.key]
             ? $t('aiAgentApprovalAccepted', 'Accepted')
             : $t('aiAgentApprovalRejected', 'Rejected')
         }}
@@ -52,7 +59,13 @@ import {
 import { Icon } from '#blokkli/editor/components'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
-import { computeDiff, computeInsertion } from '#blokkli/editor/helpers/diff'
+import {
+  computeDiff,
+  computeInsertion,
+  flattenSegments,
+  renderSegmentDiff,
+} from '#blokkli/editor/helpers/diff'
+import type { ApprovalItem, ApprovalUnit } from '../types'
 
 type ItemRect = {
   width: string
@@ -62,123 +75,167 @@ type ItemRect = {
 }
 
 const props = defineProps<{
-  uuid: string
-  fieldName: string
-  value: string
-  selected: boolean
-  active: boolean
+  item: ApprovalItem
+  /** Units belonging to this item, in reading order. Never empty in practice. */
+  units: ApprovalUnit[]
+  selected: Record<string, boolean>
+  activeKey: string | null
   /**
-   * Render the new value entirely as an insertion instead of a diff.
-   *
-   * See the prop of the same name on DiffApproval.
+   * Render the new value entirely as an insertion instead of a diff. See the
+   * prop of the same name on DiffApproval.
    */
   insertionsOnly?: boolean
 }>()
 
-defineEmits<{
-  (e: 'activate' | 'toggle'): void
+const emit = defineEmits<{
+  (e: 'activate' | 'toggle', key: string): void
 }>()
 
-const { ui, blocks, context, $t } = useBlokkli()
+const { $t, ui, blocks, context } = useBlokkli()
 
 function resolveHost(): EntityContext {
-  if (props.uuid === context.value.entityUuid) {
+  if (props.item.uuid === context.value.entityUuid) {
     return {
       type: context.value.entityType,
       bundle: context.value.entityBundle,
-      uuid: props.uuid,
+      uuid: props.item.uuid,
     }
   }
-  const block = blocks.getBlock(props.uuid)
+  const block = blocks.getBlock(props.item.uuid)
   return {
     type: itemEntityType,
     bundle: block?.bundle || '',
-    uuid: props.uuid,
+    uuid: props.item.uuid,
   }
 }
 
 const host = resolveHost()
-const override = useEditableFieldOverride(props.fieldName, host)
+const override = useEditableFieldOverride(props.item.fieldName, host)
 
-const diffHtml = computed(() =>
-  props.insertionsOnly
-    ? computeInsertion(props.value)
-    : computeDiff(override.originalValue, props.value),
-)
+const isSegmented = computed(() => Array.isArray(props.item.segments))
 
+/** Per-segment acceptance map keyed by segment id, derived from `selected`. */
+const acceptedBySegmentId = computed<Record<string, boolean>>(() => {
+  if (!props.item.segments) return {}
+  const out: Record<string, boolean> = {}
+  for (const atom of flattenSegments(props.item.segments)) {
+    out[atom.id] = props.selected[`${props.item.id}:${atom.id}`] !== false
+  }
+  return out
+})
+
+const diffHtml = computed(() => {
+  if (props.item.segments) {
+    return renderSegmentDiff(props.item.segments, {
+      insertionsOnly: props.insertionsOnly,
+      acceptedById: acceptedBySegmentId.value,
+    })
+  }
+  return props.insertionsOnly
+    ? computeInsertion(props.item.value)
+    : computeDiff(override.originalValue, props.item.value)
+})
+
+/**
+ * Apply or remove the preview overlay.
+ *
+ * - Unsegmented items: selected → diff, rejected → original (whole-field swap).
+ * - Segmented items: always set the diff HTML; `renderSegmentDiff` is fed the
+ *   per-segment acceptance map, so rejected chunks render their original
+ *   content with no markers. Re-running on every selection change keeps the
+ *   preview in sync with what would actually land on apply.
+ */
 function applyOverride() {
-  if (props.selected) {
+  if (isSegmented.value) {
+    override.setDiffHtml(diffHtml.value)
+    return
+  }
+  const onlyUnit = props.units[0]
+  if (onlyUnit && props.selected[onlyUnit.key]) {
     override.setDiffHtml(diffHtml.value)
   } else {
     override.restore()
   }
 }
 
-// Apply preview immediately.
 applyOverride()
 
-// Toggle preview when selection changes.
+// Reapply on every selection change. For segmented items the rendered markup
+// changes (rejected chunks revert visually); for unsegmented items the diff
+// is replaced by the original. Either way the rectangle bounds may shift.
 watch(
-  () => props.selected,
-  () => applyOverride(),
+  () => props.units.map((u) => props.selected[u.key]),
+  () => {
+    applyOverride()
+    updateRects()
+  },
 )
 
-// True once `commitForApply` has run — DiffApproval calls it for accepted
-// items BEFORE the consumer's mutation, so the Vue-tracked nodes are back in
-// the DOM when reactive patches flow in. Skipping the restore() here then
-// avoids clobbering the just-committed value with the pre-mutation snapshot.
 let committed = false
 
-/**
- * Restore the original Vue-managed nodes immediately, in preparation for the
- * consumer's mutation. After this runs, Vue's reactive patch can write the
- * new value into the live tracked nodes — and the post-mutation
- * `onBeforeUnmount` restore is skipped so it doesn't clobber that value.
- */
 function commitForApply() {
   override.restore()
   committed = true
 }
 
-// Undo the preview when the approval UI closes — for rejected items and the
-// cancel path. Accepted items go through `commitForApply` above instead.
 onBeforeUnmount(() => {
-  if (committed) {
-    return
-  }
+  if (committed) return
   override.restore()
 })
 
-defineExpose({ updateRect, commitForApply })
+defineExpose({ updateRects, commitForApply })
 
-const rect = ref<ItemRect>({ width: '0', height: '0', transform: '' })
+const rects = ref<Record<string, ItemRect>>({})
 
-function updateRect() {
-  const el = override.element
-  if (el) {
-    const r = ui.getAbsoluteElementRect(el)
-    const pad = 5
-    rect.value = {
-      width: r.width + pad * 2 + 'px',
-      height: r.height + pad * 2 + 'px',
-      transform: `translate(${r.x - pad}px, ${r.y - pad}px)`,
-    }
-  } else {
-    rect.value = {
-      width: '0',
-      height: '0',
-      transform: '',
-      visibility: 'hidden',
-    }
+const HIDDEN_RECT: ItemRect = {
+  width: '0',
+  height: '0',
+  transform: '',
+  visibility: 'hidden',
+}
+
+function computeRect(el: HTMLElement): ItemRect {
+  const r = ui.getAbsoluteElementRect(el)
+  const pad = 5
+  return {
+    width: r.width + pad * 2 + 'px',
+    height: r.height + pad * 2 + 'px',
+    transform: `translate(${r.x - pad}px, ${r.y - pad}px)`,
   }
 }
+
+function resolveUnitElement(unit: ApprovalUnit): HTMLElement | null {
+  const root = override.element
+  if (!root) return null
+  if (unit.kind === 'whole') return root
+  return root.querySelector<HTMLElement>(
+    `[data-chunk-index="${CSS.escape(unit.segment.id)}"]`,
+  )
+}
+
+function updateRects() {
+  const next: Record<string, ItemRect> = {}
+  for (const unit of props.units) {
+    const el = resolveUnitElement(unit)
+    next[unit.key] = el ? computeRect(el) : HIDDEN_RECT
+  }
+  rects.value = next
+}
+
+updateRects()
 
 let lastFullUpdate = 0
 
 onBlokkliEvent('animationFrame', (ctx) => {
+  // Refresh whole-field items every 1s to track viewport changes. Per-segment
+  // items skip the periodic refresh — querying N chunk rects per second per
+  // item adds up fast and the rects almost never drift on their own; they
+  // get recomputed on every toggle anyway.
   const forceRefresh = ctx.time - lastFullUpdate > 1000
   if (!forceRefresh) return
   lastFullUpdate = ctx.time
-  updateRect()
+  if (!isSegmented.value) {
+    updateRects()
+  }
 })
 </script>

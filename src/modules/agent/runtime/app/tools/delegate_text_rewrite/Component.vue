@@ -52,6 +52,7 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import { Icon, DiffApproval } from '#blokkli/editor/components'
+import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import type {
   McpToolContext,
@@ -62,6 +63,7 @@ import { applyOperations } from '../helpers'
 import {
   applyFieldDiffs,
   rejectedWithoutReasonMessage,
+  partialRejectionGuidance,
   skippedFieldsMessage,
   appendAgentNote,
   type RejectedByUser,
@@ -142,12 +144,26 @@ function transitionToApproval() {
 
     const itemId = idCounter++
 
+    // Resolve the field type so chunk segmentation only fires for markup
+    // fields — plain text stays whole-field.
+    const field = props.params.fields.find(
+      (f) => f.uuid === fs.uuid && f.fieldName === fs.fieldName,
+    )
+    const segments = field
+      ? (splitIntoSegments(
+          override.originalValue,
+          finalValue,
+          field.fieldType,
+        ) ?? undefined)
+      : undefined
+
     items.push({
       id: itemId,
       uuid: fs.uuid,
       fieldName: fs.fieldName,
       fieldLabel: fs.fieldLabel,
       value: finalValue,
+      segments,
     })
 
     beforeValues.set(itemId, override.originalValue)
@@ -216,70 +232,123 @@ function rejectAllFromApproval() {
 }
 
 async function applySelected(data: {
-  selected: Record<number, boolean>
-  reasons: Record<number, string>
+  selected: Record<string, boolean>
+  reasons: Record<string, string>
 }) {
   const { selected, reasons } = data
 
-  const { acceptedCount, rejectedByUser, label } = await applyFieldDiffs(
-    blokkli,
-    props.context.adapter,
-    completedItems.value,
-    selected,
-    reasons,
-  )
+  const { acceptedCount, rejectedByUser, label, appliedByItemId } =
+    await applyFieldDiffs(
+      blokkli,
+      props.context.adapter,
+      completedItems.value,
+      selected,
+      reasons,
+    )
 
   // Build a detailed agentMessage so the main agent knows what the sub-agent produced.
   const parts: string[] = []
 
-  // Summarize accepted fields with their new values.
-  const acceptedItems = completedItems.value.filter((item) => selected[item.id])
-  if (acceptedItems.length > 0) {
+  // Fully accepted fields: written, and absent from rejectedByUser.
+  const fullyAccepted = completedItems.value.filter(
+    (item) =>
+      appliedByItemId[item.id] !== undefined &&
+      !rejectedByUser[item.uuid]?.[item.fieldName],
+  )
+  if (fullyAccepted.length > 0) {
     parts.push('Accepted fields:')
-    for (const item of acceptedItems) {
+    for (const item of fullyAccepted) {
+      const written = appliedByItemId[item.id]!
       const truncated =
-        item.value.length > 200 ? item.value.slice(0, 200) + '...' : item.value
+        written.length > 200 ? written.slice(0, 200) + '...' : written
       parts.push(`- ${item.uuid} "${item.fieldName}": ${truncated}`)
     }
   }
 
-  // Summarize rejected fields with reasons.
-  const rejectedItems = completedItems.value.filter(
-    (item) => !selected[item.id],
-  )
-  if (rejectedItems.length > 0) {
+  // Partially accepted fields: a hybrid was written, and some chunks were
+  // rejected. Surface both so the agent knows the field changed AND which
+  // chunks it should target if asked to follow up.
+  const partials = completedItems.value
+    .map((item) => {
+      const entry = rejectedByUser[item.uuid]?.[item.fieldName]
+      if (!entry?.partial || appliedByItemId[item.id] === undefined) return null
+      return { item, entry }
+    })
+    .filter(
+      (p): p is { item: ApprovalItem; entry: NonNullable<typeof p>['entry'] } =>
+        p !== null,
+    )
+  if (partials.length > 0) {
+    parts.push('Partially accepted fields:')
+    for (const { item, entry } of partials) {
+      const { accepted, total, rejectedSegments } = entry.partial!
+      parts.push(
+        `- ${item.uuid} "${item.fieldName}": ${accepted}/${total} chunks accepted`,
+      )
+      for (const seg of rejectedSegments) {
+        const reasonText = seg.reasonForRejection
+          ? ` (reason: ${seg.reasonForRejection})`
+          : ' (no reason given)'
+        parts.push(`  · rejected <${seg.tag}> (${seg.status})${reasonText}`)
+      }
+    }
+  }
+
+  // Fully rejected fields: nothing written, no partial info.
+  const fullyRejected = completedItems.value
+    .map((item) => {
+      const entry = rejectedByUser[item.uuid]?.[item.fieldName]
+      if (!entry || entry.partial || appliedByItemId[item.id] !== undefined) {
+        return null
+      }
+      return { item, entry }
+    })
+    .filter(
+      (p): p is { item: ApprovalItem; entry: NonNullable<typeof p>['entry'] } =>
+        p !== null,
+    )
+  if (fullyRejected.length > 0) {
     parts.push('Rejected fields:')
-    for (const item of rejectedItems) {
-      const reason = reasons[item.id] || ''
-      const reasonText = reason ? ` (reason: ${reason})` : ' (no reason given)'
+    for (const { item, entry } of fullyRejected) {
+      const reasonText = entry.reasonForRejection
+        ? ` (reason: ${entry.reasonForRejection})`
+        : ' (no reason given)'
       parts.push(`- ${item.uuid} "${item.fieldName}"${reasonText}`)
     }
   }
 
   let agentMessage = parts.join('\n')
 
-  // Add follow-up instructions for rejections without reasons.
+  const partialNote = partialRejectionGuidance(rejectedByUser)
+  if (partialNote) agentMessage += '\n\n' + partialNote
+
   const followUp = rejectedWithoutReasonMessage(rejectedByUser)
   if (followUp) agentMessage += '\n' + followUp
 
   const _details: FieldDiffDetailItem[] = completedItems.value
-    .filter((item) => selected[item.id])
+    .filter((item) => appliedByItemId[item.id] !== undefined)
     .map((item) => {
       const fs = findFieldState(item.uuid, item.fieldName)
-      // Only include per-operation diffs when there were no retries.
-      // Operations from different retry attempts reference different base
-      // values, so individual search/replace pairs wouldn't make sense.
+      // Operations are only meaningful when the entire field was accepted —
+      // a partial acceptance reassembles from `splitIntoSegments` rather than
+      // the original patch operations, and retries swap the base value out
+      // from under each operation.
+      const isPartial = !!rejectedByUser[item.uuid]?.[item.fieldName]?.partial
       const hadRetries = fs ? fs.allOperations.length > 0 : false
       const operations =
-        fs?.mode === 'patch' && !hadRetries ? [...fs.operations] : []
+        fs?.mode === 'patch' && !hadRetries && !isPartial
+          ? [...fs.operations]
+          : []
       return {
         fieldLabel: item.fieldLabel,
         before: fs?.originalBaseValue || beforeValues.get(item.id) || '',
-        after: item.value,
+        after: appliedByItemId[item.id]!,
         mode: (fs?.mode || 'full') as 'full' | 'patch',
         operations,
       }
     })
+
+  const anyRejection = Object.keys(rejectedByUser).length > 0
 
   emitDone({
     acceptedCount,
@@ -291,7 +360,7 @@ async function applySelected(data: {
     _usage: streamUsage.value,
     // Let the agent respond if anything was rejected or skipped, so it can
     // retry the skipped references.
-    _skipLlmResponse: rejectedItems.length === 0 && !skippedNote,
+    _skipLlmResponse: !anyRejection && !skippedNote,
   })
 }
 

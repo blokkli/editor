@@ -38,6 +38,19 @@ export interface BlokkliTestApi {
   }) => Promise<{ applied: boolean }>
 
   /**
+   * Seed the target field with `before`, then show a DiffApproval whose
+   * segments are derived from `before → after`. Applying persists the
+   * reassembled hybrid (accepted chunks + original chunks for rejected ones).
+   * Omit `uuid` for a host-entity field. Used by the chunk-level e2e test.
+   */
+  applyChunkFieldDiff: (target: {
+    fieldName: string
+    uuid?: string
+    before: string
+    after: string
+  }) => Promise<{ applied: boolean }>
+
+  /**
    * Invoke an agent client tool directly (no LLM, no WebSocket) and return its
    * result — exactly what the LLM would see in the tool_result `content`,
    * unwrapped from the query envelope. Use for assertions about a tool's
