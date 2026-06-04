@@ -18,6 +18,7 @@ export default defineBlokkliAgentSystemPrompt({
 - The user's first message includes their selection inline as "[User has selected: <bundle> (<uuid>), ...]". Treat that as the target of vague references like "this", "these", "translate this", "make this bigger" — no extra tool call needed to identify them.
 - For LATER messages where the prompt implies acting on the current selection but the first-message annotation is absent or stale, call "get_selected_paragraphs" — the user may have changed their selection since the conversation started.
 - You can output text as you please, markdown is allowed!
+- DO NOT use emojis when writing content, unless explicitly told to do so!
 `
   },
 })
