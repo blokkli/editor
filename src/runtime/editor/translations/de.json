@@ -764,6 +764,8 @@
   "publishSuccess": "Änderungen erfolgreich publiziert.",
   "publishSuccessfullyPublished": "Erfolgreich veröffentlicht",
   "publishSuccessfullySaved": "Erfolgreich gespeichert",
+  "publishValidationErrorsDescription": "Beheben Sie die folgenden Probleme und publizieren Sie erneut.",
+  "publishValidationErrorsTitle": "Publikation nicht möglich: Validierungsfehler",
   "publishWillBePublished": "Wird publiziert",
   "publishWillBeScheduled": "Wird geplant",
   "qrCode": "QR-Code",

@@ -150,6 +150,20 @@ export type StateProvider = {
   mutateWithLoadingState: MutateWithLoadingStateFunction
 
   /**
+   * Apply the raw state returned by a mutation as the current editor state.
+   *
+   * Use this when a caller has invoked an adapter mutation directly (bypassing
+   * {@link mutateWithLoadingState}) and wants to push the response's `state`
+   * payload into the editor without an extra round-trip. The caller is
+   * responsible for only invoking this when the response belongs to the
+   * current edit state.
+   *
+   * @param rawState - The `state` field from a {@link MutationResponseLike}
+   *   response, or `null`/`undefined` to no-op.
+   */
+  applyMutationState: (rawState: unknown) => void
+
+  /**
    * Current edit mode.
    *
    * - 'readonly': User cannot edit (no permission or not owner)
@@ -781,6 +795,13 @@ export default async function (
     setContext(state, true)
   }
 
+  function applyMutationState(rawState: unknown) {
+    if (!rawState) {
+      return
+    }
+    setContext(adapter.mapState(rawState))
+  }
+
   function clearOverrideState() {
     if (!_mappedState) {
       throw new Error('Missing previous state.')
@@ -804,6 +825,7 @@ export default async function (
     violations,
     currentMutationIndex,
     mutateWithLoadingState,
+    applyMutationState,
     editMode,
     canEdit,
     isLoading: readonly(isLoading),

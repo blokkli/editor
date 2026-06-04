@@ -4,4 +4,7 @@ fragment paragraphsBlokkliMutationResult on ParagraphsBlokkliMutationResult {
   state {
     ...paragraphsBlokkliEditState
   }
+  violations {
+    ...paragraphsBlokkliViolation
+  }
 }

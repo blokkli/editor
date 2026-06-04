@@ -117,6 +117,12 @@
           </InfoBox>
         </FormItem>
       </PanelSection>
+      <Violations
+        v-if="hasFailures"
+        :violations="failedViolations"
+        :errors="failedErrors"
+        @close="$emit('close')"
+      />
       <div>
         <FormItem v-if="successItems.length && showTable">
           <h2 class="bk-heading-2">
@@ -201,9 +207,11 @@ import { emitMessage } from '#blokkli/editor/events'
 import Item from './Item.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
+import Violations from './Violations.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import type { MutationStatus } from './types'
 import type { GetEditStatesItem } from '../types'
+import type { Validation } from '#blokkli/editor/types/state'
 
 const showTable = false
 
@@ -482,6 +490,22 @@ const selectedToPublishItems = computed(() =>
 
 const isLoading = computed(() => status.value === 'pending' || isMutating.value)
 
+const failedStatuses = computed<MutationStatus[]>(() =>
+  Object.values(mutationStatusItems.value).filter((s) => !s.success),
+)
+
+const failedViolations = computed<Validation[]>(() =>
+  failedStatuses.value.flatMap((s) => s.violations ?? []),
+)
+
+const failedErrors = computed<string[]>(() => {
+  const messages = failedStatuses.value.flatMap((s) => s.errors ?? [])
+  // De-duplicate identical error strings across items.
+  return Array.from(new Set(messages))
+})
+
+const hasFailures = computed(() => failedStatuses.value.length > 0)
+
 const scheduleDateError = computed(() => {
   if (publishMode.value !== 'scheduled' || !scheduleDate.value) {
     return ''
@@ -614,12 +638,19 @@ async function removeScheduledDate() {
   // Store the current schedule date to restore it after removal
   const previousScheduleDate = scheduleDate.value
 
-  const success = await state.mutateWithLoadingState(() =>
-    adapter.unscheduleEditState!({
+  let success = false
+  try {
+    const response = await adapter.unscheduleEditState({
       hostEntityType: context.value.entityType,
       hostEntityUuid: context.value.entityUuid,
-    }),
-  )
+    })
+    success = !!response?.success
+    if (response?.state) {
+      state.applyMutationState(response.state)
+    }
+  } catch {
+    success = false
+  }
 
   if (success) {
     await refresh()
@@ -640,10 +671,8 @@ async function onSubmit() {
   isMutating.value = true
 
   const items = stateItems.value
+  const selectedItems: typeof items = []
 
-  const hasAnyError = false
-
-  let mutationResult = false
   for (const item of items) {
     const isSelected =
       states.value.includes(item.id) ||
@@ -659,32 +688,48 @@ async function onSubmit() {
       continue
     }
 
-    // Method exists because the feature is only loaded if the method exists.
+    selectedItems.push(item)
+
     try {
+      let response
       if (publishMode.value === 'scheduled') {
-        // Schedule the edit state for later publishing
         if (!adapter.scheduleEditState) {
           throw new Error('scheduleEditState method not available')
         }
-        mutationResult = await state.mutateWithLoadingState(() =>
-          adapter.scheduleEditState!({
-            hostEntityType: item.hostEntityType,
-            hostEntityUuid: item.hostEntityUuid,
-            revisionLogMessage: revisionMessage.value,
-            date: scheduleDate.value,
-          }),
-        )
+        response = await adapter.scheduleEditState({
+          hostEntityType: item.hostEntityType,
+          hostEntityUuid: item.hostEntityUuid,
+          revisionLogMessage: revisionMessage.value,
+          date: scheduleDate.value,
+        })
       } else {
-        // Publish immediately or save without publishing
-        mutationResult = await state.mutateWithLoadingState(() =>
-          adapter.publish!({
-            hostEntityType: item.hostEntityType,
-            hostEntityUuid: item.hostEntityUuid,
-            closeAfterPublish: true,
-            revisionLogMessage: revisionMessage.value,
-            publishIfUnpublished: shouldPublish.value,
-          }),
-        )
+        response = await adapter.publish!({
+          hostEntityType: item.hostEntityType,
+          hostEntityUuid: item.hostEntityUuid,
+          closeAfterPublish: true,
+          revisionLogMessage: revisionMessage.value,
+          publishIfUnpublished: shouldPublish.value,
+        })
+      }
+
+      if (response?.success) {
+        mutationStatusItems.value[item.id] = { id: item.id, success: true }
+        publishedIds.value.push(item.id)
+      } else {
+        mutationStatusItems.value[item.id] = {
+          id: item.id,
+          success: false,
+          errors: response?.errors,
+          violations: response?.violations,
+        }
+      }
+
+      // If the response carries fresh state for the current edit state,
+      // apply it directly — avoids a separate reload round-trip. State from
+      // mutations targeting OTHER edit states is ignored on purpose, since
+      // applying it would clobber the current editor's context.
+      if (response?.state && item.id === currentId.value) {
+        state.applyMutationState(response.state)
       }
     } catch {
       mutationStatusItems.value[item.id] = {
@@ -699,7 +744,11 @@ async function onSubmit() {
 
   isMutating.value = false
 
-  if (hasAnyError || !mutationResult) {
+  const allSucceeded =
+    selectedItems.length > 0 &&
+    selectedItems.every((item) => mutationStatusItems.value[item.id]?.success)
+
+  if (!allSucceeded) {
     return
   }
 

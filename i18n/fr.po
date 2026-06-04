@@ -3216,6 +3216,14 @@ msgctxt "publishSuccessfullySaved"
 msgid "Successfully saved"
 msgstr ""
 
+msgctxt "publishValidationErrorsDescription"
+msgid "Fix the following issues and try publishing again."
+msgstr ""
+
+msgctxt "publishValidationErrorsTitle"
+msgid "Cannot publish: validation errors"
+msgstr ""
+
 msgctxt "publishWillBePublished"
 msgid "Will be published"
 msgstr ""

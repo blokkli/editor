@@ -5917,6 +5917,11 @@ type ParagraphsBlokkliMutationResult {
   errors: [String]
   state: ParagraphsBlokkliEditState
   success: Boolean
+
+  """
+  A list of validation violations for the entity and all its fields.
+  """
+  violations: [ParagraphsEditViolation!]
 }
 
 """An object of options managed by the paragraph component itself."""

@@ -476,6 +476,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         success: !!action?.success,
         state: action?.state,
         errors: (action?.errors ?? []).filter(falsy),
+        violations: action?.violations ?? [],
       }
     }
 

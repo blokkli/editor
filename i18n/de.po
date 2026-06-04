@@ -3339,6 +3339,14 @@ msgctxt "publishSuccessfullySaved"
 msgid "Successfully saved"
 msgstr "Erfolgreich gespeichert"
 
+msgctxt "publishValidationErrorsDescription"
+msgid "Fix the following issues and try publishing again."
+msgstr "Beheben Sie die folgenden Probleme und publizieren Sie erneut."
+
+msgctxt "publishValidationErrorsTitle"
+msgid "Cannot publish: validation errors"
+msgstr "Publikation nicht möglich: Validierungsfehler"
+
 msgctxt "publishWillBePublished"
 msgid "Will be published"
 msgstr "Wird publiziert"

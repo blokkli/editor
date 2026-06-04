@@ -2188,6 +2188,38 @@ export default defineBlokkliEditAdapter((ctx) => {
         }
       }
 
+      // Real validation pass for the current edit state: run the same
+      // `validate()` hook each Paragraph subclass already implements (text
+      // forbids "Windows", grid requires header + blocks), and flag
+      // `not_implemented` blocks as publish-time errors. Returns a failed
+      // response when either is non-empty. Only runs for the entity that
+      // matches the editor's context — other selected edit states in the
+      // multi-publish list don't have a mock backing here.
+      if (options.hostEntityUuid === ctx.value.entityUuid) {
+        const mutatedState = await editState.getMutatedState(
+          getEntity(),
+          ctx.value.language,
+          { save: false },
+        )
+        const errors: string[] = []
+        for (const proxy of mutatedState.context.proxies) {
+          if (proxy.isDeleted) continue
+          if (proxy.block.bundle === 'not_implemented') {
+            errors.push(
+              `Cannot publish: a "${proxy.block.bundle}" block is present, which the backend does not know how to render.`,
+            )
+          }
+        }
+        if (mutatedState.violations.length || errors.length) {
+          return {
+            success: false,
+            state: mutatedState,
+            errors,
+            violations: mutatedState.violations,
+          }
+        }
+      }
+
       // Only persist in dev mode (and not under E2E, so tests don't clobber the
       // playground's persisted snapshot).
       if (import.meta.dev && !isTesting) {

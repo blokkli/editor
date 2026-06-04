@@ -7,7 +7,7 @@ import type {
   MoveMultipleBlocksEvent,
 } from '../events'
 import type { PluginConfigInput } from '../types/pluginConfig'
-import type { EntityTranslation, MappedState } from '../types/state'
+import type { EntityTranslation, MappedState, Validation } from '../types/state'
 import type {
   BlockBundleDefinition,
   EntityTypeBundleInfo,
@@ -22,6 +22,7 @@ export interface MutationResponseLike<T> {
   success: boolean
   state?: T
   errors?: string[]
+  violations?: Validation[]
 }
 
 export interface GenericAdapterResponse<T> {
