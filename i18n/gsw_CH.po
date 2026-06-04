@@ -1218,6 +1218,18 @@ msgctxt "analyzerReadabiliyTitle"
 msgid "Text readability issues"
 msgstr "Läsbarkeitsproblem im Teggscht"
 
+msgctxt "analyzerValidationsDescription"
+msgid "Validation errors reported for the current state."
+msgstr ""
+
+msgctxt "analyzerValidationsLabel"
+msgid "Validations"
+msgstr ""
+
+msgctxt "analyzerValidationsPassDescription"
+msgid "No validation errors for the current state."
+msgstr ""
+
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -4023,18 +4035,6 @@ msgstr "Es isch e unerwartete Fähler ufträte."
 msgctxt "userDeleted"
 msgid "[deleted]"
 msgstr "[glöscht]"
-
-msgctxt "validationsNoneFound"
-msgid "No validation errors found."
-msgstr "Keini Validierigsfähler gfunde."
-
-msgctxt "validationsToolbarLabel"
-msgid "Validations"
-msgstr "Validierige"
-
-msgctxt "validationsTourText"
-msgid "See validation errors for content or structure on the current page."
-msgstr "Lueg Validierigsfähler für Inhalt oder Struktur uf dr aktuälle Sitte aa."
 
 msgctxt "video"
 msgid "Video"

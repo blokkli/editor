@@ -3,11 +3,13 @@
     v-if="nodes.length"
     class="bg-mono-100 mt-10 overflow-hidden group/nodes"
     :open="isSingle || isOpen"
+    data-test="analyze-result-nodes"
     @toggle="shouldRender = true"
   >
     <summary
       v-show="!isSingle"
       class="group-open/nodes:text-mono-950 text-sm font-semibold p-10 cursor-pointer appearance-none list-none flex justify-between items-center text-mono-600 hover:bg-mono-200 hover:text-mono-950"
+      data-test="analyze-result-nodes-summary"
     >
       <span>{{ $t('multipleItemsLabel', 'Items') }}</span>
       <Icon

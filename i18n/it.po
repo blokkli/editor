@@ -1196,6 +1196,18 @@ msgctxt "analyzerReadabiliyTitle"
 msgid "Text readability issues"
 msgstr ""
 
+msgctxt "analyzerValidationsDescription"
+msgid "Validation errors reported for the current state."
+msgstr ""
+
+msgctxt "analyzerValidationsLabel"
+msgid "Validations"
+msgstr ""
+
+msgctxt "analyzerValidationsPassDescription"
+msgid "No validation errors for the current state."
+msgstr ""
+
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -3924,18 +3936,6 @@ msgstr ""
 msgctxt "userDeleted"
 msgid "[deleted]"
 msgstr "[eliminato]"
-
-msgctxt "validationsNoneFound"
-msgid "No validation errors found."
-msgstr "Nessun errore di validazione trovato."
-
-msgctxt "validationsToolbarLabel"
-msgid "Validations"
-msgstr "Validazioni"
-
-msgctxt "validationsTourText"
-msgid "See validation errors for content or structure on the current page."
-msgstr ""
 
 msgctxt "video"
 msgid "Video"

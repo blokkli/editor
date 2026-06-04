@@ -131,11 +131,6 @@ declare module '#blokkli/editor/adapter' {
 declare module '#blokkli/editor/events' {
   interface EventbusEvents {
     /**
-     * Emitted when publishing failed.
-     */
-    'publish:failed': undefined
-
-    /**
      * Show the publish dialog.
      */
     'publish:show-dialog': undefined

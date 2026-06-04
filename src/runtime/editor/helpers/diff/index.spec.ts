@@ -378,7 +378,7 @@ describe('renderSegmentDiff', () => {
     expect(html).toContain('<p data-chunk-index="0">A</p>')
     // Segment 1 (still accepted) still carries a diff: contains the new
     // content and at least one diff marker.
-    expect(html).toMatch(/<p data-chunk-index="1">[^<]*B[^<]*<ins/)
+    expect(html).toMatch(/<p data-chunk-index="1">[^<B]*B[^<]*<ins/)
   })
 
   it('renders a rejected insertion as a deletion (still in the DOM)', () => {
@@ -413,8 +413,8 @@ describe('renderSegmentDiff', () => {
     })
     expect(html).toContain('<li data-chunk-index="0/1">B</li>')
     // The other two list items still show a diff marker.
-    expect(html).toMatch(/<li data-chunk-index="0\/0">[^<]*A[^<]*<ins/)
-    expect(html).toMatch(/<li data-chunk-index="0\/2">[^<]*C[^<]*<ins/)
+    expect(html).toMatch(/<li data-chunk-index="0\/0">[^<A]*A[^<]*<ins/)
+    expect(html).toMatch(/<li data-chunk-index="0\/2">[^<C]*C[^<]*<ins/)
   })
 })
 

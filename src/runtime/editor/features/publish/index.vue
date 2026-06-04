@@ -126,11 +126,8 @@ async function publishCurrent() {
   )
 
   if (!success) {
-    const validations = state.violations.value
-    if (validations.length) {
-      eventBus.emit('publish:failed')
-      // Open the validations sidebar when there are validation errors.
-      eventBus.emit('sidebar:open', 'violations')
+    if (state.violations.value.length) {
+      eventBus.emit('sidebar:open', 'analyze')
     }
     return
   }

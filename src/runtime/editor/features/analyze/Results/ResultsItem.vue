@@ -1,6 +1,9 @@
 <template>
   <div
     class="py-20 border-b border-b-mono-300 first:pt-0 last:border-b-0 group/results-item"
+    data-test="analyze-result"
+    :data-test-result-id="id"
+    :data-test-result-status="status"
   >
     <div class="flex flex-wrap gap-5 mb-10">
       <Status :status :title="key" />

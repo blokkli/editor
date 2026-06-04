@@ -4,6 +4,7 @@
     :class="{
       'bg-accent-700': isFocused,
     }"
+    data-test="analyze-target"
   >
     <button
       ref="elButton"
@@ -11,6 +12,7 @@
       :class="{
         '!text-accent-50': isFocused,
       }"
+      data-test="analyze-target-button"
       @click.prevent="onClick"
     >
       <div v-if="node.score != null && node.scoreLabel">
@@ -28,6 +30,7 @@
           ? 'text-accent-200 hover:text-accent-700 hover:bg-white'
           : 'text-mono-500 hover:bg-accent-700 hover:text-accent-50'
       "
+      data-test="analyze-target-ignore"
       @click.prevent="
         eventBus.emit(node.ignored ? 'analyze:unignore' : 'analyze:ignore', {
           resultId,

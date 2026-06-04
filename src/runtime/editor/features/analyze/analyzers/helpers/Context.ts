@@ -2,7 +2,7 @@ import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import type { StateProvider } from '#blokkli/editor/providers/state'
 import type { ReadabilityProvider } from '#blokkli/editor/providers/readability'
 import type { TextProvider } from '#blokkli/editor/providers/texts'
-import type { MutatedField } from '#blokkli/editor/types/state'
+import type { MutatedField, Validation } from '#blokkli/editor/types/state'
 import type {
   AnalyzeCategory,
   AnalyzeNode,
@@ -13,6 +13,11 @@ import { collectTextElements, type TextElement } from './collectTextElements'
 
 export class AnalyzerContext {
   public readonly mutatedFields: Readonly<MutatedField[]>
+
+  /**
+   * Backend-reported validation violations for the current state.
+   */
+  public readonly violations: Readonly<Validation[]>
 
   /**
    * The readability provider.
@@ -35,6 +40,7 @@ export class AnalyzerContext {
   ) {
     this.readability = readability
     this.mutatedFields = JSON.parse(JSON.stringify(state.mutatedFields.value))
+    this.violations = JSON.parse(JSON.stringify(state.violations.value))
   }
 
   /**

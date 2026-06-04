@@ -22,7 +22,7 @@
         </p>
       </FormItem>
 
-      <FormItem class="relative">
+      <FormItem class="relative z-50">
         <FormToggle
           v-model="keepVisible"
           :label="$t('analyzeKeepVisible', 'Keep results visible')"
@@ -329,7 +329,10 @@ function filterResultsByIgnored(
   const filtered: AnalyzeResultMapped[] = []
   for (const result of items) {
     const nodes = result.nodes.filter((n) => n.ignored === wantIgnored)
-    if (nodes.length) {
+    // A status-only result (no nodes at all) belongs in the active list: the
+    // status itself is the message (e.g. a "pass" row with no findings to point at).
+    const isStatusOnly = result.nodes.length === 0
+    if (nodes.length || (isStatusOnly && !wantIgnored)) {
       filtered.push({ ...result, nodes })
     }
   }

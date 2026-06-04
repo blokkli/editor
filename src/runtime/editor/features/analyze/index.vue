@@ -57,7 +57,6 @@ defineBlokkliFeature({
   id: 'analyze',
   label: 'Analyze',
   icon: 'bk_mdi_speed',
-  requiredAdapterMethods: ['getAnalyzers'],
   description: 'Analyze blocks and page for SEO, accessibility, etc.',
   viewports: [],
 })

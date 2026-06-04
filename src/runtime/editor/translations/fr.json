@@ -164,7 +164,5 @@
   "settingsMenuDescription": "Paramètres personnels pour l’éditeur",
   "structureToolbarLabel": "Structure",
   "translationsBatchTranslateMenuDescription": "Traduire tous les éléments",
-  "userDeleted": "[supprimé]",
-  "validationsNoneFound": "Aucune erreur de validation trouvée.",
-  "validationsToolbarLabel": "Validations"
+  "userDeleted": "[supprimé]"
 }

@@ -13,6 +13,9 @@ import type {
 } from '../features/analyze/analyzers/types'
 import { AnalyzerContext } from '../features/analyze/analyzers/helpers/Context'
 import { normalizeToArray } from '../features/analyze/analyzers/helpers/normalizeArray'
+import { validationsAnalyzer } from '../features/analyze/analyzers/defaults/validations'
+
+const DEFAULT_ANALYZERS: Analyzer[] = [validationsAnalyzer]
 
 export type AnalyzeProvider = {
   /**
@@ -76,6 +79,7 @@ export default function analyzeProvider(
 
   async function doInit(): Promise<void> {
     const fetched = await adapters.getAggregated('getAnalyzers')
+    const all: Analyzer[] = [...DEFAULT_ANALYZERS, ...fetched]
 
     // Create a context for initialization.
     const initCtx = new AnalyzerContext(
@@ -89,14 +93,14 @@ export default function analyzeProvider(
     )
 
     await Promise.all(
-      fetched.map(async (analyzer) => {
+      all.map(async (analyzer) => {
         if (analyzer.init) {
           await analyzer.init(initCtx)
         }
       }),
     )
 
-    analyzers.value = fetched
+    analyzers.value = all
     isInitialized.value = true
   }
 
