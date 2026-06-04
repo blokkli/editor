@@ -109,5 +109,8 @@ watch(
       isOpen.value = true
     }
   },
+  // Immediate so a panel mounting AFTER a highlight click (e.g. cold-load
+  // sidebar open) still sees the already-set `activeHighlightId` and expands.
+  { immediate: true },
 )
 </script>

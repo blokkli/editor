@@ -56,7 +56,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useBlokkli, useTemplateRef, watch } from '#imports'
+import {
+  computed,
+  onMounted,
+  useBlokkli,
+  useTemplateRef,
+  watch,
+} from '#imports'
 import { renderCycle } from '#blokkli/editor/helpers/vue'
 import type {
   AnalyzeNodeMapped,
@@ -182,19 +188,28 @@ async function onClick() {
     props.resultId + '_____' + props.target.globalIndex
 }
 
-watch(
-  isFocused,
-  (isFocused) => {
-    if (!isFocused) {
-      return
-    }
-    if (elButton.value) {
-      elButton.value.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      })
-    }
-  },
-  { immediate: true },
-)
+function scrollFocusedIntoView() {
+  if (elButton.value) {
+    elButton.value.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    })
+  }
+}
+
+watch(isFocused, (isFocused) => {
+  if (isFocused) {
+    scrollFocusedIntoView()
+  }
+})
+
+// Cold-load path: the row mounts already focused (the highlight click set
+// `activeHighlightId` BEFORE the target existed). `isFocused` doesn't
+// transition, so the watcher never fires — scroll explicitly on mount, when
+// `elButton` is guaranteed populated.
+onMounted(() => {
+  if (isFocused.value) {
+    scrollFocusedIntoView()
+  }
+})
 </script>
