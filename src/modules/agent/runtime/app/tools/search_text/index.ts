@@ -79,7 +79,9 @@ export default defineBlokkliAgentTool({
 
     /**
      * Extract text from a block element, excluding text from nested blocks.
-     * Nested block elements are identified by the data-item-bundle attribute.
+     * Each rendered block wrapper carries `data-bk-uuid` (set by DraggableList);
+     * `querySelectorAll` only returns descendants, so the block's own wrapper
+     * (the clone root) is preserved while every nested block subtree is dropped.
      */
     const getBlockOwnText = (el?: HTMLElement): string => {
       if (!el) return ''
@@ -87,8 +89,8 @@ export default defineBlokkliAgentTool({
       // Clone the element to avoid modifying the actual DOM
       const clone = el.cloneNode(true) as HTMLElement
 
-      // Remove all nested block elements (they have data-item-bundle attribute)
-      const nestedBlocks = clone.querySelectorAll('[data-item-bundle]')
+      // Remove all nested block elements (their wrappers carry data-bk-uuid)
+      const nestedBlocks = clone.querySelectorAll('[data-bk-uuid]')
       nestedBlocks.forEach((nested) => nested.remove())
 
       // Get alt/title text from images (only from non-nested content)
