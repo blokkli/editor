@@ -94,6 +94,11 @@ describe('Analyze — highlight click focuses the target row', async () => {
   afterEach(async () => {
     await emitEvent(page, 'select:unselect')
     await dismissMessages(page)
+    // Reset the active highlight id so the next test's `highlight.onClick`
+    // toggles to a known value, not from a previous test's id.
+    await withApp(page, (app) => {
+      app.ui.activeHighlightId.value = ''
+    })
     await resetEditor()
   })
 
@@ -139,6 +144,36 @@ describe('Analyze — highlight click focuses the target row', async () => {
   // component state across tests (analyze `render-always` keeps the slot
   // mounted once it flipped to `shouldRender`), so the cold-load race only
   // reproduces against a brand new editor instance.
+  test('clears the active highlight when the analyze sidebar is closed', async () => {
+    await openSidebar(page, 'analyze')
+    await addBlock(page, { bundle: 'grid' })
+
+    const highlightId = await waitForValidationsHighlightId()
+    await clickHighlight(highlightId)
+
+    // Sanity: the click set the active highlight id.
+    await expect
+      .poll(() => withApp(page, (app) => app.ui.activeHighlightId.value))
+      .toBe(highlightId)
+
+    // Close the analyze sidebar via its header close button. The
+    // `data-test="sidebar-title-analyze"` scope ensures we target the analyze
+    // pane's close button specifically (multiple `PluginSidebar` instances
+    // exist in the DOM).
+    await page
+      .locator(
+        '[data-test="sidebar-title-analyze"] [data-test="sidebar-close"]',
+      )
+      .click()
+
+    // Closing the sidebar should release the active highlight — otherwise the
+    // bold border lingers on the canvas (when `keepVisible` is on) and the
+    // next sidebar open auto-expands a stale result.
+    await expect
+      .poll(() => withApp(page, (app) => app.ui.activeHighlightId.value))
+      .toBe('')
+  })
+
   test('opens result and scrolls target into view from a cold load', async () => {
     const freshPage = await openEditor()
     try {

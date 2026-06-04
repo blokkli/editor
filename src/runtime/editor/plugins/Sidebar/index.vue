@@ -88,7 +88,7 @@
       v-show="activeSidebar === id"
       class="bk bk-sidebar-inner"
     >
-      <div class="bk-sidebar-title">
+      <div class="bk-sidebar-title" :data-test="'sidebar-title-' + id">
         <span>{{ title }}</span>
         <BetaIndicator
           v-if="beta"
@@ -98,7 +98,7 @@
         <button v-if="!ui.isMobile.value" @click.prevent.stop="onDetach">
           <Icon name="dock-window" />
         </button>
-        <button @click.prevent.stop="toggleSidebar">
+        <button data-test="sidebar-close" @click.prevent.stop="toggleSidebar">
           <Icon name="bk_mdi_close" />
         </button>
       </div>

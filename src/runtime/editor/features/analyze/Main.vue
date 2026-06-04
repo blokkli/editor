@@ -137,6 +137,26 @@ const refreshKey = computed(() => {
   return `dom:${dom.settleKey.value}_directive:${directive.settleKey.value}_state:${state.refreshKey.value}`
 })
 
+// Closing the analyze sidebar releases the focused result — otherwise the
+// active highlight's bold border lingers on the canvas (when `keepVisible`
+// is on) and reopening the sidebar auto-expands a stale result row.
+//
+// `activeHighlightId` is a global ref shared with any other feature that
+// might also drive highlight focus, so only clear when the active id belongs
+// to one of THIS feature's analyzer results.
+watch(
+  () => props.isShown,
+  (isShown) => {
+    if (isShown) return
+    const activeId = ui.activeHighlightId.value
+    if (!activeId) return
+    const resultId = activeId.split('_____')[0]
+    if (allResults.value.some((r) => r.id === resultId)) {
+      ui.activeHighlightId.value = ''
+    }
+  },
+)
+
 const isRunning = defineModel<boolean>({ default: false })
 const issueCount = defineModel<number>('issueCount', { default: 0 })
 const hasViolation = defineModel<boolean>('hasViolation', { default: false })
