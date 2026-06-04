@@ -94,6 +94,7 @@
   "commentsMarkAsUnresolved": "Segna come non risolto",
   "commentsShowResolved": "Mostra risolti",
   "deleteError": "L'elemento non può essere rimosso.",
+  "deleted": "eliminato",
   "duplicate": "Duplica",
   "duplicateError": "Gli elementi non possono essere duplicati.",
   "edit": "Modifica",
@@ -163,6 +164,5 @@
   "settingsDialogTitle": "Impostazioni",
   "settingsMenuDescription": "Impostazioni personali per l'editor",
   "structureToolbarLabel": "Struttura",
-  "translationsBatchTranslateMenuDescription": "Traduci tutti gli elementi",
-  "userDeleted": "[eliminato]"
+  "translationsBatchTranslateMenuDescription": "Traduci tutti gli elementi"
 }

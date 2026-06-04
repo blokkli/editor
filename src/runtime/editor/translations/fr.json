@@ -94,6 +94,7 @@
   "commentsMarkAsUnresolved": "Marquer comme non résolu",
   "commentsShowResolved": "Afficher les résolus",
   "deleteError": "L'élément n'a pas pu être supprimé.",
+  "deleted": "supprimé",
   "duplicate": "Dupliquer",
   "duplicateError": "Les éléments n'ont pas pu être dupliqués.",
   "edit": "Modifier",
@@ -163,6 +164,5 @@
   "settingsDialogTitle": "Paramètres",
   "settingsMenuDescription": "Paramètres personnels pour l’éditeur",
   "structureToolbarLabel": "Structure",
-  "translationsBatchTranslateMenuDescription": "Traduire tous les éléments",
-  "userDeleted": "[supprimé]"
+  "translationsBatchTranslateMenuDescription": "Traduire tous les éléments"
 }

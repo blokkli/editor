@@ -27,7 +27,9 @@
             Tool Result ({{ block.tool_use_id }})
             <span v-if="block.is_error" class="text-red-dark ml-5">ERROR</span>
           </div>
-          <pre class="bk-agent-transcript-block">{{ block.content }}</pre>
+          <pre class="bk-agent-transcript-block">{{
+            formatMaybeJson(block.content)
+          }}</pre>
         </template>
       </div>
     </template>
@@ -40,4 +42,16 @@ import type { GenericContentBlock } from '#blokkli/agent/shared/types'
 defineProps<{
   content: string | GenericContentBlock[]
 }>()
+
+function formatMaybeJson(value: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) return value
+  const first = trimmed[0]
+  if (first !== '{' && first !== '[') return value
+  try {
+    return JSON.stringify(JSON.parse(trimmed), null, 2)
+  } catch {
+    return value
+  }
+}
 </script>

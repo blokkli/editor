@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-baseline gap-3 flex-wrap min-w-0 text-sm -mt-2">
     <span class="font-semibold text-mono-900 truncate">
-      {{ user?.name || $t('userDeleted', '[deleted]') }}
+      {{ user?.name || `[${$t('deleted', 'deleted')}]` }}
     </span>
     <RelativeTime v-slot="{ formatted }" :timestamp="created">
       <span class="text-xs text-mono-500">{{ formatted }}</span>

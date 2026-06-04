@@ -24,12 +24,12 @@
       <span class="text-xs text-mono-500 flex items-center gap-5 mt-3">
         <Avatar
           :deleted="!item.author"
-          :name="item.author?.name || $t('userDeleted', '[deleted]')"
+          :name="item.author?.name || `[${$t('deleted', 'deleted')}]`"
           :seed="item.author?.id"
           :image-url="item.author?.imageUrl"
         />
         <span class="truncate">{{
-          item.author?.name || $t('userDeleted', '[deleted]')
+          item.author?.name || `[${$t('deleted', 'deleted')}]`
         }}</span>
         <span class="ml-auto shrink-0">
           <RelativeTime :timestamp="item.createdAt" />

@@ -72,14 +72,22 @@
       color: var(--bk-link-color);
     }
 
-    a[href^='#'] {
-      @apply no-underline  px-3 py-1 cursor-pointer;
-      @apply bg-mono-200 text-accent-600;
-      @apply hover:bg-accent-600 hover:text-white;
+    .bk-agent-block-ref,
+    .bk-agent-block-ref-deleted {
+      @apply no-underline  px-3 py-1  rounded border text-xs;
       &:before {
         content: '↗';
-        @apply align-sub mr-2;
+        @apply mr-2 inline-block translate-y-2;
       }
+    }
+
+    .bk-agent-block-ref {
+      @apply bg-accent-100 text-accent-600 cursor-pointer border-accent-300 hover:border-accent-900;
+      @apply hover:bg-accent-600 hover:text-white;
+    }
+
+    .bk-agent-block-ref-deleted {
+      @apply bg-mono-200 text-mono-600 cursor-not-allowed border-mono-300;
     }
 
     blockquote {

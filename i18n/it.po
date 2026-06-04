@@ -2267,6 +2267,10 @@ msgctxt "deleteNoPermission"
 msgid "You do not have permission to delete this block."
 msgstr ""
 
+msgctxt "deleted"
+msgid "deleted"
+msgstr "eliminato"
+
 msgctxt "description"
 msgid "Description"
 msgstr ""
@@ -3932,10 +3936,6 @@ msgstr ""
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr ""
-
-msgctxt "userDeleted"
-msgid "[deleted]"
-msgstr "[eliminato]"
 
 msgctxt "video"
 msgid "Video"

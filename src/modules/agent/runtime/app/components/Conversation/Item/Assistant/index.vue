@@ -7,6 +7,7 @@
 <script lang="ts" setup>
 import { computed, useBlokkli } from '#imports'
 import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
+import { linkifyBlockUuids } from '#blokkli/agent/app/helpers/linkifyBlockUuids'
 import { PLACEHOLDER_USER_NAME } from '#blokkli/agent/shared/placeholders'
 
 const props = defineProps<{
@@ -16,12 +17,20 @@ const props = defineProps<{
   content: string
 }>()
 
-const { state } = useBlokkli()
+const { $t, state, blocks, types } = useBlokkli()
 
-const renderedContent = computed(() =>
-  props.content.replaceAll(
+const renderedContent = computed(() => {
+  const withName = props.content.replaceAll(
     PLACEHOLDER_USER_NAME,
     state.owner.value?.name || '',
-  ),
-)
+  )
+  return linkifyBlockUuids(
+    withName,
+    (uuid) => {
+      const block = blocks.getBlock(uuid)
+      return block ? types.getBlockLabel(block.bundle) : null
+    },
+    $t('deleted', 'deleted'),
+  )
+})
 </script>

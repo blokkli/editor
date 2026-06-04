@@ -2311,6 +2311,10 @@ msgctxt "deleteNoPermission"
 msgid "You do not have permission to delete this block."
 msgstr "Lösche ufgrund fählender Berächtigung nid möglich."
 
+msgctxt "deleted"
+msgid "deleted"
+msgstr "glöscht"
+
 msgctxt "description"
 msgid "Description"
 msgstr ""
@@ -4031,10 +4035,6 @@ msgstr "Rückgängig"
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr "Es isch e unerwartete Fähler ufträte."
-
-msgctxt "userDeleted"
-msgid "[deleted]"
-msgstr "[glöscht]"
 
 msgctxt "video"
 msgid "Video"

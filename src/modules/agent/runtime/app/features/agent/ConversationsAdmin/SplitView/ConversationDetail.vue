@@ -10,11 +10,11 @@
         <span class="flex items-center gap-5">
           <Avatar
             :deleted="!parsed.author"
-            :name="parsed.author?.name || $t('userDeleted', '[deleted]')"
+            :name="parsed.author?.name || `[${$t('deleted', 'deleted')}]`"
             :seed="parsed.author?.id"
             :image-url="parsed.author?.imageUrl"
           />
-          {{ parsed.author?.name || $t('userDeleted', '[deleted]') }}
+          {{ parsed.author?.name || `[${$t('deleted', 'deleted')}]` }}
         </span>
         <span
           v-if="parsed.host?.label"

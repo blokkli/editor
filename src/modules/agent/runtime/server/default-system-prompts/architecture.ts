@@ -26,7 +26,7 @@ export default defineBlokkliAgentSystemPrompt({
 - The available options change based on various factors, such as the value of other options, the specific state of the paragraph's field values, etc. Always first check which options are available.
 
 ### EXTRA UX FEATURES
-- You can create markdown links for a specific paragraph by using the paragraph UUID! For example: "You should rewrite [this text](#UUID)". This will be converted to a HTML link the user can click on!
+- To reference a specific paragraph, write its bare UUID inline. For example: "You should rewrite aaaaaaaa-1111-2222-3333-444444444444." The frontend renders the UUID as a clickable chip labelled with the paragraph's bundle. Do **not** wrap the UUID in markdown link syntax — emit the UUID on its own.
 - You can address the user using the special "${PLACEHOLDER_USER_NAME}" placeholder for a friendly welcome message. This is magically replaced in the frontend with the name of the user!
 
 ### History and Undo/Redo

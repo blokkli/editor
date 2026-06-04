@@ -39,6 +39,15 @@
       <template #post-title>
         <Pill :text="transcript.messages.length" />
       </template>
+      <template #actions>
+        <PanelAction
+          :title="
+            copiedKey === 'conversation' ? 'Copied!' : 'Copy conversation JSON'
+          "
+          icon="bk_mdi_content_copy"
+          @click="copyConversation"
+        />
+      </template>
       <div>
         <div
           v-for="(message, i) in transcript.messages"
@@ -69,7 +78,7 @@
       }}</pre>
       <template #actions>
         <PanelAction
-          :title="copied ? 'Copied!' : 'Copy JSON'"
+          :title="copiedKey === 'request' ? 'Copied!' : 'Copy JSON'"
           icon="bk_mdi_content_copy"
           @click="copyLastRequest"
         />
@@ -89,7 +98,9 @@ import { Pill } from '#blokkli/editor/components'
 
 const props = defineProps<{ transcript: Transcript }>()
 
-const copied = ref(false)
+type CopyKey = 'request' | 'conversation'
+
+const copiedKey = ref<CopyKey | null>(null)
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null
 
 onBeforeUnmount(() => {
@@ -98,18 +109,29 @@ onBeforeUnmount(() => {
   }
 })
 
+function flashCopied(key: CopyKey) {
+  copiedKey.value = key
+  if (copiedTimeout) {
+    clearTimeout(copiedTimeout)
+  }
+  copiedTimeout = setTimeout(() => {
+    copiedKey.value = null
+    copiedTimeout = null
+  }, 2000)
+}
+
 function copyLastRequest() {
   const json = JSON.stringify(props.transcript.lastRequest, null, 2)
-  navigator.clipboard.writeText(json).then(() => {
-    copied.value = true
-    if (copiedTimeout) {
-      clearTimeout(copiedTimeout)
-    }
-    copiedTimeout = setTimeout(() => {
-      copied.value = false
-      copiedTimeout = null
-    }, 2000)
-  })
+  navigator.clipboard.writeText(json).then(() => flashCopied('request'))
+}
+
+function copyConversation() {
+  const snapshot = props.transcript.messages.map((m) => ({
+    type: m.type,
+    content: m.seen,
+  }))
+  const json = JSON.stringify(snapshot, null, 2)
+  navigator.clipboard.writeText(json).then(() => flashCopied('conversation'))
 }
 </script>
 

@@ -29,7 +29,7 @@
   >
     <Avatar
       :deleted="!comment.user"
-      :name="comment.user?.name || $t('userDeleted', '[deleted]')"
+      :name="comment.user?.name || `[${$t('deleted', 'deleted')}]`"
       :seed="comment.user?.id"
       :image-url="comment.user?.imageUrl"
     />
