@@ -68,5 +68,17 @@ export type AgentModuleOptions = {
    */
   agentName?: string
 
+  /**
+   * Enable the mock LLM provider for E2E testing.
+   *
+   * When true, the client may send a `mockScript` in its `init` WebSocket
+   * message; the server then replaces the configured LLM provider with a
+   * deterministic mock that replays the script's agent turns in order. Leave
+   * unset (or false) in production. Independent of `provider` — the real
+   * provider stays configured and is used for any connection that does not
+   * opt in.
+   */
+  enableMock?: boolean
+
   routes?: Partial<AgentModuleOptionsRoutes>
 }

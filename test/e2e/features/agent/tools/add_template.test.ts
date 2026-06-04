@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from '../../support/session'
-import { openSidebar } from '../../support/sidebar'
-import { setupEditorE2E } from '../../support/setup'
-import { runAgentTool } from '../../support/agent'
+import { openEditor, withApp } from '../../../support/session'
+import { openSidebar } from '../../../support/sidebar'
+import { setupEditorE2E } from '../../../support/setup'
+import { runAgentTool } from '../../../support/agent'
 import type { MutationToolResult } from '#blokkli/agent/app/types'
 
 async function addTemplate(

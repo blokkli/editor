@@ -36,6 +36,7 @@
         <button
           v-show="!hasText && hasConversation"
           class="bk-agent-input-actions-button"
+          data-test="agent-new-conversation"
           :disabled="!isConnected"
           @click="$emit('new-conversation')"
         >
@@ -60,6 +61,7 @@
         <button
           v-else
           class="bk-button bk-scheme-accent bk-is-small bk-is-icon-only"
+          data-test="agent-submit"
           :disabled="!canSubmit"
           @click="$emit('submit')"
         >

@@ -1,5 +1,8 @@
 <template>
-  <div class="bk-agent-message bk-is-assistant bk-agent-assistant-bubble">
+  <div
+    class="bk-agent-message bk-is-assistant bk-agent-assistant-bubble"
+    data-test="agent-assistant-message"
+  >
     <Markdown class="bk-agent-message-text" :content="renderedContent" />
   </div>
 </template>

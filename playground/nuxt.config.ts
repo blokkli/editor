@@ -114,6 +114,7 @@ export default defineNuxtConfig({
       agentModule({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         debugPrompt: true,
+        enableMock: true,
         provider: 'anthropic',
         models: [
           {

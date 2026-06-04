@@ -120,3 +120,9 @@ The module extends the blökkli adapter with:
 - `swapBlocks(first, second)` — Swap two blocks
 - `getAgentAuthToken()` — Get HMAC auth token for WebSocket
 - `agentConversations` — Conversation CRUD operations
+
+## E2E Testing
+
+For Playwright E2E tests against the agent (calling tools directly, or driving
+the full LLM loop via a mock provider with paste-from-transcript scripts), see
+`/agent-e2e-testing`.

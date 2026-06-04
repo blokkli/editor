@@ -10,6 +10,7 @@ import type {
   GenericContentBlock,
   GenericTextBlock,
   GenericSkillBlock,
+  MockScript,
   SelectedBlock,
   Transcript,
 } from '../../../shared/types'
@@ -20,7 +21,12 @@ import {
   buildSystemPromptEntries,
 } from '../../helpers/agentPrompt'
 import type { ActivePlanContext } from '../../system-prompts/types'
-import { provider, models } from '#blokkli-build/agent-server'
+import {
+  createMockProvider,
+  provider as defaultProvider,
+  models,
+} from '#blokkli-build/agent-server'
+import type { AIProvider } from '../../providers/types'
 import { send } from '../../helpers/socket'
 import {
   ConversationHistory,
@@ -103,6 +109,13 @@ export class Session {
   /** Last raw request payload for transcript (dev only) */
   private lastDebugPayload: unknown = null
 
+  /**
+   * Active LLM provider for this session. Defaults to the build-configured
+   * provider; `useMockProvider()` swaps in a deterministic mock for E2E tests
+   * (gated upstream by the module's `enableMock` flag).
+   */
+  private provider: AIProvider = defaultProvider
+
   /** Bundled tool metadata map for server-side resolution */
   private bundledToolMap: Map<string, ServerToolMetadata>
   /** Cache for resolved JSON Schemas (Zod→JSON Schema is deterministic) */
@@ -166,6 +179,26 @@ export class Session {
   // --------------------------------------------------------------------------
   // Public methods
   // --------------------------------------------------------------------------
+
+  /**
+   * Replace the LLM provider with a deterministic mock that replays the given
+   * script. Caller (the WS handler) is responsible for gating this on the
+   * module's `enableMock` flag. Resetting to the default provider isn't
+   * supported on purpose: in test scenarios, sessions are short-lived and a
+   * fresh connection always re-creates the session.
+   */
+  useMockProvider(script: MockScript): void {
+    if (!createMockProvider) return
+    this.provider = createMockProvider(script)
+  }
+
+  /**
+   * Whether this session is currently driven by the mock provider. The WS
+   * handler uses this to skip the real-LLM `apiKey` precondition on `start`.
+   */
+  get isMocked(): boolean {
+    return this.provider.name === 'mock'
+  }
 
   init(toolNames: string[], pageContext: PageContext): void {
     // Partition into eager/lazy using bundled metadata
@@ -769,7 +802,7 @@ export class Session {
         )
 
         // Create stream using the provider
-        const stream = provider.createStream(
+        const stream = this.provider.createStream(
           {
             apiKey,
             model: getDefaultModel(models)?.name ?? '',

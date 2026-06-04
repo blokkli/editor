@@ -16,7 +16,12 @@ frame-timed drop logic, DOM lifecycle.
   Modules: `session`, `blocks`, `editable`, `diff`, `events`, `toolbar`, `menu`,
   `sidebar`, `overlays`, `options`, `preview`, `recorder`, `schedule`,
   `selection`, `clipboard`, `bundleSelector`, `history`, `itemActions`,
-  `keyboard`, `translations`, `setup`.
+  `keyboard`, `translations`, `setup`, `agent`.
+
+For tests under `test/e2e/features/agent/` see `/agent-e2e-testing` — covers the
+`tools/` (call one tool, no LLM) vs `mock-scripts/` (drive the full loop via the
+mock LLM provider) split, the mock script grammar, and the agent-specific
+support helpers.
 
 **Extract to `support/` when used by 2+ files** (and refactor existing callers
 onto it — don't leave a copy behind). One-file-only helpers stay local.

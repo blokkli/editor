@@ -3,7 +3,7 @@ import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
 import { clientMessageSchema } from '../shared/types'
 import { SessionManager } from './classes/SessionManager'
 import { send } from './helpers/socket'
-import { toolDefinitions } from '#blokkli-build/agent-server'
+import { enableMock, toolDefinitions } from '#blokkli-build/agent-server'
 
 const sessionManager = new SessionManager(toolDefinitions)
 
@@ -91,11 +91,19 @@ export default defineWebSocketHandler({
 
       switch (data.type) {
         case 'init':
+          if (enableMock && data.mockScript) {
+            session.useMockProvider(data.mockScript)
+          }
           session.init(data.toolNames, data.pageContext)
           break
 
         case 'start':
-          if (!apiKey) {
+          // Mock-driven sessions don't need a real API key. Require BOTH the
+          // build-time `enableMock` flag AND the session having actually
+          // installed a mock provider — never trust just one side. In a
+          // production build `enableMock` is `false`, so this whole branch is
+          // dead code and the apiKey check always fires.
+          if (!(enableMock && session.isMocked) && !apiKey) {
             send(peer, {
               type: 'error',
               errorType: 'authentication',

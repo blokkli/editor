@@ -12,8 +12,9 @@ import type {
 } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
-import { routeRoute } from '#blokkli-build/agent-client'
+import { enableMock, routeRoute } from '#blokkli-build/agent-client'
 import { buildPageContext } from '#blokkli/agent/app/helpers/buildPageContext'
+import { readMockScript } from '#blokkli/agent/app/helpers/mockScript'
 import {
   computeHistorySignature,
   isHistorySnapshotReachable,
@@ -243,7 +244,12 @@ export default function agentProvider({
     toolNames: string[],
     pageContext: PageContext,
   ): Promise<void> {
-    socket.send({ type: 'init', toolNames, pageContext })
+    socket.send({
+      type: 'init',
+      toolNames,
+      pageContext,
+      mockScript: enableMock ? readMockScript() : undefined,
+    })
     isReady.value = true
     hasBeenReady.value = true
 

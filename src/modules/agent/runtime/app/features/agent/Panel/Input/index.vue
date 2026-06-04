@@ -1,6 +1,7 @@
 <template>
   <div
     class="bk-agent-input flex flex-col shrink-0"
+    data-test="agent-input"
     :class="{
       'bk-is-active': hasActivePlan,
     }"

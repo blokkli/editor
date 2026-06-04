@@ -19,6 +19,8 @@ You have SEVERAL skills available that you MUST use!!
 - **changelog** => Use when creating changelog entries for a new release
 - **e2e-testing** => Use when writing, debugging, or running the Playwright E2E
   tests (`test/e2e/`)
+- **agent-e2e-testing** => Use when writing or debugging tests under
+  `test/e2e/features/agent/` (mock-provider scripts, tool-bypass tests)
 
 ## NON-NEGOTIABLE RULES (READ THIS EVERY TIME)
 

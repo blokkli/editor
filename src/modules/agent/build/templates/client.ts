@@ -49,6 +49,8 @@ export default function (
         `export const hasWebFetch = ${JSON.stringify(!!options.allowedFetchOrigins)}`,
       )
 
+      exports.push(`export const enableMock = ${!!options.enableMock}`)
+
       // Route constants
       exports.push(`export const routeAgent = ${JSON.stringify(routes.agent)}`)
       exports.push(`export const routeFetch = ${JSON.stringify(routes.fetch)}`)
@@ -132,6 +134,7 @@ export const mcpTools: McpToolDefinition[]
 export const defaultPrompts: string[]
 export const models: AgentModelDefinition[]
 export const hasWebFetch: boolean
+export const enableMock: boolean
 export const toolNames: readonly AgentToolName[]
 export const skillNames: readonly AgentSkillName[]
 `

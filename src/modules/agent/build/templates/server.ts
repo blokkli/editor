@@ -33,7 +33,7 @@ export default function (options: AgentServerTemplateOptions) {
     systemPromptTypesPath,
     mcpToolsCollector,
   } = options
-  const { allowedFetchOrigins, provider, models } = moduleOptions
+  const { allowedFetchOrigins, provider, models, enableMock } = moduleOptions
 
   return defineCodeTemplate(
     'agent-server',
@@ -57,6 +57,13 @@ export default function (options: AgentServerTemplateOptions) {
         provider === 'openai'
           ? 'createOpenAIProvider()'
           : 'createAnthropicProvider()'
+
+      // Mock provider import (always imported when enableMock is true).
+      if (enableMock) {
+        imports.push(
+          `import { createMockProvider } from '${rel(providersPath)}/mock'`,
+        )
+      }
 
       // Skills imports and export
       const skills = skillsCollector.getItems()
@@ -95,11 +102,19 @@ export default function (options: AgentServerTemplateOptions) {
 
       const originsJson = JSON.stringify(allowedFetchOrigins, null, 2)
 
+      const createMockExport = enableMock
+        ? 'export { createMockProvider }'
+        : 'export const createMockProvider = undefined'
+
       return `${imports.join('\n')}
 
 export const allowedFetchOrigins = ${originsJson}
 
 export const provider = ${providerCreate}
+
+export const enableMock = ${!!enableMock}
+
+${createMockExport}
 
 export const models = ${JSON.stringify(models)}
 export const debugPrompt = ${!!moduleOptions.debugPrompt}
@@ -118,10 +133,12 @@ ${toolDefinitionsExport}
       return `import type { AIProvider } from '${rel(providersPath)}/types'
 import type { SkillDefinition } from '${rel(skillsTypesPath)}'
 import type { SystemPromptDefinition } from '${rel(systemPromptTypesPath)}'
-import type { AgentModelDefinition, ServerToolMetadata } from '${rel(sharedTypesPath)}'
+import type { AgentModelDefinition, MockScript, ServerToolMetadata } from '${rel(sharedTypesPath)}'
 
 export const allowedFetchOrigins: string[]
 export const provider: AIProvider
+export const enableMock: boolean
+export const createMockProvider: ((script: MockScript) => AIProvider) | undefined
 export const models: AgentModelDefinition[]
 export const debugPrompt: boolean
 export const skills: SkillDefinition[]

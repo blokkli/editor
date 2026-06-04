@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from '../../support/session'
-import { addBlocks, type NewBlockTree } from '../../support/blocks'
-import { openSidebar } from '../../support/sidebar'
-import { setupEditorE2E } from '../../support/setup'
-import { runAgentTool } from '../../support/agent'
+import { openEditor } from '../../../support/session'
+import { addBlocks, type NewBlockTree } from '../../../support/blocks'
+import { openSidebar } from '../../../support/sidebar'
+import { setupEditorE2E } from '../../../support/setup'
+import { runAgentTool } from '../../../support/agent'
 
 /**
  * E2E for the `get_page_text` tool — the DOM-based Markdown rendering of the

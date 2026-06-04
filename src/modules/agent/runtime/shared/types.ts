@@ -521,12 +521,32 @@ const conversationStateSnapshotSchema = z.object({
   hash: z.string(),
 })
 
+/**
+ * Wire schema for a mock-provider script — the same shape as the transcript
+ * export produced by the "Copy conversation JSON" action. Pasting an exported
+ * transcript verbatim is a valid script; the mock replays only the `agent`
+ * entries and ignores everything else.
+ */
+const mockScriptSchema = z.array(
+  z.object({
+    type: z.enum(['user', 'agent']),
+    content: z.union([z.string(), z.array(genericContentBlockSchema)]),
+  }),
+)
+
+export type MockScript = z.infer<typeof mockScriptSchema>
+
 export const clientMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('authenticate'), authToken: z.string() }),
   z.object({
     type: z.literal('init'),
     toolNames: z.array(z.string()),
     pageContext: pageContextSchema,
+    /**
+     * Mock-provider script. Honoured only when the module's `enableMock`
+     * config is true; absent or ignored in production. See [[mockScriptSchema]].
+     */
+    mockScript: mockScriptSchema.optional(),
   }),
   z.object({
     type: z.literal('start'),

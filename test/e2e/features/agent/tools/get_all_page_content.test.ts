@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from '../../support/session'
-import { addBlock } from '../../support/blocks'
-import { openSidebar } from '../../support/sidebar'
-import { setupEditorE2E } from '../../support/setup'
-import { runAgentTool } from '../../support/agent'
+import { openEditor } from '../../../support/session'
+import { addBlock } from '../../../support/blocks'
+import { openSidebar } from '../../../support/sidebar'
+import { setupEditorE2E } from '../../../support/setup'
+import { runAgentTool } from '../../../support/agent'
 
 /**
  * Regression test for the agent's `get_all_page_content` tool — and the shared
