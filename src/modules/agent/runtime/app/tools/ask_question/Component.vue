@@ -1,5 +1,10 @@
 <template>
-  <ToolCard icon="bk_mdi_help" :title="params.question" @cancel="cancel">
+  <ToolCard
+    icon="bk_mdi_help"
+    :title="params.question"
+    data-test="agent-ask-question"
+    @cancel="cancel"
+  >
     <div class="p-10 bk-agent-tool-question-list">
       <FormCheckboxes
         v-if="params.multiSelect"
@@ -35,6 +40,7 @@
     <template #actions>
       <button
         class="bk-button bk-is-small bk-scheme-lime bk-is-fullwidth"
+        data-test="agent-ask-question-confirm"
         :disabled="!hasSelection"
         @click="confirm"
       >

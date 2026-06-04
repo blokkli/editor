@@ -1,7 +1,10 @@
 import { expect } from 'vitest'
 import type { Page } from 'playwright-core'
 import type { AgentToolMap, AgentToolName } from '#blokkli-build/agent-client'
-import type { MockScript } from '#blokkli/agent/shared/types'
+import type { MockScript, Transcript } from '#blokkli/agent/shared/types'
+// Side-effect import pulls in the `__BLOKKLI_AGENT_TEST_GET_TRANSCRIPT__`
+// global augmentation declared on `Window`. Type-only.
+import type {} from '../../../src/modules/agent/runtime/app/helpers/testSeam'
 import { openSidebar } from './sidebar'
 
 /**
@@ -72,6 +75,41 @@ export async function submitAgentPrompt(
 ): Promise<void> {
   await page.locator('[data-test="agent-input"] textarea').fill(prompt)
   await page.locator('[data-test="agent-submit"]').click()
+}
+
+/**
+ * Pick an option in the `ask_question` tool UI and confirm. Waits for the
+ * question card to render, clicks the radio whose `value` matches, then clicks
+ * Confirm. Use with mock-script tests where a scripted `ask_question` tool
+ * call is followed by a subsequent agent turn that depends on a user choice
+ * (the mock provider replays linearly, so the script's next agent turn fires
+ * regardless of which option was picked — the test asserts the post-pick
+ * behaviour).
+ */
+export async function answerAgentQuestion(
+  page: Page,
+  value: string,
+): Promise<void> {
+  const card = page.locator('[data-test="agent-ask-question"]')
+  await card.waitFor({ state: 'visible', timeout: 10_000 })
+  await card.locator(`input[type="radio"][value="${value}"]`).click()
+  await page.locator('[data-test="agent-ask-question-confirm"]').click()
+}
+
+/**
+ * Round-trip a `get_transcript` request to the server and return the response.
+ * Uses the test seam the agent Container installs in mock mode, so the
+ * sidebar must already be open (`openAgentPanel`). The transcript carries the
+ * `tools` array as it was at the last LLM request — assert on that to verify
+ * routing-driven auto-load actually activated a lazy tool.
+ */
+export async function getAgentTranscript(page: Page): Promise<Transcript> {
+  await page.waitForFunction(
+    () => typeof window.__BLOKKLI_AGENT_TEST_GET_TRANSCRIPT__ === 'function',
+  )
+  return page.evaluate(() =>
+    window.__BLOKKLI_AGENT_TEST_GET_TRANSCRIPT__!(),
+  ) as Promise<Transcript>
 }
 
 /**

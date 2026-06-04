@@ -522,19 +522,58 @@ const conversationStateSnapshotSchema = z.object({
 })
 
 /**
+ * Optional `routing` entry — additive to the transcript shape. When the
+ * client makes its first-message routing fetch and `enableMock` is on, the
+ * server returns this verbatim instead of calling the configured LLM. Lets
+ * tests assert that the listed skills/tools actually flow through the
+ * preprocess endpoint and get auto-loaded by the session.
+ */
+const mockRoutingEntrySchema = z.object({
+  type: z.literal('routing'),
+  skills: z.array(z.string()).optional(),
+  tools: z.array(z.string()).optional(),
+})
+
+export type MockRoutingEntry = z.infer<typeof mockRoutingEntrySchema>
+
+/**
  * Wire schema for a mock-provider script — the same shape as the transcript
  * export produced by the "Copy conversation JSON" action. Pasting an exported
  * transcript verbatim is a valid script; the mock replays only the `agent`
- * entries and ignores everything else.
+ * entries for the conversation loop. A leading `routing` entry is optional
+ * (additive to the transcript shape) and drives the first-message routing
+ * preprocess.
  */
 const mockScriptSchema = z.array(
-  z.object({
-    type: z.enum(['user', 'agent']),
-    content: z.union([z.string(), z.array(genericContentBlockSchema)]),
-  }),
+  z.union([
+    z.object({
+      type: z.enum(['user', 'agent']),
+      content: z.union([z.string(), z.array(genericContentBlockSchema)]),
+    }),
+    mockRoutingEntrySchema,
+  ]),
 )
 
 export type MockScript = z.infer<typeof mockScriptSchema>
+
+/**
+ * Body shape of the routing preprocess request. `mockRouting`, when set
+ * alongside `enableMock`, short-circuits the LLM call and the server returns
+ * the listed skills/tools directly.
+ */
+export const routingRequestSchema = z.object({
+  prompt: z.string(),
+  toolNames: z.array(z.string()),
+  pageContext: pageContextSchema,
+  mockRouting: z
+    .object({
+      skills: z.array(z.string()).optional(),
+      tools: z.array(z.string()).optional(),
+    })
+    .optional(),
+})
+
+export type RoutingRequest = z.infer<typeof routingRequestSchema>
 
 export const clientMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('authenticate'), authToken: z.string() }),

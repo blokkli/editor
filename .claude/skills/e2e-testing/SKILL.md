@@ -193,6 +193,11 @@ matches either; assert exact: `getAttribute === 'true'`.
 - `addBlock(page, { bundle, fieldName, entityUuid? })` → uuid. **The cheap way
   to get a pending mutation.** Use this, not `dragNewBlockIntoPage`, unless the
   drag gesture is what's under test. No canvas, no editable overlay to clean.
+- `pageStructure(page, { rootField?, entityUuid? })` →
+  `Array<{ bundle, props?, fields? }>`. The host entity's block tree,
+  recursively, with editContext keys + non-content props filtered out (only
+  primitive-typed props remain). Pair with `toMatchInlineSnapshot` to assert a
+  whole post-mutation tree in one shot instead of N individual `expect`s.
 - `toolbarButton`, `undo`, `openAppMenu`, `closeAppMenu`, `appMenuButton`,
   `openSidebar`, `popup`, `dismissPopup`, `dialog`, `dialogSubmit`,
   `dialogCancel`, `closeFormOverlay`, `dismissMessages`, `plaintextEditor`.

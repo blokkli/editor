@@ -102,6 +102,8 @@ const uuid = computed(() => {
     return '2'
   } else if (route.path.includes('page/3')) {
     return '3'
+  } else if (route.path.includes('page/4')) {
+    return '4'
   }
 
   return '1'

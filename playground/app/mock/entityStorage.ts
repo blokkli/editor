@@ -428,6 +428,14 @@ export class EntityStorageManager {
       this.createVideo((i + 100).toString(), item.url, item.title)
     })
 
+    // An intentionally empty page — no blocks in any field. Used by agent
+    // E2E tests that need a blank canvas (e.g. asserting that the agent can
+    // add blocks to an empty page, or rendering the empty-state UI).
+    const emptyPage = new ContentPage('4')
+    emptyPage.title().setText('Empty page')
+    emptyPage.lead().setText('')
+    this.storages.content.add(emptyPage)
+
     const stressTestPage = new ContentPage('3')
     stressTestPage.title().setText('A $stress test$ page with lots of blocks.')
     stressTestPage.lead().setText('Will it crash?')

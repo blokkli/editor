@@ -14,7 +14,10 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { enableMock, routeRoute } from '#blokkli-build/agent-client'
 import { buildPageContext } from '#blokkli/agent/app/helpers/buildPageContext'
-import { readMockScript } from '#blokkli/agent/app/helpers/mockScript'
+import {
+  readMockRouting,
+  readMockScript,
+} from '#blokkli/agent/app/helpers/mockScript'
 import {
   computeHistorySignature,
   isHistorySnapshotReachable,
@@ -117,6 +120,11 @@ function buildSendContext(options: SendPromptOptions) {
 /**
  * Ask the routing endpoint which skills/tools to preload for the first message.
  * Swallows failures (returns empty) so a routing outage never blocks the prompt.
+ *
+ * When `enableMock` is on and the active mock script carries a `routing` entry,
+ * we forward it in the body so the server can short-circuit and return it
+ * without touching the configured LLM. The full HTTP round-trip still happens —
+ * that's the point — but the route handler skips its `preprocessPrompt` call.
  */
 async function fetchRouting(
   prompt: string,
@@ -124,10 +132,11 @@ async function fetchRouting(
   pageContext: PageContext,
 ): Promise<{ tools: string[]; skills: string[]; usage: UsageTurn | null }> {
   try {
+    const mockRouting = enableMock ? readMockRouting() : undefined
     return await fetch(routeRoute, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, toolNames, pageContext }),
+      body: JSON.stringify({ prompt, toolNames, pageContext, mockRouting }),
     }).then(
       (r) =>
         r.json() as Promise<{
@@ -254,8 +263,14 @@ export default function agentProvider({
     hasBeenReady.value = true
 
     // Skip auto-restore if a prompt is already queued — the panel was just
-    // opened from a dropdown action and should start fresh.
-    if (adapter.agentConversations && !pendingPrompt) {
+    // opened from a dropdown action and should start fresh. Also skip when
+    // the session is mock-driven: tests want a deterministic empty history
+    // (the mock provider derives its turn index from the assistant-message
+    // count), and the adapter's `loadLatest` keys conversations by entity
+    // UUID, so multiple parallel mock tests against the same page would
+    // otherwise restore each other's state.
+    const isMockedSession = enableMock && !!readMockScript()
+    if (adapter.agentConversations && !pendingPrompt && !isMockedSession) {
       const latest = await conversation.loadLatestFromAdapter()
       if (latest) {
         conversation.activeConversationId.value = latest.uuid

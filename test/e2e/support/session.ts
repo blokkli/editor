@@ -23,6 +23,13 @@ import {
  */
 export const EDITOR_PATH = '/page/1?blokkliEditing=1&testing=true'
 
+/**
+ * Empty playground editor route (entity `4`, edit mode on). The page has a
+ * title and an empty `content` field — useful for tests that need a blank
+ * canvas, e.g. asserting the agent adds blocks to an empty page from scratch.
+ */
+export const EDITOR_PATH_EMPTY = '/page/4?blokkliEditing=4&testing=true'
+
 export interface OpenEditorOptions {
   /**
    * Pin the browser timezone (IANA id, e.g. `'UTC'`). Set at context creation

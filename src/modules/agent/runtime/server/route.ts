@@ -1,22 +1,33 @@
 import { defineEventHandler, readBody, useRuntimeConfig } from '#imports'
-import { toolDefinitions } from '#blokkli-build/agent-server'
-import type { PageContext, UsageTurn } from '../shared/types'
+import { enableMock, toolDefinitions } from '#blokkli-build/agent-server'
+import type { UsageTurn, RoutingRequest } from '../shared/types'
 import { resolveSkills } from './helpers/skills'
 import { preprocessPrompt } from './helpers/routing'
 
 const config = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<{
-    prompt: string
-    toolNames: string[]
-    pageContext: PageContext
-  }>(event)
+  const body = await readBody<RoutingRequest>(event)
 
   const empty = {
     skills: [] as string[],
     tools: [] as string[],
     usage: null as UsageTurn | null,
+  }
+
+  // Mock mode: honour the script's routing entry without touching the
+  // configured LLM. Without `mockRouting`, mock sessions auto-load nothing
+  // — the real provider is never reached even if `apiKey` is set, so the
+  // E2E suite is safe to run alongside a populated `.env`.
+  if (enableMock) {
+    if (body.mockRouting) {
+      return {
+        skills: body.mockRouting.skills ?? [],
+        tools: body.mockRouting.tools ?? [],
+        usage: null,
+      }
+    }
+    return empty
   }
 
   const apiKey = config.blokkli?.agent?.apiKey

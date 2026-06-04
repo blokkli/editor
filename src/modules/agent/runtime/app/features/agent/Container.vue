@@ -30,6 +30,11 @@ import {
   provide,
   defineAsyncComponent,
 } from '#imports'
+import { enableMock } from '#blokkli-build/agent-client'
+import {
+  installAgentTestSeam,
+  uninstallAgentTestSeam,
+} from '#blokkli/agent/app/helpers/testSeam'
 import { DialogModal, BlokkliTransition } from '#blokkli/editor/components'
 import socketProvider from '#blokkli/agent/app/providers/socketProvider'
 import conversationProvider from '#blokkli/agent/app/providers/conversationProvider'
@@ -129,6 +134,9 @@ async function consumePromptRequest(request: PendingPromptRequest) {
 // clicks a dropdown action which opens the sidebar for the first time), so
 // drain any pending value on mount.
 onMounted(() => {
+  if (enableMock) {
+    installAgentTestSeam(agent, conversation)
+  }
   if (props.pendingPromptRequest) {
     consumePromptRequest(props.pendingPromptRequest)
   }
@@ -144,6 +152,9 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  if (enableMock) {
+    uninstallAgentTestSeam()
+  }
   agent.disconnect()
 })
 </script>

@@ -134,6 +134,98 @@ export function addBlock(
 }
 
 /**
+ * A snapshottable representation of one block: its bundle, its rendered
+ * editable props (e.g. a title's `{ title, tagline, lead }`), and any nested
+ * child blocks keyed by paragraph field name. Use with `toMatchInlineSnapshot`
+ * to assert the entire post-mutation tree in one go instead of N individual
+ * `expect`s.
+ */
+export type BlockTreeNode = {
+  bundle: string
+  props?: Record<string, unknown>
+  fields?: Record<string, BlockTreeNode[]>
+}
+
+/**
+ * Read the host entity's block tree under `rootField` (defaults to `content`)
+ * and return a stable, JSON-serialisable shape suitable for inline snapshots.
+ * Each node carries its bundle, non-empty props, and any child fields that
+ * have blocks in them (empty child fields are omitted to keep snapshots
+ * focused on what's actually there).
+ *
+ * Props come straight from `state.getFieldListItem(uuid).props` — the same
+ * editable values the agent sets via `add_paragraphs`'s `contentFields`. To
+ * snapshot a specific subtree, pass `entityUuid` (the uuid whose `rootField`
+ * to walk) — defaults to the host entity.
+ */
+export function pageStructure(
+  page: Page,
+  opts: { rootField?: string; entityUuid?: string } = {},
+): Promise<BlockTreeNode[]> {
+  return page.evaluate(
+    ({ rootField, entityUuid }) => {
+      const app = window.__BLOKKLI__!.app!
+      const fields = app.state.mutatedFields.value
+
+      const byEntity = new Map<string, typeof fields>()
+      for (const f of fields) {
+        const list = byEntity.get(f.entityUuid) ?? []
+        list.push(f)
+        byEntity.set(f.entityUuid, list)
+      }
+
+      type Node = {
+        bundle: string
+        props?: Record<string, unknown>
+        fields?: Record<string, Node[]>
+      }
+
+      function describe(uuid: string): Node {
+        const item = app.state.getFieldListItem(uuid)
+        const node: Node = { bundle: item?.bundle ?? '?' }
+        if (item?.props) {
+          // Only surface content-bearing props: strings, numbers, booleans.
+          // Skips array props (field mappings — child blocks already appear
+          // under `fields`), nested objects, undefined values, and the
+          // editContext keys (`isNew`, `outdatedTranslations`) that
+          // `getFieldListItem` merges in.
+          const filtered: Record<string, unknown> = {}
+          for (const [key, value] of Object.entries(item.props)) {
+            if (key === 'isNew' || key === 'outdatedTranslations') continue
+            const t = typeof value
+            if (t === 'string' || t === 'number' || t === 'boolean') {
+              filtered[key] = value
+            }
+          }
+          if (Object.keys(filtered).length) {
+            node.props = filtered
+          }
+        }
+        const children = (byEntity.get(uuid) ?? []).filter(
+          (f) => f.list.length > 0,
+        )
+        if (children.length) {
+          node.fields = Object.fromEntries(
+            children.map((f) => [f.name, f.list.map((i) => describe(i.uuid))]),
+          )
+        }
+        return node
+      }
+
+      const targetUuid = entityUuid || app.context.value.entityUuid
+      const root = (byEntity.get(targetUuid) ?? []).find(
+        (f) => f.name === rootField,
+      )
+      return (root?.list ?? []).map((i) => describe(i.uuid))
+    },
+    {
+      rootField: opts.rootField ?? 'content',
+      entityUuid: opts.entityUuid ?? '',
+    },
+  ) as Promise<BlockTreeNode[]>
+}
+
+/**
  * A block to add via `addBlocks`. `uuid` is caller-provided (so the test knows
  * each block's id up front); `children` nests blocks keyed by the parent's
  * block-field name (e.g. `header`, `blocks`), recursively.

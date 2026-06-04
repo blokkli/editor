@@ -44,7 +44,19 @@ calls firing from an LLM response, multi-turn behaviour, error paths. The mock
 LLM provider replays a scripted sequence of agent turns; real tools fire for
 real and produce real tool relays.
 
+**Default to `EDITOR_PATH_EMPTY` (page 4).** Mock-script tests should open the
+empty page and have the agent build whatever state they need to exercise. If a
+test needs pre-existing blocks (e.g. asserting a rewrite or delete flow), seed
+them via `addBlock` or `runAgentTool` after `openEditor` and before the prompt.
+Page 1 is loaded with the demo content and is shared with non-agent tests —
+asserting on its block counts is fragile.
+
 ```ts
+import {
+  EDITOR_PATH_EMPTY,
+  openEditor,
+  withApp,
+} from '../../../support/session'
 import {
   openAgentPanel,
   setAgentMockScript,
@@ -53,6 +65,7 @@ import {
 } from '../../../support/agent'
 import type { MockScript } from '#blokkli/agent/shared/types'
 
+const page = await openEditor(EDITOR_PATH_EMPTY)
 const script: MockScript = [
   { type: 'user', content: 'hello' },
   { type: 'agent', content: [{ type: 'text', text: 'Hi! How can I help?' }] },
@@ -96,6 +109,43 @@ Each `agent` entry becomes one streamed turn:
 
 When the script runs out of agent entries, the mock yields a single `end_turn`
 and the conversation stops.
+
+### Optional `routing` entry — preload skills/tools
+
+Prepend `{ type: 'routing', skills?: string[], tools?: string[] }` to test the
+first-message routing preprocess. The client extracts the entry, sends it as
+`mockRouting` in the routing request body, and the server's `route.ts`
+short-circuits to it (no real LLM call). The Session then auto-loads the
+listed skills/lazy tools before the first turn, so they appear in the next
+LLM request's tools array. Verify with `getAgentTranscript(page)` and assert
+on `transcript.tools`.
+
+```ts
+const script: MockScript = [
+  { type: 'routing', tools: ['search_text'] },
+  { type: 'user', content: 'find "blökkli"' },
+  {
+    type: 'agent',
+    content: [
+      { type: 'text', text: 'Searching now.' },
+      {
+        type: 'tool_use',
+        id: 'tu_search',
+        name: 'search_text',
+        input: { query: 'blökkli', limit: 20 },
+      },
+    ],
+  },
+  { type: 'agent', content: [{ type: 'text', text: 'Search complete.' }] },
+]
+// …drive the conversation, then:
+const transcript = await getAgentTranscript(page)
+expect(transcript.tools.map((t) => t.name)).toContain('search_text')
+```
+
+The `routing` entry is additive — transcripts don't contain it, so a pasted
+conversation snapshot still works unchanged (no routing entry → routing
+returns empty, nothing is preloaded).
 
 ### Multi-turn example (with a real tool call)
 
@@ -144,6 +194,15 @@ After the real tool relay lands, the mock plays the second `agent` turn.
 - **`start` precondition**: the apiKey check is skipped when
   `enableMock && session.isMocked` (defense in depth — both must agree). Mock
   tests run without `NUXT_BLOKKLI_AGENT_API_KEY` set.
+- **Routing preprocess (`/api/blokkli/agent/route`)**: in mock mode the route
+  handler honours `body.mockRouting` (extracted by the client from the script's
+  `routing` entry) and never calls `preprocessPrompt` — defense in depth, so a
+  populated `.env` doesn't cause real LLM calls on the routing path either.
+- **Auto-restore is skipped in mock mode.** `agentProvider.startInit()` only
+  calls `loadLatestFromAdapter` when no mock script is present. This both
+  guarantees a clean turn-0 history for the mock provider AND lets parallel
+  mock tests against the same entity run without trampling each other's
+  conversation (the playground keys conversations by entity UUID).
 
 `?testing=true` is unrelated to the mock — it gates the adapter recorder.
 Mock-script tests don't depend on it.
@@ -156,7 +215,15 @@ Mock-script tests don't depend on it.
 | `setAgentMockScript(page, script)`         | Install a script on the window. **Must be called before `openAgentPanel`** — read once during `sendInit`.      |
 | `openAgentPanel(page)`                     | Open the agent sidebar and clear any auto-restored conversation. Idempotent.                                   |
 | `submitAgentPrompt(page, prompt)`          | Fill the input and click submit.                                                                               |
+| `answerAgentQuestion(page, value)`         | Pick a radio option in the `ask_question` tool UI by `value`, then click Confirm.                              |
 | `waitForAgentReply(page, contains, opts?)` | Poll the most recent assistant bubble until its text contains `contains`. Default 10s timeout.                 |
+| `getAgentTranscript(page)`                 | Round-trip `get_transcript` and return the response. Used to assert `transcript.tools` after a routing test.   |
+
+To assert the post-mutation page state, prefer `pageStructure(page)` (from
+`support/blocks`) + `toMatchInlineSnapshot` over multiple manual `expect`s. It
+returns the host entity's block tree (bundle + content props + nested fields)
+in a JSON-serialisable shape designed for snapshots — one assertion captures
+the whole structure the agent built.
 
 ## `data-test` hooks on the agent UI
 
@@ -168,6 +235,8 @@ Add new ones following `data-test="agent-<thing>"`:
 | `[data-test="agent-submit"]`            | The send button.                                                               |
 | `[data-test="agent-new-conversation"]`  | "Start new conversation" button — only visible when `hasConversation` is true. |
 | `[data-test="agent-assistant-message"]` | Each assistant message bubble. Use `.last()` to grab the most recent.          |
+| `[data-test="agent-ask-question"]`      | The `ask_question` tool card wrapper. Wait for it to know the UI rendered.     |
+| `[data-test="agent-ask-question-confirm"]` | The Confirm button inside the `ask_question` card.                          |
 
 ## Common patterns
 

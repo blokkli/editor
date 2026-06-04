@@ -31,26 +31,28 @@ function toolUseFromBlock(
 }
 
 function normaliseScript(script: MockScript): MockTurn[] {
-  return script
-    .filter((entry) => entry.type === 'agent')
-    .map((entry): MockTurn => {
-      if (typeof entry.content === 'string') {
-        return { text: entry.content }
+  const turns: MockTurn[] = []
+  for (const entry of script) {
+    if (entry.type !== 'agent') continue
+    if (typeof entry.content === 'string') {
+      turns.push({ text: entry.content })
+      continue
+    }
+    const textParts: string[] = []
+    const toolUses: MockTurn['toolUses'] = []
+    for (const block of entry.content) {
+      if (block.type === 'text' || block.type === 'skill') {
+        textParts.push(block.text)
+      } else if (block.type === 'tool_use') {
+        toolUses.push(toolUseFromBlock(block))
       }
-      const textParts: string[] = []
-      const toolUses: MockTurn['toolUses'] = []
-      for (const block of entry.content) {
-        if (block.type === 'text' || block.type === 'skill') {
-          textParts.push(block.text)
-        } else if (block.type === 'tool_use') {
-          toolUses.push(toolUseFromBlock(block))
-        }
-      }
-      return {
-        text: textParts.length ? textParts.join('') : undefined,
-        toolUses: toolUses.length ? toolUses : undefined,
-      }
+    }
+    turns.push({
+      text: textParts.length ? textParts.join('') : undefined,
+      toolUses: toolUses.length ? toolUses : undefined,
     })
+  }
+  return turns
 }
 
 /**

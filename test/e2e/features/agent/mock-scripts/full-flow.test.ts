@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from '../../../support/session'
+import { EDITOR_PATH_EMPTY, openEditor } from '../../../support/session'
 import { setupEditorE2E } from '../../../support/setup'
 import {
   openAgentPanel,
@@ -30,7 +30,7 @@ describe('agent: full flow via mock provider', async () => {
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    page = await openEditor(EDITOR_PATH_EMPTY)
   })
 
   afterAll(async () => {
