@@ -40,6 +40,7 @@ import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
 import { chartTypeComponents } from '#blokkli-build/charts-components'
+import { colorOptions as buildColorOptions } from '#blokkli-build/editor-config'
 import {
   INJECT_IS_EDITING,
   INJECT_PROVIDER_CONTEXT,
@@ -82,11 +83,23 @@ const currentLanguage = computed(
 )
 
 const colorPalette = computed(() => {
-  const map = appConfig.blokkli?.colorOptions as
-    | Record<string, string>
-    | undefined
-  if (!map) return [] as { id: string; hex: string }[]
-  return Object.keys(map).map((id) => ({ id, hex: map[id]! }))
+  const overrides = (appConfig.blokkli?.colorOptions ?? {}) as Record<
+    string,
+    string | null | undefined
+  >
+  const result: { id: string; hex: string }[] = []
+  for (const [id, entry] of Object.entries(buildColorOptions)) {
+    const override = overrides[id]
+    if (override === null) continue
+    const baseHex =
+      typeof override === 'string'
+        ? override
+        : 'shades' in entry
+          ? entry.shades[entry.mainShade]!
+          : entry.hex
+    result.push({ id, hex: baseHex })
+  }
+  return result
 })
 
 const hasDynamicSource = computed(() => !!props.dataSource)
@@ -209,10 +222,35 @@ function superscriptFor(n: number): string {
 }
 
 function resolveHex(id: string): string {
-  const map = appConfig.blokkli?.colorOptions as
-    | Record<string, string>
-    | undefined
-  return map?.[id] || '#888888'
+  const overrides = (appConfig.blokkli?.colorOptions ?? {}) as Record<
+    string,
+    string | null | undefined
+  >
+  const dotIndex = id.indexOf('.')
+  const baseId = dotIndex === -1 ? id : id.slice(0, dotIndex)
+  const shadeId = dotIndex === -1 ? undefined : id.slice(dotIndex + 1)
+
+  if (overrides[baseId] === null) return '#888888'
+
+  const entry = (buildColorOptions as Record<string, unknown>)[baseId]
+  if (!entry || typeof entry !== 'object') return '#888888'
+
+  const typed = entry as
+    | { hex: string; label: string }
+    | { shades: Record<string, string>; mainShade: string; label: string }
+
+  if ('shades' in typed) {
+    if (shadeId !== undefined) {
+      return typed.shades[shadeId] ?? '#888888'
+    }
+    const override = overrides[baseId]
+    return typeof override === 'string'
+      ? override
+      : (typed.shades[typed.mainShade] ?? '#888888')
+  }
+
+  const override = overrides[baseId]
+  return typeof override === 'string' ? override : typed.hex
 }
 
 const typeComponent = computed(

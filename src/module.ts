@@ -79,8 +79,10 @@ export default defineNuxtModule<ModuleOptions>({
 
     const colorOptions = Object.entries(
       helper.options.colorOptions || {},
-    ).reduce<Record<string, string>>((acc, entry) => {
-      acc[entry[0]] = entry[1].hex
+    ).reduce<Record<string, string | null>>((acc, entry) => {
+      const option = entry[1]
+      acc[entry[0]] =
+        'shades' in option ? option.shades[option.mainShade]! : option.hex
       return acc
     }, {})
 

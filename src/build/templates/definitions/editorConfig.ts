@@ -59,6 +59,10 @@ import type { InterfaceLanguage } from '#blokkli-build/translations'
 
 export type ValidColorOption = ${validColorOptions}
 
+export type GeneratedColorOption =
+  | { label: string; hex: string }
+  | { label: string; shades: Record<string, string>; mainShade: string }
+
 /**
  * Whether the app uses a custom theme.
  */
@@ -72,7 +76,7 @@ export declare const themes: Record<string, Theme>
 /**
  * The available color options.
  */
-export declare const colorOptions: Record<ValidColorOption, { hex: string; label: string }>
+export declare const colorOptions: Record<ValidColorOption, GeneratedColorOption>
 
 /**
  * The default theme.

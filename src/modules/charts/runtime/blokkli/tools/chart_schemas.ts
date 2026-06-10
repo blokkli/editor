@@ -15,8 +15,35 @@ const agentChartTypeIds = definitionIds.filter((id) => id !== 'advanced') as [
 ]
 export const chartTypeEnum = z.enum(agentChartTypeIds)
 
-const colorIds = Object.keys(colorOptions) as [string, ...string[]]
+// Build the union of all referenceable color ids at build time: every base
+// id, plus `<base>.<shade>` for ramped colors. Runtime disabling (via
+// app.config null-override) is enforced inside `validateChartData`; the agent's
+// schema necessarily reflects the build-time universe because tool schemas are
+// extracted statically at build time.
+const colorIds = Object.entries(colorOptions).flatMap(([id, option]) => {
+  if ('shades' in option) {
+    return [id, ...Object.keys(option.shades).map((shade) => `${id}.${shade}`)]
+  }
+  return [id]
+}) as [string, ...string[]]
 export const chartColorEnum = z.enum(colorIds)
+
+function parseColorId(id: string): {
+  baseId: string
+  shadeId: string | undefined
+} {
+  const dotIndex = id.indexOf('.')
+  if (dotIndex === -1) return { baseId: id, shadeId: undefined }
+  return { baseId: id.slice(0, dotIndex), shadeId: id.slice(dotIndex + 1) }
+}
+
+function isColorEnabled(id: string, options: ColorOption[]): boolean {
+  const { baseId, shadeId } = parseColorId(id)
+  const option = options.find((c) => c.id === baseId)
+  if (!option) return false
+  if (shadeId === undefined) return true
+  return option.shades?.some((s) => s.id === shadeId) === true
+}
 
 export const chartSeriesSchema = z.object({
   name: z.string().describe('Series name (shown in legend)'),
@@ -173,8 +200,10 @@ export function validateChartData(
   data: BlokkliChartData,
   options: ColorOption[],
 ): { error: string } | { data: BlokkliChartData } {
-  const validIds = new Set(options.map((c) => c.id))
-  const availableIds = options.map((c) => c.id)
+  const availableIds = options.flatMap((c) => [
+    c.id,
+    ...(c.shades?.map((s) => `${c.id}.${s.id}`) ?? []),
+  ])
 
   // Validate series data length matches categories.
   for (let i = 0; i < data.series.length; i++) {
@@ -191,7 +220,7 @@ export function validateChartData(
     const series = data.series[i]!
     if (!series.color) {
       series.color = getColorIdAtIndex(i, options)
-    } else if (!validIds.has(series.color)) {
+    } else if (!isColorEnabled(series.color, options)) {
       return {
         error: `Invalid color ID "${series.color}" on series "${series.name}". Available colors: ${availableIds.join(', ')}`,
       }
@@ -211,7 +240,7 @@ export function validateChartData(
     } else {
       for (let i = 0; i < data.categoryColors.length; i++) {
         const id = data.categoryColors[i]!
-        if (!validIds.has(id)) {
+        if (!isColorEnabled(id, options)) {
           return {
             error: `Invalid categoryColor ID "${id}" at index ${i}. Available colors: ${availableIds.join(', ')}`,
           }

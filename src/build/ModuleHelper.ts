@@ -13,6 +13,7 @@ import { onlyUnique } from './helpers'
 import type { ValidationInterface } from './ValidationInterface'
 import type { IconCollector } from './Collector/Icons'
 import { validateOptions } from './validation/validateOptions'
+import { validateColorOptions } from './validation/validateColorOptions'
 import type { ColorOption } from '../global/types/colorOptions'
 
 const defaultColorOptions: Record<string, ColorOption> = {
@@ -300,10 +301,11 @@ export class ModuleHelper implements ValidationInterface {
   }
 
   public validate(icons: IconCollector): boolean {
-    const errors = validateOptions(this.options.globalOptions, icons)
+    let hasErrors = false
 
-    if (errors.length > 0) {
-      const lines = errors.map((error) => {
+    const optionErrors = validateOptions(this.options.globalOptions, icons)
+    if (optionErrors.length > 0) {
+      const lines = optionErrors.map((error) => {
         const prefix = error.optionKey
           ? `  Option "${error.optionKey}": `
           : '  '
@@ -312,9 +314,23 @@ export class ModuleHelper implements ValidationInterface {
       this.logger.error(
         `blökkli global options validation errors:\n${lines.join('\n')}`,
       )
-      return true
+      hasErrors = true
     }
 
-    return false
+    const colorErrors = validateColorOptions(this.options.colorOptions)
+    if (colorErrors.length > 0) {
+      const lines = colorErrors.map((error) => {
+        const prefix = error.optionKey
+          ? `  Option "${error.optionKey}": `
+          : '  '
+        return prefix + error.message
+      })
+      this.logger.error(
+        `blökkli colorOptions validation errors:\n${lines.join('\n')}`,
+      )
+      hasErrors = true
+    }
+
+    return hasErrors
   }
 }
