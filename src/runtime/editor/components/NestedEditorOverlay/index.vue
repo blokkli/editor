@@ -35,7 +35,7 @@
       @after-leave="onAfterLeave"
       @leave-cancelled="onAfterLeave"
     >
-      <div
+      <PopupHost
         v-show="isLoaded"
         class="bk bk-library-edit-overlay fixed top-40 3xl:top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto z-nested-editor-overlay-iframe"
         :class="'bk-is-' + theme"
@@ -56,7 +56,7 @@
             </div>
           </slot>
         </div>
-      </div>
+      </PopupHost>
     </Transition>
   </Teleport>
 </template>
@@ -71,7 +71,7 @@ import {
   useBlokkli,
   useTemplateRef,
 } from '#imports'
-import { Icon, NotEditStateInfo } from '#blokkli/editor/components'
+import { Icon, NotEditStateInfo, PopupHost } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ThemeColorName } from '../../../../global/types/theme'

@@ -383,6 +383,7 @@
   "chartsBorderRadiusSmall": "Klein",
   "chartsCategoryFilter": "Filterbare Kategorienachse",
   "chartsCategoryFilterLabel": "Filter-Bezeichnung",
+  "chartsColorMain": "Hauptfarbe",
   "chartsCsvAddFilter": "Filter hinzufügen",
   "chartsCsvCategoryColumn": "Kategorie-Spalte",
   "chartsCsvCategoryColumnDescription": "Die unterschiedlichen Werte dieser Spalte werden zu den Kategorien des Diagramms.",

@@ -42,6 +42,7 @@
   "chartsBorderRadiusSmall": "Petit",
   "chartsCategoryFilter": "Axe de catégories filtrable",
   "chartsCategoryFilterLabel": "Libellé du filtre",
+  "chartsColorMain": "couleur principale",
   "chartsDataLabels": "Étiquettes de données",
   "chartsDonutShowTotal": "Afficher le total",
   "chartsFootnotesHelp": "Les notes de bas de page sont numérotées automatiquement. Référencez-les dans les étiquettes de catégorie ou de série avec {1}, {2}, etc.",

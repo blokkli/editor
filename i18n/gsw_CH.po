@@ -1624,6 +1624,10 @@ msgctxt "chartsCategoryFilterLabel"
 msgid "Filter label"
 msgstr "Filter-Bezeichnig"
 
+msgctxt "chartsColorMain"
+msgid "main color"
+msgstr "Hauptfarb"
+
 msgctxt "chartsCsvAddFilter"
 msgid "Add filter"
 msgstr "Filter zuefüege"
