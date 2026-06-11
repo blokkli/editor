@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 import type { McpToolContext } from '#blokkli/agent/app/types'
-import type { ColorOption } from '#blokkli/editor/types/config'
+import type { ColorOption } from '#blokkli/types/colors'
+import { isColorIdValid } from '#blokkli/helpers/colors'
 import { getColorIdAtIndex } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chart-types'
 import { colorOptions } from '#blokkli-build/editor-config'
@@ -15,35 +16,20 @@ const agentChartTypeIds = definitionIds.filter((id) => id !== 'advanced') as [
 ]
 export const chartTypeEnum = z.enum(agentChartTypeIds)
 
-// Build the union of all referenceable color ids at build time: every base
-// id, plus `<base>.<shade>` for ramped colors. Runtime disabling (via
-// app.config null-override) is enforced inside `validateChartData`; the agent's
-// schema necessarily reflects the build-time universe because tool schemas are
+// Build the union of all referenceable color ids at build time: bare id for
+// flat colors, `<base>.<shade>` for every declared shade of ramped colors.
+// Bare ids for ramped colors are NOT included — the system uses the
+// shade-qualified form everywhere (see `canonicalColorId`). Runtime disabling
+// (via app.config null-override) is enforced inside `validateChartData`; the
+// agent's schema reflects the build-time universe because tool schemas are
 // extracted statically at build time.
 const colorIds = Object.entries(colorOptions).flatMap(([id, option]) => {
   if ('shades' in option) {
-    return [id, ...Object.keys(option.shades).map((shade) => `${id}.${shade}`)]
+    return Object.keys(option.shades).map((shade) => `${id}.${shade}`)
   }
   return [id]
 }) as [string, ...string[]]
 export const chartColorEnum = z.enum(colorIds)
-
-function parseColorId(id: string): {
-  baseId: string
-  shadeId: string | undefined
-} {
-  const dotIndex = id.indexOf('.')
-  if (dotIndex === -1) return { baseId: id, shadeId: undefined }
-  return { baseId: id.slice(0, dotIndex), shadeId: id.slice(dotIndex + 1) }
-}
-
-function isColorEnabled(id: string, options: ColorOption[]): boolean {
-  const { baseId, shadeId } = parseColorId(id)
-  const option = options.find((c) => c.id === baseId)
-  if (!option) return false
-  if (shadeId === undefined) return true
-  return option.shades?.some((s) => s.id === shadeId) === true
-}
 
 export const chartSeriesSchema = z.object({
   name: z.string().describe('Series name (shown in legend)'),
@@ -200,10 +186,9 @@ export function validateChartData(
   data: BlokkliChartData,
   options: ColorOption[],
 ): { error: string } | { data: BlokkliChartData } {
-  const availableIds = options.flatMap((c) => [
-    c.id,
-    ...(c.shades?.map((s) => `${c.id}.${s.id}`) ?? []),
-  ])
+  const availableIds = options.flatMap((c) =>
+    c.shades?.length ? c.shades.map((s) => `${c.id}.${s.id}`) : [c.id],
+  )
 
   // Validate series data length matches categories.
   for (let i = 0; i < data.series.length; i++) {
@@ -220,7 +205,7 @@ export function validateChartData(
     const series = data.series[i]!
     if (!series.color) {
       series.color = getColorIdAtIndex(i, options)
-    } else if (!isColorEnabled(series.color, options)) {
+    } else if (!isColorIdValid(series.color, options)) {
       return {
         error: `Invalid color ID "${series.color}" on series "${series.name}". Available colors: ${availableIds.join(', ')}`,
       }
@@ -240,7 +225,7 @@ export function validateChartData(
     } else {
       for (let i = 0; i < data.categoryColors.length; i++) {
         const id = data.categoryColors[i]!
-        if (!isColorEnabled(id, options)) {
+        if (!isColorIdValid(id, options)) {
           return {
             error: `Invalid categoryColor ID "${id}" at index ${i}. Available colors: ${availableIds.join(', ')}`,
           }

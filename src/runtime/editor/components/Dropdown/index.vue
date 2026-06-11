@@ -34,6 +34,7 @@ import {
   onMounted,
   onBeforeUnmount,
   useTemplateRef,
+  inject,
 } from '#imports'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
@@ -45,6 +46,7 @@ import {
   shift,
   type Placement,
 } from '@floating-ui/dom'
+import { INJECT_POPUP_HOST } from '#blokkli/editor/helpers/injections'
 
 type DropdownPosition = 'bottom-left' | 'top-left' | 'top-right'
 
@@ -53,19 +55,15 @@ const props = withDefaults(
     position?: DropdownPosition
     disabled?: boolean
     buttonClass?: string
-    /**
-     * When set, the menu content is teleported to this target and positioned
-     * via `@floating-ui/dom` (viewport-relative). Use this when the dropdown
-     * lives inside an `overflow: hidden`/`overflow: auto` container that
-     * would clip the absolute-positioned default.
-     */
-    teleport?: HTMLElement | string | null
   }>(),
   {
     position: 'bottom-left',
     disabled: false,
   },
 )
+
+const popupHostRef = inject(INJECT_POPUP_HOST, null)
+const teleport = computed(() => popupHostRef?.value ?? null)
 
 const container = useTemplateRef('container')
 const contentEl = useTemplateRef<HTMLElement>('contentEl')
@@ -141,7 +139,7 @@ function close() {
 watch(showMenu, (open) => {
   if (open) {
     nextTick(() => {
-      if (props.teleport) {
+      if (teleport.value) {
         const triggerEl = getTriggerEl()
         const floatingEl = contentEl.value
         if (triggerEl && floatingEl) {

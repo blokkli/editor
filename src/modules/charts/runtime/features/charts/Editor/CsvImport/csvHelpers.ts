@@ -1,4 +1,4 @@
-import type { ColorOption } from '#blokkli/editor/types/config'
+import type { ColorOption } from '#blokkli/types/colors'
 import type { ChartSeries } from '../../../../types'
 import { getColorIdAtIndex, parseNumericInput } from '../../../../helpers'
 

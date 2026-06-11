@@ -5,7 +5,7 @@ import type {
   ChartTranslation,
   ChartType,
 } from '../../../types'
-import type { ColorOption } from '#blokkli/editor/types/config'
+import type { ColorOption } from '#blokkli/types/colors'
 import { getColorIdAtIndex } from '../../../helpers'
 import { nextCategoryValue } from '../../../helpers/nextCategoryValue'
 import { getDefaultTypeOptions } from '../../../chart-types'

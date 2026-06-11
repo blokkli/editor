@@ -1,10 +1,8 @@
 .bk {
-  .bk-chart-data-table-input,
-  .bk-chart-color-dropdown-button {
-    @apply focus:outline-2 focus:-outline-offset-2 focus:outline-accent-600 focus:border-0 focus:ring-0;
-  }
-
   .bk-chart-data-table {
+    .bk-chart-data-table-input {
+      @apply focus:outline-2 focus:-outline-offset-2 focus:outline-accent-600 focus:border-0 focus:ring-0;
+    }
     thead {
       th {
         @apply p-0 h-40 border-t-0;

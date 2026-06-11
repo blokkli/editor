@@ -5,44 +5,56 @@
  * of colors available to charts. Each site can then override entries at
  * runtime via `app.config` (this plugin, or a static `app.config.ts`):
  *
- *  - `null`  → disable the color entirely. For ramped colors, this hides the
- *              entire color and all its shades from the editor's
- *              ColorDropdown and from agent tool validation.
- *  - `string` → hex override for the canonical/base swatch. For ramped colors
- *              this replaces the `mainShade` hex while keeping all other
- *              declared shades intact.
- *  - (omit) → fall back to the build-time value.
+ *  - `<id>: null`           → disable the color entirely. For ramped colors,
+ *                             this hides the whole family.
+ *  - `<id>: '#hex'`         → flat color: replace the hex. Ramped color:
+ *                             replace just the main/canonical shade's hex.
+ *  - `<id>.<shade>: '#hex'` → ramped color only: replace just that shade's
+ *                             hex. The rest of the ramp is untouched.
+ *  - `<id>.<shade>: null`   → ramped color only: remove just that shade. If
+ *                             the main shade is removed (or every shade is
+ *                             removed), the family is disabled.
+ *  - (omit)                 → fall back to the build-time value.
  *
- * The cases below match what we implemented:
- *   - purple: disabled
- *   - green:  hex overridden (slightly brighter)
- *   - everything else: untouched
+ * Composition: `<id>: null` always wins; shade overrides are ignored when
+ * the family is off. A more-specific `<id>.<mainShade>: '#hex'` beats a bare
+ * `<id>: '#hex'` for the main shade.
+ *
+ * Examples below mix several cases at once.
  */
 export default defineNuxtPlugin(() => {
-  // Nuxt infers the appConfig type from the `inlineConfig` JSON literal in
-  // `.nuxt/types/app.config.d.ts`, which captures the build-time hex strings
-  // verbatim — there's no `null` in that literal, so the inferred map type is
-  // `Record<string, string>`. The actual runtime contract (set by the module
-  // at `src/module.ts`) is `Record<string, string | null>`. Cast to the
-  // runtime contract here.
+  // Nuxt infers the appConfig type from the seeded JSON literal in
+  // `.nuxt/types/app.config.d.ts`, which doesn't include `null`. The runtime
+  // contract (set by the module at `src/module.ts`) is
+  // `Record<string, string | null>`. Cast to match.
   updateAppConfig({
     blokkli: {
       colorOptions: {
-        // Disable a flat color entirely — disappears from ColorDropdown.
-        purple: null,
+        // Flat color, disabled — disappears from the ColorDropdown.
+        purple: undefined,
 
-        // Hex override for a flat color — base swatch shifts to this hex.
+        // Flat color, hex overridden.
         green: '#22c55e',
+
+        // Ramped color, override a single non-main shade.
+        'red.300': '#fed7d7',
+
+        // Ramped color, remove a single non-main shade — the ramp shrinks
+        // but the family stays.
+        'red.700': undefined,
 
         // Flip these to test more cases:
         //
-        // Disable a ramped color → all its shades disappear with it:
+        // Disable a whole ramped color (wins over shade overrides):
         // red: null,
         //
-        // Override the base hex of a ramped color → mainShade swatch shifts,
-        // other declared shades keep their declared hexes:
-        // red: '#7f0000',
-      } as Record<string, string | null>,
+        // Override the canonical (main) shade of a ramped color — equivalent
+        // to bare `red: '#hex'`, but more specific:
+        // 'red.500': '#7f0000',
+        //
+        // Remove the main shade → family is disabled:
+        // 'red.500': null,
+      },
     },
   })
 })

@@ -1,114 +1,74 @@
 import { computed, useAppConfig, type ComputedRef } from '#imports'
-import type { ColorOption, ColorShade } from '../types/config'
+import type { ColorOption, ColorShade } from '#blokkli/types/colors'
 import { colorOptions as moduleColorOptions } from '#blokkli-build/editor-config'
+import {
+  canonicalColorId,
+  findColorOption,
+  isColorIdValid,
+} from '#blokkli/helpers/colors'
+import { useBlokkliRuntimeConfig } from '../../composables/useBlokkliRuntimeConfig'
 
 export type ConfigProvider = {
   colorOptions: ComputedRef<ColorOption[]>
   getColorOption: (id: string) => ColorOption | undefined
   getColorHex: (id: string) => string
-  getShadeHex: (id: string) => string | undefined
   isColorEnabled: (id: string) => boolean
-}
-
-const FALLBACK_HEX = '#888888'
-
-function parseId(id: string): { baseId: string; shadeId: string | undefined } {
-  const dotIndex = id.indexOf('.')
-  if (dotIndex === -1) {
-    return { baseId: id, shadeId: undefined }
-  }
-  return {
-    baseId: id.slice(0, dotIndex),
-    shadeId: id.slice(dotIndex + 1),
-  }
+  canonicalColorId: (option: ColorOption) => string
 }
 
 export default function (): ConfigProvider {
   const appConfig = useAppConfig()
+  const { resolveColorHex } = useBlokkliRuntimeConfig()
 
+  /**
+   * The editor's structured view of available colors — same flat hex source
+   * as the runtime (`appConfig.blokkli.colorOptions`), enriched with build-
+   * time metadata (labels, shade structure, main flag) for the dropdown
+   * UI. Disable rules:
+   *   - bare `<id>: null` → family skipped entirely.
+   *   - `<id>.<shade>: null` → that shade dropped from the ramp. If all
+   *     shades end up dropped, the family is skipped.
+   */
   const colorOptions = computed<ColorOption[]>(() => {
     const overrides = (appConfig.blokkli?.colorOptions ?? {}) as Record<
       string,
       string | null | undefined
     >
-
     const result: ColorOption[] = []
-
     for (const [id, entry] of Object.entries(moduleColorOptions)) {
-      const override = overrides[id]
-      if (override === null) {
-        continue
-      }
+      if (overrides[id] === null) continue
 
       if ('shades' in entry) {
-        const overrideHex = typeof override === 'string' ? override : undefined
-        const baseHex = overrideHex ?? entry.shades[entry.mainShade]!
-        const shades: ColorShade[] = Object.entries(entry.shades).map(
-          ([shadeId, shadeHex]) => ({
+        const shades: ColorShade[] = []
+        for (const [shadeId, declaredHex] of Object.entries(entry.shades)) {
+          const value = overrides[`${id}.${shadeId}`]
+          if (value === null) continue
+          shades.push({
             id: shadeId,
-            hex: shadeId === entry.mainShade ? baseHex : shadeHex,
+            hex: typeof value === 'string' ? value : declaredHex,
             isMain: shadeId === entry.mainShade,
-          }),
-        )
+          })
+        }
+        if (shades.length === 0) continue
+        const main = shades.find((s) => s.isMain) ?? shades[0]!
+        result.push({ id, hex: main.hex, label: entry.label, shades })
+      } else {
+        const value = overrides[id]
         result.push({
           id,
-          hex: baseHex,
+          hex: typeof value === 'string' ? value : entry.hex,
           label: entry.label,
-          shades,
         })
-      } else {
-        const baseHex = typeof override === 'string' ? override : entry.hex
-        result.push({ id, hex: baseHex, label: entry.label })
       }
     }
-
     return result
   })
 
-  function getColorOption(id: string): ColorOption | undefined {
-    const { baseId } = parseId(id)
-    return colorOptions.value.find((c) => c.id === baseId)
-  }
-
-  function getColorHex(id: string): string {
-    const { baseId, shadeId } = parseId(id)
-    const option = colorOptions.value.find((c) => c.id === baseId)
-    if (!option) {
-      return FALLBACK_HEX
-    }
-    if (shadeId === undefined) {
-      return option.hex
-    }
-    const shade = option.shades?.find((s) => s.id === shadeId)
-    return shade?.hex ?? option.hex
-  }
-
-  function getShadeHex(id: string): string | undefined {
-    const { baseId, shadeId } = parseId(id)
-    if (shadeId === undefined) {
-      return undefined
-    }
-    const option = colorOptions.value.find((c) => c.id === baseId)
-    return option?.shades?.find((s) => s.id === shadeId)?.hex
-  }
-
-  function isColorEnabled(id: string): boolean {
-    const { baseId, shadeId } = parseId(id)
-    const option = colorOptions.value.find((c) => c.id === baseId)
-    if (!option) {
-      return false
-    }
-    if (shadeId === undefined) {
-      return true
-    }
-    return option.shades?.some((s) => s.id === shadeId) === true
-  }
-
   return {
     colorOptions,
-    getColorOption,
-    getColorHex,
-    getShadeHex,
-    isColorEnabled,
+    getColorOption: (id) => findColorOption(id, colorOptions.value),
+    getColorHex: resolveColorHex,
+    isColorEnabled: (id) => isColorIdValid(id, colorOptions.value),
+    canonicalColorId,
   }
 }

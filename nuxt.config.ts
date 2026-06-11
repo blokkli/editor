@@ -5,6 +5,7 @@ import tableOfContents from './src/modules/table-of-contents'
 import charts from './src/modules/charts'
 import iframes from './src/modules/iframes'
 import readability from './src/modules/readability'
+import { colorOptions } from './playground/.config/blokkli'
 
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
@@ -131,6 +132,7 @@ fragment blokkliParagraphsType on ParagraphsType {
         '../src/modules/agent/module.ts',
         '../src/modules/table-of-contents/module.ts',
         '../src/modules/agent/build/**/*',
+        '../playground/.config/blokkli.ts',
       ],
       exclude: [
         '../src/runtime/**/*',
@@ -169,5 +171,6 @@ fragment blokkliParagraphsType on ParagraphsType {
       }),
       readability(),
     ],
+    colorOptions,
   },
 })

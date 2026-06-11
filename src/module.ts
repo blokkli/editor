@@ -77,17 +77,35 @@ export default defineNuxtModule<ModuleOptions>({
       moduleOptions,
     )
 
-    const colorOptions = Object.entries(
+    // Seed every canonical color id into appConfig:
+    //   - Flat color:   `<id>` with its hex.
+    //   - Ramped color: bare `<id>` AND `<id>.<shade>` for each declared
+    //                   shade, all with their build-time hexes. The bare
+    //                   `<id>` is kept so userland can write
+    //                   `<id>: null` for a family-level disable — the
+    //                   runtime composable (and editor) treat a null on
+    //                   the bare id as "every shade off".
+    //
+    // The ordered list of canonical default ids (one per family) is NOT
+    // here — it's static build-time data, not userland-overridable, so it
+    // lives in the generated `#blokkli-build/config` template as
+    // `colorPalette`. Runtime consumers import from there directly.
+    const colorOptions: Record<string, string | undefined> = {}
+    for (const [id, option] of Object.entries(
       helper.options.colorOptions || {},
-    ).reduce<Record<string, string | null>>((acc, entry) => {
-      const option = entry[1]
-      acc[entry[0]] =
-        'shades' in option ? option.shades[option.mainShade]! : option.hex
-      return acc
-    }, {})
+    )) {
+      if ('shades' in option) {
+        colorOptions[id] = option.shades[option.mainShade]!
+        for (const [shadeId, hex] of Object.entries(option.shades)) {
+          colorOptions[`${id}.${shadeId}`] = hex
+        }
+      } else {
+        colorOptions[id] = option.hex
+      }
+    }
 
     nuxt.options.appConfig.blokkli = {
-      // @ts-expect-error The module config type defined a generic Record type, but in userland, this type will automatically contain the actual color keys as properties.
+      // @ts-expect-error generic type vs runtime derived type.
       colorOptions,
     }
 
@@ -199,6 +217,7 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('defineBlokkliProvider')
     helper.addComposable('useBlokkli')
     helper.addComposable('useBlokkliHelper')
+    helper.addComposable('useBlokkliRuntimeConfig')
 
     helper.addAlias(
       '#blokkli/analyzer',

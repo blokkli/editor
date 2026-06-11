@@ -219,3 +219,9 @@
     }
   }
 }
+
+@layer utilities {
+  .content-empty {
+    content: '';
+  }
+}

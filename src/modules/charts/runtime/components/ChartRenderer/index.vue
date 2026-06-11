@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, useAppConfig } from '#imports'
+import { computed, inject, ref, useBlokkliRuntimeConfig } from '#imports'
 import type {
   BlokkliChartData,
   ChartDataSourcePayload,
@@ -40,7 +40,6 @@ import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
 import { chartTypeComponents } from '#blokkli-build/charts-components'
-import { colorOptions as buildColorOptions } from '#blokkli-build/editor-config'
 import {
   INJECT_IS_EDITING,
   INJECT_PROVIDER_CONTEXT,
@@ -69,7 +68,7 @@ const props = defineProps<
 
 const isEditing = inject(INJECT_IS_EDITING, false)
 
-const appConfig = useAppConfig()
+const { resolveColorHex, colorPalette } = useBlokkliRuntimeConfig()
 
 const providerEntity = inject(INJECT_PROVIDER_CONTEXT, null)
 
@@ -81,26 +80,6 @@ const previewDynamicData = inject(INJECT_CHART_PREVIEW_DYNAMIC_DATA, null)
 const currentLanguage = computed(
   () => props.languageOverride ?? providerEntity?.value.language ?? '',
 )
-
-const colorPalette = computed(() => {
-  const overrides = (appConfig.blokkli?.colorOptions ?? {}) as Record<
-    string,
-    string | null | undefined
-  >
-  const result: { id: string; hex: string }[] = []
-  for (const [id, entry] of Object.entries(buildColorOptions)) {
-    const override = overrides[id]
-    if (override === null) continue
-    const baseHex =
-      typeof override === 'string'
-        ? override
-        : 'shades' in entry
-          ? entry.shades[entry.mainShade]!
-          : entry.hex
-    result.push({ id, hex: baseHex })
-  }
-  return result
-})
 
 const hasDynamicSource = computed(() => !!props.dataSource)
 
@@ -122,7 +101,7 @@ const effectiveData = computed<{
     const overrides = props.dataSource?.seriesOverrides ?? {}
     const categoryOverrides = props.dataSource?.categoryColorOverrides ?? {}
     const palette = colorPalette.value
-    const fallback = palette[0]?.id ?? ''
+    const fallback = palette[0] ?? ''
     const visibleSeries = payload.series.filter(
       (s) => overrides[s.name]?.hidden !== true,
     )
@@ -130,14 +109,14 @@ const effectiveData = computed<{
       name: s.name,
       color:
         overrides[s.name]?.color ??
-        palette[i % Math.max(palette.length, 1)]?.id ??
+        palette[i % Math.max(palette.length, 1)] ??
         fallback,
       data: s.data,
     }))
     const categoryColors = payload.categories.map((label, i) => {
       return (
         categoryOverrides[label] ??
-        palette[i % Math.max(palette.length, 1)]?.id ??
+        palette[i % Math.max(palette.length, 1)] ??
         fallback
       )
     })
@@ -221,38 +200,6 @@ function superscriptFor(n: number): string {
     .join('')
 }
 
-function resolveHex(id: string): string {
-  const overrides = (appConfig.blokkli?.colorOptions ?? {}) as Record<
-    string,
-    string | null | undefined
-  >
-  const dotIndex = id.indexOf('.')
-  const baseId = dotIndex === -1 ? id : id.slice(0, dotIndex)
-  const shadeId = dotIndex === -1 ? undefined : id.slice(dotIndex + 1)
-
-  if (overrides[baseId] === null) return '#888888'
-
-  const entry = (buildColorOptions as Record<string, unknown>)[baseId]
-  if (!entry || typeof entry !== 'object') return '#888888'
-
-  const typed = entry as
-    | { hex: string; label: string }
-    | { shades: Record<string, string>; mainShade: string; label: string }
-
-  if ('shades' in typed) {
-    if (shadeId !== undefined) {
-      return typed.shades[shadeId] ?? '#888888'
-    }
-    const override = overrides[baseId]
-    return typeof override === 'string'
-      ? override
-      : (typed.shades[typed.mainShade] ?? '#888888')
-  }
-
-  const override = overrides[baseId]
-  return typeof override === 'string' ? override : typed.hex
-}
-
 const typeComponent = computed(
   () => chartTypeComponents[props.type as keyof typeof chartTypeComponents],
 )
@@ -267,8 +214,8 @@ const renderProps = computed<ChartTypeRenderProps | null>(() => {
       name: applyFootnotes(s.name),
       data: s.data,
     })),
-    seriesHexColors: data.series.map((s) => resolveHex(s.color)),
-    categoryHexColors: data.categoryColors.map(resolveHex),
+    seriesHexColors: data.series.map((s) => resolveColorHex(s.color)),
+    categoryHexColors: data.categoryColors.map(resolveColorHex),
     typeOptions: (props.typeOptions ?? {}) as Record<string, unknown>,
     numberFormat: resolvedNumberFormat.value,
     isEditing,
