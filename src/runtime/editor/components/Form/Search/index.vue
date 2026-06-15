@@ -208,6 +208,7 @@ const props = withDefaults(
     selectedLabel?: string
   }>(),
   {
+    label: undefined,
     description: undefined,
     placeholder: undefined,
     icon: undefined,

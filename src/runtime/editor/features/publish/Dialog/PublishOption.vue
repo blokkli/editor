@@ -34,7 +34,7 @@
     >
       <Icon :name="icon" />
       <div
-        class="absolute -top-[1px] -right-[9px] size-20 rounded-full bg-mono-950 flex items-center justify-center [&_.bk-icon_svg]:size-[13px] [&_.bk-icon_svg]:fill-white"
+        class="absolute top-[-1px] right-[-9px] size-20 rounded-full bg-mono-950 flex items-center justify-center [&_.bk-icon_svg]:size-[13px] [&_.bk-icon_svg]:fill-white"
         :class="isChecked ? 'visible' : 'invisible'"
       >
         <Icon name="bk_mdi_check" />

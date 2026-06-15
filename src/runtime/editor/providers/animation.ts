@@ -83,6 +83,8 @@ export type Renderer<T = RectangleBufferCollector<any>> = {
    *
    * Renderers are checked from highest to lowest zIndex.
    * @param coord - Mouse coordinates in screen and artboard space
+   * @param coord.mouse - Coordinates in screen space
+   * @param coord.mouseArtboard - Coordinates in artboard space
    * @returns True to claim the click and stop propagation, false/undefined to continue
    */
   onClick?: (coord: {

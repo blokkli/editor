@@ -26,7 +26,7 @@ export type DefinitionProvider = {
    * 2. Parent bundle specific (e.g., bundle__parent:accordion)
    * 3. Default bundle definition
    *
-   * @param bundle - The block bundle name
+   * @param bundleOrBlock - The block bundle name, or a rendered field list item
    * @param fieldListType - The field list type context
    * @param parentBundle - Optional parent block bundle for nested blocks
    * @returns The block definition, or undefined if not found

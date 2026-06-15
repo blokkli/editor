@@ -51,7 +51,7 @@
         />
         <div
           v-if="itemBundle?.id === fromLibraryBlockBundle"
-          class="absolute z-50 -top-[7px] -right-[7px] bg-lime-dark size-20 flex items-center justify-center rounded-full border border-lime-normal shadow-lg"
+          class="absolute z-50 top-[-7px] right-[-7px] bg-lime-dark size-20 flex items-center justify-center rounded-full border border-lime-normal shadow-lg"
         >
           <Icon name="reusable" class="size-[12px] fill-lime-light" />
         </div>

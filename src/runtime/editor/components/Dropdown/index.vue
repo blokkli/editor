@@ -59,6 +59,7 @@ const props = withDefaults(
   {
     position: 'bottom-left',
     disabled: false,
+    buttonClass: undefined,
   },
 )
 

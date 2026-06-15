@@ -138,7 +138,6 @@ export type BlokkliNotificationList = {
 }
 
 declare module '#blokkli/editor/adapter' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface BlokkliAdapter<T> {
     /**
      * Load a single page of notifications for the current user (newest first).

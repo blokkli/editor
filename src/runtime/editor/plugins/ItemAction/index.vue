@@ -170,6 +170,7 @@ const props = withDefaults(
   }>(),
   {
     weight: undefined,
+    description: undefined,
     icon: undefined,
     tourText: undefined,
     keyCode: undefined,

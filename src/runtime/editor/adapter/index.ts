@@ -211,8 +211,9 @@ export interface BlokkliAdapter<T> {
  * These methods can be implemented by both the base adapter AND extensions.
  */
 // Intentionally empty: features augment this interface via declaration merging,
-// which requires an interface (a type alias can't be module-augmented).
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-object-type
+// which requires an interface (a type alias can't be module-augmented). The `T`
+// param is unused here but must stay for the augmentations to merge.
+// oxlint-disable-next-line typescript/no-empty-object-type, no-unused-vars
 export interface AdapterExtensionMethods<T> {
   // Features augment this interface to declare extensible methods
 }

@@ -22,7 +22,6 @@ export type CommentItem = {
 }
 
 declare module '#blokkli/editor/adapter' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface BlokkliAdapter<T> {
     /**
      * Load all comments (roots and replies in a flat list).
