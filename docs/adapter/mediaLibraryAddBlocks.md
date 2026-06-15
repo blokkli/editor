@@ -6,8 +6,9 @@ Create multiple new blocks from media library items.
 
 ```typescript
 mediaLibraryAddBlocks?: (e: {
-  host: DraggableHostData
-  preceedingUuid?: string
+  host: BlokkliItemHost
+  preceedingUuid: string | null
+  targetBundle: string
   items: DraggableMediaLibraryItem[]
 }) => Promise<MutationResponseLike<T>> | undefined
 ```
@@ -18,10 +19,22 @@ mediaLibraryAddBlocks?: (e: {
 
 Information about the host field where blocks should be added.
 
+```typescript
+type BlokkliItemHost = {
+  type: string
+  uuid: string
+  fieldName: string
+}
+```
+
 ### preceedingUuid
 
-Optional UUID of the block after which the new blocks should be inserted. If not
-provided, blocks are added at the beginning of the field.
+UUID of the block after which the new blocks should be inserted, or `null` to
+add them at the beginning of the field.
+
+### targetBundle
+
+The block bundle that should be created for the dropped media items.
 
 ### items
 
@@ -31,9 +44,11 @@ An array of media library items to create blocks from.
 type DraggableMediaLibraryItem = {
   itemType: 'media_library'
   element: () => HTMLElement
-  itemBundle: string
+  itemBundles: string[]
   mediaId: string
   mediaBundle: string
+  label: string
+  thumbnailSrc?: string
 }
 ```
 
@@ -51,10 +66,15 @@ batch operations when users select multiple items from the media library.
 ## Example
 
 ```typescript
-mediaLibraryAddBlocks: async ({ host, preceedingUuid, items }) => {
+mediaLibraryAddBlocks: async ({
+  host,
+  preceedingUuid,
+  targetBundle,
+  items,
+}) => {
   const mutations = items.map((item) => ({
     type: 'addBlock',
-    bundle: item.itemBundle,
+    bundle: targetBundle,
     host,
     afterUuid: preceedingUuid,
     mediaId: item.mediaId,

@@ -40,6 +40,14 @@ Unique identifier for this sidebar.
 
 The title displayed in the sidebar header.
 
+### tooltipTitle
+
+- **Type:** `string`
+- **Required:** No
+
+The title used for the toggle button's tooltip. Falls back to `title` when not
+set.
+
 ### icon
 
 - **Type:** `BlokkliIcon`
@@ -49,7 +57,7 @@ The icon displayed in the sidebar toggle button.
 
 ### region
 
-- **Type:** `'left' | 'right'`
+- **Type:** `'left' | 'right' | 'right-bottom'`
 - **Required:** No
 - **Default:** `'right'`
 
@@ -156,6 +164,11 @@ Optional text for the interactive tour.
 
 Emitted when the sidebar is opened, closed, or detached/attached.
 
+### @toggle
+
+Emitted when the toggle button is activated, before the open/closed state
+changes. Useful for reacting to the user's intent to show or hide the sidebar.
+
 ## Slots
 
 ### default
@@ -166,12 +179,20 @@ The sidebar content. Receives several slot props:
 {
   scrolledToEnd: boolean
   isDetached: boolean
+  isShown: boolean
+  shouldRender: boolean
   width: number | undefined
   height: number | undefined
   toggleSidebar: () => void
   isResizing: boolean
 }
 ```
+
+- `isShown` is `true` while the sidebar is currently visible (open or detached
+  and not disabled).
+- `shouldRender` becomes `true` the first time the sidebar is shown and stays
+  `true` afterwards. Use it to keep expensive content mounted once it has been
+  opened.
 
 ### icon
 

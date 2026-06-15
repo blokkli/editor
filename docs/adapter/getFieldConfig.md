@@ -31,7 +31,7 @@ We would then return the following field config in our getFieldConfig() method:
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { FieldConfig } from '#blokkli/types'
+import type { FieldConfig } from '#blokkli/editor/types/definitions'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

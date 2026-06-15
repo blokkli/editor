@@ -117,6 +117,8 @@ toolbar. Click it to open the agent sidebar and start chatting.
 
 ## Next Steps
 
-- [Configuration](/modules/agent/configuration) — all options and environment variables
-- [Adapter Methods](/modules/agent/adapter) — full reference for adapter integration
+- [Configuration](/modules/agent/configuration) — all options and environment
+  variables
+- [Adapter Methods](/modules/agent/adapter) — full reference for adapter
+  integration
 - [Custom Tools](/modules/agent/custom-tools) — add project-specific tools

@@ -65,9 +65,10 @@ export default defineBlokkliModule({
 
 ### Module options
 
-A module declares its own options through the generic type parameter. The factory
-signature adapts automatically: if any option is required, the factory requires
-an argument; if all are optional (or there are none), the argument is optional.
+A module declares its own options through the generic type parameter. The
+factory signature adapts automatically: if any option is required, the factory
+requires an argument; if all are optional (or there are none), the argument is
+optional.
 
 ```typescript
 type MyModuleOptions = {
@@ -93,11 +94,12 @@ The options are passed to `setup` as its second argument.
 
 When the editor builds, it processes every registered module in two passes:
 
-1. **`alterOptions(options)`** — runs first, for all modules, before any `setup`.
-   It receives the shared `ModuleOptions` (the whole `blokkli` config) and may
-   mutate it — for example to append to `featureImports` (register a feature
-   component) or `blokkliDirs` (add a `blokkli/` directory of conventions). Use
-   this only for cross-cutting config that must be in place before setup runs.
+1. **`alterOptions(options)`** — runs first, for all modules, before any
+   `setup`. It receives the shared `ModuleOptions` (the whole `blokkli` config)
+   and may mutate it — for example to append to `featureImports` (register a
+   feature component) or `blokkliDirs` (add a `blokkli/` directory of
+   conventions). Use this only for cross-cutting config that must be in place
+   before setup runs.
 2. **`setup(app, options)`** — runs next, for all modules, to register the
    module's contributions.
 
@@ -117,27 +119,28 @@ export default defineBlokkliModule({
 
 `context` is how a module registers what it contributes:
 
-| Method                                       | Purpose                                                                 |
-| -------------------------------------------- | ----------------------------------------------------------------------- |
-| `addCSS(filePath)`                           | Inject a CSS file into the editor stylesheet (see [Tailwind](/modules/tailwind/#registering-css-with-the-editor)). |
-| `addContentPath(dirPath)`                    | Include a directory of Vue files in the CSS/mangling pipeline so their utility classes are generated. |
-| `addIcon(...names)`                          | Register additional [icons](/define-blokkli/icons) to include in the build. |
-| `registerComplexOptionType(def)`             | Register a custom block option backed by a custom editor UI — see [Complex Option Types](/modules/authoring/complex-option-types). |
-| `registerAdapterExtension(namespace, path)`  | Register an [adapter extension](/adapter/overview) (analyzers, readability, …). |
-| `addCollector(collector)`                    | Add a build-time collector that introspects project files.              |
-| `addTemplate(template)`                      | Generate a runtime template/file.                                       |
-| `addFeatureFragment(name)`                   | Register a feature fragment name.                                       |
+| Method                                      | Purpose                                                                                                                            |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `addCSS(filePath)`                          | Inject a CSS file into the editor stylesheet (see [Tailwind](/modules/tailwind/#registering-css-with-the-editor)).                 |
+| `addContentPath(dirPath)`                   | Include a directory of Vue files in the CSS/mangling pipeline so their utility classes are generated.                              |
+| `addIcon(...names)`                         | Register additional [icons](/define-blokkli/icons) to include in the build.                                                        |
+| `registerComplexOptionType(def)`            | Register a custom block option backed by a custom editor UI — see [Complex Option Types](/modules/authoring/complex-option-types). |
+| `registerAdapterExtension(namespace, path)` | Register an [adapter extension](/adapter/overview) (analyzers, readability, …).                                                    |
+| `addCollector(collector)`                   | Add a build-time collector that introspects project files.                                                                         |
+| `addTemplate(template)`                     | Generate a runtime template/file.                                                                                                  |
+| `addFeatureFragment(name)`                  | Register a feature fragment name.                                                                                                  |
 
 ## The `helper` object
 
-`helper` exposes lower-level Nuxt wiring. The members you are most likely to use:
+`helper` exposes lower-level Nuxt wiring. The members you are most likely to
+use:
 
-| Member                          | Purpose                                                            |
-| ------------------------------- | ----------------------------------------------------------------- |
-| `addAlias(name, path)`          | Register a TypeScript path alias (e.g. `#my-module/types`).        |
-| `addComponent(name)`            | Register a global Vue component.                                   |
-| `addComposable(name)`           | Register an auto-imported composable.                              |
-| `addPackageDependency(...names)`| Pre-bundle npm packages — only when the module is enabled.         |
+| Member                                     | Purpose                                                                             |
+| ------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `addAlias(name, path)`                     | Register a TypeScript path alias (e.g. `#my-module/types`).                         |
+| `addComponent(name)`                       | Register a global Vue component.                                                    |
+| `addComposable(name)`                      | Register an auto-imported composable.                                               |
+| `addPackageDependency(...names)`           | Pre-bundle npm packages — only when the module is enabled.                          |
 | `nuxt` / `options` / `paths` / `resolvers` | Access to the Nuxt instance, the resolved options, build paths, and path resolvers. |
 
 ## What a module can contribute

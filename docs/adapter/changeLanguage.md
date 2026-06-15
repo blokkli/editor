@@ -11,7 +11,7 @@ different language via the language selector in the editor.
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { EntityTranslation } from '#blokkli/types'
+import type { EntityTranslation } from '#blokkli/editor/types/state'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
@@ -31,7 +31,7 @@ export default defineBlokkliEditAdapter((ctx) => {
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { EntityTranslation } from '#blokkli/types'
+import type { EntityTranslation } from '#blokkli/editor/types/state'
 
 export default defineBlokkliEditAdapter((ctx) => {
   const language = useCurrentLanguage()

@@ -48,17 +48,18 @@ page.
 
 The agent is designed to be customized for your project:
 
-- [**Custom Tools**](/modules/agent/custom-tools) — add project-specific query and
-  mutation tools
-- [**Custom Skills**](/modules/agent/custom-skills) — provide domain knowledge the LLM
-  can load on demand
-- [**Custom Prompts**](/modules/agent/custom-prompts) — add quick-action suggestions and
-  system prompt sections
+- [**Custom Tools**](/modules/agent/custom-tools) — add project-specific query
+  and mutation tools
+- [**Custom Skills**](/modules/agent/custom-skills) — provide domain knowledge
+  the LLM can load on demand
+- [**Custom Prompts**](/modules/agent/custom-prompts) — add quick-action
+  suggestions and system prompt sections
 
 ## Next Steps
 
-- [Quick Start](/modules/agent/quick-start) — get the agent running in your project
-- [Configuration](/modules/agent/configuration) — all module options and environment
-  variables
-- [Architecture](/modules/agent/architecture) — WebSocket protocol, plans, caching, and
-  built-in tools
+- [Quick Start](/modules/agent/quick-start) — get the agent running in your
+  project
+- [Configuration](/modules/agent/configuration) — all module options and
+  environment variables
+- [Architecture](/modules/agent/architecture) — WebSocket protocol, plans,
+  caching, and built-in tools

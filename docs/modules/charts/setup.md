@@ -144,7 +144,7 @@ and [Data Sources](/modules/charts/data-sources) pages.
 ## Module options
 
 | Option                 | Type     | Description                                                              |
-| ---------------------- | -------- | ----------------------------------------------------------------------- |
+| ---------------------- | -------- | ------------------------------------------------------------------------ |
 | `chartRenderComponent` | `string` | Path to a custom component used to render charts. _Not yet implemented._ |
 
 ## Aliases

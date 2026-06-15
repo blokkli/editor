@@ -87,9 +87,8 @@ running and will automatically reload. Same for styles, no need to build styles.
 
 **Do NOT verify changes in the browser (Playwright) unless explicitly asked.**
 For UI/editor changes, running the targeted typechecks and the formatter
-(`bun run format`, which runs oxfmt) is enough by
-default - only reach for the browser when the user asks you to test/verify it
-there.
+(`bun run format`, which runs oxfmt) is enough by default - only reach for the
+browser when the user asks you to test/verify it there.
 
 ### Building & Packaging
 

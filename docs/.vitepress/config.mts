@@ -341,6 +341,21 @@ export default defineConfig({
             { text: 'BlokkliProvider', link: '/components/BlokkliProvider' },
             { text: 'BlokkliField', link: '/components/BlokkliField' },
             { text: 'BlokkliEditable', link: '/components/BlokkliEditable' },
+            { text: 'BlokkliItem', link: '/components/BlokkliItem' },
+          ],
+        },
+        {
+          text: 'Composables',
+          items: [
+            { text: 'useBlokkli', link: '/composables/useBlokkli' },
+            {
+              text: 'useBlokkliRuntimeConfig',
+              link: '/composables/useBlokkliRuntimeConfig',
+            },
+            {
+              text: 'defineBlokkliFeature',
+              link: '/composables/defineBlokkliFeature',
+            },
           ],
         },
         {

@@ -88,6 +88,11 @@ export default defineNuxtConfig({
         normal: [250, 189, 47],
         dark: [144, 106, 20],
       },
+      orange: {
+        light: [254, 243, 198],
+        normal: [254, 154, 0],
+        dark: [70, 25, 1],
+      },
       red: {
         light: [255, 218, 214],
         normal: [251, 73, 52],

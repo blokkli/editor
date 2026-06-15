@@ -1,322 +1,178 @@
-# PluginViewOption
+# View Option
 
-Creates a toggle button in the view options area. Used for options that change
-the visual display or behavior of the editor without modifying content.
+Registers a toggleable view option in the editor. View options change how the
+editor displays content - like a layout grid, wireframe mode, or change
+highlighting - without modifying the content itself.
+
+A view option is registered with the `defineViewOption` composable. It returns a
+reactive `isVisible` flag you use to conditionally render your overlay. The
+on/off state is persisted to local storage and the toggle automatically appears
+in the editor's view options area.
 
 ## Usage
 
 ```vue
 <template>
-  <PluginViewOption
-    id="grid"
-    v-slot="{ isActive }"
-    label="Toggle grid"
-    title-on="Show grid"
-    title-off="Hide grid"
-    icon="grid"
-    key-code="G"
-  >
-    <div v-if="isActive" class="grid-overlay" />
-  </PluginViewOption>
+  <div v-if="isVisible" class="grid-overlay" />
 </template>
 
 <script setup lang="ts">
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { defineViewOption } from '#blokkli/editor/composables'
+
+const { isVisible } = defineViewOption({
+  id: 'grid',
+  label: 'Grid',
+  description: 'Shows a layout grid overlay on top of the page.',
+  icon: 'bk_mdi_grid_view',
+  keyCode: 'G',
+})
 </script>
 ```
 
-## Props
+## Config
+
+The composable takes a single config object of type `ViewOption`.
 
 ### id
 
 - **Type:** `string`
 - **Required:** Yes
 
-Unique identifier for this view option. Used for storage key and event tracking.
+Unique identifier for this view option. Used as the local storage key for the
+persisted on/off state.
 
 ### label
 
 - **Type:** `string`
 - **Required:** Yes
 
-The label used in commands and tour.
+The label shown for the option in the view options menu and used in commands.
 
-### titleOn
-
-- **Type:** `string`
-- **Required:** Yes
-
-The tooltip text when the option is OFF. Should describe what happens when
-turned on (e.g., `'Show grid'`).
-
-### titleOff
+### description
 
 - **Type:** `string`
 - **Required:** Yes
 
-The tooltip text when the option is ON. Should describe what happens when turned
-off (e.g., `'Hide grid'`).
+A short description of what the option does.
 
 ### icon
 
 - **Type:** `BlokkliIcon`
-- **Required:** No
+- **Required:** Yes
 
-The icon displayed in the button.
+The icon displayed for the toggle.
 
 ### keyCode
 
 - **Type:** `string`
 - **Required:** No
 
-The key code for the keyboard shortcut. Automatically includes Meta modifier
-(e.g., `'g'` for Cmd+G / Ctrl+G).
-
-### editOnly
-
-- **Type:** `boolean`
-- **Required:** No
-
-Whether the view option is only available in edit mode.
-
-### weight
-
-- **Type:** `number | string`
-- **Required:** No
-- **Default:** `0`
-
-The weight, used for positioning the button. Lower weights appear first.
-
-### modelValue
-
-- **Type:** `boolean`
-- **Required:** No
-
-Two-way binding for the active state. Can be used with `v-model`.
+The key code for the keyboard shortcut (e.g. `'G'`).
 
 ### tourText
 
 - **Type:** `string`
 - **Required:** No
 
-Optional text for the interactive tour.
+Optional text for the interactive tour. If provided, the option is included in
+the editor tour.
 
-## Slots
+### weight
 
-### default
+- **Type:** `number`
+- **Required:** No
 
-The slot receives the current active state:
+The weight, used for positioning the option. Lower weights appear first.
+
+## Return Value
 
 ```typescript
 {
-  isActive: boolean
+  isVisible: ComputedRef<boolean>
 }
 ```
 
-### icon
+### isVisible
 
-Custom icon slot (overrides the `icon` prop).
-
-## Events
-
-### @update:modelValue
-
-Emitted when the active state changes.
-
-```typescript
-(isActive: boolean) => void
-```
+A computed boolean that is `true` when the option is toggled on. It also
+accounts for viewport - view options are only available on desktop, so
+`isVisible` is always `false` on mobile. Use it to conditionally render your
+overlay.
 
 ## Real-World Examples
 
 ### Grid Overlay
 
+A grid overlay loaded from the adapter, toggled via a view option:
+
 ```vue
 <template>
-  <PluginViewOption
-    id="grid"
-    v-slot="{ isActive }"
-    :label="$t('gridToggle', 'Toggle grid')"
-    :title-on="$t('gridShow', 'Show grid')"
-    :title-off="$t('gridHide', 'Hide grid')"
-    :tour-text="
-      $t('gridTourText', 'Display a layout grid overlay on top of the page.')
-    "
-    key-code="G"
-    icon="grid"
-  >
-    <div v-if="isActive" class="bk-grid-overlay" v-html="gridMarkup" />
-  </PluginViewOption>
+  <div v-if="isVisible" class="bk-grid-overlay" v-html="gridMarkup" />
 </template>
 
 <script setup lang="ts">
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { useBlokkli, defineBlokkliFeature } from '#imports'
+import { defineViewOption } from '#blokkli/editor/composables'
 
-const gridMarkup = await adapter.getGridMarkup()
+const { adapter } = defineBlokkliFeature({
+  id: 'grid',
+  label: 'Grid',
+  icon: 'bk_mdi_grid_view',
+  requiredAdapterMethods: ['getGridMarkup'],
+  description: 'Provides a view option to render a grid.',
+  viewports: ['desktop'],
+})
+
+const gridMarkup = await Promise.resolve(adapter.getGridMarkup())
+
+const { $t } = useBlokkli()
+
+const { isVisible } = defineViewOption({
+  id: 'grid',
+  label: $t('viewOptionGrid', 'Grid'),
+  description: $t(
+    'viewOptionGridDescription',
+    'Shows a layout grid overlay on top of the page.',
+  ),
+  tourText: $t(
+    'gridTourText',
+    'Display a layout grid overlay on top of the page.',
+  ),
+  keyCode: 'G',
+  icon: 'bk_mdi_grid_view',
+})
 </script>
 ```
 
-### Dark Mode Toggle
+### Reacting to State Changes
+
+Use `watch` on `isVisible` to run side effects when the option is toggled:
 
 ```vue
-<template>
-  <PluginViewOption
-    id="dark_mode"
-    v-model="isDarkMode"
-    label="Dark mode"
-    title-on="Enable dark mode"
-    title-off="Disable dark mode"
-    icon="dark_mode"
-    key-code="D"
-    @update:model-value="onToggle"
-  />
-</template>
-
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { PluginViewOption } from '#blokkli/editor/plugins'
+import { watch } from 'vue'
+import { defineViewOption } from '#blokkli/editor/composables'
 
-const isDarkMode = ref(false)
+const { isVisible } = defineViewOption({
+  id: 'dark_mode',
+  label: 'Dark mode',
+  description: 'Preview the page with a dark color scheme.',
+  icon: 'bk_mdi_dark_mode',
+})
 
-watch(isDarkMode, (value) => {
+watch(isVisible, (value) => {
   document.documentElement.classList.toggle('dark-mode', value)
 })
-
-function onToggle(isActive: boolean) {
-  console.log('Dark mode:', isActive)
-}
-</script>
-```
-
-### Highlight Changes
-
-```vue
-<template>
-  <PluginViewOption
-    id="highlight_changes"
-    v-slot="{ isActive }"
-    label="Highlight changes"
-    title-on="Highlight changed blocks"
-    title-off="Hide change highlights"
-    icon="highlight"
-    edit-only
-  >
-    <style v-if="isActive">
-      .bk-is-changed {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-      }
-    </style>
-  </PluginViewOption>
-</template>
-```
-
-### Accessibility Checker
-
-```vue
-<template>
-  <PluginViewOption
-    id="a11y_check"
-    v-slot="{ isActive }"
-    label="Accessibility check"
-    title-on="Run accessibility check"
-    title-off="Hide accessibility issues"
-    icon="accessibility"
-    key-code="A"
-  >
-    <AccessibilityOverlay v-if="isActive" :issues="a11yIssues" />
-  </PluginViewOption>
-</template>
-
-<script setup lang="ts">
-import { ref, watch } from 'vue'
-
-const isActive = ref(false)
-const a11yIssues = ref([])
-
-watch(isActive, async (value) => {
-  if (value) {
-    a11yIssues.value = await runAccessibilityCheck()
-  }
-})
-</script>
-```
-
-### Wireframe Mode
-
-```vue
-<template>
-  <PluginViewOption
-    id="wireframe"
-    v-slot="{ isActive }"
-    label="Wireframe mode"
-    title-on="Show wireframe view"
-    title-off="Hide wireframe view"
-    icon="wireframe"
-    :weight="-10"
-  >
-    <Teleport v-if="isActive" to="head">
-      <style>
-        * {
-          color: #000 !important;
-          background: #fff !important;
-          border-color: #000 !important;
-        }
-        img {
-          opacity: 0.1;
-        }
-      </style>
-    </Teleport>
-  </PluginViewOption>
-</template>
-```
-
-### Responsive Preview (with Custom Icon)
-
-```vue
-<template>
-  <PluginViewOption
-    id="responsive"
-    v-slot="{ isActive }"
-    v-model="isResponsiveMode"
-    label="Responsive preview"
-    title-on="Show responsive preview"
-    title-off="Hide responsive preview"
-    key-code="R"
-  >
-    <template #icon>
-      <Icon :name="currentDevice.icon" />
-    </template>
-
-    <ResponsiveFrame v-if="isActive" :device="currentDevice" />
-  </PluginViewOption>
-</template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-
-const isResponsiveMode = ref(false)
-const deviceIndex = ref(0)
-
-const devices = [
-  { name: 'Mobile', icon: 'phone', width: 375 },
-  { name: 'Tablet', icon: 'tablet', width: 768 },
-  { name: 'Desktop', icon: 'desktop', width: 1440 },
-]
-
-const currentDevice = computed(() => devices[deviceIndex.value]!)
 </script>
 ```
 
 ## Notes
 
-- View options appear in the toolbar's view options region
-- State is automatically saved to local storage and persists across sessions
-- Only visible on desktop (hidden on mobile)
-- The button shows inactive state when off, active state when on
-- Keyboard shortcuts automatically use the Meta modifier (Cmd/Ctrl)
-- Use `v-slot="{ isActive }"` to conditionally render content
-- Use `v-model` for two-way binding of the active state
-- Multiple view options can be active simultaneously
-- Changes to view options don't create undo/redo history entries
-- View options don't modify content - only affect the visual display
+- The toggle appears in the editor's view options area.
+- The on/off state is automatically persisted to local storage and survives page
+  reloads.
+- View options are only available on desktop - `isVisible` is always `false` on
+  mobile.
+- Multiple view options can be active at the same time.
+- Toggling a view option does not create undo/redo history entries; it only
+  affects the visual display, never the content.

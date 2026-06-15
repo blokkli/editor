@@ -159,7 +159,8 @@ schema at build time. If a feature is missing:
 3. Clear Drupal caches (`drush cr`)
 4. Rebuild the Nuxt project so the schema is re-fetched
 
-See [Configuration — Drupal Submodules](/modules/drupal/configuration#drupal-submodules)
+See
+[Configuration — Drupal Submodules](/modules/drupal/configuration#drupal-submodules)
 for the full list.
 
 ## Fragments are not available

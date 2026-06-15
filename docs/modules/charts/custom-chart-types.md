@@ -63,11 +63,12 @@ sets.
 
 ## The render component
 
-`render.vue` receives fully resolved [`ChartTypeRenderProps`](/modules/charts/chart-types)
-(`title`, `categories`, `series`, `seriesHexColors`, `categoryHexColors`,
-`typeOptions`, `numberFormat`, `isEditing`, and — for the `advanced` type only —
-`advancedConfig`). It is responsible for drawing the chart, typically with
-`vue-echarts`. Look at any built-in type's `render.vue` for the pattern.
+`render.vue` receives fully resolved
+[`ChartTypeRenderProps`](/modules/charts/chart-types) (`title`, `categories`,
+`series`, `seriesHexColors`, `categoryHexColors`, `typeOptions`, `numberFormat`,
+`isEditing`, and — for the `advanced` type only — `advancedConfig`). It is
+responsible for drawing the chart, typically with `vue-echarts`. Look at any
+built-in type's `render.vue` for the pattern.
 
 ## Build output
 

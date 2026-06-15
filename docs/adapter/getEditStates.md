@@ -5,22 +5,32 @@ Search for edit states across the system.
 ## Signature
 
 ```typescript
-getEditStates?: (page?: number) => Promise<{
+getEditStates?: (e?: AdapterSearchArguments) => Promise<{
   items: GetEditStatesItem[]
   total: number
   perPage: number
+  filters: PluginConfigInput[]
 }>
 ```
 
 ## Parameters
 
-### page
+### e
 
-Optional page number for pagination (0-based).
+Optional search arguments containing the requested `page` (0-based) and the
+selected `filters`.
+
+```typescript
+type AdapterSearchArguments = {
+  page: number
+  filters: Record<string, any>
+}
+```
 
 ## Returns
 
-A promise that resolves to paginated edit states results.
+A promise that resolves to paginated edit states results, including the
+available filters.
 
 ```typescript
 type GetEditStatesItem = {
@@ -32,6 +42,10 @@ type GetEditStatesItem = {
     bundleLabel?: string
   }
   currentUserIsOwner: boolean
+  lastChanged: string
+  pendingChanges: number
+  ownerName: string
+  url: string
 }
 ```
 
@@ -45,11 +59,13 @@ other users.
 ## Example
 
 ```typescript
-getEditStates: async (page = 0) => {
+getEditStates: async (e) => {
+  const page = e?.page ?? 0
   const perPage = 20
   const results = await searchEditStates({
     offset: page * perPage,
     limit: perPage,
+    filters: e?.filters,
   })
 
   return {
@@ -62,9 +78,14 @@ getEditStates: async (page = 0) => {
         bundleLabel: item.bundleLabel,
       },
       currentUserIsOwner: item.userId === currentUser.id,
+      lastChanged: item.lastChanged,
+      pendingChanges: item.pendingChanges,
+      ownerName: item.ownerName,
+      url: item.url,
     })),
     total: results.total,
     perPage,
+    filters: [],
   }
 }
 ```

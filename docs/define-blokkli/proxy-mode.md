@@ -32,7 +32,7 @@ Set the `proxy-mode` prop to `true`.
 </template>
 
 <script lang="ts" setup>
-import type { FieldListItemTypedArray } from '#blokkli/generated-types'
+import type { FieldListItemTypedArray } from '#blokkli-build/generated-types'
 import { defineBlokkli } from '#imports'
 
 defineBlokkli({

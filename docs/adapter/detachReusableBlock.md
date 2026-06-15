@@ -23,7 +23,7 @@ the same bundle and field values to the host entity.
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { DetachReusableBlockEvent } from '#blokkli/types'
+import type { DetachReusableBlockEvent } from '#blokkli/editor/features/library/types'
 
 export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
   return {
@@ -35,7 +35,7 @@ export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
           // Note the UUID is the one from the "from_library" block bundle,
           // *NOT* the library item UUID or the block referenced in the
           // library item.
-          uuids: e.uuid,
+          uuids: e.uuids,
         },
       })
     },

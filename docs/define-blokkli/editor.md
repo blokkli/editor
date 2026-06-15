@@ -180,8 +180,8 @@ defineBlokkli({
   bundle: 'gallery',
 
   editor: {
-    // Will render the component at exactly 1280px and then scale it 0.25
-    // so it fits in the available space (300px).
+    // Will render the component at exactly 1200px and then scale it down
+    // to fit in the available space.
     previewWidth: 1200,
   },
 })

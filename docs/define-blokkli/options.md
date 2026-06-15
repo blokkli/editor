@@ -85,7 +85,8 @@ const { options } = defineBlokkli({
   },
 })
 
-// Either true, false or undefined.
+// The inferred type is a boolean (true or false). Internally the value is
+// stored as the string '1' or '0'.
 console.log(options.value.box)
 </script>
 ```
@@ -154,7 +155,7 @@ const { options } = defineBlokkli({
 })
 
 // The text entered by the user as a string, e.g. 'contact-form'.
-console.log(options.value.text)
+console.log(options.value.anchorId)
 </script>
 ```
 
@@ -403,6 +404,61 @@ const { options } = defineBlokkli({
 
 // An ISO 8601 datetime string.
 console.log(options.value.eventDate)
+</script>
+```
+
+## JSON
+
+This option type stores an arbitrary JSON-serialised value as a string. Unlike
+the other option types it does not render a built-in editor — the value is
+typically produced and updated by your own UI (for example a custom add or edit
+behaviour).
+
+The `default` value must be a valid JSON string (e.g. `'{}'`).
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'chart',
+  options: {
+    data: {
+      type: 'json',
+      label: 'Chart data',
+      default: '{}',
+    },
+  },
+})
+
+// The stored JSON string.
+console.log(options.value.data)
+</script>
+```
+
+### `dataType`
+
+By default the inferred type of a `json` option is `any`. To get a typed return
+value, set the `dataType` property. The given key is looked up in the
+`ComplexOptionTypeMap`, and the option's value is then typed as the mapped type.
+
+For example, the playground's `chart` block uses `dataType: 'chart'` and the
+`iframe` block uses `dataType: 'iframe_heights'`:
+
+```vue
+<script lang="ts" setup>
+const { options } = defineBlokkli({
+  bundle: 'chart',
+  options: {
+    data: {
+      type: 'json',
+      label: 'Chart data',
+      default: '{}',
+      dataType: 'chart', // [!code focus:1]
+    },
+  },
+})
+
+// Typed as the value mapped to 'chart' in ComplexOptionTypeMap.
+console.log(options.value.data)
 </script>
 ```
 

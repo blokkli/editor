@@ -120,6 +120,21 @@ const isInline = computed(() => fieldListType.value === 'inline')
 </script>
 ```
 
+## providerTypes
+
+**Type:** `string[]`
+
+Define valid provider types that can be passed to the `<BlokkliProvider>`
+component via the `provider-type` prop. This is the provider-level counterpart
+to [fieldListTypes](#fieldlisttypes): the value is made available to all blocks
+inside the provider.
+
+```typescript
+blokkli: {
+  providerTypes: ['page', 'sidebar'],
+}
+```
+
 ## editAdapterPath
 
 **Type:** `string`
@@ -193,6 +208,32 @@ The default/fallback language for the editor UI.
 
 Force the editor to always use the default language, regardless of the page
 entity's language.
+
+## textAutoReplace
+
+**Type:**
+`boolean | { quotes?: boolean; ellipsis?: boolean; enDash?: boolean }`\
+**Default:** `true`
+
+Configure automatic text replacements when editing plaintext fields. Set to
+`true` to enable all replacements, `false` to disable all, or pass an object to
+toggle individual replacements:
+
+- `quotes` – replace straight double quotes (`"..."`) with guillemets (`«...»`).
+  Only active when the interface language is `de` or `fr`.
+- `ellipsis` – replace three consecutive dots (`...`) with an ellipsis character
+  (`…`).
+- `enDash` – replace two consecutive hyphens (`--`) with an en dash (`–`).
+
+```typescript
+blokkli: {
+  textAutoReplace: {
+    quotes: true,
+    ellipsis: true,
+    enDash: false,
+  },
+}
+```
 
 ## settingsOverride
 
@@ -319,6 +360,40 @@ if (previousBlock.value?.bundle === 'title') {
   const title = previousBlock.value.props.title // string
 }
 </script>
+```
+
+## colorOptions
+
+**Type:** `Record<string, ColorOption>`
+
+A build-time color palette made available to blocks (for example for charts or
+color pickers). Each entry is keyed by a color id and can take one of two
+shapes:
+
+- A flat color with a single `hex` value.
+- A ramped color with a `shades` map and an explicit `mainShade` that identifies
+  the canonical/base swatch. The base can be referenced via the bare color id
+  (e.g. `red`) or a specific shade via the compound id `red.<shade>` (e.g.
+  `red.300`).
+
+```typescript
+blokkli: {
+  colorOptions: {
+    brand: {
+      label: 'Brand',
+      hex: '#0c6bff',
+    },
+    red: {
+      label: 'Red',
+      mainShade: '500',
+      shades: {
+        '300': '#fca5a5',
+        '500': '#ef4444',
+        '700': '#b91c1c',
+      },
+    },
+  },
+}
 ```
 
 ## modules

@@ -5,7 +5,9 @@ Determine the block bundle for a clipboard item.
 ## Signature
 
 ```typescript
-clipboardMapBundle?: (e: ClipboardMapBundleEvent) => string | undefined | null
+clipboardMapBundle?: (
+  e: ClipboardMapBundleEvent,
+) => string | string[] | undefined | null
 ```
 
 ## Parameters
@@ -20,6 +22,7 @@ type ClipboardMapBundleEvent =
   | { type: 'video'; videoService: string; videoId: string }
   | { type: 'image'; fileType: string; fileSize: number }
   | { type: 'file'; fileType: string; fileSize: number }
+  | { type: 'link'; url: string }
 ```
 
 ## Returns

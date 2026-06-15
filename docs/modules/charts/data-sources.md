@@ -2,8 +2,8 @@
 
 A chart's data can come from two places:
 
-- **Inline data** — `categories` and `series` entered in the editor and stored on
-  the block. This is the default and needs no backend integration.
+- **Inline data** — `categories` and `series` entered in the editor and stored
+  on the block. This is the default and needs no backend integration.
 - **Dynamic data source** — the chart holds a reference to an external source,
   and the values are fetched at render time. This requires the adapter methods
   and the runtime fetch described below.
@@ -11,8 +11,8 @@ A chart's data can come from two places:
 ## Inline data
 
 When data is entered in the editor it is stored on the block as part of the
-`BlokkliChartData` value (`categories`, `series`, `categoryColors`). Nothing else
-is required — `ChartRenderer` renders straight from the stored values.
+`BlokkliChartData` value (`categories`, `series`, `categoryColors`). Nothing
+else is required — `ChartRenderer` renders straight from the stored values.
 
 ## Adapter extension
 
@@ -27,8 +27,10 @@ interface BlokkliAdapter<T> {
     | ChartDataSourceCapabilities
 
   /** List (or search) the available data sources. */
-  getChartDataSources?(args: { text?: string; page?: number }):
-    | Promise<ChartDataSource[] | BlokkliAdapterSearchResults<ChartDataSource>>
+  getChartDataSources?(args: {
+    text?: string
+    page?: number
+  }): Promise<ChartDataSource[] | BlokkliAdapterSearchResults<ChartDataSource>>
 
   /** Fetch the actual data for one source — used for the editor preview. */
   getChartDataSourceData?(args: { id: string }): Promise<ChartDataSourcePayload>
@@ -59,14 +61,14 @@ type ChartDataSourcePayload = {
 ```
 
 `getChartDataSourceCapabilities` is the switch: implementing it enables the
-"Dynamic data" option in the editor. `getChartDataSourceData` powers the editor's
-live preview; the **frontend fetch is your block's responsibility** (next
-section).
+"Dynamic data" option in the editor. `getChartDataSourceData` powers the
+editor's live preview; the **frontend fetch is your block's responsibility**
+(next section).
 
 ## How a bound source is stored
 
-When a chart is bound to a source, the block stores a `dataSource` reference. The
-inline `categories` / `series` are kept as a snapshot (so switching back to
+When a chart is bound to a source, the block stores a `dataSource` reference.
+The inline `categories` / `series` are kept as a snapshot (so switching back to
 custom data restores the user's input) but are **ignored at render time**.
 
 ```typescript
@@ -115,7 +117,12 @@ import type {
 const { options } = defineBlokkli({
   bundle: 'chart',
   options: {
-    data: { type: 'json', label: 'Chart data', default: '{}', dataType: 'chart' },
+    data: {
+      type: 'json',
+      label: 'Chart data',
+      default: '{}',
+      dataType: 'chart',
+    },
   },
   editor: { addBehaviour: 'complex-option:data', disableEdit: true },
 })

@@ -1,9 +1,8 @@
 # Iframes Overview
 
-The iframes module adds support for embedding **responsive iframes** with
-height management per viewport. Editors can set a different iframe height for
-each viewport you define, and the embed adjusts its height using container
-queries.
+The iframes module adds support for embedding **responsive iframes** with height
+management per viewport. Editors can set a different iframe height for each
+viewport you define, and the embed adjusts its height using container queries.
 
 This solves a common problem with embedded content (maps, videos, third-party
 widgets): a fixed height that looks right on desktop is often wrong on mobile.

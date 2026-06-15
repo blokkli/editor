@@ -77,8 +77,8 @@ independently from the content data.
 
 ## Next Steps
 
-- [Getting Started](/modules/drupal/getting-started) — Set up the integration step by
-  step
+- [Getting Started](/modules/drupal/getting-started) — Set up the integration
+  step by step
 - [GraphQL Fragments](/modules/drupal/graphql) — Required fragments and queries
 - [Page Components](/modules/drupal/pages) — Wire up BlokkliProvider with Drupal
   entities

@@ -8,9 +8,9 @@ ships ten built-in chart types and an extensible system for adding your own.
 
 - **A `chart` complex option** — attach it to a block to store a full chart
   (type, series, categories, colors, formatting, translations).
-- **Ten built-in chart types** — `bar`, `line`, `area`, `pie`, `donut`,
-  `radar`, `heatmap`, `radialBar`, `agePyramid`, and a raw `advanced` (ECharts
-  config) type.
+- **Ten built-in chart types** — `bar`, `line`, `area`, `pie`, `donut`, `radar`,
+  `heatmap`, `radialBar`, `agePyramid`, and a raw `advanced` (ECharts config)
+  type.
 - **`ChartRenderer`** — a runtime component that resolves the stored data
   (translations, date/number formatting, color IDs, dynamic-data overrides) and
   dispatches to the type-specific render component.
@@ -29,9 +29,9 @@ declaring a `json` option with `dataType: 'chart'`; editors then get the chart
 editor, and your block component renders the value with `ChartRenderer`.
 
 Built-in chart types live under the module's own `blokkli/chart-types/`
-directory and are discovered at build time by the `ChartTypeCollector` — the same
-collector that picks up your project's custom types, so the module consumes the
-exact convention it offers to userland.
+directory and are discovered at build time by the `ChartTypeCollector` — the
+same collector that picks up your project's custom types, so the module consumes
+the exact convention it offers to userland.
 
 ## Next steps
 

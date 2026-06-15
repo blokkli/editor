@@ -28,9 +28,9 @@ export default defineNuxtConfig({
 
 ## Module options
 
-| Option      | Type                              | Required | Description                                  |
-| ----------- | --------------------------------- | -------- | -------------------------------------------- |
-| `viewports` | `Record<string, IframeViewport>`  | Yes      | Viewport presets editors can set heights for. |
+| Option      | Type                             | Required | Description                                   |
+| ----------- | -------------------------------- | -------- | --------------------------------------------- |
+| `viewports` | `Record<string, IframeViewport>` | Yes      | Viewport presets editors can set heights for. |
 
 Each viewport (`IframeViewport`) has:
 
@@ -93,10 +93,10 @@ any embed) in its default slot. It sets `container-type: inline-size` on a
 wrapper element and generates `@container` queries from the height map, so the
 slot height responds to the **container** width, not the window.
 
-| Prop      | Type              | Description                                            |
-| --------- | ----------------- | ----------------------------------------------------- |
+| Prop      | Type              | Description                                              |
+| --------- | ----------------- | -------------------------------------------------------- |
 | `src`     | `string`          | The embed URL (registered with the editor for previews). |
-| `heights` | `IframeHeightMap` | The resolved height map from the block option.        |
+| `heights` | `IframeHeightMap` | The resolved height map from the block option.           |
 
 ### The height map
 

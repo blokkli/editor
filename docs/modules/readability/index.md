@@ -32,15 +32,16 @@ Readability involves two distinct, cooperating parts:
 
 1. **The scoring engine** — an object implementing the `ReadabilityAnalyzer`
    contract, supplied through the adapter's `getReadabilityAnalyzer` method. It
-   computes a score per chunk of text, classifies it into a band
-   (`easy` / `ok` / `hard`), and reports an impact. This drives the inline
-   readability indicators on text fields. The readability module provides the
-   default implementation; you can [provide your own](/modules/readability/custom-analyzer).
+   computes a score per chunk of text, classifies it into a band (`easy` / `ok`
+   / `hard`), and reports an impact. This drives the inline readability
+   indicators on text fields. The readability module provides the default
+   implementation; you can
+   [provide your own](/modules/readability/custom-analyzer).
 
 2. **The sidebar analyzer** — `readabilityAnalyzer()` from `#blokkli/analyzer`,
-   added to the adapter's `getAnalyzers`. It surfaces the engine's results in the
-   Analyze sidebar. It is a thin wrapper that delegates scoring to the engine, so
-   it works with whichever analyzer (built-in or custom) is active:
+   added to the adapter's `getAnalyzers`. It surfaces the engine's results in
+   the Analyze sidebar. It is a thin wrapper that delegates scoring to the
+   engine, so it works with whichever analyzer (built-in or custom) is active:
 
    ```typescript
    import { readabilityAnalyzer } from '#blokkli/analyzer'

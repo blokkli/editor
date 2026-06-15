@@ -2,14 +2,14 @@
 
 A **complex option type** is a custom block option whose value is a structured
 object edited through a custom editor UI, instead of one of the built-in option
-inputs (text, checkbox, radios, …). The charts and iframes modules are both built
-on this mechanism — the chart editor and the iframe-height editor are complex
-option types.
+inputs (text, checkbox, radios, …). The charts and iframes modules are both
+built on this mechanism — the chart editor and the iframe-height editor are
+complex option types.
 
 A complex option type has two halves:
 
-1. A **registration** in your module that names the type and points at its editor
-   component.
+1. A **registration** in your module that names the type and points at its
+   editor component.
 2. A **block** that opts into the type through a `json` option.
 
 ## Registering the type
@@ -27,19 +27,19 @@ context.registerComplexOptionType({
 })
 ```
 
-| Field                 | Description                                                                                  |
-| --------------------- | -------------------------------------------------------------------------------------------- |
-| `id`                  | Unique identifier for the type. Blocks reference it via `dataType` (here, `'map'`).           |
+| Field                 | Description                                                                                     |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| `id`                  | Unique identifier for the type. Blocks reference it via `dataType` (here, `'map'`).             |
 | `typeName`            | The TypeScript type name of the stored value, exported from `typePath` (e.g. `BlokkliMapData`). |
-| `typePath`            | Absolute path to the module that exports `typeName`. Used to type the option value.           |
-| `editorComponentPath` | Absolute path to the Vue component that provides the editor UI.                               |
+| `typePath`            | Absolute path to the module that exports `typeName`. Used to type the option value.             |
+| `editorComponentPath` | Absolute path to the Vue component that provides the editor UI.                                 |
 | `editTitle`           | Title shown above the editor. Produced with `$t(key, default)` → `{ key, defaultTranslation }`. |
-| `editorIcon`          | The [icon](/define-blokkli/icons) for the edit action.                                        |
+| `editorIcon`          | The [icon](/define-blokkli/icons) for the edit action.                                          |
 
 ## Consuming it in a block
 
-A block opts into a complex option type with a **`json` option** whose `dataType`
-matches the registered `id`:
+A block opts into a complex option type with a **`json` option** whose
+`dataType` matches the registered `id`:
 
 ```vue
 <script lang="ts" setup>
@@ -75,8 +75,8 @@ const mapData = computed<BlokkliMapData | null>(() => options.value.map)
 - `disableEdit: true` is appropriate when the complex option is the block's
   primary content, so there is nothing else to edit inline.
 
-The stored value is available as the option value, typed as `typeName`. Render it
-however your block needs.
+The stored value is available as the option value, typed as `typeName`. Render
+it however your block needs.
 
 ## The editor component
 

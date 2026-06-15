@@ -1,7 +1,8 @@
 # Editor Translations
 
-Every string in the editor is translatable. blökkli ships with translations for
-English, German, French and Italian.
+Every string in the editor is translatable. English is the source language;
+blökkli additionally ships with translations for German, French, Italian and
+Swiss German (`gsw_CH`).
 
 ## Overrides
 

@@ -6,18 +6,18 @@ each type reads its own `typeOptions`.
 
 ## Built-in types
 
-| id           | Label       | Colors   | Best for                                                  |
-| ------------ | ----------- | -------- | --------------------------------------------------------- |
+| id           | Label       | Colors   | Best for                                                    |
+| ------------ | ----------- | -------- | ----------------------------------------------------------- |
 | `bar`        | Bar         | series   | Comparing values across categories (ranking, side-by-side). |
-| `line`       | Line        | series   | Trends across a continuous range.                         |
-| `area`       | Area        | series   | Trends where the filled area emphasises volume.           |
-| `radar`      | Radar       | series   | Comparing several variables across categories.            |
-| `heatmap`    | Heatmap     | —        | Values across two dimensions via colour intensity.        |
-| `pie`        | Pie         | category | Proportional shares of a whole.                           |
-| `donut`      | Donut       | category | Shares of a whole with a free centre for a total.         |
-| `radialBar`  | Radial Bar  | category | KPIs / progress as concentric circular bars.              |
-| `agePyramid` | Age pyramid | series   | Back-to-back horizontal bars by category.                 |
-| `advanced`   | Advanced    | —        | A raw ECharts configuration. Full control, no data table. |
+| `line`       | Line        | series   | Trends across a continuous range.                           |
+| `area`       | Area        | series   | Trends where the filled area emphasises volume.             |
+| `radar`      | Radar       | series   | Comparing several variables across categories.              |
+| `heatmap`    | Heatmap     | —        | Values across two dimensions via colour intensity.          |
+| `pie`        | Pie         | category | Proportional shares of a whole.                             |
+| `donut`      | Donut       | category | Shares of a whole with a free centre for a total.           |
+| `radialBar`  | Radial Bar  | category | KPIs / progress as concentric circular bars.                |
+| `agePyramid` | Age pyramid | series   | Back-to-back horizontal bars by category.                   |
+| `advanced`   | Advanced    | —        | A raw ECharts configuration. Full control, no data table.   |
 
 ## Color model
 
@@ -37,16 +37,16 @@ Each type declares how it uses color:
 These options come from shared helpers and appear on multiple types. Store them
 under `typeOptions`.
 
-| Option                | Type    | Default  | Notes                                                       |
-| --------------------- | ------- | -------- | ----------------------------------------------------------- |
-| `xaxisRotation`       | radios  | `'auto'` | Category label rotation: `auto`, `-45`, `-90`.              |
-| `dataLabels`          | boolean | `false`  | Show values directly on chart elements.                    |
-| `legendPosition`      | radios  | `'bottom'` | `bottom`, `top`, `right`.                                 |
-| `gridLines`           | boolean | `true`   | Show background grid lines.                                 |
-| `strokeWidth`         | radios  | `'2'`    | Line thickness: `2` (thin), `4` (medium), `6` (thick).     |
-| `yaxisMin`            | number  | _unset_  | Nullable. Forces the value-axis start; unset auto-scales.  |
-| `categoryFilter`      | boolean | `false`  | Renders a category picker so viewers see one category at a time. |
-| `categoryFilterLabel` | text    | `''`     | Label next to the picker (only when `categoryFilter` is on). |
+| Option                | Type    | Default    | Notes                                                            |
+| --------------------- | ------- | ---------- | ---------------------------------------------------------------- |
+| `xaxisRotation`       | radios  | `'auto'`   | Category label rotation: `auto`, `-45`, `-90`.                   |
+| `dataLabels`          | boolean | `false`    | Show values directly on chart elements.                          |
+| `legendPosition`      | radios  | `'bottom'` | `bottom`, `top`, `right`.                                        |
+| `gridLines`           | boolean | `true`     | Show background grid lines.                                      |
+| `strokeWidth`         | radios  | `'2'`      | Line thickness: `2` (thin), `4` (medium), `6` (thick).           |
+| `yaxisMin`            | number  | _unset_    | Nullable. Forces the value-axis start; unset auto-scales.        |
+| `categoryFilter`      | boolean | `false`    | Renders a category picker so viewers see one category at a time. |
+| `categoryFilterLabel` | text    | `''`       | Label next to the picker (only when `categoryFilter` is on).     |
 
 Which shared options a type uses:
 
@@ -62,25 +62,25 @@ Which shared options a type uses:
 
 On top of the shared options, each type adds its own:
 
-| Type         | Option         | Type    | Default  | Choices / notes                                    |
-| ------------ | -------------- | ------- | -------- | -------------------------------------------------- |
-| `bar`        | `stacked`      | boolean | `false`  | Stack series.                                      |
-|              | `horizontal`   | boolean | `false`  | Render bars horizontally.                          |
-|              | `borderRadius` | radios  | `'0'`    | `0` none, `4` small, `8` large.                    |
-| `line`       | `curved`       | boolean | `false`  | Smooth line.                                       |
-|              | `markers`      | boolean | `false`  | Show point markers.                                |
-| `area`       | `curved`       | boolean | `false`  | Smooth line.                                       |
-|              | `markers`      | boolean | `false`  | Show point markers.                                |
-| `radar`      | `markers`      | boolean | `false`  | Show point markers.                                |
-|              | `fillOpacity`  | radios  | `'0.2'`  | `0.2`, `0.4`, `0.8`.                               |
-| `pie`        | `showLabels`   | boolean | `true`   | Show slice labels.                                 |
-| `donut`      | `showTotal`    | boolean | `false`  | Show a total in the centre.                        |
-|              | `showLabels`   | boolean | `true`   | Show segment labels.                               |
-| `radialBar`  | `showLabels`   | boolean | `true`   | Show labels.                                       |
-| `agePyramid` | `splitIndex`   | number  | _unset_  | Nullable. Series index that starts on the right; earlier series render on the left. Defaults to half the series count. |
+| Type         | Option         | Type    | Default | Choices / notes                                                                                                        |
+| ------------ | -------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `bar`        | `stacked`      | boolean | `false` | Stack series.                                                                                                          |
+|              | `horizontal`   | boolean | `false` | Render bars horizontally.                                                                                              |
+|              | `borderRadius` | radios  | `'0'`   | `0` none, `4` small, `8` large.                                                                                        |
+| `line`       | `curved`       | boolean | `false` | Smooth line.                                                                                                           |
+|              | `markers`      | boolean | `false` | Show point markers.                                                                                                    |
+| `area`       | `curved`       | boolean | `false` | Smooth line.                                                                                                           |
+|              | `markers`      | boolean | `false` | Show point markers.                                                                                                    |
+| `radar`      | `markers`      | boolean | `false` | Show point markers.                                                                                                    |
+|              | `fillOpacity`  | radios  | `'0.2'` | `0.2`, `0.4`, `0.8`.                                                                                                   |
+| `pie`        | `showLabels`   | boolean | `true`  | Show slice labels.                                                                                                     |
+| `donut`      | `showTotal`    | boolean | `false` | Show a total in the centre.                                                                                            |
+|              | `showLabels`   | boolean | `true`  | Show segment labels.                                                                                                   |
+| `radialBar`  | `showLabels`   | boolean | `true`  | Show labels.                                                                                                           |
+| `agePyramid` | `splitIndex`   | number  | _unset_ | Nullable. Series index that starts on the right; earlier series render on the left. Defaults to half the series count. |
 
-Nullable options (`yaxisMin`, `splitIndex`) can be reset to "auto" by setting the
-key to `null`.
+Nullable options (`yaxisMin`, `splitIndex`) can be reset to "auto" by setting
+the key to `null`.
 
 ## Number & date formatting
 
@@ -127,8 +127,8 @@ type ChartDateFormat = {
 Translatable strings can be overridden per language via `translations`, keyed by
 language code. Arrays are **positionally aligned** to the source arrays (empty
 string = fall back to source). Translations apply to inline data only — they are
-skipped for [dynamic data sources](/modules/charts/data-sources), where positions
-would not be stable.
+skipped for [dynamic data sources](/modules/charts/data-sources), where
+positions would not be stable.
 
 ```typescript
 type ChartTranslation = {
@@ -161,4 +161,5 @@ do not apply.
 
 ## See also
 
-- [Custom Chart Types](/modules/charts/custom-chart-types) — define your own type.
+- [Custom Chart Types](/modules/charts/custom-chart-types) — define your own
+  type.

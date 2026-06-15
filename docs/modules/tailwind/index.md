@@ -1,7 +1,7 @@
 # Tailwind
 
-blökkli's editor UI is built with a fully custom Tailwind configuration —
-custom spacing, colors, and z-index scales rather than Tailwind's defaults. The
+blökkli's editor UI is built with a fully custom Tailwind configuration — custom
+spacing, colors, and z-index scales rather than Tailwind's defaults. The
 tailwind module exposes that configuration so your project and your custom
 modules can reuse the same design tokens.
 
@@ -27,17 +27,20 @@ visually with the editor.
 - **Z-index** — the layered z-index values the editor relies on.
 
 ::: warning
+
 This config **replaces** Tailwind's defaults, so standard classes like `p-4`,
-`text-gray-500`, or `gap-6` may not exist or may map to different values. Use the
-tokens defined by the config. See the editor's [styling
-concepts](/editor/themes) for background on the design system.
+`text-gray-500`, or `gap-6` may not exist or may map to different values. Use
+the tokens defined by the config. See the editor's
+[styling concepts](/editor/themes) for background on the design system.
+
 :::
 
 ## Registering CSS with the editor
 
-A [custom blökkli module](/modules/authoring/) can inject its own CSS into the editor's
-stylesheet — for example to style a custom complex-option editor or other editor
-UI. Register a CSS file from the module's `setup` with `context.addCSS()`:
+A [custom blökkli module](/modules/authoring/) can inject its own CSS into the
+editor's stylesheet — for example to style a custom complex-option editor or
+other editor UI. Register a CSS file from the module's `setup` with
+`context.addCSS()`:
 
 ```typescript
 import { createResolver } from '@nuxt/kit'
@@ -93,11 +96,11 @@ That means a registered CSS file can use `@apply` with blökkli's tokens and
 
 - **`context.addCSS(filePath)`** — register a standalone CSS file (absolute
   path). Use it for hand-written editor styles.
-- **`context.addContentPath(dirPath)`** — register a directory of Vue
-  components so the Tailwind utility classes used in their templates are
-  generated and included (and their template classes and `<style>` blocks are
-  mangled and scoped). Use it so utility classes in your module's components
-  actually appear in the editor output.
+- **`context.addContentPath(dirPath)`** — register a directory of Vue components
+  so the Tailwind utility classes used in their templates are generated and
+  included (and their template classes and `<style>` blocks are mangled and
+  scoped). Use it so utility classes in your module's components actually appear
+  in the editor output.
 
 ## Notes
 

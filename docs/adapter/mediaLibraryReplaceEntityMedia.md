@@ -6,7 +6,7 @@ Replace media on a field of the page entity.
 
 ```typescript
 mediaLibraryReplaceEntityMedia?: (e: {
-  host: DraggableHostData
+  host: BlokkliItemHost
   mediaId: string
 }) => Promise<MutationResponseLike<T>> | undefined
 ```
@@ -18,7 +18,7 @@ mediaLibraryReplaceEntityMedia?: (e: {
 Information about the entity and field where the media was dropped.
 
 ```typescript
-type DraggableHostData = {
+type BlokkliItemHost = {
   type: string
   uuid: string
   fieldName: string

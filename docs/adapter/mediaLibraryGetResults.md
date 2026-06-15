@@ -132,40 +132,41 @@ import {
   type GetMediaLibraryFunction,
 } from '#blokkli/editor/adapter'
 
-// This type takes a generic argument to define the available filters.
-const mediaLibraryGetResults: GetMediaLibraryFunction<{
-  type: 'select'
-  text: 'text'
-}> = async (e) => {
-  // The available filters are typed according to the generic type.
+const mediaLibraryGetResults: GetMediaLibraryFunction = async (e) => {
+  // The currently selected filter values are available on e.filters.
   const type = e.filters.type || 'image'
 
   const items = await $fetch('/backend-api/media-library', {
     method: 'post',
     query: {
-      type: e.filters.type || 'image',
+      type,
       text: e.filters.text,
     },
   })
 
   return {
-    // Define the available filters. They should match the generic type.
-    filters: {
-      type: {
-        type: 'select',
+    // Define the available filters as an array of PluginConfigInput objects.
+    filters: [
+      {
+        type: 'options',
+        name: 'type',
         label: 'Media Type',
-        options: {
-          image: 'Image',
-          video: 'Video',
-          file: 'File',
-        },
+        required: false,
+        variant: 'select',
+        options: [
+          { value: 'image', label: 'Image' },
+          { value: 'video', label: 'Video' },
+          { value: 'file', label: 'File' },
+        ],
       },
-      text: {
+      {
         type: 'text',
+        name: 'text',
         label: 'Text',
+        required: false,
         placeholder: 'Enter a search term',
       },
-    },
+    ],
     // Return the matching media items.
     items,
     total: 24,

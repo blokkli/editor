@@ -63,7 +63,11 @@ takes the links as a prop:
 
 ```vue
 <template>
-  <BlokkliTableOfContents v-slot="{ links }" :bundles="['title']" :map-item="...">
+  <BlokkliTableOfContents
+    v-slot="{ links }"
+    :bundles="['title']"
+    :map-item="..."
+  >
     <MyMenu :links="links" />
   </BlokkliTableOfContents>
 </template>
@@ -80,19 +84,19 @@ defineProps<{ links: BlokkliTableOfContentsLink[] }>()
 
 ## Props
 
-| Prop         | Type                                                | Description                                                                  |
-| ------------ | --------------------------------------------------- | --------------------------------------------------------------------------- |
-| `bundles`    | `string[]`                                          | Block bundles to include. Reusable (library) blocks of these bundles match too. |
-| `mapItem`    | `(item) => BlokkliTableOfContentsLink \| null`      | Maps a matched block to a link. Return `null` to skip it.                    |
-| `optionName` | `string` _(optional)_                               | Name of a `defineBlokkli` option used to toggle whether a block is included. |
+| Prop         | Type                                           | Description                                                                     |
+| ------------ | ---------------------------------------------- | ------------------------------------------------------------------------------- |
+| `bundles`    | `string[]`                                     | Block bundles to include. Reusable (library) blocks of these bundles match too. |
+| `mapItem`    | `(item) => BlokkliTableOfContentsLink \| null` | Maps a matched block to a link. Return `null` to skip it.                       |
+| `optionName` | `string` _(optional)_                          | Name of a `defineBlokkli` option used to toggle whether a block is included.    |
 
 `BlokkliTableOfContentsLink` is `{ id: string; label: string }`.
 
 ## Slot
 
-| Slot      | Payload                                         |
-| --------- | ----------------------------------------------- |
-| `default` | `{ links: BlokkliTableOfContentsLink[] }`       |
+| Slot      | Payload                                   |
+| --------- | ----------------------------------------- |
+| `default` | `{ links: BlokkliTableOfContentsLink[] }` |
 
 ## Behaviour
 

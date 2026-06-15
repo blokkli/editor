@@ -70,9 +70,10 @@ The current language code (e.g., `'en'`, `'de'`, `'fr'`).
 
 Array of permissions for the current user. Available permissions:
 
-- `'edit'` - User can edit content
 - `'view'` - User can view content
+- `'edit'` - User can edit content
 - `'review'` - User can review changes
+- `'delete'` - User can delete content
 
 ### editLabel
 

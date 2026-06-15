@@ -33,9 +33,9 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 })
 ```
 
-`readabilityAnalyzer()` is the generic sidebar wrapper — it delegates to whatever
-engine `getReadabilityAnalyzer` returns, so you add it once regardless of which
-analyzer is active.
+`readabilityAnalyzer()` is the generic sidebar wrapper — it delegates to
+whatever engine `getReadabilityAnalyzer` returns, so you add it once regardless
+of which analyzer is active.
 
 ## The `ReadabilityAnalyzer` contract
 
@@ -186,8 +186,8 @@ export function createCefrReadabilityAnalyzer(): ReadabilityAnalyzer {
 ```
 
 The batched `analyze` plus the per-text cache means a full-page analysis makes a
-single backend request for all unique passages, and re-analysis is free until the
-text changes.
+single backend request for all unique passages, and re-analysis is free until
+the text changes.
 
 ## See also
 
