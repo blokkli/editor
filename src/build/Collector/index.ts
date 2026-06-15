@@ -69,7 +69,7 @@ export abstract class Collector<
 
   public abstract init(): Promise<any>
 
-  public abstract runHooks(): Promise<any>
+  public abstract runHooks(): Promise<any> | void
 
   public abstract applies(filePath: string): Promise<boolean>
 

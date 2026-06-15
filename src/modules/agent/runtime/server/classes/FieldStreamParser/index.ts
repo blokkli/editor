@@ -66,17 +66,17 @@ export class FieldStreamParser {
       this.stripLeadingNewline = false
     }
 
-    let changed = true
-    while (changed) {
-      changed = false
-
+    // Each branch either consumes part of the buffer and loops (`continue`) or
+    // breaks to wait for more data / finish. Every loop-back path shrinks the
+    // buffer, so the loop always terminates.
+    while (true) {
       // Look for any marker starting with '[[['.
       const markerPos = this.buffer.indexOf(MARKER_PREFIX)
 
       if (markerPos === -1) {
         // No marker prefix found. Emit buffered content as delta,
         // keeping a tail for potential partial markers.
-        changed = this.emitBufferedContent(events, this.buffer.length)
+        this.emitBufferedContent(events, this.buffer.length)
         break
       }
 
@@ -85,29 +85,27 @@ export class FieldStreamParser {
         const before = this.buffer.slice(0, markerPos)
         this.buffer = this.buffer.slice(markerPos)
         this.appendContent(before, events)
-        changed = true
         continue
       }
 
       // Buffer starts with '[[['. Try to match a complete marker.
       const matched = this.tryMatchMarker(events)
       if (matched) {
-        changed = true
-      } else {
-        // Could be a partial marker. If buffer is long enough that it can't
-        // be a valid marker prefix, emit content up to the next '[[[' or
-        // emit the first chars and retry.
-        if (this.buffer.length >= MAX_MARKER_LENGTH) {
-          // Not a valid marker — emit the '[[[' as content.
-          const chunk = this.buffer.slice(0, 3)
-          this.buffer = this.buffer.slice(3)
-          this.appendContent(chunk, events)
-          changed = true
-        } else {
-          // Wait for more data.
-          break
-        }
+        continue
       }
+
+      // Could be a partial marker. If buffer is long enough that it can't
+      // be a valid marker prefix, emit the first chars as content and retry.
+      if (this.buffer.length >= MAX_MARKER_LENGTH) {
+        // Not a valid marker — emit the '[[[' as content.
+        const chunk = this.buffer.slice(0, 3)
+        this.buffer = this.buffer.slice(3)
+        this.appendContent(chunk, events)
+        continue
+      }
+
+      // Wait for more data.
+      break
     }
 
     return events
