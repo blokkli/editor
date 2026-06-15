@@ -67,6 +67,12 @@ export class ModuleHelper implements ValidationInterface {
   public fileCache: FileCache
   public readonly options: ModuleOptions
 
+  /**
+   * npm packages to pre-bundle via Vite's optimizeDeps, collected from the core
+   * module and enabled sub-modules. Flushed by {@link applyBuildConfig}.
+   */
+  private packageDependencies = new Set<string>()
+
   public readonly isDev: boolean
   public readonly isModuleBuild: boolean
   public readonly isPrepare: boolean
@@ -233,6 +239,46 @@ export class ModuleHelper implements ValidationInterface {
       name,
       from: this.resolvers.module.resolve('./runtime/composables/' + name),
     })
+  }
+
+  /**
+   * Register npm packages that the editor imports at runtime so Vite
+   * pre-bundles them.
+   *
+   * Without this, Vite discovers a dependency lazily on first import (often via
+   * a dynamic `import()`) and triggers a full page reload to re-optimize. The
+   * core module declares its own dependencies; optional modules (agent, charts,
+   * …) declare theirs only when enabled, so projects that don't use a module
+   * don't pre-bundle its dependencies.
+   *
+   * Collected here and flushed to the Vite config by {@link applyBuildConfig},
+   * which the core module calls once all modules have run their setup.
+   *
+   * @param names - Bare package specifiers (e.g. 'echarts', '@tiptap/core').
+   */
+  public addPackageDependency(...names: string[]) {
+    for (const name of names) {
+      this.packageDependencies.add(name)
+    }
+  }
+
+  /**
+   * Apply collected build configuration to the Nuxt/Vite config.
+   *
+   * Called once by the core module after every module's setup has run, so it
+   * sees the full set of {@link addPackageDependency} registrations.
+   */
+  public applyBuildConfig() {
+    this.nuxt.options.vite.optimizeDeps ??= {}
+    const include = (this.nuxt.options.vite.optimizeDeps.include ??= [])
+    const exclude = this.nuxt.options.vite.optimizeDeps.exclude ?? []
+    for (const name of this.packageDependencies) {
+      // Skip duplicates and anything a project has explicitly opted out of.
+      if (include.includes(name) || exclude.includes(name)) {
+        continue
+      }
+      include.push(name)
+    }
   }
 
   public addAlias(name: string, path: string) {

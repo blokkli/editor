@@ -201,10 +201,33 @@ export default defineNuxtModule<ModuleOptions>({
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 
-    // CJS packages used by the editor need Vite pre-bundling for ESM interop.
-    nuxt.options.vite.optimizeDeps ??= {}
-    nuxt.options.vite.optimizeDeps.include ??= []
-    nuxt.options.vite.optimizeDeps.include.push('papaparse', 'pofile')
+    // Packages the editor imports at runtime, pre-bundled by Vite to avoid
+    // full page reloads during dev. Optional sub-modules register their own
+    // dependencies in their setup() (already run above); applyBuildConfig()
+    // flushes the full set to the Vite config.
+    helper.addPackageDependency(
+      '@floating-ui/dom',
+      '@tiptap/core',
+      '@tiptap/extension-emoji',
+      '@tiptap/extension-mention',
+      '@tiptap/extension-task-item',
+      '@tiptap/extension-task-list',
+      '@tiptap/starter-kit',
+      '@tiptap/vue-3',
+      '@vue/devtools-core',
+      '@vue/devtools-kit',
+      'axe-core', // CJS
+      'fzf',
+      'get-video-id',
+      'html-diff-ts',
+      'mitt',
+      'papaparse', // CJS
+      'pofile', // CJS
+      'qrcode.vue',
+      'twgl.js',
+    )
+
+    helper.applyBuildConfig()
 
     helper.addComponent('BlokkliField')
     helper.addComponent('BlokkliEditable')

@@ -18,6 +18,10 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     options.blokkliDirs.push(resolve('./runtime/blokkli'))
   },
   setup({ context, helper, $t }) {
+    // Runtime packages imported by the chart editor and renderers. Registered
+    // here so they are only pre-bundled when the charts module is enabled.
+    helper.addPackageDependency('echarts', 'vue-echarts', 'json5', 'zod')
+
     helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
     helper.addAlias(
       '#blokkli/charts/definition',
