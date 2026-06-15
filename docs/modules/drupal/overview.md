@@ -77,11 +77,11 @@ independently from the content data.
 
 ## Next Steps
 
-- [Getting Started](/drupal/getting-started) — Set up the integration step by
+- [Getting Started](/modules/drupal/getting-started) — Set up the integration step by
   step
-- [GraphQL Fragments](/drupal/graphql) — Required fragments and queries
-- [Page Components](/drupal/pages) — Wire up BlokkliProvider with Drupal
+- [GraphQL Fragments](/modules/drupal/graphql) — Required fragments and queries
+- [Page Components](/modules/drupal/pages) — Wire up BlokkliProvider with Drupal
   entities
-- [Block Components](/drupal/blocks) — Create paragraph block components
-- [Configuration](/drupal/configuration) — All module options and Drupal
+- [Block Components](/modules/drupal/blocks) — Create paragraph block components
+- [Configuration](/modules/drupal/configuration) — All module options and Drupal
   settings

@@ -101,7 +101,7 @@ needed.
 ### Custom Adapter
 
 If you're using a custom adapter, you need to implement the token endpoint and
-adapter method yourself. See the [Adapter](/agent/adapter) page for full
+adapter method yourself. See the [Adapter](/modules/agent/adapter) page for full
 details.
 
 In short:
@@ -117,6 +117,6 @@ toolbar. Click it to open the agent sidebar and start chatting.
 
 ## Next Steps
 
-- [Configuration](/agent/configuration) — all options and environment variables
-- [Adapter Methods](/agent/adapter) — full reference for adapter integration
-- [Custom Tools](/agent/custom-tools) — add project-specific tools
+- [Configuration](/modules/agent/configuration) — all options and environment variables
+- [Adapter Methods](/modules/agent/adapter) — full reference for adapter integration
+- [Custom Tools](/modules/agent/custom-tools) — add project-specific tools

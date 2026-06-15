@@ -103,7 +103,7 @@ field UI or programmatically.
 The field machine name is flexible — the module automatically discovers the
 first field of this type on the host entity.
 
-See [Page Components — Host Options](/drupal/pages#host-options) for the full
+See [Page Components — Host Options](/modules/drupal/pages#host-options) for the full
 setup.
 
 ### Entity Mappings

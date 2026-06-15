@@ -106,7 +106,7 @@ It also configures `getBundlePropsType` to generate types like
 
 The module provides most GraphQL fragments (including `blokkliProps` and
 `paragraphsFieldItem`), but you need to create a few project-specific ones. See
-[GraphQL Fragments](/drupal/graphql) for full details.
+[GraphQL Fragments](/modules/drupal/graphql) for full details.
 
 At minimum, you need:
 
@@ -137,7 +137,7 @@ const props = defineProps<{
 </script>
 ```
 
-See [Page Components](/drupal/pages) for the full setup.
+See [Page Components](/modules/drupal/pages) for the full setup.
 
 ## Step 8: Create Block Components
 
@@ -157,7 +157,7 @@ defineBlokkli({
 </script>
 ```
 
-See [Block Components](/drupal/blocks) for more examples.
+See [Block Components](/modules/drupal/blocks) for more examples.
 
 ## What You Get
 
