@@ -180,8 +180,8 @@ element.classList.add(tw('flex pt-5'))
 - Global CSS entry point: `css/index.css`, partials in `css/partials/`
 - Sub-modules have their own CSS (e.g., `src/modules/agent/css/Agent.css`)
 - Output: `src/runtime/editor/css/output.css`
-- Build: `npm run styles:build` — but the developer always has
-  `npm run styles:watch` running, so changes are picked up automatically. Only
+- Build: `bun run styles:build` — but the developer always has
+  `bun run styles:watch` running, so changes are picked up automatically. Only
   use `styles:build` to verify that CSS changes compile without errors, not to
   apply them.
 - All CSS is **scoped to `.bk`** container via PostCSS replace plugin

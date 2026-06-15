@@ -23,15 +23,15 @@ onto it — don't leave a copy behind). One-file-only helpers stay local.
 
 ## Running
 
-`npm run test:e2e` against the playground at `http://localhost:3000`. Start it
-yourself first: `npm run dev` (HMR) or `npm run dev:build && npm run dev:start`
+`bun run test:e2e` against the playground at `http://localhost:3000`. Start it
+yourself first: `bun run dev` (HMR) or `bun run dev:build && bun run dev:start`
 (static, what the suite is tuned against). `setupEditorE2E()` does
 `build=false; server=false`; always `await` it at the top of an async
 `describe`.
 
 **Debug with the Playwright MCP**, not the test loop — drive the running
 playground via `browser_run_code_unsafe` / `browser_evaluate`. Lock the recipe
-into a spec, then `npm run test:e2e`.
+into a spec, then `bun run test:e2e`.
 
 ## Page lifecycle: share, don't reopen
 
@@ -258,7 +258,7 @@ matches either; assert exact: `getAttribute === 'true'`.
   timeout.
 - Browser pinned by `playwright-core`. If missing:
   `node node_modules/playwright-core/cli.js install chromium chromium-headless-shell`.
-  **Do NOT** `npx playwright install chrome` (purges + needs sudo).
+  **Do NOT** `bunx playwright install chrome` (purges + needs sudo).
 
 ## The `test-cases` playground feature
 
@@ -276,4 +276,4 @@ E2E specs span `src/runtime` AND playground scaffolding (the `.test`
 augmentation). `test/e2e/tsconfig.json` references
 `playground/.nuxt/tsconfig.app.json`; `playground/nuxt.config.ts` includes
 `../../test/e2e/**/*` and `../blokkli/features/**/*`. Covered by
-`npm run typecheck:playground`.
+`bun run typecheck:playground`.

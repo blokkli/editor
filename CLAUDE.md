@@ -41,16 +41,16 @@ gratuitous re-exports, not all re-exports.
 Test: if you can't say a one-line reason the re-export belongs there (beyond
 "it's convenient"), don't add it.
 
-### Typechecks: use the npm scripts. NEVER `npx vue-tsc ...`.
+### Typechecks: use the package.json scripts. NEVER `bunx vue-tsc ...`.
 
 The dedicated package.json scripts ARE the typecheck:
 
 ```bash
-npm run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
-npm run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
-npm run typecheck:server      # server code (.nuxt/tsconfig.server.json)
-npm run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
-npm run typecheck             # runs all four
+bun run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
+bun run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
+bun run typecheck:server      # server code (.nuxt/tsconfig.server.json)
+bun run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
+bun run typecheck             # runs all four
 ```
 
 Never improvise a `vue-tsc --project tsconfig.something.json` call. The
@@ -74,11 +74,11 @@ implementation.
 ### Development
 
 ```bash
-npm run dev                    # Start playground dev server
-npm run dev:minimal            # Start minimal playground
-npm run dev:prepare            # Prepare dev environment (stub build)
-npm run dev:build              # Generate static playground
-npm run dev:start              # Serve static playground build
+bun run dev                    # Start playground dev server
+bun run dev:minimal            # Start minimal playground
+bun run dev:prepare            # Prepare dev environment (stub build)
+bun run dev:build              # Generate static playground
+bun run dev:start              # Serve static playground build
 ```
 
 **Note:** During development, the dev server is always running with hot module
@@ -86,43 +86,44 @@ replacement. Do NOT start the dev server to verify changes - it's already
 running and will automatically reload. Same for styles, no need to build styles.
 
 **Do NOT verify changes in the browser (Playwright) unless explicitly asked.**
-For UI/editor changes, running the targeted typechecks and prettier is enough by
+For UI/editor changes, running the targeted typechecks and the formatter
+(`bun run format`, which runs oxfmt) is enough by
 default - only reach for the browser when the user asks you to test/verify it
 there.
 
 ### Building & Packaging
 
 ```bash
-npm run prepack                # Build module for distribution
-npm run styles:build           # Build PostCSS styles
-npm run styles:watch           # Watch and rebuild styles
+bun run prepack                # Build module for distribution
+bun run styles:build           # Build PostCSS styles
+bun run styles:watch           # Watch and rebuild styles
 ```
 
 ### Testing & Quality
 
 ```bash
-npm test                       # Run Vitest tests
-npm run test:watch             # Watch mode for tests
-npm run typecheck              # Type check all (see /typecheck skill for targeted commands)
-npm run lint                   # Lint source files
-npm run lint:fix               # Auto-fix linting issues
-npm run format                 # Check code formatting
-npm run format:fix           # Auto-fix formatting
+bun run test                   # Run Vitest tests
+bun run test:watch             # Watch mode for tests
+bun run typecheck              # Type check all (see /typecheck skill for targeted commands)
+bun run lint                   # Lint source files
+bun run lint:fix               # Auto-fix linting issues
+bun run format                 # Check code formatting
+bun run format:fix           # Auto-fix formatting
 ```
 
 ### Documentation
 
 ```bash
-npm run docs:dev               # Start VitePress docs dev server
-npm run docs:build             # Build documentation
-npm run docs:preview           # Preview built docs
+bun run docs:dev               # Start VitePress docs dev server
+bun run docs:build             # Build documentation
+bun run docs:preview           # Preview built docs
 ```
 
 ### Specialized Scripts
 
 ```bash
-npm run texts                  # Sync translation PO/JSON files (see /translations skill)
-npm run material-icons         # Regenerate used-icons list (see /icons skill)
+bun run texts                  # Sync translation PO/JSON files (see /translations skill)
+bun run material-icons         # Regenerate used-icons list (see /icons skill)
 ```
 
 ## Architecture Overview

@@ -85,7 +85,7 @@ it via `graphqlMiddleware.schemaPath`.
    you're implementing. Do NOT guess field names.
 2. Write the `.graphql` document in `src/modules/drupal/graphql/` matching the
    schema exactly
-3. Run `npm run dev:prepare` to regenerate types from the schema
+3. Run `bun run dev:prepare` to regenerate types from the schema
 4. The `Mutation` and `Query` TypeScript types (from
    `#nuxt-graphql-middleware/operation-types`) are generated from this schema —
    after `dev:prepare`, new operations will be recognized

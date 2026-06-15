@@ -131,8 +131,8 @@
     "test:unit": "vitest run --project unit",
     "test:unit:watch": "vitest watch --project unit",
     "test:e2e": "vitest run --project e2e",
-    "format": "prettier . --check",
-    "format:fix": "prettier . --write",
+    "format": "oxfmt --check && prettier '**/*.graphql' --check",
+    "format:fix": "oxfmt --write && prettier '**/*.graphql' --write",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
@@ -215,7 +215,6 @@
     "postcss-selector-parser": "^7.1.4",
     "postcss-url": "^10.1.4",
     "prettier": "^3.8.4",
-    "prettier-plugin-glsl": "^0.3.0",
     "syllable": "^5.0.1",
     "tailwindcss": "^4.2.4",
     "tsx": "^4.22.4",

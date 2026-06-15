@@ -24,30 +24,30 @@ files as source of truth, with generated JSON files for runtime use.
 
 ```bash
 # Sync: extract source texts and update all PO/JSON files
-npm run texts
+bun run texts
 
 # List missing translations for a language
-npm run texts -- missing <language>
+bun run texts -- missing <language>
 
 # Update specific translations
-npm run texts -- update <language> key1="value1" key2="value2"
+bun run texts -- update <language> key1="value1" key2="value2"
 ```
 
 ## Workflows
 
 ### Find missing translations for a language
 
-1. Run `npm run texts -- missing <language>` to get the list of untranslated
+1. Run `bun run texts -- missing <language>` to get the list of untranslated
    keys with their English source text
 2. Present the missing keys to the user or proceed with translating them
 
 ### Add translations for missing keys
 
-1. Run `npm run texts -- missing <language>` to identify which keys need
+1. Run `bun run texts -- missing <language>` to identify which keys need
    translation
 2. Translate the English source texts to the target language
 3. Run
-   `npm run texts -- update <language> key1="translation1" key2="translation2"`
+   `bun run texts -- update <language> key1="translation1" key2="translation2"`
    to write them
 4. The command updates both the `.po` file and regenerates the `.json` file
 
@@ -57,13 +57,13 @@ npm run texts -- update <language> key1="value1" key2="value2"
 2. **Both arguments must be pure string literals** (no variables, concatenation,
    or template literals with expressions) — they are extracted by statically
    parsing the source code
-3. Run `npm run texts` to sync — this adds the new key to all PO files and
+3. Run `bun run texts` to sync — this adds the new key to all PO files and
    regenerates JSON
 4. Then add translations using the update command above
 
 ### Full sync after code changes
 
-Run `npm run texts` to re-extract all keys, add new ones to PO files, remove
+Run `bun run texts` to re-extract all keys, add new ones to PO files, remove
 stale ones, and regenerate all JSON files.
 
 ## Important Notes
@@ -71,7 +71,7 @@ stale ones, and regenerate all JSON files.
 - **Never edit JSON files directly** — always edit PO files or use the CLI
   commands
 - The `update` command will error if a key doesn't exist in the PO file — run
-  `npm run texts` first to sync new keys
+  `bun run texts` first to sync new keys
 - Translation entries have both a `source` (English text) and a `translation`
   (localized text)
 - Keys with an empty `translation` are considered missing
