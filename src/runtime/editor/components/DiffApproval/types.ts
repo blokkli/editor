@@ -46,9 +46,7 @@ export function unitsFromItems(items: ApprovalItem[]): ApprovalUnit[] {
   const units: ApprovalUnit[] = []
   for (const item of items) {
     if (item.segments) {
-      const atoms = flattenSegments(item.segments).filter(
-        (s) => s.status !== 'matched' || s.beforeHtml !== s.afterHtml,
-      )
+      const atoms = flattenSegments(item.segments).filter((s) => s.changed)
       for (const segment of atoms) {
         units.push({
           kind: 'segment',

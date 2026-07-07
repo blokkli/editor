@@ -114,9 +114,7 @@ export function decideFieldUpdates(
 
   for (const item of items) {
     if (item.segments) {
-      const atoms = flattenSegments(item.segments).filter(
-        (s) => s.status !== 'matched' || s.beforeHtml !== s.afterHtml,
-      )
+      const atoms = flattenSegments(item.segments).filter((s) => s.changed)
       totalCount += atoms.length
 
       const acceptedById: Record<string, boolean> = {}
