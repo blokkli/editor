@@ -7,13 +7,20 @@ export default defineServerSideTool({
     'Load additional tools by name before using them. You must call this before using any tool listed under "Additional Tools" in the system prompt.',
 
   inputSchema(ctx) {
-    // Accept any lazy tool name, not just the currently-unloaded ones. The LLM
-    // sometimes re-loads a tool it already activated; rejecting that as invalid
-    // input only forces a wasted retry loop. `handle` re-activates idempotently.
+    // Accept any tool name as a plain string rather than an enum of lazy tools.
+    // The LLM sometimes asks to load a tool that's already active or isn't lazy
+    // at all (a regular, always-available tool). Both are harmless no-ops, but
+    // a strict enum rejects the non-lazy name as invalid input, forcing a
+    // wasted retry loop. `handle` activates the lazy names and silently ignores
+    // the rest.
     return z.object({
       tools: z
-        .array(z.enum(ctx.lazyToolNames as [string, ...string[]]))
-        .describe('Tool names to activate'),
+        .array(z.string())
+        .describe(
+          ctx.lazyToolNames.length
+            ? `Tool names to activate. Loadable tools: ${ctx.lazyToolNames.join(', ')}.`
+            : 'Tool names to activate.',
+        ),
     })
   },
 
