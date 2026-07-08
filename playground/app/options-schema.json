@@ -3,26 +3,46 @@
   "button": {
     "align": {
       "default": "center",
-      "label": "Align",
+      "label": {
+        "de": "Align"
+      },
       "options": {
-        "center": "Center",
-        "left": "Left",
-        "right": "Right"
+        "center": {
+          "label": {
+            "de": "Center"
+          }
+        },
+        "left": {
+          "label": {
+            "de": "Left"
+          }
+        },
+        "right": {
+          "label": {
+            "de": "Right"
+          }
+        }
       },
       "type": "radios"
     },
     "color": {
       "default": "normal",
       "displayAs": "colors",
-      "label": "Color",
+      "label": {
+        "de": "Color"
+      },
       "options": {
         "normal": {
           "class": "bg-white",
-          "label": "White"
+          "label": {
+            "de": "White"
+          }
         },
         "primary": {
           "class": "bg-accent-700",
-          "label": "Primary"
+          "label": {
+            "de": "Primary"
+          }
         }
       },
       "type": "radios"
@@ -32,31 +52,47 @@
   "card": {
     "box": {
       "default": true,
-      "description": "If checked, the card is displayed as a box with shadow. It will have a white or dark background, depending on the background of the parent block.",
-      "label": "Box",
+      "description": {
+        "de": "If checked, the card is displayed as a box with shadow. It will have a white or dark background, depending on the background of the parent block."
+      },
+      "label": {
+        "de": "Box"
+      },
       "type": "checkbox"
     },
     "color": {
       "default": "lightBlue",
-      "description": "The color for the icon.",
+      "description": {
+        "de": "The color for the icon."
+      },
       "displayAs": "colors",
-      "label": "Color",
+      "label": {
+        "de": "Color"
+      },
       "options": {
         "lightBlue": {
           "class": "bg-accent-100",
-          "label": "Blue"
+          "label": {
+            "de": "Blue"
+          }
         },
         "lightGreen": {
           "class": "bg-lime-normal",
-          "label": "Green"
+          "label": {
+            "de": "Green"
+          }
         },
         "lightRed": {
           "class": "bg-red-normal",
-          "label": "Red with a large label"
+          "label": {
+            "de": "Red with a large label"
+          }
         },
         "lightYellow": {
           "class": "bg-yellow-normal",
-          "label": "Yellow"
+          "label": {
+            "de": "Yellow"
+          }
         }
       },
       "type": "radios"
@@ -66,7 +102,9 @@
     "data": {
       "dataType": "chart",
       "default": "{}",
-      "label": "Chart data",
+      "label": {
+        "de": "Chart data"
+      },
       "type": "json"
     }
   },
@@ -141,26 +179,36 @@
     "columns": {
       "default": "two",
       "displayAs": "icons",
-      "label": "Columns",
+      "label": {
+        "de": "Columns"
+      },
       "options": {
         "four": {
           "icon": "icon-blokkli-option-four",
-          "label": "Four"
+          "label": {
+            "de": "Four"
+          }
         },
         "three": {
           "icon": "icon-blokkli-option-three",
-          "label": "Three"
+          "label": {
+            "de": "Three"
+          }
         },
         "two": {
           "icon": "icon-blokkli-option-two",
-          "label": "Two"
+          "label": {
+            "de": "Two"
+          }
         }
       },
       "type": "radios"
     },
     "mobile": {
       "default": true,
-      "label": "Mobile",
+      "label": {
+        "de": "Mobile"
+      },
       "type": "checkbox"
     }
   },
@@ -169,15 +217,21 @@
     "iframeHeight": {
       "dataType": "iframe_heights",
       "default": "{}",
-      "label": "Iframe heights",
+      "label": {
+        "de": "Iframe heights"
+      },
       "type": "json"
     }
   },
   "image": {
     "elevated": {
       "default": true,
-      "description": "Renders the image with a box shadow.",
-      "label": "Elevated",
+      "description": {
+        "de": "Renders the image with a box shadow."
+      },
+      "label": {
+        "de": "Elevated"
+      },
       "type": "checkbox"
     }
   },
@@ -223,27 +277,39 @@
     },
     "bkHiddenGlobally": {
       "default": false,
-      "description": "Always hides the block.",
-      "label": "Hide globally",
+      "description": {
+        "de": "Always hides the block."
+      },
+      "label": {
+        "de": "Hide globally"
+      },
       "type": "checkbox"
     },
     "bkVisibleLanguages": {
       "default": [],
-      "description": "Only show on specific languages.",
-      "label": "Visible languages",
+      "description": {
+        "de": "Only show on specific languages."
+      },
+      "label": {
+        "de": "Visible languages"
+      },
       "options": {},
       "type": "checkboxes"
     },
     "showInMenu": {
       "default": true,
-      "label": "Show in menu",
+      "label": {
+        "de": "Show in menu"
+      },
       "type": "checkbox"
     }
   },
   "two_columns": {
     "anchorId": {
       "default": "",
-      "label": "Anchor ID",
+      "label": {
+        "de": "Anchor ID"
+      },
       "type": "text"
     },
     "background": {
@@ -313,47 +379,67 @@
     },
     "columns": {
       "default": "equal",
-      "description": "Define how wide the columns are.",
+      "description": {
+        "de": "Define how wide the columns are."
+      },
       "displayAs": "grid",
-      "label": "Columns",
+      "label": {
+        "de": "Columns"
+      },
       "options": {
         "equal": {
           "columns": [
             1,
             1
           ],
-          "description": "Same width for both colums",
-          "label": "Equal"
+          "description": {
+            "de": "Same width for both colums"
+          },
+          "label": {
+            "de": "Equal"
+          }
         },
         "oneTwo": {
           "columns": [
             1,
             2
           ],
-          "description": "Use when you want a large image",
-          "label": "One / Two"
+          "description": {
+            "de": "Use when you want a large image"
+          },
+          "label": {
+            "de": "One / Two"
+          }
         },
         "twoOne": {
           "columns": [
             2,
             1
           ],
-          "description": "Use when you want a small image",
-          "label": "Two / One"
+          "description": {
+            "de": "Use when you want a small image"
+          },
+          "label": {
+            "de": "Two / One"
+          }
         }
       },
       "type": "radios"
     },
     "reverse": {
       "default": false,
-      "label": "Reverse",
+      "label": {
+        "de": "Reverse"
+      },
       "type": "checkbox"
     }
   },
   "video": {
     "elevated": {
       "default": true,
-      "label": "Elevated",
+      "label": {
+        "de": "Elevated"
+      },
       "type": "checkbox"
     }
   },
@@ -444,8 +530,12 @@
     },
     "bkVisibleLanguages": {
       "default": [],
-      "description": "Only show on specific languages.",
-      "label": "Visible languages",
+      "description": {
+        "de": "Only show on specific languages."
+      },
+      "label": {
+        "de": "Visible languages"
+      },
       "options": {},
       "type": "checkboxes"
     },
@@ -578,28 +668,36 @@
             1,
             1
           ],
-          "label": "50% / 50%"
+          "label": {
+            "de": "50% / 50%"
+          }
         },
         "oneTwo": {
           "columns": [
             1,
             2
           ],
-          "label": "33% / 66%"
+          "label": {
+            "de": "33% / 66%"
+          }
         },
         "quarterOne": {
           "columns": [
             3,
             1
           ],
-          "label": "75% / 25%"
+          "label": {
+            "de": "75% / 25%"
+          }
         },
         "twoOne": {
           "columns": [
             2,
             1
           ],
-          "label": "66% / 33%"
+          "label": {
+            "de": "66% / 33%"
+          }
         }
       },
       "type": "radios"

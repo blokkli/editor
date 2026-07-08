@@ -161,11 +161,13 @@ describe('The comments feature', async () => {
   })
 
   afterEach(async () => {
-    if (await page.locator('[data-test="comment-add-form"]').isVisible()) {
-      await page.keyboard.press('Escape')
-      await page
-        .locator('[data-test="comment-add-form"]')
-        .waitFor({ state: 'detached' })
+    const addForm = page.locator('[data-test="comment-add-form"]')
+    if (await addForm.isVisible()) {
+      // The add-form wrapper swallows keydown in the capture phase
+      // (`@keydown.capture.stop`), so Escape never reaches the tooltip's close
+      // handler — dismiss it via the tooltip's close button instead.
+      await page.locator('[data-test="artboard-tooltip-close"]').first().click()
+      await addForm.waitFor({ state: 'detached' })
     }
     await emitEvent(page, 'select:unselect')
   })

@@ -24,6 +24,7 @@ const props = withDefaults(
   {
     type: 'text',
     modelValue: '',
+    placeholder: undefined,
   },
 )
 

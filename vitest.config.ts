@@ -48,6 +48,7 @@ export default defineConfig({
           // burning a minute on a transition that never finishes.
           testTimeout: 15000,
           hookTimeout: 15000,
+          maxWorkers: 4,
         },
       },
       await defineVitestProject({

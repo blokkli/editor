@@ -29,6 +29,7 @@
         <button
           type="button"
           class="bk-validation-item"
+          data-test="publish-violation-button"
           @click.prevent="onClick(item)"
         >
           <div v-if="item.block" class="bk-validation-item-header">

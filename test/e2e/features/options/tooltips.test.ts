@@ -6,6 +6,7 @@ import {
   blockOption,
   bringOptionIntoView,
   openOptionGroup,
+  resolveOptionText,
   setupWidget,
 } from './../../support/options'
 
@@ -61,7 +62,9 @@ describe('Options — tooltips', async () => {
     // The label exists in the DOM but is `visibility: hidden` via the
     // `invisible` utility — Playwright treats that as not visible.
     expect(await tooltipLabel.isVisible()).toBe(false)
-    expect(await tooltipLabel.textContent()).toBe('With double description')
+    expect(await tooltipLabel.textContent()).toBe(
+      await resolveOptionText(page, 'radiosWithLabelDescription'),
+    )
 
     await wrapper.hover()
     await tooltipLabel.waitFor({ state: 'visible' })
@@ -75,18 +78,27 @@ describe('Options — tooltips', async () => {
     const description = wrapper.locator('[data-test="tooltip-description"]')
     await description.waitFor({ state: 'visible' })
     expect((await description.textContent())?.trim()).toBe(
-      'This is the option description.',
+      await resolveOptionText(
+        page,
+        'radiosWithLabelDescription',
+        'description',
+      ),
     )
   })
 
   test('ungrouped option without description: hovering shows the label but no description block, and no status slot', async () => {
-    await bringOptionIntoView(page, 'anchorId')
-    const wrapper = blockOption(page, 'anchorId')
+    // `rows` is an ungrouped, non-radios option with no description defined
+    // (`anchorId` gained a description in the Widget's translatable-options
+    // demo, so it no longer exercises the "no description" branch).
+    await bringOptionIntoView(page, 'rows')
+    const wrapper = blockOption(page, 'rows')
 
     await wrapper.hover()
     const tooltipLabel = wrapper.locator('[data-test="tooltip-label"]')
     await tooltipLabel.waitFor({ state: 'visible' })
-    expect(await tooltipLabel.textContent()).toBe('Anchor ID')
+    expect(await tooltipLabel.textContent()).toBe(
+      await resolveOptionText(page, 'rows'),
+    )
 
     // The option has no description and isn't a radios → neither the
     // description block nor the TooltipContext status slot is rendered.
@@ -117,7 +129,14 @@ describe('Options — tooltips', async () => {
       .poll(() =>
         wrapper.locator('[data-test="tooltip-status-label"]').textContent(),
       )
-      .toBe('Two')
+      .toBe(
+        await resolveOptionText(
+          page,
+          'radiosWithLabelDescription',
+          'label',
+          'two',
+        ),
+      )
     const statusDescription = wrapper.locator(
       '[data-test="tooltip-status-description"]',
     )
@@ -125,7 +144,12 @@ describe('Options — tooltips', async () => {
     // The span renders `: {{ description }}` — assert the full text incl.
     // the leading `": "` punctuation.
     expect((await statusDescription.textContent())?.trim()).toBe(
-      ': The description for the second option option.',
+      `: ${await resolveOptionText(
+        page,
+        'radiosWithLabelDescription',
+        'description',
+        'two',
+      )}`,
     )
   })
 
@@ -138,7 +162,9 @@ describe('Options — tooltips', async () => {
     const wrapper = blockOption(page, 'buttonType')
     const tooltipLabel = wrapper.locator('[data-test="tooltip-label"]')
     await tooltipLabel.waitFor({ state: 'visible' })
-    expect(await tooltipLabel.textContent()).toBe('Button Type')
+    expect(await tooltipLabel.textContent()).toBe(
+      await resolveOptionText(page, 'buttonType'),
+    )
   })
 
   test('grouped radios with displayAs:"icons": hovering an icon writes its label into the inline tooltip status', async () => {
@@ -156,7 +182,7 @@ describe('Options — tooltips', async () => {
       .poll(() =>
         wrapper.locator('[data-test="tooltip-status-label"]').textContent(),
       )
-      .toBe('Four')
+      .toBe(await resolveOptionText(page, 'columns', 'label', 'four'))
   })
 
   test('above-* tooltip extends above the toolbar without being clipped (clip-path regression)', async () => {

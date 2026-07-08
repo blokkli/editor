@@ -7,6 +7,7 @@ import {
   blockOptionControl,
   bringOptionIntoView,
   openOptionGroup,
+  resolveOptionText,
   setupWidget,
 } from './../../support/options'
 
@@ -65,12 +66,12 @@ describe('Options — rendering', async () => {
       await control
         .locator('[data-test="radios-label"][data-test-value="primary"]')
         .textContent(),
-    ).toBe('Primary')
+    ).toBe(await resolveOptionText(page, 'buttonType', 'label', 'primary'))
     expect(
       await control
         .locator('[data-test="radios-label"][data-test-value="secondary"]')
         .textContent(),
-    ).toBe('Secondary')
+    ).toBe(await resolveOptionText(page, 'buttonType', 'label', 'secondary'))
 
     // The widget's `buttonType` default is `'primary'` — that's the only
     // checked input.
@@ -200,7 +201,7 @@ describe('Options — rendering', async () => {
     // The label text mirrors `option.label`.
     expect(
       await control.locator('[data-test="checkbox-label"]').textContent(),
-    ).toBe('Show all options')
+    ).toBe(await resolveOptionText(page, 'showAllOptions'))
   })
 
   test('range option: renders the range input carrying the min/max/step from defineBlokkli and a formatted-value sibling', async () => {
