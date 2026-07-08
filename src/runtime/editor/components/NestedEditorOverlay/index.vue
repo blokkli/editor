@@ -39,6 +39,7 @@
         v-show="isLoaded"
         class="bk bk-library-edit-overlay fixed top-40 3xl:top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto z-nested-editor-overlay-iframe"
         :class="'bk-is-' + theme"
+        :data-test="'nested-editor-overlay-' + id"
       >
         <div
           class="relative top-0 left-0 w-full h-full bg-white overflow-hidden"
@@ -77,6 +78,7 @@ import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ThemeColorName } from '../../../../global/types/theme'
 
 export type NestedEditorOverlayProps = {
+  id: string
   url?: string
   uuid: string
   title: string

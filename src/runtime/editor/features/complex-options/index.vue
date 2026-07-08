@@ -1,5 +1,6 @@
 <template>
   <NestedEditorOverlay
+    :id="'complex-option-' + dataType"
     v-if="uuid"
     :uuid
     :title="
