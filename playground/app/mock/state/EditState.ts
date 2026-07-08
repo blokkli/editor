@@ -318,6 +318,23 @@ export class EditState {
     window.localStorage.setItem(this.getStorageKey('mutations'), data)
   }
 
+  /**
+   * Drop the most recently added mutation and step the index back.
+   *
+   * Used to roll back a mutation the mock backend rejected during validation,
+   * so the invalid state is never persisted — mirroring how a real backend
+   * discards a failed transaction.
+   */
+  removeLastMutation() {
+    const mutations = this.getMutations()
+    if (!mutations.length) {
+      return
+    }
+    mutations.pop()
+    this.currentIndex = this.currentIndex - 1
+    this.persistMutations(mutations)
+  }
+
   getMutationItems(): MutationItem[] {
     return this.getMutations().map((v) => {
       const mutation = createMutation(v.id as any, v.configuration)

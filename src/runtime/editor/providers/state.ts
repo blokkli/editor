@@ -8,7 +8,11 @@ import {
   provide,
 } from 'vue'
 import { refreshNuxtData, useState } from 'nuxt/app'
-import type { BlokkliAdapter, AdapterContext } from '../adapter'
+import type {
+  BlokkliAdapter,
+  AdapterContext,
+  MutationResponseLike,
+} from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from '../../helpers/injections'
 import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
 import type { FieldListItem } from '#blokkli/types'
@@ -171,6 +175,25 @@ export type StateProvider = {
    *   response, or `null`/`undefined` to no-op.
    */
   applyMutationState: (rawState: unknown) => void
+
+  /**
+   * Run an adapter mutation with the loading lock, but return the raw response
+   * instead of a boolean and never emit an error toast.
+   *
+   * Like {@link mutateWithLoadingState} it locks the body for the duration of
+   * the call and applies any returned `state`, but it does NOT throw or show a
+   * global error message on failure. The caller receives the full
+   * {@link MutationResponseLike} and is responsible for surfacing violations —
+   * used by the agent tool runner, where the conversation UI already indicates
+   * that a tool errored and a global editor toast would be redundant.
+   *
+   * @param callback - Function that performs the mutation.
+   * @returns The raw mutation response, or `undefined` if no callback was
+   *   provided or it resolved to no response.
+   */
+  applyMutationSilently: (
+    callback: () => Promise<MutationResponseLike<any>> | undefined,
+  ) => Promise<MutationResponseLike<any> | undefined>
 
   /**
    * Current edit mode.
@@ -736,6 +759,22 @@ export default async function (
     return false
   }
 
+  const applyMutationSilently: StateProvider['applyMutationSilently'] = async (
+    callback,
+  ) => {
+    if (!callback) {
+      return undefined
+    }
+    lockBody()
+    try {
+      const response = await callback()
+      applyMutationState(response?.state)
+      return response
+    } finally {
+      unlockBody()
+    }
+  }
+
   async function loadState() {
     try {
       const state = await adapter.loadState()
@@ -838,6 +877,7 @@ export default async function (
     lastChanged: readonly(lastChanged),
     mutateWithLoadingState,
     applyMutationState,
+    applyMutationSilently,
     editMode,
     canEdit,
     isLoading: readonly(isLoading),

@@ -3,6 +3,7 @@ import type { Field } from '../Field'
 import { FieldIcon } from '../Field/Icon'
 import { FieldText } from '../Field/Text'
 import { FieldUrl } from '../Field/Url'
+import type { EntityValidation } from '../Validation'
 import { Paragraph } from './Paragraph'
 import imageUrl from './images/button.png?url'
 
@@ -18,7 +19,7 @@ export class ParagraphButton extends Paragraph {
     return [
       ...super.getFieldDefintions(),
       new FieldText('title', 'Title'),
-      new FieldUrl('url', 'URL'),
+      new FieldUrl('url', 'URL', 1, true),
       new FieldIcon('icon', 'Icon'),
     ]
   }
@@ -37,5 +38,18 @@ export class ParagraphButton extends Paragraph {
 
   getUrl() {
     return this.get<FieldUrl>('url').toString()
+  }
+
+  override validate(): EntityValidation[] {
+    if (this.getUrl().includes('google.com')) {
+      return [
+        {
+          propertyPath: 'url',
+          message: `Linking to google.com is not allowed.`,
+        },
+      ]
+    }
+
+    return []
   }
 }

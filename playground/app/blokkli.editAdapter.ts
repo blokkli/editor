@@ -1147,11 +1147,42 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       flatten(e.blocks, e.host, e.afterUuid)
 
-      const result = await addMutation('add', flatArgs)
+      // UUIDs of every block being added, including nested children. Used to
+      // scope validation to the new blocks — like Drupal's add_multiple, which
+      // validates the entities it creates, not the rest of the page.
+      const newUuids = new Set<string>()
+      const collectUuids = (blocks: typeof e.blocks) => {
+        for (const block of blocks) {
+          newUuids.add(block.blockUuid)
+          if (block.children) {
+            Object.values(block.children).forEach(collectUuids)
+          }
+        }
+      }
+      collectUuids(e.blocks)
+
+      editState.addMutation('add', flatArgs)
+      const mutatedState = await editState.getMutatedState(
+        getEntity(),
+        ctx.value.language,
+      )
+
+      // Reject when a newly-added block fails validation (e.g. a Button
+      // linking to google.com). Roll the mutation back so the invalid state
+      // isn't persisted, and return the violations so the caller (editor UI or
+      // agent) can surface them.
+      const violations = mutatedState.violations.filter(
+        (v) => v.entityUuid && newUuids.has(v.entityUuid),
+      )
+      if (violations.length) {
+        editState.removeLastMutation()
+        return { success: false, violations }
+      }
+
       if (optionsToUpdate.length) {
         return addMutation('update_options', { options: optionsToUpdate })
       }
-      return result
+      return mockResponse(mutatedState)
     },
 
     moveBlock: (e) =>
