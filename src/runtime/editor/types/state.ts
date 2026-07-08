@@ -55,6 +55,13 @@ export interface MappedState {
   mutations: MutationItem[]
   currentUserIsOwner: boolean
   ownerName: string
+  /**
+   * Unix timestamp (in seconds) of when the edit state was last changed.
+   *
+   * This is the edit state's own `changed` time (it bumps on every mutation),
+   * distinct from `publishOptions.lastChanged`, which is the published entity's.
+   */
+  lastChanged?: number
   ownerId?: string
   mutatedState?: {
     mutatedOptions?: any

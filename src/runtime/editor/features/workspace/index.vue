@@ -16,7 +16,7 @@
     region="title"
     weight="500"
     icon="bk_mdi_feature_search"
-    class="relative"
+    class="relative border-l border-l-mono-600"
     @click="isVisible = !isVisible"
   />
 </template>

@@ -131,6 +131,15 @@ export type StateProvider = {
   currentMutationIndex: Readonly<Ref<number>>
 
   /**
+   * Unix timestamp (in seconds) of when the edit state was last changed, or
+   * `null` if there are no changes yet. Updates after every mutation.
+   *
+   * Distinct from `publishOptions.lastChanged`, which is the published entity's
+   * change time.
+   */
+  lastChanged: Readonly<Ref<number | null>>
+
+  /**
    * Validation violations for the current state.
    *
    * Contains errors and warnings about invalid field values or configurations.
@@ -366,6 +375,7 @@ export default async function (
   })
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
+  const lastChanged = ref<number | null>(null)
   const entity = ref<EditEntity>({
     label: '',
     status: false,
@@ -473,6 +483,7 @@ export default async function (
     entity.value.label = context?.entity?.label
     entity.value.status = context?.entity?.status
     entity.value.bundleLabel = context?.entity?.bundleLabel || ''
+    lastChanged.value = context?.lastChanged ?? null
 
     updatePublishOptions(mapPublishOptions(context))
 
@@ -824,6 +835,7 @@ export default async function (
     mutations,
     violations,
     currentMutationIndex,
+    lastChanged: readonly(lastChanged),
     mutateWithLoadingState,
     applyMutationState,
     editMode,

@@ -855,6 +855,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         currentUserIsOwner: isOwner,
         ownerName: ownershipOverride?.ownerName ?? state.owner.name,
         ownerId: ownershipOverride?.ownerId ?? state.owner.id,
+        // The mock has no persisted "changed" timestamp — fake it as "now".
+        // Using Date.now() keeps E2E deterministic under setFixedTime().
+        lastChanged: Math.floor(Date.now() / 1000),
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,

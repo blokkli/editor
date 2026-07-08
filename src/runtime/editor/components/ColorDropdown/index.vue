@@ -38,7 +38,7 @@
             class="rounded-full block relative outline-2 outline-offset-2 outline-transparent size-30"
             :class="[
               item.isMain && [
-                'before:content-empty before:absolute before:size-8 before:rounded-full before:left-1/2 before:top-1/2 before:-translate-x-1/2 before:-translate-y-1/2',
+                'before:bk-content-empty before:absolute before:size-8 before:rounded-full before:left-1/2 before:top-1/2 before:-translate-x-1/2 before:-translate-y-1/2',
                 item.isLightBg ? 'before:bg-black' : 'before:bg-white',
               ],
               isSelected(item.colorId)

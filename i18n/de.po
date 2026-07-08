@@ -2548,6 +2548,10 @@ msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr "Bearbeiten ist für diesen Blocktyp deaktiviert."
 
+msgctxt "entityTitleLastChanged"
+msgid "Last changed"
+msgstr "Zuletzt geändert"
+
 msgctxt "entityTitleTourText"
 msgid ""
 "<p>Shows the title and status of the current page.</p><p>Click on the title "
@@ -3416,6 +3420,10 @@ msgid "Content like pages or images referenced or linked by this block."
 msgstr ""
 "Inhalte wie Seiten oder Bilder, die von diesem Block referenziert oder "
 "verlinkt werden."
+
+msgctxt "relativeTimeJustNow"
+msgid "just now"
+msgstr "gerade eben"
 
 msgctxt "remove"
 msgid "Remove"

@@ -58,7 +58,7 @@
       }"
     >
       <div v-if="isSuccess">
-        <StatusIndicator :status="newStatusPropValue" class="mx-0" />
+        <StatusIndicator :status="newStatusPropValue" />
       </div>
       <div v-else-if="isSelected && isMutating">
         <Icon
@@ -67,13 +67,10 @@
         />
       </div>
       <div v-else-if="isSelected">
-        <StatusIndicator
-          :status="isCurrentlyPublished ? 'success' : 'error'"
-          class="mx-0"
-        />
+        <StatusIndicator :status="isCurrentlyPublished ? 'success' : 'error'" />
         <template v-if="newStatus.status !== isCurrentlyPublished">
           <Icon name="arrow-right-thin" class="[&_svg]:size-15" />
-          <StatusIndicator :status="newStatusPropValue" class="mx-0" />
+          <StatusIndicator :status="newStatusPropValue" />
         </template>
       </div>
     </td>

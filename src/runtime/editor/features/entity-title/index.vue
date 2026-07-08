@@ -20,18 +20,21 @@
     <button
       ref="buttonEl"
       class="bk-toolbar-button group/tooltip w-full justify-start relative"
-      data-test="entity-title"
-      :data-test-entity-status="statusIndicatorStatus"
       :disabled="!state.canEdit.value"
       @click="onEditEntity"
     >
-      <div class="bk-toolbar-title relative size-full">
-        <div
-          class="min-w-0 truncate absolute top-1/2 left-0 w-full -translate-y-1/2 text-left flex items-center"
-        >
-          <StatusIndicator :status="statusIndicatorStatus" />
+      <div class="flex items-center relative size-full">
+        <div class="flex items-center">
+          <StatusIndicator :status="statusIndicatorStatus" class="mr-10" />
           <strong class="text-mono-100">{{ entity.label }}</strong>
           <span>&nbsp;{{ entity.bundleLabel }}</span>
+        </div>
+        <div
+          v-if="lastChanged"
+          class="text-[11px] text-mono-300 border border-mono-500 px-5 py-1 rounded-full ml-10 font-medium"
+        >
+          {{ $t('entityTitleLastChanged', 'Last changed') }}
+          <RelativeTime :timestamp="lastChanged" />
         </div>
       </div>
       <Tooltip :label="tooltipLabel" />
@@ -46,7 +49,12 @@ import {
   computed,
   useTemplateRef,
 } from '#imports'
-import { Icon, StatusIndicator, Tooltip } from '#blokkli/editor/components'
+import {
+  Icon,
+  RelativeTime,
+  StatusIndicator,
+  Tooltip,
+} from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { UiStatus } from '#blokkli/editor/types/ui'
 
@@ -58,7 +66,7 @@ defineBlokkliFeature({
 })
 
 const { state, eventBus, $t, ui } = useBlokkli()
-const { entity, mutations } = state
+const { entity, mutations, lastChanged } = state
 const buttonEl = useTemplateRef('buttonEl')
 
 // Persist any pending option changes before opening the entity edit form

@@ -2461,6 +2461,10 @@ msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr ""
 
+msgctxt "entityTitleLastChanged"
+msgid "Last changed"
+msgstr "Ultima modifica"
+
 msgctxt "entityTitleTourText"
 msgid ""
 "<p>Shows the title and status of the current page.</p><p>Click on the title "
@@ -3291,6 +3295,10 @@ msgstr ""
 msgctxt "relatedContentTooltip"
 msgid "Content like pages or images referenced or linked by this block."
 msgstr ""
+
+msgctxt "relativeTimeJustNow"
+msgid "just now"
+msgstr "proprio ora"
 
 msgctxt "remove"
 msgid "Remove"
