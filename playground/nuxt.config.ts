@@ -171,40 +171,99 @@ export default defineNuxtConfig({
     globalOptions: {
       background: {
         type: 'radios',
-        label: 'Background',
+        label: {
+          en: 'Background',
+          de: 'Hintergrund',
+          fr: 'Arrière-plan',
+          it: 'Sfondo',
+          gsw_CH: 'Hintergrund',
+        },
         default: 'white',
         displayAs: 'colors',
         options: {
           white: {
             class: 'bg-white',
-            label: 'White',
-            description: 'A nice white color.',
+            label: {
+              en: 'White',
+              de: 'Weiss',
+              fr: 'Blanc',
+              it: 'Bianco',
+              gsw_CH: 'Wiiss',
+            },
+            description: {
+              en: 'A nice white color.',
+              de: 'Eine schöne weisse Farbe.',
+              fr: 'Une belle couleur blanche.',
+              it: 'Un bel colore bianco.',
+              gsw_CH: 'E schöni wiissi Farb.',
+            },
           },
           light: {
             class: 'bg-mono-100',
-            label: 'Light',
-            description: 'A slightly gray color.',
+            label: {
+              en: 'Light',
+              de: 'Hell',
+              fr: 'Clair',
+              it: 'Chiaro',
+              gsw_CH: 'Häll',
+            },
+            description: {
+              en: 'A slightly gray color.',
+              de: 'Eine leicht graue Farbe.',
+              fr: 'Une couleur légèrement grise.',
+              it: 'Un colore leggermente grigio.',
+              gsw_CH: 'E liicht graui Farb.',
+            },
           },
           dark: {
             class: 'bg-mono-800',
-            label: 'Dark',
-            description:
-              'A full dark color that also inverts text color to white.',
+            label: {
+              en: 'Dark',
+              de: 'Dunkel',
+              fr: 'Foncé',
+              it: 'Scuro',
+              gsw_CH: 'Dunkel',
+            },
+            description: {
+              en: 'A full dark color that also inverts text color to white.',
+              de: 'Eine komplett dunkle Farbe, die auch die Textfarbe auf Weiss umkehrt.',
+              fr: 'Une couleur entièrement foncée qui inverse aussi la couleur du texte en blanc.',
+              it: 'Un colore completamente scuro che inverte anche il colore del testo in bianco.',
+              gsw_CH: 'E ganz dunkli Farb, wo au d Textfarb uf Wiiss umchehrt.',
+            },
           },
         },
       },
       alignment: {
         type: 'radios',
-        label: 'Alignment',
+        label: {
+          en: 'Alignment',
+          de: 'Ausrichtung',
+          fr: 'Alignement',
+          it: 'Allineamento',
+          gsw_CH: 'Uusrichtig',
+        },
         default: 'center',
         displayAs: 'icons',
         options: {
           left: {
-            label: 'Left',
+            label: {
+              en: 'Left',
+              de: 'Links',
+              fr: 'Gauche',
+              it: 'Sinistra',
+              gsw_CH: 'Links',
+            },
             icon: 'bk_mdi_format_align_left',
           },
           center: {
-            label: 'Center',
+            label: {
+              en: 'Center',
+              de: 'Zentriert',
+              fr: 'Centré',
+              it: 'Centrato',
+              gsw_CH: 'Zentriert',
+            },
             icon: 'bk_mdi_format_align_center',
           },
         },

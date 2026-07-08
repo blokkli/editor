@@ -1,3 +1,5 @@
+export type DefinitionString = string | Record<string, string>
+
 type DefinitionOptionText = {
   /**
    * The option type.
@@ -12,14 +14,19 @@ type DefinitionOptionText = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
+
+  /**
+   * The placeholder.
+   */
+  placeholder?: DefinitionString
 
   /**
    * The HTML input type.
@@ -45,14 +52,14 @@ type DefinitionOptionNumberBase = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * Minimum allowed value.
@@ -114,14 +121,14 @@ type DefinitionOptionRange = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * Minimum allowed value.
@@ -155,14 +162,14 @@ type DefinitionOptionDateTimeLocal = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * The default value as an ISO 8601 datetime string.
@@ -203,14 +210,14 @@ type DefinitionOptionCheckbox = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * Optional group name for organizing options.
@@ -236,14 +243,14 @@ type DefinitionOptionColor = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * Optional group name for organizing options.
@@ -262,14 +269,14 @@ type DefinitionOptionCheckboxes = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * The default values.
@@ -281,7 +288,7 @@ type DefinitionOptionCheckboxes = {
    *
    * Key is the option value, value is the display label.
    */
-  options: Record<string, string>
+  options: Record<string, DefinitionString>
 
   /**
    * Optional group name for organizing options.
@@ -302,12 +309,12 @@ type DefinitionOptionRadiosGridOption = {
   /**
    * The label displayed for this option.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context for this option.
    */
-  description?: string
+  description?: DefinitionString
 }
 
 type DefinitionOptionRadiosGrid = {
@@ -342,12 +349,12 @@ type DefinitionOptionRadiosColorsOption = {
   /**
    * The label displayed for this option.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context for this option.
    */
-  description?: string
+  description?: DefinitionString
 }
 
 type DefinitionOptionRadiosColors = {
@@ -378,7 +385,10 @@ type DefinitionOptionRadiosRadios = {
    * Key is the option value, value is the display label or an object with
    * label and optional description.
    */
-  options: Record<string, string | { label: string; description?: string }>
+  options: Record<
+    string,
+    string | { label: DefinitionString; description?: DefinitionString }
+  >
 }
 
 type DefinitionOptionRadiosIconsOptionBase<Icon extends string = string> = {
@@ -392,12 +402,12 @@ type DefinitionOptionRadiosIconsOptionBase<Icon extends string = string> = {
   /**
    * The label displayed for this option.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context for this option.
    */
-  description?: string
+  description?: DefinitionString
 }
 
 type DefinitionOptionRadiosIconsBase<Icon extends string = string> = {
@@ -423,14 +433,14 @@ type DefinitionOptionRadiosBase<Icon extends string = string> = {
   /**
    * The label displayed in the editor.
    */
-  label: string
+  label: DefinitionString
 
   /**
    * Optional description providing additional context.
    *
    * Displayed below the option label in the editor.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * The default value.
@@ -454,10 +464,10 @@ type DefinitionOptionRadiosBase<Icon extends string = string> = {
 
 type DefinitionOptionJsonBase<DataType extends string = string> = {
   type: 'json'
-  label: string
+  label: DefinitionString
   default: string
   dataType?: DataType
-  description?: string
+  description?: DefinitionString
   group?: string
 }
 

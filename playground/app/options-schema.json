@@ -76,22 +76,64 @@
     "background": {
       "default": "white",
       "displayAs": "colors",
-      "label": "Background",
+      "label": {
+        "de": "Hintergrund",
+        "en": "Background",
+        "fr": "Arrière-plan",
+        "gsw_CH": "Hintergrund",
+        "it": "Sfondo"
+      },
       "options": {
         "dark": {
           "class": "bg-mono-800",
-          "description": "A full dark color that also inverts text color to white.",
-          "label": "Dark"
+          "description": {
+            "de": "Eine komplett dunkle Farbe, die auch die Textfarbe auf Weiss umkehrt.",
+            "en": "A full dark color that also inverts text color to white.",
+            "fr": "Une couleur entièrement foncée qui inverse aussi la couleur du texte en blanc.",
+            "gsw_CH": "E ganz dunkli Farb, wo au d Textfarb uf Wiiss umchehrt.",
+            "it": "Un colore completamente scuro che inverte anche il colore del testo in bianco."
+          },
+          "label": {
+            "de": "Dunkel",
+            "en": "Dark",
+            "fr": "Foncé",
+            "gsw_CH": "Dunkel",
+            "it": "Scuro"
+          }
         },
         "light": {
           "class": "bg-mono-100",
-          "description": "A slightly gray color.",
-          "label": "Light"
+          "description": {
+            "de": "Eine leicht graue Farbe.",
+            "en": "A slightly gray color.",
+            "fr": "Une couleur légèrement grise.",
+            "gsw_CH": "E liicht graui Farb.",
+            "it": "Un colore leggermente grigio."
+          },
+          "label": {
+            "de": "Hell",
+            "en": "Light",
+            "fr": "Clair",
+            "gsw_CH": "Häll",
+            "it": "Chiaro"
+          }
         },
         "white": {
           "class": "bg-white",
-          "description": "A nice white color.",
-          "label": "White"
+          "description": {
+            "de": "Eine schöne weisse Farbe.",
+            "en": "A nice white color.",
+            "fr": "Une belle couleur blanche.",
+            "gsw_CH": "E schöni wiissi Farb.",
+            "it": "Un bel colore bianco."
+          },
+          "label": {
+            "de": "Weiss",
+            "en": "White",
+            "fr": "Blanc",
+            "gsw_CH": "Wiiss",
+            "it": "Bianco"
+          }
         }
       },
       "type": "radios"
@@ -148,15 +190,33 @@
     "alignment": {
       "default": "center",
       "displayAs": "icons",
-      "label": "Alignment",
+      "label": {
+        "de": "Ausrichtung",
+        "en": "Alignment",
+        "fr": "Alignement",
+        "gsw_CH": "Uusrichtig",
+        "it": "Allineamento"
+      },
       "options": {
         "center": {
           "icon": "bk_mdi_format_align_center",
-          "label": "Center"
+          "label": {
+            "de": "Zentriert",
+            "en": "Center",
+            "fr": "Centré",
+            "gsw_CH": "Zentriert",
+            "it": "Centrato"
+          }
         },
         "left": {
           "icon": "bk_mdi_format_align_left",
-          "label": "Left"
+          "label": {
+            "de": "Links",
+            "en": "Left",
+            "fr": "Gauche",
+            "gsw_CH": "Links",
+            "it": "Sinistra"
+          }
         }
       },
       "type": "radios"
@@ -189,22 +249,64 @@
     "background": {
       "default": "white",
       "displayAs": "colors",
-      "label": "Background",
+      "label": {
+        "de": "Hintergrund",
+        "en": "Background",
+        "fr": "Arrière-plan",
+        "gsw_CH": "Hintergrund",
+        "it": "Sfondo"
+      },
       "options": {
         "dark": {
           "class": "bg-mono-800",
-          "description": "A full dark color that also inverts text color to white.",
-          "label": "Dark"
+          "description": {
+            "de": "Eine komplett dunkle Farbe, die auch die Textfarbe auf Weiss umkehrt.",
+            "en": "A full dark color that also inverts text color to white.",
+            "fr": "Une couleur entièrement foncée qui inverse aussi la couleur du texte en blanc.",
+            "gsw_CH": "E ganz dunkli Farb, wo au d Textfarb uf Wiiss umchehrt.",
+            "it": "Un colore completamente scuro che inverte anche il colore del testo in bianco."
+          },
+          "label": {
+            "de": "Dunkel",
+            "en": "Dark",
+            "fr": "Foncé",
+            "gsw_CH": "Dunkel",
+            "it": "Scuro"
+          }
         },
         "light": {
           "class": "bg-mono-100",
-          "description": "A slightly gray color.",
-          "label": "Light"
+          "description": {
+            "de": "Eine leicht graue Farbe.",
+            "en": "A slightly gray color.",
+            "fr": "Une couleur légèrement grise.",
+            "gsw_CH": "E liicht graui Farb.",
+            "it": "Un colore leggermente grigio."
+          },
+          "label": {
+            "de": "Hell",
+            "en": "Light",
+            "fr": "Clair",
+            "gsw_CH": "Häll",
+            "it": "Chiaro"
+          }
         },
         "white": {
           "class": "bg-white",
-          "description": "A nice white color.",
-          "label": "White"
+          "description": {
+            "de": "Eine schöne weisse Farbe.",
+            "en": "A nice white color.",
+            "fr": "Une belle couleur blanche.",
+            "gsw_CH": "E schöni wiissi Farb.",
+            "it": "Un bel colore bianco."
+          },
+          "label": {
+            "de": "Weiss",
+            "en": "White",
+            "fr": "Blanc",
+            "gsw_CH": "Wiiss",
+            "it": "Bianco"
+          }
         }
       },
       "type": "radios"
@@ -258,29 +360,84 @@
   "widget": {
     "anchorId": {
       "default": "",
+      "description": {
+        "de": "Die ID für den Anker"
+      },
       "inputType": "text",
-      "label": "Anchor ID",
+      "label": {
+        "de": "Anker-ID",
+        "en": "Anchor ID",
+        "fr": "ID d'ancre",
+        "gsw_CH": "Anker-ID",
+        "it": "ID àncora"
+      },
+      "placeholder": {
+        "de": "kontakt",
+        "en": "contact-us"
+      },
       "type": "text"
     },
     "background": {
       "default": "white",
       "displayAs": "colors",
-      "label": "Background",
+      "label": {
+        "de": "Hintergrund",
+        "en": "Background",
+        "fr": "Arrière-plan",
+        "gsw_CH": "Hintergrund",
+        "it": "Sfondo"
+      },
       "options": {
         "dark": {
           "class": "bg-mono-800",
-          "description": "A full dark color that also inverts text color to white.",
-          "label": "Dark"
+          "description": {
+            "de": "Eine komplett dunkle Farbe, die auch die Textfarbe auf Weiss umkehrt.",
+            "en": "A full dark color that also inverts text color to white.",
+            "fr": "Une couleur entièrement foncée qui inverse aussi la couleur du texte en blanc.",
+            "gsw_CH": "E ganz dunkli Farb, wo au d Textfarb uf Wiiss umchehrt.",
+            "it": "Un colore completamente scuro che inverte anche il colore del testo in bianco."
+          },
+          "label": {
+            "de": "Dunkel",
+            "en": "Dark",
+            "fr": "Foncé",
+            "gsw_CH": "Dunkel",
+            "it": "Scuro"
+          }
         },
         "light": {
           "class": "bg-mono-100",
-          "description": "A slightly gray color.",
-          "label": "Light"
+          "description": {
+            "de": "Eine leicht graue Farbe.",
+            "en": "A slightly gray color.",
+            "fr": "Une couleur légèrement grise.",
+            "gsw_CH": "E liicht graui Farb.",
+            "it": "Un colore leggermente grigio."
+          },
+          "label": {
+            "de": "Hell",
+            "en": "Light",
+            "fr": "Clair",
+            "gsw_CH": "Häll",
+            "it": "Chiaro"
+          }
         },
         "white": {
           "class": "bg-white",
-          "description": "A nice white color.",
-          "label": "White"
+          "description": {
+            "de": "Eine schöne weisse Farbe.",
+            "en": "A nice white color.",
+            "fr": "Une belle couleur blanche.",
+            "gsw_CH": "E schöni wiissi Farb.",
+            "it": "Un bel colore bianco."
+          },
+          "label": {
+            "de": "Weiss",
+            "en": "White",
+            "fr": "Blanc",
+            "gsw_CH": "Wiiss",
+            "it": "Bianco"
+          }
         }
       },
       "type": "radios"
@@ -295,10 +452,32 @@
     "buttonType": {
       "default": "primary",
       "group": "Radios",
-      "label": "Button Type",
+      "label": {
+        "de": "Schaltflächentyp",
+        "en": "Button Type",
+        "fr": "Type de bouton",
+        "gsw_CH": "Chnopf-Typ",
+        "it": "Tipo di pulsante"
+      },
       "options": {
-        "primary": "Primary",
-        "secondary": "Secondary"
+        "primary": {
+          "label": {
+            "de": "Primär",
+            "en": "Primary",
+            "fr": "Principal",
+            "gsw_CH": "Primär",
+            "it": "Primario"
+          }
+        },
+        "secondary": {
+          "label": {
+            "de": "Sekundär",
+            "en": "Secondary",
+            "fr": "Secondaire",
+            "gsw_CH": "Sekundär",
+            "it": "Secondario"
+          }
+        }
       },
       "type": "radios"
     },
@@ -306,15 +485,33 @@
       "default": "normal",
       "displayAs": "colors",
       "group": "Radios",
-      "label": "Color",
+      "label": {
+        "de": "Farbe",
+        "en": "Color",
+        "fr": "Couleur",
+        "gsw_CH": "Farb",
+        "it": "Colore"
+      },
       "options": {
         "normal": {
           "hex": "#FFFFFF",
-          "label": "White"
+          "label": {
+            "de": "Weiss",
+            "en": "White",
+            "fr": "Blanc",
+            "gsw_CH": "Wiiss",
+            "it": "Bianco"
+          }
         },
         "primary": {
           "hex": "#0550e6",
-          "label": "Blue"
+          "label": {
+            "de": "Blau",
+            "en": "Blue",
+            "fr": "Bleu",
+            "gsw_CH": "Blau",
+            "it": "Blu"
+          }
         }
       },
       "type": "radios"
@@ -323,19 +520,43 @@
       "default": "two",
       "displayAs": "icons",
       "group": "Radios",
-      "label": "Columns",
+      "label": {
+        "de": "Spalten",
+        "en": "Columns",
+        "fr": "Colonnes",
+        "gsw_CH": "Spalte",
+        "it": "Colonne"
+      },
       "options": {
         "four": {
           "icon": "icon-blokkli-option-four",
-          "label": "Four"
+          "label": {
+            "de": "Vier",
+            "en": "Four",
+            "fr": "Quatre",
+            "gsw_CH": "Vier",
+            "it": "Quattro"
+          }
         },
         "three": {
           "icon": "icon-blokkli-option-three",
-          "label": "Three"
+          "label": {
+            "de": "Drei",
+            "en": "Three",
+            "fr": "Trois",
+            "gsw_CH": "Drü",
+            "it": "Tre"
+          }
         },
         "two": {
           "icon": "icon-blokkli-option-two",
-          "label": "Two"
+          "label": {
+            "de": "Zwei",
+            "en": "Two",
+            "fr": "Deux",
+            "gsw_CH": "Zwöi",
+            "it": "Due"
+          }
         }
       },
       "type": "radios"
@@ -344,7 +565,13 @@
       "default": "equal",
       "displayAs": "grid",
       "group": "Radios",
-      "label": "Columns",
+      "label": {
+        "de": "Spalten",
+        "en": "Columns",
+        "fr": "Colonnes",
+        "gsw_CH": "Spalte",
+        "it": "Colonne"
+      },
       "options": {
         "equal": {
           "columns": [
@@ -383,30 +610,84 @@
         "de",
         "at"
       ],
-      "label": "Countries",
+      "label": {
+        "de": "Länder",
+        "en": "Countries",
+        "fr": "Pays",
+        "gsw_CH": "Länder",
+        "it": "Paesi"
+      },
       "options": {
-        "at": "Austria",
-        "ch": "Switzerland",
-        "de": "Germany",
-        "fr": "France",
-        "it": "Italy"
+        "at": {
+          "de": "Österreich",
+          "en": "Austria",
+          "fr": "Autriche",
+          "gsw_CH": "Ööschtriich",
+          "it": "Austria"
+        },
+        "ch": {
+          "de": "Schweiz",
+          "en": "Switzerland",
+          "fr": "Suisse",
+          "gsw_CH": "Schwiiz",
+          "it": "Svizzera"
+        },
+        "de": {
+          "de": "Deutschland",
+          "en": "Germany",
+          "fr": "Allemagne",
+          "gsw_CH": "Dütschland",
+          "it": "Germania"
+        },
+        "fr": {
+          "de": "Frankreich",
+          "en": "France",
+          "fr": "France",
+          "gsw_CH": "Frankriich",
+          "it": "Francia"
+        },
+        "it": {
+          "de": "Italien",
+          "en": "Italy",
+          "fr": "Italie",
+          "gsw_CH": "Italie",
+          "it": "Italia"
+        }
       },
       "type": "checkboxes"
     },
     "dateTimeLocal": {
-      "label": "Datetime Local",
+      "label": {
+        "de": "Datum und Zeit",
+        "en": "Datetime Local",
+        "fr": "Date et heure",
+        "gsw_CH": "Datum und Ziit",
+        "it": "Data e ora"
+      },
       "type": "datetime-local"
     },
     "nestedCheckbox": {
       "default": true,
       "group": "Radios",
-      "label": "Nested Checkbox",
+      "label": {
+        "de": "Verschachtelte Checkbox",
+        "en": "Nested Checkbox",
+        "fr": "Case à cocher imbriquée",
+        "gsw_CH": "Verschachtleti Checkbox",
+        "it": "Casella di controllo annidata"
+      },
       "type": "checkbox"
     },
     "paddingBottom": {
       "default": 0,
       "group": "Padding",
-      "label": "Bottom",
+      "label": {
+        "de": "Unten",
+        "en": "Bottom",
+        "fr": "Bas",
+        "gsw_CH": "Une",
+        "it": "Basso"
+      },
       "max": 100,
       "min": 0,
       "step": 1,
@@ -415,7 +696,13 @@
     "paddingLeft": {
       "default": 0,
       "group": "Padding",
-      "label": "Left",
+      "label": {
+        "de": "Links",
+        "en": "Left",
+        "fr": "Gauche",
+        "gsw_CH": "Links",
+        "it": "Sinistra"
+      },
       "max": 100,
       "min": 0,
       "step": 1,
@@ -424,7 +711,13 @@
     "paddingRight": {
       "default": 0,
       "group": "Padding",
-      "label": "Right",
+      "label": {
+        "de": "Rechts",
+        "en": "Right",
+        "fr": "Droite",
+        "gsw_CH": "Rächts",
+        "it": "Destra"
+      },
       "max": 100,
       "min": 0,
       "step": 1,
@@ -433,7 +726,13 @@
     "paddingTop": {
       "default": 0,
       "group": "Padding",
-      "label": "Top",
+      "label": {
+        "de": "Oben",
+        "en": "Top",
+        "fr": "Haut",
+        "gsw_CH": "Obe",
+        "it": "Alto"
+      },
       "max": 100,
       "min": 0,
       "step": 1,
@@ -441,23 +740,65 @@
     },
     "radiosWithLabelDescription": {
       "default": "one",
-      "description": "This is the option description.",
-      "label": "With double description",
+      "description": {
+        "de": "Dies ist die Beschreibung der Option.",
+        "en": "This is the option description.",
+        "fr": "Ceci est la description de l'option.",
+        "gsw_CH": "Das isch d Beschriibig vo dr Option.",
+        "it": "Questa è la descrizione dell'opzione."
+      },
+      "label": {
+        "de": "Mit doppelter Beschreibung",
+        "en": "With double description",
+        "fr": "Avec double description",
+        "gsw_CH": "Mit dopplete Beschriibig",
+        "it": "Con doppia descrizione"
+      },
       "options": {
         "one": {
-          "description": "The description for the first option option.",
-          "label": "One"
+          "description": {
+            "de": "Die Beschreibung für die erste Optionsoption.",
+            "en": "The description for the first option option.",
+            "fr": "La description de la première option.",
+            "gsw_CH": "D Beschriibig für di erschti Option.",
+            "it": "La descrizione della prima opzione."
+          },
+          "label": {
+            "de": "Eins",
+            "en": "One",
+            "fr": "Un",
+            "gsw_CH": "Eis",
+            "it": "Uno"
+          }
         },
         "two": {
-          "description": "The description for the second option option.",
-          "label": "Two"
+          "description": {
+            "de": "Die Beschreibung für die zweite Optionsoption.",
+            "en": "The description for the second option option.",
+            "fr": "La description de la deuxième option.",
+            "gsw_CH": "D Beschriibig für di zwöiti Option.",
+            "it": "La descrizione della seconda opzione."
+          },
+          "label": {
+            "de": "Zwei",
+            "en": "Two",
+            "fr": "Deux",
+            "gsw_CH": "Zwöi",
+            "it": "Due"
+          }
         }
       },
       "type": "radios"
     },
     "range": {
       "default": 0,
-      "label": "Range",
+      "label": {
+        "de": "Bereich",
+        "en": "Range",
+        "fr": "Plage",
+        "gsw_CH": "Bereich",
+        "it": "Intervallo"
+      },
       "max": 1,
       "min": 0,
       "step": 0.01,
@@ -465,19 +806,44 @@
     },
     "rows": {
       "default": 0,
-      "label": "Number",
+      "label": {
+        "de": "Zahl",
+        "en": "Number",
+        "fr": "Nombre",
+        "gsw_CH": "Zahl",
+        "it": "Numero"
+      },
       "max": 8,
       "min": 0,
       "type": "number"
     },
     "showAllOptions": {
       "default": true,
-      "label": "Show all options",
+      "description": {
+        "de": "Wenn ausgewählt werden alle anderen Optionen angezeigt",
+        "en": "When selected, all other options are shown",
+        "fr": "Lorsque cette option est activée, toutes les autres options sont affichées",
+        "gsw_CH": "Wenn aktiviert, wärde alli andere Optione azeigt",
+        "it": "Se selezionato, vengono mostrate tutte le altre opzioni"
+      },
+      "label": {
+        "de": "Alle Optionen anzeigen",
+        "en": "Show all options",
+        "fr": "Afficher toutes les options",
+        "gsw_CH": "Alli Optione azeige",
+        "it": "Mostra tutte le opzioni"
+      },
       "type": "checkbox"
     },
     "textColor": {
       "default": "#ffffff",
-      "label": "Text color",
+      "label": {
+        "de": "Textfarbe",
+        "en": "Text color",
+        "fr": "Couleur du texte",
+        "gsw_CH": "Textfarb",
+        "it": "Colore del testo"
+      },
       "type": "color"
     }
   }

@@ -59,9 +59,7 @@
           />
         </div>
         <span v-else data-test="radios-label" :data-test-value="option.key">
-          {{
-            typeof option.value === 'string' ? option.value : option.value.label
-          }}
+          {{ typeof option.value === 'string' ? option.value : option.label }}
         </span>
       </div>
     </label>
@@ -72,8 +70,9 @@
 import { computed, useBlokkli, onMounted } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { defineCommands } from '#blokkli/editor/composables'
+import type { DefinitionString } from '../../../../../../global/types/blockOptions'
 
-const { $t, state } = useBlokkli()
+const { $t, state, definitions } = useBlokkli()
 
 type PossibleOptionType =
   | string
@@ -82,8 +81,8 @@ type PossibleOptionType =
       class?: string
       columns?: number[]
       icon?: string
-      label: string
-      description?: string
+      label: DefinitionString
+      description?: DefinitionString
     }
 
 const props = defineProps<{
@@ -120,11 +119,23 @@ function getInputWrapperAttributes(value: PossibleOptionType) {
   return {}
 }
 
-const mappedOptions = computed(() => {
+const mappedOptions = computed<
+  {
+    key: string
+    value: PossibleOptionType
+    label: string
+    description: string
+  }[]
+>(() => {
   return Object.entries(props.options).map(([key, value]) => {
     const label = typeof value === 'string' ? value : value.label
     const description = typeof value === 'object' ? value.description || '' : ''
-    return { key, value, label, description }
+    return {
+      key,
+      value,
+      label: definitions.resolveDefinitionString(label),
+      description: definitions.resolveDefinitionString(description),
+    }
   })
 })
 

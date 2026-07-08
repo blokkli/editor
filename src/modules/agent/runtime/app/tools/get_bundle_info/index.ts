@@ -173,11 +173,15 @@ export default defineBlokkliAgentTool({
               )
               const entry: BlockOptionsMap[string] = {
                 type: opt.option.type,
-                label: opt.option.label,
+                label: ctx.app.definitions.resolveDefinitionString(
+                  opt.option.label,
+                ),
                 currentValue: resolvedValue ?? '',
               }
               if (opt.option.description) {
-                entry.description = opt.option.description
+                entry.description = ctx.app.definitions.resolveDefinitionString(
+                  opt.option.description,
+                )
               }
               const labels = extractOptionLabels(opt.option)
               if (labels) {

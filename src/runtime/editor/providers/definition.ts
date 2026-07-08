@@ -14,8 +14,12 @@ import type {
 import type { DeepReadonly } from 'vue'
 import type { BlockDefinitionOptionsInput } from '../../types/definitions'
 import { OPTIONS } from '#blokkli-build/runtime-options'
-import type { RuntimeBlockOptionArray } from '../../../global/types/blockOptions'
+import type {
+  DefinitionString,
+  RuntimeBlockOptionArray,
+} from '../../../global/types/blockOptions'
 import type { RenderedFieldListItem } from '../types/field'
+import { resolveDefinitionString as resolveDefinitionStringBase } from '../helpers/options'
 
 export type DefinitionProvider = {
   /**
@@ -127,9 +131,14 @@ export type DefinitionProvider = {
    * Block bundles that can be added automatically without showing the form.
    */
   bundlesWithAutoAdd: ComputedRef<string[]>
+
+  resolveDefinitionString: (definitionString: DefinitionString) => string
 }
 
-export default function (providerType: ValidProviderTypes): DefinitionProvider {
+export default function (
+  providerType: ValidProviderTypes,
+  interfaceLanguage: ComputedRef<string>,
+): DefinitionProvider {
   const blocks = ref<BlockDefinition[]>(definitions.blocks)
   const fragments = ref<FragmentDefinition[]>(definitions.fragments)
   const providers = ref<ProviderDefinition[]>(definitions.providers)
@@ -273,6 +282,13 @@ export default function (providerType: ValidProviderTypes): DefinitionProvider {
       .map((v) => v.bundle)
   })
 
+  function resolveDefinitionString(definitionString: DefinitionString): string {
+    return resolveDefinitionStringBase(
+      definitionString,
+      interfaceLanguage.value,
+    )
+  }
+
   return {
     getBlockDefinition,
     getFragmentDefinition,
@@ -286,6 +302,7 @@ export default function (providerType: ValidProviderTypes): DefinitionProvider {
     runtimeOptions: readonly(runtimeOptions),
     renderKey: readonly(renderKey),
     bundlesWithAutoAdd,
+    resolveDefinitionString,
   }
 }
 
