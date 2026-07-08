@@ -56,6 +56,7 @@ export type ViewOption = {
   keyCode?: string
   tourText?: string
   weight?: number
+  default?: boolean
 }
 
 type ViewOptionFunction = PluginAddFunction<ViewOption>

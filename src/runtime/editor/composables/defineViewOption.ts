@@ -6,7 +6,11 @@ export function defineViewOption(options: ViewOption): {
   isVisible: ComputedRef<boolean>
 } {
   const { storage, ui, plugins } = useBlokkli()
-  const isActive = storage.use('view_option_' + options.id, false, true)
+  const isActive = storage.use(
+    'view_option_' + options.id,
+    !!options.default,
+    true,
+  )
   const isVisible = computed(() => isActive.value && !ui.isMobile.value)
   const cb = () => options
 
