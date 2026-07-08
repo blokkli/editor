@@ -6,6 +6,7 @@ import { ChartTypeCollector } from './build/ChartTypeCollector'
 import createDefinitionsTemplate from './build/templates/definitions'
 import createComponentsTemplate from './build/templates/components'
 import createIllustrationsTemplate from './build/templates/illustrations'
+import createConfigTemplate from './build/templates/config'
 import type { ChartsModuleOptions } from './build/types'
 
 const resolve = createResolver(
@@ -17,7 +18,7 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     options.blokkliDirs ??= []
     options.blokkliDirs.push(resolve('./runtime/blokkli'))
   },
-  setup({ context, helper, $t }) {
+  setup({ context, helper, $t }, options) {
     // Runtime packages imported by the chart editor and renderers. Registered
     // here so they are only pre-bundled when the charts module is enabled.
     helper.addPackageDependency('echarts', 'vue-echarts', 'json5', 'zod')
@@ -57,6 +58,7 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     context.addTemplate(createDefinitionsTemplate(chartTypes))
     context.addTemplate(createComponentsTemplate(chartTypes))
     context.addTemplate(createIllustrationsTemplate(chartTypes))
+    context.addTemplate(createConfigTemplate(options))
 
     helper.addAppTsInclude(projectChartsDir)
     for (const dir of moduleBlokkliDirs) {
