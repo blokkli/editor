@@ -1,10 +1,23 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
-    <div id="bk-indicators" class="bk bk-indicators" :style>
-      <div id="bk-indicators-left" />
+    <div
+      id="bk-indicators"
+      class="bk bk-indicators absolute top-0 left-0 pointer-events-none origin-top-left z-interaction-overlay"
+      :style
+    >
+      <div
+        id="bk-indicators-left"
+        class="absolute right-full top-0 whitespace-nowrap h-full"
+      />
       <div id="bk-indicators-right" />
-      <div class="bk-indicators-hovered" :style="hoveredStyle" />
-      <div class="bk-indicators-highlighted" :style="highlightedStyle" />
+      <div
+        class="bk-indicators-hovered absolute top-0 left-0 bg-red-normal/30 rounded border-3 border-red-normal"
+        :style="hoveredStyle"
+      />
+      <div
+        class="bk-indicators-highlighted absolute top-0 left-0 rounded border-3 border-accent-500 ring-4 ring-accent-300 outline outline-white"
+        :style="highlightedStyle"
+      />
     </div>
   </Teleport>
 </template>
@@ -66,11 +79,17 @@ const highlightedStyle = computed<StyleValue>(() => {
 
 const HEIGHT = 30
 
+/**
+ * How far (in artboard units) a sticky indicator is shifted onto the
+ * artboard when clamped, so that the icon at its right end stays visible.
+ */
+const STICKY_RESERVED = 35
+
 function snapToAnchorGrid(y: number): number {
   return Math.ceil(y / HEIGHT) * HEIGHT
 }
 
-const prevRects: Map<string, number> = new Map()
+const prevTransforms: Map<string, string> = new Map()
 let lastFullUpdate = 0
 
 onBlokkliEvent('animationFrame', function (ctx) {
@@ -84,6 +103,15 @@ onBlokkliEvent('animationFrame', function (ctx) {
 
   const forceRefresh = ctx.time - lastFullUpdate > 1000
 
+  // The X translation (in artboard units) needed so that the right edge of
+  // a sticky indicator stays inside the visible viewport.
+  const stickyX = Math.max(
+    0,
+    (ui.visibleViewport.value.x - ui.artboardOffset.value.x) /
+      ui.artboardScale.value +
+      STICKY_RESERVED,
+  )
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i]
     if (!item) {
@@ -92,7 +120,7 @@ onBlokkliEvent('animationFrame', function (ctx) {
 
     const rect = dom.getBlockRect(item.uuid, forceRefresh)
     if (!rect) {
-      prevRects.delete(item.uuid)
+      prevTransforms.delete(item.uuid)
       continue
     }
     let y = snapToAnchorGrid(Math.round(rect.y))
@@ -103,9 +131,11 @@ onBlokkliEvent('animationFrame', function (ctx) {
 
     taken.add(y)
 
-    const style = `translateY(${y}px)`
-    if (prevRects.get(item.uuid) !== y) {
-      prevRects.set(item.uuid, y)
+    const x = item.sticky && item.position === 'left' ? stickyX : 0
+
+    const style = `translate(${x}px, ${y}px)`
+    if (prevTransforms.get(item.uuid) !== style) {
+      prevTransforms.set(item.uuid, style)
       item.element.style.transform = style
     }
   }
@@ -116,11 +146,11 @@ onBlokkliEvent('animationFrame', function (ctx) {
 })
 
 onBlokkliEvent('view-option:toggle', () => {
-  prevRects.clear()
+  prevTransforms.clear()
 })
 
 onBlokkliEvent('state:reloaded', () => {
-  prevRects.clear()
+  prevTransforms.clear()
 })
 
 function highlightElement(element: HTMLElement) {
@@ -155,56 +185,10 @@ onBlokkliEvent('window:clickAway', function () {
 })
 
 watch(indicators.indicators, function () {
-  prevRects.clear()
+  prevTransforms.clear()
 })
 
 watch(selection.uuids, function () {
   highlighted.value = null
 })
 </script>
-
-<style lang="postcss">
-.bk {
-  &.bk-indicators {
-    @apply absolute top-0 left-0 pointer-events-none origin-top-left z-interaction-overlay;
-
-    #bk-indicators-left {
-      @apply absolute right-full top-0 whitespace-nowrap h-full;
-      .bk-indicator-item {
-        @apply right-0 pr-10;
-      }
-    }
-
-    .bk-indicator-item {
-      @apply absolute top-0 pointer-events-auto cursor-pointer text-mono-500 h-30 flex items-center;
-
-      .bk-icon {
-        @apply size-20 bg-red-normal text-white p-2 rounded-full;
-        svg {
-          @apply fill-white;
-        }
-      }
-
-      &:hover {
-        @apply text-mono-950;
-        .bk-icon {
-          @apply bg-red-dark;
-        }
-      }
-    }
-
-    .bk-indicator-item-inner {
-      @apply flex gap-5 items-center text-xs font-medium;
-    }
-
-    .bk-indicators-hovered {
-      @apply absolute top-0 left-0 bg-red-normal/30 rounded border-3 border-red-normal;
-    }
-
-    .bk-indicators-highlighted {
-      @apply absolute top-0 left-0 rounded border-3 border-accent-500;
-      @apply ring-4 ring-accent-300 outline outline-white;
-    }
-  }
-}
-</style>

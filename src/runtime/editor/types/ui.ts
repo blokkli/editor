@@ -54,6 +54,7 @@ export type BlockIndicator = {
   uuid: string
   element: HTMLElement
   position: 'left' | 'right'
+  sticky?: boolean
 }
 
 export type Placement =

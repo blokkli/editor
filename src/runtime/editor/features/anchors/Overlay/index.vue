@@ -6,6 +6,7 @@
     :uuid="item.uuid"
     :label="'#' + item.id"
     icon="bk_mdi_anchor"
+    sticky
     @click="onClick(item)"
   />
 </template>
@@ -14,6 +15,7 @@
 import { useBlokkli, useRoute, ref, onMounted } from '#imports'
 import { PluginBlockIndicator } from '#blokkli/editor/plugins'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
+import { renderCycle } from '#blokkli/editor/helpers/vue'
 
 type Item = {
   id: string
@@ -36,6 +38,10 @@ function getAnchorItems(): Item[] {
 
     const block = element.closest('[data-bk-uuid]')
     if (!(block instanceof HTMLElement)) {
+      continue
+    }
+
+    if (element.closest('form')) {
       continue
     }
 
@@ -74,11 +80,13 @@ function onClick(item: Item) {
   ui.copyTextToClipboard(link)
 }
 
-onBlokkliEvent('state:reloaded', () => {
+async function updateAnchorItems() {
+  await renderCycle()
   items.value = getAnchorItems()
-})
+}
 
-onMounted(() => {
-  items.value = getAnchorItems()
-})
+onBlokkliEvent('state:reloaded', updateAnchorItems)
+onBlokkliEvent('option:update', updateAnchorItems)
+
+onMounted(updateAnchorItems)
 </script>
