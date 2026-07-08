@@ -253,9 +253,11 @@ import '#blokkli/charts/adapter'
 import {
   categoriesAreDates,
   categoriesAreNumeric,
+  getColorIdAtIndex,
   getDefaultChartData,
   getFirstColorId,
 } from '../../../helpers'
+import { isColorIdValid } from '#blokkli/helpers/colors'
 import { getChartType, getDefaultTypeOptions } from '../../../chart-types'
 import { useChartEditorState } from './useChartEditorState'
 import { useChartDataSourcePreview } from './useChartDataSourcePreview'
@@ -303,24 +305,21 @@ function getCurrentData(): BlokkliChartData {
     const hasSeries = Array.isArray(parsed?.series) && parsed.series.length > 0
     if (parsed && (isAdvanced || hasSeries)) {
       if (!isAdvanced) {
-        const validIds = new Set(colorOptions.map((c) => c.id))
         const fallbackId = getFirstColorId(colorOptions)
         for (const series of parsed.series) {
-          if (!validIds.has(series.color)) {
+          if (!isColorIdValid(series.color, colorOptions)) {
             series.color = fallbackId
           }
         }
         if (Array.isArray(parsed.categoryColors)) {
           for (let i = 0; i < parsed.categoryColors.length; i++) {
-            if (!validIds.has(parsed.categoryColors[i])) {
+            if (!isColorIdValid(parsed.categoryColors[i], colorOptions)) {
               parsed.categoryColors[i] = fallbackId
             }
           }
         } else {
           parsed.categoryColors = parsed.categories.map(
-            (_: string, i: number) => {
-              return colorOptions[i % colorOptions.length]?.id || fallbackId
-            },
+            (_: string, i: number) => getColorIdAtIndex(i, colorOptions),
           )
         }
       } else {

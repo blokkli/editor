@@ -10,11 +10,17 @@
         <th />
         <th v-for="(s, si) in series" :key="si">
           <div class="bk-chart-data-table-series-header">
-            <ColorDropdown
+            <span
               v-if="hasSeriesColors"
-              :color-id="s.color"
-              @select="updateSeriesColor(si, $event)"
-            />
+              :data-test="`chart-series-color-${si}`"
+              :data-test-color="s.color"
+              class="contents"
+            >
+              <ColorDropdown
+                :color-id="s.color"
+                @select="updateSeriesColor(si, $event)"
+              />
+            </span>
             <input
               type="text"
               :value="s.name"
@@ -52,11 +58,17 @@
       <tr v-for="(cat, ci) in categories" :key="ci">
         <td>
           <div class="bk-chart-data-table-category-cell">
-            <ColorDropdown
+            <span
               v-if="hasCategoryColors"
-              :color-id="categoryColors[ci] || ''"
-              @select="updateCategoryColor(ci, $event)"
-            />
+              :data-test="`chart-category-color-${ci}`"
+              :data-test-color="categoryColors[ci] || ''"
+              class="contents"
+            >
+              <ColorDropdown
+                :color-id="categoryColors[ci] || ''"
+                @select="updateCategoryColor(ci, $event)"
+              />
+            </span>
             <input
               type="text"
               class="bk-chart-data-table-input font-semibold"

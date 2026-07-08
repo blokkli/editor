@@ -29,6 +29,8 @@
           v-for="item in row.items"
           :key="item.colorId"
           type="button"
+          data-test="color-swatch"
+          :data-test-color-id="item.colorId"
           class="group/tooltip flex border-none bg-transparent cursor-pointer size-40 items-center justify-center group"
           @click="selectedId = item.colorId"
         >
@@ -54,6 +56,8 @@
         v-for="entry in colorOptions"
         :key="entry.id"
         :text="entry.label"
+        data-test="color-swatch"
+        :data-test-color-id="entry.id"
         :class="{ 'bg-mono-100 text-mono-950': isSelected(entry.id) }"
         @click="selectedId = entry.id"
       >

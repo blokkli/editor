@@ -64,6 +64,25 @@ export async function closeFormOverlay(page: Page, id: string): Promise<void> {
 }
 
 /**
+ * Locate a nested editor overlay by its `id` (the `id` prop of
+ * `<NestedEditorOverlay>`, surfaced as `data-test="nested-editor-overlay-<id>"`,
+ * e.g. `complex-option-chart`). Returns a Locator for presence / visibility.
+ */
+export function nestedEditorOverlay(page: Page, id: string): Locator {
+  return page.locator(`[data-test="nested-editor-overlay-${id}"]`)
+}
+
+/**
+ * Close a nested editor overlay via its header back button and wait until the
+ * overlay is removed from the DOM. Note: for editors that persist on close
+ * (e.g. complex options), prefer the domain helper that also awaits the save.
+ */
+export async function closeNestedEditor(page: Page, id: string): Promise<void> {
+  await page.locator(`[data-test="nested-editor-overlay-close-${id}"]`).click()
+  await nestedEditorOverlay(page, id).waitFor({ state: 'detached' })
+}
+
+/**
  * Dismiss every currently-visible toast message by emitting `message:clear` on
  * the eventBus. Messages auto-dismiss after ~6s, but on a shared page they
  * accumulate at the viewport bottom and can intercept clicks on action

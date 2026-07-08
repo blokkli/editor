@@ -15,6 +15,7 @@
             <span>{{ title }}</span>
           </h2>
           <button
+            :data-test="'nested-editor-overlay-close-' + id"
             class="h-40 3xl:h-50 flex items-center px-10 gap-10 font-semibold leading-none ml-auto hover:bg-scheme-light-hover text-sm 3xl:text-base"
             @click.prevent="closeOverlay"
           >

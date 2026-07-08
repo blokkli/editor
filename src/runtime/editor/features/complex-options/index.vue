@@ -1,7 +1,7 @@
 <template>
   <NestedEditorOverlay
-    :id="'complex-option-' + dataType"
     v-if="uuid"
+    :id="'complex-option-' + dataType"
     :uuid
     :title="
       getText(config!.editTitle.key, config!.editTitle.defaultTranslation)
