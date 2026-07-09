@@ -36,18 +36,18 @@ export class ParagraphGrid extends Paragraph {
 
   override validate(): EntityValidation[] {
     const violations: EntityValidation[] = []
-    if (this.header().getBlocks().length === 0) {
-      violations.push({
-        propertyPath: 'header',
-        message: 'The grid header is required.',
-      })
-    }
-    if (this.blocks().getBlocks().length === 0) {
-      violations.push({
-        propertyPath: 'blocks',
-        message: 'The grid must contain at least one block.',
-      })
-    }
+    // if (this.header().getBlocks().length === 0) {
+    //   violations.push({
+    //     propertyPath: 'header',
+    //     message: 'The grid header is required.',
+    //   })
+    // }
+    // if (this.blocks().getBlocks().length === 0) {
+    //   violations.push({
+    //     propertyPath: 'blocks',
+    //     message: 'The grid must contain at least one block.',
+    //   })
+    // }
     return violations
   }
 }
