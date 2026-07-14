@@ -227,6 +227,30 @@ export default defineNuxtModule<ModuleOptions>({
       'twgl.js',
     )
 
+    // Tiptap and ProseMirror must exist exactly once in the module graph: they
+    // pass nodes, fragments and steps between packages and check them with
+    // `instanceof`. A host project whose lockfile hoists one prosemirror-model
+    // version while nesting an older one under, say, prosemirror-schema-list
+    // otherwise gets "Can not convert <> to a Fragment" the moment a command
+    // crosses the boundary between the two copies.
+    helper.addDedupedPackage(
+      '@tiptap/core',
+      '@tiptap/pm',
+      'prosemirror-changeset',
+      'prosemirror-commands',
+      'prosemirror-dropcursor',
+      'prosemirror-gapcursor',
+      'prosemirror-history',
+      'prosemirror-inputrules',
+      'prosemirror-keymap',
+      'prosemirror-model',
+      'prosemirror-schema-list',
+      'prosemirror-state',
+      'prosemirror-tables',
+      'prosemirror-transform',
+      'prosemirror-view',
+    )
+
     helper.applyBuildConfig()
 
     helper.addComponent('BlokkliField')

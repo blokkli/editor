@@ -73,6 +73,12 @@ export class ModuleHelper implements ValidationInterface {
    */
   private packageDependencies = new Set<string>()
 
+  /**
+   * npm packages that must resolve to a single copy across the whole app.
+   * Flushed to Vite's resolve.dedupe by {@link applyBuildConfig}.
+   */
+  private dedupedPackages = new Set<string>()
+
   public readonly isDev: boolean
   public readonly isModuleBuild: boolean
   public readonly isPrepare: boolean
@@ -263,10 +269,28 @@ export class ModuleHelper implements ValidationInterface {
   }
 
   /**
+   * Declare packages that must only ever exist once in the module graph.
+   *
+   * Libraries that rely on `instanceof` checks or module-level registries break
+   * when a project's install tree ends up with two copies (e.g. a hoisted
+   * version plus an older one nested under a transitive dependency). Forcing
+   * resolution to a single copy makes the editor work regardless of how the
+   * host project's package manager arranged node_modules.
+   *
+   * @param names - Bare package specifiers (e.g. 'prosemirror-model').
+   */
+  public addDedupedPackage(...names: string[]) {
+    for (const name of names) {
+      this.dedupedPackages.add(name)
+    }
+  }
+
+  /**
    * Apply collected build configuration to the Nuxt/Vite config.
    *
    * Called once by the core module after every module's setup has run, so it
-   * sees the full set of {@link addPackageDependency} registrations.
+   * sees the full set of {@link addPackageDependency} and
+   * {@link addDedupedPackage} registrations.
    */
   public applyBuildConfig() {
     this.nuxt.options.vite.optimizeDeps ??= {}
@@ -278,6 +302,14 @@ export class ModuleHelper implements ValidationInterface {
         continue
       }
       include.push(name)
+    }
+
+    this.nuxt.options.vite.resolve ??= {}
+    const dedupe = (this.nuxt.options.vite.resolve.dedupe ??= [])
+    for (const name of this.dedupedPackages) {
+      if (!dedupe.includes(name)) {
+        dedupe.push(name)
+      }
     }
   }
 
