@@ -37,47 +37,54 @@ Each type declares how it uses color:
 These options come from shared helpers and appear on multiple types. Store them
 under `typeOptions`.
 
-| Option                | Type    | Default    | Notes                                                            |
-| --------------------- | ------- | ---------- | ---------------------------------------------------------------- |
-| `xaxisRotation`       | radios  | `'auto'`   | Category label rotation: `auto`, `-45`, `-90`.                   |
-| `dataLabels`          | boolean | `false`    | Show values directly on chart elements.                          |
-| `legendPosition`      | radios  | `'bottom'` | `bottom`, `top`, `right`.                                        |
-| `gridLines`           | boolean | `true`     | Show background grid lines.                                      |
-| `strokeWidth`         | radios  | `'2'`      | Line thickness: `2` (thin), `4` (medium), `6` (thick).           |
-| `yaxisMin`            | number  | _unset_    | Nullable. Forces the value-axis start; unset auto-scales.        |
-| `categoryFilter`      | boolean | `false`    | Renders a category picker so viewers see one category at a time. |
-| `categoryFilterLabel` | text    | `''`       | Label next to the picker (only when `categoryFilter` is on).     |
+| Option                | Type    | Default  | Notes                                                            |
+| --------------------- | ------- | -------- | ---------------------------------------------------------------- |
+| `xaxisRotation`       | radios  | `'auto'` | Category label rotation: `auto`, `-45`, `-90`.                   |
+| `dataLabels`          | boolean | `false`  | Show values directly on chart elements.                          |
+| `yaxisMin`            | number  | _unset_  | Nullable. Forces the value-axis start; unset auto-scales.        |
+| `categoryFilter`      | boolean | `false`  | Renders a category picker so viewers see one category at a time. |
+| `categoryFilterLabel` | text    | `''`     | Label next to the picker (only when `categoryFilter` is on).     |
 
 Which shared options a type uses:
 
-- `bar` — `xaxisRotation`, `dataLabels`, `legendPosition`, `gridLines`,
-  `yaxisMin`, `categoryFilter`
-- `line` / `area` — the bar set **plus** `strokeWidth`
-- `radar` — `dataLabels`, `legendPosition`, `categoryFilter`
-- `heatmap` — `xaxisRotation`, `legendPosition`, `gridLines`, `categoryFilter`
-- `agePyramid` — `dataLabels`, `gridLines`, `legendPosition`
+- `bar` / `line` / `area` — `xaxisRotation`, `dataLabels`, `yaxisMin`,
+  `categoryFilter`
+- `radar` — `dataLabels`, `categoryFilter`
+- `heatmap` — `xaxisRotation`, `categoryFilter`
+- `agePyramid` — `dataLabels`
 - `pie` / `donut` / `radialBar` — `categoryFilter`
+
+Legend placement, grid-line visibility, line widths and other appearance
+concerns are **not** options — they are owned by the integrator's
+[`transform` hook](/modules/charts/setup#styling-theming) (`option.legend`,
+`option.xAxis`/`yAxis`, `series.lineStyle`, …), so they stay consistent across
+every chart on the site.
+
+Cartesian types (`bar`, `line`, `area`, `agePyramid`) also accept a **value-axis
+title** and a **category-axis title** — translatable content fields entered in
+the editor's Settings panel (`valueAxisTitle` / `categoryAxisTitle` on
+`BlokkliChartData`). They are named by role rather than X/Y, so they stay
+correct when a bar chart is switched to horizontal. blökkli sets only the text
+(`axis.name`); the `transform` hook owns its placement and styling.
 
 ## Per-type options
 
 On top of the shared options, each type adds its own:
 
-| Type         | Option         | Type    | Default | Choices / notes                                                                                                        |
-| ------------ | -------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `bar`        | `stacked`      | boolean | `false` | Stack series.                                                                                                          |
-|              | `horizontal`   | boolean | `false` | Render bars horizontally.                                                                                              |
-|              | `borderRadius` | radios  | `'0'`   | `0` none, `4` small, `8` large.                                                                                        |
-| `line`       | `curved`       | boolean | `false` | Smooth line.                                                                                                           |
-|              | `markers`      | boolean | `false` | Show point markers.                                                                                                    |
-| `area`       | `curved`       | boolean | `false` | Smooth line.                                                                                                           |
-|              | `markers`      | boolean | `false` | Show point markers.                                                                                                    |
-| `radar`      | `markers`      | boolean | `false` | Show point markers.                                                                                                    |
-|              | `fillOpacity`  | radios  | `'0.2'` | `0.2`, `0.4`, `0.8`.                                                                                                   |
-| `pie`        | `showLabels`   | boolean | `true`  | Show slice labels.                                                                                                     |
-| `donut`      | `showTotal`    | boolean | `false` | Show a total in the centre.                                                                                            |
-|              | `showLabels`   | boolean | `true`  | Show segment labels.                                                                                                   |
-| `radialBar`  | `showLabels`   | boolean | `true`  | Show labels.                                                                                                           |
-| `agePyramid` | `splitIndex`   | number  | _unset_ | Nullable. Series index that starts on the right; earlier series render on the left. Defaults to half the series count. |
+| Type         | Option       | Type    | Default | Choices / notes                                                                                                        |
+| ------------ | ------------ | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `bar`        | `stacked`    | boolean | `false` | Stack series.                                                                                                          |
+|              | `horizontal` | boolean | `false` | Render bars horizontally.                                                                                              |
+| `line`       | `curved`     | boolean | `false` | Smooth line.                                                                                                           |
+|              | `markers`    | boolean | `false` | Show point markers.                                                                                                    |
+| `area`       | `curved`     | boolean | `false` | Smooth line.                                                                                                           |
+|              | `markers`    | boolean | `false` | Show point markers.                                                                                                    |
+| `radar`      | `markers`    | boolean | `false` | Show point markers.                                                                                                    |
+| `pie`        | `showLabels` | boolean | `true`  | Show slice labels.                                                                                                     |
+| `donut`      | `showTotal`  | boolean | `false` | Show a total in the centre.                                                                                            |
+|              | `showLabels` | boolean | `true`  | Show segment labels.                                                                                                   |
+| `radialBar`  | `showLabels` | boolean | `true`  | Show labels.                                                                                                           |
+| `agePyramid` | `splitIndex` | number  | _unset_ | Nullable. Series index that starts on the right; earlier series render on the left. Defaults to half the series count. |
 
 Nullable options (`yaxisMin`, `splitIndex`) can be reset to "auto" by setting
 the key to `null`.

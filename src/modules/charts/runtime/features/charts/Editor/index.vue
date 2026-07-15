@@ -197,8 +197,17 @@
           >
             <ChartTypeOptions
               v-model:title="chartData.title"
+              :value-axis-title="chartData.valueAxisTitle ?? ''"
+              :category-axis-title="chartData.categoryAxisTitle ?? ''"
+              :has-axes="chartDef.hasAxes"
               :options="chartDef.editor.options"
               :type-options="chartData.typeOptions || {}"
+              @update:value-axis-title="
+                chartData.valueAxisTitle = $event || undefined
+              "
+              @update:category-axis-title="
+                chartData.categoryAxisTitle = $event || undefined
+              "
               @update:type-options="chartData.typeOptions = $event"
             />
           </PanelSection>
@@ -383,6 +392,12 @@ function normalizeTranslations(parsed: BlokkliChartData) {
     if (!t || typeof t !== 'object') continue
     cleaned[lang] = {
       title: typeof t.title === 'string' ? t.title : '',
+      valueAxisTitle:
+        typeof t.valueAxisTitle === 'string' ? t.valueAxisTitle : undefined,
+      categoryAxisTitle:
+        typeof t.categoryAxisTitle === 'string'
+          ? t.categoryAxisTitle
+          : undefined,
       categories: padOrTrim(t.categories, parsed.categories.length),
       seriesNames: padOrTrim(t.seriesNames, parsed.series.length),
       footnotes: padOrTrim(t.footnotes, parsed.footnotes.length),

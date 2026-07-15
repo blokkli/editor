@@ -1633,21 +1633,9 @@ msgctxt "chartsBarStacked"
 msgid "Stacked"
 msgstr "Gestapelt"
 
-msgctxt "chartsBorderRadius"
-msgid "Corner radius"
-msgstr "Eckenradius"
-
-msgctxt "chartsBorderRadiusLarge"
-msgid "Large"
-msgstr "Gross"
-
-msgctxt "chartsBorderRadiusNone"
-msgid "None"
-msgstr "Keine"
-
-msgctxt "chartsBorderRadiusSmall"
-msgid "Small"
-msgstr "Klein"
+msgctxt "chartsCategoryAxisTitle"
+msgid "Category axis title"
+msgstr "Titel der Kategorienachse"
 
 msgctxt "chartsCategoryFilter"
 msgid "Filterable category axis"
@@ -1895,17 +1883,9 @@ msgstr ""
 "Fussnoten werden automatisch nummeriert. Sie können sie in Kategorie- oder "
 "Datenreihen-Beschriftungen mit {1}, {2}, usw. referenzieren."
 
-msgctxt "chartsGridLines"
-msgid "Grid lines"
-msgstr "Rasterlinien"
-
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr "CSV importieren"
-
-msgctxt "chartsLegendPosition"
-msgid "Legend position"
-msgstr "Legendenposition"
 
 msgctxt "chartsNumberFormat"
 msgid "Number format"
@@ -1935,18 +1915,6 @@ msgctxt "chartsNumberFormatNotationStandard"
 msgid "Standard"
 msgstr "Standard"
 
-msgctxt "chartsOpacityLight"
-msgid "Light"
-msgstr "Leicht"
-
-msgctxt "chartsOpacitySolid"
-msgid "Solid"
-msgstr "Deckend"
-
-msgctxt "chartsOpacityTransparent"
-msgid "Transparent"
-msgstr "Transparent"
-
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr "Beschriftungen"
@@ -1961,22 +1929,6 @@ msgctxt "chartsOrphanOverridesRemove"
 msgid "Remove override"
 msgstr "Anpassung entfernen"
 
-msgctxt "chartsPositionBottom"
-msgid "Bottom"
-msgstr "Unten"
-
-msgctxt "chartsPositionRight"
-msgid "Right"
-msgstr "Rechts"
-
-msgctxt "chartsPositionTop"
-msgid "Top"
-msgstr "Oben"
-
-msgctxt "chartsRadarFillOpacity"
-msgid "Fill opacity"
-msgstr "Fülldeckkraft"
-
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr "Vorschau aktualisieren"
@@ -1984,22 +1936,6 @@ msgstr "Vorschau aktualisieren"
 msgctxt "chartsReverseRows"
 msgid "Reverse rows"
 msgstr "Zeilen umkehren"
-
-msgctxt "chartsStrokeMedium"
-msgid "Medium"
-msgstr "Mittel"
-
-msgctxt "chartsStrokeThick"
-msgid "Thick"
-msgstr "Dick"
-
-msgctxt "chartsStrokeThin"
-msgid "Thin"
-msgstr "Dünn"
-
-msgctxt "chartsStrokeWidth"
-msgid "Line thickness"
-msgstr "Linienstärke"
 
 msgctxt "chartsTranslationsSeries"
 msgid "Series"
@@ -2138,6 +2074,10 @@ msgid ""
 msgstr ""
 "Zeigt Fortschritte oder Prozentsätze als konzentrische, kreisförmige "
 "Balken, geeignet für KPIs und Zielverfolgung."
+
+msgctxt "chartsValueAxisTitle"
+msgid "Value axis title"
+msgstr "Titel der Werteachse"
 
 msgctxt "chartsXAxisRotation"
 msgid "Label rotation"

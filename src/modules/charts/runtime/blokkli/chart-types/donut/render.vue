@@ -1,10 +1,9 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart } from 'echarts/charts'
@@ -19,6 +18,7 @@ import {
   createNumberFormatter,
   createPercentFormatter,
 } from '../../../helpers/numberFormat'
+import { useChartOption } from '../../../helpers/useChartOption'
 import type { TypeOptions } from './definition'
 
 use([
@@ -32,7 +32,7 @@ use([
 
 const props = defineProps<ChartTypeRenderProps>()
 
-const option = computed(() => {
+const option = useChartOption(() => {
   const t = props.typeOptions as Partial<TypeOptions>
   const showLabels = t.showLabels ?? true
   const showTotal = t.showTotal ?? false
@@ -47,12 +47,12 @@ const option = computed(() => {
   }))
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
-    animation: !props.isEditing,
+    animation: props.isEditing ? false : undefined,
     tooltip: {
       trigger: 'item' as const,
       valueFormatter: (v: number) => valueFormatter(v),
     },
-    legend: { left: 'center', bottom: 0, orient: 'horizontal' as const },
+    legend: { left: 'center', bottom: 0, orient: 'horizontal' },
     graphic: showTotal
       ? {
           type: 'text' as const,
@@ -80,5 +80,5 @@ const option = computed(() => {
       },
     ],
   }
-})
+}, props)
 </script>

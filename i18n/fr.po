@@ -1571,21 +1571,9 @@ msgctxt "chartsBarStacked"
 msgid "Stacked"
 msgstr "Empilé"
 
-msgctxt "chartsBorderRadius"
-msgid "Corner radius"
-msgstr "Rayon des coins"
-
-msgctxt "chartsBorderRadiusLarge"
-msgid "Large"
-msgstr "Grand"
-
-msgctxt "chartsBorderRadiusNone"
-msgid "None"
-msgstr "Aucun"
-
-msgctxt "chartsBorderRadiusSmall"
-msgid "Small"
-msgstr "Petit"
+msgctxt "chartsCategoryAxisTitle"
+msgid "Category axis title"
+msgstr "Titre de l'axe des catégories"
 
 msgctxt "chartsCategoryFilter"
 msgid "Filterable category axis"
@@ -1819,17 +1807,9 @@ msgstr ""
 "Les notes de bas de page sont numérotées automatiquement. Référencez-les "
 "dans les étiquettes de catégorie ou de série avec {1}, {2}, etc."
 
-msgctxt "chartsGridLines"
-msgid "Grid lines"
-msgstr "Lignes de grille"
-
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr ""
-
-msgctxt "chartsLegendPosition"
-msgid "Legend position"
-msgstr "Position de la légende"
 
 msgctxt "chartsNumberFormat"
 msgid "Number format"
@@ -1859,18 +1839,6 @@ msgctxt "chartsNumberFormatNotationStandard"
 msgid "Standard"
 msgstr ""
 
-msgctxt "chartsOpacityLight"
-msgid "Light"
-msgstr "Léger"
-
-msgctxt "chartsOpacitySolid"
-msgid "Solid"
-msgstr "Solide"
-
-msgctxt "chartsOpacityTransparent"
-msgid "Transparent"
-msgstr "Transparent"
-
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr ""
@@ -1883,22 +1851,6 @@ msgctxt "chartsOrphanOverridesRemove"
 msgid "Remove override"
 msgstr ""
 
-msgctxt "chartsPositionBottom"
-msgid "Bottom"
-msgstr "En bas"
-
-msgctxt "chartsPositionRight"
-msgid "Right"
-msgstr "À droite"
-
-msgctxt "chartsPositionTop"
-msgid "Top"
-msgstr "En haut"
-
-msgctxt "chartsRadarFillOpacity"
-msgid "Fill opacity"
-msgstr "Opacité du remplissage"
-
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr ""
@@ -1906,22 +1858,6 @@ msgstr ""
 msgctxt "chartsReverseRows"
 msgid "Reverse rows"
 msgstr ""
-
-msgctxt "chartsStrokeMedium"
-msgid "Medium"
-msgstr "Moyen"
-
-msgctxt "chartsStrokeThick"
-msgid "Thick"
-msgstr "Épais"
-
-msgctxt "chartsStrokeThin"
-msgid "Thin"
-msgstr "Fin"
-
-msgctxt "chartsStrokeWidth"
-msgid "Line thickness"
-msgstr "Épaisseur de ligne"
 
 msgctxt "chartsTranslationsSeries"
 msgid "Series"
@@ -2055,6 +1991,10 @@ msgid ""
 msgstr ""
 "Affiche la progression ou des pourcentages sous forme de barres circulaires "
 "concentriques, adapté aux KPI et au suivi d'objectifs."
+
+msgctxt "chartsValueAxisTitle"
+msgid "Value axis title"
+msgstr "Titre de l'axe des valeurs"
 
 msgctxt "chartsXAxisRotation"
 msgid "Label rotation"

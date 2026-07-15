@@ -1,3 +1,4 @@
+import type { EChartsOption } from 'echarts'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { BlockOptionDefinitionBase } from '../../../global/types/blockOptions'
 
@@ -42,6 +43,11 @@ export type ChartTypeDefinitionBody<
 > = {
   hasSeriesColors: boolean
   hasCategoryColors: boolean
+  /**
+   * Whether this type renders cartesian value/category axes. When true, the
+   * editor offers the value/category axis-title inputs. Defaults to false.
+   */
+  hasAxes?: boolean
   editor: {
     label: string
     description: string
@@ -73,7 +79,17 @@ export type ChartTypeDefinition<
  * dynamic-data overrides, hex colors).
  */
 export type ChartTypeRenderProps = {
+  /**
+   * The chart-type id being rendered (e.g. `'bar'`, `'pie'`). Typed as
+   * `ChartType` (= `string`) here; import `ChartTypeId` from
+   * `#blokkli-build/charts-definitions` for the strongly-typed union.
+   */
+  type: ChartType
   title: string
+  /** Resolved value-axis title (translated). Cartesian types set `axis.name`. */
+  valueAxisTitle?: string
+  /** Resolved category-axis title (translated). Cartesian types set `axis.name`. */
+  categoryAxisTitle?: string
   categories: string[]
   series: { name: string; data: number[] }[]
   /** Hex colors aligned with `series` order. Read by types with series colors. */
@@ -88,7 +104,39 @@ export type ChartTypeRenderProps = {
    * chart type. Renderers for other types ignore this field.
    */
   advancedConfig?: Record<string, unknown>
+  /**
+   * Optional integrator hook to fully customize the final ECharts option.
+   * Applied by {@link useChartOption} after the built-in type has computed
+   * its (neutral) default option. See {@link ChartOptionTransform}.
+   */
+  transform?: ChartOptionTransform
 }
+
+/**
+ * Context passed to a {@link ChartOptionTransform}: the fully-resolved render
+ * props (data, editor-owned colors, semantic options, chart-type id) the
+ * default option was built from. Everything needed to adjust or rebuild it.
+ */
+export type ChartTransformContext = Omit<ChartTypeRenderProps, 'transform'>
+
+/**
+ * Integrator-supplied hook that owns chart appearance. It receives the ECharts
+ * option the built-in chart type computed (a complete, neutral default) plus
+ * the resolved {@link ChartTransformContext}, and returns the option to render.
+ * It may mutate a few fields, or ignore the input and return a fresh option
+ * built from `context` (zero blökkli defaults). Colors in `context` are
+ * editor-owned — style around them, don't replace them.
+ *
+ * Passed to `ChartRenderer` as the `transform` prop (runtime, not persisted);
+ * typically computed reactively from color mode / design tokens.
+ *
+ * `option.series` is a union across all chart types — narrow by `series.type`
+ * (or `context.type`) to reach type-specific fields like pie `radius`.
+ */
+export type ChartOptionTransform = (
+  option: EChartsOption,
+  context: ChartTransformContext,
+) => EChartsOption
 
 // ─── Shared TypeOptions interfaces ───────────────────────────────────────────
 // Paired with the option-schema helpers in
@@ -97,9 +145,6 @@ export type ChartTypeRenderProps = {
 
 export type XAxisTypeOptions = { xaxisRotation: string }
 export type DataLabelsTypeOptions = { dataLabels: boolean }
-export type LegendTypeOptions = { legendPosition: string }
-export type GridTypeOptions = { gridLines: boolean }
-export type StrokeWidthTypeOptions = { strokeWidth: string }
 export type YAxisMinTypeOptions = { yaxisMin: number | undefined }
 export type CategoryFilterTypeOptions = {
   categoryFilter: boolean
@@ -169,6 +214,8 @@ export type ChartDateFormat = {
  */
 export type ChartTranslation = {
   title?: string
+  valueAxisTitle?: string
+  categoryAxisTitle?: string
   categories?: string[]
   seriesNames?: string[]
   footnotes?: string[]
@@ -250,6 +297,18 @@ export type ChartAdvancedConfig = {
 
 type ChartDataBase = {
   title: string
+  /**
+   * Title of the value axis (the numeric scale), e.g. "Number of apartments".
+   * Only rendered by chart types with cartesian axes (bar, line, area,
+   * agePyramid); ignored by others. Its placement/appearance is left to the
+   * integrator's `transform` — this is only the text.
+   */
+  valueAxisTitle?: string
+  /**
+   * Title of the category axis (the labels), e.g. "Year". Same rendering rules
+   * as {@link ChartDataBase.valueAxisTitle}.
+   */
+  categoryAxisTitle?: string
   categories: string[]
   series: ChartSeries[]
   /**

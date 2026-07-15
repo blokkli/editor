@@ -4,6 +4,7 @@
       v-if="hasRenderableData"
       v-bind="chartData!"
       :dynamic-data="dynamicData"
+      :transform="transform"
     />
     <div
       v-else
@@ -21,6 +22,7 @@ import type {
   BlokkliChartData,
   ChartDataSourcePayload,
 } from '#blokkli/charts/types'
+import { createHouseStyle } from '~/chart/houseStyle'
 
 const { options } = defineBlokkli({
   bundle: 'chart',
@@ -41,6 +43,8 @@ const { options } = defineBlokkli({
 })
 
 export type Props = Record<string, never>
+
+const transform = computed(() => createHouseStyle({ dark: false }))
 
 const chartData = computed<BlokkliChartData | null>(() => options.value.data)
 

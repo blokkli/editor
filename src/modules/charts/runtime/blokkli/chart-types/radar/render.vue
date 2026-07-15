@@ -1,10 +1,10 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { RadarChart } from 'echarts/charts'
@@ -14,8 +14,8 @@ import {
   TitleComponent,
 } from 'echarts/components'
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
-import { legendPositionToEcharts } from '../../../helpers/echarts'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
+import { useChartOption } from '../../../helpers/useChartOption'
 import type { TypeOptions } from './definition'
 
 use([
@@ -32,13 +32,11 @@ const opts = computed(() => {
   const t = props.typeOptions as Partial<TypeOptions>
   return {
     markers: t.markers ?? false,
-    fillOpacity: Number(t.fillOpacity ?? 0.2) || 0.2,
     dataLabels: t.dataLabels ?? false,
-    legendPosition: t.legendPosition ?? 'bottom',
   }
 })
 
-const option = computed(() => {
+const option = useChartOption(() => {
   const o = opts.value
   const valueFormatter = createNumberFormatter(props.numberFormat)
 
@@ -54,13 +52,15 @@ const option = computed(() => {
 
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
-    animation: !props.isEditing,
+    animation: props.isEditing ? false : undefined,
     tooltip: {
       trigger: 'item' as const,
       valueFormatter: (v: number) => valueFormatter(v),
     },
     legend: {
-      ...legendPositionToEcharts(o.legendPosition),
+      left: 'center',
+      bottom: 0,
+      orient: 'horizontal',
       data: props.series.map((s) => s.name),
     },
     radar: {
@@ -80,7 +80,7 @@ const option = computed(() => {
           lineStyle: { color: props.seriesHexColors[i] },
           areaStyle: {
             color: props.seriesHexColors[i],
-            opacity: o.fillOpacity,
+            opacity: 0.2,
           },
           label: {
             show: o.dataLabels,
@@ -90,5 +90,5 @@ const option = computed(() => {
       },
     ],
   }
-})
+}, props)
 </script>

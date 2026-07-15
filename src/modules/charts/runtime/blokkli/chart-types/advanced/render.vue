@@ -1,10 +1,9 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import {
@@ -56,6 +55,7 @@ import {
   AriaComponent,
 } from 'echarts/components'
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
+import { useChartOption } from '../../../helpers/useChartOption'
 
 use([
   CanvasRenderer,
@@ -107,8 +107,11 @@ use([
 
 const props = defineProps<ChartTypeRenderProps>()
 
-const option = computed(() => ({
-  animation: !props.isEditing,
-  ...props.advancedConfig,
-}))
+const option = useChartOption(
+  () => ({
+    animation: props.isEditing ? false : undefined,
+    ...props.advancedConfig,
+  }),
+  props,
+)
 </script>

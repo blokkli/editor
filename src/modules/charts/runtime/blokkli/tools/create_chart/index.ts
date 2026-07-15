@@ -55,6 +55,12 @@ export default defineBlokkliAgentTool({
     // Build chart data from params.
     const chartData: BlokkliChartData = {
       title: params.chart.title,
+      ...(params.chart.valueAxisTitle
+        ? { valueAxisTitle: params.chart.valueAxisTitle }
+        : {}),
+      ...(params.chart.categoryAxisTitle
+        ? { categoryAxisTitle: params.chart.categoryAxisTitle }
+        : {}),
       type: params.chart.type,
       categories: params.chart.categories,
       series: params.chart.series.map((s) => ({

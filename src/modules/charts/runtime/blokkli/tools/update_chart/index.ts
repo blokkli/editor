@@ -16,6 +16,18 @@ import { getDefaultChartData } from '../../../helpers'
 const paramsSchema = z.object({
   uuid: z.string().describe('UUID of the chart paragraph to update'),
   title: z.string().optional().describe('Chart title'),
+  valueAxisTitle: z
+    .string()
+    .optional()
+    .describe(
+      'Title of the value axis (numeric scale), e.g. "Number of apartments". Only rendered by cartesian types (bar, line, area, agePyramid).',
+    ),
+  categoryAxisTitle: z
+    .string()
+    .optional()
+    .describe(
+      'Title of the category axis (the labels), e.g. "Year". Only rendered by cartesian types (bar, line, area, agePyramid).',
+    ),
   type: chartTypeEnum.optional().describe('Chart type'),
   categories: z
     .array(z.string())
@@ -117,6 +129,12 @@ export default defineBlokkliAgentTool({
     const merged: BlokkliChartData = {
       ...current,
       ...(params.title !== undefined ? { title: params.title } : {}),
+      ...(params.valueAxisTitle !== undefined
+        ? { valueAxisTitle: params.valueAxisTitle }
+        : {}),
+      ...(params.categoryAxisTitle !== undefined
+        ? { categoryAxisTitle: params.categoryAxisTitle }
+        : {}),
       ...(params.type !== undefined ? { type: params.type } : {}),
       ...(params.categories !== undefined
         ? { categories: params.categories }

@@ -56,19 +56,21 @@ export default defineChartType<TypeOptions>('myChart', ($t) => ({
 ```
 
 Reuse the shared option helpers (`xAxisOptions`, `dataLabelsOptions`,
-`legendOptions`, `gridOptions`, `strokeWidthOptions`, `yAxisMinOptions`,
-`categoryFilterOptions`) from `#blokkli/charts/definition/options` and combine
-them with `mergeShared()` — that is how the built-in types compose their option
-sets.
+`yAxisMinOptions`, `categoryFilterOptions`) from
+`#blokkli/charts/definition/options` and combine them with `mergeShared()` —
+that is how the built-in types compose their option sets.
 
 ## The render component
 
 `render.vue` receives fully resolved
-[`ChartTypeRenderProps`](/modules/charts/chart-types) (`title`, `categories`,
-`series`, `seriesHexColors`, `categoryHexColors`, `typeOptions`, `numberFormat`,
-`isEditing`, and — for the `advanced` type only — `advancedConfig`). It is
-responsible for drawing the chart, typically with `vue-echarts`. Look at any
-built-in type's `render.vue` for the pattern.
+[`ChartTypeRenderProps`](/modules/charts/chart-types) (`type`, `title`,
+`categories`, `series`, `seriesHexColors`, `categoryHexColors`, `typeOptions`,
+`numberFormat`, `isEditing`, `transform`, and — for the `advanced` type only —
+`advancedConfig`). It is responsible for drawing the chart, typically with
+`vue-echarts`. Pass your final option through the
+`useChartOption(factory, props)` helper as the last step so the integrator's
+`transform` hook is applied. Look at any built-in type's `render.vue` for the
+pattern.
 
 ## Build output
 

@@ -10,6 +10,25 @@
       />
     </FormItem>
 
+    <FormItem v-if="hasAxes">
+      <div class="grid gap-15">
+        <FormText
+          id="chart-value-axis-title"
+          :label="$t('chartsValueAxisTitle', 'Value axis title')"
+          :model-value="valueAxisTitle ?? ''"
+          lazy
+          @update:model-value="$emit('update:valueAxisTitle', $event ?? '')"
+        />
+        <FormText
+          id="chart-category-axis-title"
+          :label="$t('chartsCategoryAxisTitle', 'Category axis title')"
+          :model-value="categoryAxisTitle ?? ''"
+          lazy
+          @update:model-value="$emit('update:categoryAxisTitle', $event ?? '')"
+        />
+      </div>
+    </FormItem>
+
     <FormItem v-if="ungroupedOptions.length">
       <div class="grid gap-15">
         <Field
@@ -51,12 +70,18 @@ const { $t } = useBlokkli()
 
 const props = defineProps<{
   title: string
+  valueAxisTitle?: string
+  categoryAxisTitle?: string
+  /** Whether this chart type has cartesian axes (shows the axis-title inputs). */
+  hasAxes?: boolean
   options: Record<string, ChartOption>
   typeOptions: Record<string, unknown>
 }>()
 
 const emit = defineEmits<{
   'update:title': [value: string]
+  'update:valueAxisTitle': [value: string]
+  'update:categoryAxisTitle': [value: string]
   'update:typeOptions': [value: Record<string, unknown>]
 }>()
 

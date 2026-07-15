@@ -104,6 +104,113 @@ configuration (`resolveColorHex` / `colorPalette` from
 configured palette. Configure the available colors as part of your blökkli setup
 — see [Configuration](/configuration) and [Themes](/editor/themes).
 
+## Styling / theming
+
+Everything about a chart's appearance _other_ than colors — fonts, font sizes,
+axis and grid-line styling, label spacing, plot margins, line widths, legend
+placement, tooltip styling — is owned by the integrator through a single
+`transform` hook. Each built-in chart type computes a complete, neutral
+[ECharts option](https://echarts.apache.org/en/option.html); your `transform`
+receives it (plus the resolved data) and returns the option to render:
+
+```vue
+<ChartRenderer
+  v-if="hasRenderableData"
+  v-bind="chartData!"
+  :transform="transform"
+/>
+```
+
+```ts
+import type { EChartsOption } from 'echarts'
+import type { ChartOptionTransform } from '#blokkli/charts/types'
+
+// Owns appearance. Colors come from the editor via `context.*HexColors`
+// (already applied on the option) — read them, never replace them.
+const transform: ChartOptionTransform = (option: EChartsOption, context) => {
+  option.textStyle = { fontFamily: 'Arial, sans-serif', ...option.textStyle }
+
+  // Per-type rules a flat theme can't express: legend right for pie/donut,
+  // top for everything else. Placement lives in the option, so ECharts does
+  // not re-center it.
+  if (option.legend && !Array.isArray(option.legend)) {
+    const toRight = context.type === 'pie' || context.type === 'donut'
+    option.legend = toRight
+      ? { ...option.legend, right: 0, top: 'middle', orient: 'vertical' }
+      : { ...option.legend, top: 0, left: 'center', bottom: undefined }
+  }
+  return option
+}
+```
+
+**Typing.** Both the argument and return are ECharts' own `EChartsOption`.
+Components (`option.legend`, `grid`, `xAxis`, `tooltip`, …) are precisely typed.
+`option.series` is a union across all chart types — narrow by `series.type` (or
+`context.type`) to reach type-specific fields like pie `radius` or line
+`smooth`. `context.type` is a `string`; import `ChartTypeId` from
+`#blokkli-build/charts-definitions` for the strongly-typed union.
+
+The hook can also **ignore** the incoming option and return a fresh one built
+from `context` — full control with zero blökkli defaults.
+
+The prop is a runtime value, so compute it reactively (e.g. from the active
+color mode or CSS design tokens) to keep charts in sync with the rest of your
+site. The editor preview renders through your block component, so the same
+`transform` is reflected while editing — no extra wiring needed.
+
+## Sizing
+
+Charts default to a height of **550px** and fill their container's width. The
+height is a CSS custom property, so you size charts from userland with plain CSS
+— no prop, no JS:
+
+```css
+/* Globally */
+:root {
+  --bk-chart-height: 400px;
+}
+
+/* Or per chart — set it on any ancestor of a ChartRenderer */
+.hero-chart {
+  --bk-chart-height: 70vh;
+}
+```
+
+## Renderer & other vue-echarts options
+
+The chart types render through
+[`vue-echarts`](https://github.com/ecomfe/vue-echarts). blökkli never sets its
+config props, so all four are controllable app-wide via `vue-echarts`'
+provide/inject keys — no module changes needed:
+
+| Concern                                 | Injection key         |
+| --------------------------------------- | --------------------- |
+| ECharts theme                           | `THEME_KEY`           |
+| `init` options (renderer, device ratio) | `INIT_OPTIONS_KEY`    |
+| `setOption` update options              | `UPDATE_OPTIONS_KEY`  |
+| Loading spinner options                 | `LOADING_OPTIONS_KEY` |
+
+blökkli bundles only the **Canvas** renderer. To switch every chart to **SVG**
+(crisper print/export, accessible markup), register the SVG renderer and provide
+it as the default `init` option from a client plugin — the SVG renderer enters
+your bundle only because you import it here:
+
+```ts
+// plugins/echarts-svg.client.ts
+import { use } from 'echarts/core'
+import { SVGRenderer } from 'echarts/renderers'
+import { INIT_OPTIONS_KEY } from 'vue-echarts'
+
+export default defineNuxtPlugin((nuxtApp) => {
+  use([SVGRenderer])
+  nuxtApp.vueApp.provide(INIT_OPTIONS_KEY, { renderer: 'svg' })
+})
+```
+
+A `.client` plugin is enough because `ChartRenderer` renders inside
+`<ClientOnly>`. The same pattern applies to the other keys (e.g.
+`provide(THEME_KEY, …)`).
+
 ## Data model
 
 The chart option value is a `BlokkliChartData` object:
@@ -112,6 +219,10 @@ The chart option value is a `BlokkliChartData` object:
 type BlokkliChartData = {
   type: ChartType // chart-type id, e.g. 'bar' | 'pie' | 'advanced'
   title: string
+  /** Value-axis title (e.g. 'Number of apartments'). Cartesian types only. */
+  valueAxisTitle?: string
+  /** Category-axis title (e.g. 'Year'). Cartesian types only. */
+  categoryAxisTitle?: string
   categories: string[]
   series: ChartSeries[]
   /** Color IDs per category — used by pie/donut/radialBar. */

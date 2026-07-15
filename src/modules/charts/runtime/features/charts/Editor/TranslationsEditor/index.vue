@@ -26,6 +26,40 @@
           </TranslationRow>
         </FormItem>
 
+        <FormItem v-if="chartData.valueAxisTitle">
+          <div class="bk-form-label">
+            {{ $t('chartsValueAxisTitle', 'Value axis title') }}
+          </div>
+          <TranslationRow :source="chartData.valueAxisTitle">
+            <FormText
+              :id="`chart-translation-${activeLanguage}-value-axis-title`"
+              :label="active.name"
+              :model-value="active.translation.valueAxisTitle ?? ''"
+              hide-label
+              lazy
+              @update:model-value="updateField('valueAxisTitle', $event ?? '')"
+            />
+          </TranslationRow>
+        </FormItem>
+
+        <FormItem v-if="chartData.categoryAxisTitle">
+          <div class="bk-form-label">
+            {{ $t('chartsCategoryAxisTitle', 'Category axis title') }}
+          </div>
+          <TranslationRow :source="chartData.categoryAxisTitle">
+            <FormText
+              :id="`chart-translation-${activeLanguage}-category-axis-title`"
+              :label="active.name"
+              :model-value="active.translation.categoryAxisTitle ?? ''"
+              hide-label
+              lazy
+              @update:model-value="
+                updateField('categoryAxisTitle', $event ?? '')
+              "
+            />
+          </TranslationRow>
+        </FormItem>
+
         <FormItem
           v-if="
             !chartData.dataSource &&
@@ -276,7 +310,12 @@ const active = computed(() => {
   return { id: lang.id, name: lang.name, translation }
 })
 
-type ScalarKey = 'title' | 'prefix' | 'suffix'
+type ScalarKey =
+  | 'title'
+  | 'valueAxisTitle'
+  | 'categoryAxisTitle'
+  | 'prefix'
+  | 'suffix'
 type ArrayKey = 'categories' | 'seriesNames' | 'footnotes'
 
 function updateField(key: ScalarKey, value: string) {

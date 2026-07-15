@@ -1,10 +1,10 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart } from 'echarts/charts'
@@ -15,8 +15,8 @@ import {
   TitleComponent,
 } from 'echarts/components'
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
-import { legendPositionToEcharts } from '../../../helpers/echarts'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
+import { useChartOption } from '../../../helpers/useChartOption'
 import type { TypeOptions } from './definition'
 
 use([
@@ -37,9 +37,6 @@ const opts = computed(() => {
     markers: t.markers ?? false,
     xaxisRotation: t.xaxisRotation ?? 'auto',
     dataLabels: t.dataLabels ?? false,
-    gridLines: t.gridLines ?? true,
-    legendPosition: t.legendPosition ?? 'bottom',
-    strokeWidth: Number(t.strokeWidth ?? 2) || 2,
     yaxisMin:
       typeof t.yaxisMin === 'number' && Number.isFinite(t.yaxisMin)
         ? t.yaxisMin
@@ -47,7 +44,7 @@ const opts = computed(() => {
   }
 })
 
-const option = computed(() => {
+const option = useChartOption(() => {
   const o = opts.value
   const valueFormatter = createNumberFormatter(props.numberFormat)
   const xAxis: Record<string, unknown> = {
@@ -61,21 +58,37 @@ const option = computed(() => {
   const yAxis: Record<string, unknown> = {
     type: 'value',
     axisLabel: { formatter: (v: number) => valueFormatter(v) },
-    splitLine: { show: o.gridLines },
+    splitLine: { show: true },
   }
   if (o.yaxisMin !== undefined) yAxis.min = o.yaxisMin
+  if (props.categoryAxisTitle) xAxis.name = props.categoryAxisTitle
+  if (props.valueAxisTitle) yAxis.name = props.valueAxisTitle
+  // Neutral placement: centre the category title under the (horizontal) x-axis;
+  // the value axis keeps ECharts' default top placement. Transform can override.
+  if (xAxis.name) {
+    xAxis.nameLocation = 'middle'
+    xAxis.nameGap = 30
+  }
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
-    animation: !props.isEditing,
+    animation: props.isEditing ? false : undefined,
+    grid: {
+      containLabel: true,
+      top: 50,
+      left: 10,
+      right: 10,
+      bottom: xAxis.name ? 65 : 40,
+    },
     tooltip: {
       trigger: 'axis',
       valueFormatter: (v: number) => valueFormatter(v),
     },
     legend: {
-      ...legendPositionToEcharts(o.legendPosition),
+      left: 'center',
+      bottom: 0,
+      orient: 'horizontal',
       data: props.series.map((s) => s.name),
     },
-    grid: { containLabel: true, top: 50, left: 10, right: 10, bottom: 40 },
     xAxis,
     yAxis,
     series: props.series.map((s, i) => ({
@@ -85,7 +98,7 @@ const option = computed(() => {
       smooth: o.curved,
       showSymbol: o.markers,
       symbolSize: 6,
-      lineStyle: { width: o.strokeWidth, color: props.seriesHexColors[i] },
+      lineStyle: { width: 2, color: props.seriesHexColors[i] },
       itemStyle: { color: props.seriesHexColors[i] },
       areaStyle: { opacity: 0.4 },
       label: {
@@ -94,5 +107,5 @@ const option = computed(() => {
       },
     })),
   }
-})
+}, props)
 </script>

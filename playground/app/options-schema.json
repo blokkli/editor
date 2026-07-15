@@ -4,22 +4,22 @@
     "align": {
       "default": "center",
       "label": {
-        "en": "Align"
+        "de": "Align"
       },
       "options": {
         "center": {
           "label": {
-            "en": "Center"
+            "de": "Center"
           }
         },
         "left": {
           "label": {
-            "en": "Left"
+            "de": "Left"
           }
         },
         "right": {
           "label": {
-            "en": "Right"
+            "de": "Right"
           }
         }
       },
@@ -29,19 +29,19 @@
       "default": "normal",
       "displayAs": "colors",
       "label": {
-        "en": "Color"
+        "de": "Color"
       },
       "options": {
         "normal": {
           "class": "bg-white",
           "label": {
-            "en": "White"
+            "de": "White"
           }
         },
         "primary": {
           "class": "bg-accent-700",
           "label": {
-            "en": "Primary"
+            "de": "Primary"
           }
         }
       },
@@ -53,45 +53,45 @@
     "box": {
       "default": true,
       "description": {
-        "en": "If checked, the card is displayed as a box with shadow. It will have a white or dark background, depending on the background of the parent block."
+        "de": "If checked, the card is displayed as a box with shadow. It will have a white or dark background, depending on the background of the parent block."
       },
       "label": {
-        "en": "Box"
+        "de": "Box"
       },
       "type": "checkbox"
     },
     "color": {
       "default": "lightBlue",
       "description": {
-        "en": "The color for the icon."
+        "de": "The color for the icon."
       },
       "displayAs": "colors",
       "label": {
-        "en": "Color"
+        "de": "Color"
       },
       "options": {
         "lightBlue": {
           "class": "bg-accent-100",
           "label": {
-            "en": "Blue"
+            "de": "Blue"
           }
         },
         "lightGreen": {
           "class": "bg-lime-normal",
           "label": {
-            "en": "Green"
+            "de": "Green"
           }
         },
         "lightRed": {
           "class": "bg-red-normal",
           "label": {
-            "en": "Red with a large label"
+            "de": "Red with a large label"
           }
         },
         "lightYellow": {
           "class": "bg-yellow-normal",
           "label": {
-            "en": "Yellow"
+            "de": "Yellow"
           }
         }
       },
@@ -103,7 +103,7 @@
       "dataType": "chart",
       "default": "{}",
       "label": {
-        "en": "Chart data"
+        "de": "Chart data"
       },
       "type": "json"
     }
@@ -180,25 +180,25 @@
       "default": "two",
       "displayAs": "icons",
       "label": {
-        "en": "Columns"
+        "de": "Columns"
       },
       "options": {
         "four": {
           "icon": "icon-blokkli-option-four",
           "label": {
-            "en": "Four"
+            "de": "Four"
           }
         },
         "three": {
           "icon": "icon-blokkli-option-three",
           "label": {
-            "en": "Three"
+            "de": "Three"
           }
         },
         "two": {
           "icon": "icon-blokkli-option-two",
           "label": {
-            "en": "Two"
+            "de": "Two"
           }
         }
       },
@@ -207,7 +207,7 @@
     "mobile": {
       "default": true,
       "label": {
-        "en": "Mobile"
+        "de": "Mobile"
       },
       "type": "checkbox"
     }
@@ -218,7 +218,7 @@
       "dataType": "iframe_heights",
       "default": "{}",
       "label": {
-        "en": "Iframe heights"
+        "de": "Iframe heights"
       },
       "type": "json"
     }
@@ -227,10 +227,10 @@
     "elevated": {
       "default": true,
       "description": {
-        "en": "Renders the image with a box shadow."
+        "de": "Renders the image with a box shadow."
       },
       "label": {
-        "en": "Elevated"
+        "de": "Elevated"
       },
       "type": "checkbox"
     }
@@ -278,20 +278,20 @@
     "bkHiddenGlobally": {
       "default": false,
       "description": {
-        "en": "Always hides the block."
+        "de": "Always hides the block."
       },
       "label": {
-        "en": "Hide globally"
+        "de": "Hide globally"
       },
       "type": "checkbox"
     },
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Only show on specific languages."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Visible languages"
       },
       "options": {},
       "type": "checkboxes"
@@ -299,7 +299,7 @@
     "showInMenu": {
       "default": true,
       "label": {
-        "en": "Show in menu"
+        "de": "Show in menu"
       },
       "type": "checkbox"
     }
@@ -308,7 +308,7 @@
     "anchorId": {
       "default": "",
       "label": {
-        "en": "Anchor ID"
+        "de": "Anchor ID"
       },
       "type": "text"
     },
@@ -380,11 +380,11 @@
     "columns": {
       "default": "equal",
       "description": {
-        "en": "Define how wide the columns are."
+        "de": "Define how wide the columns are."
       },
       "displayAs": "grid",
       "label": {
-        "en": "Columns"
+        "de": "Columns"
       },
       "options": {
         "equal": {
@@ -393,10 +393,10 @@
             1
           ],
           "description": {
-            "en": "Same width for both colums"
+            "de": "Same width for both colums"
           },
           "label": {
-            "en": "Equal"
+            "de": "Equal"
           }
         },
         "oneTwo": {
@@ -405,10 +405,10 @@
             2
           ],
           "description": {
-            "en": "Use when you want a large image"
+            "de": "Use when you want a large image"
           },
           "label": {
-            "en": "One / Two"
+            "de": "One / Two"
           }
         },
         "twoOne": {
@@ -417,10 +417,10 @@
             1
           ],
           "description": {
-            "en": "Use when you want a small image"
+            "de": "Use when you want a small image"
           },
           "label": {
-            "en": "Two / One"
+            "de": "Two / One"
           }
         }
       },
@@ -429,7 +429,7 @@
     "reverse": {
       "default": false,
       "label": {
-        "en": "Reverse"
+        "de": "Reverse"
       },
       "type": "checkbox"
     }
@@ -438,7 +438,7 @@
     "elevated": {
       "default": true,
       "label": {
-        "en": "Elevated"
+        "de": "Elevated"
       },
       "type": "checkbox"
     }
@@ -531,10 +531,10 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Only show on specific languages."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Visible languages"
       },
       "options": {},
       "type": "checkboxes"
@@ -669,7 +669,7 @@
             1
           ],
           "label": {
-            "en": "50% / 50%"
+            "de": "50% / 50%"
           }
         },
         "oneTwo": {
@@ -678,7 +678,7 @@
             2
           ],
           "label": {
-            "en": "33% / 66%"
+            "de": "33% / 66%"
           }
         },
         "quarterOne": {
@@ -687,7 +687,7 @@
             1
           ],
           "label": {
-            "en": "75% / 25%"
+            "de": "75% / 25%"
           }
         },
         "twoOne": {
@@ -696,7 +696,7 @@
             1
           ],
           "label": {
-            "en": "66% / 33%"
+            "de": "66% / 33%"
           }
         }
       },

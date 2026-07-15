@@ -33,6 +33,7 @@ import { computed, inject, ref, useBlokkliRuntimeConfig } from '#imports'
 import type {
   BlokkliChartData,
   ChartDataSourcePayload,
+  ChartOptionTransform,
   ChartSeries,
   ChartTypeRenderProps,
 } from '../../types'
@@ -63,6 +64,15 @@ const props = defineProps<
      * `server: false` to avoid bloating SSR HTML.
      */
     dynamicData?: ChartDataSourcePayload | null
+
+    /**
+     * Integrator hook to fully customize the final ECharts option of every
+     * built-in chart type. Receives the neutral default option + resolved
+     * context and returns the option to render. Runtime, not persisted;
+     * typically computed reactively from color mode / design tokens. Colors
+     * stay editor-owned. See `ChartOptionTransform`.
+     */
+    transform?: ChartOptionTransform
   }
 >()
 
@@ -138,6 +148,16 @@ const resolvedTitle = computed(() => {
   return t?.title || props.title
 })
 
+const resolvedValueAxisTitle = computed(() => {
+  const t = props.translations?.[currentLanguage.value]
+  return t?.valueAxisTitle || props.valueAxisTitle
+})
+
+const resolvedCategoryAxisTitle = computed(() => {
+  const t = props.translations?.[currentLanguage.value]
+  return t?.categoryAxisTitle || props.categoryAxisTitle
+})
+
 const resolvedCategories = computed(() => {
   const data = effectiveData.value
   if (!data) return [] as string[]
@@ -208,7 +228,10 @@ const renderProps = computed<ChartTypeRenderProps | null>(() => {
   const data = effectiveData.value
   if (!data) return null
   return {
+    type: props.type,
     title: applyFootnotes(resolvedTitle.value),
+    valueAxisTitle: resolvedValueAxisTitle.value,
+    categoryAxisTitle: resolvedCategoryAxisTitle.value,
     categories: formattedCategories.value.map(applyFootnotes),
     series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
@@ -220,6 +243,7 @@ const renderProps = computed<ChartTypeRenderProps | null>(() => {
     numberFormat: resolvedNumberFormat.value,
     isEditing,
     advancedConfig: props.advancedConfig?.parsed,
+    transform: props.transform,
   }
 })
 

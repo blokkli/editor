@@ -1,10 +1,10 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
@@ -15,8 +15,8 @@ import {
   TitleComponent,
 } from 'echarts/components'
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
-import { legendPositionToEcharts } from '../../../helpers/echarts'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
+import { useChartOption } from '../../../helpers/useChartOption'
 import type { TypeOptions } from './definition'
 
 use([
@@ -38,35 +38,47 @@ const opts = computed(() => {
   return {
     splitIndex: Math.max(0, Math.min(props.series.length, split)),
     dataLabels: t.dataLabels ?? false,
-    gridLines: t.gridLines ?? true,
-    legendPosition: t.legendPosition ?? 'bottom',
   }
 })
 
-const option = computed(() => {
+const option = useChartOption(() => {
   const o = opts.value
   const valueFormatter = createNumberFormatter(props.numberFormat)
   const abs = (v: number) => Math.abs(v)
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
-    animation: !props.isEditing,
+    animation: props.isEditing ? false : undefined,
+    grid: {
+      containLabel: true,
+      top: 50,
+      left: 10,
+      right: 10,
+      // The value axis is horizontal here, so its title sits below — widen the
+      // inset to clear labels and the bottom legend.
+      bottom: props.valueAxisTitle ? 65 : 40,
+    },
     tooltip: {
       trigger: 'axis' as const,
       axisPointer: { type: 'shadow' as const },
       valueFormatter: (v: number) => valueFormatter(abs(v)),
     },
     legend: {
-      ...legendPositionToEcharts(o.legendPosition),
+      left: 'center',
+      bottom: 0,
+      orient: 'horizontal',
       data: props.series.map((s) => s.name),
     },
-    grid: { containLabel: true, top: 50, left: 10, right: 10, bottom: 40 },
     xAxis: {
       type: 'value' as const,
+      name: props.valueAxisTitle,
+      nameLocation: 'middle' as const,
+      nameGap: 30,
       axisLabel: { formatter: (v: number) => valueFormatter(abs(v)) },
-      splitLine: { show: o.gridLines },
+      splitLine: { show: true },
     },
     yAxis: {
       type: 'category' as const,
+      name: props.categoryAxisTitle,
       data: props.categories,
       axisTick: { alignWithLabel: true },
     },
@@ -86,5 +98,5 @@ const option = computed(() => {
       }
     }),
   }
-})
+}, props)
 </script>

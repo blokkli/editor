@@ -43,6 +43,8 @@ export const chartSeriesSchema = z.object({
 
 export const chartTranslationSchema = z.object({
   title: z.string().optional(),
+  valueAxisTitle: z.string().optional(),
+  categoryAxisTitle: z.string().optional(),
   categories: z.array(z.string()).optional(),
   seriesNames: z.array(z.string()).optional(),
   footnotes: z.array(z.string()).optional(),
@@ -98,6 +100,18 @@ export const dateFormatSchema = z.object({
 
 export const chartDataSchema = z.object({
   title: z.string().optional().default('').describe('Chart title'),
+  valueAxisTitle: z
+    .string()
+    .optional()
+    .describe(
+      'Title of the value axis (numeric scale), e.g. "Number of apartments". Only rendered by cartesian types (bar, line, area, agePyramid).',
+    ),
+  categoryAxisTitle: z
+    .string()
+    .optional()
+    .describe(
+      'Title of the category axis (the labels), e.g. "Year". Only rendered by cartesian types (bar, line, area, agePyramid).',
+    ),
   type: chartTypeEnum.describe('Chart type'),
   categories: z
     .array(z.string())
