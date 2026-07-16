@@ -2,7 +2,7 @@
   <div class="container mx-auto my-20">
     <ChartRenderer
       v-if="hasRenderableData"
-      v-bind="chartData!"
+      :data="chartData!"
       :dynamic-data="dynamicData"
       :transform="transform"
     />
