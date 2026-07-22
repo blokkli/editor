@@ -10,6 +10,7 @@ import { mapBlockItem } from '../state'
 import { createParagraph } from './Paragraph'
 import type { Paragraph } from './Paragraph/Paragraph'
 import type { Entity } from './Entity'
+import type { MutatedChildren } from './Validation'
 
 export class BlockProxy {
   hostEntityType: string
@@ -402,6 +403,34 @@ export class EditState {
       proxiesByFieldKey[key].push(proxy)
     })
 
+    // Children per host field, as the mutation would save them. Blocks track
+    // their parent through the proxy graph, so a block's own block-field lists
+    // still describe the persisted state — see `MutatedChildren`.
+    const childrenByHostField = new Map<string, string[]>()
+    for (const proxy of context.proxies) {
+      if (proxy.isDeleted) {
+        continue
+      }
+      const key = proxy.getFieldListKey()
+      const list = childrenByHostField.get(key)
+      if (list) {
+        list.push(proxy.block.uuid)
+      } else {
+        childrenByHostField.set(key, [proxy.block.uuid])
+      }
+    }
+
+    const getMutatedChildren = (block: Paragraph): MutatedChildren => {
+      const children: MutatedChildren = {}
+      for (const field of block.getBlockFields()) {
+        children[field.id] =
+          childrenByHostField.get(
+            [block.entityType, block.uuid, field.id].join(':'),
+          ) ?? []
+      }
+      return children
+    }
+
     const mutatedFields: Record<string, MutatedField> = {}
 
     entity.getBlockFields().forEach((field) => {
@@ -431,13 +460,15 @@ export class EditState {
         }
       }
 
-      const blockValidations = proxy.block.validate().map((v) => {
-        return {
-          ...v,
-          entityType: 'paragraph',
-          entityUuid: proxy.block.uuid,
-        }
-      })
+      const blockValidations = proxy.block
+        .validate(getMutatedChildren(proxy.block))
+        .map((v) => {
+          return {
+            ...v,
+            entityType: 'paragraph',
+            entityUuid: proxy.block.uuid,
+          }
+        })
       violations.push(...blockValidations)
 
       if (!proxy.isDeleted) {

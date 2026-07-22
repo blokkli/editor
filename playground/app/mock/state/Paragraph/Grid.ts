@@ -1,6 +1,6 @@
 import type { Field } from '../Field'
 import { FieldBlocks } from '../Field/Blocks'
-import type { EntityValidation } from '../Validation'
+import type { EntityValidation, MutatedChildren } from '../Validation'
 import { Paragraph } from './Paragraph'
 import imageUrl from './images/grid.png?url'
 
@@ -34,20 +34,20 @@ export class ParagraphGrid extends Paragraph {
     return this.get('blocks')
   }
 
-  override validate(): EntityValidation[] {
+  override validate(children: MutatedChildren): EntityValidation[] {
     const violations: EntityValidation[] = []
-    // if (this.header().getBlocks().length === 0) {
-    //   violations.push({
-    //     propertyPath: 'header',
-    //     message: 'The grid header is required.',
-    //   })
-    // }
-    // if (this.blocks().getBlocks().length === 0) {
-    //   violations.push({
-    //     propertyPath: 'blocks',
-    //     message: 'The grid must contain at least one block.',
-    //   })
-    // }
+    if (!children.header?.length) {
+      violations.push({
+        propertyPath: 'header',
+        message: 'The grid header is required.',
+      })
+    }
+    if (!children.blocks?.length) {
+      violations.push({
+        propertyPath: 'blocks',
+        message: 'The grid must contain at least one block.',
+      })
+    }
     return violations
   }
 }

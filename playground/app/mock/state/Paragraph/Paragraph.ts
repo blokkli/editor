@@ -3,7 +3,7 @@ import type { Field } from '../Field'
 import { FieldBoolean } from '../Field/Boolean'
 import { FieldOptions } from '../Field/Options'
 import { FieldText } from '../Field/Text'
-import type { EntityValidation } from '../Validation'
+import type { EntityValidation, MutatedChildren } from '../Validation'
 import { Entity } from '../Entity'
 import { readOutdatedTranslationsOverride } from '../../outdatedTranslationsOverride'
 
@@ -51,7 +51,14 @@ export abstract class Paragraph extends Entity {
     return props
   }
 
-  validate(): EntityValidation[] {
+  /**
+   * Validate the block against the state the current mutation would save.
+   *
+   * Scalar fields can be read off the block itself (the proxy clone carries the
+   * mutated values), but structural rules must use `children` — see
+   * {@link MutatedChildren}.
+   */
+  validate(_children: MutatedChildren): EntityValidation[] {
     return []
   }
 

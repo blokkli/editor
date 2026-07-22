@@ -1171,9 +1171,22 @@ export default defineBlokkliEditAdapter((ctx) => {
       // linking to google.com). Roll the mutation back so the invalid state
       // isn't persisted, and return the violations so the caller (editor UI or
       // agent) can surface them.
-      const violations = mutatedState.violations.filter(
-        (v) => v.entityUuid && newUuids.has(v.entityUuid),
-      )
+      //
+      // Violations on a *block* field are exempt: a container created empty
+      // (or only partly filled) is a normal intermediate state — the caller
+      // fills it in a follow-up call, and the UI offers add buttons for exactly
+      // those empty fields. They stay reported through `state.violations`, so
+      // the analyze sidebar still flags them and publishing is still blocked.
+      const violations = mutatedState.violations.filter((v) => {
+        if (!v.entityUuid || !newUuids.has(v.entityUuid)) {
+          return false
+        }
+        if (!v.propertyPath) {
+          return true
+        }
+        const block = entityStorageManager.storages.paragraph.load(v.entityUuid)
+        return block?.get(v.propertyPath)?.type !== 'blocks'
+      })
       if (violations.length) {
         editState.removeLastMutation()
         return { success: false, violations }
