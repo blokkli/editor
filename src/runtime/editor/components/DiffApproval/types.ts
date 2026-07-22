@@ -38,6 +38,22 @@ export type ApprovalUnit =
       segment: AtomicSegment
     }
 
+/** Payload emitted by DiffApproval's `apply` event. */
+export type DiffApplyPayload = {
+  /**
+   * Acceptance keyed by unit. For unsegmented items the key is the
+   * stringified item id; for segmented items it's `${itemId}:${segmentId}`.
+   */
+  selected: Record<string, boolean>
+  reasons: Record<string, string>
+  /**
+   * Values the user manually revised before applying, keyed by stringified
+   * item id. An edited item always resolves as a single whole-field unit,
+   * regardless of any segments it originally had.
+   */
+  edited: Record<string, string>
+}
+
 /**
  * Expand items into their toggle units. Unchanged segments inside a list are
  * skipped — they're context, not choices.

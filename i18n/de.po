@@ -285,6 +285,18 @@ msgctxt "aiAgentApprovalAccepted"
 msgid "Accepted"
 msgstr "Akzeptiert"
 
+msgctxt "aiAgentApprovalEdit"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgctxt "aiAgentApprovalEditText"
+msgid ""
+"Manually edit the suggested text. The editor opens with the entire field "
+"value."
+msgstr ""
+"Den vorgeschlagenen Text manuell bearbeiten. Der Editor öffnet den gesamten "
+"Feldinhalt."
+
 msgctxt "aiAgentApprovalHint"
 msgid ""
 "Review changes and accept or reject them individually. Tab/Arrow keys: "
@@ -3984,6 +3996,18 @@ msgstr "Übersetzungen als CSV- oder PO-Dateien importieren oder exportieren"
 msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
 msgstr "CSV- oder PO-Datei zum Importieren ablegen"
+
+msgctxt "translationsEditReset"
+msgid "Discard manual translation"
+msgstr "Manuelle Anpassung verwerfen"
+
+msgctxt "translationsEditTranslation"
+msgid "Edit translation"
+msgstr "Übersetzung bearbeiten"
+
+msgctxt "translationsEditedManually"
+msgid "Manually edited"
+msgstr "Manuell angepasst"
 
 msgctxt "translationsMarkUpToDate"
 msgid "Mark translations as up to date"

@@ -14,6 +14,8 @@
   "addListSidebarTitle": "Ajouter des blocs",
   "aiAgentAnalyzeContentDone": "@count résultats analysés",
   "aiAgentAnalyzeContentRunning": "Analyse du contenu...",
+  "aiAgentApprovalEdit": "Modifier",
+  "aiAgentApprovalEditText": "Modifier manuellement le texte proposé. L'éditeur s'ouvre avec le contenu complet du champ.",
   "aiAgentBatchRewriteNoChanges": "Aucune modification détectée",
   "aiAgentPastedText": "Texte collé",
   "aiAgentRemoveAttachment": "Supprimer la pièce jointe",
@@ -151,5 +153,8 @@
   "settingsDialogTitle": "Paramètres",
   "settingsMenuDescription": "Paramètres personnels pour l’éditeur",
   "structureToolbarLabel": "Structure",
-  "translationsBatchTranslateMenuDescription": "Traduire tous les éléments"
+  "translationsBatchTranslateMenuDescription": "Traduire tous les éléments",
+  "translationsEditReset": "Abandonner la traduction manuelle",
+  "translationsEditTranslation": "Modifier la traduction",
+  "translationsEditedManually": "Modifié manuellement"
 }

@@ -28,6 +28,7 @@
     v-if="pendingDiff"
     :items="pendingDiff"
     show-reason
+    editable
     @apply="onApply"
     @cancel="onCancel"
   />
@@ -36,7 +37,10 @@
 <script setup lang="ts">
 import { ref, useBlokkli, onMounted } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
-import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type {
+  ApprovalItem,
+  DiffApplyPayload,
+} from '#blokkli/editor/components/DiffApproval/types'
 import {
   flattenSegments,
   reassembleValue,
@@ -253,14 +257,20 @@ function settle(applied: boolean) {
   resolvePending = null
 }
 
-async function onApply(data: {
-  selected: Record<string, boolean>
-  reasons: Record<string, string>
-}) {
+async function onApply(data: DiffApplyPayload) {
   if (applyMutates && pendingDiff.value) {
     // Mutate before closing so the field is patched to the new value as the
     // preview overlay is torn down (the real consumer order).
     for (const item of pendingDiff.value) {
+      // A manually edited item resolves as a single whole-field unit with the
+      // revised value — its segments (still present here) are superseded.
+      const editedValue = data.edited[String(item.id)]
+      if (editedValue !== undefined) {
+        if (data.selected[String(item.id)] !== false) {
+          await persistValue(item.uuid, item.fieldName, editedValue)
+        }
+        continue
+      }
       if (item.segments) {
         const atoms = flattenSegments(item.segments).filter(
           (s) => s.status !== 'matched' || s.beforeHtml !== s.afterHtml,

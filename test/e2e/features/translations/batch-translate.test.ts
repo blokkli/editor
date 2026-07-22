@@ -1,8 +1,14 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
-import type { Page } from 'playwright-core'
+import type { Page, Locator } from 'playwright-core'
 import { openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
-import { blockHost, editableState } from './../../support/editable'
+import {
+  blockHost,
+  editableState,
+  editableFrame,
+  setFrameValue,
+} from './../../support/editable'
+import { addBlock } from './../../support/blocks'
 import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
 import { dialog } from './../../support/overlays'
 import {
@@ -10,6 +16,32 @@ import {
   autoTranslateMockEntry,
   openTranslateDialog,
 } from './../../support/translations'
+
+type ImportTranslationsArgs = {
+  items: Array<{
+    langcode: string
+    uuid: string
+    fieldName: string
+    fieldValue: string
+  }>
+}
+
+/** The table row for a given `uuid:fieldName` key. */
+function batchRow(page: Page, key: string): Locator {
+  return page.locator(
+    `[data-test="translations-batch-row"][data-test-key="${key}"]`,
+  )
+}
+
+/** Open the inline editor for the given row and wait until it's rendered. */
+async function openRowEditor(page: Page, key: string): Promise<void> {
+  await batchRow(page, key)
+    .locator('[data-test="translations-batch-edit"]')
+    .click()
+  await page
+    .locator('[data-test="translations-batch-editor"]')
+    .waitFor({ state: 'visible' })
+}
 
 /**
  * Regression tests for the batch-translate flow (TranslateDialog).
@@ -166,5 +198,171 @@ describe('Batch translate (TranslateDialog)', async () => {
     )
     expect(sentTitleUuids.has(a.uuid)).toBe(false)
     expect(sentTitleUuids.has(b.uuid)).toBe(true)
+  })
+
+  test('a manually edited proposal is applied instead of the suggestion', async () => {
+    const a = await addCardWithSourceTitle(page)
+    const key = `${a.uuid}:title`
+
+    await openTranslateDialog(page)
+    await page.locator('[data-test="translations-batch-request"]').click()
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+
+    await openRowEditor(page, key)
+    const input = page.locator('[data-test="translations-batch-editor-input"]')
+    // Seeded with the proposed translation.
+    await expect.poll(() => input.inputValue()).toBe(`[DE] ${a.sourceTitle}`)
+
+    await input.fill('Hand-revised batch title')
+    await page.locator('[data-test="translations-batch-editor-save"]').click()
+
+    // The row is marked as manually edited and previews the revision.
+    const row = batchRow(page, key)
+    await row
+      .locator('[data-test="translations-batch-edited"]')
+      .waitFor({ state: 'visible' })
+    expect(await row.textContent()).toContain('Hand-revised batch title')
+
+    await applyButton.click()
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+
+    const call = await waitForAdapterCall<ImportTranslationsArgs>(
+      page,
+      'import_translations_batched',
+    )
+    const item = call.items.find(
+      (i) => i.uuid === a.uuid && i.fieldName === 'title',
+    )
+    expect(item).toBeDefined()
+    expect(item!.fieldValue).toBe('Hand-revised batch title')
+    expect(item!.langcode).toBe('de')
+
+    const host = await blockHost(page, a.uuid)
+    await expect
+      .poll(async () => (await editableState(page, 'title', host))?.text.trim())
+      .toBe('Hand-revised batch title')
+  })
+
+  test('a manual translation can be applied without requesting translations', async () => {
+    const a = await addCardWithSourceTitle(page)
+    const key = `${a.uuid}:title`
+
+    await openTranslateDialog(page)
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+    expect(await applyButton.isDisabled()).toBe(true)
+
+    await openRowEditor(page, key)
+    const input = page.locator('[data-test="translations-batch-editor-input"]')
+    // No proposal and no real current translation — the editor starts empty.
+    await expect.poll(() => input.inputValue()).toBe('')
+
+    await input.fill('Manually translated title')
+    await page.locator('[data-test="translations-batch-editor-save"]').click()
+
+    // A manual edit alone unlocks the apply.
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+    await applyButton.click()
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+
+    // Only the edited row is applied — other selected rows have neither a
+    // proposal nor an edit.
+    const call = await waitForAdapterCall<ImportTranslationsArgs>(
+      page,
+      'import_translations_batched',
+    )
+    expect(call.items).toHaveLength(1)
+    expect(call.items[0]!.uuid).toBe(a.uuid)
+    expect(call.items[0]!.fieldName).toBe('title')
+    expect(call.items[0]!.fieldValue).toBe('Manually translated title')
+
+    const host = await blockHost(page, a.uuid)
+    await expect
+      .poll(async () => (await editableState(page, 'title', host))?.text.trim())
+      .toBe('Manually translated title')
+  })
+
+  test('discarding a manual edit restores the suggestion', async () => {
+    const a = await addCardWithSourceTitle(page)
+    const key = `${a.uuid}:title`
+
+    await openTranslateDialog(page)
+    await page.locator('[data-test="translations-batch-request"]').click()
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+
+    await openRowEditor(page, key)
+    const input = page.locator('[data-test="translations-batch-editor-input"]')
+    await expect.poll(() => input.inputValue()).toBe(`[DE] ${a.sourceTitle}`)
+    await input.fill('Draft that gets discarded')
+    await page.locator('[data-test="translations-batch-editor-save"]').click()
+
+    const row = batchRow(page, key)
+    const pill = row.locator('[data-test="translations-batch-edited"]')
+    await pill.waitFor({ state: 'visible' })
+
+    await row.locator('[data-test="translations-batch-edit-reset"]').click()
+    await pill.waitFor({ state: 'hidden' })
+
+    await applyButton.click()
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+
+    // The apply carries the original suggestion again.
+    const call = await waitForAdapterCall<ImportTranslationsArgs>(
+      page,
+      'import_translations_batched',
+    )
+    const item = call.items.find(
+      (i) => i.uuid === a.uuid && i.fieldName === 'title',
+    )
+    expect(item!.fieldValue).toBe(`[DE] ${a.sourceTitle}`)
+  })
+
+  test('a rich text field is edited in the backend editor inside the dialog', async () => {
+    const uuid = (await addBlock(page, { bundle: 'text' }))!
+    const key = `${uuid}:text`
+
+    await openTranslateDialog(page)
+    await openRowEditor(page, key)
+
+    // The backend editor iframe mounts inside the dialog.
+    await editableFrame(page)
+
+    // Track the frame's value echoes on the parent window so the save can
+    // wait for the pushed value to round-trip (posting → CKEditor → update
+    // event). The echo CONTENT matters: the editor seeds the frame with an
+    // empty value on ready, and that seed's own echo must not satisfy the
+    // wait — saving then would carry the empty model.
+    await page.evaluate(() => {
+      delete document.body.dataset.bkTestFrameEcho
+      window.addEventListener('message', (e) => {
+        if (e.data?.name === 'blokkli__editable_field_update') {
+          document.body.dataset.bkTestFrameEcho = e.data.data?.text ?? ''
+        }
+      })
+    })
+    await setFrameValue(page, '<p>Manuell übersetzter Text.</p>')
+    await page.waitForFunction(() =>
+      (document.body.dataset.bkTestFrameEcho ?? '').includes(
+        'Manuell übersetzter Text',
+      ),
+    )
+
+    await page.locator('[data-test="translations-batch-editor-save"]').click()
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+    await applyButton.click()
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+
+    const call = await waitForAdapterCall<ImportTranslationsArgs>(
+      page,
+      'import_translations_batched',
+    )
+    const item = call.items.find(
+      (i) => i.uuid === uuid && i.fieldName === 'text',
+    )
+    expect(item).toBeDefined()
+    expect(item!.fieldValue).toContain('Manuell übersetzter Text.')
+    expect(item!.langcode).toBe('de')
   })
 })

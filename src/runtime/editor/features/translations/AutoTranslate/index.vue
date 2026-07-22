@@ -31,6 +31,7 @@
     v-if="phase === 'approving'"
     :items="approvalItems"
     insertions-only
+    editable
     @apply="onApply"
     @cancel="onCancel"
   />
@@ -40,7 +41,10 @@
 import { ref, computed, useBlokkli } from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { DiffApproval, Icon } from '#blokkli/editor/components'
-import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type {
+  ApprovalItem,
+  DiffApplyPayload,
+} from '#blokkli/editor/components/DiffApproval/types'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
 const { adapter, $t, state, context, selection, types, ui } = useBlokkli()
@@ -139,18 +143,15 @@ async function onClick() {
   }
 }
 
-async function onApply(data: {
-  selected: Record<number, boolean>
-  reasons: Record<number, string>
-}) {
+async function onApply(data: DiffApplyPayload) {
   const targetLanguage = context.value.language
   const items = approvalItems.value
-    .filter((item) => data.selected[item.id])
+    .filter((item) => data.selected[String(item.id)])
     .map((item) => ({
       langcode: targetLanguage,
       uuid: item.uuid,
       fieldName: item.fieldName,
-      fieldValue: item.value,
+      fieldValue: data.edited[String(item.id)] ?? item.value,
     }))
 
   if (items.length) {

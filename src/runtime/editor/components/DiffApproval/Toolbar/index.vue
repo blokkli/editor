@@ -84,7 +84,10 @@
           </span>
         </div>
 
-        <div class="group/tooltip relative h-full mr-auto">
+        <div
+          class="group/tooltip relative h-full"
+          :class="{ 'mr-auto': !canEdit }"
+        >
           <FormToggle
             class="mx-15"
             color-scheme="dark"
@@ -102,6 +105,34 @@
                 key-code="Enter"
                 :label="$t('aiAgentApprovalToggle', 'Toggle approval')"
                 @pressed="toggleCurrent"
+              />
+            </template>
+          </Tooltip>
+        </div>
+
+        <div v-if="canEdit" class="group/tooltip relative h-full mr-auto">
+          <button
+            class="h-full px-10 flex items-center gap-5 hover:bg-mono-800"
+            data-test="diff-approval-edit"
+            @click="$emit('edit')"
+          >
+            <Icon name="bk_mdi_edit" class="size-20" />
+            <span>{{ $t('aiAgentApprovalEdit', 'Edit') }}</span>
+          </button>
+          <Tooltip
+            :label="
+              $t(
+                'aiAgentApprovalEditText',
+                'Manually edit the suggested text. The editor opens with the entire field value.',
+              )
+            "
+            placement="above-left"
+          >
+            <template #shortcut>
+              <ShortcutIndicator
+                key-code="e"
+                :label="$t('aiAgentApprovalEdit', 'Edit')"
+                @pressed="$emit('edit')"
               />
             </template>
           </Tooltip>
@@ -173,12 +204,18 @@ const props = defineProps<{
    * apply changes directly (e.g. automatic translation) leave it off.
    */
   showReason?: boolean
+
+  /**
+   * Whether the current unit's field supports manual editing of the suggested
+   * value. Editing always operates on the whole field, even on segment units.
+   */
+  canEdit?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'update:selected', key: string, value: boolean): void
   (e: 'update:reasons', key: string, value: string): void
-  (e: 'apply' | 'prev' | 'next' | 'cancel'): void
+  (e: 'apply' | 'prev' | 'next' | 'cancel' | 'edit'): void
 }>()
 
 const { ui, blocks, types, $t } = useBlokkli()

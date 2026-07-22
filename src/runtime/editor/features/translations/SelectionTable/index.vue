@@ -50,8 +50,20 @@ defineEmits<{
     text-overflow: ellipsis;
   }
 
+  /* Full-width expansion cells (e.g. the inline translation editor) must not
+     clip or truncate their content. */
+  td.bk-is-expansion {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
   tr:hover td {
     @apply bg-mono-50;
+  }
+
+  tr:hover td.bk-is-expansion {
+    @apply bg-transparent;
   }
 
   .bk-is-empty {

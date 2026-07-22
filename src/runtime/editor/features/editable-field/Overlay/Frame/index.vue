@@ -49,6 +49,7 @@ const modelValue = defineModel<string>({ required: true })
 
 const emit = defineEmits<{
   formatted: [text: string]
+  ready: []
 }>()
 
 const style = computed<StyleValue>(() => {
@@ -151,8 +152,21 @@ const url = computed(() => {
   })
 })
 
+// The field editor inside the iframe posts its first message (usually the
+// height update on mount) once it is fully initialised — only then can a
+// pushed value actually reach the editor instance.
+let hasEmittedReady = false
+
 const onMessage = (e: MessageEvent) => {
   if (typeof e.data === 'object') {
+    if (
+      !hasEmittedReady &&
+      typeof e.data.name === 'string' &&
+      e.data.name.startsWith('blokkli__editable_field_')
+    ) {
+      hasEmittedReady = true
+      emit('ready')
+    }
     if (e.data.name === 'blokkli__editable_field_update') {
       modelValue.value = e.data.data.text
     } else if (e.data.name === 'blokkli__editable_field_update_formatted') {

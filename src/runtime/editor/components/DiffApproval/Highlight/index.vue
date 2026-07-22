@@ -13,8 +13,10 @@
         :selected
         :active-key
         :insertions-only
+        :can-edit="editableItemIds?.[item.id]"
         @activate="(key: string) => onActivate(key)"
         @toggle="(key: string) => emit('toggle', key)"
+        @edit="emit('edit')"
       />
     </div>
   </Teleport>
@@ -30,10 +32,13 @@ const props = defineProps<{
   units: ApprovalUnit[]
   selected: Record<string, boolean>
   insertionsOnly?: boolean
+  /** Per-item editability — shows the Edit button on the active unit's pill. */
+  editableItemIds?: Record<number, boolean>
 }>()
 
 const emit = defineEmits<{
   (e: 'toggle', key: string): void
+  (e: 'edit'): void
 }>()
 
 const activeIndex = defineModel<number>({ default: -1 })
@@ -93,5 +98,21 @@ function commitSelected() {
   }
 }
 
-defineExpose({ updateRects, commitSelected })
+// Locate by the exposed itemId — template-ref arrays from v-for don't
+// guarantee source order.
+function findItem(itemId: number) {
+  return itemRefs.value?.find((ref) => ref?.itemId === itemId) ?? null
+}
+
+/** Restore the item's field DOM so a manual edit can begin on the original. */
+function beginEdit(itemId: number) {
+  findItem(itemId)?.beginEdit()
+}
+
+/** Re-render the item's diff preview after a manual edit session ended. */
+function endEdit(itemId: number) {
+  findItem(itemId)?.endEdit()
+}
+
+defineExpose({ updateRects, commitSelected, beginEdit, endEdit })
 </script>

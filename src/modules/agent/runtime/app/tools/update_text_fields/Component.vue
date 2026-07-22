@@ -3,6 +3,7 @@
     v-if="items.length > 0 && params.requireApproval !== false"
     :items="items"
     show-reason
+    editable
     @apply="applySelected"
     @cancel="rejectAll"
   />
@@ -22,11 +23,15 @@ import {
   applyFieldDiffs,
   rejectedWithoutReasonMessage,
   partialRejectionGuidance,
+  manualEditsMessage,
   skippedFieldsMessage,
   appendAgentNote,
   type RejectedByUser,
 } from '../fieldDiffApproval'
-import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type {
+  ApprovalItem,
+  DiffApplyPayload,
+} from '#blokkli/editor/components/DiffApproval/types'
 import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
 
 const props = defineProps<{
@@ -74,6 +79,7 @@ onMounted(() => {
     applySelected({
       selected: Object.fromEntries(items.map((item) => [item.id, true])),
       reasons: Object.fromEntries(items.map((item) => [item.id, ''])),
+      edited: {},
     })
   }
 })
@@ -221,22 +227,25 @@ for (const draft of buildItems()) {
   })
 }
 
-async function applySelected(data: {
-  selected: Record<string, boolean>
-  reasons: Record<string, string>
-}) {
-  const { selected, reasons } = data
+async function applySelected(data: DiffApplyPayload) {
+  const { selected, reasons, edited } = data
 
   isApplying.value = true
 
-  const { acceptedCount, rejectedByUser, label, appliedByItemId } =
-    await applyFieldDiffs(
-      blokkli,
-      props.context.adapter,
-      items,
-      selected,
-      reasons,
-    )
+  const {
+    acceptedCount,
+    rejectedByUser,
+    label,
+    appliedByItemId,
+    editedFields,
+  } = await applyFieldDiffs(
+    blokkli,
+    props.context.adapter,
+    items,
+    selected,
+    reasons,
+    edited,
+  )
 
   // Capture before/after diffs for the details panel. For segmented items the
   // "after" is the reassembled hybrid we actually wrote, not the agent's
@@ -249,13 +258,24 @@ async function applySelected(data: {
       after: appliedByItemId[item.id]!,
     }))
 
+  const editedByUser: Record<string, Record<string, { value: string }>> = {}
+  for (const e of editedFields) {
+    const fields = editedByUser[e.uuid] ?? {}
+    fields[e.fieldName] = { value: e.value }
+    editedByUser[e.uuid] = fields
+  }
+
   emitDone({
     acceptedCount,
     rejectedByUser,
+    editedByUser: editedFields.length > 0 ? editedByUser : undefined,
     label,
     agentMessage: appendAgentNote(
-      partialRejectionGuidance(rejectedByUser),
-      rejectedWithoutReasonMessage(rejectedByUser),
+      appendAgentNote(
+        partialRejectionGuidance(rejectedByUser),
+        rejectedWithoutReasonMessage(rejectedByUser),
+      ),
+      manualEditsMessage(editedFields),
     ),
     historyIndex: state.currentMutationIndex.value,
     _details,

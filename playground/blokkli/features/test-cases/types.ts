@@ -60,4 +60,17 @@ export interface BlokkliTestApi {
     name: T,
     params: AgentToolMap[T]['params'],
   ) => Promise<AgentToolMap[T]['result']>
+
+  /**
+   * Invoke a component tool (one that renders its own approval UI, e.g.
+   * `update_text_fields`): validates and prepares params via the tool's
+   * `execute`, mounts the tool's component, and resolves with the raw
+   * `ComponentToolResult` emitted on `done` — including `agentMessage` and
+   * `_`-prefixed meta. The promise stays pending while the approval UI is
+   * open, so specs can drive it (accept/reject/edit) before awaiting.
+   */
+  runComponentTool: (
+    name: AgentToolName,
+    params: Record<string, unknown>,
+  ) => Promise<Record<string, unknown>>
 }

@@ -4,7 +4,18 @@ This method should build the URL for an iframe that renders the rich text editor
 for the given block field.
 
 The method is called when the user double clicks on an editable field of type
-`frame`.
+`frame`. It is also used by the diff approval workflow when the user manually
+edits a suggested value for a `frame` field.
+
+## Translations
+
+In translating mode the URL is requested for the current (target) language — for
+example via a language prefix. The backend route must render the editor form
+even when the target translation does not yet exist on the backend; falling back
+to the source-language value is fine. When the editor opens the frame as part of
+a diff approval edit, it seeds the editor with the value being reviewed and
+persists the result itself (for translations via `importTranslationsBatched`
+with an explicit langcode), so the initially rendered value is never used.
 
 ## Example
 

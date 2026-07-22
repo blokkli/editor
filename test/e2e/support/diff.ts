@@ -78,6 +78,22 @@ export function cancelDiff(page: Page): Promise<void> {
   return page.locator('[data-test="diff-approval-cancel"]').click()
 }
 
+/** Click the DiffApproval toolbar's Edit button (manual revision). */
+export function editDiff(page: Page): Promise<void> {
+  return page.locator('[data-test="diff-approval-edit"]').click()
+}
+
+/**
+ * Click the Edit button on the active highlight pill (the in-canvas entry
+ * point). The button renders per unit but is only shown for the active one,
+ * hence the `:visible` filter.
+ */
+export function editDiffFromHighlight(page: Page): Promise<void> {
+  return page
+    .locator('[data-test="diff-approval-highlight-edit"]:visible')
+    .click()
+}
+
 /** Click the DiffApproval toolbar's Apply button. */
 export function applyDiff(page: Page): Promise<void> {
   return page.locator('[data-test="diff-approval-apply"]').click()

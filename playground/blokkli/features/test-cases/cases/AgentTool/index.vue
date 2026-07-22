@@ -14,6 +14,16 @@
     class="text-xs bg-mono-100 p-10 rounded max-h-[400px] overflow-auto"
     >{{ lastResult }}</pre
   >
+
+  <!-- Component tools (e.g. update_text_fields) render their own approval UI
+       via teleports, so mounting them inside this invisible host is fine. -->
+  <component
+    :is="pendingComponent.component"
+    v-if="pendingComponent"
+    :context="pendingComponent.ctx"
+    :params="pendingComponent.params"
+    @done="onComponentDone"
+  />
 </template>
 
 <script setup lang="ts">
@@ -21,12 +31,15 @@ import { ref, useBlokkli, onMounted } from '#imports'
 import {
   createToolMap,
   executeTool,
+  getToolDefinition,
   isMutationAction,
+  isToolError,
 } from '#blokkli/agent/app/helpers/index'
 import { buildNewParagraphsTree } from '#blokkli/agent/app/helpers/mutationResult'
 import { mcpTools } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
 import type { AgentToolMap, AgentToolName } from '#blokkli-build/agent-client'
+import type { McpToolDefinition } from '#blokkli/agent/app/types'
 import type { BlokkliTestApi } from '../../types'
 
 /**
@@ -108,8 +121,60 @@ async function runDefaultTool() {
   await runAgentTool('get_all_page_content', {})
 }
 
+type PendingComponent = {
+  component: NonNullable<McpToolDefinition['component']>
+  ctx: Record<string, unknown>
+  params: Record<string, unknown>
+}
+
+const pendingComponent = ref<PendingComponent | null>(null)
+let resolveComponent: ((result: Record<string, unknown>) => void) | null = null
+
+/**
+ * Invoke a component tool the way the runtime `toolsProvider` does: run
+ * `execute` to validate and prepare the params, then mount the tool's own
+ * component (which renders the approval UI) and resolve with the raw
+ * `ComponentToolResult` it emits via `done` — including `agentMessage` and
+ * `_`-prefixed meta, which the LLM-facing envelope would otherwise split off.
+ * Lets E2E specs drive the real approval flow without the LLM/WebSocket loop.
+ */
+async function runComponentTool(
+  name: AgentToolName,
+  params: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  const toolDef = getToolDefinition(toolMap, name)
+  if (!toolDef.component) {
+    throw new Error(`Tool "${name}" has no component`)
+  }
+  const ctx = {
+    app: blokkli,
+    itemEntityType,
+    adapter: blokkli.adapter,
+    pageContext: null,
+  }
+  const prepared = await executeTool(toolMap, name, ctx, params)
+  if (isToolError(prepared)) {
+    throw new Error(prepared.error)
+  }
+  return new Promise((resolve) => {
+    resolveComponent = resolve
+    pendingComponent.value = {
+      component: toolDef.component!,
+      ctx,
+      params: prepared as Record<string, unknown>,
+    }
+  })
+}
+
+function onComponentDone(result: Record<string, unknown>) {
+  pendingComponent.value = null
+  lastResult.value = JSON.stringify(result, null, 2)
+  resolveComponent?.(result)
+  resolveComponent = null
+}
+
 onMounted(() => {
-  emit('register', { runAgentTool })
+  emit('register', { runAgentTool, runComponentTool })
 })
 
 defineOptions({

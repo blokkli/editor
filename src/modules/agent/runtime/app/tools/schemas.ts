@@ -212,6 +212,12 @@ export const fieldDiffResultSchema = z.object({
     .describe(
       'Map of paragraph UUID → field name → rejection details. A field appears here when at least one chunk was rejected (or, for non-chunked fields, when the whole field was rejected).',
     ),
+  editedByUser: z
+    .record(z.string(), z.record(z.string(), z.object({ value: z.string() })))
+    .optional()
+    .describe(
+      'Map of paragraph UUID → field name → the value the user manually wrote in place of the suggestion before applying. Treat these as wording/style calibration.',
+    ),
   label: z.string().describe('Human-readable summary shown in the UI'),
   agentMessage: z
     .string()
