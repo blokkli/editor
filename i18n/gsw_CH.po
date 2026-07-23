@@ -1240,6 +1240,10 @@ msgctxt "analyzerValidationsPassDescription"
 msgid "No validation errors for the current state."
 msgstr ""
 
+msgctxt "apply"
+msgid "Apply"
+msgstr "Übernäh"
+
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -3833,16 +3837,8 @@ msgctxt "translationsAutoTranslate"
 msgid "Auto-translate"
 msgstr ""
 
-msgctxt "translationsAutoTranslateButton"
-msgid "Auto-translate"
-msgstr ""
-
 msgctxt "translationsAutoTranslateDescription"
 msgid "Automatically translate all texts of this block."
-msgstr ""
-
-msgctxt "translationsAutoTranslateTooltip"
-msgid "Automatically translate all texts using a translation service"
 msgstr ""
 
 msgctxt "translationsBannerButton"
@@ -3877,8 +3873,8 @@ msgstr ""
 "verfüegbar."
 
 msgctxt "translationsBatchTranslateMenuDescription"
-msgid "Translate all blocks"
-msgstr "Alli Blöck übersetze"
+msgid "Translate texts automatically or edit translations"
+msgstr "Texte automatisch übersetze oder Übersetzige bearbeite"
 
 msgctxt "translationsCsvApply"
 msgid "Import @count translations"
@@ -3932,6 +3928,10 @@ msgctxt "translationsCsvTooltip"
 msgid "Import or export translations as CSV or PO files"
 msgstr ""
 
+msgctxt "translationsDiscardProposal"
+msgid "Discard suggestion"
+msgstr "Vorschlag verwerfe"
+
 msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
 msgstr ""
@@ -3949,7 +3949,7 @@ msgid "Manually edited"
 msgstr "Vo Hand agpasst"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
+msgid "Mark as up-to-date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDescription"
@@ -3959,6 +3959,10 @@ msgstr ""
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
 msgstr ""
+
+msgctxt "translationsRestoreProposal"
+msgid "Restore suggestion"
+msgstr "Vorschlag wiederhärstelle"
 
 msgctxt "translationsSelectImportFile"
 msgid "Select CSV or PO file"
@@ -3974,21 +3978,17 @@ msgstr ""
 "aa, dass dr Inhalt no nid übersetzt worde isch. E Klick druf macht "
 "s'Formular uf zum e neui Übersetztig für die Sproch z'erstelle."
 
-msgctxt "translationsTranslateApply"
-msgid "Apply @count translations"
-msgstr ""
-
 msgctxt "translationsTranslateButton"
-msgid "Request @count translations"
-msgstr ""
+msgid "Auto-translate @count fields"
+msgstr "@count Fälder automatisch übersetze"
 
 msgctxt "translationsTranslateCurrentColumn"
 msgid "Current translation (@language)"
 msgstr ""
 
 msgctxt "translationsTranslateDialogTitle"
-msgid "Automatic Translation"
-msgstr ""
+msgid "Translate texts"
+msgstr "Texte übersetze"
 
 msgctxt "translationsTranslateFieldsLabel"
 msgid "fields selected"
@@ -4001,6 +4001,16 @@ msgstr ""
 msgctxt "translationsTranslateNoTexts"
 msgid "No translatable texts found on this page."
 msgstr ""
+
+msgctxt "translationsTranslateTextsButton"
+msgid "Translate texts"
+msgstr "Texte übersetze"
+
+msgctxt "translationsTranslateTextsTooltip"
+msgid "Translate all texts of this page automatically or edit translations manually"
+msgstr ""
+"Alli Texte vo derre Siite automatisch übersetze oder Übersetzige vo Hand "
+"bearbeite"
 
 msgctxt "undo"
 msgid "Undo"

@@ -133,9 +133,7 @@
           <FormToggle
             v-model="markUpToDate"
             class="!h-auto"
-            :label="
-              $t('translationsMarkUpToDate', 'Mark translations as up to date')
-            "
+            :label="$t('translationsMarkUpToDate', 'Mark as up-to-date')"
           />
         </div>
 

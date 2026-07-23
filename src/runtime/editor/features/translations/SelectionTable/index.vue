@@ -7,6 +7,7 @@
             <div class="bk-checkbox">
               <input
                 type="checkbox"
+                data-test="selection-table-toggle-all"
                 :checked="selectedCount === totalCount && totalCount > 0"
                 @change="$emit('toggle-all')"
               />
@@ -50,10 +51,9 @@ defineEmits<{
     text-overflow: ellipsis;
   }
 
-  /* Full-width expansion cells (e.g. the inline translation editor) must not
-     clip or truncate their content. */
-  td.bk-is-expansion {
-    max-width: none;
+  /* Cells hosting the inline translation editor must not clip or truncate
+     their content and need room to edit comfortably. */
+  td.bk-is-editing {
     overflow: visible;
     text-overflow: clip;
   }
@@ -62,7 +62,7 @@ defineEmits<{
     @apply bg-mono-50;
   }
 
-  tr:hover td.bk-is-expansion {
+  tr:hover td.bk-is-editing {
     @apply bg-transparent;
   }
 

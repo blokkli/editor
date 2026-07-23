@@ -31,6 +31,7 @@
   "analyzerReadabiliyCouldBeSimpler": "Pourrait être plus simple (@lang).",
   "analyzerReadabiliyOkDescription": "Texte qui pourrait être plus facile à lire.",
   "analyzerReadabiliyOkTitle": "Le texte pourrait être plus simple",
+  "apply": "Appliquer",
   "chartsAdvancedConfigHelp": "Collez un objet d'options ECharts. Les clés sans guillemets, les apostrophes et les virgules de fin sont autorisées. Les fonctions (formateurs personnalisés, etc.) ne sont pas prises en charge.",
   "chartsAdvancedConfigTitle": "Configuration ECharts",
   "chartsAdvancedNoTranslations": "Les graphiques avancés n'ont pas de chaînes traduisibles — la configuration ECharts est enregistrée telle quelle.",
@@ -153,8 +154,14 @@
   "settingsDialogTitle": "Paramètres",
   "settingsMenuDescription": "Paramètres personnels pour l’éditeur",
   "structureToolbarLabel": "Structure",
-  "translationsBatchTranslateMenuDescription": "Traduire tous les éléments",
+  "translationsBatchTranslateMenuDescription": "Traduire les textes automatiquement ou modifier les traductions",
+  "translationsDiscardProposal": "Rejeter la suggestion",
   "translationsEditReset": "Abandonner la traduction manuelle",
   "translationsEditTranslation": "Modifier la traduction",
-  "translationsEditedManually": "Modifié manuellement"
+  "translationsEditedManually": "Modifié manuellement",
+  "translationsRestoreProposal": "Rétablir la suggestion",
+  "translationsTranslateButton": "Traduire automatiquement @count champs",
+  "translationsTranslateDialogTitle": "Traduire les textes",
+  "translationsTranslateTextsButton": "Traduire les textes",
+  "translationsTranslateTextsTooltip": "Traduire automatiquement tous les textes de cette page ou modifier les traductions manuellement"
 }

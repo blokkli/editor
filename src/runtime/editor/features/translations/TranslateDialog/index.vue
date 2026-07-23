@@ -1,7 +1,7 @@
 <template>
   <DialogModal
     id="translations-translate"
-    :title="$t('translationsTranslateDialogTitle', 'Automatic Translation')"
+    :title="$t('translationsTranslateDialogTitle', 'Translate texts')"
     icon="bk_mdi_translate"
     :width="1800"
     mono
@@ -29,6 +29,7 @@
     <PanelSection
       data-test="translations-batch-fields"
       :title="sourceValues.length ? fieldsTitle : undefined"
+      sticky-actions
     >
       <div v-if="isLoading" class="flex items-center justify-center py-60">
         <Loading />
@@ -69,95 +70,121 @@
           </th>
         </template>
         <template #body>
-          <template v-for="item in filteredValues" :key="item.key">
-            <tr data-test="translations-batch-row" :data-test-key="item.key">
-              <td>
-                <div class="bk-checkbox">
-                  <input
-                    type="checkbox"
-                    data-test="translations-batch-row-checkbox"
-                    :checked="selected[item.key]"
-                    @change="selected[item.key] = !selected[item.key]"
-                  />
-                  <span class="!mt-0 before:!mt-0" />
-                </div>
-              </td>
-              <td v-text="stripHtml(item.value)" />
-              <td>
-                <div class="flex items-start gap-10">
-                  <div class="flex-1 min-w-0">
-                    <DiffValue
-                      v-if="effectiveValue(item) !== undefined"
-                      :before="currentValues.get(item.key) || ''"
-                      :after="effectiveValue(item)!"
-                      :after-only="
-                        !currentValues.get(item.key) ||
-                        currentValues.get(item.key) === item.value
-                      "
-                    />
-                    <span
-                      v-else-if="
-                        currentValues.get(item.key) &&
-                        currentValues.get(item.key) !== item.value
-                      "
-                      v-text="stripHtml(currentValues.get(item.key)!)"
-                    />
-                    <span v-else class="text-mono-400 italic">&mdash;</span>
-                  </div>
-                  <div class="flex items-center gap-5 shrink-0">
-                    <Pill
-                      v-if="editedTranslations.has(item.key)"
-                      data-test="translations-batch-edited"
-                      :text="
-                        $t('translationsEditedManually', 'Manually edited')
-                      "
-                    />
-                    <ButtonAction
-                      v-if="editedTranslations.has(item.key)"
-                      icon="bk_mdi_undo"
-                      data-test="translations-batch-edit-reset"
-                      :label="
-                        $t(
-                          'translationsEditReset',
-                          'Discard manual translation',
-                        )
-                      "
-                      @click="editedTranslations.delete(item.key)"
-                    />
-                    <ButtonAction
-                      v-if="editConfigFor(item)"
-                      icon="bk_mdi_edit"
-                      data-test="translations-batch-edit"
-                      :label="
-                        $t('translationsEditTranslation', 'Edit translation')
-                      "
-                      @click="openEditor(item)"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="editingKey === item.key">
-              <td
-                colspan="3"
-                class="bk-is-expansion p-0!"
-                data-test="translations-batch-editor"
-              >
-                <Editor
-                  :uuid="item.uuid"
-                  :field-name="item.fieldName"
-                  :entity-type="item.entityType"
-                  :entity-bundle="item.entityBundle"
-                  :seed="editorSeed"
-                  :config-type="editorConfigType"
-                  @save="onEditorSave(item, $event)"
-                  @cancel="editingKey = null"
+          <tr
+            v-for="item in filteredValues"
+            :key="item.key"
+            data-test="translations-batch-row"
+            :data-test-key="item.key"
+          >
+            <td>
+              <div class="bk-checkbox">
+                <input
+                  type="checkbox"
+                  data-test="translations-batch-row-checkbox"
+                  :checked="selected[item.key]"
+                  @change="selected[item.key] = !selected[item.key]"
                 />
-              </td>
-            </tr>
-          </template>
+                <span class="!mt-0 before:!mt-0" />
+              </div>
+            </td>
+            <td v-text="stripHtml(item.value)" />
+            <td :class="{ 'bk-is-editing': editingKey === item.key }">
+              <Editor
+                v-if="editingKey === item.key"
+                :uuid="item.uuid"
+                :field-name="item.fieldName"
+                :entity-type="item.entityType"
+                :entity-bundle="item.entityBundle"
+                :seed="editorSeed"
+                :config-type="editorConfigType"
+                @save="onEditorSave(item, $event)"
+                @cancel="editingKey = null"
+              />
+              <div v-else class="flex items-start gap-10">
+                <div class="flex-1 min-w-0">
+                  <DiffValue
+                    v-if="effectiveValue(item) !== undefined"
+                    :before="currentValues.get(item.key) || ''"
+                    :after="effectiveValue(item)!"
+                    :after-only="
+                      !currentValues.get(item.key) ||
+                      currentValues.get(item.key) === item.value
+                    "
+                  />
+                  <span
+                    v-else-if="
+                      currentValues.get(item.key) &&
+                      currentValues.get(item.key) !== item.value
+                    "
+                    v-text="stripHtml(currentValues.get(item.key)!)"
+                  />
+                  <span v-else class="text-mono-400 italic">&mdash;</span>
+                </div>
+                <div class="flex items-center gap-5 shrink-0">
+                  <Pill
+                    v-if="editedTranslations.has(item.key)"
+                    data-test="translations-batch-edited"
+                    :text="$t('translationsEditedManually', 'Manually edited')"
+                  />
+                  <ButtonAction
+                    v-if="editedTranslations.has(item.key)"
+                    icon="bk_mdi_undo"
+                    data-test="translations-batch-edit-reset"
+                    :label="
+                      $t('translationsEditReset', 'Discard manual translation')
+                    "
+                    @click="editedTranslations.delete(item.key)"
+                  />
+                  <ButtonAction
+                    v-if="
+                      !editedTranslations.has(item.key) &&
+                      translations.has(item.key) &&
+                      !discardedProposals.has(item.key)
+                    "
+                    icon="bk_mdi_close"
+                    data-test="translations-batch-discard"
+                    :label="
+                      $t('translationsDiscardProposal', 'Discard suggestion')
+                    "
+                    @click="discardedProposals.add(item.key)"
+                  />
+                  <ButtonAction
+                    v-if="
+                      !editedTranslations.has(item.key) &&
+                      discardedProposals.has(item.key)
+                    "
+                    icon="bk_mdi_undo"
+                    data-test="translations-batch-restore"
+                    :label="
+                      $t('translationsRestoreProposal', 'Restore suggestion')
+                    "
+                    @click="discardedProposals.delete(item.key)"
+                  />
+                  <ButtonAction
+                    v-if="editConfigFor(item)"
+                    icon="bk_mdi_edit"
+                    data-test="translations-batch-edit"
+                    :label="
+                      $t('translationsEditTranslation', 'Edit translation')
+                    "
+                    @click="openEditor(item)"
+                  />
+                </div>
+              </div>
+            </td>
+          </tr>
         </template>
       </SelectionTable>
+
+      <template v-if="!isLoading && sourceValues.length" #actions>
+        <PanelAction
+          data-test="translations-batch-request"
+          icon="bk_mdi_translate"
+          :disabled="!selectedCount || isTranslating"
+          :title="requestButtonLabel"
+          @click="requestTranslations"
+        />
+      </template>
     </PanelSection>
 
     <template v-if="errorMessage" #pre-footer>
@@ -166,48 +193,17 @@
 
     <template #footer>
       <button
-        class="bk-button"
-        data-test="translations-batch-request"
-        :disabled="!selectedCount || isTranslating"
-        @click="requestTranslations"
-      >
-        <template v-if="isTranslating">
-          {{
-            $t('translationsTranslateLoading', 'Translating', { more: true })
-          }}
-        </template>
-        <template v-else>
-          {{
-            $t(
-              'translationsTranslateButton',
-              'Request @count translations',
-            ).replace('@count', selectedCount.toString())
-          }}
-        </template>
-      </button>
-      <button
         class="bk-button bk-scheme-accent"
         data-test="translations-batch-apply"
-        :disabled="
-          (!hasTranslated && !editedTranslations.size) ||
-          !selectedCount ||
-          isApplying
-        "
+        :disabled="!pendingCount || isApplying"
         @click="applyTranslations"
       >
-        {{
-          $t('translationsTranslateApply', 'Apply @count translations').replace(
-            '@count',
-            selectedCount.toString(),
-          )
-        }}
+        {{ $t('apply', 'Apply') }}
       </button>
       <FormToggle
         v-model="markUpToDate"
         class="!h-auto"
-        :label="
-          $t('translationsMarkUpToDate', 'Mark translations as up to date')
-        "
+        :label="$t('translationsMarkUpToDate', 'Mark as up-to-date')"
       />
     </template>
   </DialogModal>
@@ -225,6 +221,7 @@ import {
 } from '#blokkli/editor/components'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../SelectionTable/index.vue'
 import Editor from './Editor/index.vue'
 
@@ -240,6 +237,7 @@ const sourceValues = ref<SourceItem[]>([])
 const currentValues = ref<Map<string, string>>(new Map())
 const translations = ref<Map<string, string>>(new Map())
 const editedTranslations = ref<Map<string, string>>(new Map())
+const discardedProposals = ref<Set<string>>(new Set())
 const editingKey = ref<string | null>(null)
 const editorSeed = ref('')
 const editorConfigType = ref<'plain' | 'frame'>('plain')
@@ -268,6 +266,15 @@ const outdatedUuids = computed(() => {
   )
 })
 
+/**
+ * A current value that is absent or identical to the source text is the
+ * untranslated fallback, not a real translation.
+ */
+function isMissingTranslation(item: SourceItem): boolean {
+  const current = currentValues.value.get(item.key)
+  return !current || current === item.value
+}
+
 const filteredValues = computed(() => {
   let items = sourceValues.value
 
@@ -276,10 +283,7 @@ const filteredValues = computed(() => {
   }
 
   if (onlyUntranslated.value) {
-    items = items.filter((item) => {
-      const current = currentValues.value.get(item.key)
-      return !current || current === item.value
-    })
+    items = items.filter(isMissingTranslation)
   }
 
   return items
@@ -294,6 +298,26 @@ const fieldsTitle = computed(
     `${selectedCount.value}/${filteredValues.value.length} ` +
     $t('translationsTranslateFieldsLabel', 'fields selected'),
 )
+
+/**
+ * Pending changes over ALL rows, ignoring the display filters — a manual
+ * edit on a filtered-out row must still be applied.
+ */
+const pendingCount = computed(
+  () =>
+    sourceValues.value.filter((item) => effectiveValue(item) !== undefined)
+      .length,
+)
+
+const requestButtonLabel = computed(() => {
+  if (isTranslating.value) {
+    return $t('translationsTranslateLoading', 'Translating', { more: true })
+  }
+  return $t(
+    'translationsTranslateButton',
+    'Auto-translate @count fields',
+  ).replace('@count', selectedCount.value.toString())
+})
 
 const sourceLangName = computed(() => {
   const id = sourceLanguage.value
@@ -327,11 +351,19 @@ function stripHtml(text: string): string {
   return div.textContent || ''
 }
 
-/** The value that would land on apply: manual edit first, then proposal. */
+/**
+ * The value that would land on apply: manual edit first, then the proposal
+ * unless it was discarded.
+ */
 function effectiveValue(item: SourceItem): string | undefined {
-  return (
-    editedTranslations.value.get(item.key) ?? translations.value.get(item.key)
-  )
+  const edited = editedTranslations.value.get(item.key)
+  if (edited !== undefined) {
+    return edited
+  }
+  if (discardedProposals.value.has(item.key)) {
+    return undefined
+  }
+  return translations.value.get(item.key)
 }
 
 /**
@@ -371,9 +403,10 @@ function onEditorSave(item: SourceItem, value: string) {
   // the edit instead of storing a redundant one.
   if (value === proposal || (proposal === undefined && !value.trim())) {
     editedTranslations.value.delete(item.key)
+    // Saving the proposal by hand means adopting it again.
+    discardedProposals.value.delete(item.key)
   } else {
     editedTranslations.value.set(item.key, value)
-    selected.value[item.key] = true
   }
   editingKey.value = null
 }
@@ -391,11 +424,6 @@ async function loadTexts() {
       key: `${v.uuid}:${v.fieldName}`,
     }))
 
-    // Select all by default.
-    for (const item of sourceValues.value) {
-      selected.value[item.key] = true
-    }
-
     // Load current translation values.
     const current = await adapter.loadTextFieldValuesForLanguage!(
       targetLanguage.value,
@@ -405,6 +433,13 @@ async function loadTexts() {
       map.set(`${v.uuid}:${v.fieldName}`, v.value)
     }
     currentValues.value = map
+
+    // Preselect only fields that need attention: missing or outdated
+    // translations. Everything can still be selected via the header checkbox.
+    for (const item of sourceValues.value) {
+      selected.value[item.key] =
+        isMissingTranslation(item) || outdatedUuids.value.has(item.uuid)
+    }
   } catch (e: any) {
     errorMessage.value = e?.message || 'Failed to load texts.'
   } finally {
@@ -433,9 +468,13 @@ async function requestTranslations() {
         response.errors?.join(', ') || 'Translation request failed.'
       return
     }
-    const map = new Map<string, string>()
+    // Merge with earlier proposals so requesting more fields in a second
+    // round doesn't lose the first round's results. A fresh proposal also
+    // clears a previous discard — asking again means wanting it again.
+    const map = new Map(translations.value)
     for (const result of response.data) {
       map.set(result.key, result.translatedText)
+      discardedProposals.value.delete(result.key)
     }
     translations.value = map
     hasTranslated.value = true
@@ -447,13 +486,8 @@ async function requestTranslations() {
 }
 
 async function applyTranslations() {
-  isApplying.value = true
-  errorMessage.value = ''
-
-  const items = filteredValues.value
-    .filter(
-      (item) => selected.value[item.key] && effectiveValue(item) !== undefined,
-    )
+  const items = sourceValues.value
+    .filter((item) => effectiveValue(item) !== undefined)
     .map((item) => {
       const separatorIndex = item.key.indexOf(':')
       return {
@@ -465,6 +499,9 @@ async function applyTranslations() {
     })
 
   if (!items.length) return
+
+  isApplying.value = true
+  errorMessage.value = ''
 
   try {
     await state.mutateWithLoadingState(() =>

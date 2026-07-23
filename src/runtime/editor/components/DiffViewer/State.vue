@@ -429,42 +429,6 @@ function scrollToBlock(uuid: string) {
     }
   }
 
-  .bk-diff-value {
-    @apply inline;
-    word-break: break-word;
-
-    .bk-is-clipped {
-      del {
-        @apply line-clamp-4;
-      }
-    }
-
-    del {
-      @apply line-through text-mono-500;
-
-      &:has(img) {
-        @apply block overflow-hidden max-w-300 bg-red-normal;
-        @apply border-2 border-red-normal;
-        img {
-          opacity: 0.7;
-        }
-      }
-    }
-
-    ins {
-      @apply bg-lime-light rounded text-lime-dark border border-lime-normal/30 no-underline;
-
-      &:has(img) {
-        @apply border-2 border-lime-normal;
-        @apply block overflow-hidden max-w-300;
-      }
-    }
-
-    del:has(img) + ins:has(img) {
-      @apply mt-15;
-    }
-  }
-
   .bk-diff-prop-side-by-side {
     @apply grid gap-10;
     @container (min-width: 700px) {

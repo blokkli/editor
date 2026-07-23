@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-mono-200 p-20 border-y border-y-mono-400">
+  <div data-test="translations-batch-editor">
     <div class="border border-mono-300 bg-white">
       <FlexTextarea
         v-if="configType === 'plain'"

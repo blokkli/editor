@@ -66,15 +66,15 @@
             >
               <Icon name="bk_mdi_translate" />
               {{
-                $t('translationsAutoTranslateButton', 'Auto-translate', {
+                $t('translationsTranslateTextsButton', 'Translate texts', {
                   more: true,
                 })
               }}
               <Tooltip
                 :label="
                   $t(
-                    'translationsAutoTranslateTooltip',
-                    'Automatically translate all texts using a translation service',
+                    'translationsTranslateTextsTooltip',
+                    'Translate all texts of this page automatically or edit translations manually',
                   )
                 "
                 placement="above-left"

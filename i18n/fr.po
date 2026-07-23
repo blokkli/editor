@@ -1220,6 +1220,10 @@ msgctxt "analyzerValidationsPassDescription"
 msgid "No validation errors for the current state."
 msgstr ""
 
+msgctxt "apply"
+msgid "Apply"
+msgstr "Appliquer"
+
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -3742,16 +3746,8 @@ msgctxt "translationsAutoTranslate"
 msgid "Auto-translate"
 msgstr ""
 
-msgctxt "translationsAutoTranslateButton"
-msgid "Auto-translate"
-msgstr ""
-
 msgctxt "translationsAutoTranslateDescription"
 msgid "Automatically translate all texts of this block."
-msgstr ""
-
-msgctxt "translationsAutoTranslateTooltip"
-msgid "Automatically translate all texts using a translation service"
 msgstr ""
 
 msgctxt "translationsBannerButton"
@@ -3783,8 +3779,8 @@ msgid "You are currently editing the <strong>@language</strong> translation."
 msgstr ""
 
 msgctxt "translationsBatchTranslateMenuDescription"
-msgid "Translate all blocks"
-msgstr "Traduire tous les éléments"
+msgid "Translate texts automatically or edit translations"
+msgstr "Traduire les textes automatiquement ou modifier les traductions"
 
 msgctxt "translationsCsvApply"
 msgid "Import @count translations"
@@ -3838,6 +3834,10 @@ msgctxt "translationsCsvTooltip"
 msgid "Import or export translations as CSV or PO files"
 msgstr ""
 
+msgctxt "translationsDiscardProposal"
+msgid "Discard suggestion"
+msgstr "Rejeter la suggestion"
+
 msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
 msgstr ""
@@ -3855,7 +3855,7 @@ msgid "Manually edited"
 msgstr "Modifié manuellement"
 
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
+msgid "Mark as up-to-date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDescription"
@@ -3865,6 +3865,10 @@ msgstr ""
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
 msgstr ""
+
+msgctxt "translationsRestoreProposal"
+msgid "Restore suggestion"
+msgstr "Rétablir la suggestion"
 
 msgctxt "translationsSelectImportFile"
 msgid "Select CSV or PO file"
@@ -3877,21 +3881,17 @@ msgid ""
 "to create a new translation for this language."
 msgstr ""
 
-msgctxt "translationsTranslateApply"
-msgid "Apply @count translations"
-msgstr ""
-
 msgctxt "translationsTranslateButton"
-msgid "Request @count translations"
-msgstr ""
+msgid "Auto-translate @count fields"
+msgstr "Traduire automatiquement @count champs"
 
 msgctxt "translationsTranslateCurrentColumn"
 msgid "Current translation (@language)"
 msgstr ""
 
 msgctxt "translationsTranslateDialogTitle"
-msgid "Automatic Translation"
-msgstr ""
+msgid "Translate texts"
+msgstr "Traduire les textes"
 
 msgctxt "translationsTranslateFieldsLabel"
 msgid "fields selected"
@@ -3904,6 +3904,16 @@ msgstr ""
 msgctxt "translationsTranslateNoTexts"
 msgid "No translatable texts found on this page."
 msgstr ""
+
+msgctxt "translationsTranslateTextsButton"
+msgid "Translate texts"
+msgstr "Traduire les textes"
+
+msgctxt "translationsTranslateTextsTooltip"
+msgid "Translate all texts of this page automatically or edit translations manually"
+msgstr ""
+"Traduire automatiquement tous les textes de cette page ou modifier les "
+"traductions manuellement"
 
 msgctxt "undo"
 msgid "Undo"

@@ -23,7 +23,7 @@
   <Highlight
     ref="highlight"
     v-model="currentIndex"
-    :items
+    :items="effectiveItems"
     :units
     :selected
     :insertions-only
@@ -145,7 +145,7 @@ const sortedItems = [...props.items].sort((a, b) => {
 // with them all chunk-level toggles) are dropped.
 const editedValues = reactive<Record<number, string>>({})
 
-const items = computed<ApprovalItem[]>(() =>
+const effectiveItems = computed<ApprovalItem[]>(() =>
   sortedItems.map((item) =>
     editedValues[item.id] === undefined
       ? item
@@ -153,7 +153,9 @@ const items = computed<ApprovalItem[]>(() =>
   ),
 )
 
-const units = computed<ApprovalUnit[]>(() => unitsFromItems(items.value))
+const units = computed<ApprovalUnit[]>(() =>
+  unitsFromItems(effectiveItems.value),
+)
 
 const currentIndex = ref(0)
 
@@ -246,7 +248,7 @@ const canEditCurrent = computed(() => {
 const editableItemIds = computed<Record<number, boolean>>(() => {
   if (!props.editable) return {}
   return Object.fromEntries(
-    items.value.map((item) => [item.id, !!editConfigForItem(item)]),
+    effectiveItems.value.map((item) => [item.id, !!editConfigForItem(item)]),
   )
 })
 

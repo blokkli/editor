@@ -3,7 +3,8 @@
  */
 
 /* Diff display in the artboard (page content), outside the .bk editor scope. */
-[data-bk-diff-active] {
+[data-bk-diff-active],
+.bk-inline-diff {
   del {
     @apply line-through decoration-red-normal text-red-normal/50;
   }

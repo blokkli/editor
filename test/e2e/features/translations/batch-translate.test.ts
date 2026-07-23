@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import type { Page, Locator } from 'playwright-core'
-import { openEditor } from './../../support/session'
+import { getHostContext, openEditor } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import {
   blockHost,
@@ -31,6 +31,19 @@ function batchRow(page: Page, key: string): Locator {
   return page.locator(
     `[data-test="translations-batch-row"][data-test-key="${key}"]`,
   )
+}
+
+/**
+ * Deselect every row. The initial selection is partial (only missing/outdated
+ * translations are preselected), so getting to "none selected" may take a
+ * select-all first.
+ */
+async function deselectAll(page: Page): Promise<void> {
+  const toggleAll = page.locator('[data-test="selection-table-toggle-all"]')
+  if (!(await toggleAll.isChecked())) {
+    await toggleAll.click()
+  }
+  await toggleAll.click()
 }
 
 /** Open the inline editor for the given row and wait until it's rendered. */
@@ -101,6 +114,16 @@ describe('Batch translate (TranslateDialog)', async () => {
     )
     const applyButton = page.locator('[data-test="translations-batch-apply"]')
 
+    // The request action lives inside the table section (sticky action row),
+    // not in the dialog footer.
+    expect(
+      await page
+        .locator(
+          '[data-test="translations-batch-fields"] [data-test="translations-batch-request"]',
+        )
+        .count(),
+    ).toBe(1)
+
     expect(await applyButton.isDisabled()).toBe(true)
     await requestButton.click()
     // Apply unlocks once requestTranslation resolves.
@@ -150,7 +173,35 @@ describe('Batch translate (TranslateDialog)', async () => {
     expect(sentUuids.has(b.uuid)).toBe(true)
   })
 
-  test('applying with one row unchecked excludes that row from the apply', async () => {
+  test('only missing or outdated translations are initially selected', async () => {
+    const a = await addCardWithSourceTitle(page)
+
+    await openTranslateDialog(page)
+
+    // The freshly added card has no DE translation yet — preselected.
+    const cardCheckbox = batchRow(page, `${a.uuid}:title`).locator(
+      '[data-test="translations-batch-row-checkbox"]',
+    )
+    expect(await cardCheckbox.isChecked()).toBe(true)
+
+    // The host page's title has a seeded, up-to-date DE translation — not
+    // preselected.
+    const host = await getHostContext(page)
+    const hostCheckbox = batchRow(page, `${host.uuid}:title`).locator(
+      '[data-test="translations-batch-row-checkbox"]',
+    )
+    expect(await hostCheckbox.isChecked()).toBe(false)
+
+    // The header checkbox still selects everything in one click.
+    await page.locator('[data-test="selection-table-toggle-all"]').click()
+    expect(await hostCheckbox.isChecked()).toBe(true)
+
+    // Nothing is applied in this test — close the dialog explicitly.
+    await page.keyboard.press('Escape')
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+  })
+
+  test('discarding a proposal excludes it from the apply; unchecking does not', async () => {
     const a = await addCardWithSourceTitle(page)
     const b = await addCardWithSourceTitle(page)
 
@@ -160,15 +211,25 @@ describe('Batch translate (TranslateDialog)', async () => {
     )
     const applyButton = page.locator('[data-test="translations-batch-apply"]')
 
+    // The selection scopes the auto-translate request: with nothing selected
+    // there is nothing to request.
+    await deselectAll(page)
+    await expect.poll(() => requestButton.isDisabled()).toBe(true)
+    await page.locator('[data-test="selection-table-toggle-all"]').click()
+    await expect.poll(() => requestButton.isDisabled()).toBe(false)
+
     await requestButton.click()
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
 
-    // Uncheck the row keyed by cardA's title via its `data-test-key` attribute.
-    const rowA = page.locator(
-      `[data-test="translations-batch-row"][data-test-key="${a.uuid}:title"]`,
-    )
-    await rowA.waitFor({ state: 'visible' })
-    await rowA.locator('[data-test="translations-batch-row-checkbox"]').click()
+    // Discard card A's proposal — that's the mechanism that excludes a row
+    // from the apply.
+    const rowA = batchRow(page, `${a.uuid}:title`)
+    await rowA.locator('[data-test="translations-batch-discard"]').click()
+
+    // Unchecking card B's row must NOT exclude it — after the request, the
+    // checkbox has no influence on what gets applied.
+    const rowB = batchRow(page, `${b.uuid}:title`)
+    await rowB.locator('[data-test="translations-batch-row-checkbox"]').click()
 
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
@@ -198,6 +259,52 @@ describe('Batch translate (TranslateDialog)', async () => {
     )
     expect(sentTitleUuids.has(a.uuid)).toBe(false)
     expect(sentTitleUuids.has(b.uuid)).toBe(true)
+  })
+
+  test('a discarded suggestion disables the apply and can be restored', async () => {
+    const a = await addCardWithSourceTitle(page)
+    const key = `${a.uuid}:title`
+
+    await openTranslateDialog(page)
+    const requestButton = page.locator(
+      '[data-test="translations-batch-request"]',
+    )
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+
+    // Scope the request to card A's title only so its proposal is the single
+    // pending change — that makes the apply-disabled assertions exact.
+    await deselectAll(page)
+    const row = batchRow(page, key)
+    await row.locator('[data-test="translations-batch-row-checkbox"]').click()
+    await requestButton.click()
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+
+    // Discarding the only pending change disables the apply again; the
+    // proposal is no longer shown in the row.
+    await row.locator('[data-test="translations-batch-discard"]').click()
+    const restore = row.locator('[data-test="translations-batch-restore"]')
+    await restore.waitFor({ state: 'visible' })
+    expect(await row.textContent()).not.toContain('[DE]')
+    await expect.poll(() => applyButton.isDisabled()).toBe(true)
+
+    // Restoring brings the suggestion (and the apply) back.
+    await restore.click()
+    await row
+      .locator('[data-test="translations-batch-discard"]')
+      .waitFor({ state: 'visible' })
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+
+    await applyButton.click()
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+
+    const call = await waitForAdapterCall<ImportTranslationsArgs>(
+      page,
+      'import_translations_batched',
+    )
+    expect(call.items).toHaveLength(1)
+    expect(call.items[0]!.uuid).toBe(a.uuid)
+    expect(call.items[0]!.fieldName).toBe('title')
+    expect(call.items[0]!.fieldValue).toBe(`[DE] ${a.sourceTitle}`)
   })
 
   test('a manually edited proposal is applied instead of the suggestion', async () => {
