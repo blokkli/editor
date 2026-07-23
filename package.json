@@ -133,6 +133,7 @@
     "test:e2e": "vitest run --project e2e",
     "format": "oxfmt --check && prettier '**/*.graphql' --check",
     "format:fix": "oxfmt --write && prettier '**/*.graphql' --write",
+    "verify": "bash ./scripts/verify.sh",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

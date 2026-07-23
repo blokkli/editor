@@ -100,15 +100,26 @@ bun run styles:watch           # Watch and rebuild styles
 
 ### Testing & Quality
 
+**`bun run verify` is THE verification command — use it instead of running
+individual gates by hand.**
+
 ```bash
-bun run test                   # Run Vitest tests
-bun run test:watch             # Watch mode for tests
-bun run typecheck              # Type check all (see /typecheck skill for targeted commands)
-bun run lint                   # Lint source files
-bun run lint:fix               # Auto-fix linting issues
-bun run format                 # Check code formatting
-bun run format:fix           # Auto-fix formatting
+bun run verify                 # format:fix, lint:fix, all 4 typechecks, unit
+                               # tests. Does NOT run e2e (and says so).
+bun run verify -- e2e          # E2E suite (needs the dev server running)
+bun run verify -- <gate>       # One gate only: format, lint, typecheck,
+                               # typecheck:runtime (etc.), unit, e2e
+bun run test:watch             # Watch mode during development
 ```
+
+Rules:
+
+- The script writes the FULL output of every gate to
+  `tmp/verify-output/<timestamp>.txt` and prints that path at the end. When a
+  gate fails, **READ THAT LOG FILE** — do NOT re-run gates piped through
+  `tail`/`grep`; that loses output and wastes minutes per re-run.
+- All gates must pass before declaring work verified. Without an argument, e2e
+  is NOT included — run it explicitly when editor behavior or E2E specs changed.
 
 ### Documentation
 
