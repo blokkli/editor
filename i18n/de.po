@@ -3935,7 +3935,7 @@ msgstr "Sie bearbeiten die Übersetzung <strong>«@language»</strong>."
 
 msgctxt "translationsBatchTranslateMenuDescription"
 msgid "Translate texts automatically or edit translations"
-msgstr "Texte automatisch übersetzen oder Übersetzungen bearbeiten"
+msgstr "Automatisch übersetzen oder Übersetzungen bearbeiten"
 
 msgctxt "translationsCsvApply"
 msgid "Import @count translations"

@@ -895,7 +895,7 @@
   "translationsBannerOutdatedSingular": "@count Block hat eine <strong>veraltete Übersetzung</strong>.",
   "translationsBannerPrev": "Vorheriger Block",
   "translationsBannerText": "Sie bearbeiten die Übersetzung <strong>«@language»</strong>.",
-  "translationsBatchTranslateMenuDescription": "Texte automatisch übersetzen oder Übersetzungen bearbeiten",
+  "translationsBatchTranslateMenuDescription": "Automatisch übersetzen oder Übersetzungen bearbeiten",
   "translationsCsvApply": "@count Übersetzungen importieren",
   "translationsCsvChangesTitle": "@count/@total Felder werden aktualisiert",
   "translationsCsvDialogTitle": "Übersetzungen importieren/exportieren",
