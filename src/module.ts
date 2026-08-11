@@ -216,7 +216,6 @@ export default defineNuxtModule<ModuleOptions>({
       '@tiptap/vue-3',
       '@vue/devtools-core',
       '@vue/devtools-kit',
-      'axe-core', // CJS
       'fzf',
       'get-video-id',
       'html-diff-ts',
