@@ -201,6 +201,27 @@ describe('Batch translate (TranslateDialog)', async () => {
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
   })
 
+  test('row action buttons show a tooltip on hover', async () => {
+    const a = await addCardWithSourceTitle(page)
+    const key = `${a.uuid}:title`
+
+    await openTranslateDialog(page)
+
+    // The tooltip is hidden until hover and must not be clipped by the table
+    // cell (regression: overflow:hidden on the td swallowed it entirely).
+    const editButton = batchRow(page, key).locator(
+      '[data-test="translations-batch-edit"]',
+    )
+    const tooltip = editButton.locator('[data-test="tooltip-label"]')
+    expect(await tooltip.isVisible()).toBe(false)
+    await editButton.hover()
+    await expect.poll(() => tooltip.isVisible()).toBe(true)
+    expect((await tooltip.textContent())?.trim()).toBeTruthy()
+
+    await page.keyboard.press('Escape')
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+  })
+
   test('discarding a proposal excludes it from the apply; unchecking does not', async () => {
     const a = await addCardWithSourceTitle(page)
     const b = await addCardWithSourceTitle(page)

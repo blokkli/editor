@@ -51,6 +51,12 @@ defineEmits<{
     text-overflow: ellipsis;
   }
 
+  /* Cells with hoverable row actions must not clip, or the absolutely
+     positioned tooltips of their icon-only buttons are cut off. */
+  td.bk-has-row-actions {
+    overflow: visible;
+  }
+
   /* Cells hosting the inline translation editor must not clip or truncate
      their content and need room to edit comfortably. */
   td.bk-is-editing {

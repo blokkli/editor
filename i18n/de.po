@@ -2474,7 +2474,7 @@ msgstr "Übersetzung bearbeiten"
 
 msgctxt "editTranslationDescription"
 msgid "Manually add or edit the translations."
-msgstr "Die Übersetzungen manuell hinzufügen oder bearbeiten."
+msgstr "Übersetzungen manuell hinzufügen oder bearbeiten."
 
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
@@ -4000,10 +4000,6 @@ msgstr "CSV- oder PO-Datei zum Importieren ablegen"
 msgctxt "translationsEditReset"
 msgid "Discard manual translation"
 msgstr "Manuelle Anpassung verwerfen"
-
-msgctxt "translationsEditTranslation"
-msgid "Edit translation"
-msgstr "Übersetzung bearbeiten"
 
 msgctxt "translationsEditedManually"
 msgid "Manually edited"

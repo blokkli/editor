@@ -2425,7 +2425,7 @@ msgstr "Bearbeite ufgrund fählender Berächtigung nid möglich."
 
 msgctxt "editTranslation"
 msgid "Edit translation"
-msgstr ""
+msgstr "Übersetzig bearbeite"
 
 msgctxt "editTranslationDescription"
 msgid "Manually add or edit the translations."
@@ -3939,10 +3939,6 @@ msgstr ""
 msgctxt "translationsEditReset"
 msgid "Discard manual translation"
 msgstr "Manuelli Apassig verwerfe"
-
-msgctxt "translationsEditTranslation"
-msgid "Edit translation"
-msgstr "Übersetzig bearbeite"
 
 msgctxt "translationsEditedManually"
 msgid "Manually edited"

@@ -88,7 +88,10 @@
               </div>
             </td>
             <td v-text="stripHtml(item.value)" />
-            <td :class="{ 'bk-is-editing': editingKey === item.key }">
+            <td
+              class="bk-has-row-actions"
+              :class="{ 'bk-is-editing': editingKey === item.key }"
+            >
               <Editor
                 v-if="editingKey === item.key"
                 :uuid="item.uuid"
@@ -120,7 +123,7 @@
                   />
                   <span v-else class="text-mono-400 italic">&mdash;</span>
                 </div>
-                <div class="flex items-center gap-5 shrink-0">
+                <div class="flex items-center gap-5 shrink-0 relative">
                   <Pill
                     v-if="editedTranslations.has(item.key)"
                     data-test="translations-batch-edited"
@@ -164,9 +167,7 @@
                     v-if="editConfigFor(item)"
                     icon="bk_mdi_edit"
                     data-test="translations-batch-edit"
-                    :label="
-                      $t('translationsEditTranslation', 'Edit translation')
-                    "
+                    :label="$t('editTranslation', 'Edit translation')"
                     @click="openEditor(item)"
                   />
                 </div>

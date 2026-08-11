@@ -2383,7 +2383,7 @@ msgstr ""
 
 msgctxt "editTranslation"
 msgid "Edit translation"
-msgstr ""
+msgstr "Modifica traduzione"
 
 msgctxt "editTranslationDescription"
 msgid "Manually add or edit the translations."
@@ -3845,10 +3845,6 @@ msgstr ""
 msgctxt "translationsEditReset"
 msgid "Discard manual translation"
 msgstr "Scarta la traduzione manuale"
-
-msgctxt "translationsEditTranslation"
-msgid "Edit translation"
-msgstr "Modifica traduzione"
 
 msgctxt "translationsEditedManually"
 msgid "Manually edited"
