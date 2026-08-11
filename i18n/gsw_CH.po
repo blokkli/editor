@@ -3281,10 +3281,6 @@ msgctxt "readabilityEntireText"
 msgid "This score is calculated for the entire text."
 msgstr "Dr Wärt würd für dr gsamte Teggscht berechnet."
 
-msgctxt "readabilityTooShort"
-msgid "Too short"
-msgstr "Z churz"
-
 msgctxt "readabilityTooShortTooltip"
 msgid "Text needs at least @count words for readability analysis."
 msgstr "Dr Teggscht bruucht mindestens @count Wörter für d'Lesbarkeitsanalys."

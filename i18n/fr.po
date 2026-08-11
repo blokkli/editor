@@ -3220,10 +3220,6 @@ msgctxt "readabilityEntireText"
 msgid "This score is calculated for the entire text."
 msgstr ""
 
-msgctxt "readabilityTooShort"
-msgid "Too short"
-msgstr "Trop court"
-
 msgctxt "readabilityTooShortTooltip"
 msgid "Text needs at least @count words for readability analysis."
 msgstr "Le texte nécessite au moins @count mots pour l'analyse de lisibilité."

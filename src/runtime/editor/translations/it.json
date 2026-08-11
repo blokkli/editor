@@ -137,7 +137,6 @@
   "publishError": "Le modifiche non possono essere pubblicate.",
   "publishRevisionLogMessage": "Descrizione delle modifiche",
   "publishSuccess": "Modifiche pubblicate con successo.",
-  "readabilityTooShort": "Troppo breve",
   "readabilityTooShortTooltip": "Il testo necessita di almeno @count parole per l'analisi della leggibilità.",
   "readabilityTooltipDescription": "@label misura quanto è facile leggere il testo.",
   "relativeTimeJustNow": "proprio ora",

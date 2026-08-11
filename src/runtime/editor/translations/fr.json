@@ -137,7 +137,6 @@
   "publishError": "Les modifications n’ont pas pu être publiées.",
   "publishRevisionLogMessage": "Description des modifications",
   "publishSuccess": "Modifications publiées avec succès.",
-  "readabilityTooShort": "Trop court",
   "readabilityTooShortTooltip": "Le texte nécessite au moins @count mots pour l'analyse de lisibilité.",
   "readabilityTooltipDescription": "@label mesure la facilité de lecture du texte.",
   "relativeTimeJustNow": "à l'instant",

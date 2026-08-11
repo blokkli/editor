@@ -764,7 +764,6 @@
   "publishWillBeScheduled": "Wird geplant",
   "qrCode": "QR-Code",
   "readabilityEntireText": "Dieser Wert wird für den gesamten Text berechnet.",
-  "readabilityTooShort": "Zu kurz",
   "readabilityTooShortTooltip": "Text braucht mindestens @count Wörter für die Lesbarkeitsanalyse.",
   "readabilityTooltipDescription": "@label misst, wie leicht der Text zu lesen ist.",
   "redo": "Wiederholen",

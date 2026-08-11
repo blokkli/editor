@@ -764,7 +764,6 @@
   "publishWillBeScheduled": "Würd plant",
   "qrCode": "QR-Code",
   "readabilityEntireText": "Dr Wärt würd für dr gsamte Teggscht berechnet.",
-  "readabilityTooShort": "Z churz",
   "readabilityTooShortTooltip": "Dr Teggscht bruucht mindestens @count Wörter für d'Lesbarkeitsanalys.",
   "readabilityTooltipDescription": "@label misst, wie eifach dr Teggscht z'läse isch.",
   "redo": "Wiederhole",
