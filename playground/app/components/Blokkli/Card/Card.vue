@@ -1,4 +1,5 @@
 <template>
+  <!-- This is a comment. -->
   <div
     :class="{
       'container mx-auto mt-50 h-full': !parentType,
