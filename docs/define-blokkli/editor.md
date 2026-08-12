@@ -464,3 +464,38 @@ outer container. The editor also uses this element for:
 If no `ref="blokkliDraggable"` is set, the component's root element is used as a
 fallback. The ref can also point to a child component — the editor will use its
 root element.
+
+### Registering an element inside a child component
+
+A template ref is only available on the instance whose template declares it, so
+putting `ref="blokkliDraggable"` inside a child component is not visible to the
+block component. If the element you want lives in a child component's template,
+the child has to expose it as `blokkliDraggable`:
+
+```vue
+<!-- Paragraph/Card/index.vue (the block) -->
+<template>
+  <div class="container">
+    <CardContent ref="blokkliDraggable" :title :text />
+  </div>
+</template>
+```
+
+```vue
+<!-- Paragraph/Card/Content.vue -->
+<template>
+  <div ref="blokkliDraggable" class="card-content">
+    <h3 v-blokkli-editable:title>{{ title }}</h3>
+    <p v-blokkli-editable:text>{{ text }}</p>
+  </div>
+</template>
+
+<script lang="ts" setup>
+const blokkliDraggable = useTemplateRef('blokkliDraggable')
+
+defineExpose({ blokkliDraggable })
+</script>
+```
+
+The editor now uses `.card-content` inside the child as the draggable element.
+Without the `defineExpose()`, it would fall back to the child's root element.

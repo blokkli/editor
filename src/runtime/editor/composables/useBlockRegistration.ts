@@ -63,20 +63,28 @@ export function useBlockRegistration(dom: DomProvider, uuid: string) {
   let rootElement: HTMLElement | null = null
 
   function getDraggableElement(): HTMLElement | null {
-    const blokkliDraggable = instance?.refs.blokkliDraggable
-    if (blokkliDraggable instanceof HTMLElement) {
-      return blokkliDraggable
-    } else if (blokkliDraggable && typeof blokkliDraggable === 'object') {
-      // The ref is another component. Try to get the root element, descending
-      // into its rendered tree if the component itself is a fragment.
+    const draggableRef = instance?.refs.blokkliDraggable
+    if (draggableRef instanceof HTMLElement) {
+      return draggableRef
+    } else if (draggableRef && typeof draggableRef === 'object') {
+      // The ref points to another component. A template ref only ever lands on
+      // the instance whose template declares it, so a child component that
+      // wants to designate an element inside its own template has to expose it
+      // as `blokkliDraggable` via defineExpose(). If it does, that wins.
       if (
-        '$el' in blokkliDraggable &&
-        blokkliDraggable.$el instanceof HTMLElement
+        'blokkliDraggable' in draggableRef &&
+        draggableRef.blokkliDraggable instanceof HTMLElement
       ) {
-        return blokkliDraggable.$el
+        return draggableRef.blokkliDraggable
       }
 
-      const { $ } = blokkliDraggable as { $?: { subTree?: VNode } }
+      // Else use the component's root element, descending into its rendered
+      // tree if the component itself is a fragment.
+      if ('$el' in draggableRef && draggableRef.$el instanceof HTMLElement) {
+        return draggableRef.$el
+      }
+
+      const { $ } = draggableRef as { $?: { subTree?: VNode } }
       const el = findFirstElement($?.subTree)
       if (el) {
         return el
