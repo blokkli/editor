@@ -33,7 +33,14 @@ type OverrideEntry = {
   element: HTMLElement | null
   setValue: (value: string) => void
   restore: () => void
-  originalValue: string
+  /**
+   * The field's value as STORED, captured before the rewrite began.
+   *
+   * Deliberately the raw value and not the rendered one: the component diffs
+   * against this and a partial acceptance reassembles from it, so a rendered
+   * value here would persist the backend's render-time markup.
+   */
+  rawOriginalValue: string
 }
 
 /**
@@ -124,7 +131,7 @@ export function useFieldRewriteStream(options: {
       element: override.element,
       setValue: override.setValue,
       restore: override.restore,
-      originalValue: override.originalValue,
+      rawOriginalValue: override.rawOriginalValue,
     })
   }
 

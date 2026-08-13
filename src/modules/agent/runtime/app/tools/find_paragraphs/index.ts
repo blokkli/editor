@@ -2,7 +2,8 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { parentSchema } from '../schemas'
 import { optionalBooleanParam } from '../../../shared/toolParams'
-import { getResolvedOptions } from '../helpers'
+import { getResolvedOptions, readBlockContentFields } from '../helpers'
+import { itemEntityType } from '#blokkli-build/config'
 import {
   getMutatedOptionValue,
   optionValueToStorable,
@@ -197,14 +198,28 @@ export default defineBlokkliAgentTool({
       })
     }
 
-    // Filter by containsText (most expensive, do last)
+    // Filter by containsText (most expensive, do last).
+    //
+    // Matched against the STORED values first and the rendered text second.
+    // The model builds `containsText` from whatever a query tool showed it, and
+    // those tools report stored values — so matching only the rendered text
+    // silently returns nothing whenever the backend's filters rewrote the
+    // passage (e.g. `--` rendered as an em dash). Rendered text still counts,
+    // because it covers content that lives in no field at all.
     if (params.containsText) {
       const searchText = params.containsText.toLowerCase()
       candidates = candidates.filter((block) => {
+        const storedMatch = readBlockContentFields(
+          ctx.app,
+          block.uuid,
+          itemEntityType,
+          block.bundle,
+        ).some((f) => f.value.toLowerCase().includes(searchText))
+        if (storedMatch) return true
+
         const el = dom.getDragElement(block)
         if (!el) return false
-        const text = el.textContent?.toLowerCase() || ''
-        return text.includes(searchText)
+        return (el.textContent?.toLowerCase() || '').includes(searchText)
       })
     }
 

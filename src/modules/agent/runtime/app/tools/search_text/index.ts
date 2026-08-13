@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
+import { readBlockContentFields } from '../helpers'
+import { itemEntityType } from '#blokkli-build/config'
 
 export const paramsSchema = z.object({
   query: z
@@ -27,6 +29,17 @@ export const resultSchema = z.object({
       matchCount: z
         .number()
         .describe('Number of times the query appears in this paragraph'),
+      source: z
+        .enum(['field', 'rendered'])
+        .describe(
+          '"field": the match is in an editable field and `matchedText` is the STORED value — safe to reuse as a search/replace target. "rendered": the match is only in the rendered page (content the backend generated, or a component that loads its own data), so `matchedText` may not exist in any field and MUST NOT be used as an edit target.',
+        ),
+      fieldName: z
+        .string()
+        .optional()
+        .describe(
+          'The editable field the snippet came from. Present only when source is "field".',
+        ),
     }),
   ),
   totalMatches: z.number().describe('Total number of paragraphs that matched'),
@@ -35,7 +48,7 @@ export const resultSchema = z.object({
 export default defineBlokkliAgentTool({
   name: 'search_text',
   description:
-    'Search for text in paragraph content. Returns paragraphs containing matches with text snippets. Only searches text directly in each paragraph, not in nested child paragraphs. For regex, use /pattern/flags format (e.g., "/hello|world/gi").',
+    'Search for text in paragraph content. Returns paragraphs containing matches with text snippets. Only searches text directly in each paragraph, not in nested child paragraphs. For regex, use /pattern/flags format (e.g., "/hello|world/gi").\nSearches editable field values first and falls back to the rendered page, so it also finds text no field holds. Check `source` on each match before acting: "field" snippets are stored values you can reuse as edit targets, "rendered" snippets are display-only and may not exist in any field.',
   category: 'query',
   volatile: true,
   lazy: true,
@@ -136,6 +149,39 @@ export default defineBlokkliAgentTool({
       // Filter by bundle if specified
       if (params.bundle && block.bundle !== params.bundle) continue
 
+      // Stored values first. A snippet from here is a real substring of the
+      // field, so the model can hand it straight back as a search/replace
+      // target — which is exactly what it tends to do with these results.
+      let storedCount = 0
+      let storedField: { fieldName: string; value: string } | undefined
+      for (const field of readBlockContentFields(
+        ctx.app,
+        block.uuid,
+        itemEntityType,
+        block.bundle,
+      )) {
+        const hits = field.value.match(regex)
+        if (!hits?.length) continue
+        storedCount += hits.length
+        storedField ??= field
+      }
+
+      if (storedField) {
+        matches.push({
+          uuid: block.uuid,
+          bundle: block.bundle,
+          matchedText: getSnippet(storedField.value),
+          matchCount: storedCount,
+          source: 'field',
+          fieldName: storedField.fieldName,
+        })
+        continue
+      }
+
+      // Nothing in the fields — fall back to the rendered text. This is what
+      // makes the tool find content no field holds (a block that fetches its
+      // own data, backend-generated markup), so it stays worth searching; the
+      // `source` marker tells the model it cannot edit what it found.
       const el = dom.getDragElement(block)
       const text = getBlockOwnText(el)
       const matchArray = text.match(regex)
@@ -146,6 +192,7 @@ export default defineBlokkliAgentTool({
           bundle: block.bundle,
           matchedText: getSnippet(text),
           matchCount: matchArray.length,
+          source: 'rendered',
         })
       }
     }

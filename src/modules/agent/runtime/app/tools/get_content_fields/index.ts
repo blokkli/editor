@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { readBlockContentFields } from '../helpers'
+import { readAgentFieldValue, readBlockContentFields } from '../helpers'
 import { stringArrayParam, tolerantSingularKeys } from '../schemas'
 import { booleanParamWithDefault } from '../../../shared/toolParams'
 
@@ -115,22 +115,18 @@ export default defineBlokkliAgentTool({
         .filter((f) => f.type !== 'table')
 
       for (const config of editableConfigs) {
-        const fieldType =
-          config.type === 'frame' || config.type === 'markup'
-            ? 'markup'
-            : 'plain'
-
-        const currentValue = ctx.app.fieldValue.readValue(
+        const read = readAgentFieldValue(
+          ctx.app,
           entityType,
           entityUuid,
           entityBundle,
           config.name,
-          fieldType as 'plain' | 'markup',
         )
+        if (!read) continue
 
         addField(result, entityUuid, config.name, {
-          type: fieldType as 'plain' | 'markup',
-          currentValue,
+          type: read.fieldType,
+          currentValue: read.value,
           required: config.required,
           maxLength: config.maxLength,
         })

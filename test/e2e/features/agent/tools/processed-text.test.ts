@@ -29,10 +29,11 @@ import { applyDiff } from '../../../support/diff'
  * persisted.
  *
  * ── STATUS ─────────────────────────────────────────────────────────────────
- * Most cases are `test.fails` — they document the CURRENT broken behaviour and
- * will flip red once the agent reads raw values (step 2). Convert those to plain
- * `test(...)` then; do not delete. The handful of plain `test(...)` cases at the
- * bottom pin paths that are ALREADY correct and must stay that way.
+ * Complete. The agent reads field values through `fieldValue.readRawValue`, and
+ * the DOM-derived tools either report stored values (`search_text`,
+ * `find_paragraphs`) or declare their provenance on the payload
+ * (`get_page_text`). Every case is a plain `test(...)`; there is nothing left
+ * documenting broken behaviour.
  *
  * `requireApproval: false` drives `update_text_fields` without its approval UI —
  * the tool applies on mount and `runComponentTool` resolves.
@@ -115,25 +116,28 @@ describe('agent: text field values are always unprocessed', async () => {
   // All of these resolve through `fieldValue.readValue` /
   // `readBlockContentFields`, so they share one root cause.
 
-  test.fails('readValue returns the raw field value', async () => {
+  test('readRawValue returns the stored field value', async () => {
     // The provider-level contract underneath every tool below — and the read
     // basis `delegate_text_rewrite` turns into its `baseValue`, which has no
     // reachable E2E seam of its own (its rewrite streams from a real LLM route).
-    const value = await page.evaluate(
-      ({ uuid, bundle }) =>
-        window.__BLOKKLI__!.app!.fieldValue.readValue(
-          'paragraph',
-          uuid,
-          bundle,
-          'text',
-          'markup',
-        ),
+    const values = await page.evaluate(
+      ({ uuid, bundle }) => {
+        const fieldValue = window.__BLOKKLI__!.app!.fieldValue
+        const args = ['paragraph', uuid, bundle, 'text', 'markup'] as const
+        return {
+          raw: fieldValue.readRawValue(...args),
+          rendered: fieldValue.readValue(...args),
+        }
+      },
       { uuid: markupUuid, bundle: 'text' },
     )
-    expect(value).not.toContain(MARKUP_MARKER)
+    expect(values.raw).toBe(RAW_MARKUP)
+    // `readValue` is deliberately left alone — the editor's preview machinery
+    // restores what was on screen, so it must keep returning the rendered value.
+    expect(values.rendered).toContain(MARKUP_MARKER)
   })
 
-  test.fails('get_all_page_content reports raw markup', async () => {
+  test('get_all_page_content reports raw markup', async () => {
     const result = await runAgentTool(page, 'get_all_page_content', {})
     const entry = result.content.find((b) => b.uuid === markupUuid)
     expect(
@@ -143,7 +147,7 @@ describe('agent: text field values are always unprocessed', async () => {
     expect(entry!.text).not.toContain(MARKUP_MARKER)
   })
 
-  test.fails('get_paragraph_context reports raw markup', async () => {
+  test('get_paragraph_context reports raw markup', async () => {
     const result = await runAgentTool(page, 'get_paragraph_context', {
       uuid: markupUuid,
       includeContentFields: true,
@@ -155,7 +159,7 @@ describe('agent: text field values are always unprocessed', async () => {
     expect(JSON.stringify(result)).not.toContain(MARKUP_MARKER)
   })
 
-  test.fails('get_content_fields reports raw markup for a block', async () => {
+  test('get_content_fields reports raw markup for a block', async () => {
     const result = await runAgentTool(page, 'get_content_fields', {
       uuids: [markupUuid],
       includeNested: false,
@@ -167,7 +171,7 @@ describe('agent: text field values are always unprocessed', async () => {
     ).not.toContain(MARKUP_MARKER)
   })
 
-  test.fails('get_content_fields reports raw plain text for an entity field', async () => {
+  test('get_content_fields reports raw plain text for an entity field', async () => {
     const result = await runAgentTool(page, 'get_content_fields', {
       uuids: [pageUuid],
       includeNested: false,
@@ -179,7 +183,7 @@ describe('agent: text field values are always unprocessed', async () => {
     ).not.toContain(PLAIN_MARKER)
   })
 
-  test.fails('get_page_structure reports raw block content', async () => {
+  test('get_page_structure reports raw block content', async () => {
     const result = await runAgentTool(page, 'get_page_structure', {
       uuid: markupUuid,
     })
@@ -188,7 +192,7 @@ describe('agent: text field values are always unprocessed', async () => {
     expect(result.structure).not.toContain(MARKUP_MARKER)
   })
 
-  test.fails('get_page_structure reports raw entity content', async () => {
+  test('get_page_structure reports raw entity content', async () => {
     const result = await runAgentTool(page, 'get_page_structure', {})
     expect(result.structure, 'lead should appear in the structure').toContain(
       'Alpha',
@@ -197,28 +201,43 @@ describe('agent: text field values are always unprocessed', async () => {
   })
 
   // ── DOM-derived reads ─────────────────────────────────────────────────────
-  // These bypass `readValue` entirely and read the rendered page, so a raw read
-  // path does NOT reach them. Pinned here so the leak stays visible; what to do
-  // about them is an open decision.
+  // These read the rendered page, which no raw read path reaches. `get_page_text`
+  // stays that way on purpose — it is the only tool that captures content
+  // belonging to no field (a block that fetches its own data, backend-generated
+  // markup). The other two search the rendered page for RECALL but must not hand
+  // back rendered text the model could use as an edit target.
 
-  test.fails('get_page_text reports raw text', async () => {
+  test('get_page_text is rendered text, and says so', async () => {
     const result = await runAgentTool(page, 'get_page_text', {})
-    expect(result.text).not.toContain(PLAIN_MARKER)
+    // Deliberately still processed: this is what the user sees. Inverted from a
+    // `test.fails` so nobody "fixes" it into a raw read and loses the coverage
+    // of non-field content that is the whole point of the tool.
+    expect(result.text).toContain(PLAIN_MARKER)
+    // The payload has to carry its own provenance — a tool description is read
+    // once, far from the point of use.
+    expect(result.source).toBe('rendered')
   })
 
-  test.fails('search_text returns raw match snippets', async () => {
+  test('search_text returns stored snippets for field matches', async () => {
     const result = await runAgentTool(page, 'search_text', {
       query: 'Alpha',
       limit: 20,
     })
     const match = result.matches.find((r) => r.uuid === plainUuid)
     expect(match, 'seeded card should match the query').toBeDefined()
+    // The snippet is a real substring of the stored value, so the model can
+    // reuse it as a search/replace target.
+    expect(match!.source).toBe('field')
+    expect(match!.fieldName).toBe('title')
     expect(match!.matchedText).not.toContain(PLAIN_MARKER)
+    expect(RAW_PLAIN).toContain(
+      match!.matchedText.replace(/^\.\.\.|\.\.\.$/g, ''),
+    )
   })
 
-  test.fails('find_paragraphs matches containsText against raw text', async () => {
-    // The model builds `containsText` from a value some other tool showed it.
-    // Filtering against the rendered text means the raw authoring marks miss.
+  test('find_paragraphs matches containsText against raw text', async () => {
+    // The model builds `containsText` from a value some other tool showed it,
+    // and those tools report stored values.
     const result = await runAgentTool(page, 'find_paragraphs', {
       containsText: RAW_PLAIN,
       limit: 50,
@@ -228,7 +247,7 @@ describe('agent: text field values are always unprocessed', async () => {
 
   // ── Writes: what gets persisted ───────────────────────────────────────────
 
-  test.fails('a patch operation persists raw markup', async () => {
+  test('a patch operation persists raw markup', async () => {
     const uuid = await addTextBlock()
     await seedField(uuid, 'text', RAW_MARKUP)
 
@@ -249,7 +268,7 @@ describe('agent: text field values are always unprocessed', async () => {
     )
   })
 
-  test.fails('a partially accepted diff persists a raw hybrid', async () => {
+  test('a partially accepted diff persists a raw hybrid', async () => {
     const uuid = await addTextBlock()
     await seedField(uuid, 'text', RAW_MARKUP)
 
@@ -286,7 +305,7 @@ describe('agent: text field values are always unprocessed', async () => {
     )
   })
 
-  test.fails('an agent edit does not compound the processing', async () => {
+  test('an agent edit does not compound the processing', async () => {
     const uuid = await addTextBlock()
     await seedField(uuid, 'text', RAW_MARKUP)
 
@@ -297,11 +316,11 @@ describe('agent: text field values are always unprocessed', async () => {
       requireApproval: false,
     })
 
-    // Read the block's props off the state rather than the DOM: applying a diff
-    // leaves the written value in `mutatedItemProps`, which masks the element
-    // for the rest of the session. The state props are what the mock actually
-    // re-rendered from the stored value — i.e. what the user sees on their next
-    // visit.
+    // Read the block's props off the state, NOT the DOM. The DOM cannot show
+    // this bug: `<p data-bk-processed data-bk-processed="">` is invalid HTML,
+    // and the parser silently drops the duplicate attribute, so the element
+    // looks identical to a singly-processed one. The state props carry the
+    // value the mock actually produced from the stored value.
     const renderedText = () =>
       page.evaluate((uuid) => {
         const item = window.__BLOKKLI__!.app!.state.getFieldListItem(uuid)
@@ -334,7 +353,7 @@ describe('agent: text field values are always unprocessed', async () => {
 
   // LAST: mutates the shared host entity's `lead`, which the read cases above
   // depend on being exactly RAW_PLAIN.
-  test.fails('a patch on a plain host-entity field preserves the raw text', async () => {
+  test('a patch on a plain host-entity field preserves the raw text', async () => {
     // Force a read: the patch is applied to whatever the current value
     // resolves to. `lead` is mapped via `propsFieldMapping`, so that read
     // comes from `mutatedEntity` — the processed value.

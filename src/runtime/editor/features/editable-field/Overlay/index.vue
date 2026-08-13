@@ -462,18 +462,15 @@ const focusInput = (el?: HTMLElement | Document | null) => {
 onMounted(() => {
   const el = props.element
 
-  // Read the raw value from textFieldValues when available (always has
-  // unprocessed values), fall back to the override's captured DOM value.
+  // Edit the STORED value, not the rendered one — otherwise saving would
+  // persist whatever the backend's filters injected while rendering.
+  // `rawOriginalValue` already falls back to the rendered value for adapters
+  // that expose nothing raw.
   if (props.controlled || props.isComponent) {
     modelValue.value = props.value || ''
   } else {
-    const tfv = fieldValue
-      .getTextFieldValues()
-      .find(
-        (v) => v.uuid === props.host.uuid && v.fieldName === props.fieldName,
-      )
     modelValue.value =
-      tfv?.value ||
+      override.rawOriginalValue ||
       override.originalValue ||
       (isMarkup.value ? props.element.innerHTML : props.element.textContent) ||
       ''

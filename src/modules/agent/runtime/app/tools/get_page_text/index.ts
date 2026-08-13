@@ -4,6 +4,11 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 export const paramsSchema = z.object({})
 
 export const resultSchema = z.object({
+  source: z
+    .literal('rendered')
+    .describe(
+      'This text is the RENDERED page, not stored field values. The backend transforms text while rendering (text formats, typographic replacements, markers appended to links), and some of this text belongs to no editable field at all. Use it to understand the page; never copy from it into a field update. To edit, read the field with get_content_fields and write what you read.',
+    ),
   text: z
     .string()
     .describe(
@@ -41,7 +46,12 @@ export default defineBlokkliAgentTool({
     'question about page meaning or content ("what does this page say", ' +
     '"summarize the page", "write an intro that matches the content", ' +
     '"translate the page"). Reach for `get_all_page_content` only when you ' +
-    'need per-block UUIDs to act on specific blocks.',
+    'need per-block UUIDs to act on specific blocks.\n' +
+    'READ-ONLY REFERENCE: this is the RENDERED page, not stored field values. ' +
+    'The backend rewrites text while rendering, and some of this text belongs ' +
+    'to no editable field at all. Never copy a passage from here into a field ' +
+    'update — read the field with `get_content_fields` and edit what that ' +
+    'returns.',
   category: 'query',
   lazy: true,
   volatile: true,
@@ -92,7 +102,9 @@ export default defineBlokkliAgentTool({
 
     return {
       label: $t('aiAgentGetPageTextDone', 'Read page content'),
-      result: truncated ? { text, truncated } : { text },
+      result: truncated
+        ? { source: 'rendered' as const, text, truncated }
+        : { source: 'rendered' as const, text },
     }
   },
 })

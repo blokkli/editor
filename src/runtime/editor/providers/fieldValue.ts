@@ -68,6 +68,31 @@ export type FieldValueProvider = {
   ) => string
 
   /**
+   * Read the RAW (unprocessed) value of an editable field — what is actually
+   * stored in the backend, not what the page renders.
+   *
+   * A CMS renders text fields through filters (text formats, typographic
+   * transforms, "opens in a new tab" markers on external links), so the
+   * rendered value differs from the stored one. Anything that can end up being
+   * written back — an agent edit, a diff base, a search/replace target — MUST
+   * use this rather than `readValue`, or the filter's output gets persisted as
+   * if it were authored content and compounds on the next render.
+   *
+   * Resolves from the adapter's `textFieldValues` (mapped state), falling back
+   * to `readValue` only when the adapter exposes nothing for that entity.
+   *
+   * Imperative use only: the mapped state lives outside Vue's reactivity, so a
+   * `computed()` built on this will not re-evaluate when the state is re-mapped.
+   */
+  readRawValue: (
+    entityType: string,
+    uuid: string,
+    bundle: string,
+    fieldName: string,
+    fieldType: FieldValueType,
+  ) => string
+
+  /**
    * Read the current value and field type of an editable field.
    *
    * Uses the correct strategy based on the field's configuration:
@@ -246,6 +271,71 @@ export default function fieldValueProvider(
     return ''
   }
 
+  /**
+   * The adapter's raw values, or null before any state has been mapped.
+   *
+   * `getMappedState()` throws when called before a state is available, and
+   * `readRawValue` can run during component setup — so this swallows that case
+   * rather than letting it propagate to a caller that only wants a string.
+   */
+  function getRawFieldValues(): TextFieldValue[] | null {
+    try {
+      return state.getMappedState().textFieldValues ?? null
+    } catch {
+      return null
+    }
+  }
+
+  /** True once we've warned about an adapter that exposes no raw values. */
+  let warnedMissingRawValues = false
+
+  function readRawValue(
+    entityType: string,
+    uuid: string,
+    bundle: string,
+    fieldName: string,
+    fieldType: FieldValueType,
+  ): string {
+    const values = getRawFieldValues()
+
+    if (!values) {
+      if (import.meta.dev && !warnedMissingRawValues) {
+        warnedMissingRawValues = true
+        console.warn(
+          '[blökkli] The adapter exposes no `textFieldValues`, so raw field ' +
+            'values fall back to the rendered ones. Any text the agent writes ' +
+            'back will carry whatever the backend injected while rendering.',
+        )
+      }
+      return readValue(entityType, uuid, bundle, fieldName, fieldType)
+    }
+
+    let entityIsKnown = false
+    for (let i = 0; i < values.length; i++) {
+      const v = values[i]!
+      if (v.uuid !== uuid || v.entityType !== entityType) {
+        continue
+      }
+      // Same entity — so the adapter DOES expose this entity's fields.
+      entityIsKnown = true
+      if (v.fieldName === fieldName) {
+        return v.value
+      }
+    }
+
+    // The entity is exposed but this field isn't: adapters omit fields with no
+    // value (see the playground's `mapState`), so the field is genuinely empty.
+    // Falling back here would hand back filter-injected markup as if a human
+    // had authored it.
+    if (entityIsKnown) {
+      return ''
+    }
+
+    // Entity absent entirely (e.g. a block inside a library item, which the
+    // mapped state doesn't walk). Nothing better than the rendered value.
+    return readValue(entityType, uuid, bundle, fieldName, fieldType)
+  }
+
   function getTextFieldValues(): TextFieldValue[] {
     // Read from mapped state if available (provided by adapter's mapState).
     const mappedState = state.getMappedState()
@@ -318,6 +408,7 @@ export default function fieldValueProvider(
   return {
     resolveFieldType,
     readValue,
+    readRawValue,
     readFieldValue,
     getTextFieldValues,
     getDroppableFieldValues,

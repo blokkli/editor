@@ -18,7 +18,11 @@ import type {
   ComponentToolResult,
 } from '#blokkli/agent/app/types'
 import type { ComponentParams, BatchRewriteResult } from './index'
-import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
+import {
+  applyOperations,
+  readAgentFieldValue,
+  resolveHost as resolveBlockHost,
+} from '../helpers'
 import {
   applyFieldDiffs,
   rejectedWithoutReasonMessage,
@@ -44,7 +48,7 @@ const emit = defineEmits<{
 }>()
 
 const blokkli = useBlokkli()
-const { $t, state, types, directive } = blokkli
+const { $t, state, types } = blokkli
 
 const isApplying = ref(false)
 
@@ -117,18 +121,27 @@ function getFieldType(
   return cfg.type === 'plain' ? 'plain' : 'markup'
 }
 
+/**
+ * The field's current STORED value — the basis for patch operations, the diff,
+ * and the reassembled value a partial acceptance writes back.
+ *
+ * Must not read the DOM: the rendered value carries whatever the backend's
+ * filters injected, and every one of those three consumers ends up persisted.
+ * Reading raw also means fields with no directive-bound element (declared purely
+ * via `propsFieldMapping`) resolve, where the old DOM lookup returned null and
+ * silently dropped their operations.
+ */
 function getCurrentValue(uuid: string, fieldName: string): string | null {
   const host = resolveHost(uuid)
   if (!host) return null
-  const el = directive.findEditableElement(fieldName, {
-    type: host.entityType,
-    bundle: host.bundle,
+  const read = readAgentFieldValue(
+    blokkli,
+    host.entityType,
     uuid,
-  })
-  if (!el) return null
-  const fieldType = getFieldType(uuid, fieldName)
-  if (fieldType === null) return null
-  return fieldType === 'plain' ? el.textContent || '' : el.innerHTML
+    host.bundle,
+    fieldName,
+  )
+  return read ? read.value : null
 }
 
 let idCounter = 0

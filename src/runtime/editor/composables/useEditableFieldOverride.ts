@@ -6,8 +6,24 @@ import type { PropsFieldMapping } from './../../../global/types/definitions'
 export type EditableFieldOverride = {
   /** The resolved DOM element, or null if not found. */
   element: HTMLElement | null
-  /** The original value captured when the override was created. */
+  /**
+   * The original value captured when the override was created, as RENDERED.
+   *
+   * Use this only to put the page back the way it was — `restore()` writes it
+   * straight into the DOM. It is NOT what is stored: a CMS renders text fields
+   * through filters, so this can carry markup nobody authored.
+   */
   originalValue: string
+  /**
+   * The original value as STORED — the backend's raw value, before any render
+   * filters ran.
+   *
+   * Use this for anything that computes a diff or can be written back
+   * (`splitIntoSegments`, `computeDiff`, change detection). Diffing against
+   * `originalValue` marks every filter artifact as a change, and reassembling a
+   * partially-accepted diff would then persist that rendered markup.
+   */
+  rawOriginalValue: string
   /** The field type (plain or markup). */
   fieldType: 'plain' | 'markup'
   /** Apply a value — updates live preview via the correct strategy. */
@@ -21,6 +37,7 @@ export type EditableFieldOverride = {
 const NOOP_OVERRIDE: EditableFieldOverride = {
   element: null,
   originalValue: '',
+  rawOriginalValue: '',
   fieldType: 'plain',
   setValue() {},
   setDiffHtml() {},
@@ -102,9 +119,21 @@ export function useEditableFieldOverride(
 
   const mutatedItemPropsKey = providerDefinition ? 'HOST' : host.uuid
 
-  // Capture original value using the shared provider method.
+  // Capture original value using the shared provider method. This is the
+  // RENDERED value — `restore()` writes it straight back into the DOM, so it
+  // has to be exactly what was on screen.
   const readResult = fieldValue.readFieldValue(fieldName, host)
   const originalValue = readResult?.value ?? ''
+
+  // The stored counterpart, for anything that computes a diff or gets written
+  // back. See the type docs for why the two must not be conflated.
+  const rawOriginalValue = fieldValue.readRawValue(
+    host.type,
+    host.uuid,
+    host.bundle,
+    fieldName,
+    fieldType,
+  )
 
   // Capture original mutatedItemProps value for restore.
   const originalMutatedProp: string | undefined = matchingProp
@@ -149,6 +178,7 @@ export function useEditableFieldOverride(
     return {
       element: null,
       originalValue,
+      rawOriginalValue,
       fieldType,
       setValue: setMutatedProp,
       // Diff markup needs an element to render into; a prop can only carry a
@@ -264,6 +294,7 @@ export function useEditableFieldOverride(
   return {
     element,
     originalValue,
+    rawOriginalValue,
     fieldType,
     setValue,
     setDiffHtml,

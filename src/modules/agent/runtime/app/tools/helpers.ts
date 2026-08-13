@@ -427,14 +427,54 @@ export function getResolvedOptions(
 }
 
 /**
+ * Read one editable field the way the agent must always read text: RAW, as
+ * stored in the backend, never as rendered.
+ *
+ * Every agent read of a field value goes through this (or through
+ * {@link readBlockContentFields} below). Agent code must NOT call
+ * `app.fieldValue.readValue` directly — the rendered value carries whatever the
+ * backend's filters injected while rendering, and anything the agent reads can
+ * end up written back, baking that output into the stored content.
+ *
+ * Returns null for fields with no text payload (`table`), matching the way
+ * callers skip them.
+ */
+export function readAgentFieldValue(
+  app: BlokkliApp,
+  entityType: string,
+  uuid: string,
+  bundle: string,
+  fieldName: string,
+): { fieldType: FieldValueType; value: string } | null {
+  const cfg = app.types.editableFieldConfig.forName(
+    entityType,
+    bundle,
+    fieldName,
+  )
+  if (!cfg || cfg.type === 'table') {
+    return null
+  }
+  const fieldType: FieldValueType =
+    cfg.type === 'frame' || cfg.type === 'markup' ? 'markup' : 'plain'
+  return {
+    fieldType,
+    value: app.fieldValue.readRawValue(
+      entityType,
+      uuid,
+      bundle,
+      fieldName,
+      fieldType,
+    ),
+  }
+}
+
+/**
  * Read every editable content field of a block (or entity), skipping `table`
  * fields (no text payload). Iterates the declared `editableFieldConfig` rather
  * than the runtime `v-blokkli-editable` directive registry — the former is the
  * canonical declaration (it sees fields exposed via `propsFieldMapping` even
  * when no directive is present in the template), while the latter only sees
- * fields whose template marks them with the directive. `fieldValue.readValue`
- * already knows how to resolve a value through `propsFieldMapping`, so this
- * one swap surfaces all editable fields to every caller.
+ * fields whose template marks them with the directive.
  */
 export function readBlockContentFields(
   app: BlokkliApp,
@@ -452,17 +492,13 @@ export function readBlockContentFields(
     bundle,
   )
   for (const cfg of configs) {
-    if (cfg.type === 'table') continue
-    const fieldType: FieldValueType =
-      cfg.type === 'frame' || cfg.type === 'markup' ? 'markup' : 'plain'
-    const value = app.fieldValue.readValue(
-      entityType,
-      uuid,
-      bundle,
-      cfg.name,
-      fieldType,
-    )
-    result.push({ fieldName: cfg.name, fieldType, value })
+    const read = readAgentFieldValue(app, entityType, uuid, bundle, cfg.name)
+    if (!read) continue
+    result.push({
+      fieldName: cfg.name,
+      fieldType: read.fieldType,
+      value: read.value,
+    })
   }
   return result
 }

@@ -143,8 +143,10 @@ function transitionToApproval() {
       finalValue = fs.fullValue
     }
 
-    // Skip fields where value didn't change.
-    if (override.originalValue === finalValue) continue
+    // Skip fields where value didn't change. Compared against the STORED value
+    // — `originalValue` is the rendered one, so it would report a change for
+    // every field the backend's filters decorate.
+    if (override.rawOriginalValue === finalValue) continue
 
     const itemId = idCounter++
 
@@ -155,7 +157,7 @@ function transitionToApproval() {
     )
     const segments = field
       ? (splitIntoSegments(
-          override.originalValue,
+          override.rawOriginalValue,
           finalValue,
           field.fieldType,
         ) ?? undefined)
@@ -170,7 +172,7 @@ function transitionToApproval() {
       segments,
     })
 
-    beforeValues.set(itemId, override.originalValue)
+    beforeValues.set(itemId, override.rawOriginalValue)
   }
 
   if (items.length === 0) {

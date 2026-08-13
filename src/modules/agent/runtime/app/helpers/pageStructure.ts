@@ -5,6 +5,7 @@ import type {
 } from '#blokkli/agent/shared/types'
 import {
   getParagraphChildren,
+  readAgentFieldValue,
   readBlockContentFields,
 } from '#blokkli/agent/app/tools/helpers'
 import { itemEntityType } from '#blokkli-build/config'
@@ -79,17 +80,15 @@ export function buildPageStructure(app: BlokkliApp): PageStructure {
   let entityContentFields: Record<string, string> | undefined
 
   for (const config of entityEditableConfigs) {
-    const fieldType =
-      config.type === 'frame' || config.type === 'markup' ? 'markup' : 'plain'
-    const raw = app.fieldValue.readValue(
+    const read = readAgentFieldValue(
+      app,
       entityType,
       pageUuid,
       entityBundle,
       config.name,
-      fieldType as 'plain' | 'markup',
     )
-    const text = raw
-    const truncated = truncate(text)
+    if (!read) continue
+    const truncated = truncate(read.value)
     if (truncated) {
       if (!entityContentFields) entityContentFields = {}
       entityContentFields[config.name] = truncated

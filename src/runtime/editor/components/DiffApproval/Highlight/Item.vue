@@ -163,7 +163,10 @@ const diffHtml = computed(() => {
   }
   return props.insertionsOnly
     ? computeInsertion(props.item.value)
-    : computeDiff(override.originalValue, props.item.value)
+    : // Diffed against the STORED value: `item.value` is a stored value too, so
+      // using the rendered `originalValue` here would paint every bit of markup
+      // the backend's filters injected as a user-visible deletion.
+      computeDiff(override.rawOriginalValue, props.item.value)
 })
 
 /**

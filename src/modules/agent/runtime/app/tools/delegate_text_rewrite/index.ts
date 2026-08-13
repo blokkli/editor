@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
-import { resolveHost } from '../helpers'
+import { readAgentFieldValue, resolveHost } from '../helpers'
 import { runReadabilityAnalysis } from '../readability'
 import {
   requireBundlePermission,
@@ -148,23 +148,18 @@ export default defineBlokkliAgentTool({
       }
       const { entityType, bundle } = host
 
-      const fieldType = ctx.app.fieldValue.resolveFieldType(
-        entityType,
-        bundle,
-        fieldName,
-      )
-      if (!fieldType) {
-        skipped.push({ uuid, fieldName, reason: 'field not found' })
-        continue
-      }
-
-      const currentValue = ctx.app.fieldValue.readValue(
+      const read = readAgentFieldValue(
+        ctx.app,
         entityType,
         uuid,
         bundle,
         fieldName,
-        fieldType,
       )
+      if (!read) {
+        skipped.push({ uuid, fieldName, reason: 'field not found' })
+        continue
+      }
+      const { fieldType, value: currentValue } = read
 
       resolvedFields.push({
         uuid,
