@@ -58,6 +58,32 @@ export function editableState(
   )
 }
 
+/**
+ * Read a field's *stored* value — the raw, unprocessed value the adapter
+ * supplies via mapped state, which is what would be persisted.
+ *
+ * Deliberately not a DOM read: the mock (like a real CMS) renders a *processed*
+ * value, so `editableState().html` and this can legitimately differ. Use this
+ * whenever the assertion is about what ends up in the backend rather than what
+ * the user sees.
+ *
+ * Returns null when the field has no entry (the mock omits empty fields).
+ */
+export function storedFieldValue(
+  page: Page,
+  uuid: string,
+  fieldName: string,
+): Promise<string | null> {
+  return page.evaluate(
+    ({ uuid, fieldName }) =>
+      window
+        .__BLOKKLI__!.app!.fieldValue.getTextFieldValues()
+        .find((v) => v.uuid === uuid && v.fieldName === fieldName)?.value ??
+      null,
+    { uuid, fieldName },
+  )
+}
+
 /** Read an editable field's current trimmed text. */
 export async function editableText(
   page: Page,
