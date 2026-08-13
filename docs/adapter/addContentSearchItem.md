@@ -15,7 +15,7 @@ import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 import type {
   AddContentSearchItemEvent,
   SearchContentItem,
-} from '#blokkli/types'
+} from '#blokkli/editor/features/search/types'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {

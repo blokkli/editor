@@ -855,6 +855,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         currentUserIsOwner: isOwner,
         ownerName: ownershipOverride?.ownerName ?? state.owner.name,
         ownerId: ownershipOverride?.ownerId ?? state.owner.id,
+        // The mock has no persisted "changed" timestamp — fake it as "now".
+        // Using Date.now() keeps E2E deterministic under setFixedTime().
+        lastChanged: Math.floor(Date.now() / 1000),
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,
@@ -1144,11 +1147,55 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       flatten(e.blocks, e.host, e.afterUuid)
 
-      const result = await addMutation('add', flatArgs)
+      // UUIDs of every block being added, including nested children. Used to
+      // scope validation to the new blocks — like Drupal's add_multiple, which
+      // validates the entities it creates, not the rest of the page.
+      const newUuids = new Set<string>()
+      const collectUuids = (blocks: typeof e.blocks) => {
+        for (const block of blocks) {
+          newUuids.add(block.blockUuid)
+          if (block.children) {
+            Object.values(block.children).forEach(collectUuids)
+          }
+        }
+      }
+      collectUuids(e.blocks)
+
+      editState.addMutation('add', flatArgs)
+      const mutatedState = await editState.getMutatedState(
+        getEntity(),
+        ctx.value.language,
+      )
+
+      // Reject when a newly-added block fails validation (e.g. a Button
+      // linking to google.com). Roll the mutation back so the invalid state
+      // isn't persisted, and return the violations so the caller (editor UI or
+      // agent) can surface them.
+      //
+      // Violations on a *block* field are exempt: a container created empty
+      // (or only partly filled) is a normal intermediate state — the caller
+      // fills it in a follow-up call, and the UI offers add buttons for exactly
+      // those empty fields. They stay reported through `state.violations`, so
+      // the analyze sidebar still flags them and publishing is still blocked.
+      const violations = mutatedState.violations.filter((v) => {
+        if (!v.entityUuid || !newUuids.has(v.entityUuid)) {
+          return false
+        }
+        if (!v.propertyPath) {
+          return true
+        }
+        const block = entityStorageManager.storages.paragraph.load(v.entityUuid)
+        return block?.get(v.propertyPath)?.type !== 'blocks'
+      })
+      if (violations.length) {
+        editState.removeLastMutation()
+        return { success: false, violations }
+      }
+
       if (optionsToUpdate.length) {
         return addMutation('update_options', { options: optionsToUpdate })
       }
-      return result
+      return mockResponse(mutatedState)
     },
 
     moveBlock: (e) =>

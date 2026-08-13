@@ -189,8 +189,8 @@ defineProps<{
 blökkli will automatically scan for components that contain `defineBlokkli` in
 their script tag and generate the required imports automatically.
 
-By default the search file pattern is `'components/Blokkli/**/*.{js,ts,vue}'`.
-This can be changed using the `blokkli.pattern` config option in nuxt.config.ts.
+There is no default search pattern – you must configure at least one. This is
+done using the `blokkli.pattern` config option in nuxt.config.ts.
 
 ## Trying it out
 

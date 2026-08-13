@@ -1,18 +1,11 @@
 <template>
-  <div
-    :class="{
-      'w-full max-w-prose mx-auto my-20 lg:my-50': !parentType,
-      'mt-50 mb-10': parentType,
-    }"
-  >
-    <div
-      ref="blokkliDraggable"
-      v-blokkli-editable:text
-      class="ck-content"
-      :class="{ 'is-inverted': isInverted }"
-      v-html="text"
-    />
-  </div>
+  <BlokkliTextInner
+    v-if="isInverted"
+    :text
+    :has-parent-type="!!parentType"
+    is-inverted
+  />
+  <BlokkliTextInner v-else :text :has-parent-type="!!parentType" />
 </template>
 
 <script lang="ts" setup>

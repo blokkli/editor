@@ -2,9 +2,6 @@ import { defineChartType } from '#blokkli/charts/definition'
 import {
   xAxisOptions,
   dataLabelsOptions,
-  legendOptions,
-  gridOptions,
-  strokeWidthOptions,
   yAxisMinOptions,
   categoryFilterOptions,
   mergeShared,
@@ -12,9 +9,6 @@ import {
 import type {
   XAxisTypeOptions,
   DataLabelsTypeOptions,
-  LegendTypeOptions,
-  GridTypeOptions,
-  StrokeWidthTypeOptions,
   YAxisMinTypeOptions,
   CategoryFilterTypeOptions,
 } from '#blokkli/charts/types'
@@ -24,9 +18,6 @@ export type TypeOptions = {
   markers: boolean
 } & XAxisTypeOptions &
   DataLabelsTypeOptions &
-  LegendTypeOptions &
-  GridTypeOptions &
-  StrokeWidthTypeOptions &
   YAxisMinTypeOptions &
   CategoryFilterTypeOptions
 
@@ -34,15 +25,13 @@ export default defineChartType<TypeOptions>('area', ($t) => {
   const shared = mergeShared(
     xAxisOptions($t),
     dataLabelsOptions($t),
-    legendOptions($t),
-    gridOptions($t),
-    strokeWidthOptions($t),
     yAxisMinOptions($t),
     categoryFilterOptions($t),
   )
   return {
     hasSeriesColors: true,
     hasCategoryColors: false,
+    hasAxes: true,
     editor: {
       label: $t('chartsTypeArea', 'Area'),
       description: $t(

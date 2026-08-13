@@ -30,7 +30,7 @@ type YourStateType = {
 
 export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
   return {
-    loadState: async (): YourStateType => {
+    loadState: async (): Promise<YourStateType | undefined> => {
       const response = await $fetch(
         `/backend-api/edit/${ctx.value.entityUuid}/get-state`,
       )

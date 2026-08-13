@@ -7,6 +7,7 @@
             <div class="bk-checkbox">
               <input
                 type="checkbox"
+                data-test="selection-table-toggle-all"
                 :checked="selectedCount === totalCount && totalCount > 0"
                 @change="$emit('toggle-all')"
               />
@@ -50,8 +51,25 @@ defineEmits<{
     text-overflow: ellipsis;
   }
 
+  /* Cells with hoverable row actions must not clip, or the absolutely
+     positioned tooltips of their icon-only buttons are cut off. */
+  td.bk-has-row-actions {
+    overflow: visible;
+  }
+
+  /* Cells hosting the inline translation editor must not clip or truncate
+     their content and need room to edit comfortably. */
+  td.bk-is-editing {
+    overflow: visible;
+    text-overflow: clip;
+  }
+
   tr:hover td {
     @apply bg-mono-50;
+  }
+
+  tr:hover td.bk-is-editing {
+    @apply bg-transparent;
   }
 
   .bk-is-empty {

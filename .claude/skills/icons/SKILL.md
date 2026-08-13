@@ -62,7 +62,7 @@ discovered automatically by the `IconCollector`.
 
 ### Runtime code (blökkli source)
 
-1. `npm run material-icons` scans all `.vue` and `.ts` files in `src/runtime/`
+1. `bun run material-icons` scans all `.vue` and `.ts` files in `src/runtime/`
    and `src/modules/` for strings matching the regex `/bk_mdi_[a-z0-9_-]+/g`
 2. It generates `src/build/used-icons.ts` — a static list of all Material
    Symbols icons used in blökkli's own runtime code
@@ -91,7 +91,7 @@ It validates each `bk_mdi_*` name against the actual
 
 1. Use the icon name string (e.g. `bk_mdi_favorite`) anywhere in the code — as a
    prop, variable, or string literal
-2. Run `npm run material-icons` to regenerate `src/build/used-icons.ts`
+2. Run `bun run material-icons` to regenerate `src/build/used-icons.ts`
 3. The icon will be included in the next build
 
 ### In userland code (defineBlokkli, features, options)

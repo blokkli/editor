@@ -46,6 +46,7 @@
   <NestedEditorOverlay
     v-if="editingLibraryItem"
     v-bind="editingLibraryItem"
+    id="library-item"
     theme="lime"
     icon="reusable"
     :title="$t('libraryItemEditOverlayTitle', 'Edit reusable block')"

@@ -43,16 +43,16 @@ gratuitous re-exports, not all re-exports.
 Test: if you can't say a one-line reason the re-export belongs there (beyond
 "it's convenient"), don't add it.
 
-### Typechecks: use the npm scripts. NEVER `npx vue-tsc ...`.
+### Typechecks: use the package.json scripts. NEVER `bunx vue-tsc ...`.
 
 The dedicated package.json scripts ARE the typecheck:
 
 ```bash
-npm run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
-npm run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
-npm run typecheck:server      # server code (.nuxt/tsconfig.server.json)
-npm run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
-npm run typecheck             # runs all four
+bun run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
+bun run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
+bun run typecheck:server      # server code (.nuxt/tsconfig.server.json)
+bun run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
+bun run typecheck             # runs all four
 ```
 
 Never improvise a `vue-tsc --project tsconfig.something.json` call. The
@@ -76,11 +76,11 @@ implementation.
 ### Development
 
 ```bash
-npm run dev                    # Start playground dev server
-npm run dev:minimal            # Start minimal playground
-npm run dev:prepare            # Prepare dev environment (stub build)
-npm run dev:build              # Generate static playground
-npm run dev:start              # Serve static playground build
+bun run dev                    # Start playground dev server
+bun run dev:minimal            # Start minimal playground
+bun run dev:prepare            # Prepare dev environment (stub build)
+bun run dev:build              # Generate static playground
+bun run dev:start              # Serve static playground build
 ```
 
 **Note:** During development, the dev server is always running with hot module
@@ -88,43 +88,54 @@ replacement. Do NOT start the dev server to verify changes - it's already
 running and will automatically reload. Same for styles, no need to build styles.
 
 **Do NOT verify changes in the browser (Playwright) unless explicitly asked.**
-For UI/editor changes, running the targeted typechecks and prettier is enough by
-default - only reach for the browser when the user asks you to test/verify it
-there.
+For UI/editor changes, running the targeted typechecks and the formatter
+(`bun run format`, which runs oxfmt) is enough by default - only reach for the
+browser when the user asks you to test/verify it there.
 
 ### Building & Packaging
 
 ```bash
-npm run prepack                # Build module for distribution
-npm run styles:build           # Build PostCSS styles
-npm run styles:watch           # Watch and rebuild styles
+bun run prepack                # Build module for distribution
+bun run styles:build           # Build PostCSS styles
+bun run styles:watch           # Watch and rebuild styles
 ```
 
 ### Testing & Quality
 
+**`bun run verify` is THE verification command — use it instead of running
+individual gates by hand.**
+
 ```bash
-npm test                       # Run Vitest tests
-npm run test:watch             # Watch mode for tests
-npm run typecheck              # Type check all (see /typecheck skill for targeted commands)
-npm run lint                   # Lint source files
-npm run lint:fix               # Auto-fix linting issues
-npm run format                 # Check code formatting
-npm run format:fix           # Auto-fix formatting
+bun run verify                 # format:fix, lint:fix, all 4 typechecks, unit
+                               # tests. Does NOT run e2e (and says so).
+bun run verify -- e2e          # E2E suite (needs the dev server running)
+bun run verify -- <gate>       # One gate only: format, lint, typecheck,
+                               # typecheck:runtime (etc.), unit, e2e
+bun run test:watch             # Watch mode during development
 ```
+
+Rules:
+
+- The script writes the FULL output of every gate to
+  `tmp/verify-output/<timestamp>.txt` and prints that path at the end. When a
+  gate fails, **READ THAT LOG FILE** — do NOT re-run gates piped through
+  `tail`/`grep`; that loses output and wastes minutes per re-run.
+- All gates must pass before declaring work verified. Without an argument, e2e
+  is NOT included — run it explicitly when editor behavior or E2E specs changed.
 
 ### Documentation
 
 ```bash
-npm run docs:dev               # Start VitePress docs dev server
-npm run docs:build             # Build documentation
-npm run docs:preview           # Preview built docs
+bun run docs:dev               # Start VitePress docs dev server
+bun run docs:build             # Build documentation
+bun run docs:preview           # Preview built docs
 ```
 
 ### Specialized Scripts
 
 ```bash
-npm run texts                  # Sync translation PO/JSON files (see /translations skill)
-npm run material-icons         # Regenerate used-icons list (see /icons skill)
+bun run texts                  # Sync translation PO/JSON files (see /translations skill)
+bun run material-icons         # Regenerate used-icons list (see /icons skill)
 ```
 
 ## Architecture Overview

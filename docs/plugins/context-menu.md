@@ -14,7 +14,7 @@ items.
 
 <script setup lang="ts">
 import { PluginContextMenu } from '#blokkli/editor/plugins'
-import type { ContextMenu } from '#blokkli/types'
+import type { ContextMenu } from '#blokkli/editor/types/ui'
 
 const menuItems: ContextMenu[] = [
   {
@@ -56,7 +56,7 @@ open.
 - **Required:** Yes
 
 Array of menu items to display. Each item is either a button or a rule
-(separator).
+(separator). The menu is a flat list — there are no nested sub-menus.
 
 **Menu Item Types:**
 
@@ -130,7 +130,7 @@ A visual separator between menu items:
 <script setup lang="ts">
 import { computed } from 'vue'
 import { PluginContextMenu } from '#blokkli/editor/plugins'
-import type { ContextMenu } from '#blokkli/types'
+import type { ContextMenu } from '#blokkli/editor/types/ui'
 
 const props = defineProps<{
   uuid: string

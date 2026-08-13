@@ -1,14 +1,29 @@
 <template>
   <div>
     <div v-if="showCategoryFilter" class="blokkli-chart-category-filter">
-      <label>
-        <span v-if="categoryFilterLabel">{{ categoryFilterLabel }}:</span>
-        <select v-model.number="selectedCategoryIndex">
-          <option v-for="(c, i) in formattedCategories" :key="i" :value="i">
-            {{ c }}
-          </option>
-        </select>
-      </label>
+      <slot
+        name="categoryFilter"
+        :label="categoryFilterLabel"
+        :categories="formattedCategories"
+        :selected-index="clampedSelectedIndex"
+        :set-selected-index="setSelectedIndex"
+      >
+        <label>
+          <span v-if="categoryFilterLabel">{{ categoryFilterLabel }}:</span>
+          <select
+            :value="clampedSelectedIndex"
+            @change="
+              setSelectedIndex(
+                Number(($event.target as HTMLSelectElement).value),
+              )
+            "
+          >
+            <option v-for="(c, i) in formattedCategories" :key="i" :value="i">
+              {{ c }}
+            </option>
+          </select>
+        </label>
+      </slot>
     </div>
     <ClientOnly>
       <component
@@ -29,10 +44,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, useAppConfig } from '#imports'
+import { computed, inject, ref, useBlokkliRuntimeConfig } from '#imports'
 import type {
   BlokkliChartData,
   ChartDataSourcePayload,
+  ChartOptionTransform,
   ChartSeries,
   ChartTypeRenderProps,
 } from '../../types'
@@ -45,30 +61,59 @@ import {
   INJECT_PROVIDER_CONTEXT,
 } from '#blokkli/helpers/injections'
 
-const props = defineProps<
-  BlokkliChartData & {
-    /**
-     * Override the language used to resolve translated strings. When unset,
-     * the language comes from the surrounding BlokkliProvider context.
-     */
-    languageOverride?: string
+const props = defineProps<{
+  /**
+   * The full chart data object from your block's options.
+   */
+  data: BlokkliChartData
 
+  /**
+   * Override the language used to resolve translated strings. When unset,
+   * the language comes from the surrounding BlokkliProvider context.
+   */
+  languageOverride?: string
+
+  /**
+   * Data fetched at runtime for a dynamic data source. Required when
+   * `props.dataSource` is set; otherwise ignored.
+   *
+   * The integrator's chart block component is responsible for fetching
+   * (e.g. via `useFetch` / `useLazyFetch`) and passing the result here.
+   * For large payloads, prefer `useLazyFetch` or `useAsyncData` with
+   * `server: false` to avoid bloating SSR HTML.
+   */
+  dynamicData?: ChartDataSourcePayload | null
+
+  /**
+   * Integrator hook to fully customize the final ECharts option of every
+   * built-in chart type. Receives the neutral default option + resolved
+   * context and returns the option to render. Runtime, not persisted;
+   * typically computed reactively from color mode / design tokens. Colors
+   * stay editor-owned. See `ChartOptionTransform`.
+   */
+  transform?: ChartOptionTransform
+}>()
+
+defineSlots<{
+  categoryFilter(props: {
+    label: string
+    categories: string[]
     /**
-     * Data fetched at runtime for a dynamic data source. Required when
-     * `props.dataSource` is set; otherwise ignored.
-     *
-     * The integrator's chart block component is responsible for fetching
-     * (e.g. via `useFetch` / `useLazyFetch`) and passing the result here.
-     * For large payloads, prefer `useLazyFetch` or `useAsyncData` with
-     * `server: false` to avoid bloating SSR HTML.
+     * The currently selected category index, clamped to the available
+     * categories. Bind as `:model-value` on a custom select.
      */
-    dynamicData?: ChartDataSourcePayload | null
-  }
->()
+    selectedIndex: number
+    /**
+     * Update the selected category index. Bind as `@update:model-value` on a
+     * custom select.
+     */
+    setSelectedIndex: (index: number) => void
+  }): any
+}>()
 
 const isEditing = inject(INJECT_IS_EDITING, false)
 
-const appConfig = useAppConfig()
+const { resolveColorHex, colorPalette } = useBlokkliRuntimeConfig()
 
 const providerEntity = inject(INJECT_PROVIDER_CONTEXT, null)
 
@@ -81,15 +126,7 @@ const currentLanguage = computed(
   () => props.languageOverride ?? providerEntity?.value.language ?? '',
 )
 
-const colorPalette = computed(() => {
-  const map = appConfig.blokkli?.colorOptions as
-    | Record<string, string>
-    | undefined
-  if (!map) return [] as { id: string; hex: string }[]
-  return Object.keys(map).map((id) => ({ id, hex: map[id]! }))
-})
-
-const hasDynamicSource = computed(() => !!props.dataSource)
+const hasDynamicSource = computed(() => !!props.data.dataSource)
 
 const effectiveDynamicPayload = computed(() => {
   if (props.dynamicData !== undefined && props.dynamicData !== null) {
@@ -106,10 +143,11 @@ const effectiveData = computed<{
   if (hasDynamicSource.value) {
     const payload = effectiveDynamicPayload.value
     if (!payload) return null
-    const overrides = props.dataSource?.seriesOverrides ?? {}
-    const categoryOverrides = props.dataSource?.categoryColorOverrides ?? {}
+    const overrides = props.data.dataSource?.seriesOverrides ?? {}
+    const categoryOverrides =
+      props.data.dataSource?.categoryColorOverrides ?? {}
     const palette = colorPalette.value
-    const fallback = palette[0]?.id ?? ''
+    const fallback = palette[0] ?? ''
     const visibleSeries = payload.series.filter(
       (s) => overrides[s.name]?.hidden !== true,
     )
@@ -117,14 +155,14 @@ const effectiveData = computed<{
       name: s.name,
       color:
         overrides[s.name]?.color ??
-        palette[i % Math.max(palette.length, 1)]?.id ??
+        palette[i % Math.max(palette.length, 1)] ??
         fallback,
       data: s.data,
     }))
     const categoryColors = payload.categories.map((label, i) => {
       return (
         categoryOverrides[label] ??
-        palette[i % Math.max(palette.length, 1)]?.id ??
+        palette[i % Math.max(palette.length, 1)] ??
         fallback
       )
     })
@@ -135,15 +173,25 @@ const effectiveData = computed<{
     }
   }
   return {
-    categories: props.categories,
-    series: props.series,
-    categoryColors: props.categoryColors,
+    categories: props.data.categories,
+    series: props.data.series,
+    categoryColors: props.data.categoryColors,
   }
 })
 
 const resolvedTitle = computed(() => {
-  const t = props.translations?.[currentLanguage.value]
-  return t?.title || props.title
+  const t = props.data.translations?.[currentLanguage.value]
+  return t?.title || props.data.title
+})
+
+const resolvedValueAxisTitle = computed(() => {
+  const t = props.data.translations?.[currentLanguage.value]
+  return t?.valueAxisTitle || props.data.valueAxisTitle
+})
+
+const resolvedCategoryAxisTitle = computed(() => {
+  const t = props.data.translations?.[currentLanguage.value]
+  return t?.categoryAxisTitle || props.data.categoryAxisTitle
 })
 
 const resolvedCategories = computed(() => {
@@ -151,7 +199,7 @@ const resolvedCategories = computed(() => {
   if (!data) return [] as string[]
   // Translations for categories are positional and only safe for inline data.
   if (hasDynamicSource.value) return data.categories
-  const t = props.translations?.[currentLanguage.value]
+  const t = props.data.translations?.[currentLanguage.value]
   if (!t?.categories) return data.categories
   return data.categories.map((c, i) => t.categories?.[i] || c)
 })
@@ -161,7 +209,7 @@ const resolvedSeries = computed(() => {
   if (!data) return [] as ChartSeries[]
   // Translations for series names are positional and only safe for inline data.
   if (hasDynamicSource.value) return data.series
-  const t = props.translations?.[currentLanguage.value]
+  const t = props.data.translations?.[currentLanguage.value]
   if (!t?.seriesNames) return data.series
   return data.series.map((s, i) => ({
     ...s,
@@ -170,31 +218,31 @@ const resolvedSeries = computed(() => {
 })
 
 const resolvedFootnotes = computed(() => {
-  const t = props.translations?.[currentLanguage.value]
-  if (!t?.footnotes) return props.footnotes
-  return props.footnotes.map((f, i) => t.footnotes?.[i] || f)
+  const t = props.data.translations?.[currentLanguage.value]
+  if (!t?.footnotes) return props.data.footnotes
+  return props.data.footnotes.map((f, i) => t.footnotes?.[i] || f)
 })
 
 const formattedCategories = computed(() => {
   const cats = resolvedCategories.value
   const detected = detectDateFormat(cats)
   if (!detected) return cats
-  const locale = props.numberFormat?.locale
+  const locale = props.data.numberFormat?.locale
   return cats.map((c) =>
-    formatDateCategory(c, detected, props.dateFormat, locale),
+    formatDateCategory(c, detected, props.data.dateFormat, locale),
   )
 })
 
 const resolvedNumberFormat = computed(() => {
-  if (!props.numberFormat) return undefined
-  const t = props.translations?.[currentLanguage.value]
+  if (!props.data.numberFormat) return undefined
+  const t = props.data.translations?.[currentLanguage.value]
   if (!t || (t.prefix === undefined && t.suffix === undefined)) {
-    return props.numberFormat
+    return props.data.numberFormat
   }
   return {
-    ...props.numberFormat,
-    prefix: t.prefix || props.numberFormat.prefix,
-    suffix: t.suffix || props.numberFormat.suffix,
+    ...props.data.numberFormat,
+    prefix: t.prefix || props.data.numberFormat?.prefix,
+    suffix: t.suffix || props.data.numberFormat?.suffix,
   }
 })
 
@@ -208,39 +256,37 @@ function superscriptFor(n: number): string {
     .join('')
 }
 
-function resolveHex(id: string): string {
-  const map = appConfig.blokkli?.colorOptions as
-    | Record<string, string>
-    | undefined
-  return map?.[id] || '#888888'
-}
-
 const typeComponent = computed(
-  () => chartTypeComponents[props.type as keyof typeof chartTypeComponents],
+  () =>
+    chartTypeComponents[props.data.type as keyof typeof chartTypeComponents],
 )
 
 const renderProps = computed<ChartTypeRenderProps | null>(() => {
   const data = effectiveData.value
   if (!data) return null
   return {
+    type: props.data.type,
     title: applyFootnotes(resolvedTitle.value),
+    valueAxisTitle: resolvedValueAxisTitle.value,
+    categoryAxisTitle: resolvedCategoryAxisTitle.value,
     categories: formattedCategories.value.map(applyFootnotes),
     series: resolvedSeries.value.map((s) => ({
       name: applyFootnotes(s.name),
       data: s.data,
     })),
-    seriesHexColors: data.series.map((s) => resolveHex(s.color)),
-    categoryHexColors: data.categoryColors.map(resolveHex),
-    typeOptions: (props.typeOptions ?? {}) as Record<string, unknown>,
+    seriesHexColors: data.series.map((s) => resolveColorHex(s.color)),
+    categoryHexColors: data.categoryColors.map(resolveColorHex),
+    typeOptions: (props.data.typeOptions ?? {}) as Record<string, unknown>,
     numberFormat: resolvedNumberFormat.value,
     isEditing,
-    advancedConfig: props.advancedConfig?.parsed,
+    advancedConfig: props.data.advancedConfig?.parsed,
+    transform: props.transform,
   }
 })
 
 const typeOptionsBag = computed(
   () =>
-    (props.typeOptions ?? {}) as {
+    (props.data.typeOptions ?? {}) as {
       categoryFilter?: boolean
       categoryFilterLabel?: string
     },
@@ -255,6 +301,10 @@ const categoryFilterLabel = computed(
 )
 
 const selectedCategoryIndex = ref(0)
+
+function setSelectedIndex(index: number): void {
+  selectedCategoryIndex.value = index
+}
 
 const clampedSelectedIndex = computed(() => {
   const max = (renderProps.value?.categories.length ?? 0) - 1

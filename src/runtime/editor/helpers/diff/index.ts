@@ -405,7 +405,18 @@ export type AtomicSegment = {
   kind: 'atomic'
   id: string
   tag: string
+  /**
+   * The open tag of the accepted (after) state. For matched segments this can
+   * differ from `beforeOpenTag` when only attributes changed — a segment
+   * counts as changed in that case even when the inner HTML is identical.
+   */
   openTag: string
+  /**
+   * The open tag of the original (before) state. Rejecting a matched segment
+   * restores this alongside `beforeHtml`. Equals `openTag` for inserted
+   * segments (which have no before state).
+   */
+  beforeOpenTag: string
   closeTag: string
   beforeHtml: string
   afterHtml: string
@@ -549,10 +560,13 @@ function atomicFromAlignment(entry: AlignmentEntry, id: string): AtomicSegment {
       id,
       tag: entry.after.tag,
       openTag: entry.after.openTag,
+      beforeOpenTag: entry.before.openTag,
       closeTag: `</${entry.after.tag}>`,
       beforeHtml: entry.before.innerHTML,
       afterHtml: entry.after.innerHTML,
-      changed: entry.before.innerHTML !== entry.after.innerHTML,
+      changed:
+        entry.before.innerHTML !== entry.after.innerHTML ||
+        entry.before.openTag !== entry.after.openTag,
       status: 'matched',
     }
   }
@@ -562,6 +576,7 @@ function atomicFromAlignment(entry: AlignmentEntry, id: string): AtomicSegment {
       id,
       tag: entry.before.tag,
       openTag: entry.before.openTag,
+      beforeOpenTag: entry.before.openTag,
       closeTag: `</${entry.before.tag}>`,
       beforeHtml: entry.before.innerHTML,
       afterHtml: '',
@@ -574,6 +589,7 @@ function atomicFromAlignment(entry: AlignmentEntry, id: string): AtomicSegment {
     id,
     tag: entry.after.tag,
     openTag: entry.after.openTag,
+    beforeOpenTag: entry.after.openTag,
     closeTag: `</${entry.after.tag}>`,
     beforeHtml: '',
     afterHtml: entry.after.innerHTML,
@@ -614,10 +630,14 @@ export function splitIntoSegments(
   alignment.forEach((entry, index) => {
     const id = String(index)
 
+    // Recurse only when the wrapper's own open tag is unchanged: per-<li>
+    // toggles can't represent an attribute change on the <ul>/<ol> itself, so
+    // such a list stays a single all-or-nothing atomic segment.
     if (
       entry.type === 'match' &&
       (entry.after.tag === 'ul' || entry.after.tag === 'ol') &&
-      entry.before.innerHTML !== entry.after.innerHTML
+      entry.before.innerHTML !== entry.after.innerHTML &&
+      entry.before.openTag === entry.after.openTag
     ) {
       const beforeItems = parseListItems(entry.before.innerHTML)
       const afterItems = parseListItems(entry.after.innerHTML)
@@ -652,11 +672,7 @@ export function splitIntoSegments(
  */
 export function segmentsHaveChanges(segments: Segment[]): boolean {
   return segments.some((seg) =>
-    seg.kind === 'list'
-      ? seg.children.some(
-          (c) => c.status !== 'matched' || c.beforeHtml !== c.afterHtml,
-        )
-      : seg.status !== 'matched' || seg.beforeHtml !== seg.afterHtml,
+    seg.kind === 'list' ? seg.children.some((c) => c.changed) : seg.changed,
   )
 }
 
@@ -693,9 +709,15 @@ function renderAtomicDiffMarkup(
   }
   // matched
   if (!accepted) {
-    // Rejecting a modification reverts the chunk to its original content.
-    // No diff markers — the user sees what would actually land on apply.
-    return `${open}${seg.beforeHtml}${seg.closeTag}`
+    // Rejecting a modification reverts the chunk to its original content and
+    // open tag (attributes may have changed too). No diff markers — the user
+    // sees what would actually land on apply.
+    const beforeOpen = injectAttribute(
+      seg.beforeOpenTag,
+      'data-chunk-index',
+      seg.id,
+    )
+    return `${beforeOpen}${seg.beforeHtml}${seg.closeTag}`
   }
   if (opts.insertionsOnly) {
     return `${open}<ins>${seg.afterHtml}</ins>${seg.closeTag}`
@@ -759,9 +781,9 @@ export function reassembleValue(
   const renderAtomic = (seg: AtomicSegment): string => {
     const accepted = isAccepted(seg.id)
     if (seg.status === 'matched') {
-      return (
-        seg.openTag + (accepted ? seg.afterHtml : seg.beforeHtml) + seg.closeTag
-      )
+      return accepted
+        ? seg.openTag + seg.afterHtml + seg.closeTag
+        : seg.beforeOpenTag + seg.beforeHtml + seg.closeTag
     }
     if (seg.status === 'inserted') {
       return accepted ? seg.openTag + seg.afterHtml + seg.closeTag : ''

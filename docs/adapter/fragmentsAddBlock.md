@@ -7,8 +7,9 @@ Add a fragment block.
 ```typescript
 fragmentsAddBlock?: (e: {
   name: string
-  host: DraggableHostData
-  preceedingUuid?: string
+  host: BlokkliItemHost
+  preceedingUuid: string | null
+  options?: Record<string, string>
 }) => Promise<MutationResponseLike<T>> | undefined
 ```
 
@@ -22,9 +23,18 @@ The name of the fragment to add.
 
 Information about the host field where the block should be added.
 
+```typescript
+type BlokkliItemHost = {
+  type: string
+  uuid: string
+  fieldName: string
+}
+```
+
 ### preceedingUuid
 
-Optional UUID of the block after which the new block should be inserted.
+UUID of the block after which the new block should be inserted, or `null` to
+insert at the beginning of the field.
 
 ## Returns
 

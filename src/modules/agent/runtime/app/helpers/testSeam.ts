@@ -42,5 +42,7 @@ export function installAgentTestSeam(
 }
 
 export function uninstallAgentTestSeam(): void {
-  delete window[GLOBAL_KEY]
+  // Spelled out rather than `delete window[GLOBAL_KEY]`: a computed key trips
+  // oxlint's `no-dynamic-delete`, even though the const is a literal type.
+  delete window.__BLOKKLI_AGENT_TEST_GET_TRANSCRIPT__
 }

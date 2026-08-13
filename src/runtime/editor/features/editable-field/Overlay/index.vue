@@ -54,6 +54,7 @@
           :initial-height="scrollHeight"
           :is-fullscreen
           @formatted="onFormattedValue"
+          @ready="onFrameReady"
         />
 
         <InputPlaintext
@@ -180,9 +181,20 @@ const props = defineProps<{
   config: EditableFieldConfig
   isComponent?: boolean
   value?: string
+
+  /**
+   * Controlled mode: the overlay is seeded from `value` instead of the field's
+   * current value, never persists via the adapter and hands the result back to
+   * the caller via the `save` emit. The caller owns persistence.
+   */
+  controlled?: boolean
 }>()
 
-const emit = defineEmits(['close'])
+const emit = defineEmits<{
+  close: []
+  /** Controlled mode only: the user confirmed this value. Always followed by `close`. */
+  save: [value: string]
+}>()
 
 // Refs
 const scrollHeight = ref(0)
@@ -268,8 +280,19 @@ function onFormattedValue(text: string) {
   formattedValue.value = text
 }
 
+function onFrameReady() {
+  // The iframe renders the field's persisted value; in controlled mode the
+  // seed must be pushed into the editor once it's able to receive it.
+  if (props.controlled) {
+    inputFrame.value?.setValue(modelValue.value)
+  }
+}
+
 const canTranslate = computed(
-  () => state.editMode.value === 'translating' && !!adapter.requestTranslation,
+  () =>
+    state.editMode.value === 'translating' &&
+    !!adapter.requestTranslation &&
+    !props.controlled,
 )
 
 async function autoTranslate() {
@@ -340,6 +363,14 @@ function discard() {
   }
   isClosing.value = true
 
+  if (props.controlled) {
+    // The live preview showed the seed, not the field's current value, so the
+    // override must be restored even when the user didn't change anything.
+    override.restore()
+    emit('close')
+    return
+  }
+
   if (hasChanged.value) {
     restoreOriginalState()
   }
@@ -354,6 +385,15 @@ async function save() {
     return
   }
   isClosing.value = true
+
+  if (props.controlled) {
+    override.restore()
+    if (!errorText.value) {
+      emit('save', modelValue.value)
+    }
+    emit('close')
+    return
+  }
 
   if (hasChanged.value) {
     if (errorText.value) {
@@ -424,7 +464,7 @@ onMounted(() => {
 
   // Read the raw value from textFieldValues when available (always has
   // unprocessed values), fall back to the override's captured DOM value.
-  if (props.isComponent) {
+  if (props.controlled || props.isComponent) {
     modelValue.value = props.value || ''
   } else {
     const tfv = fieldValue
@@ -453,6 +493,13 @@ onMounted(() => {
 onBeforeUnmount(async () => {
   // If save() or discard() already ran, skip - they handled everything.
   if (isClosing.value) {
+    return
+  }
+
+  // Controlled mode: the caller is being torn down mid-edit. Never persist,
+  // just leave the field's DOM clean.
+  if (props.controlled) {
+    override.restore()
     return
   }
 

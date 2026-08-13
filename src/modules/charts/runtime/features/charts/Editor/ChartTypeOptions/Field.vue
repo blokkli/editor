@@ -1,16 +1,16 @@
 <template>
   <FormToggle
     v-if="option.type === 'checkbox'"
-    :label="option.label"
-    :description="option.description"
+    :label
+    :description
     :model-value="!!(value ?? option.default)"
     @update:model-value="$emit('update', $event)"
   />
   <FormRadio
     v-else-if="option.type === 'radios'"
     :id="`chart-option-${optionKey}`"
-    :label="option.label"
-    :description="option.description"
+    :label
+    :description
     inline
     :options="radioOptions"
     :model-value="String(value ?? option.default ?? '')"
@@ -19,8 +19,8 @@
   <FormNumber
     v-else-if="option.type === 'number'"
     :id="`chart-option-${optionKey}`"
-    :label="option.label"
-    :description="option.description"
+    :label
+    :description
     :min="numberMin"
     :max="numberMax"
     :nullable="(option as { nullable?: boolean }).nullable"
@@ -31,8 +31,8 @@
   <FormText
     v-else-if="option.type === 'text'"
     :id="`chart-option-${optionKey}`"
-    :label="option.label"
-    :description="option.description"
+    :label
+    :description
     :model-value="String(value ?? option.default ?? '')"
     lazy
     @update:model-value="$emit('update', $event ?? '')"
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
+import { computed, useBlokkli } from '#imports'
 import {
   FormToggle,
   FormRadio,
@@ -58,6 +58,20 @@ const props = defineProps<{
 }>()
 
 defineEmits<{ update: [value: unknown] }>()
+
+const { definitions } = useBlokkli()
+
+const label = computed(() => {
+  return definitions.resolveDefinitionString(props.option.label)
+})
+
+const description = computed(() => {
+  if (props.option.description) {
+    return definitions.resolveDefinitionString(props.option.description)
+  }
+
+  return undefined
+})
 
 const radioOptions = computed(() => {
   if (props.option.type !== 'radios') {

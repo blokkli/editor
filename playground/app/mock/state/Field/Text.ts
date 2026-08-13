@@ -42,6 +42,15 @@ export class FieldText extends Field<string> {
     return this.list[0] || ''
   }
 
+  /**
+   * Block props render the processed value, exactly like a real CMS renders
+   * filtered text. Overriding the per-item hook (instead of getPropValue())
+   * keeps the base class' cardinality handling intact.
+   */
+  override getPropValueItem(v: string): string {
+    return processPlainText(v)
+  }
+
   setText(text: string) {
     if (!this.list.length) {
       this.append(text)

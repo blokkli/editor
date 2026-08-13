@@ -75,6 +75,15 @@ export type DecidedUpdate = {
   fieldValue: string
 }
 
+/** A field whose suggested value the user manually revised before applying. */
+export type EditedField = {
+  itemId: number
+  uuid: string
+  fieldName: string
+  /** The value the user wrote in place of the suggestion. */
+  value: string
+}
+
 export type FieldDecisionResult = {
   /**
    * One entry per accepted item, with the value that should be written. For
@@ -91,6 +100,12 @@ export type FieldDecisionResult = {
   acceptedCount: number
   /** Total number of toggle units the user could have selected. */
   totalCount: number
+  /**
+   * Accepted fields whose value the user manually revised in the approval UI.
+   * Their revised value is also part of `updates`; this list exists so the
+   * caller can report the revisions back to the agent as calibration feedback.
+   */
+  editedFields: EditedField[]
 }
 
 /**
@@ -101,22 +116,58 @@ export type FieldDecisionResult = {
  *
  * `selected` and `reasons` are keyed by `ApprovalUnit.key` — the stringified
  * item id for unsegmented items, `${itemId}:${segmentId}` for segmented.
+ *
+ * `edited` holds manually revised values keyed by stringified item id (see
+ * `DiffApplyPayload`). An edited item always resolves as a single whole-field
+ * unit with the revised value — any segments on the item are ignored, matching
+ * the collapse the approval UI performed.
  */
 export function decideFieldUpdates(
   items: ApprovalItem[],
   selected: Record<string, boolean>,
   reasons: Record<string, string>,
+  edited: Record<string, string> = {},
 ): FieldDecisionResult {
   const rejectedByUser: RejectedByUser = {}
   const updates: DecidedUpdate[] = []
+  const editedFields: EditedField[] = []
   let acceptedCount = 0
   let totalCount = 0
 
   for (const item of items) {
+    const editedValue = edited[String(item.id)]
+    if (editedValue !== undefined) {
+      totalCount++
+      const key = String(item.id)
+      const isAccepted = selected[key] !== false
+
+      if (isAccepted) {
+        acceptedCount++
+        updates.push({
+          itemId: item.id,
+          uuid: item.uuid,
+          fieldName: item.fieldName,
+          fieldValue: editedValue,
+        })
+        editedFields.push({
+          itemId: item.id,
+          uuid: item.uuid,
+          fieldName: item.fieldName,
+          value: editedValue,
+        })
+      } else {
+        // Drafted, then discarded: reported as a plain rejection.
+        const fields = rejectedByUser[item.uuid] ?? {}
+        fields[item.fieldName] = {
+          reasonForRejection: reasons[key] || '',
+        }
+        rejectedByUser[item.uuid] = fields
+      }
+      continue
+    }
+
     if (item.segments) {
-      const atoms = flattenSegments(item.segments).filter(
-        (s) => s.status !== 'matched' || s.beforeHtml !== s.afterHtml,
-      )
+      const atoms = flattenSegments(item.segments).filter((s) => s.changed)
       totalCount += atoms.length
 
       const acceptedById: Record<string, boolean> = {}
@@ -186,7 +237,7 @@ export function decideFieldUpdates(
     }
   }
 
-  return { updates, rejectedByUser, acceptedCount, totalCount }
+  return { updates, rejectedByUser, acceptedCount, totalCount, editedFields }
 }
 
 export type FieldDiffApplyResult = FieldDecisionResult & {
@@ -211,11 +262,12 @@ export async function applyFieldDiffs(
   items: ApprovalItem[],
   selected: Record<string, boolean>,
   reasons: Record<string, string>,
+  edited: Record<string, string> = {},
 ): Promise<FieldDiffApplyResult> {
   const { $t, state, context } = app
   const entityUuid = context.value.entityUuid
 
-  const decision = decideFieldUpdates(items, selected, reasons)
+  const decision = decideFieldUpdates(items, selected, reasons, edited)
 
   const batchItems: Array<{
     uuid: string
@@ -295,6 +347,36 @@ export function partialRejectionGuidance(
     .join(', ')
   const noun = partials.length === 1 ? 'This field was' : 'These fields were'
   return `${noun} updated with a hybrid value — accepted chunks plus the original content of the rejected ones: ${fieldList}. If you follow up on the rejected chunks, scope your change to those chunks only — use update_text_fields patch mode (operations) with search matching the rejected chunk's original content. Do NOT re-rewrite the whole field; the accepted chunks must stay byte-for-byte identical.`
+}
+
+/**
+ * The agent-facing note describing fields the user manually revised before
+ * applying. Returns undefined when nothing was edited.
+ *
+ * A manual revision is the strongest calibration signal the approval flow
+ * produces — the user showed exactly what they wanted instead — so the note
+ * quotes the revised value and tells the agent to treat it as wording/style
+ * feedback for the rest of the session.
+ */
+export function manualEditsMessage(
+  editedFields: EditedField[],
+): string | undefined {
+  if (editedFields.length === 0) return undefined
+
+  const truncate = (value: string): string =>
+    value.length > 500 ? value.slice(0, 500) + '…' : value
+
+  if (editedFields.length === 1) {
+    const e = editedFields[0]!
+    return `The user manually revised your suggested text for "${e.fieldName}" (paragraph ${e.uuid}) before applying it. They wrote this instead:\n${truncate(e.value)}\nTreat this as feedback on wording and style — calibrate future suggestions accordingly.`
+  }
+
+  const list = editedFields
+    .map(
+      (e) => `- "${e.fieldName}" (paragraph ${e.uuid}):\n${truncate(e.value)}`,
+    )
+    .join('\n')
+  return `The user manually revised your suggested text for ${editedFields.length} fields before applying. What they wrote instead:\n${list}\nTreat this as feedback on wording and style — calibrate future suggestions accordingly.`
 }
 
 /**

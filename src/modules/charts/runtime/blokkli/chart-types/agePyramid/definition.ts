@@ -1,31 +1,20 @@
 import { defineChartType } from '#blokkli/charts/definition'
 import {
   dataLabelsOptions,
-  gridOptions,
-  legendOptions,
   mergeShared,
 } from '#blokkli/charts/definition/options'
-import type {
-  DataLabelsTypeOptions,
-  GridTypeOptions,
-  LegendTypeOptions,
-} from '#blokkli/charts/types'
+import type { DataLabelsTypeOptions } from '#blokkli/charts/types'
 
 export type TypeOptions = {
   splitIndex?: number
-} & DataLabelsTypeOptions &
-  GridTypeOptions &
-  LegendTypeOptions
+} & DataLabelsTypeOptions
 
 export default defineChartType<TypeOptions>('agePyramid', ($t) => {
-  const shared = mergeShared(
-    dataLabelsOptions($t),
-    gridOptions($t),
-    legendOptions($t),
-  )
+  const shared = mergeShared(dataLabelsOptions($t))
   return {
     hasSeriesColors: true,
     hasCategoryColors: false,
+    hasAxes: true,
     editor: {
       label: $t('chartsTypeAgePyramid', 'Age pyramid'),
       description: $t(

@@ -22,7 +22,7 @@ import { z } from 'zod'
  */
 export function booleanParam(
   description: string,
-): z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodBoolean> {
+): z.ZodPreprocess<z.ZodBoolean> {
   return z.preprocess((value) => {
     if (typeof value === 'string') {
       const lower = value.trim().toLowerCase()
@@ -41,7 +41,7 @@ export function booleanParam(
  */
 export function optionalBooleanParam(
   description: string,
-): z.ZodOptional<z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodBoolean>> {
+): z.ZodOptional<z.ZodPreprocess<z.ZodBoolean>> {
   return booleanParam(description).optional()
 }
 
@@ -54,9 +54,7 @@ export function optionalBooleanParam(
 export function booleanParamWithDefault(
   description: string,
   defaultValue: boolean,
-): z.ZodDefault<
-  z.ZodOptional<z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodBoolean>>
-> {
+): z.ZodDefault<z.ZodOptional<z.ZodPreprocess<z.ZodBoolean>>> {
   return booleanParam(description).optional().default(defaultValue)
 }
 

@@ -13,7 +13,7 @@ The return value should be an array of `CommentItem` objects.
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { CommentItem } from '#blokkli/types'
+import type { CommentItem } from '#blokkli/editor/features/comments/types'
 
 export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
   return {
@@ -35,12 +35,13 @@ export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
           // The comment text.
           body: 'Can we merge these two blocks?',
 
-          // Timestamp of when the comment was added (as seconds since UNIX epoch).
-          created: 1706109810,
+          // When the comment was added, as an ISO 8601 timestamp.
+          created: '2024-01-24T16:43:30Z',
 
-          // The user that added the comment. Currently only label is implemented.
+          // The user that added the comment, or null for anonymous comments.
           user: {
-            label: 'John Wayne',
+            id: '42',
+            name: 'John Wayne',
           },
         },
 
@@ -51,10 +52,11 @@ export default defineBlokkliEditAdapter<YourStateType>((ctx) => {
           blockUuids: [],
           resolved: true,
           body: 'We still need a hero image for the landing page.',
-          created: 1705733562,
+          created: '2024-01-20T07:32:42Z',
 
           user: {
-            label: 'Martha Meier',
+            id: '7',
+            name: 'Martha Meier',
           },
         },
       ]

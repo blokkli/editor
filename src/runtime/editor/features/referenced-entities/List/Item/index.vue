@@ -25,6 +25,7 @@
   </a>
   <NestedEditorOverlay
     v-if="editUrl && isEditing"
+    id="referenced-entity"
     :url="editUrl"
     :uuid="entityUuid"
     :element

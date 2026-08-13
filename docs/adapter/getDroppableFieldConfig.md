@@ -35,12 +35,14 @@ function getDroppableFieldConfig() {
   ): DroppableFieldConfig[] => {
     return [
       {
+        // Either 'reference' (an entity reference field) or 'link'.
+        type: 'reference',
         name: 'field_image',
         label: 'Image',
         entityType: 'block',
         entityBundle: 'image',
-        allowedEntityType: 'media',
-        allowedBundles: ['image'],
+        // The entity types and bundles that may be dropped on this field.
+        allowed: [{ type: 'media', bundles: ['image'] }],
         cardinality: 1,
         required: true,
       },

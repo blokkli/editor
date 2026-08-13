@@ -27,7 +27,9 @@ export default defineBlokkliEditAdapter((ctx) => {
             // The ID of the media library item, as returned by
             // mediaLibraryGetResults().
             mediaId: e.item.mediaId,
-            blockBundle: e.item.blockBundle,
+
+            // The block bundle that should be created for this media item.
+            blockBundle: e.targetBundle,
 
             // The parent entity type where the block is being added.
             // Could be the entity type of the <BlokkliProvider> or in
@@ -41,7 +43,7 @@ export default defineBlokkliEditAdapter((ctx) => {
             // The UUID of the block that should be before the new one.
             // If undefined, the block should be moved to index 0 of the
             // field list.
-            preceedingUuid: e.afterUuid,
+            preceedingUuid: e.preceedingUuid,
           },
         },
       )

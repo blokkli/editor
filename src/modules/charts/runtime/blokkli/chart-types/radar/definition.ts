@@ -1,29 +1,21 @@
 import { defineChartType } from '#blokkli/charts/definition'
 import {
   dataLabelsOptions,
-  legendOptions,
   categoryFilterOptions,
   mergeShared,
 } from '#blokkli/charts/definition/options'
 import type {
   DataLabelsTypeOptions,
-  LegendTypeOptions,
   CategoryFilterTypeOptions,
 } from '#blokkli/charts/types'
 
 export type TypeOptions = {
   markers: boolean
-  fillOpacity: string
 } & DataLabelsTypeOptions &
-  LegendTypeOptions &
   CategoryFilterTypeOptions
 
 export default defineChartType<TypeOptions>('radar', ($t) => {
-  const shared = mergeShared(
-    dataLabelsOptions($t),
-    legendOptions($t),
-    categoryFilterOptions($t),
-  )
+  const shared = mergeShared(dataLabelsOptions($t), categoryFilterOptions($t))
   return {
     hasSeriesColors: true,
     hasCategoryColors: false,
@@ -40,16 +32,6 @@ export default defineChartType<TypeOptions>('radar', ($t) => {
           label: $t('showMarkers', 'Show markers'),
           default: false,
           group: 'display',
-        },
-        fillOpacity: {
-          type: 'radios',
-          label: $t('chartsRadarFillOpacity', 'Fill opacity'),
-          default: '0.2',
-          options: {
-            '0.2': $t('chartsOpacityTransparent', 'Transparent'),
-            '0.4': $t('chartsOpacityLight', 'Light'),
-            '0.8': $t('chartsOpacitySolid', 'Solid'),
-          },
         },
         ...shared.options,
       },

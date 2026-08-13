@@ -43,7 +43,7 @@
 import { defineBlokkli, computed, inject, type ComputedRef } from '#imports'
 import { slugify } from '~/helpers'
 
-const { parentType, fieldListType } = defineBlokkli({
+const { parentType, fieldListType, options } = defineBlokkli({
   bundle: 'title',
   globalOptions: ['bkHiddenGlobally', 'bkVisibleLanguages', 'alignment'],
   options: {
@@ -81,7 +81,9 @@ const renderedTagline = computed(() => {
   return props.tagline || 'Fallback'
 })
 
-const id = computed(() => slugify(props.title))
+const id = computed(() =>
+  options.value.showInMenu ? slugify(props.title) : undefined,
+)
 
 const isCentered = computed(
   () =>

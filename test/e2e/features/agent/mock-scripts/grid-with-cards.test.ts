@@ -126,9 +126,7 @@ describe('agent: grid with cards via ask_question', async () => {
       },
       {
         type: 'agent',
-        content: [
-          { type: 'text', text: 'Done! Your grid has been added.' },
-        ],
+        content: [{ type: 'text', text: 'Done! Your grid has been added.' }],
       },
     ]
 

@@ -21,7 +21,7 @@ export default defineBlokkliEditAdapter((ctx) => {
             method: 'post',
             body: {
               // Contains the clipboard data, in this case a string.
-              text: e.item.clipboardData,
+              text: e.item.data,
 
               // The parent entity type where the block is being added.
               // Could be the entity type of the <BlokkliProvider> or in

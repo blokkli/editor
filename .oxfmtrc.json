@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "proseWrap": "always",
+  "semi": false,
+  "singleQuote": true,
+  "arrowParens": "always",
+  "printWidth": 80,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "CHANGELOG.md",
+    "playground/app/options-schema.json",
+    "build/drupal-schema.graphql",
+    ".oxfmtrc.json"
+  ]
+}

@@ -61,10 +61,11 @@ const context = computed<AdapterContext>(() => {
     language: props.language,
   }
 })
+const interfaceLanguage = computed(() => context.value.language)
 const adapter = await getAdapter(context)
 const router = useRouter()
 const broadcast = broadcastProvider()
-const definitions = definitionProvider(props.providerType)
+const definitions = definitionProvider(props.providerType, interfaceLanguage)
 
 let timeout: any = null
 let lastChanged: number = 0

@@ -118,9 +118,21 @@ describe('Publish dialog — failure rendering', async () => {
     await dialogSubmit(page).click()
     await waitForAdapterCall(page, 'publish')
 
-    const items = page.locator('[data-test="publish-violation-item"]')
+    // `publish` resolves after a delay — wait for the validation panel to
+    // render (as the sibling test does) before counting, otherwise the poll
+    // races the async response.
+    const errorsPanel = page.locator('[data-test="publish-validation-errors"]')
+    await errorsPanel.waitFor({ state: 'visible' })
+
+    const items = errorsPanel.locator('[data-test="publish-violation-item"]')
+    await items.first().waitFor({ state: 'visible' })
     await expect.poll(() => items.count()).toBe(2)
-    await items.first().click()
+    // Click the violation's button (the full-width `<li>` isn't the click
+    // target — only the inner button carries the navigate handler).
+    await items
+      .first()
+      .locator('[data-test="publish-violation-button"]')
+      .click()
 
     await dialog(page, 'publish').waitFor({ state: 'hidden' })
 

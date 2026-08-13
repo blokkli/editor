@@ -285,6 +285,18 @@ msgctxt "aiAgentApprovalAccepted"
 msgid "Accepted"
 msgstr "Akzeptiert"
 
+msgctxt "aiAgentApprovalEdit"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgctxt "aiAgentApprovalEditText"
+msgid ""
+"Manually edit the suggested text. The editor opens with the entire field "
+"value."
+msgstr ""
+"Den vorgeschlagenen Text manuell bearbeiten. Der Editor öffnet den gesamten "
+"Feldinhalt."
+
 msgctxt "aiAgentApprovalHint"
 msgid ""
 "Review changes and accept or reject them individually. Tab/Arrow keys: "
@@ -1241,6 +1253,10 @@ msgctxt "analyzerValidationsPassDescription"
 msgid "No validation errors for the current state."
 msgstr "Keine Validierungsfehler für den aktuellen Stand der Seite."
 
+msgctxt "apply"
+msgid "Apply"
+msgstr "Übernehmen"
+
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr "Pfeil links"
@@ -1633,21 +1649,9 @@ msgctxt "chartsBarStacked"
 msgid "Stacked"
 msgstr "Gestapelt"
 
-msgctxt "chartsBorderRadius"
-msgid "Corner radius"
-msgstr "Eckenradius"
-
-msgctxt "chartsBorderRadiusLarge"
-msgid "Large"
-msgstr "Gross"
-
-msgctxt "chartsBorderRadiusNone"
-msgid "None"
-msgstr "Keine"
-
-msgctxt "chartsBorderRadiusSmall"
-msgid "Small"
-msgstr "Klein"
+msgctxt "chartsCategoryAxisTitle"
+msgid "Category axis title"
+msgstr "Titel der Kategorienachse"
 
 msgctxt "chartsCategoryFilter"
 msgid "Filterable category axis"
@@ -1895,17 +1899,9 @@ msgstr ""
 "Fussnoten werden automatisch nummeriert. Sie können sie in Kategorie- oder "
 "Datenreihen-Beschriftungen mit {1}, {2}, usw. referenzieren."
 
-msgctxt "chartsGridLines"
-msgid "Grid lines"
-msgstr "Rasterlinien"
-
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr "CSV importieren"
-
-msgctxt "chartsLegendPosition"
-msgid "Legend position"
-msgstr "Legendenposition"
 
 msgctxt "chartsNumberFormat"
 msgid "Number format"
@@ -1935,18 +1931,6 @@ msgctxt "chartsNumberFormatNotationStandard"
 msgid "Standard"
 msgstr "Standard"
 
-msgctxt "chartsOpacityLight"
-msgid "Light"
-msgstr "Leicht"
-
-msgctxt "chartsOpacitySolid"
-msgid "Solid"
-msgstr "Deckend"
-
-msgctxt "chartsOpacityTransparent"
-msgid "Transparent"
-msgstr "Transparent"
-
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr "Beschriftungen"
@@ -1961,22 +1945,6 @@ msgctxt "chartsOrphanOverridesRemove"
 msgid "Remove override"
 msgstr "Anpassung entfernen"
 
-msgctxt "chartsPositionBottom"
-msgid "Bottom"
-msgstr "Unten"
-
-msgctxt "chartsPositionRight"
-msgid "Right"
-msgstr "Rechts"
-
-msgctxt "chartsPositionTop"
-msgid "Top"
-msgstr "Oben"
-
-msgctxt "chartsRadarFillOpacity"
-msgid "Fill opacity"
-msgstr "Fülldeckkraft"
-
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr "Vorschau aktualisieren"
@@ -1984,22 +1952,6 @@ msgstr "Vorschau aktualisieren"
 msgctxt "chartsReverseRows"
 msgid "Reverse rows"
 msgstr "Zeilen umkehren"
-
-msgctxt "chartsStrokeMedium"
-msgid "Medium"
-msgstr "Mittel"
-
-msgctxt "chartsStrokeThick"
-msgid "Thick"
-msgstr "Dick"
-
-msgctxt "chartsStrokeThin"
-msgid "Thin"
-msgstr "Dünn"
-
-msgctxt "chartsStrokeWidth"
-msgid "Line thickness"
-msgstr "Linienstärke"
 
 msgctxt "chartsTranslationsSeries"
 msgid "Series"
@@ -2138,6 +2090,10 @@ msgid ""
 msgstr ""
 "Zeigt Fortschritte oder Prozentsätze als konzentrische, kreisförmige "
 "Balken, geeignet für KPIs und Zielverfolgung."
+
+msgctxt "chartsValueAxisTitle"
+msgid "Value axis title"
+msgstr "Titel der Werteachse"
 
 msgctxt "chartsXAxisRotation"
 msgid "Label rotation"
@@ -2518,7 +2474,7 @@ msgstr "Übersetzung bearbeiten"
 
 msgctxt "editTranslationDescription"
 msgid "Manually add or edit the translations."
-msgstr "Die Übersetzungen manuell hinzufügen oder bearbeiten."
+msgstr "Übersetzungen manuell hinzufügen oder bearbeiten."
 
 msgctxt "editableCommandEdit"
 msgid "Edit field \"@name\""
@@ -2547,6 +2503,10 @@ msgstr "Den aktuellen Text automatisch übersetzen."
 msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr "Bearbeiten ist für diesen Blocktyp deaktiviert."
+
+msgctxt "entityTitleLastChanged"
+msgid "Last changed"
+msgstr "Zuletzt geändert"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -2973,6 +2933,10 @@ msgctxt "loading"
 msgid "Loading"
 msgstr "Wird geladen"
 
+msgctxt "mainColor"
+msgid "main color"
+msgstr "Hauptfarbe"
+
 msgctxt "manageSchedule"
 msgid "Manage schedule"
 msgstr "Planung verwalten"
@@ -3379,10 +3343,6 @@ msgctxt "readabilityEntireText"
 msgid "This score is calculated for the entire text."
 msgstr "Dieser Wert wird für den gesamten Text berechnet."
 
-msgctxt "readabilityTooShort"
-msgid "Too short"
-msgstr "Zu kurz"
-
 msgctxt "readabilityTooShortTooltip"
 msgid "Text needs at least @count words for readability analysis."
 msgstr "Text braucht mindestens @count Wörter für die Lesbarkeitsanalyse."
@@ -3412,6 +3372,10 @@ msgid "Content like pages or images referenced or linked by this block."
 msgstr ""
 "Inhalte wie Seiten oder Bilder, die von diesem Block referenziert oder "
 "verlinkt werden."
+
+msgctxt "relativeTimeJustNow"
+msgid "just now"
+msgstr "gerade eben"
 
 msgctxt "remove"
 msgid "Remove"
@@ -3933,17 +3897,9 @@ msgctxt "translationsAutoTranslate"
 msgid "Auto-translate"
 msgstr "Automatisch übersetzen"
 
-msgctxt "translationsAutoTranslateButton"
-msgid "Auto-translate"
-msgstr "Automatisch übersetzen"
-
 msgctxt "translationsAutoTranslateDescription"
 msgid "Automatically translate all texts of this block."
 msgstr "Übersetzt automatisch alle Texte dieses Blocks."
-
-msgctxt "translationsAutoTranslateTooltip"
-msgid "Automatically translate all texts using a translation service"
-msgstr "Alle Texte automatisch mit einem Übersetzungsdienst übersetzen"
 
 msgctxt "translationsBannerButton"
 msgid "Edit source language instead"
@@ -3974,8 +3930,8 @@ msgid "You are currently editing the <strong>@language</strong> translation."
 msgstr "Sie bearbeiten die Übersetzung <strong>«@language»</strong>."
 
 msgctxt "translationsBatchTranslateMenuDescription"
-msgid "Translate all blocks"
-msgstr "Alle Elemente übersetzen"
+msgid "Translate texts automatically or edit translations"
+msgstr "Automatisch übersetzen oder Übersetzungen bearbeiten"
 
 msgctxt "translationsCsvApply"
 msgid "Import @count translations"
@@ -4029,12 +3985,24 @@ msgctxt "translationsCsvTooltip"
 msgid "Import or export translations as CSV or PO files"
 msgstr "Übersetzungen als CSV- oder PO-Dateien importieren oder exportieren"
 
+msgctxt "translationsDiscardProposal"
+msgid "Discard suggestion"
+msgstr "Vorschlag verwerfen"
+
 msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
 msgstr "CSV- oder PO-Datei zum Importieren ablegen"
 
+msgctxt "translationsEditReset"
+msgid "Discard manual translation"
+msgstr "Manuelle Anpassung verwerfen"
+
+msgctxt "translationsEditedManually"
+msgid "Manually edited"
+msgstr "Manuell angepasst"
+
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
+msgid "Mark as up-to-date"
 msgstr "Als aktuell markieren"
 
 msgctxt "translationsMarkUpToDateDescription"
@@ -4044,6 +4012,10 @@ msgstr "Markiert alle Textübersetzungen dieses Blocks als aktuell."
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
 msgstr "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
+
+msgctxt "translationsRestoreProposal"
+msgid "Restore suggestion"
+msgstr "Vorschlag wiederherstellen"
 
 msgctxt "translationsSelectImportFile"
 msgid "Select CSV or PO file"
@@ -4060,21 +4032,17 @@ msgstr ""
 "öffnet das Formular, um eine neue Übersetzung für diese Sprache zu "
 "erstellen."
 
-msgctxt "translationsTranslateApply"
-msgid "Apply @count translations"
-msgstr "@count Übersetzungen anwenden"
-
 msgctxt "translationsTranslateButton"
-msgid "Request @count translations"
-msgstr "@count Übersetzungen anfordern"
+msgid "Auto-translate @count fields"
+msgstr "@count Felder automatisch übersetzen"
 
 msgctxt "translationsTranslateCurrentColumn"
 msgid "Current translation (@language)"
 msgstr "Aktuelle Übersetzung (@language)"
 
 msgctxt "translationsTranslateDialogTitle"
-msgid "Automatic Translation"
-msgstr "Automatische Übersetzung"
+msgid "Translate texts"
+msgstr "Texte übersetzen"
 
 msgctxt "translationsTranslateFieldsLabel"
 msgid "fields selected"
@@ -4087,6 +4055,16 @@ msgstr "Wird übersetzt"
 msgctxt "translationsTranslateNoTexts"
 msgid "No translatable texts found on this page."
 msgstr "Keine übersetzbaren Texte auf dieser Seite gefunden."
+
+msgctxt "translationsTranslateTextsButton"
+msgid "Translate texts"
+msgstr "Texte übersetzen"
+
+msgctxt "translationsTranslateTextsTooltip"
+msgid "Translate all texts of this page automatically or edit translations manually"
+msgstr ""
+"Alle Texte dieser Seite automatisch übersetzen oder Übersetzungen manuell "
+"bearbeiten"
 
 msgctxt "undo"
 msgid "Undo"

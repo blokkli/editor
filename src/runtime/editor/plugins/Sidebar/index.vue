@@ -3,6 +3,7 @@
     <button
       :id="'bk-sidebar-button-' + id"
       ref="tourElement"
+      :data-test="'sidebar-button-' + id"
       class="bk-toolbar-button group/tooltip"
       :class="[
         {

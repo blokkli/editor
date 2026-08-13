@@ -1,9 +1,19 @@
 # getContentSearchTabs()
 
-This method should return an object that defines the available tabs in the
-search feature. The keys of the object are used as identifiers when calling
-[getContentSearchResults()](/adapter/getContentSearchResults) and the value is
+This method should return an array of `ContentSearchTab` objects that define the
+available tabs in the search feature. The `id` of each tab is used as the
+identifier when calling
+[getContentSearchResults()](/adapter/getContentSearchResults) and the `title` is
 used as the label in the UI.
+
+```typescript
+type ContentSearchTab = {
+  id: string
+  title: string
+  description: string | null
+  types: { type: string; bundles: string[] }[]
+}
+```
 
 ::: code-group
 
@@ -13,10 +23,20 @@ import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 export default defineBlokkliEditAdapter((ctx) => {
   return {
     getContentSearchTabs: () => {
-      return {
-        images: 'Images',
-        pages: 'Pages',
-      }
+      return [
+        {
+          id: 'images',
+          title: 'Images',
+          description: null,
+          types: [{ type: 'media', bundles: ['image'] }],
+        },
+        {
+          id: 'pages',
+          title: 'Pages',
+          description: null,
+          types: [{ type: 'node', bundles: ['page'] }],
+        },
+      ]
     },
   }
 })

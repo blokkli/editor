@@ -4,6 +4,11 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
   }
 
   currentIndex
+  changedRawField {
+    first {
+      value
+    }
+  }
   currentUserIsOwner
   ownerName
   user: uid {

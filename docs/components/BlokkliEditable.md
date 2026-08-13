@@ -165,18 +165,18 @@ getEditableFieldConfig: () => {
     {
       name: 'title',
       label: 'Page Title',
-      type: 'text',
+      type: 'plain',
       required: true,
     },
     {
       name: 'description',
       label: 'Description',
-      type: 'text',
+      type: 'plain',
     },
     {
       name: 'intro',
       label: 'Introduction',
-      type: 'text_formatted',
+      type: 'markup',
     },
   ]
 }
@@ -184,10 +184,19 @@ getEditableFieldConfig: () => {
 
 ## Field Types
 
-The adapter configuration supports different field types:
+The `type` property of an editable field configuration controls how the inline
+editing overlay behaves. The available values are:
 
-- `'text'` - Plain text editing
-- `'text_formatted'` - Rich text editing (with formatting options)
+- `'plain'` - Plain text editing in a `<textarea>`. The value is stored and
+  saved as plain text (no markup). A character counter is shown.
+- `'markup'` - Rich text editing in a `contenteditable` element. The value is
+  HTML, so the formatting the user applies is preserved in the stored value.
+- `'frame'` - Rich text editing inside a same-origin iframe (e.g. a CKEditor
+  instance) that syncs its value back to the editor. This requires the adapter
+  to also implement `buildEditableFrameUrl()`, which returns the URL to load
+  into the iframe for the given field.
+- `'table'` - Editing of table markup. Like `'markup'`, the value is treated as
+  HTML rather than plain text.
 
 ## Comparison with v-blokkli-editable Directive
 

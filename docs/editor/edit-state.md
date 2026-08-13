@@ -30,10 +30,13 @@ current edit state.
 
 ### Example
 
+Each item has an optional `timestamp` (a `string`), `pluginId`, `plugin` (with
+`label` and `affectedItemUuid`) and `enabled`.
+
 ```json
 [
   {
-    "timestamp": 1706109810,
+    "timestamp": "1706109810",
     "pluginId": "move_blocks",
     "plugin": {
       "label": "Move 'Title' block",
@@ -41,7 +44,7 @@ current edit state.
     }
   },
   {
-    "timestamp": 1706109422,
+    "timestamp": "1706109422",
     "pluginId": "add_new_block",
     "plugin": {
       "label": "Add 'Text' block",
@@ -49,7 +52,7 @@ current edit state.
     }
   },
   {
-    "timestamp": 1706107204,
+    "timestamp": "1706107204",
     "pluginId": "add_new_block",
     "plugin": {
       "label": "Add 'Title' block",
@@ -78,6 +81,12 @@ By always returning `true` here you can disable the "ownership" feature.
 
 The name of the owner of the edit state. This is used when `currentUserIsOwner`
 is `false` and the "take ownership" banner is displayed.
+
+## ownerId
+
+`string` (optional)
+
+The ID of the owner of the edit state.
 
 ## mutatedState
 
@@ -150,9 +159,11 @@ components.
 
 ## mutatedState.mutatedOptions
 
-`Record<string, Record<string, string>>`
+`any` (optional)
 
 This object contains the mutated options of all blocks, keyed by block UUID.
+Conceptually it maps each block UUID to a record of option keys and their
+(string) values, but the field is not strictly typed in the state.
 
 ```json
 {
@@ -169,6 +180,20 @@ This object contains the mutated options of all blocks, keyed by block UUID.
 These options are used to override the existing options on a block. This object
 is made reactive, which allows the user to instantly see how changing an option
 value affects the block.
+
+## mutatedState.mutatedHostOptions
+
+`Record<string, string>` (optional)
+
+The mutated options of the host entity itself (as opposed to the per-block
+options in `mutatedOptions`).
+
+## mutatedState.violations
+
+[type.Validation[]] (optional)
+
+An array of validation violations for the current edit state. Each violation has
+a `message` and optional `code`, `propertyPath`, `entityType` and `entityUuid`.
 
 ## publishOptions
 
@@ -210,6 +235,28 @@ that were changed via inline editing.
 
 A URL for previewing the current entity. When provided, the editor can offer a
 preview link.
+
+## textFieldValues
+
+`array` (optional)
+
+The mutated values of editable text fields. Each entry has a `uuid`,
+`fieldName`, `value`, `fieldType` (`'plain'` or `'markup'`), `entityType` and
+`entityBundle`.
+
+## droppableFieldValues
+
+`array` (optional)
+
+The mutated values of droppable (reference) fields. Each entry has a `uuid`,
+`fieldName`, an array of referenced `ids`, `entityType` and `entityBundle`.
+
+## ignoredAnalyzeIdentifiers
+
+`string[]` (optional)
+
+A list of analyze identifiers that should be ignored. This is used by the
+analyze feature to suppress findings the user has dismissed.
 
 ## translationState
 
@@ -286,6 +333,19 @@ An array of existing translations of the entity.
 Each translation can also have an optional `editUrl` property for a direct link
 to the translation editing interface.
 
+## Edit mode
+
+[type.EditMode]
+
+In addition to the mapped state, the editor tracks the current edit mode,
+available as `state.editMode`. It can be one of four values:
+
+- `readonly` – the content is displayed but cannot be edited.
+- `editing` – the default mode, the user can freely edit content.
+- `translating` – the user is editing a translation of the host entity, so only
+  blocks can be translated and most structural mutations are disabled.
+- `review` – the content is shown in a review mode.
+
 ## Full example
 
 This is an example of a full edit state object that should be returned by
@@ -296,7 +356,7 @@ This is an example of a full edit state object that should be returned by
   "currentIndex": 2,
   "mutations": [
     {
-      "timestamp": 1706109810,
+      "timestamp": "1706109810",
       "pluginId": "move_blocks",
       "plugin": {
         "label": "Move 'Title' block",
@@ -304,7 +364,7 @@ This is an example of a full edit state object that should be returned by
       }
     },
     {
-      "timestamp": 1706109422,
+      "timestamp": "1706109422",
       "pluginId": "add_new_block",
       "plugin": {
         "label": "Add 'Text' block",
@@ -312,7 +372,7 @@ This is an example of a full edit state object that should be returned by
       }
     },
     {
-      "timestamp": 1706107204,
+      "timestamp": "1706107204",
       "pluginId": "add_new_block",
       "plugin": {
         "label": "Add 'Title' block",

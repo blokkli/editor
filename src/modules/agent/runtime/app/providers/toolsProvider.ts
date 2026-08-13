@@ -19,7 +19,10 @@ import {
   asRecord,
   splitMeta,
 } from '#blokkli/agent/app/helpers'
-import { buildNewParagraphsTree } from '#blokkli/agent/app/helpers/mutationResult'
+import {
+  buildNewParagraphsTree,
+  formatMutationFailure,
+} from '#blokkli/agent/app/helpers/mutationResult'
 import { mcpTools } from '#blokkli-build/agent-client'
 import type { AgentToolName, AgentToolMap } from '#blokkli-build/agent-client'
 import { itemEntityType } from '#blokkli-build/config'
@@ -185,9 +188,21 @@ export default function toolsProvider({
     const action = result
     if (setLabel) setLabel(action.label)
 
-    async function applyMutation(): Promise<string[]> {
+    // Apply the mutation directly (without mutateWithLoadingState's error
+    // toast) so we can inspect the raw response. A rejected mutation is
+    // reported back to the agent as a tool error carrying the backend
+    // violations — the conversation UI already shows the failure, so a global
+    // editor toast would be redundant.
+    async function applyMutation(): Promise<ToolOutcome> {
       const uuidsBefore = state.getAllUuids()
-      await state.mutateWithLoadingState(() => action.apply(adapter))
+      const response = await state.applyMutationSilently(() =>
+        action.apply(adapter),
+      )
+
+      if (!response || !response.success) {
+        return { ok: false, error: formatMutationFailure(response) }
+      }
+
       const newUuids = state
         .getAllUuids()
         .filter((uuid) => !uuidsBefore.includes(uuid))
@@ -198,7 +213,7 @@ export default function toolsProvider({
         app.eventBus.emit('select', selectUuids)
         app.eventBus.emit('scrollSelectionIntoView', {})
       }
-      return newUuids
+      return { ok: true, result: buildMutationResult(newUuids), meta: {} }
     }
 
     function buildMutationResult(newUuids: string[]) {
@@ -216,14 +231,12 @@ export default function toolsProvider({
     }
 
     if (autoApprove.value || !toolDef.requiresApproval) {
-      const newUuids = await applyMutation()
-      return { ok: true, result: buildMutationResult(newUuids), meta: {} }
+      return applyMutation()
     }
 
     const approved = await waitForApproval(action)
     if (approved) {
-      const newUuids = await applyMutation()
-      return { ok: true, result: buildMutationResult(newUuids), meta: {} }
+      return applyMutation()
     }
 
     if (action.revert) action.revert()

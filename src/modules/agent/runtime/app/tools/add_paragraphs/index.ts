@@ -21,21 +21,60 @@ import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import { optionValueToStorable } from '#blokkli/editor/helpers/options'
 import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
 
-const contentFieldValueSchema = z.union([
-  z
-    .string()
-    .describe(
-      'Text value for plain/markup content fields, or a URL string (starting with http) for link content fields',
-    ),
-  z
-    .object({
-      entityType: z.string().describe('Entity type (e.g., "media", "node")'),
-      entityId: z.string().describe('Entity ID'),
-    })
-    .describe(
-      'Entity reference for reference content fields (media, content references)',
-    ),
-])
+/**
+ * A content-field value the model can author. We deliberately accept several
+ * equivalent shapes: the LLM has strong, correct priors about the backend's own
+ * data model (a Drupal link field is `{ uri, title }`, an entity reference is
+ * `{ target_id }`) and otherwise fails validation on its first, natural
+ * attempt. Every shape is collapsed to the canonical value via
+ * `normalizeContentFieldValue` before it reaches the adapter, so the adapter
+ * boundary stays the single normalization point and nothing downstream changes.
+ */
+const contentFieldValueSchema = z.union(
+  [
+    z
+      .string()
+      .describe(
+        'Text for plain/markup fields, or a URL/link URI (https://…, mailto:, tel:, internal:/path, entity:type/id) for link fields.',
+      ),
+    z
+      .object({
+        uri: z
+          .string()
+          .describe('The link target: an absolute URL or a backend link URI.'),
+        title: z
+          .string()
+          .optional()
+          .describe(
+            'Optional link text. Accepted, but the URI is what gets stored — some backends do not persist the title yet.',
+          ),
+      })
+      .describe('Link field value with an optional title.'),
+    z
+      .object({
+        entityType: z.string().describe('Entity type (e.g. "media", "node").'),
+        entityId: z.string().describe('Entity ID.'),
+      })
+      .describe(
+        'Entity reference for reference fields (media, content references), from search_media / search_content results.',
+      ),
+    z
+      .object({
+        target_id: z.string().describe('The referenced entity ID.'),
+        target_type: z
+          .string()
+          .optional()
+          .describe('The referenced entity type, if known.'),
+      })
+      .describe(
+        'Entity reference in the backend-native { target_id } shape (equivalent to { entityType, entityId }).',
+      ),
+  ],
+  {
+    error:
+      'Content field value must be one of: a text/URL string; a link object { uri, title? }; or an entity reference { entityType, entityId } or { target_id, target_type? }.',
+  },
+)
 
 const contentFieldsSchema = z
   .record(
@@ -49,14 +88,41 @@ const contentFieldsSchema = z
 
 type OptionValue = string | boolean | number | string[]
 
+/**
+ * The accepted input shapes for a single content-field value, mirroring
+ * `contentFieldValueSchema`. Normalized to `CanonicalFieldValue` before use.
+ */
+type ContentFieldInput =
+  | string
+  | { uri: string; title?: string }
+  | { entityType: string; entityId: string }
+  | { target_id: string; target_type?: string }
+
+/** The canonical value carried downstream (see BlockFieldValue). */
+type CanonicalFieldValue = string | { entityType: string; entityId: string }
+
 type BlockInput = {
   bundle: string
-  contentFields?: Record<
-    string,
-    string | { entityType: string; entityId: string }
-  >
+  contentFields?: Record<string, ContentFieldInput>
   options?: Record<string, OptionValue>
   children?: Record<string, BlockInput[]>
+}
+
+/**
+ * Collapse any accepted content-field input shape into the canonical value the
+ * adapter consumes. Link objects reduce to their `uri` (the title is not
+ * carried downstream yet); backend-native `{ target_id }` references become
+ * `{ entityType, entityId }`.
+ */
+function normalizeContentFieldValue(
+  value: ContentFieldInput,
+): CanonicalFieldValue {
+  if (typeof value === 'string') return value
+  if ('uri' in value) return value.uri
+  if ('target_id' in value) {
+    return { entityType: value.target_type ?? '', entityId: value.target_id }
+  }
+  return { entityType: value.entityType, entityId: value.entityId }
 }
 
 const blockSchema: z.ZodType<BlockInput> = z.object({
@@ -101,7 +167,10 @@ function validateContentFields(
 ): string | undefined {
   if (!block.contentFields) return undefined
 
-  for (const [fieldName, fieldValue] of Object.entries(block.contentFields)) {
+  for (const [fieldName, rawFieldValue] of Object.entries(
+    block.contentFields,
+  )) {
+    const fieldValue = normalizeContentFieldValue(rawFieldValue)
     const editableConfig = ctx.app.types.editableFieldConfig.forName(
       ctx.itemEntityType,
       block.bundle,
@@ -137,7 +206,7 @@ function validateContentFields(
 
     if (droppableConfig) {
       if (typeof fieldValue === 'string' && droppableConfig.type !== 'link') {
-        return `${path}: Field "${fieldName}" is a reference field and expects { entityType, entityId }, got a string.`
+        return `${path}: Field "${fieldName}" is a reference field and expects { entityType, entityId } (or { target_id }), got a string.`
       }
     }
   }
@@ -297,7 +366,7 @@ function buildEventBlocks(
     const values = block.contentFields
       ? Object.entries(block.contentFields).map(([fieldName, fieldValue]) => ({
           fieldName,
-          fieldValue,
+          fieldValue: normalizeContentFieldValue(fieldValue),
         }))
       : undefined
 
@@ -380,7 +449,7 @@ export const resultSchema = mutationResultSchema
 export default defineBlokkliAgentTool({
   name: 'add_paragraphs',
   description:
-    'Add one or more new paragraphs to the page. Supports nested structures via the `children` property — define entire paragraph trees in a single call. IMPORTANT: Always provide content field values (text, media/entity references) directly via contentFields, instead of adding empty paragraphs! For reference content fields (media), set the value to { entityType, entityId } from search_media results. NOTE: You can ONLY provide content fields, NOT paragraph fields! For nested paragraphs, use the `children` property keyed by paragraph field name. You can also set paragraph options inline via the `options` property (key-value pairs). The success result mirrors the input shape: each top-level entry in `newParagraphs` includes its own `children` keyed by paragraph field, so the structure round-trips and a nested child does NOT appear as a sibling — treat the tree as the source of truth instead of guessing from order.',
+    'Add one or more new paragraphs to the page. Supports nested structures via the `children` property — define entire paragraph trees in a single call. IMPORTANT: Always provide content field values (text, media/entity references) directly via contentFields, instead of adding empty paragraphs! For reference content fields (media), set the value to { entityType, entityId } from search_media results. For link fields, set a URL string or { uri, title }. NOTE: You can ONLY provide content fields, NOT paragraph fields! For nested paragraphs, use the `children` property keyed by paragraph field name. You can also set paragraph options inline via the `options` property (key-value pairs). The success result mirrors the input shape: each top-level entry in `newParagraphs` includes its own `children` keyed by paragraph field, so the structure round-trips and a nested child does NOT appear as a sibling — treat the tree as the source of truth instead of guessing from order.',
   category: 'mutation',
   lazy: false,
   prunedSummary: (r) =>

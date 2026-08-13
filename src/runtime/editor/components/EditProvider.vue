@@ -211,7 +211,6 @@ const toolbarLoaded = ref(false)
 const featuresLoaded = ref(false)
 const isInitializing = ref(true)
 
-const definitions = definitionProvider(props.providerType)
 const $t = await textProvider(context.value.language)
 const state = await editStateProvider(
   eventBus,
@@ -243,6 +242,7 @@ const ui = uiProvider(
   viewportElement,
   $t,
 )
+const definitions = definitionProvider(props.providerType, ui.interfaceLanguage)
 const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)
 const blocks = blocksProvider(state, dom, context)

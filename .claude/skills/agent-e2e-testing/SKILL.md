@@ -115,10 +115,10 @@ and the conversation stops.
 Prepend `{ type: 'routing', skills?: string[], tools?: string[] }` to test the
 first-message routing preprocess. The client extracts the entry, sends it as
 `mockRouting` in the routing request body, and the server's `route.ts`
-short-circuits to it (no real LLM call). The Session then auto-loads the
-listed skills/lazy tools before the first turn, so they appear in the next
-LLM request's tools array. Verify with `getAgentTranscript(page)` and assert
-on `transcript.tools`.
+short-circuits to it (no real LLM call). The Session then auto-loads the listed
+skills/lazy tools before the first turn, so they appear in the next LLM
+request's tools array. Verify with `getAgentTranscript(page)` and assert on
+`transcript.tools`.
 
 ```ts
 const script: MockScript = [
@@ -144,8 +144,8 @@ expect(transcript.tools.map((t) => t.name)).toContain('search_text')
 ```
 
 The `routing` entry is additive — transcripts don't contain it, so a pasted
-conversation snapshot still works unchanged (no routing entry → routing
-returns empty, nothing is preloaded).
+conversation snapshot still works unchanged (no routing entry → routing returns
+empty, nothing is preloaded).
 
 ### Multi-turn example (with a real tool call)
 
@@ -200,9 +200,9 @@ After the real tool relay lands, the mock plays the second `agent` turn.
   populated `.env` doesn't cause real LLM calls on the routing path either.
 - **Auto-restore is skipped in mock mode.** `agentProvider.startInit()` only
   calls `loadLatestFromAdapter` when no mock script is present. This both
-  guarantees a clean turn-0 history for the mock provider AND lets parallel
-  mock tests against the same entity run without trampling each other's
-  conversation (the playground keys conversations by entity UUID).
+  guarantees a clean turn-0 history for the mock provider AND lets parallel mock
+  tests against the same entity run without trampling each other's conversation
+  (the playground keys conversations by entity UUID).
 
 `?testing=true` is unrelated to the mock — it gates the adapter recorder.
 Mock-script tests don't depend on it.
@@ -221,22 +221,22 @@ Mock-script tests don't depend on it.
 
 To assert the post-mutation page state, prefer `pageStructure(page)` (from
 `support/blocks`) + `toMatchInlineSnapshot` over multiple manual `expect`s. It
-returns the host entity's block tree (bundle + content props + nested fields)
-in a JSON-serialisable shape designed for snapshots — one assertion captures
-the whole structure the agent built.
+returns the host entity's block tree (bundle + content props + nested fields) in
+a JSON-serialisable shape designed for snapshots — one assertion captures the
+whole structure the agent built.
 
 ## `data-test` hooks on the agent UI
 
 Add new ones following `data-test="agent-<thing>"`:
 
-| Selector                                | Element                                                                        |
-| --------------------------------------- | ------------------------------------------------------------------------------ |
-| `[data-test="agent-input"]`             | Input wrapper (use `... textarea` to reach the textarea).                      |
-| `[data-test="agent-submit"]`            | The send button.                                                               |
-| `[data-test="agent-new-conversation"]`  | "Start new conversation" button — only visible when `hasConversation` is true. |
-| `[data-test="agent-assistant-message"]` | Each assistant message bubble. Use `.last()` to grab the most recent.          |
-| `[data-test="agent-ask-question"]`      | The `ask_question` tool card wrapper. Wait for it to know the UI rendered.     |
-| `[data-test="agent-ask-question-confirm"]` | The Confirm button inside the `ask_question` card.                          |
+| Selector                                   | Element                                                                        |
+| ------------------------------------------ | ------------------------------------------------------------------------------ |
+| `[data-test="agent-input"]`                | Input wrapper (use `... textarea` to reach the textarea).                      |
+| `[data-test="agent-submit"]`               | The send button.                                                               |
+| `[data-test="agent-new-conversation"]`     | "Start new conversation" button — only visible when `hasConversation` is true. |
+| `[data-test="agent-assistant-message"]`    | Each assistant message bubble. Use `.last()` to grab the most recent.          |
+| `[data-test="agent-ask-question"]`         | The `ask_question` tool card wrapper. Wait for it to know the UI rendered.     |
+| `[data-test="agent-ask-question-confirm"]` | The Confirm button inside the `ask_question` card.                             |
 
 ## Common patterns
 

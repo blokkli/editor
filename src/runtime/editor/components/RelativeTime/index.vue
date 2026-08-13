@@ -12,7 +12,7 @@ const props = defineProps<{
   timestamp: number | string
 }>()
 
-const { ui } = useBlokkli()
+const { ui, $t } = useBlokkli()
 
 const date = computed<Date | null>(() => {
   const dateArg =
@@ -29,8 +29,9 @@ const formattedDate = computed<string>(() => {
 
 /**
  * Convert a date to a relative time string, such as
- * "a minute ago", "in 2 hours", "yesterday", "3 months ago", etc.
- * using Intl.RelativeTimeFormat
+ * "less than a minute ago", "in 2 hours", "yesterday", "3 months ago", etc.
+ * using Intl.RelativeTimeFormat. The smallest unit is a minute — seconds are
+ * too noisy and update constantly.
  */
 function getRelativeTimeString(
   date: Date | number,
@@ -42,20 +43,17 @@ function getRelativeTimeString(
   // Get the amount of seconds between the given date and now
   const deltaSeconds = Math.round((timeMs - Date.now()) / 1000)
 
-  // Array reprsenting one minute, hour, day, week, month, etc in seconds
-  const cutoffs = [
-    60,
-    3600,
-    86400,
-    86400 * 7,
-    86400 * 30,
-    86400 * 365,
-    Infinity,
-  ]
+  // Below a minute we don't count seconds: the exact value is noise and would
+  // update every second. Show a stable, compact label instead.
+  if (Math.abs(deltaSeconds) < 60) {
+    return $t('relativeTimeJustNow', 'just now')
+  }
+
+  // Array representing one hour, day, week, month, etc in seconds
+  const cutoffs = [3600, 86400, 86400 * 7, 86400 * 30, 86400 * 365, Infinity]
 
   // Array equivalent to the above but in the string representation of the units
   const units: Intl.RelativeTimeFormatUnit[] = [
-    'second',
     'minute',
     'hour',
     'day',
@@ -70,12 +68,15 @@ function getRelativeTimeString(
   )
 
   // Get the divisor to divide from the seconds. E.g. if our unit is "day" our divisor
-  // is one day in seconds, so we can divide our seconds by this to get the # of days
-  const divisor = unitIndex ? cutoffs[unitIndex - 1]! : 1
+  // is one day in seconds, so we can divide our seconds by this to get the # of days.
+  // The minute unit (index 0) has no smaller cutoff, so fall back to 60.
+  const divisor = unitIndex ? cutoffs[unitIndex - 1]! : 60
 
-  // Intl.RelativeTimeFormat do its magic
+  // Intl.RelativeTimeFormat do its magic. `Math.trunc` (not `Math.floor`) so we
+  // round toward zero: a past time of 61s is "1 minute ago", not "2 minutes ago"
+  // (`Math.floor(-61 / 60)` would be -2).
   const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
-  return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]!)
+  return rtf.format(Math.trunc(deltaSeconds / divisor), units[unitIndex]!)
 }
 
 const incrementToggle = ref(0)

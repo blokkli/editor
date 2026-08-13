@@ -10,14 +10,13 @@ It's expected to return an array of `BlockBundleDefinition` objects.
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import types { BlockBundleDefinition } from '#blokkli/types'
+import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 
 const bundles: BlockBundleDefinition[] = [
   {
     id: 'card',
     label: 'Card',
-    description:
-      'A block that renders a card with a title, text and a link.',
+    description: 'A block that renders a card with a title, text and a link.',
     allowReusable: true,
     isTranslatable: true,
   },

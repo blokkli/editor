@@ -19,9 +19,17 @@ export default defineConfig({
         resolve: {
           alias: {
             '#blokkli-build': path.resolve(__dirname, './.nuxt/blokkli'),
+            '#blokkli/editor/helpers/diff': path.resolve(
+              __dirname,
+              './src/runtime/editor/helpers/diff',
+            ),
             '#blokkli/constants': path.resolve(
               __dirname,
               './src/runtime/constants',
+            ),
+            '#blokkli/helpers': path.resolve(
+              __dirname,
+              './src/runtime/helpers',
             ),
             '#blokkli/types': path.resolve(__dirname, './src/runtime/types'),
           },
@@ -40,6 +48,7 @@ export default defineConfig({
           // burning a minute on a transition that never finishes.
           testTimeout: 15000,
           hookTimeout: 15000,
+          maxWorkers: 4,
         },
       },
       await defineVitestProject({

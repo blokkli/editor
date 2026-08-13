@@ -2,21 +2,41 @@
 
 This method should return the available library items.
 
-The method receives a single argument `bundles` which contains the bundles that
-can be placed in the selected field. The method should only return library items
-with blocks of this bundle.
+The method receives a single `data` argument of type
+`BlokkliAdapterGetLibraryItemsData`:
 
-It's expected to return an array of `LibraryItem` objects.
+```typescript
+type BlokkliAdapterGetLibraryItemsData = {
+  bundles: string[]
+  page: number
+  filters: Record<string, any>
+}
+```
+
+The `bundles` property contains the bundles that can be placed in the selected
+field. The method should only return library items with blocks of one of these
+bundles.
+
+It's expected to return a paginated result of `LibraryItem` objects:
+
+```typescript
+type BlokkliAdapterGetLibraryItemsResult = {
+  items: LibraryItem[]
+  total: number
+  perPage: number
+  filters: PluginConfigInput[]
+}
+```
 
 ::: code-group
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { LibraryItem } from '#blokkli/types'
+import type { LibraryItem } from '#blokkli/editor/features/library/types'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {
-    getLibraryItems: (bundles: string[]) => {
+    getLibraryItems: (data) => {
       const items: LibraryItem[] = [
         {
           // The UUID of the library item.
@@ -54,7 +74,14 @@ export default defineBlokkliEditAdapter((ctx) => {
         },
       ]
 
-      return Promise.resolve(items.filter((v) => bundles.includes(v.bundle)))
+      const filtered = items.filter((v) => data.bundles.includes(v.bundle))
+
+      return Promise.resolve({
+        items: filtered,
+        total: filtered.length,
+        perPage: 20,
+        filters: [],
+      })
     },
   }
 })

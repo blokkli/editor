@@ -90,7 +90,6 @@ export function useStickyToolbar(
     let maxX = 0
     let minY = 0
     let maxY = 0
-    let hasRects = false
 
     const anchorElement =
       options && options.getAnchorElement ? options.getAnchorElement() : null
@@ -110,7 +109,6 @@ export function useStickyToolbar(
       maxX = rectX + 1
       minY = rectY
       maxY = rectY + 1
-      hasRects = true
     } else if (anchorElement) {
       // Use anchor element if provided
       anchorRect ||= ui.getAbsoluteElementRect(
@@ -127,7 +125,6 @@ export function useStickyToolbar(
       maxX = rectRight
       minY = rectY
       maxY = rectBottom
-      hasRects = true
     } else {
       // Use selected blocks.
       const rects = selection.uuids.value
@@ -135,7 +132,7 @@ export function useStickyToolbar(
         .filter(falsy)
         .filter((rect) => rect.height || rect.width)
 
-      hasRects = !!rects.length
+      const hasRects = !!rects.length
 
       if (hasRects) {
         for (let i = 0; i < rects.length; i++) {

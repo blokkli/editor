@@ -54,8 +54,8 @@ export default defineBlokkliEditAdapter((ctx) => {
           // The label displayed in the editor.
           label: 'Title',
 
-          // The field type ('plaintext' or 'formatted').
-          type: 'plaintext',
+          // The field type ('plain', 'markup', 'table' or 'frame').
+          type: 'plain',
 
           // Whether the field is required.
           required: true,

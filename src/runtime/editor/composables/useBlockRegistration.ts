@@ -3,8 +3,50 @@ import {
   onBeforeUnmount,
   onMounted,
   onUpdated,
+  type VNode,
 } from '#imports'
 import type { DomProvider } from '../providers/dom'
+
+/**
+ * Find the first rendered HTMLElement in a vnode subtree.
+ *
+ * A block does not always render a single element as its root: it may render a
+ * fragment (a multi-root template, which also happens when a comment precedes
+ * the root element) or delegate rendering to a child component. In both cases
+ * the component's `$el` is a text or comment anchor node instead of an element,
+ * so we have to descend into the rendered tree to find the actual element.
+ */
+function findFirstElement(vnode: unknown): HTMLElement | null {
+  if (Array.isArray(vnode)) {
+    for (const child of vnode) {
+      const el = findFirstElement(child)
+      if (el) {
+        return el
+      }
+    }
+    return null
+  }
+
+  if (!vnode || typeof vnode !== 'object') {
+    return null
+  }
+
+  const { el, component, children } = vnode as VNode
+
+  if (el instanceof HTMLElement) {
+    return el
+  }
+
+  // A component vnode: continue with whatever the component rendered.
+  if (component?.subTree) {
+    const found = findFirstElement(component.subTree)
+    if (found) {
+      return found
+    }
+  }
+
+  return findFirstElement(children)
+}
 
 /**
  * Helper composable to handle registering the block in the DOM provider.
@@ -21,43 +63,35 @@ export function useBlockRegistration(dom: DomProvider, uuid: string) {
   let rootElement: HTMLElement | null = null
 
   function getDraggableElement(): HTMLElement | null {
-    const blokkliDraggable = instance?.refs.blokkliDraggable
-    if (blokkliDraggable instanceof HTMLElement) {
-      return blokkliDraggable
-    } else if (
-      // The ref is another component. Try to get the root element.
-      blokkliDraggable !== null &&
-      typeof blokkliDraggable === 'object' &&
-      '$el' in blokkliDraggable
-    ) {
-      if (blokkliDraggable.$el instanceof HTMLElement) {
-        return blokkliDraggable.$el
+    const draggableRef = instance?.refs.blokkliDraggable
+    if (draggableRef instanceof HTMLElement) {
+      return draggableRef
+    } else if (draggableRef && typeof draggableRef === 'object') {
+      // The ref points to another component. A template ref only ever lands on
+      // the instance whose template declares it, so a child component that
+      // wants to designate an element inside its own template has to expose it
+      // as `blokkliDraggable` via defineExpose(). If it does, that wins.
+      if (
+        'blokkliDraggable' in draggableRef &&
+        draggableRef.blokkliDraggable instanceof HTMLElement
+      ) {
+        return draggableRef.blokkliDraggable
+      }
+
+      // Else use the component's root element, descending into its rendered
+      // tree if the component itself is a fragment.
+      if ('$el' in draggableRef && draggableRef.$el instanceof HTMLElement) {
+        return draggableRef.$el
+      }
+
+      const { $ } = draggableRef as { $?: { subTree?: VNode } }
+      const el = findFirstElement($?.subTree)
+      if (el) {
+        return el
       }
     }
 
-    const rootElement = instance?.proxy?.$el
-
-    if (rootElement instanceof HTMLElement) {
-      return rootElement
-    }
-
-    // For fragment components (multi-root, e.g. with leading comments),
-    // walk the VNode subtree to find the first HTMLElement.
-    const children = instance?.subTree?.children
-    if (Array.isArray(children)) {
-      for (const child of children) {
-        if (
-          child !== null &&
-          typeof child === 'object' &&
-          'el' in child &&
-          child.el instanceof HTMLElement
-        ) {
-          return child.el
-        }
-      }
-    }
-
-    return null
+    return findFirstElement(instance?.subTree)
   }
 
   function setRootElement() {

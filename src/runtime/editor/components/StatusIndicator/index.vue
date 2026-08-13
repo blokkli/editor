@@ -1,6 +1,6 @@
 <template>
   <span
-    class="size-[0.9em] inline-block rounded-full shrink-0 mr-[0.3em] align-middle"
+    class="size-[0.9em] inline-block rounded-full shrink-0 align-middle"
     :class="{
       'bg-red-normal': status === 'error',
       'bg-lime-normal': status === 'success',

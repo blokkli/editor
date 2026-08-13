@@ -280,6 +280,16 @@ msgctxt "aiAgentApprovalAccepted"
 msgid "Accepted"
 msgstr "Akzeptiert"
 
+msgctxt "aiAgentApprovalEdit"
+msgid "Edit"
+msgstr "Bearbeite"
+
+msgctxt "aiAgentApprovalEditText"
+msgid ""
+"Manually edit the suggested text. The editor opens with the entire field "
+"value."
+msgstr "Dr vorgschlageni Text manuell bearbeite. Dr Editor zeigt dr ganz Fäldinhalt."
+
 msgctxt "aiAgentApprovalHint"
 msgid ""
 "Review changes and accept or reject them individually. Tab/Arrow keys: "
@@ -1230,6 +1240,10 @@ msgctxt "analyzerValidationsPassDescription"
 msgid "No validation errors for the current state."
 msgstr ""
 
+msgctxt "apply"
+msgid "Apply"
+msgstr "Übernäh"
+
 msgctxt "arrowLeft"
 msgid "Arrow Left"
 msgstr ""
@@ -1600,21 +1614,9 @@ msgctxt "chartsBarStacked"
 msgid "Stacked"
 msgstr "Gstaplet"
 
-msgctxt "chartsBorderRadius"
-msgid "Corner radius"
-msgstr "Eckeradius"
-
-msgctxt "chartsBorderRadiusLarge"
-msgid "Large"
-msgstr "Gross"
-
-msgctxt "chartsBorderRadiusNone"
-msgid "None"
-msgstr "Käi"
-
-msgctxt "chartsBorderRadiusSmall"
-msgid "Small"
-msgstr "Chli"
+msgctxt "chartsCategoryAxisTitle"
+msgid "Category axis title"
+msgstr "Titel vo dr Kategorie-Achse"
 
 msgctxt "chartsCategoryFilter"
 msgid "Filterable category axis"
@@ -1855,17 +1857,9 @@ msgstr ""
 "Fuessnote werded automatisch nummeriert. Sie chönd sie i de Kategorie- oder "
 "Datereihe-Beschriftige mit {1}, {2}, usw. referenziere."
 
-msgctxt "chartsGridLines"
-msgid "Grid lines"
-msgstr "Raschterliniene"
-
 msgctxt "chartsImportCsv"
 msgid "Import CSV"
 msgstr "CSV importiere"
-
-msgctxt "chartsLegendPosition"
-msgid "Legend position"
-msgstr "Legendeposition"
 
 msgctxt "chartsNumberFormat"
 msgid "Number format"
@@ -1895,18 +1889,6 @@ msgctxt "chartsNumberFormatNotationStandard"
 msgid "Standard"
 msgstr ""
 
-msgctxt "chartsOpacityLight"
-msgid "Light"
-msgstr "Liecht"
-
-msgctxt "chartsOpacitySolid"
-msgid "Solid"
-msgstr "Deckend"
-
-msgctxt "chartsOpacityTransparent"
-msgid "Transparent"
-msgstr "Transparent"
-
 msgctxt "chartsOptionGroupLabels"
 msgid "Labels"
 msgstr "Beschriftige"
@@ -1919,22 +1901,6 @@ msgctxt "chartsOrphanOverridesRemove"
 msgid "Remove override"
 msgstr ""
 
-msgctxt "chartsPositionBottom"
-msgid "Bottom"
-msgstr "Unde"
-
-msgctxt "chartsPositionRight"
-msgid "Right"
-msgstr "Rächts"
-
-msgctxt "chartsPositionTop"
-msgid "Top"
-msgstr "Obe"
-
-msgctxt "chartsRadarFillOpacity"
-msgid "Fill opacity"
-msgstr "Fülldeckchraft"
-
 msgctxt "chartsRefreshPreview"
 msgid "Refresh Preview"
 msgstr "Vorschau aktualisiere"
@@ -1942,22 +1908,6 @@ msgstr "Vorschau aktualisiere"
 msgctxt "chartsReverseRows"
 msgid "Reverse rows"
 msgstr ""
-
-msgctxt "chartsStrokeMedium"
-msgid "Medium"
-msgstr "Mittel"
-
-msgctxt "chartsStrokeThick"
-msgid "Thick"
-msgstr "Dick"
-
-msgctxt "chartsStrokeThin"
-msgid "Thin"
-msgstr "Dünn"
-
-msgctxt "chartsStrokeWidth"
-msgid "Line thickness"
-msgstr "Liniestärchi"
 
 msgctxt "chartsTranslationsSeries"
 msgid "Series"
@@ -2096,6 +2046,10 @@ msgid ""
 msgstr ""
 "Zeigt Fortschritt oder Prozänt als konzäntrischi, chreisförmigi Balke, "
 "gueti Wahl für KPIs und Zielverfolgig."
+
+msgctxt "chartsValueAxisTitle"
+msgid "Value axis title"
+msgstr "Titel vo dr Wärt-Achse"
 
 msgctxt "chartsXAxisRotation"
 msgid "Label rotation"
@@ -2471,7 +2425,7 @@ msgstr "Bearbeite ufgrund fählender Berächtigung nid möglich."
 
 msgctxt "editTranslation"
 msgid "Edit translation"
-msgstr ""
+msgstr "Übersetzig bearbeite"
 
 msgctxt "editTranslationDescription"
 msgid "Manually add or edit the translations."
@@ -2504,6 +2458,10 @@ msgstr ""
 msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr ""
+
+msgctxt "entityTitleLastChanged"
+msgid "Last changed"
+msgstr "Zletscht gänderet"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -2915,6 +2873,10 @@ msgctxt "loading"
 msgid "Loading"
 msgstr ""
 
+msgctxt "mainColor"
+msgid "main color"
+msgstr ""
+
 msgctxt "manageSchedule"
 msgid "Manage schedule"
 msgstr "Planung verwalte..."
@@ -3319,10 +3281,6 @@ msgctxt "readabilityEntireText"
 msgid "This score is calculated for the entire text."
 msgstr "Dr Wärt würd für dr gsamte Teggscht berechnet."
 
-msgctxt "readabilityTooShort"
-msgid "Too short"
-msgstr "Z churz"
-
 msgctxt "readabilityTooShortTooltip"
 msgid "Text needs at least @count words for readability analysis."
 msgstr "Dr Teggscht bruucht mindestens @count Wörter für d'Lesbarkeitsanalys."
@@ -3350,6 +3308,10 @@ msgstr ""
 msgctxt "relatedContentTooltip"
 msgid "Content like pages or images referenced or linked by this block."
 msgstr ""
+
+msgctxt "relativeTimeJustNow"
+msgid "just now"
+msgstr "grad ebe"
 
 msgctxt "remove"
 msgid "Remove"
@@ -3871,16 +3833,8 @@ msgctxt "translationsAutoTranslate"
 msgid "Auto-translate"
 msgstr ""
 
-msgctxt "translationsAutoTranslateButton"
-msgid "Auto-translate"
-msgstr ""
-
 msgctxt "translationsAutoTranslateDescription"
 msgid "Automatically translate all texts of this block."
-msgstr ""
-
-msgctxt "translationsAutoTranslateTooltip"
-msgid "Automatically translate all texts using a translation service"
 msgstr ""
 
 msgctxt "translationsBannerButton"
@@ -3915,8 +3869,8 @@ msgstr ""
 "verfüegbar."
 
 msgctxt "translationsBatchTranslateMenuDescription"
-msgid "Translate all blocks"
-msgstr "Alli Blöck übersetze"
+msgid "Translate texts automatically or edit translations"
+msgstr "Texte automatisch übersetze oder Übersetzige bearbeite"
 
 msgctxt "translationsCsvApply"
 msgid "Import @count translations"
@@ -3970,12 +3924,24 @@ msgctxt "translationsCsvTooltip"
 msgid "Import or export translations as CSV or PO files"
 msgstr ""
 
+msgctxt "translationsDiscardProposal"
+msgid "Discard suggestion"
+msgstr "Vorschlag verwerfe"
+
 msgctxt "translationsDropToImport"
 msgid "Drop CSV or PO file to import"
 msgstr ""
 
+msgctxt "translationsEditReset"
+msgid "Discard manual translation"
+msgstr "Manuelli Apassig verwerfe"
+
+msgctxt "translationsEditedManually"
+msgid "Manually edited"
+msgstr "Vo Hand agpasst"
+
 msgctxt "translationsMarkUpToDate"
-msgid "Mark translations as up to date"
+msgid "Mark as up-to-date"
 msgstr ""
 
 msgctxt "translationsMarkUpToDateDescription"
@@ -3985,6 +3951,10 @@ msgstr ""
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
 msgstr ""
+
+msgctxt "translationsRestoreProposal"
+msgid "Restore suggestion"
+msgstr "Vorschlag wiederhärstelle"
 
 msgctxt "translationsSelectImportFile"
 msgid "Select CSV or PO file"
@@ -4000,21 +3970,17 @@ msgstr ""
 "aa, dass dr Inhalt no nid übersetzt worde isch. E Klick druf macht "
 "s'Formular uf zum e neui Übersetztig für die Sproch z'erstelle."
 
-msgctxt "translationsTranslateApply"
-msgid "Apply @count translations"
-msgstr ""
-
 msgctxt "translationsTranslateButton"
-msgid "Request @count translations"
-msgstr ""
+msgid "Auto-translate @count fields"
+msgstr "@count Fälder automatisch übersetze"
 
 msgctxt "translationsTranslateCurrentColumn"
 msgid "Current translation (@language)"
 msgstr ""
 
 msgctxt "translationsTranslateDialogTitle"
-msgid "Automatic Translation"
-msgstr ""
+msgid "Translate texts"
+msgstr "Texte übersetze"
 
 msgctxt "translationsTranslateFieldsLabel"
 msgid "fields selected"
@@ -4027,6 +3993,16 @@ msgstr ""
 msgctxt "translationsTranslateNoTexts"
 msgid "No translatable texts found on this page."
 msgstr ""
+
+msgctxt "translationsTranslateTextsButton"
+msgid "Translate texts"
+msgstr "Texte übersetze"
+
+msgctxt "translationsTranslateTextsTooltip"
+msgid "Translate all texts of this page automatically or edit translations manually"
+msgstr ""
+"Alli Texte vo derre Siite automatisch übersetze oder Übersetzige vo Hand "
+"bearbeite"
 
 msgctxt "undo"
 msgid "Undo"

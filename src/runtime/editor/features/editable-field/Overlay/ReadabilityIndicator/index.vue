@@ -81,12 +81,11 @@
   </div>
   <div
     v-else-if="tooShort"
-    class="bk-editable-field-readability"
+    class="bk-editable-field-readability group/tooltip"
     data-test="editable-readability"
     :data-test-too-short="true"
   >
     <span class="bk-editable-field-readability-dot" />
-    <span>{{ $t('readabilityTooShort', 'Too short') }}</span>
     <Tooltip :label="minWordsText" />
   </div>
 </template>

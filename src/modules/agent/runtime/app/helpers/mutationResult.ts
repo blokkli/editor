@@ -1,4 +1,6 @@
 import type { BlokkliApp } from '#blokkli/editor/types/app'
+import type { MutationResponseLike } from '#blokkli/editor/adapter'
+import type { Validation } from '#blokkli/editor/types/state'
 
 /**
  * Tree-shaped entry in the `newParagraphs` payload returned by mutation tools.
@@ -81,6 +83,63 @@ export function buildNewParagraphsTree(
   }
 
   return roots
+}
+
+/**
+ * Human-readable location of a single validation violation, e.g.
+ * `field_link (paragraph 3dcc1aeb…)` or just `field_link`.
+ */
+function violationLocation(violation: Validation): string {
+  const parts: string[] = []
+  if (violation.propertyPath) {
+    parts.push(violation.propertyPath)
+  }
+  if (violation.entityUuid) {
+    const entity = violation.entityType ?? 'entity'
+    parts.push(
+      violation.propertyPath
+        ? `(${entity} ${violation.entityUuid})`
+        : `${entity} ${violation.entityUuid}`,
+    )
+  }
+  return parts.join(' ')
+}
+
+/**
+ * Compose an agent-facing error message from a rejected mutation response.
+ *
+ * Backends return structured `violations` (field-level constraint failures)
+ * and/or plain `errors`. Violations carry the useful context (which field on
+ * which entity failed and why), so they're preferred; the generic `errors`
+ * list (e.g. Drupal's catch-all "Entity Violations") is only used as a
+ * fallback when no violations are present. The result is surfaced to the LLM
+ * so it can correct the mutation (e.g. supply the missing required field).
+ */
+export function formatMutationFailure(
+  response: MutationResponseLike<any> | undefined,
+): string {
+  if (!response) {
+    return 'The mutation failed: the backend returned no response.'
+  }
+
+  const violations = response.violations ?? []
+  if (violations.length) {
+    const lines = violations.map((violation) => {
+      const location = violationLocation(violation)
+      return location
+        ? `- ${location}: ${violation.message}`
+        : `- ${violation.message}`
+    })
+    return `The mutation was rejected by the backend:\n${lines.join('\n')}`
+  }
+
+  const errors = (response.errors ?? []).filter(Boolean)
+  if (errors.length) {
+    const lines = errors.map((error) => `- ${error}`)
+    return `The mutation was rejected by the backend:\n${lines.join('\n')}`
+  }
+
+  return 'The mutation was rejected by the backend.'
 }
 
 /**

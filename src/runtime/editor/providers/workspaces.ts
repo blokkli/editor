@@ -106,7 +106,6 @@ export type WorkspacesProvider = {
 }
 
 declare module '#blokkli/editor/adapter' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface BlokkliAdapter<T> {
     /**
      * Search for host entities.

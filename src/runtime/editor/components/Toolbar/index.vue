@@ -1,29 +1,31 @@
 <template>
   <div
-    v-show="activeSidebarLeft && sidebarVisible"
+    v-show="hasSidebarLeft && sidebarVisible"
     id="bk-sidebar-content-left"
+    data-test="sidebar-content-left"
     class="bk-sidebar bk-is-left bk"
     :class="{ 'bk-is-hidden': !sidebarVisible }"
   />
 
   <div
-    v-show="activeSidebarRight || activeSidebarRightBottom"
+    v-show="hasSidebarRight || hasSidebarRightBottom"
     ref="sidebarRightWrapper"
     class="bk bk-sidebar-right-wrapper"
     :class="{
       'bk-is-resizing-split': isResizingSplit,
-      'bk-is-split': activeSidebarRightBottom,
+      'bk-is-split': hasSidebarRightBottom,
     }"
   >
     <div
-      v-show="activeSidebarRight"
+      v-show="hasSidebarRight"
       id="bk-sidebar-content-right"
+      data-test="sidebar-content-right"
       class="bk-sidebar bk-is-right bk border-l border-l-mono-400"
       :class="{ 'bk-is-hidden': !sidebarVisible }"
       :style="rightSidebarStyle"
     />
     <div
-      v-show="activeSidebarRight && activeSidebarRightBottom"
+      v-show="hasSidebarRight && hasSidebarRightBottom"
       class="bk bk-sidebar-resize"
       @mousedown.prevent.stop="onSplitMouseDown"
     >
@@ -34,8 +36,9 @@
       </div>
     </div>
     <div
-      v-show="activeSidebarRightBottom"
+      v-show="hasSidebarRightBottom"
       id="bk-sidebar-content-right-bottom"
+      data-test="sidebar-content-right-bottom"
       class="bk-sidebar bk-is-right-bottom bk"
       :class="{ 'bk-is-hidden': !sidebarVisible }"
     />
@@ -132,9 +135,14 @@ const sidebarVisible = computed(() => {
   return true
 })
 
-const activeSidebarLeft = storage.use('sidebar:active:left', '')
+// The persisted sidebar state may reference a sidebar that no longer exists
+// (e.g. a disabled feature), so visibility is derived from the sidebars that
+// are actually mounted and open.
+const hasSidebarLeft = ui.hasSidebarLeft
+const hasSidebarRight = ui.hasSidebarRight
+const hasSidebarRightBottom = ui.hasSidebarRightBottom
+
 const activeSidebarRight = storage.use('sidebar:active:right', '')
-const activeSidebarRightBottom = storage.use('sidebar:active:right-bottom', '')
 const focusedSidebar = storage.use('sidebar:focused', '')
 const splitPercent = storage.use('sidebar:right:split-percent', 50)
 
@@ -145,7 +153,7 @@ const splitStartY = ref(0)
 const splitStartHeight = ref(0)
 
 const bothSidebarsVisible = computed(
-  () => !!activeSidebarRight.value && !!activeSidebarRightBottom.value,
+  () => hasSidebarRight.value && hasSidebarRightBottom.value,
 )
 
 const rightSidebarStyle = computed(() => {

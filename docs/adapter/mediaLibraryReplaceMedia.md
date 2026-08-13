@@ -6,7 +6,7 @@ Replace media on a block with a new media item.
 
 ```typescript
 mediaLibraryReplaceMedia?: (e: {
-  host: DraggableHostData
+  host: BlokkliItemHost
   mediaId: string
 }) => Promise<MutationResponseLike<T>> | undefined
 ```
@@ -18,7 +18,7 @@ mediaLibraryReplaceMedia?: (e: {
 Information about the block and field where the media was dropped.
 
 ```typescript
-type DraggableHostData = {
+type BlokkliItemHost = {
   type: string
   uuid: string
   fieldName: string

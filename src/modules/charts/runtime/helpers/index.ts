@@ -1,5 +1,6 @@
 import type { BlokkliChartData } from '../types'
-import type { ColorOption } from '#blokkli/editor/types/config'
+import type { ColorOption } from '#blokkli/types/colors'
+import { canonicalColorId } from '#blokkli/helpers/colors'
 import { detectDateFormat } from './dateFormat'
 
 export const SUPERSCRIPTS: Record<string, string> = {
@@ -29,18 +30,20 @@ export function applyFootnotes(text: string): string {
  * Get the fallback color ID (first defined color).
  */
 export function getFirstColorId(options: ColorOption[]): string {
-  return options[0]?.id || ''
+  return options[0] ? canonicalColorId(options[0]) : ''
 }
 
 /**
  * Get a color ID for the given index, cycling through available colors.
+ * Always returns the canonical form (`<base>.<mainShade>` for ramps).
  */
 export function getColorIdAtIndex(
   index: number,
   options: ColorOption[],
 ): string {
   if (options.length === 0) return ''
-  return options[index % options.length]?.id || options[0]?.id || ''
+  const option = options[index % options.length] ?? options[0]!
+  return canonicalColorId(option)
 }
 
 export function getDefaultChartData(options: ColorOption[]): BlokkliChartData {

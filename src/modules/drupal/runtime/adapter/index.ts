@@ -320,6 +320,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       const mutations = (state?.mutations || []).filter(falsy)
       const currentUserIsOwner = !!state?.currentUserIsOwner
       const ownerName = state?.ownerName || ''
+      const lastChangedRaw = state?.changedRawField?.first?.value
+      const lastChanged = lastChangedRaw ? parseInt(lastChangedRaw) : undefined
       const fields = state?.mutatedState?.fields || []
       const violations = state.mutatedState?.violations || []
       const entity = state.entity
@@ -375,6 +377,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         mutations,
         currentUserIsOwner,
         ownerName,
+        lastChanged,
         ownerId: state.user?.id,
         mutatedState: {
           fields,

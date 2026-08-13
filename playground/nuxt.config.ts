@@ -10,6 +10,7 @@ import tableOfContents from './../src/modules/table-of-contents'
 import charts from './../src/modules/charts'
 import iframes from './../src/modules/iframes'
 import readability from './../src/modules/readability'
+import { colorOptions } from './.config/blokkli'
 
 const playgroundFolder = fileURLToPath(new URL('./', import.meta.url))
 
@@ -121,9 +122,16 @@ export default defineNuxtConfig({
             name: 'claude-haiku-4-5',
             // name: 'claude-sonnet-4-6',
             label: 'Claude Haiku 4.5',
-            isDefault: true,
+            isDefault: false,
             routing: true,
             pricing: { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 },
+          },
+          {
+            name: 'claude-sonnet-5',
+            label: 'Claude Sonnet 5',
+            isDefault: true,
+            routing: false,
+            pricing: { input: 2, cacheWrite: 2.5, cacheRead: 0.2, output: 10 },
           },
         ],
         // provider: 'openai',
@@ -167,53 +175,103 @@ export default defineNuxtConfig({
     itemEntityType: 'paragraph',
     fieldListTypes: ['header', 'inline'],
     providerTypes: ['contentPage'],
-    colorOptions: {
-      blue: { hex: '#3b82f6', label: 'Blue' },
-      red: { hex: '#ef4444', label: 'Red' },
-      green: { hex: '#10b981', label: 'Green' },
-      amber: { hex: '#f59e0b', label: 'Amber' },
-      purple: { hex: '#8b5cf6', label: 'Purple' },
-      pink: { hex: '#ec4899', label: 'Pink' },
-      teal: { hex: '#14b8a6', label: 'Teal' },
-      orange: { hex: '#f97316', label: 'Orange' },
-    },
+    colorOptions,
     globalOptions: {
       background: {
         type: 'radios',
-        label: 'Background',
+        label: {
+          en: 'Background',
+          de: 'Hintergrund',
+          fr: 'Arrière-plan',
+          it: 'Sfondo',
+          gsw_CH: 'Hintergrund',
+        },
         default: 'white',
         displayAs: 'colors',
         options: {
           white: {
             class: 'bg-white',
-            label: 'White',
-            description: 'A nice white color.',
+            label: {
+              en: 'White',
+              de: 'Weiss',
+              fr: 'Blanc',
+              it: 'Bianco',
+              gsw_CH: 'Wiiss',
+            },
+            description: {
+              en: 'A nice white color.',
+              de: 'Eine schöne weisse Farbe.',
+              fr: 'Une belle couleur blanche.',
+              it: 'Un bel colore bianco.',
+              gsw_CH: 'E schöni wiissi Farb.',
+            },
           },
           light: {
             class: 'bg-mono-100',
-            label: 'Light',
-            description: 'A slightly gray color.',
+            label: {
+              en: 'Light',
+              de: 'Hell',
+              fr: 'Clair',
+              it: 'Chiaro',
+              gsw_CH: 'Häll',
+            },
+            description: {
+              en: 'A slightly gray color.',
+              de: 'Eine leicht graue Farbe.',
+              fr: 'Une couleur légèrement grise.',
+              it: 'Un colore leggermente grigio.',
+              gsw_CH: 'E liicht graui Farb.',
+            },
           },
           dark: {
             class: 'bg-mono-800',
-            label: 'Dark',
-            description:
-              'A full dark color that also inverts text color to white.',
+            label: {
+              en: 'Dark',
+              de: 'Dunkel',
+              fr: 'Foncé',
+              it: 'Scuro',
+              gsw_CH: 'Dunkel',
+            },
+            description: {
+              en: 'A full dark color that also inverts text color to white.',
+              de: 'Eine komplett dunkle Farbe, die auch die Textfarbe auf Weiss umkehrt.',
+              fr: 'Une couleur entièrement foncée qui inverse aussi la couleur du texte en blanc.',
+              it: 'Un colore completamente scuro che inverte anche il colore del testo in bianco.',
+              gsw_CH: 'E ganz dunkli Farb, wo au d Textfarb uf Wiiss umchehrt.',
+            },
           },
         },
       },
       alignment: {
         type: 'radios',
-        label: 'Alignment',
+        label: {
+          en: 'Alignment',
+          de: 'Ausrichtung',
+          fr: 'Alignement',
+          it: 'Allineamento',
+          gsw_CH: 'Uusrichtig',
+        },
         default: 'center',
         displayAs: 'icons',
         options: {
           left: {
-            label: 'Left',
+            label: {
+              en: 'Left',
+              de: 'Links',
+              fr: 'Gauche',
+              it: 'Sinistra',
+              gsw_CH: 'Links',
+            },
             icon: 'bk_mdi_format_align_left',
           },
           center: {
-            label: 'Center',
+            label: {
+              en: 'Center',
+              de: 'Zentriert',
+              fr: 'Centré',
+              it: 'Centrato',
+              gsw_CH: 'Zentriert',
+            },
             icon: 'bk_mdi_format_align_center',
           },
         },

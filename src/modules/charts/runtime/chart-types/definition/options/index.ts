@@ -60,42 +60,6 @@ export function yAxisMinOptions($t: TranslateFunction): SharedOptions {
 }
 
 /**
- * Legend position option for multi-series chart types.
- */
-export function legendOptions($t: TranslateFunction): SharedOptions {
-  return {
-    options: {
-      legendPosition: {
-        type: 'radios',
-        label: $t('chartsLegendPosition', 'Legend position'),
-        default: 'bottom',
-        options: {
-          bottom: $t('chartsPositionBottom', 'Bottom'),
-          top: $t('chartsPositionTop', 'Top'),
-          right: $t('chartsPositionRight', 'Right'),
-        },
-      },
-    },
-  }
-}
-
-/**
- * Grid lines option for chart types with axes.
- */
-export function gridOptions($t: TranslateFunction): SharedOptions {
-  return {
-    options: {
-      gridLines: {
-        type: 'checkbox',
-        label: $t('chartsGridLines', 'Grid lines'),
-        default: true,
-        group: 'display',
-      },
-    },
-  }
-}
-
-/**
  * Runtime category filter — when enabled, the chart wrapper renders a
  * `<select>` above the chart so viewers can pick one category at a time.
  * The wrapper pivots the payload to a 1-series × N-bar shape and passes
@@ -116,26 +80,6 @@ export function categoryFilterOptions($t: TranslateFunction): SharedOptions {
         default: '',
         group: 'filter',
         shouldRender: ({ options }) => options.categoryFilter === true,
-      },
-    },
-  }
-}
-
-/**
- * Stroke width option for line-based chart types.
- */
-export function strokeWidthOptions($t: TranslateFunction): SharedOptions {
-  return {
-    options: {
-      strokeWidth: {
-        type: 'radios',
-        label: $t('chartsStrokeWidth', 'Line thickness'),
-        default: '2',
-        options: {
-          '2': $t('chartsStrokeThin', 'Thin'),
-          '4': $t('chartsStrokeMedium', 'Medium'),
-          '6': $t('chartsStrokeThick', 'Thick'),
-        },
       },
     },
   }

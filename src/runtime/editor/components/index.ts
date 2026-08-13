@@ -40,6 +40,7 @@ export { default as ItemIconBox } from './ItemIconBox/index.vue'
 export { default as Loading } from './Loading/index.vue'
 export { default as Pagination } from './Pagination/index.vue'
 export { default as Popup } from './Popup/index.vue'
+export { default as PopupHost } from './PopupHost/index.vue'
 export { default as RelativeTime } from './RelativeTime/index.vue'
 export { default as Reorder } from './Reorder/index.vue'
 export { default as Resizable } from './Resizable/index.vue'
@@ -61,6 +62,7 @@ export { default as ButtonAction } from './ButtonAction/index.vue'
 export { default as Pill } from './Pill/index.vue'
 export { default as DialogModal } from './Dialog/index.vue'
 export { default as ToolbarDropdown } from './ToolbarDropdown/index.vue'
+export { default as ColorDropdown } from './ColorDropdown/index.vue'
 
 export const NestedEditorOverlay = defineAsyncComponent(
   () => import('./NestedEditorOverlay/index.vue'),

@@ -1,0 +1,4 @@
+# Agent and Drupal docs moved under /modules/ (blökkli 2.0).
+# Redirect the old top-level URLs to their new location.
+/agent/*   /modules/agent/:splat   301
+/drupal/*  /modules/drupal/:splat  301

@@ -1,10 +1,10 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
 import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { HeatmapChart } from 'echarts/charts'
@@ -16,6 +16,7 @@ import {
 } from 'echarts/components'
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
+import { useChartOption } from '../../../helpers/useChartOption'
 import type { TypeOptions } from './definition'
 
 use([
@@ -33,11 +34,10 @@ const opts = computed(() => {
   const t = props.typeOptions as Partial<TypeOptions>
   return {
     xaxisRotation: t.xaxisRotation ?? 'auto',
-    gridLines: t.gridLines ?? true,
   }
 })
 
-const option = computed(() => {
+const option = useChartOption(() => {
   const o = opts.value
   const valueFormatter = createNumberFormatter(props.numberFormat)
 
@@ -60,7 +60,8 @@ const option = computed(() => {
   const xAxis: Record<string, unknown> = {
     type: 'category',
     data: props.categories,
-    splitArea: { show: o.gridLines },
+    // Cell background bands are structural to the heatmap grid.
+    splitArea: { show: true },
   }
   if (o.xaxisRotation !== 'auto') {
     xAxis.axisLabel = { rotate: Number(o.xaxisRotation) }
@@ -68,7 +69,7 @@ const option = computed(() => {
 
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
-    animation: !props.isEditing,
+    animation: props.isEditing ? false : undefined,
     tooltip: {
       position: 'top' as const,
       formatter: (p: { data: [number, number, number] }) => {
@@ -83,7 +84,7 @@ const option = computed(() => {
     yAxis: {
       type: 'category',
       data: props.series.map((s) => s.name),
-      splitArea: { show: o.gridLines },
+      splitArea: { show: true },
     },
     visualMap: {
       min,
@@ -109,5 +110,5 @@ const option = computed(() => {
       },
     ],
   }
-})
+}, props)
 </script>

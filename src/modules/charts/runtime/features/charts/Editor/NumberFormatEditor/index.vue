@@ -70,6 +70,7 @@ import type { ChartNumberFormat } from '../../../../types'
 import { createNumberFormatter } from '../../../../helpers/numberFormat'
 import { FormSelect, FormText, FormRadio } from '#blokkli/editor/components'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
+import { chartsConfig } from '#blokkli-build/charts-config'
 
 const { $t } = useBlokkli()
 
@@ -94,15 +95,40 @@ function update<K extends keyof ChartNumberFormat>(
   emit('update:format', next)
 }
 
+/**
+ * Build the label for a locale entirely from its id: the language and region
+ * name are rendered in the locale itself (autonym), followed by an example of
+ * how a number is formatted. Falls back to the raw id if `Intl` can't resolve
+ * the locale.
+ */
+function deriveLocaleLabel(id: string): string {
+  let name = id
+  try {
+    name =
+      new Intl.DisplayNames([id], {
+        type: 'language',
+        languageDisplay: 'standard',
+      }).of(id) ?? id
+  } catch {
+    // Keep the raw id.
+  }
+
+  try {
+    const example = new Intl.NumberFormat(id, {
+      minimumFractionDigits: 2,
+    }).format(1234.5)
+    return `${name} — ${example}`
+  } catch {
+    return name
+  }
+}
+
 const localeOptions = computed(() => [
   { value: '', label: $t('chartsNumberFormatLocaleAuto', 'Auto (browser)') },
-  { value: 'de-CH', label: 'Deutsch (Schweiz) — 1’234.50' },
-  { value: 'fr-CH', label: 'Français (Suisse) — 1 234,50' },
-  { value: 'it-CH', label: 'Italiano (Svizzera) — 1’234,50' },
-  { value: 'de-DE', label: 'Deutsch (Deutschland) — 1.234,50' },
-  { value: 'en-US', label: 'English (US) — 1,234.50' },
-  { value: 'en-GB', label: 'English (UK) — 1,234.50' },
-  { value: 'fr-FR', label: 'Français (France) — 1 234,50' },
+  ...chartsConfig.numberFormatLocales.map((id) => ({
+    value: id,
+    label: deriveLocaleLabel(id),
+  })),
 ])
 
 const decimalsOptions = computed(() => [

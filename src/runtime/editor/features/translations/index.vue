@@ -292,10 +292,12 @@ onMounted(() => {
 defineMenuButton(() => {
   return {
     id: 'translations',
-    title: $t('translate', 'Translate', { more: true }),
+    title: $t('translationsTranslateTextsButton', 'Translate texts', {
+      more: true,
+    }),
     description: $t(
       'translationsBatchTranslateMenuDescription',
-      'Translate all blocks',
+      'Translate texts automatically or edit translations',
     ),
     icon: 'bk_mdi_translate',
     disabled: !isTranslating.value,

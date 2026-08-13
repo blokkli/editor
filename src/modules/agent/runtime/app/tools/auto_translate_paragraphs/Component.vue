@@ -4,6 +4,7 @@
     :items="approvalItems"
     insertions-only
     show-reason
+    editable
     @apply="onApply"
     @cancel="onCancel"
   />
@@ -17,13 +18,17 @@ import type {
   McpToolContext,
   ComponentToolResult,
 } from '#blokkli/agent/app/types'
-import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type {
+  ApprovalItem,
+  DiffApplyPayload,
+} from '#blokkli/editor/components/DiffApproval/types'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import {
   skippedFieldsMessage,
   appendAgentNote,
   rejectedWithoutReasonMessage,
   partialRejectionGuidance,
+  manualEditsMessage,
   decideFieldUpdates,
   type RejectedByUser,
 } from '../fieldDiffApproval'
@@ -163,15 +168,12 @@ onMounted(async () => {
   phase.value = 'approving'
 })
 
-async function onApply(data: {
-  selected: Record<string, boolean>
-  reasons: Record<string, string>
-}) {
+async function onApply(data: DiffApplyPayload) {
   const targetLanguage = entityContext.value.language
   const items = approvalItems.value
 
-  const { updates, rejectedByUser, acceptedCount, totalCount } =
-    decideFieldUpdates(items, data.selected, data.reasons)
+  const { updates, rejectedByUser, acceptedCount, totalCount, editedFields } =
+    decideFieldUpdates(items, data.selected, data.reasons, data.edited)
 
   if (updates.length) {
     await state.mutateWithLoadingState(() =>
@@ -213,13 +215,24 @@ async function onApply(data: {
       after: updatesByItem.get(`${item.uuid}:${item.fieldName}`)!,
     }))
 
+  const editedByUser: Record<string, Record<string, { value: string }>> = {}
+  for (const e of editedFields) {
+    const fields = editedByUser[e.uuid] ?? {}
+    fields[e.fieldName] = { value: e.value }
+    editedByUser[e.uuid] = fields
+  }
+
   emitDone({
     acceptedCount,
     rejectedByUser,
+    editedByUser: editedFields.length > 0 ? editedByUser : undefined,
     label,
     agentMessage: appendAgentNote(
-      partialRejectionGuidance(rejectedByUser),
-      rejectedWithoutReasonMessage(rejectedByUser),
+      appendAgentNote(
+        partialRejectionGuidance(rejectedByUser),
+        rejectedWithoutReasonMessage(rejectedByUser),
+      ),
+      manualEditsMessage(editedFields),
     ),
     historyIndex: state.currentMutationIndex.value,
     _details,

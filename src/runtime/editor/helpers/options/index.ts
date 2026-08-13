@@ -1,5 +1,7 @@
 import type { BlockOptionDefinition } from '#blokkli/types/blockOptions'
 import type { BlockDefinitionOptionsInput } from '#blokkli/types/definitions'
+import type { DefinitionString } from '../../../../global/types/blockOptions'
+import { defaultLanguage } from '#blokkli-build/editor-config'
 
 export type OptionItem = {
   property: string
@@ -119,4 +121,34 @@ export function optionValueToStorable(
   }
 
   return ''
+}
+
+export function resolveDefinitionString(
+  definitionString: DefinitionString,
+  langcode?: string,
+): string {
+  if (!definitionString) {
+    return ''
+  }
+
+  if (typeof definitionString === 'string') {
+    return definitionString
+  }
+
+  if (langcode) {
+    const translation = definitionString[langcode]
+
+    if (translation) {
+      return translation
+    }
+  }
+
+  const defaultTranslation = definitionString[defaultLanguage]
+
+  if (defaultTranslation) {
+    return defaultTranslation
+  }
+
+  const firstValue = Object.values(definitionString)[0]
+  return firstValue ?? ''
 }

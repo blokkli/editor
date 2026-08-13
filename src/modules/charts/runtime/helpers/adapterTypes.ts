@@ -6,7 +6,6 @@ import type {
 } from '../types'
 
 declare module '#blokkli/editor/adapter' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface BlokkliAdapter<T> {
     /**
      * Return the capabilities of the chart data sources system. If this

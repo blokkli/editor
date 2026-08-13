@@ -139,35 +139,73 @@ function mangleClassExpression(expr: string): string {
 }
 
 /**
+ * Component props that carry a class string and must be mangled like
+ * `class`. Each entry is a kebab-case template attribute name (matching
+ * the camelCase Vue prop, e.g. `buttonClass` → `button-class`).
+ *
+ * Keep this list explicit. Convention in this codebase is that any prop
+ * with a name ending in `Class` forwards its value to a `:class` binding
+ * internally — but only the props listed here have been audited and
+ * accept Tailwind utility class strings. Add new entries when a new
+ * mangle-eligible class-bearing prop is introduced.
+ */
+const CLASS_BEARING_PROPS = ['button-class', 'background-class'] as const
+
+/**
  * Mangle template and script class names in a Vue SFC source string.
  *
  * Handles:
- * 1. Static class="..." attributes
- * 2. :class="..." bindings (parsed with acorn)
+ * 1. Static `class="..."` attributes
+ * 2. Static class-bearing prop attributes (see CLASS_BEARING_PROPS)
  * 3. tw('...') marker calls
+ * 4. `:class="..."` bindings (parsed with acorn)
+ * 5. `:<class-bearing-prop>="..."` bindings (parsed with acorn)
  */
 export function mangleTemplateAndScript(code: string): string {
   let result = code
 
-  // 1. Static class="..." attributes.
-  // Negative lookbehind excludes :class and v-bind:class.
+  // 1. Static `class="..."` attributes.
+  // Negative lookbehind excludes `:class`, `v-bind:class`, `.class`, and
+  // any kebab-case attribute ending in `-class` (e.g. `data-class`,
+  // `button-class` — the latter is handled explicitly in step 2).
   result = result.replace(
     /(?<![-:.])\bclass="([^"]*)"/g,
     (_match, value: string) => `class="${mangleClassString(value)}"`,
   )
 
-  // 2. tw('...') and tw("...") marker calls in script sections.
+  // 2. Static class-bearing prop attributes. The negative lookbehind
+  // excludes the bound forms (`:button-class`, `v-bind:button-class`) —
+  // those are handled by step 5 via acorn parsing.
+  for (const prop of CLASS_BEARING_PROPS) {
+    const staticAttr = new RegExp(`(?<![:.])\\b${prop}="([^"]*)"`, 'g')
+    result = result.replace(
+      staticAttr,
+      (_match, value: string) => `${prop}="${mangleClassString(value)}"`,
+    )
+  }
+
+  // 3. tw('...') and tw("...") marker calls in script sections.
   result = result.replace(
     /\btw\(\s*(['"])([\s\S]*?)\1\s*\)/g,
     (_match, quote: string, value: string) =>
       `tw(${quote}${mangleClassString(value)}${quote})`,
   )
 
-  // 3. :class bindings — use acorn to parse the expression properly.
+  // 4. `:class` bindings — use acorn to parse the expression properly.
   result = result.replace(
     /(?::|v-bind:)class="([^"]*)"/g,
     (_match, expr: string) => `:class="${mangleClassExpression(expr)}"`,
   )
+
+  // 5. Bound class-bearing prop bindings (`:button-class="..."`).
+  for (const prop of CLASS_BEARING_PROPS) {
+    const boundAttr = new RegExp(`(:|v-bind:)${prop}="([^"]*)"`, 'g')
+    result = result.replace(
+      boundAttr,
+      (_match, prefix: string, expr: string) =>
+        `${prefix}${prop}="${mangleClassExpression(expr)}"`,
+    )
+  }
 
   return result
 }

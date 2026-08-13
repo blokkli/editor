@@ -44,18 +44,20 @@ The title displayed in the tooltip.
 ### region
 
 - **Type:**
-  `'after-title' | 'before-title' | 'before-sidebar' | 'after-menu' | 'before-sidebar-right' | 'view-options'`
+  `'title' | 'after-title' | 'before-title' | 'before-sidebar' | 'after-menu' | 'before-sidebar-right' | 'view-options' | 'artboard'`
 - **Required:** Yes
 
 Which toolbar region to render the button in. Different regions appear in
 different locations of the toolbar:
 
+- `'title'` - In the page title area
 - `'before-title'` - Far left, before the page title
 - `'after-title'` - After the page title
 - `'after-menu'` - After the main menu button
 - `'before-sidebar'` - Before the right sidebar buttons
 - `'before-sidebar-right'` - Alternative position before sidebars
 - `'view-options'` - In the view options area
+- `'artboard'` - On the artboard / canvas area
 
 ### icon
 

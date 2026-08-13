@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 import type { McpToolContext } from '#blokkli/agent/app/types'
-import type { ColorOption } from '#blokkli/editor/types/config'
+import type { ColorOption } from '#blokkli/types/colors'
+import { isColorIdValid } from '#blokkli/helpers/colors'
 import { getColorIdAtIndex } from '../../helpers'
 import { getChartTypeRuntime, getDefaultTypeOptions } from '../../chart-types'
 import { colorOptions } from '#blokkli-build/editor-config'
@@ -15,7 +16,19 @@ const agentChartTypeIds = definitionIds.filter((id) => id !== 'advanced') as [
 ]
 export const chartTypeEnum = z.enum(agentChartTypeIds)
 
-const colorIds = Object.keys(colorOptions) as [string, ...string[]]
+// Build the union of all referenceable color ids at build time: bare id for
+// flat colors, `<base>.<shade>` for every declared shade of ramped colors.
+// Bare ids for ramped colors are NOT included — the system uses the
+// shade-qualified form everywhere (see `canonicalColorId`). Runtime disabling
+// (via app.config null-override) is enforced inside `validateChartData`; the
+// agent's schema reflects the build-time universe because tool schemas are
+// extracted statically at build time.
+const colorIds = Object.entries(colorOptions).flatMap(([id, option]) => {
+  if ('shades' in option) {
+    return Object.keys(option.shades).map((shade) => `${id}.${shade}`)
+  }
+  return [id]
+}) as [string, ...string[]]
 export const chartColorEnum = z.enum(colorIds)
 
 export const chartSeriesSchema = z.object({
@@ -30,6 +43,8 @@ export const chartSeriesSchema = z.object({
 
 export const chartTranslationSchema = z.object({
   title: z.string().optional(),
+  valueAxisTitle: z.string().optional(),
+  categoryAxisTitle: z.string().optional(),
   categories: z.array(z.string()).optional(),
   seriesNames: z.array(z.string()).optional(),
   footnotes: z.array(z.string()).optional(),
@@ -85,6 +100,18 @@ export const dateFormatSchema = z.object({
 
 export const chartDataSchema = z.object({
   title: z.string().optional().default('').describe('Chart title'),
+  valueAxisTitle: z
+    .string()
+    .optional()
+    .describe(
+      'Title of the value axis (numeric scale), e.g. "Number of apartments". Only rendered by cartesian types (bar, line, area, agePyramid).',
+    ),
+  categoryAxisTitle: z
+    .string()
+    .optional()
+    .describe(
+      'Title of the category axis (the labels), e.g. "Year". Only rendered by cartesian types (bar, line, area, agePyramid).',
+    ),
   type: chartTypeEnum.describe('Chart type'),
   categories: z
     .array(z.string())
@@ -173,8 +200,9 @@ export function validateChartData(
   data: BlokkliChartData,
   options: ColorOption[],
 ): { error: string } | { data: BlokkliChartData } {
-  const validIds = new Set(options.map((c) => c.id))
-  const availableIds = options.map((c) => c.id)
+  const availableIds = options.flatMap((c) =>
+    c.shades?.length ? c.shades.map((s) => `${c.id}.${s.id}`) : [c.id],
+  )
 
   // Validate series data length matches categories.
   for (let i = 0; i < data.series.length; i++) {
@@ -191,7 +219,7 @@ export function validateChartData(
     const series = data.series[i]!
     if (!series.color) {
       series.color = getColorIdAtIndex(i, options)
-    } else if (!validIds.has(series.color)) {
+    } else if (!isColorIdValid(series.color, options)) {
       return {
         error: `Invalid color ID "${series.color}" on series "${series.name}". Available colors: ${availableIds.join(', ')}`,
       }
@@ -211,7 +239,7 @@ export function validateChartData(
     } else {
       for (let i = 0; i < data.categoryColors.length; i++) {
         const id = data.categoryColors[i]!
-        if (!validIds.has(id)) {
+        if (!isColorIdValid(id, options)) {
           return {
             error: `Invalid categoryColor ID "${id}" at index ${i}. Available colors: ${availableIds.join(', ')}`,
           }

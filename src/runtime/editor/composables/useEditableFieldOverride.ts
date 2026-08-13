@@ -30,12 +30,18 @@ const NOOP_OVERRIDE: EditableFieldOverride = {
 /**
  * Create an override for an editable field.
  *
- * Resolves the element and determines the correct update strategy
- * (direct DOM, mutatedItemProps, or component event), captures the
- * original value, and returns methods to set/restore the field value.
+ * Resolves the update strategy and returns methods to set/restore the field
+ * value. Exactly ONE of two mutually exclusive strategies is used:
  *
- * If the field element is not found or the field type is unsupported
- * (e.g. 'table'), returns a no-op override with empty values.
+ * - **DOM-based** (field element found via the editable directive): live
+ *   preview through the element, including diff markup via `setDiffHtml`.
+ * - **Props-based** (no element, but the field is declared in the block's
+ *   `propsFieldMapping`): values are written to `mutatedItemProps` and flow
+ *   reactively into the component's props. No DOM is touched and diff markup
+ *   cannot render (`setDiffHtml` is a no-op) — only real values.
+ *
+ * If neither strategy applies or the field type is unsupported (e.g.
+ * 'table'), returns a no-op override with empty values.
  */
 export function useEditableFieldOverride(
   fieldName: string,
@@ -43,16 +49,6 @@ export function useEditableFieldOverride(
 ): EditableFieldOverride {
   const { eventBus, state, types, definitions, directive, fieldValue, blocks } =
     useBlokkli()
-
-  // Resolve the element and editable data.
-  const el = directive.findEditableElement(fieldName, host)
-  if (!el) {
-    return NOOP_OVERRIDE
-  }
-  // Re-assign after guard so TypeScript knows it's defined inside closures.
-  const element: HTMLElement = el
-
-  const editableData = directive.findEditable(fieldName, host)
 
   // Get field config.
   const cfg = types.editableFieldConfig.forName(
@@ -68,9 +64,8 @@ export function useEditableFieldOverride(
   const fieldType: 'plain' | 'markup' =
     config.type === 'frame' || config.type === 'markup' ? 'markup' : 'plain'
   const isMarkup = config.type !== 'plain'
-  const isComponent = !!editableData?.isComponent
 
-  // Determine update strategy.
+  // Determine the props mapping (element-independent).
   function findMatchingProp(
     mapping: Record<string, PropsFieldMapping | null>,
   ): string | null {
@@ -106,18 +101,69 @@ export function useEditableFieldOverride(
   }
 
   const mutatedItemPropsKey = providerDefinition ? 'HOST' : host.uuid
-  const usesMutatedProps = !!matchingProp
-  const usesDirectDom = !isComponent && !matchingProp
 
   // Capture original value using the shared provider method.
   const readResult = fieldValue.readFieldValue(fieldName, host)
   const originalValue = readResult?.value ?? ''
 
   // Capture original mutatedItemProps value for restore.
-  const originalMutatedProp: string | undefined =
-    usesMutatedProps && matchingProp
-      ? state.mutatedItemProps[mutatedItemPropsKey]?.[matchingProp]
-      : undefined
+  const originalMutatedProp: string | undefined = matchingProp
+    ? state.mutatedItemProps[mutatedItemPropsKey]?.[matchingProp]
+    : undefined
+
+  /** Write a value into the block's mutated props (reactive re-render). */
+  function setMutatedProp(value: string): void {
+    if (!matchingProp) return
+    if (!state.mutatedItemProps[mutatedItemPropsKey]) {
+      state.mutatedItemProps[mutatedItemPropsKey] = {}
+    }
+    state.mutatedItemProps[mutatedItemPropsKey]![matchingProp] = value
+  }
+
+  /** Undo the mutated-props write, re-instating any pre-existing override. */
+  function restoreMutatedProp(): void {
+    if (!matchingProp) return
+    const propsObj = state.mutatedItemProps[mutatedItemPropsKey]
+    if (propsObj) {
+      if (originalMutatedProp === undefined) {
+        Reflect.deleteProperty(propsObj, matchingProp)
+        // Only remove the entire object if no other overrides remain.
+        if (Object.keys(propsObj).length === 0) {
+          state.mutatedItemProps[mutatedItemPropsKey] = undefined
+        }
+      } else {
+        propsObj[matchingProp] = originalMutatedProp
+      }
+    }
+  }
+
+  // Resolve the element and editable data.
+  const el = directive.findEditableElement(fieldName, host)
+  if (!el) {
+    // Props-based strategy: the field is not rendered with the editable
+    // directive, but its value flows into the component via propsFieldMapping.
+    // Everything goes through the reactive prop — the DOM is never touched.
+    if (!matchingProp) {
+      return NOOP_OVERRIDE
+    }
+    return {
+      element: null,
+      originalValue,
+      fieldType,
+      setValue: setMutatedProp,
+      // Diff markup needs an element to render into; a prop can only carry a
+      // real value (the component may escape it, e.g. via v-text).
+      setDiffHtml() {},
+      restore: restoreMutatedProp,
+    }
+  }
+  // Re-assign after guard so TypeScript knows it's defined inside closures.
+  const element: HTMLElement = el
+
+  const editableData = directive.findEditable(fieldName, host)
+  const isComponent = !!editableData?.isComponent
+  const usesMutatedProps = !!matchingProp
+  const usesDirectDom = !isComponent && !matchingProp
 
   // The element's Vue-managed child nodes, captured when a diff preview is
   // applied. We keep the live node objects (not a clone) so that re-inserting
@@ -145,11 +191,8 @@ export function useEditableFieldOverride(
     reattachOriginalNodes()
     element.removeAttribute('data-bk-diff-active')
 
-    if (usesMutatedProps && matchingProp) {
-      if (!state.mutatedItemProps[mutatedItemPropsKey]) {
-        state.mutatedItemProps[mutatedItemPropsKey] = {}
-      }
-      state.mutatedItemProps[mutatedItemPropsKey]![matchingProp] = value
+    if (usesMutatedProps) {
+      setMutatedProp(value)
     }
 
     if (usesDirectDom) {
@@ -197,19 +240,8 @@ export function useEditableFieldOverride(
 
     // setValue path: undo the live-preview write via the same strategy used to
     // apply it.
-    if (usesMutatedProps && matchingProp) {
-      const propsObj = state.mutatedItemProps[mutatedItemPropsKey]
-      if (propsObj) {
-        if (originalMutatedProp === undefined) {
-          Reflect.deleteProperty(propsObj, matchingProp)
-          // Only remove the entire object if no other overrides remain.
-          if (Object.keys(propsObj).length === 0) {
-            state.mutatedItemProps[mutatedItemPropsKey] = undefined
-          }
-        } else {
-          propsObj[matchingProp] = originalMutatedProp
-        }
-      }
+    if (usesMutatedProps) {
+      restoreMutatedProp()
     }
 
     if (usesDirectDom) {

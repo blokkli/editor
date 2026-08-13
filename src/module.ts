@@ -77,15 +77,35 @@ export default defineNuxtModule<ModuleOptions>({
       moduleOptions,
     )
 
-    const colorOptions = Object.entries(
+    // Seed every canonical color id into appConfig:
+    //   - Flat color:   `<id>` with its hex.
+    //   - Ramped color: bare `<id>` AND `<id>.<shade>` for each declared
+    //                   shade, all with their build-time hexes. The bare
+    //                   `<id>` is kept so userland can write
+    //                   `<id>: null` for a family-level disable — the
+    //                   runtime composable (and editor) treat a null on
+    //                   the bare id as "every shade off".
+    //
+    // The ordered list of canonical default ids (one per family) is NOT
+    // here — it's static build-time data, not userland-overridable, so it
+    // lives in the generated `#blokkli-build/config` template as
+    // `colorPalette`. Runtime consumers import from there directly.
+    const colorOptions: Record<string, string | undefined> = {}
+    for (const [id, option] of Object.entries(
       helper.options.colorOptions || {},
-    ).reduce<Record<string, string>>((acc, entry) => {
-      acc[entry[0]] = entry[1].hex
-      return acc
-    }, {})
+    )) {
+      if ('shades' in option) {
+        colorOptions[id] = option.shades[option.mainShade]!
+        for (const [shadeId, hex] of Object.entries(option.shades)) {
+          colorOptions[`${id}.${shadeId}`] = hex
+        }
+      } else {
+        colorOptions[id] = option.hex
+      }
+    }
 
     nuxt.options.appConfig.blokkli = {
-      // @ts-expect-error The module config type defined a generic Record type, but in userland, this type will automatically contain the actual color keys as properties.
+      // @ts-expect-error generic type vs runtime derived type.
       colorOptions,
     }
 
@@ -181,10 +201,56 @@ export default defineNuxtModule<ModuleOptions>({
     // Add plugin and transpile runtime directory.
     nuxt.options.build.transpile.push(resolver.resolve('runtime'))
 
-    // CJS packages used by the editor need Vite pre-bundling for ESM interop.
-    nuxt.options.vite.optimizeDeps ??= {}
-    nuxt.options.vite.optimizeDeps.include ??= []
-    nuxt.options.vite.optimizeDeps.include.push('papaparse', 'pofile')
+    // Packages the editor imports at runtime, pre-bundled by Vite to avoid
+    // full page reloads during dev. Optional sub-modules register their own
+    // dependencies in their setup() (already run above); applyBuildConfig()
+    // flushes the full set to the Vite config.
+    helper.addPackageDependency(
+      '@floating-ui/dom',
+      '@tiptap/core',
+      '@tiptap/extension-emoji',
+      '@tiptap/extension-mention',
+      '@tiptap/extension-task-item',
+      '@tiptap/extension-task-list',
+      '@tiptap/starter-kit',
+      '@tiptap/vue-3',
+      '@vue/devtools-core',
+      '@vue/devtools-kit',
+      'fzf',
+      'get-video-id',
+      'html-diff-ts',
+      'mitt',
+      'papaparse', // CJS
+      'pofile', // CJS
+      'qrcode.vue',
+      'twgl.js',
+    )
+
+    // Tiptap and ProseMirror must exist exactly once in the module graph: they
+    // pass nodes, fragments and steps between packages and check them with
+    // `instanceof`. A host project whose lockfile hoists one prosemirror-model
+    // version while nesting an older one under, say, prosemirror-schema-list
+    // otherwise gets "Can not convert <> to a Fragment" the moment a command
+    // crosses the boundary between the two copies.
+    helper.addDedupedPackage(
+      '@tiptap/core',
+      '@tiptap/pm',
+      'prosemirror-changeset',
+      'prosemirror-commands',
+      'prosemirror-dropcursor',
+      'prosemirror-gapcursor',
+      'prosemirror-history',
+      'prosemirror-inputrules',
+      'prosemirror-keymap',
+      'prosemirror-model',
+      'prosemirror-schema-list',
+      'prosemirror-state',
+      'prosemirror-tables',
+      'prosemirror-transform',
+      'prosemirror-view',
+    )
+
+    helper.applyBuildConfig()
 
     helper.addComponent('BlokkliField')
     helper.addComponent('BlokkliEditable')
@@ -197,6 +263,7 @@ export default defineNuxtModule<ModuleOptions>({
     helper.addComposable('defineBlokkliProvider')
     helper.addComposable('useBlokkli')
     helper.addComposable('useBlokkliHelper')
+    helper.addComposable('useBlokkliRuntimeConfig')
 
     helper.addAlias(
       '#blokkli/analyzer',

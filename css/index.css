@@ -219,3 +219,18 @@
     }
   }
 }
+
+@layer utilities {
+  .bk-content-empty {
+    content: '';
+  }
+}
+
+@layer components {
+  .bk-list-dotted {
+    > li:not(:last-child):after {
+      content: '•';
+      @apply inline-block mx-[0.5em];
+    }
+  }
+}

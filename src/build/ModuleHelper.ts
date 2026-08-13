@@ -13,6 +13,7 @@ import { onlyUnique } from './helpers'
 import type { ValidationInterface } from './ValidationInterface'
 import type { IconCollector } from './Collector/Icons'
 import { validateOptions } from './validation/validateOptions'
+import { validateColorOptions } from './validation/validateColorOptions'
 import type { ColorOption } from '../global/types/colorOptions'
 
 const defaultColorOptions: Record<string, ColorOption> = {
@@ -65,6 +66,18 @@ export class ModuleHelper implements ValidationInterface {
   resolvers: ModuleHelperResolvers
   public fileCache: FileCache
   public readonly options: ModuleOptions
+
+  /**
+   * npm packages to pre-bundle via Vite's optimizeDeps, collected from the core
+   * module and enabled sub-modules. Flushed by {@link applyBuildConfig}.
+   */
+  private packageDependencies = new Set<string>()
+
+  /**
+   * npm packages that must resolve to a single copy across the whole app.
+   * Flushed to Vite's resolve.dedupe by {@link applyBuildConfig}.
+   */
+  private dedupedPackages = new Set<string>()
 
   public readonly isDev: boolean
   public readonly isModuleBuild: boolean
@@ -234,6 +247,72 @@ export class ModuleHelper implements ValidationInterface {
     })
   }
 
+  /**
+   * Register npm packages that the editor imports at runtime so Vite
+   * pre-bundles them.
+   *
+   * Without this, Vite discovers a dependency lazily on first import (often via
+   * a dynamic `import()`) and triggers a full page reload to re-optimize. The
+   * core module declares its own dependencies; optional modules (agent, charts,
+   * …) declare theirs only when enabled, so projects that don't use a module
+   * don't pre-bundle its dependencies.
+   *
+   * Collected here and flushed to the Vite config by {@link applyBuildConfig},
+   * which the core module calls once all modules have run their setup.
+   *
+   * @param names - Bare package specifiers (e.g. 'echarts', '@tiptap/core').
+   */
+  public addPackageDependency(...names: string[]) {
+    for (const name of names) {
+      this.packageDependencies.add(name)
+    }
+  }
+
+  /**
+   * Declare packages that must only ever exist once in the module graph.
+   *
+   * Libraries that rely on `instanceof` checks or module-level registries break
+   * when a project's install tree ends up with two copies (e.g. a hoisted
+   * version plus an older one nested under a transitive dependency). Forcing
+   * resolution to a single copy makes the editor work regardless of how the
+   * host project's package manager arranged node_modules.
+   *
+   * @param names - Bare package specifiers (e.g. 'prosemirror-model').
+   */
+  public addDedupedPackage(...names: string[]) {
+    for (const name of names) {
+      this.dedupedPackages.add(name)
+    }
+  }
+
+  /**
+   * Apply collected build configuration to the Nuxt/Vite config.
+   *
+   * Called once by the core module after every module's setup has run, so it
+   * sees the full set of {@link addPackageDependency} and
+   * {@link addDedupedPackage} registrations.
+   */
+  public applyBuildConfig() {
+    this.nuxt.options.vite.optimizeDeps ??= {}
+    const include = (this.nuxt.options.vite.optimizeDeps.include ??= [])
+    const exclude = this.nuxt.options.vite.optimizeDeps.exclude ?? []
+    for (const name of this.packageDependencies) {
+      // Skip duplicates and anything a project has explicitly opted out of.
+      if (include.includes(name) || exclude.includes(name)) {
+        continue
+      }
+      include.push(name)
+    }
+
+    this.nuxt.options.vite.resolve ??= {}
+    const dedupe = (this.nuxt.options.vite.resolve.dedupe ??= [])
+    for (const name of this.dedupedPackages) {
+      if (!dedupe.includes(name)) {
+        dedupe.push(name)
+      }
+    }
+  }
+
   public addAlias(name: string, path: string) {
     this.nuxt.options.alias[name] = path
 
@@ -300,10 +379,11 @@ export class ModuleHelper implements ValidationInterface {
   }
 
   public validate(icons: IconCollector): boolean {
-    const errors = validateOptions(this.options.globalOptions, icons)
+    let hasErrors = false
 
-    if (errors.length > 0) {
-      const lines = errors.map((error) => {
+    const optionErrors = validateOptions(this.options.globalOptions, icons)
+    if (optionErrors.length > 0) {
+      const lines = optionErrors.map((error) => {
         const prefix = error.optionKey
           ? `  Option "${error.optionKey}": `
           : '  '
@@ -312,9 +392,23 @@ export class ModuleHelper implements ValidationInterface {
       this.logger.error(
         `blökkli global options validation errors:\n${lines.join('\n')}`,
       )
-      return true
+      hasErrors = true
     }
 
-    return false
+    const colorErrors = validateColorOptions(this.options.colorOptions)
+    if (colorErrors.length > 0) {
+      const lines = colorErrors.map((error) => {
+        const prefix = error.optionKey
+          ? `  Option "${error.optionKey}": `
+          : '  '
+        return prefix + error.message
+      })
+      this.logger.error(
+        `blökkli colorOptions validation errors:\n${lines.join('\n')}`,
+      )
+      hasErrors = true
+    }
+
+    return hasErrors
   }
 }

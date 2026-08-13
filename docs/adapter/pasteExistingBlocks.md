@@ -21,14 +21,14 @@ import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 
 export default defineBlokkliEditAdapter((ctx) => {
   return {
-    pasteExistingBlocks: (uuids) => {
+    pasteExistingBlocks: (e) => {
       return $fetch(
         `/backend-api/edit/${ctx.value.entityUuid}/paste-existing-blocks`,
         {
           method: 'post',
           body: {
             // The UUIDs of the blocks being pasted.
-            uuids,
+            uuids: e.uuids,
 
             // The parent entity type where the block is being added.
             // Could be the entity type of the <BlokkliProvider> or in case of nested blocks, the entity type of the block.
@@ -39,8 +39,8 @@ export default defineBlokkliEditAdapter((ctx) => {
             fieldName: e.host.fieldName,
 
             // The UUID of the block that should be before the new one.
-            // If undefined, the block should be moved to index 0 of the field list.
-            preceedingUuid: e.afterUuid,
+            // If null, the block should be moved to index 0 of the field list.
+            preceedingUuid: e.preceedingUuid,
           },
         },
       )

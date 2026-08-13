@@ -30,6 +30,7 @@ const { isVisible } = defineViewOption({
     'Highlights blocks that have an anchor ID.',
   ),
   icon: 'bk_mdi_anchor',
+  default: true,
 })
 </script>
 

@@ -16,8 +16,8 @@ fragment paragraphsBlokkliCurrentUser on ParagraphsBlokkliUser {
     permission: "manage default paragraph templates"
   )
 
-  create_comments: hasPermission(permission: "post comments")
-  view_comments: hasPermission(permission: "access comments")
+  create_comments: hasPermission(permission: "post blokkli comments")
+  view_comments: hasPermission(permission: "view blokkli comments")
   use_agent: hasPermission(permission: "use paragraphs blokkli agent")
   manage_agent_conversations: hasPermission(
     permission: "manage all blokkli agent conversations"

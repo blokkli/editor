@@ -78,6 +78,7 @@
   </tr>
   <NestedEditorOverlay
     v-if="isEditing && editUrl"
+    id="edit-template"
     :url="editUrl"
     :uuid
     :element="editButtonEl"

@@ -30,9 +30,7 @@ export function readMockRouting():
   | undefined {
   const script = readMockScript()
   if (!script) return undefined
-  const entry = script.find(
-    (e): e is MockRoutingEntry => e.type === 'routing',
-  )
+  const entry = script.find((e): e is MockRoutingEntry => e.type === 'routing')
   if (!entry) return undefined
   return { skills: entry.skills ?? [], tools: entry.tools ?? [] }
 }

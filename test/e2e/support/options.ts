@@ -59,6 +59,60 @@ export function blockOption(page: Page, property: string): Locator {
   return page.locator(`[data-test="option-${property}"]`)
 }
 
+/**
+ * Resolve a Widget option's label/description exactly as the editor renders
+ * it — via `definitions.getBlockDefinition('widget')` + the same
+ * `resolveDefinitionString` the `Options/Form` uses, for the *current*
+ * interface language.
+ *
+ * Option labels/descriptions are `DefinitionString`s (translatable objects),
+ * so their rendered text depends on the interface language — German under the
+ * forced-German dev server, English against the static build. Hardcoding the
+ * expected text would couple the assertion to one language; deriving it from
+ * the definition keeps the assertion about *the label renders correctly*
+ * rather than *the label is a specific string*.
+ *
+ * Pass `optionKey` to resolve a nested radios/checkboxes choice's text (e.g.
+ * the `two` radio's label); omit it for the option's own label/description.
+ */
+export function resolveOptionText(
+  page: Page,
+  property: string,
+  which: 'label' | 'description' = 'label',
+  optionKey?: string,
+): Promise<string> {
+  return page.evaluate(
+    ({ property, which, optionKey }) => {
+      const app = window.__BLOKKLI__!.app!
+      const definition = app.definitions.getBlockDefinition(
+        'widget',
+        null,
+        null,
+      )
+      const option: any = definition?.options?.[property]
+      if (!option) {
+        return ''
+      }
+
+      let target: unknown
+      if (optionKey === undefined) {
+        target = option[which]
+      } else {
+        const nested: any = option.options?.[optionKey]
+        // Radios choices are `{ label, description }`; checkboxes choices are
+        // the `DefinitionString` itself.
+        target =
+          nested && typeof nested === 'object' && 'label' in nested
+            ? nested[which]
+            : nested
+      }
+
+      return app.definitions.resolveDefinitionString((target ?? '') as any)
+    },
+    { property, which, optionKey },
+  )
+}
+
 /** The typed control inside an option (e.g. `checkbox`, `radios`, `text`). */
 export function blockOptionControl(
   page: Page,

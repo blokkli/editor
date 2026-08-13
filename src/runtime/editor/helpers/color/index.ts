@@ -44,6 +44,29 @@ export function findHighestContrastColor(
   return maxContrastColor
 }
 
+export const hexToRgb = (hex: string): RGB | undefined => {
+  const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  if (!match) return
+  return [
+    Number.parseInt(match[1]!, 16),
+    Number.parseInt(match[2]!, 16),
+    Number.parseInt(match[3]!, 16),
+  ]
+}
+
+/**
+ * Whether the given hex color is "light" — i.e. dark text on top of it would
+ * be more readable than light text. Use this to decide between black/white
+ * foreground content on a colored background. Unparseable hex → `false`.
+ */
+export const isLightHex = (hex: string): boolean => {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return false
+  return (
+    getContrastRatio(rgb, [0, 0, 0]) > getContrastRatio(rgb, [255, 255, 255])
+  )
+}
+
 export const parseColorString = (color: string): RGB | undefined => {
   const rgbaRegex =
     /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(?:,\s*(0|1|0?\.\d+))?\)$/

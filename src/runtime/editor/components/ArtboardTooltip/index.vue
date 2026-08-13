@@ -63,6 +63,7 @@ const props = withDefaults(
   }>(),
   {
     anchorEl: null,
+    buttonLabel: undefined,
     anchorCoordinates: null,
     closeIcon: 'bk_mdi_close',
     placementY: 'auto',

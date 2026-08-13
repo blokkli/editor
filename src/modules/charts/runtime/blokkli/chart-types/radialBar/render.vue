@@ -1,10 +1,9 @@
 <template>
-  <VChart :option="option" autoresize style="height: 550px; width: 100%" />
+  <ChartCanvas :option="option" />
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
-import VChart from 'vue-echarts'
+import ChartCanvas from '../../../components/ChartCanvas/index.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
@@ -15,6 +14,7 @@ import {
 } from 'echarts/components'
 import type { ChartTypeRenderProps } from '#blokkli/charts/types'
 import { createNumberFormatter } from '../../../helpers/numberFormat'
+import { useChartOption } from '../../../helpers/useChartOption'
 import type { TypeOptions } from './definition'
 
 use([
@@ -27,7 +27,7 @@ use([
 
 const props = defineProps<ChartTypeRenderProps>()
 
-const option = computed(() => {
+const option = useChartOption(() => {
   const t = props.typeOptions as Partial<TypeOptions>
   const showLabels = t.showLabels ?? true
   const values = props.series[0]?.data ?? []
@@ -42,7 +42,7 @@ const option = computed(() => {
 
   return {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
-    animation: !props.isEditing,
+    animation: props.isEditing ? false : undefined,
     polar: { radius: ['20%', '70%'] },
     tooltip: {
       trigger: 'item' as const,
@@ -71,5 +71,5 @@ const option = computed(() => {
       },
     ],
   }
-})
+}, props)
 </script>

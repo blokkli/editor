@@ -3,9 +3,9 @@
 This method should return search results for the given search tab and search
 text.
 
-The `tab` argument is the key of one of the properties defined in the object
-returned by [getContentSearchTabs()](/adapter/getContentSearchTabs) and the
-`text` argument is the search text entered by the user.
+The `tab` argument is the `id` of one of the tabs returned by
+[getContentSearchTabs()](/adapter/getContentSearchTabs) and the `text` argument
+is the search text entered by the user.
 
 The method does not need to perform debouncing, as this is already handled by
 blökkli.
@@ -14,7 +14,7 @@ blökkli.
 
 ```typescript [~/app/blokkli.editAdapter.ts]
 import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
-import type { SearchContentItem } from '#blokkli/types'
+import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
 const images: SearchContentItem[] = [
   {
@@ -22,7 +22,7 @@ const images: SearchContentItem[] = [
     id: '9485812c-0ecd-4699-85b2-3a031d47a0a1',
 
     // Title displayed in the search results.
-    title 'Image of the moon',
+    title: 'Image of the moon',
 
     // An optional context text that is highlighted in the search result.
     context: 'image-of-moon-1024x768.jpg',
@@ -34,14 +34,15 @@ const images: SearchContentItem[] = [
     targetBundles: ['image'],
 
     // An option image that is displayed instead of an icon.
-    imageUrl: 'https://www.example.com/assets/images/image-of-moon-1024x768.jpg'
+    imageUrl:
+      'https://www.example.com/assets/images/image-of-moon-1024x768.jpg',
   },
 ]
 
 const pages: SearchContentItem[] = [
   {
     id: '4526d2d0-f122-4093-902f-e2f00a433981',
-    title 'Subscibe to our newsletter',
+    title: 'Subscribe to our newsletter',
     context: 'Landing Page',
     text: 'Landing page for the newsletter subscription',
 

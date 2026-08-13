@@ -35,6 +35,7 @@
     v-else-if="phase === 'approval' && completedItems.length > 0"
     :items="completedItems"
     show-reason
+    editable
     @apply="applySelected"
     @cancel="rejectAllFromApproval"
   />
@@ -68,7 +69,10 @@ import {
   appendAgentNote,
   type RejectedByUser,
 } from '../fieldDiffApproval'
-import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
+import type {
+  ApprovalItem,
+  DiffApplyPayload,
+} from '#blokkli/editor/components/DiffApproval/types'
 import type { FieldDiffDetailItem } from '../../components/FieldDiffDetails/index.vue'
 import { useFieldRewriteStream } from './useFieldRewriteStream'
 
@@ -231,28 +235,34 @@ function rejectAllFromApproval() {
   })
 }
 
-async function applySelected(data: {
-  selected: Record<string, boolean>
-  reasons: Record<string, string>
-}) {
-  const { selected, reasons } = data
+async function applySelected(data: DiffApplyPayload) {
+  const { selected, reasons, edited } = data
 
-  const { acceptedCount, rejectedByUser, label, appliedByItemId } =
-    await applyFieldDiffs(
-      blokkli,
-      props.context.adapter,
-      completedItems.value,
-      selected,
-      reasons,
-    )
+  const {
+    acceptedCount,
+    rejectedByUser,
+    label,
+    appliedByItemId,
+    editedFields,
+  } = await applyFieldDiffs(
+    blokkli,
+    props.context.adapter,
+    completedItems.value,
+    selected,
+    reasons,
+    edited,
+  )
 
   // Build a detailed agentMessage so the main agent knows what the sub-agent produced.
   const parts: string[] = []
 
-  // Fully accepted fields: written, and absent from rejectedByUser.
+  // Fully accepted fields: written unmodified, and absent from rejectedByUser.
+  // Manually revised fields get their own section below.
+  const editedItemIds = new Set(editedFields.map((e) => e.itemId))
   const fullyAccepted = completedItems.value.filter(
     (item) =>
       appliedByItemId[item.id] !== undefined &&
+      !editedItemIds.has(item.id) &&
       !rejectedByUser[item.uuid]?.[item.fieldName],
   )
   if (fullyAccepted.length > 0) {
@@ -262,6 +272,18 @@ async function applySelected(data: {
       const truncated =
         written.length > 200 ? written.slice(0, 200) + '...' : written
       parts.push(`- ${item.uuid} "${item.fieldName}": ${truncated}`)
+    }
+  }
+
+  // Manually revised fields: the user replaced the suggested value with their
+  // own text in the approval UI. Quote more of the value than for plain
+  // acceptances — it's the calibration signal.
+  if (editedFields.length > 0) {
+    parts.push('Manually revised fields (user replaced the suggestion):')
+    for (const e of editedFields) {
+      const truncated =
+        e.value.length > 500 ? e.value.slice(0, 500) + '...' : e.value
+      parts.push(`- ${e.uuid} "${e.fieldName}": ${truncated}`)
     }
   }
 
@@ -325,6 +347,11 @@ async function applySelected(data: {
   const followUp = rejectedWithoutReasonMessage(rejectedByUser)
   if (followUp) agentMessage += '\n' + followUp
 
+  if (editedFields.length > 0) {
+    agentMessage +=
+      '\n\nThe manually revised fields show what the user wanted instead of your suggestion — treat them as feedback on wording and style and calibrate future suggestions accordingly.'
+  }
+
   const _details: FieldDiffDetailItem[] = completedItems.value
     .filter((item) => appliedByItemId[item.id] !== undefined)
     .map((item) => {
@@ -350,17 +377,26 @@ async function applySelected(data: {
 
   const anyRejection = Object.keys(rejectedByUser).length > 0
 
+  const editedByUser: Record<string, Record<string, { value: string }>> = {}
+  for (const e of editedFields) {
+    const fields = editedByUser[e.uuid] ?? {}
+    fields[e.fieldName] = { value: e.value }
+    editedByUser[e.uuid] = fields
+  }
+
   emitDone({
     acceptedCount,
     rejectedByUser,
+    editedByUser: editedFields.length > 0 ? editedByUser : undefined,
     label,
     agentMessage,
     historyIndex: state.currentMutationIndex.value,
     _details,
     _usage: streamUsage.value,
-    // Let the agent respond if anything was rejected or skipped, so it can
-    // retry the skipped references.
-    _skipLlmResponse: !anyRejection && !skippedNote,
+    // Let the agent respond if anything was rejected, skipped or manually
+    // revised, so it can retry references and calibrate to the revisions.
+    _skipLlmResponse:
+      !anyRejection && !skippedNote && editedFields.length === 0,
   })
 }
 

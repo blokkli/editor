@@ -133,3 +133,26 @@ export async function waitForAgentReply(
     )
     .toContain(contains)
 }
+
+/**
+ * Invoke a component tool (one that renders its own approval UI, e.g.
+ * `update_text_fields`) and resolve with the raw `ComponentToolResult` it
+ * emits on `done`, including `agentMessage` and `_`-prefixed meta.
+ *
+ * The promise stays pending while the approval UI is open — fire it, hold the
+ * promise, drive the UI (accept/reject/edit), then await.
+ */
+export async function runComponentTool<T = Record<string, unknown>>(
+  page: Page,
+  name: AgentToolName,
+  params: Record<string, unknown>,
+): Promise<T> {
+  await page.waitForFunction(
+    () => typeof window.__BLOKKLI__?.test?.runComponentTool === 'function',
+  )
+  return page.evaluate(
+    ({ name, params }) =>
+      window.__BLOKKLI__!.test!.runComponentTool(name as AgentToolName, params),
+    { name, params },
+  ) as Promise<T>
+}

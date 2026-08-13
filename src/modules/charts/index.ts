@@ -6,6 +6,7 @@ import { ChartTypeCollector } from './build/ChartTypeCollector'
 import createDefinitionsTemplate from './build/templates/definitions'
 import createComponentsTemplate from './build/templates/components'
 import createIllustrationsTemplate from './build/templates/illustrations'
+import createConfigTemplate from './build/templates/config'
 import type { ChartsModuleOptions } from './build/types'
 
 const resolve = createResolver(
@@ -17,7 +18,30 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     options.blokkliDirs ??= []
     options.blokkliDirs.push(resolve('./runtime/blokkli'))
   },
-  setup({ context, helper, $t }) {
+  setup({ context, helper, $t }, options) {
+    // Runtime packages imported by the chart editor and renderers. Registered
+    // here so they are only pre-bundled when the charts module is enabled.
+    //
+    // The chart renderers import echarts via its subpath entry points
+    // (`echarts/core`, `echarts/renderers`, …) and register renderers/charts
+    // with `use()`. `vue-echarts` calls `init()` from `echarts/core`. All of
+    // these MUST be pre-bundled together in Vite's single optimize pass so they
+    // share one internal echarts core — and therefore one `use()` registry.
+    // Including only the bare `echarts` (which nothing imports) leaves the
+    // subpaths to be optimised separately on first request, each with its own
+    // registry; `use(CanvasRenderer)` then lands on a different copy than the
+    // one `vue-echarts` reads, surfacing as
+    // "Renderer 'undefined' is not imported. Please import it first."
+    helper.addPackageDependency(
+      'echarts/core',
+      'echarts/renderers',
+      'echarts/charts',
+      'echarts/components',
+      'vue-echarts',
+      'json5',
+      'zod',
+    )
+
     helper.addAlias('#blokkli/charts/types', resolve('./runtime/types'))
     helper.addAlias(
       '#blokkli/charts/definition',
@@ -53,6 +77,7 @@ export default defineBlokkliModule<ChartsModuleOptions>({
     context.addTemplate(createDefinitionsTemplate(chartTypes))
     context.addTemplate(createComponentsTemplate(chartTypes))
     context.addTemplate(createIllustrationsTemplate(chartTypes))
+    context.addTemplate(createConfigTemplate(options))
 
     helper.addAppTsInclude(projectChartsDir)
     for (const dir of moduleBlokkliDirs) {

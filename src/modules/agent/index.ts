@@ -84,6 +84,10 @@ export default defineNuxtConfig({
       moduleResolver.resolve('./runtime/server'),
     )
 
+    // Runtime packages imported by the agent client (some lazily). Registered
+    // here so they are only pre-bundled when the agent module is enabled.
+    ctx.helper.addPackageDependency('mammoth', 'marked', 'turndown', 'zod')
+
     // Additional blokkli/ directories registered by other modules.
     const moduleBlokkliDirs = ctx.helper.options.blokkliDirs || []
 

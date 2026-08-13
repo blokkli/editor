@@ -19,7 +19,7 @@ operations that act on one or more selected blocks.
 
 <script setup lang="ts">
 import { PluginItemAction } from '#blokkli/editor/plugins'
-import type { RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 async function onDelete(items: RenderedFieldListItem[]) {
   await adapter.deleteBlocks(items.map((item) => item.uuid))
@@ -155,7 +155,7 @@ Receives the selected items and UUIDs:
 <script setup lang="ts">
 import { useBlokkli } from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
-import type { RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const { state, $t } = useBlokkli()
 
@@ -183,7 +183,7 @@ async function onDelete(items: RenderedFieldListItem[]) {
 </template>
 
 <script setup lang="ts">
-import type { RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 async function onDuplicate(items: RenderedFieldListItem[]) {
   // Only duplicates the first item since multiple=false
@@ -244,7 +244,7 @@ function toggleDropdown() {
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { RenderedFieldListItem } from '#blokkli/types'
+import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
 const canMakeReusable = computed(() => {
   // Check if selected blocks can be made reusable

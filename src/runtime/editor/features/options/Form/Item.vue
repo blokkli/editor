@@ -59,6 +59,7 @@
         v-model="value"
         :label="label"
         :type="option.inputType"
+        :placeholder="option.placeholder"
       />
       <OptionColor
         v-else-if="option.type === 'color'"
@@ -113,7 +114,7 @@ import { Tooltip, TooltipContext } from '#blokkli/editor/components'
 import type { BlockOptionDefinitionBase } from './../../../../../global/types/blockOptions'
 import { BK_VISIBLE_LANGUAGES } from './../../../../../global/constants'
 
-const { state, $t: $blokkliText } = useBlokkli()
+const { state, definitions } = useBlokkli()
 
 const emit = defineEmits<{
   (e: 'update', data: unknown): void
@@ -131,20 +132,11 @@ const hoveredOption = ref('')
 const hoveredOptionDescription = ref('')
 
 const label = computed(() =>
-  $blokkliText(`blockOption_${props.property}_label`, props.option.label),
+  definitions.resolveDefinitionString(props.option.label),
 )
 
 const description = computed<string | null>(() => {
-  if (!props.option.description) {
-    return null
-  }
-  const key = `blockOption_${props.property}_description`
-  const translation = $blokkliText(key, props.option.description)
-  if (key === translation) {
-    return null
-  }
-
-  return translation
+  return definitions.resolveDefinitionString(props.option.description ?? '')
 })
 
 const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
@@ -166,7 +158,7 @@ const checkboxOptions = computed<{ value: string; label: string }[]>(() => {
   return Object.entries(props.option.options).map(([value, label]) => {
     return {
       value,
-      label,
+      label: definitions.resolveDefinitionString(label),
     }
   })
 })

@@ -115,16 +115,19 @@ const { options } = defineBlokkli({
 
 ## propsFieldMapping
 
-**Type:** `Record<string, string>`
+**Type:** `Record<keyof BundleProps[Bundle], PropsFieldMapping | null>`, where
+`PropsFieldMapping = { type: 'editable' | 'droppable' | 'field'; name: string }`
 
-Maps component prop names to backend field names. This is required for blocks
-that contain nested blocks (via `<BlokkliField>`), so that blökkli can walk the
-block tree correctly — for example, when using
+Maps component prop names to backend fields. This is required for blocks that
+contain nested blocks (via `<BlokkliField>`), so that blökkli can walk the block
+tree correctly — for example, when using
 [`useBlokkliHelper()`](/define-blokkli/query-blocks) or for editable field
 overrides during editing.
 
-Each key is the **prop name** on the component, and the value is the **field
-name** used in `<BlokkliField>`.
+Each key is the **prop name** on the component, and the value is an object
+describing the kind of field (`'editable'`, `'droppable'` or `'field'` for
+nested blocks rendered with `<BlokkliField>`) and the backend `name` of the
+field. Use `null` for props that don't map to a field.
 
 ```vue
 <template>
@@ -141,9 +144,9 @@ name** used in `<BlokkliField>`.
 defineBlokkli({
   bundle: 'two_columns',
   propsFieldMapping: {
-    header: 'header',
-    left: 'left',
-    right: 'right',
+    header: { type: 'field', name: 'header' },
+    left: { type: 'field', name: 'left' },
+    right: { type: 'field', name: 'right' },
   },
   editor: {
     disableEdit: true,
@@ -165,7 +168,7 @@ If the prop name differs from the field name (common with Drupal backends):
 defineBlokkli({
   bundle: 'section',
   propsFieldMapping: {
-    headerParagraphs: 'field_paragraphs_header',
+    headerParagraphs: { type: 'field', name: 'field_paragraphs_header' },
   },
 })
 </script>

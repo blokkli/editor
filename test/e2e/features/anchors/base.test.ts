@@ -126,7 +126,14 @@ async function enableAnchors(
     )
   }
   await openViewOptions(page)
-  await anchorViewOption(page).click()
+  // The `anchor` view option defaults to ON, and its state persists in
+  // storage, so the button may already be active — only click when it isn't,
+  // otherwise a blind toggle would turn anchors OFF.
+  if (
+    (await anchorViewOption(page).getAttribute('data-test-active')) !== 'true'
+  ) {
+    await anchorViewOption(page).click()
+  }
 }
 
 /** The indicator's current `translateY` (px), or null if not positioned yet. */
@@ -135,8 +142,10 @@ function indicatorTranslateY(page: Page, uuid: string): Promise<number | null> {
     const el = document.querySelector(
       `[data-test-block-indicator="anchor"][data-test-uuid="${uuid}"]`,
     )
+    // Indicators are positioned with `translate(<x>px, <y>px)` (see
+    // Indicators/index.vue) — extract the Y component.
     const match = (el as HTMLElement | null)?.style.transform.match(
-      /translateY\(([-\d.]+)px\)/,
+      /translate\([-\d.]+px,\s*([-\d.]+)px\)/,
     )
     return match ? Number(match[1]) : null
   }, uuid)
@@ -211,11 +220,17 @@ describe('The anchors feature', async () => {
     await openViewOptions(page)
     const vo = anchorViewOption(page)
 
-    // Off by default: no indicator.
+    // The option defaults to ON and its state persists, so normalize to OFF
+    // first — this test is about the toggle wiring, not the default.
+    if ((await vo.getAttribute('data-test-active')) === 'true') {
+      await vo.click()
+    }
     expect(await vo.getAttribute('data-test-active')).toBe('false')
+    await indicator.waitFor({ state: 'detached' })
     expect(await indicator.count()).toBe(0)
 
-    await enableAnchors(page, ANCHOR)
+    // Turning it on draws the indicator.
+    await vo.click()
     expect(await vo.getAttribute('data-test-active')).toBe('true')
     await indicator.waitFor({ state: 'attached' })
     expect(await indicator.count()).toBe(1)

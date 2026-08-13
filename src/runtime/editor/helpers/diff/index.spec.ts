@@ -289,6 +289,29 @@ describe('splitIntoSegments', () => {
     const list = segments[0] as Extract<Segment, { kind: 'list' }>
     expect(list.children[0]!.openTag).toBe('<li class="x">')
   })
+
+  it('treats a <ul> whose own attributes changed as a single atomic segment', () => {
+    // Per-<li> toggles can't represent an attribute change on the wrapper, so
+    // the whole list becomes one all-or-nothing unit.
+    const segments = splitIntoSegments(
+      '<ul><li>A</li><li>B</li></ul>',
+      '<ul class="fancy"><li>A2</li><li>B</li></ul>',
+      'markup',
+    )!
+    expect(segments[0]!.kind).toBe('atomic')
+    expect((segments[0] as AtomicSegment).changed).toBe(true)
+  })
+
+  it('marks a matched block as changed when only its attributes differ', () => {
+    const segments = splitIntoSegments(
+      '<p>Hello world</p>',
+      '<p style="background-color: red;">Hello world</p>',
+      'markup',
+    )!
+    const atom = segments[0] as AtomicSegment
+    expect(atom.status).toBe('matched')
+    expect(atom.changed).toBe(true)
+  })
 })
 
 describe('segmentsHaveChanges', () => {
@@ -305,6 +328,15 @@ describe('segmentsHaveChanges', () => {
     const segments = splitIntoSegments(
       '<ul><li>A</li><li>B</li></ul>',
       '<ul><li>A</li><li>B2</li></ul>',
+      'markup',
+    )!
+    expect(segmentsHaveChanges(segments)).toBe(true)
+  })
+
+  it('is true when the only change is an attribute on a matched block', () => {
+    const segments = splitIntoSegments(
+      '<p>Hello world</p>',
+      '<p style="background-color: red;">Hello world</p>',
       'markup',
     )!
     expect(segmentsHaveChanges(segments)).toBe(true)
@@ -402,6 +434,18 @@ describe('renderSegmentDiff', () => {
     expect(html).not.toMatch(/<h3[^>]*><del>Removed/)
   })
 
+  it('reverts a rejected matched chunk to its original openTag', () => {
+    const segments = splitIntoSegments(
+      '<p>Hello</p>',
+      '<p class="highlight">Hello world</p>',
+      'markup',
+    )!
+    const html = renderSegmentDiff(segments, { acceptedById: { '0': false } })
+    // Rejecting the chunk reverts content AND attributes — the preview must
+    // show what would actually land on apply.
+    expect(html).toBe('<p data-chunk-index="0">Hello</p>')
+  })
+
   it('reverts a rejected <li> while keeping siblings as diffs', () => {
     const segments = splitIntoSegments(
       '<ul><li>A</li><li>B</li><li>C</li></ul>',
@@ -451,6 +495,15 @@ describe('reassembleValue', () => {
     expect(result).toBe(
       '<p>New intro</p><ul><li>New A</li><li>Original B</li><li>New C</li></ul><p>New outro</p>',
     )
+  })
+
+  it('restores the original openTag when a matched segment is rejected', () => {
+    const segments = splitIntoSegments(
+      '<p>Hello</p>',
+      '<p class="highlight">Hello world</p>',
+      'markup',
+    )!
+    expect(reassembleValue(segments, { '0': false })).toBe('<p>Hello</p>')
   })
 
   it('drops a rejected insertion', () => {

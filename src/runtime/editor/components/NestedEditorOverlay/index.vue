@@ -15,6 +15,7 @@
             <span>{{ title }}</span>
           </h2>
           <button
+            :data-test="'nested-editor-overlay-close-' + id"
             class="h-40 3xl:h-50 flex items-center px-10 gap-10 font-semibold leading-none ml-auto hover:bg-scheme-light-hover text-sm 3xl:text-base"
             @click.prevent="closeOverlay"
           >
@@ -35,10 +36,11 @@
       @after-leave="onAfterLeave"
       @leave-cancelled="onAfterLeave"
     >
-      <div
+      <PopupHost
         v-show="isLoaded"
         class="bk bk-library-edit-overlay fixed top-40 3xl:top-50 left-0 w-screen bottom-0 flex flex-col pointer-events-auto z-nested-editor-overlay-iframe"
         :class="'bk-is-' + theme"
+        :data-test="'nested-editor-overlay-' + id"
       >
         <div
           class="relative top-0 left-0 w-full h-full bg-white overflow-hidden"
@@ -56,7 +58,7 @@
             </div>
           </slot>
         </div>
-      </div>
+      </PopupHost>
     </Transition>
   </Teleport>
 </template>
@@ -71,12 +73,13 @@ import {
   useBlokkli,
   useTemplateRef,
 } from '#imports'
-import { Icon, NotEditStateInfo } from '#blokkli/editor/components'
+import { Icon, NotEditStateInfo, PopupHost } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ThemeColorName } from '../../../../global/types/theme'
 
 export type NestedEditorOverlayProps = {
+  id: string
   url?: string
   uuid: string
   title: string
