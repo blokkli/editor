@@ -51,6 +51,22 @@ export interface BlokkliTestApi {
   }) => Promise<{ applied: boolean }>
 
   /**
+   * Show a DiffApproval for named fields, resolved from the editable field
+   * CONFIG instead of the rendered editable elements.
+   *
+   * This is the only scenario that can target a field with no element of its
+   * own (declared purely via `propsFieldMapping`) — the others start from
+   * `directive.getAllEditables()` and simply bail on those. Such fields anchor
+   * their highlight to the block, so several of them merge into one stop.
+   *
+   * Applying persists every accepted field. Omit `uuid` for host-entity fields.
+   */
+  runFieldsDiffApproval: (target: {
+    uuid?: string
+    fields: Array<{ fieldName: string; value: string }>
+  }) => Promise<{ applied: boolean }>
+
+  /**
    * Invoke an agent client tool directly (no LLM, no WebSocket) and return its
    * result — exactly what the LLM would see in the tool_result `content`,
    * unwrapped from the query envelope. Use for assertions about a tool's

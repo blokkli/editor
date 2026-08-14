@@ -53,7 +53,10 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted, onBeforeUnmount } from '#imports'
 import { Icon, DiffApproval } from '#blokkli/editor/components'
-import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
+import {
+  segmentsHaveChanges,
+  splitIntoSegments,
+} from '#blokkli/editor/helpers/diff'
 import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import type {
   McpToolContext,
@@ -155,13 +158,18 @@ function transitionToApproval() {
     const field = props.params.fields.find(
       (f) => f.uuid === fs.uuid && f.fieldName === fs.fieldName,
     )
-    const segments = field
+    // Segmentation parses both values into blocks, which drops the whitespace
+    // between them — so two values that differ only there come back with no
+    // changed chunk at all, leaving the user a preview but nothing to toggle.
+    // Fall back to a whole-field item in that case.
+    const parsed = field
       ? (splitIntoSegments(
           override.rawOriginalValue,
           finalValue,
           field.fieldType,
         ) ?? undefined)
       : undefined
+    const segments = parsed && segmentsHaveChanges(parsed) ? parsed : undefined
 
     items.push({
       id: itemId,
@@ -238,7 +246,7 @@ function rejectAllFromApproval() {
 }
 
 async function applySelected(data: DiffApplyPayload) {
-  const { selected, reasons, edited } = data
+  const { selected, reasons, edited, atomicItemIds } = data
 
   const {
     acceptedCount,
@@ -253,6 +261,7 @@ async function applySelected(data: DiffApplyPayload) {
     selected,
     reasons,
     edited,
+    atomicItemIds,
   )
 
   // Build a detailed agentMessage so the main agent knows what the sub-agent produced.

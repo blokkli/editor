@@ -1,18 +1,20 @@
 <template>
   <Toolbar
-    v-if="currentUnit && !editing"
-    :current-unit
-    :current-item="currentUnit.item"
-    :unit-index="currentIndex + 1"
-    :total-units="units.length"
+    v-if="currentStop && !editing"
+    :current-stop
+    :label="currentLabel"
+    :kind="currentStop.kind"
+    :segment-tag="currentSegmentTag"
     :segment-index="segmentIndex"
-    :selected
-    :reasons
+    :is-selected="isStopSelected(currentStop)"
+    :reason="currentReason"
+    :stop-index="currentIndex + 1"
+    :total-stops="stops.length"
     :apply-label
     :show-reason="showReason"
     :can-edit="canEditCurrent"
-    @update:selected="onUpdateSelected"
-    @update:reasons="onUpdateReasons"
+    @update:selected="onToolbarSelected"
+    @update:reason="onToolbarReason"
     @apply="onApply"
     @cancel="emit('cancel')"
     @prev="prev"
@@ -23,12 +25,12 @@
   <Highlight
     ref="highlight"
     v-model="currentIndex"
-    :items="effectiveItems"
-    :units
-    :selected
-    :insertions-only
-    :editable-item-ids="editableItemIds"
-    @toggle="onToggle"
+    :stops
+    :selected="selectedByStopKey"
+    :overrides
+    :editable-stop-keys="editableStopKeys"
+    :editing-item-id="editing?.item.id ?? null"
+    @toggle="onToggleStopKey"
     @edit="startEdit"
   />
 
@@ -54,6 +56,7 @@ import {
   onMounted,
   reactive,
   ref,
+  watch,
   useTemplateRef,
   useBlokkli,
   onBeforeUnmount,
@@ -66,13 +69,14 @@ import { itemEntityType } from '#blokkli-build/config'
 import type { EntityContext } from '#blokkli/types'
 import type { EditableFieldConfig } from '#blokkli/editor/features/editable-field/types'
 import { flattenSegments, reassembleValue } from '#blokkli/editor/helpers/diff'
-import type { ApprovalItem, ApprovalUnit, DiffApplyPayload } from './types'
-import { unitsFromItems } from './types'
+import type { ApprovalItem, ApprovalStop, DiffApplyPayload } from './types'
+import { stopItemIds, stopKeys, stopsFromUnits, unitsFromItems } from './types'
+import { useApprovalOverrides } from './useApprovalOverrides'
 
 const props = defineProps<{
   items: ApprovalItem[]
   /**
-   * Whether to show the per-unit rejection reason input.
+   * Whether to show the per-stop rejection reason input.
    *
    * Used by the agent tools to feed feedback back to the LLM. Leave it off when
    * changes are applied directly with no agent loop.
@@ -131,6 +135,13 @@ function getItemRect(item: ApprovalItem): { x: number; y: number } | null {
 
 // Sort items once by visual position (top to bottom, left to right). Segments
 // inside an item stay in reading order via `unitsFromItems`.
+//
+// Note: `getItemRect` deliberately does NOT fall back to the block element, so
+// items without their own element compare equal to everything and keep their
+// input order. Giving them the block's geometry would sort a block-level group
+// above its own nested fields, which is not the order a reader expects — and
+// paint order, which is what decides clicks, is handled separately by the
+// highlight's containment ranking.
 const sortedItems = [...props.items].sort((a, b) => {
   const rectA = getItemRect(a)
   const rectB = getItemRect(b)
@@ -153,19 +164,80 @@ const effectiveItems = computed<ApprovalItem[]>(() =>
   ),
 )
 
-const units = computed<ApprovalUnit[]>(() =>
-  unitsFromItems(effectiveItems.value),
+const units = computed(() => unitsFromItems(effectiveItems.value))
+
+const selected = reactive<Record<string, boolean>>({})
+const reasons = reactive<Record<string, string>>({})
+
+// Seed state for every unit, including ones that appear later: a manual edit
+// replaces an item's chunk units with a single whole-field unit whose key did
+// not exist before. An unseeded key would read as rejected in the UI while
+// `decideFieldUpdates` treats it as accepted.
+watch(
+  units,
+  (list) => {
+    for (const unit of list) {
+      if (selected[unit.key] === undefined) selected[unit.key] = true
+      if (reasons[unit.key] === undefined) reasons[unit.key] = ''
+    }
+  },
+  { immediate: true },
+)
+
+const overrides = useApprovalOverrides({
+  items: sortedItems,
+  effectiveItem: (itemId) =>
+    effectiveItems.value.find((item) => item.id === itemId),
+  selected,
+  insertionsOnly: () => !!props.insertionsOnly,
+})
+
+/**
+ * Which item ids share a highlight anchor, resolved once.
+ *
+ * Not a `computed`: this reads the editable directive's registry, a plain
+ * non-reactive Map, so a computed would track nothing and cache its first
+ * answer forever. The sibling `sortedItems` snapshot works the same way, and
+ * the batch is fixed for the lifetime of the approval.
+ */
+const groupKeys = new Map<number, string | null>(
+  sortedItems.map((item) => [item.id, overrides.anchorGroupKey(item.id)]),
+)
+
+const stops = computed<ApprovalStop[]>(() =>
+  stopsFromUnits(units.value, groupKeys),
 )
 
 const currentIndex = ref(0)
 
-const currentUnit = computed<ApprovalUnit | null>(() => {
-  return units.value.at(currentIndex.value) ?? null
-})
+const currentStop = computed<ApprovalStop | null>(
+  () => stops.value.at(currentIndex.value) ?? null,
+)
 
-/** 1-based segment index within the current field. 0 when not segmented. */
+// A manual edit can collapse several stops into one, so the index has to be
+// pulled back inside the list — otherwise `currentStop` goes null and the
+// toolbar unmounts, taking Cancel and Apply with it.
+watch(
+  () => stops.value.length,
+  (total) => {
+    if (total === 0) return
+    if (currentIndex.value > total - 1) {
+      currentIndex.value = total - 1
+    }
+  },
+)
+
+function stopIndexForItem(itemId: number): number {
+  return stops.value.findIndex((stop) =>
+    stop.units.some((unit) => unit.item.id === itemId),
+  )
+}
+
+/** 1-based segment index within the current field. 0 when not a chunk stop. */
 const segmentIndex = computed(() => {
-  const unit = currentUnit.value
+  const stop = currentStop.value
+  if (!stop || stop.kind !== 'segment') return 0
+  const unit = stop.units[0]
   if (!unit || unit.kind !== 'segment') return 0
   const fieldUnits = units.value.filter(
     (u) => u.kind === 'segment' && u.item.id === unit.item.id,
@@ -173,34 +245,108 @@ const segmentIndex = computed(() => {
   return fieldUnits.findIndex((u) => u.key === unit.key) + 1
 })
 
-const selected = reactive<Record<string, boolean>>(
-  Object.fromEntries(units.value.map((u) => [u.key, true])),
-)
-const reasons = reactive<Record<string, string>>(
-  Object.fromEntries(units.value.map((u) => [u.key, ''])),
+const currentSegmentTag = computed(() => {
+  const unit = currentStop.value?.units[0]
+  return unit?.kind === 'segment' ? unit.segment.tag : null
+})
+
+/**
+ * A stop is accepted only when every change behind it is. Members of a group
+ * move together, so this is exact rather than a summary — and it matches
+ * `decideFieldUpdates`, which reads anything other than an explicit `false` as
+ * accepted.
+ */
+function isStopSelected(stop: ApprovalStop): boolean {
+  return (
+    stop.units.length > 0 &&
+    stopKeys(stop).every((key) => selected[key] !== false)
+  )
+}
+
+const selectedByStopKey = computed<Record<string, boolean>>(() =>
+  Object.fromEntries(
+    stops.value.map((stop) => [stop.key, isStopSelected(stop)]),
+  ),
 )
 
 const selectedCount = computed(
-  () => units.value.filter((u) => selected[u.key]).length,
+  () => stops.value.filter((stop) => isStopSelected(stop)).length,
 )
 
 const applyLabel = computed(() => {
   return $t('aiAgentBatchRewriteApply', 'Apply @count of @total')
     .replace('@count', selectedCount.value.toString())
-    .replace('@total', units.value.length.toString())
+    .replace('@total', stops.value.length.toString())
 })
 
-function onUpdateSelected(key: string, value: boolean) {
-  selected[key] = value
+// A merged stop stands for several fields, so name them — but only the first
+// couple, or a block with five changed fields would push the Apply button out
+// of the toolbar. The overflow marker is a bare count, so it needs no
+// translation.
+const MAX_LABELS = 2
+
+const currentLabel = computed(() => {
+  const stop = currentStop.value
+  if (!stop) return ''
+  const labels: string[] = []
+  for (const itemId of stopItemIds(stop)) {
+    const item = effectiveItems.value.find((i) => i.id === itemId)
+    if (item && !labels.includes(item.fieldLabel)) {
+      labels.push(item.fieldLabel)
+    }
+  }
+  if (labels.length <= MAX_LABELS) return labels.join(' · ')
+  const rest = labels.length - MAX_LABELS
+  return `${labels.slice(0, MAX_LABELS).join(' · ')} · +${rest}`
+})
+
+const currentReason = computed(() => {
+  const stop = currentStop.value
+  if (!stop) return ''
+  const key = stopKeys(stop)[0]
+  return (key !== undefined ? reasons[key] : '') ?? ''
+})
+
+/**
+ * The single entry point for changing a decision.
+ *
+ * Every write goes through here so a group can never end up half-accepted: the
+ * new value is decided once for the whole stop rather than per member, which
+ * also heals a group that somehow went out of step.
+ */
+function setStopSelected(stop: ApprovalStop, value: boolean) {
+  for (const key of stopKeys(stop)) {
+    selected[key] = value
+  }
+  // Preview first, then measure. The DOM strategy writes synchronously so the
+  // measurement below sees it; the props strategy re-renders asynchronously, so
+  // it needs the extra pass.
+  overrides.apply(stopItemIds(stop))
+  highlight.value?.updateRects()
   nextTick(() => highlight.value?.updateRects())
 }
 
-function onToggle(key: string) {
-  onUpdateSelected(key, !selected[key])
+function toggleStop(stop: ApprovalStop) {
+  setStopSelected(stop, !isStopSelected(stop))
 }
 
-function onUpdateReasons(key: string, value: string) {
-  reasons[key] = value
+function onToggleStopKey(key: string) {
+  const stop = stops.value.find((s) => s.key === key)
+  if (stop) toggleStop(stop)
+}
+
+function onToolbarSelected(value: boolean) {
+  const stop = currentStop.value
+  if (stop) setStopSelected(stop, value)
+}
+
+function onToolbarReason(value: string) {
+  const stop = currentStop.value
+  if (!stop) return
+  // One reason for one decision: it applies to every change behind the stop.
+  for (const key of stopKeys(stop)) {
+    reasons[key] = value
+  }
 }
 
 type EditingState = {
@@ -237,18 +383,33 @@ function editConfigForItem(item: ApprovalItem): EditableFieldConfig | null {
   return null
 }
 
-const canEditCurrent = computed(() => {
+/**
+ * Whether a stop can be manually edited. Editing rewrites one field's whole
+ * value, so a stop covering several fields has no single subject — and the
+ * overlay needs an element to anchor to, or the action would silently do
+ * nothing.
+ */
+function canEditStop(stop: ApprovalStop): boolean {
   if (!props.editable) return false
-  const unit = currentUnit.value
-  if (!unit) return false
-  return !!editConfigForItem(unit.item)
+  const itemIds = stopItemIds(stop)
+  if (itemIds.length !== 1) return false
+  const itemId = itemIds[0]!
+  const item = effectiveItems.value.find((i) => i.id === itemId)
+  if (!item) return false
+  if (!overrides.anchorElement(itemId)) return false
+  return !!editConfigForItem(item)
+}
+
+const canEditCurrent = computed(() => {
+  const stop = currentStop.value
+  return !!stop && canEditStop(stop)
 })
 
-/** Per-item editability for the Highlight pills. */
-const editableItemIds = computed<Record<number, boolean>>(() => {
+/** Per-stop editability for the Highlight pills. */
+const editableStopKeys = computed<Record<string, boolean>>(() => {
   if (!props.editable) return {}
   return Object.fromEntries(
-    effectiveItems.value.map((item) => [item.id, !!editConfigForItem(item)]),
+    stops.value.map((stop) => [stop.key, canEditStop(stop)]),
   )
 })
 
@@ -264,24 +425,19 @@ function acceptedByIdFor(item: ApprovalItem): Record<string, boolean> {
 
 function startEdit() {
   if (editing.value) return
-  const unit = currentUnit.value
-  if (!unit) return
-  const item = unit.item
+  const stop = currentStop.value
+  if (!stop || !canEditStop(stop)) return
+  const itemId = stopItemIds(stop)[0]!
+  const item = effectiveItems.value.find((i) => i.id === itemId)
+  if (!item) return
   const config = editConfigForItem(item)
   const host = resolveHost(item.uuid)
-  if (!config || !host) return
-  // Fields without an editable element (prop-mapped only) anchor the overlay
-  // to the block's root element instead — the same fallback the highlight
-  // uses. The element is purely an anchor here: the overlay is seeded from
-  // `value` and the live preview goes through the props-based override.
-  const element =
-    directive.findEditableElement(item.fieldName, host) ??
-    (host.type === itemEntityType
-      ? document.querySelector<HTMLElement>(
-          `[data-bk-uuid="${CSS.escape(item.uuid)}"]`,
-        )
-      : null)
-  if (!element) return
+  // Fields without their own element anchor the overlay to whatever their
+  // highlight uses — the block, or the provider root. The element is purely an
+  // anchor here: the overlay is seeded from `value` and the live preview goes
+  // through the props-based override.
+  const element = overrides.anchorElement(itemId)
+  if (!config || !host || !element) return
   // Seed with the value as currently decided: accepted chunks show the
   // proposed text, rejected chunks the original text.
   const seed = item.segments
@@ -289,7 +445,7 @@ function startEdit() {
     : item.value
   // Restore the field's original DOM synchronously BEFORE the overlay mounts,
   // so the overlay's own override captures a clean field.
-  highlight.value?.beginEdit(item.id)
+  overrides.beginEdit(itemId)
   editing.value = { item, host, element, config, seed }
 }
 
@@ -301,8 +457,12 @@ function onEditSave(value: string) {
   if (value === current.seed) return
   const item = current.item
   editedValues[item.id] = value
-  // Seed the whole-field unit's decision state: for previously segmented
-  // items the key doesn't exist yet and would read as unselected.
+  // Seed the whole-field unit's decision state: for previously segmented items
+  // the key doesn't exist yet and would read as unselected. A manual revision
+  // supersedes whatever chunk decisions preceded it.
+  //
+  // This cannot desync a merged stop: only stops covering exactly one item are
+  // editable (see `canEditStop`), so there are no siblings to leave behind.
   selected[String(item.id)] = true
   if (reasons[String(item.id)] === undefined) {
     reasons[String(item.id)] = ''
@@ -313,11 +473,11 @@ async function onEditClose() {
   const current = editing.value
   if (!current) return
   editing.value = null
-  // Wait for the (possibly collapsed) item to propagate to the Highlight
-  // items before re-rendering the diff preview from it.
+  // Wait for the (possibly collapsed) item to propagate to the stop list
+  // before re-rendering the diff preview from it.
   await nextTick()
-  highlight.value?.endEdit(current.item.id)
-  const idx = units.value.findIndex((u) => u.item.id === current.item.id)
+  overrides.endEdit(current.item.id)
+  const idx = stopIndexForItem(current.item.id)
   if (idx !== -1) {
     currentIndex.value = idx
   }
@@ -326,23 +486,30 @@ async function onEditClose() {
 
 function onApply() {
   // Reset accepted items' editables to their original Vue-tracked DOM BEFORE
-  // notifying the consumer (see Highlight/Item.vue for the rationale).
-  highlight.value?.commitSelected()
+  // notifying the consumer (see useApprovalOverrides for the rationale).
+  overrides.commitAll()
   emit('apply', {
     selected: { ...selected },
     reasons: { ...reasons },
     edited: Object.fromEntries(
       Object.entries(editedValues).map(([id, value]) => [id, value]),
     ),
+    // Items the user decided in one go, so the tools can report them as a
+    // field-level decision instead of inventing a per-chunk verdict.
+    atomicItemIds: stops.value
+      .filter((stop) => stop.kind === 'group')
+      .flatMap((stop) => stopItemIds(stop)),
   })
 }
 
-function scrollToUnit(unit: ApprovalUnit) {
+function scrollToStop(stop: ApprovalStop) {
+  const unit = stop.units[0]
+  if (!unit) return
   const host = resolveHost(unit.item.uuid)
   if (host) {
     const fieldEl = directive.findEditableElement(unit.item.fieldName, host)
     if (fieldEl) {
-      // For segment units, scroll the specific chunk element into view via the
+      // For chunk stops, scroll the specific chunk element into view via the
       // data-chunk-index marker rendered by `renderSegmentDiff`. Falls back to
       // the field root when the marker isn't there yet (preview still pending).
       let target: HTMLElement = fieldEl
@@ -360,19 +527,19 @@ function scrollToUnit(unit: ApprovalUnit) {
 }
 
 function prev() {
-  const total = units.value.length
+  const total = stops.value.length
   if (total === 0) return
   currentIndex.value = (currentIndex.value - 1 + total) % total
-  const u = units.value[currentIndex.value]
-  if (u) scrollToUnit(u)
+  const stop = stops.value[currentIndex.value]
+  if (stop) scrollToStop(stop)
 }
 
 function next() {
-  const total = units.value.length
+  const total = stops.value.length
   if (total === 0) return
   currentIndex.value = (currentIndex.value + 1) % total
-  const u = units.value[currentIndex.value]
-  if (u) scrollToUnit(u)
+  const stop = stops.value[currentIndex.value]
+  if (stop) scrollToStop(stop)
 }
 
 onBlokkliEvent('keyPressed', (e) => {
@@ -386,20 +553,25 @@ onBlokkliEvent('keyPressed', (e) => {
     prev()
   } else if (e.code === ' ') {
     e.originalEvent.preventDefault()
-    const u = units.value[currentIndex.value]
-    if (u) {
-      onUpdateSelected(u.key, !selected[u.key])
+    const stop = currentStop.value
+    if (stop) {
+      toggleStop(stop)
     }
   }
 })
 
 onBlokkliEvent('editable:focus', (e) => {
   if (editing.value) return
-  // Jump to the first unit belonging to the focused field — for unsegmented
+  // The event omits the uuid for host-entity fields, so fill it in or clicking
+  // the page's own title during approval would never match anything.
+  const uuid = e.uuid ?? context.value.entityUuid
+  // Jump to the first stop belonging to the focused field — for unsegmented
   // items that's the field itself, for segmented items it's the first changed
   // segment, which is the most useful entry point.
-  const idx = units.value.findIndex(
-    (u) => u.item.fieldName === e.fieldName && u.item.uuid === e.uuid,
+  const idx = stops.value.findIndex((stop) =>
+    stop.units.some(
+      (unit) => unit.item.fieldName === e.fieldName && unit.item.uuid === uuid,
+    ),
   )
   if (idx !== -1) {
     currentIndex.value = idx
@@ -408,16 +580,22 @@ onBlokkliEvent('editable:focus', (e) => {
 
 onMounted(async () => {
   ui.setIsApproving(true)
+  // Previews are applied here rather than during setup so the overrides capture
+  // the fields exactly as the consumer left them.
+  overrides.applyAll()
   await nextTick()
-  const first = units.value[0]
+  highlight.value?.updateRects()
+  const first = stops.value[0]
   if (first) {
-    scrollToUnit(first)
+    scrollToStop(first)
   }
 })
 
 onBeforeUnmount(() => {
   ui.setIsApproving(false)
-  // Each Item restores its own preview overlay on unmount (re-inserting the
-  // original Vue-managed nodes), so no global cleanup is needed here.
+  // Undo every live preview, re-inserting the original Vue-managed nodes. This
+  // used to happen per highlight rectangle; now that one rectangle can stand
+  // for several fields, the overrides outlive them and must be cleaned up here.
+  overrides.restoreAll()
 })
 </script>

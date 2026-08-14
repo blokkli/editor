@@ -146,7 +146,9 @@ async function onClick() {
 async function onApply(data: DiffApplyPayload) {
   const targetLanguage = context.value.language
   const items = approvalItems.value
-    .filter((item) => data.selected[String(item.id)])
+    // Anything not explicitly rejected counts as accepted, matching the agent
+    // tools — a key can be absent, e.g. after a manual edit collapsed an item.
+    .filter((item) => data.selected[String(item.id)] !== false)
     .map((item) => ({
       langcode: targetLanguage,
       uuid: item.uuid,

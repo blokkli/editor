@@ -59,7 +59,8 @@ const emit = defineEmits<{
   register: [api: Partial<BlokkliTestApi>]
 }>()
 
-const { directive, fieldValue, context, state, adapter } = useBlokkli()
+const { directive, fieldValue, context, state, adapter, types, blocks } =
+  useBlokkli()
 
 const pendingDiff = ref<ApprovalItem[] | null>(null)
 let resolvePending: ((result: { applied: boolean }) => void) | null = null
@@ -175,6 +176,59 @@ function applyFieldDiff(target: {
       value: target.value,
     },
   ]
+  return new Promise((resolve) => {
+    resolvePending = resolve
+  })
+}
+
+/**
+ * Diff scenario for arbitrary fields, resolved from the editable field CONFIG
+ * rather than from the rendered editable elements.
+ *
+ * The other scenarios all start at `directive.getAllEditables()`, so they can
+ * only ever target fields that carry the editable directive — which makes the
+ * interesting case unreachable. A field declared purely through
+ * `propsFieldMapping` has no element of its own, so its highlight falls back to
+ * the block, and several of them collapse into one merged stop.
+ *
+ * Applying persists every accepted field, so a spec can assert that one
+ * decision on a merged stop really did write (or skip) all of them.
+ */
+function runFieldsDiffApproval(target: {
+  uuid?: string
+  fields: Array<{ fieldName: string; value: string }>
+}): Promise<{ applied: boolean }> {
+  const uuid = target.uuid ?? context.value.entityUuid
+  const isHost = uuid === context.value.entityUuid
+  const entityType = isHost ? context.value.entityType : itemEntityType
+  const bundle = isHost
+    ? context.value.entityBundle
+    : (blocks.getBlock(uuid)?.bundle ?? '')
+
+  const items: ApprovalItem[] = []
+  let id = 0
+  for (const field of target.fields) {
+    const config = types.editableFieldConfig.forName(
+      entityType,
+      bundle,
+      field.fieldName,
+    )
+    if (!config) continue
+    items.push({
+      id: id++,
+      uuid,
+      fieldName: field.fieldName,
+      fieldLabel: config.label,
+      value: field.value,
+    })
+  }
+
+  if (!items.length) {
+    return Promise.resolve({ applied: false })
+  }
+
+  applyMutates = true
+  pendingDiff.value = items
   return new Promise((resolve) => {
     resolvePending = resolve
   })
@@ -352,7 +406,12 @@ async function runChunkDemo(): Promise<void> {
 }
 
 onMounted(() => {
-  emit('register', { runDiffApproval, applyFieldDiff, applyChunkFieldDiff })
+  emit('register', {
+    runDiffApproval,
+    applyFieldDiff,
+    applyChunkFieldDiff,
+    runFieldsDiffApproval,
+  })
 })
 
 defineOptions({

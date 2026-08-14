@@ -35,6 +35,7 @@ export class ContentPage extends Content {
         'button',
         'link',
         'card',
+        'card_plain',
         'iframe',
         'image',
         'from_library',

@@ -6,8 +6,8 @@
     <div
       class="bk bk-control bk-diff-approval-toolbar self-end pointer-events-auto bg-mono-900 text-mono-50 select-none relative mx-15 mb-15 rounded shadow-xl-even outline outline-1 outline-mono-400"
       data-test="diff-approval-toolbar"
-      :data-test-selected="!!selected[currentUnit.key]"
-      :data-test-unit-kind="currentUnit.kind"
+      :data-test-selected="isSelected"
+      :data-test-unit-kind="kind"
     >
       <div
         class="text-mono-100 font-medium text-sm border-b border-b-mono-600 flex justify-between items-center"
@@ -69,15 +69,15 @@
           class="flex items-center gap-10 px-15 border-l border-l-mono-600 h-full"
         >
           <span class="text-mono-400 tabular-nums whitespace-nowrap">
-            {{ unitIndex }} / {{ totalUnits }}
+            {{ stopIndex }} / {{ totalStops }}
           </span>
           <span class="font-medium whitespace-nowrap">
-            {{ currentItem.fieldLabel }}
+            {{ label }}
             <template v-if="bundleLabel"> &middot; {{ bundleLabel }}</template>
-            <template v-if="currentUnit.kind === 'segment'">
+            <template v-if="kind === 'segment' && segmentTag">
               &middot;
               <span class="font-mono text-mono-300"
-                >&lt;{{ currentUnit.segment.tag }}&gt;</span
+                >&lt;{{ segmentTag }}&gt;</span
               >
               {{ segmentIndex }}
             </template>
@@ -92,7 +92,7 @@
             class="mx-15"
             color-scheme="dark"
             stretch
-            :model-value="selected[currentUnit.key]"
+            :model-value="isSelected"
             :label="$t('aiAgentApprovalAccept', 'Accept')"
             @update:model-value="toggleCurrent"
           />
@@ -138,14 +138,11 @@
           </Tooltip>
         </div>
 
-        <div
-          v-if="!selected[currentUnit.key] && showReason"
-          class="flex-1 min-w-0 px-10"
-        >
+        <div v-if="!isSelected && showReason" class="flex-1 min-w-0 px-10">
           <input
             type="text"
             class="w-full h-30 px-10 rounded bg-mono-800 text-mono-100 text-sm border border-mono-600 outline-none placeholder:text-mono-500 focus:border-mono-400"
-            :value="reasons[currentUnit.key]"
+            :value="reason"
             :placeholder="
               $t(
                 'aiAgentBatchRewriteReasonPlaceholder',
@@ -178,24 +175,36 @@ import {
   ShortcutIndicator,
   Tooltip,
 } from '#blokkli/editor/components'
-import type { ApprovalItem, ApprovalUnit } from '../types'
+import type { ApprovalStop } from '../types'
 
+/**
+ * Everything the toolbar needs about the current stop, as scalars.
+ *
+ * It deliberately never sees the `selected`/`reasons` maps: a stop can stand for
+ * several changes at once, and a toolbar that indexed those maps itself would
+ * show — and write — only the first of them.
+ */
 const props = defineProps<{
-  currentUnit: ApprovalUnit
-  currentItem: ApprovalItem
+  currentStop: ApprovalStop
+  /** The field(s) behind the current stop, already joined for display. */
+  label: string
+  kind: ApprovalStop['kind']
+  /** Tag name of the current chunk, when the stop is one. */
+  segmentTag?: string | null
   /**
-   * 1-based position of the current unit across the whole batch — a single
-   * progress count that includes per-chunk units for segmented fields.
+   * 1-based position of the current stop across the whole batch — the same
+   * count the user can step through, so it includes per-chunk stops for
+   * segmented fields and counts a merged group once.
    */
-  unitIndex: number
-  totalUnits: number
+  stopIndex: number
+  totalStops: number
   /**
-   * 1-based segment index within the current field. 0 when the current unit
-   * is whole-field (the segment chip is hidden in that case).
+   * 1-based segment index within the current field. 0 when the current stop
+   * is not a chunk (the segment chip is hidden in that case).
    */
   segmentIndex: number
-  selected: Record<string, boolean>
-  reasons: Record<string, string>
+  isSelected: boolean
+  reason: string
   applyLabel: string
   /**
    * Whether to show the rejection reason input.
@@ -206,36 +215,33 @@ const props = defineProps<{
   showReason?: boolean
 
   /**
-   * Whether the current unit's field supports manual editing of the suggested
-   * value. Editing always operates on the whole field, even on segment units.
+   * Whether the current stop's field supports manual editing of the suggested
+   * value. Editing always operates on the whole field, even on chunk stops.
    */
   canEdit?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:selected', key: string, value: boolean): void
-  (e: 'update:reasons', key: string, value: string): void
+  (e: 'update:selected', value: boolean): void
+  (e: 'update:reason', value: string): void
   (e: 'apply' | 'prev' | 'next' | 'cancel' | 'edit'): void
 }>()
 
 const { ui, blocks, types, $t } = useBlokkli()
 
 const bundleLabel = computed(() => {
-  const item = props.currentItem
-  const block = blocks.getBlock(item.uuid)
+  const block = blocks.getBlock(props.currentStop.uuid)
   if (!block) return ''
   const def = types.getBlockBundleDefinition(block.bundle)
   return def?.label || block.bundle
 })
 
 function toggleCurrent() {
-  const key = props.currentUnit.key
-  emit('update:selected', key, !props.selected[key])
+  emit('update:selected', !props.isSelected)
 }
 
 function onReasonInput(event: Event) {
-  const value = (event.target as HTMLInputElement).value
-  emit('update:reasons', props.currentUnit.key, value)
+  emit('update:reason', (event.target as HTMLInputElement).value)
 }
 </script>
 

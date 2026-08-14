@@ -98,7 +98,13 @@ export type FieldDecisionResult = {
    * each changed chunk counts as one unit.
    */
   acceptedCount: number
-  /** Total number of toggle units the user could have selected. */
+  /**
+   * Total number of toggle units the user could have selected.
+   *
+   * Unit-level, and therefore not necessarily what the approval UI showed: when
+   * several changes share one highlight they collapse into a single stop there,
+   * so the toolbar can offer fewer decisions than there are units here.
+   */
   totalCount: number
   /**
    * Accepted fields whose value the user manually revised in the approval UI.
@@ -121,13 +127,20 @@ export type FieldDecisionResult = {
  * `DiffApplyPayload`). An edited item always resolves as a single whole-field
  * unit with the revised value — any segments on the item are ignored, matching
  * the collapse the approval UI performed.
+ *
+ * `atomicItemIds` lists items the user decided in one go because their changes
+ * shared a single highlight. They are treated as whole-field decisions even if
+ * they carry segments, so the agent isn't told the user judged chunks they never
+ * saw individually.
  */
 export function decideFieldUpdates(
   items: ApprovalItem[],
   selected: Record<string, boolean>,
   reasons: Record<string, string>,
   edited: Record<string, string> = {},
+  atomicItemIds: number[] = [],
 ): FieldDecisionResult {
+  const atomic = new Set(atomicItemIds)
   const rejectedByUser: RejectedByUser = {}
   const updates: DecidedUpdate[] = []
   const editedFields: EditedField[] = []
@@ -157,6 +170,39 @@ export function decideFieldUpdates(
         })
       } else {
         // Drafted, then discarded: reported as a plain rejection.
+        const fields = rejectedByUser[item.uuid] ?? {}
+        fields[item.fieldName] = {
+          reasonForRejection: reasons[key] || '',
+        }
+        rejectedByUser[item.uuid] = fields
+      }
+      continue
+    }
+
+    if (item.segments && atomic.has(item.id)) {
+      // The field's chunks shared one highlight, so the user made a single
+      // decision for the whole field. Read it off any chunk key — they move
+      // together — and report a field-level verdict: claiming the user judged
+      // each chunk would fabricate feedback, and would also downgrade the
+      // agent's follow-up guidance to the generic "some changes were rejected".
+      const atoms = flattenSegments(item.segments).filter((s) => s.changed)
+      const first = atoms[0]
+      if (!first) continue
+      totalCount++
+      const key = `${item.id}:${first.id}`
+      const isAccepted = selected[key] !== false
+
+      if (isAccepted) {
+        acceptedCount++
+        // The proposed value verbatim. Reassembling would round-trip the whole
+        // field through the DOM and rewrite content the user never touched.
+        updates.push({
+          itemId: item.id,
+          uuid: item.uuid,
+          fieldName: item.fieldName,
+          fieldValue: item.value,
+        })
+      } else {
         const fields = rejectedByUser[item.uuid] ?? {}
         fields[item.fieldName] = {
           reasonForRejection: reasons[key] || '',
@@ -272,11 +318,18 @@ export async function applyFieldDiffs(
   selected: Record<string, boolean>,
   reasons: Record<string, string>,
   edited: Record<string, string> = {},
+  atomicItemIds: number[] = [],
 ): Promise<FieldDiffApplyResult> {
   const { $t, state, context } = app
   const entityUuid = context.value.entityUuid
 
-  const decision = decideFieldUpdates(items, selected, reasons, edited)
+  const decision = decideFieldUpdates(
+    items,
+    selected,
+    reasons,
+    edited,
+    atomicItemIds,
+  )
 
   const batchItems: Array<{
     uuid: string

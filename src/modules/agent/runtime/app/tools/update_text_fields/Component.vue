@@ -12,7 +12,10 @@
 <script lang="ts" setup>
 import { useBlokkli, ref, onMounted } from '#imports'
 import { DiffApproval } from '#blokkli/editor/components'
-import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
+import {
+  segmentsHaveChanges,
+  splitIntoSegments,
+} from '#blokkli/editor/helpers/diff'
 import type {
   McpToolContext,
   ComponentToolResult,
@@ -84,6 +87,9 @@ onMounted(() => {
       selected: Object.fromEntries(items.map((item) => [item.id, true])),
       reasons: Object.fromEntries(items.map((item) => [item.id, ''])),
       edited: {},
+      // Nothing was merged: there is no approval UI on this path, so every
+      // item keeps its own per-chunk resolution.
+      atomicItemIds: [],
     })
   }
 })
@@ -226,10 +232,15 @@ for (const draft of buildItems()) {
     beforeValues.set(draft.id, current)
     if (current === draft.value) continue
   }
-  const segments =
+  // Segmentation parses both values into blocks, which drops the whitespace
+  // between them — so two values that differ only there come back with no
+  // changed chunk at all. Such an item would produce no toggle for the user
+  // while still previewing a change, so fall back to a whole-field item.
+  const parsed =
     current !== null
       ? (splitIntoSegments(current, draft.value, draft.fieldType) ?? undefined)
       : undefined
+  const segments = parsed && segmentsHaveChanges(parsed) ? parsed : undefined
   items.push({
     id: draft.id,
     uuid: draft.uuid,
@@ -241,7 +252,7 @@ for (const draft of buildItems()) {
 }
 
 async function applySelected(data: DiffApplyPayload) {
-  const { selected, reasons, edited } = data
+  const { selected, reasons, edited, atomicItemIds } = data
 
   isApplying.value = true
 
@@ -258,6 +269,7 @@ async function applySelected(data: DiffApplyPayload) {
     selected,
     reasons,
     edited,
+    atomicItemIds,
   )
 
   // Capture before/after diffs for the details panel. For segmented items the

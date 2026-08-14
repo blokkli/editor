@@ -98,6 +98,7 @@
       "type": "radios"
     }
   },
+  "card_plain": {},
   "chart": {
     "data": {
       "dataType": "chart",

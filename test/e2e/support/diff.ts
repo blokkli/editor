@@ -73,6 +73,25 @@ export async function applyChunkFieldDiff(
   )
 }
 
+/**
+ * Drive a DiffApproval for named fields, resolved from the editable field
+ * config rather than the rendered editable elements — the only way to target a
+ * field that has no element of its own. Applying persists every accepted field.
+ * Resolves on apply/cancel. Omit `uuid` for host-entity fields.
+ */
+export async function runFieldsDiffApproval(
+  page: Page,
+  args: { uuid?: string; fields: Array<{ fieldName: string; value: string }> },
+): Promise<{ applied: boolean }> {
+  await page.waitForFunction(
+    () => typeof window.__BLOKKLI__?.test?.runFieldsDiffApproval === 'function',
+  )
+  return page.evaluate(
+    (args) => window.__BLOKKLI__!.test!.runFieldsDiffApproval(args),
+    args,
+  )
+}
+
 /** Click the DiffApproval toolbar's Cancel button. */
 export function cancelDiff(page: Page): Promise<void> {
   return page.locator('[data-test="diff-approval-cancel"]').click()

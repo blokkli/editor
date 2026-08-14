@@ -173,7 +173,13 @@ async function onApply(data: DiffApplyPayload) {
   const items = approvalItems.value
 
   const { updates, rejectedByUser, acceptedCount, totalCount, editedFields } =
-    decideFieldUpdates(items, data.selected, data.reasons, data.edited)
+    decideFieldUpdates(
+      items,
+      data.selected,
+      data.reasons,
+      data.edited,
+      data.atomicItemIds,
+    )
 
   if (updates.length) {
     await state.mutateWithLoadingState(() =>
