@@ -1,4 +1,5 @@
-import type { Field } from './Field'
+import type { Field, FieldTextEntry } from './Field'
+import { splitFieldPath } from './Field'
 import type { FieldBlocks } from './Field/Blocks'
 import { FieldText } from './Field/Text'
 import { FieldTextarea } from './Field/Textarea'
@@ -93,13 +94,33 @@ export class Entity {
     if (!this.translationValues[langcode]) {
       this.translationValues[langcode] = {}
     }
-    Object.entries(valuesInput).forEach(([fieldName, value]) => {
-      const field = this.fields[fieldName]
-      if (field?.isTranslatable) {
-        this.translationValues[langcode]![fieldName] = Array.isArray(value)
+    Object.entries(valuesInput).forEach(([path, value]) => {
+      // Keys are property paths (`field` or `field.property`), but translation
+      // values are stored per FIELD, holding the field's whole list.
+      const resolved = this.resolveTextPath(path)
+      if (!resolved?.field.isTranslatable) {
+        return
+      }
+      const { field, property } = resolved
+
+      if (property === null) {
+        this.translationValues[langcode]![field.id] = Array.isArray(value)
           ? value
           : [value]
+        return
       }
+
+      // Translating one property replaces only that property. The rest of the
+      // value — a link's uri — carries over from whatever this language already
+      // has, falling back to the source value.
+      const existing = this.translationValues[langcode]![field.id] ?? field.list
+      const base = existing[0]
+      this.translationValues[langcode]![field.id] = [
+        {
+          ...(base && typeof base === 'object' ? base : {}),
+          [property]: value,
+        },
+      ]
     })
   }
 
@@ -144,6 +165,29 @@ export class Entity {
     return Object.values(this.fields).filter((field) => {
       return field instanceof FieldText || field instanceof FieldTextarea
     })
+  }
+
+  /**
+   * Every translatable text value on the entity, addressed by property path.
+   *
+   * Supersedes {@link getTextFields} for anything that reads or writes text:
+   * it also yields text stored as a property of a non-text field, such as a
+   * link's title.
+   */
+  getTextEntries(): FieldTextEntry[] {
+    return Object.values(this.fields).flatMap((field) => field.getTextEntries())
+  }
+
+  /** Resolve a property path to the field that owns it. */
+  resolveTextPath(
+    path: string,
+  ): { field: Field<any>; property: string | null } | undefined {
+    const [fieldName, property] = splitFieldPath(path)
+    const field = this.fields[fieldName]
+    if (!field) {
+      return undefined
+    }
+    return { field, property }
   }
 
   getTranslatableFields(): Field<any>[] {

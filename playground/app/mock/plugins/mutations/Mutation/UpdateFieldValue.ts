@@ -27,11 +27,20 @@ export class MutationUpdateFieldValue extends Mutation {
       return
     }
     const block = proxy.block
-    const field = block.get(args.fieldName)
-    if (!field) {
+    // `fieldName` is a property path: `field` or `field.property`. Writing a
+    // nested property must leave the field's other properties alone — replacing
+    // the whole value would drop a link's uri when only its title changed.
+    const resolved = block.resolveTextPath(args.fieldName)
+    if (!resolved) {
       return
     }
-    field.setList([JSON.parse(JSON.stringify(args.fieldValue))])
+    const { field, property } = resolved
+    const value = JSON.parse(JSON.stringify(args.fieldValue))
+    if (property === null) {
+      field.setList([value])
+    } else {
+      field.setTextValue(property, value)
+    }
 
     // Only mark translations as outdated when a translatable field changes.
     if (field.isTranslatable) {

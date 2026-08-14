@@ -19,16 +19,22 @@
       />
       <RichText
         v-else-if="field.type === 'textarea'"
-        v-model="values[field.name]!"
+        :model-value="stringValue(field.name)"
+        @update:model-value="values[field.name] = $event"
       />
       <FieldIconInput
         v-else-if="field.type === 'icon'"
-        v-model="values[field.name]!"
+        :model-value="stringValue(field.name)"
+        @update:model-value="values[field.name] = $event"
       />
       <MediaSelector
         v-else-if="field.type === 'media'"
         v-model="values[field.name]!"
         v-bind="field.props"
+      />
+      <FieldLink
+        v-else-if="field.type === 'link'"
+        v-model="values[field.name]"
       />
     </div>
     <div class="entity-form-footer">
@@ -45,7 +51,10 @@ import { FieldIcon } from '#mock/state/Field/Icon'
 import { FieldText } from '#mock/state/Field/Text'
 import { FieldTextarea } from '#mock/state/Field/Textarea'
 import { FieldUrl } from '#mock/state/Field/Url'
+import type { LinkValue } from '#mock/state/Field/UrlWithTitle'
+import { FieldUrlWithTitle } from '#mock/state/Field/UrlWithTitle'
 import FieldIconInput from './FieldIcon/index.vue'
+import FieldLink from './FieldLink/index.vue'
 import MediaSelector from './MediaSelector/index.vue'
 import RichText from './RichText/index.vue'
 import { FieldReference } from '#mock/state/Field/Reference'
@@ -54,15 +63,22 @@ const props = defineProps<{
   fields: Field<any>[]
 }>()
 
+/**
+ * Most fields submit a plain string. A `field_link`-shaped field submits both
+ * its URI and its title as one object, because the title is a property of the
+ * link rather than a field of its own.
+ */
+export type FormValue = string | LinkValue
+
 const emit = defineEmits<{
-  (e: 'submit', values: Record<string, string>): void
+  (e: 'submit', values: Record<string, FormValue>): void
 }>()
 
 type FormField = {
-  type: 'text' | 'textarea' | 'url' | 'icon' | 'media'
+  type: 'text' | 'textarea' | 'url' | 'icon' | 'media' | 'link'
   name: string
   label: string
-  value: string
+  value: FormValue
   props?: any
 }
 
@@ -87,6 +103,16 @@ const mapField = (field: Field<unknown>): FormField | undefined => {
       name: field.id,
       label: field.label,
       value: field.list[0] || '',
+    }
+  } else if (field instanceof FieldUrlWithTitle) {
+    // Must be checked before FieldUrl — they are unrelated classes, but keeping
+    // them adjacent makes the ordering intent obvious if one ever extends the
+    // other.
+    return {
+      type: 'link',
+      name: field.id,
+      label: field.label,
+      value: (field.list[0] as LinkValue | undefined) ?? { uri: '', title: '' },
     }
   } else if (field instanceof FieldUrl) {
     return {
@@ -121,12 +147,18 @@ const formFields = computed<FormField[]>(() =>
   Object.values(props.fields).map(mapField).filter(falsy),
 )
 
-const values = ref<Record<string, string>>(
-  formFields.value.reduce<Record<string, string>>((acc, field) => {
+const values = ref<Record<string, FormValue>>(
+  formFields.value.reduce<Record<string, FormValue>>((acc, field) => {
     acc[field.name] = field.value
     return acc
   }, {}),
 )
+
+/** Narrow a heterogeneous form value for the inputs that only accept a string. */
+const stringValue = (name: string): string => {
+  const value = values.value[name]
+  return typeof value === 'string' ? value : ''
+}
 
 const onSubmit = () => {
   emit('submit', values.value)

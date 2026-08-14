@@ -211,10 +211,23 @@ export default function fieldValueProvider(
     }
 
     if (matchingProp) {
-      const value = providerDefinition
-        ? state.mutatedEntity.value[matchingProp] || ''
-        : (state.getFieldListItem(host.uuid)?.props?.[matchingProp] ?? '')
-      return { value, fieldType }
+      const propValue = providerDefinition
+        ? state.mutatedEntity.value[matchingProp]
+        : state.getFieldListItem(host.uuid)?.props?.[matchingProp]
+
+      // A field name is a property path. `link.title` resolves to prop `link`,
+      // then the `title` property inside it.
+      const dotIndex = fieldName.indexOf('.')
+      if (dotIndex !== -1) {
+        const property = fieldName.slice(dotIndex + 1)
+        const nested =
+          propValue && typeof propValue === 'object'
+            ? (propValue as Record<string, unknown>)[property]
+            : undefined
+        return { value: typeof nested === 'string' ? nested : '', fieldType }
+      }
+
+      return { value: propValue || '', fieldType }
     }
 
     // No propsFieldMapping — fall back to reading from the directive-bound

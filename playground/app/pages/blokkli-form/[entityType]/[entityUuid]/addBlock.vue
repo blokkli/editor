@@ -13,6 +13,7 @@ import {
 } from '#imports'
 import { entityStorageManager } from '#mock/entityStorage'
 import { getEditState } from '#mock/state'
+import type { FormValue } from '~/components/EntityForm/index.vue'
 import { getParagraphBundles } from '#mock/state/Paragraph'
 
 definePageMeta({
@@ -53,7 +54,7 @@ fields.forEach((field) => {
   }
 })
 
-const onSubmit = async (values: Record<string, string>) => {
+const onSubmit = async (values: Record<string, FormValue>) => {
   editState.addMutation('add', {
     bundle: bundle.value,
     values,

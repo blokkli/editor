@@ -1,4 +1,4 @@
-import { Field } from '../Field'
+import { Field, type FieldTextEntry } from '../Field'
 
 /**
  * Simulate CMS text processing: apply typographic transformations.
@@ -49,6 +49,19 @@ export class FieldText extends Field<string> {
    */
   override getPropValueItem(v: string): string {
     return processPlainText(v)
+  }
+
+  override getTextEntries(): FieldTextEntry[] {
+    return [
+      {
+        path: this.id,
+        label: this.label,
+        value: this.getUnprocessed(),
+        fieldType: 'plain',
+        maxLength: this.maxLength,
+        isTranslatable: this.isTranslatable,
+      },
+    ]
   }
 
   setText(text: string) {

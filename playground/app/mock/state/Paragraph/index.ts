@@ -9,6 +9,7 @@ import { ParagraphGrid } from './Grid'
 import { ParagraphIframe } from './Iframe'
 import { ParagraphIcon } from './Icon'
 import { ParagraphImage } from './Image'
+import { ParagraphLink } from './Link'
 import { ParagraphNotImplemented } from './NotImplemented'
 import { ParagraphOnThisPage } from './OnThisPage'
 import { ParagraphSlider } from './Slider'
@@ -61,6 +62,8 @@ export const createParagraph = (bundle: string, uuid: string): Paragraph => {
       return new ParagraphIcon(uuid)
     case 'button_list':
       return new ParagraphButtonList(uuid)
+    case 'link':
+      return new ParagraphLink(uuid)
     case 'gallery':
       return new ParagraphGallery(uuid)
     case 'not_implemented':
@@ -90,6 +93,7 @@ export const getParagraphBundles = (): Array<typeof Paragraph> => {
     ParagraphIframe,
     ParagraphIcon,
     ParagraphButtonList,
+    ParagraphLink,
     ParagraphGallery,
     ParagraphSlider,
     ParagraphNotImplemented,

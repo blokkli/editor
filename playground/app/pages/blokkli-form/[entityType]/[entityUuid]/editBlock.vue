@@ -13,6 +13,7 @@ import {
 } from '#imports'
 import { entityStorageManager } from '#mock/entityStorage'
 import { getEditState } from '#mock/state'
+import type { FormValue } from '~/components/EntityForm/index.vue'
 
 definePageMeta({
   layout: 'form',
@@ -40,7 +41,7 @@ if (!block) {
 
 const fields = Object.values(block.fields)
 
-const onSubmit = async (values: Record<string, string>) => {
+const onSubmit = async (values: Record<string, FormValue>) => {
   editState.addMutation('edit', {
     uuid: uuid.value,
     values,

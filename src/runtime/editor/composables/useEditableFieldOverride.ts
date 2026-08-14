@@ -135,10 +135,25 @@ export function useEditableFieldOverride(
     fieldType,
   )
 
-  // Capture original mutatedItemProps value for restore.
-  const originalMutatedProp: string | undefined = matchingProp
+  // Capture original mutatedItemProps value for restore. Always the WHOLE prop
+  // value, even when only one property of it is edited, so restoring puts the
+  // structure back exactly as it was.
+  const originalMutatedProp: unknown = matchingProp
     ? state.mutatedItemProps[mutatedItemPropsKey]?.[matchingProp]
     : undefined
+
+  // The property inside the prop that this field addresses, if any. A field
+  // name is a property path: `link.title` means prop `link`, property `title`.
+  const dotIndex = fieldName.indexOf('.')
+  const propProperty = dotIndex === -1 ? null : fieldName.slice(dotIndex + 1)
+
+  /** The committed prop value, i.e. what the block renders without overrides. */
+  function readCommittedProp(): unknown {
+    if (!matchingProp) return undefined
+    return providerDefinition
+      ? state.mutatedEntity.value[matchingProp]
+      : state.getFieldListItem(host.uuid)?.props?.[matchingProp]
+  }
 
   /** Write a value into the block's mutated props (reactive re-render). */
   function setMutatedProp(value: string): void {
@@ -146,7 +161,21 @@ export function useEditableFieldOverride(
     if (!state.mutatedItemProps[mutatedItemPropsKey]) {
       state.mutatedItemProps[mutatedItemPropsKey] = {}
     }
-    state.mutatedItemProps[mutatedItemPropsKey]![matchingProp] = value
+    const bucket = state.mutatedItemProps[mutatedItemPropsKey]!
+
+    if (propProperty === null) {
+      bucket[matchingProp] = value
+      return
+    }
+
+    // Only one property of a structured value changed. Merge into the current
+    // value rather than replacing it, or the siblings — a link's uri — would be
+    // dropped for as long as the preview is active.
+    const base = bucket[matchingProp] ?? readCommittedProp()
+    bucket[matchingProp] = {
+      ...(base && typeof base === 'object' ? base : {}),
+      [propProperty]: value,
+    }
   }
 
   /** Undo the mutated-props write, re-instating any pre-existing override. */

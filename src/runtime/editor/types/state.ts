@@ -107,7 +107,10 @@ export type MutatedOptions = {
 export type MutatedItemProps = {
   [uuid: string]:
     | {
-        [key: string]: string
+        // Not always a string: a field whose value is a structure (a link's
+        // `{ uri, title }`) is overridden as the whole object, with only the
+        // edited property replaced.
+        [key: string]: unknown
       }
     | undefined
 }

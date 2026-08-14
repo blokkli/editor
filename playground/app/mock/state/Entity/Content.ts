@@ -33,6 +33,7 @@ export class ContentPage extends Content {
         'chart',
         'slider',
         'button',
+        'link',
         'card',
         'iframe',
         'image',

@@ -13,6 +13,7 @@ import {
 } from '#imports'
 import { entityStorageManager } from '#mock/entityStorage'
 import { getEditState } from '#mock/state'
+import type { FormValue } from '~/components/EntityForm/index.vue'
 
 definePageMeta({
   layout: 'form',
@@ -43,7 +44,7 @@ const translation = block.getTranslation(langcode.value)
 
 const fields = Object.values(translation.fields).filter((f) => f.isTranslatable)
 
-const onSubmit = async (values: Record<string, string>) => {
+const onSubmit = async (values: Record<string, FormValue>) => {
   editState.addMutation('edit_translation', {
     uuid: uuid.value,
     values,

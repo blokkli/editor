@@ -2,7 +2,7 @@ import type { MutationContext } from '../../../state/EditState'
 import { Mutation } from './../Mutation'
 
 export type MutationEditEntityArgs = {
-  values: Record<string, string>
+  values: Record<string, any>
 }
 
 export class MutationEditEntity extends Mutation {

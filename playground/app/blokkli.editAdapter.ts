@@ -41,8 +41,6 @@ import type {
   MockImportSummary,
   SerializedParagraph,
 } from './mock/plugins/mutations/Mutation/Import'
-import { FieldText } from './mock/state/Field/Text'
-import { FieldTextarea } from './mock/state/Field/Textarea'
 import type { Paragraph } from './mock/state/Paragraph/Paragraph'
 import { FieldReference } from './mock/state/Field/Reference'
 import type { MutationAddArgs } from './mock/plugins/mutations/Mutation/Add'
@@ -77,6 +75,7 @@ import type {
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
 import type { UserPermissions } from '#blokkli/editor/types/permissions'
 import { FieldUrl } from './mock/state/Field/Url'
+import { FieldUrlWithTitle } from './mock/state/Field/UrlWithTitle'
 import type {
   AgentConversationData,
   AgentConversationItemSummary,
@@ -794,14 +793,13 @@ export default defineBlokkliEditAdapter((ctx) => {
       const droppableFieldValues: DroppableFieldValue[] = []
 
       const hostEntity = inputState.context.entity
-      for (const field of hostEntity.getTextFields()) {
-        const value = field.getUnprocessed()
-        if (value && value.trim()) {
+      for (const entry of hostEntity.getTextEntries()) {
+        if (entry.value && entry.value.trim()) {
           textFieldValues.push({
             uuid: hostEntity.uuid,
-            fieldName: field.id,
-            value,
-            fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            fieldName: entry.path,
+            value: entry.value,
+            fieldType: entry.fieldType,
             entityType: hostEntity.entityType,
             entityBundle: hostEntity.bundle,
           })
@@ -822,15 +820,13 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       for (const proxy of inputState.context.proxies) {
         if (proxy.isDeleted) continue
-        const textFields = proxy.block.getTextFields()
-        for (const field of textFields) {
-          const value = field.getUnprocessed()
-          if (value && value.trim()) {
+        for (const entry of proxy.block.getTextEntries()) {
+          if (entry.value && entry.value.trim()) {
             textFieldValues.push({
               uuid: proxy.block.uuid,
-              fieldName: field.id,
-              value,
-              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+              fieldName: entry.path,
+              value: entry.value,
+              fieldType: entry.fieldType,
               entityType: proxy.block.entityType,
               entityBundle: proxy.block.bundle,
             })
@@ -957,15 +953,14 @@ export default defineBlokkliEditAdapter((ctx) => {
       const result: TextFieldValue[] = []
 
       const hostEntity = mutatedState.context.entity
-      for (const field of hostEntity.getTextFields()) {
-        if (!field.isTranslatable) continue
-        const value = field.getUnprocessed()
-        if (value && value.trim()) {
+      for (const entry of hostEntity.getTextEntries()) {
+        if (!entry.isTranslatable) continue
+        if (entry.value && entry.value.trim()) {
           result.push({
             uuid: hostEntity.uuid,
-            fieldName: field.id,
-            value,
-            fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+            fieldName: entry.path,
+            value: entry.value,
+            fieldType: entry.fieldType,
             entityType: hostEntity.entityType,
             entityBundle: hostEntity.bundle,
           })
@@ -974,16 +969,14 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       for (const proxy of mutatedState.context.proxies) {
         if (proxy.isDeleted) continue
-        const textFields = proxy.block.getTextFields()
-        for (const field of textFields) {
-          if (!field.isTranslatable) continue
-          const value = field.getUnprocessed()
-          if (value && value.trim()) {
+        for (const entry of proxy.block.getTextEntries()) {
+          if (!entry.isTranslatable) continue
+          if (entry.value && entry.value.trim()) {
             result.push({
               uuid: proxy.block.uuid,
-              fieldName: field.id,
-              value,
-              fieldType: field.type === 'textarea' ? 'markup' : 'plain',
+              fieldName: entry.path,
+              value: entry.value,
+              fieldType: entry.fieldType,
               entityType: proxy.block.entityType,
               entityBundle: proxy.block.bundle,
             })
@@ -2138,23 +2131,28 @@ export default defineBlokkliEditAdapter((ctx) => {
       const mapEntityFields = (
         entity: typeof Content | typeof Paragraph,
       ): EditableFieldConfig[] => {
+        // Driven by the same `getTextEntries()` declaration that produces the
+        // VALUES, so the config and the values cannot drift apart — and a text
+        // property nested in a non-text field (a link title) is picked up here
+        // for free.
         return entity
           .getFieldDefintions()
-          .map<EditableFieldConfig | undefined>((field) => {
+          .flatMap<EditableFieldConfig | undefined>((field) => {
             if (field.id === 'publishOn' || field.id === 'unpublishOn') {
-              return
+              return []
             }
-            if (field instanceof FieldText || field instanceof FieldTextarea) {
-              return {
-                name: field.id,
-                entityType: entity.entityType,
-                entityBundle: entity.bundle,
-                label: field.label,
-                type: field instanceof FieldText ? 'plain' : 'frame',
-                required: field.required,
-                maxLength: field.maxLength,
-              }
-            }
+            return field.getTextEntries().map((entry) => ({
+              name: entry.path,
+              entityType: entity.entityType,
+              entityBundle: entity.bundle,
+              label: entry.label,
+              type:
+                entry.fieldType === 'markup'
+                  ? ('frame' as const)
+                  : ('plain' as const),
+              required: field.required,
+              maxLength: entry.maxLength,
+            }))
           })
           .filter(falsy)
       }
@@ -2191,7 +2189,10 @@ export default defineBlokkliEditAdapter((ctx) => {
                 cardinality: field.cardinality,
                 required: field.required,
               }
-            } else if (field instanceof FieldUrl) {
+            } else if (
+              field instanceof FieldUrl ||
+              field instanceof FieldUrlWithTitle
+            ) {
               return {
                 type: 'link',
                 name: field.id,

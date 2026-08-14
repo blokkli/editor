@@ -3,7 +3,8 @@ import { Mutation } from './../Mutation'
 
 export type MutationEditArgs = {
   uuid: string
-  values: Record<string, string>
+  // A link field submits an object (uri + title), not a string.
+  values: Record<string, any>
 }
 
 export class MutationEdit extends Mutation {

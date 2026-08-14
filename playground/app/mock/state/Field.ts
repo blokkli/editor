@@ -1,5 +1,32 @@
 import type { Entity } from './Entity'
 
+/**
+ * One translatable text value, addressed by property path.
+ *
+ * A text field exposes its own value, so the path is just the field id. A field
+ * whose value is a structure can expose text *properties* inside it, in which
+ * case the path is `fieldId.property` — the convention Drupal uses, and the one
+ * `paragraphs_blokkli` already writes through
+ * (`UpdateFieldValueTrait::updateTextFieldValue`).
+ */
+export type FieldTextEntry = {
+  path: string
+  label: string
+  value: string
+  fieldType: 'plain' | 'markup'
+  maxLength: number
+  isTranslatable: boolean
+}
+
+/** Split `field.property` into its parts. A bare field id yields a null property. */
+export function splitFieldPath(path: string): [string, string | null] {
+  const index = path.indexOf('.')
+  if (index === -1) {
+    return [path, null]
+  }
+  return [path.slice(0, index), path.slice(index + 1)]
+}
+
 export abstract class Field<T> {
   type: string
   id: string
@@ -63,6 +90,24 @@ export abstract class Field<T> {
 
   getPropValueItem(v: T): any {
     return v
+  }
+
+  /**
+   * The translatable text values this field exposes. Empty for fields that
+   * carry no text (references, options, booleans...).
+   */
+  getTextEntries(): FieldTextEntry[] {
+    return []
+  }
+
+  /**
+   * Write one of the values from {@link getTextEntries}, addressed by the
+   * property within this field. `null` means the field's own value.
+   */
+  setTextValue(property: string | null, value: string): void {
+    if (property === null) {
+      this.setList([value as unknown as T])
+    }
   }
 
   toJSON() {
