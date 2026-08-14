@@ -1,20 +1,32 @@
 import { Field } from '../Field'
 
 /**
- * Simulate CMS markup processing: add a `data-bk-processed` attribute to
- * block-level HTML elements. This simulates server-side text filters that
- * inject attributes during rendering.
+ * Simulate the three things a CMS text filter actually does while rendering,
+ * each detectable through a different read path:
  *
- * Crucially, this is NOT idempotent: if processed markup is saved back and
- * processed again, every block element gets a duplicate attribute
- * (`<p data-bk-processed data-bk-processed>`), making the corruption
- * immediately visible.
+ * 1. **Rewrites attributes** — `/node/123` resolved to its path alias. Only
+ *    visible in `innerHTML`; survives a Markdown conversion as a link target.
+ * 2. **Inserts nodes** — the "opens in a new tab" hint Drupal appends after
+ *    external links. This is the case that motivated all of this, and the only
+ *    one visible to `textContent`, turndown and readability chunking.
+ * 3. **Injects attributes** — `data-bk-processed` on block elements. Invisible
+ *    to text extraction, so it alone cannot catch a `textContent`-based read.
+ *
+ * None of it is idempotent: processed markup fed back through gains a second
+ * `data-bk-processed`, a second hint span and an `/alias-alias-` href, so
+ * round-tripped corruption compounds visibly instead of hiding.
  */
 function processMarkup(raw: string): string {
-  return raw.replace(
-    /<(p|h[1-6]|ul|ol|li|blockquote)([\s>])/g,
-    '<$1 data-bk-processed$2',
-  )
+  return raw
+    .replace(/href="\/node\/(\d+)"/g, 'href="/alias-$1"')
+    .replace(
+      /(<a\b[^>]*target="_blank"[^>]*>.*?<\/a>)/g,
+      '$1<span class="bk-ext"> (opens in a new tab)</span>',
+    )
+    .replace(
+      /<(p|h[1-6]|ul|ol|li|blockquote)([\s>])/g,
+      '<$1 data-bk-processed$2',
+    )
 }
 
 export class FieldTextarea extends Field<string> {

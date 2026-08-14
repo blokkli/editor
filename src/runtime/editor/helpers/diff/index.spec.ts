@@ -559,6 +559,94 @@ describe('reassembleValue', () => {
   })
 })
 
+/**
+ * Segments are reassembled by re-serializing parsed DOM, so anything the
+ * parser normalizes away is silently rewritten into the STORED field value.
+ *
+ * This only became dangerous once the agent started diffing against the raw
+ * backend value instead of the rendered one: a rendered value has already been
+ * through the browser's parser, so the round-trip was idempotent. A raw value
+ * has not.
+ */
+describe('reassembleValue does not corrupt raw stored markup', () => {
+  it('keeps quotes in an attribute value escaped', () => {
+    // `attr.value` is the DECODED value. Re-emitting it raw closes the
+    // attribute early and produces structurally broken markup, which Drupal's
+    // filter_xss then eats.
+    const stored = '<p data-quote="Er sagte &quot;Hallo&quot;">A</p><p>B</p>'
+    const segments = splitIntoSegments(
+      stored,
+      '<p data-quote="Er sagte &quot;Hallo&quot;">A</p><p>New</p>',
+      'markup',
+    )!
+    expect(reassembleValue(segments, {})).toBe(
+      '<p data-quote="Er sagte &quot;Hallo&quot;">A</p><p>New</p>',
+    )
+  })
+
+  it('keeps an ampersand in an attribute value escaped', () => {
+    const segments = splitIntoSegments(
+      '<p class="a &amp; b">A</p><p>B</p>',
+      '<p class="a &amp; b">A</p><p>New</p>',
+      'markup',
+    )!
+    expect(reassembleValue(segments, {})).toBe(
+      '<p class="a &amp; b">A</p><p>New</p>',
+    )
+  })
+
+  it('keeps quotes in a list item attribute escaped', () => {
+    const segments = splitIntoSegments(
+      '<ul><li data-q="say &quot;hi&quot;">A</li><li>B</li></ul>',
+      '<ul><li data-q="say &quot;hi&quot;">A</li><li>New</li></ul>',
+      'markup',
+    )!
+    expect(reassembleValue(segments, {})).toBe(
+      '<ul><li data-q="say &quot;hi&quot;">A</li><li>New</li></ul>',
+    )
+  })
+
+  it('refuses to segment a value containing a top-level HTML comment', () => {
+    // A comment is neither an element nor a text node, so the block parser
+    // skips it and it disappears on reassembly. Bailing sends the field down
+    // the unsegmented path, which writes the proposed value verbatim.
+    expect(
+      splitIntoSegments(
+        '<p>a</p><!-- TODO: Preis prüfen --><p>b</p>',
+        '<p>A</p><!-- TODO: Preis prüfen --><p>b</p>',
+        'markup',
+      ),
+    ).toBeNull()
+  })
+
+  it('refuses to segment when only the incoming value has a comment', () => {
+    expect(
+      splitIntoSegments(
+        '<p>a</p><p>b</p>',
+        '<p>A</p><!-- added --><p>b</p>',
+        'markup',
+      ),
+    ).toBeNull()
+  })
+
+  it('keeps a comment inside a list', () => {
+    // The list parser bails on the comment, so the <ul> degrades to a single
+    // atomic block whose innerHTML is carried verbatim. Per-<li> granularity is
+    // lost, the comment is not.
+    const segments = splitIntoSegments(
+      '<ul><li>A</li><!-- c --><li>B</li></ul>',
+      '<ul><li>A2</li><!-- c --><li>B</li></ul>',
+      'markup',
+    )!
+    expect(reassembleValue(segments, {})).toBe(
+      '<ul><li>A2</li><!-- c --><li>B</li></ul>',
+    )
+    expect(reassembleValue(segments, { '0': false })).toBe(
+      '<ul><li>A</li><!-- c --><li>B</li></ul>',
+    )
+  })
+})
+
 describe('flattenSegments', () => {
   it('includes list children at the same level as atomic siblings', () => {
     const segments = splitIntoSegments(

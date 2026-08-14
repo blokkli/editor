@@ -194,11 +194,20 @@ export function decideFieldUpdates(
       acceptedCount += accepted
 
       if (accepted > 0) {
+        // Reassembly re-serializes the whole field through the DOM, which
+        // rewrites content the user never touched (entities decode, `<br />`
+        // becomes `<br>`). It is only worth that cost for a genuine partial
+        // accept — when everything was accepted the proposed value already IS
+        // the answer, byte for byte.
+        const fieldValue =
+          accepted === atoms.length
+            ? item.value
+            : reassembleValue(item.segments, acceptedById)
         updates.push({
           itemId: item.id,
           uuid: item.uuid,
           fieldName: item.fieldName,
-          fieldValue: reassembleValue(item.segments, acceptedById),
+          fieldValue,
         })
       }
 

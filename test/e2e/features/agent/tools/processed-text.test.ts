@@ -5,7 +5,11 @@ import { addBlock } from '../../../support/blocks'
 import { openSidebar } from '../../../support/sidebar'
 import { setupEditorE2E } from '../../../support/setup'
 import { runAgentTool, runComponentTool } from '../../../support/agent'
-import { storedFieldValue } from '../../../support/editable'
+import {
+  openEditableField,
+  plaintextEditor,
+  storedFieldValue,
+} from '../../../support/editable'
 import { applyDiff } from '../../../support/diff'
 
 /**
@@ -46,8 +50,20 @@ describe('agent: text field values are always unprocessed', async () => {
   /** Raw plain-text fixture. Processing would turn `--` into an em dash. */
   const RAW_PLAIN = 'Alpha -- Beta'
 
+  /**
+   * The case that motivated all of this: a link the backend rewrites while
+   * rendering. Processing resolves `/node/123` to a path alias and appends a
+   * visible "opens in a new tab" hint after the anchor.
+   */
+  const RAW_LINK =
+    '<p>Mehr <a href="/node/123" target="_blank">im Angebot</a> lesen.</p>'
+
   const MARKUP_MARKER = 'data-bk-processed'
   const PLAIN_MARKER = '—'
+  /** Node insertion — the only marker visible to `textContent`. */
+  const LINK_TEXT_MARKER = '(opens in a new tab)'
+  /** Attribute rewriting — visible only in markup. */
+  const LINK_HREF_MARKER = '/alias-123'
 
   let page: Page
   let pageUuid: string
@@ -303,6 +319,72 @@ describe('agent: text field values are always unprocessed', async () => {
     expect(await storedFieldValue(page, uuid, 'text')).not.toContain(
       MARKUP_MARKER,
     )
+  })
+
+  test('a rewritten link is read with its stored href and no inserted hint', async () => {
+    const uuid = await addTextBlock()
+    await seedField(uuid, 'text', RAW_LINK)
+
+    const result = await runAgentTool(page, 'get_content_fields', {
+      uuids: [uuid],
+      includeNested: false,
+    })
+    const json = JSON.stringify(result)
+    expect(json).toContain('/node/123')
+    expect(json).not.toContain(LINK_HREF_MARKER)
+    expect(json).not.toContain(LINK_TEXT_MARKER)
+  })
+
+  test('editing around a rewritten link keeps the stored href intact', async () => {
+    const uuid = await addTextBlock()
+    await seedField(uuid, 'text', RAW_LINK)
+
+    // Touch text outside the anchor. The whole field is still rewritten on
+    // apply, so a rendered read basis would bake in both the alias and the hint.
+    await runComponentTool(page, 'update_text_fields', {
+      operations: [
+        { uuid, fieldName: 'text', search: 'lesen', replace: 'entdecken' },
+      ],
+      requireApproval: false,
+    })
+
+    await expect
+      .poll(() => storedFieldValue(page, uuid, 'text'))
+      .toContain('entdecken')
+    const stored = await storedFieldValue(page, uuid, 'text')
+    expect(stored).toContain('href="/node/123"')
+    expect(stored).not.toContain(LINK_HREF_MARKER)
+    expect(stored).not.toContain(LINK_TEXT_MARKER)
+    expect(stored).not.toContain(MARKUP_MARKER)
+  })
+
+  test('get_page_text still reports the inserted hint as rendered text', async () => {
+    // The counterpart to the read test above: the hint is genuinely part of the
+    // page, and `get_page_text` is the tool that must keep showing it — with
+    // `source: 'rendered'` so the model knows it cannot be used as an edit
+    // target. Pinning it here stops anyone "fixing" this into a raw read.
+    const uuid = await addTextBlock()
+    await seedField(uuid, 'text', RAW_LINK)
+
+    const result = await runAgentTool(page, 'get_page_text', {})
+    expect(result.source).toBe('rendered')
+    expect(result.text).toContain(LINK_TEXT_MARKER)
+  })
+
+  test('opening a component editable seeds the stored value', async () => {
+    // `<BlokkliEditable>` — the documented Drupal pattern, and the path a
+    // HUMAN uses — seeded its editor from the rendered prop, so opening a field
+    // and saving persisted the filter output even without the agent involved.
+    await seedField(pageUuid, 'title', RAW_PLAIN)
+    await openEditableField(page, 'title', pageUuid)
+
+    const editor = plaintextEditor(page)
+    await editor.waitFor({ state: 'visible' })
+    const seeded = await editor.inputValue()
+    expect(seeded).toContain('--')
+    expect(seeded).not.toContain(PLAIN_MARKER)
+
+    await page.keyboard.press('Escape')
   })
 
   test('an agent edit does not compound the processing', async () => {

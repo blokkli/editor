@@ -280,10 +280,31 @@ export default function fieldValueProvider(
    */
   function getRawFieldValues(): TextFieldValue[] | null {
     try {
-      return state.getMappedState().textFieldValues ?? null
+      const values = state.getMappedState().textFieldValues
+      // An empty array means the adapter exposed nothing, exactly like omitting
+      // the key: the Drupal adapter maps missing data to `[]`. Accepting it as
+      // "raw values are available" would silently serve every field from the
+      // rendered DOM, with no warning, in the adapter this exists to protect.
+      return values?.length ? values : null
     } catch {
       return null
     }
+  }
+
+  /**
+   * Whether the mapped state walked this entity's fields at all.
+   *
+   * Adapters emit one row per NON-EMPTY field, so the absence of rows for an
+   * entity says nothing about whether the adapter covers it — a block whose
+   * text fields happen to all be empty contributes none. Coverage has to be
+   * decided from the state tree instead.
+   */
+  function entityIsCovered(entityType: string, uuid: string): boolean {
+    // The host entity is always part of the state the adapter maps.
+    if (entityType !== itemEntityType) {
+      return true
+    }
+    return !!state.getFieldListItem(uuid)
   }
 
   /** True once we've warned about an adapter that exposes no raw values. */
@@ -310,29 +331,25 @@ export default function fieldValueProvider(
       return readValue(entityType, uuid, bundle, fieldName, fieldType)
     }
 
-    let entityIsKnown = false
     for (let i = 0; i < values.length; i++) {
       const v = values[i]!
-      if (v.uuid !== uuid || v.entityType !== entityType) {
-        continue
-      }
-      // Same entity — so the adapter DOES expose this entity's fields.
-      entityIsKnown = true
-      if (v.fieldName === fieldName) {
-        return v.value
+      if (v.uuid === uuid && v.entityType === entityType) {
+        if (v.fieldName === fieldName) {
+          return v.value
+        }
       }
     }
 
-    // The entity is exposed but this field isn't: adapters omit fields with no
-    // value (see the playground's `mapState`), so the field is genuinely empty.
-    // Falling back here would hand back filter-injected markup as if a human
-    // had authored it.
-    if (entityIsKnown) {
+    // No row for this field. Adapters omit fields with no value, so for an
+    // entity the adapter covers this means the field is genuinely empty.
+    // Falling back would hand back a rendered placeholder — or filter-injected
+    // markup — as if a human had authored it.
+    if (entityIsCovered(entityType, uuid)) {
       return ''
     }
 
-    // Entity absent entirely (e.g. a block inside a library item, which the
-    // mapped state doesn't walk). Nothing better than the rendered value.
+    // The mapped state never walked this entity, so there is no raw value to
+    // be had. Nothing better than the rendered one.
     return readValue(entityType, uuid, bundle, fieldName, fieldType)
   }
 

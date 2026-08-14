@@ -299,7 +299,29 @@ export function applySelectorOperation(
     const parser = new DOMParser()
     const doc = parser.parseFromString(`<body>${html}</body>`, 'text/html')
     const el = doc.querySelector(selector)
-    if (el) {
+    if (!el) {
+      return html
+    }
+
+    // Serializing the parse tree rewrites the WHOLE field, including content
+    // this operation was never asked to touch. That was harmless while the
+    // input was the rendered value (already parser-normalized), but the input
+    // is now the raw stored value, where the parser restructures things:
+    // `<drupal-media … />` swallows its following siblings, a `<tr>` fragment
+    // loses its tags entirely, and entities decode.
+    //
+    // So prefer a string-level splice: when the target's current content
+    // appears exactly once in the source, it is an unambiguous anchor and every
+    // other byte of the field can be left exactly as it was.
+    const current = el.innerHTML
+    if (current && html.split(current).length === 2) {
+      return html.replace(current, replacement)
+    }
+
+    // No unique anchor. Fall back to re-serializing, but only when that
+    // reproduces the input exactly — otherwise the field would be rewritten
+    // around the edit.
+    if (doc.body.innerHTML === html) {
       el.innerHTML = replacement
       return doc.body.innerHTML
     }

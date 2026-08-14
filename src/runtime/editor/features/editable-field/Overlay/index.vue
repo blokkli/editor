@@ -466,14 +466,16 @@ onMounted(() => {
   // persist whatever the backend's filters injected while rendering.
   // `rawOriginalValue` already falls back to the rendered value for adapters
   // that expose nothing raw.
-  if (props.controlled || props.isComponent) {
+  if (props.controlled) {
     modelValue.value = props.value || ''
   } else {
-    modelValue.value =
-      override.rawOriginalValue ||
-      override.originalValue ||
-      (isMarkup.value ? props.element.innerHTML : props.element.textContent) ||
-      ''
+    // `readRawValue` resolves the fallback itself (rendered value for adapters
+    // that expose nothing raw), so whatever it returns is the best answer
+    // available — including an empty string, which means the field is
+    // genuinely empty. A `||` chain here would treat that as "no value" and
+    // seed the editor from the DOM instead, so a template placeholder like
+    // `{{ title || 'Learn more' }}` would be persisted as authored content.
+    modelValue.value = override.rawOriginalValue
   }
 
   originalText.value = modelValue.value

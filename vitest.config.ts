@@ -27,6 +27,13 @@ export default defineConfig({
               __dirname,
               './src/runtime/constants',
             ),
+            '#blokkli/runtime-helpers': path.resolve(
+              __dirname,
+              './src/runtime/helpers/runtimeHelpers',
+            ),
+            // Must come after the more specific `#blokkli/editor/...` entries
+            // above — Vite matches aliases in order.
+            '#blokkli/editor': path.resolve(__dirname, './src/runtime/editor'),
             '#blokkli/helpers': path.resolve(
               __dirname,
               './src/runtime/helpers',

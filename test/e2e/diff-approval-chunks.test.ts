@@ -5,7 +5,7 @@ import { addBlock } from './support/blocks'
 import { applyChunkFieldDiff, applyDiff, cancelDiff } from './support/diff'
 import { openSidebar } from './support/sidebar'
 import { setupEditorE2E } from './support/setup'
-import { editableState, blockHost } from './support/editable'
+import { editableState, blockHost, storedFieldValue } from './support/editable'
 
 /**
  * Chunk-level DiffApproval: a rewrite on a markup field that contains multiple
@@ -16,9 +16,11 @@ import { editableState, blockHost } from './support/editable'
  * seeds it with the test's `before` value before opening the DiffApproval, so
  * the segment count is deterministic.
  *
- * Verification is against the editable's rendered text after apply — the mock
- * decorates block elements with `data-bk-processed` on read, so we ignore
- * markup and assert on plain text only.
+ * Verification is against the editable's rendered text after apply. The mock
+ * decorates block elements on read, so the rendered markup carries filter
+ * artifacts and only its plain text is meaningful here — the STORED value is
+ * asserted separately via `storedFieldValue`, which is what a partial accept
+ * actually writes back.
  */
 describe('DiffApproval chunk-level approval', async () => {
   await setupEditorE2E()
@@ -123,5 +125,13 @@ describe('DiffApproval chunk-level approval', async () => {
     expect(textAfter).not.toContain('Bullet B new') // rejection landed
     expect(textAfter).toContain('Bullet C new')
     expect(textAfter).toContain('New outro')
+
+    // The rendered check above cannot see what was actually persisted. A
+    // partial accept is the one path that still reassembles the field from
+    // parsed DOM, so assert the STORED markup exactly: the rejected <li> keeps
+    // its original text and nothing picked up the mock's render-time markers.
+    expect(await storedFieldValue(page, uuid, 'text')).toBe(
+      '<p>New intro</p><ul><li>Bullet A new</li><li>Bullet B</li><li>Bullet C new</li></ul><p>New outro</p>',
+    )
   })
 })

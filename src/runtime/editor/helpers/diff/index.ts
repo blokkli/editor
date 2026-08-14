@@ -211,6 +211,26 @@ type Block = {
  * inline elements at the top level), signaling that a flat diff should be
  * used instead.
  */
+/**
+ * Serialize an attribute value back into HTML.
+ *
+ * `attr.value` is the DECODED value, so emitting it raw closes the attribute
+ * early on any embedded quote — turning `data-q="say &quot;hi&quot;"` into
+ * `data-q="say "hi""`, which is structurally broken markup. Reassembly writes
+ * straight into the stored field, so this has to round-trip exactly.
+ */
+function escapeAttribute(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+}
+
+function serializeOpenTag(el: HTMLElement, tag: string): string {
+  let openTag = `<${tag}`
+  for (const attr of el.attributes) {
+    openTag += ` ${attr.name}="${escapeAttribute(attr.value)}"`
+  }
+  return openTag + '>'
+}
+
 function parseBlocks(html: string): Block[] | null {
   const container = document.createElement('div')
   container.innerHTML = html
@@ -223,12 +243,16 @@ function parseBlocks(html: string): Block[] | null {
       if (!BLOCK_TAGS.has(tag)) {
         return null
       }
-      let openTag = `<${tag}`
-      for (const attr of el.attributes) {
-        openTag += ` ${attr.name}="${attr.value}"`
-      }
-      openTag += '>'
-      blocks.push({ tag, innerHTML: el.innerHTML, openTag })
+      blocks.push({
+        tag,
+        innerHTML: el.innerHTML,
+        openTag: serializeOpenTag(el, tag),
+      })
+    } else if (child.nodeType === Node.COMMENT_NODE) {
+      // A comment is neither an element nor a text node, so it would simply be
+      // dropped from the reassembled value. Bail instead: the caller falls back
+      // to the unsegmented path, which writes the proposed value verbatim.
+      return null
     } else if (child.nodeType === Node.TEXT_NODE && child.textContent?.trim()) {
       return null
     }
@@ -446,12 +470,14 @@ function parseListItems(html: string): Block[] | null {
       const el = child as HTMLElement
       const tag = el.tagName.toLowerCase()
       if (tag !== 'li') return null
-      let openTag = `<${tag}`
-      for (const attr of el.attributes) {
-        openTag += ` ${attr.name}="${attr.value}"`
-      }
-      openTag += '>'
-      items.push({ tag, innerHTML: el.innerHTML, openTag })
+      items.push({
+        tag,
+        innerHTML: el.innerHTML,
+        openTag: serializeOpenTag(el, tag),
+      })
+    } else if (child.nodeType === Node.COMMENT_NODE) {
+      // Would be dropped on reassembly — see `parseBlocks`.
+      return null
     } else if (child.nodeType === Node.TEXT_NODE && child.textContent?.trim()) {
       return null
     }
