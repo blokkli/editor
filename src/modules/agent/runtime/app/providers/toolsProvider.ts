@@ -159,16 +159,24 @@ export default function toolsProvider({
     return { ok: true, result: payload, meta }
   }
 
-  /** Read-only query tool: surface the label and select/scroll any affected blocks. */
+  /**
+   * Read-only query tool: surface the label and scroll to the blocks it read.
+   *
+   * Deliberately does NOT touch the selection. `select` replaces the selection
+   * wholesale, so a query tool inspecting a subset of what the user selected
+   * would silently discard the rest — and the agent would then read its own
+   * footprint back via `get_selected_paragraphs` instead of the user's intent.
+   * The selection is an input to the turn, not something reading may rewrite.
+   */
   function executeQueryTool(
     result: unknown,
     setLabel?: (label: string) => void,
   ): ToolOutcome {
     if (isQueryResult(result)) {
       if (setLabel) setLabel(result.label)
-      if (result.affectedUuids?.length) {
-        app.eventBus.emit('select', result.affectedUuids)
-        app.eventBus.emit('scrollSelectionIntoView', {})
+      const uuid = result.affectedUuids?.[0]
+      if (uuid) {
+        app.eventBus.emit('scrollIntoView', { uuid })
       }
       return { ok: true, result: result.result, meta: {} }
     }

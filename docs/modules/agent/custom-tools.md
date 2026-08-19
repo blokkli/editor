@@ -90,7 +90,7 @@ The `execute` function must return a `QueryResult`:
 type QueryResult<T> = {
   label: string // Shown in the conversation UI
   result: T // Data sent to the LLM
-  affectedUuids?: string[] // Blocks to select and scroll into view
+  affectedUuids?: string[] // Blocks to scroll into view (never changes the selection)
 }
 ```
 

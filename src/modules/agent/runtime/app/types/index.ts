@@ -67,7 +67,8 @@ export type QueryResult<T = unknown> = {
   result: T
   /**
    * UUIDs of blocks related to this query.
-   * The framework will select these blocks and scroll them into view.
+   * The framework scrolls the first one into view. Query tools never change
+   * the selection — that belongs to the user.
    */
   affectedUuids?: string[]
 }
