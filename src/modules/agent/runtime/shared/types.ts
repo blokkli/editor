@@ -471,9 +471,13 @@ export const pageStructureSchema = z.object({
 export type PageStructure = z.infer<typeof pageStructureSchema>
 
 /**
- * A block the user had selected when sending the initial message. The bundle
- * and label travel with the UUID so the LLM can disambiguate "this" / "these"
- * without an extra `get_selected_paragraphs` round-trip.
+ * A block the user had selected when sending a message. Every message the user
+ * writes carries its own snapshot, so the LLM can resolve "this" / "these"
+ * against the selection as it was for that message, without an extra
+ * `get_selected_paragraphs` round-trip.
+ *
+ * The bundle travels with the UUID for disambiguation. The label is carried for
+ * client-side use; the marker sent to the LLM uses bundle and UUID only.
  */
 export type SelectedBlock = {
   uuid: string

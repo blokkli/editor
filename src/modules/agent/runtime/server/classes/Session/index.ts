@@ -41,6 +41,7 @@ import { resolveSkills } from '../../helpers/skills'
 import { classifyError } from '../../helpers/errors'
 import { computeStateHash, verifyStateHash } from '../../helpers/security'
 import { validateMessages } from '../../helpers/messages'
+import { formatSelectionMarker } from '../../helpers/selectionMarker'
 import { getDefaultModel, createUsageTurn } from '../../helpers/models'
 import type {
   ServerPlan,
@@ -605,15 +606,9 @@ export class Session {
     // Build initial user message with context
     const userParts: string[] = []
 
-    if (selectedBlocks?.length) {
-      const formatted = selectedBlocks
-        .map((b) => `${b.bundle} (${b.uuid})`)
-        .join(', ')
-      userParts.push(
-        selectedBlocks.length === 1
-          ? `[User has selected one block: ${formatted}]`
-          : `[User has selected: ${formatted}]`,
-      )
+    const selectionMarker = formatSelectionMarker(selectedBlocks)
+    if (selectionMarker) {
+      userParts.push(selectionMarker)
     }
 
     userParts.push(prompt)

@@ -71,6 +71,7 @@ import {
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
 import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
 import type { PendingPromptRequest } from './types'
+import { snapshotSelectedBlocks } from '#blokkli/agent/app/helpers/snapshotSelectedBlocks'
 
 const AgentContainer = defineAsyncComponent(() => import('./Container.vue'))
 const ConversationsAdminDialog = defineAsyncComponent(
@@ -173,11 +174,7 @@ defineItemDropdownAction(() => {
           app.eventBus.emit('sidebar:open', 'agent')
           pendingPromptRequest.value = {
             prompt,
-            selectedBlocks: app.selection.items.value.map((item) => ({
-              uuid: item.uuid,
-              bundle: item.bundle,
-              label: app.types.getBlockLabel(item.bundle),
-            })),
+            selectedBlocks: snapshotSelectedBlocks(app),
           }
         },
       }

@@ -153,6 +153,7 @@ import { agentName } from '#blokkli-build/agent-prompts'
 import PanelSheet from '#blokkli/editor/components/Panel/Sheet/index.vue'
 import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
 import { useAgent } from '#blokkli/agent/app/composables/useAgent'
+import { snapshotSelectedBlocks } from '#blokkli/agent/app/helpers/snapshotSelectedBlocks'
 
 const props = defineProps<{
   isShown: boolean
@@ -281,25 +282,8 @@ function scrollToBottomOnSend() {
   nextTick(scrollToBottom)
 }
 
-/**
- * Snapshot the current selection in the wire shape — but only on the first
- * user message of a conversation. After that the user may have re-selected,
- * so the agent should call `get_selected_paragraphs` to read the current
- * selection rather than trust a stale snapshot.
- */
-function snapshotInitialSelection() {
-  if (conversation.value.length) return undefined
-  const items = app.selection.items.value
-  if (!items.length) return undefined
-  return items.map((item) => ({
-    uuid: item.uuid,
-    bundle: item.bundle,
-    label: app.types.getBlockLabel(item.bundle),
-  }))
-}
-
 function onWelcomePrompt(prompt: string) {
-  agent.sendPrompt({ prompt, selectedBlocks: snapshotInitialSelection() })
+  agent.sendPrompt({ prompt, selectedBlocks: snapshotSelectedBlocks(app) })
   scrollToBottomOnSend()
 }
 
@@ -312,7 +296,7 @@ function onSubmit(submitAttachments: Attachment[]) {
   )
     return
 
-  const selectedBlocks = snapshotInitialSelection()
+  const selectedBlocks = snapshotSelectedBlocks(app)
 
   if (!submitAttachments.length) {
     agent.sendPrompt({ prompt: inputValue.value, selectedBlocks })

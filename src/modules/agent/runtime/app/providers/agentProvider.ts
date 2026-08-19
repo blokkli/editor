@@ -14,6 +14,7 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { enableMock, routeRoute } from '#blokkli-build/agent-client'
 import { buildPageContext } from '#blokkli/agent/app/helpers/buildPageContext'
+import { snapshotSelectedBlocks } from '#blokkli/agent/app/helpers/snapshotSelectedBlocks'
 import {
   readMockRouting,
   readMockScript,
@@ -570,7 +571,14 @@ export default function agentProvider({
       displayPrompt: isEdit ? undefined : displayedText,
       attachments: target.attachments,
       rollbackToUserMessageIndex: userMessageIndex,
-      selectedBlocks: ctx?.selectedBlocks,
+      // Retry replays the message as originally sent, so the original
+      // selection is the honest answer. An edit is a new message being sent
+      // now — the marker claims "when this message was sent", so it must
+      // reflect the live selection, snapshotted after the history restore
+      // above.
+      selectedBlocks: isEdit
+        ? snapshotSelectedBlocks(app)
+        : ctx?.selectedBlocks,
       autoLoadTools: ctx?.autoLoadTools,
       autoLoadSkills: ctx?.autoLoadSkills,
       preSeededResults: isEdit ? undefined : ctx?.preSeededResults,
@@ -602,7 +610,13 @@ export default function agentProvider({
     )
 
     isProcessing.value = true
-    socket.send({ type: 'start', prompt: lastUserItem.content })
+    // Replay the original selection: omitting it would tell the agent nothing
+    // was selected when the user wrote this, rather than leaving it unstated.
+    socket.send({
+      type: 'start',
+      prompt: lastUserItem.content,
+      selectedBlocks: lastUserItem.sendContext?.selectedBlocks,
+    })
   }
 
   function cancel(): void {
