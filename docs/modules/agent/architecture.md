@@ -69,8 +69,15 @@ Client                          Server
 
 1. **Connect** — client opens WebSocket to `/api/blokkli/agent`
 2. **Authenticate** — client sends HMAC token, server validates it
-3. **Initialize** — client sends tool definitions and page context
-4. **Converse** — client sends messages, server streams responses
+3. **Initialize** — client sends tool definitions and page context. The tool
+   list covers everything the client can structurally run (adapter methods
+   present, availability checks pass) — it is not filtered by edit mode.
+4. **Converse** — client sends messages, server streams responses. Each user
+   message carries the live page state (edit mode, content language, published
+   state); the server merges it into its context, filters the offered tools by
+   the current edit mode on every turn, and announces changes to the LLM with an
+   `[Editor context …]` note. Taking ownership or moving to a translation
+   mid-conversation therefore takes effect on the next message.
 5. **Idle timeout** — after 5 minutes of inactivity, the server cleans up
 6. **Disconnect** — client or server closes the connection
 

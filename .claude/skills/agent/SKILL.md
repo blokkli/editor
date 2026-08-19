@@ -25,12 +25,13 @@ src/modules/agent/
 │   │   └── types/              # Tool, conversation, prompt types
 │   ├── server/                 # Server-side code
 │   │   ├── agent.ts            # WebSocket handler entry point
-│   │   ├── Session.ts          # Conversation state, agent loop, tool orchestration
-│   │   ├── SessionManager.ts   # Per-peer session management, auth
+│   │   ├── classes/Session/    # Conversation state, agent loop, tool orchestration
+│   │   ├── classes/SessionManager/ # Per-peer session management, auth
 │   │   ├── providers/          # LLM providers (anthropic, openai)
 │   │   ├── default-system-prompts/  # Modular system prompt sections
 │   │   ├── default-skills/     # Built-in skills (loaded on demand)
-│   │   └── helpers.ts          # Message pruning, hashing, error classification
+│   │   ├── server-tools/       # In-process tools (load_tools, create_plan, …)
+│   │   └── helpers/            # Hashing, errors, selection marker, page state note
 │   └── shared/                 # WebSocket protocol types, page context, plan state
 └── css/                        # Agent UI styles (partials in css/partials/)
 ```
@@ -60,8 +61,14 @@ NUXT_BLOKKLI_AGENT_AUTH_SECRET  // HMAC secret for WebSocket auth
 
 1. Client opens WebSocket to `/api/blokkli/agent`
 2. Client authenticates with HMAC token (from adapter's `getAgentAuthToken()`)
-3. Client sends page context + available tools (JSON schemas)
-4. User sends a message → server streams LLM response
+3. Client sends page context + available tools (JSON schemas). The tool list is
+   capability-filtered (adapter methods, `isAvailable`) but NOT mode filtered —
+   the server gates tools by the current edit mode per turn and refuses
+   out-of-mode calls at execution time
+4. User sends a message → server streams LLM response. Every user message
+   carries the live page state (edit mode, language, published, title) plus the
+   current selection; the server merges the state into its context and prepends
+   `[Editor context …]` / selection markers to the user message
 5. LLM can call tools → server sends `tool_call` → client executes → sends
    `tool_result` → loop continues until final text response
 

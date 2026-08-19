@@ -101,12 +101,7 @@ export default function toolsProvider({
 
   async function init(): Promise<{ toolNames: string[] }> {
     toolMap = createToolMap(mcpTools)
-    const toolNames = await getToolInfoForServer(
-      mcpTools,
-      state.editMode.value,
-      app,
-      adapter,
-    )
+    const toolNames = await getToolInfoForServer(mcpTools, app, adapter)
     return { toolNames }
   }
 

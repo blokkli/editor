@@ -436,6 +436,16 @@ export class EntityStorageManager {
     emptyPage.lead().setText('')
     this.storages.content.add(emptyPage)
 
+    // Another empty page, reserved for agent E2E tests that exercise
+    // conversation persistence (auto-restore on reload). Conversations are
+    // keyed by entity uuid and `loadLatest` returns the newest one, so these
+    // tests need an entity nothing else writes conversations for — page 4 is
+    // shared by all mock-script agent tests, whose turns also persist.
+    const agentRestorePage = new ContentPage('2')
+    agentRestorePage.title().setText('Agent conversation restore page')
+    agentRestorePage.lead().setText('')
+    this.storages.content.add(agentRestorePage)
+
     const stressTestPage = new ContentPage('3')
     stressTestPage.title().setText('A $stress test$ page with lots of blocks.')
     stressTestPage.lead().setText('Will it crash?')

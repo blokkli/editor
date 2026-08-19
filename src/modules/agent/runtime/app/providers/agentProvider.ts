@@ -12,9 +12,11 @@ import type {
 } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
-import { enableMock, routeRoute } from '#blokkli-build/agent-client'
+import { enableMock, mcpTools, routeRoute } from '#blokkli-build/agent-client'
 import { buildPageContext } from '#blokkli/agent/app/helpers/buildPageContext'
 import { snapshotSelectedBlocks } from '#blokkli/agent/app/helpers/snapshotSelectedBlocks'
+import { snapshotPageState } from '#blokkli/agent/app/helpers/snapshotPageState'
+import { filterToolNamesByEditMode } from '#blokkli/agent/app/helpers'
 import {
   readMockRouting,
   readMockScript,
@@ -457,10 +459,19 @@ export default function agentProvider({
     let resolvedAutoLoadSkills = autoLoadSkills
 
     if (isFirstMessage && !hasClientDirectives && tools.pageContext.value) {
+      // The init tool list is capability-filtered but mode-agnostic, and the
+      // stored pageContext may predate a mode/language change (taking
+      // ownership happens exactly in this first-message window). Correct both
+      // with the live state so routing only suggests tools and skills the
+      // server would actually offer for this message.
       const routingResult = await fetchRouting(
         prompt,
-        sentToolNames,
-        tools.pageContext.value,
+        filterToolNamesByEditMode(
+          mcpTools,
+          sentToolNames,
+          app.state.editMode.value,
+        ),
+        { ...tools.pageContext.value, ...snapshotPageState(app) },
       )
 
       if (routingResult.usage) {
@@ -492,6 +503,9 @@ export default function agentProvider({
       type: 'start',
       prompt,
       selectedBlocks: selectedBlocks?.length ? selectedBlocks : undefined,
+      // Always live — page state describes the editor NOW, so even a
+      // retried/edited message must not replay an old snapshot.
+      pageState: snapshotPageState(app),
       autoLoadTools: resolvedAutoLoadTools?.length
         ? resolvedAutoLoadTools
         : undefined,
@@ -612,10 +626,13 @@ export default function agentProvider({
     isProcessing.value = true
     // Replay the original selection: omitting it would tell the agent nothing
     // was selected when the user wrote this, rather than leaving it unstated.
+    // Page state is the opposite — always a live snapshot, since it describes
+    // the editor at (re)send time, not the message being replayed.
     socket.send({
       type: 'start',
       prompt: lastUserItem.content,
       selectedBlocks: lastUserItem.sendContext?.selectedBlocks,
+      pageState: snapshotPageState(app),
     })
   }
 

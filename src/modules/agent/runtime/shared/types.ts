@@ -406,6 +406,25 @@ const fragmentSchema = z.object({
   description: z.string().optional(),
 })
 
+const editModeSchema = z.enum(['readonly', 'editing', 'translating', 'review'])
+
+/**
+ * The volatile subset of [[PageContext]]: everything that can change while the
+ * editor stays open (taking ownership flips `editMode`, publishing flips
+ * `isPublished`, moving to a translation changes `entityLanguage`). The client
+ * attaches a live snapshot to every user-written message; the server merges it
+ * into its stored page context and announces changes to the LLM. The static
+ * bulk of the context (bundles, fragments, field configs) is sent once on init.
+ */
+export const pageStateSchema = z.object({
+  editMode: editModeSchema,
+  entityLanguage: z.string(),
+  isPublished: z.boolean().nullable(),
+  title: z.string(),
+})
+
+export type PageState = z.infer<typeof pageStateSchema>
+
 const pageContextSchema = z.object({
   title: z.string(),
   entityType: z.string(),
@@ -417,7 +436,7 @@ const pageContextSchema = z.object({
   interfaceLanguage: z.string(),
   entityLanguage: z.string(),
   isPublished: z.boolean().nullable(),
-  editMode: z.enum(['readonly', 'editing', 'translating', 'review']),
+  editMode: editModeSchema,
   fragments: z.array(fragmentSchema),
   entityContentFields: z.array(blockBundleContentFieldSchema),
   contentSearchTabs: z
@@ -595,6 +614,13 @@ export const clientMessageSchema = z.discriminatedUnion('type', [
     type: z.literal('start'),
     prompt: z.string(),
     selectedBlocks: z.array(selectedBlockSchema).optional(),
+    /**
+     * Live editor state at the moment the user sent this message. Always a
+     * fresh snapshot (never replayed from an earlier send) — the server diffs
+     * it against what the LLM was last told and prepends an
+     * `[Editor context …]` note when something changed.
+     */
+    pageState: pageStateSchema.optional(),
     autoLoadTools: z.array(z.string()).optional(),
     autoLoadSkills: z.array(z.string()).optional(),
     preSeededResults: z

@@ -58,21 +58,21 @@ export function createToolMap(
 }
 
 /**
- * Get tool names for the server.
+ * Get tool names for the server: everything this client can STRUCTURALLY run.
  *
- * Applies three filters in order:
- * 1. `tool.modes` must include the current edit mode.
- * 2. `tool.requiredAdapterMethods` (if any) must all exist on the adapter.
- * 3. `tool.isAvailable(app)` (if defined) must return (or resolve to) true.
+ * Deliberately mode-agnostic — the server gates tools by the current edit mode
+ * on every turn (and refuses out-of-mode calls at execution time), so the mode
+ * can change mid-conversation without a re-init. Only genuine client
+ * capabilities the server cannot know are filtered here:
+ * 1. `tool.requiredAdapterMethods` (if any) must all exist on the adapter.
+ * 2. `tool.isAvailable(app)` (if defined) must return (or resolve to) true.
  */
 export async function getToolInfoForServer(
   tools: McpToolDefinition[],
-  editMode: EditMode,
   app: BlokkliApp,
   adapter?: BlokkliAdapter<unknown>,
 ): Promise<string[]> {
   const staticFiltered = tools.filter((tool) => {
-    if (!tool.modes.includes(editMode)) return false
     if (!tool.requiredAdapterMethods) return true
     if (!adapter) return true
     return tool.requiredAdapterMethods.every(
@@ -91,6 +91,23 @@ export async function getToolInfoForServer(
   return staticFiltered
     .filter((_, index) => availability[index])
     .map((t) => t.name)
+}
+
+/**
+ * Reduce a list of tool names to those usable in the given edit mode. Used for
+ * the first-message routing preprocess, which should only suggest tools the
+ * server would actually offer for the mode the message is sent in.
+ */
+export function filterToolNamesByEditMode(
+  tools: McpToolDefinition[],
+  names: string[],
+  editMode: EditMode,
+): string[] {
+  const byName = createToolMap(tools)
+  return names.filter((name) => {
+    const tool = byName[name]
+    return !tool || tool.modes.includes(editMode)
+  })
 }
 
 /**

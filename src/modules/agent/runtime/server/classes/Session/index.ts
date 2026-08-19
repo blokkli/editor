@@ -11,6 +11,7 @@ import type {
   GenericTextBlock,
   GenericSkillBlock,
   MockScript,
+  PageState,
   SelectedBlock,
   Transcript,
 } from '../../../shared/types'
@@ -42,6 +43,7 @@ import { classifyError } from '../../helpers/errors'
 import { computeStateHash, verifyStateHash } from '../../helpers/security'
 import { validateMessages } from '../../helpers/messages'
 import { formatSelectionMarker } from '../../helpers/selectionMarker'
+import { formatPageStateNote } from '../../helpers/pageStateNote'
 import { getDefaultModel, createUsageTurn } from '../../helpers/models'
 import type {
   ServerPlan,
@@ -65,6 +67,38 @@ const serverTools: ServerSideTool[] = [
   createPlanTool,
   completePlanStepTool,
 ]
+
+/** All inputs of a `start` message, minus the peer. */
+export type SessionStartOptions = {
+  prompt: string
+  apiKey: string
+  authSecret: string
+  selectedBlocks?: SelectedBlock[]
+  /** Live editor state at send time; merged into the session's page context. */
+  pageState?: PageState
+  autoLoadTools?: string[]
+  autoLoadSkills?: string[]
+  preSeededResults?: {
+    toolName: string
+    params: Record<string, unknown>
+    result: unknown
+  }[]
+  autoExecuteTools?: {
+    toolName: string
+    params: Record<string, unknown>
+  }[]
+  rollbackToUserMessageIndex?: number
+}
+
+/** The volatile subset of a page context, in the per-message wire shape. */
+function pageStateOfContext(ctx: PageContext): PageState {
+  return {
+    editMode: ctx.editMode,
+    entityLanguage: ctx.entityLanguage,
+    isPublished: ctx.isPublished,
+    title: ctx.title,
+  }
+}
 
 // ============================================================================
 // Session class
@@ -96,8 +130,24 @@ export class Session {
   activatedLazyTools = new Set<string>()
   /** Names of skills that have been loaded via load_skills */
   loadedSkills = new Set<string>()
-  /** Page context received from client on init */
+  /** Page context received from client on init, volatile fields updated per message */
   pageContext?: PageContext
+
+  /**
+   * The volatile page state as last announced to the LLM (via init's system
+   * prompt or a previous `[Editor context …]` note). Diffing against it
+   * decides whether the next user message needs a note. NOT rolled back with
+   * history truncation on retry — a flip-and-back could emit a note about a
+   * change the truncated transcript never saw, which is harmless.
+   */
+  private lastAnnouncedPageState?: PageState
+  /**
+   * Set after a conversation restore: the restored history may have been
+   * written under a different mode/language (the persistence snapshot stores
+   * no page context), so the next user message carries a full context note
+   * instead of a diff.
+   */
+  private stateBaselineUnknown = false
 
   /** Current plan (null when no plan is active) */
   plan: ServerPlan | null = null
@@ -177,6 +227,18 @@ export class Session {
     return { name: bundled.name, description: bundled.description }
   }
 
+  /**
+   * Whether a client tool may be offered/executed in the current edit mode.
+   * Tools without bundled metadata (or without declared modes) are allowed —
+   * robustness over strictness for project tools the build didn't annotate.
+   */
+  private toolAllowedInMode(name: string): boolean {
+    const modes = this.bundledToolMap.get(name)?.modes
+    if (!modes?.length) return true
+    const editMode = this.pageContext?.editMode
+    return !editMode || modes.includes(editMode)
+  }
+
   // --------------------------------------------------------------------------
   // Public methods
   // --------------------------------------------------------------------------
@@ -218,27 +280,13 @@ export class Session {
     this.activatedLazyTools = new Set()
     this.loadedSkills = new Set()
     this.pageContext = pageContext
+    // The init context IS what the LLM gets told (via the system prompt), so
+    // it is the baseline future per-message states diff against.
+    this.lastAnnouncedPageState = pageStateOfContext(pageContext)
+    this.stateBaselineUnknown = false
   }
 
-  start(
-    peer: Peer,
-    prompt: string,
-    apiKey: string,
-    authSecret: string,
-    selectedBlocks?: SelectedBlock[],
-    autoLoadTools?: string[],
-    autoLoadSkills?: string[],
-    preSeededResults?: {
-      toolName: string
-      params: Record<string, unknown>
-      result: unknown
-    }[],
-    autoExecuteTools?: {
-      toolName: string
-      params: Record<string, unknown>
-    }[],
-    rollbackToUserMessageIndex?: number,
-  ): void {
+  start(peer: Peer, options: SessionStartOptions): void {
     if (this.isProcessing) {
       send(peer, {
         type: 'error',
@@ -248,9 +296,9 @@ export class Session {
       return
     }
 
-    if (rollbackToUserMessageIndex !== undefined) {
+    if (options.rollbackToUserMessageIndex !== undefined) {
       try {
-        this.truncateAtUserMessage(rollbackToUserMessageIndex)
+        this.truncateAtUserMessage(options.rollbackToUserMessageIndex)
       } catch (e) {
         send(peer, {
           type: 'error',
@@ -269,17 +317,7 @@ export class Session {
     // concurrent loop over the same `this.messages`.
     this.isProcessing = true
 
-    this.runAgentLoop(
-      peer,
-      prompt,
-      apiKey,
-      authSecret,
-      selectedBlocks,
-      autoLoadTools,
-      autoLoadSkills,
-      preSeededResults,
-      autoExecuteTools,
-    )
+    this.runAgentLoop(peer, options)
   }
 
   /**
@@ -386,6 +424,12 @@ export class Session {
       this.pendingPlanApproval.resolve(false)
       this.pendingPlanApproval = null
     }
+    // A fresh conversation has nothing to contrast a "changed" note against —
+    // re-baseline on the current context so no stale note leaks into turn 1.
+    if (this.pageContext) {
+      this.lastAnnouncedPageState = pageStateOfContext(this.pageContext)
+    }
+    this.stateBaselineUnknown = false
     send(peer, { type: 'done' })
     // Send empty state so adapter clears persisted data
     this.sendConversationState(peer, authSecret)
@@ -470,6 +514,12 @@ export class Session {
 
     this.plan = null
 
+    // The restored history may have been written under a different edit mode
+    // or language — the snapshot deliberately stores no page context. The next
+    // user message must carry a full `[Editor context …]` note instead of a
+    // diff so the LLM knows where the conversation resumed.
+    this.stateBaselineUnknown = true
+
     return { success: true }
   }
 
@@ -526,22 +576,20 @@ export class Session {
 
   private async runAgentLoop(
     peer: Peer,
-    prompt: string,
-    apiKey: string,
-    authSecret: string,
-    selectedBlocks?: SelectedBlock[],
-    autoLoadTools?: string[],
-    autoLoadSkills?: string[],
-    preSeededResults?: {
-      toolName: string
-      params: Record<string, unknown>
-      result: unknown
-    }[],
-    autoExecuteTools?: {
-      toolName: string
-      params: Record<string, unknown>
-    }[],
+    options: SessionStartOptions,
   ): Promise<void> {
+    const {
+      prompt,
+      apiKey,
+      authSecret,
+      selectedBlocks,
+      pageState,
+      autoLoadTools,
+      autoLoadSkills,
+      preSeededResults,
+      autoExecuteTools,
+    } = options
+
     if (this.toolNames.length === 0) {
       this.isProcessing = false
       send(peer, {
@@ -562,6 +610,34 @@ export class Session {
           'No page context available. Client must send init message with pageContext first.',
       })
       return
+    }
+
+    // Apply the volatile editor state carried by this message BEFORE anything
+    // reads this.pageContext: resolveSkills below hands the full context to
+    // every skill, and the per-turn system prompt (rebuilt from this.pageContext
+    // each round) must reflect e.g. a readonly→editing flip from taking
+    // ownership. The note announcing the change to the LLM is prepended to the
+    // user message further down.
+    let pageStateNote: string | null = null
+    if (pageState) {
+      // On the first message of a fresh conversation there is nothing to
+      // contrast a "changed" note against — the system prompt (built from the
+      // merged context below) is simply correct from the start.
+      if (this.history.length > 0) {
+        pageStateNote = formatPageStateNote(
+          this.lastAnnouncedPageState,
+          pageState,
+          { baselineUnknown: this.stateBaselineUnknown },
+        )
+      }
+      Object.assign(this.pageContext, {
+        editMode: pageState.editMode,
+        entityLanguage: pageState.entityLanguage,
+        isPublished: pageState.isPublished,
+        title: pageState.title,
+      })
+      this.lastAnnouncedPageState = pageState
+      this.stateBaselineUnknown = false
     }
 
     // Resolve skills for this page context
@@ -603,8 +679,13 @@ export class Session {
       }
     }
 
-    // Build initial user message with context
+    // Build initial user message with context. Order: state note, selection
+    // marker, prompt — both ride on user-written messages only.
     const userParts: string[] = []
+
+    if (pageStateNote) {
+      userParts.push(pageStateNote)
+    }
 
     const selectionMarker = formatSelectionMarker(selectedBlocks)
     if (selectionMarker) {
@@ -648,6 +729,23 @@ export class Session {
         const autoTool = autoExecuteTools[i]!
         const callId = `auto_${i}`
         const toolUseId = `auto_tu_${i}`
+
+        // Same mode gate as LLM-initiated tool calls: prompt templates are
+        // client-trusted, but the template may predate a mode change. The
+        // state merge above precedes this, so the check sees the fresh mode.
+        if (!this.toolAllowedInMode(autoTool.toolName)) {
+          hasErrors = true
+          allSkip = false
+          this.pushToolExchange(
+            toolUseId,
+            autoTool.toolName,
+            autoTool.params,
+            ToolResult.error(
+              `The tool "${autoTool.toolName}" is not available in the current edit mode ("${this.pageContext?.editMode}").`,
+            ),
+          )
+          continue
+        }
 
         send(peer, {
           type: 'tool_call',
@@ -747,17 +845,28 @@ export class Session {
         // Flag set by create_plan: messages already committed, skip normal commit
         let messagesCommittedByPlanTool = false
 
+        // Everything the LLM gets to see this turn is filtered by the CURRENT
+        // edit mode — init sends the client's full capability set, and the
+        // mode can change between messages (taking ownership, moving to a
+        // translation). The activated set itself is never mutated by the
+        // filter: a tool loaded in one mode comes back when the mode returns.
+        const eligibleLazyToolNames = this.lazyToolNames.filter((name) =>
+          this.toolAllowedInMode(name),
+        )
+
         // Resolve eager tools from names
-        const eagerTools = this.resolveToolDefinitions(this.toolNames)
+        const eagerTools = this.resolveToolDefinitions(
+          this.toolNames.filter((name) => this.toolAllowedInMode(name)),
+        )
 
         // Resolve activated lazy tools
-        const activatedToolNames = this.lazyToolNames.filter((name) =>
+        const activatedToolNames = eligibleLazyToolNames.filter((name) =>
           this.activatedLazyTools.has(name),
         )
         const activatedTools = this.resolveToolDefinitions(activatedToolNames)
 
         // Build server-side tool definitions for this turn
-        const unloadedLazyToolNames = this.lazyToolNames.filter(
+        const unloadedLazyToolNames = eligibleLazyToolNames.filter(
           (name) => !this.activatedLazyTools.has(name),
         )
         const unloadedLazyTools = unloadedLazyToolNames
@@ -769,7 +878,11 @@ export class Session {
           resolvedSkills,
           plan: this.plan,
           unloadedLazyTools,
-          lazyToolNames: this.lazyToolNames,
+          // Mode-filtered so load_tools' description only advertises tools
+          // that are actually loadable right now. The runtime activation
+          // whitelist (ServerToolContext.lazyToolNames) deliberately stays the
+          // full session list.
+          lazyToolNames: eligibleLazyToolNames,
         }
         const serverToolDefs = serverTools
           .map((t) => buildDefinition(t, defCtx))
@@ -780,12 +893,7 @@ export class Session {
         this.lastTools = allTools
 
         // Compute lazy tool summaries each turn, filtering out activated tools
-        const lazyToolSummaries = this.lazyToolNames
-          .filter((name) => !this.activatedLazyTools.has(name))
-          .map((name) => this.getToolSummary(name))
-          .filter(
-            (s): s is { name: string; description: string } => s !== undefined,
-          )
+        const lazyToolSummaries = unloadedLazyTools
 
         // Build system prompt each turn so it reflects current plan state
         const systemPrompt = buildSystemPrompt(
@@ -920,7 +1028,26 @@ export class Session {
                     break
                   }
 
-                  // Client-side tool: validate the arguments server-side first.
+                  // Client-side tool: refuse calls not allowed in the current
+                  // edit mode. Per-turn listing keeps out-of-mode tools away
+                  // from the LLM, but a stale tool_use replayed from history
+                  // (or a hallucinated name) can still arrive. Unconditional —
+                  // no hidden-failure escape hatch. This gates LLM behavior
+                  // only, NOT authorization: the backend enforces permissions
+                  // on every mutation regardless of what the agent believes.
+                  if (!this.toolAllowedInMode(toolName)) {
+                    toolResults.push({
+                      type: 'tool_result',
+                      tool_use_id: toolUseId,
+                      content: JSON.stringify({
+                        error: `The tool "${toolName}" is not available in the current edit mode ("${this.pageContext?.editMode}"). The Edit Mode section of the system prompt describes what is currently allowed.`,
+                      }),
+                      is_error: true,
+                    })
+                    break
+                  }
+
+                  // Validate the arguments server-side first.
                   // A malformed call is rejected silently — the error goes to
                   // the LLM (and the transcript) for a retry, but no `tool_call`
                   // is sent to the peer, so the UI shows nothing. If the model
@@ -1385,7 +1512,10 @@ export class Session {
       ? buildSystemPromptEntries(
           this.pageContext,
           resolveSkills(this.pageContext),
+          // Same mode filter as the live prompt build, so the transcript
+          // preview shows what the LLM would actually be offered.
           this.lazyToolNames
+            .filter((name) => this.toolAllowedInMode(name))
             .map((name) => this.getToolSummary(name))
             .filter(
               (s): s is { name: string; description: string } =>

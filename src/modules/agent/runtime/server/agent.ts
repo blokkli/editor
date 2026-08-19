@@ -111,18 +111,18 @@ export default defineWebSocketHandler({
             })
             return
           }
-          session.start(
-            peer,
-            data.prompt,
+          session.start(peer, {
+            prompt: data.prompt,
             apiKey,
             authSecret,
-            data.selectedBlocks,
-            data.autoLoadTools,
-            data.autoLoadSkills,
-            data.preSeededResults,
-            data.autoExecuteTools,
-            data.rollbackToUserMessageIndex,
-          )
+            selectedBlocks: data.selectedBlocks,
+            pageState: data.pageState,
+            autoLoadTools: data.autoLoadTools,
+            autoLoadSkills: data.autoLoadSkills,
+            preSeededResults: data.preSeededResults,
+            autoExecuteTools: data.autoExecuteTools,
+            rollbackToUserMessageIndex: data.rollbackToUserMessageIndex,
+          })
           break
 
         case 'tool_result':
