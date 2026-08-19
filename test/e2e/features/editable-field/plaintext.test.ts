@@ -14,6 +14,7 @@ import {
   blockHost,
   saveByClickAway,
   nextEditableOpen,
+  storedFieldValue,
 } from './../../support/editable'
 import {
   clearAdapterCalls,
@@ -154,6 +155,51 @@ describe('Editable field — plaintext', async () => {
 
     await waitForEditableText(page, 'title', host, original)
     expect(await fieldValueCalls(page)).toHaveLength(0)
+  })
+
+  test('an empty field is seeded from its rendered template fallback', async () => {
+    // The `title` block's optional `tagline` renders `tagline || 'Fallback'`,
+    // so an empty stored value still shows text in the DOM. The overlay seeds
+    // the editor with that visible text (plain fields only) instead of opening
+    // empty — but the seed must never be persisted on its own.
+    const uuid = (await addBlock(page, { bundle: 'title' }))!
+    const host = await blockHost(page, uuid)
+
+    // Empty the field first — a new block defaults the tagline to 'Tagline'.
+    await openEditableField(page, 'tagline', uuid)
+    const textarea = plaintextEditor(page)
+    await textarea.waitFor({ state: 'visible' })
+    await textarea.fill('')
+    await textarea.press('Enter')
+    await textarea.waitFor({ state: 'hidden' })
+    await waitForAdapterCall(page, 'updateFieldValue')
+    await clearAdapterCalls(page)
+
+    // The stored value is now empty; the DOM renders the template fallback.
+    await waitForEditableText(page, 'tagline', host, 'Fallback')
+    expect(await storedFieldValue(page, uuid, 'tagline')).toBe(null)
+
+    // Reopening seeds the editor with the visible fallback text …
+    await openEditableField(page, 'tagline', uuid)
+    await textarea.waitFor({ state: 'visible' })
+    expect(await textarea.inputValue()).toBe('Fallback')
+
+    // … but it doesn't count as a change: closing unchanged persists nothing.
+    await textarea.press('Enter')
+    await textarea.waitFor({ state: 'hidden' })
+    expect(await fieldValueCalls(page)).toHaveLength(0)
+
+    // Editing the seeded text persists the edited value.
+    await openEditableField(page, 'tagline', uuid)
+    await textarea.waitFor({ state: 'visible' })
+    await textarea.fill('Edited tagline')
+    await textarea.press('Enter')
+    const call = await waitForAdapterCall<FieldValueCall>(
+      page,
+      'updateFieldValue',
+    )
+    expect(call.fieldName).toBe('tagline')
+    expect(call.fieldValue).toBe('Edited tagline')
   })
 
   test('the character counter reflects the typed length', async () => {

@@ -472,10 +472,19 @@ onMounted(() => {
     // `readRawValue` resolves the fallback itself (rendered value for adapters
     // that expose nothing raw), so whatever it returns is the best answer
     // available — including an empty string, which means the field is
-    // genuinely empty. A `||` chain here would treat that as "no value" and
-    // seed the editor from the DOM instead, so a template placeholder like
-    // `{{ title || 'Learn more' }}` would be persisted as authored content.
+    // genuinely empty.
     modelValue.value = override.rawOriginalValue
+
+    // An empty plain field may still render a template fallback, e.g.
+    // `{{ tagline || 'Fallback' }}`. Seed the editor with that visible text so
+    // the user edits what they see instead of an empty input. This is a seed,
+    // not a value: `originalText` is set to it below, so `hasChanged` stays
+    // false and nothing is persisted unless the user actually edits it.
+    // Markup fields are excluded — their DOM can carry backend filter
+    // artifacts that must never be written back.
+    if (!modelValue.value && props.config.type === 'plain') {
+      modelValue.value = props.element.textContent?.trim() || ''
+    }
   }
 
   originalText.value = modelValue.value
