@@ -18,6 +18,9 @@ export default defineConfig({
         },
         resolve: {
           alias: {
+            // Runtime code imports Vue composables via Nuxt's auto-import
+            // alias. Outside of a Nuxt context they all come from Vue itself.
+            '#imports': 'vue',
             '#blokkli-build': path.resolve(__dirname, './.nuxt/blokkli'),
             '#blokkli/editor/helpers/diff': path.resolve(
               __dirname,

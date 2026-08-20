@@ -47,7 +47,12 @@
         <BlokkliField
           name="content"
           :list="fieldContent"
-          :allowed-fragments="['cta', 'shader_debug', 'top_level_link']"
+          :allowed-fragments="[
+            'cta',
+            'shader_debug',
+            'top_level_link',
+            'async_test',
+          ]"
         >
           <DevOnly>
             <div>
