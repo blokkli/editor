@@ -49,11 +49,10 @@ import {
   useBlokkli,
   defineBlokkliFeature,
   useTemplateRef,
-  onMounted,
-  onUnmounted,
 } from '#imports'
 import { PluginToolbarButton } from '#blokkli/editor/plugins'
 import { ToolbarDropdown, BlokkliTransition } from '#blokkli/editor/components'
+import { usePolling } from '#blokkli/editor/composables'
 import NotificationsList from './List/index.vue'
 
 const { adapter } = defineBlokkliFeature({
@@ -98,53 +97,16 @@ const toggleElement = computed<HTMLElement | null>(
 // user didn't trigger).
 const unreadCount = ref<number | null>(null)
 
-/** Poll interval for refreshing the unread-count badge. */
-const POLL_INTERVAL_MS = 60_000
-
-let lastFetchAt = 0
-
-const fetchUnreadCount = async (): Promise<void> => {
-  try {
+// The List owns the count while the dropdown is open (it writes through
+// `v-model:unread-count` after every interaction), so polling pauses while it
+// is: a tick would only add a redundant request that could clobber the List's
+// fresher value with a stale one.
+usePolling({
+  immediate: true,
+  pause: isVisible,
+  handler: async () => {
     unreadCount.value = await adapter.loadUnreadNotificationsCount()
-    lastFetchAt = Date.now()
-  } catch {
-    // Swallowed: poll failures keep the last known value. Initial failure
-    // leaves the button disabled.
-  }
-}
-
-/** Refresh only if the last fetch is older than the poll interval. */
-const maybeRefresh = () => {
-  if (isVisible.value || document.hidden) {
-    return
-  }
-  if (Date.now() - lastFetchAt < POLL_INTERVAL_MS) {
-    return
-  }
-  fetchUnreadCount()
-}
-
-let pollInterval: ReturnType<typeof setInterval> | null = null
-
-onMounted(async () => {
-  await fetchUnreadCount()
-
-  // Poll periodically. The List owns the count while the dropdown is open
-  // (it writes through `v-model:unread-count` after every interaction), so
-  // we skip the tick to avoid a redundant request that could clobber the
-  // List's fresher value with a stale one.
-  pollInterval = setInterval(maybeRefresh, POLL_INTERVAL_MS)
-
-  // Refresh on tab refocus too, but only when the last fetch is stale —
-  // quick tab-flipping must not trigger a request storm.
-  document.addEventListener('visibilitychange', maybeRefresh)
-})
-
-onUnmounted(() => {
-  if (pollInterval) {
-    clearInterval(pollInterval)
-  }
-  document.removeEventListener('visibilitychange', maybeRefresh)
+  },
 })
 </script>
 

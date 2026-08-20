@@ -88,6 +88,7 @@ import {
 } from '#imports'
 import { PluginSidebar, PluginItemAction } from '#blokkli/editor/plugins'
 import { BlokkliTransition } from '#blokkli/editor/components'
+import { usePolling } from '#blokkli/editor/composables'
 import CommentSidebar from './Sidebar/index.vue'
 import type { CommentItem } from './types'
 
@@ -134,6 +135,15 @@ comments.value = await adapter.loadComments()
 const unresolvedCount = computed(
   () => comments.value.filter((c) => !c.parentUuid && !c.resolved).length,
 )
+
+// Other users can add, edit or resolve comments while the editor is open, so
+// keep the list and the sidebar badge fresh. The initial state is already
+// loaded above, hence no immediate refresh.
+usePolling({
+  handler: async () => {
+    comments.value = await adapter.loadComments()
+  },
+})
 
 /**
  * The exact UUID (root or reply) from `?blokkliComment=<uuid>` when the
