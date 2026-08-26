@@ -1,6 +1,7 @@
 <template>
   <form
     data-test="comment-input"
+    class="max-w-[400px]"
     :class="{
       'border border-mono-300 rounded bg-white focus-within:border-mono-400':
         boxed,
