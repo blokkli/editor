@@ -63,15 +63,15 @@ import {
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { Icon, Popup, BlokkliTransition } from '#blokkli/editor/components'
-import { agentPrompts, agentName } from '#blokkli-build/agent-prompts'
+import { agentName } from '#blokkli-build/agent-prompts'
 import {
   defineItemDropdownAction,
   defineMenuButton,
 } from '#blokkli/editor/composables'
 import type { ItemDropdownAction } from '#blokkli/editor/providers/plugin'
-import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
 import type { PendingPromptRequest } from './types'
 import { snapshotSelectedBlocks } from '#blokkli/agent/app/helpers/snapshotSelectedBlocks'
+import { resolveAgentPrompts } from '#blokkli/agent/app/helpers/resolveAgentPrompts'
 
 const AgentContainer = defineAsyncComponent(() => import('./Container.vue'))
 const ConversationsAdminDialog = defineAsyncComponent(
@@ -153,32 +153,25 @@ const tooltipTitle = computed(() => {
 })
 
 defineItemDropdownAction(() => {
-  return agentPrompts.flatMap((promptFactory) => {
-    const promptsResult =
-      '__factory' in promptFactory ? promptFactory.resolve(app) : promptFactory
-    const prompts = Array.isArray(promptsResult)
-      ? promptsResult
-      : [promptsResult]
-    return prompts.map<ItemDropdownAction>((prompt: AgentPromptDefinition) => {
-      return {
-        id: 'agent:prompt:' + prompt.id,
-        label: prompt.getLabel(app),
-        icon: 'stars',
-        group: 'agent',
-        variant: 'agent',
-        weight: -900,
-        callback: () => {
-          // Open the sidebar (which triggers the container to mount on first
-          // click) and queue the prompt. The container picks it up via its
-          // `immediate: true` watcher — either on mount or on change.
-          app.eventBus.emit('sidebar:open', 'agent')
-          pendingPromptRequest.value = {
-            prompt,
-            selectedBlocks: snapshotSelectedBlocks(app),
-          }
-        },
-      }
-    })
+  return resolveAgentPrompts(app, 'item').map<ItemDropdownAction>((prompt) => {
+    return {
+      id: 'agent:prompt:' + prompt.id,
+      label: prompt.getLabel(app),
+      icon: 'stars',
+      group: 'agent',
+      variant: 'agent',
+      weight: -900,
+      callback: () => {
+        // Open the sidebar (which triggers the container to mount on first
+        // click) and queue the prompt. The container picks it up via its
+        // `immediate: true` watcher — either on mount or on change.
+        app.eventBus.emit('sidebar:open', 'agent')
+        pendingPromptRequest.value = {
+          prompt,
+          selectedBlocks: snapshotSelectedBlocks(app),
+        }
+      },
+    }
   })
 })
 </script>

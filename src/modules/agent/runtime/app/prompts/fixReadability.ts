@@ -6,6 +6,8 @@ export default defineBlokkliAgentPrompt({
     return [
       {
         id: 'fix_readability',
+        // Works without a selection: `preExecute` then analyzes the whole page.
+        contexts: ['item', 'welcome'],
         skills: ['rewrite-and-translate', 'assess-and-fix-readability'],
         tools: [
           'get_readability_issues',
@@ -23,7 +25,13 @@ export default defineBlokkliAgentPrompt({
             'The readability issues have already been analyzed and the fix has been applied. Do not call any more tools. Just very briefly confirm that you are done.',
           )
         },
-        getUserPrompt: ({ $t }) => {
+        getUserPrompt: ({ $t, selection }) => {
+          if (!selection.items.value.length) {
+            return $t(
+              'agentPromptReadabilityUserPromptPage',
+              'Fix the readability of the page.',
+            )
+          }
           return $t(
             'agentPromptReadabilityUserPrompt',
             'Fix the readability of the selected paragraphs.',

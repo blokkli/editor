@@ -189,6 +189,10 @@ msgctxt "agentPromptReadabilityUserPrompt"
 msgid "Fix the readability of the selected paragraphs."
 msgstr "Verbessere die Lesbarkeit der ausgewählten Blöcke."
 
+msgctxt "agentPromptReadabilityUserPromptPage"
+msgid "Fix the readability of the page."
+msgstr "Verbessere die Lesbarkeit der Seite."
+
 msgctxt "agentRatingsBackendMissing"
 msgid "This backend does not expose the ratings list."
 msgstr "Dieses Backend stellt die Bewertungsliste nicht zur Verfügung."

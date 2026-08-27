@@ -16,7 +16,13 @@
       @scroll="onScroll"
     >
       <div ref="conversationContainer" class="p-10 flex-1 relative">
-        <Welcome v-if="showWelcome" :agent-name @prompt="onWelcomePrompt" />
+        <Welcome
+          v-if="showWelcome"
+          :agent-name
+          :disabled="isStartingPrompt"
+          @prompt="onWelcomePrompt"
+          @prompt-definition="onWelcomePromptDefinition"
+        />
         <Conversation
           v-if="conversation.length || activeItem || isThinking"
           :history="conversation"
@@ -144,7 +150,10 @@ import AgentInput from './Input/index.vue'
 import ConversationList from './ConversationList/index.vue'
 import Feedback from './Feedback/index.vue'
 import type { AgentConversationFeedbackRating } from '../types'
-import type { Attachment } from '#blokkli/agent/app/types'
+import type {
+  AgentPromptDefinition,
+  Attachment,
+} from '#blokkli/agent/app/types'
 import Plan from './Plan/index.vue'
 import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
@@ -154,6 +163,7 @@ import PanelSheet from '#blokkli/editor/components/Panel/Sheet/index.vue'
 import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
 import { useAgent } from '#blokkli/agent/app/composables/useAgent'
 import { snapshotSelectedBlocks } from '#blokkli/agent/app/helpers/snapshotSelectedBlocks'
+import { runAgentPrompt } from '#blokkli/agent/app/helpers/runAgentPrompt'
 
 const props = defineProps<{
   isShown: boolean
@@ -285,6 +295,27 @@ function scrollToBottomOnSend() {
 function onWelcomePrompt(prompt: string) {
   agent.sendPrompt({ prompt, selectedBlocks: snapshotSelectedBlocks(app) })
   scrollToBottomOnSend()
+}
+
+// A pre-defined prompt may run an async `preExecute` before anything appears in
+// the conversation, during which the welcome screen (and its buttons) are still
+// visible. Guard against starting a second prompt in that window.
+const isStartingPrompt = ref(false)
+
+async function onWelcomePromptDefinition(prompt: AgentPromptDefinition) {
+  if (isStartingPrompt.value) return
+  isStartingPrompt.value = true
+  scrollToBottomOnSend()
+  try {
+    await runAgentPrompt({
+      app,
+      agent,
+      prompt,
+      selectedBlocks: snapshotSelectedBlocks(app),
+    })
+  } finally {
+    isStartingPrompt.value = false
+  }
 }
 
 function onSubmit(submitAttachments: Attachment[]) {

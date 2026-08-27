@@ -6,8 +6,9 @@ into the LLM system prompt).
 
 ## User Prompts
 
-User prompts are clickable suggestions shown in the welcome screen and block
-action menus. They provide shortcuts for common tasks.
+User prompts are clickable suggestions shown in the dropdown of a selected block
+and, opt-in, on the welcome screen of the agent panel. They provide shortcuts
+for common tasks.
 
 ### File Location
 
@@ -43,16 +44,41 @@ Skills.`
 
 ### Properties
 
-| Property        | Type              | Description                                                        |
-| --------------- | ----------------- | ------------------------------------------------------------------ |
-| `id`            | `string`          | Unique prompt identifier                                           |
-| `getLabel`      | `(app) => string` | Label shown on the button                                          |
-| `getPrompt`     | `(app) => string` | Full prompt text sent to the LLM                                   |
-| `getUserPrompt` | `(app) => string` | Optional. Text shown in the conversation. Defaults to `getPrompt`. |
+| Property        | Type                      | Description                                                        |
+| --------------- | ------------------------- | ------------------------------------------------------------------ |
+| `id`            | `string`                  | Unique prompt identifier                                           |
+| `contexts`      | `('item' \| 'welcome')[]` | Optional. Where the prompt is offered. Defaults to `['item']`.     |
+| `getLabel`      | `(app) => string`         | Label shown on the button                                          |
+| `getPrompt`     | `(app) => string`         | Full prompt text sent to the LLM                                   |
+| `getUserPrompt` | `(app) => string`         | Optional. Text shown in the conversation. Defaults to `getPrompt`. |
 
 The `getUserPrompt` property is useful when the actual prompt contains detailed
 tool instructions that would clutter the conversation UI. The user sees the
 short version while the LLM receives the detailed one.
+
+### Where a Prompt Is Offered
+
+By default a prompt is only offered in the dropdown of a selected block
+(`contexts: ['item']`), where a selection is guaranteed. Add `'welcome'` to also
+show it on the welcome screen of the agent panel:
+
+```ts
+export default defineBlokkliAgentPrompt({
+  id: 'summarize_page',
+  contexts: ['item', 'welcome'],
+  getLabel: () => 'Summarize the page',
+  getPrompt: () => 'Write a short summary of the entire page.',
+})
+```
+
+::: warning
+
+On the welcome screen usually **nothing is selected**. A prompt offered there
+must be written to work without a selection — a wording like "translate the
+selected blocks" tells the LLM that nothing was selected. Prompts whose
+`preExecute` reads `selectedBlocks` need a fallback for the empty case.
+
+:::
 
 ### Prompt Factories
 

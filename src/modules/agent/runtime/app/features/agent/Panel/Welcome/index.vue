@@ -4,17 +4,26 @@
       class="bk-agent-message-text bk-agent-welcome-text"
       :content="welcomeContent"
     />
-    <div v-if="defaultPrompts.length" class="grid gap-5 mt-10">
-      <button
+    <div
+      v-if="defaultPrompts.length || promptDefinitions.length"
+      class="grid gap-5 mt-10"
+    >
+      <PromptButton
         v-for="(prompt, index) in defaultPrompts"
         :key="index"
-        type="button"
-        class="flex text-sm bg-accent-100 text-accent-700 py-5 px-8 gap-5 rounded hover:bg-accent-700 hover:text-white font-medium"
+        :label="prompt"
+        icon="bk_mdi_chat"
+        :disabled
         @click.prevent="emit('prompt', prompt)"
-      >
-        <Icon name="bk_mdi_chat" class="size-15 mt-2" />
-        <span>{{ prompt }}</span>
-      </button>
+      />
+      <PromptButton
+        v-for="prompt in promptDefinitions"
+        :key="prompt.id"
+        :label="prompt.getLabel(app)"
+        icon="stars"
+        :disabled
+        @click.prevent="emit('promptDefinition', prompt)"
+      />
     </div>
     <InfoBox :text="disclaimer" class="mt-20" small />
   </div>
@@ -25,18 +34,28 @@ import { computed, useBlokkli } from '#imports'
 import welcomeMdEn from './en.md?raw'
 import welcomeMdDe from './de.md?raw'
 import { defaultPrompts } from '#blokkli-build/agent-client'
-import { Icon, InfoBox } from '#blokkli/editor/components'
+import { InfoBox } from '#blokkli/editor/components'
 import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
+import PromptButton from './PromptButton/index.vue'
+import { resolveAgentPrompts } from '#blokkli/agent/app/helpers/resolveAgentPrompts'
+import type { AgentPromptDefinition } from '#blokkli/agent/app/types'
 
 const props = defineProps<{
   agentName: string
+  /** Whether a prompt is currently being started. */
+  disabled: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'prompt', value: string): void
+  (e: 'promptDefinition', value: AgentPromptDefinition): void
 }>()
 
-const { $t, ui } = useBlokkli()
+const app = useBlokkli()
+const { $t, ui } = app
+
+// Computed because prompt factories resolve based on reactive editor state.
+const promptDefinitions = computed(() => resolveAgentPrompts(app, 'welcome'))
 
 const welcomeMd =
   ui.interfaceLanguage.value === 'de' ? welcomeMdDe : welcomeMdEn

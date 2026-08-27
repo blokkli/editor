@@ -41,6 +41,7 @@
   "agentConversationsUntitled": "Ohne Titel",
   "agentPromptReadabilityPrompt": "Die Lesbarkeit wurde bereits analysiert und die Korrektur wurde angewendet. Rufe keine weiteren Tools auf. Bestätige nur kurz, dass du fertig bist.",
   "agentPromptReadabilityUserPrompt": "Verbessere die Lesbarkeit der ausgewählten Blöcke.",
+  "agentPromptReadabilityUserPromptPage": "Verbessere die Lesbarkeit der Seite.",
   "agentRatingsBackendMissing": "Dieses Backend stellt die Bewertungsliste nicht zur Verfügung.",
   "agentRatingsEmpty": "Noch keine Bewertungen vorhanden.",
   "agentRatingsListError": "Bewertungen konnten nicht geladen werden.",

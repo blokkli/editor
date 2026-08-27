@@ -41,6 +41,7 @@
   "agentConversationsUntitled": "Ohne Titel",
   "agentPromptReadabilityPrompt": "D'Läsbarkäitsproblem sin scho analysiert und d'Korrektur isch aagwändet worde. Rüef käi witere Tools uf. Bestätig nur churz, dass du fertig bisch.",
   "agentPromptReadabilityUserPrompt": "Verbessere d'Läsbarkäit vo de usgwählte Blöck.",
+  "agentPromptReadabilityUserPromptPage": "Verbessere d'Läsbarkäit vo derre Siite.",
   "agentRatingsBackendMissing": "Dieses Backend stellt die Bewertungsliste nicht zur Verfügung.",
   "agentRatingsEmpty": "Noch keine Bewertungen vorhanden.",
   "agentRatingsListError": "Bewertungen konnten nicht geladen werden.",

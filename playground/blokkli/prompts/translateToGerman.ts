@@ -2,6 +2,7 @@ import { defineBlokkliAgentPrompt } from '#blokkli/agent/app/composables'
 
 export default defineBlokkliAgentPrompt({
   id: 'translate_to_german',
+  contexts: ['item', 'welcome'],
   getLabel: () => {
     return 'Auf Deutsch übersetzen...'
   },

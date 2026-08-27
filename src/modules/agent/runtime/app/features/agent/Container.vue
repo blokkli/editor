@@ -47,6 +47,7 @@ import AgentPanel from './Panel/index.vue'
 import type { PendingPromptRequest } from './types'
 import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
 import { agentName } from '#blokkli-build/agent-prompts'
+import { runAgentPrompt } from '#blokkli/agent/app/helpers/runAgentPrompt'
 
 const AgentTranscript = defineAsyncComponent(
   () => import('./Transcript/index.vue'),
@@ -96,37 +97,14 @@ provide(INJECT_AGENT_APP, agentApp)
 // Run a prompt request queued by the outer feature component's item-dropdown
 // callback (see `features/agent/index.vue`). The request is consumed (cleared
 // in the parent) before the async `preExecute`/`sendPrompt` so it can't re-run.
-async function consumePromptRequest(request: PendingPromptRequest) {
+function consumePromptRequest(request: PendingPromptRequest) {
   emit('consumed')
 
-  const { prompt, selectedBlocks } = request
-  const promptText = prompt.getPrompt(blokkli)
-  const userPromptText = prompt.getUserPrompt?.(blokkli)
-
-  let preSeededResults = undefined
-  let autoExecuteTools = undefined
-
-  if (prompt.preExecute) {
-    const preResult = await prompt.preExecute({
-      app: blokkli,
-      selectedBlocks,
-      runTool: tools.runForPrompt,
-    })
-    if (preResult) {
-      preSeededResults = preResult.preSeededResults
-      autoExecuteTools = preResult.autoExecuteTools
-    }
-  }
-
-  agent.sendPrompt({
-    prompt: promptText,
-    displayPrompt: userPromptText,
-    selectedBlocks,
-    autoLoadTools: prompt.tools,
-    autoLoadSkills: prompt.skills,
-    preSeededResults,
-    autoExecuteTools,
-    promptId: prompt.id,
+  return runAgentPrompt({
+    app: blokkli,
+    agent: agentApp,
+    prompt: request.prompt,
+    selectedBlocks: request.selectedBlocks,
   })
 }
 

@@ -384,11 +384,24 @@ export type AutoExecuteTool = {
 }
 
 /**
+ * Where a pre-defined prompt is offered.
+ *
+ * - `item`: in the dropdown of a selected block.
+ * - `welcome`: on the welcome screen of the agent panel, where usually nothing
+ *   is selected. Prompts must be written to work without a selection.
+ */
+export type AgentPromptContext = 'item' | 'welcome'
+
+/**
  * A pre-defined agent prompt that users can select.
  */
 export type AgentPromptDefinition = {
   /** Unique prompt ID */
   id: string
+  /**
+   * Where the prompt is offered. Defaults to `['item']`.
+   */
+  contexts?: AgentPromptContext[]
   /** Returns the label shown in the UI */
   getLabel: (app: BlokkliApp) => string
   /** Returns the prompt text sent to the agent */

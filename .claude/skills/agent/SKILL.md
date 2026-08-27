@@ -111,8 +111,11 @@ Projects can add custom skills in `blokkli/skills/*.ts` using
 
 ## Agent Prompts (Client-Side)
 
-Predefined prompts shown as suggestions in the welcome screen. Projects can add
-them in `blokkli/prompts/*.ts` using `defineBlokkliAgentPrompt()`.
+Predefined prompts shown in the dropdown of a selected block and — for prompts
+that opt in via `contexts: ['item', 'welcome']` — on the welcome screen.
+Projects can add them in `blokkli/prompts/*.ts` using
+`defineBlokkliAgentPrompt()`. Resolving (`resolveAgentPrompts`) and running
+(`runAgentPrompt`, including `preExecute`) live in `runtime/app/helpers/`.
 
 ## Conversation Persistence
 
