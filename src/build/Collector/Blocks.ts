@@ -1,7 +1,13 @@
 import { resolveAlias, resolveFiles } from '@nuxt/kit'
 import path from 'node:path'
 import { dirname } from 'pathe'
-import { CollectedFile, Collector, type ValidationError } from './index'
+import type { WatchEvent } from 'nuxt/schema'
+import {
+  CollectedFile,
+  Collector,
+  type HandleWatchEventResult,
+  type ValidationError,
+} from './index'
 import micromatch from 'micromatch'
 import type { ModuleHelper } from '../ModuleHelper'
 import type { TemplateDependency } from '../templates/defineTemplate'
@@ -513,6 +519,64 @@ export function validateRenderForConflicts(
   return conflicts
 }
 
+export type LayerShadowingResult = {
+  /** Files that remain active. */
+  active: CollectedBlockFile[]
+
+  /** Files shadowed by a file from a higher-priority Nuxt layer. */
+  shadowed: CollectedBlockFile[]
+}
+
+/**
+ * Resolve collisions where multiple collected files define the same block
+ * identity (bundle + renderFor variations, fragment name or provider): the
+ * file from the highest-priority Nuxt layer wins, the others are shadowed.
+ *
+ * Files with the same layer priority are left untouched, so genuine
+ * duplicates within a single layer still surface as validation errors.
+ *
+ * @param files - All collected block files.
+ * @param getPriority - Returns the Nuxt layer priority for a file path (lower value = higher priority).
+ */
+export function resolveLayerShadowing(
+  files: CollectedBlockFile[],
+  getPriority: (filePath: string) => number,
+): LayerShadowingResult {
+  const byIdentifier = new Map<string, CollectedBlockFile[]>()
+
+  for (const file of files) {
+    if (!file.definition || !file.identifier) {
+      continue
+    }
+    const group = byIdentifier.get(file.identifier)
+    if (group) {
+      group.push(file)
+    } else {
+      byIdentifier.set(file.identifier, [file])
+    }
+  }
+
+  const shadowed = new Set<CollectedBlockFile>()
+
+  for (const group of byIdentifier.values()) {
+    if (group.length < 2) {
+      continue
+    }
+    const priorities = group.map((file) => getPriority(file.filePath))
+    const winningPriority = Math.min(...priorities)
+    group.forEach((file, index) => {
+      if (priorities[index]! > winningPriority) {
+        shadowed.add(file)
+      }
+    })
+  }
+
+  return {
+    active: files.filter((file) => !shadowed.has(file)),
+    shadowed: [...shadowed],
+  }
+}
+
 export type MissingMainComponentError = {
   bundle: string
   filePaths: string[]
@@ -561,6 +625,15 @@ export function validateMissingMainComponent(
 
 export class BlockCollector extends Collector<CollectedBlockFile> {
   private patterns: string[]
+  private positivePatterns: string[]
+  private negativePatterns: string[]
+
+  /**
+   * Files that define the same block identity as a file in a higher-priority
+   * Nuxt layer. They are kept here instead of in `files` so they can be
+   * re-activated when the overriding file is removed.
+   */
+  private shadowed = new Map<string, CollectedBlockFile>()
 
   constructor(
     helper: ModuleHelper,
@@ -568,18 +641,31 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
   ) {
     super(helper)
 
-    this.patterns = (helper.options.pattern || []).map((pattern) => {
+    this.patterns = (helper.options.pattern || []).map((raw) => {
+      // Support negated glob patterns (e.g. "!**/components/Blokkli/Text/**")
+      // to exclude components from collection.
+      const isNegated = raw.startsWith('!')
+      const pattern = isNegated ? raw.slice(1) : raw
+
+      let resolved: string
       if (pattern.startsWith('/')) {
         // Absolute.
-        return pattern
+        resolved = pattern
       } else if (pattern.startsWith('.')) {
         // Relative to nuxt.config.ts.
-        return helper.resolvers.src.resolve(pattern)
+        resolved = helper.resolvers.src.resolve(pattern)
+      } else {
+        // Starts with an alias (~, @ or any custom alias).
+        resolved = resolveAlias(pattern)
       }
 
-      // Starts with an alias (~, @ or any custom alias).
-      return resolveAlias(pattern)
+      return isNegated ? '!' + resolved : resolved
     })
+
+    this.positivePatterns = this.patterns.filter((v) => !v.startsWith('!'))
+    this.negativePatterns = this.patterns
+      .filter((v) => v.startsWith('!'))
+      .map((v) => v.slice(1))
   }
 
   override async init() {
@@ -597,6 +683,83 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
     }
 
     await Promise.all(promises)
+    this.resolveLayerOverrides()
+  }
+
+  /**
+   * Determine the Nuxt layer priority of a file.
+   *
+   * Lower value = higher priority. The app/project layer is index 0, extended
+   * layers follow in the order they are defined. Files that can't be matched
+   * to a layer get the lowest priority.
+   */
+  private getLayerPriority(filePath: string): number {
+    const layers = this.helper.nuxt.options._layers || []
+    let priority = layers.length
+    let longestMatch = -1
+    for (let i = 0; i < layers.length; i++) {
+      const config = layers[i]!.config || {}
+      const dirs = [config.srcDir, config.rootDir, layers[i]!.cwd]
+      for (const dir of dirs) {
+        if (!dir) {
+          continue
+        }
+        const prefix = dir.endsWith('/') ? dir : dir + '/'
+        if (filePath.startsWith(prefix) && dir.length > longestMatch) {
+          priority = i
+          longestMatch = dir.length
+        }
+      }
+    }
+    return priority
+  }
+
+  /**
+   * Resolve cross-layer definition collisions: the file from the
+   * highest-priority Nuxt layer wins, the others are shadowed. Shadowed files
+   * are re-activated when the overriding file is removed.
+   *
+   * @returns Whether the set of active files has changed.
+   */
+  private resolveLayerOverrides(): boolean {
+    // Re-activate previously shadowed files so they participate in the
+    // resolution again (their overriding file may have been removed).
+    const previouslyShadowed = this.shadowed
+    for (const [filePath, file] of previouslyShadowed) {
+      if (!this.files.has(filePath)) {
+        this.files.set(filePath, file)
+      }
+    }
+
+    const { shadowed } = resolveLayerShadowing(
+      [...this.files.values()],
+      (filePath) => this.getLayerPriority(filePath),
+    )
+
+    this.shadowed = new Map()
+    for (const file of shadowed) {
+      this.shadowed.set(file.filePath, file)
+      this.files.delete(file.filePath)
+    }
+
+    if (previouslyShadowed.size !== this.shadowed.size) {
+      return true
+    }
+    for (const filePath of this.shadowed.keys()) {
+      if (!previouslyShadowed.has(filePath)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  override async handleWatchEvent(
+    event: WatchEvent,
+    filePath: string,
+  ): Promise<HandleWatchEventResult> {
+    const result = await super.handleWatchEvent(event, filePath)
+    const overridesChanged = this.resolveLayerOverrides()
+    return { hasChanged: result.hasChanged || overridesChanged }
   }
 
   public runHooks() {
@@ -675,7 +838,14 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
       return false
     }
 
-    if (!micromatch.isMatch(filePath, this.patterns)) {
+    if (!micromatch.isMatch(filePath, this.positivePatterns)) {
+      return false
+    }
+
+    if (
+      this.negativePatterns.length &&
+      micromatch.isMatch(filePath, this.negativePatterns)
+    ) {
       return false
     }
 
