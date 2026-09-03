@@ -10,10 +10,10 @@
     </div>
     <div v-if="selectedDate" class="flex-1">
       <div
-        v-if="formattedDateTime"
         class="mb-20 px-10 font-bold text-lg bg-mono-100 h-[52px] flex items-center"
+        data-test="schedule-preview"
       >
-        {{ formattedDateTime }}
+        {{ formattedDateTime || '\u00A0' }}
       </div>
       <div class="flex gap-10 items-stretch">
         <input
@@ -24,13 +24,15 @@
           class="bk-form-input flex-1 w-full tabular-nums"
           :disabled="disabled"
           :class="{
-            'bk-is-invalid': error,
+            'bk-is-invalid': error || isTimeInvalid,
           }"
+          :data-test-invalid="isTimeInvalid"
         />
         <button
           type="button"
           class="bk-button bk-scheme-mono bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
           :disabled="disabled"
+          data-test="schedule-hour-decrement"
           @click="decrementHour"
         >
           <Icon name="bk_mdi_remove" />
@@ -39,6 +41,7 @@
           type="button"
           class="bk-button bk-scheme-mono bk-is-icon-only shrink-0 px-10 [&_.bk-icon]:size-15 [&_.bk-icon_svg]:size-full [&_.bk-icon_svg]:fill-current"
           :disabled="disabled"
+          data-test="schedule-hour-increment"
           @click="incrementHour"
         >
           <Icon name="bk_mdi_add" />
@@ -61,6 +64,13 @@
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli } from '#imports'
 import { FormDatepicker, Icon, InfoBox } from '#blokkli/editor/components'
+import {
+  isValidDate,
+  toDateInputValue,
+  toTimeInputValue,
+  parseTime,
+  composeLocalDateTime,
+} from '#blokkli/editor/helpers/date'
 
 const { ui } = useBlokkli()
 
@@ -69,20 +79,28 @@ defineProps<{
   error?: string
 }>()
 
+const DEFAULT_TIME = '12:00'
+const DEFAULT_PARSED_TIME = { hours: 12, minutes: 0 }
+
 const modelValue = defineModel<string>()
 
-const selectedDate = ref<string>('')
-const selectedTime = ref<string>('12:00')
+const selectedDate = ref('')
+const selectedTime = ref(DEFAULT_TIME)
+
+const selectedDateTime = computed(() =>
+  composeLocalDateTime(selectedDate.value, selectedTime.value),
+)
+
+const isTimeInvalid = computed(
+  () => !!selectedDate.value && !parseTime(selectedTime.value),
+)
 
 const formattedDateTime = computed(() => {
-  if (!selectedDate.value || !selectedTime.value) {
+  if (!selectedDateTime.value) {
     return ''
   }
 
-  const dateTimeString = `${selectedDate.value}T${selectedTime.value}:00`
-  const date = new Date(dateTimeString)
-
-  return ui.formatDate(date, {
+  return ui.formatDate(selectedDateTime.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -92,67 +110,47 @@ const formattedDateTime = computed(() => {
   })
 })
 
-if (modelValue.value) {
-  const date = new Date(modelValue.value)
-  selectedDate.value = formatDate(date)
-  selectedTime.value = formatTime(date)
-}
+const minDate = computed(() => toDateInputValue(new Date()))
 
-const minDate = computed(() => {
-  const today = new Date()
-  return formatDate(today)
+watch(selectedDateTime, (date) => {
+  modelValue.value = date ? date.toISOString() : undefined
 })
 
-function formatDate(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+watch(
+  modelValue,
+  (newValue) => {
+    // Ignore echoes of our own output so an in-progress edit (e.g. a cleared
+    // time input) is not reset from the outside.
+    if (newValue === selectedDateTime.value?.toISOString()) {
+      return
+    }
+
+    const date = newValue ? new Date(newValue) : null
+    if (!date || !isValidDate(date)) {
+      selectedDate.value = ''
+      selectedTime.value = DEFAULT_TIME
+      return
+    }
+
+    selectedDate.value = toDateInputValue(date)
+    selectedTime.value = toTimeInputValue(date)
+  },
+  { immediate: true },
+)
+
+function setHour(hours: number) {
+  selectedTime.value = `${String(hours).padStart(2, '0')}:00`
 }
-
-function formatTime(date: Date): string {
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  return `${hours}:${minutes}`
-}
-
-watch([selectedDate, selectedTime], () => {
-  if (!selectedDate.value) {
-    modelValue.value = undefined
-    return
-  }
-
-  const dateTimeString = `${selectedDate.value}T${selectedTime.value}:00`
-  const date = new Date(dateTimeString)
-  modelValue.value = date.toISOString()
-})
-
-watch(modelValue, (newValue) => {
-  if (!newValue) {
-    selectedDate.value = ''
-    selectedTime.value = '12:00'
-    return
-  }
-
-  const date = new Date(newValue)
-  const newDate = formatDate(date)
-  const newTime = formatTime(date)
-
-  if (newDate !== selectedDate.value || newTime !== selectedTime.value) {
-    selectedDate.value = newDate
-    selectedTime.value = newTime
-  }
-})
 
 function incrementHour() {
-  const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
-  const newHours = minutes > 0 ? (hours + 1) % 24 : (hours + 1) % 24
-  selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
+  const { hours } = parseTime(selectedTime.value) ?? DEFAULT_PARSED_TIME
+  setHour((hours + 1) % 24)
 }
 
 function decrementHour() {
-  const [hours = 0, minutes = 0] = selectedTime.value.split(':').map(Number)
-  const newHours = minutes > 0 ? hours : hours === 0 ? 23 : hours - 1
-  selectedTime.value = `${String(newHours).padStart(2, '0')}:00`
+  const { hours, minutes } =
+    parseTime(selectedTime.value) ?? DEFAULT_PARSED_TIME
+  // Round down to the full hour first, only then step back.
+  setHour(minutes > 0 ? hours : (hours + 23) % 24)
 }
 </script>

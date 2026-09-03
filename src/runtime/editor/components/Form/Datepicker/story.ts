@@ -1,12 +1,6 @@
 import { defineEditorComponent } from '#blokkli/editor/composables'
 import Datepicker from './index.vue'
-
-function formatDate(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
+import { toDateInputValue } from '#blokkli/editor/helpers/date'
 
 const today = new Date()
 const inOneWeek = new Date(today)
@@ -27,29 +21,29 @@ export default defineEditorComponent({
     {
       label: 'Default',
       props: {
-        modelValue: formatDate(today),
+        modelValue: toDateInputValue(today),
       },
     },
     {
       label: 'Min/max range',
       description: 'Selectable range constrained to the next month.',
       props: {
-        modelValue: formatDate(inOneWeek),
-        min: formatDate(today),
-        max: formatDate(inOneMonth),
+        modelValue: toDateInputValue(inOneWeek),
+        min: toDateInputValue(today),
+        max: toDateInputValue(inOneMonth),
       },
     },
     {
       label: 'Error state',
       props: {
-        modelValue: formatDate(oneMonthAgo),
+        modelValue: toDateInputValue(oneMonthAgo),
         error: true,
       },
     },
     {
       label: 'Disabled',
       props: {
-        modelValue: formatDate(today),
+        modelValue: toDateInputValue(today),
         disabled: true,
       },
     },

@@ -24,6 +24,32 @@ export function scheduleTime(page: Page, within?: Locator): Locator {
   return base(page, within).locator('[data-test="schedule-time"]')
 }
 
+/** The formatted date/time preview box (`data-test="schedule-preview"`). */
+export function schedulePreview(page: Page, within?: Locator): Locator {
+  return base(page, within).locator('[data-test="schedule-preview"]')
+}
+
+/** The "-1 hour" button (`data-test="schedule-hour-decrement"`). */
+export function scheduleHourDecrement(page: Page, within?: Locator): Locator {
+  return base(page, within).locator('[data-test="schedule-hour-decrement"]')
+}
+
+/** The "+1 hour" button (`data-test="schedule-hour-increment"`). */
+export function scheduleHourIncrement(page: Page, within?: Locator): Locator {
+  return base(page, within).locator('[data-test="schedule-hour-increment"]')
+}
+
+/** Whether the time input is flagged invalid (`data-test-invalid="true"`). */
+export async function isScheduleTimeInvalid(
+  page: Page,
+  within?: Locator,
+): Promise<boolean> {
+  return (
+    (await scheduleTime(page, within).getAttribute('data-test-invalid')) ===
+    'true'
+  )
+}
+
 /** The "date must be in the future" error box (`data-test="schedule-error"`). */
 export function scheduleError(page: Page, within?: Locator): Locator {
   return base(page, within).locator('[data-test="schedule-error"]')

@@ -61,6 +61,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, useBlokkli } from '#imports'
 import ButtonAction from '#blokkli/editor/components/ButtonAction/index.vue'
+import { toDateInputValue } from '#blokkli/editor/helpers/date'
 
 const props = defineProps<{
   min?: string
@@ -117,7 +118,7 @@ const canGoPrevious = computed(() => {
   const prevYear =
     currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value
   const lastDayOfPrevMonth = new Date(prevYear, prevMonth + 1, 0)
-  const lastDayString = formatDate(lastDayOfPrevMonth)
+  const lastDayString = toDateInputValue(lastDayOfPrevMonth)
 
   return lastDayString >= props.min
 })
@@ -136,7 +137,7 @@ const canGoNext = computed(() => {
   const nextYear =
     currentMonth.value === 11 ? currentYear.value + 1 : currentYear.value
   const firstDayOfNextMonth = new Date(nextYear, nextMonth, 1)
-  const firstDayString = formatDate(firstDayOfNextMonth)
+  const firstDayString = toDateInputValue(firstDayOfNextMonth)
 
   return firstDayString <= props.max
 })
@@ -206,9 +207,9 @@ const calendarDays = computed<CalendarDay[]>(() => {
 })
 
 function createCalendarDay(date: Date, isCurrentMonth: boolean): CalendarDay {
-  const dateString = formatDate(date)
+  const dateString = toDateInputValue(date)
   const today = new Date()
-  const todayString = formatDate(today)
+  const todayString = toDateInputValue(today)
 
   let isDisabled = false
 
@@ -230,13 +231,6 @@ function createCalendarDay(date: Date, isCurrentMonth: boolean): CalendarDay {
     isSelected: dateString === modelValue.value,
     isDisabled,
   }
-}
-
-function formatDate(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
 }
 
 function selectDate(day: CalendarDay) {

@@ -19,6 +19,7 @@ import {
 import type { Viewport } from '../../../global/constants'
 import { falsy } from '../../helpers'
 import { truncate } from '../helpers/string'
+import { isValidDate } from '../helpers/date'
 import {
   addElementClasses,
   defineElementStyle,
@@ -333,7 +334,7 @@ export type UiProvider = {
    *
    * @param date - Date object or ISO string
    * @param options - Intl.DateTimeFormat options. Defaults to numeric date + time.
-   * @returns Localized date string
+   * @returns Localized date string, or an empty string if the date is invalid
    *
    * @example
    * ```ts
@@ -955,6 +956,9 @@ export default function (
     options?: Intl.DateTimeFormatOptions,
   ): string {
     const dateObj = typeof date === 'string' ? new Date(date) : date
+    if (!isValidDate(dateObj)) {
+      return ''
+    }
 
     const defaultOptions: Intl.DateTimeFormatOptions = {
       year: 'numeric',

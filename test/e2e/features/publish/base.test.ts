@@ -16,6 +16,10 @@ import {
   scheduleDate,
   scheduleTime,
   scheduleError,
+  schedulePreview,
+  scheduleHourDecrement,
+  scheduleHourIncrement,
+  isScheduleTimeInvalid,
   pickScheduleDay,
   setScheduleTime,
 } from './../../support/schedule'
@@ -69,11 +73,13 @@ async function isModeChecked(mode: Locator): Promise<boolean> {
  * (save + immediate).
  *
  * `pinnedPage` is opened with timezone `UTC` and the clock pinned to `NOW`
- * once in `beforeAll`. It serves the three scheduler tests — 3, 7 & 6 —
- * but in THAT order. Test 6 submits `scheduleEditState` which sets the
- * entity's `publishOn`, and the publish dialog defaults to `scheduled` mode
- * whenever `publishOn` is set; running test 6 last avoids polluting tests
- * 3 and 7 which both assert `save` is the initial mode.
+ * once in `beforeAll`. It serves the scheduler tests (validation, clearing
+ * the time, the hour buttons, the scheduled-blocks notice and the scheduled
+ * submit) — with the scheduled submit LAST. That test submits
+ * `scheduleEditState` which sets the entity's `publishOn`, and the publish
+ * dialog defaults to `scheduled` mode whenever `publishOn` is set; running it
+ * last avoids polluting the earlier tests that assert `save` is the initial
+ * mode.
  *
  * `afterEach` closes any open dialog/menu, dismisses success messages, and
  * clears the adapter recorder — so each test's `waitForAdapterCall` only
@@ -185,6 +191,85 @@ describe('The publish dialog', async () => {
     // is enabled again.
     await setScheduleTime(pinnedPage, '11:00')
     await error.waitFor({ state: 'hidden' })
+    await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(false)
+  })
+
+  test('clearing the time keeps the dialog alive and blocks submit', async () => {
+    await openPublishDialog(pinnedPage)
+
+    await publishMode(pinnedPage, 'scheduled').click()
+    await scheduleDate(pinnedPage).waitFor({ state: 'visible' })
+
+    const preview = schedulePreview(pinnedPage)
+    const time = scheduleTime(pinnedPage)
+
+    // Start from a valid schedule: today at 11:00 (now is 10:00).
+    await pickScheduleDay(pinnedPage, TODAY)
+    await setScheduleTime(pinnedPage, '11:00')
+    await expect.poll(() => preview.textContent()).toContain('2026')
+    await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(false)
+
+    // Clearing the native time input (what the Delete key does) used to throw
+    // on `toISOString` and take the whole editor down. Now the dialog stays,
+    // the input is flagged, the preview keeps its box (no layout shift) but
+    // shows nothing, and submit is blocked without a "too soon" error.
+    await setScheduleTime(pinnedPage, '')
+    await expect.poll(() => isScheduleTimeInvalid(pinnedPage)).toBe(true)
+    expect(await dialog(pinnedPage, 'publish').count()).toBe(1)
+    expect(await preview.isVisible()).toBe(true)
+    expect(((await preview.textContent()) ?? '').trim()).toBe('')
+    expect(await scheduleError(pinnedPage).isHidden()).toBe(true)
+    await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(true)
+
+    // Typing a time again restores everything.
+    await setScheduleTime(pinnedPage, '11:30')
+    await expect.poll(() => isScheduleTimeInvalid(pinnedPage)).toBe(false)
+    await expect.poll(() => preview.textContent()).toContain('2026')
+    await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(false)
+    expect(await time.inputValue()).toBe('11:30')
+  })
+
+  test('hour buttons step to full hours and recover from an empty time', async () => {
+    await openPublishDialog(pinnedPage)
+
+    await publishMode(pinnedPage, 'scheduled').click()
+    await scheduleDate(pinnedPage).waitFor({ state: 'visible' })
+
+    const time = scheduleTime(pinnedPage)
+    const plus = scheduleHourIncrement(pinnedPage)
+    const minus = scheduleHourDecrement(pinnedPage)
+
+    await pickScheduleDay(pinnedPage, TODAY)
+
+    // From a full hour both buttons step by exactly one hour.
+    await setScheduleTime(pinnedPage, '11:00')
+    await plus.click()
+    await expect.poll(() => time.inputValue()).toBe('12:00')
+    await minus.click()
+    await expect.poll(() => time.inputValue()).toBe('11:00')
+
+    // From a partial hour "-" first rounds down, "+" goes to the next hour.
+    await setScheduleTime(pinnedPage, '11:30')
+    await minus.click()
+    await expect.poll(() => time.inputValue()).toBe('11:00')
+    await setScheduleTime(pinnedPage, '11:30')
+    await plus.click()
+    await expect.poll(() => time.inputValue()).toBe('12:00')
+
+    // Wraps around midnight in both directions.
+    await setScheduleTime(pinnedPage, '23:00')
+    await plus.click()
+    await expect.poll(() => time.inputValue()).toBe('00:00')
+    await minus.click()
+    await expect.poll(() => time.inputValue()).toBe('23:00')
+
+    // With the input cleared the buttons fall back to the noon default
+    // instead of producing "NaN:00", and the schedule becomes valid again.
+    await setScheduleTime(pinnedPage, '')
+    await expect.poll(() => isScheduleTimeInvalid(pinnedPage)).toBe(true)
+    await plus.click()
+    await expect.poll(() => time.inputValue()).toBe('13:00')
+    await expect.poll(() => isScheduleTimeInvalid(pinnedPage)).toBe(false)
     await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(false)
   })
 
