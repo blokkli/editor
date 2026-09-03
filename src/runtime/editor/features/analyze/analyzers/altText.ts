@@ -9,17 +9,17 @@ export default defineAnalyzer(() => {
     continuous: true,
     run: async (context) => {
       const $t = context.$t
-      const images = [
-        ...context.providerRootElement.querySelectorAll('img'),
-      ].map((img) => {
-        const alt = img.getAttribute('alt')
-        return {
-          element: img,
-          hasAlt: alt !== null && alt.trim() !== '',
-          alt: alt || '',
-          src: img.src.substring(0, 50),
-        }
-      })
+      const images = context
+        .querySelectorAll<HTMLImageElement>('img')
+        .map((img) => {
+          const alt = img.getAttribute('alt')
+          return {
+            element: img,
+            hasAlt: alt !== null && alt.trim() !== '',
+            alt: alt || '',
+            src: img.src.substring(0, 50),
+          }
+        })
 
       const withAlt = images.filter((v) => v.hasAlt)
       const withoutAlt = images.filter((v) => !v.hasAlt)
@@ -31,10 +31,16 @@ export default defineAnalyzer(() => {
         id: 'blokkli:image-alt-text:valid',
         title: $t('analyzeAltTextValid', 'Images with alt text'),
         category: 'accessibility' as const,
-        description: $t(
-          'analyzeAltTextValidDescription',
-          'Images have an alt text.',
-        ),
+        description:
+          withAlt.length === 1
+            ? $t(
+                'analyzeAltTextValidDescriptionOne',
+                'One image has an alt text.',
+              )
+            : $t(
+                'analyzeAltTextValidDescription',
+                '@count images have an alt text.',
+              ).replace('@count', String(withAlt.length)),
         status: 'pass' as const,
         nodes: withAlt.map((img) => ({
           targets: img.element,
@@ -47,10 +53,16 @@ export default defineAnalyzer(() => {
           id: 'blokkli:image-alt-text:missing',
           title: $t('analyzeAltTextMissing', 'Images without alt text'),
           category: 'accessibility' as const,
-          description: $t(
-            'analyzeAltTextMissingDescription',
-            'Images are missing alt text. Alt texts are important for accessibility and SEO.',
-          ),
+          description:
+            withoutAlt.length === 1
+              ? $t(
+                  'analyzeAltTextMissingDescriptionOne',
+                  'One image is missing alt text. Alt texts are important for accessibility and SEO.',
+                )
+              : $t(
+                  'analyzeAltTextMissingDescription',
+                  '@count images are missing alt text. Alt texts are important for accessibility and SEO.',
+                ).replace('@count', String(withoutAlt.length)),
           status: 'violation' as const,
           impact: 'serious' as const,
           nodes: withoutAlt.map((img) => ({

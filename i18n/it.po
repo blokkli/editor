@@ -1010,8 +1010,14 @@ msgstr ""
 
 msgctxt "analyzeAltTextMissingDescription"
 msgid ""
-"Images are missing alt text. Alt texts are important for accessibility and "
-"SEO."
+"@count images are missing alt text. Alt texts are important for "
+"accessibility and SEO."
+msgstr ""
+
+msgctxt "analyzeAltTextMissingDescriptionOne"
+msgid ""
+"One image is missing alt text. Alt texts are important for accessibility "
+"and SEO."
 msgstr ""
 
 msgctxt "analyzeAltTextMissingNode"
@@ -1023,7 +1029,11 @@ msgid "Images with alt text"
 msgstr ""
 
 msgctxt "analyzeAltTextValidDescription"
-msgid "Images have an alt text."
+msgid "@count images have an alt text."
+msgstr ""
+
+msgctxt "analyzeAltTextValidDescriptionOne"
+msgid "One image has an alt text."
 msgstr ""
 
 msgctxt "analyzeButtonLabel"
