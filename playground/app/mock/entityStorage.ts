@@ -162,6 +162,16 @@ export class EntityStorageManager {
       750,
       1400,
     )
+    // Intentionally has no alt text: the alt text analyzer E2E test adds an
+    // image block referencing this media to get a reported violation.
+    this.createImage(
+      '9',
+      '/placeholder.jpg',
+      '',
+      'placeholder-without-alt.jpg',
+      1220,
+      915,
+    )
 
     this.addUser('1', 'John Miller', 'john@example.com', '/avatar-1.jpg')
     this.addUser('2', 'Martin Faux', 'martin@example.com')

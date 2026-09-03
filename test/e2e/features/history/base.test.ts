@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from './../../support/session'
+import { openEditor, resetMockState } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import {
   addBlock,
@@ -11,7 +11,6 @@ import {
 import { toolbarButton, undo } from './../../support/toolbar'
 import { pressShortcut } from './../../support/keyboard'
 import { selectedUuids } from './../../support/selection'
-import { emitEvent } from './../../support/events'
 import {
   activeHistoryIndex,
   clickCurrentRevision,
@@ -50,24 +49,6 @@ describe('The history feature', async () => {
 
   let page: Page
 
-  /**
-   * Reset to a pristine editor session WITHOUT a full page reload. The
-   * playground's `EditState` persists its mutation list AND current index to
-   * `__30_blokkli_mock_<uuid>_*` localStorage keys (so an accidental tab
-   * refresh keeps your work). Clearing those keys + emitting `reloadState`
-   * makes the editor re-read the mock and arrive at an empty mutation list.
-   */
-  async function resetEditor(): Promise<void> {
-    await page.evaluate(() => {
-      localStorage.removeItem('__30_blokkli_mock_1_mutations')
-      localStorage.removeItem('__30_blokkli_mock_1_index')
-    })
-    await emitEvent(page, 'reloadState')
-    await page.waitForFunction(
-      () => window.__BLOKKLI__?.app?.state.mutations.value.length === 0,
-    )
-  }
-
   beforeAll(async () => {
     page = await openEditor()
   })
@@ -77,7 +58,7 @@ describe('The history feature', async () => {
   })
 
   afterEach(async () => {
-    await resetEditor()
+    await resetMockState(page)
   })
 
   test('both toolbar buttons are disabled with no mutations', async () => {

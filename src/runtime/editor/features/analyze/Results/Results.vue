@@ -3,6 +3,7 @@
     <Section
       v-for="group in grouped"
       :key="group.group"
+      :group="group.group"
       :label="group.label"
       :count="group.results.length"
       :results="group.results"

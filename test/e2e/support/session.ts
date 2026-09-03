@@ -6,6 +6,7 @@ import {
   PERMISSION_OVERRIDES_KEY,
   type PermissionOverrides,
 } from '../../../playground/app/mock/permissionOverrides'
+import { emitEvent } from './events'
 
 // `window.__BLOKKLI__` is typed by its real augmentations, both pulled into
 // scope by `test/e2e/tsconfig.json`: the global `Window` augmentation +
@@ -167,4 +168,25 @@ export function getHostContext(page: Page): Promise<EntityContext> {
       uuid: ctx.entityUuid,
     }
   })
+}
+
+/**
+ * Reset the editor to a pristine session without reloading the page.
+ *
+ * The playground's `EditState` persists its mutation list AND current index
+ * to `__30_blokkli_mock_1_{mutations,index}` localStorage keys (so an
+ * accidental tab refresh keeps your work). The mock EditState is a singleton
+ * keyed `1` whatever page is edited. Clearing those keys and emitting
+ * `reloadState` makes the editor re-read the mock and arrive at an empty
+ * mutation list in ~200ms, instead of the ~2s a `page.reload()` costs.
+ */
+export async function resetMockState(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    localStorage.removeItem('__30_blokkli_mock_1_mutations')
+    localStorage.removeItem('__30_blokkli_mock_1_index')
+  })
+  await emitEvent(page, 'reloadState')
+  await page.waitForFunction(
+    () => window.__BLOKKLI__?.app?.state.mutations.value.length === 0,
+  )
 }

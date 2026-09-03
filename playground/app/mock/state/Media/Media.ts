@@ -55,7 +55,7 @@ export class MediaImage extends Media {
   }
 
   override title(): string {
-    return this.alt()
+    return this.alt() || this.filename()
   }
 
   override getData() {

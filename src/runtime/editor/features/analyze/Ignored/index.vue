@@ -1,5 +1,6 @@
 <template>
   <Section
+    group="ignored"
     :label="$t('analyzeIgnoredResults', 'Ignored')"
     :count="totalCount"
     :results="results"
