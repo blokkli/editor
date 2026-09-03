@@ -58,6 +58,27 @@ getAnalyzers: () => {
 
 See the analyzer documentation for more details on creating custom analyzers.
 
+## The analyzer context
+
+`run()` and `init()` receive an `AnalyzerContext` with everything an analyzer
+needs about the current state:
+
+- `providerRootElement` — the root element of the rendered page
+- `langcode` / `interfaceLangcode` — the content and editor UI language
+- `entity` — the edited host entity (`type`, `uuid`, `bundle`)
+- `mutatedFields` — the current block tree
+- `violations` — backend-reported validation errors
+- `getTextElements()` — the lowest block elements that contain text
+- `getTextFieldValues()` — the stored (unrendered) values of all text fields.
+  The host entity's own fields are listed under `entity.uuid`. Use this when an
+  analyzer must know what the editor actually stores, e.g. because backend text
+  filters rewrite links or markup while rendering. Pass `{ processed: true }` to
+  get the same fields with their rendered values instead.
+- `readRawValue(host, fieldName)` — the stored value of a single text field
+- `getFieldListItem(uuid)` — the block for a UUID
+- `$t` — the translation function
+- `signal` — an `AbortSignal` that fires when the run is cancelled
+
 ## Built-in analyzers
 
 blökkli ships a few analyzers you can return from `getAnalyzers`. They are

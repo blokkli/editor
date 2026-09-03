@@ -275,7 +275,16 @@ const readability = await readabilityProviderFn(
   directive,
   fieldValue,
 )
-const analyze = analyzeProviderFn(adapters, state, ui, context, $t, readability)
+const analyze = analyzeProviderFn(
+  adapters,
+  state,
+  ui,
+  context,
+  $t,
+  readability,
+  entityContext,
+  fieldValue,
+)
 const dragdrop = dragdropProvider()
 const cache = cacheProvider()
 const workspaces = workspacesProvider(adapter, context, state)
