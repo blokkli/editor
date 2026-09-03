@@ -278,6 +278,7 @@
   "analyzeKeepVisibleDescription": "Wenn aktiviert, bliibe d'Analyseergebnis uf dr Sitte hervorghobe, au wenn s'Analyse-Panel zuegmacht isch.",
   "analyzeLastRun": "Zletscht usgfüehrt: @time",
   "analyzeMoreLink": "Meh",
+  "analyzeNodeLink": "Öffne",
   "analyzeNotAvailableInStructureView": "Analys isch in de Strukturaasicht nid verfüegbar.",
   "analyzeResultsOutdated": "D'Ergebnis sin veraltet. Klick uf de Button zum Aktualisiere.",
   "analyzeShowDetails": "Details anzeigen",

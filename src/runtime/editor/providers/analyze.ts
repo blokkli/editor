@@ -4,6 +4,9 @@ import type { StateProvider } from './state'
 import type { UiProvider } from './ui'
 import type { ReadabilityProvider } from './readability'
 import type { FieldValueProvider } from './fieldValue'
+import type { DomProvider } from './dom'
+import type { BlocksProvider } from './blocks'
+import type { DefinitionProvider } from './definition'
 import type { EntityContext } from '#blokkli/types'
 import type { AdapterContext } from '#blokkli/editor/adapter'
 import type { TextProvider } from './texts'
@@ -76,6 +79,9 @@ export default function analyzeProvider(
   readability: ReadabilityProvider,
   entity: ComputedRef<EntityContext>,
   fieldValue: FieldValueProvider,
+  dom: DomProvider,
+  blocks: BlocksProvider,
+  definitions: DefinitionProvider,
 ): AnalyzeProvider {
   const analyzers = ref<Analyzer[]>([])
   const isInitialized = ref(false)
@@ -96,6 +102,9 @@ export default function analyzeProvider(
       readability,
       entity.value,
       fieldValue,
+      dom,
+      blocks,
+      definitions,
     )
 
     await Promise.all(
@@ -134,6 +143,9 @@ export default function analyzeProvider(
       readability,
       entity.value,
       fieldValue,
+      dom,
+      blocks,
+      definitions,
     )
   }
 

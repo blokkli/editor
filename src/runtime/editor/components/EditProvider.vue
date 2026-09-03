@@ -284,6 +284,9 @@ const analyze = analyzeProviderFn(
   readability,
   entityContext,
   fieldValue,
+  dom,
+  blocks,
+  definitions,
 )
 const dragdrop = dragdropProvider()
 const cache = cacheProvider()

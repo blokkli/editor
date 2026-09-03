@@ -33,6 +33,12 @@ export type AnalyzeNode = {
    */
   identifier?: string
   /**
+   * Optional URL that helps resolving this finding, e.g. the edit form of
+   * the referenced media entity. Rendered as an external link next to the
+   * node.
+   */
+  link?: string
+  /**
    * Label for the score metric (e.g., "FRE", "LIX", "WSTF").
    * Shown as a badge in the results UI when both score and scoreLabel are set.
    */

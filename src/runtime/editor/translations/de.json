@@ -278,6 +278,7 @@
   "analyzeKeepVisibleDescription": "Wenn aktiviert, bleiben die Analyseergebnisse auf der Seite hervorgehoben, auch wenn das Analyse-Panel geschlossen ist.",
   "analyzeLastRun": "Zuletzt ausgeführt: @time",
   "analyzeMoreLink": "Mehr",
+  "analyzeNodeLink": "Öffnen",
   "analyzeNotAvailableInStructureView": "«Analysieren» ist in der strukturierten Vorschau nicht verfügbar.",
   "analyzeResultsOutdated": "Resultate sind veraltet. Klicken Sie auf den Button um zu aktualisieren.",
   "analyzeShowDetails": "Details anzeigen",

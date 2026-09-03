@@ -76,6 +76,18 @@ needs about the current state:
   get the same fields with their rendered values instead.
 - `readRawValue(host, fieldName)` — the stored value of a single text field
 - `getFieldListItem(uuid)` — the block for a UUID
+- `getAllUuids(bundle?)` — all block UUIDs, optionally of one bundle
+- `getChildBlocks(uuid, fieldName?)` — the blocks directly inside a block or the
+  host entity, without grandchildren
+- `getBlockOptions(uuid)` — the resolved option values of a block, the same
+  values its component receives from `defineBlokkli()`
+- `getBlockElement(uuid)` — the rendered root element of a block
+- `getBlockUuid(element)` — the UUID of the innermost block rendering an
+  element, or undefined if it belongs to the host entity
+- `isSkipped(element)` — whether the element is inside a `bk-skip-analyze`
+  element
+- `querySelectorAll(selector)` — like the DOM method on the root element, but
+  without skipped elements
 - `$t` — the translation function
 - `signal` — an `AbortSignal` that fires when the run is cancelled
 
@@ -89,6 +101,12 @@ exported from `#blokkli/analyzer`:
 - `altTextAnalyzer` — checks that images have alt text
 - `readabilityAnalyzer` — scores text readability
 - `axeAnalyzer` — runs axe-core accessibility rules
+
+### Result and node fields
+
+Descriptions of results and nodes are rendered as HTML. A result can carry a
+`link` to documentation, and a node can carry a `link` that helps resolving the
+finding directly, e.g. the edit form of a referenced media entity.
 
 ### Excluding content
 

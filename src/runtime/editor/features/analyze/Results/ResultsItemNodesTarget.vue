@@ -22,6 +22,25 @@
         getLabel()
       }}</span>
     </button>
+    <a
+      v-if="node.link"
+      :href="node.link"
+      target="_blank"
+      class="shrink-0 size-25 flex items-center justify-center rounded group/tooltip relative"
+      :class="
+        isFocused
+          ? 'text-accent-200 hover:text-accent-700 hover:bg-white'
+          : 'text-mono-500 hover:bg-accent-700 hover:text-accent-50'
+      "
+      data-test="analyze-target-link"
+    >
+      <Icon name="bk_mdi_open_in_new" class="size-15" />
+      <Tooltip
+        placement="center-before"
+        small
+        :label="$t('analyzeNodeLink', 'Open')"
+      />
+    </a>
     <button
       v-if="node.identifier"
       class="shrink-0 size-25 flex items-center justify-center rounded group/tooltip relative"

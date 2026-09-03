@@ -1,4 +1,7 @@
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
+import type { BlocksProvider } from '#blokkli/editor/providers/blocks'
+import type { DefinitionProvider } from '#blokkli/editor/providers/definition'
+import type { DomProvider } from '#blokkli/editor/providers/dom'
 import type {
   FieldValueProvider,
   TextFieldValue,
@@ -8,6 +11,12 @@ import type { ReadabilityProvider } from '#blokkli/editor/providers/readability'
 import type { TextProvider } from '#blokkli/editor/providers/texts'
 import type { MutatedField, Validation } from '#blokkli/editor/types/state'
 import type { EntityContext } from '#blokkli/types'
+import type { BlockDefinitionOptionsInput } from '#blokkli/types/definitions'
+import {
+  getAvailableOptions,
+  getMutatedOptionValue,
+} from '#blokkli/editor/helpers/options'
+import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
 import type {
   AnalyzeCategory,
   AnalyzeNode,
@@ -15,6 +24,12 @@ import type {
   AnalyzeStatus,
 } from '../types'
 import { collectTextElements, type TextElement } from './collectTextElements'
+import { isSkipped } from './skip'
+
+/**
+ * The resolved runtime value of a block option.
+ */
+export type BlockOptionValue = ReturnType<typeof getRuntimeOptionValue>
 
 export class AnalyzerContext {
   public readonly mutatedFields: Readonly<MutatedField[]>
@@ -58,6 +73,9 @@ export class AnalyzerContext {
      */
     public readonly entity: EntityContext,
     private fieldValue: FieldValueProvider,
+    private dom: DomProvider,
+    private blocks: BlocksProvider,
+    private definitions: DefinitionProvider,
   ) {
     this.readability = readability
     this.mutatedFields = JSON.parse(JSON.stringify(state.mutatedFields.value))
@@ -69,6 +87,116 @@ export class AnalyzerContext {
    */
   public getFieldListItem(uuid: string): FieldListItemTyped | undefined {
     return this.state.getFieldListItem(uuid) as FieldListItemTyped | undefined
+  }
+
+  /**
+   * Whether the element is, or is inside, an element with the
+   * `bk-skip-analyze` class. Analyzers should not report such elements.
+   */
+  public isSkipped(element: Element): boolean {
+    return isSkipped(element)
+  }
+
+  /**
+   * Query the provider root element, excluding elements that opted out of
+   * analysis via the `bk-skip-analyze` class.
+   */
+  public querySelectorAll<T extends Element = HTMLElement>(
+    selector: string,
+  ): T[] {
+    return [...this.providerRootElement.querySelectorAll<T>(selector)].filter(
+      (element) => !isSkipped(element),
+    )
+  }
+
+  /**
+   * The root element of the rendered block, or undefined if the block is not
+   * rendered.
+   */
+  public getBlockElement(uuid: string): HTMLElement | undefined {
+    return this.dom.registeredBlocks.value[uuid]
+  }
+
+  /**
+   * The UUID of the block that renders this element, or undefined if the
+   * element belongs to the host entity itself and not to any block.
+   *
+   * For nested blocks this is the innermost block, so comparing the result
+   * with a block's UUID tells whether the block renders the element itself
+   * or one of its children does.
+   */
+  public getBlockUuid(element: Element): string | undefined {
+    const block = element.closest('[data-bk-uuid]')
+    return block instanceof HTMLElement ? block.dataset.bkUuid : undefined
+  }
+
+  /**
+   * All block UUIDs in the current state, optionally filtered by bundle.
+   */
+  public getAllUuids(bundle?: string): string[] {
+    return this.state.getAllUuids(bundle)
+  }
+
+  /**
+   * The blocks directly inside the given entity, in document order.
+   *
+   * Pass the UUID of a block to get its nested blocks or `entity.uuid` to get
+   * the top-level blocks of the page. Grandchildren are not included.
+   */
+  public getChildBlocks(
+    uuid: string,
+    fieldName?: string,
+  ): FieldListItemTyped[] {
+    return this.mutatedFields
+      .filter(
+        (field) =>
+          field.entityUuid === uuid && (!fieldName || field.name === fieldName),
+      )
+      .flatMap((field) => field.list as FieldListItemTyped[])
+  }
+
+  /**
+   * The resolved option values of a block, the same values the block's
+   * component receives from `defineBlokkli()`. Returns undefined if the block
+   * is not rendered.
+   */
+  public getBlockOptions(
+    uuid: string,
+  ): Record<string, BlockOptionValue> | undefined {
+    const block = this.blocks.getBlock(uuid)
+    if (!block) {
+      return
+    }
+
+    const definition = this.definitions.getBlockDefinition(
+      block,
+      block.fieldListType,
+      block.parentBlockBundle,
+    )
+    if (!definition) {
+      return
+    }
+
+    const item = this.state.getFieldListItem(uuid)
+    const available = getAvailableOptions(
+      definition.options as BlockDefinitionOptionsInput | undefined,
+      definition.globalOptions as string[] | undefined,
+      this.definitions.globalOptions.value as Record<string, any>,
+    )
+
+    return available.reduce<Record<string, BlockOptionValue>>(
+      (acc, { property, option }) => {
+        const stored = getMutatedOptionValue(
+          this.state.mutatedOptions,
+          uuid,
+          property,
+          item?.options?.[property] ?? option.default,
+        )
+        acc[property] = getRuntimeOptionValue(option, stored)
+        return acc
+      },
+      {},
+    )
   }
 
   /**

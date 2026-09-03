@@ -2,18 +2,13 @@ import type { AnalyzeResult } from '#blokkli/analyzer/types'
 import { falsy } from '#blokkli/helpers'
 import { defineAnalyzer } from './defineAnalyzer'
 import { hashString } from './helpers/hashString'
+import { isSkipped } from './helpers/skip'
 
 /**
  * Class on the provider root element that disables this analyzer for the
  * whole page.
  */
 const SKIP_PAGE_CLASS = 'bk-skip-heading-structure'
-
-/**
- * Headings inside an element with this class are not analyzed. Same
- * convention as the text analyzers (see collectTextElements).
- */
-const SKIP_ELEMENT_CLASS = 'bk-skip-analyze'
 
 /**
  * The level the first heading of the page is compared against. A page is
@@ -48,10 +43,7 @@ export default defineAnalyzer(() => {
         ...root.querySelectorAll('h1, h2, h3, h4, h5, h6'),
       ]
         .map((heading) => {
-          if (
-            heading instanceof HTMLElement &&
-            !heading.closest('.' + SKIP_ELEMENT_CLASS)
-          ) {
+          if (heading instanceof HTMLElement && !isSkipped(heading)) {
             const level = parseInt(heading.tagName.substring(1))
             return {
               element: heading,

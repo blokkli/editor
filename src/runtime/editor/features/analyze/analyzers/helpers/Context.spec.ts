@@ -8,6 +8,9 @@ const ENTITY = { type: 'node', uuid: 'host-uuid', bundle: 'page' }
 function createContext(options: {
   textFieldValues?: TextFieldValue[]
   fieldType?: 'plain' | 'markup' | null
+  root?: HTMLElement
+  mutatedFields?: unknown[]
+  registeredBlocks?: Record<string, HTMLElement>
 }) {
   const getTextFieldValues = vi.fn(() => options.textFieldValues ?? [])
   const resolveFieldType = vi.fn(() => options.fieldType ?? null)
@@ -15,21 +18,26 @@ function createContext(options: {
   const readValue = vi.fn(() => 'RENDERED')
 
   const state = {
-    mutatedFields: { value: [] },
+    mutatedFields: { value: options.mutatedFields ?? [] },
     violations: { value: [] },
     getFieldListItem: () => undefined,
+    getAllUuids: vi.fn(() => ['a', 'b']),
   }
+  const dom = { registeredBlocks: { value: options.registeredBlocks ?? {} } }
 
   const context = new AnalyzerContext(
     'de',
     'de',
-    document.createElement('div'),
+    options.root ?? document.createElement('div'),
     state as never,
     ((_key: string, defaultValue?: string) => defaultValue || '') as never,
     undefined,
     {} as never,
     ENTITY,
     { getTextFieldValues, resolveFieldType, readRawValue, readValue } as never,
+    dom as never,
+    {} as never,
+    {} as never,
   )
 
   return {
@@ -114,5 +122,52 @@ describe('AnalyzerContext', () => {
     const host = { type: 'paragraph', uuid: 'block-1', bundle: 'image' }
     expect(context.readRawValue(host, 'field_image')).toBeNull()
     expect(readRawValue).not.toHaveBeenCalled()
+  })
+
+  it('detects elements that opted out of analysis', () => {
+    const root = document.createElement('div')
+    root.innerHTML =
+      '<p id="kept">a</p><div class="bk-skip-analyze"><p id="skipped">b</p></div>'
+    const { context } = createContext({ root })
+    expect(context.isSkipped(root.querySelector('#kept')!)).toBe(false)
+    expect(context.isSkipped(root.querySelector('#skipped')!)).toBe(true)
+    expect(context.querySelectorAll('p').map((el) => el.id)).toEqual(['kept'])
+  })
+
+  it('resolves block elements and owning block uuids', () => {
+    const root = document.createElement('div')
+    root.innerHTML =
+      '<a id="host"></a><div data-bk-uuid="outer"><a id="outer-link"></a><div data-bk-uuid="inner"><a id="inner-link"></a></div></div>'
+    const outer = root.querySelector<HTMLElement>('[data-bk-uuid="outer"]')!
+    const { context } = createContext({
+      root,
+      registeredBlocks: { outer },
+    })
+    expect(context.getBlockElement('outer')).toBe(outer)
+    expect(context.getBlockElement('missing')).toBeUndefined()
+    expect(context.getBlockUuid(root.querySelector('#host')!)).toBeUndefined()
+    expect(context.getBlockUuid(root.querySelector('#outer-link')!)).toBe(
+      'outer',
+    )
+    expect(context.getBlockUuid(root.querySelector('#inner-link')!)).toBe(
+      'inner',
+    )
+  })
+
+  it('returns the direct children of an entity', () => {
+    const child = { uuid: 'child', bundle: 'text' }
+    const grandchild = { uuid: 'grandchild', bundle: 'text' }
+    const { context } = createContext({
+      mutatedFields: [
+        { name: 'field_blocks', entityUuid: 'host-uuid', list: [child] },
+        { name: 'field_nested', entityUuid: 'child', list: [grandchild] },
+      ],
+    })
+    expect(context.getChildBlocks('host-uuid')).toEqual([child])
+    expect(context.getChildBlocks('child', 'field_nested')).toEqual([
+      grandchild,
+    ])
+    expect(context.getChildBlocks('child', 'field_other')).toEqual([])
+    expect(context.getAllUuids('text')).toEqual(['a', 'b'])
   })
 })

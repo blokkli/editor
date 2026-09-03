@@ -1,3 +1,4 @@
+import { SKIP_ANALYZE_CLASS } from './skip'
 export interface TextElement {
   text: string
   element: HTMLElement
@@ -84,8 +85,8 @@ const traverse = (element: HTMLElement, results: TextElement[]) => {
     return
   }
 
-  // Skip elements with the bk-skip-analyze class
-  if (element.classList.contains('bk-skip-analyze')) {
+  // Skip elements that opted out of analysis.
+  if (element.classList.contains(SKIP_ANALYZE_CLASS)) {
     return
   }
 

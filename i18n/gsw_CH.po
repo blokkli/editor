@@ -1184,6 +1184,10 @@ msgctxt "analyzeMoreLink"
 msgid "More"
 msgstr "Meh"
 
+msgctxt "analyzeNodeLink"
+msgid "Open"
+msgstr "Öffne"
+
 msgctxt "analyzeNotAvailableInStructureView"
 msgid "Analyze is not available in structure view."
 msgstr "Analys isch in de Strukturaasicht nid verfüegbar."
