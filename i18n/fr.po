@@ -1050,12 +1050,14 @@ msgctxt "analyzeClickButton"
 msgid "Click the button above to run the analysis."
 msgstr ""
 
-msgctxt "analyzeHeadingHasH2"
-msgid "H2 headings present"
+msgctxt "analyzeHeadingMissingH1"
+msgid "Missing H1 heading"
 msgstr ""
 
-msgctxt "analyzeHeadingHasH2Description"
-msgid "The page contains H2 headings for a clear content structure."
+msgctxt "analyzeHeadingMissingH1Description"
+msgid ""
+"The page contains no H1 heading. Every page should have exactly one H1 "
+"heading."
 msgstr ""
 
 msgctxt "analyzeHeadingMultipleH1"
@@ -1064,8 +1066,12 @@ msgstr ""
 
 msgctxt "analyzeHeadingMultipleH1Description"
 msgid ""
-"The page contains multiple H1 headings. There should only be one H1 heading "
+"The page contains @count H1 headings. There should only be one H1 heading "
 "per page."
+msgstr ""
+
+msgctxt "analyzeHeadingNoH1Found"
+msgid "No H1 heading found"
 msgstr ""
 
 msgctxt "analyzeHeadingNoH2"
@@ -1082,34 +1088,44 @@ msgctxt "analyzeHeadingNoH2Found"
 msgid "No H2 headings found"
 msgstr ""
 
-msgctxt "analyzeHeadingNoSkippedLevels"
-msgid "No skipped heading levels"
-msgstr ""
-
-msgctxt "analyzeHeadingNoSkippedLevelsDescription"
-msgid "The heading hierarchy does not skip any levels."
-msgstr ""
-
-msgctxt "analyzeHeadingSingleH1"
-msgid "Single H1 heading"
-msgstr ""
-
-msgctxt "analyzeHeadingSingleH1Description"
-msgid "The page has exactly one H1 heading."
-msgstr ""
-
 msgctxt "analyzeHeadingSkippedLevels"
 msgid "Skipped heading levels"
 msgstr ""
 
 msgctxt "analyzeHeadingSkippedLevelsDescription"
 msgid ""
-"Headings skip a level. The heading hierarchy should not skip levels (e.g. "
-"do not jump from H2 to H4)."
+"@count headings skip a level. The heading hierarchy should not skip levels "
+"(e.g. do not jump from H2 to H4)."
+msgstr ""
+
+msgctxt "analyzeHeadingSkippedLevelsDescriptionOne"
+msgid ""
+"One heading skips a level. The heading hierarchy should not skip levels "
+"(e.g. do not jump from H2 to H4)."
+msgstr ""
+
+msgctxt "analyzeHeadingSkippedLevelsFirst"
+msgid "First heading is @tag: \"@text\""
 msgstr ""
 
 msgctxt "analyzeHeadingStructureLabel"
 msgid "Heading Structure"
+msgstr ""
+
+msgctxt "analyzeHeadingValid"
+msgid "Correct heading structure"
+msgstr ""
+
+msgctxt "analyzeHeadingValidDescription"
+msgid ""
+"The page has a correct heading structure: one H1, @count H2 headings, no "
+"skipped levels."
+msgstr ""
+
+msgctxt "analyzeHeadingValidDescriptionOne"
+msgid ""
+"The page has a correct heading structure: one H1, one H2 heading, no "
+"skipped levels."
 msgstr ""
 
 msgctxt "analyzeIgnore"

@@ -57,3 +57,21 @@ getAnalyzers: () => {
 ```
 
 See the analyzer documentation for more details on creating custom analyzers.
+
+## Built-in analyzers
+
+blökkli ships a few analyzers you can return from `getAnalyzers`. They are
+exported from `#blokkli/analyzer`:
+
+- `headingStructureAnalyzer` — checks the heading hierarchy (exactly one H1, at
+  least one H2, no skipped levels)
+- `altTextAnalyzer` — checks that images have alt text
+- `readabilityAnalyzer` — scores text readability
+- `axeAnalyzer` — runs axe-core accessibility rules
+
+### Excluding content
+
+- Add the class `bk-skip-analyze` to any element to exclude it and its children
+  from text and heading analysis.
+- Add the class `bk-skip-heading-structure` to the provider root element to
+  disable the heading structure analyzer for the whole page.
