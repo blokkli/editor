@@ -14,7 +14,7 @@ metadata:
   author: blokkli
   version: '1.0.0'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
-  docs: https://blokk.li
+  docs: https://docs.blokk.li
 ---
 
 # Paragraph templates (paragraphs_blokkli_template)
