@@ -27,7 +27,8 @@
     "url": "git+https://github.com/blokkli/editor.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "type": "module",
   "sideEffects": false,
