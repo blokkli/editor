@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+## Description: Check which upstream (nuxt or drupal) nginx routes paths to
+## Usage: check-routes
+## Example: "ddev check-routes"
+
+# Every path in the table below is requested through the ddev router, and the
+# X-Blokkli-Upstream response header (set in .ddev/nginx_full/nginx-site.conf)
+# is compared with the expected upstream. Extend the table when routes change.
+
+set -uo pipefail
+
+base="${DDEV_PRIMARY_URL:-https://blokkli.ddev.site}"
+
+routes=(
+  # Nuxt
+  "/ nuxt"
+  "/en/some/page nuxt"
+  "/de nuxt"
+  "/node/1 nuxt"
+  "/_nuxt/x.js nuxt"
+  "/api/graphql_query/x nuxt"
+  "/api/blokkli/agent nuxt"
+  "/blockchain nuxt"
+  "/users nuxt"
+  "/media-kit nuxt"
+  "/administration nuxt"
+  # Drupal
+  "/user/login drupal"
+  "/fr/user/login drupal"
+  "/graphql drupal"
+  "/en/graphql drupal"
+  "/admin drupal"
+  "/de/admin/content drupal"
+  "/core/install.php drupal"
+  "/update.php drupal"
+  "/node/add drupal"
+  "/node/add/page drupal"
+  "/node/1/edit drupal"
+  "/fr/node/1/translations drupal"
+  "/node/preview/x/full drupal"
+  "/taxonomy/term/1/edit drupal"
+  "/media/1/edit drupal"
+  "/media-library drupal"
+  "/paragraphs_blokkli/x drupal"
+  "/file/progress/1 drupal"
+  "/sites/default/files/x.jpg drupal"
+  "/system/files/x drupal"
+  "/entity_reference_autocomplete/x drupal"
+  "/.well-known/change-password drupal"
+)
+
+failed=0
+for route in "${routes[@]}"; do
+  path="${route% *}"
+  expected="${route##* }"
+  actual=$(curl -sk -o /dev/null -D - --max-time 10 "$base$path" |
+    tr -d '\r' | awk -F': ' 'tolower($1) == "x-blokkli-upstream" { print $2 }')
+  if [ "$actual" = "$expected" ]; then
+    printf '  ok    %-40s %s\n' "$path" "$actual"
+  else
+    printf '  FAIL  %-40s expected %s, got %s\n' "$path" "$expected" "${actual:-nothing}"
+    failed=1
+  fi
+done
+
+exit $failed

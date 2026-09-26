@@ -24,6 +24,11 @@
 
 @config '../tailwind.config.ts';
 
+/* Keep class candidates from the Drupal site and its Nuxt app out of the editor CSS. */
+@source not '../drupal';
+@source not '../.ddev';
+@source not '../playground-drupal';
+
 @font-face {
   font-family: 'PB Inter';
   font-weight: 100 900;

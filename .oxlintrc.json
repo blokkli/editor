@@ -55,7 +55,9 @@
     "src/module/used-icons.ts",
     "src/runtime/material-icons/index.ts",
     "**/.vercel",
-    "**/public"
+    "**/public",
+    "drupal/**",
+    ".ddev/**"
   ],
   "rules": {
     "constructor-super": "error",

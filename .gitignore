@@ -4,7 +4,8 @@ storage
 tmp
 
 # Logs
-*.log*
+*.log
+*.log.*
 
 # Temp directories
 .temp
@@ -78,3 +79,24 @@ playground/public/uploads/
 packages/agent
 packages/kit
 .playwright-mcp
+
+# Drupal (Composer root drupal/). Everything Composer or Drupal generates is
+# ignored; only custom code, settings.php and config are tracked.
+/drupal/vendor/
+/drupal/web/*
+!/drupal/web/modules/
+/drupal/web/modules/*
+!/drupal/web/modules/custom/
+!/drupal/web/sites/
+/drupal/web/sites/*
+!/drupal/web/sites/default/
+/drupal/web/sites/default/*
+!/drupal/web/sites/default/settings.php
+/drupal/db/
+/drupal/private/
+/drupal/sandboxes/
+/drupal/recipes/
+/drupal/drush/Commands/contrib/
+
+# ddev environment files can contain API keys.
+/.ddev/.env*

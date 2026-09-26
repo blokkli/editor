@@ -1,0 +1,30 @@
+# ddev project for the blökkli Drupal playground and sandbox.
+# See plans/drupal-setup/ for the design.
+name: blokkli
+type: drupal11
+docroot: drupal/web
+composer_root: drupal
+composer_version: "2"
+php_version: "8.5"
+webserver_type: nginx-fpm
+nodejs_version: auto
+xdebug_enabled: false
+
+# Drupal runs on SQLite (one file per sandbox), so there is no db container,
+# and settings.php is ours, not ddev's.
+omit_containers: [db]
+disable_settings_management: true
+
+working_dir:
+  web: /var/www/html/drupal
+
+# The playground-drupal Nuxt dev server. Control it with `ddev nuxt`.
+web_extra_daemons:
+  - name: nuxt
+    command: /var/www/html/.ddev/nuxt-daemon.sh
+    directory: /var/www/html
+
+hooks:
+  post-start:
+    # Keeps drupal/vendor in sync with composer.lock after a checkout or pull.
+    - composer: install --no-interaction

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>502: Drupal isn't responding</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 4rem auto; padding: 0 1rem; line-height: 1.5; }
+      code { background: #eee; padding: 0.1em 0.3em; border-radius: 3px; }
+    </style>
+  </head>
+  <body>
+    <h1>Drupal isn't responding</h1>
+    <p>nginx is up, but PHP-FPM doesn't answer.</p>
+    <ul>
+      <li>Check the container log: <code>ddev logs</code></li>
+      <li>Restart the project: <code>ddev restart</code></li>
+    </ul>
+  </body>
+</html>

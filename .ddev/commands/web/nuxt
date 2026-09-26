@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+## Description: Control the playground-drupal Nuxt dev server (the "nuxt" daemon)
+## Usage: nuxt [status|start|stop|restart|logs]
+## Example: "ddev nuxt restart" or "ddev nuxt logs"
+
+set -euo pipefail
+
+program=webextradaemons:nuxt
+
+case "${1:-status}" in
+  status | start | stop | restart)
+    supervisorctl "$1" "$program"
+    ;;
+  logs)
+    exec tail -n 100 -F /tmp/nuxt.log
+    ;;
+  *)
+    echo "Usage: ddev nuxt [status|start|stop|restart|logs]" >&2
+    exit 1
+    ;;
+esac
