@@ -37,22 +37,24 @@ and tracks its own status. The [index](#chunks) mirrors those statuses.
 
 ## Decisions
 
-| Topic                | Decision                                                                                                                                                                                                          |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frontend runtime     | Nuxt runs inside the ddev web container. One domain, with nginx path rules deciding between Nuxt and Drupal, as in the starterkit. blökkli relies on this, e.g. when it opens Drupal forms in iframes.            |
-| `paragraphs_blokkli` | Git submodule of the drupal.org repository (branch 2.0.x), symlinked in through a Composer path repository. Each blökkli branch pins the module commit it works with.                                             |
-| Database             | SQLite, one file per sandbox. Confirmed by the [spike](01-sqlite-spike.md) on 2026-09-26, with `synchronous=NORMAL` and the memory backend for the entity cache bin.                                              |
-| Isolation            | Each sandbox gets its own database, files directory, subdomain and hash salt. Code is shared.                                                                                                                     |
-| Languages            | EN (default and source language), DE, FR.                                                                                                                                                                         |
-| Sandbox lifetime     | Normal: 24h maximum, deleted after 2h idle. Premium: 7 days.                                                                                                                                                      |
-| Paid features        | The agent is only available in premium sandboxes, which are created by invitation. Costs are capped by a spend limit on a dedicated provider key, with no budget logic in the app. DeepL costs are not a concern. |
-| Visibility           | Anonymous users don't get `access content`. Pages are visible to the sandbox's own users, or through the session grant from "preview on smartphone".                                                              |
-| Hosting              | Hosted ddev on the existing Hetzner server. Deferred until everything works locally (M3).                                                                                                                         |
-| Branches             | Two hosted instances: `main` (public) at `sandbox.blokk.li` and `dev` (maintainer and invited testers) at `dev-sandbox.blokk.li`. Sandboxes are subdomains of these.                                              |
-| Order                | Local first (M0–M2). DNS, TLS and hosting come after.                                                                                                                                                             |
-| Nuxt app             | `playground-drupal/`                                                                                                                                                                                              |
-| Node tooling         | Runs in the web container, as in the other ddev projects: `ddev ssh`, then `bun …`. bun is part of the web image, pinned to `packageManager` (2026-09-26, chunk 02).                                              |
-| nginx                | One public server for every hostname; Drupal paths are anchored, with an optional language prefix; both upstreams get the browser's host (2026-09-26, chunk 02).                                                  |
+| Topic                | Decision                                                                                                                                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend runtime     | Nuxt runs inside the ddev web container. One domain, with nginx path rules deciding between Nuxt and Drupal, as in the starterkit. blökkli relies on this, e.g. when it opens Drupal forms in iframes.                        |
+| `paragraphs_blokkli` | Git submodule of the drupal.org repository (branch 2.0.x), symlinked in through a Composer path repository. Each blökkli branch pins the module commit it works with.                                                         |
+| Database             | SQLite, one file per sandbox. Confirmed by the [spike](01-sqlite-spike.md) on 2026-09-26, with `synchronous=NORMAL` and the memory backend for the entity cache bin.                                                          |
+| Isolation            | Each sandbox gets its own database, files directory, subdomain and hash salt. Code is shared.                                                                                                                                 |
+| Languages            | EN (default and source language), DE, FR. Every language has a URL prefix (`/en`, `/de`, `/fr`), as in the starterkit (2026-09-26, chunk 03).                                                                                 |
+| Sandbox lifetime     | Normal: 24h maximum, deleted after 2h idle. Premium: 7 days.                                                                                                                                                                  |
+| Paid features        | The agent is only available in premium sandboxes, which are created by invitation. Costs are capped by a spend limit on a dedicated provider key, with no budget logic in the app. DeepL costs are not a concern.             |
+| Visibility           | Anonymous users don't get `access content`. Pages are visible to the sandbox's own users, or through the session grant from "preview on smartphone".                                                                          |
+| Hosting              | Hosted ddev on the existing Hetzner server. Deferred until everything works locally (M3).                                                                                                                                     |
+| Branches             | Two hosted instances: `main` (public) at `sandbox.blokk.li` and `dev` (maintainer and invited testers) at `dev-sandbox.blokk.li`. Sandboxes are subdomains of these.                                                          |
+| Order                | Local first (M0–M2). DNS, TLS and hosting come after.                                                                                                                                                                         |
+| Nuxt app             | `playground-drupal/`                                                                                                                                                                                                          |
+| Node tooling         | Runs in the web container, as in the other ddev projects: `ddev ssh`, then `bun …`. bun is part of the web image, pinned to `packageManager` (2026-09-26, chunk 02).                                                          |
+| nginx                | One public server for every hostname; Drupal paths are anchored, with an optional language prefix; both upstreams get the browser's host (2026-09-26, chunk 02).                                                              |
+| Drupal config        | Profile-less, installed from `drupal/config/sync` (`ddev drush si --existing-config -y`). Config is the source of truth; it was bootstrapped once from core's `standard` recipe (2026-09-26, chunk 03).                       |
+| Secrets              | From the environment: `.ddev/.env.web` (gitignored). The hash salt has a public local fallback; the hosted site sets `IS_DDEV_HOSTED=true`, and settings.php then refuses to run without its own salt (2026-09-26, chunk 03). |
 
 When a decision changes, update this table and add the date.
 
@@ -71,7 +73,7 @@ blokkli/
 │   ├── content/                    # declarative seed content
 │   ├── db/                         # gitignored: the dev site's SQLite database
 │   ├── paragraphs_blokkli/         # git submodule (drupal.org, 2.0.x)
-│   ├── private/                    # gitignored: private files
+│   ├── private/                    # private files; only .htaccess is tracked
 │   ├── sandboxes/                  # gitignored: template + one folder per sandbox
 │   ├── web/                        # docroot; core and contrib are gitignored
 │   │   └── modules/custom/
@@ -121,7 +123,7 @@ Milestones:
 | --- | -------------------------------------------------------------- | --------- | ------ | ----------------- |
 | 01  | [SQLite spike](01-sqlite-spike.md)                             | M0        | done   | –                 |
 | 02  | [ddev and repo layout](02-ddev-and-repo-layout.md)             | M1        | done   | 01                |
-| 03  | [Drupal base site](03-drupal-base-site.md)                     | M1        | todo   | 02                |
+| 03  | [Drupal base site](03-drupal-base-site.md)                     | M1        | done   | 02                |
 | 04  | [Content model and features](04-content-model-and-features.md) | M1        | todo   | 03                |
 | 05  | [Seed, bake, reset](05-seed-bake-reset.md)                     | M1        | todo   | 04                |
 | 06  | [playground-drupal app](06-playground-drupal-app.md)           | M1        | todo   | 03, grows with 04 |
@@ -162,10 +164,13 @@ fixed before chunk 09's "Invite a colleague".
   the site path (`Settings::getApcuPrefix()`). All sandboxes share
   `sites/default`, so with a shared salt they would share APCu entries (config,
   discovery). Hence a per-sandbox hash salt.
-- **Login links.** One-time login links are derived from the hash salt and the
-  user's password hash. Cloned sandboxes have identical users, so with a shared
-  salt a link from one sandbox would work in another. Hence the per-sandbox
-  salt, a regenerated `system.private_key` on claim, and no passwords.
+- **Login links.** One-time login links are an HMAC keyed with the hash salt and
+  the user's password hash (`OneTimeAuthentication`). Seeded users have no known
+  passwords, so the salt is what protects them: a public salt would let anyone
+  forge a login link. Cloned sandboxes have identical users, so with a shared
+  salt a link from one sandbox would work in another. Hence a secret,
+  per-sandbox salt and no passwords. `system.private_key` (regenerated on claim)
+  protects other tokens, not login links.
 - **Feature detection happens twice** in the Drupal module:
   - At build time: a feature is disabled when the schema lacks its mutation
     (`context.features.disableFeature` in `src/modules/drupal/index.ts`).

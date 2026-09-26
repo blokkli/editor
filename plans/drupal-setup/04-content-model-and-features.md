@@ -34,7 +34,8 @@ stay comparable and E2E specs could be ported later.
 - [ ] **Templates:** template entity config plus its edit route (chunk 06).
 - [ ] **Library:** `paragraphs_library` plus `from_library`.
 - [ ] **Translation:**
-  - [ ] DeepL via `paragraphs_blokkli_deepl`, with the key from the environment
+  - [ ] DeepL via `paragraphs_blokkli_deepl` (the key from the environment is
+        wired in chunk 03)
   - [ ] outdated-translation tracking
 - [ ] **Publishing:**
   - [ ] scheduler on nodes (`publish_on` / `unpublish_on`) and block scheduling
@@ -53,8 +54,8 @@ stay comparable and E2E specs could be ported later.
 - [ ] **Options:** point `paragraphs_blokkli.settings.schema_file` at the
       options schema the frontend writes (`schemaOptionsPath`), as the
       starterkit does.
-- [ ] **Agent:** `paragraphs_blokkli_agent` with `auth_secret` from the
-      environment.
+- [ ] **Agent:** `paragraphs_blokkli_agent` (the `auth_secret` from the
+      environment is wired in chunk 03).
 
 ## Acceptance criteria
 
@@ -64,3 +65,38 @@ stay comparable and E2E specs could be ported later.
   for lack of backend support.
 
 ## Notes
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **Chunk 03 left a minimal model:** node type `page` with `field_paragraphs`,
+  paragraph type `text` with `field_text`. Rename freely; there's no content
+  until chunk 05. Every module is already enabled except `media_library` and
+  `paragraphs_type_permissions` (core `media` is enabled, without types).
+- **Config changes** go through `ddev drush cex` into `drupal/config/sync`.
+  Reinstall with `ddev drush si --existing-config -y` to check that the export
+  is complete, then `drush config:status` must be clean.
+- **List allowed paragraph types explicitly** on every paragraphs field. For
+  `target_bundles: null` the module reports no allowed types (F7). The library
+  item's types come from each paragraph type's `allow_library_conversion`.
+- **The GraphQL server's `bundles` key** must list every bundle, or
+  graphql_core_schema generates no type for it (`…Unexposed`). Add new fields to
+  its `fields` list too. The server also needs `media` (entity type, bundles,
+  fields) once the media types exist.
+- **Media-library** passes the schema check already, but fails at runtime until
+  the media types and the `media_library` search provider exist.
+- **Search providers** are config entities
+  (`paragraphs_blokkli_search.blokkli_search_provider.*`). The template module
+  needs "Entity Query Templates" enabled.
+- **Block scheduling** needs scheduler's paragraph plugin: the starterkit
+  patches scheduler with #3312200 (needs `cweagans/composer-patches`). Without
+  it, `getEnabledTypes('paragraph')` returns nothing.
+- **`paragraphs_type_permissions`:** enable it together with the roles. Every
+  role then needs per-bundle view (and create/update) permissions, including
+  anonymous for SSR with a preview grant.
+- **`schema_file`** in `paragraphs_blokkli.settings` is still empty.
+- **Translatable config pages:** the GraphQL extension is
+  `translatable_config_pages` (module `graphql_translatable_config_pages`, part
+  of graphql_core_schema). `enabled_types` for config pages hits the schema gap
+  in F7.
+- **Port `add_teaser_from_node_id`**: it's the only blökkli mutation in
+  `build/drupal-schema.graphql` that the local schema lacks.

@@ -1,0 +1,144 @@
+uuid: 38ae9f46-536c-4f00-8d7a-0d90a4b082fb
+langcode: en
+status: true
+dependencies: {  }
+name: graphql
+label: GraphQL
+endpoint: /graphql
+debug_flag: 1
+schema: core_composable
+caching: true
+batching: true
+disable_introspection: false
+query_depth: 0
+query_complexity: 0
+schema_configuration:
+  core_composable:
+    extensions:
+      entity_query: entity_query
+      formatted_date: formatted_date
+      language_schema: language_schema
+      paragraphs_blokkli_agent: paragraphs_blokkli_agent
+      paragraphs_blokkli_comment: paragraphs_blokkli_comment
+      paragraphs_blokkli_deepl: paragraphs_blokkli_deepl
+      paragraphs_blokkli_edit: paragraphs_blokkli_edit
+      paragraphs_blokkli_library: paragraphs_blokkli_library
+      paragraphs_blokkli_scheduler: paragraphs_blokkli_scheduler
+      paragraphs_blokkli_search: paragraphs_blokkli_search
+      paragraphs_blokkli_template: paragraphs_blokkli_template
+      paragraphs_blokkli_transform: paragraphs_blokkli_transform
+      routing: routing
+      user: user
+    generate_value_fields: 1
+    entity_base_fields:
+      fields:
+        accessCheck: accessCheck
+        entityBundle: entityBundle
+        entityTypeId: entityTypeId
+        isNew: isNew
+        label: label
+        langcode: langcode
+        uuid: uuid
+    enabled_entity_types:
+      blokkli_paragraph_template: 1
+      configurable_language: 1
+      file: 1
+      node: 1
+      paragraph: 1
+      paragraphs_blokkli_edit_state: 1
+      paragraphs_library_item: 1
+      paragraphs_type: 1
+      user: 1
+    fields:
+      blokkli_paragraph_template:
+        changed: changed
+        created: created
+        description: description
+        is_default: is_default
+        paragraphs: paragraphs
+        uid: uid
+      configurable_language:
+        status: status
+      file:
+        uri: uri
+      node:
+        changed: changed
+        created: created
+        default_langcode: default_langcode
+        field_paragraphs: field_paragraphs
+        langcode: langcode
+        nid: nid
+        publish_on: publish_on
+        status: status
+        title: title
+        uid: uid
+        unpublish_on: unpublish_on
+      paragraph:
+        behavior_settings: behavior_settings
+        created: created
+        default_langcode: default_langcode
+        field_blokkli_fragment_name: field_blokkli_fragment_name
+        field_reusable_paragraph: field_reusable_paragraph
+        field_text: field_text
+        parent_field_name: parent_field_name
+        parent_id: parent_id
+        parent_type: parent_type
+        status: status
+        type: type
+      paragraphs_blokkli_edit_state:
+        changed: changed
+        created: created
+        current_index: current_index
+        host_entity_type: host_entity_type
+        host_entity_uuid: host_entity_uuid
+        mutations: mutations
+        preview_hash: preview_hash
+        status: status
+        uid: uid
+      paragraphs_library_item:
+        changed: changed
+        created: created
+        paragraphs: paragraphs
+        status: status
+      paragraphs_type:
+        behavior_plugins: behavior_plugins
+        description: description
+        icon_default: icon_default
+        icon_uuid: icon_uuid
+        status: status
+      user:
+        access: access
+        changed: changed
+        created: created
+        mail: mail
+        name: name
+        roles: roles
+        status: status
+        uid: uid
+    bundles:
+      blokkli_paragraph_template:
+        blokkli_paragraph_template:
+          enabled: true
+      file:
+        file:
+          enabled: true
+      node:
+        page:
+          enabled: true
+      paragraph:
+        blokkli_fragment:
+          enabled: true
+        from_library:
+          enabled: true
+        text:
+          enabled: true
+      paragraphs_blokkli_edit_state:
+        paragraphs_blokkli_edit_state:
+          enabled: true
+      paragraphs_library_item:
+        paragraphs_library_item:
+          enabled: true
+      user:
+        user:
+          enabled: true
+persisted_queries_settings: {  }

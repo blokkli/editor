@@ -59,3 +59,9 @@ From the [SQLite spike](01-sqlite-spike.md) (2026-09-26):
   view after the scheduled time still shows the old content. Consider a single
   system cron that runs `drush cron` for each active sandbox instead, and use
   the same job for the lifecycle cleanup.
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **Client IPs:** the per-IP claim rate limit and flood control rely on the
+  client IP. Drupal trusts `PRIVATE_SUBNETS` as proxies and gets the real IP
+  from `X-Forwarded-For`, which the router sets.

@@ -66,3 +66,14 @@ From [chunk 02](02-ddev-and-repo-layout.md) (2026-09-26):
   router does the same, or a client could pick another sandbox's host.
 - **The `post-start` hook runs `composer install` on every restart.** Harmless,
   but the deploy script runs it anyway.
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **Required:** `IS_DDEV_HOSTED=true` in `.ddev/config.local.yaml`, and
+  `DRUPAL_HASH_SALT` (plus the agent secret and keys) in `.ddev/.env.web`.
+  settings.php refuses to run hosted without the salt; the local fallback is
+  public.
+- **`X-Forwarded-For`:** check that the hosted router also replaces what clients
+  send (it does locally), and that `REMOTE_ADDR` is IPv4. `PRIVATE_SUBNETS`
+  includes `::ffff:0:0/96`, so IPv4-mapped IPv6 addresses would all count as
+  trusted proxies.

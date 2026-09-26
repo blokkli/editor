@@ -31,3 +31,9 @@ failing, and they can't use it even through direct API calls.
 - A premium sandbox can use the agent.
 
 ## Notes
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- settings.php currently sets the agent's `auth_secret` from
+  `NUXT_BLOKKLI_AGENT_AUTH_SECRET` for every site. The premium task above
+  narrows that to premium sandbox ids.

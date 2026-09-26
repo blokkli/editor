@@ -1,0 +1,13 @@
+uuid: 7cebd1c9-f0f2-4d5b-be2a-4cb1102b63ad
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_comment
+_core:
+  default_config_hash: QGy6cb5KH9qBfcIzOFO2roVQyDMjDEG1oZ9CILS2XE4
+id: blokkli_comment_delete_action
+label: 'Delete blokkli comments'
+type: blokkli_comment
+plugin: 'entity:delete_action:blokkli_comment'
+configuration: {  }

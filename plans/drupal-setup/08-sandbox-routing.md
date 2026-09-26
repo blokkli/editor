@@ -53,3 +53,13 @@ salt. Code and processes are shared.
   `settings.php` can read the sandbox id from `$_SERVER['HTTP_HOST']`, also for
   Nuxt's SSR requests, as long as Nuxt forwards `X-Forwarded-Host` (chunk 06).
   Tested with a simulated SSR request for `a1.blokkli.ddev.site`.
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **Include point:** settings.php sets the site's database, private files and
+  hash salt in one block at the top, marked for the sandbox include.
+- **Hash salt:** derive it as `HMAC(DRUPAL_HASH_SALT, id)`. The hosted site must
+  have its own `DRUPAL_HASH_SALT` (settings.php refuses to run hosted without
+  one), and the salt is what protects login links for seeded users.
+- **Trusted hosts** come from `DDEV_HOSTNAME` (comma-separated). A wildcard
+  hostname needs its own pattern, not `preg_quote`.

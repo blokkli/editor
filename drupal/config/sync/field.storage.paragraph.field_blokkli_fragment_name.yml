@@ -1,0 +1,23 @@
+uuid: 4d16011b-d0e3-42c5-8723-ccdb0075f5fe
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: 9TpGSx_vZ_Ggoq2hKJw9_rYsj-xMstChq3Nv0-5SQmw
+id: paragraph.field_blokkli_fragment_name
+field_name: field_blokkli_fragment_name
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

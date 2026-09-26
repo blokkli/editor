@@ -6,7 +6,8 @@
 
 # Every path in the table below is requested through the ddev router, and the
 # X-Blokkli-Upstream response header (set in .ddev/nginx_full/nginx-site.conf)
-# is compared with the expected upstream. Extend the table when routes change.
+# is compared with the expected upstream. Extend the table when routes change:
+# a module or view with a new first path segment needs it in the nginx list.
 
 set -uo pipefail
 
@@ -25,11 +26,13 @@ routes=(
   "/users nuxt"
   "/media-kit nuxt"
   "/administration nuxt"
+  "/blokkli/library-item/x nuxt"
   # Drupal
   "/user/login drupal"
   "/fr/user/login drupal"
   "/graphql drupal"
   "/en/graphql drupal"
+  "/de/graphql drupal"
   "/admin drupal"
   "/de/admin/content drupal"
   "/core/install.php drupal"
@@ -43,6 +46,9 @@ routes=(
   "/media/1/edit drupal"
   "/media-library drupal"
   "/paragraphs_blokkli/x drupal"
+  "/paragraphs_blokkli_graphql/prefix drupal"
+  "/admin/config/content/blokkli drupal"
+  "/layout_builder/x drupal"
   "/file/progress/1 drupal"
   "/sites/default/files/x.jpg drupal"
   "/system/files/x drupal"

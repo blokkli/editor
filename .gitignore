@@ -93,7 +93,8 @@ packages/kit
 /drupal/web/sites/default/*
 !/drupal/web/sites/default/settings.php
 /drupal/db/
-/drupal/private/
+/drupal/private/*
+!/drupal/private/.htaccess
 /drupal/sandboxes/
 /drupal/recipes/
 /drupal/drush/Commands/contrib/

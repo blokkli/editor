@@ -61,3 +61,15 @@ From the [SQLite spike](01-sqlite-spike.md) (2026-09-26):
   btrfs/xfs) takes 1 ms. `ddev reset` can be near-instant.
 - Deleting a sandbox or restoring the dev site must also remove the `-wal` and
   `-shm` files of the old database.
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **Install from config:** `drush si --existing-config -y` works on an empty and
+  on an existing database. drush drops the tables through the `sqlite3` CLI,
+  which works despite the `NOCASE_UTF8` collation. Bake should still delete
+  `drupal/db/site.sqlite*` first: that also clears `-wal`/`-shm` files and can't
+  lose a lock race with a running request.
+- **Front page:** `system.site.page.front` is still `/node` (the frontpage view
+  was removed). Set it to the seeded home page.
+- **New routes:** a custom module or view with a new first path segment needs it
+  in nginx's Drupal list and a `ddev check-routes` row.

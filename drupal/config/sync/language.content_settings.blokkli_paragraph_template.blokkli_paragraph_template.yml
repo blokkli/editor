@@ -1,0 +1,17 @@
+uuid: d127b3e6-a62c-44e5-b508-314ffa95a818
+langcode: en
+status: true
+dependencies:
+  module:
+    - content_translation
+    - paragraphs_blokkli_template
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: blokkli_paragraph_template.blokkli_paragraph_template
+target_entity_type_id: blokkli_paragraph_template
+target_bundle: blokkli_paragraph_template
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,24 @@
+uuid: 4437f665-a09d-4645-8d0b-1c3d194282bf
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_comment
+_core:
+  default_config_hash: HO6-q82f30e8ZRFkW3LNXnJ9s7UlFMrnBBlckSaIXFQ
+name: 'Blokkli Comment'
+format: blokkli_comment
+weight: 100
+filters:
+  blokkli_comment_html:
+    id: blokkli_comment_html
+    provider: paragraphs_blokkli_comment
+    status: true
+    weight: -10
+    settings: {  }
+  filter_htmlcorrector:
+    id: filter_htmlcorrector
+    provider: filter
+    status: true
+    weight: 0
+    settings: {  }

@@ -102,3 +102,23 @@ minimal app (`nuxt.config.ts` with `vite.server.allowedHosts: true`, and
   (`src/build/templates/definitions/styles.ts`, see chunk 02's notes). The
   daemon runs from the repo root, so it picks up candidates from `drupal/` too.
   Only extra CSS; fix it in the module.
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **GraphQL access is open.** Anonymous users have neither `access content` nor
+  GraphQL permission, so `/graphql` returns 403 for them; only the admin can
+  query it. Decide how SSR gets access: a GraphQL permission for anonymous and
+  authenticated, or the starterkit's `graphql_security` token. The token only
+  opens the endpoint; entity access still runs as the forwarded session. See
+  also chunk 10.
+- **Frontend extensions:** the server has `entity_query`, `formatted_date`,
+  `language_schema`, `routing` and `user`, plus the blökkli ones. Add what the
+  app needs (e.g. `local_tasks`, `messenger`, `language_switch_links`,
+  `masquerade`).
+- **Every language has a prefix.** Nuxt owns `/` and redirects it to `/en`. The
+  mock playground leaves EN unprefixed, so ported E2E specs need their URLs
+  mapped.
+- **`/blokkli/library-item/{uuid}`** is the page Drupal links to for library
+  items; nginx sends it to Nuxt.
+- **Secrets:** the agent's `NUXT_BLOKKLI_AGENT_AUTH_SECRET` (read by Drupal and
+  Nuxt) and the LLM key go in `.ddev/.env.web`.

@@ -1,0 +1,24 @@
+uuid: 87c35594-a2b3-4e89-a981-b915b8c64dc1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.blokkli_fragment.field_blokkli_fragment_name
+    - paragraphs.paragraphs_type.blokkli_fragment
+_core:
+  default_config_hash: Gz2s-_CFhuoys0S7r2zuIpSoZHnigBcf-ZXtuqAA2m8
+id: paragraph.blokkli_fragment.default
+targetEntityType: paragraph
+bundle: blokkli_fragment
+mode: default
+content:
+  field_blokkli_fragment_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  search_api_excerpt: true

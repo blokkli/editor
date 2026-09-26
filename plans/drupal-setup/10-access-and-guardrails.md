@@ -35,3 +35,10 @@ hosting, and it can't affect other sandboxes or the host.
   results under Notes.
 
 ## Notes
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- Anonymous `access content` is already revoked in the config.
+- **GraphQL:** the server has `debug_flag: 1` and no limits on query depth or
+  complexity (as in the starterkit). Decide both for sandboxes, together with
+  anonymous GraphQL access (chunk 06).

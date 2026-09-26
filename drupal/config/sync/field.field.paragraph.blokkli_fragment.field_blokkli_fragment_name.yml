@@ -1,0 +1,21 @@
+uuid: 6a91aedf-b8ab-49c5-944d-992009dcd9d3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_blokkli_fragment_name
+    - paragraphs.paragraphs_type.blokkli_fragment
+_core:
+  default_config_hash: OZndoWwFs7d55gfADwZhlSs_vV--KrRGfqViNYfohhs
+id: paragraph.blokkli_fragment.field_blokkli_fragment_name
+field_name: field_blokkli_fragment_name
+entity_type: paragraph
+bundle: blokkli_fragment
+label: 'blökkli Fragment Name'
+description: 'The name of the blökkli fragment.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,13 @@
+_core:
+  default_config_hash: gCoNFCyODCBstryw-7ONztSWxVfWHRAwmMc2723f62Q
+api_key: ''
+language_mapping:
+  en:
+    deepl_code: EN-GB
+    style_rules_id: ''
+  de:
+    deepl_code: DE
+    style_rules_id: ''
+  fr:
+    deepl_code: FR
+    style_rules_id: ''

@@ -15,6 +15,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                           | `paragraphs_blokkli` | low      | open       | –        |
 | F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                  | Drupal core          | high     | workaround | –        |
 | F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                   | `blokkli_starterkit` | low      | open       | –        |
+| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)     | `paragraphs_blokkli` | low      | open       | –        |
 
 Statuses: `open`, `workaround`, `fixed`.
 
@@ -165,3 +166,39 @@ Statuses: `open`, `workaround`, `fixed`.
   - Send one host to the upstreams: `X-Forwarded-Host` if present, otherwise
     `Host`, as both `Host` and `X-Forwarded-Host`. This repo's
     `.ddev/nginx_full/nginx-site.conf` does all three.
+
+## F7: Undeclared dependencies and config gaps
+
+- **Found:** 2026-09-26, while building the base site in
+  [chunk 03](03-drupal-base-site.md).
+- **Undeclared dependencies:**
+  - `paragraphs_blokkli_scheduler` uses contrib `scheduler` (`scheduler.manager`
+    in `BundleSupportsScheduleProcess.php`, `ParagraphScheduleDateValue.php` and
+    `Mutation/SetParagraphSchedule.php`), but its `.info.yml` doesn't declare
+    it.
+  - `paragraphs_blokkli_search_api` extends `search_api` classes without
+    declaring `search_api`.
+  - The main module's settings form (`src/Form/SettingsForm.php:417`) loads the
+    `media_type` storage unconditionally, so `/admin/config/content/blokkli`
+    returns 500 without core `media`.
+- **"All types allowed" reads as "none allowed".** For a paragraphs field with
+  `target_bundles: null`, `ParagraphsBlokkliFieldConfig`
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliFieldConfig.php:84`)
+  returns `allowedBundles: []`, and the editor then offers no block types. Fix:
+  treat `null` as every paragraph type.
+- **Config schema gaps** (`config/schema/paragraphs_blokkli.schema.yml`):
+  - `media_bundle_file` is read and saved, but missing from the schema.
+  - `enabled_types` only declares `node`, while the settings form saves any
+    entity type (e.g. `translatable_config_pages`). Both are "missing schema"
+    errors in a config schema check.
+- **The DeepL settings form stores the API key in config.** `api_key` is
+  required, and the language mapping only renders once a key is present. Sites
+  that inject the key from `settings.php` either export it with `drush cex` or
+  can't use the form. Fix: make the field optional when an override is active,
+  and show the mapping without it.
+- **Small ones:**
+  - DeepL's `hook_requirements` checks for `\DeepL\Translator`, while the client
+    uses `\DeepL\DeepLClient`.
+  - `PbEntityMapping` declares
+    `admin_permission: 'administer pb_entity_mapping'`, which isn't defined
+    anywhere (its routes use `administer blokkli settings`).

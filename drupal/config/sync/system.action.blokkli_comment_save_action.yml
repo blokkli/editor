@@ -1,0 +1,13 @@
+uuid: 6a3a43a5-3a08-4dde-bf98-c0fbbc09ac89
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_comment
+_core:
+  default_config_hash: G_NVKHI721sXyN3jL8T5KNu0cfXqG6g2-H1GojmyrEQ
+id: blokkli_comment_save_action
+label: 'Save blokkli comments'
+type: blokkli_comment
+plugin: 'entity:save_action:blokkli_comment'
+configuration: {  }

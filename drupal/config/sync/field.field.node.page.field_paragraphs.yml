@@ -1,0 +1,31 @@
+uuid: 99ab1540-27fb-4940-a52d-438027474ae7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_paragraphs
+    - node.type.page
+    - paragraphs.paragraphs_type.blokkli_fragment
+    - paragraphs.paragraphs_type.from_library
+    - paragraphs.paragraphs_type.text
+  module:
+    - entity_reference_revisions
+id: node.page.field_paragraphs
+field_name: field_paragraphs
+entity_type: node
+bundle: page
+label: Paragraphs
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      blokkli_fragment: blokkli_fragment
+      from_library: from_library
+      text: text
+    negate: 0
+field_type: entity_reference_revisions

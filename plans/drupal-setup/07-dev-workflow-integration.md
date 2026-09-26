@@ -64,3 +64,20 @@ From [chunk 02](02-ddev-and-repo-layout.md) (2026-09-26), for the docs:
 - **CLAUDE.md:** its commands (`bun run verify`, the typechecks, the mock
   playground's `bun run dev`) are written for the host today. Decide whether
   they move into the container too (`ddev exec bun run …`).
+
+From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+
+- **`drupal:schema`:** `/graphql` is admin-only, so dump the schema with drush
+  instead of downloading it: `ddev drush graphql:dump graphql <file>`.
+  `build/drupal-schema.graphql` stays generated, never edited by hand.
+- **Onboarding:** after `ddev start`, run `ddev drush si --existing-config -y`
+  and `ddev drush uli`. Optional secrets:
+  `ddev dotenv set .ddev/.env.web --deepl-auth-key=…`, then `ddev restart`.
+- **Config workflow:** change config, `ddev drush cex`, commit
+  `drupal/config/sync`.
+- **The first install of a fresh checkout** logs "Couldn't write .htaccess file"
+  for `public://` once. Harmless; say so in the onboarding docs.
+- **The first `bun install` in a fresh container fails** with "Fail extracting
+  tarball from @nuxt/devtools", and a rerun installs the missing package. This
+  happened in both clean-clone tests (chunks 02 and 03), so it's not a one-off.
+  Look into it (bun 1.3.14) or document the rerun.

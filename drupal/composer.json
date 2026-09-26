@@ -5,15 +5,36 @@
     "license": "GPL-2.0-or-later",
     "repositories": [
         {
+            "name": "paragraphs_blokkli",
+            "type": "path",
+            "url": "paragraphs_blokkli",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "drupal/paragraphs_blokkli": "2.0.x-dev"
+                }
+            }
+        },
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }
     ],
     "require": {
         "composer/installers": "^2.3",
+        "deeplcom/deepl-php": "^1.18",
         "drupal/core-composer-scaffold": "^11.4",
         "drupal/core-recipe-unpack": "^11.4",
         "drupal/core-recommended": "^11.4",
+        "drupal/entity_usage": "^2.0@beta",
+        "drupal/graphql": "^5",
+        "drupal/graphql_core_schema": "^1.0",
+        "drupal/masquerade": "^2.0@beta",
+        "drupal/paragraphs": "^1.23",
+        "drupal/paragraphs_blokkli": "2.0.x-dev",
+        "drupal/scheduler": "^2.3",
+        "drupal/search_api": "^1.41",
+        "drupal/translatable_config_pages": "^1.0",
         "drush/drush": "^13",
         "twig/twig": "~3.29.0"
     },

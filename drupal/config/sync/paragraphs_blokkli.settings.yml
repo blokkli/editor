@@ -1,0 +1,17 @@
+_core:
+  default_config_hash: uJM-LpGaOWbH2FmDN4N6IV6uxGrq1fRu1bOLyPeVhwU
+schema_file: ''
+media_library_image_style: ''
+use_user_images: true
+enabled_types:
+  node:
+    - page
+clipboard_text_paragraph:
+  bundle: text
+  field: field_text
+hide_unpublished_paragraphs: true
+restrict_fields: false
+enabled_fields: {  }
+disable_notifications: false
+validation_types:
+  - paragraph
