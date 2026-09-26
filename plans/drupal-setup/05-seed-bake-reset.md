@@ -2,7 +2,7 @@
 
 - **Status:** todo
 - **Milestone:** M1 Local dev site
-- **Depends on:** 13
+- **Depends on:** 13a–13i
 
 ## Goal
 
@@ -13,18 +13,21 @@ seconds.
 ## Tasks
 
 - [ ] Write declarative content in `drupal/content/` (YAML). Until
-      [chunk 14](14-demo-content.md), the pages are placeholders built from the
-      base paragraphs of [chunk 04](04-base-content-model.md):
+      [chunk 14b](14b-demo-content.md), the pages are placeholders built from
+      the base paragraphs of [chunk 04](04-base-content-model.md):
   - [ ] pages as paragraph trees, with field values per language
   - [ ] EN source content with DE and FR translations; some translations
         deliberately outdated
   - [ ] media files in `drupal/content/files/`
   - [ ] library items, templates, a few comments
+  - [ ] dates relative to the bake (e.g. an event "in 12 days, 19:30"), so
+        events, news and scheduled items never go stale (14a)
 - [ ] Drush command `blokkli-playground:seed` in `blokkli_playground` that reads
       the content files. The starterkit's `BlokkliImportCommands.php` hardcodes
       its content as PHP arrays in 1,348 lines. Reuse its entity-creation logic,
       not its data format.
-- [ ] Seeded users: admin, editor, reviewer, restricted editor, translator.
+- [ ] Seeded users for 14a's roles (13h): admin, a department editor, the head
+      of the department as reviewer, a French translator, a restricted editor.
       Sandboxes have no known passwords (login via token, chunk 09); locally use
       `drush uli` and masquerade.
 - [ ] `blokkli-playground:bake`:

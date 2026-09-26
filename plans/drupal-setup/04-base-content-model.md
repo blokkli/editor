@@ -14,7 +14,8 @@ pasting text, images, files and video URLs.
 Until 2026-09-26 this chunk was "Content model and features", with bundles that
 mirror the mock playground. The features moved to
 [chunk 13](13-editor-features.md), the demo content to
-[chunk 14](14-demo-content.md).
+[chunk 14b](14b-demo-content.md), with its concept in
+[14a](14a-demo-concept.md).
 
 ## Tasks
 

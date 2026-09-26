@@ -2,7 +2,7 @@
 
 - **Status:** todo
 - **Milestone:** M3 Hosted
-- **Depends on:** 09, 10; 14 for the public launch
+- **Depends on:** 09, 10; 14b for the public launch
 
 ## Goal
 
@@ -34,6 +34,8 @@ This chunk starts only once M0–M2 work locally.
     verify), or move or delegate the zones to another DNS provider.
 - [ ] Two ddev projects: `main` → `sandbox.blokk.li`, `dev` →
       `dev-sandbox.blokk.li`.
+- [ ] Re-bake regularly (e.g. weekly), not only on deploy, so that the seeded
+      dates stay current (14a: they're relative to the bake).
 - [ ] Deploy script: check out the branch → `git submodule update` → composer
       install → bun install → build Nuxt → bake → expire all sandboxes →
       restart. Run it manually at first; a GitHub Action can come later.

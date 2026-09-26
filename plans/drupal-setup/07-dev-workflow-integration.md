@@ -64,7 +64,7 @@ feature goes from PHP to schema to adapter to UI without leaving this repo.
   - The `drupal` and `typecheck` skills cover the schema loop and
     `typecheck:playground-drupal`.
 - **No Drupal gates in `verify.sh` yet.** There's no custom PHP until
-  `blokkli_playground` gets the example plugins in chunk 13, which now has the
+  `blokkli_playground` gets the example plugins in chunk 13g, which now has the
   task. `paragraphs_blokkli` is checked in its own repository.
 - **The first `bun install` failure** is intermittent and upstream: one of three
   cold-cache installs in the container failed, always on `@nuxt/devtools` (bun

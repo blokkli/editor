@@ -55,10 +55,11 @@ and tracks its own status. The [index](#chunks) mirrors those statuses.
 | nginx                | One public server for every hostname; Drupal paths are anchored, with an optional language prefix; both upstreams get the browser's host (2026-09-26, chunk 02).                                                                                                                                                                  |
 | Drupal config        | Profile-less, installed from `drupal/config/sync` (`ddev drush si --existing-config -y`). Config is the source of truth; it was bootstrapped once from core's `standard` recipe (2026-09-26, chunk 03).                                                                                                                           |
 | Secrets              | From the environment: `.ddev/.env.web` (gitignored). The hash salt has a public local fallback; the hosted site sets `IS_DDEV_HOSTED=true`, and settings.php then refuses to run without its own salt (2026-09-26, chunk 03).                                                                                                     |
-| Content model        | Not a mirror of the mock playground. The base content paragraphs come first (chunk 04), the paragraph types for editor features next (13), and the demo content, including what it's about, last (14) (2026-09-26).                                                                                                               |
+| Content model        | Not a mirror of the mock playground. The base content paragraphs come first (chunk 04). The demo concept (14a) then decides the topic and the content model, before the feature sub-chunks of 13 add bundles and paragraph types; the demo content itself comes last (14b) (2026-09-26).                                          |
 | Frontend routing     | Hand-written in `playground-drupal`: one `route` query, the language is the path's first segment. No vuepal, nuxt-language-negotiation or nuxt-easy-texts, no extra Drupal modules; UI strings are English for now (2026-09-26, chunk 06).                                                                                        |
 | Rendering            | SSR only for anonymous users and only locally, to test blökkli's server code paths. Logged-in users, editing and the hosted instance get the SPA (2026-09-26, chunk 06).                                                                                                                                                          |
 | GraphQL schema       | One generated file, `build/drupal-schema.graphql`, dumped from the local site with `bun run drupal:schema`. The root config and `playground-drupal` both use it (2026-09-26, chunk 07).                                                                                                                                           |
+| Demo topic           | A fictional Swiss municipality, Blockingen/Bloquens: a bilingual town by a lake. Many kinds of content (services, knowledge, news, politics, leisure) and structured data (events, offices). Chosen over non-fictional topics after a brainstorm (2026-09-26, chunk 14a).                                                         |
 
 When a decision changes, update this table and add the date.
 
@@ -123,24 +124,39 @@ Milestones:
 - **M3 Hosted:** public at `*.sandbox.blokk.li` (`main`) and
   `*.dev-sandbox.blokk.li` (`dev`).
 
-| #   | Chunk                                                      | Milestone | Status | Depends on                       |
-| --- | ---------------------------------------------------------- | --------- | ------ | -------------------------------- |
-| 01  | [SQLite spike](01-sqlite-spike.md)                         | M0        | done   | –                                |
-| 02  | [ddev and repo layout](02-ddev-and-repo-layout.md)         | M1        | done   | 01                               |
-| 03  | [Drupal base site](03-drupal-base-site.md)                 | M1        | done   | 02                               |
-| 04  | [Base content model](04-base-content-model.md)             | M1        | done   | 03                               |
-| 05  | [Seed, bake, reset](05-seed-bake-reset.md)                 | M1        | todo   | 13                               |
-| 06  | [playground-drupal app](06-playground-drupal-app.md)       | M1        | done   | 03, 04; grows with 13            |
-| 07  | [Dev workflow integration](07-dev-workflow-integration.md) | M1        | done   | 06                               |
-| 08  | [Sandbox routing](08-sandbox-routing.md)                   | M2        | todo   | 05                               |
-| 09  | [Control plane: claim and invite](09-control-plane.md)     | M2        | todo   | 08                               |
-| 10  | [Access and guardrails](10-access-and-guardrails.md)       | M2        | todo   | 08                               |
-| 11  | [Premium features](11-premium-features.md)                 | M2        | todo   | 09                               |
-| 12  | [Hosted deploy](12-hosted-deploy.md)                       | M3        | todo   | 09, 10; 14 for the public launch |
-| 13  | [Editor features](13-editor-features.md)                   | M1        | todo   | 04, 06                           |
-| 14  | [Demo content](14-demo-content.md)                         | M3        | todo   | 05, 13                           |
+| #   | Chunk                                                      | Milestone | Status | Depends on                        |
+| --- | ---------------------------------------------------------- | --------- | ------ | --------------------------------- |
+| 01  | [SQLite spike](01-sqlite-spike.md)                         | M0        | done   | –                                 |
+| 02  | [ddev and repo layout](02-ddev-and-repo-layout.md)         | M1        | done   | 01                                |
+| 03  | [Drupal base site](03-drupal-base-site.md)                 | M1        | done   | 02                                |
+| 04  | [Base content model](04-base-content-model.md)             | M1        | done   | 03                                |
+| 05  | [Seed, bake, reset](05-seed-bake-reset.md)                 | M1        | todo   | 13a–13i                           |
+| 06  | [playground-drupal app](06-playground-drupal-app.md)       | M1        | done   | 03, 04; grows with 13             |
+| 07  | [Dev workflow integration](07-dev-workflow-integration.md) | M1        | done   | 06                                |
+| 08  | [Sandbox routing](08-sandbox-routing.md)                   | M2        | todo   | 05                                |
+| 09  | [Control plane: claim and invite](09-control-plane.md)     | M2        | todo   | 08                                |
+| 10  | [Access and guardrails](10-access-and-guardrails.md)       | M2        | todo   | 08                                |
+| 11  | [Premium features](11-premium-features.md)                 | M2        | todo   | 09                                |
+| 12  | [Hosted deploy](12-hosted-deploy.md)                       | M3        | todo   | 09, 10; 14b for the public launch |
+| 13  | [Editor features](13-editor-features.md) (overview)        | M1        | todo   | 04, 06; 14a                       |
+| 13a | [Base setup skill](13a-base-setup-skill.md)                | M1        | done   | 06                                |
+| 13b | [Block types](13b-block-types.md)                          | M1        | todo   | 14a                               |
+| 13c | [Hosts](13c-hosts.md)                                      | M1        | todo   | 13b                               |
+| 13d | [Reusable content](13d-reusable-content.md)                | M1        | todo   | 13b, 13c                          |
+| 13e | [Publishing](13e-publishing.md)                            | M1        | todo   | 13c                               |
+| 13f | [Translation](13f-translation.md)                          | M1        | todo   | 13c                               |
+| 13g | [Search and plugins](13g-search-and-plugins.md)            | M1        | todo   | 13c, 13d                          |
+| 13h | [Collaboration and roles](13h-collaboration-roles.md)      | M1        | todo   | 13b–13g, 13i                      |
+| 13i | [Agent and modules](13i-agent-and-modules.md)              | M1        | todo   | 13b                               |
+| 13j | [Skill tests](13j-skill-tests.md)                          | M1        | todo   | 13a–13i                           |
+| 14a | [Demo concept](14a-demo-concept.md)                        | M1        | done   | 04                                |
+| 14b | [Demo content](14b-demo-content.md)                        | M3        | todo   | 05, 13, 14a                       |
 
 Statuses: `todo`, `in progress`, `done`, `dropped`.
+
+Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
+(order, skill conventions, feature matrix). 13a and 14a are done; next up is
+13b, which builds 14a's content model.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

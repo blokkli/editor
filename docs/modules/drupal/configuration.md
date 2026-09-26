@@ -82,7 +82,7 @@ Drupal configuration.
 
 ### Main Settings
 
-Configure at `/admin/config/content/blokkli/settings`:
+Configure at `/admin/config/content/blokkli`:
 
 - **Enabled entity types** — Which content types/bundles are editable with
   blökkli
@@ -171,9 +171,8 @@ items and reuse them across entities.
 ### paragraphs_blokkli_comment
 
 Adds commenting to edit states. Reviewers can leave comments on changes without
-needing edit access.
-
-**Depends on:** Drupal `comment` module
+needing edit access. It has its own comment entity type and doesn't need
+Drupal's `comment` module.
 
 ### paragraphs_blokkli_search
 

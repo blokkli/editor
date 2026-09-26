@@ -189,7 +189,7 @@ chunk 06":
   - title and text are added inline (`editable:field_…`)
   - image, video and button go through the form or the media library
   - the video block is a thumbnail linking to the video; an embed comes with
-    chunk 14
+    chunk 13i (iframes)
   - the button has a `style` option, the only blökkli option so far
 - **Library items** open at `/{lang}/blokkli/library-item/<uuid>`: the adapter
   prefixes the URL. Templates at `/blokkli/template/<uuid>`, by route name.

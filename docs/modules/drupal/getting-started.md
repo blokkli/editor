@@ -43,7 +43,7 @@ Assign the following permissions to your editor role at
 
 ## Step 3: Configure the Drupal Module
 
-Go to `/admin/config/content/blokkli/settings` and:
+Go to `/admin/config/content/blokkli` and:
 
 - Enable the entity types and bundles that should be editable (e.g., Node: Page)
 - Configure media bundles for image and video uploads
@@ -70,7 +70,8 @@ Add the blökkli module and the Drupal integration to your `nuxt.config.ts`:
 import drupal from '@blokkli/editor/drupal'
 
 export default defineNuxtConfig({
-  modules: ['@blokkli/editor', 'nuxt-graphql-middleware'],
+  // nuxt-graphql-middleware must come before @blokkli/editor.
+  modules: ['nuxt-graphql-middleware', '@blokkli/editor'],
 
   blokkli: {
     modules: [
