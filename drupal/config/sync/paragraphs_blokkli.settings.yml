@@ -1,6 +1,6 @@
 _core:
   default_config_hash: uJM-LpGaOWbH2FmDN4N6IV6uxGrq1fRu1bOLyPeVhwU
-schema_file: ''
+schema_file: ../blokkli-options-schema.json
 media_bundle_remote_video: remote_video
 media_bundle_image: image
 media_library_image_style: ''

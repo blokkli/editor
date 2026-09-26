@@ -7,19 +7,25 @@ a chunk. Update the status when one is fixed, and name the commit or issue.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #   | Finding                                                                                                          | Project              | Severity | Status     | Blocks   |
-| --- | ---------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
-| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                               | `paragraphs_blokkli` | high     | open       | chunk 09 |
-| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                   | `paragraphs_blokkli` | high     | open       | chunk 09 |
-| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                       | `paragraphs_blokkli` | low      | open       | –        |
-| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                 | `paragraphs_blokkli` | low      | open       | –        |
-| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                        | Drupal core          | high     | workaround | –        |
-| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                         | `blokkli_starterkit` | low      | open       | –        |
-| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                           | `paragraphs_blokkli` | low      | open       | –        |
-| F8  | [Upload mutations ignore tokens in the file directory](#f8-upload-mutations-ignore-tokens-in-the-file-directory) | `paragraphs_blokkli` | low      | workaround | –        |
-| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                         | `paragraphs_blokkli` | medium   | workaround | –        |
+| #   | Finding                                                                                                                 | Project              | Severity | Status     | Blocks   |
+| --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
+| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | open       | chunk 09 |
+| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | open       | chunk 09 |
+| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                              | `paragraphs_blokkli` | low      | open       | –        |
+| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       | –        |
+| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround | –        |
+| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                | `blokkli_starterkit` | low      | open       | –        |
+| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                  | `paragraphs_blokkli` | low      | open       | –        |
+| F8  | [Upload mutations ignore tokens in the file directory](#f8-upload-mutations-ignore-tokens-in-the-file-directory)        | `paragraphs_blokkli` | low      | workaround | –        |
+| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                | `paragraphs_blokkli` | medium   | workaround | –        |
+| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                       | `paragraphs_blokkli` | medium   | workaround | –        |
+| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                   | `paragraphs_blokkli` | low      | open       | –        |
+| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | to verify  | 13d      |
+| F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                     | `@blokkli/editor`    | low      | open       | –        |
+| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                   | `paragraphs_blokkli` | low      | open       | –        |
 
-Statuses: `open`, `workaround`, `fixed`.
+Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
+`fixed`.
 
 ## F1: Duplicate edit states
 
@@ -265,3 +271,94 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   `LinkItem::isEmpty()` only looks at the URI, so the title is dropped on save.
 - **Workaround:** link fields without a title and the text in its own field, as
   in the starterkit and winterthur. The playground's `button` does this.
+
+## F10: Paragraphs below level 5 are lost on publish
+
+- **Found:** 2026-09-26, planning [chunk 13b](13b-block-types.md), by reading
+  the code.
+- **Symptom:** blocks nested more than 5 levels deep disappear when the page is
+  published.
+- **Cause:**
+  - `ParagraphsBlokkliHelper::buildProxies()`
+    (`src/ParagraphsBlokkliHelper.php:557`) only recurses while `$level < 4`, so
+    it loads paragraphs down to level 5.
+  - `ParagraphsBlokkliEditState::rebuildFields()`
+    (`src/Entity/ParagraphsBlokkliEditState.php:491-520`) empties every
+    paragraphs field it visits and refills it from the proxies, with no depth
+    limit. A level-5 paragraph's children have no proxies, so its fields are
+    saved empty.
+- **Workaround in this plan:** the model goes 4 deep (13b).
+- **Fix ideas:** the same limit in both places (or none), or leave fields
+  untouched when their children weren't loaded. A kernel test with 6 levels.
+
+## F11: Options schema: no validation, lossy form saves
+
+- **Found:** 2026-09-26, planning [chunk 13b](13b-block-types.md).
+- **No validation.** The docs said Drupal validates options against
+  `schema_file`. It doesn't: mutations (`update_behavior_setting`,
+  `bulk_update_behavior_settings`, `add_multiple`, `add_fragment`) store any
+  string. The schema only builds the options in Drupal's own paragraphs widget
+  (`ParagraphsBlokkliData::buildBehaviorForm()`). The docs are fixed (13b).
+- **Lossy form saves.** Saving through that widget
+  (`ParagraphsBlokkliData::submitBehaviorForm()`, line 430) goes through
+  `filterBehaviorFormSubmitValues()`, which drops falsy values
+  (`ParagraphsBehaviorBase.php:163-175`), then replaces the whole set:
+  - A checkbox that defaults to true can't be unchecked, and a radio value `'0'`
+    can't be saved.
+  - Options missing from the schema are dropped.
+  - Options the user never set get their default stored (seen in 13b's check).
+- **The path** is used as it is (relative to the web root), and a missing file
+  silently means no options.
+- **Fix ideas:** keep falsy values that the schema knows; merge into the
+  existing settings instead of replacing them; optionally validate mutations
+  against the schema when one is configured; resolve relative paths against
+  `DRUPAL_ROOT` and log a missing file.
+
+## F12: "Make reusable" on a container with unpublished children
+
+- **Found:** 2026-09-26, the Drupal review of 13b's plan, by reading the code.
+  Not reproduced yet.
+- **Suspected symptom:** making a container block (e.g. a section) reusable
+  before publishing loses the children that were added or moved since the last
+  publish.
+- **Cause (suspected):**
+  - `MakeReusable`
+    (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:79-131`) moves the
+    container into a new library item and removes it from the edit state. Its
+    children stay behind, with the container as their parent.
+  - On publish, `rebuildFields()` only walks down from the host's fields.
+    `from_library` holds the library item through a plain entity reference, so
+    the container's child list is never rebuilt.
+  - The only test publishes first
+    (`TemplateLibraryIntegrationTest.php:352-398`).
+- **In this plan:** containers get no library conversion until 13d tests it.
+
+## F13: `bkVisibleLanguages` on library blocks
+
+- **Found:** 2026-09-26, the frontend review of 13b's plan.
+- **Symptom:** the options of a block from the library show "Visible languages",
+  but the setting has no effect.
+- **Cause:** the options form uses the reusable block's definition
+  (`src/runtime/editor/features/options/index.vue:84-86`), so the value is
+  stored on the `from_library` paragraph. `isVisibleByOptions()`
+  (`src/runtime/helpers/runtimeHelpers/index.ts:209-219`) checks whether that
+  bundle opted into the option, and the built-in FromLibrary block opts into
+  none (`src/runtime/components/Blocks/FromLibrary/index.vue:27-32`).
+- **Fix idea:** check the reusable block's definition for `from_library` items,
+  as the options form does.
+
+## F14: The comment filter leaks into new text formats
+
+- **Found:** 2026-09-26, creating the `table` format in 13b.
+- **Symptom:** every text format saved while `paragraphs_blokkli_comment` is
+  enabled gets a disabled `blokkli_comment_html` filter with `settings: {}`, and
+  a dependency on the module.
+- **Cause:** `FilterPluginCollection::getConfiguration()` only drops filters
+  whose configuration equals their defaults. `BlokkliCommentHtml`
+  (`modules/paragraphs_blokkli_comment/src/Plugin/Filter/BlokkliCommentHtml.php:21-31`)
+  declares default settings, but the instance reports none, so the comparison
+  never matches.
+- **Impact:** noise in config exports. Core removes the filter when the module
+  is uninstalled.
+- **Fix idea:** make the plugin's configuration match its defaults (e.g.
+  `defaultConfiguration()` or `setConfiguration()` in the plugin).

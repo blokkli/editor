@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - filter.format.basic_html
+    - filter.format.table
   module:
     - file
     - filter
@@ -21,4 +22,5 @@ permissions:
   - 'delete own files'
   - 'execute graphql arbitrary graphql requests'
   - 'use text format basic_html'
+  - 'use text format table'
   - 'view media'

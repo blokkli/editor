@@ -8,8 +8,27 @@
   @apply mx-auto w-full max-w-5xl px-4;
 }
 
+/* A vertical list of blocks: the page, a one-column section, an accordion. */
+@utility flow {
+  @apply flex flex-col gap-8;
+}
+
+/* An empty editable field while editing (the element needs a size). */
+@utility editable-placeholder {
+  &:empty::before {
+    @apply text-stone-400;
+    content: attr(data-placeholder);
+  }
+}
+
 body {
   @apply bg-stone-50 text-stone-900;
+}
+
+/* Consecutive accordion items form one list: no gap, and their borders
+   overlap. */
+.flow > .accordion + .accordion {
+  margin-top: calc(var(--spacing) * -8 - 1px);
 }
 
 /* Formatted text from Drupal (basic_html). */
@@ -34,5 +53,30 @@ body {
 
   ol {
     @apply list-decimal pl-6;
+  }
+
+  table {
+    @apply w-full border-collapse text-base;
+  }
+
+  caption {
+    @apply mb-2 text-left font-semibold;
+  }
+
+  th,
+  td {
+    @apply border-b border-stone-300 px-3 py-2 text-left align-top;
+  }
+
+  th {
+    @apply font-semibold;
+  }
+
+  thead th {
+    @apply border-b-2 border-stone-900;
+  }
+
+  &.is-striped tbody tr:nth-child(odd) {
+    @apply bg-stone-100;
   }
 }

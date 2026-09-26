@@ -1,0 +1,27 @@
+uuid: 8a72544d-cdf8-4b07-9abd-107122d53082
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_table
+    - filter.format.table
+    - paragraphs.paragraphs_type.table
+  module:
+    - text
+id: paragraph.table.field_table
+field_name: field_table
+entity_type: paragraph
+bundle: table
+label: Table
+description: ''
+required: true
+translatable: true
+default_value:
+  -
+    value: '<table><thead><tr><th>Column 1</th><th>Column 2</th><th>Column 3</th></tr></thead><tbody><tr><td>Text</td><td>Text</td><td>Text</td></tr><tr><td>Text</td><td>Text</td><td>Text</td></tr></tbody></table>'
+    format: table
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - table
+field_type: text_long

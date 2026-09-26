@@ -1,0 +1,27 @@
+uuid: 0e2cafb2-d2ca-491c-92d2-2e842948113f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.gallery
+    - paragraphs.paragraphs_type.image
+  module:
+    - entity_reference_revisions
+id: paragraph.gallery.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: gallery
+label: Images
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      image: image
+    negate: 0
+field_type: entity_reference_revisions

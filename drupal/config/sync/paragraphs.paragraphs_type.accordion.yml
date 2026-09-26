@@ -1,0 +1,14 @@
+uuid: a318e49a-c659-4b08-b3b1-11b8bb076acc
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: accordion
+label: Accordion
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

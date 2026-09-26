@@ -1,0 +1,25 @@
+uuid: 17224f11-7d98-4e87-855d-f09391d38d67
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_comment
+name: Table
+format: table
+weight: 1
+filters:
+  blokkli_comment_html:
+    id: blokkli_comment_html
+    provider: paragraphs_blokkli_comment
+    status: false
+    weight: -10
+    settings: {  }
+  filter_html:
+    id: filter_html
+    provider: filter
+    status: true
+    weight: -10
+    settings:
+      allowed_html: '<br> <p> <a href> <table> <tr> <td rowspan colspan> <th rowspan colspan> <thead> <tbody> <tfoot> <caption>'
+      filter_html_help: false
+      filter_html_nofollow: false

@@ -1,7 +1,8 @@
 <template>
   <h2
     v-blokkli-editable:field_title
-    class="container-content text-2xl font-bold md:text-3xl"
+    class="text-2xl font-bold md:text-3xl"
+    :class="{ 'container-content': !parentType }"
   >
     {{ title }}
   </h2>
@@ -13,8 +14,9 @@ import type { ParagraphTitleFragment } from '#graphql-operations'
 
 defineProps<ParagraphTitleFragment>()
 
-defineBlokkli({
+const { parentType } = defineBlokkli({
   bundle: 'title',
+  globalOptions: ['bkVisibleLanguages'],
   editor: {
     addBehaviour: 'editable:field_title',
     icon: 'bk_mdi_format_h2',

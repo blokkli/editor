@@ -62,3 +62,15 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   `translatable_config_pages` (module `graphql_translatable_config_pages`, part
   of graphql_core_schema). `enabled_types` for config pages hits the schema gap
   in F7.
+
+From [13b](13b-block-types.md) (2026-09-26):
+
+- **Teaser and contact are leaf blocks:** add their fragments to
+  `Paragraph/fragment.paragraphLeaf.graphql`, and the bundles to the allowed
+  types of section, accordion and columns, and to the library if wanted
+  (`allow_library_conversion`).
+- **Paragraphs fields on the new hosts** (and `field_aside`): explicit allowed
+  types, untranslatable.
+- **The width option with a sidebar:** `field_aside` narrows the main column.
+  Decide what `wide` and `full` mean on a page with an aside (e.g. both become
+  the content width).

@@ -1,0 +1,39 @@
+uuid: 7ba68f76-e4b5-43b7-9cd8-9aae83f36f25
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_left
+    - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.columns
+    - paragraphs.paragraphs_type.downloads
+    - paragraphs.paragraphs_type.image
+    - paragraphs.paragraphs_type.table
+    - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.title
+    - paragraphs.paragraphs_type.video
+  module:
+    - entity_reference_revisions
+id: paragraph.columns.field_left
+field_name: field_left
+entity_type: paragraph
+bundle: columns
+label: Left
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      button: button
+      downloads: downloads
+      image: image
+      table: table
+      text: text
+      title: title
+      video: video
+    negate: 0
+field_type: entity_reference_revisions

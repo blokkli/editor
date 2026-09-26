@@ -17,6 +17,8 @@ and the analyzers.
       environment is wired in chunk 03). Example skills, tools and prompts under
       `playground-drupal/blokkli/` (see winterthur's `frontend/blokkli/`),
       fitting a town's website.
+- [ ] **`colorOptions`** in `playground-drupal/nuxt.config.ts`, for the chart
+      colours (moved from 13b: only the charts module uses them).
 - [ ] **Charts:** a `chart` block (the town in numbers: population, budget,
       recycling rate; election results), and the chart data source methods in
       `app/blokkli.editAdapter.ts` (`getChartDataSources`,

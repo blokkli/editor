@@ -77,34 +77,39 @@ paragraph types and bundles get added that end up wrong for it.
 
 **Everyday blocks:** what an average page is built from.
 
-| Type        | Fields                                     | Options                         | From 04        |
-| ----------- | ------------------------------------------ | ------------------------------- | -------------- |
-| `title`     | title                                      |                                 | yes            |
-| `text`      | rich text                                  |                                 | yes            |
-| `image`     | media, caption                             | width: content, wide, full      | yes, + caption |
-| `video`     | remote video                               |                                 | yes, embedded  |
-| `button`    | link or document, text                     | style: primary, secondary       | yes            |
-| `table`     | text with a tables-and-links format        | striped; first column as header | new            |
-| `downloads` | documents (several)                        |                                 | new            |
-| `contact`   | office (reference)                         | compact, full                   | new            |
-| `teaser`    | page, news or event (reference)            | card, list                      | new            |
-| `gallery`   | images (several)                           | grid, slider (proxy mode)       | new            |
-| `chart`     | chart data (charts module)                 | chart type, per the module      | new (13i)      |
-| `embed`     | URL, heights per viewport (iframes module) |                                 | new (13i)      |
+| Type        | Fields                                     | Options                    | From 04        |
+| ----------- | ------------------------------------------ | -------------------------- | -------------- |
+| `title`     | title                                      |                            | yes            |
+| `text`      | rich text                                  |                            | yes            |
+| `image`     | media, caption                             | width: content, wide, full | yes, + caption |
+| `video`     | remote video                               |                            | yes, embedded  |
+| `button`    | link or document, text                     | style: primary, secondary  | yes            |
+| `table`     | text with a tables-and-links format        | striped                    | new            |
+| `downloads` | documents (several)                        |                            | new            |
+| `contact`   | office (reference)                         | compact, full              | new            |
+| `teaser`    | page, news or event (reference)            | card, list                 | new            |
+| `gallery`   | image blocks (several)                     | grid, slider (proxy mode)  | new            |
+| `chart`     | chart data (charts module)                 | chart type, per the module | new (13i)      |
+| `embed`     | URL, heights per viewport (iframes module) |                            | new (13i)      |
 
 **Structure:** nesting only where it makes sense.
 
 | Type        | Holds                                                   | Options                                          |
 | ----------- | ------------------------------------------------------- | ------------------------------------------------ |
-| `section`   | everyday blocks, accordion, columns                     | background colour; children in 1, 2 or 3 columns |
-| `accordion` | items, each with a title and everyday blocks or columns |                                                  |
+| `section`   | a heading; everyday blocks, accordion, columns          | background colour; children in 1, 2 or 3 columns |
+| `accordion` | one item per block: a title, everyday blocks or columns |                                                  |
 | `columns`   | two paragraph fields (left, right), everyday blocks     | ratio: 50/50, 33/66, 66/33                       |
 
 The deepest path is the user's example: section > accordion > columns > text.
+The gallery isn't allowed in columns, which keeps the model at 4 levels.
 
-**Media:** the image media type gets a credit field (author, licence, source),
-shown with every image. Captions stay on the block, since they depend on where
-the image is used.
+13b built this with a few changes (the accordion, the gallery, the table option,
+the credit, `width` as a global option): see its
+[Decisions](13b-block-types.md#decisions-2026-09-26-deviating-from-14a).
+
+**Media:** the image media type gets a credit field (one line: author, source,
+licence), shown with every image. Captions stay on the block, since they depend
+on where the image is used.
 
 **Fragments** (no fields of their own): "upcoming events" and "latest news"
 (lists from the structured data), and a table of contents (13i).

@@ -1,0 +1,14 @@
+fragment paragraphColumns on ParagraphColumns {
+  left: fieldLeft {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLeaf
+    }
+  }
+  right: fieldRight {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLeaf
+    }
+  }
+}

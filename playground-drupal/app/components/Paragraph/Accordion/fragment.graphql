@@ -1,0 +1,11 @@
+fragment paragraphAccordion on ParagraphAccordion {
+  title: fieldTitle
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLeaf
+      ...paragraphGallery
+      ...paragraphColumns
+    }
+  }
+}

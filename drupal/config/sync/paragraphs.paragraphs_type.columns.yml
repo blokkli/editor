@@ -1,0 +1,14 @@
+uuid: 75bcb0ec-1e14-4eb7-b382-ed8d8fe576fe
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: columns
+label: Columns
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

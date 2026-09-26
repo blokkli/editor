@@ -1,7 +1,8 @@
 <template>
   <div
     v-blokkli-editable:field_text
-    class="container-content rich-text"
+    class="rich-text"
+    :class="{ 'container-content': !parentType }"
     v-html="text"
   />
 </template>
@@ -12,8 +13,9 @@ import type { ParagraphTextFragment } from '#graphql-operations'
 
 defineProps<ParagraphTextFragment>()
 
-defineBlokkli({
+const { parentType } = defineBlokkli({
   bundle: 'text',
+  globalOptions: ['bkVisibleLanguages'],
   editor: {
     addBehaviour: 'editable:field_text',
     icon: 'bk_mdi_notes',

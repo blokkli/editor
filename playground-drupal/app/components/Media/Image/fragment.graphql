@@ -1,4 +1,5 @@
 fragment mediaImage on MediaImage {
+  credit: fieldCredit
   image: fieldMediaImage {
     alt
     derivative(style: CONTENT) {

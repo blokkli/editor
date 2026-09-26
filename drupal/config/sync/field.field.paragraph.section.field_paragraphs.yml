@@ -1,0 +1,45 @@
+uuid: 4b9bbbea-dc67-496c-afdf-1a4016cc33e3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.columns
+    - paragraphs.paragraphs_type.downloads
+    - paragraphs.paragraphs_type.gallery
+    - paragraphs.paragraphs_type.image
+    - paragraphs.paragraphs_type.section
+    - paragraphs.paragraphs_type.table
+    - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.title
+    - paragraphs.paragraphs_type.video
+  module:
+    - entity_reference_revisions
+id: paragraph.section.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: section
+label: Content
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      accordion: accordion
+      button: button
+      columns: columns
+      downloads: downloads
+      gallery: gallery
+      image: image
+      table: table
+      text: text
+      title: title
+      video: video
+    negate: 0
+field_type: entity_reference_revisions

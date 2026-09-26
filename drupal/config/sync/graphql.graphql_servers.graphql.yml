@@ -63,8 +63,10 @@ schema_configuration:
       configurable_language:
         status: status
       file:
+        filesize: filesize
         uri: uri
       media:
+        field_credit: field_credit
         field_media_document: field_media_document
         field_media_image: field_media_image
         field_media_oembed_video: field_media_oembed_video
@@ -89,9 +91,15 @@ schema_configuration:
         created: created
         default_langcode: default_langcode
         field_blokkli_fragment_name: field_blokkli_fragment_name
+        field_caption: field_caption
+        field_documents: field_documents
+        field_left: field_left
         field_link: field_link
         field_media: field_media
+        field_paragraphs: field_paragraphs
         field_reusable_paragraph: field_reusable_paragraph
+        field_right: field_right
+        field_table: field_table
         field_text: field_text
         field_title: field_title
         field_video: field_video
@@ -148,13 +156,25 @@ schema_configuration:
         page:
           enabled: true
       paragraph:
+        accordion:
+          enabled: true
         blokkli_fragment:
           enabled: true
         button:
           enabled: true
+        columns:
+          enabled: true
+        downloads:
+          enabled: true
         from_library:
           enabled: true
+        gallery:
+          enabled: true
         image:
+          enabled: true
+        section:
+          enabled: true
+        table:
           enabled: true
         text:
           enabled: true

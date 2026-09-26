@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.image.field_caption
     - field.field.paragraph.image.field_media
     - paragraphs.paragraphs_type.image
 id: paragraph.image.default
@@ -10,6 +11,13 @@ targetEntityType: paragraph
 bundle: image
 mode: default
 content:
+  field_caption:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
   field_media:
     type: entity_reference_entity_view
     label: hidden

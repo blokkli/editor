@@ -5,11 +5,7 @@ fragment paragraphFromLibrary on ParagraphFromLibrary {
     block: paragraphs {
       ...paragraphsFieldItem
       props {
-        ...paragraphTitle
-        ...paragraphText
-        ...paragraphImage
-        ...paragraphVideo
-        ...paragraphButton
+        ...paragraphLeaf
       }
     }
   }

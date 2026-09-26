@@ -1,0 +1,19 @@
+uuid: f4d6abc7-2b52-4dac-be22-4edd50b1dc69
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.table
+  module:
+    - ckeditor5
+format: table
+editor: ckeditor5
+settings:
+  toolbar:
+    items:
+      - insertTable
+      - '|'
+      - link
+  plugins: {  }
+image_upload:
+  status: false

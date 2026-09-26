@@ -16,6 +16,12 @@ const schemaPath = fileURLToPath(
   new URL('../build/drupal-schema.graphql', import.meta.url),
 )
 
+// The block options, for the options form in Drupal's paragraph widget
+// (`paragraphs_blokkli.settings:schema_file`).
+const optionsSchemaPath = fileURLToPath(
+  new URL('../drupal/blokkli-options-schema.json', import.meta.url),
+)
+
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli.
   modules: ['nuxt-graphql-middleware', '../src/module'],
@@ -50,6 +56,21 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
+    globalOptions: {
+      width: {
+        type: 'radios',
+        label: 'Width',
+        default: 'content',
+        displayAs: 'icons',
+        options: {
+          content: { label: 'Content', icon: 'bk_mdi_width_normal' },
+          wide: { label: 'Wide', icon: 'bk_mdi_width_wide' },
+          full: { label: 'Full', icon: 'bk_mdi_width_full' },
+        },
+      },
+    },
+    chunkNames: ['global', 'rare'],
+    schemaOptionsPath: optionsSchemaPath,
     modules: [
       drupal({ templateEditRouteName: 'blokkli-template' }),
       agent({

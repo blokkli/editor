@@ -1,0 +1,12 @@
+fragment paragraphSection on ParagraphSection {
+  title: fieldTitle
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLeaf
+      ...paragraphGallery
+      ...paragraphAccordion
+      ...paragraphColumns
+    }
+  }
+}

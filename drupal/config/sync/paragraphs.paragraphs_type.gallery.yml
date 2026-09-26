@@ -1,0 +1,14 @@
+uuid: 2b85df20-454e-4288-9836-3c637addc4aa
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: gallery
+label: Gallery
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

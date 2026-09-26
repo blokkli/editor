@@ -1,0 +1,14 @@
+fragment paragraphDownloads on ParagraphDownloads {
+  documents: fieldDocuments {
+    uuid
+    name
+    mediaFileUrl {
+      path
+    }
+    file: fieldMediaDocument {
+      entity {
+        filesize
+      }
+    }
+  }
+}

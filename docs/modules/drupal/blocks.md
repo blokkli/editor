@@ -116,8 +116,8 @@ defineProps<{
 defineBlokkli({
   bundle: 'two_columns',
   propsFieldMapping: {
-    left: 'field_left',
-    right: 'field_right',
+    left: { type: 'field', name: 'field_left' },
+    right: { type: 'field', name: 'field_right' },
   },
   editor: {
     disableEdit: true,

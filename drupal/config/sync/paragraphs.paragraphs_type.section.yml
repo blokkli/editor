@@ -1,0 +1,14 @@
+uuid: c6e32927-9137-4aaa-80b6-a0dbaae2c2e9
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: section
+label: Section
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

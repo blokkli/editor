@@ -1,5 +1,5 @@
 <template>
-  <div class="container-wide">
+  <div :class="parentType ? '' : WIDTH_CLASSES[options.width]">
     <a
       :href="video?.url ?? undefined"
       target="_blank"
@@ -25,17 +25,20 @@
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
 import type { ParagraphVideoFragment } from '#graphql-operations'
+import { WIDTH_CLASSES } from '~/helpers/width'
 
 const props = defineProps<ParagraphVideoFragment>()
 
 // A link, not an embed: an iframe would swallow the editor's clicks.
 const thumbnail = computed(() => props.video?.thumbnail?.derivative)
 
-defineBlokkli({
+const { options, parentType } = defineBlokkli({
   bundle: 'video',
+  globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
     icon: 'bk_mdi_smart_display',
     editTitle: (el) => el.textContent?.trim(),
+    determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
   },
 })
 </script>

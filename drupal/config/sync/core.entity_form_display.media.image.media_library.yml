@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - core.entity_form_mode.media.media_library
+    - field.field.media.image.field_credit
     - field.field.media.image.field_media_image
     - image.style.thumbnail
     - media.type.image
@@ -16,6 +17,14 @@ targetEntityType: media
 bundle: image
 mode: media_library
 content:
+  field_credit:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_media_image:
     type: image_image
     weight: 1

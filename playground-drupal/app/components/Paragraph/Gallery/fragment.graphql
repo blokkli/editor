@@ -1,0 +1,8 @@
+fragment paragraphGallery on ParagraphGallery {
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphImage
+    }
+  }
+}

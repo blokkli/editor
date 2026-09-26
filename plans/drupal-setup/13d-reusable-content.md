@@ -50,3 +50,13 @@ model has them.
   (chunk 06).
 - **The template module** needs "Entity Query Templates" enabled as a search
   provider (chunk 03).
+
+From [13b](13b-block-types.md) (2026-09-26):
+
+- **Containers can't become library items yet.** Gallery, section, accordion and
+  columns have no `allow_library_conversion`, because "make reusable" may lose a
+  container's unpublished children (F12). The library items here are likely
+  sections: reproduce F12 first, then enable it (and add the containers to
+  `Paragraph/FromLibrary/fragment.graphql`).
+- **Fragments are only allowed on the page's `field_paragraphs`.** Add
+  `blokkli_fragment` to nested fields if a fragment should go into a section.

@@ -120,19 +120,31 @@ paragraph and set its media reference field.
 ### Options Schema
 
 blökkli generates an `options-schema.json` file containing all block option
-definitions. The Drupal module uses this to validate option values on the server
-side.
+definitions. Drupal uses it to show the options in its own paragraphs widget
+(for example on the node edit form), for users with the
+`edit behavior plugin settings` permission. blökkli's own edit forms don't need
+it. Drupal doesn't validate option values against it: the editor's mutations
+store options as they're sent.
 
 To sync the schema to Drupal, set `schemaOptionsPath` in your Nuxt config to a
-path accessible by Drupal:
+path accessible by Drupal. An absolute path is safest: a relative one is
+resolved against Nuxt's source directory (`app/` in Nuxt 4).
 
 ```typescript
+import { fileURLToPath } from 'node:url'
+
 blokkli: {
-  schemaOptionsPath: '../../drupal/modules/custom/my_module/data/schema.json',
+  schemaOptionsPath: fileURLToPath(
+    new URL('../drupal/blokkli-options-schema.json', import.meta.url),
+  ),
 }
 ```
 
-Then configure the `schema_file` setting in Drupal to point to the same file.
+Then set the `schema_file` setting in Drupal to the same file. Drupal uses the
+path as it is, so a relative path is relative to the web root (e.g.
+`../blokkli-options-schema.json`). If the file doesn't exist, Drupal silently
+shows no options. Nuxt writes the file whenever it starts or builds. Commit it,
+so that Drupal has it where Nuxt doesn't run.
 
 ## Drupal Permissions Reference
 

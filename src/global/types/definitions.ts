@@ -300,7 +300,7 @@ export type BlockDefinitionInputBase<
    * defineBlokkli({
    *   bundle: 'section',
    *   propsFieldMapping: {
-   *     headerParagraphs: 'field_paragraphs_header',
+   *     headerParagraphs: { type: 'field', name: 'field_paragraphs_header' },
    *   }
    * })
    * </script>

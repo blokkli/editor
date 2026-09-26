@@ -111,22 +111,25 @@ From [chunk 03](03-drupal-base-site.md), [04](04-base-content-model.md) and
 To be filled in by the sub-chunks. The features that the Drupal module gates on
 the schema, and where they're set up:
 
-| Feature         | Sub-chunk | Exercised by                                                                  |
-| --------------- | --------- | ----------------------------------------------------------------------------- |
-| media-library   | 04        | the image, video and button blocks; media types image, remote video, document |
-| fragments       | 13d       | "upcoming events", "latest news"; the table of contents (13i)                 |
-| library         | 13d       | emergency numbers, "what goes into which bin", "stay informed"                |
-| templates       | 13d       | a service page; default contents for new columns                              |
-| import-existing | 13c       | copying blocks from one service page to another                               |
-| block-transfer  | 13c       | moving blocks between pages                                                   |
-| preview-grant   | 13e       | previewing unpublished changes on a phone                                     |
-| transform       | 13g       | search and replace, e.g. a renamed office                                     |
-| conversions     | 13g       | text ↔ title, button → text                                                   |
-| search          | 13g       | offices, events, news, pages, media, library                                  |
-| comments        | 13h       | the head of the department reviews a page                                     |
-| notifications   | 13h       | comments and mentions                                                         |
-| agent           | 13i       | editing a page with the agent                                                 |
+| Feature              | Sub-chunk | Exercised by                                                                 |
+| -------------------- | --------- | ---------------------------------------------------------------------------- |
+| media-library        | 04, 13b   | the image, video, button and downloads blocks; several images into a gallery |
+| droppable-field-edit | 13b       | adding documents to a downloads block by dropping                            |
+| fragments            | 13d       | "upcoming events", "latest news"; the table of contents (13i)                |
+| library              | 13d       | emergency numbers, "what goes into which bin", "stay informed"               |
+| templates            | 13d       | a service page; default contents for new columns                             |
+| import-existing      | 13c       | copying blocks from one service page to another                              |
+| block-transfer       | 13c       | moving blocks between pages                                                  |
+| preview-grant        | 13e       | previewing unpublished changes on a phone                                    |
+| transform            | 13g       | search and replace, e.g. a renamed office                                    |
+| conversions          | 13g       | text ↔ title, button → text                                                  |
+| search               | 13g       | offices, events, news, pages, media, library                                 |
+| comments             | 13h       | the head of the department reviews a page                                    |
+| notifications        | 13h       | comments and mentions                                                        |
+| agent                | 13i       | editing a page with the agent                                                |
 
-Also: publishing and scheduling (13e), translations (13f), options and complex
-options (13b, 13i), host options (13c), analyze (06, 13i). The other editor
-features need no backend config; add them once they're checked in the editor.
+Also: publishing and scheduling (13e), translations (13f), options (13b: local,
+global, `bkVisibleLanguages`, the schema file) and complex options (13i),
+nesting and proxy mode (13b: section, accordion, columns, the gallery slider),
+host options (13c), analyze (06, 13i). The other editor features need no backend
+config; add them once they're checked in the editor.

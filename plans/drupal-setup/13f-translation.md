@@ -36,5 +36,10 @@ the language.
 
 ## Notes
 
+- **13b set the translation settings of its types** (its "model as built"
+  table): review them here. Nested paragraphs fields are untranslatable.
+- **Option labels are English only.** playground-drupal sets no
+  `defaultLanguage`, so the options schema and the editor show English labels.
+  Decide whether option labels get DE and FR.
 - **Without a DeepL key** (the default locally and in CI), the editor must still
   work: check what the translation feature shows then.

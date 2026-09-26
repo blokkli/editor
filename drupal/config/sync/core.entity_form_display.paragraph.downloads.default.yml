@@ -1,0 +1,24 @@
+uuid: a4105bf1-5ed9-44df-b5c8-a43aee56bcb4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.downloads.field_documents
+    - paragraphs.paragraphs_type.downloads
+  module:
+    - media_library
+id: paragraph.downloads.default
+targetEntityType: paragraph
+bundle: downloads
+mode: default
+content:
+  field_documents:
+    type: media_library_widget
+    weight: 0
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

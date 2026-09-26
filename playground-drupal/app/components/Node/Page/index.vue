@@ -13,7 +13,8 @@
         <MediaImage
           v-if="entity.hero"
           v-bind="entity.hero"
-          class="size-full object-cover"
+          class="size-full"
+          img-class="size-full object-cover"
         />
       </div>
       <div class="container-content pt-12">
@@ -31,7 +32,7 @@
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
-        class="mt-10 flex flex-col gap-8"
+        class="flow mt-10"
       />
     </article>
   </BlokkliProvider>

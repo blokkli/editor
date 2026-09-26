@@ -140,7 +140,7 @@ Milestones:
 | 12  | [Hosted deploy](12-hosted-deploy.md)                       | M3        | todo   | 09, 10; 14b for the public launch |
 | 13  | [Editor features](13-editor-features.md) (overview)        | M1        | todo   | 04, 06; 14a                       |
 | 13a | [Base setup skill](13a-base-setup-skill.md)                | M1        | done   | 06                                |
-| 13b | [Block types](13b-block-types.md)                          | M1        | todo   | 14a                               |
+| 13b | [Block types](13b-block-types.md)                          | M1        | done   | 14a                               |
 | 13c | [Hosts](13c-hosts.md)                                      | M1        | todo   | 13b                               |
 | 13d | [Reusable content](13d-reusable-content.md)                | M1        | todo   | 13b, 13c                          |
 | 13e | [Publishing](13e-publishing.md)                            | M1        | todo   | 13c                               |
@@ -155,8 +155,8 @@ Milestones:
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 13a and 14a are done; next up is
-13b, which builds 14a's content model.
+(order, skill conventions, feature matrix). 13a, 13b and 14a are done; next up
+is 13c (the hosts), or 13i, which only needs 13b.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

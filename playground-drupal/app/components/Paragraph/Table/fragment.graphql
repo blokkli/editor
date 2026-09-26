@@ -1,0 +1,3 @@
+fragment paragraphTable on ParagraphTable {
+  table: fieldTable
+}
