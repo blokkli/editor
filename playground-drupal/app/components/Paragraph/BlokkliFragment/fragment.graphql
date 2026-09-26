@@ -1,0 +1,3 @@
+fragment paragraphBlokkliFragment on ParagraphBlokkliFragment {
+  name: fieldBlokkliFragmentName
+}

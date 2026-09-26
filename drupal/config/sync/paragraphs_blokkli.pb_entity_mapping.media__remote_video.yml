@@ -1,0 +1,22 @@
+uuid: 40a03471-9772-49a6-a7df-885a6a953e4d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.video.field_video
+    - media.type.remote_video
+    - paragraphs.paragraphs_type.video
+  module:
+    - media
+    - paragraphs
+id: media__remote_video
+label: 'media - remote_video'
+target_entity_type: media
+target_entity_bundle: remote_video
+paragraph_bundle: null
+paragraph_field: null
+mappings:
+  -
+    paragraph_bundle: video
+    paragraph_field: field_video
+context_description: null

@@ -17,7 +17,9 @@ schema_configuration:
     extensions:
       entity_query: entity_query
       formatted_date: formatted_date
+      image: image
       language_schema: language_schema
+      media: media
       paragraphs_blokkli_agent: paragraphs_blokkli_agent
       paragraphs_blokkli_comment: paragraphs_blokkli_comment
       paragraphs_blokkli_deepl: paragraphs_blokkli_deepl
@@ -43,6 +45,7 @@ schema_configuration:
       blokkli_paragraph_template: 1
       configurable_language: 1
       file: 1
+      media: 1
       node: 1
       paragraph: 1
       paragraphs_blokkli_edit_state: 1
@@ -61,10 +64,18 @@ schema_configuration:
         status: status
       file:
         uri: uri
+      media:
+        field_media_document: field_media_document
+        field_media_image: field_media_image
+        field_media_oembed_video: field_media_oembed_video
+        name: name
+        thumbnail: thumbnail
       node:
         changed: changed
         created: created
         default_langcode: default_langcode
+        field_hero_image: field_hero_image
+        field_lead: field_lead
         field_paragraphs: field_paragraphs
         langcode: langcode
         nid: nid
@@ -78,8 +89,12 @@ schema_configuration:
         created: created
         default_langcode: default_langcode
         field_blokkli_fragment_name: field_blokkli_fragment_name
+        field_link: field_link
+        field_media: field_media
         field_reusable_paragraph: field_reusable_paragraph
         field_text: field_text
+        field_title: field_title
+        field_video: field_video
         parent_field_name: parent_field_name
         parent_id: parent_id
         parent_type: parent_type
@@ -122,15 +137,30 @@ schema_configuration:
       file:
         file:
           enabled: true
+      media:
+        document:
+          enabled: true
+        image:
+          enabled: true
+        remote_video:
+          enabled: true
       node:
         page:
           enabled: true
       paragraph:
         blokkli_fragment:
           enabled: true
+        button:
+          enabled: true
         from_library:
           enabled: true
+        image:
+          enabled: true
         text:
+          enabled: true
+        title:
+          enabled: true
+        video:
           enabled: true
       paragraphs_blokkli_edit_state:
         paragraphs_blokkli_edit_state:

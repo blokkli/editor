@@ -7,6 +7,7 @@ dependencies:
   module:
     - file
     - filter
+    - graphql
     - media
     - system
 _core:
@@ -18,5 +19,6 @@ is_admin: false
 permissions:
   - 'access content'
   - 'delete own files'
+  - 'execute graphql arbitrary graphql requests'
   - 'use text format basic_html'
   - 'view media'

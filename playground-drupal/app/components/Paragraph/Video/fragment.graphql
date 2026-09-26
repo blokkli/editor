@@ -1,0 +1,13 @@
+fragment paragraphVideo on ParagraphVideo {
+  video: fieldVideo {
+    name
+    url: fieldMediaOembedVideo
+    thumbnail {
+      derivative(style: CONTENT) {
+        urlPath
+        width
+        height
+      }
+    }
+  }
+}

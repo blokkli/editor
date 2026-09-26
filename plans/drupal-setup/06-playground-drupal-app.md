@@ -1,8 +1,8 @@
 # 06: playground-drupal app
 
-- **Status:** todo
+- **Status:** done (2026-09-26)
 - **Milestone:** M1 Local dev site
-- **Depends on:** 03. Grows alongside 04.
+- **Depends on:** 03, 04. Grows alongside 13.
 
 ## Goal
 
@@ -11,52 +11,53 @@ module, consuming blökkli from `src/`, so changes hot-reload.
 
 ## Tasks
 
-- [ ] `playground-drupal/nuxt.config.ts`:
-  - [ ] `nuxt-graphql-middleware` (it must come before blökkli), then
-        `../src/module`, then tailwind.
-  - [ ] blökkli modules: `drupal({ templateEditRouteName })`, `agent` (Anthropic
-        provider, key from the environment, mock provider enabled), `charts`,
-        `tableOfContents`, `iframes`, `readability`, `tailwind`.
-  - [ ] `globalOptions`, `colorOptions`, `chunkNames`, `schemaOptionsPath`.
-  - [ ] Watch the schema file, so a schema change restarts Nuxt and feature
+- [x] `playground-drupal/nuxt.config.ts`:
+  - [x] `nuxt-graphql-middleware` (it must come before blökkli), then
+        `../src/module`. Tailwind v4 through `@tailwindcss/vite`.
+  - [x] blökkli modules: `drupal({ templateEditRouteName })`, `agent`
+        (Anthropic, the mock playground's models, mock provider enabled),
+        `charts`, `tableOfContents`, `iframes`, `readability`. `tailwind` is a
+        Tailwind config export, not a module.
+  - [ ] `globalOptions`, `colorOptions`, `chunkNames`, `schemaOptionsPath`:
+        moved to [chunk 13](13-editor-features.md), with Drupal's `schema_file`.
+  - [x] Watch the schema file, so a schema change restarts Nuxt and feature
         detection runs again.
-- [ ] GraphQL middleware:
-  - [ ] one endpoint per language
-  - [ ] in dev, download the schema from the local site, and commit it so
-        typecheck works without ddev
-  - [ ] server options that forward cookies and Host (copy from the starterkit's
-        `frontend/server/graphqlMiddleware.serverOptions.ts`)
-- [ ] Pages:
-  - [ ] a catch-all page that resolves the Drupal route by path, with language
+- [x] GraphQL middleware:
+  - [x] one endpoint per language
+  - [x] the schema is committed (`playground-drupal/schema.graphql`; since chunk
+        07 the shared `build/drupal-schema.graphql`) and dumped with
+        `bun run drupal:schema`, since `/graphql` is not open to anonymous users
+  - [x] server options that forward cookies and the X-Forwarded headers
+- [x] Pages:
+  - [x] a catch-all page that resolves the Drupal route by path, with language
         prefix
-  - [ ] `blokkli/template/[uuid]` and `blokkli/library-item/[uuid]`
-  - [ ] 404 and 403 pages
-  - [ ] a "this sandbox is private" page for anonymous users
-- [ ] `Paragraph/*` components with GraphQL fragments for every bundle from
-      chunk 04, plus the fragment components.
-- [ ] `app/blokkli.editAdapter.ts` that wraps `#blokkli/drupal-adapter` and adds
-      the app-level extension points only the mock has today: `getAnalyzers`,
-      `getChartDataSources`, `getChartDataSourceCapabilities`,
-      `getChartDataSourceData`, `getGridMarkup`. `userSettings` needs a backend:
-      that's a follow-up in `paragraphs_blokkli`.
+  - [x] `blokkli/template/[uuid]` and `[lang]/blokkli/library-item/[uuid]`
+  - [x] 404 and 403 pages
+  - [x] a "this sandbox is private" page for anonymous users
+- [x] `Paragraph/*` components with GraphQL fragments for every bundle from
+      chunk 04. Chunk 13 adds its bundles and the fragment components.
+- [x] `app/blokkli.editAdapter.ts` that wraps `#blokkli/drupal-adapter` and adds
+      `getAnalyzers` and `getGridMarkup`. The chart data sources move to chunk
+      13 with a chart block. `userSettings` needs a backend: that's a follow-up
+      in `paragraphs_blokkli`.
 - [ ] Example agent skills, tools and prompts under `playground-drupal/blokkli/`
-      (see winterthur's `frontend/blokkli/`).
-- [ ] Coverage check: in `playground-drupal`, fail dev startup (or print a clear
-      report) when the Drupal module disables a feature because the schema lacks
-      it. See `context.features.disableFeature` in
-      `src/modules/drupal/index.ts`.
-- [ ] Don't copy `usePolling: true` from the mock playground. The repo is on
+      (see winterthur's `frontend/blokkli/`): moved to chunk 13.
+- [x] Coverage check: the Drupal module logs which features it disables for lack
+      of schema support (`src/modules/drupal/index.ts`).
+- [x] Don't copy `usePolling: true` from the mock playground. The repo is on
       ext4, and inotify works through the bind mount.
-- [ ] `package.json` script `typecheck:playground-drupal`. Add it to
-      `typecheck`, `dev:prepare` (`nuxi prepare playground-drupal`) and
-      `verify.sh`. There's no `dev:drupal` script: the ddev daemon starts `nuxi`
-      itself, and `ddev nuxt` controls it (chunk 02).
+- [x] `package.json` script `typecheck:playground-drupal`, in `typecheck` and
+      `verify.sh`. Not in `dev:prepare`: `nuxi prepare playground-drupal` would
+      clear the daemon's `.nuxt`, so the typecheck uses the daemon's. There's no
+      `dev:drupal` script: the ddev daemon starts `nuxi` itself, and `ddev nuxt`
+      controls it (chunk 02).
 
 ## Acceptance criteria
 
-- As an editor, any seeded page can be opened in edit mode at
+- As an editor, a page can be opened in edit mode at
   `https://blokkli.ddev.site`.
-- The coverage check passes: every feature is available.
+- The coverage check runs. Passing it (every feature available) is
+  [chunk 13](13-editor-features.md)'s acceptance criterion.
 - Editing `src/` hot-reloads; `bun run typecheck:playground-drupal` passes.
 
 ## Notes
@@ -122,3 +123,113 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   items; nginx sends it to Nuxt.
 - **Secrets:** the agent's `NUXT_BLOKKLI_AGENT_AUTH_SECRET` (read by Drupal and
   Nuxt) and the LLM key go in `.ddev/.env.web`.
+
+From [chunk 04](04-base-content-model.md) (2026-09-26), details under its "For
+chunk 06":
+
+- **`addBehaviour`:** title and text can be added inline; image, video and
+  button need the form, because `add` can't set required fields.
+- **Document buttons** link to `entity:media/ID`, which resolves to the media
+  edit page. Use the `media` extension's `mediaFileUrl`, and `uri`, not
+  `resolvableUri`.
+- **Images:** enable the `image` extension and add the frontend's image styles.
+
+### Using it (2026-09-26)
+
+- **Log in:** `ddev drush uli /en/node/1`. The one-time link redirects to that
+  page. `si --existing-config` gives the admin a random password.
+- **Pages:** the front page is `/node` (no view), so `/` → `/en` is a 404 until
+  chunk 05 sets `system.site.page.front`. The 404 page links to the content
+  overview and to "add a page". Every page is at `/{en,de,fr}/…`.
+- **The agent** needs a shared secret for Drupal and Nuxt:
+  `ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-auth-secret=<random>`,
+  then `ddev restart`: the env is read when the container starts. Without it,
+  Drupal throws when the agent panel opens. The LLM key
+  (`NUXT_BLOKKLI_AGENT_API_KEY`) is optional; the mock provider works without
+  it.
+- **The daemon:**
+  - `ddev nuxt restart` for a stuck daemon, and `ddev nuxt logs`.
+  - Changes to `nuxt.config.ts` and to the schema file restart Nuxt on their
+    own.
+- **Schema:** after a Drupal change to the GraphQL server or the module's
+  schema, run `bun run drupal:schema` in the container.
+- **Editor CSS:** Tailwind changes in `src/` need `bun run styles:watch`, as
+  with the mock playground.
+
+### How it's built (2026-09-26)
+
+- **Routing is hand-written** (decided with the user: no vuepal,
+  nuxt-language-negotiation or nuxt-easy-texts, no new Drupal modules).
+  - `app/pages/[...slug].vue` runs the `route` query with the full path.
+  - The language is the path's first segment (`shared/languages.ts`).
+    `app/graphqlMiddleware.clientOptions.ts` sends it along, and the server
+    options pick `/{language}/graphql`.
+  - Anything but a `NodePage` is a 404, and a 403 from the proxy is the private
+    page (`app/error.vue`).
+- **SSR only for anonymous users, and only locally** (decided with the user;
+  some blökkli code branches on `import.meta.server`, to be tested later).
+  - `server/middleware/spa.ts` switches to the SPA for a Drupal session cookie,
+    `blokkliEditing`/`blokkliPreview` in the path, and `IS_DDEV_HOSTED=true`.
+  - During SSR, `app/plugins/graphqlMiddleware.ts` passes the browser's headers
+    on to the proxy.
+  - Anonymous users can't see content yet, so SSR only renders the private page.
+    Local content access for anonymous users is chunk 10's decision.
+- **The GraphQL proxy** (`server/graphqlMiddleware.serverOptions.ts`):
+  - requests `http://127.0.0.1/{language}/graphql` (nginx in the container)
+  - forwards `cookie` and `x-forwarded-{for,host,port,proto}` (the whitelist in
+    `shared/request.ts`)
+  - returns Drupal's `set-cookie`
+  - keeps Drupal's error status
+- **Drupal config for the app:**
+  - the GraphQL extensions `image` (`derivative`) and `media` (`mediaFileUrl`)
+  - the media field `thumbnail`
+  - the image style `content`
+  - `execute graphql arbitrary graphql requests` for `authenticated`
+- **Blocks:**
+  - title and text are added inline (`editable:field_…`)
+  - image, video and button go through the form or the media library
+  - the video block is a thumbnail linking to the video; an embed comes with
+    chunk 14
+  - the button has a `style` option, the only blökkli option so far
+- **Library items** open at `/{lang}/blokkli/library-item/<uuid>`: the adapter
+  prefixes the URL. Templates at `/blokkli/template/<uuid>`, by route name.
+- **Type declarations:** `playground-drupal/declarations.d.ts` includes the root
+  `declarations.d.ts` (for `*.vue?blokkliEditing=true` imports), as the mock
+  playground does.
+
+### Findings (2026-09-26)
+
+- **A full build in `dist/` breaks `typecheck:playground`** ("separate
+  declarations of a private property"): the mock playground imports
+  `@blokkli/editor/modules`, which resolves to dist. `bun run dev:prepare` (a
+  stub build) fixes it. Never import `@blokkli/editor/*` from playground-drupal.
+- **Invalid GraphQL documents hang the daemon.** nuxt-graphql-middleware asks on
+  the terminal, and the daemon has none, so nginx serves 502. Check
+  `ddev nuxt logs`; validate new documents before the daemon picks them up.
+- **`drush graphql:dump` resolves relative paths against the Drupal root.** The
+  script passes an absolute path.
+- **Nuxt 4.4.8 restarts on a `watch` entry that is an exact file path**, so the
+  schema needs no custom module.
+- **The Drupal module now reports disabled features** in one log line ("The
+  Drupal GraphQL schema supports all features." here). A template type that
+  lacks required fields now really disables templates; before, it only warned.
+
+### Verification (2026-09-26)
+
+- `ddev drush si --existing-config -y`: `config:status` is clean.
+- `bun run verify` in the container: format, lint, all five typechecks and the
+  unit tests pass (after `bun run dev:prepare`).
+- Nuxt starts cleanly: "All GraphQL documents are valid", "The Drupal GraphQL
+  schema supports all features".
+- With a test page (title, lead, a title and a text block):
+  - anonymous `/en/node/1` (HTML): status 403, the private page rendered on the
+    server
+  - an unknown language (`/xx/foo`): 404
+  - `/` redirects to `/en`
+  - as admin: `/en/node/1` is the SPA shell. The proxied `route` query returns
+    the node, its paragraphs and `blokkliProps` (permissions view, review, edit,
+    delete).
+- `bun run drupal:schema` restarts Nuxt.
+- `ddev check-routes`: all 40 rows pass.
+- **In the browser** (the user): the editor opens on the test page, the block
+  types can be added and edited, and editing `src/` hot-reloads.

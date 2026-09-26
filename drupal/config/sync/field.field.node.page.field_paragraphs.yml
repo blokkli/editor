@@ -6,8 +6,12 @@ dependencies:
     - field.storage.node.field_paragraphs
     - node.type.page
     - paragraphs.paragraphs_type.blokkli_fragment
+    - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.from_library
+    - paragraphs.paragraphs_type.image
     - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.title
+    - paragraphs.paragraphs_type.video
   module:
     - entity_reference_revisions
 id: node.page.field_paragraphs
@@ -25,7 +29,11 @@ settings:
   handler_settings:
     target_bundles:
       blokkli_fragment: blokkli_fragment
+      button: button
       from_library: from_library
+      image: image
       text: text
+      title: title
+      video: video
     negate: 0
 field_type: entity_reference_revisions

@@ -51,6 +51,13 @@ implements all features available in the editor. It provides a new edit state
 entity that stores the applied mutations and implements a GraphQL schema
 extension to integrate the adapter.
 
+## Development
+
+This repository has two playgrounds: the mock playground (`playground/`), which
+keeps everything in local storage, and a Drupal site with its own Nuxt app
+(`drupal/` and `playground-drupal/`), which runs in [ddev](https://ddev.com).
+[CONTRIBUTING.md](CONTRIBUTING.md) explains how to set up both.
+
 ## Acknowledgments
 
 blökkli was developed by [dulnan](https://github.com/dulnan) at

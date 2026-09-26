@@ -1,6 +1,6 @@
 # 07: Dev workflow integration
 
-- **Status:** todo
+- **Status:** done (2026-09-26)
 - **Milestone:** M1 Local dev site
 - **Depends on:** 06
 
@@ -11,23 +11,23 @@ feature goes from PHP to schema to adapter to UI without leaving this repo.
 
 ## Tasks
 
-- [ ] Add `bun run drupal:schema`: run `drush cr`, then download the schema from
+- [x] Add `bun run drupal:schema`: run `drush cr`, then download the schema from
       the local site into `build/drupal-schema.graphql`. Point `graphqlEndpoint`
       in the root `nuxt.config.ts` at `blokkli.ddev.site` instead of
       `starterkit.ddev.site`.
-- [ ] Update CLAUDE.md:
-  - [ ] Add a "Drupal dev environment" section: `ddev start`, where things live,
+- [x] Update CLAUDE.md:
+  - [x] Add a "Drupal dev environment" section: `ddev start`, where things live,
         the schema loop, `drush cr` after PHP changes.
-  - [ ] Nuxt in ddev is a daemon: don't start it by hand.
-- [ ] Update the `drupal` skill:
-  - [ ] The schema now comes from the local site.
-  - [ ] Schema additions go into `drupal/paragraphs_blokkli` first.
-- [ ] Onboarding docs: clone with submodules, `bun install`, `ddev start`,
-      `ddev bake`.
-- [ ] Document the submodule workflow: commit and push in
+  - [x] Nuxt in ddev is a daemon: don't start it by hand.
+- [x] Update the `drupal` skill:
+  - [x] The schema now comes from the local site.
+  - [x] Schema additions go into `drupal/paragraphs_blokkli` first.
+- [x] Onboarding docs: clone with submodules, `bun install`, `ddev start`,
+      ~~`ddev bake`~~ (chunk 05 adds it; the docs use `drush si` until then).
+- [x] Document the submodule workflow: commit and push in
       `drupal/paragraphs_blokkli` (to drupal.org), then bump the pointer here.
-- [ ] Decide whether `scripts/verify.sh` gets Drupal gates, e.g. phpcs and
-      phpstan for the custom modules.
+- [x] Decide whether `scripts/verify.sh` gets Drupal gates, e.g. phpcs and
+      phpstan for the custom modules: not yet, see Notes.
 
 ## Acceptance criteria
 
@@ -35,6 +35,64 @@ feature goes from PHP to schema to adapter to UI without leaving this repo.
   alone, and the steps are documented.
 
 ## Notes
+
+### What was done (2026-09-26)
+
+- **One schema file.** `bun run drupal:schema` runs `drush cr` and dumps the
+  schema into `build/drupal-schema.graphql`. The root config and
+  `playground-drupal` both use it; `playground-drupal/schema.graphql` is gone.
+  - The first dump rewrote the whole file: `drush graphql:dump` prints the types
+    in the order Drupal registers them, while the starterkit download was
+    sorted. Later dumps only show real changes.
+  - The root's `graphqlEndpoint` is `https://blokkli.ddev.site/en/graphql`. It
+    isn't used for anything (`downloadSchema: false`).
+- **The two playgrounds coexist** (the user, 2026-09-26): the mock playground
+  and its E2E suite run on the host, the Drupal stack in ddev. The mock
+  playground will be removed later, so no work went into moving it into the
+  container.
+  - `bun run verify` passes on the host and in the container. The absolute paths
+    in the generated `.nuxt` files don't break either side.
+  - `verify.sh` skips `typecheck:playground-drupal` (with a note) when
+    `playground-drupal/.nuxt` doesn't exist, i.e. without ddev.
+- **Docs:**
+  - `CONTRIBUTING.md` (new) covers both playgrounds, the setup, the secrets,
+    where things live, the loop for a feature across both repositories, the
+    submodule and the checks.
+  - The README got a short "Development" section that links to it.
+  - CLAUDE.md got a "Drupal Dev Environment" section, and its commands and
+    typecheck list mention both playgrounds.
+  - The `drupal` and `typecheck` skills cover the schema loop and
+    `typecheck:playground-drupal`.
+- **No Drupal gates in `verify.sh` yet.** There's no custom PHP until
+  `blokkli_playground` gets the example plugins in chunk 13, which now has the
+  task. `paragraphs_blokkli` is checked in its own repository.
+- **The first `bun install` failure** is intermittent and upstream: one of three
+  cold-cache installs in the container failed, always on `@nuxt/devtools` (bun
+  1.3.14). `CONTRIBUTING.md` says to run it again.
+- **Fixed on the way:** the chunk 06 `Paragraph/Video` component put a
+  `<figcaption>` inside a link, which Vue warns about (invalid nesting, possible
+  hydration errors). The root is now a `div` and the caption a `span`.
+- **Not fixed:** `bun run dev:prepare` still rewrites
+  `playground/app/options-schema.json` with English labels, because the mock
+  playground only uses German labels in dev mode (`FORCE_GERMAN`). The docs say
+  to revert it.
+- **Pitfall:** editing `playground-drupal/nuxt.config.ts` restarts Nuxt at once.
+  When the schema path changed before the new dump existed, the daemon loaded
+  the old file, hit an invalid document and hung on the prompt. A
+  `ddev nuxt restart` fixed it.
+
+### Verification (2026-09-26)
+
+- `bun run drupal:schema` in the container writes the file; `dev:prepare`
+  reports "The Drupal GraphQL schema supports all features" for the root config.
+- The daemon restarts cleanly: "All GraphQL documents are valid", all features
+  supported. Anonymous `/en/node/1` is still a server-rendered 403.
+- `bun run verify` in the container: all 8 gates pass. On the host,
+  `typecheck:playground-drupal` and `typecheck:server` pass too.
+- The skip path of the new gate, in a copy without `playground-drupal/.nuxt`:
+  skipped with the note, exit 0.
+
+### Carried over from earlier chunks
 
 From [chunk 02](02-ddev-and-repo-layout.md) (2026-09-26), for the docs:
 
@@ -81,3 +139,15 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   tarball from @nuxt/devtools", and a rerun installs the missing package. This
   happened in both clean-clone tests (chunks 02 and 03), so it's not a one-off.
   Look into it (bun 1.3.14) or document the rerun.
+
+From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
+
+- **`bun run drupal:schema` exists** and writes
+  `playground-drupal/schema.graphql` (with an absolute path; drush resolves
+  relative ones against the Drupal root). Extend it for
+  `build/drupal-schema.graphql` instead of adding a second script.
+- **`typecheck:playground-drupal` needs the daemon's `.nuxt`**, so
+  `bun run verify` runs in the container. `nuxi prepare playground-drupal` would
+  clear the daemon's build dir.
+- **`bun run dev:prepare`** regenerates `playground/app/options-schema.json`
+  with English labels (`nuxi prepare` isn't dev mode). Don't commit that change.

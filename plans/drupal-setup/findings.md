@@ -7,15 +7,17 @@ a chunk. Update the status when one is fixed, and name the commit or issue.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #   | Finding                                                                                    | Project              | Severity | Status     | Blocks   |
-| --- | ------------------------------------------------------------------------------------------ | -------------------- | -------- | ---------- | -------- |
-| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                         | `paragraphs_blokkli` | high     | open       | chunk 09 |
-| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)             | `paragraphs_blokkli` | high     | open       | chunk 09 |
-| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache) | `paragraphs_blokkli` | low      | open       | –        |
-| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                           | `paragraphs_blokkli` | low      | open       | –        |
-| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                  | Drupal core          | high     | workaround | –        |
-| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                   | `blokkli_starterkit` | low      | open       | –        |
-| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)     | `paragraphs_blokkli` | low      | open       | –        |
+| #   | Finding                                                                                                          | Project              | Severity | Status     | Blocks   |
+| --- | ---------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
+| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                               | `paragraphs_blokkli` | high     | open       | chunk 09 |
+| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                   | `paragraphs_blokkli` | high     | open       | chunk 09 |
+| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                       | `paragraphs_blokkli` | low      | open       | –        |
+| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                 | `paragraphs_blokkli` | low      | open       | –        |
+| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                        | Drupal core          | high     | workaround | –        |
+| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                         | `blokkli_starterkit` | low      | open       | –        |
+| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                           | `paragraphs_blokkli` | low      | open       | –        |
+| F8  | [Upload mutations ignore tokens in the file directory](#f8-upload-mutations-ignore-tokens-in-the-file-directory) | `paragraphs_blokkli` | low      | workaround | –        |
+| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                         | `paragraphs_blokkli` | medium   | workaround | –        |
 
 Statuses: `open`, `workaround`, `fixed`.
 
@@ -202,3 +204,64 @@ Statuses: `open`, `workaround`, `fixed`.
   - `PbEntityMapping` declares
     `admin_permission: 'administer pb_entity_mapping'`, which isn't defined
     anywhere (its routes use `administer blokkli settings`).
+
+From [chunk 04](04-base-content-model.md) (2026-09-26):
+
+- **More config schema gaps:** `blokkli_search_provider`
+  (`modules/paragraphs_blokkli_search/config/schema/paragraphs_blokkli_search.schema.yml`)
+  lacks `weight` and `search_plugin_configuration`, so every search provider
+  fails a config schema check. The plugins' settings (`per_page`, `index_id`,
+  `field_mapping`) have no schema either.
+- **Empty `allowed_formats` means two things.**
+  `ParagraphsBlokkliHelper::getUsableTextFormats()`
+  (`src/ParagraphsBlokkliHelper.php:244`) treats it as "any format", but
+  `AddClipboardText`
+  (`src/Plugin/ParagraphsBlokkli/Mutation/AddClipboardText.php:149`) throws, so
+  pasting text fails on a text field without allowed formats. Fix: fall back to
+  the user's first usable format there too.
+- **Blocks with a required field can only be added through the form.** `add`
+  validates the new paragraph
+  (`src/Plugin/ParagraphsBlokkli/AddMutationBase.php:143`), and its `values`
+  context isn't exposed in GraphQL: `map` arguments are only mapped for a list
+  of mutations
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/SchemaExtension/EditExtension.php:152`).
+  So `addBehaviour: 'no-form'` or `'editable:…'` fails for such a block. If
+  that's intended, document it with `addBehaviour`.
+
+## F8: Upload mutations ignore tokens in the file directory
+
+- **Found:** 2026-09-26, while building the content model in
+  [chunk 04](04-base-content-model.md).
+- **Symptom:** `add_image` and `add_file` store files in a directory literally
+  named like the field's `file_directory` setting. Core's media recipes use
+  `[date:custom:Y]-[date:custom:m]`, so pasted files would end up in
+  `public://[date:custom:Y]-[date:custom:m]/`.
+- **Cause:** `FileUploadMutationBase`
+  (`src/Plugin/ParagraphsBlokkli/FileUploadMutationBase.php:259`) uses the
+  setting as it is. Core's file fields replace tokens
+  (`FileItem::getUploadLocation()`).
+- **Fix:** use `FileItem::getUploadLocation()`, or replace tokens the same way.
+- **Workaround:** plain directories (`media/images`, `media/documents`), as in
+  the starterkit.
+
+## F9: Link titles from entity mappings
+
+- **Found:** 2026-09-26, while building the content model in
+  [chunk 04](04-base-content-model.md), by reading the code.
+- **Wrong title.** When a mapping targets a link field with a title,
+  `LinkOrReferenceFieldTrait::setLinkOrEntityReferenceFieldValue()`
+  (`src/Traits/LinkOrReferenceFieldTrait.php:62`) sets the title to
+  `$entity->label()`: the paragraph, not the target entity.
+  - For a new paragraph that's "Orphaned Button: …". Affected: `add_file`,
+    `add_entity_reference`, `add_entity_reference_multiple`.
+  - `replace_entity_reference` overwrites a title the user wrote.
+  - Fix: use `$targetEntity->label()`, and keep an existing title.
+- **Always true.** `isInternalLinkField()` (`:88`) returns
+  `$linkTypeSetting === LINK_GENERIC || LinkItemInterface::LINK_INTERNAL`, which
+  is always TRUE. It should compare the setting with both constants.
+- **Lost title.** Editing a link's title inline while the field has no URI
+  writes an item with only a title
+  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:70`).
+  `LinkItem::isEmpty()` only looks at the URI, so the title is dropped on save.
+- **Workaround:** link fields without a title and the text in its own field, as
+  in the starterkit and winterthur. The playground's `button` does this.

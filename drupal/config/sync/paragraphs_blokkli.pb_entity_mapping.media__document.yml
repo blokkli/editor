@@ -1,0 +1,22 @@
+uuid: eeda6c39-df7d-4b98-b43f-b76063095e2f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.button.field_link
+    - media.type.document
+    - paragraphs.paragraphs_type.button
+  module:
+    - media
+    - paragraphs
+id: media__document
+label: 'media - document'
+target_entity_type: media
+target_entity_bundle: document
+paragraph_bundle: null
+paragraph_field: null
+mappings:
+  -
+    paragraph_bundle: button
+    paragraph_field: field_link
+context_description: null

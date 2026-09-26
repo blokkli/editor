@@ -1,0 +1,10 @@
+fragment mediaImage on MediaImage {
+  image: fieldMediaImage {
+    alt
+    derivative(style: CONTENT) {
+      urlPath
+      width
+      height
+    }
+  }
+}

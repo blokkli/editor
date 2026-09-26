@@ -1,0 +1,22 @@
+uuid: a3667616-5a76-45ff-ac40-922cbf7b9c6c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.image.field_media
+    - media.type.image
+    - paragraphs.paragraphs_type.image
+  module:
+    - media
+    - paragraphs
+id: media__image
+label: 'media - image'
+target_entity_type: media
+target_entity_bundle: image
+paragraph_bundle: null
+paragraph_field: null
+mappings:
+  -
+    paragraph_bundle: image
+    paragraph_field: field_media
+context_description: null

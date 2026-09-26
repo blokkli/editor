@@ -2,7 +2,7 @@
 
 - **Status:** todo
 - **Milestone:** M3 Hosted
-- **Depends on:** 09, 10
+- **Depends on:** 09, 10; 14 for the public launch
 
 ## Goal
 
@@ -77,3 +77,9 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   send (it does locally), and that `REMOTE_ADDR` is IPv4. `PRIVATE_SUBNETS`
   includes `::ffff:0:0/96`, so IPv4-mapped IPv6 addresses would all count as
   trusted proxies.
+
+From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
+
+- **Check that the hosted instance serves the SPA only:**
+  `playground-drupal/server/middleware/spa.ts` turns SSR off when
+  `IS_DDEV_HOSTED=true`, which the Nuxt daemon must see in its environment.

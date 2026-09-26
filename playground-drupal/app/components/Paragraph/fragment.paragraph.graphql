@@ -1,0 +1,9 @@
+fragment paragraph on Paragraph {
+  ...paragraphTitle
+  ...paragraphText
+  ...paragraphImage
+  ...paragraphVideo
+  ...paragraphButton
+  ...paragraphFromLibrary
+  ...paragraphBlokkliFragment
+}

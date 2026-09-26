@@ -1,0 +1,19 @@
+uuid: 30a5b521-3c1e-4cfc-88e3-a9c59d05bd20
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_lead
+    - node.type.page
+id: node.page.field_lead
+field_name: field_lead
+entity_type: node
+bundle: page
+label: Lead
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

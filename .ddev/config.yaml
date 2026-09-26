@@ -24,6 +24,7 @@ working_dir:
 # `ddev dotenv set .ddev/.env.web --deepl-auth-key=…`:
 #   DEEPL_AUTH_KEY                  DeepL translations
 #   NUXT_BLOKKLI_AGENT_AUTH_SECRET  signs agent tokens (Drupal and Nuxt)
+#   NUXT_BLOKKLI_AGENT_API_KEY      the agent's LLM key (optional: mock provider)
 #   DRUPAL_HASH_SALT                required when hosted (IS_DDEV_HOSTED=true)
 web_environment:
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL

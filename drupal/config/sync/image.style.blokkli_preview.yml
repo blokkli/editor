@@ -1,0 +1,15 @@
+uuid: 9194706d-98e3-4a2b-b644-0b262807a2ff
+langcode: en
+status: true
+dependencies: {  }
+name: blokkli_preview
+label: 'blökkli preview'
+effects:
+  25b0b2d7-e75d-445f-9d2d-1fc4ab5a068a:
+    uuid: 25b0b2d7-e75d-445f-9d2d-1fc4ab5a068a
+    id: image_scale_and_crop
+    weight: 0
+    data:
+      width: 300
+      height: 300
+      anchor: center-center

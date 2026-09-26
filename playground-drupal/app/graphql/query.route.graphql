@@ -1,0 +1,11 @@
+query route($path: String!) {
+  route(path: $path) {
+    __typename
+    ... on EntityUrl {
+      entity {
+        __typename
+        ...nodePage
+      }
+    }
+  }
+}

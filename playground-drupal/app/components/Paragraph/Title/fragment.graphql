@@ -1,0 +1,3 @@
+fragment paragraphTitle on ParagraphTitle {
+  title: fieldTitle
+}

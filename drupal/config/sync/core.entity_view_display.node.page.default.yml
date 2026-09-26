@@ -3,6 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.page.field_hero_image
+    - field.field.node.page.field_lead
     - field.field.node.page.field_paragraphs
     - node.type.page
   module:
@@ -13,6 +15,22 @@ targetEntityType: node
 bundle: page
 mode: default
 content:
+  field_hero_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: -3
+    region: content
+  field_lead:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
   field_paragraphs:
     type: entity_reference_revisions_entity_view
     label: hidden

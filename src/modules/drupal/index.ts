@@ -142,6 +142,14 @@ export declare const templateEditRouteName: string|null
       join(fileURLToPath(new URL('./', import.meta.url)), 'graphql'),
     )
 
+    // Features disabled because the schema lacks what they need.
+    const disabledFeatures: string[] = []
+
+    function disableFeature(feature: string) {
+      disabledFeatures.push(feature)
+      context.features.disableFeature(feature)
+    }
+
     /**
      * Registers a GraphQL file.
      */
@@ -159,7 +167,7 @@ export declare const templateEditRouteName: string|null
       if (editMutationStateFields.has(mutationName)) {
         addGraphqlDocument(`mutations/${mutationName}.graphql`)
       } else if (feature) {
-        context.features.disableFeature(feature)
+        disableFeature(feature)
       }
     }
 
@@ -233,7 +241,7 @@ export declare const templateEditRouteName: string|null
     if (graphql.schemaHasType('ParagraphsBlokkliComment')) {
       addGraphqlDocument('features/comments.graphql')
     } else {
-      context.features.disableFeature('comments')
+      disableFeature('comments')
     }
 
     // Feature: Notifications.
@@ -244,28 +252,28 @@ export declare const templateEditRouteName: string|null
     ) {
       addGraphqlDocument('features/notifications.graphql')
     } else {
-      context.features.disableFeature('notifications')
+      disableFeature('notifications')
     }
 
     // Feature: Agent.
     if (mutationFields.has('paragraphsBlokkliAgentToken')) {
       addGraphqlDocument('features/agent.graphql')
     } else {
-      context.features.disableFeature('agent')
+      disableFeature('agent')
     }
 
     // Feature: Fragments.
     if (graphql.schemaHasType('ParagraphBlokkliFragment')) {
       addGraphqlDocument('features/fragments.graphql')
     } else {
-      context.features.disableFeature('fragments')
+      disableFeature('fragments')
     }
 
     // Feature: Transform.
     if (graphql.schemaHasType('ParagraphsBlokkliTransformPlugin')) {
       addGraphqlDocument('features/transform.graphql')
     } else {
-      context.features.disableFeature('transform')
+      disableFeature('transform')
     }
 
     // Feature: Host Transform.
@@ -277,28 +285,28 @@ export declare const templateEditRouteName: string|null
     if (graphql.schemaHasType('ParagraphFromLibrary')) {
       addGraphqlDocument('features/library.graphql')
     } else {
-      context.features.disableFeature('library')
+      disableFeature('library')
     }
 
     // Feature: Search.
     if (graphql.schemaHasType('ParagraphsBlokkliSearchTab')) {
       addGraphqlDocument('features/search.graphql')
     } else {
-      context.features.disableFeature('search')
+      disableFeature('search')
     }
 
     // Feature: Conversions.
     if (graphql.schemaHasType('ParagraphsBlokkliConversion')) {
       addGraphqlDocument('features/conversions.graphql')
     } else {
-      context.features.disableFeature('conversions')
+      disableFeature('conversions')
     }
 
     // Feature: Import Existing.
     if (editMutationStateFields.has('copy_from_existing')) {
       addGraphqlDocument('features/import-existing.graphql')
     } else {
-      context.features.disableFeature('import-existing')
+      disableFeature('import-existing')
     }
 
     // Feature: Block Transfer (export/import via clipboard).
@@ -308,14 +316,14 @@ export declare const templateEditRouteName: string|null
     ) {
       addGraphqlDocument('features/block-transfer.graphql')
     } else {
-      context.features.disableFeature('block-transfer')
+      disableFeature('block-transfer')
     }
 
     // Feature: Media Library.
     if (queryFields.has('pbMediaLibraryGetResults')) {
       addGraphqlDocument('features/media-library.graphql')
     } else {
-      context.features.disableFeature('media-library')
+      disableFeature('media-library')
     }
 
     // Feature: Workspace.
@@ -339,7 +347,7 @@ export declare const templateEditRouteName: string|null
     if (editStateFields.has('previewUrl')) {
       addGraphqlDocument('features/preview-grant.graphql')
     } else {
-      context.features.disableFeature('preview-grant')
+      disableFeature('preview-grant')
     }
 
     // Feature: Templates.
@@ -362,6 +370,7 @@ export declare const templateEditRouteName: string|null
         helper.logger.warn(
           `Missing GraphQL fields on type "BlokkliParagraphTemplate": ${missingFieldsString}. Please enable them in your Drupal GraphQL schema configuration. The "templates" feature will be disabled.`,
         )
+        disableFeature('templates')
       } else {
         addGraphqlDocument('features/templates.graphql')
         if (!options?.templateEditRouteName) {
@@ -371,7 +380,7 @@ export declare const templateEditRouteName: string|null
         }
       }
     } else {
-      context.features.disableFeature('templates')
+      disableFeature('templates')
     }
 
     // Enable the new publish options.
@@ -443,6 +452,12 @@ fragment blokkliParagraphsType on ParagraphsType {
   ${paragraphsTypeFields.join('\n  ')}
 }
 `,
+    )
+
+    helper.logger.info(
+      disabledFeatures.length
+        ? `Features disabled because the Drupal GraphQL schema lacks support for them: ${disabledFeatures.join(', ')}`
+        : 'The Drupal GraphQL schema supports all features.',
     )
   },
 })

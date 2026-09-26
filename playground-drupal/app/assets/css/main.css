@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+
+@utility container-content {
+  @apply mx-auto w-full max-w-3xl px-4;
+}
+
+@utility container-wide {
+  @apply mx-auto w-full max-w-5xl px-4;
+}
+
+body {
+  @apply bg-stone-50 text-stone-900;
+}
+
+/* Formatted text from Drupal (basic_html). */
+.rich-text {
+  @apply flex flex-col gap-4 text-lg leading-relaxed;
+
+  h2 {
+    @apply text-2xl font-bold;
+  }
+
+  h3 {
+    @apply text-xl font-bold;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  ul {
+    @apply list-disc pl-6;
+  }
+
+  ol {
+    @apply list-decimal pl-6;
+  }
+}

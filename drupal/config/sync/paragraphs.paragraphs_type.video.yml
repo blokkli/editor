@@ -1,0 +1,18 @@
+uuid: 4a191faa-cf08-4c02-8bd0-fb010d4b1aa8
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: true
+id: video
+label: Video
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

@@ -1,0 +1,17 @@
+query libraryItem($uuid: String!) {
+  entity: entityByUuid(entityType: PARAGRAPHS_LIBRARY_ITEM, uuid: $uuid) {
+    ... on ParagraphsLibraryItem {
+      uuid
+      libraryItemLabel: label
+      blokkliProps {
+        ...blokkliProps
+      }
+      paragraphs {
+        ...paragraphsFieldItem
+        props {
+          ...paragraph
+        }
+      }
+    }
+  }
+}

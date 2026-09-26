@@ -1,0 +1,11 @@
+# The host entity's fields that blökkli can change while editing.
+fragment pbMutatedEntity on Entity {
+  ... on NodePage {
+    title
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+  }
+  libraryItemLabel: label
+}

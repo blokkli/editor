@@ -1,7 +1,10 @@
 _core:
   default_config_hash: uJM-LpGaOWbH2FmDN4N6IV6uxGrq1fRu1bOLyPeVhwU
 schema_file: ''
+media_bundle_remote_video: remote_video
+media_bundle_image: image
 media_library_image_style: ''
+image_style: blokkli_preview
 use_user_images: true
 enabled_types:
   node:
@@ -15,3 +18,4 @@ enabled_fields: {  }
 disable_notifications: false
 validation_types:
   - paragraph
+media_bundle_file: document

@@ -27,6 +27,7 @@ module:
   link: 0
   masquerade: 0
   media: 0
+  media_library: 0
   menu_link_content: 0
   menu_ui: 0
   navigation: 0
@@ -47,6 +48,7 @@ module:
   paragraphs_blokkli_template: 0
   paragraphs_blokkli_transform: 0
   paragraphs_library: 0
+  path: 0
   path_alias: 0
   scheduler: 0
   search_api: 0

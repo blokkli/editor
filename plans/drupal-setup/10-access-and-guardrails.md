@@ -42,3 +42,15 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
 - **GraphQL:** the server has `debug_flag: 1` and no limits on query depth or
   complexity (as in the starterkit). Decide both for sandboxes, together with
   anonymous GraphQL access (chunk 06).
+
+From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
+
+- **GraphQL access today:**
+  - `authenticated` has `execute graphql arbitrary graphql requests`, and
+    `anonymous` has no GraphQL permission, so anonymous users get the private
+    page.
+  - The server still has `debug_flag: 1` and no depth or complexity limits.
+- **SSR for anonymous users** runs locally only, and today it only renders the
+  private page. To exercise blökkli's server code paths, anonymous users need
+  content access on the local site. That must be a local-only override (e.g. in
+  `settings.local.php`), never `config/sync`, or every sandbox would be public.

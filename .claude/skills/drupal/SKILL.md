@@ -76,19 +76,30 @@ feature-specific query/fragment sets.
 
 The Drupal GraphQL schema is stored at `build/drupal-schema.graphql`. This is
 the source of truth for type generation — the root `nuxt.config.ts` references
-it via `graphqlMiddleware.schemaPath`.
+it via `graphqlMiddleware.schemaPath`, and so does `playground-drupal`.
+
+It's generated from the local ddev site (`drupal/`, see CLAUDE.md's Drupal Dev
+Environment section): `bun run drupal:schema` in the container runs `drush cr`
+and dumps the schema. **Never edit the file by hand.**
 
 **When adding or modifying GraphQL mutations/queries:**
 
 1. **Always read the schema first** — check `build/drupal-schema.graphql` to see
    the exact field names, types, and argument names for the mutation/query
    you're implementing. Do NOT guess field names.
-2. Write the `.graphql` document in `src/modules/drupal/graphql/` matching the
+2. If the schema lacks something, add it to the Drupal module first:
+   `drupal/paragraphs_blokkli`, a git submodule of the drupal.org repository
+   (symlinked into the site). Run `ddev drush cr` after PHP changes, then
+   `bun run drupal:schema`. Don't commit or push in the submodule unless asked.
+3. Write the `.graphql` document in `src/modules/drupal/graphql/` matching the
    schema exactly
-3. Run `bun run dev:prepare` to regenerate types from the schema
-4. The `Mutation` and `Query` TypeScript types (from
+4. Run `bun run dev:prepare` to regenerate types from the schema
+5. The `Mutation` and `Query` TypeScript types (from
    `#nuxt-graphql-middleware/operation-types`) are generated from this schema —
    after `dev:prepare`, new operations will be recognized
+6. Try it against real Drupal in `playground-drupal`
+   (https://blokkli.ddev.site). Its Nuxt runs as a ddev daemon and restarts on
+   its own when the schema changes.
 
 **Adapter pattern for GraphQL operations:**
 

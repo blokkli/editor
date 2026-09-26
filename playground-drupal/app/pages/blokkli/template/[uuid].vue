@@ -1,0 +1,16 @@
+<template>
+  <BlokkliDrupalEditTemplate :uuid />
+</template>
+
+<script lang="ts" setup>
+import { definePageMeta, useRoute } from '#imports'
+import BlokkliDrupalEditTemplate from '#blokkli/drupal/components/BlokkliDrupalEditTemplate/index.vue'
+
+// The Drupal module opens templates by this route name (templateEditRouteName
+// in nuxt.config.ts). The path has no language, so GraphQL uses English.
+definePageMeta({
+  name: 'blokkli-template',
+})
+
+const uuid = String(useRoute().params.uuid)
+</script>

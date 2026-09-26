@@ -1,0 +1,12 @@
+uuid: de1656e7-53fb-4e29-9fe7-93e23684090a
+langcode: en
+status: true
+dependencies: {  }
+id: media_library
+label: 'Media Library'
+search_plugin_id: entity_query_media_library
+search_type: media_library
+description: ''
+weight: 0
+search_plugin_configuration:
+  per_page: '32'

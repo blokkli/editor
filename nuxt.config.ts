@@ -10,7 +10,7 @@ import { colorOptions } from './playground/.config/blokkli'
 export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware'],
   graphqlMiddleware: {
-    graphqlEndpoint: 'https://starterkit.ddev.site/de/graphql',
+    graphqlEndpoint: 'https://blokkli.ddev.site/en/graphql',
     schemaPath: './build/drupal-schema.graphql',
     downloadSchema: false,
     // graphqlConfigFilePath: '',

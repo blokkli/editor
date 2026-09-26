@@ -2,7 +2,7 @@
 
 - **Status:** todo
 - **Milestone:** M1 Local dev site
-- **Depends on:** 04
+- **Depends on:** 13
 
 ## Goal
 
@@ -12,7 +12,9 @@ seconds.
 
 ## Tasks
 
-- [ ] Write declarative content in `drupal/content/` (YAML):
+- [ ] Write declarative content in `drupal/content/` (YAML). Until
+      [chunk 14](14-demo-content.md), the pages are placeholders built from the
+      base paragraphs of [chunk 04](04-base-content-model.md):
   - [ ] pages as paragraph trees, with field values per language
   - [ ] EN source content with DE and FR translations; some translations
         deliberately outdated
@@ -37,6 +39,8 @@ seconds.
 - [ ] `ddev bake` and `ddev reset`. `reset` restores the dev site from the
       template.
 - [ ] Record bake time and template size under Notes.
+- [ ] Update the setup steps in `CONTRIBUTING.md` and CLAUDE.md's Drupal Dev
+      Environment section for `ddev bake` and `ddev reset`.
 
 ## Acceptance criteria
 
@@ -73,3 +77,11 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   was removed). Set it to the seeded home page.
 - **New routes:** a custom module or view with a new first path segment needs it
   in nginx's Drupal list and a `ddev check-routes` row.
+
+From [chunk 04](04-base-content-model.md) (2026-09-26):
+
+- **Remote videos need the network.** Creating a `remote_video` media item
+  fetches its oEmbed data and thumbnail from YouTube or Vimeo. Seeding and
+  baking do so too, unless the seed sets the thumbnail itself.
+- **The media library lists media of every mapped bundle**, so seeded media
+  shows up there right away.

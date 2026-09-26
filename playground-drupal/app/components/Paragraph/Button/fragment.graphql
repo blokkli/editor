@@ -1,0 +1,18 @@
+fragment paragraphButton on ParagraphButton {
+  title: fieldTitle
+  link: fieldLink {
+    uri {
+      path
+      ... on EntityUrl {
+        entity {
+          label
+          ... on Media {
+            mediaFileUrl {
+              path
+            }
+          }
+        }
+      }
+    }
+  }
+}

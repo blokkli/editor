@@ -1,0 +1,3 @@
+fragment paragraphText on ParagraphText {
+  text: fieldText
+}
