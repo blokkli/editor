@@ -1,0 +1,18 @@
+# The latest news published in the page's language.
+query latestNews($language: String!) {
+  news: entityQuery(
+    entityType: NODE
+    limit: 3
+    filter: {
+      conditions: [
+        { field: "type", value: ["news"] }
+        { field: "status", value: ["1"], language: $language }
+      ]
+    }
+    sort: [{ field: "created", direction: DESC }]
+  ) {
+    items {
+      ...nodeTeaser
+    }
+  }
+}

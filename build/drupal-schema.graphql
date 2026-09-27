@@ -18,6 +18,9 @@ enum LanguageDirection {
 }
 
 enum DrupalDateFormat {
+  "14 November 2022"
+  DAY
+
   "Mon, 14 Nov 2022 - 14:52"
   FALLBACK
 

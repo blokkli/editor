@@ -1,0 +1,79 @@
+label: Dateien
+display:
+  default:
+    display_title: Standard
+    display_options:
+      title: Dateien
+      fields:
+        filename:
+          label: Name
+          separator: ', '
+        filemime:
+          label: MIME-Typ
+        filesize:
+          label: Größe
+        status:
+          label: Status
+          settings:
+            format_custom_false: Temporär
+            format_custom_true: Dauerhaft
+        changed:
+          label: Änderungsdatum
+        count:
+          label: 'Verwendet in'
+        operations:
+          label: Aktionen
+      pager:
+        options:
+          tags:
+            next: 'Weiter ›'
+            previous: '‹ Zurück'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      filters:
+        filename:
+          expose:
+            label: Dateiname
+        filemime:
+          expose:
+            label: MIME-Typ
+        status:
+          expose:
+            label: Status
+  page_1:
+    display_options:
+      menu:
+        title: Dateien
+  page_2:
+    display_title: Dateinutzung
+    display_options:
+      title: Dateinutzung
+      fields:
+        entity_label:
+          label: Entität
+        type:
+          label: Entitätstyp
+        count:
+          label: Verwendungsanzahl
+      pager:
+        options:
+          tags:
+            next: 'Weiter ›'
+            previous: '‹ Zurück'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      arguments:
+        fid:
+          exception:
+            title: Alle

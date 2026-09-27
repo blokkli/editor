@@ -111,22 +111,22 @@ From [chunk 03](03-drupal-base-site.md), [04](04-base-content-model.md) and
 To be filled in by the sub-chunks. The features that the Drupal module gates on
 the schema, and where they're set up:
 
-| Feature              | Sub-chunk | Exercised by                                                                 |
-| -------------------- | --------- | ---------------------------------------------------------------------------- |
-| media-library        | 04, 13b   | the image, video, button and downloads blocks; several images into a gallery |
-| droppable-field-edit | 13b       | adding documents to a downloads block by dropping                            |
-| fragments            | 13d       | "upcoming events", "latest news"; the table of contents (13i)                |
-| library              | 13d       | emergency numbers, "what goes into which bin", "stay informed"               |
-| templates            | 13d       | a service page; default contents for new columns                             |
-| import-existing      | 13c       | copying blocks from one page to another (same type and bundle only)          |
-| block-transfer       | 13c       | copying blocks between hosts, e.g. a page into a news item or the sidebar    |
-| preview-grant        | 13e       | previewing unpublished changes on a phone                                    |
-| transform            | 13g       | search and replace, e.g. a renamed office                                    |
-| conversions          | 13g       | text ↔ title, button → text                                                  |
-| search               | 13g       | offices, events, news, pages, media, library                                 |
-| comments             | 13h       | the head of the department reviews a page                                    |
-| notifications        | 13h       | comments and mentions                                                        |
-| agent                | 13i       | editing a page with the agent                                                |
+| Feature              | Sub-chunk | Exercised by                                                                                                                                                   |
+| -------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| media-library        | 04, 13b   | the image, video, button and downloads blocks; several images into a gallery                                                                                   |
+| droppable-field-edit | 13b       | adding documents to a downloads block by dropping                                                                                                              |
+| fragments            | 13d       | "upcoming events", "latest news" (data from `entityQuery`, one option); the table of contents (13i)                                                            |
+| library              | 13d       | single blocks (emergency numbers, "what goes into which bin", "stay informed") in the main content, containers, the sidebar and the footer; translatable items |
+| templates            | 13d       | a service page; the default template for new columns                                                                                                           |
+| import-existing      | 13c       | copying blocks from one page to another (same type and bundle only)                                                                                            |
+| block-transfer       | 13c       | copying blocks between hosts, e.g. a page into a news item or the sidebar                                                                                      |
+| preview-grant        | 13e       | previewing unpublished changes on a phone                                                                                                                      |
+| transform            | 13g       | search and replace, e.g. a renamed office                                                                                                                      |
+| conversions          | 13g       | text ↔ title, button → text                                                                                                                                    |
+| search               | 13g       | offices, events, news, pages, media, library                                                                                                                   |
+| comments             | 13h       | the head of the department reviews a page                                                                                                                      |
+| notifications        | 13h       | comments and mentions                                                                                                                                          |
+| agent                | 13i       | editing a page with the agent                                                                                                                                  |
 
 Also: publishing and scheduling (13e), translations (13f), options (13b: local,
 global, `bkVisibleLanguages`, the schema file) and complex options (13i),

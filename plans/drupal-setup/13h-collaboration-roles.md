@@ -53,3 +53,15 @@ From [13c](13c-hosts.md) (2026-09-26):
   has it).
 - **The node bundles** news, event and office need their own create and edit
   permissions per role.
+
+From [13d](13d-reusable-content.md) (2026-09-27):
+
+- **Library:**
+  - `create paragraph library item` ("Add to library")
+  - `edit paragraph library item` (edit an item)
+  - `administer paragraphs library` (delete, unpublished items)
+- **Templates:**
+  - `view paragraph templates` (the dialog's previews and the edit route)
+  - `create paragraph template`, `edit own/any paragraph template`,
+    `delete own/any paragraph template`
+  - `manage default paragraph templates`: admins only

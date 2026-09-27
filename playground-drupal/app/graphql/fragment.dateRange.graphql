@@ -1,0 +1,9 @@
+# A date range formatted by Drupal in the page's language (the date format
+# "day" is translated). `start` is for machines, e.g. <time datetime>.
+fragment dateRange on FieldItemTypeDaterange {
+  start: startDate(format: "c")
+  startDay: startDate(drupalDateFormat: DAY)
+  startTime: startDate(format: "H:i")
+  endDay: endDate(drupalDateFormat: DAY)
+  endTime: endDate(format: "H:i")
+}

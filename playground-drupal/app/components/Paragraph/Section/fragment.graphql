@@ -4,6 +4,7 @@ fragment paragraphSection on ParagraphSection {
     ...paragraphsFieldItem
     props {
       ...paragraphLeaf
+      ...paragraphFromLibrary
       ...paragraphGallery
       ...paragraphAccordion
       ...paragraphColumns

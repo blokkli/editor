@@ -1,0 +1,2 @@
+label: 'Date courte par défaut'
+pattern: 'j M Y - H:i'

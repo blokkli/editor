@@ -6,8 +6,7 @@ fragment nodeEvent on NodeEvent {
     ...mediaImage
   }
   date: fieldDate {
-    start: startDate(format: "c")
-    end: endDate(format: "c")
+    ...dateRange
   }
   place: fieldPlace
   organiser: fieldOrganiser

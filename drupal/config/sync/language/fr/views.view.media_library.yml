@@ -1,0 +1,120 @@
+label: 'Media library'
+description: 'Trouver et gérer des media.'
+display:
+  default:
+    display_title: 'Par défaut'
+    display_options:
+      title: Média
+      fields:
+        media_bulk_form:
+          action_title: Action
+      pager:
+        options:
+          tags:
+            next: ››
+            previous: ‹‹
+          expose:
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options_all_label: '- Tout -'
+            offset_label: Décalage
+      exposed_form:
+        options:
+          submit_button: 'Appliquer les filtres'
+          reset_button_label: Réinitialiser
+          exposed_sorts_label: 'Trier par'
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      empty:
+        area_text_custom:
+          content: 'Aucun média disponible.'
+      sorts:
+        created:
+          expose:
+            label: "Le plus récent d'abord"
+        name:
+          expose:
+            label: 'Nom (A-Z)'
+        name_1:
+          expose:
+            label: 'Nom (Z-A)'
+      filters:
+        status:
+          expose:
+            label: 'Statut de publication'
+          group_info:
+            label: Publié
+            group_items:
+              1:
+                title: Publié
+              2:
+                title: 'Non publié'
+        name:
+          expose:
+            label: Nom
+        bundle:
+          expose:
+            label: 'Type de média'
+          group_info:
+            label: 'Type de média'
+        langcode:
+          expose:
+            label: Langue
+  page:
+    display_title: Page
+    display_options:
+      fields:
+        media_bulk_form:
+          action_title: Action
+        name:
+          separator: ', '
+        edit_media:
+          alter:
+            text: 'Modifier {{ name }}'
+            alt: 'Modifier {{ name }}'
+          text: Modifier
+        delete_media:
+          alter:
+            text: 'Supprimer {{ name }}'
+            alt: 'Supprimer {{ name }}'
+          text: Supprimer
+  widget:
+    display_title: Widget
+    display_options:
+      arguments:
+        bundle:
+          exception:
+            title: Tout
+      filters:
+        name:
+          expose:
+            label: Nom
+      header:
+        display_link_grid:
+          label: Grille
+        display_link_table:
+          label: Tableau
+  widget_table:
+    display_title: 'Widget (tableau)'
+    display_options:
+      fields:
+        thumbnail__target_id:
+          label: Vignette
+        name:
+          label: Nom
+        uid:
+          label: Auteur
+        changed:
+          label: 'Mis à jour'
+      arguments:
+        bundle:
+          exception:
+            title: Tout
+      filters:
+        name:
+          expose:
+            label: Nom
+      header:
+        display_link_grid:
+          label: Grille
+        display_link_table:
+          label: Tableau

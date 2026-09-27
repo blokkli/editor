@@ -98,3 +98,18 @@ From [13c](13c-hosts.md) (2026-09-26):
 - **Office hours** are `office_hours` items (`day` 0 = Sunday, times as HHMM
   numbers). Event dates are stored in UTC.
 - `tmp/drupal-hosts-content.php` (not committed) was 13c's test content.
+
+From [13d](13d-reusable-content.md) (2026-09-27):
+
+- **Library items and templates are content**, including the default template
+  for new columns. The search providers are config.
+- **Create each default template once:** a second default for the same type is
+  refused after its paragraphs were saved.
+- **Library items** are saved when the page that made them is published. Seeding
+  them directly (a `paragraphs_library_item` with its paragraph, and a
+  `from_library` block referencing it) avoids that.
+- **Interface translations** (month names, the admin) aren't config: import them
+  with `drush locale:check && drush locale:update` (from drupal.org) before
+  baking, so sandboxes get them without network access.
+- `tmp/drupal-reusable-content.php` and `tmp/drupal-reusable-mutations.sh` (not
+  committed) were 13d's test content.

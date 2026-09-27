@@ -1,0 +1,33 @@
+fragment nodeTeaser on Node {
+  __typename
+  label
+  url {
+    path
+  }
+  ... on NodePage {
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+  }
+  ... on NodeNews {
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+    createdDate: createdRawField {
+      first {
+        day: formatted(drupalDateFormat: DAY)
+      }
+    }
+  }
+  ... on NodeEvent {
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+    date: fieldDate {
+      ...dateRange
+    }
+  }
+}

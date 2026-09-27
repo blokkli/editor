@@ -13,7 +13,9 @@ from its parent fragment block.
 
 Fragment components are placed in a dedicated directory (e.g.,
 `~/components/Blokkli/Fragment/`) and use the `defineBlokkliFragment()`
-composable:
+composable. The directory must be covered by the module's `pattern` option, like
+block components. With the Drupal module's default patterns, use e.g.
+`~/components/Paragraph/BlokkliFragment/<Name>/index.vue`.
 
 ```vue
 <template>
@@ -99,7 +101,11 @@ Reference global options defined in `nuxt.config.ts`, same as in
 
 **Type:** [type.BlokkliDefinitionInputEditorBase]
 
-Editor behaviour settings (e.g., `previewWidth`, `icon`).
+Editor behaviour settings (e.g., `previewWidth`, `icon`). Unlike blocks,
+fragments don't pick up an `icon.svg` next to the component: set `editor.icon`.
+
+The argument of `defineBlokkliFragment()` must be a static object literal, as
+for `defineBlokkli()`.
 
 ## Using Fragments in a Field
 
@@ -112,6 +118,9 @@ To allow a fragment to be placed in a `<BlokkliField>`, use the
 </template>
 ```
 
+The default is an empty list: without the prop, editors can't add fragments to
+the field.
+
 You can allow multiple fragments:
 
 ```vue
@@ -121,6 +130,42 @@ You can allow multiple fragments:
   :allowed-fragments="['cta', 'hero']"
 />
 ```
+
+The field must also allow the fragment block bundle (`blokkli_fragment` by
+default) in the backend. Fragments that are already in a field keep rendering
+even if the prop doesn't list them.
+
+## Fragments that load data
+
+A fragment can load its own data, e.g. the latest news, in an async setup:
+
+```vue
+<script lang="ts" setup>
+// Before the first await.
+defineBlokkliFragment({
+  name: 'latest_news',
+  label: 'Latest news',
+  editor: {
+    icon: 'bk_mdi_news',
+    previewWidth: 800,
+  },
+})
+
+const { data } = await useAsyncData('latest-news', () => fetchLatestNews())
+</script>
+```
+
+- **Call `defineBlokkliFragment()` first, before any `await`.** It registers the
+  block with the editor.
+- **It works in every mode:** on the server, while editing, and in the preview
+  of the add dialog, which renders the real component at `previewWidth` (default
+  400). The preview runs the query too; `editor.noPreview` turns it off.
+- **Render one root element, always.** While editing, show a placeholder when
+  there's no data: the editor needs an element to select and drag.
+- **Don't throw on a failed request.** An error in an async setup takes the page
+  down with it. Render nothing instead.
+- **Make the key depend on everything the data depends on,** e.g. the language
+  of the page.
 
 ## Return Value
 
@@ -137,17 +182,17 @@ You can allow multiple fragments:
 
 See [Block Context](/define-blokkli/block-context) for details.
 
-## Configuration
+## The Fragment Block Bundle
 
-Fragments require the `fragmentBlockBundle` option to be set in your
-`nuxt.config.ts`:
+In the backend, a fragment is a block of the bundle set by the
+`fragmentBlockBundle` option, which stores the fragment's name. The default is
+`blokkli_fragment`, which the Drupal module uses. Only set it if your backend
+uses another bundle:
 
 ```typescript
 export default defineNuxtConfig({
   blokkli: {
-    fragmentBlockBundle: 'blokkli_fragment',
+    fragmentBlockBundle: 'my_fragment',
   },
 })
 ```
-
-This tells blökkli which block bundle wraps fragment components.

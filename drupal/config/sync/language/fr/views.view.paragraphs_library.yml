@@ -1,0 +1,62 @@
+label: 'Bibliothèque de paragraphes'
+display:
+  default:
+    display_title: Principal
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filtrer
+          reset_button_label: Réinitialiser
+          exposed_sorts_label: 'Trier par'
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      pager:
+        options:
+          tags:
+            previous: ‹‹
+            next: ››
+          expose:
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options_all_label: '- Tout -'
+            offset_label: Décalage
+      fields:
+        label:
+          label: Libellé
+          separator: ', '
+        type:
+          label: Type
+          separator: ', '
+        paragraphs__target_id:
+          label: Paragraphs
+          separator: ', '
+        langcode:
+          label: Langue
+          separator: ', '
+        id:
+          label: 'Identifiant (ID)'
+          separator: ', '
+        count:
+          label: Utilisé
+          alter:
+            path: 'admin/content/entity-usage/paragraphs_library_item/{{ id }}'
+          format_plural_string: !!binary QGNvdW50IGVtcGxhY2VtZW50A0Bjb3VudCBlbXBsYWNlbWVudHM=
+        changed:
+          label: Modifié
+          separator: ', '
+        operations:
+          label: Actions
+      filters:
+        label:
+          expose:
+            label: Libellé
+          group_info:
+            label: Libellé
+        type:
+          expose:
+            label: Type
+      title: 'Bibliothèque de paragraphes'
+      empty:
+        area_text_custom:
+          content: 'Aucun élément de bibliothèque disponible.'
+  page_1:
+    display_title: Page

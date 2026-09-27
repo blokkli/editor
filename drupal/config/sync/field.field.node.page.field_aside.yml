@@ -8,6 +8,7 @@ dependencies:
     - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
+    - paragraphs.paragraphs_type.from_library
   module:
     - entity_reference_revisions
 id: node.page.field_aside
@@ -27,5 +28,6 @@ settings:
       button: button
       contact: contact
       downloads: downloads
+      from_library: from_library
     negate: 0
 field_type: entity_reference_revisions

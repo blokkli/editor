@@ -150,7 +150,9 @@ Built by a throwaway script (`tmp/drupal-hosts.php`, as in 13b), then
     config page on its own.
 - **Helpers:**
   - `app/helpers/date.ts`: `Intl` with `Europe/Zurich`; dates come as
-    `startDate(format: "c")`, and `created` is a timestamp
+    `startDate(format: "c")`. `created` was recorded as a Unix timestamp, but
+    it's an ISO 8601 string, which crashed the news date (fixed in 13d: Drupal
+    formats the dates now)
   - `app/composables/useLanguage.ts`
 - **`pbMutatedEntity`** only has the fields edited on the page.
 

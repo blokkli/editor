@@ -1,0 +1,27 @@
+cancel_confirm:
+  subject: "Demande d'annulation du compte [user:display-name] sur [site:name]"
+  body: "[user:display-name]\r\n\r\nUne requête pour supprimer votre compte a été déposée sur [site:name].\r\n\r\nVous pouvez désormais supprimer votre compte sur [site:url-brief] en cliquant sur ce lien ou en copiant cette adresse dans un navigateur :\r\n\r\n[user:cancel-url]\r\n\r\nÀ noter : la suppression de votre compte n'est pas réversible.\r\n\r\nCe lien expire dans un délai d'une journée et rien ne se passera si vous ne l'utilisez pas.\r\n\r\n--  L'équipe de [site:name]"
+password_reset:
+  subject: 'Modification des informations de connexion pour [user:display-name] sur [site:name]'
+  body: "[user:display-name],\r\n\r\nUne demande de réinitialisation de votre mot de passe pour votre compte a été faite sur [site:name].\r\n\r\nVous pouvez maintenant vous connecter en cliquant sur le lien ci-dessous ou en le copiant dans votre navigateur : \r\n\r\n[user:one-time-login-url]\r\n\r\nCe lien ne peut être utilisé qu'une seule fois pour vous connecter et vous mènera à la page pour changer votre mot de passe. Il expirera dans un jour et rien ne se passera s'il n'est pas utilisé.\r\n\r\n--  L'équipe de [site:name]"
+register_admin_created:
+  subject: 'Un administrateur a créé un compte pour vous sur [site:name]'
+  body: "[user:display-name],\r\n\r\nUn administrateur sur [site:name] a créé un compte pour vous. Vous pouvez maintenant vous connecter en utilisant le lien ci-dessous ou en le copiant dans votre navigateur : \r\n\r\n[user:one-time-login-url]\r\n\r\nCe lien ne peut être utilisé qu'une seule fois pour vous connecter et vous redirigera vers la page où vous pourrez choisir votre mot de passe.\r\n\r\nAprès avoir choisi votre mot de passe, vous pourrez vous connecter sur [site:login-url] en utilisant : \r\n\r\nnom d'utilisateur : [user:name]\r\nmot de passe : Votre mot de passe\r\n\r\n--  L'équipe de [site:name]"
+register_no_approval_required:
+  subject: 'Détails du compte [user:display-name] sur [site:name]'
+  body: "[user:display-name],\r\n\r\nNous vous remercions pour votre inscription sur [site:name]. Vous pouvez maintenant vous connecter en utilisant le lien ci-dessous ou en le copiant dans votre navigateur : \r\n\r\n[user:one-time-login-url]\r\n\r\nCe lien ne peut être utilisé qu'une seule fois et vous redirigera vers une page où vous pourrez choisir votre mot de passe.\r\n\r\nAprès avoir choisi votre mot de passe, vous pourrez vous connecter sur [site:login-url] en utilisant : \r\n\r\nNom d'utilisateur : [user:name]\r\nmot de passe : Votre mot de passe\r\n\r\n--  L'équipe de [site:name]"
+register_pending_approval:
+  subject: "Détails du compte [user:display-name] sur [site:name] (en attente de validation d'un administrateur)"
+  body: "[user:display-name],\r\n\r\nNous vous remercions pour votre demande d'inscription sur [site:name]. Votre demande est actuellement en cours de validation. Une fois la validation faite, vous recevrez un autre courriel de confirmation contenant les informations vous permettant de vous connecter, choisir votre mot de passe ainsi que d'autres détails.\r\n\r\n\r\n--  L'équipe de [site:name]"
+register_pending_approval_admin:
+  subject: "Détails du compte [user:display-name] sur [site:name] (en attente de validation d'un administrateur)"
+  body: "[user:display-name] a fait une demande de compte.\r\n\r\n[user:edit-url]"
+status_activated:
+  subject: 'Détails du compte pour [user:display-name] sur [site:name]'
+  body: "[user:display-name],\r\n\r\nVotre compte sur [site:name] a été activé.\r\n\r\nVous pouvez maintenant vous connecter en cliquant sur le lien ci-dessous ou en le copiant dans votre navigateur : \r\n\r\n[user:one-time-login-url]\r\n\r\nCe lien ne peut être utilisé qu'une seule fois et vous redirigera vers une page où vous pourrez choisir votre mot de passe.\r\n\r\nAprès avoir choisi votre mot de passe, vous pourrez vous connecter sur [site:login-url] en utilisant :\r\n\r\nnom d'utilisateur : [user:account-name]\r\nmot de passe : Votre mot de passe\r\n\r\n--  L'équipe de [site:name]"
+status_blocked:
+  subject: 'Détails du compte [user:display-name] sur [site:name] (bloqué)'
+  body: "[user:display-name],\r\n\r\nVotre compte sur [site:name] a été bloqué.\r\n\r\n-- L'équipe [site:name]"
+status_canceled:
+  subject: 'Détails du compte [user:display-name] sur [site:name] (annulé)'
+  body: "[user:display-name],\r\n\r\nVotre compte sur [site:name] a été annulé.\r\n\r\n--  L'équipe de [site:name]"

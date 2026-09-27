@@ -51,3 +51,15 @@ the language.
   Decide whether option labels get DE and FR.
 - **Without a DeepL key** (the default locally and in CI), the editor must still
   work: check what the translation feature shows then.
+
+From [13d](13d-reusable-content.md) (2026-09-27):
+
+- **Library items are translatable.** "Add to library" creates a translation for
+  each language of the block, each with the source label. Check the language
+  switch on an item's page.
+- **Templates stay in English:** their route has no language.
+- **The fragments' placeholders** ("No upcoming events") are English.
+- **`locale` is enabled** (13d, for dates formatted by Drupal), with the DE and
+  FR interface translations. The date format `day` has a German pattern. Other
+  UI strings of the frontend (labels such as "Date", "News") are still English,
+  and `config_translation` (the UI for config translations) isn't enabled.

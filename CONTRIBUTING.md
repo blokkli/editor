@@ -41,7 +41,10 @@ bun run dev          # http://localhost:3000
    tarball from @nuxt/devtools" (bun 1.3.14); run it again.
 4. `ddev drush si --existing-config -y` installs the site from
    `drupal/config/sync`. The first install logs "Couldn't write .htaccess file"
-   for `public://` once, which is harmless.
+   for `public://` once, which is harmless. Then
+   `ddev drush locale:check && ddev drush locale:update` imports the German and
+   French interface translations from drupal.org (month names, the admin). They
+   aren't config, so every install needs this step.
 5. `ddev drush uli` prints a login link. Create a page at `/en/node/add/page`.
 
 Nuxt runs as a ddev daemon and starts on its own once `node_modules` exists.

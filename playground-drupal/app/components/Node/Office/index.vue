@@ -19,6 +19,7 @@
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
+        :allowed-fragments="['upcoming_events', 'latest_news']"
         class="flow mt-10"
       />
     </article>

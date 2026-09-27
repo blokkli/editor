@@ -6,6 +6,7 @@ dependencies:
     - field.storage.translatable_config_pages.field_paragraphs
     - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.contact
+    - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.text
     - translatable_config_pages.translatable_config_pages_type.footer
   module:
@@ -26,6 +27,7 @@ settings:
     target_bundles:
       button: button
       contact: contact
+      from_library: from_library
       text: text
     negate: 0
 field_type: entity_reference_revisions

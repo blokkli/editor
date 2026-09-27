@@ -1,0 +1,12 @@
+uuid: 80203220-a6e1-4d84-8a40-923e43a37f20
+langcode: en
+status: true
+dependencies: {  }
+id: templates
+label: Templates
+search_plugin_id: entity_query_templates
+search_type: templates
+description: ''
+weight: 0
+search_plugin_configuration:
+  per_page: '20'

@@ -58,3 +58,9 @@ From [13c](13c-hosts.md) (2026-09-26):
   if it holds.
 - **The custom module `blokkli_playground` exists** (13c: a route subscriber for
   config pages). Add the plugins there.
+
+From [13d](13d-reusable-content.md) (2026-09-27):
+
+- **The `library_items` and `templates` providers exist:** they serve the "From
+  library" and "Template" dialogs. The library in the editor's search (a
+  search_api provider) is separate, and 13g's.

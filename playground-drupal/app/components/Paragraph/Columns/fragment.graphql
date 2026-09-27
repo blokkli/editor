@@ -3,12 +3,14 @@ fragment paragraphColumns on ParagraphColumns {
     ...paragraphsFieldItem
     props {
       ...paragraphLeaf
+      ...paragraphFromLibrary
     }
   }
   right: fieldRight {
     ...paragraphsFieldItem
     props {
       ...paragraphLeaf
+      ...paragraphFromLibrary
     }
   }
 }

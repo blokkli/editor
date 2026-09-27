@@ -224,8 +224,7 @@ Outside of editing, `entity` is the same as the data you passed via `:entity`.
 
 ## Template Editing
 
-If you use the library/template feature, create a page for editing template
-entities:
+If you use templates, create a page for editing template entities:
 
 ::: code-group
 
@@ -249,4 +248,5 @@ const uuid = computed(() => String(route.params.uuid))
 :::
 
 The route name must match the `templateEditRouteName` option you pass to the
-Drupal module in your config.
+Drupal module in your config. The route may have no parameter besides `uuid`
+(e.g. no language segment): blökkli resolves it by name with the uuid only.

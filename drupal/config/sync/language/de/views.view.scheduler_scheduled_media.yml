@@ -1,0 +1,71 @@
+display:
+  default:
+    display_title: Standard
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      pager:
+        options:
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+          tags:
+            previous: '‹ vorherige Seite'
+            next: 'nächste Seite ›'
+            first: '« erste Seite'
+            last: 'letzte Seite »'
+      fields:
+        media_bulk_form:
+          label: Massenaktualisierung
+          action_title: Aktion
+        name:
+          label: Medienname
+          separator: ', '
+        bundle:
+          label: Medientyp
+          separator: ', '
+        uid:
+          label: Autor
+          separator: ', '
+        status:
+          label: Status
+          settings:
+            format_custom_true: Veröffentlicht
+            format_custom_false: 'Nicht veröffentlicht'
+          separator: ', '
+        publish_on:
+          label: 'Veröffentlichen am/um'
+          separator: ', '
+        unpublish_on:
+          label: 'Depublizieren am/um'
+          separator: ', '
+        operations:
+          label: Aktionen
+      filters:
+        name:
+          expose:
+            label: Medienname
+        bundle:
+          expose:
+            label: Typ
+        status:
+          expose:
+            label: Status
+          group_info:
+            label: Veröffentlichungsstatus
+            group_items:
+              1:
+                title: Veröffentlicht
+              2:
+                title: 'Nicht veröffentlicht'
+        langcode:
+          expose:
+            label: Sprache
+  user_page:
+    display_title: Benutzer

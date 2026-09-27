@@ -1,17 +1,26 @@
-query libraryItem($uuid: String!) {
-  entity: entityByUuid(entityType: PARAGRAPHS_LIBRARY_ITEM, uuid: $uuid) {
-    ... on ParagraphsLibraryItem {
-      uuid
-      libraryItemLabel: label
-      blokkliProps {
-        ...blokkliProps
-      }
-      paragraphs {
-        ...paragraphsFieldItem
-        props {
-          ...paragraph
-        }
-      }
+# By id for the links Drupal builds (/blokkli/library-item/{id}), by uuid for
+# the editor's.
+query libraryItem($id: ID!, $uuid: String!, $byId: Boolean!) {
+  byId: entityById(entityType: PARAGRAPHS_LIBRARY_ITEM, id: $id)
+    @include(if: $byId) {
+    ...libraryItemPage
+  }
+  byUuid: entityByUuid(entityType: PARAGRAPHS_LIBRARY_ITEM, uuid: $uuid)
+    @skip(if: $byId) {
+    ...libraryItemPage
+  }
+}
+
+fragment libraryItemPage on ParagraphsLibraryItem {
+  uuid
+  libraryItemLabel: label
+  blokkliProps {
+    ...blokkliProps
+  }
+  paragraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
     }
   }
 }

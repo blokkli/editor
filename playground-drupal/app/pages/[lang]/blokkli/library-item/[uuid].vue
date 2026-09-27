@@ -18,18 +18,26 @@
 <script lang="ts" setup>
 import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
+import type { LibraryItemPageFragment } from '#graphql-operations'
 import { isLanguage } from '#shared/languages'
 
-// The editor links here with the language prefix, e.g.
-// /de/blokkli/library-item/<uuid>.
+// The editor links here with the uuid, e.g. /de/blokkli/library-item/<uuid>.
+// Drupal's own links (open editing, the language switch, notifications) use
+// the id: paragraphs_blokkli_library moves the canonical route to
+// /blokkli/library-item/{id}.
 const route = useRoute()
 
 if (!isLanguage(route.params.lang)) {
   throw createError({ statusCode: 404, fatal: true })
 }
 
+const param = String(route.params.uuid)
+const byId = /^\d+$/.test(param)
+
 const { data, error } = await useAsyncGraphqlQuery('libraryItem', {
-  uuid: String(route.params.uuid),
+  id: param,
+  uuid: param,
+  byId,
 })
 
 if (error.value) {
@@ -37,9 +45,16 @@ if (error.value) {
 }
 
 const item = computed(() => {
-  const entity = data.value?.data.entity
-  return entity && 'blokkliProps' in entity ? entity : null
+  const entity = byId ? data.value?.data.byId : data.value?.data.byUuid
+  return isLibraryItem(entity) ? entity : null
 })
+
+// The query returns an `Entity`, typed as the fragment or `object`.
+function isLibraryItem(
+  entity: object | undefined,
+): entity is LibraryItemPageFragment {
+  return !!entity && 'blokkliProps' in entity
+}
 
 if (!item.value) {
   throw createError({ statusCode: 404, fatal: true })

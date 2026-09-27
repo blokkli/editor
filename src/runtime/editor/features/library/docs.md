@@ -49,11 +49,14 @@ const blocks: FieldListItem[] = [
     bundle: 'from_library',
     // blökkli expects a single prop named libraryItem.
     props: {
-      // The referenced library item entity.
+      // The referenced library item entity. The editor uses its uuid and
+      // label, e.g. to edit or detach it.
       libraryItem: {
-        // The actual reusable block.
+        uuid: 'c5b3a0f2-6d7e-4f1a-9b8c-2e4d6f8a0b1c',
+        label: 'Opening hours notice',
+        // The actual reusable block, with its own uuid.
         block: {
-          uuid: '9485812c-0ecd-4699-85b2-3a031d47a0a1',
+          uuid: '1f0e7c3d-5a9b-4c2e-8d6f-7b3a1e9c5d20',
           bundle: 'rich_text',
           props: {
             text: '<p>Lorem ipsum dolor sit amet</p>',
@@ -86,7 +89,8 @@ to allow the "from_library" bundle in the fields where reusable blocks should be
 placed, in addition to allowing the bundle of the reusable block.
 
 This is done in the [getFieldConfig()](/adapter/getFieldConfig) adapter method.
-An example field config that only allows `text` blocks might look like this:
+With Drupal, it's the paragraphs field's allowed types. An example field config
+that only allows `text` blocks might look like this:
 
 ```typescript
 import type { FieldConfig } from '#blokkli/types'

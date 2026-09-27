@@ -1,0 +1,79 @@
+label: Fichiers
+display:
+  default:
+    display_title: 'Par défaut'
+    display_options:
+      title: Fichiers
+      fields:
+        filename:
+          label: Nom
+          separator: ', '
+        filemime:
+          label: 'Type MIME'
+        filesize:
+          label: Taille
+        status:
+          label: État
+          settings:
+            format_custom_false: Temporaire
+            format_custom_true: Permanent
+        changed:
+          label: 'Date de modification'
+        count:
+          label: 'Utilisé dans'
+        operations:
+          label: Actions
+      pager:
+        options:
+          tags:
+            next: 'Suivant ›'
+            previous: '‹ Précédent'
+          expose:
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options_all_label: '- Tout -'
+            offset_label: Décalage
+      exposed_form:
+        options:
+          submit_button: Filtrer
+          reset_button_label: Réinitialiser
+          exposed_sorts_label: 'Trier par'
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      filters:
+        filename:
+          expose:
+            label: 'Nom du fichier'
+        filemime:
+          expose:
+            label: 'Type MIME'
+        status:
+          expose:
+            label: État
+  page_1:
+    display_options:
+      menu:
+        title: Fichiers
+  page_2:
+    display_title: 'Utilisation du fichier'
+    display_options:
+      title: 'Utilisation du fichier'
+      fields:
+        entity_label:
+          label: Entité
+        type:
+          label: "Type d'entité"
+        count:
+          label: "Nombre d'utilisations"
+      pager:
+        options:
+          tags:
+            next: 'Suivant ›'
+            previous: '‹ Précédent'
+          expose:
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options_all_label: '- Tout -'
+            offset_label: Décalage
+      arguments:
+        fid:
+          exception:
+            title: Tout

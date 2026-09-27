@@ -18,7 +18,7 @@ compatibility: >-
   backend (drush, config export, custom modules) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/pages
 ---
@@ -87,21 +87,30 @@ Then update the schema in Nuxt. The bundle's type (e.g. `NodeNews`) now has
 
 **Structured fields** come out like this:
 
-| Field type                     | GraphQL                                                                                                                             |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `daterange`                    | `FieldItemTypeDaterange`: `value` and `endValue` are UTC without an offset. Use `startDate(format: "c")` and `endDate(format: "c")` |
-| `datetime`                     | `FieldItemTypeDatetime`: the same, with `formatted(format: "c")`                                                                    |
-| `created`, `changed`           | `String`, a Unix timestamp                                                                                                          |
-| `list_string`                  | `String`, the key: the labels aren't in the schema                                                                                  |
-| `telephone`, `email`, `string` | `String`                                                                                                                            |
-| `link`                         | `FieldItemTypeLink` (`uri { path }`, `title`)                                                                                       |
-| `entity_reference`             | the target bundle's type if the field allows one bundle, otherwise the interface (e.g. `Node`) with inline fragments                |
-| other modules' types           | a generated `FieldItemType<Name>` with one field per property                                                                       |
+| Field type                     | GraphQL                                                                                                                                         |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `daterange`                    | `FieldItemTypeDaterange`: `value` and `endValue` are UTC without an offset. Use `startDate` and `endDate` with a `format` or `drupalDateFormat` |
+| `datetime`                     | `FieldItemTypeDatetime`: the same, with `formatted(format: …)`                                                                                  |
+| `created`, `changed`           | `String`, ISO 8601 with an offset. Formatted: `createdRawField { first { formatted(drupalDateFormat: …) } }`                                    |
+| `list_string`                  | `String`, the key: the labels aren't in the schema                                                                                              |
+| `telephone`, `email`, `string` | `String`                                                                                                                                        |
+| `link`                         | `FieldItemTypeLink` (`uri { path }`, `title`)                                                                                                   |
+| `entity_reference`             | the target bundle's type if the field allows one bundle, otherwise the interface (e.g. `Node`) with inline fragments                            |
+| other modules' types           | a generated `FieldItemType<Name>` with one field per property                                                                                   |
 
 - Dates without an offset come out shifted by an hour or two, between the server
   and the browser too.
-- Format dates in the frontend with `Intl.DateTimeFormat` and an explicit
-  `timeZone`.
+- **Let Drupal format dates** in the page's language: `drupalDateFormat` takes a
+  date format (e.g. `LONG`, or your own: every format is in the enum), `format`
+  a PHP date format such as `"H:i"`.
+  - Month and day names need the `locale` module and the languages' interface
+    translations (`drush locale:check && drush locale:update`). Without them
+    they're English in every language.
+  - Translate a format's pattern per language (e.g. `j. F Y` in German) with a
+    config translation of `core.date_format.<id>`.
+  - For a range, select the day and the time of start and end, and show the day
+    once if both are the same.
+  - Keep `format: "c"` for machines, e.g. `<time datetime>`.
 - A computed property that depends on the time (e.g. "open now") is cached with
   the GraphQL response: compute it in the frontend.
 
@@ -352,5 +361,6 @@ footer or a site-wide notice.
 | Starting the editor, switching the language or previewing leads into the admin        | The entity type's canonical URL is under `/admin`: move it (section 4)                                                   |
 | The config page renders nothing                                                       | The entity doesn't exist yet, or a null result is still cached: create it, then clear the caches                         |
 | A config page is edited in the default language on a translated page                  | The translation doesn't exist                                                                                            |
-| Dates are an hour or two off                                                          | The raw `value` of a date field has no offset; use `format: "c"`                                                         |
+| Dates are an hour or two off                                                          | The raw `value` of a date field has no offset; use `startDate`, `endDate` or `formatted`                                 |
+| Month names are English on a translated page                                          | The `locale` module or the interface translations are missing                                                            |
 | Saving the entity's form fails with "This entity (paragraph: N) cannot be referenced" | The field holds a block type it doesn't allow (blökkli's mutations don't check allowed types; e.g. after narrowing them) |

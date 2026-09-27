@@ -20,11 +20,16 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                | `paragraphs_blokkli` | medium   | workaround | –        |
 | F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                       | `paragraphs_blokkli` | medium   | workaround | –        |
 | F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                   | `paragraphs_blokkli` | low      | open       | –        |
-| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | to verify  | 13d      |
+| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | open       | –        |
 | F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                     | `@blokkli/editor`    | low      | open       | –        |
 | F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                   | `paragraphs_blokkli` | low      | open       | –        |
 | F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                           | `paragraphs_blokkli` | low      | open       | –        |
 | F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                | `paragraphs_blokkli` | medium   | open       | –        |
+| F17 | [`detach_reusable` bugs](#f17-detach_reusable-bugs)                                                                     | `paragraphs_blokkli` | medium   | open       | –        |
+| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                       | both                 | low      | workaround | –        |
+| F19 | [Template and library search](#f19-template-and-library-search)                                                         | both                 | low      | open       | –        |
+| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                       | `paragraphs_blokkli` | low      | open       | –        |
+| F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                               | `@blokkli/editor`    | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -319,21 +324,38 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 ## F12: "Make reusable" on a container with unpublished children
 
 - **Found:** 2026-09-26, the Drupal review of 13b's plan, by reading the code.
-  Not reproduced yet.
-- **Suspected symptom:** making a container block (e.g. a section) reusable
-  before publishing loses the children that were added or moved since the last
-  publish.
-- **Cause (suspected):**
+  Reproduced 2026-09-27 in 13d (`tmp/drupal-reusable-mutations.sh f12`).
+- **Symptom:** after "make reusable" on a container (a section) and publishing,
+  the library item's container is the last published one:
+  - A text edited since the last publish kept its edit in the run.
+  - A removed text came back.
+  - A title added since the last publish, and one moved in from the page, were
+    lost; the moved one is gone from the page too.
+  - A container that was never published ends up empty.
+- **Cause:**
   - `MakeReusable`
     (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:79-131`) moves the
-    container into a new library item and removes it from the edit state. Its
-    children stay behind, with the container as their parent.
+    container into a new library item and removes its proxy. The children's
+    proxies stay behind, with the container as their host.
   - On publish, `rebuildFields()` only walks down from the host's fields.
     `from_library` holds the library item through a plain entity reference, so
-    the container's child list is never rebuilt.
+    the container's fields are never rebuilt, and the container keeps the child
+    list it had when the edit state loaded it.
   - The only test publishes first
     (`TemplateLibraryIntegrationTest.php:352-398`).
-- **In this plan:** containers get no library conversion until 13d tests it.
+  - `make_reusable` doesn't check `allow_library_conversion` (F16), so the
+    mutation reproduces this on any container.
+- **How to reproduce:** publish a section with two texts. Then edit one, remove
+  the other, add a title into the section, add a title to the page and move it
+  into the section; `make_reusable` the section, publish, and list the library
+  item's section.
+- **Fix idea:** in `rebuildFields()`, when a `from_library` paragraph references
+  a new library item, rebuild the item's `paragraphs` and mark them for saving.
+  Only for new items: `rebuildFields` empties a field before refilling it.
+- **In this plan:** containers have no library conversion (13d, the user). Once
+  fixed, enable it, and add the containers to
+  `Paragraph/FromLibrary/fragment.graphql` without letting them spread
+  `paragraphFromLibrary` (a cycle).
 
 ## F13: `bkVisibleLanguages` on library blocks
 
@@ -348,6 +370,10 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   none (`src/runtime/components/Blocks/FromLibrary/index.vue:27-32`).
 - **Fix idea:** check the reusable block's definition for `from_library` items,
   as the options form does.
+- **Fragments too** (13d, by reading): `bundlesWithVisibleLanguage` only
+  collects block definitions
+  (`src/build/templates/definitions/defaultGlobalOptions.ts:27-37`), so the
+  option has no effect on `blokkli_fragment` blocks either.
 
 ## F14: The comment filter leaks into new text formats
 
@@ -399,7 +425,105 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
     (or a UI bug) can break them.
   - The nesting depth relies on them (F10), so a deeper structure can lose
     blocks on publish.
+- **More mutations** (13d):
+  - `add_reusable` put a text library block into the sidebar. The node form then
+    refused to save: "The Reusable paragraph field cannot contain a Text
+    paragraph, because the parent Sidebar field disallows it."
+  - `add_from_template` checks nothing: no host access, no create access, no
+    template access, no allowed types (by reading).
+  - `make_reusable` checks neither `create paragraph library item` nor the
+    type's `allow_library_conversion` (by reading; F12 relies on it).
+  - `add_reusable` loads the item with `accessCheck(FALSE)`
+    (`AddReusable.php:72-76`), so unpublished items can be placed (by reading).
 - **Fix idea:** check the target field's allowed bundles wherever a mutation
   places a paragraph into a field (checked here: `add` and `import`; the other
   mutations are likely the same), or validate the host's reference fields on
   publish.
+
+## F17: `detach_reusable` bugs
+
+- **Found:** 2026-09-27, 13d, reproduced
+  (`tmp/drupal-reusable-mutations.sh f17`).
+- **Symptoms and causes**
+  (`src/Plugin/ParagraphsBlokkli/Mutation/DetachReusable.php`):
+  - **A block that isn't from the library** fails with an internal server error,
+    "Field field_reusable_paragraph is unknown". The guard
+    `if (!$fromLibrary->bundle() === 'from_library')` (line 60) is always false.
+  - **An unknown uuid first in the list** returns success and detaches nothing:
+    the `return` inside the loop (lines 55-74) ends the mutation at the first
+    uuid it skips.
+  - **Two blocks of the same item detached at once** get the same uuid: the
+    clone's uuid is derived from the library paragraph's uuid (line 85,
+    `getUuidForNewEntity`). Publishing then fails with "UNIQUE constraint
+    failed: paragraphs_item.uuid", and the edit state can't be published until
+    the mutation is undone.
+- **Fix ideas:** `$fromLibrary->bundle() !== 'from_library'`; `continue` instead
+  of `return`; derive the clone's uuid from the `from_library` block's uuid.
+
+## F18: Links to library items and templates
+
+- **Found:** 2026-09-27, 13d.
+- **Library items:**
+  - `paragraphs_blokkli_library` moves the canonical route to
+    `/blokkli/library-item/{paragraphs_library_item}`, with the numeric id.
+    Drupal builds links with it: open editing, the list of edit states when
+    publishing, notifications, preview grants, the language switch.
+  - The editor's own link (`getLibraryItemEditUrl` in the Drupal adapter) uses
+    the uuid, and the documented Nuxt page loads by uuid. So Drupal's links 404.
+  - **Workaround:** the page loads by id when the parameter is numeric
+    (`playground-drupal/app/pages/[lang]/blokkli/library-item/[uuid].vue`, and
+    the `blokkli-setup-library` skill).
+- **Templates:** the canonical URL is the admin form
+  (`/admin/config/content/blokkli/templates/{id}`), so Drupal's links to a
+  template's edit state lead there, not to the template route. Not worked
+  around.
+- **Fix ideas:** one parameter for both sides, e.g. the adapter builds the link
+  from the id, or Drupal's route takes the uuid. For templates, a canonical
+  route the frontend serves.
+
+## F19: Template and library search
+
+- **Found:** 2026-09-27, 13d, by reading; the `NOT IN ()` error was confirmed
+  with drush.
+- **Templates aren't filtered by the field:** the Drupal adapter's
+  `templatesSearch` (`src/modules/drupal/runtime/adapter/index.ts:1600-1605`,
+  this repo) never sends the host the dialog passes. The server supports a
+  `host` filter (`EntityQueryTemplates.php:103-128`), but it throws "Query
+  condition 'p.type NOT IN ()' cannot be empty" for a host whose field has no
+  target bundles (library items, templates). Fix both together.
+- **`templateBundles` repeats bundles** (`TemplateBundles.php:85`): a template
+  with two accordions lists `accordion` twice, and the join has no language
+  condition.
+- **The library search** (`LibraryItemsSearch.php`) ignores the provider's
+  `status`, doesn't filter by language (labels come in the item's source
+  language), and shows unpublished items to users who may see them.
+
+## F20: Default templates with `add_multiple`
+
+- **Found:** 2026-09-27, 13d, reproduced
+  (`tmp/drupal-reusable-mutations.sh templates`).
+- **Symptom:** with a default template for columns, `add_multiple` of a columns
+  block with its own children gives the template's children plus the given ones
+  (the agent's `add_paragraphs` uses it).
+- **Cause:** `AddMultiple::createItem` (`AddMultiple.php:168-199`) applies the
+  template, then adds the children. `createNestedParagraphs` only skips the
+  template's children when a value for the field is given, not children
+  (`AddMutationBase.php:447-450`).
+- **Also:** the template root's own options aren't applied
+  (`createAndAddParagraphWithTemplate` sets no behavior settings), only its
+  children's (by reading).
+- **Fix idea:** skip the template's children for a field that gets children.
+
+## F21: "Add to library" needs two clicks
+
+- **Found:** 2026-09-27, 13d, in the browser.
+- **Symptom:** in the "Add to library" dialog, an editor types the label and
+  clicks "Add to library". The first click only enables the button; the dialog
+  stays open until a second click.
+- **Cause:** the label field is a `FormText` with `lazy`
+  (`src/runtime/editor/features/library/DialogMakeReusable/index.vue:32-36`), so
+  `label` updates on `change`, when the field loses focus. The button is
+  disabled while the label is empty (`:can-submit="!!label.length"`), and the
+  click that blurs the field lands on the disabled button.
+- **Fix idea:** drop `lazy` there, or enable the button from the field's current
+  value.

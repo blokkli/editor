@@ -1,0 +1,62 @@
+label: Seitenabschnittsbibliothek
+display:
+  default:
+    display_title: Standard
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      pager:
+        options:
+          tags:
+            previous: ‹‹
+            next: ››
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      fields:
+        label:
+          label: Beschriftung
+          separator: ', '
+        type:
+          label: Typ
+          separator: ', '
+        paragraphs__target_id:
+          label: Seitenabschnitte
+          separator: ', '
+        langcode:
+          label: Sprache
+          separator: ', '
+        id:
+          label: ID
+          separator: ', '
+        count:
+          label: Verwendet
+          alter:
+            path: 'admin/content/entity-usage/paragraphs_library_item/{{ id }}'
+          format_plural_string: !!binary MSBTdGVsbGUDQGNvdW50IFN0ZWxsZW4=
+        changed:
+          label: Geändert
+          separator: ', '
+        operations:
+          label: Aktionen
+      filters:
+        label:
+          expose:
+            label: Beschriftung
+          group_info:
+            label: Beschriftung
+        type:
+          expose:
+            label: Typ
+      title: Seitenabschnittsbibliothek
+      empty:
+        area_text_custom:
+          content: 'Keine Bibliothekeinträge vorhanden.'
+  page_1:
+    display_title: Seite

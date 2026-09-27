@@ -7,9 +7,9 @@ dependencies:
     - paragraphs_library
 third_party_settings:
   content_translation:
-    enabled: false
+    enabled: true
     bundle_settings:
-      untranslatable_fields_hide: '0'
+      untranslatable_fields_hide: '1'
 id: paragraphs_library_item.paragraphs_library_item
 target_entity_type_id: paragraphs_library_item
 target_bundle: paragraphs_library_item

@@ -1,0 +1,69 @@
+label: Benutzer
+display:
+  default:
+    display_title: Standard
+    display_options:
+      title: Benutzer
+      fields:
+        user_bulk_form:
+          label: Massenaktualisierung
+        name:
+          label: Benutzername
+        status:
+          label: Status
+          settings:
+            format_custom_false: Gesperrt
+            format_custom_true: Aktiv
+        roles_target_id:
+          label: Rollen
+        access:
+          label: 'Letzter Zugriff'
+        operations:
+          label: Aktionen
+        mail:
+          separator: ', '
+      pager:
+        options:
+          tags:
+            next: 'Weiter ›'
+            previous: '‹ Zurück'
+            first: '« Erste'
+            last: 'Letzte »'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      empty:
+        area_text_custom:
+          content: 'Keine Personen verfügbar.'
+      filters:
+        status:
+          group_info:
+            label: Status
+            group_items:
+              1:
+                title: Aktiv
+              2:
+                title: Gesperrt
+        roles_target_id:
+          expose:
+            label: Rolle
+        permission:
+          expose:
+            label: Berechtigung
+      use_more_text: mehr
+  page_1:
+    display_title: Seite
+    display_options:
+      menu:
+        title: Liste
+      tab_options:
+        title: Benutzer
+        description: 'Verwalten von Benutzerkonten, Rollen und Zugriffsrechten.'

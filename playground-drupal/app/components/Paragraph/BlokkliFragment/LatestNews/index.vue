@@ -1,0 +1,69 @@
+<template>
+  <div
+    class="container-content"
+    :class="{ hidden: !items.length && !isEditing }"
+  >
+    <div
+      v-if="items.length"
+      :class="
+        options.display === 'list'
+          ? 'divide-y divide-stone-300 border-y border-stone-300'
+          : 'grid gap-6 sm:grid-cols-3'
+      "
+    >
+      <NodeTeaser
+        v-for="item in items"
+        :key="item.url?.path"
+        :node="item"
+        :display="options.display"
+      />
+    </div>
+    <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
+      No news.
+    </p>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { computed, defineBlokkliFragment, useAsyncGraphqlQuery } from '#imports'
+import type { NodeTeaserFragment } from '#graphql-operations'
+import NodeTeaser from '~/components/NodeTeaser/index.vue'
+import { useLanguage } from '~/composables/useLanguage'
+
+// Before the await: the editor needs the definition during setup.
+const { options } = defineBlokkliFragment({
+  name: 'latest_news',
+  label: 'Latest news',
+  description: 'The three latest news items.',
+  options: {
+    display: {
+      type: 'radios',
+      label: 'Display',
+      default: 'card',
+      options: {
+        card: 'Cards',
+        list: 'List',
+      },
+    },
+  },
+  editor: {
+    icon: 'bk_mdi_news',
+    previewWidth: 800,
+  },
+})
+
+const language = useLanguage()
+
+const { data } = await useAsyncGraphqlQuery(
+  'latestNews',
+  computed(() => ({ language: language.value })),
+)
+
+const items = computed(() =>
+  (data.value?.data.news.items ?? []).filter(
+    (v): v is NodeTeaserFragment => !!v && '__typename' in v,
+  ),
+)
+
+const isEditing = import.meta.blokkliEditing
+</script>

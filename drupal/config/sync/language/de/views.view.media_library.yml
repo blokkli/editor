@@ -1,0 +1,120 @@
+label: Medienbibliothek
+description: 'Medien finden und verwalten.'
+display:
+  default:
+    display_title: Standard
+    display_options:
+      title: Medien
+      fields:
+        media_bulk_form:
+          action_title: Aktion
+      pager:
+        options:
+          tags:
+            next: ››
+            previous: ‹‹
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      exposed_form:
+        options:
+          submit_button: Filtern
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      empty:
+        area_text_custom:
+          content: 'Keine Medien verfügbar.'
+      sorts:
+        created:
+          expose:
+            label: 'Neueste zuerst'
+        name:
+          expose:
+            label: 'Name (A-Z)'
+        name_1:
+          expose:
+            label: 'Name (Z-A)'
+      filters:
+        status:
+          expose:
+            label: Veröffentlichungsstatus
+          group_info:
+            label: Veröffentlicht
+            group_items:
+              1:
+                title: Veröffentlicht
+              2:
+                title: 'Nicht veröffentlicht'
+        name:
+          expose:
+            label: Name
+        bundle:
+          expose:
+            label: Medientyp
+          group_info:
+            label: Medientyp
+        langcode:
+          expose:
+            label: Sprache
+  page:
+    display_title: Seite
+    display_options:
+      fields:
+        media_bulk_form:
+          action_title: Aktion
+        name:
+          separator: ', '
+        edit_media:
+          alter:
+            text: '{{ name }} bearbeiten'
+            alt: '{{ name }} bearbeiten'
+          text: Bearbeiten
+        delete_media:
+          alter:
+            text: '{{ name }} löschen'
+            alt: '{{ name }} löschen'
+          text: Löschen
+  widget:
+    display_title: Steuerelement
+    display_options:
+      arguments:
+        bundle:
+          exception:
+            title: Alle
+      filters:
+        name:
+          expose:
+            label: Name
+      header:
+        display_link_grid:
+          label: Raster
+        display_link_table:
+          label: Tabelle
+  widget_table:
+    display_title: 'Steuerelement (Tabelle)'
+    display_options:
+      fields:
+        thumbnail__target_id:
+          label: Miniaturbild
+        name:
+          label: Name
+        uid:
+          label: Autor
+        changed:
+          label: Aktualisiert
+      arguments:
+        bundle:
+          exception:
+            title: Alle
+      filters:
+        name:
+          expose:
+            label: Name
+      header:
+        display_link_grid:
+          label: Raster
+        display_link_table:
+          label: Tabelle

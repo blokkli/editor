@@ -47,10 +47,14 @@ the corresponding editor feature is automatically disabled.
 
 For example:
 
-- If `CommentBlokkliNode` doesn't exist in the schema → comments feature
+- If `ParagraphsBlokkliComment` doesn't exist in the schema → comments feature
   disabled
 - If the `duplicate` mutation isn't available → duplication feature disabled
-- If `ParagraphsBlokkliLibraryItem` doesn't exist → library feature disabled
+- If `ParagraphFromLibrary` doesn't exist → library feature disabled
+- If `ParagraphBlokkliFragment` doesn't exist → fragments feature disabled
+- If `BlokkliParagraphTemplate` or one of its fields `uuid`, `label`,
+  `description`, `isDefault` and `paragraphs` doesn't exist → templates feature
+  disabled
 
 This means you only need to enable Drupal submodules — the Nuxt side adapts
 automatically.
@@ -177,8 +181,12 @@ Provides the complete GraphQL API. Must always be enabled.
 
 ### paragraphs_blokkli_library
 
-Enables the reusable paragraph library. Users can save paragraphs as library
-items and reuse them across entities.
+For the reusable paragraph library, which comes from Paragraphs'
+`paragraphs_library`. It adds the form that sets which paragraph types may
+become library items (`/admin/config/content/blokkli/library`), and moves the
+library item's canonical URL to `/blokkli/library-item/{id}`, a path the
+frontend serves. The editor's "From library" dialog also needs a search provider
+of the type "Paragraphs library items".
 
 ### paragraphs_blokkli_comment
 
@@ -202,7 +210,8 @@ Batch transform plugins for applying operations to multiple paragraphs at once.
 
 ### paragraphs_blokkli_template
 
-Template system for creating and managing paragraph templates.
+Template system for creating and managing paragraph templates. The editor's
+template dialog needs a search provider of the type "Paragraph Templates".
 
 ### paragraphs_blokkli_scheduler
 

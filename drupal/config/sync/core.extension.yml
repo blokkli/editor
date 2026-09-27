@@ -28,6 +28,7 @@ module:
   layout_builder: 0
   layout_discovery: 0
   link: 0
+  locale: 0
   masquerade: 0
   media: 0
   media_library: 0

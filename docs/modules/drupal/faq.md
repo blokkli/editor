@@ -172,10 +172,20 @@ If fragments don't appear at all in the editor, check:
 1. The `paragraphs_blokkli_fragments` Drupal submodule must be enabled
 2. The paragraph field in Drupal must allow `blokkli_fragment` (or whatever you
    configured as `fragmentBlockBundle`) as a valid paragraph bundle
+3. The GraphQL server must expose the `blokkli_fragment` bundle and its
+   `field_blokkli_fragment_name` field, and the app's `paragraph` fragment must
+   spread a fragment for it:
 
-If the "add fragment" action appears in the editor but a specific fragment is
-missing from the list, the fragment name is not included in the
-`allowed-fragments` prop on `<BlokkliField>`:
+   ```graphql
+   fragment paragraphBlokkliFragment on ParagraphBlokkliFragment {
+     name: fieldBlokkliFragmentName
+   }
+   ```
+
+If the "Fragment" action appears in the editor but can't be used in a field, or
+a specific fragment is missing from the list, the fragment name is not included
+in the `allowed-fragments` prop on `<BlokkliField>`. Its default is an empty
+list:
 
 ```vue
 <BlokkliField

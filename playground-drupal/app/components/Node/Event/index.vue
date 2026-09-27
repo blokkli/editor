@@ -49,6 +49,7 @@
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
+        :allowed-fragments="['upcoming_events', 'latest_news']"
         class="flow mt-10"
       />
     </article>
@@ -60,12 +61,9 @@ import { computed } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { NodeEventFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
-import { useLanguage } from '~/composables/useLanguage'
 import { formatDateRange } from '~/helpers/date'
 
 const props = defineProps<NodeEventFragment>()
-
-const language = useLanguage()
 
 // The allowed values of field_category. Its labels aren't in the schema.
 const CATEGORIES: Record<string, string> = {
@@ -81,8 +79,6 @@ const categoryLabel = computed(() =>
 )
 
 const dateRange = computed(() =>
-  props.date?.start && props.date.end
-    ? formatDateRange(props.date.start, props.date.end, language.value)
-    : '',
+  props.date ? formatDateRange(props.date) : '',
 )
 </script>

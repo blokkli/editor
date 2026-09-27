@@ -1,0 +1,79 @@
+label: Medien
+description: 'Medien finden und verwalten.'
+display:
+  default:
+    display_title: Standard
+    display_options:
+      title: Medien
+      fields:
+        media_bulk_form:
+          action_title: Aktion
+        thumbnail__target_id:
+          label: Miniaturbild
+          separator: ', '
+        name:
+          label: Medienname
+          separator: ', '
+        bundle:
+          label: Typ
+          separator: ', '
+        uid:
+          label: Autor
+          separator: ', '
+        status:
+          label: Status
+          settings:
+            format_custom_false: 'Nicht veröffentlicht'
+            format_custom_true: Veröffentlicht
+          separator: ', '
+        changed:
+          label: Aktualisiert
+          separator: ', '
+        operations:
+          label: Aktionen
+      pager:
+        options:
+          tags:
+            next: 'Weiter ›'
+            previous: '‹ Zurück'
+            first: '« Erste'
+            last: 'Letzte »'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      empty:
+        area_text_custom:
+          content: 'Keine Medien verfügbar.'
+      filters:
+        name:
+          expose:
+            label: Medienname
+        bundle:
+          expose:
+            label: Typ
+        status:
+          expose:
+            label: Wahr
+          group_info:
+            label: Veröffentlichungsstatus
+            group_items:
+              1:
+                title: Veröffentlicht
+              2:
+                title: 'Nicht veröffentlicht'
+        langcode:
+          expose:
+            label: Sprache
+  media_page_list:
+    display_title: Medien
+    display_options:
+      menu:
+        title: Medien

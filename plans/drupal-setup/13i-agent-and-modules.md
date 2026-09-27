@@ -52,3 +52,10 @@ and the analyzers.
 
 - **The agent's API key** is optional: the mock provider works without it (chunk
   06).
+
+From [13d](13d-reusable-content.md) (2026-09-27):
+
+- **The table of contents** joins `allowed-fragments` on the four node bundles'
+  main field (`Node/*/index.vue`).
+- **The agent adding columns** gets the default template's texts plus its own
+  children (F20).

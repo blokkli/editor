@@ -289,8 +289,8 @@ blokkli: {
 
 **Type:** `string`
 
-The entity type for template entities (reusable block templates). For the Drupal
-integration this should be `'blokkli_paragraph_template'`.
+The entity type for template entities (sets of blocks that editors insert as a
+copy). For the Drupal integration this should be `'blokkli_paragraph_template'`.
 
 ## fromLibraryBlockBundle
 
@@ -298,7 +298,7 @@ integration this should be `'blokkli_paragraph_template'`.
 **Default:** `'from_library'`
 
 The block bundle name used for "from library" blocks (blocks that reference a
-reusable template).
+library item).
 
 ## fragmentBlockBundle
 

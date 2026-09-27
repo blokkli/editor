@@ -1,0 +1,54 @@
+label: Systemprotokoll
+description: 'Aktuelle Protokollnachrichten'
+display:
+  default:
+    display_title: Standard
+    display_options:
+      title: 'Aktuelle Protokollnachrichten'
+      fields:
+        nothing:
+          admin_label: Symbol
+        wid:
+          label: WID
+        severity:
+          label: Schweregrad
+        type:
+          label: Typ
+        timestamp:
+          label: Datum
+        message:
+          label: Benachrichtigung
+        name:
+          label: Benutzer
+          separator: ', '
+        link:
+          label: Aktionen
+      pager:
+        options:
+          tags:
+            next: ››
+            previous: ‹‹
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      empty:
+        area:
+          admin_label: 'Keine Protokollnachrichten verfügbar.'
+          content: 'Keine Protokollnachrichten verfügbar.'
+      filters:
+        type:
+          expose:
+            label: Typ
+        severity:
+          expose:
+            label: Schweregrad
+  page:
+    display_title: Seite

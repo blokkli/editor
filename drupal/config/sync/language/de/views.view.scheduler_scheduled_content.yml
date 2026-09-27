@@ -1,0 +1,98 @@
+label: 'Vom Zeitplaner gesteuerte Inhalte'
+description: 'Zeitgesteuerte Inhalte finden und verwalten.'
+display:
+  default:
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      pager:
+        options:
+          tags:
+            previous: '‹ vorherige Seite'
+            next: 'nächste Seite ›'
+            first: '« erste Seite'
+            last: 'letzte Seite »'
+      fields:
+        node_bulk_form:
+          action_title: Aktion
+        title:
+          label: Titel
+          separator: ', '
+        type:
+          label: Inhaltstyp
+          separator: ', '
+        name:
+          label: Autor
+          separator: ', '
+        status:
+          label: Status
+          settings:
+            format_custom_true: Veröffentlicht
+            format_custom_false: 'Nicht veröffentlicht'
+          separator: ', '
+        publish_on:
+          label: 'Veröffentlichen am/um'
+          separator: ', '
+        unpublish_on:
+          label: 'Depublizieren am/um'
+          separator: ', '
+        operations:
+          label: Aktionen
+      filters:
+        title:
+          expose:
+            label: Titel
+        type:
+          expose:
+            label: Inhaltstyp
+        status:
+          expose:
+            label: Status
+          group_info:
+            label: Veröffentlichungsstatus
+            group_items:
+              1:
+                title: Veröffentlicht
+              2:
+                title: 'Nicht veröffentlicht'
+        langcode:
+          expose:
+            label: Sprache
+      title: 'Vom Zeitplaner gesteuerte Inhalte'
+      empty:
+        area_text_custom:
+          content: 'Es sind keine Inhalte vorhanden, die nach einem Zeitplan veröffentlicht werden sollen.'
+    display_title: Standard
+  overview:
+    display_options:
+      menu:
+        title: 'Vom Zeitplaner gesteuerte Inhalte'
+        description: 'Inhalte, deren Veröffentlichung bzw. Depublikation geplant ist.'
+      tab_options:
+        title: Inhalt
+        description: 'Zeitgesteuerte Inhalte finden und verwalten'
+      display_description: 'Übersicht über alle zeitgesteuerten Inhalte, als Reiter auf der Seite Inhalt verwalten.'
+      display_comment: 'Eine Revisions-nid-Beziehung ist erforderlich, weil der Inhaltstyp nur auf der Stufe „Inhalt“, aber nicht auf der Stufe „Inhaltsrevision“ gespeichert wird.'
+    display_title: Inhaltsübersicht
+  user_page:
+    display_options:
+      menu:
+        title: Zeitgesteuert
+      tab_options:
+        title: Inhalt
+        description: 'Zeitgesteuerte Inhalte finden und verwalten'
+      display_description: 'Reiter für zeitgesteuerte Inhalte im Benutzerprofil. Zeigt nur die zeitgesteuerten Inhalte dieses Benutzers an.'
+      arguments:
+        uid:
+          exception:
+            title: Alle
+      empty:
+        area_text_custom:
+          content: 'Keine zeitgesteuerten Inhalte für den Benutzer {{ arguments.uid }}'
+      display_comment: 'Der Zugriff auf die Benutzeransicht wird über SchedulerRouteSubscriber::alterRoutes() gesteuert. Das High-Level-Recht "access content" wird hinzugefügt, um das security_review-Modul zu erfüllen'
+    display_title: Benutzer

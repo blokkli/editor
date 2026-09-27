@@ -13,14 +13,18 @@
         :is-editing
       >
         <template #meta>
-          <p v-if="created" class="mb-2 font-semibold text-stone-600">
-            News, {{ formatTimestamp(created, language) }}
+          <p
+            v-if="createdDate?.first?.day"
+            class="mb-2 font-semibold text-stone-600"
+          >
+            News, {{ createdDate.first.day }}
           </p>
         </template>
       </HostHeader>
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
+        :allowed-fragments="['upcoming_events', 'latest_news']"
         class="flow mt-10"
       />
     </article>
@@ -31,10 +35,6 @@
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { NodeNewsFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
-import { useLanguage } from '~/composables/useLanguage'
-import { formatTimestamp } from '~/helpers/date'
 
 const props = defineProps<NodeNewsFragment>()
-
-const language = useLanguage()
 </script>

@@ -23,7 +23,9 @@ adds types.
   - [ ] the landing page "The lakeside pool" at its best, with the planted
         mistakes for the analyzer (an image without alt text, a table without a
         header row, an outdated French translation)
-  - [ ] the library items, the service page template's default content
+  - [ ] the library items (single blocks: containers stay out of the library
+        until F12 is fixed), the service page template, and the default template
+        for new columns
   - [ ] one deliberately outdated French page
   - [ ] dates relative to the bake (chunk 05)
 - [ ] Images and other media: openly licensed (CC0, public domain, CC BY, CC

@@ -1,0 +1,27 @@
+cancel_confirm:
+  subject: 'Du möchtest deinen Account [user:display-name] auf [site:name] löschen?'
+  body: "[user:display-name],\r\n\r\nauf der Seite [site:name] wurde eine Anfrage zur Löschung Ihres Benutzerkontos gestellt.\r\n\r\nSie können nun Ihr Benutzerkonto auf der Seite [site:url-brief] schließen, indem Sie auf folgenden Link klicken oder diesen in die Adresszeile Ihres Browsers kopieren:\r\n\r\n[user:cancel-url]\r\n\r\nBeachten Sie: Die Schließung Ihres Benutzerkontos kann nicht rückgängig gemacht werden.\r\n\r\nDieser Link läuft innerhalb eines Tages ab. Es passiert nichts, wenn Sie den Link nicht benutzen.\r\n\r\nIhr Team von:\r\n\r\n--  [site:name]"
+password_reset:
+  subject: 'Du hast dein Passwort für [site:name] vergessen?'
+  body: "[user:display-name],\r\n\r\neine Anfrage zum Zurücksetzen des Passworts für Ihr Benutzerkonto auf [site:name] wurde gestellt.\r\n\r\nSie können sich jetzt mit einem Klick auf folgenden Link anmelden oder diesen alternativ in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDieser Link kann nur einmal verwendet werden und leitet Sie zu einer Seite, auf der Sie ein neues Passwort festlegen können. Er ist einen Tag lang gültig und läuft automatisch aus, falls Sie ihn nicht verwenden.\r\n\r\nViele Grüße\r\nDas Team von [site:name]"
+register_admin_created:
+  subject: 'Ein Admin hat einen Account für dich angelegt auf [site:name]'
+  body: "[user:display-name],\r\n\r\nEin Administrator der Website [site:name] hat für Sie ein Benutzerkonto angelegt. Sie können sich jetzt mit einem Klick auf den folgenden Link anmelden oder diesen alternativ in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDieser Link kann nur einmal verwendet werden und leitet Sie zu einer Seite, auf der Sie ein neues Passwort vergeben können.\r\n\r\nNachdem Sie Ihr Passwort festgelegt haben, können Sie sich zukünftig auf [site:login-url] mit den folgenden Zugangsdaten anmelden:\r\n\r\nBenutzername: [user:name]\r\nPasswort: Ihr Passwort\r\n\r\nViele Grüße\r\nDas Team von [site:name]"
+register_no_approval_required:
+  subject: 'Willkommen [user:display-name] auf [site:name]!'
+  body: "[user:display-name],\r\n\r\nvielen Dank für die Registrierung auf [site:name]. Sie können sich jetzt mit einem Klick auf den folgenden Link anmelden oder diesen alternativ in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDieser Link kann nur einmal verwendet werden und leitet Sie auf eine Seite, auf der Sie Ihr Passwort festlegen können.\r\n\r\nNachdem Sie Ihr Passwort festgelegt haben, können Sie sich zukünftig mit folgenden Zugangsdaten bei [site:login-url] anmelden:\r\n\r\nBenutzername: [user:name]\r\nPasswort: Ihr Passwort\r\n\r\nViele Grüße\r\nDas Team von [site:name]"
+register_pending_approval:
+  subject: 'Freischaltung des Accounts [user:display-name] auf [site:name] erforderlich'
+  body: "[user:display-name],\r\n\r\nVielen Dank, dass Sie ein Benutzerkonto auf der Website [site:name] erstellt haben. Ihre Anmeldung wird momentan überprüft. Sobald die Überprüfung abgeschlossen ist, erhalten Sie eine weitere E-Mail, die Informationen darüber enthält, wie Sie sich auf der Website einloggen, Ihr Passwort festlegen und weitere Angaben in Ihrem Benutzerkonto machen können.\r\n\r\n--  Ihr Team von [site:name]."
+register_pending_approval_admin:
+  subject: 'Freischaltung des Accounts [user:display-name] auf [site:name] erforderlich'
+  body: "[user:display-name] hat einen Antrag auf ein Benutzerkonto gestellt.\r\n\r\n[user:edit-url]"
+status_activated:
+  subject: 'Dein Account [user:display-name] auf [site:name] wurde freigeschaltet!'
+  body: "[user:display-name],\r\n\r\nIhr Benutzerkonto auf der Website [site:name] wurde aktiviert. \r\n\r\nSie können sich jetzt mit einem Klick auf den folgenden Link anmelden oder diesen alternativ in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDieser Link kann nur einmal verwendet werden und leitet Sie zu einer Seite, auf der Sie ein neues Passwort vergeben können.\r\n\r\nNachdem Sie Ihr Passwort festgelegt haben, können Sie sich zukünftig auf [site:login-url] mit den folgenden Zugangsdaten anmelden:\r\n\r\nBenutzername: [user:name]\r\nPasswort: Ihr Passwort\r\n\r\nViele Grüße\r\nDas Team von [site:name]"
+status_blocked:
+  subject: 'Dein Account [user:display-name] auf [site:name] wurde gesperrt!'
+  body: "[user:display-name],\r\n\r\nIhr Benutzerkonto auf [site:name] wurde gesperrt.\r\n\r\n--  [site:name]-Team"
+status_canceled:
+  subject: 'Dein Account [user:display-name] auf [site:name] wurde gelöscht'
+  body: "[user:display-name],\r\n\r\nIhr Benutzerkonto auf [site:name] wurde gelöscht.\r\n\r\nViele Grüße\r\nDas Team von [site:name]"

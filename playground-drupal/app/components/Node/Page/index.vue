@@ -13,7 +13,12 @@
         :is-editing
       />
       <div class="page-body mt-10">
-        <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+        <BlokkliField
+          name="field_paragraphs"
+          :list="paragraphs"
+          :allowed-fragments="['upcoming_events', 'latest_news']"
+          class="flow"
+        />
         <BlokkliField
           name="field_aside"
           :list="aside"

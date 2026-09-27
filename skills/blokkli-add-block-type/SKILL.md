@@ -18,7 +18,7 @@ compatibility: >-
   backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.0'
+  version: '1.1.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/blocks
 ---
@@ -49,9 +49,9 @@ Decide, from the design or by asking:
 
 - **Paragraph type or fragment?** A block with no fields of its own (it lists
   data from elsewhere, or is only markup) is a blökkli fragment:
-  `defineBlokkliFragment`, no Drupal bundle
-  ([fragments](https://docs.blokk.li/define-blokkli/fragments)). The rest of
-  this skill is about paragraph types.
+  `defineBlokkliFragment`, stored in the shared `blokkli_fragment` paragraph
+  type, so it needs no bundle of its own. See the `blokkli-setup-fragments`
+  skill. The rest of this skill is about paragraph types.
 - **The fields:** what the editor types or picks. Reuse an existing field
   storage when the type fits (`field.storage.paragraph.*` in the config
   directory): every new storage needs its own entry in the GraphQL server.
@@ -79,8 +79,9 @@ Create them in the Drupal UI or with a script, then `drush cex`. Check:
 
 - **Library items:**
   `third_party_settings.paragraphs_library.allow_library_conversion: true` makes
-  the type available in library items and offers "make reusable" in the editor.
-  For blocks that hold other blocks, see section 7 first.
+  the type available in library items and offers "Add to library" in the editor.
+  For blocks that hold other blocks, see section 7 first, and the
+  `blokkli-setup-library` skill.
 - **`translatable` on every field, explicitly.** Fields created through the API
   are translatable by default:
   - Text an editor types: translatable.
@@ -343,8 +344,9 @@ field.
   deeper than that are lost when the page is published. Keep a level spare.
 - **Required fields on nested blocks** are checked when a block is added or
   changed, not when the page is published.
-- **Library conversion:** test "make reusable" on a container with unpublished
-  children before enabling it for container types.
+- **Library conversion:** making a container reusable loses the changes made
+  inside it since the last publish (the `blokkli-setup-library` skill). Keep
+  containers out of the library, or tell editors to publish first.
 - **Fragments can't be recursive,** so a container's fragment spreads each
   allowed child's fragment. A shared fragment for the blocks without children
   keeps that in one place:

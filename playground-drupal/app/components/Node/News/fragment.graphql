@@ -5,7 +5,11 @@ fragment nodeNews on NodeNews {
   hero: fieldHeroImage {
     ...mediaImage
   }
-  created
+  createdDate: createdRawField {
+    first {
+      day: formatted(drupalDateFormat: DAY)
+    }
+  }
   blokkliProps {
     ...blokkliProps
   }

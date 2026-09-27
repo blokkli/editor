@@ -1,0 +1,54 @@
+label: Watchdog
+description: 'Entrées récentes du journal'
+display:
+  default:
+    display_title: 'Par défaut'
+    display_options:
+      title: 'Entrées récentes du journal'
+      fields:
+        nothing:
+          admin_label: Icône
+        wid:
+          label: WID
+        severity:
+          label: Importance
+        type:
+          label: Type
+        timestamp:
+          label: Date
+        message:
+          label: Message
+        name:
+          label: Utilisateur
+          separator: ', '
+        link:
+          label: Actions
+      pager:
+        options:
+          tags:
+            next: ››
+            previous: ‹‹
+          expose:
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options_all_label: '- Tout -'
+            offset_label: Décalage
+      exposed_form:
+        options:
+          submit_button: Filtrer
+          reset_button_label: Réinitialiser
+          exposed_sorts_label: 'Trier par'
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      empty:
+        area:
+          admin_label: "Aucune entrée du journal n'est disponible."
+          content: "Aucune entrée du journal n'est disponible."
+      filters:
+        type:
+          expose:
+            label: Type
+        severity:
+          expose:
+            label: Importance
+  page:
+    display_title: Page

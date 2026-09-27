@@ -15,7 +15,7 @@ compatibility: >-
   backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -78,7 +78,9 @@ drush en paragraphs_blokkli paragraphs_blokkli_graphql media
 - Core `media` is needed even without media types: blökkli's settings form
   returns a 500 without it.
 - Feature submodules (library, comments, search, templates, …) have their own
-  skills and docs. Start with the base; add features once the editor works.
+  skills and docs: `blokkli-setup-library`, `blokkli-setup-fragments`,
+  `blokkli-setup-templates`. Start with the base; add features once the editor
+  works.
 
 ## 3. Paragraphs fields
 
@@ -352,10 +354,8 @@ with `defineBlokkli({ bundle: '<bundle>' })`. See
 - The editor starts on the host's own page (with `?blokkliEditing=<uuid>`), so
   the page that renders the host must render its host component.
 - **Library items** (with `paragraphs_library`): a page at
-  `blokkli/library-item/[uuid]`, behind the language prefix if the site has one.
-  The editor links there as `/<prefix>/blokkli/library-item/<uuid>`. Query the
-  item with `entityByUuid(entityType: PARAGRAPHS_LIBRARY_ITEM, …)` and render
-  its `paragraphs` field in a `BlokkliProvider`.
+  `blokkli/library-item/[uuid]`, which must also load by id. See the
+  `blokkli-setup-library` skill.
 - **Templates:** see the `blokkli-setup-templates` skill.
 
 **The edit adapter:** the Drupal module brings its own. Add
