@@ -15,7 +15,7 @@
         <template #meta>
           <p
             v-if="createdDate?.first?.day"
-            class="mb-2 font-semibold text-stone-600"
+            class="mb-2 font-semibold text-muted"
           >
             {{
               $texts('news.meta', 'News, @date', {

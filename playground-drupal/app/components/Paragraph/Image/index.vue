@@ -15,7 +15,7 @@
       v-if="caption || isEditing"
       v-blokkli-editable:field_caption
       :data-placeholder="$texts('placeholder.caption', 'Caption')"
-      class="editable-placeholder mt-2 text-sm text-stone-600"
+      class="editable-placeholder mt-2 text-small text-muted"
       :class="{ 'px-4': options.width === 'full' && !parentType }"
     >
       {{ caption }}

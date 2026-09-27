@@ -3,14 +3,14 @@
     v-blokkli-droppable:field_documents
     :class="{ 'container-content': !parentType && fieldListType === 'default' }"
   >
-    <ul class="divide-y divide-stone-300 border-y border-stone-300">
+    <ul class="divide-y divide-line border-y border-line">
       <li v-for="item in items" :key="item.uuid">
         <a
           :href="item.href"
           class="flex items-baseline justify-between gap-4 py-3 hover:underline"
         >
           <span class="font-semibold">{{ item.name }}</span>
-          <span class="shrink-0 text-sm text-stone-600">
+          <span class="shrink-0 text-small text-muted">
             {{ item.meta }}
           </span>
         </a>

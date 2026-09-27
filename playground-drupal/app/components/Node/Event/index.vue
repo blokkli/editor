@@ -13,41 +13,41 @@
         :is-editing
       >
         <template #meta>
-          <p class="mb-2 font-semibold text-stone-600">
+          <p class="mb-2 font-semibold text-muted">
             {{ categoryLabel }}
           </p>
         </template>
       </HostHeader>
       <div class="container-content mt-10">
-        <dl class="grid gap-4 rounded-sm bg-stone-200 p-6 sm:grid-cols-2">
+        <dl class="grid gap-4 bg-surface p-6 sm:grid-cols-2">
           <div v-if="dateRange" class="sm:col-span-2">
-            <dt class="text-sm font-semibold text-stone-600">
+            <dt class="text-smallall font-semibold text-muted">
               {{ $texts('event.date', 'Date') }}
             </dt>
-            <dd class="text-lg">
+            <dd>
               <time :datetime="date?.start">{{ dateRange }}</time>
             </dd>
           </div>
           <div v-if="place">
-            <dt class="text-sm font-semibold text-stone-600">
+            <dt class="text-smallall font-semibold text-muted">
               {{ $texts('event.place', 'Place') }}
             </dt>
             <dd>{{ place }}</dd>
           </div>
           <div v-if="organiser">
-            <dt class="text-sm font-semibold text-stone-600">
+            <dt class="text-smallall font-semibold text-muted">
               {{ $texts('event.organiser', 'Organiser') }}
             </dt>
             <dd>{{ organiser }}</dd>
           </div>
           <div v-if="price">
-            <dt class="text-sm font-semibold text-stone-600">
+            <dt class="text-smallall font-semibold text-muted">
               {{ $texts('event.price', 'Price') }}
             </dt>
             <dd>{{ price }}</dd>
           </div>
           <div v-if="registration?.uri?.path">
-            <dt class="text-sm font-semibold text-stone-600">
+            <dt class="text-smallall font-semibold text-muted">
               {{ $texts('event.registration', 'Registration') }}
             </dt>
             <dd>

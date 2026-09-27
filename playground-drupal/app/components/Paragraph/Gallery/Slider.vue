@@ -14,7 +14,7 @@
           v-bind="slide.media"
           img-class="aspect-[3/2] w-full object-cover"
         />
-        <figcaption v-if="slide.caption" class="mt-2 text-sm text-stone-600">
+        <figcaption v-if="slide.caption" class="mt-2 text-small text-muted">
           {{ slide.caption }}
         </figcaption>
       </figure>
@@ -26,7 +26,7 @@
     >
       <button
         type="button"
-        class="rounded-full border border-stone-900 px-4 py-1"
+        class="rounded-full border border-ink px-4 py-1"
         :aria-label="$texts('gallery.previous_image', 'Previous image')"
         @click="scroll(-1)"
       >
@@ -34,7 +34,7 @@
       </button>
       <button
         type="button"
-        class="rounded-full border border-stone-900 px-4 py-1"
+        class="rounded-full border border-ink px-4 py-1"
         :aria-label="$texts('gallery.next_image', 'Next image')"
         @click="scroll(1)"
       >

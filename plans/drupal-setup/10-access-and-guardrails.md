@@ -76,3 +76,9 @@ From [13f](13f-translation.md) (2026-09-27):
 - **Any GraphQL user can create text keys:** the texts resolvers create a text
   for every unknown key, without an access check. Sandbox users are logged in,
   so they could fill the table.
+
+From [15a](15a-design-system.md) (2026-09-27):
+
+- **`/<lang>/design-system` is public:** the design system and its mockups use
+  no GraphQL, so anonymous visitors see them (with English UI strings). Decide
+  whether the hosted sandbox shows them or answers 404.

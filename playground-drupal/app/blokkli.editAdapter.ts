@@ -22,6 +22,6 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 
     // The columns of the widest content container (container-wide).
     getGridMarkup: () =>
-      `<div class="mx-auto grid h-full max-w-5xl grid-cols-12 gap-4 px-4">${'<div class="h-full bg-red-500/10"></div>'.repeat(12)}</div>`,
+      `<div class="container-wide grid h-full grid-cols-12 gap-grid">${'<div class="h-full bg-primary/10"></div>'.repeat(12)}</div>`,
   }
 })

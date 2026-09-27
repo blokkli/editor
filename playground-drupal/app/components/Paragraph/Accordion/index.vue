@@ -1,7 +1,7 @@
 <template>
   <div class="accordion" :class="{ 'container-content': !parentType }">
-    <div class="border-y border-stone-300">
-      <h3 class="text-lg font-semibold">
+    <div class="border-y border-line">
+      <h3 class="text-h3">
         <span
           v-if="isEditing"
           v-blokkli-editable:field_title

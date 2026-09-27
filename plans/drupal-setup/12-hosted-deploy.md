@@ -93,3 +93,8 @@ From [13f](13f-translation.md) (2026-09-27):
 - **The generated `app/graphql/fragment.easyTexts.graphql` is committed:**
   nuxt-graphql-middleware reads the documents before nuxt-easy-texts writes it,
   so a fresh build uses the file on disk.
+
+From [15a](15a-design-system.md) (2026-09-27):
+
+- **The theme's nested CSS** (`main.css`) ships as native CSS nesting in dev;
+  check that the production build flattens or keeps it as intended.

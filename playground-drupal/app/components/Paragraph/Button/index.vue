@@ -5,12 +5,8 @@
     <a
       v-blokkli-droppable:field_link
       :href
-      class="inline-block rounded-full border-2 px-6 py-3 font-semibold"
-      :class="
-        options.style === 'secondary'
-          ? 'border-stone-900 text-stone-900'
-          : 'border-stone-900 bg-stone-900 text-white'
-      "
+      class="button"
+      :class="{ 'is-secondary': options.style === 'secondary' }"
     >
       <span v-blokkli-editable:field_title>{{ label }}</span>
     </a>

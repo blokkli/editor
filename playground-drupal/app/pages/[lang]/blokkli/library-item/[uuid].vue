@@ -6,10 +6,10 @@
     :entity="item"
   >
     <div class="container-content py-8">
-      <p class="text-sm text-stone-600">
+      <p class="text-small text-muted">
         {{ $texts('library_item.label', 'Library item') }}
       </p>
-      <h1 v-blokkli-editable:label class="text-3xl font-bold">
+      <h1 v-blokkli-editable:label class="font-serif text-h1">
         {{ entity.libraryItemLabel }}
       </h1>
     </div>

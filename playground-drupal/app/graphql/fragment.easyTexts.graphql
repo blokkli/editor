@@ -2,7 +2,12 @@
 # Any manual changes will be overwritten.
 
 fragment easyTexts on TextsLoader {
+  breadcrumb__label: getText(key: "label", context: "breadcrumb", default: "Breadcrumb")
   button__label: getText(key: "label", context: "button", default: "Button")
+  callout__error: getText(key: "error", context: "callout", default: "Error")
+  callout__info: getText(key: "info", context: "callout", default: "Information")
+  callout__success: getText(key: "success", context: "callout", default: "Success")
+  callout__warning: getText(key: "warning", context: "callout", default: "Warning")
   contact__unavailable: getText(key: "unavailable", context: "contact", default: "The office of this contact isn't available.")
   error__add_page: getText(key: "add_page", context: "error", default: "Add a page")
   error__content_overview: getText(key: "content_overview", context: "error", default: "Content overview")
@@ -22,6 +27,12 @@ fragment easyTexts on TextsLoader {
   event__registration: getText(key: "registration", context: "event", default: "Registration")
   gallery__next_image: getText(key: "next_image", context: "gallery", default: "Next image")
   gallery__previous_image: getText(key: "previous_image", context: "gallery", default: "Previous image")
+  header__main_navigation: getText(key: "main_navigation", context: "header", default: "Main navigation")
+  header__menu: getText(key: "menu", context: "header", default: "Menu")
+  header__search_label: getText(key: "search_label", context: "header", default: "Search the website")
+  header__search: getText(key: "search", context: "header", default: "Search")
+  header__service_navigation: getText(key: "service_navigation", context: "header", default: "Service")
+  header__skip_to_content: getText(key: "skip_to_content", context: "header", default: "Skip to content")
   language_switch__label: getText(key: "label", context: "language_switch", default: "Language")
   latest_news__empty: getText(key: "empty", context: "latest_news", default: "No news.")
   library_item__label: getText(key: "label", context: "library_item", default: "Library item")
@@ -35,6 +46,7 @@ fragment easyTexts on TextsLoader {
   placeholder__heading: getText(key: "heading", context: "placeholder", default: "Heading")
   placeholder__site_name: getText(key: "site_name", context: "placeholder", default: "Site name")
   placeholder__title: getText(key: "title", context: "placeholder", default: "Title")
+  search__submit: getText(key: "submit", context: "search", default: "Search")
   teaser__unavailable: getText(key: "unavailable", context: "teaser", default: "The content of this teaser isn't available.")
   upcoming_events__empty: getText(key: "empty", context: "upcoming_events", default: "No upcoming events.")
 }

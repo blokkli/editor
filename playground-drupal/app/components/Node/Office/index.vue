@@ -12,7 +12,7 @@
         :is-editing
       />
       <div class="container-content mt-10">
-        <div class="rounded-sm bg-stone-200 p-6">
+        <div class="bg-surface p-6">
           <OfficeDetails v-bind="props" />
         </div>
       </div>

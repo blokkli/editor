@@ -6,7 +6,7 @@
   >
     <div
       v-if="'hero' in node && node.hero"
-      class="shrink-0 overflow-hidden bg-stone-200"
+      class="shrink-0 overflow-hidden bg-surface"
       :class="display === 'list' ? 'w-32' : ''"
     >
       <MediaImage
@@ -16,15 +16,15 @@
       />
     </div>
     <div class="flex flex-col gap-1">
-      <p v-if="meta" class="text-sm font-semibold text-stone-600">
+      <p v-if="meta" class="text-smallall font-semibold text-muted">
         {{ meta }}
       </p>
-      <h3 class="text-xl font-bold group-hover:underline">
+      <h3 class="text-h3 group-hover:underline">
         {{ node.label }}
       </h3>
       <p
         v-if="'lead' in node && node.lead"
-        class="text-stone-600"
+        class="text-muted"
         :class="{ 'line-clamp-2': display === 'list' }"
       >
         {{ node.lead }}

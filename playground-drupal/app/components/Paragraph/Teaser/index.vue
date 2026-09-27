@@ -7,9 +7,9 @@
       v-if="node"
       :node
       :display="options.display"
-      :class="{ 'border-y border-stone-300': options.display === 'list' }"
+      :class="{ 'border-y border-line': options.display === 'list' }"
     />
-    <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
+    <p v-else-if="isEditing" class="bg-surface p-4 text-muted">
       {{
         $texts(
           'teaser.unavailable',

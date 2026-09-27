@@ -7,7 +7,7 @@
         v-if="title || isEditing"
         v-blokkli-editable:field_title
         :data-placeholder="$texts('placeholder.heading', 'Heading')"
-        class="editable-placeholder mb-8 text-2xl font-bold md:text-3xl"
+        class="editable-placeholder mb-8 font-serif text-h2"
       >
         {{ title }}
       </h2>
@@ -30,8 +30,8 @@ defineProps<ParagraphSectionFragment>()
 
 const BACKGROUNDS = {
   none: '',
-  stone: 'bg-stone-200',
-  lake: 'bg-sky-100',
+  stone: 'bg-surface',
+  lake: 'bg-info-light',
 } as const
 
 const COLUMNS = {
@@ -52,15 +52,15 @@ const { options } = defineBlokkli({
       options: {
         none: {
           label: { en: 'None', de: 'Keiner', fr: 'Aucun' },
-          hex: '#fafaf9',
+          hex: '#ffffff',
         },
         stone: {
           label: { en: 'Stone', de: 'Stein', fr: 'Pierre' },
-          hex: '#e7e5e4',
+          hex: '#f5f2ee',
         },
         lake: {
           label: { en: 'Lake', de: 'See', fr: 'Lac' },
-          hex: '#e0f2fe',
+          hex: '#e6eef6',
         },
       },
     },

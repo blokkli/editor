@@ -6,7 +6,7 @@
     :edit-path="url?.path"
     tag="header"
   >
-    <div class="border-b border-stone-200 bg-white">
+    <div class="border-b border-line bg-white">
       <div class="container-wide flex items-center gap-3 py-3">
         <div
           v-if="entity.coatOfArms || isEditing"
@@ -23,7 +23,7 @@
         <span
           v-blokkli-editable:field_site_name
           :data-placeholder="$texts('placeholder.site_name', 'Site name')"
-          class="editable-placeholder text-lg font-bold"
+          class="editable-placeholder font-serif text-h3"
         >
           {{ entity.siteName }}
         </span>
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="bg-amber-100 empty:hidden">
+    <div class="bg-warning-light empty:hidden">
       <BlokkliField
         name="field_notice"
         :list="notice"

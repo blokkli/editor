@@ -4,7 +4,7 @@
     :entity="props"
     :edit-path="url?.path"
     tag="footer"
-    class="bg-stone-200 py-12"
+    class="bg-surface py-12"
   >
     <BlokkliField
       name="field_paragraphs"

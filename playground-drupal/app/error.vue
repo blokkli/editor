@@ -2,13 +2,13 @@
   <main class="container-content py-20">
     <!-- English: anonymous users get no texts (see easyTexts.loader.ts). -->
     <template v-if="error.statusCode === 403">
-      <h1 class="text-3xl font-bold">This sandbox is private</h1>
+      <h1 class="font-serif text-h1">This sandbox is private</h1>
       <p class="mt-4">
         <a :href="loginUrl" class="underline">Log in</a> to see its pages.
       </p>
     </template>
     <template v-else-if="error.statusCode === 404">
-      <h1 class="text-3xl font-bold">
+      <h1 class="font-serif text-h1">
         {{ $texts('error.not_found', 'Page not found') }}
       </h1>
       <p class="mt-4 flex gap-4">
@@ -21,7 +21,7 @@
       </p>
     </template>
     <template v-else>
-      <h1 class="text-3xl font-bold">
+      <h1 class="font-serif text-h1">
         {{ $texts('error.unknown', 'Something went wrong') }}
       </h1>
       <p class="mt-4">{{ error.statusMessage || error.message }}</p>

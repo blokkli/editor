@@ -3,6 +3,7 @@
 // See plans/drupal-setup/06-playground-drupal-app.md.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
+import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import drupal from './../src/modules/drupal'
 import agent from './../src/modules/agent'
 import charts from './../src/modules/charts'
@@ -24,13 +25,24 @@ const optionsSchemaPath = fileURLToPath(
 
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli.
-  modules: ['nuxt-easy-texts', 'nuxt-graphql-middleware', '../src/module'],
+  modules: [
+    'nuxt-easy-texts',
+    'nuxt-graphql-middleware',
+    'nuxt-svg-icon-sprite',
+    '../src/module',
+  ],
 
   imports: {
     autoImport: false,
   },
 
-  css: ['~/assets/css/main.css'],
+  // Self-hosted fonts: Source Serif 4 with its optical size axis.
+  css: [
+    '@fontsource-variable/source-sans-3/wght.css',
+    '@fontsource-variable/source-sans-3/wght-italic.css',
+    '@fontsource-variable/source-serif-4/opsz.css',
+    '~/assets/css/main.css',
+  ],
 
   // Logged-in users, editing and the hosted instance get the SPA, see
   // server/middleware/spa.ts.
@@ -65,6 +77,17 @@ export default defineNuxtConfig({
         generate: 'drupal-graphql-texts',
       },
     ],
+  },
+
+  // The default pattern resolves against the root dir, not app/.
+  svgIconSprite: {
+    ariaHidden: true,
+    sprites: {
+      default: {
+        importPatterns: ['./app/assets/symbols/*.svg'],
+        processSpriteSymbol: [removeSizes()],
+      },
+    },
   },
 
   blokkli: {

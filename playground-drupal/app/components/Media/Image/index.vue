@@ -11,7 +11,7 @@
     />
     <span
       v-if="credit && !hideCredit"
-      class="absolute right-0 bottom-0 bg-black/60 px-2 py-0.5 text-xs text-white"
+      class="absolute right-0 bottom-0 bg-ink/60 px-2 py-0.5 text-smallall text-white"
     >
       {{ credit }}
     </span>

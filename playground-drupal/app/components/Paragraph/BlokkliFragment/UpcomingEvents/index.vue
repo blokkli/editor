@@ -3,10 +3,7 @@
     class="container-content"
     :class="{ hidden: !items.length && !isEditing }"
   >
-    <div
-      v-if="items.length"
-      class="divide-y divide-stone-300 border-y border-stone-300"
-    >
+    <div v-if="items.length" class="divide-y divide-line border-y border-line">
       <NodeTeaser
         v-for="item in items"
         :key="item.url?.path"
@@ -14,7 +11,7 @@
         display="list"
       />
     </div>
-    <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
+    <p v-else-if="isEditing" class="bg-surface p-4 text-muted">
       {{ $texts('upcoming_events.empty', 'No upcoming events.') }}
     </p>
   </div>

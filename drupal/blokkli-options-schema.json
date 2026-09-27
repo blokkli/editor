@@ -320,7 +320,7 @@
       },
       "options": {
         "lake": {
-          "hex": "#e0f2fe",
+          "hex": "#e6eef6",
           "label": {
             "de": "See",
             "en": "Lake",
@@ -328,7 +328,7 @@
           }
         },
         "none": {
-          "hex": "#fafaf9",
+          "hex": "#ffffff",
           "label": {
             "de": "Keiner",
             "en": "None",
@@ -336,7 +336,7 @@
           }
         },
         "stone": {
-          "hex": "#e7e5e4",
+          "hex": "#f5f2ee",
           "label": {
             "de": "Stein",
             "en": "Stone",

@@ -8,7 +8,7 @@
       "
       class="py-12"
     >
-      <p class="container-wide mb-8 text-sm text-stone-600">
+      <p class="container-wide mb-8 text-small text-muted">
         {{ entity.label }}
       </p>
       <ConfigPageFooter

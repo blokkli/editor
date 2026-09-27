@@ -1,7 +1,7 @@
 <template>
   <h2
     v-blokkli-editable:field_title
-    class="text-2xl font-bold md:text-3xl"
+    class="font-serif text-h2"
     :class="{ 'container-content': !parentType }"
   >
     {{ title }}

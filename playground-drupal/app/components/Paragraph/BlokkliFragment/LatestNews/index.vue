@@ -7,7 +7,7 @@
       v-if="items.length"
       :class="
         options.display === 'list'
-          ? 'divide-y divide-stone-300 border-y border-stone-300'
+          ? 'divide-y divide-line border-y border-line'
           : 'grid gap-6 sm:grid-cols-3'
       "
     >
@@ -18,7 +18,7 @@
         :display="options.display"
       />
     </div>
-    <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
+    <p v-else-if="isEditing" class="bg-surface p-4 text-muted">
       {{ $texts('latest_news.empty', 'No news.') }}
     </p>
   </div>

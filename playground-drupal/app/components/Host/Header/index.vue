@@ -3,7 +3,7 @@
     <div
       v-if="hasImage"
       v-blokkli-droppable:field_hero_image
-      class="relative col-start-1 row-start-1 overflow-hidden bg-stone-200"
+      class="relative col-start-1 row-start-1 overflow-hidden bg-surface"
       :class="
         variant === 'overlay'
           ? 'aspect-[2/1] min-h-80'
@@ -18,7 +18,7 @@
       />
       <div
         v-if="variant === 'overlay'"
-        class="absolute inset-0 bg-linear-to-t from-black/70 to-transparent"
+        class="absolute inset-0 bg-linear-to-t from-ink/70 to-transparent"
       />
     </div>
     <div
@@ -30,14 +30,14 @@
       "
     >
       <slot name="meta" />
-      <h1 v-blokkli-editable:title class="text-4xl font-bold md:text-5xl">
+      <h1 v-blokkli-editable:title class="font-serif text-h1">
         {{ title }}
       </h1>
       <p
         v-if="lead || isEditing"
         v-blokkli-editable:field_lead
-        class="mt-4 text-xl"
-        :class="{ 'text-stone-600': !hasImage || variant !== 'overlay' }"
+        class="mt-4 font-serif text-lead"
+        :class="{ 'text-muted': !hasImage || variant !== 'overlay' }"
       >
         {{ lead }}
       </p>

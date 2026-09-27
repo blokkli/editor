@@ -37,7 +37,9 @@ adds types.
       BY-SA; no NC or ND), without recognisable real landmarks or place names.
       Record every file's source and licence, and fill the media credit field.
 - [ ] The coat of arms of Blockingen/Bloquens (invented). A raster image (PNG or
-      WebP): image styles can't process SVG (13c).
+      WebP): image styles can't process SVG (13c). The design is the `Logo`
+      component's shield (15a); export it from there.
+- [ ] Real photos and copy for what the mockups of 15a show as placeholders.
 - [ ] Suggested tasks for the sandbox's welcome panel (chunk 09).
 
 ## Acceptance criteria

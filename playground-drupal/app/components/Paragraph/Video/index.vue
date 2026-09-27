@@ -15,7 +15,7 @@
         loading="lazy"
         class="aspect-video w-full object-cover"
       />
-      <span class="mt-2 block text-sm text-stone-600 group-hover:underline">
+      <span class="mt-2 block text-small text-muted group-hover:underline">
         {{ video?.name }}
       </span>
     </a>
