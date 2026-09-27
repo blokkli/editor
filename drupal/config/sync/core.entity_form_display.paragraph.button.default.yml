@@ -31,4 +31,7 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  publish_on: true
+  scheduler_settings: true
   status: true
+  unpublish_on: true

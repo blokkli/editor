@@ -11,6 +11,7 @@ dependencies:
     - media_library
     - paragraphs
     - path
+    - scheduler
 id: node.news.default
 targetEntityType: node
 bundle: news
@@ -68,6 +69,17 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 52
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  scheduler_settings:
+    weight: 50
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   status:
     type: boolean_checkbox
     weight: 120
@@ -93,8 +105,12 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 54
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   promote: true
-  publish_on: true
   sticky: true
-  unpublish_on: true

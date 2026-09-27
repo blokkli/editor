@@ -46,7 +46,7 @@ and tracks its own status. The [index](#chunks) mirrors those statuses.
 | Languages            | EN (default and source language), DE, FR. Every language has a URL prefix (`/en`, `/de`, `/fr`), as in the starterkit (2026-09-26, chunk 03).                                                                                                                                                                                     |
 | Sandbox lifetime     | Normal: 24h maximum, deleted after 2h idle. Premium: 7 days.                                                                                                                                                                                                                                                                      |
 | Paid features        | The agent is only available in premium sandboxes, which are created by invitation. Costs are capped by a spend limit on a dedicated provider key, with no budget logic in the app. DeepL costs are not a concern.                                                                                                                 |
-| Visibility           | Anonymous users don't get `access content`. Pages are visible to the sandbox's own users, or through the session grant from "preview on smartphone".                                                                                                                                                                              |
+| Visibility           | Anonymous users don't get `access content`. Pages are visible to the sandbox's own users, or through the session grant from "preview on smartphone". For anonymous visitors, that grant needs code (chunk 10, F22; 2026-09-27).                                                                                                   |
 | Hosting              | Hosted ddev on the existing Hetzner server. Deferred until everything works locally (M3).                                                                                                                                                                                                                                         |
 | Branches             | Two hosted instances: `main` (public) at `sandbox.blokk.li` and `dev` (maintainer and invited testers) at `dev-sandbox.blokk.li`. Sandboxes are subdomains of these.                                                                                                                                                              |
 | Order                | Local first (M0–M2). DNS, TLS and hosting come after.                                                                                                                                                                                                                                                                             |
@@ -143,7 +143,7 @@ Milestones:
 | 13b | [Block types](13b-block-types.md)                          | M1        | done   | 14a                               |
 | 13c | [Hosts](13c-hosts.md)                                      | M1        | done   | 13b                               |
 | 13d | [Reusable content](13d-reusable-content.md)                | M1        | done   | 13b, 13c                          |
-| 13e | [Publishing](13e-publishing.md)                            | M1        | todo   | 13c                               |
+| 13e | [Publishing](13e-publishing.md)                            | M1        | done   | 13c                               |
 | 13f | [Translation](13f-translation.md)                          | M1        | todo   | 13c                               |
 | 13g | [Search and plugins](13g-search-and-plugins.md)            | M1        | todo   | 13c, 13d                          |
 | 13h | [Collaboration and roles](13h-collaboration-roles.md)      | M1        | todo   | 13b–13g, 13i                      |
@@ -155,8 +155,8 @@ Milestones:
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 13a, 13b, 13c, 13d and 14a are done;
-next up is 13e, 13f, 13g or 13i.
+(order, skill conventions, feature matrix). 13a–13e and 14a are done; next up is
+13f, 13g or 13i.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

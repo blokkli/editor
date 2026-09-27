@@ -30,6 +30,10 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F19 | [Template and library search](#f19-template-and-library-search)                                                         | both                 | low      | open       | –        |
 | F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                       | `paragraphs_blokkli` | low      | open       | –        |
 | F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                               | `@blokkli/editor`    | low      | open       | –        |
+| F22 | [Preview grants only work for some viewers](#f22-preview-grants-only-work-for-some-viewers)                             | `paragraphs_blokkli` | medium   | open       | chunk 10 |
+| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                 | both                 | low      | open       | –        |
+| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                       | `paragraphs_blokkli` | medium   | open       | –        |
+| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                     | `paragraphs_blokkli` | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -527,3 +531,72 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   click that blurs the field lands on the disabled button.
 - **Fix idea:** drop `lazy` there, or enable the button from the field's current
   value.
+
+## F22: Preview grants only work for some viewers
+
+- **Found:** 2026-09-27, 13e. Reproduced with a second, plain logged-in user.
+- **Anonymous visitors can't use a grant** where they lack `access content` and
+  GraphQL access, as in the sandbox (chunk 10):
+  - the grant route and `last_changed` require `access content`
+    (`paragraphs_blokkli.routing.yml:62-69, 86-91`)
+  - the grant adds no permissions: `PreviewGrantChecker::isEntityPreviewable()`
+    has no callers outside tests
+- **An unpublished host** can't be previewed by anyone who can't view it
+  (`LoadHostEntity`'s view access check).
+- **The link opens the default translation.** The redirect uses the host as
+  loaded by the edit state (`ParagraphsBlokkliEditState.php:303`,
+  `PreviewGrantController.php:95-100`), whatever language the editor was in.
+- **A stale `null` for earlier visitors.** A user who loaded the edit state
+  before opening the link (e.g. the preview URL without a grant) keeps getting
+  `null` from `getParagraphsEditState` until the caches are cleared.
+  `CanUseBlokkli` adds only `user.permissions` and `session.exists` as cache
+  contexts, not the module's `paragraphs_blokkli_session` context, so its
+  `FALSE` is reused after the grant. Users without a grant don't get another
+  user's result.
+- **Not reproduced (read in the code):** the standalone preview ignores changed
+  host options (e.g. a page's header), which only the edit mode applies.
+- **Fix ideas:** a route access check that accepts a valid grant, and an access
+  policy that adds view permissions while a grant is valid; the session context
+  on `CanUseBlokkli`'s result; the current language in `previewUrl`.
+
+## F23: A past unpublish date blocks publishing
+
+- **Found:** 2026-09-27, 13e.
+- **Symptom:** a paragraph's "Unpublish on" date passes, and cron hasn't run
+  yet. Publishing the host fails with "The 'unpublish on' date must be in the
+  future." until cron has unpublished the paragraph.
+- **Cause:** scheduler's `SchedulerUnpublishOnConstraintValidator` rejects every
+  past unpublish date; unlike `publish_past_date`, there's no setting for it.
+  blökkli validates the host's paragraphs when publishing
+  (`ParagraphsBlokkliEditState.php:772-794`).
+- **Reproduced** at the validation level (`$paragraph->validate()` returns the
+  violation). The site's only editor is user 1, who has "publish paragraphs
+  blokkli edit state with validation errors" and skips validation
+  (`ParagraphsBlokkliManager.php:181-185`); other editors hit it.
+- **Fix idea:** paragraphs_blokkli ignores scheduler's date constraints on
+  paragraphs that cron will process, or processes due paragraphs before
+  validating.
+
+## F24: Paragraph schedules apply to one translation
+
+- **Found:** 2026-09-27, 13e.
+- **Symptom:** "Manage schedule" on a paragraph with a German translation, in
+  the English editor, with a "Publish on" date. The English paragraph is hidden
+  until the date; the German one is published at once and has no date.
+- **Cause:** `set_paragraph_schedule` sets `publish_on`, `unpublish_on` and the
+  status on the paragraph of the edit's language
+  (`Mutation/SetParagraphSchedule.php:120-133`). All three are translatable. The
+  dialog doesn't mention languages.
+- **Impact:** a notice scheduled to disappear stays in the other languages.
+- **Fix idea:** set the dates and the status on every translation, or show the
+  language in the dialog.
+
+## F25: An empty change description keeps the old log
+
+- **Found:** 2026-09-27, 13e.
+- **Symptom:** publish with a change description, then publish again without
+  one. The second revision has the first one's log message.
+- **Cause:** the manager sets the log only when the message isn't empty
+  (`ParagraphsBlokkliManager.php:169`), and `setNewRevision()` keeps the loaded
+  revision's log. Drupal's entity form clears it; blökkli doesn't.
+- **Fix idea:** always set the log message on a new revision, empty or not.

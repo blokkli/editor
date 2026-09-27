@@ -5,9 +5,23 @@ dependencies:
   module:
     - paragraphs_blokkli
     - paragraphs_library
+    - scheduler
 third_party_settings:
   paragraphs_library:
     allow_library_conversion: true
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: fieldset
+    publish_enable: true
+    publish_past_date: publish
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: false
+    show_message_after_update: false
+    unpublish_enable: true
+    unpublish_required: false
+    unpublish_revision: false
 id: button
 label: Button
 icon_uuid: null

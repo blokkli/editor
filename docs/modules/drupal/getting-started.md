@@ -15,18 +15,18 @@ drush en paragraphs_blokkli paragraphs_blokkli_graphql
 
 Enable additional submodules based on your needs:
 
-| Submodule                       | Purpose                             |
-| ------------------------------- | ----------------------------------- |
-| `paragraphs_blokkli_graphql`    | GraphQL API (required)              |
-| `paragraphs_blokkli_library`    | Reusable paragraph library          |
-| `paragraphs_blokkli_comment`    | Review comments on edit states      |
-| `paragraphs_blokkli_search`     | Content search in the editor        |
-| `paragraphs_blokkli_conversion` | Convert between paragraph types     |
-| `paragraphs_blokkli_transform`  | Batch transform plugins             |
-| `paragraphs_blokkli_template`   | Paragraph templates                 |
-| `paragraphs_blokkli_scheduler`  | Schedule changes for future publish |
-| `paragraphs_blokkli_fragments`  | Fragment support                    |
-| `paragraphs_blokkli_agent`      | AI agent conversation persistence   |
+| Submodule                       | Purpose                                |
+| ------------------------------- | -------------------------------------- |
+| `paragraphs_blokkli_graphql`    | GraphQL API (required)                 |
+| `paragraphs_blokkli_library`    | Reusable paragraph library             |
+| `paragraphs_blokkli_comment`    | Review comments on edit states         |
+| `paragraphs_blokkli_search`     | Content search in the editor           |
+| `paragraphs_blokkli_conversion` | Convert between paragraph types        |
+| `paragraphs_blokkli_transform`  | Batch transform plugins                |
+| `paragraphs_blokkli_template`   | Paragraph templates                    |
+| `paragraphs_blokkli_scheduler`  | Scheduling (needs contrib `scheduler`) |
+| `paragraphs_blokkli_fragments`  | Fragment support                       |
+| `paragraphs_blokkli_agent`      | AI agent conversation persistence      |
 
 ## Step 2: Configure Drupal Permissions
 

@@ -215,8 +215,19 @@ template dialog needs a search provider of the type "Paragraph Templates".
 
 ### paragraphs_blokkli_scheduler
 
-Schedule edit states for future publishing. Adds a `publish_on` timestamp to
-edit states.
+Scheduling, built on the contrib `scheduler` module, which it needs but doesn't
+declare:
+
+- **Pending changes:** the "Schedule" mode of the publish dialog stores a
+  `publish_on` date on the edit state. Cron publishes the changes then.
+- **Single paragraphs:** "Manage schedule" sets scheduler's publish and
+  unpublish dates on paragraphs. scheduler has no paragraph support of its own;
+  it needs the patch from
+  [scheduler#3312200](https://www.drupal.org/project/scheduler/issues/3312200),
+  and scheduling enabled on each paragraph type.
+
+Both only happen when cron runs: `drush cron` runs scheduler's job and this
+module's.
 
 ### paragraphs_blokkli_fragments
 

@@ -10,7 +10,10 @@ Actually granting access is left to the specific implementation. It could be
 that opening this URL sets a session cookie that grants read-only permissions to
 the edit state.
 
-The returned URL should be a fully valid URL starting with https://.
+The method returns a path on the site, such as
+`/backend-api/grant-access?grantToken=…`. The editor puts its own origin
+(`window.location.origin`) in front of it, so the path must be reachable on the
+host the editor runs on.
 
 ::: code-group
 
@@ -20,7 +23,7 @@ import { defineBlokkliEditAdapter } from '#blokkli/editor/adapter'
 export default defineBlokkliEditAdapter((ctx) => {
   return {
     getPreviewGrantUrl: () => {
-      return 'https://example.com/backend-api/grant-access?grantToken=QNeQGCzrBfJ1E83b3kcDKll9RmMsTBDR3Ozb3jYVoAcqTphgNuZlrRmsgAHc2JUj'
+      return '/backend-api/grant-access?grantToken=QNeQGCzrBfJ1E83b3kcDKll9RmMsTBDR3Ozb3jYVoAcqTphgNuZlrRmsgAHc2JUj'
     },
   }
 })

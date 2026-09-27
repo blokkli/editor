@@ -70,8 +70,8 @@ before the feature sub-chunks use them.
   form, the library item route, and the header forwarding. A docs page for them
   is a follow-up, not part of this plan.
 - **Frontmatter:** all five existing skills already had the conventions' fields.
-  `blokkli-setup-scheduling`'s description got its "Use when" triggers; its
-  content is 13e's.
+  `blokkli-setup-scheduling`'s (now `blokkli-setup-publishing`) description got
+  its "Use when" triggers; its content is 13e's.
 - **Verified against the code** while writing: `defineBlokkliEditAdapter` isn't
   auto-imported (the example imports it), the module-order error message, the
   `blokkliEditing` query param, the library item URL the adapter builds, the

@@ -113,3 +113,16 @@ From [13d](13d-reusable-content.md) (2026-09-27):
   baking, so sandboxes get them without network access.
 - `tmp/drupal-reusable-content.php` and `tmp/drupal-reusable-mutations.sh` (not
   committed) were 13d's test content.
+
+From [13e](13e-publishing.md) (2026-09-27):
+
+- **The scheduler patch** comes with `composer install` (composer-patches). A
+  `si --existing-config` installs the paragraphs' scheduler fields by itself.
+- **Seeded events** get their unpublish date from `blokkli_playground`'s hook
+  when they're saved; don't seed it.
+- **Scheduled content goes stale.** Dates are relative to the bake, and the
+  template ages: a sandbox's first cron publishes the scheduled news and removes
+  the notice. Rebake often, or shift the dates when a sandbox is claimed (chunk
+  09).
+- **Cron** runs per sandbox (`drush cron --uri`, chunk 09). Without it, nothing
+  scheduled changes.

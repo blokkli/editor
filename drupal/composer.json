@@ -22,6 +22,7 @@
     ],
     "require": {
         "composer/installers": "^2.3",
+        "cweagans/composer-patches": "^1.7",
         "deeplcom/deepl-php": "^1.18",
         "drupal/core-composer-scaffold": "^11.4",
         "drupal/core-recipe-unpack": "^11.4",
@@ -53,7 +54,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "php-http/discovery": true,
             "php-tuf/composer-integration": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "cweagans/composer-patches": true
         },
         "platform": {
             "php": "8.5.0"
@@ -102,6 +104,12 @@
             "recipes/{$name}": [
                 "type:drupal-recipe"
             ]
+        },
+        "composer-exit-on-patch-failure": true,
+        "patches": {
+            "drupal/scheduler": {
+                "scheduler#3312200: Paragraph scheduler plugin": "https://www.drupal.org/files/issues/2026-06-15/3312200-paragraph-scheduler.diff"
+            }
         }
     }
 }

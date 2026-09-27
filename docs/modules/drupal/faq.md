@@ -199,10 +199,31 @@ See [Fragments](/define-blokkli/fragments) for the full setup.
 
 ## Scheduling options don't appear on paragraphs
 
-The `paragraphs_blokkli_scheduler` submodule must be enabled, but that alone is
-not enough. Scheduling must also be **enabled per paragraph type** in the Drupal
-paragraph type settings. This is how the underlying scheduler module works and
-is not blökkli-specific.
+"Manage schedule" is disabled with "Scheduling is not available for this block
+type." It needs three things:
+
+- The contrib `scheduler` module with paragraph support. scheduler has none of
+  its own: apply the patch from
+  [scheduler#3312200](https://www.drupal.org/project/scheduler/issues/3312200),
+  then run `drush cr` and `drush sch-ent-upd`.
+- The `paragraphs_blokkli_scheduler` submodule and its GraphQL extension.
+- Scheduling **enabled per paragraph type** in the paragraph type's settings.
+  This is how scheduler works and is not blökkli-specific.
+
+Scheduled paragraphs only change when cron runs.
+
+## Preview links don't open for others
+
+"Preview (with smartphone)" gives a link that adds a preview grant to the
+visitor's session. The grant only lets them see the pending changes. Everything
+else is checked as usual, so the visitor needs:
+
+- `access content`, for the link itself (`/paragraphs_blokkli/preview_grant/…`)
+- access to the GraphQL endpoint
+- view access to the page: others can't preview an unpublished page
+
+Sites that deny these to anonymous visitors need custom code for anonymous
+previews. The link always opens the page's default language.
 
 ## "Another user is currently editing" / ownership conflict
 

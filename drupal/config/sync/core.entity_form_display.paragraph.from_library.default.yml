@@ -24,5 +24,7 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  publish_on: true
   status: true
   uid: true
+  unpublish_on: true

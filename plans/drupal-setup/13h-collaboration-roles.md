@@ -23,7 +23,7 @@ bundle.
         `paragraphs_type_permissions` (e.g. no sections or charts)
   - [ ] media permissions for the editing roles
   - [ ] per-bundle view permissions for anonymous users, for SSR with a preview
-        grant (13e)
+        grant (13e). Needs chunk 10's grant code first (F22).
 - [ ] Skills:
   - [ ] new `blokkli-setup-permissions`: which role needs which permission, for
         blökkli, paragraphs, media and GraphQL
@@ -65,3 +65,16 @@ From [13d](13d-reusable-content.md) (2026-09-27):
   - `create paragraph template`, `edit own/any paragraph template`,
     `delete own/any paragraph template`
   - `manage default paragraph templates`: admins only
+
+From [13e](13e-publishing.md) (2026-09-27):
+
+- **Scheduler:** `schedule publishing of nodes`,
+  `schedule publishing of paragraph`, `view scheduled content`,
+  `view scheduled paragraph`. "Manage schedule" (`set_paragraph_schedule`)
+  checks none of them: editing the edit state is enough.
+- **Revisions:** `view/revert {bundle} revisions` for Drupal's revision pages.
+- **"publish paragraphs blokkli edit state with validation errors"** skips
+  validation, including F23's past unpublish dates. Only the admin should have
+  it, and testing needs a role without it.
+- **Preview links** work for any user with `access content`, GraphQL access and
+  view access to the page.

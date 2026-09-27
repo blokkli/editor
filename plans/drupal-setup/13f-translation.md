@@ -63,3 +63,13 @@ From [13d](13d-reusable-content.md) (2026-09-27):
   FR interface translations. The date format `day` has a German pattern. Other
   UI strings of the frontend (labels such as "Date", "News") are still English,
   and `config_translation` (the UI for config translations) isn't enabled.
+
+From [13e](13e-publishing.md) (2026-09-27):
+
+- **The preview link opens the default language** (F22).
+- **Paragraph schedules are per translation** (F24). A paragraph scheduled in EN
+  stays published in DE.
+- **Events:** the hook sets `unpublish_on` on every translation.
+- **"Publish if unpublished"** publishes the default translation (read in
+  `ParagraphsBlokkliManager.php:175-177`, not tested). Check it with an
+  unpublished DE translation.

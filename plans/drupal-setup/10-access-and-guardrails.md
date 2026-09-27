@@ -12,9 +12,9 @@ hosting, and it can't affect other sandboxes or the host.
 ## Tasks
 
 - [ ] Anonymous users don't get `access content`.
-  - [ ] Verify that a "preview on smartphone" session grant
-        (`PreviewGrantChecker`) lets an anonymous session resolve the route and
-        render page, media and files through GraphQL.
+  - [ ] A "preview on smartphone" session grant lets an anonymous session
+        resolve the route and render page, media and files through GraphQL. This
+        needs code (13e, F22): the grant adds no permissions today.
   - [ ] Without a grant, Nuxt shows the "this sandbox is private" page.
 - [ ] Audit the editor role. It must not have any of: administer modules,
       permissions, users, text formats or site configuration. Nobody ever logs
@@ -54,3 +54,15 @@ From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
   private page. To exercise blökkli's server code paths, anonymous users need
   content access on the local site. That must be a local-only override (e.g. in
   `settings.local.php`), never `config/sync`, or every sandbox would be public.
+
+From [13e](13e-publishing.md) (2026-09-27):
+
+- **A grant adds no permissions** (F22). The grant route and `last_changed` need
+  `access content`, GraphQL needs its permission, and the host needs view
+  access. `PreviewGrantChecker::isEntityPreviewable()` has no callers.
+- **What anonymous previews need:** a route access check that accepts a valid
+  grant (for `preview_grant` and `last_changed`), and an access policy that adds
+  view and GraphQL permissions while the session holds a grant. Possibly in
+  `blokkli_playground`, better upstream.
+- **Tested so far:** a plain logged-in user in another session sees the pending
+  changes through the link.

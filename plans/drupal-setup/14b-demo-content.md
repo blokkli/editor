@@ -28,6 +28,10 @@ adds types.
         for new columns
   - [ ] one deliberately outdated French page
   - [ ] dates relative to the bake (chunk 05)
+  - [ ] scheduled content (13e): a news item that publishes later (the lakeside
+        pool's opening), and the "pool closed" text in the site notice with an
+        unpublish date, set in every language it has (F24). Events get their
+        unpublish date from the hook when they're saved.
 - [ ] Images and other media: openly licensed (CC0, public domain, CC BY, CC
       BY-SA; no NC or ND), without recognisable real landmarks or place names.
       Record every file's source and licence, and fill the media credit field.
