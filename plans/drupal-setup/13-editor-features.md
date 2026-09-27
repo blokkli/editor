@@ -21,7 +21,7 @@ review pass.
 | #                                 | Scope                                                                            | Skills                                                                                   | Depends on   |
 | --------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------ |
 | [13a](13a-base-setup-skill.md)    | The base setup of chunks 03, 04 and 06, written up                               | new `blokkli-setup-drupal`                                                               | 06           |
-| [13b](13b-block-types.md)         | Everyday and structure blocks, the image credit, options                         | new `blokkli-add-block-type`                                                             | 14a          |
+| [13b](13b-block-types.md)         | Everyday and structure blocks, the image credit, options                         | new `blokkli-add-paragraph-type`                                                         | 14a          |
 | [13c](13c-hosts.md)               | News, events, offices, the page sidebar, config pages, teaser and contact blocks | review `blokkli-setup-host-options`; new `blokkli-add-host`                              | 13b          |
 | [13d](13d-reusable-content.md)    | Library, fragments, templates                                                    | review `blokkli-setup-templates`; new `blokkli-setup-library`, `blokkli-setup-fragments` | 13b, 13c     |
 | [13e](13e-publishing.md)          | Scheduling, revisions, preview grants                                            | review `blokkli-setup-scheduling`                                                        | 13c          |
@@ -53,6 +53,10 @@ review pass.
   - No `playground-drupal` paths and no ddev commands of this repo; plain
     `drush`.
   - Examples assume Nuxt's auto-imports, as most projects use them.
+  - Drupal's terms: paragraph, paragraph type, paragraphs field. blökkli's UI
+    says "block" for editors, but in Drupal a block is something else (block
+    plugins, custom block types). "Block" only in quoted UI labels, strings
+    editors see, and blökkli's API names.
 - **Frontmatter,** as in the existing skills: `name`, a `description` with the
   "Use when …" triggers, `license: MIT`, `compatibility` and `metadata`
   (`author`, `version`, `targets`, `docs`).

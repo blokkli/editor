@@ -36,7 +36,8 @@ Options on block types work end to end. The blocks that reference other hosts
   - [x] `colorOptions`: moved to 13i (only the charts module uses it)
 - [x] **The page's `field_paragraphs`** allows the new types. The other hosts
       get theirs in 13c.
-- [x] **Skill:** new `blokkli-add-block-type`.
+- [x] **Skill:** new `blokkli-add-block-type`, since renamed to
+      `blokkli-add-paragraph-type`.
 - [x] **Docs:** the options schema section of
       `docs/modules/drupal/configuration.md` (no validation, path rules), the
       `propsFieldMapping` example in `docs/modules/drupal/blocks.md` and its

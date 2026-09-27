@@ -45,7 +45,8 @@ can reference other hosts.
   - [x] new `blokkli-add-host`: make an entity type or bundle editable
         (`enabled_types`, the paragraphs fields, the GraphQL server, the
         component with `BlokkliProvider`, the route), including config pages
-  - [x] `blokkli-add-block-type` 1.1.0: section 4 covers content mappings
+  - [x] `blokkli-add-paragraph-type` (then `blokkli-add-block-type`) 1.1.0:
+        section 4 covers content mappings
 
 ## Acceptance criteria
 

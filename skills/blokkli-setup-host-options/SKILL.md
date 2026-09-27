@@ -4,9 +4,9 @@ description: >-
   Add options to host entities (e.g. a page's header variant) in a blökkli 2.x +
   Drupal project: a paragraphs_blokkli_host_options field in Drupal and
   defineBlokkliProvider in Nuxt. Use when the user wants page-level options that
-  editors change in the blökkli editor like block options, or when host options
-  aren't saved, disappear after saving the Drupal form, or don't show in the
-  editor.
+  editors change in the blökkli editor like paragraph options, or when host
+  options aren't saved, disappear after saving the Drupal form, or don't show in
+  the editor.
 license: MIT
 compatibility: >-
   Requires a working blökkli + Drupal setup (see the blokkli-setup-drupal
@@ -14,17 +14,17 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.0'
+  version: '1.1.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/components/BlokkliProvider#defineblokkliprovider
 ---
 
 # Host options
 
-Blocks have options, and so can the host: the node or other entity whose blocks
-are edited. Editors change them like block options, by clicking the page instead
-of a block. Typical uses are a header variant or whether an anchor navigation
-shows.
+Paragraphs have options, and so can the host: the node or other entity whose
+paragraphs are edited. Editors change them like a paragraph's options, by
+clicking the page instead of a paragraph. Typical uses are a header variant or
+whether an anchor navigation shows.
 
 An option has one value for all languages. Text that editors write belongs in a
 field, not in an option.
@@ -97,12 +97,12 @@ const { options } = defineBlokkliProvider(props, {
   collected and `options` stays empty. The Drupal module's default covers
   `~/components/{Paragraph,Node,TaxonomyTerm,CommerceProduct,Storage}/**/*.vue`.
   Add a pattern for hosts elsewhere, e.g. config pages.
-- **The option types** are those of block options (radios, checkbox, …). The
+- **The option types** are those of paragraph options (radios, checkbox, …). The
   values are stored as strings.
 
 ## 3. Check the result
 
-1. In the editor, click the page outside every block: the options show.
+1. In the editor, click the page outside every paragraph: the options show.
 2. Change one, publish, and reload: the value is kept, and the page renders it.
 3. Save the entity's form in Drupal without changes: the value is still kept.
 

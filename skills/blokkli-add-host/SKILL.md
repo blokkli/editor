@@ -18,17 +18,17 @@ compatibility: >-
   backend (drush, config export, custom modules) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.1'
+  version: '1.0.2'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/pages
 ---
 
 # Adding a host
 
-A host is the entity whose blocks blökkli edits: usually a node, but any content
-entity type with bundles works, including config pages. The order is always the
-same: Drupal, then the GraphQL schema, then Nuxt. The GraphQL type doesn't exist
-until the bundle is exposed and the schema is updated.
+A host is the entity whose paragraphs blökkli edits: usually a node, but any
+content entity type with bundles works, including config pages. The order is
+always the same: Drupal, then the GraphQL schema, then Nuxt. The GraphQL type
+doesn't exist until the bundle is exposed and the schema is updated.
 
 The docs: [pages with Drupal](https://docs.blokk.li/modules/drupal/pages),
 [`BlokkliProvider`](https://docs.blokk.li/components/BlokkliProvider),
@@ -38,22 +38,22 @@ The docs: [pages with Drupal](https://docs.blokk.li/modules/drupal/pages),
 
 - The base setup exists (the `blokkli-setup-drupal` skill).
 - **The paragraphs fields:** usually one for the content. Add more for regions
-  that hold other blocks, e.g. a sidebar with contact boxes. Each field has its
-  own allowed types.
-- **The host's own fields:** which ones render outside the blocks (title, lead,
-  image, structured data such as dates or an address), and which of those are
-  edited on the page (inline text, dropped media). The rest are edited in the
-  entity's form, which the editor also opens.
+  that hold other paragraphs, e.g. a sidebar with contact boxes. Each field has
+  its own allowed types.
+- **The host's own fields:** which ones render outside the paragraphs (title,
+  lead, image, structured data such as dates or an address), and which of those
+  are edited on the page (inline text, dropped media). The rest are edited in
+  the entity's form, which the editor also opens.
 - **Page-level options** (e.g. a header variant): the
   `blokkli-setup-host-options` skill.
-- **Blocks that show a host** (a teaser, a contact box): the
-  `blokkli-add-block-type` skill.
+- **Paragraphs that show a host** (a teaser, a contact box): the
+  `blokkli-add-paragraph-type` skill.
 
 ## 1. The bundle and its fields
 
 - **Paragraphs fields:** `entity_reference_revisions` to paragraph, unlimited
   and **untranslatable**. The translations share the list, and blökkli
-  translates the blocks, not the list.
+  translates the paragraphs, not the list.
 - **List the allowed types explicitly** on every paragraphs field. A field that
   allows "all types" is reported to the editor as allowing none.
 - **The other fields:** translatable if their value differs per language (text,
@@ -158,7 +158,7 @@ Tell the developer who needs which permissions; don't assign them:
   `manage translatable config pages` and `translate translatable_config_pages`
   for config pages
 - blökkli's edit state permissions, as for other hosts
-- `transfer blokkli paragraphs` to copy blocks between hosts
+- `transfer blokkli paragraphs` to copy paragraphs between hosts
 
 ## 6. The component
 
@@ -268,9 +268,9 @@ edited.
 - **An empty field** renders nothing outside the editor, but always renders
   while editing, so that it takes drops. Give it a size while editing:
   `edit-class="min-h-24"`.
-- **`non-empty-class`** is set while the field has blocks, in both modes, from
-  the current list. Use it to switch the layout, e.g. a sidebar column only when
-  the sidebar has blocks:
+- **`non-empty-class`** is set while the field has paragraphs, in both modes,
+  from the current list. Use it to switch the layout, e.g. a sidebar column only
+  when the sidebar has paragraphs:
 
 ```vue
 <div class="page-body">
@@ -291,14 +291,15 @@ edited.
 }
 ```
 
-- **`field-list-type`** tells blocks where they are. Declare the types in the
-  module option `fieldListTypes`. A block then reads it from `defineBlokkli`:
+- **`field-list-type`** tells paragraphs where they are. Declare the types in
+  the module option `fieldListTypes`. A paragraph component then reads it from
+  `defineBlokkli`:
   - `const { fieldListType } = defineBlokkli(…)`, e.g. to skip its page-width
     container in the sidebar
   - or it gets a variant for it with `renderFor: { fieldListType: 'sidebar' }`
-- **Moving blocks between fields:** block transfer (paste) asks which field to
-  paste into. Import from another page lets editors choose the fields, and only
-  copies from entities of the same type and bundle.
+- **Moving paragraphs between fields:** pasting (the `block-transfer` feature)
+  asks which field to paste into. Import from another page lets editors choose
+  the fields, and only copies from entities of the same type and bundle.
 
 ## 9. Config pages
 
@@ -349,18 +350,18 @@ footer or a site-wide notice.
 
 ## Symptoms and causes
 
-| Symptom                                                                               | Cause                                                                                                                    |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| No edit button                                                                        | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound                                        |
-| `Unknown type "Node…"` or a `…Unexposed` type                                         | The bundle is missing from the server's `bundles`                                                                        |
-| `blokkliProps` is missing on the type                                                 | The bundle isn't in the enabled types, or the schema wasn't updated after adding it                                      |
-| A paragraphs field is empty while editing and takes no drops                          | `name` isn't the field's machine name                                                                                    |
-| The editor offers no block types in a field                                           | The field allows "all types"; list them                                                                                  |
-| An inline edit of a host field doesn't show until a reload                            | The field is missing from `pbMutatedEntity`, or the template doesn't read it from the slot's `entity`                    |
-| Hovering and dragging stop working on one bundle's pages                              | A `v-blokkli-droppable` or `v-blokkli-editable` for a field the bundle doesn't have                                      |
-| Starting the editor, switching the language or previewing leads into the admin        | The entity type's canonical URL is under `/admin`: move it (section 4)                                                   |
-| The config page renders nothing                                                       | The entity doesn't exist yet, or a null result is still cached: create it, then clear the caches                         |
-| A config page is edited in the default language on a translated page                  | The translation doesn't exist                                                                                            |
-| Dates are an hour or two off                                                          | The raw `value` of a date field has no offset; use `startDate`, `endDate` or `formatted`                                 |
-| Month names are English on a translated page                                          | The `locale` module or the interface translations are missing                                                            |
-| Saving the entity's form fails with "This entity (paragraph: N) cannot be referenced" | The field holds a block type it doesn't allow (blökkli's mutations don't check allowed types; e.g. after narrowing them) |
+| Symptom                                                                               | Cause                                                                                                                        |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| No edit button                                                                        | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound                                            |
+| `Unknown type "Node…"` or a `…Unexposed` type                                         | The bundle is missing from the server's `bundles`                                                                            |
+| `blokkliProps` is missing on the type                                                 | The bundle isn't in the enabled types, or the schema wasn't updated after adding it                                          |
+| A paragraphs field is empty while editing and takes no drops                          | `name` isn't the field's machine name                                                                                        |
+| The editor offers no paragraph types in a field                                       | The field allows "all types"; list them                                                                                      |
+| An inline edit of a host field doesn't show until a reload                            | The field is missing from `pbMutatedEntity`, or the template doesn't read it from the slot's `entity`                        |
+| Hovering and dragging stop working on one bundle's pages                              | A `v-blokkli-droppable` or `v-blokkli-editable` for a field the bundle doesn't have                                          |
+| Starting the editor, switching the language or previewing leads into the admin        | The entity type's canonical URL is under `/admin`: move it (section 4)                                                       |
+| The config page renders nothing                                                       | The entity doesn't exist yet, or a null result is still cached: create it, then clear the caches                             |
+| A config page is edited in the default language on a translated page                  | The translation doesn't exist                                                                                                |
+| Dates are an hour or two off                                                          | The raw `value` of a date field has no offset; use `startDate`, `endDate` or `formatted`                                     |
+| Month names are English on a translated page                                          | The `locale` module or the interface translations are missing                                                                |
+| Saving the entity's form fails with "This entity (paragraph: N) cannot be referenced" | The field holds a paragraph type it doesn't allow (blökkli's mutations don't check allowed types; e.g. after narrowing them) |

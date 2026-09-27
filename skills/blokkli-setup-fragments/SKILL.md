@@ -1,14 +1,14 @@
 ---
 name: blokkli-setup-fragments
 description: >-
-  Set up and write blökkli fragments in a blökkli 2.x + Drupal project: blocks
-  without fields of their own, defined in Nuxt with defineBlokkliFragment and
-  stored in Drupal as a blokkli_fragment paragraph. Covers the Drupal module and
-  GraphQL exposure, where fragment components go, allowed-fragments, the
-  preview, options, and fragments that load data (e.g. the latest news or
-  upcoming events). Use when a block only renders markup or data from elsewhere,
-  or when the "Fragment" action is missing or disabled, the fragment dialog is
-  empty, or a fragment renders nothing.
+  Set up and write blökkli fragments in a blökkli 2.x + Drupal project:
+  paragraphs without fields of their own, defined in Nuxt with
+  defineBlokkliFragment and stored in Drupal as a blokkli_fragment paragraph.
+  Covers the Drupal module and GraphQL exposure, where fragment components go,
+  allowed-fragments, the preview, options, and fragments that load data (e.g.
+  the latest news or upcoming events). Use when a paragraph only renders markup
+  or data from elsewhere, or when the "Fragment" action is missing or disabled,
+  the fragment dialog is empty, or a fragment renders nothing.
 license: MIT
 compatibility: >-
   Requires a working blökkli + Drupal setup (see the blokkli-setup-drupal
@@ -17,20 +17,20 @@ compatibility: >-
   backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/define-blokkli/fragments
 ---
 
 # Fragments
 
-A fragment is a block that editors place, but whose content comes from the
+A fragment is a paragraph that editors place, but whose content comes from the
 frontend: a newsletter form, a list of the latest news, a table of contents. It
 has no fields of its own. Drupal stores it as a `blokkli_fragment` paragraph
 with the fragment's name, and Nuxt renders the component of that name.
 
 Anything an editor types belongs in a field, and so in a paragraph type (the
-`blokkli-add-block-type` skill). A fragment can have options.
+`blokkli-add-paragraph-type` skill). A fragment can have options.
 
 The docs: [fragments](https://docs.blokk.li/define-blokkli/fragments),
 [`allowedFragments`](https://docs.blokk.li/components/BlokkliField#allowedfragments),
@@ -60,7 +60,7 @@ fragment paragraphBlokkliFragment on ParagraphBlokkliFragment {
 }
 ```
 
-Keep the alias `name`: blökkli's fragment block reads it.
+Keep the alias `name`: blökkli's fragment component reads it.
 
 ## 2. The component
 
@@ -86,7 +86,7 @@ defineBlokkliFragment({
 ```
 
 - **Outside the `pattern`,** the fragment isn't found. Elsewhere, add a pattern.
-  Don't create `Paragraph/BlokkliFragment/index.vue`: blökkli's own block
+  Don't create `Paragraph/BlokkliFragment/index.vue`: blökkli's own component
   renders that bundle.
 - **`name`** is what Drupal stores. Renaming it orphans the fragments already
   placed.
@@ -95,8 +95,8 @@ defineBlokkliFragment({
   component. Use `bk_mdi_<name>` from Material Symbols (rounded).
 - **`editor.previewWidth`:** the add dialog renders a real preview at this width
   (default 400). Set it to the width the fragment is designed for.
-- **No props.** `defineBlokkliFragment` returns the block's context: `options`,
-  `parentType`, `fieldListType`, `provider` (the host).
+- **No props.** `defineBlokkliFragment` returns the paragraph's context:
+  `options`, `parentType`, `fieldListType`, `provider` (the host).
 - **One root element, always rendered while editing.** Show a placeholder when
   there's nothing to show, so that editors can select and move it.
 
@@ -185,11 +185,11 @@ const items = computed(() =>
 
 ## 5. Options and languages
 
-- **Options** work as on blocks (`options` in the definition). They're stored on
-  the `blokkli_fragment` paragraph.
+- **Options** work as on other paragraph types (`options` in the definition).
+  They're stored on the `blokkli_fragment` paragraph.
 - **Global options such as "Visible languages"** have no effect on fragments.
 - **Text in the component** (headings, "No news") isn't translated by Drupal.
-  Translate it in the frontend, or leave headings to a title block above the
+  Translate it in the frontend, or leave headings to a title paragraph above the
   fragment.
 
 ## 6. Check the result

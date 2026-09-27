@@ -3,16 +3,16 @@ name: blokkli-setup-scheduling
 description: >-
   Set up scheduling in a blökkli 2.x project: publishing and unpublishing single
   paragraphs with the scheduler module, and scheduling an edit state's pending
-  changes. Use when the user wants blocks to appear or disappear at a set time,
-  wants to publish changes later, or asks why scheduling options don't appear on
-  paragraphs.
+  changes. Use when the user wants paragraphs (blocks in the editor) to appear
+  or disappear at a set time, wants to publish changes later, or asks why
+  scheduling options don't appear on paragraphs.
 license: MIT
 compatibility: >-
   Requires @blokkli/editor 2.x with the drupal module and paragraphs_blokkli
   2.x, plus access to the Drupal backend (drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li
 ---

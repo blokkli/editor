@@ -1,14 +1,14 @@
 ---
 name: blokkli-setup-library
 description: >-
-  Set up library items (reusable blocks) in a blökkli 2.x + Drupal project:
-  paragraphs_library and paragraphs_blokkli_library, the from_library block,
-  which types may become library items, the GraphQL exposure, the library search
-  provider, translation, permissions, the GraphQL fragment and the library item
-  page in Nuxt. Use when editors should reuse a block on several pages (e.g.
-  emergency numbers), or when "Add to library" or "From library" is missing or
-  empty, library items open a 404, or a container loses its content after being
-  made reusable.
+  Set up library items (reusable paragraphs) in a blökkli 2.x + Drupal project:
+  paragraphs_library and paragraphs_blokkli_library, the from_library paragraph
+  type, which paragraph types may become library items, the GraphQL exposure,
+  the library search provider, translation, permissions, the GraphQL fragment
+  and the library item page in Nuxt. Use when editors should reuse a paragraph
+  on several pages (e.g. emergency numbers), or when "Add to library" or "From
+  library" is missing or empty, library items open a 404, or a container
+  paragraph loses its content after being made reusable.
 license: MIT
 compatibility: >-
   Requires a working blökkli + Drupal setup (see the blokkli-setup-drupal
@@ -16,22 +16,23 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/features/library
 ---
 
 # The library
 
-A library item holds one block that several pages show. Changing the item
-changes every page that uses it. The pages hold a `from_library` block that
+A library item holds one paragraph that several pages show. Changing the item
+changes every page that uses it. The pages hold a `from_library` paragraph that
 references the item.
 
 In the editor:
 
-- **"Add to library"** makes a block reusable.
+- **"Add to library"** makes a paragraph reusable.
 - **"From library"** in the add menu places an item.
-- **"Detach from library"** turns a placed item back into a copy of its block.
+- **"Detach from library"** turns a placed item back into a copy of its
+  paragraph.
 - **"Edit"** on a placed item opens the item's own page in a nested editor.
 
 To insert a copy that doesn't stay in sync, use templates instead (the
@@ -43,13 +44,13 @@ This skill is the procedure and the traps.
 
 ## Before you start
 
-- **Which block types may become library items?** Usually single blocks: a
-  table, a text, a contact box. Container blocks (sections, columns) can, but
-  see the trap in section 2.
-- **Where may library blocks go?** Every paragraphs field that should offer
-  "From library", including fields inside containers.
+- **Which paragraph types may become library items?** Usually ones that don't
+  hold other paragraphs: a table, a text, a contact box. Containers (sections,
+  columns) can, but see the trap in section 2.
+- **Where may library items go?** Every paragraphs field that should offer "From
+  library", including fields inside containers.
 
-## 1. The modules and the block type
+## 1. The modules and the paragraph type
 
 - **Enable** `paragraphs_library` (from Paragraphs; it needs `entity_usage`) and
   `paragraphs_blokkli_library`.
@@ -60,33 +61,33 @@ This skill is the procedure and the traps.
     serves.
 - **Keep the names** `from_library` and `field_reusable_paragraph`: blökkli's
   mutations use them.
-- **Allow `from_library`** in every paragraphs field where library blocks may
-  go, including fields of containers. The "From library" dialog then offers the
-  items whose block type the field also allows.
+- **Allow `from_library`** in every paragraphs field where library items may go,
+  including fields of containers. The "From library" dialog then offers the
+  items whose paragraph type the field also allows.
 - **Translation:** on a multilingual site, enable content translation for
   library items (`/admin/config/regional/content-language`). Then the editor
   translates an item as it translates a page, and the item's label is
   translatable.
 - Export the config (`drush cex`).
 
-## 2. Which types may become library items
+## 2. Which paragraph types may become library items
 
 At `/admin/config/content/blokkli/library` check the types. The setting is
 `third_party_settings.paragraphs_library.allow_library_conversion` on the
 paragraph type. It decides both:
 
-- which blocks offer "Add to library"
-- which types a library item may hold
+- which paragraphs offer "Add to library"
+- which paragraph types a library item may hold
 
 **The trap: containers.** Making a container reusable (a section, columns, an
 accordion) loses the changes made inside it since the last publish:
 
-- Blocks added to it, or moved into it, are gone after publishing.
-- Blocks removed or moved out come back.
+- Paragraphs added to it, or moved into it, are gone after publishing.
+- Paragraphs removed or moved out come back.
 - A container that was never published ends up empty.
 
-Only enable containers if editors publish first, and tell the developer. Single
-blocks are safe.
+Only enable containers if editors publish first, and tell the developer.
+Paragraph types that don't hold other paragraphs are safe.
 
 ## 3. GraphQL
 
@@ -152,7 +153,8 @@ fragment paragraphFromLibrary on ParagraphFromLibrary {
 ```
 
 - **Keep the aliases:** `libraryItem`, `uuid`, `label` and `block`.
-- **Spread the fragment** of every type that may become a library item.
+- **Spread the fragment** of every paragraph type that may become a library
+  item.
 - **Don't spread the `paragraph` fragment** there: it contains
   `paragraphFromLibrary`, and GraphQL rejects the cycle. A container spread
   there must not spread `paragraphFromLibrary` either.
@@ -161,7 +163,7 @@ fragment paragraphFromLibrary on ParagraphFromLibrary {
 
 ## 7. The library item page
 
-"Edit" on a library block opens the item's page, which blökkli expects at
+"Edit" on a placed library item opens the item's page, which blökkli expects at
 `blokkli/library-item/<uuid>`, behind the language prefix if the site has one.
 
 **Drupal links to the same page with the id**: `/blokkli/library-item/{id}`.
@@ -244,12 +246,12 @@ if (!item.value) {
 ## 8. Options and languages
 
 - **Options** of a placed item are stored per placement, on its `from_library`
-  block. The item's own options are the defaults.
-- **Global options such as "Visible languages"** have no effect on library
-  blocks.
+  paragraph. The item's own options are the defaults.
+- **Global options such as "Visible languages"** have no effect on
+  `from_library` paragraphs.
 - **"Add to library"** creates the item in the page's source language, with a
-  translation for each language of the block. Every translation starts with the
-  source label: translate it on the item's page in that language.
+  translation for each language of the paragraph. Every translation starts with
+  the source label: translate it on the item's page in that language.
 
 ## 9. Check the result
 
@@ -257,7 +259,7 @@ if (!item.value) {
 2. **The Nuxt dev server's log** doesn't list the library among the disabled
    features.
 3. **In the browser, as an editor** (not user 1):
-   - "Add to library" on a block, then publish. The item exists after
+   - "Add to library" on a paragraph, then publish. The item exists after
      publishing, not before.
    - "From library" in another field, including one inside a container
    - "Edit" opens the item's page. Change it and publish: every page shows the
@@ -270,13 +272,13 @@ if (!item.value) {
 
 | Symptom                                                                                   | Cause                                                                                                                                  |
 | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| The "From library" dialog is empty                                                        | No search provider of type "Paragraphs library items", or no item's block type is allowed in the field                                 |
+| The "From library" dialog is empty                                                        | No search provider of type "Paragraphs library items", or no item's paragraph type is allowed in the field                             |
 | A new item isn't in the dialog                                                            | Items are created when the page is published                                                                                           |
-| No "Add to library" on a block                                                            | The type isn't allowed as a library item, `from_library` isn't allowed in the field, or the user lacks `create paragraph library item` |
+| No "Add to library" on a paragraph                                                        | The type isn't allowed as a library item, `from_library` isn't allowed in the field, or the user lacks `create paragraph library item` |
 | No library features at all                                                                | `ParagraphFromLibrary` isn't in the schema (the bundle or the extension is missing)                                                    |
 | `Cycle` or `Cannot spread fragment` errors for `paragraphFromLibrary`                     | The fragment spreads `paragraph`, or a container spread there spreads `paragraphFromLibrary`                                           |
-| A library block renders nothing                                                           | The block's type isn't spread in `paragraphFromLibrary`, or the item is unpublished                                                    |
+| A placed library item renders nothing                                                     | The item's paragraph type isn't spread in `paragraphFromLibrary`, or the item is unpublished                                           |
 | The item's page is a 404 from Drupal's links (open editing, language switch)              | The page only loads by uuid; Drupal links with the id                                                                                  |
 | A container's content is lost or reverted after "Add to library"                          | It had unpublished changes (section 2)                                                                                                 |
 | The item's label is in the source language on a translated page                           | Each translation starts with the source label                                                                                          |
-| Saving the host's form fails: "The Reusable paragraph field cannot contain a … paragraph" | A library block holds a type the field doesn't allow                                                                                   |
+| Saving the host's form fails: "The Reusable paragraph field cannot contain a … paragraph" | A placed library item holds a paragraph type the field doesn't allow                                                                   |

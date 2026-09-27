@@ -6,8 +6,8 @@ description: >-
   permissions, nuxt-graphql-middleware, the Drupal module of @blokkli/editor,
   the required fragments and the page components. Use when adding blökkli to a
   Drupal + Nuxt project, making another project's setup match it, or when the
-  editor doesn't start, offers no block types, or features are missing because
-  the GraphQL schema lacks them.
+  editor doesn't start, offers no paragraph types, or features are missing
+  because the GraphQL schema lacks them.
 license: MIT
 compatibility: >-
   Requires @blokkli/editor 2.x with the drupal module, paragraphs_blokkli 2.x,
@@ -15,7 +15,7 @@ compatibility: >-
   backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.1'
+  version: '1.0.2'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -27,11 +27,15 @@ time and enables only the features the schema supports. So the order is always:
 Drupal first, then the schema, then Nuxt. A Nuxt change can't make up for a
 missing type in the schema.
 
+blökkli's editor and API call paragraphs "blocks", but in Drupal a block is
+something else, so these skills say paragraph, paragraph type and paragraphs
+field.
+
 The [blökkli starterkit](https://www.drupal.org/project/blokkli_starterkit) has
 all of this set up. If the project is based on it, compare against it instead of
 building from scratch.
 
-The docs cover fragments, page and block components in more detail:
+The docs cover fragments, page and paragraph components in more detail:
 [Getting started](https://docs.blokk.li/modules/drupal/getting-started),
 [GraphQL fragments](https://docs.blokk.li/modules/drupal/graphql),
 [page components](https://docs.blokk.li/modules/drupal/pages),
@@ -89,7 +93,7 @@ drush en paragraphs_blokkli paragraphs_blokkli_graphql media
   are.
 - **List the allowed paragraph types explicitly on every paragraphs field**,
   nested ones included. A field that allows "all types" (no `target_bundles`) is
-  reported to the editor as allowing none, so it offers no block types.
+  reported to the editor as allowing none, so it offers no paragraph types.
 - Add `blokkli_fragment` (from `paragraphs_blokkli_fragments`) and
   `from_library` (from `paragraphs_library`) to the allowed types where those
   features should work.
@@ -345,9 +349,10 @@ const props = defineProps<NodePageFragment>()
   `v-blokkli-droppable:<field>` makes a host media or reference field a drop
   target.
 
-**Block components** go in `components/Paragraph/<PascalCaseBundle>/index.vue`
-with `defineBlokkli({ bundle: '<bundle>' })`. See
-[block components](https://docs.blokk.li/modules/drupal/blocks).
+**Paragraph components** go in
+`components/Paragraph/<PascalCaseBundle>/index.vue` with
+`defineBlokkli({ bundle: '<bundle>' })`. See
+[paragraph components](https://docs.blokk.li/modules/drupal/blocks).
 
 **Routes:**
 
@@ -385,22 +390,22 @@ export default defineBlokkliEditAdapter(async (ctx) => {
    older versions, compare the schema with the
    [feature detection](https://docs.blokk.li/modules/drupal/configuration#feature-detection).
 3. **In the browser,** as an editor (not user 1, who bypasses permissions): the
-   edit button appears on a host page, the editor starts, "add block" offers the
-   allowed types, a change survives a reload, and publishing works.
+   edit button appears on a host page, the editor starts, its add list offers
+   the allowed types, a change survives a reload, and publishing works.
 
 ## Symptoms and causes
 
 | Symptom                                                                   | Cause                                                                                     |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | No edit button                                                            | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound         |
-| The editor offers no block types                                          | The paragraphs field allows "all types"; list them                                        |
+| The editor offers no paragraph types                                      | The paragraphs field allows "all types"; list them                                        |
 | `Unknown type "ParagraphXyz"`, or a `…Unexposed` type                     | The bundle is missing from the GraphQL server's `bundles`                                 |
 | A field is missing from the schema                                        | It's missing from the server's `fields`                                                   |
 | "Failed to initialise blökkli Drupal module"                              | `nuxt-graphql-middleware` isn't before `@blokkli/editor`                                  |
 | `Unknown fragment "paragraph"` or `"pbMutatedEntity"`                     | The app doesn't define them, or `autoImportPatterns` misses the file                      |
 | A host field's edit is lost on reload                                     | The field is missing from `pbMutatedEntity`                                               |
 | A feature is missing in the editor                                        | Its submodule or GraphQL extension isn't enabled, or the schema in Nuxt is stale          |
-| Adding a block fails unless it opens the form                             | The paragraph type has a required field: blökkli can't set values when adding it directly |
+| Adding a paragraph fails unless it opens the form                         | The paragraph type has a required field: blökkli can't set values when adding it directly |
 | Pasted text fails                                                         | The text field has no allowed formats                                                     |
 | Pasted files end up in a directory named `[date:custom:Y]-…`              | Tokens in the media field's file directory                                                |
 | `/admin/config/content/blokkli` returns 500                               | Core `media` isn't enabled                                                                |

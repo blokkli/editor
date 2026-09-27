@@ -13,7 +13,7 @@ compatibility: >-
   (blokkli.editAdapter.ts).
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x'
   docs: https://docs.blokk.li
 ---
@@ -27,7 +27,7 @@ Analyzers check the content of the page being edited and report findings in the
 texts, axe-core rules), SEO (heading structure), readability, or any
 project-specific content rule ("don't use empty grid blocks").
 
-Each finding is highlighted on the page, so editors can jump to the block or
+Each finding is highlighted on the page, so editors can jump to the paragraph or
 element that caused it. A finding has a status (`pass`, `violation`,
 `incomplete`, `inapplicable`), a category (`accessibility`, `seo`, `text`,
 `content`) and an optional impact (`minor` to `critical`). Editors can
@@ -210,13 +210,13 @@ shipped from an adapter extension (`defineBlokkliAdapterExtension`), since
 Key points:
 
 - **Targets** can be a CSS selector, an `HTMLElement`, or `{ uuid }` for a whole
-  block. They're used to highlight the finding on the page.
+  paragraph. They're used to highlight the finding on the page.
 - **Prefer the context helpers** over raw DOM queries:
   `context.querySelectorAll()` already filters out `bk-skip-analyze` elements;
   `getTextElements()`, `getTextFieldValues()`, `getChildBlocks()`,
   `getBlockOptions()`, `getBlockElement()` and `getBlockUuid()` give access to
-  content and the block tree. `context.$t` translates, `context.langcode` is the
-  content language.
+  content and the paragraph tree. `context.$t` translates, `context.langcode` is
+  the content language.
 - **`identifier`** on a node makes it ignorable. Derive it from the content
   (e.g. `hashString(text)` from `#blokkli/analyzer/helpers/hashString`) so the
   finding reappears when the content changes.
