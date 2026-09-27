@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid gap-8"
+    class="grid gap-x-grid gap-y-flow"
     :class="[RATIOS[options.ratio], { 'container-wide': !parentType }]"
   >
     <BlokkliField

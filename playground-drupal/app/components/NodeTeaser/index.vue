@@ -1,52 +1,76 @@
 <template>
   <a
+    v-if="display === 'card'"
     :href="node.url?.path"
-    class="group"
-    :class="display === 'list' ? 'flex gap-4 py-4' : 'flex flex-col gap-3'"
+    class="group flex flex-col gap-3 text-ink"
   >
-    <div
-      v-if="'hero' in node && node.hero"
-      class="shrink-0 overflow-hidden bg-surface"
-      :class="display === 'list' ? 'w-32' : ''"
+    <MediaImage
+      v-if="hero"
+      v-bind="hero"
+      hide-credit
+      class="overflow-hidden bg-surface"
+      img-class="aspect-3/2 w-full object-cover"
+    />
+    <p v-if="meta" class="pt-1 text-small text-muted">{{ meta }}</p>
+    <h3
+      class="font-serif text-h3 font-semibold group-hover:text-primary group-hover:underline"
     >
-      <MediaImage
-        v-bind="node.hero"
-        hide-credit
-        img-class="aspect-[3/2] w-full object-cover"
-      />
-    </div>
-    <div class="flex flex-col gap-1">
-      <p v-if="meta" class="text-smallall font-semibold text-muted">
-        {{ meta }}
-      </p>
-      <h3 class="text-h3 group-hover:underline">
+      {{ node.label }}
+    </h3>
+    <p v-if="lead">{{ lead }}</p>
+  </a>
+  <a
+    v-else
+    :href="node.url?.path"
+    class="group flex items-center gap-4 border-b border-line py-4 text-ink"
+  >
+    <span
+      v-if="date"
+      class="flex size-15 shrink-0 flex-col items-center justify-center bg-primary-light text-primary-dark"
+      aria-hidden="true"
+    >
+      <strong class="text-h3">{{ date.badgeDay }}</strong>
+      <span class="text-label uppercase">{{ date.badgeMonth }}</span>
+    </span>
+    <MediaImage
+      v-else-if="hero"
+      v-bind="hero"
+      hide-credit
+      class="w-24 shrink-0 overflow-hidden bg-surface"
+      img-class="aspect-3/2 w-full object-cover"
+    />
+    <div class="flex grow flex-col">
+      <h3 class="font-semibold group-hover:text-primary group-hover:underline">
         {{ node.label }}
       </h3>
-      <p
-        v-if="'lead' in node && node.lead"
-        class="text-muted"
-        :class="{ 'line-clamp-2': display === 'list' }"
-      >
-        {{ node.lead }}
-      </p>
+      <p v-if="meta" class="text-small text-muted">{{ meta }}</p>
     </div>
+    <SpriteSymbol name="arrow-right" class="size-5 shrink-0 text-primary" />
   </a>
 </template>
 
 <script lang="ts" setup>
 import { computed, useEasyTexts } from '#imports'
+import { SpriteSymbol } from '#components'
 import type { NodeTeaserFragment } from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
 import { formatDateRange } from '~/helpers/date'
 
 // A page, news item or event as a card or a list item: the teaser block and
-// the fragments that list news and events.
+// the fragments that list news and events. In a list, an event gets a date
+// badge and the others their image.
 const props = defineProps<{
   node: NodeTeaserFragment
   display: 'card' | 'list'
 }>()
 
 const { $texts } = useEasyTexts()
+
+const hero = computed(() => ('hero' in props.node ? props.node.hero : null))
+const lead = computed(() => ('lead' in props.node ? props.node.lead : null))
+const date = computed(() =>
+  props.node.__typename === 'NodeEvent' ? props.node.date : null,
+)
 
 const meta = computed(() => {
   const node = props.node

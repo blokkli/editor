@@ -3,25 +3,20 @@
     v-blokkli-droppable:field_documents
     :class="{ 'container-content': !parentType && fieldListType === 'default' }"
   >
-    <ul class="divide-y divide-line border-y border-line">
-      <li v-for="item in items" :key="item.uuid">
-        <a
-          :href="item.href"
-          class="flex items-baseline justify-between gap-4 py-3 hover:underline"
-        >
-          <span class="font-semibold">{{ item.name }}</span>
-          <span class="shrink-0 text-small text-muted">
-            {{ item.meta }}
-          </span>
-        </a>
-      </li>
-    </ul>
+    <h2
+      v-if="fieldListType === 'sidebar'"
+      class="pb-2.5 text-label text-muted uppercase"
+    >
+      {{ $texts('downloads.label', 'Downloads') }}
+    </h2>
+    <LinkList download :items />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
 import type { ParagraphDownloadsFragment } from '#graphql-operations'
+import LinkList from '~/components/LinkList/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
 
 const props = defineProps<ParagraphDownloadsFragment>()
@@ -41,16 +36,15 @@ function formatSize(bytes: number): string {
 // The type comes from the file's extension, e.g. "PDF, 240 KB".
 const items = computed(() =>
   (props.documents ?? []).flatMap((media) => {
-    if (!media) {
+    const url = media?.mediaFileUrl?.path
+    if (!url) {
       return []
     }
-    const href = media.mediaFileUrl?.path ?? undefined
-    const extension = href?.split('.').pop()?.toUpperCase()
+    const extension = url.split('.').pop()?.toUpperCase()
     const size = media.file?.entity?.filesize
     return {
-      uuid: media.uuid,
-      name: media.name,
-      href,
+      label: media.name ?? url,
+      url,
       meta: [extension, size ? formatSize(size) : undefined]
         .filter(Boolean)
         .join(', '),

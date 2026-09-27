@@ -1,13 +1,13 @@
 <template>
   <dl class="flex flex-col gap-4">
     <div v-if="address && !compact">
-      <dt class="text-smallall font-semibold text-muted">
+      <dt class="text-small font-semibold text-muted">
         {{ $texts('office.address', 'Address') }}
       </dt>
       <dd class="whitespace-pre-line">{{ address }}</dd>
     </div>
     <div v-if="phone">
-      <dt class="text-smallall font-semibold text-muted">
+      <dt class="text-small font-semibold text-muted">
         {{ $texts('office.phone', 'Phone') }}
       </dt>
       <dd>
@@ -17,7 +17,7 @@
       </dd>
     </div>
     <div v-if="email">
-      <dt class="text-smallall font-semibold text-muted">
+      <dt class="text-small font-semibold text-muted">
         {{ $texts('office.email', 'Email') }}
       </dt>
       <dd>
@@ -25,7 +25,7 @@
       </dd>
     </div>
     <div v-if="days.length && !compact">
-      <dt class="text-smallall font-semibold text-muted">
+      <dt class="text-small font-semibold text-muted">
         {{ $texts('office.opening_hours', 'Opening hours') }}
       </dt>
       <dd>

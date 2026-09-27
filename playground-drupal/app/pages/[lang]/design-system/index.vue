@@ -225,10 +225,22 @@
           <h2 class="font-serif text-h2">Layout</h2>
           <p class="max-w-content">
             Mobile first with Tailwind's breakpoints. Content sits in a
-            container: <code>container-content</code> (48rem, the text column)
-            or <code>container-wide</code> (75rem), each plus the gutter on both
-            sides. At 1440 px the wide container leaves 120 px of margin, as in
-            the canvas.
+            container, aligned to the left of the grid:
+            <code>container-wide</code> (75rem plus the gutter on both sides; at
+            1440 px it leaves 120 px of margin, as in the canvas) or
+            <code>container-content</code>, the content column: the wide
+            container's left 8 of 12 columns from lg, about 80 characters a
+            line. A block's width option picks one of them, or the whole page.
+          </p>
+          <p class="max-w-content">
+            A host with a sidebar (<code>Host/Layout</code>) has the layout of
+            the detail mockup from lg: the header in columns 1–8, the sidebar as
+            a white panel cutting into the header in columns 9–12, the blocks
+            below the header. Inside, every container means the column. The
+            blocks know where they are from their field list type:
+            <code>sidebar</code>, <code>footer</code> (the ink ground: buttons,
+            links and neutral colours flip, see <code>on-dark</code>) or
+            <code>notice</code>.
           </p>
           <p class="max-w-content">
             <code>band</code> puts a page's header on a <code>surface</code>
@@ -317,12 +329,15 @@
           </div>
           <div class="on-dark flex flex-wrap items-center gap-4 bg-primary p-6">
             <a href="#" class="button is-on-dark">Einsatz wählen</a>
+            <a href="#" class="button is-secondary is-on-dark">Mitmachen</a>
             <a href="#" class="text-white underline">Link on red</a>
           </div>
           <p class="text-small text-muted">
             <code>.button</code>, <code>.button.is-secondary</code>,
             <code>.button.is-on-dark</code>: at least 48 px high. On dark
-            grounds, <code>on-dark</code> turns the focus ring white.
+            grounds, <code>on-dark</code> turns the focus ring white, and
+            <code>ink</code>, <code>muted</code> and <code>line</code> inside it
+            become their light counterparts.
           </p>
 
           <h3 class="text-h3">Search field</h3>

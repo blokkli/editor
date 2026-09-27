@@ -6,14 +6,43 @@
       hidden: !office && !isEditing,
     }"
   >
-    <div v-if="office" class="border border-line bg-white p-6">
-      <h3 class="mb-4 text-h3">
-        <a :href="office.url?.path" class="hover:underline">
-          {{ office.title }}
-        </a>
-      </h3>
-      <OfficeDetails v-bind="office" :compact="options.display === 'compact'" />
-    </div>
+    <template v-if="office">
+      <!-- The sidebar: under a heading, on the white panel. -->
+      <div v-if="fieldListType === 'sidebar'" class="flex flex-col gap-3">
+        <h2 class="border-b border-ink pb-2.5 text-label text-muted uppercase">
+          {{ $texts('contact.label', 'Contact') }}
+        </h2>
+        <p class="font-serif text-h3 font-semibold">
+          <a
+            :href="office.url?.path"
+            class="hover:text-primary hover:underline"
+          >
+            {{ office.title }}
+          </a>
+        </p>
+        <OfficeDetails v-bind="office" :compact />
+      </div>
+      <!-- The footer: a column on the ink ground. -->
+      <div v-else-if="fieldListType === 'footer'" class="flex flex-col gap-2">
+        <h2 class="text-label text-white uppercase">
+          <a :href="office.url?.path" class="hover:underline">
+            {{ office.title }}
+          </a>
+        </h2>
+        <OfficeDetails v-bind="office" :compact />
+      </div>
+      <div v-else class="flex flex-col gap-4 border border-line bg-white p-6">
+        <h3 class="font-serif text-h3 font-semibold">
+          <a
+            :href="office.url?.path"
+            class="hover:text-primary hover:underline"
+          >
+            {{ office.title }}
+          </a>
+        </h3>
+        <OfficeDetails v-bind="office" :compact />
+      </div>
+    </template>
     <p v-else-if="isEditing" class="bg-surface p-4 text-muted">
       {{
         $texts(
@@ -26,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
+import { computed, defineBlokkli } from '#imports'
 import type { ParagraphContactFragment } from '#graphql-operations'
 import OfficeDetails from '~/components/Office/Details/index.vue'
 
@@ -48,9 +77,11 @@ const { options, parentType, fieldListType } = defineBlokkli({
   },
   editor: {
     icon: 'bk_mdi_contact_page',
-    editTitle: (el) => el.querySelector('h3')?.textContent,
+    editTitle: (el) => el.querySelector('a')?.textContent,
   },
 })
+
+const compact = computed(() => options.value.display === 'compact')
 
 const isEditing = import.meta.blokkliEditing
 </script>

@@ -133,7 +133,7 @@ export default defineNuxtConfig({
     chunkNames: ['global', 'rare'],
     // The fields outside the main content: the page's sidebar, the footer and
     // the site-wide notice.
-    fieldListTypes: ['secondary'],
+    fieldListTypes: ['sidebar', 'footer', 'notice'],
     schemaOptionsPath: optionsSchemaPath,
     modules: [
       drupal({ templateEditRouteName: 'blokkli-template' }),

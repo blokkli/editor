@@ -1,14 +1,16 @@
 <template>
   <div
-    class="container-content"
-    :class="{ hidden: !items.length && !isEditing }"
+    :class="[
+      options.display === 'list' ? 'container-content' : 'container-wide',
+      { hidden: !items.length && !isEditing },
+    ]"
   >
     <div
       v-if="items.length"
       :class="
         options.display === 'list'
-          ? 'divide-y divide-line border-y border-line'
-          : 'grid gap-6 sm:grid-cols-3'
+          ? 'border-t border-ink'
+          : 'grid gap-x-grid gap-y-10 md:grid-cols-3'
       "
     >
       <NodeTeaser

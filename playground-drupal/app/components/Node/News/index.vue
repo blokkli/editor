@@ -4,34 +4,28 @@
     v-bind="blokkliProps"
     :entity="props"
   >
-    <article class="pb-20">
-      <HostHeader
-        :title="entity.title"
-        :lead="entity.lead"
-        :image="entity.hero"
-        variant="image"
-        :is-editing
-      >
-        <template #meta>
-          <p
-            v-if="createdDate?.first?.day"
-            class="mb-2 font-semibold text-muted"
-          >
-            {{
-              $texts('news.meta', 'News, @date', {
-                '@date': createdDate.first.day,
-              })
-            }}
-          </p>
-        </template>
-      </HostHeader>
+    <HostLayout>
+      <template #header>
+        <HostHeader
+          :title="entity.title"
+          :lead="entity.lead"
+          :image="entity.hero"
+          variant="image"
+          :is-editing
+        >
+          <template #eyebrow>{{ $texts('news.label', 'News') }}</template>
+          <template v-if="createdDate?.first?.day" #meta>
+            {{ createdDate.first.day }}
+          </template>
+        </HostHeader>
+      </template>
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
         :allowed-fragments="['upcoming_events', 'latest_news']"
-        class="flow mt-10"
+        class="flow"
       />
-    </article>
+    </HostLayout>
   </BlokkliProvider>
 </template>
 
@@ -39,6 +33,7 @@
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { NodeNewsFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
+import HostLayout from '~/components/Host/Layout/index.vue'
 
 const props = defineProps<NodeNewsFragment>()
 </script>

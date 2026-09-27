@@ -3,7 +3,7 @@
     class="container-content"
     :class="{ hidden: !items.length && !isEditing }"
   >
-    <div v-if="items.length" class="divide-y divide-line border-y border-line">
+    <div v-if="items.length" class="border-t border-ink">
       <NodeTeaser
         v-for="item in items"
         :key="item.url?.path"

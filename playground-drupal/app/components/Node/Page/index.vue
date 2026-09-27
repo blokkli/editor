@@ -4,31 +4,41 @@
     v-bind="blokkliProps"
     :entity="props"
   >
-    <article class="pb-20">
-      <HostHeader
-        :title="entity.title"
-        :lead="entity.lead"
-        :image="entity.hero"
-        :variant="options.header"
-        :is-editing
+    <HostLayout>
+      <template #header>
+        <HostHeader
+          :title="entity.title"
+          :lead="entity.lead"
+          :image="entity.hero"
+          :variant="options.header"
+          :is-editing
+        >
+          <template v-if="changedDate?.first?.day" #meta>
+            {{
+              $texts('page.updated', 'Updated on @date', {
+                '@date': changedDate.first.day,
+              })
+            }}
+          </template>
+        </HostHeader>
+      </template>
+      <BlokkliField
+        name="field_paragraphs"
+        :list="paragraphs"
+        :allowed-fragments="['upcoming_events', 'latest_news']"
+        class="flow"
       />
-      <div class="page-body mt-10">
-        <BlokkliField
-          name="field_paragraphs"
-          :list="paragraphs"
-          :allowed-fragments="['upcoming_events', 'latest_news']"
-          class="flow"
-        />
+      <template #aside>
         <BlokkliField
           name="field_aside"
           :list="aside"
-          field-list-type="secondary"
+          field-list-type="sidebar"
           non-empty-class="has-aside"
           edit-class="min-h-24"
-          class="container-content flow mt-12"
+          class="container-content flex flex-col gap-10"
         />
-      </div>
-    </article>
+      </template>
+    </HostLayout>
   </BlokkliProvider>
 </template>
 
@@ -37,6 +47,7 @@ import { defineBlokkliProvider } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { NodePageFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
+import HostLayout from '~/components/Host/Layout/index.vue'
 
 const props = defineProps<NodePageFragment>()
 
@@ -51,9 +62,9 @@ const { options } = defineBlokkliProvider(props, {
       options: {
         image: {
           label: {
-            en: 'Image above the title',
-            de: 'Bild über dem Titel',
-            fr: 'Image au-dessus du titre',
+            en: 'Image below the title',
+            de: 'Bild unter dem Titel',
+            fr: 'Image sous le titre',
           },
         },
         overlay: {

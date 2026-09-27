@@ -1,26 +1,7 @@
 <template>
-  <template v-if="entity">
-    <!-- A config page on its own route: where it's edited. -->
-    <main
-      v-if="
-        entity.__typename === 'TranslatableConfigPagesFooter' ||
-        entity.__typename === 'TranslatableConfigPagesSite'
-      "
-      class="py-12"
-    >
-      <p class="container-wide mb-8 text-small text-muted">
-        {{ entity.label }}
-      </p>
-      <ConfigPageFooter
-        v-if="entity.__typename === 'TranslatableConfigPagesFooter'"
-        v-bind="entity"
-      />
-      <ConfigPageSite v-else v-bind="entity" />
-    </main>
-    <template v-else>
-      <ConfigPageSite v-if="site" v-bind="site">
-        <LanguageSwitch v-if="languageLinks" :links="languageLinks" />
-      </ConfigPageSite>
+  <div v-if="entity" class="flex min-h-screen flex-col">
+    <ConfigPageSite v-if="siteConfig" v-bind="siteConfig" :language-links />
+    <main id="main" class="grow overflow-x-clip">
       <NodePage v-if="entity.__typename === 'NodePage'" v-bind="entity" />
       <NodeNews v-else-if="entity.__typename === 'NodeNews'" v-bind="entity" />
       <NodeEvent
@@ -31,9 +12,17 @@
         v-else-if="entity.__typename === 'NodeOffice'"
         v-bind="entity"
       />
-      <ConfigPageFooter v-if="footer" v-bind="footer" />
-    </template>
-  </template>
+      <!-- A config page on its own route, where it's edited. -->
+      <p v-else class="container-wide py-section text-small text-muted">
+        {{ entity.label }}
+      </p>
+    </main>
+    <ConfigPageFooter
+      v-if="footerConfig"
+      v-bind="footerConfig"
+      :site-name="siteConfig?.siteName"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -41,7 +30,6 @@ import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
 import {
   ConfigPageFooter,
   ConfigPageSite,
-  LanguageSwitch,
   NodeEvent,
   NodeNews,
   NodeOffice,
@@ -97,8 +85,18 @@ const languageLinks = computed(() => {
   return url.languageSwitchLinks
 })
 
-const site = computed(() => data.value?.data.siteConfig)
-const footer = computed(() => data.value?.data.footerConfig)
+// On a config page's own route, the config page is the entity being edited.
+const siteConfig = computed(() =>
+  entity.value?.__typename === 'TranslatableConfigPagesSite'
+    ? entity.value
+    : data.value?.data.siteConfig,
+)
+
+const footerConfig = computed(() =>
+  entity.value?.__typename === 'TranslatableConfigPagesFooter'
+    ? entity.value
+    : data.value?.data.footerConfig,
+)
 
 if (!entity.value) {
   throw createError({ statusCode: 404, fatal: true })

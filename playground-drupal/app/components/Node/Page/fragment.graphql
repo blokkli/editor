@@ -5,6 +5,11 @@ fragment nodePage on NodePage {
   hero: fieldHeroImage {
     ...mediaImage
   }
+  changedDate: changedRawField {
+    first {
+      day: formatted(drupalDateFormat: DAY)
+    }
+  }
   blokkliProps {
     ...blokkliProps
   }

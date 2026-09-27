@@ -1,7 +1,6 @@
 <template>
   <div class="flex min-h-screen flex-col">
     <PageHeader
-      name="Gemeinde Blockingen"
       name-secondary="Commune de Bloquens"
       :home-url="`/${language}/design-system/home`"
       :links
@@ -10,7 +9,14 @@
         { label: 'Kontakt', url: '#' },
       ]"
       :language-links
-    />
+    >
+      <template #name>Gemeinde Blockingen</template>
+      <template #search>
+        <SearchField
+          :label="$texts('header.search_label', 'Search the website')"
+        />
+      </template>
+    </PageHeader>
 
     <main id="main" lang="de" class="grow overflow-x-clip">
       <slot />
@@ -57,7 +63,7 @@
 
 <script lang="ts" setup>
 import { computed, useRoute } from '#imports'
-import { PageFooter, PageHeader } from '#components'
+import { PageFooter, PageHeader, SearchField } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 import { useLanguage } from '~/composables/useLanguage'
 import { LANGUAGES } from '#shared/languages'

@@ -7,7 +7,7 @@
       v-if="node"
       :node
       :display="options.display"
-      :class="{ 'border-y border-line': options.display === 'list' }"
+      :class="{ 'border-t border-line': options.display === 'list' }"
     />
     <p v-else-if="isEditing" class="bg-surface p-4 text-muted">
       {{

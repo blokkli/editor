@@ -4,18 +4,32 @@
       :href="video?.url ?? undefined"
       target="_blank"
       rel="noopener"
-      class="group relative block"
+      class="group block"
     >
-      <img
-        v-if="thumbnail?.urlPath"
-        :src="thumbnail.urlPath"
-        :width="thumbnail.width ?? undefined"
-        :height="thumbnail.height ?? undefined"
-        alt=""
-        loading="lazy"
-        class="aspect-video w-full object-cover"
-      />
-      <span class="mt-2 block text-small text-muted group-hover:underline">
+      <span class="relative block bg-ink">
+        <img
+          v-if="thumbnail?.urlPath"
+          :src="thumbnail.urlPath"
+          :width="thumbnail.width ?? undefined"
+          :height="thumbnail.height ?? undefined"
+          alt=""
+          loading="lazy"
+          class="aspect-video w-full object-cover"
+        />
+        <span class="absolute inset-0 flex items-center justify-center">
+          <span
+            class="flex size-16 items-center justify-center bg-primary text-white group-hover:bg-primary-dark"
+          >
+            <SpriteSymbol name="play" class="size-7" />
+          </span>
+        </span>
+      </span>
+      <span
+        class="mt-2 block text-small text-muted group-hover:underline"
+        :class="{
+          'container-content': options.width === 'full' && !parentType,
+        }"
+      >
         {{ video?.name }}
       </span>
     </a>
@@ -24,6 +38,7 @@
 
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
+import { SpriteSymbol } from '#components'
 import type { ParagraphVideoFragment } from '#graphql-operations'
 import { WIDTH_CLASSES } from '~/helpers/width'
 

@@ -86,7 +86,8 @@ progress, not a spec (the user).
     `@theme` (not `inline`) is required. `flow` is 32 px.
   - Containers: `container-content` (48rem) and `container-wide` (75rem) plus
     the gutter on both sides. At 1440 px the wide container leaves the canvas's
-    120 px of margin.
+    120 px of margin. [15b](15b-apply-design.md) made `container-content` the
+    content column, aligned to the left.
   - `band`: a `surface` background as wide as the window behind an element in a
     container, through a pseudo-element; the mockup's `<main>` has
     `overflow-x-clip`. Used by the home page's hero and the detail page's

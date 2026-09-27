@@ -8,8 +8,9 @@
     </a>
 
     <div class="on-dark bg-ink text-white">
-      <div class="container-wide flex items-center justify-end gap-6">
+      <div class="container-wide flex min-h-10 items-center justify-end gap-6">
         <nav
+          v-if="serviceLinks?.length"
           :aria-label="$texts('header.service_navigation', 'Service')"
           class="hidden md:block"
         >
@@ -21,25 +22,33 @@
             </li>
           </ul>
         </nav>
-        <LanguageSwitch :links="languageLinks" />
+        <LanguageSwitch v-if="languageLinks" :links="languageLinks" />
       </div>
     </div>
 
     <div class="border-b-4 border-primary bg-white">
       <div class="container-wide flex items-center gap-3 py-3 lg:gap-8 lg:py-5">
-        <a :href="homeUrl" class="mr-auto flex items-center gap-3 text-ink">
-          <Logo class="h-11 w-auto shrink-0 lg:h-12" />
+        <!-- No link while editing: the name is edited in place. -->
+        <component
+          :is="homeUrl ? 'a' : 'div'"
+          :href="homeUrl"
+          class="mr-auto flex items-center gap-3 text-ink"
+        >
+          <slot name="logo">
+            <Logo class="h-11 w-auto shrink-0 lg:h-12" />
+          </slot>
           <span class="flex flex-col hyphens-none">
             <span class="font-serif text-body font-semibold lg:text-h3">
-              {{ name }}
+              <slot name="name" />
             </span>
             <span v-if="nameSecondary" class="text-small text-muted">
               {{ nameSecondary }}
             </span>
           </span>
-        </a>
+        </component>
 
         <nav
+          v-if="links?.length"
           :aria-label="$texts('header.main_navigation', 'Main navigation')"
           class="hidden lg:block"
         >
@@ -58,6 +67,7 @@
         </nav>
 
         <button
+          v-if="$slots.search"
           type="button"
           class="flex size-11 shrink-0 items-center justify-center border border-line hover:border-ink"
           aria-controls="page-header-search"
@@ -72,6 +82,7 @@
         </button>
 
         <button
+          v-if="hasMenu"
           type="button"
           class="flex h-11 min-w-11 shrink-0 items-center justify-center gap-2 border border-line px-2.5 font-semibold hover:border-ink lg:hidden"
           aria-controls="page-header-menu"
@@ -87,24 +98,27 @@
     </div>
 
     <div
+      v-if="$slots.search"
       v-show="isSearchOpen"
       id="page-header-search"
       class="border-b border-line bg-surface"
     >
       <div class="container-wide py-5">
-        <SearchField
-          :label="$texts('header.search_label', 'Search the website')"
-        />
+        <slot name="search" />
       </div>
     </div>
 
     <div
+      v-if="hasMenu"
       v-show="isMenuOpen"
       id="page-header-menu"
       class="border-b border-line bg-white lg:hidden"
     >
       <div class="container-wide pb-4">
-        <nav :aria-label="$texts('header.main_navigation', 'Main navigation')">
+        <nav
+          v-if="links?.length"
+          :aria-label="$texts('header.main_navigation', 'Main navigation')"
+        >
           <ul>
             <li
               v-for="link in links"
@@ -124,7 +138,7 @@
             </li>
           </ul>
         </nav>
-        <ul class="flex flex-col pt-3 md:hidden">
+        <ul v-if="serviceLinks?.length" class="flex flex-col pt-3 md:hidden">
           <li v-for="link in serviceLinks" :key="link.url + link.label">
             <a :href="link.url" class="block py-2 underline">
               {{ link.label }}
@@ -137,23 +151,28 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from '#imports'
-import { LanguageSwitch, Logo, SearchField, SpriteSymbol } from '#components'
+import { computed, ref } from '#imports'
+import { LanguageSwitch, Logo, SpriteSymbol } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 
 type Link = { label: string; url: string }
 
 // The site's header: a service bar with the language switch, the logo and the
 // main navigation. Below lg, the navigation is a panel behind a menu button.
-defineProps<{
-  name: string
+// Slots: the name (required), the logo (the Logo by default) and the search,
+// e.g. a SearchField behind a toggle. Parts without content aren't rendered.
+const props = defineProps<{
   nameSecondary?: string
-  homeUrl: string
+  homeUrl?: string
   // isActive: the current page is in this section.
-  links: (Link & { isActive?: boolean })[]
-  serviceLinks: Link[]
-  languageLinks: LanguageSwitchLinkFragment[]
+  links?: (Link & { isActive?: boolean })[]
+  serviceLinks?: Link[]
+  languageLinks?: LanguageSwitchLinkFragment[] | null
 }>()
+
+const hasMenu = computed(
+  () => !!props.links?.length || !!props.serviceLinks?.length,
+)
 
 const isMenuOpen = ref(false)
 const isSearchOpen = ref(false)

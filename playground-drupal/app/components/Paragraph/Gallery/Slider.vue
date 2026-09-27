@@ -26,19 +26,19 @@
     >
       <button
         type="button"
-        class="rounded-full border border-ink px-4 py-1"
+        class="flex size-11 items-center justify-center border border-line hover:border-ink"
         :aria-label="$texts('gallery.previous_image', 'Previous image')"
         @click="scroll(-1)"
       >
-        ←
+        <SpriteSymbol name="arrow-left" class="size-5" />
       </button>
       <button
         type="button"
-        class="rounded-full border border-ink px-4 py-1"
+        class="flex size-11 items-center justify-center border border-line hover:border-ink"
         :aria-label="$texts('gallery.next_image', 'Next image')"
         @click="scroll(1)"
       >
-        →
+        <SpriteSymbol name="arrow-right" class="size-5" />
       </button>
     </div>
   </div>
@@ -46,6 +46,7 @@
 
 <script lang="ts" setup>
 import { computed, useTemplateRef } from '#imports'
+import { SpriteSymbol } from '#components'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import MediaImage from '~/components/Media/Image/index.vue'
 

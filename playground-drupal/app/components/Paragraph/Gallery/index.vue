@@ -5,7 +5,7 @@
       name="field_paragraphs"
       :list="paragraphs"
       drop-alignment="horizontal"
-      class="grid grid-cols-2 gap-4 md:grid-cols-3"
+      class="grid grid-cols-2 gap-3 md:grid-cols-3"
       edit-class="min-h-24"
     />
     <div v-else class="relative">

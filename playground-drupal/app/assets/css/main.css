@@ -80,25 +80,66 @@
   /* Between the blocks of a field. */
   --spacing-flow: 2rem;
 
-  /* Without the gutter: container-content and container-wide add it. */
+  /* A comfortable line length, e.g. max-w-content for a lead. */
   --container-content: 48rem;
+  /* Without the gutter: container-wide adds it. */
   --container-wide: 75rem;
 }
 
-/* A container: its width plus the gutter on both sides. At 1440 px the wide
-   one leaves 120 px of margin. */
-@utility container-content {
-  width: 100%;
-  max-width: calc(var(--container-content) + var(--spacing-gutter) * 2);
-  margin-inline: auto;
-  padding-inline: var(--spacing-gutter);
-}
-
+/* The wide container: 75rem plus the gutter on both sides. At 1440 px it
+   leaves 120 px of margin. */
 @utility container-wide {
   width: 100%;
   max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
   margin-inline: auto;
   padding-inline: var(--spacing-gutter);
+
+  /* A host with a sidebar lays out its parts itself (Host/Layout), except for
+     a title on an image, which is as wide as the page. */
+  @variant lg {
+    .host-layout:has(> .host-layout-aside .has-aside)
+      :is(
+        .host-layout-body,
+        .host-layout-aside,
+        .host-layout-header > :not(.is-overlay)
+      )
+      & {
+      max-width: none;
+      padding-inline: 0;
+    }
+  }
+}
+
+/* The content column: the wide container's left 8 of 12 columns from lg,
+   about 80 characters a line. The right padding is the other 4 columns and a
+   gap: a third of the inner width plus a gap. */
+@utility container-content {
+  width: 100%;
+  max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+
+  @variant lg {
+    padding-right: calc(
+      var(--spacing-gutter) +
+        (
+          min(100% - var(--spacing-gutter) * 2, var(--container-wide)) +
+            var(--spacing-grid)
+        ) /
+        3
+    );
+
+    .host-layout:has(> .host-layout-aside .has-aside)
+      :is(
+        .host-layout-body,
+        .host-layout-aside,
+        .host-layout-header > :not(.is-overlay)
+      )
+      & {
+      max-width: none;
+      padding-inline: 0;
+    }
+  }
 }
 
 /* A vertical list of blocks: the page, a one-column section, an accordion. */
@@ -130,9 +171,17 @@
   }
 }
 
-/* Focus rings on the ink or red ground. */
+/* The ink or red ground: white focus rings. Inside, the neutral colours flip,
+   so that text-muted or border-line work in the footer's blocks too. Not on
+   the element itself, whose ground is usually bg-ink. */
 @utility on-dark {
   --focus-color: var(--color-white);
+
+  & * {
+    --color-ink: var(--color-white);
+    --color-muted: var(--color-on-dark-muted);
+    --color-line: var(--color-on-dark-line);
+  }
 }
 
 @layer base {
@@ -195,24 +244,111 @@
       &:hover {
         @apply bg-primary-light;
       }
+
+      &.is-secondary {
+        @apply border-white bg-transparent text-white;
+
+        &:hover {
+          @apply bg-white/10;
+        }
+      }
     }
   }
 
-  /* A page with blocks in its sidebar: on large screens, the content and the
-     sidebar side by side. Every width option then means the content column. */
-  .page-body:has(> .has-aside) {
-    @apply mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-grid;
-    max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
+  /* A host's header, blocks and sidebar (Host/Layout). With something in the
+     sidebar, from lg: the header's band in columns 1–8, the sidebar as a white
+     panel cutting into it in columns 9–12, the blocks below the header. The
+     containers inside then mean the column, whatever the width option. */
+  .host-layout {
+    @apply flex flex-col gap-10 pb-section;
 
-    > .has-aside {
-      @apply lg:mt-0;
+    > .host-layout-body {
+      @apply order-2;
+    }
+
+    > .host-layout-aside {
+      @apply order-3;
+    }
+
+    /* Below lg: facts (an event's date, an office's address) come before the
+       blocks. */
+    &.is-aside-first > .host-layout-aside {
+      @apply order-1;
     }
   }
 
-  /* Consecutive accordion items form one list: no gap, and their borders
-     overlap. */
+  .host-layout:has(> .host-layout-aside .has-aside) {
+    @variant lg {
+      /* The wide container's 12 columns, and a track on each side for a title
+         on an image, which is as wide as the page. The inner columns share
+         the space first, up to the wide container's width. */
+      display: grid;
+      grid-template-columns:
+        [full-start] minmax(
+          calc(var(--spacing-gutter) - var(--spacing-grid)),
+          1fr
+        )
+        repeat(
+          12,
+          minmax(
+            0,
+            calc((var(--container-wide) - var(--spacing-grid) * 11) / 12)
+          )
+        )
+        minmax(calc(var(--spacing-gutter) - var(--spacing-grid)), 1fr)
+        [full-end];
+      grid-template-rows: auto 1fr;
+      column-gap: var(--spacing-grid);
+
+      > .host-layout-header {
+        grid-column: 2 / span 8;
+        grid-row: 1;
+      }
+
+      > .host-layout-body {
+        grid-column: 2 / span 8;
+        grid-row: 2;
+      }
+
+      /* Positioned, so that it's painted over the header's band. */
+      > .host-layout-aside {
+        @apply relative mt-8 self-start bg-white p-6;
+        grid-column: 10 / span 4;
+        grid-row: 1 / span 2;
+      }
+    }
+  }
+
+  /* A title on the image: the header is as wide as the page, and the sidebar
+     starts below it. */
+  .host-layout:has(> .host-layout-header .is-overlay):has(
+      > .host-layout-aside .has-aside
+    ) {
+    @variant lg {
+      > .host-layout-header {
+        grid-column: full;
+      }
+
+      > .host-layout-aside {
+        @apply mt-0;
+        grid-row: 2;
+      }
+    }
+  }
+
+  /* An accordion item: an ink rule on top, a line below. Consecutive items
+     form one list: no gap between them, and only the first one has the ink
+     rule. Here, not in the template: utilities would win over this. */
+  .accordion > :first-child {
+    @apply border-y border-t-ink border-b-line;
+  }
+
   .flow > .accordion + .accordion {
-    margin-top: calc(var(--spacing-flow) * -1 - 1px);
+    margin-top: calc(var(--spacing-flow) * -1);
+
+    > :first-child {
+      border-top-width: 0;
+    }
   }
 
   /* Formatted text from Drupal (basic_html). */
@@ -229,6 +365,10 @@
 
     a {
       @apply text-primary underline underline-offset-2 hover:text-primary-dark;
+
+      .on-dark & {
+        @apply text-white hover:text-on-dark;
+      }
     }
 
     strong {

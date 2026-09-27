@@ -1,6 +1,6 @@
 <template>
   <div class="accordion" :class="{ 'container-content': !parentType }">
-    <div class="border-y border-line">
+    <div>
       <h3 class="text-h3">
         <span
           v-if="isEditing"
@@ -13,18 +13,15 @@
         <button
           v-else
           type="button"
-          class="flex w-full items-center justify-between gap-4 py-4 text-left"
+          class="flex w-full items-center justify-between gap-4 py-4 text-left hover:text-primary"
           :aria-expanded="isOpen"
           @click="isOpen = !isOpen"
         >
           {{ title }}
-          <span
-            aria-hidden="true"
-            class="transition-transform"
-            :class="{ 'rotate-180': isOpen }"
-          >
-            ▾
-          </span>
+          <SpriteSymbol
+            :name="isOpen ? 'minus' : 'plus'"
+            class="size-5 shrink-0 text-primary"
+          />
         </button>
       </h3>
       <div v-show="isOpen || isEditing" class="pb-6">
@@ -41,6 +38,7 @@
 
 <script lang="ts" setup>
 import { defineBlokkli, ref } from '#imports'
+import { SpriteSymbol } from '#components'
 import type { ParagraphAccordionFragment } from '#graphql-operations'
 
 defineProps<ParagraphAccordionFragment>()

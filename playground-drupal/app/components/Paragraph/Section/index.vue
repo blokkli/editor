@@ -1,5 +1,10 @@
 <template>
-  <section class="py-12" :class="BACKGROUNDS[options.background]">
+  <section
+    :class="[
+      BACKGROUNDS[options.background],
+      { 'py-section': options.background !== 'none' },
+    ]"
+  >
     <div
       :class="options.columns === '1' ? 'container-content' : 'container-wide'"
     >
@@ -7,7 +12,7 @@
         v-if="title || isEditing"
         v-blokkli-editable:field_title
         :data-placeholder="$texts('placeholder.heading', 'Heading')"
-        class="editable-placeholder mb-8 font-serif text-h2"
+        class="editable-placeholder mb-6 font-serif text-h2"
       >
         {{ title }}
       </h2>
@@ -36,8 +41,8 @@ const BACKGROUNDS = {
 
 const COLUMNS = {
   '1': 'flow',
-  '2': 'grid gap-8 md:grid-cols-2',
-  '3': 'grid gap-8 md:grid-cols-3',
+  '2': 'grid gap-x-grid gap-y-flow md:grid-cols-2',
+  '3': 'grid gap-x-grid gap-y-flow md:grid-cols-3',
 } as const
 
 const { options } = defineBlokkli({
