@@ -123,5 +123,10 @@
                 "scheduler#3312200: Paragraph scheduler plugin": "https://www.drupal.org/files/issues/2026-06-15/3312200-paragraph-scheduler.diff"
             }
         }
+    },
+    "require-dev": {
+        "drupal/coder": "^9.0",
+        "mglaman/phpstan-drupal": "^2.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0"
     }
 }

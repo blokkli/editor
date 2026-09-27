@@ -1,0 +1,20 @@
+uuid: aaad4b7b-2184-45bd-bcd3-1ee6d97836af
+langcode: en
+status: true
+dependencies: {  }
+id: content
+label: Content
+search_plugin_id: entity_query
+search_type: content
+description: ''
+weight: 0
+search_plugin_configuration:
+  entity_type: node
+  bundles:
+    - page
+    - editorial
+    - news
+    - event
+    - office
+  text_fields:
+    field_lead: field_lead

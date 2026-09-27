@@ -221,8 +221,10 @@ content.
 
 ### paragraphs_blokkli_conversion
 
-Allows converting between paragraph types (e.g., text to accordion). Requires
-field mapping configuration.
+Allows converting between paragraph types (e.g., text to title). Each direction
+is a conversion plugin in a custom module, which returns the new paragraph's
+field values; the editor then offers "Convert to" on paragraphs of the source
+type.
 
 ### paragraphs_blokkli_transform
 

@@ -109,11 +109,12 @@ bun run styles:watch           # Watch and rebuild styles
 individual gates by hand.**
 
 ```bash
-bun run verify                 # format:fix, lint:fix, all 5 typechecks, unit
-                               # tests. Does NOT run e2e (and says so).
+bun run verify                 # format:fix, lint:fix, all 5 typechecks,
+                               # phpcs and phpstan (Drupal's custom modules),
+                               # unit tests. Does NOT run e2e (and says so).
 bun run verify -- e2e          # E2E suite (needs the mock playground running)
 bun run verify -- <gate>       # One gate only: format, lint, typecheck,
-                               # typecheck:runtime (etc.), unit, e2e
+                               # typecheck:runtime (etc.), php, unit, e2e
 bun run test:watch             # Watch mode during development
 ```
 

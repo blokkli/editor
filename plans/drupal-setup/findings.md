@@ -40,6 +40,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                            | `paragraphs_blokkli` | low      | workaround | –        |
 | F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                           | `paragraphs_blokkli` | low      | open       | –        |
 | F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       | –        |
+| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                     | `paragraphs_blokkli` | medium   | open       | –        |
+| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                | both                 | low      | workaround | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -685,3 +687,32 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   `entity:translate` form doesn't have; its language is `translation.id`
   (`src/runtime/editor/features/edit-form/index.vue:86-96`, in this repository).
 - **Fix idea:** read `translation.id` for `entity:translate`.
+
+## F32: Content search results in the source language
+
+- **Found:** 2026-09-27, 13g, in the editor.
+- **Results aren't translated:** `EntityQuery` (the `entity_query` search
+  plugin) matches the label in any translation (`EntityQuery.php:125`), but maps
+  the loaded entity as it is (`:130`, `:160`). In the German editor, "rathaus"
+  finds the town hall, listed as "Town hall". The provider's label, a config
+  override, is translated. **Fix idea:** the entity repository's
+  `getTranslationFromContext()` in `mapEntity()`.
+- **No text for `string_long` fields:** `TEXT_FIELD_TYPES` (`:46`) lacks
+  `string_long`, so a lead (`field_lead`) never shows below the title. This is
+  13c's note on `getEntityText()`. The other half of that note doesn't hold:
+  unchecked text fields are stored as `0`, and `hasField('0')` skips them.
+
+## F33: Transform plugins don't get the language
+
+- **Found:** 2026-09-27, 13g, with the "Search and replace" transform.
+- **Symptom:** a transform that `applies()` in a translation changes the
+  paragraph's source language, not the translation being edited.
+- **Cause:** `applies()` gets the langcode, but `transform()` doesn't: the
+  `Transform` mutation (`Transform.php:123`) has no langcode argument. The
+  frontend's `pbApplyTransformPlugin`
+  (`src/modules/drupal/graphql/features/transform.graphql:25-43`, in this
+  repository) declares `$langcode` but never passes it.
+- **Workaround:** `SearchAndReplace` in `blokkli_playground` takes the current
+  content language from the request, which has the language's prefix.
+- **Fix idea:** a `langcode` argument on the `transform` field, passed to
+  `transform()` (or set on the mutation context).

@@ -115,7 +115,9 @@ From [13d](13d-reusable-content.md) (2026-09-27):
   `from_library` block referencing it) avoids that.
 - **Interface translations** (month names, the admin) aren't config: import them
   with `drush locale:check && drush locale:update` (from drupal.org) before
-  baking, so sandboxes get them without network access.
+  baking, so sandboxes get them without network access. The same commands import
+  `blokkli_playground`'s own (`translations/de.po`, `fr.po`, since 13g): the
+  labels of its transform plugin.
 - `tmp/drupal-reusable-content.php` and `tmp/drupal-reusable-mutations.sh` (not
   committed) were 13d's test content.
 

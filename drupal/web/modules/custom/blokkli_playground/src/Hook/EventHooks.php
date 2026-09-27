@@ -7,6 +7,7 @@ namespace Drupal\blokkli_playground\Hook;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\datetime_range\Plugin\Field\FieldType\DateRangeItem;
 use Drupal\node\NodeInterface;
 
 /**
@@ -32,7 +33,10 @@ final class EventHooks {
     }
 
     $date = $node->get('field_date')->first();
-    $end = $date?->end_date ?? $date?->start_date;
+    if (!$date instanceof DateRangeItem) {
+      return;
+    }
+    $end = $date->get('end_date')->getValue() ?? $date->get('start_date')->getValue();
     if (!$end instanceof DrupalDateTime) {
       return;
     }

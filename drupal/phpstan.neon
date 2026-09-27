@@ -1,0 +1,12 @@
+# Static analysis of the custom modules (the `php` gate of `bun run verify`).
+# Level 5: level 6 wants the value types of arrays in docblocks, which the
+# Drupal conventions leave out.
+includes:
+  - vendor/mglaman/phpstan-drupal/extension.neon
+  - vendor/mglaman/phpstan-drupal/rules.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
+parameters:
+  level: 5
+  paths:
+    - web/modules/custom

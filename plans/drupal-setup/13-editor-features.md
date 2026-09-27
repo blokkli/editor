@@ -125,9 +125,9 @@ the schema, and where they're set up:
 | import-existing      | 13c       | copying blocks from one page to another (same type and bundle only)                                                                                            |
 | block-transfer       | 13c       | copying blocks between hosts, e.g. a page into a news item or the sidebar                                                                                      |
 | preview-grant        | 13e       | previewing unpublished changes on a phone                                                                                                                      |
-| transform            | 13g       | search and replace, e.g. a renamed office                                                                                                                      |
+| transform            | 13g       | search and replace in text and title blocks, also in a translation                                                                                             |
 | conversions          | 13g       | text ↔ title, button → text                                                                                                                                    |
-| search               | 13g       | offices, events, news, pages, media, library                                                                                                                   |
+| search               | 13g       | the tab "Content": pages, editorial pages, news, events and offices (`entity_query`); media and library items have their own dialogs                           |
 | comments             | 13h       | the head of the department reviews a page                                                                                                                      |
 | notifications        | 13h       | comments and mentions                                                                                                                                          |
 | agent                | 13i       | editing a page with the agent                                                                                                                                  |

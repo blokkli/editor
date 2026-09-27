@@ -6,3 +6,7 @@ core_version_requirement: ^11
 dependencies:
   - scheduler:scheduler
   - translatable_config_pages:translatable_config_pages
+# The translations of the module's strings (translations/de.po, fr.po),
+# imported by locale:update.
+'interface translation project': blokkli_playground
+'interface translation server pattern': modules/custom/blokkli_playground/translations/%language.po

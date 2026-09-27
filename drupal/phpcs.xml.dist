@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The coding standards of the custom modules (the php gate of verify). -->
+<ruleset name="blokkli-drupal">
+  <rule ref="vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml"/>
+  <rule ref="vendor/drupal/coder/coder_sniffer/DrupalPractice/ruleset.xml"/>
+
+  <arg name="extensions" value="php,inc,module,install,info,yml"/>
+  <arg name="parallel" value="4"/>
+
+  <file>web/modules/custom</file>
+</ruleset>

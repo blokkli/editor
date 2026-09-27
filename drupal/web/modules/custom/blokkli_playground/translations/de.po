@@ -1,0 +1,28 @@
+# German translations of blokkli_playground.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Search and replace"
+msgstr "Suchen und ersetzen"
+
+msgid "Replaces a text everywhere in the selected blocks."
+msgstr "Ersetzt einen Text überall in den ausgewählten Blöcken."
+
+msgctxt "blokkli_playground"
+msgid "Search"
+msgstr "Suchen nach"
+
+msgctxt "blokkli_playground"
+msgid "Replace with"
+msgstr "Ersetzen durch"
+
+msgid "Convert a text to a title"
+msgstr "Text in einen Titel umwandeln"
+
+msgid "Convert a title to a text"
+msgstr "Titel in einen Text umwandeln"
+
+msgid "Convert a button to a text"
+msgstr "Button in einen Text umwandeln"
