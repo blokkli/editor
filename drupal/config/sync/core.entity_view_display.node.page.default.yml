@@ -4,9 +4,8 @@ status: true
 dependencies:
   config:
     - field.field.node.page.field_aside
-    - field.field.node.page.field_hero_image
-    - field.field.node.page.field_host_options
     - field.field.node.page.field_lead
+    - field.field.node.page.field_office
     - field.field.node.page.field_paragraphs
     - node.type.page
   module:
@@ -26,21 +25,20 @@ content:
     third_party_settings: {  }
     weight: -1
     region: content
-  field_hero_image:
-    type: entity_reference_entity_view
-    label: hidden
-    settings:
-      view_mode: default
-      link: false
-    third_party_settings: {  }
-    weight: -3
-    region: content
   field_lead:
     type: basic_string
     label: hidden
     settings: {  }
     third_party_settings: {  }
     weight: -4
+    region: content
+  field_office:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: -3
     region: content
   field_paragraphs:
     type: entity_reference_revisions_entity_view
@@ -57,6 +55,5 @@ content:
     weight: 100
     region: content
 hidden:
-  field_host_options: true
   langcode: true
   search_api_excerpt: true

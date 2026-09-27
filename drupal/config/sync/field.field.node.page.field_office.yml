@@ -1,0 +1,29 @@
+uuid: 795ae206-8d96-4f9e-8e48-a57507539271
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_office
+    - node.type.office
+    - node.type.page
+id: node.page.field_office
+field_name: field_office
+entity_type: node
+bundle: page
+label: 'Responsible office'
+description: 'Shown below the title, and its contact in the sidebar.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      office: office
+    sort:
+      field: title
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

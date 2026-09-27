@@ -1,0 +1,22 @@
+uuid: 3b4a76dc-fb08-4a7e-a294-9884a060931a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.teaser.field_node
+    - node.type.editorial
+    - paragraphs.paragraphs_type.teaser
+  module:
+    - node
+    - paragraphs
+id: node__editorial
+label: 'node - editorial'
+target_entity_type: node
+target_entity_bundle: editorial
+paragraph_bundle: null
+paragraph_field: null
+mappings:
+  -
+    paragraph_bundle: teaser
+    paragraph_field: field_node
+context_description: null

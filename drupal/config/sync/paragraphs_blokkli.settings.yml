@@ -8,6 +8,7 @@ image_style: blokkli_preview
 use_user_images: true
 enabled_types:
   node:
+    - editorial
     - event
     - news
     - office

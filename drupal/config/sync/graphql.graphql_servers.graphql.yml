@@ -87,6 +87,7 @@ schema_configuration:
         field_email: field_email
         field_hero_image: field_hero_image
         field_lead: field_lead
+        field_office: field_office
         field_opening_hours: field_opening_hours
         field_organiser: field_organiser
         field_paragraphs: field_paragraphs
@@ -175,6 +176,8 @@ schema_configuration:
         remote_video:
           enabled: true
       node:
+        editorial:
+          enabled: true
         event:
           enabled: true
         news:

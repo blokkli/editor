@@ -5,6 +5,10 @@ fragment pbMutatedEntity on Entity {
   ... on NodePage {
     title
     lead: fieldLead
+  }
+  ... on NodeEditorial {
+    title
+    lead: fieldLead
     hero: fieldHeroImage {
       ...mediaImage
     }

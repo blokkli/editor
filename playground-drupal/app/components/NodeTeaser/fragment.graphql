@@ -6,6 +6,9 @@ fragment nodeTeaser on Node {
   }
   ... on NodePage {
     lead: fieldLead
+  }
+  ... on NodeEditorial {
+    lead: fieldLead
     hero: fieldHeroImage {
       ...mediaImage
     }

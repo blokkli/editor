@@ -1,9 +1,5 @@
 fragment paragraphContact on ParagraphContact {
   office: fieldOffice {
-    title
-    url {
-      path
-    }
-    ...officeDetails
+    ...officeContact
   }
 }

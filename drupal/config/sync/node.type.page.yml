@@ -18,9 +18,9 @@ third_party_settings:
     unpublish_enable: true
     unpublish_required: false
     unpublish_revision: false
-name: Page
+name: 'Detail page'
 type: page
-description: null
+description: 'An information page, the last in its branch of the menu. With a sidebar for the contact and more.'
 help: null
 new_revision: true
 preview_mode: 1

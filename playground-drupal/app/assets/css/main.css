@@ -94,15 +94,10 @@
   margin-inline: auto;
   padding-inline: var(--spacing-gutter);
 
-  /* A host with a sidebar lays out its parts itself (Host/Layout), except for
-     a title on an image, which is as wide as the page. */
+  /* The sidebar layout (Host/Layout) lays out a host's parts itself. */
   @variant lg {
-    .host-layout:has(> .host-layout-aside .has-aside)
-      :is(
-        .host-layout-body,
-        .host-layout-aside,
-        .host-layout-header > :not(.is-overlay)
-      )
+    .host-layout.has-sidebar
+      :is(.host-layout-header, .host-layout-body, .host-layout-aside)
       & {
       max-width: none;
       padding-inline: 0;
@@ -129,12 +124,8 @@
         3
     );
 
-    .host-layout:has(> .host-layout-aside .has-aside)
-      :is(
-        .host-layout-body,
-        .host-layout-aside,
-        .host-layout-header > :not(.is-overlay)
-      )
+    .host-layout.has-sidebar
+      :is(.host-layout-header, .host-layout-body, .host-layout-aside)
       & {
       max-width: none;
       padding-inline: 0;
@@ -255,10 +246,7 @@
     }
   }
 
-  /* A host's header, blocks and sidebar (Host/Layout). With something in the
-     sidebar, from lg: the header's band in columns 1–8, the sidebar as a white
-     panel cutting into it in columns 9–12, the blocks below the header. The
-     containers inside then mean the column, whatever the width option. */
+  /* A host's header, blocks and sidebar (Host/Layout). */
   .host-layout {
     @apply flex flex-col gap-10 pb-section;
 
@@ -275,63 +263,44 @@
     &.is-aside-first > .host-layout-aside {
       @apply order-1;
     }
+
+    /* No visible block in the sidebar, e.g. only the contact fragment of a
+       page without an office: no panel, but the layout stays. While editing,
+       the sidebar stays a drop zone. */
+    > .host-layout-aside:not(.is-editing):not(:has(> * > :not(.hidden))) {
+      @apply hidden;
+    }
   }
 
-  .host-layout:has(> .host-layout-aside .has-aside) {
+  /* The sidebar layout of detail pages, from lg: the header's band in columns
+     1–8, the sidebar as a white panel cutting into it in columns 9–12, the
+     blocks below the header. The containers inside then mean the column,
+     whatever the width option. */
+  .host-layout.has-sidebar {
     @variant lg {
-      /* The wide container's 12 columns, and a track on each side for a title
-         on an image, which is as wide as the page. The inner columns share
-         the space first, up to the wide container's width. */
       display: grid;
-      grid-template-columns:
-        [full-start] minmax(
-          calc(var(--spacing-gutter) - var(--spacing-grid)),
-          1fr
-        )
-        repeat(
-          12,
-          minmax(
-            0,
-            calc((var(--container-wide) - var(--spacing-grid) * 11) / 12)
-          )
-        )
-        minmax(calc(var(--spacing-gutter) - var(--spacing-grid)), 1fr)
-        [full-end];
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       grid-template-rows: auto 1fr;
       column-gap: var(--spacing-grid);
+      max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
+      margin-inline: auto;
+      padding-inline: var(--spacing-gutter);
 
       > .host-layout-header {
-        grid-column: 2 / span 8;
+        grid-column: 1 / span 8;
         grid-row: 1;
       }
 
       > .host-layout-body {
-        grid-column: 2 / span 8;
+        grid-column: 1 / span 8;
         grid-row: 2;
       }
 
       /* Positioned, so that it's painted over the header's band. */
       > .host-layout-aside {
         @apply relative mt-8 self-start bg-white p-6;
-        grid-column: 10 / span 4;
+        grid-column: 9 / span 4;
         grid-row: 1 / span 2;
-      }
-    }
-  }
-
-  /* A title on the image: the header is as wide as the page, and the sidebar
-     starts below it. */
-  .host-layout:has(> .host-layout-header .is-overlay):has(
-      > .host-layout-aside .has-aside
-    ) {
-    @variant lg {
-      > .host-layout-header {
-        grid-column: full;
-      }
-
-      > .host-layout-aside {
-        @apply mt-0;
-        grid-row: 2;
       }
     }
   }

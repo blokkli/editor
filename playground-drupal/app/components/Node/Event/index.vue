@@ -4,7 +4,7 @@
     v-bind="blokkliProps"
     :entity="props"
   >
-    <HostLayout aside-first>
+    <HostLayout sidebar aside-first>
       <template #header>
         <HostHeader
           :title="entity.title"
@@ -23,7 +23,7 @@
         class="flow"
       />
       <template #aside>
-        <div class="has-aside container-content flex flex-col gap-4">
+        <div class="container-content flex flex-col gap-4">
           <h2
             class="border-b border-ink pb-2.5 text-label text-muted uppercase"
           >

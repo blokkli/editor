@@ -1,16 +1,16 @@
-uuid: 4d804fbd-ebc1-489d-9136-6a16c9b8c58e
+uuid: 1066aaa5-bf22-44e4-b861-e3c730b5b77a
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_host_options
-    - node.type.page
+    - node.type.editorial
   module:
     - paragraphs_blokkli
-id: node.page.field_host_options
+id: node.editorial.field_host_options
 field_name: field_host_options
 entity_type: node
-bundle: page
+bundle: editorial
 label: Options
 description: ''
 required: false

@@ -1186,6 +1186,202 @@ interface Node implements Entity & EntityLinkable & EntityRevisionable {
   isLatestRevision: Boolean
 }
 
+"Editorial page {entity_type: node, bundle: editorial}"
+type NodeEditorial implements Node & Entity & EntityLinkable & EntityRevisionable & EntityTranslatable {
+  "{field: nid} "
+  nidRawField: FieldItemListInteger
+
+  "{value} {field: nid} "
+  nid: Int
+
+  "{field: status} "
+  statusRawField: FieldItemListBoolean
+
+  "{value} {field: status} "
+  status: Boolean
+
+  "{field: uid} The username of the content author."
+  uidRawField: FieldItemListEntityReference
+
+  "{value} {field: uid} The username of the content author."
+  uid: User
+
+  "{field: title} "
+  titleRawField: FieldItemListString
+
+  "{value} {field: title} "
+  title: String
+
+  "{field: created} The date and time that the content was created."
+  createdRawField: FieldItemListCreated
+
+  "{value} {field: created} The date and time that the content was created."
+  created: String
+
+  "{field: changed} The time that the node was last edited."
+  changedRawField: FieldItemListChanged
+
+  "{value} {field: changed} The time that the node was last edited."
+  changed: String
+
+  "{field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  "{value} {field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcode: Boolean
+
+  "{field: publish_on} "
+  publishOnRawField: FieldItemListTimestamp
+
+  "{value} {field: publish_on} "
+  publishOn: String
+
+  "{field: unpublish_on} "
+  unpublishOnRawField: FieldItemListTimestamp
+
+  "{value} {field: unpublish_on} "
+  unpublishOn: String
+
+  "{field: field_hero_image} "
+  fieldHeroImageRawField: FieldItemListEntityReference
+
+  "{value} {field: field_hero_image} "
+  fieldHeroImage: MediaImage
+
+  "{field: field_lead} "
+  fieldLeadRawField: FieldItemListStringLong
+
+  "{value} {field: field_lead} "
+  fieldLead: String
+
+  "{field: field_paragraphs} "
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  "{value} {field: field_paragraphs} "
+  fieldParagraphs: [Paragraph]
+
+  "The props for the blokkli provider component."
+  blokkliProps: ParagraphsBlokkliProps!
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+
+  "Get all translations."
+  translations: [NodeEditorial]
+
+  "Get a specific translation."
+  translation(
+    ""
+    langcode: Langcode!
+
+    "Return entity in current language if translation language does not exist."
+    fallback: Boolean
+  ): NodeEditorial
+}
+
+"Lead"
+type FieldItemListStringLong implements FieldItemList {
+  "Array of field items."
+  list: [FieldItemTypeStringLong]
+
+  "The first field item."
+  first: FieldItemTypeStringLong
+
+  "True if the field list has no items."
+  isEmpty: Boolean!
+
+  "The number of field items."
+  count: Int!
+
+  "Get a string representation of all field items."
+  getString: String!
+
+  "Get the entity the field belongs to."
+  entity: Entity
+}
+
+"Long text"
+type FieldItemTypeStringLong implements FieldItemType & FieldItemTypeStringInterface {
+  "{field: value} Text value"
+  value: String
+
+  "True if this item is considered empty."
+  isEmpty: Boolean!
+}
+
+"Content"
+type FieldItemListEntityReferenceRevisions implements FieldItemList {
+  "Array of field items."
+  list: [FieldItemTypeEntityReferenceRevisions]
+
+  "The first field item."
+  first: FieldItemTypeEntityReferenceRevisions
+
+  "True if the field list has no items."
+  isEmpty: Boolean!
+
+  "The number of field items."
+  count: Int!
+
+  "Get a string representation of all field items."
+  getString: String!
+
+  "Get the entity the field belongs to."
+  entity: Entity
+
+  name: String!
+  targetBundles: [Entity]
+  canEdit: Boolean
+}
+
+"Entity reference revisions"
+type FieldItemTypeEntityReferenceRevisions implements FieldItemType {
+  "{field: target_id} Paragraph ID"
+  targetId: Int
+
+  "{field: entity} Paragraph"
+  entity: Entity
+
+  "{field: target_revision_id} Paragraph revision ID"
+  targetRevisionId: Int
+
+  "True if this item is considered empty."
+  isEmpty: Boolean!
+}
+
 "Event {entity_type: node, bundle: event}"
 type NodeEvent implements Node & Entity & EntityLinkable & EntityRevisionable & EntityTranslatable {
   "{field: nid} "
@@ -1415,76 +1611,6 @@ type FieldItemTypeDaterange implements FieldItemType & FieldItemTypeTimestampInt
 
   startDate(format: String, drupalDateFormat: DrupalDateFormat): String!
   endDate(format: String, drupalDateFormat: DrupalDateFormat): String!
-}
-
-"Lead"
-type FieldItemListStringLong implements FieldItemList {
-  "Array of field items."
-  list: [FieldItemTypeStringLong]
-
-  "The first field item."
-  first: FieldItemTypeStringLong
-
-  "True if the field list has no items."
-  isEmpty: Boolean!
-
-  "The number of field items."
-  count: Int!
-
-  "Get a string representation of all field items."
-  getString: String!
-
-  "Get the entity the field belongs to."
-  entity: Entity
-}
-
-"Long text"
-type FieldItemTypeStringLong implements FieldItemType & FieldItemTypeStringInterface {
-  "{field: value} Text value"
-  value: String
-
-  "True if this item is considered empty."
-  isEmpty: Boolean!
-}
-
-"Content"
-type FieldItemListEntityReferenceRevisions implements FieldItemList {
-  "Array of field items."
-  list: [FieldItemTypeEntityReferenceRevisions]
-
-  "The first field item."
-  first: FieldItemTypeEntityReferenceRevisions
-
-  "True if the field list has no items."
-  isEmpty: Boolean!
-
-  "The number of field items."
-  count: Int!
-
-  "Get a string representation of all field items."
-  getString: String!
-
-  "Get the entity the field belongs to."
-  entity: Entity
-
-  name: String!
-  targetBundles: [Entity]
-  canEdit: Boolean
-}
-
-"Entity reference revisions"
-type FieldItemTypeEntityReferenceRevisions implements FieldItemType {
-  "{field: target_id} Paragraph ID"
-  targetId: Int
-
-  "{field: entity} Paragraph"
-  entity: Entity
-
-  "{field: target_revision_id} Paragraph revision ID"
-  targetRevisionId: Int
-
-  "True if this item is considered empty."
-  isEmpty: Boolean!
 }
 
 "Registration link"
@@ -1871,7 +1997,7 @@ type FieldItemTypeTelephone implements FieldItemType & FieldItemTypeStringInterf
   isEmpty: Boolean!
 }
 
-"Page {entity_type: node, bundle: page}"
+"Detail page {entity_type: node, bundle: page}"
 type NodePage implements Node & Entity & EntityLinkable & EntityRevisionable & EntityTranslatable {
   "{field: nid} "
   nidRawField: FieldItemListInteger
@@ -1933,17 +2059,17 @@ type NodePage implements Node & Entity & EntityLinkable & EntityRevisionable & E
   "{value} {field: field_aside} "
   fieldAside: [Paragraph]
 
-  "{field: field_hero_image} "
-  fieldHeroImageRawField: FieldItemListEntityReference
-
-  "{value} {field: field_hero_image} "
-  fieldHeroImage: MediaImage
-
   "{field: field_lead} "
   fieldLeadRawField: FieldItemListStringLong
 
   "{value} {field: field_lead} "
   fieldLead: String
+
+  "{field: field_office} Shown below the title, and its contact in the sidebar."
+  fieldOfficeRawField: FieldItemListEntityReference
+
+  "{value} {field: field_office} Shown below the title, and its contact in the sidebar."
+  fieldOffice: NodeOffice
 
   "{field: field_paragraphs} "
   fieldParagraphsRawField: FieldItemListEntityReferenceRevisions

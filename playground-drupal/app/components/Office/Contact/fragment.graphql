@@ -1,0 +1,7 @@
+fragment officeContact on NodeOffice {
+  title
+  url {
+    path
+  }
+  ...officeDetails
+}

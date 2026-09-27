@@ -2,8 +2,8 @@ fragment nodePage on NodePage {
   uuid
   title
   lead: fieldLead
-  hero: fieldHeroImage {
-    ...mediaImage
+  office: fieldOffice {
+    ...officeContact
   }
   changedDate: changedRawField {
     first {

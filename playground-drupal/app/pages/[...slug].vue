@@ -3,6 +3,10 @@
     <ConfigPageSite v-if="siteConfig" v-bind="siteConfig" :language-links />
     <main id="main" class="grow overflow-x-clip">
       <NodePage v-if="entity.__typename === 'NodePage'" v-bind="entity" />
+      <NodeEditorial
+        v-else-if="entity.__typename === 'NodeEditorial'"
+        v-bind="entity"
+      />
       <NodeNews v-else-if="entity.__typename === 'NodeNews'" v-bind="entity" />
       <NodeEvent
         v-else-if="entity.__typename === 'NodeEvent'"
@@ -30,6 +34,7 @@ import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
 import {
   ConfigPageFooter,
   ConfigPageSite,
+  NodeEditorial,
   NodeEvent,
   NodeNews,
   NodeOffice,
@@ -60,6 +65,7 @@ const entity = computed(() => {
   }
   switch (url.entity.__typename) {
     case 'NodePage':
+    case 'NodeEditorial':
     case 'NodeNews':
     case 'NodeEvent':
     case 'NodeOffice':

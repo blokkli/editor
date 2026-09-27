@@ -1,5 +1,5 @@
 <template>
-  <header :class="isOverlay ? 'is-overlay grid' : 'band'">
+  <header :class="{ grid: isOverlay }">
     <div
       v-if="isOverlay"
       v-blokkli-droppable:field_hero_image
@@ -20,7 +20,7 @@
       :class="
         isOverlay
           ? 'on-dark z-10 col-start-1 row-start-1 self-end pb-10 text-white lg:pb-12'
-          : 'py-8 lg:pt-10 lg:pb-12'
+          : ['band py-8 lg:pt-10', hasImage ? 'lg:pb-10' : 'lg:pb-12']
       "
     >
       <p
@@ -47,17 +47,25 @@
       >
         <slot name="meta" />
       </p>
+    </div>
+    <!-- The image after the band, as wide as the container. The band reaches
+         halfway down it. -->
+    <div v-if="hasImage && !isOverlay" class="relative isolate">
       <div
-        v-if="hasImage && !isOverlay"
-        v-blokkli-droppable:field_hero_image
-        class="mt-4 aspect-[2/1] overflow-hidden bg-line"
-      >
-        <MediaImage
-          v-if="image"
-          v-bind="image"
-          class="size-full"
-          img-class="size-full object-cover"
-        />
+        class="absolute inset-x-[-100vmax] top-0 bottom-1/2 -z-10 bg-surface"
+      />
+      <div class="container-wide">
+        <div
+          v-blokkli-droppable:field_hero_image
+          class="aspect-[3/2] overflow-hidden bg-line lg:aspect-[5/2]"
+        >
+          <MediaImage
+            v-if="image"
+            v-bind="image"
+            class="size-full"
+            img-class="size-full object-cover"
+          />
+        </div>
       </div>
     </div>
   </header>
@@ -78,7 +86,7 @@ const props = defineProps<{
    * a droppable element for a field the host doesn't have breaks the editor.
    */
   image?: MediaImageFragment | null
-  // image: in the band, below the lead. overlay: the title on the image.
+  // image: after the band. overlay: the title on the image.
   variant: 'image' | 'overlay' | 'plain'
   isEditing: boolean
 }>()

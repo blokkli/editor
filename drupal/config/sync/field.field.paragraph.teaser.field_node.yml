@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_node
+    - node.type.editorial
     - node.type.event
     - node.type.news
     - node.type.page
@@ -22,6 +23,7 @@ settings:
   handler: 'default:node'
   handler_settings:
     target_bundles:
+      editorial: editorial
       event: event
       news: news
       page: page

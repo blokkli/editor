@@ -1,0 +1,27 @@
+uuid: bc95aa41-e497-44a1-a022-c91b9063d572
+langcode: en
+status: true
+dependencies:
+  module:
+    - scheduler
+third_party_settings:
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: vertical_tab
+    publish_enable: true
+    publish_past_date: error
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: false
+    show_message_after_update: false
+    unpublish_enable: true
+    unpublish_required: false
+    unpublish_revision: false
+name: 'Editorial page'
+type: editorial
+description: 'The home page, overview pages and landing pages: a hero image and a free layout.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

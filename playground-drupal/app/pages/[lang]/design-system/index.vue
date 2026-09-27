@@ -233,20 +233,29 @@
             line. A block's width option picks one of them, or the whole page.
           </p>
           <p class="max-w-content">
-            A host with a sidebar (<code>Host/Layout</code>) has the layout of
-            the detail mockup from lg: the header in columns 1–8, the sidebar as
-            a white panel cutting into the header in columns 9–12, the blocks
-            below the header. Inside, every container means the column. The
-            blocks know where they are from their field list type:
+            Two page types. The <strong>detail page</strong>, the last page in
+            its branch of the menu, always has the sidebar layout of the detail
+            mockup (<code>Host/Layout</code>) from lg: the header in columns
+            1–8, the sidebar as a white panel cutting into the header in columns
+            9–12, the blocks below the header. Inside, every container means the
+            column. It has no hero image; its responsible office fills the
+            header's meta and the contact fragment in the sidebar. The
+            <strong>editorial page</strong> (the home page, overview pages,
+            landing pages) has a hero image and no sidebar. Events and offices
+            keep the sidebar until they get their own design.
+          </p>
+          <p class="max-w-content">
+            The blocks know where they are from their field list type:
             <code>sidebar</code>, <code>footer</code> (the ink ground: buttons,
             links and neutral colours flip, see <code>on-dark</code>) or
             <code>notice</code>.
           </p>
           <p class="max-w-content">
-            <code>band</code> puts a page's header on a <code>surface</code>
-            background as wide as the window (the hero of the home page, the
-            header of the detail page). An ancestor clips it with
-            <code>overflow-x-clip</code>.
+            <code>band</code> puts a page's header on a
+            <code>surface</code> background as wide as the window. The hero
+            image follows it, as wide as the container, with the band reaching
+            halfway down the image; or the title sits on the image. An ancestor
+            clips the band with <code>overflow-x-clip</code>.
           </p>
           <div class="overflow-x-auto">
             <table class="w-full min-w-[32rem] text-left">

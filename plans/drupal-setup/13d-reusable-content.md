@@ -28,6 +28,8 @@ model has them.
   - [x] the template search provider ("Entity Query Templates")
   - [x] a service page template: steps as an accordion, a fees table, downloads,
         a contact block (content: 14b; checked with a throwaway one)
+    - Since 15d, a detail page's sidebar has the contact fragment. The
+      template's contact block can go when 05/14b write its content.
   - [x] a default template for new columns (content: 05/14b; checked)
   - [x] the edit route exists (chunk 06)
 - [x] Skills:

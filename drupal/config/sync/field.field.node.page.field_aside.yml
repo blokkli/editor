@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_aside
     - node.type.page
+    - paragraphs.paragraphs_type.blokkli_fragment
     - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
@@ -20,11 +21,12 @@ description: ''
 required: false
 translatable: false
 default_value: {  }
-default_value_callback: ''
+default_value_callback: 'Drupal\blokkli_playground\PageDefaults::sidebar'
 settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
+      blokkli_fragment: blokkli_fragment
       button: button
       contact: contact
       downloads: downloads

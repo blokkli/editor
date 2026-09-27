@@ -47,6 +47,10 @@ import { computed, useEasyTexts } from '#imports'
 import type { OfficeDetailsFragment } from '#graphql-operations'
 import { useLanguage } from '~/composables/useLanguage'
 
+// Callers spread an office into it: its other fields (e.g. title) aren't
+// attributes of the list.
+defineOptions({ inheritAttrs: false })
+
 const props = defineProps<
   OfficeDetailsFragment & {
     /** Only the phone and the email. */

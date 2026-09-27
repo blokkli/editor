@@ -8,20 +8,11 @@
   >
     <template v-if="office">
       <!-- The sidebar: under a heading, on the white panel. -->
-      <div v-if="fieldListType === 'sidebar'" class="flex flex-col gap-3">
-        <h2 class="border-b border-ink pb-2.5 text-label text-muted uppercase">
-          {{ $texts('contact.label', 'Contact') }}
-        </h2>
-        <p class="font-serif text-h3 font-semibold">
-          <a
-            :href="office.url?.path"
-            class="hover:text-primary hover:underline"
-          >
-            {{ office.title }}
-          </a>
-        </p>
-        <OfficeDetails v-bind="office" :compact />
-      </div>
+      <OfficeContact
+        v-if="fieldListType === 'sidebar'"
+        v-bind="office"
+        :compact
+      />
       <!-- The footer: a column on the ink ground. -->
       <div v-else-if="fieldListType === 'footer'" class="flex flex-col gap-2">
         <h2 class="text-label text-white uppercase">
@@ -57,6 +48,7 @@
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
 import type { ParagraphContactFragment } from '#graphql-operations'
+import OfficeContact from '~/components/Office/Contact/index.vue'
 import OfficeDetails from '~/components/Office/Details/index.vue'
 
 defineProps<ParagraphContactFragment>()
