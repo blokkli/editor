@@ -1,12 +1,15 @@
 # A date range formatted by Drupal in the page's language (the date format
-# "day" and month names are translated). `start` is for machines, e.g.
-# <time datetime>. `badgeDay` and `badgeMonth` are for the date badge.
+# "day", and month and weekday names are translated). `start` is for machines,
+# e.g. <time datetime>. `badgeDay` and `badgeMonth` are for the date badge.
 fragment dateRange on FieldItemTypeDaterange {
   start: startDate(format: "c")
   startDay: startDate(drupalDateFormat: DAY)
+  startWeekday: startDate(format: "l")
   badgeDay: startDate(format: "j")
   badgeMonth: startDate(format: "M")
   startTime: startDate(format: "H:i")
+  end: endDate(format: "c")
   endDay: endDate(drupalDateFormat: DAY)
+  endWeekday: endDate(format: "l")
   endTime: endDate(format: "H:i")
 }

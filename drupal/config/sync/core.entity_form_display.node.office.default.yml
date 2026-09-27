@@ -5,12 +5,14 @@ dependencies:
   config:
     - field.field.node.office.field_address
     - field.field.node.office.field_email
+    - field.field.node.office.field_hero_image
     - field.field.node.office.field_lead
     - field.field.node.office.field_opening_hours
     - field.field.node.office.field_paragraphs
     - field.field.node.office.field_phone
     - node.type.office
   module:
+    - media_library
     - office_hours
     - paragraphs
     - path
@@ -42,9 +44,16 @@ content:
       placeholder: ''
       size: 60
     third_party_settings: {  }
+  field_hero_image:
+    type: media_library_widget
+    weight: -4
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
   field_lead:
     type: string_textarea
-    weight: -4
+    weight: -5
     region: content
     settings:
       rows: 5

@@ -241,8 +241,11 @@
             column. It has no hero image; its responsible office fills the
             header's meta and the contact fragment in the sidebar. The
             <strong>editorial page</strong> (the home page, overview pages,
-            landing pages) has a hero image and no sidebar. Events and offices
-            keep the sidebar until they get their own design.
+            landing pages) has a hero image and no sidebar. So do events and
+            offices: their key facts (<code>Facts</code>, the editorial mockup's
+            row under a primary rule) follow the header. An event's date, time
+            and place are large; an office has its address, contact and opening
+            hours.
           </p>
           <p class="max-w-content">
             Both are in Drupal's main menu. The header shows its first level;

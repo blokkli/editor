@@ -156,13 +156,13 @@ Milestones:
 | 15b | [Apply the design](15b-apply-design.md)                                                             | M1        | done        | 15a                               |
 | 15c | [Site structure](15c-site-structure.md): menus, breadcrumbs, URLs, the sub-pages of editorial pages | M1        | done        | 15d                               |
 | 15d | [Page types](15d-page-types.md): detail and editorial pages                                         | M1        | in progress | 15b                               |
-| 15e | Events and offices: their own design, without the sidebar                                           | M1        | todo        | 15d                               |
+| 15e | [Events and offices](15e-events-and-offices.md): their own design, without the sidebar              | M1        | done        | 15d                               |
 
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 13a–13f, 14a, 15a, 15b and 15c are
-done; next up is 15e, 13g or 13i. 15d waits for the review of its hero image.
+(order, skill conventions, feature matrix). 13a–13f, 14a, 15a, 15b, 15c and 15e
+are done; next up is 13g or 13i. 15d waits for the review of its hero image.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

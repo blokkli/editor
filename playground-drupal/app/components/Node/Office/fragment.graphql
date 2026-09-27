@@ -2,6 +2,9 @@ fragment nodeOffice on NodeOffice {
   uuid
   title
   lead: fieldLead
+  hero: fieldHeroImage {
+    ...mediaImage
+  }
   ...officeDetails
   blokkliProps {
     ...blokkliProps

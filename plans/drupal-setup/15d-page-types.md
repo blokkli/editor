@@ -211,6 +211,7 @@ Unlike 15a and 15b, this chunk changes the Drupal content model.
   - the sub-pages at the top of editorial pages, with a host option to hide them
   - the home page as an editorial page, for the logo's link
 - **15e:** events and offices without the sidebar. The office gets a hero image.
+  Done (2026-09-27): their facts follow the header.
 - **13g:** the search providers cover editorial pages.
 - **13i:** the table of contents fragment joins the sidebar's default, before
   the contact (the detail mockup's order).

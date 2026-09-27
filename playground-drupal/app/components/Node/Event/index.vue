@@ -4,7 +4,7 @@
     v-bind="blokkliProps"
     :entity="props"
   >
-    <HostLayout sidebar aside-first>
+    <HostLayout>
       <template #header>
         <HostHeader
           :title="entity.title"
@@ -15,58 +15,40 @@
           :breadcrumb
         >
           <template #eyebrow>{{ categoryLabel }}</template>
+          <template v-if="organiser" #meta>
+            {{
+              $texts('event.organised_by', 'Organised by @name', {
+                '@name': organiser,
+              })
+            }}
+          </template>
+          <template v-if="registration?.uri?.path" #actions>
+            <a :href="registration.uri.path" class="button">
+              {{ $texts('event.register', 'Register') }}
+            </a>
+          </template>
         </HostHeader>
       </template>
+      <Facts v-if="facts.length" class="mb-10">
+        <FactsItem
+          v-for="fact in facts"
+          :key="fact.label"
+          :label="fact.label"
+          class="font-serif text-h2"
+          :class="{ 'md:col-span-2': fact.wide }"
+        >
+          <time v-if="fact.datetime" :datetime="fact.datetime">
+            {{ fact.value }}
+          </time>
+          <template v-else>{{ fact.value }}</template>
+        </FactsItem>
+      </Facts>
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
         :allowed-fragments="['upcoming_events', 'latest_news']"
         class="flow"
       />
-      <template #aside>
-        <div class="container-content flex flex-col gap-4">
-          <h2
-            class="border-b border-ink pb-2.5 text-label text-muted uppercase"
-          >
-            {{ $texts('event.details', 'Details') }}
-          </h2>
-          <dl class="flex flex-col gap-4">
-            <div v-if="dateRange">
-              <dt class="text-small font-semibold text-muted">
-                {{ $texts('event.date', 'Date') }}
-              </dt>
-              <dd>
-                <time :datetime="date?.start">{{ dateRange }}</time>
-              </dd>
-            </div>
-            <div v-if="place">
-              <dt class="text-small font-semibold text-muted">
-                {{ $texts('event.place', 'Place') }}
-              </dt>
-              <dd>{{ place }}</dd>
-            </div>
-            <div v-if="organiser">
-              <dt class="text-small font-semibold text-muted">
-                {{ $texts('event.organiser', 'Organiser') }}
-              </dt>
-              <dd>{{ organiser }}</dd>
-            </div>
-            <div v-if="price">
-              <dt class="text-small font-semibold text-muted">
-                {{ $texts('event.price', 'Price') }}
-              </dt>
-              <dd>{{ price }}</dd>
-            </div>
-          </dl>
-          <a
-            v-if="registration?.uri?.path"
-            :href="registration.uri.path"
-            class="button mt-2"
-          >
-            {{ $texts('event.register', 'Register') }}
-          </a>
-        </div>
-      </template>
     </HostLayout>
   </BlokkliProvider>
 </template>
@@ -75,10 +57,12 @@
 import { computed, useEasyTexts } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { BreadcrumbFragment, NodeEventFragment } from '#graphql-operations'
+import Facts from '~/components/Facts/index.vue'
+import FactsItem from '~/components/Facts/Item/index.vue'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
-import { formatDateRange } from '~/helpers/date'
 
+// An event: its date, time and place are the facts after the header, large.
 const props = defineProps<
   NodeEventFragment & { breadcrumb?: BreadcrumbFragment[] }
 >()
@@ -103,7 +87,57 @@ const categoryLabel = computed(() => {
   return $texts('event.event', 'Event')
 })
 
-const dateRange = computed(() =>
-  props.date ? formatDateRange(props.date) : '',
-)
+function withWeekday(weekday: string, day: string): string {
+  return $texts('event.weekday_date', '@weekday, @date', {
+    '@weekday': weekday,
+    '@date': day,
+  })
+}
+
+// One day: its date and the time. Several days: the start and the end, each
+// over two columns.
+const facts = computed(() => {
+  const date = props.date
+  const facts: {
+    label: string
+    value: string
+    datetime?: string
+    wide?: boolean
+  }[] = []
+  if (date && date.startDay === date.endDay) {
+    facts.push(
+      {
+        label: $texts('event.date', 'Date'),
+        value: withWeekday(date.startWeekday, date.startDay),
+        datetime: date.start,
+      },
+      {
+        label: $texts('event.time', 'Time'),
+        value: `${date.startTime}–${date.endTime}`,
+      },
+    )
+  } else if (date) {
+    facts.push(
+      {
+        label: $texts('event.start', 'Start'),
+        value: `${withWeekday(date.startWeekday, date.startDay)}, ${date.startTime}`,
+        datetime: date.start,
+        wide: true,
+      },
+      {
+        label: $texts('event.end', 'End'),
+        value: `${withWeekday(date.endWeekday, date.endDay)}, ${date.endTime}`,
+        datetime: date.end,
+        wide: true,
+      },
+    )
+  }
+  if (props.place) {
+    facts.push({ label: $texts('event.place', 'Place'), value: props.place })
+  }
+  if (props.price) {
+    facts.push({ label: $texts('event.price', 'Price'), value: props.price })
+  }
+  return facts
+})
 </script>

@@ -1,8 +1,5 @@
 <template>
-  <article
-    class="host-layout"
-    :class="{ 'has-sidebar': sidebar, 'is-aside-first': asideFirst }"
-  >
+  <article class="host-layout" :class="{ 'has-sidebar': sidebar }">
     <div class="host-layout-header">
       <slot name="header" />
     </div>
@@ -21,11 +18,9 @@
 
 <script lang="ts" setup>
 // A host's header, blocks and sidebar. The sidebar layout (main.css) is for
-// detail pages, and for events and offices until they get their own design.
+// detail pages only.
 defineProps<{
   sidebar?: boolean
-  // Below lg, the sidebar comes before the blocks, e.g. an event's facts.
-  asideFirst?: boolean
   // While editing, an empty sidebar stays a drop zone.
   isEditing?: boolean
 }>()

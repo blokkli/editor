@@ -250,20 +250,6 @@
   .host-layout {
     @apply flex flex-col gap-10 pb-section;
 
-    > .host-layout-body {
-      @apply order-2;
-    }
-
-    > .host-layout-aside {
-      @apply order-3;
-    }
-
-    /* Below lg: facts (an event's date, an office's address) come before the
-       blocks. */
-    &.is-aside-first > .host-layout-aside {
-      @apply order-1;
-    }
-
     /* No visible block in the sidebar, e.g. only the contact fragment of a
        page without an office: no panel, but the layout stays. While editing,
        the sidebar stays a drop zone. */

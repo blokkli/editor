@@ -18,12 +18,15 @@ event.category_market;default;Market;Markt;Marché
 event.category_politics;default;Politics;Politik;Politique
 event.category_sport;default;Sport;Sport;Sport
 event.date;default;Date;Datum;Date
-event.details;default;Details;Details;Détails
+event.end;default;End;Ende;Fin
 event.event;default;Event;Veranstaltung;Événement
-event.organiser;default;Organiser;Veranstalter;Organisateur
+event.organised_by;default;Organised by @name;Organisiert von @name;Organisé par @name
 event.place;default;Place;Ort;Lieu
 event.price;default;Price;Preis;Prix
 event.register;default;Register;Anmelden;S'inscrire
+event.start;default;Start;Beginn;Début
+event.time;default;Time;Zeit;Heure
+event.weekday_date;default;@weekday, @date;@weekday, @date;@weekday @date
 gallery.next_image;default;Next image;Nächstes Bild;Image suivante
 gallery.previous_image;default;Previous image;Vorheriges Bild;Image précédente
 header.main_navigation;default;Main navigation;Hauptnavigation;Navigation principale

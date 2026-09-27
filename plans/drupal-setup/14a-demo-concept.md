@@ -59,13 +59,13 @@ paragraph types and bundles get added that end up wrong for it.
 
 ### Content types (hosts)
 
-| Bundle               | Fields                                                                                         | Paragraph fields                            |
-| -------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `page` (detail page) | title, lead, responsible office (15d)                                                          | `field_paragraphs`, `field_aside` (sidebar) |
-| `editorial` (15d)    | title, lead, hero image, host options (header variant)                                         | `field_paragraphs`                          |
-| `news`               | title, lead, image; the date is the publication date                                           | `field_paragraphs`                          |
-| `event`              | title, lead, image, date range, place, organiser, category (list), price, registration link    | `field_paragraphs`                          |
-| `office`             | title, lead, address, phone, email, opening hours (structured, e.g. the `office_hours` module) | `field_paragraphs`                          |
+| Bundle               | Fields                                                                                                      | Paragraph fields                            |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `page` (detail page) | title, lead, responsible office (15d)                                                                       | `field_paragraphs`, `field_aside` (sidebar) |
+| `editorial` (15d)    | title, lead, hero image, host options (header variant)                                                      | `field_paragraphs`                          |
+| `news`               | title, lead, image; the date is the publication date                                                        | `field_paragraphs`                          |
+| `event`              | title, lead, image, date range, place, organiser, category (list), price, registration link                 | `field_paragraphs`                          |
+| `office`             | title, lead, image (15e), address, phone, email, opening hours (structured, e.g. the `office_hours` module) | `field_paragraphs`                          |
 
 - `field_aside` on pages holds contact boxes, related links and downloads, and
   allows only those types. It covers "a host with several paragraph fields"
@@ -80,6 +80,8 @@ paragraph types and bundles get added that end up wrong for it.
     their URLs (pathauto) and breadcrumbs (`menu_breadcrumb`).
   - News, events and offices have a URL prefix per language.
   - The home page is an editorial page, set as the front page.
+- **Changed in [15e](15e-events-and-offices.md) (the user, 2026-09-27):**
+  offices have a hero image, like news and events.
 - Config pages: `footer` (a paragraphs field) and `site` (name, coat of arms, a
   site-wide notice with a paragraphs field). Covers 13c.
 - Library items and templates are hosts too (13d).

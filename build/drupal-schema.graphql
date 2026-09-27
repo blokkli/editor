@@ -1942,6 +1942,12 @@ type NodeOffice implements Node & Entity & EntityLinkable & EntityRevisionable &
   "{value} {field: field_email} "
   fieldEmail: String
 
+  "{field: field_hero_image} "
+  fieldHeroImageRawField: FieldItemListEntityReference
+
+  "{value} {field: field_hero_image} "
+  fieldHeroImage: MediaImage
+
   "{field: field_lead} "
   fieldLeadRawField: FieldItemListStringLong
 

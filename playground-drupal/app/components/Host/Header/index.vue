@@ -52,6 +52,9 @@
       >
         <slot name="meta" />
       </p>
+      <div v-if="$slots.actions" class="flex flex-wrap gap-3 pt-2">
+        <slot name="actions" />
+      </div>
     </div>
     <!-- The image after the band, as wide as the container. The band reaches
          halfway down it. -->
@@ -87,7 +90,7 @@ import MediaImage from '~/components/Media/Image/index.vue'
 
 // A host's title and lead on the beige band, below the breadcrumb. The eyebrow
 // above the title says what the page is (e.g. "News"), the meta below the lead
-// e.g. its date.
+// e.g. its date. The actions are buttons, e.g. an event's registration.
 const props = defineProps<{
   title?: string | null
   lead?: string | null
