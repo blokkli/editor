@@ -132,8 +132,9 @@ the schema, and where they're set up:
 | notifications        | 13h       | comments and mentions                                                                                                                                          |
 | agent                | 13i       | editing a page with the agent                                                                                                                                  |
 
-Also: publishing and scheduling (13e), translations (13f), options (13b: local,
-global, `bkVisibleLanguages`, the schema file) and complex options (13i),
+Also: publishing and scheduling (13e), translations (13f: the switcher, adding
+translations, outdated translations, DeepL, labels in DE and FR), options (13b:
+local, global, `bkVisibleLanguages`, the schema file) and complex options (13i),
 nesting and proxy mode (13b: section, accordion, columns, the gallery slider),
 host options (13c: the page's header variant), several paragraphs fields on one
 host (13c: the page's sidebar), config pages as hosts (13c: footer, site),

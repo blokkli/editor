@@ -5,8 +5,8 @@ of editor features, for example comments, duplicate or clipboard integration.
 Another term would be "module" or "plugin".
 
 Every feature can be enabled or disabled at both build time or runtime. For
-example, the `translation` feature is only enabled when the language context
-indicates the user is editing translated content.
+example, the `translations` feature is only enabled when the adapter implements
+`changeLanguage`.
 
 ## Builtin features
 

@@ -225,6 +225,17 @@ else is checked as usual, so the visitor needs:
 Sites that deny these to anonymous visitors need custom code for anonymous
 previews. The link always opens the page's default language.
 
+## Translating says "DeepL API key is not configured."
+
+The site has `paragraphs_blokkli_deepl` but no API key. The editor offers
+machine translation whenever the module's GraphQL extension is enabled; it
+doesn't know whether a key is set. Set the key from the environment (see
+[paragraphs_blokkli_deepl](/modules/drupal/configuration#paragraphs-blokkli-deepl)),
+or disable the module's GraphQL extension if the site doesn't use DeepL.
+
+"Translate texts" shows the message. "Auto-translate" on a block and a field's
+"Translate" button fail without one.
+
 ## "Another user is currently editing" / ownership conflict
 
 blökkli uses an ownership system — only one user can edit an entity at a time.

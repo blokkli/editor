@@ -78,3 +78,16 @@ From [13e](13e-publishing.md) (2026-09-27):
   it, and testing needs a role without it.
 - **Preview links** work for any user with `access content`, GraphQL access and
   view access to the page.
+
+From [13f](13f-translation.md) (2026-09-27):
+
+- **Translators** (the French translator of 14a) need `translate <bundle> node`
+  for each host type, `create content translations` and
+  `update content translations`: the editor's switcher opens Drupal's "add
+  translation" form. Config pages: `translate translatable_config_pages`.
+  Paragraphs only need `edit paragraphs blokkli edit state`.
+- **UI strings** (the `texts` module): `access string translation overview`,
+  `view string translation`, `create string translation` and
+  `edit string translation`, for whoever translates the frontend's texts. Not
+  blökkli's.
+- **DeepL** has no permission of its own.

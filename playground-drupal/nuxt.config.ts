@@ -24,7 +24,7 @@ const optionsSchemaPath = fileURLToPath(
 
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli.
-  modules: ['nuxt-graphql-middleware', '../src/module'],
+  modules: ['nuxt-easy-texts', 'nuxt-graphql-middleware', '../src/module'],
 
   imports: {
     autoImport: false,
@@ -55,18 +55,56 @@ export default defineNuxtConfig({
     autoImportPatterns: ['./app/**/*.graphql'],
   },
 
+  // UI strings, translated in Drupal's texts module. The fragment is committed:
+  // nuxt-graphql-middleware reads the documents before it's generated.
+  easyTexts: {
+    pattern: ['~/**/*.{js,ts,vue}'],
+    generators: [
+      {
+        outputPath: './app/graphql/fragment.easyTexts.graphql',
+        generate: 'drupal-graphql-texts',
+      },
+    ],
+  },
+
   blokkli: {
     globalOptions: {
       width: {
         type: 'radios',
-        label: 'Width',
+        label: { en: 'Width', de: 'Breite', fr: 'Largeur' },
         default: 'content',
         displayAs: 'icons',
         options: {
-          content: { label: 'Content', icon: 'bk_mdi_width_normal' },
-          wide: { label: 'Wide', icon: 'bk_mdi_width_wide' },
-          full: { label: 'Full', icon: 'bk_mdi_width_full' },
+          content: {
+            label: { en: 'Content', de: 'Inhalt', fr: 'Contenu' },
+            icon: 'bk_mdi_width_normal',
+          },
+          wide: {
+            label: { en: 'Wide', de: 'Breit', fr: 'Large' },
+            icon: 'bk_mdi_width_wide',
+          },
+          full: {
+            label: { en: 'Full', de: 'Volle Breite', fr: 'Pleine largeur' },
+            icon: 'bk_mdi_width_full',
+          },
         },
+      },
+      // blökkli's own definition, with labels in every language: the editor
+      // doesn't translate them.
+      bkVisibleLanguages: {
+        type: 'checkboxes',
+        label: {
+          en: 'Visible languages',
+          de: 'Sichtbare Sprachen',
+          fr: 'Langues visibles',
+        },
+        description: {
+          en: 'Only show on specific languages.',
+          de: 'Nur in bestimmten Sprachen anzeigen.',
+          fr: 'Afficher uniquement dans certaines langues.',
+        },
+        options: {},
+        default: [],
       },
     },
     chunkNames: ['global', 'rare'],

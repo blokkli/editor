@@ -10,7 +10,12 @@
       :class="{ 'border-y border-stone-300': options.display === 'list' }"
     />
     <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
-      The content of this teaser isn't available.
+      {{
+        $texts(
+          'teaser.unavailable',
+          "The content of this teaser isn't available.",
+        )
+      }}
     </p>
   </div>
 </template>
@@ -28,11 +33,11 @@ const { options, parentType } = defineBlokkli({
   options: {
     display: {
       type: 'radios',
-      label: 'Display',
+      label: { en: 'Display', de: 'Darstellung', fr: 'Affichage' },
       default: 'card',
       options: {
-        card: 'Card',
-        list: 'List',
+        card: { label: { en: 'Card', de: 'Karte', fr: 'Carte' } },
+        list: { label: { en: 'List', de: 'Liste', fr: 'Liste' } },
       },
     },
   },

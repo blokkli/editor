@@ -36,7 +36,7 @@ const { options, parentType } = defineBlokkli({
   options: {
     ratio: {
       type: 'radios',
-      label: 'Ratio',
+      label: { en: 'Ratio', de: 'Verhältnis', fr: 'Proportions' },
       default: '50-50',
       displayAs: 'grid',
       options: {

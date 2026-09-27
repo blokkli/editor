@@ -18,7 +18,7 @@ compatibility: >-
   backend (drush, config export, custom modules) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.2'
+  version: '1.0.3'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/pages
 ---
@@ -57,9 +57,11 @@ The docs: [pages with Drupal](https://docs.blokk.li/modules/drupal/pages),
 - **List the allowed types explicitly** on every paragraphs field. A field that
   allows "all types" is reported to the editor as allowing none.
 - **The other fields:** translatable if their value differs per language (text,
-  often an address), untranslatable otherwise (dates, references, phone
+  often an address), untranslatable otherwise (dates, links, references, phone
   numbers).
-- **Translation:** enable it for the bundle if the site is multilingual.
+- **Translation:** enable it for the bundle if the site is multilingual. If the
+  site shows `created` (e.g. as a news date), make it untranslatable too; the
+  `blokkli-setup-translations` skill has the override.
 - **The form display:** every field that editors change outside blökkli. The
   editor's "Edit" on the host opens this form.
 - Export the config (`drush cex`).

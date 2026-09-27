@@ -1,0 +1,36 @@
+full_key;type;en;de;fr
+button.label;default;Button;Button;Bouton
+contact.unavailable;default;The office of this contact isn't available.;Das Amt dieses Kontakts ist nicht verfügbar.;Le service de ce contact n'est pas disponible.
+error.add_page;default;Add a page;Seite hinzufügen;Ajouter une page
+error.content_overview;default;Content overview;Inhaltsübersicht;Aperçu du contenu
+error.not_found;default;Page not found;Seite nicht gefunden;Page introuvable
+error.unknown;default;Something went wrong;Etwas ist schiefgelaufen;Une erreur s'est produite
+event.category_culture;default;Culture;Kultur;Culture
+event.category_family;default;Family;Familie;Famille
+event.category_market;default;Market;Markt;Marché
+event.category_politics;default;Politics;Politik;Politique
+event.category_sport;default;Sport;Sport;Sport
+event.date;default;Date;Datum;Date
+event.event;default;Event;Veranstaltung;Événement
+event.organiser;default;Organiser;Veranstalter;Organisateur
+event.place;default;Place;Ort;Lieu
+event.price;default;Price;Preis;Prix
+event.register;default;Register;Anmelden;S'inscrire
+event.registration;default;Registration;Anmeldung;Inscription
+gallery.next_image;default;Next image;Nächstes Bild;Image suivante
+gallery.previous_image;default;Previous image;Vorheriges Bild;Image précédente
+language_switch.label;default;Language;Sprache;Langue
+latest_news.empty;default;No news.;Keine News.;Aucune actualité.
+library_item.label;default;Library item;Bibliothekseintrag;Élément de bibliothèque
+news.meta;default;News, @date;News, @date;Actualité, @date
+office.address;default;Address;Adresse;Adresse
+office.closed;default;Closed;Geschlossen;Fermé
+office.email;default;Email;E-Mail;E-mail
+office.opening_hours;default;Opening hours;Öffnungszeiten;Horaires d'ouverture
+office.phone;default;Phone;Telefon;Téléphone
+placeholder.caption;default;Caption;Bildlegende;Légende
+placeholder.heading;default;Heading;Überschrift;Titre
+placeholder.site_name;default;Site name;Name der Website;Nom du site
+placeholder.title;default;Title;Titel;Titre
+teaser.unavailable;default;The content of this teaser isn't available.;Der Inhalt dieses Teasers ist nicht verfügbar.;Le contenu de cet aperçu n'est pas disponible.
+upcoming_events.empty;default;No upcoming events.;Keine bevorstehenden Veranstaltungen.;Aucun événement à venir.

@@ -62,6 +62,8 @@ module:
   system: 0
   telephone: 0
   text: 0
+  texts: 0
+  texts_graphql: 0
   translatable_config_pages: 0
   typed_data: 0
   user: 0

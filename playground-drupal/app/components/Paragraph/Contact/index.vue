@@ -15,7 +15,12 @@
       <OfficeDetails v-bind="office" :compact="options.display === 'compact'" />
     </div>
     <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
-      The office of this contact isn't available.
+      {{
+        $texts(
+          'contact.unavailable',
+          "The office of this contact isn't available.",
+        )
+      }}
     </p>
   </div>
 </template>
@@ -33,11 +38,11 @@ const { options, parentType, fieldListType } = defineBlokkli({
   options: {
     display: {
       type: 'radios',
-      label: 'Display',
+      label: { en: 'Display', de: 'Darstellung', fr: 'Affichage' },
       default: 'full',
       options: {
-        full: 'Full',
-        compact: 'Compact',
+        full: { label: { en: 'Full', de: 'Vollständig', fr: 'Complet' } },
+        compact: { label: { en: 'Compact', de: 'Kompakt', fr: 'Compact' } },
       },
     },
   },

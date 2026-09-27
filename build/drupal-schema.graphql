@@ -4526,6 +4526,10 @@ type Query {
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   route(path: String!, skipFrontpageRedirect: Boolean = false): Url
+  getText(key: String!, default: String, context: String): String
+  getTextPlural(key: String!, singular: String, plural: String, context: String): TextsPlural
+  getTextMultiple(texts: [TextsInput]): [TextsInterface]
+  textsLoader: TextsLoader
   footerConfig: TranslatableConfigPagesFooter
   siteConfig: TranslatableConfigPagesSite
   currentUser: User
@@ -4688,6 +4692,21 @@ type Language implements LanguageInterface {
 
   ""
   isLocked: Boolean!
+}
+
+""
+type LanguageSwitchLink {
+  ""
+  active: Boolean!
+
+  ""
+  title: String!
+
+  ""
+  url: Url!
+
+  ""
+  language: ConfigurableLanguage!
 }
 
 "A persisted agent conversation belonging to a user and host entity."
@@ -6546,6 +6565,8 @@ interface InternalUrl {
 
   ""
   routeName: String!
+
+  languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
 ""
@@ -6558,6 +6579,8 @@ interface EntityUrl {
 
   ""
   routeName: String!
+
+  languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
 ""
@@ -6570,6 +6593,8 @@ type DefaultInternalUrl implements Url & InternalUrl {
 
   ""
   routeName: String!
+
+  languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
 ""
@@ -6585,6 +6610,8 @@ type DefaultEntityUrl implements Url & InternalUrl & EntityUrl {
 
   ""
   internalPath: String!
+
+  languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
 ""
@@ -6600,6 +6627,8 @@ type EntityCanonicalUrl implements Url & InternalUrl & EntityUrl {
 
   ""
   internalPath: String!
+
+  languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
 ""
@@ -6612,6 +6641,54 @@ type RedirectUrl implements Url {
 type ExternalUrl implements Url {
   ""
   path: String!
+}
+
+""
+interface TextsInterface {
+  ""
+  key: String!
+
+  ""
+  context: String
+}
+
+""
+type TextsDefault implements TextsInterface {
+  ""
+  key: String!
+
+  ""
+  default: String
+
+  ""
+  context: String
+}
+
+""
+type TextsPlural implements TextsInterface {
+  ""
+  key: String!
+
+  ""
+  singular: String
+
+  ""
+  plural: String
+
+  ""
+  context: String
+}
+
+""
+type TextsLoader {
+  ""
+  getText(key: String!, default: String, context: String): String
+
+  ""
+  getTextPlural(key: String!, singular: String, plural: String, context: String): TextsPlural
+
+  ""
+  getTextMultiple(texts: [TextsInput]): [TextsInterface]
 }
 
 "Generic type for untyped values."
@@ -6844,6 +6921,12 @@ enum ParagraphsBlokkliTypePermission {
   add
   delete
   edit
+}
+
+input TextsInput {
+  key: String!
+  context: String
+  default: String
 }
 
 "Result of exporting paragraphs into a transferable payload."

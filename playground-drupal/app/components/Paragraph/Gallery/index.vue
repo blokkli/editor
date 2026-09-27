@@ -37,12 +37,18 @@ const { options, parentType } = defineBlokkli({
   options: {
     display: {
       type: 'radios',
-      label: 'Display',
+      label: { en: 'Display', de: 'Darstellung', fr: 'Affichage' },
       default: 'grid',
       displayAs: 'icons',
       options: {
-        grid: { label: 'Grid', icon: 'bk_mdi_grid_view' },
-        slider: { label: 'Slider', icon: 'bk_mdi_view_carousel' },
+        grid: {
+          label: { en: 'Grid', de: 'Raster', fr: 'Grille' },
+          icon: 'bk_mdi_grid_view',
+        },
+        slider: {
+          label: { en: 'Slider', de: 'Slider', fr: 'Carrousel' },
+          icon: 'bk_mdi_view_carousel',
+        },
       },
     },
   },

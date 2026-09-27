@@ -150,6 +150,26 @@ path as it is, so a relative path is relative to the web root (e.g.
 shows no options. Nuxt writes the file whenever it starts or builds. Commit it,
 so that Drupal has it where Nuxt doesn't run.
 
+## Translations
+
+The editor translates a page in place: switching to another language in the
+toolbar edits that translation. This needs Drupal's content translation on the
+host and paragraph types, with each paragraphs field untranslatable (its storage
+stays translatable, as Paragraphs requires).
+
+**Outdated translations** are tracked per paragraph, with content translation's
+`content_translation_outdated` flag:
+
+- Changing a paragraph's text in the source language marks its other existing
+  translations as outdated.
+- "Mark as up-to-date" clears the flag, as does an import with the option to
+  mark imported texts as up to date.
+- The flags are saved when the changes are published.
+- Changes to options, media and the host's own fields aren't tracked.
+
+For machine translation, see
+[paragraphs_blokkli_deepl](#paragraphs-blokkli-deepl).
+
 ## Drupal Permissions Reference
 
 ### Edit State Permissions
@@ -228,6 +248,28 @@ declare:
 
 Both only happen when cron runs: `drush cron` runs scheduler's job and this
 module's.
+
+### paragraphs_blokkli_deepl
+
+Machine translation with DeepL, for "Translate texts", "Auto-translate" and the
+agent's translation tool. It needs the `deeplcom/deepl-php` library, not TMGMT.
+
+- **The API key:** don't enter it in the settings form
+  (`/admin/config/content/blokkli/deepl`), which stores it in config, so a
+  config export would commit it. Set it from the environment in `settings.php`:
+
+  ```php
+  $config['paragraphs_blokkli_deepl.settings']['api_key'] = getenv('DEEPL_AUTH_KEY') ?: '';
+  ```
+
+- **`language_mapping`:** the DeepL language code for each Drupal language (e.g.
+  `en: EN-GB`, `de: DE`, `fr: FR`), optionally with a DeepL style rule. Source
+  languages are reduced to their base code.
+- **Glossaries:** every multilingual glossary in the DeepL account is used for
+  its language pair.
+
+Without a key, the editor still offers machine translation, and requests fail
+with "DeepL API key is not configured."
 
 ### paragraphs_blokkli_fragments
 

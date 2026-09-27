@@ -26,7 +26,7 @@ id: node.page.field_paragraphs
 field_name: field_paragraphs
 entity_type: node
 bundle: page
-label: Paragraphs
+label: Content
 description: ''
 required: false
 translatable: false

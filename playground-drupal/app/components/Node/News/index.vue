@@ -17,7 +17,11 @@
             v-if="createdDate?.first?.day"
             class="mb-2 font-semibold text-stone-600"
           >
-            News, {{ createdDate.first.day }}
+            {{
+              $texts('news.meta', 'News, @date', {
+                '@date': createdDate.first.day,
+              })
+            }}
           </p>
         </template>
       </HostHeader>

@@ -66,3 +66,13 @@ From [13e](13e-publishing.md) (2026-09-27):
   `blokkli_playground`, better upstream.
 - **Tested so far:** a plain logged-in user in another session sees the pending
   changes through the link.
+
+From [13f](13f-translation.md) (2026-09-27):
+
+- **Anonymous visitors get no UI texts:** the texts query needs GraphQL access
+  (403 today). `nuxi dev` shows the defaults, a production build the keys, on
+  the error pages too. The "This sandbox is private" page is plain English on
+  purpose.
+- **Any GraphQL user can create text keys:** the texts resolvers create a text
+  for every unknown key, without an access check. Sandbox users are logged in,
+  so they could fill the table.

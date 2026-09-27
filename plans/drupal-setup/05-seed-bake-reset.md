@@ -126,3 +126,20 @@ From [13e](13e-publishing.md) (2026-09-27):
   09).
 - **Cron** runs per sandbox (`drush cron --uri`, chunk 09). Without it, nothing
   scheduled changes.
+
+From [13f](13f-translation.md) (2026-09-27):
+
+- **UI texts:** import `drupal/content/texts.csv` (the `texts` module's format,
+  `;`-separated). The import skips a text whose context doesn't exist yet and
+  still reports success: send the frontend's `loadTexts` query first, which
+  creates every key, then import. `tmp/drupal-texts.sh` (not committed) does
+  both, with `TextsImportForm`'s batch methods.
+- **Interface translations** (`locale:update`) don't cover the texts or the
+  labels: those are content and config.
+- **The outdated French page (14b):** set `content_translation_outdated` on its
+  paragraphs' FR translations (and publish, or write them directly: the edit
+  state only saves the flags on publish). The node's own flag only shows in
+  Drupal's translation overview.
+- **Dates and links are untranslatable:** set them once, on the source.
+- `tmp/drupal-translation.php`, `tmp/drupal-texts.sh` and
+  `tmp/drupal-translation-check.sh` (not committed) were 13f's.

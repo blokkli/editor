@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, useEasyTexts } from '#imports'
 import type { NodeTeaserFragment } from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
 import { formatDateRange } from '~/helpers/date'
@@ -46,10 +46,14 @@ const props = defineProps<{
   display: 'card' | 'list'
 }>()
 
+const { $texts } = useEasyTexts()
+
 const meta = computed(() => {
   const node = props.node
   if (node.__typename === 'NodeNews' && node.createdDate?.first?.day) {
-    return 'News, ' + node.createdDate.first.day
+    return $texts('news.meta', 'News, @date', {
+      '@date': node.createdDate.first.day,
+    })
   }
   if (node.__typename === 'NodeEvent' && node.date) {
     return formatDateRange(node.date)

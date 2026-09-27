@@ -27,7 +27,7 @@
       <button
         type="button"
         class="rounded-full border border-stone-900 px-4 py-1"
-        aria-label="Previous image"
+        :aria-label="$texts('gallery.previous_image', 'Previous image')"
         @click="scroll(-1)"
       >
         ←
@@ -35,7 +35,7 @@
       <button
         type="button"
         class="rounded-full border border-stone-900 px-4 py-1"
-        aria-label="Next image"
+        :aria-label="$texts('gallery.next_image', 'Next image')"
         @click="scroll(1)"
       >
         →

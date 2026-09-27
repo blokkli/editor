@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
+import { computed, defineBlokkli, useEasyTexts } from '#imports'
 import type { ParagraphButtonFragment } from '#graphql-operations'
 
 const props = defineProps<ParagraphButtonFragment>()
@@ -32,10 +32,12 @@ const href = computed(() => {
   return uri?.path ?? undefined
 })
 
+const { $texts } = useEasyTexts()
+
 const label = computed(() => {
   const uri = props.link?.uri
   const entityLabel = uri && 'entity' in uri ? uri.entity?.label : undefined
-  return props.title || entityLabel || 'Button'
+  return props.title || entityLabel || $texts('button.label', 'Button')
 })
 
 const { options, parentType, fieldListType } = defineBlokkli({
@@ -44,11 +46,13 @@ const { options, parentType, fieldListType } = defineBlokkli({
   options: {
     style: {
       type: 'radios',
-      label: 'Style',
+      label: { en: 'Style', de: 'Stil', fr: 'Style' },
       default: 'primary',
       options: {
-        primary: 'Primary',
-        secondary: 'Secondary',
+        primary: { label: { en: 'Primary', de: 'Primär', fr: 'Principal' } },
+        secondary: {
+          label: { en: 'Secondary', de: 'Sekundär', fr: 'Secondaire' },
+        },
       },
     },
   },

@@ -22,14 +22,20 @@
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
 import type { ParagraphDownloadsFragment } from '#graphql-operations'
+import { useLanguage } from '~/composables/useLanguage'
 
 const props = defineProps<ParagraphDownloadsFragment>()
 
+const language = useLanguage()
+
+// "240 kB" or "1.2 MB", in the page's language (e.g. "1,2 Mo" in French).
 function formatSize(bytes: number): string {
-  if (bytes < 1024 * 1024) {
-    return `${Math.max(1, Math.round(bytes / 1024))} KB`
-  }
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  const megabytes = bytes >= 1024 * 1024
+  return new Intl.NumberFormat(language.value, {
+    style: 'unit',
+    unit: megabytes ? 'megabyte' : 'kilobyte',
+    maximumFractionDigits: megabytes ? 1 : 0,
+  }).format(megabytes ? bytes / 1024 / 1024 : Math.max(1, bytes / 1024))
 }
 
 // The type comes from the file's extension, e.g. "PDF, 240 KB".

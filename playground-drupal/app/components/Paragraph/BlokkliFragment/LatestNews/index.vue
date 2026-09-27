@@ -19,7 +19,7 @@
       />
     </div>
     <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
-      No news.
+      {{ $texts('latest_news.empty', 'No news.') }}
     </p>
   </div>
 </template>
@@ -38,11 +38,11 @@ const { options } = defineBlokkliFragment({
   options: {
     display: {
       type: 'radios',
-      label: 'Display',
+      label: { en: 'Display', de: 'Darstellung', fr: 'Affichage' },
       default: 'card',
       options: {
-        card: 'Cards',
-        list: 'List',
+        card: { label: { en: 'Cards', de: 'Karten', fr: 'Cartes' } },
+        list: { label: { en: 'List', de: 'Liste', fr: 'Liste' } },
       },
     },
   },

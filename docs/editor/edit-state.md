@@ -311,27 +311,39 @@ An array of languages that are generally available.
 
 [type.EntityTranslation[]]
 
-An array of existing translations of the entity.
+One entry per available language, whether the translation exists or not. The
+language switcher uses it: an existing translation leads to its `url`, a missing
+one (`exists: false`) opens its `editUrl` to add it. A language without an entry
+can't be selected.
 
 ```json
 [
   {
     "id": "en",
     "url": "/en/subscribe-to-newsletter",
+    "editUrl": "/en/node/1/edit",
     "exists": true,
     "status": true // Translation exists and is published.
   },
   {
     "id": "de",
     "url": "/de/anmeldung-newsletter",
+    "editUrl": "/de/node/1/edit",
     "exists": true,
     "status": false // Translation exists, but is not published.
+  },
+  {
+    "id": "fr",
+    "url": "/en/subscribe-to-newsletter",
+    "editUrl": "/fr/node/1/translations/add/en/fr",
+    "exists": false,
+    "status": false // Not translated yet.
   }
 ]
 ```
 
-Each translation can also have an optional `editUrl` property for a direct link
-to the translation editing interface.
+`editUrl` is optional in the type, but the Drupal adapter drops an entry that
+has neither `url` nor `editUrl`.
 
 ## Edit mode
 

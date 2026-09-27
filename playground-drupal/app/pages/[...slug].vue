@@ -18,7 +18,9 @@
       <ConfigPageSite v-else v-bind="entity" />
     </main>
     <template v-else>
-      <ConfigPageSite v-if="site" v-bind="site" />
+      <ConfigPageSite v-if="site" v-bind="site">
+        <LanguageSwitch v-if="languageLinks" :links="languageLinks" />
+      </ConfigPageSite>
       <NodePage v-if="entity.__typename === 'NodePage'" v-bind="entity" />
       <NodeNews v-else-if="entity.__typename === 'NodeNews'" v-bind="entity" />
       <NodeEvent
@@ -39,6 +41,7 @@ import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
 import {
   ConfigPageFooter,
   ConfigPageSite,
+  LanguageSwitch,
   NodeEvent,
   NodeNews,
   NodeOffice,
@@ -77,6 +80,21 @@ const entity = computed(() => {
       return url.entity
   }
   return null
+})
+
+// Hidden while editing (the editor has its own switch) and previewing (the
+// links would leave the preview).
+const languageLinks = computed(() => {
+  const url = data.value?.data.route
+  if (
+    route.query.blokkliEditing ||
+    route.query.blokkliPreview ||
+    !url ||
+    !('languageSwitchLinks' in url)
+  ) {
+    return null
+  }
+  return url.languageSwitchLinks
 })
 
 const site = computed(() => data.value?.data.siteConfig)

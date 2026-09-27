@@ -19,7 +19,7 @@ compatibility: >-
   backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.2'
+  version: '1.1.3'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/blocks
 ---
@@ -91,6 +91,7 @@ Create them in the Drupal UI or with a script, then `drush cex`. Check:
   are translatable by default:
   - Text an editor types: translatable.
   - Media references: usually not, since the media entity is translated itself.
+  - Dates and links: never.
   - Paragraphs fields: never (section 7).
 - **Translation:** if the bundle has translatable fields, enable content
   translation for it (`language.content_settings.paragraph.<bundle>`).

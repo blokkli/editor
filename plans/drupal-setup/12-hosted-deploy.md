@@ -85,3 +85,11 @@ From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
 - **Check that the hosted instance serves the SPA only:**
   `playground-drupal/server/middleware/spa.ts` turns SSR off when
   `IS_DDEV_HOSTED=true`, which the Nuxt daemon must see in its environment.
+
+From [13f](13f-translation.md) (2026-09-27):
+
+- **A production build strips the texts' defaults:** a key that isn't loaded
+  shows as the key. Anonymous visitors get no texts (chunk 10).
+- **The generated `app/graphql/fragment.easyTexts.graphql` is committed:**
+  nuxt-graphql-middleware reads the documents before nuxt-easy-texts writes it,
+  so a fresh build uses the file on disk.

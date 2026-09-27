@@ -22,11 +22,15 @@
         </div>
         <span
           v-blokkli-editable:field_site_name
-          data-placeholder="Site name"
+          :data-placeholder="$texts('placeholder.site_name', 'Site name')"
           class="editable-placeholder text-lg font-bold"
         >
           {{ entity.siteName }}
         </span>
+        <!-- Filled around nodes, with the language switch. -->
+        <div class="ml-auto">
+          <slot />
+        </div>
       </div>
     </div>
     <div class="bg-amber-100 empty:hidden">

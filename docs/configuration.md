@@ -197,9 +197,12 @@ See [Translations](/editor/translations) for details.
 
 ## defaultLanguage
 
-**Type:** `string`
+**Type:** `string`\
+**Default:** `'en'`
 
-The default/fallback language for the editor UI.
+The default/fallback language for the editor UI. Option labels in several
+languages fall back to it too, and a plain string label is stored under it in
+the options schema.
 
 ## forceDefaultLanguage
 

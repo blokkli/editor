@@ -34,6 +34,12 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                 | both                 | low      | open       | –        |
 | F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                       | `paragraphs_blokkli` | medium   | open       | –        |
 | F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                     | `paragraphs_blokkli` | low      | open       | –        |
+| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation) | `paragraphs_blokkli` | medium   | open       | –        |
+| F27 | [Machine translation fails silently](#f27-machine-translation-fails-silently)                                           | `@blokkli/editor`    | low      | open       | –        |
+| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround | –        |
+| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                            | `paragraphs_blokkli` | low      | workaround | –        |
+| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                           | `paragraphs_blokkli` | low      | open       | –        |
+| F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -600,3 +606,82 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   (`ParagraphsBlokkliManager.php:169`), and `setNewRevision()` keeps the loaded
   revision's log. Drupal's entity form clears it; blökkli doesn't.
 - **Fix idea:** always set the log message on a new revision, empty or not.
+
+## F26: "Publish if unpublished" acts on the default translation
+
+- **Found:** 2026-09-27, 13f.
+- **Symptom:** a news item published in English and unpublished in German,
+  published from the German editor with "Publish if unpublished": German stays
+  unpublished. The other way round (English unpublished, German published),
+  publishing from the German editor publishes English.
+- **Cause:** publishing loads the host through `getHostEntity()`, which returns
+  the default translation (`Entity/ParagraphsBlokkliEditState.php:303`), and
+  sets that one published (`ParagraphsBlokkliManager.php:175-176`). The publish
+  dialog shows the status of the editor's language.
+- **Impact:** an editor can't publish a translation from the editor, and may
+  publish the source by accident.
+- **Fix idea:** publish the translation of the edit's language.
+
+## F27: Machine translation fails silently
+
+- **Found:** 2026-09-27, 13f.
+- **Symptom:** without a DeepL key (or on any DeepL error), "Translate texts"
+  shows the error, but "Auto-translate" on a block and a field's "Translate"
+  button do nothing.
+- **Cause:** both return on `!response.success` without showing
+  `response.errors`
+  (`src/runtime/editor/features/translations/AutoTranslate/index.vue:116`,
+  `src/runtime/editor/features/editable-field/Overlay/index.vue:317`, in this
+  repository).
+- **Fix idea:** show the errors as the dialog does, e.g. as a notification.
+
+## F28: Labels that can't be translated
+
+- **Found:** 2026-09-27, 13f.
+- **Symptom:** on a German page, the editor shows "Visible languages" and "Hide
+  globally" in English, and the fragments' labels ("Upcoming events") too.
+- **Cause:**
+  - The built-in global options are defined with English strings
+    (`src/module.ts:44-56`). Their translation keys
+    (`blockOption_bkVisibleLanguages_label`, …) exist but nothing reads them.
+  - A fragment's `label` and `description` are plain strings
+    (`src/global/types/definitions.ts:329`), not `DefinitionString` like option
+    labels.
+- **Workaround:** playground-drupal redefines `bkVisibleLanguages` in
+  `nuxt.config.ts` with labels per language. Fragments have none.
+- **Fix idea:** resolve the built-in labels through the editor's texts, and
+  accept `DefinitionString` for fragment labels.
+
+## F29: Drops write only the source's link
+
+- **Found:** 2026-09-27, 13f (read in the code; the demo avoids it).
+- **Symptom:** a page dropped onto a button whose link field is translatable
+  changes the link in the source language only. The translations keep the old
+  link.
+- **Cause:** `replace_entity_reference` sets the field on the paragraph as
+  loaded, the default translation (`Mutation/ReplaceEntityReference.php:131`,
+  `Traits/LinkOrReferenceFieldTrait.php:30`).
+- **Workaround:** link fields are untranslatable in the demo (dates and links
+  never are, the user's decision).
+- **Fix idea:** write the translation of the edit's language, or all of them.
+
+## F30: No hint for shared fields in a translation
+
+- **Found:** 2026-09-27, 13f (read in the code).
+- **Symptom:** "Edit translation" on a button in German shows its link like any
+  other field. Changing it changes every language.
+- **Cause:** content translation marks untranslatable fields "(all languages)"
+  or hides them (`untranslatable_fields_hide`) only on content entity forms.
+  `EditParagraphForm` extends `ParagraphsBlokkliFormBase`, a plain form.
+- **Fix idea:** hide untranslatable fields in the translation form, or mark
+  them.
+
+## F31: The "add translation" dialog has no language
+
+- **Found:** 2026-09-27, 13f.
+- **Symptom:** a greyed-out language in the switcher opens a dialog titled
+  `Translate "…" ()`.
+- **Cause:** the title takes the language from the form's `langcode`, which the
+  `entity:translate` form doesn't have; its language is `translation.id`
+  (`src/runtime/editor/features/edit-form/index.vue:86-96`, in this repository).
+- **Fix idea:** read `translation.id` for `entity:translate`.

@@ -1,0 +1,22 @@
+uuid: 200d61c8-188e-47db-b2a6-578b76650f0f
+langcode: en
+status: true
+dependencies:
+  module:
+    - content_translation
+    - texts
+  enforced:
+    module:
+      - texts
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '1'
+_core:
+  default_config_hash: YBjQt9U2mUCEQKluvr32HosmAZF41XS0iiWHhnCHbWw
+id: texts.texts
+target_entity_type_id: texts
+target_bundle: texts
+default_langcode: site_default
+language_alterable: false

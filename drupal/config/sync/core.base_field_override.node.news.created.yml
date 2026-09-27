@@ -1,0 +1,18 @@
+uuid: 1b435412-d605-4a64-8261-29f6cdddf105
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+id: node.news.created
+field_name: created
+entity_type: node
+bundle: news
+label: 'Authored on'
+description: 'The date and time that the content was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

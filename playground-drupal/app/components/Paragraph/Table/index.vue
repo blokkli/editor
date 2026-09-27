@@ -22,7 +22,11 @@ const { options, parentType } = defineBlokkli({
   options: {
     striped: {
       type: 'checkbox',
-      label: 'Striped rows',
+      label: {
+        en: 'Striped rows',
+        de: 'Gestreifte Zeilen',
+        fr: 'Lignes alternées',
+      },
       default: false,
     },
   },

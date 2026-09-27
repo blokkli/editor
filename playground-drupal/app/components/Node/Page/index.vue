@@ -46,12 +46,26 @@ const { options } = defineBlokkliProvider(props, {
   options: {
     header: {
       type: 'radios',
-      label: 'Header',
+      label: { en: 'Header', de: 'Kopfbereich', fr: 'En-tête' },
       default: 'image',
       options: {
-        image: 'Image above the title',
-        overlay: 'Title on the image',
-        plain: 'No image',
+        image: {
+          label: {
+            en: 'Image above the title',
+            de: 'Bild über dem Titel',
+            fr: 'Image au-dessus du titre',
+          },
+        },
+        overlay: {
+          label: {
+            en: 'Title on the image',
+            de: 'Titel auf dem Bild',
+            fr: "Titre sur l'image",
+          },
+        },
+        plain: {
+          label: { en: 'No image', de: 'Kein Bild', fr: 'Sans image' },
+        },
       },
     },
   },

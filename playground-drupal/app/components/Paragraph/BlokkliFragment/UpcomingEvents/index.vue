@@ -15,7 +15,7 @@
       />
     </div>
     <p v-else-if="isEditing" class="rounded-sm bg-stone-200 p-4 text-stone-600">
-      No upcoming events.
+      {{ $texts('upcoming_events.empty', 'No upcoming events.') }}
     </p>
   </div>
 </template>

@@ -65,6 +65,32 @@ const { options } = defineBlokkli({
 Options can be grouped together in a dropdown. See the [Grouping](#grouping)
 section for more details.
 
+### Labels in several languages
+
+A `label` or `description` can be an object with one text per language instead
+of a string. The editor shows the one for its interface language (the page's
+language), then the one for [`defaultLanguage`](/configuration#defaultlanguage),
+then the first.
+
+```typescript
+options: {
+  style: {
+    type: 'radios',
+    label: { en: 'Style', de: 'Stil', fr: 'Style' },
+    default: 'primary',
+    options: {
+      primary: { label: { en: 'Primary', de: 'Primär', fr: 'Principal' } },
+      secondary: { label: { en: 'Secondary', de: 'Sekundär', fr: 'Secondaire' } },
+    },
+  },
+},
+```
+
+A plain radio choice needs the `{ label }` object around the texts; choices with
+their own shape (colors, grids, icons) translate their `label`. Options can't be
+changed while editing a translation, so most of these labels show when editing a
+page in its source language.
+
 ## Checkbox
 
 ![Screenshot of the checkbox option type](/assets/option-checkbox.png)

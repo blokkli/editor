@@ -1,0 +1,9 @@
+fragment languageSwitchLink on LanguageSwitchLink {
+  title
+  language {
+    id
+  }
+  url {
+    path
+  }
+}

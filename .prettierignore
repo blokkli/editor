@@ -1,6 +1,7 @@
 CHANGELOG.md
 playground/app/options-schema.json
 build/drupal-schema.graphql
+playground-drupal/app/graphql/fragment.easyTexts.graphql
 .oxfmtrc.json
 /drupal/*
 !/drupal/mocks.graphql

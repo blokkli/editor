@@ -26,7 +26,8 @@ adds types.
   - [ ] the library items (single blocks: containers stay out of the library
         until F12 is fixed), the service page template, and the default template
         for new columns
-  - [ ] one deliberately outdated French page
+  - [ ] one deliberately outdated French page: the paragraphs' FR translations
+        flagged `content_translation_outdated` (chunk 05, 13f)
   - [ ] dates relative to the bake (chunk 05)
   - [ ] scheduled content (13e): a news item that publishes later (the lakeside
         pool's opening), and the "pool closed" text in the site notice with an

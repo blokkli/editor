@@ -56,7 +56,7 @@ and tracks its own status. The [index](#chunks) mirrors those statuses.
 | Drupal config        | Profile-less, installed from `drupal/config/sync` (`ddev drush si --existing-config -y`). Config is the source of truth; it was bootstrapped once from core's `standard` recipe (2026-09-26, chunk 03).                                                                                                                           |
 | Secrets              | From the environment: `.ddev/.env.web` (gitignored). The hash salt has a public local fallback; the hosted site sets `IS_DDEV_HOSTED=true`, and settings.php then refuses to run without its own salt (2026-09-26, chunk 03).                                                                                                     |
 | Content model        | Not a mirror of the mock playground. The base content paragraphs come first (chunk 04). The demo concept (14a) then decides the topic and the content model, before the feature sub-chunks of 13 add bundles and paragraph types; the demo content itself comes last (14b) (2026-09-26).                                          |
-| Frontend routing     | Hand-written in `playground-drupal`: one `route` query, the language is the path's first segment. No vuepal, nuxt-language-negotiation or nuxt-easy-texts, no extra Drupal modules; UI strings are English for now (2026-09-26, chunk 06).                                                                                        |
+| Frontend routing     | Hand-written in `playground-drupal`: one `route` query, the language is the path's first segment. No vuepal or nuxt-language-negotiation (2026-09-26, chunk 06). UI strings go through nuxt-easy-texts and the Drupal `texts` module, as in the starterkit (the user, 2026-09-27, chunk 13f).                                     |
 | Rendering            | SSR only for anonymous users and only locally, to test blökkli's server code paths. Logged-in users, editing and the hosted instance get the SPA (2026-09-26, chunk 06).                                                                                                                                                          |
 | GraphQL schema       | One generated file, `build/drupal-schema.graphql`, dumped from the local site with `bun run drupal:schema`. The root config and `playground-drupal` both use it (2026-09-26, chunk 07).                                                                                                                                           |
 | Demo topic           | A fictional Swiss municipality, Blockingen/Bloquens: a bilingual town by a lake. Many kinds of content (services, knowledge, news, politics, leisure) and structured data (events, offices). Chosen over non-fictional topics after a brainstorm (2026-09-26, chunk 14a).                                                         |
@@ -144,7 +144,7 @@ Milestones:
 | 13c | [Hosts](13c-hosts.md)                                      | M1        | done   | 13b                               |
 | 13d | [Reusable content](13d-reusable-content.md)                | M1        | done   | 13b, 13c                          |
 | 13e | [Publishing](13e-publishing.md)                            | M1        | done   | 13c                               |
-| 13f | [Translation](13f-translation.md)                          | M1        | todo   | 13c                               |
+| 13f | [Translation](13f-translation.md)                          | M1        | done   | 13c                               |
 | 13g | [Search and plugins](13g-search-and-plugins.md)            | M1        | todo   | 13c, 13d                          |
 | 13h | [Collaboration and roles](13h-collaboration-roles.md)      | M1        | todo   | 13b–13g, 13i                      |
 | 13i | [Agent and modules](13i-agent-and-modules.md)              | M1        | todo   | 13b                               |
@@ -155,8 +155,8 @@ Milestones:
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 13a–13e and 14a are done; next up is
-13f, 13g or 13i.
+(order, skill conventions, feature matrix). 13a–13f and 14a are done; next up is
+13g or 13i.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

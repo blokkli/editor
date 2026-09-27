@@ -21,27 +21,39 @@
       <div class="container-content mt-10">
         <dl class="grid gap-4 rounded-sm bg-stone-200 p-6 sm:grid-cols-2">
           <div v-if="dateRange" class="sm:col-span-2">
-            <dt class="text-sm font-semibold text-stone-600">Date</dt>
+            <dt class="text-sm font-semibold text-stone-600">
+              {{ $texts('event.date', 'Date') }}
+            </dt>
             <dd class="text-lg">
               <time :datetime="date?.start">{{ dateRange }}</time>
             </dd>
           </div>
           <div v-if="place">
-            <dt class="text-sm font-semibold text-stone-600">Place</dt>
+            <dt class="text-sm font-semibold text-stone-600">
+              {{ $texts('event.place', 'Place') }}
+            </dt>
             <dd>{{ place }}</dd>
           </div>
           <div v-if="organiser">
-            <dt class="text-sm font-semibold text-stone-600">Organiser</dt>
+            <dt class="text-sm font-semibold text-stone-600">
+              {{ $texts('event.organiser', 'Organiser') }}
+            </dt>
             <dd>{{ organiser }}</dd>
           </div>
           <div v-if="price">
-            <dt class="text-sm font-semibold text-stone-600">Price</dt>
+            <dt class="text-sm font-semibold text-stone-600">
+              {{ $texts('event.price', 'Price') }}
+            </dt>
             <dd>{{ price }}</dd>
           </div>
           <div v-if="registration?.uri?.path">
-            <dt class="text-sm font-semibold text-stone-600">Registration</dt>
+            <dt class="text-sm font-semibold text-stone-600">
+              {{ $texts('event.registration', 'Registration') }}
+            </dt>
             <dd>
-              <a :href="registration.uri.path" class="underline">Register</a>
+              <a :href="registration.uri.path" class="underline">
+                {{ $texts('event.register', 'Register') }}
+              </a>
             </dd>
           </div>
         </dl>
@@ -57,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, useEasyTexts } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { NodeEventFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
@@ -65,18 +77,25 @@ import { formatDateRange } from '~/helpers/date'
 
 const props = defineProps<NodeEventFragment>()
 
-// The allowed values of field_category. Its labels aren't in the schema.
-const CATEGORIES: Record<string, string> = {
-  culture: 'Culture',
-  sport: 'Sport',
-  family: 'Family',
-  market: 'Market',
-  politics: 'Politics',
-}
+const { $texts } = useEasyTexts()
 
-const categoryLabel = computed(() =>
-  props.category ? (CATEGORIES[props.category] ?? 'Event') : 'Event',
-)
+// The allowed values of field_category: the schema only has the key. One
+// literal call per value, so that the keys can be extracted.
+const categoryLabel = computed(() => {
+  switch (props.category) {
+    case 'culture':
+      return $texts('event.category_culture', 'Culture')
+    case 'sport':
+      return $texts('event.category_sport', 'Sport')
+    case 'family':
+      return $texts('event.category_family', 'Family')
+    case 'market':
+      return $texts('event.category_market', 'Market')
+    case 'politics':
+      return $texts('event.category_politics', 'Politics')
+  }
+  return $texts('event.event', 'Event')
+})
 
 const dateRange = computed(() =>
   props.date ? formatDateRange(props.date) : '',

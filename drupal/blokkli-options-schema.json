@@ -3,10 +3,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -17,10 +21,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -28,17 +36,23 @@
     "style": {
       "default": "primary",
       "label": {
-        "en": "Style"
+        "de": "Stil",
+        "en": "Style",
+        "fr": "Style"
       },
       "options": {
         "primary": {
           "label": {
-            "en": "Primary"
+            "de": "Primär",
+            "en": "Primary",
+            "fr": "Principal"
           }
         },
         "secondary": {
           "label": {
-            "en": "Secondary"
+            "de": "Sekundär",
+            "en": "Secondary",
+            "fr": "Secondaire"
           }
         }
       },
@@ -49,10 +63,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -61,7 +79,9 @@
       "default": "50-50",
       "displayAs": "grid",
       "label": {
-        "en": "Ratio"
+        "de": "Verhältnis",
+        "en": "Ratio",
+        "fr": "Proportions"
       },
       "options": {
         "33-66": {
@@ -99,10 +119,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -110,17 +134,23 @@
     "display": {
       "default": "full",
       "label": {
-        "en": "Display"
+        "de": "Darstellung",
+        "en": "Display",
+        "fr": "Affichage"
       },
       "options": {
         "compact": {
           "label": {
-            "en": "Compact"
+            "de": "Kompakt",
+            "en": "Compact",
+            "fr": "Compact"
           }
         },
         "full": {
           "label": {
-            "en": "Full"
+            "de": "Vollständig",
+            "en": "Full",
+            "fr": "Complet"
           }
         }
       },
@@ -131,10 +161,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -145,10 +179,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -157,19 +195,25 @@
       "default": "grid",
       "displayAs": "icons",
       "label": {
-        "en": "Display"
+        "de": "Darstellung",
+        "en": "Display",
+        "fr": "Affichage"
       },
       "options": {
         "grid": {
           "icon": "bk_mdi_grid_view",
           "label": {
-            "en": "Grid"
+            "de": "Raster",
+            "en": "Grid",
+            "fr": "Grille"
           }
         },
         "slider": {
           "icon": "bk_mdi_view_carousel",
           "label": {
-            "en": "Slider"
+            "de": "Slider",
+            "en": "Slider",
+            "fr": "Carrousel"
           }
         }
       },
@@ -179,25 +223,33 @@
       "default": "content",
       "displayAs": "icons",
       "label": {
-        "en": "Width"
+        "de": "Breite",
+        "en": "Width",
+        "fr": "Largeur"
       },
       "options": {
         "content": {
           "icon": "bk_mdi_width_normal",
           "label": {
-            "en": "Content"
+            "de": "Inhalt",
+            "en": "Content",
+            "fr": "Contenu"
           }
         },
         "full": {
           "icon": "bk_mdi_width_full",
           "label": {
-            "en": "Full"
+            "de": "Volle Breite",
+            "en": "Full",
+            "fr": "Pleine largeur"
           }
         },
         "wide": {
           "icon": "bk_mdi_width_wide",
           "label": {
-            "en": "Wide"
+            "de": "Breit",
+            "en": "Wide",
+            "fr": "Large"
           }
         }
       },
@@ -208,10 +260,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -220,25 +276,33 @@
       "default": "content",
       "displayAs": "icons",
       "label": {
-        "en": "Width"
+        "de": "Breite",
+        "en": "Width",
+        "fr": "Largeur"
       },
       "options": {
         "content": {
           "icon": "bk_mdi_width_normal",
           "label": {
-            "en": "Content"
+            "de": "Inhalt",
+            "en": "Content",
+            "fr": "Contenu"
           }
         },
         "full": {
           "icon": "bk_mdi_width_full",
           "label": {
-            "en": "Full"
+            "de": "Volle Breite",
+            "en": "Full",
+            "fr": "Pleine largeur"
           }
         },
         "wide": {
           "icon": "bk_mdi_width_wide",
           "label": {
-            "en": "Wide"
+            "de": "Breit",
+            "en": "Wide",
+            "fr": "Large"
           }
         }
       },
@@ -250,25 +314,33 @@
       "default": "none",
       "displayAs": "colors",
       "label": {
-        "en": "Background"
+        "de": "Hintergrund",
+        "en": "Background",
+        "fr": "Arrière-plan"
       },
       "options": {
         "lake": {
           "hex": "#e0f2fe",
           "label": {
-            "en": "Lake"
+            "de": "See",
+            "en": "Lake",
+            "fr": "Lac"
           }
         },
         "none": {
           "hex": "#fafaf9",
           "label": {
-            "en": "None"
+            "de": "Keiner",
+            "en": "None",
+            "fr": "Aucun"
           }
         },
         "stone": {
           "hex": "#e7e5e4",
           "label": {
-            "en": "Stone"
+            "de": "Stein",
+            "en": "Stone",
+            "fr": "Pierre"
           }
         }
       },
@@ -277,10 +349,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -289,7 +365,9 @@
       "default": "1",
       "displayAs": "grid",
       "label": {
-        "en": "Columns"
+        "de": "Spalten",
+        "en": "Columns",
+        "fr": "Colonnes"
       },
       "options": {
         "1": {
@@ -297,7 +375,9 @@
             1
           ],
           "label": {
-            "en": "One column"
+            "de": "Eine Spalte",
+            "en": "One column",
+            "fr": "Une colonne"
           }
         },
         "2": {
@@ -306,7 +386,9 @@
             1
           ],
           "label": {
-            "en": "Two columns"
+            "de": "Zwei Spalten",
+            "en": "Two columns",
+            "fr": "Deux colonnes"
           }
         },
         "3": {
@@ -316,7 +398,9 @@
             1
           ],
           "label": {
-            "en": "Three columns"
+            "de": "Drei Spalten",
+            "en": "Three columns",
+            "fr": "Trois colonnes"
           }
         }
       },
@@ -327,10 +411,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -338,7 +426,9 @@
     "striped": {
       "default": false,
       "label": {
-        "en": "Striped rows"
+        "de": "Gestreifte Zeilen",
+        "en": "Striped rows",
+        "fr": "Lignes alternées"
       },
       "type": "checkbox"
     }
@@ -347,10 +437,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -358,17 +452,23 @@
     "display": {
       "default": "card",
       "label": {
-        "en": "Display"
+        "de": "Darstellung",
+        "en": "Display",
+        "fr": "Affichage"
       },
       "options": {
         "card": {
           "label": {
-            "en": "Card"
+            "de": "Karte",
+            "en": "Card",
+            "fr": "Carte"
           }
         },
         "list": {
           "label": {
-            "en": "List"
+            "de": "Liste",
+            "en": "List",
+            "fr": "Liste"
           }
         }
       },
@@ -379,10 +479,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -392,10 +496,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -405,10 +513,14 @@
     "bkVisibleLanguages": {
       "default": [],
       "description": {
-        "en": "Only show on specific languages."
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
       },
       "label": {
-        "en": "Visible languages"
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
       },
       "options": {},
       "type": "checkboxes"
@@ -417,25 +529,33 @@
       "default": "content",
       "displayAs": "icons",
       "label": {
-        "en": "Width"
+        "de": "Breite",
+        "en": "Width",
+        "fr": "Largeur"
       },
       "options": {
         "content": {
           "icon": "bk_mdi_width_normal",
           "label": {
-            "en": "Content"
+            "de": "Inhalt",
+            "en": "Content",
+            "fr": "Contenu"
           }
         },
         "full": {
           "icon": "bk_mdi_width_full",
           "label": {
-            "en": "Full"
+            "de": "Volle Breite",
+            "en": "Full",
+            "fr": "Pleine largeur"
           }
         },
         "wide": {
           "icon": "bk_mdi_width_wide",
           "label": {
-            "en": "Wide"
+            "de": "Breit",
+            "en": "Wide",
+            "fr": "Large"
           }
         }
       },

@@ -5,7 +5,7 @@
         <span
           v-if="isEditing"
           v-blokkli-editable:field_title
-          data-placeholder="Title"
+          :data-placeholder="$texts('placeholder.title', 'Title')"
           class="editable-placeholder block py-4"
         >
           {{ title }}
