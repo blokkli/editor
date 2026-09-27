@@ -1,0 +1,20 @@
+fragment configPageSite on TranslatableConfigPagesSite {
+  uuid
+  label
+  url {
+    path
+  }
+  siteName: fieldSiteName
+  coatOfArms: fieldCoatOfArms {
+    ...mediaImage
+  }
+  blokkliProps {
+    ...blokkliProps
+  }
+  notice: fieldNotice {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

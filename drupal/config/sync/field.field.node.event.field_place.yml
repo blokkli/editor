@@ -1,0 +1,19 @@
+uuid: 60294b0a-3043-4f1e-9f0e-738e76683e54
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_place
+    - node.type.event
+id: node.event.field_place
+field_name: field_place
+entity_type: node
+bundle: event
+label: Place
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

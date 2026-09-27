@@ -44,3 +44,12 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   role then needs per-bundle view (and create/update) permissions, including
   anonymous for SSR with a preview grant.
 - **Chunk 05 seeds users** for these roles.
+
+From [13c](13c-hosts.md) (2026-09-26):
+
+- **Config pages:** editors need `manage translatable config pages`, and
+  translators `translate translatable_config_pages`.
+- **Block transfer** needs `transfer blokkli paragraphs` (only the admin role
+  has it).
+- **The node bundles** news, event and office need their own create and edit
+  permissions per role.

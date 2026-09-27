@@ -1,0 +1,19 @@
+uuid: 79788661-bde0-4bc1-b435-e9b0864312f1
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - paragraphs_blokkli
+id: node.field_host_options
+field_name: field_host_options
+entity_type: node
+type: paragraphs_blokkli_host_options
+settings: {  }
+module: paragraphs_blokkli
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

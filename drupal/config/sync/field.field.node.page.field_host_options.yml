@@ -1,0 +1,21 @@
+uuid: 4d804fbd-ebc1-489d-9136-6a16c9b8c58e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_host_options
+    - node.type.page
+  module:
+    - paragraphs_blokkli
+id: node.page.field_host_options
+field_name: field_host_options
+entity_type: node
+bundle: page
+label: Options
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: paragraphs_blokkli_host_options

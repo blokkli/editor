@@ -1,0 +1,22 @@
+uuid: b1ed8253-7fae-4407-8bb9-3f160bba3560
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.contact.field_office
+    - paragraphs.paragraphs_type.contact
+id: paragraph.contact.default
+targetEntityType: paragraph
+bundle: contact
+mode: default
+content:
+  field_office:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  search_api_excerpt: true

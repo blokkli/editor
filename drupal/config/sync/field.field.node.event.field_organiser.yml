@@ -1,0 +1,19 @@
+uuid: f9004445-8066-4c11-8eed-7e1891c9f916
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_organiser
+    - node.type.event
+id: node.event.field_organiser
+field_name: field_organiser
+entity_type: node
+bundle: event
+label: Organiser
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

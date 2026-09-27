@@ -5,43 +5,50 @@
     :entity="props"
   >
     <article class="pb-20">
-      <div
-        v-if="entity.hero || isEditing"
-        v-blokkli-droppable:field_hero_image
-        class="aspect-[3/1] min-h-40 overflow-hidden bg-stone-200"
-      >
-        <MediaImage
-          v-if="entity.hero"
-          v-bind="entity.hero"
-          class="size-full"
-          img-class="size-full object-cover"
+      <HostHeader
+        :title="entity.title"
+        :lead="entity.lead"
+        :image="entity.hero"
+        :variant="options.header"
+        :is-editing
+      />
+      <div class="page-body mt-10">
+        <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+        <BlokkliField
+          name="field_aside"
+          :list="aside"
+          field-list-type="secondary"
+          non-empty-class="has-aside"
+          edit-class="min-h-24"
+          class="container-content flow mt-12"
         />
       </div>
-      <div class="container-content pt-12">
-        <h1 v-blokkli-editable:title class="text-4xl font-bold md:text-5xl">
-          {{ entity.title }}
-        </h1>
-        <p
-          v-if="entity.lead || isEditing"
-          v-blokkli-editable:field_lead
-          class="mt-4 text-xl text-stone-600"
-        >
-          {{ entity.lead }}
-        </p>
-      </div>
-      <BlokkliField
-        name="field_paragraphs"
-        :list="paragraphs"
-        class="flow mt-10"
-      />
     </article>
   </BlokkliProvider>
 </template>
 
 <script lang="ts" setup>
+import { defineBlokkliProvider } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { NodePageFragment } from '#graphql-operations'
-import MediaImage from '~/components/Media/Image/index.vue'
+import HostHeader from '~/components/Host/Header/index.vue'
 
 const props = defineProps<NodePageFragment>()
+
+const { options } = defineBlokkliProvider(props, {
+  entityType: 'node',
+  bundle: 'page',
+  options: {
+    header: {
+      type: 'radios',
+      label: 'Header',
+      default: 'image',
+      options: {
+        image: 'Image above the title',
+        overlay: 'Title on the image',
+        plain: 'No image',
+      },
+    },
+  },
+})
 </script>

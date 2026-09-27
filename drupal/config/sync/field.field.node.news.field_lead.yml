@@ -1,0 +1,19 @@
+uuid: 7584af12-5e41-4b30-ac26-c3f1069975d5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_lead
+    - node.type.news
+id: node.news.field_lead
+field_name: field_lead
+entity_type: node
+bundle: news
+label: Lead
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

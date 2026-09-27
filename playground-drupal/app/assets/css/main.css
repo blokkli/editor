@@ -25,6 +25,16 @@ body {
   @apply bg-stone-50 text-stone-900;
 }
 
+/* A page with blocks in its sidebar: on large screens, the content and the
+   sidebar side by side. Every width option then means the content column. */
+.page-body:has(> .has-aside) {
+  @apply mx-auto max-w-5xl lg:grid lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-8;
+
+  > .has-aside {
+    @apply lg:mt-0;
+  }
+}
+
 /* Consecutive accordion items form one list: no gap, and their borders
    overlap. */
 .flow > .accordion + .accordion {

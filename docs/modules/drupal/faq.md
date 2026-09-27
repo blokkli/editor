@@ -14,15 +14,17 @@ For the edit button to appear, three conditions must be met:
    your GraphQL query includes the `blokkliProps` field and you spread it onto
    the provider with `v-bind="blokkliProps"`
 
-## Provider / host options do not appear in the editor
+## Provider / host options are not saved
 
-If you defined options with `defineBlokkliProvider()` but they don't show up in
-the editor, the most likely cause is that the Drupal entity is missing the
-**host options field**.
+If you defined options with `defineBlokkliProvider()` and they appear in the
+editor, but changes are lost after a reload, the most likely cause is that the
+Drupal entity is missing the **host options field**.
 
 The entity (e.g. a Node of type "Page") must have a field of type
 `paragraphs_blokkli_host_options`. Without this field, Drupal has nowhere to
-store the option values and the editor will not display them.
+store the option values: the editor displays them, but saving them silently does
+nothing. If the options are lost when the entity's form is saved, hide the field
+in the form display.
 
 Add the field via the Drupal field UI at
 `/admin/structure/types/manage/PAGE_TYPE/fields` or programmatically:

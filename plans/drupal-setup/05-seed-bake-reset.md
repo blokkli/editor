@@ -88,3 +88,13 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   baking do so too, unless the seed sets the thumbnail itself.
 - **The media library lists media of every mapped bundle**, so seeded media
   shows up there right away.
+
+From [13c](13c-hosts.md) (2026-09-26):
+
+- **Config pages are content:** the seed creates the `footer` and `site`
+  entities, with DE and FR translations. `si --existing-config` doesn't.
+- **Clear the caches after seeding them:** a null `footerConfig` stays in the
+  GraphQL response cache.
+- **Office hours** are `office_hours` items (`day` 0 = Sunday, times as HHMM
+  numbers). Event dates are stored in UTC.
+- `tmp/drupal-hosts-content.php` (not committed) was 13c's test content.

@@ -1,0 +1,26 @@
+uuid: 6548280c-4687-42ec-ba1c-5f85a9978b07
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.translatable_config_pages.footer.field_paragraphs
+    - translatable_config_pages.translatable_config_pages_type.footer
+  module:
+    - entity_reference_revisions
+id: translatable_config_pages.footer.default
+targetEntityType: translatable_config_pages
+bundle: footer
+mode: default
+content:
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

@@ -1,0 +1,104 @@
+uuid: 40af1e75-d7df-43c6-9830-b569fa7a5122
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.office.field_address
+    - field.field.node.office.field_email
+    - field.field.node.office.field_lead
+    - field.field.node.office.field_opening_hours
+    - field.field.node.office.field_paragraphs
+    - field.field.node.office.field_phone
+    - node.type.office
+  module:
+    - entity_reference_revisions
+    - office_hours
+    - telephone
+    - user
+id: node.office.default
+targetEntityType: node
+bundle: office
+mode: default
+content:
+  field_address:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -3
+    region: content
+  field_email:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -1
+    region: content
+  field_lead:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
+  field_opening_hours:
+    type: office_hours
+    label: hidden
+    settings:
+      day_format: long
+      time_format: G
+      compress: false
+      grouped: false
+      show_empty: false
+      show_closed: all
+      closed_format: Closed
+      all_day_format: 'All day open'
+      separator:
+        days: '<br />'
+        grouped_days: ' - '
+        day_hours: ': '
+        hours_hours: '-'
+        more_hours: ', '
+      current_status:
+        position: ''
+        open_text: 'Currently open!'
+        closed_text: 'Currently closed'
+      exceptions:
+        title: 'Exception hours'
+        replace_exceptions: false
+        restrict_exceptions_to_num_days: 7
+        restrict_seasons_to_num_days: 366
+        date_format: long
+        all_day_format: 'All day open'
+      timezone_field: ''
+      office_hours_first_day: ''
+      schema:
+        enabled: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_phone:
+    type: telephone_link
+    label: hidden
+    settings:
+      title: ''
+    third_party_settings: {  }
+    weight: -2
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

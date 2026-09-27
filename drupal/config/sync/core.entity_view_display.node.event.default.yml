@@ -1,0 +1,116 @@
+uuid: ef331ae3-ff90-4449-8167-f6fea05d8223
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.event.field_category
+    - field.field.node.event.field_date
+    - field.field.node.event.field_hero_image
+    - field.field.node.event.field_lead
+    - field.field.node.event.field_organiser
+    - field.field.node.event.field_paragraphs
+    - field.field.node.event.field_place
+    - field.field.node.event.field_price
+    - field.field.node.event.field_registration
+    - node.type.event
+  module:
+    - datetime_range
+    - entity_reference_revisions
+    - link
+    - options
+    - user
+id: node.event.default
+targetEntityType: node
+bundle: event
+mode: default
+content:
+  field_category:
+    type: list_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -6
+    region: content
+  field_date:
+    type: daterange_default
+    label: hidden
+    settings:
+      timezone_override: ''
+      format_type: medium
+      from_to: both
+      separator: '-'
+    third_party_settings: {  }
+    weight: -9
+    region: content
+  field_hero_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: -3
+    region: content
+  field_lead:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
+  field_organiser:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: -7
+    region: content
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_place:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: -8
+    region: content
+  field_price:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: -5
+    region: content
+  field_registration:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: -1
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

@@ -337,6 +337,8 @@ const props = defineProps<NodePageFragment>()
 
 - Render text and media from the slot's `entity`: while editing, it holds the
   changed values.
+- More hosts (other bundles, several paragraphs fields, config pages): the
+  `blokkli-add-host` skill.
 - `v-blokkli-editable:<field>` edits a host text field inline,
   `v-blokkli-droppable:<field>` makes a host media or reference field a drop
   target.

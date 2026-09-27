@@ -1,0 +1,15 @@
+fragment nodeOffice on NodeOffice {
+  uuid
+  title
+  lead: fieldLead
+  ...officeDetails
+  blokkliProps {
+    ...blokkliProps
+  }
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

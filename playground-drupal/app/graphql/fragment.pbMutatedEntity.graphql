@@ -1,9 +1,35 @@
-# The host entity's fields that blökkli can change while editing.
+# The host entity's fields that blökkli can change while editing: the ones
+# edited on the page. Fields edited in Drupal's form are reloaded with the
+# route query, and this fragment comes with every mutation.
 fragment pbMutatedEntity on Entity {
   ... on NodePage {
     title
     lead: fieldLead
     hero: fieldHeroImage {
+      ...mediaImage
+    }
+  }
+  ... on NodeNews {
+    title
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+  }
+  ... on NodeEvent {
+    title
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+  }
+  ... on NodeOffice {
+    title
+    lead: fieldLead
+  }
+  ... on TranslatableConfigPagesSite {
+    siteName: fieldSiteName
+    coatOfArms: fieldCoatOfArms {
       ...mediaImage
     }
   }

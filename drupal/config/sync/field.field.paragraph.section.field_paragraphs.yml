@@ -7,11 +7,13 @@ dependencies:
     - paragraphs.paragraphs_type.accordion
     - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.columns
+    - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
     - paragraphs.paragraphs_type.gallery
     - paragraphs.paragraphs_type.image
     - paragraphs.paragraphs_type.section
     - paragraphs.paragraphs_type.table
+    - paragraphs.paragraphs_type.teaser
     - paragraphs.paragraphs_type.text
     - paragraphs.paragraphs_type.title
     - paragraphs.paragraphs_type.video
@@ -34,10 +36,12 @@ settings:
       accordion: accordion
       button: button
       columns: columns
+      contact: contact
       downloads: downloads
       gallery: gallery
       image: image
       table: table
+      teaser: teaser
       text: text
       title: title
       video: video

@@ -46,3 +46,13 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   it, `getEnabledTypes('paragraph')` returns nothing.
 - **Seeded dates** are relative to the bake (14a, chunk 05), so scheduled items
   stay in the future.
+
+From [13c](13c-hosts.md) (2026-09-26):
+
+- **The news date is `created`.** Scheduled news should get the publish date as
+  its `created` (scheduler's "change content creation time to match the
+  scheduled publish time").
+- **News, event and office have no scheduler settings yet,** and their form
+  displays hide `publish_on`/`unpublish_on`, as the page's does.
+- **Config pages have no revisions and no status:** publishing an edit state
+  saves them directly, and they can't be scheduled or unpublished.

@@ -29,7 +29,8 @@ adds types.
 - [ ] Images and other media: openly licensed (CC0, public domain, CC BY, CC
       BY-SA; no NC or ND), without recognisable real landmarks or place names.
       Record every file's source and licence, and fill the media credit field.
-- [ ] The coat of arms of Blockingen/Bloquens (invented).
+- [ ] The coat of arms of Blockingen/Bloquens (invented). A raster image (PNG or
+      WebP): image styles can't process SVG (13c).
 - [ ] Suggested tasks for the sandbox's welcome panel (chunk 09).
 
 ## Acceptance criteria

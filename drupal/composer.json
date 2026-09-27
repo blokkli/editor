@@ -30,6 +30,7 @@
         "drupal/graphql": "^5",
         "drupal/graphql_core_schema": "^1.0",
         "drupal/masquerade": "^2.0@beta",
+        "drupal/office_hours": "^1.29",
         "drupal/paragraphs": "^1.23",
         "drupal/paragraphs_blokkli": "2.0.x-dev",
         "drupal/scheduler": "^2.3",

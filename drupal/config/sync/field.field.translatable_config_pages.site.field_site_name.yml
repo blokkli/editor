@@ -1,0 +1,19 @@
+uuid: 06823db9-1d50-456c-8a93-4c087cc87715
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_site_name
+    - translatable_config_pages.translatable_config_pages_type.site
+id: translatable_config_pages.site.field_site_name
+field_name: field_site_name
+entity_type: translatable_config_pages
+bundle: site
+label: 'Site name'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

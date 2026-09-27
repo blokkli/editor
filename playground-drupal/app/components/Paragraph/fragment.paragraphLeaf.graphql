@@ -8,4 +8,6 @@ fragment paragraphLeaf on Paragraph {
   ...paragraphButton
   ...paragraphTable
   ...paragraphDownloads
+  ...paragraphTeaser
+  ...paragraphContact
 }

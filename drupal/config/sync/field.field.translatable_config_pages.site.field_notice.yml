@@ -1,0 +1,29 @@
+uuid: a9c85ae2-3288-420d-8d75-2c6378040538
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_notice
+    - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.text
+    - translatable_config_pages.translatable_config_pages_type.site
+  module:
+    - entity_reference_revisions
+id: translatable_config_pages.site.field_notice
+field_name: field_notice
+entity_type: translatable_config_pages
+bundle: site
+label: Notice
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      button: button
+      text: text
+    negate: 0
+field_type: entity_reference_revisions

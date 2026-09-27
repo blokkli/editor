@@ -60,3 +60,14 @@ From [13b](13b-block-types.md) (2026-09-26):
   `Paragraph/FromLibrary/fragment.graphql`).
 - **Fragments are only allowed on the page's `field_paragraphs`.** Add
   `blokkli_fragment` to nested fields if a fragment should go into a section.
+
+From [13c](13c-hosts.md) (2026-09-26):
+
+- **Check the library item links.** Drupal builds a library item's canonical URL
+  with its id (`/blokkli/library-item/{id}`), but
+  `pages/[lang]/blokkli/library-item/[uuid].vue` loads it by uuid. Links that
+  Drupal builds (open editing, the language switch) may then 404. Config pages
+  avoid this by resolving their path with the route query.
+- **Teaser and contact** can become library items (`allow_library_conversion`).
+- **Fragments** for "upcoming events" and "latest news" can read `NodeEvent`'s
+  `date` (`startDate(format: "c")`) and `NodeNews.created`, as the teaser does.

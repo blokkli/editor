@@ -1,0 +1,30 @@
+fragment nodeEvent on NodeEvent {
+  uuid
+  title
+  lead: fieldLead
+  hero: fieldHeroImage {
+    ...mediaImage
+  }
+  date: fieldDate {
+    start: startDate(format: "c")
+    end: endDate(format: "c")
+  }
+  place: fieldPlace
+  organiser: fieldOrganiser
+  category: fieldCategory
+  price: fieldPrice
+  registration: fieldRegistration {
+    uri {
+      path
+    }
+  }
+  blokkliProps {
+    ...blokkliProps
+  }
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

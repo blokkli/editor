@@ -95,6 +95,38 @@
       "type": "radios"
     }
   },
+  "contact": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "en": "Only show on specific languages."
+      },
+      "label": {
+        "en": "Visible languages"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "display": {
+      "default": "full",
+      "label": {
+        "en": "Display"
+      },
+      "options": {
+        "compact": {
+          "label": {
+            "en": "Compact"
+          }
+        },
+        "full": {
+          "label": {
+            "en": "Full"
+          }
+        }
+      },
+      "type": "radios"
+    }
+  },
   "downloads": {
     "bkVisibleLanguages": {
       "default": [],
@@ -309,6 +341,38 @@
         "en": "Striped rows"
       },
       "type": "checkbox"
+    }
+  },
+  "teaser": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "en": "Only show on specific languages."
+      },
+      "label": {
+        "en": "Visible languages"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "display": {
+      "default": "card",
+      "label": {
+        "en": "Display"
+      },
+      "options": {
+        "card": {
+          "label": {
+            "en": "Card"
+          }
+        },
+        "list": {
+          "label": {
+            "en": "List"
+          }
+        }
+      },
+      "type": "radios"
     }
   },
   "text": {

@@ -1,0 +1,55 @@
+uuid: c72d1f7f-538e-400a-a6fe-12a3a351ec2b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_paragraphs
+    - node.type.news
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.blokkli_fragment
+    - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.columns
+    - paragraphs.paragraphs_type.contact
+    - paragraphs.paragraphs_type.downloads
+    - paragraphs.paragraphs_type.from_library
+    - paragraphs.paragraphs_type.gallery
+    - paragraphs.paragraphs_type.image
+    - paragraphs.paragraphs_type.section
+    - paragraphs.paragraphs_type.table
+    - paragraphs.paragraphs_type.teaser
+    - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.title
+    - paragraphs.paragraphs_type.video
+  module:
+    - entity_reference_revisions
+id: node.news.field_paragraphs
+field_name: field_paragraphs
+entity_type: node
+bundle: news
+label: Content
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      accordion: accordion
+      blokkli_fragment: blokkli_fragment
+      button: button
+      columns: columns
+      contact: contact
+      downloads: downloads
+      from_library: from_library
+      gallery: gallery
+      image: image
+      section: section
+      table: table
+      teaser: teaser
+      text: text
+      title: title
+      video: video
+    negate: 0
+field_type: entity_reference_revisions

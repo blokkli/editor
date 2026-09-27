@@ -115,8 +115,8 @@ To add page-level options that are editable in blökkli, you need two things:
 ### Drupal Field Setup
 
 The host entity (e.g. a Node) must have a field of type
-`paragraphs_blokkli_host_options`. Without this field, host options will **not**
-appear in the editor.
+`paragraphs_blokkli_host_options`. Without this field, the options still appear
+in the editor, but changes to them aren't saved.
 
 You can add this field via the Drupal admin UI at
 `/admin/structure/types/manage/PAGE_TYPE/fields` or programmatically:
@@ -142,6 +142,14 @@ FieldConfig::create([
 
 The field machine name can be anything — `paragraphs_blokkli` automatically
 discovers the first field of this type on the host entity.
+
+- The field type always has unlimited cardinality: one item per option.
+- Make the field untranslatable: options apply to every language.
+- Hide the field in the form display. Its widget is empty, so saving the
+  entity's form (in Drupal, or the host's edit form in the editor) would delete
+  the options.
+- The GraphQL server needs no configuration for it: the values are part of
+  `blokkliProps`.
 
 ### Nuxt Provider Setup
 
@@ -175,7 +183,7 @@ const { options } = defineBlokkliProvider(props, {
 </script>
 ```
 
-See [defineBlokkliProvider()](/components/BlokkliProvider#defineblokkprovider)
+See [defineBlokkliProvider()](/components/BlokkliProvider#defineblokkliprovider)
 for full documentation.
 
 ## Multiple Paragraph Fields

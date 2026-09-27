@@ -1,0 +1,31 @@
+uuid: ca54ec9a-4a1e-4101-a24f-d7735214371e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_paragraphs
+    - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.contact
+    - paragraphs.paragraphs_type.text
+    - translatable_config_pages.translatable_config_pages_type.footer
+  module:
+    - entity_reference_revisions
+id: translatable_config_pages.footer.field_paragraphs
+field_name: field_paragraphs
+entity_type: translatable_config_pages
+bundle: footer
+label: Content
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      button: button
+      contact: contact
+      text: text
+    negate: 0
+field_type: entity_reference_revisions

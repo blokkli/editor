@@ -1,0 +1,18 @@
+uuid: 9be61891-31b0-4ceb-a979-b1e391361e13
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.office
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '1'
+id: node.office
+target_entity_type_id: node
+target_bundle: office
+default_langcode: site_default
+language_alterable: false

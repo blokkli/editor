@@ -23,6 +23,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | to verify  | 13d      |
 | F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                     | `@blokkli/editor`    | low      | open       | –        |
 | F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                   | `paragraphs_blokkli` | low      | open       | –        |
+| F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                           | `paragraphs_blokkli` | low      | open       | –        |
+| F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                | `paragraphs_blokkli` | medium   | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -362,3 +364,42 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   is uninstalled.
 - **Fix idea:** make the plugin's configuration match its defaults (e.g.
   `defaultConfiguration()` or `setConfiguration()` in the plugin).
+
+## F15: Config pages have no label in entity lists
+
+- **Found:** 2026-09-26, making config pages hosts in 13c.
+- **Symptom:** `paragraphsBlokkliEntitiesSearch` (the editor's lists of hosts,
+  e.g. edit states and import) returns `label: null` for
+  `translatable_config_pages`.
+- **Cause:** `EntitiesSearch`
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/EntitiesSearch.php:231-259`)
+  selects the entity type's label key in SQL. `translatable_config_pages` has
+  none, so it selects `''`. `label()` would return the bundle's label.
+- **Fix idea:** fall back to the bundle label when the entity type has no label
+  key. The item alter hook (`paragraphs_blokkli_entities_search_item`) is a
+  site-level workaround.
+
+## F16: Mutations ignore a field's allowed types
+
+- **Found:** 2026-09-26, checking block-transfer in 13c.
+- **Symptom:** `add` and `import` put a block type into a paragraphs field that
+  doesn't allow it (a text block into the page's sidebar, which allows button,
+  contact and downloads), and publishing keeps it. Drupal's entity form then
+  refuses to save the host: "This entity (paragraph: N) cannot be referenced."
+- **Cause:**
+  - `AddMutationBase::createAndAddParagraph()`
+    (`src/Plugin/ParagraphsBlokkli/AddMutationBase.php:109`) validates the new
+    paragraph, but not the host field's `target_bundles`.
+  - `Import` (`src/Plugin/ParagraphsBlokkli/Mutation/Import.php:170-178`) only
+    checks create access per bundle.
+  - Publishing validates paragraphs (`validation_types`), not the references of
+    the host's fields.
+- **Impact:**
+  - Only the editor's UI enforces allowed types: any client of the GraphQL API
+    (or a UI bug) can break them.
+  - The nesting depth relies on them (F10), so a deeper structure can lose
+    blocks on publish.
+- **Fix idea:** check the target field's allowed bundles wherever a mutation
+  places a paragraph into a field (checked here: `add` and `import`; the other
+  mutations are likely the same), or validate the host's reference fields on
+  publish.

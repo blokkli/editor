@@ -1,0 +1,16 @@
+fragment configPageFooter on TranslatableConfigPagesFooter {
+  uuid
+  label
+  url {
+    path
+  }
+  blokkliProps {
+    ...blokkliProps
+  }
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

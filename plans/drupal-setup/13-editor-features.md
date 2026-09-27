@@ -118,8 +118,8 @@ the schema, and where they're set up:
 | fragments            | 13d       | "upcoming events", "latest news"; the table of contents (13i)                |
 | library              | 13d       | emergency numbers, "what goes into which bin", "stay informed"               |
 | templates            | 13d       | a service page; default contents for new columns                             |
-| import-existing      | 13c       | copying blocks from one service page to another                              |
-| block-transfer       | 13c       | moving blocks between pages                                                  |
+| import-existing      | 13c       | copying blocks from one page to another (same type and bundle only)          |
+| block-transfer       | 13c       | copying blocks between hosts, e.g. a page into a news item or the sidebar    |
 | preview-grant        | 13e       | previewing unpublished changes on a phone                                    |
 | transform            | 13g       | search and replace, e.g. a renamed office                                    |
 | conversions          | 13g       | text ↔ title, button → text                                                  |
@@ -131,5 +131,7 @@ the schema, and where they're set up:
 Also: publishing and scheduling (13e), translations (13f), options (13b: local,
 global, `bkVisibleLanguages`, the schema file) and complex options (13i),
 nesting and proxy mode (13b: section, accordion, columns, the gallery slider),
-host options (13c), analyze (06, 13i). The other editor features need no backend
-config; add them once they're checked in the editor.
+host options (13c: the page's header variant), several paragraphs fields on one
+host (13c: the page's sidebar), config pages as hosts (13c: footer, site),
+analyze (06, 13i). The other editor features need no backend config; add them
+once they're checked in the editor.

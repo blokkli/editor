@@ -8,7 +8,13 @@ image_style: blokkli_preview
 use_user_images: true
 enabled_types:
   node:
+    - event
+    - news
+    - office
     - page
+  translatable_config_pages:
+    - footer
+    - site
 clipboard_text_paragraph:
   bundle: text
   field: field_text

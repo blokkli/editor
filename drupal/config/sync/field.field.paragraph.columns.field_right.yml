@@ -6,9 +6,11 @@ dependencies:
     - field.storage.paragraph.field_right
     - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.columns
+    - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
     - paragraphs.paragraphs_type.image
     - paragraphs.paragraphs_type.table
+    - paragraphs.paragraphs_type.teaser
     - paragraphs.paragraphs_type.text
     - paragraphs.paragraphs_type.title
     - paragraphs.paragraphs_type.video
@@ -29,9 +31,11 @@ settings:
   handler_settings:
     target_bundles:
       button: button
+      contact: contact
       downloads: downloads
       image: image
       table: table
+      teaser: teaser
       text: text
       title: title
       video: video

@@ -4,10 +4,12 @@ module:
   automated_cron: 0
   big_pipe: 0
   block: 0
+  blokkli_playground: 0
   ckeditor5: 0
   config: 0
   contextual: 0
   datetime: 0
+  datetime_range: 0
   dblog: 0
   dynamic_page_cache: 0
   editor: 0
@@ -19,6 +21,7 @@ module:
   filter: 0
   graphql: 0
   graphql_core_schema: 0
+  graphql_translatable_config_pages: 0
   help: 0
   image: 0
   language: 0
@@ -32,6 +35,7 @@ module:
   menu_ui: 0
   navigation: 0
   node: 0
+  office_hours: 0
   options: 0
   page_cache: 0
   paragraphs_blokkli: 0
@@ -55,6 +59,7 @@ module:
   search_api_db: 0
   sqlite: 0
   system: 0
+  telephone: 0
   text: 0
   translatable_config_pages: 0
   typed_data: 0

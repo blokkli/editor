@@ -4,11 +4,12 @@ description: >-
   Add a block type (a paragraph type) to a blökkli + Drupal project: the bundle,
   its fields, form display, allowed types, translation and GraphQL exposure in
   Drupal, then the Nuxt component, its fragment, options and editor behaviour.
-  Covers blocks that hold other blocks, proxy mode, multi-value media fields and
-  rich text with its own text format (e.g. tables). Use when adding, changing or
-  removing a block type, when a new bundle doesn't appear in the schema or the
-  editor, when a block can't be added, or when options, nesting or dropping
-  media don't behave.
+  Covers blocks that hold other blocks, proxy mode, multi-value media fields,
+  blocks that reference content (teasers, contact boxes) and rich text with its
+  own text format (e.g. tables). Use when adding, changing or removing a block
+  type, when a new bundle doesn't appear in the schema or the editor, when a
+  block can't be added, or when options, nesting or dropping media or search
+  results don't behave.
 license: MIT
 compatibility: >-
   Requires a working blökkli + Drupal setup (see the blokkli-setup-drupal
@@ -17,7 +18,7 @@ compatibility: >-
   backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.1.0'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/blocks
 ---
@@ -152,11 +153,14 @@ schema_configuration:
   does (the blokkli-setup-drupal skill, section 7), then restart Nuxt. The
   Drupal module reads the schema at startup.
 
-## 4. Media drops (entity mappings)
+## 4. Entity mappings: media and content
 
-Entity mappings (`/admin/config/content/blokkli/entity-mapping`) map a media
-bundle to a paragraph bundle and field. They make dropping from the media
-library and pasting files create the block.
+Entity mappings (`/admin/config/content/blokkli/entity-mapping`) map an entity
+bundle (a media type, a content type) to a paragraph bundle and field. They make
+dropping create the block: from the media library, from search results, and
+pasted files.
+
+**Media:**
 
 - **Several mappings for one media bundle:** when the target field allows more
   than one of them, the editor asks which block to create.
@@ -168,6 +172,29 @@ library and pasting files create the block.
     `v-blokkli-droppable` on a field with several values)
 - **Every media bundle in the media library needs a mapping,** or the library
   doesn't list it.
+
+**Content** (e.g. a teaser that shows a page, or a contact box that shows an
+office):
+
+- **The field:**
+  - an `entity_reference` whose allowed bundles include every mapped bundle
+    (e.g. `node:news` → `teaser.field_node`)
+  - A link field works too, but blökkli sets its title to the block's label.
+- **A dropped search result** creates the block with the reference set, without
+  the form, even if the field is required. Dropping needs a search provider for
+  the entity type (`paragraphs_blokkli_search`, e.g. its `entity_query` plugin).
+- **Replacing the reference:** a `v-blokkli-droppable:<field>` on a single-value
+  reference lets editors drop a search result onto the block. Such a droppable
+  gets no hover and no double-click.
+- **GraphQL:**
+  - A field that allows one bundle is typed as that bundle (`NodeOffice`).
+    Several bundles give the interface (`Node`), with inline fragments per
+    bundle.
+  - Give the reference an alias that no other block uses with another type (e.g.
+    `node`, `office`), since all blocks share one selection.
+- **An unpublished or deleted target** is `null` for users without access.
+  Render nothing outside the editor and a hint while editing, on an element that
+  still carries the droppable, so that the reference can be replaced.
 
 ## 5. The component
 
@@ -458,3 +485,5 @@ so they catch none of the problems above.
 | Nested blocks disappear on publish                                      | More than 5 levels of nesting                                                           |
 | Drupal's paragraph form shows no options                                | `schema_file` doesn't point at the schema file (relative to the web root)               |
 | An option has no effect on a block from the library                     | Global options like `bkVisibleLanguages` don't apply to library blocks                  |
+| Dropping a search result fails with "Missing mapping for entity type …" | No entity mapping from that bundle to this block and field                              |
+| A search result can't be dropped onto the block to replace it           | No `v-blokkli-droppable` on the reference, or its allowed bundles lack the result's     |

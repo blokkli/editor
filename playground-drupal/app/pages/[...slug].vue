@@ -1,10 +1,49 @@
 <template>
-  <NodePage v-if="node" v-bind="node" />
+  <template v-if="entity">
+    <!-- A config page on its own route: where it's edited. -->
+    <main
+      v-if="
+        entity.__typename === 'TranslatableConfigPagesFooter' ||
+        entity.__typename === 'TranslatableConfigPagesSite'
+      "
+      class="py-12"
+    >
+      <p class="container-wide mb-8 text-sm text-stone-600">
+        {{ entity.label }}
+      </p>
+      <ConfigPageFooter
+        v-if="entity.__typename === 'TranslatableConfigPagesFooter'"
+        v-bind="entity"
+      />
+      <ConfigPageSite v-else v-bind="entity" />
+    </main>
+    <template v-else>
+      <ConfigPageSite v-if="site" v-bind="site" />
+      <NodePage v-if="entity.__typename === 'NodePage'" v-bind="entity" />
+      <NodeNews v-else-if="entity.__typename === 'NodeNews'" v-bind="entity" />
+      <NodeEvent
+        v-else-if="entity.__typename === 'NodeEvent'"
+        v-bind="entity"
+      />
+      <NodeOffice
+        v-else-if="entity.__typename === 'NodeOffice'"
+        v-bind="entity"
+      />
+      <ConfigPageFooter v-if="footer" v-bind="footer" />
+    </template>
+  </template>
 </template>
 
 <script lang="ts" setup>
 import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
-import { NodePage } from '#components'
+import {
+  ConfigPageFooter,
+  ConfigPageSite,
+  NodeEvent,
+  NodeNews,
+  NodeOffice,
+  NodePage,
+} from '#components'
 import { getLanguageFromPath } from '#shared/languages'
 
 const route = useRoute()
@@ -23,15 +62,27 @@ if (error.value) {
   throw createError({ statusCode: error.value.statusCode ?? 500, fatal: true })
 }
 
-const node = computed(() => {
+const entity = computed(() => {
   const url = data.value?.data.route
-  if (url && 'entity' in url && url.entity?.__typename === 'NodePage') {
-    return url.entity
+  if (!url || !('entity' in url) || !url.entity) {
+    return null
+  }
+  switch (url.entity.__typename) {
+    case 'NodePage':
+    case 'NodeNews':
+    case 'NodeEvent':
+    case 'NodeOffice':
+    case 'TranslatableConfigPagesFooter':
+    case 'TranslatableConfigPagesSite':
+      return url.entity
   }
   return null
 })
 
-if (!node.value) {
+const site = computed(() => data.value?.data.siteConfig)
+const footer = computed(() => data.value?.data.footerConfig)
+
+if (!entity.value) {
   throw createError({ statusCode: 404, fatal: true })
 }
 </script>

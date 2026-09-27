@@ -1,0 +1,21 @@
+uuid: a36a0745-db54-47e8-ac01-8835285ca812
+langcode: en
+status: true
+dependencies:
+  module:
+    - entity_reference_revisions
+    - paragraphs
+    - translatable_config_pages
+id: translatable_config_pages.field_paragraphs
+field_name: field_paragraphs
+entity_type: translatable_config_pages
+type: entity_reference_revisions
+settings:
+  target_type: paragraph
+module: entity_reference_revisions
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

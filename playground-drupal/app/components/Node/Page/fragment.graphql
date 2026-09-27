@@ -14,4 +14,10 @@ fragment nodePage on NodePage {
       ...paragraph
     }
   }
+  aside: fieldAside {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
 }

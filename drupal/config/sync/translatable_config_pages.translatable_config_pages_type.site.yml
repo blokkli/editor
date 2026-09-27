@@ -1,0 +1,9 @@
+uuid: 2415a83e-333b-4bf4-a490-506e66e0bc0e
+langcode: en
+status: true
+dependencies: {  }
+id: site
+label: Site
+menu:
+  description: Site
+  menu_parent: 'admin:translates_config_pages.parent'

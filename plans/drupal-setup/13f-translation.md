@@ -38,6 +38,14 @@ the language.
 
 - **13b set the translation settings of its types** (its "model as built"
   table): review them here. Nested paragraphs fields are untranslatable.
+- **13c set them for news, event, office and both config pages** (translation
+  on; see its "model as built"). The teaser and contact blocks have translation
+  off.
+- **Config pages need a translation per language,** or the frontend shows (and
+  blökkli edits) the default translation. 13c's test content creates them.
+- **Event category labels** are English in the frontend: `list_string` only
+  exposes the key. Translate the allowed values in Drupal and expose the labels,
+  or keep a map per language.
 - **Option labels are English only.** playground-drupal sets no
   `defaultLanguage`, so the options schema and the editor show English labels.
   Decide whether option labels get DE and FR.

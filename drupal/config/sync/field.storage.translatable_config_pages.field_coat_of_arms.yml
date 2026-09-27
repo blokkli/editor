@@ -1,0 +1,20 @@
+uuid: 011bd08c-06ec-4a43-81bb-5d8d0249c9de
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - translatable_config_pages
+id: translatable_config_pages.field_coat_of_arms
+field_name: field_coat_of_arms
+entity_type: translatable_config_pages
+type: entity_reference
+settings:
+  target_type: media
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

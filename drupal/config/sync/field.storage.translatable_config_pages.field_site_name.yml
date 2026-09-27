@@ -1,0 +1,21 @@
+uuid: 1e69b4ca-72c0-4a6f-acdc-e0c80017c6bf
+langcode: en
+status: true
+dependencies:
+  module:
+    - translatable_config_pages
+id: translatable_config_pages.field_site_name
+field_name: field_site_name
+entity_type: translatable_config_pages
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

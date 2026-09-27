@@ -1,0 +1,10 @@
+fragment officeDetails on NodeOffice {
+  address: fieldAddress
+  phone: fieldPhone
+  email: fieldEmail
+  hours: fieldOpeningHours {
+    day
+    starthours
+    endhours
+  }
+}

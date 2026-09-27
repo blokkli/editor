@@ -1,0 +1,9 @@
+uuid: 224ca666-a5e0-45a3-bb5b-39370b4bac71
+langcode: en
+status: true
+dependencies: {  }
+id: footer
+label: Footer
+menu:
+  description: Footer
+  menu_parent: 'admin:translates_config_pages.parent'

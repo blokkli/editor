@@ -1,0 +1,33 @@
+uuid: 872cc277-d880-4b90-88ae-b5be80163501
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_node
+    - node.type.event
+    - node.type.news
+    - node.type.page
+    - paragraphs.paragraphs_type.teaser
+id: paragraph.teaser.field_node
+field_name: field_node
+entity_type: paragraph
+bundle: teaser
+label: Content
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      event: event
+      news: news
+      page: page
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

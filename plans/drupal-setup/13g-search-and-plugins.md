@@ -47,3 +47,14 @@ From [chunk 03](03-drupal-base-site.md) and [04](04-base-content-model.md)
 - **Port `add_teaser_from_node_id`**: it was the only blökkli mutation in the
   starterkit's schema that the local one lacked. Since chunk 07,
   `build/drupal-schema.graphql` is the local dump.
+
+From [13c](13c-hosts.md) (2026-09-26):
+
+- **The node mappings exist** (page, news, event → teaser; office → contact),
+  but no content search provider yet: that's the task here.
+- **`entity_query`'s text fields,** to verify: `EntityQuery::getEntityText()`
+  seems to iterate the setting's values (unchecked boxes are stored as `0`), and
+  `string_long` (the lead) isn't among its field types. Record it in findings.md
+  if it holds.
+- **The custom module `blokkli_playground` exists** (13c: a route subscriber for
+  config pages). Add the plugins there.

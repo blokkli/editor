@@ -1,0 +1,22 @@
+uuid: d07fbce5-bc33-4990-9883-c6b808430b37
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.teaser.field_node
+    - node.type.page
+    - paragraphs.paragraphs_type.teaser
+  module:
+    - node
+    - paragraphs
+id: node__page
+label: 'node - page'
+target_entity_type: node
+target_entity_bundle: page
+paragraph_bundle: null
+paragraph_field: null
+mappings:
+  -
+    paragraph_bundle: teaser
+    paragraph_field: field_node
+context_description: null

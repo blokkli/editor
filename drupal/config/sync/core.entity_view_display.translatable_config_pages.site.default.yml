@@ -1,0 +1,46 @@
+uuid: 95b72502-314f-4a2a-b506-25a8bc7a6d6d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.translatable_config_pages.site.field_coat_of_arms
+    - field.field.translatable_config_pages.site.field_notice
+    - field.field.translatable_config_pages.site.field_site_name
+    - translatable_config_pages.translatable_config_pages_type.site
+  module:
+    - entity_reference_revisions
+id: translatable_config_pages.site.default
+targetEntityType: translatable_config_pages
+bundle: site
+mode: default
+content:
+  field_coat_of_arms:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: -1
+    region: content
+  field_notice:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_site_name:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: -2
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

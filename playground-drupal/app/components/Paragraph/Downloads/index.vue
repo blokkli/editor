@@ -1,7 +1,7 @@
 <template>
   <div
     v-blokkli-droppable:field_documents
-    :class="{ 'container-content': !parentType }"
+    :class="{ 'container-content': !parentType && fieldListType === 'default' }"
   >
     <ul class="divide-y divide-stone-300 border-y border-stone-300">
       <li v-for="item in items" :key="item.uuid">
@@ -52,7 +52,7 @@ const items = computed(() =>
   }),
 )
 
-const { parentType } = defineBlokkli({
+const { parentType, fieldListType } = defineBlokkli({
   bundle: 'downloads',
   globalOptions: ['bkVisibleLanguages'],
   editor: {

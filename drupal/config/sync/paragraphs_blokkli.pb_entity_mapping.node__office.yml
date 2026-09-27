@@ -1,0 +1,22 @@
+uuid: b8dc3375-2b52-4514-9610-d4425596d824
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.contact.field_office
+    - node.type.office
+    - paragraphs.paragraphs_type.contact
+  module:
+    - node
+    - paragraphs
+id: node__office
+label: 'node - office'
+target_entity_type: node
+target_entity_bundle: office
+paragraph_bundle: null
+paragraph_field: null
+mappings:
+  -
+    paragraph_bundle: contact
+    paragraph_field: field_office
+context_description: null

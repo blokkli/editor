@@ -2,7 +2,7 @@
   <div
     v-blokkli-editable:field_text
     class="rich-text"
-    :class="{ 'container-content': !parentType }"
+    :class="{ 'container-content': !parentType && fieldListType === 'default' }"
     v-html="text"
   />
 </template>
@@ -13,7 +13,7 @@ import type { ParagraphTextFragment } from '#graphql-operations'
 
 defineProps<ParagraphTextFragment>()
 
-const { parentType } = defineBlokkli({
+const { parentType, fieldListType } = defineBlokkli({
   bundle: 'text',
   globalOptions: ['bkVisibleLanguages'],
   editor: {

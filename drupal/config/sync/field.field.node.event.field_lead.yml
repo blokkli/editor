@@ -1,0 +1,19 @@
+uuid: 2bf6d5b7-f16d-41b4-9075-63fef10a9661
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_lead
+    - node.type.event
+id: node.event.field_lead
+field_name: field_lead
+entity_type: node
+bundle: event
+label: Lead
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

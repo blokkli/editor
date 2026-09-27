@@ -1,0 +1,5 @@
+services:
+  blokkli_playground.route_subscriber:
+    class: Drupal\blokkli_playground\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

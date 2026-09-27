@@ -30,6 +30,7 @@ schema_configuration:
       paragraphs_blokkli_template: paragraphs_blokkli_template
       paragraphs_blokkli_transform: paragraphs_blokkli_transform
       routing: routing
+      translatable_config_pages: translatable_config_pages
       user: user
     generate_value_fields: 1
     entity_base_fields:
@@ -51,6 +52,7 @@ schema_configuration:
       paragraphs_blokkli_edit_state: 1
       paragraphs_library_item: 1
       paragraphs_type: 1
+      translatable_config_pages: 1
       user: 1
     fields:
       blokkli_paragraph_template:
@@ -76,9 +78,20 @@ schema_configuration:
         changed: changed
         created: created
         default_langcode: default_langcode
+        field_address: field_address
+        field_aside: field_aside
+        field_category: field_category
+        field_date: field_date
+        field_email: field_email
         field_hero_image: field_hero_image
         field_lead: field_lead
+        field_opening_hours: field_opening_hours
+        field_organiser: field_organiser
         field_paragraphs: field_paragraphs
+        field_phone: field_phone
+        field_place: field_place
+        field_price: field_price
+        field_registration: field_registration
         langcode: langcode
         nid: nid
         publish_on: publish_on
@@ -96,6 +109,8 @@ schema_configuration:
         field_left: field_left
         field_link: field_link
         field_media: field_media
+        field_node: field_node
+        field_office: field_office
         field_paragraphs: field_paragraphs
         field_reusable_paragraph: field_reusable_paragraph
         field_right: field_right
@@ -129,6 +144,11 @@ schema_configuration:
         icon_default: icon_default
         icon_uuid: icon_uuid
         status: status
+      translatable_config_pages:
+        field_coat_of_arms: field_coat_of_arms
+        field_notice: field_notice
+        field_paragraphs: field_paragraphs
+        field_site_name: field_site_name
       user:
         access: access
         changed: changed
@@ -153,6 +173,12 @@ schema_configuration:
         remote_video:
           enabled: true
       node:
+        event:
+          enabled: true
+        news:
+          enabled: true
+        office:
+          enabled: true
         page:
           enabled: true
       paragraph:
@@ -163,6 +189,8 @@ schema_configuration:
         button:
           enabled: true
         columns:
+          enabled: true
+        contact:
           enabled: true
         downloads:
           enabled: true
@@ -176,6 +204,8 @@ schema_configuration:
           enabled: true
         table:
           enabled: true
+        teaser:
+          enabled: true
         text:
           enabled: true
         title:
@@ -187,6 +217,11 @@ schema_configuration:
           enabled: true
       paragraphs_library_item:
         paragraphs_library_item:
+          enabled: true
+      translatable_config_pages:
+        footer:
+          enabled: true
+        site:
           enabled: true
       user:
         user:

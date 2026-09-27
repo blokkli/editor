@@ -1,0 +1,18 @@
+fragment nodeNews on NodeNews {
+  uuid
+  title
+  lead: fieldLead
+  hero: fieldHeroImage {
+    ...mediaImage
+  }
+  created
+  blokkliProps {
+    ...blokkliProps
+  }
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

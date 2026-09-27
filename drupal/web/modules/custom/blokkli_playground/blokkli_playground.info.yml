@@ -1,0 +1,7 @@
+name: blökkli playground
+type: module
+description: Site-specific code of the blökkli playground.
+package: Custom
+core_version_requirement: ^11
+dependencies:
+  - translatable_config_pages:translatable_config_pages

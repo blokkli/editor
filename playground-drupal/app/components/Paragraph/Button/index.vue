@@ -1,5 +1,7 @@
 <template>
-  <div :class="{ 'container-content': !parentType }">
+  <div
+    :class="{ 'container-content': !parentType && fieldListType === 'default' }"
+  >
     <a
       v-blokkli-droppable:field_link
       :href
@@ -36,7 +38,7 @@ const label = computed(() => {
   return props.title || entityLabel || 'Button'
 })
 
-const { options, parentType } = defineBlokkli({
+const { options, parentType, fieldListType } = defineBlokkli({
   bundle: 'button',
   globalOptions: ['bkVisibleLanguages'],
   options: {
