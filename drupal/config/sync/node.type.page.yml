@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   module:
+    - menu_ui
     - scheduler
 third_party_settings:
   scheduler:
@@ -18,6 +19,10 @@ third_party_settings:
     unpublish_enable: true
     unpublish_required: false
     unpublish_revision: false
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
 name: 'Detail page'
 type: page
 description: 'An information page, the last in its branch of the menu. With a sidebar for the contact and more.'

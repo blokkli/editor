@@ -1,0 +1,11 @@
+# A link of the main menu. The description is shown in the sub-pages of
+# editorial pages.
+fragment menuLink on MenuLinkTreeElement {
+  link {
+    label
+    description
+    url {
+      path
+    }
+  }
+}

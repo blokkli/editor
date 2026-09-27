@@ -23,6 +23,11 @@
           : ['band py-8 lg:pt-10', hasImage ? 'lg:pb-10' : 'lg:pb-12']
       "
     >
+      <Breadcrumb
+        v-if="breadcrumbItems.length > 1"
+        :items="breadcrumbItems"
+        class="mb-2"
+      />
       <p
         v-if="$slots.eyebrow"
         class="text-label uppercase"
@@ -73,11 +78,16 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import type { MediaImageFragment } from '#graphql-operations'
+import type {
+  BreadcrumbFragment,
+  MediaImageFragment,
+} from '#graphql-operations'
+import Breadcrumb from '~/components/Breadcrumb/index.vue'
 import MediaImage from '~/components/Media/Image/index.vue'
 
-// A host's title and lead on the beige band. The eyebrow above the title says
-// what the page is (e.g. "News"), the meta below the lead e.g. its date.
+// A host's title and lead on the beige band, below the breadcrumb. The eyebrow
+// above the title says what the page is (e.g. "News"), the meta below the lead
+// e.g. its date.
 const props = defineProps<{
   title?: string | null
   lead?: string | null
@@ -89,7 +99,17 @@ const props = defineProps<{
   // image: after the band. overlay: the title on the image.
   variant: 'image' | 'overlay' | 'plain'
   isEditing: boolean
+  // Drupal's, from the main menu: it ends with the current page, without a
+  // link.
+  breadcrumb?: BreadcrumbFragment[]
 }>()
+
+const breadcrumbItems = computed(() =>
+  (props.breadcrumb ?? []).map((item) => ({
+    label: item.title,
+    url: item.url.path || undefined,
+  })),
+)
 
 const hasImage = computed(
   () =>

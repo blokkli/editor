@@ -1,0 +1,11 @@
+uuid: 137e8a1b-9fa3-4416-b98b-8b9cc0b3f2af
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: blokkli_notification.token
+label: Token
+description: null
+targetEntityType: blokkli_notification
+cache: true

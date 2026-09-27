@@ -1,0 +1,11 @@
+uuid: cf73f345-43b6-4916-8447-6e0beea663e1
+langcode: en
+status: true
+dependencies:
+  module:
+    - texts
+id: texts.token
+label: Token
+description: null
+targetEntityType: texts
+cache: true

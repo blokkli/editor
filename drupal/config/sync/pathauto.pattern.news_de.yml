@@ -1,0 +1,33 @@
+uuid: 8a5d2244-b2b1-4bb8-b59f-46924f08bb70
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+  module:
+    - language
+    - node
+id: news_de
+label: 'News (DE)'
+type: 'canonical_entities:node'
+pattern: '/aktuelles/[node:title]'
+selection_criteria:
+  e65e2d5c-3a9a-4c82-b295-ea66db15c372:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      news: news
+  19d03c6b-3cf3-4161-b0a1-f72f602d68fb:
+    id: language
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    langcodes:
+      de: de
+selection_logic: and
+weight: -10
+relationships:
+  'node:langcode:language':
+    label: Language

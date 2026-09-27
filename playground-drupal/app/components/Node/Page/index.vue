@@ -11,7 +11,9 @@
           :lead="entity.lead"
           variant="plain"
           :is-editing
+          :breadcrumb
         >
+          <template v-if="parent" #eyebrow>{{ parent }}</template>
           <template v-if="office || changedDate?.first?.day" #meta>
             <span v-if="office">
               {{ $texts('page.responsible', 'Responsible:') }}
@@ -55,7 +57,7 @@
 <script lang="ts" setup>
 import { computed } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
-import type { NodePageFragment } from '#graphql-operations'
+import type { BreadcrumbFragment, NodePageFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
 import { providePageOffice } from '~/composables/usePageOffice'
@@ -63,7 +65,16 @@ import { providePageOffice } from '~/composables/usePageOffice'
 // The detail page: an information page, the last in its branch of the menu.
 // Always the sidebar layout, no hero image. The responsible office is set in
 // Drupal's form; the route query reloads it.
-const props = defineProps<NodePageFragment>()
+const props = defineProps<
+  NodePageFragment & { breadcrumb?: BreadcrumbFragment[] }
+>()
 
 providePageOffice(computed(() => props.office))
+
+// The eyebrow is the parent in the menu. The breadcrumb ends with the page
+// itself; a top-level page's parent is the home page.
+const parent = computed(() => {
+  const items = props.breadcrumb ?? []
+  return items.length > 2 ? items[items.length - 2]?.title : null
+})
 </script>

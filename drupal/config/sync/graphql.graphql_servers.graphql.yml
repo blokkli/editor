@@ -15,12 +15,14 @@ query_complexity: 0
 schema_configuration:
   core_composable:
     extensions:
+      breadcrumb: breadcrumb
       entity_query: entity_query
       formatted_date: formatted_date
       image: image
       language_schema: language_schema
       language_switch_links: language_switch_links
       media: media
+      menu: menu
       paragraphs_blokkli_agent: paragraphs_blokkli_agent
       paragraphs_blokkli_comment: paragraphs_blokkli_comment
       paragraphs_blokkli_deepl: paragraphs_blokkli_deepl
@@ -49,6 +51,8 @@ schema_configuration:
       configurable_language: 1
       file: 1
       media: 1
+      menu: 1
+      menu_link_content: 1
       node: 1
       paragraph: 1
       paragraphs_blokkli_edit_state: 1
@@ -174,6 +178,9 @@ schema_configuration:
         image:
           enabled: true
         remote_video:
+          enabled: true
+      menu_link_content:
+        menu_link_content:
           enabled: true
       node:
         editorial:

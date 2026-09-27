@@ -1,0 +1,11 @@
+uuid: 0dde02cd-277e-4155-a565-507dc3fc0e14
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_comment
+id: blokkli_comment.token
+label: Token
+description: null
+targetEntityType: blokkli_comment
+cache: true

@@ -51,5 +51,6 @@ placeholder.heading;default;Heading;Überschrift;Titre
 placeholder.site_name;default;Site name;Name der Website;Nom du site
 placeholder.title;default;Title;Titel;Titre
 search.submit;default;Search;Suchen;Rechercher
+subpages.label;default;In this section;In diesem Bereich;Dans cette rubrique
 teaser.unavailable;default;The content of this teaser isn't available.;Der Inhalt dieses Teasers ist nicht verfügbar.;Le contenu de cet aperçu n'est pas disponible.
 upcoming_events.empty;default;No upcoming events.;Keine bevorstehenden Veranstaltungen.;Aucun événement à venir.

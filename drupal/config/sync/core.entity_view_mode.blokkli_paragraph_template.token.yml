@@ -1,0 +1,11 @@
+uuid: cdd42acb-7d33-4606-bf31-72606da26a22
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_template
+id: blokkli_paragraph_template.token
+label: Token
+description: null
+targetEntityType: blokkli_paragraph_template
+cache: true

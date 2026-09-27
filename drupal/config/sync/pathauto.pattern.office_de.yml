@@ -1,0 +1,33 @@
+uuid: 5fb46089-4e31-4062-a6bf-de5015c66aaa
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.office
+  module:
+    - language
+    - node
+id: office_de
+label: 'Offices (DE)'
+type: 'canonical_entities:node'
+pattern: '/aemter/[node:title]'
+selection_criteria:
+  56d05a5d-62fe-4d5a-affe-0d0a4b4bda2b:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      office: office
+  1a852070-5bc7-4e28-be32-2c483d8997bf:
+    id: language
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    langcodes:
+      de: de
+selection_logic: and
+weight: -10
+relationships:
+  'node:langcode:language':
+    label: Language

@@ -1,0 +1,11 @@
+uuid: 9b253c2b-31a6-47cf-b8d4-0c5491fce09d
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: paragraphs_blokkli_edit_state.token
+label: Token
+description: null
+targetEntityType: paragraphs_blokkli_edit_state
+cache: true

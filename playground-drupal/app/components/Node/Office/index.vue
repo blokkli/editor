@@ -11,6 +11,7 @@
           :lead="entity.lead"
           variant="plain"
           :is-editing
+          :breadcrumb
         >
           <template #eyebrow>{{ $texts('office.label', 'Office') }}</template>
         </HostHeader>
@@ -37,10 +38,15 @@
 
 <script lang="ts" setup>
 import { BlokkliField, BlokkliProvider } from '#components'
-import type { NodeOfficeFragment } from '#graphql-operations'
+import type {
+  BreadcrumbFragment,
+  NodeOfficeFragment,
+} from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
 import OfficeDetails from '~/components/Office/Details/index.vue'
 
-const props = defineProps<NodeOfficeFragment>()
+const props = defineProps<
+  NodeOfficeFragment & { breadcrumb?: BreadcrumbFragment[] }
+>()
 </script>

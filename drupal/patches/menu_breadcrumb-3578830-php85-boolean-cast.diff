@@ -1,0 +1,30 @@
+diff --git a/src/Form/SettingsForm.php b/src/Form/SettingsForm.php
+index 8b6b57f60416e272e897e0b1b92153838f2c0e9f..92d2efa030a8329f4f8f3b34d3fe35a89052b393 100644
+--- a/src/Form/SettingsForm.php
++++ b/src/Form/SettingsForm.php
+@@ -237,16 +237,16 @@ class SettingsForm extends ConfigFormBase {
+    */
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->config('menu_breadcrumb.settings')
+-      ->set('determine_menu', (boolean) $form_state->getValue('determine_menu'))
+-      ->set('disable_admin_page', (boolean) $form_state->getValue('disable_admin_page'))
+-      ->set('append_current_page', (boolean) $form_state->getValue('append_current_page'))
+-      ->set('current_page_as_link', (boolean) $form_state->getValue('current_page_as_link'))
+-      ->set('stop_on_first_match', (boolean) $form_state->getValue('stop_on_first_match'))
+-      ->set('append_member_page', (boolean) $form_state->getValue('append_member_page'))
+-      ->set('member_page_as_link', (boolean) $form_state->getValue('member_page_as_link'))
++      ->set('determine_menu', (bool) $form_state->getValue('determine_menu'))
++      ->set('disable_admin_page', (bool) $form_state->getValue('disable_admin_page'))
++      ->set('append_current_page', (bool) $form_state->getValue('append_current_page'))
++      ->set('current_page_as_link', (bool) $form_state->getValue('current_page_as_link'))
++      ->set('stop_on_first_match', (bool) $form_state->getValue('stop_on_first_match'))
++      ->set('append_member_page', (bool) $form_state->getValue('append_member_page'))
++      ->set('member_page_as_link', (bool) $form_state->getValue('member_page_as_link'))
+       ->set('front_title', $form_state->getValue('front_title'))
+-      ->set('remove_home', (boolean) $form_state->getValue('remove_home'))
+-      ->set('add_home', (boolean) $form_state->getValue('add_home'))
++      ->set('remove_home', (bool) $form_state->getValue('remove_home'))
++      ->set('add_home', (bool) $form_state->getValue('add_home'))
+       ->set('menu_breadcrumb_menus', $form_state->getValue('menu_breadcrumb_menus'))
+       ->set('exclude_empty_url', $form_state->getValue('exclude_empty_url'))
+       ->set('exclude_disabled_menu_items', $form_state->getValue('exclude_disabled_menu_items'))

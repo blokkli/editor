@@ -1,0 +1,34 @@
+diff --git a/src/PathautoGenerator.php b/src/PathautoGenerator.php
+--- a/src/PathautoGenerator.php
++++ b/src/PathautoGenerator.php
+@@ -342,7 +342,8 @@ class PathautoGenerator implements PathautoGeneratorInterface {
+    */
+   public function getPatternByEntity(EntityInterface $entity) {
+     $langcode = $entity->language()->getId();
+-    if (!isset($this->patterns[$entity->getEntityTypeId()][$entity->id()][$langcode])) {
++    $entity_id = $entity->id() ?? '';
++    if (!isset($this->patterns[$entity->getEntityTypeId()][$entity_id][$langcode])) {
+       foreach ($this->getPatternByEntityType($entity->getEntityTypeId()) as $pattern) {
+         if ($pattern->applies($entity)) {
+           // Fetch the translated pattern string if a language-specific config
+@@ -359,15 +360,15 @@ class PathautoGenerator implements PathautoGeneratorInterface {
+           if ($entity->isNew()) {
+             return $pattern;
+           }
+-          $this->patterns[$entity->getEntityTypeId()][$entity->id()][$langcode] = $pattern;
++          $this->patterns[$entity->getEntityTypeId()][$entity_id][$langcode] = $pattern;
+           break;
+         }
+       }
+       // If still not set.
+-      if (!isset($this->patterns[$entity->getEntityTypeId()][$entity->id()][$langcode])) {
+-        $this->patterns[$entity->getEntityTypeId()][$entity->id()][$langcode] = NULL;
++      if (!isset($this->patterns[$entity->getEntityTypeId()][$entity_id][$langcode])) {
++        $this->patterns[$entity->getEntityTypeId()][$entity_id][$langcode] = NULL;
+       }
+     }
+-    return $this->patterns[$entity->getEntityTypeId()][$entity->id()][$langcode];
++    return $this->patterns[$entity->getEntityTypeId()][$entity_id][$langcode];
+   }
+ 
+   /**

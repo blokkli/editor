@@ -31,12 +31,16 @@
         "drupal/graphql": "^5",
         "drupal/graphql_core_schema": "^1.0",
         "drupal/masquerade": "^2.0@beta",
+        "drupal/menu_breadcrumb": "~2.0",
         "drupal/office_hours": "^1.29",
         "drupal/paragraphs": "^1.23",
         "drupal/paragraphs_blokkli": "2.0.x-dev",
+        "drupal/pathauto": "^1.6",
         "drupal/scheduler": "^2.3",
         "drupal/search_api": "^1.41",
         "drupal/texts": "^1.0",
+        "drupal/token": "^1.5",
+        "drupal/token_or": "^2.1",
         "drupal/translatable_config_pages": "^1.0",
         "drush/drush": "^13",
         "twig/twig": "~3.29.0"
@@ -108,6 +112,13 @@
         },
         "composer-exit-on-patch-failure": true,
         "patches": {
+            "drupal/menu_breadcrumb": {
+                "The breadcrumb over GraphQL: the active trail cache context is the /graphql route's, so the second request gets a wrong breadcrumb (from blokkli_starterkit)": "patches/menu_breadcrumb-graphql-cache-context.patch",
+                "menu_breadcrumb#3578830: PHP 8.5, (bool) instead of (boolean) casts (menu_breadcrumb!40)": "patches/menu_breadcrumb-3578830-php85-boolean-cast.diff"
+            },
+            "drupal/pathauto": {
+                "PHP 8.4+: getPatternByEntity() doesn't use a null entity id as an array key (from blokkli_starterkit)": "patches/pathauto-php84-null-entity-id-array-key.patch"
+            },
             "drupal/scheduler": {
                 "scheduler#3312200: Paragraph scheduler plugin": "https://www.drupal.org/files/issues/2026-06-15/3312200-paragraph-scheduler.diff"
             }

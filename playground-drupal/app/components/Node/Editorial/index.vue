@@ -12,8 +12,14 @@
           :image="entity.hero"
           :variant="options.header"
           :is-editing
+          :breadcrumb
         />
       </template>
+      <SubPages
+        v-if="options.subPages && subPages?.length"
+        :items="subPages"
+        class="mb-10"
+      />
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
@@ -27,13 +33,23 @@
 <script lang="ts" setup>
 import { defineBlokkliProvider } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
-import type { NodeEditorialFragment } from '#graphql-operations'
+import type {
+  BreadcrumbFragment,
+  NodeEditorialFragment,
+} from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
+import SubPages from '~/components/SubPages/index.vue'
 
 // The editorial page: the home page, overview pages and landing pages. A hero
-// image and a free layout, no sidebar.
-const props = defineProps<NodeEditorialFragment>()
+// image and a free layout, no sidebar. An overview page lists its sub-pages
+// in the main menu above the blocks.
+const props = defineProps<
+  NodeEditorialFragment & {
+    breadcrumb?: BreadcrumbFragment[]
+    subPages?: { label: string; url: string; description?: string | null }[]
+  }
+>()
 
 const { options } = defineBlokkliProvider(props, {
   entityType: 'node',
@@ -62,6 +78,15 @@ const { options } = defineBlokkliProvider(props, {
           label: { en: 'No image', de: 'Kein Bild', fr: 'Sans image' },
         },
       },
+    },
+    subPages: {
+      type: 'checkbox',
+      label: {
+        en: 'Show sub-pages',
+        de: 'Unterseiten anzeigen',
+        fr: 'Afficher les sous-pages',
+      },
+      default: true,
     },
   },
 })

@@ -12,6 +12,7 @@
           :image="entity.hero"
           variant="image"
           :is-editing
+          :breadcrumb
         >
           <template #eyebrow>{{ $texts('news.label', 'News') }}</template>
           <template v-if="createdDate?.first?.day" #meta>
@@ -31,9 +32,11 @@
 
 <script lang="ts" setup>
 import { BlokkliField, BlokkliProvider } from '#components'
-import type { NodeNewsFragment } from '#graphql-operations'
+import type { BreadcrumbFragment, NodeNewsFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
 
-const props = defineProps<NodeNewsFragment>()
+const props = defineProps<
+  NodeNewsFragment & { breadcrumb?: BreadcrumbFragment[] }
+>()
 </script>

@@ -76,8 +76,13 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   which works despite the `NOCASE_UTF8` collation. Bake should still delete
   `drupal/db/site.sqlite*` first: that also clears `-wal`/`-shm` files and can't
   lose a lock race with a running request.
-- **Front page:** `system.site.page.front` is still `/node` (the frontpage view
-  was removed). Set it to the seeded home page.
+- **Front page:** `system.site.page.front` is `/node/16`, the test home page
+  from [15c](15c-site-structure.md). The seed must create the home page with
+  that id, or set the front page after creating it.
+- **The main menu** (15c) is content: `menu_link_content`, translated. The seed
+  creates it after the pages, then generates the aliases
+  (`drush pathauto:aliases-generate all canonical_entities:node`): the pages'
+  aliases come from their place in the menu.
 - **New routes:** a custom module or view with a new first path segment needs it
   in nginx's Drupal list and a `ddev check-routes` row.
 

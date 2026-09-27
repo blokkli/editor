@@ -71,6 +71,12 @@ enum EntityType {
   "Media"
   MEDIA
 
+  "Menu"
+  MENU
+
+  "Custom menu link"
+  MENU_LINK_CONTENT
+
   "Content"
   NODE
 
@@ -804,6 +810,96 @@ type MediaRemoteVideo implements Media & Entity & EntityLinkable & EntityRevisio
     "Return entity in current language if translation language does not exist."
     fallback: Boolean
   ): MediaRemoteVideo
+}
+
+"Custom menu link"
+interface MenuLinkContent implements Entity & EntityLinkable & EntityRevisionable {
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+}
+
+"Custom menu link {entity_type: menu_link_content, bundle: menu_link_content}"
+type MenuLinkContentMenuLinkContent implements MenuLinkContent & Entity & EntityLinkable & EntityRevisionable & EntityTranslatable {
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+
+  "Get all translations."
+  translations: [MenuLinkContentMenuLinkContent]
+
+  "Get a specific translation."
+  translation(
+    ""
+    langcode: Langcode!
+
+    "Return entity in current language if translation language does not exist."
+    fallback: Boolean
+  ): MenuLinkContentMenuLinkContent
 }
 
 "Published"
@@ -2472,6 +2568,35 @@ type ParagraphsLibraryItem implements Entity & EntityLinkable & EntityRevisionab
 
   "Checks if this entity is the latest revision."
   isLatestRevision: Boolean
+}
+
+"Menu"
+type Menu implements Entity {
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  links(root: String = null, activeTrailIds: [String] = null, minDepth: Int = null, maxDepth: Int = null): [MenuLinkTreeElement!]!
 }
 
 "Translatable config pages"
@@ -4523,6 +4648,15 @@ type Query {
   entityByUuid(entityType: EntityType!, uuid: String!, langcode: Langcode): Entity
 
   """
+  Load a menu by its name. The menu is loaded automatically in the
+  current language.
+  """
+  menuByName(
+    "The name of the menu."
+    name: MenuName!
+  ): Menu
+
+  """
   List conversations of the current user, ordered by last changed date
   (newest first). When the `host` argument is provided, results are filtered
   to that host entity; when omitted, all of the current user's conversations
@@ -4776,6 +4910,15 @@ type DefaultUrl implements Url {
 }
 
 ""
+type Breadcrumb {
+  ""
+  url: Url!
+
+  ""
+  title: String!
+}
+
+""
 type EntityQueryResult {
   ""
   total: Int!
@@ -4833,6 +4976,36 @@ type LanguageSwitchLink {
 
   ""
   language: ConfigurableLanguage!
+}
+
+""
+type MenuLinkTreeElement {
+  ""
+  link: MenuLink!
+
+  ""
+  subtree: [MenuLinkTreeElement!]!
+}
+
+""
+type MenuLink {
+  ""
+  url: Url
+
+  ""
+  label: String!
+
+  ""
+  description: String
+
+  ""
+  expanded: Boolean!
+
+  ""
+  content: MenuLinkContent
+
+  ""
+  attribute(name: String!): String
 }
 
 "A persisted agent conversation belonging to a user and host entity."
@@ -6692,6 +6865,7 @@ interface InternalUrl {
   ""
   routeName: String!
 
+  breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
@@ -6706,6 +6880,7 @@ interface EntityUrl {
   ""
   routeName: String!
 
+  breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
@@ -6720,6 +6895,7 @@ type DefaultInternalUrl implements Url & InternalUrl {
   ""
   routeName: String!
 
+  breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
@@ -6737,6 +6913,7 @@ type DefaultEntityUrl implements Url & InternalUrl & EntityUrl {
   ""
   internalPath: String!
 
+  breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
@@ -6754,6 +6931,7 @@ type EntityCanonicalUrl implements Url & InternalUrl & EntityUrl {
   ""
   internalPath: String!
 
+  breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
 }
 
@@ -6919,6 +7097,29 @@ enum ImageStyleId {
 
   "{thumbnail} Thumbnail (100×100)"
   THUMBNAIL
+}
+
+enum MenuName {
+  "Links related to the active user account"
+  ACCOUNT
+
+  "Administrative task links"
+  ADMIN
+
+  "Content task links"
+  CONTENT
+
+  "Site information links"
+  FOOTER
+
+  "Site section links"
+  MAIN
+
+  "User links to be used in Navigation"
+  NAVIGATION_USER_LINKS
+
+  "User tool links, often added by modules"
+  TOOLS
 }
 
 "Possible ratings for agent conversation feedback."

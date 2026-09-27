@@ -245,6 +245,12 @@
             keep the sidebar until they get their own design.
           </p>
           <p class="max-w-content">
+            Both are in Drupal's main menu. The header shows its first level;
+            the breadcrumb (Drupal's, from the menu) sits above the title; a
+            detail page's eyebrow is its parent; an editorial page lists its
+            children at the top of its body.
+          </p>
+          <p class="max-w-content">
             The blocks know where they are from their field list type:
             <code>sidebar</code>, <code>footer</code> (the ink ground: buttons,
             links and neutral colours flip, see <code>on-dark</code>) or

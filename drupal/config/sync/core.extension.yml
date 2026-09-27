@@ -32,6 +32,7 @@ module:
   masquerade: 0
   media: 0
   media_library: 0
+  menu_breadcrumb: 0
   menu_link_content: 0
   menu_ui: 0
   navigation: 0
@@ -64,10 +65,13 @@ module:
   text: 0
   texts: 0
   texts_graphql: 0
+  token: 0
+  token_or: 0
   translatable_config_pages: 0
   typed_data: 0
   user: 0
   views_ui: 0
+  pathauto: 1
   content_translation: 10
   views: 10
   paragraphs: 11

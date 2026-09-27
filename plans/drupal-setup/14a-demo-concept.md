@@ -75,6 +75,11 @@ paragraph types and bundles get added that end up wrong for it.
   - Its responsible office feeds the header and the contact fragment, which new
     pages get in their sidebar.
   - The editorial page is new: the home page, overview pages and landing pages.
+- **Changed in [15c](15c-site-structure.md) (the user, 2026-09-27):**
+  - Detail and editorial pages are in the translated main menu. It gives them
+    their URLs (pathauto) and breadcrumbs (`menu_breadcrumb`).
+  - News, events and offices have a URL prefix per language.
+  - The home page is an editorial page, set as the front page.
 - Config pages: `footer` (a paragraphs field) and `site` (name, coat of arms, a
   site-wide notice with a paragraphs field). Covers 13c.
 - Library items and templates are hosts too (13d).

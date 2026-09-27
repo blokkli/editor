@@ -8,6 +8,7 @@
     <PageHeader
       :home-url="isEditing ? undefined : `/${language}`"
       :language-links
+      :links
     >
       <template #logo>
         <div
@@ -73,6 +74,8 @@ import { useLanguage } from '~/composables/useLanguage'
 const props = defineProps<
   ConfigPageSiteFragment & {
     languageLinks?: LanguageSwitchLinkFragment[] | null
+    // The main menu's first level.
+    links?: { label: string; url: string; isActive?: boolean }[]
   }
 >()
 

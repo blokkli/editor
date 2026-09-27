@@ -12,6 +12,7 @@
           :image="entity.hero"
           variant="image"
           :is-editing
+          :breadcrumb
         >
           <template #eyebrow>{{ categoryLabel }}</template>
         </HostHeader>
@@ -73,12 +74,14 @@
 <script lang="ts" setup>
 import { computed, useEasyTexts } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
-import type { NodeEventFragment } from '#graphql-operations'
+import type { BreadcrumbFragment, NodeEventFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
 import { formatDateRange } from '~/helpers/date'
 
-const props = defineProps<NodeEventFragment>()
+const props = defineProps<
+  NodeEventFragment & { breadcrumb?: BreadcrumbFragment[] }
+>()
 
 const { $texts } = useEasyTexts()
 

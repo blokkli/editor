@@ -1,0 +1,25 @@
+uuid: 59bc0287-1922-4f26-b2ad-e6bdcdf36384
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.editorial
+    - node.type.page
+  module:
+    - node
+id: page
+label: 'Detail and editorial pages'
+type: 'canonical_entities:node'
+pattern: '/[node:menu-link:parents:join-path]/[node:menu-link:title|node:title]'
+selection_criteria:
+  18aadcc2-f1e7-427b-b50e-e461dfb72ba7:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      page: page
+      editorial: editorial
+selection_logic: and
+weight: -5
+relationships: {  }

@@ -1,0 +1,13 @@
+diff --git a/src/MenuBasedBreadcrumbBuilder.php b/src/MenuBasedBreadcrumbBuilder.php
+--- a/src/MenuBasedBreadcrumbBuilder.php
++++ b/src/MenuBasedBreadcrumbBuilder.php	(date 1709039732165)
+@@ -301,7 +301,7 @@
+
+     // Changing the active trail or URL, of either the current path or the
+     // taxonomy-attached path, on this menu will invalidate this breadcrumb:
+-    $breadcrumb->addCacheContexts(['route.menu_active_trails:' . $this->menuName]);
++    // $breadcrumb->addCacheContexts(['route.menu_active_trails:' . $this->menuName]);
+     $breadcrumb->addCacheContexts(['url.path']);
+
+     // Generate basic breadcrumb trail from active trail.
+

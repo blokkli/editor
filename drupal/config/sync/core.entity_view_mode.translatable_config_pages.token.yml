@@ -1,0 +1,11 @@
+uuid: b08935ce-2107-4321-aafb-9f60a28dc600
+langcode: en
+status: true
+dependencies:
+  module:
+    - translatable_config_pages
+id: translatable_config_pages.token
+label: Token
+description: null
+targetEntityType: translatable_config_pages
+cache: true

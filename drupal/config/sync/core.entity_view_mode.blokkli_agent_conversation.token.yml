@@ -1,0 +1,11 @@
+uuid: 0c4e7b09-90d4-4f54-a4a5-ead33559ba50
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli_agent
+id: blokkli_agent_conversation.token
+label: Token
+description: null
+targetEntityType: blokkli_agent_conversation
+cache: true
