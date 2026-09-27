@@ -87,6 +87,10 @@ progress, not a spec (the user).
   - Containers: `container-content` (48rem) and `container-wide` (75rem) plus
     the gutter on both sides. At 1440 px the wide container leaves the canvas's
     120 px of margin.
+  - `band`: a `surface` background as wide as the window behind an element in a
+    container, through a pseudo-element; the mockup's `<main>` has
+    `overflow-x-clip`. Used by the home page's hero and the detail page's
+    header.
 - **Base, scoped to `.bk-main-canvas`:** hyphenation
   (`hyphenate-limit-chars: 12 5 5`, so names like "Blockingen" stay whole), the
   focus ring (3 px `info`; white inside `on-dark`) and `::selection`. The
@@ -154,7 +158,12 @@ progress, not a spec (the user).
 
 - **The canvas's other mockups** (the overview pages on levels 1 and 2, the
   editorial "850 Jahre Blockingen") aren't built; they come with 15b and 15c.
-- **Line length:** the detail mockup's text runs at 9 of 12 columns (about 100
-  characters a line), as in the canvas. Worth revisiting.
+- **The detail page's layout** (iterated with the user, 2026-09-27):
+  - The header (breadcrumb, eyebrow, title, lead, responsibility) sits on a
+    `surface` band as wide as the window.
+  - The sidebar is a white panel cut into the band. Its contact section is on
+    the white, not in a box.
+  - Content and sidebar split 8/4 from `lg`: about 790 and 380 px at 1440, and
+    about 80 characters a line.
 - **The small logo:** the canvas has a simplified 16 px variant (one square).
   The component has only the full shield.

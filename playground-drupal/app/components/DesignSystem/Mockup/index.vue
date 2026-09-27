@@ -12,7 +12,7 @@
       :language-links
     />
 
-    <main id="main" lang="de" class="grow">
+    <main id="main" lang="de" class="grow overflow-x-clip">
       <slot />
     </main>
 

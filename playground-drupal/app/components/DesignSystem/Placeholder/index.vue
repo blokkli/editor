@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center justify-center bg-surface p-4 text-center text-small text-muted"
+    class="flex items-center justify-center border border-line bg-surface p-4 text-center text-small text-muted"
     style="
       background-image: repeating-linear-gradient(
         135deg,

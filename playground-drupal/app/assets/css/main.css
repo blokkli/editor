@@ -114,6 +114,22 @@
   }
 }
 
+/* A background as wide as the window behind an element in a container, e.g. a
+   page's header. An ancestor needs overflow-x: clip. */
+@utility band {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline: -100vmax;
+    z-index: -1;
+    background: var(--color-surface);
+  }
+}
+
 /* Focus rings on the ink or red ground. */
 @utility on-dark {
   --focus-color: var(--color-white);

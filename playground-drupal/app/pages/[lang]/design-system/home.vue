@@ -1,7 +1,9 @@
 <template>
   <DesignSystemMockup>
-    <div class="container-wide flex flex-col gap-section py-8 lg:py-12">
-      <section class="grid gap-x-grid gap-y-8 lg:grid-cols-12 lg:items-center">
+    <div class="container-wide flex flex-col gap-section pb-8 lg:pb-12">
+      <section
+        class="band grid gap-x-grid gap-y-8 py-8 lg:grid-cols-12 lg:items-center lg:py-12"
+      >
         <div class="flex flex-col gap-5 lg:col-span-7">
           <h1 class="font-serif text-h1 text-balance">
             Wie können wir Ihnen helfen?

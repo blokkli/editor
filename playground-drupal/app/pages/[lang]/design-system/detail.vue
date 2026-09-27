@@ -1,19 +1,23 @@
 <template>
   <DesignSystemMockup section="Verwaltung">
-    <div class="container-wide flex flex-col gap-6 pt-6 pb-section lg:pt-8">
-      <Breadcrumb
-        :items="[
-          { label: 'Startseite', url: '#' },
-          { label: 'Verwaltung', url: '#' },
-          { label: 'Bauen & Planen', url: '#' },
-          { label: 'Baugesuch einreichen' },
-        ]"
-      />
-
+    <div class="pb-section">
       <!-- Below lg the sidebar's parts join the column (display: contents):
-           the table of contents after the title, the contact at the end. -->
-      <div class="flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-x-grid">
-        <div class="flex flex-col gap-4 lg:col-span-9 lg:row-start-1">
+           the table of contents after the header, the contact at the end. -->
+      <div
+        class="container-wide flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-x-grid"
+      >
+        <div
+          class="band flex flex-col gap-4 py-6 lg:col-span-8 lg:row-start-1 lg:pt-8 lg:pb-12"
+        >
+          <Breadcrumb
+            class="mb-2"
+            :items="[
+              { label: 'Startseite', url: '#' },
+              { label: 'Verwaltung', url: '#' },
+              { label: 'Bauen & Planen', url: '#' },
+              { label: 'Baugesuch einreichen' },
+            ]"
+          />
           <p class="text-label text-primary uppercase">Bauen & Planen</p>
           <h1 class="font-serif text-h1 text-balance">Baugesuch einreichen</h1>
           <p class="max-w-content font-serif text-lead">
@@ -22,15 +26,16 @@
             Verfahren abläuft und welche Unterlagen nötig sind.
           </p>
           <p class="flex flex-wrap gap-x-7 gap-y-1 text-small text-muted">
-            <span
-              >Zuständig: <strong class="text-ink">Bauverwaltung</strong></span
-            >
+            <span>
+              Zuständig: <strong class="text-ink">Bauverwaltung</strong>
+            </span>
             <span>Aktualisiert am 14. September 2026</span>
           </p>
         </div>
 
+        <!-- A white panel cut into the band. -->
         <aside
-          class="contents lg:col-span-3 lg:col-start-10 lg:row-span-2 lg:row-start-1 lg:flex lg:flex-col lg:gap-10 lg:pt-2"
+          class="contents lg:relative lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-1 lg:mt-8 lg:flex lg:flex-col lg:gap-10 lg:bg-white lg:p-6"
         >
           <nav aria-label="Auf dieser Seite" class="flex flex-col">
             <h2
@@ -40,24 +45,28 @@
             </h2>
             <ul>
               <li v-for="(item, index) in TOC" :key="item.id">
+                <!-- The current section: a bar on the panel's edge (the
+                     page's edge below lg), so the text stays aligned. -->
                 <a
                   :href="`#${item.id}`"
-                  class="flex items-center gap-2.5 py-2 hover:text-primary"
-                  :class="
-                    index === 0 ? 'font-bold text-ink' : 'pl-4.5 text-ink'
-                  "
+                  class="relative block py-2 text-ink hover:text-primary"
+                  :class="{
+                    'font-bold before:absolute before:inset-y-1 before:-left-gutter before:w-1 before:bg-primary lg:before:-left-6':
+                      index === 0,
+                  }"
                   :aria-current="index === 0 ? 'true' : undefined"
                 >
-                  <span v-if="index === 0" class="size-2 shrink-0 bg-primary" />
                   {{ item.label }}
                 </a>
               </li>
             </ul>
           </nav>
-          <div
-            class="order-last flex flex-col gap-3 bg-surface p-6 lg:order-none"
-          >
-            <h2 class="text-label text-muted uppercase">Kontakt</h2>
+          <div class="order-last flex flex-col gap-3 lg:order-none">
+            <h2
+              class="border-b border-ink pb-2.5 text-label text-muted uppercase"
+            >
+              Kontakt
+            </h2>
             <p class="font-serif text-h3 font-semibold">Bauverwaltung</p>
             <p>
               Gemeindehaus, 1. Stock<br />Dorfstrasse 1<br />Termine nach
@@ -68,9 +77,7 @@
           </div>
         </aside>
 
-        <article
-          class="flex flex-col gap-flow lg:col-span-9 lg:row-start-2 lg:pr-6"
-        >
+        <article class="flex flex-col gap-flow lg:col-span-8 lg:row-start-2">
           <Callout type="info">
             <strong>Elektronisch einreichen:</strong> Baugesuche können Sie auch
             über den

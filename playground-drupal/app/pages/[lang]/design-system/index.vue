@@ -230,6 +230,12 @@
             sides. At 1440 px the wide container leaves 120 px of margin, as in
             the canvas.
           </p>
+          <p class="max-w-content">
+            <code>band</code> puts a page's header on a <code>surface</code>
+            background as wide as the window (the hero of the home page, the
+            header of the detail page). An ancestor clips it with
+            <code>overflow-x-clip</code>.
+          </p>
           <div class="overflow-x-auto">
             <table class="w-full min-w-[32rem] text-left">
               <thead>
