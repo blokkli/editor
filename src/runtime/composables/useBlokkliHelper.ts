@@ -3,7 +3,15 @@ import {
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/injections'
-import { inject, type ComputedRef, computed, watch, ref } from '#imports'
+import {
+  inject,
+  type ComputedRef,
+  computed,
+  watch,
+  ref,
+  toValue,
+} from '#imports'
+import type { MaybeRefOrGetter } from 'vue'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { getActualBlock } from '#blokkli/helpers/runtimeHelpers'
@@ -29,12 +37,12 @@ type UseBlokkliHelper = {
    */
   queryBlocks<K extends BundleWithoutLibrary>(
     bundles: K[],
-    providedList?: FieldListItemTyped[],
+    providedList?: MaybeRefOrGetter<FieldListItemTyped[] | undefined>,
   ): ComputedRef<Extract<FieldListItemTyped, { bundle: K }>[]>
 
   queryBlocks(
     bundles: (item: FieldListItemTyped) => CallbackResult,
-    providedList?: FieldListItemTyped[],
+    providedList?: MaybeRefOrGetter<FieldListItemTyped[] | undefined>,
   ): ComputedRef<FieldListItemTyped[]>
 }
 
@@ -141,7 +149,7 @@ export function useBlokkliHelper(): UseBlokkliHelper {
 
   function queryBlocks(
     bundlesOrCallback: BundlesOrCallback<any>,
-    providedList?: FieldListItemTyped[],
+    providedList?: MaybeRefOrGetter<FieldListItemTyped[] | undefined>,
   ): ComputedRef<FieldListItemTyped[]> {
     const callback =
       typeof bundlesOrCallback === 'function'
@@ -162,7 +170,7 @@ export function useBlokkliHelper(): UseBlokkliHelper {
 
     return computed(() => {
       const matches: FieldListItemTyped[] = []
-      const list = providedList ? providedList : rootBlocks?.value
+      const list = toValue(providedList) ?? rootBlocks?.value
 
       if (!list) {
         console.error(

@@ -716,3 +716,25 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   content language from the request, which has the language's prefix.
 - **Fix idea:** a `langcode` argument on the `transform` field, passed to
   `transform()` (or set on the mutation context).
+
+## F34: The table of contents links to hidden nested headings
+
+- **Found:** 2026-09-27, 13i, reading the code while building the table of
+  contents. Not reproduced in the browser: the demo has no nested title limited
+  to some languages.
+- **Symptom:** a title inside a section, limited to German with "Visible
+  languages", still gets a link in the English table of contents. The title
+  isn't rendered, so the link leads nowhere.
+- **Cause:** `queryBlocks()` starts from the field's list, which `BlokkliField`
+  filters by visibility (`src/runtime/components/BlokkliField.vue:282`, in this
+  repository), but walks nested paragraphs from their raw props
+  (`src/runtime/composables/useBlokkliHelper.ts:105`). `BlokkliTableOfContents`
+  then only skips "Hidden globally"
+  (`src/modules/table-of-contents/runtime/components/BlokkliTableOfContents/index.vue:67`).
+- **With a passed list** (`queryBlocks()`'s second argument,
+  `BlokkliTableOfContents`'s `list` prop, as in the detail page's sidebar), the
+  top-level blocks aren't filtered either, and while editing they're the saved
+  ones. See the TODO in `BlokkliTableOfContents`.
+- **Fix idea:** check `isVisibleByOptions()` with the provider's language, and
+  `isVisible`, for nested paragraphs in `walkBlocks()`, so that every
+  `queryBlocks()` caller gets what's rendered.

@@ -97,6 +97,9 @@ const items = computed(() =>
 
 `useBlokkliHelper()` automatically injects the root block list from the nearest
 `<BlokkliProvider>`. If the component is not inside a `<BlokkliField>`, you can
-pass the block list as the second argument to `queryBlocks`.
+pass the block list as the second argument to `queryBlocks`: an array, a ref or
+a getter. A passed list is used as it is: while editing, changes to its
+top-level blocks are missing, and so is the visibility filtering that
+`<BlokkliField>` does.
 
 :::

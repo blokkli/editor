@@ -10,6 +10,7 @@
     >
       <h2
         v-if="title || isEditing"
+        :id="anchorId(title)"
         v-blokkli-editable:field_title
         :data-placeholder="$texts('placeholder.heading', 'Heading')"
         class="editable-placeholder mb-6 font-serif text-h2"
@@ -30,6 +31,7 @@
 <script lang="ts" setup>
 import { defineBlokkli } from '#imports'
 import type { ParagraphSectionFragment } from '#graphql-operations'
+import { anchorId } from '~/helpers/anchor'
 
 defineProps<ParagraphSectionFragment>()
 

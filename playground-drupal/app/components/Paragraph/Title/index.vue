@@ -1,5 +1,6 @@
 <template>
   <h2
+    :id="anchorId(title)"
     v-blokkli-editable:field_title
     class="font-serif text-h2"
     :class="{ 'container-content': !parentType }"
@@ -11,6 +12,7 @@
 <script lang="ts" setup>
 import { defineBlokkli } from '#imports'
 import type { ParagraphTitleFragment } from '#graphql-operations'
+import { anchorId } from '~/helpers/anchor'
 
 defineProps<ParagraphTitleFragment>()
 

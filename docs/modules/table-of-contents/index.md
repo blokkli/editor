@@ -89,8 +89,35 @@ defineProps<{ links: BlokkliTableOfContentsLink[] }>()
 | `bundles`    | `string[]`                                     | Block bundles to include. Reusable (library) blocks of these bundles match too. |
 | `mapItem`    | `(item) => BlokkliTableOfContentsLink \| null` | Maps a matched block to a link. Return `null` to skip it.                       |
 | `optionName` | `string` _(optional)_                          | Name of a `defineBlokkli` option used to toggle whether a block is included.    |
+| `list`       | `FieldListItem[]` _(optional)_                 | The blocks to search instead of the field's. See below.                         |
 
 `BlokkliTableOfContentsLink` is `{ id: string; label: string }`.
+
+## Outside the field
+
+By default, the component finds the blocks of the `<BlokkliField>` it's placed
+in. For a table of contents next to the field, e.g. in a sidebar, pass the
+field's list:
+
+```vue
+<template>
+  <BlokkliField name="field_paragraphs" :list="paragraphs" />
+  <aside>
+    <BlokkliTableOfContents
+      v-slot="{ links }"
+      :bundles="['title']"
+      :list="paragraphs"
+      :map-item="(item) => ({ id: item.uuid, label: item.props.title })"
+    >
+      <MyMenu :links />
+    </BlokkliTableOfContents>
+  </aside>
+</template>
+```
+
+The list is used as it is. While editing, the table of contents doesn't show the
+changes to the field's top-level blocks until they're published, and top-level
+blocks hidden in the current language ("Visible languages") are included.
 
 ## Slot
 

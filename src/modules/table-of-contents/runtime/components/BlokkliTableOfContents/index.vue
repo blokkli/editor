@@ -12,6 +12,7 @@ type BundleWithoutLibrary = Exclude<
 <script setup lang="ts" generic="T extends BundleWithoutLibrary">
 import type { fromLibraryBlockBundle } from '#blokkli-build/config'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
+import type { FieldListItem } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
 import { getRuntimeOptions } from '#blokkli/helpers/runtimeHelpers'
 import { computed, useBlokkliHelper } from '#imports'
@@ -38,6 +39,13 @@ const props = defineProps<{
   mapItem: (
     item: Extract<FieldListItemTyped, { bundle: T }>,
   ) => BlokkliTableOfContentsLink | null
+
+  /**
+   * The blocks to search, e.g. the list of a field that the component is
+   * placed next to. If not provided, the blocks of the field the component is
+   * placed in.
+   */
+  list?: Array<FieldListItem | null | undefined>
 }>()
 
 defineSlots<{
@@ -46,7 +54,15 @@ defineSlots<{
 
 const { queryBlocks } = useBlokkliHelper()
 
-const items = queryBlocks(props.bundles)
+// @todo: A passed list is what the page received, not what <BlokkliField>
+// renders: while editing, the edit state's changes to the field's top-level
+// blocks are missing, and its hidden top-level blocks (e.g. with "Visible
+// languages") are included. Take a field name instead, and resolve that
+// field's list from the provider the way <BlokkliField> does.
+const items = queryBlocks(
+  props.bundles,
+  () => props.list as FieldListItemTyped[] | undefined,
+)
 
 const links = computed<BlokkliTableOfContentsLink[]>(() => {
   return items.value

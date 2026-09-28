@@ -58,6 +58,7 @@ fragment easyTexts on TextsLoader {
   placeholder__title: getText(key: "title", context: "placeholder", default: "Title")
   search__submit: getText(key: "submit", context: "search", default: "Search")
   subpages__label: getText(key: "label", context: "subpages", default: "In this section")
+  table_of_contents__label: getText(key: "label", context: "table_of_contents", default: "On this page")
   teaser__unavailable: getText(key: "unavailable", context: "teaser", default: "The content of this teaser isn't available.")
   upcoming_events__empty: getText(key: "empty", context: "upcoming_events", default: "No upcoming events.")
 }

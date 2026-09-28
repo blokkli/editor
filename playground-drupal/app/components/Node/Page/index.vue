@@ -40,6 +40,9 @@
         :allowed-fragments="['upcoming_events', 'latest_news']"
         class="flow"
       />
+      <template #toc>
+        <TableOfContents :list="paragraphs" />
+      </template>
       <template #aside>
         <BlokkliField
           name="field_aside"
@@ -60,6 +63,7 @@ import { BlokkliField, BlokkliProvider } from '#components'
 import type { BreadcrumbFragment, NodePageFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
+import TableOfContents from '~/components/TableOfContents/index.vue'
 import { providePageOffice } from '~/composables/usePageOffice'
 
 // The detail page: an information page, the last in its branch of the menu.

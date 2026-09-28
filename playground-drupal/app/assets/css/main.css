@@ -256,6 +256,14 @@
     > .host-layout-aside:not(.is-editing):not(:has(> * > :not(.hidden))) {
       @apply hidden;
     }
+
+    /* Parts of the sidebar with nothing visible leave no gap: the table of
+       contents without links, the field with only hidden blocks (except while
+       editing: the field stays a drop zone). */
+    > .host-layout-aside > .host-layout-toc:empty,
+    > .host-layout-aside:not(.is-editing) > :not(:has(> :not(.hidden))) {
+      @apply hidden;
+    }
   }
 
   /* The sidebar layout of detail pages, from lg: the header's band in columns
@@ -263,6 +271,19 @@
      blocks below the header. The containers inside then mean the column,
      whatever the width option. */
   .host-layout.has-sidebar {
+    /* Below lg, the sidebar's parts join the column: the table of contents
+       after the header, the rest after the blocks. */
+    @variant max-lg {
+      > .host-layout-aside {
+        display: contents;
+      }
+
+      > .host-layout-body,
+      > .host-layout-aside > :not(.host-layout-toc) {
+        order: 1;
+      }
+    }
+
     @variant lg {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -284,7 +305,7 @@
 
       /* Positioned, so that it's painted over the header's band. */
       > .host-layout-aside {
-        @apply relative mt-8 self-start bg-white p-6;
+        @apply relative mt-8 flex flex-col gap-10 self-start bg-white p-6;
         grid-column: 9 / span 4;
         grid-row: 1 / span 2;
       }
