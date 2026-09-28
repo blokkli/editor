@@ -1,0 +1,18 @@
+uuid: 3811c5d7-7049-4c12-b77c-7155aa48b606
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: true
+id: embed
+label: Embed
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

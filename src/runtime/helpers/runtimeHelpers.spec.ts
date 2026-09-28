@@ -83,6 +83,14 @@ describe('getRuntimeOptionValue', () => {
     ])
   })
 
+  test('Json options without a value get the parsed default', () => {
+    expect(getRuntimeOptionValue(['json', '{}'], undefined)).toEqual({})
+    expect(getRuntimeOptionValue(['json', '{"375":600}'], null)).toEqual({
+      375: 600,
+    })
+    expect(getRuntimeOptionValue(['json', '{}'], '{"a":1}')).toEqual({ a: 1 })
+  })
+
   test('Returns the correct value for type radios', () => {
     const checkbox: BlockOptionDefinition = {
       type: 'radios',

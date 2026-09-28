@@ -3673,6 +3673,129 @@ type ParagraphDownloads implements Paragraph & Entity & EntityRevisionable {
   isLatestRevision: Boolean
 }
 
+"Embed {entity_type: paragraph, bundle: embed}"
+type ParagraphEmbed implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
+  "{field: type} "
+  typeRawField: FieldItemListEntityReference
+
+  "{value} {field: type} "
+  type: ParagraphsType
+
+  "{field: status} "
+  statusRawField: FieldItemListBoolean
+
+  "{value} {field: status} "
+  status: Boolean
+
+  "{field: created} The time that the Paragraph was created."
+  createdRawField: FieldItemListCreated
+
+  "{value} {field: created} The time that the Paragraph was created."
+  created: String
+
+  "{field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentIdRawField: FieldItemListString
+
+  "{value} {field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentId: String
+
+  "{field: parent_type} The entity parent type to which this entity is referenced."
+  parentTypeRawField: FieldItemListString
+
+  "{value} {field: parent_type} The entity parent type to which this entity is referenced."
+  parentType: String
+
+  "{field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldNameRawField: FieldItemListString
+
+  "{value} {field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldName: String
+
+  "{field: behavior_settings} The behavior plugin settings"
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  "{value} {field: behavior_settings} The behavior plugin settings"
+  behaviorSettings: String
+
+  "{field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  "{value} {field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcode: Boolean
+
+  "{field: field_link} A page of this site, e.g. /embed/fee-calculator. It is shown in the language of the page it is placed on."
+  fieldLinkRawField: FieldItemListLink
+
+  "{value} {field: field_link} A page of this site, e.g. /embed/fee-calculator. It is shown in the language of the page it is placed on."
+  fieldLink: FieldItemTypeLink
+
+  "{field: field_title} Names the embedded page for screen readers, e.g. \"Fee calculator\"."
+  fieldTitleRawField: FieldItemListString
+
+  "{value} {field: field_title} Names the embedded page for screen readers, e.g. \"Fee calculator\"."
+  fieldTitle: String
+
+  "The untyped paragraph options."
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  "The status of the paragraph."
+  isPublished: Boolean
+
+  ""
+  props: Paragraph
+
+  ""
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  "Whether the paragraph should be rendered."
+  paragraphsBlokkliIsVisible: Boolean!
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+
+  "Get all translations."
+  translations: [ParagraphEmbed]
+
+  "Get a specific translation."
+  translation(
+    ""
+    langcode: Langcode!
+
+    "Return entity in current language if translation language does not exist."
+    fallback: Boolean
+  ): ParagraphEmbed
+}
+
 "From library {entity_type: paragraph, bundle: from_library}"
 type ParagraphFromLibrary implements Paragraph & Entity & EntityRevisionable {
   "{field: type} "

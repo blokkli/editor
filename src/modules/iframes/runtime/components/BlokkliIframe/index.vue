@@ -10,6 +10,7 @@
 import { computed, inject, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useBlokkli, useHead } from '#imports'
 import type { IframeHeightMap } from '../../types'
+import { DEFAULT_IFRAME_HEIGHT } from '../../constants'
 import { INJECT_BLOCK_ITEM } from '#blokkli/helpers/injections'
 
 const props = defineProps<{
@@ -53,9 +54,12 @@ const generatedCSS = computed(() => {
     .filter((e) => !Number.isNaN(e.width) && e.height > 0)
     .sort((a, b) => b.width - a.width)
 
-  if (!entries.length) return ''
-
   const sel = `[data-bk-iframe-id="${scopeId.value}"]`
+
+  if (!entries.length) {
+    return `${sel} .bk-iframe-slot { height: ${DEFAULT_IFRAME_HEIGHT}px; }`
+  }
+
   const lines: string[] = []
 
   // Default: largest width's height.

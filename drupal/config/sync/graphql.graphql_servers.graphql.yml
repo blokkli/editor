@@ -208,6 +208,8 @@ schema_configuration:
           enabled: true
         downloads:
           enabled: true
+        embed:
+          enabled: true
         from_library:
           enabled: true
         gallery:

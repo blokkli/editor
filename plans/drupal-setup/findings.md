@@ -42,6 +42,10 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       | –        |
 | F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                     | `paragraphs_blokkli` | medium   | open       | –        |
 | F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                | both                 | low      | workaround | –        |
+| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)     | `@blokkli/editor`    | low      | to verify  | –        |
+| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)    | `@blokkli/editor`    | low      | open       | –        |
+| F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                               | `@blokkli/editor`    | low      | workaround | –        |
+| F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                              | `@blokkli/editor`    | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -771,3 +775,17 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Workaround:** English texts go in the code, as `$t()`'s default.
 - **Fix idea:** a loader for `en` that returns `userTranslations.en` when it's
   set.
+
+## F37: The iframe height editor isn't translated
+
+- **Found:** 2026-09-28, 13i, with the embed paragraph type.
+- **Symptom:** in the German and French editor, the height editor
+  ("Iframe-Grösse bearbeiten") shows "Presets", "Breakpoints" and "The block
+  must be rendered on the page before iframe heights can be configured." in
+  English.
+- **Cause:** the strings are literals in the template
+  (`src/modules/iframes/runtime/features/iframes/Editor/index.vue:57-109`, in
+  this repository), not `$t()` calls.
+- **Workaround:** none; the labels are short and the presets show their widths.
+- **Fix idea:** `$t()` with keys, then `bun run texts` and the DE and FR
+  translations (`/translations` skill).

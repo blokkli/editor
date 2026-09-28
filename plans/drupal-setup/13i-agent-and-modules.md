@@ -1,6 +1,7 @@
 # 13i: Agent and modules
 
-- **Status:** in progress (the table of contents and the charts are done)
+- **Status:** in progress (the table of contents, the charts, the analyzer and
+  the embed are done)
 - **Milestone:** M1 Local dev site
 - **Depends on:** 13b
 - **Part of:** [chunk 13](13-editor-features.md)
@@ -24,9 +25,10 @@ and the analyzers.
       `app/blokkli.editAdapter.ts` (`getChartDataSources`,
       `getChartDataSourceCapabilities`, `getChartDataSourceData`), moved from
       chunk 06.
-- [ ] **Iframes:** an `embed` block with heights per viewport. No maps (14a);
+- [x] **Iframes:** an `embed` block with heights per viewport. No maps (14a);
       use it for the playable video embed (moved from chunk 06), or decide
-      whether the `video` block uses `BlokkliIframe` directly.
+      whether the `video` block uses `BlokkliIframe` directly. Decided: the fee
+      calculator, a page of the Nuxt app; the video stays a link.
 - [x] **Table of contents:** a fragment for long service pages.
 - [x] **Analyzers:** a custom analyzer next to the built-in ones (see
       winterthur's `frontend/app/blokkli/analyzer/`), e.g. "every service page
@@ -36,8 +38,9 @@ and the analyzers.
   - [x] review `blokkli-analyze`
   - [ ] new `blokkli-setup-agent`
   - [x] new `blokkli-setup-charts`
-  - [ ] iframes: a skill, unless the docs (`docs/modules/`) already cover the
-        setup. Decide here.
+  - [x] iframes: a skill, unless the docs (`docs/modules/`) already cover the
+        setup. Decided: no skill. The docs cover the module; the rest is a
+        paragraph type (`blokkli-add-paragraph-type`).
   - [x] the table of contents: no skill. The docs cover the module
         (`docs/modules/table-of-contents`, with the new `list` prop); the rest
         is the host template (`blokkli-add-host`). Revisit with the module's
@@ -272,3 +275,74 @@ Verification:
 - Real leftovers: the office in French (2 English texts), the 13d page in German
   (5). Page 13 in English, with charts and the table of contents: passes.
 - The strings in EN, DE and FR; no console errors.
+
+## The embed (2026-09-28)
+
+Decisions:
+
+- **A page of the site, not another site** (the user): external pages can't be
+  framed, so the Nuxt app hosts what's embedded. The video stays a link to the
+  video (chunk 06).
+- **The fee calculator** (the user, from four proposals by Claude: a waste
+  calendar, the fee calculator, the lake pool's status, a room booking): water,
+  sewage and waste fees of a household, with fictional rates. Its layout changes
+  with the width (a form beside the fees, or stacked), so the heights per
+  viewport matter.
+- **A link field** (the user), not a list of the site's widgets:
+  - Internal links only: Drupal rejects other sites.
+  - Untranslatable, like every link. The embed shows the page in the language of
+    the page it's placed on: the component sets the language prefix, the way
+    Drupal renders internal links. The prefix also keeps it on the site.
+- **A title field,** translatable and required: the frame's name for screen
+  readers. Not shown. Proposed by Claude.
+- **The calculator is a box as high as the frame,** like the contact box
+  (`border-line`, white): its edge lines up with the column, and its padding
+  keeps focus outlines inside the frame. Proposed by Claude, after a first
+  version with an 8 px inset.
+
+As built:
+
+- **Drupal:** the paragraph type `embed` (translatable, library conversion,
+  labels "Einbettung" / "Intégration"), with `field_link` (internal, no link
+  text, untranslatable) and `field_title` (translatable), both required, labels
+  and descriptions in DE and FR. Allowed wherever charts are, and on the GraphQL
+  server. Script: `tmp/13i-embed-config.php` (not committed).
+- **Nuxt:**
+  - `components/Paragraph/Embed`: `BlokkliIframe` with the option `heights`
+    (`iframe_heights`), the global width option (content or wide) and "Visible
+    languages".
+  - `components/FeeCalculator`: the calculator; `rates.ts` has the rates (2026,
+    CHF with VAT) and 50 m³ of water per person and year.
+  - `pages/[lang]/embed/fee-calculator.vue`: the calculator alone, `noindex`.
+  - The texts `fee_calculator.*` (21, EN/DE/FR).
+- **blökkli:**
+  - A json option without a stored value got its default as a string (`"{}"`),
+    not parsed: `getRuntimeOptionValue()` returned the raw default, and
+    `defineBlokkli()`, `defineBlokkliProvider()` and `getRuntimeOptions()` read
+    it without the function. Charts had the same bug, hidden because `"{}".type`
+    is undefined. Test in `runtimeHelpers.spec.ts`.
+  - `BlokkliIframe` without heights (a new block) is 400 px tall, the height
+    editor's starting height (`DEFAULT_IFRAME_HEIGHT`), instead of the browser's
+    150 px.
+  - Docs: the frame's title, the default height, and how to choose heights.
+- **Not needed:** stopping pointer events on the frame while editing. The
+  editor's overlay catches the clicks, so a click on the frame selects the
+  block. The video block's comment said otherwise; corrected.
+- F37: the height editor's own strings are English in every language.
+
+Verification:
+
+- The calculator alone at 360 and 790 px, in EN, DE and FR: the layouts, the
+  numbers in Swiss format (`CHF 80.00`, `80.00 CHF`), no console errors.
+- Page 13 (throwaway), now also in DE and FR (`/de/f12-de`, `/fr/f12-fr`):
+  - Added in the editor through the Drupal form (`/embed/fee-calculator`), 400
+    px tall until heights are set.
+  - The height editor: the presets, a drag of the handle, saved on "Go back".
+  - Heights 1420 / 1320 / 800 (up to 375, 768 and wider), measured at the
+    narrowest width of each range, in the longest language, with every row
+    shown. At 390, 768, 1024 and 1440 px the calculator fits, with no horizontal
+    overflow. At 1024 px the column is 598 px wide, so it's stacked.
+  - The title translated in the editor's translation mode (the Drupal form in DE
+    and FR); each page's frame has its title and its language
+    (`/de/embed/fee-calculator`).
+- Not checked: the server render (anonymous visitors get a 403 locally).

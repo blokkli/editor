@@ -1,0 +1,8 @@
+fragment paragraphEmbed on ParagraphEmbed {
+  title: fieldTitle
+  link: fieldLink {
+    uri {
+      path
+    }
+  }
+}

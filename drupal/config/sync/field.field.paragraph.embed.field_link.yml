@@ -1,0 +1,23 @@
+uuid: 41624bc2-c1ac-4fe9-88e0-386155885cf1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_link
+    - paragraphs.paragraphs_type.embed
+  module:
+    - link
+id: paragraph.embed.field_link
+field_name: field_link
+entity_type: paragraph
+bundle: embed
+label: Page
+description: 'A page of this site, e.g. /embed/fee-calculator. It is shown in the language of the page it is placed on.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 1
+field_type: link

@@ -32,6 +32,9 @@ adds types.
         for new columns
   - [ ] one deliberately outdated French page: the paragraphs' FR translations
         flagged `content_translation_outdated` (chunk 05, 13f)
+  - [ ] the fee calculator (13i) on a page about the town's fees, in an embed
+        with heights per viewport (13i's section: measure at the narrowest width
+        of each range, in the longest language)
   - [ ] dates relative to the bake (chunk 05)
   - [ ] scheduled content (13e): a news item that publishes later (the lakeside
         pool's opening), and the "pool closed" text in the site notice with an

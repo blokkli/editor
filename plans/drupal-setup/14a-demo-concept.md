@@ -213,7 +213,8 @@ every file's source and licence.
   inline table editing isn't used; `paragraphs_blokkli` doesn't report a table
   editable type.
 - **No maps.** The embed block (iframes module, 13i) needs another use, e.g. the
-  video embed.
+  video embed. Decided in 13i: the fee calculator, a page of the Nuxt app. Other
+  sites can't be framed, so the video stays a link.
 
 ### The name (decided, 2026-09-26)
 

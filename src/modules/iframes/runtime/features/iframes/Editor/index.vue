@@ -141,14 +141,13 @@
 import { ref, computed, onBeforeUnmount, useBlokkli } from '#imports'
 import type { IframeHeightMap } from '../../../types'
 import { VIEWPORTS } from '#blokkli-build/iframes-config'
+import { DEFAULT_IFRAME_HEIGHT } from '../../../constants'
 
 const props = defineProps<{
   data: IframeHeightMap | null
   uuid: string
   optionKey: string
 }>()
-
-const DEFAULT_HEIGHT = 400
 
 const { directive } = useBlokkli()
 
@@ -161,7 +160,7 @@ const heights = ref<IframeHeightMap>(
   props.data && Object.keys(props.data).length > 0
     ? { ...props.data }
     : Object.values(VIEWPORTS).reduce<IframeHeightMap>((acc, vp) => {
-        acc[String(vp.width)] = DEFAULT_HEIGHT
+        acc[String(vp.width)] = DEFAULT_IFRAME_HEIGHT
         return acc
       }, {}),
 )
@@ -183,7 +182,7 @@ const sortedEntries = computed(() =>
 const resolved = computed(() => {
   const sorted = sortedEntries.value
   if (!sorted.length) {
-    return { height: DEFAULT_HEIGHT, widthKey: '' }
+    return { height: DEFAULT_IFRAME_HEIGHT, widthKey: '' }
   }
 
   const match = sorted.find((bp) => bp.width >= containerWidth.value)

@@ -44,7 +44,7 @@ import { WIDTH_CLASSES } from '~/helpers/width'
 
 const props = defineProps<ParagraphVideoFragment>()
 
-// A link, not an embed: an iframe would swallow the editor's clicks.
+// A link, not an embed: the site frames only its own pages (Paragraph/Embed).
 const thumbnail = computed(() => props.video?.thumbnail?.derivative)
 
 const { options, parentType } = defineBlokkli({

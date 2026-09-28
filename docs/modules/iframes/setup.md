@@ -52,6 +52,7 @@ Heights are stored on a block as a **`json` option with
     <BlokkliIframe :src="props.url" :heights="iframeHeights">
       <iframe
         :src="props.url"
+        :title="props.title"
         style="width: 100%; height: 100%; border: 0"
         scrolling="no"
       />
@@ -80,7 +81,7 @@ const { options } = defineBlokkli({
   },
 })
 
-const props = defineProps<{ url: string }>()
+const props = defineProps<{ url: string; title: string }>()
 
 const iframeHeights = computed<IframeHeightMap>(
   () => options.value.iframeHeight || {},
@@ -89,9 +90,11 @@ const iframeHeights = computed<IframeHeightMap>(
 ```
 
 `BlokkliIframe` is a wrapper, not the iframe itself: put your own `<iframe>` (or
-any embed) in its default slot. It sets `container-type: inline-size` on a
-wrapper element and generates `@container` queries from the height map, so the
-slot height responds to the **container** width, not the window.
+any embed) in its default slot. Give the iframe a `title`: screen readers
+announce it, and the accessibility analyzer reports frames without one. It sets
+`container-type: inline-size` on a wrapper element and generates `@container`
+queries from the height map, so the slot height responds to the **container**
+width, not the window.
 
 | Prop      | Type              | Description                                              |
 | --------- | ----------------- | -------------------------------------------------------- |
@@ -112,7 +115,16 @@ heights (px). The largest width is the default; smaller widths become
 ```
 
 The keys come from the `width` values of the `viewports` you configured, so
-editors set one height per viewport preset.
+editors set one height per viewport preset. Until they do, the embed is 400px
+tall, the height editor's starting height.
+
+### Choosing heights
+
+A height applies to every container up to its width, down to the next smaller
+one. Set it for the narrowest container in that range, where the content wraps
+most: the editor shows each preset at its own width, and its width handle shows
+narrower ones. Heights are block options, the same in every language, so they
+have to fit the longest translation.
 
 ## Aliases
 

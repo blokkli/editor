@@ -170,7 +170,7 @@ export function defineBlokkli<
       }
 
       // Use the default value.
-      acc[key] = definition[1]
+      acc[key] = getRuntimeOptionValue(definition, undefined)
 
       return acc
     }, {})

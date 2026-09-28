@@ -28,6 +28,27 @@ event.register;default;Register;Anmelden;S'inscrire
 event.start;default;Start;Beginn;Début
 event.time;default;Time;Zeit;Heure
 event.weekday_date;default;@weekday, @date;@weekday, @date;@weekday @date
+fee_calculator.apartment;default;Apartment;Wohnung;Appartement
+fee_calculator.bag_size;default;Waste bags;Abfallsäcke;Sacs à ordures
+fee_calculator.bags;default;Bags;Säcke;Sacs
+fee_calculator.bags_per_week;default;Bags per week;Säcke pro Woche;Sacs par semaine
+fee_calculator.base_fee;default;Base fee;Grundgebühr;Taxe de base
+fee_calculator.consumption;default;Consumption;Verbrauch;Consommation
+fee_calculator.dwelling;default;Dwelling;Wohnform;Logement
+fee_calculator.fees;default;Your fees per year;Ihre Gebühren pro Jahr;Vos taxes par année
+fee_calculator.green_bin;default;Green waste bin (140 l);Grüngutcontainer (140 l);Conteneur à déchets verts (140 l)
+fee_calculator.house;default;House;Einfamilienhaus;Maison individuelle
+fee_calculator.intro;default;Estimate the yearly fees of your household for water, sewage and waste.;Schätzen Sie die jährlichen Gebühren Ihres Haushalts für Wasser, Abwasser und Abfall.;Estimez les taxes annuelles de votre ménage pour l'eau, les eaux usées et les déchets.
+fee_calculator.note;default;An estimate, VAT included. The bill follows your water meter.;Eine Schätzung, inkl. MWST. Die Rechnung richtet sich nach Ihrem Wasserzähler.;Une estimation, TVA comprise. La facture se base sur votre compteur d'eau.
+fee_calculator.per_month;default;Per month;Pro Monat;Par mois
+fee_calculator.persons;default;People in the household;Personen im Haushalt;Personnes dans le ménage
+fee_calculator.persons_hint;default;Used to estimate the water use.;Dient zur Schätzung des Wasserverbrauchs.;Sert à estimer la consommation d'eau.
+fee_calculator.rates;default;Rates;Tarife;Tarifs
+fee_calculator.sewage;default;Sewage;Abwasser;Eaux usées
+fee_calculator.title;default;Fee calculator;Gebührenrechner;Calculateur de taxes
+fee_calculator.total;default;Total per year;Total pro Jahr;Total par année
+fee_calculator.waste;default;Waste;Abfall;Déchets
+fee_calculator.water;default;Water;Wasser;Eau
 gallery.next_image;default;Next image;Nächstes Bild;Image suivante
 gallery.previous_image;default;Previous image;Vorheriges Bild;Image précédente
 header.main_navigation;default;Main navigation;Hauptnavigation;Navigation principale

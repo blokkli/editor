@@ -9,6 +9,7 @@ dependencies:
     - paragraphs.paragraphs_type.columns
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
+    - paragraphs.paragraphs_type.embed
     - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.image
     - paragraphs.paragraphs_type.table
@@ -36,6 +37,7 @@ settings:
       chart: chart
       contact: contact
       downloads: downloads
+      embed: embed
       from_library: from_library
       image: image
       table: table

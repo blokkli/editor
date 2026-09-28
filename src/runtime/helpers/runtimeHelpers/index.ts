@@ -61,8 +61,13 @@ export function getRuntimeOptionValue(
     definition[0] === 'number' &&
     definition[3] === true
 
-  // If no value is provided, return the default value.
-  if ((value === null || value === undefined) && defaultValue !== undefined) {
+  // If no value is provided, return the default value. A json default is
+  // stored like its values, as a string: the json branch parses it.
+  if (
+    (value === null || value === undefined) &&
+    defaultValue !== undefined &&
+    type !== 'json'
+  ) {
     return defaultValue
   }
 
@@ -285,7 +290,7 @@ export function getRuntimeOptions<K extends keyof RuntimeBlockOptions>(
       }
 
       // Use the default value.
-      acc[key] = definition[1]
+      acc[key] = getRuntimeOptionValue(definition, undefined)
 
       return acc
     },

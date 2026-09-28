@@ -27,7 +27,9 @@ hosting, and it can't affect other sandboxes or the host.
   - [ ] App level: the agent's `allowedFetchOrigins`.
   - [ ] Network level: an allowlist (oEmbed providers, LLM API, DeepL API),
         enforced in chunk 12.
-- [ ] Host-only cookies, a CSP, and `X-Robots-Tag: noindex` everywhere.
+- [ ] Host-only cookies, a CSP, and `X-Robots-Tag: noindex` everywhere. The
+      embed paragraph type (13i) frames only the site's own pages
+      (`frame-src 'self'`).
 
 ## Acceptance criteria
 
