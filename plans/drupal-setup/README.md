@@ -147,7 +147,7 @@ Milestones:
 | 13e | [Publishing](13e-publishing.md)                                                                     | M1        | done        | 13c                               |
 | 13f | [Translation](13f-translation.md)                                                                   | M1        | done        | 13c                               |
 | 13g | [Search and plugins](13g-search-and-plugins.md)                                                     | M1        | done        | 13c, 13d                          |
-| 13h | [Collaboration and roles](13h-collaboration-roles.md)                                               | M1        | todo        | 13b–13g, 13i                      |
+| 13h | [Collaboration and roles](13h-collaboration-roles.md)                                               | M1        | done        | 13b–13g, 13i                      |
 | 13i | [Agent and modules](13i-agent-and-modules.md)                                                       | M1        | in progress | 13b                               |
 | 13j | [Skill tests](13j-skill-tests.md)                                                                   | M1        | todo        | 13a–13i                           |
 | 14a | [Demo concept](14a-demo-concept.md)                                                                 | M1        | done        | 04                                |
@@ -161,10 +161,10 @@ Milestones:
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 13a–13g, 14a, 15a, 15b, 15c and 15e
+(order, skill conventions, feature matrix). 13a–13h, 14a, 15a, 15b, 15c and 15e
 are done. 13i is in progress: the table of contents, the charts, the analyzer
-and the embed are done, the agent is next. 15d waits for the review of its hero
-image.
+and the embed are done; the agent is postponed. 15d waits for the review of its
+hero image.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

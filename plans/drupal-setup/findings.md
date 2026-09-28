@@ -46,6 +46,13 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)    | `@blokkli/editor`    | low      | open       | –        |
 | F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                               | `@blokkli/editor`    | low      | workaround | –        |
 | F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                              | `@blokkli/editor`    | low      | open       | –        |
+| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                            | `paragraphs_blokkli` | high     | workaround | –        |
+| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                         | `@blokkli/editor`    | low      | to verify  | –        |
+| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                 | `paragraphs_blokkli` | low      | open       | –        |
+| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                             | `paragraphs_blokkli` | low      | open       | –        |
+| F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                               | `paragraphs_blokkli` | medium   | open       | –        |
+| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                          | both                 | low      | open       | –        |
+| F44 | [No approval step](#f44-no-approval-step)                                                                               | both                 | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -789,3 +796,101 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Workaround:** none; the labels are short and the presets show their widths.
 - **Fix idea:** `$t()` with keys, then `bun run texts` and the DE and FR
   translations (`/translations` skill).
+
+## F38: Editors can't view paragraph types
+
+- **Found:** 2026-09-28, 13h, logged in as the first non-admin editor.
+- **Symptom:** the editor opens and edits, but its add list is empty: an editor
+  can't add any paragraph. Admins see every type.
+- **Cause:** the frontend loads the types with
+  `entityQuery(entityType: PARAGRAPHS_TYPE)`
+  (`src/modules/drupal/graphql/base/query.pbConfig.graphql`, in this
+  repository), and graphql_core_schema returns `null` for every item the user
+  may not view (`src/Wrappers/QueryConnection.php:66`, in graphql_core_schema
+  1.0.28). Paragraphs' `ParagraphsTypeAccessControlHandler` only opens
+  `view label` (with `access content`); `view` needs
+  `administer paragraphs types`. The starterkit works around it in its custom
+  module (`blokkli_starterkit_paragraphs_type_access()`).
+- **Workaround:** `blokkli_playground`'s `ParagraphsTypeHooks` grants `view`
+  with `view paragraphs blokkli edit state`. Documented in the configuration
+  docs and the skills.
+- **Fix idea:** the same hook in paragraphs_blokkli, or the types from a data
+  producer of its own that checks blökkli's permission.
+
+## F39: The editor ignores `create_comments`
+
+- **Found:** 2026-09-28, 13h, reading the code. Not reproduced: every demo role
+  that sees comments may post them.
+- **Symptom:** a user with `view blokkli comments` but without
+  `post blokkli comments` gets the add and reply forms; posting fails without a
+  message.
+- **Cause:** the adapter loads `create_comments`
+  (`src/modules/drupal/graphql/base/query.pbConfig.graphql`, in this
+  repository), but nothing in `src/runtime/editor/features/comments` checks it.
+- **Fix idea:** hide the forms and the "Add comment" action without it.
+
+## F40: A new comment without a mention notifies nobody
+
+- **Found:** 2026-09-28, 13h.
+- **Symptom:** an editor comments on a page; the other people working on it
+  aren't notified unless they're mentioned.
+- **Cause:** the comment module only creates `comment:mention`, `comment:reply`,
+  `comment:thread` and `comment:resolved`
+  (`modules/paragraphs_blokkli_comment/src/CommentNotifier.php`).
+- **Workaround:** mention the reviewer (the demo's flow, 13h).
+- **Fix idea:** notify the edit state's owner of new comments on their page.
+
+## F41: Every comment is marked as edited
+
+- **Found:** 2026-09-28, 13h.
+- **Symptom:** every comment and reply shows "(edited)" in the editor, right
+  after it was posted.
+- **Cause:** the GraphQL field `updated` returns the `changed` time whenever it
+  exists, and it's set on every save
+  (`modules/paragraphs_blokkli_comment/src/Plugin/GraphQL/SchemaExtension/ParagraphsBlokkliCommentExtension.php:174-180`).
+- **Fix idea:** return `NULL` while `changed` equals `created`.
+
+## F42: Uploads skip media create access
+
+- **Found:** 2026-09-28, 13h. Reproduced: the translator, without
+  `create image media`, pasted an image and got a media entity.
+- **Symptom:** any user who may add a paragraph to the page can create media by
+  pasting or dropping images and files, whatever their media permissions.
+- **Cause:** `FileUploadMutationBase` checks paragraph create access and host
+  update access
+  (`src/Plugin/ParagraphsBlokkli/FileUploadMutationBase.php:174-175`), then
+  creates and saves the media (`:337`, `:372`) without the media type's create
+  access.
+- **Workaround:** none; the permissions skill says media permissions don't
+  prevent uploads.
+- **Fix idea:** check the media type's create access before creating it, and
+  offer the clipboard only when the user has it.
+
+## F43: Translators can't be limited to translating
+
+- **Found:** 2026-09-28, 13h, with the French translator.
+- **Symptom:** a translator who can translate in the editor can also change the
+  source language's page, including its structure.
+- **Cause:** `blokkliProps` gives `edit` only with update access to the host
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/BlokkliProps.php`),
+  and core's translation permissions don't grant update access to a translation.
+  So translators need `edit any <type> content`.
+- **Workaround:** none; the translator role has it (13h).
+- **Fix idea:** a paragraphs_blokkli permission that gives `edit` in translation
+  mode only, for translations the user may translate, and limits the mutations
+  to texts in those languages.
+
+## F44: No approval step
+
+- **Found:** 2026-09-28, 13h. The user chose a reviewer who only comments.
+- **Symptom:** a reviewer can't publish without edit rights, and an editor can't
+  be kept from publishing.
+- **Cause:** publishing needs `edit` and update access to the host, the same as
+  editing (`canPublish` in
+  `modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/PublishOptions.php:88`).
+  The editor has an unused `review` edit mode and never reads
+  `publishOptions.canPublish` (`src/runtime/editor/providers/state.ts`, in this
+  repository).
+- **Fix idea:** a publish permission of its own, a review mode that publishes,
+  and an "approved" notification (the editor already has the type
+  `edit-state:approved`).

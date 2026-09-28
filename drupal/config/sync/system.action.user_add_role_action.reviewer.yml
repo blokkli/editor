@@ -1,0 +1,14 @@
+uuid: 76f5ccdd-3ebb-43d5-a71e-112742fd887d
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.reviewer
+  module:
+    - user
+id: user_add_role_action.reviewer
+label: 'Add the Head of department role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: reviewer

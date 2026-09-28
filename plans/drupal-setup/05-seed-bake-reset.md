@@ -29,7 +29,10 @@ seconds.
 - [ ] Seeded users for 14a's roles (13h): admin, a department editor, the head
       of the department as reviewer, a French translator, a restricted editor.
       Sandboxes have no known passwords (login via token, chunk 09); locally use
-      `drush uli` and masquerade.
+      `drush uli` and masquerade. 13h's test users: Anna Keller
+      (`content_editor`, EN), Marc Brunner (`reviewer`, DE), Élodie Favre
+      (`translator`, FR), Jonas Weber (`restricted_editor`, DE), with their
+      preferred languages (`tmp/13h-users.php`).
 - [ ] `blokkli-playground:bake`:
   1. install from config
   2. seed

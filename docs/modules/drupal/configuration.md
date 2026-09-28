@@ -174,22 +174,59 @@ For machine translation, see
 
 ### Edit State Permissions
 
-| Permission                                                     | Description                                 |
-| -------------------------------------------------------------- | ------------------------------------------- |
-| `view paragraphs blokkli edit state`                           | View edit states (required for all users)   |
-| `create paragraphs blokkli edit state`                         | Create new edit states                      |
-| `edit paragraphs blokkli edit state`                           | Perform mutations (add, move, delete, etc.) |
-| `review paragraphs blokkli edit state`                         | Review and publish changes                  |
-| `take ownership of paragraphs blokkli edit state`              | Transfer edit state ownership               |
-| `delete paragraphs blokkli edit state`                         | Delete edit states                          |
-| `publish paragraphs blokkli edit state with validation errors` | Publish despite validation errors           |
+| Permission                                                     | Description                                                                             |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `view paragraphs blokkli edit state`                           | View edit states (required for all users)                                               |
+| `create paragraphs blokkli edit state`                         | Create new edit states                                                                  |
+| `edit paragraphs blokkli edit state`                           | Perform mutations (add, move, delete, etc.) and publish, with update access to the host |
+| `review paragraphs blokkli edit state`                         | Open the editor read-only, e.g. to comment. It doesn't publish.                         |
+| `take ownership of paragraphs blokkli edit state`              | Transfer edit state ownership                                                           |
+| `delete paragraphs blokkli edit state`                         | Delete edit states                                                                      |
+| `publish paragraphs blokkli edit state with validation errors` | Publish despite validation errors                                                       |
+
+### Collaboration Permissions
+
+| Permission                          | Description                                              |
+| ----------------------------------- | -------------------------------------------------------- |
+| `view blokkli comments`             | See comments, with view access to the host               |
+| `post blokkli comments`             | Comment and reply, resolve, edit and delete own comments |
+| `load id and name of blokkli users` | Mention other users in comments                          |
+| `transfer blokkli paragraphs`       | Copy and paste paragraphs between pages                  |
+
+Commenting needs an edit state: a user with only the review permission can
+comment on a page with pending changes, but can't create an edit state.
+
+### Paragraph Types
+
+The editor loads the paragraph types through GraphQL, which only returns the
+types a user may view. Paragraphs allows that only with
+`administer paragraphs types`, so editors without it get no paragraph types to
+add. Grant view access in a custom module:
+
+```php
+#[Hook('paragraphs_type_access')]
+public function access(ParagraphsTypeInterface $type, string $operation, AccountInterface $account): AccessResultInterface {
+  if ($operation !== 'view') {
+    return AccessResult::neutral();
+  }
+  return AccessResult::allowedIfHasPermission($account, 'view paragraphs blokkli edit state');
+}
+```
+
+With Paragraphs' `paragraphs_type_permissions` module, a user needs
+`create paragraph content <type>` to add a paragraph of a type: the editor hides
+the others, and the mutations refuse them. Every user who sees pages also needs
+`view paragraph content <type>` for each type, or
+`bypass paragraphs type content access`.
 
 ### Admin Permissions
 
-| Permission                                 | Description                      |
-| ------------------------------------------ | -------------------------------- |
-| `administer blokkli settings`              | Configure module settings        |
-| `administer paragraphs blokkli edit state` | Full admin access to edit states |
+| Permission                                 | Description                       |
+| ------------------------------------------ | --------------------------------- |
+| `administer blokkli settings`              | Configure module settings         |
+| `administer paragraphs blokkli edit state` | Full admin access to edit states  |
+| `administer blokkli_comment`               | Edit and delete any comment       |
+| `administer blokkli notifications`         | Access every user's notifications |
 
 ## Drupal Submodules
 

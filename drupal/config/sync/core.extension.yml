@@ -54,6 +54,7 @@ module:
   paragraphs_blokkli_template: 0
   paragraphs_blokkli_transform: 0
   paragraphs_library: 0
+  paragraphs_type_permissions: 0
   path: 0
   path_alias: 0
   scheduler: 0

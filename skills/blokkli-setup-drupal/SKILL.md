@@ -15,7 +15,7 @@ compatibility: >-
   backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.6'
+  version: '1.0.7'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -86,9 +86,11 @@ drush en paragraphs_blokkli paragraphs_blokkli_graphql media
   `blokkli-setup-templates`, `blokkli-setup-publishing` (scheduling, revisions,
   preview grants), `blokkli-setup-translations` (content translation, DeepL,
   outdated translations), `blokkli-setup-search` (the editor's content search),
-  `blokkli-setup-charts` (charts and their data sources). Custom transforms and
-  conversions: `blokkli-write-drupal-plugin`. Start with the base; add features
-  once the editor works.
+  `blokkli-setup-charts` (charts and their data sources),
+  `blokkli-setup-comments` (comments, mentions, notifications) and
+  `blokkli-setup-permissions` (roles, per-type permissions). Custom transforms
+  and conversions: `blokkli-write-drupal-plugin`. Start with the base; add
+  features once the editor works.
 
 ## 3. Paragraphs fields
 
@@ -203,12 +205,18 @@ permissions yourself.
   project uses (e.g. a token that only opens the endpoint). Editors need it;
   anonymous visitors only if pages are rendered for them.
 - **Edit states:** `view`, `create` and `edit paragraphs blokkli edit state` to
-  edit; `review paragraphs blokkli edit state` to publish;
-  `take ownership of paragraphs blokkli edit state` to take over another user's
-  changes. The full list is in the
+  edit and publish (with update access to the host);
+  `review paragraphs blokkli edit state` to open the editor read-only and
+  comment; `take ownership of paragraphs blokkli edit state` to take over
+  another user's changes. The full list is in the
   [configuration docs](https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference).
+- **Paragraph types:** users without `administer paragraphs types` can't view
+  them, so the editor offers them none. Grant view access in a custom module
+  (`hook_paragraphs_type_access()`, in the `blokkli-setup-permissions` skill).
 - **Content:** editors also need the usual permissions to edit the host entity
   and to use its media.
+- Roles for editors, reviewers and translators, and per-type permissions: the
+  `blokkli-setup-permissions` skill.
 
 ## 7. The schema in Nuxt
 
@@ -403,6 +411,7 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | No edit button                                                            | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound         |
 | The editor offers no paragraph types                                      | The paragraphs field allows "all types"; list them                                        |
+| The editor offers no paragraph types to editors, only to admins           | They can't view paragraph types (section 6)                                               |
 | `Unknown type "ParagraphXyz"`, or a `…Unexposed` type                     | The bundle is missing from the GraphQL server's `bundles`                                 |
 | A field is missing from the schema                                        | It's missing from the server's `fields`                                                   |
 | "Failed to initialise blökkli Drupal module"                              | `nuxt-graphql-middleware` isn't before `@blokkli/editor`                                  |

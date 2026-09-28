@@ -1,0 +1,150 @@
+uuid: 65414a5b-3ab9-4040-91ec-5851fefa34ec
+langcode: en
+status: true
+dependencies:
+  config:
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - node.type.editorial
+    - node.type.event
+    - node.type.news
+    - node.type.office
+    - node.type.page
+  module:
+    - content_translation
+    - contextual
+    - file
+    - media
+    - navigation
+    - node
+    - paragraphs
+    - paragraphs_blokkli
+    - paragraphs_blokkli_comment
+    - paragraphs_blokkli_template
+    - paragraphs_library
+    - paragraphs_type_permissions
+    - path
+    - scheduler
+    - system
+    - translatable_config_pages
+id: restricted_editor
+label: 'Restricted editor'
+weight: 6
+is_admin: false
+permissions:
+  - 'access administration pages'
+  - 'access content overview'
+  - 'access contextual links'
+  - 'access files overview'
+  - 'access media overview'
+  - 'access navigation'
+  - 'create content translations'
+  - 'create document media'
+  - 'create editorial content'
+  - 'create event content'
+  - 'create image media'
+  - 'create news content'
+  - 'create office content'
+  - 'create page content'
+  - 'create paragraph content accordion'
+  - 'create paragraph content blokkli_fragment'
+  - 'create paragraph content button'
+  - 'create paragraph content columns'
+  - 'create paragraph content contact'
+  - 'create paragraph content downloads'
+  - 'create paragraph content embed'
+  - 'create paragraph content from_library'
+  - 'create paragraph content gallery'
+  - 'create paragraph content image'
+  - 'create paragraph content table'
+  - 'create paragraph content teaser'
+  - 'create paragraph content text'
+  - 'create paragraph content title'
+  - 'create paragraph content video'
+  - 'create paragraph library item'
+  - 'create paragraph template'
+  - 'create paragraphs blokkli edit state'
+  - 'create remote_video media'
+  - 'create url aliases'
+  - 'delete own document media'
+  - 'delete own editorial content'
+  - 'delete own event content'
+  - 'delete own files'
+  - 'delete own image media'
+  - 'delete own news content'
+  - 'delete own office content'
+  - 'delete own page content'
+  - 'delete own paragraph template'
+  - 'delete own remote_video media'
+  - 'delete paragraph content accordion'
+  - 'delete paragraph content blokkli_fragment'
+  - 'delete paragraph content button'
+  - 'delete paragraph content columns'
+  - 'delete paragraph content contact'
+  - 'delete paragraph content downloads'
+  - 'delete paragraph content embed'
+  - 'delete paragraph content from_library'
+  - 'delete paragraph content gallery'
+  - 'delete paragraph content image'
+  - 'delete paragraph content table'
+  - 'delete paragraph content teaser'
+  - 'delete paragraph content text'
+  - 'delete paragraph content title'
+  - 'delete paragraph content video'
+  - 'delete paragraphs blokkli edit state'
+  - 'edit any editorial content'
+  - 'edit any event content'
+  - 'edit any news content'
+  - 'edit any office content'
+  - 'edit any page content'
+  - 'edit own document media'
+  - 'edit own image media'
+  - 'edit own paragraph template'
+  - 'edit own remote_video media'
+  - 'edit paragraph library item'
+  - 'edit paragraphs blokkli edit state'
+  - 'load id and name of blokkli users'
+  - 'manage translatable config pages'
+  - 'post blokkli comments'
+  - 'revert all revisions'
+  - 'schedule publishing of nodes'
+  - 'schedule publishing of paragraph'
+  - 'take ownership of paragraphs blokkli edit state'
+  - 'translate editorial node'
+  - 'translate event node'
+  - 'translate news node'
+  - 'translate office node'
+  - 'translate page node'
+  - 'translate paragraph'
+  - 'translate paragraphs_library_item'
+  - 'translate translatable_config_pages'
+  - 'update content translations'
+  - 'update paragraph content accordion'
+  - 'update paragraph content blokkli_fragment'
+  - 'update paragraph content button'
+  - 'update paragraph content chart'
+  - 'update paragraph content columns'
+  - 'update paragraph content contact'
+  - 'update paragraph content downloads'
+  - 'update paragraph content embed'
+  - 'update paragraph content from_library'
+  - 'update paragraph content gallery'
+  - 'update paragraph content image'
+  - 'update paragraph content section'
+  - 'update paragraph content table'
+  - 'update paragraph content teaser'
+  - 'update paragraph content text'
+  - 'update paragraph content title'
+  - 'update paragraph content video'
+  - 'view all revisions'
+  - 'view blokkli comments'
+  - 'view own unpublished content'
+  - 'view own unpublished media'
+  - 'view paragraph templates'
+  - 'view paragraphs blokkli edit state'
+  - 'view scheduled content'
+  - 'view scheduled paragraph'
+  - 'view the administration theme'
+  - 'view translatable config pages'
+  - 'view unpublished paragraphs'

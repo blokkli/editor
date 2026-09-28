@@ -1,0 +1,62 @@
+uuid: ec3a7f46-011d-4c46-a222-a103b473dfad
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.editorial
+    - node.type.event
+    - node.type.news
+    - node.type.office
+    - node.type.page
+  module:
+    - content_translation
+    - navigation
+    - node
+    - paragraphs
+    - paragraphs_blokkli
+    - paragraphs_blokkli_comment
+    - paragraphs_library
+    - paragraphs_type_permissions
+    - scheduler
+    - system
+    - texts
+    - translatable_config_pages
+id: translator
+label: 'Translator (French)'
+weight: 5
+is_admin: false
+permissions:
+  - 'access content overview'
+  - 'access navigation'
+  - 'access string translation overview'
+  - 'bypass paragraphs type content access'
+  - 'create content translations'
+  - 'create paragraphs blokkli edit state'
+  - 'create string translation'
+  - 'edit any editorial content'
+  - 'edit any event content'
+  - 'edit any news content'
+  - 'edit any office content'
+  - 'edit any page content'
+  - 'edit paragraphs blokkli edit state'
+  - 'edit string translation'
+  - 'load id and name of blokkli users'
+  - 'post blokkli comments'
+  - 'take ownership of paragraphs blokkli edit state'
+  - 'translate editorial node'
+  - 'translate event node'
+  - 'translate news node'
+  - 'translate office node'
+  - 'translate page node'
+  - 'translate paragraph'
+  - 'translate paragraphs_library_item'
+  - 'translate translatable_config_pages'
+  - 'update content translations'
+  - 'view blokkli comments'
+  - 'view paragraphs blokkli edit state'
+  - 'view scheduled content'
+  - 'view scheduled paragraph'
+  - 'view string translation'
+  - 'view the administration theme'
+  - 'view translatable config pages'
+  - 'view unpublished paragraphs'

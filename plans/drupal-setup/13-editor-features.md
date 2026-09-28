@@ -128,7 +128,7 @@ the schema, and where they're set up:
 | transform            | 13g       | search and replace in text and title blocks, also in a translation                                                                                             |
 | conversions          | 13g       | text ↔ title, button → text                                                                                                                                    |
 | search               | 13g       | the tab "Content": pages, editorial pages, news, events and offices (`entity_query`); media and library items have their own dialogs                           |
-| comments             | 13h       | the head of the department reviews a page                                                                                                                      |
+| comments             | 13h       | the head of the department reviews a page and comments; the editor publishes                                                                                   |
 | notifications        | 13h       | comments and mentions                                                                                                                                          |
 | agent                | 13i       | editing a page with the agent                                                                                                                                  |
 

@@ -1,7 +1,7 @@
 # 13i: Agent and modules
 
 - **Status:** in progress (the table of contents, the charts, the analyzer and
-  the embed are done)
+  the embed are done; the agent is postponed, the user, 2026-09-28)
 - **Milestone:** M1 Local dev site
 - **Depends on:** 13b
 - **Part of:** [chunk 13](13-editor-features.md)

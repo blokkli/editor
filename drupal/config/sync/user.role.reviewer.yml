@@ -1,0 +1,29 @@
+uuid: d768b392-b373-4f15-b03e-1b68fda1f8a9
+langcode: en
+status: true
+dependencies:
+  module:
+    - navigation
+    - node
+    - paragraphs
+    - paragraphs_blokkli
+    - paragraphs_blokkli_comment
+    - scheduler
+    - system
+id: reviewer
+label: 'Head of department'
+weight: 4
+is_admin: false
+permissions:
+  - 'access content overview'
+  - 'access navigation'
+  - 'load id and name of blokkli users'
+  - 'post blokkli comments'
+  - 'review paragraphs blokkli edit state'
+  - 'view all revisions'
+  - 'view blokkli comments'
+  - 'view paragraphs blokkli edit state'
+  - 'view scheduled content'
+  - 'view scheduled paragraph'
+  - 'view the administration theme'
+  - 'view unpublished paragraphs'

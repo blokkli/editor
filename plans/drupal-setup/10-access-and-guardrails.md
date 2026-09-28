@@ -16,9 +16,12 @@ hosting, and it can't affect other sandboxes or the host.
         resolve the route and render page, media and files through GraphQL. This
         needs code (13e, F22): the grant adds no permissions today.
   - [ ] Without a grant, Nuxt shows the "this sandbox is private" page.
+  - [ ] With a grant, anonymous visitors also need
+        `view paragraph content <type>` for every paragraph type, since
+        `paragraphs_type_permissions` is on (13h).
 - [ ] Audit the editor role. It must not have any of: administer modules,
       permissions, users, text formats or site configuration. Nobody ever logs
-      in as user 1.
+      in as user 1. 13h's four roles have none of them.
 - [ ] Text formats: only what blökkli's markup fields need.
 - [ ] Uploads: images and documents only, a size limit, a per-sandbox quota.
 - [ ] Mail is never sent. Capture it per sandbox and show it on an "Inbox" page,

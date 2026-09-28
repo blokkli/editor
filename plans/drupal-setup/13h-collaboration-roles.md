@@ -1,6 +1,6 @@
 # 13h: Collaboration and roles
 
-- **Status:** todo
+- **Status:** done
 - **Milestone:** M1 Local dev site
 - **Depends on:** 13b–13g, 13i
 - **Part of:** [chunk 13](13-editor-features.md)
@@ -14,26 +14,29 @@ bundle.
 
 ## Tasks
 
-- [ ] **Comments and notifications.**
-- [ ] **Roles** (14a):
-  - [ ] a department editor
-  - [ ] the head of the department as reviewer (view, comment, publish)
-  - [ ] a French translator
-  - [ ] a restricted editor who can't use some blocks, through
+- [x] **Comments and notifications.**
+- [x] **Roles** (14a):
+  - [x] a department editor
+  - [x] the head of the department as reviewer (view, comment, publish).
+        Decided: view and comment; the editor publishes.
+  - [x] a French translator
+  - [x] a restricted editor who can't use some blocks, through
         `paragraphs_type_permissions` (e.g. no sections or charts)
-  - [ ] media permissions for the editing roles
+  - [x] media permissions for the editing roles
   - [ ] per-bundle view permissions for anonymous users, for SSR with a preview
-        grant (13e). Needs chunk 10's grant code first (F22).
-- [ ] Skills:
-  - [ ] new `blokkli-setup-permissions`: which role needs which permission, for
+        grant (13e). Needs chunk 10's grant code first (F22). Moved to chunk 10.
+- [x] Skills:
+  - [x] new `blokkli-setup-permissions`: which role needs which permission, for
         blökkli, paragraphs, media and GraphQL
-  - [ ] comments and notifications: in that skill, or in their own. Decide here.
+  - [x] comments and notifications: in that skill, or in their own. Decided:
+        their own, `blokkli-setup-comments`.
 
 ## Acceptance criteria
 
 - Each role can do what it's meant to in the editor, and nothing more. The
   restricted editor doesn't see the denied blocks.
-- A comment notifies the other users of the page.
+- A mention, a reply or a resolved thread notifies the users concerned (a new
+  comment without a mention notifies nobody, F40).
 - The skills exist.
 
 ## Notes
@@ -91,3 +94,90 @@ From [13f](13f-translation.md) (2026-09-27):
   `edit string translation`, for whoever translates the frontend's texts. Not
   blökkli's.
 - **DeepL** has no permission of its own.
+
+## Roles and comments (2026-09-28)
+
+The agent was skipped for now (the user); its permission comes with it.
+
+Decisions:
+
+- **The head of the department only comments** (the user): read-only with
+  comments and mentions; the department editor publishes. blökkli has no publish
+  permission of its own: publishing needs edit rights and ownership of the edit
+  state (F44).
+- **Notifications as the module creates them** (the user): mentions, replies and
+  resolved threads. A new comment without a mention notifies nobody (F40); the
+  acceptance criterion is reworded.
+- **The roles,** proposed by Claude, labels as language overrides:
+
+  | Role (id)                 | Label EN / DE / FR                                                      |
+  | ------------------------- | ----------------------------------------------------------------------- |
+  | `content_editor` (reused) | Editor / Redaktion / Rédaction                                          |
+  | `reviewer`                | Head of department / Abteilungsleitung / Direction de service           |
+  | `translator`              | Translator (French) / Übersetzung (Französisch) / Traduction (français) |
+  | `restricted_editor`       | Restricted editor / Redaktion (eingeschränkt) / Rédaction (restreinte)  |
+
+  None has `transfer blokkli paragraphs`, `publish … with validation errors`,
+  `manage default paragraph templates`, masquerade or anything administrative.
+
+- **Per-type permissions** (proposed by Claude): `paragraphs_type_permissions`
+  is on. The editor and the translator bypass it; `authenticated` views every
+  type; the restricted editor may create, update and delete every type but
+  section and chart, which it may only update (texts inside an existing section
+  stay editable). Anonymous visitors get theirs with chunk 10's grant.
+- **No per-department access:** "department" is the persona; every editor edits
+  every page.
+- **The translator** needs `edit any <type> content`: editing in blökkli needs
+  update access to the page, so they can also change the English page (F43).
+- **Media:** editors create and edit their own image, document and video media;
+  the translator and the reviewer only view them. blökkli's uploads don't check
+  it (F42).
+- **Two skills:** `blokkli-setup-permissions` and `blokkli-setup-comments`.
+
+As built:
+
+- **Drupal config:** `paragraphs_type_permissions` enabled; the four roles with
+  their permissions and DE/FR labels; `authenticated` gets
+  `view paragraph content <type>` for all 17 types. Script:
+  `tmp/13h-roles-config.php` (not committed, can be run again).
+- **`blokkli_playground`:** `Hook/ParagraphsTypeHooks.php` lets users with
+  `view paragraphs blokkli edit state` view paragraph types. Without it, no
+  editor but the admin got any paragraph type to add (F38).
+- **Test users** (content, `tmp/13h-users.php`, not committed; chunk 05 seeds
+  them): Anna Keller (editor), Marc Brunner (head of department), Élodie Favre
+  (translator), Jonas Weber (restricted editor). Log in with
+  `ddev drush uli --name="Anna Keller"`.
+- **Docs:** the permissions reference (review doesn't publish; comments,
+  mentions, transfer and notifications; the paragraph type access hook;
+  `paragraphs_type_permissions`) and the editor overview (the editor opens for
+  any edit permission, read-only without `edit`).
+- **Skills:** new `blokkli-setup-permissions` and `blokkli-setup-comments`
+  (1.0.0); `blokkli-setup-drupal` 1.0.7 (review doesn't publish, the paragraph
+  type access, both new skills listed).
+- **Findings:** F38–F44.
+
+Verification (page 13, logged in per user in its own browser context):
+
+- **Anna (editor):** took over the edit state from admin ("Assign to me"), got
+  the 15 addable types, added a title through the Drupal form, commented on it
+  mentioning "@Marc Brunner", resolved the thread and published. Her permissions
+  in the editor: library yes, default templates no, agent no, block transfer no.
+  Drupal's media form 200, the UI strings 403.
+- **Marc (head of department):** the page read-only with "You are in review
+  mode" and Anna's pending title; no add list. The bell showed 1 ("Anna Keller
+  mentioned you in a comment"); he replied in the sidebar, and Anna got the
+  reply notification; Anna's resolve notified him. Publishing and deleting
+  through the API returned `success: false`; the node form and the permissions
+  page are 403. The published German page shows every paragraph with only the
+  view permissions of `authenticated`.
+- **Jonas (restricted editor):** no Section and Chart in the add list (both
+  "edit" only). Through the API: adding a section is refused ("Access denied:
+  cannot create paragraph of type 'section'"), deleting one fails, editing the
+  title inside a section and adding a text work. Reverted.
+- **Élodie (translator):** in French the editor is in translation mode (no add
+  list), a title translated and published. In English she edits everything
+  (F43). Drupal's translation overview and "add translation" 200, the UI strings
+  200, the media form 403, yet pasting an image created a media entity (F42;
+  deleted).
+- Not checked: templates with a denied type (no templates locally; F16 covers
+  them), anonymous access (chunk 10).

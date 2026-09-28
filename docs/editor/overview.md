@@ -8,9 +8,11 @@ interface to build content.
 The editor is started from within the `<BlokkliProvider>` component. It displays
 an "Edit Blocks" button to start the editor.
 
-The button is only displayed if the user has the `'edit'` permission.
-Permissions are passed via the `:permissions` prop as an array. An example
-implementation might look like this:
+The button is displayed if the user has any permission (`view`, `review`,
+`edit`, `delete`), passed via the `:permissions` prop as an array. Without
+`edit`, the editor opens read-only: the user sees the pending changes and, with
+the comments feature, can comment on them. An example implementation might look
+like this:
 
 ::: code-group
 
@@ -27,9 +29,7 @@ implementation might look like this:
 
 <script lang="ts" setup>
 const user = useCurrentUser()
-const userPermissions = computed(() =>
-  user.isAdmin ? ['edit', 'view'] : ['view'],
-)
+const userPermissions = computed(() => (user.isAdmin ? ['view', 'edit'] : []))
 </script>
 ```
 
@@ -52,5 +52,5 @@ The current entity context is part of the URL in the form of the entity UUID:
 /en/topics/my-test-page?blokkliEditing=908fac9f-e47e-4478-bfd8-ab8ac947835b
 ```
 
-The editor will only mount when the `permissions` array includes `'edit'` and
-the `blokkliEditing` query value is equal to the `:entity-uuid` prop value.
+The editor will only mount when the `permissions` array isn't empty and the
+`blokkliEditing` query value is equal to the `:entity-uuid` prop value.

@@ -10,6 +10,7 @@ dependencies:
     - filter
     - graphql
     - media
+    - paragraphs_type_permissions
     - system
 _core:
   default_config_hash: dJ0L2DNSj5q6XVZAGsuVDpJTh5UeYkIPwKrUOOpr8YI
@@ -24,3 +25,20 @@ permissions:
   - 'use text format basic_html'
   - 'use text format table'
   - 'view media'
+  - 'view paragraph content accordion'
+  - 'view paragraph content blokkli_fragment'
+  - 'view paragraph content button'
+  - 'view paragraph content chart'
+  - 'view paragraph content columns'
+  - 'view paragraph content contact'
+  - 'view paragraph content downloads'
+  - 'view paragraph content embed'
+  - 'view paragraph content from_library'
+  - 'view paragraph content gallery'
+  - 'view paragraph content image'
+  - 'view paragraph content section'
+  - 'view paragraph content table'
+  - 'view paragraph content teaser'
+  - 'view paragraph content text'
+  - 'view paragraph content title'
+  - 'view paragraph content video'
