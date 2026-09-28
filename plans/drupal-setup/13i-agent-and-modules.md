@@ -28,12 +28,12 @@ and the analyzers.
       use it for the playable video embed (moved from chunk 06), or decide
       whether the `video` block uses `BlokkliIframe` directly.
 - [x] **Table of contents:** a fragment for long service pages.
-- [ ] **Analyzers:** a custom analyzer next to the built-in ones (see
+- [x] **Analyzers:** a custom analyzer next to the built-in ones (see
       winterthur's `frontend/app/blokkli/analyzer/`), e.g. "every service page
       has a contact block". The planted mistakes on the landing page (14b) are
       for the built-in ones.
 - [ ] Skills:
-  - [ ] review `blokkli-analyze`
+  - [x] review `blokkli-analyze`
   - [ ] new `blokkli-setup-agent`
   - [x] new `blokkli-setup-charts`
   - [ ] iframes: a skill, unless the docs (`docs/modules/`) already cover the
@@ -218,3 +218,57 @@ Verification:
   the chart editor's loading that changed.
 - Not tested: adding a chart through the editor's sidebar (drag and drop);
   `addBehaviour` opening the chart editor is the module's.
+
+## The custom analyzer (2026-09-28)
+
+Decisions:
+
+- **Text in a language other than the page's** (the user, from four proposals by
+  Claude; the others: teasers to past events, checks of charts, a contact on
+  service pages). A translation starts as a copy of the source's paragraphs, and
+  a teaser shows an untranslated page in its source language: text nobody
+  translated is the most common mistake of a trilingual site, and none of the
+  built-in analyzers checks it.
+- **The rendered text** (`getTextElements()`), not the stored field values: it
+  includes teasers and the host's header, and a finding highlights one paragraph
+  of text. Proposed by Claude.
+- **Skipped:** text marked with another language (`lang`, WCAG 3.1.2),
+  paragraphs hidden in the page's language and what's inside them, and texts of
+  fewer than four words (numbers and dates don't count).
+- **eld (Efficient Language Detector),** its smallest database (about 1 MB,
+  loaded on the first run), only its reliable results. Proposed by Claude, after
+  franc-min: that one took short English texts for French ("When do you need a
+  permit?"), and a minimum of eight words, which removed that, lost the real
+  findings. Over the rendered texts of all 33 page translations, eld reports
+  only English left in German and French translations.
+- **Ignorable,** e.g. for a quote: the identifier is a hash of the text. A
+  finding names the detected language.
+
+As built:
+
+- `playground-drupal/app/blokkli/analyzers/wrongLanguage.ts`, registered in
+  `app/blokkli.editAdapter.ts`. Its German and French strings in the module's
+  `translations` (`nuxt.config.ts`), the English ones in the code.
+- `eld` as a dev dependency, pre-bundled (`vite.optimizeDeps.include`): Vite
+  would otherwise reload the editor on the analyzer's first run.
+- **blökkli:**
+  - `getRuntimeOptionValue()`: for checkboxes, an empty string is no value (so
+    the default), not `['']`. An empty "Visible languages" made a paragraph
+    hidden in every language for `getBlockOptions()`. With a test.
+  - `AnalyzerContext.getFieldListItem()`: the doc says that its options are the
+    saved ones.
+  - `docs/adapter/getAnalyzers.md`: an example that works (the old one used
+    fields `Analyzer` doesn't have), the strings, and libraries.
+  - Found, not fixed: the `translations` option ignores English (F36).
+- **Skill:** `blokkli-analyze` reviewed (1.0.2): strings, current option values,
+  hidden paragraphs, libraries, and a "Check it" section.
+
+Verification:
+
+- Page 14 in French (edit state, reverted): a German paragraph planted in a text
+  is found ("En allemand"); the French one and a quote marked `lang="de"`
+  aren't. Hidden in French ("Visible languages": DE), it's skipped; visible
+  again, it's found. "Ignore" and "Restore".
+- Real leftovers: the office in French (2 English texts), the 13d page in German
+  (5). Page 13 in English, with charts and the table of contents: passes.
+- The strings in EN, DE and FR; no console errors.

@@ -75,6 +75,14 @@ describe('getRuntimeOptionValue', () => {
     ])
   })
 
+  test('Checkboxes with an empty string have no value checked', () => {
+    // As stored when every checkbox is unchecked, e.g. "Visible languages".
+    expect(getRuntimeOptionValue(['checkboxes', [], []], '')).toEqual([])
+    expect(getRuntimeOptionValue(['checkboxes', ['default'], []], '')).toEqual([
+      'default',
+    ])
+  })
+
   test('Returns the correct value for type radios', () => {
     const checkbox: BlockOptionDefinition = {
       type: 'radios',

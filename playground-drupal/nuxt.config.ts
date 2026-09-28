@@ -132,6 +132,34 @@ export default defineNuxtConfig({
       },
     },
     colorOptions: CHART_COLORS,
+    // The strings of the demo's own analyzer (app/blokkli/analyzers). English
+    // is the default in the code.
+    translations: {
+      de: {
+        blockingenWrongLanguageLabel: 'Sprache der Texte',
+        blockingenWrongLanguage: 'Text in einer anderen Sprache',
+        blockingenWrongLanguageDescriptionOne:
+          'Ein Text ist nicht auf @language, der Sprache der Seite. Übersetzen Sie ihn. Ist die Sprache gewollt, z. B. bei einem Zitat, ignorieren Sie den Befund.',
+        blockingenWrongLanguageDescription:
+          '@count Texte sind nicht auf @language, der Sprache der Seite. Übersetzen Sie sie. Ist die Sprache gewollt, z. B. bei einem Zitat, ignorieren Sie den Befund.',
+        blockingenWrongLanguageNode: 'Auf @language',
+        blockingenWrongLanguageValid: 'Texte in der Sprache der Seite',
+        blockingenWrongLanguageValidDescription:
+          'Alle Texte sind auf @language.',
+      },
+      fr: {
+        blockingenWrongLanguageLabel: 'Langue des textes',
+        blockingenWrongLanguage: 'Texte dans une autre langue',
+        blockingenWrongLanguageDescriptionOne:
+          'Un texte n’est pas en @language, la langue de la page. Traduisez-le. Si la langue est voulue, p. ex. pour une citation, ignorez le résultat.',
+        blockingenWrongLanguageDescription:
+          '@count textes ne sont pas en @language, la langue de la page. Traduisez-les. Si la langue est voulue, p. ex. pour une citation, ignorez le résultat.',
+        blockingenWrongLanguageNode: 'En @language',
+        blockingenWrongLanguageValid: 'Textes dans la langue de la page',
+        blockingenWrongLanguageValidDescription:
+          'Tous les textes sont en @language.',
+      },
+    },
     // The chart block and ECharts load only on pages with a chart.
     chunkNames: ['global', 'rare', 'chart'],
     // The fields outside the main content: the page's sidebar, the footer and
@@ -173,6 +201,11 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // Imported on the first run of the language analyzer
+    // (app/blokkli/analyzers): found only then, Vite would reload the editor.
+    optimizeDeps: {
+      include: ['eld/extrasmall'],
+    },
     server: {
       // Requests arrive through nginx with the site's Host (and, later, the
       // sandbox subdomains), which Vite would otherwise reject.

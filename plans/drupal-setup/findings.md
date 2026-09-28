@@ -756,3 +756,18 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   slices at most).
 - **Fix idea:** an optional stable `key` per category and series in
   `ChartDataSourcePayload`, used for the overrides when present.
+
+## F36: The `translations` option ignores English
+
+- **Found:** 2026-09-28, 13i, reading the code for the analyzer's strings.
+- **Symptom:** `blokkli.translations.en` has no effect, although the docs
+  (`docs/configuration.md`, `docs/editor/translations.md`) use it to override
+  English texts.
+- **Cause:** the template only builds loaders for `TRANSLATION_LANGUAGES` (`de`,
+  `fr`, `it`, `gsw_CH`) (`src/build/templates/definitions/translations.ts:13`,
+  in this repository), and the text provider falls back to the default in the
+  code when a language has no loader
+  (`src/runtime/editor/providers/texts.ts:69`).
+- **Workaround:** English texts go in the code, as `$t()`'s default.
+- **Fix idea:** a loader for `en` that returns `userTranslations.en` when it's
+  set.

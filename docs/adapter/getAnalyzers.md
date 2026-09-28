@@ -29,34 +29,39 @@ Analyzers can be either:
 
 ## Example
 
+Define an analyzer with `defineAnalyzer` and return it next to the built-in
+ones:
+
 ```typescript
-getAnalyzers: () => {
-  return [
-    {
-      id: 'heading-structure',
-      title: 'Heading Structure',
-      description: 'Check if headings follow a logical hierarchy',
-      type: 'manual',
-      run: async (provider) => {
-        const headings = provider.querySelectorAll('h1, h2, h3, h4, h5, h6')
-        const violations = []
+import { defineAnalyzer, headingStructureAnalyzer } from '#blokkli/analyzer'
 
-        // Check heading hierarchy
-        for (let i = 0; i < headings.length; i++) {
-          // ... analyze headings
-        }
+const emptyGridAnalyzer = defineAnalyzer(() => ({
+  id: 'project:empty-grid',
+  label: (_langcode, $t) => $t('projectEmptyGridLabel', 'Empty grids'),
+  continuous: true,
+  run(context) {
+    const empty = context
+      .getAllUuids('grid')
+      .filter((uuid) => context.getChildBlocks(uuid).length === 0)
 
-        return {
-          status: violations.length > 0 ? 'violation' : 'pass',
-          nodes: violations,
-        }
-      },
-    },
-  ]
-}
+    return {
+      id: 'project:empty-grid',
+      title: context.$t('projectEmptyGrid', 'Empty grid blocks'),
+      category: 'content',
+      description: 'Grid blocks should contain at least one block.',
+      status: empty.length ? 'violation' : 'pass',
+      impact: 'moderate',
+      nodes: empty.map((uuid) => ({
+        targets: { uuid },
+        // Makes the finding ignorable.
+        identifier: uuid,
+      })),
+    }
+  },
+}))
+
+getAnalyzers: () => [headingStructureAnalyzer(), emptyGridAnalyzer()]
 ```
-
-See the analyzer documentation for more details on creating custom analyzers.
 
 ## The analyzer context
 
@@ -75,7 +80,8 @@ needs about the current state:
   filters rewrite links or markup while rendering. Pass `{ processed: true }` to
   get the same fields with their rendered values instead.
 - `readRawValue(host, fieldName)` — the stored value of a single text field
-- `getFieldListItem(uuid)` — the block for a UUID
+- `getFieldListItem(uuid)` — the block for a UUID. Its `options` are the saved
+  ones, without the edit state's changes: use `getBlockOptions()` for those.
 - `getAllUuids(bundle?)` — all block UUIDs, optionally of one bundle
 - `getChildBlocks(uuid, fieldName?)` — the blocks directly inside a block or the
   host entity, without grandchildren
@@ -88,8 +94,15 @@ needs about the current state:
   element
 - `querySelectorAll(selector)` — like the DOM method on the root element, but
   without skipped elements
-- `$t` — the translation function
+- `$t` — the translation function, in the editor's language. Pass the English
+  text as the default, and the other languages through the module's
+  [`translations`](/editor/translations) option.
 - `signal` — an `AbortSignal` that fires when the run is cancelled
+
+A library an analyzer needs (e.g. for language detection) belongs in a dynamic
+`import()` in `run()` or `init()`, so that it only loads when the analyzer runs.
+In development, list it in `vite.optimizeDeps.include`: Vite otherwise reloads
+the editor when it discovers the import.
 
 ## Built-in analyzers
 

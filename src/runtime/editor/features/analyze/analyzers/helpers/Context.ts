@@ -84,6 +84,9 @@ export class AnalyzerContext {
 
   /**
    * Get the field list item for a block UUID.
+   *
+   * Its `options` don't include the option changes of the edit state:
+   * `getBlockOptions()` returns the current values.
    */
   public getFieldListItem(uuid: string): FieldListItemTyped | undefined {
     return this.state.getFieldListItem(uuid) as FieldListItemTyped | undefined

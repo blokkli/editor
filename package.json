@@ -196,6 +196,7 @@
     "ckeditor5": "^48.2.0",
     "commander": "^15.0.0",
     "deepl-node": "^1.27.0",
+    "eld": "^2.1.0",
     "eslint": "^10.5.0",
     "eslint-plugin-oxlint": "^1.69.0",
     "eslint-plugin-sonarjs": "^4.0.3",

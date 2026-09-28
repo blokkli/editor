@@ -94,7 +94,8 @@ export function getRuntimeOptionValue(
   } else if (type === 'checkboxes') {
     let values: string[] = []
     if (typeof value === 'string') {
-      values = value.split(',')
+      // An empty string is no value checked, not one empty value.
+      values = value.split(',').filter(Boolean)
     } else if (Array.isArray(value)) {
       values = value as string[]
     }

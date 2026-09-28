@@ -162,8 +162,8 @@ Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
 (order, skill conventions, feature matrix). 13a–13g, 14a, 15a, 15b, 15c and 15e
-are done. 13i is in progress: the table of contents and the charts are done, the
-agent, iframes and analyzers are next. 15d waits for the review of its hero
+are done. 13i is in progress: the table of contents, the charts and the analyzer
+are done, the agent and iframes are next. 15d waits for the review of its hero
 image.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are

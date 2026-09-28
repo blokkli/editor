@@ -13,7 +13,7 @@ compatibility: >-
   (blokkli.editAdapter.ts).
 metadata:
   author: blokkli
-  version: '1.0.1'
+  version: '1.0.2'
   targets: '@blokkli/editor 2.x'
   docs: https://docs.blokk.li
 ---
@@ -229,3 +229,28 @@ Key points:
   library.
 - **Options**: `defineAnalyzer<{ minWords?: number }>((options) => ...)` makes
   the factory accept options, like `axeAnalyzer({ exclude })`.
+- **Strings**: `label: (_langcode, $t) => $t('projectKey', 'English text')`, and
+  `context.$t(...)` in `run`. The English text is the default in the code; the
+  other languages go into the module's `translations` option
+  (`blokkli.translations.de.projectKey`). The editor's language is
+  `context.interfaceLangcode`, the page's `context.langcode`. Prefix the keys
+  with the project, so that they never collide with blökkli's.
+- **Current option values**: `getBlockOptions(uuid)`. The `options` of
+  `getFieldListItem(uuid)` are the saved ones, without the edit state's changes.
+- **Hidden paragraphs**: while editing, paragraphs hidden in the page's language
+  ("Visible languages", `bkVisibleLanguages`) are rendered too. A check of what
+  readers see skips them, and what's inside them.
+- **Libraries** (e.g. language detection): a dynamic `import()` in `run` or
+  `init`, so that they only load in the editor. In development, list them in
+  `vite.optimizeDeps.include`, or Vite reloads the editor on the first run.
+
+## Check it
+
+1. Open the editor, open the Analyze sidebar: the analyzer is listed under its
+   label, in the editor's language.
+2. Plant a finding: it's listed, highlighted on the page, and "Ignore" moves it
+   to the ignored ones (with an `identifier`). Fix it: it goes away.
+3. **Run it on the site's content, in every language,** before shipping. A check
+   that reports what isn't wrong is soon ignored: collect the findings of every
+   page and read them. Tune the rule until nothing false is left, even if some
+   true findings go with it.

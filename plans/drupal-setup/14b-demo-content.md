@@ -22,7 +22,11 @@ adds types.
         the lighter ones can be trimmed
   - [ ] the landing page "The lakeside pool" at its best, with the planted
         mistakes for the analyzer (an image without alt text, a table without a
-        header row, an outdated French translation)
+        header row, an outdated French translation, an English paragraph left in
+        the French translation for the language analyzer of 13i)
+  - [ ] no other text left untranslated: the language analyzer (13i) lists
+        English in German and French translations, e.g. today on the office, the
+        events and the 13d page
   - [ ] the library items (single blocks: containers stay out of the library
         until F12 is fixed), the service page template, and the default template
         for new columns

@@ -10,6 +10,7 @@ import {
   headingStructureAnalyzer,
   readabilityAnalyzer,
 } from '#blokkli/analyzer'
+import wrongLanguageAnalyzer from './blokkli/analyzers/wrongLanguage'
 
 export default defineBlokkliEditAdapter(async (ctx) => {
   const adapter = await drupalAdapter(ctx)
@@ -22,6 +23,7 @@ export default defineBlokkliEditAdapter(async (ctx) => {
       altTextAnalyzer(),
       headingStructureAnalyzer(),
       axeAnalyzer(),
+      wrongLanguageAnalyzer(),
     ],
 
     // The columns of the widest content container (container-wide).
