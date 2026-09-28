@@ -101,7 +101,7 @@ watches the bound source id, fetches the payload, and passes it via the
 <template>
   <ChartRenderer
     v-if="hasRenderableData"
-    v-bind="chartData!"
+    :data="chartData!"
     :dynamic-data="dynamicData"
   />
 </template>
@@ -178,3 +178,7 @@ Notes:
 alignment against the inline source data, so they are **not applied** to dynamic
 data — the fetched series/categories may differ in order or count. Localize
 dynamic data on the backend instead.
+
+Series and category overrides (`seriesOverrides`, `categoryColorOverrides`) are
+keyed by the fetched names. With localized names, an override set while editing
+one language doesn't apply to the others.

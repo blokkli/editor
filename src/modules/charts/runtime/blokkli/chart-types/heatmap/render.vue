@@ -79,7 +79,14 @@ const option = useChartOption(() => {
         return `${row} / ${cat}: ${valueFormatter(v)}`
       },
     },
-    grid: { containLabel: true, top: 50, left: 10, right: 50, bottom: 60 },
+    grid: {
+      outerBoundsMode: 'same',
+      outerBoundsContain: 'axisLabel',
+      top: 50,
+      left: 10,
+      right: 50,
+      bottom: 60,
+    },
     xAxis,
     yAxis: {
       type: 'category',

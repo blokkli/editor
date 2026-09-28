@@ -1,6 +1,6 @@
 # 13i: Agent and modules
 
-- **Status:** in progress (the table of contents is done)
+- **Status:** in progress (the table of contents and the charts are done)
 - **Milestone:** M1 Local dev site
 - **Depends on:** 13b
 - **Part of:** [chunk 13](13-editor-features.md)
@@ -17,9 +17,9 @@ and the analyzers.
       environment is wired in chunk 03). Example skills, tools and prompts under
       `playground-drupal/blokkli/` (see winterthur's `frontend/blokkli/`),
       fitting a town's website.
-- [ ] **`colorOptions`** in `playground-drupal/nuxt.config.ts`, for the chart
+- [x] **`colorOptions`** in `playground-drupal/nuxt.config.ts`, for the chart
       colours (moved from 13b: only the charts module uses them).
-- [ ] **Charts:** a `chart` block (the town in numbers: population, budget,
+- [x] **Charts:** a `chart` block (the town in numbers: population, budget,
       recycling rate; election results), and the chart data source methods in
       `app/blokkli.editAdapter.ts` (`getChartDataSources`,
       `getChartDataSourceCapabilities`, `getChartDataSourceData`), moved from
@@ -35,7 +35,7 @@ and the analyzers.
 - [ ] Skills:
   - [ ] review `blokkli-analyze`
   - [ ] new `blokkli-setup-agent`
-  - [ ] new `blokkli-setup-charts`
+  - [x] new `blokkli-setup-charts`
   - [ ] iframes: a skill, unless the docs (`docs/modules/`) already cover the
         setup. Decide here.
   - [x] the table of contents: no skill. The docs cover the module
@@ -121,3 +121,100 @@ Verification:
   the blocks).
 - Not checked: the server render. Locally, anonymous visitors get a 403, and
   granting `access content` wasn't enough.
+
+## Charts (2026-09-28)
+
+Decisions:
+
+- **A paragraph type without fields** (the user): the chart, including its title
+  and translations, is the charts module's block option. A first idea, the title
+  as a Drupal field, would have competed with the chart editor's own title.
+- **Styled like the site, not like winterthur** (the user). Proposed by Claude,
+  in `components/Chart/transform.ts`:
+  - The fonts and colours come from the design tokens, read from CSS.
+  - The title is the figure's caption (`text-h3`); the chart draws none.
+  - Axes and labels: the category axis is the ink baseline, the value axis
+    carries thin `line` gridlines, no ticks, labels 14 px in `muted`.
+  - Legend: top left, square swatches (a line for line charts), none for a
+    single series.
+  - Tooltip: white, a `line` border, square corners.
+  - Bars and lines: square bars at most 40 px wide, a white gap between stacked
+    segments; lines 2.5 px with ringed points.
+  - Pies: white gaps between slices, the legend below. When narrow (below 520
+    px, measured by the component): a smaller pie, the legend as a list, labels
+    at the edges.
+  - Line charts fit their value axis to the data unless the editor set a
+    minimum; bars and areas start at zero.
+  - Horizontal bars read from the top; with value labels on, the value axis
+    goes.
+  - SVG instead of canvas: the web font, sharp print.
+  - A description for screen readers from the resolved data, in the page's
+    language: ECharts' own is English and garbles stacks.
+- **The colours** (`colorOptions`, from `shared/chartColors.ts`, also shown in
+  the design system's Colours section): a family per colour of the design system
+  (lake, ochre, forest, plum, red, stone), each a ramp in OKLCH with the token
+  as its 600. The palette alternates lightness for red-green colour blindness;
+  every main shade has at least 3.8:1 on white; red comes fifth.
+- **Where:** wherever tables are allowed. The global width option (content or
+  wide; "full" is treated as wide).
+- **Data sources in this slice** (the user): three sources of the town,
+  fictional numbers in EN/DE/FR, from a Nuxt server route
+  (`server/api/chart-data`). A real site would read them from its statistics.
+  The budget has six slices: the palette has six colours, and data sources'
+  colour overrides only work in one language (F35).
+
+As built:
+
+- **Drupal:** the paragraph type `chart` (no fields, library conversion, not
+  translatable, labels "Diagramm" / "Graphique"), allowed in the nine fields
+  that allow `table`, and the bundle on the GraphQL server. Script:
+  `tmp/13i-chart-config.php` (not committed).
+- **Nuxt:**
+  - `components/Paragraph/Chart`: the block (chunk `chart`), the data of a bound
+    source (`useLazyAsyncData`, browser only, keyed by source and language), a
+    placeholder while editing.
+  - `components/Chart`: the figure, the SVG renderer, the width measurement, and
+    `transform.ts`.
+  - `server/chartData.ts` and `server/api/chart-data`: the sources.
+  - `app/blokkli.editAdapter.ts`: the three data source methods.
+  - `main.css`: the footnotes and the category filter.
+  - `shared/chartColors.ts`: the colours, imported by `nuxt.config.ts` and the
+    design system page.
+  - The design system page: the colour ramps in "Colours", and a "Charts"
+    section with four sample charts.
+  - The text `chart.empty` (EN/DE/FR).
+- **blökkli's charts module:**
+  - `containLabel` (deprecated in ECharts 6, which only warns without a legacy
+    module) replaced by `outerBoundsMode: 'same'` and
+    `outerBoundsContain: 'axisLabel'`, its documented equivalent, in the five
+    cartesian types.
+  - The classes of the footnotes and the category filter are now `bk-chart-*`:
+    the build mangled `blokkli-chart-*`, so integrators couldn't style them.
+    Documented in the setup docs.
+  - The chart editor opened a chart bound to a data source without inline data
+    as a new default chart, dropping the binding (e.g. charts from the agent).
+  - The docs' `v-bind="chartData!"` examples: `ChartRenderer` takes `:data`.
+  - The data source docs: overrides and localized names (F35).
+- **Skill:** `blokkli-setup-charts` (1.0.0), listed in `blokkli-setup-drupal`
+  (1.0.6). F28 now also lists the colours' labels.
+
+Verification:
+
+- Page 13 ("F12 (throwaway)"), published: a stacked bar chart and a donut bound
+  to data sources, a line chart with inline data, translations and a footnote
+  marker in its title.
+- Page 14 (EN/DE/FR, reverted): the same charts in German and French: the
+  captions, the sources' data, the inline translations and the footnotes; the
+  screen reader descriptions in each language.
+- At 1440 and 390 px: no horizontal overflow, nothing clipped, no console
+  errors; the narrow donut with its total.
+- The editor: the chart type in the sidebar with its icon, selecting a chart,
+  the chart editor with the bound source, its series in the palette's colours,
+  and a preview in the site's style. The adapter lists the three sources and
+  returns localized data.
+- The design system page's charts section at 1440 px.
+- `verify`: all 10 gates. Not run: the E2E suite (the mock playground wasn't
+  running), including `test/e2e/features/charts/colors.test.ts`, which covers
+  the chart editor's loading that changed.
+- Not tested: adding a chart through the editor's sidebar (drag and drop);
+  `addBehaviour` opening the chart editor is the module's.

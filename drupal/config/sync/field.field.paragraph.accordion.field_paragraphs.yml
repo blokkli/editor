@@ -6,6 +6,7 @@ dependencies:
     - field.storage.paragraph.field_paragraphs
     - paragraphs.paragraphs_type.accordion
     - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.chart
     - paragraphs.paragraphs_type.columns
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
@@ -34,6 +35,7 @@ settings:
   handler_settings:
     target_bundles:
       button: button
+      chart: chart
       columns: columns
       contact: contact
       downloads: downloads

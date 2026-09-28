@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="showCategoryFilter" class="blokkli-chart-category-filter">
+    <div v-if="showCategoryFilter" class="bk-chart-category-filter">
       <slot
         name="categoryFilter"
         :label="categoryFilterLabel"
@@ -31,9 +31,9 @@
         v-if="typeComponent && finalRenderProps"
         v-bind="finalRenderProps"
       />
-      <ol v-if="resolvedFootnotes.length" class="blokkli-chart-footnotes">
+      <ol v-if="resolvedFootnotes.length" class="bk-chart-footnotes">
         <li v-for="(note, i) in resolvedFootnotes" :key="i">
-          <span class="blokkli-chart-footnote-marker">{{
+          <span class="bk-chart-footnote-marker">{{
             superscriptFor(i + 1)
           }}</span>
           {{ note }}

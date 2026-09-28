@@ -10,6 +10,7 @@ import charts from './../src/modules/charts'
 import iframes from './../src/modules/iframes'
 import readability from './../src/modules/readability'
 import tableOfContents from './../src/modules/table-of-contents'
+import { CHART_COLORS } from './shared/chartColors'
 
 // Dumped from the local site by `bun run drupal:schema`. The root config types
 // the Drupal module against the same file.
@@ -130,7 +131,9 @@ export default defineNuxtConfig({
         default: [],
       },
     },
-    chunkNames: ['global', 'rare'],
+    colorOptions: CHART_COLORS,
+    // The chart block and ECharts load only on pages with a chart.
+    chunkNames: ['global', 'rare', 'chart'],
     // The fields outside the main content: the page's sidebar, the footer and
     // the site-wide notice.
     fieldListTypes: ['sidebar', 'footer', 'notice'],

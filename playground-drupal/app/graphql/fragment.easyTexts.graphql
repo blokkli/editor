@@ -8,6 +8,7 @@ fragment easyTexts on TextsLoader {
   callout__info: getText(key: "info", context: "callout", default: "Information")
   callout__success: getText(key: "success", context: "callout", default: "Success")
   callout__warning: getText(key: "warning", context: "callout", default: "Warning")
+  chart__empty: getText(key: "empty", context: "chart", default: "No data yet: edit the chart to add some.")
   contact__label: getText(key: "label", context: "contact", default: "Contact")
   contact__unavailable: getText(key: "unavailable", context: "contact", default: "The office of this contact isn't available.")
   downloads__label: getText(key: "label", context: "downloads", default: "Downloads")

@@ -312,8 +312,13 @@ function getCurrentData(): BlokkliChartData {
     const parsed = JSON.parse(JSON.stringify(props.data))
     const isAdvanced = parsed?.type === 'advanced'
     const hasSeries = Array.isArray(parsed?.series) && parsed.series.length > 0
-    if (parsed && (isAdvanced || hasSeries)) {
+    // A chart bound to a data source may have no inline data (e.g. created by
+    // the agent): it's not empty.
+    const hasDataSource = !!parsed?.dataSource
+    if (parsed && (isAdvanced || hasSeries || hasDataSource)) {
       if (!isAdvanced) {
+        if (!Array.isArray(parsed.series)) parsed.series = []
+        if (!Array.isArray(parsed.categories)) parsed.categories = []
         const fallbackId = getFirstColorId(colorOptions)
         for (const series of parsed.series) {
           if (!isColorIdValid(series.color, colorOptions)) {

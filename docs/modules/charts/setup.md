@@ -71,7 +71,7 @@ Spread the resolved `BlokkliChartData` onto it with `v-bind`:
 ```vue
 <template>
   <div class="container mx-auto my-20">
-    <ChartRenderer v-if="hasRenderableData" v-bind="chartData!" />
+    <ChartRenderer v-if="hasRenderableData" :data="chartData!" />
     <div v-else>No chart data. Click "Edit chart" to add data.</div>
   </div>
 </template>
@@ -116,7 +116,7 @@ receives it (plus the resolved data) and returns the option to render:
 ```vue
 <ChartRenderer
   v-if="hasRenderableData"
-  v-bind="chartData!"
+  :data="chartData!"
   :transform="transform"
 />
 ```
@@ -175,6 +175,20 @@ height is a CSS custom property, so you size charts from userland with plain CSS
   --bk-chart-height: 70vh;
 }
 ```
+
+## Footnotes and the category filter
+
+`ChartRenderer` renders two parts of its own around the chart, with stable
+classes to style them:
+
+| Class                      | Element                                   |
+| -------------------------- | ----------------------------------------- |
+| `bk-chart-category-filter` | The wrapper of the category filter, above |
+| `bk-chart-footnotes`       | The footnotes' `<ol>`, below the chart    |
+| `bk-chart-footnote-marker` | Each footnote's number (¹, ², …)          |
+
+The category filter's markup is yours through the `categoryFilter` slot, which
+receives `label`, `categories`, `selectedIndex` and `setSelectedIndex`.
 
 ## Renderer & other vue-echarts options
 

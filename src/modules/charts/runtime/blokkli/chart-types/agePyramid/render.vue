@@ -49,7 +49,8 @@ const option = useChartOption(() => {
     title: props.title ? { text: props.title, left: 'left' } : undefined,
     animation: props.isEditing ? false : undefined,
     grid: {
-      containLabel: true,
+      outerBoundsMode: 'same',
+      outerBoundsContain: 'axisLabel',
       top: 50,
       left: 10,
       right: 10,

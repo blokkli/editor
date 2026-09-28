@@ -1,0 +1,13 @@
+uuid: 6aedcf85-fa6e-4a68-b763-eae9812990d0
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.chart
+id: paragraph.chart.default
+targetEntityType: paragraph
+bundle: chart
+mode: default
+content: {  }
+hidden:
+  search_api_excerpt: true

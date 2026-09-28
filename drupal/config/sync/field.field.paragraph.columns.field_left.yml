@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.paragraph.field_left
     - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.chart
     - paragraphs.paragraphs_type.columns
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
@@ -32,6 +33,7 @@ settings:
   handler_settings:
     target_bundles:
       button: button
+      chart: chart
       contact: contact
       downloads: downloads
       from_library: from_library

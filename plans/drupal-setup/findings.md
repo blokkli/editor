@@ -649,10 +649,12 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   - A fragment's `label` and `description` are plain strings
     (`src/global/types/definitions.ts:329`), not `DefinitionString` like option
     labels.
+  - So are the chart colours' labels in `colorOptions`
+    (`src/global/types/colorOptions.ts`), 13i.
 - **Workaround:** playground-drupal redefines `bkVisibleLanguages` in
-  `nuxt.config.ts` with labels per language. Fragments have none.
+  `nuxt.config.ts` with labels per language. Fragments and colours have none.
 - **Fix idea:** resolve the built-in labels through the editor's texts, and
-  accept `DefinitionString` for fragment labels.
+  accept `DefinitionString` for fragment and colour labels.
 
 ## F29: Drops write only the source's link
 
@@ -738,3 +740,19 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix idea:** check `isVisibleByOptions()` with the provider's language, and
   `isVisible`, for nested paragraphs in `walkBlocks()`, so that every
   `queryBlocks()` caller gets what's rendered.
+
+## F35: A data source's colour overrides apply to one language
+
+- **Found:** 2026-09-28, 13i, with the budget chart (a donut bound to a data
+  source).
+- **Symptom:** an editor sets a slice's colour in the English editor; the German
+  page shows the palette's colour.
+- **Cause:** `categoryColorOverrides` and `seriesOverrides` are keyed by the
+  fetched names
+  (`src/modules/charts/runtime/components/ChartRenderer/index.vue:146-170`, in
+  this repository), and the docs tell integrators to localize those names in the
+  data source.
+- **Workaround:** none; the demo keeps the palette's colours (a pie of six
+  slices at most).
+- **Fix idea:** an optional stable `key` per category and series in
+  `ChartDataSourcePayload`, used for the overrides when present.

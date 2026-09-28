@@ -59,6 +59,69 @@
       "type": "radios"
     }
   },
+  "chart": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "data": {
+      "dataType": "chart",
+      "default": "{}",
+      "label": {
+        "de": "Diagramm",
+        "en": "Chart",
+        "fr": "Graphique"
+      },
+      "type": "json"
+    },
+    "width": {
+      "default": "content",
+      "displayAs": "icons",
+      "label": {
+        "de": "Breite",
+        "en": "Width",
+        "fr": "Largeur"
+      },
+      "options": {
+        "content": {
+          "icon": "bk_mdi_width_normal",
+          "label": {
+            "de": "Inhalt",
+            "en": "Content",
+            "fr": "Contenu"
+          }
+        },
+        "full": {
+          "icon": "bk_mdi_width_full",
+          "label": {
+            "de": "Volle Breite",
+            "en": "Full",
+            "fr": "Pleine largeur"
+          }
+        },
+        "wide": {
+          "icon": "bk_mdi_width_wide",
+          "label": {
+            "de": "Breit",
+            "en": "Wide",
+            "fr": "Large"
+          }
+        }
+      },
+      "type": "radios"
+    }
+  },
   "columns": {
     "bkVisibleLanguages": {
       "default": [],

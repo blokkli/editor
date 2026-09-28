@@ -327,6 +327,20 @@
     }
   }
 
+  /* The parts the charts module renders around a chart (Chart/index.vue):
+     the category filter above it, the footnotes below. */
+  .bk-chart-category-filter {
+    @apply mb-4;
+  }
+
+  .bk-chart-footnotes {
+    @apply mt-3 flex flex-col gap-1 border-t border-line pt-3 text-small text-muted;
+  }
+
+  .bk-chart-footnote-marker {
+    @apply mr-1 text-ink;
+  }
+
   /* Formatted text from Drupal (basic_html). */
   .rich-text {
     @apply flex flex-col gap-4;

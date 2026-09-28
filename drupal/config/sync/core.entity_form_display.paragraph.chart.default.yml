@@ -1,0 +1,16 @@
+uuid: 0b1130e9-5225-4f1b-b773-d266fc704223
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.chart
+id: paragraph.chart.default
+targetEntityType: paragraph
+bundle: chart
+mode: default
+content: {  }
+hidden:
+  created: true
+  publish_on: true
+  status: true
+  unpublish_on: true

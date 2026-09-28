@@ -200,6 +200,8 @@ schema_configuration:
           enabled: true
         button:
           enabled: true
+        chart:
+          enabled: true
         columns:
           enabled: true
         contact:

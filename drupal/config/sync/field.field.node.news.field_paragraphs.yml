@@ -8,6 +8,7 @@ dependencies:
     - paragraphs.paragraphs_type.accordion
     - paragraphs.paragraphs_type.blokkli_fragment
     - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.chart
     - paragraphs.paragraphs_type.columns
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.downloads
@@ -39,6 +40,7 @@ settings:
       accordion: accordion
       blokkli_fragment: blokkli_fragment
       button: button
+      chart: chart
       columns: columns
       contact: contact
       downloads: downloads

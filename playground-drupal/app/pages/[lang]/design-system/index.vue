@@ -138,6 +138,36 @@
               </li>
             </ul>
           </div>
+          <div id="chart-colours" class="flex flex-col gap-3">
+            <h3 class="text-h3">Charts</h3>
+            <p class="max-w-content">
+              Only for charts (<code>shared/chartColors.ts</code>, blökkli's
+              <code>colorOptions</code>): a family per colour above, its 600.
+              Editors pick any shade; new charts use the outlined main shades,
+              in this order.
+            </p>
+            <ul class="flex flex-col gap-2">
+              <li
+                v-for="family in chartColours"
+                :key="family.id"
+                class="grid grid-cols-[5rem_repeat(7,minmax(0,1fr))] items-center gap-1"
+              >
+                <code class="font-semibold">{{ family.id }}</code>
+                <span
+                  v-for="shade in family.shades"
+                  :key="shade.id"
+                  class="flex h-10 items-end p-1 text-small"
+                  :class="[
+                    shade.id >= '500' ? 'text-white' : 'text-ink',
+                    { 'outline-2 outline-offset-2 outline-ink': shade.isMain },
+                  ]"
+                  :style="{ backgroundColor: shade.hex }"
+                >
+                  {{ shade.id }}
+                </span>
+              </li>
+            </ul>
+          </div>
         </section>
 
         <section id="typography" :class="SECTION">
@@ -427,6 +457,24 @@
           </p>
         </section>
 
+        <section id="charts" :class="SECTION">
+          <h2 class="font-serif text-h2">Charts</h2>
+          <p class="max-w-content">
+            The chart block draws with blökkli's charts module, in the
+            <a href="#chart-colours" class="text-primary underline"
+              >chart colours</a
+            >. Type, axes, legend and tooltip come from
+            <code>components/Chart/transform.ts</code>.
+          </p>
+          <div class="grid gap-x-grid gap-y-10 md:grid-cols-2">
+            <Chart
+              v-for="(chart, index) in CHARTS"
+              :key="index"
+              :data="chart"
+            />
+          </div>
+        </section>
+
         <section id="mockups" :class="SECTION">
           <h2 class="font-serif text-h2">Mockups</h2>
           <ul class="grid gap-grid md:grid-cols-2">
@@ -462,7 +510,10 @@ import {
 } from '#components'
 import { allSymbolNames } from '#nuxt-svg-icon-sprite/runtime'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
+import type { BlokkliChartData } from '#blokkli/charts/types'
+import Chart from '~/components/Chart/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
+import { CHART_COLORS } from '#shared/chartColors'
 import { LANGUAGES, isLanguage } from '#shared/languages'
 
 // The design system of the demo: the tokens from main.css and the shared
@@ -487,7 +538,86 @@ const SECTIONS = [
   { id: 'layout', label: 'Layout' },
   { id: 'icons', label: 'Icons' },
   { id: 'components', label: 'Components' },
+  { id: 'charts', label: 'Charts' },
   { id: 'mockups', label: 'Mockups' },
+]
+
+// The chart colours, with each family's shades.
+const chartColours = Object.entries(CHART_COLORS).map(([id, family]) => ({
+  id,
+  shades: Object.entries(family.shades).map(([shade, hex]) => ({
+    id: shade,
+    hex,
+    isMain: shade === family.mainShade,
+  })),
+}))
+
+// One chart of each common kind, with made-up data.
+const CHARTS: BlokkliChartData[] = [
+  {
+    type: 'bar',
+    title: 'Visitors to the lakeside pool',
+    valueAxisTitle: 'Visitors',
+    categories: ['May', 'June', 'July', 'August', 'September'],
+    series: [
+      { name: '2024', color: 'lake', data: [3120, 8940, 15210, 13870, 4010] },
+      { name: '2025', color: 'ochre', data: [3480, 10230, 16940, 12650, 4390] },
+    ],
+    categoryColors: [],
+    footnotes: [],
+    numberFormat: { locale: 'de-CH' },
+  },
+  {
+    type: 'line',
+    title: 'Water use per resident',
+    valueAxisTitle: 'Litres per day',
+    categories: [
+      '2018',
+      '2019',
+      '2020',
+      '2021',
+      '2022',
+      '2023',
+      '2024',
+      '2025',
+    ],
+    series: [
+      {
+        name: 'Water use',
+        color: 'lake',
+        data: [166, 161, 172, 163, 158, 156, 151, 149],
+      },
+    ],
+    categoryColors: [],
+    footnotes: ['2020: more time at home during the pandemic.'],
+  },
+  {
+    type: 'donut',
+    title: 'The way to work',
+    categories: ['Public transport', 'Car', 'Bike', 'On foot', 'Other'],
+    series: [{ name: 'Share', color: 'lake', data: [34, 31, 18, 12, 5] }],
+    categoryColors: ['lake', 'ochre', 'forest', 'plum', 'stone'],
+    footnotes: [],
+    numberFormat: { suffix: ' %' },
+    typeOptions: { showLabels: true },
+  },
+  {
+    type: 'bar',
+    title: 'Turnout in 2025',
+    categories: [
+      'Federal vote, February',
+      'Federal vote, June',
+      'Municipal elections',
+      'Federal vote, September',
+    ],
+    series: [
+      { name: 'Turnout', color: 'forest', data: [52.4, 47.1, 38.6, 49.8] },
+    ],
+    categoryColors: [],
+    footnotes: ['Share of the registered voters.'],
+    numberFormat: { suffix: ' %', decimals: 1 },
+    typeOptions: { horizontal: true, dataLabels: true },
+  },
 ]
 
 const MOCKUPS = [

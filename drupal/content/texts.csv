@@ -5,6 +5,7 @@ callout.error;default;Error;Fehler;Erreur
 callout.info;default;Information;Information;Information
 callout.success;default;Success;Erfolg;Succès
 callout.warning;default;Warning;Warnung;Avertissement
+chart.empty;default;No data yet: edit the chart to add some.;Noch keine Daten: Bearbeiten Sie das Diagramm, um welche zu erfassen.;Pas encore de données : modifiez le graphique pour en saisir.
 contact.label;default;Contact;Kontakt;Contact
 contact.unavailable;default;The office of this contact isn't available.;Das Amt dieses Kontakts ist nicht verfügbar.;Le service de ce contact n'est pas disponible.
 downloads.label;default;Downloads;Downloads;Téléchargements
