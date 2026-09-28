@@ -368,8 +368,14 @@ full workflow: `CONTRIBUTING.md`. Design and status: `plans/drupal-setup/`.
 - **The submodule is a separate repository.** Never commit or push in it without
   being asked, and never run `git submodule update` (it detaches the working
   branch). ddev commands run inside it target the module's own ddev project.
+- **Content is code:** `drupal/content` (YAML, see its README). `ddev bake`
+  installs the site from config and seeds it (`--source=de` makes German the
+  original language); it replaces the database. `ddev reset [de]` restores the
+  last bake in a moment: use it after testing in the editor. Content changed in
+  the editor isn't exported; change the files and bake.
 - After nginx changes (`.ddev/nginx_full/`), run `ddev check-routes`.
-- Log in with a one-time link: `ddev drush uli /en/node/1`.
+- Log in with a one-time link: `ddev drush uli /en/node/1` (the admin), or
+  `ddev drush uli --name="Anna Keller"` for a test user (13h's roles).
 
 ## Working with the Codebase
 

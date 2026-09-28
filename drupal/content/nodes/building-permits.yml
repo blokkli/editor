@@ -1,0 +1,90 @@
+key: building-permits
+type: page
+title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
+field_lead:
+  en: When you need a permit, and how to apply for one.
+  de: Wann es eine Bewilligung braucht und wie Sie sie beantragen.
+  fr: Quand il faut un permis, et comment le demander.
+field_office: { node: town-hall }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>Most buildings, extensions and conversions need a permit. Apply before you start: work without a permit can be stopped.</p>'
+      de: '<p>Die meisten Bauten, Anbauten und Umbauten brauchen eine Bewilligung. Reichen Sie das Gesuch vor Baubeginn ein: Arbeiten ohne Bewilligung können gestoppt werden.</p>'
+      fr: '<p>La plupart des constructions, agrandissements et transformations nécessitent un permis. Déposez la demande avant le début des travaux : des travaux sans permis peuvent être arrêtés.</p>'
+  - type: section
+    options: { background: stone, columns: 2 }
+    field_title: { en: Applying, de: Gesuch einreichen, fr: Déposer une demande }
+    field_paragraphs:
+      - type: text
+        key: counter-text
+        field_text:
+          en: '<p>Hand in the application form with the plans at the counter of the building office, or send it by post.</p>'
+          de: '<p>Geben Sie das Gesuchsformular mit den Plänen am Schalter des Bauamts ab, oder senden Sie es per Post.</p>'
+          fr: '<p>Remettez le formulaire de demande avec les plans au guichet du service des constructions, ou envoyez-le par la poste.</p>'
+      - type: table
+        options: { striped: true }
+        field_table:
+          en: '<table><thead><tr><th>Project</th><th>Fee</th></tr></thead><tbody><tr><td>Garden shed</td><td>CHF 150</td></tr><tr><td>Extension</td><td>CHF 800</td></tr><tr><td>New house</td><td>CHF 2,500</td></tr></tbody></table>'
+          de: '<table><thead><tr><th>Vorhaben</th><th>Gebühr</th></tr></thead><tbody><tr><td>Gartenhaus</td><td>CHF 150</td></tr><tr><td>Anbau</td><td>CHF 800</td></tr><tr><td>Neubau</td><td>CHF 2500</td></tr></tbody></table>'
+          fr: '<table><thead><tr><th>Projet</th><th>Émolument</th></tr></thead><tbody><tr><td>Cabanon de jardin</td><td>CHF 150</td></tr><tr><td>Agrandissement</td><td>CHF 800</td></tr><tr><td>Maison neuve</td><td>CHF 2500</td></tr></tbody></table>'
+  - type: title
+    field_title:
+      en: Frequently asked questions
+      de: Häufige Fragen
+      fr: Questions fréquentes
+  - type: accordion
+    field_title:
+      en: Do I need a permit for a garden shed?
+      de: Braucht ein Gartenhaus eine Bewilligung?
+      fr: Un cabanon de jardin nécessite-t-il un permis ?
+    field_paragraphs:
+      - type: text
+        field_text:
+          en: '<p>Yes, from a floor area of 10 m². Smaller sheds only need to be reported.</p>'
+          de: '<p>Ja, ab einer Grundfläche von 10 m². Kleinere Gartenhäuser müssen nur gemeldet werden.</p>'
+          fr: '<p>Oui, dès une surface de 10 m². Les cabanons plus petits doivent seulement être annoncés.</p>'
+      - type: columns
+        options: { ratio: 66-33 }
+        field_left:
+          - type: text
+            field_text:
+              en: '<p>Mark the shed on the site plan, with its distance to the neighbouring plots.</p>'
+              de: '<p>Zeichnen Sie das Gartenhaus im Situationsplan ein, mit dem Abstand zu den Nachbargrundstücken.</p>'
+              fr: '<p>Indiquez le cabanon sur le plan de situation, avec sa distance aux parcelles voisines.</p>'
+        field_right:
+          - type: image
+            field_media: { media: meadow }
+            field_caption: { en: A garden by the lake, de: Ein Garten am See, fr: Un jardin au bord du lac }
+  - type: gallery
+    options: { display: slider, width: wide }
+    field_paragraphs:
+      - type: image
+        field_media: { media: lake }
+        field_caption: { en: The lakeshore, de: Das Seeufer, fr: La rive du lac }
+      - type: image
+        field_media: { media: stone }
+        field_caption: { en: The old town, de: Die Altstadt, fr: La vieille ville }
+  - type: image
+    options: { width: full }
+    field_media: { media: stone }
+  - type: video
+    field_video: { media: big-buck-bunny }
+  - type: from_library
+    field_reusable_paragraph: { library: counter-hours }
+  - type: button
+    options: { style: primary }
+    field_link: { node: town-hall }
+    field_title:
+      en: Contact the building office
+      de: Bauamt kontaktieren
+      fr: Contacter le service des constructions
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact
+  - type: downloads
+    field_documents: [{ media: permit-form }]
+  - type: button
+    options: { style: secondary }
+    field_link: { node: administration }
+    field_title: { en: All services, de: Alle Dienstleistungen, fr: Toutes les prestations }

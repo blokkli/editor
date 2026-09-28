@@ -1,0 +1,14 @@
+# The main menu. Pages and editorial pages get their URL from their place in
+# it (pathauto).
+main:
+  - key: administration
+    title: { en: Administration, de: Verwaltung, fr: Administration }
+    link: { node: administration }
+    children:
+      - key: building-permits
+        title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
+        description:
+          en: When you need a permit, and how to apply for one.
+          de: Wann es eine Bewilligung braucht und wie Sie sie beantragen.
+          fr: Quand il faut un permis, et comment le demander.
+        link: { node: building-permits }

@@ -13,5 +13,5 @@ third_party_settings:
 id: blokkli_paragraph_template.blokkli_paragraph_template
 target_entity_type_id: blokkli_paragraph_template
 target_bundle: blokkli_paragraph_template
-default_langcode: site_default
+default_langcode: current_interface
 language_alterable: false

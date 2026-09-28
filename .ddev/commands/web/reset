@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+## Description: Restore the Drupal site from a template written by "ddev bake"
+## Usage: reset [en|de|fr]
+## Example: "ddev reset" or "ddev reset de"
+
+set -euo pipefail
+
+source="${1:-en}"
+cd /var/www/html/drupal
+files=web/sites/default/files
+template="sandboxes/_template/$source"
+
+if [ ! -f "$template/db.sqlite" ]; then
+  echo "There's no template for '$source': run ddev bake --source=$source" >&2
+  exit 1
+fi
+
+start=$(date +%s%N)
+rm -f db/site.sqlite db/site.sqlite-wal db/site.sqlite-shm
+cp --reflink=auto "$template/db.sqlite" db/site.sqlite
+rm -rf "$files/media" "$files/media-icons" "$files/styles"
+cp -a --reflink=auto "$template/files/." "$files/"
+
+echo "Restored the site from $template in $((($(date +%s%N) - start) / 1000000)) ms."

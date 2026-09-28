@@ -52,7 +52,8 @@ paragraph types and bundles get added that end up wrong for it.
 
 - A small town on the German–French language border, by a lake, about 15,000
   inhabitants. German and French are its languages; English is for international
-  readers (and the source language of the site).
+  readers (and the source language of the site). Since chunk 05, a bake can make
+  German or French the content's source language instead.
 - **Blockingen / Bloquens**, a bilingual name like Biel/Bienne (see "The name").
 - Invented coat of arms, people and addresses. Photos show no recognisable real
   landmarks or place names.

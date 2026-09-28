@@ -1,0 +1,44 @@
+# Templates aren't translated (content translation is off for them): they're
+# created in the source language only.
+- key: service-page
+  label: { en: Service page, de: Dienstleistungsseite, fr: Page de prestation }
+  description:
+    en: A title, an introduction and questions with answers.
+    de: Ein Titel, eine Einleitung und Fragen mit Antworten.
+    fr: Un titre, une introduction et des questions avec leurs réponses.
+  paragraphs:
+    - type: title
+      field_title: { en: What you need, de: Was Sie brauchen, fr: Ce qu'il vous faut }
+    - type: text
+      field_text:
+        en: '<p>Describe the service in two or three sentences.</p>'
+        de: '<p>Beschreiben Sie die Dienstleistung in zwei, drei Sätzen.</p>'
+        fr: '<p>Décrivez la prestation en deux ou trois phrases.</p>'
+    - type: accordion
+      field_title: { en: A frequent question, de: Eine häufige Frage, fr: Une question fréquente }
+      field_paragraphs:
+        - type: text
+          field_text:
+            en: '<p>And its answer.</p>'
+            de: '<p>Und ihre Antwort.</p>'
+            fr: '<p>Et sa réponse.</p>'
+
+# Added when an editor adds two columns.
+- key: columns
+  label: { en: Two columns, de: Zwei Spalten, fr: Deux colonnes }
+  is_default: true
+  paragraphs:
+    - type: columns
+      options: { ratio: 50-50 }
+      field_left:
+        - type: text
+          field_text:
+            en: '<p>The left column.</p>'
+            de: '<p>Die linke Spalte.</p>'
+            fr: '<p>La colonne de gauche.</p>'
+      field_right:
+        - type: text
+          field_text:
+            en: '<p>The right column.</p>'
+            de: '<p>Die rechte Spalte.</p>'
+            fr: '<p>La colonne de droite.</p>'

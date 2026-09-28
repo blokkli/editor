@@ -1,0 +1,11 @@
+# Comment threads on paragraphs. The comment module notifies the mentioned
+# users, as in the editor.
+- key: counter-question
+  host: { node: building-permits }
+  paragraphs: [counter-text]
+  uid: { user: anna }
+  body: '<p>@{marc} Are the counter hours still right? I would like to publish the page.</p>'
+  replies:
+    - key: counter-answer
+      uid: { user: marc }
+      body: '<p>Yes, they are. Go ahead.</p>'

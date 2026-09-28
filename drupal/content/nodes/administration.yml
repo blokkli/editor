@@ -1,0 +1,50 @@
+key: administration
+type: editorial
+title: { en: Administration, de: Verwaltung, fr: Administration }
+field_lead:
+  en: 'Offices, permits and fees: what the administration does for you.'
+  de: 'Ämter, Bewilligungen und Gebühren: was die Verwaltung für Sie tut.'
+  fr: 'Services, autorisations et taxes : ce que l''administration fait pour vous.'
+field_hero_image: { media: stone }
+field_host_options:
+  - { key: header, value: overlay }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The town administration serves about 15,000 residents in German and in French.</p>'
+      de: '<p>Die Gemeindeverwaltung ist für rund 15 000 Einwohnerinnen und Einwohner da, auf Deutsch und auf Französisch.</p>'
+      fr: '<p>L''administration communale est au service d''environ 15 000 habitantes et habitants, en allemand et en français.</p>'
+  - type: chart
+    options:
+      width: wide
+      data:
+        type: bar
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH }
+        typeOptions: { stacked: true }
+        dataSource: { id: population, label: 'Population by nationality, 2016–2025' }
+        translations:
+          en:
+            title: Population by nationality
+            valueAxisTitle: Residents
+            footnotes: [Permanent residents at the end of the year.]
+          de:
+            title: Bevölkerung nach Nationalität
+            valueAxisTitle: Einwohnerinnen und Einwohner
+            footnotes: [Ständige Wohnbevölkerung am Jahresende.]
+          fr:
+            title: Population par nationalité
+            valueAxisTitle: Habitants
+            footnotes: ['Population résidante permanente en fin d''année.']
+  - type: embed
+    options:
+      width: wide
+      # Measured at the narrowest width of each range, in the longest language.
+      heights: { 375: 1420, 768: 1320, 1440: 800 }
+    field_link: /embed/fee-calculator
+    field_title: { en: Fee calculator, de: Gebührenrechner, fr: Calculateur de taxes }
+  - type: teaser
+    options: { display: list }
+    field_node: { node: building-permits }

@@ -65,3 +65,17 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
 - **Client IPs:** the per-IP claim rate limit and flood control rely on the
   client IP. Drupal trusts `PRIVATE_SUBNETS` as proxies and gets the real IP
   from `X-Forwarded-For`, which the router sets.
+
+From [chunk 05](05-seed-bake-reset.md) (2026-09-28):
+
+- **A template per source language:** `ddev bake --source=de` bakes the content
+  with German as its original, and EN and FR as translations. Decide which
+  templates sandboxes offer, and how a visitor gets theirs (a choice on the
+  claim page, or the browser's language).
+- **Open the sandbox in its source language.** The frontend's `/` redirects to
+  `/en` whatever the template.
+- **The seeded users** (13h): Anna Keller (editor), Marc Brunner (head of
+  department, reviews), Élodie Favre (French translator), Jonas Weber
+  (restricted editor). The seeded comment thread mentions Marc, so he has a
+  notification. Dates are relative to the bake: rebake often, or shift them on
+  claim.

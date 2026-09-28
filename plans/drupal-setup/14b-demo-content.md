@@ -17,7 +17,9 @@ adds types.
 
 ## Tasks
 
-- [ ] The content from 14a's concept, in EN with DE and FR translations:
+- [ ] The content from 14a's concept, in `drupal/content` (chunk 05's format,
+      replacing its placeholders), with every text in EN, DE and FR so that any
+      of them can be the source language (`ddev bake --source=de`):
   - [ ] about 20 pages, 6 offices, 6 news items and 10 events (14a's page list);
         the lighter ones can be trimmed
   - [ ] the landing page "The lakeside pool" at its best, with the planted

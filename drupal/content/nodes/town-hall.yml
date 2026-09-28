@@ -1,0 +1,36 @@
+key: town-hall
+type: office
+title: { en: Town hall, de: Rathaus, fr: Hôtel de ville }
+field_lead:
+  en: 'The town administration: registrations, permits and certificates.'
+  de: 'Die Gemeindeverwaltung: Anmeldungen, Bewilligungen und Bescheinigungen.'
+  fr: 'L''administration communale : annonces, autorisations et attestations.'
+field_address:
+  en: "Seestrasse 1 / Rue du Lac 1\n9999 Blockingen"
+  de: "Seestrasse 1\n9999 Blockingen"
+  fr: "Rue du Lac 1\n9999 Bloquens"
+field_phone: '+41 32 555 01 00'
+field_email: info@blockingen.example
+field_hero_image: { media: stone }
+# Monday to Friday with a lunch break, Thursday until 18:30. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 800, endhours: 1200 }
+  - { day: 1, starthours: 1330, endhours: 1700 }
+  - { day: 2, starthours: 800, endhours: 1200 }
+  - { day: 2, starthours: 1330, endhours: 1700 }
+  - { day: 3, starthours: 800, endhours: 1200 }
+  - { day: 3, starthours: 1330, endhours: 1700 }
+  - { day: 4, starthours: 800, endhours: 1200 }
+  - { day: 4, starthours: 1330, endhours: 1830 }
+  - { day: 5, starthours: 800, endhours: 1200 }
+  - { day: 5, starthours: 1330, endhours: 1700 }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>Please bring an identity card for all registrations.</p>'
+      de: '<p>Bitte bringen Sie für alle Anmeldungen einen Ausweis mit.</p>'
+      fr: '<p>Pour toutes les annonces, veuillez vous munir d''une pièce d''identité.</p>'
+  - type: button
+    options: { style: secondary }
+    field_link: { node: building-permits }
+    field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+## Description: Install the Drupal site from config, seed its content and write a template for "ddev reset"
+## Usage: bake [--source=en|de|fr]
+## Example: "ddev bake" or "ddev bake --source=de"
+
+# Replaces the site's database and media files. --source is the original
+# language of the seeded content (drupal/content); the others are translations.
+# The template goes to drupal/sandboxes/_template/<source>.
+
+set -euo pipefail
+
+source=en
+for argument in "$@"; do
+  case "$argument" in
+    --source=en | --source=de | --source=fr) source="${argument#--source=}" ;;
+    *)
+      echo "Usage: ddev bake [--source=en|de|fr]" >&2
+      exit 1
+      ;;
+  esac
+done
+
+cd /var/www/html/drupal
+files=web/sites/default/files
+template="$PWD/sandboxes/_template/$source"
+start=$(date +%s)
+
+rm -f db/site.sqlite db/site.sqlite-wal db/site.sqlite-shm
+rm -rf "$files/media" "$files/media-icons" "$files/styles"
+# Also imports the interface translations: drupal.org's (downloaded once into
+# files/translations) and blokkli_playground's.
+drush site:install --existing-config --yes
+drush blokkli-playground:seed --source="$source"
+drush cache:rebuild
+drush blokkli-playground:template "$template"
+
+rm -rf "$template/files"
+mkdir -p "$template/files"
+cp -a "$files/media" "$files/media-icons" "$files/styles" "$template/files/"
+
+echo "Baked $template in $(($(date +%s) - start)) s ($(du -sh "$template" | cut -f1))."

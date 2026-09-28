@@ -43,7 +43,7 @@ and tracks its own status. The [index](#chunks) mirrors those statuses.
 | `paragraphs_blokkli` | Git submodule of the drupal.org repository (branch 2.0.x), symlinked in through a Composer path repository. Each blökkli branch pins the module commit it works with.                                                                                                                                                                                                                                                                                                                          |
 | Database             | SQLite, one file per sandbox. Confirmed by the [spike](01-sqlite-spike.md) on 2026-09-26, with `synchronous=NORMAL` and the memory backend for the entity cache bin.                                                                                                                                                                                                                                                                                                                           |
 | Isolation            | Each sandbox gets its own database, files directory, subdomain and hash salt. Code is shared.                                                                                                                                                                                                                                                                                                                                                                                                  |
-| Languages            | EN (default and source language), DE, FR. Every language has a URL prefix (`/en`, `/de`, `/fr`), as in the starterkit (2026-09-26, chunk 03).                                                                                                                                                                                                                                                                                                                                                  |
+| Languages            | EN (Drupal's default language), DE, FR. Every language has a URL prefix (`/en`, `/de`, `/fr`), as in the starterkit (2026-09-26, chunk 03). The content's source language is chosen per bake (`ddev bake --source=de`); EN stays Drupal's default (the user, 2026-09-28, chunk 05).                                                                                                                                                                                                            |
 | Sandbox lifetime     | Normal: 24h maximum, deleted after 2h idle. Premium: 7 days.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Paid features        | The agent is only available in premium sandboxes, which are created by invitation. Costs are capped by a spend limit on a dedicated provider key, with no budget logic in the app. DeepL costs are not a concern.                                                                                                                                                                                                                                                                              |
 | Visibility           | Anonymous users don't get `access content`. Pages are visible to the sandbox's own users, or through the session grant from "preview on smartphone". For anonymous visitors, that grant needs code (chunk 10, F22; 2026-09-27).                                                                                                                                                                                                                                                                |
@@ -131,7 +131,7 @@ Milestones:
 | 02  | [ddev and repo layout](02-ddev-and-repo-layout.md)                                                  | M1        | done        | 01                                |
 | 03  | [Drupal base site](03-drupal-base-site.md)                                                          | M1        | done        | 02                                |
 | 04  | [Base content model](04-base-content-model.md)                                                      | M1        | done        | 03                                |
-| 05  | [Seed, bake, reset](05-seed-bake-reset.md)                                                          | M1        | todo        | 13a–13i                           |
+| 05  | [Seed, bake, reset](05-seed-bake-reset.md)                                                          | M1        | done        | 13a–13i                           |
 | 06  | [playground-drupal app](06-playground-drupal-app.md)                                                | M1        | done        | 03, 04; grows with 13             |
 | 07  | [Dev workflow integration](07-dev-workflow-integration.md)                                          | M1        | done        | 06                                |
 | 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | todo        | 05                                |
@@ -161,10 +161,10 @@ Milestones:
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 13a–13h, 14a, 15a, 15b, 15c and 15e
-are done. 13i is in progress: the table of contents, the charts, the analyzer
-and the embed are done; the agent is postponed. 15d waits for the review of its
-hero image.
+(order, skill conventions, feature matrix). 05, 13a–13h, 14a, 15a, 15b, 15c and
+15e are done: `ddev bake` seeds the content from `drupal/content`. 13i is in
+progress: the table of contents, the charts, the analyzer and the embed are
+done; the agent is postponed. 15d waits for the review of its hero image.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

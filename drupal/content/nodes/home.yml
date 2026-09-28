@@ -1,0 +1,28 @@
+# The front page: system.site.page.front is /node/1.
+key: home
+id: 1
+type: editorial
+title:
+  en: Welcome to Blockingen
+  de: Willkommen in Blockingen
+  fr: Bienvenue à Bloquens
+field_lead:
+  en: The town by the lake, in two languages.
+  de: Die Gemeinde am See, in zwei Sprachen.
+  fr: La commune au bord du lac, en deux langues.
+field_hero_image: { media: lake }
+field_host_options:
+  - { key: header, value: image }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>Blockingen and Bloquens are one town with two names: German and French are spoken here, and the lake belongs to everyone.</p>'
+      de: '<p>Blockingen und Bloquens sind eine Gemeinde mit zwei Namen: Hier spricht man Deutsch und Französisch, und der See gehört allen.</p>'
+      fr: '<p>Blockingen et Bloquens sont une seule commune avec deux noms : on y parle allemand et français, et le lac appartient à tout le monde.</p>'
+  - type: teaser
+    options: { display: card }
+    field_node: { node: pool-opening }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: latest_news
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: upcoming_events

@@ -1,6 +1,6 @@
 # 05: Seed, bake, reset
 
-- **Status:** todo
+- **Status:** done
 - **Milestone:** M1 Local dev site
 - **Depends on:** 13a–13i
 
@@ -8,44 +8,42 @@
 
 Deterministic content and users, and a baked template (database plus files) to
 build every sandbox from. The dev site can be reset from the template in
-seconds.
+seconds. The content's original language can be chosen per bake (the user,
+2026-09-28).
 
 ## Tasks
 
-- [ ] Write declarative content in `drupal/content/` (YAML). Until
+- [x] Write declarative content in `drupal/content/` (YAML). Until
       [chunk 14b](14b-demo-content.md), the pages are placeholders built from
       the base paragraphs of [chunk 04](04-base-content-model.md):
-  - [ ] pages as paragraph trees, with field values per language
-  - [ ] EN source content with DE and FR translations; some translations
+  - [x] pages as paragraph trees, with field values per language
+  - [x] EN, DE and FR, any of them the source language; one translation
         deliberately outdated
-  - [ ] media files in `drupal/content/files/`
-  - [ ] library items, templates, a few comments
-  - [ ] dates relative to the bake (e.g. an event "in 12 days, 19:30"), so
+  - [x] media files in `drupal/content/files/`
+  - [x] library items, templates, a few comments
+  - [x] dates relative to the bake (e.g. an event "in 12 days, 19:30"), so
         events, news and scheduled items never go stale (14a)
-- [ ] Drush command `blokkli-playground:seed` in `blokkli_playground` that reads
+- [x] Drush command `blokkli-playground:seed` in `blokkli_playground` that reads
       the content files. The starterkit's `BlokkliImportCommands.php` hardcodes
       its content as PHP arrays in 1,348 lines. Reuse its entity-creation logic,
       not its data format.
-- [ ] Seeded users for 14a's roles (13h): admin, a department editor, the head
+- [x] Seeded users for 14a's roles (13h): admin, a department editor, the head
       of the department as reviewer, a French translator, a restricted editor.
       Sandboxes have no known passwords (login via token, chunk 09); locally use
-      `drush uli` and masquerade. 13h's test users: Anna Keller
-      (`content_editor`, EN), Marc Brunner (`reviewer`, DE), Élodie Favre
-      (`translator`, FR), Jonas Weber (`restricted_editor`, DE), with their
-      preferred languages (`tmp/13h-users.php`).
-- [ ] `blokkli-playground:bake`:
+      `drush uli --name=…`.
+- [x] Bake (`ddev bake`, with the drush command `blokkli-playground:template`):
   1. install from config
   2. seed
   3. generate image style derivatives
-  4. warm the container, config, discovery, router and GraphQL schema caches
+  4. warm the container, router and GraphQL schema caches
   5. clear the render, page and dynamic page caches, which can contain the
      template's hostname
   6. write the template (SQLite file plus files) to
-     `drupal/sandboxes/_template/`
-- [ ] `ddev bake` and `ddev reset`. `reset` restores the dev site from the
+     `drupal/sandboxes/_template/<source language>/`
+- [x] `ddev bake` and `ddev reset`. `reset` restores the dev site from the
       template.
-- [ ] Record bake time and template size under Notes.
-- [ ] Update the setup steps in `CONTRIBUTING.md` and CLAUDE.md's Drupal Dev
+- [x] Record bake time and template size under Notes.
+- [x] Update the setup steps in `CONTRIBUTING.md` and CLAUDE.md's Drupal Dev
       Environment section for `ddev bake` and `ddev reset`.
 
 ## Acceptance criteria
@@ -54,6 +52,102 @@ seconds.
 - `ddev reset` restores the dev site in a few seconds.
 - The seeded content renders in all three languages, and every seeded user can
   log in locally.
+
+## Content in code, a source language per bake (2026-09-28)
+
+The user: the content is written in code (reproducible, clear intent), and the
+source language of the created entities can be chosen. The audience is Swiss and
+would rather have their own language as the original than English.
+
+Decisions (the user):
+
+- **Drupal's default language stays EN.** blökkli and paragraphs_blokkli use
+  each entity's own original language, and every URL has a language prefix, so
+  only the content's language varies. Changing Drupal's default is costly: it's
+  read from the raw config into the container (a settings.php override doesn't
+  work), and the locale module then rewrites the language of all config that
+  modules ship (drift from config/sync).
+  - New content gets the language it's created in:
+    `default_langcode: current_interface` (was `site_default`) for the node,
+    media, menu link, library item and template bundles.
+  - The UI texts stay EN-based, like the defaults in the code.
+- **Minimal placeholders:** one entity per host type and every paragraph type
+  once, complete in EN, DE and FR. 14b replaces them in the same format.
+- **One template per bake, EN by default:** `ddev bake [--source=de]`,
+  `ddev reset [de]`. Chunk 09 decides which templates sandboxes offer.
+
+As built:
+
+- **The format** (`drupal/content/README.md`): YAML, one file per entity type
+  and one per node. Language maps (`{ en: …, de: …, fr: … }`) on translatable
+  fields, references by key (`{ node: town-hall }`), relative dates, paragraphs
+  nested as lists, options as maps (JSON for the chart and the embed). An entity
+  gets a translation in every language of its maps. Our own format, not core's
+  default content (`Drupal\Core\DefaultContent\Importer`, 11.4.7): that one is
+  `@internal`, can't change an entity's original language (its `_meta` is
+  readonly in the events) and can't export paragraphs.
+- **`blokkli_playground`:** `Seed/Seeder.php` (with `Item`, `Ref`,
+  `SeedException`) and `Drush/Commands/SeedCommands.php`
+  (`blokkli-playground:seed [--source] [--content]`,
+  `blokkli-playground:template <directory>`).
+  - Every file is read and checked first (unknown fields, language maps on
+    untranslatable fields, missing source values, unknown references, keys);
+    then everything is created in one transaction, each entity validated. A
+    problem in either step creates nothing.
+  - Deterministic: UUIDs are version 5, from the keys; node IDs are the files'
+    `id` or the next free one in file order; the home page has `id: 1`, and
+    `system.site.page.front` is now `/node/1` (was `/node/16`). Two bakes gave
+    the same IDs, UUIDs and languages.
+  - Paragraph translations are added per paragraph (the reference field
+    doesn't); `content_translation_source` and `_outdated` are set.
+  - The chart keeps its texts in the host's source language: the files give
+    every language in `translations`, and the seed moves the source's into the
+    chart.
+  - Comments are created as entities; the comment module notifies the mentioned
+    users, as in the editor.
+  - The UI texts are created from `texts.csv` directly, without the frontend's
+    `loadTexts` query first (13f's workaround).
+- **`ddev bake`** (`.ddev/commands/web/bake`): deletes the database and the
+  `media`, `media-icons` and `styles` files, `drush si --existing-config` (which
+  also imports the interface translations: `locale:update` isn't needed), seed,
+  `drush cr`, `blokkli-playground:template`, then copies the files into the
+  template. **`ddev reset`** copies them back.
+- **Config:** the user form display hides `path`. Every install added it
+  (neither shown nor hidden in the config), so `config:status` wasn't clean
+  after an install.
+- **Content:** 6 nodes (home, administration, building permits, town hall, a
+  news item with an outdated French translation, an event), 6 media (generated
+  placeholder images, a PDF, a remote video), a library item, 2 templates,
+  footer and site, the main menu, the 4 test users of 13h, a comment thread, the
+  81 UI texts.
+- **Not changed:** the templates' route stays without a language. Reading the
+  code suggested that a German template edited there would get an English
+  translation; with a DE bake, editing it changed its German source (templates
+  aren't translatable).
+
+Numbers (local, ddev on btrfs):
+
+- Bake: 10–18 s (EN and DE), template 18 MB (database 17.7 MB after
+  `VACUUM INTO`, 36 image style derivatives).
+- Reset: 8–17 ms. The first request afterwards: 0.12 s.
+
+Verification:
+
+- Two EN bakes: the seeded entities' IDs, UUIDs and languages are identical;
+  only the installer's (anonymous, admin, the media icons) differ.
+  `drush config:status` is clean after each bake.
+- `ddev bake --source=de`: every seeded entity's original is German, EN and FR
+  are translations, the news item's FR translation is outdated, the chart's
+  texts are German with EN and FR translations. In the editor, the building
+  permits page is in edit mode in German and in translation mode in English and
+  French.
+- A broken copy of the content (an unknown field, an unknown node, a missing
+  source value, a map on an untranslatable field) reported all four and created
+  nothing; an invalid email address, found while creating, rolled everything
+  back.
+- The 18 pages (6 nodes × 3 languages) return 200 without console errors. The
+  test users log in; Anna edits, Marc sees the page read-only with her mention,
+  Anna has Marc's reply; the template page opens.
 
 ## Notes
 

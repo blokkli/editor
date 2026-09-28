@@ -63,3 +63,13 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   one), and the salt is what protects login links for seeded users.
 - **Trusted hosts** come from `DDEV_HOSTNAME` (comma-separated). A wildcard
   hostname needs its own pattern, not `preg_quote`.
+
+From [chunk 05](05-seed-bake-reset.md) (2026-09-28):
+
+- **The template** is `drupal/sandboxes/_template/<source language>/`: the
+  database (`db.sqlite`, written with `VACUUM INTO`, no `-wal`/`-shm`) and
+  `files/` with the public `media`, `media-icons` and `styles` folders, which go
+  into the sandbox's public files. One template per source language
+  (`ddev bake --source=de`).
+- `ddev reset` copies a template over the dev site in 8–17 ms
+  (`cp --reflink=auto`).

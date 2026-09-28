@@ -1,0 +1,11 @@
+- key: counter-hours
+  label:
+    en: Counter opening hours
+    de: Schalteröffnungszeiten
+    fr: Heures d'ouverture des guichets
+  paragraphs:
+    - type: text
+      field_text:
+        en: '<p>Our counters are open Monday to Friday, 8:00 to 12:00 and 13:30 to 17:00, on Thursdays until 18:30.</p>'
+        de: '<p>Unsere Schalter sind von Montag bis Freitag geöffnet, 8.00 bis 12.00 und 13.30 bis 17.00 Uhr, am Donnerstag bis 18.30 Uhr.</p>'
+        fr: '<p>Nos guichets sont ouverts du lundi au vendredi, de 8 h à 12 h et de 13 h 30 à 17 h, le jeudi jusqu''à 18 h 30.</p>'

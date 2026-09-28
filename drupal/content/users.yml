@@ -1,0 +1,33 @@
+# One test user per role (13h). The admin (uid 1) comes from the installation.
+# No passwords: log in with `drush uli --name="Anna Keller"`.
+- key: anna
+  name: Anna Keller
+  mail: anna.keller@example.com
+  roles: [content_editor]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
+- key: marc
+  name: Marc Brunner
+  mail: marc.brunner@example.com
+  roles: [reviewer]
+  preferred_langcode: de
+  preferred_admin_langcode: de
+  status: true
+
+- key: elodie
+  name: Élodie Favre
+  mail: elodie.favre@example.com
+  roles: [translator]
+  preferred_langcode: fr
+  preferred_admin_langcode: fr
+  status: true
+
+- key: jonas
+  name: Jonas Weber
+  mail: jonas.weber@example.com
+  roles: [restricted_editor]
+  preferred_langcode: de
+  preferred_admin_langcode: de
+  status: true

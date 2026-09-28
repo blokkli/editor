@@ -1,0 +1,20 @@
+key: open-air-cinema
+type: event
+title: { en: Open-air cinema, de: Openair-Kino, fr: Cinéma en plein air }
+field_lead:
+  en: Films on the lakeside meadow, every Friday in summer.
+  de: Filme auf der Seewiese, jeden Freitag im Sommer.
+  fr: Des films sur la prairie du lac, tous les vendredis en été.
+field_hero_image: { media: meadow }
+field_date: { value: '+12 days 19:30', end_value: '+12 days 22:00' }
+field_place: { en: Lakeside meadow, de: Seewiese, fr: Prairie du lac }
+field_organiser: { en: Culture commission, de: Kulturkommission, fr: Commission culturelle }
+field_category: culture
+field_price: { en: Free, de: Gratis, fr: Gratuit }
+field_registration: https://www.example.com/open-air-cinema
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>Bring a blanket: the film starts at dusk. If it rains, the screening moves to the school hall.</p>'
+      de: '<p>Bringen Sie eine Decke mit: Der Film beginnt bei Einbruch der Dunkelheit. Bei Regen findet die Vorführung in der Schulaula statt.</p>'
+      fr: '<p>Apportez une couverture : le film commence à la tombée de la nuit. En cas de pluie, la projection a lieu à l''aula de l''école.</p>'

@@ -1,0 +1,30 @@
+key: pool-opening
+type: news
+created: '-3 days'
+# The French text still has last year's opening hours.
+outdated: [fr]
+title:
+  en: The lakeside pool opens on Saturday
+  de: Das Strandbad öffnet am Samstag
+  fr: La piscine du lac ouvre samedi
+field_lead:
+  en: "After the renovation, the pool opens with a new children's area."
+  de: Nach der Sanierung öffnet das Bad mit einem neuen Kinderbereich.
+  fr: Après la rénovation, la piscine ouvre avec un nouvel espace pour les enfants.
+field_hero_image: { media: lake }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The pool is open daily from 9:00 to 20:00, in good weather until 21:00.</p>'
+      de: '<p>Das Bad ist täglich von 9.00 bis 20.00 Uhr geöffnet, bei schönem Wetter bis 21.00 Uhr.</p>'
+      fr: '<p>La piscine est ouverte tous les jours de 10 h à 19 h.</p>'
+  - type: image
+    options: { width: wide }
+    field_media: { media: meadow }
+    field_caption:
+      en: The new children's area
+      de: Der neue Kinderbereich
+      fr: Le nouvel espace pour les enfants
+  - type: contact
+    options: { display: compact }
+    field_office: { node: town-hall }

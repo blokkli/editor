@@ -1,0 +1,60 @@
+# Placeholders until 14b's openly licensed photos.
+- key: lake
+  type: image
+  name: { en: The lake, de: Der See, fr: Le lac }
+  field_media_image:
+    file: images/lake.png
+    alt:
+      en: Placeholder for a photo of the lake
+      de: Platzhalter für ein Foto des Sees
+      fr: Image provisoire pour une photo du lac
+  field_credit: Placeholder
+
+- key: meadow
+  type: image
+  name: { en: The lakeside meadow, de: Die Seewiese, fr: La prairie du lac }
+  field_media_image:
+    file: images/meadow.png
+    alt:
+      en: Placeholder for a photo of the lakeside meadow
+      de: Platzhalter für ein Foto der Seewiese
+      fr: Image provisoire pour une photo de la prairie du lac
+  field_credit: Placeholder
+
+- key: stone
+  type: image
+  name: { en: The old town, de: Die Altstadt, fr: La vieille ville }
+  field_media_image:
+    file: images/stone.png
+    alt:
+      en: Placeholder for a photo of the old town
+      de: Platzhalter für ein Foto der Altstadt
+      fr: Image provisoire pour une photo de la vieille ville
+  field_credit: Placeholder
+
+- key: coat-of-arms
+  type: image
+  name: { en: Coat of arms, de: Wappen, fr: Armoiries }
+  field_media_image:
+    file: images/coat-of-arms.png
+    alt:
+      en: Coat of arms of Blockingen
+      de: Wappen von Blockingen
+      fr: Armoiries de Bloquens
+  field_credit: Placeholder
+
+- key: permit-form
+  type: document
+  name:
+    en: Building permit application
+    de: Baugesuch
+    fr: Demande de permis de construire
+  field_media_document:
+    file: documents/building-permit-application.pdf
+
+# Big Buck Bunny, © Blender Foundation, CC BY 3.0. Seeding it fetches its
+# oEmbed data from YouTube.
+- key: big-buck-bunny
+  type: remote_video
+  name: Big Buck Bunny
+  field_media_oembed_video: https://www.youtube.com/watch?v=aqz-KE-bpKQ

@@ -3,3 +3,5 @@ services:
     class: Drupal\blokkli_playground\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
+  Drupal\blokkli_playground\Seed\Seeder:
+    autowire: true

@@ -39,13 +39,28 @@ bun run dev          # http://localhost:3000
 3. `ddev ssh`, then `bun install`. All bun and node tooling for this stack runs
    in the container. The first install sometimes fails with "Fail extracting
    tarball from @nuxt/devtools" (bun 1.3.14); run it again.
-4. `ddev drush si --existing-config -y` installs the site from
-   `drupal/config/sync`. The first install logs "Couldn't write .htaccess file"
-   for `public://` once, which is harmless. Then
-   `ddev drush locale:check && ddev drush locale:update` imports the German and
-   French interface translations from drupal.org (month names, the admin). They
-   aren't config, so every install needs this step.
-5. `ddev drush uli` prints a login link. Create a page at `/en/node/add/page`.
+4. `ddev bake` installs the site from `drupal/config/sync`, with the German and
+   French interface translations from drupal.org, and seeds the content of
+   `drupal/content`. It takes about 20 seconds. The first install logs "Couldn't
+   write .htaccess file" for `public://` once, which is harmless.
+5. `ddev drush uli` prints a login link for the admin. The test users log in
+   with `ddev drush uli --name="Anna Keller"` (editor), `Marc Brunner` (head of
+   department, reviews), `Élodie Favre` (French translator) and `Jonas Weber`
+   (restricted editor).
+
+### Content
+
+The content is written in YAML in `drupal/content`: pages as paragraph trees,
+with a value per language. Its README describes the format.
+
+- `ddev bake` replaces the site's database and media files. English is the
+  original language of the content; `ddev bake --source=de` (or `fr`) makes
+  German the original and English and French its translations.
+- Each bake writes a template to `drupal/sandboxes/_template/<language>`.
+  `ddev reset` (or `ddev reset de`) restores the site from it in a moment, e.g.
+  after testing something in the editor.
+- To change the content, edit the files and run `ddev bake`. Content created in
+  the editor isn't exported.
 
 Nuxt runs as a ddev daemon and starts on its own once `node_modules` exists.
 Don't run `bun run dev` for it: use
@@ -71,9 +86,11 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 | ----------------------------- | --------------------------------------------------------------- |
 | `drupal/`                     | Composer root. `config/sync` is the config, `web/` the docroot. |
 | `drupal/paragraphs_blokkli/`  | The Drupal module, a git submodule of the drupal.org repo.      |
+| `drupal/content/`             | The content that `ddev bake` seeds.                             |
+| `drupal/sandboxes/`           | Gitignored: the templates for `ddev reset`.                     |
 | `playground-drupal/`          | The Nuxt app.                                                   |
 | `build/drupal-schema.graphql` | The site's GraphQL schema. Generated, never edited by hand.     |
-| `.ddev/`                      | nginx routing, the Nuxt daemon, `ddev nuxt`, `check-routes`.    |
+| `.ddev/`                      | nginx routing, the Nuxt daemon, `ddev nuxt`, `bake`, `reset`.   |
 | `plans/drupal-setup/`         | The plan for this setup and the public sandbox.                 |
 
 ### A feature across both repositories

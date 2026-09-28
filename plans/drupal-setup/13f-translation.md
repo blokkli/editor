@@ -10,7 +10,8 @@
 Editors translate pages in the editor, with DeepL, and see which translations
 are outdated. In Blockingen/Bloquens, German and French are both real languages
 of the town (14a); English is the site's source language. Visitors can switch
-the language.
+the language. Since chunk 05, a bake can make German or French the content's
+source language (`ddev bake --source=de`); EN stays Drupal's default.
 
 ## Tasks
 
@@ -62,7 +63,10 @@ From [13d](13d-reusable-content.md) (2026-09-27):
 - **Library items are translatable.** "Add to library" creates a translation for
   each language of the block, each with the source label. Check the language
   switch on an item's page.
-- **Templates stay in English:** their route has no language.
+- **Templates stay in English:** their route has no language. (Chunk 05,
+  2026-09-28: templates are created in the content's source language. Editing a
+  German template on that route changes its German source: templates aren't
+  translatable.)
 - **The fragments' placeholders** ("No upcoming events") are English.
 - **`locale` is enabled** (13d, for dates formatted by Drupal), with the DE and
   FR interface translations. The date format `day` has a German pattern. Other

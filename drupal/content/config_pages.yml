@@ -1,0 +1,26 @@
+- key: footer
+  type: footer
+  field_paragraphs:
+    - type: text
+      field_text:
+        en: '<p>Blockingen / Bloquens, the town by the lake.</p>'
+        de: '<p>Blockingen / Bloquens, die Gemeinde am See.</p>'
+        fr: '<p>Blockingen / Bloquens, la commune au bord du lac.</p>'
+    - type: contact
+      options: { display: compact }
+      field_office: { node: town-hall }
+    - type: button
+      options: { style: secondary }
+      field_link: { node: town-hall }
+      field_title: { en: Contact, de: Kontakt, fr: Contact }
+
+- key: site
+  type: site
+  field_site_name: { en: Blockingen, de: Blockingen, fr: Bloquens }
+  field_coat_of_arms: { media: coat-of-arms }
+  field_notice:
+    - type: text
+      field_text:
+        en: '<p>The lakeside pool is closed on Mondays for maintenance.</p>'
+        de: '<p>Das Strandbad ist montags wegen Unterhaltsarbeiten geschlossen.</p>'
+        fr: '<p>La piscine du lac est fermée le lundi pour l''entretien.</p>'
