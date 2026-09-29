@@ -14,9 +14,7 @@
       >
         {{ isEditing ? title : title || source.title }}
       </h2>
-      <a href="#" class="font-semibold text-primary hover:underline">
-        {{ source.all }} <span aria-hidden="true">→</span>
-      </a>
+      <ArrowLink to="#">{{ source.all }}</ArrowLink>
     </div>
     <div
       v-if="items.length"
@@ -48,6 +46,7 @@ import type {
   NodeTeaserFragment,
   ParagraphTeaserListFragment,
 } from '#graphql-operations'
+import ArrowLink from '~/components/ArrowLink/index.vue'
 import NodeTeaser from '~/components/NodeTeaser/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
 

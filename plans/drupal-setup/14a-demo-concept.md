@@ -60,14 +60,14 @@ paragraph types and bundles get added that end up wrong for it.
 
 ### Content types (hosts)
 
-| Bundle               | Fields                                                                                                      | Paragraph fields                            |
-| -------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `page` (detail page) | title, lead, responsible office (15d)                                                                       | `field_paragraphs`, `field_aside` (sidebar) |
-| `editorial` (15d)    | title, lead, hero image, host options (header variant)                                                      | `field_paragraphs`                          |
-| `news`               | title, lead, image; the date is the publication date                                                        | `field_paragraphs`                          |
-| `event`              | title, lead, image, date range, place, organiser, category (list), price, registration link                 | `field_paragraphs`                          |
-| `office`             | title, lead, image (15e), address, phone, email, opening hours (structured, e.g. the `office_hours` module) | `field_paragraphs`                          |
-| `publication` (15f)  | title, lead, type (list), publication period (date range, date only)                                        | `field_paragraphs`                          |
+| Bundle               | Fields                                                                                                      | Paragraph fields                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `page` (detail page) | title, lead, responsible office (15d)                                                                       | `field_paragraphs`, `field_aside` (sidebar), `field_related` (15g) |
+| `editorial` (15d)    | title, lead, hero image, host options (header variant)                                                      | `field_paragraphs`                                                 |
+| `news`               | title, lead, image; the date is the publication date                                                        | `field_paragraphs`                                                 |
+| `event`              | title, lead, image, date range, place, organiser, category (list), price, registration link                 | `field_paragraphs`                                                 |
+| `office`             | title, lead, image (15e), address, phone, email, opening hours (structured, e.g. the `office_hours` module) | `field_paragraphs`                                                 |
+| `publication` (15f)  | title, lead, type (list), publication period (date range, date only)                                        | `field_paragraphs`                                                 |
 
 - `field_aside` on pages holds contact boxes, related links and downloads, and
   allows only those types. It covers "a host with several paragraph fields"
@@ -96,6 +96,8 @@ paragraph types and bundles get added that end up wrong for it.
     events". The home page's "Today" and frequently searched links are fragments
     that only the home page allows.
   - The home page has its own page component on top of its editorial page.
+- **Changed in [15g](15g-detail-page-parts.md) (the user, 2026-09-29):** a
+  detail page ends with up to three related topics, teasers in `field_related`.
 - Config pages: `footer` (a paragraphs field) and `site` (name, service links, a
   site-wide notice of banners and the home page's frequently searched links, all
   but the name paragraphs fields). Covers 13c. The logo is the frontend's (the
@@ -109,7 +111,7 @@ paragraph types and bundles get added that end up wrong for it.
 | Type          | Fields                                     | Options                                               | From 04        |
 | ------------- | ------------------------------------------ | ----------------------------------------------------- | -------------- |
 | `title`       | title                                      |                                                       | yes            |
-| `text`        | rich text                                  |                                                       | yes            |
+| `text`        | rich text                                  | info box: none, blue, green, yellow, red (15g)        | yes            |
 | `image`       | media, caption                             | width: content, wide, full                            | yes, + caption |
 | `video`       | remote video                               |                                                       | yes, embedded  |
 | `link`        | link (a page, a URL or a document), text   | style: primary, secondary                             | yes (`button`) |
@@ -131,6 +133,7 @@ paragraph types and bundles get added that end up wrong for it.
 | `accordion`            | one item per block: a title, everyday blocks or columns                    |                                                  |
 | `columns`              | two paragraph fields (left, right), everyday blocks                        | ratio: 50/50, 33/66, 66/33                       |
 | `call_to_action` (15f) | a tagline, a title, a text; up to 4 links: one is a button, several a list |                                                  |
+| `steps` (15g)          | numbered steps, each a title and a text                                    |                                                  |
 
 The deepest path is the user's example: section > accordion > columns > text.
 The gallery isn't allowed in columns, which keeps the model at 4 levels.

@@ -1,0 +1,32 @@
+uuid: c42f1855-2a66-4fb8-b73c-59103452ca7a
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+    - scheduler
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: false
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: fieldset
+    publish_enable: true
+    publish_past_date: publish
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: false
+    show_message_after_update: false
+    unpublish_enable: true
+    unpublish_required: false
+    unpublish_revision: false
+id: step
+label: Step
+icon_uuid: null
+icon_default: null
+description: 'One step: a title and a text.'
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

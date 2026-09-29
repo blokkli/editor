@@ -113,18 +113,11 @@
               <li
                 v-for="(step, index) in STEPS"
                 :key="step.title"
-                class="flex gap-5 border-b border-line py-4"
+                class="flex gap-4 border-b border-line py-4"
               >
-                <span
-                  class="flex size-11 shrink-0 items-center justify-center font-serif text-h3 font-semibold"
-                  :class="
-                    index === STEPS.length - 1
-                      ? 'bg-primary-light text-primary-dark'
-                      : 'bg-primary text-white'
-                  "
-                >
+                <Tile tone="primary" class="font-serif text-h3 font-semibold">
                   {{ index + 1 }}
-                </span>
+                </Tile>
                 <div class="flex flex-col gap-1">
                   <h3 class="text-h3">{{ step.title }}</h3>
                   <p>{{ step.text }}</p>
@@ -198,13 +191,10 @@
               <li v-for="item in RELATED" :key="item.title">
                 <a href="#" class="group flex flex-col gap-1">
                   <span
-                    class="flex items-center gap-2 font-bold text-primary group-hover:underline"
+                    class="flex items-center gap-2 font-semibold text-primary"
                   >
-                    {{ item.title }}
-                    <SpriteSymbol
-                      name="arrow-right"
-                      class="size-4.5 shrink-0"
-                    />
+                    <span class="group-hover:underline">{{ item.title }}</span>
+                    <SpriteSymbol name="arrow-right" class="size-5 shrink-0" />
                   </span>
                   <span class="text-small text-muted">{{ item.text }}</span>
                 </a>
@@ -225,6 +215,7 @@ import {
   DesignSystemMockup,
   LinkList,
   SpriteSymbol,
+  Tile,
 } from '#components'
 import { isLanguage } from '#shared/languages'
 

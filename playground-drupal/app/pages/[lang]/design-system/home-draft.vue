@@ -72,9 +72,7 @@
           class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
         >
           <h2 class="font-serif text-h2">Aktuelles</h2>
-          <a href="#" class="font-semibold text-primary hover:underline">
-            Alle Meldungen →
-          </a>
+          <ArrowLink to="#">Alle Meldungen</ArrowLink>
         </div>
         <div class="grid gap-x-grid gap-y-10 md:grid-cols-3">
           <a
@@ -123,9 +121,7 @@
             class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
           >
             <h2 class="font-serif text-h2">{{ list.title }}</h2>
-            <a href="#" class="font-semibold text-primary hover:underline">
-              {{ list.more }}
-            </a>
+            <ArrowLink to="#">{{ list.more }}</ArrowLink>
           </div>
           <div class="border-t border-ink">
             <a
@@ -134,21 +130,13 @@
               href="#"
               class="group flex items-center gap-4 border-b border-line py-4 text-ink"
             >
-              <span
-                v-if="'day' in item"
-                class="flex size-15 shrink-0 flex-col items-center justify-center bg-primary-light text-primary-dark"
-                aria-hidden="true"
-              >
+              <Tile v-if="'day' in item" tone="light">
                 <strong class="text-h3">{{ item.day }}</strong>
                 <span class="text-label uppercase">{{ item.month }}</span>
-              </span>
-              <span
-                v-else
-                class="flex size-15 shrink-0 items-center justify-center bg-surface text-primary"
-                aria-hidden="true"
-              >
+              </Tile>
+              <Tile v-else tone="surface">
                 <SpriteSymbol name="document" class="size-6" />
-              </span>
+              </Tile>
               <span class="flex grow flex-col">
                 <span
                   class="font-semibold group-hover:text-primary group-hover:underline"
@@ -172,10 +160,12 @@
 <script lang="ts" setup>
 import { createError, useHead, useRoute } from '#imports'
 import {
+  ArrowLink,
   DesignSystemMockup,
   DesignSystemPlaceholder,
   SearchField,
   SpriteSymbol,
+  Tile,
 } from '#components'
 import { isLanguage } from '#shared/languages'
 
@@ -250,7 +240,7 @@ const NEWS = [
 const LISTS = [
   {
     title: 'Veranstaltungen',
-    more: 'Alle Veranstaltungen →',
+    more: 'Alle Veranstaltungen',
     items: [
       {
         day: '8',
@@ -274,7 +264,7 @@ const LISTS = [
   },
   {
     title: 'Amtliche Publikationen',
-    more: 'Alle Publikationen →',
+    more: 'Alle Publikationen',
     items: [
       {
         title: 'Baugesuch: Anbau Wintergarten, Rebweg 12',

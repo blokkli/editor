@@ -2179,6 +2179,12 @@ type NodePage implements Node & Entity & EntityLinkable & EntityRevisionable & E
   "{value} {field: field_paragraphs} "
   fieldParagraphs: [Paragraph]
 
+  "{field: field_related} Up to three teasers at the end of the page."
+  fieldRelatedRawField: FieldItemListEntityReferenceRevisions
+
+  "{value} {field: field_related} Up to three teasers at the end of the page."
+  fieldRelated: [ParagraphTeaser]
+
   "The props for the blokkli provider component."
   blokkliProps: ParagraphsBlokkliProps!
 
@@ -4648,6 +4654,270 @@ type ParagraphSection implements Paragraph & Entity & EntityRevisionable & Entit
   ): ParagraphSection
 }
 
+"Step {entity_type: paragraph, bundle: step}"
+type ParagraphStep implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
+  "{field: type} "
+  typeRawField: FieldItemListEntityReference
+
+  "{value} {field: type} "
+  type: ParagraphsType
+
+  "{field: status} "
+  statusRawField: FieldItemListBoolean
+
+  "{value} {field: status} "
+  status: Boolean
+
+  "{field: created} The time that the Paragraph was created."
+  createdRawField: FieldItemListCreated
+
+  "{value} {field: created} The time that the Paragraph was created."
+  created: String
+
+  "{field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentIdRawField: FieldItemListString
+
+  "{value} {field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentId: String
+
+  "{field: parent_type} The entity parent type to which this entity is referenced."
+  parentTypeRawField: FieldItemListString
+
+  "{value} {field: parent_type} The entity parent type to which this entity is referenced."
+  parentType: String
+
+  "{field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldNameRawField: FieldItemListString
+
+  "{value} {field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldName: String
+
+  "{field: behavior_settings} The behavior plugin settings"
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  "{value} {field: behavior_settings} The behavior plugin settings"
+  behaviorSettings: String
+
+  "{field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  "{value} {field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcode: Boolean
+
+  "{field: field_text} "
+  fieldTextRawField: FieldItemListTextLong
+
+  "{value} {field: field_text} "
+  fieldText: String
+
+  "{field: field_title} "
+  fieldTitleRawField: FieldItemListString
+
+  "{value} {field: field_title} "
+  fieldTitle: String
+
+  "The untyped paragraph options."
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  "The status of the paragraph."
+  isPublished: Boolean
+
+  ""
+  props: Paragraph
+
+  ""
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  "Whether the paragraph should be rendered."
+  paragraphsBlokkliIsVisible: Boolean!
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+
+  "Get all translations."
+  translations: [ParagraphStep]
+
+  "Get a specific translation."
+  translation(
+    ""
+    langcode: Langcode!
+
+    "Return entity in current language if translation language does not exist."
+    fallback: Boolean
+  ): ParagraphStep
+}
+
+"Text"
+type FieldItemListTextLong implements FieldItemList {
+  "Array of field items."
+  list: [FieldItemTypeTextLong]
+
+  "The first field item."
+  first: FieldItemTypeTextLong
+
+  "True if the field list has no items."
+  isEmpty: Boolean!
+
+  "The number of field items."
+  count: Int!
+
+  "Get a string representation of all field items."
+  getString: String!
+
+  "Get the entity the field belongs to."
+  entity: Entity
+}
+
+"Long text"
+type FieldItemTypeTextLong implements FieldItemType & FieldItemTypeStringInterface {
+  "{field: value} Text"
+  value: String
+
+  "{field: format} Text format"
+  format: String
+
+  "{field: processed} Processed text"
+  processed: String
+
+  "True if this item is considered empty."
+  isEmpty: Boolean!
+}
+
+"Steps {entity_type: paragraph, bundle: steps}"
+type ParagraphSteps implements Paragraph & Entity & EntityRevisionable {
+  "{field: type} "
+  typeRawField: FieldItemListEntityReference
+
+  "{value} {field: type} "
+  type: ParagraphsType
+
+  "{field: status} "
+  statusRawField: FieldItemListBoolean
+
+  "{value} {field: status} "
+  status: Boolean
+
+  "{field: created} The time that the Paragraph was created."
+  createdRawField: FieldItemListCreated
+
+  "{value} {field: created} The time that the Paragraph was created."
+  created: String
+
+  "{field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentIdRawField: FieldItemListString
+
+  "{value} {field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentId: String
+
+  "{field: parent_type} The entity parent type to which this entity is referenced."
+  parentTypeRawField: FieldItemListString
+
+  "{value} {field: parent_type} The entity parent type to which this entity is referenced."
+  parentType: String
+
+  "{field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldNameRawField: FieldItemListString
+
+  "{value} {field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldName: String
+
+  "{field: behavior_settings} The behavior plugin settings"
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  "{value} {field: behavior_settings} The behavior plugin settings"
+  behaviorSettings: String
+
+  "{field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  "{value} {field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcode: Boolean
+
+  "{field: field_paragraphs} "
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  "{value} {field: field_paragraphs} "
+  fieldParagraphs: [ParagraphStep]
+
+  "The untyped paragraph options."
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  "The status of the paragraph."
+  isPublished: Boolean
+
+  ""
+  props: Paragraph
+
+  ""
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  "Whether the paragraph should be rendered."
+  paragraphsBlokkliIsVisible: Boolean!
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+}
+
 "Table {entity_type: paragraph, bundle: table}"
 type ParagraphTable implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
   "{field: type} "
@@ -4763,42 +5033,6 @@ type ParagraphTable implements Paragraph & Entity & EntityRevisionable & EntityT
     "Return entity in current language if translation language does not exist."
     fallback: Boolean
   ): ParagraphTable
-}
-
-"Table"
-type FieldItemListTextLong implements FieldItemList {
-  "Array of field items."
-  list: [FieldItemTypeTextLong]
-
-  "The first field item."
-  first: FieldItemTypeTextLong
-
-  "True if the field list has no items."
-  isEmpty: Boolean!
-
-  "The number of field items."
-  count: Int!
-
-  "Get a string representation of all field items."
-  getString: String!
-
-  "Get the entity the field belongs to."
-  entity: Entity
-}
-
-"Long text"
-type FieldItemTypeTextLong implements FieldItemType & FieldItemTypeStringInterface {
-  "{field: value} Text"
-  value: String
-
-  "{field: format} Text format"
-  format: String
-
-  "{field: processed} Processed text"
-  processed: String
-
-  "True if this item is considered empty."
-  isEmpty: Boolean!
 }
 
 "Teaser {entity_type: paragraph, bundle: teaser}"

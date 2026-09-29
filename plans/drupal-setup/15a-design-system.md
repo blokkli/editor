@@ -110,6 +110,8 @@ progress, not a spec (the user).
 - `PageFooter`: logo, address and column slots, the bottom row.
 - `Breadcrumb`, `Callout` (info, success, warning, error), `LinkList` (links or
   downloads with meta), `SearchField` (two sizes).
+- `Tile` (a row's number, date or icon) and `ArrowLink` (a link with an arrow),
+  added in [15g](15g-detail-page-parts.md).
 - `LanguageSwitch` now inherits its colour (light and dark grounds).
 - `DesignSystem/Mockup` (the shell with the mockups' German navigation and
   footer) and `DesignSystem/Placeholder` (striped image placeholders): for the

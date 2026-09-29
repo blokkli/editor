@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.page.field_lead
     - field.field.node.page.field_office
     - field.field.node.page.field_paragraphs
+    - field.field.node.page.field_related
     - node.type.page
   module:
     - entity_reference_revisions
@@ -48,6 +49,15 @@ content:
       link: ''
     third_party_settings: {  }
     weight: 101
+    region: content
+  field_related:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
     region: content
   links:
     settings: {  }

@@ -1,3 +1,5 @@
+# Every paragraph type, nested ones included: the editor loads each field's
+# blocks with this fragment, e.g. a step on its own, outside its steps.
 fragment paragraph on Paragraph {
   ...paragraphLeaf
   ...paragraphGallery
@@ -6,4 +8,5 @@ fragment paragraph on Paragraph {
   ...paragraphColumns
   ...paragraphFromLibrary
   ...paragraphBlokkliFragment
+  ...paragraphStep
 }

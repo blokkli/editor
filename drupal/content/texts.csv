@@ -84,6 +84,7 @@ publication.type_traffic;default;Traffic;Verkehr;Circulation
 publication.until;default;@type, until @date;@type, bis @date;@type, jusqu'au @date
 quick_links.empty;default;Add the links on the site config page.;Fügen Sie die Links auf der Konfigurationsseite der Website hinzu.;Ajoutez les liens sur la page de configuration du site.
 quick_links.title;default;Frequently searched;Häufig gesucht;Recherches fréquentes
+related.title;default;Related topics;Verwandte Themen;Thèmes associés
 search.submit;default;Search;Suchen;Rechercher
 search.title;default;Search;Suche;Recherche
 subpages.label;default;In this section;In diesem Bereich;Dans cette rubrique

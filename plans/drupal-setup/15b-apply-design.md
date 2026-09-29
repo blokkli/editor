@@ -183,4 +183,5 @@ The page's eyebrow waits for the menus (15c).
   - the coat-of-arms media is still a placeholder
   - the home page's content
   - The mockups' parts that aren't paragraph types (callouts, steps, quick
-    links, the "Heute" row) need a decision on new paragraph types.
+    links, the "Heute" row) need a decision on new paragraph types. Done: the
+    home page's in 15f, the detail page's in 15g.

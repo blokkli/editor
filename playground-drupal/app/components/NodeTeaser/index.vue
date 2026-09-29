@@ -20,25 +20,30 @@
     <p v-if="teaserLead">{{ teaserLead }}</p>
   </SiteLink>
   <SiteLink
+    v-else-if="display === 'link'"
+    :to="href"
+    class="group flex flex-col gap-1"
+  >
+    <span class="flex items-center gap-2 font-semibold text-primary">
+      <span class="group-hover:underline">{{ label }}</span>
+      <SpriteSymbol name="arrow-right" class="size-5 shrink-0" />
+    </span>
+    <span v-if="teaserLead" class="line-clamp-2 text-small text-muted">
+      {{ teaserLead }}
+    </span>
+  </SiteLink>
+  <SiteLink
     v-else
     :to="href"
     class="group flex items-center gap-4 border-b border-line py-4 text-ink"
   >
-    <span
-      v-if="date"
-      class="flex size-15 shrink-0 flex-col items-center justify-center bg-primary-light text-primary-dark"
-      aria-hidden="true"
-    >
+    <Tile v-if="date" tone="light">
       <strong class="text-h3">{{ date.badgeDay }}</strong>
       <span class="text-label uppercase">{{ date.badgeMonth }}</span>
-    </span>
-    <span
-      v-else-if="node?.__typename === 'NodePublication'"
-      class="flex size-15 shrink-0 items-center justify-center bg-surface text-primary"
-      aria-hidden="true"
-    >
+    </Tile>
+    <Tile v-else-if="node?.__typename === 'NodePublication'" tone="surface">
       <SpriteSymbol name="document" class="size-6" />
-    </span>
+    </Tile>
     <MediaImage
       v-else-if="hero"
       v-bind="hero"
@@ -64,20 +69,22 @@ import type {
   NodeTeaserFragment,
 } from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
+import Tile from '~/components/Tile/index.vue'
 import { usePublicationType } from '~/composables/usePublicationType'
 import { formatDateRange } from '~/helpers/date'
 
-// A page, news item, event or publication as a card or a list item: the
-// teaser block and the automatic teaser list. In a list, an event gets a date
-// badge, a publication a document icon and the others their image. The teaser block can override the node's
-// title, lead and image, or link to a URL without a node.
+// A page, news item, event or publication as a card, a list item or a link
+// with its lead (a related topic): the teaser block and the automatic teaser
+// list. In a list, an event gets a date badge, a publication a document icon
+// and the others their image. The teaser block can override the node's title,
+// lead and image, or link to a URL without a node.
 const props = defineProps<{
   node?: NodeTeaserFragment | null
   title?: string | null
   lead?: string | null
   image?: MediaImageFragment | null
   url?: string | null
-  display: 'card' | 'list'
+  display: 'card' | 'list' | 'link'
 }>()
 
 const { $texts } = useEasyTexts()

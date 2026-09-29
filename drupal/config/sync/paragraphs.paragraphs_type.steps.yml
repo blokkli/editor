@@ -1,0 +1,18 @@
+uuid: f42940d5-65d4-4e77-8e56-328decee562b
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: false
+id: steps
+label: Steps
+icon_uuid: null
+icon_default: null
+description: 'Numbered steps, e.g. of a procedure.'
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

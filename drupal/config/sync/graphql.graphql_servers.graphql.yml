@@ -103,6 +103,7 @@ schema_configuration:
         field_price: field_price
         field_publication_type: field_publication_type
         field_registration: field_registration
+        field_related: field_related
         langcode: langcode
         nid: nid
         publish_on: publish_on
@@ -229,6 +230,10 @@ schema_configuration:
         link_list:
           enabled: true
         section:
+          enabled: true
+        step:
+          enabled: true
+        steps:
           enabled: true
         table:
           enabled: true

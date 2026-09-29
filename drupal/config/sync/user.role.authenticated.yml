@@ -39,6 +39,8 @@ permissions:
   - 'view paragraph content link'
   - 'view paragraph content link_list'
   - 'view paragraph content section'
+  - 'view paragraph content step'
+  - 'view paragraph content steps'
   - 'view paragraph content table'
   - 'view paragraph content teaser'
   - 'view paragraph content teaser_list'

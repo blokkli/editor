@@ -1,0 +1,4 @@
+fragment paragraphStep on ParagraphStep {
+  title: fieldTitle
+  text: fieldText
+}

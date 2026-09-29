@@ -87,6 +87,7 @@ fragment easyTexts on TextsLoader {
   publication__until: getText(key: "until", context: "publication", default: "@type, until @date")
   quick_links__empty: getText(key: "empty", context: "quick_links", default: "Add the links on the site config page.")
   quick_links__title: getText(key: "title", context: "quick_links", default: "Frequently searched")
+  related__title: getText(key: "title", context: "related", default: "Related topics")
   search__submit: getText(key: "submit", context: "search", default: "Search")
   search__title: getText(key: "title", context: "search", default: "Search")
   subpages__label: getText(key: "label", context: "subpages", default: "In this section")

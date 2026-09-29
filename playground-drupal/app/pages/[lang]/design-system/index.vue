@@ -373,9 +373,7 @@
           <div class="flex flex-wrap items-center gap-4">
             <a href="#" class="button">Termin vereinbaren</a>
             <a href="#" class="button is-secondary">Mitmachen</a>
-            <a href="#" class="font-semibold text-primary hover:underline">
-              Alle Meldungen →
-            </a>
+            <ArrowLink to="#">Alle Meldungen</ArrowLink>
           </div>
           <div class="on-dark flex flex-wrap items-center gap-4 bg-primary p-6">
             <a href="#" class="button is-on-dark">Einsatz wählen</a>
@@ -426,7 +424,12 @@
               :items="[
                 { label: 'Sammelkalender 2027', url: '#' },
                 { label: 'Grüngutabfuhr', url: '#' },
-                { label: 'Traktandenliste', url: '#', meta: 'PDF · 120 KB' },
+                {
+                  label: 'Traktandenliste',
+                  url: '#',
+                  meta: 'PDF · 120 KB',
+                  download: true,
+                },
               ]"
             />
             <LinkList
@@ -445,6 +448,24 @@
                 },
               ]"
             />
+          </div>
+
+          <h3 class="text-h3">Tiles</h3>
+          <p class="max-w-content">
+            The square at the start of a row: a step's number, an event's date,
+            a publication's icon. One size in every list.
+          </p>
+          <div lang="de" class="flex gap-4">
+            <Tile tone="primary" class="font-serif text-h3 font-semibold">
+              1
+            </Tile>
+            <Tile tone="light">
+              <strong class="text-h3">12</strong>
+              <span class="text-label uppercase">Okt</span>
+            </Tile>
+            <Tile tone="surface">
+              <SpriteSymbol name="document" class="size-6" />
+            </Tile>
           </div>
 
           <h3 class="text-h3">Breadcrumb and language switch</h3>
@@ -511,6 +532,7 @@
 <script lang="ts" setup>
 import { computed, createError, useHead, useRoute } from '#imports'
 import {
+  ArrowLink,
   Breadcrumb,
   Callout,
   LanguageSwitch,
@@ -518,6 +540,7 @@ import {
   Logo,
   SearchField,
   SpriteSymbol,
+  Tile,
 } from '#components'
 import { allSymbolNames } from '#nuxt-svg-icon-sprite/runtime'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'

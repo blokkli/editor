@@ -19,6 +19,12 @@ fragment nodePage on NodePage {
       ...paragraph
     }
   }
+  related: fieldRelated {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphTeaser
+    }
+  }
   aside: fieldAside {
     ...paragraphsFieldItem
     props {

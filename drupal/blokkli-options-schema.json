@@ -611,6 +611,40 @@
       "type": "radios"
     }
   },
+  "step": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    }
+  },
+  "steps": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    }
+  },
   "table": {
     "bkVisibleLanguages": {
       "default": [],
@@ -743,6 +777,58 @@
       },
       "options": {},
       "type": "checkboxes"
+    },
+    "box": {
+      "default": "none",
+      "displayAs": "colors",
+      "label": {
+        "de": "Infobox",
+        "en": "Info box",
+        "fr": "Encadré"
+      },
+      "options": {
+        "error": {
+          "hex": "#f3e4ec",
+          "label": {
+            "de": "Rot",
+            "en": "Red",
+            "fr": "Rouge"
+          }
+        },
+        "info": {
+          "hex": "#e6eef6",
+          "label": {
+            "de": "Blau",
+            "en": "Blue",
+            "fr": "Bleu"
+          }
+        },
+        "none": {
+          "hex": "#ffffff",
+          "label": {
+            "de": "Keine",
+            "en": "None",
+            "fr": "Aucun"
+          }
+        },
+        "success": {
+          "hex": "#e5f0e8",
+          "label": {
+            "de": "Grün",
+            "en": "Green",
+            "fr": "Vert"
+          }
+        },
+        "warning": {
+          "hex": "#fbf1dc",
+          "label": {
+            "de": "Gelb",
+            "en": "Yellow",
+            "fr": "Jaune"
+          }
+        }
+      },
+      "type": "radios"
     }
   },
   "title": {

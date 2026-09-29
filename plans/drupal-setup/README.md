@@ -159,15 +159,16 @@ Milestones:
 | 15d | [Page types](15d-page-types.md): detail and editorial pages                                         | M1        | done        | 15b                               |
 | 15e | [Events and offices](15e-events-and-offices.md): their own design, without the sidebar              | M1        | done        | 15d                               |
 | 15f | [The home page](15f-home-page.md): its own page component, a mock first                             | M1        | in progress | 15c, 15d                          |
+| 15g | [The detail page's missing parts](15g-detail-page-parts.md): info boxes, steps, related topics      | M1        | done        | 15d                               |
 
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 05, 13a–13h, 14a and 15a–15e are
-done: `ddev bake` seeds the content from `drupal/content`. 13i is in progress:
-the table of contents, the charts, the analyzer and the embed are done; the
-agent is postponed. 15f, the home page, is built and waits for the user's
-review.
+(order, skill conventions, feature matrix). 05, 13a–13h, 14a, 15a–15e and 15g
+are done: `ddev bake` seeds the content from `drupal/content`. 13i is in
+progress: the table of contents, the charts, the analyzer and the embed are
+done; the agent is postponed. 15f, the home page, is built and waits for the
+user's review.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2 must be

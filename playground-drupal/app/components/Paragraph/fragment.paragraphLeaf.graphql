@@ -1,5 +1,5 @@
-# The blocks without nested blocks, and the link list and the call to action,
-# whose blocks are links.
+# The blocks without nested blocks, and the link list, the call to action and
+# the steps, whose blocks are links or steps.
 # Structure blocks spread this instead of the `paragraph` union, which would be
 # recursive.
 fragment paragraphLeaf on Paragraph {
@@ -16,4 +16,5 @@ fragment paragraphLeaf on Paragraph {
   ...paragraphBanner
   ...paragraphTeaserList
   ...paragraphCallToAction
+  ...paragraphSteps
 }

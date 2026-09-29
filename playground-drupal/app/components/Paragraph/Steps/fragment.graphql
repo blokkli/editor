@@ -1,0 +1,8 @@
+fragment paragraphSteps on ParagraphSteps {
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphStep
+    }
+  }
+}

@@ -73,9 +73,7 @@
       <section class="flex flex-col gap-6">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="font-serif text-h2">Aktuelles</h2>
-          <a href="#" class="font-semibold text-primary hover:underline">
-            Alle Meldungen →
-          </a>
+          <ArrowLink to="#">Alle Meldungen</ArrowLink>
         </div>
         <div class="grid gap-x-grid gap-y-10 md:grid-cols-3">
           <article
@@ -115,9 +113,7 @@
         <div class="flex flex-col gap-4">
           <div class="flex items-baseline justify-between gap-4">
             <h2 class="font-serif text-h2">Veranstaltungen</h2>
-            <a href="#" class="font-semibold text-primary hover:underline">
-              Kalender →
-            </a>
+            <ArrowLink to="#">Kalender</ArrowLink>
           </div>
           <ul class="border-t border-ink">
             <li v-for="(item, index) in EVENTS" :key="item.title">
@@ -125,17 +121,10 @@
                 href="#"
                 class="flex items-center gap-4 border-b border-line py-4 text-ink hover:text-primary"
               >
-                <span
-                  class="flex size-15 shrink-0 flex-col items-center justify-center"
-                  :class="
-                    index === 0
-                      ? 'bg-primary text-white'
-                      : 'bg-primary-light text-primary-dark'
-                  "
-                >
+                <Tile :tone="index === 0 ? 'primary' : 'light'">
                   <strong class="text-h3">{{ item.day }}</strong>
                   <span class="text-label">{{ item.month }}</span>
-                </span>
+                </Tile>
                 <span class="flex flex-col">
                   <span class="font-semibold">{{ item.title }}</span>
                   <span class="text-small text-muted">{{ item.meta }}</span>
@@ -147,9 +136,7 @@
         <div class="flex flex-col gap-4">
           <div class="flex items-baseline justify-between gap-4">
             <h2 class="font-serif text-h2">Amtliche Publikationen</h2>
-            <a href="#" class="font-semibold text-primary hover:underline">
-              Alle →
-            </a>
+            <ArrowLink to="#">Alle</ArrowLink>
           </div>
           <ul class="border-t border-ink">
             <li v-for="item in PUBLICATIONS" :key="item.title">
@@ -157,11 +144,9 @@
                 href="#"
                 class="flex items-center gap-4 border-b border-line py-4 text-ink hover:text-primary"
               >
-                <span
-                  class="flex size-15 shrink-0 items-center justify-center bg-surface text-primary"
-                >
+                <Tile tone="surface">
                   <SpriteSymbol name="document" class="size-6" />
-                </span>
+                </Tile>
                 <span class="flex flex-col">
                   <span class="font-semibold">{{ item.title }}</span>
                   <span class="text-small text-muted">{{ item.meta }}</span>
@@ -178,11 +163,13 @@
 <script lang="ts" setup>
 import { createError, useHead, useRoute } from '#imports'
 import {
+  ArrowLink,
   DesignSystemMockup,
   DesignSystemPlaceholder,
   LinkList,
   SearchField,
   SpriteSymbol,
+  Tile,
 } from '#components'
 import { isLanguage } from '#shared/languages'
 

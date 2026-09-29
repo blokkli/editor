@@ -12,6 +12,13 @@ field_paragraphs:
       en: '<p>Most buildings, extensions and conversions need a permit. Apply before you start: work without a permit can be stopped.</p>'
       de: '<p>Die meisten Bauten, Anbauten und Umbauten brauchen eine Bewilligung. Reichen Sie das Gesuch vor Baubeginn ein: Arbeiten ohne Bewilligung können gestoppt werden.</p>'
       fr: '<p>La plupart des constructions, agrandissements et transformations nécessitent un permis. Déposez la demande avant le début des travaux : des travaux sans permis peuvent être arrêtés.</p>'
+  # The text's box option: an info box.
+  - type: text
+    options: { box: info }
+    field_text:
+      en: '<p><strong>Apply online:</strong> you can also submit building applications at the <a href="https://www.example.com/online-counter">online counter</a>. Upload the plans as PDFs.</p>'
+      de: '<p><strong>Elektronisch einreichen:</strong> Baugesuche können Sie auch über den <a href="https://www.example.com/online-counter">Online-Schalter</a> einreichen. Pläne laden Sie als PDF hoch.</p>'
+      fr: '<p><strong>Dépôt électronique :</strong> vous pouvez aussi déposer les demandes de permis au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Téléchargez les plans au format PDF.</p>'
   - type: title
     field_title: { en: Applying, de: Gesuch einreichen, fr: Déposer une demande }
   - type: text
@@ -20,6 +27,46 @@ field_paragraphs:
       en: '<p>Hand in the application form with the plans at the counter of the building office, or send it by post.</p>'
       de: '<p>Geben Sie das Gesuchsformular mit den Plänen am Schalter des Bauamts ab, oder senden Sie es per Post.</p>'
       fr: '<p>Remettez le formulaire de demande avec les plans au guichet du service des constructions, ou envoyez-le par la poste.</p>'
+  - type: title
+    field_title: { en: Procedure, de: Ablauf, fr: Procédure }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { en: Preliminary enquiry, de: Vorabklärung, fr: Clarification préalable }
+        field_text:
+          en: '<p>Discuss your project with the building office early on. It saves time and revisions.</p>'
+          de: '<p>Besprechen Sie Ihr Vorhaben frühzeitig mit der Bauverwaltung. Das spart Zeit und Überarbeitungen.</p>'
+          fr: '<p>Discutez de votre projet suffisamment tôt avec le service des constructions. Cela évite des pertes de temps et des remaniements.</p>'
+      - type: step
+        field_title: { en: Submitting the application, de: Gesuch einreichen, fr: Dépôt de la demande }
+        field_text:
+          en: '<p>Hand in the form, the site plan and the building plans, complete and signed.</p>'
+          de: '<p>Formular, Situationsplan und Baupläne vollständig und unterzeichnet einreichen.</p>'
+          fr: '<p>Remettez le formulaire, le plan de situation et les plans de construction, complets et signés.</p>'
+      - type: step
+        field_title: { en: Review and publication, de: Prüfung und Publikation, fr: Examen et publication }
+        field_text:
+          en: '<p>The building office reviews the application. Then the building outline is marked on site and the application goes on public display.</p>'
+          de: '<p>Die Bauverwaltung prüft das Gesuch. Anschliessend werden Profile gestellt und das Gesuch öffentlich aufgelegt.</p>'
+          fr: '<p>Le service des constructions examine la demande. Ensuite, les gabarits sont posés et la demande est mise à l''enquête publique.</p>'
+      - type: step
+        field_title: { en: Objection period, de: Einsprachefrist, fr: Délai d'opposition }
+        field_text:
+          en: '<p>While the application is on display, anyone affected can object. The period is 30 days.</p>'
+          de: '<p>Während der Auflage können Betroffene Einsprache erheben. Die Frist beträgt 30 Tage.</p>'
+          fr: '<p>Pendant la mise à l''enquête, les personnes concernées peuvent faire opposition. Le délai est de 30 jours.</p>'
+      - type: step
+        field_title: { en: Decision, de: Bauentscheid, fr: Décision }
+        field_text:
+          en: '<p>The town council decides on the application. Once the decision is final, you may start building.</p>'
+          de: '<p>Der Gemeinderat entscheidet über das Gesuch. Nach Rechtskraft dürfen Sie mit dem Bau beginnen.</p>'
+          fr: '<p>Le conseil communal statue sur la demande. Une fois la décision entrée en force, vous pouvez commencer les travaux.</p>'
+  - type: text
+    options: { box: warning }
+    field_text:
+      en: '<p><strong>Important:</strong> only start building once the permit is final. Otherwise, the work can be stopped.</p>'
+      de: '<p><strong>Wichtig:</strong> Beginnen Sie erst mit den Bauarbeiten, wenn die Bewilligung rechtskräftig ist. Andernfalls kann ein Baustopp verfügt werden.</p>'
+      fr: '<p><strong>Important :</strong> ne commencez les travaux qu''une fois le permis entré en force. Sinon, un arrêt des travaux peut être ordonné.</p>'
   - type: table
     options: { striped: true }
     field_table:
@@ -81,6 +128,24 @@ field_paragraphs:
   # automatic list is always a list.
   - type: teaser_list
     options: { source: publications }
+# A teaser without its own title and lead shows the linked page's.
+field_related:
+  - type: teaser
+    field_link: https://www.example.com/zoning-plan
+    field_title: { en: Zoning plan, de: Zonenplan, fr: Plan de zones }
+    field_lead:
+      en: Which use applies to your plot?
+      de: Welche Nutzung gilt für Ihr Grundstück?
+      fr: Quelle affectation s'applique à votre parcelle ?
+  - type: teaser
+    field_link: { node: administration }
+  - type: teaser
+    field_link: https://www.example.com/energy-subsidies
+    field_title: { en: Energy and subsidies, de: Energie & Förderung, fr: Énergie et subventions }
+    field_lead:
+      en: Grants for renovations.
+      de: Beiträge für Sanierungen.
+      fr: Subventions pour les rénovations.
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact

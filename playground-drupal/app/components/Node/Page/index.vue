@@ -35,6 +35,22 @@
         </HostHeader>
       </template>
       <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+      <section
+        v-if="related?.length || isEditing"
+        class="container-content mt-flow flex flex-col gap-4 border-t-2 border-ink pt-6"
+      >
+        <h2 class="text-label text-muted uppercase">
+          {{ $texts('related.title', 'Related topics') }}
+        </h2>
+        <BlokkliField
+          name="field_related"
+          :list="related"
+          field-list-type="related"
+          tag="ul"
+          class="grid gap-x-grid gap-y-6 md:grid-cols-3"
+          edit-class="min-h-12"
+        />
+      </section>
       <template #toc>
         <TableOfContents :list="paragraphs" />
       </template>
@@ -63,7 +79,8 @@ import { providePageOffice } from '~/composables/usePageOffice'
 
 // The detail page: an information page, the last in its branch of the menu.
 // Always the sidebar layout, no hero image. The responsible office is set in
-// Drupal's form; the route query reloads it.
+// Drupal's form; the route query reloads it. Up to three related topics end the
+// main column.
 const props = defineProps<
   NodePageFragment & { breadcrumb?: BreadcrumbFragment[] }
 >()
