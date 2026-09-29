@@ -88,28 +88,30 @@ paragraph types and bundles get added that end up wrong for it.
   - Fragments are only for editorial pages. News, events and offices keep
     sections.
   - The sidebar allows titles as headings, e.g. above a link list.
-- Config pages: `footer` (a paragraphs field) and `site` (name, coat of arms, a
-  site-wide notice with a paragraphs field). Covers 13c.
+- Config pages: `footer` (a paragraphs field) and `site` (name, service links
+  and a site-wide notice of banners, both paragraphs fields). Covers 13c. The
+  logo is the frontend's (the user, 2026-09-29, 15c).
 - Library items and templates are hosts too (13d).
 
 ### Block types
 
 **Everyday blocks:** what an average page is built from.
 
-| Type        | Fields                                     | Options                    | From 04        |
-| ----------- | ------------------------------------------ | -------------------------- | -------------- |
-| `title`     | title                                      |                            | yes            |
-| `text`      | rich text                                  |                            | yes            |
-| `image`     | media, caption                             | width: content, wide, full | yes, + caption |
-| `video`     | remote video                               |                            | yes, embedded  |
-| `link`      | link (a page, a URL or a document), text   | style: primary, secondary  | yes (`button`) |
-| `table`     | text with a tables-and-links format        | striped                    | new            |
-| `link_list` | link blocks (several)                      |                            | new            |
-| `contact`   | office (reference)                         | compact, full              | new            |
-| `teaser`    | link; title, lead, image (overrides)       | card, list                 | new            |
-| `gallery`   | image blocks (several)                     | grid, slider (proxy mode)  | new            |
-| `chart`     | chart data (charts module)                 | chart type, per the module | new (13i)      |
-| `embed`     | URL, heights per viewport (iframes module) |                            | new (13i)      |
+| Type        | Fields                                     | Options                         | From 04        |
+| ----------- | ------------------------------------------ | ------------------------------- | -------------- |
+| `title`     | title                                      |                                 | yes            |
+| `text`      | rich text                                  |                                 | yes            |
+| `image`     | media, caption                             | width: content, wide, full      | yes, + caption |
+| `video`     | remote video                               |                                 | yes, embedded  |
+| `link`      | link (a page, a URL or a document), text   | style: primary, secondary       | yes (`button`) |
+| `table`     | text with a tables-and-links format        | striped                         | new            |
+| `link_list` | link blocks (several)                      |                                 | new            |
+| `contact`   | office (reference)                         | compact, full                   | new            |
+| `teaser`    | link; title, lead, image (overrides)       | card, list                      | new            |
+| `gallery`   | image blocks (several)                     | grid, slider (proxy mode)       | new            |
+| `chart`     | chart data (charts module)                 | chart type, per the module      | new (13i)      |
+| `embed`     | URL, heights per viewport (iframes module) |                                 | new (13i)      |
+| `banner`    | text, link (the site config's notice only) | color: yellow, blue, green, red | new (15c)      |
 
 **Structure:** nesting only where it makes sense.
 

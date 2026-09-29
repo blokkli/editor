@@ -1,0 +1,8 @@
+fragment paragraphBanner on ParagraphBanner {
+  text: fieldTitle
+  link: fieldLink {
+    uri {
+      path
+    }
+  }
+}

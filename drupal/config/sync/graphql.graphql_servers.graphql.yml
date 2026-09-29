@@ -153,9 +153,9 @@ schema_configuration:
         icon_uuid: icon_uuid
         status: status
       translatable_config_pages:
-        field_coat_of_arms: field_coat_of_arms
         field_notice: field_notice
         field_paragraphs: field_paragraphs
+        field_service_links: field_service_links
         field_site_name: field_site_name
       user:
         access: access
@@ -178,10 +178,6 @@ schema_configuration:
           enabled: true
         image:
           enabled: true
-        link:
-          enabled: true
-        link_list:
-          enabled: true
         remote_video:
           enabled: true
       menu_link_content:
@@ -200,6 +196,8 @@ schema_configuration:
           enabled: true
       paragraph:
         accordion:
+          enabled: true
+        banner:
           enabled: true
         blokkli_fragment:
           enabled: true

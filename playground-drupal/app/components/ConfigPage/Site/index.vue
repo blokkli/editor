@@ -7,23 +7,29 @@
   >
     <PageHeader
       :home-url="isEditing ? undefined : `/${language}`"
+      :search-url="`/${language}/search`"
       :language-links
       :links
+      :service-links="plainServiceLinks"
     >
-      <template #logo>
-        <div
-          v-blokkli-droppable:field_coat_of_arms
-          class="h-11 shrink-0 lg:h-12"
-        >
-          <MediaImage
-            v-if="entity.coatOfArms"
-            v-bind="entity.coatOfArms"
-            hide-credit
-            class="h-full"
-            img-class="h-full w-auto object-contain"
-          />
-          <Logo v-else class="h-full w-auto" />
-        </div>
+      <template #banner>
+        <BlokkliField
+          v-if="notice?.length || isEditing"
+          name="field_notice"
+          :list="notice"
+          field-list-type="notice"
+          edit-class="min-h-12"
+        />
+      </template>
+      <template #service>
+        <BlokkliField
+          name="field_service_links"
+          :list="serviceLinks"
+          field-list-type="service"
+          tag="ul"
+          edit-class="min-h-10 min-w-40"
+          class="flex gap-6 text-small"
+        />
       </template>
       <template #name>
         <span
@@ -35,42 +41,24 @@
         </span>
       </template>
     </PageHeader>
-    <div v-if="notice?.length || isEditing" class="bg-warning-light">
-      <div class="container-wide flex gap-3 py-3">
-        <SpriteSymbol
-          name="warning"
-          class="mt-0.5 size-6 shrink-0 text-warning"
-        />
-        <BlokkliField
-          name="field_notice"
-          :list="notice"
-          field-list-type="notice"
-          edit-class="min-h-12"
-          class="flex grow flex-col gap-2"
-        />
-      </div>
-    </div>
   </BlokkliProvider>
 </template>
 
 <script lang="ts" setup>
-import {
-  BlokkliField,
-  BlokkliProvider,
-  Logo,
-  PageHeader,
-  SpriteSymbol,
-} from '#components'
+import { computed } from '#imports'
+import { BlokkliField, BlokkliProvider, PageHeader } from '#components'
 import type {
   ConfigPageSiteFragment,
   LanguageSwitchLinkFragment,
+  ParagraphLinkFragment,
 } from '#graphql-operations'
-import MediaImage from '~/components/Media/Image/index.vue'
+import { linkTarget } from '~/components/Paragraph/Link/target'
 import { useLanguage } from '~/composables/useLanguage'
 
-// The site's header and notice. Editing happens on the config page's own
-// route, where Drupal's links (e.g. the language switch) lead too. Without a
-// coat of arms, the Logo stands in.
+// The site's header, with the notice's banners at the top. Editing happens on
+// the config page's own route, where Drupal's links (e.g. the language switch)
+// lead too. The service links are edited in the bar; the menu panel below md
+// gets them as links.
 const props = defineProps<
   ConfigPageSiteFragment & {
     languageLinks?: LanguageSwitchLinkFragment[] | null
@@ -80,4 +68,23 @@ const props = defineProps<
 >()
 
 const language = useLanguage()
+
+// The field only allows links.
+function isLink(
+  value: ParagraphLinkFragment | object,
+): value is ParagraphLinkFragment {
+  return 'link' in value
+}
+
+// For the menu panel below md.
+const plainServiceLinks = computed(() =>
+  (props.serviceLinks ?? []).flatMap((item) => {
+    if (!item?.props || !isLink(item.props)) {
+      return []
+    }
+    const target = linkTarget(item.props.link)
+    const label = item.props.title || target.label
+    return target.href && label ? [{ label, url: target.href }] : []
+  }),
+)
 </script>

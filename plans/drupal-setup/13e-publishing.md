@@ -153,3 +153,9 @@ From [13c](13c-hosts.md) (2026-09-26):
   - "Preview (with smartphone)" shows the link. Opened by the plain user, it
     shows the pending change; without it, the published page.
 - **Not tested:** a phone. `blokkli.ddev.site` resolves to 127.0.0.1.
+
+## Changed after 13e (2026-09-29)
+
+The notice only takes the new `banner` paragraph type (15c), which has the
+scheduler settings of the link it was copied from. Text and link keep theirs,
+though the notice no longer uses them.

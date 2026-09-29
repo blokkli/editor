@@ -26,6 +26,7 @@ permissions:
   - 'use text format table'
   - 'view media'
   - 'view paragraph content accordion'
+  - 'view paragraph content banner'
   - 'view paragraph content blokkli_fragment'
   - 'view paragraph content chart'
   - 'view paragraph content columns'

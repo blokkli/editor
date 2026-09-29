@@ -1,0 +1,21 @@
+uuid: 6d5630e4-211d-4231-8f4c-2f8087b694a8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.banner
+id: paragraph.banner.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: banner
+label: Text
+description: ''
+required: true
+translatable: true
+default_value:
+  -
+    value: 'Lorem ipsum dolor'
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -3,8 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.translatable_config_pages.site.field_coat_of_arms
     - field.field.translatable_config_pages.site.field_notice
+    - field.field.translatable_config_pages.site.field_service_links
     - field.field.translatable_config_pages.site.field_site_name
     - translatable_config_pages.translatable_config_pages_type.site
   module:
@@ -14,15 +14,6 @@ targetEntityType: translatable_config_pages
 bundle: site
 mode: default
 content:
-  field_coat_of_arms:
-    type: entity_reference_entity_view
-    label: hidden
-    settings:
-      view_mode: default
-      link: false
-    third_party_settings: {  }
-    weight: -1
-    region: content
   field_notice:
     type: entity_reference_revisions_entity_view
     label: hidden
@@ -31,6 +22,15 @@ content:
       link: ''
     third_party_settings: {  }
     weight: 0
+    region: content
+  field_service_links:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: -1
     region: content
   field_site_name:
     type: string

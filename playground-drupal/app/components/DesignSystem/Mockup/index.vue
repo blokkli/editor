@@ -9,13 +9,9 @@
         { label: 'Kontakt', url: '#' },
       ]"
       :language-links
+      search-url="#"
     >
       <template #name>Gemeinde Blockingen</template>
-      <template #search>
-        <SearchField
-          :label="$texts('header.search_label', 'Search the website')"
-        />
-      </template>
     </PageHeader>
 
     <main id="main" lang="de" class="grow overflow-x-clip">
@@ -63,10 +59,10 @@
 
 <script lang="ts" setup>
 import { computed, useRoute } from '#imports'
-import { PageFooter, PageHeader, SearchField } from '#components'
+import { PageFooter, PageHeader } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 import { useLanguage } from '~/composables/useLanguage'
-import { LANGUAGES } from '#shared/languages'
+import { LANGUAGE_NAMES, LANGUAGES } from '#shared/languages'
 
 // The site's shell around a mockup, with German copy as in the canvas.
 const props = defineProps<{
@@ -76,7 +72,6 @@ const props = defineProps<{
 
 const DIRECT = ['Online-Schalter', 'Behörden & Kommissionen', 'Reglemente']
 const LEGAL = ['Impressum', 'Datenschutz', 'Barrierefreiheit']
-const TITLES = { en: 'English', de: 'Deutsch', fr: 'Français' } as const
 
 const route = useRoute()
 const language = useLanguage()
@@ -92,7 +87,7 @@ const links = computed(() =>
 // The same mockup in every language: only the UI strings change.
 const languageLinks = computed<LanguageSwitchLinkFragment[]>(() =>
   LANGUAGES.map((id) => ({
-    title: TITLES[id],
+    title: LANGUAGE_NAMES[id],
     language: { id },
     url: { path: route.path.replace(/^\/[a-z]+/, `/${id}`) },
   })),

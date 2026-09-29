@@ -1,0 +1,14 @@
+key: news
+type: editorial
+title: { en: News, de: Aktuelles, fr: Actualités }
+field_lead:
+  en: What's new in town, and what's coming up.
+  de: Was es Neues gibt in der Gemeinde, und was bevorsteht.
+  fr: Les nouvelles de la commune, et ce qui s'annonce.
+field_host_options:
+  - { key: header, value: plain }
+field_paragraphs:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: latest_news
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: upcoming_events

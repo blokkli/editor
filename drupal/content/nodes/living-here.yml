@@ -1,0 +1,16 @@
+key: living-here
+type: editorial
+title: { en: Living here, de: Leben & Wohnen, fr: Vivre ici }
+field_lead:
+  en: Moving here, waste and recycling, schools and everyday life in town.
+  de: Zuzug, Abfall und Recycling, Schulen und der Alltag in der Gemeinde.
+  fr: Arrivée, déchets et recyclage, écoles et vie quotidienne dans la commune.
+field_hero_image: { media: meadow }
+field_host_options:
+  - { key: header, value: image }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>Everything you need when you move to Blockingen, and once you live here.</p>'
+      de: '<p>Alles, was Sie brauchen, wenn Sie nach Blockingen ziehen und hier wohnen.</p>'
+      fr: '<p>Tout ce qu''il vous faut pour vous installer à Bloquens, et une fois que vous y habitez.</p>'

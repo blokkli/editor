@@ -1,0 +1,27 @@
+uuid: f7a33138-9b0c-4f7a-8085-ed1e0686609e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_service_links
+    - paragraphs.paragraphs_type.link
+    - translatable_config_pages.translatable_config_pages_type.site
+  module:
+    - entity_reference_revisions
+id: translatable_config_pages.site.field_service_links
+field_name: field_service_links
+entity_type: translatable_config_pages
+bundle: site
+label: 'Service links'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      link: link
+    negate: 0
+field_type: entity_reference_revisions

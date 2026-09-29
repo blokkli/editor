@@ -16,6 +16,67 @@
       "type": "checkboxes"
     }
   },
+  "banner": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "color": {
+      "default": "warning",
+      "displayAs": "colors",
+      "label": {
+        "de": "Farbe",
+        "en": "Color",
+        "fr": "Couleur"
+      },
+      "options": {
+        "error": {
+          "hex": "#f3e4ec",
+          "label": {
+            "de": "Rot",
+            "en": "Red",
+            "fr": "Rouge"
+          }
+        },
+        "info": {
+          "hex": "#e6eef6",
+          "label": {
+            "de": "Blau",
+            "en": "Blue",
+            "fr": "Bleu"
+          }
+        },
+        "success": {
+          "hex": "#e5f0e8",
+          "label": {
+            "de": "Grün",
+            "en": "Green",
+            "fr": "Vert"
+          }
+        },
+        "warning": {
+          "hex": "#fbf1dc",
+          "label": {
+            "de": "Gelb",
+            "en": "Yellow",
+            "fr": "Jaune"
+          }
+        }
+      },
+      "type": "radios"
+    }
+  },
   "blokkli_fragment": {},
   "chart": {
     "bkVisibleLanguages": {

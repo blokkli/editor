@@ -32,17 +32,6 @@
       fr: Image provisoire pour une photo de la vieille ville
   field_credit: Placeholder
 
-- key: coat-of-arms
-  type: image
-  name: { en: Coat of arms, de: Wappen, fr: Armoiries }
-  field_media_image:
-    file: images/coat-of-arms.png
-    alt:
-      en: Coat of arms of Blockingen
-      de: Wappen von Blockingen
-      fr: Armoiries de Bloquens
-  field_credit: Placeholder
-
 - key: permit-form
   type: document
   name:

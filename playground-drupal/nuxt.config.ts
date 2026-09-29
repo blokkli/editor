@@ -170,9 +170,9 @@ export default defineNuxtConfig({
     },
     // The chart block and ECharts load only on pages with a chart.
     chunkNames: ['global', 'rare', 'chart'],
-    // The fields outside the main content: the page's sidebar, the footer and
-    // the site-wide notice.
-    fieldListTypes: ['sidebar', 'footer', 'notice'],
+    // The fields outside the main content: the page's sidebar, the footer, the
+    // site-wide notice and the header's service links.
+    fieldListTypes: ['sidebar', 'footer', 'notice', 'service'],
     schemaOptionsPath: optionsSchemaPath,
     modules: [
       drupal({ templateEditRouteName: 'blokkli-template' }),

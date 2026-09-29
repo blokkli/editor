@@ -1,9 +1,12 @@
 <template>
   <div class="flex min-h-screen flex-col">
     <ClientOnly>
-      <div v-if="isVisible" class="border-b border-line bg-white">
+      <div
+        v-if="isVisible"
+        class="hidden border-b border-line bg-white lg:block"
+      >
         <VuepalAdminToolbar :key="language" />
-        <VuepalLocalTasks class="container-wide py-2.5" />
+        <VuepalLocalTasks class="container-wide py-2.5 not-has-[li]:hidden" />
       </div>
     </ClientOnly>
     <slot />
@@ -15,9 +18,9 @@ import { computed, useAsyncGraphqlQuery, useRoute } from '#imports'
 import { ClientOnly, VuepalAdminToolbar, VuepalLocalTasks } from '#components'
 import { useLanguage } from '~/composables/useLanguage'
 
-// The layout of Drupal's routes: Drupal's toolbar and the route's local tasks
-// (view, edit, translate…) above the page. It stays mounted between pages, so
-// the toolbar loads once per language.
+// The layout of the site's pages: Drupal's toolbar and the route's local tasks
+// (view, edit, translate…) above the page, from lg (both are too wide below).
+// It stays mounted between pages, so the toolbar loads once per language.
 const route = useRoute()
 const language = useLanguage()
 

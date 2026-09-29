@@ -30,7 +30,8 @@ can reference other hosts.
         `defineBlokkliProvider` with a header variant
 - [x] **Config pages** (`translatable_config_pages`): `footer` with a paragraphs
       field; `site` with the name, the coat of arms and a site-wide notice as a
-      paragraphs field.
+      paragraphs field. (2026-09-29: service links instead of the coat of arms,
+      see 15c.)
 - [x] **Blocks that reference hosts:**
   - [x] `teaser`: a page, news item or event; option card or list
   - [x] `contact`: an office, rendered from its structured data; option compact
@@ -114,7 +115,9 @@ Built by a throwaway script (`tmp/drupal-hosts.php`, as in 13b), then
 - **Config page types** (translation on):
   - `footer`: `field_paragraphs` (button, contact, text)
   - `site`: `field_site_name` (translatable), `field_coat_of_arms` (media
-    image), `field_notice` (button, text)
+    image), `field_notice` (button, text). Since 2026-09-29 (15c):
+    `field_service_links` (link) instead of the coat of arms, and `field_notice`
+    only takes banners.
 - **`enabled_types`:** node event, news, office and page;
   `translatable_config_pages` footer and site.
 - **Entity mappings:** `node__page`, `node__news`, `node__event` →

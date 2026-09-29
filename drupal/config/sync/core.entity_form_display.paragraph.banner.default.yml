@@ -1,0 +1,37 @@
+uuid: 1d7d6fd3-f907-49ce-a380-ba8a2ba94c02
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.banner.field_link
+    - field.field.paragraph.banner.field_title
+    - paragraphs.paragraphs_type.banner
+  module:
+    - link
+id: paragraph.banner.default
+targetEntityType: paragraph
+bundle: banner
+mode: default
+content:
+  field_link:
+    type: link_default
+    weight: 0
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  publish_on: true
+  scheduler_settings: true
+  status: true
+  unpublish_on: true

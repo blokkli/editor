@@ -1,49 +1,43 @@
 <template>
-  <div v-if="entity" class="flex grow flex-col">
-    <ConfigPageSite
-      v-if="siteConfig"
-      v-bind="siteConfig"
-      :language-links
-      :links="menuLinks"
+  <SiteShell
+    v-if="entity"
+    :site-config
+    :footer-config
+    :menu
+    :breadcrumb
+    :language-links
+  >
+    <NodePage
+      v-if="entity.__typename === 'NodePage'"
+      v-bind="entity"
+      :breadcrumb
     />
-    <main id="main" class="grow overflow-x-clip">
-      <NodePage
-        v-if="entity.__typename === 'NodePage'"
-        v-bind="entity"
-        :breadcrumb
-      />
-      <NodeEditorial
-        v-else-if="entity.__typename === 'NodeEditorial'"
-        v-bind="entity"
-        :breadcrumb
-        :sub-pages
-      />
-      <NodeNews
-        v-else-if="entity.__typename === 'NodeNews'"
-        v-bind="entity"
-        :breadcrumb
-      />
-      <NodeEvent
-        v-else-if="entity.__typename === 'NodeEvent'"
-        v-bind="entity"
-        :breadcrumb
-      />
-      <NodeOffice
-        v-else-if="entity.__typename === 'NodeOffice'"
-        v-bind="entity"
-        :breadcrumb
-      />
-      <!-- A config page on its own route, where it's edited. -->
-      <p v-else class="container-wide py-section text-small text-muted">
-        {{ entity.label }}
-      </p>
-    </main>
-    <ConfigPageFooter
-      v-if="footerConfig"
-      v-bind="footerConfig"
-      :site-name="siteConfig?.siteName"
+    <NodeEditorial
+      v-else-if="entity.__typename === 'NodeEditorial'"
+      v-bind="entity"
+      :breadcrumb
+      :sub-pages
     />
-  </div>
+    <NodeNews
+      v-else-if="entity.__typename === 'NodeNews'"
+      v-bind="entity"
+      :breadcrumb
+    />
+    <NodeEvent
+      v-else-if="entity.__typename === 'NodeEvent'"
+      v-bind="entity"
+      :breadcrumb
+    />
+    <NodeOffice
+      v-else-if="entity.__typename === 'NodeOffice'"
+      v-bind="entity"
+      :breadcrumb
+    />
+    <!-- A config page on its own route, where it's edited. -->
+    <p v-else class="container-wide py-section text-small text-muted">
+      {{ entity.label }}
+    </p>
+  </SiteShell>
 </template>
 
 <script lang="ts" setup>
@@ -55,13 +49,12 @@ import {
   useRoute,
 } from '#imports'
 import {
-  ConfigPageFooter,
-  ConfigPageSite,
   NodeEditorial,
   NodeEvent,
   NodeNews,
   NodeOffice,
   NodePage,
+  SiteShell,
 } from '#components'
 import { getLanguageFromPath } from '#shared/languages'
 import { findMenuChildren } from '~/helpers/menu'
@@ -123,24 +116,6 @@ const breadcrumb = computed(() => {
 })
 
 const menu = computed(() => data.value?.data.mainMenu?.links ?? [])
-
-// The header shows the main menu's first level. A link is active when it's in
-// the breadcrumb or the current page.
-const menuLinks = computed(() => {
-  const trail = breadcrumb.value.map((item) => item.url.path)
-  return menu.value.flatMap(({ link }) => {
-    const url = link.url?.path
-    return url
-      ? [
-          {
-            label: link.label,
-            url,
-            isActive: url === route.path || trail.includes(url),
-          },
-        ]
-      : []
-  })
-})
 
 const subPages = computed(() =>
   findMenuChildren(menu.value, route.path).flatMap(({ link }) =>

@@ -78,7 +78,8 @@ The site gets a structure from Drupal's main menu:
     - Its content is 14b's.
 11. **Out of scope:**
     - the site search: 13g, or later
-    - the service links and a footer menu
+    - the service links and a footer menu (the service links came later, see
+      "The header, completed")
 
 ## Tasks
 
@@ -221,3 +222,57 @@ The site gets a structure from Drupal's main menu:
   - the patches in `drupal/patches/`
 - The starterkit's menus are bundles through `menu_item_extras`. Without it, the
   menu links' bundle is `menu_link_content`.
+
+## The header, completed (2026-09-29)
+
+The user compared the header with the mockup: the logo, four main sections, the
+search button and the service links (the meta navigation) were missing.
+
+- **Decisions (the user):**
+  - The frontend always renders the `Logo`; Drupal has no coat of arms. The site
+    config page's `field_coat_of_arms` and its seed media are gone, which also
+    drops 14b's coat-of-arms image.
+  - The service links are link paragraphs on the site config page
+    (`field_service_links`, only `link`), edited in blökkli in the header's
+    service bar.
+  - The search button is a link to a search page, `/<lang>/search`, which
+    doesn't search yet.
+- **Content:** the mockup's four sections, as editorial pages in the main menu:
+  Living here, Administration, Politics and News (with the latest news and the
+  upcoming events). Placeholders until 14b.
+- **Nuxt:**
+  - `PageHeader`: a `service` slot for the bar (the menu panel below md still
+    gets `serviceLinks`), and `searchUrl` instead of the search toggle and its
+    panel.
+  - `Paragraph/Link/Service.vue` renders a link in the bar (`renderFor` the new
+    field list type `service`).
+  - `SiteShell` renders the header, `<main>` and the footer around the route
+    page and the search page. The search page runs the route query for its path:
+    Drupal has no route there, so it only brings the config pages and the menu.
+    Its language links are built in Nuxt (`LANGUAGE_NAMES`).
+  - Drupal's toolbar (the `drupal` layout) shows from lg only, where it fits,
+    and on the search page too; an empty list of local tasks is hidden.
+- **Verified:** the header in EN, DE and FR (the current section marked, the
+  service links, the search link, the shield); the search page in all three
+  languages; the menu panel at 390 px with the service links and no horizontal
+  overflow; the service links in the editor (only links, the bar's rendering);
+  `ddev check-routes` with `/de/search`.
+- **A new UI text needs a second Nuxt restart:** nuxt-graphql-middleware reads
+  the texts fragment before nuxt-easy-texts rewrites it, so the first restart
+  still serves the old `loadTexts` query.
+
+### The banner (2026-09-29)
+
+The user: the notice becomes its own paragraph type, with options, at the very
+top, since its yellow clashed with the band of the page's header below it.
+
+- **`banner`:** `field_title` ("Text", plain, required, translatable) and
+  `field_link` (optional). With a link, the text is the link. The option `color`
+  (swatches): yellow, blue, green and red, with the callout's icons. Only
+  `field_notice` allows it, and it's the only type there.
+- **Adding one:** new paragraphs are validated, so the text has a default
+  ("Lorem ipsum dolor", as the text paragraph) and is edited in place
+  (`editable:field_title`); see the finding on required fields (F7).
+- **`PageHeader`:** a `banner` slot after the skip link, above the service bar.
+- **Verified:** the banner first in the header in EN and FR, with its link; in
+  the editor, the colour swatches, a colour change, and adding a second banner.

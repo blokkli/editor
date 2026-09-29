@@ -1,6 +1,9 @@
 # The main menu. Pages and editorial pages get their URL from their place in
 # it (pathauto).
 main:
+  - key: living-here
+    title: { en: Living here, de: Leben & Wohnen, fr: Vivre ici }
+    link: { node: living-here }
   - key: administration
     title: { en: Administration, de: Verwaltung, fr: Administration }
     link: { node: administration }
@@ -12,3 +15,9 @@ main:
           de: Wann es eine Bewilligung braucht und wie Sie sie beantragen.
           fr: Quand il faut un permis, et comment le demander.
         link: { node: building-permits }
+  - key: politics
+    title: { en: Politics, de: Politik, fr: Politique }
+    link: { node: politics }
+  - key: news
+    title: { en: News, de: Aktuelles, fr: Actualités }
+    link: { node: news }

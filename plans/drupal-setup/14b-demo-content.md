@@ -39,15 +39,14 @@ adds types.
         of each range, in the longest language)
   - [ ] dates relative to the bake (chunk 05)
   - [ ] scheduled content (13e): a news item that publishes later (the lakeside
-        pool's opening), and the "pool closed" text in the site notice with an
+        pool's opening), and the "pool closed" banner in the site notice with an
         unpublish date, set in every language it has (F24). Events get their
         unpublish date from the hook when they're saved.
 - [ ] Images and other media: openly licensed (CC0, public domain, CC BY, CC
       BY-SA; no NC or ND), without recognisable real landmarks or place names.
       Record every file's source and licence, and fill the media credit field.
-- [ ] The coat of arms of Blockingen/Bloquens (invented). A raster image (PNG or
-      WebP): image styles can't process SVG (13c). The design is the `Logo`
-      component's shield (15a); export it from there.
+- ~~The coat of arms as a media image.~~ Dropped: the frontend always renders
+  the `Logo` (the user, 2026-09-29, 15c).
 - [ ] Real photos and copy for what the mockups of 15a show as placeholders.
 - [ ] Suggested tasks for the sandbox's welcome panel (chunk 09).
 

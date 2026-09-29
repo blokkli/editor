@@ -27,6 +27,7 @@ routes=(
   "/media-kit nuxt"
   "/administration nuxt"
   "/en/blokkli/library-item/x nuxt"
+  "/de/search nuxt"
   "/blokkli/template/x nuxt"
   # Drupal
   "/user/login drupal"

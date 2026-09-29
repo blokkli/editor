@@ -126,7 +126,8 @@ The page's eyebrow waits for the menus (15c).
     have content.
   - No link while editing.
 - **`ConfigPage/Site`** (the header):
-  - the droppable coat of arms, falling back to the `Logo`
+  - the droppable coat of arms, falling back to the `Logo` (since 2026-09-29
+    always the `Logo`, with editable service links: see 15c)
   - the editable site name
   - the language switch as a prop (hidden while editing and previewing)
   - **The notice:** a `warning-light` band with the warning icon.

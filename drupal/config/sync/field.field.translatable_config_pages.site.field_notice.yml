@@ -4,8 +4,7 @@ status: true
 dependencies:
   config:
     - field.storage.translatable_config_pages.field_notice
-    - paragraphs.paragraphs_type.link
-    - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.banner
     - translatable_config_pages.translatable_config_pages_type.site
   module:
     - entity_reference_revisions
@@ -23,7 +22,6 @@ settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
-      link: link
-      text: text
+      banner: banner
     negate: 0
 field_type: entity_reference_revisions

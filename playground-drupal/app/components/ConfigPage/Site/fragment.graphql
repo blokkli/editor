@@ -5,8 +5,11 @@ fragment configPageSite on TranslatableConfigPagesSite {
     path
   }
   siteName: fieldSiteName
-  coatOfArms: fieldCoatOfArms {
-    ...mediaImage
+  serviceLinks: fieldServiceLinks {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLink
+    }
   }
   blokkliProps {
     ...blokkliProps

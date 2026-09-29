@@ -1,0 +1,32 @@
+uuid: 731c0b81-bc1a-401f-90b4-cc0c5243ae77
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+    - scheduler
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: true
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: fieldset
+    publish_enable: true
+    publish_past_date: publish
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: false
+    show_message_after_update: false
+    unpublish_enable: true
+    unpublish_required: false
+    unpublish_revision: false
+id: banner
+label: Banner
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

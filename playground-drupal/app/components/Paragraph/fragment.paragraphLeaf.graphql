@@ -12,4 +12,5 @@ fragment paragraphLeaf on Paragraph {
   ...paragraphTeaser
   ...paragraphContact
   ...paragraphEmbed
+  ...paragraphBanner
 }

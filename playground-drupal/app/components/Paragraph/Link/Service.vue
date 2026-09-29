@@ -1,0 +1,37 @@
+<template>
+  <li>
+    <SiteLink
+      v-blokkli-droppable:field_link
+      :to="target.href"
+      class="block py-2 hover:underline"
+    >
+      <span v-blokkli-editable:field_title>{{ label }}</span>
+    </SiteLink>
+  </li>
+</template>
+
+<script lang="ts" setup>
+import { computed, defineBlokkli } from '#imports'
+import { SiteLink } from '#components'
+import type { ParagraphLinkFragment } from '#graphql-operations'
+import { linkTarget } from './target'
+
+// A link in the header's service bar (the site config page's service links).
+const props = defineProps<ParagraphLinkFragment>()
+
+const target = computed(() => linkTarget(props.link))
+
+const label = computed(
+  () => props.title || target.value.label || target.value.href,
+)
+
+defineBlokkli({
+  bundle: 'link',
+  renderFor: [{ fieldListType: 'service' }],
+  globalOptions: ['bkVisibleLanguages'],
+  editor: {
+    icon: 'bk_mdi_link',
+    editTitle: (el) => el.querySelector('a > span')?.textContent,
+  },
+})
+</script>

@@ -36,9 +36,6 @@ fragment pbMutatedEntity on Entity {
   }
   ... on TranslatableConfigPagesSite {
     siteName: fieldSiteName
-    coatOfArms: fieldCoatOfArms {
-      ...mediaImage
-    }
   }
   libraryItemLabel: label
 }

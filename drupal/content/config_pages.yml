@@ -17,10 +17,20 @@
 - key: site
   type: site
   field_site_name: { en: Blockingen, de: Blockingen, fr: Bloquens }
-  field_coat_of_arms: { media: coat-of-arms }
+  # The meta navigation, in the header's service bar.
+  field_service_links:
+    - type: link
+      field_link: https://www.example.com/online-counter
+      field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
+    - type: link
+      field_link: { node: town-hall }
+      field_title: { en: Contact, de: Kontakt, fr: Contact }
+  # Banners at the very top of every page.
   field_notice:
-    - type: text
-      field_text:
-        en: '<p>The lakeside pool is closed on Mondays for maintenance.</p>'
-        de: '<p>Das Strandbad ist montags wegen Unterhaltsarbeiten geschlossen.</p>'
-        fr: '<p>La piscine du lac est fermée le lundi pour l''entretien.</p>'
+    - type: banner
+      options: { color: warning }
+      field_title:
+        en: The lakeside pool opens on Saturday. It's closed on Mondays for maintenance.
+        de: Das Strandbad öffnet am Samstag. Montags ist es wegen Unterhaltsarbeiten geschlossen.
+        fr: La piscine du lac ouvre samedi. Elle est fermée le lundi pour l'entretien.
+      field_link: { node: pool-opening }
