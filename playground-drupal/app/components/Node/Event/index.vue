@@ -23,9 +23,9 @@
             }}
           </template>
           <template v-if="registration?.uri?.path" #actions>
-            <a :href="registration.uri.path" class="button">
+            <SiteLink :to="registration.uri.path" class="button">
               {{ $texts('event.register', 'Register') }}
-            </a>
+            </SiteLink>
           </template>
         </HostHeader>
       </template>
@@ -50,7 +50,7 @@
 
 <script lang="ts" setup>
 import { computed, useEasyTexts } from '#imports'
-import { BlokkliField, BlokkliProvider } from '#components'
+import { BlokkliField, BlokkliProvider, SiteLink } from '#components'
 import type { BreadcrumbFragment, NodeEventFragment } from '#graphql-operations'
 import Facts from '~/components/Facts/index.vue'
 import FactsItem from '~/components/Facts/Item/index.vue'

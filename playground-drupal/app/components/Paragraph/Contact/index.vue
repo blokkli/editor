@@ -16,20 +16,20 @@
       <!-- The footer: a column on the ink ground. -->
       <div v-else-if="fieldListType === 'footer'" class="flex flex-col gap-2">
         <h2 class="text-label text-white uppercase">
-          <a :href="office.url?.path" class="hover:underline">
+          <SiteLink :to="office.url?.path" class="hover:underline">
             {{ office.title }}
-          </a>
+          </SiteLink>
         </h2>
         <OfficeDetails v-bind="office" :compact />
       </div>
       <div v-else class="flex flex-col gap-4 border border-line bg-white p-6">
         <h3 class="font-serif text-h3 font-semibold">
-          <a
-            :href="office.url?.path"
+          <SiteLink
+            :to="office.url?.path"
             class="hover:text-primary hover:underline"
           >
             {{ office.title }}
-          </a>
+          </SiteLink>
         </h3>
         <OfficeDetails v-bind="office" :compact />
       </div>
@@ -47,6 +47,7 @@
 
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
+import { SiteLink } from '#components'
 import type { ParagraphContactFragment } from '#graphql-operations'
 import OfficeContact from '~/components/Office/Contact/index.vue'
 import OfficeDetails from '~/components/Office/Details/index.vue'

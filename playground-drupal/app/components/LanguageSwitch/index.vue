@@ -9,15 +9,15 @@
         >
           {{ item.language.toUpperCase() }}
         </span>
-        <a
+        <SiteLink
           v-else-if="item.link"
-          :href="item.link.url.path"
+          :to="item.link.url.path"
           :hreflang="item.language"
           :title="item.link.title"
           class="block px-1.5 py-2 opacity-80 hover:underline hover:opacity-100"
         >
           {{ item.language.toUpperCase() }}
-        </a>
+        </SiteLink>
         <span v-else class="block cursor-not-allowed px-1.5 py-2 opacity-40">
           {{ item.language.toUpperCase() }}
         </span>
@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
+import { SiteLink } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 import { useLanguage } from '~/composables/useLanguage'
 import { LANGUAGES } from '#shared/languages'

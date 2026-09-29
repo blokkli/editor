@@ -4,15 +4,16 @@
       {{ $texts('contact.label', 'Contact') }}
     </h2>
     <p class="font-serif text-h3 font-semibold">
-      <a :href="url?.path" class="hover:text-primary hover:underline">
+      <SiteLink :to="url?.path" class="hover:text-primary hover:underline">
         {{ title }}
-      </a>
+      </SiteLink>
     </p>
     <OfficeDetails v-bind="props" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { SiteLink } from '#components'
 import type { OfficeContactFragment } from '#graphql-operations'
 import OfficeDetails from '~/components/Office/Details/index.vue'
 

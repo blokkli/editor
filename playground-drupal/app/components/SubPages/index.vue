@@ -5,8 +5,8 @@
   >
     <ul class="grid gap-x-grid gap-y-8 md:grid-cols-2 lg:grid-cols-3">
       <li v-for="item in items" :key="item.url">
-        <a
-          :href="item.url"
+        <SiteLink
+          :to="item.url"
           class="group flex h-full flex-col gap-2 border-t border-ink pt-4 text-ink"
         >
           <span
@@ -21,14 +21,14 @@
           <span v-if="item.description" class="text-muted">
             {{ item.description }}
           </span>
-        </a>
+        </SiteLink>
       </li>
     </ul>
   </nav>
 </template>
 
 <script lang="ts" setup>
-import { SpriteSymbol } from '#components'
+import { SiteLink, SpriteSymbol } from '#components'
 
 // An editorial page's children in the main menu, with the menu links'
 // descriptions.

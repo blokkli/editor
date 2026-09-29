@@ -2,9 +2,9 @@
   <div
     :class="{ 'container-content': !parentType && fieldListType === 'default' }"
   >
-    <a
+    <SiteLink
       v-blokkli-droppable:field_link
-      :href="target.href"
+      :to="target.href"
       class="button"
       :class="{
         'is-secondary': options.style === 'secondary',
@@ -13,12 +13,13 @@
       }"
     >
       <span v-blokkli-editable:field_title>{{ label }}</span>
-    </a>
+    </SiteLink>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineBlokkli, useEasyTexts } from '#imports'
+import { SiteLink } from '#components'
 import type { ParagraphLinkFragment } from '#graphql-operations'
 import { linkTarget } from './target'
 

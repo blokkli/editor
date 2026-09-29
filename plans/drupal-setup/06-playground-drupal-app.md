@@ -267,3 +267,27 @@ tasks in the frontend, as in the starterkit.
   filtered toolbar), in EN, DE and FR; hidden while editing; the dropdowns in
   both toolbars; `ddev bake` and `ddev bake --source=de` with a clean
   `config:status`.
+
+### Links (2026-09-29)
+
+Every link was a plain `<a>`, so each click loaded the whole app again. The
+user: links navigate in the app; our own component instead of vuepal's
+`VuepalLink`, whose click handler intercepts cmd/ctrl-click and would route
+Drupal's pages through Nuxt.
+
+- **`SiteLink`** wraps `NuxtLink`, which already leaves modifier keys, middle
+  clicks, `target` and prevented events to the browser. Other sites load as
+  usual (`NuxtLink` detects them), and so do Drupal's own pages and files:
+  `isDrupalPath()` (`app/helpers/drupalPath.ts`) mirrors nginx's three Drupal
+  locations, and `/sites/…` covers the files. Without a URL it's an anchor
+  without `href`, as before.
+- **`test/unit/drupal-path.test.ts`** checks `isDrupalPath()` against every row
+  of `ddev check-routes`, so a new Drupal path in nginx needs a row there and
+  fails the test until the pattern follows.
+- **Plain `<a>` stays** for the skip link, the table of contents' anchors, the
+  video's link (always another site) and `tel:`/`mailto:`.
+- **Verified:** header, breadcrumb, sub-pages, teasers, link list rows, the
+  search link and the language switch navigate in the app (the page isn't
+  reloaded, the toolbar stays mounted and its access query runs once);
+  documents, Drupal's forms, other sites, ctrl-click and middle click don't;
+  back works; a click in edit mode doesn't navigate.

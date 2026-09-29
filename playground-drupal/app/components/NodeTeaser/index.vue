@@ -1,5 +1,9 @@
 <template>
-  <a v-if="display === 'card'" :href class="group flex flex-col gap-3 text-ink">
+  <SiteLink
+    v-if="display === 'card'"
+    :to="href"
+    class="group flex flex-col gap-3 text-ink"
+  >
     <MediaImage
       v-if="hero"
       v-bind="hero"
@@ -14,10 +18,10 @@
       {{ label }}
     </h3>
     <p v-if="teaserLead">{{ teaserLead }}</p>
-  </a>
-  <a
+  </SiteLink>
+  <SiteLink
     v-else
-    :href
+    :to="href"
     class="group flex items-center gap-4 border-b border-line py-4 text-ink"
   >
     <span
@@ -42,12 +46,12 @@
       <p v-if="meta" class="text-small text-muted">{{ meta }}</p>
     </div>
     <SpriteSymbol name="arrow-right" class="size-5 shrink-0 text-primary" />
-  </a>
+  </SiteLink>
 </template>
 
 <script lang="ts" setup>
 import { computed, useEasyTexts } from '#imports'
-import { SpriteSymbol } from '#components'
+import { SiteLink, SpriteSymbol } from '#components'
 import type {
   MediaImageFragment,
   NodeTeaserFragment,

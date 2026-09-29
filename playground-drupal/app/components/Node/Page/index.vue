@@ -17,12 +17,12 @@
           <template v-if="office || changedDate?.first?.day" #meta>
             <span v-if="office">
               {{ $texts('page.responsible', 'Responsible:') }}
-              <a
-                :href="office.url?.path"
+              <SiteLink
+                :to="office.url?.path"
                 class="font-semibold text-ink hover:text-primary hover:underline"
               >
                 {{ office.title }}
-              </a>
+              </SiteLink>
             </span>
             <span v-if="changedDate?.first?.day">
               {{
@@ -54,7 +54,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
-import { BlokkliField, BlokkliProvider } from '#components'
+import { BlokkliField, BlokkliProvider, SiteLink } from '#components'
 import type { BreadcrumbFragment, NodePageFragment } from '#graphql-operations'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
