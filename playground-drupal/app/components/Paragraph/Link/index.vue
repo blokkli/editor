@@ -4,7 +4,7 @@
   >
     <a
       v-blokkli-droppable:field_link
-      :href
+      :href="target.href"
       class="button"
       :class="{
         'is-secondary': options.style === 'secondary',
@@ -19,29 +19,22 @@
 
 <script lang="ts" setup>
 import { computed, defineBlokkli, useEasyTexts } from '#imports'
-import type { ParagraphButtonFragment } from '#graphql-operations'
+import type { ParagraphLinkFragment } from '#graphql-operations'
+import { linkTarget } from './target'
 
-const props = defineProps<ParagraphButtonFragment>()
-
-// A button linking to a document (e.g. a pasted PDF) links to the file.
-const href = computed(() => {
-  const uri = props.link?.uri
-  if (uri && 'entity' in uri && uri.entity && 'mediaFileUrl' in uri.entity) {
-    return uri.entity.mediaFileUrl?.path ?? uri.path ?? undefined
-  }
-  return uri?.path ?? undefined
-})
+// A link as a button. In a link list, InList.vue renders it as a row.
+const props = defineProps<ParagraphLinkFragment>()
 
 const { $texts } = useEasyTexts()
 
-const label = computed(() => {
-  const uri = props.link?.uri
-  const entityLabel = uri && 'entity' in uri ? uri.entity?.label : undefined
-  return props.title || entityLabel || $texts('button.label', 'Button')
-})
+const target = computed(() => linkTarget(props.link))
+
+const label = computed(
+  () => props.title || target.value.label || $texts('link.label', 'Link'),
+)
 
 const { options, parentType, fieldListType } = defineBlokkli({
-  bundle: 'button',
+  bundle: 'link',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     style: {
@@ -57,7 +50,7 @@ const { options, parentType, fieldListType } = defineBlokkli({
     },
   },
   editor: {
-    icon: 'bk_mdi_buttons_alt',
+    icon: 'bk_mdi_link',
     editTitle: (el) => el.textContent,
   },
 })

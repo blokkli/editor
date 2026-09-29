@@ -30,7 +30,7 @@ field_paragraphs:
       en: '<p>Please bring an identity card for all registrations.</p>'
       de: '<p>Bitte bringen Sie für alle Anmeldungen einen Ausweis mit.</p>'
       fr: '<p>Pour toutes les annonces, veuillez vous munir d''une pièce d''identité.</p>'
-  - type: button
+  - type: link
     options: { style: secondary }
     field_link: { node: building-permits }
     field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }

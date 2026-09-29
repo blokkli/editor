@@ -215,3 +215,11 @@ Unlike 15a and 15b, this chunk changes the Drupal content model.
 - **13g:** the search providers cover editorial pages.
 - **13i:** the table of contents fragment joins the sidebar's default, before
   the contact (the detail mockup's order).
+
+## Changed after chunk 05 (2026-09-28)
+
+The user changed the model after trying chunk 05's bake (see
+[14a](14a-demo-concept.md#block-types)): `button` became the generic `link`,
+`downloads` became `link_list` (link blocks instead of `field_documents`), and
+the teaser links to any URL (`field_link` with title, lead and image overrides
+instead of `field_node`). Detail pages allow no sections and no fragments.

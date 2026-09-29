@@ -6,10 +6,11 @@ dependencies:
     - field.storage.node.field_aside
     - node.type.page
     - paragraphs.paragraphs_type.blokkli_fragment
-    - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.contact
-    - paragraphs.paragraphs_type.downloads
     - paragraphs.paragraphs_type.from_library
+    - paragraphs.paragraphs_type.link
+    - paragraphs.paragraphs_type.link_list
+    - paragraphs.paragraphs_type.title
   module:
     - entity_reference_revisions
 id: node.page.field_aside
@@ -27,9 +28,10 @@ settings:
   handler_settings:
     target_bundles:
       blokkli_fragment: blokkli_fragment
-      button: button
       contact: contact
-      downloads: downloads
       from_library: from_library
+      link: link
+      link_list: link_list
+      title: title
     negate: 0
 field_type: entity_reference_revisions

@@ -1,13 +1,14 @@
-# The blocks without nested blocks. Structure blocks spread this instead of the
-# `paragraph` union, which would be recursive.
+# The blocks without nested blocks, and the link list, whose blocks are links.
+# Structure blocks spread this instead of the `paragraph` union, which would be
+# recursive.
 fragment paragraphLeaf on Paragraph {
   ...paragraphTitle
   ...paragraphText
   ...paragraphImage
   ...paragraphVideo
-  ...paragraphButton
+  ...paragraphLink
   ...paragraphTable
-  ...paragraphDownloads
+  ...paragraphLinkList
   ...paragraphTeaser
   ...paragraphContact
   ...paragraphEmbed

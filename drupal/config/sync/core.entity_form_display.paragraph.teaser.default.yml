@@ -3,20 +3,47 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.teaser.field_node
+    - field.field.paragraph.teaser.field_lead
+    - field.field.paragraph.teaser.field_link
+    - field.field.paragraph.teaser.field_media
+    - field.field.paragraph.teaser.field_title
     - paragraphs.paragraphs_type.teaser
+  module:
+    - link
+    - media_library
 id: paragraph.teaser.default
 targetEntityType: paragraph
 bundle: teaser
 mode: default
 content:
-  field_node:
-    type: entity_reference_autocomplete
+  field_lead:
+    type: string_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+  field_link:
+    type: link_default
     weight: 0
     region: content
     settings:
-      match_operator: CONTAINS
-      match_limit: 10
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_media:
+    type: media_library_widget
+    weight: 3
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }

@@ -1,11 +1,16 @@
 <template>
   <div
-    v-blokkli-droppable:field_node
-    :class="{ 'container-content': !parentType, hidden: !node && !isEditing }"
+    v-blokkli-droppable:field_link
+    :class="{ 'container-content': !parentType, hidden: !url && !isEditing }"
   >
     <NodeTeaser
-      v-if="node"
+      v-if="url"
+      v-blokkli-droppable:field_media
       :node
+      :title
+      :lead
+      :image
+      :url
       :display="options.display"
       :class="{ 'border-t border-line': options.display === 'list' }"
     />
@@ -21,11 +26,39 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
-import type { ParagraphTeaserFragment } from '#graphql-operations'
+import { computed, defineBlokkli } from '#imports'
+import type {
+  NodeTeaserFragment,
+  ParagraphTeaserFragment,
+} from '#graphql-operations'
 import NodeTeaser from '~/components/NodeTeaser/index.vue'
 
-defineProps<ParagraphTeaserFragment>()
+// A teaser for a page, news item or event, or for any URL. Its title, lead
+// and image override the linked node's.
+const props = defineProps<ParagraphTeaserFragment>()
+
+// Only nodes have fields in the fragment: a document's entity is empty.
+function isNode(
+  entity: NodeTeaserFragment | object,
+): entity is NodeTeaserFragment {
+  return '__typename' in entity
+}
+
+const node = computed(() => {
+  const uri = props.link?.uri
+  const entity = uri && 'entity' in uri ? uri.entity : null
+  return entity && isNode(entity) ? entity : null
+})
+
+// A link to a page the visitor can't see (e.g. unpublished) has no entity:
+// without a title of its own, the teaser isn't shown.
+const url = computed(() => {
+  const uri = props.link?.uri
+  if (!uri || ('entity' in uri && !node.value && !props.title)) {
+    return null
+  }
+  return uri.path
+})
 
 const { options, parentType } = defineBlokkli({
   bundle: 'teaser',

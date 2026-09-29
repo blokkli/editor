@@ -112,11 +112,10 @@ schema_configuration:
         default_langcode: default_langcode
         field_blokkli_fragment_name: field_blokkli_fragment_name
         field_caption: field_caption
-        field_documents: field_documents
+        field_lead: field_lead
         field_left: field_left
         field_link: field_link
         field_media: field_media
-        field_node: field_node
         field_office: field_office
         field_paragraphs: field_paragraphs
         field_reusable_paragraph: field_reusable_paragraph
@@ -177,6 +176,10 @@ schema_configuration:
           enabled: true
         image:
           enabled: true
+        link:
+          enabled: true
+        link_list:
+          enabled: true
         remote_video:
           enabled: true
       menu_link_content:
@@ -198,15 +201,11 @@ schema_configuration:
           enabled: true
         blokkli_fragment:
           enabled: true
-        button:
-          enabled: true
         chart:
           enabled: true
         columns:
           enabled: true
         contact:
-          enabled: true
-        downloads:
           enabled: true
         embed:
           enabled: true
@@ -215,6 +214,10 @@ schema_configuration:
         gallery:
           enabled: true
         image:
+          enabled: true
+        link:
+          enabled: true
+        link_list:
           enabled: true
         section:
           enabled: true

@@ -428,10 +428,19 @@
               ]"
             />
             <LinkList
-              download
               :items="[
-                { label: 'Formular Baugesuch', url: '#', meta: 'PDF · 240 KB' },
-                { label: 'Gebührenreglement', url: '#', meta: 'PDF · 310 KB' },
+                {
+                  label: 'Formular Baugesuch',
+                  url: '#',
+                  meta: 'PDF · 240 KB',
+                  download: true,
+                },
+                {
+                  label: 'Gebührenreglement',
+                  url: '#',
+                  meta: 'PDF · 310 KB',
+                  download: true,
+                },
               ]"
             />
           </div>

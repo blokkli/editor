@@ -3,8 +3,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.teaser.field_node
+    - field.field.paragraph.link.field_link
+    - field.field.paragraph.teaser.field_link
     - node.type.editorial
+    - paragraphs.paragraphs_type.link
     - paragraphs.paragraphs_type.teaser
   module:
     - node
@@ -18,5 +20,8 @@ paragraph_field: null
 mappings:
   -
     paragraph_bundle: teaser
-    paragraph_field: field_node
+    paragraph_field: field_link
+  -
+    paragraph_bundle: link
+    paragraph_field: field_link
 context_description: null

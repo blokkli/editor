@@ -17,48 +17,6 @@
     }
   },
   "blokkli_fragment": {},
-  "button": {
-    "bkVisibleLanguages": {
-      "default": [],
-      "description": {
-        "de": "Nur in bestimmten Sprachen anzeigen.",
-        "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
-      },
-      "label": {
-        "de": "Sichtbare Sprachen",
-        "en": "Visible languages",
-        "fr": "Langues visibles"
-      },
-      "options": {},
-      "type": "checkboxes"
-    },
-    "style": {
-      "default": "primary",
-      "label": {
-        "de": "Stil",
-        "en": "Style",
-        "fr": "Style"
-      },
-      "options": {
-        "primary": {
-          "label": {
-            "de": "Primär",
-            "en": "Primary",
-            "fr": "Principal"
-          }
-        },
-        "secondary": {
-          "label": {
-            "de": "Sekundär",
-            "en": "Secondary",
-            "fr": "Secondaire"
-          }
-        }
-      },
-      "type": "radios"
-    }
-  },
   "chart": {
     "bkVisibleLanguages": {
       "default": [],
@@ -218,23 +176,6 @@
         }
       },
       "type": "radios"
-    }
-  },
-  "downloads": {
-    "bkVisibleLanguages": {
-      "default": [],
-      "description": {
-        "de": "Nur in bestimmten Sprachen anzeigen.",
-        "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
-      },
-      "label": {
-        "de": "Sichtbare Sprachen",
-        "en": "Visible languages",
-        "fr": "Langues visibles"
-      },
-      "options": {},
-      "type": "checkboxes"
     }
   },
   "embed": {
@@ -433,6 +374,65 @@
         }
       },
       "type": "radios"
+    }
+  },
+  "link": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "style": {
+      "default": "primary",
+      "label": {
+        "de": "Stil",
+        "en": "Style",
+        "fr": "Style"
+      },
+      "options": {
+        "primary": {
+          "label": {
+            "de": "Primär",
+            "en": "Primary",
+            "fr": "Principal"
+          }
+        },
+        "secondary": {
+          "label": {
+            "de": "Sekundär",
+            "en": "Secondary",
+            "fr": "Secondaire"
+          }
+        }
+      },
+      "type": "radios"
+    }
+  },
+  "link_list": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
     }
   },
   "section": {

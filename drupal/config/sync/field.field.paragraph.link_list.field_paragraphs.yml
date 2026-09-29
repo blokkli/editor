@@ -1,0 +1,27 @@
+uuid: 2e277cb6-fec1-4915-92bc-c69605f7776c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.link
+    - paragraphs.paragraphs_type.link_list
+  module:
+    - entity_reference_revisions
+id: paragraph.link_list.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: link_list
+label: Links
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      link: link
+    negate: 0
+field_type: entity_reference_revisions

@@ -3,11 +3,9 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.button.field_link
-    - field.field.paragraph.downloads.field_documents
+    - field.field.paragraph.link.field_link
     - media.type.document
-    - paragraphs.paragraphs_type.button
-    - paragraphs.paragraphs_type.downloads
+    - paragraphs.paragraphs_type.link
   module:
     - media
     - paragraphs
@@ -19,9 +17,6 @@ paragraph_bundle: null
 paragraph_field: null
 mappings:
   -
-    paragraph_bundle: button
+    paragraph_bundle: link
     paragraph_field: field_link
-  -
-    paragraph_bundle: downloads
-    paragraph_field: field_documents
 context_description: null

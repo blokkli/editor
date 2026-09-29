@@ -1,5 +1,17 @@
 fragment paragraphTeaser on ParagraphTeaser {
-  node: fieldNode {
-    ...nodeTeaser
+  title: fieldTitle
+  lead: fieldLead
+  image: fieldMedia {
+    ...mediaImage
+  }
+  link: fieldLink {
+    uri {
+      path
+      ... on EntityUrl {
+        entity {
+          ...nodeTeaser
+        }
+      }
+    }
   }
 }

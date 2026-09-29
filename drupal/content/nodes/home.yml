@@ -21,7 +21,17 @@ field_paragraphs:
       fr: '<p>Blockingen et Bloquens sont une seule commune avec deux noms : on y parle allemand et français, et le lac appartient à tout le monde.</p>'
   - type: teaser
     options: { display: card }
-    field_node: { node: pool-opening }
+    field_link: { node: pool-opening }
+  # A teaser for another site: its title, lead and image are its own.
+  - type: teaser
+    options: { display: card }
+    field_link: https://www.example.com/regatta
+    field_title: { en: The lake regatta, de: Die Seeregatta, fr: La régate du lac }
+    field_lead:
+      en: The sailing club's regatta, on the first weekend of September.
+      de: Die Regatta des Segelclubs, am ersten Septemberwochenende.
+      fr: La régate du club de voile, le premier week-end de septembre.
+    field_media: { media: lake }
   - type: blokkli_fragment
     field_blokkli_fragment_name: latest_news
   - type: blokkli_fragment

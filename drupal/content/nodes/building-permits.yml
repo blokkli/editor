@@ -12,22 +12,20 @@ field_paragraphs:
       en: '<p>Most buildings, extensions and conversions need a permit. Apply before you start: work without a permit can be stopped.</p>'
       de: '<p>Die meisten Bauten, Anbauten und Umbauten brauchen eine Bewilligung. Reichen Sie das Gesuch vor Baubeginn ein: Arbeiten ohne Bewilligung können gestoppt werden.</p>'
       fr: '<p>La plupart des constructions, agrandissements et transformations nécessitent un permis. Déposez la demande avant le début des travaux : des travaux sans permis peuvent être arrêtés.</p>'
-  - type: section
-    options: { background: stone, columns: 2 }
+  - type: title
     field_title: { en: Applying, de: Gesuch einreichen, fr: Déposer une demande }
-    field_paragraphs:
-      - type: text
-        key: counter-text
-        field_text:
-          en: '<p>Hand in the application form with the plans at the counter of the building office, or send it by post.</p>'
-          de: '<p>Geben Sie das Gesuchsformular mit den Plänen am Schalter des Bauamts ab, oder senden Sie es per Post.</p>'
-          fr: '<p>Remettez le formulaire de demande avec les plans au guichet du service des constructions, ou envoyez-le par la poste.</p>'
-      - type: table
-        options: { striped: true }
-        field_table:
-          en: '<table><thead><tr><th>Project</th><th>Fee</th></tr></thead><tbody><tr><td>Garden shed</td><td>CHF 150</td></tr><tr><td>Extension</td><td>CHF 800</td></tr><tr><td>New house</td><td>CHF 2,500</td></tr></tbody></table>'
-          de: '<table><thead><tr><th>Vorhaben</th><th>Gebühr</th></tr></thead><tbody><tr><td>Gartenhaus</td><td>CHF 150</td></tr><tr><td>Anbau</td><td>CHF 800</td></tr><tr><td>Neubau</td><td>CHF 2500</td></tr></tbody></table>'
-          fr: '<table><thead><tr><th>Projet</th><th>Émolument</th></tr></thead><tbody><tr><td>Cabanon de jardin</td><td>CHF 150</td></tr><tr><td>Agrandissement</td><td>CHF 800</td></tr><tr><td>Maison neuve</td><td>CHF 2500</td></tr></tbody></table>'
+  - type: text
+    key: counter-text
+    field_text:
+      en: '<p>Hand in the application form with the plans at the counter of the building office, or send it by post.</p>'
+      de: '<p>Geben Sie das Gesuchsformular mit den Plänen am Schalter des Bauamts ab, oder senden Sie es per Post.</p>'
+      fr: '<p>Remettez le formulaire de demande avec les plans au guichet du service des constructions, ou envoyez-le par la poste.</p>'
+  - type: table
+    options: { striped: true }
+    field_table:
+      en: '<table><thead><tr><th>Project</th><th>Fee</th></tr></thead><tbody><tr><td>Garden shed</td><td>CHF 150</td></tr><tr><td>Extension</td><td>CHF 800</td></tr><tr><td>New house</td><td>CHF 2,500</td></tr></tbody></table>'
+      de: '<table><thead><tr><th>Vorhaben</th><th>Gebühr</th></tr></thead><tbody><tr><td>Gartenhaus</td><td>CHF 150</td></tr><tr><td>Anbau</td><td>CHF 800</td></tr><tr><td>Neubau</td><td>CHF 2500</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Projet</th><th>Émolument</th></tr></thead><tbody><tr><td>Cabanon de jardin</td><td>CHF 150</td></tr><tr><td>Agrandissement</td><td>CHF 800</td></tr><tr><td>Maison neuve</td><td>CHF 2500</td></tr></tbody></table>'
   - type: title
     field_title:
       en: Frequently asked questions
@@ -72,7 +70,7 @@ field_paragraphs:
     field_video: { media: big-buck-bunny }
   - type: from_library
     field_reusable_paragraph: { library: counter-hours }
-  - type: button
+  - type: link
     options: { style: primary }
     field_link: { node: town-hall }
     field_title:
@@ -82,9 +80,18 @@ field_paragraphs:
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
-  - type: downloads
-    field_documents: [{ media: permit-form }]
-  - type: button
-    options: { style: secondary }
-    field_link: { node: administration }
-    field_title: { en: All services, de: Alle Dienstleistungen, fr: Toutes les prestations }
+  - type: title
+    field_title: { en: Documents and links, de: Dokumente und Links, fr: Documents et liens }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { media: permit-form }
+      - type: link
+        field_link: { node: administration }
+        field_title: { en: All services, de: Alle Dienstleistungen, fr: Toutes les prestations }
+      - type: link
+        field_link: https://www.example.com/building-law
+        field_title:
+          en: Cantonal building law
+          de: Kantonales Baugesetz
+          fr: Loi cantonale sur les constructions

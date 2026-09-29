@@ -3,14 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.button.field_link
-    - field.field.paragraph.button.field_title
-    - paragraphs.paragraphs_type.button
+    - field.field.paragraph.link.field_link
+    - field.field.paragraph.link.field_title
+    - paragraphs.paragraphs_type.link
   module:
     - link
-id: paragraph.button.default
+id: paragraph.link.default
 targetEntityType: paragraph
-bundle: button
+bundle: link
 mode: default
 content:
   field_link:

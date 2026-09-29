@@ -35,12 +35,7 @@
           <OfficeHours :hours />
         </FactsItem>
       </Facts>
-      <BlokkliField
-        name="field_paragraphs"
-        :list="paragraphs"
-        :allowed-fragments="['upcoming_events', 'latest_news']"
-        class="flow"
-      />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
     </HostLayout>
   </BlokkliProvider>
 </template>

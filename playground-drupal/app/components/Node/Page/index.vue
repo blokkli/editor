@@ -34,12 +34,7 @@
           </template>
         </HostHeader>
       </template>
-      <BlokkliField
-        name="field_paragraphs"
-        :list="paragraphs"
-        :allowed-fragments="['upcoming_events', 'latest_news']"
-        class="flow"
-      />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
       <template #toc>
         <TableOfContents :list="paragraphs" />
       </template>

@@ -4,11 +4,11 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_title
-    - paragraphs.paragraphs_type.button
-id: paragraph.button.field_title
+    - paragraphs.paragraphs_type.link
+id: paragraph.link.field_title
 field_name: field_title
 entity_type: paragraph
-bundle: button
+bundle: link
 label: Text
 description: ''
 required: false

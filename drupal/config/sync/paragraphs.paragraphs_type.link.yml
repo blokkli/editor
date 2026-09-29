@@ -22,8 +22,8 @@ third_party_settings:
     unpublish_enable: true
     unpublish_required: false
     unpublish_revision: false
-id: button
-label: Button
+id: link
+label: Link
 icon_uuid: null
 icon_default: null
 description: null

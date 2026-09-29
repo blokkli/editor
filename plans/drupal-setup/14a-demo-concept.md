@@ -83,6 +83,11 @@ paragraph types and bundles get added that end up wrong for it.
   - The home page is an editorial page, set as the front page.
 - **Changed in [15e](15e-events-and-offices.md) (the user, 2026-09-27):**
   offices have a hero image, like news and events.
+- **Changed after chunk 05 (the user, 2026-09-28):**
+  - Detail pages (sidebar layout) allow no sections and no fragments.
+  - Fragments are only for editorial pages. News, events and offices keep
+    sections.
+  - The sidebar allows titles as headings, e.g. above a link list.
 - Config pages: `footer` (a paragraphs field) and `site` (name, coat of arms, a
   site-wide notice with a paragraphs field). Covers 13c.
 - Library items and templates are hosts too (13d).
@@ -97,11 +102,11 @@ paragraph types and bundles get added that end up wrong for it.
 | `text`      | rich text                                  |                            | yes            |
 | `image`     | media, caption                             | width: content, wide, full | yes, + caption |
 | `video`     | remote video                               |                            | yes, embedded  |
-| `button`    | link or document, text                     | style: primary, secondary  | yes            |
+| `link`      | link (a page, a URL or a document), text   | style: primary, secondary  | yes (`button`) |
 | `table`     | text with a tables-and-links format        | striped                    | new            |
-| `downloads` | documents (several)                        |                            | new            |
+| `link_list` | link blocks (several)                      |                            | new            |
 | `contact`   | office (reference)                         | compact, full              | new            |
-| `teaser`    | page, news or event (reference)            | card, list                 | new            |
+| `teaser`    | link; title, lead, image (overrides)       | card, list                 | new            |
 | `gallery`   | image blocks (several)                     | grid, slider (proxy mode)  | new            |
 | `chart`     | chart data (charts module)                 | chart type, per the module | new (13i)      |
 | `embed`     | URL, heights per viewport (iframes module) |                            | new (13i)      |
@@ -116,6 +121,17 @@ paragraph types and bundles get added that end up wrong for it.
 
 The deepest path is the user's example: section > accordion > columns > text.
 The gallery isn't allowed in columns, which keeps the model at 4 levels.
+
+**Changed after chunk 05 (the user, 2026-09-28):**
+
+- **`button` became `link`:** on a page it's a button; in a link list, a row. A
+  link moves between the two. A document is a link too (`entity:media/N`), so a
+  document dropped from the media library becomes a link.
+- **`downloads` became `link_list`:** link blocks, so documents and links mix
+  and can be dragged. It has no title: a heading is a title block. It isn't
+  allowed in columns (4 levels).
+- **The teaser** links to a page or any URL. Its title, lead and image override
+  the linked page's.
 
 13b built this with a few changes (the accordion, the gallery, the table option,
 the credit, `width` as a global option): see its

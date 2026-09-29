@@ -24,5 +24,5 @@ msgstr "Convertir un texte en titre"
 msgid "Convert a title to a text"
 msgstr "Convertir un titre en texte"
 
-msgid "Convert a button to a text"
-msgstr "Convertir un bouton en texte"
+msgid "Convert a link to a text"
+msgstr "Convertir un lien en texte"

@@ -162,7 +162,7 @@
 
           <div class="flex flex-col gap-4">
             <h2 id="unterlagen" class="font-serif text-h2">Unterlagen</h2>
-            <LinkList download :items="DOCUMENTS" />
+            <LinkList :items="DOCUMENTS" />
           </div>
 
           <div class="flex flex-col gap-4">
@@ -276,10 +276,30 @@ const FEES = [
 ]
 
 const DOCUMENTS = [
-  { label: 'Formular Baugesuch', url: '#', meta: 'PDF · 240 KB' },
-  { label: 'Merkblatt Solaranlagen', url: '#', meta: 'PDF · 180 KB' },
-  { label: 'Baureglement der Gemeinde', url: '#', meta: 'PDF · 1.1 MB' },
-  { label: 'Gebührenreglement', url: '#', meta: 'PDF · 310 KB' },
+  {
+    label: 'Formular Baugesuch',
+    url: '#',
+    meta: 'PDF · 240 KB',
+    download: true,
+  },
+  {
+    label: 'Merkblatt Solaranlagen',
+    url: '#',
+    meta: 'PDF · 180 KB',
+    download: true,
+  },
+  {
+    label: 'Baureglement der Gemeinde',
+    url: '#',
+    meta: 'PDF · 1.1 MB',
+    download: true,
+  },
+  {
+    label: 'Gebührenreglement',
+    url: '#',
+    meta: 'PDF · 310 KB',
+    download: true,
+  },
 ]
 
 const FAQ = [

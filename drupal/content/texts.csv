@@ -1,6 +1,5 @@
 full_key;type;en;de;fr
 breadcrumb.label;default;Breadcrumb;Brotkrumen;Fil d'Ariane
-button.label;default;Button;Button;Bouton
 callout.error;default;Error;Fehler;Erreur
 callout.info;default;Information;Information;Information
 callout.success;default;Success;Erfolg;Succès
@@ -8,7 +7,6 @@ callout.warning;default;Warning;Warnung;Avertissement
 chart.empty;default;No data yet: edit the chart to add some.;Noch keine Daten: Bearbeiten Sie das Diagramm, um welche zu erfassen.;Pas encore de données : modifiez le graphique pour en saisir.
 contact.label;default;Contact;Kontakt;Contact
 contact.unavailable;default;The office of this contact isn't available.;Das Amt dieses Kontakts ist nicht verfügbar.;Le service de ce contact n'est pas disponible.
-downloads.label;default;Downloads;Downloads;Téléchargements
 error.add_page;default;Add a page;Seite hinzufügen;Ajouter une page
 error.content_overview;default;Content overview;Inhaltsübersicht;Aperçu du contenu
 error.not_found;default;Page not found;Seite nicht gefunden;Page introuvable
@@ -60,6 +58,7 @@ header.skip_to_content;default;Skip to content;Zum Inhalt springen;Aller au cont
 language_switch.label;default;Language;Sprache;Langue
 latest_news.empty;default;No news.;Keine News.;Aucune actualité.
 library_item.label;default;Library item;Bibliothekseintrag;Élément de bibliothèque
+link.label;default;Link;Link;Lien
 news.label;default;News;News;Actualité
 news.meta;default;News, @date;News, @date;Actualité, @date
 office.address;default;Address;Adresse;Adresse

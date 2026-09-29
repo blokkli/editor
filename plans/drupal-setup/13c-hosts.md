@@ -227,3 +227,11 @@ Built by a throwaway script (`tmp/drupal-hosts.php`, as in 13b), then
   - the footer's and notice's edit buttons, and their routes
   - the language switch while editing a config page
   - import and transfer
+
+## Changed after chunk 05 (2026-09-28)
+
+The user changed the model after trying chunk 05's bake (see
+[14a](14a-demo-concept.md#block-types)): `button` became the generic `link`,
+`downloads` became `link_list` (link blocks instead of `field_documents`), and
+the teaser links to any URL (`field_link` with title, lead and image overrides
+instead of `field_node`). Detail pages allow no sections and no fragments.

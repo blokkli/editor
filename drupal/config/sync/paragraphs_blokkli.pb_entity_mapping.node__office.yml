@@ -4,8 +4,10 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.contact.field_office
+    - field.field.paragraph.link.field_link
     - node.type.office
     - paragraphs.paragraphs_type.contact
+    - paragraphs.paragraphs_type.link
   module:
     - node
     - paragraphs
@@ -19,4 +21,7 @@ mappings:
   -
     paragraph_bundle: contact
     paragraph_field: field_office
+  -
+    paragraph_bundle: link
+    paragraph_field: field_link
 context_description: null

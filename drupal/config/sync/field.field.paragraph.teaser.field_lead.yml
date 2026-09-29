@@ -1,0 +1,19 @@
+uuid: 3ecc29a6-99d9-4b36-9e9c-80b75414ebed
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_lead
+    - paragraphs.paragraphs_type.teaser
+id: paragraph.teaser.field_lead
+field_name: field_lead
+entity_type: paragraph
+bundle: teaser
+label: Lead
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

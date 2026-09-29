@@ -4,9 +4,9 @@ status: true
 dependencies:
   config:
     - field.storage.translatable_config_pages.field_paragraphs
-    - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.from_library
+    - paragraphs.paragraphs_type.link
     - paragraphs.paragraphs_type.text
     - translatable_config_pages.translatable_config_pages_type.footer
   module:
@@ -25,9 +25,9 @@ settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
-      button: button
       contact: contact
       from_library: from_library
+      link: link
       text: text
     negate: 0
 field_type: entity_reference_revisions

@@ -1,16 +1,16 @@
-uuid: 42aa54eb-5c17-415f-ab47-f496a16e730b
+uuid: fc3b43bc-9d69-42e8-b3e7-2c2057f3329f
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.paragraph.field_link
-    - paragraphs.paragraphs_type.button
+    - paragraphs.paragraphs_type.teaser
   module:
     - link
-id: paragraph.button.field_link
+id: paragraph.teaser.field_link
 field_name: field_link
 entity_type: paragraph
-bundle: button
+bundle: teaser
 label: Link
 description: ''
 required: true

@@ -1,9 +1,5 @@
 <template>
-  <a
-    v-if="display === 'card'"
-    :href="node.url?.path"
-    class="group flex flex-col gap-3 text-ink"
-  >
+  <a v-if="display === 'card'" :href class="group flex flex-col gap-3 text-ink">
     <MediaImage
       v-if="hero"
       v-bind="hero"
@@ -15,13 +11,13 @@
     <h3
       class="font-serif text-h3 font-semibold group-hover:text-primary group-hover:underline"
     >
-      {{ node.label }}
+      {{ label }}
     </h3>
-    <p v-if="lead">{{ lead }}</p>
+    <p v-if="teaserLead">{{ teaserLead }}</p>
   </a>
   <a
     v-else
-    :href="node.url?.path"
+    :href
     class="group flex items-center gap-4 border-b border-line py-4 text-ink"
   >
     <span
@@ -41,7 +37,7 @@
     />
     <div class="flex grow flex-col">
       <h3 class="font-semibold group-hover:text-primary group-hover:underline">
-        {{ node.label }}
+        {{ label }}
       </h3>
       <p v-if="meta" class="text-small text-muted">{{ meta }}</p>
     </div>
@@ -52,28 +48,48 @@
 <script lang="ts" setup>
 import { computed, useEasyTexts } from '#imports'
 import { SpriteSymbol } from '#components'
-import type { NodeTeaserFragment } from '#graphql-operations'
+import type {
+  MediaImageFragment,
+  NodeTeaserFragment,
+} from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
 import { formatDateRange } from '~/helpers/date'
 
 // A page, news item or event as a card or a list item: the teaser block and
 // the fragments that list news and events. In a list, an event gets a date
-// badge and the others their image.
+// badge and the others their image. The teaser block can override the node's
+// title, lead and image, or link to a URL without a node.
 const props = defineProps<{
-  node: NodeTeaserFragment
+  node?: NodeTeaserFragment | null
+  title?: string | null
+  lead?: string | null
+  image?: MediaImageFragment | null
+  url?: string | null
   display: 'card' | 'list'
 }>()
 
 const { $texts } = useEasyTexts()
 
-const hero = computed(() => ('hero' in props.node ? props.node.hero : null))
-const lead = computed(() => ('lead' in props.node ? props.node.lead : null))
+const href = computed(() => props.url ?? props.node?.url?.path ?? undefined)
+const label = computed(() => props.title || props.node?.label || href.value)
+const hero = computed(
+  () =>
+    props.image ??
+    (props.node && 'hero' in props.node ? props.node.hero : null),
+)
+const teaserLead = computed(
+  () =>
+    props.lead || (props.node && 'lead' in props.node ? props.node.lead : null),
+)
 const date = computed(() =>
-  props.node.__typename === 'NodeEvent' ? props.node.date : null,
+  props.node?.__typename === 'NodeEvent' ? props.node.date : null,
 )
 
 const meta = computed(() => {
   const node = props.node
+  if (!node) {
+    return ''
+  }
   if (node.__typename === 'NodeNews' && node.createdDate?.first?.day) {
     return $texts('news.meta', 'News, @date', {
       '@date': node.createdDate.first.day,

@@ -47,4 +47,4 @@ field_paragraphs:
     field_title: { en: Fee calculator, de: Gebührenrechner, fr: Calculateur de taxes }
   - type: teaser
     options: { display: list }
-    field_node: { node: building-permits }
+    field_link: { node: building-permits }

@@ -1,7 +1,7 @@
 <template>
   <BlokkliTableOfContents
     v-slot="{ links }"
-    :bundles="['title', 'section']"
+    :bundles="['title']"
     :map-item
     :list
   >
@@ -35,8 +35,8 @@ import type { NodePageFragment } from '#graphql-operations'
 import { anchorId } from '~/helpers/anchor'
 
 // The detail page's table of contents, in its sidebar: links to the headings
-// of the title paragraphs and sections in its main field, nested ones
-// included, from two headings. The headings get their ids from anchorId().
+// of the title paragraphs in its main field, nested ones included, from two
+// headings. The headings get their ids from anchorId().
 // The sidebar is another field, so the page passes the main field's list:
 // while editing, it shows the saved headings (see BlokkliTableOfContents).
 defineProps<{

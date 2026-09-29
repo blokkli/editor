@@ -1,0 +1,8 @@
+fragment paragraphLinkList on ParagraphLinkList {
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLink
+    }
+  }
+}

@@ -53,6 +53,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                               | `paragraphs_blokkli` | medium   | open       | –        |
 | F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                          | both                 | low      | open       | –        |
 | F44 | [No approval step](#f44-no-approval-step)                                                                               | both                 | low      | open       | –        |
+| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                     | `paragraphs_blokkli` | medium   | open       | –        |
+| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                | both                 | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -894,3 +896,39 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix idea:** a publish permission of its own, a review mode that publishes,
   and an "approved" notification (the editor already has the type
   `edit-state:approved`).
+
+## F45: "Replace" fails on link fields
+
+- **Found:** 2026-09-28, while turning the button into the generic `link`
+  paragraph. Reproduced through the adapter's `mediaLibraryReplaceMedia` on a
+  link's `field_link`.
+- **Symptom:** the media library offers to replace the target of a link field
+  that an entity mapping allows media for (here `media__document` →
+  `link.field_link`), and the mutation fails: "The requested field 'field_link'
+  is not an entity reference field."
+- **Cause:** `ReplaceMedia::execute()`
+  (`src/Plugin/ParagraphsBlokkli/Mutation/ReplaceMedia.php:80`) calls
+  `updateEntityReferenceField()`, which only takes entity reference fields
+  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:157`). The droppable
+  field config lists link fields as well
+  (`ParagraphsBlokkliHelper::getDroppableFieldType()`).
+- **Workaround:** none needed for the demo; dropping a document into a link list
+  adds a new link.
+- **Fix idea:** set the value with `setLinkOrEntityReferenceFieldValue()`
+  (`src/Traits/LinkOrReferenceFieldTrait.php`), as `add_entity_reference` and
+  `replace_entity_reference` do.
+
+## F46: A pasted URL can't become a link
+
+- **Found:** 2026-09-28, with the generic `link` paragraph, by reading the code.
+- **Symptom:** pasting a URL creates a text paragraph with the URL, even where a
+  link paragraph would fit.
+- **Cause:** the editor asks the adapter for a bundle for `{ type: 'link' }`
+  (`src/runtime/editor/features/clipboard/index.vue:701`, in this repository),
+  but the Drupal adapter's `clipboardMapBundle` only maps video, plain text,
+  images and files (`src/modules/drupal/runtime/adapter/index.ts:1420`, in this
+  repository). The clipboard item is then text, and paragraphs_blokkli has no
+  mutation that creates a link paragraph from a URL.
+- **Fix idea:** a clipboard config for URLs in paragraphs_blokkli (paragraph
+  types with a link field, like the file mapping), a mutation that sets the link
+  field, and the mapping in the Drupal adapter.

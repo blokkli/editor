@@ -70,7 +70,7 @@ field_paragraphs:
 | ---------------------------------------- | -------------------------------------------------------------- |
 | entity reference                         | `{ node: key }`, `{ media: key }`, `{ library: key }`, `{ user: key }` (`admin` is uid 1) |
 | paragraphs (entity reference revisions)  | a list of paragraphs: `type`, `options`, fields                |
-| link                                     | `{ node: key }`, `/internal/path` or `https://…`                |
+| link                                     | `{ node: key }`, `{ media: key }` (a document), `/internal/path` or `https://…` |
 | formatted text                           | the markup; the field's first allowed format is used           |
 | image, file                              | `{ file: images/lake.png, alt: … }`, a path in `files/`        |
 | date, date range                         | `'+12 days 19:30'` or `{ value: …, end_value: … }`             |

@@ -43,12 +43,7 @@
           <template v-else>{{ fact.value }}</template>
         </FactsItem>
       </Facts>
-      <BlokkliField
-        name="field_paragraphs"
-        :list="paragraphs"
-        :allowed-fragments="['upcoming_events', 'latest_news']"
-        class="flow"
-      />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
     </HostLayout>
   </BlokkliProvider>
 </template>

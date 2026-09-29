@@ -9,7 +9,7 @@
     - type: contact
       options: { display: compact }
       field_office: { node: town-hall }
-    - type: button
+    - type: link
       options: { style: secondary }
       field_link: { node: town-hall }
       field_title: { en: Contact, de: Kontakt, fr: Contact }

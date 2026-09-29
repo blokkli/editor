@@ -20,15 +20,15 @@ use Drupal\paragraphs_blokkli_conversion\ParagraphConversionPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Converts a button to a text with the button's link.
+ * Converts a link to a text with the link in it.
  */
 #[ParagraphConversion(
-  id: 'button_to_text',
-  title: new TranslatableMarkup('Convert a button to a text'),
-  source_bundle: 'button',
+  id: 'link_to_text',
+  title: new TranslatableMarkup('Convert a link to a text'),
+  source_bundle: 'link',
   target_bundle: 'text',
 )]
-final class ButtonToText extends ParagraphConversionPluginBase implements ContainerFactoryPluginInterface {
+final class LinkToText extends ParagraphConversionPluginBase implements ContainerFactoryPluginInterface {
 
   public function __construct(
     array $configuration,
@@ -77,7 +77,7 @@ final class ButtonToText extends ParagraphConversionPluginBase implements Contai
   }
 
   /**
-   * The link's URL; a document's is its file, as in the button block.
+   * The link's URL; a document's is its file, as in the link block.
    */
   private function getHref(Url $url): string {
     if ($url->isRouted() && $url->getRouteName() === 'entity.media.canonical') {

@@ -4,14 +4,13 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_right
-    - paragraphs.paragraphs_type.button
     - paragraphs.paragraphs_type.chart
     - paragraphs.paragraphs_type.columns
     - paragraphs.paragraphs_type.contact
-    - paragraphs.paragraphs_type.downloads
     - paragraphs.paragraphs_type.embed
     - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.image
+    - paragraphs.paragraphs_type.link
     - paragraphs.paragraphs_type.table
     - paragraphs.paragraphs_type.teaser
     - paragraphs.paragraphs_type.text
@@ -33,13 +32,12 @@ settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
-      button: button
       chart: chart
       contact: contact
-      downloads: downloads
       embed: embed
       from_library: from_library
       image: image
+      link: link
       table: table
       teaser: teaser
       text: text
