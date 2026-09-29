@@ -1,0 +1,10 @@
+query quickLinks {
+  siteConfig {
+    quickLinks: fieldQuickLinks {
+      ...paragraphsFieldItem
+      props {
+        ...paragraphLink
+      }
+    }
+  }
+}

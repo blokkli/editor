@@ -1,0 +1,21 @@
+key: information-evening
+type: event
+title:
+  en: Information evening on the village square
+  de: Informationsabend Dorfplatz
+  fr: Soirée d'information sur la place du village
+field_lead:
+  en: The town council presents the plans for the new village square and answers questions.
+  de: Der Gemeinderat stellt die Pläne für den neuen Dorfplatz vor und beantwortet Fragen.
+  fr: Le conseil communal présente les plans de la nouvelle place du village et répond aux questions.
+field_date: { value: '+9 days 19:30', end_value: '+9 days 21:00' }
+field_place: { en: Multi-purpose hall, de: Mehrzweckhalle, fr: Salle polyvalente }
+field_organiser: { en: Town council, de: Gemeinderat, fr: Conseil communal }
+field_category: politics
+field_price: { en: Free, de: Gratis, fr: Gratuit }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The plans are on display in the hall from 19:00.</p>'
+      de: '<p>Die Pläne sind ab 19 Uhr in der Halle ausgestellt.</p>'
+      fr: '<p>Les plans sont exposés dans la salle dès 19 h.</p>'

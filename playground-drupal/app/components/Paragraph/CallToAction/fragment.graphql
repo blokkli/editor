@@ -1,0 +1,11 @@
+fragment paragraphCallToAction on ParagraphCallToAction {
+  tagline: fieldTagline
+  title: fieldTitle
+  lead: fieldLead
+  links: fieldLinks {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphLink
+    }
+  }
+}

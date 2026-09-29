@@ -1,0 +1,18 @@
+uuid: 0cd6cc73-b1ed-451f-b43b-9079c6d35a3a
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.teaser_list
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.teaser_list
+target_entity_type_id: paragraph
+target_bundle: teaser_list
+default_langcode: site_default
+language_alterable: true

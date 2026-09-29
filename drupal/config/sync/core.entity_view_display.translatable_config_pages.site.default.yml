@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.translatable_config_pages.site.field_notice
+    - field.field.translatable_config_pages.site.field_quick_links
     - field.field.translatable_config_pages.site.field_service_links
     - field.field.translatable_config_pages.site.field_site_name
     - translatable_config_pages.translatable_config_pages_type.site
@@ -15,6 +16,15 @@ bundle: site
 mode: default
 content:
   field_notice:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_quick_links:
     type: entity_reference_revisions_entity_view
     label: hidden
     settings:

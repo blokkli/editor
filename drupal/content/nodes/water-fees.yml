@@ -1,0 +1,18 @@
+key: water-fees
+type: publication
+title:
+  en: Revision of the water fees regulation
+  de: Revision des Reglements über die Wassergebühren
+  fr: Révision du règlement sur les taxes d'eau
+field_lead:
+  en: The town council proposes new water fees. Residents can comment on the draft until the end of the period.
+  de: Der Gemeinderat schlägt neue Wassergebühren vor. Die Bevölkerung kann bis zum Ende der Frist zum Entwurf Stellung nehmen.
+  fr: Le conseil communal propose de nouvelles taxes d'eau. La population peut se prononcer sur le projet jusqu'à la fin du délai.
+field_publication_type: regulation
+field_period: { value: '-10 days', end_value: '+62 days' }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The base fee stays the same; the price per cubic metre rises by 20 centimes. The assembly decides on 2 December.</p>'
+      de: '<p>Die Grundgebühr bleibt gleich, der Preis pro Kubikmeter steigt um 20 Rappen. Die Gemeindeversammlung entscheidet am 2. Dezember.</p>'
+      fr: '<p>La taxe de base reste la même ; le prix par mètre cube augmente de 20 centimes. L''assemblée communale décide le 2 décembre.</p>'

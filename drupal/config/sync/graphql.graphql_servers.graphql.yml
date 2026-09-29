@@ -97,9 +97,11 @@ schema_configuration:
         field_opening_hours: field_opening_hours
         field_organiser: field_organiser
         field_paragraphs: field_paragraphs
+        field_period: field_period
         field_phone: field_phone
         field_place: field_place
         field_price: field_price
+        field_publication_type: field_publication_type
         field_registration: field_registration
         langcode: langcode
         nid: nid
@@ -117,12 +119,14 @@ schema_configuration:
         field_lead: field_lead
         field_left: field_left
         field_link: field_link
+        field_links: field_links
         field_media: field_media
         field_office: field_office
         field_paragraphs: field_paragraphs
         field_reusable_paragraph: field_reusable_paragraph
         field_right: field_right
         field_table: field_table
+        field_tagline: field_tagline
         field_text: field_text
         field_title: field_title
         field_video: field_video
@@ -155,6 +159,7 @@ schema_configuration:
       translatable_config_pages:
         field_notice: field_notice
         field_paragraphs: field_paragraphs
+        field_quick_links: field_quick_links
         field_service_links: field_service_links
         field_site_name: field_site_name
       user:
@@ -194,12 +199,16 @@ schema_configuration:
           enabled: true
         page:
           enabled: true
+        publication:
+          enabled: true
       paragraph:
         accordion:
           enabled: true
         banner:
           enabled: true
         blokkli_fragment:
+          enabled: true
+        call_to_action:
           enabled: true
         chart:
           enabled: true
@@ -224,6 +233,8 @@ schema_configuration:
         table:
           enabled: true
         teaser:
+          enabled: true
+        teaser_list:
           enabled: true
         text:
           enabled: true

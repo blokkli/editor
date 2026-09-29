@@ -11,6 +11,7 @@ dependencies:
     - node.type.news
     - node.type.office
     - node.type.page
+    - node.type.publication
   module:
     - content_translation
     - contextual
@@ -53,6 +54,7 @@ permissions:
   - 'create paragraph library item'
   - 'create paragraph template'
   - 'create paragraphs blokkli edit state'
+  - 'create publication content'
   - 'create remote_video media'
   - 'create url aliases'
   - 'delete own document media'
@@ -64,6 +66,7 @@ permissions:
   - 'delete own office content'
   - 'delete own page content'
   - 'delete own paragraph template'
+  - 'delete own publication content'
   - 'delete own remote_video media'
   - 'delete paragraphs blokkli edit state'
   - 'edit any editorial content'
@@ -71,6 +74,7 @@ permissions:
   - 'edit any news content'
   - 'edit any office content'
   - 'edit any page content'
+  - 'edit any publication content'
   - 'edit own document media'
   - 'edit own image media'
   - 'edit own paragraph template'
@@ -91,6 +95,7 @@ permissions:
   - 'translate page node'
   - 'translate paragraph'
   - 'translate paragraphs_library_item'
+  - 'translate publication node'
   - 'translate translatable_config_pages'
   - 'update content translations'
   - 'view all revisions'

@@ -32,6 +32,13 @@
       <strong class="text-h3">{{ date.badgeDay }}</strong>
       <span class="text-label uppercase">{{ date.badgeMonth }}</span>
     </span>
+    <span
+      v-else-if="node?.__typename === 'NodePublication'"
+      class="flex size-15 shrink-0 items-center justify-center bg-surface text-primary"
+      aria-hidden="true"
+    >
+      <SpriteSymbol name="document" class="size-6" />
+    </span>
     <MediaImage
       v-else-if="hero"
       v-bind="hero"
@@ -57,11 +64,12 @@ import type {
   NodeTeaserFragment,
 } from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
+import { usePublicationType } from '~/composables/usePublicationType'
 import { formatDateRange } from '~/helpers/date'
 
-// A page, news item or event as a card or a list item: the teaser block and
-// the fragments that list news and events. In a list, an event gets a date
-// badge and the others their image. The teaser block can override the node's
+// A page, news item, event or publication as a card or a list item: the
+// teaser block and the automatic teaser list. In a list, an event gets a date
+// badge, a publication a document icon and the others their image. The teaser block can override the node's
 // title, lead and image, or link to a URL without a node.
 const props = defineProps<{
   node?: NodeTeaserFragment | null
@@ -73,6 +81,7 @@ const props = defineProps<{
 }>()
 
 const { $texts } = useEasyTexts()
+const publicationType = usePublicationType()
 
 const href = computed(() => props.url ?? props.node?.url?.path ?? undefined)
 const label = computed(() => props.title || props.node?.label || href.value)
@@ -101,6 +110,15 @@ const meta = computed(() => {
   }
   if (node.__typename === 'NodeEvent' && node.date) {
     return formatDateRange(node.date)
+  }
+  if (node.__typename === 'NodePublication') {
+    const type = publicationType(node.publicationType)
+    return node.period?.endDay
+      ? $texts('publication.until', '@type, until @date', {
+          '@type': type,
+          '@date': node.period.endDay,
+        })
+      : type
   }
   return ''
 })

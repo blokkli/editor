@@ -8,7 +8,7 @@ field_lead:
 field_host_options:
   - { key: header, value: plain }
 field_paragraphs:
-  - type: blokkli_fragment
-    field_blokkli_fragment_name: latest_news
-  - type: blokkli_fragment
-    field_blokkli_fragment_name: upcoming_events
+  - type: teaser_list
+    options: { source: news }
+  - type: teaser_list
+    options: { source: events }

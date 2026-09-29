@@ -67,6 +67,7 @@ paragraph types and bundles get added that end up wrong for it.
 | `news`               | title, lead, image; the date is the publication date                                                        | `field_paragraphs`                          |
 | `event`              | title, lead, image, date range, place, organiser, category (list), price, registration link                 | `field_paragraphs`                          |
 | `office`             | title, lead, image (15e), address, phone, email, opening hours (structured, e.g. the `office_hours` module) | `field_paragraphs`                          |
+| `publication` (15f)  | title, lead, type (list), publication period (date range, date only)                                        | `field_paragraphs`                          |
 
 - `field_aside` on pages holds contact boxes, related links and downloads, and
   allows only those types. It covers "a host with several paragraph fields"
@@ -88,38 +89,48 @@ paragraph types and bundles get added that end up wrong for it.
   - Fragments are only for editorial pages. News, events and offices keep
     sections.
   - The sidebar allows titles as headings, e.g. above a link list.
-- Config pages: `footer` (a paragraphs field) and `site` (name, service links
-  and a site-wide notice of banners, both paragraphs fields). Covers 13c. The
-  logo is the frontend's (the user, 2026-09-29, 15c).
+- **Changed in [15f](15f-home-page.md) (the user, 2026-09-29):**
+  - Official publications are a content type, listed by the automatic teaser
+    list.
+  - The automatic teaser list replaces the fragments "latest news" and "upcoming
+    events". The home page's "Today" and frequently searched links are fragments
+    that only the home page allows.
+  - The home page has its own page component on top of its editorial page.
+- Config pages: `footer` (a paragraphs field) and `site` (name, service links, a
+  site-wide notice of banners and the home page's frequently searched links, all
+  but the name paragraphs fields). Covers 13c. The logo is the frontend's (the
+  user, 2026-09-29, 15c).
 - Library items and templates are hosts too (13d).
 
 ### Block types
 
 **Everyday blocks:** what an average page is built from.
 
-| Type        | Fields                                     | Options                         | From 04        |
-| ----------- | ------------------------------------------ | ------------------------------- | -------------- |
-| `title`     | title                                      |                                 | yes            |
-| `text`      | rich text                                  |                                 | yes            |
-| `image`     | media, caption                             | width: content, wide, full      | yes, + caption |
-| `video`     | remote video                               |                                 | yes, embedded  |
-| `link`      | link (a page, a URL or a document), text   | style: primary, secondary       | yes (`button`) |
-| `table`     | text with a tables-and-links format        | striped                         | new            |
-| `link_list` | link blocks (several)                      |                                 | new            |
-| `contact`   | office (reference)                         | compact, full                   | new            |
-| `teaser`    | link; title, lead, image (overrides)       | card, list                      | new            |
-| `gallery`   | image blocks (several)                     | grid, slider (proxy mode)       | new            |
-| `chart`     | chart data (charts module)                 | chart type, per the module      | new (13i)      |
-| `embed`     | URL, heights per viewport (iframes module) |                                 | new (13i)      |
-| `banner`    | text, link (the site config's notice only) | color: yellow, blue, green, red | new (15c)      |
+| Type          | Fields                                     | Options                                               | From 04        |
+| ------------- | ------------------------------------------ | ----------------------------------------------------- | -------------- |
+| `title`       | title                                      |                                                       | yes            |
+| `text`        | rich text                                  |                                                       | yes            |
+| `image`       | media, caption                             | width: content, wide, full                            | yes, + caption |
+| `video`       | remote video                               |                                                       | yes, embedded  |
+| `link`        | link (a page, a URL or a document), text   | style: primary, secondary                             | yes (`button`) |
+| `table`       | text with a tables-and-links format        | striped                                               | new            |
+| `link_list`   | link blocks (several)                      |                                                       | new            |
+| `contact`     | office (reference)                         | compact, full                                         | new            |
+| `teaser`      | link; title, lead, image (overrides)       | card, list                                            | new            |
+| `gallery`     | image blocks (several)                     | grid, slider (proxy mode)                             | new            |
+| `chart`       | chart data (charts module)                 | chart type, per the module                            | new (13i)      |
+| `embed`       | URL, heights per viewport (iframes module) |                                                       | new (13i)      |
+| `banner`      | text, link (the site config's notice only) | color: yellow, blue, green, red                       | new (15c)      |
+| `teaser_list` | title (overrides the default)              | news, events, publications (cards only at full width) | new (15f)      |
 
 **Structure:** nesting only where it makes sense.
 
-| Type        | Holds                                                   | Options                                          |
-| ----------- | ------------------------------------------------------- | ------------------------------------------------ |
-| `section`   | a heading; everyday blocks, accordion, columns          | background colour; children in 1, 2 or 3 columns |
-| `accordion` | one item per block: a title, everyday blocks or columns |                                                  |
-| `columns`   | two paragraph fields (left, right), everyday blocks     | ratio: 50/50, 33/66, 66/33                       |
+| Type                   | Holds                                                                      | Options                                          |
+| ---------------------- | -------------------------------------------------------------------------- | ------------------------------------------------ |
+| `section`              | a heading; everyday blocks, accordion, columns                             | background colour; children in 1, 2 or 3 columns |
+| `accordion`            | one item per block: a title, everyday blocks or columns                    |                                                  |
+| `columns`              | two paragraph fields (left, right), everyday blocks                        | ratio: 50/50, 33/66, 66/33                       |
+| `call_to_action` (15f) | a tagline, a title, a text; up to 4 links: one is a button, several a list |                                                  |
 
 The deepest path is the user's example: section > accordion > columns > text.
 The gallery isn't allowed in columns, which keeps the model at 4 levels.
@@ -161,7 +172,9 @@ About 20 pages, 6 offices, 6 news items and 10 events, in three languages. 14b
 can trim the lighter ones.
 
 - **Home:** teasers, the upcoming events and latest news fragments, the
-  site-wide notice.
+  site-wide notice. Built in [15f](15f-home-page.md) instead: the search,
+  "Today", the frequently searched links, the automatic lists for news, events
+  and publications, and a call to action.
 - **Living here:** moving here (a service page), waste and recycling (tables,
   the library box), schools.
 - **Town hall:** the offices, building permits (a service page: steps,

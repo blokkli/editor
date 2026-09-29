@@ -1,0 +1,62 @@
+uuid: ee3699d5-b331-473d-95a6-73e7c8699dae
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.publication.field_lead
+    - field.field.node.publication.field_paragraphs
+    - field.field.node.publication.field_period
+    - field.field.node.publication.field_publication_type
+    - node.type.publication
+  module:
+    - datetime_range
+    - entity_reference_revisions
+    - options
+    - user
+id: node.publication.default
+targetEntityType: node
+bundle: publication
+mode: default
+content:
+  field_lead:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_period:
+    type: daterange_default
+    label: hidden
+    settings:
+      timezone_override: ''
+      format_type: medium
+      from_to: both
+      separator: '-'
+    third_party_settings: {  }
+    weight: -3
+    region: content
+  field_publication_type:
+    type: list_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: -3
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

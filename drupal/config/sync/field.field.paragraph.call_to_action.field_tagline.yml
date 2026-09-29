@@ -1,0 +1,19 @@
+uuid: bfc24ecc-f805-42a0-b635-dd59e61c9fd7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_tagline
+    - paragraphs.paragraphs_type.call_to_action
+id: paragraph.call_to_action.field_tagline
+field_name: field_tagline
+entity_type: paragraph
+bundle: call_to_action
+label: Tagline
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,18 @@
+uuid: 0db1639b-8cf9-4dea-9e83-eb11486d6de2
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: false
+id: call_to_action
+label: 'Call to action'
+icon_uuid: null
+icon_default: null
+description: 'A box with a title, a text and up to four links.'
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

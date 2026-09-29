@@ -1,0 +1,33 @@
+uuid: b9cf2927-cd6f-48b2-9009-6b361570f292
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_publication_type
+field_name: field_publication_type
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: building_application
+      label: 'Building application'
+    -
+      value: traffic
+      label: Traffic
+    -
+      value: regulation
+      label: Regulation
+    -
+      value: other
+      label: Other
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

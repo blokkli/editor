@@ -13,11 +13,14 @@ query route($path: String!) {
     ... on EntityUrl {
       entity {
         __typename
+        # The front page is node 1 (system.site.page.front).
+        id
         ...nodePage
         ...nodeEditorial
         ...nodeNews
         ...nodeEvent
         ...nodeOffice
+        ...nodePublication
         ...configPageFooter
         ...configPageSite
       }

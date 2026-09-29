@@ -1,0 +1,18 @@
+key: town-hall-hours
+type: news
+created: '-11 days'
+title:
+  en: New opening hours at the town hall
+  de: Neue Öffnungszeiten der Gemeindekanzlei
+  fr: Nouveaux horaires de l'administration communale
+field_lead:
+  en: From November, also open on Thursday evenings.
+  de: Ab November zusätzlich am Donnerstagabend geöffnet.
+  fr: Dès novembre, ouverte aussi le jeudi soir.
+field_hero_image: { media: meadow }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>On Thursdays the counter stays open until 19:00. The other hours stay the same.</p>'
+      de: '<p>Am Donnerstag ist der Schalter bis 19 Uhr geöffnet. Die übrigen Öffnungszeiten bleiben gleich.</p>'
+      fr: '<p>Le jeudi, le guichet reste ouvert jusqu''à 19 h. Les autres horaires ne changent pas.</p>'

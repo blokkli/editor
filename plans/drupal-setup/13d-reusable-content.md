@@ -106,7 +106,9 @@ Built by a throwaway script (`tmp/drupal-reusable.php`, as in 13b and 13c), then
 - **`components/NodeTeaser`** (`fragment nodeTeaser on Node`) renders a page,
   news item or event as a card or a list item, for the teaser block and both
   fragments.
-- **Fragments** in `Paragraph/BlokkliFragment/<Name>/`:
+- **Fragments** in `Paragraph/BlokkliFragment/<Name>/` (both replaced in
+  [15f](15f-home-page.md) by the automatic teaser list, a paragraph type; the
+  home page has the fragments `today` and `quick_links` instead):
   - `UpcomingEvents` (`upcoming_events`): the next three events that haven't
     ended, as a list. `field_date.end_value` is compared with today at 00:00
     UTC, which keeps the cache key stable for a day.

@@ -1,0 +1,21 @@
+uuid: 2970046b-5f8a-4a32-b0e3-e00762f96266
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_publication_type
+    - node.type.publication
+  module:
+    - options
+id: node.publication.field_publication_type
+field_name: field_publication_type
+entity_type: node
+bundle: publication
+label: Type
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

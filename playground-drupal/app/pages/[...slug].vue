@@ -33,6 +33,11 @@
       v-bind="entity"
       :breadcrumb
     />
+    <NodePublication
+      v-else-if="entity.__typename === 'NodePublication'"
+      v-bind="entity"
+      :breadcrumb
+    />
     <!-- A config page on its own route, where it's edited. -->
     <p v-else class="container-wide py-section text-small text-muted">
       {{ entity.label }}
@@ -45,6 +50,7 @@ import {
   computed,
   createError,
   definePageMeta,
+  navigateTo,
   useAsyncGraphqlQuery,
   useRoute,
 } from '#imports'
@@ -54,6 +60,7 @@ import {
   NodeNews,
   NodeOffice,
   NodePage,
+  NodePublication,
   SiteShell,
 } from '#components'
 import { getLanguageFromPath } from '#shared/languages'
@@ -63,7 +70,9 @@ definePageMeta({ layout: 'drupal' })
 
 const route = useRoute()
 
-if (!getLanguageFromPath(route.path)) {
+const language = getLanguageFromPath(route.path)
+
+if (!language) {
   throw createError({ statusCode: 404, fatal: true })
 }
 
@@ -77,6 +86,19 @@ if (error.value) {
   throw createError({ statusCode: error.value.statusCode ?? 500, fatal: true })
 }
 
+// The front page (node 1, system.site.page.front) has its own page component
+// (pages/[lang]/index.vue). Its alias, e.g. from Drupal's "View" tab or the
+// editor's lists, leads there, with the query (editing, previewing).
+const routeUrl = data.value?.data.route
+if (
+  routeUrl &&
+  'entity' in routeUrl &&
+  routeUrl.entity?.__typename === 'NodeEditorial' &&
+  routeUrl.entity.id === '1'
+) {
+  await navigateTo({ path: `/${language}`, query: route.query })
+}
+
 const entity = computed(() => {
   const url = data.value?.data.route
   if (!url || !('entity' in url) || !url.entity) {
@@ -88,6 +110,7 @@ const entity = computed(() => {
     case 'NodeNews':
     case 'NodeEvent':
     case 'NodeOffice':
+    case 'NodePublication':
     case 'TranslatableConfigPagesFooter':
     case 'TranslatableConfigPagesSite':
       return url.entity

@@ -53,6 +53,11 @@ const { options, parentType, fieldListType } = defineBlokkli({
   editor: {
     icon: 'bk_mdi_link',
     editTitle: (el) => el.textContent,
+    // In a list or a call to action, a link is a row (InList.vue).
+    determineVisibleOptions: (ctx) =>
+      ctx.parentType === 'link_list' || ctx.parentType === 'call_to_action'
+        ? []
+        : ['style'],
   },
 })
 </script>

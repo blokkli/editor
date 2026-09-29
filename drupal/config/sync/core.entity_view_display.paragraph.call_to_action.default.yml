@@ -1,0 +1,45 @@
+uuid: 2b2fadf0-6aff-42e2-a46d-ebf1f7c4b3b9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.call_to_action.field_lead
+    - field.field.paragraph.call_to_action.field_links
+    - field.field.paragraph.call_to_action.field_tagline
+    - field.field.paragraph.call_to_action.field_title
+    - paragraphs.paragraphs_type.call_to_action
+id: paragraph.call_to_action.default
+targetEntityType: paragraph
+bundle: call_to_action
+mode: default
+content:
+  field_lead:
+    type: basic_string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_links:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_tagline:
+    type: string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_title:
+    type: string
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  search_api_excerpt: true

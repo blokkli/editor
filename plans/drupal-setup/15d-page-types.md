@@ -1,6 +1,6 @@
 # 15d: Page types
 
-- **Status:** in progress
+- **Status:** done
 - **Milestone:** M1 Local dev site
 - **Depends on:** 15b
 
@@ -93,10 +93,10 @@ Unlike 15a and 15b, this chunk changes the Drupal content model.
   - [x] the header variants as a host option
   - [x] the route query and `pbMutatedEntity`
 - [x] **The hero image:**
-  - [ ] It moves out of the band, iterated on in the browser with the user.
+  - [x] It moves out of the band, reviewed by the user (2026-09-29).
   - [x] **The starting point:** the image after the band, 12 columns wide, with
         the band reaching halfway down it. The title on the image stays a
-        variant.
+        variant (removed after the review, 2026-09-29).
   - [x] News uses the new hero too.
 - [x] **Texts:** EN, DE and FR in `drupal/content/texts.csv`: the "Responsible"
       line, the fragment's heading and placeholder.
@@ -201,7 +201,9 @@ Unlike 15a and 15b, this chunk changes the Drupal content model.
 
 - **The canvas's editorial mockup** isn't in the repository yet: 15a built the
   detail and home mockups. It decides whether the editorial page needs more than
-  the blocks' width options.
+  the blocks' width options. Left for the home page, which is the first
+  editorial page built to a mockup ([15f](15f-home-page.md)): its blocks got the
+  sections' spacing there, not new width options.
 
 ## Left for later
 
@@ -223,3 +225,15 @@ The user changed the model after trying chunk 05's bake (see
 `downloads` became `link_list` (link blocks instead of `field_documents`), and
 the teaser links to any URL (`field_link` with title, lead and image overrides
 instead of `field_node`). Detail pages allow no sections and no fragments.
+
+## The hero image, reviewed (2026-09-29)
+
+The user: the image below the title works; the title on the image doesn't. Its
+gradient and overlay match nothing in the design system.
+
+- `Host/Header` has two variants left: `image` (after the band) and `plain`. The
+  editorial page's header option lost "Title on the image"; a page that still
+  has it stored renders `image`.
+- The administration page (the only one in `drupal/content` with `overlay`) uses
+  `image`.
+- The design system page says so: no overlays or gradients on images.

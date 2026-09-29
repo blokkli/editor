@@ -1,0 +1,18 @@
+uuid: a2ca4515-fc72-4c80-bc6f-09a38c4d1b10
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.call_to_action
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.call_to_action
+target_entity_type_id: paragraph
+target_bundle: call_to_action
+default_langcode: site_default
+language_alterable: true

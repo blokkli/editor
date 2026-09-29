@@ -1,0 +1,25 @@
+uuid: 1370b8c1-e3a8-4aa1-a333-f7d90c3684d9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.teaser_list.field_title
+    - paragraphs.paragraphs_type.teaser_list
+id: paragraph.teaser_list.default
+targetEntityType: paragraph
+bundle: teaser_list
+mode: default
+content:
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  publish_on: true
+  status: true
+  unpublish_on: true

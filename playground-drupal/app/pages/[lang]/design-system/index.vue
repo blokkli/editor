@@ -286,15 +286,17 @@
           <p class="max-w-content">
             The blocks know where they are from their field list type:
             <code>sidebar</code>, <code>footer</code> (the ink ground: buttons,
-            links and neutral colours flip, see <code>on-dark</code>) or
-            <code>notice</code>.
+            links and neutral colours flip, see <code>on-dark</code>),
+            <code>notice</code> (the banner above the header) or
+            <code>service</code> (the header's service links).
           </p>
           <p class="max-w-content">
             <code>band</code> puts a page's header on a
             <code>surface</code> background as wide as the window. The hero
             image follows it, as wide as the container, with the band reaching
-            halfway down the image; or the title sits on the image. An ancestor
-            clips the band with <code>overflow-x-clip</code>.
+            halfway down the image. No overlays or gradients: the title never
+            sits on the image. An ancestor clips the band with
+            <code>overflow-x-clip</code>.
           </p>
           <div class="overflow-x-auto">
             <table class="w-full min-w-[32rem] text-left">
@@ -634,6 +636,11 @@ const MOCKUPS = [
     path: 'home',
     label: 'Home',
     description: 'Search, today, frequent links, news, politics, events.',
+  },
+  {
+    path: 'home-draft',
+    label: 'Home (draft)',
+    description: 'The home page as it will be built, simplified (15f).',
   },
   {
     path: 'detail',

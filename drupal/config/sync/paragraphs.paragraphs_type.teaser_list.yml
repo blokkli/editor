@@ -1,0 +1,18 @@
+uuid: 3ac22e99-a0cd-47f0-ab14-b219860b9c2e
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: true
+id: teaser_list
+label: 'Automatic teaser list'
+icon_uuid: null
+icon_default: null
+description: 'The latest news, the next events or the current official publications.'
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

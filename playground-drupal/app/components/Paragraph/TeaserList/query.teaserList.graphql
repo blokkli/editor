@@ -1,0 +1,12 @@
+# The nodes of an automatic teaser list: three, filtered and sorted by its
+# source (TeaserList/index.vue).
+query teaserList(
+  $filter: EntityQueryFilterInput!
+  $sort: [EntityQuerySortInput!]
+) {
+  entityQuery(entityType: NODE, limit: 3, filter: $filter, sort: $sort) {
+    items {
+      ...nodeTeaser
+    }
+  }
+}

@@ -1,38 +1,15 @@
 <template>
-  <header :class="{ grid: isOverlay }">
+  <header>
     <div
-      v-if="isOverlay"
-      v-blokkli-droppable:field_hero_image
-      class="relative col-start-1 row-start-1 aspect-[2/1] min-h-96 overflow-hidden bg-ink lg:aspect-[3/1]"
-    >
-      <MediaImage
-        v-if="image"
-        v-bind="image"
-        class="size-full"
-        img-class="size-full object-cover"
-      />
-      <div
-        class="absolute inset-0 bg-linear-to-t from-ink/85 via-ink/30 to-transparent"
-      />
-    </div>
-    <div
-      class="container-content flex flex-col gap-4"
-      :class="
-        isOverlay
-          ? 'on-dark z-10 col-start-1 row-start-1 self-end pb-10 text-white lg:pb-12'
-          : ['band py-8 lg:pt-10', hasImage ? 'lg:pb-10' : 'lg:pb-12']
-      "
+      class="band container-content flex flex-col gap-4 py-8 lg:pt-10"
+      :class="hasImage ? 'lg:pb-10' : 'lg:pb-12'"
     >
       <Breadcrumb
         v-if="breadcrumbItems.length > 1"
         :items="breadcrumbItems"
         class="mb-2"
       />
-      <p
-        v-if="$slots.eyebrow"
-        class="text-label uppercase"
-        :class="isOverlay ? 'text-white' : 'text-primary'"
-      >
+      <p v-if="$slots.eyebrow" class="text-label text-primary uppercase">
         <slot name="eyebrow" />
       </p>
       <h1 v-blokkli-editable:title class="font-serif text-h1 text-balance">
@@ -47,8 +24,7 @@
       </p>
       <p
         v-if="$slots.meta"
-        class="flex flex-wrap gap-x-7 gap-y-1 text-small"
-        :class="isOverlay ? 'text-on-dark' : 'text-muted'"
+        class="flex flex-wrap gap-x-7 gap-y-1 text-small text-muted"
       >
         <slot name="meta" />
       </p>
@@ -58,7 +34,7 @@
     </div>
     <!-- The image after the band, as wide as the container. The band reaches
          halfway down it. -->
-    <div v-if="hasImage && !isOverlay" class="relative isolate">
+    <div v-if="hasImage" class="relative isolate">
       <div
         class="absolute inset-x-[-100vmax] top-0 bottom-1/2 -z-10 bg-surface"
       />
@@ -99,8 +75,8 @@ const props = defineProps<{
    * a droppable element for a field the host doesn't have breaks the editor.
    */
   image?: MediaImageFragment | null
-  // image: after the band. overlay: the title on the image.
-  variant: 'image' | 'overlay' | 'plain'
+  // image: after the band. plain: without the image.
+  variant: 'image' | 'plain'
   isEditing: boolean
   // Drupal's, from the main menu: it ends with the current page, without a
   // link.
@@ -120,6 +96,4 @@ const hasImage = computed(
     props.variant !== 'plain' &&
     (!!props.image || props.isEditing),
 )
-
-const isOverlay = computed(() => hasImage.value && props.variant === 'overlay')
 </script>

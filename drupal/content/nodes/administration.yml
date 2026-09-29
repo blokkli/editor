@@ -7,7 +7,7 @@ field_lead:
   fr: 'Services, autorisations et taxes : ce que l''administration fait pour vous.'
 field_hero_image: { media: stone }
 field_host_options:
-  - { key: header, value: overlay }
+  - { key: header, value: image }
 field_paragraphs:
   - type: text
     field_text:

@@ -7,6 +7,7 @@ dependencies:
     - node.type.editorial
     - paragraphs.paragraphs_type.accordion
     - paragraphs.paragraphs_type.blokkli_fragment
+    - paragraphs.paragraphs_type.call_to_action
     - paragraphs.paragraphs_type.chart
     - paragraphs.paragraphs_type.columns
     - paragraphs.paragraphs_type.contact
@@ -19,6 +20,7 @@ dependencies:
     - paragraphs.paragraphs_type.section
     - paragraphs.paragraphs_type.table
     - paragraphs.paragraphs_type.teaser
+    - paragraphs.paragraphs_type.teaser_list
     - paragraphs.paragraphs_type.text
     - paragraphs.paragraphs_type.title
     - paragraphs.paragraphs_type.video
@@ -40,6 +42,7 @@ settings:
     target_bundles:
       accordion: accordion
       blokkli_fragment: blokkli_fragment
+      call_to_action: call_to_action
       chart: chart
       columns: columns
       contact: contact
@@ -52,6 +55,7 @@ settings:
       section: section
       table: table
       teaser: teaser
+      teaser_list: teaser_list
       text: text
       title: title
       video: video

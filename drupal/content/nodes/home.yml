@@ -1,38 +1,47 @@
-# The front page: system.site.page.front is /node/1.
+# The front page: system.site.page.front is /node/1. The frontend renders it
+# with its own header (with the search), then these blocks. Only here can
+# blocks be the fragments "today" and "quick_links" (the site config page's
+# frequently searched links).
 key: home
 id: 1
 type: editorial
 title:
-  en: Welcome to Blockingen
-  de: Willkommen in Blockingen
-  fr: Bienvenue à Bloquens
+  en: How can we help?
+  de: Wie können wir Ihnen helfen?
+  fr: Comment pouvons-nous vous aider ?
 field_lead:
-  en: The town by the lake, in two languages.
-  de: Die Gemeinde am See, in zwei Sprachen.
-  fr: La commune au bord du lac, en deux langues.
+  en: Services, information and news from the town of Blockingen, in one place.
+  de: Dienstleistungen, Auskünfte und Neuigkeiten der Gemeinde Blockingen – an einem Ort.
+  fr: Prestations, renseignements et nouvelles de la commune de Bloquens, en un seul lieu.
 field_hero_image: { media: lake }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:
-  - type: text
-    field_text:
-      en: '<p>Blockingen and Bloquens are one town with two names: German and French are spoken here, and the lake belongs to everyone.</p>'
-      de: '<p>Blockingen und Bloquens sind eine Gemeinde mit zwei Namen: Hier spricht man Deutsch und Französisch, und der See gehört allen.</p>'
-      fr: '<p>Blockingen et Bloquens sont une seule commune avec deux noms : on y parle allemand et français, et le lac appartient à tout le monde.</p>'
-  - type: teaser
-    options: { display: card }
-    field_link: { node: pool-opening }
-  # A teaser for another site: its title, lead and image are its own.
-  - type: teaser
-    options: { display: card }
-    field_link: https://www.example.com/regatta
-    field_title: { en: The lake regatta, de: Die Seeregatta, fr: La régate du lac }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: today
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: quick_links
+  - type: teaser_list
+    options: { source: news }
+  - type: call_to_action
+    field_tagline: { en: Politics, de: Politik, fr: Politique }
+    field_title:
+      en: Municipal assembly on 2 December
+      de: Gemeindeversammlung vom 2. Dezember
+      fr: Assemblée communale du 2 décembre
     field_lead:
-      en: The sailing club's regatta, on the first weekend of September.
-      de: Die Regatta des Segelclubs, am ersten Septemberwochenende.
-      fr: La régate du club de voile, le premier week-end de septembre.
-    field_media: { media: lake }
-  - type: blokkli_fragment
-    field_blokkli_fragment_name: latest_news
-  - type: blokkli_fragment
-    field_blokkli_fragment_name: upcoming_events
+      en: Voters decide on the 2027 budget and the loan for renovating the school gym.
+      de: Die Stimmberechtigten entscheiden über das Budget 2027 und den Kredit für die Sanierung der Schulhausturnhalle.
+      fr: Les électrices et électeurs se prononcent sur le budget 2027 et le crédit pour la rénovation de la salle de gym de l'école.
+    field_links:
+      - type: link
+        field_link: { node: politics }
+        field_title: { en: Agenda and documents, de: Traktanden und Unterlagen, fr: Ordre du jour et documents }
+  - type: columns
+    options: { ratio: '50-50' }
+    field_left:
+      - type: teaser_list
+        options: { source: events }
+    field_right:
+      - type: teaser_list
+        options: { source: publications }

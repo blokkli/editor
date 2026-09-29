@@ -22,6 +22,8 @@ adds types.
       of them can be the source language (`ddev bake --source=de`):
   - [ ] about 20 pages, 6 offices, 6 news items and 10 events (14a's page list);
         the lighter ones can be trimmed
+  - [x] the home page, three news items, three events and three official
+        publications ([15f](15f-home-page.md), 2026-09-29)
   - [ ] the landing page "The lakeside pool" at its best, with the planted
         mistakes for the analyzer (an image without alt text, a table without a
         header row, an outdated French translation, an English paragraph left in

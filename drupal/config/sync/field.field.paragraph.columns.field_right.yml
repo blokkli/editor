@@ -13,6 +13,7 @@ dependencies:
     - paragraphs.paragraphs_type.link
     - paragraphs.paragraphs_type.table
     - paragraphs.paragraphs_type.teaser
+    - paragraphs.paragraphs_type.teaser_list
     - paragraphs.paragraphs_type.text
     - paragraphs.paragraphs_type.title
     - paragraphs.paragraphs_type.video
@@ -40,6 +41,7 @@ settings:
       link: link
       table: table
       teaser: teaser
+      teaser_list: teaser_list
       text: text
       title: title
       video: video

@@ -24,6 +24,13 @@ fragment nodeTeaser on Node {
       }
     }
   }
+  ... on NodePublication {
+    lead: fieldLead
+    publicationType: fieldPublicationType
+    period: fieldPeriod {
+      endDay: endDate(drupalDateFormat: DAY)
+    }
+  }
   ... on NodeEvent {
     lead: fieldLead
     hero: fieldHeroImage {

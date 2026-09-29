@@ -1,0 +1,33 @@
+uuid: fd8b1a1a-a7ea-4614-b679-ebd81ecb0987
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.publication
+  module:
+    - language
+    - node
+id: publication_de
+label: 'Publication (DE)'
+type: 'canonical_entities:node'
+pattern: '/publikationen/[node:title]'
+selection_criteria:
+  d555f18c-4669-4641-a57e-c0c128dee840:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      publication: publication
+  fd2b98ba-fb5c-48a0-9360-a34263b99cd3:
+    id: language
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    langcodes:
+      de: de
+selection_logic: and
+weight: -10
+relationships:
+  'node:langcode:language':
+    label: Language

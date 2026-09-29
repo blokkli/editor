@@ -8,6 +8,7 @@ dependencies:
     - node.type.news
     - node.type.office
     - node.type.page
+    - node.type.publication
   module:
     - content_translation
     - node
@@ -38,6 +39,7 @@ permissions:
   - 'edit any news content'
   - 'edit any office content'
   - 'edit any page content'
+  - 'edit any publication content'
   - 'edit paragraphs blokkli edit state'
   - 'edit string translation'
   - 'load id and name of blokkli users'
@@ -50,6 +52,7 @@ permissions:
   - 'translate page node'
   - 'translate paragraph'
   - 'translate paragraphs_library_item'
+  - 'translate publication node'
   - 'translate translatable_config_pages'
   - 'update content translations'
   - 'view blokkli comments'

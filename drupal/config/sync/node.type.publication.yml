@@ -1,0 +1,31 @@
+uuid: 8f6cdfbd-3cbf-463b-bf0a-e1b2f8169cdf
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+    - scheduler
+third_party_settings:
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: vertical_tab
+    publish_enable: true
+    publish_past_date: error
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: true
+    show_message_after_update: false
+    unpublish_enable: true
+    unpublish_required: false
+    unpublish_revision: false
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: 'Official publication'
+type: publication
+description: 'A notice the town publishes for a period, e.g. a building application.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

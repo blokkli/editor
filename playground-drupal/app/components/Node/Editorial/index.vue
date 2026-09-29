@@ -4,16 +4,18 @@
     v-bind="blokkliProps"
     :entity="props"
   >
-    <HostLayout>
+    <HostLayout :class="{ 'gap-section lg:gap-24': frontPage }">
       <template #header>
-        <HostHeader
-          :title="entity.title"
-          :lead="entity.lead"
-          :image="entity.hero"
-          :variant="options.header"
-          :is-editing
-          :breadcrumb
-        />
+        <slot name="header" :entity :is-editing :options>
+          <HostHeader
+            :title="entity.title"
+            :lead="entity.lead"
+            :image="entity.hero"
+            :variant="options.header"
+            :is-editing
+            :breadcrumb
+          />
+        </slot>
       </template>
       <SubPages
         v-if="options.subPages && subPages?.length"
@@ -23,8 +25,8 @@
       <BlokkliField
         name="field_paragraphs"
         :list="paragraphs"
-        :allowed-fragments="['upcoming_events', 'latest_news']"
-        class="flow"
+        :allowed-fragments="frontPage ? ['today', 'quick_links'] : []"
+        :class="frontPage ? 'flex flex-col gap-section lg:gap-24' : 'flow'"
       />
     </HostLayout>
   </BlokkliProvider>
@@ -43,11 +45,14 @@ import SubPages from '~/components/SubPages/index.vue'
 
 // The editorial page: the home page, overview pages and landing pages. A hero
 // image and a free layout, no sidebar. An overview page lists its sub-pages
-// in the main menu above the blocks.
+// in the main menu above the blocks. The front page (pages/[lang]/index.vue)
+// has its own header, more space between the blocks, and the only fragments:
+// what's on today and the frequently searched links.
 const props = defineProps<
   NodeEditorialFragment & {
     breadcrumb?: BreadcrumbFragment[]
     subPages?: { label: string; url: string; description?: string | null }[]
+    frontPage?: boolean
   }
 >()
 
@@ -65,13 +70,6 @@ const { options } = defineBlokkliProvider(props, {
             en: 'Image below the title',
             de: 'Bild unter dem Titel',
             fr: 'Image sous le titre',
-          },
-        },
-        overlay: {
-          label: {
-            en: 'Title on the image',
-            de: 'Titel auf dem Bild',
-            fr: "Titre sur l'image",
           },
         },
         plain: {

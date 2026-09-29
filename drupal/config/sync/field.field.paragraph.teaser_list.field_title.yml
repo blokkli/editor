@@ -1,0 +1,19 @@
+uuid: e3ba011c-3a7c-463a-a053-61129c353f99
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.teaser_list
+id: paragraph.teaser_list.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: teaser_list
+label: Title
+description: 'Replaces the default title.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

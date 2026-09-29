@@ -1,0 +1,19 @@
+fragment nodePublication on NodePublication {
+  uuid
+  title
+  lead: fieldLead
+  publicationType: fieldPublicationType
+  period: fieldPeriod {
+    startDay: startDate(drupalDateFormat: DAY)
+    endDay: endDate(drupalDateFormat: DAY)
+  }
+  blokkliProps {
+    ...blokkliProps
+  }
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraph
+    }
+  }
+}

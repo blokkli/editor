@@ -1,0 +1,19 @@
+key: autumn-market
+type: event
+title: { en: Autumn market, de: Herbstmarkt, fr: Marché d'automne }
+field_lead:
+  en: Local produce, crafts and soup for everyone.
+  de: Regionale Produkte, Handwerk und Suppe für alle.
+  fr: Produits régionaux, artisanat et soupe pour tout le monde.
+field_hero_image: { media: meadow }
+field_date: { value: '+25 days 09:00', end_value: '+25 days 16:00' }
+field_place: { en: School grounds, de: Schulhausareal, fr: Cour de l'école }
+field_organiser: { en: Market association, de: Marktverein, fr: Association du marché }
+field_category: market
+field_price: { en: Free, de: Gratis, fr: Gratuit }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>This year the market is on the school grounds, while the village square is being redesigned.</p>'
+      de: '<p>Dieses Jahr findet der Markt auf dem Schulhausareal statt, weil der Dorfplatz umgestaltet wird.</p>'
+      fr: '<p>Cette année, le marché a lieu dans la cour de l''école, pendant le réaménagement de la place du village.</p>'

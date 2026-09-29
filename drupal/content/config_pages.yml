@@ -25,6 +25,33 @@
     - type: link
       field_link: { node: town-hall }
       field_title: { en: Contact, de: Kontakt, fr: Contact }
+  # The home page's frequently searched links: its own pages where there are
+  # some, the rest are placeholders like the online counter.
+  field_quick_links:
+    - type: link
+      field_link: https://www.example.com/online-counter
+      field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
+    - type: link
+      field_link: https://www.example.com/waste
+      field_title: { en: Waste and recycling, de: Abfall & Recycling, fr: Déchets et recyclage }
+    - type: link
+      field_link: https://www.example.com/taxes
+      field_title: { en: Taxes, de: Steuern, fr: Impôts }
+    - type: link
+      field_link: { node: building-permits }
+      field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
+    - type: link
+      field_link: { node: living-here }
+      field_title: { en: Moving here, de: Zuzug, fr: S'installer ici }
+    - type: link
+      field_link: https://www.example.com/schools
+      field_title: { en: Schools and childcare, de: Schule & Betreuung, fr: École et accueil }
+    - type: link
+      field_link: https://www.example.com/rooms
+      field_title: { en: Room hire, de: Raumvermietung, fr: Location de salles }
+    - type: link
+      field_link: https://www.example.com/jobs
+      field_title: { en: Vacancies, de: Offene Stellen, fr: Postes vacants }
   # Banners at the very top of every page.
   field_notice:
     - type: banner

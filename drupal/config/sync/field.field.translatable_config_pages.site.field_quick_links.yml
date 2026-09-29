@@ -1,0 +1,27 @@
+uuid: 8391b48a-e9af-407c-8b0d-58c539b4d7bf
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_quick_links
+    - paragraphs.paragraphs_type.link
+    - translatable_config_pages.translatable_config_pages_type.site
+  module:
+    - entity_reference_revisions
+id: translatable_config_pages.site.field_quick_links
+field_name: field_quick_links
+entity_type: translatable_config_pages
+bundle: site
+label: 'Frequently searched'
+description: 'Up to eight links on the home page.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      link: link
+    negate: 0
+field_type: entity_reference_revisions

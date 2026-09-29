@@ -1,0 +1,18 @@
+key: village-square
+type: news
+created: '-5 days'
+title:
+  en: Redesign of the village square begins in October
+  de: Neugestaltung des Dorfplatzes beginnt im Oktober
+  fr: Le réaménagement de la place du village commence en octobre
+field_lead:
+  en: The weekly market moves to the school grounds during the works.
+  de: Der Wochenmarkt zieht während der Bauzeit auf das Schulhausareal.
+  fr: Le marché hebdomadaire déménage dans la cour de l'école pendant les travaux.
+field_hero_image: { media: stone }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The works last until spring. Dorfstrasse is closed between the church and the school while they last.</p>'
+      de: '<p>Die Arbeiten dauern bis im Frühling. Solange ist die Dorfstrasse zwischen Kirche und Schulhaus gesperrt.</p>'
+      fr: '<p>Les travaux durent jusqu''au printemps. Pendant ce temps, la Dorfstrasse est fermée entre l''église et l''école.</p>'

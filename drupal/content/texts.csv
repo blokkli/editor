@@ -55,8 +55,8 @@ header.search;default;Search;Suche;Recherche
 header.search_label;default;Search the website;Website durchsuchen;Rechercher sur le site
 header.service_navigation;default;Service;Service;Services
 header.skip_to_content;default;Skip to content;Zum Inhalt springen;Aller au contenu
+home.search_placeholder;default;e.g. waste calendar, building application, dog tax;z. B. Abfallkalender, Baugesuch, Hundetaxe;p. ex. calendrier des déchets, permis de construire, taxe sur les chiens
 language_switch.label;default;Language;Sprache;Langue
-latest_news.empty;default;No news.;Keine News.;Aucune actualité.
 library_item.label;default;Library item;Bibliothekseintrag;Élément de bibliothèque
 link.label;default;Link;Link;Lien
 news.label;default;News;News;Actualité
@@ -73,10 +73,38 @@ page.updated;default;Updated on @date;Aktualisiert am @date;Mis à jour le @date
 placeholder.caption;default;Caption;Bildlegende;Légende
 placeholder.heading;default;Heading;Überschrift;Titre
 placeholder.site_name;default;Site name;Name der Website;Nom du site
+placeholder.tagline;default;Tagline;Dachzeile;Surtitre
+placeholder.text;default;Text;Text;Texte
 placeholder.title;default;Title;Titel;Titre
+publication.label;default;Official publication;Amtliche Publikation;Publication officielle
+publication.period;default;Published from @start to @end;Publiziert vom @start bis @end;Publiée du @start au @end
+publication.type_building_application;default;Building application;Baugesuch;Demande de permis de construire
+publication.type_regulation;default;Regulation;Reglement;Règlement
+publication.type_traffic;default;Traffic;Verkehr;Circulation
+publication.until;default;@type, until @date;@type, bis @date;@type, jusqu'au @date
+quick_links.empty;default;Add the links on the site config page.;Fügen Sie die Links auf der Konfigurationsseite der Website hinzu.;Ajoutez les liens sur la page de configuration du site.
+quick_links.title;default;Frequently searched;Häufig gesucht;Recherches fréquentes
 search.submit;default;Search;Suchen;Rechercher
 search.title;default;Search;Suche;Recherche
 subpages.label;default;In this section;In diesem Bereich;Dans cette rubrique
 table_of_contents.label;default;On this page;Auf dieser Seite;Sur cette page
 teaser.unavailable;default;The content of this teaser isn't available.;Der Inhalt dieses Teasers ist nicht verfügbar.;Le contenu de cet aperçu n'est pas disponible.
-upcoming_events.empty;default;No upcoming events.;Keine bevorstehenden Veranstaltungen.;Aucun événement à venir.
+teaser_list.events;default;Events;Veranstaltungen;Événements
+teaser_list.events_all;default;All events;Alle Veranstaltungen;Tous les événements
+teaser_list.events_empty;default;No upcoming events.;Keine bevorstehenden Veranstaltungen.;Aucun événement à venir.
+teaser_list.news;default;News;Aktuelles;Actualités
+teaser_list.news_all;default;All news;Alle Meldungen;Toutes les actualités
+teaser_list.news_empty;default;No news.;Keine Meldungen.;Aucune actualité.
+teaser_list.publications;default;Official publications;Amtliche Publikationen;Publications officielles
+teaser_list.publications_all;default;All publications;Alle Publikationen;Toutes les publications
+teaser_list.publications_empty;default;No current publications.;Keine aktuellen Publikationen.;Aucune publication en cours.
+today.assembly;default;Municipal assembly;Gemeindeversammlung;Assemblée communale
+today.assembly_link;default;Agenda;Traktanden;Ordre du jour
+today.assembly_value;default;Wednesday, 2 December 2026;Mittwoch, 2. Dezember 2026;mercredi 2 décembre 2026
+today.collection;default;Next collection;Nächste Abfuhr;Prochain ramassage
+today.collection_link;default;Collection calendar;Sammelkalender;Calendrier des collectes
+today.collection_value;default;Household waste · Tuesday, 6 October;Kehricht · Dienstag, 6. Oktober;Ordures ménagères · mardi 6 octobre
+today.label;default;Today;Heute;Aujourd'hui
+today.town_hall;default;Town hall;Gemeindeverwaltung;Administration communale
+today.town_hall_hours;default;8:00–11:30 and 14:00–17:00;08.00–11.30 und 14.00–17.00;8 h – 11 h 30 et 14 h – 17 h
+today.town_hall_open;default;Open today;Heute geöffnet;Ouvert aujourd'hui

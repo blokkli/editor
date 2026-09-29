@@ -78,6 +78,23 @@
     }
   },
   "blokkli_fragment": {},
+  "call_to_action": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    }
+  },
   "chart": {
     "bkVisibleLanguages": {
       "default": [],
@@ -656,6 +673,55 @@
             "de": "Liste",
             "en": "List",
             "fr": "Liste"
+          }
+        }
+      },
+      "type": "radios"
+    }
+  },
+  "teaser_list": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "source": {
+      "default": "news",
+      "label": {
+        "de": "Inhalt",
+        "en": "Content",
+        "fr": "Contenu"
+      },
+      "options": {
+        "events": {
+          "label": {
+            "de": "Veranstaltungen",
+            "en": "Events",
+            "fr": "Événements"
+          }
+        },
+        "news": {
+          "label": {
+            "de": "News",
+            "en": "News",
+            "fr": "Actualités"
+          }
+        },
+        "publications": {
+          "label": {
+            "de": "Amtliche Publikationen",
+            "en": "Official publications",
+            "fr": "Publications officielles"
           }
         }
       },

@@ -16,5 +16,6 @@ search_plugin_configuration:
     - news
     - event
     - office
+    - publication
   text_fields:
     field_lead: field_lead

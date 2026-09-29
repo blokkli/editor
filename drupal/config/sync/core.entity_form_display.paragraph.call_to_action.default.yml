@@ -1,0 +1,58 @@
+uuid: 83213ca0-3985-4f8e-8691-c56e99235456
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.call_to_action.field_lead
+    - field.field.paragraph.call_to_action.field_links
+    - field.field.paragraph.call_to_action.field_tagline
+    - field.field.paragraph.call_to_action.field_title
+    - paragraphs.paragraphs_type.call_to_action
+id: paragraph.call_to_action.default
+targetEntityType: paragraph
+bundle: call_to_action
+mode: default
+content:
+  field_lead:
+    type: string_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+  field_links:
+    type: paragraphs
+    weight: 3
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+  field_tagline:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  publish_on: true
+  status: true
+  unpublish_on: true

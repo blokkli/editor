@@ -138,8 +138,8 @@ Built by a throwaway script (`tmp/drupal-hosts.php`, as in 13b), then
   - `.page-body:has(> .has-aside)` in `main.css` makes a two-column grid on
     large screens. Without blocks in the aside it sits below the content, and
     only while editing.
-- **Host options:** `Node/Page` defines `header` (image, overlay, plain) and
-  passes it to `Host/Header`.
+- **Host options:** `Node/Page` defines `header` (image, overlay, plain; 15d
+  removed overlay) and passes it to `Host/Header`.
 - **Components:**
   - `Host/Header` is shared by the four node bundles. The office passes no
     image, so the header has no droppable for a field it lacks.

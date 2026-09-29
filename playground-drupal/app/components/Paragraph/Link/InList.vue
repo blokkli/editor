@@ -1,5 +1,11 @@
 <template>
+  <li v-if="isButton">
+    <SiteLink v-blokkli-droppable:field_link :to="target.href" class="button">
+      <span v-blokkli-editable:field_title>{{ label }}</span>
+    </SiteLink>
+  </li>
   <LinkListItem
+    v-else
     v-blokkli-droppable:field_link
     :url="target.href"
     :meta
@@ -11,13 +17,15 @@
 
 <script lang="ts" setup>
 import { computed, defineBlokkli } from '#imports'
+import { SiteLink } from '#components'
 import type { ParagraphLinkFragment } from '#graphql-operations'
 import LinkListItem from '~/components/LinkList/Item.vue'
 import { useLanguage } from '~/composables/useLanguage'
 import { linkTarget } from './target'
 
-// A link in a link list, as a row. A document gets its type and size, e.g.
-// "PDF, 240 kB".
+// A link in a link list or a call to action, as a row. A document gets its
+// type and size, e.g. "PDF, 240 kB". The only link of a call to action is a
+// button.
 const props = defineProps<ParagraphLinkFragment>()
 
 const language = useLanguage()
@@ -50,13 +58,20 @@ const meta = computed(() => {
     .join(', ')
 })
 
-defineBlokkli({
+const { parentType, siblings } = defineBlokkli({
   bundle: 'link',
-  renderFor: [{ parentBundle: 'link_list' }],
+  renderFor: [
+    { parentBundle: 'link_list' },
+    { parentBundle: 'call_to_action' },
+  ],
   globalOptions: ['bkVisibleLanguages'],
   editor: {
     icon: 'bk_mdi_link',
     editTitle: (el) => el.querySelector('a > span')?.textContent,
   },
 })
+
+const isButton = computed(
+  () => parentType.value === 'call_to_action' && siblings.value.length === 1,
+)
 </script>

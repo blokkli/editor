@@ -77,6 +77,10 @@ field_paragraphs:
       en: Contact the building office
       de: Bauamt kontaktieren
       fr: Contacter le service des constructions
+  # Building applications are official publications. On a detail page, the
+  # automatic list is always a list.
+  - type: teaser_list
+    options: { source: publications }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact

@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.translatable_config_pages.site.field_notice
+    - field.field.translatable_config_pages.site.field_quick_links
     - field.field.translatable_config_pages.site.field_service_links
     - field.field.translatable_config_pages.site.field_site_name
     - translatable_config_pages.translatable_config_pages_type.site
@@ -15,6 +16,24 @@ bundle: site
 mode: default
 content:
   field_notice:
+    type: paragraphs
+    weight: 0
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+  field_quick_links:
     type: paragraphs
     weight: 0
     region: content

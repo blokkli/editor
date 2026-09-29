@@ -13,6 +13,7 @@ enabled_types:
     - news
     - office
     - page
+    - publication
   translatable_config_pages:
     - footer
     - site

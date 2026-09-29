@@ -10,7 +10,7 @@
       :search-url="`/${language}/search`"
       :language-links
       :links
-      :service-links="plainServiceLinks"
+      :service-links="plainLinks(serviceLinks)"
     >
       <template #banner>
         <BlokkliField
@@ -41,24 +41,38 @@
         </span>
       </template>
     </PageHeader>
+    <QuickLinks v-if="isEditing" class="py-section">
+      <BlokkliField
+        name="field_quick_links"
+        :list="quickLinks"
+        field-list-type="quick_links"
+        tag="ul"
+        class="grid gap-x-grid sm:grid-cols-2 lg:grid-cols-4"
+        edit-class="min-h-14"
+      />
+    </QuickLinks>
   </BlokkliProvider>
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { BlokkliField, BlokkliProvider, PageHeader } from '#components'
+import {
+  BlokkliField,
+  BlokkliProvider,
+  PageHeader,
+  QuickLinks,
+} from '#components'
 import type {
   ConfigPageSiteFragment,
   LanguageSwitchLinkFragment,
-  ParagraphLinkFragment,
 } from '#graphql-operations'
-import { linkTarget } from '~/components/Paragraph/Link/target'
+import { plainLinks } from '~/components/Paragraph/Link/target'
 import { useLanguage } from '~/composables/useLanguage'
 
 // The site's header, with the notice's banners at the top. Editing happens on
 // the config page's own route, where Drupal's links (e.g. the language switch)
 // lead too. The service links are edited in the bar; the menu panel below md
-// gets them as links.
+// gets them as links. The home page's frequently searched links are edited
+// below the header.
 const props = defineProps<
   ConfigPageSiteFragment & {
     languageLinks?: LanguageSwitchLinkFragment[] | null
@@ -68,23 +82,4 @@ const props = defineProps<
 >()
 
 const language = useLanguage()
-
-// The field only allows links.
-function isLink(
-  value: ParagraphLinkFragment | object,
-): value is ParagraphLinkFragment {
-  return 'link' in value
-}
-
-// For the menu panel below md.
-const plainServiceLinks = computed(() =>
-  (props.serviceLinks ?? []).flatMap((item) => {
-    if (!item?.props || !isLink(item.props)) {
-      return []
-    }
-    const target = linkTarget(item.props.link)
-    const label = item.props.title || target.label
-    return target.href && label ? [{ label, url: target.href }] : []
-  }),
-)
 </script>

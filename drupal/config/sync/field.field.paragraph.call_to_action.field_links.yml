@@ -1,0 +1,27 @@
+uuid: bcfc945a-9f4a-4239-98fc-715a3e28bcd7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_links
+    - paragraphs.paragraphs_type.call_to_action
+    - paragraphs.paragraphs_type.link
+  module:
+    - entity_reference_revisions
+id: paragraph.call_to_action.field_links
+field_name: field_links
+entity_type: paragraph
+bundle: call_to_action
+label: Links
+description: 'One link is a button, several are a list.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      link: link
+    negate: 0
+field_type: entity_reference_revisions

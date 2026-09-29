@@ -1,0 +1,21 @@
+uuid: 32590db7-a5b2-40f9-a6ce-33ca398095c0
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_tagline
+field_name: field_tagline
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

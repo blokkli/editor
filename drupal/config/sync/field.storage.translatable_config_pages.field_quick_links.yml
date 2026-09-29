@@ -1,0 +1,21 @@
+uuid: 81a7623e-6b8e-4144-92aa-7c308b923af8
+langcode: en
+status: true
+dependencies:
+  module:
+    - entity_reference_revisions
+    - paragraphs
+    - translatable_config_pages
+id: translatable_config_pages.field_quick_links
+field_name: field_quick_links
+entity_type: translatable_config_pages
+type: entity_reference_revisions
+settings:
+  target_type: paragraph
+module: entity_reference_revisions
+locked: false
+cardinality: 8
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
