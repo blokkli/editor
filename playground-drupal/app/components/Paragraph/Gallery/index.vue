@@ -1,5 +1,5 @@
 <template>
-  <div :class="parentType ? '' : WIDTH_CLASSES[options.width]">
+  <div :class="[spacing, parentType ? '' : WIDTH_CLASSES[options.width]]">
     <BlokkliField
       v-if="options.display === 'grid'"
       name="field_paragraphs"
@@ -27,10 +27,11 @@ import { defineBlokkli } from '#imports'
 import type { ParagraphGalleryFragment } from '#graphql-operations'
 import ParagraphGallerySlider from './Slider.vue'
 import { WIDTH_CLASSES } from '~/helpers/width'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphGalleryFragment>()
 
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'gallery',
   chunkName: 'rare',
   globalOptions: ['width', 'bkVisibleLanguages'],
@@ -63,6 +64,8 @@ const { options, parentType } = defineBlokkli({
       ctx.parentType ? ['display'] : ['display', 'width'],
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 
 const isEditing = import.meta.blokkliEditing
 </script>

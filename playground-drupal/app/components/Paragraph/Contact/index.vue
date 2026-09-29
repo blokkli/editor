@@ -1,10 +1,13 @@
 <template>
   <div
     v-blokkli-droppable:field_office
-    :class="{
-      'container-content': !parentType && fieldListType === 'default',
-      hidden: !office && !isEditing,
-    }"
+    :class="[
+      spacing,
+      {
+        'container-content': !parentType && fieldListType === 'default',
+        hidden: !office && !isEditing,
+      },
+    ]"
   >
     <template v-if="office">
       <!-- The sidebar: under a heading, on the white panel. -->
@@ -51,10 +54,11 @@ import { SiteLink } from '#components'
 import type { ParagraphContactFragment } from '#graphql-operations'
 import OfficeContact from '~/components/Office/Contact/index.vue'
 import OfficeDetails from '~/components/Office/Details/index.vue'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphContactFragment>()
 
-const { options, parentType, fieldListType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'contact',
   globalOptions: ['bkVisibleLanguages'],
   options: {
@@ -73,6 +77,8 @@ const { options, parentType, fieldListType } = defineBlokkli({
     editTitle: (el) => el.querySelector('a')?.textContent,
   },
 })
+const { options, parentType, fieldListType } = block
+const spacing = useBlockSpacing(block)
 
 const compact = computed(() => options.value.display === 'compact')
 

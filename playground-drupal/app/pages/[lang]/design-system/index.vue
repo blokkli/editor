@@ -873,7 +873,12 @@ const SPACING = [
   {
     token: 'flow',
     values: ['32 px', '32 px', '32 px'],
-    use: 'Between the blocks of a field: flow',
+    use: 'Above a block: mt-flow (16 px after a title)',
+  },
+  {
+    token: 'heading',
+    values: ['48 px', '48 px', '48 px'],
+    use: 'Above a title, a section or a teaser list: mt-heading',
   },
 ]
 

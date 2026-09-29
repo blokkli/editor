@@ -34,7 +34,7 @@
           </template>
         </HostHeader>
       </template>
-      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" />
       <section
         v-if="related?.length || isEditing"
         class="container-content mt-flow flex flex-col gap-4 border-t-2 border-ink pt-6"

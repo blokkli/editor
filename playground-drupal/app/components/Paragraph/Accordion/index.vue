@@ -1,6 +1,14 @@
 <template>
-  <div class="accordion" :class="{ 'container-content': !parentType }">
-    <div>
+  <div
+    :class="[continued ? '' : spacing, { 'container-content': !parentType }]"
+  >
+    <div
+      :class="
+        continued
+          ? 'border-b border-line'
+          : 'border-y border-t-ink border-b-line'
+      "
+    >
       <h3 class="text-h3">
         <span
           v-if="isEditing"
@@ -28,7 +36,6 @@
         <BlokkliField
           name="field_paragraphs"
           :list="paragraphs"
-          class="flow"
           edit-class="min-h-16"
         />
       </div>
@@ -37,16 +44,18 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli, ref } from '#imports'
+import { computed, defineBlokkli, ref } from '#imports'
 import { SpriteSymbol } from '#components'
 import type { ParagraphAccordionFragment } from '#graphql-operations'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphAccordionFragment>()
 
 const isOpen = ref(false)
 
-// One block is one item. Consecutive items form one list (main.css).
-const { parentType } = defineBlokkli({
+// One block is one item. Consecutive items form one list: no space between
+// them, and only the first one has the ink rule on top.
+const block = defineBlokkli({
   bundle: 'accordion',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
@@ -59,6 +68,11 @@ const { parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('h3')?.textContent,
   },
 })
+const { parentType } = block
+const spacing = useBlockSpacing(block)
+const continued = computed(
+  () => block.siblings.value[block.index.value - 1]?.bundle === 'accordion',
+)
 
 const isEditing = import.meta.blokkliEditing
 </script>

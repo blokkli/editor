@@ -1,6 +1,7 @@
 <template>
   <section
     :class="[
+      spacing,
       BACKGROUNDS[options.background],
       { 'py-section': options.background !== 'none' },
     ]"
@@ -32,6 +33,7 @@
 import { defineBlokkli } from '#imports'
 import type { ParagraphSectionFragment } from '#graphql-operations'
 import { anchorId } from '~/helpers/anchor'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphSectionFragment>()
 
@@ -41,13 +43,15 @@ const BACKGROUNDS = {
   lake: 'bg-info-light',
 } as const
 
+// One column stacks the blocks, each with its own space above
+// (useBlockSpacing). In a grid, the gaps space them.
 const COLUMNS = {
-  '1': 'flow',
-  '2': 'grid gap-x-grid gap-y-flow md:grid-cols-2',
-  '3': 'grid gap-x-grid gap-y-flow md:grid-cols-3',
+  '1': '',
+  '2': 'grid gap-x-grid gap-y-flow md:grid-cols-2 *:mt-0',
+  '3': 'grid gap-x-grid gap-y-flow md:grid-cols-3 *:mt-0',
 } as const
 
-const { options } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'section',
   globalOptions: ['bkVisibleLanguages'],
   options: {
@@ -106,6 +110,8 @@ const { options } = defineBlokkli({
     editTitle: (el) => el.querySelector(':scope > div > h2')?.textContent,
   },
 })
+const { options } = block
+const spacing = useBlockSpacing(block)
 
 const isEditing = import.meta.blokkliEditing
 </script>

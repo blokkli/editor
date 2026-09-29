@@ -2,10 +2,10 @@
   <div
     v-blokkli-editable:field_table
     class="rich-text overflow-x-auto"
-    :class="{
-      'container-content': !parentType,
-      'is-striped': options.striped,
-    }"
+    :class="[
+      spacing,
+      { 'container-content': !parentType, 'is-striped': options.striped },
+    ]"
     v-html="table"
   />
 </template>
@@ -13,10 +13,11 @@
 <script lang="ts" setup>
 import { defineBlokkli } from '#imports'
 import type { ParagraphTableFragment } from '#graphql-operations'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphTableFragment>()
 
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'table',
   globalOptions: ['bkVisibleLanguages'],
   options: {
@@ -38,4 +39,6 @@ const { options, parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('caption, th, td')?.textContent,
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 </script>

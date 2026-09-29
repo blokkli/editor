@@ -83,7 +83,8 @@ progress, not a spec (the user).
   - Spacing tokens: `gutter` (16 / 32 / 48 px), `grid` (16 / 24 / 32) and
     `section` (40 / 56 / 64). They are made responsive in `@layer base` with
     `:root { @variant md { … } }`; utilities reference the variables, so plain
-    `@theme` (not `inline`) is required. `flow` is 32 px.
+    `@theme` (not `inline`) is required. `flow` is 32 px, `heading` 48 px: each
+    block's space above, since 15g.
   - Containers: `container-content` (48rem) and `container-wide` (75rem) plus
     the gutter on both sides. At 1440 px the wide container leaves the canvas's
     120 px of margin. [15b](15b-apply-design.md) made `container-content` the

@@ -1,5 +1,5 @@
 <template>
-  <figure :class="parentType ? '' : WIDTH_CLASSES[options.width]">
+  <figure :class="[spacing, parentType ? '' : WIDTH_CLASSES[options.width]]">
     <div v-blokkli-droppable:field_media>
       <MediaImage
         v-if="media"
@@ -28,10 +28,11 @@ import { defineBlokkli } from '#imports'
 import type { ParagraphImageFragment } from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
 import { WIDTH_CLASSES } from '~/helpers/width'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphImageFragment>()
 
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'image',
   globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
@@ -40,6 +41,8 @@ const { options, parentType } = defineBlokkli({
     determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 
 const isEditing = import.meta.blokkliEditing
 </script>

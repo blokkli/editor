@@ -77,8 +77,10 @@
   --spacing-gutter: 1rem;
   --spacing-grid: 1rem;
   --spacing-section: 2.5rem;
-  /* Between the blocks of a field. */
+  /* Between the blocks of a field, and above a heading: each block decides
+     its own space above (useBlockSpacing). */
   --spacing-flow: 2rem;
+  --spacing-heading: 3rem;
 
   /* A comfortable line length, e.g. max-w-content for a lead. */
   --container-content: 48rem;
@@ -131,11 +133,6 @@
       padding-inline: 0;
     }
   }
-}
-
-/* A vertical list of blocks: the page, a one-column section, an accordion. */
-@utility flow {
-  @apply flex flex-col gap-flow;
 }
 
 /* An empty editable field while editing (the element needs a size). */
@@ -312,21 +309,6 @@
     }
   }
 
-  /* An accordion item: an ink rule on top, a line below. Consecutive items
-     form one list: no gap between them, and only the first one has the ink
-     rule. Here, not in the template: utilities would win over this. */
-  .accordion > :first-child {
-    @apply border-y border-t-ink border-b-line;
-  }
-
-  .flow > .accordion + .accordion {
-    margin-top: calc(var(--spacing-flow) * -1);
-
-    > :first-child {
-      border-top-width: 0;
-    }
-  }
-
   /* The parts the charts module renders around a chart (Chart/index.vue):
      the category filter above it, the footnotes below. */
   .bk-chart-category-filter {
@@ -345,8 +327,9 @@
   .rich-text {
     @apply flex flex-col gap-4;
 
+    /* With the gap, as much space as above a title block. */
     h2 {
-      @apply mt-4 font-serif text-h2 first:mt-0;
+      @apply mt-8 font-serif text-h2 first:mt-0;
     }
 
     h3 {

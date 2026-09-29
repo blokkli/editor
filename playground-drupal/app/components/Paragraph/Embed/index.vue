@@ -1,5 +1,5 @@
 <template>
-  <div :class="widthClass">
+  <div :class="[spacing, widthClass]">
     <BlokkliIframe v-if="src" :src :heights="options.heights">
       <iframe :src :title="title ?? undefined" class="block size-full" />
     </BlokkliIframe>
@@ -13,12 +13,13 @@ import type { ParagraphEmbedFragment } from '#graphql-operations'
 import { useLanguage } from '~/composables/useLanguage'
 import { getLanguageFromPath } from '#shared/languages'
 import { WIDTH_CLASSES } from '~/helpers/width'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 const props = defineProps<ParagraphEmbedFragment>()
 
 // A page of this site in an iframe, e.g. the fee calculator
 // (pages/[lang]/embed), with heights per viewport from the iframes module.
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'embed',
   globalOptions: ['width', 'bkVisibleLanguages'],
   options: {
@@ -37,6 +38,8 @@ const { options, parentType } = defineBlokkli({
       ctx.parentType ? ['heights'] : ['width', 'heights'],
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 
 // The link is the same in every language: the page is shown in the language
 // of the page the embed is placed on, like Drupal renders internal links. The

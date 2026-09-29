@@ -2,6 +2,7 @@
   <section
     class="flex flex-col gap-6"
     :class="[
+      spacing,
       { hidden: !items.length && !isEditing },
       parentType ? '' : isCards ? 'container-wide' : 'container-content',
     ]"
@@ -49,6 +50,7 @@ import type {
 import ArrowLink from '~/components/ArrowLink/index.vue'
 import NodeTeaser from '~/components/NodeTeaser/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // The three latest news items, the next three events or the three current
 // official publications. The title replaces the source's default. The link to
@@ -57,7 +59,7 @@ import { useLanguage } from '~/composables/useLanguage'
 defineProps<ParagraphTeaserListFragment>()
 
 // Before the await: the editor needs the definition during setup.
-const { options, parentType, provider } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'teaser_list',
   globalOptions: ['bkVisibleLanguages'],
   options: {
@@ -85,6 +87,8 @@ const { options, parentType, provider } = defineBlokkli({
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },
 })
+const { options, parentType, provider } = block
+const spacing = useBlockSpacing(block)
 
 const { $texts } = useEasyTexts()
 const language = useLanguage()

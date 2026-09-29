@@ -75,6 +75,33 @@ After the first build, the user pointed out three inconsistencies:
 The mockups and the design system page use both components too; its type scale
 keeps "→" for its size ranges (mobile → desktop).
 
+## Spacing decided by the blocks (the user, 2026-09-29)
+
+The fields had one gap between all their blocks (the `flow` utility): a title
+had as much space above as the text below it. Now each block decides its space
+above with `useBlockSpacing()`, from its own type and the one before it:
+
+- none at the start of a field
+- `mt-heading` (48 px) above a title, a section or a teaser list, which start
+  with a heading. A rich text's `h2` gets the same.
+- `mt-4` (16 px) after a title: its text belongs to it
+- `mt-flow` (32 px) otherwise
+- an accordion after an accordion: none, and no ink rule on top. They form one
+  list; the accordion decides this itself, which replaces `main.css`'s rules.
+
+It applies in stacked fields only: a host's main field, a section with one
+column, an accordion and the columns. Grids space their blocks with their gaps
+(`*:mt-0`): a section with two or three columns, and the front page's sections
+(96 px from lg, as before). Other field list types (sidebar, footer) and the
+blocks inside link lists, steps, galleries and calls to action have their own
+layouts.
+
+**Checked (2026-09-29):** building permits at 390 and 1440 px, published and
+while editing: 48 px above each title and the publications list, 16 px after
+each title, 32 px otherwise. A duplicated accordion follows its original without
+a gap and without the ink rule. The home page keeps its 96 px. `bun run verify`:
+all 10 gates.
+
 ## Verification (2026-09-29)
 
 - `ddev bake`, `drush config:status` clean. `bun run verify`: all 10 gates.

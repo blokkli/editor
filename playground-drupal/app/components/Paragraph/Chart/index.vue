@@ -1,5 +1,5 @@
 <template>
-  <div :class="[widthClass, { hidden: !hasChart && !isEditing }]">
+  <div :class="[spacing, widthClass, { hidden: !hasChart && !isEditing }]">
     <Chart v-if="hasChart" :data="chartData!" :dynamic-data />
     <p v-else class="bg-surface p-4 text-muted">
       {{ $texts('chart.empty', 'No data yet: edit the chart to add some.') }}
@@ -16,10 +16,11 @@ import type {
 import Chart from '~/components/Chart/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
 import { WIDTH_CLASSES } from '~/helpers/width'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // A chart of the charts module. The paragraph has no fields: the chart,
 // including its title and translations, is a block option.
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'chart',
   chunkName: 'chart',
   globalOptions: ['width', 'bkVisibleLanguages'],
@@ -40,6 +41,8 @@ const { options, parentType } = defineBlokkli({
     determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 
 const chartData = computed<BlokkliChartData | null>(() => options.value.data)
 

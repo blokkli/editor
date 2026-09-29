@@ -35,7 +35,7 @@
           <OfficeHours :hours />
         </FactsItem>
       </Facts>
-      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" />
     </HostLayout>
   </BlokkliProvider>
 </template>

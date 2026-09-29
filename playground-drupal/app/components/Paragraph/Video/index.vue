@@ -1,5 +1,5 @@
 <template>
-  <div :class="parentType ? '' : WIDTH_CLASSES[options.width]">
+  <div :class="[spacing, parentType ? '' : WIDTH_CLASSES[options.width]]">
     <a
       :href="video?.url ?? undefined"
       target="_blank"
@@ -41,13 +41,14 @@ import { computed, defineBlokkli } from '#imports'
 import { SpriteSymbol } from '#components'
 import type { ParagraphVideoFragment } from '#graphql-operations'
 import { WIDTH_CLASSES } from '~/helpers/width'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 const props = defineProps<ParagraphVideoFragment>()
 
 // A link, not an embed: the site frames only its own pages (Paragraph/Embed).
 const thumbnail = computed(() => props.video?.thumbnail?.derivative)
 
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'video',
   globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
@@ -56,4 +57,6 @@ const { options, parentType } = defineBlokkli({
     determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 </script>

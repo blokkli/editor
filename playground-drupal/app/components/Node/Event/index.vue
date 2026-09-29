@@ -43,7 +43,7 @@
           <template v-else>{{ fact.value }}</template>
         </FactsItem>
       </Facts>
-      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" />
     </HostLayout>
   </BlokkliProvider>
 </template>

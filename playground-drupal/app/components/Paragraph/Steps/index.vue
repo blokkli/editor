@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'container-content': !parentType }">
+  <div :class="[spacing, { 'container-content': !parentType }]">
     <BlokkliField
       name="field_paragraphs"
       :list="paragraphs"
@@ -14,12 +14,13 @@
 import { defineBlokkli } from '#imports'
 import { BlokkliField } from '#components'
 import type { ParagraphStepsFragment } from '#graphql-operations'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Numbered steps (Step/index.vue), e.g. of a procedure. A heading is a title
 // block before them.
 defineProps<ParagraphStepsFragment>()
 
-const { parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'steps',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
@@ -32,4 +33,6 @@ const { parentType } = defineBlokkli({
     editTitle: (el) => el.querySelector('li h3')?.textContent,
   },
 })
+const { parentType } = block
+const spacing = useBlockSpacing(block)
 </script>

@@ -26,7 +26,7 @@
         name="field_paragraphs"
         :list="paragraphs"
         :allowed-fragments="frontPage ? ['today', 'quick_links'] : []"
-        :class="frontPage ? 'flex flex-col gap-section lg:gap-24' : 'flow'"
+        :class="{ 'flex flex-col gap-section lg:gap-24 *:mt-0': frontPage }"
       />
     </HostLayout>
   </BlokkliProvider>

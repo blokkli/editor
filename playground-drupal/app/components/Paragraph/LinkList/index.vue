@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="{ 'container-content': !parentType && fieldListType === 'default' }"
+    :class="[
+      spacing,
+      { 'container-content': !parentType && fieldListType === 'default' },
+    ]"
   >
     <BlokkliField
       name="field_paragraphs"
@@ -16,12 +19,13 @@
 import { defineBlokkli } from '#imports'
 import { BlokkliField } from '#components'
 import type { ParagraphLinkListFragment } from '#graphql-operations'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Links and documents, one per row (Link/InList.vue). A heading is a title
 // block before the list.
 defineProps<ParagraphLinkListFragment>()
 
-const { parentType, fieldListType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'link_list',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
@@ -34,4 +38,6 @@ const { parentType, fieldListType } = defineBlokkli({
     editTitle: (el) => el.querySelector('li a > span')?.textContent,
   },
 })
+const { parentType, fieldListType } = block
+const spacing = useBlockSpacing(block)
 </script>

@@ -20,7 +20,7 @@
           </template>
         </HostHeader>
       </template>
-      <BlokkliField name="field_paragraphs" :list="paragraphs" class="flow" />
+      <BlokkliField name="field_paragraphs" :list="paragraphs" />
     </HostLayout>
   </BlokkliProvider>
 </template>

@@ -3,7 +3,7 @@
     :id="anchorId(title)"
     v-blokkli-editable:field_title
     class="font-serif text-h2"
-    :class="{ 'container-content': !parentType }"
+    :class="[spacing, { 'container-content': !parentType }]"
   >
     {{ title }}
   </h2>
@@ -13,10 +13,11 @@
 import { defineBlokkli } from '#imports'
 import type { ParagraphTitleFragment } from '#graphql-operations'
 import { anchorId } from '~/helpers/anchor'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphTitleFragment>()
 
-const { parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'title',
   globalOptions: ['bkVisibleLanguages'],
   editor: {
@@ -25,4 +26,6 @@ const { parentType } = defineBlokkli({
     editTitle: (el) => el.textContent,
   },
 })
+const { parentType } = block
+const spacing = useBlockSpacing(block)
 </script>

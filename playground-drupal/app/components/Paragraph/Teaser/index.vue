@@ -1,7 +1,10 @@
 <template>
   <div
     v-blokkli-droppable:field_link
-    :class="{ 'container-content': !parentType, hidden: !url && !isEditing }"
+    :class="[
+      spacing,
+      { 'container-content': !parentType, hidden: !url && !isEditing },
+    ]"
   >
     <NodeTeaser
       v-if="url"
@@ -30,6 +33,7 @@ import { computed, defineBlokkli } from '#imports'
 import type { ParagraphTeaserFragment } from '#graphql-operations'
 import NodeTeaser from '~/components/NodeTeaser/index.vue'
 import { teaserTarget } from './target'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // A teaser for a page, news item or event, or for any URL. Its title, lead
 // and image override the linked node's.
@@ -39,7 +43,7 @@ const target = computed(() => teaserTarget(props))
 const node = computed(() => target.value.node)
 const url = computed(() => target.value.url)
 
-const { options, parentType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'teaser',
   globalOptions: ['bkVisibleLanguages'],
   options: {
@@ -61,6 +65,8 @@ const { options, parentType } = defineBlokkli({
       ctx.fieldListType === 'related' ? [] : ['display'],
   },
 })
+const { options, parentType } = block
+const spacing = useBlockSpacing(block)
 
 const isEditing = import.meta.blokkliEditing
 </script>

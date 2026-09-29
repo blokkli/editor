@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="{ 'container-content': !parentType && fieldListType === 'default' }"
+    :class="[
+      spacing,
+      { 'container-content': !parentType && fieldListType === 'default' },
+    ]"
   >
     <Callout v-if="box" :type="box">
       <div v-blokkli-editable:field_text class="rich-text" v-html="text" />
@@ -13,11 +16,12 @@
 import { computed, defineBlokkli } from '#imports'
 import { Callout } from '#components'
 import type { ParagraphTextFragment } from '#graphql-operations'
+import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Rich text, or an info box: the box option puts the text in a callout.
 defineProps<ParagraphTextFragment>()
 
-const { options, parentType, fieldListType } = defineBlokkli({
+const block = defineBlokkli({
   bundle: 'text',
   globalOptions: ['bkVisibleLanguages'],
   options: {
@@ -55,6 +59,8 @@ const { options, parentType, fieldListType } = defineBlokkli({
       ctx.fieldListType === 'default' ? ['box'] : [],
   },
 })
+const { options, parentType, fieldListType } = block
+const spacing = useBlockSpacing(block)
 
 const box = computed(() =>
   options.value.box === 'none' || fieldListType.value !== 'default'
