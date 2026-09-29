@@ -46,7 +46,8 @@ bun run dev          # http://localhost:3000
 5. `ddev drush uli` prints a login link for the admin. The test users log in
    with `ddev drush uli --name="Anna Keller"` (editor), `Marc Brunner` (head of
    department, reviews), `Élodie Favre` (French translator) and `Jonas Weber`
-   (restricted editor).
+   (restricted editor). Logged in, a page shows Drupal's toolbar and its tabs
+   (Edit, Translate…) above it; Drupal's admin theme is Gin.
 
 ### Content
 

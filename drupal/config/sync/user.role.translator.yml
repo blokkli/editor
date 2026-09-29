@@ -10,7 +10,6 @@ dependencies:
     - node.type.page
   module:
     - content_translation
-    - navigation
     - node
     - paragraphs
     - paragraphs_blokkli
@@ -20,6 +19,7 @@ dependencies:
     - scheduler
     - system
     - texts
+    - toolbar
     - translatable_config_pages
 id: translator
 label: 'Translator (French)'
@@ -27,8 +27,8 @@ weight: 5
 is_admin: false
 permissions:
   - 'access content overview'
-  - 'access navigation'
   - 'access string translation overview'
+  - 'access toolbar'
   - 'bypass paragraphs type content access'
   - 'create content translations'
   - 'create paragraphs blokkli edit state'

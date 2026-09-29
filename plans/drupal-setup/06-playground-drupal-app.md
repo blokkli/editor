@@ -159,7 +159,8 @@ chunk 06":
 ### How it's built (2026-09-26)
 
 - **Routing is hand-written** (decided with the user: no vuepal,
-  nuxt-language-negotiation or nuxt-easy-texts, no new Drupal modules).
+  nuxt-language-negotiation or nuxt-easy-texts, no new Drupal modules). vuepal
+  came later, for the toolbar only (see "Drupal's toolbar" below).
   - `app/pages/[...slug].vue` runs the `route` query with the full path.
   - The language is the path's first segment (`shared/languages.ts`).
     `app/graphqlMiddleware.clientOptions.ts` sends it along, and the server
@@ -233,3 +234,36 @@ chunk 06":
 - `ddev check-routes`: all 40 rows pass.
 - **In the browser** (the user): the editor opens on the test page, the block
   types can be added and edited, and editing `src/` hot-reloads.
+
+### Drupal's toolbar (2026-09-29)
+
+The user found it tedious to switch between the frontend and Drupal, and asked
+for Gin with its horizontal toolbar, and vuepal for the toolbar and the local
+tasks in the frontend, as in the starterkit.
+
+- **Drupal:**
+  - Gin is the admin theme, with `classic_toolbar: horizontal`. Gin can only
+    show that toolbar without core's Navigation module, so Navigation made way
+    for Toolbar, `gin_toolbar` and `admin_toolbar` (its dropdowns). The roles
+    have `access toolbar` instead of `access navigation`.
+  - The GraphQL extensions `local_tasks` and `environment_indicator`. vuepal's
+    toolbar query needs the latter (`activeEnvironment`), and with it the
+    `environment_indicator` module. No environment is configured, so the field
+    is null.
+  - `MenuHooks` (blokkli_playground) lets users with `access toolbar` view the
+    admin menu, and everyone the main menu. Drupal allows both only with
+    "administer menu", so GraphQL returned no main menu to the editors: the
+    header had no links for them.
+- **Nuxt:**
+  - vuepal's `adminToolbar` and `localTasks`, with `app/vuepal.adapter.ts`.
+  - The layout `drupal` (only `[...slug].vue` uses it) shows both above the
+    page, in the browser only, for users with `access toolbar`, and not while
+    editing or previewing. As a layout it stays mounted between pages: the
+    toolbar loads once per language, and the local tasks per path.
+  - The local tasks link to Drupal's forms (nginx routes `/node/N/edit` and the
+    rest to Drupal); "View", "Back to site" and the content overview lead back
+    to Nuxt.
+- **Verified:** the toolbar and the local tasks as admin and as Jonas (a
+  filtered toolbar), in EN, DE and FR; hidden while editing; the dropdowns in
+  both toolbars; `ddev bake` and `ddev bake --source=de` with a clean
+  `config:status`.

@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   modules: [
     'nuxt-easy-texts',
     'nuxt-graphql-middleware',
+    'vuepal',
     'nuxt-svg-icon-sprite',
     '../src/module',
   ],
@@ -66,6 +67,13 @@ export default defineNuxtConfig({
     downloadSchema: false,
     schemaPath,
     autoImportPatterns: ['./app/**/*.graphql'],
+  },
+
+  // Drupal's toolbar and the local tasks (view, edit, translate…) above the
+  // page, for users who may use the toolbar.
+  vuepal: {
+    adminToolbar: { enabled: true },
+    localTasks: { enabled: true },
   },
 
   // UI strings, translated in Drupal's texts module. The fragment is committed:

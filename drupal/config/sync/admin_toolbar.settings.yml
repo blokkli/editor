@@ -1,0 +1,8 @@
+_core:
+  default_config_hash: uyQNqftluizBjDPnFYOJseLmtGK0tyiCkOyBmLkjOio
+enable_toggle_shortcut: false
+menu_depth: 4
+sticky_behavior: enabled
+hoverintent_behavior:
+  enabled: true
+  timeout: 500

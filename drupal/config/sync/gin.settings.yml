@@ -1,0 +1,17 @@
+_core:
+  default_config_hash: c8aZhkIY8zHUo0_UOll4vVs_l48dHL_gBqbvfuAM0Rs
+logo:
+  use_default: true
+third_party_settings:
+  shortcut:
+    module_link: true
+preset_accent_color: blue
+preset_focus_color: gin
+enable_darkmode: '0'
+classic_toolbar: horizontal
+secondary_toolbar_frontend: true
+high_contrast_mode: false
+layout_density: default
+show_description_toggle: false
+show_user_theme_settings: false
+sticky_action_buttons: false

@@ -16,7 +16,6 @@ dependencies:
     - contextual
     - file
     - media
-    - navigation
     - node
     - paragraphs
     - paragraphs_blokkli
@@ -27,6 +26,7 @@ dependencies:
     - path
     - scheduler
     - system
+    - toolbar
     - translatable_config_pages
 _core:
   default_config_hash: g-zSnaBXJnH7VoimReFb6KcLjIgHCU-hisiShtZ9hjQ
@@ -40,7 +40,7 @@ permissions:
   - 'access contextual links'
   - 'access files overview'
   - 'access media overview'
-  - 'access navigation'
+  - 'access toolbar'
   - 'bypass paragraphs type content access'
   - 'create content translations'
   - 'create document media'

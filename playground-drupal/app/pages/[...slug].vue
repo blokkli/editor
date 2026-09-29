@@ -1,5 +1,5 @@
 <template>
-  <div v-if="entity" class="flex min-h-screen flex-col">
+  <div v-if="entity" class="flex grow flex-col">
     <ConfigPageSite
       v-if="siteConfig"
       v-bind="siteConfig"
@@ -47,7 +47,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
+import {
+  computed,
+  createError,
+  definePageMeta,
+  useAsyncGraphqlQuery,
+  useRoute,
+} from '#imports'
 import {
   ConfigPageFooter,
   ConfigPageSite,
@@ -59,6 +65,8 @@ import {
 } from '#components'
 import { getLanguageFromPath } from '#shared/languages'
 import { findMenuChildren } from '~/helpers/menu'
+
+definePageMeta({ layout: 'drupal' })
 
 const route = useRoute()
 

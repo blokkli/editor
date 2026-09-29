@@ -3,20 +3,20 @@ langcode: en
 status: true
 dependencies:
   module:
-    - navigation
     - node
     - paragraphs
     - paragraphs_blokkli
     - paragraphs_blokkli_comment
     - scheduler
     - system
+    - toolbar
 id: reviewer
 label: 'Head of department'
 weight: 4
 is_admin: false
 permissions:
   - 'access content overview'
-  - 'access navigation'
+  - 'access toolbar'
   - 'load id and name of blokkli users'
   - 'post blokkli comments'
   - 'review paragraphs blokkli edit state'

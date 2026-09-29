@@ -4904,6 +4904,7 @@ type Query {
   ): EntityQueryResult!
   entityById(entityType: EntityType!, id: ID!, langcode: Langcode): Entity
   entityByUuid(entityType: EntityType!, uuid: String!, langcode: Langcode): Entity
+  activeEnvironment: ActiveEnvironment
 
   """
   Load a menu by its name. The menu is loaded automatically in the
@@ -5186,6 +5187,18 @@ type EntityQueryResult {
 }
 
 ""
+type ActiveEnvironment {
+  ""
+  name: String
+
+  ""
+  fgColor: String
+
+  ""
+  bgColor: String
+}
+
+""
 type DrupalDateTime {
   ""
   formatted(format: String, drupalDateFormat: DrupalDateFormat): String!
@@ -5234,6 +5247,24 @@ type LanguageSwitchLink {
 
   ""
   language: ConfigurableLanguage!
+}
+
+""
+type LocalTask {
+  ""
+  baseId: String!
+
+  ""
+  active: Boolean!
+
+  ""
+  url: Url!
+
+  ""
+  title: String!
+
+  ""
+  weight: Int!
 }
 
 ""
@@ -7125,6 +7156,7 @@ interface InternalUrl {
 
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
+  localTasks: [LocalTask!]!
 }
 
 ""
@@ -7140,6 +7172,7 @@ interface EntityUrl {
 
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
+  localTasks: [LocalTask!]!
 }
 
 ""
@@ -7155,6 +7188,7 @@ type DefaultInternalUrl implements Url & InternalUrl {
 
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
+  localTasks: [LocalTask!]!
 }
 
 ""
@@ -7173,6 +7207,7 @@ type DefaultEntityUrl implements Url & InternalUrl & EntityUrl {
 
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
+  localTasks: [LocalTask!]!
 }
 
 ""
@@ -7191,6 +7226,7 @@ type EntityCanonicalUrl implements Url & InternalUrl & EntityUrl {
 
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
+  localTasks: [LocalTask!]!
 }
 
 ""
@@ -7364,17 +7400,11 @@ enum MenuName {
   "Administrative task links"
   ADMIN
 
-  "Content task links"
-  CONTENT
-
   "Site information links"
   FOOTER
 
   "Site section links"
   MAIN
-
-  "User links to be used in Navigation"
-  NAVIGATION_USER_LINKS
 
   "User tool links, often added by modules"
   TOOLS

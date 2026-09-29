@@ -24,11 +24,6 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  content:
-    enabled: 0
-    weight: 0
-    taxattach: 0
-    langhandle: 0
   footer:
     enabled: 0
     weight: 0
@@ -37,11 +32,6 @@ menu_breadcrumb_menus:
   main:
     enabled: 1
     weight: -10
-    taxattach: 0
-    langhandle: 0
-  navigation-user-links:
-    enabled: 0
-    weight: 0
     taxattach: 0
     langhandle: 0
   tools:

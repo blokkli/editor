@@ -1,10 +1,12 @@
 _core:
   default_config_hash: 4GIX5Esnc_umpXUBj4IIocRX7Mt5fPhm4AgXfE3E56E
 module:
+  admin_toolbar: 0
   automated_cron: 0
   big_pipe: 0
   block: 0
   blokkli_playground: 0
+  breakpoint: 0
   ckeditor5: 0
   config: 0
   contextual: 0
@@ -15,12 +17,15 @@ module:
   editor: 0
   entity_reference_revisions: 0
   entity_usage: 0
+  environment_indicator: 0
   field: 0
   field_ui: 0
   file: 0
   filter: 0
+  gin_toolbar: 0
   graphql: 0
   graphql_core_schema: 0
+  graphql_environment_indicator: 0
   graphql_translatable_config_pages: 0
   help: 0
   image: 0
@@ -35,7 +40,6 @@ module:
   menu_breadcrumb: 0
   menu_link_content: 0
   menu_ui: 0
-  navigation: 0
   node: 0
   office_hours: 0
   options: 0
@@ -68,6 +72,7 @@ module:
   texts_graphql: 0
   token: 0
   token_or: 0
+  toolbar: 0
   translatable_config_pages: 0
   typed_data: 0
   user: 0
@@ -79,3 +84,4 @@ module:
 theme:
   claro: 0
   olivero: 0
+  gin: 0

@@ -1,0 +1,7 @@
+_core:
+  default_config_hash: RHFPAppLk6zO1dvgmh8B7KnqfC2cFwvZapHp4z8YWhs
+toolbar_integration:
+  - toolbar
+favicon: true
+version_identifier: environment_indicator_current_release
+version_identifier_fallback: deployment_identifier

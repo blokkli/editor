@@ -1,0 +1,6 @@
+# Whether the layout shows Drupal's toolbar and the local tasks.
+query adminToolbarAccess {
+  currentUser {
+    accessToolbar: hasPermission(permission: "access toolbar")
+  }
+}

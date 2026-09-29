@@ -233,7 +233,8 @@
     "vitepress": "^2.0.0-alpha.17",
     "vitest": "^4.1.9",
     "vue-router": "^5.1.0",
-    "vue-tsc": "^3.3.5"
+    "vue-tsc": "^3.3.5",
+    "vuepal": "^3.0.6"
   },
   "peerDependencies": {
     "@anthropic-ai/sdk": "*",

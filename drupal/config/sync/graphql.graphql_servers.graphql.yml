@@ -17,10 +17,12 @@ schema_configuration:
     extensions:
       breadcrumb: breadcrumb
       entity_query: entity_query
+      environment_indicator: environment_indicator
       formatted_date: formatted_date
       image: image
       language_schema: language_schema
       language_switch_links: language_switch_links
+      local_tasks: local_tasks
       media: media
       menu: menu
       paragraphs_blokkli_agent: paragraphs_blokkli_agent

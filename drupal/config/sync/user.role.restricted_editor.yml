@@ -16,7 +16,6 @@ dependencies:
     - contextual
     - file
     - media
-    - navigation
     - node
     - paragraphs
     - paragraphs_blokkli
@@ -27,6 +26,7 @@ dependencies:
     - path
     - scheduler
     - system
+    - toolbar
     - translatable_config_pages
 id: restricted_editor
 label: 'Restricted editor'
@@ -38,7 +38,7 @@ permissions:
   - 'access contextual links'
   - 'access files overview'
   - 'access media overview'
-  - 'access navigation'
+  - 'access toolbar'
   - 'create content translations'
   - 'create document media'
   - 'create editorial content'
