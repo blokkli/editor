@@ -1,0 +1,12 @@
+key: relocation
+type: editorial
+title: { de: 'Umzug' }
+field_lead:
+  de: 'Wer nach Blockingen zieht, innerhalb der Gemeinde umzieht oder wegzieht, meldet sich innert 14 Tagen bei den Einwohnerdiensten.'
+field_host_options:
+  - { key: header, value: plain }
+# Who is in charge, as on the detail pages.
+field_paragraphs:
+  - type: contact
+    options: { display: compact }
+    field_office: { node: residents-services }

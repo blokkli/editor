@@ -1,0 +1,9 @@
+key: collection-days
+type: page
+title: { de: 'Abfuhrtage und Abfallkalender' }
+field_lead:
+  de: 'Wann Kehricht, Grüngut, Papier und Sperrgut abgeholt werden.'
+field_office: { node: public-works }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

@@ -43,6 +43,7 @@ import type {
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
 import SubPages from '~/components/SubPages/index.vue'
+import type { SubPage } from '~/helpers/menu'
 
 // The editorial page: the home page, overview pages and landing pages. A hero
 // image and a free layout, no sidebar. An overview page lists its sub-pages
@@ -53,7 +54,7 @@ import SubPages from '~/components/SubPages/index.vue'
 const props = defineProps<
   NodeEditorialFragment & {
     breadcrumb?: BreadcrumbFragment[]
-    subPages?: { label: string; url: string; description?: string | null }[]
+    subPages?: SubPage[]
     frontPage?: boolean
   }
 >()

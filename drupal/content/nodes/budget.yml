@@ -1,0 +1,9 @@
+key: budget
+type: page
+title: { de: 'Budget und Rechnung' }
+field_lead:
+  de: 'Das Budget für das nächste Jahr und die Rechnung des letzten Jahres, mit den wichtigsten Zahlen.'
+field_office: { node: finance-taxes }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

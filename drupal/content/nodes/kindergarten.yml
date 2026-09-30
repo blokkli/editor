@@ -1,0 +1,9 @@
+key: kindergarten
+type: page
+title: { de: 'Kindergarteneintritt' }
+field_lead:
+  de: 'Wann Ihr Kind in den Kindergarten kommt und wie Sie es anmelden.'
+field_office: { node: schools-office }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

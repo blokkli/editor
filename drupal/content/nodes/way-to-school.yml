@@ -1,0 +1,9 @@
+key: way-to-school
+type: page
+title: { de: 'Schulweg' }
+field_lead:
+  de: 'Wie Ihr Kind sicher zur Schule kommt, zu Fuss oder mit dem Velo.'
+field_office: { node: schools-office }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

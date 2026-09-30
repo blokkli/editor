@@ -1,0 +1,58 @@
+key: history
+type: page
+title: { de: Geschichte }
+field_lead:
+  de: Vom Fischerdorf an der Sprachgrenze zur zweisprachigen Kleinstadt am See.
+field_office: { node: municipal-chancery }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Blockingen liegt dort, wo sich seit Jahrhunderten Deutsch und Französisch begegnen. Der See, die Strasse ins Mittelland und später die Eisenbahn haben den Ort geprägt: Er war nie gross, aber immer ein Ort des Austauschs.</p>'
+  - type: title
+    field_title: { de: Frühe Spuren }
+  - type: text
+    field_text:
+      de: '<p>Pfähle im Uferschlamm zeigen, dass schon vor über 5000 Jahren Menschen am See wohnten. Aus römischer Zeit stammen die Mauern eines Gutshofs oberhalb der Rebberge. Als «Bloquingen» erscheint der Ort erstmals 1228 in einer Urkunde, als Fischerdorf mit einer Kapelle und einer Fähre über den See.</p>'
+  - type: title
+    field_title: { de: Ein Marktort an der Sprachgrenze }
+  - type: text
+    field_text:
+      de: '<p>1476 erhielt Blockingen das Marktrecht. Weinbauern aus den Dörfern am Hang und Fischer vom See verkauften ihre Waren auf dem Dorfplatz, Händler aus beiden Sprachgebieten kamen dazu. Aus dieser Zeit stammen die Häuser der Altstadt mit ihren steilen Ziegeldächern. Das Rathaus am See erhielt seine heutige Gestalt 1652.</p>'
+  - type: image
+    options: { width: wide }
+    field_media: { media: old-town }
+    field_caption: { de: 'Die Altstadt: Viele Häuser gehen auf das 15. und 16. Jahrhundert zurück.' }
+  - type: title
+    field_title: { de: Eisenbahn und Uhren }
+  - type: text
+    field_text:
+      de: '<p>Mit der Eisenbahn kam 1864 die Industrie. Zuerst fertigten Heimarbeiterinnen und Heimarbeiter in ihren Stuben Uhrenteile, bald entstanden zwei Fabriken beim Bahnhof. In wenigen Jahrzehnten wuchs Blockingen von 2000 auf über 5000 Einwohnerinnen und Einwohner. Viele kamen aus den französischsprachigen Tälern im Westen, und im Ort wurde nun ebenso viel Französisch wie Deutsch gesprochen.</p>'
+  - type: title
+    field_title: { de: Die Gemeinde heute }
+  - type: text
+    field_text:
+      de: '<p>In der Uhrenkrise der 1970er-Jahre schlossen die Fabriken. Auf ihrem Gelände stehen heute Wohnungen, Werkstätten und das Verwaltungszentrum. Seit 1996 ist Blockingen offiziell zweisprachig: Die Gemeinde führt ihre Geschäfte auf Deutsch und auf Französisch, und die Strassen tragen Namen in beiden Sprachen.</p>'
+  - type: title
+    field_title: { de: Zeittafel }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Jahr</th><th>Ereignis</th></tr></thead><tbody><tr><td>um 3000 v. Chr.</td><td>Pfahlbausiedlung am Seeufer</td></tr><tr><td>1228</td><td>Erste Erwähnung als «Bloquingen»</td></tr><tr><td>1476</td><td>Blockingen erhält das Marktrecht</td></tr><tr><td>1652</td><td>Neubau des Rathauses am See</td></tr><tr><td>1864</td><td>Eröffnung der Eisenbahnlinie und des Bahnhofs</td></tr><tr><td>1911</td><td>Das Strandbad wird eröffnet</td></tr><tr><td>1958</td><td>Das Schulhaus Seefeld wird eröffnet</td></tr><tr><td>1975</td><td>Die letzte Uhrenfabrik schliesst</td></tr><tr><td>1996</td><td>Blockingen wird offiziell zweisprachig</td></tr></tbody></table>'
+field_related:
+  - type: teaser
+    field_link: { node: in-numbers }
+  - type: teaser
+    field_link: { node: lakeside-pool }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Mehr erfahren }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/archive
+        field_title: { de: Gemeindearchiv }
+      - type: link
+        field_link: https://www.example.com/old-town-tours
+        field_title: { de: Führungen durch die Altstadt }

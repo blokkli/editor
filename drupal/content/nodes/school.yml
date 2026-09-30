@@ -1,0 +1,12 @@
+key: school
+type: editorial
+title: { de: 'Schule' }
+field_lead:
+  de: 'Die Schule Blockingen unterrichtet vom Kindergarten bis zur 6. Klasse, in einer deutsch- und einer französischsprachigen Abteilung.'
+field_host_options:
+  - { key: header, value: plain }
+# Who is in charge, as on the detail pages.
+field_paragraphs:
+  - type: contact
+    options: { display: compact }
+    field_office: { node: schools-office }

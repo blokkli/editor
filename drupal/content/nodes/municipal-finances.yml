@@ -1,0 +1,12 @@
+key: municipal-finances
+type: editorial
+title: { de: 'Gemeindefinanzen' }
+field_lead:
+  de: 'Woher das Geld der Gemeinde kommt und wofür sie es ausgibt.'
+field_host_options:
+  - { key: header, value: plain }
+# Who is in charge, as on the detail pages.
+field_paragraphs:
+  - type: contact
+    options: { display: compact }
+    field_office: { node: finance-taxes }

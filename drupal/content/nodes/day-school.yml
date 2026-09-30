@@ -1,0 +1,9 @@
+key: day-school
+type: page
+title: { de: 'Tagesschule' }
+field_lead:
+  de: 'Betreuung vor und nach dem Unterricht und über Mittag, vom Kindergarten bis zur 6. Klasse.'
+field_office: { node: schools-office }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

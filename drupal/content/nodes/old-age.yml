@@ -1,0 +1,9 @@
+key: old-age
+type: page
+title: { de: 'Leben im Alter' }
+field_lead:
+  de: 'Beratung, Hilfe zu Hause und Angebote für ältere Menschen in Blockingen.'
+field_office: { node: social-services }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

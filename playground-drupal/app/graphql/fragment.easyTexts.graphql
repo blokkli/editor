@@ -49,7 +49,7 @@ fragment easyTexts on TextsLoader {
   fee_calculator__per_month: getText(key: "per_month", context: "fee_calculator", default: "Per month")
   fee_calculator__persons_hint: getText(key: "persons_hint", context: "fee_calculator", default: "Used to estimate the water use.")
   fee_calculator__persons: getText(key: "persons", context: "fee_calculator", default: "People in the household")
-  fee_calculator__rates: getText(key: "rates", context: "fee_calculator", default: "Rates")
+  fee_calculator__rates: getText(key: "rates", context: "fee_calculator", default: "Current rates")
   fee_calculator__sewage: getText(key: "sewage", context: "fee_calculator", default: "Sewage")
   fee_calculator__title: getText(key: "title", context: "fee_calculator", default: "Fee calculator")
   fee_calculator__total: getText(key: "total", context: "fee_calculator", default: "Total per year")

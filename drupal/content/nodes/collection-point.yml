@@ -1,0 +1,9 @@
+key: collection-point
+type: page
+title: { de: 'Entsorgungsstelle Werkhof' }
+field_lead:
+  de: 'Was Sie in der Entsorgungsstelle an der Industriestrasse abgeben können, und wann sie offen ist.'
+field_office: { node: public-works }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

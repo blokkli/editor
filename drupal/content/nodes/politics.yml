@@ -3,10 +3,11 @@ type: editorial
 title: { en: Politics, de: Politik, fr: Politique }
 field_lead:
   en: The town council, votes and elections.
-  de: Der Gemeinderat, Abstimmungen und Wahlen.
+  de: 'Der Gemeinderat, die Gemeindeversammlung, Abstimmungen und Wahlen.'
   fr: Le conseil communal, les votations et les élections.
+field_hero_image: { media: town-hall }
 field_host_options:
-  - { key: header, value: plain }
+  - { key: header, value: image }
 field_paragraphs:
   - type: text
     field_text:

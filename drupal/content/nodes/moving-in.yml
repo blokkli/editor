@@ -1,0 +1,9 @@
+key: moving-in
+type: page
+title: { de: 'Zuzug' }
+field_lead:
+  de: 'Melden Sie sich innert 14 Tagen nach dem Einzug an, am Schalter oder online.'
+field_office: { node: residents-services }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

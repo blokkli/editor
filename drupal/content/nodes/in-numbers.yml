@@ -1,0 +1,87 @@
+key: in-numbers
+type: page
+title: { de: Blockingen in Zahlen }
+field_lead:
+  de: Wie viele Menschen hier wohnen, welche Sprachen sie sprechen und wofür die Gemeinde ihr Geld ausgibt.
+field_office: { node: municipal-chancery }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Blockingen wächst langsam, aber stetig: in zehn Jahren um gut tausend Einwohnerinnen und Einwohner. Die Zahlen stammen aus dem Einwohnerregister und aus der Rechnung der Gemeinde. Wir aktualisieren sie jedes Jahr im Frühling.</p>'
+  - type: title
+    field_title: { de: Auf einen Blick }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Kennzahl</th><th>Wert</th></tr></thead><tbody><tr><td>Einwohnerinnen und Einwohner</td><td>15 240</td></tr><tr><td>Haushalte</td><td>6950</td></tr><tr><td>Arbeitsplätze</td><td>6100</td></tr><tr><td>Fläche</td><td>14,8 km², davon 5,1 km² Wald und 0,9 km² Reben</td></tr><tr><td>Höhe am Seeufer</td><td>431 m ü. M.</td></tr><tr><td>Amtssprachen</td><td>Deutsch und Französisch</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Bevölkerung }
+  - type: chart
+    options:
+      data:
+        type: bar
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH }
+        typeOptions: { stacked: true }
+        dataSource: { id: population, label: 'Wohnbevölkerung nach Nationalität, 2016–2025' }
+        translations:
+          de:
+            title: Wohnbevölkerung nach Nationalität
+            valueAxisTitle: Einwohnerinnen und Einwohner
+            footnotes: [Ständige Wohnbevölkerung am Jahresende.]
+  - type: title
+    field_title: { de: Sprachen }
+  - type: text
+    field_text:
+      de: '<p>Knapp sechs von zehn Einwohnerinnen und Einwohnern sprechen hauptsächlich Deutsch, ein Drittel Französisch. Die Gemeinde führt ihre Geschäfte in beiden Sprachen, und jede Einwohnerin und jeder Einwohner wählt die eigene Korrespondenzsprache.</p>'
+  - type: chart
+    options:
+      data:
+        type: pie
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH, suffix: ' %' }
+        dataSource: { id: languages, label: Hauptsprache der Bevölkerung }
+        translations:
+          de:
+            title: Hauptsprache der Bevölkerung
+            footnotes: [In Prozent der ständigen Wohnbevölkerung.]
+  - type: title
+    field_title: { de: Finanzen }
+  - type: text
+    field_text:
+      de: '<p>Die Gemeinde gibt jedes Jahr rund 68 Millionen Franken aus. Am meisten kosten die Schulen und die soziale Sicherheit: Zusammen machen sie mehr als die Hälfte aus.</p>'
+  - type: chart
+    options:
+      data:
+        type: pie
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH }
+        dataSource: { id: budget, label: 'Budget 2026: Aufwand nach Aufgabenbereich' }
+        translations:
+          de:
+            title: Aufwand nach Aufgabenbereich
+            footnotes: [Budget des laufenden Jahres.]
+field_related:
+  - type: teaser
+    field_link: { node: history }
+  - type: teaser
+    field_link: { node: waste }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Dokumente und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/budget
+        field_title: { de: Budget und Rechnung }
+      - type: link
+        field_link: https://www.example.com/statistics
+        field_title: { de: Statistik des Kantons }

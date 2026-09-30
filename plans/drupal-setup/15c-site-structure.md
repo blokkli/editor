@@ -81,6 +81,11 @@ The site gets a structure from Drupal's main menu:
     - the service links and a footer menu (the service links came later, see
       "The header, completed")
 
+**Changed in [14b](14b-demo-content.md) (the user, 2026-09-30):** offices are in
+the main menu too, as Verwaltung's children. Their form offers the main menu,
+and they share the pages' pattern (`/verwaltung/einwohnerdienste`); the three
+`/aemter/…` patterns are gone. Decisions 5 and 6 are otherwise unchanged.
+
 ## Tasks
 
 ### Drupal

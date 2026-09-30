@@ -19,20 +19,33 @@ export function findMenuChildren(tree: MenuTree[], path: string): MenuTree[] {
   return []
 }
 
-/**
- * The sub-pages of an editorial page: its children in the menu, with their
- * descriptions.
- */
-export function findSubPages(tree: MenuTree[], path: string) {
-  return findMenuChildren(tree, path).flatMap(({ link }) =>
+export type SubPage = {
+  label: string
+  url: string
+  description?: string | null
+  children: SubPage[]
+}
+
+function toSubPages(tree: MenuTree[], depth: number): SubPage[] {
+  return tree.flatMap(({ link, subtree }) =>
     link.url?.path
       ? [
           {
             label: link.label,
             url: link.url.path,
             description: link.description,
+            children: depth > 1 ? toSubPages(subtree ?? [], depth - 1) : [],
           },
         ]
       : [],
   )
+}
+
+/**
+ * The sub-pages of an editorial page: its children in the menu, with their
+ * descriptions and their own children, e.g. an area's topics and their
+ * detail pages.
+ */
+export function findSubPages(tree: MenuTree[], path: string) {
+  return toSubPages(findMenuChildren(tree, path), 2)
 }

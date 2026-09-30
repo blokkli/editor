@@ -1,0 +1,9 @@
+key: council
+type: page
+title: { de: 'Gemeinderat' }
+field_lead:
+  de: 'Die sieben Mitglieder des Gemeinderats, ihre Ressorts und wie der Gemeinderat arbeitet.'
+field_office: { node: municipal-chancery }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

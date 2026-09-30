@@ -1,0 +1,9 @@
+key: financial-strategy
+type: page
+title: { de: 'Finanzstrategie' }
+field_lead:
+  de: 'Wie der Gemeinderat die Finanzen in den nächsten Jahren im Gleichgewicht halten will.'
+field_office: { node: finance-taxes }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

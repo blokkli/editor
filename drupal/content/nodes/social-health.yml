@@ -1,0 +1,8 @@
+key: social-health
+type: editorial
+title: { de: 'Soziales & Gesundheit' }
+field_lead:
+  de: 'Unterstützung in schwierigen Zeiten und im Alter.'
+field_hero_image: { media: village-square }
+field_host_options:
+  - { key: header, value: image }

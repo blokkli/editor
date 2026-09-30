@@ -4,11 +4,12 @@ status: true
 dependencies:
   config:
     - node.type.editorial
+    - node.type.office
     - node.type.page
   module:
     - node
 id: page
-label: 'Detail and editorial pages'
+label: 'Detail and editorial pages, offices'
 type: 'canonical_entities:node'
 pattern: '/[node:menu-link:parents:join-path]/[node:menu-link:title|node:title]'
 selection_criteria:
@@ -20,6 +21,7 @@ selection_criteria:
     bundles:
       page: page
       editorial: editorial
+      office: office
 selection_logic: and
 weight: -5
 relationships: {  }

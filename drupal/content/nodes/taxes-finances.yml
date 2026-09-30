@@ -1,0 +1,8 @@
+key: taxes-finances
+type: editorial
+title: { de: 'Steuern & Finanzen' }
+field_lead:
+  de: 'Ihre Steuern und die Finanzen der Gemeinde.'
+field_hero_image: { media: administrative-centre }
+field_host_options:
+  - { key: header, value: image }

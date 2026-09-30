@@ -1,0 +1,9 @@
+key: tax-return
+type: page
+title: { de: 'Steuererklärung' }
+field_lead:
+  de: 'Bis wann Sie die Steuererklärung einreichen, wie Sie die Frist verlängern und welche Belege es braucht.'
+field_office: { node: finance-taxes }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

@@ -1,0 +1,101 @@
+# The landing page: visitors start here in the editor. The admission table has
+# no header row on purpose, for the analyzer.
+key: lakeside-pool
+type: editorial
+title: { de: Strandbad }
+field_lead:
+  de: 'Schwimmen im See, eine Liegewiese unter alten Bäumen, ein Sprungturm und ein neuer Kinderbereich: Das Strandbad ist von Mitte Mai bis Mitte September offen.'
+field_hero_image: { media: lakeside-pool }
+field_host_options:
+  - { key: header, value: image }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Das Strandbad liegt am Ende der Seepromenade, zehn Minuten zu Fuss vom Bahnhof. Es hat ein Schwimmbecken mit 50-Meter-Bahnen, ein Nichtschwimmerbecken, einen Steg in den See und eine grosse Liegewiese. Nach der Sanierung gibt es einen neuen Kinderbereich mit Wasserspielplatz.</p>'
+  - type: section
+    options: { background: lake, columns: 2 }
+    field_title: { de: Öffnungszeiten und Eintritt }
+    field_paragraphs:
+      - type: table
+        field_table:
+          de: '<table><thead><tr><th>Saison</th><th>Täglich</th></tr></thead><tbody><tr><td>Mitte Mai bis Mitte Juni</td><td>10.00–19.00 Uhr</td></tr><tr><td>Mitte Juni bis Mitte August</td><td>9.00–20.00 Uhr</td></tr><tr><td>Mitte August bis Mitte September</td><td>10.00–19.00 Uhr</td></tr></tbody></table>'
+      - type: table
+        field_table:
+          de: '<table><tbody><tr><td>Eintritt</td><td>Einzeln</td><td>Saison</td></tr><tr><td>Erwachsene</td><td>Fr. 7.–</td><td>Fr. 90.–</td></tr><tr><td>Jugendliche bis 20, Studierende</td><td>Fr. 5.–</td><td>Fr. 60.–</td></tr><tr><td>Kinder von 6 bis 15</td><td>Fr. 3.50</td><td>Fr. 40.–</td></tr><tr><td>Familien</td><td>–</td><td>Fr. 190.–</td></tr><tr><td>Kinder unter 6</td><td>gratis</td><td>gratis</td></tr></tbody></table>'
+  - type: text
+    options: { box: warning }
+    field_text:
+      de: '<p><strong>Bei schlechtem Wetter</strong> bleibt das Bad geschlossen. Ob es offen ist, erfahren Sie ab 8.00 Uhr unter 032 555 01 85.</p>'
+  - type: gallery
+    options: { display: slider, width: wide }
+    field_paragraphs:
+      - type: image
+        field_media: { media: lakeside-pool }
+        field_caption: { de: Das Schwimmbecken und der Steg in den See }
+      - type: image
+        field_media: { media: pool-children-area }
+        field_caption: { de: Der neue Kinderbereich mit Wasserspielplatz }
+  - type: section
+    options: { columns: 3 }
+    field_title: { de: Was Sie erwartet }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<h3>Schwimmen</h3><p>Das Becken hat sechs Bahnen; zwei sind am Morgen bis 10.00 Uhr für Längen reserviert. Im See markieren Bojen die bewachte Zone.</p>'
+      - type: text
+        field_text:
+          de: '<h3>Für Kinder</h3><p>Der neue Kinderbereich hat ein Planschbecken unter einem Sonnensegel, einen Wasserspielplatz und einen Sandplatz. Kinder unter 8 Jahren baden nur mit Erwachsenen.</p>'
+      - type: text
+        field_text:
+          de: '<h3>Kiosk und Restaurant</h3><p>Der Kiosk verkauft Glace, Snacks und Getränke. Das Restaurant am Steg ist bis 22.00 Uhr offen, auch für Gäste ohne Badeeintritt.</p>'
+  - type: title
+    field_title: { de: Baderegeln }
+  - type: accordion
+    field_title: { de: Baden im See }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Die Badeaufsicht überwacht nur die Zone innerhalb der Bojen; ausserhalb baden Sie auf eigene Gefahr. Springen Sie nicht vom Steg: Das Wasser ist dort weniger als zwei Meter tief.</p>'
+  - type: accordion
+    field_title: { de: Sprungturm }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Der Sprungturm mit 1, 3 und 5 Metern ist offen, wenn die Badeaufsicht dort ist, in der Hauptsaison ab 11.00 Uhr. Springen Sie einzeln, und schwimmen Sie gleich zur Leiter.</p>'
+  - type: accordion
+    field_title: { de: 'Hunde, Grill und Musik' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Hunde sind im Bad nicht erlaubt, ausser Assistenzhunden. Grillieren Sie nur an den Feuerstellen auf der Liegewiese. Musik hören Sie bitte mit Kopfhörern.</p>'
+  - type: accordion
+    field_title: { de: Fundsachen }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Fundsachen erhalten Sie an der Kasse zurück. Nach dem Saisonende bringen wir sie ins Fundbüro im Rathaus.</p>'
+  - type: call_to_action
+    field_tagline: { de: Saisonkarte }
+    field_title: { de: Den ganzen Sommer baden }
+    field_lead:
+      de: Mit der Saisonkarte baden Sie, so oft Sie wollen. Sie kaufen sie an der Kasse oder online, als Karte oder auf dem Smartphone.
+    field_links:
+      - type: link
+        field_link: https://www.example.com/season-ticket
+        field_title: { de: Saisonkarte kaufen }
+  - type: section
+    options: { columns: 2 }
+    field_title: { de: Rund um den See }
+    field_paragraphs:
+      - type: teaser
+        options: { display: card }
+        field_link: { node: pool-opening }
+      - type: teaser
+        options: { display: card }
+        field_link: { node: clubs }
+        field_title: { de: 'Segeln, rudern, paddeln' }
+        field_lead:
+          de: Die Wassersportvereine am See und ihre Kurse für Kinder und Erwachsene.
+        field_media: { media: regatta }
+  - type: contact
+    field_office: { node: sport-leisure }

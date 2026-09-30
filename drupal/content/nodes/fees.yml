@@ -1,0 +1,17 @@
+key: fees
+type: page
+title: { de: 'Gebühren für Wasser, Abwasser und Abfall' }
+field_lead:
+  de: 'Was Wasser, Abwasser und Abfall kosten, und was Ihr Haushalt im Jahr bezahlt.'
+field_office: { node: utilities }
+field_paragraphs:
+  - type: embed
+    options:
+      # The frame's own widths: measured at the narrowest width of each range,
+      # in the longest language.
+      heights: { 375: 1420, 768: 1320, 1440: 800 }
+    field_link: /embed/fee-calculator
+    field_title: { de: Gebührenrechner }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

@@ -1,0 +1,9 @@
+key: sports-facilities
+type: page
+title: { de: 'Sportanlagen' }
+field_lead:
+  de: 'Turnhallen, Sportplätze und die Finnenbahn: was es gibt und wie Sie reservieren.'
+field_office: { node: sport-leisure }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

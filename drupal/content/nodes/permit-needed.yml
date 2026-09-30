@@ -1,0 +1,37 @@
+key: permit-needed
+type: page
+title: { de: 'Brauche ich eine Baubewilligung?' }
+field_lead:
+  de: 'Welche Vorhaben eine Bewilligung brauchen, welche Sie nur melden und welche frei sind.'
+field_office: { node: building-planning }
+field_paragraphs:
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: Braucht ein Gartenhaus eine Bewilligung? }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, ab einer Grundfläche von 10 m². Kleinere Gartenhäuser müssen Sie nur melden.</p>'
+      - type: columns
+        options: { ratio: 66-33 }
+        field_left:
+          - type: text
+            field_text:
+              de: '<p>Zeichnen Sie das Gartenhaus im Situationsplan ein, mit dem Abstand zu den Nachbargrundstücken.</p>'
+        field_right:
+          - type: image
+            field_media: { media: garden-shed }
+            field_caption: { de: Ein Gartenhaus }
+  - type: accordion
+    field_title: { de: Braucht ein Anbau eine Bewilligung? }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, immer. Anbauten, Aufstockungen und Wintergärten brauchen eine Baubewilligung, auch wenn sie klein sind.</p>'
+      - type: image
+        field_media: { media: house-extension }
+        field_caption: { de: Ein Anbau im Bau }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

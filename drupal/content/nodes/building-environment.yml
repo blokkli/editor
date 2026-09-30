@@ -1,0 +1,8 @@
+key: building-environment
+type: editorial
+title: { de: 'Bauen & Umwelt' }
+field_lead:
+  de: 'Bauen, Abfall und Recycling, Wasser und Abwasser.'
+field_hero_image: { media: building-profiles }
+field_host_options:
+  - { key: header, value: image }

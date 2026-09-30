@@ -33,9 +33,10 @@ query route($path: String!) {
   footerConfig {
     ...configPageFooter
   }
-  # Three levels: the header shows the first, editorial pages list their
-  # children. Here and not in a query of its own: the query's cache key is its
-  # variables, and the path carries the language.
+  # Four levels (Themen, an area, a topic, a detail page): the header shows the
+  # first, editorial pages list their children and grandchildren. Here and not
+  # in a query of its own: the query's cache key is its variables, and the path
+  # carries the language.
   mainMenu: menuByName(name: MAIN) {
     links {
       ...menuLink
@@ -43,6 +44,9 @@ query route($path: String!) {
         ...menuLink
         subtree {
           ...menuLink
+          subtree {
+            ...menuLink
+          }
         }
       }
     }

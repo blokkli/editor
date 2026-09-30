@@ -2,7 +2,7 @@
   <div class="grid gap-x-grid gap-y-8 md:grid-cols-12">
     <div class="flex flex-col gap-2 md:col-span-12">
       <p class="text-label text-primary uppercase">
-        {{ $texts('fee_calculator.rates', 'Rates') }} {{ RATES.year }}
+        {{ $texts('fee_calculator.rates', 'Current rates') }}
       </p>
       <h1 class="font-serif text-h2">
         {{ $texts('fee_calculator.title', 'Fee calculator') }}

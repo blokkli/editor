@@ -1,0 +1,9 @@
+key: moving-within
+type: page
+title: { de: 'Umzug innerhalb von Blockingen' }
+field_lead:
+  de: 'Eine neue Adresse in Blockingen melden Sie innert 14 Tagen. Die Meldung ist gratis.'
+field_office: { node: residents-services }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

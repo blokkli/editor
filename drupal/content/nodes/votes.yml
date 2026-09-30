@@ -1,0 +1,9 @@
+key: votes
+type: page
+title: { de: 'Abstimmungen und Wahlen' }
+field_lead:
+  de: 'Die Resultate der letzten Abstimmungen und Wahlen, und wie Sie brieflich stimmen.'
+field_office: { node: municipal-chancery }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

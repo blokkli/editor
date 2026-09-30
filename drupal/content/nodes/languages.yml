@@ -1,0 +1,9 @@
+key: languages
+type: page
+title: { de: 'Deutsch, Französisch oder zweisprachig' }
+field_lead:
+  de: 'Welche Abteilung zu Ihrem Kind passt, und wie ein Wechsel möglich ist.'
+field_office: { node: schools-office }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

@@ -88,6 +88,9 @@ paragraph types and bundles get added that end up wrong for it.
   office is in a location (a taxonomy term: a building with its address and
   photo), which several offices share. The office keeps its phone, email and
   opening hours; its header shows the location's photo.
+- **Changed in [14b](14b-demo-content.md) (the user, 2026-09-30):** the menu
+  follows Winterthur's: Themen (areas, topics, detail pages), Verwaltung (the
+  offices, now in the menu) and Aktuelles.
 - **Changed after chunk 05 (the user, 2026-09-28):**
   - Detail pages (sidebar layout) allow no sections and no fragments.
   - Fragments are only for editorial pages. News, events and offices keep

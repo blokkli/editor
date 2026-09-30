@@ -26,16 +26,16 @@ field_paragraphs:
   - type: call_to_action
     field_tagline: { en: Politics, de: Politik, fr: Politique }
     field_title:
-      en: Municipal assembly on 2 December
-      de: Gemeindeversammlung vom 2. Dezember
-      fr: Assemblée communale du 2 décembre
+      en: The next municipal assembly
+      de: Die nächste Gemeindeversammlung
+      fr: La prochaine assemblée communale
     field_lead:
-      en: Voters decide on the 2027 budget and the loan for renovating the school gym.
-      de: Die Stimmberechtigten entscheiden über das Budget 2027 und den Kredit für die Sanierung der Schulhausturnhalle.
-      fr: Les électrices et électeurs se prononcent sur le budget 2027 et le crédit pour la rénovation de la salle de gym de l'école.
+      en: Voters decide on next year's budget and the loan for renovating the old town gym.
+      de: Die Stimmberechtigten entscheiden über das Budget des nächsten Jahres und den Kredit für die Sanierung der Turnhalle Altstadt.
+      fr: Les électrices et électeurs se prononcent sur le budget de l'année prochaine et le crédit pour la rénovation de la salle de gym de la vieille ville.
     field_links:
       - type: link
-        field_link: { node: politics }
+        field_link: { node: assembly }
         field_title: { en: Agenda and documents, de: Traktanden und Unterlagen, fr: Ordre du jour et documents }
   - type: columns
     options: { ratio: '50-50' }

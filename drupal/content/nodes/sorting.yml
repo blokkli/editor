@@ -1,0 +1,12 @@
+key: sorting
+type: page
+title: { de: 'Was gehört wohin?' }
+field_lead:
+  de: 'Von PET bis Sonderabfall: wo Sie was abgeben.'
+field_office: { node: public-works }
+field_paragraphs:
+  - type: from_library
+    field_reusable_paragraph: { library: waste-guide }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

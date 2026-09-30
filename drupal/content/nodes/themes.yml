@@ -1,0 +1,7 @@
+key: themes
+type: editorial
+title: { de: 'Themen' }
+field_lead:
+  de: 'Was die Gemeinde für Sie tut, nach Themen geordnet.'
+field_host_options:
+  - { key: header, value: plain }

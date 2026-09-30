@@ -1,0 +1,9 @@
+key: paying-taxes
+type: page
+title: { de: 'Steuern bezahlen' }
+field_lead:
+  de: 'Provisorische Rechnung, Schlussrechnung und Ratenzahlung: wie und wann Sie Ihre Steuern bezahlen.'
+field_office: { node: finance-taxes }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

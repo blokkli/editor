@@ -1,0 +1,9 @@
+key: documents
+type: page
+title: { de: 'Ausweise und Bestätigungen' }
+field_lead:
+  de: 'Identitätskarte, Pass, Wohnsitzbestätigung: was Sie wo beantragen und was es kostet.'
+field_office: { node: residents-services }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

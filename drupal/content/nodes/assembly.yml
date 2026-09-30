@@ -1,0 +1,9 @@
+key: assembly
+type: page
+title: { de: 'Gemeindeversammlung' }
+field_lead:
+  de: 'Die nächste Versammlung, ihre Traktanden und Unterlagen, und wer mitbestimmen darf.'
+field_office: { node: municipal-chancery }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

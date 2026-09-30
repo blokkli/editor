@@ -1,0 +1,9 @@
+key: moving-away
+type: page
+title: { de: 'Wegzug' }
+field_lead:
+  de: 'Melden Sie sich spätestens am Tag des Wegzugs ab, und geben Sie Ihre neue Adresse an.'
+field_office: { node: residents-services }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

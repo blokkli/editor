@@ -1,23 +1,228 @@
-# The main menu. Pages and editorial pages get their URL from their place in
-# it (pathauto), except the frontend routes' (frontend_route in their files).
+# The main menu. Pages, editorial pages and offices get their URL from their
+# place in it (pathauto), except the frontend routes' (frontend_route in their
+# files).
 main:
-  - key: living-here
-    title: { en: Living here, de: Leben & Wohnen, fr: Vivre ici }
-    link: { node: living-here }
+  - key: themes
+    title: { de: 'Themen' }
+    link: { node: themes }
+    children:
+      - key: life-events
+        title: { de: 'Lebenslagen' }
+        description: { de: 'Umzug, Ausweise und Bestätigungen.' }
+        link: { node: life-events }
+        children:
+          - key: relocation
+            title: { de: 'Umzug' }
+            description: { de: 'Zuzug, Wegzug und Umzug in der Gemeinde melden.' }
+            link: { node: relocation }
+            children:
+              - key: moving-in
+                title: { de: 'Zuzug' }
+                description: { de: 'Innert 14 Tagen anmelden: was Sie mitbringen und was es kostet.' }
+                link: { node: moving-in }
+              - key: moving-away
+                title: { de: 'Wegzug' }
+                description: { de: 'Abmelden und die neue Adresse angeben.' }
+                link: { node: moving-away }
+              - key: moving-within
+                title: { de: 'Umzug innerhalb von Blockingen' }
+                description: { de: 'Die neue Adresse melden, gratis.' }
+                link: { node: moving-within }
+          - key: documents
+            title: { de: 'Ausweise und Bestätigungen' }
+            description: { de: 'Identitätskarte, Pass und Wohnsitzbestätigung.' }
+            link: { node: documents }
+      - key: taxes-finances
+        title: { de: 'Steuern & Finanzen' }
+        description: { de: 'Steuererklärung, Steuern bezahlen, Budget und Zahlen.' }
+        link: { node: taxes-finances }
+        children:
+          - key: taxes
+            title: { de: 'Steuern' }
+            description: { de: 'Steuererklärung und Steuern bezahlen.' }
+            link: { node: taxes }
+            children:
+              - key: tax-return
+                title: { de: 'Steuererklärung' }
+                description: { de: 'Fristen, Fristverlängerung und Belege.' }
+                link: { node: tax-return }
+              - key: paying-taxes
+                title: { de: 'Steuern bezahlen' }
+                description: { de: 'Provisorische Rechnung, Schlussrechnung, Ratenzahlung.' }
+                link: { node: paying-taxes }
+          - key: municipal-finances
+            title: { de: 'Gemeindefinanzen' }
+            description: { de: 'Budget, Rechnung, Finanzstrategie und Zahlen.' }
+            link: { node: municipal-finances }
+            children:
+              - key: budget
+                title: { de: 'Budget und Rechnung' }
+                description: { de: 'Was die Gemeinde plant und was sie ausgegeben hat.' }
+                link: { node: budget }
+              - key: financial-strategy
+                title: { de: 'Finanzstrategie' }
+                description: { de: 'Die Ziele des Gemeinderats für die nächsten Jahre.' }
+                link: { node: financial-strategy }
+              - key: in-numbers
+                title: { de: 'Blockingen in Zahlen' }
+                description: { de: 'Bevölkerung, Sprachen und Finanzen.' }
+                link: { node: in-numbers }
+      - key: building-environment
+        title: { de: 'Bauen & Umwelt' }
+        description: { de: 'Baubewilligung, Abfall und Gebühren.' }
+        link: { node: building-environment }
+        children:
+          - key: waste
+            title: { de: 'Abfall & Recycling' }
+            description: { de: 'Abfuhrtage, was wohin gehört und die Entsorgungsstelle.' }
+            link: { node: waste }
+            children:
+              - key: collection-days
+                title: { de: 'Abfuhrtage und Abfallkalender' }
+                description: { de: 'Wann was abgeholt wird.' }
+                link: { node: collection-days }
+              - key: sorting
+                title: { de: 'Was gehört wohin?' }
+                description: { de: 'Wo Sie was abgeben.' }
+                link: { node: sorting }
+              - key: collection-point
+                title: { de: 'Entsorgungsstelle Werkhof' }
+                description: { de: 'Öffnungszeiten und was Sie abgeben können.' }
+                link: { node: collection-point }
+          - key: building-permit
+            title: { de: 'Baubewilligung' }
+            description: { de: 'Braucht es eine Bewilligung, und wie reichen Sie ein Gesuch ein?' }
+            link: { node: building-permit }
+            children:
+              - key: permit-needed
+                title: { de: 'Brauche ich eine Baubewilligung?' }
+                description: { de: 'Bewilligung, Meldung oder frei.' }
+                link: { node: permit-needed }
+              - key: building-permits
+                title: { de: 'Baugesuch einreichen' }
+                description: { de: 'Wie Sie ein Gesuch einreichen und wie es weitergeht.' }
+                link: { node: building-permits }
+          - key: fees
+            title: { de: 'Gebühren für Wasser, Abwasser und Abfall' }
+            description: { de: 'Tarife und der Gebührenrechner.' }
+            link: { node: fees }
+      - key: school-family
+        title: { de: 'Schule & Familie' }
+        description: { de: 'Kindergarten, Schule und Tagesschule.' }
+        link: { node: school-family }
+        children:
+          - key: school
+            title: { de: 'Schule' }
+            description: { de: 'Kindergarten, Sprachen und Schulweg.' }
+            link: { node: school }
+            children:
+              - key: kindergarten
+                title: { de: 'Kindergarteneintritt' }
+                description: { de: 'Wann und wie Sie Ihr Kind anmelden.' }
+                link: { node: kindergarten }
+              - key: languages
+                title: { de: 'Deutsch, Französisch oder zweisprachig' }
+                description: { de: 'Die richtige Abteilung für Ihr Kind.' }
+                link: { node: languages }
+              - key: way-to-school
+                title: { de: 'Schulweg' }
+                description: { de: 'Sicher zur Schule.' }
+                link: { node: way-to-school }
+          - key: day-school
+            title: { de: 'Tagesschule' }
+            description: { de: 'Betreuung vor und nach dem Unterricht.' }
+            link: { node: day-school }
+      - key: leisure-culture
+        title: { de: 'Freizeit & Kultur' }
+        description: { de: 'Strandbad, Sportanlagen, Vereine und Geschichte.' }
+        link: { node: leisure-culture }
+        children:
+          - key: lakeside-pool
+            title: { de: 'Strandbad' }
+            description: { de: 'Öffnungszeiten, Eintritt und Baderegeln.' }
+            link: { node: lakeside-pool }
+          - key: sports-facilities
+            title: { de: 'Sportanlagen' }
+            description: { de: 'Hallen und Plätze, und wie Sie reservieren.' }
+            link: { node: sports-facilities }
+          - key: clubs
+            title: { de: 'Vereine' }
+            description: { de: 'Rund 60 Vereine und die Vereinsförderung.' }
+            link: { node: clubs }
+          - key: history
+            title: { de: 'Geschichte' }
+            description: { de: 'Vom Fischerdorf zur zweisprachigen Kleinstadt.' }
+            link: { node: history }
+      - key: social-health
+        title: { de: 'Soziales & Gesundheit' }
+        description: { de: 'Sozialhilfe und Leben im Alter.' }
+        link: { node: social-health }
+        children:
+          - key: social-assistance
+            title: { de: 'Sozialhilfe' }
+            description: { de: 'Anspruch, Antrag und Beratung.' }
+            link: { node: social-assistance }
+          - key: old-age
+            title: { de: 'Leben im Alter' }
+            description: { de: 'Beratung, Hilfe zu Hause und Angebote.' }
+            link: { node: old-age }
+      - key: politics
+        title: { en: Politics, de: Politik, fr: Politique }
+        description: { de: 'Gemeinderat, Gemeindeversammlung, Abstimmungen und Wahlen.' }
+        link: { node: politics }
+        children:
+          - key: council
+            title: { de: Gemeinderat }
+            description: { de: Die Mitglieder und ihre Ressorts. }
+            link: { node: council }
+          - key: assembly
+            title: { de: Gemeindeversammlung }
+            description: { de: 'Die nächste Versammlung, Traktanden und Unterlagen.' }
+            link: { node: assembly }
+          - key: votes
+            title: { de: Abstimmungen und Wahlen }
+            description: { de: 'Resultate, und wie Sie brieflich stimmen.' }
+            link: { node: votes }
   - key: administration
     title: { en: Administration, de: Verwaltung, fr: Administration }
     link: { node: administration }
     children:
-      - key: building-permits
-        title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
-        description:
-          en: When you need a permit, and how to apply for one.
-          de: Wann es eine Bewilligung braucht und wie Sie sie beantragen.
-          fr: Quand il faut un permis, et comment le demander.
-        link: { node: building-permits }
-  - key: politics
-    title: { en: Politics, de: Politik, fr: Politique }
-    link: { node: politics }
+      - key: municipal-chancery
+        title: { de: 'Gemeindekanzlei' }
+        description: { de: 'Gemeinderat, Gemeindeversammlung, Abstimmungen und Wahlen.' }
+        link: { node: municipal-chancery }
+      - key: residents-services
+        title: { de: 'Einwohnerdienste' }
+        description: { de: 'Zuzug und Wegzug, Ausweise und Bestätigungen.' }
+        link: { node: residents-services }
+      - key: finance-taxes
+        title: { de: 'Finanzen und Steuern' }
+        description: { de: 'Steuererklärung, Steuerrechnungen und die Finanzen der Gemeinde.' }
+        link: { node: finance-taxes }
+      - key: building-planning
+        title: { de: 'Bau und Planung' }
+        description: { de: 'Baubewilligungen, Zonenplan und Beratung.' }
+        link: { node: building-planning }
+      - key: social-services
+        title: { de: 'Soziale Dienste' }
+        description: { de: 'Sozialhilfe und Beratung, im Vertrauen.' }
+        link: { node: social-services }
+      - key: public-works
+        title: { de: 'Tiefbau und Werkhof' }
+        description: { de: 'Strassen, Abfall, Parks und der Friedhof.' }
+        link: { node: public-works }
+      - key: utilities
+        title: { de: 'Gemeindewerke' }
+        description: { de: 'Wasser, Strom und die Zählerstände.' }
+        link: { node: utilities }
+      - key: schools-office
+        title: { de: 'Schulverwaltung' }
+        description: { de: 'Kindergarten, Schule und Tagesschule.' }
+        link: { node: schools-office }
+      - key: sport-leisure
+        title: { de: 'Sport und Freizeit' }
+        description: { de: 'Das Strandbad, die Sportanlagen und die Vereine.' }
+        link: { node: sport-leisure }
   - key: news
     title: { en: News, de: Aktuelles, fr: Actualités }
     link: { node: news }

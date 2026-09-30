@@ -1,0 +1,8 @@
+key: school-family
+type: editorial
+title: { de: 'Schule & Familie' }
+field_lead:
+  de: 'Kindergarten, Schule und Betreuung, auf Deutsch und auf Französisch.'
+field_hero_image: { media: seefeld-school }
+field_host_options:
+  - { key: header, value: image }

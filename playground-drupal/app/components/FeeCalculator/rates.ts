@@ -3,7 +3,6 @@
  * VAT. Sewage is billed by the water a household uses.
  */
 export const RATES = {
-  year: 2026,
   water: {
     base: { apartment: 80, house: 140 },
     perCubicMetre: 1.9,

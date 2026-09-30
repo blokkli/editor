@@ -152,7 +152,7 @@ Milestones:
 | 13i | [Agent and modules](13i-agent-and-modules.md)                                                       | M1        | in progress | 13b                               |
 | 13j | [Skill tests](13j-skill-tests.md)                                                                   | M1        | todo        | 13a–13i                           |
 | 14a | [Demo concept](14a-demo-concept.md)                                                                 | M1        | done        | 04                                |
-| 14b | [Demo content](14b-demo-content.md)                                                                 | M3        | todo        | 05, 13, 14a                       |
+| 14b | [Demo content](14b-demo-content.md)                                                                 | M3        | in progress | 05, 13, 14a                       |
 | 15a | [Design system](15a-design-system.md)                                                               | M1        | done        | 06, 14a                           |
 | 15b | [Apply the design](15b-apply-design.md)                                                             | M1        | done        | 15a                               |
 | 15c | [Site structure](15c-site-structure.md): menus, breadcrumbs, URLs, the sub-pages of editorial pages | M1        | done        | 15d                               |

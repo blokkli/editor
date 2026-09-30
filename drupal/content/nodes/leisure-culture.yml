@@ -1,0 +1,8 @@
+key: leisure-culture
+type: editorial
+title: { de: 'Freizeit & Kultur' }
+field_lead:
+  de: 'Baden, Sport, Vereine und die Geschichte der Gemeinde.'
+field_hero_image: { media: regatta }
+field_host_options:
+  - { key: header, value: image }

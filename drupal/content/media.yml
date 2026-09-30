@@ -196,10 +196,3 @@
     fr: Demande de permis de construire
   field_media_document:
     file: documents/building-permit-application.pdf
-
-# Big Buck Bunny, © Blender Foundation, CC BY 3.0. Seeding it fetches its
-# oEmbed data from YouTube.
-- key: big-buck-bunny
-  type: remote_video
-  name: Big Buck Bunny
-  field_media_oembed_video: https://www.youtube.com/watch?v=aqz-KE-bpKQ

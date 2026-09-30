@@ -1,11 +1,8 @@
-- key: counter-hours
-  label:
-    en: Counter opening hours
-    de: Schalteröffnungszeiten
-    fr: Heures d'ouverture des guichets
+# Reused on the waste page and the works yard's office.
+- key: waste-guide
+  label: { de: Was gehört wohin? }
   paragraphs:
-    - type: text
-      field_text:
-        en: '<p>Our counters are open Monday to Friday, 8:00 to 12:00 and 13:30 to 17:00, on Thursdays until 18:30.</p>'
-        de: '<p>Unsere Schalter sind von Montag bis Freitag geöffnet, 8.00 bis 12.00 und 13.30 bis 17.00 Uhr, am Donnerstag bis 18.30 Uhr.</p>'
-        fr: '<p>Nos guichets sont ouverts du lundi au vendredi, de 8 h à 12 h et de 13 h 30 à 17 h, le jeudi jusqu''à 18 h 30.</p>'
+    - type: table
+      options: { striped: true }
+      field_table:
+        de: '<table><thead><tr><th>Was</th><th>Wohin</th></tr></thead><tbody><tr><td>PET-Getränkeflaschen</td><td>Verkaufsstellen</td></tr><tr><td>Glas, nach Farben getrennt</td><td>Sammelstellen im Quartier</td></tr><tr><td>Alu und Blech</td><td>Sammelstellen im Quartier, Entsorgungsstelle</td></tr><tr><td>Papier und Karton</td><td>Papierabfuhr</td></tr><tr><td>Grüngut und Rüstabfälle</td><td>Grüngutabfuhr</td></tr><tr><td>Batterien und Leuchtmittel</td><td>Verkaufsstellen</td></tr><tr><td>Elektrogeräte</td><td>Verkaufsstellen, Entsorgungsstelle</td></tr><tr><td>Kleider und Schuhe</td><td>Sammelcontainer beim Bahnhof und beim Werkhof</td></tr><tr><td>Farben, Altöl, Chemikalien</td><td>Entsorgungsstelle</td></tr><tr><td>Medikamente</td><td>Apotheken</td></tr></tbody></table>'

@@ -32,22 +32,22 @@
       field_link: https://www.example.com/online-counter
       field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
     - type: link
-      field_link: https://www.example.com/waste
+      field_link: { node: waste }
       field_title: { en: Waste and recycling, de: Abfall & Recycling, fr: Déchets et recyclage }
     - type: link
-      field_link: https://www.example.com/taxes
+      field_link: { node: taxes }
       field_title: { en: Taxes, de: Steuern, fr: Impôts }
     - type: link
       field_link: { node: building-permits }
       field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
     - type: link
-      field_link: { node: living-here }
+      field_link: { node: moving-in }
       field_title: { en: Moving here, de: Zuzug, fr: S'installer ici }
     - type: link
-      field_link: https://www.example.com/schools
+      field_link: { node: school }
       field_title: { en: Schools and childcare, de: Schule & Betreuung, fr: École et accueil }
     - type: link
-      field_link: https://www.example.com/rooms
+      field_link: { node: sports-facilities }
       field_title: { en: Room hire, de: Raumvermietung, fr: Location de salles }
     - type: link
       field_link: https://www.example.com/jobs

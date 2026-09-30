@@ -1,0 +1,12 @@
+key: waste
+type: editorial
+title: { de: 'Abfall & Recycling' }
+field_lead:
+  de: 'Was die Gemeinde abholt, was Sie wohin bringen und wann die Entsorgungsstelle offen ist.'
+field_host_options:
+  - { key: header, value: plain }
+# Who is in charge, as on the detail pages.
+field_paragraphs:
+  - type: contact
+    options: { display: compact }
+    field_office: { node: public-works }

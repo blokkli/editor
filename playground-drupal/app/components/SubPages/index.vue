@@ -7,7 +7,8 @@
       <li v-for="item in items" :key="item.url">
         <SiteLink
           :to="item.url"
-          class="group flex h-full flex-col gap-2 border-t border-ink pt-4 text-ink"
+          class="group flex flex-col gap-2 border-t border-ink pt-4 text-ink"
+          :class="{ 'h-full': !item.children.length }"
         >
           <span
             class="flex items-start justify-between gap-4 font-serif text-h3 font-semibold group-hover:text-primary group-hover:underline"
@@ -18,10 +19,23 @@
               class="mt-1 size-5 shrink-0 text-primary"
             />
           </span>
-          <span v-if="item.description" class="text-muted">
+          <span
+            v-if="item.description && !item.children.length"
+            class="text-muted"
+          >
             {{ item.description }}
           </span>
         </SiteLink>
+        <ul v-if="item.children.length" class="mt-3 flex flex-col gap-2">
+          <li v-for="child in item.children" :key="child.url">
+            <SiteLink
+              :to="child.url"
+              class="text-ink hover:text-primary hover:underline"
+            >
+              {{ child.label }}
+            </SiteLink>
+          </li>
+        </ul>
       </li>
     </ul>
   </nav>
@@ -29,10 +43,12 @@
 
 <script lang="ts" setup>
 import { SiteLink, SpriteSymbol } from '#components'
+import type { SubPage } from '~/helpers/menu'
 
 // An editorial page's children in the main menu, with the menu links'
-// descriptions.
+// descriptions. A child with children of its own, like an area's topic, lists
+// them instead of its description.
 defineProps<{
-  items: { label: string; url: string; description?: string | null }[]
+  items: SubPage[]
 }>()
 </script>

@@ -1,0 +1,9 @@
+key: clubs
+type: page
+title: { de: 'Vereine' }
+field_lead:
+  de: 'Rund 60 Vereine, vom Segelclub bis zum Chor, und wie die Gemeinde sie unterstützt.'
+field_office: { node: sport-leisure }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

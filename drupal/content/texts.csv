@@ -46,7 +46,7 @@ fee_calculator.note;default;An estimate, VAT included. The bill follows your wat
 fee_calculator.per_month;default;Per month;Pro Monat;Par mois
 fee_calculator.persons;default;People in the household;Personen im Haushalt;Personnes dans le ménage
 fee_calculator.persons_hint;default;Used to estimate the water use.;Dient zur Schätzung des Wasserverbrauchs.;Sert à estimer la consommation d'eau.
-fee_calculator.rates;default;Rates;Tarife;Tarifs
+fee_calculator.rates;default;Current rates;Aktuelle Tarife;Tarifs actuels
 fee_calculator.sewage;default;Sewage;Abwasser;Eaux usées
 fee_calculator.title;default;Fee calculator;Gebührenrechner;Calculateur de taxes
 fee_calculator.total;default;Total per year;Total pro Jahr;Total par année

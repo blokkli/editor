@@ -1,6 +1,6 @@
 # 14b: Demo content
 
-- **Status:** todo
+- **Status:** in progress (2026-09-30)
 - **Milestone:** M3 Hosted
 - **Depends on:** 05, 13, [14a](14a-demo-concept.md)
 
@@ -51,6 +51,109 @@ adds types.
   the `Logo` (the user, 2026-09-29, 15c).
 - [ ] Real photos and copy for what the mockups of 15a show as placeholders.
 - [ ] Suggested tasks for the sandbox's welcome panel (chunk 09).
+
+## The content (decided with the user, 2026-09-30)
+
+German first: the user reviews the German on the site, one part at a time, and
+then it's translated to French and English. The existing texts are rewritten
+German-first too. While in review, new files have only `de` and the site is
+baked with `ddev bake --source=de`.
+
+**Decisions:**
+
+1. **Three sections** in the main menu: Themen, Verwaltung, Aktuelles. Politik
+   is an area under Themen; the offices are Verwaltung's children.
+2. **The topics are structured like Winterthur's** (the user, 2026-09-30,
+   replacing a first draft with "Leben & Wohnen"): Themen, then an area, a topic
+   and its detail pages. Areas and topics are editorial pages that list what's
+   below them; a topic has a contact box for the office in charge. An area can
+   hold detail pages directly.
+3. **A Gemeindeversammlung** (the voters' assembly), not a parliament.
+4. **Events fit any season:** dates are relative to the bake, so the open-air
+   cinema and the autumn market are replaced. The lakeside pool stays seasonal
+   (it's the landing page).
+
+**Writing rules:** Swiss spelling (ss, no ß), formal Sie, "Fr. 45.–", "8.00
+Uhr". No current years in running text (history is fine); dates only in date
+fields. Invented people, addresses and numbers (032 555 01 xx,
+`@blockingen.example`); no canton by name, no real parties. Detail pages carry
+about 300–600 words of real content.
+
+**Themen** (areas with an image, topics without; the office in brackets):
+
+- **Lebenslagen**
+  - Umzug (Einwohnerdienste): Zuzug, Wegzug, Umzug innerhalb von Blockingen
+  - Ausweise und Bestätigungen
+- **Steuern & Finanzen**
+  - Steuern (Finanzen und Steuern): Steuererklärung, Steuern bezahlen
+  - Gemeindefinanzen: Budget und Rechnung, Finanzstrategie, Blockingen in Zahlen
+- **Bauen & Umwelt**
+  - Abfall & Recycling (Tiefbau und Werkhof): Abfuhrtage und Abfallkalender, Was
+    gehört wohin? (the library item), Entsorgungsstelle Werkhof
+  - Baubewilligung (Bau und Planung): Brauche ich eine Baubewilligung?,
+    Baugesuch einreichen
+  - Gebühren für Wasser, Abwasser und Abfall (Gemeindewerke), with the fee
+    calculator
+- **Schule & Familie**
+  - Schule (Schulverwaltung): Kindergarteneintritt, Deutsch, Französisch oder
+    zweisprachig, Schulweg
+  - Tagesschule
+- **Freizeit & Kultur:** Strandbad (the landing page), Sportanlagen, Vereine,
+  Geschichte
+- **Soziales & Gesundheit:** Sozialhilfe, Leben im Alter
+- **Politik** (Gemeindekanzlei): Gemeinderat, Gemeindeversammlung, Abstimmungen
+  und Wahlen
+
+**Verwaltung:** the nine offices are its children in the menu, and get their URL
+from it like pages (`/verwaltung/einwohnerdienste`). **Aktuelles** as it is.
+
+**Status (2026-09-30):** the tree is seeded with titles and leads (German only)
+for the user to try the structure. Written in full: Strandbad, Blockingen in
+Zahlen, Geschichte. The first draft's texts for Zuzug, Abfall, Schule and the
+clubs are in the ignored `tmp/14b-drafts/`, to split into the new detail pages.
+The test content is gone: Verwaltung has an introduction instead of the
+population chart (on Blockingen in Zahlen) and the fee calculator (now on the
+fees page, without a year); Baugesuch einreichen lost its video, old town photo
+and gallery (the profile poles are one image), and its garden shed question
+moved to "Brauche ich eine Baubewilligung?". The home page's call to action has
+no date or year. No video: there's no fictional one to link, and editors try
+the video block by pasting a YouTube link (the Big Buck Bunny media is gone).
+
+**The frontend for it:** the menu query has four levels, and an editorial page's
+sub-pages list their own children (an area's topics with their detail pages)
+instead of their description.
+
+**Offices (9):** a short text on what each handles and a link list to its pages.
+
+**News (6):** the pool opening, the new opening hours, the village square; new:
+green waste collected weekly, a new water main in Dorfstrasse (with the road
+closure), the council's budget (a chart).
+
+**Events (8), any season:** the village square's information evening; new: the
+Gemeindeversammlung, a welcome for new residents (politics), a concert of the
+town band, a guided tour of the old town (culture), a floorball tournament in
+the Seefeld hall (sport), a games afternoon at the toy library (family), a flea
+market on the village square (market).
+
+**Publications (5):** the three existing; new: a building application for a
+solar installation, the invitation to the Gemeindeversammlung.
+
+**Reused:** the library items "Notfallnummern", "Was gehört wohin?" and "Bleiben
+Sie informiert"; "Schalteröffnungszeiten" goes (each office has its hours). The
+service page template follows the service pages. The home page, footer, service
+links and the "Strandbad geschlossen" banner point at the real pages.
+
+**Images:** a second brief once the pages stand: more of the pool, old photos
+for the history, the new news and events. The market and open-air cinema photos
+lose their events.
+
+**Order of review:**
+
+1. The structure (Themen), then the detail pages area by area
+2. Verwaltung and the offices
+3. Politik
+4. News, events and publications
+5. The home page, footer, library and templates
 
 ## Acceptance criteria
 

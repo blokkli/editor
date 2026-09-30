@@ -1,0 +1,9 @@
+key: social-assistance
+type: page
+title: { de: 'Sozialhilfe' }
+field_lead:
+  de: 'Wer Anspruch auf Sozialhilfe hat, wie Sie sie beantragen und wer Sie berät.'
+field_office: { node: social-services }
+field_aside:
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_contact

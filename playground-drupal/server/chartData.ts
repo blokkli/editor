@@ -43,11 +43,13 @@ export const CHART_DATA: Record<string, Dataset> = {
     series: [
       {
         name: { en: 'Swiss', de: 'Schweiz', fr: 'Suisse' },
-        data: [3968, 3981, 3990, 4012, 4019, 4035, 4061, 4083, 4102, 4127],
+        data: [
+          11520, 11560, 11590, 11640, 11660, 11700, 11750, 11790, 11820, 11860,
+        ],
       },
       {
         name: { en: 'Foreign', de: 'Ausland', fr: 'Étranger' },
-        data: [844, 874, 913, 949, 971, 999, 1041, 1093, 1129, 1171],
+        data: [2710, 2790, 2880, 2960, 3010, 3080, 3170, 3260, 3320, 3380],
       },
     ],
   },
@@ -90,7 +92,30 @@ export const CHART_DATA: Record<string, Dataset> = {
       {
         name: { en: 'Expenses', de: 'Aufwand', fr: 'Charges' },
         // The last three areas together: a pie reads well up to six slices.
-        data: [9420, 6710, 3380, 2650, 2410, 4530],
+        data: [22100, 15800, 7900, 6200, 5600, 10400],
+      },
+    ],
+  },
+  languages: {
+    label: {
+      en: 'Main language of the population',
+      de: 'Hauptsprache der Bevölkerung',
+      fr: 'Langue principale de la population',
+    },
+    description: {
+      en: 'In percent of the permanent residents.',
+      de: 'In Prozent der ständigen Wohnbevölkerung.',
+      fr: 'En pour cent de la population résidante permanente.',
+    },
+    categories: [
+      { en: 'German', de: 'Deutsch', fr: 'Allemand' },
+      { en: 'French', de: 'Französisch', fr: 'Français' },
+      { en: 'Other', de: 'Andere', fr: 'Autres' },
+    ],
+    series: [
+      {
+        name: { en: 'Share', de: 'Anteil', fr: 'Part' },
+        data: [58, 34, 8],
       },
     ],
   },

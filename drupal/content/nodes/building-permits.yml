@@ -1,9 +1,9 @@
 key: building-permits
 type: page
-title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
+title: { en: Building permits, de: Baugesuch einreichen, fr: Permis de construire }
 field_lead:
   en: When you need a permit, and how to apply for one.
-  de: Wann es eine Bewilligung braucht und wie Sie sie beantragen.
+  de: Wie Sie ein Baugesuch einreichen und wie es danach weitergeht.
   fr: Quand il faut un permis, et comment le demander.
 field_office: { node: building-planning }
 field_paragraphs:
@@ -61,75 +61,26 @@ field_paragraphs:
           en: '<p>The town council decides on the application. Once the decision is final, you may start building.</p>'
           de: '<p>Der Gemeinderat entscheidet über das Gesuch. Nach Rechtskraft dürfen Sie mit dem Bau beginnen.</p>'
           fr: '<p>Le conseil communal statue sur la demande. Une fois la décision entrée en force, vous pouvez commencer les travaux.</p>'
+  - type: image
+    field_media: { media: building-profiles }
+    field_caption:
+      en: The profile poles show the planned building
+      de: Die Bauprofile zeigen das geplante Gebäude
+      fr: Les gabarits montrent le bâtiment prévu
   - type: text
     options: { box: warning }
     field_text:
       en: '<p><strong>Important:</strong> only start building once the permit is final. Otherwise, the work can be stopped.</p>'
       de: '<p><strong>Wichtig:</strong> Beginnen Sie erst mit den Bauarbeiten, wenn die Bewilligung rechtskräftig ist. Andernfalls kann ein Baustopp verfügt werden.</p>'
       fr: '<p><strong>Important :</strong> ne commencez les travaux qu''une fois le permis entré en force. Sinon, un arrêt des travaux peut être ordonné.</p>'
+  - type: title
+    field_title: { en: Fees, de: Gebühren, fr: Émoluments }
   - type: table
     options: { striped: true }
     field_table:
       en: '<table><thead><tr><th>Project</th><th>Fee</th></tr></thead><tbody><tr><td>Garden shed</td><td>CHF 150</td></tr><tr><td>Extension</td><td>CHF 800</td></tr><tr><td>New house</td><td>CHF 2,500</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Vorhaben</th><th>Gebühr</th></tr></thead><tbody><tr><td>Gartenhaus</td><td>CHF 150</td></tr><tr><td>Anbau</td><td>CHF 800</td></tr><tr><td>Neubau</td><td>CHF 2500</td></tr></tbody></table>'
       fr: '<table><thead><tr><th>Projet</th><th>Émolument</th></tr></thead><tbody><tr><td>Cabanon de jardin</td><td>CHF 150</td></tr><tr><td>Agrandissement</td><td>CHF 800</td></tr><tr><td>Maison neuve</td><td>CHF 2500</td></tr></tbody></table>'
-  - type: title
-    field_title:
-      en: Frequently asked questions
-      de: Häufige Fragen
-      fr: Questions fréquentes
-  - type: accordion
-    field_title:
-      en: Do I need a permit for a garden shed?
-      de: Braucht ein Gartenhaus eine Bewilligung?
-      fr: Un cabanon de jardin nécessite-t-il un permis ?
-    field_paragraphs:
-      - type: text
-        field_text:
-          en: '<p>Yes, from a floor area of 10 m². Smaller sheds only need to be reported.</p>'
-          de: '<p>Ja, ab einer Grundfläche von 10 m². Kleinere Gartenhäuser müssen nur gemeldet werden.</p>'
-          fr: '<p>Oui, dès une surface de 10 m². Les cabanons plus petits doivent seulement être annoncés.</p>'
-      - type: columns
-        options: { ratio: 66-33 }
-        field_left:
-          - type: text
-            field_text:
-              en: '<p>Mark the shed on the site plan, with its distance to the neighbouring plots.</p>'
-              de: '<p>Zeichnen Sie das Gartenhaus im Situationsplan ein, mit dem Abstand zu den Nachbargrundstücken.</p>'
-              fr: '<p>Indiquez le cabanon sur le plan de situation, avec sa distance aux parcelles voisines.</p>'
-        field_right:
-          - type: image
-            field_media: { media: garden-shed }
-            field_caption: { en: A garden shed, de: Ein Gartenhaus, fr: Un cabanon de jardin }
-  - type: gallery
-    options: { display: slider, width: wide }
-    field_paragraphs:
-      - type: image
-        field_media: { media: building-profiles }
-        field_caption:
-          en: The profile poles show the planned building
-          de: Die Bauprofile zeigen das geplante Gebäude
-          fr: Les gabarits montrent le bâtiment prévu
-      - type: image
-        field_media: { media: house-extension }
-        field_caption:
-          en: An extension under construction
-          de: Ein Anbau im Bau
-          fr: Une annexe en construction
-  - type: image
-    options: { width: full }
-    field_media: { media: old-town }
-  - type: video
-    field_video: { media: big-buck-bunny }
-  - type: from_library
-    field_reusable_paragraph: { library: counter-hours }
-  - type: link
-    options: { style: primary }
-    field_link: { node: building-planning }
-    field_title:
-      en: Contact the building office
-      de: Bauamt kontaktieren
-      fr: Contacter le service des constructions
   # Building applications are official publications. On a detail page, the
   # automatic list is always a list.
   - type: teaser_list
@@ -144,7 +95,7 @@ field_related:
       de: Welche Nutzung gilt für Ihr Grundstück?
       fr: Quelle affectation s'applique à votre parcelle ?
   - type: teaser
-    field_link: { node: administration }
+    field_link: { node: permit-needed }
   - type: teaser
     field_link: https://www.example.com/energy-subsidies
     field_title: { en: Energy and subsidies, de: Energie & Förderung, fr: Énergie et subventions }
@@ -161,9 +112,6 @@ field_aside:
     field_paragraphs:
       - type: link
         field_link: { media: permit-form }
-      - type: link
-        field_link: { node: administration }
-        field_title: { en: All services, de: Alle Dienstleistungen, fr: Toutes les prestations }
       - type: link
         field_link: https://www.example.com/building-law
         field_title:

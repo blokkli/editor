@@ -1,0 +1,8 @@
+key: life-events
+type: editorial
+title: { de: 'Lebenslagen' }
+field_lead:
+  de: 'Umziehen, einen Ausweis beantragen, eine Bestätigung bestellen: was in wichtigen Momenten zu erledigen ist.'
+field_hero_image: { media: residential-street }
+field_host_options:
+  - { key: header, value: image }

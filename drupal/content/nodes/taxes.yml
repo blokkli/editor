@@ -1,0 +1,12 @@
+key: taxes
+type: editorial
+title: { de: 'Steuern' }
+field_lead:
+  de: 'Die Gemeinde verschickt die Steuererklärung, führt das Steuerregister und zieht die Gemeinde- und Staatssteuern ein.'
+field_host_options:
+  - { key: header, value: plain }
+# Who is in charge, as on the detail pages.
+field_paragraphs:
+  - type: contact
+    options: { display: compact }
+    field_office: { node: finance-taxes }
