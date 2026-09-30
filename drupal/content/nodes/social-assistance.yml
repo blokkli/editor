@@ -4,6 +4,88 @@ title: { de: 'Sozialhilfe' }
 field_lead:
   de: 'Wer Anspruch auf Sozialhilfe hat, wie Sie sie beantragen und wer Sie berät.'
 field_office: { node: social-services }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Wer seinen Lebensunterhalt nicht selbst bestreiten kann, hat Anspruch auf Sozialhilfe. Sie deckt, was Sie zum Leben brauchen: Essen, Kleider, die Wohnung und die Krankenkasse. Und sie hilft Ihnen, wieder auf eigenen Beinen zu stehen. Zuerst zählen aber Ihr eigenes Einkommen und Vermögen und die Leistungen von Versicherungen, etwa der Arbeitslosenkasse.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Beratung ohne Antrag:</strong> Wissen Sie nicht, ob Sie Anspruch haben, oder brauchen Sie Rat bei Geldsorgen? Die Sozialen Dienste beraten Sie vertraulich und gratis, auch wenn Sie keine Sozialhilfe beziehen.</p>'
+  - type: title
+    field_title: { de: So beantragen Sie Sozialhilfe }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Termin vereinbaren }
+        field_text:
+          de: '<p>Rufen Sie uns an, oder kommen Sie an den Schalter. In einer Notlage erhalten Sie noch am selben Tag einen Termin.</p>'
+      - type: step
+        field_title: { de: Erstgespräch }
+        field_text:
+          de: '<p>Eine Sozialarbeiterin oder ein Sozialarbeiter bespricht Ihre Lage mit Ihnen. Bringen Sie die Unterlagen mit, die unten aufgeführt sind.</p>'
+      - type: step
+        field_title: { de: Entscheid }
+        field_text:
+          de: '<p>Innert zwei Wochen erhalten Sie den schriftlichen Entscheid. Brauchen Sie sofort Geld für Essen oder Miete, helfen wir Ihnen bis dahin mit einem Vorschuss.</p>'
+      - type: step
+        field_title: { de: Begleitung }
+        field_text:
+          de: '<p>Sie vereinbaren mit Ihrer Sozialarbeiterin oder Ihrem Sozialarbeiter Ziele, etwa eine Stelle oder eine Weiterbildung, und treffen sich regelmässig.</p>'
+  - type: title
+    field_title: { de: Was Sie mitbringen }
+  - type: text
+    field_text:
+      de: '<ul><li>Identitätskarte, Pass oder Ausländerausweis</li><li>Mietvertrag und die letzte Mietzinsquittung</li><li>Kontoauszüge aller Konten der letzten drei Monate</li><li>Lohnabrechnungen, Taggeld- oder Rentenbescheide</li><li>die Police der Krankenkasse</li><li>die letzte Steuerveranlagung</li></ul>'
+  - type: title
+    field_title: { de: Was die Sozialhilfe bezahlt }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Haushalt</th><th>Grundbedarf pro Monat</th></tr></thead><tbody><tr><td>1 Person</td><td>Fr. 1080.–</td></tr><tr><td>2 Personen</td><td>Fr. 1650.–</td></tr><tr><td>3 Personen</td><td>Fr. 2010.–</td></tr><tr><td>4 Personen</td><td>Fr. 2310.–</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Der Grundbedarf deckt Essen, Kleider, Energie, Telefon und Verkehr. Dazu kommen die Miete bis zu einer Obergrenze, die Krankenkassenprämie nach Abzug der Prämienverbilligung und, wenn nötig, Kosten für den Zahnarzt, eine Brille oder die Betreuung Ihrer Kinder.</p>'
+  - type: title
+    field_title: { de: Ihre Pflichten }
+  - type: text
+    field_text:
+      de: '<p>Melden Sie uns sofort, wenn sich Ihr Einkommen, Ihre Wohnung oder Ihr Haushalt ändert. Suchen Sie Arbeit, wenn Sie arbeiten können, und nehmen Sie an den Programmen teil, die wir mit Ihnen vereinbaren. Erhalten Sie später Geld, etwa aus einer Erbschaft, zahlen Sie die Sozialhilfe zurück. Aus einem späteren Lohn müssen Sie sie nicht zurückzahlen.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Ich arbeite, aber der Lohn reicht nicht. Kann ich trotzdem Sozialhilfe erhalten?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, ergänzend zum Lohn. Von Ihrem Lohn behalten Sie einen Freibetrag von bis zu Fr. 400.– im Monat, damit sich die Arbeit lohnt.</p>'
+  - type: accordion
+    field_title: { de: 'Erfährt jemand, dass ich Sozialhilfe beziehe?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Nein. Die Sozialen Dienste unterstehen der Schweigepflicht. Mit Ihrem Arbeitgeber oder Ihrer Vermieterin sprechen wir nur, wenn Sie einverstanden sind.</p>'
+  - type: accordion
+    field_title: { de: 'Ich habe Schulden. Hilft mir die Sozialhilfe?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Alte Schulden bezahlt die Sozialhilfe nicht. Die Schuldenberatung der Sozialen Dienste hilft Ihnen aber, einen Plan zu machen und mit den Gläubigern zu verhandeln. Offene Steuern können Sie mit einem Gesuch um Steuererlass bei der Gemeinde angehen.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: paying-taxes }
+  - type: teaser
+    field_link: { node: old-age }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/premium-reduction
+        field_title: { de: Prämienverbilligung beantragen }
+      - type: link
+        field_link: https://www.example.com/debt-advice
+        field_title: { de: Schuldenberatung }

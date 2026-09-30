@@ -4,6 +4,78 @@ title: { de: 'Steuererklärung' }
 field_lead:
   de: 'Bis wann Sie die Steuererklärung einreichen, wie Sie die Frist verlängern und welche Belege es braucht.'
 field_office: { node: finance-taxes }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Steuererklärung erhalten Sie im Februar per Post, mit einem Zugangscode für die Steuersoftware des Kantons. Reichen Sie sie bis Ende März ein, online oder auf Papier. Sie gilt für die Gemeinde- und Staatssteuern und für die direkte Bundessteuer. Die Veranlagung macht die kantonale Steuerverwaltung; bei Fragen zum Ausfüllen helfen wir Ihnen gern.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Online einreichen:</strong> Mit der <a href="https://www.example.com/tax-software">Steuersoftware</a> füllen Sie die Steuererklärung am Computer aus und reichen sie mit dem Zugangscode ein, ohne Unterschrift und ohne Papier. Die Belege laden Sie als PDF oder Foto hoch.</p>'
+  - type: title
+    field_title: { de: Frist verlängern }
+  - type: text
+    field_text:
+      de: '<p>Schaffen Sie es nicht bis Ende März, verlängern Sie die Frist online oder am Telefon, bis Ende September gratis. Eine Frist bis Ende November kostet Fr. 20.– und braucht einen Grund, zum Beispiel ein Treuhandbüro, das Ihre Steuererklärung ausfüllt.</p>'
+  - type: text
+    options: { box: warning }
+    field_text:
+      de: '<p><strong>Mahnung:</strong> Haben Sie die Steuererklärung nach Ablauf der Frist nicht eingereicht, erhalten Sie eine Mahnung für Fr. 50.–. Reichen Sie sie auch dann nicht ein, schätzt die Steuerverwaltung Ihr Einkommen und Vermögen ein, und Sie riskieren eine Busse.</p>'
+  - type: title
+    field_title: { de: Welche Belege Sie beilegen }
+  - type: columns
+    options: { ratio: 50-50 }
+    field_left:
+      - type: text
+        field_text:
+          de: '<h3>Einkommen</h3><ul><li>Lohnausweise</li><li>Bescheinigungen über Renten, Taggelder und Arbeitslosenentschädigung</li><li>Abrechnungen über einen Nebenerwerb oder Mieteinnahmen</li></ul>'
+    field_right:
+      - type: text
+        field_text:
+          de: '<h3>Vermögen und Abzüge</h3><ul><li>Kontoauszüge und Wertschriftenverzeichnis per Ende Jahr</li><li>Bescheinigung über Einzahlungen in die Säule 3a</li><li>Belege für Krankheitskosten, Spenden und die Betreuung Ihrer Kinder</li><li>Ausweis über Schulden und Schuldzinsen, etwa für die Hypothek</li></ul>'
+  - type: title
+    field_title: { de: Nach dem Einreichen }
+  - type: text
+    field_text:
+      de: '<p>Die kantonale Steuerverwaltung prüft Ihre Angaben und stellt Ihnen die Veranlagungsverfügung zu. Sind Sie nicht einverstanden, erheben Sie innert 30 Tagen schriftlich Einsprache. Danach erhalten Sie von uns die Schlussrechnung.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Wir haben geheiratet. Füllen wir eine gemeinsame Steuererklärung aus?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, schon für das Jahr, in dem Sie geheiratet haben. Ehepaare und eingetragene Partnerschaften werden gemeinsam besteuert. Paare, die sich trennen, füllen ab dem Jahr der Trennung je eine eigene Steuererklärung aus.</p>'
+  - type: accordion
+    field_title: { de: 'Ich bin neu zugezogen. Wo bezahle ich Steuern?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Kommen Sie aus einem anderen Kanton, bezahlen Sie die Steuern für das ganze Jahr in Blockingen. Kommen Sie aus einer Gemeinde im selben Kanton, teilen die beiden Gemeinden das Jahr unter sich auf. Die Steuererklärung erhalten Sie im folgenden Februar von uns.</p>'
+  - type: accordion
+    field_title: { de: 'Hilft mir jemand beim Ausfüllen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja. An zwei Abenden im März helfen wir Ihnen im Rathaus beim Ausfüllen, gratis und ohne Anmeldung. Bringen Sie die Steuererklärung und alle Belege mit. Die Daten finden Sie im Februar unter «Aktuelles».</p>'
+field_related:
+  - type: teaser
+    field_link: { node: paying-taxes }
+  - type: teaser
+    field_link: { node: budget }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/tax-software
+        field_title: { de: Steuersoftware }
+      - type: link
+        field_link: https://www.example.com/tax-extension
+        field_title: { de: Frist verlängern }
+      - type: link
+        field_link: https://www.example.com/tax-guide
+        field_title: { de: Wegleitung zur Steuererklärung }

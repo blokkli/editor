@@ -5,10 +5,33 @@ field_lead:
   de: 'Welche Vorhaben eine Bewilligung brauchen, welche Sie nur melden und welche frei sind.'
 field_office: { node: building-planning }
 field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Ob Sie eine Baubewilligung brauchen, hängt davon ab, wie gross Ihr Vorhaben ist, wo es steht und wie es auf die Umgebung wirkt. Es gibt drei Fälle: Manche Vorhaben brauchen eine Bewilligung, manche melden Sie nur, und manche sind frei. Auch was frei ist, muss die Vorschriften einhalten: Die Abstände zu den Nachbargrundstücken und die Regeln Ihrer Zone gelten immer.</p>'
+  - type: title
+    field_title: { de: 'Bewilligung, Meldung oder frei' }
+  - type: text
+    field_text:
+      de: '<h3>Eine Baubewilligung brauchen</h3><ul><li>Neubauten, Anbauten, Aufstockungen und Wintergärten</li><li>Umbauten, die die Nutzung oder die Fassade ändern, etwa eine Dachwohnung oder neue Dachfenster</li><li>Gartenhäuser, Velounterstände und Pergolen ab 10 m²</li><li>Wärmepumpen im Freien</li><li>Stützmauern und Aufschüttungen über 1 Meter</li><li>neue Parkplätze und Garagen</li></ul>'
+  - type: text
+    field_text:
+      de: '<h3>Nur melden</h3><ul><li>Solaranlagen auf dem Dach</li><li>Gartenhäuser, Velounterstände und Pergolen bis 10 m²</li><li>Wärmepumpen im Innern des Hauses</li><li>ein Fassadenanstrich in einer neuen Farbe</li></ul>'
+  - type: text
+    field_text:
+      de: '<h3>Frei</h3><ul><li>Unterhalt und Reparaturen, die das Aussehen nicht ändern</li><li>Umbauten im Innern, die die Nutzung nicht ändern, etwa eine neue Küche</li><li>Sitzplätze ohne Dach, Gartenwege und Spielgeräte</li><li>Zäune und Hecken bis 1,2 Meter Höhe</li><li>Festzelte und andere Bauten, die höchstens drei Monate stehen</li></ul>'
+  - type: text
+    options: { box: warning }
+    field_text:
+      de: '<p><strong>In der Altstadt gilt mehr:</strong> Dort und bei geschützten Bauten brauchen auch Solaranlagen, neue Fenster und ein neuer Fassadenanstrich eine Bewilligung. Fragen Sie vor der Planung bei Bau und Planung nach.</p>'
+  - type: title
+    field_title: { de: So melden Sie ein Vorhaben }
+  - type: text
+    field_text:
+      de: '<p>Reichen Sie die Meldung mindestens 30 Tage vor Baubeginn bei Bau und Planung ein, mit dem Meldeformular, einem Situationsplan und einer Skizze oder einem Foto. Hören Sie innert 30 Tagen nichts von uns, dürfen Sie bauen. Braucht Ihr Vorhaben doch eine Bewilligung, sagen wir es Ihnen in dieser Frist. Die Meldung kostet Fr. 100.–.</p>'
   - type: title
     field_title: { de: Häufige Fragen }
   - type: accordion
-    field_title: { de: Braucht ein Gartenhaus eine Bewilligung? }
+    field_title: { de: 'Braucht ein Gartenhaus eine Bewilligung?' }
     field_paragraphs:
       - type: text
         field_text:
@@ -18,20 +41,53 @@ field_paragraphs:
         field_left:
           - type: text
             field_text:
-              de: '<p>Zeichnen Sie das Gartenhaus im Situationsplan ein, mit dem Abstand zu den Nachbargrundstücken.</p>'
+              de: '<p>Zeichnen Sie das Gartenhaus im Situationsplan ein, mit dem Abstand zu den Nachbargrundstücken. Halten Sie mindestens 2 Meter Abstand, oder legen Sie die schriftliche Zustimmung der Nachbarin oder des Nachbarn bei.</p>'
         field_right:
           - type: image
             field_media: { media: garden-shed }
             field_caption: { de: Ein Gartenhaus }
   - type: accordion
-    field_title: { de: Braucht ein Anbau eine Bewilligung? }
+    field_title: { de: 'Braucht ein Anbau eine Bewilligung?' }
     field_paragraphs:
       - type: text
         field_text:
-          de: '<p>Ja, immer. Anbauten, Aufstockungen und Wintergärten brauchen eine Baubewilligung, auch wenn sie klein sind.</p>'
+          de: '<p>Ja, immer. Anbauten, Aufstockungen und Wintergärten brauchen eine Baubewilligung, auch wenn sie klein sind. Wir prüfen, ob der Anbau die Abstände, die Gebäudehöhe und die zulässige Ausnützung Ihres Grundstücks einhält.</p>'
       - type: image
         field_media: { media: house-extension }
         field_caption: { de: Ein Anbau im Bau }
+  - type: accordion
+    field_title: { de: 'Brauche ich für eine Solaranlage eine Bewilligung?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Auf dem Dach nicht: Sie melden die Anlage nur, wenn sie nicht mehr als 20 Zentimeter über das Dach hinausragt und nicht über den Dachrand hinausgeht. In der Altstadt und auf geschützten Bauten braucht sie eine Bewilligung. Anlagen an der Fassade oder im Garten brauchen immer eine.</p>'
+  - type: accordion
+    field_title: { de: 'Ich will eine Wärmepumpe. Was muss ich beachten?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Steht die Wärmepumpe im Freien, brauchen Sie eine Bewilligung, mit einem Lärmnachweis: Nachts darf sie beim Nachbarhaus nicht lauter als erlaubt sein. Ihre Installationsfirma berechnet den Lärm für Sie. Eine Wärmepumpe im Innern melden Sie nur.</p>'
+  - type: accordion
+    field_title: { de: 'Was passiert, wenn ich ohne Bewilligung baue?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Wir stoppen die Arbeiten, und Sie reichen nachträglich ein Gesuch ein. Die Gebühr ist dann höher. Lässt sich das Vorhaben nicht bewilligen, müssen Sie es auf Ihre Kosten zurückbauen.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: building-permits }
+  - type: teaser
+    field_link: { node: fees }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/building-notice
+        field_title: { de: Meldeformular }
+      - type: link
+        field_link: https://www.example.com/zoning-plan
+        field_title: { de: Zonenplan }

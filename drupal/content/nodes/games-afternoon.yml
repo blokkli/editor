@@ -1,0 +1,14 @@
+key: games-afternoon
+type: event
+title: { de: Spielnachmittag in der Ludothek }
+field_lead:
+  de: 'Neue Brettspiele ausprobieren, alte wiederentdecken: für Familien, Kinder ab 4 Jahren und alle, die gern spielen.'
+field_date: { value: '+5 days 14:00', end_value: '+5 days 17:00' }
+field_place: { de: Ludothek Blockingen }
+field_organiser: { de: Ludothek Blockingen }
+field_category: family
+field_price: { de: Gratis }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Ludothek stellt ihre Neuheiten vor, und das Team erklärt Ihnen die Regeln. An einem Tisch spielen die Kleinen Memory und Würfelspiele, an einem anderen die Grösseren Strategiespiele. Um 15.30 Uhr beginnt ein Jassturnier für Jung und Alt.</p><p>Sirup und Kuchen gibt es gegen einen kleinen Beitrag. Kinder unter 8 Jahren kommen mit einer erwachsenen Person. Was Ihnen gefällt, leihen Sie gleich aus: Ein Spiel kostet für drei Wochen Fr. 2.– bis Fr. 5.–.</p>'

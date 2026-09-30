@@ -1,0 +1,17 @@
+key: solar-installation
+type: publication
+title: { de: 'Solaranlage auf dem Dach, Kirchgasse 5' }
+field_lead:
+  de: In der Altstadt braucht auch eine Solaranlage eine Baubewilligung. Die Pläne liegen bei Bau und Planung auf.
+field_publication_type: building_application
+field_period: { value: '-1 days', end_value: '+29 days' }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p><strong>Bauherrschaft:</strong> Stockwerkeigentümergemeinschaft Kirchgasse 5, Blockingen<br><strong>Projektverfassung:</strong> Sonnwerk Solartechnik GmbH, Industriestrasse 18, Blockingen<br><strong>Vorhaben:</strong> Photovoltaikanlage von 38 m² auf dem südlichen Dachteil, ins Dach integriert, mit ziegelroten Modulen<br><strong>Standort:</strong> Kirchgasse 5, Parzelle Nr. 212<br><strong>Zone:</strong> Kernzone Altstadt, schützenswertes Gebäude</p>'
+  - type: text
+    field_text:
+      de: '<p>Die kantonale Denkmalpflege hat das Vorhaben vorgeprüft und stimmt ihm unter Auflagen zu.</p><p><strong>Auflage:</strong> Die Pläne liegen während der Frist bei Bau und Planung im Verwaltungszentrum, Bahnhofstrasse 12, auf. Sie können sie zu den Öffnungszeiten einsehen, am Nachmittag nach Vereinbarung.</p><p><strong>Einsprachen:</strong> Einsprachen sind bis zum Ende der Frist schriftlich und begründet an den Gemeinderat zu richten: Gemeinderat Blockingen, Rathaus, Seestrasse 1, 9999 Blockingen.</p>'
+  - type: link
+    field_link: { node: permit-needed }
+    field_title: { de: Brauche ich eine Baubewilligung? }

@@ -1,18 +1,18 @@
 key: town-hall-hours
 type: news
 created: '-11 days'
-title:
-  en: New opening hours at the town hall
-  de: Neue Öffnungszeiten der Gemeindekanzlei
-  fr: Nouveaux horaires de l'administration communale
+title: { de: Einwohnerdienste am Donnerstag bis 18.30 Uhr offen }
 field_lead:
-  en: From November, also open on Thursday evenings.
-  de: Ab November zusätzlich am Donnerstagabend geöffnet.
-  fr: Dès novembre, ouverte aussi le jeudi soir.
-field_hero_image: { media: town-hall }
+  de: Wer tagsüber arbeitet, meldet sich neu am Donnerstagabend an oder beantragt dann eine Identitätskarte.
+field_hero_image: { media: town-hall-counter }
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>On Thursdays the counter stays open until 19:00. The other hours stay the same.</p>'
-      de: '<p>Am Donnerstag ist der Schalter bis 19 Uhr geöffnet. Die übrigen Öffnungszeiten bleiben gleich.</p>'
-      fr: '<p>Le jeudi, le guichet reste ouvert jusqu''à 19 h. Les autres horaires ne changent pas.</p>'
+      de: '<p>Seit dieser Woche ist der Schalter der Einwohnerdienste im Rathaus am Donnerstag bis 18.30 Uhr offen, statt bis 17.00 Uhr. Dafür gibt es den Abendschalter am ersten Dienstag im Monat nicht mehr: Er war oft leer, während sich am Donnerstag vor 17.00 Uhr eine Schlange bildete.</p><p>Die übrigen Öffnungszeiten bleiben gleich: Montag bis Freitag von 8.00 bis 12.00 Uhr und von 13.30 bis 17.00 Uhr. Einen Termin brauchen Sie nicht, auch nicht am Abend.</p><p>Am Donnerstagabend erledigen Sie alles, was auch tagsüber geht: Zuzug und Wegzug melden, eine Identitätskarte beantragen oder eine Wohnsitzbestätigung bestellen. Ein Jahr lang testen die Einwohnerdienste die neuen Zeiten; danach entscheidet der Gemeinderat, ob sie bleiben.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Die anderen Ämter</strong> haben eigene Öffnungszeiten. Sie finden sie unter «Verwaltung», auf der Seite jedes Amts. Vieles erledigen Sie auch am <a href="https://www.example.com/online-counter">Online-Schalter</a>, rund um die Uhr.</p>'
+  - type: contact
+    options: { display: compact }
+    field_office: { node: residents-services }

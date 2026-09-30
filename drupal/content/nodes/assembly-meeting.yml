@@ -1,0 +1,31 @@
+key: assembly-meeting
+type: event
+title: { de: Gemeindeversammlung }
+field_lead:
+  de: 'Die Stimmberechtigten entscheiden über das Budget, den Kredit für die Turnhalle Altstadt und die neuen Wassergebühren.'
+field_hero_image: { media: town-hall }
+field_date: { value: '+35 days 19:30', end_value: '+35 days 22:00' }
+field_place: { de: Rathaussaal }
+field_organiser: { de: Gemeinderat }
+field_category: politics
+field_price: { de: Gratis }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Eingeladen sind alle Stimmberechtigten der Gemeinde, auch Ausländerinnen und Ausländer mit Stimmrecht in Gemeindesachen. Bringen Sie Ihren Stimmrechtsausweis mit; Sie erhalten ihn mit der Einladung per Post. Gäste sind willkommen und sitzen in den hinteren Reihen.</p>'
+  - type: title
+    field_title: { de: Traktanden }
+  - type: text
+    field_text:
+      de: '<ol><li>Protokoll der letzten Versammlung</li><li>Budget des nächsten Jahres und Steuerfuss von 1,62</li><li>Kredit von 4,6 Mio. Franken für die Sanierung der Turnhalle Altstadt</li><li>Revision des Reglements über die Wassergebühren</li><li>Verschiedenes</li></ol>'
+  - type: text
+    field_text:
+      de: '<p>Die Versammlung findet auf Deutsch und auf Französisch statt: Sie sprechen in Ihrer Sprache, und die Gemeindepräsidentin fasst jede Wortmeldung in der anderen zusammen. Der Saal ist mit dem Lift erreichbar, und eine Höranlage überträgt alle Wortmeldungen. Nach der Versammlung offeriert die Gemeinde einen Apéro.</p>'
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: assembly-invitation }
+        field_title: { de: Einladung und Botschaft }
+      - type: link
+        field_link: { node: assembly }
+        field_title: { de: So funktioniert die Gemeindeversammlung }

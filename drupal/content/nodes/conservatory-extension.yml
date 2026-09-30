@@ -1,21 +1,17 @@
 key: conservatory-extension
 type: publication
-title:
-  en: Conservatory extension, Rebweg 12
-  de: Anbau Wintergarten, Rebweg 12
-  fr: Agrandissement d'une véranda, Rebweg 12
+title: { de: 'Anbau Wintergarten, Rebweg 12' }
 field_lead:
-  en: The plans are on display at the town hall. Objections can be submitted in writing until the end of the period.
-  de: Die Pläne liegen in der Gemeindeverwaltung auf. Einsprachen sind bis zum Ende der Frist schriftlich einzureichen.
-  fr: Les plans peuvent être consultés à l'administration communale. Les oppositions sont à déposer par écrit jusqu'à la fin du délai.
+  de: Die Pläne liegen bei Bau und Planung auf. Einsprachen reichen Sie bis zum Ende der Frist schriftlich ein.
 field_publication_type: building_application
 field_period: { value: '-4 days', end_value: '+27 days' }
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>Applicant: Anna and Peter Muster. Project: a heated conservatory on the south side of the house.</p>'
-      de: '<p>Bauherrschaft: Anna und Peter Muster. Vorhaben: ein beheizter Wintergarten auf der Südseite des Hauses.</p>'
-      fr: '<p>Maîtres d''ouvrage : Anna et Peter Muster. Projet : une véranda chauffée sur le côté sud de la maison.</p>'
+      de: '<p><strong>Bauherrschaft:</strong> Anna und Peter Muster, Rebweg 12, Blockingen<br><strong>Projektverfassung:</strong> Weber Roth Architekten, Bahnhofstrasse 40, Blockingen<br><strong>Vorhaben:</strong> Anbau eines beheizten Wintergartens auf der Südseite des Einfamilienhauses, 18 m²<br><strong>Standort:</strong> Rebweg 12, Parzelle Nr. 1284<br><strong>Zone:</strong> Wohnzone W2</p>'
+  - type: text
+    field_text:
+      de: '<p><strong>Auflage:</strong> Die Pläne liegen während der Frist bei Bau und Planung im Verwaltungszentrum, Bahnhofstrasse 12, auf. Sie können sie zu den Öffnungszeiten einsehen, am Nachmittag nach Vereinbarung.</p><p><strong>Einsprachen:</strong> Einsprachen sind bis zum Ende der Frist schriftlich und begründet an den Gemeinderat zu richten: Gemeinderat Blockingen, Rathaus, Seestrasse 1, 9999 Blockingen.</p>'
   - type: link
     field_link: { node: building-permits }
-    field_title: { en: About building permits, de: Zu den Baubewilligungen, fr: À propos des permis de construire }
+    field_title: { de: So läuft ein Baugesuch ab }

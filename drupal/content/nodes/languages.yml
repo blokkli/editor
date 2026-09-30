@@ -4,6 +4,64 @@ title: { de: 'Deutsch, Französisch oder zweisprachig' }
 field_lead:
   de: 'Welche Abteilung zu Ihrem Kind passt, und wie ein Wechsel möglich ist.'
 field_office: { node: schools-office }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Schule Blockingen hat eine deutschsprachige und eine französischsprachige Abteilung, vom Kindergarten bis zur 6. Klasse. In jedem Jahrgang gibt es ausserdem eine zweisprachige Klasse. Alle Klassen folgen demselben Lehrplan und haben dieselben Ferien. Die Oberstufe besuchen die Jugendlichen im regionalen Oberstufenzentrum, auf Deutsch oder auf Französisch.</p>'
+  - type: title
+    field_title: { de: Die drei Möglichkeiten }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Klasse</th><th>Unterricht</th><th>Die andere Sprache</th></tr></thead><tbody><tr><td>Deutschsprachige Abteilung</td><td>auf Deutsch</td><td>Französisch als Fach ab der 3. Klasse</td></tr><tr><td>Französischsprachige Abteilung</td><td>auf Französisch</td><td>Deutsch als Fach ab der 3. Klasse</td></tr><tr><td>Zweisprachige Klasse</td><td>je zur Hälfte auf Deutsch und auf Französisch</td><td>vom Kindergarten an, im Unterricht und im Spiel</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Englisch lernen alle Kinder ab der 5. Klasse.</p>'
+  - type: title
+    field_title: { de: Die zweisprachige Klasse }
+  - type: text
+    field_text:
+      de: '<p>Die zweisprachige Klasse hat höchstens 22 Kinder, je etwa zur Hälfte mit deutscher und mit französischer Erstsprache. Zwei Lehrpersonen unterrichten sie, jede in ihrer Sprache. So lernen die Kinder die andere Sprache nebenbei, wie zu Hause.</p><p>Die Plätze sind begrenzt. Gibt es mehr Anmeldungen als Plätze, achten wir zuerst auf ein Gleichgewicht der beiden Sprachen und auf Geschwister; danach entscheidet das Los.</p>'
+  - type: title
+    field_title: { de: Wie Sie wählen }
+  - type: text
+    field_text:
+      de: '<p>Wählen Sie die Sprache, in der sich Ihr Kind am sichersten ausdrückt. Spricht es zu Hause beide Sprachen, passt oft die zweisprachige Klasse. Sind Sie unsicher, berät Sie die Schulleitung gern, auch in einem Gespräch mit Ihrem Kind. Die Sprache wählen Sie mit der Anmeldung für den Kindergarten.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Kann unser Kind später die Abteilung wechseln?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, auf Beginn eines Schuljahres, nach einem Gespräch mit beiden Schulleitungen. In die zweisprachige Klasse wechselt ein Kind nur, wenn dort ein Platz frei ist.</p>'
+  - type: accordion
+    field_title: { de: 'In welcher Sprache schreibt uns die Schule?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Die Schulverwaltung schreibt Ihnen in Ihrer Korrespondenzsprache, die Lehrpersonen in der Sprache der Klasse. Elternabende der zweisprachigen Klassen finden in beiden Sprachen statt.</p>'
+  - type: accordion
+    field_title: { de: 'Wir sprechen zu Hause eine andere Sprache. Was wählen wir?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Die Sprache, die Ihr Kind am besten versteht, oft die der Spielgruppe oder der Kita. Kinder, die die Unterrichtssprache noch lernen, erhalten zusätzlichen Unterricht darin. Kurse in Ihrer Sprache und Kultur bieten verschiedene Vereine an; die Schule stellt ihnen Räume zur Verfügung.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: kindergarten }
+  - type: teaser
+    field_link: { node: in-numbers }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/kindergarten-registration
+        field_title: { de: Kindergarten anmelden }
+      - type: link
+        field_link: https://www.example.com/curriculum
+        field_title: { de: Lehrplan }

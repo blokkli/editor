@@ -3,10 +3,11 @@
 key: news
 type: editorial
 frontend_route: news
-title: { en: News, de: Aktuelles, fr: Actualités }
+title: { de: Aktuelles }
 field_lead:
-  en: What's new in town, and what's coming up.
-  de: Was es Neues gibt in der Gemeinde, und was bevorsteht.
-  fr: Les nouvelles de la commune, et ce qui s'annonce.
+  de: 'Neuigkeiten aus der Gemeinde, die Veranstaltungen und die amtlichen Publikationen.'
 field_host_options:
   - { key: header, value: plain }
+field_paragraphs:
+  - type: from_library
+    field_reusable_paragraph: { library: stay-informed }

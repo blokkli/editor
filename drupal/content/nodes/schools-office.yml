@@ -1,10 +1,8 @@
 key: schools-office
 type: office
-title: { en: Schools office, de: Schulverwaltung, fr: Administration scolaire }
+title: { de: 'Schulverwaltung' }
 field_lead:
-  en: 'Starting school, the way to school and the day school.'
-  de: 'Einschulung, Schulweg und Tagesschule.'
-  fr: 'Entrée à l''école, chemin de l''école et école à journée continue.'
+  de: 'Kindergarteneintritt, die Einteilung in die Klassen, der Schulweg und die Tagesschule.'
 field_location: { term: seefeld-school }
 field_phone: '+41 32 555 01 70'
 field_email: schulen@blockingen.example
@@ -17,3 +15,21 @@ field_opening_hours:
   - { day: 2, starthours: 1330, endhours: 1600 }
   - { day: 4, starthours: 730, endhours: 1130 }
   - { day: 4, starthours: 1330, endhours: 1600 }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Schulverwaltung ist für den Kindergarten und die Primarschule da, in beiden Abteilungen. Sie meldet die Kinder für den Kindergarten an, teilt sie in die Klassen ein, organisiert den Schulbus und die Tagesschule und berechnet deren Tarife. Sie ist die Anlaufstelle für die Eltern und leitet Ihre Fragen an die richtige Stelle weiter.</p><p>Fragen zum Unterricht Ihres Kindes besprechen Sie am besten zuerst mit der Lehrperson, danach mit der Schulleitung der deutsch- oder der französischsprachigen Abteilung. Das Büro der Schulverwaltung ist im Schulhaus Seefeld, am Vormittag und am Dienstag- und am Donnerstagnachmittag offen.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: school }
+      - type: link
+        field_link: { node: kindergarten }
+      - type: link
+        field_link: { node: languages }
+      - type: link
+        field_link: { node: way-to-school }
+      - type: link
+        field_link: { node: day-school }

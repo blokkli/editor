@@ -1,0 +1,31 @@
+key: assembly-invitation
+type: publication
+title: { de: Einladung zur Gemeindeversammlung }
+field_lead:
+  de: Die Stimmberechtigten entscheiden über das Budget, den Kredit für die Turnhalle Altstadt und die Wassergebühren.
+field_publication_type: other
+field_period: { value: '-3 days', end_value: '+35 days' }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Der Gemeinderat lädt alle Stimmberechtigten zur Gemeindeversammlung ein, um 19.30 Uhr im Rathaussaal, Seestrasse 1. Die Versammlung wird auf Deutsch und auf Französisch geführt.</p>'
+  - type: teaser
+    field_link: { node: assembly-meeting }
+  - type: title
+    field_title: { de: Traktanden }
+  - type: text
+    field_text:
+      de: '<ol><li><strong>Protokoll der letzten Versammlung</strong></li><li><strong>Budget des nächsten Jahres und Steuerfuss:</strong> Der Gemeinderat beantragt ein Budget mit einem Defizit von 0,5 Millionen Franken und einen unveränderten Steuerfuss von 1,62. Die Finanzkommission empfiehlt, das Budget zu genehmigen.</li><li><strong>Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt:</strong> ein neues Dach, eine neue Heizung, neue Garderoben und ein hindernisfreier Zugang.</li><li><strong>Revision des Reglements über die Wassergebühren:</strong> Der Preis pro Kubikmeter Wasser steigt um 20 Rappen.</li><li><strong>Verschiedenes</strong></li></ol>'
+  - type: title
+    field_title: { de: Unterlagen }
+  - type: text
+    field_text:
+      de: '<p>Die Botschaft mit allen Anträgen des Gemeinderats liegt bei der Gemeindekanzlei im Rathaus auf und steht online zur Verfügung. Auf Wunsch senden wir sie Ihnen per Post.</p><p>Im Namen des Gemeinderats: Martine Blaser, Gemeindepräsidentin</p>'
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/assembly-message
+        field_title: { de: Botschaft zur Gemeindeversammlung (PDF) }
+      - type: link
+        field_link: { node: assembly }
+        field_title: { de: Die Gemeindeversammlung }

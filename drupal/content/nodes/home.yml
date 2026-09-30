@@ -5,14 +5,9 @@
 key: home
 id: 1
 type: editorial
-title:
-  en: How can we help?
-  de: Wie können wir Ihnen helfen?
-  fr: Comment pouvons-nous vous aider ?
+title: { de: 'Wie können wir Ihnen helfen?' }
 field_lead:
-  en: Services, information and news from the town of Blockingen, in one place.
-  de: Dienstleistungen, Auskünfte und Neuigkeiten der Gemeinde Blockingen – an einem Ort.
-  fr: Prestations, renseignements et nouvelles de la commune de Bloquens, en un seul lieu.
+  de: 'Dienstleistungen, Auskünfte und Neuigkeiten der Gemeinde Blockingen, an einem Ort.'
 field_hero_image: { media: town-from-lake }
 field_host_options:
   - { key: header, value: image }
@@ -24,19 +19,14 @@ field_paragraphs:
   - type: teaser_list
     options: { source: news }
   - type: call_to_action
-    field_tagline: { en: Politics, de: Politik, fr: Politique }
-    field_title:
-      en: The next municipal assembly
-      de: Die nächste Gemeindeversammlung
-      fr: La prochaine assemblée communale
+    field_tagline: { de: Politik }
+    field_title: { de: Die nächste Gemeindeversammlung }
     field_lead:
-      en: Voters decide on next year's budget and the loan for renovating the old town gym.
-      de: Die Stimmberechtigten entscheiden über das Budget des nächsten Jahres und den Kredit für die Sanierung der Turnhalle Altstadt.
-      fr: Les électrices et électeurs se prononcent sur le budget de l'année prochaine et le crédit pour la rénovation de la salle de gym de la vieille ville.
+      de: 'Die Stimmberechtigten entscheiden über das Budget und den Steuerfuss, einen Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt und die neuen Wassergebühren.'
     field_links:
       - type: link
         field_link: { node: assembly }
-        field_title: { en: Agenda and documents, de: Traktanden und Unterlagen, fr: Ordre du jour et documents }
+        field_title: { de: Traktanden und Unterlagen }
   - type: columns
     options: { ratio: '50-50' }
     field_left:
@@ -45,3 +35,5 @@ field_paragraphs:
     field_right:
       - type: teaser_list
         options: { source: publications }
+  - type: from_library
+    field_reusable_paragraph: { library: emergency-numbers }

@@ -1,10 +1,8 @@
 key: residents-services
 type: office
-title: { en: 'Residents'' services', de: Einwohnerdienste, fr: Contrôle des habitants }
+title: { de: 'Einwohnerdienste' }
 field_lead:
-  en: 'Moving here and moving away, identity cards and certificates.'
-  de: 'Zuzug und Wegzug, Identitätskarten und Bescheinigungen.'
-  fr: 'Arrivées et départs, cartes d''identité et attestations.'
+  de: 'Zuzug, Umzug und Wegzug, Identitätskarten und Bestätigungen aus dem Einwohnerregister.'
 field_location: { term: town-hall }
 field_phone: '+41 32 555 01 10'
 field_email: einwohner@blockingen.example
@@ -23,6 +21,18 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>Please bring an identity card for all registrations.</p>'
-      de: '<p>Bitte bringen Sie für alle Anmeldungen einen Ausweis mit.</p>'
-      fr: '<p>Pour toutes les annonces, veuillez vous munir d''une pièce d''identité.</p>'
+      de: '<p>Die Einwohnerdienste führen das Einwohnerregister von Blockingen. Bei uns melden Sie sich an, wenn Sie zuziehen, und ab, wenn Sie wegziehen. Hier melden Sie auch einen Umzug innerhalb der Gemeinde, Ihren Hund und Ihre Korrespondenzsprache. Wir stellen Identitätskarten aus, bestellen Bestätigungen aus dem Register und geben die Anwohnerparkkarten ab.</p><p>Einen Termin brauchen Sie nicht, und am Donnerstag ist der Schalter bis 18.30 Uhr offen. Bringen Sie für alle Anliegen einen Ausweis mit. Vieles erledigen Sie auch am <a href="https://www.example.com/online-counter">Online-Schalter</a>, etwa einen Umzug oder eine Wohnsitzbestätigung.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: relocation }
+      - type: link
+        field_link: { node: moving-in }
+      - type: link
+        field_link: { node: moving-within }
+      - type: link
+        field_link: { node: moving-away }
+      - type: link
+        field_link: { node: documents }

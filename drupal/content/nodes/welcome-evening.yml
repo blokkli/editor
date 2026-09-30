@@ -1,0 +1,16 @@
+key: welcome-evening
+type: event
+title: { de: Begrüssungsabend für Neuzugezogene }
+field_lead:
+  de: Der Gemeinderat lädt alle ein, die im letzten Jahr nach Blockingen gezogen sind.
+field_hero_image: { media: town-from-lake }
+field_date: { value: '+24 days 18:30', end_value: '+24 days 21:30' }
+field_place: { de: Rathaussaal }
+field_organiser: { de: Gemeinderat }
+field_category: politics
+field_price: { de: Gratis }
+field_registration: https://www.example.com/welcome-evening
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Der Abend beginnt um 18.30 Uhr vor dem Rathaus mit einer kurzen Führung durch die Altstadt, auf Deutsch oder auf Französisch. Um 19.30 Uhr begrüsst Sie Gemeindepräsidentin Martine Blaser im Rathaussaal und stellt Ihnen den Gemeinderat vor. Danach stellen sich an Ständen die Vereine vor, vom Segelclub bis zur Ludothek, und die Verwaltung beantwortet Ihre Fragen.</p><p>Zum Schluss offeriert die Gemeinde einen Apéro mit Wein aus den Blockinger Reben. Kinder sind willkommen. Die persönliche Einladung erhalten Sie per Post. Melden Sie sich bis eine Woche vorher mit der Antwortkarte oder online an.</p>'

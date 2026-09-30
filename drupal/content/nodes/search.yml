@@ -3,6 +3,6 @@
 key: search
 type: editorial
 frontend_route: search
-title: { en: Search, de: Suche, fr: Recherche }
+title: { de: Suche }
 field_host_options:
   - { key: header, value: plain }

@@ -1,0 +1,18 @@
+key: old-town-tour
+type: event
+title: { de: Führung durch die Altstadt }
+field_lead:
+  de: 'Vom Fischerdorf zur Uhrenstadt: die Geschichte Blockingens in anderthalb Stunden.'
+field_hero_image: { media: old-town }
+field_date: { value: '+19 days 14:00', end_value: '+19 days 15:30' }
+field_place: { de: 'Treffpunkt vor dem Rathaus' }
+field_organiser: { de: Verkehrsverein Blockingen }
+field_category: culture
+field_price: { de: 'Fr. 10.–, Kinder gratis' }
+field_registration: https://www.example.com/old-town-tours
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Eine Stadtführerin zeigt Ihnen die Altstadt: das Rathaus am See, die Häuser der Weinbauern mit ihren steilen Ziegeldächern und den Dorfplatz, auf dem seit Jahrhunderten Markt gehalten wird und der gerade neu gestaltet wird. Sie erfahren, warum in Blockingen zwei Sprachen gesprochen werden und in welchen Stuben einst Uhrenteile entstanden.</p><p>Die Führung findet bei jedem Wetter statt, auf Deutsch; eine Führung auf Französisch beginnt zur selben Zeit. Der Weg führt über Pflastersteine und einige Treppen. Melden Sie sich an: Eine Gruppe hat höchstens 25 Personen.</p>'
+  - type: teaser
+    field_link: { node: history }

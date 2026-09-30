@@ -1,0 +1,46 @@
+key: budget-news
+type: news
+created: '-1 days'
+title: { de: 'Das Budget: ein kleines Defizit und grosse Investitionen' }
+field_lead:
+  de: Der Gemeinderat rechnet für das nächste Jahr mit einem Defizit von 0,5 Millionen Franken und will 12,4 Millionen investieren. Der Steuerfuss bleibt bei 1,62.
+field_hero_image: { media: administrative-centre }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Der Gemeinderat hat das Budget für das nächste Jahr verabschiedet. Er rechnet mit einem Aufwand von 69,4 Millionen und einem Ertrag von 68,9 Millionen Franken, also mit einem Defizit von 0,5 Millionen. Der Aufwand steigt vor allem bei der Schule, weil es mehr Klassen braucht, und bei den Beiträgen an die Pflegeheime.</p><p>«Wir investieren in das, was Blockingen in den nächsten Jahrzehnten braucht, und halten die Steuern stabil», sagt Gemeindepräsidentin Martine Blaser. Der Steuerfuss bleibt bei 1,62.</p>'
+  - type: title
+    field_title: { de: Wo die Gemeinde investiert }
+  - type: text
+    field_text:
+      de: '<p>Von den 12,4 Millionen Franken für Investitionen gehen am meisten in:</p><ul><li>den neuen Dorfplatz (4,1 Millionen)</li><li>zwei zusätzliche Klassenzimmer im Schulhaus Seefeld (3,2 Millionen)</li><li>die Wasserleitung in der Dorfstrasse (2,8 Millionen)</li></ul><p>Einen Teil davon kann die Gemeinde nicht selbst finanzieren: Die Schulden steigen um rund 6 Millionen Franken. Sie bleiben aber unter dem Richtwert der Finanzstrategie von Fr. 3000.– pro Kopf.</p>'
+  - type: title
+    field_title: { de: Wofür die Gemeinde ihr Geld ausgibt }
+  - type: text
+    field_text:
+      de: '<p>Am meisten Geld brauchen die Schule und die soziale Sicherheit: zusammen mehr als die Hälfte des Aufwands. Daran ändert auch das neue Budget wenig.</p>'
+  - type: chart
+    options:
+      data:
+        type: pie
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH }
+        dataSource: { id: budget, label: 'Budget 2026: Aufwand nach Aufgabenbereich' }
+        translations:
+          de:
+            title: Aufwand nach Aufgabenbereich
+            footnotes: [Budget des laufenden Jahres.]
+  - type: text
+    field_text:
+      de: '<p>Die Finanzkommission hat das Budget geprüft und empfiehlt, es zu genehmigen. Das letzte Wort hat die Gemeindeversammlung.</p>'
+  - type: link
+    field_link: { node: assembly }
+    field_title: { de: Zur Gemeindeversammlung }
+  - type: link
+    field_link: { node: budget }
+    field_title: { de: Budget und Rechnung }
+  - type: contact
+    options: { display: compact }
+    field_office: { node: finance-taxes }

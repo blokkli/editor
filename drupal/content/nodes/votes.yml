@@ -4,6 +4,79 @@ title: { de: 'Abstimmungen und Wahlen' }
 field_lead:
   de: 'Die Resultate der letzten Abstimmungen und Wahlen, und wie Sie brieflich stimmen.'
 field_office: { node: municipal-chancery }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Viermal im Jahr stimmen die Stimmberechtigten ab, über Vorlagen des Bundes, des Kantons und der Gemeinde. Über Kredite von mehr als 5 Millionen Franken entscheiden in Blockingen nicht die Gemeindeversammlung, sondern alle an der Urne. Das Stimmmaterial erhalten Sie drei bis vier Wochen vor dem Abstimmungssonntag per Post, in Ihrer Korrespondenzsprache.</p>'
+  - type: title
+    field_title: { de: Brieflich stimmen }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Stimmzettel ausfüllen }
+        field_text:
+          de: '<p>Füllen Sie die Stimmzettel von Hand aus, und legen Sie sie in das kleine Stimmcouvert. Kleben Sie es zu.</p>'
+      - type: step
+        field_title: { de: Stimmrechtsausweis unterschreiben }
+        field_text:
+          de: '<p>Unterschreiben Sie den Stimmrechtsausweis. Ohne Unterschrift zählt Ihre Stimme nicht.</p>'
+      - type: step
+        field_title: { de: Zurücksenden }
+        field_text:
+          de: '<p>Legen Sie das Stimmcouvert und den Stimmrechtsausweis in das Antwortcouvert, so dass die Adresse der Gemeinde im Fenster erscheint. Senden Sie es spätestens am Dienstag vor dem Abstimmungssonntag ab, das Porto bezahlt die Gemeinde. Oder werfen Sie es bis Sonntag, 10.00 Uhr, in den Briefkasten beim Rathaus.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>An der Urne:</strong> Lieber persönlich? Das Stimmlokal im Rathaus ist am Abstimmungssonntag von 10.00 bis 11.00 Uhr offen. Bringen Sie Ihren Stimmrechtsausweis mit.</p>'
+  - type: title
+    field_title: { de: Die letzten Abstimmungen in Blockingen }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Vorlage der Gemeinde</th><th>Ja</th><th>Nein</th><th>Beteiligung</th></tr></thead><tbody><tr><td>Kredit für die Umgestaltung des Dorfplatzes</td><td>2650</td><td>2210</td><td>45 %</td></tr><tr><td>Kredit für die Sanierung des Strandbads</td><td>3120</td><td>1480</td><td>43 %</td></tr><tr><td>Totalrevision der Gemeindeordnung</td><td>3400</td><td>610</td><td>37 %</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Die Resultate aller Abstimmungen, auch des Bundes und des Kantons, finden Sie unter «Dokumente und Links». Am Abstimmungssonntag veröffentlichen wir die Resultate der Gemeinde ab etwa 13.00 Uhr.</p>'
+  - type: title
+    field_title: { de: Wahlen }
+  - type: text
+    field_text:
+      de: '<p>Alle vier Jahre wählen die Stimmberechtigten den Gemeinderat und die Gemeindepräsidentin oder den Gemeindepräsidenten. Die sieben Sitze im Gemeinderat werden nach dem Anteil der Stimmen auf die Listen verteilt. Wählbar ist, wer in Blockingen stimmberechtigt ist. Einen Wahlvorschlag reichen Sie bei der Gemeindekanzlei ein, mit den Unterschriften von mindestens zehn Stimmberechtigten.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Ich habe kein Stimmmaterial erhalten. Was tun?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Melden Sie sich bis Donnerstag vor dem Abstimmungssonntag bei der Gemeindekanzlei. Wir stellen Ihnen neues Stimmmaterial aus; das alte ist dann nicht mehr gültig.</p>'
+  - type: accordion
+    field_title: { de: 'Darf ich als Ausländerin oder Ausländer abstimmen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>In Gemeindesachen ja, wenn Sie eine Niederlassungsbewilligung haben und seit fünf Jahren im Kanton wohnen. Sie stimmen dann über die Vorlagen der Gemeinde ab und wählen den Gemeinderat. Über Vorlagen des Bundes und des Kantons stimmen nur Schweizerinnen und Schweizer ab.</p>'
+  - type: accordion
+    field_title: { de: 'Ich kann nicht schreiben. Wer hilft mir?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Eine Person Ihres Vertrauens darf den Stimmzettel nach Ihren Angaben ausfüllen. Den Stimmrechtsausweis unterschreibt sie mit ihrem eigenen Namen und dem Vermerk «im Auftrag».</p>'
+field_related:
+  - type: teaser
+    field_link: { node: assembly }
+  - type: teaser
+    field_link: { node: council }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Dokumente und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/results
+        field_title: { de: Resultate aller Abstimmungen }
+      - type: link
+        field_link: https://www.example.com/voting-calendar
+        field_title: { de: Abstimmungstermine }

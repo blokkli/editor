@@ -119,7 +119,7 @@ today.assembly;default;Municipal assembly;Gemeindeversammlung;Assemblée communa
 today.assembly_link;default;Agenda;Traktanden;Ordre du jour
 today.assembly_value;default;Wednesday, 2 December 2026;Mittwoch, 2. Dezember 2026;mercredi 2 décembre 2026
 today.collection;default;Next collection;Nächste Abfuhr;Prochain ramassage
-today.collection_link;default;Collection calendar;Sammelkalender;Calendrier des collectes
+today.collection_link;default;Collection calendar;Abfallkalender;Calendrier des collectes
 today.collection_value;default;Household waste · Tuesday, 6 October;Kehricht · Dienstag, 6. Oktober;Ordures ménagères · mardi 6 octobre
 today.label;default;Today;Heute;Aujourd'hui
 today.town_hall;default;Town hall;Gemeindeverwaltung;Administration communale

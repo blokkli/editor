@@ -4,6 +4,80 @@ title: { de: 'Ausweise und Bestätigungen' }
 field_lead:
   de: 'Identitätskarte, Pass, Wohnsitzbestätigung: was Sie wo beantragen und was es kostet.'
 field_office: { node: residents-services }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Bei den Einwohnerdiensten beantragen Sie die Identitätskarte und bestellen Bestätigungen aus dem Einwohnerregister. Den Pass stellt das kantonale Ausweiszentrum aus, weil es dafür Ihr Foto und Ihre Fingerabdrücke aufnimmt.</p>'
+  - type: title
+    field_title: { de: Identitätskarte }
+  - type: text
+    field_text:
+      de: '<p>Die Identitätskarte beantragen Sie am Schalter der Einwohnerdienste. Bringen Sie Ihre bisherige Identitätskarte mit und ein aktuelles Passfoto, das den Vorgaben des Bundes entspricht. Kinder kommen persönlich mit; für Kinder und Jugendliche unter 18 unterschreibt ein sorgeberechtigter Elternteil.</p><p>Die neue Karte erhalten Sie nach etwa zehn Arbeitstagen per Post. Bis dahin gilt die alte, wenn sie nicht abgelaufen ist.</p>'
+  - type: title
+    field_title: { de: Pass }
+  - type: text
+    field_text:
+      de: '<p>Den Pass beantragen Sie online oder am Telefon beim kantonalen Ausweiszentrum. Dort vereinbaren Sie einen Termin, bei dem Ihr Foto und Ihre Fingerabdrücke aufgenommen werden. Beantragen Sie Pass und Identitätskarte zusammen, bezahlen Sie weniger. Den Pass erhalten Sie nach etwa zehn Arbeitstagen per Post.</p>'
+  - type: text
+    options: { box: warning }
+    field_text:
+      de: '<p><strong>Rechtzeitig beantragen:</strong> Vor den Sommer- und den Herbstferien warten Sie beim Ausweiszentrum bis zu vier Wochen auf einen Termin. Prüfen Sie früh, ob Ihre Ausweise für die Reise gelten: Manche Länder verlangen, dass der Pass nach der Rückreise noch sechs Monate gültig ist.</p>'
+  - type: title
+    field_title: { de: Gebühren für Ausweise }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Ausweis</th><th>Erwachsene</th><th>Kinder unter 18</th></tr></thead><tbody><tr><td>Identitätskarte</td><td>Fr. 70.–</td><td>Fr. 35.–</td></tr><tr><td>Pass</td><td>Fr. 145.–</td><td>Fr. 65.–</td></tr><tr><td>Pass und Identitätskarte zusammen</td><td>Fr. 158.–</td><td>Fr. 78.–</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Die Gebühren legt der Bund fest; das Porto ist inbegriffen. Ausweise für Erwachsene gelten zehn Jahre, für Kinder und Jugendliche fünf.</p>'
+  - type: title
+    field_title: { de: Bestätigungen }
+  - type: text
+    field_text:
+      de: '<p>Aus dem Einwohnerregister stellen wir Ihnen Bestätigungen aus, etwa für den Arbeitgeber, die Bank oder eine andere Behörde. Sie bestellen sie am Schalter oder am Online-Schalter. Online bestellte Bestätigungen erhalten Sie per Post oder als PDF mit elektronischer Signatur.</p>'
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Bestätigung</th><th>Wofür</th><th>Gebühr</th></tr></thead><tbody><tr><td>Wohnsitzbestätigung</td><td>Sie wohnen in Blockingen, seit wann und mit wem.</td><td>Fr. 20.–</td></tr><tr><td>Heimatausweis</td><td>Für einen Wochenaufenthalt in einer anderen Gemeinde.</td><td>Fr. 30.–</td></tr><tr><td>Lebensbescheinigung</td><td>Für eine Rente aus dem Ausland.</td><td>Fr. 20.–</td></tr><tr><td>Adressauskunft</td><td>Die Adresse einer Person in Blockingen, für Dritte mit einem berechtigten Interesse.</td><td>Fr. 20.–</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Ich habe meinen Ausweis verloren. Was tun?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Melden Sie den Verlust der Polizei; sie stellt Ihnen eine Verlustanzeige aus. Damit beantragen Sie einen neuen Ausweis. Wird Ihnen der Pass im Ausland gestohlen, hilft Ihnen die Schweizer Vertretung.</p>'
+  - type: accordion
+    field_title: { de: 'Reicht für die Reise die Identitätskarte?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>In die Länder der EU und des Schengen-Raums reisen Sie mit der Identitätskarte. Für die meisten anderen Länder brauchen Sie einen Pass. Was ein Land verlangt, steht in den Reisehinweisen des Bundes.</p>'
+  - type: accordion
+    field_title: { de: 'Wo bekomme ich einen Betreibungsregisterauszug?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Beim regionalen Betreibungsamt, nicht bei der Gemeinde. Sie bestellen ihn dort am Schalter oder online.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: moving-in }
+  - type: teaser
+    field_link: { node: moving-within }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/residence-certificate
+        field_title: { de: Bestätigung bestellen }
+      - type: link
+        field_link: https://www.example.com/passport-appointment
+        field_title: { de: Termin beim Ausweiszentrum }
+      - type: link
+        field_link: https://www.example.com/photo-requirements
+        field_title: { de: Vorgaben für das Passfoto }

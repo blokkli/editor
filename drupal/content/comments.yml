@@ -1,11 +1,11 @@
 # Comment threads on paragraphs. The comment module notifies the mentioned
-# users, as in the editor.
+# users, as in the editor. Editors talk to each other, so they say du.
 - key: counter-question
   host: { node: building-permits }
   paragraphs: [counter-text]
   uid: { user: anna }
-  body: '<p>@{marc} Are the counter hours still right? I would like to publish the page.</p>'
+  body: '<p>@{marc} Stimmen die Schalterzeiten von Bau und Planung noch? Ich möchte die Seite gern publizieren.</p>'
   replies:
     - key: counter-answer
       uid: { user: marc }
-      body: '<p>Yes, they are. Go ahead.</p>'
+      body: '<p>Ja, am Vormittag von 8.00 bis 12.00 Uhr, am Nachmittag nach Vereinbarung. Du kannst publizieren.</p>'

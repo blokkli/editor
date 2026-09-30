@@ -3,10 +3,14 @@
 key: publications
 type: editorial
 frontend_route: publications
-title: { en: Official publications, de: Amtliche Publikationen, fr: Publications officielles }
+title: { de: Amtliche Publikationen }
 field_lead:
-  en: Building applications, traffic measures and regulations, for as long as they're on display.
-  de: Baugesuche, Verkehrsmassnahmen und Reglemente, solange sie aufliegen.
-  fr: Demandes de permis, mesures de circulation et règlements, tant qu'ils sont à l'enquête.
+  de: 'Baugesuche, Verkehrsmassnahmen und Reglemente, solange sie aufliegen.'
 field_host_options:
   - { key: header, value: plain }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Solange eine Publikation aufliegt, können Sie die Unterlagen bei der zuständigen Stelle einsehen, die in der Publikation steht. Einsprachen reichen Sie schriftlich und begründet bis zum Ende der Frist dort ein.</p>'
+  - type: from_library
+    field_reusable_paragraph: { library: stay-informed }

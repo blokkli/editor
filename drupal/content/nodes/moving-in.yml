@@ -4,6 +4,96 @@ title: { de: 'Zuzug' }
 field_lead:
   de: 'Melden Sie sich innert 14 Tagen nach dem Einzug an, am Schalter oder online.'
 field_office: { node: residents-services }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Willkommen in Blockingen! Wer hier wohnt, ist im Einwohnerregister eingetragen. Melden Sie sich deshalb innert 14 Tagen nach dem Einzug bei den Einwohnerdiensten im Rathaus an. Die Anmeldung gilt für alle Personen im Haushalt, auch für Kinder. Wer sich nicht rechtzeitig anmeldet, riskiert eine Busse.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Online anmelden:</strong> Ziehen Sie aus einer anderen Schweizer Gemeinde zu, können Sie sich am <a href="https://www.example.com/online-counter">Online-Schalter</a> anmelden. Sie brauchen eine gültige Identitätskarte oder einen Pass und bezahlen die Gebühr online. Wer aus dem Ausland zuzieht, kommt persönlich an den Schalter.</p>'
+  - type: title
+    field_title: { de: So melden Sie sich an }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Unterlagen bereitlegen }
+        field_text:
+          de: '<p>Stellen Sie die Unterlagen für alle Personen im Haushalt zusammen. Den Heimatschein erhalten Sie von Ihrer bisherigen Gemeinde, wenn Sie sich dort abmelden.</p>'
+      - type: step
+        field_title: { de: Anmelden }
+        field_text:
+          de: '<p>Kommen Sie innert 14 Tagen an den Schalter der Einwohnerdienste, oder melden Sie sich online an. Am Schalter dauert die Anmeldung etwa 15 Minuten; einen Termin brauchen Sie nicht.</p>'
+      - type: step
+        field_title: { de: Bestätigung erhalten }
+        field_text:
+          de: '<p>Sie erhalten eine Anmeldebestätigung. Die Steuerverwaltung, die Gemeindewerke, die Schulverwaltung und das Stimmregister informieren wir selbst.</p>'
+      - type: step
+        field_title: { de: Weitere Stellen informieren }
+        field_text:
+          de: '<p>Ihre neue Adresse melden Sie selbst: der Krankenkasse, dem Arbeitgeber, der Bank, der Post und, innert 14 Tagen, dem Strassenverkehrsamt für den Führerausweis und den Fahrzeugausweis.</p>'
+  - type: title
+    field_title: { de: Was Sie mitbringen }
+  - type: columns
+    options: { ratio: 50-50 }
+    field_left:
+      - type: text
+        field_text:
+          de: '<h3>Schweizerinnen und Schweizer</h3><ul><li>Heimatschein im Original</li><li>Identitätskarte oder Pass</li><li>Mietvertrag oder Kaufvertrag, bei Untermiete eine Bestätigung der Vermieterin oder des Vermieters</li><li>Krankenkassenausweis</li><li>Familienausweis, wenn Sie verheiratet sind oder Kinder haben</li></ul>'
+    field_right:
+      - type: text
+        field_text:
+          de: '<h3>Ausländerinnen und Ausländer</h3><ul><li>Pass oder Identitätskarte</li><li>Ausländerausweis, beim Zuzug aus dem Ausland der Arbeitsvertrag</li><li>Mietvertrag oder Kaufvertrag</li><li>Nachweis der Krankenversicherung</li><li>ein aktuelles Passfoto</li><li>Zivilstandsdokumente wie Eheschein oder Geburtsschein der Kinder</li></ul>'
+  - type: title
+    field_title: { de: Gebühren }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Leistung</th><th>Gebühr</th></tr></thead><tbody><tr><td>Anmeldung, pro erwachsene Person</td><td>Fr. 20.–</td></tr><tr><td>Anmeldung von Kindern und Jugendlichen unter 18 Jahren</td><td>gratis</td></tr><tr><td>Anmeldung als Wochenaufenthalterin oder Wochenaufenthalter</td><td>Fr. 30.–</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'In welcher Sprache schreibt mir die Gemeinde?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Blockingen ist zweisprachig. Bei der Anmeldung wählen Sie Deutsch oder Französisch als Korrespondenzsprache. Die Gemeinde schreibt Ihnen dann in dieser Sprache, auch die Steuerrechnung und das Stimmmaterial. Ändern können Sie die Sprache jederzeit am Schalter.</p>'
+  - type: accordion
+    field_title: { de: 'Ich wohne nur unter der Woche hier. Muss ich mich anmelden?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, als Wochenaufenthalterin oder Wochenaufenthalter. Bringen Sie statt des Heimatscheins einen Heimatausweis Ihrer Wohnsitzgemeinde mit. Steuern bezahlen Sie in der Regel weiterhin dort, wo Sie am Wochenende wohnen.</p>'
+  - type: accordion
+    field_title: { de: 'Muss ich meinen Hund anmelden?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, innert 14 Tagen, am Schalter oder online. Bringen Sie den Heimtierausweis mit; der Hund muss mit einem Mikrochip gekennzeichnet sein. Die Hundetaxe beträgt Fr. 120.– im Jahr.</p>'
+  - type: accordion
+    field_title: { de: 'Wie lerne ich Blockingen kennen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Einmal im Jahr lädt der Gemeinderat alle, die neu in Blockingen wohnen, zu einem Begrüssungsabend ins Rathaus ein: mit einer Führung durch die Altstadt, den Vereinen und einem Apéro. Die Einladung erhalten Sie per Post.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: collection-days }
+  - type: teaser
+    field_link: { node: school }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/online-counter
+        field_title: { de: Online-Schalter }
+      - type: link
+        field_link: https://www.example.com/dog-registration
+        field_title: { de: Hund anmelden }
+      - type: link
+        field_link: https://www.example.com/vehicle-address
+        field_title: { de: 'Strassenverkehrsamt: Adresse ändern' }

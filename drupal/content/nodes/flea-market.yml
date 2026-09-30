@@ -1,0 +1,16 @@
+key: flea-market
+type: event
+title: { de: Flohmarkt }
+field_lead:
+  de: 'Kleider, Bücher, Spielsachen und Möbel: rund 80 Stände auf dem Schulhausareal.'
+field_hero_image: { media: market }
+field_date: { value: '+30 days 09:00', end_value: '+30 days 16:00' }
+field_place: { de: Schulhausareal Seefeld }
+field_organiser: { de: Marktverein Blockingen }
+field_category: market
+field_price: { de: Gratis }
+field_registration: https://www.example.com/flea-market
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Solange der Dorfplatz umgestaltet wird, findet der Flohmarkt auf dem Schulhausareal statt. Stöbern Sie an rund 80 Ständen, von Kinderkleidern über Schallplatten bis zu alten Möbeln. Der Elternrat verkauft Suppe, Kaffee und Kuchen.</p><p>Einen Stand anmelden können alle, die Gebrauchtes verkaufen, aber keine Händlerinnen und Händler. Ein Platz von drei Metern kostet Fr. 15.–; Kinder, die ihre Spielsachen verkaufen, erhalten ihn gratis. Melden Sie sich bis zwei Wochen vorher online an. Kommen Sie zu Fuss oder mit dem Velo: Die Parkplätze beim Schulhaus sind für die Stände reserviert.</p>'

@@ -4,6 +4,79 @@ title: { de: 'Wegzug' }
 field_lead:
   de: 'Melden Sie sich spätestens am Tag des Wegzugs ab, und geben Sie Ihre neue Adresse an.'
 field_office: { node: residents-services }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Wenn Sie aus Blockingen wegziehen, melden Sie sich bei den Einwohnerdiensten ab, frühestens einen Monat vorher und spätestens am Tag des Wegzugs. In Ihrer neuen Gemeinde melden Sie sich danach innert 14 Tagen an. Die Abmeldung ist gratis.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Online abmelden:</strong> Ziehen Sie in eine andere Schweizer Gemeinde, können Sie sich am <a href="https://www.example.com/online-counter">Online-Schalter</a> abmelden. Den Heimatschein senden wir Ihnen dann eingeschrieben an die neue Adresse.</p>'
+  - type: title
+    field_title: { de: So melden Sie sich ab }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Abmelden }
+        field_text:
+          de: '<p>Kommen Sie mit Ihrer Identitätskarte oder Ihrem Pass an den Schalter, oder melden Sie sich online ab. Die Abmeldung gilt für alle Personen im Haushalt, die mit Ihnen wegziehen.</p>'
+      - type: step
+        field_title: { de: Neue Adresse angeben }
+        field_text:
+          de: '<p>Geben Sie Ihre neue Adresse und den Tag des Wegzugs an. Kennen Sie die neue Adresse noch nicht, reichen Sie sie innert 14 Tagen nach.</p>'
+      - type: step
+        field_title: { de: Heimatschein mitnehmen }
+        field_text:
+          de: '<p>Schweizerinnen und Schweizer erhalten ihren Heimatschein zurück und geben ihn in der neuen Gemeinde ab. Ausländerinnen und Ausländer erhalten eine Abmeldebestätigung.</p>'
+      - type: step
+        field_title: { de: In der neuen Gemeinde anmelden }
+        field_text:
+          de: '<p>Melden Sie sich innert 14 Tagen nach dem Einzug in Ihrer neuen Gemeinde an. Ihre Adresse bei Krankenkasse, Arbeitgeber, Bank und Post ändern Sie selbst.</p>'
+  - type: title
+    field_title: { de: Was wir nach dem Wegzug abrechnen }
+  - type: text
+    field_text:
+      de: '<p>Die Einwohnerdienste informieren die anderen Stellen der Gemeinde. Danach erhalten Sie:</p><ul><li>die <strong>Steuerabrechnung</strong>. Ziehen Sie in einen anderen Kanton, bezahlen Sie die Steuern für das ganze Jahr in Ihrer neuen Gemeinde. Innerhalb des Kantons teilen die Gemeinden das Jahr unter sich auf.</li><li>die <strong>Schlussrechnung der Gemeindewerke</strong> für Wasser und Abwasser, wenn Ihnen die Wohnung oder das Haus gehört. Melden Sie uns den Tag der Übergabe, damit wir den Zähler ablesen.</li><li>eine <strong>Rückerstattung</strong> für die Anwohnerparkkarte, für jeden ganzen Monat, der noch bleibt.</li></ul>'
+  - type: title
+    field_title: { de: Wegzug ins Ausland }
+  - type: text
+    field_text:
+      de: '<p>Wer ins Ausland zieht, meldet sich persönlich am Schalter ab. Bringen Sie Ihren Pass oder Ihre Identitätskarte mit. Ausländerinnen und Ausländer geben bei uns ihren Ausländerausweis ab.</p><p>Schweizerinnen und Schweizer melden sich innert 90 Tagen bei der Schweizer Vertretung im neuen Land an. Dort tragen Sie sich auch ins Stimmregister ein, wenn Sie weiter abstimmen und wählen möchten. Klären Sie vor dem Wegzug mit der Ausgleichskasse, ob Sie weiter AHV-Beiträge bezahlen, und mit Ihrer Krankenkasse, wann Ihre Versicherung endet.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Ich ziehe nur für einige Monate weg. Muss ich mich abmelden?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Nur wenn Sie länger als ein Jahr weg sind. Für einen kürzeren Aufenthalt, etwa ein Semester im Ausland, bleiben Sie angemeldet. Geben Sie uns eine Zustelladresse an, wenn niemand Ihre Post entgegennimmt.</p>'
+  - type: accordion
+    field_title: { de: 'Was geschieht mit meinem Hund?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Wir melden ihn mit Ihnen ab. In der neuen Gemeinde melden Sie ihn wieder an. Die Hundetaxe für das laufende Jahr erstatten wir nicht zurück.</p>'
+  - type: accordion
+    field_title: { de: 'Kann mein Kind hier weiter zur Schule gehen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Bis zum Ende des Schuljahres meistens schon, wenn die neue Gemeinde das Schulgeld übernimmt. Klären Sie das früh mit der Schulverwaltung, und stellen Sie das Gesuch vor dem Wegzug.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: moving-within }
+  - type: teaser
+    field_link: { node: paying-taxes }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/online-counter
+        field_title: { de: Online-Schalter }
+      - type: link
+        field_link: https://www.example.com/mail-forwarding
+        field_title: { de: Nachsendeauftrag bei der Post }

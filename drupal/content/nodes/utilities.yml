@@ -1,10 +1,8 @@
 key: utilities
 type: office
-title: { en: Utilities, de: Gemeindewerke, fr: Services industriels }
+title: { de: 'Gemeindewerke' }
 field_lead:
-  en: 'Water, electricity and the meter readings.'
-  de: 'Wasser, Strom und die Zählerablesung.'
-  fr: 'Eau, électricité et relevés des compteurs.'
+  de: 'Trinkwasser und Abwasser, die Gebühren und die Zählerablesung.'
 field_location: { term: works-yard }
 field_phone: '+41 32 555 01 60'
 field_email: werke@blockingen.example
@@ -20,3 +18,15 @@ field_opening_hours:
   - { day: 4, starthours: 1330, endhours: 1630 }
   - { day: 5, starthours: 800, endhours: 1200 }
   - { day: 5, starthours: 1330, endhours: 1630 }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Gemeindewerke liefern das Trinkwasser und leiten das Abwasser in die Kläranlage. Sie unterhalten ein Leitungsnetz von rund 60 Kilometern und ersetzen jedes Jahr die ältesten Leitungen. Einmal im Jahr, im September, lesen sie die Wasserzähler ab. Danach erhalten die Eigentümerinnen und Eigentümer die Rechnung für Wasser, Abwasser und die Grundgebühr für den Abfall.</p><p>Bei einem Wasserrohrbruch oder einer Störung erreichen Sie den Pikettdienst rund um die Uhr unter 032 555 01 69. Einen neuen Anschluss oder eine Zählerablesung beim Wegzug melden Sie am Schalter oder am Telefon.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: fees }
+      - type: link
+        field_link: { node: water-fees }

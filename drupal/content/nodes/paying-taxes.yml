@@ -4,6 +4,86 @@ title: { de: 'Steuern bezahlen' }
 field_lead:
   de: 'Provisorische Rechnung, Schlussrechnung und Ratenzahlung: wie und wann Sie Ihre Steuern bezahlen.'
 field_office: { node: finance-taxes }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Gemeinde zieht die Gemeinde- und Staatssteuern ein, mit einer gemeinsamen Rechnung. Gehören Sie einer Landeskirche an, ist die Kirchensteuer darin enthalten. Die direkte Bundessteuer stellt Ihnen der Kanton separat in Rechnung.</p>'
+  - type: title
+    field_title: { de: So läuft es ab }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Provisorische Rechnung }
+        field_text:
+          de: '<p>Im Februar erhalten Sie die provisorische Rechnung für das laufende Jahr. Sie beruht auf Ihrer letzten Veranlagung, und ihr liegen neun Einzahlungsscheine bei.</p>'
+      - type: step
+        field_title: { de: Bezahlen }
+        field_text:
+          de: '<p>Bezahlen Sie den ganzen Betrag bis Ende September, auf einmal oder in Monatsraten. Was Sie früher bezahlen, verzinsen wir Ihnen.</p>'
+      - type: step
+        field_title: { de: Schlussrechnung }
+        field_text:
+          de: '<p>Nach der Veranlagung erhalten Sie die Schlussrechnung. Haben Sie zu viel bezahlt, erhalten Sie den Rest mit Zins zurück. Fehlt noch etwas, bezahlen Sie es innert 30 Tagen.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Elektronische Rechnung:</strong> Die Steuerrechnung erhalten Sie auf Wunsch direkt in Ihr E-Banking. Melden Sie sich dafür in Ihrem E-Banking bei der Gemeinde Blockingen an.</p>'
+  - type: title
+    field_title: { de: Zinsen }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Zins</th><th>Satz</th><th>Wofür</th></tr></thead><tbody><tr><td>Vergütungszins</td><td>0,25 %</td><td>Zahlungen vor Ende September und Rückzahlungen</td></tr><tr><td>Verzugszins</td><td>3,0 %</td><td>Beträge, die nach Ende September noch offen sind</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Die Zinssätze legt der Kanton jedes Jahr fest.</p>'
+  - type: title
+    field_title: { de: Wenn Sie nicht bezahlen können }
+  - type: text
+    field_text:
+      de: '<p>Melden Sie sich früh, bevor eine Mahnung kommt. Wir vereinbaren mit Ihnen einen Zahlungsplan mit monatlichen Raten, die Sie tragen können.</p><p>Sind Sie in eine Notlage geraten, etwa nach einem Stellenverlust oder einer Krankheit, können Sie ein Gesuch um Steuererlass stellen. Die Sozialen Dienste beraten Sie dabei.</p>'
+  - type: text
+    options: { box: warning }
+    field_text:
+      de: '<p><strong>Mahnung und Betreibung:</strong> Offene Steuern mahnen wir 30 Tage nach der Fälligkeit. Bleibt die zweite Mahnung unbezahlt, leiten wir die Betreibung ein.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Mein Einkommen hat sich stark verändert. Was tun?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Lassen Sie die provisorische Rechnung anpassen, online oder am Telefon. So bezahlen Sie nicht zu viel und vermeiden eine hohe Nachzahlung mit der Schlussrechnung.</p>'
+  - type: accordion
+    field_title: { de: 'Muss ich die Raten genau so bezahlen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Nein. Sie können jederzeit mehr oder weniger einzahlen. Wichtig ist, dass der ganze Betrag Ende September bezahlt ist.</p>'
+  - type: accordion
+    field_title: { de: 'Ich ziehe weg. Was ist mit meinen Steuern?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Wir rechnen sie nach dem Wegzug ab. Ob Sie für das ganze Jahr in Blockingen Steuern bezahlen, hängt davon ab, wohin Sie ziehen: Mehr dazu auf der Seite «Wegzug».</p>'
+field_related:
+  - type: teaser
+    field_link: { node: tax-return }
+  - type: teaser
+    field_link: { node: social-assistance }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/tax-adjust
+        field_title: { de: Provisorische Rechnung anpassen }
+      - type: link
+        field_link: https://www.example.com/payment-plan
+        field_title: { de: Zahlungsplan beantragen }
+      - type: link
+        field_link: https://www.example.com/tax-remission
+        field_title: { de: Gesuch um Steuererlass }

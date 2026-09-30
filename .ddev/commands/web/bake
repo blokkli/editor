@@ -31,6 +31,10 @@ rm -rf "$files/media" "$files/media-icons" "$files/styles"
 # Also imports the interface translations: drupal.org's (downloaded once into
 # files/translations) and blokkli_playground's.
 drush site:install --existing-config --yes
+# A request during the install (a browser tab, the Nuxt app) can cache a
+# container from before the last modules were installed, e.g. without the
+# language module. The seed needs the complete one.
+drush cache:rebuild
 drush blokkli-playground:seed --source="$source"
 # The site search's index (search_api), in the database like the content.
 drush search-api:index

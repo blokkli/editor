@@ -1,0 +1,15 @@
+key: floorball-tournament
+type: event
+title: { de: Seefeld-Cup im Unihockey }
+field_lead:
+  de: 'Rund 40 Teams, von den Jüngsten bis zu den Plauschteams, spielen einen Tag lang um den Seefeld-Cup.'
+field_date: { value: '+13 days 09:00', end_value: '+13 days 17:30' }
+field_place: { de: Sporthalle Seefeld }
+field_organiser: { de: Unihockeyclub Seefeld }
+field_category: sport
+field_price: { de: Eintritt gratis }
+field_registration: https://www.example.com/seefeld-cup
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Am Morgen spielen die Kinder und Jugendlichen in fünf Kategorien, am Nachmittag die Erwachsenen. Plauschteams aus Firmen, Vereinen und Freundeskreisen sind willkommen: Sie brauchen keine Lizenz, nur mindestens fünf Personen. Ein Team anzumelden kostet Fr. 60.–, bis eine Woche vorher.</p><p>Zuschauen ist gratis. Die Festwirtschaft bietet Hotdogs, Kuchen und Getränke an, und um 17.00 Uhr ist die Rangverkündigung. Wer selbst spielt, bringt saubere Hallenschuhe mit.</p>'

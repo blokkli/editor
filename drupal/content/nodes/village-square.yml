@@ -1,18 +1,24 @@
 key: village-square
 type: news
 created: '-5 days'
-title:
-  en: Redesign of the village square begins in October
-  de: Neugestaltung des Dorfplatzes beginnt im Oktober
-  fr: Le réaménagement de la place du village commence en octobre
+title: { de: Die Umgestaltung des Dorfplatzes beginnt }
 field_lead:
-  en: The weekly market moves to the school grounds during the works.
-  de: Der Wochenmarkt zieht während der Bauzeit auf das Schulhausareal.
-  fr: Le marché hebdomadaire déménage dans la cour de l'école pendant les travaux.
+  de: Der Wochenmarkt zieht während der Bauzeit auf das Schulhausareal, und die Dorfstrasse ist zwischen Kirche und Schulhaus gesperrt.
 field_hero_image: { media: village-square }
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>The works last until spring. Dorfstrasse is closed between the church and the school while they last.</p>'
-      de: '<p>Die Arbeiten dauern bis im Frühling. Solange ist die Dorfstrasse zwischen Kirche und Schulhaus gesperrt.</p>'
-      fr: '<p>Les travaux durent jusqu''au printemps. Pendant ce temps, la Dorfstrasse est fermée entre l''église et l''école.</p>'
+      de: '<p>Am Montag fahren die Bagger auf: Der Dorfplatz wird umgestaltet. Wo heute Autos parkieren, entsteht ein Platz zum Verweilen, mit acht neuen Bäumen, einem Brunnen, Sitzbänken im Schatten und Platz für den Wochenmarkt und für Feste. Die Parkplätze kommen in die Einstellhalle beim Bahnhof.</p><p>Die Arbeiten dauern bis im Frühling. Solange ist die Dorfstrasse zwischen Kirche und Schulhaus gesperrt. Die Gemeindewerke nutzen die Sperrung, um gleich auch die alte Wasserleitung zu ersetzen.</p>'
+  - type: title
+    field_title: { de: Was sich während der Bauzeit ändert }
+  - type: text
+    field_text:
+      de: '<ul><li>Der <strong>Wochenmarkt</strong> findet am Samstagmorgen auf dem Schulhausareal statt.</li><li>Die <strong>Bushaltestelle «Dorfplatz»</strong> ist beim Schulhaus.</li><li>Autos fahren über den Rebweg. Zu Fuss und mit dem Velo kommen Sie an der Baustelle vorbei.</li><li>Die <strong>Geschäfte am Dorfplatz</strong> bleiben offen und sind zu Fuss erreichbar.</li></ul>'
+  - type: text
+    field_text:
+      de: '<p>Am Informationsabend stellt der Gemeinderat die Pläne und die Etappen vor und beantwortet Fragen. Die Pläne sind ab 19.00 Uhr ausgestellt.</p>'
+  - type: teaser
+    field_link: { node: information-evening }
+  - type: contact
+    options: { display: compact }
+    field_office: { node: building-planning }

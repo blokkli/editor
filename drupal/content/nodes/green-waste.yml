@@ -1,0 +1,21 @@
+key: green-waste
+type: news
+created: '-8 days'
+title: { de: 'Grüngut: neu jede Woche, auch im Winter' }
+field_lead:
+  de: Ab sofort holt die Gemeinde das Grüngut jeden Mittwoch ab, das ganze Jahr. Die Grüngutmarke kostet gleich viel wie bisher.
+field_hero_image: { media: works-yard }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Bisher holte der Werkhof das Grüngut im Winter nur alle zwei Wochen ab. Doch auch im Winter fallen Rüstabfälle an, und viele Container waren voll, lange bevor die Abfuhr kam. Ab sofort leeren wir die Container deshalb jeden Mittwoch, das ganze Jahr.</p><p>Das Grüngut bringt der Werkhof in die regionale Vergärungsanlage. Dort wird es zu Biogas und zu Kompost für die Landwirtschaft. Je mehr Rüstabfälle im Grüngut landen statt im Kehricht, desto weniger Kehrichtsäcke brauchen Sie.</p>'
+  - type: title
+    field_title: { de: Was Sie wissen müssen }
+  - type: text
+    field_text:
+      de: '<ul><li>Stellen Sie den Container am Mittwoch bis 7.00 Uhr an den Strassenrand.</li><li>Die Grüngutmarke für einen Container mit 140 Litern kostet weiterhin Fr. 90.– im Jahr.</li><li>Ins Grüngut gehören Rüstabfälle, Rasen, Laub, Blumen und Zweige, aber keine Säcke aus Kunststoff, auch keine kompostierbaren.</li><li>Im Winter hilft eine Lage Zeitungspapier am Boden, damit nichts am Container festfriert.</li></ul>'
+  - type: teaser
+    field_link: { node: collection-days }
+  - type: contact
+    options: { display: compact }
+    field_office: { node: public-works }

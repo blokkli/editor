@@ -1,0 +1,15 @@
+key: band-concert
+type: event
+title: { de: Jahreskonzert der Musikgesellschaft }
+field_lead:
+  de: Die Musikgesellschaft Blockingen spielt Märsche, Filmmusik und ein neues Stück, zusammen mit der Jugendmusik.
+field_date: { value: '+47 days 19:30', end_value: '+47 days 22:00' }
+field_place: { de: Sporthalle Seefeld }
+field_organiser: { de: Musikgesellschaft Blockingen }
+field_category: culture
+field_price: { de: 'Fr. 20.–, Kinder und Jugendliche gratis' }
+field_registration: https://www.example.com/concert-tickets
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Jugendmusik eröffnet das Konzert. Im ersten Teil spielt die Musikgesellschaft unter der Leitung von Luca Moser Märsche und Polkas, im zweiten Filmmusik und «Seeufer», ein Stück, das ein Blockinger Komponist für sie geschrieben hat.</p><p>Die Türen öffnen um 18.30 Uhr; die Festwirtschaft serviert Raclette, Kuchen und Getränke. Sitzplätze reservieren Sie online, an der Abendkasse gibt es Restplätze. Die Halle ist rollstuhlgängig.</p>'

@@ -1,10 +1,8 @@
 key: building-planning
 type: office
-title: { en: Building and planning, de: Bau und Planung, fr: Constructions et urbanisme }
+title: { de: 'Bau und Planung' }
 field_lead:
-  en: 'Building permits, zoning and the municipality''s construction projects. In the afternoon by appointment.'
-  de: 'Baubewilligungen, Zonenplan und die Bauprojekte der Gemeinde. Nachmittags nach Vereinbarung.'
-  fr: 'Permis de construire, plan de zones et projets de construction de la commune. L''après-midi sur rendez-vous.'
+  de: 'Baubewilligungen, Meldungen und der Zonenplan, und die Bauprojekte der Gemeinde. Nachmittags nach Vereinbarung.'
 field_location: { term: administrative-centre }
 field_phone: '+41 32 555 01 30'
 field_email: bau@blockingen.example
@@ -16,7 +14,16 @@ field_opening_hours:
   - { day: 4, starthours: 800, endhours: 1200 }
   - { day: 5, starthours: 800, endhours: 1200 }
 field_paragraphs:
-  - type: link
-    options: { style: secondary }
-    field_link: { node: building-permits }
-    field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
+  - type: text
+    field_text:
+      de: '<p>Bau und Planung prüft Baugesuche und Meldungen, berät Bauherrschaften und führt den Zonenplan. Wir betreuen auch die Bauprojekte der Gemeinde, zurzeit vor allem den neuen Dorfplatz.</p><p>Am Vormittag ist der Schalter im Verwaltungszentrum offen, ohne Anmeldung. Am Nachmittag nehmen wir uns Zeit für Beratungen: Vereinbaren Sie dafür einen Termin, am besten mit einer Skizze Ihres Vorhabens. Die erste Beratung ist gratis. Baugesuche reichen Sie am Schalter, per Post oder am <a href="https://www.example.com/online-counter">Online-Schalter</a> ein. Die Gesuche, die öffentlich aufliegen, finden Sie unter den amtlichen Publikationen.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: building-permit }
+      - type: link
+        field_link: { node: permit-needed }
+      - type: link
+        field_link: { node: building-permits }

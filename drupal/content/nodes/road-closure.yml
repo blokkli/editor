@@ -1,18 +1,17 @@
 key: road-closure
 type: publication
-title:
-  en: Temporary closure of Dorfstrasse
-  de: Temporäre Sperrung der Dorfstrasse
-  fr: Fermeture temporaire de la Dorfstrasse
+title: { de: Sperrung der Dorfstrasse }
 field_lead:
-  en: Dorfstrasse is closed to traffic between the church and the school while the village square is redesigned.
-  de: Die Dorfstrasse ist zwischen Kirche und Schulhaus für den Verkehr gesperrt, solange der Dorfplatz umgestaltet wird.
-  fr: La Dorfstrasse est fermée à la circulation entre l'église et l'école pendant le réaménagement de la place du village.
+  de: Die Dorfstrasse ist zwischen Kirche und Schulhaus für den Verkehr gesperrt, solange der Dorfplatz umgestaltet und die Wasserleitung ersetzt wird.
 field_publication_type: traffic
-field_period: { value: '-2 days', end_value: '+8 days' }
+field_period: { value: '-2 days', end_value: '+28 days' }
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>A diversion is signposted via Rebweg. The bus stop "Dorfplatz" moves to the school.</p>'
-      de: '<p>Eine Umleitung über den Rebweg ist signalisiert. Die Bushaltestelle «Dorfplatz» wird zum Schulhaus verlegt.</p>'
-      fr: '<p>Une déviation est signalée par le Rebweg. L''arrêt de bus « Dorfplatz » est déplacé vers l''école.</p>'
+      de: '<p>Der Gemeinderat verfügt folgende vorübergehende Verkehrsanordnung:</p><p><strong>Ort:</strong> Dorfstrasse, zwischen der Kirche und dem Schulhaus Seefeld<br><strong>Massnahme:</strong> allgemeines Fahrverbot in beiden Richtungen; Zufahrt für Anwohnende nach Absprache mit der Bauleitung<br><strong>Dauer:</strong> bis zum Abschluss der Bauarbeiten, voraussichtlich im Frühling</p>'
+  - type: text
+    field_text:
+      de: '<p>Eine Umleitung über den Rebweg ist signalisiert. Die Bushaltestelle «Dorfplatz» wird zum Schulhaus verlegt. Zu Fuss und mit dem Velo kommen Sie an der Baustelle vorbei.</p><p><strong>Rechtsmittel:</strong> Gegen diese Verfügung kann innert 30 Tagen seit der Publikation beim Kanton schriftlich und begründet Beschwerde geführt werden.</p>'
+  - type: link
+    field_link: { node: water-main }
+    field_title: { de: Eine neue Wasserleitung für die Dorfstrasse }

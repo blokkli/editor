@@ -4,6 +4,62 @@ title: { de: 'Entsorgungsstelle Werkhof' }
 field_lead:
   de: 'Was Sie in der Entsorgungsstelle an der Industriestrasse abgeben können, und wann sie offen ist.'
 field_office: { node: public-works }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>In der Entsorgungsstelle beim Werkhof, Industriestrasse 30, geben Sie ab, was die Gemeinde nicht abholt. Die Mitarbeitenden zeigen Ihnen, was wohin gehört, und helfen beim Ausladen schwerer Gegenstände. Die Entsorgungsstelle ist für Haushalte aus Blockingen da: Bringen Sie einen Ausweis mit.</p>'
+  - type: title
+    field_title: { de: Öffnungszeiten }
+  - type: table
+    field_table:
+      de: '<table><thead><tr><th>Tag</th><th>Offen</th></tr></thead><tbody><tr><td>Mittwoch</td><td>14.00–18.00 Uhr</td></tr><tr><td>Samstag</td><td>9.00–12.00 Uhr</td></tr></tbody></table>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Eigene Öffnungszeiten:</strong> Die Entsorgungsstelle ist nur am Mittwochnachmittag und am Samstagmorgen offen. Die Zeiten im Kontakt gelten für das Büro des Werkhofs. An Feiertagen und am Samstag vor Ostern bleibt die Entsorgungsstelle geschlossen.</p>'
+  - type: title
+    field_title: { de: Was Sie abgeben können }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Was</th><th>Gebühr</th></tr></thead><tbody><tr><td>Glas, Alu, Blech und Metall</td><td>gratis</td></tr><tr><td>Elektro- und Elektronikgeräte</td><td>gratis</td></tr><tr><td>Styropor, sauber und ohne Folien</td><td>gratis</td></tr><tr><td>Altöl, Speiseöl, Farben und andere Sonderabfälle bis 20 kg</td><td>gratis</td></tr><tr><td>Grüngut und Äste, mehr als ein Container</td><td>Fr. 10.– pro m³</td></tr><tr><td>Sperrgut</td><td>Fr. 5.– bis Fr. 20.– pro Gegenstand</td></tr><tr><td>Altholz</td><td>Fr. 10.– pro 100 kg</td></tr><tr><td>Bauschutt, bis 200 kg</td><td>Fr. 15.– pro 100 kg</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Die Gebühren bezahlen Sie vor Ort, bar oder mit Karte. Was Sie selbst bringen, kostet weniger als die Abfuhr: Sperrgut, das wir abholen, kostet Fr. 10.– bis Fr. 30.– pro Gegenstand.</p>'
+  - type: title
+    field_title: { de: Was wir nicht annehmen }
+  - type: text
+    field_text:
+      de: '<p>Kehricht gehört in den Kehrichtsack, Medikamente in eine Apotheke. Asbest, Munition, Autoreifen und grosse Mengen Bauschutt nehmen wir nicht an: Dafür gibt es spezialisierte Betriebe, deren Adressen Ihnen die Mitarbeitenden gern geben. Auch Abfälle von Gewerbebetrieben nehmen wir nicht an.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Kann ich mit dem Anhänger kommen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja. Am wenigsten los ist am Mittwoch nach 16.00 Uhr. Laden Sie so, dass Sie nach Material getrennt ausladen können: Das geht schneller, auch für die anderen.</p>'
+  - type: accordion
+    field_title: { de: 'Was geschieht mit dem Material?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Glas, Metall und Elektrogeräte gehen an Recyclingbetriebe in der Region und werden zu neuen Rohstoffen. Altholz und Sperrgut, das sich nicht verwerten lässt, verbrennt die Kehrichtverbrennungsanlage; sie macht daraus Fernwärme und Strom.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: sorting }
+  - type: teaser
+    field_link: { node: collection-days }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/bulky-waste
+        field_title: { de: Sperrgut anmelden }
+      - type: link
+        field_link: https://www.example.com/collection-map
+        field_title: { de: Karte der Sammelstellen }

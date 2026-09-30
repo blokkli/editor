@@ -77,7 +77,8 @@ baked with `ddev bake --source=de`.
 Uhr". No current years in running text (history is fine); dates only in date
 fields. Invented people, addresses and numbers (032 555 01 xx,
 `@blockingen.example`); no canton by name, no real parties. Detail pages carry
-about 300–600 words of real content.
+about 300–600 words of real content, and generally no image (the user,
+2026-09-30).
 
 **Themen** (areas with an image, topics without; the office in brackets):
 
@@ -109,15 +110,24 @@ from it like pages (`/verwaltung/einwohnerdienste`). **Aktuelles** as it is.
 
 **Status (2026-09-30):** the tree is seeded with titles and leads (German only)
 for the user to try the structure. Written in full: Strandbad, Blockingen in
-Zahlen, Geschichte. The first draft's texts for Zuzug, Abfall, Schule and the
-clubs are in the ignored `tmp/14b-drafts/`, to split into the new detail pages.
-The test content is gone: Verwaltung has an introduction instead of the
-population chart (on Blockingen in Zahlen) and the fee calculator (now on the
-fees page, without a year); Baugesuch einreichen lost its video, old town photo
-and gallery (the profile poles are one image), and its garden shed question
-moved to "Brauche ich eine Baubewilligung?". The home page's call to action has
-no date or year. No video: there's no fictional one to link, and editors try
-the video block by pasting a YouTube link (the Big Buck Bunny media is gone).
+Zahlen, Geschichte; then all the rest in German, for the user to review at once
+(2026-09-30): every detail page, Politik, the offices, 6 news items, 8 events
+(the open-air cinema and the autumn market are gone), 5 publications, the home
+page, the overview pages, the config pages, three library items, the templates
+and the comments. No page has English or French left (the media, the terms and
+the menu keep theirs). The translation phase puts back what the German-first
+rewrite removed: the outdated French of the pool opening (`outdated: [fr]`, with
+hours that differ from the German) and the French site name "Bloquens". The home
+page's "Today" row still has fixed texts (15f's todo), so its assembly date
+doesn't match the event. The first draft's texts, in the ignored
+`tmp/14b-drafts/`, are used up. The test content is gone: Verwaltung has an
+introduction instead of the population chart (on Blockingen in Zahlen) and the
+fee calculator (now on the fees page, without a year); Baugesuch einreichen lost
+its video, old town photo and gallery (the profile poles are one image), and its
+garden shed question moved to "Brauche ich eine Baubewilligung?". The home
+page's call to action has no date or year. No video: there's no fictional one to
+link, and editors try the video block by pasting a YouTube link (the Big Buck
+Bunny media is gone).
 
 **The frontend for it:** the menu query has four levels, and an editorial page's
 sub-pages list their own children (an area's topics with their detail pages)

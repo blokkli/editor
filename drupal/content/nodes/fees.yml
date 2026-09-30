@@ -5,6 +5,23 @@ field_lead:
   de: 'Was Wasser, Abwasser und Abfall kosten, und was Ihr Haushalt im Jahr bezahlt.'
 field_office: { node: utilities }
 field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Wasser, Abwasser und Abfall bezahlen Sie mit Gebühren, nicht mit Steuern. Die Gebühren decken die Kosten der Leitungen, der Kläranlage und der Abfuhr, und nicht mehr. Sie bestehen aus drei Teilen:</p><ul><li>der <strong>Anschlussgebühr</strong>, einmal, wenn Sie neu bauen oder anbauen</li><li>der <strong>Grundgebühr</strong>, jedes Jahr, pro Wohnung oder Haus</li><li>der <strong>Verbrauchsgebühr</strong>: für Wasser und Abwasser nach dem Wasserzähler, für den Abfall mit der Sackgebühr</li></ul>'
+  - type: title
+    field_title: { de: Tarife }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Gebühr</th><th>Wohnung</th><th>Haus</th></tr></thead><tbody><tr><td>Wasser, Grundgebühr pro Jahr</td><td>Fr. 80.–</td><td>Fr. 140.–</td></tr><tr><td>Wasser, pro m³</td><td>Fr. 1.90</td><td>Fr. 1.90</td></tr><tr><td>Abwasser, Grundgebühr pro Jahr</td><td>Fr. 100.–</td><td>Fr. 170.–</td></tr><tr><td>Abwasser, pro m³ Wasser</td><td>Fr. 2.30</td><td>Fr. 2.30</td></tr><tr><td>Abfall, Grundgebühr pro Jahr</td><td>Fr. 75.–</td><td>Fr. 75.–</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Die Sackgebühr bezahlen Sie mit dem Kehrichtsack: Er kostet Fr. 1.10 mit 17 Litern, Fr. 2.20 mit 35 Litern und Fr. 3.80 mit 60 Litern. Die Grüngutmarke für einen Container mit 140 Litern kostet Fr. 90.– im Jahr. Alle Preise verstehen sich inklusive Mehrwertsteuer.</p><p>Die Anschlussgebühr beträgt 1,5 Prozent des Gebäudeversicherungswerts für Wasser und 2 Prozent für Abwasser; bei einem Anbau zählt nur der Mehrwert.</p>'
+  - type: title
+    field_title: { de: Was Ihr Haushalt bezahlt }
+  - type: text
+    field_text:
+      de: '<p>Der Gebührenrechner schätzt Ihre Gebühren für ein Jahr. Er rechnet mit 50 m³ Wasser pro Person; Ihre Rechnung richtet sich nach dem Zähler.</p>'
   - type: embed
     options:
       # The frame's own widths: measured at the narrowest width of each range,
@@ -12,6 +29,40 @@ field_paragraphs:
       heights: { 375: 1420, 768: 1320, 1440: 800 }
     field_link: /embed/fee-calculator
     field_title: { de: Gebührenrechner }
+  - type: title
+    field_title: { de: Die Rechnung }
+  - type: text
+    field_text:
+      de: '<p>Die Gemeindewerke lesen die Wasserzähler einmal im Jahr ab, im September. Im März erhalten Sie eine Akontorechnung über die Hälfte des Vorjahres, im Oktober die Schlussrechnung mit dem tatsächlichen Verbrauch. Sie bezahlen innert 30 Tagen.</p><p>Die Rechnung geht an die Eigentümerin oder den Eigentümer. Wohnen Sie zur Miete, sind die Gebühren Teil Ihrer Nebenkosten: Fragen dazu stellen Sie der Vermieterin oder dem Vermieter.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Mein Verbrauch ist plötzlich viel höher. Was tun?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Vielleicht ist eine Leitung undicht, oder ein WC-Spülkasten läuft. Schliessen Sie alle Wasserhahnen, und schauen Sie auf den Zähler: Dreht er sich weiter, rufen Sie eine Sanitärfirma. Auf Wunsch lesen wir den Zähler gratis nach.</p>'
+  - type: accordion
+    field_title: { de: 'Ändern sich die Wassergebühren?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Der Gemeinderat schlägt neue Wassergebühren vor, damit die Gemeinde alte Leitungen ersetzen kann. Zum Entwurf können Sie bis zum Ende der Frist Stellung nehmen. Über die neuen Tarife entscheidet die Gemeindeversammlung; bis dahin gelten die Tarife auf dieser Seite.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: water-fees }
+  - type: teaser
+    field_link: { node: collection-days }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/meter-reading
+        field_title: { de: Zählerstand melden }
+      - type: link
+        field_link: https://www.example.com/water-regulation
+        field_title: { de: Reglement über die Wassergebühren }

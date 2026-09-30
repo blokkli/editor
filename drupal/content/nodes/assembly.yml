@@ -4,6 +4,89 @@ title: { de: 'Gemeindeversammlung' }
 field_lead:
   de: 'Die nächste Versammlung, ihre Traktanden und Unterlagen, und wer mitbestimmen darf.'
 field_office: { node: municipal-chancery }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Blockingen hat kein Gemeindeparlament. Die wichtigen Entscheide fällt die Gemeindeversammlung: Alle Stimmberechtigten können kommen, mitreden, Anträge stellen und abstimmen. Sie beschliesst das Budget und den Steuerfuss, genehmigt die Rechnung, bewilligt Kredite bis 5 Millionen Franken und erlässt die Reglemente der Gemeinde. Sie tagt zweimal im Jahr, im Juni und im Dezember, und wenn nötig ausserordentlich.</p>'
+  - type: title
+    field_title: { de: Die nächste Versammlung }
+  - type: teaser
+    options: { display: list }
+    field_link: { node: assembly-meeting }
+  - type: text
+    field_text:
+      de: '<p>Die Traktanden:</p><ol><li>Protokoll der letzten Versammlung</li><li>Budget des nächsten Jahres und Steuerfuss</li><li>Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt</li><li>Revision des Reglements über die Wassergebühren</li><li>Verschiedenes</li></ol><p>Die Unterlagen liegen in der Gemeindekanzlei auf, und Sie finden sie in der Einladung.</p>'
+  - type: link
+    options: { style: secondary }
+    field_link: { node: assembly-invitation }
+    field_title: { de: Einladung und Unterlagen }
+  - type: title
+    field_title: { de: Wer mitbestimmen darf }
+  - type: text
+    field_text:
+      de: '<p>Stimmberechtigt sind Schweizerinnen und Schweizer ab 18 Jahren, die in Blockingen angemeldet sind. Ausländerinnen und Ausländer mit einer Niederlassungsbewilligung, die seit fünf Jahren im Kanton wohnen, stimmen in Gemeindesachen ebenfalls mit. Eine Stellvertretung gibt es nicht: Abstimmen kann nur, wer an der Versammlung ist.</p>'
+  - type: title
+    field_title: { de: So läuft eine Versammlung ab }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Einladung }
+        field_text:
+          de: '<p>Vier Wochen vorher erhalten Sie die Einladung mit der Botschaft des Gemeinderats per Post, zusammen mit Ihrem Stimmrechtsausweis.</p>'
+      - type: step
+        field_title: { de: Eingang }
+        field_text:
+          de: '<p>Am Eingang geben Sie den Stimmrechtsausweis ab und erhalten eine Stimmkarte. Der Saal ist ab 19.00 Uhr offen.</p>'
+      - type: step
+        field_title: { de: Beraten }
+        field_text:
+          de: '<p>Der Gemeinderat stellt jedes Geschäft vor, bei Finanzgeschäften empfiehlt die Finanzkommission. Danach haben alle das Wort und können Anträge stellen.</p>'
+      - type: step
+        field_title: { de: Abstimmen }
+        field_text:
+          de: '<p>Sie stimmen mit der Stimmkarte, offen. Verlangt es ein Viertel der Anwesenden, wird geheim abgestimmt.</p>'
+      - type: step
+        field_title: { de: Protokoll }
+        field_text:
+          de: '<p>Die Beschlüsse veröffentlichen wir am nächsten Tag, das Protokoll nach zwei Wochen. Genehmigt wird es an der nächsten Versammlung.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'In welcher Sprache wird gesprochen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>In beiden. Die Unterlagen gibt es auf Deutsch und auf Französisch, und Sie sprechen in Ihrer Sprache. Die Gemeindepräsidentin fasst jede Wortmeldung in der anderen Sprache zusammen.</p>'
+  - type: accordion
+    field_title: { de: 'Kann ich meine Kinder mitnehmen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja. Während der Versammlung betreut die Pfadi Seefeld Kinder ab drei Jahren in einem Raum im Rathaus, gratis. Melden Sie Ihre Kinder bis zum Vortag bei der Gemeindekanzlei an.</p>'
+  - type: accordion
+    field_title: { de: 'Ist der Rathaussaal barrierefrei?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja. Der Saal ist mit dem Lift erreichbar, und eine Höranlage überträgt alle Wortmeldungen. Kopfhörer erhalten Sie am Eingang.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: council }
+  - type: teaser
+    field_link: { node: budget }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Dokumente und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/assembly-message
+        field_title: { de: Botschaft des Gemeinderats (PDF) }
+      - type: link
+        field_link: https://www.example.com/assembly-minutes
+        field_title: { de: Protokoll der letzten Versammlung (PDF) }
+      - type: link
+        field_link: https://www.example.com/municipal-code
+        field_title: { de: Gemeindeordnung (PDF) }

@@ -1,10 +1,8 @@
 key: municipal-chancery
 type: office
-title: { en: Municipal chancery, de: Gemeindekanzlei, fr: Chancellerie communale }
+title: { de: 'Gemeindekanzlei' }
 field_lead:
-  en: 'The council''s secretariat: council meetings, votes and elections, official publications, and permits for markets and events.'
-  de: 'Das Sekretariat des Gemeinderats: Sitzungen, Abstimmungen und Wahlen, amtliche Publikationen und Bewilligungen für Märkte und Anlässe.'
-  fr: 'Le secrétariat du conseil communal : séances, votations et élections, publications officielles et autorisations pour les marchés et manifestations.'
+  de: 'Die erste Anlaufstelle im Rathaus: allgemeine Auskünfte, der Gemeinderat, die Gemeindeversammlung, Abstimmungen und Wahlen.'
 field_location: { term: town-hall }
 field_phone: '+41 32 555 01 00'
 field_email: info@blockingen.example
@@ -20,3 +18,25 @@ field_opening_hours:
   - { day: 4, starthours: 1330, endhours: 1700 }
   - { day: 5, starthours: 800, endhours: 1200 }
   - { day: 5, starthours: 1330, endhours: 1700 }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Gemeindekanzlei ist die erste Anlaufstelle im Rathaus. Sie beantwortet allgemeine Fragen und sagt Ihnen, welches Amt für Ihr Anliegen zuständig ist. Unter der Leitung von Gemeindeschreiberin Claire Rossel führt sie das Sekretariat des Gemeinderats, bereitet die Gemeindeversammlung vor, organisiert die Abstimmungen und Wahlen und veröffentlicht die amtlichen Publikationen.</p><p>Am Schalter erhalten Sie das Budget und die Rechnung gedruckt, und hier ist auch das Fundbüro der Gemeinde. Was Sie verloren haben, melden Sie am Telefon oder per E-Mail; Fundsachen bewahren wir ein Jahr lang auf.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: politics }
+      - type: link
+        field_link: { node: council }
+      - type: link
+        field_link: { node: assembly }
+      - type: link
+        field_link: { node: votes }
+      - type: link
+        field_link: { node: in-numbers }
+      - type: link
+        field_link: { node: history }
+      - type: link
+        field_link: { node: publications }

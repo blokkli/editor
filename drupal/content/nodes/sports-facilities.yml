@@ -4,6 +4,74 @@ title: { de: 'Sportanlagen' }
 field_lead:
   de: 'Turnhallen, Sportplätze und die Finnenbahn: was es gibt und wie Sie reservieren.'
 field_office: { node: sport-leisure }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Gemeinde baut und unterhält die Sportanlagen, die Vereine füllen sie mit Leben. Unter der Woche turnt tagsüber die Schule in den Hallen, am Abend trainieren die Vereine. Den Sportplatz, die Finnenbahn und den Pumptrack können alle benützen, ohne Anmeldung und gratis.</p>'
+  - type: title
+    field_title: { de: Die Anlagen }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Anlage</th><th>Angebot</th><th>Benützung</th></tr></thead><tbody><tr><td>Sporthalle Seefeld</td><td>Dreifachhalle mit Tribüne, Kraftraum, Sitzungsraum</td><td>Schule und Vereine, freie Zeiten auf Anfrage</td></tr><tr><td>Turnhalle Altstadt</td><td>Einfachhalle</td><td>Schule und Vereine, am Wochenende zu mieten</td></tr><tr><td>Sportplatz Allmend</td><td>Rasen- und Kunstrasenfeld, 400-Meter-Bahn, Beachvolleyball, Pumptrack</td><td>frei, ausser während Trainings und Spielen</td></tr><tr><td>Finnenbahn im Blockingerwald</td><td>1,2 Kilometer, beleuchtet bis 22.00 Uhr</td><td>frei</td></tr><tr><td>Strandbad</td><td>Schwimmbecken, Sprungturm, Zugang zum See</td><td>Mitte Mai bis Mitte September</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Hallen und Plätze mieten }
+  - type: text
+    field_text:
+      de: '<p>Vereine, Firmen und Privatpersonen können die Hallen, den Sitzungsraum und die Rasenfelder mieten. Unter der Woche haben die Schule und die Vereine Vorrang; am Wochenende sind oft Zeiten frei. Reservieren Sie online, spätestens eine Woche vorher. Ob eine Halle frei ist, sehen Sie im Belegungsplan.</p>'
+  - type: link
+    options: { style: primary }
+    field_link: https://www.example.com/reservations
+    field_title: { de: Halle reservieren }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Pro Stunde</th><th>Blockinger Vereine</th><th>Private und Firmen</th></tr></thead><tbody><tr><td>Turnhalle Altstadt</td><td>Fr. 15.–</td><td>Fr. 40.–</td></tr><tr><td>Sporthalle Seefeld, ein Drittel</td><td>Fr. 15.–</td><td>Fr. 40.–</td></tr><tr><td>Sporthalle Seefeld, ganze Halle</td><td>Fr. 40.–</td><td>Fr. 110.–</td></tr><tr><td>Rasenfeld</td><td>Fr. 20.–</td><td>Fr. 60.–</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Blockinger Vereine mit einer Jugendabteilung trainieren gratis. Garderoben und Duschen sind im Preis inbegriffen.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Sommerpause:</strong> In den ersten drei Wochen der Sommerferien sind die Hallen für die Reinigung geschlossen. Der Sportplatz und die Finnenbahn bleiben offen.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Können wir die Turnhalle für einen Kindergeburtstag mieten?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, die Turnhalle Altstadt am Samstag oder am Sonntag. Eine erwachsene Person ist die ganze Zeit dabei und verantwortlich. Die Bälle und Matten dürfen Sie benützen; die grossen Geräte wie das Trampolin bleiben weggeräumt.</p>'
+  - type: accordion
+    field_title: { de: 'Ist die Finnenbahn im Winter offen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, und beleuchtet wie im Sommer. Der Werkhof räumt sie aber nicht: Bei Schnee und Eis laufen Sie auf eigene Gefahr.</p>'
+  - type: accordion
+    field_title: { de: 'Darf mein Hund auf den Sportplatz?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Nein, auf den Spielfeldern und der Bahn sind Hunde nicht erlaubt, auch nicht an der Leine. Auf der Finnenbahn dürfen Sie Ihren Hund an der Leine mitnehmen.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: clubs }
+  - type: teaser
+    field_link: { node: lakeside-pool }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/reservations
+        field_title: { de: Halle reservieren }
+      - type: link
+        field_link: https://www.example.com/hall-schedule
+        field_title: { de: Belegungsplan der Hallen }
+      - type: link
+        field_link: https://www.example.com/facilities-rules
+        field_title: { de: Benützungsreglement (PDF) }

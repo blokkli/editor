@@ -1,18 +1,29 @@
 key: water-fees
 type: publication
-title:
-  en: Revision of the water fees regulation
-  de: Revision des Reglements über die Wassergebühren
-  fr: Révision du règlement sur les taxes d'eau
+title: { de: Revision des Reglements über die Wassergebühren }
 field_lead:
-  en: The town council proposes new water fees. Residents can comment on the draft until the end of the period.
-  de: Der Gemeinderat schlägt neue Wassergebühren vor. Die Bevölkerung kann bis zum Ende der Frist zum Entwurf Stellung nehmen.
-  fr: Le conseil communal propose de nouvelles taxes d'eau. La population peut se prononcer sur le projet jusqu'à la fin du délai.
+  de: Der Gemeinderat schlägt neue Wassergebühren vor. Bis zum Ende der Frist können Sie zum Entwurf Stellung nehmen.
 field_publication_type: regulation
-field_period: { value: '-10 days', end_value: '+62 days' }
+field_period: { value: '-10 days', end_value: '+20 days' }
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>The base fee stays the same; the price per cubic metre rises by 20 centimes. The assembly decides on 2 December.</p>'
-      de: '<p>Die Grundgebühr bleibt gleich, der Preis pro Kubikmeter steigt um 20 Rappen. Die Gemeindeversammlung entscheidet am 2. Dezember.</p>'
-      fr: '<p>La taxe de base reste la même ; le prix par mètre cube augmente de 20 centimes. L''assemblée communale décide le 2 décembre.</p>'
+      de: '<p>Viele Wasserleitungen in Blockingen sind über 60 Jahre alt und müssen in den nächsten Jahren ersetzt werden. Das Wasser bezahlt die Gemeinde mit den Gebühren, nicht mit den Steuern. Damit die Gebühren die Kosten auch künftig decken, schlägt der Gemeinderat vor, sie anzupassen.</p>'
+  - type: title
+    field_title: { de: Was sich ändert }
+  - type: text
+    field_text:
+      de: '<ul><li>Die <strong>Grundgebühr</strong> bleibt gleich: Fr. 80.– für eine Wohnung, Fr. 140.– für ein Haus.</li><li>Der <strong>Preis pro Kubikmeter</strong> Wasser steigt um 20 Rappen, von Fr. 1.90 auf Fr. 2.10.</li><li>Ein Haushalt mit vier Personen, der 200 m³ im Jahr braucht, bezahlt damit Fr. 40.– mehr.</li></ul>'
+  - type: title
+    field_title: { de: So nehmen Sie Stellung }
+  - type: text
+    field_text:
+      de: '<p>Den Entwurf des Reglements und den Bericht des Gemeinderats finden Sie online und bei der Gemeindekanzlei im Rathaus. Ihre Stellungnahme senden Sie bis zum Ende der Frist per Post an die Gemeindekanzlei, Rathaus, Seestrasse 1, 9999 Blockingen, oder per E-Mail an <a href="mailto:vernehmlassung@blockingen.example">vernehmlassung@blockingen.example</a>.</p><p>Danach überarbeitet der Gemeinderat den Entwurf. Über das Reglement entscheidet die Gemeindeversammlung; die neuen Tarife gelten ab dem nächsten Jahr.</p>'
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/water-regulation-draft
+        field_title: { de: Entwurf des Reglements (PDF) }
+      - type: link
+        field_link: { node: fees }
+        field_title: { de: 'Gebühren für Wasser, Abwasser und Abfall' }

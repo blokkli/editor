@@ -4,6 +4,85 @@ title: { de: 'Budget und Rechnung' }
 field_lead:
   de: 'Das Budget für das nächste Jahr und die Rechnung des letzten Jahres, mit den wichtigsten Zahlen.'
 field_office: { node: finance-taxes }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Das Budget ist der Plan: Es legt fest, wie viel die Gemeinde im nächsten Jahr ausgeben darf und welche Einnahmen sie erwartet. Die Rechnung zeigt, wie es tatsächlich gekommen ist. Über beide entscheidet die Gemeindeversammlung, und beide können Sie als PDF lesen oder gedruckt bei der Gemeindekanzlei beziehen.</p>'
+  - type: title
+    field_title: { de: Die wichtigsten Zahlen }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>In Mio. Franken</th><th>Rechnung letztes Jahr</th><th>Budget laufendes Jahr</th><th>Budget nächstes Jahr</th></tr></thead><tbody><tr><td>Aufwand</td><td>66,8</td><td>68,0</td><td>69,4</td></tr><tr><td>Ertrag</td><td>67,9</td><td>67,6</td><td>68,9</td></tr><tr><td>Ergebnis</td><td>+1,1</td><td>−0,4</td><td>−0,5</td></tr><tr><td>Nettoinvestitionen</td><td>7,2</td><td>10,8</td><td>12,4</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Der Steuerfuss bleibt bei 1,62: Die Gemeindesteuer beträgt das 1,62-Fache der einfachen Steuer des Kantons.</p>'
+  - type: title
+    field_title: { de: Die Rechnung des letzten Jahres }
+  - type: text
+    field_text:
+      de: '<p>Die Rechnung schliesst mit einem Überschuss von 1,1 Millionen Franken ab, statt mit dem budgetierten Defizit von 0,4 Millionen. Die Firmen haben mehr Steuern bezahlt als erwartet, und die Umgestaltung des Dorfplatzes hat später begonnen. Der Überschuss geht ins Eigenkapital. Investiert hat die Gemeinde 7,2 Millionen, vor allem in die Sanierung des Strandbads.</p>'
+  - type: title
+    field_title: { de: Das Budget für das nächste Jahr }
+  - type: text
+    field_text:
+      de: '<p>Der Gemeinderat rechnet mit einem kleinen Defizit von 0,5 Millionen Franken. Der Aufwand steigt vor allem bei der Schule, weil es mehr Klassen braucht, und bei den Beiträgen an die Pflegeheime. Investieren will die Gemeinde 12,4 Millionen, am meisten in:</p><ul><li>den neuen Dorfplatz (4,1 Millionen)</li><li>die Wasserleitung in der Dorfstrasse (2,8 Millionen)</li><li>zwei zusätzliche Klassenzimmer im Schulhaus Seefeld (3,2 Millionen)</li></ul>'
+  - type: title
+    field_title: { de: Wie Budget und Rechnung entstehen }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Rechnung prüfen }
+        field_text:
+          de: '<p>Im Frühling prüft die externe Revisionsstelle die Rechnung des Vorjahres.</p>'
+      - type: step
+        field_title: { de: Rechnung genehmigen }
+        field_text:
+          de: '<p>Im Juni genehmigt die Gemeindeversammlung die Rechnung.</p>'
+      - type: step
+        field_title: { de: Budget erarbeiten }
+        field_text:
+          de: '<p>Im Sommer erarbeitet der Gemeinderat mit der Verwaltung das Budget und den Finanzplan für die folgenden vier Jahre.</p>'
+      - type: step
+        field_title: { de: Budget prüfen }
+        field_text:
+          de: '<p>Im Herbst prüft die Finanzkommission das Budget und gibt der Gemeindeversammlung eine Empfehlung ab.</p>'
+      - type: step
+        field_title: { de: Budget beschliessen }
+        field_text:
+          de: '<p>Im Dezember beschliesst die Gemeindeversammlung das Budget und den Steuerfuss.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Was geschieht, wenn die Gemeindeversammlung das Budget ablehnt?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Dann legt der Gemeinderat im Frühling ein neues Budget vor. Bis dahin darf die Gemeinde nur Ausgaben tätigen, die gesetzlich vorgeschrieben sind oder keinen Aufschub dulden.</p>'
+  - type: accordion
+    field_title: { de: 'Wer sitzt in der Finanzkommission?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Fünf Stimmberechtigte, die die Gemeindeversammlung für vier Jahre wählt. Sie gehören nicht dem Gemeinderat an und prüfen seine Vorlagen unabhängig.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: financial-strategy }
+  - type: teaser
+    field_link: { node: in-numbers }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Dokumente }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/budget
+        field_title: { de: Budget (PDF) }
+      - type: link
+        field_link: https://www.example.com/annual-accounts
+        field_title: { de: Rechnung (PDF) }
+      - type: link
+        field_link: https://www.example.com/financial-plan
+        field_title: { de: Finanzplan (PDF) }

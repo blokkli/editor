@@ -5,8 +5,76 @@ field_lead:
   de: 'Von PET bis Sonderabfall: wo Sie was abgeben.'
 field_office: { node: public-works }
 field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Was sich wiederverwerten lässt, gehört nicht in den Kehrichtsack. Separat gesammelt, wird es zu neuem Glas, Papier oder Metall, und Sie sparen Sackgebühren. Die Tabelle zeigt, wo Sie was abgeben. Was nicht darin steht, gehört in den Kehricht.</p>'
   - type: from_library
     field_reusable_paragraph: { library: waste-guide }
+  - type: title
+    field_title: { de: Sammelstellen im Quartier }
+  - type: text
+    field_text:
+      de: '<p>An sieben Sammelstellen geben Sie Glas, Alu und Blech ab, unter anderem beim Bahnhof, beim Schulhaus Seefeld und beim Friedhof. Die Karte unter «Formulare und Links» zeigt alle. Aus Rücksicht auf die Nachbarschaft sind die Sammelstellen von Montag bis Samstag von 7.00 bis 20.00 Uhr offen, an Sonn- und Feiertagen nicht.</p><p>Trennen Sie das Glas nach Farben: weiss, braun und grün. Anderes farbiges Glas gehört zum grünen. Deckel und Korken werfen Sie in den Kehricht.</p>'
+  - type: title
+    field_title: { de: Sonderabfall }
+  - type: text
+    field_text:
+      de: '<p>Farben, Lacke, Lösungsmittel, Altöl, Chemikalien und Pflanzenschutzmittel gehören weder in den Kehricht noch in den Ausguss. Bringen Sie sie in der Originalverpackung in die Entsorgungsstelle beim Werkhof: Haushaltsmengen bis 20 Kilogramm nehmen wir gratis an. Medikamente bringen Sie in eine Apotheke, Batterien und Leuchtmittel in eine Verkaufsstelle.</p>'
+  - type: title
+    field_title: { de: 'Weniger Kehricht, mehr Recycling' }
+  - type: text
+    field_text:
+      de: '<p>Seit der Einführung der Sackgebühr trennen die Blockingerinnen und Blockinger ihren Abfall immer sorgfältiger. Heute sammeln sie mehr als die Hälfte separat.</p>'
+  - type: chart
+    options:
+      data:
+        type: bar
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH }
+        typeOptions: { stacked: true }
+        dataSource: { id: waste, label: 'Abfall pro Kopf, 2016–2025' }
+        translations:
+          de:
+            title: Abfall pro Kopf
+            valueAxisTitle: Kilogramm
+            footnotes: ['Haushaltsabfälle, ohne Bauschutt und Sonderabfall.']
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Wohin mit Plastik?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>PET-Getränkeflaschen und Plastikflaschen von Milch, Shampoo oder Waschmittel nehmen die meisten Verkaufsstellen zurück. Anderes Plastik, etwa Folien, Becher und Schalen, gehört in den Kehricht: Blockingen sammelt es nicht separat.</p>'
+  - type: accordion
+    field_title: { de: 'Gehören kompostierbare Säcke ins Grüngut?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Nein. Auch kompostierbare Säcke zerfallen in der Vergärungsanlage zu langsam. Sammeln Sie Rüstabfälle in Zeitungspapier oder direkt im Container.</p>'
+  - type: accordion
+    field_title: { de: 'Wohin mit alten Kleidern?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>In die Sammelcontainer beim Bahnhof und beim Werkhof, sauber und in geschlossenen Säcken. Schuhe binden Sie paarweise zusammen. Was noch tragbar ist, wird weiterverkauft, der Rest wird zu Putzlappen oder Dämmstoff.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: collection-days }
+  - type: teaser
+    field_link: { node: collection-point }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/collection-map
+        field_title: { de: Karte der Sammelstellen }
+      - type: link
+        field_link: https://www.example.com/waste-calendar
+        field_title: { de: Abfallkalender }

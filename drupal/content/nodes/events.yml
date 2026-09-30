@@ -2,10 +2,12 @@
 key: events
 type: editorial
 frontend_route: events
-title: { en: Events, de: Veranstaltungen, fr: Événements }
+title: { de: Veranstaltungen }
 field_lead:
-  en: "What's on in Blockingen: markets, concerts, sport and meetings."
   de: 'Was in Blockingen los ist: Märkte, Konzerte, Sport und Versammlungen.'
-  fr: 'Ce qui se passe à Bloquens : marchés, concerts, sport et assemblées.'
 field_host_options:
   - { key: header, value: plain }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Organisieren Sie einen öffentlichen Anlass in Blockingen? Vereine und Organisationen publizieren ihn hier gratis. Senden Sie Titel, Datum, Ort und eine kurze Beschreibung mindestens drei Wochen vorher an Sport und Freizeit: <a href="mailto:sport@blockingen.example">sport@blockingen.example</a>.</p>'

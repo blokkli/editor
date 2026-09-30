@@ -4,6 +4,61 @@ title: { de: 'Gemeinderat' }
 field_lead:
   de: 'Die sieben Mitglieder des Gemeinderats, ihre Ressorts und wie der Gemeinderat arbeitet.'
 field_office: { node: municipal-chancery }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Der Gemeinderat ist die Regierung von Blockingen. Seine sieben Mitglieder wählen die Stimmberechtigten für vier Jahre. Er führt die Verwaltung, bereitet die Geschäfte der Gemeindeversammlung vor und entscheidet selbst, wo das Gesetz es ihm überträgt, etwa über Baugesuche und Beiträge an Vereine. Jedes Mitglied betreut ein Ressort, entschieden wird aber gemeinsam: Nach aussen vertritt der Gemeinderat seine Beschlüsse als Ganzes.</p>'
+  - type: title
+    field_title: { de: Die Mitglieder }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Mitglied</th><th>Ressort</th></tr></thead><tbody><tr><td>Martine Blaser, Gemeindepräsidentin</td><td>Präsidiales und Finanzen</td></tr><tr><td>Thomas Wüthrich, Vizepräsident</td><td>Bau und Planung</td></tr><tr><td>Sandra Marti</td><td>Bildung</td></tr><tr><td>Luc Perrin</td><td>Soziales und Gesundheit</td></tr><tr><td>Beat Zingg</td><td>Tiefbau und Umwelt</td></tr><tr><td>Nathalie Rochat</td><td>Gemeindewerke und Sicherheit</td></tr><tr><td>Daniel Hofer</td><td>Sport, Kultur und Freizeit</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Wie der Gemeinderat arbeitet }
+  - type: text
+    field_text:
+      de: '<p>Der Gemeinderat tagt jeden zweiten Montag im Rathaus. Die Sitzungen sind nicht öffentlich, die Beschlüsse schon: Er veröffentlicht sie in der Woche danach unter «Aktuelles». Vorbereitet werden die Geschäfte von der Verwaltung; die Gemeindeschreiberin führt das Protokoll.</p><p>Das Amt ist ein Nebenamt. Die Gemeindepräsidentin arbeitet zu 60 Prozent für die Gemeinde, die anderen Mitglieder etwa einen Tag pro Woche.</p>'
+  - type: title
+    field_title: { de: Sprechstunde }
+  - type: text
+    field_text:
+      de: '<p>Am ersten Donnerstag im Monat empfängt die Gemeindepräsidentin von 17.00 bis 18.30 Uhr im Rathaus, ohne Anmeldung. Die anderen Mitglieder erreichen Sie per E-Mail, etwa <a href="mailto:thomas.wuethrich@blockingen.example">thomas.wuethrich@blockingen.example</a>, oder über die Gemeindekanzlei.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Wie bringe ich ein Anliegen vor den Gemeinderat?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Schreiben Sie ihm, per Post an die Gemeindekanzlei oder per E-Mail. Der Gemeinderat beantwortet jedes Schreiben, in der Regel innert eines Monats. Betrifft Ihr Anliegen die ganze Gemeinde, können Sie es auch an der Gemeindeversammlung vorbringen.</p>'
+  - type: accordion
+    field_title: { de: 'Was verdienen die Mitglieder des Gemeinderats?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Die Gemeindepräsidentin erhält Fr. 78 000.– im Jahr, die anderen Mitglieder je Fr. 18 000.–, dazu ein Sitzungsgeld für Kommissionen. Die Entschädigungen legt die Gemeindeversammlung fest.</p>'
+  - type: accordion
+    field_title: { de: 'Kann ich selbst für den Gemeinderat kandidieren?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, wenn Sie in Blockingen stimmberechtigt sind. Für die Wahl braucht es einen Wahlvorschlag, unterschrieben von mindestens zehn Stimmberechtigten. Mehr dazu auf der Seite «Abstimmungen und Wahlen».</p>'
+field_related:
+  - type: teaser
+    field_link: { node: assembly }
+  - type: teaser
+    field_link: { node: votes }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Dokumente und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/council-decisions
+        field_title: { de: Beschlüsse des Gemeinderats }
+      - type: link
+        field_link: https://www.example.com/municipal-code
+        field_title: { de: Gemeindeordnung (PDF) }

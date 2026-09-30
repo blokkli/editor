@@ -3,61 +3,57 @@
   field_paragraphs:
     - type: text
       field_text:
-        en: '<p>Blockingen / Bloquens, the town by the lake.</p>'
-        de: '<p>Blockingen / Bloquens, die Gemeinde am See.</p>'
-        fr: '<p>Blockingen / Bloquens, la commune au bord du lac.</p>'
+        de: '<p>Blockingen / Bloquens, die zweisprachige Gemeinde am See.</p>'
     - type: contact
       options: { display: compact }
       field_office: { node: municipal-chancery }
     - type: link
       options: { style: secondary }
-      field_link: { node: municipal-chancery }
-      field_title: { en: Contact, de: Kontakt, fr: Contact }
+      field_link: { node: administration }
+      field_title: { de: Alle Ämter und Öffnungszeiten }
 
 - key: site
   type: site
-  field_site_name: { en: Blockingen, de: Blockingen, fr: Bloquens }
+  field_site_name: { de: Blockingen }
   # The meta navigation, in the header's service bar.
   field_service_links:
     - type: link
       field_link: https://www.example.com/online-counter
-      field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
+      field_title: { de: Online-Schalter }
     - type: link
       field_link: { node: municipal-chancery }
-      field_title: { en: Contact, de: Kontakt, fr: Contact }
+      field_title: { de: Kontakt }
   # The home page's frequently searched links: its own pages where there are
-  # some, the rest are placeholders like the online counter.
+  # some, the rest are placeholders like the vacancies.
   field_quick_links:
     - type: link
-      field_link: https://www.example.com/online-counter
-      field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
+      field_link: { node: collection-days }
+      field_title: { de: Abfuhrtage }
     - type: link
-      field_link: { node: waste }
-      field_title: { en: Waste and recycling, de: Abfall & Recycling, fr: Déchets et recyclage }
-    - type: link
-      field_link: { node: taxes }
-      field_title: { en: Taxes, de: Steuern, fr: Impôts }
-    - type: link
-      field_link: { node: building-permits }
-      field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
+      field_link: { node: tax-return }
+      field_title: { de: Steuererklärung }
     - type: link
       field_link: { node: moving-in }
-      field_title: { en: Moving here, de: Zuzug, fr: S'installer ici }
+      field_title: { de: Zuzug }
     - type: link
-      field_link: { node: school }
-      field_title: { en: Schools and childcare, de: Schule & Betreuung, fr: École et accueil }
+      field_link: { node: documents }
+      field_title: { de: Identitätskarte und Pass }
+    - type: link
+      field_link: { node: building-permits }
+      field_title: { de: Baugesuch einreichen }
+    - type: link
+      field_link: { node: day-school }
+      field_title: { de: Tagesschule }
     - type: link
       field_link: { node: sports-facilities }
-      field_title: { en: Room hire, de: Raumvermietung, fr: Location de salles }
+      field_title: { de: Hallen mieten }
     - type: link
       field_link: https://www.example.com/jobs
-      field_title: { en: Vacancies, de: Offene Stellen, fr: Postes vacants }
+      field_title: { de: Offene Stellen }
   # Banners at the very top of every page.
   field_notice:
     - type: banner
-      options: { color: warning }
+      options: { color: success }
       field_title:
-        en: The lakeside pool opens on Saturday. It's closed on Mondays for maintenance.
-        de: Das Strandbad öffnet am Samstag. Montags ist es wegen Unterhaltsarbeiten geschlossen.
-        fr: La piscine du lac ouvre samedi. Elle est fermée le lundi pour l'entretien.
+        de: 'Das Strandbad öffnet am Samstag, nach der Sanierung mit einem neuen Kinderbereich.'
       field_link: { node: pool-opening }

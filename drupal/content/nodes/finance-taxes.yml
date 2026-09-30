@@ -1,10 +1,8 @@
 key: finance-taxes
 type: office
-title: { en: Finance and taxes, de: Finanzen und Steuern, fr: Finances et impôts }
+title: { de: 'Finanzen und Steuern' }
 field_lead:
-  en: 'Tax returns, tax bills and payment plans, and the municipality''s accounts.'
-  de: 'Steuererklärungen, Steuerrechnungen und Ratenzahlungen, und die Rechnung der Gemeinde.'
-  fr: 'Déclarations d''impôt, factures et plans de paiement, et les comptes de la commune.'
+  de: 'Steuererklärungen, Steuerrechnungen und Zahlungspläne, das Budget und die Rechnung der Gemeinde.'
 field_location: { term: town-hall }
 field_phone: '+41 32 555 01 20'
 field_email: finanzen@blockingen.example
@@ -19,3 +17,23 @@ field_opening_hours:
   - { day: 4, starthours: 800, endhours: 1200 }
   - { day: 4, starthours: 1330, endhours: 1700 }
   - { day: 5, starthours: 800, endhours: 1200 }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Finanzen und Steuern verschickt die Steuererklärungen, stellt die Rechnungen für die Gemeinde- und Staatssteuern aus und vereinbart mit Ihnen einen Zahlungsplan, wenn Sie nicht alles auf einmal bezahlen können. Bei Fragen zum Ausfüllen helfen wir Ihnen gern, im März auch an zwei Abenden im Rathaus. Fragen zu Ihrer Veranlagung beantwortet die kantonale Steuerverwaltung. Die Steuererklärung reichen Sie am einfachsten online ein, mit der Steuersoftware des Kantons.</p><p>Für die Gemeinde führen wir die Buchhaltung und erarbeiten mit dem Gemeinderat das Budget, die Rechnung und den Finanzplan. Am Freitagnachmittag ist der Schalter geschlossen.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: taxes }
+      - type: link
+        field_link: { node: tax-return }
+      - type: link
+        field_link: { node: paying-taxes }
+      - type: link
+        field_link: { node: municipal-finances }
+      - type: link
+        field_link: { node: budget }
+      - type: link
+        field_link: { node: financial-strategy }

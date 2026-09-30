@@ -4,6 +4,64 @@ title: { de: 'Leben im Alter' }
 field_lead:
   de: 'Beratung, Hilfe zu Hause und Angebote für ältere Menschen in Blockingen.'
 field_office: { node: social-services }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Fast jede fünfte Person in Blockingen ist älter als 65. Die meisten möchten so lange wie möglich zu Hause wohnen, und dabei helfen die Gemeinde, die Spitex und viele Freiwillige. Die Anlaufstelle Alter der Sozialen Dienste berät Sie und Ihre Angehörigen: zu Hilfe im Alltag, zu Finanzen, zu einer kleineren Wohnung oder einem Platz im Alterszentrum. Die Beratung ist gratis; auf Wunsch kommen wir zu Ihnen nach Hause.</p>'
+  - type: title
+    field_title: { de: Zu Hause wohnen bleiben }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Angebot</th><th>Was</th><th>Kosten</th></tr></thead><tbody><tr><td>Spitex</td><td>Pflege und Hilfe im Haushalt</td><td>Die Pflege bezahlt zum grössten Teil die Krankenkasse.</td></tr><tr><td>Mahlzeitendienst</td><td>ein warmes Mittagessen aus der Küche des Alterszentrums, an sieben Tagen in der Woche</td><td>Fr. 14.– pro Mahlzeit</td></tr><tr><td>Fahrdienst</td><td>Freiwillige fahren Sie zur Ärztin, zur Therapie oder zum Einkaufen.</td><td>70 Rappen pro Kilometer</td></tr><tr><td>Notruf</td><td>Ein Knopf am Handgelenk verbindet Sie rund um die Uhr mit einer Notrufzentrale.</td><td>Fr. 45.– im Monat</td></tr><tr><td>Besuchsdienst</td><td>Freiwillige besuchen Sie regelmässig, für ein Gespräch, einen Spaziergang oder ein Spiel.</td><td>gratis</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Das Alterszentrum Seematte }
+  - type: text
+    field_text:
+      de: '<p>Das Alterszentrum Seematte am Rebweg hat 64 Plätze im Pflegeheim und 24 Alterswohnungen, in denen Sie selbständig wohnen und bei Bedarf Hilfe holen. Dazu kommen zwei Ferienbetten, etwa wenn Ihre Angehörigen verreisen, und eine Tagesstätte für Menschen mit Demenz.</p><p>Die Kosten für Pension und Betreuung bezahlen Sie selbst, die Pflege zum grössten Teil die Krankenkasse und der Kanton. Reichen Ihre Rente und Ihr Vermögen nicht, erhalten Sie Ergänzungsleistungen. Für einen Platz im Pflegeheim gibt es eine Warteliste: Melden Sie sich früh bei der Anlaufstelle.</p>'
+  - type: title
+    field_title: { de: Aktiv bleiben }
+  - type: text
+    field_text:
+      de: '<ul><li><strong>Mittagstisch:</strong> jeden Donnerstag um 12.00 Uhr im Alterszentrum, für alle ab 60, ohne Anmeldung</li><li><strong>Seniorenturnen:</strong> mit dem Turnverein, jeden Dienstag in der Turnhalle Altstadt</li><li><strong>Smartphone und Computer:</strong> Jugendliche helfen Ihnen einmal im Monat in der Bibliothek, gratis</li><li><strong>Wandergruppe:</strong> jeden zweiten Mittwoch, zwei bis drei Stunden, in der Umgebung</li></ul>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Meine Mutter wird vergesslich. Wo bekommen wir Hilfe?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Sprechen Sie zuerst mit ihrer Hausärztin oder ihrem Hausarzt; eine Abklärung zeigt, woher die Vergesslichkeit kommt. Die Anlaufstelle Alter berät Sie danach, wie Ihre Mutter zu Hause gut leben kann. Die Tagesstätte im Alterszentrum entlastet Sie an einem oder mehreren Tagen pro Woche.</p>'
+  - type: accordion
+    field_title: { de: 'Wo beantrage ich Ergänzungsleistungen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Bei der AHV-Zweigstelle im Verwaltungszentrum, im selben Haus wie die Sozialen Dienste. Wir helfen Ihnen gern beim Ausfüllen des Formulars.</p>'
+  - type: accordion
+    field_title: { de: 'Ich möchte mich freiwillig engagieren. Wo melde ich mich?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Bei der Anlaufstelle Alter. Für den Fahrdienst und den Besuchsdienst suchen wir immer Freiwillige, auch für ein paar Stunden im Monat. Ihre Auslagen erhalten Sie zurück.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: social-assistance }
+  - type: teaser
+    field_link: { node: clubs }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/meal-service
+        field_title: { de: Mahlzeitendienst bestellen }
+      - type: link
+        field_link: https://www.example.com/transport-service
+        field_title: { de: Fahrdienst anfragen }
+      - type: link
+        field_link: https://www.example.com/seematte
+        field_title: { de: Alterszentrum Seematte }

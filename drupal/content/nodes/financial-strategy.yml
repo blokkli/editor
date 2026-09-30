@@ -4,6 +4,45 @@ title: { de: 'Finanzstrategie' }
 field_lead:
   de: 'Wie der Gemeinderat die Finanzen in den nächsten Jahren im Gleichgewicht halten will.'
 field_office: { node: finance-taxes }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Blockingen wächst, und in den nächsten zehn Jahren stehen grosse Investitionen an: mehr Schulraum, neue Wasserleitungen für ein Netz, das zum Teil über 60 Jahre alt ist, und der neue Dorfplatz. Zusammen kosten sie rund 90 Millionen Franken. Ohne Gegenmassnahmen würden sich die Schulden der Gemeinde in dieser Zeit verdoppeln.</p><p>Der Gemeinderat hat deshalb eine Finanzstrategie beschlossen. Sie ist die Grundlage für jedes Budget und für den Finanzplan.</p>'
+  - type: title
+    field_title: { de: Die Ziele }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Ziel</th><th>Richtwert</th><th>Heute</th></tr></thead><tbody><tr><td>Ausgeglichene Rechnung</td><td>über acht Jahre im Durchschnitt mindestens ausgeglichen</td><td>+0,3 Mio. Franken im Durchschnitt</td></tr><tr><td>Investitionen selbst finanzieren</td><td>Selbstfinanzierungsgrad von mindestens 80 % im Durchschnitt</td><td>72 %</td></tr><tr><td>Schulden begrenzen</td><td>Nettoschuld von höchstens Fr. 3000.– pro Kopf</td><td>Fr. 2490.–</td></tr><tr><td>Stabiler Steuerfuss</td><td>1,62, ohne Erhöhung</td><td>1,62</td></tr></tbody></table>'
+  - type: title
+    field_title: { de: Die Massnahmen }
+  - type: text
+    field_text:
+      de: '<h3>Investitionen nach Dringlichkeit</h3><p>Der Gemeinderat teilt die Projekte in drei Stufen ein: notwendig, wie die Wasserleitungen und der Schulraum; wichtig; und wünschbar. Ein Projekt kommt erst ins Budget, wenn seine Finanzierung steht.</p><h3>Gebühren, die die Kosten decken</h3><p>Wasser, Abwasser und Abfall bezahlen wir mit den Gebühren, nicht mit den Steuern. Deshalb passt die Gemeinde die Gebühren an, wenn die Kosten steigen, wie jetzt beim Wasser.</p><h3>Ein Aufwand, der mit der Gemeinde wächst</h3><p>Der Aufwand der Verwaltung soll nicht stärker wachsen als die Bevölkerung. Neue Aufgaben finanziert die Gemeinde, indem sie auf andere verzichtet oder sie mit Nachbargemeinden teilt.</p><h3>Land im Baurecht</h3><p>Grundstücke, die sie nicht selbst braucht, verkauft die Gemeinde nicht, sondern gibt sie im Baurecht ab. So bleiben sie in ihrem Besitz und bringen jedes Jahr einen Zins ein.</p>'
+  - type: title
+    field_title: { de: Wie es weitergeht }
+  - type: text
+    field_text:
+      de: '<p>Der Gemeinderat prüft jedes Jahr mit dem Finanzplan, ob die Gemeinde auf Kurs ist, und berichtet der Gemeindeversammlung darüber. Werden zwei Ziele drei Jahre nacheinander verfehlt, schlägt er zusätzliche Massnahmen vor.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Fragen zur Finanzstrategie?</strong> Die Finanzkommission beantwortet sie gern, auch vor der Gemeindeversammlung: <a href="mailto:finanzkommission@blockingen.example">finanzkommission@blockingen.example</a>.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: budget }
+  - type: teaser
+    field_link: { node: in-numbers }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Dokumente }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/financial-strategy
+        field_title: { de: Finanzstrategie (PDF) }
+      - type: link
+        field_link: https://www.example.com/financial-plan
+        field_title: { de: Finanzplan (PDF) }

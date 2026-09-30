@@ -1,31 +1,45 @@
 # Templates aren't translated (content translation is off for them): they're
 # created in the source language only.
+
+# Follows the detail pages: an introduction, an info box, the steps, and the
+# frequent questions. The sidebar (the office's contact and a link list) isn't
+# part of a template.
 - key: service-page
-  label: { en: Service page, de: Dienstleistungsseite, fr: Page de prestation }
+  label: { de: Dienstleistungsseite }
   description:
-    en: A title, an introduction and questions with answers.
-    de: Ein Titel, eine Einleitung und Fragen mit Antworten.
-    fr: Un titre, une introduction et des questions avec leurs réponses.
+    de: 'Eine Einleitung, ein Hinweis, die Schritte und häufige Fragen, wie auf den Detailseiten.'
   paragraphs:
-    - type: title
-      field_title: { en: What you need, de: Was Sie brauchen, fr: Ce qu'il vous faut }
     - type: text
       field_text:
-        en: '<p>Describe the service in two or three sentences.</p>'
-        de: '<p>Beschreiben Sie die Dienstleistung in zwei, drei Sätzen.</p>'
-        fr: '<p>Décrivez la prestation en deux ou trois phrases.</p>'
+        de: '<p>Beschreiben Sie in zwei, drei Sätzen, worum es geht, für wen es gilt und bis wann es zu erledigen ist.</p>'
+    - type: text
+      options: { box: info }
+      field_text:
+        de: '<p><strong>Online erledigen:</strong> Sagen Sie, ob und wo es auch online geht.</p>'
+    - type: title
+      field_title: { de: So gehen Sie vor }
+    - type: steps
+      field_paragraphs:
+        - type: step
+          field_title: { de: Der erste Schritt }
+          field_text:
+            de: '<p>Was ist zu tun, und was braucht es dafür?</p>'
+        - type: step
+          field_title: { de: Der zweite Schritt }
+          field_text:
+            de: '<p>Was geschieht danach, und wie lange dauert es?</p>'
+    - type: title
+      field_title: { de: Häufige Fragen }
     - type: accordion
-      field_title: { en: A frequent question, de: Eine häufige Frage, fr: Une question fréquente }
+      field_title: { de: 'Eine häufige Frage?' }
       field_paragraphs:
         - type: text
           field_text:
-            en: '<p>And its answer.</p>'
-            de: '<p>Und ihre Antwort.</p>'
-            fr: '<p>Et sa réponse.</p>'
+            de: '<p>Und ihre Antwort, in wenigen Sätzen.</p>'
 
 # Added when an editor adds two columns.
 - key: columns
-  label: { en: Two columns, de: Zwei Spalten, fr: Deux colonnes }
+  label: { de: Zwei Spalten }
   is_default: true
   paragraphs:
     - type: columns
@@ -33,12 +47,8 @@
       field_left:
         - type: text
           field_text:
-            en: '<p>The left column.</p>'
             de: '<p>Die linke Spalte.</p>'
-            fr: '<p>La colonne de gauche.</p>'
       field_right:
         - type: text
           field_text:
-            en: '<p>The right column.</p>'
             de: '<p>Die rechte Spalte.</p>'
-            fr: '<p>La colonne de droite.</p>'

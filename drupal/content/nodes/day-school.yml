@@ -4,6 +4,71 @@ title: { de: 'Tagesschule' }
 field_lead:
   de: 'Betreuung vor und nach dem Unterricht und über Mittag, vom Kindergarten bis zur 6. Klasse.'
 field_office: { node: schools-office }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Tagesschule betreut Kinder vom Kindergarten bis zur 6. Klasse vor und nach dem Unterricht und über Mittag, an allen Schultagen. Sie ist im Pavillon beim Schulhaus Seefeld. Die Kinder aus den Kindergärten holen die Betreuerinnen und Betreuer ab. Sie wählen die Module, die Sie brauchen.</p>'
+  - type: title
+    field_title: { de: Module und Tarife }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Modul</th><th>Zeit</th><th>Tarif</th></tr></thead><tbody><tr><td>Frühbetreuung</td><td>7.00–8.00 Uhr</td><td>Fr. 1.– bis Fr. 6.–</td></tr><tr><td>Mittag, mit Essen</td><td>11.45–13.30 Uhr</td><td>Fr. 8.– bis Fr. 18.–</td></tr><tr><td>Nachmittag</td><td>13.30–16.00 Uhr</td><td>Fr. 2.50 bis Fr. 15.–</td></tr><tr><td>Spätbetreuung</td><td>16.00–18.00 Uhr</td><td>Fr. 2.– bis Fr. 12.–</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Der Tarif hängt vom Einkommen und vom Vermögen der Eltern ab. Die Schulverwaltung berechnet ihn mit Ihrer letzten Steuerveranlagung. Für das zweite und jedes weitere Kind bezahlen Sie 20 % weniger.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Anmeldung:</strong> für das neue Schuljahr bis Ende April. Die Module gelten für ein Semester; ändern können Sie sie auf Beginn des Frühlingssemesters.</p>'
+  - type: title
+    field_title: { de: Ein Tag in der Tagesschule }
+  - type: text
+    field_text:
+      de: '<p>Über Mittag essen die Kinder zusammen. Das Essen kocht die Küche des Alterszentrums, frisch und mit Gemüse aus der Region; jeden Tag gibt es auch ein vegetarisches Menü. Am Nachmittag machen die Kinder ihre Hausaufgaben, spielen draussen oder basteln. Bei den Hausaufgaben hilft das Team, es ersetzt aber keinen Nachhilfeunterricht.</p>'
+  - type: title
+    field_title: { de: In den Ferien }
+  - type: text
+    field_text:
+      de: '<p>In sechs der dreizehn Ferienwochen bietet die Tagesschule eine Ferienbetreuung an, von 7.30 bis 17.30 Uhr, mit Ausflügen in die Umgebung. Sie steht allen Kindern der Schule offen, auch denen, die sonst nicht in die Tagesschule gehen. Melden Sie Ihr Kind spätestens sechs Wochen vorher an.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Kann unser Kind einmal spontan zum Mittagessen kommen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja, wenn ein Platz frei ist. Melden Sie es bis 9.00 Uhr am Vortag, am Telefon oder per E-Mail. Sie bezahlen dafür den Tarif des Moduls.</p>'
+  - type: accordion
+    field_title: { de: 'Was bezahlen wir, wenn unser Kind krank ist?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Die gebuchten Module bezahlen Sie auch, wenn Ihr Kind fehlt. Ist es länger als zwei Wochen krank, verrechnen wir ab der dritten Woche nichts mehr.</p>'
+  - type: accordion
+    field_title: { de: 'Unser Kind hat eine Allergie. Kann es trotzdem mitessen?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja. Geben Sie Allergien und Unverträglichkeiten bei der Anmeldung an, mit einem Zeugnis der Ärztin oder des Arztes. Die Küche kocht dann für Ihr Kind separat.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: kindergarten }
+  - type: teaser
+    field_link: { node: way-to-school }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/day-school-registration
+        field_title: { de: Tagesschule anmelden }
+      - type: link
+        field_link: https://www.example.com/day-school-rates
+        field_title: { de: Tarifreglement (PDF) }
+      - type: link
+        field_link: https://www.example.com/day-school-menu
+        field_title: { de: Menüplan }

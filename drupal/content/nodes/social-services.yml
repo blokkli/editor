@@ -1,10 +1,8 @@
 key: social-services
 type: office
-title: { en: Social services, de: Soziale Dienste, fr: Services sociaux }
+title: { de: 'Soziale Dienste' }
 field_lead:
-  en: 'Advice and support for individuals and families, in confidence.'
-  de: 'Beratung und Unterstützung für Einzelpersonen und Familien, vertraulich.'
-  fr: 'Conseil et soutien aux personnes et aux familles, en toute confidentialité.'
+  de: 'Beratung und Unterstützung für Einzelpersonen, Familien und ältere Menschen, vertraulich.'
 field_location: { term: administrative-centre }
 field_phone: '+41 32 555 01 40'
 field_email: soziales@blockingen.example
@@ -18,3 +16,17 @@ field_opening_hours:
   - { day: 4, starthours: 1400, endhours: 1630 }
   - { day: 3, starthours: 830, endhours: 1130 }
   - { day: 5, starthours: 830, endhours: 1130 }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Die Sozialen Dienste beraten und unterstützen Menschen in Blockingen, die in eine schwierige Lage geraten sind: bei Geldsorgen und Schulden, bei der Suche nach einer Stelle oder einer Wohnung, in Familienfragen. Sie prüfen Gesuche um Sozialhilfe und begleiten die Menschen, die sie beziehen. Die Anlaufstelle Alter berät ältere Menschen und ihre Angehörigen.</p><p>Alle Mitarbeitenden unterstehen der Schweigepflicht. Vereinbaren Sie einen Termin am Telefon; in einer Notlage erhalten Sie noch am selben Tag einen. Im selben Haus, im Verwaltungszentrum, ist die AHV-Zweigstelle.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: social-health }
+      - type: link
+        field_link: { node: social-assistance }
+      - type: link
+        field_link: { node: old-age }

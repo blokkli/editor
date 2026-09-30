@@ -4,6 +4,71 @@ title: { de: 'Vereine' }
 field_lead:
   de: 'Rund 60 Vereine, vom Segelclub bis zum Chor, und wie die Gemeinde sie unterstützt.'
 field_office: { node: sport-leisure }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Vom Fussball bis zum Chor, von der Pfadi bis zum Segelclub: In Blockingen gibt es rund 60 Vereine, und viele davon sind zweisprachig. Sie organisieren Trainings, Konzerte und Feste und bringen Menschen zusammen, die sich sonst nicht begegnen würden. Wer neu in Blockingen ist, findet in einem Verein am schnellsten Anschluss.</p>'
+  - type: title
+    field_title: { de: Eine Auswahl }
+  - type: table
+    options: { striped: true }
+    field_table:
+      de: '<table><thead><tr><th>Verein</th><th>Angebot</th></tr></thead><tbody><tr><td>FC Blockingen</td><td>Fussball für Kinder ab 5 Jahren, Frauen und Männer</td></tr><tr><td>Segelclub Blockingen</td><td>Segelkurse, Regatten, Bootsplätze am See</td></tr><tr><td>Ruder- und Kanuclub Blockingen</td><td>Rudern und Paddeln auf dem See, Schnupperkurse im Frühling</td></tr><tr><td>Turnverein Blockingen</td><td>Kinderturnen, Geräteturnen, Fitness für Seniorinnen und Senioren</td></tr><tr><td>Unihockeyclub Seefeld</td><td>Unihockey ab 8 Jahren</td></tr><tr><td>Musikgesellschaft Blockingen</td><td>Blasmusik und Jugendmusik</td></tr><tr><td>Chœur mixte de Bloquens</td><td>Gemischter Chor, auf Französisch und Deutsch</td></tr><tr><td>Pfadi Seefeld</td><td>Pfadi für Kinder und Jugendliche von 6 bis 17 Jahren</td></tr><tr><td>Ludothek Blockingen</td><td>Spiele ausleihen und gemeinsam spielen</td></tr></tbody></table>'
+  - type: text
+    field_text:
+      de: '<p>Alle Vereine mit ihren Kontakten finden Sie im Vereinsverzeichnis unter «Formulare und Links».</p>'
+  - type: title
+    field_title: { de: Wie die Gemeinde die Vereine unterstützt }
+  - type: text
+    field_text:
+      de: '<ul><li>Für jedes aktive Mitglied unter 20 Jahren erhält ein Verein jedes Jahr Fr. 50.–.</li><li>An Anlässe, die allen offenstehen, zahlt die Gemeinde bis zu Fr. 2000.–.</li><li>Vereine mit einer Jugendabteilung trainieren gratis in den Hallen und auf den Plätzen der Gemeinde.</li><li>Ihre Anlässe publizieren die Vereine gratis unter «Veranstaltungen» auf dieser Website.</li></ul><p>Einmal im Jahr zeichnet der Gemeinderat zudem eine Person aus, die sich besonders für einen Verein einsetzt, mit dem Blockinger Freiwilligenpreis.</p>'
+  - type: title
+    field_title: { de: Einen Anlass organisieren }
+  - type: text
+    field_text:
+      de: '<p>Planen Sie ein Fest, ein Turnier oder einen Markt auf öffentlichem Grund, brauchen Sie eine Bewilligung. Reichen Sie das Gesuch mindestens zwei Monate vorher bei Sport und Freizeit ein; wir stimmen es mit der Polizei, dem Werkhof und den Gemeindewerken ab. Der Werkhof leiht Ihnen Festbänke, Absperrgitter und Abfallcontainer.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Mehrweg:</strong> An Anlässen auf öffentlichem Grund schenken Sie Getränke in Mehrwegbechern aus. Die Gemeinde leiht Ihnen bis zu 2000 Becher gratis, gewaschen und in Kisten.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Wie beantragen wir einen Beitrag?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Reichen Sie das Gesuch mit der Mitgliederliste und der Jahresrechnung bis Ende März bei Sport und Freizeit ein. Der Gemeinderat entscheidet im Juni, und der Beitrag wird im Juli ausbezahlt.</p>'
+  - type: accordion
+    field_title: { de: 'Wir gründen einen Verein. Was müssen wir tun?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Melden Sie den Verein bei Sport und Freizeit, damit wir ihn ins Verzeichnis aufnehmen. Für Beiträge braucht der Verein Statuten und muss seit mindestens einem Jahr bestehen.</p>'
+  - type: accordion
+    field_title: { de: 'Wie publizieren wir unseren Anlass auf der Website?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Senden Sie uns den Titel, das Datum, den Ort und eine kurze Beschreibung, mindestens drei Wochen vorher, gern mit einem Bild. Wir publizieren Anlässe, die öffentlich sind.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: sports-facilities }
+  - type: teaser
+    field_link: { node: lakeside-pool }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/clubs
+        field_title: { de: Vereinsverzeichnis }
+      - type: link
+        field_link: https://www.example.com/club-grants
+        field_title: { de: Gesuch für einen Vereinsbeitrag }
+      - type: link
+        field_link: https://www.example.com/event-permit
+        field_title: { de: Bewilligung für einen Anlass }

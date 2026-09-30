@@ -1,0 +1,22 @@
+key: water-main
+type: news
+created: '-2 days'
+title: { de: Eine neue Wasserleitung für die Dorfstrasse }
+field_lead:
+  de: Die Gemeindewerke ersetzen die über 60 Jahre alte Leitung, solange die Dorfstrasse für den neuen Dorfplatz gesperrt ist.
+field_hero_image: { media: residential-street }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Unter der Dorfstrasse liegt eine der ältesten Wasserleitungen von Blockingen. Allein im letzten Jahr ist sie dreimal gebrochen. Die Gemeindewerke ersetzen sie jetzt auf 450 Metern, zwischen der Kirche und dem Schulhaus, und erneuern dabei auch die Hausanschlüsse. Weil die Strasse für die Umgestaltung des Dorfplatzes ohnehin gesperrt ist, muss sie nur einmal aufgerissen werden.</p><p>Die Leitung kostet 2,8 Millionen Franken. Die Gemeindeversammlung hat den Kredit an ihrer letzten Versammlung bewilligt; bezahlt wird er zum grössten Teil im nächsten Jahr.</p>'
+  - type: title
+    field_title: { de: Für die Anwohnerinnen und Anwohner }
+  - type: text
+    field_text:
+      de: '<ul><li>Die Dorfstrasse ist zwischen Kirche und Schulhaus gesperrt, bis im Frühling. Die Umleitung über den Rebweg ist signalisiert.</li><li>Die Bushaltestelle «Dorfplatz» ist beim Schulhaus.</li><li>Zu Ihrem Haus kommen Sie zu Fuss immer, mit dem Auto nach Absprache mit der Bauleitung.</li><li>Wird das Wasser kurz abgestellt, finden Sie zwei Tage vorher einen Zettel im Briefkasten. Meist dauert es nicht länger als einen halben Tag.</li></ul>'
+  - type: link
+    field_link: { node: road-closure }
+    field_title: { de: Die Verkehrsanordnung zur Sperrung }
+  - type: contact
+    options: { display: compact }
+    field_office: { node: utilities }

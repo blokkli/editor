@@ -1,8 +1,28 @@
-# Reused on the waste page and the works yard's office.
+# Single blocks: containers stay out of the library until F12 is fixed.
+
+# Reused on the waste sorting page and the works yard's office.
 - key: waste-guide
   label: { de: Was gehört wohin? }
   paragraphs:
     - type: table
       options: { striped: true }
       field_table:
-        de: '<table><thead><tr><th>Was</th><th>Wohin</th></tr></thead><tbody><tr><td>PET-Getränkeflaschen</td><td>Verkaufsstellen</td></tr><tr><td>Glas, nach Farben getrennt</td><td>Sammelstellen im Quartier</td></tr><tr><td>Alu und Blech</td><td>Sammelstellen im Quartier, Entsorgungsstelle</td></tr><tr><td>Papier und Karton</td><td>Papierabfuhr</td></tr><tr><td>Grüngut und Rüstabfälle</td><td>Grüngutabfuhr</td></tr><tr><td>Batterien und Leuchtmittel</td><td>Verkaufsstellen</td></tr><tr><td>Elektrogeräte</td><td>Verkaufsstellen, Entsorgungsstelle</td></tr><tr><td>Kleider und Schuhe</td><td>Sammelcontainer beim Bahnhof und beim Werkhof</td></tr><tr><td>Farben, Altöl, Chemikalien</td><td>Entsorgungsstelle</td></tr><tr><td>Medikamente</td><td>Apotheken</td></tr></tbody></table>'
+        de: '<table><thead><tr><th>Was</th><th>Wohin</th></tr></thead><tbody><tr><td>PET-Getränkeflaschen</td><td>Verkaufsstellen</td></tr><tr><td>Plastikflaschen von Milch, Shampoo oder Waschmittel</td><td>Verkaufsstellen</td></tr><tr><td>Glas, nach Farben getrennt</td><td>Sammelstellen im Quartier, Entsorgungsstelle</td></tr><tr><td>Alu und Blech</td><td>Sammelstellen im Quartier, Entsorgungsstelle</td></tr><tr><td>Papier und Karton</td><td>Papierabfuhr am ersten Donnerstag im Monat</td></tr><tr><td>Grüngut und Rüstabfälle</td><td>Grüngutabfuhr am Mittwoch</td></tr><tr><td>Batterien und Leuchtmittel</td><td>Verkaufsstellen</td></tr><tr><td>Elektrogeräte</td><td>Verkaufsstellen, Entsorgungsstelle</td></tr><tr><td>Sperrgut</td><td>Sperrgutabfuhr auf Anmeldung, Entsorgungsstelle</td></tr><tr><td>Styropor</td><td>Entsorgungsstelle</td></tr><tr><td>Kleider und Schuhe</td><td>Sammelcontainer beim Bahnhof und beim Werkhof</td></tr><tr><td>Farben, Altöl, Chemikalien</td><td>Entsorgungsstelle</td></tr><tr><td>Medikamente</td><td>Apotheken</td></tr></tbody></table>'
+
+# On the home page.
+- key: emergency-numbers
+  label: { de: Notfallnummern }
+  paragraphs:
+    - type: text
+      options: { box: info }
+      field_text:
+        de: '<p><strong>Notfallnummern:</strong> Polizei <a href="tel:117">117</a>, Feuerwehr <a href="tel:118">118</a>, Sanität <a href="tel:144">144</a>, Vergiftungen <a href="tel:145">145</a>. Bei einem Wasserrohrbruch erreichen Sie den Pikettdienst der Gemeindewerke rund um die Uhr unter <a href="tel:+41325550169">032 555 01 69</a>.</p>'
+
+# On the news and the official publications' overviews.
+- key: stay-informed
+  label: { de: Bleiben Sie informiert }
+  paragraphs:
+    - type: text
+      options: { box: success }
+      field_text:
+        de: '<p><strong>Bleiben Sie informiert:</strong> Der <a href="https://www.example.com/newsletter">Newsletter</a> bringt Ihnen die Neuigkeiten, Veranstaltungen und amtlichen Publikationen der Gemeinde jeden Freitag per E-Mail. Die amtlichen Publikationen können Sie auch als <a href="https://www.example.com/rss">RSS-Feed</a> abonnieren.</p>'

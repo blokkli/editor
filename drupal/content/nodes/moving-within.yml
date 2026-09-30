@@ -4,6 +4,68 @@ title: { de: 'Umzug innerhalb von Blockingen' }
 field_lead:
   de: 'Eine neue Adresse in Blockingen melden Sie innert 14 Tagen. Die Meldung ist gratis.'
 field_office: { node: residents-services }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Ziehen Sie innerhalb von Blockingen um, melden Sie Ihre neue Adresse innert 14 Tagen bei den Einwohnerdiensten. Die Meldung gilt für alle Personen im Haushalt, die mit Ihnen umziehen, und ist gratis.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Online melden:</strong> Den Umzug melden Sie am einfachsten am <a href="https://www.example.com/online-counter">Online-Schalter</a>, in wenigen Minuten. Sie brauchen dafür die Nummer Ihrer neuen Wohnung: Sie steht im Mietvertrag, oder die Verwaltung nennt sie Ihnen.</p>'
+  - type: title
+    field_title: { de: Was Sie angeben }
+  - type: text
+    field_text:
+      de: '<p>Für die Meldung, am Schalter oder online, brauchen Sie:</p><ul><li>die neue Adresse und die Wohnungsnummer</li><li>den Tag des Umzugs</li><li>die Namen aller Personen, die mit Ihnen umziehen</li><li>Ihre Identitätskarte oder Ihren Pass, wenn Sie an den Schalter kommen</li></ul><p>Einen Mietvertrag oder einen neuen Heimatschein brauchen Sie nicht.</p>'
+  - type: title
+    field_title: { de: Wen wir informieren }
+  - type: text
+    field_text:
+      de: '<p>Die neue Adresse geben wir an die Steuerverwaltung, die Gemeindewerke, die Schulverwaltung und das Stimmregister weiter. Das Stimmmaterial und die Steuerrechnung erhalten Sie danach an der neuen Adresse.</p><p>Selbst melden Sie die Adresse Ihrer Krankenkasse, dem Arbeitgeber, der Bank und der Post. Dem Strassenverkehrsamt melden Sie sie innert 14 Tagen, für den Führerausweis und den Fahrzeugausweis.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Ich bleibe im selben Haus. Muss ich den Umzug melden?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Ja. Jede Wohnung hat im Einwohnerregister eine eigene Nummer, auch im selben Haus. Die Gemeinde braucht sie, etwa für die Wohnungsstatistik und für Notfälle.</p>'
+  - type: accordion
+    field_title: { de: 'Ich ziehe mit jemandem zusammen. Was müssen wir melden?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Wer schon in Blockingen wohnt, meldet einen Umzug. Wer aus einer anderen Gemeinde dazuzieht, meldet sich als Zuzug an. Sie können beides zusammen am Schalter erledigen.</p>'
+  - type: accordion
+    field_title: { de: 'Gilt meine Anwohnerparkkarte weiter?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Nur in derselben Parkzone. Liegt Ihre neue Adresse in einer anderen Zone, tauschen wir die Karte am Schalter um. Den Rest der alten Karte rechnen wir an.</p>'
+  - type: accordion
+    field_title: { de: 'Ich habe ein Haus gekauft. Was ist mit Wasser und Abwasser?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Melden Sie den Tag der Übergabe den Gemeindewerken. Sie lesen den Wasserzähler ab und stellen die Rechnung ab diesem Tag auf Sie aus.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: documents }
+  - type: teaser
+    field_link: { node: fees }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/online-counter
+        field_title: { de: Online-Schalter }
+      - type: link
+        field_link: https://www.example.com/parking-permit
+        field_title: { de: Anwohnerparkkarte }
+      - type: link
+        field_link: https://www.example.com/vehicle-address
+        field_title: { de: 'Strassenverkehrsamt: Adresse ändern' }

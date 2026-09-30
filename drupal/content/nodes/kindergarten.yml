@@ -4,6 +4,75 @@ title: { de: 'Kindergarteneintritt' }
 field_lead:
   de: 'Wann Ihr Kind in den Kindergarten kommt und wie Sie es anmelden.'
 field_office: { node: schools-office }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Kinder, die bis zum 31. Juli vier Jahre alt werden, kommen im August in den Kindergarten. Der Kindergarten dauert zwei Jahre und ist obligatorisch. Blockingen hat fünf Kindergärten in den Quartieren, damit der Weg für die Kinder kurz ist: drei deutschsprachige, einen französischsprachigen und einen zweisprachigen.</p>'
+  - type: title
+    field_title: { de: So melden Sie Ihr Kind an }
+  - type: steps
+    field_paragraphs:
+      - type: step
+        field_title: { de: Brief im Januar }
+        field_text:
+          de: '<p>Die Schulverwaltung schreibt allen Eltern, deren Kind im Sommer in den Kindergarten kommt.</p>'
+      - type: step
+        field_title: { de: Anmeldung bis Ende Februar }
+        field_text:
+          de: '<p>Melden Sie Ihr Kind online oder mit dem Formular an, und wählen Sie die Sprache: Deutsch, Französisch oder zweisprachig.</p>'
+      - type: step
+        field_title: { de: Einteilung im Mai }
+        field_text:
+          de: '<p>Wir teilen Ihr Kind nach Sprache und Wohnort ein. Sie erfahren, in welchen Kindergarten es geht und wer es unterrichtet.</p>'
+      - type: step
+        field_title: { de: Besuchsmorgen im Juni }
+        field_text:
+          de: '<p>Ihr Kind lernt seine Lehrperson und die anderen Kinder kennen. Sie sind mit dabei.</p>'
+  - type: title
+    field_title: { de: Später eintreten }
+  - type: text
+    field_text:
+      de: '<p>Ist Ihr Kind noch nicht bereit, kann es ein Jahr später in den Kindergarten kommen. Stellen Sie das Gesuch zusammen mit der Anmeldung; die Kindergartenlehrperson oder die Schulleitung bespricht es mit Ihnen. Früher eintreten ist nicht möglich.</p>'
+  - type: title
+    field_title: { de: Der Kindergartenalltag }
+  - type: text
+    field_text:
+      de: '<p>Im ersten Jahr besucht Ihr Kind den Kindergarten an vier Vormittagen, von 8.15 bis 11.45 Uhr. Im zweiten Jahr kommen zwei Nachmittage dazu. Für den ersten Tag braucht Ihr Kind:</p><ul><li>Finken mit Namen</li><li>ein Znünitäschli mit einem gesunden Znüni, etwa Früchten oder einem Brot</li><li>Kleider, die schmutzig werden dürfen, und bei jedem Wetter eine Jacke: Die Kinder sind jeden Tag draussen</li></ul>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Unser Kind spricht noch kaum Deutsch oder Französisch. Was nun?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Es lernt die Sprache im Kindergarten, mit zusätzlichen Lektionen in Deutsch oder Französisch als Zweitsprache. Leichter fällt der Einstieg, wenn es schon ein Jahr vorher eine Spielgruppe besucht. Die Gemeinde bezahlt dafür einen Beitrag.</p>'
+  - type: accordion
+    field_title: { de: 'Wer betreut unser Kind am Nachmittag?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Die Tagesschule, schon vom ersten Kindergartenjahr an. Die Betreuerinnen und Betreuer holen die Kinder im Kindergarten ab. Melden Sie Ihr Kind bis Ende April an.</p>'
+  - type: accordion
+    field_title: { de: 'Wir ziehen erst im Sommer nach Blockingen. Wann melden wir unser Kind an?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Sobald Sie Ihre neue Adresse kennen, auch nach Ende Februar. Ihr Kind erhält auf jeden Fall einen Platz; die Wahl der Sprache und des Kindergartens berücksichtigen wir, so gut es geht.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: languages }
+  - type: teaser
+    field_link: { node: day-school }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Formulare und Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/kindergarten-registration
+        field_title: { de: Kindergarten anmelden }
+      - type: link
+        field_link: https://www.example.com/school-holidays
+        field_title: { de: Ferienplan }

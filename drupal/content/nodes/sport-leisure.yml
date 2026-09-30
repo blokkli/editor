@@ -1,10 +1,8 @@
 key: sport-leisure
 type: office
-title: { en: Sport and leisure, de: Sport und Freizeit, fr: Sports et loisirs }
+title: { de: 'Sport und Freizeit' }
 field_lead:
-  en: 'The lakeside pool, the sports grounds and the clubs.'
-  de: 'Das Strandbad, die Sportanlagen und die Vereine.'
-  fr: 'La plage, les installations sportives et les sociétés locales.'
+  de: 'Das Strandbad, die Sportanlagen, die Vereine und die Bewilligungen für Anlässe.'
 field_location: { term: lakeside-pool }
 field_phone: '+41 32 555 01 80'
 field_email: sport@blockingen.example
@@ -16,3 +14,19 @@ field_opening_hours:
   - { day: 3, starthours: 1400, endhours: 1600 }
   - { day: 5, starthours: 900, endhours: 1130 }
   - { day: 5, starthours: 1400, endhours: 1600 }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Sport und Freizeit betreibt das Strandbad und vermietet die Turnhallen, den Sitzungsraum und die Rasenfelder. Wir unterstützen die rund 60 Vereine in Blockingen, prüfen ihre Gesuche um Beiträge und bewilligen Feste, Turniere und Märkte auf öffentlichem Grund. Für Ihren Anlass leihen wir Ihnen auch Mehrwegbecher.</p><p>Unser Büro ist beim Strandbad, am Montag, am Mittwoch und am Freitag offen. Das Strandbad selbst hat seine eigenen Öffnungszeiten, und Fundsachen aus dem Bad erhalten Sie an seiner Kasse zurück. Hallen reservieren Sie am einfachsten online, spätestens eine Woche vorher.</p>'
+  - type: title
+    field_title: { de: Themen und Dienstleistungen }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: { node: leisure-culture }
+      - type: link
+        field_link: { node: lakeside-pool }
+      - type: link
+        field_link: { node: sports-facilities }
+      - type: link
+        field_link: { node: clubs }

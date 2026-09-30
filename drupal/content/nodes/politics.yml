@@ -1,16 +1,12 @@
 key: politics
 type: editorial
-title: { en: Politics, de: Politik, fr: Politique }
+title: { de: Politik }
 field_lead:
-  en: The town council, votes and elections.
   de: 'Der Gemeinderat, die Gemeindeversammlung, Abstimmungen und Wahlen.'
-  fr: Le conseil communal, les votations et les élections.
 field_hero_image: { media: town-hall }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:
   - type: text
     field_text:
-      en: '<p>The town council meets once a month. Its meetings are open to the public.</p>'
-      de: '<p>Der Gemeinderat tagt einmal im Monat. Seine Sitzungen sind öffentlich.</p>'
-      fr: '<p>Le conseil communal se réunit une fois par mois. Ses séances sont publiques.</p>'
+      de: '<p>In Blockingen entscheiden die Stimmberechtigten selbst: an der Gemeindeversammlung und an der Urne. Der Gemeinderat führt die Gemeinde und bereitet die Geschäfte vor.</p>'

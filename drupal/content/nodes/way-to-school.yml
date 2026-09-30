@@ -4,6 +4,63 @@ title: { de: 'Schulweg' }
 field_lead:
   de: 'Wie Ihr Kind sicher zur Schule kommt, zu Fuss oder mit dem Velo.'
 field_office: { node: schools-office }
+field_paragraphs:
+  - type: text
+    field_text:
+      de: '<p>Auf dem Schulweg lernen Kinder viel: selbständig unterwegs zu sein, sich im Verkehr zurechtzufinden, mit anderen Kindern zu reden. Für den Schulweg sind die Eltern verantwortlich. Bringen Sie Ihr Kind deshalb nicht mit dem Auto: Es lernt den Weg nur zu Fuss, und die Autos vor dem Schulhaus gefährden die anderen Kinder.</p>'
+  - type: title
+    field_title: { de: Den Weg üben }
+  - type: text
+    field_text:
+      de: '<p>Gehen Sie den Schulweg vor dem ersten Schultag mehrmals mit Ihrem Kind ab, zuerst Sie voraus, dann Ihr Kind.</p><ul><li>Wählen Sie den sichersten Weg, nicht den kürzesten.</li><li>Üben Sie die schwierigen Stellen: Ihr Kind hält am Fussgängerstreifen an, schaut nach links und rechts und geht erst, wenn die Autos stehen.</li><li>Planen Sie genug Zeit ein. Wer es eilig hat, passt weniger auf.</li><li>Im Winter machen Leuchtstreifen an der Jacke und am Schulsack Ihr Kind sichtbar.</li></ul>'
+  - type: title
+    field_title: { de: Schülerlotsen }
+  - type: text
+    field_text:
+      de: '<p>An der Seestrasse und an der Bahnhofstrasse helfen Schülerlotsinnen und Schülerlotsen den Kindern über die Strasse, am Morgen von 7.40 bis 8.15 Uhr und am Mittag von 11.45 bis 12.05 Uhr. Es sind Freiwillige aus Blockingen, ausgebildet von der Polizei.</p>'
+  - type: text
+    options: { box: info }
+    field_text:
+      de: '<p><strong>Freiwillige gesucht:</strong> Möchten Sie einen Morgen pro Woche Schülerlotsin oder Schülerlotse sein? Melden Sie sich bei der Schulverwaltung. Die Ausbildung dauert einen Nachmittag.</p>'
+  - type: title
+    field_title: { de: Mit dem Velo oder dem Trottinett }
+  - type: text
+    field_text:
+      de: '<p>Mit dem Velo fahren Kinder zur Schule, wenn sie die Veloprüfung in der 4. Klasse bestanden haben. Darauf bereitet sie die Polizei im Verkehrsunterricht vor. Mit dem Trottinett kommen Kinder ab der 1. Klasse. Velos und Trottinetts stellen sie beim Schulhaus in den Unterstand; auf dem Pausenplatz wird nicht gefahren.</p>'
+  - type: title
+    field_title: { de: Schulbus }
+  - type: text
+    field_text:
+      de: '<p>Kinder aus den Weilern oberhalb der Reben, die mehr als zwei Kilometer vom Schulhaus entfernt wohnen, fahren gratis mit dem Schulbus. Den Fahrplan erhalten Sie mit der Einteilung. Der Bus fährt nur an Schultagen.</p>'
+  - type: title
+    field_title: { de: Häufige Fragen }
+  - type: accordion
+    field_title: { de: 'Unser Kind hat Angst, allein zu gehen. Was hilft?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Oft hilft es, wenn Kinder aus der Nachbarschaft zusammen gehen. Die Lehrperson vermittelt Ihnen gern Kontakte zu anderen Eltern. Begleiten Sie Ihr Kind anfangs ein Stück, und lassen Sie es dann nach und nach allein gehen.</p>'
+  - type: accordion
+    field_title: { de: 'Wo ist eine Stelle gefährlich?' }
+    field_paragraphs:
+      - type: text
+        field_text:
+          de: '<p>Melden Sie es der Schulverwaltung. Sie prüft die Stelle mit der Polizei und dem Tiefbau, und oft findet sich eine Lösung: ein neuer Fussgängerstreifen, eine Tempotafel oder ein Schülerlotse mehr.</p>'
+field_related:
+  - type: teaser
+    field_link: { node: kindergarten }
+  - type: teaser
+    field_link: { node: day-school }
 field_aside:
   - type: blokkli_fragment
     field_blokkli_fragment_name: office_contact
+  - type: title
+    field_title: { de: Links }
+  - type: link_list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/school-bus
+        field_title: { de: Fahrplan des Schulbusses }
+      - type: link
+        field_link: https://www.example.com/school-holidays
+        field_title: { de: Ferienplan }
