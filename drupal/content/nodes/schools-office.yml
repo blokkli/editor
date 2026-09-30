@@ -1,8 +1,10 @@
 key: schools-office
 type: office
-title: { de: 'Schulverwaltung' }
+title: { en: 'Schools office', de: 'Schulverwaltung', fr: 'Administration scolaire' }
 field_lead:
+  en: 'Starting kindergarten, class allocation, the way to school and the day school.'
   de: 'Kindergarteneintritt, die Einteilung in die Klassen, der Schulweg und die Tagesschule.'
+  fr: 'Entrée à l''école enfantine, répartition dans les classes, chemin de l''école et école à journée continue.'
 field_location: { term: seefeld-school }
 field_phone: '+41 32 555 01 70'
 field_email: schulen@blockingen.example
@@ -18,18 +20,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The schools office looks after the kindergarten and the primary school, in both language sections. It enrols children in kindergarten, allocates them to classes, organises the school bus and the day school and calculates their fees. It is the point of contact for parents and passes your questions on to the right person.</p><p>It''s best to discuss questions about your child''s lessons with the teacher first, then with the head teacher of the German- or French-speaking section. The schools office is in Seefeld school and is open in the mornings and on Tuesday and Thursday afternoons.</p>'
       de: '<p>Die Schulverwaltung ist für den Kindergarten und die Primarschule da, in beiden Abteilungen. Sie meldet die Kinder für den Kindergarten an, teilt sie in die Klassen ein, organisiert den Schulbus und die Tagesschule und berechnet deren Tarife. Sie ist die Anlaufstelle für die Eltern und leitet Ihre Fragen an die richtige Stelle weiter.</p><p>Fragen zum Unterricht Ihres Kindes besprechen Sie am besten zuerst mit der Lehrperson, danach mit der Schulleitung der deutsch- oder der französischsprachigen Abteilung. Das Büro der Schulverwaltung ist im Schulhaus Seefeld, am Vormittag und am Dienstag- und am Donnerstagnachmittag offen.</p>'
+      fr: '<p>L''Administration scolaire s''occupe de l''école enfantine et de l''école primaire, dans les deux sections linguistiques. Elle inscrit les enfants à l''école enfantine, les répartit dans les classes, organise le bus scolaire et l''école à journée continue et en calcule les tarifs. Elle est le point de contact des parents et transmet vos questions au bon interlocuteur.</p><p>Pour les questions concernant l''enseignement de votre enfant, adressez-vous d''abord à l''enseignante ou à l''enseignant, puis à la direction d''école de la section germanophone ou francophone. Le bureau de l''Administration scolaire se trouve à l''école du Seefeld ; il est ouvert le matin ainsi que le mardi et le jeudi après-midi.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: school }
-      - type: link
-        field_link: { node: kindergarten }
-      - type: link
-        field_link: { node: languages }
-      - type: link
-        field_link: { node: way-to-school }
-      - type: link
-        field_link: { node: day-school }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

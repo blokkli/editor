@@ -1,67 +1,100 @@
 key: votes
 type: page
-title: { de: 'Abstimmungen und Wahlen' }
+title: { en: Votes and elections, de: 'Abstimmungen und Wahlen', fr: Votations et élections }
 field_lead:
+  en: 'The results of the latest votes and elections, and how to vote by post.'
   de: 'Die Resultate der letzten Abstimmungen und Wahlen, und wie Sie brieflich stimmen.'
+  fr: 'Les résultats des dernières votations et élections, et comment voter par correspondance.'
 field_office: { node: municipal-chancery }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Four times a year, voters decide on federal, cantonal and municipal proposals. In Blockingen, funding of more than CHF 5 million isn''t decided by the municipal assembly but by all voters at the ballot box. You receive your voting papers by post three to four weeks before voting Sunday, in your language of correspondence.</p>'
       de: '<p>Viermal im Jahr stimmen die Stimmberechtigten ab, über Vorlagen des Bundes, des Kantons und der Gemeinde. Über Kredite von mehr als 5 Millionen Franken entscheiden in Blockingen nicht die Gemeindeversammlung, sondern alle an der Urne. Das Stimmmaterial erhalten Sie drei bis vier Wochen vor dem Abstimmungssonntag per Post, in Ihrer Korrespondenzsprache.</p>'
+      fr: '<p>Quatre fois par an, les électrices et électeurs se prononcent sur des objets fédéraux, cantonaux et communaux. À Bloquens, les crédits de plus de 5 millions de francs ne relèvent pas de l''Assemblée communale : c''est l''ensemble du corps électoral qui en décide, aux urnes. Vous recevez le matériel de vote par la poste trois à quatre semaines avant le dimanche de votation, dans votre langue de correspondance.</p>'
   - type: title
-    field_title: { de: Brieflich stimmen }
+    field_title: { en: Voting by post, de: Brieflich stimmen, fr: Voter par correspondance }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Stimmzettel ausfüllen }
+        field_title: { en: Fill in your ballot papers, de: Stimmzettel ausfüllen, fr: Remplir les bulletins de vote }
         field_text:
+          en: '<p>Fill in the ballot papers by hand and put them in the small ballot envelope. Seal it.</p>'
           de: '<p>Füllen Sie die Stimmzettel von Hand aus, und legen Sie sie in das kleine Stimmcouvert. Kleben Sie es zu.</p>'
+          fr: '<p>Remplissez les bulletins de vote à la main et glissez-les dans la petite enveloppe de vote. Fermez-la.</p>'
       - type: step
-        field_title: { de: Stimmrechtsausweis unterschreiben }
+        field_title: { en: Sign your voting card, de: Stimmrechtsausweis unterschreiben, fr: Signer la carte de légitimation }
         field_text:
+          en: '<p>Sign the voting card. Without your signature, your vote doesn''t count.</p>'
           de: '<p>Unterschreiben Sie den Stimmrechtsausweis. Ohne Unterschrift zählt Ihre Stimme nicht.</p>'
+          fr: '<p>Signez la carte de légitimation. Sans signature, votre vote n''est pas valable.</p>'
       - type: step
-        field_title: { de: Zurücksenden }
+        field_title: { en: Send it back, de: Zurücksenden, fr: Renvoyer }
         field_text:
+          en: '<p>Put the ballot envelope and the voting card in the return envelope so that the town''s address shows in the window. Post it by the Tuesday before voting Sunday at the latest; the town pays the postage. Or drop it in the letterbox at the town hall by 10:00 on Sunday.</p>'
           de: '<p>Legen Sie das Stimmcouvert und den Stimmrechtsausweis in das Antwortcouvert, so dass die Adresse der Gemeinde im Fenster erscheint. Senden Sie es spätestens am Dienstag vor dem Abstimmungssonntag ab, das Porto bezahlt die Gemeinde. Oder werfen Sie es bis Sonntag, 10.00 Uhr, in den Briefkasten beim Rathaus.</p>'
+          fr: '<p>Glissez l''enveloppe de vote et la carte de légitimation dans l''enveloppe-réponse, de sorte que l''adresse de la commune apparaisse dans la fenêtre. Envoyez-la au plus tard le mardi précédant le dimanche de votation ; l''affranchissement est payé par la commune. Vous pouvez aussi la déposer jusqu''au dimanche à 10 h dans la boîte aux lettres de l''hôtel de ville.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>At the polling station:</strong> Prefer to vote in person? The polling station in the town hall is open on voting Sunday from 10:00 to 11:00. Bring your voting card.</p>'
       de: '<p><strong>An der Urne:</strong> Lieber persönlich? Das Stimmlokal im Rathaus ist am Abstimmungssonntag von 10.00 bis 11.00 Uhr offen. Bringen Sie Ihren Stimmrechtsausweis mit.</p>'
+      fr: '<p><strong>Au bureau de vote :</strong> vous préférez voter en personne ? Le bureau de vote de l''hôtel de ville est ouvert le dimanche de votation de 10 h à 11 h. Apportez votre carte de légitimation.</p>'
   - type: title
-    field_title: { de: Die letzten Abstimmungen in Blockingen }
+    field_title: { en: Recent votes in Blockingen, de: Die letzten Abstimmungen in Blockingen, fr: Les dernières votations à Bloquens }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Municipal proposal</th><th>Yes</th><th>No</th><th>Turnout</th></tr></thead><tbody><tr><td>Funding for the redesign of the village square</td><td>2,650</td><td>2,210</td><td>45%</td></tr><tr><td>Funding for the renovation of the lakeside pool</td><td>3,120</td><td>1,480</td><td>43%</td></tr><tr><td>Complete revision of the municipal code</td><td>3,400</td><td>610</td><td>37%</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Vorlage der Gemeinde</th><th>Ja</th><th>Nein</th><th>Beteiligung</th></tr></thead><tbody><tr><td>Kredit für die Umgestaltung des Dorfplatzes</td><td>2650</td><td>2210</td><td>45 %</td></tr><tr><td>Kredit für die Sanierung des Strandbads</td><td>3120</td><td>1480</td><td>43 %</td></tr><tr><td>Totalrevision der Gemeindeordnung</td><td>3400</td><td>610</td><td>37 %</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Objet communal</th><th>Oui</th><th>Non</th><th>Participation</th></tr></thead><tbody><tr><td>Crédit pour le réaménagement de la place du village</td><td>2650</td><td>2210</td><td>45 %</td></tr><tr><td>Crédit pour la rénovation de la plage</td><td>3120</td><td>1480</td><td>43 %</td></tr><tr><td>Révision totale du règlement d''organisation</td><td>3400</td><td>610</td><td>37 %</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>You''ll find the results of all votes, including federal and cantonal ones, under “Documents and links”. On voting Sunday, we publish the town''s results from about 13:00.</p>'
       de: '<p>Die Resultate aller Abstimmungen, auch des Bundes und des Kantons, finden Sie unter «Dokumente und Links». Am Abstimmungssonntag veröffentlichen wir die Resultate der Gemeinde ab etwa 13.00 Uhr.</p>'
+      fr: '<p>Vous trouverez les résultats de toutes les votations, y compris fédérales et cantonales, sous « Documents et liens ». Le dimanche de votation, nous publions les résultats de la commune dès 13 h environ.</p>'
   - type: title
-    field_title: { de: Wahlen }
+    field_title: { en: Elections, de: Wahlen, fr: Élections }
   - type: text
     field_text:
+      en: '<p>Every four years, voters elect the municipal council and the mayor. The seven seats on the council are distributed among the lists according to their share of the vote. Anyone entitled to vote in Blockingen can stand for election. Submit your nomination to the municipal chancery, with the signatures of at least ten voters.</p>'
       de: '<p>Alle vier Jahre wählen die Stimmberechtigten den Gemeinderat und die Gemeindepräsidentin oder den Gemeindepräsidenten. Die sieben Sitze im Gemeinderat werden nach dem Anteil der Stimmen auf die Listen verteilt. Wählbar ist, wer in Blockingen stimmberechtigt ist. Einen Wahlvorschlag reichen Sie bei der Gemeindekanzlei ein, mit den Unterschriften von mindestens zehn Stimmberechtigten.</p>'
+      fr: '<p>Tous les quatre ans, les électrices et électeurs élisent le Conseil communal et la ou le maire. Les sept sièges du Conseil communal sont répartis entre les listes selon leur part des suffrages. Est éligible toute personne ayant le droit de vote à Bloquens. Une proposition de candidature se dépose à la Chancellerie communale, avec les signatures d''au moins dix électrices et électeurs.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Ich habe kein Stimmmaterial erhalten. Was tun?' }
+    field_title:
+      en: 'I haven''t received my voting papers. What should I do?'
+      de: 'Ich habe kein Stimmmaterial erhalten. Was tun?'
+      fr: 'Je n''ai pas reçu de matériel de vote. Que faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Contact the municipal chancery by the Thursday before voting Sunday. We will issue you with new voting papers; the old ones are then no longer valid.</p>'
           de: '<p>Melden Sie sich bis Donnerstag vor dem Abstimmungssonntag bei der Gemeindekanzlei. Wir stellen Ihnen neues Stimmmaterial aus; das alte ist dann nicht mehr gültig.</p>'
+          fr: '<p>Adressez-vous à la Chancellerie communale au plus tard le jeudi précédant le dimanche de votation. Nous vous délivrons un nouveau matériel de vote ; l''ancien n''est alors plus valable.</p>'
   - type: accordion
-    field_title: { de: 'Darf ich als Ausländerin oder Ausländer abstimmen?' }
+    field_title:
+      en: 'Can I vote as a foreign national?'
+      de: 'Darf ich als Ausländerin oder Ausländer abstimmen?'
+      fr: 'Puis-je voter en tant qu''étrangère ou étranger ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>On municipal matters, yes, if you have a settlement permit and have lived in the canton for five years. You can then vote on the town''s proposals and elect the municipal council. Only Swiss citizens can vote on federal and cantonal proposals.</p>'
           de: '<p>In Gemeindesachen ja, wenn Sie eine Niederlassungsbewilligung haben und seit fünf Jahren im Kanton wohnen. Sie stimmen dann über die Vorlagen der Gemeinde ab und wählen den Gemeinderat. Über Vorlagen des Bundes und des Kantons stimmen nur Schweizerinnen und Schweizer ab.</p>'
+          fr: '<p>En matière communale, oui, si vous êtes titulaire d''une autorisation d''établissement et habitez dans le canton depuis cinq ans. Vous votez alors sur les objets communaux et élisez le Conseil communal. Le vote sur les objets fédéraux et cantonaux est réservé aux Suissesses et aux Suisses.</p>'
   - type: accordion
-    field_title: { de: 'Ich kann nicht schreiben. Wer hilft mir?' }
+    field_title:
+      en: 'I can''t write. Who can help me?'
+      de: 'Ich kann nicht schreiben. Wer hilft mir?'
+      fr: 'Je ne peux pas écrire. Qui peut m''aider ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>A person you trust may fill in the ballot paper following your instructions. They sign the voting card with their own name and the note “on behalf of”.</p>'
           de: '<p>Eine Person Ihres Vertrauens darf den Stimmzettel nach Ihren Angaben ausfüllen. Den Stimmrechtsausweis unterschreibt sie mit ihrem eigenen Namen und dem Vermerk «im Auftrag».</p>'
+          fr: '<p>Une personne de confiance peut remplir le bulletin de vote selon vos indications. Elle signe la carte de légitimation de son propre nom, avec la mention « par ordre ».</p>'
 field_related:
   - type: teaser
     field_link: { node: assembly }
@@ -69,12 +102,12 @@ field_related:
     field_link: { node: council }
 field_aside:
   - type: title
-    field_title: { de: Dokumente und Links }
+    field_title: { en: Documents and links, de: Dokumente und Links, fr: Documents et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/results
-        field_title: { de: Resultate aller Abstimmungen }
+        field_title: { en: Results of all votes, de: Resultate aller Abstimmungen, fr: Résultats de toutes les votations }
       - type: link
         field_link: https://www.example.com/voting-calendar
-        field_title: { de: Abstimmungstermine }
+        field_title: { en: Voting dates, de: Abstimmungstermine, fr: Dates des votations }

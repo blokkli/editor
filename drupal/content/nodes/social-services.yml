@@ -1,8 +1,10 @@
 key: social-services
 type: office
-title: { de: 'Soziale Dienste' }
+title: { en: 'Social services', de: 'Soziale Dienste', fr: 'Services sociaux' }
 field_lead:
+  en: 'Confidential advice and support for individuals, families and older people.'
   de: 'Beratung und Unterstützung für Einzelpersonen, Familien und ältere Menschen, vertraulich.'
+  fr: 'Conseils et soutien pour les particuliers, les familles et les personnes âgées, en toute confidentialité.'
 field_location: { term: administrative-centre }
 field_phone: '+41 32 555 01 40'
 field_email: soziales@blockingen.example
@@ -19,14 +21,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The social services advise and support people in Blockingen who have got into a difficult situation: with money worries and debt, when looking for a job or a flat, or with family matters. They review applications for social assistance and support the people who receive it. The advice centre for older people helps them and their families.</p><p>All staff are bound by confidentiality. Make an appointment by phone; in an emergency, you''ll get one the same day. The AHV branch office (old-age pensions) is in the same building, the administrative centre.</p>'
       de: '<p>Die Sozialen Dienste beraten und unterstützen Menschen in Blockingen, die in eine schwierige Lage geraten sind: bei Geldsorgen und Schulden, bei der Suche nach einer Stelle oder einer Wohnung, in Familienfragen. Sie prüfen Gesuche um Sozialhilfe und begleiten die Menschen, die sie beziehen. Die Anlaufstelle Alter berät ältere Menschen und ihre Angehörigen.</p><p>Alle Mitarbeitenden unterstehen der Schweigepflicht. Vereinbaren Sie einen Termin am Telefon; in einer Notlage erhalten Sie noch am selben Tag einen. Im selben Haus, im Verwaltungszentrum, ist die AHV-Zweigstelle.</p>'
+      fr: '<p>Les Services sociaux conseillent et soutiennent les personnes de Bloquens qui se trouvent dans une situation difficile : soucis d''argent et dettes, recherche d''un emploi ou d''un logement, questions familiales. Ils examinent les demandes d''aide sociale et accompagnent les personnes qui en bénéficient. Le Point info seniors conseille les personnes âgées et leurs proches.</p><p>Tout le personnel est soumis au secret professionnel. Prenez rendez-vous par téléphone ; en cas d''urgence, vous en obtenez un le jour même. L''agence AVS se trouve dans le même bâtiment, au centre administratif.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: social-health }
-      - type: link
-        field_link: { node: social-assistance }
-      - type: link
-        field_link: { node: old-age }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

@@ -1,8 +1,10 @@
 key: building-planning
 type: office
-title: { de: 'Bau und Planung' }
+title: { en: 'Building and planning', de: 'Bau und Planung', fr: 'Constructions et urbanisme' }
 field_lead:
+  en: 'Building permits, notifications and the zoning plan, and the town''s building projects. Afternoons by appointment.'
   de: 'Baubewilligungen, Meldungen und der Zonenplan, und die Bauprojekte der Gemeinde. Nachmittags nach Vereinbarung.'
+  fr: 'Permis de construire, annonces et plan de zones, ainsi que les projets de construction de la commune. L''après-midi sur rendez-vous.'
 field_location: { term: administrative-centre }
 field_phone: '+41 32 555 01 30'
 field_email: bau@blockingen.example
@@ -16,14 +18,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The building and planning office reviews building applications and notifications, advises people who are planning to build and maintains the zoning plan. We also manage the town''s own building projects, at the moment above all the new village square.</p><p>In the morning, the counter at the administrative centre is open, no appointment needed. In the afternoon, we take time for advice: make an appointment, ideally with a sketch of your project. The first consultation is free. You can submit building applications at the counter, by post or at the <a href="https://www.example.com/online-counter">online counter</a>. The applications on public display are listed in the official publications.</p>'
       de: '<p>Bau und Planung prüft Baugesuche und Meldungen, berät Bauherrschaften und führt den Zonenplan. Wir betreuen auch die Bauprojekte der Gemeinde, zurzeit vor allem den neuen Dorfplatz.</p><p>Am Vormittag ist der Schalter im Verwaltungszentrum offen, ohne Anmeldung. Am Nachmittag nehmen wir uns Zeit für Beratungen: Vereinbaren Sie dafür einen Termin, am besten mit einer Skizze Ihres Vorhabens. Die erste Beratung ist gratis. Baugesuche reichen Sie am Schalter, per Post oder am <a href="https://www.example.com/online-counter">Online-Schalter</a> ein. Die Gesuche, die öffentlich aufliegen, finden Sie unter den amtlichen Publikationen.</p>'
+      fr: '<p>Le service Constructions et urbanisme examine les demandes de permis de construire et les annonces, conseille les maîtres d''ouvrage et tient le plan de zones. Nous suivons aussi les projets de construction de la commune, actuellement surtout la nouvelle place du village.</p><p>Le matin, le guichet du centre administratif est ouvert, sans rendez-vous. L''après-midi, nous prenons le temps de vous conseiller : prenez rendez-vous, de préférence avec une esquisse de votre projet. Le premier conseil est gratuit. Vous pouvez déposer les demandes de permis de construire au guichet, par la poste ou au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Les demandes mises à l''enquête publique figurent dans les publications officielles.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: building-permit }
-      - type: link
-        field_link: { node: permit-needed }
-      - type: link
-        field_link: { node: building-permits }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

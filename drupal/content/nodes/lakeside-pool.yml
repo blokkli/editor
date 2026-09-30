@@ -1,91 +1,125 @@
 # The landing page: visitors start here in the editor. The admission table has
-# no header row on purpose, for the analyzer.
+# no header row on purpose, for the analyzer. The kiosk's text is English in
+# the French translation, also on purpose.
 key: lakeside-pool
 type: editorial
-title: { de: Strandbad }
+title: { en: Lakeside pool, de: Strandbad, fr: Plage }
 field_lead:
+  en: 'Swimming in the lake, a lawn for sunbathing under old trees, a diving tower and a new children''s area: the lakeside pool is open from mid-May to mid-September.'
   de: 'Schwimmen im See, eine Liegewiese unter alten Bäumen, ein Sprungturm und ein neuer Kinderbereich: Das Strandbad ist von Mitte Mai bis Mitte September offen.'
+  fr: 'Nager dans le lac, une pelouse sous de vieux arbres, un plongeoir et un nouvel espace pour les enfants : la plage est ouverte de mi-mai à mi-septembre.'
 field_hero_image: { media: lakeside-pool }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The lakeside pool is at the end of the lakeside promenade, a ten-minute walk from the station. It has a swimming pool with 50-metre lanes, a pool for non-swimmers, a jetty into the lake and a large lawn for sunbathing. Since the renovation, there is also a new children''s area with a water playground.</p>'
       de: '<p>Das Strandbad liegt am Ende der Seepromenade, zehn Minuten zu Fuss vom Bahnhof. Es hat ein Schwimmbecken mit 50-Meter-Bahnen, ein Nichtschwimmerbecken, einen Steg in den See und eine grosse Liegewiese. Nach der Sanierung gibt es einen neuen Kinderbereich mit Wasserspielplatz.</p>'
+      fr: '<p>La plage se trouve au bout de la promenade du lac, à dix minutes à pied de la gare. Elle dispose d''un bassin de natation avec des lignes d''eau de 50 mètres, d''un bassin pour non-nageurs, d''un ponton qui s''avance dans le lac et d''une grande pelouse. Depuis sa rénovation, elle a aussi un nouvel espace pour les enfants avec une aire de jeux d''eau.</p>'
   - type: section
     options: { background: lake, columns: 2 }
-    field_title: { de: Öffnungszeiten und Eintritt }
+    field_title: { en: Opening hours and admission, de: Öffnungszeiten und Eintritt, fr: Horaires et tarifs }
     field_paragraphs:
       - type: table
         field_table:
+          en: '<table><thead><tr><th>Season</th><th>Daily</th></tr></thead><tbody><tr><td>Mid-May to mid-June</td><td>10:00–19:00</td></tr><tr><td>Mid-June to mid-August</td><td>9:00–20:00</td></tr><tr><td>Mid-August to mid-September</td><td>10:00–19:00</td></tr></tbody></table>'
           de: '<table><thead><tr><th>Saison</th><th>Täglich</th></tr></thead><tbody><tr><td>Mitte Mai bis Mitte Juni</td><td>10.00–19.00 Uhr</td></tr><tr><td>Mitte Juni bis Mitte August</td><td>9.00–20.00 Uhr</td></tr><tr><td>Mitte August bis Mitte September</td><td>10.00–19.00 Uhr</td></tr></tbody></table>'
+          fr: '<table><thead><tr><th>Saison</th><th>Tous les jours</th></tr></thead><tbody><tr><td>De mi-mai à mi-juin</td><td>10 h–19 h</td></tr><tr><td>De mi-juin à mi-août</td><td>9 h–20 h</td></tr><tr><td>De mi-août à mi-septembre</td><td>10 h–19 h</td></tr></tbody></table>'
       - type: table
         field_table:
+          en: '<table><tbody><tr><td>Admission</td><td>Single entry</td><td>Season ticket</td></tr><tr><td>Adults</td><td>CHF 7</td><td>CHF 90</td></tr><tr><td>Young people up to 20, students</td><td>CHF 5</td><td>CHF 60</td></tr><tr><td>Children aged 6 to 15</td><td>CHF 3.50</td><td>CHF 40</td></tr><tr><td>Families</td><td>–</td><td>CHF 190</td></tr><tr><td>Children under 6</td><td>free</td><td>free</td></tr></tbody></table>'
           de: '<table><tbody><tr><td>Eintritt</td><td>Einzeln</td><td>Saison</td></tr><tr><td>Erwachsene</td><td>Fr. 7.–</td><td>Fr. 90.–</td></tr><tr><td>Jugendliche bis 20, Studierende</td><td>Fr. 5.–</td><td>Fr. 60.–</td></tr><tr><td>Kinder von 6 bis 15</td><td>Fr. 3.50</td><td>Fr. 40.–</td></tr><tr><td>Familien</td><td>–</td><td>Fr. 190.–</td></tr><tr><td>Kinder unter 6</td><td>gratis</td><td>gratis</td></tr></tbody></table>'
+          fr: '<table><tbody><tr><td>Tarifs</td><td>Entrée simple</td><td>Abonnement de saison</td></tr><tr><td>Adultes</td><td>Fr. 7.–</td><td>Fr. 90.–</td></tr><tr><td>Jeunes jusqu''à 20 ans, étudiantes et étudiants</td><td>Fr. 5.–</td><td>Fr. 60.–</td></tr><tr><td>Enfants de 6 à 15 ans</td><td>Fr. 3.50</td><td>Fr. 40.–</td></tr><tr><td>Familles</td><td>–</td><td>Fr. 190.–</td></tr><tr><td>Enfants de moins de 6 ans</td><td>gratuit</td><td>gratuit</td></tr></tbody></table>'
   - type: text
     options: { box: warning }
     field_text:
+      en: '<p><strong>In bad weather</strong> the pool stays closed. To find out whether it''s open, call 032 555 01 85 from 8:00.</p>'
       de: '<p><strong>Bei schlechtem Wetter</strong> bleibt das Bad geschlossen. Ob es offen ist, erfahren Sie ab 8.00 Uhr unter 032 555 01 85.</p>'
+      fr: '<p><strong>Par mauvais temps</strong>, la plage reste fermée. Pour savoir si elle est ouverte, appelez le 032 555 01 85 dès 8 h.</p>'
   - type: gallery
     options: { display: slider, width: wide }
     field_paragraphs:
       - type: image
         field_media: { media: lakeside-pool }
-        field_caption: { de: Das Schwimmbecken und der Steg in den See }
+        field_caption:
+          en: The swimming pool and the jetty into the lake
+          de: Das Schwimmbecken und der Steg in den See
+          fr: Le bassin de natation et le ponton qui s'avance dans le lac
       - type: image
         field_media: { media: pool-children-area }
-        field_caption: { de: Der neue Kinderbereich mit Wasserspielplatz }
+        field_caption:
+          en: The new children's area with its water playground
+          de: Der neue Kinderbereich mit Wasserspielplatz
+          fr: Le nouvel espace pour les enfants et son aire de jeux d'eau
   - type: section
     options: { columns: 3 }
-    field_title: { de: Was Sie erwartet }
+    field_title: { en: What to expect, de: Was Sie erwartet, fr: Ce qui vous attend }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<h3>Swimming</h3><p>The pool has six lanes; two are reserved for lane swimming in the morning until 10:00. In the lake, buoys mark the supervised area.</p>'
           de: '<h3>Schwimmen</h3><p>Das Becken hat sechs Bahnen; zwei sind am Morgen bis 10.00 Uhr für Längen reserviert. Im See markieren Bojen die bewachte Zone.</p>'
+          fr: '<h3>Natation</h3><p>Le bassin compte six lignes d''eau ; deux sont réservées aux longueurs le matin jusqu''à 10 h. Dans le lac, des bouées délimitent la zone surveillée.</p>'
       - type: text
         field_text:
+          en: '<h3>For children</h3><p>The new children''s area has a paddling pool under a shade sail, a water playground and a sandpit. Children under 8 may only swim with an adult.</p>'
           de: '<h3>Für Kinder</h3><p>Der neue Kinderbereich hat ein Planschbecken unter einem Sonnensegel, einen Wasserspielplatz und einen Sandplatz. Kinder unter 8 Jahren baden nur mit Erwachsenen.</p>'
+          fr: '<h3>Pour les enfants</h3><p>Le nouvel espace pour les enfants comprend une pataugeoire sous une voile d''ombrage, une aire de jeux d''eau et un bac à sable. Les enfants de moins de 8 ans ne se baignent qu''accompagnés d''une personne adulte.</p>'
+      # Its French is the English text, on purpose: for the language analyzer.
       - type: text
         field_text:
+          en: '<h3>Kiosk and restaurant</h3><p>The kiosk sells ice cream, snacks and drinks. The restaurant by the jetty is open until 22:00, and you don''t need a pool ticket to eat there.</p>'
           de: '<h3>Kiosk und Restaurant</h3><p>Der Kiosk verkauft Glace, Snacks und Getränke. Das Restaurant am Steg ist bis 22.00 Uhr offen, auch für Gäste ohne Badeeintritt.</p>'
+          fr: '<h3>Kiosk and restaurant</h3><p>The kiosk sells ice cream, snacks and drinks. The restaurant by the jetty is open until 22:00, and you don''t need a pool ticket to eat there.</p>'
   - type: title
-    field_title: { de: Baderegeln }
+    field_title: { en: Pool rules, de: Baderegeln, fr: Règles de baignade }
   - type: accordion
-    field_title: { de: Baden im See }
+    field_title: { en: Swimming in the lake, de: Baden im See, fr: Baignade dans le lac }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The lifeguards only supervise the area inside the buoys; outside it, you swim at your own risk. Don''t jump off the jetty: the water there is less than two metres deep.</p>'
           de: '<p>Die Badeaufsicht überwacht nur die Zone innerhalb der Bojen; ausserhalb baden Sie auf eigene Gefahr. Springen Sie nicht vom Steg: Das Wasser ist dort weniger als zwei Meter tief.</p>'
+          fr: '<p>La surveillance ne couvre que la zone délimitée par les bouées ; au-delà, vous vous baignez à vos risques et périls. Ne sautez pas du ponton : l''eau y fait moins de deux mètres de profondeur.</p>'
   - type: accordion
-    field_title: { de: Sprungturm }
+    field_title: { en: Diving tower, de: Sprungturm, fr: Plongeoir }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The diving tower, with boards at 1, 3 and 5 metres, is open when a lifeguard is there: in the high season from 11:00. Jump one at a time, and swim straight to the ladder.</p>'
           de: '<p>Der Sprungturm mit 1, 3 und 5 Metern ist offen, wenn die Badeaufsicht dort ist, in der Hauptsaison ab 11.00 Uhr. Springen Sie einzeln, und schwimmen Sie gleich zur Leiter.</p>'
+          fr: '<p>Le plongeoir de 1, 3 et 5 mètres est ouvert lorsque la surveillance est sur place, en haute saison dès 11 h. Sautez l''un après l''autre, puis nagez tout de suite jusqu''à l''échelle.</p>'
   - type: accordion
-    field_title: { de: 'Hunde, Grill und Musik' }
+    field_title: { en: 'Dogs, barbecues and music', de: 'Hunde, Grill und Musik', fr: 'Chiens, grillades et musique' }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Dogs are not allowed in the pool area, except assistance dogs. Only barbecue at the fire pits on the lawn. Please use headphones to listen to music.</p>'
           de: '<p>Hunde sind im Bad nicht erlaubt, ausser Assistenzhunden. Grillieren Sie nur an den Feuerstellen auf der Liegewiese. Musik hören Sie bitte mit Kopfhörern.</p>'
+          fr: '<p>Les chiens ne sont pas admis à la plage, à l''exception des chiens d''assistance. Faites vos grillades uniquement aux foyers de la pelouse. Merci d''écouter votre musique avec des écouteurs.</p>'
   - type: accordion
-    field_title: { de: Fundsachen }
+    field_title: { en: Lost property, de: Fundsachen, fr: Objets trouvés }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>You can collect lost property at the ticket office. After the end of the season, we take it to the lost property office at the town hall.</p>'
           de: '<p>Fundsachen erhalten Sie an der Kasse zurück. Nach dem Saisonende bringen wir sie ins Fundbüro im Rathaus.</p>'
+          fr: '<p>Vous pouvez récupérer les objets trouvés à la caisse. Après la fin de la saison, nous les apportons au bureau des objets trouvés, à l''hôtel de ville.</p>'
   - type: call_to_action
-    field_tagline: { de: Saisonkarte }
-    field_title: { de: Den ganzen Sommer baden }
+    field_tagline: { en: Season ticket, de: Saisonkarte, fr: Abonnement de saison }
+    field_title: { en: Swim all summer long, de: Den ganzen Sommer baden, fr: 'Se baigner tout l''été' }
     field_lead:
+      en: With a season ticket, you can swim as often as you like. Buy it at the ticket office or online, as a card or on your smartphone.
       de: Mit der Saisonkarte baden Sie, so oft Sie wollen. Sie kaufen sie an der Kasse oder online, als Karte oder auf dem Smartphone.
+      fr: 'Avec l''abonnement de saison, vous vous baignez aussi souvent que vous le souhaitez. Vous l''achetez à la caisse ou en ligne, sous forme de carte ou sur votre smartphone.'
     field_links:
       - type: link
         field_link: https://www.example.com/season-ticket
-        field_title: { de: Saisonkarte kaufen }
+        field_title: { en: Buy a season ticket, de: Saisonkarte kaufen, fr: Acheter un abonnement de saison }
   - type: section
     options: { columns: 2 }
-    field_title: { de: Rund um den See }
+    field_title: { en: Around the lake, de: Rund um den See, fr: Autour du lac }
     field_paragraphs:
       - type: teaser
         options: { display: card }
@@ -93,9 +127,11 @@ field_paragraphs:
       - type: teaser
         options: { display: card }
         field_link: { node: clubs }
-        field_title: { de: 'Segeln, rudern, paddeln' }
+        field_title: { en: 'Sailing, rowing, paddling', de: 'Segeln, rudern, paddeln', fr: 'Naviguer, ramer, pagayer' }
         field_lead:
+          en: The water sports clubs on the lake and their courses for children and adults.
           de: Die Wassersportvereine am See und ihre Kurse für Kinder und Erwachsene.
+          fr: Les sociétés nautiques du lac et leurs cours pour les enfants et les adultes.
         field_media: { media: regatta }
   - type: contact
     field_office: { node: sport-leisure }

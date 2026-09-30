@@ -1,8 +1,10 @@
 key: residents-services
 type: office
-title: { de: 'Einwohnerdienste' }
+title: { en: 'Residents'' services', de: 'Einwohnerdienste', fr: 'Contrôle des habitants' }
 field_lead:
+  en: 'Moving here, moving house and moving away, identity cards and certificates from the residents'' register.'
   de: 'Zuzug, Umzug und Wegzug, Identitätskarten und Bestätigungen aus dem Einwohnerregister.'
+  fr: 'Arrivée, déménagement et départ, cartes d''identité et attestations du registre des habitants.'
 field_location: { term: town-hall }
 field_phone: '+41 32 555 01 10'
 field_email: einwohner@blockingen.example
@@ -21,18 +23,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The residents'' services keep Blockingen''s residents'' register. You register with us when you move here and deregister when you move away. This is also where you report a move within the town, your dog and your language of correspondence. We issue identity cards, provide certificates from the register and hand out resident parking permits.</p><p>You don''t need an appointment, and on Thursdays the counter is open until 18:30. Please bring an identity document, whatever your request. You can also do many things at the <a href="https://www.example.com/online-counter">online counter</a>, such as reporting a move or ordering a certificate of residence.</p>'
       de: '<p>Die Einwohnerdienste führen das Einwohnerregister von Blockingen. Bei uns melden Sie sich an, wenn Sie zuziehen, und ab, wenn Sie wegziehen. Hier melden Sie auch einen Umzug innerhalb der Gemeinde, Ihren Hund und Ihre Korrespondenzsprache. Wir stellen Identitätskarten aus, bestellen Bestätigungen aus dem Register und geben die Anwohnerparkkarten ab.</p><p>Einen Termin brauchen Sie nicht, und am Donnerstag ist der Schalter bis 18.30 Uhr offen. Bringen Sie für alle Anliegen einen Ausweis mit. Vieles erledigen Sie auch am <a href="https://www.example.com/online-counter">Online-Schalter</a>, etwa einen Umzug oder eine Wohnsitzbestätigung.</p>'
+      fr: '<p>Le Contrôle des habitants tient le registre des habitants de Bloquens. C''est chez nous que vous annoncez votre arrivée quand vous vous installez dans la commune, et votre départ quand vous la quittez. Vous y annoncez aussi un déménagement au sein de la commune, votre chien et votre langue de correspondance. Nous établissons les cartes d''identité, délivrons les attestations du registre et remettons les vignettes de stationnement pour résidents.</p><p>Vous n''avez pas besoin de rendez-vous, et le jeudi, le guichet est ouvert jusqu''à 18 h 30. Munissez-vous d''une pièce d''identité, quelle que soit votre démarche. Beaucoup de choses peuvent aussi se régler au <a href="https://www.example.com/online-counter">guichet en ligne</a>, par exemple un déménagement ou une attestation de domicile.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: relocation }
-      - type: link
-        field_link: { node: moving-in }
-      - type: link
-        field_link: { node: moving-within }
-      - type: link
-        field_link: { node: moving-away }
-      - type: link
-        field_link: { node: documents }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

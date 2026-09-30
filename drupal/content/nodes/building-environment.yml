@@ -1,8 +1,10 @@
 key: building-environment
 type: editorial
-title: { de: 'Bauen & Umwelt' }
+title: { en: 'Building & environment', de: 'Bauen & Umwelt', fr: 'Construction & environnement' }
 field_lead:
+  en: 'Building, waste and recycling, water and wastewater.'
   de: 'Bauen, Abfall und Recycling, Wasser und Abwasser.'
+  fr: 'Construction, déchets et recyclage, eau et eaux usées.'
 field_hero_image: { media: building-profiles }
 field_host_options:
   - { key: header, value: image }

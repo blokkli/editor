@@ -1,78 +1,125 @@
 key: permit-needed
 type: page
-title: { de: 'Brauche ich eine Baubewilligung?' }
+title:
+  en: 'Do I need a building permit?'
+  de: 'Brauche ich eine Baubewilligung?'
+  fr: 'Ai-je besoin d''un permis de construire ?'
 field_lead:
+  en: 'Which projects need a permit, which you only need to notify, and which are exempt.'
   de: 'Welche Vorhaben eine Bewilligung brauchen, welche Sie nur melden und welche frei sind.'
+  fr: 'Quels projets sont soumis à permis, lesquels il suffit d''annoncer et lesquels en sont dispensés.'
 field_office: { node: building-planning }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Whether you need a building permit depends on how big your project is, where it is and what impact it has on its surroundings. There are three cases: some projects need a permit, some you only need to notify, and some are exempt. Even exempt projects must comply with the regulations: the distances to neighbouring plots and the rules of your zone always apply.</p>'
       de: '<p>Ob Sie eine Baubewilligung brauchen, hängt davon ab, wie gross Ihr Vorhaben ist, wo es steht und wie es auf die Umgebung wirkt. Es gibt drei Fälle: Manche Vorhaben brauchen eine Bewilligung, manche melden Sie nur, und manche sind frei. Auch was frei ist, muss die Vorschriften einhalten: Die Abstände zu den Nachbargrundstücken und die Regeln Ihrer Zone gelten immer.</p>'
+      fr: '<p>Le besoin d''un permis de construire dépend de la taille de votre projet, de son emplacement et de son effet sur les environs. Il y a trois cas : certains projets sont soumis à permis, d''autres doivent seulement être annoncés, et d''autres encore en sont dispensés. Même un projet dispensé doit respecter les prescriptions : les distances aux parcelles voisines et les règles de votre zone s''appliquent toujours.</p>'
   - type: title
-    field_title: { de: 'Bewilligung, Meldung oder frei' }
+    field_title:
+      en: 'Permit, notification or exempt'
+      de: 'Bewilligung, Meldung oder frei'
+      fr: 'Permis, annonce ou dispense'
   - type: text
     field_text:
+      en: '<h3>Building permit required</h3><ul><li>New buildings, extensions, additional storeys and conservatories</li><li>Conversions that change the use or the façade, such as a loft flat or new roof windows</li><li>Garden sheds, bike shelters and pergolas of 10 m² or more</li><li>Outdoor heat pumps</li><li>Retaining walls and embankments over 1 metre</li><li>New parking spaces and garages</li></ul>'
       de: '<h3>Eine Baubewilligung brauchen</h3><ul><li>Neubauten, Anbauten, Aufstockungen und Wintergärten</li><li>Umbauten, die die Nutzung oder die Fassade ändern, etwa eine Dachwohnung oder neue Dachfenster</li><li>Gartenhäuser, Velounterstände und Pergolen ab 10 m²</li><li>Wärmepumpen im Freien</li><li>Stützmauern und Aufschüttungen über 1 Meter</li><li>neue Parkplätze und Garagen</li></ul>'
+      fr: '<h3>Soumis à permis de construire</h3><ul><li>Nouvelles constructions, annexes, surélévations et jardins d''hiver</li><li>Transformations qui modifient l''affectation ou la façade, par exemple un appartement dans les combles ou de nouvelles fenêtres de toit</li><li>Cabanons de jardin, abris à vélos et pergolas à partir de 10 m²</li><li>Pompes à chaleur à l''extérieur</li><li>Murs de soutènement et remblais de plus de 1 mètre</li><li>Nouvelles places de stationnement et garages</li></ul>'
   - type: text
     field_text:
+      en: '<h3>Notification only</h3><ul><li>Solar panels on the roof</li><li>Garden sheds, bike shelters and pergolas up to 10 m²</li><li>Heat pumps inside the house</li><li>Repainting the façade in a new colour</li></ul>'
       de: '<h3>Nur melden</h3><ul><li>Solaranlagen auf dem Dach</li><li>Gartenhäuser, Velounterstände und Pergolen bis 10 m²</li><li>Wärmepumpen im Innern des Hauses</li><li>ein Fassadenanstrich in einer neuen Farbe</li></ul>'
+      fr: '<h3>Annonce seulement</h3><ul><li>Installations solaires sur le toit</li><li>Cabanons de jardin, abris à vélos et pergolas jusqu''à 10 m²</li><li>Pompes à chaleur à l''intérieur de la maison</li><li>Nouvelle peinture de façade dans une autre couleur</li></ul>'
   - type: text
     field_text:
+      en: '<h3>Exempt</h3><ul><li>Maintenance and repairs that don''t change the appearance</li><li>Interior conversions that don''t change the use, such as a new kitchen</li><li>Uncovered patios, garden paths and play equipment</li><li>Fences and hedges up to 1.2 metres high</li><li>Marquees and other structures that stand for three months at most</li></ul>'
       de: '<h3>Frei</h3><ul><li>Unterhalt und Reparaturen, die das Aussehen nicht ändern</li><li>Umbauten im Innern, die die Nutzung nicht ändern, etwa eine neue Küche</li><li>Sitzplätze ohne Dach, Gartenwege und Spielgeräte</li><li>Zäune und Hecken bis 1,2 Meter Höhe</li><li>Festzelte und andere Bauten, die höchstens drei Monate stehen</li></ul>'
+      fr: '<h3>Dispensé de permis</h3><ul><li>Entretien et réparations qui ne modifient pas l''aspect</li><li>Transformations intérieures qui ne modifient pas l''affectation, par exemple une nouvelle cuisine</li><li>Terrasses non couvertes, chemins de jardin et jeux pour enfants</li><li>Clôtures et haies jusqu''à 1,2 mètre de haut</li><li>Tentes de fête et autres constructions qui restent en place trois mois au plus</li></ul>'
   - type: text
     options: { box: warning }
     field_text:
+      en: '<p><strong>Stricter rules in the old town:</strong> There, and for listed buildings, solar panels, new windows and a new coat of paint on the façade also need a permit. Check with the building and planning office before you start planning.</p>'
       de: '<p><strong>In der Altstadt gilt mehr:</strong> Dort und bei geschützten Bauten brauchen auch Solaranlagen, neue Fenster und ein neuer Fassadenanstrich eine Bewilligung. Fragen Sie vor der Planung bei Bau und Planung nach.</p>'
+      fr: '<p><strong>Règles plus strictes dans la vieille ville :</strong> Dans la vieille ville et pour les bâtiments protégés, les installations solaires, les nouvelles fenêtres et une nouvelle peinture de façade nécessitent aussi un permis. Renseignez-vous auprès du service Constructions et urbanisme avant de planifier votre projet.</p>'
   - type: title
-    field_title: { de: So melden Sie ein Vorhaben }
+    field_title: { en: 'How to notify a project', de: So melden Sie ein Vorhaben, fr: 'Comment annoncer un projet' }
   - type: text
     field_text:
+      en: '<p>Submit your notification to the building and planning office at least 30 days before work starts, with the notification form, a site plan and a sketch or photo. If you don''t hear from us within 30 days, you may build. If your project does need a permit after all, we''ll tell you within this period. The notification costs CHF 100.</p>'
       de: '<p>Reichen Sie die Meldung mindestens 30 Tage vor Baubeginn bei Bau und Planung ein, mit dem Meldeformular, einem Situationsplan und einer Skizze oder einem Foto. Hören Sie innert 30 Tagen nichts von uns, dürfen Sie bauen. Braucht Ihr Vorhaben doch eine Bewilligung, sagen wir es Ihnen in dieser Frist. Die Meldung kostet Fr. 100.–.</p>'
+      fr: '<p>Déposez l''annonce au service Constructions et urbanisme au moins 30 jours avant le début des travaux, avec le formulaire d''annonce, un plan de situation et une esquisse ou une photo. Si vous n''avez pas de nouvelles de notre part dans les 30 jours, vous pouvez construire. Si votre projet nécessite malgré tout un permis, nous vous le signalons dans ce délai. L''annonce coûte Fr. 100.–.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Braucht ein Gartenhaus eine Bewilligung?' }
+    field_title:
+      en: 'Does a garden shed need a permit?'
+      de: 'Braucht ein Gartenhaus eine Bewilligung?'
+      fr: 'Un cabanon de jardin est-il soumis à permis ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, if its floor area is 10 m² or more. For smaller garden sheds, you only need to notify us.</p>'
           de: '<p>Ja, ab einer Grundfläche von 10 m². Kleinere Gartenhäuser müssen Sie nur melden.</p>'
+          fr: '<p>Oui, à partir d''une surface au sol de 10 m². Les cabanons plus petits doivent seulement être annoncés.</p>'
       - type: columns
         options: { ratio: 66-33 }
         field_left:
           - type: text
             field_text:
+              en: '<p>Draw the garden shed on the site plan, with its distance to the neighbouring plots. Keep a distance of at least 2 metres, or enclose your neighbour''s written consent.</p>'
               de: '<p>Zeichnen Sie das Gartenhaus im Situationsplan ein, mit dem Abstand zu den Nachbargrundstücken. Halten Sie mindestens 2 Meter Abstand, oder legen Sie die schriftliche Zustimmung der Nachbarin oder des Nachbarn bei.</p>'
+              fr: '<p>Dessinez le cabanon sur le plan de situation, avec sa distance aux parcelles voisines. Respectez une distance d''au moins 2 mètres, ou joignez l''accord écrit de la voisine ou du voisin.</p>'
         field_right:
           - type: image
             field_media: { media: garden-shed }
-            field_caption: { de: Ein Gartenhaus }
+            field_caption: { en: 'A garden shed', de: Ein Gartenhaus, fr: 'Un cabanon de jardin' }
   - type: accordion
-    field_title: { de: 'Braucht ein Anbau eine Bewilligung?' }
+    field_title:
+      en: 'Does an extension need a permit?'
+      de: 'Braucht ein Anbau eine Bewilligung?'
+      fr: 'Une annexe est-elle soumise à permis ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, always. Extensions, additional storeys and conservatories need a building permit, even if they''re small. We check whether the extension complies with the distances, the building height and the permitted floor area ratio of your plot.</p>'
           de: '<p>Ja, immer. Anbauten, Aufstockungen und Wintergärten brauchen eine Baubewilligung, auch wenn sie klein sind. Wir prüfen, ob der Anbau die Abstände, die Gebäudehöhe und die zulässige Ausnützung Ihres Grundstücks einhält.</p>'
+          fr: '<p>Oui, toujours. Les annexes, les surélévations et les jardins d''hiver nécessitent un permis de construire, même s''ils sont petits. Nous vérifions que l''annexe respecte les distances, la hauteur du bâtiment et l''indice d''utilisation admis pour votre parcelle.</p>'
       - type: image
         field_media: { media: house-extension }
-        field_caption: { de: Ein Anbau im Bau }
+        field_caption: { en: 'An extension under construction', de: Ein Anbau im Bau, fr: 'Une annexe en construction' }
   - type: accordion
-    field_title: { de: 'Brauche ich für eine Solaranlage eine Bewilligung?' }
+    field_title:
+      en: 'Do I need a permit for solar panels?'
+      de: 'Brauche ich für eine Solaranlage eine Bewilligung?'
+      fr: 'Ai-je besoin d''un permis pour une installation solaire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Not on the roof: you only need to notify us of the installation, as long as it doesn''t stick out more than 20 centimetres above the roof and doesn''t extend beyond its edge. In the old town and on listed buildings, it needs a permit. Installations on the façade or in the garden always need one.</p>'
           de: '<p>Auf dem Dach nicht: Sie melden die Anlage nur, wenn sie nicht mehr als 20 Zentimeter über das Dach hinausragt und nicht über den Dachrand hinausgeht. In der Altstadt und auf geschützten Bauten braucht sie eine Bewilligung. Anlagen an der Fassade oder im Garten brauchen immer eine.</p>'
+          fr: '<p>Pas sur le toit : vous annoncez seulement l''installation, si elle ne dépasse pas le toit de plus de 20 centimètres et ne déborde pas de ses bords. Dans la vieille ville et sur les bâtiments protégés, elle est soumise à permis. Les installations en façade ou dans le jardin nécessitent toujours un permis.</p>'
   - type: accordion
-    field_title: { de: 'Ich will eine Wärmepumpe. Was muss ich beachten?' }
+    field_title:
+      en: 'I want a heat pump. What do I need to consider?'
+      de: 'Ich will eine Wärmepumpe. Was muss ich beachten?'
+      fr: 'Je souhaite une pompe à chaleur. À quoi dois-je faire attention ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>If the heat pump is outdoors, you need a permit, with a noise assessment: at night, it mustn''t be louder than permitted at the neighbouring house. Your installer will calculate the noise for you. A heat pump inside the house only needs to be notified.</p>'
           de: '<p>Steht die Wärmepumpe im Freien, brauchen Sie eine Bewilligung, mit einem Lärmnachweis: Nachts darf sie beim Nachbarhaus nicht lauter als erlaubt sein. Ihre Installationsfirma berechnet den Lärm für Sie. Eine Wärmepumpe im Innern melden Sie nur.</p>'
+          fr: '<p>Si la pompe à chaleur est installée à l''extérieur, vous avez besoin d''un permis, avec un justificatif acoustique : la nuit, elle ne doit pas dépasser le niveau de bruit admis à la maison voisine. Votre entreprise d''installation calcule le bruit pour vous. Une pompe à chaleur à l''intérieur doit seulement être annoncée.</p>'
   - type: accordion
-    field_title: { de: 'Was passiert, wenn ich ohne Bewilligung baue?' }
+    field_title:
+      en: 'What happens if I build without a permit?'
+      de: 'Was passiert, wenn ich ohne Bewilligung baue?'
+      fr: 'Que se passe-t-il si je construis sans permis ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>We stop the work, and you submit an application retrospectively. The fee is then higher. If the project can''t be approved, you have to remove it at your own expense.</p>'
           de: '<p>Wir stoppen die Arbeiten, und Sie reichen nachträglich ein Gesuch ein. Die Gebühr ist dann höher. Lässt sich das Vorhaben nicht bewilligen, müssen Sie es auf Ihre Kosten zurückbauen.</p>'
+          fr: '<p>Nous arrêtons les travaux, et vous déposez une demande a posteriori. L''émolument est alors plus élevé. Si le projet ne peut pas être autorisé, vous devez le démolir à vos frais.</p>'
 field_related:
   - type: teaser
     field_link: { node: building-permits }
@@ -80,12 +127,12 @@ field_related:
     field_link: { node: fees }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/building-notice
-        field_title: { de: Meldeformular }
+        field_title: { en: 'Notification form', de: Meldeformular, fr: 'Formulaire d''annonce' }
       - type: link
         field_link: https://www.example.com/zoning-plan
-        field_title: { de: Zonenplan }
+        field_title: { en: 'Zoning plan', de: Zonenplan, fr: 'Plan de zones' }

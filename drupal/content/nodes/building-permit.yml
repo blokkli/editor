@@ -1,8 +1,10 @@
 key: building-permit
 type: editorial
-title: { de: 'Baubewilligung' }
+title: { en: 'Building permit', de: 'Baubewilligung', fr: 'Permis de construire' }
 field_lead:
+  en: 'Advice, building applications and objections: what you need to know before you build.'
   de: 'Beratung, Baugesuch und Einsprachen: was Sie vor dem Bauen wissen müssen.'
+  fr: 'Conseils, demande de permis de construire et oppositions : ce qu''il faut savoir avant de construire.'
 field_host_options:
   - { key: header, value: plain }
 # Who is in charge, as on the detail pages.

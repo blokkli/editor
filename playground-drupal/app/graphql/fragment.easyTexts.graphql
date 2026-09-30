@@ -78,6 +78,7 @@ fragment easyTexts on TextsLoader {
   office__label: getText(key: "label", context: "office", default: "Office")
   office__opening_hours: getText(key: "opening_hours", context: "office", default: "Opening hours")
   office__phone: getText(key: "phone", context: "office", default: "Phone")
+  office_pages__empty: getText(key: "empty", context: "office_pages", default: "No detail page has this office as its responsible office.")
   page__responsible: getText(key: "responsible", context: "page", default: "Responsible:")
   page__updated: getText(key: "updated", context: "page", default: "Updated on @date")
   pagination__label: getText(key: "label", context: "pagination", default: "Pages")

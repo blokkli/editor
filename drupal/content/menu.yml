@@ -3,225 +3,399 @@
 # files).
 main:
   - key: themes
-    title: { de: 'Themen' }
+    title: { en: 'Topics', de: 'Themen', fr: 'Thématiques' }
     link: { node: themes }
     children:
       - key: life-events
-        title: { de: 'Lebenslagen' }
-        description: { de: 'Umzug, Ausweise und Bestätigungen.' }
+        title: { en: 'Life events', de: 'Lebenslagen', fr: 'Situations de vie' }
+        description:
+          en: 'Moving, identity documents and certificates.'
+          de: 'Umzug, Ausweise und Bestätigungen.'
+          fr: 'Déménagement, documents d''identité et attestations.'
         link: { node: life-events }
         children:
           - key: relocation
-            title: { de: 'Umzug' }
-            description: { de: 'Zuzug, Wegzug und Umzug in der Gemeinde melden.' }
+            title: { en: 'Moving', de: 'Umzug', fr: 'Déménagement' }
+            description:
+              en: 'Report moving here, moving away or moving within the town.'
+              de: 'Zuzug, Wegzug und Umzug in der Gemeinde melden.'
+              fr: 'Annoncer une arrivée, un départ ou un déménagement dans la commune.'
             link: { node: relocation }
             children:
               - key: moving-in
-                title: { de: 'Zuzug' }
-                description: { de: 'Innert 14 Tagen anmelden: was Sie mitbringen und was es kostet.' }
+                title: { en: 'Moving here', de: 'Zuzug', fr: 'Arrivée' }
+                description:
+                  en: 'Register within 14 days: what to bring and what it costs.'
+                  de: 'Innert 14 Tagen anmelden: was Sie mitbringen und was es kostet.'
+                  fr: 'S''annoncer dans les 14 jours : ce qu''il faut apporter et ce que cela coûte.'
                 link: { node: moving-in }
               - key: moving-away
-                title: { de: 'Wegzug' }
-                description: { de: 'Abmelden und die neue Adresse angeben.' }
+                title: { en: 'Moving away', de: 'Wegzug', fr: 'Départ' }
+                description:
+                  en: 'Deregister and give your new address.'
+                  de: 'Abmelden und die neue Adresse angeben.'
+                  fr: 'Annoncer votre départ et indiquer votre nouvelle adresse.'
                 link: { node: moving-away }
               - key: moving-within
-                title: { de: 'Umzug innerhalb von Blockingen' }
-                description: { de: 'Die neue Adresse melden, gratis.' }
+                title:
+                  en: 'Moving within Blockingen'
+                  de: 'Umzug innerhalb von Blockingen'
+                  fr: 'Déménagement au sein de Bloquens'
+                description:
+                  en: 'Report your new address, free of charge.'
+                  de: 'Die neue Adresse melden, gratis.'
+                  fr: 'Annoncer votre nouvelle adresse, gratuitement.'
                 link: { node: moving-within }
           - key: documents
-            title: { de: 'Ausweise und Bestätigungen' }
-            description: { de: 'Identitätskarte, Pass und Wohnsitzbestätigung.' }
+            title:
+              en: 'Identity documents and certificates'
+              de: 'Ausweise und Bestätigungen'
+              fr: 'Documents d''identité et attestations'
+            description:
+              en: 'Identity card, passport and certificate of residence.'
+              de: 'Identitätskarte, Pass und Wohnsitzbestätigung.'
+              fr: 'Carte d''identité, passeport et attestation de domicile.'
             link: { node: documents }
       - key: taxes-finances
-        title: { de: 'Steuern & Finanzen' }
-        description: { de: 'Steuererklärung, Steuern bezahlen, Budget und Zahlen.' }
+        title: { en: 'Taxes & finances', de: 'Steuern & Finanzen', fr: 'Impôts & finances' }
+        description:
+          en: 'Tax return, paying taxes, budget and figures.'
+          de: 'Steuererklärung, Steuern bezahlen, Budget und Zahlen.'
+          fr: 'Déclaration d''impôt, paiement des impôts, budget et chiffres.'
         link: { node: taxes-finances }
         children:
           - key: taxes
-            title: { de: 'Steuern' }
-            description: { de: 'Steuererklärung und Steuern bezahlen.' }
+            title: { en: 'Taxes', de: 'Steuern', fr: 'Impôts' }
+            description:
+              en: 'Tax return and paying taxes.'
+              de: 'Steuererklärung und Steuern bezahlen.'
+              fr: 'Déclaration d''impôt et paiement des impôts.'
             link: { node: taxes }
             children:
               - key: tax-return
-                title: { de: 'Steuererklärung' }
-                description: { de: 'Fristen, Fristverlängerung und Belege.' }
+                title: { en: 'Tax return', de: 'Steuererklärung', fr: 'Déclaration d''impôt' }
+                description:
+                  en: 'Deadlines, extensions and supporting documents.'
+                  de: 'Fristen, Fristverlängerung und Belege.'
+                  fr: 'Délais, prolongation du délai et justificatifs.'
                 link: { node: tax-return }
               - key: paying-taxes
-                title: { de: 'Steuern bezahlen' }
-                description: { de: 'Provisorische Rechnung, Schlussrechnung, Ratenzahlung.' }
+                title: { en: 'Paying taxes', de: 'Steuern bezahlen', fr: 'Payer ses impôts' }
+                description:
+                  en: 'Provisional bill, final bill, payment in instalments.'
+                  de: 'Provisorische Rechnung, Schlussrechnung, Ratenzahlung.'
+                  fr: 'Facture provisoire, décompte final, paiement échelonné.'
                 link: { node: paying-taxes }
           - key: municipal-finances
-            title: { de: 'Gemeindefinanzen' }
-            description: { de: 'Budget, Rechnung, Finanzstrategie und Zahlen.' }
+            title: { en: 'Municipal finances', de: 'Gemeindefinanzen', fr: 'Finances communales' }
+            description:
+              en: 'Budget, accounts, financial strategy and figures.'
+              de: 'Budget, Rechnung, Finanzstrategie und Zahlen.'
+              fr: 'Budget, comptes, stratégie financière et chiffres.'
             link: { node: municipal-finances }
             children:
               - key: budget
-                title: { de: 'Budget und Rechnung' }
-                description: { de: 'Was die Gemeinde plant und was sie ausgegeben hat.' }
+                title: { en: 'Budget and accounts', de: 'Budget und Rechnung', fr: 'Budget et comptes' }
+                description:
+                  en: 'What the town plans to spend and what it has spent.'
+                  de: 'Was die Gemeinde plant und was sie ausgegeben hat.'
+                  fr: 'Ce que la commune prévoit et ce qu''elle a dépensé.'
                 link: { node: budget }
               - key: financial-strategy
-                title: { de: 'Finanzstrategie' }
-                description: { de: 'Die Ziele des Gemeinderats für die nächsten Jahre.' }
+                title: { en: 'Financial strategy', de: 'Finanzstrategie', fr: 'Stratégie financière' }
+                description:
+                  en: 'The municipal council''s goals for the coming years.'
+                  de: 'Die Ziele des Gemeinderats für die nächsten Jahre.'
+                  fr: 'Les objectifs du Conseil communal pour les prochaines années.'
                 link: { node: financial-strategy }
               - key: in-numbers
-                title: { de: 'Blockingen in Zahlen' }
-                description: { de: 'Bevölkerung, Sprachen und Finanzen.' }
+                title: { en: 'Blockingen in numbers', de: 'Blockingen in Zahlen', fr: 'Bloquens en chiffres' }
+                description:
+                  en: 'Population, languages and finances.'
+                  de: 'Bevölkerung, Sprachen und Finanzen.'
+                  fr: 'Population, langues et finances.'
                 link: { node: in-numbers }
       - key: building-environment
-        title: { de: 'Bauen & Umwelt' }
-        description: { de: 'Baubewilligung, Abfall und Gebühren.' }
+        title: { en: 'Building & environment', de: 'Bauen & Umwelt', fr: 'Construction & environnement' }
+        description:
+          en: 'Building permits, waste and fees.'
+          de: 'Baubewilligung, Abfall und Gebühren.'
+          fr: 'Permis de construire, déchets et taxes.'
         link: { node: building-environment }
         children:
           - key: waste
-            title: { de: 'Abfall & Recycling' }
-            description: { de: 'Abfuhrtage, was wohin gehört und die Entsorgungsstelle.' }
+            title: { en: 'Waste & recycling', de: 'Abfall & Recycling', fr: 'Déchets & recyclage' }
+            description:
+              en: 'Collection days, what goes where and the collection point.'
+              de: 'Abfuhrtage, was wohin gehört und die Entsorgungsstelle.'
+              fr: 'Jours de ramassage, tri des déchets et déchetterie.'
             link: { node: waste }
             children:
               - key: collection-days
-                title: { de: 'Abfuhrtage und Abfallkalender' }
-                description: { de: 'Wann was abgeholt wird.' }
+                title:
+                  en: 'Collection days and waste calendar'
+                  de: 'Abfuhrtage und Abfallkalender'
+                  fr: 'Jours de ramassage et calendrier des déchets'
+                description:
+                  en: 'What is collected when.'
+                  de: 'Wann was abgeholt wird.'
+                  fr: 'Ce qui est ramassé, et quand.'
                 link: { node: collection-days }
               - key: sorting
-                title: { de: 'Was gehört wohin?' }
-                description: { de: 'Wo Sie was abgeben.' }
+                title: { en: 'What goes where?', de: 'Was gehört wohin?', fr: 'Que jeter où ?' }
+                description:
+                  en: 'Where to take what.'
+                  de: 'Wo Sie was abgeben.'
+                  fr: 'Où déposer quoi.'
                 link: { node: sorting }
               - key: collection-point
-                title: { de: 'Entsorgungsstelle Werkhof' }
-                description: { de: 'Öffnungszeiten und was Sie abgeben können.' }
+                title:
+                  en: 'Collection point at the works yard'
+                  de: 'Entsorgungsstelle Werkhof'
+                  fr: 'Déchetterie du dépôt communal'
+                description:
+                  en: 'Opening hours and what you can bring.'
+                  de: 'Öffnungszeiten und was Sie abgeben können.'
+                  fr: 'Horaires d''ouverture et ce que vous pouvez y déposer.'
                 link: { node: collection-point }
           - key: building-permit
-            title: { de: 'Baubewilligung' }
-            description: { de: 'Braucht es eine Bewilligung, und wie reichen Sie ein Gesuch ein?' }
+            title: { en: 'Building permit', de: 'Baubewilligung', fr: 'Permis de construire' }
+            description:
+              en: 'Do you need a permit, and how do you apply?'
+              de: 'Braucht es eine Bewilligung, und wie reichen Sie ein Gesuch ein?'
+              fr: 'Faut-il un permis, et comment déposer une demande ?'
             link: { node: building-permit }
             children:
               - key: permit-needed
-                title: { de: 'Brauche ich eine Baubewilligung?' }
-                description: { de: 'Bewilligung, Meldung oder frei.' }
+                title:
+                  en: 'Do I need a building permit?'
+                  de: 'Brauche ich eine Baubewilligung?'
+                  fr: 'Ai-je besoin d''un permis de construire ?'
+                description:
+                  en: 'Permit, notification or exempt.'
+                  de: 'Bewilligung, Meldung oder frei.'
+                  fr: 'Permis, simple annonce ou dispense.'
                 link: { node: permit-needed }
               - key: building-permits
-                title: { de: 'Baugesuch einreichen' }
-                description: { de: 'Wie Sie ein Gesuch einreichen und wie es weitergeht.' }
+                title:
+                  en: 'Applying for a building permit'
+                  de: 'Baugesuch einreichen'
+                  fr: 'Déposer une demande de permis de construire'
+                description:
+                  en: 'How to apply and what happens next.'
+                  de: 'Wie Sie ein Gesuch einreichen und wie es weitergeht.'
+                  fr: 'Comment déposer une demande et la suite de la procédure.'
                 link: { node: building-permits }
           - key: fees
-            title: { de: 'Gebühren für Wasser, Abwasser und Abfall' }
-            description: { de: 'Tarife und der Gebührenrechner.' }
+            title:
+              en: 'Water, wastewater and waste fees'
+              de: 'Gebühren für Wasser, Abwasser und Abfall'
+              fr: 'Taxes pour l''eau, les eaux usées et les déchets'
+            description:
+              en: 'Rates and the fee calculator.'
+              de: 'Tarife und der Gebührenrechner.'
+              fr: 'Tarifs et calculateur de taxes.'
             link: { node: fees }
       - key: school-family
-        title: { de: 'Schule & Familie' }
-        description: { de: 'Kindergarten, Schule und Tagesschule.' }
+        title: { en: 'School & family', de: 'Schule & Familie', fr: 'École & famille' }
+        description:
+          en: 'Kindergarten, school and day school.'
+          de: 'Kindergarten, Schule und Tagesschule.'
+          fr: 'École enfantine, école et école à journée continue.'
         link: { node: school-family }
         children:
           - key: school
-            title: { de: 'Schule' }
-            description: { de: 'Kindergarten, Sprachen und Schulweg.' }
+            title: { en: 'School', de: 'Schule', fr: 'École' }
+            description:
+              en: 'Kindergarten, languages and the way to school.'
+              de: 'Kindergarten, Sprachen und Schulweg.'
+              fr: 'École enfantine, langues et chemin de l''école.'
             link: { node: school }
             children:
               - key: kindergarten
-                title: { de: 'Kindergarteneintritt' }
-                description: { de: 'Wann und wie Sie Ihr Kind anmelden.' }
+                title: { en: 'Starting kindergarten', de: 'Kindergarteneintritt', fr: 'Entrée à l''école enfantine' }
+                description:
+                  en: 'When and how to enrol your child.'
+                  de: 'Wann und wie Sie Ihr Kind anmelden.'
+                  fr: 'Quand et comment inscrire votre enfant.'
                 link: { node: kindergarten }
               - key: languages
-                title: { de: 'Deutsch, Französisch oder zweisprachig' }
-                description: { de: 'Die richtige Abteilung für Ihr Kind.' }
+                title:
+                  en: 'German, French or bilingual'
+                  de: 'Deutsch, Französisch oder zweisprachig'
+                  fr: 'Allemand, français ou bilingue'
+                description:
+                  en: 'The right section for your child.'
+                  de: 'Die richtige Abteilung für Ihr Kind.'
+                  fr: 'La bonne section pour votre enfant.'
                 link: { node: languages }
               - key: way-to-school
-                title: { de: 'Schulweg' }
-                description: { de: 'Sicher zur Schule.' }
+                title: { en: 'The way to school', de: 'Schulweg', fr: 'Le chemin de l''école' }
+                description:
+                  en: 'Getting to school safely.'
+                  de: 'Sicher zur Schule.'
+                  fr: 'Aller à l''école en toute sécurité.'
                 link: { node: way-to-school }
           - key: day-school
-            title: { de: 'Tagesschule' }
-            description: { de: 'Betreuung vor und nach dem Unterricht.' }
+            title: { en: 'Day school', de: 'Tagesschule', fr: 'École à journée continue' }
+            description:
+              en: 'Childcare before and after lessons.'
+              de: 'Betreuung vor und nach dem Unterricht.'
+              fr: 'Accueil avant et après les cours.'
             link: { node: day-school }
       - key: leisure-culture
-        title: { de: 'Freizeit & Kultur' }
-        description: { de: 'Strandbad, Sportanlagen, Vereine und Geschichte.' }
+        title: { en: 'Leisure & culture', de: 'Freizeit & Kultur', fr: 'Loisirs & culture' }
+        description:
+          en: 'Lakeside pool, sports facilities, clubs and history.'
+          de: 'Strandbad, Sportanlagen, Vereine und Geschichte.'
+          fr: 'Plage, installations sportives, sociétés locales et histoire.'
         link: { node: leisure-culture }
         children:
           - key: lakeside-pool
-            title: { de: 'Strandbad' }
-            description: { de: 'Öffnungszeiten, Eintritt und Baderegeln.' }
+            title: { en: 'Lakeside pool', de: 'Strandbad', fr: 'Plage' }
+            description:
+              en: 'Opening hours, admission and swimming rules.'
+              de: 'Öffnungszeiten, Eintritt und Baderegeln.'
+              fr: 'Horaires d''ouverture, entrée et règles de baignade.'
             link: { node: lakeside-pool }
           - key: sports-facilities
-            title: { de: 'Sportanlagen' }
-            description: { de: 'Hallen und Plätze, und wie Sie reservieren.' }
+            title: { en: 'Sports facilities', de: 'Sportanlagen', fr: 'Installations sportives' }
+            description:
+              en: 'Halls and pitches, and how to book them.'
+              de: 'Hallen und Plätze, und wie Sie reservieren.'
+              fr: 'Salles et terrains, et comment les réserver.'
             link: { node: sports-facilities }
           - key: clubs
-            title: { de: 'Vereine' }
-            description: { de: 'Rund 60 Vereine und die Vereinsförderung.' }
+            title: { en: 'Clubs', de: 'Vereine', fr: 'Sociétés locales' }
+            description:
+              en: 'Around 60 clubs and how the town supports them.'
+              de: 'Rund 60 Vereine und die Vereinsförderung.'
+              fr: 'Quelque 60 sociétés locales et le soutien que leur apporte la commune.'
             link: { node: clubs }
           - key: history
-            title: { de: 'Geschichte' }
-            description: { de: 'Vom Fischerdorf zur zweisprachigen Kleinstadt.' }
+            title: { en: 'History', de: 'Geschichte', fr: 'Histoire' }
+            description:
+              en: 'From fishing village to small bilingual town.'
+              de: 'Vom Fischerdorf zur zweisprachigen Kleinstadt.'
+              fr: 'Du village de pêcheurs à la petite ville bilingue.'
             link: { node: history }
       - key: social-health
-        title: { de: 'Soziales & Gesundheit' }
-        description: { de: 'Sozialhilfe und Leben im Alter.' }
+        title: { en: 'Social affairs & health', de: 'Soziales & Gesundheit', fr: 'Social & santé' }
+        description:
+          en: 'Social assistance and later life.'
+          de: 'Sozialhilfe und Leben im Alter.'
+          fr: 'Aide sociale et personnes âgées.'
         link: { node: social-health }
         children:
           - key: social-assistance
-            title: { de: 'Sozialhilfe' }
-            description: { de: 'Anspruch, Antrag und Beratung.' }
+            title: { en: 'Social assistance', de: 'Sozialhilfe', fr: 'Aide sociale' }
+            description:
+              en: 'Eligibility, applying and advice.'
+              de: 'Anspruch, Antrag und Beratung.'
+              fr: 'Droit à l''aide, demande et conseil.'
             link: { node: social-assistance }
           - key: old-age
-            title: { de: 'Leben im Alter' }
-            description: { de: 'Beratung, Hilfe zu Hause und Angebote.' }
+            title: { en: 'Later life', de: 'Leben im Alter', fr: 'Personnes âgées' }
+            description:
+              en: 'Advice, help at home and other services.'
+              de: 'Beratung, Hilfe zu Hause und Angebote.'
+              fr: 'Conseil, aide à domicile et offres.'
             link: { node: old-age }
       - key: politics
         title: { en: Politics, de: Politik, fr: Politique }
-        description: { de: 'Gemeinderat, Gemeindeversammlung, Abstimmungen und Wahlen.' }
+        description:
+          en: 'Municipal council, municipal assembly, votes and elections.'
+          de: 'Gemeinderat, Gemeindeversammlung, Abstimmungen und Wahlen.'
+          fr: 'Conseil communal, Assemblée communale, votations et élections.'
         link: { node: politics }
         children:
           - key: council
-            title: { de: Gemeinderat }
-            description: { de: Die Mitglieder und ihre Ressorts. }
+            title: { en: Municipal council, de: Gemeinderat, fr: Conseil communal }
+            description:
+              en: The members and their portfolios.
+              de: Die Mitglieder und ihre Ressorts.
+              fr: Les membres et leurs dicastères.
             link: { node: council }
           - key: assembly
-            title: { de: Gemeindeversammlung }
-            description: { de: 'Die nächste Versammlung, Traktanden und Unterlagen.' }
+            title: { en: Municipal assembly, de: Gemeindeversammlung, fr: Assemblée communale }
+            description:
+              en: 'The next assembly, agenda and documents.'
+              de: 'Die nächste Versammlung, Traktanden und Unterlagen.'
+              fr: 'La prochaine assemblée, l''ordre du jour et les documents.'
             link: { node: assembly }
           - key: votes
-            title: { de: Abstimmungen und Wahlen }
-            description: { de: 'Resultate, und wie Sie brieflich stimmen.' }
+            title: { en: Votes and elections, de: Abstimmungen und Wahlen, fr: Votations et élections }
+            description:
+              en: 'Results, and how to vote by post.'
+              de: 'Resultate, und wie Sie brieflich stimmen.'
+              fr: 'Résultats, et comment voter par correspondance.'
             link: { node: votes }
   - key: administration
     title: { en: Administration, de: Verwaltung, fr: Administration }
     link: { node: administration }
     children:
       - key: municipal-chancery
-        title: { de: 'Gemeindekanzlei' }
-        description: { de: 'Gemeinderat, Gemeindeversammlung, Abstimmungen und Wahlen.' }
+        title: { en: 'Municipal chancery', de: 'Gemeindekanzlei', fr: 'Chancellerie communale' }
+        description:
+          en: 'Municipal council, municipal assembly, votes and elections.'
+          de: 'Gemeinderat, Gemeindeversammlung, Abstimmungen und Wahlen.'
+          fr: 'Conseil communal, Assemblée communale, votations et élections.'
         link: { node: municipal-chancery }
       - key: residents-services
-        title: { de: 'Einwohnerdienste' }
-        description: { de: 'Zuzug und Wegzug, Ausweise und Bestätigungen.' }
+        title: { en: 'Residents'' services', de: 'Einwohnerdienste', fr: 'Contrôle des habitants' }
+        description:
+          en: 'Moving here and away, identity documents and certificates.'
+          de: 'Zuzug und Wegzug, Ausweise und Bestätigungen.'
+          fr: 'Arrivées et départs, documents d''identité et attestations.'
         link: { node: residents-services }
       - key: finance-taxes
-        title: { de: 'Finanzen und Steuern' }
-        description: { de: 'Steuererklärung, Steuerrechnungen und die Finanzen der Gemeinde.' }
+        title: { en: 'Finance and taxes', de: 'Finanzen und Steuern', fr: 'Finances et impôts' }
+        description:
+          en: 'Tax returns, tax bills and the town''s finances.'
+          de: 'Steuererklärung, Steuerrechnungen und die Finanzen der Gemeinde.'
+          fr: 'Déclaration d''impôt, factures d''impôt et finances de la commune.'
         link: { node: finance-taxes }
       - key: building-planning
-        title: { de: 'Bau und Planung' }
-        description: { de: 'Baubewilligungen, Zonenplan und Beratung.' }
+        title: { en: 'Building and planning', de: 'Bau und Planung', fr: 'Constructions et urbanisme' }
+        description:
+          en: 'Building permits, zoning plan and advice.'
+          de: 'Baubewilligungen, Zonenplan und Beratung.'
+          fr: 'Permis de construire, plan de zones et conseil.'
         link: { node: building-planning }
       - key: social-services
-        title: { de: 'Soziale Dienste' }
-        description: { de: 'Sozialhilfe und Beratung, im Vertrauen.' }
+        title: { en: 'Social services', de: 'Soziale Dienste', fr: 'Services sociaux' }
+        description:
+          en: 'Social assistance and advice, in confidence.'
+          de: 'Sozialhilfe und Beratung, im Vertrauen.'
+          fr: 'Aide sociale et conseil, en toute confidentialité.'
         link: { node: social-services }
       - key: public-works
-        title: { de: 'Tiefbau und Werkhof' }
-        description: { de: 'Strassen, Abfall, Parks und der Friedhof.' }
+        title: { en: 'Public works', de: 'Tiefbau und Werkhof', fr: 'Travaux publics et voirie' }
+        description:
+          en: 'Roads, waste, parks and the cemetery.'
+          de: 'Strassen, Abfall, Parks und der Friedhof.'
+          fr: 'Routes, déchets, parcs et cimetière.'
         link: { node: public-works }
       - key: utilities
-        title: { de: 'Gemeindewerke' }
-        description: { de: 'Wasser, Strom und die Zählerstände.' }
+        title: { en: 'Utilities', de: 'Gemeindewerke', fr: 'Services industriels' }
+        description:
+          en: 'Water, electricity and meter readings.'
+          de: 'Wasser, Strom und die Zählerstände.'
+          fr: 'Eau, électricité et relevés de compteurs.'
         link: { node: utilities }
       - key: schools-office
-        title: { de: 'Schulverwaltung' }
-        description: { de: 'Kindergarten, Schule und Tagesschule.' }
+        title: { en: 'Schools office', de: 'Schulverwaltung', fr: 'Administration scolaire' }
+        description:
+          en: 'Kindergarten, school and day school.'
+          de: 'Kindergarten, Schule und Tagesschule.'
+          fr: 'École enfantine, école et école à journée continue.'
         link: { node: schools-office }
       - key: sport-leisure
-        title: { de: 'Sport und Freizeit' }
-        description: { de: 'Das Strandbad, die Sportanlagen und die Vereine.' }
+        title: { en: 'Sport and leisure', de: 'Sport und Freizeit', fr: 'Sports et loisirs' }
+        description:
+          en: 'The lakeside pool, the sports facilities and the clubs.'
+          de: 'Das Strandbad, die Sportanlagen und die Vereine.'
+          fr: 'La plage, les installations sportives et les sociétés locales.'
         link: { node: sport-leisure }
   - key: news
     title: { en: News, de: Aktuelles, fr: Actualités }

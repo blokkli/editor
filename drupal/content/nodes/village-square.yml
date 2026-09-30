@@ -1,22 +1,36 @@
 key: village-square
 type: news
 created: '-5 days'
-title: { de: Die Umgestaltung des Dorfplatzes beginnt }
+title:
+  en: 'Work begins on the new village square'
+  de: Die Umgestaltung des Dorfplatzes beginnt
+  fr: 'Le réaménagement de la place du village commence'
 field_lead:
+  en: 'During the works, the weekly market moves to the school grounds, and Dorfstrasse is closed between the church and the school.'
   de: Der Wochenmarkt zieht während der Bauzeit auf das Schulhausareal, und die Dorfstrasse ist zwischen Kirche und Schulhaus gesperrt.
+  fr: 'Pendant les travaux, le marché hebdomadaire s''installe dans le préau de l''école, et la rue du Village est fermée entre l''église et l''école.'
 field_hero_image: { media: village-square }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>On Monday the diggers move in: the village square is being redesigned. Where cars park today, there will be a square to linger in, with eight new trees, a fountain, benches in the shade and room for the weekly market and for festivals. The parking spaces are moving to the underground car park by the station.</p><p>The work will last until spring. Until then, Dorfstrasse is closed between the church and the school. The utilities are using the closure to replace the old water main at the same time.</p>'
       de: '<p>Am Montag fahren die Bagger auf: Der Dorfplatz wird umgestaltet. Wo heute Autos parkieren, entsteht ein Platz zum Verweilen, mit acht neuen Bäumen, einem Brunnen, Sitzbänken im Schatten und Platz für den Wochenmarkt und für Feste. Die Parkplätze kommen in die Einstellhalle beim Bahnhof.</p><p>Die Arbeiten dauern bis im Frühling. Solange ist die Dorfstrasse zwischen Kirche und Schulhaus gesperrt. Die Gemeindewerke nutzen die Sperrung, um gleich auch die alte Wasserleitung zu ersetzen.</p>'
+      fr: '<p>Lundi, les pelles mécaniques entrent en action : la place du village est réaménagée. Là où les voitures stationnent aujourd''hui naîtra une place où il fait bon s''attarder, avec huit nouveaux arbres, une fontaine, des bancs à l''ombre et de la place pour le marché hebdomadaire et les fêtes. Les places de stationnement sont déplacées dans le parking souterrain près de la gare.</p><p>Les travaux dureront jusqu''au printemps. D''ici là, la rue du Village est fermée entre l''église et l''école. Les Services industriels profitent de la fermeture pour remplacer en même temps l''ancienne conduite d''eau.</p>'
   - type: title
-    field_title: { de: Was sich während der Bauzeit ändert }
+    field_title:
+      en: 'What changes during the works'
+      de: Was sich während der Bauzeit ändert
+      fr: 'Ce qui change pendant les travaux'
   - type: text
     field_text:
+      en: '<ul><li>The <strong>weekly market</strong> takes place on Saturday mornings on the school grounds.</li><li>The <strong>“Village square” bus stop</strong> is at the school.</li><li>Cars are diverted via Rebweg. On foot and by bike, you can get past the building site.</li><li>The <strong>shops on the village square</strong> stay open and can be reached on foot.</li></ul>'
       de: '<ul><li>Der <strong>Wochenmarkt</strong> findet am Samstagmorgen auf dem Schulhausareal statt.</li><li>Die <strong>Bushaltestelle «Dorfplatz»</strong> ist beim Schulhaus.</li><li>Autos fahren über den Rebweg. Zu Fuss und mit dem Velo kommen Sie an der Baustelle vorbei.</li><li>Die <strong>Geschäfte am Dorfplatz</strong> bleiben offen und sind zu Fuss erreichbar.</li></ul>'
+      fr: '<ul><li>Le <strong>marché hebdomadaire</strong> a lieu le samedi matin dans le préau de l''école.</li><li>L''<strong>arrêt de bus « Place du village »</strong> se trouve près de l''école.</li><li>Les voitures sont déviées par le chemin des Vignes. À pied et à vélo, vous pouvez passer à côté du chantier.</li><li>Les <strong>commerces de la place du village</strong> restent ouverts et sont accessibles à pied.</li></ul>'
   - type: text
     field_text:
+      en: '<p>At the information evening, the municipal council presents the plans and the stages of the work and answers questions. The plans are on display from 19:00.</p>'
       de: '<p>Am Informationsabend stellt der Gemeinderat die Pläne und die Etappen vor und beantwortet Fragen. Die Pläne sind ab 19.00 Uhr ausgestellt.</p>'
+      fr: '<p>Lors de la séance d''information, le Conseil communal présente les plans et les étapes des travaux et répond aux questions. Les plans sont exposés dès 19 h.</p>'
   - type: teaser
     field_link: { node: information-evening }
   - type: contact

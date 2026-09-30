@@ -1,56 +1,85 @@
 key: clubs
 type: page
-title: { de: 'Vereine' }
+title: { en: 'Clubs', de: 'Vereine', fr: 'Sociétés locales' }
 field_lead:
+  en: 'Around 60 clubs, from the sailing club to the choir, and how the town supports them.'
   de: 'Rund 60 Vereine, vom Segelclub bis zum Chor, und wie die Gemeinde sie unterstützt.'
+  fr: 'Environ 60 sociétés locales, du club de voile à la chorale, et le soutien que leur apporte la commune.'
 field_office: { node: sport-leisure }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>From football to choir singing, from the Scouts to the sailing club: Blockingen has around 60 clubs, and many of them are bilingual. They organise training sessions, concerts and festivals, and they bring together people who would otherwise never meet. If you''re new to Blockingen, joining a club is the quickest way to feel at home.</p>'
       de: '<p>Vom Fussball bis zum Chor, von der Pfadi bis zum Segelclub: In Blockingen gibt es rund 60 Vereine, und viele davon sind zweisprachig. Sie organisieren Trainings, Konzerte und Feste und bringen Menschen zusammen, die sich sonst nicht begegnen würden. Wer neu in Blockingen ist, findet in einem Verein am schnellsten Anschluss.</p>'
+      fr: '<p>Du football au chant choral, des scouts au club de voile : Bloquens compte environ 60 sociétés locales, et beaucoup d''entre elles sont bilingues. Elles organisent des entraînements, des concerts et des fêtes, et réunissent des personnes qui ne se rencontreraient pas autrement. Si vous venez d''arriver à Bloquens, une société locale est le moyen le plus rapide de vous faire des connaissances.</p>'
   - type: title
-    field_title: { de: Eine Auswahl }
+    field_title: { en: A selection, de: Eine Auswahl, fr: Une sélection }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Club</th><th>What it offers</th></tr></thead><tbody><tr><td>FC Blockingen</td><td>Football for children from age 5, women and men</td></tr><tr><td>Blockingen Sailing Club</td><td>Sailing courses, regattas, boat moorings on the lake</td></tr><tr><td>Blockingen Rowing and Canoe Club</td><td>Rowing and paddling on the lake, taster courses in spring</td></tr><tr><td>Blockingen Gymnastics Club</td><td>Gymnastics for children, apparatus gymnastics, fitness for seniors</td></tr><tr><td>Seefeld Floorball Club</td><td>Floorball from age 8</td></tr><tr><td>Blockingen Town Band</td><td>Wind band and youth band</td></tr><tr><td>Chœur mixte de Bloquens</td><td>Mixed choir, singing in French and German</td></tr><tr><td>Seefeld Scouts</td><td>Scouting for children and young people aged 6 to 17</td></tr><tr><td>Blockingen Toy Library</td><td>Borrow games and play together</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Verein</th><th>Angebot</th></tr></thead><tbody><tr><td>FC Blockingen</td><td>Fussball für Kinder ab 5 Jahren, Frauen und Männer</td></tr><tr><td>Segelclub Blockingen</td><td>Segelkurse, Regatten, Bootsplätze am See</td></tr><tr><td>Ruder- und Kanuclub Blockingen</td><td>Rudern und Paddeln auf dem See, Schnupperkurse im Frühling</td></tr><tr><td>Turnverein Blockingen</td><td>Kinderturnen, Geräteturnen, Fitness für Seniorinnen und Senioren</td></tr><tr><td>Unihockeyclub Seefeld</td><td>Unihockey ab 8 Jahren</td></tr><tr><td>Musikgesellschaft Blockingen</td><td>Blasmusik und Jugendmusik</td></tr><tr><td>Chœur mixte de Bloquens</td><td>Gemischter Chor, auf Französisch und Deutsch</td></tr><tr><td>Pfadi Seefeld</td><td>Pfadi für Kinder und Jugendliche von 6 bis 17 Jahren</td></tr><tr><td>Ludothek Blockingen</td><td>Spiele ausleihen und gemeinsam spielen</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Société</th><th>Offre</th></tr></thead><tbody><tr><td>FC Bloquens</td><td>Football pour les enfants dès 5 ans, les femmes et les hommes</td></tr><tr><td>Club de voile de Bloquens</td><td>Cours de voile, régates, places d''amarrage sur le lac</td></tr><tr><td>Club d''aviron et de canoë de Bloquens</td><td>Aviron et canoë sur le lac, cours d''initiation au printemps</td></tr><tr><td>Société de gymnastique de Bloquens</td><td>Gymnastique enfantine, gymnastique aux agrès, fitness pour les seniors</td></tr><tr><td>Club d''unihockey du Seefeld</td><td>Unihockey dès 8 ans</td></tr><tr><td>Fanfare de Bloquens</td><td>Musique à vent et fanfare des jeunes</td></tr><tr><td>Chœur mixte de Bloquens</td><td>Chœur mixte, en français et en allemand</td></tr><tr><td>Scouts du Seefeld</td><td>Scoutisme pour les enfants et les jeunes de 6 à 17 ans</td></tr><tr><td>Ludothèque de Bloquens</td><td>Emprunter des jeux et jouer ensemble</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>You''ll find all the clubs and their contact details in the club directory under “Forms and links”.</p>'
       de: '<p>Alle Vereine mit ihren Kontakten finden Sie im Vereinsverzeichnis unter «Formulare und Links».</p>'
+      fr: '<p>Vous trouverez toutes les sociétés locales et leurs coordonnées dans le répertoire des sociétés locales, sous « Formulaires et liens ».</p>'
   - type: title
-    field_title: { de: Wie die Gemeinde die Vereine unterstützt }
+    field_title: { en: How the town supports clubs, de: Wie die Gemeinde die Vereine unterstützt, fr: Comment la commune soutient les sociétés locales }
   - type: text
     field_text:
+      en: '<ul><li>A club receives CHF 50 a year for every active member under 20.</li><li>The town contributes up to CHF 2,000 to events that are open to everyone.</li><li>Clubs with a youth section train for free in the town''s halls and on its pitches.</li><li>Clubs can publish their events for free under “Events” on this website.</li></ul><p>Once a year, the municipal council also honours someone who is particularly committed to a club with the Blockingen Volunteer Award.</p>'
       de: '<ul><li>Für jedes aktive Mitglied unter 20 Jahren erhält ein Verein jedes Jahr Fr. 50.–.</li><li>An Anlässe, die allen offenstehen, zahlt die Gemeinde bis zu Fr. 2000.–.</li><li>Vereine mit einer Jugendabteilung trainieren gratis in den Hallen und auf den Plätzen der Gemeinde.</li><li>Ihre Anlässe publizieren die Vereine gratis unter «Veranstaltungen» auf dieser Website.</li></ul><p>Einmal im Jahr zeichnet der Gemeinderat zudem eine Person aus, die sich besonders für einen Verein einsetzt, mit dem Blockinger Freiwilligenpreis.</p>'
+      fr: '<ul><li>Pour chaque membre actif de moins de 20 ans, une société reçoit Fr. 50.– par année.</li><li>La commune verse jusqu''à Fr. 2000.– pour les manifestations ouvertes à toutes et à tous.</li><li>Les sociétés qui ont une section jeunesse s''entraînent gratuitement dans les halles et sur les terrains de la commune.</li><li>Les sociétés publient gratuitement leurs manifestations sous « Événements » sur ce site.</li></ul><p>Une fois par année, le Conseil communal distingue en outre une personne particulièrement engagée dans une société locale en lui remettant le Prix du bénévolat de Bloquens.</p>'
   - type: title
-    field_title: { de: Einen Anlass organisieren }
+    field_title: { en: Organising an event, de: Einen Anlass organisieren, fr: Organiser une manifestation }
   - type: text
     field_text:
+      en: '<p>If you''re planning a festival, a tournament or a market on public land, you need a permit. Submit your application to the sport and leisure office at least two months in advance; we coordinate it with the police, the works yard and the utilities. The works yard can lend you festival benches, crowd barriers and waste containers.</p>'
       de: '<p>Planen Sie ein Fest, ein Turnier oder einen Markt auf öffentlichem Grund, brauchen Sie eine Bewilligung. Reichen Sie das Gesuch mindestens zwei Monate vorher bei Sport und Freizeit ein; wir stimmen es mit der Polizei, dem Werkhof und den Gemeindewerken ab. Der Werkhof leiht Ihnen Festbänke, Absperrgitter und Abfallcontainer.</p>'
+      fr: '<p>Si vous prévoyez une fête, un tournoi ou un marché sur le domaine public, il vous faut une autorisation. Déposez la demande au moins deux mois à l''avance auprès du service Sports et loisirs ; nous la coordonnons avec la police, le dépôt communal et les Services industriels. Le dépôt communal vous prête des bancs de fête, des barrières et des conteneurs à déchets.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Reusable cups:</strong> At events on public land, drinks must be served in reusable cups. The town lends you up to 2,000 cups free of charge, washed and packed in crates.</p>'
       de: '<p><strong>Mehrweg:</strong> An Anlässen auf öffentlichem Grund schenken Sie Getränke in Mehrwegbechern aus. Die Gemeinde leiht Ihnen bis zu 2000 Becher gratis, gewaschen und in Kisten.</p>'
+      fr: '<p><strong>Gobelets réutilisables :</strong> lors des manifestations sur le domaine public, les boissons sont servies dans des gobelets réutilisables. La commune vous prête gratuitement jusqu''à 2000 gobelets, lavés et rangés dans des caisses.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Wie beantragen wir einen Beitrag?' }
+    field_title:
+      en: 'How do we apply for a grant?'
+      de: 'Wie beantragen wir einen Beitrag?'
+      fr: 'Comment demander une subvention ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Submit your application, with the list of members and the annual accounts, to the sport and leisure office by the end of March. The municipal council decides in June, and the grant is paid out in July.</p>'
           de: '<p>Reichen Sie das Gesuch mit der Mitgliederliste und der Jahresrechnung bis Ende März bei Sport und Freizeit ein. Der Gemeinderat entscheidet im Juni, und der Beitrag wird im Juli ausbezahlt.</p>'
+          fr: '<p>Déposez la demande, accompagnée de la liste des membres et des comptes annuels, auprès du service Sports et loisirs d''ici fin mars. Le Conseil communal décide en juin et la subvention est versée en juillet.</p>'
   - type: accordion
-    field_title: { de: 'Wir gründen einen Verein. Was müssen wir tun?' }
+    field_title:
+      en: 'We''re setting up a club. What do we need to do?'
+      de: 'Wir gründen einen Verein. Was müssen wir tun?'
+      fr: 'Nous fondons une société. Que devons-nous faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Register the club with the sport and leisure office so that we can add it to the directory. To receive grants, the club needs articles of association and must have existed for at least a year.</p>'
           de: '<p>Melden Sie den Verein bei Sport und Freizeit, damit wir ihn ins Verzeichnis aufnehmen. Für Beiträge braucht der Verein Statuten und muss seit mindestens einem Jahr bestehen.</p>'
+          fr: '<p>Annoncez la société au service Sports et loisirs afin que nous l''inscrivions dans le répertoire. Pour recevoir des subventions, elle doit avoir des statuts et exister depuis au moins un an.</p>'
   - type: accordion
-    field_title: { de: 'Wie publizieren wir unseren Anlass auf der Website?' }
+    field_title:
+      en: 'How do we publish our event on the website?'
+      de: 'Wie publizieren wir unseren Anlass auf der Website?'
+      fr: 'Comment publier notre manifestation sur le site ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Send us the title, date, venue and a short description at least three weeks in advance, ideally with a picture. We publish events that are open to the public.</p>'
           de: '<p>Senden Sie uns den Titel, das Datum, den Ort und eine kurze Beschreibung, mindestens drei Wochen vorher, gern mit einem Bild. Wir publizieren Anlässe, die öffentlich sind.</p>'
+          fr: '<p>Envoyez-nous le titre, la date, le lieu et une brève description, au moins trois semaines à l''avance, volontiers avec une image. Nous publions les manifestations ouvertes au public.</p>'
 field_related:
   - type: teaser
     field_link: { node: sports-facilities }
@@ -58,15 +87,15 @@ field_related:
     field_link: { node: lakeside-pool }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/clubs
-        field_title: { de: Vereinsverzeichnis }
+        field_title: { en: Club directory, de: Vereinsverzeichnis, fr: Répertoire des sociétés locales }
       - type: link
         field_link: https://www.example.com/club-grants
-        field_title: { de: Gesuch für einen Vereinsbeitrag }
+        field_title: { en: Application for a club grant, de: Gesuch für einen Vereinsbeitrag, fr: Demande de subvention pour une société locale }
       - type: link
         field_link: https://www.example.com/event-permit
-        field_title: { de: Bewilligung für einen Anlass }
+        field_title: { en: Event permit, de: Bewilligung für einen Anlass, fr: Autorisation pour une manifestation }

@@ -5,41 +5,53 @@
 # frequent questions. The sidebar (the office's contact and a link list) isn't
 # part of a template.
 - key: service-page
-  label: { de: Dienstleistungsseite }
+  label: { en: Service page, de: Dienstleistungsseite, fr: Page de prestation }
   description:
+    en: 'An introduction, a notice, the steps and frequently asked questions, as on the detail pages.'
     de: 'Eine Einleitung, ein Hinweis, die Schritte und häufige Fragen, wie auf den Detailseiten.'
+    fr: 'Une introduction, une remarque, les étapes et les questions fréquentes, comme sur les pages de détail.'
   paragraphs:
     - type: text
       field_text:
+        en: '<p>Describe in two or three sentences what this is about, who it applies to and by when it needs to be done.</p>'
         de: '<p>Beschreiben Sie in zwei, drei Sätzen, worum es geht, für wen es gilt und bis wann es zu erledigen ist.</p>'
+        fr: '<p>Décrivez en deux ou trois phrases de quoi il s''agit, à qui cela s''adresse et dans quel délai la démarche doit être faite.</p>'
     - type: text
       options: { box: info }
       field_text:
+        en: '<p><strong>Do it online:</strong> say whether and where this can also be done online.</p>'
         de: '<p><strong>Online erledigen:</strong> Sagen Sie, ob und wo es auch online geht.</p>'
+        fr: '<p><strong>Effectuer la démarche en ligne :</strong> indiquez si et où elle peut aussi se faire en ligne.</p>'
     - type: title
-      field_title: { de: So gehen Sie vor }
+      field_title: { en: How to proceed, de: So gehen Sie vor, fr: Marche à suivre }
     - type: steps
       field_paragraphs:
         - type: step
-          field_title: { de: Der erste Schritt }
+          field_title: { en: The first step, de: Der erste Schritt, fr: La première étape }
           field_text:
+            en: '<p>What do you need to do, and what do you need for it?</p>'
             de: '<p>Was ist zu tun, und was braucht es dafür?</p>'
+            fr: '<p>Que faut-il faire, et de quoi a-t-on besoin ?</p>'
         - type: step
-          field_title: { de: Der zweite Schritt }
+          field_title: { en: The second step, de: Der zweite Schritt, fr: La deuxième étape }
           field_text:
+            en: '<p>What happens next, and how long does it take?</p>'
             de: '<p>Was geschieht danach, und wie lange dauert es?</p>'
+            fr: '<p>Que se passe-t-il ensuite, et combien de temps cela prend-il ?</p>'
     - type: title
-      field_title: { de: Häufige Fragen }
+      field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
     - type: accordion
-      field_title: { de: 'Eine häufige Frage?' }
+      field_title: { en: 'A frequently asked question?', de: 'Eine häufige Frage?', fr: 'Une question fréquente ?' }
       field_paragraphs:
         - type: text
           field_text:
+            en: '<p>And its answer, in a few sentences.</p>'
             de: '<p>Und ihre Antwort, in wenigen Sätzen.</p>'
+            fr: '<p>Et sa réponse, en quelques phrases.</p>'
 
 # Added when an editor adds two columns.
 - key: columns
-  label: { de: Zwei Spalten }
+  label: { en: Two columns, de: Zwei Spalten, fr: Deux colonnes }
   is_default: true
   paragraphs:
     - type: columns
@@ -47,8 +59,12 @@
       field_left:
         - type: text
           field_text:
+            en: '<p>The left column.</p>'
             de: '<p>Die linke Spalte.</p>'
+            fr: '<p>La colonne de gauche.</p>'
       field_right:
         - type: text
           field_text:
+            en: '<p>The right column.</p>'
             de: '<p>Die rechte Spalte.</p>'
+            fr: '<p>La colonne de droite.</p>'

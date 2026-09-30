@@ -1,76 +1,113 @@
 key: social-assistance
 type: page
-title: { de: 'Sozialhilfe' }
+title: { en: 'Social assistance', de: 'Sozialhilfe', fr: 'Aide sociale' }
 field_lead:
+  en: 'Who is entitled to social assistance, how to apply for it and who can advise you.'
   de: 'Wer Anspruch auf Sozialhilfe hat, wie Sie sie beantragen und wer Sie berät.'
+  fr: 'Qui a droit à l''aide sociale, comment la demander et qui vous conseille.'
 field_office: { node: social-services }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Anyone who can''t support themselves is entitled to social assistance. It covers what you need to live: food, clothes, housing and health insurance. And it helps you get back on your feet. But your own income and assets come first, as do benefits from insurance, such as unemployment insurance.</p>'
       de: '<p>Wer seinen Lebensunterhalt nicht selbst bestreiten kann, hat Anspruch auf Sozialhilfe. Sie deckt, was Sie zum Leben brauchen: Essen, Kleider, die Wohnung und die Krankenkasse. Und sie hilft Ihnen, wieder auf eigenen Beinen zu stehen. Zuerst zählen aber Ihr eigenes Einkommen und Vermögen und die Leistungen von Versicherungen, etwa der Arbeitslosenkasse.</p>'
+      fr: '<p>Toute personne qui ne peut pas subvenir elle-même à ses besoins a droit à l''aide sociale. Celle-ci couvre ce dont vous avez besoin pour vivre : la nourriture, les habits, le logement et l''assurance maladie. Et elle vous aide à retrouver votre autonomie. Mais ce qui compte d''abord, ce sont votre revenu et votre fortune ainsi que les prestations des assurances, par exemple de la caisse de chômage.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Advice without applying:</strong> Not sure whether you''re entitled, or need advice about money worries? The social services advise you in confidence and free of charge, even if you don''t receive social assistance.</p>'
       de: '<p><strong>Beratung ohne Antrag:</strong> Wissen Sie nicht, ob Sie Anspruch haben, oder brauchen Sie Rat bei Geldsorgen? Die Sozialen Dienste beraten Sie vertraulich und gratis, auch wenn Sie keine Sozialhilfe beziehen.</p>'
+      fr: '<p><strong>Conseils sans demande :</strong> vous ne savez pas si vous y avez droit, ou vous avez besoin de conseils face à des soucis d''argent ? Les Services sociaux vous conseillent gratuitement et en toute confidentialité, même si vous ne touchez pas l''aide sociale.</p>'
   - type: title
-    field_title: { de: So beantragen Sie Sozialhilfe }
+    field_title: { en: 'How to apply for social assistance', de: So beantragen Sie Sozialhilfe, fr: 'Comment demander l''aide sociale' }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Termin vereinbaren }
+        field_title: { en: 'Make an appointment', de: Termin vereinbaren, fr: 'Prendre rendez-vous' }
         field_text:
+          en: '<p>Call us or come to the counter. In an emergency, you''ll get an appointment the same day.</p>'
           de: '<p>Rufen Sie uns an, oder kommen Sie an den Schalter. In einer Notlage erhalten Sie noch am selben Tag einen Termin.</p>'
+          fr: '<p>Appelez-nous ou passez au guichet. En cas d''urgence, vous obtenez un rendez-vous le jour même.</p>'
       - type: step
-        field_title: { de: Erstgespräch }
+        field_title: { en: 'First meeting', de: Erstgespräch, fr: 'Premier entretien' }
         field_text:
+          en: '<p>A social worker discusses your situation with you. Bring the documents listed below.</p>'
           de: '<p>Eine Sozialarbeiterin oder ein Sozialarbeiter bespricht Ihre Lage mit Ihnen. Bringen Sie die Unterlagen mit, die unten aufgeführt sind.</p>'
+          fr: '<p>Une assistante sociale ou un assistant social examine votre situation avec vous. Apportez les documents énumérés ci-dessous.</p>'
       - type: step
-        field_title: { de: Entscheid }
+        field_title: { en: 'Decision', de: Entscheid, fr: 'Décision' }
         field_text:
+          en: '<p>You''ll receive the decision in writing within two weeks. If you need money straight away for food or rent, we''ll help you with an advance until then.</p>'
           de: '<p>Innert zwei Wochen erhalten Sie den schriftlichen Entscheid. Brauchen Sie sofort Geld für Essen oder Miete, helfen wir Ihnen bis dahin mit einem Vorschuss.</p>'
+          fr: '<p>Vous recevez la décision écrite dans les deux semaines. Si vous avez besoin d''argent tout de suite pour la nourriture ou le loyer, nous vous aidons d''ici là avec une avance.</p>'
       - type: step
-        field_title: { de: Begleitung }
+        field_title: { en: 'Ongoing support', de: Begleitung, fr: 'Accompagnement' }
         field_text:
+          en: '<p>You agree on goals with your social worker, such as a job or further training, and meet regularly.</p>'
           de: '<p>Sie vereinbaren mit Ihrer Sozialarbeiterin oder Ihrem Sozialarbeiter Ziele, etwa eine Stelle oder eine Weiterbildung, und treffen sich regelmässig.</p>'
+          fr: '<p>Vous fixez des objectifs avec votre assistante sociale ou votre assistant social, par exemple un emploi ou une formation continue, et vous vous rencontrez régulièrement.</p>'
   - type: title
-    field_title: { de: Was Sie mitbringen }
+    field_title: { en: 'What to bring', de: Was Sie mitbringen, fr: 'Ce qu''il faut apporter' }
   - type: text
     field_text:
+      en: '<ul><li>Identity card, passport or residence permit</li><li>Tenancy agreement and your latest rent receipt</li><li>Statements for all your accounts for the last three months</li><li>Payslips, and decisions on daily allowances or pensions</li><li>Your health insurance policy</li><li>Your latest tax assessment</li></ul>'
       de: '<ul><li>Identitätskarte, Pass oder Ausländerausweis</li><li>Mietvertrag und die letzte Mietzinsquittung</li><li>Kontoauszüge aller Konten der letzten drei Monate</li><li>Lohnabrechnungen, Taggeld- oder Rentenbescheide</li><li>die Police der Krankenkasse</li><li>die letzte Steuerveranlagung</li></ul>'
+      fr: '<ul><li>Carte d''identité, passeport ou permis de séjour</li><li>Bail à loyer et dernière quittance de loyer</li><li>Relevés de tous vos comptes des trois derniers mois</li><li>Fiches de salaire, décisions d''indemnités journalières ou de rente</li><li>Police d''assurance maladie</li><li>Dernière décision de taxation</li></ul>'
   - type: title
-    field_title: { de: Was die Sozialhilfe bezahlt }
+    field_title: { en: 'What social assistance pays for', de: Was die Sozialhilfe bezahlt, fr: 'Ce que paie l''aide sociale' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Household</th><th>Basic allowance per month</th></tr></thead><tbody><tr><td>1 person</td><td>CHF 1,080</td></tr><tr><td>2 people</td><td>CHF 1,650</td></tr><tr><td>3 people</td><td>CHF 2,010</td></tr><tr><td>4 people</td><td>CHF 2,310</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Haushalt</th><th>Grundbedarf pro Monat</th></tr></thead><tbody><tr><td>1 Person</td><td>Fr. 1080.–</td></tr><tr><td>2 Personen</td><td>Fr. 1650.–</td></tr><tr><td>3 Personen</td><td>Fr. 2010.–</td></tr><tr><td>4 Personen</td><td>Fr. 2310.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Ménage</th><th>Forfait pour l''entretien par mois</th></tr></thead><tbody><tr><td>1 personne</td><td>Fr. 1080.–</td></tr><tr><td>2 personnes</td><td>Fr. 1650.–</td></tr><tr><td>3 personnes</td><td>Fr. 2010.–</td></tr><tr><td>4 personnes</td><td>Fr. 2310.–</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>The basic allowance covers food, clothes, energy, phone and transport. On top of that come the rent up to a maximum amount, the health insurance premium minus the premium reduction and, if necessary, the costs of the dentist, glasses or childcare.</p>'
       de: '<p>Der Grundbedarf deckt Essen, Kleider, Energie, Telefon und Verkehr. Dazu kommen die Miete bis zu einer Obergrenze, die Krankenkassenprämie nach Abzug der Prämienverbilligung und, wenn nötig, Kosten für den Zahnarzt, eine Brille oder die Betreuung Ihrer Kinder.</p>'
+      fr: '<p>Le forfait pour l''entretien couvre la nourriture, les habits, l''énergie, le téléphone et les transports. S''y ajoutent le loyer jusqu''à un plafond, la prime d''assurance maladie après déduction de la réduction des primes et, si nécessaire, les frais de dentiste, de lunettes ou de garde de vos enfants.</p>'
   - type: title
-    field_title: { de: Ihre Pflichten }
+    field_title: { en: 'Your obligations', de: Ihre Pflichten, fr: 'Vos obligations' }
   - type: text
     field_text:
+      en: '<p>Tell us straight away if your income, your home or your household changes. Look for work if you are able to work, and take part in the programmes we agree with you. If you later come into money, for example through an inheritance, you pay the social assistance back. You don''t have to repay it out of wages you earn later.</p>'
       de: '<p>Melden Sie uns sofort, wenn sich Ihr Einkommen, Ihre Wohnung oder Ihr Haushalt ändert. Suchen Sie Arbeit, wenn Sie arbeiten können, und nehmen Sie an den Programmen teil, die wir mit Ihnen vereinbaren. Erhalten Sie später Geld, etwa aus einer Erbschaft, zahlen Sie die Sozialhilfe zurück. Aus einem späteren Lohn müssen Sie sie nicht zurückzahlen.</p>'
+      fr: '<p>Annoncez-nous immédiatement tout changement de revenu, de logement ou de ménage. Cherchez du travail si vous êtes en mesure de travailler, et participez aux programmes que nous convenons avec vous. Si vous recevez plus tard de l''argent, par exemple d''un héritage, vous remboursez l''aide sociale. Vous n''avez pas à la rembourser avec un salaire ultérieur.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Ich arbeite, aber der Lohn reicht nicht. Kann ich trotzdem Sozialhilfe erhalten?' }
+    field_title:
+      en: 'I work, but my wages aren''t enough. Can I still get social assistance?'
+      de: 'Ich arbeite, aber der Lohn reicht nicht. Kann ich trotzdem Sozialhilfe erhalten?'
+      fr: 'Je travaille, mais mon salaire ne suffit pas. Puis-je quand même obtenir l''aide sociale ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, on top of your wages. Up to CHF 400 a month of your wages isn''t counted, so that working pays off.</p>'
           de: '<p>Ja, ergänzend zum Lohn. Von Ihrem Lohn behalten Sie einen Freibetrag von bis zu Fr. 400.– im Monat, damit sich die Arbeit lohnt.</p>'
+          fr: '<p>Oui, en complément de votre salaire. Sur votre salaire, vous gardez une franchise allant jusqu''à Fr. 400.– par mois, pour que le travail en vaille la peine.</p>'
   - type: accordion
-    field_title: { de: 'Erfährt jemand, dass ich Sozialhilfe beziehe?' }
+    field_title:
+      en: 'Will anyone find out that I receive social assistance?'
+      de: 'Erfährt jemand, dass ich Sozialhilfe beziehe?'
+      fr: 'Quelqu''un saura-t-il que je touche l''aide sociale ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>No. The social services are bound by confidentiality. We only speak to your employer or your landlord if you agree.</p>'
           de: '<p>Nein. Die Sozialen Dienste unterstehen der Schweigepflicht. Mit Ihrem Arbeitgeber oder Ihrer Vermieterin sprechen wir nur, wenn Sie einverstanden sind.</p>'
+          fr: '<p>Non. Les Services sociaux sont tenus au secret professionnel. Nous ne parlons à votre employeur ou à votre propriétaire qu''avec votre accord.</p>'
   - type: accordion
-    field_title: { de: 'Ich habe Schulden. Hilft mir die Sozialhilfe?' }
+    field_title:
+      en: 'I''m in debt. Can social assistance help me?'
+      de: 'Ich habe Schulden. Hilft mir die Sozialhilfe?'
+      fr: 'J''ai des dettes. L''aide sociale peut-elle m''aider ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Social assistance doesn''t pay off old debts. But the social services'' debt advice service helps you make a plan and negotiate with your creditors. For unpaid taxes, you can apply to the town for tax relief.</p>'
           de: '<p>Alte Schulden bezahlt die Sozialhilfe nicht. Die Schuldenberatung der Sozialen Dienste hilft Ihnen aber, einen Plan zu machen und mit den Gläubigern zu verhandeln. Offene Steuern können Sie mit einem Gesuch um Steuererlass bei der Gemeinde angehen.</p>'
+          fr: '<p>L''aide sociale ne paie pas les anciennes dettes. Le conseil en désendettement des Services sociaux vous aide cependant à établir un plan et à négocier avec vos créanciers. Pour des impôts impayés, vous pouvez adresser une demande de remise d''impôt à la commune.</p>'
 field_related:
   - type: teaser
     field_link: { node: paying-taxes }
@@ -78,12 +115,12 @@ field_related:
     field_link: { node: old-age }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/premium-reduction
-        field_title: { de: Prämienverbilligung beantragen }
+        field_title: { en: 'Apply for a premium reduction', de: Prämienverbilligung beantragen, fr: 'Demander une réduction des primes' }
       - type: link
         field_link: https://www.example.com/debt-advice
-        field_title: { de: Schuldenberatung }
+        field_title: { en: 'Debt advice', de: Schuldenberatung, fr: 'Conseil en désendettement' }

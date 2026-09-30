@@ -2,27 +2,33 @@
 
 # Reused on the waste sorting page and the works yard's office.
 - key: waste-guide
-  label: { de: Was gehört wohin? }
+  label: { en: What goes where?, de: Was gehört wohin?, fr: 'Que jeter où ?' }
   paragraphs:
     - type: table
       options: { striped: true }
       field_table:
+        en: '<table><thead><tr><th>What</th><th>Where</th></tr></thead><tbody><tr><td>PET drinks bottles</td><td>Shops</td></tr><tr><td>Plastic bottles from milk, shampoo or detergent</td><td>Shops</td></tr><tr><td>Glass, sorted by colour</td><td>Neighbourhood recycling points, collection point</td></tr><tr><td>Aluminium and tin cans</td><td>Neighbourhood recycling points, collection point</td></tr><tr><td>Paper and cardboard</td><td>Paper collection on the first Thursday of the month</td></tr><tr><td>Green waste and kitchen scraps</td><td>Green waste collection on Wednesdays</td></tr><tr><td>Batteries and light bulbs</td><td>Shops</td></tr><tr><td>Electrical appliances</td><td>Shops, collection point</td></tr><tr><td>Bulky waste</td><td>Bulky waste collection on request, collection point</td></tr><tr><td>Polystyrene</td><td>Collection point</td></tr><tr><td>Clothes and shoes</td><td>Collection containers at the station and the works yard</td></tr><tr><td>Paint, used oil, chemicals</td><td>Collection point</td></tr><tr><td>Medicines</td><td>Pharmacies</td></tr></tbody></table>'
         de: '<table><thead><tr><th>Was</th><th>Wohin</th></tr></thead><tbody><tr><td>PET-Getränkeflaschen</td><td>Verkaufsstellen</td></tr><tr><td>Plastikflaschen von Milch, Shampoo oder Waschmittel</td><td>Verkaufsstellen</td></tr><tr><td>Glas, nach Farben getrennt</td><td>Sammelstellen im Quartier, Entsorgungsstelle</td></tr><tr><td>Alu und Blech</td><td>Sammelstellen im Quartier, Entsorgungsstelle</td></tr><tr><td>Papier und Karton</td><td>Papierabfuhr am ersten Donnerstag im Monat</td></tr><tr><td>Grüngut und Rüstabfälle</td><td>Grüngutabfuhr am Mittwoch</td></tr><tr><td>Batterien und Leuchtmittel</td><td>Verkaufsstellen</td></tr><tr><td>Elektrogeräte</td><td>Verkaufsstellen, Entsorgungsstelle</td></tr><tr><td>Sperrgut</td><td>Sperrgutabfuhr auf Anmeldung, Entsorgungsstelle</td></tr><tr><td>Styropor</td><td>Entsorgungsstelle</td></tr><tr><td>Kleider und Schuhe</td><td>Sammelcontainer beim Bahnhof und beim Werkhof</td></tr><tr><td>Farben, Altöl, Chemikalien</td><td>Entsorgungsstelle</td></tr><tr><td>Medikamente</td><td>Apotheken</td></tr></tbody></table>'
+        fr: '<table><thead><tr><th>Quoi</th><th>Où</th></tr></thead><tbody><tr><td>Bouteilles de boissons en PET</td><td>Points de vente</td></tr><tr><td>Flacons en plastique de lait, de shampoing ou de lessive</td><td>Points de vente</td></tr><tr><td>Verre, trié par couleur</td><td>Points de collecte du quartier, déchetterie</td></tr><tr><td>Aluminium et fer-blanc</td><td>Points de collecte du quartier, déchetterie</td></tr><tr><td>Papier et carton</td><td>Ramassage du papier le premier jeudi du mois</td></tr><tr><td>Déchets verts et déchets de cuisine</td><td>Ramassage des déchets verts le mercredi</td></tr><tr><td>Piles et ampoules</td><td>Points de vente</td></tr><tr><td>Appareils électriques</td><td>Points de vente, déchetterie</td></tr><tr><td>Déchets encombrants</td><td>Ramassage des encombrants sur inscription, déchetterie</td></tr><tr><td>Sagex (polystyrène)</td><td>Déchetterie</td></tr><tr><td>Vêtements et chaussures</td><td>Conteneurs de collecte à la gare et au dépôt communal</td></tr><tr><td>Peintures, huiles usagées, produits chimiques</td><td>Déchetterie</td></tr><tr><td>Médicaments</td><td>Pharmacies</td></tr></tbody></table>'
 
 # On the home page.
 - key: emergency-numbers
-  label: { de: Notfallnummern }
+  label: { en: Emergency numbers, de: Notfallnummern, fr: 'Numéros d''urgence' }
   paragraphs:
     - type: text
       options: { box: info }
       field_text:
+        en: '<p><strong>Emergency numbers:</strong> police <a href="tel:117">117</a>, fire brigade <a href="tel:118">118</a>, ambulance <a href="tel:144">144</a>, poisoning <a href="tel:145">145</a>. If a water pipe bursts, you can reach the utilities'' on-call service around the clock on <a href="tel:+41325550169">032 555 01 69</a>.</p>'
         de: '<p><strong>Notfallnummern:</strong> Polizei <a href="tel:117">117</a>, Feuerwehr <a href="tel:118">118</a>, Sanität <a href="tel:144">144</a>, Vergiftungen <a href="tel:145">145</a>. Bei einem Wasserrohrbruch erreichen Sie den Pikettdienst der Gemeindewerke rund um die Uhr unter <a href="tel:+41325550169">032 555 01 69</a>.</p>'
+        fr: '<p><strong>Numéros d''urgence :</strong> police <a href="tel:117">117</a>, pompiers <a href="tel:118">118</a>, ambulance <a href="tel:144">144</a>, intoxications <a href="tel:145">145</a>. En cas de rupture d''une conduite d''eau, le service de piquet des Services industriels est joignable 24 heures sur 24 au <a href="tel:+41325550169">032 555 01 69</a>.</p>'
 
 # On the news and the official publications' overviews.
 - key: stay-informed
-  label: { de: Bleiben Sie informiert }
+  label: { en: Stay informed, de: Bleiben Sie informiert, fr: Restez au courant }
   paragraphs:
     - type: text
       options: { box: success }
       field_text:
+        en: '<p><strong>Stay informed:</strong> the <a href="https://www.example.com/newsletter">newsletter</a> brings you the town''s news, events and official publications by email every Friday. You can also subscribe to the official publications as an <a href="https://www.example.com/rss">RSS feed</a>.</p>'
         de: '<p><strong>Bleiben Sie informiert:</strong> Der <a href="https://www.example.com/newsletter">Newsletter</a> bringt Ihnen die Neuigkeiten, Veranstaltungen und amtlichen Publikationen der Gemeinde jeden Freitag per E-Mail. Die amtlichen Publikationen können Sie auch als <a href="https://www.example.com/rss">RSS-Feed</a> abonnieren.</p>'
+        fr: '<p><strong>Restez au courant :</strong> la <a href="https://www.example.com/newsletter">lettre d''information</a> vous apporte chaque vendredi par e-mail les actualités, les événements et les publications officielles de la commune. Vous pouvez aussi vous abonner aux publications officielles par <a href="https://www.example.com/rss">flux RSS</a>.</p>'

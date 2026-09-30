@@ -3,9 +3,11 @@
 key: news
 type: editorial
 frontend_route: news
-title: { de: Aktuelles }
+title: { en: News, de: Aktuelles, fr: Actualités }
 field_lead:
+  en: 'News from the town, events and official publications.'
   de: 'Neuigkeiten aus der Gemeinde, die Veranstaltungen und die amtlichen Publikationen.'
+  fr: 'Les actualités de la commune, les événements et les publications officielles.'
 field_host_options:
   - { key: header, value: plain }
 field_paragraphs:

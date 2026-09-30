@@ -1,59 +1,88 @@
 key: sports-facilities
 type: page
-title: { de: 'Sportanlagen' }
+title: { en: 'Sports facilities', de: 'Sportanlagen', fr: 'Installations sportives' }
 field_lead:
+  en: 'Gyms, sports grounds and the woodchip running track: what''s available and how to book.'
   de: 'Turnhallen, Sportplätze und die Finnenbahn: was es gibt und wie Sie reservieren.'
+  fr: 'Halles de gymnastique, terrains de sport et piste finlandaise : ce que nous proposons et comment réserver.'
 field_office: { node: sport-leisure }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The town builds and maintains the sports facilities, and the clubs bring them to life. On weekdays, the schools use the halls during the day, and the clubs train there in the evening. The sports ground, the woodchip running track and the pump track are open to everyone, free of charge and with no need to register.</p>'
       de: '<p>Die Gemeinde baut und unterhält die Sportanlagen, die Vereine füllen sie mit Leben. Unter der Woche turnt tagsüber die Schule in den Hallen, am Abend trainieren die Vereine. Den Sportplatz, die Finnenbahn und den Pumptrack können alle benützen, ohne Anmeldung und gratis.</p>'
+      fr: '<p>La commune construit et entretient les installations sportives, les sociétés locales les font vivre. En semaine, l''école utilise les halles pendant la journée et les sociétés locales s''y entraînent le soir. Le terrain de sport, la piste finlandaise et le pumptrack sont ouverts à toutes et à tous, sans inscription et gratuitement.</p>'
   - type: title
-    field_title: { de: Die Anlagen }
+    field_title: { en: The facilities, de: Die Anlagen, fr: Les installations }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Facility</th><th>Features</th><th>Use</th></tr></thead><tbody><tr><td>Seefeld sports hall</td><td>Triple hall with a spectator stand, weights room, meeting room</td><td>Schools and clubs, free slots on request</td></tr><tr><td>Old town gym</td><td>Single hall</td><td>Schools and clubs, can be rented at weekends</td></tr><tr><td>Allmend sports ground</td><td>Grass and artificial turf pitches, 400-metre track, beach volleyball, pump track</td><td>Open to all, except during training sessions and matches</td></tr><tr><td>Woodchip running track in the Blockingerwald</td><td>1.2 kilometres, lit until 22:00</td><td>Open to all</td></tr><tr><td>Lakeside pool</td><td>Swimming pool, diving tower, access to the lake</td><td>Mid-May to mid-September</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Anlage</th><th>Angebot</th><th>Benützung</th></tr></thead><tbody><tr><td>Sporthalle Seefeld</td><td>Dreifachhalle mit Tribüne, Kraftraum, Sitzungsraum</td><td>Schule und Vereine, freie Zeiten auf Anfrage</td></tr><tr><td>Turnhalle Altstadt</td><td>Einfachhalle</td><td>Schule und Vereine, am Wochenende zu mieten</td></tr><tr><td>Sportplatz Allmend</td><td>Rasen- und Kunstrasenfeld, 400-Meter-Bahn, Beachvolleyball, Pumptrack</td><td>frei, ausser während Trainings und Spielen</td></tr><tr><td>Finnenbahn im Blockingerwald</td><td>1,2 Kilometer, beleuchtet bis 22.00 Uhr</td><td>frei</td></tr><tr><td>Strandbad</td><td>Schwimmbecken, Sprungturm, Zugang zum See</td><td>Mitte Mai bis Mitte September</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Installation</th><th>Équipement</th><th>Utilisation</th></tr></thead><tbody><tr><td>Halle de sport du Seefeld</td><td>Triple halle avec tribune, salle de musculation, salle de réunion</td><td>École et sociétés locales, créneaux libres sur demande</td></tr><tr><td>Halle de gymnastique de la vieille ville</td><td>Halle simple</td><td>École et sociétés locales, à louer le week-end</td></tr><tr><td>Terrain de sport de l''Allmend</td><td>Terrain en gazon naturel et terrain synthétique, piste de 400 mètres, beach-volley, pumptrack</td><td>Libre, sauf pendant les entraînements et les matchs</td></tr><tr><td>Piste finlandaise du Blockingerwald</td><td>1,2 kilomètre, éclairée jusqu''à 22 h</td><td>Libre</td></tr><tr><td>Plage</td><td>Bassin de natation, plongeoir, accès au lac</td><td>De mi-mai à mi-septembre</td></tr></tbody></table>'
   - type: title
-    field_title: { de: Hallen und Plätze mieten }
+    field_title: { en: Renting halls and pitches, de: Hallen und Plätze mieten, fr: Louer les halles et les terrains }
   - type: text
     field_text:
+      en: '<p>Clubs, companies and private individuals can rent the halls, the meeting room and the grass pitches. On weekdays, the schools and clubs have priority; at weekends, there are often free slots. Book online at least a week in advance. You can see whether a hall is free in the booking schedule.</p>'
       de: '<p>Vereine, Firmen und Privatpersonen können die Hallen, den Sitzungsraum und die Rasenfelder mieten. Unter der Woche haben die Schule und die Vereine Vorrang; am Wochenende sind oft Zeiten frei. Reservieren Sie online, spätestens eine Woche vorher. Ob eine Halle frei ist, sehen Sie im Belegungsplan.</p>'
+      fr: '<p>Les sociétés locales, les entreprises et les particuliers peuvent louer les halles, la salle de réunion et les terrains en gazon. En semaine, l''école et les sociétés locales sont prioritaires ; le week-end, il reste souvent des créneaux libres. Réservez en ligne, au plus tard une semaine à l''avance. Le plan d''occupation vous indique si une halle est libre.</p>'
   - type: link
     options: { style: primary }
     field_link: https://www.example.com/reservations
-    field_title: { de: Halle reservieren }
+    field_title: { en: Book a hall, de: Halle reservieren, fr: Réserver une halle }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Per hour</th><th>Blockingen clubs</th><th>Individuals and companies</th></tr></thead><tbody><tr><td>Old town gym</td><td>CHF 15</td><td>CHF 40</td></tr><tr><td>Seefeld sports hall, one third</td><td>CHF 15</td><td>CHF 40</td></tr><tr><td>Seefeld sports hall, whole hall</td><td>CHF 40</td><td>CHF 110</td></tr><tr><td>Grass pitch</td><td>CHF 20</td><td>CHF 60</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Pro Stunde</th><th>Blockinger Vereine</th><th>Private und Firmen</th></tr></thead><tbody><tr><td>Turnhalle Altstadt</td><td>Fr. 15.–</td><td>Fr. 40.–</td></tr><tr><td>Sporthalle Seefeld, ein Drittel</td><td>Fr. 15.–</td><td>Fr. 40.–</td></tr><tr><td>Sporthalle Seefeld, ganze Halle</td><td>Fr. 40.–</td><td>Fr. 110.–</td></tr><tr><td>Rasenfeld</td><td>Fr. 20.–</td><td>Fr. 60.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Par heure</th><th>Sociétés de Bloquens</th><th>Particuliers et entreprises</th></tr></thead><tbody><tr><td>Halle de gymnastique de la vieille ville</td><td>Fr. 15.–</td><td>Fr. 40.–</td></tr><tr><td>Halle de sport du Seefeld, un tiers</td><td>Fr. 15.–</td><td>Fr. 40.–</td></tr><tr><td>Halle de sport du Seefeld, halle entière</td><td>Fr. 40.–</td><td>Fr. 110.–</td></tr><tr><td>Terrain en gazon</td><td>Fr. 20.–</td><td>Fr. 60.–</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>Blockingen clubs with a youth section train for free. Changing rooms and showers are included in the price.</p>'
       de: '<p>Blockinger Vereine mit einer Jugendabteilung trainieren gratis. Garderoben und Duschen sind im Preis inbegriffen.</p>'
+      fr: '<p>Les sociétés de Bloquens qui ont une section jeunesse s''entraînent gratuitement. Les vestiaires et les douches sont compris dans le prix.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Summer break:</strong> The halls are closed for cleaning during the first three weeks of the summer holidays. The sports ground and the woodchip running track stay open.</p>'
       de: '<p><strong>Sommerpause:</strong> In den ersten drei Wochen der Sommerferien sind die Hallen für die Reinigung geschlossen. Der Sportplatz und die Finnenbahn bleiben offen.</p>'
+      fr: '<p><strong>Pause estivale :</strong> pendant les trois premières semaines des vacances d''été, les halles sont fermées pour le nettoyage. Le terrain de sport et la piste finlandaise restent ouverts.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Können wir die Turnhalle für einen Kindergeburtstag mieten?' }
+    field_title:
+      en: 'Can we rent the gym for a children''s birthday party?'
+      de: 'Können wir die Turnhalle für einen Kindergeburtstag mieten?'
+      fr: 'Pouvons-nous louer la halle de gymnastique pour un anniversaire d''enfant ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, the old town gym on Saturdays or Sundays. An adult must be there the whole time and is responsible. You may use the balls and mats; the large equipment, such as the trampoline, stays put away.</p>'
           de: '<p>Ja, die Turnhalle Altstadt am Samstag oder am Sonntag. Eine erwachsene Person ist die ganze Zeit dabei und verantwortlich. Die Bälle und Matten dürfen Sie benützen; die grossen Geräte wie das Trampolin bleiben weggeräumt.</p>'
+          fr: '<p>Oui, la halle de gymnastique de la vieille ville, le samedi ou le dimanche. Une personne adulte est présente pendant toute la durée de la location et en assume la responsabilité. Vous pouvez utiliser les ballons et les tapis ; les grands engins, comme le trampoline, restent rangés.</p>'
   - type: accordion
-    field_title: { de: 'Ist die Finnenbahn im Winter offen?' }
+    field_title:
+      en: 'Is the woodchip running track open in winter?'
+      de: 'Ist die Finnenbahn im Winter offen?'
+      fr: 'La piste finlandaise est-elle ouverte en hiver ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, and it''s lit just as in summer. But the works yard doesn''t clear it: in snow and ice, you run at your own risk.</p>'
           de: '<p>Ja, und beleuchtet wie im Sommer. Der Werkhof räumt sie aber nicht: Bei Schnee und Eis laufen Sie auf eigene Gefahr.</p>'
+          fr: '<p>Oui, et elle est éclairée comme en été. Le dépôt communal ne la déneige toutefois pas : par temps de neige ou de verglas, vous courez à vos risques et périls.</p>'
   - type: accordion
-    field_title: { de: 'Darf mein Hund auf den Sportplatz?' }
+    field_title:
+      en: 'Can I bring my dog to the sports ground?'
+      de: 'Darf mein Hund auf den Sportplatz?'
+      fr: 'Mon chien peut-il venir sur le terrain de sport ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>No, dogs are not allowed on the pitches or the athletics track, not even on a lead. On the woodchip running track, you may take your dog with you on a lead.</p>'
           de: '<p>Nein, auf den Spielfeldern und der Bahn sind Hunde nicht erlaubt, auch nicht an der Leine. Auf der Finnenbahn dürfen Sie Ihren Hund an der Leine mitnehmen.</p>'
+          fr: '<p>Non, les chiens ne sont pas admis sur les terrains ni sur la piste d''athlétisme, même tenus en laisse. Sur la piste finlandaise, vous pouvez emmener votre chien en laisse.</p>'
 field_related:
   - type: teaser
     field_link: { node: clubs }
@@ -61,15 +90,15 @@ field_related:
     field_link: { node: lakeside-pool }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/reservations
-        field_title: { de: Halle reservieren }
+        field_title: { en: Book a hall, de: Halle reservieren, fr: Réserver une halle }
       - type: link
         field_link: https://www.example.com/hall-schedule
-        field_title: { de: Belegungsplan der Hallen }
+        field_title: { en: Hall booking schedule, de: Belegungsplan der Hallen, fr: 'Plan d''occupation des halles' }
       - type: link
         field_link: https://www.example.com/facilities-rules
-        field_title: { de: Benützungsreglement (PDF) }
+        field_title: { en: Regulations for use (PDF), de: Benützungsreglement (PDF), fr: 'Règlement d''utilisation (PDF)' }

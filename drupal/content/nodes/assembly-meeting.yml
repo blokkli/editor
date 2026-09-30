@@ -1,31 +1,39 @@
 key: assembly-meeting
 type: event
-title: { de: Gemeindeversammlung }
+title: { en: Municipal assembly, de: Gemeindeversammlung, fr: Assemblée communale }
 field_lead:
+  en: 'Voters decide on the budget, the funding for the old town gym and the new water fees.'
   de: 'Die Stimmberechtigten entscheiden über das Budget, den Kredit für die Turnhalle Altstadt und die neuen Wassergebühren.'
+  fr: 'Les électrices et électeurs se prononcent sur le budget, le crédit pour la halle de gymnastique de la vieille ville et les nouvelles taxes pour l''eau.'
 field_hero_image: { media: town-hall }
 field_date: { value: '+35 days 19:30', end_value: '+35 days 22:00' }
-field_place: { de: Rathaussaal }
-field_organiser: { de: Gemeinderat }
+field_place: { en: 'Town hall, main hall', de: Rathaussaal, fr: 'Hôtel de ville, grande salle' }
+field_organiser: { en: Municipal council, de: Gemeinderat, fr: Conseil communal }
 field_category: politics
-field_price: { de: Gratis }
+field_price: { en: Free, de: Gratis, fr: Gratuit }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>All of the town''s voters are invited, including foreign nationals with the right to vote on municipal matters. Bring your voting card; you receive it by post with the invitation. Guests are welcome and sit in the back rows.</p>'
       de: '<p>Eingeladen sind alle Stimmberechtigten der Gemeinde, auch Ausländerinnen und Ausländer mit Stimmrecht in Gemeindesachen. Bringen Sie Ihren Stimmrechtsausweis mit; Sie erhalten ihn mit der Einladung per Post. Gäste sind willkommen und sitzen in den hinteren Reihen.</p>'
+      fr: '<p>Toutes les électrices et tous les électeurs de la commune sont convoqués, y compris les étrangères et étrangers ayant le droit de vote en matière communale. Apportez votre carte de légitimation ; vous la recevez par la poste avec la convocation. Le public est le bienvenu et prend place dans les derniers rangs.</p>'
   - type: title
-    field_title: { de: Traktanden }
+    field_title: { en: Agenda, de: Traktanden, fr: Ordre du jour }
   - type: text
     field_text:
+      en: '<ol><li>Minutes of the last assembly</li><li>Next year''s budget and tax rate of 1.62</li><li>Funding of CHF 4.6 million for the renovation of the old town gym</li><li>Revision of the regulations on water fees</li><li>Any other business</li></ol>'
       de: '<ol><li>Protokoll der letzten Versammlung</li><li>Budget des nächsten Jahres und Steuerfuss von 1,62</li><li>Kredit von 4,6 Mio. Franken für die Sanierung der Turnhalle Altstadt</li><li>Revision des Reglements über die Wassergebühren</li><li>Verschiedenes</li></ol>'
+      fr: '<ol><li>Procès-verbal de la dernière assemblée</li><li>Budget de l''année prochaine et quotité d''impôt de 1,62</li><li>Crédit de 4,6 millions de francs pour la rénovation de la halle de gymnastique de la vieille ville</li><li>Révision du règlement sur les taxes pour l''eau</li><li>Divers</li></ol>'
   - type: text
     field_text:
+      en: '<p>The assembly is held in German and French: you speak in your own language, and the mayor summarises each contribution in the other. The hall can be reached by lift, and an assistive listening system relays every contribution. After the assembly, the town hosts a drinks reception.</p>'
       de: '<p>Die Versammlung findet auf Deutsch und auf Französisch statt: Sie sprechen in Ihrer Sprache, und die Gemeindepräsidentin fasst jede Wortmeldung in der anderen zusammen. Der Saal ist mit dem Lift erreichbar, und eine Höranlage überträgt alle Wortmeldungen. Nach der Versammlung offeriert die Gemeinde einen Apéro.</p>'
+      fr: '<p>L''assemblée se tient en allemand et en français : vous vous exprimez dans votre langue, et la maire résume chaque intervention dans l''autre. La salle est accessible par l''ascenseur, et une installation pour malentendants retransmet toutes les interventions. Après l''assemblée, la commune offre l''apéritif.</p>'
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: { node: assembly-invitation }
-        field_title: { de: Einladung und Botschaft }
+        field_title: { en: Invitation and report, de: Einladung und Botschaft, fr: Convocation et message }
       - type: link
         field_link: { node: assembly }
-        field_title: { de: So funktioniert die Gemeindeversammlung }
+        field_title: { en: How the municipal assembly works, de: So funktioniert die Gemeindeversammlung, fr: 'Le fonctionnement de l''Assemblée communale' }

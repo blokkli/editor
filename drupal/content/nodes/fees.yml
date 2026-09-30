@@ -1,53 +1,78 @@
 key: fees
 type: page
-title: { de: 'Gebühren für Wasser, Abwasser und Abfall' }
+title:
+  en: 'Water, wastewater and waste fees'
+  de: 'Gebühren für Wasser, Abwasser und Abfall'
+  fr: 'Taxes pour l''eau, les eaux usées et les déchets'
 field_lead:
+  en: 'What water, wastewater and waste cost, and what your household pays each year.'
   de: 'Was Wasser, Abwasser und Abfall kosten, und was Ihr Haushalt im Jahr bezahlt.'
+  fr: 'Ce que coûtent l''eau, les eaux usées et les déchets, et ce que votre ménage paie par année.'
 field_office: { node: utilities }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>You pay for water, wastewater and waste through fees, not taxes. The fees cover the costs of the pipes, the wastewater treatment plant and the waste collection, and nothing more. They are made up of three parts:</p><ul><li>the <strong>connection fee</strong>, once, when you build a new house or an extension</li><li>the <strong>base fee</strong>, every year, per apartment or house</li><li>the <strong>usage fee</strong>: for water and wastewater according to the water meter, for waste through the bag fee</li></ul>'
       de: '<p>Wasser, Abwasser und Abfall bezahlen Sie mit Gebühren, nicht mit Steuern. Die Gebühren decken die Kosten der Leitungen, der Kläranlage und der Abfuhr, und nicht mehr. Sie bestehen aus drei Teilen:</p><ul><li>der <strong>Anschlussgebühr</strong>, einmal, wenn Sie neu bauen oder anbauen</li><li>der <strong>Grundgebühr</strong>, jedes Jahr, pro Wohnung oder Haus</li><li>der <strong>Verbrauchsgebühr</strong>: für Wasser und Abwasser nach dem Wasserzähler, für den Abfall mit der Sackgebühr</li></ul>'
+      fr: '<p>L''eau, les eaux usées et les déchets sont financés par des taxes, et non par les impôts. Les taxes couvrent les coûts des conduites, de la station d''épuration et du ramassage des déchets, et rien de plus. Elles se composent de trois parties :</p><ul><li>la <strong>taxe de raccordement</strong>, une seule fois, lorsque vous construisez ou agrandissez</li><li>la <strong>taxe de base</strong>, chaque année, par appartement ou maison</li><li>la <strong>taxe de consommation</strong> : pour l''eau et les eaux usées selon le compteur d''eau, pour les déchets par la taxe au sac</li></ul>'
   - type: title
-    field_title: { de: Tarife }
+    field_title: { en: 'Rates', de: Tarife, fr: 'Tarifs' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Fee</th><th>Apartment</th><th>House</th></tr></thead><tbody><tr><td>Water, base fee per year</td><td>CHF 80</td><td>CHF 140</td></tr><tr><td>Water, per m³</td><td>CHF 1.90</td><td>CHF 1.90</td></tr><tr><td>Wastewater, base fee per year</td><td>CHF 100</td><td>CHF 170</td></tr><tr><td>Wastewater, per m³ of water</td><td>CHF 2.30</td><td>CHF 2.30</td></tr><tr><td>Waste, base fee per year</td><td>CHF 75</td><td>CHF 75</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Gebühr</th><th>Wohnung</th><th>Haus</th></tr></thead><tbody><tr><td>Wasser, Grundgebühr pro Jahr</td><td>Fr. 80.–</td><td>Fr. 140.–</td></tr><tr><td>Wasser, pro m³</td><td>Fr. 1.90</td><td>Fr. 1.90</td></tr><tr><td>Abwasser, Grundgebühr pro Jahr</td><td>Fr. 100.–</td><td>Fr. 170.–</td></tr><tr><td>Abwasser, pro m³ Wasser</td><td>Fr. 2.30</td><td>Fr. 2.30</td></tr><tr><td>Abfall, Grundgebühr pro Jahr</td><td>Fr. 75.–</td><td>Fr. 75.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Taxe</th><th>Appartement</th><th>Maison</th></tr></thead><tbody><tr><td>Eau, taxe de base par année</td><td>Fr. 80.–</td><td>Fr. 140.–</td></tr><tr><td>Eau, par m³</td><td>Fr. 1.90</td><td>Fr. 1.90</td></tr><tr><td>Eaux usées, taxe de base par année</td><td>Fr. 100.–</td><td>Fr. 170.–</td></tr><tr><td>Eaux usées, par m³ d''eau</td><td>Fr. 2.30</td><td>Fr. 2.30</td></tr><tr><td>Déchets, taxe de base par année</td><td>Fr. 75.–</td><td>Fr. 75.–</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>You pay the bag fee when you buy official waste bags: a 17-litre bag costs CHF 1.10, a 35-litre bag CHF 2.20 and a 60-litre bag CHF 3.80. The green waste sticker for a 140-litre bin costs CHF 90 a year. All prices include VAT.</p><p>The connection fee is 1.5 per cent of the building''s insurance value for water and 2 per cent for wastewater; for an extension, only the added value counts.</p>'
       de: '<p>Die Sackgebühr bezahlen Sie mit dem Kehrichtsack: Er kostet Fr. 1.10 mit 17 Litern, Fr. 2.20 mit 35 Litern und Fr. 3.80 mit 60 Litern. Die Grüngutmarke für einen Container mit 140 Litern kostet Fr. 90.– im Jahr. Alle Preise verstehen sich inklusive Mehrwertsteuer.</p><p>Die Anschlussgebühr beträgt 1,5 Prozent des Gebäudeversicherungswerts für Wasser und 2 Prozent für Abwasser; bei einem Anbau zählt nur der Mehrwert.</p>'
+      fr: '<p>Vous payez la taxe au sac en achetant les sacs taxés : un sac de 17 litres coûte Fr. 1.10, un sac de 35 litres Fr. 2.20 et un sac de 60 litres Fr. 3.80. La vignette pour un conteneur à déchets verts de 140 litres coûte Fr. 90.– par année. Tous les prix s''entendent TVA comprise.</p><p>La taxe de raccordement s''élève à 1,5 % de la valeur d''assurance du bâtiment pour l''eau et à 2 % pour les eaux usées ; pour une annexe, seule la plus-value est prise en compte.</p>'
   - type: title
-    field_title: { de: Was Ihr Haushalt bezahlt }
+    field_title: { en: 'What your household pays', de: Was Ihr Haushalt bezahlt, fr: 'Ce que paie votre ménage' }
   - type: text
     field_text:
+      en: '<p>The fee calculator estimates your fees for a year. It assumes 50 m³ of water per person; your bill is based on your meter.</p>'
       de: '<p>Der Gebührenrechner schätzt Ihre Gebühren für ein Jahr. Er rechnet mit 50 m³ Wasser pro Person; Ihre Rechnung richtet sich nach dem Zähler.</p>'
+      fr: '<p>Le calculateur de taxes estime vos taxes pour une année. Il se base sur 50 m³ d''eau par personne ; votre facture, elle, se base sur le compteur.</p>'
   - type: embed
     options:
       # The frame's own widths: measured at the narrowest width of each range,
       # in the longest language.
       heights: { 375: 1420, 768: 1320, 1440: 800 }
     field_link: /embed/fee-calculator
-    field_title: { de: Gebührenrechner }
+    field_title: { en: 'Fee calculator', de: Gebührenrechner, fr: 'Calculateur de taxes' }
   - type: title
-    field_title: { de: Die Rechnung }
+    field_title: { en: 'Your bill', de: Die Rechnung, fr: 'La facture' }
   - type: text
     field_text:
+      en: '<p>The utilities read the water meters once a year, in September. In March, you receive an interim bill for half of the previous year''s amount, and in October the final bill based on your actual consumption. You pay within 30 days.</p><p>The bill goes to the owner. If you rent, the fees are part of your service charges: ask your landlord if you have any questions about them.</p>'
       de: '<p>Die Gemeindewerke lesen die Wasserzähler einmal im Jahr ab, im September. Im März erhalten Sie eine Akontorechnung über die Hälfte des Vorjahres, im Oktober die Schlussrechnung mit dem tatsächlichen Verbrauch. Sie bezahlen innert 30 Tagen.</p><p>Die Rechnung geht an die Eigentümerin oder den Eigentümer. Wohnen Sie zur Miete, sind die Gebühren Teil Ihrer Nebenkosten: Fragen dazu stellen Sie der Vermieterin oder dem Vermieter.</p>'
+      fr: '<p>Les Services industriels relèvent les compteurs d''eau une fois par année, en septembre. En mars, vous recevez une facture d''acompte correspondant à la moitié de l''année précédente, en octobre le décompte final selon votre consommation effective. Vous payez dans les 30 jours.</p><p>La facture est adressée à la ou au propriétaire. Si vous êtes locataire, les taxes font partie de vos charges : adressez vos questions à votre bailleresse ou à votre bailleur.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Mein Verbrauch ist plötzlich viel höher. Was tun?' }
+    field_title:
+      en: 'My consumption has suddenly gone up a lot. What should I do?'
+      de: 'Mein Verbrauch ist plötzlich viel höher. Was tun?'
+      fr: 'Ma consommation a soudain fortement augmenté. Que faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>A pipe may be leaking, or a toilet cistern may be running. Turn off all the taps and look at the meter: if it keeps turning, call a plumber. On request, we''ll read the meter again free of charge.</p>'
           de: '<p>Vielleicht ist eine Leitung undicht, oder ein WC-Spülkasten läuft. Schliessen Sie alle Wasserhahnen, und schauen Sie auf den Zähler: Dreht er sich weiter, rufen Sie eine Sanitärfirma. Auf Wunsch lesen wir den Zähler gratis nach.</p>'
+          fr: '<p>Une conduite fuit peut-être, ou une chasse d''eau coule. Fermez tous les robinets et regardez le compteur : s''il continue de tourner, appelez une entreprise sanitaire. Sur demande, nous relevons à nouveau le compteur gratuitement.</p>'
   - type: accordion
-    field_title: { de: 'Ändern sich die Wassergebühren?' }
+    field_title:
+      en: 'Are the water fees changing?'
+      de: 'Ändern sich die Wassergebühren?'
+      fr: 'Les taxes pour l''eau vont-elles changer ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The municipal council is proposing new water fees so that the town can replace old pipes. You can comment on the draft until the deadline. The municipal assembly decides on the new rates; until then, the rates on this page apply.</p>'
           de: '<p>Der Gemeinderat schlägt neue Wassergebühren vor, damit die Gemeinde alte Leitungen ersetzen kann. Zum Entwurf können Sie bis zum Ende der Frist Stellung nehmen. Über die neuen Tarife entscheidet die Gemeindeversammlung; bis dahin gelten die Tarife auf dieser Seite.</p>'
+          fr: '<p>Le Conseil communal propose de nouvelles taxes pour l''eau afin que la commune puisse remplacer les anciennes conduites. Vous pouvez prendre position sur le projet jusqu''à l''échéance du délai. L''Assemblée communale se prononcera sur les nouveaux tarifs ; d''ici là, les tarifs de cette page s''appliquent.</p>'
 field_related:
   - type: teaser
     field_link: { node: water-fees }
@@ -55,12 +80,12 @@ field_related:
     field_link: { node: collection-days }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/meter-reading
-        field_title: { de: Zählerstand melden }
+        field_title: { en: 'Submit your meter reading', de: Zählerstand melden, fr: 'Annoncer le relevé du compteur' }
       - type: link
         field_link: https://www.example.com/water-regulation
-        field_title: { de: Reglement über die Wassergebühren }
+        field_title: { en: 'Regulations on water fees', de: Reglement über die Wassergebühren, fr: 'Règlement sur les taxes pour l''eau' }

@@ -1,53 +1,83 @@
 key: moving-within
 type: page
-title: { de: 'Umzug innerhalb von Blockingen' }
+title: { en: 'Moving within Blockingen', de: 'Umzug innerhalb von Blockingen', fr: 'Déménagement au sein de Bloquens' }
 field_lead:
+  en: 'Report a new address in Blockingen within 14 days. It''s free of charge.'
   de: 'Eine neue Adresse in Blockingen melden Sie innert 14 Tagen. Die Meldung ist gratis.'
+  fr: 'Annoncez votre nouvelle adresse à Bloquens dans les 14 jours. L''annonce est gratuite.'
 field_office: { node: residents-services }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>If you move within Blockingen, report your new address to the residents'' services within 14 days. The notification covers everyone in your household who is moving with you, and it''s free.</p>'
       de: '<p>Ziehen Sie innerhalb von Blockingen um, melden Sie Ihre neue Adresse innert 14 Tagen bei den Einwohnerdiensten. Die Meldung gilt für alle Personen im Haushalt, die mit Ihnen umziehen, und ist gratis.</p>'
+      fr: '<p>Si vous déménagez au sein de Bloquens, annoncez votre nouvelle adresse au Contrôle des habitants dans les 14 jours. L''annonce vaut pour toutes les personnes du ménage qui déménagent avec vous, et elle est gratuite.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Report online:</strong> The easiest way to report your move is at the <a href="https://www.example.com/online-counter">online counter</a>, in just a few minutes. You''ll need the number of your new flat: it''s in your tenancy agreement, or your property manager can give it to you.</p>'
       de: '<p><strong>Online melden:</strong> Den Umzug melden Sie am einfachsten am <a href="https://www.example.com/online-counter">Online-Schalter</a>, in wenigen Minuten. Sie brauchen dafür die Nummer Ihrer neuen Wohnung: Sie steht im Mietvertrag, oder die Verwaltung nennt sie Ihnen.</p>'
+      fr: '<p><strong>Annoncer en ligne :</strong> le plus simple est d''annoncer votre déménagement au <a href="https://www.example.com/online-counter">guichet en ligne</a>, en quelques minutes. Il vous faut pour cela le numéro de votre nouveau logement : il figure dans le bail à loyer, ou la gérance vous le communique.</p>'
   - type: title
-    field_title: { de: Was Sie angeben }
+    field_title: { en: What you need to provide, de: Was Sie angeben, fr: Les informations à fournir }
   - type: text
     field_text:
+      en: '<p>To report your move, at the counter or online, you need:</p><ul><li>your new address and flat number</li><li>the date of the move</li><li>the names of everyone moving with you</li><li>your identity card or passport, if you come to the counter</li></ul><p>You don''t need a tenancy agreement or a new certificate of origin.</p>'
       de: '<p>Für die Meldung, am Schalter oder online, brauchen Sie:</p><ul><li>die neue Adresse und die Wohnungsnummer</li><li>den Tag des Umzugs</li><li>die Namen aller Personen, die mit Ihnen umziehen</li><li>Ihre Identitätskarte oder Ihren Pass, wenn Sie an den Schalter kommen</li></ul><p>Einen Mietvertrag oder einen neuen Heimatschein brauchen Sie nicht.</p>'
+      fr: '<p>Pour l''annonce, au guichet ou en ligne, il vous faut :</p><ul><li>la nouvelle adresse et le numéro de logement</li><li>la date du déménagement</li><li>le nom de toutes les personnes qui déménagent avec vous</li><li>votre carte d''identité ou votre passeport, si vous venez au guichet</li></ul><p>Vous n''avez besoin ni d''un bail à loyer ni d''un nouvel acte d''origine.</p>'
   - type: title
-    field_title: { de: Wen wir informieren }
+    field_title: { en: Who we inform, de: Wen wir informieren, fr: Qui nous informons }
   - type: text
     field_text:
+      en: '<p>We pass your new address on to the tax office, the utilities, the schools office and the electoral register. You''ll then receive your voting material and tax bill at your new address.</p><p>You tell your health insurer, your employer, your bank and Swiss Post about the new address yourself. Tell the road traffic office within 14 days, for your driving licence and vehicle registration document.</p>'
       de: '<p>Die neue Adresse geben wir an die Steuerverwaltung, die Gemeindewerke, die Schulverwaltung und das Stimmregister weiter. Das Stimmmaterial und die Steuerrechnung erhalten Sie danach an der neuen Adresse.</p><p>Selbst melden Sie die Adresse Ihrer Krankenkasse, dem Arbeitgeber, der Bank und der Post. Dem Strassenverkehrsamt melden Sie sie innert 14 Tagen, für den Führerausweis und den Fahrzeugausweis.</p>'
+      fr: '<p>Nous transmettons votre nouvelle adresse à l''administration fiscale, aux Services industriels, à l''Administration scolaire et au registre électoral. Vous recevez ensuite le matériel de vote et la facture d''impôt à votre nouvelle adresse.</p><p>Vous annoncez vous-même votre adresse à votre caisse-maladie, à votre employeur, à votre banque et à La Poste. Annoncez-la dans les 14 jours à l''office de la circulation routière, pour le permis de conduire et le permis de circulation.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Ich bleibe im selben Haus. Muss ich den Umzug melden?' }
+    field_title:
+      en: 'I''m staying in the same building. Do I have to report the move?'
+      de: 'Ich bleibe im selben Haus. Muss ich den Umzug melden?'
+      fr: 'Je reste dans le même immeuble. Dois-je annoncer le déménagement ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes. Every flat has its own number in the residents'' register, even within the same building. The town needs it for things like housing statistics and emergencies.</p>'
           de: '<p>Ja. Jede Wohnung hat im Einwohnerregister eine eigene Nummer, auch im selben Haus. Die Gemeinde braucht sie, etwa für die Wohnungsstatistik und für Notfälle.</p>'
+          fr: '<p>Oui. Chaque logement a son propre numéro dans le registre des habitants, même au sein d''un même immeuble. La commune en a besoin, par exemple pour la statistique des logements et en cas d''urgence.</p>'
   - type: accordion
-    field_title: { de: 'Ich ziehe mit jemandem zusammen. Was müssen wir melden?' }
+    field_title:
+      en: 'I''m moving in with someone. What do we need to report?'
+      de: 'Ich ziehe mit jemandem zusammen. Was müssen wir melden?'
+      fr: 'J''emménage avec quelqu''un. Que devons-nous annoncer ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The person who already lives in Blockingen reports a move. The person moving here from another municipality registers as a new resident. You can do both at the same time at the counter.</p>'
           de: '<p>Wer schon in Blockingen wohnt, meldet einen Umzug. Wer aus einer anderen Gemeinde dazuzieht, meldet sich als Zuzug an. Sie können beides zusammen am Schalter erledigen.</p>'
+          fr: '<p>La personne qui habite déjà à Bloquens annonce un déménagement. Celle qui arrive d''une autre commune annonce son arrivée. Vous pouvez régler les deux en même temps au guichet.</p>'
   - type: accordion
-    field_title: { de: 'Gilt meine Anwohnerparkkarte weiter?' }
+    field_title:
+      en: 'Is my resident parking permit still valid?'
+      de: 'Gilt meine Anwohnerparkkarte weiter?'
+      fr: 'Ma vignette de stationnement pour résidents reste-t-elle valable ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Only in the same parking zone. If your new address is in a different zone, we''ll exchange the permit at the counter. We''ll credit you for the rest of the old permit.</p>'
           de: '<p>Nur in derselben Parkzone. Liegt Ihre neue Adresse in einer anderen Zone, tauschen wir die Karte am Schalter um. Den Rest der alten Karte rechnen wir an.</p>'
+          fr: '<p>Seulement dans la même zone de stationnement. Si votre nouvelle adresse se trouve dans une autre zone, nous échangeons la vignette au guichet. La durée restante de l''ancienne vignette est prise en compte.</p>'
   - type: accordion
-    field_title: { de: 'Ich habe ein Haus gekauft. Was ist mit Wasser und Abwasser?' }
+    field_title:
+      en: 'I''ve bought a house. What about water and wastewater?'
+      de: 'Ich habe ein Haus gekauft. Was ist mit Wasser und Abwasser?'
+      fr: 'J''ai acheté une maison. Qu''en est-il de l''eau et des eaux usées ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Tell the utilities the handover date. They''ll read the water meter and bill you from that day on.</p>'
           de: '<p>Melden Sie den Tag der Übergabe den Gemeindewerken. Sie lesen den Wasserzähler ab und stellen die Rechnung ab diesem Tag auf Sie aus.</p>'
+          fr: '<p>Communiquez la date de la remise aux Services industriels. Ils relèvent le compteur d''eau et établissent la facture à votre nom à partir de ce jour.</p>'
 field_related:
   - type: teaser
     field_link: { node: documents }
@@ -55,15 +85,18 @@ field_related:
     field_link: { node: fees }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/online-counter
-        field_title: { de: Online-Schalter }
+        field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
       - type: link
         field_link: https://www.example.com/parking-permit
-        field_title: { de: Anwohnerparkkarte }
+        field_title: { en: Resident parking permit, de: Anwohnerparkkarte, fr: Vignette de stationnement pour résidents }
       - type: link
         field_link: https://www.example.com/vehicle-address
-        field_title: { de: 'Strassenverkehrsamt: Adresse ändern' }
+        field_title:
+          en: 'Road traffic office: change of address'
+          de: 'Strassenverkehrsamt: Adresse ändern'
+          fr: 'Office de la circulation routière : changement d''adresse'

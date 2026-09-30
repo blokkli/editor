@@ -1,43 +1,60 @@
 key: history
 type: page
-title: { de: Geschichte }
+title: { en: History, de: Geschichte, fr: Histoire }
 field_lead:
+  en: From a fishing village on the language border to a bilingual small town by the lake.
   de: Vom Fischerdorf an der Sprachgrenze zur zweisprachigen Kleinstadt am See.
+  fr: 'D''un village de pêcheurs sur la frontière linguistique à une petite ville bilingue au bord du lac.'
 field_office: { node: municipal-chancery }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Blockingen lies where German and French have met for centuries. The lake, the road to the Swiss Plateau and later the railway have shaped the town: it was never large, but it has always been a place of exchange.</p>'
       de: '<p>Blockingen liegt dort, wo sich seit Jahrhunderten Deutsch und Französisch begegnen. Der See, die Strasse ins Mittelland und später die Eisenbahn haben den Ort geprägt: Er war nie gross, aber immer ein Ort des Austauschs.</p>'
+      fr: '<p>Bloquens se trouve là où l''allemand et le français se rencontrent depuis des siècles. Le lac, la route vers le Plateau et, plus tard, le chemin de fer ont façonné la localité : elle n''a jamais été grande, mais elle a toujours été un lieu d''échanges.</p>'
   - type: title
-    field_title: { de: Frühe Spuren }
+    field_title: { en: Early traces, de: Frühe Spuren, fr: Premières traces }
   - type: text
     field_text:
+      en: '<p>Piles in the mud of the lakeshore show that people were already living by the lake more than 5,000 years ago. The walls of a farming estate above the vineyards date back to Roman times. The town first appears in a charter in 1228, as “Bloquingen”: a fishing village with a chapel and a ferry across the lake.</p>'
       de: '<p>Pfähle im Uferschlamm zeigen, dass schon vor über 5000 Jahren Menschen am See wohnten. Aus römischer Zeit stammen die Mauern eines Gutshofs oberhalb der Rebberge. Als «Bloquingen» erscheint der Ort erstmals 1228 in einer Urkunde, als Fischerdorf mit einer Kapelle und einer Fähre über den See.</p>'
+      fr: '<p>Des pieux plantés dans la vase de la rive montrent que des gens vivaient déjà au bord du lac il y a plus de 5000 ans. Au-dessus des vignes, les murs d''un domaine agricole remontent à l''époque romaine. La localité apparaît pour la première fois en 1228 dans une charte, sous le nom de « Bloquingen » : un village de pêcheurs avec une chapelle et un bac pour traverser le lac.</p>'
   - type: title
-    field_title: { de: Ein Marktort an der Sprachgrenze }
+    field_title: { en: A market town on the language border, de: Ein Marktort an der Sprachgrenze, fr: Un bourg de marché sur la frontière linguistique }
   - type: text
     field_text:
+      en: '<p>In 1476, Blockingen was granted market rights. Winegrowers from the villages on the hillside and fishermen from the lake sold their goods on the village square, joined by traders from both language regions. The houses of the old town, with their steep tiled roofs, date from this period. The town hall by the lake took on its present form in 1652.</p>'
       de: '<p>1476 erhielt Blockingen das Marktrecht. Weinbauern aus den Dörfern am Hang und Fischer vom See verkauften ihre Waren auf dem Dorfplatz, Händler aus beiden Sprachgebieten kamen dazu. Aus dieser Zeit stammen die Häuser der Altstadt mit ihren steilen Ziegeldächern. Das Rathaus am See erhielt seine heutige Gestalt 1652.</p>'
+      fr: '<p>En 1476, Bloquens a obtenu le droit de marché. Les vignerons des villages du coteau et les pêcheurs du lac vendaient leurs marchandises sur la place du village, rejoints par des marchands des deux régions linguistiques. Les maisons de la vieille ville, avec leurs toits de tuiles pentus, datent de cette époque. L''hôtel de ville au bord du lac a pris son aspect actuel en 1652.</p>'
   - type: image
     options: { width: wide }
     field_media: { media: old-town }
-    field_caption: { de: 'Die Altstadt: Viele Häuser gehen auf das 15. und 16. Jahrhundert zurück.' }
+    field_caption:
+      en: 'The old town: many houses date back to the 15th and 16th centuries.'
+      de: 'Die Altstadt: Viele Häuser gehen auf das 15. und 16. Jahrhundert zurück.'
+      fr: 'La vieille ville : de nombreuses maisons remontent aux XVe et XVIe siècles.'
   - type: title
-    field_title: { de: Eisenbahn und Uhren }
+    field_title: { en: The railway and watchmaking, de: Eisenbahn und Uhren, fr: Chemin de fer et horlogerie }
   - type: text
     field_text:
+      en: '<p>Industry arrived with the railway in 1864. At first, homeworkers made watch parts in their living rooms; soon two factories were built near the station. Within a few decades, Blockingen grew from 2,000 to more than 5,000 residents. Many came from the French-speaking valleys to the west, and as much French as German was now spoken in the town.</p>'
       de: '<p>Mit der Eisenbahn kam 1864 die Industrie. Zuerst fertigten Heimarbeiterinnen und Heimarbeiter in ihren Stuben Uhrenteile, bald entstanden zwei Fabriken beim Bahnhof. In wenigen Jahrzehnten wuchs Blockingen von 2000 auf über 5000 Einwohnerinnen und Einwohner. Viele kamen aus den französischsprachigen Tälern im Westen, und im Ort wurde nun ebenso viel Französisch wie Deutsch gesprochen.</p>'
+      fr: '<p>L''industrie est arrivée avec le chemin de fer en 1864. D''abord, des ouvrières et des ouvriers fabriquaient chez eux des pièces d''horlogerie, puis deux fabriques ont vu le jour près de la gare. En quelques décennies, la population de Bloquens est passée de 2000 à plus de 5000 habitantes et habitants. Beaucoup venaient des vallées francophones de l''ouest, et l''on parlait désormais autant le français que l''allemand dans la localité.</p>'
   - type: title
-    field_title: { de: Die Gemeinde heute }
+    field_title: { en: The town today, de: Die Gemeinde heute, fr: 'La commune aujourd''hui' }
   - type: text
     field_text:
+      en: '<p>The factories closed during the watchmaking crisis of the 1970s. Today, their sites are home to flats, workshops and the administrative centre. Blockingen has been officially bilingual since 1996: the town conducts its business in German and in French, and the streets have names in both languages.</p>'
       de: '<p>In der Uhrenkrise der 1970er-Jahre schlossen die Fabriken. Auf ihrem Gelände stehen heute Wohnungen, Werkstätten und das Verwaltungszentrum. Seit 1996 ist Blockingen offiziell zweisprachig: Die Gemeinde führt ihre Geschäfte auf Deutsch und auf Französisch, und die Strassen tragen Namen in beiden Sprachen.</p>'
+      fr: '<p>Les fabriques ont fermé pendant la crise horlogère des années 1970. Sur leurs terrains se trouvent aujourd''hui des logements, des ateliers et le centre administratif. Depuis 1996, Bloquens est officiellement bilingue : la commune traite ses affaires en allemand et en français, et les rues portent des noms dans les deux langues.</p>'
   - type: title
-    field_title: { de: Zeittafel }
+    field_title: { en: Timeline, de: Zeittafel, fr: Chronologie }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Year</th><th>Event</th></tr></thead><tbody><tr><td>Around 3000 BC</td><td>Pile-dwelling settlement on the lakeshore</td></tr><tr><td>1228</td><td>First mentioned as “Bloquingen”</td></tr><tr><td>1476</td><td>Blockingen is granted market rights</td></tr><tr><td>1652</td><td>The town hall by the lake is rebuilt</td></tr><tr><td>1864</td><td>The railway line and the station open</td></tr><tr><td>1911</td><td>The lakeside pool opens</td></tr><tr><td>1958</td><td>Seefeld school opens</td></tr><tr><td>1975</td><td>The last watch factory closes</td></tr><tr><td>1996</td><td>Blockingen becomes officially bilingual</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Jahr</th><th>Ereignis</th></tr></thead><tbody><tr><td>um 3000 v. Chr.</td><td>Pfahlbausiedlung am Seeufer</td></tr><tr><td>1228</td><td>Erste Erwähnung als «Bloquingen»</td></tr><tr><td>1476</td><td>Blockingen erhält das Marktrecht</td></tr><tr><td>1652</td><td>Neubau des Rathauses am See</td></tr><tr><td>1864</td><td>Eröffnung der Eisenbahnlinie und des Bahnhofs</td></tr><tr><td>1911</td><td>Das Strandbad wird eröffnet</td></tr><tr><td>1958</td><td>Das Schulhaus Seefeld wird eröffnet</td></tr><tr><td>1975</td><td>Die letzte Uhrenfabrik schliesst</td></tr><tr><td>1996</td><td>Blockingen wird offiziell zweisprachig</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Année</th><th>Événement</th></tr></thead><tbody><tr><td>Vers 3000 av. J.-C.</td><td>Village palafittique au bord du lac</td></tr><tr><td>1228</td><td>Première mention sous le nom de « Bloquingen »</td></tr><tr><td>1476</td><td>Bloquens obtient le droit de marché</td></tr><tr><td>1652</td><td>Reconstruction de l''hôtel de ville au bord du lac</td></tr><tr><td>1864</td><td>Ouverture de la ligne de chemin de fer et de la gare</td></tr><tr><td>1911</td><td>Ouverture de la plage</td></tr><tr><td>1958</td><td>Ouverture de l''école du Seefeld</td></tr><tr><td>1975</td><td>Fermeture de la dernière fabrique d''horlogerie</td></tr><tr><td>1996</td><td>Bloquens devient officiellement bilingue</td></tr></tbody></table>'
 field_related:
   - type: teaser
     field_link: { node: in-numbers }
@@ -45,12 +62,12 @@ field_related:
     field_link: { node: lakeside-pool }
 field_aside:
   - type: title
-    field_title: { de: Mehr erfahren }
+    field_title: { en: Find out more, de: Mehr erfahren, fr: En savoir plus }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/archive
-        field_title: { de: Gemeindearchiv }
+        field_title: { en: Municipal archives, de: Gemeindearchiv, fr: Archives communales }
       - type: link
         field_link: https://www.example.com/old-town-tours
-        field_title: { de: Führungen durch die Altstadt }
+        field_title: { en: Guided tours of the old town, de: Führungen durch die Altstadt, fr: Visites guidées de la vieille ville }

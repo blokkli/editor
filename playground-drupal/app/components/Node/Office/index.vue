@@ -38,7 +38,11 @@
           <OfficeHours :hours />
         </FactsItem>
       </Facts>
-      <BlokkliField name="field_paragraphs" :list="paragraphs" />
+      <BlokkliField
+        name="field_paragraphs"
+        :list="paragraphs"
+        :allowed-fragments="['office_pages']"
+      />
     </HostLayout>
   </BlokkliProvider>
 </template>
@@ -58,7 +62,8 @@ import OfficeHours from '~/components/Office/Hours/index.vue'
 
 // An office: its address, contact and opening hours are the facts after the
 // header. The address and the header's photo are its location's, a building
-// that other offices can be in too (a taxonomy term, edited in Drupal).
+// that other offices can be in too (a taxonomy term, edited in Drupal). The
+// fragment office_pages lists the detail pages it's responsible for.
 const props = defineProps<
   NodeOfficeFragment & { breadcrumb?: BreadcrumbFragment[] }
 >()

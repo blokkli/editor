@@ -1,8 +1,10 @@
 key: taxes-finances
 type: editorial
-title: { de: 'Steuern & Finanzen' }
+title: { en: 'Taxes & finances', de: 'Steuern & Finanzen', fr: 'Impôts & finances' }
 field_lead:
+  en: 'Your taxes and the town''s finances.'
   de: 'Ihre Steuern und die Finanzen der Gemeinde.'
+  fr: 'Vos impôts et les finances de la commune.'
 field_hero_image: { media: administrative-centre }
 field_host_options:
   - { key: header, value: image }

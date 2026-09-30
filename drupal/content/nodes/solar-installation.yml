@@ -1,17 +1,29 @@
 key: solar-installation
 type: publication
-title: { de: 'Solaranlage auf dem Dach, Kirchgasse 5' }
+title:
+  en: 'Solar panels on the roof, Kirchgasse 5'
+  de: 'Solaranlage auf dem Dach, Kirchgasse 5'
+  fr: 'Installation solaire sur le toit, ruelle de l''Église 5'
 field_lead:
+  en: 'In the old town, even solar panels need a building permit. The plans are on display at the building and planning office.'
   de: In der Altstadt braucht auch eine Solaranlage eine Baubewilligung. Die Pläne liegen bei Bau und Planung auf.
+  fr: 'Dans la vieille ville, même une installation solaire nécessite un permis de construire. Les plans sont mis à l''enquête au service Constructions et urbanisme.'
 field_publication_type: building_application
 field_period: { value: '-1 days', end_value: '+29 days' }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p><strong>Applicant:</strong> Kirchgasse 5 condominium owners'' association, Blockingen<br><strong>Designed by:</strong> Sonnwerk Solartechnik GmbH, Industriestrasse 18, Blockingen<br><strong>Project:</strong> 38 m² photovoltaic system on the southern part of the roof, integrated into the roof, with tile-red modules<br><strong>Location:</strong> Kirchgasse 5, plot no. 212<br><strong>Zone:</strong> old town core zone, building worthy of protection</p>'
       de: '<p><strong>Bauherrschaft:</strong> Stockwerkeigentümergemeinschaft Kirchgasse 5, Blockingen<br><strong>Projektverfassung:</strong> Sonnwerk Solartechnik GmbH, Industriestrasse 18, Blockingen<br><strong>Vorhaben:</strong> Photovoltaikanlage von 38 m² auf dem südlichen Dachteil, ins Dach integriert, mit ziegelroten Modulen<br><strong>Standort:</strong> Kirchgasse 5, Parzelle Nr. 212<br><strong>Zone:</strong> Kernzone Altstadt, schützenswertes Gebäude</p>'
+      fr: '<p><strong>Maître d''ouvrage :</strong> communauté des propriétaires par étages ruelle de l''Église 5, Bloquens<br><strong>Auteur du projet :</strong> Sonnwerk Solartechnik GmbH, rue de l''Industrie 18, Bloquens<br><strong>Projet :</strong> installation photovoltaïque de 38 m² sur le pan sud du toit, intégrée à la toiture, avec des modules rouge tuile<br><strong>Emplacement :</strong> ruelle de l''Église 5, parcelle n° 212<br><strong>Zone :</strong> zone centre de la vieille ville, bâtiment digne de protection</p>'
   - type: text
     field_text:
+      en: '<p>The cantonal heritage office has reviewed the project in advance and approves it, subject to conditions.</p><p><strong>Public display:</strong> The plans are on display for the duration of the period at the building and planning office in the administrative centre, Bahnhofstrasse 12. You can view them during opening hours, and in the afternoon by appointment.</p><p><strong>Objections:</strong> Objections must be sent to the municipal council in writing, stating the reasons, by the end of the period: Municipal council of Blockingen, Town hall, Seestrasse 1, 9999 Blockingen.</p>'
       de: '<p>Die kantonale Denkmalpflege hat das Vorhaben vorgeprüft und stimmt ihm unter Auflagen zu.</p><p><strong>Auflage:</strong> Die Pläne liegen während der Frist bei Bau und Planung im Verwaltungszentrum, Bahnhofstrasse 12, auf. Sie können sie zu den Öffnungszeiten einsehen, am Nachmittag nach Vereinbarung.</p><p><strong>Einsprachen:</strong> Einsprachen sind bis zum Ende der Frist schriftlich und begründet an den Gemeinderat zu richten: Gemeinderat Blockingen, Rathaus, Seestrasse 1, 9999 Blockingen.</p>'
+      fr: '<p>Le service cantonal des monuments historiques a examiné le projet au préalable et l''approuve sous conditions.</p><p><strong>Mise à l''enquête :</strong> Pendant le délai, les plans sont déposés au service Constructions et urbanisme, au centre administratif, rue de la Gare 12. Vous pouvez les consulter pendant les heures d''ouverture, l''après-midi sur rendez-vous.</p><p><strong>Oppositions :</strong> Les oppositions doivent être adressées par écrit et dûment motivées au Conseil communal jusqu''à la fin du délai : Conseil communal de Bloquens, hôtel de ville, rue du Lac 1, 9999 Bloquens.</p>'
   - type: link
     field_link: { node: permit-needed }
-    field_title: { de: Brauche ich eine Baubewilligung? }
+    field_title:
+      en: 'Do I need a building permit?'
+      de: Brauche ich eine Baubewilligung?
+      fr: 'Ai-je besoin d''un permis de construire ?'

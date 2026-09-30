@@ -1,19 +1,31 @@
 key: green-waste
 type: news
 created: '-8 days'
-title: { de: 'Grüngut: neu jede Woche, auch im Winter' }
+title:
+  en: 'Green waste: now every week, even in winter'
+  de: 'Grüngut: neu jede Woche, auch im Winter'
+  fr: 'Déchets verts : désormais chaque semaine, même en hiver'
 field_lead:
+  en: 'From now on, the town collects green waste every Wednesday, all year round. The green waste sticker costs the same as before.'
   de: Ab sofort holt die Gemeinde das Grüngut jeden Mittwoch ab, das ganze Jahr. Die Grüngutmarke kostet gleich viel wie bisher.
+  fr: 'Dès maintenant, la commune ramasse les déchets verts chaque mercredi, toute l''année. La vignette pour déchets verts coûte le même prix qu''avant.'
 field_hero_image: { media: works-yard }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Until now, the works yard only collected green waste every two weeks in winter. But there are kitchen scraps in winter too, and many containers were full long before the collection came. So from now on, we empty the containers every Wednesday, all year round.</p><p>The works yard takes the green waste to the regional fermentation plant, where it is turned into biogas and compost for farming. The more kitchen scraps go into the green waste instead of the household waste, the fewer official waste bags you need.</p>'
       de: '<p>Bisher holte der Werkhof das Grüngut im Winter nur alle zwei Wochen ab. Doch auch im Winter fallen Rüstabfälle an, und viele Container waren voll, lange bevor die Abfuhr kam. Ab sofort leeren wir die Container deshalb jeden Mittwoch, das ganze Jahr.</p><p>Das Grüngut bringt der Werkhof in die regionale Vergärungsanlage. Dort wird es zu Biogas und zu Kompost für die Landwirtschaft. Je mehr Rüstabfälle im Grüngut landen statt im Kehricht, desto weniger Kehrichtsäcke brauchen Sie.</p>'
+      fr: '<p>Jusqu''ici, la voirie ne ramassait les déchets verts que toutes les deux semaines en hiver. Mais on produit aussi des déchets de cuisine en hiver, et beaucoup de conteneurs étaient pleins bien avant le passage du ramassage. Désormais, nous vidons donc les conteneurs chaque mercredi, toute l''année.</p><p>La voirie apporte les déchets verts à l''installation régionale de méthanisation, où ils sont transformés en biogaz et en compost pour l''agriculture. Plus vous mettez de déchets de cuisine dans les déchets verts plutôt que dans les ordures ménagères, moins vous avez besoin de sacs taxés.</p>'
   - type: title
-    field_title: { de: Was Sie wissen müssen }
+    field_title:
+      en: 'What you need to know'
+      de: Was Sie wissen müssen
+      fr: 'Ce qu''il faut savoir'
   - type: text
     field_text:
+      en: '<ul><li>Put your container out at the roadside by 7:00 on Wednesday.</li><li>The green waste sticker for a 140-litre container still costs CHF 90 a year.</li><li>Green waste includes kitchen scraps, grass cuttings, leaves, flowers and twigs, but no plastic bags, not even compostable ones.</li><li>In winter, a layer of newspaper at the bottom stops anything freezing to the container.</li></ul>'
       de: '<ul><li>Stellen Sie den Container am Mittwoch bis 7.00 Uhr an den Strassenrand.</li><li>Die Grüngutmarke für einen Container mit 140 Litern kostet weiterhin Fr. 90.– im Jahr.</li><li>Ins Grüngut gehören Rüstabfälle, Rasen, Laub, Blumen und Zweige, aber keine Säcke aus Kunststoff, auch keine kompostierbaren.</li><li>Im Winter hilft eine Lage Zeitungspapier am Boden, damit nichts am Container festfriert.</li></ul>'
+      fr: '<ul><li>Placez le conteneur au bord de la route le mercredi avant 7 h.</li><li>La vignette pour un conteneur de 140 litres coûte toujours Fr. 90.– par an.</li><li>Les déchets verts comprennent les déchets de cuisine, le gazon, les feuilles, les fleurs et les branches, mais pas de sacs en plastique, même compostables.</li><li>En hiver, une couche de papier journal au fond évite que les déchets ne gèlent contre le conteneur.</li></ul>'
   - type: teaser
     field_link: { node: collection-days }
   - type: contact

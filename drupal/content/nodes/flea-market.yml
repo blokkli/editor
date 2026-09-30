@@ -1,16 +1,20 @@
 key: flea-market
 type: event
-title: { de: Flohmarkt }
+title: { en: Flea market, de: Flohmarkt, fr: Marché aux puces }
 field_lead:
+  en: 'Clothes, books, toys and furniture: around 80 stalls in the school grounds.'
   de: 'Kleider, Bücher, Spielsachen und Möbel: rund 80 Stände auf dem Schulhausareal.'
+  fr: 'Vêtements, livres, jouets et meubles : quelque 80 stands sur le site de l''école.'
 field_hero_image: { media: market }
 field_date: { value: '+30 days 09:00', end_value: '+30 days 16:00' }
-field_place: { de: Schulhausareal Seefeld }
-field_organiser: { de: Marktverein Blockingen }
+field_place: { en: Seefeld school grounds, de: Schulhausareal Seefeld, fr: 'Site de l''école du Seefeld' }
+field_organiser: { en: Blockingen Market Association, de: Marktverein Blockingen, fr: Association du marché de Bloquens }
 field_category: market
-field_price: { de: Gratis }
+field_price: { en: Free, de: Gratis, fr: Gratuit }
 field_registration: https://www.example.com/flea-market
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>While the village square is being redesigned, the flea market takes place in the school grounds. Browse around 80 stalls, from children''s clothes and records to old furniture. The parents'' council sells soup, coffee and cake.</p><p>Anyone selling second-hand goods can book a stall, but traders can''t. A three-metre pitch costs CHF 15; children selling their toys get one free. Register online no later than two weeks before. Come on foot or by bike: the parking spaces at the school are reserved for the stalls.</p>'
       de: '<p>Solange der Dorfplatz umgestaltet wird, findet der Flohmarkt auf dem Schulhausareal statt. Stöbern Sie an rund 80 Ständen, von Kinderkleidern über Schallplatten bis zu alten Möbeln. Der Elternrat verkauft Suppe, Kaffee und Kuchen.</p><p>Einen Stand anmelden können alle, die Gebrauchtes verkaufen, aber keine Händlerinnen und Händler. Ein Platz von drei Metern kostet Fr. 15.–; Kinder, die ihre Spielsachen verkaufen, erhalten ihn gratis. Melden Sie sich bis zwei Wochen vorher online an. Kommen Sie zu Fuss oder mit dem Velo: Die Parkplätze beim Schulhaus sind für die Stände reserviert.</p>'
+      fr: '<p>Pendant le réaménagement de la place du village, le marché aux puces a lieu sur le site de l''école. Chinez parmi quelque 80 stands, des vêtements d''enfants aux vieux meubles en passant par les disques vinyles. Le conseil des parents vend de la soupe, du café et des gâteaux.</p><p>Toute personne qui vend des objets d''occasion peut réserver un stand, mais pas les marchandes et marchands professionnels. Un emplacement de trois mètres coûte Fr. 15.– ; les enfants qui vendent leurs jouets l''obtiennent gratuitement. Inscrivez-vous en ligne au plus tard deux semaines avant. Venez à pied ou à vélo : les places de parc de l''école sont réservées aux stands.</p>'

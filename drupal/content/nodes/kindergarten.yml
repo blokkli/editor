@@ -1,63 +1,94 @@
 key: kindergarten
 type: page
-title: { de: 'Kindergarteneintritt' }
+title: { en: 'Starting kindergarten', de: 'Kindergarteneintritt', fr: 'Entrée à l''école enfantine' }
 field_lead:
+  en: 'When your child starts kindergarten and how to register them.'
   de: 'Wann Ihr Kind in den Kindergarten kommt und wie Sie es anmelden.'
+  fr: 'Quand votre enfant entre à l''école enfantine et comment l''inscrire.'
 field_office: { node: schools-office }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Children who turn four by 31 July start kindergarten in August. Kindergarten lasts two years and is compulsory. Blockingen has five kindergartens spread across its neighbourhoods, so that the children don''t have far to go: three German-speaking, one French-speaking and one bilingual.</p>'
       de: '<p>Kinder, die bis zum 31. Juli vier Jahre alt werden, kommen im August in den Kindergarten. Der Kindergarten dauert zwei Jahre und ist obligatorisch. Blockingen hat fünf Kindergärten in den Quartieren, damit der Weg für die Kinder kurz ist: drei deutschsprachige, einen französischsprachigen und einen zweisprachigen.</p>'
+      fr: '<p>Les enfants qui fêtent leurs quatre ans au plus tard le 31 juillet entrent à l''école enfantine en août. L''école enfantine dure deux ans et est obligatoire. Bloquens compte cinq écoles enfantines réparties dans les quartiers, pour que le chemin reste court pour les enfants : trois germanophones, une francophone et une bilingue.</p>'
   - type: title
-    field_title: { de: So melden Sie Ihr Kind an }
+    field_title: { en: 'How to register your child', de: So melden Sie Ihr Kind an, fr: 'Comment inscrire votre enfant' }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Brief im Januar }
+        field_title: { en: 'A letter in January', de: Brief im Januar, fr: 'Une lettre en janvier' }
         field_text:
+          en: '<p>The schools office writes to all parents whose child will start kindergarten in the summer.</p>'
           de: '<p>Die Schulverwaltung schreibt allen Eltern, deren Kind im Sommer in den Kindergarten kommt.</p>'
+          fr: '<p>L''Administration scolaire écrit à tous les parents dont l''enfant entrera à l''école enfantine en été.</p>'
       - type: step
-        field_title: { de: Anmeldung bis Ende Februar }
+        field_title: { en: 'Register by the end of February', de: Anmeldung bis Ende Februar, fr: 'Inscription d''ici fin février' }
         field_text:
+          en: '<p>Register your child online or with the form, and choose the language: German, French or bilingual.</p>'
           de: '<p>Melden Sie Ihr Kind online oder mit dem Formular an, und wählen Sie die Sprache: Deutsch, Französisch oder zweisprachig.</p>'
+          fr: '<p>Inscrivez votre enfant en ligne ou au moyen du formulaire, et choisissez la langue : allemand, français ou bilingue.</p>'
       - type: step
-        field_title: { de: Einteilung im Mai }
+        field_title: { en: 'Class allocation in May', de: Einteilung im Mai, fr: 'Répartition en mai' }
         field_text:
+          en: '<p>We allocate your child according to language and where you live. You''ll find out which kindergarten your child will attend and who their teacher will be.</p>'
           de: '<p>Wir teilen Ihr Kind nach Sprache und Wohnort ein. Sie erfahren, in welchen Kindergarten es geht und wer es unterrichtet.</p>'
+          fr: '<p>Nous répartissons votre enfant selon la langue et le lieu de domicile. Vous apprenez dans quelle école enfantine il ira et qui sera son enseignante ou son enseignant.</p>'
       - type: step
-        field_title: { de: Besuchsmorgen im Juni }
+        field_title: { en: 'Visiting morning in June', de: Besuchsmorgen im Juni, fr: 'Matinée de visite en juin' }
         field_text:
+          en: '<p>Your child meets their teacher and the other children. You come along too.</p>'
           de: '<p>Ihr Kind lernt seine Lehrperson und die anderen Kinder kennen. Sie sind mit dabei.</p>'
+          fr: '<p>Votre enfant fait la connaissance de son enseignante ou de son enseignant et des autres enfants. Vous l''accompagnez.</p>'
   - type: title
-    field_title: { de: Später eintreten }
+    field_title: { en: 'Starting later', de: Später eintreten, fr: 'Entrée différée' }
   - type: text
     field_text:
+      en: '<p>If your child isn''t ready yet, they can start kindergarten a year later. Submit the request together with the registration; the kindergarten teacher or the head teacher will discuss it with you. Starting earlier isn''t possible.</p>'
       de: '<p>Ist Ihr Kind noch nicht bereit, kann es ein Jahr später in den Kindergarten kommen. Stellen Sie das Gesuch zusammen mit der Anmeldung; die Kindergartenlehrperson oder die Schulleitung bespricht es mit Ihnen. Früher eintreten ist nicht möglich.</p>'
+      fr: '<p>Si votre enfant n''est pas encore prêt, il peut entrer à l''école enfantine une année plus tard. Déposez la demande avec l''inscription ; l''enseignante ou l''enseignant de l''école enfantine ou la direction d''école en discute avec vous. Une entrée anticipée n''est pas possible.</p>'
   - type: title
-    field_title: { de: Der Kindergartenalltag }
+    field_title: { en: 'A day at kindergarten', de: Der Kindergartenalltag, fr: 'Le quotidien à l''école enfantine' }
   - type: text
     field_text:
+      en: '<p>In the first year, your child goes to kindergarten on four mornings a week, from 8:15 to 11:45. In the second year, two afternoons are added. For the first day, your child needs:</p><ul><li>slippers with their name on them</li><li>a small snack bag with a healthy morning snack, such as fruit or some bread</li><li>clothes that can get dirty, and a jacket whatever the weather: the children go outside every day</li></ul>'
       de: '<p>Im ersten Jahr besucht Ihr Kind den Kindergarten an vier Vormittagen, von 8.15 bis 11.45 Uhr. Im zweiten Jahr kommen zwei Nachmittage dazu. Für den ersten Tag braucht Ihr Kind:</p><ul><li>Finken mit Namen</li><li>ein Znünitäschli mit einem gesunden Znüni, etwa Früchten oder einem Brot</li><li>Kleider, die schmutzig werden dürfen, und bei jedem Wetter eine Jacke: Die Kinder sind jeden Tag draussen</li></ul>'
+      fr: '<p>La première année, votre enfant va à l''école enfantine quatre matins par semaine, de 8 h 15 à 11 h 45. La deuxième année, deux après-midi s''y ajoutent. Pour le premier jour, votre enfant a besoin :</p><ul><li>de pantoufles marquées à son nom</li><li>d''un petit sac avec des dix-heures sains, par exemple des fruits ou du pain</li><li>d''habits qui peuvent se salir et d''une veste par tous les temps : les enfants sont dehors tous les jours</li></ul>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Unser Kind spricht noch kaum Deutsch oder Französisch. Was nun?' }
+    field_title:
+      en: 'Our child hardly speaks any German or French yet. What now?'
+      de: 'Unser Kind spricht noch kaum Deutsch oder Französisch. Was nun?'
+      fr: 'Notre enfant parle à peine l''allemand ou le français. Que faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Your child will learn the language at kindergarten, with extra lessons in German or French as a second language. Starting is easier if they go to a playgroup the year before. The town pays a contribution towards it.</p>'
           de: '<p>Es lernt die Sprache im Kindergarten, mit zusätzlichen Lektionen in Deutsch oder Französisch als Zweitsprache. Leichter fällt der Einstieg, wenn es schon ein Jahr vorher eine Spielgruppe besucht. Die Gemeinde bezahlt dafür einen Beitrag.</p>'
+          fr: '<p>Il apprend la langue à l''école enfantine, avec des leçons supplémentaires d''allemand ou de français langue seconde. Le début est plus facile s''il fréquente déjà un groupe de jeu l''année précédente. La commune verse une contribution pour cela.</p>'
   - type: accordion
-    field_title: { de: 'Wer betreut unser Kind am Nachmittag?' }
+    field_title:
+      en: 'Who looks after our child in the afternoon?'
+      de: 'Wer betreut unser Kind am Nachmittag?'
+      fr: 'Qui s''occupe de notre enfant l''après-midi ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The day school, from the first year of kindergarten. The day school staff collect the children from kindergarten. Register your child by the end of April.</p>'
           de: '<p>Die Tagesschule, schon vom ersten Kindergartenjahr an. Die Betreuerinnen und Betreuer holen die Kinder im Kindergarten ab. Melden Sie Ihr Kind bis Ende April an.</p>'
+          fr: '<p>L''école à journée continue, dès la première année d''école enfantine. Les éducatrices et éducateurs vont chercher les enfants à l''école enfantine. Inscrivez votre enfant d''ici fin avril.</p>'
   - type: accordion
-    field_title: { de: 'Wir ziehen erst im Sommer nach Blockingen. Wann melden wir unser Kind an?' }
+    field_title:
+      en: 'We''re only moving to Blockingen in the summer. When do we register our child?'
+      de: 'Wir ziehen erst im Sommer nach Blockingen. Wann melden wir unser Kind an?'
+      fr: 'Nous n''emménageons à Bloquens qu''en été. Quand inscrire notre enfant ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>As soon as you know your new address, even after the end of February. Your child will get a place in any case; we''ll take your choice of language and kindergarten into account as far as we can.</p>'
           de: '<p>Sobald Sie Ihre neue Adresse kennen, auch nach Ende Februar. Ihr Kind erhält auf jeden Fall einen Platz; die Wahl der Sprache und des Kindergartens berücksichtigen wir, so gut es geht.</p>'
+          fr: '<p>Dès que vous connaissez votre nouvelle adresse, même après fin février. Votre enfant obtiendra une place dans tous les cas ; nous tenons compte au mieux de votre choix de langue et d''école enfantine.</p>'
 field_related:
   - type: teaser
     field_link: { node: languages }
@@ -65,12 +96,12 @@ field_related:
     field_link: { node: day-school }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/kindergarten-registration
-        field_title: { de: Kindergarten anmelden }
+        field_title: { en: 'Register for kindergarten', de: Kindergarten anmelden, fr: 'Inscription à l''école enfantine' }
       - type: link
         field_link: https://www.example.com/school-holidays
-        field_title: { de: Ferienplan }
+        field_title: { en: 'School holidays', de: Ferienplan, fr: 'Calendrier des vacances scolaires' }

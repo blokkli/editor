@@ -1,49 +1,74 @@
 key: council
 type: page
-title: { de: 'Gemeinderat' }
+title: { en: Municipal council, de: 'Gemeinderat', fr: Conseil communal }
 field_lead:
+  en: 'The seven members of the municipal council, their portfolios and how the council works.'
   de: 'Die sieben Mitglieder des Gemeinderats, ihre Ressorts und wie der Gemeinderat arbeitet.'
+  fr: 'Les sept membres du Conseil communal, leurs dicastères et le fonctionnement du Conseil.'
 field_office: { node: municipal-chancery }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The municipal council is Blockingen''s government. Its seven members are elected by the voters for four years. It runs the municipal administration, prepares the business of the municipal assembly and makes its own decisions where the law gives it that power, for example on building applications and grants to clubs. Each member is in charge of a portfolio, but decisions are taken together: towards the outside, the council stands behind its decisions as a whole.</p>'
       de: '<p>Der Gemeinderat ist die Regierung von Blockingen. Seine sieben Mitglieder wählen die Stimmberechtigten für vier Jahre. Er führt die Verwaltung, bereitet die Geschäfte der Gemeindeversammlung vor und entscheidet selbst, wo das Gesetz es ihm überträgt, etwa über Baugesuche und Beiträge an Vereine. Jedes Mitglied betreut ein Ressort, entschieden wird aber gemeinsam: Nach aussen vertritt der Gemeinderat seine Beschlüsse als Ganzes.</p>'
+      fr: '<p>Le Conseil communal est le gouvernement de Bloquens. Ses sept membres sont élus par les électrices et électeurs pour quatre ans. Il dirige l''administration communale, prépare les objets de l''Assemblée communale et décide lui-même là où la loi lui en donne la compétence, par exemple sur les demandes de permis de construire et les subventions aux sociétés locales. Chaque membre est responsable d''un dicastère, mais les décisions sont prises ensemble : vers l''extérieur, le Conseil communal défend ses décisions de manière collégiale.</p>'
   - type: title
-    field_title: { de: Die Mitglieder }
+    field_title: { en: The members, de: Die Mitglieder, fr: Les membres }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Member</th><th>Portfolio</th></tr></thead><tbody><tr><td>Martine Blaser, mayor</td><td>Mayor''s office and finance</td></tr><tr><td>Thomas Wüthrich, deputy mayor</td><td>Building and planning</td></tr><tr><td>Sandra Marti</td><td>Education</td></tr><tr><td>Luc Perrin</td><td>Social affairs and health</td></tr><tr><td>Beat Zingg</td><td>Public works and environment</td></tr><tr><td>Nathalie Rochat</td><td>Utilities and public safety</td></tr><tr><td>Daniel Hofer</td><td>Sport, culture and leisure</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Mitglied</th><th>Ressort</th></tr></thead><tbody><tr><td>Martine Blaser, Gemeindepräsidentin</td><td>Präsidiales und Finanzen</td></tr><tr><td>Thomas Wüthrich, Vizepräsident</td><td>Bau und Planung</td></tr><tr><td>Sandra Marti</td><td>Bildung</td></tr><tr><td>Luc Perrin</td><td>Soziales und Gesundheit</td></tr><tr><td>Beat Zingg</td><td>Tiefbau und Umwelt</td></tr><tr><td>Nathalie Rochat</td><td>Gemeindewerke und Sicherheit</td></tr><tr><td>Daniel Hofer</td><td>Sport, Kultur und Freizeit</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Membre</th><th>Dicastère</th></tr></thead><tbody><tr><td>Martine Blaser, maire</td><td>Mairie et finances</td></tr><tr><td>Thomas Wüthrich, vice-maire</td><td>Constructions et urbanisme</td></tr><tr><td>Sandra Marti</td><td>Formation</td></tr><tr><td>Luc Perrin</td><td>Affaires sociales et santé</td></tr><tr><td>Beat Zingg</td><td>Travaux publics et environnement</td></tr><tr><td>Nathalie Rochat</td><td>Services industriels et sécurité</td></tr><tr><td>Daniel Hofer</td><td>Sports, culture et loisirs</td></tr></tbody></table>'
   - type: title
-    field_title: { de: Wie der Gemeinderat arbeitet }
+    field_title: { en: How the municipal council works, de: Wie der Gemeinderat arbeitet, fr: Le fonctionnement du Conseil communal }
   - type: text
     field_text:
+      en: '<p>The municipal council meets every other Monday at the town hall. Its meetings are not public, but its decisions are: it publishes them the following week under “News”. The municipal administration prepares the business; the town clerk takes the minutes.</p><p>Serving on the council is a part-time role. The mayor works a 60 per cent position for the town; the other members spend about one day a week on it.</p>'
       de: '<p>Der Gemeinderat tagt jeden zweiten Montag im Rathaus. Die Sitzungen sind nicht öffentlich, die Beschlüsse schon: Er veröffentlicht sie in der Woche danach unter «Aktuelles». Vorbereitet werden die Geschäfte von der Verwaltung; die Gemeindeschreiberin führt das Protokoll.</p><p>Das Amt ist ein Nebenamt. Die Gemeindepräsidentin arbeitet zu 60 Prozent für die Gemeinde, die anderen Mitglieder etwa einen Tag pro Woche.</p>'
+      fr: '<p>Le Conseil communal siège un lundi sur deux à l''hôtel de ville. Ses séances ne sont pas publiques, mais ses décisions le sont : il les publie la semaine suivante sous « Actualités ». Les objets sont préparés par l''administration communale ; la secrétaire communale tient le procès-verbal.</p><p>La fonction est exercée à titre accessoire. La maire travaille à 60 % pour la commune, les autres membres environ un jour par semaine.</p>'
   - type: title
-    field_title: { de: Sprechstunde }
+    field_title: { en: Office hours, de: Sprechstunde, fr: Permanence }
   - type: text
     field_text:
+      en: '<p>On the first Thursday of the month, the mayor sees residents at the town hall from 17:00 to 18:30, no appointment needed. You can reach the other members by email, for example <a href="mailto:thomas.wuethrich@blockingen.example">thomas.wuethrich@blockingen.example</a>, or through the municipal chancery.</p>'
       de: '<p>Am ersten Donnerstag im Monat empfängt die Gemeindepräsidentin von 17.00 bis 18.30 Uhr im Rathaus, ohne Anmeldung. Die anderen Mitglieder erreichen Sie per E-Mail, etwa <a href="mailto:thomas.wuethrich@blockingen.example">thomas.wuethrich@blockingen.example</a>, oder über die Gemeindekanzlei.</p>'
+      fr: '<p>Le premier jeudi du mois, la maire vous reçoit à l''hôtel de ville de 17 h à 18 h 30, sans rendez-vous. Vous pouvez joindre les autres membres par e-mail, par exemple <a href="mailto:thomas.wuethrich@blockingen.example">thomas.wuethrich@blockingen.example</a>, ou par l''intermédiaire de la Chancellerie communale.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Wie bringe ich ein Anliegen vor den Gemeinderat?' }
+    field_title:
+      en: 'How do I raise a matter with the municipal council?'
+      de: 'Wie bringe ich ein Anliegen vor den Gemeinderat?'
+      fr: 'Comment soumettre une demande au Conseil communal ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Write to it, by post to the municipal chancery or by email. The council answers every letter, usually within a month. If your matter concerns the whole town, you can also raise it at the municipal assembly.</p>'
           de: '<p>Schreiben Sie ihm, per Post an die Gemeindekanzlei oder per E-Mail. Der Gemeinderat beantwortet jedes Schreiben, in der Regel innert eines Monats. Betrifft Ihr Anliegen die ganze Gemeinde, können Sie es auch an der Gemeindeversammlung vorbringen.</p>'
+          fr: '<p>Écrivez-lui, par courrier à la Chancellerie communale ou par e-mail. Le Conseil communal répond à chaque courrier, en général dans un délai d''un mois. Si votre demande concerne toute la commune, vous pouvez aussi la présenter à l''Assemblée communale.</p>'
   - type: accordion
-    field_title: { de: 'Was verdienen die Mitglieder des Gemeinderats?' }
+    field_title:
+      en: 'How much are the councillors paid?'
+      de: 'Was verdienen die Mitglieder des Gemeinderats?'
+      fr: 'Combien gagnent les membres du Conseil communal ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The mayor receives CHF 78,000 a year and the other members CHF 18,000 each, plus an attendance fee for committee meetings. The pay is set by the municipal assembly.</p>'
           de: '<p>Die Gemeindepräsidentin erhält Fr. 78 000.– im Jahr, die anderen Mitglieder je Fr. 18 000.–, dazu ein Sitzungsgeld für Kommissionen. Die Entschädigungen legt die Gemeindeversammlung fest.</p>'
+          fr: '<p>La maire reçoit Fr. 78 000.– par an, les autres membres Fr. 18 000.– chacun, plus des jetons de présence pour les commissions. Les indemnités sont fixées par l''Assemblée communale.</p>'
   - type: accordion
-    field_title: { de: 'Kann ich selbst für den Gemeinderat kandidieren?' }
+    field_title:
+      en: 'Can I stand for the municipal council myself?'
+      de: 'Kann ich selbst für den Gemeinderat kandidieren?'
+      fr: 'Puis-je me porter candidate ou candidat au Conseil communal ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, if you are entitled to vote in Blockingen. To stand for election, you need a nomination signed by at least ten voters. Find out more on the “Votes and elections” page.</p>'
           de: '<p>Ja, wenn Sie in Blockingen stimmberechtigt sind. Für die Wahl braucht es einen Wahlvorschlag, unterschrieben von mindestens zehn Stimmberechtigten. Mehr dazu auf der Seite «Abstimmungen und Wahlen».</p>'
+          fr: '<p>Oui, si vous avez le droit de vote à Bloquens. Pour l''élection, il faut une proposition de candidature signée par au moins dix électrices et électeurs. Pour en savoir plus, consultez la page « Votations et élections ».</p>'
 field_related:
   - type: teaser
     field_link: { node: assembly }
@@ -51,12 +76,12 @@ field_related:
     field_link: { node: votes }
 field_aside:
   - type: title
-    field_title: { de: Dokumente und Links }
+    field_title: { en: Documents and links, de: Dokumente und Links, fr: Documents et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/council-decisions
-        field_title: { de: Beschlüsse des Gemeinderats }
+        field_title: { en: Decisions of the municipal council, de: Beschlüsse des Gemeinderats, fr: Décisions du Conseil communal }
       - type: link
         field_link: https://www.example.com/municipal-code
-        field_title: { de: Gemeindeordnung (PDF) }
+        field_title: { en: Municipal code (PDF), de: Gemeindeordnung (PDF), fr: 'Règlement d''organisation (PDF)' }

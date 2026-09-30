@@ -1,8 +1,10 @@
 key: school-family
 type: editorial
-title: { de: 'Schule & Familie' }
+title: { en: 'School & family', de: 'Schule & Familie', fr: 'École & famille' }
 field_lead:
+  en: 'Kindergarten, school and childcare, in German and in French.'
   de: 'Kindergarten, Schule und Betreuung, auf Deutsch und auf Französisch.'
+  fr: 'École enfantine, école et accueil extrascolaire, en allemand et en français.'
 field_hero_image: { media: seefeld-school }
 field_host_options:
   - { key: header, value: image }

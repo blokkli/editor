@@ -1,16 +1,23 @@
 key: welcome-evening
 type: event
-title: { de: Begrüssungsabend für Neuzugezogene }
+title:
+  en: Welcome evening for new residents
+  de: Begrüssungsabend für Neuzugezogene
+  fr: 'Soirée d''accueil des nouvelles habitantes et nouveaux habitants'
 field_lead:
+  en: 'The municipal council invites everyone who moved to Blockingen in the past year.'
   de: Der Gemeinderat lädt alle ein, die im letzten Jahr nach Blockingen gezogen sind.
+  fr: 'Le Conseil communal invite toutes les personnes qui se sont installées à Bloquens au cours de l''année écoulée.'
 field_hero_image: { media: town-from-lake }
 field_date: { value: '+24 days 18:30', end_value: '+24 days 21:30' }
-field_place: { de: Rathaussaal }
-field_organiser: { de: Gemeinderat }
+field_place: { en: 'Town hall, main hall', de: Rathaussaal, fr: 'Hôtel de ville, grande salle' }
+field_organiser: { en: Municipal council, de: Gemeinderat, fr: Conseil communal }
 field_category: politics
-field_price: { de: Gratis }
+field_price: { en: Free, de: Gratis, fr: Gratuit }
 field_registration: https://www.example.com/welcome-evening
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The evening starts at 18:30 in front of the town hall with a short guided tour of the old town, in German or French. At 19:30, the mayor, Martine Blaser, welcomes you in the main hall of the town hall and introduces the municipal council. Afterwards, the clubs present themselves at stands, from the sailing club to the toy library, and the municipal administration answers your questions.</p><p>To round off the evening, the town hosts a drinks reception with wine from Blockingen''s own vineyards. Children are welcome. You''ll receive your personal invitation by post. Please register at least one week in advance with the reply card or online.</p>'
       de: '<p>Der Abend beginnt um 18.30 Uhr vor dem Rathaus mit einer kurzen Führung durch die Altstadt, auf Deutsch oder auf Französisch. Um 19.30 Uhr begrüsst Sie Gemeindepräsidentin Martine Blaser im Rathaussaal und stellt Ihnen den Gemeinderat vor. Danach stellen sich an Ständen die Vereine vor, vom Segelclub bis zur Ludothek, und die Verwaltung beantwortet Ihre Fragen.</p><p>Zum Schluss offeriert die Gemeinde einen Apéro mit Wein aus den Blockinger Reben. Kinder sind willkommen. Die persönliche Einladung erhalten Sie per Post. Melden Sie sich bis eine Woche vorher mit der Antwortkarte oder online an.</p>'
+      fr: '<p>La soirée commence à 18 h 30 devant l''hôtel de ville par une courte visite guidée de la vieille ville, en allemand ou en français. À 19 h 30, la maire Martine Blaser vous souhaite la bienvenue dans la grande salle de l''hôtel de ville et vous présente le Conseil communal. Ensuite, les sociétés locales se présentent à leurs stands, du club de voile à la ludothèque, et l''administration communale répond à vos questions.</p><p>Pour terminer, la commune offre un apéritif avec du vin des vignes de Bloquens. Les enfants sont les bienvenus. Vous recevrez l''invitation personnelle par la poste. Inscrivez-vous au plus tard une semaine avant, avec la carte-réponse ou en ligne.</p>'

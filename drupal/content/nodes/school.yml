@@ -1,8 +1,10 @@
 key: school
 type: editorial
-title: { de: 'Schule' }
+title: { en: 'School', de: 'Schule', fr: 'École' }
 field_lead:
+  en: 'Blockingen''s school takes children from kindergarten to Year 6, in a German-speaking and a French-speaking section.'
   de: 'Die Schule Blockingen unterrichtet vom Kindergarten bis zur 6. Klasse, in einer deutsch- und einer französischsprachigen Abteilung.'
+  fr: 'L''école de Bloquens accueille les enfants de l''école enfantine à la 6e année, dans une section germanophone et une section francophone.'
 field_host_options:
   - { key: header, value: plain }
 # Who is in charge, as on the detail pages.

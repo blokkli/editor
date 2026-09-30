@@ -1,56 +1,85 @@
 key: day-school
 type: page
-title: { de: 'Tagesschule' }
+title: { en: 'Day school', de: 'Tagesschule', fr: 'École à journée continue' }
 field_lead:
+  en: 'Childcare before and after lessons and over lunch, from kindergarten to Year 6.'
   de: 'Betreuung vor und nach dem Unterricht und über Mittag, vom Kindergarten bis zur 6. Klasse.'
+  fr: 'Un accueil avant et après les cours et à midi, de l''école enfantine à la 6e année.'
 field_office: { node: schools-office }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The day school looks after children from kindergarten to Year 6 before and after lessons and over lunch, on every school day. It is in the pavilion next to Seefeld school. The staff collect the children from the kindergartens. You choose the modules you need.</p>'
       de: '<p>Die Tagesschule betreut Kinder vom Kindergarten bis zur 6. Klasse vor und nach dem Unterricht und über Mittag, an allen Schultagen. Sie ist im Pavillon beim Schulhaus Seefeld. Die Kinder aus den Kindergärten holen die Betreuerinnen und Betreuer ab. Sie wählen die Module, die Sie brauchen.</p>'
+      fr: '<p>L''école à journée continue accueille les enfants de l''école enfantine à la 6e année avant et après les cours et à midi, tous les jours d''école. Elle se trouve dans le pavillon près de l''école du Seefeld. Les éducatrices et éducateurs vont chercher les enfants dans les écoles enfantines. Vous choisissez les modules dont vous avez besoin.</p>'
   - type: title
-    field_title: { de: Module und Tarife }
+    field_title: { en: 'Modules and rates', de: Module und Tarife, fr: 'Modules et tarifs' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Module</th><th>Time</th><th>Rate</th></tr></thead><tbody><tr><td>Early morning care</td><td>7:00–8:00</td><td>CHF 1 to CHF 6</td></tr><tr><td>Lunchtime, with a meal</td><td>11:45–13:30</td><td>CHF 8 to CHF 18</td></tr><tr><td>Afternoon</td><td>13:30–16:00</td><td>CHF 2.50 to CHF 15</td></tr><tr><td>Late afternoon care</td><td>16:00–18:00</td><td>CHF 2 to CHF 12</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Modul</th><th>Zeit</th><th>Tarif</th></tr></thead><tbody><tr><td>Frühbetreuung</td><td>7.00–8.00 Uhr</td><td>Fr. 1.– bis Fr. 6.–</td></tr><tr><td>Mittag, mit Essen</td><td>11.45–13.30 Uhr</td><td>Fr. 8.– bis Fr. 18.–</td></tr><tr><td>Nachmittag</td><td>13.30–16.00 Uhr</td><td>Fr. 2.50 bis Fr. 15.–</td></tr><tr><td>Spätbetreuung</td><td>16.00–18.00 Uhr</td><td>Fr. 2.– bis Fr. 12.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Module</th><th>Horaire</th><th>Tarif</th></tr></thead><tbody><tr><td>Accueil du matin</td><td>7 h–8 h</td><td>Fr. 1.– à Fr. 6.–</td></tr><tr><td>Midi, avec repas</td><td>11 h 45–13 h 30</td><td>Fr. 8.– à Fr. 18.–</td></tr><tr><td>Après-midi</td><td>13 h 30–16 h</td><td>Fr. 2.50 à Fr. 15.–</td></tr><tr><td>Accueil de fin de journée</td><td>16 h–18 h</td><td>Fr. 2.– à Fr. 12.–</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>The rate depends on the parents'' income and assets. The schools office calculates it using your latest tax assessment. For the second child and each additional child, you pay 20% less.</p>'
       de: '<p>Der Tarif hängt vom Einkommen und vom Vermögen der Eltern ab. Die Schulverwaltung berechnet ihn mit Ihrer letzten Steuerveranlagung. Für das zweite und jedes weitere Kind bezahlen Sie 20 % weniger.</p>'
+      fr: '<p>Le tarif dépend du revenu et de la fortune des parents. L''Administration scolaire le calcule sur la base de votre dernière décision de taxation. Pour le deuxième enfant et chaque enfant supplémentaire, vous payez 20 % de moins.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Registration:</strong> for the new school year by the end of April. The modules apply for one semester; you can change them for the start of the spring semester.</p>'
       de: '<p><strong>Anmeldung:</strong> für das neue Schuljahr bis Ende April. Die Module gelten für ein Semester; ändern können Sie sie auf Beginn des Frühlingssemesters.</p>'
+      fr: '<p><strong>Inscription :</strong> pour la nouvelle année scolaire, d''ici fin avril. Les modules valent pour un semestre ; vous pouvez les modifier pour le début du semestre de printemps.</p>'
   - type: title
-    field_title: { de: Ein Tag in der Tagesschule }
+    field_title: { en: 'A day at the day school', de: Ein Tag in der Tagesschule, fr: 'Une journée à l''école à journée continue' }
   - type: text
     field_text:
+      en: '<p>At lunchtime, the children eat together. The meals are cooked fresh by the kitchen at the Seematte care home, with vegetables from the region; there''s also a vegetarian menu every day. In the afternoon, the children do their homework, play outside or make things. The team helps with homework, but it''s no substitute for tutoring.</p>'
       de: '<p>Über Mittag essen die Kinder zusammen. Das Essen kocht die Küche des Alterszentrums, frisch und mit Gemüse aus der Region; jeden Tag gibt es auch ein vegetarisches Menü. Am Nachmittag machen die Kinder ihre Hausaufgaben, spielen draussen oder basteln. Bei den Hausaufgaben hilft das Team, es ersetzt aber keinen Nachhilfeunterricht.</p>'
+      fr: '<p>À midi, les enfants mangent ensemble. Les repas sont préparés par la cuisine du home Seematte, frais et avec des légumes de la région ; chaque jour, il y a aussi un menu végétarien. L''après-midi, les enfants font leurs devoirs, jouent dehors ou bricolent. L''équipe aide aux devoirs, mais ne remplace pas des cours d''appui.</p>'
   - type: title
-    field_title: { de: In den Ferien }
+    field_title: { en: 'During the holidays', de: In den Ferien, fr: 'Pendant les vacances' }
   - type: text
     field_text:
+      en: '<p>In six of the thirteen weeks of school holidays, the day school offers holiday care from 7:30 to 17:30, with outings in the area. It is open to all children at the school, including those who don''t usually go to the day school. Register your child at least six weeks in advance.</p>'
       de: '<p>In sechs der dreizehn Ferienwochen bietet die Tagesschule eine Ferienbetreuung an, von 7.30 bis 17.30 Uhr, mit Ausflügen in die Umgebung. Sie steht allen Kindern der Schule offen, auch denen, die sonst nicht in die Tagesschule gehen. Melden Sie Ihr Kind spätestens sechs Wochen vorher an.</p>'
+      fr: '<p>Pendant six des treize semaines de vacances, l''école à journée continue propose un accueil de vacances, de 7 h 30 à 17 h 30, avec des excursions dans la région. Il est ouvert à tous les enfants de l''école, y compris à ceux qui ne fréquentent pas l''école à journée continue le reste de l''année. Inscrivez votre enfant au plus tard six semaines à l''avance.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Kann unser Kind einmal spontan zum Mittagessen kommen?' }
+    field_title:
+      en: 'Can our child come for lunch at short notice now and then?'
+      de: 'Kann unser Kind einmal spontan zum Mittagessen kommen?'
+      fr: 'Notre enfant peut-il venir manger à midi de façon ponctuelle ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, if there''s a place free. Let us know by 9:00 the day before, by phone or email. You pay the module rate for it.</p>'
           de: '<p>Ja, wenn ein Platz frei ist. Melden Sie es bis 9.00 Uhr am Vortag, am Telefon oder per E-Mail. Sie bezahlen dafür den Tarif des Moduls.</p>'
+          fr: '<p>Oui, s''il reste une place. Annoncez-le la veille avant 9 h, par téléphone ou par e-mail. Vous payez pour cela le tarif du module.</p>'
   - type: accordion
-    field_title: { de: 'Was bezahlen wir, wenn unser Kind krank ist?' }
+    field_title:
+      en: 'What do we pay if our child is ill?'
+      de: 'Was bezahlen wir, wenn unser Kind krank ist?'
+      fr: 'Que payons-nous si notre enfant est malade ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>You pay for the booked modules even if your child is absent. If they are ill for more than two weeks, we stop charging from the third week.</p>'
           de: '<p>Die gebuchten Module bezahlen Sie auch, wenn Ihr Kind fehlt. Ist es länger als zwei Wochen krank, verrechnen wir ab der dritten Woche nichts mehr.</p>'
+          fr: '<p>Vous payez les modules réservés même si votre enfant est absent. S''il est malade plus de deux semaines, nous ne facturons plus rien à partir de la troisième semaine.</p>'
   - type: accordion
-    field_title: { de: 'Unser Kind hat eine Allergie. Kann es trotzdem mitessen?' }
+    field_title:
+      en: 'Our child has an allergy. Can they still eat with the others?'
+      de: 'Unser Kind hat eine Allergie. Kann es trotzdem mitessen?'
+      fr: 'Notre enfant a une allergie. Peut-il quand même manger avec les autres ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes. State any allergies and intolerances when you register, with a doctor''s certificate. The kitchen will then cook separately for your child.</p>'
           de: '<p>Ja. Geben Sie Allergien und Unverträglichkeiten bei der Anmeldung an, mit einem Zeugnis der Ärztin oder des Arztes. Die Küche kocht dann für Ihr Kind separat.</p>'
+          fr: '<p>Oui. Indiquez les allergies et intolérances lors de l''inscription, avec un certificat médical. La cuisine prépare alors des repas séparés pour votre enfant.</p>'
 field_related:
   - type: teaser
     field_link: { node: kindergarten }
@@ -58,15 +87,15 @@ field_related:
     field_link: { node: way-to-school }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/day-school-registration
-        field_title: { de: Tagesschule anmelden }
+        field_title: { en: 'Register for the day school', de: Tagesschule anmelden, fr: 'Inscription à l''école à journée continue' }
       - type: link
         field_link: https://www.example.com/day-school-rates
-        field_title: { de: Tarifreglement (PDF) }
+        field_title: { en: 'Rate regulations (PDF)', de: Tarifreglement (PDF), fr: 'Règlement tarifaire (PDF)' }
       - type: link
         field_link: https://www.example.com/day-school-menu
-        field_title: { de: Menüplan }
+        field_title: { en: 'Menus', de: Menüplan, fr: 'Menus' }

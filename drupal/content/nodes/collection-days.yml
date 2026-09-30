@@ -1,60 +1,91 @@
 key: collection-days
 type: page
-title: { de: 'Abfuhrtage und Abfallkalender' }
+title:
+  en: 'Collection days and waste calendar'
+  de: 'Abfuhrtage und Abfallkalender'
+  fr: 'Jours de ramassage et calendrier des déchets'
 field_lead:
+  en: 'When household waste, green waste, paper and bulky waste are collected.'
   de: 'Wann Kehricht, Grüngut, Papier und Sperrgut abgeholt werden.'
+  fr: 'Quand les ordures ménagères, les déchets verts, le papier et les déchets encombrants sont ramassés.'
 field_office: { node: public-works }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The town collects household waste, green waste, and paper and cardboard from outside your house, and bulky waste on request. Everything else you take to the recycling points in your neighbourhood, to the shops or to the collection point at the works yard.</p>'
       de: '<p>Die Gemeinde holt Kehricht, Grüngut sowie Papier und Karton vor Ihrem Haus ab, Sperrgut auf Anmeldung. Alles andere bringen Sie an die Sammelstellen im Quartier, in die Verkaufsstellen oder in die Entsorgungsstelle beim Werkhof.</p>'
+      fr: '<p>La commune ramasse devant chez vous les ordures ménagères, les déchets verts ainsi que le papier et le carton, et les déchets encombrants sur inscription. Tout le reste, vous l''apportez aux points de collecte de quartier, dans les points de vente ou à la déchetterie du dépôt communal.</p>'
   - type: title
-    field_title: { de: Abfuhrtage }
+    field_title: { en: 'Collection days', de: Abfuhrtage, fr: 'Jours de ramassage' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Waste</th><th>Collection</th><th>Note</th></tr></thead><tbody><tr><td>Household waste</td><td>every Tuesday</td><td>in official waste bags only</td></tr><tr><td>Green waste</td><td>every Wednesday, all year round</td><td>in a bin with a green waste sticker</td></tr><tr><td>Paper and cardboard</td><td>first Thursday of every month</td><td>tied in bundles, not in carrier bags</td></tr><tr><td>Bulky waste</td><td>on request</td><td>book by Friday for the following week</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Abfall</th><th>Abfuhr</th><th>Hinweis</th></tr></thead><tbody><tr><td>Kehricht</td><td>jeden Dienstag</td><td>nur in offiziellen Kehrichtsäcken</td></tr><tr><td>Grüngut</td><td>jeden Mittwoch, das ganze Jahr</td><td>im Container mit Grüngutmarke</td></tr><tr><td>Papier und Karton</td><td>jeden ersten Donnerstag im Monat</td><td>gebündelt, nicht in Tragtaschen</td></tr><tr><td>Sperrgut</td><td>auf Anmeldung</td><td>bis Freitag für die folgende Woche anmelden</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Déchets</th><th>Ramassage</th><th>Remarque</th></tr></thead><tbody><tr><td>Ordures ménagères</td><td>chaque mardi</td><td>uniquement dans les sacs taxés officiels</td></tr><tr><td>Déchets verts</td><td>chaque mercredi, toute l''année</td><td>dans un conteneur muni de la vignette pour déchets verts</td></tr><tr><td>Papier et carton</td><td>le premier jeudi du mois</td><td>ficelés, pas dans des cabas</td></tr><tr><td>Déchets encombrants</td><td>sur inscription</td><td>s''inscrire jusqu''au vendredi pour la semaine suivante</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>Put your waste out by the roadside by 7:00 on collection day, not the evening before: otherwise cats and foxes tear the bags open. If a collection day falls on a public holiday, we collect the waste on the next working day.</p>'
       de: '<p>Stellen Sie den Abfall am Abfuhrtag bis 7.00 Uhr an den Strassenrand, nicht schon am Vorabend: Sonst reissen Katzen und Füchse die Säcke auf. Fällt ein Abfuhrtag auf einen Feiertag, holen wir den Abfall am nächsten Werktag ab.</p>'
+      fr: '<p>Déposez vos déchets au bord de la route le jour du ramassage, jusqu''à 7 h, et non la veille au soir : sinon, les chats et les renards éventrent les sacs. Si un jour de ramassage tombe sur un jour férié, nous ramassons les déchets le jour ouvrable suivant.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Waste calendar:</strong> All of the year''s collection days, including the changes around public holidays, are in the <a href="https://www.example.com/waste-calendar">waste calendar</a>. You receive it by post in December. Online, you can subscribe to it and get a reminder the evening before.</p>'
       de: '<p><strong>Abfallkalender:</strong> Alle Abfuhrtage des Jahres, auch die Verschiebungen an Feiertagen, stehen im <a href="https://www.example.com/waste-calendar">Abfallkalender</a>. Sie erhalten ihn im Dezember per Post. Online können Sie ihn abonnieren und sich am Vorabend erinnern lassen.</p>'
+      fr: '<p><strong>Calendrier des déchets :</strong> Tous les jours de ramassage de l''année, y compris les reports dus aux jours fériés, figurent dans le <a href="https://www.example.com/waste-calendar">calendrier des déchets</a>. Vous le recevez par la poste en décembre. En ligne, vous pouvez vous y abonner et recevoir un rappel la veille au soir.</p>'
   - type: title
-    field_title: { de: Kehricht }
+    field_title: { en: 'Household waste', de: Kehricht, fr: 'Ordures ménagères' }
   - type: text
     field_text:
+      en: '<p>We only take household waste in the official Blockingen waste bags. The bag fee is included in the price: a 17-litre bag costs CHF 1.10, a 35-litre bag CHF 2.20 and a 60-litre bag CHF 3.80. You can buy the bags in rolls of ten at the grocery shops in Blockingen and at the counter in the town hall.</p><p>You may use a container as long as the bags are inside it. We don''t take loose waste from a container.</p>'
       de: '<p>Kehricht nehmen wir nur in den offiziellen Blockinger Kehrichtsäcken mit. Die Sackgebühr ist im Preis enthalten: Ein Sack mit 17 Litern kostet Fr. 1.10, mit 35 Litern Fr. 2.20 und mit 60 Litern Fr. 3.80. Sie kaufen die Säcke in Rollen zu zehn Stück in den Lebensmittelgeschäften in Blockingen und am Schalter im Rathaus.</p><p>Einen Container dürfen Sie benützen, wenn die Säcke darin stehen. Losen Abfall im Container nehmen wir nicht mit.</p>'
+      fr: '<p>Nous ne ramassons les ordures ménagères que dans les sacs taxés officiels de Bloquens. La taxe au sac est comprise dans le prix : un sac de 17 litres coûte Fr. 1.10, un sac de 35 litres Fr. 2.20 et un sac de 60 litres Fr. 3.80. Vous achetez les sacs en rouleaux de dix dans les magasins d''alimentation de Bloquens et au guichet de l''hôtel de ville.</p><p>Vous pouvez utiliser un conteneur si les sacs se trouvent dedans. Nous n''emportons pas les déchets jetés en vrac dans un conteneur.</p>'
   - type: title
-    field_title: { de: Grüngut }
+    field_title: { en: 'Green waste', de: Grüngut, fr: 'Déchets verts' }
   - type: text
     field_text:
+      en: '<p>Green waste means vegetable peelings, grass cuttings, leaves, flowers and twigs. Food scraps with meat, cat litter and plastic bags don''t belong in it, not even compostable bags. We only empty bins with the current year''s green waste sticker. The annual sticker for a 140-litre bin costs CHF 90; you order it at the online counter, and we add it to your utilities bill.</p><p>Put branches up to 1.5 metres long next to the bin, tied in bundles.</p>'
       de: '<p>Ins Grüngut gehören Rüstabfälle, Rasen, Laub, Blumen und Zweige. Speisereste mit Fleisch, Katzenstreu und Säcke aus Kunststoff gehören nicht hinein, auch keine kompostierbaren. Wir leeren nur Container mit der Grüngutmarke des laufenden Jahres. Die Jahresmarke für einen Container mit 140 Litern kostet Fr. 90.–; Sie bestellen sie am Online-Schalter, und wir verrechnen sie mit den Gebühren der Gemeindewerke.</p><p>Äste bis 1,5 Meter Länge legen Sie gebündelt neben den Container.</p>'
+      fr: '<p>Les déchets verts comprennent les épluchures, le gazon, les feuilles mortes, les fleurs et les branchages. Les restes de repas contenant de la viande, la litière pour chats et les sacs en plastique n''y ont pas leur place, pas même les sacs compostables. Nous ne vidons que les conteneurs munis de la vignette pour déchets verts de l''année en cours. La vignette annuelle pour un conteneur de 140 litres coûte Fr. 90.– ; vous la commandez au guichet en ligne, et nous la facturons avec les taxes des Services industriels.</p><p>Déposez les branches jusqu''à 1,5 mètre de long en fagots à côté du conteneur.</p>'
   - type: title
-    field_title: { de: Papier und Karton }
+    field_title: { en: 'Paper and cardboard', de: Papier und Karton, fr: 'Papier et carton' }
   - type: text
     field_text:
+      en: '<p>Tie paper crosswise with string, and fold cardboard flat, in a separate bundle. We don''t take carrier bags, tape or coated cardboard such as drinks cartons: they go in the household waste.</p>'
       de: '<p>Bündeln Sie Papier kreuzweise mit einer Schnur, und falten Sie Karton flach, in einem eigenen Bündel. Tragtaschen, Klebeband und beschichtete Kartons wie Getränkepackungen nehmen wir nicht mit: Sie gehören in den Kehricht.</p>'
+      fr: '<p>Ficelez le papier en croix, et pliez le carton à plat, en un paquet séparé. Nous n''emportons pas les cabas, le ruban adhésif ni les cartons plastifiés comme les briques à boissons : ils vont dans les ordures ménagères.</p>'
   - type: title
-    field_title: { de: Sperrgut }
+    field_title: { en: 'Bulky waste', de: Sperrgut, fr: 'Déchets encombrants' }
   - type: text
     field_text:
+      en: '<p>Bulky waste is anything that doesn''t fit into a 60-litre bag: furniture, mattresses, carpets or bikes. Book a collection by Friday at the online counter or with the works yard; we collect it the following week. Collection costs CHF 10 to CHF 30 per item, depending on its size. We don''t collect electrical appliances: the shops take them back free of charge.</p>'
       de: '<p>Sperrgut ist, was nicht in einen 60-Liter-Sack passt: Möbel, Matratzen, Teppiche oder Velos. Melden Sie es bis Freitag am Online-Schalter oder beim Werkhof an; wir holen es in der folgenden Woche ab. Die Abfuhr kostet Fr. 10.– bis Fr. 30.– pro Gegenstand, je nach Grösse. Elektrogeräte holen wir nicht ab: Die Verkaufsstellen nehmen sie gratis zurück.</p>'
+      fr: '<p>Les déchets encombrants sont tout ce qui n''entre pas dans un sac de 60 litres : meubles, matelas, tapis ou vélos. Inscrivez-les jusqu''au vendredi au guichet en ligne ou auprès du dépôt communal ; nous passons les chercher la semaine suivante. Le ramassage coûte de Fr. 10.– à Fr. 30.– par objet, selon la taille. Nous ne ramassons pas les appareils électriques : les points de vente les reprennent gratuitement.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Mein Kehrichtsack wurde nicht mitgenommen. Warum?' }
+    field_title:
+      en: 'My waste bag wasn''t taken. Why?'
+      de: 'Mein Kehrichtsack wurde nicht mitgenommen. Warum?'
+      fr: 'Mon sac taxé n''a pas été ramassé. Pourquoi ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>We only take official waste bags that are out by the roadside by 7:00. We leave bags containing rubble, electrical appliances or glass where they are, with a note.</p>'
           de: '<p>Wir nehmen nur offizielle Kehrichtsäcke mit, die bis 7.00 Uhr am Strassenrand stehen. Säcke mit Bauschutt, Elektrogeräten oder Glas lassen wir mit einem Hinweis stehen.</p>'
+          fr: '<p>Nous n''emportons que les sacs taxés officiels déposés au bord de la route avant 7 h. Les sacs contenant des gravats, des appareils électriques ou du verre restent sur place, avec un avis.</p>'
   - type: accordion
-    field_title: { de: 'Ich bin am Abfuhrtag nicht da. Was tun?' }
+    field_title:
+      en: 'I''m away on collection day. What should I do?'
+      de: 'Ich bin am Abfuhrtag nicht da. Was tun?'
+      fr: 'Je ne suis pas là le jour du ramassage. Que faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Ask a neighbour to put the bag out in the morning, or wait until the next collection. Until then, keep the bag closed in the cellar or on the balcony, not in front of the house.</p>'
           de: '<p>Bitten Sie die Nachbarschaft, den Sack am Morgen hinauszustellen, oder warten Sie bis zur nächsten Abfuhr. Bewahren Sie den Sack bis dahin geschlossen im Keller oder auf dem Balkon auf, nicht vor dem Haus.</p>'
+          fr: '<p>Demandez à vos voisins de sortir le sac le matin, ou attendez le prochain ramassage. D''ici là, gardez le sac fermé à la cave ou sur le balcon, pas devant la maison.</p>'
 field_related:
   - type: teaser
     field_link: { node: sorting }
@@ -62,15 +93,15 @@ field_related:
     field_link: { node: collection-point }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/waste-calendar
-        field_title: { de: Abfallkalender }
+        field_title: { en: 'Waste calendar', de: Abfallkalender, fr: 'Calendrier des déchets' }
       - type: link
         field_link: https://www.example.com/bulky-waste
-        field_title: { de: Sperrgut anmelden }
+        field_title: { en: 'Book a bulky waste collection', de: Sperrgut anmelden, fr: 'Inscrire des déchets encombrants' }
       - type: link
         field_link: https://www.example.com/green-waste-sticker
-        field_title: { de: Grüngutmarke bestellen }
+        field_title: { en: 'Order a green waste sticker', de: Grüngutmarke bestellen, fr: 'Commander une vignette pour déchets verts' }

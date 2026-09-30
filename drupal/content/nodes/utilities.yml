@@ -1,8 +1,10 @@
 key: utilities
 type: office
-title: { de: 'Gemeindewerke' }
+title: { en: 'Utilities', de: 'Gemeindewerke', fr: 'Services industriels' }
 field_lead:
+  en: 'Drinking water and wastewater, the fees and meter reading.'
   de: 'Trinkwasser und Abwasser, die Gebühren und die Zählerablesung.'
+  fr: 'Eau potable et eaux usées, taxes et relevé des compteurs.'
 field_location: { term: works-yard }
 field_phone: '+41 32 555 01 60'
 field_email: werke@blockingen.example
@@ -21,12 +23,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The utilities supply drinking water and carry wastewater to the sewage treatment plant. They maintain a network of around 60 kilometres of pipes and replace the oldest ones every year. Once a year, in September, they read the water meters. Property owners then receive the bill for water, wastewater and the base fee for waste.</p><p>If a water pipe bursts or there''s a fault, you can reach the on-call service around the clock on 032 555 01 69. Report a new connection, or a meter reading when you move away, at the counter or by phone.</p>'
       de: '<p>Die Gemeindewerke liefern das Trinkwasser und leiten das Abwasser in die Kläranlage. Sie unterhalten ein Leitungsnetz von rund 60 Kilometern und ersetzen jedes Jahr die ältesten Leitungen. Einmal im Jahr, im September, lesen sie die Wasserzähler ab. Danach erhalten die Eigentümerinnen und Eigentümer die Rechnung für Wasser, Abwasser und die Grundgebühr für den Abfall.</p><p>Bei einem Wasserrohrbruch oder einer Störung erreichen Sie den Pikettdienst rund um die Uhr unter 032 555 01 69. Einen neuen Anschluss oder eine Zählerablesung beim Wegzug melden Sie am Schalter oder am Telefon.</p>'
+      fr: '<p>Les Services industriels fournissent l''eau potable et acheminent les eaux usées vers la station d''épuration. Ils entretiennent un réseau de conduites d''environ 60 kilomètres et remplacent chaque année les conduites les plus anciennes. Une fois par an, en septembre, ils relèvent les compteurs d''eau. Les propriétaires reçoivent ensuite la facture pour l''eau, les eaux usées et la taxe de base pour les déchets.</p><p>En cas de rupture de conduite ou de panne, vous pouvez joindre le service de piquet 24 heures sur 24 au 032 555 01 69. Annoncez un nouveau raccordement, ou un relevé de compteur lors de votre départ, au guichet ou par téléphone.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: fees }
-      - type: link
-        field_link: { node: water-fees }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

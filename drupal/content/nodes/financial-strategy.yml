@@ -1,33 +1,45 @@
 key: financial-strategy
 type: page
-title: { de: 'Finanzstrategie' }
+title: { en: 'Financial strategy', de: 'Finanzstrategie', fr: 'Stratégie financière' }
 field_lead:
+  en: 'How the municipal council plans to keep the town''s finances balanced over the coming years.'
   de: 'Wie der Gemeinderat die Finanzen in den nächsten Jahren im Gleichgewicht halten will.'
+  fr: 'Comment le Conseil communal entend maintenir l''équilibre des finances ces prochaines années.'
 field_office: { node: finance-taxes }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Blockingen is growing, and major investments lie ahead over the next ten years: more school space, new water mains for a network that is partly over 60 years old, and the new village square. Together they will cost around CHF 90 million. Without countermeasures, the town''s debt would double over this period.</p><p>That''s why the municipal council has adopted a financial strategy. It is the basis for every budget and for the financial plan.</p>'
       de: '<p>Blockingen wächst, und in den nächsten zehn Jahren stehen grosse Investitionen an: mehr Schulraum, neue Wasserleitungen für ein Netz, das zum Teil über 60 Jahre alt ist, und der neue Dorfplatz. Zusammen kosten sie rund 90 Millionen Franken. Ohne Gegenmassnahmen würden sich die Schulden der Gemeinde in dieser Zeit verdoppeln.</p><p>Der Gemeinderat hat deshalb eine Finanzstrategie beschlossen. Sie ist die Grundlage für jedes Budget und für den Finanzplan.</p>'
+      fr: '<p>Bloquens grandit, et d''importants investissements l''attendent ces dix prochaines années : davantage de locaux scolaires, de nouvelles conduites d''eau pour un réseau qui a en partie plus de 60 ans, et la nouvelle place du village. Ensemble, ils coûteront environ 90 millions de francs. Sans mesures correctives, la dette de la commune doublerait durant cette période.</p><p>Le Conseil communal a donc adopté une stratégie financière. Elle sert de base à chaque budget et au plan financier.</p>'
   - type: title
-    field_title: { de: Die Ziele }
+    field_title: { en: The goals, de: Die Ziele, fr: Les objectifs }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Goal</th><th>Target</th><th>Today</th></tr></thead><tbody><tr><td>Balanced accounts</td><td>at least balanced on average over eight years</td><td>+CHF 0.3 million on average</td></tr><tr><td>Funding investments from own resources</td><td>self-financing ratio of at least 80% on average</td><td>72%</td></tr><tr><td>Limiting debt</td><td>net debt of no more than CHF 3,000 per head</td><td>CHF 2,490</td></tr><tr><td>A stable tax rate</td><td>1.62, with no increase</td><td>1.62</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Ziel</th><th>Richtwert</th><th>Heute</th></tr></thead><tbody><tr><td>Ausgeglichene Rechnung</td><td>über acht Jahre im Durchschnitt mindestens ausgeglichen</td><td>+0,3 Mio. Franken im Durchschnitt</td></tr><tr><td>Investitionen selbst finanzieren</td><td>Selbstfinanzierungsgrad von mindestens 80 % im Durchschnitt</td><td>72 %</td></tr><tr><td>Schulden begrenzen</td><td>Nettoschuld von höchstens Fr. 3000.– pro Kopf</td><td>Fr. 2490.–</td></tr><tr><td>Stabiler Steuerfuss</td><td>1,62, ohne Erhöhung</td><td>1,62</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Objectif</th><th>Valeur de référence</th><th>Aujourd''hui</th></tr></thead><tbody><tr><td>Des comptes équilibrés</td><td>au moins équilibrés en moyenne sur huit ans</td><td>+0,3 million de francs en moyenne</td></tr><tr><td>Autofinancer les investissements</td><td>degré d''autofinancement d''au moins 80 % en moyenne</td><td>72 %</td></tr><tr><td>Limiter l''endettement</td><td>dette nette de Fr. 3000.– par habitant au maximum</td><td>Fr. 2490.–</td></tr><tr><td>Une quotité d''impôt stable</td><td>1,62, sans hausse</td><td>1,62</td></tr></tbody></table>'
   - type: title
-    field_title: { de: Die Massnahmen }
+    field_title: { en: The measures, de: Die Massnahmen, fr: Les mesures }
   - type: text
     field_text:
+      en: '<h3>Investments by urgency</h3><p>The municipal council divides projects into three levels: essential, like the water mains and school space; important; and desirable. A project only goes into the budget once its funding is in place.</p><h3>Fees that cover the costs</h3><p>We pay for water, wastewater and waste through fees, not taxes. That''s why the town adjusts the fees when costs rise, as it is doing now for water.</p><h3>Spending that grows with the town</h3><p>The administration''s spending should not grow faster than the population. The town pays for new tasks by giving up others or sharing them with neighbouring municipalities.</p><h3>Land on building leases</h3><p>The town doesn''t sell land it doesn''t need itself: it grants building leases on it instead. That way the land stays in its ownership and brings in ground rent every year.</p>'
       de: '<h3>Investitionen nach Dringlichkeit</h3><p>Der Gemeinderat teilt die Projekte in drei Stufen ein: notwendig, wie die Wasserleitungen und der Schulraum; wichtig; und wünschbar. Ein Projekt kommt erst ins Budget, wenn seine Finanzierung steht.</p><h3>Gebühren, die die Kosten decken</h3><p>Wasser, Abwasser und Abfall bezahlen wir mit den Gebühren, nicht mit den Steuern. Deshalb passt die Gemeinde die Gebühren an, wenn die Kosten steigen, wie jetzt beim Wasser.</p><h3>Ein Aufwand, der mit der Gemeinde wächst</h3><p>Der Aufwand der Verwaltung soll nicht stärker wachsen als die Bevölkerung. Neue Aufgaben finanziert die Gemeinde, indem sie auf andere verzichtet oder sie mit Nachbargemeinden teilt.</p><h3>Land im Baurecht</h3><p>Grundstücke, die sie nicht selbst braucht, verkauft die Gemeinde nicht, sondern gibt sie im Baurecht ab. So bleiben sie in ihrem Besitz und bringen jedes Jahr einen Zins ein.</p>'
+      fr: '<h3>Des investissements selon leur urgence</h3><p>Le Conseil communal classe les projets en trois degrés : nécessaires, comme les conduites d''eau et les locaux scolaires ; importants ; et souhaitables. Un projet n''entre dans le budget que lorsque son financement est assuré.</p><h3>Des taxes qui couvrent les coûts</h3><p>L''eau, les eaux usées et les déchets sont financés par les taxes, et non par les impôts. C''est pourquoi la commune adapte les taxes lorsque les coûts augmentent, comme actuellement pour l''eau.</p><h3>Des charges qui croissent avec la commune</h3><p>Les charges de l''administration ne doivent pas croître plus vite que la population. La commune finance les nouvelles tâches en renonçant à d''autres ou en les partageant avec des communes voisines.</p><h3>Des terrains en droit de superficie</h3><p>La commune ne vend pas les terrains dont elle n''a pas besoin elle-même : elle les cède en droit de superficie. Ils restent ainsi sa propriété et lui rapportent une rente chaque année.</p>'
   - type: title
-    field_title: { de: Wie es weitergeht }
+    field_title: { en: What happens next, de: Wie es weitergeht, fr: La suite }
   - type: text
     field_text:
+      en: '<p>Every year, using the financial plan, the municipal council checks whether the town is on track and reports on it to the municipal assembly. If two goals are missed three years in a row, it proposes additional measures.</p>'
       de: '<p>Der Gemeinderat prüft jedes Jahr mit dem Finanzplan, ob die Gemeinde auf Kurs ist, und berichtet der Gemeindeversammlung darüber. Werden zwei Ziele drei Jahre nacheinander verfehlt, schlägt er zusätzliche Massnahmen vor.</p>'
+      fr: '<p>Chaque année, à l''aide du plan financier, le Conseil communal vérifie si la commune est sur la bonne voie et en rend compte à l''Assemblée communale. Si deux objectifs ne sont pas atteints trois années de suite, il propose des mesures supplémentaires.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Questions about the financial strategy?</strong> The finance committee is happy to answer them, including before the municipal assembly: <a href="mailto:finanzkommission@blockingen.example">finanzkommission@blockingen.example</a>.</p>'
       de: '<p><strong>Fragen zur Finanzstrategie?</strong> Die Finanzkommission beantwortet sie gern, auch vor der Gemeindeversammlung: <a href="mailto:finanzkommission@blockingen.example">finanzkommission@blockingen.example</a>.</p>'
+      fr: '<p><strong>Des questions sur la stratégie financière ?</strong> La commission des finances y répond volontiers, y compris avant l''Assemblée communale : <a href="mailto:finanzkommission@blockingen.example">finanzkommission@blockingen.example</a>.</p>'
 field_related:
   - type: teaser
     field_link: { node: budget }
@@ -35,12 +47,12 @@ field_related:
     field_link: { node: in-numbers }
 field_aside:
   - type: title
-    field_title: { de: Dokumente }
+    field_title: { en: Documents, de: Dokumente, fr: Documents }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/financial-strategy
-        field_title: { de: Finanzstrategie (PDF) }
+        field_title: { en: Financial strategy (PDF), de: Finanzstrategie (PDF), fr: Stratégie financière (PDF) }
       - type: link
         field_link: https://www.example.com/financial-plan
-        field_title: { de: Finanzplan (PDF) }
+        field_title: { en: Financial plan (PDF), de: Finanzplan (PDF), fr: Plan financier (PDF) }

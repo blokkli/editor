@@ -1,12 +1,16 @@
 key: administration
 type: editorial
-title: { de: Verwaltung }
+title: { en: Administration, de: Verwaltung, fr: Administration }
 field_lead:
+  en: 'Nine offices at five locations: who is responsible for what, and when the counters are open.'
   de: 'Neun Ämter an fünf Standorten: wer wofür zuständig ist und wann die Schalter offen sind.'
+  fr: 'Neuf services sur cinq sites : qui est responsable de quoi et quand les guichets sont ouverts.'
 field_hero_image: { media: town-hall-counter }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The municipal administration is here for around 15,000 residents, in German and in French. The municipal chancery at the town hall answers general questions. It can also tell you which office deals with your request.</p><p>You can also take care of a lot at the <a href="https://www.example.com/online-counter">online counter</a>, around the clock: report a move, order a certificate, book a bulky waste collection or reserve a hall.</p>'
       de: '<p>Die Gemeindeverwaltung ist für rund 15 000 Einwohnerinnen und Einwohner da, auf Deutsch und auf Französisch. Allgemeine Fragen beantwortet die Gemeindekanzlei im Rathaus. Sie weiss auch, welches Amt für Ihr Anliegen zuständig ist.</p><p>Vieles erledigen Sie auch am <a href="https://www.example.com/online-counter">Online-Schalter</a>, rund um die Uhr: einen Umzug melden, eine Bestätigung bestellen, Sperrgut anmelden oder eine Halle reservieren.</p>'
+      fr: '<p>L''administration communale est au service de quelque 15 000 habitantes et habitants, en allemand et en français. La Chancellerie communale, à l''hôtel de ville, répond aux questions générales. Elle sait aussi quel service est compétent pour votre demande.</p><p>Vous pouvez aussi régler beaucoup de choses au <a href="https://www.example.com/online-counter">guichet en ligne</a>, 24 heures sur 24 : annoncer un déménagement, commander une attestation, annoncer des déchets encombrants ou réserver une salle.</p>'

@@ -1,74 +1,107 @@
 key: assembly
 type: page
-title: { de: 'Gemeindeversammlung' }
+title: { en: Municipal assembly, de: 'Gemeindeversammlung', fr: Assemblée communale }
 field_lead:
+  en: 'The next assembly, its agenda and documents, and who has a say.'
   de: 'Die nächste Versammlung, ihre Traktanden und Unterlagen, und wer mitbestimmen darf.'
+  fr: 'La prochaine assemblée, son ordre du jour et ses documents, et qui peut participer aux décisions.'
 field_office: { node: municipal-chancery }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Blockingen has no town parliament. The important decisions are made by the municipal assembly: all voters can come, have their say, put forward motions and vote. The assembly decides on the budget and the tax rate, approves the accounts, approves funding of up to CHF 5 million and adopts the town''s regulations. It meets twice a year, in June and December, and holds extraordinary meetings when needed.</p>'
       de: '<p>Blockingen hat kein Gemeindeparlament. Die wichtigen Entscheide fällt die Gemeindeversammlung: Alle Stimmberechtigten können kommen, mitreden, Anträge stellen und abstimmen. Sie beschliesst das Budget und den Steuerfuss, genehmigt die Rechnung, bewilligt Kredite bis 5 Millionen Franken und erlässt die Reglemente der Gemeinde. Sie tagt zweimal im Jahr, im Juni und im Dezember, und wenn nötig ausserordentlich.</p>'
+      fr: '<p>Bloquens n''a pas de parlement communal. Les décisions importantes sont prises par l''Assemblée communale : toutes les électrices et tous les électeurs peuvent y venir, prendre la parole, faire des propositions et voter. Elle adopte le budget et la quotité d''impôt, approuve les comptes, accorde les crédits jusqu''à 5 millions de francs et édicte les règlements de la commune. Elle siège deux fois par an, en juin et en décembre, et en séance extraordinaire si nécessaire.</p>'
   - type: title
-    field_title: { de: Die nächste Versammlung }
+    field_title: { en: The next assembly, de: Die nächste Versammlung, fr: La prochaine assemblée }
   - type: teaser
     options: { display: list }
     field_link: { node: assembly-meeting }
   - type: text
     field_text:
+      en: '<p>The agenda:</p><ol><li>Minutes of the last assembly</li><li>Next year''s budget and tax rate</li><li>Funding of CHF 4.6 million for the renovation of the old town gym</li><li>Revision of the regulations on water fees</li><li>Any other business</li></ol><p>The documents can be inspected at the municipal chancery, and you''ll find them in the invitation.</p>'
       de: '<p>Die Traktanden:</p><ol><li>Protokoll der letzten Versammlung</li><li>Budget des nächsten Jahres und Steuerfuss</li><li>Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt</li><li>Revision des Reglements über die Wassergebühren</li><li>Verschiedenes</li></ol><p>Die Unterlagen liegen in der Gemeindekanzlei auf, und Sie finden sie in der Einladung.</p>'
+      fr: '<p>L''ordre du jour :</p><ol><li>Procès-verbal de la dernière assemblée</li><li>Budget de l''année prochaine et quotité d''impôt</li><li>Crédit de 4,6 millions de francs pour la rénovation de la halle de gymnastique de la vieille ville</li><li>Révision du règlement sur les taxes pour l''eau</li><li>Divers</li></ol><p>Les documents sont déposés à la Chancellerie communale, et vous les trouverez dans la convocation.</p>'
   - type: link
     options: { style: secondary }
     field_link: { node: assembly-invitation }
-    field_title: { de: Einladung und Unterlagen }
+    field_title: { en: Invitation and documents, de: Einladung und Unterlagen, fr: Convocation et documents }
   - type: title
-    field_title: { de: Wer mitbestimmen darf }
+    field_title: { en: Who has a say, de: Wer mitbestimmen darf, fr: Qui peut participer aux décisions }
   - type: text
     field_text:
+      en: '<p>Swiss citizens aged 18 and over who are registered in Blockingen are entitled to vote. Foreign nationals with a settlement permit who have lived in the canton for five years can also vote on municipal matters. There are no proxies: only those present at the assembly can vote.</p>'
       de: '<p>Stimmberechtigt sind Schweizerinnen und Schweizer ab 18 Jahren, die in Blockingen angemeldet sind. Ausländerinnen und Ausländer mit einer Niederlassungsbewilligung, die seit fünf Jahren im Kanton wohnen, stimmen in Gemeindesachen ebenfalls mit. Eine Stellvertretung gibt es nicht: Abstimmen kann nur, wer an der Versammlung ist.</p>'
+      fr: '<p>Ont le droit de vote les Suissesses et les Suisses dès 18 ans domiciliés à Bloquens. Les étrangères et étrangers titulaires d''une autorisation d''établissement qui habitent dans le canton depuis cinq ans votent aussi en matière communale. Il n''est pas possible de se faire représenter : seules les personnes présentes à l''assemblée peuvent voter.</p>'
   - type: title
-    field_title: { de: So läuft eine Versammlung ab }
+    field_title: { en: How an assembly works, de: So läuft eine Versammlung ab, fr: 'Le déroulement d''une assemblée' }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Einladung }
+        field_title: { en: Invitation, de: Einladung, fr: Convocation }
         field_text:
+          en: '<p>Four weeks before, you receive the invitation with the council''s report by post, together with your voting card.</p>'
           de: '<p>Vier Wochen vorher erhalten Sie die Einladung mit der Botschaft des Gemeinderats per Post, zusammen mit Ihrem Stimmrechtsausweis.</p>'
+          fr: '<p>Quatre semaines avant, vous recevez par la poste la convocation avec le message du Conseil communal, accompagnée de votre carte de légitimation.</p>'
       - type: step
-        field_title: { de: Eingang }
+        field_title: { en: Arrival, de: Eingang, fr: Accueil }
         field_text:
+          en: '<p>At the entrance, you hand in your voting card and receive a ballot card. The hall opens at 19:00.</p>'
           de: '<p>Am Eingang geben Sie den Stimmrechtsausweis ab und erhalten eine Stimmkarte. Der Saal ist ab 19.00 Uhr offen.</p>'
+          fr: '<p>À l''entrée, vous remettez votre carte de légitimation et recevez un carton de vote. La salle est ouverte dès 19 h.</p>'
       - type: step
-        field_title: { de: Beraten }
+        field_title: { en: Debate, de: Beraten, fr: Délibération }
         field_text:
+          en: '<p>The municipal council presents each item; on financial matters, the finance committee gives its recommendation. Then everyone can speak and put forward motions.</p>'
           de: '<p>Der Gemeinderat stellt jedes Geschäft vor, bei Finanzgeschäften empfiehlt die Finanzkommission. Danach haben alle das Wort und können Anträge stellen.</p>'
+          fr: '<p>Le Conseil communal présente chaque objet ; pour les objets financiers, la commission des finances donne sa recommandation. Ensuite, chacune et chacun peut prendre la parole et faire des propositions.</p>'
       - type: step
-        field_title: { de: Abstimmen }
+        field_title: { en: Vote, de: Abstimmen, fr: Vote }
         field_text:
+          en: '<p>You vote openly by raising your ballot card. If a quarter of those present ask for it, the vote is held by secret ballot.</p>'
           de: '<p>Sie stimmen mit der Stimmkarte, offen. Verlangt es ein Viertel der Anwesenden, wird geheim abgestimmt.</p>'
+          fr: '<p>Vous votez ouvertement, en levant votre carton de vote. Si un quart des personnes présentes le demande, le vote a lieu à bulletin secret.</p>'
       - type: step
-        field_title: { de: Protokoll }
+        field_title: { en: Minutes, de: Protokoll, fr: Procès-verbal }
         field_text:
+          en: '<p>We publish the decisions the next day and the minutes two weeks later. The minutes are approved at the next assembly.</p>'
           de: '<p>Die Beschlüsse veröffentlichen wir am nächsten Tag, das Protokoll nach zwei Wochen. Genehmigt wird es an der nächsten Versammlung.</p>'
+          fr: '<p>Nous publions les décisions le lendemain et le procès-verbal deux semaines plus tard. Celui-ci est approuvé lors de l''assemblée suivante.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'In welcher Sprache wird gesprochen?' }
+    field_title:
+      en: 'Which language is spoken?'
+      de: 'In welcher Sprache wird gesprochen?'
+      fr: 'Dans quelle langue les débats ont-ils lieu ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Both. The documents are available in German and French, and you speak in your own language. The mayor summarises each contribution in the other language.</p>'
           de: '<p>In beiden. Die Unterlagen gibt es auf Deutsch und auf Französisch, und Sie sprechen in Ihrer Sprache. Die Gemeindepräsidentin fasst jede Wortmeldung in der anderen Sprache zusammen.</p>'
+          fr: '<p>Dans les deux. Les documents existent en allemand et en français, et vous vous exprimez dans votre langue. La maire résume chaque intervention dans l''autre langue.</p>'
   - type: accordion
-    field_title: { de: 'Kann ich meine Kinder mitnehmen?' }
+    field_title:
+      en: 'Can I bring my children?'
+      de: 'Kann ich meine Kinder mitnehmen?'
+      fr: 'Puis-je venir avec mes enfants ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes. During the assembly, the Seefeld Scouts look after children aged three and over in a room in the town hall, free of charge. Register your children with the municipal chancery by the day before.</p>'
           de: '<p>Ja. Während der Versammlung betreut die Pfadi Seefeld Kinder ab drei Jahren in einem Raum im Rathaus, gratis. Melden Sie Ihre Kinder bis zum Vortag bei der Gemeindekanzlei an.</p>'
+          fr: '<p>Oui. Pendant l''assemblée, les scouts du Seefeld s''occupent gratuitement des enfants dès trois ans dans une salle de l''hôtel de ville. Inscrivez vos enfants auprès de la Chancellerie communale au plus tard la veille.</p>'
   - type: accordion
-    field_title: { de: 'Ist der Rathaussaal barrierefrei?' }
+    field_title:
+      en: 'Is the hall in the town hall accessible?'
+      de: 'Ist der Rathaussaal barrierefrei?'
+      fr: 'La grande salle de l''hôtel de ville est-elle accessible ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes. The hall can be reached by lift, and an assistive listening system relays every contribution. You can get headphones at the entrance.</p>'
           de: '<p>Ja. Der Saal ist mit dem Lift erreichbar, und eine Höranlage überträgt alle Wortmeldungen. Kopfhörer erhalten Sie am Eingang.</p>'
+          fr: '<p>Oui. La salle est accessible par l''ascenseur, et une installation pour malentendants retransmet toutes les interventions. Des écouteurs sont à votre disposition à l''entrée.</p>'
 field_related:
   - type: teaser
     field_link: { node: council }
@@ -76,15 +109,15 @@ field_related:
     field_link: { node: budget }
 field_aside:
   - type: title
-    field_title: { de: Dokumente und Links }
+    field_title: { en: Documents and links, de: Dokumente und Links, fr: Documents et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/assembly-message
-        field_title: { de: Botschaft des Gemeinderats (PDF) }
+        field_title: { en: 'The council''s report (PDF)', de: Botschaft des Gemeinderats (PDF), fr: Message du Conseil communal (PDF) }
       - type: link
         field_link: https://www.example.com/assembly-minutes
-        field_title: { de: Protokoll der letzten Versammlung (PDF) }
+        field_title: { en: Minutes of the last assembly (PDF), de: Protokoll der letzten Versammlung (PDF), fr: Procès-verbal de la dernière assemblée (PDF) }
       - type: link
         field_link: https://www.example.com/municipal-code
-        field_title: { de: Gemeindeordnung (PDF) }
+        field_title: { en: Municipal code (PDF), de: Gemeindeordnung (PDF), fr: 'Règlement d''organisation (PDF)' }

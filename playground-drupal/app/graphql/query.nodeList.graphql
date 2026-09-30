@@ -1,5 +1,5 @@
-# An automatic list of nodes: the teaser list and the overview pages. The
-# filter and sort come from helpers/nodeList.ts.
+# An automatic list of nodes: the teaser list and the overview pages (filter
+# and sort from helpers/nodeList.ts), and an office's pages.
 query nodeList(
   $filter: EntityQueryFilterInput!
   $sort: [EntityQuerySortInput!]

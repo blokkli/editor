@@ -1,15 +1,22 @@
 key: band-concert
 type: event
-title: { de: Jahreskonzert der Musikgesellschaft }
+title: { en: Annual concert of the town band, de: Jahreskonzert der Musikgesellschaft, fr: Concert annuel de la fanfare }
 field_lead:
+  en: The Blockingen Town Band plays marches, film music and a new piece, together with the youth band.
   de: Die Musikgesellschaft Blockingen spielt Märsche, Filmmusik und ein neues Stück, zusammen mit der Jugendmusik.
+  fr: La Fanfare de Bloquens joue des marches, des musiques de film et un morceau inédit, avec la fanfare des jeunes.
 field_date: { value: '+47 days 19:30', end_value: '+47 days 22:00' }
-field_place: { de: Sporthalle Seefeld }
-field_organiser: { de: Musikgesellschaft Blockingen }
+field_place: { en: Seefeld sports hall, de: Sporthalle Seefeld, fr: Halle de sport du Seefeld }
+field_organiser: { en: Blockingen Town Band, de: Musikgesellschaft Blockingen, fr: Fanfare de Bloquens }
 field_category: culture
-field_price: { de: 'Fr. 20.–, Kinder und Jugendliche gratis' }
+field_price:
+  en: 'CHF 20, free for children and young people'
+  de: 'Fr. 20.–, Kinder und Jugendliche gratis'
+  fr: 'Fr. 20.–, gratuit pour les enfants et les jeunes'
 field_registration: https://www.example.com/concert-tickets
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The youth band opens the concert. In the first half, the town band, conducted by Luca Moser, plays marches and polkas; in the second, film music and “Lakeshore”, a piece a Blockingen composer wrote for the band.</p><p>Doors open at 18:30, and the refreshment stand serves raclette, cake and drinks. Book your seat online; any remaining seats are sold at the door on the evening. The hall is wheelchair accessible.</p>'
       de: '<p>Die Jugendmusik eröffnet das Konzert. Im ersten Teil spielt die Musikgesellschaft unter der Leitung von Luca Moser Märsche und Polkas, im zweiten Filmmusik und «Seeufer», ein Stück, das ein Blockinger Komponist für sie geschrieben hat.</p><p>Die Türen öffnen um 18.30 Uhr; die Festwirtschaft serviert Raclette, Kuchen und Getränke. Sitzplätze reservieren Sie online, an der Abendkasse gibt es Restplätze. Die Halle ist rollstuhlgängig.</p>'
+      fr: '<p>La fanfare des jeunes ouvre le concert. En première partie, la fanfare, sous la direction de Luca Moser, joue des marches et des polkas ; en seconde partie, des musiques de film et « Rive du lac », un morceau qu''un compositeur de Bloquens a écrit pour elle.</p><p>Les portes ouvrent à 18 h 30 ; la cantine sert de la raclette, des gâteaux et des boissons. Réservez vos places en ligne ; les places restantes sont en vente à la caisse du soir. La halle est accessible en fauteuil roulant.</p>'

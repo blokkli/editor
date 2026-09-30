@@ -1,25 +1,38 @@
 key: pool-opening
 type: news
 created: '-3 days'
-title: { de: Das Strandbad öffnet am Samstag }
+# The French text still has last year's opening hours.
+outdated: [fr]
+title: { en: The lakeside pool opens on Saturday, de: Das Strandbad öffnet am Samstag, fr: La plage rouvre samedi }
 field_lead:
+  en: 'After its renovation, the pool reopens with a new children''s area. Admission is free on the opening day.'
   de: Nach der Sanierung öffnet das Bad mit einem neuen Kinderbereich. Am Eröffnungstag ist der Eintritt gratis.
+  fr: 'Après sa rénovation, la plage rouvre avec un nouvel espace pour les enfants. Le jour de l''ouverture, l''entrée est gratuite.'
 field_hero_image: { media: lakeside-pool }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The lakeside pool has been renovated over the past year: the swimming pool has a new liner and a new water treatment system, the changing rooms are now accessible, and the lawn has more shade. The pool reopens on Saturday at 10:00.</p><p>The children''s area by the entrance is new: a paddling pool under a shade sail, a water playground with pumps and channels, and a sandpit. Mayor Martine Blaser will open it at 11:00, together with the children from the day school, who had a say in its planning.</p>'
       de: '<p>Ein Jahr lang wurde das Strandbad saniert: Das Schwimmbecken hat eine neue Folie und eine neue Wasseraufbereitung, die Garderoben sind hindernisfrei, und die Liegewiese hat mehr Schatten. Am Samstag öffnet das Bad wieder, um 10.00 Uhr.</p><p>Neu ist der Kinderbereich beim Eingang: ein Planschbecken unter einem Sonnensegel, ein Wasserspielplatz mit Pumpen und Rinnen und ein Sandplatz. Um 11.00 Uhr eröffnet ihn Gemeindepräsidentin Martine Blaser, zusammen mit den Kindern der Tagesschule, die bei der Planung mitgeredet haben.</p>'
+      fr: '<p>Pendant un an, la plage a été rénovée : le bassin de natation a un nouveau revêtement et un nouveau système de traitement de l''eau, les vestiaires sont sans obstacles et la pelouse offre davantage d''ombre. Samedi, la plage rouvre ses portes à 10 h.</p><p>Le nouvel espace pour les enfants se trouve près de l''entrée : une pataugeoire sous une voile d''ombrage, une aire de jeux d''eau avec des pompes et des rigoles, et un bac à sable. À 11 h, la maire Martine Blaser l''inaugure avec les enfants de l''école à journée continue, qui ont participé à sa conception.</p>'
   - type: image
     options: { width: wide }
     field_media: { media: pool-children-area }
-    field_caption: { de: Der neue Kinderbereich mit Wasserspielplatz }
+    field_caption:
+      en: The new children's area with its water playground
+      de: Der neue Kinderbereich mit Wasserspielplatz
+      fr: Le nouvel espace pour les enfants et son aire de jeux d'eau
   - type: text
     field_text:
+      en: '<p>Until mid-June, the pool is open daily from 10:00 to 19:00, and for longer in the high season. On the opening day, everyone swims for free, and the kiosk treats the children to an ice cream. You can buy a season ticket at the ticket office or online, as a card or on your smartphone.</p>'
       de: '<p>Bis Mitte Juni ist das Bad täglich von 10.00 bis 19.00 Uhr offen, in der Hauptsaison länger. Am Eröffnungstag baden alle gratis, und der Kiosk offeriert den Kindern eine Glace. Die Saisonkarte kaufen Sie an der Kasse oder online, als Karte oder auf dem Smartphone.</p>'
+      fr: '<p>Jusqu''à mi-juin, la plage est ouverte tous les jours de 9 h à 18 h, plus longtemps en haute saison. Le jour de l''ouverture, la baignade est gratuite pour tout le monde et le kiosque offre une glace aux enfants. Vous achetez l''abonnement de saison à la caisse ou en ligne, sous forme de carte ou sur votre smartphone.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>In bad weather</strong> the pool stays closed. To find out whether it''s open, call 032 555 01 85 from 8:00.</p>'
       de: '<p><strong>Bei schlechtem Wetter</strong> bleibt das Bad geschlossen. Ob es offen ist, erfahren Sie ab 8.00 Uhr unter 032 555 01 85.</p>'
+      fr: '<p><strong>Par mauvais temps</strong>, la plage reste fermée. Pour savoir si elle est ouverte, appelez le 032 555 01 85 dès 8 h.</p>'
   - type: contact
     options: { display: compact }
     field_office: { node: sport-leisure }

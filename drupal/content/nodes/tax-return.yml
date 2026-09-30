@@ -1,63 +1,94 @@
 key: tax-return
 type: page
-title: { de: 'Steuererklärung' }
+title: { en: 'Tax return', de: 'Steuererklärung', fr: 'Déclaration d''impôt' }
 field_lead:
+  en: 'When to submit your tax return, how to get an extension and which supporting documents you need.'
   de: 'Bis wann Sie die Steuererklärung einreichen, wie Sie die Frist verlängern und welche Belege es braucht.'
+  fr: 'Quand remettre votre déclaration d''impôt, comment prolonger le délai et quels justificatifs joindre.'
 field_office: { node: finance-taxes }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>You receive your tax return by post in February, with an access code for the canton''s tax software. Submit it by the end of March, online or on paper. It covers the municipal and cantonal taxes as well as the direct federal tax. Your assessment is carried out by the cantonal tax administration; if you have questions about filling in the return, we''re happy to help.</p>'
       de: '<p>Die Steuererklärung erhalten Sie im Februar per Post, mit einem Zugangscode für die Steuersoftware des Kantons. Reichen Sie sie bis Ende März ein, online oder auf Papier. Sie gilt für die Gemeinde- und Staatssteuern und für die direkte Bundessteuer. Die Veranlagung macht die kantonale Steuerverwaltung; bei Fragen zum Ausfüllen helfen wir Ihnen gern.</p>'
+      fr: '<p>Vous recevez votre déclaration d''impôt par la poste en février, avec un code d''accès au logiciel fiscal du canton. Remettez-la d''ici fin mars, en ligne ou sur papier. Elle vaut pour les impôts communaux et cantonaux ainsi que pour l''impôt fédéral direct. La taxation est effectuée par l''administration cantonale des impôts ; si vous avez des questions pour remplir votre déclaration, nous vous aidons volontiers.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Submitting online:</strong> With the <a href="https://www.example.com/tax-software">tax software</a>, you fill in your tax return on your computer and submit it with the access code, with no signature and no paper. You upload your supporting documents as PDFs or photos.</p>'
       de: '<p><strong>Online einreichen:</strong> Mit der <a href="https://www.example.com/tax-software">Steuersoftware</a> füllen Sie die Steuererklärung am Computer aus und reichen sie mit dem Zugangscode ein, ohne Unterschrift und ohne Papier. Die Belege laden Sie als PDF oder Foto hoch.</p>'
+      fr: '<p><strong>Remettre en ligne :</strong> avec le <a href="https://www.example.com/tax-software">logiciel fiscal</a>, vous remplissez votre déclaration d''impôt sur l''ordinateur et la remettez avec le code d''accès, sans signature ni papier. Vous joignez les justificatifs en PDF ou en photo.</p>'
   - type: title
-    field_title: { de: Frist verlängern }
+    field_title: { en: Extending the deadline, de: Frist verlängern, fr: Prolonger le délai }
   - type: text
     field_text:
+      en: '<p>If you can''t make it by the end of March, extend the deadline online or by phone; up to the end of September, it''s free. An extension to the end of November costs CHF 20 and needs a reason, for example a tax adviser who is filling in your return for you.</p>'
       de: '<p>Schaffen Sie es nicht bis Ende März, verlängern Sie die Frist online oder am Telefon, bis Ende September gratis. Eine Frist bis Ende November kostet Fr. 20.– und braucht einen Grund, zum Beispiel ein Treuhandbüro, das Ihre Steuererklärung ausfüllt.</p>'
+      fr: '<p>Si vous n''y arrivez pas d''ici fin mars, prolongez le délai en ligne ou par téléphone, gratuitement jusqu''à fin septembre. Un délai jusqu''à fin novembre coûte Fr. 20.– et doit être justifié, par exemple par une fiduciaire qui remplit votre déclaration d''impôt.</p>'
   - type: text
     options: { box: warning }
     field_text:
+      en: '<p><strong>Reminder:</strong> If you haven''t submitted your tax return by the time the deadline has passed, you receive a reminder costing CHF 50. If you still don''t submit it, the tax administration estimates your income and assets, and you risk a fine.</p>'
       de: '<p><strong>Mahnung:</strong> Haben Sie die Steuererklärung nach Ablauf der Frist nicht eingereicht, erhalten Sie eine Mahnung für Fr. 50.–. Reichen Sie sie auch dann nicht ein, schätzt die Steuerverwaltung Ihr Einkommen und Vermögen ein, und Sie riskieren eine Busse.</p>'
+      fr: '<p><strong>Sommation :</strong> si vous n''avez pas remis votre déclaration d''impôt à l''échéance du délai, vous recevez une sommation de Fr. 50.–. Si vous ne la remettez toujours pas, l''administration des impôts estime votre revenu et votre fortune, et vous risquez une amende.</p>'
   - type: title
-    field_title: { de: Welche Belege Sie beilegen }
+    field_title: { en: Which documents to include, de: Welche Belege Sie beilegen, fr: Les justificatifs à joindre }
   - type: columns
     options: { ratio: 50-50 }
     field_left:
       - type: text
         field_text:
+          en: '<h3>Income</h3><ul><li>Salary certificates</li><li>Statements of pensions, daily allowances and unemployment benefits</li><li>Statements of any side income or rental income</li></ul>'
           de: '<h3>Einkommen</h3><ul><li>Lohnausweise</li><li>Bescheinigungen über Renten, Taggelder und Arbeitslosenentschädigung</li><li>Abrechnungen über einen Nebenerwerb oder Mieteinnahmen</li></ul>'
+          fr: '<h3>Revenu</h3><ul><li>Certificats de salaire</li><li>Attestations de rentes, d''indemnités journalières et d''indemnités de chômage</li><li>Décomptes d''une activité accessoire ou de revenus locatifs</li></ul>'
     field_right:
       - type: text
         field_text:
+          en: '<h3>Assets and deductions</h3><ul><li>Bank statements and a list of securities as at the end of the year</li><li>Certificate of your payments into pillar 3a</li><li>Receipts for medical costs, donations and childcare</li><li>Statement of debts and interest on them, for example for your mortgage</li></ul>'
           de: '<h3>Vermögen und Abzüge</h3><ul><li>Kontoauszüge und Wertschriftenverzeichnis per Ende Jahr</li><li>Bescheinigung über Einzahlungen in die Säule 3a</li><li>Belege für Krankheitskosten, Spenden und die Betreuung Ihrer Kinder</li><li>Ausweis über Schulden und Schuldzinsen, etwa für die Hypothek</li></ul>'
+          fr: '<h3>Fortune et déductions</h3><ul><li>Relevés de compte et état des titres en fin d''année</li><li>Attestation des versements au pilier 3a</li><li>Justificatifs des frais de maladie, des dons et de la garde de vos enfants</li><li>Attestation des dettes et des intérêts passifs, par exemple pour l''hypothèque</li></ul>'
   - type: title
-    field_title: { de: Nach dem Einreichen }
+    field_title: { en: After you submit it, de: Nach dem Einreichen, fr: Après la remise }
   - type: text
     field_text:
+      en: '<p>The cantonal tax administration checks your information and sends you the assessment notice. If you disagree with it, lodge an objection in writing within 30 days. After that, you receive the final bill from us.</p>'
       de: '<p>Die kantonale Steuerverwaltung prüft Ihre Angaben und stellt Ihnen die Veranlagungsverfügung zu. Sind Sie nicht einverstanden, erheben Sie innert 30 Tagen schriftlich Einsprache. Danach erhalten Sie von uns die Schlussrechnung.</p>'
+      fr: '<p>L''administration cantonale des impôts vérifie vos indications et vous notifie la décision de taxation. Si vous n''êtes pas d''accord, déposez une réclamation écrite dans les 30 jours. Vous recevez ensuite de notre part le décompte final.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Wir haben geheiratet. Füllen wir eine gemeinsame Steuererklärung aus?' }
+    field_title:
+      en: 'We''ve got married. Do we fill in a joint tax return?'
+      de: 'Wir haben geheiratet. Füllen wir eine gemeinsame Steuererklärung aus?'
+      fr: 'Nous nous sommes mariés. Remplissons-nous une déclaration d''impôt commune ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, starting with the year in which you got married. Married couples and registered partners are taxed jointly. Couples who separate each fill in their own tax return from the year of the separation.</p>'
           de: '<p>Ja, schon für das Jahr, in dem Sie geheiratet haben. Ehepaare und eingetragene Partnerschaften werden gemeinsam besteuert. Paare, die sich trennen, füllen ab dem Jahr der Trennung je eine eigene Steuererklärung aus.</p>'
+          fr: '<p>Oui, dès l''année de votre mariage. Les couples mariés et les partenaires enregistrés sont imposés ensemble. Les couples qui se séparent remplissent chacun leur propre déclaration d''impôt dès l''année de la séparation.</p>'
   - type: accordion
-    field_title: { de: 'Ich bin neu zugezogen. Wo bezahle ich Steuern?' }
+    field_title:
+      en: 'I''ve just moved here. Where do I pay my taxes?'
+      de: 'Ich bin neu zugezogen. Wo bezahle ich Steuern?'
+      fr: 'Je viens d''emménager. Où est-ce que je paie mes impôts ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>If you''ve come from another canton, you pay your taxes for the whole year in Blockingen. If you''ve come from a municipality in the same canton, the two municipalities split the year between them. You receive your tax return from us the following February.</p>'
           de: '<p>Kommen Sie aus einem anderen Kanton, bezahlen Sie die Steuern für das ganze Jahr in Blockingen. Kommen Sie aus einer Gemeinde im selben Kanton, teilen die beiden Gemeinden das Jahr unter sich auf. Die Steuererklärung erhalten Sie im folgenden Februar von uns.</p>'
+          fr: '<p>Si vous venez d''un autre canton, vous payez vos impôts pour toute l''année à Bloquens. Si vous venez d''une commune du même canton, les deux communes se partagent l''année. Vous recevez votre déclaration d''impôt de notre part en février de l''année suivante.</p>'
   - type: accordion
-    field_title: { de: 'Hilft mir jemand beim Ausfüllen?' }
+    field_title:
+      en: 'Can someone help me fill it in?'
+      de: 'Hilft mir jemand beim Ausfüllen?'
+      fr: 'Quelqu''un peut-il m''aider à la remplir ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes. On two evenings in March, we help you fill in your tax return at the town hall, free of charge and without registration. Bring your tax return and all your supporting documents. You''ll find the dates under “News” in February.</p>'
           de: '<p>Ja. An zwei Abenden im März helfen wir Ihnen im Rathaus beim Ausfüllen, gratis und ohne Anmeldung. Bringen Sie die Steuererklärung und alle Belege mit. Die Daten finden Sie im Februar unter «Aktuelles».</p>'
+          fr: '<p>Oui. Deux soirs en mars, nous vous aidons à remplir votre déclaration à l''hôtel de ville, gratuitement et sans inscription. Apportez votre déclaration d''impôt et tous les justificatifs. Vous trouverez les dates en février sous « Actualités ».</p>'
 field_related:
   - type: teaser
     field_link: { node: paying-taxes }
@@ -65,15 +96,15 @@ field_related:
     field_link: { node: budget }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/tax-software
-        field_title: { de: Steuersoftware }
+        field_title: { en: Tax software, de: Steuersoftware, fr: Logiciel fiscal }
       - type: link
         field_link: https://www.example.com/tax-extension
-        field_title: { de: Frist verlängern }
+        field_title: { en: Extend the deadline, de: Frist verlängern, fr: Prolonger le délai }
       - type: link
         field_link: https://www.example.com/tax-guide
-        field_title: { de: Wegleitung zur Steuererklärung }
+        field_title: { en: Guide to the tax return, de: Wegleitung zur Steuererklärung, fr: 'Guide de la déclaration d''impôt' }

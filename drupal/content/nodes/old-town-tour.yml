@@ -1,18 +1,22 @@
 key: old-town-tour
 type: event
-title: { de: Führung durch die Altstadt }
+title: { en: Guided tour of the old town, de: Führung durch die Altstadt, fr: Visite guidée de la vieille ville }
 field_lead:
+  en: 'From fishing village to watchmaking town: the history of Blockingen in an hour and a half.'
   de: 'Vom Fischerdorf zur Uhrenstadt: die Geschichte Blockingens in anderthalb Stunden.'
+  fr: 'Du village de pêcheurs à la cité horlogère : l''histoire de Bloquens en une heure et demie.'
 field_hero_image: { media: old-town }
 field_date: { value: '+19 days 14:00', end_value: '+19 days 15:30' }
-field_place: { de: 'Treffpunkt vor dem Rathaus' }
-field_organiser: { de: Verkehrsverein Blockingen }
+field_place: { en: 'Meeting point in front of the town hall', de: 'Treffpunkt vor dem Rathaus', fr: 'Rendez-vous devant l''hôtel de ville' }
+field_organiser: { en: Blockingen Tourist Association, de: Verkehrsverein Blockingen, fr: Société de développement de Bloquens }
 field_category: culture
-field_price: { de: 'Fr. 10.–, Kinder gratis' }
+field_price: { en: 'CHF 10, children free', de: 'Fr. 10.–, Kinder gratis', fr: 'Fr. 10.–, gratuit pour les enfants' }
 field_registration: https://www.example.com/old-town-tours
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>A guide shows you around the old town: the town hall by the lake, the winegrowers'' houses with their steep tiled roofs, and the village square, where markets have been held for centuries and which is now being redesigned. You''ll learn why two languages are spoken in Blockingen and in which living rooms watch parts were once made.</p><p>The tour takes place in all weathers, in German; a tour in French starts at the same time. The route goes over cobblestones and up and down a few steps. Please register: groups are limited to 25 people.</p>'
       de: '<p>Eine Stadtführerin zeigt Ihnen die Altstadt: das Rathaus am See, die Häuser der Weinbauern mit ihren steilen Ziegeldächern und den Dorfplatz, auf dem seit Jahrhunderten Markt gehalten wird und der gerade neu gestaltet wird. Sie erfahren, warum in Blockingen zwei Sprachen gesprochen werden und in welchen Stuben einst Uhrenteile entstanden.</p><p>Die Führung findet bei jedem Wetter statt, auf Deutsch; eine Führung auf Französisch beginnt zur selben Zeit. Der Weg führt über Pflastersteine und einige Treppen. Melden Sie sich an: Eine Gruppe hat höchstens 25 Personen.</p>'
+      fr: '<p>Une guide vous fait découvrir la vieille ville : l''hôtel de ville au bord du lac, les maisons des vignerons avec leurs toits de tuiles pentus et la place du village, où se tient le marché depuis des siècles et qui est en cours de réaménagement. Vous apprendrez pourquoi on parle deux langues à Bloquens et dans quels salons on fabriquait autrefois des pièces d''horlogerie.</p><p>La visite a lieu par tous les temps, en allemand ; une visite en français commence à la même heure. Le parcours passe sur des pavés et par quelques escaliers. Inscrivez-vous : un groupe compte 25 personnes au maximum.</p>'
   - type: teaser
     field_link: { node: history }

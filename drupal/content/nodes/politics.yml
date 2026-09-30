@@ -1,12 +1,16 @@
 key: politics
 type: editorial
-title: { de: Politik }
+title: { en: Politics, de: Politik, fr: Politique }
 field_lead:
+  en: 'The municipal council, the municipal assembly, votes and elections.'
   de: 'Der Gemeinderat, die Gemeindeversammlung, Abstimmungen und Wahlen.'
+  fr: 'Le Conseil communal, l''Assemblée communale, les votations et les élections.'
 field_hero_image: { media: town-hall }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>In Blockingen, voters decide for themselves: at the municipal assembly and at the ballot box. The municipal council runs the town and prepares the matters they decide on.</p>'
       de: '<p>In Blockingen entscheiden die Stimmberechtigten selbst: an der Gemeindeversammlung und an der Urne. Der Gemeinderat führt die Gemeinde und bereitet die Geschäfte vor.</p>'
+      fr: '<p>À Bloquens, les électrices et électeurs décident eux-mêmes : à l''Assemblée communale et aux urnes. Le Conseil communal dirige la commune et prépare les objets qui leur sont soumis.</p>'

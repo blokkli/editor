@@ -1,30 +1,43 @@
 key: sorting
 type: page
-title: { de: 'Was gehört wohin?' }
+title: { en: 'What goes where?', de: 'Was gehört wohin?', fr: 'Que jeter où ?' }
 field_lead:
+  en: 'From PET to hazardous waste: where to take what.'
   de: 'Von PET bis Sonderabfall: wo Sie was abgeben.'
+  fr: 'Du PET aux déchets spéciaux : où déposer quoi.'
 field_office: { node: public-works }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Anything that can be recycled doesn''t belong in the waste bag. Collected separately, it becomes new glass, paper or metal, and you save on bag fees. The table shows where to take what. Anything that isn''t listed goes in the household waste.</p>'
       de: '<p>Was sich wiederverwerten lässt, gehört nicht in den Kehrichtsack. Separat gesammelt, wird es zu neuem Glas, Papier oder Metall, und Sie sparen Sackgebühren. Die Tabelle zeigt, wo Sie was abgeben. Was nicht darin steht, gehört in den Kehricht.</p>'
+      fr: '<p>Ce qui peut être recyclé n''a pas sa place dans le sac taxé. Collecté séparément, il redevient du verre, du papier ou du métal, et vous économisez des taxes au sac. Le tableau indique où déposer quoi. Ce qui n''y figure pas va dans les ordures ménagères.</p>'
   - type: from_library
     field_reusable_paragraph: { library: waste-guide }
   - type: title
-    field_title: { de: Sammelstellen im Quartier }
+    field_title: { en: 'Neighbourhood recycling points', de: Sammelstellen im Quartier, fr: 'Points de collecte de quartier' }
   - type: text
     field_text:
+      en: '<p>You can drop off glass, aluminium and tin cans at seven recycling points, including at the station, at Seefeld school and at the cemetery. The map under “Forms and links” shows them all. Out of consideration for the neighbours, the recycling points are open from Monday to Saturday from 7:00 to 20:00, and closed on Sundays and public holidays.</p><p>Sort glass by colour: clear, brown and green. Glass of any other colour goes with the green. Put lids and corks in the household waste.</p>'
       de: '<p>An sieben Sammelstellen geben Sie Glas, Alu und Blech ab, unter anderem beim Bahnhof, beim Schulhaus Seefeld und beim Friedhof. Die Karte unter «Formulare und Links» zeigt alle. Aus Rücksicht auf die Nachbarschaft sind die Sammelstellen von Montag bis Samstag von 7.00 bis 20.00 Uhr offen, an Sonn- und Feiertagen nicht.</p><p>Trennen Sie das Glas nach Farben: weiss, braun und grün. Anderes farbiges Glas gehört zum grünen. Deckel und Korken werfen Sie in den Kehricht.</p>'
+      fr: '<p>Vous déposez le verre, l''aluminium et le fer-blanc dans sept points de collecte, notamment à la gare, à l''école du Seefeld et au cimetière. La carte sous « Formulaires et liens » les indique tous. Par égard pour le voisinage, les points de collecte sont ouverts du lundi au samedi de 7 h à 20 h, mais pas les dimanches et jours fériés.</p><p>Triez le verre par couleur : blanc, brun et vert. Le verre d''une autre couleur va avec le vert. Jetez les couvercles et les bouchons dans les ordures ménagères.</p>'
   - type: title
-    field_title: { de: Sonderabfall }
+    field_title: { en: 'Hazardous waste', de: Sonderabfall, fr: 'Déchets spéciaux' }
   - type: text
     field_text:
+      en: '<p>Paint, varnish, solvents, used oil, chemicals and pesticides belong neither in the household waste nor down the drain. Take them in their original packaging to the collection point at the works yard: we accept household quantities of up to 20 kilograms free of charge. Take medicines to a pharmacy, and batteries and light bulbs to a shop that sells them.</p>'
       de: '<p>Farben, Lacke, Lösungsmittel, Altöl, Chemikalien und Pflanzenschutzmittel gehören weder in den Kehricht noch in den Ausguss. Bringen Sie sie in der Originalverpackung in die Entsorgungsstelle beim Werkhof: Haushaltsmengen bis 20 Kilogramm nehmen wir gratis an. Medikamente bringen Sie in eine Apotheke, Batterien und Leuchtmittel in eine Verkaufsstelle.</p>'
+      fr: '<p>Les peintures, vernis, solvants, huiles usées, produits chimiques et produits phytosanitaires ne vont ni dans les ordures ménagères ni dans l''évier. Apportez-les dans leur emballage d''origine à la déchetterie du dépôt communal : nous acceptons gratuitement les quantités ménagères jusqu''à 20 kilogrammes. Rapportez les médicaments en pharmacie, les piles et les ampoules dans un point de vente.</p>'
   - type: title
-    field_title: { de: 'Weniger Kehricht, mehr Recycling' }
+    field_title:
+      en: 'Less household waste, more recycling'
+      de: 'Weniger Kehricht, mehr Recycling'
+      fr: 'Moins d''ordures, plus de recyclage'
   - type: text
     field_text:
+      en: '<p>Since the bag fee was introduced, the people of Blockingen have been sorting their waste more and more carefully. Today, they collect more than half of it separately.</p>'
       de: '<p>Seit der Einführung der Sackgebühr trennen die Blockingerinnen und Blockinger ihren Abfall immer sorgfältiger. Heute sammeln sie mehr als die Hälfte separat.</p>'
+      fr: '<p>Depuis l''introduction de la taxe au sac, la population de Bloquens trie ses déchets avec toujours plus de soin. Aujourd''hui, elle en collecte plus de la moitié séparément.</p>'
   - type: chart
     options:
       data:
@@ -36,30 +49,47 @@ field_paragraphs:
         typeOptions: { stacked: true }
         dataSource: { id: waste, label: 'Abfall pro Kopf, 2016–2025' }
         translations:
+          en:
+            title: Waste per resident
+            valueAxisTitle: Kilograms
+            footnotes: ['Household waste, excluding rubble and hazardous waste.']
           de:
             title: Abfall pro Kopf
             valueAxisTitle: Kilogramm
             footnotes: ['Haushaltsabfälle, ohne Bauschutt und Sonderabfall.']
+          fr:
+            title: Déchets par habitant
+            valueAxisTitle: Kilogrammes
+            footnotes: ['Déchets ménagers, sans les gravats ni les déchets spéciaux.']
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Wohin mit Plastik?' }
+    field_title: { en: 'Where does plastic go?', de: 'Wohin mit Plastik?', fr: 'Où jeter le plastique ?' }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Most shops take back PET drinks bottles and plastic bottles from milk, shampoo or detergent. Other plastic, such as film, pots and trays, goes in the household waste: Blockingen doesn''t collect it separately.</p>'
           de: '<p>PET-Getränkeflaschen und Plastikflaschen von Milch, Shampoo oder Waschmittel nehmen die meisten Verkaufsstellen zurück. Anderes Plastik, etwa Folien, Becher und Schalen, gehört in den Kehricht: Blockingen sammelt es nicht separat.</p>'
+          fr: '<p>La plupart des points de vente reprennent les bouteilles à boissons en PET et les flacons en plastique de lait, de shampooing ou de lessive. Les autres plastiques, comme les films, les gobelets et les barquettes, vont dans les ordures ménagères : Bloquens ne les collecte pas séparément.</p>'
   - type: accordion
-    field_title: { de: 'Gehören kompostierbare Säcke ins Grüngut?' }
+    field_title:
+      en: 'Can compostable bags go in the green waste?'
+      de: 'Gehören kompostierbare Säcke ins Grüngut?'
+      fr: 'Les sacs compostables vont-ils dans les déchets verts ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>No. Even compostable bags break down too slowly in the digestion plant. Collect your vegetable peelings in newspaper or put them straight into the bin.</p>'
           de: '<p>Nein. Auch kompostierbare Säcke zerfallen in der Vergärungsanlage zu langsam. Sammeln Sie Rüstabfälle in Zeitungspapier oder direkt im Container.</p>'
+          fr: '<p>Non. Même les sacs compostables se décomposent trop lentement dans l''installation de méthanisation. Récoltez les épluchures dans du papier journal ou mettez-les directement dans le conteneur.</p>'
   - type: accordion
-    field_title: { de: 'Wohin mit alten Kleidern?' }
+    field_title: { en: 'Where do old clothes go?', de: 'Wohin mit alten Kleidern?', fr: 'Où déposer les vieux vêtements ?' }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>In the collection containers at the station and at the works yard, clean and in closed bags. Tie shoes together in pairs. Anything that can still be worn is sold again; the rest becomes cleaning rags or insulation.</p>'
           de: '<p>In die Sammelcontainer beim Bahnhof und beim Werkhof, sauber und in geschlossenen Säcken. Schuhe binden Sie paarweise zusammen. Was noch tragbar ist, wird weiterverkauft, der Rest wird zu Putzlappen oder Dämmstoff.</p>'
+          fr: '<p>Dans les conteneurs de collecte à la gare et au dépôt communal, propres et dans des sacs fermés. Attachez les chaussures par paires. Ce qui peut encore être porté est revendu, le reste devient des chiffons ou de l''isolant.</p>'
 field_related:
   - type: teaser
     field_link: { node: collection-days }
@@ -67,12 +97,12 @@ field_related:
     field_link: { node: collection-point }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/collection-map
-        field_title: { de: Karte der Sammelstellen }
+        field_title: { en: 'Map of recycling points', de: Karte der Sammelstellen, fr: 'Carte des points de collecte' }
       - type: link
         field_link: https://www.example.com/waste-calendar
-        field_title: { de: Abfallkalender }
+        field_title: { en: 'Waste calendar', de: Abfallkalender, fr: 'Calendrier des déchets' }

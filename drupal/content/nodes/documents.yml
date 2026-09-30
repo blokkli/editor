@@ -1,65 +1,98 @@
 key: documents
 type: page
-title: { de: 'Ausweise und Bestätigungen' }
+title: { en: 'Identity documents and certificates', de: 'Ausweise und Bestätigungen', fr: 'Documents d''identité et attestations' }
 field_lead:
+  en: 'Identity card, passport, certificate of residence: where to apply and what it costs.'
   de: 'Identitätskarte, Pass, Wohnsitzbestätigung: was Sie wo beantragen und was es kostet.'
+  fr: 'Carte d''identité, passeport, attestation de domicile : où faire la demande et combien cela coûte.'
 field_office: { node: residents-services }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>At the residents'' services, you apply for an identity card and order certificates from the residents'' register. Passports are issued by the cantonal passport office, because it takes your photo and fingerprints for them.</p>'
       de: '<p>Bei den Einwohnerdiensten beantragen Sie die Identitätskarte und bestellen Bestätigungen aus dem Einwohnerregister. Den Pass stellt das kantonale Ausweiszentrum aus, weil es dafür Ihr Foto und Ihre Fingerabdrücke aufnimmt.</p>'
+      fr: '<p>Au Contrôle des habitants, vous demandez la carte d''identité et commandez des attestations du registre des habitants. Le passeport est établi par le centre de documents d''identité du canton, car celui-ci prend votre photo et vos empreintes digitales.</p>'
   - type: title
-    field_title: { de: Identitätskarte }
+    field_title: { en: Identity card, de: Identitätskarte, fr: Carte d'identité }
   - type: text
     field_text:
+      en: '<p>You apply for an identity card at the residents'' services counter. Bring your current identity card and a recent passport photo that meets the federal requirements. Children come along in person; for children and young people under 18, a parent with custody signs the application.</p><p>You''ll receive the new card by post after about ten working days. Until then, your old one remains valid, as long as it hasn''t expired.</p>'
       de: '<p>Die Identitätskarte beantragen Sie am Schalter der Einwohnerdienste. Bringen Sie Ihre bisherige Identitätskarte mit und ein aktuelles Passfoto, das den Vorgaben des Bundes entspricht. Kinder kommen persönlich mit; für Kinder und Jugendliche unter 18 unterschreibt ein sorgeberechtigter Elternteil.</p><p>Die neue Karte erhalten Sie nach etwa zehn Arbeitstagen per Post. Bis dahin gilt die alte, wenn sie nicht abgelaufen ist.</p>'
+      fr: '<p>Vous demandez la carte d''identité au guichet du Contrôle des habitants. Apportez votre carte d''identité actuelle et une photo d''identité récente conforme aux exigences de la Confédération. Les enfants viennent en personne ; pour les enfants et les jeunes de moins de 18 ans, un parent détenteur de l''autorité parentale signe la demande.</p><p>Vous recevez la nouvelle carte par la poste après une dizaine de jours ouvrables. D''ici là, l''ancienne reste valable si elle n''est pas échue.</p>'
   - type: title
-    field_title: { de: Pass }
+    field_title: { en: Passport, de: Pass, fr: Passeport }
   - type: text
     field_text:
+      en: '<p>You apply for a passport online or by phone with the cantonal passport office. There you make an appointment, at which your photo and fingerprints are taken. If you apply for a passport and an identity card together, you pay less. You''ll receive the passport by post after about ten working days.</p>'
       de: '<p>Den Pass beantragen Sie online oder am Telefon beim kantonalen Ausweiszentrum. Dort vereinbaren Sie einen Termin, bei dem Ihr Foto und Ihre Fingerabdrücke aufgenommen werden. Beantragen Sie Pass und Identitätskarte zusammen, bezahlen Sie weniger. Den Pass erhalten Sie nach etwa zehn Arbeitstagen per Post.</p>'
+      fr: '<p>Vous demandez le passeport en ligne ou par téléphone auprès du centre de documents d''identité du canton. Vous y fixez un rendez-vous, lors duquel votre photo et vos empreintes digitales sont prises. Si vous demandez le passeport et la carte d''identité ensemble, vous payez moins. Vous recevez le passeport par la poste après une dizaine de jours ouvrables.</p>'
   - type: text
     options: { box: warning }
     field_text:
+      en: '<p><strong>Apply in good time:</strong> Before the summer and autumn holidays, you may wait up to four weeks for an appointment at the passport office. Check early whether your documents are valid for your trip: some countries require your passport to be valid for another six months after your return.</p>'
       de: '<p><strong>Rechtzeitig beantragen:</strong> Vor den Sommer- und den Herbstferien warten Sie beim Ausweiszentrum bis zu vier Wochen auf einen Termin. Prüfen Sie früh, ob Ihre Ausweise für die Reise gelten: Manche Länder verlangen, dass der Pass nach der Rückreise noch sechs Monate gültig ist.</p>'
+      fr: '<p><strong>Faites votre demande à temps :</strong> avant les vacances d''été et d''automne, l''attente d''un rendez-vous au centre de documents d''identité peut atteindre quatre semaines. Vérifiez tôt si vos documents sont valables pour votre voyage : certains pays exigent que le passeport soit encore valable six mois après le retour.</p>'
   - type: title
-    field_title: { de: Gebühren für Ausweise }
+    field_title: { en: Fees for identity documents, de: Gebühren für Ausweise, fr: Émoluments pour les documents d'identité }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Document</th><th>Adults</th><th>Children under 18</th></tr></thead><tbody><tr><td>Identity card</td><td>CHF 70</td><td>CHF 35</td></tr><tr><td>Passport</td><td>CHF 145</td><td>CHF 65</td></tr><tr><td>Passport and identity card together</td><td>CHF 158</td><td>CHF 78</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Ausweis</th><th>Erwachsene</th><th>Kinder unter 18</th></tr></thead><tbody><tr><td>Identitätskarte</td><td>Fr. 70.–</td><td>Fr. 35.–</td></tr><tr><td>Pass</td><td>Fr. 145.–</td><td>Fr. 65.–</td></tr><tr><td>Pass und Identitätskarte zusammen</td><td>Fr. 158.–</td><td>Fr. 78.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Document</th><th>Adultes</th><th>Enfants de moins de 18 ans</th></tr></thead><tbody><tr><td>Carte d''identité</td><td>Fr. 70.–</td><td>Fr. 35.–</td></tr><tr><td>Passeport</td><td>Fr. 145.–</td><td>Fr. 65.–</td></tr><tr><td>Passeport et carte d''identité ensemble</td><td>Fr. 158.–</td><td>Fr. 78.–</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>The fees are set by the federal government and include postage. Documents for adults are valid for ten years, those for children and young people for five.</p>'
       de: '<p>Die Gebühren legt der Bund fest; das Porto ist inbegriffen. Ausweise für Erwachsene gelten zehn Jahre, für Kinder und Jugendliche fünf.</p>'
+      fr: '<p>Les émoluments sont fixés par la Confédération ; le port est compris. Les documents des adultes sont valables dix ans, ceux des enfants et des jeunes cinq ans.</p>'
   - type: title
-    field_title: { de: Bestätigungen }
+    field_title: { en: Certificates, de: Bestätigungen, fr: Attestations }
   - type: text
     field_text:
+      en: '<p>We issue certificates from the residents'' register, for example for your employer, your bank or another authority. You can order them at the counter or at the online counter. Certificates ordered online are sent to you by post or as a PDF with an electronic signature.</p>'
       de: '<p>Aus dem Einwohnerregister stellen wir Ihnen Bestätigungen aus, etwa für den Arbeitgeber, die Bank oder eine andere Behörde. Sie bestellen sie am Schalter oder am Online-Schalter. Online bestellte Bestätigungen erhalten Sie per Post oder als PDF mit elektronischer Signatur.</p>'
+      fr: '<p>Nous établissons des attestations tirées du registre des habitants, par exemple pour votre employeur, votre banque ou une autre autorité. Vous les commandez au guichet ou au guichet en ligne. Les attestations commandées en ligne vous parviennent par la poste ou au format PDF avec signature électronique.</p>'
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Certificate</th><th>Purpose</th><th>Fee</th></tr></thead><tbody><tr><td>Certificate of residence</td><td>Confirms that you live in Blockingen, since when and with whom.</td><td>CHF 20</td></tr><tr><td>Certificate for weekly residents</td><td>For staying in another municipality during the week.</td><td>CHF 30</td></tr><tr><td>Life certificate</td><td>For a pension from abroad.</td><td>CHF 20</td></tr><tr><td>Address information</td><td>The address of a person in Blockingen, for third parties with a legitimate interest.</td><td>CHF 20</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Bestätigung</th><th>Wofür</th><th>Gebühr</th></tr></thead><tbody><tr><td>Wohnsitzbestätigung</td><td>Sie wohnen in Blockingen, seit wann und mit wem.</td><td>Fr. 20.–</td></tr><tr><td>Heimatausweis</td><td>Für einen Wochenaufenthalt in einer anderen Gemeinde.</td><td>Fr. 30.–</td></tr><tr><td>Lebensbescheinigung</td><td>Für eine Rente aus dem Ausland.</td><td>Fr. 20.–</td></tr><tr><td>Adressauskunft</td><td>Die Adresse einer Person in Blockingen, für Dritte mit einem berechtigten Interesse.</td><td>Fr. 20.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Attestation</th><th>Usage</th><th>Émolument</th></tr></thead><tbody><tr><td>Attestation de domicile</td><td>Atteste que vous habitez à Bloquens, depuis quand et avec qui.</td><td>Fr. 20.–</td></tr><tr><td>Attestation pour séjour hebdomadaire</td><td>Pour un séjour à la semaine dans une autre commune.</td><td>Fr. 30.–</td></tr><tr><td>Certificat de vie</td><td>Pour une rente versée depuis l''étranger.</td><td>Fr. 20.–</td></tr><tr><td>Renseignement d''adresse</td><td>L''adresse d''une personne à Bloquens, pour des tiers ayant un intérêt légitime.</td><td>Fr. 20.–</td></tr></tbody></table>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Ich habe meinen Ausweis verloren. Was tun?' }
+    field_title:
+      en: 'I''ve lost my identity document. What should I do?'
+      de: 'Ich habe meinen Ausweis verloren. Was tun?'
+      fr: 'J''ai perdu ma pièce d''identité. Que faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Report the loss to the police; they''ll give you a loss report. With it, you can apply for a new document. If your passport is stolen abroad, the Swiss embassy or consulate will help you.</p>'
           de: '<p>Melden Sie den Verlust der Polizei; sie stellt Ihnen eine Verlustanzeige aus. Damit beantragen Sie einen neuen Ausweis. Wird Ihnen der Pass im Ausland gestohlen, hilft Ihnen die Schweizer Vertretung.</p>'
+          fr: '<p>Signalez la perte à la police ; elle vous remet une déclaration de perte. Avec celle-ci, vous demandez un nouveau document. Si votre passeport est volé à l''étranger, la représentation suisse vous aide.</p>'
   - type: accordion
-    field_title: { de: 'Reicht für die Reise die Identitätskarte?' }
+    field_title:
+      en: 'Is my identity card enough for my trip?'
+      de: 'Reicht für die Reise die Identitätskarte?'
+      fr: 'La carte d''identité suffit-elle pour voyager ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>You can travel to EU and Schengen countries with your identity card. For most other countries, you need a passport. The federal government''s travel advice tells you what each country requires.</p>'
           de: '<p>In die Länder der EU und des Schengen-Raums reisen Sie mit der Identitätskarte. Für die meisten anderen Länder brauchen Sie einen Pass. Was ein Land verlangt, steht in den Reisehinweisen des Bundes.</p>'
+          fr: '<p>Vous pouvez voyager dans les pays de l''UE et de l''espace Schengen avec la carte d''identité. Pour la plupart des autres pays, il vous faut un passeport. Les exigences de chaque pays figurent dans les conseils aux voyageurs de la Confédération.</p>'
   - type: accordion
-    field_title: { de: 'Wo bekomme ich einen Betreibungsregisterauszug?' }
+    field_title:
+      en: 'Where can I get a debt enforcement register extract?'
+      de: 'Wo bekomme ich einen Betreibungsregisterauszug?'
+      fr: 'Où obtenir un extrait du registre des poursuites ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>From the regional debt enforcement office, not from the town. You can order it there at the counter or online.</p>'
           de: '<p>Beim regionalen Betreibungsamt, nicht bei der Gemeinde. Sie bestellen ihn dort am Schalter oder online.</p>'
+          fr: '<p>Auprès de l''office régional des poursuites, pas auprès de la commune. Vous le commandez à son guichet ou en ligne.</p>'
 field_related:
   - type: teaser
     field_link: { node: moving-in }
@@ -67,15 +100,15 @@ field_related:
     field_link: { node: moving-within }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/residence-certificate
-        field_title: { de: Bestätigung bestellen }
+        field_title: { en: Order a certificate, de: Bestätigung bestellen, fr: Commander une attestation }
       - type: link
         field_link: https://www.example.com/passport-appointment
-        field_title: { de: Termin beim Ausweiszentrum }
+        field_title: { en: Appointment at the cantonal passport office, de: Termin beim Ausweiszentrum, fr: Rendez-vous au centre de documents d'identité }
       - type: link
         field_link: https://www.example.com/photo-requirements
-        field_title: { de: Vorgaben für das Passfoto }
+        field_title: { en: Passport photo requirements, de: Vorgaben für das Passfoto, fr: Exigences pour la photo d'identité }

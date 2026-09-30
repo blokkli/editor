@@ -1,70 +1,102 @@
 key: budget
 type: page
-title: { de: 'Budget und Rechnung' }
+title: { en: 'Budget and accounts', de: 'Budget und Rechnung', fr: 'Budget et comptes' }
 field_lead:
+  en: 'Next year''s budget and last year''s accounts, with the key figures.'
   de: 'Das Budget für das nächste Jahr und die Rechnung des letzten Jahres, mit den wichtigsten Zahlen.'
+  fr: 'Le budget de l''année prochaine et les comptes de l''année dernière, avec les principaux chiffres.'
 field_office: { node: finance-taxes }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The budget is the plan: it sets how much the town may spend next year and what revenue it expects. The accounts show how things actually turned out. The municipal assembly decides on both, and you can read both as a PDF or get a printed copy from the municipal chancery.</p>'
       de: '<p>Das Budget ist der Plan: Es legt fest, wie viel die Gemeinde im nächsten Jahr ausgeben darf und welche Einnahmen sie erwartet. Die Rechnung zeigt, wie es tatsächlich gekommen ist. Über beide entscheidet die Gemeindeversammlung, und beide können Sie als PDF lesen oder gedruckt bei der Gemeindekanzlei beziehen.</p>'
+      fr: '<p>Le budget est le plan : il fixe combien la commune peut dépenser l''année prochaine et quels revenus elle attend. Les comptes montrent ce qu''il en a réellement été. L''Assemblée communale se prononce sur les deux, et vous pouvez les consulter en PDF ou les obtenir sous forme imprimée auprès de la Chancellerie communale.</p>'
   - type: title
-    field_title: { de: Die wichtigsten Zahlen }
+    field_title: { en: Key figures, de: Die wichtigsten Zahlen, fr: Les chiffres clés }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>In CHF million</th><th>Accounts last year</th><th>Budget this year</th><th>Budget next year</th></tr></thead><tbody><tr><td>Expenses</td><td>66.8</td><td>68.0</td><td>69.4</td></tr><tr><td>Revenue</td><td>67.9</td><td>67.6</td><td>68.9</td></tr><tr><td>Result</td><td>+1.1</td><td>−0.4</td><td>−0.5</td></tr><tr><td>Net investment</td><td>7.2</td><td>10.8</td><td>12.4</td></tr></tbody></table>'
       de: '<table><thead><tr><th>In Mio. Franken</th><th>Rechnung letztes Jahr</th><th>Budget laufendes Jahr</th><th>Budget nächstes Jahr</th></tr></thead><tbody><tr><td>Aufwand</td><td>66,8</td><td>68,0</td><td>69,4</td></tr><tr><td>Ertrag</td><td>67,9</td><td>67,6</td><td>68,9</td></tr><tr><td>Ergebnis</td><td>+1,1</td><td>−0,4</td><td>−0,5</td></tr><tr><td>Nettoinvestitionen</td><td>7,2</td><td>10,8</td><td>12,4</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>En millions de francs</th><th>Comptes de l''année dernière</th><th>Budget de l''année en cours</th><th>Budget de l''année prochaine</th></tr></thead><tbody><tr><td>Charges</td><td>66,8</td><td>68,0</td><td>69,4</td></tr><tr><td>Revenus</td><td>67,9</td><td>67,6</td><td>68,9</td></tr><tr><td>Résultat</td><td>+1,1</td><td>−0,4</td><td>−0,5</td></tr><tr><td>Investissements nets</td><td>7,2</td><td>10,8</td><td>12,4</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>The tax rate stays at 1.62: the municipal tax is 1.62 times the canton''s basic tax.</p>'
       de: '<p>Der Steuerfuss bleibt bei 1,62: Die Gemeindesteuer beträgt das 1,62-Fache der einfachen Steuer des Kantons.</p>'
+      fr: '<p>La quotité d''impôt reste à 1,62 : l''impôt communal correspond à 1,62 fois l''impôt simple du canton.</p>'
   - type: title
-    field_title: { de: Die Rechnung des letzten Jahres }
+    field_title: { en: 'Last year''s accounts', de: Die Rechnung des letzten Jahres, fr: 'Les comptes de l''année dernière' }
   - type: text
     field_text:
+      en: '<p>The accounts closed with a surplus of CHF 1.1 million, instead of the budgeted deficit of CHF 0.4 million. Businesses paid more tax than expected, and the redesign of the village square started later than planned. The surplus goes into the town''s equity. The town invested CHF 7.2 million, mainly in the renovation of the lakeside pool.</p>'
       de: '<p>Die Rechnung schliesst mit einem Überschuss von 1,1 Millionen Franken ab, statt mit dem budgetierten Defizit von 0,4 Millionen. Die Firmen haben mehr Steuern bezahlt als erwartet, und die Umgestaltung des Dorfplatzes hat später begonnen. Der Überschuss geht ins Eigenkapital. Investiert hat die Gemeinde 7,2 Millionen, vor allem in die Sanierung des Strandbads.</p>'
+      fr: '<p>Les comptes bouclent sur un excédent de 1,1 million de francs, au lieu du déficit de 0,4 million inscrit au budget. Les entreprises ont payé plus d''impôts que prévu, et le réaménagement de la place du village a commencé plus tard. L''excédent est versé au capital propre. La commune a investi 7,2 millions, surtout dans la rénovation de la plage.</p>'
   - type: title
-    field_title: { de: Das Budget für das nächste Jahr }
+    field_title: { en: 'Next year''s budget', de: Das Budget für das nächste Jahr, fr: 'Le budget de l''année prochaine' }
   - type: text
     field_text:
+      en: '<p>The municipal council expects a small deficit of CHF 0.5 million. Expenses are rising mainly for schools, because more classes are needed, and for contributions to care homes. The town plans to invest CHF 12.4 million, most of it in:</p><ul><li>the new village square (CHF 4.1 million)</li><li>the water main in Dorfstrasse (CHF 2.8 million)</li><li>two additional classrooms at Seefeld school (CHF 3.2 million)</li></ul>'
       de: '<p>Der Gemeinderat rechnet mit einem kleinen Defizit von 0,5 Millionen Franken. Der Aufwand steigt vor allem bei der Schule, weil es mehr Klassen braucht, und bei den Beiträgen an die Pflegeheime. Investieren will die Gemeinde 12,4 Millionen, am meisten in:</p><ul><li>den neuen Dorfplatz (4,1 Millionen)</li><li>die Wasserleitung in der Dorfstrasse (2,8 Millionen)</li><li>zwei zusätzliche Klassenzimmer im Schulhaus Seefeld (3,2 Millionen)</li></ul>'
+      fr: '<p>Le Conseil communal prévoit un léger déficit de 0,5 million de francs. Les charges augmentent surtout pour l''école, parce qu''il faut davantage de classes, et pour les contributions aux établissements médico-sociaux. La commune prévoit d''investir 12,4 millions, principalement dans :</p><ul><li>la nouvelle place du village (4,1 millions)</li><li>la conduite d''eau de la rue du Village (2,8 millions)</li><li>deux salles de classe supplémentaires à l''école du Seefeld (3,2 millions)</li></ul>'
   - type: title
-    field_title: { de: Wie Budget und Rechnung entstehen }
+    field_title: { en: How the budget and accounts are drawn up, de: Wie Budget und Rechnung entstehen, fr: 'L''élaboration du budget et des comptes' }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Rechnung prüfen }
+        field_title: { en: Auditing the accounts, de: Rechnung prüfen, fr: Vérification des comptes }
         field_text:
+          en: '<p>In spring, the external auditors check the previous year''s accounts.</p>'
           de: '<p>Im Frühling prüft die externe Revisionsstelle die Rechnung des Vorjahres.</p>'
+          fr: '<p>Au printemps, l''organe de révision externe vérifie les comptes de l''année précédente.</p>'
       - type: step
-        field_title: { de: Rechnung genehmigen }
+        field_title: { en: Approving the accounts, de: Rechnung genehmigen, fr: Approbation des comptes }
         field_text:
+          en: '<p>In June, the municipal assembly approves the accounts.</p>'
           de: '<p>Im Juni genehmigt die Gemeindeversammlung die Rechnung.</p>'
+          fr: '<p>En juin, l''Assemblée communale approuve les comptes.</p>'
       - type: step
-        field_title: { de: Budget erarbeiten }
+        field_title: { en: Drawing up the budget, de: Budget erarbeiten, fr: Élaboration du budget }
         field_text:
+          en: '<p>In summer, the municipal council and the administration draw up the budget and the financial plan for the following four years.</p>'
           de: '<p>Im Sommer erarbeitet der Gemeinderat mit der Verwaltung das Budget und den Finanzplan für die folgenden vier Jahre.</p>'
+          fr: '<p>En été, le Conseil communal élabore avec l''administration le budget et le plan financier pour les quatre années suivantes.</p>'
       - type: step
-        field_title: { de: Budget prüfen }
+        field_title: { en: Reviewing the budget, de: Budget prüfen, fr: Examen du budget }
         field_text:
+          en: '<p>In autumn, the finance committee reviews the budget and makes a recommendation to the municipal assembly.</p>'
           de: '<p>Im Herbst prüft die Finanzkommission das Budget und gibt der Gemeindeversammlung eine Empfehlung ab.</p>'
+          fr: '<p>En automne, la commission des finances examine le budget et adresse une recommandation à l''Assemblée communale.</p>'
       - type: step
-        field_title: { de: Budget beschliessen }
+        field_title: { en: Adopting the budget, de: Budget beschliessen, fr: Adoption du budget }
         field_text:
+          en: '<p>In December, the municipal assembly adopts the budget and sets the tax rate.</p>'
           de: '<p>Im Dezember beschliesst die Gemeindeversammlung das Budget und den Steuerfuss.</p>'
+          fr: '<p>En décembre, l''Assemblée communale adopte le budget et fixe la quotité d''impôt.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Was geschieht, wenn die Gemeindeversammlung das Budget ablehnt?' }
+    field_title:
+      en: 'What happens if the municipal assembly rejects the budget?'
+      de: 'Was geschieht, wenn die Gemeindeversammlung das Budget ablehnt?'
+      fr: 'Que se passe-t-il si l''Assemblée communale refuse le budget ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The municipal council then presents a new budget in spring. Until then, the town may only spend money on what is required by law or can''t be put off.</p>'
           de: '<p>Dann legt der Gemeinderat im Frühling ein neues Budget vor. Bis dahin darf die Gemeinde nur Ausgaben tätigen, die gesetzlich vorgeschrieben sind oder keinen Aufschub dulden.</p>'
+          fr: '<p>Le Conseil communal présente alors un nouveau budget au printemps. D''ici là, la commune ne peut engager que les dépenses prescrites par la loi ou qui ne souffrent aucun report.</p>'
   - type: accordion
-    field_title: { de: 'Wer sitzt in der Finanzkommission?' }
+    field_title:
+      en: 'Who sits on the finance committee?'
+      de: 'Wer sitzt in der Finanzkommission?'
+      fr: 'Qui siège à la commission des finances ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Five voters, elected by the municipal assembly for four years. They are not members of the municipal council and review its proposals independently.</p>'
           de: '<p>Fünf Stimmberechtigte, die die Gemeindeversammlung für vier Jahre wählt. Sie gehören nicht dem Gemeinderat an und prüfen seine Vorlagen unabhängig.</p>'
+          fr: '<p>Cinq électrices et électeurs, élus par l''Assemblée communale pour quatre ans. Ils ne font pas partie du Conseil communal et examinent ses propositions en toute indépendance.</p>'
 field_related:
   - type: teaser
     field_link: { node: financial-strategy }
@@ -72,15 +104,15 @@ field_related:
     field_link: { node: in-numbers }
 field_aside:
   - type: title
-    field_title: { de: Dokumente }
+    field_title: { en: Documents, de: Dokumente, fr: Documents }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/budget
-        field_title: { de: Budget (PDF) }
+        field_title: { en: Budget (PDF), de: Budget (PDF), fr: Budget (PDF) }
       - type: link
         field_link: https://www.example.com/annual-accounts
-        field_title: { de: Rechnung (PDF) }
+        field_title: { en: Accounts (PDF), de: Rechnung (PDF), fr: Comptes (PDF) }
       - type: link
         field_link: https://www.example.com/financial-plan
-        field_title: { de: Finanzplan (PDF) }
+        field_title: { en: Financial plan (PDF), de: Finanzplan (PDF), fr: Plan financier (PDF) }

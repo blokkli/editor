@@ -1,15 +1,19 @@
 key: floorball-tournament
 type: event
-title: { de: Seefeld-Cup im Unihockey }
+title: { en: Seefeld Cup floorball tournament, de: Seefeld-Cup im Unihockey, fr: 'Coupe du Seefeld d''unihockey' }
 field_lead:
+  en: 'Around 40 teams, from the youngest players to the fun teams, compete all day for the Seefeld Cup.'
   de: 'Rund 40 Teams, von den Jüngsten bis zu den Plauschteams, spielen einen Tag lang um den Seefeld-Cup.'
+  fr: 'Quelque 40 équipes, des plus jeunes aux équipes amateurs, se disputent la Coupe du Seefeld pendant toute une journée.'
 field_date: { value: '+13 days 09:00', end_value: '+13 days 17:30' }
-field_place: { de: Sporthalle Seefeld }
-field_organiser: { de: Unihockeyclub Seefeld }
+field_place: { en: Seefeld sports hall, de: Sporthalle Seefeld, fr: Halle de sport du Seefeld }
+field_organiser: { en: Seefeld Floorball Club, de: Unihockeyclub Seefeld, fr: 'Club d''unihockey du Seefeld' }
 field_category: sport
-field_price: { de: Eintritt gratis }
+field_price: { en: Free admission, de: Eintritt gratis, fr: Entrée libre }
 field_registration: https://www.example.com/seefeld-cup
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>In the morning, children and young people play in five categories; in the afternoon, it''s the adults'' turn. Fun teams from companies, clubs and groups of friends are welcome: you don''t need a licence, just at least five players. Registration costs CHF 60 per team and closes a week before the tournament.</p><p>Watching is free. The refreshment stand serves hot dogs, cake and drinks, and the prize-giving is at 17:00. If you''re playing, bring clean indoor shoes.</p>'
       de: '<p>Am Morgen spielen die Kinder und Jugendlichen in fünf Kategorien, am Nachmittag die Erwachsenen. Plauschteams aus Firmen, Vereinen und Freundeskreisen sind willkommen: Sie brauchen keine Lizenz, nur mindestens fünf Personen. Ein Team anzumelden kostet Fr. 60.–, bis eine Woche vorher.</p><p>Zuschauen ist gratis. Die Festwirtschaft bietet Hotdogs, Kuchen und Getränke an, und um 17.00 Uhr ist die Rangverkündigung. Wer selbst spielt, bringt saubere Hallenschuhe mit.</p>'
+      fr: '<p>Le matin, les enfants et les jeunes jouent dans cinq catégories, l''après-midi, les adultes. Les équipes amateurs d''entreprises, de sociétés locales et de groupes d''amis sont les bienvenues : pas besoin de licence, il suffit d''être au moins cinq. L''inscription coûte Fr. 60.– par équipe et reste ouverte jusqu''à une semaine avant le tournoi.</p><p>L''entrée est libre pour le public. La cantine propose des hot-dogs, des gâteaux et des boissons, et la proclamation des résultats a lieu à 17 h. Si vous jouez, apportez des chaussures de salle propres.</p>'

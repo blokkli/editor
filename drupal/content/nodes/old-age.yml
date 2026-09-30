@@ -1,49 +1,74 @@
 key: old-age
 type: page
-title: { de: 'Leben im Alter' }
+title: { en: 'Later life', de: 'Leben im Alter', fr: 'Personnes âgées' }
 field_lead:
+  en: 'Advice, help at home and activities for older people in Blockingen.'
   de: 'Beratung, Hilfe zu Hause und Angebote für ältere Menschen in Blockingen.'
+  fr: 'Conseils, aide à domicile et offres pour les personnes âgées à Bloquens.'
 field_office: { node: social-services }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Almost one in five people in Blockingen is over 65. Most would like to live at home for as long as possible, and the town, home care (Spitex) and many volunteers help them do so. The social services'' advice centre for older people advises you and your family: on help with everyday life, on finances, on moving to a smaller flat or on a place in the care home. The advice is free; if you wish, we can come to your home.</p>'
       de: '<p>Fast jede fünfte Person in Blockingen ist älter als 65. Die meisten möchten so lange wie möglich zu Hause wohnen, und dabei helfen die Gemeinde, die Spitex und viele Freiwillige. Die Anlaufstelle Alter der Sozialen Dienste berät Sie und Ihre Angehörigen: zu Hilfe im Alltag, zu Finanzen, zu einer kleineren Wohnung oder einem Platz im Alterszentrum. Die Beratung ist gratis; auf Wunsch kommen wir zu Ihnen nach Hause.</p>'
+      fr: '<p>Près d''une personne sur cinq à Bloquens a plus de 65 ans. La plupart souhaitent vivre chez elles le plus longtemps possible, et la commune, les soins à domicile et de nombreux bénévoles les y aident. Le Point info seniors des Services sociaux vous conseille, vous et vos proches : sur l''aide au quotidien, les finances, un logement plus petit ou une place au home. Les conseils sont gratuits ; sur demande, nous venons chez vous.</p>'
   - type: title
-    field_title: { de: Zu Hause wohnen bleiben }
+    field_title: { en: 'Staying at home', de: Zu Hause wohnen bleiben, fr: 'Rester chez soi' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Service</th><th>What it offers</th><th>Cost</th></tr></thead><tbody><tr><td>Home care (Spitex)</td><td>Nursing care and help with housework</td><td>Health insurance covers most of the nursing care.</td></tr><tr><td>Meal delivery</td><td>A hot lunch from the care home''s kitchen, seven days a week</td><td>CHF 14 per meal</td></tr><tr><td>Transport service</td><td>Volunteers drive you to the doctor, to therapy or to the shops.</td><td>70 centimes per kilometre</td></tr><tr><td>Emergency alarm</td><td>A button on your wrist connects you to an emergency call centre around the clock.</td><td>CHF 45 a month</td></tr><tr><td>Visiting service</td><td>Volunteers visit you regularly for a chat, a walk or a game.</td><td>free</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Angebot</th><th>Was</th><th>Kosten</th></tr></thead><tbody><tr><td>Spitex</td><td>Pflege und Hilfe im Haushalt</td><td>Die Pflege bezahlt zum grössten Teil die Krankenkasse.</td></tr><tr><td>Mahlzeitendienst</td><td>ein warmes Mittagessen aus der Küche des Alterszentrums, an sieben Tagen in der Woche</td><td>Fr. 14.– pro Mahlzeit</td></tr><tr><td>Fahrdienst</td><td>Freiwillige fahren Sie zur Ärztin, zur Therapie oder zum Einkaufen.</td><td>70 Rappen pro Kilometer</td></tr><tr><td>Notruf</td><td>Ein Knopf am Handgelenk verbindet Sie rund um die Uhr mit einer Notrufzentrale.</td><td>Fr. 45.– im Monat</td></tr><tr><td>Besuchsdienst</td><td>Freiwillige besuchen Sie regelmässig, für ein Gespräch, einen Spaziergang oder ein Spiel.</td><td>gratis</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Offre</th><th>Contenu</th><th>Coût</th></tr></thead><tbody><tr><td>Soins à domicile</td><td>Soins et aide au ménage</td><td>Les soins sont pris en charge en grande partie par l''assurance maladie.</td></tr><tr><td>Repas à domicile</td><td>Un repas de midi chaud préparé par la cuisine du home, sept jours sur sept</td><td>Fr. 14.– par repas</td></tr><tr><td>Service de transport</td><td>Des bénévoles vous conduisent chez le médecin, en thérapie ou faire vos courses.</td><td>70 centimes par kilomètre</td></tr><tr><td>Appel d''urgence</td><td>Un bouton au poignet vous relie jour et nuit à une centrale d''alarme.</td><td>Fr. 45.– par mois</td></tr><tr><td>Service de visites</td><td>Des bénévoles vous rendent visite régulièrement, pour une discussion, une promenade ou un jeu.</td><td>gratuit</td></tr></tbody></table>'
   - type: title
-    field_title: { de: Das Alterszentrum Seematte }
+    field_title: { en: 'The Seematte care home', de: Das Alterszentrum Seematte, fr: 'Le home Seematte' }
   - type: text
     field_text:
+      en: '<p>The Seematte care home on Rebweg has 64 nursing home places and 24 retirement flats, where you live independently and can call on help when you need it. There are also two short-stay beds, for example for when your family goes away, and a day centre for people with dementia.</p><p>You pay for board and care yourself; health insurance and the canton pay most of the nursing costs. If your pension and assets aren''t enough, you receive supplementary benefits. There is a waiting list for a nursing home place: contact the advice centre early.</p>'
       de: '<p>Das Alterszentrum Seematte am Rebweg hat 64 Plätze im Pflegeheim und 24 Alterswohnungen, in denen Sie selbständig wohnen und bei Bedarf Hilfe holen. Dazu kommen zwei Ferienbetten, etwa wenn Ihre Angehörigen verreisen, und eine Tagesstätte für Menschen mit Demenz.</p><p>Die Kosten für Pension und Betreuung bezahlen Sie selbst, die Pflege zum grössten Teil die Krankenkasse und der Kanton. Reichen Ihre Rente und Ihr Vermögen nicht, erhalten Sie Ergänzungsleistungen. Für einen Platz im Pflegeheim gibt es eine Warteliste: Melden Sie sich früh bei der Anlaufstelle.</p>'
+      fr: '<p>Le home Seematte, au chemin des Vignes, compte 64 places en soins et 24 appartements protégés, où vous vivez de manière autonome et faites appel à de l''aide au besoin. S''y ajoutent deux lits de court séjour, par exemple lorsque vos proches partent en voyage, et un foyer de jour pour les personnes atteintes de démence.</p><p>Vous payez vous-même les frais de pension et d''accompagnement ; les soins sont pris en charge en grande partie par l''assurance maladie et le canton. Si votre rente et votre fortune ne suffisent pas, vous recevez des prestations complémentaires. Il y a une liste d''attente pour une place en soins : adressez-vous tôt au Point info seniors.</p>'
   - type: title
-    field_title: { de: Aktiv bleiben }
+    field_title: { en: 'Staying active', de: Aktiv bleiben, fr: 'Rester actif' }
   - type: text
     field_text:
+      en: '<ul><li><strong>Lunch club:</strong> every Thursday at 12:00 at the care home, for everyone aged 60 and over, no need to register</li><li><strong>Seniors'' gym:</strong> with the gymnastics club, every Tuesday in the old town gym</li><li><strong>Smartphones and computers:</strong> young people help you once a month at the library, free of charge</li><li><strong>Walking group:</strong> every other Wednesday, two to three hours, in the surrounding area</li></ul>'
       de: '<ul><li><strong>Mittagstisch:</strong> jeden Donnerstag um 12.00 Uhr im Alterszentrum, für alle ab 60, ohne Anmeldung</li><li><strong>Seniorenturnen:</strong> mit dem Turnverein, jeden Dienstag in der Turnhalle Altstadt</li><li><strong>Smartphone und Computer:</strong> Jugendliche helfen Ihnen einmal im Monat in der Bibliothek, gratis</li><li><strong>Wandergruppe:</strong> jeden zweiten Mittwoch, zwei bis drei Stunden, in der Umgebung</li></ul>'
+      fr: '<ul><li><strong>Table de midi :</strong> chaque jeudi à 12 h au home, pour toutes et tous dès 60 ans, sans inscription</li><li><strong>Gym seniors :</strong> avec la société de gymnastique, chaque mardi à la halle de gymnastique de la vieille ville</li><li><strong>Smartphone et ordinateur :</strong> des jeunes vous aident une fois par mois à la bibliothèque, gratuitement</li><li><strong>Groupe de randonnée :</strong> un mercredi sur deux, deux à trois heures, dans les environs</li></ul>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Meine Mutter wird vergesslich. Wo bekommen wir Hilfe?' }
+    field_title:
+      en: 'My mother is becoming forgetful. Where can we get help?'
+      de: 'Meine Mutter wird vergesslich. Wo bekommen wir Hilfe?'
+      fr: 'Ma mère a des trous de mémoire. Où trouver de l''aide ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>First talk to her GP; an assessment will show what is causing the forgetfulness. The advice centre for older people will then advise you on how your mother can live well at home. The day centre at the care home gives you a break on one or more days a week.</p>'
           de: '<p>Sprechen Sie zuerst mit ihrer Hausärztin oder ihrem Hausarzt; eine Abklärung zeigt, woher die Vergesslichkeit kommt. Die Anlaufstelle Alter berät Sie danach, wie Ihre Mutter zu Hause gut leben kann. Die Tagesstätte im Alterszentrum entlastet Sie an einem oder mehreren Tagen pro Woche.</p>'
+          fr: '<p>Parlez-en d''abord à son médecin de famille ; un bilan montrera d''où viennent ces troubles de la mémoire. Le Point info seniors vous conseille ensuite pour que votre mère puisse bien vivre chez elle. Le foyer de jour du home vous soulage un ou plusieurs jours par semaine.</p>'
   - type: accordion
-    field_title: { de: 'Wo beantrage ich Ergänzungsleistungen?' }
+    field_title:
+      en: 'Where do I apply for supplementary benefits?'
+      de: 'Wo beantrage ich Ergänzungsleistungen?'
+      fr: 'Où demander des prestations complémentaires ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>At the AHV branch office (old-age and survivors'' insurance) in the administrative centre, in the same building as the social services. We''ll be happy to help you fill in the form.</p>'
           de: '<p>Bei der AHV-Zweigstelle im Verwaltungszentrum, im selben Haus wie die Sozialen Dienste. Wir helfen Ihnen gern beim Ausfüllen des Formulars.</p>'
+          fr: '<p>À l''agence AVS du centre administratif, dans le même bâtiment que les Services sociaux. Nous vous aidons volontiers à remplir le formulaire.</p>'
   - type: accordion
-    field_title: { de: 'Ich möchte mich freiwillig engagieren. Wo melde ich mich?' }
+    field_title:
+      en: 'I''d like to volunteer. Who do I contact?'
+      de: 'Ich möchte mich freiwillig engagieren. Wo melde ich mich?'
+      fr: 'J''aimerais faire du bénévolat. À qui m''adresser ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The advice centre for older people. We are always looking for volunteers for the transport service and the visiting service, even for just a few hours a month. Your expenses are reimbursed.</p>'
           de: '<p>Bei der Anlaufstelle Alter. Für den Fahrdienst und den Besuchsdienst suchen wir immer Freiwillige, auch für ein paar Stunden im Monat. Ihre Auslagen erhalten Sie zurück.</p>'
+          fr: '<p>Au Point info seniors. Nous cherchons toujours des bénévoles pour le service de transport et le service de visites, même pour quelques heures par mois. Vos frais vous sont remboursés.</p>'
 field_related:
   - type: teaser
     field_link: { node: social-assistance }
@@ -51,15 +76,15 @@ field_related:
     field_link: { node: clubs }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/meal-service
-        field_title: { de: Mahlzeitendienst bestellen }
+        field_title: { en: 'Order meal delivery', de: Mahlzeitendienst bestellen, fr: 'Commander des repas à domicile' }
       - type: link
         field_link: https://www.example.com/transport-service
-        field_title: { de: Fahrdienst anfragen }
+        field_title: { en: 'Request the transport service', de: Fahrdienst anfragen, fr: 'Demander le service de transport' }
       - type: link
         field_link: https://www.example.com/seematte
-        field_title: { de: Alterszentrum Seematte }
+        field_title: { en: 'Seematte care home', de: Alterszentrum Seematte, fr: 'Home Seematte' }

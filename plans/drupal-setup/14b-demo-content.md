@@ -28,14 +28,14 @@ adds types.
         mistakes for the analyzer (an image without alt text, a table without a
         header row, an outdated French translation, an English paragraph left in
         the French translation for the language analyzer of 13i)
-  - [ ] no other text left untranslated: the language analyzer (13i) lists
+  - [x] no other text left untranslated: the language analyzer (13i) lists
         English in German and French translations, e.g. today on the office, the
-        events and the 13d page
+        events and the 13d page (2026-09-30)
   - [ ] the library items (single blocks: containers stay out of the library
         until F12 is fixed), the service page template, and the default template
         for new columns
-  - [ ] one deliberately outdated French page: the paragraphs' FR translations
-        flagged `content_translation_outdated` (chunk 05, 13f)
+  - [x] one deliberately outdated French page: the paragraphs' FR translations
+        flagged `content_translation_outdated` (chunk 05, 13f): the pool opening
   - [ ] the fee calculator (13i) on a page about the town's fees, in an embed
         with heights per viewport (13i's section: measure at the narrowest width
         of each range, in the longest language)
@@ -129,11 +129,22 @@ page's call to action has no date or year. No video: there's no fictional one to
 link, and editors try the video block by pasting a YouTube link (the Big Buck
 Bunny media is gone).
 
+**Translated (2026-09-30):** everything has EN and FR, and bakes with any source
+language. The planted mistakes are back: the pool opening's French is outdated
+(`outdated: [fr]`, 9 h to 18 h instead of 10 h to 19 h), and the lakeside pool's
+kiosk text is English in French. The town is Bloquens in French, also as the
+site name. Streets have French names in French (rue du Village, chemin des
+Vignes), and English keeps the German ones. Themen is "Thématiques" in French:
+"Thèmes" would be `/fr/themes`, which pathauto makes `/fr/themes-0` (a folder in
+the docroot) and nginx sends to Drupal.
+
 **The frontend for it:** the menu query has four levels, and an editorial page's
 sub-pages list their own children (an area's topics with their detail pages)
 instead of their description.
 
-**Offices (9):** a short text on what each handles and a link list to its pages.
+**Offices (9):** a short text on what each handles, and the fragment
+`office_pages`: the detail pages it's responsible for, listed automatically (the
+user, 2026-09-30, instead of a link list).
 
 **News (6):** the pool opening, the new opening hours, the village square; new:
 green waste collected weekly, a new water main in Dorfstrasse (with the road

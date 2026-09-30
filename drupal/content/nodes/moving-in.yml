@@ -1,81 +1,121 @@
 key: moving-in
 type: page
-title: { de: 'Zuzug' }
+title: { en: 'Moving here', de: 'Zuzug', fr: 'Arrivée' }
 field_lead:
+  en: 'Register within 14 days of moving in, at the counter or online.'
   de: 'Melden Sie sich innert 14 Tagen nach dem Einzug an, am Schalter oder online.'
+  fr: 'Annoncez votre arrivée dans les 14 jours qui suivent votre emménagement, au guichet ou en ligne.'
 field_office: { node: residents-services }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Welcome to Blockingen! Everyone who lives here is listed in the residents'' register. So please register with the residents'' services at the town hall within 14 days of moving in. Registration covers everyone in your household, including children. If you don''t register in time, you may be fined.</p>'
       de: '<p>Willkommen in Blockingen! Wer hier wohnt, ist im Einwohnerregister eingetragen. Melden Sie sich deshalb innert 14 Tagen nach dem Einzug bei den Einwohnerdiensten im Rathaus an. Die Anmeldung gilt für alle Personen im Haushalt, auch für Kinder. Wer sich nicht rechtzeitig anmeldet, riskiert eine Busse.</p>'
+      fr: '<p>Bienvenue à Bloquens ! Toute personne qui habite ici est inscrite au registre des habitants. Annoncez-vous donc au Contrôle des habitants, à l''hôtel de ville, dans les 14 jours qui suivent votre emménagement. L''annonce vaut pour toutes les personnes du ménage, enfants compris. Si vous ne vous annoncez pas à temps, vous risquez une amende.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Register online:</strong> If you''re moving here from another Swiss municipality, you can register at the <a href="https://www.example.com/online-counter">online counter</a>. You need a valid identity card or passport, and you pay the fee online. If you''re moving here from abroad, please come to the counter in person.</p>'
       de: '<p><strong>Online anmelden:</strong> Ziehen Sie aus einer anderen Schweizer Gemeinde zu, können Sie sich am <a href="https://www.example.com/online-counter">Online-Schalter</a> anmelden. Sie brauchen eine gültige Identitätskarte oder einen Pass und bezahlen die Gebühr online. Wer aus dem Ausland zuzieht, kommt persönlich an den Schalter.</p>'
+      fr: '<p><strong>S''annoncer en ligne :</strong> si vous arrivez d''une autre commune suisse, vous pouvez vous annoncer au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Il vous faut une carte d''identité ou un passeport valable, et vous payez l''émolument en ligne. Si vous arrivez de l''étranger, présentez-vous en personne au guichet.</p>'
   - type: title
-    field_title: { de: So melden Sie sich an }
+    field_title: { en: How to register, de: So melden Sie sich an, fr: Comment vous annoncer }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Unterlagen bereitlegen }
+        field_title: { en: Get your documents ready, de: Unterlagen bereitlegen, fr: Préparer les documents }
         field_text:
+          en: '<p>Gather the documents for everyone in your household. You''ll get your certificate of origin from your previous municipality when you deregister there.</p>'
           de: '<p>Stellen Sie die Unterlagen für alle Personen im Haushalt zusammen. Den Heimatschein erhalten Sie von Ihrer bisherigen Gemeinde, wenn Sie sich dort abmelden.</p>'
+          fr: '<p>Rassemblez les documents de toutes les personnes du ménage. Votre ancienne commune vous remet l''acte d''origine lorsque vous y annoncez votre départ.</p>'
       - type: step
-        field_title: { de: Anmelden }
+        field_title: { en: Register, de: Anmelden, fr: S'annoncer }
         field_text:
+          en: '<p>Come to the residents'' services counter within 14 days, or register online. At the counter, registration takes about 15 minutes; you don''t need an appointment.</p>'
           de: '<p>Kommen Sie innert 14 Tagen an den Schalter der Einwohnerdienste, oder melden Sie sich online an. Am Schalter dauert die Anmeldung etwa 15 Minuten; einen Termin brauchen Sie nicht.</p>'
+          fr: '<p>Présentez-vous dans les 14 jours au guichet du Contrôle des habitants, ou annoncez-vous en ligne. Au guichet, l''annonce prend environ 15 minutes ; vous n''avez pas besoin de rendez-vous.</p>'
       - type: step
-        field_title: { de: Bestätigung erhalten }
+        field_title: { en: Receive your confirmation, de: Bestätigung erhalten, fr: Recevoir la confirmation }
         field_text:
+          en: '<p>You''ll receive a confirmation of registration. We inform the tax office, the utilities, the schools office and the electoral register ourselves.</p>'
           de: '<p>Sie erhalten eine Anmeldebestätigung. Die Steuerverwaltung, die Gemeindewerke, die Schulverwaltung und das Stimmregister informieren wir selbst.</p>'
+          fr: '<p>Vous recevez une confirmation d''arrivée. Nous informons nous-mêmes l''administration fiscale, les Services industriels, l''Administration scolaire et le registre électoral.</p>'
       - type: step
-        field_title: { de: Weitere Stellen informieren }
+        field_title: { en: Tell other organisations, de: Weitere Stellen informieren, fr: Informer d'autres organismes }
         field_text:
+          en: '<p>Some organisations you need to tell about your new address yourself: your health insurer, your employer, your bank, Swiss Post and, within 14 days, the road traffic office, for your driving licence and vehicle registration document.</p>'
           de: '<p>Ihre neue Adresse melden Sie selbst: der Krankenkasse, dem Arbeitgeber, der Bank, der Post und, innert 14 Tagen, dem Strassenverkehrsamt für den Führerausweis und den Fahrzeugausweis.</p>'
+          fr: '<p>Vous annoncez vous-même votre nouvelle adresse : à votre caisse-maladie, à votre employeur, à votre banque, à La Poste et, dans les 14 jours, à l''office de la circulation routière pour le permis de conduire et le permis de circulation.</p>'
   - type: title
-    field_title: { de: Was Sie mitbringen }
+    field_title: { en: What to bring, de: Was Sie mitbringen, fr: 'Ce qu''il faut apporter' }
   - type: columns
     options: { ratio: 50-50 }
     field_left:
       - type: text
         field_text:
+          en: '<h3>Swiss citizens</h3><ul><li>Certificate of origin (original)</li><li>Identity card or passport</li><li>Tenancy agreement or purchase contract; if you''re subletting, a confirmation from your landlord</li><li>Health insurance card</li><li>Family certificate, if you''re married or have children</li></ul>'
           de: '<h3>Schweizerinnen und Schweizer</h3><ul><li>Heimatschein im Original</li><li>Identitätskarte oder Pass</li><li>Mietvertrag oder Kaufvertrag, bei Untermiete eine Bestätigung der Vermieterin oder des Vermieters</li><li>Krankenkassenausweis</li><li>Familienausweis, wenn Sie verheiratet sind oder Kinder haben</li></ul>'
+          fr: '<h3>Suissesses et Suisses</h3><ul><li>Acte d''origine (original)</li><li>Carte d''identité ou passeport</li><li>Bail à loyer ou contrat de vente ; en cas de sous-location, une confirmation de la bailleresse ou du bailleur</li><li>Carte d''assurance-maladie</li><li>Certificat de famille, pour les personnes mariées ou avec enfants</li></ul>'
     field_right:
       - type: text
         field_text:
+          en: '<h3>Foreign nationals</h3><ul><li>Passport or identity card</li><li>Residence permit; if you''re moving here from abroad, your employment contract</li><li>Tenancy agreement or purchase contract</li><li>Proof of health insurance</li><li>A recent passport photo</li><li>Civil status documents such as your marriage certificate or your children''s birth certificates</li></ul>'
           de: '<h3>Ausländerinnen und Ausländer</h3><ul><li>Pass oder Identitätskarte</li><li>Ausländerausweis, beim Zuzug aus dem Ausland der Arbeitsvertrag</li><li>Mietvertrag oder Kaufvertrag</li><li>Nachweis der Krankenversicherung</li><li>ein aktuelles Passfoto</li><li>Zivilstandsdokumente wie Eheschein oder Geburtsschein der Kinder</li></ul>'
+          fr: '<h3>Étrangères et étrangers</h3><ul><li>Passeport ou carte d''identité</li><li>Titre de séjour ; en cas d''arrivée de l''étranger, le contrat de travail</li><li>Bail à loyer ou contrat de vente</li><li>Attestation d''assurance-maladie</li><li>Une photo d''identité récente</li><li>Documents d''état civil, comme l''acte de mariage ou les actes de naissance des enfants</li></ul>'
   - type: title
-    field_title: { de: Gebühren }
+    field_title: { en: Fees, de: Gebühren, fr: Émoluments }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Service</th><th>Fee</th></tr></thead><tbody><tr><td>Registration, per adult</td><td>CHF 20</td></tr><tr><td>Registration of children and young people under 18</td><td>free</td></tr><tr><td>Registration as a weekly resident</td><td>CHF 30</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Leistung</th><th>Gebühr</th></tr></thead><tbody><tr><td>Anmeldung, pro erwachsene Person</td><td>Fr. 20.–</td></tr><tr><td>Anmeldung von Kindern und Jugendlichen unter 18 Jahren</td><td>gratis</td></tr><tr><td>Anmeldung als Wochenaufenthalterin oder Wochenaufenthalter</td><td>Fr. 30.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Prestation</th><th>Émolument</th></tr></thead><tbody><tr><td>Annonce d''arrivée, par personne adulte</td><td>Fr. 20.–</td></tr><tr><td>Annonce d''enfants et de jeunes de moins de 18 ans</td><td>gratuit</td></tr><tr><td>Annonce en séjour hebdomadaire</td><td>Fr. 30.–</td></tr></tbody></table>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'In welcher Sprache schreibt mir die Gemeinde?' }
+    field_title:
+      en: 'Which language will the town write to me in?'
+      de: 'In welcher Sprache schreibt mir die Gemeinde?'
+      fr: 'Dans quelle langue la commune m''écrit-elle ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Blockingen is bilingual. When you register, you choose German or French as your language of correspondence. The town then writes to you in that language, including your tax bill and voting material. You can change the language at the counter at any time.</p>'
           de: '<p>Blockingen ist zweisprachig. Bei der Anmeldung wählen Sie Deutsch oder Französisch als Korrespondenzsprache. Die Gemeinde schreibt Ihnen dann in dieser Sprache, auch die Steuerrechnung und das Stimmmaterial. Ändern können Sie die Sprache jederzeit am Schalter.</p>'
+          fr: '<p>Bloquens est bilingue. Lorsque vous vous annoncez, vous choisissez l''allemand ou le français comme langue de correspondance. La commune vous écrit ensuite dans cette langue, y compris pour la facture d''impôt et le matériel de vote. Vous pouvez changer de langue en tout temps au guichet.</p>'
   - type: accordion
-    field_title: { de: 'Ich wohne nur unter der Woche hier. Muss ich mich anmelden?' }
+    field_title:
+      en: 'I only live here during the week. Do I have to register?'
+      de: 'Ich wohne nur unter der Woche hier. Muss ich mich anmelden?'
+      fr: 'Je n''habite ici que pendant la semaine. Dois-je m''annoncer ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, as a weekly resident. Instead of your certificate of origin, bring a certificate for weekly residents from your municipality of residence. As a rule, you continue to pay taxes where you live at weekends.</p>'
           de: '<p>Ja, als Wochenaufenthalterin oder Wochenaufenthalter. Bringen Sie statt des Heimatscheins einen Heimatausweis Ihrer Wohnsitzgemeinde mit. Steuern bezahlen Sie in der Regel weiterhin dort, wo Sie am Wochenende wohnen.</p>'
+          fr: '<p>Oui, en séjour hebdomadaire. Au lieu de l''acte d''origine, apportez une attestation pour séjour hebdomadaire de votre commune de domicile. En règle générale, vous continuez à payer vos impôts là où vous habitez le week-end.</p>'
   - type: accordion
-    field_title: { de: 'Muss ich meinen Hund anmelden?' }
+    field_title:
+      en: 'Do I have to register my dog?'
+      de: 'Muss ich meinen Hund anmelden?'
+      fr: 'Dois-je annoncer mon chien ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, within 14 days, at the counter or online. Bring the pet passport; the dog must be microchipped. The dog tax is CHF 120 a year.</p>'
           de: '<p>Ja, innert 14 Tagen, am Schalter oder online. Bringen Sie den Heimtierausweis mit; der Hund muss mit einem Mikrochip gekennzeichnet sein. Die Hundetaxe beträgt Fr. 120.– im Jahr.</p>'
+          fr: '<p>Oui, dans les 14 jours, au guichet ou en ligne. Apportez le passeport pour animaux de compagnie ; le chien doit être identifié par une puce électronique. La taxe sur les chiens s''élève à Fr. 120.– par an.</p>'
   - type: accordion
-    field_title: { de: 'Wie lerne ich Blockingen kennen?' }
+    field_title:
+      en: 'How can I get to know Blockingen?'
+      de: 'Wie lerne ich Blockingen kennen?'
+      fr: 'Comment découvrir Bloquens ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Once a year, the municipal council invites everyone who has recently moved to Blockingen to a welcome evening at the town hall, with a guided tour of the old town, a chance to meet the local clubs and an apéro. You''ll receive the invitation by post.</p>'
           de: '<p>Einmal im Jahr lädt der Gemeinderat alle, die neu in Blockingen wohnen, zu einem Begrüssungsabend ins Rathaus ein: mit einer Führung durch die Altstadt, den Vereinen und einem Apéro. Die Einladung erhalten Sie per Post.</p>'
+          fr: '<p>Une fois par année, le Conseil communal invite toutes les personnes nouvellement établies à Bloquens à une soirée d''accueil à l''hôtel de ville : avec une visite guidée de la vieille ville, les sociétés locales et un apéritif. Vous recevez l''invitation par la poste.</p>'
 field_related:
   - type: teaser
     field_link: { node: collection-days }
@@ -83,15 +123,18 @@ field_related:
     field_link: { node: school }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/online-counter
-        field_title: { de: Online-Schalter }
+        field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
       - type: link
         field_link: https://www.example.com/dog-registration
-        field_title: { de: Hund anmelden }
+        field_title: { en: Register a dog, de: Hund anmelden, fr: Annoncer un chien }
       - type: link
         field_link: https://www.example.com/vehicle-address
-        field_title: { de: 'Strassenverkehrsamt: Adresse ändern' }
+        field_title:
+          en: 'Road traffic office: change of address'
+          de: 'Strassenverkehrsamt: Adresse ändern'
+          fr: 'Office de la circulation routière : changement d''adresse'

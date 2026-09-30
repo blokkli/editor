@@ -1,18 +1,27 @@
 key: town-hall-hours
 type: news
 created: '-11 days'
-title: { de: Einwohnerdienste am Donnerstag bis 18.30 Uhr offen }
+title:
+  en: 'Residents'' services open until 18:30 on Thursdays'
+  de: Einwohnerdienste am Donnerstag bis 18.30 Uhr offen
+  fr: 'Le Contrôle des habitants ouvert jusqu''à 18 h 30 le jeudi'
 field_lead:
+  en: 'If you work during the day, you can now register or apply for an identity card on Thursday evenings.'
   de: Wer tagsüber arbeitet, meldet sich neu am Donnerstagabend an oder beantragt dann eine Identitätskarte.
+  fr: 'Si vous travaillez pendant la journée, vous pouvez désormais annoncer votre arrivée ou demander une carte d''identité le jeudi soir.'
 field_hero_image: { media: town-hall-counter }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Since this week, the residents'' services counter at the town hall has been open until 18:30 on Thursdays, instead of until 17:00. In return, there is no longer an evening counter on the first Tuesday of the month: it was often empty, while on Thursdays a queue formed before 17:00.</p><p>The other opening hours stay the same: Monday to Friday from 8:00 to 12:00 and from 13:30 to 17:00. You don''t need an appointment, not even in the evening.</p><p>On Thursday evenings, you can do everything you can do during the day: register your arrival or departure, apply for an identity card or order a certificate of residence. The residents'' services are trying out the new hours for a year; the municipal council will then decide whether to keep them.</p>'
       de: '<p>Seit dieser Woche ist der Schalter der Einwohnerdienste im Rathaus am Donnerstag bis 18.30 Uhr offen, statt bis 17.00 Uhr. Dafür gibt es den Abendschalter am ersten Dienstag im Monat nicht mehr: Er war oft leer, während sich am Donnerstag vor 17.00 Uhr eine Schlange bildete.</p><p>Die übrigen Öffnungszeiten bleiben gleich: Montag bis Freitag von 8.00 bis 12.00 Uhr und von 13.30 bis 17.00 Uhr. Einen Termin brauchen Sie nicht, auch nicht am Abend.</p><p>Am Donnerstagabend erledigen Sie alles, was auch tagsüber geht: Zuzug und Wegzug melden, eine Identitätskarte beantragen oder eine Wohnsitzbestätigung bestellen. Ein Jahr lang testen die Einwohnerdienste die neuen Zeiten; danach entscheidet der Gemeinderat, ob sie bleiben.</p>'
+      fr: '<p>Depuis cette semaine, le guichet du Contrôle des habitants à l''hôtel de ville est ouvert le jeudi jusqu''à 18 h 30, au lieu de 17 h. En contrepartie, le guichet du soir du premier mardi du mois est supprimé : il était souvent vide, alors que le jeudi, une file d''attente se formait avant 17 h.</p><p>Les autres horaires ne changent pas : du lundi au vendredi de 8 h à 12 h et de 13 h 30 à 17 h. Vous n''avez pas besoin de rendez-vous, même le soir.</p><p>Le jeudi soir, vous pouvez effectuer toutes les démarches possibles pendant la journée : annoncer votre arrivée ou votre départ, demander une carte d''identité ou commander une attestation de domicile. Le Contrôle des habitants teste les nouveaux horaires pendant un an ; le Conseil communal décidera ensuite s''ils sont maintenus.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>The other offices</strong> have their own opening hours. You''ll find them under “Administration”, on each office''s page. You can also do many things at the <a href="https://www.example.com/online-counter">online counter</a>, around the clock.</p>'
       de: '<p><strong>Die anderen Ämter</strong> haben eigene Öffnungszeiten. Sie finden sie unter «Verwaltung», auf der Seite jedes Amts. Vieles erledigen Sie auch am <a href="https://www.example.com/online-counter">Online-Schalter</a>, rund um die Uhr.</p>'
+      fr: '<p><strong>Les autres services</strong> ont leurs propres horaires. Vous les trouverez sous « Administration », sur la page de chaque service. Vous pouvez aussi effectuer de nombreuses démarches au <a href="https://www.example.com/online-counter">guichet en ligne</a>, 24 heures sur 24.</p>'
   - type: contact
     options: { display: compact }
     field_office: { node: residents-services }

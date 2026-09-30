@@ -1,8 +1,10 @@
 key: taxes
 type: editorial
-title: { de: 'Steuern' }
+title: { en: 'Taxes', de: 'Steuern', fr: 'Impôts' }
 field_lead:
+  en: 'The town sends out the tax return, keeps the tax register and collects the municipal and cantonal taxes.'
   de: 'Die Gemeinde verschickt die Steuererklärung, führt das Steuerregister und zieht die Gemeinde- und Staatssteuern ein.'
+  fr: 'La commune envoie la déclaration d''impôt, tient le registre fiscal et perçoit les impôts communaux et cantonaux.'
 field_host_options:
   - { key: header, value: plain }
 # Who is in charge, as on the detail pages.

@@ -37,11 +37,10 @@ Unlike 15a and 15b, this chunk changes the Drupal content model.
      paragraph together on every page.
    - **Replaced (the user, 2026-09-30):** the contact took too much room in the
      sidebar. The page's template renders it after the blocks, before the
-     related topics, and the table of contents links to it last. It's short:
-     the office's name, address, phone and email, and a link to the office's
-     page for the opening hours. The fragment,
-     its default value (`PageDefaults`) and `blokkli_fragment` in `field_aside`
-     are gone.
+     related topics, and the table of contents links to it last. It's short: the
+     office's name, address, phone and email, and a link to the office's page
+     for the opening hours. The fragment, its default value (`PageDefaults`) and
+     `blokkli_fragment` in `field_aside` are gone.
 4. **Overview pages are editorial pages**, not a type of their own.
    - They show their sub-pages from the menu at the top automatically.
    - A host option hides the list.

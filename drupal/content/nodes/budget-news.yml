@@ -1,24 +1,35 @@
 key: budget-news
 type: news
 created: '-1 days'
-title: { de: 'Das Budget: ein kleines Defizit und grosse Investitionen' }
+title:
+  en: 'The budget: a small deficit and major investments'
+  de: 'Das Budget: ein kleines Defizit und grosse Investitionen'
+  fr: 'Le budget : un léger déficit et d''importants investissements'
 field_lead:
+  en: 'The municipal council expects a deficit of CHF 0.5 million next year and plans to invest CHF 12.4 million. The tax rate stays at 1.62.'
   de: Der Gemeinderat rechnet für das nächste Jahr mit einem Defizit von 0,5 Millionen Franken und will 12,4 Millionen investieren. Der Steuerfuss bleibt bei 1,62.
+  fr: 'Le Conseil communal prévoit un déficit de 0,5 million de francs pour l''année prochaine et entend investir 12,4 millions. La quotité d''impôt reste à 1,62.'
 field_hero_image: { media: administrative-centre }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The municipal council has approved the budget for next year. It expects expenses of CHF 69.4 million and revenue of CHF 68.9 million, a deficit of CHF 0.5 million. Expenses are rising mainly for schools, because more classes are needed, and for contributions to care homes.</p><p>“We''re investing in what Blockingen will need in the coming decades, and keeping taxes stable,” says Mayor Martine Blaser. The tax rate stays at 1.62.</p>'
       de: '<p>Der Gemeinderat hat das Budget für das nächste Jahr verabschiedet. Er rechnet mit einem Aufwand von 69,4 Millionen und einem Ertrag von 68,9 Millionen Franken, also mit einem Defizit von 0,5 Millionen. Der Aufwand steigt vor allem bei der Schule, weil es mehr Klassen braucht, und bei den Beiträgen an die Pflegeheime.</p><p>«Wir investieren in das, was Blockingen in den nächsten Jahrzehnten braucht, und halten die Steuern stabil», sagt Gemeindepräsidentin Martine Blaser. Der Steuerfuss bleibt bei 1,62.</p>'
+      fr: '<p>Le Conseil communal a adopté le budget de l''année prochaine. Il prévoit des charges de 69,4 millions et des revenus de 68,9 millions de francs, soit un déficit de 0,5 million. Les charges augmentent surtout pour l''école, parce qu''il faut davantage de classes, et pour les contributions aux établissements médico-sociaux.</p><p>« Nous investissons dans ce dont Bloquens aura besoin ces prochaines décennies, tout en maintenant les impôts stables », déclare la maire Martine Blaser. La quotité d''impôt reste à 1,62.</p>'
   - type: title
-    field_title: { de: Wo die Gemeinde investiert }
+    field_title: { en: Where the town is investing, de: Wo die Gemeinde investiert, fr: Où la commune investit }
   - type: text
     field_text:
+      en: '<p>Of the CHF 12.4 million for investments, the largest amounts go to:</p><ul><li>the new village square (CHF 4.1 million)</li><li>two additional classrooms at Seefeld school (CHF 3.2 million)</li><li>the water main in Dorfstrasse (CHF 2.8 million)</li></ul><p>The town can''t finance part of this itself: its debt will rise by around CHF 6 million. It will, however, stay below the financial strategy''s target of CHF 3,000 per head.</p>'
       de: '<p>Von den 12,4 Millionen Franken für Investitionen gehen am meisten in:</p><ul><li>den neuen Dorfplatz (4,1 Millionen)</li><li>zwei zusätzliche Klassenzimmer im Schulhaus Seefeld (3,2 Millionen)</li><li>die Wasserleitung in der Dorfstrasse (2,8 Millionen)</li></ul><p>Einen Teil davon kann die Gemeinde nicht selbst finanzieren: Die Schulden steigen um rund 6 Millionen Franken. Sie bleiben aber unter dem Richtwert der Finanzstrategie von Fr. 3000.– pro Kopf.</p>'
+      fr: '<p>Sur les 12,4 millions de francs d''investissements, la plus grande part va à :</p><ul><li>la nouvelle place du village (4,1 millions)</li><li>deux salles de classe supplémentaires à l''école du Seefeld (3,2 millions)</li><li>la conduite d''eau de la rue du Village (2,8 millions)</li></ul><p>La commune ne peut pas financer elle-même une partie de ces investissements : la dette augmente d''environ 6 millions de francs. Elle reste toutefois en dessous de la valeur de référence de la stratégie financière, soit Fr. 3000.– par habitant.</p>'
   - type: title
-    field_title: { de: Wofür die Gemeinde ihr Geld ausgibt }
+    field_title: { en: What the town spends its money on, de: Wofür die Gemeinde ihr Geld ausgibt, fr: À quoi la commune consacre son argent }
   - type: text
     field_text:
+      en: '<p>Schools and social security need the most money: together, more than half of all expenses. The new budget changes little in that respect.</p>'
       de: '<p>Am meisten Geld brauchen die Schule und die soziale Sicherheit: zusammen mehr als die Hälfte des Aufwands. Daran ändert auch das neue Budget wenig.</p>'
+      fr: '<p>L''école et la sécurité sociale sont les domaines qui coûtent le plus : ensemble, plus de la moitié des charges. Le nouveau budget n''y change pas grand-chose.</p>'
   - type: chart
     options:
       data:
@@ -29,18 +40,26 @@ field_paragraphs:
         numberFormat: { locale: de-CH }
         dataSource: { id: budget, label: 'Budget 2026: Aufwand nach Aufgabenbereich' }
         translations:
+          en:
+            title: Expenses by area
+            footnotes: ['Current year''s budget.']
           de:
             title: Aufwand nach Aufgabenbereich
             footnotes: [Budget des laufenden Jahres.]
+          fr:
+            title: Charges par domaine
+            footnotes: ['Budget de l''année en cours.']
   - type: text
     field_text:
+      en: '<p>The finance committee has reviewed the budget and recommends approving it. The municipal assembly has the final say.</p>'
       de: '<p>Die Finanzkommission hat das Budget geprüft und empfiehlt, es zu genehmigen. Das letzte Wort hat die Gemeindeversammlung.</p>'
+      fr: '<p>La commission des finances a examiné le budget et recommande de l''approuver. Le dernier mot revient à l''Assemblée communale.</p>'
   - type: link
     field_link: { node: assembly }
-    field_title: { de: Zur Gemeindeversammlung }
+    field_title: { en: Municipal assembly, de: Zur Gemeindeversammlung, fr: Assemblée communale }
   - type: link
     field_link: { node: budget }
-    field_title: { de: Budget und Rechnung }
+    field_title: { en: Budget and accounts, de: Budget und Rechnung, fr: Budget et comptes }
   - type: contact
     options: { display: compact }
     field_office: { node: finance-taxes }

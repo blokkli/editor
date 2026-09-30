@@ -1,50 +1,71 @@
 key: collection-point
 type: page
-title: { de: 'Entsorgungsstelle Werkhof' }
+title:
+  en: 'Collection point at the works yard'
+  de: 'Entsorgungsstelle Werkhof'
+  fr: 'Déchetterie du dépôt communal'
 field_lead:
+  en: 'What you can drop off at the collection point on Industriestrasse, and when it''s open.'
   de: 'Was Sie in der Entsorgungsstelle an der Industriestrasse abgeben können, und wann sie offen ist.'
+  fr: 'Ce que vous pouvez déposer à la déchetterie de la rue de l''Industrie, et quand elle est ouverte.'
 field_office: { node: public-works }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>At the collection point at the works yard, Industriestrasse 30, you can drop off anything the town doesn''t collect. The staff show you what goes where and help you unload heavy items. The collection point is for households in Blockingen: bring an identity document with you.</p>'
       de: '<p>In der Entsorgungsstelle beim Werkhof, Industriestrasse 30, geben Sie ab, was die Gemeinde nicht abholt. Die Mitarbeitenden zeigen Ihnen, was wohin gehört, und helfen beim Ausladen schwerer Gegenstände. Die Entsorgungsstelle ist für Haushalte aus Blockingen da: Bringen Sie einen Ausweis mit.</p>'
+      fr: '<p>À la déchetterie du dépôt communal, rue de l''Industrie 30, vous déposez ce que la commune ne ramasse pas. Le personnel vous montre ce qui va où et vous aide à décharger les objets lourds. La déchetterie est réservée aux ménages de Bloquens : munissez-vous d''une pièce d''identité.</p>'
   - type: title
-    field_title: { de: Öffnungszeiten }
+    field_title: { en: 'Opening hours', de: Öffnungszeiten, fr: 'Heures d''ouverture' }
   - type: table
     field_table:
+      en: '<table><thead><tr><th>Day</th><th>Open</th></tr></thead><tbody><tr><td>Wednesday</td><td>14:00–18:00</td></tr><tr><td>Saturday</td><td>9:00–12:00</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Tag</th><th>Offen</th></tr></thead><tbody><tr><td>Mittwoch</td><td>14.00–18.00 Uhr</td></tr><tr><td>Samstag</td><td>9.00–12.00 Uhr</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Jour</th><th>Ouverture</th></tr></thead><tbody><tr><td>Mercredi</td><td>14 h–18 h</td></tr><tr><td>Samedi</td><td>9 h–12 h</td></tr></tbody></table>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Separate opening hours:</strong> The collection point is only open on Wednesday afternoons and Saturday mornings. The hours in the contact details are for the works yard''s office. The collection point is closed on public holidays and on the Saturday before Easter.</p>'
       de: '<p><strong>Eigene Öffnungszeiten:</strong> Die Entsorgungsstelle ist nur am Mittwochnachmittag und am Samstagmorgen offen. Die Zeiten im Kontakt gelten für das Büro des Werkhofs. An Feiertagen und am Samstag vor Ostern bleibt die Entsorgungsstelle geschlossen.</p>'
+      fr: '<p><strong>Horaires propres :</strong> La déchetterie n''est ouverte que le mercredi après-midi et le samedi matin. Les horaires indiqués dans le contact sont ceux du bureau du dépôt communal. Les jours fériés et le samedi précédant Pâques, la déchetterie reste fermée.</p>'
   - type: title
-    field_title: { de: Was Sie abgeben können }
+    field_title: { en: 'What you can drop off', de: Was Sie abgeben können, fr: 'Ce que vous pouvez déposer' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Waste</th><th>Fee</th></tr></thead><tbody><tr><td>Glass, aluminium, tin and metal</td><td>free</td></tr><tr><td>Electrical and electronic appliances</td><td>free</td></tr><tr><td>Polystyrene, clean and without film</td><td>free</td></tr><tr><td>Used oil, cooking oil, paint and other hazardous waste up to 20 kg</td><td>free</td></tr><tr><td>Green waste and branches, more than one bin</td><td>CHF 10 per m³</td></tr><tr><td>Bulky waste</td><td>CHF 5 to CHF 20 per item</td></tr><tr><td>Waste wood</td><td>CHF 10 per 100 kg</td></tr><tr><td>Rubble, up to 200 kg</td><td>CHF 15 per 100 kg</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Was</th><th>Gebühr</th></tr></thead><tbody><tr><td>Glas, Alu, Blech und Metall</td><td>gratis</td></tr><tr><td>Elektro- und Elektronikgeräte</td><td>gratis</td></tr><tr><td>Styropor, sauber und ohne Folien</td><td>gratis</td></tr><tr><td>Altöl, Speiseöl, Farben und andere Sonderabfälle bis 20 kg</td><td>gratis</td></tr><tr><td>Grüngut und Äste, mehr als ein Container</td><td>Fr. 10.– pro m³</td></tr><tr><td>Sperrgut</td><td>Fr. 5.– bis Fr. 20.– pro Gegenstand</td></tr><tr><td>Altholz</td><td>Fr. 10.– pro 100 kg</td></tr><tr><td>Bauschutt, bis 200 kg</td><td>Fr. 15.– pro 100 kg</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Déchets</th><th>Taxe</th></tr></thead><tbody><tr><td>Verre, aluminium, fer-blanc et métal</td><td>gratuit</td></tr><tr><td>Appareils électriques et électroniques</td><td>gratuit</td></tr><tr><td>Sagex, propre et sans film plastique</td><td>gratuit</td></tr><tr><td>Huiles usées, huile de cuisson, peintures et autres déchets spéciaux jusqu''à 20 kg</td><td>gratuit</td></tr><tr><td>Déchets verts et branches, plus d''un conteneur</td><td>Fr. 10.– par m³</td></tr><tr><td>Déchets encombrants</td><td>de Fr. 5.– à Fr. 20.– par objet</td></tr><tr><td>Bois usagé</td><td>Fr. 10.– par 100 kg</td></tr><tr><td>Gravats, jusqu''à 200 kg</td><td>Fr. 15.– par 100 kg</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>You pay the fees on site, in cash or by card. Bringing things yourself costs less than having them collected: bulky waste that we collect costs CHF 10 to CHF 30 per item.</p>'
       de: '<p>Die Gebühren bezahlen Sie vor Ort, bar oder mit Karte. Was Sie selbst bringen, kostet weniger als die Abfuhr: Sperrgut, das wir abholen, kostet Fr. 10.– bis Fr. 30.– pro Gegenstand.</p>'
+      fr: '<p>Vous payez les taxes sur place, en espèces ou par carte. Ce que vous apportez vous-même coûte moins cher que le ramassage : les déchets encombrants que nous venons chercher coûtent de Fr. 10.– à Fr. 30.– par objet.</p>'
   - type: title
-    field_title: { de: Was wir nicht annehmen }
+    field_title: { en: 'What we don''t accept', de: Was wir nicht annehmen, fr: 'Ce que nous n''acceptons pas' }
   - type: text
     field_text:
+      en: '<p>Household waste goes in the waste bag, medicines to a pharmacy. We don''t accept asbestos, ammunition, car tyres or large amounts of rubble: specialist companies take these, and the staff will gladly give you their addresses. We don''t accept waste from businesses either.</p>'
       de: '<p>Kehricht gehört in den Kehrichtsack, Medikamente in eine Apotheke. Asbest, Munition, Autoreifen und grosse Mengen Bauschutt nehmen wir nicht an: Dafür gibt es spezialisierte Betriebe, deren Adressen Ihnen die Mitarbeitenden gern geben. Auch Abfälle von Gewerbebetrieben nehmen wir nicht an.</p>'
+      fr: '<p>Les ordures ménagères vont dans le sac taxé, les médicaments en pharmacie. Nous n''acceptons pas l''amiante, les munitions, les pneus ni les grandes quantités de gravats : des entreprises spécialisées s''en chargent, et le personnel vous donnera volontiers leurs adresses. Nous n''acceptons pas non plus les déchets des entreprises.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Kann ich mit dem Anhänger kommen?' }
+    field_title: { en: 'Can I come with a trailer?', de: 'Kann ich mit dem Anhänger kommen?', fr: 'Puis-je venir avec une remorque ?' }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes. It''s quietest on Wednesdays after 16:00. Load your trailer so that you can unload it material by material: it''s quicker, for everyone else too.</p>'
           de: '<p>Ja. Am wenigsten los ist am Mittwoch nach 16.00 Uhr. Laden Sie so, dass Sie nach Material getrennt ausladen können: Das geht schneller, auch für die anderen.</p>'
+          fr: '<p>Oui. C''est le mercredi après 16 h qu''il y a le moins de monde. Chargez de façon à pouvoir décharger matériau par matériau : cela va plus vite, pour les autres aussi.</p>'
   - type: accordion
-    field_title: { de: 'Was geschieht mit dem Material?' }
+    field_title: { en: 'What happens to the material?', de: 'Was geschieht mit dem Material?', fr: 'Que deviennent les matériaux ?' }
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Glass, metal and electrical appliances go to recycling companies in the region and are turned into new raw materials. Waste wood and bulky waste that can''t be recycled are burnt at the waste incineration plant, which turns them into district heating and electricity.</p>'
           de: '<p>Glas, Metall und Elektrogeräte gehen an Recyclingbetriebe in der Region und werden zu neuen Rohstoffen. Altholz und Sperrgut, das sich nicht verwerten lässt, verbrennt die Kehrichtverbrennungsanlage; sie macht daraus Fernwärme und Strom.</p>'
+          fr: '<p>Le verre, le métal et les appareils électriques partent chez des entreprises de recyclage de la région et deviennent de nouvelles matières premières. Le bois usagé et les déchets encombrants non valorisables sont brûlés à l''usine d''incinération, qui en tire du chauffage à distance et de l''électricité.</p>'
 field_related:
   - type: teaser
     field_link: { node: sorting }
@@ -52,12 +73,12 @@ field_related:
     field_link: { node: collection-days }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/bulky-waste
-        field_title: { de: Sperrgut anmelden }
+        field_title: { en: 'Book a bulky waste collection', de: Sperrgut anmelden, fr: 'Inscrire des déchets encombrants' }
       - type: link
         field_link: https://www.example.com/collection-map
-        field_title: { de: Karte der Sammelstellen }
+        field_title: { en: 'Map of recycling points', de: Karte der Sammelstellen, fr: 'Carte des points de collecte' }

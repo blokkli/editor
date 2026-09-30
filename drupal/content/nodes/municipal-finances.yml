@@ -1,8 +1,10 @@
 key: municipal-finances
 type: editorial
-title: { de: 'Gemeindefinanzen' }
+title: { en: 'Municipal finances', de: 'Gemeindefinanzen', fr: 'Finances communales' }
 field_lead:
+  en: 'Where the town''s money comes from and what it spends it on.'
   de: 'Woher das Geld der Gemeinde kommt und wofür sie es ausgibt.'
+  fr: 'D''où vient l''argent de la commune et à quoi elle le consacre.'
 field_host_options:
   - { key: header, value: plain }
 # Who is in charge, as on the detail pages.

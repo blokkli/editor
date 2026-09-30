@@ -1,17 +1,24 @@
 key: information-evening
 type: event
-title: { de: Informationsabend zum neuen Dorfplatz }
+title:
+  en: Information evening on the new village square
+  de: Informationsabend zum neuen Dorfplatz
+  fr: Séance d'information sur la nouvelle place du village
 field_lead:
+  en: The municipal council presents the plans for the new village square and answers your questions.
   de: Der Gemeinderat stellt die Pläne für den neuen Dorfplatz vor und beantwortet Ihre Fragen.
+  fr: Le Conseil communal présente les plans de la nouvelle place du village et répond à vos questions.
 field_hero_image: { media: village-square }
 field_date: { value: '+9 days 19:30', end_value: '+9 days 21:00' }
-field_place: { de: Rathaussaal }
-field_organiser: { de: Gemeinderat }
+field_place: { en: 'Town hall, main hall', de: Rathaussaal, fr: 'Hôtel de ville, grande salle' }
+field_organiser: { en: Municipal council, de: Gemeinderat, fr: Conseil communal }
 field_category: politics
-field_price: { de: Gratis }
+field_price: { en: Free, de: Gratis, fr: Gratuit }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The plans and a model of the new village square are on show in the hall from 19:00. At 19:30, Mayor Martine Blaser and the landscape architect present the project: more trees and shade, a fountain, space for the weekly market and fewer parking spaces. Afterwards, they answer your questions.</p><p>The head of public works explains how the construction work is progressing and how much longer Dorfstrasse will stay closed. The main hall of the town hall can be reached by lift. There''s no need to register.</p>'
       de: '<p>Die Pläne und ein Modell des neuen Dorfplatzes sind ab 19.00 Uhr im Saal ausgestellt. Um 19.30 Uhr stellen Gemeindepräsidentin Martine Blaser und die Landschaftsarchitektin das Projekt vor: mehr Bäume und Schatten, ein Brunnen, Platz für den Wochenmarkt und weniger Parkplätze. Danach beantworten sie Ihre Fragen.</p><p>Der Leiter Tiefbau erklärt, wie die Bauarbeiten vorankommen und wie lange die Dorfstrasse noch gesperrt bleibt. Der Rathaussaal ist mit dem Lift erreichbar. Eine Anmeldung ist nicht nötig.</p>'
+      fr: '<p>Les plans et une maquette de la nouvelle place du village sont exposés dans la salle dès 19 h. À 19 h 30, la maire Martine Blaser et l''architecte paysagiste présentent le projet : plus d''arbres et d''ombre, une fontaine, de la place pour le marché hebdomadaire et moins de places de parc. Elles répondent ensuite à vos questions.</p><p>Le chef des Travaux publics explique où en sont les travaux et combien de temps la rue du Village restera encore fermée. La grande salle de l''hôtel de ville est accessible en ascenseur. Pas besoin de vous inscrire.</p>'
   - type: teaser
     field_link: { node: village-square }

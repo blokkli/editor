@@ -1,17 +1,29 @@
 key: conservatory-extension
 type: publication
-title: { de: 'Anbau Wintergarten, Rebweg 12' }
+title:
+  en: 'Conservatory extension, Rebweg 12'
+  de: 'Anbau Wintergarten, Rebweg 12'
+  fr: 'Construction d''un jardin d''hiver, chemin des Vignes 12'
 field_lead:
+  en: 'The plans are on display at the building and planning office. Objections must be submitted in writing by the end of the period.'
   de: Die Pläne liegen bei Bau und Planung auf. Einsprachen reichen Sie bis zum Ende der Frist schriftlich ein.
+  fr: 'Les plans sont mis à l''enquête au service Constructions et urbanisme. Les oppositions doivent être déposées par écrit jusqu''à la fin du délai.'
 field_publication_type: building_application
 field_period: { value: '-4 days', end_value: '+27 days' }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p><strong>Applicants:</strong> Anna and Peter Muster, Rebweg 12, Blockingen<br><strong>Designed by:</strong> Weber Roth Architekten, Bahnhofstrasse 40, Blockingen<br><strong>Project:</strong> heated conservatory extension on the south side of the detached house, 18 m²<br><strong>Location:</strong> Rebweg 12, plot no. 1284<br><strong>Zone:</strong> residential zone W2</p>'
       de: '<p><strong>Bauherrschaft:</strong> Anna und Peter Muster, Rebweg 12, Blockingen<br><strong>Projektverfassung:</strong> Weber Roth Architekten, Bahnhofstrasse 40, Blockingen<br><strong>Vorhaben:</strong> Anbau eines beheizten Wintergartens auf der Südseite des Einfamilienhauses, 18 m²<br><strong>Standort:</strong> Rebweg 12, Parzelle Nr. 1284<br><strong>Zone:</strong> Wohnzone W2</p>'
+      fr: '<p><strong>Maîtres d''ouvrage :</strong> Anna et Peter Muster, chemin des Vignes 12, Bloquens<br><strong>Auteur du projet :</strong> Weber Roth Architekten, rue de la Gare 40, Bloquens<br><strong>Projet :</strong> construction d''un jardin d''hiver chauffé sur la façade sud de la maison individuelle, 18 m²<br><strong>Emplacement :</strong> chemin des Vignes 12, parcelle n° 1284<br><strong>Zone :</strong> zone d''habitation W2</p>'
   - type: text
     field_text:
+      en: '<p><strong>Public display:</strong> The plans are on display for the duration of the period at the building and planning office in the administrative centre, Bahnhofstrasse 12. You can view them during opening hours, and in the afternoon by appointment.</p><p><strong>Objections:</strong> Objections must be sent to the municipal council in writing, stating the reasons, by the end of the period: Municipal council of Blockingen, Town hall, Seestrasse 1, 9999 Blockingen.</p>'
       de: '<p><strong>Auflage:</strong> Die Pläne liegen während der Frist bei Bau und Planung im Verwaltungszentrum, Bahnhofstrasse 12, auf. Sie können sie zu den Öffnungszeiten einsehen, am Nachmittag nach Vereinbarung.</p><p><strong>Einsprachen:</strong> Einsprachen sind bis zum Ende der Frist schriftlich und begründet an den Gemeinderat zu richten: Gemeinderat Blockingen, Rathaus, Seestrasse 1, 9999 Blockingen.</p>'
+      fr: '<p><strong>Mise à l''enquête :</strong> Pendant le délai, les plans sont déposés au service Constructions et urbanisme, au centre administratif, rue de la Gare 12. Vous pouvez les consulter pendant les heures d''ouverture, l''après-midi sur rendez-vous.</p><p><strong>Oppositions :</strong> Les oppositions doivent être adressées par écrit et dûment motivées au Conseil communal jusqu''à la fin du délai : Conseil communal de Bloquens, hôtel de ville, rue du Lac 1, 9999 Bloquens.</p>'
   - type: link
     field_link: { node: building-permits }
-    field_title: { de: So läuft ein Baugesuch ab }
+    field_title:
+      en: 'How a building application works'
+      de: So läuft ein Baugesuch ab
+      fr: 'Le déroulement d''une demande de permis de construire'

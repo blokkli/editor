@@ -1,7 +1,9 @@
 key: themes
 type: editorial
-title: { de: 'Themen' }
+title: { en: 'Topics', de: 'Themen', fr: 'Thématiques' }
 field_lead:
+  en: 'What the town does for you, by topic.'
   de: 'Was die Gemeinde für Sie tut, nach Themen geordnet.'
+  fr: 'Ce que la commune fait pour vous, classé par thème.'
 field_host_options:
   - { key: header, value: plain }

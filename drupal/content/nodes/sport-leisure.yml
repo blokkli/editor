@@ -1,8 +1,10 @@
 key: sport-leisure
 type: office
-title: { de: 'Sport und Freizeit' }
+title: { en: 'Sport and leisure', de: 'Sport und Freizeit', fr: 'Sports et loisirs' }
 field_lead:
+  en: 'The lakeside pool, the sports facilities, the clubs and permits for events.'
   de: 'Das Strandbad, die Sportanlagen, die Vereine und die Bewilligungen für Anlässe.'
+  fr: 'La plage, les installations sportives, les sociétés locales et les autorisations pour les manifestations.'
 field_location: { term: lakeside-pool }
 field_phone: '+41 32 555 01 80'
 field_email: sport@blockingen.example
@@ -17,16 +19,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The sport and leisure office runs the lakeside pool and rents out the gyms, the meeting room and the grass pitches. We support Blockingen''s 60 or so clubs, review their applications for grants and issue permits for festivals, tournaments and markets on public land. We can also lend you reusable cups for your event.</p><p>Our office is at the lakeside pool and is open on Mondays, Wednesdays and Fridays. The pool itself has its own opening hours, and you can collect anything lost at the pool from its ticket desk. The easiest way to book a hall is online, at least a week in advance.</p>'
       de: '<p>Sport und Freizeit betreibt das Strandbad und vermietet die Turnhallen, den Sitzungsraum und die Rasenfelder. Wir unterstützen die rund 60 Vereine in Blockingen, prüfen ihre Gesuche um Beiträge und bewilligen Feste, Turniere und Märkte auf öffentlichem Grund. Für Ihren Anlass leihen wir Ihnen auch Mehrwegbecher.</p><p>Unser Büro ist beim Strandbad, am Montag, am Mittwoch und am Freitag offen. Das Strandbad selbst hat seine eigenen Öffnungszeiten, und Fundsachen aus dem Bad erhalten Sie an seiner Kasse zurück. Hallen reservieren Sie am einfachsten online, spätestens eine Woche vorher.</p>'
+      fr: '<p>Le service Sports et loisirs exploite la plage et loue les halles de gymnastique, la salle de réunion et les terrains en gazon. Nous soutenons la soixantaine de sociétés locales de Bloquens, examinons leurs demandes de subventions et autorisons les fêtes, tournois et marchés sur le domaine public. Pour votre manifestation, nous vous prêtons aussi des gobelets réutilisables.</p><p>Notre bureau se trouve à la plage et il est ouvert le lundi, le mercredi et le vendredi. La plage elle-même a ses propres horaires, et les objets trouvés à la plage vous sont rendus à sa caisse. Le plus simple est de réserver les halles en ligne, au plus tard une semaine à l''avance.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: leisure-culture }
-      - type: link
-        field_link: { node: lakeside-pool }
-      - type: link
-        field_link: { node: sports-facilities }
-      - type: link
-        field_link: { node: clubs }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

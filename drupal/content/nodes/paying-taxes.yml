@@ -1,71 +1,106 @@
 key: paying-taxes
 type: page
-title: { de: 'Steuern bezahlen' }
+title: { en: 'Paying taxes', de: 'Steuern bezahlen', fr: 'Payer ses impôts' }
 field_lead:
+  en: 'Provisional bill, final bill and payment in instalments: how and when to pay your taxes.'
   de: 'Provisorische Rechnung, Schlussrechnung und Ratenzahlung: wie und wann Sie Ihre Steuern bezahlen.'
+  fr: 'Facture provisoire, décompte final et paiement échelonné : comment et quand payer vos impôts.'
 field_office: { node: finance-taxes }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The town collects the municipal and cantonal taxes together, on a single bill. If you belong to one of the recognised churches, the church tax is included. The canton bills you separately for the direct federal tax.</p>'
       de: '<p>Die Gemeinde zieht die Gemeinde- und Staatssteuern ein, mit einer gemeinsamen Rechnung. Gehören Sie einer Landeskirche an, ist die Kirchensteuer darin enthalten. Die direkte Bundessteuer stellt Ihnen der Kanton separat in Rechnung.</p>'
+      fr: '<p>La commune perçoit les impôts communaux et cantonaux au moyen d''une facture commune. Si vous êtes membre d''une Église reconnue, l''impôt ecclésiastique y est compris. Le canton vous facture séparément l''impôt fédéral direct.</p>'
   - type: title
-    field_title: { de: So läuft es ab }
+    field_title: { en: How it works, de: So läuft es ab, fr: Déroulement }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Provisorische Rechnung }
+        field_title: { en: Provisional bill, de: Provisorische Rechnung, fr: Facture provisoire }
         field_text:
+          en: '<p>In February, you receive the provisional bill for the current year. It''s based on your last assessment and comes with nine payment slips.</p>'
           de: '<p>Im Februar erhalten Sie die provisorische Rechnung für das laufende Jahr. Sie beruht auf Ihrer letzten Veranlagung, und ihr liegen neun Einzahlungsscheine bei.</p>'
+          fr: '<p>En février, vous recevez la facture provisoire pour l''année en cours. Elle se fonde sur votre dernière taxation et est accompagnée de neuf bulletins de versement.</p>'
       - type: step
-        field_title: { de: Bezahlen }
+        field_title: { en: Paying, de: Bezahlen, fr: Paiement }
         field_text:
+          en: '<p>Pay the full amount by the end of September, in one go or in monthly instalments. We pay you interest on anything you pay early.</p>'
           de: '<p>Bezahlen Sie den ganzen Betrag bis Ende September, auf einmal oder in Monatsraten. Was Sie früher bezahlen, verzinsen wir Ihnen.</p>'
+          fr: '<p>Payez le montant total d''ici fin septembre, en une fois ou par mensualités. Ce que vous payez plus tôt vous rapporte des intérêts.</p>'
       - type: step
-        field_title: { de: Schlussrechnung }
+        field_title: { en: Final bill, de: Schlussrechnung, fr: Décompte final }
         field_text:
+          en: '<p>After your assessment, you receive the final bill. If you''ve paid too much, we refund the difference with interest. If anything is still owed, pay it within 30 days.</p>'
           de: '<p>Nach der Veranlagung erhalten Sie die Schlussrechnung. Haben Sie zu viel bezahlt, erhalten Sie den Rest mit Zins zurück. Fehlt noch etwas, bezahlen Sie es innert 30 Tagen.</p>'
+          fr: '<p>Après la taxation, vous recevez le décompte final. Si vous avez trop payé, nous vous remboursons la différence avec intérêts. S''il manque encore un montant, payez-le dans les 30 jours.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Electronic bill:</strong> If you wish, you can receive your tax bill directly in your e-banking. To do so, sign up for bills from the Municipality of Blockingen in your e-banking.</p>'
       de: '<p><strong>Elektronische Rechnung:</strong> Die Steuerrechnung erhalten Sie auf Wunsch direkt in Ihr E-Banking. Melden Sie sich dafür in Ihrem E-Banking bei der Gemeinde Blockingen an.</p>'
+      fr: '<p><strong>Facture électronique :</strong> sur demande, vous recevez la facture d''impôt directement dans votre e-banking. Pour cela, inscrivez-vous auprès de la commune de Bloquens dans votre e-banking.</p>'
   - type: title
-    field_title: { de: Zinsen }
+    field_title: { en: Interest, de: Zinsen, fr: Intérêts }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Interest</th><th>Rate</th><th>Applies to</th></tr></thead><tbody><tr><td>Credit interest</td><td>0.25%</td><td>Payments before the end of September and refunds</td></tr><tr><td>Late payment interest</td><td>3.0%</td><td>Amounts still outstanding after the end of September</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Zins</th><th>Satz</th><th>Wofür</th></tr></thead><tbody><tr><td>Vergütungszins</td><td>0,25 %</td><td>Zahlungen vor Ende September und Rückzahlungen</td></tr><tr><td>Verzugszins</td><td>3,0 %</td><td>Beträge, die nach Ende September noch offen sind</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Intérêt</th><th>Taux</th><th>S''applique à</th></tr></thead><tbody><tr><td>Intérêt rémunératoire</td><td>0,25 %</td><td>Paiements avant fin septembre et remboursements</td></tr><tr><td>Intérêt moratoire</td><td>3,0 %</td><td>Montants encore dus après fin septembre</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>The canton sets the interest rates every year.</p>'
       de: '<p>Die Zinssätze legt der Kanton jedes Jahr fest.</p>'
+      fr: '<p>Le canton fixe les taux d''intérêt chaque année.</p>'
   - type: title
-    field_title: { de: Wenn Sie nicht bezahlen können }
+    field_title: { en: 'If you can''t pay', de: Wenn Sie nicht bezahlen können, fr: Si vous ne pouvez pas payer }
   - type: text
     field_text:
+      en: '<p>Get in touch early, before a reminder arrives. We''ll agree a payment plan with you, with monthly instalments you can manage.</p><p>If you''ve fallen into financial hardship, for example after losing your job or an illness, you can apply for tax remission. The social services can advise you on this.</p>'
       de: '<p>Melden Sie sich früh, bevor eine Mahnung kommt. Wir vereinbaren mit Ihnen einen Zahlungsplan mit monatlichen Raten, die Sie tragen können.</p><p>Sind Sie in eine Notlage geraten, etwa nach einem Stellenverlust oder einer Krankheit, können Sie ein Gesuch um Steuererlass stellen. Die Sozialen Dienste beraten Sie dabei.</p>'
+      fr: '<p>Annoncez-vous tôt, avant de recevoir un rappel. Nous convenons avec vous d''un plan de paiement, avec des mensualités que vous pouvez assumer.</p><p>Si vous vous trouvez dans une situation difficile, par exemple après la perte de votre emploi ou une maladie, vous pouvez déposer une demande de remise d''impôt. Les Services sociaux vous conseillent dans cette démarche.</p>'
   - type: text
     options: { box: warning }
     field_text:
+      en: '<p><strong>Reminders and debt collection:</strong> We send a reminder for unpaid taxes 30 days after they fall due. If the second reminder remains unpaid, we start debt collection proceedings.</p>'
       de: '<p><strong>Mahnung und Betreibung:</strong> Offene Steuern mahnen wir 30 Tage nach der Fälligkeit. Bleibt die zweite Mahnung unbezahlt, leiten wir die Betreibung ein.</p>'
+      fr: '<p><strong>Rappel et poursuite :</strong> nous envoyons un rappel pour les impôts impayés 30 jours après l''échéance. Si le deuxième rappel reste impayé, nous engageons une poursuite.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Mein Einkommen hat sich stark verändert. Was tun?' }
+    field_title:
+      en: 'My income has changed a lot. What should I do?'
+      de: 'Mein Einkommen hat sich stark verändert. Was tun?'
+      fr: 'Mon revenu a beaucoup changé. Que faire ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Have your provisional bill adjusted, online or by phone. That way you don''t pay too much, and you avoid a large additional payment with the final bill.</p>'
           de: '<p>Lassen Sie die provisorische Rechnung anpassen, online oder am Telefon. So bezahlen Sie nicht zu viel und vermeiden eine hohe Nachzahlung mit der Schlussrechnung.</p>'
+          fr: '<p>Faites adapter votre facture provisoire, en ligne ou par téléphone. Ainsi, vous ne payez pas trop et vous évitez un important montant à payer avec le décompte final.</p>'
   - type: accordion
-    field_title: { de: 'Muss ich die Raten genau so bezahlen?' }
+    field_title:
+      en: 'Do I have to pay the instalments exactly as they are?'
+      de: 'Muss ich die Raten genau so bezahlen?'
+      fr: 'Dois-je payer les mensualités exactement comme prévu ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>No. You can pay in more or less at any time. What matters is that the full amount has been paid by the end of September.</p>'
           de: '<p>Nein. Sie können jederzeit mehr oder weniger einzahlen. Wichtig ist, dass der ganze Betrag Ende September bezahlt ist.</p>'
+          fr: '<p>Non. Vous pouvez verser plus ou moins à tout moment. L''important est que le montant total soit payé à fin septembre.</p>'
   - type: accordion
-    field_title: { de: 'Ich ziehe weg. Was ist mit meinen Steuern?' }
+    field_title:
+      en: 'I''m moving away. What happens to my taxes?'
+      de: 'Ich ziehe weg. Was ist mit meinen Steuern?'
+      fr: 'Je quitte la commune. Qu''en est-il de mes impôts ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>We settle them after you''ve moved away. Whether you pay taxes in Blockingen for the whole year depends on where you move to: find out more on the “Moving away” page.</p>'
           de: '<p>Wir rechnen sie nach dem Wegzug ab. Ob Sie für das ganze Jahr in Blockingen Steuern bezahlen, hängt davon ab, wohin Sie ziehen: Mehr dazu auf der Seite «Wegzug».</p>'
+          fr: '<p>Nous établissons le décompte après votre départ. Selon votre nouveau lieu de domicile, vous payez ou non vos impôts à Bloquens pour toute l''année : plus d''informations sur la page « Départ ».</p>'
 field_related:
   - type: teaser
     field_link: { node: tax-return }
@@ -73,15 +108,15 @@ field_related:
     field_link: { node: social-assistance }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/tax-adjust
-        field_title: { de: Provisorische Rechnung anpassen }
+        field_title: { en: Adjust your provisional bill, de: Provisorische Rechnung anpassen, fr: Adapter la facture provisoire }
       - type: link
         field_link: https://www.example.com/payment-plan
-        field_title: { de: Zahlungsplan beantragen }
+        field_title: { en: Request a payment plan, de: Zahlungsplan beantragen, fr: Demander un plan de paiement }
       - type: link
         field_link: https://www.example.com/tax-remission
-        field_title: { de: Gesuch um Steuererlass }
+        field_title: { en: Apply for tax remission, de: Gesuch um Steuererlass, fr: 'Demande de remise d''impôt' }

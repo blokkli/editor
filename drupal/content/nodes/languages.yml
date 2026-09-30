@@ -1,52 +1,79 @@
 key: languages
 type: page
-title: { de: 'Deutsch, Französisch oder zweisprachig' }
+title: { en: 'German, French or bilingual', de: 'Deutsch, Französisch oder zweisprachig', fr: 'Allemand, français ou bilingue' }
 field_lead:
+  en: 'Which section suits your child, and how to switch.'
   de: 'Welche Abteilung zu Ihrem Kind passt, und wie ein Wechsel möglich ist.'
+  fr: 'Quelle section convient à votre enfant, et comment en changer.'
 field_office: { node: schools-office }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Blockingen''s school has a German-speaking and a French-speaking section, from kindergarten to Year 6. Each year group also has a bilingual class. All classes follow the same curriculum and have the same holidays. For lower secondary school, young people go to the regional secondary school centre, in German or in French.</p>'
       de: '<p>Die Schule Blockingen hat eine deutschsprachige und eine französischsprachige Abteilung, vom Kindergarten bis zur 6. Klasse. In jedem Jahrgang gibt es ausserdem eine zweisprachige Klasse. Alle Klassen folgen demselben Lehrplan und haben dieselben Ferien. Die Oberstufe besuchen die Jugendlichen im regionalen Oberstufenzentrum, auf Deutsch oder auf Französisch.</p>'
+      fr: '<p>L''école de Bloquens compte une section germanophone et une section francophone, de l''école enfantine à la 6e année. Dans chaque volée, il y a en outre une classe bilingue. Toutes les classes suivent le même plan d''études et ont les mêmes vacances. Pour le degré secondaire, les jeunes fréquentent le centre scolaire secondaire régional, en allemand ou en français.</p>'
   - type: title
-    field_title: { de: Die drei Möglichkeiten }
+    field_title: { en: 'The three options', de: Die drei Möglichkeiten, fr: 'Les trois possibilités' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Class</th><th>Teaching</th><th>The other language</th></tr></thead><tbody><tr><td>German-speaking section</td><td>in German</td><td>French as a subject from Year 3</td></tr><tr><td>French-speaking section</td><td>in French</td><td>German as a subject from Year 3</td></tr><tr><td>Bilingual class</td><td>half in German, half in French</td><td>from kindergarten, in lessons and at play</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Klasse</th><th>Unterricht</th><th>Die andere Sprache</th></tr></thead><tbody><tr><td>Deutschsprachige Abteilung</td><td>auf Deutsch</td><td>Französisch als Fach ab der 3. Klasse</td></tr><tr><td>Französischsprachige Abteilung</td><td>auf Französisch</td><td>Deutsch als Fach ab der 3. Klasse</td></tr><tr><td>Zweisprachige Klasse</td><td>je zur Hälfte auf Deutsch und auf Französisch</td><td>vom Kindergarten an, im Unterricht und im Spiel</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Classe</th><th>Enseignement</th><th>L''autre langue</th></tr></thead><tbody><tr><td>Section germanophone</td><td>en allemand</td><td>français comme branche dès la 3e année</td></tr><tr><td>Section francophone</td><td>en français</td><td>allemand comme branche dès la 3e année</td></tr><tr><td>Classe bilingue</td><td>moitié en allemand, moitié en français</td><td>dès l''école enfantine, en classe et au jeu</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>All children learn English from Year 5.</p>'
       de: '<p>Englisch lernen alle Kinder ab der 5. Klasse.</p>'
+      fr: '<p>Tous les enfants apprennent l''anglais dès la 5e année.</p>'
   - type: title
-    field_title: { de: Die zweisprachige Klasse }
+    field_title: { en: 'The bilingual class', de: Die zweisprachige Klasse, fr: 'La classe bilingue' }
   - type: text
     field_text:
+      en: '<p>The bilingual class has no more than 22 children, roughly half with German and half with French as their first language. It is taught by two teachers, each in their own language. This way, the children pick up the other language along the way, just as they would at home.</p><p>Places are limited. If there are more registrations than places, we first look for a balance between the two languages and consider siblings; after that, places are drawn by lot.</p>'
       de: '<p>Die zweisprachige Klasse hat höchstens 22 Kinder, je etwa zur Hälfte mit deutscher und mit französischer Erstsprache. Zwei Lehrpersonen unterrichten sie, jede in ihrer Sprache. So lernen die Kinder die andere Sprache nebenbei, wie zu Hause.</p><p>Die Plätze sind begrenzt. Gibt es mehr Anmeldungen als Plätze, achten wir zuerst auf ein Gleichgewicht der beiden Sprachen und auf Geschwister; danach entscheidet das Los.</p>'
+      fr: '<p>La classe bilingue compte au plus 22 enfants, dont environ la moitié de langue première allemande et l''autre moitié de langue première française. Elle est tenue par deux enseignantes ou enseignants, chacun dans sa langue. Ainsi, les enfants apprennent l''autre langue au passage, comme à la maison.</p><p>Les places sont limitées. S''il y a plus d''inscriptions que de places, nous veillons d''abord à l''équilibre entre les deux langues et aux fratries ; ensuite, c''est le tirage au sort qui décide.</p>'
   - type: title
-    field_title: { de: Wie Sie wählen }
+    field_title: { en: 'How to choose', de: Wie Sie wählen, fr: 'Comment choisir' }
   - type: text
     field_text:
+      en: '<p>Choose the language in which your child expresses themselves most confidently. If they speak both languages at home, the bilingual class is often a good fit. If you''re unsure, the head teacher will be glad to advise you, including in a meeting with your child. You choose the language when you register your child for kindergarten.</p>'
       de: '<p>Wählen Sie die Sprache, in der sich Ihr Kind am sichersten ausdrückt. Spricht es zu Hause beide Sprachen, passt oft die zweisprachige Klasse. Sind Sie unsicher, berät Sie die Schulleitung gern, auch in einem Gespräch mit Ihrem Kind. Die Sprache wählen Sie mit der Anmeldung für den Kindergarten.</p>'
+      fr: '<p>Choisissez la langue dans laquelle votre enfant s''exprime avec le plus d''assurance. S''il parle les deux langues à la maison, la classe bilingue lui convient souvent. En cas de doute, la direction d''école vous conseille volontiers, y compris lors d''un entretien avec votre enfant. Vous choisissez la langue au moment de l''inscription à l''école enfantine.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Kann unser Kind später die Abteilung wechseln?' }
+    field_title:
+      en: 'Can our child switch sections later?'
+      de: 'Kann unser Kind später die Abteilung wechseln?'
+      fr: 'Notre enfant peut-il changer de section plus tard ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Yes, at the start of a school year, after a meeting with the head teachers of both sections. A child can only move to the bilingual class if there is a free place.</p>'
           de: '<p>Ja, auf Beginn eines Schuljahres, nach einem Gespräch mit beiden Schulleitungen. In die zweisprachige Klasse wechselt ein Kind nur, wenn dort ein Platz frei ist.</p>'
+          fr: '<p>Oui, au début d''une année scolaire, après un entretien avec les deux directions d''école. Un enfant ne peut passer en classe bilingue que si une place y est libre.</p>'
   - type: accordion
-    field_title: { de: 'In welcher Sprache schreibt uns die Schule?' }
+    field_title:
+      en: 'Which language does the school write to us in?'
+      de: 'In welcher Sprache schreibt uns die Schule?'
+      fr: 'Dans quelle langue l''école nous écrit-elle ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The schools office writes to you in your language of correspondence, the teachers in the language of the class. Parents'' evenings for the bilingual classes are held in both languages.</p>'
           de: '<p>Die Schulverwaltung schreibt Ihnen in Ihrer Korrespondenzsprache, die Lehrpersonen in der Sprache der Klasse. Elternabende der zweisprachigen Klassen finden in beiden Sprachen statt.</p>'
+          fr: '<p>L''Administration scolaire vous écrit dans votre langue de correspondance, les enseignantes et enseignants dans la langue de la classe. Les soirées de parents des classes bilingues ont lieu dans les deux langues.</p>'
   - type: accordion
-    field_title: { de: 'Wir sprechen zu Hause eine andere Sprache. Was wählen wir?' }
+    field_title:
+      en: 'We speak another language at home. What should we choose?'
+      de: 'Wir sprechen zu Hause eine andere Sprache. Was wählen wir?'
+      fr: 'Nous parlons une autre langue à la maison. Que choisir ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>The language your child understands best, often the one spoken at their playgroup or nursery. Children who are still learning the language of instruction get extra lessons in it. Various associations offer courses in your language and culture; the school provides them with rooms.</p>'
           de: '<p>Die Sprache, die Ihr Kind am besten versteht, oft die der Spielgruppe oder der Kita. Kinder, die die Unterrichtssprache noch lernen, erhalten zusätzlichen Unterricht darin. Kurse in Ihrer Sprache und Kultur bieten verschiedene Vereine an; die Schule stellt ihnen Räume zur Verfügung.</p>'
+          fr: '<p>La langue que votre enfant comprend le mieux, souvent celle du groupe de jeu ou de la crèche. Les enfants qui apprennent encore la langue d''enseignement reçoivent des cours supplémentaires dans cette langue. Diverses associations proposent des cours de langue et de culture d''origine ; l''école met des locaux à leur disposition.</p>'
 field_related:
   - type: teaser
     field_link: { node: kindergarten }
@@ -54,12 +81,12 @@ field_related:
     field_link: { node: in-numbers }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/kindergarten-registration
-        field_title: { de: Kindergarten anmelden }
+        field_title: { en: 'Register for kindergarten', de: Kindergarten anmelden, fr: 'Inscription à l''école enfantine' }
       - type: link
         field_link: https://www.example.com/curriculum
-        field_title: { de: Lehrplan }
+        field_title: { en: 'Curriculum', de: Lehrplan, fr: 'Plan d''études' }

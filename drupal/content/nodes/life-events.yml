@@ -1,8 +1,10 @@
 key: life-events
 type: editorial
-title: { de: 'Lebenslagen' }
+title: { en: 'Life events', de: 'Lebenslagen', fr: 'Situations de vie' }
 field_lead:
+  en: 'Moving house, applying for an identity document, ordering a certificate: what to take care of at important moments.'
   de: 'Umziehen, einen Ausweis beantragen, eine Bestätigung bestellen: was in wichtigen Momenten zu erledigen ist.'
+  fr: 'Déménager, demander une pièce d''identité, commander une attestation : ce qu''il faut régler dans les moments importants.'
 field_hero_image: { media: residential-street }
 field_host_options:
   - { key: header, value: image }

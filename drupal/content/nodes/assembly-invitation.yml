@@ -1,31 +1,39 @@
 key: assembly-invitation
 type: publication
-title: { de: Einladung zur Gemeindeversammlung }
+title: { en: Invitation to the municipal assembly, de: Einladung zur Gemeindeversammlung, fr: 'Convocation à l''Assemblée communale' }
 field_lead:
+  en: 'Voters decide on the budget, the funding for the old town gym and the water fees.'
   de: Die Stimmberechtigten entscheiden über das Budget, den Kredit für die Turnhalle Altstadt und die Wassergebühren.
+  fr: 'Les électrices et électeurs se prononcent sur le budget, le crédit pour la halle de gymnastique de la vieille ville et les taxes pour l''eau.'
 field_publication_type: other
 field_period: { value: '-3 days', end_value: '+35 days' }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The municipal council invites all voters to the municipal assembly, at 19:30 in the main hall of the town hall, Seestrasse 1. The assembly is held in German and French.</p>'
       de: '<p>Der Gemeinderat lädt alle Stimmberechtigten zur Gemeindeversammlung ein, um 19.30 Uhr im Rathaussaal, Seestrasse 1. Die Versammlung wird auf Deutsch und auf Französisch geführt.</p>'
+      fr: '<p>Le Conseil communal convoque toutes les électrices et tous les électeurs à l''Assemblée communale, à 19 h 30 dans la grande salle de l''hôtel de ville, rue du Lac 1. L''assemblée se tient en allemand et en français.</p>'
   - type: teaser
     field_link: { node: assembly-meeting }
   - type: title
-    field_title: { de: Traktanden }
+    field_title: { en: Agenda, de: Traktanden, fr: Ordre du jour }
   - type: text
     field_text:
+      en: '<ol><li><strong>Minutes of the last assembly</strong></li><li><strong>Next year''s budget and tax rate:</strong> the municipal council proposes a budget with a deficit of CHF 0.5 million and an unchanged tax rate of 1.62. The finance committee recommends approving the budget.</li><li><strong>Funding of CHF 4.6 million for the renovation of the old town gym:</strong> a new roof, new heating, new changing rooms and step-free access.</li><li><strong>Revision of the regulations on water fees:</strong> the price per cubic metre of water rises by 20 centimes.</li><li><strong>Any other business</strong></li></ol>'
       de: '<ol><li><strong>Protokoll der letzten Versammlung</strong></li><li><strong>Budget des nächsten Jahres und Steuerfuss:</strong> Der Gemeinderat beantragt ein Budget mit einem Defizit von 0,5 Millionen Franken und einen unveränderten Steuerfuss von 1,62. Die Finanzkommission empfiehlt, das Budget zu genehmigen.</li><li><strong>Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt:</strong> ein neues Dach, eine neue Heizung, neue Garderoben und ein hindernisfreier Zugang.</li><li><strong>Revision des Reglements über die Wassergebühren:</strong> Der Preis pro Kubikmeter Wasser steigt um 20 Rappen.</li><li><strong>Verschiedenes</strong></li></ol>'
+      fr: '<ol><li><strong>Procès-verbal de la dernière assemblée</strong></li><li><strong>Budget de l''année prochaine et quotité d''impôt :</strong> le Conseil communal propose un budget présentant un déficit de 0,5 million de francs et une quotité d''impôt inchangée de 1,62. La commission des finances recommande d''approuver le budget.</li><li><strong>Crédit de 4,6 millions de francs pour la rénovation de la halle de gymnastique de la vieille ville :</strong> une nouvelle toiture, un nouveau chauffage, de nouveaux vestiaires et un accès sans obstacles.</li><li><strong>Révision du règlement sur les taxes pour l''eau :</strong> le prix du mètre cube d''eau augmente de 20 centimes.</li><li><strong>Divers</strong></li></ol>'
   - type: title
-    field_title: { de: Unterlagen }
+    field_title: { en: Documents, de: Unterlagen, fr: Documents }
   - type: text
     field_text:
+      en: '<p>The council''s report, with all of its proposals, can be inspected at the municipal chancery in the town hall and is also available online. On request, we will send it to you by post.</p><p>On behalf of the municipal council: Martine Blaser, mayor</p>'
       de: '<p>Die Botschaft mit allen Anträgen des Gemeinderats liegt bei der Gemeindekanzlei im Rathaus auf und steht online zur Verfügung. Auf Wunsch senden wir sie Ihnen per Post.</p><p>Im Namen des Gemeinderats: Martine Blaser, Gemeindepräsidentin</p>'
+      fr: '<p>Le message contenant toutes les propositions du Conseil communal est déposé à la Chancellerie communale, à l''hôtel de ville, et peut être consulté en ligne. Sur demande, nous vous l''envoyons par la poste.</p><p>Au nom du Conseil communal : Martine Blaser, maire</p>'
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/assembly-message
-        field_title: { de: Botschaft zur Gemeindeversammlung (PDF) }
+        field_title: { en: 'The council''s report for the municipal assembly (PDF)', de: Botschaft zur Gemeindeversammlung (PDF), fr: 'Message relatif à l''Assemblée communale (PDF)' }
       - type: link
         field_link: { node: assembly }
-        field_title: { de: Die Gemeindeversammlung }
+        field_title: { en: The municipal assembly, de: Die Gemeindeversammlung, fr: 'L''Assemblée communale' }

@@ -3,57 +3,61 @@
   field_paragraphs:
     - type: text
       field_text:
+        en: '<p>Blockingen / Bloquens, the bilingual town by the lake.</p>'
         de: '<p>Blockingen / Bloquens, die zweisprachige Gemeinde am See.</p>'
+        fr: '<p>Blockingen / Bloquens, la commune bilingue au bord du lac.</p>'
     - type: contact
       options: { display: compact }
       field_office: { node: municipal-chancery }
     - type: link
       options: { style: secondary }
       field_link: { node: administration }
-      field_title: { de: Alle Ämter und Öffnungszeiten }
+      field_title: { en: All offices and opening hours, de: Alle Ämter und Öffnungszeiten, fr: 'Tous les services et horaires d''ouverture' }
 
 - key: site
   type: site
-  field_site_name: { de: Blockingen }
+  field_site_name: { en: Blockingen, de: Blockingen, fr: Bloquens }
   # The meta navigation, in the header's service bar.
   field_service_links:
     - type: link
       field_link: https://www.example.com/online-counter
-      field_title: { de: Online-Schalter }
+      field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
     - type: link
       field_link: { node: municipal-chancery }
-      field_title: { de: Kontakt }
+      field_title: { en: Contact, de: Kontakt, fr: Contact }
   # The home page's frequently searched links: its own pages where there are
   # some, the rest are placeholders like the vacancies.
   field_quick_links:
     - type: link
       field_link: { node: collection-days }
-      field_title: { de: Abfuhrtage }
+      field_title: { en: Collection days, de: Abfuhrtage, fr: Jours de ramassage }
     - type: link
       field_link: { node: tax-return }
-      field_title: { de: Steuererklärung }
+      field_title: { en: Tax return, de: Steuererklärung, fr: 'Déclaration d''impôt' }
     - type: link
       field_link: { node: moving-in }
-      field_title: { de: Zuzug }
+      field_title: { en: Moving here, de: Zuzug, fr: Arrivée }
     - type: link
       field_link: { node: documents }
-      field_title: { de: Identitätskarte und Pass }
+      field_title: { en: Identity card and passport, de: Identitätskarte und Pass, fr: 'Carte d''identité et passeport' }
     - type: link
       field_link: { node: building-permits }
-      field_title: { de: Baugesuch einreichen }
+      field_title: { en: Building permit application, de: Baugesuch einreichen, fr: Demande de permis de construire }
     - type: link
       field_link: { node: day-school }
-      field_title: { de: Tagesschule }
+      field_title: { en: Day school, de: Tagesschule, fr: École à journée continue }
     - type: link
       field_link: { node: sports-facilities }
-      field_title: { de: Hallen mieten }
+      field_title: { en: Hire a hall, de: Hallen mieten, fr: Louer une salle }
     - type: link
       field_link: https://www.example.com/jobs
-      field_title: { de: Offene Stellen }
+      field_title: { en: Vacancies, de: Offene Stellen, fr: 'Offres d''emploi' }
   # Banners at the very top of every page.
   field_notice:
     - type: banner
       options: { color: success }
       field_title:
+        en: 'The lakeside pool opens on Saturday, renovated and with a new children''s area.'
         de: 'Das Strandbad öffnet am Samstag, nach der Sanierung mit einem neuen Kinderbereich.'
+        fr: 'La plage ouvre samedi, rénovée et dotée d''un nouvel espace pour les enfants.'
       field_link: { node: pool-opening }

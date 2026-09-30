@@ -1,22 +1,37 @@
 key: water-main
 type: news
 created: '-2 days'
-title: { de: Eine neue Wasserleitung für die Dorfstrasse }
+title:
+  en: 'A new water main for Dorfstrasse'
+  de: Eine neue Wasserleitung für die Dorfstrasse
+  fr: 'Une nouvelle conduite d''eau pour la rue du Village'
 field_lead:
+  en: 'The utilities are replacing the main, which is more than 60 years old, while Dorfstrasse is closed for the new village square.'
   de: Die Gemeindewerke ersetzen die über 60 Jahre alte Leitung, solange die Dorfstrasse für den neuen Dorfplatz gesperrt ist.
+  fr: 'Les Services industriels remplacent la conduite, vieille de plus de 60 ans, pendant que la rue du Village est fermée pour la nouvelle place du village.'
 field_hero_image: { media: residential-street }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>One of Blockingen''s oldest water mains runs under Dorfstrasse. Last year alone, it burst three times. The utilities are now replacing 450 metres of it, between the church and the school, and renewing the connections to the houses at the same time. Because the street is closed anyway for the redesign of the village square, it only has to be dug up once.</p><p>The new main costs CHF 2.8 million. The municipal assembly approved the funding at its last meeting; most of it will be paid next year.</p>'
       de: '<p>Unter der Dorfstrasse liegt eine der ältesten Wasserleitungen von Blockingen. Allein im letzten Jahr ist sie dreimal gebrochen. Die Gemeindewerke ersetzen sie jetzt auf 450 Metern, zwischen der Kirche und dem Schulhaus, und erneuern dabei auch die Hausanschlüsse. Weil die Strasse für die Umgestaltung des Dorfplatzes ohnehin gesperrt ist, muss sie nur einmal aufgerissen werden.</p><p>Die Leitung kostet 2,8 Millionen Franken. Die Gemeindeversammlung hat den Kredit an ihrer letzten Versammlung bewilligt; bezahlt wird er zum grössten Teil im nächsten Jahr.</p>'
+      fr: '<p>Sous la rue du Village passe l''une des plus anciennes conduites d''eau de Bloquens. Rien que l''an dernier, elle s''est rompue trois fois. Les Services industriels la remplacent maintenant sur 450 mètres, entre l''église et l''école, et renouvellent du même coup les raccordements des maisons. Comme la rue est de toute façon fermée pour le réaménagement de la place du village, il ne faudra l''ouvrir qu''une seule fois.</p><p>La conduite coûte 2,8 millions de francs. L''Assemblée communale a approuvé le crédit lors de sa dernière séance ; il sera payé en majeure partie l''an prochain.</p>'
   - type: title
-    field_title: { de: Für die Anwohnerinnen und Anwohner }
+    field_title:
+      en: 'For local residents'
+      de: Für die Anwohnerinnen und Anwohner
+      fr: 'Pour les riveraines et riverains'
   - type: text
     field_text:
+      en: '<ul><li>Dorfstrasse is closed between the church and the school until spring. The diversion via Rebweg is signposted.</li><li>The “Village square” bus stop is at the school.</li><li>You can always reach your house on foot, and by car by arrangement with the site management.</li><li>If the water has to be turned off for a short time, you''ll find a notice in your letterbox two days beforehand. It usually lasts no longer than half a day.</li></ul>'
       de: '<ul><li>Die Dorfstrasse ist zwischen Kirche und Schulhaus gesperrt, bis im Frühling. Die Umleitung über den Rebweg ist signalisiert.</li><li>Die Bushaltestelle «Dorfplatz» ist beim Schulhaus.</li><li>Zu Ihrem Haus kommen Sie zu Fuss immer, mit dem Auto nach Absprache mit der Bauleitung.</li><li>Wird das Wasser kurz abgestellt, finden Sie zwei Tage vorher einen Zettel im Briefkasten. Meist dauert es nicht länger als einen halben Tag.</li></ul>'
+      fr: '<ul><li>La rue du Village est fermée entre l''église et l''école jusqu''au printemps. La déviation par le chemin des Vignes est signalée.</li><li>L''arrêt de bus « Place du village » se trouve près de l''école.</li><li>Vous pouvez toujours rejoindre votre maison à pied, et en voiture après entente avec la direction des travaux.</li><li>Si l''eau doit être brièvement coupée, vous trouverez un avis dans votre boîte aux lettres deux jours avant. La coupure ne dure généralement pas plus d''une demi-journée.</li></ul>'
   - type: link
     field_link: { node: road-closure }
-    field_title: { de: Die Verkehrsanordnung zur Sperrung }
+    field_title:
+      en: 'The traffic order for the closure'
+      de: Die Verkehrsanordnung zur Sperrung
+      fr: 'La mesure de circulation liée à la fermeture'
   - type: contact
     options: { display: compact }
     field_office: { node: utilities }

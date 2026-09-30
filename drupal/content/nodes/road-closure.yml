@@ -1,17 +1,29 @@
 key: road-closure
 type: publication
-title: { de: Sperrung der Dorfstrasse }
+title:
+  en: 'Closure of Dorfstrasse'
+  de: Sperrung der Dorfstrasse
+  fr: 'Fermeture de la rue du Village'
 field_lead:
+  en: 'Dorfstrasse is closed to traffic between the church and the school while the village square is redesigned and the water main is replaced.'
   de: Die Dorfstrasse ist zwischen Kirche und Schulhaus für den Verkehr gesperrt, solange der Dorfplatz umgestaltet und die Wasserleitung ersetzt wird.
+  fr: 'La rue du Village est fermée à la circulation entre l''église et l''école pendant le réaménagement de la place du village et le remplacement de la conduite d''eau.'
 field_publication_type: traffic
 field_period: { value: '-2 days', end_value: '+28 days' }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The municipal council issues the following temporary traffic order:</p><p><strong>Location:</strong> Dorfstrasse, between the church and Seefeld school<br><strong>Measure:</strong> no vehicles in either direction; access for local residents by arrangement with the site management<br><strong>Duration:</strong> until the building work is finished, expected in spring</p>'
       de: '<p>Der Gemeinderat verfügt folgende vorübergehende Verkehrsanordnung:</p><p><strong>Ort:</strong> Dorfstrasse, zwischen der Kirche und dem Schulhaus Seefeld<br><strong>Massnahme:</strong> allgemeines Fahrverbot in beiden Richtungen; Zufahrt für Anwohnende nach Absprache mit der Bauleitung<br><strong>Dauer:</strong> bis zum Abschluss der Bauarbeiten, voraussichtlich im Frühling</p>'
+      fr: '<p>Le Conseil communal ordonne la mesure de circulation temporaire suivante :</p><p><strong>Lieu :</strong> rue du Village, entre l''église et l''école du Seefeld<br><strong>Mesure :</strong> interdiction générale de circuler dans les deux sens ; accès pour les riveraines et riverains après entente avec la direction des travaux<br><strong>Durée :</strong> jusqu''à la fin des travaux, probablement au printemps</p>'
   - type: text
     field_text:
+      en: '<p>A diversion via Rebweg is signposted. The “Village square” bus stop moves to the school. On foot and by bike, you can get past the building site.</p><p><strong>Right of appeal:</strong> An appeal against this order may be lodged with the canton in writing, stating the reasons, within 30 days of publication.</p>'
       de: '<p>Eine Umleitung über den Rebweg ist signalisiert. Die Bushaltestelle «Dorfplatz» wird zum Schulhaus verlegt. Zu Fuss und mit dem Velo kommen Sie an der Baustelle vorbei.</p><p><strong>Rechtsmittel:</strong> Gegen diese Verfügung kann innert 30 Tagen seit der Publikation beim Kanton schriftlich und begründet Beschwerde geführt werden.</p>'
+      fr: '<p>Une déviation par le chemin des Vignes est signalée. L''arrêt de bus « Place du village » est déplacé près de l''école. À pied et à vélo, vous pouvez passer à côté du chantier.</p><p><strong>Voies de droit :</strong> La présente décision peut faire l''objet d''un recours écrit et motivé auprès du canton dans les 30 jours suivant sa publication.</p>'
   - type: link
     field_link: { node: water-main }
-    field_title: { de: Eine neue Wasserleitung für die Dorfstrasse }
+    field_title:
+      en: 'A new water main for Dorfstrasse'
+      de: Eine neue Wasserleitung für die Dorfstrasse
+      fr: 'Une nouvelle conduite d''eau pour la rue du Village'

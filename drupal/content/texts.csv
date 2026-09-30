@@ -75,6 +75,7 @@ office.email;default;Email;E-Mail;E-mail
 office.label;default;Office;Amt;Service
 office.opening_hours;default;Opening hours;Öffnungszeiten;Horaires d'ouverture
 office.phone;default;Phone;Telefon;Téléphone
+office_pages.empty;default;No detail page has this office as its responsible office.;Keine Detailseite hat dieses Amt als zuständiges Amt.;Aucune page de détail n'a ce service comme service responsable.
 page.responsible;default;Responsible:;Zuständig:;Responsable :
 page.updated;default;Updated on @date;Aktualisiert am @date;Mis à jour le @date
 pagination.label;default;Pages;Seiten;Pages

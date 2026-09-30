@@ -1,67 +1,100 @@
 key: moving-away
 type: page
-title: { de: 'Wegzug' }
+title: { en: 'Moving away', de: 'Wegzug', fr: 'Départ' }
 field_lead:
+  en: 'Deregister no later than the day you move away, and give us your new address.'
   de: 'Melden Sie sich spätestens am Tag des Wegzugs ab, und geben Sie Ihre neue Adresse an.'
+  fr: 'Annoncez votre départ au plus tard le jour du déménagement et indiquez votre nouvelle adresse.'
 field_office: { node: residents-services }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>If you''re moving away from Blockingen, deregister with the residents'' services, no earlier than one month before and no later than the day you move. Then register in your new municipality within 14 days. Deregistration is free.</p>'
       de: '<p>Wenn Sie aus Blockingen wegziehen, melden Sie sich bei den Einwohnerdiensten ab, frühestens einen Monat vorher und spätestens am Tag des Wegzugs. In Ihrer neuen Gemeinde melden Sie sich danach innert 14 Tagen an. Die Abmeldung ist gratis.</p>'
+      fr: '<p>Si vous quittez Bloquens, annoncez votre départ au Contrôle des habitants, au plus tôt un mois avant et au plus tard le jour du départ. Annoncez ensuite votre arrivée dans votre nouvelle commune dans les 14 jours. L''annonce de départ est gratuite.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Deregister online:</strong> If you''re moving to another Swiss municipality, you can deregister at the <a href="https://www.example.com/online-counter">online counter</a>. We''ll then send your certificate of origin by registered post to your new address.</p>'
       de: '<p><strong>Online abmelden:</strong> Ziehen Sie in eine andere Schweizer Gemeinde, können Sie sich am <a href="https://www.example.com/online-counter">Online-Schalter</a> abmelden. Den Heimatschein senden wir Ihnen dann eingeschrieben an die neue Adresse.</p>'
+      fr: '<p><strong>Annoncer son départ en ligne :</strong> si vous partez pour une autre commune suisse, vous pouvez annoncer votre départ au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Nous vous envoyons alors votre acte d''origine par courrier recommandé à votre nouvelle adresse.</p>'
   - type: title
-    field_title: { de: So melden Sie sich ab }
+    field_title: { en: How to deregister, de: So melden Sie sich ab, fr: Comment annoncer votre départ }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Abmelden }
+        field_title: { en: Deregister, de: Abmelden, fr: Annoncer son départ }
         field_text:
+          en: '<p>Come to the counter with your identity card or passport, or deregister online. Deregistration covers everyone in your household who is moving away with you.</p>'
           de: '<p>Kommen Sie mit Ihrer Identitätskarte oder Ihrem Pass an den Schalter, oder melden Sie sich online ab. Die Abmeldung gilt für alle Personen im Haushalt, die mit Ihnen wegziehen.</p>'
+          fr: '<p>Présentez-vous au guichet avec votre carte d''identité ou votre passeport, ou annoncez votre départ en ligne. L''annonce vaut pour toutes les personnes du ménage qui partent avec vous.</p>'
       - type: step
-        field_title: { de: Neue Adresse angeben }
+        field_title: { en: Give your new address, de: Neue Adresse angeben, fr: Indiquer la nouvelle adresse }
         field_text:
+          en: '<p>Tell us your new address and the date you''re moving away. If you don''t know your new address yet, send it to us within 14 days.</p>'
           de: '<p>Geben Sie Ihre neue Adresse und den Tag des Wegzugs an. Kennen Sie die neue Adresse noch nicht, reichen Sie sie innert 14 Tagen nach.</p>'
+          fr: '<p>Indiquez votre nouvelle adresse et la date de votre départ. Si vous ne connaissez pas encore votre nouvelle adresse, communiquez-la-nous dans les 14 jours.</p>'
       - type: step
-        field_title: { de: Heimatschein mitnehmen }
+        field_title: { en: Take your certificate of origin, de: Heimatschein mitnehmen, fr: Reprendre l'acte d'origine }
         field_text:
+          en: '<p>Swiss citizens get their certificate of origin back and hand it in at their new municipality. Foreign nationals receive a confirmation of deregistration.</p>'
           de: '<p>Schweizerinnen und Schweizer erhalten ihren Heimatschein zurück und geben ihn in der neuen Gemeinde ab. Ausländerinnen und Ausländer erhalten eine Abmeldebestätigung.</p>'
+          fr: '<p>Les Suissesses et les Suisses récupèrent leur acte d''origine et le déposent dans leur nouvelle commune. Les étrangères et les étrangers reçoivent une attestation de départ.</p>'
       - type: step
-        field_title: { de: In der neuen Gemeinde anmelden }
+        field_title: { en: Register in your new municipality, de: In der neuen Gemeinde anmelden, fr: S'annoncer dans la nouvelle commune }
         field_text:
+          en: '<p>Register in your new municipality within 14 days of moving in. You update your address with your health insurer, employer, bank and Swiss Post yourself.</p>'
           de: '<p>Melden Sie sich innert 14 Tagen nach dem Einzug in Ihrer neuen Gemeinde an. Ihre Adresse bei Krankenkasse, Arbeitgeber, Bank und Post ändern Sie selbst.</p>'
+          fr: '<p>Annoncez votre arrivée dans votre nouvelle commune dans les 14 jours qui suivent votre emménagement. Vous changez vous-même votre adresse auprès de votre caisse-maladie, de votre employeur, de votre banque et de La Poste.</p>'
   - type: title
-    field_title: { de: Was wir nach dem Wegzug abrechnen }
+    field_title: { en: What we settle after you move away, de: Was wir nach dem Wegzug abrechnen, fr: Les décomptes après votre départ }
   - type: text
     field_text:
+      en: '<p>The residents'' services inform the town''s other offices. You will then receive:</p><ul><li>your <strong>tax statement</strong>. If you move to another canton, you pay the taxes for the whole year in your new municipality. Within the canton, the municipalities divide the year between them.</li><li>the <strong>utilities'' final bill</strong> for water and wastewater, if you own the flat or house. Let us know the handover date so that we can read the meter.</li><li>a <strong>refund</strong> for your resident parking permit, for every full month that remains.</li></ul>'
       de: '<p>Die Einwohnerdienste informieren die anderen Stellen der Gemeinde. Danach erhalten Sie:</p><ul><li>die <strong>Steuerabrechnung</strong>. Ziehen Sie in einen anderen Kanton, bezahlen Sie die Steuern für das ganze Jahr in Ihrer neuen Gemeinde. Innerhalb des Kantons teilen die Gemeinden das Jahr unter sich auf.</li><li>die <strong>Schlussrechnung der Gemeindewerke</strong> für Wasser und Abwasser, wenn Ihnen die Wohnung oder das Haus gehört. Melden Sie uns den Tag der Übergabe, damit wir den Zähler ablesen.</li><li>eine <strong>Rückerstattung</strong> für die Anwohnerparkkarte, für jeden ganzen Monat, der noch bleibt.</li></ul>'
+      fr: '<p>Le Contrôle des habitants informe les autres services de la commune. Vous recevez ensuite :</p><ul><li>le <strong>décompte d''impôt</strong>. Si vous partez pour un autre canton, vous payez les impôts de toute l''année dans votre nouvelle commune. Au sein du canton, les communes se répartissent l''année.</li><li>le <strong>décompte final des Services industriels</strong> pour l''eau et les eaux usées, si vous êtes propriétaire de l''appartement ou de la maison. Communiquez-nous la date de la remise, afin que nous puissions relever le compteur.</li><li>un <strong>remboursement</strong> de la vignette de stationnement pour résidents, pour chaque mois entier restant.</li></ul>'
   - type: title
-    field_title: { de: Wegzug ins Ausland }
+    field_title: { en: Moving abroad, de: Wegzug ins Ausland, fr: Départ à l'étranger }
   - type: text
     field_text:
+      en: '<p>If you''re moving abroad, you deregister in person at the counter. Bring your passport or identity card. Foreign nationals hand in their residence permit to us.</p><p>Swiss citizens register with the Swiss embassy or consulate in their new country within 90 days. That''s also where you enter your name in the electoral register if you want to keep voting in elections and referendums. Before you leave, check with the compensation office whether you''ll keep paying AHV contributions (old-age and survivors'' insurance), and with your health insurer when your cover ends.</p>'
       de: '<p>Wer ins Ausland zieht, meldet sich persönlich am Schalter ab. Bringen Sie Ihren Pass oder Ihre Identitätskarte mit. Ausländerinnen und Ausländer geben bei uns ihren Ausländerausweis ab.</p><p>Schweizerinnen und Schweizer melden sich innert 90 Tagen bei der Schweizer Vertretung im neuen Land an. Dort tragen Sie sich auch ins Stimmregister ein, wenn Sie weiter abstimmen und wählen möchten. Klären Sie vor dem Wegzug mit der Ausgleichskasse, ob Sie weiter AHV-Beiträge bezahlen, und mit Ihrer Krankenkasse, wann Ihre Versicherung endet.</p>'
+      fr: '<p>Si vous partez à l''étranger, annoncez votre départ en personne au guichet. Apportez votre passeport ou votre carte d''identité. Les étrangères et les étrangers nous remettent leur titre de séjour.</p><p>Les Suissesses et les Suisses s''annoncent dans les 90 jours auprès de la représentation suisse dans leur nouveau pays. C''est aussi là que vous vous inscrivez au registre électoral si vous souhaitez continuer à voter et à élire. Avant votre départ, vérifiez avec la caisse de compensation si vous continuez à payer des cotisations AVS, et avec votre caisse-maladie quand votre assurance prend fin.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: Frequently asked questions, de: Häufige Fragen, fr: Questions fréquentes }
   - type: accordion
-    field_title: { de: 'Ich ziehe nur für einige Monate weg. Muss ich mich abmelden?' }
+    field_title:
+      en: 'I''m only going away for a few months. Do I have to deregister?'
+      de: 'Ich ziehe nur für einige Monate weg. Muss ich mich abmelden?'
+      fr: 'Je pars seulement pour quelques mois. Dois-je annoncer mon départ ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Only if you''ll be away for more than a year. For a shorter stay, such as a semester abroad, you remain registered. Give us a postal address if nobody will be taking in your post.</p>'
           de: '<p>Nur wenn Sie länger als ein Jahr weg sind. Für einen kürzeren Aufenthalt, etwa ein Semester im Ausland, bleiben Sie angemeldet. Geben Sie uns eine Zustelladresse an, wenn niemand Ihre Post entgegennimmt.</p>'
+          fr: '<p>Seulement si votre absence dure plus d''une année. Pour un séjour plus court, par exemple un semestre à l''étranger, votre inscription est maintenue. Indiquez-nous une adresse de correspondance si personne ne réceptionne votre courrier.</p>'
   - type: accordion
-    field_title: { de: 'Was geschieht mit meinem Hund?' }
+    field_title:
+      en: 'What about my dog?'
+      de: 'Was geschieht mit meinem Hund?'
+      fr: 'Qu''en est-il de mon chien ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>We deregister your dog along with you. Register it again in your new municipality. We don''t refund the dog tax for the current year.</p>'
           de: '<p>Wir melden ihn mit Ihnen ab. In der neuen Gemeinde melden Sie ihn wieder an. Die Hundetaxe für das laufende Jahr erstatten wir nicht zurück.</p>'
+          fr: '<p>Nous enregistrons son départ en même temps que le vôtre. Dans votre nouvelle commune, vous l''annoncez à nouveau. La taxe sur les chiens de l''année en cours n''est pas remboursée.</p>'
   - type: accordion
-    field_title: { de: 'Kann mein Kind hier weiter zur Schule gehen?' }
+    field_title:
+      en: 'Can my child keep going to school here?'
+      de: 'Kann mein Kind hier weiter zur Schule gehen?'
+      fr: 'Mon enfant peut-il continuer à aller à l''école ici ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Usually yes, until the end of the school year, if your new municipality pays the school fees. Check this early with the schools office, and submit your application before you move.</p>'
           de: '<p>Bis zum Ende des Schuljahres meistens schon, wenn die neue Gemeinde das Schulgeld übernimmt. Klären Sie das früh mit der Schulverwaltung, und stellen Sie das Gesuch vor dem Wegzug.</p>'
+          fr: '<p>En général oui, jusqu''à la fin de l''année scolaire, si la nouvelle commune prend en charge l''écolage. Clarifiez la question tôt avec l''Administration scolaire, et déposez la demande avant votre départ.</p>'
 field_related:
   - type: teaser
     field_link: { node: moving-within }
@@ -69,12 +102,12 @@ field_related:
     field_link: { node: paying-taxes }
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: Forms and links, de: Formulare und Links, fr: Formulaires et liens }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/online-counter
-        field_title: { de: Online-Schalter }
+        field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
       - type: link
         field_link: https://www.example.com/mail-forwarding
-        field_title: { de: Nachsendeauftrag bei der Post }
+        field_title: { en: Mail forwarding with Swiss Post, de: Nachsendeauftrag bei der Post, fr: Réexpédition du courrier par La Poste }

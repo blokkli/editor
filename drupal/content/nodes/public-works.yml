@@ -1,8 +1,10 @@
 key: public-works
 type: office
-title: { de: 'Tiefbau und Werkhof' }
+title: { en: 'Public works', de: 'Tiefbau und Werkhof', fr: 'Travaux publics et voirie' }
 field_lead:
+  en: 'Roads and winter maintenance, waste and recycling, parks and the cemetery.'
   de: 'Strassen und Winterdienst, Abfall und Recycling, Grünanlagen und Friedhof.'
+  fr: 'Routes et service hivernal, déchets et recyclage, espaces verts et cimetière.'
 field_location: { term: works-yard }
 field_phone: '+41 32 555 01 50'
 field_email: werkhof@blockingen.example
@@ -21,21 +23,15 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The works yard keeps Blockingen in good shape: it maintains the roads, paths and squares, clears the snow in winter, looks after the parks and the cemetery and collects the waste. It runs the collection point on Industriestrasse, which has its own opening hours: Wednesday afternoons and Saturday mornings.</p><p>Let us know about a pothole, a broken streetlight or a full litter bin, by phone or at the <a href="https://www.example.com/online-counter">online counter</a>. Book bulky waste by Friday for collection the following week. We lend clubs festival benches, crowd barriers and waste containers for their events.</p>'
       de: '<p>Der Werkhof hält Blockingen in Schuss: Er unterhält die Strassen, Wege und Plätze, räumt im Winter den Schnee, pflegt die Grünanlagen und den Friedhof und holt den Abfall ab. Er betreibt die Entsorgungsstelle an der Industriestrasse, die ihre eigenen Öffnungszeiten hat: am Mittwochnachmittag und am Samstagmorgen.</p><p>Melden Sie uns ein Schlagloch, eine defekte Strassenlampe oder einen vollen Abfalleimer, am Telefon oder am <a href="https://www.example.com/online-counter">Online-Schalter</a>. Sperrgut melden Sie bis Freitag für die folgende Woche an. Vereinen leihen wir für ihre Anlässe Festbänke, Absperrgitter und Abfallcontainer.</p>'
+      fr: '<p>La voirie veille au bon état de Bloquens : elle entretient les routes, les chemins et les places, déneige en hiver, soigne les espaces verts et le cimetière et ramasse les déchets. Elle exploite la déchetterie de la rue de l''Industrie, qui a ses propres horaires : le mercredi après-midi et le samedi matin.</p><p>Signalez-nous un nid-de-poule, un lampadaire défectueux ou une poubelle pleine, par téléphone ou au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Annoncez vos déchets encombrants jusqu''au vendredi pour la semaine suivante. Nous prêtons aux sociétés locales des bancs de fête, des barrières et des conteneurs à déchets pour leurs manifestations.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: waste }
-      - type: link
-        field_link: { node: collection-days }
-      - type: link
-        field_link: { node: sorting }
-      - type: link
-        field_link: { node: collection-point }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages
   # The same guide as on the page "Was gehört wohin?".
   - type: title
-    field_title: { de: 'Was gehört wohin?' }
+    field_title: { en: 'What goes where?', de: 'Was gehört wohin?', fr: 'Que jeter où ?' }
   - type: from_library
     field_reusable_paragraph: { library: waste-guide }

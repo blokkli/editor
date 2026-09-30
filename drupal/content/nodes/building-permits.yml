@@ -1,83 +1,125 @@
 key: building-permits
 type: page
-title: { de: Baugesuch einreichen }
+title:
+  en: Applying for a building permit
+  de: Baugesuch einreichen
+  fr: Déposer une demande de permis de construire
 field_lead:
+  en: How to submit a building application and what happens next.
   de: Wie Sie ein Baugesuch einreichen und wie es danach weitergeht.
+  fr: Comment déposer une demande de permis de construire et ce qui se passe ensuite.
 field_office: { node: building-planning }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Most new buildings, extensions and conversions need a building permit. Submit your application before work starts: work without a permit can be stopped. If an application is complete and there are no objections, we usually decide on it within two months.</p>'
       de: '<p>Die meisten Bauten, Anbauten und Umbauten brauchen eine Baubewilligung. Reichen Sie das Gesuch vor Baubeginn ein: Arbeiten ohne Bewilligung können gestoppt werden. Ein vollständiges Gesuch ohne Einsprachen entscheiden wir in der Regel innert zwei Monaten.</p>'
+      fr: '<p>La plupart des constructions, annexes et transformations nécessitent un permis de construire. Déposez la demande avant le début des travaux : des travaux sans permis peuvent être arrêtés. Nous statuons en règle générale dans les deux mois sur une demande complète qui ne fait l''objet d''aucune opposition.</p>'
   # The text's box option: an info box.
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Apply online:</strong> You can also submit building applications at the <a href="https://www.example.com/online-counter">online counter</a>. Upload your plans as PDFs; we then don''t need any paper copies.</p>'
       de: '<p><strong>Elektronisch einreichen:</strong> Baugesuche können Sie auch über den <a href="https://www.example.com/online-counter">Online-Schalter</a> einreichen. Pläne laden Sie als PDF hoch; Papier brauchen wir dann keines.</p>'
+      fr: '<p><strong>Dépôt électronique :</strong> Vous pouvez aussi déposer les demandes de permis de construire au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Vous chargez les plans au format PDF ; nous n''avons alors besoin d''aucun document papier.</p>'
   - type: title
-    field_title: { de: Was das Gesuch enthält }
+    field_title: { en: 'What the application includes', de: Was das Gesuch enthält, fr: 'Contenu de la demande' }
   - type: text
     field_text:
+      en: '<ul><li>the application form, signed by the project owner, the landowner and the person who drew the plans</li><li>a site plan at a scale of 1:500, showing the distances to the neighbouring plots</li><li>floor plans, sections and elevations at a scale of 1:100</li><li>a landscaping plan showing parking spaces, terrain and planting</li><li>for a new heating system or a new building, the energy certificate</li></ul>'
       de: '<ul><li>das Gesuchsformular, unterschrieben von der Bauherrschaft, der Grundeigentümerin oder dem Grundeigentümer und der Person, die die Pläne gezeichnet hat</li><li>einen Situationsplan im Massstab 1:500 mit den Abständen zu den Nachbargrundstücken</li><li>Grundrisse, Schnitte und Fassaden im Massstab 1:100</li><li>einen Umgebungsplan mit Parkplätzen, Terrain und Bepflanzung</li><li>bei einer neuen Heizung oder einem Neubau den Energienachweis</li></ul>'
+      fr: '<ul><li>le formulaire de demande, signé par le maître d''ouvrage, la ou le propriétaire du bien-fonds et la personne qui a dessiné les plans</li><li>un plan de situation à l''échelle 1:500 avec les distances aux parcelles voisines</li><li>les plans des étages, les coupes et les façades à l''échelle 1:100</li><li>un plan des aménagements extérieurs avec les places de stationnement, le terrain et les plantations</li><li>pour un nouveau chauffage ou une nouvelle construction, le justificatif énergétique</li></ul>'
   - type: title
-    field_title: { de: Gesuch einreichen }
+    field_title: { en: 'Submitting the application', de: Gesuch einreichen, fr: 'Déposer la demande' }
   - type: text
     key: counter-text
     field_text:
+      en: '<p>Hand in the application with three copies of the plans at the building and planning counter in the administrative centre, or send it by post. The counter is open in the mornings from 8:00 to 12:00, and in the afternoons by appointment. We''re happy to check at the counter whether your application is complete.</p>'
       de: '<p>Geben Sie das Gesuch mit den Plänen in dreifacher Ausführung am Schalter von Bau und Planung im Verwaltungszentrum ab, oder senden Sie es per Post. Der Schalter ist am Vormittag von 8.00 bis 12.00 Uhr offen, am Nachmittag nach Vereinbarung. Wir prüfen am Schalter gern, ob das Gesuch vollständig ist.</p>'
+      fr: '<p>Remettez la demande et les plans en trois exemplaires au guichet du service Constructions et urbanisme, au centre administratif, ou envoyez-les par la poste. Le guichet est ouvert le matin de 8 h à 12 h, l''après-midi sur rendez-vous. Nous vérifions volontiers au guichet si votre demande est complète.</p>'
   - type: title
-    field_title: { de: Ablauf }
+    field_title: { en: 'The procedure', de: Ablauf, fr: 'Déroulement' }
   - type: steps
     field_paragraphs:
       - type: step
-        field_title: { de: Vorabklärung }
+        field_title: { en: 'Preliminary advice', de: Vorabklärung, fr: 'Clarification préalable' }
         field_text:
+          en: '<p>Discuss your project with the building and planning office early on, ideally with a sketch. It saves time and revisions. The first consultation is free of charge.</p>'
           de: '<p>Besprechen Sie Ihr Vorhaben früh mit Bau und Planung, am besten mit einer Skizze. Das spart Zeit und Überarbeitungen. Die erste Beratung ist gratis.</p>'
+          fr: '<p>Discutez tôt de votre projet avec le service Constructions et urbanisme, idéalement avec une esquisse. Vous gagnez du temps et évitez des remaniements. Le premier entretien-conseil est gratuit.</p>'
       - type: step
-        field_title: { de: Gesuch einreichen }
+        field_title: { en: 'Submitting the application', de: Gesuch einreichen, fr: 'Dépôt de la demande' }
         field_text:
+          en: '<p>Submit the form and the plans, complete and signed. If anything is missing, we''ll ask you for it; the time limit only starts once the application is complete.</p>'
           de: '<p>Reichen Sie das Formular und die Pläne vollständig und unterschrieben ein. Fehlt etwas, fordern wir es nach; die Frist beginnt erst mit dem vollständigen Gesuch.</p>'
+          fr: '<p>Déposez le formulaire et les plans, complets et signés. S''il manque quelque chose, nous vous le demandons ; le délai ne court qu''à partir du dépôt de la demande complète.</p>'
       - type: step
-        field_title: { de: Prüfung und Publikation }
+        field_title: { en: 'Review and publication', de: Prüfung und Publikation, fr: 'Examen et publication' }
         field_text:
+          en: '<p>The building and planning office reviews the application. You then put up the profile poles, and we publish the application in the official gazette and on this website.</p>'
           de: '<p>Bau und Planung prüft das Gesuch. Danach stellen Sie die Bauprofile auf, und wir publizieren das Gesuch im Amtsblatt und auf dieser Website.</p>'
+          fr: '<p>Le service Constructions et urbanisme examine la demande. Vous posez ensuite les gabarits, et nous publions la demande dans la Feuille officielle et sur ce site.</p>'
       - type: step
-        field_title: { de: Einsprachefrist }
+        field_title: { en: 'Objection period', de: Einsprachefrist, fr: 'Délai d''opposition' }
         field_text:
+          en: '<p>The application is on public display for 30 days. During this time, anyone affected can lodge an objection.</p>'
           de: '<p>Während 30 Tagen liegt das Gesuch öffentlich auf. In dieser Zeit können Betroffene Einsprache erheben.</p>'
+          fr: '<p>La demande est mise à l''enquête publique pendant 30 jours. Durant ce délai, les personnes concernées peuvent faire opposition.</p>'
       - type: step
-        field_title: { de: Bauentscheid }
+        field_title: { en: 'Building decision', de: Bauentscheid, fr: 'Décision' }
         field_text:
+          en: '<p>The municipal council decides on the application and on any objections. Once the appeal period has expired, the decision is final and you may build.</p>'
           de: '<p>Der Gemeinderat entscheidet über das Gesuch und über allfällige Einsprachen. Nach Ablauf der Beschwerdefrist ist der Entscheid rechtskräftig, und Sie dürfen bauen.</p>'
+          fr: '<p>Le Conseil communal statue sur la demande et sur les éventuelles oppositions. Une fois le délai de recours échu, la décision entre en force, et vous pouvez construire.</p>'
   - type: image
     field_media: { media: building-profiles }
-    field_caption: { de: Die Bauprofile zeigen das geplante Gebäude }
+    field_caption:
+      en: Profile poles show the planned building
+      de: Die Bauprofile zeigen das geplante Gebäude
+      fr: Les gabarits indiquent le bâtiment prévu
   - type: text
     options: { box: warning }
     field_text:
+      en: '<p><strong>Important:</strong> Don''t start building until the permit is final. Otherwise, the work can be ordered to stop.</p>'
       de: '<p><strong>Wichtig:</strong> Beginnen Sie erst mit den Bauarbeiten, wenn die Bewilligung rechtskräftig ist. Andernfalls kann ein Baustopp verfügt werden.</p>'
+      fr: '<p><strong>Important :</strong> Ne commencez les travaux que lorsque le permis est entré en force. Sinon, un arrêt des travaux peut être ordonné.</p>'
   - type: title
-    field_title: { de: Gebühren }
+    field_title: { en: 'Fees', de: Gebühren, fr: 'Émoluments' }
   - type: table
     options: { striped: true }
     field_table:
+      en: '<table><thead><tr><th>Project</th><th>Fee</th></tr></thead><tbody><tr><td>Garden shed</td><td>CHF 150</td></tr><tr><td>Extension</td><td>CHF 800</td></tr><tr><td>New building</td><td>CHF 2,500</td></tr></tbody></table>'
       de: '<table><thead><tr><th>Vorhaben</th><th>Gebühr</th></tr></thead><tbody><tr><td>Gartenhaus</td><td>Fr. 150.–</td></tr><tr><td>Anbau</td><td>Fr. 800.–</td></tr><tr><td>Neubau</td><td>Fr. 2500.–</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>Projet</th><th>Émolument</th></tr></thead><tbody><tr><td>Cabanon de jardin</td><td>Fr. 150.–</td></tr><tr><td>Annexe</td><td>Fr. 800.–</td></tr><tr><td>Nouvelle construction</td><td>Fr. 2500.–</td></tr></tbody></table>'
   - type: text
     field_text:
+      en: '<p>The table shows guide values: the fee depends on the construction costs and on how much work the application means for us. On top of that come the costs of publication and, for a new building, the connection fees for water and wastewater.</p>'
       de: '<p>Die Tabelle zeigt Richtwerte: Die Gebühr richtet sich nach den Baukosten und nach unserem Aufwand. Dazu kommen die Kosten für die Publikation und, bei einem Neubau, die Anschlussgebühren für Wasser und Abwasser.</p>'
+      fr: '<p>Le tableau indique des valeurs indicatives : l''émolument dépend du coût des travaux et du travail que la demande nous occasionne. S''y ajoutent les frais de publication et, pour une nouvelle construction, les taxes de raccordement pour l''eau et les eaux usées.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Was passiert bei einer Einsprache?' }
+    field_title:
+      en: 'What happens if someone objects?'
+      de: 'Was passiert bei einer Einsprache?'
+      fr: 'Que se passe-t-il en cas d''opposition ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>We invite you and the objectors to a conciliation meeting. Often, a small change to the project is enough. If no agreement is reached, the municipal council also decides on the objection. Its decision can be appealed to the canton.</p>'
           de: '<p>Wir laden Sie und die Einsprechenden zu einer Einigungsverhandlung ein. Oft genügt eine kleine Änderung am Projekt. Kommt keine Einigung zustande, entscheidet der Gemeinderat auch über die Einsprache. Gegen seinen Entscheid kann man beim Kanton Beschwerde führen.</p>'
+          fr: '<p>Nous vous invitons, vous et les opposantes et opposants, à une séance de conciliation. Souvent, une petite modification du projet suffit. Si aucun accord n''est trouvé, le Conseil communal statue aussi sur l''opposition. Sa décision peut faire l''objet d''un recours auprès du canton.</p>'
   - type: accordion
-    field_title: { de: 'Wie lange gilt die Bewilligung?' }
+    field_title:
+      en: 'How long is the permit valid?'
+      de: 'Wie lange gilt die Bewilligung?'
+      fr: 'Combien de temps le permis est-il valable ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>For two years from the day it becomes final. You must have started building by then. On request, we extend it once by one year.</p>'
           de: '<p>Zwei Jahre, ab dem Tag, an dem sie rechtskräftig ist. Bis dahin müssen Sie mit dem Bau begonnen haben. Auf Gesuch verlängern wir sie einmal um ein Jahr.</p>'
+          fr: '<p>Deux ans, à partir du jour de son entrée en force. D''ici là, vous devez avoir commencé les travaux. Sur demande, nous le prolongeons une fois d''une année.</p>'
   # Building applications are official publications. On a detail page, the
   # automatic list is always a list.
   - type: teaser_list
@@ -88,16 +130,18 @@ field_related:
     field_link: { node: permit-needed }
   - type: teaser
     field_link: https://www.example.com/zoning-plan
-    field_title: { de: Zonenplan }
+    field_title: { en: 'Zoning plan', de: Zonenplan, fr: 'Plan de zones' }
     field_lead:
+      en: What can your plot be used for?
       de: Welche Nutzung gilt für Ihr Grundstück?
+      fr: 'Quelle affectation s''applique à votre parcelle ?'
 field_aside:
   - type: title
-    field_title: { de: Formulare und Links }
+    field_title: { en: 'Forms and links', de: Formulare und Links, fr: 'Formulaires et liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: { media: permit-form }
       - type: link
         field_link: https://www.example.com/building-law
-        field_title: { de: Kantonales Baugesetz }
+        field_title: { en: 'Cantonal building act', de: Kantonales Baugesetz, fr: 'Loi cantonale sur les constructions' }

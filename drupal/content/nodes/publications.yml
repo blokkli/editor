@@ -3,14 +3,18 @@
 key: publications
 type: editorial
 frontend_route: publications
-title: { de: Amtliche Publikationen }
+title: { en: Official publications, de: Amtliche Publikationen, fr: Publications officielles }
 field_lead:
+  en: 'Building applications, traffic measures and regulations, while they are on display.'
   de: 'Baugesuche, Verkehrsmassnahmen und Reglemente, solange sie aufliegen.'
+  fr: 'Demandes de permis de construire, mesures de circulation et règlements, pendant leur mise à l''enquête.'
 field_host_options:
   - { key: header, value: plain }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>While a publication is on display, you can inspect the documents at the office named in it. Submit any objections there in writing, stating your reasons, before the deadline ends.</p>'
       de: '<p>Solange eine Publikation aufliegt, können Sie die Unterlagen bei der zuständigen Stelle einsehen, die in der Publikation steht. Einsprachen reichen Sie schriftlich und begründet bis zum Ende der Frist dort ein.</p>'
+      fr: '<p>Pendant la mise à l''enquête, vous pouvez consulter le dossier auprès du service compétent, indiqué dans la publication. Déposez-y vos oppositions par écrit et dûment motivées jusqu''à la fin du délai.</p>'
   - type: from_library
     field_reusable_paragraph: { library: stay-informed }

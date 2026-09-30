@@ -1,8 +1,10 @@
 key: municipal-chancery
 type: office
-title: { de: 'Gemeindekanzlei' }
+title: { en: 'Municipal chancery', de: 'Gemeindekanzlei', fr: 'Chancellerie communale' }
 field_lead:
+  en: 'Your first point of contact at the town hall: general information, the municipal council, the municipal assembly, votes and elections.'
   de: 'Die erste Anlaufstelle im Rathaus: allgemeine Auskünfte, der Gemeinderat, die Gemeindeversammlung, Abstimmungen und Wahlen.'
+  fr: 'Le premier point de contact à l''hôtel de ville : renseignements généraux, Conseil communal, Assemblée communale, votations et élections.'
 field_location: { term: town-hall }
 field_phone: '+41 32 555 01 00'
 field_email: info@blockingen.example
@@ -21,22 +23,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The municipal chancery is your first point of contact at the town hall. It answers general questions and tells you which office deals with your request. Led by the town clerk, Claire Rossel, it runs the municipal council''s secretariat, prepares the municipal assembly, organises votes and elections and publishes the official publications.</p><p>At the counter, you can get printed copies of the budget and the accounts, and this is also where you''ll find the town''s lost property office. Report anything you''ve lost by phone or email; we keep lost property for a year.</p>'
       de: '<p>Die Gemeindekanzlei ist die erste Anlaufstelle im Rathaus. Sie beantwortet allgemeine Fragen und sagt Ihnen, welches Amt für Ihr Anliegen zuständig ist. Unter der Leitung von Gemeindeschreiberin Claire Rossel führt sie das Sekretariat des Gemeinderats, bereitet die Gemeindeversammlung vor, organisiert die Abstimmungen und Wahlen und veröffentlicht die amtlichen Publikationen.</p><p>Am Schalter erhalten Sie das Budget und die Rechnung gedruckt, und hier ist auch das Fundbüro der Gemeinde. Was Sie verloren haben, melden Sie am Telefon oder per E-Mail; Fundsachen bewahren wir ein Jahr lang auf.</p>'
+      fr: '<p>La Chancellerie communale est le premier point de contact à l''hôtel de ville. Elle répond aux questions générales et vous indique quel service est compétent pour votre demande. Sous la direction de la secrétaire communale, Claire Rossel, elle assure le secrétariat du Conseil communal, prépare l''Assemblée communale, organise les votations et les élections et fait paraître les publications officielles.</p><p>Au guichet, vous pouvez obtenir le budget et les comptes imprimés, et c''est aussi ici que se trouve le bureau des objets trouvés de la commune. Signalez ce que vous avez perdu par téléphone ou par e-mail ; nous conservons les objets trouvés pendant un an.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: politics }
-      - type: link
-        field_link: { node: council }
-      - type: link
-        field_link: { node: assembly }
-      - type: link
-        field_link: { node: votes }
-      - type: link
-        field_link: { node: in-numbers }
-      - type: link
-        field_link: { node: history }
-      - type: link
-        field_link: { node: publications }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

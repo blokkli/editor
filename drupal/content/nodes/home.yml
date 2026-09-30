@@ -5,9 +5,11 @@
 key: home
 id: 1
 type: editorial
-title: { de: 'Wie können wir Ihnen helfen?' }
+title: { en: 'How can we help?', de: 'Wie können wir Ihnen helfen?', fr: 'Comment pouvons-nous vous aider ?' }
 field_lead:
+  en: 'Services, information and news from the town of Blockingen, all in one place.'
   de: 'Dienstleistungen, Auskünfte und Neuigkeiten der Gemeinde Blockingen, an einem Ort.'
+  fr: 'Prestations, renseignements et actualités de la commune de Bloquens, réunis en un seul endroit.'
 field_hero_image: { media: town-from-lake }
 field_host_options:
   - { key: header, value: image }
@@ -19,14 +21,16 @@ field_paragraphs:
   - type: teaser_list
     options: { source: news }
   - type: call_to_action
-    field_tagline: { de: Politik }
-    field_title: { de: Die nächste Gemeindeversammlung }
+    field_tagline: { en: Politics, de: Politik, fr: Politique }
+    field_title: { en: The next municipal assembly, de: Die nächste Gemeindeversammlung, fr: La prochaine Assemblée communale }
     field_lead:
+      en: 'Voters decide on the budget and the tax rate, CHF 4.6 million for the renovation of the old town gym, and the new water fees.'
       de: 'Die Stimmberechtigten entscheiden über das Budget und den Steuerfuss, einen Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt und die neuen Wassergebühren.'
+      fr: 'Les électrices et électeurs se prononcent sur le budget et la quotité d''impôt, un crédit de 4,6 millions de francs pour la rénovation de la halle de gymnastique de la vieille ville et les nouvelles taxes pour l''eau.'
     field_links:
       - type: link
         field_link: { node: assembly }
-        field_title: { de: Traktanden und Unterlagen }
+        field_title: { en: Agenda and documents, de: Traktanden und Unterlagen, fr: Ordre du jour et documents }
   - type: columns
     options: { ratio: '50-50' }
     field_left:

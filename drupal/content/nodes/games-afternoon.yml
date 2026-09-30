@@ -1,14 +1,18 @@
 key: games-afternoon
 type: event
-title: { de: Spielnachmittag in der Ludothek }
+title: { en: Games afternoon at the toy library, de: Spielnachmittag in der Ludothek, fr: Après-midi jeux à la ludothèque }
 field_lead:
+  en: 'Try out new board games and rediscover old ones: for families, children aged 4 and over, and anyone who enjoys playing.'
   de: 'Neue Brettspiele ausprobieren, alte wiederentdecken: für Familien, Kinder ab 4 Jahren und alle, die gern spielen.'
+  fr: 'Essayer de nouveaux jeux de société, en redécouvrir d''anciens : pour les familles, les enfants dès 4 ans et toutes celles et ceux qui aiment jouer.'
 field_date: { value: '+5 days 14:00', end_value: '+5 days 17:00' }
-field_place: { de: Ludothek Blockingen }
-field_organiser: { de: Ludothek Blockingen }
+field_place: { en: Blockingen Toy Library, de: Ludothek Blockingen, fr: Ludothèque de Bloquens }
+field_organiser: { en: Blockingen Toy Library, de: Ludothek Blockingen, fr: Ludothèque de Bloquens }
 field_category: family
-field_price: { de: Gratis }
+field_price: { en: Free, de: Gratis, fr: Gratuit }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The toy library presents its new games, and the team explains the rules to you. At one table, the little ones play memory and dice games; at another, the older children play strategy games. At 15:30, a tournament of Jass, the Swiss card game, begins for young and old.</p><p>Squash and cake are available for a small contribution. Children under 8 come with an adult. If you like a game, borrow it straight away: it costs CHF 2 to CHF 5 for three weeks.</p>'
       de: '<p>Die Ludothek stellt ihre Neuheiten vor, und das Team erklärt Ihnen die Regeln. An einem Tisch spielen die Kleinen Memory und Würfelspiele, an einem anderen die Grösseren Strategiespiele. Um 15.30 Uhr beginnt ein Jassturnier für Jung und Alt.</p><p>Sirup und Kuchen gibt es gegen einen kleinen Beitrag. Kinder unter 8 Jahren kommen mit einer erwachsenen Person. Was Ihnen gefällt, leihen Sie gleich aus: Ein Spiel kostet für drei Wochen Fr. 2.– bis Fr. 5.–.</p>'
+      fr: '<p>La ludothèque présente ses nouveautés, et l''équipe vous explique les règles. À une table, les petits jouent au memory et aux jeux de dés ; à une autre, les plus grands, à des jeux de stratégie. À 15 h 30 commence un tournoi de jass pour jeunes et moins jeunes.</p><p>Sirop et gâteaux sont proposés contre une petite participation. Les enfants de moins de 8 ans viennent accompagnés d''une personne adulte. Ce qui vous plaît, vous pouvez l''emprunter tout de suite : un jeu coûte de Fr. 2.– à Fr. 5.– pour trois semaines.</p>'

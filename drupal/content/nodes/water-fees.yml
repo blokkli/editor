@@ -1,29 +1,43 @@
 key: water-fees
 type: publication
-title: { de: Revision des Reglements über die Wassergebühren }
+title:
+  en: Revision of the regulations on water fees
+  de: Revision des Reglements über die Wassergebühren
+  fr: 'Révision du règlement sur les taxes pour l''eau'
 field_lead:
+  en: 'The municipal council is proposing new water fees. You can comment on the draft until the end of the consultation period.'
   de: Der Gemeinderat schlägt neue Wassergebühren vor. Bis zum Ende der Frist können Sie zum Entwurf Stellung nehmen.
+  fr: 'Le Conseil communal propose de nouvelles taxes pour l''eau. Vous pouvez prendre position sur le projet jusqu''à la fin du délai.'
 field_publication_type: regulation
 field_period: { value: '-10 days', end_value: '+20 days' }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Many of Blockingen''s water mains are over 60 years old and will have to be replaced in the coming years. The town pays for water with the fees, not with taxes. So that the fees continue to cover the costs in future, the municipal council is proposing to adjust them.</p>'
       de: '<p>Viele Wasserleitungen in Blockingen sind über 60 Jahre alt und müssen in den nächsten Jahren ersetzt werden. Das Wasser bezahlt die Gemeinde mit den Gebühren, nicht mit den Steuern. Damit die Gebühren die Kosten auch künftig decken, schlägt der Gemeinderat vor, sie anzupassen.</p>'
+      fr: '<p>De nombreuses conduites d''eau de Bloquens ont plus de 60 ans et devront être remplacées ces prochaines années. La commune finance l''eau par les taxes, et non par les impôts. Pour que les taxes continuent à couvrir les coûts, le Conseil communal propose de les adapter.</p>'
   - type: title
-    field_title: { de: Was sich ändert }
+    field_title: { en: 'What changes', de: Was sich ändert, fr: 'Ce qui change' }
   - type: text
     field_text:
+      en: '<ul><li>The <strong>base fee</strong> stays the same: CHF 80 for a flat, CHF 140 for a house.</li><li>The <strong>price per cubic metre</strong> of water rises by 20 centimes, from CHF 1.90 to CHF 2.10.</li><li>A household of four using 200 m³ a year will therefore pay CHF 40 more.</li></ul>'
       de: '<ul><li>Die <strong>Grundgebühr</strong> bleibt gleich: Fr. 80.– für eine Wohnung, Fr. 140.– für ein Haus.</li><li>Der <strong>Preis pro Kubikmeter</strong> Wasser steigt um 20 Rappen, von Fr. 1.90 auf Fr. 2.10.</li><li>Ein Haushalt mit vier Personen, der 200 m³ im Jahr braucht, bezahlt damit Fr. 40.– mehr.</li></ul>'
+      fr: '<ul><li>La <strong>taxe de base</strong> reste inchangée : Fr. 80.– pour un appartement, Fr. 140.– pour une maison.</li><li>Le <strong>prix par mètre cube</strong> d''eau augmente de 20 centimes, de Fr. 1.90 à Fr. 2.10.</li><li>Un ménage de quatre personnes qui consomme 200 m³ par an paiera ainsi Fr. 40.– de plus.</li></ul>'
   - type: title
-    field_title: { de: So nehmen Sie Stellung }
+    field_title: { en: 'How to comment', de: So nehmen Sie Stellung, fr: 'Comment prendre position' }
   - type: text
     field_text:
+      en: '<p>You''ll find the draft regulations and the municipal council''s report online and at the municipal chancery in the town hall. Send your comments by the end of the period by post to the Municipal chancery, Town hall, Seestrasse 1, 9999 Blockingen, or by email to <a href="mailto:vernehmlassung@blockingen.example">vernehmlassung@blockingen.example</a>.</p><p>The municipal council will then revise the draft. The municipal assembly decides on the regulations; the new rates apply from next year.</p>'
       de: '<p>Den Entwurf des Reglements und den Bericht des Gemeinderats finden Sie online und bei der Gemeindekanzlei im Rathaus. Ihre Stellungnahme senden Sie bis zum Ende der Frist per Post an die Gemeindekanzlei, Rathaus, Seestrasse 1, 9999 Blockingen, oder per E-Mail an <a href="mailto:vernehmlassung@blockingen.example">vernehmlassung@blockingen.example</a>.</p><p>Danach überarbeitet der Gemeinderat den Entwurf. Über das Reglement entscheidet die Gemeindeversammlung; die neuen Tarife gelten ab dem nächsten Jahr.</p>'
+      fr: '<p>Le projet de règlement et le rapport du Conseil communal sont disponibles en ligne et à la Chancellerie communale, à l''hôtel de ville. Envoyez votre prise de position jusqu''à la fin du délai par courrier à la Chancellerie communale, hôtel de ville, rue du Lac 1, 9999 Bloquens, ou par e-mail à <a href="mailto:vernehmlassung@blockingen.example">vernehmlassung@blockingen.example</a>.</p><p>Le Conseil communal remaniera ensuite le projet. L''Assemblée communale se prononcera sur le règlement ; les nouveaux tarifs s''appliqueront dès l''année prochaine.</p>'
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/water-regulation-draft
-        field_title: { de: Entwurf des Reglements (PDF) }
+        field_title: { en: 'Draft regulations (PDF)', de: Entwurf des Reglements (PDF), fr: 'Projet de règlement (PDF)' }
       - type: link
         field_link: { node: fees }
-        field_title: { de: 'Gebühren für Wasser, Abwasser und Abfall' }
+        field_title:
+          en: 'Water, wastewater and waste fees'
+          de: 'Gebühren für Wasser, Abwasser und Abfall'
+          fr: 'Taxes pour l''eau, les eaux usées et les déchets'

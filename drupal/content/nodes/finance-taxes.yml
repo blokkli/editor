@@ -1,8 +1,10 @@
 key: finance-taxes
 type: office
-title: { de: 'Finanzen und Steuern' }
+title: { en: 'Finance and taxes', de: 'Finanzen und Steuern', fr: 'Finances et impôts' }
 field_lead:
+  en: 'Tax returns, tax bills and payment plans, the town''s budget and accounts.'
   de: 'Steuererklärungen, Steuerrechnungen und Zahlungspläne, das Budget und die Rechnung der Gemeinde.'
+  fr: 'Déclarations d''impôt, factures d''impôt et plans de paiement, budget et comptes de la commune.'
 field_location: { term: town-hall }
 field_phone: '+41 32 555 01 20'
 field_email: finanzen@blockingen.example
@@ -20,20 +22,10 @@ field_opening_hours:
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>The finance and taxes office sends out the tax returns, issues the bills for municipal and cantonal taxes and agrees a payment plan with you if you can''t pay everything at once. We''re happy to help if you have questions about filling in your return, and in March also on two evenings at the town hall. Questions about your tax assessment are answered by the cantonal tax office. The easiest way to submit your tax return is online, with the canton''s tax software.</p><p>For the town, we keep the books and work with the municipal council to draw up the budget, the accounts and the financial plan. The counter is closed on Friday afternoons.</p>'
       de: '<p>Finanzen und Steuern verschickt die Steuererklärungen, stellt die Rechnungen für die Gemeinde- und Staatssteuern aus und vereinbart mit Ihnen einen Zahlungsplan, wenn Sie nicht alles auf einmal bezahlen können. Bei Fragen zum Ausfüllen helfen wir Ihnen gern, im März auch an zwei Abenden im Rathaus. Fragen zu Ihrer Veranlagung beantwortet die kantonale Steuerverwaltung. Die Steuererklärung reichen Sie am einfachsten online ein, mit der Steuersoftware des Kantons.</p><p>Für die Gemeinde führen wir die Buchhaltung und erarbeiten mit dem Gemeinderat das Budget, die Rechnung und den Finanzplan. Am Freitagnachmittag ist der Schalter geschlossen.</p>'
+      fr: '<p>Le service Finances et impôts envoie les déclarations d''impôt, établit les factures des impôts communaux et cantonaux et convient avec vous d''un plan de paiement si vous ne pouvez pas tout payer en une fois. Nous vous aidons volontiers à remplir votre déclaration, en mars aussi lors de deux soirées à l''hôtel de ville. Pour les questions concernant votre taxation, adressez-vous à l''administration fiscale cantonale. Le plus simple est de déposer votre déclaration d''impôt en ligne, avec le logiciel fiscal du canton.</p><p>Pour la commune, nous tenons la comptabilité et élaborons avec le Conseil communal le budget, les comptes et le plan financier. Le guichet est fermé le vendredi après-midi.</p>'
   - type: title
-    field_title: { de: Themen und Dienstleistungen }
-  - type: link_list
-    field_paragraphs:
-      - type: link
-        field_link: { node: taxes }
-      - type: link
-        field_link: { node: tax-return }
-      - type: link
-        field_link: { node: paying-taxes }
-      - type: link
-        field_link: { node: municipal-finances }
-      - type: link
-        field_link: { node: budget }
-      - type: link
-        field_link: { node: financial-strategy }
+    field_title: { en: 'Topics and services', de: Themen und Dienstleistungen, fr: 'Thèmes et prestations' }
+  - type: blokkli_fragment
+    field_blokkli_fragment_name: office_pages

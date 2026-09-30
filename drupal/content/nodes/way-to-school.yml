@@ -1,51 +1,75 @@
 key: way-to-school
 type: page
-title: { de: 'Schulweg' }
+title: { en: 'The way to school', de: 'Schulweg', fr: 'Le chemin de l''école' }
 field_lead:
+  en: 'How your child gets to school safely, on foot or by bike.'
   de: 'Wie Ihr Kind sicher zur Schule kommt, zu Fuss oder mit dem Velo.'
+  fr: 'Comment votre enfant se rend à l''école en toute sécurité, à pied ou à vélo.'
 field_office: { node: schools-office }
 field_paragraphs:
   - type: text
     field_text:
+      en: '<p>Children learn a lot on the way to school: getting around on their own, finding their way in traffic, talking to other children. Parents are responsible for the way to school. So please don''t drive your child to school: they only learn the way on foot, and the cars outside the school put the other children at risk.</p>'
       de: '<p>Auf dem Schulweg lernen Kinder viel: selbständig unterwegs zu sein, sich im Verkehr zurechtzufinden, mit anderen Kindern zu reden. Für den Schulweg sind die Eltern verantwortlich. Bringen Sie Ihr Kind deshalb nicht mit dem Auto: Es lernt den Weg nur zu Fuss, und die Autos vor dem Schulhaus gefährden die anderen Kinder.</p>'
+      fr: '<p>Sur le chemin de l''école, les enfants apprennent beaucoup : se déplacer de manière autonome, s''orienter dans la circulation, parler avec d''autres enfants. Les parents sont responsables du chemin de l''école. N''amenez donc pas votre enfant en voiture : il n''apprend le chemin qu''à pied, et les voitures devant l''école mettent en danger les autres enfants.</p>'
   - type: title
-    field_title: { de: Den Weg üben }
+    field_title: { en: 'Practising the route', de: Den Weg üben, fr: 'S''exercer sur le trajet' }
   - type: text
     field_text:
+      en: '<p>Walk the route to school with your child several times before the first day of school, first with you in front, then with your child leading the way.</p><ul><li>Choose the safest route, not the shortest.</li><li>Practise the tricky spots: your child stops at the zebra crossing, looks left and right, and only crosses once the cars have stopped.</li><li>Allow enough time. Children in a hurry pay less attention.</li><li>In winter, reflective strips on their jacket and school bag make your child visible.</li></ul>'
       de: '<p>Gehen Sie den Schulweg vor dem ersten Schultag mehrmals mit Ihrem Kind ab, zuerst Sie voraus, dann Ihr Kind.</p><ul><li>Wählen Sie den sichersten Weg, nicht den kürzesten.</li><li>Üben Sie die schwierigen Stellen: Ihr Kind hält am Fussgängerstreifen an, schaut nach links und rechts und geht erst, wenn die Autos stehen.</li><li>Planen Sie genug Zeit ein. Wer es eilig hat, passt weniger auf.</li><li>Im Winter machen Leuchtstreifen an der Jacke und am Schulsack Ihr Kind sichtbar.</li></ul>'
+      fr: '<p>Avant le premier jour d''école, parcourez plusieurs fois le chemin avec votre enfant, d''abord en marchant devant lui, puis en le laissant passer devant.</p><ul><li>Choisissez le chemin le plus sûr, pas le plus court.</li><li>Exercez les passages difficiles : votre enfant s''arrête au passage pour piétons, regarde à gauche et à droite et ne traverse que lorsque les voitures sont arrêtées.</li><li>Prévoyez suffisamment de temps. Qui est pressé fait moins attention.</li><li>En hiver, des bandes réfléchissantes sur la veste et le sac d''école rendent votre enfant visible.</li></ul>'
   - type: title
-    field_title: { de: Schülerlotsen }
+    field_title: { en: 'School crossing patrols', de: Schülerlotsen, fr: 'Patrouilleurs scolaires' }
   - type: text
     field_text:
+      en: '<p>On Seestrasse and Bahnhofstrasse, school crossing patrollers help the children across the road, in the morning from 7:40 to 8:15 and at lunchtime from 11:45 to 12:05. They are volunteers from Blockingen, trained by the police.</p>'
       de: '<p>An der Seestrasse und an der Bahnhofstrasse helfen Schülerlotsinnen und Schülerlotsen den Kindern über die Strasse, am Morgen von 7.40 bis 8.15 Uhr und am Mittag von 11.45 bis 12.05 Uhr. Es sind Freiwillige aus Blockingen, ausgebildet von der Polizei.</p>'
+      fr: '<p>À la rue du Lac et à la rue de la Gare, des patrouilleuses et patrouilleurs scolaires aident les enfants à traverser, le matin de 7 h 40 à 8 h 15 et à midi de 11 h 45 à 12 h 05. Ce sont des bénévoles de Bloquens, formés par la police.</p>'
   - type: text
     options: { box: info }
     field_text:
+      en: '<p><strong>Volunteers wanted:</strong> Would you like to be a school crossing patroller one morning a week? Get in touch with the schools office. The training takes one afternoon.</p>'
       de: '<p><strong>Freiwillige gesucht:</strong> Möchten Sie einen Morgen pro Woche Schülerlotsin oder Schülerlotse sein? Melden Sie sich bei der Schulverwaltung. Die Ausbildung dauert einen Nachmittag.</p>'
+      fr: '<p><strong>Bénévoles recherchés :</strong> vous aimeriez être patrouilleuse ou patrouilleur scolaire un matin par semaine ? Adressez-vous à l''Administration scolaire. La formation dure un après-midi.</p>'
   - type: title
-    field_title: { de: Mit dem Velo oder dem Trottinett }
+    field_title: { en: 'By bike or scooter', de: Mit dem Velo oder dem Trottinett, fr: 'À vélo ou en trottinette' }
   - type: text
     field_text:
+      en: '<p>Children cycle to school once they have passed the cycling test in Year 4. The police prepare them for it in road safety lessons. Children can come by scooter from Year 1. They leave bikes and scooters in the shelter at the school; there is no riding in the playground.</p>'
       de: '<p>Mit dem Velo fahren Kinder zur Schule, wenn sie die Veloprüfung in der 4. Klasse bestanden haben. Darauf bereitet sie die Polizei im Verkehrsunterricht vor. Mit dem Trottinett kommen Kinder ab der 1. Klasse. Velos und Trottinetts stellen sie beim Schulhaus in den Unterstand; auf dem Pausenplatz wird nicht gefahren.</p>'
+      fr: '<p>Les enfants viennent à l''école à vélo une fois qu''ils ont réussi l''examen cycliste en 4e année. La police les y prépare lors des cours d''éducation routière. En trottinette, les enfants peuvent venir dès la 1re année. Ils rangent vélos et trottinettes sous l''abri près de l''école ; on ne roule pas dans la cour de récréation.</p>'
   - type: title
-    field_title: { de: Schulbus }
+    field_title: { en: 'School bus', de: Schulbus, fr: 'Bus scolaire' }
   - type: text
     field_text:
+      en: '<p>Children from the hamlets above the vineyards who live more than two kilometres from the school travel free on the school bus. You''ll receive the timetable with the class allocation. The bus only runs on school days.</p>'
       de: '<p>Kinder aus den Weilern oberhalb der Reben, die mehr als zwei Kilometer vom Schulhaus entfernt wohnen, fahren gratis mit dem Schulbus. Den Fahrplan erhalten Sie mit der Einteilung. Der Bus fährt nur an Schultagen.</p>'
+      fr: '<p>Les enfants des hameaux au-dessus des vignes qui habitent à plus de deux kilomètres de l''école prennent gratuitement le bus scolaire. Vous recevez l''horaire avec la répartition dans les classes. Le bus ne circule que les jours d''école.</p>'
   - type: title
-    field_title: { de: Häufige Fragen }
+    field_title: { en: 'Frequently asked questions', de: Häufige Fragen, fr: 'Questions fréquentes' }
   - type: accordion
-    field_title: { de: 'Unser Kind hat Angst, allein zu gehen. Was hilft?' }
+    field_title:
+      en: 'Our child is afraid to walk to school alone. What helps?'
+      de: 'Unser Kind hat Angst, allein zu gehen. Was hilft?'
+      fr: 'Notre enfant a peur d''y aller seul. Qu''est-ce qui aide ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>It often helps if children from the neighbourhood walk together. The teacher will be happy to put you in touch with other parents. Walk part of the way with your child at first, then gradually let them go on their own.</p>'
           de: '<p>Oft hilft es, wenn Kinder aus der Nachbarschaft zusammen gehen. Die Lehrperson vermittelt Ihnen gern Kontakte zu anderen Eltern. Begleiten Sie Ihr Kind anfangs ein Stück, und lassen Sie es dann nach und nach allein gehen.</p>'
+          fr: '<p>Souvent, cela aide que des enfants du voisinage fassent le chemin ensemble. L''enseignante ou l''enseignant vous met volontiers en contact avec d''autres parents. Au début, accompagnez votre enfant sur une partie du trajet, puis laissez-le peu à peu y aller seul.</p>'
   - type: accordion
-    field_title: { de: 'Wo ist eine Stelle gefährlich?' }
+    field_title:
+      en: 'Where do we report a dangerous spot?'
+      de: 'Wo ist eine Stelle gefährlich?'
+      fr: 'Où signaler un endroit dangereux ?'
     field_paragraphs:
       - type: text
         field_text:
+          en: '<p>Report it to the schools office. It will look at the spot together with the police and public works, and there''s often a solution: a new zebra crossing, a speed limit sign or an extra school crossing patroller.</p>'
           de: '<p>Melden Sie es der Schulverwaltung. Sie prüft die Stelle mit der Polizei und dem Tiefbau, und oft findet sich eine Lösung: ein neuer Fussgängerstreifen, eine Tempotafel oder ein Schülerlotse mehr.</p>'
+          fr: '<p>Signalez-le à l''Administration scolaire. Elle examine l''endroit avec la police et les Travaux publics, et une solution se trouve souvent : un nouveau passage pour piétons, un panneau de limitation de vitesse ou un patrouilleur scolaire de plus.</p>'
 field_related:
   - type: teaser
     field_link: { node: kindergarten }
@@ -53,12 +77,12 @@ field_related:
     field_link: { node: day-school }
 field_aside:
   - type: title
-    field_title: { de: Links }
+    field_title: { en: 'Links', de: Links, fr: 'Liens' }
   - type: link_list
     field_paragraphs:
       - type: link
         field_link: https://www.example.com/school-bus
-        field_title: { de: Fahrplan des Schulbusses }
+        field_title: { en: 'School bus timetable', de: Fahrplan des Schulbusses, fr: 'Horaire du bus scolaire' }
       - type: link
         field_link: https://www.example.com/school-holidays
-        field_title: { de: Ferienplan }
+        field_title: { en: 'School holidays', de: Ferienplan, fr: 'Calendrier des vacances scolaires' }
