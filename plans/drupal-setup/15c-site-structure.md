@@ -150,6 +150,13 @@ and they share the pages' pattern (`/verwaltung/einwohnerdienste`); the three
   - The starterkit's three patches are in `drupal/patches/`: all three problems
     are still in the current releases. The PHP 8.5 one is
     `menu_breadcrumb#3578830` (`menu_breadcrumb!40`).
+  - Two core patches from Winterthur (2026-09-30): `drupal#1255092` makes the
+    front page's URL `/de` instead of its alias, so the home page's language
+    switcher stays on the home page; `drupal#3580733` stops a PHP 8.5
+    deprecation per row on /admin/people. Winterthur's other patches were
+    checked and aren't needed here: the menu shows for editors without
+    `drupal#2915792`, translation forms save without `drupal#3025039`, and the
+    editor shows unpublished paragraphs without `paragraphs#3095959`.
 - **The config** was made by a script in the ignored `tmp/` and exported:
   - one pattern for detail and editorial pages, and nine for news, events and
     offices, one per language

@@ -1,0 +1,12 @@
+--- a/core/lib/Drupal/Core/Entity/ContentEntityBase.php
++++ b/core/lib/Drupal/Core/Entity/ContentEntityBase.php
+@@ -978,6 +978,9 @@
+    * {@inheritdoc}
+    */
+   public function hasTranslation($langcode) {
++    if ($langcode === NULL) {
++      return FALSE;
++    }
+     if ($langcode == $this->defaultLangcode) {
+       $langcode = LanguageInterface::LANGCODE_DEFAULT;
+     }

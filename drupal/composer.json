@@ -117,6 +117,10 @@
         },
         "composer-exit-on-patch-failure": true,
         "patches": {
+            "drupal/core": {
+                "drupal#1255092: The front page's URL is /, not its node's alias, e.g. in the language switcher (from Winterthur)": "https://www.drupal.org/files/issues/2022-03-31/1255092-41.patch",
+                "drupal#3580733: PHP 8.5, hasTranslation() with a NULL langcode, e.g. the status field on /admin/people (from Winterthur)": "patches/core-3580733-php85-has-translation-null-langcode.patch"
+            },
             "drupal/menu_breadcrumb": {
                 "The breadcrumb over GraphQL: the active trail cache context is the /graphql route's, so the second request gets a wrong breadcrumb (from blokkli_starterkit)": "patches/menu_breadcrumb-graphql-cache-context.patch",
                 "menu_breadcrumb#3578830: PHP 8.5, (bool) instead of (boolean) casts (menu_breadcrumb!40)": "patches/menu_breadcrumb-3578830-php85-boolean-cast.diff"
