@@ -110,11 +110,16 @@ const publicationType = usePublicationType()
 
 const href = computed(() => props.url ?? props.node?.url?.path ?? undefined)
 const label = computed(() => props.title || props.node?.label || href.value)
-const hero = computed(
-  () =>
-    props.image ??
-    (props.node && 'hero' in props.node ? props.node.hero : null),
-)
+// An office shows its location's photo.
+const hero = computed(() => {
+  if (props.image) {
+    return props.image
+  }
+  if (props.node?.__typename === 'NodeOffice') {
+    return props.node.location?.image
+  }
+  return props.node && 'hero' in props.node ? props.node.hero : null
+})
 const teaserLead = computed(
   () =>
     props.lead || (props.node && 'lead' in props.node ? props.node.lead : null),

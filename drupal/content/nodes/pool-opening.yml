@@ -11,7 +11,7 @@ field_lead:
   en: "After the renovation, the pool opens with a new children's area."
   de: Nach der Sanierung öffnet das Bad mit einem neuen Kinderbereich.
   fr: Après la rénovation, la piscine ouvre avec un nouvel espace pour les enfants.
-field_hero_image: { media: lake }
+field_hero_image: { media: lakeside-pool }
 field_paragraphs:
   - type: text
     field_text:
@@ -20,11 +20,11 @@ field_paragraphs:
       fr: '<p>La piscine est ouverte tous les jours de 10 h à 19 h.</p>'
   - type: image
     options: { width: wide }
-    field_media: { media: meadow }
+    field_media: { media: pool-children-area }
     field_caption:
       en: The new children's area
       de: Der neue Kinderbereich
       fr: Le nouvel espace pour les enfants
   - type: contact
     options: { display: compact }
-    field_office: { node: town-hall }
+    field_office: { node: sport-leisure }

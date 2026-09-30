@@ -13,7 +13,7 @@ field_lead:
   en: Services, information and news from the town of Blockingen, in one place.
   de: Dienstleistungen, Auskünfte und Neuigkeiten der Gemeinde Blockingen – an einem Ort.
   fr: Prestations, renseignements et nouvelles de la commune de Bloquens, en un seul lieu.
-field_hero_image: { media: lake }
+field_hero_image: { media: town-from-lake }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:

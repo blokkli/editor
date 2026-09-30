@@ -1,0 +1,22 @@
+key: municipal-chancery
+type: office
+title: { en: Municipal chancery, de: Gemeindekanzlei, fr: Chancellerie communale }
+field_lead:
+  en: 'The council''s secretariat: council meetings, votes and elections, official publications, and permits for markets and events.'
+  de: 'Das Sekretariat des Gemeinderats: Sitzungen, Abstimmungen und Wahlen, amtliche Publikationen und Bewilligungen für Märkte und Anlässe.'
+  fr: 'Le secrétariat du conseil communal : séances, votations et élections, publications officielles et autorisations pour les marchés et manifestations.'
+field_location: { term: town-hall }
+field_phone: '+41 32 555 01 00'
+field_email: info@blockingen.example
+# Monday to Friday with a lunch break. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 800, endhours: 1200 }
+  - { day: 1, starthours: 1330, endhours: 1700 }
+  - { day: 2, starthours: 800, endhours: 1200 }
+  - { day: 2, starthours: 1330, endhours: 1700 }
+  - { day: 3, starthours: 800, endhours: 1200 }
+  - { day: 3, starthours: 1330, endhours: 1700 }
+  - { day: 4, starthours: 800, endhours: 1200 }
+  - { day: 4, starthours: 1330, endhours: 1700 }
+  - { day: 5, starthours: 800, endhours: 1200 }
+  - { day: 5, starthours: 1330, endhours: 1700 }

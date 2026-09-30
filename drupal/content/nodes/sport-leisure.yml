@@ -1,0 +1,18 @@
+key: sport-leisure
+type: office
+title: { en: Sport and leisure, de: Sport und Freizeit, fr: Sports et loisirs }
+field_lead:
+  en: 'The lakeside pool, the sports grounds and the clubs.'
+  de: 'Das Strandbad, die Sportanlagen und die Vereine.'
+  fr: 'La plage, les installations sportives et les sociétés locales.'
+field_location: { term: lakeside-pool }
+field_phone: '+41 32 555 01 80'
+field_email: sport@blockingen.example
+# The office's hours; the pool has its own. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 900, endhours: 1130 }
+  - { day: 1, starthours: 1400, endhours: 1600 }
+  - { day: 3, starthours: 900, endhours: 1130 }
+  - { day: 3, starthours: 1400, endhours: 1600 }
+  - { day: 5, starthours: 900, endhours: 1130 }
+  - { day: 5, starthours: 1400, endhours: 1600 }

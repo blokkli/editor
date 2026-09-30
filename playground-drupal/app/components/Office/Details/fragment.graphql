@@ -1,5 +1,8 @@
 fragment officeDetails on NodeOffice {
-  address: fieldAddress
+  location: fieldLocation {
+    label
+    address: fieldAddress
+  }
   phone: fieldPhone
   email: fieldEmail
   hours: fieldOpeningHours {

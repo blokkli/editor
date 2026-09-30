@@ -161,11 +161,12 @@ Milestones:
 | 15f | [The home page](15f-home-page.md): its own page component, a mock first                             | M1        | done        | 15c, 15d                          |
 | 15g | [The detail page's missing parts](15g-detail-page-parts.md): info boxes, steps, related topics      | M1        | done        | 15d                               |
 | 15h | [Overview pages and search](15h-overviews-and-search.md): frontend routes, filters, Search API      | M1        | done        | 15f                               |
+| 15i | [Locations and offices](15i-locations-and-offices.md): buildings as terms, the offices in them      | M1        | done        | 15e                               |
 
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 05, 13a–13h, 14a and 15a–15h are
+(order, skill conventions, feature matrix). 05, 13a–13h, 14a and 15a–15i are
 done: `ddev bake` seeds the content from `drupal/content`. 13i is in progress:
 the table of contents, the charts, the analyzer and the embed are done; the
 agent is postponed.

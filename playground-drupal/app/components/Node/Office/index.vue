@@ -9,7 +9,8 @@
         <HostHeader
           :title="entity.title"
           :lead="entity.lead"
-          :image="entity.hero"
+          :image="location?.image"
+          static-image
           variant="image"
           :is-editing
           :breadcrumb
@@ -17,9 +18,11 @@
           <template #eyebrow>{{ $texts('office.label', 'Office') }}</template>
         </HostHeader>
       </template>
-      <Facts v-if="address || phone || email || hours?.length" class="mb-10">
-        <FactsItem v-if="address" :label="$texts('office.address', 'Address')">
-          <p class="whitespace-pre-line">{{ address }}</p>
+      <Facts v-if="location || phone || email || hours?.length" class="mb-10">
+        <FactsItem v-if="location" :label="$texts('office.address', 'Address')">
+          <p class="whitespace-pre-line">
+            {{ location.label }}<br />{{ location.address }}
+          </p>
         </FactsItem>
         <FactsItem
           v-if="phone || email"
@@ -54,7 +57,8 @@ import OfficeDetails from '~/components/Office/Details/index.vue'
 import OfficeHours from '~/components/Office/Hours/index.vue'
 
 // An office: its address, contact and opening hours are the facts after the
-// header.
+// header. The address and the header's photo are its location's, a building
+// that other offices can be in too (a taxonomy term, edited in Drupal).
 const props = defineProps<
   NodeOfficeFragment & { breadcrumb?: BreadcrumbFragment[] }
 >()

@@ -1,0 +1,9 @@
+uuid: cd233bde-63a6-4003-bea2-e386352b5082
+langcode: en
+status: true
+dependencies: {  }
+name: Locations
+vid: location
+description: 'The buildings the offices are in: their address and a photo.'
+weight: 0
+new_revision: false

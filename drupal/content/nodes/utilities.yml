@@ -1,0 +1,22 @@
+key: utilities
+type: office
+title: { en: Utilities, de: Gemeindewerke, fr: Services industriels }
+field_lead:
+  en: 'Water, electricity and the meter readings.'
+  de: 'Wasser, Strom und die Zählerablesung.'
+  fr: 'Eau, électricité et relevés des compteurs.'
+field_location: { term: works-yard }
+field_phone: '+41 32 555 01 60'
+field_email: werke@blockingen.example
+# Monday to Friday with a lunch break. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 800, endhours: 1200 }
+  - { day: 1, starthours: 1330, endhours: 1630 }
+  - { day: 2, starthours: 800, endhours: 1200 }
+  - { day: 2, starthours: 1330, endhours: 1630 }
+  - { day: 3, starthours: 800, endhours: 1200 }
+  - { day: 3, starthours: 1330, endhours: 1630 }
+  - { day: 4, starthours: 800, endhours: 1200 }
+  - { day: 4, starthours: 1330, endhours: 1630 }
+  - { day: 5, starthours: 800, endhours: 1200 }
+  - { day: 5, starthours: 1330, endhours: 1630 }

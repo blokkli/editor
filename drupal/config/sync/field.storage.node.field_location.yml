@@ -1,15 +1,16 @@
-uuid: a7648a70-6785-4203-b203-21c710551f1e
+uuid: 8fb002a5-8ae4-4bef-8b99-18b18076acd4
 langcode: en
 status: true
 dependencies:
   module:
     - node
-id: node.field_address
-field_name: field_address
+    - taxonomy
+id: node.field_location
+field_name: field_location
 entity_type: node
-type: string_long
+type: entity_reference
 settings:
-  case_sensitive: false
+  target_type: taxonomy_term
 module: core
 locked: false
 cardinality: 1

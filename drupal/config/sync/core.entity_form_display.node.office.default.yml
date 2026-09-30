@@ -3,16 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.office.field_address
     - field.field.node.office.field_email
-    - field.field.node.office.field_hero_image
     - field.field.node.office.field_lead
+    - field.field.node.office.field_location
     - field.field.node.office.field_opening_hours
     - field.field.node.office.field_paragraphs
     - field.field.node.office.field_phone
     - node.type.office
   module:
-    - media_library
     - office_hours
     - paragraphs
     - path
@@ -28,14 +26,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_address:
-    type: string_textarea
-    weight: -3
-    region: content
-    settings:
-      rows: 5
-      placeholder: ''
-    third_party_settings: {  }
   field_email:
     type: email_default
     weight: -1
@@ -44,13 +34,6 @@ content:
       placeholder: ''
       size: 60
     third_party_settings: {  }
-  field_hero_image:
-    type: media_library_widget
-    weight: -4
-    region: content
-    settings:
-      media_types: {  }
-    third_party_settings: {  }
   field_lead:
     type: string_textarea
     weight: -5
@@ -58,6 +41,12 @@ content:
     settings:
       rows: 5
       placeholder: ''
+    third_party_settings: {  }
+  field_location:
+    type: options_select
+    weight: -3
+    region: content
+    settings: {  }
     third_party_settings: {  }
   field_opening_hours:
     type: office_hours_default

@@ -5,7 +5,7 @@ field_lead:
   en: Films on the lakeside meadow, every Friday in summer.
   de: Filme auf der Seewiese, jeden Freitag im Sommer.
   fr: Des films sur la prairie du lac, tous les vendredis en été.
-field_hero_image: { media: meadow }
+field_hero_image: { media: open-air-cinema }
 field_date: { value: '+12 days 19:30', end_value: '+12 days 22:00' }
 field_place: { en: Lakeside meadow, de: Seewiese, fr: Prairie du lac }
 field_organiser: { en: Culture commission, de: Kulturkommission, fr: Commission culturelle }

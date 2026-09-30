@@ -1,0 +1,46 @@
+# The locations: the buildings the offices are in. English gives both street
+# names, like the town's signs.
+- key: town-hall
+  type: location
+  name: { en: Town hall, de: Rathaus, fr: Hôtel de ville }
+  field_address:
+    en: "Seestrasse 1 / Rue du Lac 1\n9999 Blockingen"
+    de: "Seestrasse 1\n9999 Blockingen"
+    fr: "Rue du Lac 1\n9999 Bloquens"
+  field_image: { media: town-hall }
+
+- key: administrative-centre
+  type: location
+  name: { en: Administrative centre, de: Verwaltungszentrum, fr: Centre administratif }
+  field_address:
+    en: "Bahnhofstrasse 12 / Rue de la Gare 12\n9999 Blockingen"
+    de: "Bahnhofstrasse 12\n9999 Blockingen"
+    fr: "Rue de la Gare 12\n9999 Bloquens"
+  field_image: { media: administrative-centre }
+
+- key: works-yard
+  type: location
+  name: { en: Works yard, de: Werkhof, fr: Dépôt communal }
+  field_address:
+    en: "Industriestrasse 30 / Rue de l'Industrie 30\n9999 Blockingen"
+    de: "Industriestrasse 30\n9999 Blockingen"
+    fr: "Rue de l'Industrie 30\n9999 Bloquens"
+  field_image: { media: works-yard }
+
+- key: seefeld-school
+  type: location
+  name: { en: Seefeld school, de: Schulhaus Seefeld, fr: École du Seefeld }
+  field_address:
+    en: "Schulweg 5 / Chemin de l'École 5\n9999 Blockingen"
+    de: "Schulweg 5\n9999 Blockingen"
+    fr: "Chemin de l'École 5\n9999 Bloquens"
+  field_image: { media: seefeld-school }
+
+- key: lakeside-pool
+  type: location
+  name: { en: Lakeside pool, de: Strandbad, fr: Plage }
+  field_address:
+    en: "Strandweg 20 / Chemin de la Plage 20\n9999 Blockingen"
+    de: "Strandweg 20\n9999 Blockingen"
+    fr: "Chemin de la Plage 20\n9999 Bloquens"
+  field_image: { media: lakeside-pool }

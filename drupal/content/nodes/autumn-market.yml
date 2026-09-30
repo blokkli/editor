@@ -5,7 +5,7 @@ field_lead:
   en: Local produce, crafts and soup for everyone.
   de: Regionale Produkte, Handwerk und Suppe für alle.
   fr: Produits régionaux, artisanat et soupe pour tout le monde.
-field_hero_image: { media: meadow }
+field_hero_image: { media: market }
 field_date: { value: '+25 days 09:00', end_value: '+25 days 16:00' }
 field_place: { en: School grounds, de: Schulhausareal, fr: Cour de l'école }
 field_organiser: { en: Market association, de: Marktverein, fr: Association du marché }

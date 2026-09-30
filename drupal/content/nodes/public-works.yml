@@ -1,0 +1,22 @@
+key: public-works
+type: office
+title: { en: Public works, de: Tiefbau und Werkhof, fr: Travaux publics et voirie }
+field_lead:
+  en: 'Roads, waste collection, parks and the cemetery.'
+  de: 'Strassen, Abfallentsorgung, Grünanlagen und Friedhof.'
+  fr: 'Routes, ramassage des déchets, espaces verts et cimetière.'
+field_location: { term: works-yard }
+field_phone: '+41 32 555 01 50'
+field_email: werkhof@blockingen.example
+# The works yard starts early. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 700, endhours: 1200 }
+  - { day: 1, starthours: 1300, endhours: 1630 }
+  - { day: 2, starthours: 700, endhours: 1200 }
+  - { day: 2, starthours: 1300, endhours: 1630 }
+  - { day: 3, starthours: 700, endhours: 1200 }
+  - { day: 3, starthours: 1300, endhours: 1630 }
+  - { day: 4, starthours: 700, endhours: 1200 }
+  - { day: 4, starthours: 1300, endhours: 1630 }
+  - { day: 5, starthours: 700, endhours: 1200 }
+  - { day: 5, starthours: 1300, endhours: 1630 }

@@ -9,6 +9,7 @@ file and path.
 | ------------------ | --------------------------------------------------- |
 | `users.yml`        | users (the admin comes from the installation)       |
 | `media.yml`        | media, with their files from `files/`               |
+| `terms.yml`        | taxonomy terms: the locations of the offices        |
 | `library.yml`      | library items                                       |
 | `nodes/<key>.yml`  | one node per file                                   |
 | `templates.yml`    | paragraph templates                                 |
@@ -26,7 +27,7 @@ after them.
 key: building-permits # required, unique per entity type
 type: page # the bundle
 title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }
-field_office: { node: town-hall }
+field_office: { node: building-planning }
 field_paragraphs:
   - type: section
     options: { background: stone, columns: 2 }
@@ -72,11 +73,11 @@ field_paragraphs:
 
 | Field type                               | Write                                                          |
 | ---------------------------------------- | -------------------------------------------------------------- |
-| entity reference                         | `{ node: key }`, `{ media: key }`, `{ library: key }`, `{ user: key }` (`admin` is uid 1) |
+| entity reference                         | `{ node: key }`, `{ media: key }`, `{ term: key }`, `{ library: key }`, `{ user: key }` (`admin` is uid 1) |
 | paragraphs (entity reference revisions)  | a list of paragraphs: `type`, `options`, fields                |
 | link                                     | `{ node: key }`, `{ media: key }` (a document), `/internal/path` or `https://…` |
 | formatted text                           | the markup; the field's first allowed format is used           |
-| image, file                              | `{ file: images/lake.png, alt: … }`, a path in `files/`        |
+| image, file                              | `{ file: images/old-town.jpg, alt: … }`, a path in `files/`        |
 | date, date range                         | `'+12 days 19:30'` or `{ value: …, end_value: … }`             |
 | created, timestamp                       | `'-3 days'`                                                    |
 | anything else                            | the field's own values, e.g. office hours items                |
@@ -120,8 +121,9 @@ Pages and editorial pages get their URL from their place in the menu.
 
 `@{marc}` mentions a user; the comment module notifies them, as in the editor.
 
-## Placeholders
+## Photos and placeholders
 
-The images in `files/` are generated placeholders, and the content is the
-minimum that uses every paragraph type and host. The demo content (chunk 14b)
-replaces them, in the same format.
+The photos in `files/images/` are AI-generated from one brief for the whole town
+(in `plans/drupal-setup/15i-locations-and-offices.md`), so new ones look like
+the same place. The content is the minimum that uses every paragraph type and
+host; the demo content (chunk 14b) replaces it, in the same format.

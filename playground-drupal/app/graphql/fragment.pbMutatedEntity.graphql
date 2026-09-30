@@ -30,9 +30,6 @@ fragment pbMutatedEntity on Entity {
   ... on NodeOffice {
     title
     lead: fieldLead
-    hero: fieldHeroImage {
-      ...mediaImage
-    }
   }
   ... on NodePublication {
     title

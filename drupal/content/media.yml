@@ -1,36 +1,192 @@
-# Placeholders until 14b's openly licensed photos.
-- key: lake
+# Photos of the fictional town, generated with an image AI from the brief in
+# plans/drupal-setup/15i-locations-and-offices.md.
+- key: town-from-lake
   type: image
-  name: { en: The lake, de: Der See, fr: Le lac }
+  name: { en: The town from the lake, de: Die Gemeinde vom See aus, fr: La commune vue du lac }
   field_media_image:
-    file: images/lake.png
+    file: images/town-from-lake.jpg
     alt:
-      en: Placeholder for a photo of the lake
-      de: Platzhalter für ein Foto des Sees
-      fr: Image provisoire pour une photo du lac
-  field_credit: Placeholder
+      en: 'The town seen from the lake: the old town on the shore, with vineyards and wooded hills behind it'
+      de: 'Die Gemeinde vom See aus: die Altstadt am Ufer, dahinter Rebberge und bewaldete Hügel'
+      fr: 'La commune vue du lac : la vieille ville sur la rive, avec les vignes et les collines boisées derrière'
+  field_credit: AI-generated
 
-- key: meadow
-  type: image
-  name: { en: The lakeside meadow, de: Die Seewiese, fr: La prairie du lac }
-  field_media_image:
-    file: images/meadow.png
-    alt:
-      en: Placeholder for a photo of the lakeside meadow
-      de: Platzhalter für ein Foto der Seewiese
-      fr: Image provisoire pour une photo de la prairie du lac
-  field_credit: Placeholder
-
-- key: stone
+- key: old-town
   type: image
   name: { en: The old town, de: Die Altstadt, fr: La vieille ville }
   field_media_image:
-    file: images/stone.png
+    file: images/old-town.jpg
     alt:
-      en: Placeholder for a photo of the old town
-      de: Platzhalter für ein Foto der Altstadt
-      fr: Image provisoire pour une photo de la vieille ville
-  field_credit: Placeholder
+      en: A cobbled lane in the old town, with a clock tower at its end
+      de: Eine gepflasterte Gasse in der Altstadt, an ihrem Ende ein Uhrturm
+      fr: 'Une ruelle pavée de la vieille ville, avec une tour de l''horloge au bout'
+  field_credit: AI-generated
+
+- key: village-square
+  type: image
+  name: { en: The village square, de: Der Dorfplatz, fr: La place du village }
+  field_media_image:
+    file: images/village-square.jpg
+    alt:
+      en: The village square with its fountain and parked cars, the church behind it
+      de: Der Dorfplatz mit Brunnen und parkierten Autos, dahinter die Kirche
+      fr: 'La place du village avec sa fontaine et des voitures garées, l''église à l''arrière-plan'
+  field_credit: AI-generated
+
+- key: residential-street
+  type: image
+  name: { en: A residential street, de: Eine Wohnstrasse, fr: Une rue résidentielle }
+  field_media_image:
+    file: images/residential-street.jpg
+    alt:
+      en: A residential street with houses, small apartment buildings and gardens
+      de: Eine Wohnstrasse mit Häusern, kleinen Mehrfamilienhäusern und Gärten
+      fr: Une rue résidentielle avec des maisons, de petits immeubles et des jardins
+  field_credit: AI-generated
+
+- key: regatta
+  type: image
+  name: { en: The regatta, de: Die Regatta, fr: La régate }
+  field_media_image:
+    file: images/regatta.jpg
+    alt:
+      en: Sailing boats racing on the lake, the town and the vineyards behind them
+      de: Segelboote bei einer Regatta auf dem See, dahinter die Gemeinde und die Rebberge
+      fr: Des voiliers en régate sur le lac, avec la commune et les vignes derrière
+  field_credit: AI-generated
+
+- key: market
+  type: image
+  name: { en: The market, de: Der Markt, fr: Le marché }
+  field_media_image:
+    file: images/market.jpg
+    alt:
+      en: Market stalls with vegetables and flowers in the old town
+      de: Marktstände mit Gemüse und Blumen in der Altstadt
+      fr: Des stands de marché avec des légumes et des fleurs dans la vieille ville
+  field_credit: AI-generated
+
+- key: open-air-cinema
+  type: image
+  name: { en: The open-air cinema, de: Das Openair-Kino, fr: Le cinéma en plein air }
+  field_media_image:
+    file: images/open-air-cinema.jpg
+    alt:
+      en: 'The open-air cinema on the lakeside meadow: a screen and rows of deck chairs'
+      de: 'Das Openair-Kino auf der Seewiese: eine Leinwand und Reihen von Liegestühlen'
+      fr: 'Le cinéma en plein air sur la prairie du lac : un écran et des rangées de chaises longues'
+  field_credit: AI-generated
+
+- key: pool-children-area
+  type: image
+  name: { en: 'The children''s area at the pool', de: Der Kinderbereich im Strandbad, fr: 'L''espace pour les enfants de la plage' }
+  field_media_image:
+    file: images/pool-children-area.jpg
+    alt:
+      en: 'The new children''s area at the pool: a water playground with fountains and a slide'
+      de: 'Der neue Kinderbereich im Strandbad: ein Wasserspielplatz mit Fontänen und einer Rutschbahn'
+      fr: 'Le nouvel espace pour les enfants à la plage : une aire de jeux d''eau avec des jets et un toboggan'
+  field_credit: AI-generated
+
+- key: town-hall-counter
+  type: image
+  name: { en: The counter in the town hall, de: Der Schalter im Rathaus, fr: 'Le guichet de l''hôtel de ville' }
+  field_media_image:
+    file: images/town-hall-counter.jpg
+    alt:
+      en: 'The counter of the residents'' services in the town hall, under a vaulted ceiling'
+      de: Der Schalter der Einwohnerdienste im Rathaus, unter einem Gewölbe
+      fr: 'Le guichet du contrôle des habitants à l''hôtel de ville, sous une voûte'
+  field_credit: AI-generated
+
+- key: building-profiles
+  type: image
+  name: { en: Profile poles, de: Bauprofile, fr: Gabarits }
+  field_media_image:
+    file: images/building-profiles.jpg
+    alt:
+      en: Profile poles on a plot, marking the outline of a planned building
+      de: Bauprofile auf einer Parzelle zeigen die Umrisse eines geplanten Gebäudes
+      fr: 'Des gabarits sur une parcelle indiquent le volume d''un bâtiment prévu'
+  field_credit: AI-generated
+
+- key: house-extension
+  type: image
+  name: { en: An extension under construction, de: Ein Anbau im Bau, fr: Une annexe en construction }
+  field_media_image:
+    file: images/house-extension.jpg
+    alt:
+      en: A house with an extension under construction, in scaffolding
+      de: Ein Haus mit einem Anbau im Bau, eingerüstet
+      fr: Une maison avec une annexe en construction, sous échafaudage
+  field_credit: AI-generated
+
+- key: garden-shed
+  type: image
+  name: { en: A garden shed, de: Ein Gartenhaus, fr: Un cabanon de jardin }
+  field_media_image:
+    file: images/garden-shed.jpg
+    alt:
+      en: A garden with a wooden shed, a lawn and raised beds
+      de: Ein Garten mit einem Gartenhaus aus Holz, Rasen und Hochbeeten
+      fr: Un jardin avec un cabanon en bois, une pelouse et des plates-bandes surélevées
+  field_credit: AI-generated
+
+# The locations (terms.yml).
+- key: town-hall
+  type: image
+  name: { en: The town hall, de: Das Rathaus, fr: 'L''hôtel de ville' }
+  field_media_image:
+    file: images/town-hall.jpg
+    alt:
+      en: The town hall, a baroque building with green shutters and flower boxes, on a square with a fountain
+      de: Das Rathaus, ein barockes Gebäude mit grünen Fensterläden und Blumenkästen, an einem Platz mit Brunnen
+      fr: 'L''hôtel de ville, un bâtiment baroque aux volets verts et aux jardinières fleuries, sur une place avec une fontaine'
+  field_credit: AI-generated
+
+- key: administrative-centre
+  type: image
+  name: { en: The administrative centre, de: Das Verwaltungszentrum, fr: Le centre administratif }
+  field_media_image:
+    file: images/administrative-centre.jpg
+    alt:
+      en: The administrative centre, a plain office building next to the railway station
+      de: Das Verwaltungszentrum, ein schlichtes Bürogebäude neben dem Bahnhof
+      fr: Le centre administratif, un immeuble de bureaux sobre à côté de la gare
+  field_credit: AI-generated
+
+- key: works-yard
+  type: image
+  name: { en: The works yard, de: Der Werkhof, fr: Le dépôt communal }
+  field_media_image:
+    file: images/works-yard.jpg
+    alt:
+      en: The works yard, with orange municipal vehicles in its open garages
+      de: Der Werkhof, mit orangen Gemeindefahrzeugen in den offenen Garagen
+      fr: Le dépôt communal, avec des véhicules communaux orange dans ses garages ouverts
+  field_credit: AI-generated
+
+- key: seefeld-school
+  type: image
+  name: { en: Seefeld school, de: Das Schulhaus Seefeld, fr: 'L''école du Seefeld' }
+  field_media_image:
+    file: images/seefeld-school.jpg
+    alt:
+      en: Seefeld school, a modern school building with its schoolyard and a climbing frame
+      de: Das Schulhaus Seefeld, ein moderner Schulbau mit Pausenplatz und Klettergerüst
+      fr: 'L''école du Seefeld, un bâtiment scolaire moderne avec sa cour et une structure d''escalade'
+  field_credit: AI-generated
+
+- key: lakeside-pool
+  type: image
+  name: { en: The lakeside pool, de: Das Strandbad, fr: La plage }
+  field_media_image:
+    file: images/lakeside-pool.jpg
+    alt:
+      en: 'The lakeside pool: a pool by the lake with a diving tower, and people on the lawn'
+      de: 'Das Strandbad: ein Becken am See mit Sprungturm, und Badegäste auf der Wiese'
+      fr: 'La plage : un bassin au bord du lac avec un plongeoir, et des baigneurs sur la pelouse'
+  field_credit: AI-generated
 
 - key: permit-form
   type: document

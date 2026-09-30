@@ -9,7 +9,7 @@ field_lead:
   en: From November, also open on Thursday evenings.
   de: Ab November zusätzlich am Donnerstagabend geöffnet.
   fr: Dès novembre, ouverte aussi le jeudi soir.
-field_hero_image: { media: meadow }
+field_hero_image: { media: town-hall }
 field_paragraphs:
   - type: text
     field_text:

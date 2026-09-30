@@ -1,17 +1,17 @@
-uuid: 629cc8c6-02b9-4646-9597-654309c6efea
+uuid: 1ce6542b-b931-46fb-b0c4-bfe944145df3
 langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_hero_image
+    - field.storage.taxonomy_term.field_image
     - media.type.image
-    - node.type.office
-id: node.office.field_hero_image
-field_name: field_hero_image
-entity_type: node
-bundle: office
+    - taxonomy.vocabulary.location
+id: taxonomy_term.location.field_image
+field_name: field_image
+entity_type: taxonomy_term
+bundle: location
 label: Image
-description: ''
+description: 'A photo of the building. The offices in it show it in their header.'
 required: false
 translatable: false
 default_value: {  }

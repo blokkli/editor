@@ -1,0 +1,19 @@
+key: schools-office
+type: office
+title: { en: Schools office, de: Schulverwaltung, fr: Administration scolaire }
+field_lead:
+  en: 'Starting school, the way to school and the day school.'
+  de: 'Einschulung, Schulweg und Tagesschule.'
+  fr: 'Entrée à l''école, chemin de l''école et école à journée continue.'
+field_location: { term: seefeld-school }
+field_phone: '+41 32 555 01 70'
+field_email: schulen@blockingen.example
+# Mornings, and two afternoons. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 730, endhours: 1130 }
+  - { day: 3, starthours: 730, endhours: 1130 }
+  - { day: 5, starthours: 730, endhours: 1130 }
+  - { day: 2, starthours: 730, endhours: 1130 }
+  - { day: 2, starthours: 1330, endhours: 1600 }
+  - { day: 4, starthours: 730, endhours: 1130 }
+  - { day: 4, starthours: 1330, endhours: 1600 }

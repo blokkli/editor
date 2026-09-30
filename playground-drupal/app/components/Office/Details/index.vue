@@ -1,10 +1,12 @@
 <template>
   <dl class="flex flex-col gap-4">
-    <div v-if="address && !compact">
+    <div v-if="location && !compact">
       <dt class="text-small font-semibold text-muted">
         {{ $texts('office.address', 'Address') }}
       </dt>
-      <dd class="whitespace-pre-line">{{ address }}</dd>
+      <dd class="whitespace-pre-line">
+        {{ location.label }}<br />{{ location.address }}
+      </dd>
     </div>
     <div v-if="phone">
       <dt class="text-small font-semibold text-muted">

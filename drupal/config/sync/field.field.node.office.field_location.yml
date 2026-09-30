@@ -1,0 +1,28 @@
+uuid: d0a6a98f-29f7-4e7a-944c-407ad05b8045
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_location
+    - node.type.office
+    - taxonomy.vocabulary.location
+id: node.office.field_location
+field_name: field_location
+entity_type: node
+bundle: office
+label: Location
+description: 'The building the office is in: its address and photo.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      location: location
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+field_type: entity_reference

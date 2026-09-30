@@ -9,7 +9,7 @@ field_lead:
   en: The weekly market moves to the school grounds during the works.
   de: Der Wochenmarkt zieht während der Bauzeit auf das Schulhausareal.
   fr: Le marché hebdomadaire déménage dans la cour de l'école pendant les travaux.
-field_hero_image: { media: stone }
+field_hero_image: { media: village-square }
 field_paragraphs:
   - type: text
     field_text:

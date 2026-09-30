@@ -12,6 +12,7 @@ dependencies:
     - node.type.office
     - node.type.page
     - node.type.publication
+    - taxonomy.vocabulary.location
   module:
     - content_translation
     - contextual
@@ -27,6 +28,7 @@ dependencies:
     - path
     - scheduler
     - system
+    - taxonomy
     - toolbar
     - translatable_config_pages
 _core:
@@ -56,6 +58,7 @@ permissions:
   - 'create paragraphs blokkli edit state'
   - 'create publication content'
   - 'create remote_video media'
+  - 'create terms in location'
   - 'create url aliases'
   - 'delete own document media'
   - 'delete own editorial content'
@@ -81,6 +84,7 @@ permissions:
   - 'edit own remote_video media'
   - 'edit paragraph library item'
   - 'edit paragraphs blokkli edit state'
+  - 'edit terms in location'
   - 'load id and name of blokkli users'
   - 'manage translatable config pages'
   - 'post blokkli comments'
@@ -90,6 +94,7 @@ permissions:
   - 'take ownership of paragraphs blokkli edit state'
   - 'translate editorial node'
   - 'translate event node'
+  - 'translate location taxonomy_term'
   - 'translate news node'
   - 'translate office node'
   - 'translate page node'

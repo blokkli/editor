@@ -5,7 +5,7 @@ field_lead:
   en: Moving here, waste and recycling, schools and everyday life in town.
   de: Zuzug, Abfall und Recycling, Schulen und der Alltag in der Gemeinde.
   fr: Arrivée, déchets et recyclage, écoles et vie quotidienne dans la commune.
-field_hero_image: { media: meadow }
+field_hero_image: { media: residential-street }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:
@@ -30,4 +30,4 @@ field_paragraphs:
           en: The sailing club's regatta, on the first weekend of September.
           de: Die Regatta des Segelclubs, am ersten Septemberwochenende.
           fr: La régate du club de voile, le premier week-end de septembre.
-        field_media: { media: lake }
+        field_media: { media: regatta }

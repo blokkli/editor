@@ -33,8 +33,10 @@ fragment nodeTeaser on Node {
   }
   ... on NodeOffice {
     lead: fieldLead
-    hero: fieldHeroImage {
-      ...mediaImage
+    location: fieldLocation {
+      image: fieldImage {
+        ...mediaImage
+      }
     }
   }
   ... on NodeEvent {

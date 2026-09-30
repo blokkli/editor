@@ -8,10 +8,10 @@
         fr: '<p>Blockingen / Bloquens, la commune au bord du lac.</p>'
     - type: contact
       options: { display: compact }
-      field_office: { node: town-hall }
+      field_office: { node: municipal-chancery }
     - type: link
       options: { style: secondary }
-      field_link: { node: town-hall }
+      field_link: { node: municipal-chancery }
       field_title: { en: Contact, de: Kontakt, fr: Contact }
 
 - key: site
@@ -23,7 +23,7 @@
       field_link: https://www.example.com/online-counter
       field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
     - type: link
-      field_link: { node: town-hall }
+      field_link: { node: municipal-chancery }
       field_title: { en: Contact, de: Kontakt, fr: Contact }
   # The home page's frequently searched links: its own pages where there are
   # some, the rest are placeholders like the online counter.

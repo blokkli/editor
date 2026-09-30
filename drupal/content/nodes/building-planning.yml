@@ -1,0 +1,22 @@
+key: building-planning
+type: office
+title: { en: Building and planning, de: Bau und Planung, fr: Constructions et urbanisme }
+field_lead:
+  en: 'Building permits, zoning and the municipality''s construction projects. In the afternoon by appointment.'
+  de: 'Baubewilligungen, Zonenplan und die Bauprojekte der Gemeinde. Nachmittags nach Vereinbarung.'
+  fr: 'Permis de construire, plan de zones et projets de construction de la commune. L''après-midi sur rendez-vous.'
+field_location: { term: administrative-centre }
+field_phone: '+41 32 555 01 30'
+field_email: bau@blockingen.example
+# Mornings only: the afternoons are for appointments. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 800, endhours: 1200 }
+  - { day: 2, starthours: 800, endhours: 1200 }
+  - { day: 3, starthours: 800, endhours: 1200 }
+  - { day: 4, starthours: 800, endhours: 1200 }
+  - { day: 5, starthours: 800, endhours: 1200 }
+field_paragraphs:
+  - type: link
+    options: { style: secondary }
+    field_link: { node: building-permits }
+    field_title: { en: Building permits, de: Baubewilligungen, fr: Permis de construire }

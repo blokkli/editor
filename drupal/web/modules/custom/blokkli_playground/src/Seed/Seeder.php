@@ -45,6 +45,7 @@ final class Seeder {
   private const FILES = [
     'user' => 'users.yml',
     'media' => 'media.yml',
+    'taxonomy_term' => 'terms.yml',
     'paragraphs_library_item' => 'library.yml',
     'node' => 'nodes',
     'blokkli_paragraph_template' => 'templates.yml',
@@ -63,6 +64,7 @@ final class Seeder {
   private const REFERENCES = [
     'node' => 'node',
     'media' => 'media',
+    'term' => 'taxonomy_term',
     'library' => 'paragraphs_library_item',
     'user' => 'user',
   ];

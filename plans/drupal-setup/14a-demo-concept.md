@@ -84,6 +84,10 @@ paragraph types and bundles get added that end up wrong for it.
   - The home page is an editorial page, set as the front page.
 - **Changed in [15e](15e-events-and-offices.md) (the user, 2026-09-27):**
   offices have a hero image, like news and events.
+- **Changed in [15i](15i-locations-and-offices.md) (the user, 2026-09-30):** an
+  office is in a location (a taxonomy term: a building with its address and
+  photo), which several offices share. The office keeps its phone, email and
+  opening hours; its header shows the location's photo.
 - **Changed after chunk 05 (the user, 2026-09-28):**
   - Detail pages (sidebar layout) allow no sections and no fragments.
   - Fragments are only for editorial pages. News, events and offices keep

@@ -5,7 +5,7 @@ field_lead:
   en: When you need a permit, and how to apply for one.
   de: Wann es eine Bewilligung braucht und wie Sie sie beantragen.
   fr: Quand il faut un permis, et comment le demander.
-field_office: { node: town-hall }
+field_office: { node: building-planning }
 field_paragraphs:
   - type: text
     field_text:
@@ -99,27 +99,33 @@ field_paragraphs:
               fr: '<p>Indiquez le cabanon sur le plan de situation, avec sa distance aux parcelles voisines.</p>'
         field_right:
           - type: image
-            field_media: { media: meadow }
-            field_caption: { en: A garden by the lake, de: Ein Garten am See, fr: Un jardin au bord du lac }
+            field_media: { media: garden-shed }
+            field_caption: { en: A garden shed, de: Ein Gartenhaus, fr: Un cabanon de jardin }
   - type: gallery
     options: { display: slider, width: wide }
     field_paragraphs:
       - type: image
-        field_media: { media: lake }
-        field_caption: { en: The lakeshore, de: Das Seeufer, fr: La rive du lac }
+        field_media: { media: building-profiles }
+        field_caption:
+          en: The profile poles show the planned building
+          de: Die Bauprofile zeigen das geplante Gebäude
+          fr: Les gabarits montrent le bâtiment prévu
       - type: image
-        field_media: { media: stone }
-        field_caption: { en: The old town, de: Die Altstadt, fr: La vieille ville }
+        field_media: { media: house-extension }
+        field_caption:
+          en: An extension under construction
+          de: Ein Anbau im Bau
+          fr: Une annexe en construction
   - type: image
     options: { width: full }
-    field_media: { media: stone }
+    field_media: { media: old-town }
   - type: video
     field_video: { media: big-buck-bunny }
   - type: from_library
     field_reusable_paragraph: { library: counter-hours }
   - type: link
     options: { style: primary }
-    field_link: { node: town-hall }
+    field_link: { node: building-planning }
     field_title:
       en: Contact the building office
       de: Bauamt kontaktieren

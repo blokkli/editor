@@ -3,10 +3,9 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.office.field_address
     - field.field.node.office.field_email
-    - field.field.node.office.field_hero_image
     - field.field.node.office.field_lead
+    - field.field.node.office.field_location
     - field.field.node.office.field_opening_hours
     - field.field.node.office.field_paragraphs
     - field.field.node.office.field_phone
@@ -21,28 +20,12 @@ targetEntityType: node
 bundle: office
 mode: default
 content:
-  field_address:
-    type: basic_string
-    label: hidden
-    settings: {  }
-    third_party_settings: {  }
-    weight: -3
-    region: content
   field_email:
     type: basic_string
     label: hidden
     settings: {  }
     third_party_settings: {  }
     weight: -1
-    region: content
-  field_hero_image:
-    type: entity_reference_entity_view
-    label: hidden
-    settings:
-      view_mode: default
-      link: false
-    third_party_settings: {  }
-    weight: -3
     region: content
   field_lead:
     type: basic_string
@@ -110,5 +93,6 @@ content:
     weight: 100
     region: content
 hidden:
+  field_location: true
   langcode: true
   search_api_excerpt: true

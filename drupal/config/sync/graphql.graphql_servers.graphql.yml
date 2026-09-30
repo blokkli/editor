@@ -61,6 +61,7 @@ schema_configuration:
       paragraphs_blokkli_edit_state: 1
       paragraphs_library_item: 1
       paragraphs_type: 1
+      taxonomy_term: 1
       translatable_config_pages: 1
       user: 1
     fields:
@@ -87,13 +88,13 @@ schema_configuration:
         changed: changed
         created: created
         default_langcode: default_langcode
-        field_address: field_address
         field_aside: field_aside
         field_category: field_category
         field_date: field_date
         field_email: field_email
         field_hero_image: field_hero_image
         field_lead: field_lead
+        field_location: field_location
         field_office: field_office
         field_opening_hours: field_opening_hours
         field_organiser: field_organiser
@@ -158,6 +159,9 @@ schema_configuration:
         icon_default: icon_default
         icon_uuid: icon_uuid
         status: status
+      taxonomy_term:
+        field_address: field_address
+        field_image: field_image
       translatable_config_pages:
         field_notice: field_notice
         field_paragraphs: field_paragraphs
@@ -253,6 +257,9 @@ schema_configuration:
           enabled: true
       paragraphs_library_item:
         paragraphs_library_item:
+          enabled: true
+      taxonomy_term:
+        location:
           enabled: true
       translatable_config_pages:
         footer:

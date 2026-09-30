@@ -5,7 +5,7 @@ field_lead:
   en: 'Offices, permits and fees: what the administration does for you.'
   de: 'Ämter, Bewilligungen und Gebühren: was die Verwaltung für Sie tut.'
   fr: 'Services, autorisations et taxes : ce que l''administration fait pour vous.'
-field_hero_image: { media: stone }
+field_hero_image: { media: town-hall-counter }
 field_host_options:
   - { key: header, value: image }
 field_paragraphs:

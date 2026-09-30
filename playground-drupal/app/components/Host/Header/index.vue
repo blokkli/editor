@@ -40,7 +40,7 @@
       />
       <div class="container-wide">
         <div
-          v-blokkli-droppable:field_hero_image
+          v-blokkli-droppable:[imageField]
           class="aspect-[3/2] overflow-hidden bg-line lg:aspect-[5/2]"
         >
           <MediaImage
@@ -75,6 +75,11 @@ const props = defineProps<{
    * a droppable element for a field the host doesn't have breaks the editor.
    */
   image?: MediaImageFragment | null
+  /**
+   * The image isn't the host's own, e.g. an office shows its location's: no
+   * drop target, and no empty image while editing.
+   */
+  staticImage?: boolean
   // image: after the band. plain: without the image.
   variant: 'image' | 'plain'
   isEditing: boolean
@@ -90,10 +95,14 @@ const breadcrumbItems = computed(() =>
   })),
 )
 
+const imageField = computed(() =>
+  props.staticImage ? null : 'field_hero_image',
+)
+
 const hasImage = computed(
   () =>
     props.image !== undefined &&
     props.variant !== 'plain' &&
-    (!!props.image || props.isEditing),
+    (!!props.image || (props.isEditing && !props.staticImage)),
 )
 </script>

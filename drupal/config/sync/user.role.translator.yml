@@ -9,6 +9,7 @@ dependencies:
     - node.type.office
     - node.type.page
     - node.type.publication
+    - taxonomy.vocabulary.location
   module:
     - content_translation
     - node
@@ -19,6 +20,7 @@ dependencies:
     - paragraphs_type_permissions
     - scheduler
     - system
+    - taxonomy
     - texts
     - toolbar
     - translatable_config_pages
@@ -42,11 +44,13 @@ permissions:
   - 'edit any publication content'
   - 'edit paragraphs blokkli edit state'
   - 'edit string translation'
+  - 'edit terms in location'
   - 'load id and name of blokkli users'
   - 'post blokkli comments'
   - 'take ownership of paragraphs blokkli edit state'
   - 'translate editorial node'
   - 'translate event node'
+  - 'translate location taxonomy_term'
   - 'translate news node'
   - 'translate office node'
   - 'translate page node'

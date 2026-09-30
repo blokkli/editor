@@ -92,6 +92,9 @@ enum EntityType {
   "Paragraphs type"
   PARAGRAPHS_TYPE
 
+  "Taxonomy term"
+  TAXONOMY_TERM
+
   "Translatable config pages"
   TRANSLATABLE_CONFIG_PAGES
 
@@ -1930,29 +1933,23 @@ type NodeOffice implements Node & Entity & EntityLinkable & EntityRevisionable &
   "{value} {field: unpublish_on} "
   unpublishOn: String
 
-  "{field: field_address} "
-  fieldAddressRawField: FieldItemListStringLong
-
-  "{value} {field: field_address} "
-  fieldAddress: String
-
   "{field: field_email} "
   fieldEmailRawField: FieldItemListEmail
 
   "{value} {field: field_email} "
   fieldEmail: String
 
-  "{field: field_hero_image} "
-  fieldHeroImageRawField: FieldItemListEntityReference
-
-  "{value} {field: field_hero_image} "
-  fieldHeroImage: MediaImage
-
   "{field: field_lead} "
   fieldLeadRawField: FieldItemListStringLong
 
   "{value} {field: field_lead} "
   fieldLead: String
+
+  "{field: field_location} The building the office is in: its address and photo."
+  fieldLocationRawField: FieldItemListEntityReference
+
+  "{value} {field: field_location} The building the office is in: its address and photo."
+  fieldLocation: TaxonomyTermLocation
 
   "{field: field_opening_hours} "
   fieldOpeningHoursRawField: FieldItemListOfficeHours
@@ -2741,6 +2738,108 @@ type Menu implements Entity {
   accessCheck(operation: String): Boolean!
 
   links(root: String = null, activeTrailIds: [String] = null, minDepth: Int = null, maxDepth: Int = null): [MenuLinkTreeElement!]!
+}
+
+"Taxonomy term"
+interface TaxonomyTerm implements Entity & EntityLinkable & EntityRevisionable {
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+}
+
+"Locations {entity_type: taxonomy_term, bundle: location}"
+type TaxonomyTermLocation implements TaxonomyTerm & Entity & EntityLinkable & EntityRevisionable & EntityTranslatable {
+  "{field: field_address} "
+  fieldAddressRawField: FieldItemListStringLong
+
+  "{value} {field: field_address} "
+  fieldAddress: String
+
+  "{field: field_image} A photo of the building. The offices in it show it in their header."
+  fieldImageRawField: FieldItemListEntityReference
+
+  "{value} {field: field_image} A photo of the building. The offices in it show it in their header."
+  fieldImage: MediaImage
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+
+  "Get all translations."
+  translations: [TaxonomyTermLocation]
+
+  "Get a specific translation."
+  translation(
+    ""
+    langcode: Langcode!
+
+    "Return entity in current language if translation language does not exist."
+    fallback: Boolean
+  ): TaxonomyTermLocation
 }
 
 "Translatable config pages"

@@ -1,0 +1,21 @@
+key: finance-taxes
+type: office
+title: { en: Finance and taxes, de: Finanzen und Steuern, fr: Finances et impôts }
+field_lead:
+  en: 'Tax returns, tax bills and payment plans, and the municipality''s accounts.'
+  de: 'Steuererklärungen, Steuerrechnungen und Ratenzahlungen, und die Rechnung der Gemeinde.'
+  fr: 'Déclarations d''impôt, factures et plans de paiement, et les comptes de la commune.'
+field_location: { term: town-hall }
+field_phone: '+41 32 555 01 20'
+field_email: finanzen@blockingen.example
+# Closed on Friday afternoons. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 800, endhours: 1200 }
+  - { day: 1, starthours: 1330, endhours: 1700 }
+  - { day: 2, starthours: 800, endhours: 1200 }
+  - { day: 2, starthours: 1330, endhours: 1700 }
+  - { day: 3, starthours: 800, endhours: 1200 }
+  - { day: 3, starthours: 1330, endhours: 1700 }
+  - { day: 4, starthours: 800, endhours: 1200 }
+  - { day: 4, starthours: 1330, endhours: 1700 }
+  - { day: 5, starthours: 800, endhours: 1200 }

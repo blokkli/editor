@@ -1,0 +1,20 @@
+key: social-services
+type: office
+title: { en: Social services, de: Soziale Dienste, fr: Services sociaux }
+field_lead:
+  en: 'Advice and support for individuals and families, in confidence.'
+  de: 'Beratung und Unterstützung für Einzelpersonen und Familien, vertraulich.'
+  fr: 'Conseil et soutien aux personnes et aux familles, en toute confidentialité.'
+field_location: { term: administrative-centre }
+field_phone: '+41 32 555 01 40'
+field_email: soziales@blockingen.example
+# Mornings, and three afternoons. Day 0 is Sunday.
+field_opening_hours:
+  - { day: 1, starthours: 830, endhours: 1130 }
+  - { day: 1, starthours: 1400, endhours: 1630 }
+  - { day: 2, starthours: 830, endhours: 1130 }
+  - { day: 2, starthours: 1400, endhours: 1630 }
+  - { day: 4, starthours: 830, endhours: 1130 }
+  - { day: 4, starthours: 1400, endhours: 1630 }
+  - { day: 3, starthours: 830, endhours: 1130 }
+  - { day: 5, starthours: 830, endhours: 1130 }
