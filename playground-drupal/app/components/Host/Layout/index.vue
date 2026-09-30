@@ -1,31 +1,27 @@
 <template>
-  <article class="host-layout" :class="{ 'has-sidebar': sidebar }">
-    <div class="host-layout-header">
+  <article class="host-layout">
+    <div>
       <slot name="header" />
     </div>
-    <div class="host-layout-body">
+    <div>
       <slot />
     </div>
-    <aside
-      v-if="$slots.aside"
-      class="host-layout-aside"
-      :class="{ 'is-editing': isEditing }"
-    >
-      <div v-if="$slots.toc" class="host-layout-toc">
-        <slot name="toc" />
-      </div>
-      <slot name="aside" />
-    </aside>
   </article>
 </template>
 
 <script lang="ts" setup>
-// A host's header, blocks and sidebar. The sidebar layout (main.css) is for
-// detail pages only. The table of contents (toc) is the sidebar's first part;
-// below lg, it comes after the header.
-defineProps<{
-  sidebar?: boolean
-  // While editing, an empty sidebar stays a drop zone.
-  isEditing?: boolean
-}>()
+// A host's header and blocks. The detail page has its own layout, with a
+// sidebar (Node/Page).
 </script>
+
+<style>
+@reference '../../../assets/css/main.css';
+
+/* A class in the components layer, so that a host can change the gap with a
+   utility (Node/Editorial). */
+@layer components {
+  .host-layout {
+    @apply flex flex-col gap-10 pb-section;
+  }
+}
+</style>

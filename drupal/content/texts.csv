@@ -6,6 +6,7 @@ callout.success;default;Success;Erfolg;Succès
 callout.warning;default;Warning;Warnung;Avertissement
 chart.empty;default;No data yet: edit the chart to add some.;Noch keine Daten: Bearbeiten Sie das Diagramm, um welche zu erfassen.;Pas encore de données : modifiez le graphique pour en saisir.
 contact.label;default;Contact;Kontakt;Contact
+contact.office_link;default;Opening hours and location;Öffnungszeiten und Standort;Horaires d'ouverture et adresse
 contact.unavailable;default;The office of this contact isn't available.;Das Amt dieses Kontakts ist nicht verfügbar.;Le service de ce contact n'est pas disponible.
 content_type.event;default;Event;Veranstaltung;Événement
 content_type.news;default;News;News;Actualité
@@ -74,7 +75,6 @@ office.email;default;Email;E-Mail;E-mail
 office.label;default;Office;Amt;Service
 office.opening_hours;default;Opening hours;Öffnungszeiten;Horaires d'ouverture
 office.phone;default;Phone;Telefon;Téléphone
-office_contact.empty;default;Choose the responsible office in the page's form.;Wählen Sie das zuständige Amt im Formular der Seite.;Choisissez le service responsable dans le formulaire de la page.
 page.responsible;default;Responsible:;Zuständig:;Responsable :
 page.updated;default;Updated on @date;Aktualisiert am @date;Mis à jour le @date
 pagination.label;default;Pages;Seiten;Pages

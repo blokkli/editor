@@ -6,7 +6,7 @@
     :list
   >
     <nav
-      v-if="links.length > 1"
+      v-if="withContact(links).length > 1"
       :aria-label="label"
       class="container-content flex flex-col"
     >
@@ -14,7 +14,7 @@
         {{ label }}
       </h2>
       <ul>
-        <li v-for="link in links" :key="link.id">
+        <li v-for="link in withContact(links)" :key="link.id">
           <a
             :href="`#${link.id}`"
             class="block py-2 text-ink hover:text-primary"
@@ -35,17 +35,23 @@ import type { NodePageFragment } from '#graphql-operations'
 import { anchorId } from '~/helpers/anchor'
 
 // The detail page's table of contents, in its sidebar: links to the headings
-// of the title paragraphs in its main field, nested ones included, from two
-// headings. The headings get their ids from anchorId().
+// of the title paragraphs in its main field, nested ones included, and to the
+// contact after them; from two links. The headings get their ids from
+// anchorId().
 // The sidebar is another field, so the page passes the main field's list:
 // while editing, it shows the saved headings (see BlokkliTableOfContents).
-defineProps<{
+const props = defineProps<{
   list: NodePageFragment['paragraphs']
+  contact?: BlokkliTableOfContentsLink | null
 }>()
 
 const { $texts } = useEasyTexts()
 
 const label = computed(() => $texts('table_of_contents.label', 'On this page'))
+
+function withContact(links: BlokkliTableOfContentsLink[]) {
+  return props.contact ? [...links, props.contact] : links
+}
 
 function mapItem(item: {
   props: { title?: string | null }

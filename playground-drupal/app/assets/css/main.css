@@ -79,13 +79,17 @@
   --spacing-section: 2.5rem;
   /* Between the blocks of a field, and above a heading: each block decides
      its own space above (useBlockSpacing). */
-  --spacing-flow: 2rem;
-  --spacing-heading: 3rem;
+  --spacing-flow: 3rem;
+  --spacing-heading: 4rem;
 
   /* A comfortable line length, e.g. max-w-content for a lead. */
   --container-content: 48rem;
   /* Without the gutter: container-wide adds it. */
   --container-wide: 75rem;
+  /* The detail page's sidebar from lg (Node/Page), and the space
+     between it and the content. Responsive, see :root below. */
+  --container-sidebar: 18rem;
+  --spacing-sidebar: 4rem;
 }
 
 /* The wide container: 75rem plus the gutter on both sides. At 1440 px it
@@ -96,20 +100,18 @@
   margin-inline: auto;
   padding-inline: var(--spacing-gutter);
 
-  /* The sidebar layout (Host/Layout) lays out a host's parts itself. */
+  /* In the detail page's sidebar layout (Node/Page), the page is the
+     container: blocks fill their column. */
   @variant lg {
-    .host-layout.has-sidebar
-      :is(.host-layout-header, .host-layout-body, .host-layout-aside)
-      & {
+    .sidebar-layout & {
       max-width: none;
       padding-inline: 0;
     }
   }
 }
 
-/* The content column: the wide container's left 8 of 12 columns from lg,
-   about 80 characters a line. The right padding is the other 4 columns and a
-   gap: a third of the inner width plus a gap. */
+/* The content column: from lg, it leaves room for the detail page's sidebar,
+   so that text lines up on every page. About 80 characters a line. */
 @utility container-content {
   width: 100%;
   max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
@@ -118,17 +120,10 @@
 
   @variant lg {
     padding-right: calc(
-      var(--spacing-gutter) +
-        (
-          min(100% - var(--spacing-gutter) * 2, var(--container-wide)) +
-            var(--spacing-grid)
-        ) /
-        3
+      var(--spacing-gutter) + var(--container-sidebar) + var(--spacing-sidebar)
     );
 
-    .host-layout.has-sidebar
-      :is(.host-layout-header, .host-layout-body, .host-layout-aside)
-      & {
+    .sidebar-layout & {
       max-width: none;
       padding-inline: 0;
     }
@@ -185,6 +180,10 @@
       --spacing-grid: 2rem;
       --spacing-section: 4rem;
     }
+
+    @variant xl {
+      --container-sidebar: 24rem;
+    }
   }
 
   body {
@@ -239,72 +238,6 @@
         &:hover {
           @apply bg-white/10;
         }
-      }
-    }
-  }
-
-  /* A host's header, blocks and sidebar (Host/Layout). */
-  .host-layout {
-    @apply flex flex-col gap-10 pb-section;
-
-    /* No visible block in the sidebar, e.g. only the contact fragment of a
-       page without an office: no panel, but the layout stays. While editing,
-       the sidebar stays a drop zone. */
-    > .host-layout-aside:not(.is-editing):not(:has(> * > :not(.hidden))) {
-      @apply hidden;
-    }
-
-    /* Parts of the sidebar with nothing visible leave no gap: the table of
-       contents without links, the field with only hidden blocks (except while
-       editing: the field stays a drop zone). */
-    > .host-layout-aside > .host-layout-toc:empty,
-    > .host-layout-aside:not(.is-editing) > :not(:has(> :not(.hidden))) {
-      @apply hidden;
-    }
-  }
-
-  /* The sidebar layout of detail pages, from lg: the header's band in columns
-     1–8, the sidebar as a white panel cutting into it in columns 9–12, the
-     blocks below the header. The containers inside then mean the column,
-     whatever the width option. */
-  .host-layout.has-sidebar {
-    /* Below lg, the sidebar's parts join the column: the table of contents
-       after the header, the rest after the blocks. */
-    @variant max-lg {
-      > .host-layout-aside {
-        display: contents;
-      }
-
-      > .host-layout-body,
-      > .host-layout-aside > :not(.host-layout-toc) {
-        order: 1;
-      }
-    }
-
-    @variant lg {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-template-rows: auto 1fr;
-      column-gap: var(--spacing-grid);
-      max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
-      margin-inline: auto;
-      padding-inline: var(--spacing-gutter);
-
-      > .host-layout-header {
-        grid-column: 1 / span 8;
-        grid-row: 1;
-      }
-
-      > .host-layout-body {
-        grid-column: 1 / span 8;
-        grid-row: 2;
-      }
-
-      /* Positioned, so that it's painted over the header's band. */
-      > .host-layout-aside {
-        @apply relative mt-8 flex flex-col gap-10 self-start bg-white p-6;
-        grid-column: 9 / span 4;
-        grid-row: 1 / span 2;
       }
     }
   }

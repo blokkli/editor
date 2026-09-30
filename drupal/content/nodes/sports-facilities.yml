@@ -60,8 +60,6 @@ field_related:
   - type: teaser
     field_link: { node: lakeside-pool }
 field_aside:
-  - type: blokkli_fragment
-    field_blokkli_fragment_name: office_contact
   - type: title
     field_title: { de: Formulare und Links }
   - type: link_list

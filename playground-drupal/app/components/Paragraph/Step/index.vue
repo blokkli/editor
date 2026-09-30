@@ -3,7 +3,7 @@
     <Tile tone="primary" class="text-h3 font-bold">
       {{ index + 1 }}
     </Tile>
-    <div class="flex min-w-0 grow flex-col gap-1">
+    <div>
       <h3 v-blokkli-editable:field_title class="text-h3">{{ title }}</h3>
       <div
         v-if="text || isEditing"

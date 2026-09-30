@@ -5,7 +5,6 @@ dependencies:
   config:
     - field.storage.node.field_aside
     - node.type.page
-    - paragraphs.paragraphs_type.blokkli_fragment
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.link
@@ -22,12 +21,11 @@ description: ''
 required: false
 translatable: false
 default_value: {  }
-default_value_callback: 'Drupal\blokkli_playground\PageDefaults::sidebar'
+default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
-      blokkli_fragment: blokkli_fragment
       contact: contact
       from_library: from_library
       link: link

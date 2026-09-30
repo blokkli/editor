@@ -52,8 +52,6 @@ field_related:
   - type: teaser
     field_link: { node: day-school }
 field_aside:
-  - type: blokkli_fragment
-    field_blokkli_fragment_name: office_contact
   - type: title
     field_title: { de: Links }
   - type: link_list
