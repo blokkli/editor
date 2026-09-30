@@ -2,11 +2,11 @@
   <div :class="style.band">
     <div
       v-blokkli-droppable:field_link
-      class="container-wide flex items-start gap-3 py-3"
+      class="container-wide flex items-start gap-2.5 py-2 text-small"
     >
       <SpriteSymbol
         :name="style.icon"
-        class="mt-0.5 size-6 shrink-0"
+        class="mt-px size-5 shrink-0"
         :class="style.text"
       />
       <component
@@ -19,7 +19,7 @@
         <SpriteSymbol
           v-if="url"
           name="arrow-right"
-          class="mt-1 size-5 shrink-0 transition-transform group-hover:translate-x-0.5"
+          class="mt-1 size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
         />
       </component>
     </div>

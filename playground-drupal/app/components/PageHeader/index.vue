@@ -9,29 +9,8 @@
 
     <slot name="banner" />
 
-    <div class="on-dark bg-ink text-white">
-      <div class="container-wide flex min-h-10 items-center justify-end gap-6">
-        <nav
-          v-if="$slots.service || serviceLinks?.length"
-          :aria-label="$texts('header.service_navigation', 'Service')"
-          class="hidden md:block"
-        >
-          <slot name="service">
-            <ul class="flex gap-6 text-small">
-              <li v-for="link in serviceLinks" :key="link.url + link.label">
-                <SiteLink :to="link.url" class="block py-2 hover:underline">
-                  {{ link.label }}
-                </SiteLink>
-              </li>
-            </ul>
-          </slot>
-        </nav>
-        <LanguageSwitch v-if="languageLinks" :links="languageLinks" />
-      </div>
-    </div>
-
-    <div class="border-b-4 border-primary bg-white">
-      <div class="container-wide flex items-center gap-3 py-3 lg:gap-8 lg:py-5">
+    <div class="border-b border-line bg-white">
+      <div class="container-wide flex items-center gap-3 py-3 lg:gap-8 lg:py-4">
         <!-- No link while editing: the name is edited in place. -->
         <component
           :is="homeUrl ? SiteLink : 'div'"
@@ -51,47 +30,81 @@
           </span>
         </component>
 
-        <nav
-          v-if="links?.length"
-          :aria-label="$texts('header.main_navigation', 'Main navigation')"
-          class="hidden lg:block"
-        >
-          <ul class="flex gap-8 font-semibold">
-            <li v-for="link in links" :key="link.url + link.label">
-              <SiteLink
-                :to="link.url"
-                :aria-current="link.isActive ? 'true' : undefined"
-                class="block py-2 decoration-2 underline-offset-8 hover:text-primary hover:underline"
-                :class="link.isActive ? 'text-primary underline' : 'text-ink'"
-              >
-                {{ link.label }}
-              </SiteLink>
-            </li>
-          </ul>
-        </nav>
+        <div class="flex flex-col items-end gap-1">
+          <div
+            v-if="$slots.service || serviceLinks?.length || languageLinks"
+            class="hidden items-center gap-6 text-small text-muted lg:flex"
+          >
+            <nav
+              v-if="$slots.service || serviceLinks?.length"
+              :aria-label="$texts('header.service_navigation', 'Service')"
+            >
+              <slot name="service">
+                <ul class="flex gap-6">
+                  <li v-for="link in serviceLinks" :key="link.url + link.label">
+                    <SiteLink :to="link.url" class="block py-1 hover:underline">
+                      {{ link.label }}
+                    </SiteLink>
+                  </li>
+                </ul>
+              </slot>
+            </nav>
+            <LanguageSwitch
+              v-if="languageLinks"
+              :links="languageLinks"
+              class="-mr-1.5"
+            />
+          </div>
 
-        <SiteLink
-          v-if="searchUrl"
-          :to="searchUrl"
-          class="flex size-11 shrink-0 items-center justify-center border border-line hover:border-ink"
-          :aria-label="$texts('header.search', 'Search')"
-        >
-          <SpriteSymbol name="search" class="size-5" />
-        </SiteLink>
+          <div class="flex items-center gap-3 lg:gap-8">
+            <nav
+              v-if="links?.length"
+              :aria-label="$texts('header.main_navigation', 'Main navigation')"
+              class="hidden lg:block"
+            >
+              <ul class="flex gap-8 font-semibold">
+                <li v-for="link in links" :key="link.url + link.label">
+                  <SiteLink
+                    :to="link.url"
+                    :aria-current="link.isActive ? 'true' : undefined"
+                    class="block py-2 decoration-2 underline-offset-8 hover:text-primary hover:underline"
+                    :class="
+                      link.isActive ? 'text-primary underline' : 'text-ink'
+                    "
+                  >
+                    {{ link.label }}
+                  </SiteLink>
+                </li>
+              </ul>
+            </nav>
 
-        <button
-          v-if="hasMenu"
-          type="button"
-          class="flex h-11 min-w-11 shrink-0 items-center justify-center gap-2 border border-line px-2.5 font-semibold hover:border-ink lg:hidden"
-          aria-controls="page-header-menu"
-          :aria-expanded="isMenuOpen"
-          @click="isMenuOpen = !isMenuOpen"
-        >
-          <SpriteSymbol :name="isMenuOpen ? 'close' : 'menu'" class="size-5" />
-          <span class="sr-only sm:not-sr-only">
-            {{ $texts('header.menu', 'Menu') }}
-          </span>
-        </button>
+            <SiteLink
+              v-if="searchUrl"
+              :to="searchUrl"
+              class="flex size-11 shrink-0 items-center justify-center border border-line hover:border-ink"
+              :aria-label="$texts('header.search', 'Search')"
+            >
+              <SpriteSymbol name="search" class="size-5" />
+            </SiteLink>
+
+            <button
+              v-if="hasMenu"
+              type="button"
+              class="flex h-11 min-w-11 shrink-0 items-center justify-center gap-2 border border-line px-2.5 font-semibold hover:border-ink lg:hidden"
+              aria-controls="page-header-menu"
+              :aria-expanded="isMenuOpen"
+              @click="isMenuOpen = !isMenuOpen"
+            >
+              <SpriteSymbol
+                :name="isMenuOpen ? 'close' : 'menu'"
+                class="size-5"
+              />
+              <span class="sr-only sm:not-sr-only">
+                {{ $texts('header.menu', 'Menu') }}
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -125,7 +138,7 @@
             </li>
           </ul>
         </nav>
-        <ul v-if="serviceLinks?.length" class="flex flex-col pt-3 md:hidden">
+        <ul v-if="serviceLinks?.length" class="flex flex-col pt-3">
           <li v-for="link in serviceLinks" :key="link.url + link.label">
             <SiteLink
               :to="link.url"
@@ -136,6 +149,11 @@
             </SiteLink>
           </li>
         </ul>
+        <LanguageSwitch
+          v-if="languageLinks"
+          :links="languageLinks"
+          class="-ml-1.5 pt-3"
+        />
       </div>
     </div>
   </header>
@@ -148,13 +166,14 @@ import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 
 type Link = { label: string; url: string }
 
-// The site's header: a service bar with the service links and the language
-// switch, the logo, the main navigation and a link to the search page. Below
-// lg, the navigation is a panel behind a menu button, with the service links.
-// Slots: the banner above everything else (e.g. a site-wide notice), the name
-// (required), the logo (the Logo by default) and the service links in the bar,
-// e.g. an editable field (the panel still gets them as serviceLinks). Parts
-// without content aren't rendered.
+// The site's header: the logo, and on its right the service links and the
+// language switch (small) above the main navigation and a link to the search
+// page. Below lg, the navigation is a panel behind a menu button, with the
+// service links and the language switch. Slots: the banner above everything
+// else (e.g. a site-wide notice), the name (required), the logo (the Logo by
+// default) and the service links above the navigation, e.g. an editable field
+// (the panel still gets them as serviceLinks). Parts without content aren't
+// rendered.
 const props = defineProps<{
   nameSecondary?: string
   homeUrl?: string
@@ -166,7 +185,10 @@ const props = defineProps<{
 }>()
 
 const hasMenu = computed(
-  () => !!props.links?.length || !!props.serviceLinks?.length,
+  () =>
+    !!props.links?.length ||
+    !!props.serviceLinks?.length ||
+    !!props.languageLinks,
 )
 
 const isMenuOpen = ref(false)

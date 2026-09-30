@@ -5,7 +5,7 @@
         <span
           v-if="item.isCurrent"
           aria-current="page"
-          class="block px-1.5 py-2 font-bold"
+          class="block px-1.5 py-1 font-bold"
         >
           {{ item.language.toUpperCase() }}
         </span>
@@ -14,11 +14,11 @@
           :to="item.link.url.path"
           :hreflang="item.language"
           :title="item.link.title"
-          class="block px-1.5 py-2 opacity-80 hover:underline hover:opacity-100"
+          class="block px-1.5 py-1 opacity-80 hover:underline hover:opacity-100"
         >
           {{ item.language.toUpperCase() }}
         </SiteLink>
-        <span v-else class="block cursor-not-allowed px-1.5 py-2 opacity-40">
+        <span v-else class="block cursor-not-allowed px-1.5 py-1 opacity-40">
           {{ item.language.toUpperCase() }}
         </span>
       </li>

@@ -3,7 +3,7 @@
     <SiteLink
       v-blokkli-droppable:field_link
       :to="target.href"
-      class="block py-2 hover:underline"
+      class="block py-1 hover:underline"
     >
       <span v-blokkli-editable:field_title>{{ label }}</span>
     </SiteLink>
@@ -16,7 +16,7 @@ import { SiteLink } from '#components'
 import type { ParagraphLinkFragment } from '#graphql-operations'
 import { linkTarget } from './target'
 
-// A link in the header's service bar (the site config page's service links).
+// One of the header's service links (the site config page's).
 const props = defineProps<ParagraphLinkFragment>()
 
 const target = computed(() => linkTarget(props.link))

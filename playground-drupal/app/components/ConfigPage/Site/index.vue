@@ -28,7 +28,7 @@
           field-list-type="service"
           tag="ul"
           edit-class="min-h-10 min-w-40"
-          class="flex gap-6 text-small"
+          class="flex gap-6"
         />
       </template>
       <template #name>
@@ -71,9 +71,9 @@ import { useLanguage } from '~/composables/useLanguage'
 
 // The site's header, with the notice's banners at the top. Editing happens on
 // the config page's own route, where Drupal's links (e.g. the language switch)
-// lead too. The service links are edited in the bar; the menu panel below md
-// gets them as links. The home page's frequently searched links are edited
-// below the header.
+// lead too. The service links are edited above the navigation; the menu panel
+// below lg gets them as links. The home page's frequently searched links are
+// edited below the header.
 const props = defineProps<
   ConfigPageSiteFragment & {
     languageLinks?: LanguageSwitchLinkFragment[] | null
