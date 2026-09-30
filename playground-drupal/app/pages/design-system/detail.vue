@@ -208,7 +208,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createError, useHead, useRoute } from '#imports'
+import { useHead } from '#imports'
 import {
   Breadcrumb,
   Callout,
@@ -217,15 +217,8 @@ import {
   SpriteSymbol,
   Tile,
 } from '#components'
-import { isLanguage } from '#shared/languages'
 
 // A mockup of a service page, to iterate on the design (see index.vue).
-const route = useRoute()
-
-if (!isLanguage(route.params.lang)) {
-  throw createError({ statusCode: 404, fatal: true })
-}
-
 useHead({ title: 'Baugesuch einreichen – Mockup' })
 
 const TOC = [

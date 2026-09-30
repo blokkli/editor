@@ -1,0 +1,8 @@
+# The search page (pages/search.vue): the field in the header, the results
+# below the node's blocks.
+key: search
+type: editorial
+frontend_route: search
+title: { en: Search, de: Suche, fr: Recherche }
+field_host_options:
+  - { key: header, value: plain }

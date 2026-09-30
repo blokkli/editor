@@ -4,43 +4,29 @@
     :site-config="data?.data.siteConfig"
     :footer-config="data?.data.footerConfig"
     :menu
+    :breadcrumb
     :language-links
   >
-    <NodeEditorial v-bind="entity" front-page>
-      <template #header="{ entity: node, isEditing, options }">
-        <HomeHero
-          :title="node.title"
-          :lead="node.lead"
-          :image="node.hero"
-          :variant="options.header"
-          :is-editing
-        />
+    <NodeEditorial v-bind="entity" :breadcrumb :sub-pages>
+      <template v-if="$slots.header" #header="header">
+        <slot name="header" v-bind="header" />
       </template>
+      <slot />
     </NodeEditorial>
   </SiteShell>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  createError,
-  definePageMeta,
-  useAsyncGraphqlQuery,
-  useRoute,
-} from '#imports'
-import { HomeHero, NodeEditorial, SiteShell } from '#components'
-import { isLanguage } from '#shared/languages'
+import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
+import { NodeEditorial, SiteShell } from '#components'
+import { findSubPages } from '~/helpers/menu'
 
-// The front page: Drupal's front page (an editorial page) with a header of its
-// own, with the search. Only its blocks can hold the fragments "today" and
-// "quick_links". Every other path is [...slug].vue.
-definePageMeta({ layout: 'drupal' })
-
+// A hardcoded page on top of its Drupal node: the overviews and the search.
+// The page's definePageMeta (drupalFrontendRoute, languageMapping) gives it a
+// path per language; vuepal writes them into frontend_routing's config, which
+// locks the aliases of the node assigned to it. The node, an editorial page,
+// brings the header and blocks; the page's own part follows in the slot.
 const route = useRoute()
-
-if (!isLanguage(route.params.lang)) {
-  throw createError({ statusCode: 404, fatal: true })
-}
 
 const { data, error } = await useAsyncGraphqlQuery(
   'route',
@@ -74,8 +60,16 @@ const languageLinks = computed(() => {
   return url.languageSwitchLinks
 })
 
+const breadcrumb = computed(() => {
+  const url = data.value?.data.route
+  return url && 'breadcrumb' in url ? url.breadcrumb : []
+})
+
 const menu = computed(() => data.value?.data.mainMenu?.links ?? [])
 
+const subPages = computed(() => findSubPages(menu.value, route.path))
+
+// No node assigned to the route yet (frontend_routing's settings).
 if (!entity.value) {
   throw createError({ statusCode: 404, fatal: true })
 }

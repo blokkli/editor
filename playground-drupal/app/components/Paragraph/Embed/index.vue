@@ -18,7 +18,7 @@ import { useBlockSpacing } from '~/composables/useBlockSpacing'
 const props = defineProps<ParagraphEmbedFragment>()
 
 // A page of this site in an iframe, e.g. the fee calculator
-// (pages/[lang]/embed), with heights per viewport from the iframes module.
+// (pages/embed), with heights per viewport from the iframes module.
 const block = defineBlokkli({
   bundle: 'embed',
   globalOptions: ['width', 'bkVisibleLanguages'],

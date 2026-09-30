@@ -3,6 +3,7 @@
 // See plans/drupal-setup/06-playground-drupal-app.md.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
+import { pathPrefix } from 'nuxt-language-negotiation/negotiators'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import drupal from './../src/modules/drupal'
 import agent from './../src/modules/agent'
@@ -11,6 +12,7 @@ import iframes from './../src/modules/iframes'
 import readability from './../src/modules/readability'
 import tableOfContents from './../src/modules/table-of-contents'
 import { CHART_COLORS } from './shared/chartColors'
+import { LANGUAGES } from './shared/languages'
 
 // Dumped from the local site by `bun run drupal:schema`. The root config types
 // the Drupal module against the same file.
@@ -25,11 +27,13 @@ const optionsSchemaPath = fileURLToPath(
 )
 
 export default defineNuxtConfig({
-  // nuxt-graphql-middleware must come before blökkli.
+  // nuxt-graphql-middleware must come before blökkli, vuepal before
+  // nuxt-language-negotiation.
   modules: [
     'nuxt-easy-texts',
     'nuxt-graphql-middleware',
     'vuepal',
+    'nuxt-language-negotiation',
     'nuxt-svg-icon-sprite',
     '../src/module',
   ],
@@ -45,12 +49,6 @@ export default defineNuxtConfig({
     '@fontsource-variable/source-serif-4/opsz.css',
     '~/assets/css/main.css',
   ],
-
-  // Logged-in users, editing and the hosted instance get the SPA, see
-  // server/middleware/spa.ts.
-  routeRules: {
-    '/': { redirect: '/en' },
-  },
 
   runtimeConfig: {
     // Drupal, through nginx in the same container.
@@ -69,11 +67,26 @@ export default defineNuxtConfig({
     autoImportPatterns: ['./app/**/*.graphql'],
   },
 
+  // Every language has its code as a prefix (/en, /de, /fr), which decides the
+  // page's language; `/` redirects to /en. Pages get a route per language from
+  // their `languageMapping` meta, the others a :langPrefix param.
+  languageNegotiation: {
+    languages: [...LANGUAGES],
+    negotiators: [pathPrefix()],
+  },
+
   // Drupal's toolbar and the local tasks (view, edit, translate…) above the
-  // page, for users who may use the toolbar.
+  // page, for users who may use the toolbar. The pages with
+  // `drupalFrontendRoute` (the overviews, the search) write their paths into
+  // frontend_routing's config, which locks the aliases of their nodes.
   vuepal: {
     adminToolbar: { enabled: true },
     localTasks: { enabled: true },
+    frontendRouting: {
+      enabled: true,
+      defaultLanguage: 'en',
+      outputPath: '../drupal/config/sync/frontend_routing.settings.yml',
+    },
   },
 
   // UI strings, translated in Drupal's texts module. The fragment is committed:

@@ -64,7 +64,7 @@ import {
   SiteShell,
 } from '#components'
 import { getLanguageFromPath } from '#shared/languages'
-import { findMenuChildren } from '~/helpers/menu'
+import { findSubPages } from '~/helpers/menu'
 
 definePageMeta({ layout: 'drupal' })
 
@@ -87,7 +87,7 @@ if (error.value) {
 }
 
 // The front page (node 1, system.site.page.front) has its own page component
-// (pages/[lang]/index.vue). Its alias, e.g. from Drupal's "View" tab or the
+// (pages/index.vue). Its alias, e.g. from Drupal's "View" tab or the
 // editor's lists, leads there, with the query (editing, previewing).
 const routeUrl = data.value?.data.route
 if (
@@ -140,19 +140,7 @@ const breadcrumb = computed(() => {
 
 const menu = computed(() => data.value?.data.mainMenu?.links ?? [])
 
-const subPages = computed(() =>
-  findMenuChildren(menu.value, route.path).flatMap(({ link }) =>
-    link.url?.path
-      ? [
-          {
-            label: link.label,
-            url: link.url.path,
-            description: link.description,
-          },
-        ]
-      : [],
-  ),
-)
+const subPages = computed(() => findSubPages(menu.value, route.path))
 
 // On a config page's own route, the config page is the entity being edited.
 const siteConfig = computed(() =>

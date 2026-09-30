@@ -7,7 +7,7 @@
   >
     <PageHeader
       :home-url="isEditing ? undefined : `/${language}`"
-      :search-url="`/${language}/search`"
+      :search-url="searchUrl"
       :language-links
       :links
       :service-links="plainLinks(serviceLinks)"
@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, useRouter } from '#imports'
 import {
   BlokkliField,
   BlokkliProvider,
@@ -82,4 +83,8 @@ const props = defineProps<
 >()
 
 const language = useLanguage()
+const router = useRouter()
+
+// The search page (pages/search.vue), in the page's language.
+const searchUrl = computed(() => router.resolve({ name: 'search' }).href)
 </script>

@@ -1,10 +1,9 @@
-import { computed, useRoute } from '#imports'
-import { DEFAULT_LANGUAGE, getLanguageFromPath } from '#shared/languages'
+import { useCurrentLanguage } from '#imports'
 
 /**
- * The language of the current page, from its path prefix.
+ * The language of the current page, as nuxt-language-negotiation negotiated
+ * it from the path's prefix.
  */
 export function useLanguage() {
-  const route = useRoute()
-  return computed(() => getLanguageFromPath(route.path) ?? DEFAULT_LANGUAGE)
+  return useCurrentLanguage()
 }

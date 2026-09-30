@@ -1,0 +1,12 @@
+# The official publications' overview (pages/publications.vue): the current
+# ones, by type.
+key: publications
+type: editorial
+frontend_route: publications
+title: { en: Official publications, de: Amtliche Publikationen, fr: Publications officielles }
+field_lead:
+  en: Building applications, traffic measures and regulations, for as long as they're on display.
+  de: Baugesuche, Verkehrsmassnahmen und Reglemente, solange sie aufliegen.
+  fr: Demandes de permis, mesures de circulation et règlements, tant qu'ils sont à l'enquête.
+field_host_options:
+  - { key: header, value: plain }

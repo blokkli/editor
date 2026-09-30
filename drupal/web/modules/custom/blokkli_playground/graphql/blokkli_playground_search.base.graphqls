@@ -1,0 +1,14 @@
+"""
+A page of the site search's results.
+"""
+type SearchResult {
+  """
+  The number of results, of all pages.
+  """
+  total: Int!
+
+  """
+  The nodes of the requested page, the best match first.
+  """
+  items: [Node!]!
+}

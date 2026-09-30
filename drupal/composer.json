@@ -30,6 +30,7 @@
         "drupal/core-recommended": "^11.4",
         "drupal/entity_usage": "^2.0@beta",
         "drupal/environment_indicator": "^4.0",
+        "drupal/frontend_routing": "^1.0",
         "drupal/gin": "^5.0",
         "drupal/gin_toolbar": "^3.0",
         "drupal/graphql": "^5",

@@ -32,6 +32,8 @@ rm -rf "$files/media" "$files/media-icons" "$files/styles"
 # files/translations) and blokkli_playground's.
 drush site:install --existing-config --yes
 drush blokkli-playground:seed --source="$source"
+# The site search's index (search_api), in the database like the content.
+drush search-api:index
 drush cache:rebuild
 drush blokkli-playground:template "$template"
 

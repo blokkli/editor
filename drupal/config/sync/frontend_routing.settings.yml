@@ -1,0 +1,21 @@
+keys:
+  events:
+    aliases:
+      de: /veranstaltungen
+      en: /events
+      fr: /evenements
+  news:
+    aliases:
+      de: /aktuelles
+      en: /news
+      fr: /actualites
+  publications:
+    aliases:
+      de: /publikationen
+      en: /publications
+      fr: /publications
+  search:
+    aliases:
+      de: /suche
+      en: /search
+      fr: /recherche

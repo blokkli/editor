@@ -15,6 +15,7 @@ query_complexity: 0
 schema_configuration:
   core_composable:
     extensions:
+      blokkli_playground_search: blokkli_playground_search
       breadcrumb: breadcrumb
       entity_query: entity_query
       environment_indicator: environment_indicator

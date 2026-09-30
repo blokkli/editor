@@ -1,5 +1,14 @@
 import { useEasyTexts } from '#imports'
 
+// The allowed values of field_publication_type, e.g. for the overview's
+// filters.
+export const PUBLICATION_TYPES = [
+  'building_application',
+  'traffic',
+  'regulation',
+  'other',
+] as const
+
 /**
  * The label of a publication's type (field_publication_type): the schema only
  * has the key. One literal call per value, so that the keys can be extracted.

@@ -7,6 +7,11 @@ callout.warning;default;Warning;Warnung;Avertissement
 chart.empty;default;No data yet: edit the chart to add some.;Noch keine Daten: Bearbeiten Sie das Diagramm, um welche zu erfassen.;Pas encore de données : modifiez le graphique pour en saisir.
 contact.label;default;Contact;Kontakt;Contact
 contact.unavailable;default;The office of this contact isn't available.;Das Amt dieses Kontakts ist nicht verfügbar.;Le service de ce contact n'est pas disponible.
+content_type.event;default;Event;Veranstaltung;Événement
+content_type.news;default;News;News;Actualité
+content_type.office;default;Office;Amt;Service
+content_type.page;default;Page;Seite;Page
+content_type.publication;default;Official publication;Amtliche Publikation;Publication officielle
 error.add_page;default;Add a page;Seite hinzufügen;Ajouter une page
 error.content_overview;default;Content overview;Inhaltsübersicht;Aperçu du contenu
 error.not_found;default;Page not found;Seite nicht gefunden;Page introuvable
@@ -47,6 +52,8 @@ fee_calculator.title;default;Fee calculator;Gebührenrechner;Calculateur de taxe
 fee_calculator.total;default;Total per year;Total pro Jahr;Total par année
 fee_calculator.waste;default;Waste;Abfall;Déchets
 fee_calculator.water;default;Water;Wasser;Eau
+filter.all;default;All;Alle;Tous
+filter.label;default;Filter;Filter;Filtre
 gallery.next_image;default;Next image;Nächstes Bild;Image suivante
 gallery.previous_image;default;Previous image;Vorheriges Bild;Image précédente
 header.main_navigation;default;Main navigation;Hauptnavigation;Navigation principale
@@ -70,6 +77,10 @@ office.phone;default;Phone;Telefon;Téléphone
 office_contact.empty;default;Choose the responsible office in the page's form.;Wählen Sie das zuständige Amt im Formular der Seite.;Choisissez le service responsable dans le formulaire de la page.
 page.responsible;default;Responsible:;Zuständig:;Responsable :
 page.updated;default;Updated on @date;Aktualisiert am @date;Mis à jour le @date
+pagination.label;default;Pages;Seiten;Pages
+pagination.next;default;Next page;Nächste Seite;Page suivante
+pagination.page;default;Page @page;Seite @page;Page @page
+pagination.previous;default;Previous page;Vorherige Seite;Page précédente
 placeholder.caption;default;Caption;Bildlegende;Légende
 placeholder.heading;default;Heading;Überschrift;Titre
 placeholder.site_name;default;Site name;Name der Website;Nom du site
@@ -79,12 +90,17 @@ placeholder.title;default;Title;Titel;Titre
 publication.label;default;Official publication;Amtliche Publikation;Publication officielle
 publication.period;default;Published from @start to @end;Publiziert vom @start bis @end;Publiée du @start au @end
 publication.type_building_application;default;Building application;Baugesuch;Demande de permis de construire
+publication.type_other;default;Other;Andere;Autre
 publication.type_regulation;default;Regulation;Reglement;Règlement
 publication.type_traffic;default;Traffic;Verkehr;Circulation
 publication.until;default;@type, until @date;@type, bis @date;@type, jusqu'au @date
 quick_links.empty;default;Add the links on the site config page.;Fügen Sie die Links auf der Konfigurationsseite der Website hinzu.;Ajoutez les liens sur la page de configuration du site.
 quick_links.title;default;Frequently searched;Häufig gesucht;Recherches fréquentes
 related.title;default;Related topics;Verwandte Themen;Thèmes associés
+search.no_results;default;No results for “@text”.;Keine Ergebnisse für «@text».;Aucun résultat pour « @text ».
+search.no_results_hint;default;Try another word.;Versuchen Sie es mit einem anderen Begriff.;Essayez avec un autre terme.
+search.result;default;1 result for “@text”;1 Ergebnis für «@text»;1 résultat pour « @text »
+search.results;default;@count results for “@text”;@count Ergebnisse für «@text»;@count résultats pour « @text »
 search.submit;default;Search;Suchen;Rechercher
 search.title;default;Search;Suche;Recherche
 subpages.label;default;In this section;In diesem Bereich;Dans cette rubrique

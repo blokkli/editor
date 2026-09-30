@@ -1,0 +1,119 @@
+uuid: 09fd1030-bfcf-40f1-80ab-4da014a1f795
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_lead
+    - search_api.server.database
+  module:
+    - blokkli_playground
+    - node
+    - paragraphs_blokkli_search_api
+id: content
+name: Content
+description: 'Every node in every language, for the site search (pages/search.vue).'
+read_only: false
+field_settings:
+  field_lead:
+    label: Lead
+    datasource_id: 'entity:node'
+    property_path: field_lead
+    type: text
+    boost: 2.0
+    dependencies:
+      config:
+        - field.storage.node.field_lead
+  paragraphs_text:
+    label: 'Paragraphs text'
+    datasource_id: 'entity:node'
+    property_path: blokkli_playground_paragraphs_text
+    type: text
+  status:
+    label: Published
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+    dependencies:
+      module:
+        - node
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    boost: 5.0
+    dependencies:
+      module:
+        - node
+  type:
+    label: 'Content type'
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
+    dependencies:
+      module:
+        - node
+datasource_settings:
+  'entity:node':
+    bundles:
+      default: true
+      selected: {  }
+    languages:
+      default: true
+      selected: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  blokkli_playground_paragraphs_text: {  }
+  custom_value: {  }
+  entity_status: {  }
+  entity_type: {  }
+  html_filter:
+    all_fields: false
+    fields:
+      - field_lead
+      - paragraphs_text
+      - title
+    title: true
+    alt: true
+    tags:
+      b: 2.0
+      h1: 5.0
+      h2: 3.0
+      h3: 2.0
+      strong: 2.0
+  ignorecase:
+    all_fields: false
+    fields:
+      - field_lead
+      - paragraphs_text
+      - title
+  language_with_fallback: {  }
+  paragraphs_blokkli_search_context: {  }
+  paragraphs_blokkli_search_thumbnail: {  }
+  rendered_item: {  }
+  tokenizer:
+    all_fields: false
+    fields:
+      - field_lead
+      - paragraphs_text
+      - title
+    spaces: ''
+    ignored: ._-
+    overlap_cjk: 1
+    minimum_word_size: '2'
+  transliteration:
+    all_fields: false
+    fields:
+      - field_lead
+      - paragraphs_text
+      - title
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  cron_limit: 50
+  delete_on_fail: true
+  index_directly: true
+  track_changes_in_references: true
+server: database

@@ -1,0 +1,7 @@
+extend type Query {
+  """
+  Searches the content (the Search API index "content") in the current
+  language: titles, leads and the paragraphs' text.
+  """
+  search(text: String!, offset: Int = 0, limit: Int = 10): SearchResult!
+}

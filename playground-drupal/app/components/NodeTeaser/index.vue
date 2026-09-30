@@ -33,6 +33,22 @@
     </span>
   </SiteLink>
   <SiteLink
+    v-else-if="display === 'result'"
+    :to="href"
+    class="group flex items-center gap-4 border-b border-line py-4 text-ink"
+  >
+    <div class="flex grow flex-col gap-0.5">
+      <p class="text-label text-muted uppercase">{{ contentType }}</p>
+      <h3 class="font-semibold group-hover:text-primary group-hover:underline">
+        {{ label }}
+      </h3>
+      <p v-if="resultText" class="line-clamp-2 text-small text-muted">
+        {{ resultText }}
+      </p>
+    </div>
+    <SpriteSymbol name="arrow-right" class="size-5 shrink-0 text-primary" />
+  </SiteLink>
+  <SiteLink
     v-else
     :to="href"
     class="group flex items-center gap-4 border-b border-line py-4 text-ink"
@@ -73,10 +89,12 @@ import Tile from '~/components/Tile/index.vue'
 import { usePublicationType } from '~/composables/usePublicationType'
 import { formatDateRange } from '~/helpers/date'
 
-// A page, news item, event or publication as a card, a list item or a link
-// with its lead (a related topic): the teaser block and the automatic teaser
-// list. In a list, an event gets a date badge, a publication a document icon
-// and the others their image. The teaser block can override the node's title,
+// A page, news item, event or publication as a card, a list item, a link with
+// its lead (a related topic) or a search result: the teaser block, the
+// automatic teaser list, the overviews and the search. In a list, an event
+// gets a date badge, a publication a document icon and the others their image;
+// a search result has its content type above the title instead, and no image,
+// so that the titles line up. The teaser block can override the node's title,
 // lead and image, or link to a URL without a node.
 const props = defineProps<{
   node?: NodeTeaserFragment | null
@@ -84,7 +102,7 @@ const props = defineProps<{
   lead?: string | null
   image?: MediaImageFragment | null
   url?: string | null
-  display: 'card' | 'list' | 'link'
+  display: 'card' | 'list' | 'link' | 'result'
 }>()
 
 const { $texts } = useEasyTexts()
@@ -104,6 +122,37 @@ const teaserLead = computed(
 const date = computed(() =>
   props.node?.__typename === 'NodeEvent' ? props.node.date : null,
 )
+
+// A search result's content type. Editorial pages are pages to visitors.
+const contentType = computed(() => {
+  switch (props.node?.__typename) {
+    case 'NodeNews':
+      return $texts('content_type.news', 'News')
+    case 'NodeEvent':
+      return $texts('content_type.event', 'Event')
+    case 'NodeOffice':
+      return $texts('content_type.office', 'Office')
+    case 'NodePublication':
+      return $texts('content_type.publication', 'Official publication')
+  }
+  return $texts('content_type.page', 'Page')
+})
+
+// Below a search result's title: the date of news and events (the type is
+// above), a publication's meta, the lead of the others.
+const resultText = computed(() => {
+  const node = props.node
+  if (node?.__typename === 'NodeNews') {
+    return node.createdDate?.first?.day
+  }
+  if (
+    node?.__typename === 'NodeEvent' ||
+    node?.__typename === 'NodePublication'
+  ) {
+    return meta.value
+  }
+  return teaserLead.value
+})
 
 const meta = computed(() => {
   const node = props.node

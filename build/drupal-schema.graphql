@@ -5631,6 +5631,12 @@ type Query {
   ""
   ping: String
 
+  """
+  Searches the content (the Search API index "content") in the current
+  language: titles, leads and the paragraphs' text.
+  """
+  search(text: String!, offset: Int = 0, limit: Int = 10): SearchResult!
+
   entityQuery(
     " The machine name of the entity type (e.g. \"node\", \"taxonomy_term\", etc.) "
     entityType: EntityType!
@@ -5913,6 +5919,15 @@ interface Url {
 type DefaultUrl implements Url {
   ""
   path: String
+}
+
+"A page of the site search's results."
+type SearchResult {
+  "The number of results, of all pages."
+  total: Int!
+
+  "The nodes of the requested page, the best match first."
+  items: [Node!]!
 }
 
 ""

@@ -56,6 +56,7 @@ import Facts from '~/components/Facts/index.vue'
 import FactsItem from '~/components/Facts/Item/index.vue'
 import HostHeader from '~/components/Host/Header/index.vue'
 import HostLayout from '~/components/Host/Layout/index.vue'
+import { useEventCategory } from '~/composables/useEventCategory'
 
 // An event: its date, time and place are the facts after the header, large.
 const props = defineProps<
@@ -64,23 +65,8 @@ const props = defineProps<
 
 const { $texts } = useEasyTexts()
 
-// The allowed values of field_category: the schema only has the key. One
-// literal call per value, so that the keys can be extracted.
-const categoryLabel = computed(() => {
-  switch (props.category) {
-    case 'culture':
-      return $texts('event.category_culture', 'Culture')
-    case 'sport':
-      return $texts('event.category_sport', 'Sport')
-    case 'family':
-      return $texts('event.category_family', 'Family')
-    case 'market':
-      return $texts('event.category_market', 'Market')
-    case 'politics':
-      return $texts('event.category_politics', 'Politics')
-  }
-  return $texts('event.event', 'Event')
-})
+const eventCategory = useEventCategory()
+const categoryLabel = computed(() => eventCategory(props.category))
 
 function withWeekday(weekday: string, day: string): string {
   return $texts('event.weekday_date', '@weekday, @date', {

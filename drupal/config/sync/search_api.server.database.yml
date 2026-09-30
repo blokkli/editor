@@ -1,0 +1,15 @@
+uuid: 7f89176b-28f4-45d8-b6cb-cc9aa282b01d
+langcode: en
+status: true
+dependencies:
+  module:
+    - search_api_db
+id: database
+name: Database
+description: "The site search, in the site's own database."
+backend: search_api_db
+backend_config:
+  database: 'default:default'
+  min_chars: 2
+  matching: partial
+  phrase: bigram

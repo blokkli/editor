@@ -161,7 +161,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createError, useHead, useRoute } from '#imports'
+import { useHead } from '#imports'
 import {
   ArrowLink,
   DesignSystemMockup,
@@ -171,15 +171,8 @@ import {
   SpriteSymbol,
   Tile,
 } from '#components'
-import { isLanguage } from '#shared/languages'
 
 // A mockup of the home page, to iterate on the design (see index.vue).
-const route = useRoute()
-
-if (!isLanguage(route.params.lang)) {
-  throw createError({ statusCode: 404, fatal: true })
-}
-
 useHead({ title: 'Startseite – Mockup' })
 
 const TODAY = [

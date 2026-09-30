@@ -1,6 +1,6 @@
 # 15f: The home page
 
-- **Status:** in progress
+- **Status:** done
 - **Milestone:** M1 Local dev site
 - **Depends on:** 15c, 15d
 
@@ -60,7 +60,8 @@ for later").
 - [x] The home page's content in `drupal/content`, in EN, DE and FR.
 - [x] Plans: 14a's block table, 14b's home page, 15d's open question on the
       editorial mockup, 13d's fragments.
-- [ ] The user reviews the home page. Then the draft mock goes.
+- [x] The user reviews the home page. Then the draft mock goes. Accepted
+      (2026-09-29); the draft mock is deleted.
 
 ## Decisions on the structure (the user, 2026-09-29)
 
@@ -215,5 +216,6 @@ The automatic list has no display option any more: its placement decides.
 - **"Today"** has fixed texts, which go stale: compute them (the town hall's
   hours per weekday, the collection day, the next assembly).
 - **The links to all news, events and publications** lead to `#` until the
-  overview pages are designed.
-- **The search** on the home page does nothing yet, like the search page.
+  overview pages are designed. Done in [15h](15h-overviews-and-search.md).
+- **The search** on the home page does nothing yet, like the search page. Done
+  in [15h](15h-overviews-and-search.md).

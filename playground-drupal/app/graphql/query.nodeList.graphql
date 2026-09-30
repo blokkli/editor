@@ -1,0 +1,21 @@
+# An automatic list of nodes: the teaser list and the overview pages. The
+# filter and sort come from helpers/nodeList.ts.
+query nodeList(
+  $filter: EntityQueryFilterInput!
+  $sort: [EntityQuerySortInput!]
+  $limit: Int!
+  $offset: Int = 0
+) {
+  entityQuery(
+    entityType: NODE
+    limit: $limit
+    offset: $offset
+    filter: $filter
+    sort: $sort
+  ) {
+    total
+    items {
+      ...nodeTeaser
+    }
+  }
+}

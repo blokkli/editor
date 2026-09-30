@@ -400,6 +400,31 @@
               placeholder="z. B. Abfallkalender, Baugesuch"
             />
           </div>
+          <p class="max-w-content">
+            Above the results, their number:
+            <strong>14 Ergebnisse für «Bau»</strong>. Without any:
+            <strong>Keine Ergebnisse für «Baugsuch».</strong> Versuchen Sie es
+            mit einem anderen Begriff.
+          </p>
+
+          <h3 class="text-h3">Filters and pages</h3>
+          <p class="max-w-content">
+            Links that set the URL's query, so a filtered page can be shared:
+            one filter at a time, and the pages of a list.
+          </p>
+          <div lang="de" class="flex flex-col gap-6">
+            <FilterChips
+              label="Filter"
+              :items="
+                ['Alle', 'Baugesuch', 'Verkehr', 'Reglement'].map((label) => ({
+                  label,
+                  to: '#',
+                  active: label === 'Alle',
+                }))
+              "
+            />
+            <Pagination :page="3" :pages="8" :to="() => '#'" />
+          </div>
 
           <h3 class="text-h3">Callouts</h3>
           <div lang="de" class="grid gap-grid md:grid-cols-2">
@@ -530,14 +555,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, createError, useHead, useRoute } from '#imports'
+import { computed, useHead } from '#imports'
 import {
   ArrowLink,
   Breadcrumb,
   Callout,
+  FilterChips,
   LanguageSwitch,
   LinkList,
   Logo,
+  Pagination,
   SearchField,
   SpriteSymbol,
   Tile,
@@ -548,16 +575,10 @@ import type { BlokkliChartData } from '#blokkli/charts/types'
 import Chart from '~/components/Chart/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
 import { CHART_COLORS } from '#shared/chartColors'
-import { LANGUAGES, isLanguage } from '#shared/languages'
+import { LANGUAGES } from '#shared/languages'
 
 // The design system of the demo: the tokens from main.css and the shared
 // components, next to the two mockups it's iterated on with.
-const route = useRoute()
-
-if (!isLanguage(route.params.lang)) {
-  throw createError({ statusCode: 404, fatal: true })
-}
-
 useHead({ title: 'Design system' })
 
 const language = useLanguage()
@@ -661,14 +682,19 @@ const MOCKUPS = [
     description: 'Search, today, frequent links, news, politics, events.',
   },
   {
-    path: 'home-draft',
-    label: 'Home (draft)',
-    description: 'The home page as it will be built, simplified (15f).',
-  },
-  {
     path: 'detail',
     label: 'Detail',
     description: 'A service page with a sidebar, steps, a table and an FAQ.',
+  },
+  {
+    path: 'overview',
+    label: 'Overview',
+    description: 'The upcoming events, filtered by category, with pages (15h).',
+  },
+  {
+    path: 'search',
+    label: 'Search',
+    description: 'The search page with its results (15h).',
   },
 ]
 

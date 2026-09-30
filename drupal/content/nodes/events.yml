@@ -1,0 +1,11 @@
+# The events overview (pages/events.vue): the upcoming events, by category.
+key: events
+type: editorial
+frontend_route: events
+title: { en: Events, de: Veranstaltungen, fr: Événements }
+field_lead:
+  en: "What's on in Blockingen: markets, concerts, sport and meetings."
+  de: 'Was in Blockingen los ist: Märkte, Konzerte, Sport und Versammlungen.'
+  fr: 'Ce qui se passe à Bloquens : marchés, concerts, sport et assemblées.'
+field_host_options:
+  - { key: header, value: plain }

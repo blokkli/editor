@@ -1,5 +1,5 @@
 # The main menu. Pages and editorial pages get their URL from their place in
-# it (pathauto).
+# it (pathauto), except the frontend routes' (frontend_route in their files).
 main:
   - key: living-here
     title: { en: Living here, de: Leben & Wohnen, fr: Vivre ici }
@@ -21,3 +21,21 @@ main:
   - key: news
     title: { en: News, de: Aktuelles, fr: Actualités }
     link: { node: news }
+    children:
+      - key: events
+        title: { en: Events, de: Veranstaltungen, fr: Événements }
+        description:
+          en: Markets, concerts, sport and meetings.
+          de: Märkte, Konzerte, Sport und Versammlungen.
+          fr: Marchés, concerts, sport et assemblées.
+        link: { node: events }
+      - key: publications
+        title:
+          en: Official publications
+          de: Amtliche Publikationen
+          fr: Publications officielles
+        description:
+          en: Building applications, traffic measures and regulations.
+          de: Baugesuche, Verkehrsmassnahmen und Reglemente.
+          fr: Demandes de permis, mesures de circulation et règlements.
+        link: { node: publications }

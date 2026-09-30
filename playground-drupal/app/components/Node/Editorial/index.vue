@@ -6,7 +6,7 @@
   >
     <HostLayout :class="{ 'gap-section lg:gap-24': frontPage }">
       <template #header>
-        <slot name="header" :entity :is-editing :options>
+        <slot name="header" :entity :is-editing :options :breadcrumb>
           <HostHeader
             :title="entity.title"
             :lead="entity.lead"
@@ -28,6 +28,7 @@
         :allowed-fragments="frontPage ? ['today', 'quick_links'] : []"
         :class="{ 'flex flex-col gap-section lg:gap-24 *:mt-0': frontPage }"
       />
+      <slot />
     </HostLayout>
   </BlokkliProvider>
 </template>
@@ -45,9 +46,10 @@ import SubPages from '~/components/SubPages/index.vue'
 
 // The editorial page: the home page, overview pages and landing pages. A hero
 // image and a free layout, no sidebar. An overview page lists its sub-pages
-// in the main menu above the blocks. The front page (pages/[lang]/index.vue)
+// in the main menu above the blocks. The front page (pages/index.vue)
 // has its own header, more space between the blocks, and the only fragments:
-// what's on today and the frequently searched links.
+// what's on today and the frequently searched links. A frontend route
+// (FrontendRoute) puts its own part after the blocks.
 const props = defineProps<
   NodeEditorialFragment & {
     breadcrumb?: BreadcrumbFragment[]

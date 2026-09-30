@@ -19,6 +19,7 @@ use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\pathauto\PathautoGeneratorInterface;
@@ -54,7 +55,7 @@ final class Seeder {
   /**
    * The keys of an entity in the files that aren't fields.
    */
-  private const RESERVED = ['key', 'type', 'id', 'source', 'options', 'outdated'];
+  private const RESERVED = ['key', 'type', 'id', 'source', 'options', 'outdated', 'frontend_route'];
 
   /**
    * How the files refer to other entities, e.g. `{ node: town-hall }`.
@@ -121,6 +122,11 @@ final class Seeder {
    */
   private array $files = [];
 
+  /**
+   * The nodes of the frontend routes: [route name => node key].
+   */
+  private array $frontendRoutes = [];
+
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly EntityFieldManagerInterface $entityFieldManager,
@@ -130,6 +136,7 @@ final class Seeder {
     private readonly FileSystemInterface $fileSystem,
     private readonly Connection $database,
     private readonly AccountSwitcherInterface $accountSwitcher,
+    private readonly StateInterface $state,
     #[Autowire(service: 'content_translation.manager')]
     private readonly ContentTranslationManagerInterface $contentTranslationManager,
     #[Autowire(service: 'pathauto.generator')]
@@ -196,6 +203,7 @@ final class Seeder {
       }
       // Pages get their URL from the menu, which exists only now.
       $this->updateAliases($items['node']);
+      $this->assignFrontendRoutes();
       $this->createComments($comments);
       $this->createTexts($texts);
     }
@@ -351,6 +359,20 @@ final class Seeder {
       }
       else {
         $this->ids['node'][$key] = $data['id'];
+      }
+    }
+
+    if (isset($data['frontend_route'])) {
+      $name = $data['frontend_route'];
+      $routes = $this->configFactory->get('frontend_routing.settings')->get('keys') ?? [];
+      if ($entityType !== 'node' || !is_string($name) || !isset($routes[$name])) {
+        $this->error("$path: there's no frontend route '" . (is_string($name) ? $name : '') . "' in frontend_routing.settings");
+      }
+      elseif (isset($this->frontendRoutes[$name])) {
+        $this->error("$path: the frontend route '$name' has two nodes");
+      }
+      else {
+        $this->frontendRoutes[$name] = $key;
       }
     }
 
@@ -839,6 +861,38 @@ final class Seeder {
         $this->pathautoGenerator->updateEntityAlias($node->getTranslation($langcode), 'update');
       }
     }
+  }
+
+  /**
+   * Assigns the nodes of the frontend routes, as frontend_routing's form does.
+   *
+   * The module has no API for it. The state maps each route to its node. The
+   * node's aliases are the route's paths from the config (written by the Nuxt
+   * app), in the languages it has; the module keeps pathauto off for it from
+   * now on.
+   */
+  private function assignFrontendRoutes(): void {
+    $routes = $this->configFactory->get('frontend_routing.settings')->get('keys') ?? [];
+    $nodes = $this->entityTypeManager->getStorage('node');
+    $aliases = $this->entityTypeManager->getStorage('path_alias');
+    $assigned = [];
+    foreach ($this->frontendRoutes as $name => $key) {
+      $nid = $this->ids['node'][$key];
+      $assigned[$name] = $nid;
+      $node = $nodes->load($nid);
+      assert($node instanceof ContentEntityInterface);
+      $aliases->delete($aliases->loadByProperties(['path' => "/node/$nid"]));
+      foreach ($routes[$name]['aliases'] ?? [] as $langcode => $alias) {
+        if ($node->hasTranslation($langcode)) {
+          $aliases->create([
+            'path' => "/node/$nid",
+            'alias' => $alias,
+            'langcode' => $langcode,
+          ])->save();
+        }
+      }
+    }
+    $this->state->set('frontend_routing.settings', $assigned);
   }
 
   /**

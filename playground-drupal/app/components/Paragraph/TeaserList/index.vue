@@ -15,7 +15,7 @@
       >
         {{ isEditing ? title : title || source.title }}
       </h2>
-      <ArrowLink to="#">{{ source.all }}</ArrowLink>
+      <ArrowLink :to="allUrl">{{ source.all }}</ArrowLink>
     </div>
     <div
       v-if="items.length"
@@ -42,6 +42,7 @@ import {
   defineBlokkli,
   useAsyncGraphqlQuery,
   useEasyTexts,
+  useRouter,
 } from '#imports'
 import type {
   NodeTeaserFragment,
@@ -50,11 +51,12 @@ import type {
 import ArrowLink from '~/components/ArrowLink/index.vue'
 import NodeTeaser from '~/components/NodeTeaser/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
+import { nodeListVariables } from '~/helpers/nodeList'
 import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // The three latest news items, the next three events or the three current
 // official publications. The title replaces the source's default. The link to
-// all of them leads nowhere until the overview pages are designed (15f). Cards
+// all of them leads to the source's overview page (pages/news.vue etc.). Cards
 // only at full width, directly on an editorial page; a list everywhere else.
 defineProps<ParagraphTeaserListFragment>()
 
@@ -92,6 +94,7 @@ const spacing = useBlockSpacing(block)
 
 const { $texts } = useEasyTexts()
 const language = useLanguage()
+const router = useRouter()
 
 const isEditing = import.meta.blokkliEditing
 
@@ -101,6 +104,11 @@ const isCards = computed(
     !parentType.value &&
     provider.value?.bundle === 'editorial' &&
     options.value.source !== 'publications',
+)
+
+// The overview page's route has the source's name, in the page's language.
+const allUrl = computed(
+  () => router.resolve({ name: options.value.source }).href,
 )
 
 const source = computed(() => {
@@ -129,55 +137,18 @@ const source = computed(() => {
 })
 
 // Today in UTC, as the date fields store it: the same on the server and in the
-// browser, and cacheable for a day. Events that end today are still upcoming,
-// and publications whose period ends today still current.
+// browser, and cacheable for a day.
 const today = new Date().toISOString().slice(0, 10)
 
-const variables = computed(() => {
-  const published = {
-    field: 'status',
-    value: ['1'],
+const variables = computed(() => ({
+  ...nodeListVariables(options.value.source, {
     language: language.value,
-  }
-  switch (options.value.source) {
-    case 'events':
-      return {
-        filter: {
-          conditions: [
-            { field: 'type', value: ['event'] },
-            published,
-            {
-              field: 'field_date.end_value',
-              value: [today],
-              operator: 'GREATER_THAN_OR_EQUAL' as const,
-            },
-          ],
-        },
-        sort: [{ field: 'field_date.value', direction: 'ASC' as const }],
-      }
-    case 'publications':
-      return {
-        filter: {
-          conditions: [
-            { field: 'type', value: ['publication'] },
-            published,
-            {
-              field: 'field_period.end_value',
-              value: [today],
-              operator: 'GREATER_THAN_OR_EQUAL' as const,
-            },
-          ],
-        },
-        sort: [{ field: 'field_period.value', direction: 'DESC' as const }],
-      }
-  }
-  return {
-    filter: { conditions: [{ field: 'type', value: ['news'] }, published] },
-    sort: [{ field: 'created', direction: 'DESC' as const }],
-  }
-})
+    today,
+  }),
+  limit: 3,
+}))
 
-const { data } = await useAsyncGraphqlQuery('teaserList', variables)
+const { data } = await useAsyncGraphqlQuery('nodeList', variables)
 
 const items = computed(() =>
   (data.value?.data.entityQuery.items ?? []).filter(

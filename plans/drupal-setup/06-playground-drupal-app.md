@@ -160,7 +160,10 @@ chunk 06":
 
 - **Routing is hand-written** (decided with the user: no vuepal,
   nuxt-language-negotiation or nuxt-easy-texts, no new Drupal modules). vuepal
-  came later, for the toolbar only (see "Drupal's toolbar" below).
+  came later, for the toolbar only (see "Drupal's toolbar" below). **Changed in
+  [15h](15h-overviews-and-search.md) (the user, 2026-09-29):**
+  nuxt-language-negotiation negotiates the language from the prefix, and the
+  pages left `pages/[lang]/`.
   - `app/pages/[...slug].vue` runs the `route` query with the full path.
   - The language is the path's first segment (`shared/languages.ts`).
     `app/graphqlMiddleware.clientOptions.ts` sends it along, and the server

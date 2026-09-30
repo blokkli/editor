@@ -1,5 +1,8 @@
+# The news overview (pages/news.vue): all news below the node's blocks, and
+# its sub-pages, the events and the official publications.
 key: news
 type: editorial
+frontend_route: news
 title: { en: News, de: Aktuelles, fr: Actualités }
 field_lead:
   en: What's new in town, and what's coming up.
@@ -7,8 +10,3 @@ field_lead:
   fr: Les nouvelles de la commune, et ce qui s'annonce.
 field_host_options:
   - { key: header, value: plain }
-field_paragraphs:
-  - type: teaser_list
-    options: { source: news }
-  - type: teaser_list
-    options: { source: events }

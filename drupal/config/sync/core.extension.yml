@@ -22,6 +22,7 @@ module:
   field_ui: 0
   file: 0
   filter: 0
+  frontend_routing: 0
   gin_toolbar: 0
   graphql: 0
   graphql_core_schema: 0

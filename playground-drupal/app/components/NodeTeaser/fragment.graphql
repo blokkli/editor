@@ -31,6 +31,12 @@ fragment nodeTeaser on Node {
       endDay: endDate(drupalDateFormat: DAY)
     }
   }
+  ... on NodeOffice {
+    lead: fieldLead
+    hero: fieldHeroImage {
+      ...mediaImage
+    }
+  }
   ... on NodeEvent {
     lead: fieldLead
     hero: fieldHeroImage {

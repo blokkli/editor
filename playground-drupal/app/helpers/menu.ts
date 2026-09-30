@@ -18,3 +18,21 @@ export function findMenuChildren(tree: MenuTree[], path: string): MenuTree[] {
   }
   return []
 }
+
+/**
+ * The sub-pages of an editorial page: its children in the menu, with their
+ * descriptions.
+ */
+export function findSubPages(tree: MenuTree[], path: string) {
+  return findMenuChildren(tree, path).flatMap(({ link }) =>
+    link.url?.path
+      ? [
+          {
+            label: link.label,
+            url: link.url.path,
+            description: link.description,
+          },
+        ]
+      : [],
+  )
+}

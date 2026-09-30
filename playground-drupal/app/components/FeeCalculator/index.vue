@@ -176,7 +176,7 @@ import { useLanguage } from '~/composables/useLanguage'
 import { RATES, WATER_PER_PERSON, type BagSize, type Dwelling } from './rates'
 
 // The town's fee calculator: an app of its own, embedded in pages with the
-// embed paragraph type (pages/[lang]/embed/fee-calculator.vue).
+// embed paragraph type (pages/embed/fee-calculator.vue).
 const { $texts } = useEasyTexts()
 const language = useLanguage()
 const id = useId()

@@ -98,6 +98,10 @@ paragraph types and bundles get added that end up wrong for it.
   - The home page has its own page component on top of its editorial page.
 - **Changed in [15g](15g-detail-page-parts.md) (the user, 2026-09-29):** a
   detail page ends with up to three related topics, teasers in `field_related`.
+- **Changed in [15h](15h-overviews-and-search.md) (the user, 2026-09-29):** the
+  overviews of news, events and official publications and the search are
+  hardcoded pages in the Nuxt app, each on an editorial node whose aliases
+  `frontend_routing` locks. The search is Search API's, over every node.
 - Config pages: `footer` (a paragraphs field) and `site` (name, service links, a
   site-wide notice of banners and the home page's frequently searched links, all
   but the name paragraphs fields). Covers 13c. The logo is the frontend's (the

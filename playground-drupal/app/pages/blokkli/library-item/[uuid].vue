@@ -21,17 +21,12 @@
 import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
 import { BlokkliField, BlokkliProvider } from '#components'
 import type { LibraryItemPageFragment } from '#graphql-operations'
-import { isLanguage } from '#shared/languages'
 
 // The editor links here with the uuid, e.g. /de/blokkli/library-item/<uuid>.
 // Drupal's own links (open editing, the language switch, notifications) use
 // the id: paragraphs_blokkli_library moves the canonical route to
 // /blokkli/library-item/{id}.
 const route = useRoute()
-
-if (!isLanguage(route.params.lang)) {
-  throw createError({ statusCode: 404, fatal: true })
-}
 
 const param = String(route.params.uuid)
 const byId = /^\d+$/.test(param)
