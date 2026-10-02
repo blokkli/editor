@@ -397,6 +397,13 @@ main:
           de: 'Das Strandbad, die Sportanlagen und die Vereine.'
           fr: 'La plage, les installations sportives et les sociétés locales.'
         link: { node: sport-leisure }
+      - key: online-counter
+        title: { en: 'Online counter', de: 'Online-Schalter', fr: 'Guichet en ligne' }
+        description:
+          en: 'Report a move, order a certificate, book a bulky waste collection.'
+          de: 'Umzug melden, Bestätigung bestellen, Sperrgut anmelden.'
+          fr: 'Annoncer un déménagement, commander une attestation, annoncer des encombrants.'
+        link: { node: online-counter }
   - key: news
     title: { en: News, de: Aktuelles, fr: Actualités }
     link: { node: news }

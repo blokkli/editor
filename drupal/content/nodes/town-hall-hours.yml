@@ -19,9 +19,9 @@ field_paragraphs:
   - type: text
     options: { box: info }
     field_text:
-      en: '<p><strong>The other offices</strong> have their own opening hours. You''ll find them under “Administration”, on each office''s page. You can also do many things at the <a href="https://www.example.com/online-counter">online counter</a>, around the clock.</p>'
-      de: '<p><strong>Die anderen Ämter</strong> haben eigene Öffnungszeiten. Sie finden sie unter «Verwaltung», auf der Seite jedes Amts. Vieles erledigen Sie auch am <a href="https://www.example.com/online-counter">Online-Schalter</a>, rund um die Uhr.</p>'
-      fr: '<p><strong>Les autres services</strong> ont leurs propres horaires. Vous les trouverez sous « Administration », sur la page de chaque service. Vous pouvez aussi effectuer de nombreuses démarches au <a href="https://www.example.com/online-counter">guichet en ligne</a>, 24 heures sur 24.</p>'
+      en: '<p><strong>The other offices</strong> have their own opening hours. You''ll find them under “Administration”, on each office''s page. You can also do many things at the <a href="/en/administration/online-counter">online counter</a>, around the clock.</p>'
+      de: '<p><strong>Die anderen Ämter</strong> haben eigene Öffnungszeiten. Sie finden sie unter «Verwaltung», auf der Seite jedes Amts. Vieles erledigen Sie auch am <a href="/de/verwaltung/online-schalter">Online-Schalter</a>, rund um die Uhr.</p>'
+      fr: '<p><strong>Les autres services</strong> ont leurs propres horaires. Vous les trouverez sous « Administration », sur la page de chaque service. Vous pouvez aussi effectuer de nombreuses démarches au <a href="/fr/administration/guichet-en-ligne">guichet en ligne</a>, 24 heures sur 24.</p>'
   - type: contact
     options: { display: compact }
     field_office: { node: residents-services }

@@ -15,9 +15,9 @@ field_paragraphs:
   - type: text
     options: { box: info }
     field_text:
-      en: '<p><strong>Deregister online:</strong> If you''re moving to another Swiss municipality, you can deregister at the <a href="https://www.example.com/online-counter">online counter</a>. We''ll then send your certificate of origin by registered post to your new address.</p>'
-      de: '<p><strong>Online abmelden:</strong> Ziehen Sie in eine andere Schweizer Gemeinde, können Sie sich am <a href="https://www.example.com/online-counter">Online-Schalter</a> abmelden. Den Heimatschein senden wir Ihnen dann eingeschrieben an die neue Adresse.</p>'
-      fr: '<p><strong>Annoncer son départ en ligne :</strong> si vous partez pour une autre commune suisse, vous pouvez annoncer votre départ au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Nous vous envoyons alors votre acte d''origine par courrier recommandé à votre nouvelle adresse.</p>'
+      en: '<p><strong>Deregister online:</strong> If you''re moving to another Swiss municipality, you can deregister at the <a href="/en/administration/online-counter">online counter</a>. We''ll then send your certificate of origin by registered post to your new address.</p>'
+      de: '<p><strong>Online abmelden:</strong> Ziehen Sie in eine andere Schweizer Gemeinde, können Sie sich am <a href="/de/verwaltung/online-schalter">Online-Schalter</a> abmelden. Den Heimatschein senden wir Ihnen dann eingeschrieben an die neue Adresse.</p>'
+      fr: '<p><strong>Annoncer son départ en ligne :</strong> si vous partez pour une autre commune suisse, vous pouvez annoncer votre départ au <a href="/fr/administration/guichet-en-ligne">guichet en ligne</a>. Nous vous envoyons alors votre acte d''origine par courrier recommandé à votre nouvelle adresse.</p>'
   - type: title
     field_title: { en: How to deregister, de: So melden Sie sich ab, fr: Comment annoncer votre départ }
   - type: steps
@@ -106,7 +106,7 @@ field_aside:
   - type: link_list
     field_paragraphs:
       - type: link
-        field_link: https://www.example.com/online-counter
+        field_link: { node: online-counter }
         field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
       - type: link
         field_link: https://www.example.com/mail-forwarding

@@ -15,9 +15,9 @@ field_paragraphs:
   - type: text
     options: { box: info }
     field_text:
-      en: '<p><strong>Report online:</strong> The easiest way to report your move is at the <a href="https://www.example.com/online-counter">online counter</a>, in just a few minutes. You''ll need the number of your new flat: it''s in your tenancy agreement, or your property manager can give it to you.</p>'
-      de: '<p><strong>Online melden:</strong> Den Umzug melden Sie am einfachsten am <a href="https://www.example.com/online-counter">Online-Schalter</a>, in wenigen Minuten. Sie brauchen dafür die Nummer Ihrer neuen Wohnung: Sie steht im Mietvertrag, oder die Verwaltung nennt sie Ihnen.</p>'
-      fr: '<p><strong>Annoncer en ligne :</strong> le plus simple est d''annoncer votre déménagement au <a href="https://www.example.com/online-counter">guichet en ligne</a>, en quelques minutes. Il vous faut pour cela le numéro de votre nouveau logement : il figure dans le bail à loyer, ou la gérance vous le communique.</p>'
+      en: '<p><strong>Report online:</strong> The easiest way to report your move is at the <a href="/en/administration/online-counter">online counter</a>, in just a few minutes. You''ll need the number of your new flat: it''s in your tenancy agreement, or your property manager can give it to you.</p>'
+      de: '<p><strong>Online melden:</strong> Den Umzug melden Sie am einfachsten am <a href="/de/verwaltung/online-schalter">Online-Schalter</a>, in wenigen Minuten. Sie brauchen dafür die Nummer Ihrer neuen Wohnung: Sie steht im Mietvertrag, oder die Verwaltung nennt sie Ihnen.</p>'
+      fr: '<p><strong>Annoncer en ligne :</strong> le plus simple est d''annoncer votre déménagement au <a href="/fr/administration/guichet-en-ligne">guichet en ligne</a>, en quelques minutes. Il vous faut pour cela le numéro de votre nouveau logement : il figure dans le bail à loyer, ou la gérance vous le communique.</p>'
   - type: title
     field_title: { en: What you need to provide, de: Was Sie angeben, fr: Les informations à fournir }
   - type: text
@@ -89,7 +89,7 @@ field_aside:
   - type: link_list
     field_paragraphs:
       - type: link
-        field_link: https://www.example.com/online-counter
+        field_link: { node: online-counter }
         field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
       - type: link
         field_link: https://www.example.com/parking-permit

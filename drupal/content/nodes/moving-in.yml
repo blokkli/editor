@@ -15,9 +15,9 @@ field_paragraphs:
   - type: text
     options: { box: info }
     field_text:
-      en: '<p><strong>Register online:</strong> If you''re moving here from another Swiss municipality, you can register at the <a href="https://www.example.com/online-counter">online counter</a>. You need a valid identity card or passport, and you pay the fee online. If you''re moving here from abroad, please come to the counter in person.</p>'
-      de: '<p><strong>Online anmelden:</strong> Ziehen Sie aus einer anderen Schweizer Gemeinde zu, können Sie sich am <a href="https://www.example.com/online-counter">Online-Schalter</a> anmelden. Sie brauchen eine gültige Identitätskarte oder einen Pass und bezahlen die Gebühr online. Wer aus dem Ausland zuzieht, kommt persönlich an den Schalter.</p>'
-      fr: '<p><strong>S''annoncer en ligne :</strong> si vous arrivez d''une autre commune suisse, vous pouvez vous annoncer au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Il vous faut une carte d''identité ou un passeport valable, et vous payez l''émolument en ligne. Si vous arrivez de l''étranger, présentez-vous en personne au guichet.</p>'
+      en: '<p><strong>Register online:</strong> If you''re moving here from another Swiss municipality, you can register at the <a href="/en/administration/online-counter">online counter</a>. You need a valid identity card or passport, and you pay the fee online. If you''re moving here from abroad, please come to the counter in person.</p>'
+      de: '<p><strong>Online anmelden:</strong> Ziehen Sie aus einer anderen Schweizer Gemeinde zu, können Sie sich am <a href="/de/verwaltung/online-schalter">Online-Schalter</a> anmelden. Sie brauchen eine gültige Identitätskarte oder einen Pass und bezahlen die Gebühr online. Wer aus dem Ausland zuzieht, kommt persönlich an den Schalter.</p>'
+      fr: '<p><strong>S''annoncer en ligne :</strong> si vous arrivez d''une autre commune suisse, vous pouvez vous annoncer au <a href="/fr/administration/guichet-en-ligne">guichet en ligne</a>. Il vous faut une carte d''identité ou un passeport valable, et vous payez l''émolument en ligne. Si vous arrivez de l''étranger, présentez-vous en personne au guichet.</p>'
   - type: title
     field_title: { en: How to register, de: So melden Sie sich an, fr: Comment vous annoncer }
   - type: steps
@@ -127,7 +127,7 @@ field_aside:
   - type: link_list
     field_paragraphs:
       - type: link
-        field_link: https://www.example.com/online-counter
+        field_link: { node: online-counter }
         field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
       - type: link
         field_link: https://www.example.com/dog-registration

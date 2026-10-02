@@ -1,0 +1,73 @@
+# The services the pages say you can do online, each leading to the page that
+# explains it. There are no forms behind them: the pages are where they'd
+# start.
+key: online-counter
+type: editorial
+title: { en: 'Online counter', de: 'Online-Schalter', fr: 'Guichet en ligne' }
+field_lead:
+  en: 'Report a move, order a certificate or book a bulky waste collection: you can do a lot online, around the clock.'
+  de: 'Umzug melden, Bestätigung bestellen oder Sperrgut anmelden: Vieles erledigen Sie online, rund um die Uhr.'
+  fr: 'Annoncer un déménagement, commander une attestation ou annoncer des déchets encombrants : vous pouvez régler beaucoup de choses en ligne, 24 heures sur 24.'
+field_host_options:
+  - { key: header, value: plain }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>For most services, an email address is all you need. To register when you move here, you also need a valid identity card or passport. You pay fees online by card. Each page below explains what you need and what happens next.</p>'
+      de: '<p>Für die meisten Dienstleistungen genügt eine E-Mail-Adresse. Für die Anmeldung beim Zuzug brauchen Sie zusätzlich eine gültige Identitätskarte oder einen Pass. Gebühren bezahlen Sie online mit Karte. Auf den Seiten unten steht, was Sie brauchen und wie es weitergeht.</p>'
+      fr: '<p>Pour la plupart des prestations, une adresse e-mail suffit. Pour vous annoncer à votre arrivée, il vous faut en plus une carte d''identité ou un passeport valable. Vous payez les émoluments en ligne par carte. Les pages ci-dessous indiquent ce dont vous avez besoin et la suite de la procédure.</p>'
+  - type: columns
+    options: { ratio: '50-50' }
+    field_left:
+      - type: title
+        field_title: { en: 'Moving and residence', de: 'Umzug und Wohnsitz', fr: 'Déménagement et domicile' }
+      - type: link_list
+        field_paragraphs:
+          - type: link
+            field_link: { node: moving-in }
+            field_title: { en: 'Register when moving here', de: 'Zuzug melden', fr: 'Annoncer votre arrivée' }
+          - type: link
+            field_link: { node: moving-away }
+            field_title: { en: 'Deregister when moving away', de: 'Wegzug melden', fr: 'Annoncer votre départ' }
+          - type: link
+            field_link: { node: moving-within }
+            field_title: { en: 'Report a move within Blockingen', de: 'Umzug innerhalb von Blockingen melden', fr: 'Annoncer un déménagement à Bloquens' }
+          - type: link
+            field_link: { node: documents }
+            field_title: { en: 'Order a certificate', de: 'Bestätigung bestellen', fr: 'Commander une attestation' }
+      - type: title
+        field_title: { en: 'Taxes', de: 'Steuern', fr: 'Impôts' }
+      - type: link_list
+        field_paragraphs:
+          - type: link
+            field_link: { node: tax-return }
+            field_title: { en: 'Extend the deadline for your tax return', de: 'Frist für die Steuererklärung verlängern', fr: 'Prolonger le délai de la déclaration d''impôt' }
+    field_right:
+      - type: title
+        field_title: { en: 'Building and environment', de: 'Bauen und Umwelt', fr: 'Construction et environnement' }
+      - type: link_list
+        field_paragraphs:
+          - type: link
+            field_link: { node: building-permits }
+            field_title: { en: 'Submit a building application', de: 'Baugesuch einreichen', fr: 'Déposer une demande de permis de construire' }
+          - type: link
+            field_link: { node: collection-days }
+            field_title: { en: 'Book a bulky waste collection', de: 'Sperrgut anmelden', fr: 'Annoncer des déchets encombrants' }
+          - type: link
+            field_link: { node: collection-days }
+            field_title: { en: 'Order a green waste sticker', de: 'Grüngutmarke bestellen', fr: 'Commander une vignette pour déchets verts' }
+          - type: link
+            field_link: { node: public-works }
+            field_title: { en: 'Report damage to a road', de: 'Schaden an einer Strasse melden', fr: 'Signaler un dégât sur la route' }
+      - type: title
+        field_title: { en: 'Sport and leisure', de: 'Sport und Freizeit', fr: 'Sports et loisirs' }
+      - type: link_list
+        field_paragraphs:
+          - type: link
+            field_link: { node: sports-facilities }
+            field_title: { en: 'Book a hall or a sports pitch', de: 'Halle oder Sportplatz reservieren', fr: 'Réserver une salle ou un terrain de sport' }
+  - type: title
+    field_title: { en: 'Questions about the online counter', de: 'Fragen zum Online-Schalter', fr: 'Questions sur le guichet en ligne' }
+  - type: contact
+    options: { display: compact }
+    field_office: { node: municipal-chancery }

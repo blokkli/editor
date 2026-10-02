@@ -24,7 +24,7 @@
   # The meta navigation, in the header's service bar.
   field_service_links:
     - type: link
-      field_link: https://www.example.com/online-counter
+      field_link: { node: online-counter }
       field_title: { en: Online counter, de: Online-Schalter, fr: Guichet en ligne }
     - type: link
       field_link: { node: municipal-chancery }

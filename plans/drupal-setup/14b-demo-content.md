@@ -162,6 +162,14 @@ the docroot) and nginx sends to Drupal.
   rates); and the event's day, with a link. Days are in the town's time zone,
   formatted in British English, Swiss German and Swiss French.
 
+**The online counter (2026-10-02):** the header's "Online-Schalter" and the
+pages' mentions of it led to example.com. It's now an editorial page under
+Verwaltung (`/de/verwaltung/online-schalter`): the services the pages say you
+can do online, grouped in link lists, each leading to the page that explains it,
+and the chancery as the contact. There are no forms behind them; pages per
+service may follow (the user). The texts link to it with each language's path,
+e.g. `/fr/administration/guichet-en-ligne`.
+
 **The frontend for it:** the menu query has four levels, and an editorial page's
 sub-pages list their own children (an area's topics with their detail pages)
 instead of their description.

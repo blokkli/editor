@@ -19,9 +19,9 @@ field_paragraphs:
   - type: text
     options: { box: info }
     field_text:
-      en: '<p><strong>Apply online:</strong> You can also submit building applications at the <a href="https://www.example.com/online-counter">online counter</a>. Upload your plans as PDFs; we then don''t need any paper copies.</p>'
-      de: '<p><strong>Elektronisch einreichen:</strong> Baugesuche können Sie auch über den <a href="https://www.example.com/online-counter">Online-Schalter</a> einreichen. Pläne laden Sie als PDF hoch; Papier brauchen wir dann keines.</p>'
-      fr: '<p><strong>Dépôt électronique :</strong> Vous pouvez aussi déposer les demandes de permis de construire au <a href="https://www.example.com/online-counter">guichet en ligne</a>. Vous chargez les plans au format PDF ; nous n''avons alors besoin d''aucun document papier.</p>'
+      en: '<p><strong>Apply online:</strong> You can also submit building applications at the <a href="/en/administration/online-counter">online counter</a>. Upload your plans as PDFs; we then don''t need any paper copies.</p>'
+      de: '<p><strong>Elektronisch einreichen:</strong> Baugesuche können Sie auch über den <a href="/de/verwaltung/online-schalter">Online-Schalter</a> einreichen. Pläne laden Sie als PDF hoch; Papier brauchen wir dann keines.</p>'
+      fr: '<p><strong>Dépôt électronique :</strong> Vous pouvez aussi déposer les demandes de permis de construire au <a href="/fr/administration/guichet-en-ligne">guichet en ligne</a>. Vous chargez les plans au format PDF ; nous n''avons alors besoin d''aucun document papier.</p>'
   - type: title
     field_title: { en: 'What the application includes', de: Was das Gesuch enthält, fr: 'Contenu de la demande' }
   - type: text
