@@ -130,6 +130,9 @@
             },
             "drupal/scheduler": {
                 "scheduler#3312200: Paragraph scheduler plugin": "https://www.drupal.org/files/issues/2026-06-15/3312200-paragraph-scheduler.diff"
+            },
+            "mglaman/phpstan-drupal": {
+                "Extension discovery skips directories named web, like file_scan_ignore_directories in settings.php: the paragraphs_blokkli checkout builds its own test site there": "patches/phpstan-drupal-ignore-web-directories.patch"
             }
         }
     },

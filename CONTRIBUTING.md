@@ -151,7 +151,8 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 4. Change the adapter and the UI in `src/`. The sandbox's Nuxt app hot-reloads.
 5. Export config changes with `ddev drush cex -y` and commit
    `sandbox/drupal/config/sync`.
-6. Run `bun run verify`. After nginx changes, also `ddev check-routes`.
+6. Run `bun run verify`, and the module's checks (see below). After nginx
+   changes, also `ddev check-routes`.
 7. Commit the module change in the submodule and push it to drupal.org. Then
    commit the new submodule pointer here.
 
@@ -168,6 +169,20 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 - The module has its own `.ddev` (project `paragraphs-blokkli`). ddev commands
   run inside `sandbox/drupal/paragraphs_blokkli` target that project, not this
   one.
+- **The module's tests and checks** run in that project. In
+  `sandbox/drupal/paragraphs_blokkli`:
+  1. `ddev start`, `ddev poser`, then `ddev symlink-project`. This builds a test
+     site into the checkout's `web/` and `vendor/`, which are gitignored there.
+  2. `ddev phpunit-parallel` runs the whole suite in about 20 seconds.
+     `ddev phpunit --filter …` runs single tests. `ddev phpcs` and
+     `ddev phpstan` use the module's own configuration, as on drupal.org.
+  - This site's Drupal and phpstan skip directories named `web`: settings.php
+    sets `file_scan_ignore_directories`, and phpstan-drupal is patched.
+  - ddev gives a project name to one checkout only. If another checkout of the
+    module already uses `paragraphs-blokkli`, set another name in
+    `.ddev/config.local.yaml` (gitignored), e.g.
+    `name: paragraphs-blokkli-sandbox`. The module's folder in the test site
+    takes that name too.
 
 ## Checks
 

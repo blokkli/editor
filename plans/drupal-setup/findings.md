@@ -9,8 +9,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #   | Finding                                                                                                                 | Project              | Severity | Status     | Blocks   |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
-| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | open       | chunk 09 |
-| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | open       | chunk 09 |
+| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | open       | 09b      |
+| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | open       | 09b      |
 | F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                              | `paragraphs_blokkli` | low      | open       | –        |
 | F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       | –        |
 | F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround | –        |
@@ -103,7 +103,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
   responses, but some mutations are never stored. In the spike on MariaDB, 79
   mutations from two clients reported success and 53 were stored.
 - **Why it matters:** the edit state is shared by everyone editing a page. Two
-  editors on one page is a normal situation, and "Invite a colleague" (chunk 09)
+  editors on one page is a normal situation, and "Invite a colleague" (09b)
   creates it on purpose.
 - **Cause:** a classic read-modify-write race with no lock or transaction.
   - The state is loaded in `LoadEditStateForMutation::resolve()` (the resolver

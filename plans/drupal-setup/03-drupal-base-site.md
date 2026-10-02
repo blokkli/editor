@@ -184,6 +184,9 @@ From the [SQLite spike](01-sqlite-spike.md) and
   `composer install`. Don't run the module's own ddev inside the submodule.
   `settings.php` also ignores directories named `web` in extension discovery, in
   case the module's own test site exists.
+  - **2026-10-02:** the module's ddev runs inside the submodule now (see
+    CONTRIBUTING.md). phpstan-drupal has its own extension discovery, so a patch
+    makes it skip `web` too.
 
 ### Verification (2026-09-26)
 

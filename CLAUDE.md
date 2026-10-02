@@ -373,7 +373,9 @@ full workflow: `CONTRIBUTING.md`. Design and status: `plans/drupal-setup/`.
   (`ddev dotenv set`), never in config.
 - **The submodule is a separate repository.** Never commit or push in it without
   being asked, and never run `git submodule update` (it detaches the working
-  branch). ddev commands run inside it target the module's own ddev project.
+  branch). ddev commands run inside it target the module's own ddev project,
+  which runs the module's tests and checks (`ddev phpunit-parallel`,
+  `ddev phpcs`, `ddev phpstan`; see its CLAUDE.md).
 - **Content is code:** `sandbox/drupal/content` (YAML, see its README).
   `ddev bake` installs the site from config and seeds it (`--source=de` makes
   German the original language); it replaces the database. `ddev reset [de]`
