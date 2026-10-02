@@ -6,7 +6,7 @@
         :list="paragraphs"
         field-list-type="footer"
         edit-class="min-h-24"
-        class="grid gap-x-grid gap-y-8 md:col-span-2 md:grid-cols-3 lg:col-span-8"
+        class="grid gap-x-grid gap-y-8 md:grid-cols-2 lg:grid-cols-3"
       />
       <template #bottom>
         <span>© {{ siteName }}</span>

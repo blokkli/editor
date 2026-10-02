@@ -86,12 +86,9 @@
                 <span class="text-muted">Commune de Bloquens</span>
               </span>
             </div>
-            <div class="grid grid-cols-3 gap-grid">
-              <div class="flex items-center justify-center bg-primary p-6">
-                <Logo negative class="h-14 w-auto" />
-              </div>
+            <div class="grid grid-cols-2 gap-grid">
               <div class="flex items-center justify-center bg-ink p-6">
-                <Logo negative class="h-14 w-auto" />
+                <Logo class="h-14 w-auto" />
               </div>
               <div
                 class="flex items-end justify-center gap-4 border border-line p-6"
@@ -105,7 +102,8 @@
           <p class="max-w-content text-muted">
             A shield in Wappenrot with a wall of six blocks: heraldic, and the
             building-block principle of the editor. Always next to the name.
-            Negative on the red and ink grounds.
+            Never inverted: like any coat of arms, it keeps its colours, also on
+            the ink ground.
           </p>
         </section>
 

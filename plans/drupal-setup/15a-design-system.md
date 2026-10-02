@@ -105,14 +105,17 @@ progress, not a spec (the user).
 
 ### Components (`playground-drupal/app/components/`)
 
-- `Logo`: the shield with six blocks, `negative` for the red and ink grounds.
+- `Logo`: the shield with six blocks, in its colours on every ground: a coat of
+  arms has no inverted version (the user, 2026-10-02).
 - `PageHeader`: the skip link, a service bar with the language switch, the logo,
   the main navigation and a search toggle; below `lg` a menu panel. Since
   [15h](15h-overviews-and-search.md), the service links and the language switch
   are a small row above the navigation, with no dark bar, and a thin line
   replaces the red one below the header: with Drupal's toolbar, its local tasks
   and a banner, the page's top had too many bands.
-- `PageFooter`: logo, address and column slots, the bottom row.
+- `PageFooter`: the columns (a slot), then the bottom row with the logo and the
+  ©. The logo was the first column until 2026-10-02: the columns beside it were
+  too narrow for a button (the user).
 - `Breadcrumb`, `Callout` (info, success, warning, error), `LinkList` (links or
   downloads with meta), `SearchField` (two sizes).
 - `Tile` (a row's number, date or icon) and `ArrowLink` (a link with an arrow),

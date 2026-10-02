@@ -19,30 +19,30 @@
     </main>
 
     <PageFooter name="Gemeinde Blockingen" name-secondary="Commune de Bloquens">
-      <template #address>
-        <p>Gemeindeverwaltung<br />Dorfstrasse 1<br />[PLZ] Blockingen</p>
-      </template>
-
-      <div class="flex flex-col gap-2 lg:col-span-3">
-        <h2 class="text-label text-white uppercase">Öffnungszeiten</h2>
-        <p>
-          Mo–Fr 08.00–11.30<br />Mo, Di, Do 14.00–17.00<br />oder nach
-          Vereinbarung
-        </p>
-      </div>
-      <div class="flex flex-col gap-2 lg:col-span-2">
-        <h2 class="text-label text-white uppercase">Kontakt</h2>
-        <p>[Telefon]<br />[E-Mail]</p>
-      </div>
-      <div class="flex flex-col gap-2 lg:col-span-3">
-        <h2 class="text-label text-white uppercase">Direkt</h2>
-        <ul>
-          <li v-for="label in DIRECT" :key="label">
-            <a href="#" class="text-white underline hover:no-underline">{{
-              label
-            }}</a>
-          </li>
-        </ul>
+      <div class="grid gap-x-grid gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col gap-2">
+          <h2 class="text-label text-white uppercase">Öffnungszeiten</h2>
+          <p>
+            Mo–Fr 08.00–11.30<br />Mo, Di, Do 14.00–17.00<br />oder nach
+            Vereinbarung
+          </p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <h2 class="text-label text-white uppercase">Kontakt</h2>
+          <p>
+            Gemeindeverwaltung<br />Dorfstrasse 1<br />[PLZ] Blockingen<br />[Telefon]<br />[E-Mail]
+          </p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <h2 class="text-label text-white uppercase">Direkt</h2>
+          <ul>
+            <li v-for="label in DIRECT" :key="label">
+              <a href="#" class="text-white underline hover:no-underline">{{
+                label
+              }}</a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <template #bottom>
