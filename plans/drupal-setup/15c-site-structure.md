@@ -188,7 +188,9 @@ and they share the pages' pattern (`/verwaltung/einwohnerdienste`); the three
   link. The detail page's eyebrow is the breadcrumb's second-to-last item.
 - **`SubPages`:** a grid under an ink rule, with the menu links' descriptions,
   in a `nav` ("In this section"). `Node/Editorial`'s host option `subPages`
-  hides it.
+  hides it. Since 2026-10-02, "In this section" is a visible h2 (a small label)
+  and the cards' titles are h3s: a page with sub-pages and no blocks has a valid
+  heading structure in the analyzer (the user).
 - **`ConfigPage/Site`** passes the links to `PageHeader`, which already rendered
   them.
 
