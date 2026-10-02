@@ -33,5 +33,5 @@ this chunk tests them (the user, 2026-09-26).
 From [chunk 05](05-seed-bake-reset.md) (2026-09-28):
 
 - **The baseline site is a bake:** `ddev bake` installs from config and seeds
-  `drupal/content`; a worktree bakes its own. `ddev reset` restores the site
-  between replays.
+  `sandbox/drupal/content`; a worktree bakes its own. `ddev reset` restores the
+  site between replays.

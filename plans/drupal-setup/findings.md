@@ -496,7 +496,7 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   - The editor's own link (`getLibraryItemEditUrl` in the Drupal adapter) uses
     the uuid, and the documented Nuxt page loads by uuid. So Drupal's links 404.
   - **Workaround:** the page loads by id when the parameter is numeric
-    (`playground-drupal/app/pages/[lang]/blokkli/library-item/[uuid].vue`, and
+    (`sandbox/frontend/app/pages/[lang]/blokkli/library-item/[uuid].vue`, and
     the `blokkli-setup-library` skill).
 - **Templates:** the canonical URL is the admin form
   (`/admin/config/content/blokkli/templates/{id}`), so Drupal's links to a
@@ -664,7 +664,7 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
     labels.
   - So are the chart colours' labels in `colorOptions`
     (`src/global/types/colorOptions.ts`), 13i.
-- **Workaround:** playground-drupal redefines `bkVisibleLanguages` in
+- **Workaround:** the sandbox frontend redefines `bkVisibleLanguages` in
   `nuxt.config.ts` with labels per language. Fragments and colours have none.
 - **Fix idea:** resolve the built-in labels through the editor's texts, and
   accept `DefinitionString` for fragment and colour labels.

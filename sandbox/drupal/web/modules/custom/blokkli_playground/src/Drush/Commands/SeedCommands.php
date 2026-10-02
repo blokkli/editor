@@ -44,11 +44,11 @@ final class SeedCommands extends DrushCommands {
   }
 
   /**
-   * Creates the content from drupal/content, in the given source language.
+   * Creates the content of sandbox/drupal/content, in the source language.
    */
   #[CLI\Command(name: 'blokkli-playground:seed')]
   #[CLI\Option(name: 'source', description: 'The original language of the content (en, de or fr); the others are translations.')]
-  #[CLI\Option(name: 'content', description: 'The content directory, if not drupal/content.')]
+  #[CLI\Option(name: 'content', description: 'The content directory, if not sandbox/drupal/content.')]
   #[CLI\Usage(name: 'drush blokkli-playground:seed --source=de', description: 'Seed the content with German as its original language.')]
   public function seed(array $options = ['source' => 'en', 'content' => NULL]): void {
     $nodes = $this->entityTypeManager->getStorage('node')->getQuery()->accessCheck(FALSE)->count()->execute();
@@ -82,7 +82,7 @@ final class SeedCommands extends DrushCommands {
    */
   #[CLI\Command(name: 'blokkli-playground:template')]
   #[CLI\Argument(name: 'directory', description: 'Where to write db.sqlite.')]
-  #[CLI\Usage(name: 'drush blokkli-playground:template /var/www/html/drupal/sandboxes/_template/en', description: 'Write the English template.')]
+  #[CLI\Usage(name: 'drush blokkli-playground:template /var/www/html/sandbox/drupal/sandboxes/_template/en', description: 'Write the English template.')]
   public function template(string $directory): void {
     $styles = $this->entityTypeManager->getStorage('image_style')->loadMultiple();
     $derivatives = 0;

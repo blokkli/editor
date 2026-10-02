@@ -75,7 +75,7 @@ export default defineConfig({
       // The Drupal site (vendor, core, the paragraphs_blokkli submodule) is
       // never imported by tests; watching it only costs inotify watches.
       ignored: [
-        path.resolve(__dirname, 'drupal') + '/**',
+        path.resolve(__dirname, 'sandbox/drupal') + '/**',
         path.resolve(__dirname, '.ddev') + '/**',
       ],
     },

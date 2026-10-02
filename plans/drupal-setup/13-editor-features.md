@@ -8,9 +8,9 @@
 ## Goal
 
 The Drupal site supports every blökkli feature, verified in the editor of
-`playground-drupal`. Along the way, the setup of every feature is written up as
-a skill in `./skills`. The skills ship with `@blokkli/editor`, for agents that
-set the same features up in other projects.
+`sandbox/frontend`. Along the way, the setup of every feature is written up as a
+skill in `./skills`. The skills ship with `@blokkli/editor`, for agents that set
+the same features up in other projects.
 
 Split off from chunk 04 on 2026-09-26, and split into the sub-chunks below the
 same day: as one plan it was too big. Each sub-chunk gets its own plan and
@@ -50,8 +50,7 @@ review pass.
   `package.json`).
 - **Audience:** an agent in a consumer project (Nuxt and Drupal, often based on
   the starterkit), not in this repo.
-  - No `playground-drupal` paths and no ddev commands of this repo; plain
-    `drush`.
+  - No `sandbox/` paths and no ddev commands of this repo; plain `drush`.
   - Examples assume Nuxt's auto-imports, as most projects use them.
   - Drupal's terms: paragraph, paragraph type, paragraphs field. blökkli's UI
     says "block" for editors, but in Drupal a block is something else (block
@@ -81,7 +80,7 @@ review pass.
 
 - The feature matrix under Notes lists every blökkli feature and adapter method,
   and the bundle or config that exercises it. Each sub-chunk fills in its rows.
-- The `playground-drupal` coverage check (chunk 06) reports no feature disabled
+- The `sandbox/frontend` coverage check (chunk 06) reports no feature disabled
   for lack of backend support.
 - Every skill planned in the sub-chunks exists.
 
@@ -92,9 +91,10 @@ review pass.
 From [chunk 03](03-drupal-base-site.md), [04](04-base-content-model.md) and
 [06](06-playground-drupal-app.md) (2026-09-26):
 
-- **Config changes** go through `ddev drush cex` into `drupal/config/sync`.
-  Reinstall with `ddev drush si --existing-config -y` to check that the export
-  is complete, then `drush config:status` must be clean.
+- **Config changes** go through `ddev drush cex` into
+  `sandbox/drupal/config/sync`. Reinstall with
+  `ddev drush si --existing-config -y` to check that the export is complete,
+  then `drush config:status` must be clean.
 - **List allowed paragraph types explicitly** on every paragraphs field. For
   `target_bundles: null` the module reports no allowed types (F7). The library
   item's types come from each paragraph type's `allow_library_conversion`.
@@ -105,7 +105,7 @@ From [chunk 03](03-drupal-base-site.md), [04](04-base-content-model.md) and
   form.** `add` validates the new paragraph but can't take values (F7). Keep
   that in mind for the `addBehaviour` of new block types.
 - **New block types** need a component in
-  `playground-drupal/app/components/Paragraph/<Pascal>/` (`index.vue` and
+  `sandbox/frontend/app/components/Paragraph/<Pascal>/` (`index.vue` and
   `fragment.graphql` with `paragraph<Pascal>`), a spread in
   `Paragraph/fragment.paragraph.graphql`, and, if library items may hold them,
   one in `Paragraph/FromLibrary/fragment.graphql`.

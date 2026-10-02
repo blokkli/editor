@@ -1,4 +1,4 @@
 [submodule "drupal/paragraphs_blokkli"]
-	path = drupal/paragraphs_blokkli
+	path = sandbox/drupal/paragraphs_blokkli
 	url = https://git.drupalcode.org/project/paragraphs_blokkli.git
 	branch = 2.0.x

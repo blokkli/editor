@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## Description: Control the playground-drupal Nuxt dev server (the "nuxt" daemon)
+## Description: Control the sandbox frontend's Nuxt dev server (the "nuxt" daemon)
 ## Usage: nuxt [status|start|stop|restart|logs]
 ## Example: "ddev nuxt restart" or "ddev nuxt logs"
 

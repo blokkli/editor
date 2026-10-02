@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs the playground-drupal Nuxt dev server in the web container. Started by
+# Runs the sandbox frontend's Nuxt dev server in the web container. Started by
 # supervisor as the ddev web_extra_daemon "nuxt" (see config.yaml); control it
 # with `ddev nuxt`.
 set -euo pipefail
@@ -17,4 +17,4 @@ while [ ! -x node_modules/.bin/nuxi ]; do
 done
 
 # 127.0.0.1: only nginx in this container talks to the dev server.
-exec node_modules/.bin/nuxi dev playground-drupal --host 127.0.0.1 --port 3000
+exec node_modules/.bin/nuxi dev sandbox/frontend --host 127.0.0.1 --port 3000

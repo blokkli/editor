@@ -31,7 +31,7 @@ export default defineNuxtConfig({
       // './src/modules/drupal/graphql/features/transform.graphql',
       // './src/modules/drupal/graphql/features/transform_host.graphql',
       // './src/modules/drupal/graphql/features/templates.graphql',
-      './drupal/mocks.graphql',
+      './sandbox/drupal/mocks.graphql',
     ],
     documents: [
       `

@@ -107,7 +107,8 @@ $settings['skip_permissions_hardening'] = TRUE;
 $settings['update_free_access'] = FALSE;
 $settings['entity_update_batch_size'] = 50;
 // "web": the test site a module checkout builds for itself (see the README of
-// drupal/paragraphs_blokkli), which would expose a second copy of core.
+// sandbox/drupal/paragraphs_blokkli), which would expose a second copy of
+// core.
 $settings['file_scan_ignore_directories'] = ['node_modules', 'bower_components', 'web'];
 
 // Empty turns the feature off.

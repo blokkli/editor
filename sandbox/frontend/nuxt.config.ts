@@ -1,23 +1,23 @@
-// The Nuxt app for the Drupal playground. It runs inside ddev as the "nuxt"
-// daemon (`ddev nuxt`), behind nginx at https://blokkli.ddev.site.
+// The sandbox's Nuxt app. It runs inside ddev as the "nuxt" daemon
+// (`ddev nuxt`), behind nginx at https://blokkli.ddev.site.
 // See plans/drupal-setup/06-playground-drupal-app.md.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import { pathPrefix } from 'nuxt-language-negotiation/negotiators'
 import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
-import drupal from './../src/modules/drupal'
-import agent from './../src/modules/agent'
-import charts from './../src/modules/charts'
-import iframes from './../src/modules/iframes'
-import readability from './../src/modules/readability'
-import tableOfContents from './../src/modules/table-of-contents'
+import drupal from './../../src/modules/drupal'
+import agent from './../../src/modules/agent'
+import charts from './../../src/modules/charts'
+import iframes from './../../src/modules/iframes'
+import readability from './../../src/modules/readability'
+import tableOfContents from './../../src/modules/table-of-contents'
 import { CHART_COLORS } from './shared/chartColors'
 import { LANGUAGES } from './shared/languages'
 
 // Dumped from the local site by `bun run drupal:schema`. The root config types
 // the Drupal module against the same file.
 const schemaPath = fileURLToPath(
-  new URL('../build/drupal-schema.graphql', import.meta.url),
+  new URL('../../build/drupal-schema.graphql', import.meta.url),
 )
 
 // The block options, for the options form in Drupal's paragraph widget
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     'vuepal',
     'nuxt-language-negotiation',
     'nuxt-svg-icon-sprite',
-    '../src/module',
+    '../../src/module',
   ],
 
   imports: {

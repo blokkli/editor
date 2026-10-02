@@ -5,8 +5,9 @@
 ## Example: "ddev bake" or "ddev bake --source=de"
 
 # Replaces the site's database and media files. --source is the original
-# language of the seeded content (drupal/content); the others are translations.
-# The template goes to drupal/sandboxes/_template/<source>.
+# language of the seeded content (sandbox/drupal/content); the others are
+# translations. The template goes to
+# sandbox/drupal/sandboxes/_template/<source>.
 
 set -euo pipefail
 
@@ -21,7 +22,7 @@ for argument in "$@"; do
   esac
 done
 
-cd /var/www/html/drupal
+cd /var/www/html/sandbox/drupal
 files=web/sites/default/files
 template="$PWD/sandboxes/_template/$source"
 start=$(date +%s)

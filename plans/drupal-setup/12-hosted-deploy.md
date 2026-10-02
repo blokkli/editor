@@ -83,7 +83,7 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
 From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
 
 - **Check that the hosted instance serves the SPA only:**
-  `playground-drupal/server/middleware/spa.ts` turns SSR off when
+  `sandbox/frontend/server/middleware/spa.ts` turns SSR off when
   `IS_DDEV_HOSTED=true`, which the Nuxt daemon must see in its environment.
 
 From [13f](13f-translation.md) (2026-09-27):

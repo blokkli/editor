@@ -17,9 +17,9 @@ adds types.
 
 ## Tasks
 
-- [x] The content from 14a's concept, in `drupal/content` (chunk 05's format,
-      replacing its placeholders), with every text in EN, DE and FR so that any
-      of them can be the source language (`ddev bake --source=de`):
+- [x] The content from 14a's concept, in `sandbox/drupal/content` (chunk 05's
+      format, replacing its placeholders), with every text in EN, DE and FR so
+      that any of them can be the source language (`ddev bake --source=de`):
   - [x] about 20 pages, 6 offices, 6 news items and 10 events (14a's page list);
         the lighter ones can be trimmed: 27 detail and 21 editorial pages, 9
         offices, 6 news items, 8 events and 5 publications (below)

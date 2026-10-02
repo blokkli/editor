@@ -33,5 +33,5 @@ export default defineEasyTextsLoader(
       },
     }
   },
-  { dependsOn: ['playground-drupal:graphql'] },
+  { dependsOn: ['sandbox:graphql'] },
 )

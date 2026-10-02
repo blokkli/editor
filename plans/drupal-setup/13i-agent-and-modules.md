@@ -8,7 +8,7 @@
 
 ## Goal
 
-The blökkli modules that `playground-drupal` loads (chunk 06) all have something
+The blökkli modules that `sandbox/frontend` loads (chunk 06) all have something
 to work on in the demo (14a): the agent, charts, iframes, the table of contents
 and the analyzers.
 
@@ -16,9 +16,9 @@ and the analyzers.
 
 - [ ] **Agent:** `paragraphs_blokkli_agent` (the `auth_secret` from the
       environment is wired in chunk 03). Example skills, tools and prompts under
-      `playground-drupal/blokkli/` (see winterthur's `frontend/blokkli/`),
+      `sandbox/frontend/blokkli/` (see winterthur's `frontend/blokkli/`),
       fitting a town's website.
-- [x] **`colorOptions`** in `playground-drupal/nuxt.config.ts`, for the chart
+- [x] **`colorOptions`** in `sandbox/frontend/nuxt.config.ts`, for the chart
       colours (moved from 13b: only the charts module uses them).
 - [x] **Charts:** a `chart` block (the town in numbers: population, budget,
       recycling rate; election results), and the chart data source methods in
@@ -94,7 +94,7 @@ As built:
   - `queryBlocks()` takes a ref or getter as the list, so that a new `list`
     (e.g. after publishing) updates the links.
   - Docs: the module's page ("Outside the field") and `queryBlocks()`.
-- **playground-drupal:**
+- **sandbox/frontend:**
   - `components/TableOfContents/index.vue`: the mockup's "Auf dieser Seite" nav
     (a label heading over an ink rule, then the links).
   - `Host/Layout`: a `toc` slot, the sidebar's first part.
@@ -249,7 +249,7 @@ Decisions:
 
 As built:
 
-- `playground-drupal/app/blokkli/analyzers/wrongLanguage.ts`, registered in
+- `sandbox/frontend/app/blokkli/analyzers/wrongLanguage.ts`, registered in
   `app/blokkli.editAdapter.ts`. Its German and French strings in the module's
   `translations` (`nuxt.config.ts`), the English ones in the code.
 - `eld` as a dev dependency, pre-bundled (`vite.optimizeDeps.include`): Vite

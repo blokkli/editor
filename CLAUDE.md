@@ -52,7 +52,7 @@ bun run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
 bun run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
 bun run typecheck:server      # server code (.nuxt/tsconfig.server.json)
 bun run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
-bun run typecheck:playground-drupal  # playground-drupal app (its .nuxt comes from ddev)
+bun run typecheck:sandbox-frontend  # sandbox/frontend (its .nuxt comes from ddev)
 bun run typecheck             # runs all five
 ```
 
@@ -86,7 +86,7 @@ bun run drupal:schema          # Dump the local Drupal site's schema (in ddev)
 ```
 
 **Note:** During development, the dev servers are always running with hot module
-replacement: the mock playground on the host, playground-drupal as a ddev
+replacement: the mock playground on the host, the sandbox's Nuxt app as a ddev
 daemon. Do NOT start a dev server to verify changes - it's already running and
 will automatically reload. Same for styles, no need to build styles.
 
@@ -292,9 +292,9 @@ The `playground/` directory is a full Nuxt app demonstrating blökkli features.
 It uses a mock adapter that stores data in localStorage. Use it to test changes
 to the editor.
 
-`playground-drupal/` renders pages of a real Drupal site through the Drupal
-adapter. Both playgrounds coexist until the mock playground is removed; see the
-Drupal Dev Environment section below.
+`sandbox/` is a real Drupal site with a Nuxt app that renders its pages through
+the Drupal adapter. It coexists with the mock playground until that is removed;
+see the Drupal Dev Environment section below.
 
 ## Module Configuration
 
@@ -344,35 +344,38 @@ adapter methods, and configuration.
 
 ## Drupal Dev Environment
 
-A Drupal 11 site (`drupal/`) and a Nuxt app that uses the Drupal adapter
-(`playground-drupal/`) run in ddev at https://blokkli.ddev.site. Setup and the
-full workflow: `CONTRIBUTING.md`. Design and status: `plans/drupal-setup/`.
+`sandbox/` holds a Drupal 11 site (`sandbox/drupal/`) and a Nuxt app that uses
+the Drupal adapter (`sandbox/frontend/`). They run in ddev at
+https://blokkli.ddev.site. Setup and the full workflow: `CONTRIBUTING.md`.
+Design and status: `plans/drupal-setup/`.
 
 - **Commands for this stack run in the web container:**
   `ddev exec -d /var/www/html bun run …` and `ddev drush …`. `bun run verify`
   works on the host and in the container.
-- **playground-drupal's Nuxt is a ddev daemon.** Never start it. Use
+- **The sandbox's Nuxt is a ddev daemon.** Never start it. Use
   `ddev nuxt restart` and `ddev nuxt logs`. An invalid GraphQL document makes it
   hang on an interactive prompt (nginx answers 502): fix the document, then
   `ddev nuxt restart`.
 - **The schema loop:**
-  1. Schema changes go into the module first: `drupal/paragraphs_blokkli`, a git
-     submodule of the drupal.org repository. After PHP changes: `ddev drush cr`.
+  1. Schema changes go into the module first:
+     `sandbox/drupal/paragraphs_blokkli`, a git submodule of the drupal.org
+     repository. After PHP changes: `ddev drush cr`.
   2. `bun run drupal:schema` (in the container) dumps the schema into
      `build/drupal-schema.graphql`, and the daemon restarts. Never edit that
      file by hand.
   3. `bun run dev:prepare` regenerates the root types. Revert the change it
      makes to `playground/app/options-schema.json`.
-- **Config:** export with `ddev drush cex -y` and commit `drupal/config/sync`.
-  Secrets only go in `.ddev/.env.web` (`ddev dotenv set`), never in config.
+- **Config:** export with `ddev drush cex -y` and commit
+  `sandbox/drupal/config/sync`. Secrets only go in `.ddev/.env.web`
+  (`ddev dotenv set`), never in config.
 - **The submodule is a separate repository.** Never commit or push in it without
   being asked, and never run `git submodule update` (it detaches the working
   branch). ddev commands run inside it target the module's own ddev project.
-- **Content is code:** `drupal/content` (YAML, see its README). `ddev bake`
-  installs the site from config and seeds it (`--source=de` makes German the
-  original language); it replaces the database. `ddev reset [de]` restores the
-  last bake in a moment: use it after testing in the editor. Content changed in
-  the editor isn't exported; change the files and bake.
+- **Content is code:** `sandbox/drupal/content` (YAML, see its README).
+  `ddev bake` installs the site from config and seeds it (`--source=de` makes
+  German the original language); it replaces the database. `ddev reset [de]`
+  restores the last bake in a moment: use it after testing in the editor.
+  Content changed in the editor isn't exported; change the files and bake.
 - After nginx changes (`.ddev/nginx_full/`), run `ddev check-routes`.
 - Log in with a one-time link: `ddev drush uli /en/node/1` (the admin), or
   `ddev drush uli --name="Anna Keller"` for a test user (13h's roles).

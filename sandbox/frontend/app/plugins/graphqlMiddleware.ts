@@ -6,7 +6,7 @@ import { FORWARDED_HEADERS, pickForwardedHeaders } from '#shared/request'
  * browser's headers. Pass them on, so that Drupal sees the right host.
  */
 export default defineNuxtPlugin({
-  name: 'playground-drupal:graphql',
+  name: 'sandbox:graphql',
   dependsOn: ['nuxt-graphql-middleware-provide-state'],
   setup() {
     if (!import.meta.server) {

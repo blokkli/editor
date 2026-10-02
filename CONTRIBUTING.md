@@ -8,10 +8,10 @@ playground will be removed at some point.
 - **The mock playground** (`playground/`) uses a mock adapter that keeps
   everything in local storage. It runs on the host, and the E2E suite runs
   against it.
-- **The Drupal playground** is a Drupal 11 site with
+- **The sandbox** (`sandbox/`) is a Drupal 11 site with
   [Paragraphs blökkli](https://www.drupal.org/project/paragraphs_blokkli)
-  (`drupal/`) and a Nuxt app that uses the Drupal adapter
-  (`playground-drupal/`). Both run in [ddev](https://ddev.com), at
+  (`sandbox/drupal/`) and a Nuxt app that uses the Drupal adapter
+  (`sandbox/frontend/`). Both run in [ddev](https://ddev.com), at
   https://blokkli.ddev.site.
 
 `node_modules` is shared between the host and the container. On Linux, that's
@@ -26,23 +26,24 @@ bun run dev:prepare
 bun run dev          # http://localhost:3000
 ```
 
-## The Drupal playground
+## The sandbox
 
 ### Setup
 
 1. Clone with the submodule:
    `git clone --recurse-submodules https://github.com/blokkli/editor.git`. In an
    existing clone: `git submodule update --init`. Composer symlinks
-   `drupal/paragraphs_blokkli` into the site, and the `composer install` in
-   `ddev start` fails while it's empty.
+   `sandbox/drupal/paragraphs_blokkli` into the site, and the `composer install`
+   in `ddev start` fails while it's empty.
 2. `ddev start`
 3. `ddev ssh`, then `bun install`. All bun and node tooling for this stack runs
    in the container. The first install sometimes fails with "Fail extracting
    tarball from @nuxt/devtools" (bun 1.3.14); run it again.
-4. `ddev bake` installs the site from `drupal/config/sync`, with the German and
-   French interface translations from drupal.org, and seeds the content of
-   `drupal/content`. It takes about 20 seconds. The first install logs "Couldn't
-   write .htaccess file" for `public://` once, which is harmless.
+4. `ddev bake` installs the site from `sandbox/drupal/config/sync`, with the
+   German and French interface translations from drupal.org, and seeds the
+   content of `sandbox/drupal/content`. It takes about 20 seconds. The first
+   install logs "Couldn't write .htaccess file" for `public://` once, which is
+   harmless.
 5. `ddev drush uli` prints a login link for the admin. The test users log in
    with `ddev drush uli --name="Anna Keller"` (editor), `Marc Brunner` (head of
    department, reviews), `Élodie Favre` (French translator) and `Jonas Weber`
@@ -52,15 +53,16 @@ bun run dev          # http://localhost:3000
 
 ### Content
 
-The content is written in YAML in `drupal/content`: pages as paragraph trees,
-with a value per language. Its README describes the format.
+The content is written in YAML in `sandbox/drupal/content`: pages as paragraph
+trees, with a value per language. Its README describes the format.
 
 - `ddev bake` replaces the site's database and media files. English is the
   original language of the content; `ddev bake --source=de` (or `fr`) makes
   German the original and English and French its translations.
-- Each bake writes a template to `drupal/sandboxes/_template/<language>`.
-  `ddev reset` (or `ddev reset de`) restores the site from it in a moment, e.g.
-  after testing something in the editor.
+- Each bake writes a template to
+  `sandbox/drupal/sandboxes/_template/<language>`. `ddev reset` (or
+  `ddev reset de`) restores the site from it in a moment, e.g. after testing
+  something in the editor.
 - To change the content, edit the files and run `ddev bake`. Content created in
   the editor isn't exported.
 
@@ -102,30 +104,30 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 
 ### Where things live
 
-| Path                          | What                                                            |
-| ----------------------------- | --------------------------------------------------------------- |
-| `drupal/`                     | Composer root. `config/sync` is the config, `web/` the docroot. |
-| `drupal/paragraphs_blokkli/`  | The Drupal module, a git submodule of the drupal.org repo.      |
-| `drupal/content/`             | The content that `ddev bake` seeds.                             |
-| `drupal/sandboxes/`           | Gitignored: the templates, and each sandbox's database.         |
-| `playground-drupal/`          | The Nuxt app.                                                   |
-| `build/drupal-schema.graphql` | The site's GraphQL schema. Generated, never edited by hand.     |
-| `.ddev/`                      | nginx routing, the Nuxt daemon, `ddev nuxt`, `bake`, `reset`.   |
-| `plans/drupal-setup/`         | The plan for this setup and the public sandbox.                 |
+| Path                                 | What                                                            |
+| ------------------------------------ | --------------------------------------------------------------- |
+| `sandbox/drupal/`                    | Composer root. `config/sync` is the config, `web/` the docroot. |
+| `sandbox/drupal/paragraphs_blokkli/` | The Drupal module, a git submodule of the drupal.org repo.      |
+| `sandbox/drupal/content/`            | The content that `ddev bake` seeds.                             |
+| `sandbox/drupal/sandboxes/`          | Gitignored: the templates, and each sandbox's database.         |
+| `sandbox/frontend/`                  | The Nuxt app.                                                   |
+| `build/drupal-schema.graphql`        | The site's GraphQL schema. Generated, never edited by hand.     |
+| `.ddev/`                             | nginx routing, the Nuxt daemon, `ddev nuxt`, `bake`, `reset`.   |
+| `plans/drupal-setup/`                | The plan for this setup and the public sandbox.                 |
 
 ### A feature across both repositories
 
-1. Change the module in `drupal/paragraphs_blokkli`. It's symlinked into the
-   site, so changes are live. After PHP changes, run `ddev drush cr`.
+1. Change the module in `sandbox/drupal/paragraphs_blokkli`. It's symlinked into
+   the site, so changes are live. After PHP changes, run `ddev drush cr`.
 2. `bun run drupal:schema` (in the container) rebuilds Drupal's caches and dumps
    the schema into `build/drupal-schema.graphql`. The Nuxt daemon restarts and
    detects the available features again.
 3. `bun run dev:prepare` regenerates the types for the Drupal module in `src/`.
    It also rewrites `playground/app/options-schema.json` with English labels;
    don't commit that.
-4. Change the adapter and the UI in `src/`. playground-drupal hot-reloads.
+4. Change the adapter and the UI in `src/`. The sandbox's Nuxt app hot-reloads.
 5. Export config changes with `ddev drush cex -y` and commit
-   `drupal/config/sync`.
+   `sandbox/drupal/config/sync`.
 6. Run `bun run verify`. After nginx changes, also `ddev check-routes`.
 7. Commit the module change in the submodule and push it to drupal.org. Then
    commit the new submodule pointer here.
@@ -133,21 +135,22 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 ### The submodule
 
 - `git submodule update` leaves the module on a detached HEAD. Before committing
-  in it, switch to a branch: `git -C drupal/paragraphs_blokkli switch 2.0.x` (or
-  a feature branch).
+  in it, switch to a branch:
+  `git -C sandbox/drupal/paragraphs_blokkli switch 2.0.x` (or a feature branch).
 - `.gitmodules` uses the https URL, so cloning needs no drupal.org account.
   Pushing needs SSH:
   `git config --global url."git@git.drupal.org:".pushInsteadOf "https://git.drupalcode.org/"`.
 - Don't run `git submodule update` from hooks or scripts: it would detach the
   branch someone is working on.
 - The module has its own `.ddev` (project `paragraphs-blokkli`). ddev commands
-  run inside `drupal/paragraphs_blokkli` target that project, not this one.
+  run inside `sandbox/drupal/paragraphs_blokkli` target that project, not this
+  one.
 
 ## Checks
 
 - `bun run verify` runs the formatters, the linters, all typechecks and the unit
-  tests. It works on the host and in the container.
-  `typecheck:playground-drupal` needs the `.nuxt` folder that the Nuxt daemon
-  generates, and is skipped without it.
+  tests. It works on the host and in the container. `typecheck:sandbox-frontend`
+  needs the `.nuxt` folder that the Nuxt daemon generates, and is skipped
+  without it.
 - `bun run verify -- e2e` runs the E2E suite against the mock playground on
   `localhost:3000`, on the host.

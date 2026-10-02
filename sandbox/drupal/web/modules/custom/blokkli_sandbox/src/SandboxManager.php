@@ -11,9 +11,9 @@ use Drupal\Core\Site\Settings;
  * Creates, deletes and lists the sandboxes.
  *
  * A sandbox is a copy of a template that `ddev bake` writes: its database and
- * private and temporary files in drupal/sandboxes/<id>/, its public files in
- * sites/default/files/sandboxes/<id>/. settings.php picks it by the request's
- * subdomain, and nginx shows a page for a sandbox without a database.
+ * private and temporary files in sandbox/drupal/sandboxes/<id>/, its public
+ * files in sites/default/files/sandboxes/<id>/. settings.php picks it by the
+ * request's subdomain, and nginx shows a page for a sandbox without a database.
  *
  * @see plans/drupal-setup/08-sandbox-routing.md
  */

@@ -27,10 +27,10 @@ use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * Creates the site's content from the files in drupal/content.
+ * Creates the site's content from the files in sandbox/drupal/content.
  *
- * The format is described in drupal/content/README.md. Every file is read and
- * checked first: nothing is created while a file has problems.
+ * The format is described in sandbox/drupal/content/README.md. Every file is
+ * read and checked first: nothing is created while a file has problems.
  */
 final class Seeder {
 

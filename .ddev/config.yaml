@@ -1,9 +1,9 @@
-# ddev project for the blökkli Drupal playground and sandbox.
+# ddev project for the blökkli sandbox: the Drupal site and its Nuxt app.
 # See plans/drupal-setup/ for the design.
 name: blokkli
 type: drupal11
-docroot: drupal/web
-composer_root: drupal
+docroot: sandbox/drupal/web
+composer_root: sandbox/drupal
 composer_version: "2"
 php_version: "8.5"
 webserver_type: nginx-fpm
@@ -19,7 +19,7 @@ omit_containers: [db]
 disable_settings_management: true
 
 working_dir:
-  web: /var/www/html/drupal
+  web: /var/www/html/sandbox/drupal
 
 # ddev only sets DRUSH_OPTIONS_URI with settings management on.
 #
@@ -32,7 +32,8 @@ working_dir:
 web_environment:
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
 
-# The playground-drupal Nuxt dev server. Control it with `ddev nuxt`.
+# The Nuxt dev server of the sandbox frontend (sandbox/frontend). Control it
+# with `ddev nuxt`.
 web_extra_daemons:
   - name: nuxt
     command: /var/www/html/.ddev/nuxt-daemon.sh
@@ -40,5 +41,6 @@ web_extra_daemons:
 
 hooks:
   post-start:
-    # Keeps drupal/vendor in sync with composer.lock after a checkout or pull.
+    # Keeps sandbox/drupal/vendor in sync with composer.lock after a checkout
+    # or pull.
     - composer: install --no-interaction

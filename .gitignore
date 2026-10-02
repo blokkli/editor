@@ -80,24 +80,24 @@ packages/agent
 packages/kit
 .playwright-mcp
 
-# Drupal (Composer root drupal/). Everything Composer or Drupal generates is
+# Drupal (Composer root sandbox/drupal/). Everything Composer or Drupal generates is
 # ignored; only custom code, settings.php and config are tracked.
-/drupal/vendor/
-/drupal/web/*
-!/drupal/web/modules/
-/drupal/web/modules/*
-!/drupal/web/modules/custom/
-!/drupal/web/sites/
-/drupal/web/sites/*
-!/drupal/web/sites/default/
-/drupal/web/sites/default/*
-!/drupal/web/sites/default/settings.php
-/drupal/db/
-/drupal/private/*
-!/drupal/private/.htaccess
-/drupal/sandboxes/
-/drupal/recipes/
-/drupal/drush/Commands/contrib/
+/sandbox/drupal/vendor/
+/sandbox/drupal/web/*
+!/sandbox/drupal/web/modules/
+/sandbox/drupal/web/modules/*
+!/sandbox/drupal/web/modules/custom/
+!/sandbox/drupal/web/sites/
+/sandbox/drupal/web/sites/*
+!/sandbox/drupal/web/sites/default/
+/sandbox/drupal/web/sites/default/*
+!/sandbox/drupal/web/sites/default/settings.php
+/sandbox/drupal/db/
+/sandbox/drupal/private/*
+!/sandbox/drupal/private/.htaccess
+/sandbox/drupal/sandboxes/
+/sandbox/drupal/recipes/
+/sandbox/drupal/drush/Commands/contrib/
 
 # ddev environment files can contain API keys.
 /.ddev/.env*

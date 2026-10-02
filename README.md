@@ -54,8 +54,8 @@ extension to integrate the adapter.
 ## Development
 
 This repository has two playgrounds: the mock playground (`playground/`), which
-keeps everything in local storage, and a Drupal site with its own Nuxt app
-(`drupal/` and `playground-drupal/`), which runs in [ddev](https://ddev.com).
+keeps everything in local storage, and the sandbox (`sandbox/`), a Drupal site
+with its own Nuxt app, which runs in [ddev](https://ddev.com).
 [CONTRIBUTING.md](CONTRIBUTING.md) explains how to set up both.
 
 ## Acknowledgments

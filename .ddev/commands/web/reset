@@ -7,7 +7,7 @@
 set -euo pipefail
 
 source="${1:-en}"
-cd /var/www/html/drupal
+cd /var/www/html/sandbox/drupal
 files=web/sites/default/files
 template="sandboxes/_template/$source"
 
