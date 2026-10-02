@@ -11,6 +11,7 @@ dependencies:
     - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.image
     - paragraphs.paragraphs_type.link
+    - paragraphs.paragraphs_type.link_list
     - paragraphs.paragraphs_type.table
     - paragraphs.paragraphs_type.teaser
     - paragraphs.paragraphs_type.teaser_list
@@ -39,6 +40,7 @@ settings:
       from_library: from_library
       image: image
       link: link
+      link_list: link_list
       table: table
       teaser: teaser
       teaser_list: teaser_list

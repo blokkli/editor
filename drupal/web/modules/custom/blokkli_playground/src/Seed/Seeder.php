@@ -394,8 +394,18 @@ final class Seeder {
           $this->error("$at: expected a list of paragraphs");
           continue;
         }
+        // Validating the entity doesn't check the types of new paragraphs:
+        // ParagraphSelection::validateReferenceableNewEntities() lets every
+        // type through (its closure doesn't see the allowed types).
+        $settings = $definition->getSetting('handler_settings') ?? [];
+        $allowed = $settings['target_bundles'] ?? [];
         $paragraphs[$name] = [];
         foreach ($value as $delta => $paragraph) {
+          $type = $paragraph['type'] ?? NULL;
+          if ($allowed && is_string($type) && in_array($type, $allowed, TRUE) === !empty($settings['negate'])) {
+            $this->error("$at.$delta: the field doesn't allow paragraphs of type '$type'");
+            continue;
+          }
           $item = $this->prepare('paragraph', $paragraph, "$at.$delta", "$uuidName/$name/$delta", $paragraphHost);
           if ($item) {
             $paragraphs[$name][] = $item;
