@@ -47,7 +47,8 @@ bun run dev          # http://localhost:3000
    with `ddev drush uli --name="Anna Keller"` (editor), `Marc Brunner` (head of
    department, reviews), `Élodie Favre` (French translator) and `Jonas Weber`
    (restricted editor). Logged in, a page shows Drupal's toolbar and its tabs
-   (Edit, Translate…) above it; Drupal's admin theme is Gin.
+   (Edit, Translate…) above it; Drupal renders everything with Gin, also the
+   pages that aren't admin pages (the login, a user's page).
 
 ### Content
 

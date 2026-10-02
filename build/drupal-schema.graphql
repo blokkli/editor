@@ -51,9 +51,6 @@ enum DrupalDateFormat {
   "Mon, 14 Nov 2022 - 14:52"
   MEDIUM
 
-  "14 November 2022"
-  OLIVERO_MEDIUM
-
   "14 Nov 2022 - 14:52"
   SHORT
 }
