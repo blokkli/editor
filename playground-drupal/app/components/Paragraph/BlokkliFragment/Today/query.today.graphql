@@ -1,0 +1,22 @@
+# The site config page's office and event for the home page's "Today" row.
+query today {
+  siteConfig {
+    office: fieldTodayOffice {
+      title
+      hours: fieldOpeningHours {
+        day
+        starthours
+        endhours
+      }
+    }
+    event: fieldTodayEvent {
+      title
+      url {
+        path
+      }
+      date: fieldDate {
+        start: startDate(format: "c")
+      }
+    }
+  }
+}

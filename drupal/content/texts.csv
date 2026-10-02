@@ -116,13 +116,11 @@ teaser_list.news_empty;default;No news.;Keine Meldungen.;Aucune actualité.
 teaser_list.publications;default;Official publications;Amtliche Publikationen;Publications officielles
 teaser_list.publications_all;default;All publications;Alle Publikationen;Toutes les publications
 teaser_list.publications_empty;default;No current publications.;Keine aktuellen Publikationen.;Aucune publication en cours.
-today.assembly;default;Municipal assembly;Gemeindeversammlung;Assemblée communale
-today.assembly_link;default;Agenda;Traktanden;Ordre du jour
-today.assembly_value;default;Wednesday, 2 December 2026;Mittwoch, 2. Dezember 2026;mercredi 2 décembre 2026
+today.closed;default;Closed today;Heute geschlossen;Fermé aujourd'hui
 today.collection;default;Next collection;Nächste Abfuhr;Prochain ramassage
-today.collection_link;default;Collection calendar;Abfallkalender;Calendrier des collectes
-today.collection_value;default;Household waste · Tuesday, 6 October;Kehricht · Dienstag, 6. Oktober;Ordures ménagères · mardi 6 octobre
+today.collection_note;default;Out on the street by 7:00;Bis 7.00 Uhr an den Strassenrand;Au bord de la route avant 7 h
+today.event_link;default;Details;Details;Détails
+today.household_waste;default;Household waste;Kehricht;Ordures ménagères
 today.label;default;Today;Heute;Aujourd'hui
-today.town_hall;default;Town hall;Gemeindeverwaltung;Administration communale
-today.town_hall_hours;default;8:00–11:30 and 14:00–17:00;08.00–11.30 und 14.00–17.00;8 h – 11 h 30 et 14 h – 17 h
-today.town_hall_open;default;Open today;Heute geöffnet;Ouvert aujourd'hui
+today.open;default;Open today;Heute geöffnet;Ouvert aujourd'hui
+today.open_again;default;Open again on @day;Wieder geöffnet am @day;De nouveau ouvert le @day

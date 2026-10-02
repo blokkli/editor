@@ -168,6 +168,8 @@ schema_configuration:
         field_quick_links: field_quick_links
         field_service_links: field_service_links
         field_site_name: field_site_name
+        field_today_event: field_today_event
+        field_today_office: field_today_office
       user:
         access: access
         changed: changed

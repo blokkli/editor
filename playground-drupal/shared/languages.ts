@@ -11,6 +11,14 @@ export const LANGUAGE_NAMES: Record<Language, string> = {
   fr: 'Français',
 }
 
+// The locale for dates, times and lists formatted in the frontend: British
+// English and Swiss German and French, like the content.
+export const LOCALES: Record<Language, string> = {
+  en: 'en-GB',
+  de: 'de-CH',
+  fr: 'fr-CH',
+}
+
 export function isLanguage(value: unknown): value is Language {
   return LANGUAGES.includes(value as Language)
 }

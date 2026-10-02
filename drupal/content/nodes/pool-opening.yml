@@ -1,6 +1,11 @@
 key: pool-opening
 type: news
 created: '-3 days'
+# Written in advance: it publishes itself two days before the opening, while
+# the site notice says the pool is closed (config_pages.yml). Unpublished in
+# every language: scheduler only unpublishes the translation it saves.
+publish_on: '+2 days 8:00'
+status: false
 # The French text still has last year's opening hours.
 outdated: [fr]
 title: { en: The lakeside pool opens on Saturday, de: Das Strandbad öffnet am Samstag, fr: La plage rouvre samedi }

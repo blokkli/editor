@@ -11,6 +11,15 @@
       fr: 'La commune vue du lac : la vieille ville sur la rive, avec les vignes et les collines boisées derrière'
   field_credit: AI-generated
 
+# No alt text, on purpose: the lakeside pool's gallery shows it, for the
+# analyzer. The same photo as the town from the lake.
+- key: jetty-view
+  type: image
+  name: { en: View from the jetty, de: Blick vom Steg, fr: Vue depuis le ponton }
+  field_media_image:
+    file: images/town-from-lake.jpg
+  field_credit: AI-generated
+
 - key: old-town
   type: image
   name: { en: The old town, de: Die Altstadt, fr: La vieille ville }

@@ -1,0 +1,27 @@
+uuid: d0a2b83d-0436-4c51-9ac4-dfaf4b3d9ef8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_today_event
+    - node.type.event
+    - translatable_config_pages.translatable_config_pages_type.site
+id: translatable_config_pages.site.field_today_event
+field_name: field_today_event
+entity_type: translatable_config_pages
+bundle: site
+label: '“Today”: event'
+description: 'The home page announces it, e.g. the next municipal assembly.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      event: event
+    sort:
+      field: title
+      direction: ASC
+field_type: entity_reference

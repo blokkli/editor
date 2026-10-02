@@ -1,6 +1,6 @@
-# The landing page: visitors start here in the editor. The admission table has
-# no header row on purpose, for the analyzer. The kiosk's text is English in
-# the French translation, also on purpose.
+# The landing page: visitors start here in the editor. Mistakes on purpose, for
+# the analyzers: the admission table has no header row, the gallery's last
+# image has no alt text, and the kiosk's text is English in French.
 key: lakeside-pool
 type: editorial
 title: { en: Lakeside pool, de: Strandbad, fr: Plage }
@@ -52,6 +52,12 @@ field_paragraphs:
           en: The new children's area with its water playground
           de: Der neue Kinderbereich mit Wasserspielplatz
           fr: Le nouvel espace pour les enfants et son aire de jeux d'eau
+      - type: image
+        field_media: { media: jetty-view }
+        field_caption:
+          en: The old town seen from the jetty
+          de: Blick vom Steg auf die Altstadt
+          fr: La vieille ville vue depuis le ponton
   - type: section
     options: { columns: 3 }
     field_title: { en: What to expect, de: Was Sie erwartet, fr: Ce qui vous attend }

@@ -7,6 +7,8 @@ dependencies:
     - field.field.translatable_config_pages.site.field_quick_links
     - field.field.translatable_config_pages.site.field_service_links
     - field.field.translatable_config_pages.site.field_site_name
+    - field.field.translatable_config_pages.site.field_today_event
+    - field.field.translatable_config_pages.site.field_today_office
     - translatable_config_pages.translatable_config_pages_type.site
   module:
     - paragraphs
@@ -76,6 +78,18 @@ content:
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_today_event:
+    type: entity_reference_autocomplete
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_today_office:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
     third_party_settings: {  }
   langcode:
     type: language_select

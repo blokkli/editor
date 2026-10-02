@@ -17,6 +17,10 @@
 - key: site
   type: site
   field_site_name: { en: Blockingen, de: Blockingen, fr: Bloquens }
+  # The home page's "Today" row: whether the office is open today, and the
+  # event it announces.
+  field_today_office: { node: municipal-chancery }
+  field_today_event: { node: assembly-meeting }
   # The meta navigation, in the header's service bar.
   field_service_links:
     - type: link
@@ -54,10 +58,13 @@
       field_title: { en: Vacancies, de: Offene Stellen, fr: 'Offres d''emploi' }
   # Banners at the very top of every page.
   field_notice:
+    # Disappears itself when the pool opens, in every language (F24: the
+    # editor's schedule dialog sets one translation's).
     - type: banner
-      options: { color: success }
+      options: { color: warning }
+      unpublish_on: '+4 days 10:00'
       field_title:
-        en: 'The lakeside pool opens on Saturday, renovated and with a new children''s area.'
-        de: 'Das Strandbad öffnet am Samstag, nach der Sanierung mit einem neuen Kinderbereich.'
-        fr: 'La plage ouvre samedi, rénovée et dotée d''un nouvel espace pour les enfants.'
-      field_link: { node: pool-opening }
+        en: 'The lakeside pool is closed for renovation. It reopens on Saturday, with a new children''s area.'
+        de: 'Das Strandbad ist wegen der Sanierung geschlossen. Am Samstag öffnet es wieder, mit einem neuen Kinderbereich.'
+        fr: 'La plage est fermée pour rénovation. Elle rouvre samedi, avec un nouvel espace pour les enfants.'
+      field_link: { node: lakeside-pool }

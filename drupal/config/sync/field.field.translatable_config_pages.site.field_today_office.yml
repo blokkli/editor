@@ -1,0 +1,27 @@
+uuid: 85568e74-f0b9-4bd4-b71f-fdf2695c809f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.translatable_config_pages.field_today_office
+    - node.type.office
+    - translatable_config_pages.translatable_config_pages_type.site
+id: translatable_config_pages.site.field_today_office
+field_name: field_today_office
+entity_type: translatable_config_pages
+bundle: site
+label: '“Today”: office'
+description: 'The home page shows whether it is open today, and its hours.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      office: office
+    sort:
+      field: title
+      direction: ASC
+field_type: entity_reference

@@ -7,6 +7,8 @@ dependencies:
     - field.field.translatable_config_pages.site.field_quick_links
     - field.field.translatable_config_pages.site.field_service_links
     - field.field.translatable_config_pages.site.field_site_name
+    - field.field.translatable_config_pages.site.field_today_event
+    - field.field.translatable_config_pages.site.field_today_office
     - translatable_config_pages.translatable_config_pages_type.site
   module:
     - entity_reference_revisions
@@ -52,5 +54,7 @@ content:
     weight: -2
     region: content
 hidden:
+  field_today_event: true
+  field_today_office: true
   langcode: true
   search_api_excerpt: true

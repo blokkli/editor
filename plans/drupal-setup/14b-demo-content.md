@@ -17,30 +17,34 @@ adds types.
 
 ## Tasks
 
-- [ ] The content from 14a's concept, in `drupal/content` (chunk 05's format,
+- [x] The content from 14a's concept, in `drupal/content` (chunk 05's format,
       replacing its placeholders), with every text in EN, DE and FR so that any
       of them can be the source language (`ddev bake --source=de`):
-  - [ ] about 20 pages, 6 offices, 6 news items and 10 events (14a's page list);
-        the lighter ones can be trimmed
+  - [x] about 20 pages, 6 offices, 6 news items and 10 events (14a's page list);
+        the lighter ones can be trimmed: 27 detail and 21 editorial pages, 9
+        offices, 6 news items, 8 events and 5 publications (below)
   - [x] the home page, three news items, three events and three official
         publications ([15f](15f-home-page.md), 2026-09-29)
-  - [ ] the landing page "The lakeside pool" at its best, with the planted
+  - [x] the landing page "The lakeside pool" at its best, with the planted
         mistakes for the analyzer (an image without alt text, a table without a
         header row, an outdated French translation, an English paragraph left in
-        the French translation for the language analyzer of 13i)
+        the French translation for the language analyzer of 13i): the outdated
+        French is the pool opening's, and the image without alt text is the
+        gallery's last (2026-09-30, below)
   - [x] no other text left untranslated: the language analyzer (13i) lists
         English in German and French translations, e.g. today on the office, the
         events and the 13d page (2026-09-30)
-  - [ ] the library items (single blocks: containers stay out of the library
+  - [x] the library items (single blocks: containers stay out of the library
         until F12 is fixed), the service page template, and the default template
         for new columns
   - [x] one deliberately outdated French page: the paragraphs' FR translations
         flagged `content_translation_outdated` (chunk 05, 13f): the pool opening
-  - [ ] the fee calculator (13i) on a page about the town's fees, in an embed
+  - [x] the fee calculator (13i) on a page about the town's fees, in an embed
         with heights per viewport (13i's section: measure at the narrowest width
-        of each range, in the longest language)
-  - [ ] dates relative to the bake (chunk 05)
-  - [ ] scheduled content (13e): a news item that publishes later (the lakeside
+        of each range, in the longest language): the heights still fit in EN, DE
+        and FR (2026-09-30, below)
+  - [x] dates relative to the bake (chunk 05)
+  - [x] scheduled content (13e): a news item that publishes later (the lakeside
         pool's opening), and the "pool closed" banner in the site notice with an
         unpublish date, set in every language it has (F24). Events get their
         unpublish date from the hook when they're saved.
@@ -117,17 +121,15 @@ page, the overview pages, the config pages, three library items, the templates
 and the comments. No page has English or French left (the media, the terms and
 the menu keep theirs). The translation phase puts back what the German-first
 rewrite removed: the outdated French of the pool opening (`outdated: [fr]`, with
-hours that differ from the German) and the French site name "Bloquens". The home
-page's "Today" row still has fixed texts (15f's todo), so its assembly date
-doesn't match the event. The first draft's texts, in the ignored
-`tmp/14b-drafts/`, are used up. The test content is gone: Verwaltung has an
-introduction instead of the population chart (on Blockingen in Zahlen) and the
-fee calculator (now on the fees page, without a year); Baugesuch einreichen lost
-its video, old town photo and gallery (the profile poles are one image), and its
-garden shed question moved to "Brauche ich eine Baubewilligung?". The home
-page's call to action has no date or year. No video: there's no fictional one to
-link, and editors try the video block by pasting a YouTube link (the Big Buck
-Bunny media is gone).
+hours that differ from the German) and the French site name "Bloquens". The
+first draft's texts, in the ignored `tmp/14b-drafts/`, are used up. The test
+content is gone: Verwaltung has an introduction instead of the population chart
+(on Blockingen in Zahlen) and the fee calculator (now on the fees page, without
+a year); Baugesuch einreichen lost its video, old town photo and gallery (the
+profile poles are one image), and its garden shed question moved to "Brauche ich
+eine Baubewilligung?". The home page's call to action has no date or year. No
+video: there's no fictional one to link, and editors try the video block by
+pasting a YouTube link (the Big Buck Bunny media is gone).
 
 **Translated (2026-09-30):** everything has EN and FR, and bakes with any source
 language. The planted mistakes are back: the pool opening's French is outdated
@@ -137,6 +139,28 @@ site name. Streets have French names in French (rue du Village, chemin des
 Vignes), and English keeps the German ones. Themen is "Thématiques" in French:
 "Thèmes" would be `/fr/themes`, which pathauto makes `/fr/themes-0` (a folder in
 the docroot) and nginx sends to Drupal.
+
+**Scheduled, planted and computed (2026-09-30):**
+
+- **Scheduled:** the pool opening publishes itself two days after the bake. The
+  site notice says the pool is closed and disappears on the fourth day, at the
+  opening. Both are set in every language: scheduler only unpublishes the
+  translation it saves, so the news has `status: false` in its file. Checked
+  with cron and the dates moved back: all three translations change.
+- **The image without alt text:** the lakeside pool's gallery ends with "Blick
+  vom Steg" (the photo of the town from the lake, a media of its own). Media
+  images don't require alt text any more (`alt_field_required: false`): a
+  missing one is what the analyzer is for, and decorative images don't need one.
+- **The fee calculator's heights still fit,** measured in the tallest state (a
+  house, 12 people, 10 bags, the green waste bin): up to 1389 px in a 288 px
+  frame (FR), 1285 px at 376 px, 790 px at 769 px, against 1420, 1320 and 800.
+- **"Today" is computed** (the user: from the site config page, 15f's todo). The
+  config page has two new references, "«Heute»: Amt" (the chancery) and
+  "«Heute»: Veranstaltung" (the assembly). The row shows whether the office is
+  open today and its hours, or when it's open again; the next household waste
+  collection (every Tuesday, a rule in the fragment like the fee calculator's
+  rates); and the event's day, with a link. Days are in the town's time zone,
+  formatted in British English, Swiss German and Swiss French.
 
 **The frontend for it:** the menu query has four levels, and an editorial page's
 sub-pages list their own children (an area's topics with their detail pages)

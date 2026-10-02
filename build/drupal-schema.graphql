@@ -2952,6 +2952,18 @@ type TranslatableConfigPagesSite implements TranslatableConfigPages & Entity & E
   "{value} {field: field_site_name} "
   fieldSiteName: String
 
+  "{field: field_today_event} The home page announces it, e.g. the next municipal assembly."
+  fieldTodayEventRawField: FieldItemListEntityReference
+
+  "{value} {field: field_today_event} The home page announces it, e.g. the next municipal assembly."
+  fieldTodayEvent: NodeEvent
+
+  "{field: field_today_office} The home page shows whether it is open today, and its hours."
+  fieldTodayOfficeRawField: FieldItemListEntityReference
+
+  "{value} {field: field_today_office} The home page shows whether it is open today, and its hours."
+  fieldTodayOffice: NodeOffice
+
   "The props for the blokkli provider component."
   blokkliProps: ParagraphsBlokkliProps!
 

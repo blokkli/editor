@@ -214,7 +214,8 @@ The automatic list has no display option any more: its placement decides.
 ### Left for later
 
 - **"Today"** has fixed texts, which go stale: compute them (the town hall's
-  hours per weekday, the collection day, the next assembly).
+  hours per weekday, the collection day, the next assembly). Done in
+  [14b](14b-demo-content.md), from two references on the site config page.
 - **The links to all news, events and publications** lead to `#` until the
   overview pages are designed. Done in [15h](15h-overviews-and-search.md).
 - **The search** on the home page does nothing yet, like the search page. Done
