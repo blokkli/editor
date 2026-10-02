@@ -4,7 +4,7 @@
 ## Usage: check-routes
 ## Example: "ddev check-routes"
 
-# Every path in the table below is requested through the ddev router, and the
+# Every path in the tables below is requested through the ddev router, and the
 # X-Blokkli-Upstream response header (set in .ddev/nginx_full/nginx-site.conf)
 # is compared with the expected upstream. Extend the table when routes change:
 # a module or view with a new first path segment needs it in the nginx list.
@@ -59,18 +59,33 @@ routes=(
   "/.well-known/change-password drupal"
 )
 
+# A sandbox that doesn't exist (chunk 08): nginx's static page, whatever the
+# path.
+unknown_sandbox="${base/:\/\//://zz99.}"
+sandbox_routes=(
+  "/ sandbox-unknown"
+  "/en/graphql sandbox-unknown"
+  "/_nuxt/x.js sandbox-unknown"
+)
+
 failed=0
-for route in "${routes[@]}"; do
-  path="${route% *}"
-  expected="${route##* }"
-  actual=$(curl -sk -o /dev/null -D - --max-time 10 "$base$path" |
+check() {
+  local url="$1" expected="$2" actual
+  actual=$(curl -sk -o /dev/null -D - --max-time 10 "$url" |
     tr -d '\r' | awk -F': ' 'tolower($1) == "x-blokkli-upstream" { print $2 }')
   if [ "$actual" = "$expected" ]; then
-    printf '  ok    %-40s %s\n' "$path" "$actual"
+    printf '  ok    %-50s %s\n' "${url#https://}" "$actual"
   else
-    printf '  FAIL  %-40s expected %s, got %s\n' "$path" "$expected" "${actual:-nothing}"
+    printf '  FAIL  %-50s expected %s, got %s\n' "${url#https://}" "$expected" "${actual:-nothing}"
     failed=1
   fi
+}
+
+for route in "${routes[@]}"; do
+  check "$base${route% *}" "${route##* }"
+done
+for route in "${sandbox_routes[@]}"; do
+  check "$unknown_sandbox${route% *}" "${route##* }"
 done
 
 exit $failed

@@ -6,6 +6,7 @@ module:
   big_pipe: 0
   block: 0
   blokkli_playground: 0
+  blokkli_sandbox: 0
   breakpoint: 0
   ckeditor5: 0
   config: 0

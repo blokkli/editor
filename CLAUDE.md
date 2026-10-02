@@ -376,6 +376,11 @@ full workflow: `CONTRIBUTING.md`. Design and status: `plans/drupal-setup/`.
 - After nginx changes (`.ddev/nginx_full/`), run `ddev check-routes`.
 - Log in with a one-time link: `ddev drush uli /en/node/1` (the admin), or
   `ddev drush uli --name="Anna Keller"` for a test user (13h's roles).
+- Sandboxes are copies of a template at their own subdomain:
+  `ddev drush blokkli-sandbox:create a1 [--source=de]`, then
+  https://a1.blokkli.ddev.site. drush targets one with
+  `--uri=https://a1.blokkli.ddev.site`. `ddev bake` and `ddev reset` only touch
+  the dev site.
 
 ## Working with the Codebase
 

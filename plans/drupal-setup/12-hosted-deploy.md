@@ -98,3 +98,14 @@ From [15a](15a-design-system.md) (2026-09-27):
 
 - **The theme's nested CSS** (`main.css`) ships as native CSS nesting in dev;
   check that the production build flattens or keeps it as intended.
+
+From [chunk 08](08-sandbox-routing.md) (2026-10-02):
+
+- **The hosted domains:** `DDEV_HOSTNAME` needs the wildcard entries
+  (`*.sandbox.blokk.li`), which settings.php reads, and nginx's
+  `$blokkli_sandbox` map has only `blokkli.ddev.site` so far.
+- **Disk:** a sandbox is a full copy (32 MB database, 11 MB files). Hard links
+  would share the files, but Drupal can write into an existing file (see 08). On
+  a filesystem with reflinks (XFS, btrfs), PHP's `copy()` should share the
+  blocks on its own (it uses `copy_file_range`, which clones first). Check it on
+  the server.

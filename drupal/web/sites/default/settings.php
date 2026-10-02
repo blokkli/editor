@@ -9,33 +9,91 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-// The site's database, private files and hash salt. The sandbox include
-// (chunk 08) replaces these with the ones of the sandbox the Host names.
+// Sandboxes (plans/drupal-setup/08-sandbox-routing.md): a subdomain of a
+// wildcard hostname in DDEV_HOSTNAME (*.blokkli.ddev.site) names a sandbox, a
+// copy of a template made by the blokkli_sandbox module. It has its own
+// database, files and hash salt. Without a subdomain, this is the default site:
+// the dev site locally, the control plane when hosted.
+$settings['blokkli_sandbox'] = [
+  // Their databases, private and temporary files, and the templates.
+  'directory' => dirname($app_root) . '/sandboxes',
+  // Their public files, relative to the web root.
+  'public_directory' => 'sites/default/files/sandboxes',
+  // A path segment and a DNS label. nginx has the same pattern.
+  'pattern' => '/^[a-z0-9]{2,32}$/',
+];
+$hostnames = explode(',', (string) getenv('DDEV_HOSTNAME'));
+$host = strtolower((string) preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? ''));
+$sandbox = NULL;
+foreach ($hostnames as $hostname) {
+  $suffix = substr($hostname, 1);
+  if (str_starts_with($hostname, '*.') && str_ends_with($host, $suffix)) {
+    $sandbox = substr($host, 0, -strlen($suffix));
+  }
+}
+// Public, so the hosted site must set its own (see the guard at the end).
+$salt = getenv('DRUPAL_HASH_SALT') ?: 'blokkli-local-development';
+
+if ($sandbox === NULL) {
+  $database = dirname($app_root) . '/db/site.sqlite';
+  $settings['file_private_path'] = dirname($app_root) . '/private';
+  $settings['file_temp_path'] = '/tmp';
+  $settings['hash_salt'] = $salt;
+  // ddev's hostnames for this project, without the sandboxes' wildcards.
+  $settings['trusted_host_patterns'] = array_map(
+    fn (string $hostname): string => '^' . preg_quote($hostname) . '$',
+    array_filter($hostnames, fn (string $hostname): bool => !str_starts_with($hostname, '*.')),
+  );
+}
+else {
+  $directory = $settings['blokkli_sandbox']['directory'] . '/' . $sandbox;
+  // nginx shows visitors a page for a sandbox that doesn't exist (any more).
+  // This guards drush and the rest: SQLite would create an empty database.
+  if (!preg_match($settings['blokkli_sandbox']['pattern'], $sandbox) || !file_exists("$directory/db.sqlite")) {
+    throw new \RuntimeException("There's no sandbox '$sandbox'.");
+  }
+  $database = "$directory/db.sqlite";
+  $settings['file_public_path'] = $settings['blokkli_sandbox']['public_directory'] . '/' . $sandbox;
+  $settings['file_private_path'] = "$directory/private";
+  $settings['file_temp_path'] = "$directory/tmp";
+  // Its own salt: its login links, form tokens and image style tokens don't
+  // work on another site.
+  $settings['hash_salt'] = hash_hmac('sha256', $sandbox, $salt);
+  $settings['trusted_host_patterns'] = ['^' . preg_quote($host) . '$'];
+  // The default site's compiled Twig and CSS/JS aggregates: they depend only on
+  // the code. Twig's secret names the files, and would be the sandbox's salt.
+  $settings['php_storage']['twig'] = [
+    'directory' => $app_root . '/sites/default/files/php',
+    'secret' => $salt,
+  ];
+  $settings['file_assets_path'] = 'sites/default/files';
+  // The bins on core's chained fast backend (core.services.yml), without APCu:
+  // it would grow with every sandbox, and the prefix is shared (see
+  // apcu_ensure_unique_prefix below).
+  foreach (['bootstrap', 'config', 'discovery', 'routes'] as $bin) {
+    $settings['cache']['bins'][$bin] = 'cache.backend.database';
+  }
+}
+// APCu's prefixes without the hash salt: the class loader and the file cache
+// depend only on the code, so every site shares one copy. Only the default
+// site keeps cache bins in APCu.
+$settings['apcu_ensure_unique_prefix'] = FALSE;
+
 $databases['default']['default'] = [
   'driver' => 'sqlite',
-  'database' => dirname($app_root) . '/db/site.sqlite',
+  'database' => $database,
   'namespace' => 'Drupal\\sqlite\\Driver\\Database\\sqlite',
   'autoload' => 'core/modules/sqlite/src/Driver/Database/sqlite/',
   // Safe with WAL (Drupal's default): a power loss can lose the last commits,
   // but it can't corrupt the database.
   'init_commands' => ['synchronous' => 'PRAGMA synchronous=NORMAL'],
 ];
-$settings['file_private_path'] = dirname($app_root) . '/private';
-// Public, so the hosted site must set its own (see the guard at the end).
-$settings['hash_salt'] = getenv('DRUPAL_HASH_SALT') ?: 'blokkli-local-development';
 
 // With the persistent entity cache, concurrent reads and writes on SQLite lose
 // edits (plans/drupal-setup/01-sqlite-spike.md).
 $settings['cache']['bins']['entity'] = 'cache.backend.memory';
 
 $settings['config_sync_directory'] = dirname($app_root) . '/config/sync';
-$settings['file_temp_path'] = '/tmp';
-
-// ddev's hostnames for this project, comma-separated.
-$settings['trusted_host_patterns'] = array_map(
-  fn (string $host): string => '^' . preg_quote($host) . '$',
-  explode(',', (string) getenv('DDEV_HOSTNAME')),
-);
 
 // Requests come through ddev's router and this container's nginx, both on
 // private networks. Only the X-Forwarded headers they set are trusted: a

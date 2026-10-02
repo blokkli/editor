@@ -10,6 +10,9 @@ webserver_type: nginx-fpm
 nodejs_version: auto
 xdebug_enabled: false
 
+# The sandboxes: <id>.blokkli.ddev.site (plans/drupal-setup/08-sandbox-routing.md).
+additional_hostnames: ["*.blokkli"]
+
 # Drupal runs on SQLite (one file per sandbox), so there is no db container,
 # and settings.php is ours, not ddev's.
 omit_containers: [db]

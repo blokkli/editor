@@ -85,7 +85,7 @@ blokkli/
 │   ├── web/                        # docroot; core and contrib are gitignored
 │   │   └── modules/custom/
 │   │       ├── blokkli_playground/  # seed, bake, example plugins
-│   │       └── blokkli_sandbox/     # sandbox routing, claim, cleanup
+│   │       └── blokkli_sandbox/     # create and delete sandboxes; claim, cleanup (09)
 │   └── mocks.graphql               # existing, used by the root typecheck
 ├── playground-drupal/              # Nuxt app using the Drupal adapter
 ├── playground/                     # mock playground, unchanged
@@ -135,7 +135,7 @@ Milestones:
 | 05  | [Seed, bake, reset](05-seed-bake-reset.md)                                                          | M1        | done        | 13a–13i                           |
 | 06  | [playground-drupal app](06-playground-drupal-app.md)                                                | M1        | done        | 03, 04; grows with 13             |
 | 07  | [Dev workflow integration](07-dev-workflow-integration.md)                                          | M1        | done        | 06                                |
-| 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | todo        | 05                                |
+| 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | done        | 05                                |
 | 09  | [Control plane: claim and invite](09-control-plane.md)                                              | M2        | todo        | 08                                |
 | 10  | [Access and guardrails](10-access-and-guardrails.md)                                                | M2        | todo        | 08                                |
 | 11  | [Premium features](11-premium-features.md)                                                          | M2        | todo        | 09                                |

@@ -64,6 +64,24 @@ with a value per language. Its README describes the format.
 - To change the content, edit the files and run `ddev bake`. Content created in
   the editor isn't exported.
 
+### Sandboxes
+
+A sandbox is a copy of a template with its own database, files and logins, at
+its own subdomain. The site without a subdomain is the dev site.
+
+```bash
+ddev drush blokkli-sandbox:create a1             # https://a1.blokkli.ddev.site
+ddev drush blokkli-sandbox:create b2 --source=de # from the German template
+ddev drush blokkli-sandbox:list
+ddev drush blokkli-sandbox:delete a1
+```
+
+- Ids are lowercase letters and digits, 2 to 32. An id without a sandbox gets a
+  static page.
+- drush works on a sandbox with `--uri`, e.g.
+  `ddev drush --uri=https://a1.blokkli.ddev.site uli` for a login link.
+- A bake doesn't change existing sandboxes. Delete and create them again.
+
 Nuxt runs as a ddev daemon and starts on its own once `node_modules` exists.
 Don't run `bun run dev` for it: use
 `ddev nuxt [status|start|stop|restart|logs]`.
@@ -89,7 +107,7 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 | `drupal/`                     | Composer root. `config/sync` is the config, `web/` the docroot. |
 | `drupal/paragraphs_blokkli/`  | The Drupal module, a git submodule of the drupal.org repo.      |
 | `drupal/content/`             | The content that `ddev bake` seeds.                             |
-| `drupal/sandboxes/`           | Gitignored: the templates for `ddev reset`.                     |
+| `drupal/sandboxes/`           | Gitignored: the templates, and each sandbox's database.         |
 | `playground-drupal/`          | The Nuxt app.                                                   |
 | `build/drupal-schema.graphql` | The site's GraphQL schema. Generated, never edited by hand.     |
 | `.ddev/`                      | nginx routing, the Nuxt daemon, `ddev nuxt`, `bake`, `reset`.   |

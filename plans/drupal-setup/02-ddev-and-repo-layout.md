@@ -50,7 +50,8 @@ project and the `paragraphs_blokkli` submodule in place.
         Drupal paths (anchored, with an optional language prefix)
   - [x] WebSocket upgrade for `/_nuxt/` (HMR) and `/api/blokkli/agent`
   - [x] 502 pages for Nuxt and for Drupal
-  - [x] Works for any hostname, so chunk 08's subdomains need no nginx change.
+  - [x] Works for any hostname. Chunk 08 added only a check for sandboxes that
+        don't exist.
 - [x] `ddev check-routes`: requests a table of paths and checks which upstream
       answered (the `X-Blokkli-Upstream` header).
 - [x] A minimal `playground-drupal/` (`nuxt.config.ts`, one page) so the daemon

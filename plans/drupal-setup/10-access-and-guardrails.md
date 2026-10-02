@@ -87,3 +87,16 @@ From [15a](15a-design-system.md) (2026-09-27):
 - **`/<lang>/design-system` is public:** the design system and its mockups use
   no GraphQL, so anonymous visitors see them (with English UI strings). Decide
   whether the hosted sandbox shows them or answers 404.
+
+From [chunk 08](08-sandbox-routing.md) (2026-10-02):
+
+- **The default site's session cookie reaches every sandbox.** Drupal sets it
+  for `.<host>`, e.g. `.blokkli.ddev.site`, so the browser also sends it to
+  `a1.blokkli.ddev.site`. It logs no one in there (a sandbox's cookie has
+  another name), but hosted it's the control plane's, and
+  `server/middleware/ spa.ts` takes any `SESS` cookie for a login. Part of
+  "Host-only cookies".
+- **Public files are readable across sandboxes:** nginx serves any existing file
+  under `sites/default/files/`, whatever the host, so a sandbox's files are
+  public to anyone who knows the path (the ids are random). Private files go
+  through Drupal.
