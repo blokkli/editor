@@ -9,7 +9,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #   | Finding                                                                                                                 | Project              | Severity | Status     | Blocks   |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
-| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | open       | 09b      |
+| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | fixed      | –        |
 | F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | open       | 09b      |
 | F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                              | `paragraphs_blokkli` | low      | open       | –        |
 | F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       | –        |
@@ -94,6 +94,15 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
     the same way every time.
   - Consider not creating a state on read at all. A read could return an
     unsaved, empty state.
+- **Fixed (2026-10-02, `paragraphs_blokkli` `94e7253`):**
+  - `getParagraphsEditState()` creates a state only while it holds a lock per
+    host entity (`paragraphs_blokkli_edit_state:<type>:<uuid>`), after loading
+    again. F2 can reuse the lock (`acquireHostLock()`).
+  - `loadForEntityTypeAndUuid()` sorts by id, so of existing duplicates the
+    oldest wins. No unique key and no update hook; states are still created on
+    read.
+  - Tested by `EditStateCreationTest`, and by a race on the dev site: 10
+    processes asking at the same instant made 10 states before the fix, 1 after.
 
 ## F2: Lost mutations on concurrent writes
 
