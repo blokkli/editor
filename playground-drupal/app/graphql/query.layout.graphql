@@ -1,0 +1,26 @@
+# Around every page of the site (layouts/drupal.vue), once per language.
+query layout {
+  # Null if the config page doesn't exist yet.
+  siteConfig {
+    ...configPageSite
+  }
+  footerConfig {
+    ...configPageFooter
+  }
+  # Four levels (Themen, an area, a topic, a detail page): the header shows the
+  # first, editorial pages list their children and grandchildren.
+  mainMenu: menuByName(name: MAIN) {
+    links {
+      ...menuLink
+      subtree {
+        ...menuLink
+        subtree {
+          ...menuLink
+          subtree {
+            ...menuLink
+          }
+        }
+      }
+    }
+  }
+}

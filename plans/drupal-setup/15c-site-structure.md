@@ -180,6 +180,13 @@ and they share the pages' pattern (`/verwaltung/einwohnerdienste`); the three
     language, so a query without variables would show a stale menu after
     switching languages. The route query's path carries the language, like
     `siteConfig` and `footerConfig`.
+  - **Replaced on 2026-10-02 (the user):** the config pages and the menu don't
+    belong in every page's query, and `SiteShell` rebuilt a layout. A `layout`
+    query (`useLayoutQuery()`) loads them once per language, with the language
+    in `useAsyncData`'s key; the `drupal` layout renders the header and the
+    footer, and pages that need the menu share its data. The layout reads the
+    language links and the breadcrumb from the page's route query, which is the
+    same request.
 - **`[...slug].vue`** passes the header's links (the first level, active when in
   the breadcrumb or the current page), the breadcrumb (to every host) and the
   editorial page's sub-pages. `findMenuChildren()` in `helpers/menu.ts` finds
@@ -261,7 +268,8 @@ search button and the service links (the meta navigation) were missing.
   - `Paragraph/Link/Service.vue` renders a link in the bar (`renderFor` the new
     field list type `service`).
   - `SiteShell` renders the header, `<main>` and the footer around the route
-    page and the search page. The search page runs the route query for its path:
+    page and the search page (since 2026-10-02 the `drupal` layout does, see the
+    route query above). The search page runs the route query for its path:
     Drupal has no route there, so it only brings the config pages and the menu.
     Its language links are built in Nuxt (`LANGUAGE_NAMES`).
   - Drupal's toolbar (the `drupal` layout) shows from lg only, where it fits,

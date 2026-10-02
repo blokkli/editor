@@ -1,24 +1,16 @@
 <template>
-  <SiteShell
-    v-if="entity"
-    :site-config="data?.data.siteConfig"
-    :footer-config="data?.data.footerConfig"
-    :menu
-    :breadcrumb
-    :language-links
-  >
-    <NodeEditorial v-bind="entity" :breadcrumb :sub-pages>
-      <template v-if="$slots.header" #header="header">
-        <slot name="header" v-bind="header" />
-      </template>
-      <slot />
-    </NodeEditorial>
-  </SiteShell>
+  <NodeEditorial v-if="entity" v-bind="entity" :breadcrumb :sub-pages>
+    <template v-if="$slots.header" #header="header">
+      <slot name="header" v-bind="header" />
+    </template>
+    <slot />
+  </NodeEditorial>
 </template>
 
 <script lang="ts" setup>
 import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
-import { NodeEditorial, SiteShell } from '#components'
+import { NodeEditorial } from '#components'
+import { useLayoutQuery } from '~/composables/useLayoutQuery'
 import { findSubPages } from '~/helpers/menu'
 
 // A hardcoded page on top of its Drupal node: the overviews and the search.
@@ -45,29 +37,16 @@ const entity = computed(() => {
     : null
 })
 
-// Hidden while editing (the editor has its own switch) and previewing (the
-// links would leave the preview).
-const languageLinks = computed(() => {
-  const url = data.value?.data.route
-  if (
-    route.query.blokkliEditing ||
-    route.query.blokkliPreview ||
-    !url ||
-    !('languageSwitchLinks' in url)
-  ) {
-    return null
-  }
-  return url.languageSwitchLinks
-})
-
 const breadcrumb = computed(() => {
   const url = data.value?.data.route
   return url && 'breadcrumb' in url ? url.breadcrumb : []
 })
 
-const menu = computed(() => data.value?.data.mainMenu?.links ?? [])
+const { data: layout } = await useLayoutQuery()
 
-const subPages = computed(() => findSubPages(menu.value, route.path))
+const subPages = computed(() =>
+  findSubPages(layout.value?.mainMenu?.links ?? [], route.path),
+)
 
 // No node assigned to the route yet (frontend_routing's settings).
 if (!entity.value) {

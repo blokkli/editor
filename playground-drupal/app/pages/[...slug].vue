@@ -1,48 +1,38 @@
 <template>
-  <SiteShell
-    v-if="entity"
-    :site-config
-    :footer-config
-    :menu
+  <NodePage
+    v-if="entity?.__typename === 'NodePage'"
+    v-bind="entity"
     :breadcrumb
-    :language-links
-  >
-    <NodePage
-      v-if="entity.__typename === 'NodePage'"
-      v-bind="entity"
-      :breadcrumb
-    />
-    <NodeEditorial
-      v-else-if="entity.__typename === 'NodeEditorial'"
-      v-bind="entity"
-      :breadcrumb
-      :sub-pages
-    />
-    <NodeNews
-      v-else-if="entity.__typename === 'NodeNews'"
-      v-bind="entity"
-      :breadcrumb
-    />
-    <NodeEvent
-      v-else-if="entity.__typename === 'NodeEvent'"
-      v-bind="entity"
-      :breadcrumb
-    />
-    <NodeOffice
-      v-else-if="entity.__typename === 'NodeOffice'"
-      v-bind="entity"
-      :breadcrumb
-    />
-    <NodePublication
-      v-else-if="entity.__typename === 'NodePublication'"
-      v-bind="entity"
-      :breadcrumb
-    />
-    <!-- A config page on its own route, where it's edited. -->
-    <p v-else class="container-wide py-section text-small text-muted">
-      {{ entity.label }}
-    </p>
-  </SiteShell>
+  />
+  <NodeEditorial
+    v-else-if="entity?.__typename === 'NodeEditorial'"
+    v-bind="entity"
+    :breadcrumb
+    :sub-pages
+  />
+  <NodeNews
+    v-else-if="entity?.__typename === 'NodeNews'"
+    v-bind="entity"
+    :breadcrumb
+  />
+  <NodeEvent
+    v-else-if="entity?.__typename === 'NodeEvent'"
+    v-bind="entity"
+    :breadcrumb
+  />
+  <NodeOffice
+    v-else-if="entity?.__typename === 'NodeOffice'"
+    v-bind="entity"
+    :breadcrumb
+  />
+  <NodePublication
+    v-else-if="entity?.__typename === 'NodePublication'"
+    v-bind="entity"
+    :breadcrumb
+  />
+  <p v-else-if="entity" class="container-wide py-section text-small text-muted">
+    {{ entity.label }}
+  </p>
 </template>
 
 <script lang="ts" setup>
@@ -61,9 +51,9 @@ import {
   NodeOffice,
   NodePage,
   NodePublication,
-  SiteShell,
 } from '#components'
 import { getLanguageFromPath } from '#shared/languages'
+import { useLayoutQuery } from '~/composables/useLayoutQuery'
 import { findSubPages } from '~/helpers/menu'
 
 definePageMeta({ layout: 'drupal' })
@@ -99,6 +89,8 @@ if (
   await navigateTo({ path: `/${language}`, query: route.query })
 }
 
+// A config page on its own route, where it's edited: the layout renders it,
+// the page only its label.
 const entity = computed(() => {
   const url = data.value?.data.route
   if (!url || !('entity' in url) || !url.entity) {
@@ -118,41 +110,15 @@ const entity = computed(() => {
   return null
 })
 
-// Hidden while editing (the editor has its own switch) and previewing (the
-// links would leave the preview).
-const languageLinks = computed(() => {
-  const url = data.value?.data.route
-  if (
-    route.query.blokkliEditing ||
-    route.query.blokkliPreview ||
-    !url ||
-    !('languageSwitchLinks' in url)
-  ) {
-    return null
-  }
-  return url.languageSwitchLinks
-})
-
 const breadcrumb = computed(() => {
   const url = data.value?.data.route
   return url && 'breadcrumb' in url ? url.breadcrumb : []
 })
 
-const menu = computed(() => data.value?.data.mainMenu?.links ?? [])
+const { data: layout } = await useLayoutQuery()
 
-const subPages = computed(() => findSubPages(menu.value, route.path))
-
-// On a config page's own route, the config page is the entity being edited.
-const siteConfig = computed(() =>
-  entity.value?.__typename === 'TranslatableConfigPagesSite'
-    ? entity.value
-    : data.value?.data.siteConfig,
-)
-
-const footerConfig = computed(() =>
-  entity.value?.__typename === 'TranslatableConfigPagesFooter'
-    ? entity.value
-    : data.value?.data.footerConfig,
+const subPages = computed(() =>
+  findSubPages(layout.value?.mainMenu?.links ?? [], route.path),
 )
 
 if (!entity.value) {

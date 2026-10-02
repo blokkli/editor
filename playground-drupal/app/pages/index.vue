@@ -1,23 +1,15 @@
 <template>
-  <SiteShell
-    v-if="entity"
-    :site-config="data?.data.siteConfig"
-    :footer-config="data?.data.footerConfig"
-    :menu
-    :language-links
-  >
-    <NodeEditorial v-bind="entity" front-page>
-      <template #header="{ entity: node, isEditing, options }">
-        <HomeHero
-          :title="node.title"
-          :lead="node.lead"
-          :image="node.hero"
-          :variant="options.header"
-          :is-editing
-        />
-      </template>
-    </NodeEditorial>
-  </SiteShell>
+  <NodeEditorial v-if="entity" v-bind="entity" front-page>
+    <template #header="{ entity: node, isEditing, options }">
+      <HomeHero
+        :title="node.title"
+        :lead="node.lead"
+        :image="node.hero"
+        :variant="options.header"
+        :is-editing
+      />
+    </template>
+  </NodeEditorial>
 </template>
 
 <script lang="ts" setup>
@@ -28,7 +20,7 @@ import {
   useAsyncGraphqlQuery,
   useRoute,
 } from '#imports'
-import { HomeHero, NodeEditorial, SiteShell } from '#components'
+import { HomeHero, NodeEditorial } from '#components'
 
 // The front page: Drupal's front page (an editorial page) with a header of its
 // own, with the search. Only its blocks can hold the fragments "today" and
@@ -53,23 +45,6 @@ const entity = computed(() => {
     ? url.entity
     : null
 })
-
-// Hidden while editing (the editor has its own switch) and previewing (the
-// links would leave the preview).
-const languageLinks = computed(() => {
-  const url = data.value?.data.route
-  if (
-    route.query.blokkliEditing ||
-    route.query.blokkliPreview ||
-    !url ||
-    !('languageSwitchLinks' in url)
-  ) {
-    return null
-  }
-  return url.languageSwitchLinks
-})
-
-const menu = computed(() => data.value?.data.mainMenu?.links ?? [])
 
 if (!entity.value) {
   throw createError({ statusCode: 404, fatal: true })

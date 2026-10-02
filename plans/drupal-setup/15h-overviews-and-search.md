@@ -83,8 +83,10 @@ working search (the search page and the home page's field did nothing).
 - **The pages** (`pages/news.vue`, `events.vue`, `publications.vue`,
   `search.vue`) render `FrontendRoute`: the route query, 404 without an
   editorial node, `SiteShell` and `NodeEditorial` with the page's part in its
-  new default slot. The search page overrides the header slot to put the field
-  in the band (`NodeEditorial` passes the breadcrumb to it now).
+  new default slot (since 2026-10-02, the `drupal` layout renders the header and
+  the footer instead of `SiteShell`). The search page overrides the header slot
+  to put the field in the band (`NodeEditorial` passes the breadcrumb to it
+  now).
 - **Links** use the route name: the teaser list's "all" link
   (`router.resolve({ name: source })`), the header's search link and
   `SearchField`.
