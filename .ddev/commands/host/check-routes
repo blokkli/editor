@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## Description: Check which upstream (nuxt or drupal) nginx routes paths to
+## Description: Check which upstream (nuxt, drupal, control) nginx routes paths to
 ## Usage: check-routes
 ## Example: "ddev check-routes"
 
@@ -57,6 +57,7 @@ routes=(
   "/system/files/x drupal"
   "/entity_reference_autocomplete/x drupal"
   "/.well-known/change-password drupal"
+  "/blokkli-sandbox/login/x drupal"
 )
 
 # A sandbox that doesn't exist (chunk 08): nginx's static page, whatever the
@@ -66,6 +67,16 @@ sandbox_routes=(
   "/ sandbox-unknown"
   "/en/graphql sandbox-unknown"
   "/_nuxt/x.js sandbox-unknown"
+)
+
+# The control app (chunk 09): every path, Drupal's included.
+control="${base/:\/\/blokkli./://blokkli-control.}"
+control_routes=(
+  "/ control"
+  "/de control"
+  "/admin control"
+  "/api/claim control"
+  "/user/login control"
 )
 
 failed=0
@@ -86,6 +97,9 @@ for route in "${routes[@]}"; do
 done
 for route in "${sandbox_routes[@]}"; do
   check "$unknown_sandbox${route% *}" "${route##* }"
+done
+for route in "${control_routes[@]}"; do
+  check "$control${route% *}" "${route##* }"
 done
 
 exit $failed

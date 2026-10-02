@@ -11,7 +11,9 @@ nodejs_version: auto
 xdebug_enabled: false
 
 # The sandboxes: <id>.blokkli.ddev.site (plans/drupal-setup/08-sandbox-routing.md).
-additional_hostnames: ["*.blokkli"]
+# The control app: blokkli-control.ddev.site (09), not a subdomain of
+# blokkli.ddev.site, which would make it a sandbox id.
+additional_hostnames: ["*.blokkli", "blokkli-control"]
 
 # Drupal runs on SQLite (one file per sandbox), so there is no db container,
 # and settings.php is ours, not ddev's.
@@ -29,14 +31,23 @@ working_dir:
 #   NUXT_BLOKKLI_AGENT_AUTH_SECRET  signs agent tokens (Drupal and Nuxt)
 #   NUXT_BLOKKLI_AGENT_API_KEY      the agent's LLM key (optional: mock provider)
 #   DRUPAL_HASH_SALT                required when hosted (IS_DDEV_HOSTED=true)
+#   NUXT_SANDBOX_LOGIN_SECRET       signs sandbox logins (Drupal and the control
+#                                   app); required when hosted
+#   NUXT_ADMIN_PASSWORD             the control app's admin pages; required
+#                                   when hosted
+#   NUXT_TURNSTILE_SECRET_KEY,      the claim page's captcha (optional)
+#   NUXT_PUBLIC_TURNSTILE_SITE_KEY
 web_environment:
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
 
-# The Nuxt dev server of the sandbox frontend (sandbox/frontend). Control it
-# with `ddev nuxt`.
+# The Nuxt dev servers of the sandbox frontend (sandbox/frontend) and the
+# control app (sandbox/control). Control them with `ddev nuxt [control]`.
 web_extra_daemons:
   - name: nuxt
-    command: /var/www/html/.ddev/nuxt-daemon.sh
+    command: /var/www/html/.ddev/nuxt-daemon.sh frontend 3000
+    directory: /var/www/html
+  - name: control
+    command: /var/www/html/.ddev/nuxt-daemon.sh control 3001
     directory: /var/www/html
 
 hooks:

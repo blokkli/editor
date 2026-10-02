@@ -53,7 +53,8 @@ bun run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
 bun run typecheck:server      # server code (.nuxt/tsconfig.server.json)
 bun run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
 bun run typecheck:sandbox-frontend  # sandbox/frontend (its .nuxt comes from ddev)
-bun run typecheck             # runs all five
+bun run typecheck:sandbox-control   # sandbox/control (its .nuxt comes from ddev)
+bun run typecheck             # runs all six
 ```
 
 Never improvise a `vue-tsc --project tsconfig.something.json` call. The
@@ -346,15 +347,17 @@ adapter methods, and configuration.
 
 `sandbox/` holds a Drupal 11 site (`sandbox/drupal/`) and a Nuxt app that uses
 the Drupal adapter (`sandbox/frontend/`). They run in ddev at
-https://blokkli.ddev.site. Setup and the full workflow: `CONTRIBUTING.md`.
-Design and status: `plans/drupal-setup/`.
+https://blokkli.ddev.site. The control app (`sandbox/control/`, another Nuxt
+app) hands out sandboxes at https://blokkli-control.ddev.site. Setup and the
+full workflow: `CONTRIBUTING.md`. Design and status: `plans/drupal-setup/`.
 
 - **Commands for this stack run in the web container:**
   `ddev exec -d /var/www/html bun run …` and `ddev drush …`. `bun run verify`
   works on the host and in the container.
-- **The sandbox's Nuxt is a ddev daemon.** Never start it. Use
-  `ddev nuxt restart` and `ddev nuxt logs`. An invalid GraphQL document makes it
-  hang on an interactive prompt (nginx answers 502): fix the document, then
+- **Both Nuxt apps are ddev daemons.** Never start them. Use `ddev nuxt restart`
+  and `ddev nuxt logs` for the frontend, and `ddev nuxt control restart|logs`
+  for the control app. An invalid GraphQL document makes the frontend hang on an
+  interactive prompt (nginx answers 502): fix the document, then
   `ddev nuxt restart`.
 - **The schema loop:**
   1. Schema changes go into the module first:
@@ -384,6 +387,9 @@ Design and status: `plans/drupal-setup/`.
   https://a1.blokkli.ddev.site. drush targets one with
   `--uri=https://a1.blokkli.ddev.site`. `ddev bake` and `ddev reset` only touch
   the dev site.
+- The control app's claim page creates sandboxes with random ids and deletes
+  them when they expire; drush-made sandboxes never expire. Code changes in
+  `blokkli_sandbox` (routes, services) reach new sandboxes only after a bake.
 
 ## Working with the Codebase
 

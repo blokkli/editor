@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>502: The control app isn't running</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 4rem auto; padding: 0 1rem; line-height: 1.5; }
+      code { background: #eee; padding: 0.1em 0.3em; border-radius: 3px; }
+    </style>
+  </head>
+  <body>
+    <h1>The control app isn't running</h1>
+    <p>nginx is up, but the control app's dev server (sandbox/control) doesn't answer.</p>
+    <ul>
+      <li>Check its output: <code>ddev nuxt control logs</code></li>
+      <li>Missing dependencies: run <code>bun install</code> in the container (<code>ddev ssh</code>).</li>
+      <li>Restart it: <code>ddev nuxt control restart</code></li>
+    </ul>
+  </body>
+</html>

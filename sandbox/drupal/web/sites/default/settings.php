@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 // wildcard hostname in DDEV_HOSTNAME (*.blokkli.ddev.site) names a sandbox, a
 // copy of a template made by the blokkli_sandbox module. It has its own
 // database, files and hash salt. Without a subdomain, this is the default site:
-// the dev site locally, the control plane when hosted.
+// the dev site locally, only the bake target when hosted.
 $settings['blokkli_sandbox'] = [
   // Their databases, private and temporary files, and the templates.
   'directory' => dirname($app_root) . '/sandboxes',
@@ -21,6 +21,9 @@ $settings['blokkli_sandbox'] = [
   'public_directory' => 'sites/default/files/sandboxes',
   // A path segment and a DNS label. nginx has the same pattern.
   'pattern' => '/^[a-z0-9]{2,32}$/',
+  // Signs the logins that the control app (sandbox/control) hands out. Public,
+  // so the hosted site must set its own (see the guard at the end).
+  'login_secret' => getenv('NUXT_SANDBOX_LOGIN_SECRET') ?: 'blokkli-local-development',
 ];
 $hostnames = explode(',', (string) getenv('DDEV_HOSTNAME'));
 $host = strtolower((string) preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? ''));
@@ -52,6 +55,7 @@ else {
   if (!preg_match($settings['blokkli_sandbox']['pattern'], $sandbox) || !file_exists("$directory/db.sqlite")) {
     throw new \RuntimeException("There's no sandbox '$sandbox'.");
   }
+  $settings['blokkli_sandbox']['id'] = $sandbox;
   $database = "$directory/db.sqlite";
   $settings['file_public_path'] = $settings['blokkli_sandbox']['public_directory'] . '/' . $sandbox;
   $settings['file_private_path'] = "$directory/private";
@@ -119,7 +123,9 @@ if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
 }
 
-// With the public salt, anyone could forge one-time login links.
-if (getenv('IS_DDEV_HOSTED') === 'true' && !getenv('DRUPAL_HASH_SALT')) {
-  throw new \RuntimeException('DRUPAL_HASH_SALT must be set on the hosted site (.ddev/.env.web).');
+// With the public salt or login secret, anyone could forge login links.
+foreach (['DRUPAL_HASH_SALT', 'NUXT_SANDBOX_LOGIN_SECRET'] as $variable) {
+  if (getenv('IS_DDEV_HOSTED') === 'true' && !getenv($variable)) {
+    throw new \RuntimeException("$variable must be set on the hosted site (.ddev/.env.web).");
+  }
 }

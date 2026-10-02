@@ -109,3 +109,21 @@ From [chunk 08](08-sandbox-routing.md) (2026-10-02):
   a filesystem with reflinks (XFS, btrfs), PHP's `copy()` should share the
   blocks on its own (it uses `copy_file_range`, which clones first). Check it on
   the server.
+
+From [chunk 09](09-control-plane.md) (2026-10-02):
+
+- **The control app** (`sandbox/control/`):
+  - It needs its own production build and daemon, with the same `IS_DDEV_HOSTED`
+    branch as the frontend's.
+  - nginx's control server gets the apex as `server_name`, and
+    `$blokkli_control_url` the apex's URL.
+- **Required settings:**
+  - `NUXT_SANDBOX_LOGIN_SECRET`: settings.php refuses to run without it.
+  - `NUXT_ADMIN_PASSWORD`: without it, `/admin` answers 503.
+  - the Turnstile keys
+- **`sandbox/control/.data/`** holds the sandboxes and the invitations. It must
+  survive deploys.
+- **The deploy deletes all sandboxes.** The cleanup then marks their rows as
+  deleted.
+- **Nitro's dev server runs tasks at `/_nitro/tasks/<name>`,** for anyone. It's
+  one more reason never to run `nuxi dev` hosted.

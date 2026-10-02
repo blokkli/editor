@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 
-## Description: Control the sandbox frontend's Nuxt dev server (the "nuxt" daemon)
-## Usage: nuxt [status|start|stop|restart|logs]
-## Example: "ddev nuxt restart" or "ddev nuxt logs"
+## Description: Control the Nuxt dev servers: the sandbox frontend (the "nuxt" daemon), or with "control" first, the control app
+## Usage: nuxt [control] [status|start|stop|restart|logs]
+## Example: "ddev nuxt restart", "ddev nuxt logs" or "ddev nuxt control restart"
 
 set -euo pipefail
 
 program=webextradaemons:nuxt
+log=/tmp/nuxt-frontend.log
+if [ "${1:-}" = control ]; then
+  program=webextradaemons:control
+  log=/tmp/nuxt-control.log
+  shift
+fi
 
 case "${1:-status}" in
   status | start | stop | restart)
     supervisorctl "$1" "$program"
     ;;
   logs)
-    exec tail -n 100 -F /tmp/nuxt.log
+    exec tail -n 100 -F "$log"
     ;;
   *)
-    echo "Usage: ddev nuxt [status|start|stop|restart|logs]" >&2
+    echo "Usage: ddev nuxt [control] [status|start|stop|restart|logs]" >&2
     exit 1
     ;;
 esac

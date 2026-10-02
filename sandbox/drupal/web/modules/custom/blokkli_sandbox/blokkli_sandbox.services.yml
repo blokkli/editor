@@ -1,3 +1,7 @@
 services:
   Drupal\blokkli_sandbox\SandboxManager:
     autowire: true
+  Drupal\blokkli_sandbox\EventSubscriber\LastUseSubscriber:
+    autowire: true
+    tags:
+      - { name: event_subscriber }

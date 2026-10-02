@@ -37,3 +37,9 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
 - settings.php currently sets the agent's `auth_secret` from
   `NUXT_BLOKKLI_AGENT_AUTH_SECRET` for every site. The premium task above
   narrows that to premium sandbox ids.
+
+From [chunk 09](09-control-plane.md) (2026-10-02):
+
+- **settings.php can't see which sandboxes are premium.** Only the control app's
+  database knows. A marker file in the sandbox's directory would do, written by
+  `blokkli-sandbox:create --premium` when an invitation is claimed.

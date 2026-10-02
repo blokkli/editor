@@ -1,2 +1,14 @@
+# The control app's logins (plans/drupal-setup/09-control-plane.md). The token
+# expires, so the response mustn't be cached.
+blokkli_sandbox.login:
+  path: '/blokkli-sandbox/login/{token}'
+  defaults:
+    _controller: '\Drupal\blokkli_sandbox\Controller\SandboxLoginController::login'
+  requirements:
+    # Anyone: the token is the access check.
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE
+
 route_callbacks:
   - '\Drupal\blokkli_sandbox\Routing\SandboxRoutes::routes'

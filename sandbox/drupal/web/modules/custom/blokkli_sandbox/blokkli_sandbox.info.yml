@@ -1,5 +1,5 @@
 name: blökkli sandbox
 type: module
-description: Creates and deletes the sandboxes, copies of the baked site that a subdomain picks.
+description: Creates and deletes the sandboxes, copies of the baked site that a subdomain picks, and logs visitors into them.
 package: Custom
 core_version_requirement: ^11

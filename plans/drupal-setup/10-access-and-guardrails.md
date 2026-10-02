@@ -100,3 +100,12 @@ From [chunk 08](08-sandbox-routing.md) (2026-10-02):
   under `sites/default/files/`, whatever the host, so a sandbox's files are
   public to anyone who knows the path (the ids are random). Private files go
   through Drupal.
+
+From [chunk 09](09-control-plane.md) (2026-10-02):
+
+- **Turnstile:** the claim page loads its script from
+  `challenges.cloudflare.com`, and the control app verifies the answer there.
+  Both belong on the outgoing allowlist.
+- **The default site's cookie, hosted:** there, the default site is only the
+  bake target, and nobody logs in to it. So the cookie problem above exists only
+  locally.

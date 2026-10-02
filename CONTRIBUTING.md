@@ -12,7 +12,8 @@ playground will be removed at some point.
   [Paragraphs blökkli](https://www.drupal.org/project/paragraphs_blokkli)
   (`sandbox/drupal/`) and a Nuxt app that uses the Drupal adapter
   (`sandbox/frontend/`). Both run in [ddev](https://ddev.com), at
-  https://blokkli.ddev.site.
+  https://blokkli.ddev.site. A second Nuxt app hands out copies of the site
+  (`sandbox/control/`), at https://blokkli-control.ddev.site.
 
 `node_modules` is shared between the host and the container. On Linux, that's
 fine either way. On macOS, the native binaries only match the side that ran
@@ -84,9 +85,24 @@ ddev drush blokkli-sandbox:delete a1
   `ddev drush --uri=https://a1.blokkli.ddev.site uli` for a login link.
 - A bake doesn't change existing sandboxes. Delete and create them again.
 
-Nuxt runs as a ddev daemon and starts on its own once `node_modules` exists.
-Don't run `bun run dev` for it: use
-`ddev nuxt [status|start|stop|restart|logs]`.
+### The control app
+
+https://blokkli-control.ddev.site is how visitors get a sandbox:
+
+- **The claim page** (`/de`, `/fr`, `/en`) creates one and logs the visitor in
+  as Anna Keller, in the home page's editor.
+- **`/admin`** lists the sandboxes and makes invitation links. Each link creates
+  one premium sandbox (7 days), without the captcha and the limits.
+- **Every 5 minutes, it deletes expired sandboxes:** after 24 hours, or 2 hours
+  without use. Only its own: those made with drush stay.
+
+Locally, every request comes from the same address, so the limit of 3 claims an
+hour applies to everyone. Its database is `sandbox/control/.data/`.
+
+Both Nuxt apps run as ddev daemons and start on their own once `node_modules`
+exists. Don't run `bun run dev` for them: use
+`ddev nuxt [status|start|stop|restart|logs]` for the frontend, and
+`ddev nuxt control …` for the control app.
 
 Optional secrets go in `.ddev/.env.web` (gitignored). Run `ddev restart` after
 changing them.
@@ -99,6 +115,12 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 
 - The agent needs the auth secret. Without an API key, only its mock provider
   works.
+- **The control app's settings** are all optional locally, and required when
+  hosted:
+  - `--nuxt-sandbox-login-secret` signs the sandbox logins.
+  - `--nuxt-admin-password` protects `/admin`; without it, `/admin` is open.
+  - `--nuxt-turnstile-secret-key` and `--nuxt-public-turnstile-site-key` add the
+    captcha. Cloudflare's test keys work locally.
 - Don't enter the DeepL key in Drupal's settings form: it would end up in the
   exported config.
 
@@ -111,8 +133,9 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 | `sandbox/drupal/content/`            | The content that `ddev bake` seeds.                             |
 | `sandbox/drupal/sandboxes/`          | Gitignored: the templates, and each sandbox's database.         |
 | `sandbox/frontend/`                  | The Nuxt app.                                                   |
+| `sandbox/control/`                   | The control app: the claim page, invitations, the cleanup.      |
 | `build/drupal-schema.graphql`        | The site's GraphQL schema. Generated, never edited by hand.     |
-| `.ddev/`                             | nginx routing, the Nuxt daemon, `ddev nuxt`, `bake`, `reset`.   |
+| `.ddev/`                             | nginx routing, the Nuxt daemons, `ddev nuxt`, `bake`, `reset`.  |
 | `plans/drupal-setup/`                | The plan for this setup and the public sandbox.                 |
 
 ### A feature across both repositories
@@ -149,8 +172,8 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 ## Checks
 
 - `bun run verify` runs the formatters, the linters, all typechecks and the unit
-  tests. It works on the host and in the container. `typecheck:sandbox-frontend`
-  needs the `.nuxt` folder that the Nuxt daemon generates, and is skipped
-  without it.
+  tests. It works on the host and in the container. The typechecks of the
+  sandbox's apps need the `.nuxt` folders that their daemons generate, and are
+  skipped without them.
 - `bun run verify -- e2e` runs the E2E suite against the mock playground on
   `localhost:3000`, on the host.
