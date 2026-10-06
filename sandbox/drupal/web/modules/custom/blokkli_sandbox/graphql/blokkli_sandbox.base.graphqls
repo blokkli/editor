@@ -1,0 +1,46 @@
+"""
+The current sandbox, for its users.
+"""
+type Sandbox {
+  """
+  When the sandbox is deleted at the latest, a Unix timestamp.
+  """
+  expires: Int!
+
+  """
+  After how many seconds without use the sandbox is deleted earlier. Null if
+  it isn't (premium sandboxes).
+  """
+  idleLifetime: Int
+
+  """
+  The links that log the test users into the sandbox, the current user's
+  included.
+  """
+  logins: [SandboxLogin!]!
+}
+
+"""
+A link that logs a test user into the sandbox, until it expires.
+"""
+type SandboxLogin {
+  """
+  The user's name.
+  """
+  name: String!
+
+  """
+  The label of the user's role, in the current language.
+  """
+  role: String!
+
+  """
+  The absolute URL that logs the user in.
+  """
+  url: String!
+
+  """
+  Whether it's the current user.
+  """
+  isCurrentUser: Boolean!
+}

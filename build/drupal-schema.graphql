@@ -5745,6 +5745,12 @@ type Query {
   """
   search(text: String!, offset: Int = 0, limit: Int = 10): SearchResult!
 
+  """
+  The current sandbox. Null for anonymous users, on the default site, and in a
+  sandbox that doesn't expire (made with drush).
+  """
+  sandbox: Sandbox
+
   entityQuery(
     " The machine name of the entity type (e.g. \"node\", \"taxonomy_term\", etc.) "
     entityType: EntityType!
@@ -6036,6 +6042,39 @@ type SearchResult {
 
   "The nodes of the requested page, the best match first."
   items: [Node!]!
+}
+
+"The current sandbox, for its users."
+type Sandbox {
+  "When the sandbox is deleted at the latest, a Unix timestamp."
+  expires: Int!
+
+  """
+  After how many seconds without use the sandbox is deleted earlier. Null if
+  it isn't (premium sandboxes).
+  """
+  idleLifetime: Int
+
+  """
+  The links that log the test users into the sandbox, the current user's
+  included.
+  """
+  logins: [SandboxLogin!]!
+}
+
+"A link that logs a test user into the sandbox, until it expires."
+type SandboxLogin {
+  "The user's name."
+  name: String!
+
+  "The label of the user's role, in the current language."
+  role: String!
+
+  "The absolute URL that logs the user in."
+  url: String!
+
+  "Whether it's the current user."
+  isCurrentUser: Boolean!
 }
 
 ""

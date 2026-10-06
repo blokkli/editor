@@ -236,6 +236,7 @@
     "vitest": "^4.1.9",
     "vue-router": "^5.1.0",
     "vue-tsc": "^3.3.5",
+    "vue3-click-away": "^1.2.4",
     "vuepal": "^3.0.6"
   },
   "peerDependencies": {

@@ -4,26 +4,23 @@ declare(strict_types=1);
 
 namespace Drupal\blokkli_sandbox\Controller;
 
-use Drupal\Component\Datetime\TimeInterface;
+use Drupal\blokkli_sandbox\LoginToken;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\Routing\LocalRedirectResponse;
-use Drupal\Core\Site\Settings;
 use Drupal\node\NodeInterface;
 use Drupal\user\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Logs a visitor into a sandbox, with a token from the control app.
+ * Logs a visitor into a sandbox, with a token (LoginToken).
  *
- * The token is "<payload>.<signature>": the payload is base64url-encoded JSON
- * with the sandbox's id, the user's name and the expiry (a Unix timestamp),
- * the signature its HMAC-SHA256 with the login secret, base64url-encoded too.
- * The control app makes them (sandbox/control/server/utils/loginToken.ts).
+ * The control app makes them for its claims, Query.sandbox for the frontend's
+ * banner: to come back, and for colleagues.
  *
  * @see plans/drupal-setup/09-control-plane.md
  */
@@ -32,11 +29,10 @@ final class SandboxLoginController implements ContainerInjectionInterface {
   use AutowireTrait;
 
   public function __construct(
-    private readonly Settings $settings,
+    private readonly LoginToken $loginToken,
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly ConfigFactoryInterface $configFactory,
     private readonly PathValidatorInterface $pathValidator,
-    private readonly TimeInterface $time,
   ) {}
 
   /**
@@ -58,23 +54,11 @@ final class SandboxLoginController implements ContainerInjectionInterface {
    * The token's user, if the token is valid for this sandbox.
    */
   private function account(string $token): ?UserInterface {
-    $settings = $this->settings->get('blokkli_sandbox');
-    // Only in a sandbox: settings.php sets the id.
-    $id = $settings['id'] ?? NULL;
-    $secret = $settings['login_secret'] ?? NULL;
-    if (!is_string($id) || !is_string($secret)) {
+    $name = $this->loginToken->verify($token);
+    if ($name === NULL) {
       return NULL;
     }
-    [$payload, $signature] = explode('.', $token, 2) + ['', ''];
-    $expected = rtrim(strtr(base64_encode(hash_hmac('sha256', $payload, $secret, TRUE)), '+/', '-_'), '=');
-    if (!hash_equals($expected, $signature)) {
-      return NULL;
-    }
-    $data = json_decode((string) base64_decode(strtr($payload, '-_', '+/')), TRUE);
-    if (!is_array($data) || ($data['sandbox'] ?? NULL) !== $id || !is_int($data['expires'] ?? NULL) || $data['expires'] < $this->time->getRequestTime() || !is_string($data['user'] ?? NULL)) {
-      return NULL;
-    }
-    $accounts = $this->entityTypeManager->getStorage('user')->loadByProperties(['name' => $data['user']]);
+    $accounts = $this->entityTypeManager->getStorage('user')->loadByProperties(['name' => $name]);
     $account = reset($accounts);
     return $account instanceof UserInterface && $account->isActive() ? $account : NULL;
   }

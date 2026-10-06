@@ -1,0 +1,7 @@
+extend type Query {
+  """
+  The current sandbox. Null for anonymous users, on the default site, and in a
+  sandbox that doesn't expire (made with drush).
+  """
+  sandbox: Sandbox
+}

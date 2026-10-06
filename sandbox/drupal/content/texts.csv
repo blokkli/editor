@@ -98,6 +98,15 @@ publication.until;default;@type, until @date;@type, bis @date;@type, jusqu'au @d
 quick_links.empty;default;Add the links on the site config page.;Fügen Sie die Links auf der Konfigurationsseite der Website hinzu.;Ajoutez les liens sur la page de configuration du site.
 quick_links.title;default;Frequently searched;Häufig gesucht;Recherches fréquentes
 related.title;default;Related topics;Verwandte Themen;Thèmes associés
+sandbox.close;default;Close;Schliessen;Fermer
+sandbox.copied;default;Copied;Kopiert;Copié
+sandbox.copy;default;Copy the link;Link kopieren;Copier le lien
+sandbox.copy_link;default;Copy the link to this sandbox;Link zu dieser Sandbox kopieren;Copier le lien vers cette sandbox
+sandbox.expires;default;Your sandbox is deleted on @date.;Ihre Sandbox wird am @date gelöscht.;Votre sandbox sera supprimée le @date.
+sandbox.expires_idle;default;Your sandbox is deleted on @date, or after @hours hours without use.;Ihre Sandbox wird am @date gelöscht, oder nach @hours Stunden ohne Nutzung.;Votre sandbox sera supprimée le @date, ou après @hours heures sans utilisation.
+sandbox.invite;default;Invite a colleague;Kollegin oder Kollegen einladen;Inviter une ou un collègue
+sandbox.invite_text;default;Each link logs your colleague in as that user, until the sandbox is deleted.;Jeder Link meldet Ihre Kollegin oder Ihren Kollegen als diese Person an, bis die Sandbox gelöscht wird.;Chaque lien connecte votre collègue sous ce compte, jusqu'à la suppression de la sandbox.
+sandbox.label;default;Sandbox;Sandbox;Sandbox
 search.no_results;default;No results for “@text”.;Keine Ergebnisse für «@text».;Aucun résultat pour « @text ».
 search.no_results_hint;default;Try another word.;Versuchen Sie es mit einem anderen Begriff.;Essayez avec un autre terme.
 search.result;default;1 result for “@text”;1 Ergebnis für «@text»;1 résultat pour « @text »

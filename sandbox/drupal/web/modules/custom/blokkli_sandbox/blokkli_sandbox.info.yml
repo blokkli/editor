@@ -1,5 +1,7 @@
 name: blökkli sandbox
 type: module
-description: Creates and deletes the sandboxes, copies of the baked site that a subdomain picks, logs visitors into them and limits their uploads.
+description: Creates and deletes the sandboxes, copies of the baked site that a subdomain picks, logs visitors into them, limits their uploads and tells their users when they're deleted.
 package: Custom
 core_version_requirement: ^11
+dependencies:
+  - graphql_core_schema:graphql_core_schema

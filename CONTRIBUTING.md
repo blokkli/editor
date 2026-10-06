@@ -90,6 +90,12 @@ ddev drush blokkli-sandbox:delete a1
 - drush works on a sandbox with `--uri`, e.g.
   `ddev drush --uri=https://a1.blokkli.ddev.site uli` for a login link.
 - A bake doesn't change existing sandboxes. Delete and create them again.
+- A claimed sandbox has a "Sandbox" button next to Drupal's tabs above its
+  pages. Its popup says when the sandbox is deleted, with a link back to it and
+  links for colleagues. One made with drush has no button, unless it gets the
+  control app's limits:
+  `ddev drush blokkli-sandbox:create a1 --expires=$(($(date +%s) + 86400)) --idle=7200`.
+  It still doesn't expire.
 
 ### The control app
 

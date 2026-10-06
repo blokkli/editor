@@ -6,7 +6,12 @@
         class="hidden border-b border-line bg-white lg:block"
       >
         <VuepalAdminToolbar :key="language" />
-        <VuepalLocalTasks class="container-wide py-2.5 not-has-[li]:hidden" />
+        <div
+          class="container-wide flex items-center justify-between gap-4 py-2.5 not-has-[li,button]:hidden"
+        >
+          <VuepalLocalTasks />
+          <SandboxInfo />
+        </div>
       </div>
     </ClientOnly>
     <ConfigPageSite
@@ -32,6 +37,7 @@ import {
   ClientOnly,
   ConfigPageFooter,
   ConfigPageSite,
+  SandboxInfo,
   VuepalAdminToolbar,
   VuepalLocalTasks,
 } from '#components'
@@ -39,11 +45,11 @@ import { useLanguage } from '~/composables/useLanguage'
 import { useLayoutQuery } from '~/composables/useLayoutQuery'
 
 // The layout of the site's pages: Drupal's toolbar and the route's local tasks
-// (view, edit, translate…) above the page, from lg (both are too wide below),
-// then the header and the footer from their config pages. It stays mounted
-// between pages: the toolbar, the config pages and the menu load once per
-// language. A config page is edited on its own route, where the header or the
-// footer here turns into the editor.
+// (view, edit, translate…) with the sandbox's button above the page, from lg
+// (both are too wide below), then the header and the footer from their config
+// pages. It stays mounted between pages: the toolbar, the config pages and the
+// menu load once per language. A config page is edited on its own route, where
+// the header or the footer here turns into the editor.
 const route = useRoute()
 const language = useLanguage()
 

@@ -10,10 +10,11 @@ use Drupal\Core\Site\Settings;
 /**
  * Creates, deletes and lists the sandboxes.
  *
- * A sandbox is a copy of a template that `ddev bake` writes: its database and
- * private and temporary files in sandbox/drupal/sandboxes/<id>/, its public
- * files in sites/default/files/sandboxes/<id>/. settings.php picks it by the
- * request's subdomain, and nginx shows a page for a sandbox without a database.
+ * A sandbox is a copy of a template that `ddev bake` writes: its database,
+ * private and temporary files and limits in sandbox/drupal/sandboxes/<id>/,
+ * its public files in sites/default/files/sandboxes/<id>/. settings.php picks
+ * it by the request's subdomain, and nginx shows a page for a sandbox without
+ * a database.
  *
  * @see plans/drupal-setup/08-sandbox-routing.md
  */
@@ -26,8 +27,12 @@ final class SandboxManager {
 
   /**
    * Creates a sandbox from the template of a source language (e.g. "de").
+   *
+   * The control app passes the sandbox's limits, for its banner: when it's
+   * deleted at the latest (a Unix timestamp), and after how many seconds
+   * without use. It deletes the sandbox itself.
    */
-  public function create(string $id, string $source): void {
+  public function create(string $id, string $source, ?int $expires = NULL, ?int $idle = NULL): void {
     $this->validate($id);
     $directory = $this->directory($id);
     if (is_dir($directory) || is_dir($this->publicDirectory($id))) {
@@ -41,6 +46,12 @@ final class SandboxManager {
     $this->copyDirectory("$template/files", $this->publicDirectory($id));
     foreach (['private', 'tmp'] as $subdirectory) {
       $this->fileSystem->mkdir("$directory/$subdirectory", NULL, TRUE);
+    }
+    if ($expires !== NULL) {
+      $lifetime = json_encode(['expires' => $expires, 'idle' => $idle], JSON_THROW_ON_ERROR);
+      if (file_put_contents("$directory/lifetime.json", $lifetime) === FALSE) {
+        throw new \RuntimeException("Couldn't write the lifetime of the sandbox '$id'.");
+      }
     }
     // Last, and under another name first: a sandbox with a database is a
     // complete one for nginx and settings.php.
@@ -79,6 +90,26 @@ final class SandboxManager {
       fn (string $id): bool => (bool) preg_match($this->setting('pattern'), $id) && is_dir("$directory/$id"),
     );
     return array_values($ids);
+  }
+
+  /**
+   * A sandbox's limits, as the control app passed them to create().
+   *
+   * @return array{expires: int, idle: ?int}|null
+   *   When it's deleted at the latest, and after how many seconds without use.
+   *   NULL for a sandbox that doesn't expire (made with drush).
+   */
+  public function lifetime(string $id): ?array {
+    $this->validate($id);
+    $file = $this->directory($id) . '/lifetime.json';
+    $lifetime = file_exists($file) ? json_decode((string) file_get_contents($file), TRUE) : NULL;
+    if (!is_int($lifetime['expires'] ?? NULL)) {
+      return NULL;
+    }
+    return [
+      'expires' => $lifetime['expires'],
+      'idle' => is_int($lifetime['idle'] ?? NULL) ? $lifetime['idle'] : NULL,
+    ];
   }
 
   /**

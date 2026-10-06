@@ -98,6 +98,7 @@
         "vitest": "^4.1.9",
         "vue-router": "^5.1.0",
         "vue-tsc": "^3.3.5",
+        "vue3-click-away": "^1.2.4",
         "vuepal": "^3.0.6",
       },
       "peerDependencies": {
@@ -3047,6 +3048,8 @@
     "vue-sfc-transformer": ["vue-sfc-transformer@0.1.17", "", { "dependencies": { "@babel/parser": "^7.27.0" }, "peerDependencies": { "@vue/compiler-core": "^3.5.13", "esbuild": "*", "vue": "^3.5.13" } }, "sha512-0mpkDTWm1ybtp/Mp3vhrXP4r8yxcGF+quxGyJfrHDl2tl5naQjK3xkIGaVR5BtR5KG1LWJbdCrqn7I6f460j9A=="],
 
     "vue-tsc": ["vue-tsc@3.3.5", "", { "dependencies": { "@volar/typescript": "2.4.28", "@vue/language-core": "3.3.5" }, "peerDependencies": { "typescript": ">=5.0.0" }, "bin": { "vue-tsc": "bin/vue-tsc.js" } }, "sha512-Rzh/G2MmNlMSAMTiQEjDrsb4dgB/jbtEM47rVN2NtidF1dfb/q4w4QvpQBtW5+y3y5H27Hjh7deVwk+YB02fNg=="],
+
+    "vue3-click-away": ["vue3-click-away@1.2.4", "", {}, "sha512-O9Z2KlvIhJT8OxaFy04eiZE9rc1Mk/bp+70dLok68ko3Kr8AW5dU+j8avSk4GDQu94FllSr4m5ul4BpzlKOw1A=="],
 
     "vuepal": ["vuepal@3.0.6", "", { "dependencies": { "change-case": "^5.4.4", "fzf": "^0.5.2", "nuxt-graphql-middleware": "^5.3.2", "nuxt-language-negotiation": "^2.0.2", "yaml": "^2.8.2" } }, "sha512-rCVgUVWWwBpA6DpJnY6Ez/j3bMlx0OiW2e9FFWzOUQ7E+vCPthEMG+fvcvu+u8/LzMDFHEvoHY0CvbnhCYw5ow=="],
 

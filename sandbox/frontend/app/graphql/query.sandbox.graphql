@@ -1,0 +1,13 @@
+# The sandbox's banner: when the sandbox is deleted, and its users' logins.
+query sandbox {
+  sandbox {
+    expires
+    idleLifetime
+    logins {
+      name
+      role
+      url
+      isCurrentUser
+    }
+  }
+}
