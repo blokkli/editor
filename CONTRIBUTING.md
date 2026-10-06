@@ -96,6 +96,9 @@ ddev drush blokkli-sandbox:delete a1
   control app's limits:
   `ddev drush blokkli-sandbox:create a1 --expires=$(($(date +%s) + 86400)) --idle=7200`.
   It still doesn't expire.
+- Only premium sandboxes have the agent: those from an invitation, and those
+  made with `--premium` (e.g. `ddev drush blokkli-sandbox:create a1 --premium`).
+  The others get no agent secret, so the editor hides the agent.
 
 ### The control app
 
@@ -104,7 +107,8 @@ https://blokkli-control.ddev.site is how visitors get a sandbox:
 - **The claim page** (`/de`, `/fr`, `/en`) creates one and logs the visitor in
   as Anna Keller, in the home page's editor.
 - **`/admin`** lists the sandboxes and makes invitation links. Each link creates
-  one premium sandbox (7 days), without the captcha and the limits.
+  one premium sandbox (7 days, with the agent), without the captcha and the
+  limits.
 - **Every 5 minutes, it deletes expired sandboxes:** after 24 hours, or 2 hours
   without use. Only its own: those made with drush stay.
 
@@ -139,8 +143,9 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 
 ### The agent
 
-All four test users can use the agent in the editor. Drupal checks each change
-against the user's role, so Jonas's agent is as restricted as he is.
+The agent is on the dev site and in premium sandboxes (see Sandboxes). All four
+test users can use it. Drupal checks each change against the user's role, so
+Jonas's agent is as restricted as he is.
 
 The demo's own skills, tool and prompts are in `sandbox/frontend/blokkli/`, not
 in `app/`: the agent module only looks next to `nuxt.config.ts`.

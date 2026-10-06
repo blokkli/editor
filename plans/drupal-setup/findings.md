@@ -57,9 +57,9 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                | both                 | low      | open       | –        |
 | F47 | [Clipboard uploads skip core's upload handling](#f47-clipboard-uploads-skip-cores-upload-handling)                      | `paragraphs_blokkli` | high     | fixed      | –        |
 | F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       | –        |
-| F49 | [Agent endpoints without authentication](#f49-agent-endpoints-without-authentication)                                   | `@blokkli/editor`    | medium   | open       | chunk 11 |
+| F49 | [Agent endpoints without authentication](#f49-agent-endpoints-without-authentication)                                   | `@blokkli/editor`    | medium   | fixed      | chunk 11 |
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       | –        |
-| F51 | [Agent tokens of the same second collide](#f51-agent-tokens-of-the-same-second-collide)                                 | both                 | low      | open       | chunk 11 |
+| F51 | [Agent tokens of the same second collide](#f51-agent-tokens-of-the-same-second-collide)                                 | both                 | low      | fixed      | chunk 11 |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -1066,6 +1066,19 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix idea:** check the auth token as `stream.ts` does, and send it from
   `agentProvider.ts` and the `web_fetch` tool. Before chunk 11 gives the agent
   an API key.
+- **Fixed** (2026-10-06, chunk 11, in this repository):
+  - `/route` and `/fetch` return 401 without a valid token. The client fetches a
+    fresh one from the adapter for each request (`fetchRouting()` in
+    `agentProvider.ts`, the `web_fetch` tool), as for the stream. Without a
+    token there's no routing, and the prompt goes on without it.
+  - `allowedFetchOrigins` defaults to `[]` in the server template: `/fetch`
+    answers 403 ("No allowed origins configured") instead of throwing.
+  - `/fetch` follows redirects itself (`redirect: 'manual'`, at most 5), each
+    one checked like the requested URL.
+  - Found on the way: with `enableMock`, `/route` never called the model, also
+    for conversations without a script, so the sandbox had no routing. Now a
+    client with a script always sends `mockRouting` (empty without a routing
+    entry), and only those conversations skip the model.
 
 ## F50: Any GraphQL user can create text keys
 
@@ -1092,3 +1105,11 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   sandboxes, two sandboxes.
 - **Fix idea:** a random nonce in the token
   (`timestamp:nonce:HMAC(timestamp:nonce)`), in both repositories.
+- **Fixed** (2026-10-06, chunk 11, both repositories):
+  - `GenerateAgentToken` adds a random nonce (`Crypt::randomBytesBase64(12)`):
+    `<timestamp>:<nonce>:<hmac>`, the HMAC of `<timestamp>:<nonce>`. Its kernel
+    test checks the three parts and that two tokens differ.
+  - `validateToken()` (`src/modules/agent/runtime/server/helpers/security.ts`)
+    splits at the last colon, so tokens without a nonce still validate. Tests in
+    `security.spec.ts`.
+  - The playground's token route and the adapter docs use the new format.

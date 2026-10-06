@@ -405,6 +405,7 @@ As built:
 
   - The DE and FR strings in the module's `translations` (`nuxt.config.ts`),
     with formal Sie and vous.
+
 - **`nuxt.config.ts`:** Sonnet 5.5, prices in USD from Anthropic's pricing page,
   and a comment that `enableMock` is local only (12 turns it off).
 - **Skill:** `blokkli-setup-agent` (1.0.0), listed in `blokkli-setup-drupal`

@@ -30,9 +30,11 @@ final class SandboxManager {
    *
    * The control app passes the sandbox's limits, for its banner: when it's
    * deleted at the latest (a Unix timestamp), and after how many seconds
-   * without use. It deletes the sandbox itself.
+   * without use. It deletes the sandbox itself. A premium sandbox (from an
+   * invitation) gets the agent: settings.php reads "premium" from the same
+   * file.
    */
-  public function create(string $id, string $source, ?int $expires = NULL, ?int $idle = NULL): void {
+  public function create(string $id, string $source, ?int $expires = NULL, ?int $idle = NULL, bool $premium = FALSE): void {
     $this->validate($id);
     $directory = $this->directory($id);
     if (is_dir($directory) || is_dir($this->publicDirectory($id))) {
@@ -47,8 +49,8 @@ final class SandboxManager {
     foreach (['private', 'tmp'] as $subdirectory) {
       $this->fileSystem->mkdir("$directory/$subdirectory", NULL, TRUE);
     }
-    if ($expires !== NULL) {
-      $lifetime = json_encode(['expires' => $expires, 'idle' => $idle], JSON_THROW_ON_ERROR);
+    if ($expires !== NULL || $premium) {
+      $lifetime = json_encode(['expires' => $expires, 'idle' => $idle, 'premium' => $premium], JSON_THROW_ON_ERROR);
       if (file_put_contents("$directory/lifetime.json", $lifetime) === FALSE) {
         throw new \RuntimeException("Couldn't write the lifetime of the sandbox '$id'.");
       }

@@ -50,6 +50,7 @@ if ($sandbox === NULL) {
     fn (string $hostname): string => '^' . preg_quote($hostname) . '$',
     array_filter($hostnames, fn (string $hostname): bool => !str_starts_with($hostname, '*.')),
   );
+  $agent = TRUE;
 }
 else {
   $directory = $settings['blokkli_sandbox']['directory'] . '/' . $sandbox;
@@ -82,6 +83,10 @@ else {
   }
   // GraphQL errors without messages and traces for the visitors.
   $config['graphql.graphql_servers.graphql']['debug_flag'] = 0;
+  // Only premium sandboxes (an invitation's) get the agent, see its secret
+  // below. blokkli-sandbox:create writes the file (SandboxManager::create()).
+  $lifetime = file_exists("$directory/lifetime.json") ? json_decode((string) file_get_contents("$directory/lifetime.json"), TRUE) : NULL;
+  $agent = ($lifetime['premium'] ?? FALSE) === TRUE;
 }
 // APCu's prefixes without the hash salt: the class loader and the file cache
 // depend only on the code, so every site shares one copy. Only the default
@@ -120,8 +125,10 @@ $settings['entity_update_batch_size'] = 50;
 // core.
 $settings['file_scan_ignore_directories'] = ['node_modules', 'bower_components', 'web'];
 
-// Empty turns the feature off.
-$config['paragraphs_blokkli_agent.settings']['auth_secret'] = getenv('NUXT_BLOKKLI_AGENT_AUTH_SECRET') ?: '';
+// Empty turns the feature off, and the editor hides it. Without the agent's
+// secret, Drupal makes no tokens, so the agent server lets nobody in from a
+// sandbox that isn't premium.
+$config['paragraphs_blokkli_agent.settings']['auth_secret'] = $agent ? (getenv('NUXT_BLOKKLI_AGENT_AUTH_SECRET') ?: '') : '';
 $config['paragraphs_blokkli_deepl.settings']['api_key'] = getenv('DEEPL_AUTH_KEY') ?: '';
 
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {

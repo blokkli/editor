@@ -95,12 +95,13 @@ export default defineEventHandler(async (event) => {
     )
     .run(id, source, invitation ? 1 : 0, created, ipHash, invitation)
 
-  // The limits that expires() applies, for the sandbox's banner.
-  const limits = invitation
-    ? [`--expires=${created + LIFETIME.premium}`]
+  // The limits that expires() applies, for the sandbox's banner. Only a
+  // premium sandbox gets the agent.
+  const options = invitation
+    ? ['--premium', `--expires=${created + LIFETIME.premium}`]
     : [`--expires=${created + LIFETIME.normal}`, `--idle=${LIFETIME.idle}`]
   try {
-    await drush('blokkli-sandbox:create', id, `--source=${source}`, ...limits)
+    await drush('blokkli-sandbox:create', id, `--source=${source}`, ...options)
   } catch (error) {
     console.error(`Couldn't create the sandbox ${id}:`, error)
     database.prepare('DELETE FROM sandboxes WHERE id = ?').run(id)
