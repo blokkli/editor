@@ -20,3 +20,4 @@ field_paragraphs:
       fr: '<p>Une guide vous fait découvrir la vieille ville : l''hôtel de ville au bord du lac, les maisons des vignerons avec leurs toits de tuiles pentus et la place du village, où se tient le marché depuis des siècles et qui est en cours de réaménagement. Vous apprendrez pourquoi on parle deux langues à Bloquens et dans quels salons on fabriquait autrefois des pièces d''horlogerie.</p><p>La visite a lieu par tous les temps, en allemand ; une visite en français commence à la même heure. Le parcours passe sur des pavés et par quelques escaliers. Inscrivez-vous : un groupe compte 25 personnes au maximum.</p>'
   - type: teaser
     field_link: { node: history }
+    field_media: { media: old-town-lane-1930 }

@@ -9,7 +9,7 @@ field_lead:
   en: 'The utilities are replacing the main, which is more than 60 years old, while Dorfstrasse is closed for the new village square.'
   de: Die Gemeindewerke ersetzen die über 60 Jahre alte Leitung, solange die Dorfstrasse für den neuen Dorfplatz gesperrt ist.
   fr: 'Les Services industriels remplacent la conduite, vieille de plus de 60 ans, pendant que la rue du Village est fermée pour la nouvelle place du village.'
-field_hero_image: { media: residential-street }
+field_hero_image: { media: water-main }
 field_paragraphs:
   - type: text
     field_text:

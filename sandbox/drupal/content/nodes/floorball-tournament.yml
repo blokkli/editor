@@ -5,6 +5,7 @@ field_lead:
   en: 'Around 40 teams, from the youngest players to the fun teams, compete all day for the Seefeld Cup.'
   de: 'Rund 40 Teams, von den Jüngsten bis zu den Plauschteams, spielen einen Tag lang um den Seefeld-Cup.'
   fr: 'Quelque 40 équipes, des plus jeunes aux équipes amateurs, se disputent la Coupe du Seefeld pendant toute une journée.'
+field_hero_image: { media: floorball-tournament }
 field_date: { value: '+13 days 09:00', end_value: '+13 days 17:30' }
 field_place: { en: Seefeld sports hall, de: Sporthalle Seefeld, fr: Halle de sport du Seefeld }
 field_organiser: { en: Seefeld Floorball Club, de: Unihockeyclub Seefeld, fr: 'Club d''unihockey du Seefeld' }

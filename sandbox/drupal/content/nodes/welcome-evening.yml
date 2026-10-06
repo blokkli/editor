@@ -8,7 +8,7 @@ field_lead:
   en: 'The municipal council invites everyone who moved to Blockingen in the past year.'
   de: Der Gemeinderat lädt alle ein, die im letzten Jahr nach Blockingen gezogen sind.
   fr: 'Le Conseil communal invite toutes les personnes qui se sont installées à Bloquens au cours de l''année écoulée.'
-field_hero_image: { media: town-from-lake }
+field_hero_image: { media: welcome-evening }
 field_date: { value: '+24 days 18:30', end_value: '+24 days 21:30' }
 field_place: { en: 'Town hall, main hall', de: Rathaussaal, fr: 'Hôtel de ville, grande salle' }
 field_organiser: { en: Municipal council, de: Gemeinderat, fr: Conseil communal }

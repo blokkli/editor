@@ -5,6 +5,6 @@ field_lead:
   en: 'Support in difficult times and in old age.'
   de: 'Unterstützung in schwierigen Zeiten und im Alter.'
   fr: 'Un soutien dans les moments difficiles et pendant la vieillesse.'
-field_hero_image: { media: village-square }
+field_hero_image: { media: older-residents }
 field_host_options:
   - { key: header, value: image }

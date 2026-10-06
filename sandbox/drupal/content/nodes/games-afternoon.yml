@@ -5,6 +5,7 @@ field_lead:
   en: 'Try out new board games and rediscover old ones: for families, children aged 4 and over, and anyone who enjoys playing.'
   de: 'Neue Brettspiele ausprobieren, alte wiederentdecken: für Familien, Kinder ab 4 Jahren und alle, die gern spielen.'
   fr: 'Essayer de nouveaux jeux de société, en redécouvrir d''anciens : pour les familles, les enfants dès 4 ans et toutes celles et ceux qui aiment jouer.'
+field_hero_image: { media: games-afternoon }
 field_date: { value: '+5 days 14:00', end_value: '+5 days 17:00' }
 field_place: { en: Blockingen Toy Library, de: Ludothek Blockingen, fr: Ludothèque de Bloquens }
 field_organiser: { en: Blockingen Toy Library, de: Ludothek Blockingen, fr: Ludothèque de Bloquens }

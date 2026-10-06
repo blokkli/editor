@@ -5,7 +5,7 @@ field_lead:
   en: 'Voters decide on the budget, the funding for the old town gym and the new water fees.'
   de: 'Die Stimmberechtigten entscheiden über das Budget, den Kredit für die Turnhalle Altstadt und die neuen Wassergebühren.'
   fr: 'Les électrices et électeurs se prononcent sur le budget, le crédit pour la halle de gymnastique de la vieille ville et les nouvelles taxes pour l''eau.'
-field_hero_image: { media: town-hall }
+field_hero_image: { media: assembly-meeting }
 field_date: { value: '+35 days 19:30', end_value: '+35 days 22:00' }
 field_place: { en: 'Town hall, main hall', de: Rathaussaal, fr: 'Hôtel de ville, grande salle' }
 field_organiser: { en: Municipal council, de: Gemeinderat, fr: Conseil communal }

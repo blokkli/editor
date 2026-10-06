@@ -13,7 +13,7 @@ field_lead:
   en: 'After its renovation, the pool reopens with a new children''s area. Admission is free on the opening day.'
   de: Nach der Sanierung öffnet das Bad mit einem neuen Kinderbereich. Am Eröffnungstag ist der Eintritt gratis.
   fr: 'Après sa rénovation, la plage rouvre avec un nouvel espace pour les enfants. Le jour de l''ouverture, l''entrée est gratuite.'
-field_hero_image: { media: lakeside-pool }
+field_hero_image: { media: pool-opening }
 field_paragraphs:
   - type: text
     field_text:

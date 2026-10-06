@@ -12,12 +12,12 @@
   field_credit: AI-generated
 
 # No alt text, on purpose: the lakeside pool's gallery shows it, for the
-# analyzer. The same photo as the town from the lake.
+# analyzer.
 - key: jetty-view
   type: image
   name: { en: View from the jetty, de: Blick vom Steg, fr: Vue depuis le ponton }
   field_media_image:
-    file: images/town-from-lake.jpg
+    file: images/jetty-view.jpg
   field_credit: AI-generated
 
 - key: old-town
@@ -139,6 +139,129 @@
       en: A garden with a wooden shed, a lawn and raised beds
       de: Ein Garten mit einem Gartenhaus aus Holz, Rasen und Hochbeeten
       fr: Un jardin avec un cabanon en bois, une pelouse et des plates-bandes surélevées
+  field_credit: AI-generated
+
+# The second brief (14b): events and news that had none, or shared one.
+- key: band-concert
+  type: image
+  name: { en: 'The town band''s concert', de: Das Konzert der Musikgesellschaft, fr: Le concert de la fanfare }
+  field_media_image:
+    file: images/band-concert.jpg
+    alt:
+      en: The town band on stage in a hall, its conductor in front, the audience seen from behind
+      de: Die Musikgesellschaft auf der Bühne einer Halle, davor der Dirigent, das Publikum von hinten
+      fr: 'La fanfare sur la scène d''une salle, le chef devant elle, le public vu de dos'
+  field_credit: AI-generated
+
+- key: floorball-tournament
+  type: image
+  name: { en: A floorball game, de: Ein Unihockeyspiel, fr: 'Un match d''unihockey' }
+  field_media_image:
+    file: images/floorball-tournament.jpg
+    alt:
+      en: Young players in red and blue shirts fighting for the ball in a sports hall, the goalkeeper behind them
+      de: Junge Spielerinnen und Spieler in roten und blauen Shirts kämpfen in einer Sporthalle um den Ball, dahinter der Torhüter
+      fr: De jeunes joueuses et joueurs en maillots rouges et bleus se disputent la balle dans une salle de sport, le gardien derrière eux
+  field_credit: AI-generated
+
+- key: games-afternoon
+  type: image
+  name: { en: The toy library, de: Die Ludothek, fr: La ludothèque }
+  field_media_image:
+    file: images/games-afternoon.jpg
+    alt:
+      en: Board games laid out on the tables of the toy library, shelves full of games behind them
+      de: Brettspiele auf den Tischen der Ludothek, dahinter Regale voller Spiele
+      fr: Des jeux de société sur les tables de la ludothèque, avec des étagères pleines de jeux derrière
+  field_credit: AI-generated
+
+- key: welcome-evening
+  type: image
+  name: { en: An apéro in the town hall, de: Ein Apéro im Rathaus, fr: 'Un apéritif à l''hôtel de ville' }
+  field_media_image:
+    file: images/welcome-evening.jpg
+    alt:
+      en: 'An apéro in a hall of the town hall: standing tables, glasses and snacks, and a painting of the town on the wall'
+      de: 'Ein Apéro in einem Saal des Rathauses: Stehtische, Gläser und Häppchen, an der Wand ein Gemälde der Gemeinde'
+      fr: 'Un apéritif dans une salle de l''hôtel de ville : des tables hautes, des verres et des amuse-bouches, et un tableau de la commune au mur'
+  field_credit: AI-generated
+
+- key: assembly-meeting
+  type: image
+  name: { en: The municipal assembly, de: Die Gemeindeversammlung, fr: 'L''Assemblée communale' }
+  field_media_image:
+    file: images/assembly-meeting.jpg
+    alt:
+      en: Residents at the municipal assembly raise their red voting cards, the municipal council at a table in front of them
+      de: Stimmberechtigte an der Gemeindeversammlung halten ihre roten Stimmkarten hoch, vor ihnen der Gemeinderat an einem Tisch
+      fr: 'À l''Assemblée communale, les citoyennes et citoyens lèvent leur carton de vote rouge, le Conseil communal à une table devant eux'
+  field_credit: AI-generated
+
+- key: water-main
+  type: image
+  name: { en: The new water main, de: Die neue Wasserleitung, fr: 'La nouvelle conduite d''eau' }
+  field_media_image:
+    file: images/water-main.jpg
+    alt:
+      en: A worker lays new blue water pipes in a trench along a residential street, an excavator behind him
+      de: Ein Arbeiter verlegt in einem Graben entlang einer Wohnstrasse neue blaue Wasserleitungen, dahinter ein Bagger
+      fr: 'Un ouvrier pose de nouvelles conduites d''eau bleues dans une tranchée le long d''une rue résidentielle, une pelleteuse derrière lui'
+  field_credit: AI-generated
+
+- key: older-residents
+  type: image
+  name: { en: On the lakeside promenade, de: An der Seepromenade, fr: Sur la promenade du lac }
+  field_media_image:
+    file: images/older-residents.jpg
+    alt:
+      en: Three older residents chatting on a bench by the lake, the old town and the vineyards across the water
+      de: Drei ältere Menschen unterhalten sich auf einer Bank am See, gegenüber die Altstadt und die Rebberge
+      fr: Trois personnes âgées discutent sur un banc au bord du lac, avec la vieille ville et les vignes en face
+  field_credit: AI-generated
+
+- key: pool-opening
+  type: image
+  name: { en: The pool in the morning, de: Das Strandbad am Morgen, fr: La plage le matin }
+  field_media_image:
+    file: images/pool-opening.jpg
+    alt:
+      en: Early swimmers doing lengths at sunrise, steam rising from the pool, the diving tower behind them
+      de: Frühschwimmerinnen und -schwimmer ziehen bei Sonnenaufgang ihre Längen, über dem Becken steigt Dampf auf, dahinter der Sprungturm
+      fr: 'Des nageuses et nageurs matinaux font des longueurs au lever du soleil, de la vapeur s''élève du bassin, le plongeoir derrière eux'
+  field_credit: AI-generated
+
+# Old photos for the history page, from the same image AI.
+- key: lakeshore-1900
+  type: image
+  name: { en: The lakeshore around 1900, de: Das Seeufer um 1900, fr: La rive vers 1900 }
+  field_media_image:
+    file: images/lakeshore-1900.jpg
+    alt:
+      en: 'An old black-and-white photo: fishermen with their wooden boats and nets on the shore, the church and the houses of the town behind them'
+      de: 'Eine alte Schwarzweissfotografie: Fischer mit ihren Holzbooten und Netzen am Ufer, dahinter die Kirche und die Häuser des Orts'
+      fr: 'Une ancienne photo en noir et blanc : des pêcheurs avec leurs barques en bois et leurs filets sur la rive, l''église et les maisons du village derrière eux'
+  field_credit: AI-generated
+
+- key: old-town-lane-1930
+  type: image
+  name: { en: An old town lane around 1930, de: Eine Altstadtgasse um 1930, fr: Une ruelle de la vieille ville vers 1930 }
+  field_media_image:
+    file: images/old-town-lane-1930.jpg
+    alt:
+      en: 'An old black-and-white photo: a cobbled lane in the old town with a parked car, the church tower and the lake at its end'
+      de: 'Eine alte Schwarzweissfotografie: eine gepflasterte Gasse in der Altstadt mit einem parkierten Auto, an ihrem Ende der Kirchturm und der See'
+      fr: 'Une ancienne photo en noir et blanc : une ruelle pavée de la vieille ville avec une voiture garée, le clocher et le lac au bout'
+  field_credit: AI-generated
+
+- key: station-opening
+  type: image
+  name: { en: 'The station''s opening in 1864', de: Die Eröffnung des Bahnhofs 1864, fr: 'L''inauguration de la gare en 1864' }
+  field_media_image:
+    file: images/station-opening.jpg
+    alt:
+      en: 'An old black-and-white photo: people in their Sunday best on the decorated platform of the new station, a steam locomotive beside it'
+      de: 'Eine alte Schwarzweissfotografie: festlich gekleidete Menschen auf dem geschmückten Perron des neuen Bahnhofs, daneben eine Dampflokomotive'
+      fr: 'Une ancienne photo en noir et blanc : une foule endimanchée sur le quai décoré de la nouvelle gare, à côté d''une locomotive à vapeur'
   field_credit: AI-generated
 
 # The locations (terms.yml).

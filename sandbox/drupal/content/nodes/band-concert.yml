@@ -5,6 +5,7 @@ field_lead:
   en: The Blockingen Town Band plays marches, film music and a new piece, together with the youth band.
   de: Die Musikgesellschaft Blockingen spielt Märsche, Filmmusik und ein neues Stück, zusammen mit der Jugendmusik.
   fr: La Fanfare de Bloquens joue des marches, des musiques de film et un morceau inédit, avec la fanfare des jeunes.
+field_hero_image: { media: band-concert }
 field_date: { value: '+47 days 19:30', end_value: '+47 days 22:00' }
 field_place: { en: Seefeld sports hall, de: Sporthalle Seefeld, fr: Halle de sport du Seefeld }
 field_organiser: { en: Blockingen Town Band, de: Musikgesellschaft Blockingen, fr: Fanfare de Bloquens }

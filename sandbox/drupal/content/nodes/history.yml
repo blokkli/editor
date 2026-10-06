@@ -19,6 +19,13 @@ field_paragraphs:
       en: '<p>Piles in the mud of the lakeshore show that people were already living by the lake more than 5,000 years ago. The walls of a farming estate above the vineyards date back to Roman times. The town first appears in a charter in 1228, as “Bloquingen”: a fishing village with a chapel and a ferry across the lake.</p>'
       de: '<p>Pfähle im Uferschlamm zeigen, dass schon vor über 5000 Jahren Menschen am See wohnten. Aus römischer Zeit stammen die Mauern eines Gutshofs oberhalb der Rebberge. Als «Bloquingen» erscheint der Ort erstmals 1228 in einer Urkunde, als Fischerdorf mit einer Kapelle und einer Fähre über den See.</p>'
       fr: '<p>Des pieux plantés dans la vase de la rive montrent que des gens vivaient déjà au bord du lac il y a plus de 5000 ans. Au-dessus des vignes, les murs d''un domaine agricole remontent à l''époque romaine. La localité apparaît pour la première fois en 1228 dans une charte, sous le nom de « Bloquingen » : un village de pêcheurs avec une chapelle et un bac pour traverser le lac.</p>'
+  - type: image
+    options: { width: wide }
+    field_media: { media: lakeshore-1900 }
+    field_caption:
+      en: The lakeshore around 1900, when many families still lived from fishing.
+      de: Das Seeufer um 1900, als noch viele Familien vom Fischfang lebten.
+      fr: 'La rive vers 1900, quand de nombreuses familles vivaient encore de la pêche.'
   - type: title
     field_title: { en: A market town on the language border, de: Ein Marktort an der Sprachgrenze, fr: Un bourg de marché sur la frontière linguistique }
   - type: text
@@ -28,11 +35,11 @@ field_paragraphs:
       fr: '<p>En 1476, Bloquens a obtenu le droit de marché. Les vignerons des villages du coteau et les pêcheurs du lac vendaient leurs marchandises sur la place du village, rejoints par des marchands des deux régions linguistiques. Les maisons de la vieille ville, avec leurs toits de tuiles pentus, datent de cette époque. L''hôtel de ville au bord du lac a pris son aspect actuel en 1652.</p>'
   - type: image
     options: { width: wide }
-    field_media: { media: old-town }
+    field_media: { media: old-town-lane-1930 }
     field_caption:
-      en: 'The old town: many houses date back to the 15th and 16th centuries.'
-      de: 'Die Altstadt: Viele Häuser gehen auf das 15. und 16. Jahrhundert zurück.'
-      fr: 'La vieille ville : de nombreuses maisons remontent aux XVe et XVIe siècles.'
+      en: 'A lane in the old town around 1930: many of its houses date back to the 15th and 16th centuries.'
+      de: 'Eine Gasse in der Altstadt um 1930: Viele ihrer Häuser gehen auf das 15. und 16. Jahrhundert zurück.'
+      fr: 'Une ruelle de la vieille ville vers 1930 : nombre de ses maisons remontent aux XVe et XVIe siècles.'
   - type: title
     field_title: { en: The railway and watchmaking, de: Eisenbahn und Uhren, fr: Chemin de fer et horlogerie }
   - type: text
@@ -40,6 +47,13 @@ field_paragraphs:
       en: '<p>Industry arrived with the railway in 1864. At first, homeworkers made watch parts in their living rooms; soon two factories were built near the station. Within a few decades, Blockingen grew from 2,000 to more than 5,000 residents. Many came from the French-speaking valleys to the west, and as much French as German was now spoken in the town.</p>'
       de: '<p>Mit der Eisenbahn kam 1864 die Industrie. Zuerst fertigten Heimarbeiterinnen und Heimarbeiter in ihren Stuben Uhrenteile, bald entstanden zwei Fabriken beim Bahnhof. In wenigen Jahrzehnten wuchs Blockingen von 2000 auf über 5000 Einwohnerinnen und Einwohner. Viele kamen aus den französischsprachigen Tälern im Westen, und im Ort wurde nun ebenso viel Französisch wie Deutsch gesprochen.</p>'
       fr: '<p>L''industrie est arrivée avec le chemin de fer en 1864. D''abord, des ouvrières et des ouvriers fabriquaient chez eux des pièces d''horlogerie, puis deux fabriques ont vu le jour près de la gare. En quelques décennies, la population de Bloquens est passée de 2000 à plus de 5000 habitantes et habitants. Beaucoup venaient des vallées francophones de l''ouest, et l''on parlait désormais autant le français que l''allemand dans la localité.</p>'
+  - type: image
+    options: { width: wide }
+    field_media: { media: station-opening }
+    field_caption:
+      en: 'The opening of the station in 1864: the whole town came to see the first train.'
+      de: 'Die Eröffnung des Bahnhofs 1864: Der ganze Ort kam, um den ersten Zug zu sehen.'
+      fr: 'L''inauguration de la gare en 1864 : toute la localité est venue voir le premier train.'
   - type: title
     field_title: { en: The town today, de: Die Gemeinde heute, fr: 'La commune aujourd''hui' }
   - type: text
