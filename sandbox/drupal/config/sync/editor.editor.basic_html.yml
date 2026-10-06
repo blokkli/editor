@@ -22,7 +22,6 @@ settings:
       - numberedList
       - '|'
       - blockQuote
-      - drupalInsertImage
       - '|'
       - heading
       - code
@@ -36,8 +35,6 @@ settings:
         - heading4
         - heading5
         - heading6
-    ckeditor5_imageResize:
-      allow_resize: true
     ckeditor5_list:
       properties:
         reversed: false
@@ -58,10 +55,4 @@ settings:
         - '<h5 id>'
         - '<h6 id>'
 image_upload:
-  status: true
-  scheme: public
-  directory: inline-images
-  max_size: null
-  max_dimensions:
-    width: null
-    height: null
+  status: false

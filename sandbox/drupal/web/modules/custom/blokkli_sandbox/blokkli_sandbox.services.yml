@@ -5,3 +5,7 @@ services:
     autowire: true
     tags:
       - { name: event_subscriber }
+  Drupal\blokkli_sandbox\EventSubscriber\UploadQuotaSubscriber:
+    autowire: true
+    tags:
+      - { name: event_subscriber }

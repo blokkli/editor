@@ -24,6 +24,9 @@ $settings['blokkli_sandbox'] = [
   // Signs the logins that the control app (sandbox/control) hands out. Public,
   // so the hosted site must set its own (see the guard at the end).
   'login_secret' => getenv('NUXT_SANDBOX_LOGIN_SECRET') ?: 'blokkli-local-development',
+  // What a sandbox's users can upload together, in bytes
+  // (plans/drupal-setup/10-access-and-guardrails.md).
+  'upload_quota' => 100 * 1024 * 1024,
 ];
 $hostnames = explode(',', (string) getenv('DDEV_HOSTNAME'));
 $host = strtolower((string) preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? ''));
@@ -77,6 +80,8 @@ else {
   foreach (['bootstrap', 'config', 'discovery', 'routes'] as $bin) {
     $settings['cache']['bins'][$bin] = 'cache.backend.database';
   }
+  // GraphQL errors without messages and traces for the visitors.
+  $config['graphql.graphql_servers.graphql']['debug_flag'] = 0;
 }
 // APCu's prefixes without the hash salt: the class loader and the file cache
 // depend only on the code, so every site shares one copy. Only the default
@@ -121,6 +126,11 @@ $config['paragraphs_blokkli_deepl.settings']['api_key'] = getenv('DEEPL_AUTH_KEY
 
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
+}
+// Sandboxes stay private, whatever settings.local.php says (see
+// AnonymousViewerAccessPolicy).
+if ($sandbox !== NULL) {
+  unset($settings['blokkli_playground_public']);
 }
 
 // With the public salt or login secret, anyone could forge login links.

@@ -16,7 +16,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround | –        |
 | F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                | `blokkli_starterkit` | low      | open       | –        |
 | F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                  | `paragraphs_blokkli` | low      | open       | –        |
-| F8  | [Upload mutations ignore tokens in the file directory](#f8-upload-mutations-ignore-tokens-in-the-file-directory)        | `paragraphs_blokkli` | low      | workaround | –        |
+| F8  | [Upload mutations ignore tokens in the file directory](#f8-upload-mutations-ignore-tokens-in-the-file-directory)        | `paragraphs_blokkli` | low      | fixed      | –        |
 | F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                | `paragraphs_blokkli` | medium   | workaround | –        |
 | F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                       | `paragraphs_blokkli` | medium   | workaround | –        |
 | F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                   | `paragraphs_blokkli` | low      | open       | –        |
@@ -30,7 +30,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F19 | [Template and library search](#f19-template-and-library-search)                                                         | both                 | low      | open       | –        |
 | F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                       | `paragraphs_blokkli` | low      | open       | –        |
 | F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                               | `@blokkli/editor`    | low      | open       | –        |
-| F22 | [Preview grants only work for some viewers](#f22-preview-grants-only-work-for-some-viewers)                             | `paragraphs_blokkli` | medium   | open       | chunk 10 |
+| F22 | [Preview grants only work for some viewers](#f22-preview-grants-only-work-for-some-viewers)                             | `paragraphs_blokkli` | medium   | fixed      | –        |
 | F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                 | both                 | low      | open       | –        |
 | F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                       | `paragraphs_blokkli` | medium   | open       | –        |
 | F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                     | `paragraphs_blokkli` | low      | open       | –        |
@@ -55,6 +55,10 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F44 | [No approval step](#f44-no-approval-step)                                                                               | both                 | low      | open       | –        |
 | F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                     | `paragraphs_blokkli` | medium   | open       | –        |
 | F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                | both                 | low      | open       | –        |
+| F47 | [Clipboard uploads skip core's upload handling](#f47-clipboard-uploads-skip-cores-upload-handling)                      | `paragraphs_blokkli` | high     | fixed      | –        |
+| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       | –        |
+| F49 | [Agent endpoints without authentication](#f49-agent-endpoints-without-authentication)                                   | `@blokkli/editor`    | medium   | open       | chunk 11 |
+| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -243,6 +247,9 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
     only sees the real host through `X-Forwarded-Host`. That works for URL
     generation, but anything that reads `HTTP_HOST` early (multisite or per-host
     settings) picks the wrong site.
+  - **PHP in the files directories.** The PHP location matches any `*.php`, and
+    only `\..*/.*\.php$` is denied, so a `.php` file under `sites/*/files` is
+    passed to PHP. Drupal's nginx recipe denies it (found 2026-10-06, chunk 10).
 - **Fix ideas:**
   - Anchor the prefixes: `^(/(de|fr|en))?/(prefixes)(/|$)`. Entries that end in
     `/` today (`user/`, `system/`, `devel/`, `comment/`) lose the slash. Check
@@ -253,6 +260,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
   - Send one host to the upstreams: `X-Forwarded-Host` if present, otherwise
     `Host`, as both `Host` and `X-Forwarded-Host`. This repo's
     `.ddev/nginx_full/nginx-site.conf` does all three.
+  - `location ~ ^/sites/[^/]+/files/.*\.php$ { deny all; }` before the other
+    locations of files, as in this repo since chunk 10.
 
 ## F7: Undeclared dependencies and config gaps
 
@@ -274,7 +283,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
   returns `allowedBundles: []`, and the editor then offers no block types. Fix:
   treat `null` as every paragraph type.
 - **Config schema gaps** (`config/schema/paragraphs_blokkli.schema.yml`):
-  - `media_bundle_file` is read and saved, but missing from the schema.
+  - `media_bundle_file` is read and saved, but missing from the schema. Fixed in
+    `81ced3a` (2026-10-06).
   - `enabled_types` only declares `node`, while the settings form saves any
     entity type (e.g. `translatable_config_pages`). Both are "missing schema"
     errors in a config schema check.
@@ -328,6 +338,9 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix:** use `FileItem::getUploadLocation()`, or replace tokens the same way.
 - **Workaround:** plain directories (`media/images`, `media/documents`), as in
   the starterkit.
+- **Fixed** (2026-10-06, `paragraphs_blokkli` `c4be24b`, with F47): the
+  mutations take the directory from `FileUploadLocationTrait`, as JSON:API's
+  file uploads do. `FileUploadMutationTest` covers a token.
 
 ## F9: Link titles from entity mappings
 
@@ -459,7 +472,7 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   declares default settings, but the instance reports none, so the comparison
   never matches.
 - **Impact:** noise in config exports. Core removes the filter when the module
-  is uninstalled.
+  is uninstalled. `basic_html` has it too since chunk 10 changed it.
 - **Fix idea:** make the plugin's configuration match its defaults (e.g.
   `defaultConfiguration()` or `setConfiguration()` in the plugin).
 
@@ -626,6 +639,28 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix ideas:** a route access check that accepts a valid grant, and an access
   policy that adds view permissions while a grant is valid; the session context
   on `CanUseBlokkli`'s result; the current language in `previewUrl`.
+- **Fixed** (2026-10-06, chunk 10, `paragraphs_blokkli` `19b0396`, `bcdecbd`,
+  `ec2e657`):
+  - The grant route needs no permission (`_access: 'TRUE'`): the hash is the
+    credential. A wrong hash still gets 403, a missing state 404, so state ids
+    can be told apart.
+  - The redirect goes to the host's translation in the link's language. Not
+    `getTranslationFromContext()`: content_translation drops unpublished
+    translations from its fallback for visitors who can't translate.
+  - `CanUseBlokkli` counts only valid grants (the new
+    `PreviewGrantChecker::hasValidGrant()`) and varies by
+    `paragraphs_blokkli_session`.
+  - Tests: `PreviewGrantTest` (the route's access, the language) and the new
+    `CanUseBlokkliTest`.
+  - **The site** gives the permissions, as the checker's docblock intends:
+    `blokkli_playground`'s `AnonymousViewerAccessPolicy` adds `access content`,
+    GraphQL and `bypass paragraphs type content access` to anonymous visitors
+    while their session has a valid grant. `PreviewHooks` lets the grant view an
+    unpublished host.
+  - **Checked over HTTP** on a sandbox: a published page and an unpublished news
+    item, in German. After publishing, the visitor gets 403 again. Mutations are
+    refused.
+  - **Still open:** the standalone preview and host options (not reproduced).
 
 ## F23: A past unpublish date blocks publishing
 
@@ -979,3 +1014,65 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix idea:** a clipboard config for URLs in paragraphs_blokkli (paragraph
   types with a link field, like the file mapping), a mutation that sets the link
   field, and the mapping in the Drupal adapter.
+
+## F47: Clipboard uploads skip core's upload handling
+
+- **Found:** 2026-10-06, chunk 10, by reading the code.
+- **Symptom:** files pasted or dropped into the editor (`add_image`, `add_file`)
+  skip what a form upload checks: the file name is neither sanitised nor checked
+  against the field's extensions, and the field's validators don't run.
+- **Cause:** `FileUploadMutationBase`
+  (`src/Plugin/ParagraphsBlokkli/FileUploadMutationBase.php:328` before the fix)
+  writes the data with `writeData()` under the given name, after checking only
+  the content's MIME type. 1.x has the same code (1.3.6).
+- **Fixed** (2026-10-06, chunk 10, `paragraphs_blokkli` `c4be24b`, 2.0.x):
+  - The mutations upload through core's `file.upload_handler`, as JSON:API's
+    file uploads do. Core sanitises the name and checks it, and the field's
+    validators run, including `FileValidationEvent`'s subscribers. The content
+    check stays.
+  - A refused upload leaves no temporary file.
+  - The messages are plain text.
+  - New test: `tests/src/Kernel/FileUploadMutationTest.php`.
+- **In this repo:** the image and document fields allow 10 MB, and
+  `blokkli_sandbox` limits a sandbox's uploads to 100 MB together (chunk 10).
+
+## F48: A preview grant opens more than the preview
+
+- **Found:** 2026-10-06, chunk 10, by reading the code.
+- **Symptom:** a session with a preview grant passes
+  `paragraphs_blokkli_can_use_blokkli`. That also gates search, the library,
+  transforms, templates, comments and DeepL's translation request
+  (`modules/paragraphs_blokkli_deepl/src/Plugin/GraphQL/SchemaExtension/DeeplExtension.php:44-52`).
+  Since chunk 10, anonymous visitors with a preview link can request
+  translations from DeepL.
+- **Checked:** mutations of the edit state are refused (they need update access
+  to it).
+- **Fix idea:** gate DeepL, and anything else that writes or costs, with the
+  edit permission.
+
+## F49: Agent endpoints without authentication
+
+- **Found:** 2026-10-06, chunk 10, by reading the code.
+- **Symptom:** `/api/blokkli/agent/fetch` and `/api/blokkli/agent/route` accept
+  any request (`src/modules/agent/runtime/server/fetch.ts` and `route.ts`, in
+  this repository). `/route` calls the routing model with the server's API key,
+  and `/fetch` fetches pages from the allowed origins. Only `/stream` and the
+  WebSocket check the agent's auth token.
+- **Also in `/fetch`:**
+  - It throws without `allowedFetchOrigins`: `allowedFetchOrigins.length` on
+    `undefined` (`fetch.ts:126`).
+  - It follows redirects without checking their origin.
+- **Fix idea:** check the auth token as `stream.ts` does, and send it from
+  `agentProvider.ts` and the `web_fetch` tool. Before chunk 11 gives the agent
+  an API key.
+
+## F50: Any GraphQL user can create text keys
+
+- **Found:** 2026-09-27, 13f.
+- **Symptom:** the texts resolvers create a text for every unknown key, without
+  an access check (`TextsTranslator::trans()`, `src/TextsTranslator.php:117` in
+  `texts`). Any user with GraphQL access can fill the table:
+  - in a sandbox, its users;
+  - since chunk 10, anonymous visitors with a preview grant;
+  - on the dev site, everyone, with `blokkli_playground_public`.
+- **Fix idea:** create keys only with a permission, or only in development.

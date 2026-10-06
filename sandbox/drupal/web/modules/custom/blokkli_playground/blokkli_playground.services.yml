@@ -5,3 +5,7 @@ services:
       - { name: event_subscriber }
   Drupal\blokkli_playground\Seed\Seeder:
     autowire: true
+  Drupal\blokkli_playground\Access\AnonymousViewerAccessPolicy:
+    autowire: true
+    tags:
+      - { name: access_policy }

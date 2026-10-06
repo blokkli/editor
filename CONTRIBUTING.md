@@ -51,6 +51,12 @@ bun run dev          # http://localhost:3000
    (restricted editor). Logged in, a page shows Drupal's toolbar and its tabs
    (Edit, Translate…) above it; Drupal renders everything with Gin, also the
    pages that aren't admin pages (the login, a user's page).
+6. Visitors who aren't logged in get "This sandbox is private", on the dev site
+   as in a sandbox. The link of "Preview (with smartphone)" lets them see that
+   page. Only for them does Nuxt render on the server: to see real pages
+   rendered that way, put `$settings['blokkli_playground_public'] = TRUE;` in
+   `sandbox/drupal/web/sites/default/settings.local.php` (gitignored). Sandboxes
+   ignore it.
 
 ### Content
 

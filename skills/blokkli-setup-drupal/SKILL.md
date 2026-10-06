@@ -121,9 +121,9 @@ use these mappings.
 
 Watch out for:
 
-- **File directories:** blökkli's upload mutations don't replace tokens. A media
-  field's `file_directory` of `[date:custom:Y]-[date:custom:m]` creates a
-  directory with exactly that name. Use a plain directory (`media/images`).
+- **Uploads:** pasted and dropped files go through core's upload handling, as in
+  a form. The media field's extensions, maximum size and directory (tokens
+  included) apply.
 - **Text formats:** pasting text into a text field without allowed formats
   fails. Set its allowed formats.
 - **Link fields that a mapping targets:** blökkli sets the link title to the
@@ -420,7 +420,7 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 | A feature is missing in the editor                                        | Its submodule or GraphQL extension isn't enabled, or the schema in Nuxt is stale          |
 | Adding a paragraph fails unless it opens the form                         | The paragraph type has a required field: blökkli can't set values when adding it directly |
 | Pasted text fails                                                         | The text field has no allowed formats                                                     |
-| Pasted files end up in a directory named `[date:custom:Y]-…`              | Tokens in the media field's file directory                                                |
+| A pasted file is refused                                                  | The media field's allowed extensions or maximum size                                      |
 | `/admin/config/content/blokkli` returns 500                               | Core `media` isn't enabled                                                                |
 | SSR renders as anonymous, or everything is a 500                          | Cookies or `X-Forwarded-*` not forwarded, or `onServerError` swallows Drupal's status     |
 | The dev server hangs on "continue with the previously downloaded schema?" | The schema download failed; fix access or use a dumped schema                             |

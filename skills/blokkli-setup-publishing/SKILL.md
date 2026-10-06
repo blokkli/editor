@@ -257,13 +257,29 @@ Nothing to enable: the feature is on when the schema has
   - the grant route must reach Drupal, and the host's URL must reach Nuxt
   - the GraphQL proxy must forward the session cookie both ways
   - pages rendered for a session must bypass the Nuxt and CDN caches
-- **What the viewer needs:** `access content` (for the grant route), GraphQL
-  access, and view access to the host. That's usually any logged-in user, and
-  only for a published host.
-  - **Anonymous visitors** can't use it if they lack those permissions. The
-    grant itself adds none.
-  - **An unpublished host** can't be previewed by others.
-- **The link opens the host's default language.**
+- **What the viewer needs:** GraphQL access and view access to the host. The
+  grant route needs no permission: the hash is the credential. That's usually
+  any logged-in user, and only for a published host.
+  - **The grant itself adds no permissions.** For anonymous visitors without
+    them, or for an unpublished host, the site adds them while the grant is
+    valid (below).
+- **The link opens the language the editor was in.**
+
+The module leaves access to the site. For a site whose anonymous visitors can't
+view content, or to preview unpublished hosts:
+
+- **Permissions:** an access policy (`AccessPolicyBase`, implementing
+  `CacheOptionalInterface`, tagged `access_policy`) that gives the anonymous
+  account `access content` and GraphQL access while
+  `paragraphs_blokkli.preview_grant_checker`'s `hasValidGrant()` is true. It
+  adds the `paragraphs_blokkli_session` cache context to its result.
+- **Unpublished hosts:** a `hook_entity_access()` that allows `view` when
+  `isEntityPreviewable($entity)` is true, with the same cache context. Limit it
+  to unpublished entities, so that caches of published ones don't vary by the
+  grant.
+- **Paragraph type permissions:** with `paragraphs_type_permissions`, the viewer
+  also needs `view paragraph content <type>` or
+  `bypass paragraphs type content access`.
 
 ## 8. Permissions
 
@@ -300,17 +316,17 @@ Tell the developer who needs which; don't assign them:
 
 ## Symptoms and causes
 
-| Symptom                                                                | Cause                                                                                                                                         |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| "Scheduling is not available for this block type."                     | The paragraph type has no scheduler settings, or the patch isn't applied (`getEnabledTypes` is empty)                                         |
-| `sch-ent-upd` reports nothing, the paragraph fields are missing        | It ran before `drush cr`                                                                                                                      |
-| The host's form has no "Scheduling options"                            | `publish_on`/`unpublish_on` aren't in the form display                                                                                        |
-| Scheduled content doesn't change at its date                           | Cron didn't run (`automated_cron` needs a page request), or only `sch-cron` ran                                                               |
-| A scheduled paragraph shows in another language                        | The schedule was set in one language only                                                                                                     |
-| Publishing fails with "The 'unpublish on' date must be in the future." | A paragraph's unpublish date passed before cron ran                                                                                           |
-| A news item's date doesn't match when it was published                 | `publish_touch` is off, or it was published with blökkli's "Schedule" mode                                                                    |
-| A host can't be published early                                        | It has a future "Publish on" in its form                                                                                                      |
-| A revision has the previous revision's log                             | The change description was empty                                                                                                              |
-| The preview link returns "Access denied"                               | The viewer lacks `access content`                                                                                                             |
-| The preview link shows the published page                              | The viewer lacks GraphQL access or view access to the host; or opened the preview URL before the link, and the cached response hasn't expired |
-| The preview link opens a broken URL                                    | The editor runs on another origin than visitors use                                                                                           |
+| Symptom                                                                | Cause                                                                                                 |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| "Scheduling is not available for this block type."                     | The paragraph type has no scheduler settings, or the patch isn't applied (`getEnabledTypes` is empty) |
+| `sch-ent-upd` reports nothing, the paragraph fields are missing        | It ran before `drush cr`                                                                              |
+| The host's form has no "Scheduling options"                            | `publish_on`/`unpublish_on` aren't in the form display                                                |
+| Scheduled content doesn't change at its date                           | Cron didn't run (`automated_cron` needs a page request), or only `sch-cron` ran                       |
+| A scheduled paragraph shows in another language                        | The schedule was set in one language only                                                             |
+| Publishing fails with "The 'unpublish on' date must be in the future." | A paragraph's unpublish date passed before cron ran                                                   |
+| A news item's date doesn't match when it was published                 | `publish_touch` is off, or it was published with blökkli's "Schedule" mode                            |
+| A host can't be published early                                        | It has a future "Publish on" in its form                                                              |
+| A revision has the previous revision's log                             | The change description was empty                                                                      |
+| The preview link returns "Access denied"                               | The hash doesn't match: a link from another site, whose edit state has the same id                    |
+| The preview link shows the published page                              | The viewer lacks GraphQL access or view access to the host                                            |
+| The preview link opens a broken URL                                    | The editor runs on another origin than visitors use                                                   |

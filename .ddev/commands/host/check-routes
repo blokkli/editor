@@ -69,6 +69,13 @@ sandbox_routes=(
   "/_nuxt/x.js sandbox-unknown"
 )
 
+# Files (chunk 10), with the expected status: a sandbox's files only on its own
+# host (none on the default site), and PHP never runs from them.
+file_routes=(
+  "/sites/default/files/sandboxes/zz98/x.jpg nginx 404"
+  "/sites/default/files/x.php drupal 403"
+)
+
 # The control app (chunk 09): every path, Drupal's included.
 control="${base/:\/\/blokkli./://blokkli-control.}"
 control_routes=(
@@ -80,20 +87,26 @@ control_routes=(
 )
 
 failed=0
+# Compares the upstream and, if given, the status.
 check() {
-  local url="$1" expected="$2" actual
-  actual=$(curl -sk -o /dev/null -D - --max-time 10 "$url" |
-    tr -d '\r' | awk -F': ' 'tolower($1) == "x-blokkli-upstream" { print $2 }')
-  if [ "$actual" = "$expected" ]; then
-    printf '  ok    %-50s %s\n' "${url#https://}" "$actual"
+  local url="$1" expected="$2" status="${3:-}" headers actual code
+  headers=$(curl -sk -o /dev/null -D - --max-time 10 "$url" | tr -d '\r')
+  actual=$(awk -F': ' 'tolower($1) == "x-blokkli-upstream" { print $2 }' <<<"$headers")
+  code=$(awk 'NR == 1 { print $2 }' <<<"$headers")
+  if [ "$actual" = "$expected" ] && { [ -z "$status" ] || [ "$code" = "$status" ]; }; then
+    printf '  ok    %-50s %s\n' "${url#https://}" "$actual${status:+ $code}"
   else
-    printf '  FAIL  %-50s expected %s, got %s\n' "${url#https://}" "$expected" "${actual:-nothing}"
+    printf '  FAIL  %-50s expected %s, got %s\n' "${url#https://}" "$expected${status:+ $status}" "${actual:-nothing}${status:+ $code}"
     failed=1
   fi
 }
 
 for route in "${routes[@]}"; do
   check "$base${route% *}" "${route##* }"
+done
+for route in "${file_routes[@]}"; do
+  read -r path upstream status <<<"$route"
+  check "$base$path" "$upstream" "$status"
 done
 for route in "${sandbox_routes[@]}"; do
   check "$unknown_sandbox${route% *}" "${route##* }"

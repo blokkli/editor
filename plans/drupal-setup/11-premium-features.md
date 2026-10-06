@@ -23,6 +23,9 @@ failing, and they can't use it even through direct API calls.
       (`src/modules/agent/runtime/server/agent.ts`).
 - [ ] Give the Nuxt agent server a dedicated provider key with a spend limit set
       at the provider.
+- [ ] Before the key: the agent's `/route` and `/fetch` endpoints check the auth
+      token, as `/stream` does (F49). `/route` calls the routing model with the
+      server's key for anyone today.
 
 ## Acceptance criteria
 

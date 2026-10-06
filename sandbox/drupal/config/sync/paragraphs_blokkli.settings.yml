@@ -3,6 +3,7 @@ _core:
 schema_file: ../blokkli-options-schema.json
 media_bundle_remote_video: remote_video
 media_bundle_image: image
+media_bundle_file: document
 media_library_image_style: ''
 image_style: blokkli_preview
 use_user_images: true
@@ -26,4 +27,3 @@ enabled_fields: {  }
 disable_notifications: false
 validation_types:
   - paragraph
-media_bundle_file: document

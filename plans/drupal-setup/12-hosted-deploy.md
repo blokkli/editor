@@ -43,6 +43,19 @@ This chunk starts only once M0–M2 work locally.
       on the apex.
 - [ ] Monitoring: disk usage from sandboxes, error logs, and an alert when the
       active-sandbox cap gets close.
+- [ ] Outgoing requests only to an allowlist (chunk 10):
+  - `api.anthropic.com` (the agent)
+  - `api.deepl.com` and `api-free.deepl.com`
+  - `challenges.cloudflare.com` (Turnstile's verification)
+  - `oembed.com` (the providers list), and YouTube's and Vimeo's oEmbed
+    endpoints and thumbnail hosts (remote videos)
+  - `ftp.drupal.org`, only if the deploy imports interface translations
+  - no SMTP: mail stays in Mailpit
+- [ ] The hosted nginx template takes chunk 10's rules from `nginx-site.conf`:
+      `headers.inc` (CSP, noindex), each sandbox's files only on its host, and
+      no PHP under `sites/*/files`.
+- [ ] Candidates: limits on PHP-FPM time (600 s today), request size (100M) and
+      request rate, so that one sandbox can't slow down the others.
 
 ## Acceptance criteria
 

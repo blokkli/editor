@@ -34,7 +34,7 @@ settings:
   handler_settings: {  }
   file_directory: media/images
   file_extensions: 'png gif jpg jpeg webp'
-  max_filesize: ''
+  max_filesize: '10 MB'
   max_resolution: ''
   min_resolution: ''
   alt_field: true
